@@ -630,6 +630,104 @@ function createDocumentBuffer(type: DocumentArtifactType, title: string, content
   return createDocxBuffer(title, contentMd);
 }
 
+function emptyTelemetrySnapshot(): AiTelemetrySnapshot {
+  return {
+    generatedAt: '',
+    window: {},
+    runCount: 0,
+    statusCounts: {},
+    routeCounts: {},
+    modelCounts: {},
+    eventCount: 0,
+    eventPhaseCounts: {},
+    toolEventCount: 0,
+    toolUsageCounts: {},
+    artifactCounts: {},
+    confirmationCounts: {},
+    latency: { count: 0, averageMs: 0, p50Ms: 0, p95Ms: 0 },
+    tokenBudget: { promptTokens: 0, completionTokens: 0, totalTokens: 0, knownTaskCount: 0 },
+    contextBudget: { sourceCount: 0, knowledgeSnippetCount: 0, graphNodeCount: 0, taskCount: 0 },
+  };
+}
+
+function parseTelemetrySnapshot(value: unknown): AiTelemetrySnapshot {
+  const parsed = jsonObject(value);
+  const latency = parsed.latency && typeof parsed.latency === 'object' && !Array.isArray(parsed.latency)
+    ? parsed.latency as Record<string, unknown>
+    : {};
+  const tokenBudget = parsed.tokenBudget && typeof parsed.tokenBudget === 'object' && !Array.isArray(parsed.tokenBudget)
+    ? parsed.tokenBudget as Record<string, unknown>
+    : {};
+  const contextBudget = parsed.contextBudget && typeof parsed.contextBudget === 'object' && !Array.isArray(parsed.contextBudget)
+    ? parsed.contextBudget as Record<string, unknown>
+    : {};
+  const windowValue = parsed.window && typeof parsed.window === 'object' && !Array.isArray(parsed.window)
+    ? parsed.window as Record<string, unknown>
+    : {};
+  const counts = (raw: unknown) => raw && typeof raw === 'object' && !Array.isArray(raw)
+    ? Object.fromEntries(Object.entries(raw as Record<string, unknown>).map(([key, value]) => [key, toNumber(value)]))
+    : {};
+  return {
+    generatedAt: String(parsed.generatedAt ?? ''),
+    window: {
+      since: windowValue.since ? String(windowValue.since) : undefined,
+      until: windowValue.until ? String(windowValue.until) : undefined,
+    },
+    runCount: toNumber(parsed.runCount),
+    statusCounts: counts(parsed.statusCounts),
+    routeCounts: counts(parsed.routeCounts),
+    modelCounts: counts(parsed.modelCounts),
+    eventCount: toNumber(parsed.eventCount),
+    eventPhaseCounts: counts(parsed.eventPhaseCounts),
+    toolEventCount: toNumber(parsed.toolEventCount),
+    toolUsageCounts: counts(parsed.toolUsageCounts),
+    artifactCounts: counts(parsed.artifactCounts),
+    confirmationCounts: counts(parsed.confirmationCounts),
+    latency: {
+      count: toNumber(latency.count),
+      averageMs: toNumber(latency.averageMs),
+      p50Ms: toNumber(latency.p50Ms),
+      p95Ms: toNumber(latency.p95Ms),
+    },
+    tokenBudget: {
+      promptTokens: toNumber(tokenBudget.promptTokens),
+      completionTokens: toNumber(tokenBudget.completionTokens),
+      totalTokens: toNumber(tokenBudget.totalTokens),
+      knownTaskCount: toNumber(tokenBudget.knownTaskCount),
+    },
+    contextBudget: {
+      sourceCount: toNumber(contextBudget.sourceCount),
+      knowledgeSnippetCount: toNumber(contextBudget.knowledgeSnippetCount),
+      graphNodeCount: toNumber(contextBudget.graphNodeCount),
+      taskCount: toNumber(contextBudget.taskCount),
+    },
+  };
+}
+
+function parseRegressionGates(value: unknown): AiRegressionGate[] {
+  try {
+    const parsed = JSON.parse(String(value ?? '[]'));
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((item) => item && typeof item === 'object')
+      .map((item) => {
+        const gate = item as Record<string, unknown>;
+        const status = String(gate.status ?? 'warning');
+        return {
+          id: String(gate.id ?? ''),
+          label: String(gate.label ?? ''),
+          status: (status === 'passed' || status === 'failed' || status === 'warning') ? status : 'warning',
+          detail: String(gate.detail ?? ''),
+          evidence: gate.evidence && typeof gate.evidence === 'object' && !Array.isArray(gate.evidence)
+            ? gate.evidence as Record<string, unknown>
+            : {},
+        };
+      });
+  } catch {
+    return [];
+  }
+}
+
 export class OmniEduStore {
   private db!: sqlite3.Database;
   private dbPath: string;
@@ -2075,6 +2173,250 @@ export class OmniEduStore {
     return rows.map((row) => this.mapDocumentArtifact(row));
   }
 
+  async buildAiTelemetrySnapshot(input: Pick<AiRegressionReportInput, 'since' | 'until'> = {}): Promise<AiTelemetrySnapshot> {
+    const since = normalizeIsoDate(input.since);
+    const until = normalizeIsoDate(input.until);
+    const whereFor = (column: string) => {
+      const clauses: string[] = [];
+      const params: SqlValue[] = [];
+      if (since) {
+        clauses.push(`${column} >= ?`);
+        params.push(since);
+      }
+      if (until) {
+        clauses.push(`${column} <= ?`);
+        params.push(until);
+      }
+      return {
+        suffix: clauses.length ? ` WHERE ${clauses.join(' AND ')}` : '',
+        params,
+      };
+    };
+
+    const countRows = (rows: Row[], keyName: string) => {
+      const counts: Record<string, number> = {};
+      for (const row of rows) incrementCount(counts, String(row[keyName] ?? 'unknown'), Number(row.count ?? 0));
+      return counts;
+    };
+
+    const runWhere = whereFor('created_at');
+    const eventWhere = whereFor('created_at');
+    const artifactWhere = whereFor('updated_at');
+    const confirmationWhere = whereFor('updated_at');
+    const taskWhere = whereFor('created_at');
+
+    const [
+      runRows,
+      statusRows,
+      routeRows,
+      modelRows,
+      eventRows,
+      phaseRows,
+      toolEventRows,
+      toolRunRows,
+      artifactRows,
+      confirmationRows,
+      taskRows,
+    ] = await Promise.all([
+      this.all(`SELECT created_at, completed_at FROM ai_agent_runs${runWhere.suffix}`, runWhere.params),
+      this.all(`SELECT status, COUNT(*) AS count FROM ai_agent_runs${runWhere.suffix} GROUP BY status`, runWhere.params),
+      this.all(`SELECT route, COUNT(*) AS count FROM ai_agent_runs${runWhere.suffix} GROUP BY route`, runWhere.params),
+      this.all(`SELECT model, COUNT(*) AS count FROM ai_agent_runs${runWhere.suffix} GROUP BY model`, runWhere.params),
+      this.all(`SELECT COUNT(*) AS count FROM ai_agent_events${eventWhere.suffix}`, eventWhere.params),
+      this.all(`SELECT phase, COUNT(*) AS count FROM ai_agent_events${eventWhere.suffix} GROUP BY phase`, eventWhere.params),
+      this.all(`SELECT tool_name, COUNT(*) AS count FROM ai_agent_events${eventWhere.suffix}${eventWhere.suffix ? ' AND' : ' WHERE'} tool_name != '' GROUP BY tool_name`, eventWhere.params),
+      this.all(`SELECT tool_name, COUNT(*) AS count FROM ai_tool_runs${eventWhere.suffix} GROUP BY tool_name`, eventWhere.params),
+      this.all(`SELECT status, COUNT(*) AS count FROM document_artifacts${artifactWhere.suffix} GROUP BY status`, artifactWhere.params),
+      this.all(`SELECT status, COUNT(*) AS count FROM ai_confirmation_items${confirmationWhere.suffix} GROUP BY status`, confirmationWhere.params),
+      this.all(`SELECT payload_json, result_json FROM ai_tasks${taskWhere.suffix}${taskWhere.suffix ? ' AND' : ' WHERE'} task_type = 'ai_console'`, taskWhere.params),
+    ]);
+
+    const latencies = runRows
+      .map((row) => {
+        const startedAt = Date.parse(String(row.created_at ?? ''));
+        const completedAt = Date.parse(String(row.completed_at ?? ''));
+        if (!Number.isFinite(startedAt) || !Number.isFinite(completedAt) || completedAt < startedAt) return 0;
+        return completedAt - startedAt;
+      })
+      .filter((value) => value > 0);
+    const latency: AiTelemetryLatency = {
+      count: latencies.length,
+      averageMs: average(latencies),
+      p50Ms: percentile(latencies, 0.5),
+      p95Ms: percentile(latencies, 0.95),
+    };
+
+    const toolUsageCounts = countRows(toolRunRows, 'tool_name');
+    for (const row of toolEventRows) incrementCount(toolUsageCounts, String(row.tool_name ?? 'unknown'), Number(row.count ?? 0));
+
+    const tokenBudget = {
+      promptTokens: 0,
+      completionTokens: 0,
+      totalTokens: 0,
+      knownTaskCount: 0,
+    };
+    const contextBudget = {
+      sourceCount: 0,
+      knowledgeSnippetCount: 0,
+      graphNodeCount: 0,
+      taskCount: taskRows.length,
+    };
+    for (const row of taskRows) {
+      const result = jsonObject(row.result_json);
+      const usage = result.usage && typeof result.usage === 'object' && !Array.isArray(result.usage)
+        ? result.usage as Record<string, unknown>
+        : {};
+      const totalTokens = toNumber(usage.totalTokens);
+      if (totalTokens > 0 || toNumber(usage.promptTokens) > 0 || toNumber(usage.completionTokens) > 0) {
+        tokenBudget.knownTaskCount += 1;
+      }
+      tokenBudget.promptTokens += toNumber(usage.promptTokens);
+      tokenBudget.completionTokens += toNumber(usage.completionTokens);
+      tokenBudget.totalTokens += totalTokens;
+      const payload = jsonObject(row.payload_json);
+      contextBudget.sourceCount += toNumber(payload.sourceCount);
+      contextBudget.knowledgeSnippetCount += toNumber(payload.knowledgeSnippetCount);
+      contextBudget.graphNodeCount += toNumber(payload.graphNodeCount);
+    }
+
+    return {
+      generatedAt: now(),
+      window: {
+        since: since || undefined,
+        until: until || undefined,
+      },
+      runCount: runRows.length,
+      statusCounts: countRows(statusRows, 'status'),
+      routeCounts: countRows(routeRows, 'route'),
+      modelCounts: countRows(modelRows, 'model'),
+      eventCount: Number(eventRows[0]?.count ?? 0),
+      eventPhaseCounts: countRows(phaseRows, 'phase'),
+      toolEventCount: Object.values(toolUsageCounts).reduce((sum, value) => sum + value, 0),
+      toolUsageCounts,
+      artifactCounts: countRows(artifactRows, 'status'),
+      confirmationCounts: countRows(confirmationRows, 'status'),
+      latency,
+      tokenBudget,
+      contextBudget,
+    };
+  }
+
+  async createAiRegressionReport(input: AiRegressionReportInput = {}): Promise<AiRegressionReport> {
+    const snapshot = await this.buildAiTelemetrySnapshot(input);
+    const runningCount = snapshot.statusCounts.running ?? 0;
+    const failedArtifacts = snapshot.artifactCounts.failed ?? 0;
+    const pendingConfirmations = snapshot.confirmationCounts.pending ?? 0;
+    const gates: AiRegressionGate[] = [
+      {
+        id: 'agent_runs_terminal',
+        label: 'Agent run 终态',
+        status: runningCount > 0 ? 'failed' : 'passed',
+        detail: runningCount > 0 ? `仍有 ${runningCount} 个 running run。` : '没有遗留 running run。',
+        evidence: { statusCounts: snapshot.statusCounts },
+      },
+      {
+        id: 'event_trace_present',
+        label: '事件轨迹可审计',
+        status: snapshot.runCount === 0 ? 'warning' : snapshot.eventCount >= snapshot.runCount ? 'passed' : 'failed',
+        detail: snapshot.runCount === 0
+          ? '当前窗口没有 agent run，可观测性覆盖需要真实运行样本。'
+          : `runs=${snapshot.runCount}, events=${snapshot.eventCount}。`,
+        evidence: { runCount: snapshot.runCount, eventCount: snapshot.eventCount, eventPhaseCounts: snapshot.eventPhaseCounts },
+      },
+      {
+        id: 'tool_trace_present',
+        label: '工具轨迹可查询',
+        status: snapshot.toolEventCount > 0 ? 'passed' : 'warning',
+        detail: snapshot.toolEventCount > 0 ? `记录到 ${snapshot.toolEventCount} 条工具轨迹。` : '当前窗口没有工具轨迹样本。',
+        evidence: { toolUsageCounts: snapshot.toolUsageCounts },
+      },
+      {
+        id: 'artifact_export_status',
+        label: '产物导出状态',
+        status: failedArtifacts > 0 ? 'failed' : 'passed',
+        detail: failedArtifacts > 0 ? `存在 ${failedArtifacts} 个 failed 文档产物。` : '没有 failed 文档产物。',
+        evidence: { artifactCounts: snapshot.artifactCounts },
+      },
+      {
+        id: 'confirmation_queue_state',
+        label: '确认队列状态',
+        status: pendingConfirmations > 0 ? 'warning' : 'passed',
+        detail: pendingConfirmations > 0 ? `仍有 ${pendingConfirmations} 个待老师确认项。` : '没有待处理确认项。',
+        evidence: { confirmationCounts: snapshot.confirmationCounts },
+      },
+      {
+        id: 'latency_budget_available',
+        label: '延迟预算可计算',
+        status: snapshot.runCount === 0 ? 'warning' : snapshot.latency.count > 0 ? 'passed' : 'warning',
+        detail: snapshot.latency.count > 0 ? `p50=${snapshot.latency.p50Ms}ms, p95=${snapshot.latency.p95Ms}ms。` : '当前窗口缺少 completed_at，暂不能计算延迟。',
+        evidence: { latency: snapshot.latency },
+      },
+    ];
+    if (input.expectedEvalTotal != null || input.expectedEvalPassed != null) {
+      const total = Number(input.expectedEvalTotal ?? 0);
+      const passed = Number(input.expectedEvalPassed ?? 0);
+      gates.push({
+        id: 'router_eval_baseline',
+        label: 'Router eval 基线',
+        status: total > 0 && passed === total ? 'passed' : 'failed',
+        detail: total > 0 ? `${passed}/${total} router eval passed。` : '缺少 router eval 总数。',
+        evidence: { expectedEvalTotal: total, expectedEvalPassed: passed },
+      });
+    }
+    const status: AiRegressionGateStatus = gates.some((gate) => gate.status === 'failed')
+      ? 'failed'
+      : gates.some((gate) => gate.status === 'warning')
+        ? 'warning'
+        : 'passed';
+    const title = input.title?.trim() || '小智 Observability Regression Report';
+    const reportJson: Record<string, unknown> = {
+      schemaVersion: 'xiazhi.observability.v1',
+      replySchemaVersion: 'xiazhi.reply.v2',
+      generatedAt: snapshot.generatedAt,
+      title,
+      status,
+      snapshot,
+      gates,
+    };
+    const summary = `runs=${snapshot.runCount}, events=${snapshot.eventCount}, tools=${snapshot.toolEventCount}, status=${status}`;
+    const report: AiRegressionReport = {
+      id: `aireport_${randomUUID()}`,
+      title,
+      status,
+      summary,
+      snapshot,
+      gates,
+      reportJson,
+      createdAt: now(),
+    };
+    await this.run(
+      `INSERT INTO ai_regression_reports (id, title, status, summary, snapshot_json, gates_json, report_json, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        report.id,
+        report.title,
+        report.status,
+        report.summary,
+        JSON.stringify(report.snapshot),
+        JSON.stringify(report.gates),
+        JSON.stringify(report.reportJson),
+        report.createdAt,
+      ],
+    );
+    return this.getAiRegressionReportOrThrow(report.id);
+  }
+
+  async getAiRegressionReport(id: string): Promise<AiRegressionReport | null> {
+    const row = (await this.all(`SELECT * FROM ai_regression_reports WHERE id = ?`, [id]))[0];
+    return row ? this.mapAiRegressionReport(row) : null;
+  }
+
+  async listAiRegressionReports(limit = 20): Promise<AiRegressionReport[]> {
+    const boundedLimit = Math.max(1, Math.min(Math.trunc(limit), 100));
+    const rows = await this.all(`SELECT * FROM ai_regression_reports ORDER BY created_at DESC LIMIT ?`, [boundedLimit]);
+    return rows.map((row) => this.mapAiRegressionReport(row));
+  }
+
   private openDatabase(filePath: string) {
     return new Promise<sqlite3.Database>((resolveOpen, reject) => {
       const db = new sqlite3.Database(filePath, (error) => {
@@ -2885,6 +3227,12 @@ export class OmniEduStore {
     return this.mapDocumentArtifact(row);
   }
 
+  private async getAiRegressionReportOrThrow(id: string): Promise<AiRegressionReport> {
+    const row = (await this.all(`SELECT * FROM ai_regression_reports WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('AI 回归报告生成后未能读回');
+    return this.mapAiRegressionReport(row);
+  }
+
   private async executeAiConfirmation(item: AiConfirmationItem): Promise<AiConfirmationDecisionResult['readback']> {
     if (item.actionType === 'create_review_report') {
       const report = await this.createReviewReportFromConfirmation(item.payload);
@@ -3266,6 +3614,24 @@ export class OmniEduStore {
       errorMessage: String(row.error_message ?? ''),
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private mapAiRegressionReport(row: Row): AiRegressionReport {
+    const rawStatus = String(row.status ?? 'warning');
+    const status: AiRegressionGateStatus = rawStatus === 'passed' || rawStatus === 'failed' || rawStatus === 'warning'
+      ? rawStatus
+      : 'warning';
+    const snapshot = row.snapshot_json ? parseTelemetrySnapshot(row.snapshot_json) : emptyTelemetrySnapshot();
+    return {
+      id: String(row.id),
+      title: String(row.title ?? ''),
+      status,
+      summary: String(row.summary ?? ''),
+      snapshot,
+      gates: parseRegressionGates(row.gates_json),
+      reportJson: jsonObject(row.report_json),
+      createdAt: String(row.created_at ?? ''),
     };
   }
 

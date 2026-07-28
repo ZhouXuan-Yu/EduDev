@@ -1044,16 +1044,23 @@ imported
 
 任务：
 
-- run/event telemetry。
-- eval report 存档。
-- prompt/schema/model 版本记录。
-- P50/P95 延迟。
-- token 和上下文预算。
+- [x] run/event telemetry。
+- [x] eval report 存档。
+- [x] prompt/schema/model 版本记录。
+- [x] P50/P95 延迟。
+- [x] token 和上下文预算。
 
 验收：
 
-- 每次回答可查工具轨迹。
-- 每次发布前能跑回归报告。
+- [x] 每次回答可查工具轨迹。
+- [x] 每次发布前能跑回归报告。
+
+当前边界：
+
+- Phase 11 v1 当前完成的是 SQLite/API/smoke 层：统一 telemetry snapshot、回归报告存档、gate 聚合、延迟/token/context 预算和报告 readback。
+- 尚未完成专门 Observability UI、Markdown/HTML 报告导出、OpenTelemetry dashboard 或失败样本自动回放。
+- 真实 DeepSeek live usage、prompt/model 细粒度版本和生产环境延迟分布仍需在 API Key 与真实使用数据下继续校验。
+- 当前门禁：`npm run test:ai-observability`。
 
 ### Phase 12：教师可用性打磨
 
@@ -1095,7 +1102,7 @@ imported
 不要先做大而全 UI，也不要先继续堆 system prompt。小智下一步最该做的是：
 
 ```text
-Phase 11 Observability + Regression
+Phase 12 教师可用性打磨
 ```
 
 ## 17. 每轮开发的固定检查清单
@@ -1119,16 +1126,16 @@ Phase 11 Observability + Regression
 下一轮建议直接实现：
 
 ```text
-Phase 11 Observability + Regression v1
+Phase 12 教师可用性打磨 v1
 ```
 
 预计改动文件：
 
-- `apps/desktop/src/shared/contracts.ts`
-- `apps/desktop/src/main/db.ts`
 - `apps/desktop/src/main/ai-harness/*`
-- `apps/desktop/scripts/*regression*.mjs`
-- `apps/desktop/scripts/*telemetry*.mjs`
+- `apps/desktop/src/main/deepseek.ts`
+- `apps/desktop/src/renderer/App.tsx`
+- `apps/desktop/src/renderer/styles.css`
+- `apps/desktop/scripts/*usability*.mjs`
 - `docs/22_XIAOZHI_EDU_AI_HARNESS_PLAN.md`
 
 ## 19. 当前实施状态
@@ -1280,7 +1287,23 @@ Phase 11 Observability + Regression v1
 - 历史消息 metadata 尚未自动合并导出状态；下一步应在历史会话打开时按 artifact id 合并 `document_artifacts` readback，或导出成功后回写 assistant message metadata。
 - 真实 DeepSeek live 生成文档 artifact 仍需在 API Key 配置后单独验收。
 
-## 19. 长期不可变底线
+### 2026-07-28：Phase 11 Observability + Regression v1 已完成
+
+- 已新增 `AiTelemetrySnapshot`、`AiTelemetryLatency`、`AiRegressionGate`、`AiRegressionReport`、`AiRegressionReportInput` 共享契约。
+- 已新增 `ai_regression_reports` SQLite 表，用于保存 snapshot、gates 和完整 report JSON。
+- 已实现 `buildAiTelemetrySnapshot()`，从 run/event/tool/artifact/confirmation/task usage 聚合运行状态、route/model 分布、事件阶段、工具调用、产物状态、确认队列、P50/P95/avg 延迟、token 和上下文预算。
+- 已实现 `createAiRegressionReport()`，生成 `agent_runs_terminal`、`event_trace_present`、`tool_trace_present`、`artifact_export_status`、`confirmation_queue_state`、`latency_budget_available` 和 `router_eval_baseline` gates。
+- 已新增 `aiObservability:getSnapshot`、`aiObservability:createRegressionReport`、`aiObservability:listRegressionReports`、`aiObservability:getRegressionReport` IPC/preload API。
+- 已新增 `apps/desktop/scripts/ai-observability-smoke.mjs` 与 `npm run test:ai-observability`。
+- 本轮门禁：`npm run test:ai-observability`、`npm run test:ai-harness`、`npm run test:ai-agent-runtime`、`npm run test:ai-document-export`、`npm run build`。
+
+尚未完成：
+
+- 还没有 Observability UI 仪表盘、回归报告 Markdown/HTML 导出和失败样本自动回放。
+- token budget 只统计已写入 usage 的任务；真实 DeepSeek live usage 仍需单独验收。
+- 历史会话 UI 尚未按 runId 展开完整 `ai_agent_events` / `ai_tool_runs` 轨迹。
+
+## 20. 长期不可变底线
 
 - 不做学校级平台。
 - 不做学生端、家长端、完整 LMS。

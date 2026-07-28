@@ -28,6 +28,7 @@ Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把�
 | 错题图片 | 本地图片托管、`needs_ocr` 状态、脱敏文本、老师修正后重新脱敏 | v1 已落地 |
 | 知识库/图谱 | 资源切片、质量分、证据强度、个人信息隐藏、图谱背景边界 | v1 已落地 |
 | 文档导出 | Markdown / PDF / DOCX 真实写文件、hash、状态 readback | v1 已落地 |
+| Observability / Regression | AI run/event/tool/artifact/confirmation 统一快照、回归 gate 和报告 readback | v1 已落地 |
 
 ## UI 页面展示
 
@@ -53,6 +54,7 @@ Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把�
 - 右侧只在点击 `PDF 文件`、`Word 文件`、`Markdown 文件` 等产物入口后展开。
 - 文档预览面板支持拖拽调整宽度，Markdown 任务列表复选框已隔离全局输入框样式。
 - 文档导出必须由主进程真实写出文件并记录 `document_artifacts`，失败不会显示为成功。
+- 回归报告从本地 SQLite 的 run/event/tool/artifact/confirmation/task usage 生成，不能用口头结论替代真实 readback。
 
 ## 本地优先与安全边界
 
@@ -106,6 +108,7 @@ npm run test:ai-exercise-set
 npm run test:ai-mistake-image
 npm run test:ai-knowledge-graph
 npm run test:ai-document-export
+npm run test:ai-observability
 npm run build
 ```
 
@@ -145,4 +148,5 @@ docs/                               UI、知识库、小智 harness 方案文档
 - 错题图片链路已完成本地托管、状态和脱敏，真实 OCR 引擎尚未接入。
 - 知识库/图谱增强是规则版 v1，不是 Graph RAG，也不是完整知识抽取系统。
 - 三元题组已打通本地召回和确认保存第一段，完整题库导入 UI、embedding 召回和题组编辑器仍在后续阶段。
+- Observability / Regression v1 已完成数据层、IPC/preload 和本地 smoke；专门 UI 仪表盘、Markdown/HTML 报告导出和失败样本自动回放仍在后续阶段。
 - 当前产品边界仍是独立教师与小微教研团队，不扩展为学校级平台、学生端、家长端或完整 LMS。

@@ -13,6 +13,7 @@ import type {
   AiConversationMessageInput,
   AiConversationSessionInput,
   AiConversationSessionUpdateInput,
+  AiRegressionReportInput,
   DeepSeekSettingsInput,
   DocumentArtifactExportInput,
 } from '../shared/contracts';
@@ -243,6 +244,14 @@ app.whenReady().then(async () => {
     }
     shell.showItemInFolder(artifact.filePath);
   });
+  ipcMain.handle('aiObservability:getSnapshot', (_event, input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    store.buildAiTelemetrySnapshot(input ?? {}),
+  );
+  ipcMain.handle('aiObservability:createRegressionReport', (_event, input?: AiRegressionReportInput) =>
+    store.createAiRegressionReport(input ?? {}),
+  );
+  ipcMain.handle('aiObservability:listRegressionReports', (_event, limit?: number) => store.listAiRegressionReports(limit));
+  ipcMain.handle('aiObservability:getRegressionReport', (_event, id: string) => store.getAiRegressionReport(id));
   ipcMain.handle('records:list', (_event, studentId: string, filters) => store.listRecords(studentId, filters));
   ipcMain.handle('records:create', (_event, input) => store.createRecord(input));
   ipcMain.handle('records:update', (_event, recordId: string, input) => store.updateRecord(recordId, input));

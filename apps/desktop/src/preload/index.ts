@@ -12,6 +12,9 @@ import type {
   AiConversationSessionInput,
   AiConversationSessionUpdateInput,
   AiConversationWorkspace,
+  AiRegressionReport,
+  AiRegressionReportInput,
+  AiTelemetrySnapshot,
   AttachmentImportResult,
   DocumentArtifactExportInput,
   DocumentArtifactExportResult,
@@ -60,6 +63,14 @@ const api = {
   getDocumentArtifact: (id: string) =>
     ipcRenderer.invoke('documents:getArtifact', id) as Promise<DocumentArtifactExportResult | null>,
   showDocumentArtifact: (id: string) => ipcRenderer.invoke('documents:showArtifact', id),
+  getAiTelemetrySnapshot: (input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    ipcRenderer.invoke('aiObservability:getSnapshot', input) as Promise<AiTelemetrySnapshot>,
+  createAiRegressionReport: (input?: AiRegressionReportInput) =>
+    ipcRenderer.invoke('aiObservability:createRegressionReport', input) as Promise<AiRegressionReport>,
+  listAiRegressionReports: (limit?: number) =>
+    ipcRenderer.invoke('aiObservability:listRegressionReports', limit) as Promise<AiRegressionReport[]>,
+  getAiRegressionReport: (id: string) =>
+    ipcRenderer.invoke('aiObservability:getRegressionReport', id) as Promise<AiRegressionReport | null>,
   listRecords: (studentId: string, filters: LearningRecordFilters = {}) => ipcRenderer.invoke('records:list', studentId, filters),
   createRecord: (input: LearningRecordInput) => ipcRenderer.invoke('records:create', input),
   updateRecord: (recordId: string, input: LearningRecordUpdateInput) => ipcRenderer.invoke('records:update', recordId, input),
