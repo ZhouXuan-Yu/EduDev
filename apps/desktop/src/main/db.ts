@@ -8,6 +8,7 @@ import type {
   AttachmentImportItem,
   AttachmentImportResult,
   BootstrapData,
+  ExportDataRootResult,
   ExportStudentResult,
   LearningRecord,
   LearningRecordFilters,
@@ -475,6 +476,12 @@ export class OmniEduStore {
     if (existsSync(sourceStudentRoot)) {
       fileCount += this.copyDirectory(sourceStudentRoot, join(exportPath, 'files'));
     }
+    return { exportPath, fileCount };
+  }
+
+  exportDataRoot(destinationRoot: string): ExportDataRootResult {
+    const exportPath = join(destinationRoot, `OmniEduData-backup-${new Date().toISOString().replace(/[:.]/g, '-')}`);
+    const fileCount = this.copyDirectory(this.dataRoot, exportPath);
     return { exportPath, fileCount };
   }
 

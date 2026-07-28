@@ -144,6 +144,11 @@ export type ExportStudentResult = {
   fileCount: number;
 };
 
+export type ExportDataRootResult = {
+  exportPath: string;
+  fileCount: number;
+};
+
 export type BootstrapData = {
   dataRoot: string;
   students: Student[];

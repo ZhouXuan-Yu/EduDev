@@ -329,6 +329,10 @@ export function App() {
             <IconButton label="打开本地目录" onClick={() => activeStudent && window.omniEdu?.openStudentFolder(activeStudent.id)}><FolderOpen size={18} /></IconButton>
             <IconButton label="查看历史复盘"><History size={18} /></IconButton>
             <button className="secondary-action" onClick={async () => {
+              const result = await window.omniEdu?.exportDataRoot();
+              if (result) setStatus(`完整数据目录已备份：${result.exportPath}（${result.fileCount} 个文件）`);
+            }}><HardDrive size={17} />备份</button>
+            <button className="secondary-action" onClick={async () => {
               if (!activeStudent) return;
               const result = await window.omniEdu?.exportStudent(activeStudent.id);
               if (result) setStatus(`已导出学生档案：${result.exportPath}（${result.fileCount} 个文件）`);

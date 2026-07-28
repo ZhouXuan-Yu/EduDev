@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type {
   AttachmentImportResult,
+  ExportDataRootResult,
   LearningRecordFilters,
   LearningRecordInput,
   LearningRecordUpdateInput,
@@ -11,6 +12,7 @@ import type {
 const api = {
   bootstrap: () => ipcRenderer.invoke('app:bootstrap'),
   getDataRoot: () => ipcRenderer.invoke('app:getDataRoot') as Promise<string>,
+  exportDataRoot: () => ipcRenderer.invoke('app:exportDataRoot') as Promise<ExportDataRootResult | null>,
   listStudents: (query = '') => ipcRenderer.invoke('students:list', query),
   createStudent: (input: StudentInput) => ipcRenderer.invoke('students:create', input),
   updateStudent: (id: string, input: StudentInput) => ipcRenderer.invoke('students:update', id, input),

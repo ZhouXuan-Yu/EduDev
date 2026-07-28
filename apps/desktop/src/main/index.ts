@@ -40,6 +40,14 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('app:bootstrap', () => store.init());
   ipcMain.handle('app:getDataRoot', () => store.getDataRoot());
+  ipcMain.handle('app:exportDataRoot', async () => {
+    const result = await dialog.showOpenDialog({
+      title: '选择完整数据目录备份位置',
+      properties: ['openDirectory', 'createDirectory'],
+    });
+    if (result.canceled || !result.filePaths[0]) return null;
+    return store.exportDataRoot(result.filePaths[0]);
+  });
   ipcMain.handle('students:list', (_event, query: string) => store.listStudents(query));
   ipcMain.handle('students:create', (_event, input) => store.createStudent(input));
   ipcMain.handle('students:update', (_event, id: string, input) => store.updateStudent(id, input));
