@@ -182,10 +182,18 @@ export class OmniEduStore {
       where += ' AND record_type = ?';
       params.push(filters.type);
     }
-    if (filters.keyword?.trim()) {
-      where += ' AND (title LIKE ? OR content LIKE ? OR tags LIKE ?)';
-      const like = `%${filters.keyword.trim()}%`;
-      params.push(like, like, like);
+    const keyword = filters.keyword?.trim();
+    if (keyword) {
+      const ftsIds = this.searchRecordIdsByFts(keyword, studentId);
+      if (ftsIds) {
+        if (!ftsIds.length) return [];
+        where += ` AND id IN (${ftsIds.map(() => '?').join(',')})`;
+        params.push(...ftsIds);
+      } else {
+        where += ' AND (title LIKE ? OR content LIKE ? OR tags LIKE ?)';
+        const like = `%${keyword}%`;
+        params.push(like, like, like);
+      }
     }
     const records = this.all(
       `SELECT * FROM learning_records ${where} ORDER BY occurred_at DESC, created_at DESC`,
@@ -216,6 +224,7 @@ export class OmniEduStore {
       ],
     );
     this.touchStudent(input.studentId);
+    this.upsertRecordFts(id);
     mkdirSync(join(this.studentRoot(input.studentId), 'records', id, 'attachments'), { recursive: true });
     this.save();
     return this.listRecords(input.studentId);
@@ -242,6 +251,7 @@ export class OmniEduStore {
       ],
     );
     this.touchStudent(studentId);
+    this.upsertRecordFts(recordId);
     this.save();
     return this.listRecords(studentId);
   }
@@ -397,14 +407,16 @@ export class OmniEduStore {
   }
 
   search(keyword: string): SearchResult {
+    const trimmedKeyword = keyword.trim();
+    const ftsRecords = trimmedKeyword ? this.searchRecordsByFts(trimmedKeyword) : null;
     return {
       students: this.listStudents(keyword),
-      records: this.all(
+      records: ftsRecords ?? this.all(
         `SELECT * FROM learning_records
           WHERE title LIKE ? OR content LIKE ? OR tags LIKE ?
           ORDER BY occurred_at DESC
           LIMIT 50`,
-        [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`],
+        [`%${trimmedKeyword}%`, `%${trimmedKeyword}%`, `%${trimmedKeyword}%`],
       ).map((row) => ({ ...this.mapRecord(row), attachments: this.listAttachments(String(row.id)) })),
     };
   }
@@ -492,6 +504,7 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_attachments_record ON attachments(record_id);
       CREATE INDEX IF NOT EXISTS idx_local_tasks_status ON local_tasks(status, updated_at DESC);
     `);
+    this.ensureFts();
     const reportColumns = this.all(`PRAGMA table_info(review_reports)`);
     if (!hasColumn(reportColumns, 'parent_summary')) {
       this.db.run(`ALTER TABLE review_reports ADD COLUMN parent_summary TEXT NOT NULL DEFAULT ''`);
@@ -499,6 +512,7 @@ export class OmniEduStore {
     if (!hasColumn(reportColumns, 'quality_checks_json')) {
       this.db.run(`ALTER TABLE review_reports ADD COLUMN quality_checks_json TEXT NOT NULL DEFAULT '[]'`);
     }
+    this.rebuildRecordFts();
   }
 
   private seedIfEmpty() {
@@ -629,6 +643,100 @@ export class OmniEduStore {
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
     };
+  }
+
+  private ensureFts() {
+    try {
+      this.db.run(`
+        CREATE VIRTUAL TABLE IF NOT EXISTS learning_records_fts USING fts5(
+          id UNINDEXED,
+          student_id UNINDEXED,
+          title,
+          content,
+          subject,
+          tags
+        );
+      `);
+    } catch {
+      // Some SQLite builds can omit FTS5. Search falls back to LIKE in that case.
+    }
+  }
+
+  private rebuildRecordFts() {
+    try {
+      this.db.run(`DELETE FROM learning_records_fts`);
+      const rows = this.all(`SELECT id FROM learning_records`);
+      for (const row of rows) this.upsertRecordFts(String(row.id));
+    } catch {
+      // FTS is an optional acceleration layer for MVP search.
+    }
+  }
+
+  private upsertRecordFts(recordId: string) {
+    try {
+      const record = this.all(`SELECT * FROM learning_records WHERE id = ?`, [recordId])[0];
+      if (!record) return;
+      this.db.run(`DELETE FROM learning_records_fts WHERE id = ?`, [recordId]);
+      this.db.run(
+        `INSERT INTO learning_records_fts (id, student_id, title, content, subject, tags)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          String(record.id),
+          String(record.student_id),
+          String(record.title ?? ''),
+          String(record.content ?? ''),
+          String(record.subject ?? ''),
+          jsonArray(record.tags).join(' '),
+        ],
+      );
+    } catch {
+      // Keep record writes successful even if the optional FTS index cannot update.
+    }
+  }
+
+  private searchRecordIdsByFts(keyword: string, studentId?: string): string[] | null {
+    try {
+      const query = this.toFtsQuery(keyword);
+      const rows = studentId
+        ? this.all(
+            `SELECT id FROM learning_records_fts
+              WHERE learning_records_fts MATCH ? AND student_id = ?
+              LIMIT 200`,
+            [query, studentId],
+          )
+        : this.all(
+            `SELECT id FROM learning_records_fts
+              WHERE learning_records_fts MATCH ?
+              LIMIT 200`,
+            [query],
+          );
+      return rows.map((row) => String(row.id));
+    } catch {
+      return null;
+    }
+  }
+
+  private searchRecordsByFts(keyword: string): LearningRecord[] | null {
+    const ids = this.searchRecordIdsByFts(keyword);
+    if (!ids) return null;
+    if (!ids.length) return [];
+    const rows = this.all(
+      `SELECT * FROM learning_records
+        WHERE id IN (${ids.map(() => '?').join(',')})
+        ORDER BY occurred_at DESC
+        LIMIT 50`,
+      ids,
+    );
+    return rows.map((row) => ({ ...this.mapRecord(row), attachments: this.listAttachments(String(row.id)) }));
+  }
+
+  private toFtsQuery(keyword: string) {
+    return keyword
+      .split(/\s+/)
+      .map((part) => part.replace(/["*]/g, '').trim())
+      .filter(Boolean)
+      .map((part) => `"${part}"`)
+      .join(' OR ') || '""';
   }
 
   private buildReportQualityChecks(records: Array<Pick<LearningRecord, 'id'>>, contentMd: string, parentSummary: string): ReviewQualityCheck[] {
