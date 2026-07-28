@@ -149,7 +149,23 @@ export type ExportDataRootResult = {
   fileCount: number;
 };
 
+export type PlatformOverview = {
+  tagCount: number;
+  reportTemplateCount: number;
+  pendingSyncOperations: number;
+  pendingAiTasks: number;
+  teacherCount: number;
+  assignmentCount: number;
+  analytics: {
+    activeStudents: number;
+    totalRecords: number;
+    totalReports: number;
+    totalAttachments: number;
+  };
+};
+
 export type BootstrapData = {
   dataRoot: string;
   students: Student[];
+  overview: PlatformOverview;
 };

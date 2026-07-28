@@ -14,6 +14,7 @@ import type {
   LearningRecordFilters,
   LearningRecordInput,
   LearningRecordUpdateInput,
+  PlatformOverview,
   ReviewDraftInput,
   ReviewReport,
   ReviewQualityCheck,
@@ -89,11 +90,28 @@ export class OmniEduStore {
     this.migrate();
     this.seedIfEmpty();
     this.save();
-    return { dataRoot: this.dataRoot, students: this.listStudents('') };
+    return { dataRoot: this.dataRoot, students: this.listStudents(''), overview: this.getPlatformOverview() };
   }
 
   getDataRoot() {
     return this.dataRoot;
+  }
+
+  getPlatformOverview(): PlatformOverview {
+    return {
+      tagCount: this.scalarCount('tag_dictionary'),
+      reportTemplateCount: this.scalarCount('report_templates'),
+      pendingSyncOperations: this.scalarCount('sync_operations', `sync_status != 'succeeded'`),
+      pendingAiTasks: this.scalarCount('ai_tasks', `status IN ('pending', 'running', 'retrying')`),
+      teacherCount: this.scalarCount('users'),
+      assignmentCount: this.scalarCount('teacher_student_assignments'),
+      analytics: {
+        activeStudents: this.scalarCount('students', `status = 'active'`),
+        totalRecords: this.scalarCount('learning_records'),
+        totalReports: this.scalarCount('review_reports'),
+        totalAttachments: this.scalarCount('attachments'),
+      },
+    };
   }
 
   listStudents(query = ''): Student[] {
@@ -564,9 +582,94 @@ export class OmniEduStore {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS tag_dictionary (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        category TEXT NOT NULL,
+        color TEXT,
+        description TEXT,
+        scope TEXT NOT NULL DEFAULT 'personal',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS report_templates (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        report_type TEXT NOT NULL,
+        subject TEXT,
+        content_md TEXT NOT NULL,
+        scope TEXT NOT NULL DEFAULT 'personal',
+        is_default INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS sync_operations (
+        id TEXT PRIMARY KEY,
+        entity_type TEXT NOT NULL,
+        entity_id TEXT NOT NULL,
+        operation_type TEXT NOT NULL,
+        payload_json TEXT NOT NULL DEFAULT '{}',
+        base_version TEXT,
+        client_timestamp TEXT NOT NULL,
+        sync_status TEXT NOT NULL DEFAULT 'pending',
+        retry_count INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS sync_cursors (
+        scope TEXT PRIMARY KEY,
+        cursor_value TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS entity_versions (
+        entity_type TEXT NOT NULL,
+        entity_id TEXT NOT NULL,
+        version TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        PRIMARY KEY (entity_type, entity_id)
+      );
+      CREATE TABLE IF NOT EXISTS ai_tasks (
+        id TEXT PRIMARY KEY,
+        task_type TEXT NOT NULL,
+        status TEXT NOT NULL,
+        input_hash TEXT,
+        payload_json TEXT NOT NULL DEFAULT '{}',
+        result_json TEXT,
+        error_message TEXT,
+        retry_count INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS users (
+        id TEXT PRIMARY KEY,
+        display_name TEXT NOT NULL,
+        role TEXT NOT NULL DEFAULT 'teacher',
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS teacher_student_assignments (
+        id TEXT PRIMARY KEY,
+        teacher_id TEXT NOT NULL,
+        student_id TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        UNIQUE(teacher_id, student_id)
+      );
+      CREATE TABLE IF NOT EXISTS analytics_daily (
+        day TEXT PRIMARY KEY,
+        active_students INTEGER NOT NULL DEFAULT 0,
+        record_count INTEGER NOT NULL DEFAULT 0,
+        report_count INTEGER NOT NULL DEFAULT 0,
+        attachment_count INTEGER NOT NULL DEFAULT 0,
+        updated_at TEXT NOT NULL
+      );
       CREATE INDEX IF NOT EXISTS idx_records_student_time ON learning_records(student_id, occurred_at DESC);
       CREATE INDEX IF NOT EXISTS idx_attachments_record ON attachments(record_id);
       CREATE INDEX IF NOT EXISTS idx_local_tasks_status ON local_tasks(status, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_sync_operations_status ON sync_operations(sync_status, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_tasks_status ON ai_tasks(status, updated_at DESC);
     `);
     this.ensureFts();
     const reportColumns = this.all(`PRAGMA table_info(review_reports)`);
@@ -577,6 +680,7 @@ export class OmniEduStore {
       this.db.run(`ALTER TABLE review_reports ADD COLUMN quality_checks_json TEXT NOT NULL DEFAULT '[]'`);
     }
     this.rebuildRecordFts();
+    this.seedPlatformDefaults();
   }
 
   private seedIfEmpty() {
@@ -610,6 +714,43 @@ export class OmniEduStore {
       tags: ['审题', '表达规范'],
       occurredAt: new Date(Date.now() - 2 * 86400000).toISOString(),
     });
+  }
+
+  private seedPlatformDefaults() {
+    const timestamp = now();
+    if (this.scalarCount('users') === 0) {
+      this.run(
+        `INSERT INTO users (id, display_name, role, status, created_at, updated_at)
+         VALUES (?, ?, 'owner', 'active', ?, ?)`,
+        [`user_${randomUUID()}`, '默认老师', timestamp, timestamp],
+      );
+    }
+    if (this.scalarCount('tag_dictionary') === 0) {
+      for (const [name, category, color] of [
+        ['概念混淆', '错因', '#9a5b08'],
+        ['计算粗心', '能力', '#b34035'],
+        ['表达不规范', '习惯', '#2457a6'],
+        ['家长高关注', '沟通', '#1d5c52'],
+      ]) {
+        this.run(
+          `INSERT INTO tag_dictionary (id, name, category, color, description, scope, created_at, updated_at)
+           VALUES (?, ?, ?, ?, '', 'team-ready', ?, ?)`,
+          [`tag_${randomUUID()}`, name, category, color, timestamp, timestamp],
+        );
+      }
+    }
+    if (this.scalarCount('report_templates') === 0) {
+      this.run(
+        `INSERT INTO report_templates (id, name, report_type, subject, content_md, scope, is_default, created_at, updated_at)
+         VALUES (?, '阶段复盘标准模板', 'monthly', '', ?, 'team-ready', 1, ?, ?)`,
+        [
+          `template_${randomUUID()}`,
+          '# 阶段复盘\n\n## 整体表现\n\n## 主要进步\n\n## 高频薄弱点\n\n## 下阶段建议\n\n## 家长沟通版摘要\n',
+          timestamp,
+          timestamp,
+        ],
+      );
+    }
   }
 
   private listAttachments(recordId: string): Attachment[] {
@@ -653,6 +794,12 @@ export class OmniEduStore {
     if (!result.length) return [];
     const { columns, values } = result[0];
     return values.map((value) => Object.fromEntries(columns.map((column, index) => [column, value[index]])));
+  }
+
+  private scalarCount(table: string, where?: string): number {
+    const safeTable = table.replace(/[^a-zA-Z0-9_]/g, '');
+    const rows = this.all(`SELECT COUNT(*) AS count FROM ${safeTable}${where ? ` WHERE ${where}` : ''}`);
+    return Number(rows[0]?.count ?? 0);
   }
 
   private mapStudent(row: Row): Student {

@@ -1,4 +1,6 @@
-# Omni-Edu Agent MVP 开发任务列表
+# Omni-Edu Agent MVP 开发任务列表（历史参考）
+
+> 状态：已废弃为主开发方案。当前主线请使用 `docs/19_FULL_PRODUCT_DEVELOPMENT_PLAN.md`。
 
 版本：v0.1  
 依据：`docs/11_STRATEGIC_PRODUCT_PRD.md` 至 `docs/17_FRONTEND_HEROUI_PRO_DESIGN_ARCHITECTURE.md`

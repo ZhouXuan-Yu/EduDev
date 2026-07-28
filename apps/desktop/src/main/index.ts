@@ -40,6 +40,7 @@ app.whenReady().then(async () => {
 
   ipcMain.handle('app:bootstrap', () => store.init());
   ipcMain.handle('app:getDataRoot', () => store.getDataRoot());
+  ipcMain.handle('app:getPlatformOverview', () => store.getPlatformOverview());
   ipcMain.handle('app:exportDataRoot', async () => {
     const result = await dialog.showOpenDialog({
       title: '选择完整数据目录备份位置',

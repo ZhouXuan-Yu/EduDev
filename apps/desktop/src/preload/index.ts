@@ -12,6 +12,7 @@ import type {
 const api = {
   bootstrap: () => ipcRenderer.invoke('app:bootstrap'),
   getDataRoot: () => ipcRenderer.invoke('app:getDataRoot') as Promise<string>,
+  getPlatformOverview: () => ipcRenderer.invoke('app:getPlatformOverview'),
   exportDataRoot: () => ipcRenderer.invoke('app:exportDataRoot') as Promise<ExportDataRootResult | null>,
   listStudents: (query = '') => ipcRenderer.invoke('students:list', query),
   createStudent: (input: StudentInput) => ipcRenderer.invoke('students:create', input),
