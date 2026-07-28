@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import { hashFileSha256, isInsideRoot, resolveInsideRoot } from './local-file-security';
@@ -7,6 +7,11 @@ import type {
   Attachment,
   AttachmentImportItem,
   AttachmentImportResult,
+  AiConfirmationCreateInput,
+  AiConfirmationDecisionResult,
+  AiConfirmationItem,
+  AiConfirmationPayload,
+  AiConfirmationStatus,
   AiAgentEvent,
   AiAgentRun,
   AiAgentRunStatus,
@@ -22,20 +27,43 @@ import type {
   AiConversationSessionInput,
   AiConversationSessionUpdateInput,
   AiConversationWorkspace,
+  AiRegressionGate,
+  AiRegressionGateStatus,
+  AiRegressionReport,
+  AiRegressionReportInput,
+  AiTelemetryLatency,
+  AiTelemetrySnapshot,
   BootstrapData,
   DeepSeekSettings,
   DeepSeekSettingsInput,
+  DocumentArtifactExportInput,
+  DocumentArtifactExportResult,
+  DocumentArtifactType,
+  ExerciseSet,
+  ExerciseSetDraftPayload,
+  ExerciseSetItem,
   ExportDataRootResult,
   ExportStudentResult,
+  KnowledgeEvidenceStrength,
   KnowledgeEdge,
   KnowledgeImportResult,
   KnowledgeNode,
   KnowledgeOverview,
+  KnowledgeSourceTrust,
   LearningRecord,
   LearningRecordFilters,
   LearningRecordInput,
   LearningRecordUpdateInput,
+  MistakeImageAnalysis,
+  MistakeImageAnalysisInput,
+  MistakeImageCorrectionInput,
+  MistakeImageRedaction,
+  MistakeImageOcrStatus,
   PlatformOverview,
+  QuestionBankItem,
+  QuestionBankItemInput,
+  QuestionSearchFilters,
+  SanitizedProblemText,
   ResourceChunk,
   ReviewDraftInput,
   ReviewReport,
@@ -57,6 +85,34 @@ function now() {
   return new Date().toISOString();
 }
 
+function normalizeIsoDate(value?: string) {
+  if (!value) return '';
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? new Date(timestamp).toISOString() : '';
+}
+
+function incrementCount(target: Record<string, number>, key: string, amount = 1) {
+  const safeKey = key || 'unknown';
+  target[safeKey] = (target[safeKey] ?? 0) + amount;
+}
+
+function percentile(values: number[], ratio: number) {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const index = Math.min(sorted.length - 1, Math.ceil(sorted.length * ratio) - 1);
+  return Math.round(sorted[Math.max(0, index)]);
+}
+
+function average(values: number[]) {
+  if (!values.length) return 0;
+  return Math.round(values.reduce((sum, value) => sum + value, 0) / values.length);
+}
+
+function toNumber(value: unknown) {
+  const number = Number(value ?? 0);
+  return Number.isFinite(number) ? number : 0;
+}
+
 function jsonArray(value: unknown): string[] {
   if (typeof value !== 'string') return [];
   try {
@@ -74,6 +130,113 @@ function toCsvList(value: string | undefined) {
     .filter(Boolean);
 }
 
+function searchTokens(value: string | undefined) {
+  return (value ?? '')
+    .split(/[\s，,、\n]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function stableKnowledgeId(prefix: string, value: string) {
+  return `${prefix}_${createHash('sha1').update(value.trim().toLowerCase()).digest('hex').slice(0, 16)}`;
+}
+
+function includesAny(text: string, candidates: string[]) {
+  return candidates.find((candidate) => text.includes(candidate)) ?? '';
+}
+
+function inferKnowledgeSubject(text: string) {
+  return includesAny(text, ['数学', '英语', '语文', '物理', '化学', '生物', '历史', '地理', '道德与法治', '科学']);
+}
+
+function inferKnowledgeGrade(text: string) {
+  const direct = text.match(/(小学[一二三四五六]|[一二三四五六]年级|七年级|八年级|九年级|初[一二三]|高[一二三]|初中|高中)/);
+  return direct?.[1] ?? '';
+}
+
+function inferKnowledgePoint(text: string) {
+  const labeled = text.match(/(?:知识点|考点|主题|专题)[:：]\s*([^\n，,。；;]{2,24})/);
+  if (labeled?.[1]) return labeled[1].trim();
+  return includesAny(text, [
+    '一次函数',
+    '二次函数',
+    '反比例函数',
+    '方程应用题',
+    '分式方程',
+    '几何证明',
+    '阅读理解',
+    '完形填空',
+    '古诗鉴赏',
+    '电路分析',
+    '化学方程式',
+  ]);
+}
+
+function inferQuestionType(text: string) {
+  const labeled = text.match(/(?:题型|类型)[:：]\s*([^\n，,。；;]{2,16})/);
+  if (labeled?.[1]) return labeled[1].trim();
+  return includesAny(text, ['选择题', '填空题', '解答题', '应用题', '证明题', '阅读理解', '写作题']);
+}
+
+function inferDifficulty(text: string) {
+  if (/难度[:：]?\s*(hard|困难|较难|压轴)/i.test(text)) return 'hard';
+  if (/难度[:：]?\s*(easy|简单|基础|入门)/i.test(text)) return 'easy';
+  if (/难度[:：]?\s*(medium|中等|适中)/i.test(text)) return 'medium';
+  return '';
+}
+
+function containsPersonalData(text: string) {
+  return /[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/.test(text)
+    || /(?<!\d)1[3-9]\d{9}(?!\d)/.test(text)
+    || /(?<!\d)\d{6}(?:18|19|20)\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])\d{3}[\dXx](?!\d)/.test(text);
+}
+
+function inferResourceChunkMetadata(resourceTitle: string, heading: string, content: string) {
+  const text = `${resourceTitle}\n${heading}\n${content}`;
+  const subject = inferKnowledgeSubject(text);
+  const grade = inferKnowledgeGrade(text);
+  const knowledgePoint = inferKnowledgePoint(text);
+  const questionType = inferQuestionType(text);
+  const difficulty = inferDifficulty(text);
+  const personal = containsPersonalData(text);
+  const sourceTrust: KnowledgeSourceTrust = personal ? 'unverified' : 'teacher_verified';
+  const qualityScore = clampNumber(
+    45
+      + (heading ? 10 : 0)
+      + (content.trim().length >= 80 ? 10 : 0)
+      + (subject ? 8 : 0)
+      + (grade ? 6 : 0)
+      + (knowledgePoint ? 10 : 0)
+      + (questionType ? 6 : 0)
+      - (personal ? 30 : 0),
+    0,
+    100,
+  );
+  const evidenceStrength: KnowledgeEvidenceStrength = personal
+    ? 'background'
+    : qualityScore >= 78
+      ? 'direct'
+      : qualityScore >= 60
+        ? 'indirect'
+        : 'background';
+  return {
+    subject,
+    grade,
+    knowledgePoint,
+    questionType,
+    difficulty,
+    sourceTrust,
+    containsPersonalData: personal,
+    qualityScore,
+    evidenceStrength,
+  };
+}
+
 function jsonObject(value: unknown): Record<string, unknown> {
   if (!value) return {};
   try {
@@ -85,6 +248,115 @@ function jsonObject(value: unknown): Record<string, unknown> {
   } catch {
     return {};
   }
+}
+
+function jsonUnknownArray(value: unknown): unknown[] {
+  if (Array.isArray(value)) return value;
+  if (typeof value !== 'string') return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function parseAiConfirmationPayload(value: unknown): AiConfirmationPayload {
+  const parsed = jsonObject(value);
+  const exerciseSet = parseExerciseSetDraftPayload(parsed.exerciseSet);
+  return {
+    studentId: String(parsed.studentId ?? ''),
+    subject: String(parsed.subject ?? ''),
+    startDate: String(parsed.startDate ?? ''),
+    endDate: String(parsed.endDate ?? ''),
+    reportType: String(parsed.reportType ?? 'ai_draft'),
+    title: String(parsed.title ?? ''),
+    contentMd: String(parsed.contentMd ?? ''),
+    parentSummary: String(parsed.parentSummary ?? ''),
+    sourceRecordIds: Array.isArray(parsed.sourceRecordIds) ? parsed.sourceRecordIds.map(String) : [],
+    exerciseSet,
+  };
+}
+
+function normalizeDifficulty(value: unknown): ExerciseSetItem['difficulty'] {
+  return value === 'easy' || value === 'hard' ? value : 'medium';
+}
+
+function parseExerciseSetItems(value: unknown): ExerciseSetItem[] {
+  if (!Array.isArray(value)) return [];
+  const items: ExerciseSetItem[] = [];
+  for (const item of value) {
+    if (!item || typeof item !== 'object') continue;
+    const row = item as Record<string, unknown>;
+    const role = row.role === 'original' || row.role === 'similar' || row.role === 'variant'
+      ? row.role
+      : 'variant';
+    const stem = String(row.stem ?? '').trim();
+    if (!stem) continue;
+    items.push({
+      role,
+      questionId: String(row.questionId ?? '').trim() || undefined,
+      sourceKind: row.sourceKind === 'local_bank' || row.sourceKind === 'teacher_resource' ? row.sourceKind : 'generated',
+      stem,
+      answer: String(row.answer ?? '').trim(),
+      analysis: String(row.analysis ?? '').trim(),
+      knowledgePoint: String(row.knowledgePoint ?? '').trim(),
+      difficulty: normalizeDifficulty(row.difficulty),
+      teacherObservation: String(row.teacherObservation ?? '').trim(),
+    });
+  }
+  return items;
+}
+
+function parseExerciseSetDraftPayload(value: unknown): ExerciseSetDraftPayload | undefined {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+  const parsed = value as Record<string, unknown>;
+  const title = String(parsed.title ?? '').trim();
+  const contentMd = String(parsed.contentMd ?? '').trim();
+  if (!title && !contentMd) return undefined;
+  return {
+    title,
+    subject: String(parsed.subject ?? '').trim(),
+    knowledgePoint: String(parsed.knowledgePoint ?? '').trim(),
+    contentMd,
+    items: parseExerciseSetItems(parsed.items),
+    sourceQuestionIds: Array.isArray(parsed.sourceQuestionIds) ? parsed.sourceQuestionIds.map(String) : [],
+  };
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function redactPattern(text: string, pattern: RegExp, token: string) {
+  let count = 0;
+  const sanitizedText = text.replace(pattern, () => {
+    count += 1;
+    return token;
+  });
+  return { sanitizedText, count };
+}
+
+function pushRedaction(redactions: MistakeImageRedaction[], kind: MistakeImageRedaction['kind'], count: number) {
+  if (count <= 0) return;
+  const existing = redactions.find((item) => item.kind === kind);
+  if (existing) existing.count += count;
+  else redactions.push({ kind, count });
+}
+
+function parseMistakeImageRedactions(value: unknown): MistakeImageRedaction[] {
+  return jsonUnknownArray(value)
+    .map((item) => {
+      if (!item || typeof item !== 'object') return null;
+      const row = item as Record<string, unknown>;
+      const kind = row.kind === 'phone' || row.kind === 'id_card' || row.kind === 'student_name' || row.kind === 'email'
+        ? row.kind
+        : undefined;
+      const count = Number(row.count ?? 0);
+      if (!kind || !Number.isFinite(count) || count <= 0) return null;
+      return { kind, count: Math.trunc(count) };
+    })
+    .filter((item): item is MistakeImageRedaction => Boolean(item));
 }
 
 function fileType(fileName: string) {
@@ -150,6 +422,212 @@ function maskApiKey(apiKey?: string) {
   if (!apiKey) return '';
   if (apiKey.length <= 8) return '****';
   return `${apiKey.slice(0, 4)}****${apiKey.slice(-4)}`;
+}
+
+function documentMimeType(type: DocumentArtifactType) {
+  if (type === 'pdf') return 'application/pdf';
+  if (type === 'docx') return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+  return 'text/markdown';
+}
+
+function documentExtension(type: DocumentArtifactType) {
+  if (type === 'pdf') return '.pdf';
+  if (type === 'docx') return '.docx';
+  return '.md';
+}
+
+function normalizeDocumentArtifactType(type: string): DocumentArtifactType {
+  if (type === 'markdown' || type === 'pdf' || type === 'docx') return type;
+  throw new Error('不支持的文档产物类型');
+}
+
+function sanitizeDocumentFileName(fileName: string, type: DocumentArtifactType) {
+  const extension = documentExtension(type);
+  const rawBase = basename(fileName || `xiazhi-artifact${extension}`, extname(fileName || ''));
+  const safeBase = rawBase
+    .replace(/[<>:"/\\|?*\u0000-\u001F]/g, '-')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 80)
+    || 'xiazhi-artifact';
+  return `${safeBase}${extension}`;
+}
+
+function markdownToPlainText(markdown: string) {
+  return markdown
+    .replace(/```[\s\S]*?```/g, (block) => block.replace(/```/g, ''))
+    .replace(/!\[[^\]]*]\([^)]+\)/g, '')
+    .replace(/\[([^\]]+)]\([^)]+\)/g, '$1')
+    .replace(/[#>*_`~|-]+/g, ' ')
+    .replace(/\r\n/g, '\n')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .join('\n');
+}
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function escapePdfText(value: string) {
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/\(/g, '\\(')
+    .replace(/\)/g, '\\)')
+    .replace(/[^\x20-\x7E]/g, '?');
+}
+
+function createPdfBuffer(title: string, markdown: string) {
+  const lines = [`${title}`, ...markdownToPlainText(markdown).split('\n')]
+    .flatMap((line) => line.match(/.{1,86}/g) ?? [''])
+    .slice(0, 42);
+  const commands = [
+    'BT',
+    '/F1 11 Tf',
+    '50 790 Td',
+    '14 TL',
+    ...lines.map((line, index) => `${index === 0 ? '' : 'T* '}(${escapePdfText(line)}) Tj`),
+    'ET',
+  ].join('\n');
+  const objects = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+    `<< /Length ${Buffer.byteLength(commands, 'utf8')} >>\nstream\n${commands}\nendstream`,
+  ];
+  const chunks: string[] = ['%PDF-1.4\n'];
+  const offsets = [0];
+  for (let index = 0; index < objects.length; index += 1) {
+    offsets.push(Buffer.byteLength(chunks.join(''), 'utf8'));
+    chunks.push(`${index + 1} 0 obj\n${objects[index]}\nendobj\n`);
+  }
+  const xrefOffset = Buffer.byteLength(chunks.join(''), 'utf8');
+  chunks.push(`xref\n0 ${objects.length + 1}\n`);
+  chunks.push('0000000000 65535 f \n');
+  for (let index = 1; index < offsets.length; index += 1) {
+    chunks.push(`${String(offsets[index]).padStart(10, '0')} 00000 n \n`);
+  }
+  chunks.push(`trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`);
+  return Buffer.from(chunks.join(''), 'utf8');
+}
+
+function crc32(buffer: Buffer) {
+  let crc = 0xffffffff;
+  for (const byte of buffer) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit += 1) {
+      crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+    }
+  }
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function dosDateTime(date = new Date()) {
+  const dosTime = (date.getHours() << 11) | (date.getMinutes() << 5) | Math.floor(date.getSeconds() / 2);
+  const dosDate = ((date.getFullYear() - 1980) << 9) | ((date.getMonth() + 1) << 5) | date.getDate();
+  return { dosDate, dosTime };
+}
+
+function createZipBuffer(entries: { name: string; data: Buffer }[]) {
+  const localParts: Buffer[] = [];
+  const centralParts: Buffer[] = [];
+  let offset = 0;
+  const { dosDate, dosTime } = dosDateTime();
+
+  for (const entry of entries) {
+    const name = Buffer.from(entry.name, 'utf8');
+    const data = entry.data;
+    const checksum = crc32(data);
+    const localHeader = Buffer.alloc(30);
+    localHeader.writeUInt32LE(0x04034b50, 0);
+    localHeader.writeUInt16LE(20, 4);
+    localHeader.writeUInt16LE(0x0800, 6);
+    localHeader.writeUInt16LE(0, 8);
+    localHeader.writeUInt16LE(dosTime, 10);
+    localHeader.writeUInt16LE(dosDate, 12);
+    localHeader.writeUInt32LE(checksum, 14);
+    localHeader.writeUInt32LE(data.length, 18);
+    localHeader.writeUInt32LE(data.length, 22);
+    localHeader.writeUInt16LE(name.length, 26);
+    localHeader.writeUInt16LE(0, 28);
+    localParts.push(localHeader, name, data);
+
+    const centralHeader = Buffer.alloc(46);
+    centralHeader.writeUInt32LE(0x02014b50, 0);
+    centralHeader.writeUInt16LE(20, 4);
+    centralHeader.writeUInt16LE(20, 6);
+    centralHeader.writeUInt16LE(0x0800, 8);
+    centralHeader.writeUInt16LE(0, 10);
+    centralHeader.writeUInt16LE(dosTime, 12);
+    centralHeader.writeUInt16LE(dosDate, 14);
+    centralHeader.writeUInt32LE(checksum, 16);
+    centralHeader.writeUInt32LE(data.length, 20);
+    centralHeader.writeUInt32LE(data.length, 24);
+    centralHeader.writeUInt16LE(name.length, 28);
+    centralHeader.writeUInt16LE(0, 30);
+    centralHeader.writeUInt16LE(0, 32);
+    centralHeader.writeUInt16LE(0, 34);
+    centralHeader.writeUInt16LE(0, 36);
+    centralHeader.writeUInt32LE(0, 38);
+    centralHeader.writeUInt32LE(offset, 42);
+    centralParts.push(centralHeader, name);
+    offset += localHeader.length + name.length + data.length;
+  }
+
+  const centralDirectory = Buffer.concat(centralParts);
+  const localFiles = Buffer.concat(localParts);
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(0, 4);
+  end.writeUInt16LE(0, 6);
+  end.writeUInt16LE(entries.length, 8);
+  end.writeUInt16LE(entries.length, 10);
+  end.writeUInt32LE(centralDirectory.length, 12);
+  end.writeUInt32LE(localFiles.length, 16);
+  end.writeUInt16LE(0, 20);
+  return Buffer.concat([localFiles, centralDirectory, end]);
+}
+
+function createDocxBuffer(title: string, markdown: string) {
+  const paragraphs = [title, ...markdownToPlainText(markdown).split('\n')]
+    .map((line) => `<w:p><w:r><w:t xml:space="preserve">${escapeXml(line)}</w:t></w:r></w:p>`)
+    .join('');
+  const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:body>${paragraphs}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body>
+</w:document>`;
+  return createZipBuffer([
+    {
+      name: '[Content_Types].xml',
+      data: Buffer.from(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`, 'utf8'),
+    },
+    {
+      name: '_rels/.rels',
+      data: Buffer.from(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`, 'utf8'),
+    },
+    { name: 'word/document.xml', data: Buffer.from(documentXml, 'utf8') },
+  ]);
+}
+
+function createDocumentBuffer(type: DocumentArtifactType, title: string, contentMd: string) {
+  if (type === 'markdown') return Buffer.from(contentMd, 'utf8');
+  if (type === 'pdf') return createPdfBuffer(title, contentMd);
+  return createDocxBuffer(title, contentMd);
 }
 
 export class OmniEduStore {
@@ -506,6 +984,142 @@ export class OmniEduStore {
     return { status, records: await this.listRecords(studentId), items };
   }
 
+  async sanitizeProblemText(text: string, studentId?: string): Promise<SanitizedProblemText> {
+    const redactions: MistakeImageRedaction[] = [];
+    let sanitizedText = text;
+
+    let result = redactPattern(sanitizedText, /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[邮箱]');
+    sanitizedText = result.sanitizedText;
+    pushRedaction(redactions, 'email', result.count);
+
+    result = redactPattern(sanitizedText, /(?<!\d)1[3-9]\d{9}(?!\d)/g, '[手机号]');
+    sanitizedText = result.sanitizedText;
+    pushRedaction(redactions, 'phone', result.count);
+
+    result = redactPattern(sanitizedText, /(?<![0-9A-Za-z])\d{17}[\dXx](?![0-9A-Za-z])/g, '[身份证号]');
+    sanitizedText = result.sanitizedText;
+    pushRedaction(redactions, 'id_card', result.count);
+
+    if (studentId) {
+      const student = (await this.listStudents('')).find((item) => item.id === studentId);
+      const names = [...new Set([student?.displayName, student?.realName].filter((name): name is string => Boolean(name?.trim())))]
+        .filter((name) => name.length >= 2);
+      for (const name of names) {
+        result = redactPattern(sanitizedText, new RegExp(escapeRegExp(name), 'g'), '[学生姓名]');
+        sanitizedText = result.sanitizedText;
+        pushRedaction(redactions, 'student_name', result.count);
+      }
+    }
+
+    return {
+      sanitizedText,
+      redactions,
+      containsSensitiveData: redactions.some((item) => item.count > 0),
+    };
+  }
+
+  async createMistakeImageAnalysis(input: MistakeImageAnalysisInput): Promise<MistakeImageAnalysis> {
+    const studentId = requireNonEmpty(input.studentId, '错题图片解析缺少学生 ID');
+    const student = (await this.listStudents('')).find((item) => item.id === studentId);
+    if (!student) throw new Error('学生不存在');
+
+    const attachment = input.attachmentId
+      ? (await this.all(`SELECT * FROM attachments WHERE id = ? AND student_id = ?`, [input.attachmentId, studentId]))[0]
+      : undefined;
+    if (input.attachmentId && !attachment) throw new Error('附件不存在或不属于该学生');
+    const recordId = input.recordId ?? (attachment ? String(attachment.record_id ?? '') : '');
+    const attachmentId = input.attachmentId ?? '';
+    const localPath = input.localPath ?? (attachment ? String(attachment.file_path ?? '') : '');
+    if (localPath && !(await this.isManagedLocalPath(localPath))) {
+      throw new Error('错题图片路径必须位于本地数据目录内');
+    }
+    if (localPath) {
+      const localType = fileType(localPath);
+      if (localType !== 'image') throw new Error('错题图片解析只接受图片附件');
+    }
+
+    const extractedText = input.extractedText?.trim() ?? '';
+    const sanitized = extractedText ? await this.sanitizeProblemText(extractedText, studentId) : {
+      sanitizedText: '',
+      redactions: [],
+      containsSensitiveData: false,
+    };
+    const status: MistakeImageOcrStatus = extractedText ? 'sanitized' : 'needs_ocr';
+    const timestamp = now();
+    const analysis: MistakeImageAnalysis = {
+      id: `mistake_image_${randomUUID()}`,
+      studentId,
+      recordId,
+      attachmentId,
+      localPath,
+      ocrStatus: status,
+      extractedText,
+      sanitizedText: sanitized.sanitizedText,
+      redactions: sanitized.redactions,
+      teacherCorrectedText: '',
+      errorMessage: '',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    await this.run(
+      `INSERT INTO mistake_image_analyses (
+        id, student_id, record_id, attachment_id, local_path, ocr_status,
+        extracted_text, sanitized_text, redactions_json, teacher_corrected_text,
+        error_message, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?)`,
+      [
+        analysis.id,
+        analysis.studentId,
+        analysis.recordId || null,
+        analysis.attachmentId || null,
+        analysis.localPath,
+        analysis.ocrStatus,
+        analysis.extractedText,
+        analysis.sanitizedText,
+        JSON.stringify(analysis.redactions),
+        analysis.createdAt,
+        analysis.updatedAt,
+      ],
+    );
+    if (attachmentId && extractedText) {
+      await this.run(`UPDATE attachments SET extracted_text = ? WHERE id = ?`, [extractedText, attachmentId]);
+    }
+    await this.touchStudent(studentId);
+    return analysis;
+  }
+
+  async updateMistakeImageCorrection(id: string, input: MistakeImageCorrectionInput): Promise<MistakeImageAnalysis> {
+    const existing = await this.getMistakeImageAnalysisOrThrow(id);
+    const correctedText = requireNonEmpty(input.extractedText, '老师修正文不能为空');
+    const sanitized = await this.sanitizeProblemText(correctedText, existing.studentId);
+    const timestamp = now();
+    await this.run(
+      `UPDATE mistake_image_analyses
+          SET ocr_status = 'teacher_corrected',
+              extracted_text = ?,
+              sanitized_text = ?,
+              redactions_json = ?,
+              teacher_corrected_text = ?,
+              error_message = '',
+              updated_at = ?
+        WHERE id = ?`,
+      [correctedText, sanitized.sanitizedText, JSON.stringify(sanitized.redactions), correctedText, timestamp, id],
+    );
+    if (existing.attachmentId) {
+      await this.run(`UPDATE attachments SET extracted_text = ? WHERE id = ?`, [correctedText, existing.attachmentId]);
+    }
+    await this.touchStudent(existing.studentId);
+    return this.getMistakeImageAnalysisOrThrow(id);
+  }
+
+  async listMistakeImageAnalyses(studentId: string): Promise<MistakeImageAnalysis[]> {
+    const rows = await this.all(
+      `SELECT * FROM mistake_image_analyses WHERE student_id = ? ORDER BY updated_at DESC`,
+      [studentId],
+    );
+    return rows.map((row) => this.mapMistakeImageAnalysis(row));
+  }
+
   async getKnowledgeOverview(): Promise<KnowledgeOverview> {
     const resources = (await this.all(
       `SELECT r.*,
@@ -520,18 +1134,18 @@ export class OmniEduStore {
       `SELECT c.*, r.title AS resource_title
          FROM resource_chunks c
          JOIN teacher_resources r ON r.id = c.resource_id
-        ORDER BY c.created_at DESC, c.chunk_index ASC
+        ORDER BY c.quality_score DESC, c.created_at DESC, c.chunk_index ASC
         LIMIT 24`,
     )).map(this.mapResourceChunk);
     const nodes = (await this.all(
-      `SELECT * FROM knowledge_nodes ORDER BY updated_at DESC LIMIT 80`,
+      `SELECT * FROM knowledge_nodes ORDER BY confidence DESC, updated_at DESC LIMIT 80`,
     )).map(this.mapKnowledgeNode);
     const edges = (await this.all(
-      `SELECT * FROM knowledge_edges ORDER BY created_at DESC LIMIT 120`,
+      `SELECT * FROM knowledge_edges ORDER BY confidence DESC, created_at DESC LIMIT 120`,
     )).map(this.mapKnowledgeEdge);
     const [resourceCount, parsedResources, chunkCount, nodeCount, edgeCount, queuedTasks] = await Promise.all([
       this.scalarCount('teacher_resources'),
-      this.scalarCount('teacher_resources', `parse_status = 'parsed'`),
+      this.scalarCount('teacher_resources', `parse_status IN ('parsed', 'chunked', 'indexed', 'graph_extracted', 'ready')`),
       this.scalarCount('resource_chunks'),
       this.scalarCount('knowledge_nodes'),
       this.scalarCount('knowledge_edges'),
@@ -572,7 +1186,7 @@ export class OmniEduStore {
         const resourceType = fileType(originalName);
         const isText = canParseAsLocalText(originalName);
         const title = titleFromFileName(originalName);
-        const parseStatus = isText ? 'parsed' : 'needs_parser';
+        const parseStatus = isText ? 'ready' : 'needs_parser';
         const parseEngine = isText ? 'local-text' : 'Docling/MinerU 待接入';
         await this.run(
           `INSERT INTO teacher_resources (
@@ -622,20 +1236,40 @@ export class OmniEduStore {
         `SELECT c.*, r.title AS resource_title
            FROM resource_chunks c
            JOIN teacher_resources r ON r.id = c.resource_id
-          ORDER BY c.created_at DESC, c.chunk_index ASC
+          ORDER BY c.quality_score DESC, c.created_at DESC, c.chunk_index ASC
           LIMIT ?`,
         [boundedLimit],
       )).map(this.mapResourceChunk);
     }
-    const like = `%${trimmed}%`;
+    const tokens = searchTokens(trimmed);
+    const clauses = tokens.length
+      ? tokens.map(() => `(
+          c.heading LIKE ? OR c.content_md LIKE ? OR r.title LIKE ?
+          OR c.subject LIKE ? OR c.grade LIKE ? OR c.knowledge_point LIKE ? OR c.question_type LIKE ?
+        )`)
+      : ['(c.heading LIKE ? OR c.content_md LIKE ? OR r.title LIKE ?)'];
+    const params: SqlValue[] = [];
+    if (tokens.length) {
+      for (const token of tokens) {
+        const like = `%${token}%`;
+        params.push(like, like, like, like, like, like, like);
+      }
+    } else {
+      const like = `%${trimmed}%`;
+      params.push(like, like, like);
+    }
     return (await this.all(
       `SELECT c.*, r.title AS resource_title
          FROM resource_chunks c
          JOIN teacher_resources r ON r.id = c.resource_id
-        WHERE c.heading LIKE ? OR c.content_md LIKE ? OR r.title LIKE ?
-        ORDER BY c.created_at DESC, c.chunk_index ASC
+        WHERE ${clauses.join(' OR ')}
+        ORDER BY
+          CASE WHEN c.contains_personal_data = 1 THEN 1 ELSE 0 END,
+          c.quality_score DESC,
+          c.created_at DESC,
+          c.chunk_index ASC
         LIMIT ?`,
-      [like, like, like, boundedLimit],
+      [...params, boundedLimit],
     )).map(this.mapResourceChunk);
   }
 
@@ -769,6 +1403,124 @@ export class OmniEduStore {
     return rows.map((row) => this.mapAiAgentEvent(row));
   }
 
+  async createAiConfirmation(input: AiConfirmationCreateInput): Promise<AiConfirmationItem> {
+    if (input.actionType !== 'create_review_report' && input.actionType !== 'save_exercise_set') {
+      throw new Error('当前确认队列只支持创建复盘报告或保存三元题组');
+    }
+    const payload = parseAiConfirmationPayload(JSON.stringify(input.payload));
+    const studentId = input.studentId || payload.studentId;
+    requireNonEmpty(studentId, '确认项缺少学生 ID');
+    requireNonEmpty(input.title, '确认项标题不能为空');
+    requireNonEmpty(input.previewMd, '确认项预览不能为空');
+    if (input.actionType === 'create_review_report') {
+      requireNonEmpty(payload.contentMd, '确认项报告正文不能为空');
+      requireNonEmpty(payload.startDate, '确认项缺少开始日期');
+      requireNonEmpty(payload.endDate, '确认项缺少结束日期');
+    } else {
+      requireNonEmpty(payload.exerciseSet?.contentMd || payload.contentMd, '确认项题组正文不能为空');
+    }
+
+    const timestamp = now();
+    const item: AiConfirmationItem = {
+      id: `confirm_${randomUUID()}`,
+      runId: input.runId ?? '',
+      sessionId: input.sessionId ?? '',
+      studentId,
+      actionType: input.actionType,
+      status: 'pending',
+      title: input.title.trim(),
+      description: input.description?.trim() ?? '',
+      previewMd: input.previewMd,
+      payload: { ...payload, studentId },
+      result: {},
+      errorMessage: '',
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      confirmedAt: '',
+      rejectedAt: '',
+    };
+
+    await this.run(
+      `INSERT INTO ai_confirmation_items (
+        id, run_id, session_id, student_id, action_type, status, title, description,
+        preview_md, payload_json, result_json, error_message, created_at, updated_at, confirmed_at, rejected_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)`,
+      [
+        item.id,
+        item.runId,
+        item.sessionId,
+        item.studentId,
+        item.actionType,
+        item.status,
+        item.title,
+        item.description,
+        item.previewMd,
+        JSON.stringify(item.payload),
+        JSON.stringify(item.result),
+        item.errorMessage,
+        item.createdAt,
+        item.updatedAt,
+      ],
+    );
+    return item;
+  }
+
+  async listAiConfirmations(status: AiConfirmationStatus | 'all' = 'pending'): Promise<AiConfirmationItem[]> {
+    const allowedStatuses = new Set(['pending', 'confirmed', 'rejected', 'failed']);
+    const rows = status === 'all'
+      ? await this.all(`SELECT * FROM ai_confirmation_items ORDER BY updated_at DESC`)
+      : await this.all(
+        `SELECT * FROM ai_confirmation_items WHERE status = ? ORDER BY updated_at DESC`,
+        [allowedStatuses.has(status) ? status : 'pending'],
+      );
+    return rows.map((row) => this.mapAiConfirmationItem(row));
+  }
+
+  async rejectAiConfirmation(id: string): Promise<AiConfirmationDecisionResult> {
+    const existing = await this.getAiConfirmationOrThrow(id);
+    if (existing.status !== 'pending') throw new Error('只能拒绝待确认项');
+    const timestamp = now();
+    await this.run(
+      `UPDATE ai_confirmation_items
+          SET status = 'rejected', updated_at = ?, rejected_at = ?, error_message = ''
+        WHERE id = ?`,
+      [timestamp, timestamp, id],
+    );
+    return { item: await this.getAiConfirmationOrThrow(id) };
+  }
+
+  async confirmAiConfirmation(id: string): Promise<AiConfirmationDecisionResult> {
+    const existing = await this.getAiConfirmationOrThrow(id);
+    if (existing.status !== 'pending') throw new Error('只能确认待确认项');
+    const timestamp = now();
+    try {
+      const readback = await this.executeAiConfirmation(existing);
+      if (existing.actionType === 'create_review_report' && !readback?.report) throw new Error('确认后未能读回复盘报告');
+      if (existing.actionType === 'save_exercise_set' && !readback?.exerciseSet) throw new Error('确认后未能读回三元题组');
+      const result = {
+        reportId: readback?.report?.id,
+        exerciseSetId: readback?.exerciseSet?.id,
+        actionType: existing.actionType,
+      };
+      await this.run(
+        `UPDATE ai_confirmation_items
+            SET status = 'confirmed', result_json = ?, error_message = '', updated_at = ?, confirmed_at = ?
+          WHERE id = ?`,
+        [JSON.stringify(result), timestamp, timestamp, id],
+      );
+      return { item: await this.getAiConfirmationOrThrow(id), readback };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '确认项执行失败';
+      await this.run(
+        `UPDATE ai_confirmation_items
+            SET status = 'failed', error_message = ?, updated_at = ?
+          WHERE id = ?`,
+        [message, timestamp, id],
+      );
+      throw error;
+    }
+  }
+
   async generateReview(input: ReviewDraftInput): Promise<ReviewReport> {
     const records = (await this.listRecords(input.studentId, { limit: MAX_RECORD_PAGE_SIZE })).filter((record) => {
       const day = formatDate(record.occurredAt);
@@ -892,6 +1644,155 @@ export class OmniEduStore {
 
   async listReports(studentId: string): Promise<ReviewReport[]> {
     return (await this.all(`SELECT * FROM review_reports WHERE student_id = ? ORDER BY created_at DESC`, [studentId])).map((row) => this.mapReport(row));
+  }
+
+  async createQuestionBankItem(input: QuestionBankItemInput): Promise<QuestionBankItem> {
+    const stem = requireNonEmpty(input.stem, '题干不能为空');
+    const difficulty = input.difficulty === 'easy' || input.difficulty === 'hard' ? input.difficulty : 'medium';
+    const sourceKind = input.sourceKind === 'teacher_resource' || input.sourceKind === 'generated' ? input.sourceKind : 'local_bank';
+    const timestamp = now();
+    const item: QuestionBankItem = {
+      id: `question_${randomUUID()}`,
+      subject: input.subject?.trim() ?? '',
+      grade: input.grade?.trim() ?? '',
+      knowledgePoint: input.knowledgePoint?.trim() ?? '',
+      questionType: input.questionType?.trim() ?? '',
+      difficulty,
+      stem,
+      answer: input.answer?.trim() ?? '',
+      analysis: input.analysis?.trim() ?? '',
+      sourceTitle: input.sourceTitle?.trim() ?? '本地题库',
+      sourceKind,
+      tags: input.tags ?? [],
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    await this.run(
+      `INSERT INTO question_bank_items (
+        id, subject, grade, knowledge_point, question_type, difficulty, stem,
+        answer, analysis, source_title, source_kind, tags, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        item.id,
+        item.subject,
+        item.grade,
+        item.knowledgePoint,
+        item.questionType,
+        item.difficulty,
+        item.stem,
+        item.answer,
+        item.analysis,
+        item.sourceTitle,
+        item.sourceKind,
+        JSON.stringify(item.tags),
+        item.createdAt,
+        item.updatedAt,
+      ],
+    );
+    return item;
+  }
+
+  async searchQuestionBank(filters: QuestionSearchFilters = {}) {
+    const clauses: string[] = [];
+    const params: SqlValue[] = [];
+    const subject = filters.subject?.trim();
+    const knowledgePoint = filters.knowledgePoint?.trim();
+    const questionType = filters.questionType?.trim();
+    const difficulty = filters.difficulty;
+    const query = filters.query?.trim();
+    if (subject) {
+      clauses.push('subject = ?');
+      params.push(subject);
+    }
+    if (knowledgePoint) {
+      clauses.push('knowledge_point LIKE ?');
+      params.push(`%${knowledgePoint}%`);
+    }
+    if (questionType) {
+      clauses.push('question_type = ?');
+      params.push(questionType);
+    }
+    if (difficulty === 'easy' || difficulty === 'medium' || difficulty === 'hard') {
+      clauses.push('difficulty = ?');
+      params.push(difficulty);
+    }
+    const tokens = searchTokens(query);
+    if (tokens.length) {
+      clauses.push(`(${tokens.map(() => '(stem LIKE ? OR analysis LIKE ? OR tags LIKE ? OR knowledge_point LIKE ?)').join(' OR ')})`);
+      for (const token of tokens) {
+        const like = `%${token}%`;
+        params.push(like, like, like, like);
+      }
+    }
+    const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+    const limit = Math.max(1, Math.min(Math.trunc(filters.limit ?? 8), 20));
+    const rows = await this.all(
+      `SELECT * FROM question_bank_items
+       ${where}
+       ORDER BY
+         CASE WHEN knowledge_point = ? THEN 0 ELSE 1 END,
+         updated_at DESC
+       LIMIT ?`,
+      [...params, knowledgePoint ?? '', limit],
+    );
+    const queryTokens = [...new Set([...searchTokens(query), ...searchTokens(knowledgePoint)])];
+    return rows.map((row) => {
+      const item = this.mapQuestionBankItem(row);
+      const matchedToken = queryTokens.find((token) =>
+        [item.stem, item.analysis, item.knowledgePoint, item.tags.join('、')].some((text) => text.includes(token)),
+      );
+      return {
+        ...item,
+        matchReason: matchedToken ? `命中关键词：${matchedToken}` : item.knowledgePoint ? `按知识点 ${item.knowledgePoint} 排序命中` : '按更新时间命中',
+        score: matchedToken ? 0.9 : 0.6,
+      };
+    });
+  }
+
+  async saveExerciseSetFromDraft(studentId: string, draft: ExerciseSetDraftPayload): Promise<ExerciseSet> {
+    requireNonEmpty(studentId, '题组缺少学生 ID');
+    const title = requireNonEmpty(draft.title || '小智三元题组', '题组标题不能为空');
+    const contentMd = requireNonEmpty(draft.contentMd, '题组正文不能为空');
+    const timestamp = now();
+    const items = parseExerciseSetItems(draft.items ?? []);
+    const sourceQuestionIds = (draft.sourceQuestionIds ?? items.map((item) => item.questionId ?? '')).filter(Boolean);
+    const exerciseSet: ExerciseSet = {
+      id: `exercise_set_${randomUUID()}`,
+      studentId,
+      title,
+      subject: draft.subject?.trim() ?? '',
+      knowledgePoint: draft.knowledgePoint?.trim() ?? '',
+      contentMd,
+      items,
+      sourceQuestionIds,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    await this.run(
+      `INSERT INTO exercise_sets (
+        id, student_id, title, subject, knowledge_point, content_md,
+        items_json, source_question_ids, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        exerciseSet.id,
+        exerciseSet.studentId,
+        exerciseSet.title,
+        exerciseSet.subject,
+        exerciseSet.knowledgePoint,
+        exerciseSet.contentMd,
+        JSON.stringify(exerciseSet.items),
+        JSON.stringify(exerciseSet.sourceQuestionIds),
+        exerciseSet.createdAt,
+        exerciseSet.updatedAt,
+      ],
+    );
+    await this.touchStudent(studentId);
+    return exerciseSet;
+  }
+
+  async listExerciseSets(studentId: string): Promise<ExerciseSet[]> {
+    const rows = await this.all(`SELECT * FROM exercise_sets WHERE student_id = ? ORDER BY created_at DESC`, [studentId]);
+    return rows.map((row) => this.mapExerciseSet(row));
   }
 
   async search(keyword: string): Promise<SearchResult> {
@@ -1084,6 +1985,96 @@ export class OmniEduStore {
     return { exportPath, fileCount };
   }
 
+  async exportDocumentArtifact(input: DocumentArtifactExportInput): Promise<DocumentArtifactExportResult> {
+    const type = normalizeDocumentArtifactType(input.type);
+    const title = requireNonEmpty(input.title, '文档产物标题不能为空').slice(0, 120);
+    const contentMd = requireNonEmpty(input.contentMd, '文档产物正文不能为空');
+    const fileName = sanitizeDocumentFileName(input.fileName, type);
+    const exportRoot = input.destinationRoot?.trim()
+      ? input.destinationRoot.trim()
+      : this.resolveInsideDataRoot('exports', 'ai-artifacts');
+    mkdirSync(exportRoot, { recursive: true });
+    const timestamp = now();
+    const id = input.artifactId?.trim() || `artifact_${randomUUID()}`;
+    const targetPrefix = id.replace(/[^a-zA-Z0-9_-]/g, '').slice(-12) || String(Date.now());
+    const filePath = join(exportRoot, `${targetPrefix}-${fileName}`);
+    const mimeType = documentMimeType(type);
+    const description = input.description?.trim() ?? '';
+
+    try {
+      writeFileSync(filePath, createDocumentBuffer(type, title, contentMd));
+      const fileStat = statSync(filePath);
+      const contentHash = await hashFileSha256(filePath);
+      await this.run(
+        `INSERT OR REPLACE INTO document_artifacts (
+          id, session_id, message_id, title, artifact_type, file_name, mime_type, description,
+          content_md, file_path, file_size, content_hash, status, error_message, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM document_artifacts WHERE id = ?), ?), ?)`,
+        [
+          id,
+          input.sessionId ?? '',
+          input.messageId ?? '',
+          title,
+          type,
+          fileName,
+          mimeType,
+          description,
+          contentMd,
+          filePath,
+          fileStat.size,
+          contentHash,
+          'exported',
+          '',
+          id,
+          timestamp,
+          timestamp,
+        ],
+      );
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '文档产物导出失败';
+      await this.run(
+        `INSERT OR REPLACE INTO document_artifacts (
+          id, session_id, message_id, title, artifact_type, file_name, mime_type, description,
+          content_md, file_path, file_size, content_hash, status, error_message, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, '', 'failed', ?, COALESCE((SELECT created_at FROM document_artifacts WHERE id = ?), ?), ?)`,
+        [
+          id,
+          input.sessionId ?? '',
+          input.messageId ?? '',
+          title,
+          type,
+          fileName,
+          mimeType,
+          description,
+          contentMd,
+          filePath,
+          message,
+          id,
+          timestamp,
+          timestamp,
+        ],
+      );
+      throw error;
+    }
+
+    return this.getDocumentArtifactOrThrow(id);
+  }
+
+  async getDocumentArtifact(id: string): Promise<DocumentArtifactExportResult | null> {
+    const row = (await this.all(`SELECT * FROM document_artifacts WHERE id = ?`, [id]))[0];
+    return row ? this.mapDocumentArtifact(row) : null;
+  }
+
+  async listDocumentArtifacts(sessionId?: string): Promise<DocumentArtifactExportResult[]> {
+    const rows = sessionId?.trim()
+      ? await this.all(
+        `SELECT * FROM document_artifacts WHERE session_id = ? ORDER BY updated_at DESC LIMIT 100`,
+        [sessionId.trim()],
+      )
+      : await this.all(`SELECT * FROM document_artifacts ORDER BY updated_at DESC LIMIT 100`);
+    return rows.map((row) => this.mapDocumentArtifact(row));
+  }
+
   private openDatabase(filePath: string) {
     return new Promise<sqlite3.Database>((resolveOpen, reject) => {
       const db = new sqlite3.Database(filePath, (error) => {
@@ -1143,6 +2134,24 @@ export class OmniEduStore {
         FOREIGN KEY (student_id) REFERENCES students(id),
         FOREIGN KEY (record_id) REFERENCES learning_records(id)
       );
+      CREATE TABLE IF NOT EXISTS mistake_image_analyses (
+        id TEXT PRIMARY KEY,
+        student_id TEXT NOT NULL,
+        record_id TEXT,
+        attachment_id TEXT,
+        local_path TEXT NOT NULL DEFAULT '',
+        ocr_status TEXT NOT NULL DEFAULT 'needs_ocr',
+        extracted_text TEXT NOT NULL DEFAULT '',
+        sanitized_text TEXT NOT NULL DEFAULT '',
+        redactions_json TEXT NOT NULL DEFAULT '[]',
+        teacher_corrected_text TEXT NOT NULL DEFAULT '',
+        error_message TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (student_id) REFERENCES students(id),
+        FOREIGN KEY (record_id) REFERENCES learning_records(id),
+        FOREIGN KEY (attachment_id) REFERENCES attachments(id)
+      );
       CREATE TABLE IF NOT EXISTS review_reports (
         id TEXT PRIMARY KEY,
         student_id TEXT NOT NULL,
@@ -1155,6 +2164,35 @@ export class OmniEduStore {
         parent_summary TEXT NOT NULL DEFAULT '',
         quality_checks_json TEXT NOT NULL DEFAULT '[]',
         source_record_ids TEXT NOT NULL DEFAULT '[]',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (student_id) REFERENCES students(id)
+      );
+      CREATE TABLE IF NOT EXISTS question_bank_items (
+        id TEXT PRIMARY KEY,
+        subject TEXT NOT NULL DEFAULT '',
+        grade TEXT NOT NULL DEFAULT '',
+        knowledge_point TEXT NOT NULL DEFAULT '',
+        question_type TEXT NOT NULL DEFAULT '',
+        difficulty TEXT NOT NULL DEFAULT 'medium',
+        stem TEXT NOT NULL,
+        answer TEXT NOT NULL DEFAULT '',
+        analysis TEXT NOT NULL DEFAULT '',
+        source_title TEXT NOT NULL DEFAULT '',
+        source_kind TEXT NOT NULL DEFAULT 'local_bank',
+        tags TEXT NOT NULL DEFAULT '[]',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS exercise_sets (
+        id TEXT PRIMARY KEY,
+        student_id TEXT NOT NULL DEFAULT '',
+        title TEXT NOT NULL,
+        subject TEXT NOT NULL DEFAULT '',
+        knowledge_point TEXT NOT NULL DEFAULT '',
+        content_md TEXT NOT NULL DEFAULT '',
+        items_json TEXT NOT NULL DEFAULT '[]',
+        source_question_ids TEXT NOT NULL DEFAULT '[]',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
         FOREIGN KEY (student_id) REFERENCES students(id)
@@ -1233,6 +2271,24 @@ export class OmniEduStore {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS ai_confirmation_items (
+        id TEXT PRIMARY KEY,
+        run_id TEXT NOT NULL DEFAULT '',
+        session_id TEXT NOT NULL DEFAULT '',
+        student_id TEXT NOT NULL DEFAULT '',
+        action_type TEXT NOT NULL,
+        status TEXT NOT NULL,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        preview_md TEXT NOT NULL DEFAULT '',
+        payload_json TEXT NOT NULL DEFAULT '{}',
+        result_json TEXT NOT NULL DEFAULT '{}',
+        error_message TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        confirmed_at TEXT,
+        rejected_at TEXT
+      );
       CREATE TABLE IF NOT EXISTS ai_agent_runs (
         id TEXT PRIMARY KEY,
         session_id TEXT NOT NULL DEFAULT '',
@@ -1291,6 +2347,34 @@ export class OmniEduStore {
         created_at TEXT NOT NULL,
         FOREIGN KEY (session_id) REFERENCES ai_conversation_sessions(id) ON DELETE CASCADE
       );
+      CREATE TABLE IF NOT EXISTS document_artifacts (
+        id TEXT PRIMARY KEY,
+        session_id TEXT NOT NULL DEFAULT '',
+        message_id TEXT NOT NULL DEFAULT '',
+        title TEXT NOT NULL,
+        artifact_type TEXT NOT NULL,
+        file_name TEXT NOT NULL,
+        mime_type TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        content_md TEXT NOT NULL DEFAULT '',
+        file_path TEXT NOT NULL DEFAULT '',
+        file_size INTEGER NOT NULL DEFAULT 0,
+        content_hash TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL,
+        error_message TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS ai_regression_reports (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        status TEXT NOT NULL,
+        summary TEXT NOT NULL DEFAULT '',
+        snapshot_json TEXT NOT NULL DEFAULT '{}',
+        gates_json TEXT NOT NULL DEFAULT '[]',
+        report_json TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS teacher_resources (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -1313,6 +2397,15 @@ export class OmniEduStore {
         page_number INTEGER,
         bbox_json TEXT,
         token_count INTEGER NOT NULL DEFAULT 0,
+        subject TEXT NOT NULL DEFAULT '',
+        grade TEXT NOT NULL DEFAULT '',
+        knowledge_point TEXT NOT NULL DEFAULT '',
+        question_type TEXT NOT NULL DEFAULT '',
+        difficulty TEXT NOT NULL DEFAULT '',
+        source_trust TEXT NOT NULL DEFAULT 'unverified',
+        contains_personal_data INTEGER NOT NULL DEFAULT 0,
+        quality_score INTEGER NOT NULL DEFAULT 0,
+        evidence_strength TEXT NOT NULL DEFAULT 'background',
         embedding_status TEXT NOT NULL DEFAULT 'pending',
         created_at TEXT NOT NULL,
         FOREIGN KEY (resource_id) REFERENCES teacher_resources(id)
@@ -1325,6 +2418,7 @@ export class OmniEduStore {
         source_kind TEXT NOT NULL,
         source_id TEXT NOT NULL,
         confidence REAL NOT NULL DEFAULT 1,
+        evidence_strength TEXT NOT NULL DEFAULT 'background',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
@@ -1336,6 +2430,8 @@ export class OmniEduStore {
         evidence_source_id TEXT NOT NULL,
         evidence_text TEXT NOT NULL DEFAULT '',
         confidence REAL NOT NULL DEFAULT 1,
+        evidence_strength TEXT NOT NULL DEFAULT 'background',
+        evidence_kind TEXT NOT NULL DEFAULT 'inferred',
         created_at TEXT NOT NULL,
         FOREIGN KEY (source_node_id) REFERENCES knowledge_nodes(id),
         FOREIGN KEY (target_node_id) REFERENCES knowledge_nodes(id)
@@ -1378,15 +2474,26 @@ export class OmniEduStore {
       );
       CREATE INDEX IF NOT EXISTS idx_records_student_time ON learning_records(student_id, occurred_at DESC);
       CREATE INDEX IF NOT EXISTS idx_attachments_record ON attachments(record_id);
+      CREATE INDEX IF NOT EXISTS idx_mistake_image_student ON mistake_image_analyses(student_id, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_mistake_image_record ON mistake_image_analyses(record_id, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_question_bank_lookup ON question_bank_items(subject, knowledge_point, difficulty);
+      CREATE INDEX IF NOT EXISTS idx_exercise_sets_student ON exercise_sets(student_id, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_local_tasks_status ON local_tasks(status, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_sync_operations_status ON sync_operations(sync_status, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_tasks_status ON ai_tasks(status, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_confirmation_status ON ai_confirmation_items(status, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_confirmation_session ON ai_confirmation_items(session_id, created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_confirmation_run ON ai_confirmation_items(run_id, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_agent_runs_session ON ai_agent_runs(session_id, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_agent_events_run ON ai_agent_events(run_id, sequence ASC);
       CREATE INDEX IF NOT EXISTS idx_ai_conversation_sessions_folder ON ai_conversation_sessions(folder_id, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_conversation_messages_session ON ai_conversation_messages(session_id, created_at ASC);
+      CREATE INDEX IF NOT EXISTS idx_document_artifacts_session ON document_artifacts(session_id, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_document_artifacts_message ON document_artifacts(message_id, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_regression_reports_created ON ai_regression_reports(created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_teacher_resources_status ON teacher_resources(parse_status, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_resource_chunks_resource ON resource_chunks(resource_id, chunk_index);
+      CREATE INDEX IF NOT EXISTS idx_resource_chunks_metadata ON resource_chunks(subject, grade, knowledge_point, question_type);
       CREATE INDEX IF NOT EXISTS idx_knowledge_edges_source ON knowledge_edges(source_node_id);
       CREATE INDEX IF NOT EXISTS idx_ai_tool_runs_task ON ai_tool_runs(task_id);
     `);
@@ -1406,6 +2513,34 @@ export class OmniEduStore {
     if (!hasColumn(aiSessionColumns, 'archived_at')) {
       await this.run(`ALTER TABLE ai_conversation_sessions ADD COLUMN archived_at TEXT`);
     }
+    const chunkColumns = await this.all(`PRAGMA table_info(resource_chunks)`);
+    for (const [column, definition] of [
+      ['subject', `TEXT NOT NULL DEFAULT ''`],
+      ['grade', `TEXT NOT NULL DEFAULT ''`],
+      ['knowledge_point', `TEXT NOT NULL DEFAULT ''`],
+      ['question_type', `TEXT NOT NULL DEFAULT ''`],
+      ['difficulty', `TEXT NOT NULL DEFAULT ''`],
+      ['source_trust', `TEXT NOT NULL DEFAULT 'unverified'`],
+      ['contains_personal_data', `INTEGER NOT NULL DEFAULT 0`],
+      ['quality_score', `INTEGER NOT NULL DEFAULT 0`],
+      ['evidence_strength', `TEXT NOT NULL DEFAULT 'background'`],
+    ] as const) {
+      if (!hasColumn(chunkColumns, column)) {
+        await this.run(`ALTER TABLE resource_chunks ADD COLUMN ${column} ${definition}`);
+      }
+    }
+    const nodeColumns = await this.all(`PRAGMA table_info(knowledge_nodes)`);
+    if (!hasColumn(nodeColumns, 'evidence_strength')) {
+      await this.run(`ALTER TABLE knowledge_nodes ADD COLUMN evidence_strength TEXT NOT NULL DEFAULT 'background'`);
+    }
+    const edgeColumns = await this.all(`PRAGMA table_info(knowledge_edges)`);
+    if (!hasColumn(edgeColumns, 'evidence_strength')) {
+      await this.run(`ALTER TABLE knowledge_edges ADD COLUMN evidence_strength TEXT NOT NULL DEFAULT 'background'`);
+    }
+    if (!hasColumn(edgeColumns, 'evidence_kind')) {
+      await this.run(`ALTER TABLE knowledge_edges ADD COLUMN evidence_kind TEXT NOT NULL DEFAULT 'inferred'`);
+    }
+    await this.run(`CREATE INDEX IF NOT EXISTS idx_resource_chunks_metadata ON resource_chunks(subject, grade, knowledge_point, question_type)`);
     await this.seedPlatformDefaults();
     await this.rebuildRecordFtsIfEmpty();
   }
@@ -1478,14 +2613,40 @@ export class OmniEduStore {
         ],
       );
     }
+    if (await this.scalarCount('question_bank_items') === 0) {
+      await this.createQuestionBankItem({
+        subject: '数学',
+        grade: '初二',
+        knowledgePoint: '一次函数',
+        questionType: '解答题',
+        difficulty: 'medium',
+        stem: '已知一次函数 y = kx + b 经过点 (0, 2) 和 (3, 8)，求 k、b，并判断图像随 x 增大如何变化。',
+        answer: 'b = 2，3k + 2 = 8，所以 k = 2；图像随 x 增大而增大。',
+        analysis: '先用 x=0 得到截距 b，再代入另一点求斜率 k；k>0 表示递增。',
+        sourceTitle: '内置演示题库',
+        tags: ['一次函数', 'k值', '图像性质'],
+      });
+      await this.createQuestionBankItem({
+        subject: '数学',
+        grade: '初二',
+        knowledgePoint: '一次函数',
+        questionType: '变式题',
+        difficulty: 'medium',
+        stem: '一次函数 y = -3x + 5 的图像经过哪些象限？函数值随 x 增大如何变化？',
+        answer: '经过第一、二、四象限；函数值随 x 增大而减小。',
+        analysis: 'b>0，k<0，所以图像过一二四象限；斜率为负表示递减。',
+        sourceTitle: '内置演示题库',
+        tags: ['一次函数', '象限', '增减性'],
+      });
+    }
   }
 
   private async ensureTeacherLibraryNode() {
     const timestamp = now();
     await this.run(
       `INSERT OR IGNORE INTO knowledge_nodes (
-        id, node_type, name, summary, source_kind, source_id, confidence, created_at, updated_at
-      ) VALUES ('node_teacher_library', '知识库', '老师知识库', '老师本地导入的教学资源集合。', 'system', 'teacher_library', 1, ?, ?)`,
+        id, node_type, name, summary, source_kind, source_id, confidence, evidence_strength, created_at, updated_at
+      ) VALUES ('node_teacher_library', '知识库', '老师知识库', '老师本地导入的教学资源集合。', 'system', 'teacher_library', 1, 'background', ?, ?)`,
       [timestamp, timestamp],
     );
   }
@@ -1494,14 +2655,14 @@ export class OmniEduStore {
     const nodeId = `node_${resourceId}`;
     await this.run(
       `INSERT OR REPLACE INTO knowledge_nodes (
-        id, node_type, name, summary, source_kind, source_id, confidence, created_at, updated_at
-      ) VALUES (?, '资源', ?, ?, 'teacher_resource', ?, 1, ?, ?)`,
+        id, node_type, name, summary, source_kind, source_id, confidence, evidence_strength, created_at, updated_at
+      ) VALUES (?, '资源', ?, ?, 'teacher_resource', ?, 1, 'background', ?, ?)`,
       [nodeId, title, `${resourceType} 文件，${fileSize} bytes。`, resourceId, timestamp, timestamp],
     );
     await this.run(
       `INSERT OR IGNORE INTO knowledge_edges (
-        id, source_node_id, target_node_id, relation_type, evidence_source_id, evidence_text, confidence, created_at
-      ) VALUES (?, 'node_teacher_library', ?, '包含', ?, ?, 1, ?)`,
+        id, source_node_id, target_node_id, relation_type, evidence_source_id, evidence_text, confidence, evidence_strength, evidence_kind, created_at
+      ) VALUES (?, 'node_teacher_library', ?, '包含', ?, ?, 1, 'background', 'metadata', ?)`,
       [`edge_library_${resourceId}`, nodeId, resourceId, title, timestamp],
     );
   }
@@ -1510,26 +2671,120 @@ export class OmniEduStore {
     const chunks = splitIntoChunks(content);
     for (const [index, chunk] of chunks.entries()) {
       const chunkId = `chunk_${randomUUID()}`;
+      const metadata = inferResourceChunkMetadata(resourceTitle, chunk.heading, chunk.content);
       await this.run(
         `INSERT INTO resource_chunks (
           id, resource_id, chunk_index, heading, content_md, page_number, bbox_json,
-          token_count, embedding_status, created_at
-        ) VALUES (?, ?, ?, ?, ?, NULL, '', ?, 'pending', ?)`,
-        [chunkId, resourceId, index, chunk.heading, chunk.content, Math.ceil(chunk.content.length / 2), timestamp],
+          token_count, subject, grade, knowledge_point, question_type, difficulty,
+          source_trust, contains_personal_data, quality_score, evidence_strength,
+          embedding_status, created_at
+        ) VALUES (?, ?, ?, ?, ?, NULL, '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`,
+        [
+          chunkId,
+          resourceId,
+          index,
+          chunk.heading,
+          chunk.content,
+          Math.ceil(chunk.content.length / 2),
+          metadata.subject,
+          metadata.grade,
+          metadata.knowledgePoint,
+          metadata.questionType,
+          metadata.difficulty,
+          metadata.sourceTrust,
+          metadata.containsPersonalData ? 1 : 0,
+          metadata.qualityScore,
+          metadata.evidenceStrength,
+          timestamp,
+        ],
       );
-      if (chunk.heading) {
-        const nodeId = `node_${chunkId}`;
+      const nodeId = `node_${chunkId}`;
+      await this.run(
+        `INSERT OR REPLACE INTO knowledge_nodes (
+          id, node_type, name, summary, source_kind, source_id, confidence, evidence_strength, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, 'resource_chunk', ?, ?, ?, ?, ?)`,
+        [
+          nodeId,
+          chunk.heading ? '章节' : '片段',
+          chunk.heading || `${resourceTitle} #${index + 1}`,
+          chunk.content.slice(0, 180),
+          chunkId,
+          metadata.qualityScore / 100,
+          metadata.evidenceStrength,
+          timestamp,
+          timestamp,
+        ],
+      );
+      await this.run(
+        `INSERT OR IGNORE INTO knowledge_edges (
+          id, source_node_id, target_node_id, relation_type, evidence_source_id, evidence_text, confidence, evidence_strength, evidence_kind, created_at
+        ) VALUES (?, ?, ?, '包含', ?, ?, ?, ?, 'direct_quote', ?)`,
+        [`edge_${resourceId}_${chunkId}`, `node_${resourceId}`, nodeId, chunkId, resourceTitle, metadata.qualityScore / 100, metadata.evidenceStrength, timestamp],
+      );
+      if (metadata.knowledgePoint) {
+        const knowledgePointNodeId = stableKnowledgeId('node_kp', metadata.knowledgePoint);
         await this.run(
           `INSERT OR REPLACE INTO knowledge_nodes (
-            id, node_type, name, summary, source_kind, source_id, confidence, created_at, updated_at
-          ) VALUES (?, '章节', ?, ?, 'resource_chunk', ?, 0.92, ?, ?)`,
-          [nodeId, chunk.heading, chunk.content.slice(0, 180), chunkId, timestamp, timestamp],
+            id, node_type, name, summary, source_kind, source_id, confidence, evidence_strength, created_at, updated_at
+          ) VALUES (?, '知识点', ?, ?, 'resource_chunk', ?, ?, ?, ?, ?)`,
+          [
+            knowledgePointNodeId,
+            metadata.knowledgePoint,
+            `${metadata.subject || '未知学科'} / ${metadata.grade || '未标年级'}：${chunk.content.slice(0, 140)}`,
+            chunkId,
+            metadata.qualityScore / 100,
+            metadata.evidenceStrength,
+            timestamp,
+            timestamp,
+          ],
         );
         await this.run(
           `INSERT OR IGNORE INTO knowledge_edges (
-            id, source_node_id, target_node_id, relation_type, evidence_source_id, evidence_text, confidence, created_at
-          ) VALUES (?, ?, ?, '包含', ?, ?, 0.92, ?)`,
-          [`edge_${resourceId}_${chunkId}`, `node_${resourceId}`, nodeId, chunkId, resourceTitle, timestamp],
+            id, source_node_id, target_node_id, relation_type, evidence_source_id, evidence_text, confidence, evidence_strength, evidence_kind, created_at
+          ) VALUES (?, ?, ?, '涉及', ?, ?, ?, ?, 'direct_quote', ?)`,
+          [
+            `edge_${chunkId}_${knowledgePointNodeId}`,
+            `node_${chunkId}`,
+            knowledgePointNodeId,
+            chunkId,
+            chunk.heading || chunk.content.slice(0, 80),
+            metadata.qualityScore / 100,
+            metadata.evidenceStrength,
+            timestamp,
+          ],
+        );
+      }
+      if (metadata.questionType) {
+        const questionTypeNodeId = stableKnowledgeId('node_qt', metadata.questionType);
+        await this.run(
+          `INSERT OR REPLACE INTO knowledge_nodes (
+            id, node_type, name, summary, source_kind, source_id, confidence, evidence_strength, created_at, updated_at
+          ) VALUES (?, '题型', ?, ?, 'resource_chunk', ?, ?, ?, ?, ?)`,
+          [
+            questionTypeNodeId,
+            metadata.questionType,
+            `${metadata.subject || '未知学科'} 题型：${metadata.questionType}`,
+            chunkId,
+            metadata.qualityScore / 100,
+            metadata.evidenceStrength,
+            timestamp,
+            timestamp,
+          ],
+        );
+        await this.run(
+          `INSERT OR IGNORE INTO knowledge_edges (
+            id, source_node_id, target_node_id, relation_type, evidence_source_id, evidence_text, confidence, evidence_strength, evidence_kind, created_at
+          ) VALUES (?, ?, ?, '题型', ?, ?, ?, ?, 'direct_quote', ?)`,
+          [
+            `edge_${chunkId}_${questionTypeNodeId}`,
+            `node_${chunkId}`,
+            questionTypeNodeId,
+            chunkId,
+            chunk.heading || chunk.content.slice(0, 80),
+            metadata.qualityScore / 100,
+            metadata.evidenceStrength,
+            timestamp,
+          ],
         );
       }
     }
@@ -1610,6 +2865,134 @@ export class OmniEduStore {
   private async ensureAiConversationFolder(folderId: string) {
     const folder = (await this.all(`SELECT id FROM ai_conversation_folders WHERE id = ?`, [folderId]))[0];
     if (!folder) throw new Error('AI 对话文件夹不存在');
+  }
+
+  private async getAiConfirmationOrThrow(id: string): Promise<AiConfirmationItem> {
+    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('确认项不存在');
+    return this.mapAiConfirmationItem(row);
+  }
+
+  private async getMistakeImageAnalysisOrThrow(id: string): Promise<MistakeImageAnalysis> {
+    const row = (await this.all(`SELECT * FROM mistake_image_analyses WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('错题图片解析记录不存在');
+    return this.mapMistakeImageAnalysis(row);
+  }
+
+  private async getDocumentArtifactOrThrow(id: string): Promise<DocumentArtifactExportResult> {
+    const row = (await this.all(`SELECT * FROM document_artifacts WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('文档产物导出后未能读回');
+    return this.mapDocumentArtifact(row);
+  }
+
+  private async executeAiConfirmation(item: AiConfirmationItem): Promise<AiConfirmationDecisionResult['readback']> {
+    if (item.actionType === 'create_review_report') {
+      const report = await this.createReviewReportFromConfirmation(item.payload);
+      return { report };
+    }
+    if (item.actionType === 'save_exercise_set') {
+      const exerciseSet = await this.createExerciseSetFromConfirmation(item.payload);
+      return { exerciseSet };
+    }
+    throw new Error(`不支持的确认动作：${item.actionType}`);
+  }
+
+  private async createExerciseSetFromConfirmation(payload: AiConfirmationPayload): Promise<ExerciseSet> {
+    const studentId = requireNonEmpty(payload.studentId, '确认项缺少学生 ID');
+    const student = (await this.listStudents('')).find((item) => item.id === studentId);
+    if (!student) throw new Error('学生不存在');
+    const draft: ExerciseSetDraftPayload = payload.exerciseSet ?? {
+      title: payload.title || '小智三元题组',
+      subject: payload.subject,
+      knowledgePoint: '',
+      contentMd: payload.contentMd,
+      sourceQuestionIds: [],
+      items: [],
+    };
+    const exerciseSet = await this.saveExerciseSetFromDraft(studentId, draft);
+    const readback = (await this.all(`SELECT * FROM exercise_sets WHERE id = ?`, [exerciseSet.id]))[0];
+    if (!readback) throw new Error('确认后未能读回三元题组');
+    return this.mapExerciseSet(readback);
+  }
+
+  private async createReviewReportFromConfirmation(payload: AiConfirmationPayload): Promise<ReviewReport> {
+    const studentId = requireNonEmpty(payload.studentId, '确认项缺少学生 ID');
+    const student = (await this.listStudents('')).find((item) => item.id === studentId);
+    if (!student) throw new Error('学生不存在');
+    const title = requireNonEmpty(payload.title, '确认项缺少报告标题');
+    const contentMd = requireNonEmpty(payload.contentMd, '确认项缺少报告正文');
+    const parentSummary = payload.parentSummary?.trim() || 'AI 已生成复盘草稿，请老师确认后再用于家长沟通。';
+    const sourceRecordIds = (payload.sourceRecordIds ?? []).filter(Boolean);
+    const sourceRecords = sourceRecordIds.length ? await this.recordsByIds(studentId, sourceRecordIds) : [];
+    const qualityChecks = this.buildReportQualityChecks(sourceRecords, contentMd, parentSummary);
+    const timestamp = now();
+    const report: ReviewReport = {
+      id: `report_${randomUUID()}`,
+      studentId,
+      subject: payload.subject ?? '',
+      startDate: payload.startDate,
+      endDate: payload.endDate,
+      reportType: payload.reportType || 'ai_draft',
+      title,
+      contentMd,
+      parentSummary,
+      qualityChecks,
+      sourceRecordIds,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+
+    const reportRoot = this.resolveInsideDataRoot('students', studentId, 'reports');
+    mkdirSync(reportRoot, { recursive: true });
+    const reportPath = resolveInsideRoot(reportRoot, `${report.id}.md`);
+    let fileWritten = false;
+    await this.run(`BEGIN IMMEDIATE`);
+    try {
+      await this.run(
+        `INSERT INTO review_reports (
+          id, student_id, subject, start_date, end_date, report_type, title, content_md,
+          parent_summary, quality_checks_json, source_record_ids, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          report.id,
+          report.studentId,
+          report.subject,
+          report.startDate,
+          report.endDate,
+          report.reportType,
+          report.title,
+          report.contentMd,
+          report.parentSummary,
+          JSON.stringify(report.qualityChecks),
+          JSON.stringify(report.sourceRecordIds),
+          report.createdAt,
+          report.updatedAt,
+        ],
+      );
+      writeFileSync(reportPath, contentMd, 'utf8');
+      fileWritten = true;
+      await this.touchStudent(studentId);
+      const readback = (await this.all(`SELECT * FROM review_reports WHERE id = ?`, [report.id]))[0];
+      if (!readback) throw new Error('确认后未能读回复盘报告');
+      await this.run(`COMMIT`);
+      return this.mapReport(readback);
+    } catch (error) {
+      await this.run(`ROLLBACK`).catch(() => undefined);
+      if (fileWritten) rmSync(reportPath, { force: true });
+      throw error;
+    }
+  }
+
+  private async recordsByIds(studentId: string, recordIds: string[]): Promise<LearningRecord[]> {
+    const uniqueIds = [...new Set(recordIds)].slice(0, 50);
+    if (!uniqueIds.length) return [];
+    const placeholders = uniqueIds.map(() => '?').join(', ');
+    const rows = await this.all(
+      `SELECT * FROM learning_records WHERE student_id = ? AND id IN (${placeholders})`,
+      [studentId, ...uniqueIds],
+    );
+    const records = rows.map((row) => this.mapRecord(row));
+    return this.withAttachments(records);
   }
 
   private run(sql: string, params: SqlValue[] = []) {
@@ -1697,6 +3080,25 @@ export class OmniEduStore {
     };
   }
 
+  private mapMistakeImageAnalysis(row: Row): MistakeImageAnalysis {
+    const status = String(row.ocr_status ?? 'needs_ocr');
+    return {
+      id: String(row.id),
+      studentId: String(row.student_id ?? ''),
+      recordId: String(row.record_id ?? ''),
+      attachmentId: String(row.attachment_id ?? ''),
+      localPath: String(row.local_path ?? ''),
+      ocrStatus: (status === 'sanitized' || status === 'teacher_corrected' || status === 'failed') ? status : 'needs_ocr',
+      extractedText: String(row.extracted_text ?? ''),
+      sanitizedText: String(row.sanitized_text ?? ''),
+      redactions: parseMistakeImageRedactions(row.redactions_json),
+      teacherCorrectedText: String(row.teacher_corrected_text ?? ''),
+      errorMessage: String(row.error_message ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
   private mapReport(row: Row): ReviewReport {
     return {
       id: String(row.id),
@@ -1710,6 +3112,42 @@ export class OmniEduStore {
       parentSummary: String(row.parent_summary ?? ''),
       qualityChecks: this.parseQualityChecks(row.quality_checks_json),
       sourceRecordIds: jsonArray(row.source_record_ids),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private mapQuestionBankItem(row: Row): QuestionBankItem {
+    const difficulty = String(row.difficulty ?? 'medium');
+    const sourceKind = String(row.source_kind ?? 'local_bank');
+    return {
+      id: String(row.id),
+      subject: String(row.subject ?? ''),
+      grade: String(row.grade ?? ''),
+      knowledgePoint: String(row.knowledge_point ?? ''),
+      questionType: String(row.question_type ?? ''),
+      difficulty: difficulty === 'easy' || difficulty === 'hard' ? difficulty : 'medium',
+      stem: String(row.stem ?? ''),
+      answer: String(row.answer ?? ''),
+      analysis: String(row.analysis ?? ''),
+      sourceTitle: String(row.source_title ?? ''),
+      sourceKind: sourceKind === 'teacher_resource' || sourceKind === 'generated' ? sourceKind : 'local_bank',
+      tags: jsonArray(row.tags),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private mapExerciseSet(row: Row): ExerciseSet {
+    return {
+      id: String(row.id),
+      studentId: String(row.student_id ?? ''),
+      title: String(row.title ?? ''),
+      subject: String(row.subject ?? ''),
+      knowledgePoint: String(row.knowledge_point ?? ''),
+      contentMd: String(row.content_md ?? ''),
+      items: parseExerciseSetItems(jsonUnknownArray(row.items_json)),
+      sourceQuestionIds: jsonArray(row.source_question_ids),
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
     };
@@ -1745,6 +3183,27 @@ export class OmniEduStore {
       inputSummary: jsonObject(row.input_summary_json),
       outputSummary: jsonObject(row.output_summary_json),
       createdAt: String(row.created_at ?? ''),
+    };
+  }
+
+  private mapAiConfirmationItem(row: Row): AiConfirmationItem {
+    return {
+      id: String(row.id),
+      runId: String(row.run_id ?? ''),
+      sessionId: String(row.session_id ?? ''),
+      studentId: String(row.student_id ?? ''),
+      actionType: String(row.action_type ?? 'create_review_report') as AiConfirmationItem['actionType'],
+      status: String(row.status ?? 'pending') as AiConfirmationStatus,
+      title: String(row.title ?? ''),
+      description: String(row.description ?? ''),
+      previewMd: String(row.preview_md ?? ''),
+      payload: parseAiConfirmationPayload(row.payload_json),
+      result: jsonObject(row.result_json),
+      errorMessage: String(row.error_message ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+      confirmedAt: String(row.confirmed_at ?? ''),
+      rejectedAt: String(row.rejected_at ?? ''),
     };
   }
 
@@ -1786,6 +3245,30 @@ export class OmniEduStore {
     };
   }
 
+  private mapDocumentArtifact(row: Row): DocumentArtifactExportResult {
+    const type = normalizeDocumentArtifactType(String(row.artifact_type ?? 'markdown'));
+    const rawStatus = String(row.status ?? 'draft');
+    const status = rawStatus === 'exported' || rawStatus === 'failed' ? rawStatus : 'draft';
+    return {
+      id: String(row.id),
+      sessionId: String(row.session_id ?? ''),
+      messageId: String(row.message_id ?? ''),
+      title: String(row.title ?? ''),
+      type,
+      fileName: String(row.file_name ?? ''),
+      mimeType: String(row.mime_type ?? documentMimeType(type)),
+      description: String(row.description ?? ''),
+      contentMd: String(row.content_md ?? ''),
+      filePath: String(row.file_path ?? ''),
+      fileSize: Number(row.file_size ?? 0),
+      contentHash: String(row.content_hash ?? ''),
+      status,
+      errorMessage: String(row.error_message ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
   private mapTeacherResource(row: Row) {
     return {
       id: String(row.id),
@@ -1804,6 +3287,8 @@ export class OmniEduStore {
   }
 
   private mapResourceChunk(row: Row): ResourceChunk {
+    const sourceTrust = String(row.source_trust ?? 'unverified');
+    const evidenceStrength = String(row.evidence_strength ?? 'background');
     return {
       id: String(row.id),
       resourceId: String(row.resource_id),
@@ -1812,12 +3297,22 @@ export class OmniEduStore {
       heading: String(row.heading ?? ''),
       contentMd: String(row.content_md ?? ''),
       pageNumber: row.page_number == null ? null : Number(row.page_number),
+      subject: String(row.subject ?? ''),
+      grade: String(row.grade ?? ''),
+      knowledgePoint: String(row.knowledge_point ?? ''),
+      questionType: String(row.question_type ?? ''),
+      difficulty: String(row.difficulty ?? ''),
+      sourceTrust: (sourceTrust === 'teacher_verified' || sourceTrust === 'machine_extracted') ? sourceTrust : 'unverified',
+      containsPersonalData: Number(row.contains_personal_data ?? 0) === 1,
+      qualityScore: Number(row.quality_score ?? 0),
+      evidenceStrength: (evidenceStrength === 'direct' || evidenceStrength === 'indirect') ? evidenceStrength : 'background',
       embeddingStatus: String(row.embedding_status ?? 'pending'),
       createdAt: String(row.created_at ?? ''),
     };
   }
 
   private mapKnowledgeNode(row: Row): KnowledgeNode {
+    const evidenceStrength = String(row.evidence_strength ?? 'background');
     return {
       id: String(row.id),
       nodeType: String(row.node_type ?? ''),
@@ -1826,12 +3321,15 @@ export class OmniEduStore {
       sourceKind: String(row.source_kind ?? ''),
       sourceId: String(row.source_id ?? ''),
       confidence: Number(row.confidence ?? 0),
+      evidenceStrength: (evidenceStrength === 'direct' || evidenceStrength === 'indirect') ? evidenceStrength : 'background',
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
     };
   }
 
   private mapKnowledgeEdge(row: Row): KnowledgeEdge {
+    const evidenceStrength = String(row.evidence_strength ?? 'background');
+    const evidenceKind = String(row.evidence_kind ?? 'inferred');
     return {
       id: String(row.id),
       sourceNodeId: String(row.source_node_id ?? ''),
@@ -1840,6 +3338,8 @@ export class OmniEduStore {
       evidenceSourceId: String(row.evidence_source_id ?? ''),
       evidenceText: String(row.evidence_text ?? ''),
       confidence: Number(row.confidence ?? 0),
+      evidenceStrength: (evidenceStrength === 'direct' || evidenceStrength === 'indirect') ? evidenceStrength : 'background',
+      evidenceKind: (evidenceKind === 'direct_quote' || evidenceKind === 'metadata') ? evidenceKind : 'inferred',
       createdAt: String(row.created_at ?? ''),
     };
   }

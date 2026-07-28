@@ -137,9 +137,9 @@ draft -> preview -> teacher confirm -> write -> readback -> trace
   - `query_knowledge_graph`
 - Agent loop trace：
   - `route -> plan -> tool_call -> observe -> reflect -> finalize`
-- DeepSeek JSON Output + 本地 `xiazhi.reply.v1` schema 校验。
+- DeepSeek JSON Output + 本地 `xiazhi.reply.v2` schema 校验。
 - AI 回复底部已删除“上下文来源 / 上下文工具”折叠组件。
-- 48 条 router/harness eval 已建立。
+- 96 条 router/subIntent/harness eval 已建立。
 
 已验证：
 
@@ -180,7 +180,7 @@ node scripts/electron-smoke.mjs
 
 ### 3.3 只有 route eval，不足以衡量“教育质量”
 
-48 条 eval 只能证明路由和工具白名单初步正确，不能证明回答有教育价值。
+96 条 eval 能证明路由、二级意图、槽位、澄清和工具白名单初步正确，但仍不能证明回答有教育价值。
 
 必须补：
 
@@ -213,7 +213,7 @@ node scripts/electron-smoke.mjs
 本地题库索引 -> 错题图片解析 -> 脱敏上云分析 -> 本地相似题召回 -> 三元题组输出
 ```
 
-当前小智 harness 只是为这条链路准备了接口形态，还没有完成题库、OCR、相似题召回和题组保存。
+当前小智 harness 已完成本地题库相似题召回、题组确认保存，以及错题图片本地托管/脱敏/老师修正的数据层第一段；真实 OCR、脱敏文本上云分析和端到端自动题组生成仍未完成。
 
 ### 3.6 知识库和图谱仍是轻量骨架
 
@@ -733,8 +733,8 @@ imported
 
 ### 12.2 规模路线
 
-- 当前：48 条 router eval。
-- 下一阶段：96 条 route + subIntent + tool trajectory eval。
+- 当前：96 条 route + subIntent + slots + clarification + tool boundary eval。
+- 下一阶段：Education Grader bad-case eval。
 - P1：150 条含 schema/safety 的综合 eval。
 - P2：加入真实教师样本和人工评分。
 
@@ -863,21 +863,27 @@ imported
 
 ### Phase 3：Confirmation Queue v1
 
-目标：支持写入前预览确认。
+目标：支持 AI 发起写入前预览确认。
 
 任务：
 
-- 新增确认队列表。
-- 新增确认 IPC/preload 合约。
-- AI 回复产生 confirmation item。
-- UI 显示待确认项。
-- 确认后执行写入并 readback。
+- [x] 新增确认队列表。
+- [x] 新增确认 IPC/preload 合约。
+- [x] AI 回复产生 confirmation item。
+- [x] UI 显示待确认项。
+- [x] 确认后执行写入并 readback。
 
 验收：
 
-- “直接保存报告”只生成确认项。
-- 老师确认后报告才进入数据库。
-- 拒绝后不写入。
+- [x] “直接保存报告”只生成确认项。
+- [x] 老师确认后报告才进入数据库。
+- [x] 拒绝后不写入。
+
+当前边界：
+
+- v1 只开放 `create_review_report`，不开放学生标签、学习记录、题组和知识图谱写入。
+- 老师在复盘页面手动生成报告仍保留原显式写入路径；确认队列约束的是 AI 发起写入。
+- 真实 DeepSeek live `report_draft` 触发仍需在 API Key 配置后单独验收。
 
 ### Phase 4：SubIntent Router + 96 Eval
 
@@ -885,16 +891,16 @@ imported
 
 任务：
 
-- 扩展 router 输出。
-- 增加二级意图。
-- 扩展 eval 到 96 条。
-- 覆盖多学生歧义、时间范围、学科、知识点、写入意图。
+- [x] 扩展 router 输出。
+- [x] 增加二级意图。
+- [x] 扩展 eval 到 96 条。
+- [x] 覆盖多学生歧义、时间范围、学科、知识点、写入意图。
 
 验收：
 
-- 96/96 router eval 通过。
-- 低置信度只问一个关键问题。
-- 明确学生引用不要求切模块。
+- [x] 96/96 router eval 通过。
+- [x] 低置信度只问一个关键问题。
+- [x] 明确学生引用不要求切模块。
 
 ### Phase 5：Structured Reply v2
 
@@ -902,16 +908,16 @@ imported
 
 任务：
 
-- 增加 facts/evidence/inferences/risks。
-- 增加 route-specific schema。
-- 增加一次受控 repair。
-- 前端按 envelope 渲染。
+- [x] 增加 facts/evidence/inferences/risks。
+- [x] 增加 route-specific schema。
+- [x] 增加一次受控 repair。
+- [x] 前端按 envelope 渲染。
 
 验收：
 
-- 学生诊断必须有事实/推断/未知。
-- 三元题组必须符合 schema。
-- schema 失败不展示成功答案。
+- [x] 学生诊断必须有事实/推断/未知。
+- [x] 三元题组必须符合 schema。
+- [x] schema 失败不展示成功答案。
 
 ### Phase 6：Education Grader v1
 
@@ -919,16 +925,21 @@ imported
 
 任务：
 
-- 规则 grader：证据、隐私、写入、题组结构。
-- 模型 grader：教师可用性、非模板化、年级适切。
-- bad-case 数据集。
-- eval report 输出。
+- [x] 规则 grader：证据、隐私、写入、题组结构。
+- [ ] 模型 grader：教师可用性、非模板化、年级适切。
+- [x] bad-case 数据集。
+- [x] eval report 输出。
 
 验收：
 
-- “建议上传资料”类无意义回复被打低分。
-- “小A没有资料所以无法判断”必须说明实际查了哪些数据。
-- 标签化语言被拦截。
+- [x] “建议上传资料”类无意义回复被打低分。
+- [x] “小A没有资料所以无法判断”必须说明实际查了哪些数据。
+- [x] 标签化语言被拦截。
+
+当前边界：
+
+- v1 是确定性规则 grader；模型 grader 与教师人工评分未接入。
+- 当前门禁：`npm run test:ai-education-grader`。
 
 ### Phase 7：三元题组闭环 v1
 
@@ -936,18 +947,23 @@ imported
 
 任务：
 
-- 题库题目结构化表。
-- 本地题库导入。
+- [x] 题库题目结构化表。
+- [x] 本地题库导入能力第一段：`createQuestionBankItem` / 内置演示题库 / IPC 入口。
 - 错题/题目文本解析。
-- 相似题召回。
-- 三元题组生成。
-- 老师确认保存。
+- [x] 相似题召回：`search_similar_questions` 只读工具。
+- [x] 三元题组生成：结构化 `exercise_set` artifact + 本地题源上下文。
+- [x] 老师确认保存：`save_exercise_set` 确认项，确认后写入 `exercise_sets` 并 readback。
 
 验收：
 
-- 可从本地题库召回相似题。
-- 生成题与题库命中明确区分。
-- 三元题组可保存和预览。
+- [x] 可从本地题库召回相似题。
+- [x] 生成题与题库命中明确区分。
+- [x] 三元题组可保存和预览。
+
+当前边界：
+
+- 当前完成的是三元题组闭环第一段，不包含真实 OCR、脱敏文本上云分析、embedding 召回和完整题库导入 UI。
+- 当前门禁：`npm run test:ai-exercise-set`。
 
 ### Phase 8：错题图片与脱敏链路
 
@@ -955,17 +971,23 @@ imported
 
 任务：
 
-- 图片导入。
-- OCR/解析任务状态。
-- 脱敏文本生成。
+- [x] 图片导入。
+- [x] OCR/解析任务状态。
+- [x] 脱敏文本生成。
 - 模型分析。
-- 老师修正入口。
+- [x] 老师修正入口。
 
 验收：
 
-- 原始图片不自动上传。
-- 老师可修正 OCR。
-- 脱敏文本可查看。
+- [x] 原始图片不自动上传。
+- [x] 老师可修正 OCR。
+- [x] 脱敏文本可查看。
+
+当前边界：
+
+- Phase 8 当前完成的是数据/API 第一段：本地图片托管、`needs_ocr/sanitized/teacher_corrected/failed` 状态、规则脱敏和老师修正。
+- 尚未接入真实 OCR 引擎、真实 DeepSeek live 错因分析和“一键生成三元题组”的完整闭环。
+- 当前门禁：`npm run test:ai-mistake-image`。
 
 ### Phase 9：知识库/图谱增强
 
@@ -973,17 +995,23 @@ imported
 
 任务：
 
-- 导入状态机。
-- chunk 元数据。
-- 图谱节点类型扩展。
-- 检索结果 sourceId 强化。
-- 引用强度区分。
+- [x] 导入状态机。
+- [x] chunk 元数据。
+- [x] 图谱节点类型扩展。
+- [x] 检索结果 sourceId 强化。
+- [x] 引用强度区分。
 
 验收：
 
-- 知识库没命中不会伪造引用。
-- 图谱节点不冒充正文证据。
-- 备课/出题能使用知识库。
+- [x] 知识库没命中不会伪造引用。
+- [x] 图谱节点不冒充正文证据。
+- [x] 备课/出题能使用知识库。
+
+当前边界：
+
+- Phase 9 当前完成的是规则版证据层第一段：文本资源 ready 状态、chunk metadata/quality/privacy/evidenceStrength、图谱 evidenceKind/evidenceStrength 和工具输出边界。
+- 尚未接入复杂文档解析器、embedding 检索、Graph RAG、图谱人工编辑和 AI 写入图谱确认队列。
+- 当前门禁：`npm run test:ai-knowledge-graph`。
 
 ### Phase 10：文档生成与导出
 
@@ -991,17 +1019,24 @@ imported
 
 任务：
 
-- artifact builder。
-- 文件保存路径。
-- 导出状态。
-- 打开文件。
-- 预览和实际文件一致性检查。
+- [x] artifact builder。
+- [x] 文件保存路径。
+- [x] 导出状态。
+- [x] 打开文件。
+- [x] 预览和实际文件一致性检查。
 
 验收：
 
-- 文件真实存在。
-- 导出失败不显示成功。
-- 历史对话可重新打开产物。
+- [x] 文件真实存在。
+- [x] 导出失败不显示成功。
+- [x] 产物可通过 artifact id 在主进程读库后打开文件位置。
+
+当前边界：
+
+- Phase 10 当前完成的是真实文档文件闭环 v1：`document_artifacts`、Markdown/PDF/DOCX 写出、sha256/readback、主进程 IPC 和右侧面板真实导出按钮。
+- 历史消息 metadata 尚未自动合并导出后的 `document_artifacts` 状态；后续需要在打开历史会话时按 artifact id 合并 readback，或导出成功后回写 assistant message metadata。
+- PDF/DOCX 当前是最小有效文件生成器，不等于完整排版系统；中文字体、分页、表格、图片、公式和模板样式仍需后续增强。
+- 当前门禁：`npm run test:ai-document-export`。
 
 ### Phase 11：Observability + Regression
 
@@ -1060,7 +1095,7 @@ imported
 不要先做大而全 UI，也不要先继续堆 system prompt。小智下一步最该做的是：
 
 ```text
-Agent Runtime v1 + Tool Calling v1 + Confirmation Queue Contracts
+Phase 11 Observability + Regression
 ```
 
 ## 17. 每轮开发的固定检查清单
@@ -1084,32 +1119,166 @@ Agent Runtime v1 + Tool Calling v1 + Confirmation Queue Contracts
 下一轮建议直接实现：
 
 ```text
-Agent Runtime v1 + Tool Calling v1 基础设施
+Phase 11 Observability + Regression v1
 ```
 
 预计改动文件：
 
 - `apps/desktop/src/shared/contracts.ts`
 - `apps/desktop/src/main/db.ts`
-- `apps/desktop/src/main/index.ts`
-- `apps/desktop/src/main/deepseek.ts`
-- `apps/desktop/src/main/ai-harness/agent-loop.ts`
-- `apps/desktop/src/main/ai-harness/tool-registry.ts`
-- `apps/desktop/src/main/ai-harness/guardrails.ts`
-- `apps/desktop/src/main/ai-harness/planner.ts`
-- `apps/desktop/src/main/ai-harness/eval-cases.ts`
-- `apps/desktop/src/main/ai-harness/evals.ts`
-- `apps/desktop/src/renderer/App.tsx`
+- `apps/desktop/src/main/ai-harness/*`
+- `apps/desktop/scripts/*regression*.mjs`
+- `apps/desktop/scripts/*telemetry*.mjs`
+- `docs/22_XIAOZHI_EDU_AI_HARNESS_PLAN.md`
 
-第一轮验收目标：
+## 19. 当前实施状态
 
-- 小智能接收模型 tool call proposal。
-- 主进程能校验工具权限并执行只读工具。
-- 工具调用事件持久化。
-- 学生查询不要求手动切模块。
-- 普通问答不读取学生数据。
-- 48/48 eval 继续通过。
-- build 通过。
+### 2026-07-28：Phase 1 Agent Runtime v1 已完成
+
+- 已定义 `AiAgentRun`、`AiAgentEvent`、`AiAgentTraceStep` 完整运行时契约。
+- 已新增 `ai_agent_runs` / `ai_agent_events` 持久化表与查询方法。
+- `ai:runDeepSeek` 已接入 run 生命周期，失败路径也会写终态。
+- `runAiAgentLoop` 已把 route、plan、tool_call、observe、reflect、finalize 写入可审计事件流。
+- 本地门禁：`npm run test:ai-agent-runtime`。
+
+### 2026-07-28：Phase 2 Tool Calling v1 基础设施已完成
+
+- 已定义模型工具 schema、模型工具调用和工具审核契约。
+- 已实现 `getModelToolDefinitions(router)`，只向模型暴露当前 route 允许的工具。
+- 已实现 `reviewModelToolCall()`，覆盖工具存在性、route allowlist、contextPolicy、effect/privacy 和参数 schema。
+- 已实现 `executeAiToolCall()`，审核失败 blocked，审核通过才执行真实只读工具。
+- 已实现 bounded tool result，长输出会标记 `truncated=true`。
+- `compileAiContext()` 已复用同一套工具审核/执行器。
+- `runDeepSeekChat()` 已接入 OpenAI/DeepSeek 风格 `tool_calls` 一轮审核、执行、observe、回传模型流程。
+- 本地门禁：`npm run test:ai-tool-calling`。
+
+尚未完成：
+
+- 真实 DeepSeek live tool-call 尚未单独验收。
+- 写入工具尚未开放；AI 写入当前只允许通过 `Confirmation Queue v1` 创建复盘报告草稿。
+
+### 2026-07-28：Phase 3 Confirmation Queue v1 已完成
+
+- 已定义 `AiConfirmationItem`、`AiConfirmationCreateInput`、`AiConfirmationDecisionResult`。
+- 已新增 `ai_confirmation_items` 持久化表和 status/session/run 索引。
+- 已实现确认队列创建、列表、拒绝、确认执行。
+- 已实现 `create_review_report` 白名单动作：确认后写入 `review_reports`、写本地报告 md 文件，并 readback `ReviewReport`。
+- `ai:runDeepSeek` 已在结构化 `report_draft` artifact 且存在学生 ID 时生成确认项，确认前不写业务表。
+- AI 页面已显示“待老师确认”卡片，支持确认保存和拒绝。
+- 本地门禁：`npm run test:ai-confirmation`。
+
+尚未完成：
+
+- 除复盘报告草稿外的 AI 写入动作仍未开放。
+- 真实 DeepSeek live `report_draft -> confirmation item` 仍需单独验收。
+- UI 还没有确认前的富文本差异编辑器。
+
+### 2026-07-28：Phase 4 SubIntent Router + 96 Eval 已完成
+
+- 已新增 `AiSubIntent` 与 `AiRouterSlots` 契约。
+- `routeAiPrompt()` 已升级为 route + subIntent + slots + clarification。
+- slots 当前覆盖学生引用、多学生歧义、时间范围、学科、知识点和写入意图。
+- `ai_agent_runs.sub_intent`、Agent loop trace 和 DeepSeek prompt 已接入真实 subIntent/slots。
+- `eval-cases.ts` 已扩展为 96 条，覆盖 route、subIntent、slots、澄清策略和工具边界。
+- 本地门禁：`npm run test:ai-harness`，当前 96/96。
+
+尚未完成：
+
+- 多学生任务只触发一个关键澄清问题，尚未实现多学生并行读取和对比执行。
+- router 仍是确定性规则；如后续引入模型分类器，96 eval 仍必须作为硬门禁。
+
+### 2026-07-28：Phase 5 Structured Reply v2 已完成
+
+- `AiStructuredReply` 已升级为 `xiazhi.reply.v2`，新增 `subIntent`、`facts`、`risks` 和 `routeCheck`。
+- `schema.ts` 已实现本地 v2 校验和 route-specific 规则。
+- 学生诊断必须有 facts 或 unknowns；学生推断必须有 facts 支撑。
+- 三元题组必须包含原题、相似题、变式题结构，或提供 `exercise_set` artifact。
+- 写入型报告草稿必须在 `teacherConfirmations` 中说明需要老师确认后保存。
+- `runDeepSeekChat()` 已增加一次受控 JSON repair，repair 不允许再次请求工具。
+- DeepSeek system/user prompt 和前端结构校验提示已切到 `xiazhi.reply.v2`。
+- 本地门禁：`npm run test:ai-structured-reply`。
+
+尚未完成：
+
+- 真实 DeepSeek live v2 输出和 repair 仍需单独验收。
+- v2 只校验三元题组结构；真实题库召回、题目来源和保存闭环仍属于后续 Phase 7。
+
+### 2026-07-28：Phase 6 Education Grader v1 规则版已完成
+
+- 已新增 `education-grader.ts`，在 `xiazhi.reply.v2` schema 通过后继续评分。
+- 已覆盖空泛上传 fallback、学生证据缺口、标签化语言、高风险缺少处置、敏感号码泄露、无事实支撑推断和写入缺确认。
+- `runDeepSeekChat()` 已把 `educationGrade` 写入 harness；grader 未通过时 fail-closed。
+- 本地门禁：`npm run test:ai-education-grader`。
+
+尚未完成：
+
+- 模型 grader、教师人工评分和年级适切开放评分未接入。
+
+### 2026-07-28：Phase 7 三元题组闭环 v1 第一段已完成
+
+- 已新增 `question_bank_items` 与 `exercise_sets` SQLite 表。
+- 已新增 `QuestionBankItem`、`SimilarQuestionMatch`、`ExerciseSet`、`ExerciseSetItem` 等共享契约。
+- `practice_design` 路由已加入 `question_bank` 上下文。
+- 已新增 `search_similar_questions` 只读工具，从本地题库召回相似题并保留 `sourceKind`。
+- DeepSeek prompt 已加入本地题库相似题候选区块和题源边界。
+- Confirmation Queue 已扩展 `save_exercise_set`，老师确认前不写入 `exercise_sets`，确认后 readback 真实题组。
+- preload / IPC 已暴露 `createQuestionBankItem`、`searchQuestionBank`、`listExerciseSets`。
+- 本地门禁：`npm run test:ai-exercise-set`。
+
+尚未完成：
+
+- 真实 OCR、脱敏文本上云分析、完整题库导入 UI、embedding 召回和题组编辑器仍未接入。
+- 真实 DeepSeek live `exercise_set -> confirmation item` 仍需在 API Key 配置后单独验收。
+
+### 2026-07-28：Phase 8 错题图片与脱敏链路 v1 第一段已完成
+
+- 已新增 `MistakeImageAnalysis`、`MistakeImageAnalysisInput`、`MistakeImageCorrectionInput`、`SanitizedProblemText`、`MistakeImageRedaction` 等共享契约。
+- 已新增 `mistake_image_analyses` SQLite 表，记录学生、学习记录、附件、本地图片路径、OCR 状态、原始解析文本、脱敏文本、脱敏记录、老师修正文和错误信息。
+- 已实现 `sanitizeProblemText()`，规则版 v1 覆盖手机号、邮箱、身份证号样式文本和学生姓名/显示名。
+- 已实现 `createMistakeImageAnalysis()`：无解析文本进入 `needs_ocr`，有解析文本进入 `sanitized`。
+- 已实现 `updateMistakeImageCorrection()`：老师修正后重新脱敏并进入 `teacher_corrected`。
+- 主进程 / preload 已暴露错题图片创建分析、老师修正、列表查询和文本脱敏 IPC。
+- 本地门禁：`npm run test:ai-mistake-image`。
+
+尚未完成：
+
+- 真实 OCR 引擎未接入；当前只保留 OCR/解析状态和老师修正入口。
+- 脱敏文本上云进行错因分析、再触发相似题召回和三元题组草稿的完整自动链路未接入。
+- 错题图片分析 UI 未完成；当前主要是数据层、IPC/preload 和 smoke 验收。
+- 脱敏规则仍是 v1，学校、地址、复杂人名、社交账号等 PII 仍需扩展。
+
+### 2026-07-28：Phase 9 知识库/图谱增强 v1 第一段已完成
+
+- 已扩展 `TeacherResourceParseStatus`、`ResourceChunk`、`KnowledgeNode`、`KnowledgeEdge` 共享契约。
+- `resource_chunks` 已新增学科、年级、知识点、题型、难度、sourceTrust、containsPersonalData、qualityScore、evidenceStrength。
+- `knowledge_nodes` 已新增 evidenceStrength；`knowledge_edges` 已新增 evidenceStrength 和 evidenceKind。
+- 资源导入时会推断轻量教学元数据、质量分、个人信息标记，并为 chunk/知识点/题型建立图谱节点与可审计边。
+- `searchKnowledge()` 已支持多 token 检索，并按个人信息边界和质量分排序。
+- `search_teacher_knowledge` 工具会返回证据强度和质量信息；含个人信息 chunk 隐藏正文预览。
+- `query_knowledge_graph` 工具会返回节点/边，并显式声明图谱节点是背景关系，不是正文直接证据。
+- 本地门禁：`npm run test:ai-knowledge-graph`。
+
+尚未完成：
+
+- PDF/DOCX/PPT/图片等复杂资源解析器未接入。
+- embedding 检索、Graph RAG、图谱人工编辑和 AI 写入图谱确认队列未接入。
+- 元数据抽取仍是规则版，覆盖面有限，后续需要教师修正入口。
+
+### 2026-07-28：Phase 10 真实文档生成与导出 v1 已完成
+
+- 已新增 `DocumentArtifactType`、`DocumentArtifactStatus`、`DocumentArtifactExportInput`、`DocumentArtifactExportResult` 共享契约。
+- 已新增 `document_artifacts` SQLite 表和 session/message 索引，记录真实文件路径、文件大小、sha256、状态与错误信息。
+- 已实现 `exportDocumentArtifact()`：Markdown/PDF/DOCX 三类产物由主进程真实写出，写出后计算 hash 并 readback；失败路径记录 `failed`，不显示成功。
+- 已新增 `documents:exportArtifact`、`documents:listArtifacts`、`documents:getArtifact`、`documents:showArtifact` IPC/preload API。
+- AI 产物面板导出按钮已从占位提示改为真实导出；导出成功后显示文件路径和 sha256 前缀，可通过 artifact id 在文件夹中显示。
+- 已新增 `apps/desktop/scripts/ai-document-export-smoke.mjs` 与 `npm run test:ai-document-export`。
+- 本轮门禁：`npm run test:ai-document-export`、`npm run test:ai-harness`、`npm run test:ai-tool-calling`、`npm run test:ai-structured-reply`、`npm run test:ai-knowledge-graph`、`npm run build`、`npm run test:smoke`、`git diff --check`。
+
+尚未完成：
+
+- PDF/DOCX 仍是最小有效文件生成器；中文字体、分页、复杂样式、表格、图片、公式和模板能力未完成。
+- 历史消息 metadata 尚未自动合并导出状态；下一步应在历史会话打开时按 artifact id 合并 `document_artifacts` readback，或导出成功后回写 assistant message metadata。
+- 真实 DeepSeek live 生成文档 artifact 仍需在 API Key 配置后单独验收。
 
 ## 19. 长期不可变底线
 

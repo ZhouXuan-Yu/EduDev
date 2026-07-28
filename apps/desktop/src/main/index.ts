@@ -5,6 +5,7 @@ import { runDeepSeekChat } from './deepseek';
 import { OmniEduStore } from './db';
 import type {
   AiAgentTraceStep,
+  AiConfirmationItem,
   AiConsoleRunInput,
   AiConsoleRunResult,
   AiConversationFolderInput,
@@ -13,6 +14,7 @@ import type {
   AiConversationSessionInput,
   AiConversationSessionUpdateInput,
   DeepSeekSettingsInput,
+  DocumentArtifactExportInput,
 } from '../shared/contracts';
 import { routeAiPrompt } from './ai-harness/router';
 import { runAiAgentLoop } from './ai-harness/agent-loop';
@@ -72,6 +74,103 @@ function loadLocalEnv() {
   }
 }
 
+function defaultAiReportRange() {
+  const end = new Date();
+  const start = new Date(end.getTime() - 30 * 86400000);
+  return {
+    startDate: start.toISOString().slice(0, 10),
+    endDate: end.toISOString().slice(0, 10),
+  };
+}
+
+async function createAiConfirmationsFromResult(
+  input: AiConsoleRunInput,
+  result: AiConsoleRunResult,
+  agentRunId: string,
+): Promise<AiConfirmationItem[]> {
+  if (!result.ok || !input.studentId || !result.structuredReply) return [];
+  const confirmations: AiConfirmationItem[] = [];
+  const reportArtifact = result.structuredReply.artifacts.find(
+    (artifact) => artifact.type === 'report_draft' && artifact.requiresTeacherConfirmation,
+  );
+  const contentMd = result.structuredReply.answerMarkdown.trim();
+  if (contentMd && (reportArtifact || result.structuredReply.route === 'report_draft')) {
+    const range = defaultAiReportRange();
+    const title = reportArtifact?.title || '小智复盘草稿';
+    confirmations.push(await store.createAiConfirmation({
+      runId: agentRunId,
+      sessionId: input.sessionId,
+      studentId: input.studentId,
+      actionType: 'create_review_report',
+      title,
+      description: reportArtifact?.description || '小智生成的复盘报告草稿，确认后才保存到本地报告库。',
+      previewMd: contentMd,
+      payload: {
+        studentId: input.studentId,
+        subject: '',
+        startDate: range.startDate,
+        endDate: range.endDate,
+        reportType: 'ai_draft',
+        title,
+        contentMd,
+        parentSummary: result.structuredReply.nextActions.join('；').slice(0, 240),
+        sourceRecordIds: result.structuredReply.evidence
+          .map((item) => item.sourceId)
+          .filter((sourceId) => sourceId.startsWith('record_')),
+      },
+    }));
+  }
+
+  const exerciseArtifact = result.structuredReply.artifacts.find(
+    (artifact) => artifact.type === 'exercise_set' && artifact.requiresTeacherConfirmation,
+  );
+  if (contentMd && exerciseArtifact) {
+    const similarQuestions = result.similarQuestions ?? [];
+    const title = exerciseArtifact.title || '小智三元题组草稿';
+    confirmations.push(await store.createAiConfirmation({
+      runId: agentRunId,
+      sessionId: input.sessionId,
+      studentId: input.studentId,
+      actionType: 'save_exercise_set',
+      title,
+      description: exerciseArtifact.description || '小智生成的三元题组草稿，确认后才保存到本地题组库。',
+      previewMd: contentMd,
+      payload: {
+        studentId: input.studentId,
+        subject: result.structuredReply.routeCheck.kind === 'practice_design' ? result.structuredReply.routeCheck.notes.find((note) => note.includes('数学')) ?? '' : '',
+        startDate: '',
+        endDate: '',
+        reportType: 'exercise_set',
+        title,
+        contentMd,
+        sourceRecordIds: result.structuredReply.evidence
+          .map((item) => item.sourceId)
+          .filter((sourceId) => sourceId.startsWith('record_')),
+        exerciseSet: {
+          title,
+          subject: result.harness?.router.slots.subject ?? '',
+          knowledgePoint: result.harness?.router.slots.knowledgePoint ?? '',
+          contentMd,
+          sourceQuestionIds: similarQuestions.map((item) => item.id),
+          items: similarQuestions.slice(0, 3).map((question, index) => ({
+            role: index === 0 ? 'original' : 'similar',
+            questionId: question.id,
+            sourceKind: question.sourceKind,
+            stem: question.stem,
+            answer: question.answer,
+            analysis: question.analysis,
+            knowledgePoint: question.knowledgePoint,
+            difficulty: question.difficulty,
+            teacherObservation: `观察学生是否能迁移 ${question.knowledgePoint || '当前知识点'}。`,
+          })),
+        },
+      },
+    }));
+  }
+
+  return confirmations;
+}
+
 app.whenReady().then(async () => {
   loadLocalEnv();
   store = new OmniEduStore(process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'));
@@ -123,6 +222,27 @@ app.whenReady().then(async () => {
     if (result.canceled || !result.filePaths[0]) return null;
     return store.exportStudentArchive(id, result.filePaths[0]);
   });
+  ipcMain.handle('documents:exportArtifact', async (_event, input: DocumentArtifactExportInput) => {
+    let destinationRoot = input.destinationRoot;
+    if (!destinationRoot) {
+      const result = await dialog.showOpenDialog({
+        title: '选择小智文档产物导出位置',
+        properties: ['openDirectory', 'createDirectory'],
+      });
+      if (result.canceled || !result.filePaths[0]) return null;
+      destinationRoot = result.filePaths[0];
+    }
+    return store.exportDocumentArtifact({ ...input, destinationRoot });
+  });
+  ipcMain.handle('documents:listArtifacts', (_event, sessionId?: string) => store.listDocumentArtifacts(sessionId));
+  ipcMain.handle('documents:getArtifact', (_event, id: string) => store.getDocumentArtifact(id));
+  ipcMain.handle('documents:showArtifact', async (_event, id: string) => {
+    const artifact = await store.getDocumentArtifact(id);
+    if (!artifact || artifact.status !== 'exported' || !artifact.filePath || !existsSync(artifact.filePath)) {
+      throw new Error('文档产物文件不存在或尚未成功导出');
+    }
+    shell.showItemInFolder(artifact.filePath);
+  });
   ipcMain.handle('records:list', (_event, studentId: string, filters) => store.listRecords(studentId, filters));
   ipcMain.handle('records:create', (_event, input) => store.createRecord(input));
   ipcMain.handle('records:update', (_event, recordId: string, input) => store.updateRecord(recordId, input));
@@ -140,9 +260,19 @@ app.whenReady().then(async () => {
     }
     shell.showItemInFolder(filePath);
   });
+  ipcMain.handle('mistakeImages:createAnalysis', (_event, input) => store.createMistakeImageAnalysis(input));
+  ipcMain.handle('mistakeImages:updateCorrection', (_event, id: string, input) => store.updateMistakeImageCorrection(id, input));
+  ipcMain.handle('mistakeImages:list', (_event, studentId: string) => store.listMistakeImageAnalyses(studentId));
+  ipcMain.handle('mistakeImages:sanitizeText', (_event, text: string, studentId?: string) => store.sanitizeProblemText(text, studentId));
   ipcMain.handle('reports:generate', (_event, input) => store.generateReview(input));
   ipcMain.handle('reports:update', (_event, id: string, contentMd: string, parentSummary?: string) => store.updateReport(id, contentMd, parentSummary));
   ipcMain.handle('reports:list', (_event, studentId: string) => store.listReports(studentId));
+  ipcMain.handle('questionBank:create', (_event, input) => store.createQuestionBankItem(input));
+  ipcMain.handle('questionBank:search', (_event, filters) => store.searchQuestionBank(filters));
+  ipcMain.handle('exerciseSets:list', (_event, studentId: string) => store.listExerciseSets(studentId));
+  ipcMain.handle('aiConfirmations:list', (_event, status = 'pending') => store.listAiConfirmations(status));
+  ipcMain.handle('aiConfirmations:confirm', (_event, id: string) => store.confirmAiConfirmation(id));
+  ipcMain.handle('aiConfirmations:reject', (_event, id: string) => store.rejectAiConfirmation(id));
   ipcMain.handle('search:all', (_event, keyword: string) => store.search(keyword));
   ipcMain.handle('aiConversations:list', () => store.listAiConversationWorkspace());
   ipcMain.handle('aiConversations:createFolder', (_event, input: AiConversationFolderInput) => store.createAiConversationFolder(input));
@@ -175,7 +305,7 @@ app.whenReady().then(async () => {
       sessionId: input.sessionId,
       prompt,
       route: router.route,
-      subIntent: router.route,
+      subIntent: router.subIntent,
       model: deepSeekSettings.model,
       studentId: input.studentId,
     });
@@ -234,6 +364,7 @@ app.whenReady().then(async () => {
           sources: context.sources,
           knowledgeSnippets: context.knowledgeSnippets,
           graphNodes: context.graphNodes,
+          similarQuestions: context.similarQuestions,
           harness: {
             agentRunId,
             router: context.router,
@@ -249,8 +380,21 @@ app.whenReady().then(async () => {
         return result;
       }
 
-      const result = await runDeepSeekChat({ prompt, ...context }, apiKey, deepSeekSettings.model);
-      await store.completeAiAgentRun(agentRunId, result.ok ? 'succeeded' : 'failed', result.errorMessage ?? '');
+      const result = await runDeepSeekChat({ store, prompt, ...context }, apiKey, deepSeekSettings.model);
+      const confirmations = await createAiConfirmationsFromResult(input, result, agentRunId);
+      if (confirmations.length) {
+        const confirmationStep: AiAgentTraceStep = {
+          phase: 'guardrail',
+          status: 'pending',
+          label: '写入确认',
+          detail: `已创建 ${confirmations.length} 个待老师确认的本地写入项；确认前不会写入报告库。`,
+          outputSummary: { confirmationIds: confirmations.map((item) => item.id) },
+        };
+        result.confirmations = confirmations;
+        result.harness?.trace.push(confirmationStep);
+        await store.recordAiAgentEvent(agentRunId, confirmationStep);
+      }
+      await store.completeAiAgentRun(agentRunId, confirmations.length ? 'waiting_confirmation' : result.ok ? 'succeeded' : 'failed', result.errorMessage ?? '');
       await store.recordAiConsoleRun(input, result);
       return result;
     } catch (error) {

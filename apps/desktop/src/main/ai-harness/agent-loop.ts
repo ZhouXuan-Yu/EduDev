@@ -41,17 +41,19 @@ export async function runAiAgentLoop(params: {
     phase: 'route',
     status: 'succeeded',
     label: '任务识别',
-    detail: `Router dry-run 判定为 ${router.route}，置信度 ${Math.round(router.confidence * 100)}%。动作级别：${router.actionLevel}；风险级别：${router.riskLevel}。`,
+    detail: `Router dry-run 判定为 ${router.route}/${router.subIntent}，置信度 ${Math.round(router.confidence * 100)}%。动作级别：${router.actionLevel}；风险级别：${router.riskLevel}。`,
     inputSummary: {
       promptLength: params.prompt.length,
       hasSelectedStudent: Boolean(params.studentId),
     },
     outputSummary: {
       route: router.route,
+      subIntent: router.subIntent,
       confidence: router.confidence,
       audience: router.audience,
       actionLevel: router.actionLevel,
       riskLevel: router.riskLevel,
+      slots: router.slots,
       needsStudent: router.needsStudent,
     },
   });
@@ -134,9 +136,9 @@ export async function runAiAgentLoop(params: {
     phase: 'finalize',
     status: 'succeeded',
     label: '终止条件',
-    detail: '达到本轮目标：完成路由、按需工具调用、观察、复盘，并进入 xiazhi.reply.v1 结构化输出校验。',
+    detail: '达到本轮目标：完成路由、按需工具调用、观察、复盘，并进入 xiazhi.reply.v2 结构化输出校验。',
     outputSummary: {
-      schemaVersion: 'xiazhi.reply.v1',
+      schemaVersion: 'xiazhi.reply.v2',
       maxLoopReached: false,
       terminationReason: 'ready_for_structured_reply',
     },

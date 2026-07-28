@@ -1004,6 +1004,73 @@ input.hidden[type="file"] {
   box-shadow: inset 0 0 0 2px var(--accent);
 }
 
+.ai-confirmation-queue {
+  margin: 0 16px 12px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, #f59e0b 32%, var(--line));
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 251, 235, 0.96), rgba(255, 255, 255, 0.94));
+  box-shadow: 0 12px 32px rgba(120, 74, 0, 0.08);
+}
+
+.ai-confirmation-queue-header,
+.ai-confirmation-title,
+.ai-confirmation-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-confirmation-queue-header {
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.ai-confirmation-queue-header span {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.ai-confirmation-items {
+  display: grid;
+  gap: 8px;
+}
+
+.ai-confirmation-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.ai-confirmation-card p {
+  margin: 6px 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.ai-confirmation-card blockquote {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 3px solid #f59e0b;
+  border-radius: 10px;
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.ai-confirmation-actions {
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
 .prompt-attachment-trigger {
   display: inline-grid;
   width: 32px;
@@ -1152,6 +1219,28 @@ input.hidden[type="file"] {
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--surface-soft);
+}
+
+.artifact-export-meta,
+.artifact-export-error {
+  margin: 0;
+  padding: 9px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.artifact-export-meta {
+  border: 1px solid rgba(34, 197, 94, 0.24);
+  color: #166534;
+  background: rgba(220, 252, 231, 0.72);
+}
+
+.artifact-export-error {
+  border: 1px solid rgba(239, 68, 68, 0.24);
+  color: #991b1b;
+  background: rgba(254, 226, 226, 0.72);
 }
 
 .ai-artifact-preview .markdown {

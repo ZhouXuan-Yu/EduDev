@@ -37,6 +37,7 @@ import { Markdown } from './heroui-pro/components/markdown';
 import { PromptInput } from './heroui-pro/components/prompt-input';
 import { PromptSuggestion } from './heroui-pro/components/prompt-suggestion';
 import type {
+  AiConfirmationItem,
   AiConsoleRunResult,
   AiConversationFolder,
   AiConversationMessage,
@@ -44,6 +45,8 @@ import type {
   AiAgentTraceStep,
   AttachmentImportResult,
   DeepSeekSettings,
+  DocumentArtifactExportResult,
+  DocumentArtifactType,
   KnowledgeImportResult,
   KnowledgeOverview,
   LearningRecord,
@@ -116,10 +119,16 @@ type AiArtifact = {
   id: string;
   title: string;
   type: string;
+  artifactType: DocumentArtifactType;
   fileName: string;
   mimeType: string;
   description: string;
   content: string;
+  exportStatus?: DocumentArtifactExportResult['status'];
+  filePath?: string;
+  fileSize?: number;
+  contentHash?: string;
+  errorMessage?: string;
 };
 
 type AiThoughtStep = Pick<AiAgentTraceStep, 'label' | 'detail'>;
@@ -365,6 +374,7 @@ export function App() {
   const [archivedAiFolders, setArchivedAiFolders] = useState<AiConversationFolder[]>([]);
   const [archivedAiSessions, setArchivedAiSessions] = useState<AiConversationSession[]>([]);
   const [aiMessages, setAiMessages] = useState<AiConversationMessage[]>([]);
+  const [aiConfirmations, setAiConfirmations] = useState<AiConfirmationItem[]>([]);
   const [activeAiSessionId, setActiveAiSessionId] = useState<string>('');
   const [newAiFolderName, setNewAiFolderName] = useState('');
   const [creatingAiFolder, setCreatingAiFolder] = useState(false);
@@ -476,6 +486,11 @@ export function App() {
     setArchivedAiFolders(workspace.archivedFolders);
     setArchivedAiSessions(workspace.archivedSessions);
     if (nextActiveSessionId) setActiveAiSessionId(nextActiveSessionId);
+  }
+
+  async function refreshAiConfirmations() {
+    const items = await window.omniEdu?.listAiConfirmations('pending');
+    if (items) setAiConfirmations(items);
   }
 
   async function openAiConversation(sessionId: string) {
@@ -594,6 +609,7 @@ export function App() {
       setDeepSeekForm((current) => ({ ...current, model: settings.model || current.model }));
     }
     await refreshAiConversations();
+    await refreshAiConfirmations();
     setActiveStudentId((current) => current || data.students[0]?.id || '');
     setStatus('本地数据已连接。');
   }
@@ -782,17 +798,73 @@ export function App() {
     return 'text/markdown';
   }
 
+  function normalizeDocumentArtifactType(type: string): DocumentArtifactType {
+    if (type === 'pdf' || type === 'docx') return type;
+    return 'markdown';
+  }
+
   function buildAiArtifacts(_prompt: string, result?: AiConsoleRunResult | null): AiArtifact[] {
     if (!result?.ok || !result.artifacts?.length) return [];
     return result.artifacts.map((artifact) => ({
       id: artifact.id,
       title: artifact.title,
-      type: artifact.type === 'pdf' ? 'PDF' : artifact.type === 'docx' ? 'Word' : 'Markdown',
+      type: normalizeDocumentArtifactType(artifact.type) === 'pdf'
+        ? 'PDF'
+        : normalizeDocumentArtifactType(artifact.type) === 'docx'
+          ? 'Word'
+          : 'Markdown',
+      artifactType: normalizeDocumentArtifactType(artifact.type),
       fileName: artifact.fileName,
-      mimeType: getArtifactMimeType(artifact.type),
+      mimeType: getArtifactMimeType(normalizeDocumentArtifactType(artifact.type)),
       description: artifact.description || (artifact.requiresTeacherConfirmation ? '需要老师确认后再保存或导出。' : '结构化回复请求的草稿产物。'),
       content: result.content,
     }));
+  }
+
+  async function exportAiArtifact(artifact: AiArtifact | null) {
+    if (!artifact) return;
+    if (!artifact.content.trim()) {
+      setStatus('文档产物正文为空，不能导出。');
+      return;
+    }
+    setStatus(`正在导出 ${artifact.type} 文件。`);
+    try {
+      const exported = await window.omniEdu?.exportDocumentArtifact({
+        artifactId: artifact.id,
+        sessionId: activeAiSessionId,
+        title: artifact.title,
+        type: artifact.artifactType,
+        fileName: artifact.fileName,
+        contentMd: artifact.content,
+        description: artifact.description,
+      });
+      if (!exported) {
+        setStatus('已取消文档产物导出。');
+        return;
+      }
+      const nextArtifact: AiArtifact = {
+        ...artifact,
+        exportStatus: exported.status,
+        filePath: exported.filePath,
+        fileSize: exported.fileSize,
+        contentHash: exported.contentHash,
+        errorMessage: exported.errorMessage,
+      };
+      setActiveAiArtifact(nextArtifact);
+      setStatus(`已导出 ${artifact.type}：${exported.filePath}`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '文档产物导出失败。';
+      setActiveAiArtifact({ ...artifact, exportStatus: 'failed', errorMessage: message });
+      setStatus(message);
+    }
+  }
+
+  async function showAiArtifactFile(artifact: AiArtifact | null) {
+    if (!artifact?.filePath || artifact.exportStatus !== 'exported') {
+      setStatus('请先导出文档产物，再在文件夹中显示。');
+      return;
+    }
+    await window.omniEdu?.showDocumentArtifact(artifact.id);
   }
 
   function buildAiTrace(prompt: string, result?: AiConsoleRunResult | null, artifacts: AiArtifact[] = []) {
@@ -814,7 +886,7 @@ export function App() {
             {
               label: '结构校验',
               detail: result.harness.schemaValid
-                ? 'DeepSeek 返回已通过 xiazhi.reply.v1 结构校验。'
+                ? 'DeepSeek 返回已通过 xiazhi.reply.v2 结构校验。'
                 : `结构校验未通过：${result.harness.schemaErrors.join('；') || '未返回结构化结果'}。`,
             },
           ];
@@ -1037,9 +1109,11 @@ export function App() {
             contextSources: trace.contextSources,
             toolRuns: trace.toolRuns,
             artifacts,
+            confirmations: result.confirmations ?? [],
           },
         });
         if (assistantDetail) setAiMessages(assistantDetail.messages);
+        await refreshAiConfirmations();
         await refreshAiConversations(sessionId);
         setStatus(result.ok ? 'DeepSeek 已返回结果。' : result.errorMessage || 'DeepSeek 调用失败。');
       } else {
@@ -1102,6 +1176,34 @@ export function App() {
     } finally {
       setAiRunning(false);
       aiSubmitInFlightRef.current = false;
+    }
+  }
+
+  async function confirmAiItem(item: AiConfirmationItem) {
+    try {
+      const result = await window.omniEdu?.confirmAiConfirmation(item.id);
+      await refreshAiConfirmations();
+      if (result?.readback?.report) {
+        setActiveReport(result.readback.report);
+        await refreshRecords(result.readback.report.studentId);
+        setStatus(`已确认并保存：${result.readback.report.title}`);
+      } else if (result?.readback?.exerciseSet) {
+        setStatus(`已确认并保存题组：${result.readback.exerciseSet.title}`);
+      } else {
+        setStatus('已确认待办项。');
+      }
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '确认待办项失败');
+    }
+  }
+
+  async function rejectAiItem(item: AiConfirmationItem) {
+    try {
+      await window.omniEdu?.rejectAiConfirmation(item.id);
+      await refreshAiConfirmations();
+      setStatus(`已拒绝：${item.title}，本地数据库未写入。`);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '拒绝待办项失败');
     }
   }
 
@@ -1768,10 +1870,18 @@ export function App() {
           id: String(artifact.id),
           title: String(artifact.title),
           type: String(artifact.type),
+          artifactType: normalizeDocumentArtifactType(String(artifact.artifactType ?? artifact.type)),
           fileName: String(artifact.fileName),
           mimeType: String(artifact.mimeType),
           description: String(artifact.description),
           content: String(artifact.content),
+          exportStatus: ['draft', 'exported', 'failed'].includes(String(artifact.exportStatus))
+            ? artifact.exportStatus as AiArtifact['exportStatus']
+            : undefined,
+          filePath: String(artifact.filePath ?? ''),
+          fileSize: Number(artifact.fileSize ?? 0),
+          contentHash: String(artifact.contentHash ?? ''),
+          errorMessage: String(artifact.errorMessage ?? ''),
         }));
     };
     const liveTrace = buildAiTrace(aiPrompt, aiResult, liveArtifacts);
@@ -2101,6 +2211,42 @@ export function App() {
             </ChatConversation>
           </div>
 
+          {aiConfirmations.length ? (
+            <div className="ai-confirmation-queue" aria-label="小智待确认写入项">
+              <div className="ai-confirmation-queue-header">
+                <div>
+                  <strong>待老师确认</strong>
+                  <span>小智生成的写入项确认前不会保存到报告库。</span>
+                </div>
+                <Badge tone="amber">{aiConfirmations.length} 项</Badge>
+              </div>
+              <div className="ai-confirmation-items">
+                {aiConfirmations.slice(0, 3).map((item) => (
+                  <article className="ai-confirmation-card" key={item.id}>
+                    <div>
+                      <div className="ai-confirmation-title">
+                        <FileText size={15} />
+                        <strong>{item.title}</strong>
+                        <Badge tone="blue">{item.actionType === 'create_review_report' ? '复盘报告' : item.actionType}</Badge>
+                      </div>
+                      <p>{item.description || '确认后才会写入本地数据。'}</p>
+                      <blockquote>{item.previewMd.slice(0, 160)}{item.previewMd.length > 160 ? '…' : ''}</blockquote>
+                    </div>
+                    <div className="ai-confirmation-actions">
+                      <button className="primary-action compact-button" onClick={() => void confirmAiItem(item)}>
+                        <CheckCircle2 size={15} />
+                        确认保存
+                      </button>
+                      <button className="secondary-action compact-button" onClick={() => void rejectAiItem(item)}>
+                        拒绝
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           <ChatAttachmentInput
             accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.txt,.md"
             multiple
@@ -2201,7 +2347,9 @@ export function App() {
             <div className="ai-artifact-preview">
               <div className="answer-meta">
                 <Badge tone="blue">{selectedArtifact.type}</Badge>
-                <Badge tone={aiResult?.ok ? 'green' : 'amber'}>{aiResult?.ok ? '可预览' : '等待生成'}</Badge>
+                <Badge tone={selectedArtifact.exportStatus === 'exported' ? 'green' : selectedArtifact.exportStatus === 'failed' ? 'red' : 'amber'}>
+                  {selectedArtifact.exportStatus === 'exported' ? '已导出' : selectedArtifact.exportStatus === 'failed' ? '导出失败' : '可预览'}
+                </Badge>
               </div>
               <ChatAttachmentGroup className="ai-artifact-file">
                 <ChatAttachment mimeType={selectedArtifact.mimeType} name={selectedArtifact.fileName}>
@@ -2212,16 +2360,23 @@ export function App() {
                   </div>
                 </ChatAttachment>
               </ChatAttachmentGroup>
+              {selectedArtifact.filePath ? (
+                <p className="artifact-export-meta">
+                  已生成：{selectedArtifact.filePath}
+                  {selectedArtifact.contentHash ? ` · sha256 ${selectedArtifact.contentHash.slice(0, 12)}` : ''}
+                </p>
+              ) : null}
+              {selectedArtifact.errorMessage ? <p className="artifact-export-error">{selectedArtifact.errorMessage}</p> : null}
               <Markdown>{selectedArtifact.content}</Markdown>
             </div>
             <div className="quick-actions">
-              <button className="primary-action" onClick={() => setStatus(`${selectedArtifact.type} 导出将在文档生成管线接入后执行。`)}>
+              <button className="primary-action" onClick={() => exportAiArtifact(selectedArtifact)}>
                 <FileDown size={16} />
                 导出 {selectedArtifact.type}
               </button>
-              <button className="secondary-action" onClick={() => setStatus('已保留为待老师确认的文档产物。')}>
+              <button className="secondary-action" onClick={() => showAiArtifactFile(selectedArtifact)}>
                 <CheckCircle2 size={16} />
-                待确认
+                在文件夹中显示
               </button>
             </div>
           </aside>

@@ -1,5 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type {
+  AiConfirmationDecisionResult,
+  AiConfirmationItem,
+  AiConfirmationStatus,
   AiConsoleRunInput,
   AiConsoleRunResult,
   AiConversationDetail,
@@ -10,12 +13,23 @@ import type {
   AiConversationSessionUpdateInput,
   AiConversationWorkspace,
   AttachmentImportResult,
+  DocumentArtifactExportInput,
+  DocumentArtifactExportResult,
   ExportDataRootResult,
   KnowledgeImportResult,
   KnowledgeOverview,
   LearningRecordFilters,
   LearningRecordInput,
   LearningRecordUpdateInput,
+  MistakeImageAnalysis,
+  MistakeImageAnalysisInput,
+  MistakeImageCorrectionInput,
+  QuestionBankItem,
+  QuestionBankItemInput,
+  QuestionSearchFilters,
+  SanitizedProblemText,
+  SimilarQuestionMatch,
+  ExerciseSet,
   ReviewDraftInput,
   DeepSeekSettings,
   DeepSeekSettingsInput,
@@ -39,14 +53,41 @@ const api = {
   archiveStudent: (id: string) => ipcRenderer.invoke('students:archive', id),
   openStudentFolder: (id: string) => ipcRenderer.invoke('students:openFolder', id),
   exportStudent: (id: string) => ipcRenderer.invoke('students:export', id),
+  exportDocumentArtifact: (input: DocumentArtifactExportInput) =>
+    ipcRenderer.invoke('documents:exportArtifact', input) as Promise<DocumentArtifactExportResult | null>,
+  listDocumentArtifacts: (sessionId?: string) =>
+    ipcRenderer.invoke('documents:listArtifacts', sessionId) as Promise<DocumentArtifactExportResult[]>,
+  getDocumentArtifact: (id: string) =>
+    ipcRenderer.invoke('documents:getArtifact', id) as Promise<DocumentArtifactExportResult | null>,
+  showDocumentArtifact: (id: string) => ipcRenderer.invoke('documents:showArtifact', id),
   listRecords: (studentId: string, filters: LearningRecordFilters = {}) => ipcRenderer.invoke('records:list', studentId, filters),
   createRecord: (input: LearningRecordInput) => ipcRenderer.invoke('records:create', input),
   updateRecord: (recordId: string, input: LearningRecordUpdateInput) => ipcRenderer.invoke('records:update', recordId, input),
   importAttachments: (studentId: string, recordId: string) => ipcRenderer.invoke('attachments:import', studentId, recordId) as Promise<AttachmentImportResult>,
   showAttachment: (filePath: string) => ipcRenderer.invoke('attachments:show', filePath),
+  createMistakeImageAnalysis: (input: MistakeImageAnalysisInput) =>
+    ipcRenderer.invoke('mistakeImages:createAnalysis', input) as Promise<MistakeImageAnalysis>,
+  updateMistakeImageCorrection: (id: string, input: MistakeImageCorrectionInput) =>
+    ipcRenderer.invoke('mistakeImages:updateCorrection', id, input) as Promise<MistakeImageAnalysis>,
+  listMistakeImageAnalyses: (studentId: string) =>
+    ipcRenderer.invoke('mistakeImages:list', studentId) as Promise<MistakeImageAnalysis[]>,
+  sanitizeProblemText: (text: string, studentId?: string) =>
+    ipcRenderer.invoke('mistakeImages:sanitizeText', text, studentId) as Promise<SanitizedProblemText>,
   generateReview: (input: ReviewDraftInput) => ipcRenderer.invoke('reports:generate', input),
   updateReport: (id: string, contentMd: string, parentSummary?: string) => ipcRenderer.invoke('reports:update', id, contentMd, parentSummary),
   listReports: (studentId: string) => ipcRenderer.invoke('reports:list', studentId),
+  createQuestionBankItem: (input: QuestionBankItemInput) =>
+    ipcRenderer.invoke('questionBank:create', input) as Promise<QuestionBankItem>,
+  searchQuestionBank: (filters: QuestionSearchFilters = {}) =>
+    ipcRenderer.invoke('questionBank:search', filters) as Promise<SimilarQuestionMatch[]>,
+  listExerciseSets: (studentId: string) =>
+    ipcRenderer.invoke('exerciseSets:list', studentId) as Promise<ExerciseSet[]>,
+  listAiConfirmations: (status: AiConfirmationStatus | 'all' = 'pending') =>
+    ipcRenderer.invoke('aiConfirmations:list', status) as Promise<AiConfirmationItem[]>,
+  confirmAiConfirmation: (id: string) =>
+    ipcRenderer.invoke('aiConfirmations:confirm', id) as Promise<AiConfirmationDecisionResult>,
+  rejectAiConfirmation: (id: string) =>
+    ipcRenderer.invoke('aiConfirmations:reject', id) as Promise<AiConfirmationDecisionResult>,
   searchAll: (keyword: string) => ipcRenderer.invoke('search:all', keyword),
   runDeepSeek: (input: AiConsoleRunInput) => ipcRenderer.invoke('ai:runDeepSeek', input) as Promise<AiConsoleRunResult>,
   listAiConversations: () => ipcRenderer.invoke('aiConversations:list') as Promise<AiConversationWorkspace>,

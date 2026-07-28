@@ -12,6 +12,14 @@
     "test:deepseek": "npm run build && node scripts/deepseek-smoke.mjs",
     "test:ai-harness": "tsc --noEmit && node scripts/ai-harness-eval.mjs",
     "test:ai-agent-runtime": "tsc --noEmit && node scripts/ai-agent-runtime-smoke.mjs",
+    "test:ai-tool-calling": "tsc --noEmit && node scripts/ai-tool-calling-smoke.mjs",
+    "test:ai-confirmation": "tsc --noEmit && node scripts/ai-confirmation-smoke.mjs",
+    "test:ai-structured-reply": "tsc --noEmit && node scripts/ai-structured-reply-smoke.mjs",
+    "test:ai-education-grader": "tsc --noEmit && node scripts/ai-education-grader-smoke.mjs",
+    "test:ai-exercise-set": "tsc --noEmit && node scripts/ai-exercise-set-smoke.mjs",
+    "test:ai-mistake-image": "tsc --noEmit && node scripts/ai-mistake-image-smoke.mjs",
+    "test:ai-knowledge-graph": "tsc --noEmit && node scripts/ai-knowledge-graph-smoke.mjs",
+    "test:ai-document-export": "tsc --noEmit && node scripts/ai-document-export-smoke.mjs",
     "verify:30-students": "npm run test:smoke"
   },
   "dependencies": {
