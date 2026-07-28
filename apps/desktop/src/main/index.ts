@@ -35,7 +35,7 @@ function createWindow() {
 }
 
 app.whenReady().then(async () => {
-  store = new OmniEduStore(join(app.getPath('userData'), 'OmniEduData'));
+  store = new OmniEduStore(process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'));
   await store.init();
 
   ipcMain.handle('app:bootstrap', () => store.init());

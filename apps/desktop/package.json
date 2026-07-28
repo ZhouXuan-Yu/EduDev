@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "electron-vite dev",
     "build": "tsc --noEmit && electron-vite build",
-    "preview": "electron-vite preview"
+    "preview": "electron-vite preview",
+    "test:smoke": "npm run build && node scripts/electron-smoke.mjs",
+    "verify:30-students": "npm run test:smoke"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",

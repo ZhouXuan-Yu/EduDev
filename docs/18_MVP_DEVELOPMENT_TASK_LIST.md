@@ -35,7 +35,7 @@
 - [x] preload 暴露 `window.omniEdu` 任务级 API。
 - [x] Renderer 通过 IPC 读取本地数据目录。
 - [ ] `npm run build` 通过。
-- [ ] Playwright Electron smoke test 覆盖启动和 preload。
+- [x] Playwright Electron smoke test 覆盖启动和 preload。
 
 验收：
 
@@ -55,7 +55,7 @@
 - [x] 编辑学生。
 - [x] 归档学生。
 - [x] 学生列表和搜索。
-- [ ] 创建 30 个学生的持久化验证脚本或 E2E。
+- [x] 创建 30 个学生的持久化验证脚本或 E2E。
 - [x] 增加入参校验，避免空名称和非法状态进入数据库。
 
 验收：
