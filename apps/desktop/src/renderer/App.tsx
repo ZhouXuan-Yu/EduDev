@@ -18,7 +18,7 @@ import {
   UploadCloud,
 } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import type { LearningRecord, ReviewReport, Student, StudentInput } from '../shared/contracts';
+import type { AttachmentImportResult, LearningRecord, ReviewReport, Student, StudentInput } from '../shared/contracts';
 
 const recordTypeLabels: Record<string, string> = {
   class: '课堂',
@@ -120,6 +120,7 @@ export function App() {
   });
   const [activeReport, setActiveReport] = useState<ReviewReport | null>(null);
   const [status, setStatus] = useState('就绪：请从左侧选择或创建学生。');
+  const [attachmentImport, setAttachmentImport] = useState<AttachmentImportResult | null>(null);
 
   const activeStudent = useMemo(
     () => students.find((student) => student.id === activeStudentId) ?? students[0],
@@ -243,10 +244,22 @@ export function App() {
 
   async function importAttachment(recordId: string) {
     if (!activeStudent) return;
-    const nextRecords = await window.omniEdu?.importAttachments(activeStudent.id, recordId);
-    setRecords(nextRecords ?? []);
+    setAttachmentImport({ status: 'copying', records, items: [] });
+    setStatus('正在复制附件到学生本地目录，请稍候。');
+    const result = await window.omniEdu?.importAttachments(activeStudent.id, recordId);
+    if (!result) return;
+    setAttachmentImport(result);
+    setRecords(result.records ?? []);
     await refreshStudents();
-    setStatus('附件已复制到学生本地目录，数据库仅保存路径和元数据。');
+    const okCount = result.items.filter((item) => item.ok).length;
+    const failedCount = result.items.length - okCount;
+    if (result.status === 'canceled') {
+      setStatus('已取消附件导入。');
+    } else if (failedCount > 0) {
+      setStatus(`附件导入完成：成功 ${okCount} 个，失败 ${failedCount} 个。`);
+    } else {
+      setStatus(`附件已复制到学生本地目录：${okCount} 个文件，数据库仅保存路径和元数据。`);
+    }
   }
 
   async function generateReview() {
@@ -531,6 +544,20 @@ export function App() {
                 <span><FolderOpen size={16} />学生目录：{activeStudent ? `students/${activeStudent.id}` : '待创建'}</span>
                 <span><FileText size={16} />状态：{status}</span>
               </div>
+              {attachmentImport ? (
+                <div className="import-status-list">
+                  {attachmentImport.status === 'copying' ? <strong>附件复制中...</strong> : null}
+                  {attachmentImport.items.map((item) => (
+                    <article key={`${item.sourcePath}-${item.fileName}`} className={item.ok ? 'passed' : 'failed'}>
+                      <span>{item.ok ? '成功' : '失败'}</span>
+                      <div>
+                        <strong>{item.fileName}</strong>
+                        <p>{item.ok ? formatBytes(item.fileSize) : item.errorMessage}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : null}
             </section>
           </aside>
         </div>

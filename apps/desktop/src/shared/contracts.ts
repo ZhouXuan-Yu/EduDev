@@ -87,6 +87,22 @@ export type Attachment = {
   createdAt: string;
 };
 
+export type AttachmentImportStatus = 'canceled' | 'copying' | 'succeeded' | 'partial' | 'failed';
+
+export type AttachmentImportItem = {
+  sourcePath: string;
+  fileName: string;
+  ok: boolean;
+  fileSize: number;
+  errorMessage?: string;
+};
+
+export type AttachmentImportResult = {
+  status: AttachmentImportStatus;
+  records: LearningRecord[];
+  items: AttachmentImportItem[];
+};
+
 export type ReviewReport = {
   id: string;
   studentId: string;

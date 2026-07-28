@@ -1,5 +1,12 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { LearningRecordFilters, LearningRecordInput, LearningRecordUpdateInput, ReviewDraftInput, StudentInput } from '../shared/contracts';
+import type {
+  AttachmentImportResult,
+  LearningRecordFilters,
+  LearningRecordInput,
+  LearningRecordUpdateInput,
+  ReviewDraftInput,
+  StudentInput,
+} from '../shared/contracts';
 
 const api = {
   bootstrap: () => ipcRenderer.invoke('app:bootstrap'),
@@ -13,7 +20,7 @@ const api = {
   listRecords: (studentId: string, filters: LearningRecordFilters = {}) => ipcRenderer.invoke('records:list', studentId, filters),
   createRecord: (input: LearningRecordInput) => ipcRenderer.invoke('records:create', input),
   updateRecord: (recordId: string, input: LearningRecordUpdateInput) => ipcRenderer.invoke('records:update', recordId, input),
-  importAttachments: (studentId: string, recordId: string) => ipcRenderer.invoke('attachments:import', studentId, recordId),
+  importAttachments: (studentId: string, recordId: string) => ipcRenderer.invoke('attachments:import', studentId, recordId) as Promise<AttachmentImportResult>,
   showAttachment: (filePath: string) => ipcRenderer.invoke('attachments:show', filePath),
   generateReview: (input: ReviewDraftInput) => ipcRenderer.invoke('reports:generate', input),
   updateReport: (id: string, contentMd: string, parentSummary?: string) => ipcRenderer.invoke('reports:update', id, contentMd, parentSummary),

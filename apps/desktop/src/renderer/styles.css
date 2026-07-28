@@ -627,6 +627,42 @@ textarea {
   line-height: 1.45;
 }
 
+.import-status-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.import-status-list article {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.import-status-list article > span {
+  color: var(--green);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.import-status-list article.failed {
+  border-color: rgba(179, 64, 53, 0.38);
+}
+
+.import-status-list article.failed > span {
+  color: var(--coral);
+}
+
+.import-status-list p {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .report-list {
   display: grid;
   gap: 8px;

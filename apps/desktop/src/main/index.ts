@@ -61,7 +61,7 @@ app.whenReady().then(async () => {
       title: '选择要复制到学生档案的附件',
       properties: ['openFile', 'multiSelections'],
     });
-    if (result.canceled) return store.listRecords(studentId);
+    if (result.canceled) return { status: 'canceled', records: store.listRecords(studentId), items: [] };
     return store.importAttachments(studentId, recordId, result.filePaths);
   });
   ipcMain.handle('attachments:show', (_event, filePath: string) => shell.showItemInFolder(filePath));

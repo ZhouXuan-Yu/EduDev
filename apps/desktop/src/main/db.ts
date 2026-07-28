@@ -5,6 +5,8 @@ import { createRequire } from 'node:module';
 import initSqlJs, { type Database, type SqlJsStatic, type SqlValue } from 'sql.js';
 import type {
   Attachment,
+  AttachmentImportItem,
+  AttachmentImportResult,
   BootstrapData,
   ExportStudentResult,
   LearningRecord,
@@ -274,28 +276,42 @@ export class OmniEduStore {
     return this.listRecords(studentId);
   }
 
-  importAttachments(studentId: string, recordId: string, sourcePaths: string[]): LearningRecord[] {
+  importAttachments(studentId: string, recordId: string, sourcePaths: string[]): AttachmentImportResult {
     const attachmentRoot = join(this.studentRoot(studentId), 'records', recordId, 'attachments');
     mkdirSync(attachmentRoot, { recursive: true });
+    const items: AttachmentImportItem[] = [];
     for (const sourcePath of sourcePaths) {
-      const stat = statSync(sourcePath);
-      if (!stat.isFile()) continue;
       const originalName = basename(sourcePath);
-      const id = `attachment_${randomUUID()}`;
-      const targetName = `${Date.now()}-${id.slice(-8)}-${originalName}`;
-      const targetPath = join(attachmentRoot, targetName);
-      copyFileSync(sourcePath, targetPath);
-      const hash = createHash('sha256').update(readFileSync(targetPath)).digest('hex');
-      this.run(
-        `INSERT INTO attachments (
-          id, student_id, record_id, file_name, file_path, file_type, file_size, content_hash, extracted_text, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '', ?)`,
-        [id, studentId, recordId, originalName, targetPath, fileType(originalName), stat.size, hash, now()],
-      );
+      try {
+        const stat = statSync(sourcePath);
+        if (!stat.isFile()) throw new Error('不是可导入的文件');
+        const id = `attachment_${randomUUID()}`;
+        const targetName = `${Date.now()}-${id.slice(-8)}-${originalName}`;
+        const targetPath = join(attachmentRoot, targetName);
+        copyFileSync(sourcePath, targetPath);
+        const hash = createHash('sha256').update(readFileSync(targetPath)).digest('hex');
+        this.run(
+          `INSERT INTO attachments (
+            id, student_id, record_id, file_name, file_path, file_type, file_size, content_hash, extracted_text, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '', ?)`,
+          [id, studentId, recordId, originalName, targetPath, fileType(originalName), stat.size, hash, now()],
+        );
+        items.push({ sourcePath, fileName: originalName, ok: true, fileSize: stat.size });
+      } catch (error) {
+        items.push({
+          sourcePath,
+          fileName: originalName,
+          ok: false,
+          fileSize: 0,
+          errorMessage: error instanceof Error ? error.message : '附件复制失败',
+        });
+      }
     }
     this.touchStudent(studentId);
     this.save();
-    return this.listRecords(studentId);
+    const failed = items.filter((item) => !item.ok).length;
+    const status = failed === 0 ? 'succeeded' : failed === items.length ? 'failed' : 'partial';
+    return { status, records: this.listRecords(studentId), items };
   }
 
   generateReview(input: ReviewDraftInput): ReviewReport {
