@@ -12,9 +12,18 @@ import type {
   AiConversationSessionInput,
   AiConversationSessionUpdateInput,
   AiConversationWorkspace,
+  AiModelGrade,
+  AiModelGradeInput,
+  AiModelGradeSummary,
   AiRegressionReport,
   AiRegressionReportInput,
   AiTelemetrySnapshot,
+  AiUsabilityHumanReview,
+  AiUsabilityHumanReviewInput,
+  AiUsabilityHumanReviewSummary,
+  AiUsabilityReplayExperiment,
+  AiUsabilityReplayExperimentInput,
+  AiUsabilityReplaySummary,
   AttachmentImportResult,
   DocumentArtifactExportInput,
   DocumentArtifactExportResult,
@@ -71,6 +80,24 @@ const api = {
     ipcRenderer.invoke('aiObservability:listRegressionReports', limit) as Promise<AiRegressionReport[]>,
   getAiRegressionReport: (id: string) =>
     ipcRenderer.invoke('aiObservability:getRegressionReport', id) as Promise<AiRegressionReport | null>,
+  createAiUsabilityReview: (input: AiUsabilityHumanReviewInput) =>
+    ipcRenderer.invoke('aiObservability:createUsabilityReview', input) as Promise<AiUsabilityHumanReview>,
+  listAiUsabilityReviews: (limit?: number) =>
+    ipcRenderer.invoke('aiObservability:listUsabilityReviews', limit) as Promise<AiUsabilityHumanReview[]>,
+  getAiUsabilityReviewSummary: (input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    ipcRenderer.invoke('aiObservability:getUsabilityReviewSummary', input) as Promise<AiUsabilityHumanReviewSummary>,
+  createAiUsabilityReplayExperiment: (input: AiUsabilityReplayExperimentInput) =>
+    ipcRenderer.invoke('aiObservability:createUsabilityReplayExperiment', input) as Promise<AiUsabilityReplayExperiment>,
+  listAiUsabilityReplayExperiments: (limit?: number) =>
+    ipcRenderer.invoke('aiObservability:listUsabilityReplayExperiments', limit) as Promise<AiUsabilityReplayExperiment[]>,
+  getAiUsabilityReplaySummary: (input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    ipcRenderer.invoke('aiObservability:getUsabilityReplaySummary', input) as Promise<AiUsabilityReplaySummary>,
+  createAiModelGrade: (input: AiModelGradeInput) =>
+    ipcRenderer.invoke('aiObservability:createModelGrade', input) as Promise<AiModelGrade>,
+  listAiModelGrades: (limit?: number) =>
+    ipcRenderer.invoke('aiObservability:listModelGrades', limit) as Promise<AiModelGrade[]>,
+  getAiModelGradeSummary: (input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    ipcRenderer.invoke('aiObservability:getModelGradeSummary', input) as Promise<AiModelGradeSummary>,
   listRecords: (studentId: string, filters: LearningRecordFilters = {}) => ipcRenderer.invoke('records:list', studentId, filters),
   createRecord: (input: LearningRecordInput) => ipcRenderer.invoke('records:create', input),
   updateRecord: (recordId: string, input: LearningRecordUpdateInput) => ipcRenderer.invoke('records:update', recordId, input),

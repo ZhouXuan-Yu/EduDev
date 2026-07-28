@@ -43,7 +43,7 @@ async function run() {
             const diagnosisRouter = routeAiPrompt('分析当前学生最近一个月的主要错因', { hasStudent: true });
             const valid = parseStructuredReply(JSON.stringify(baseReply(diagnosisRouter)), diagnosisRouter);
             assert.ok(valid.reply, valid.errors.join(';'));
-            assert.match(structuredReplyToMarkdown(valid.reply), /## 事实/);
+            assert.match(structuredReplyToMarkdown(valid.reply), /## 依据/);
 
             const routeMismatch = parseStructuredReply(JSON.stringify(baseReply(diagnosisRouter, { route: 'general_qa' })), diagnosisRouter);
             assert.ok(!routeMismatch.reply);

@@ -13,7 +13,10 @@ import type {
   AiConversationMessageInput,
   AiConversationSessionInput,
   AiConversationSessionUpdateInput,
+  AiModelGradeInput,
   AiRegressionReportInput,
+  AiUsabilityHumanReviewInput,
+  AiUsabilityReplayExperimentInput,
   DeepSeekSettingsInput,
   DocumentArtifactExportInput,
 } from '../shared/contracts';
@@ -252,6 +255,27 @@ app.whenReady().then(async () => {
   );
   ipcMain.handle('aiObservability:listRegressionReports', (_event, limit?: number) => store.listAiRegressionReports(limit));
   ipcMain.handle('aiObservability:getRegressionReport', (_event, id: string) => store.getAiRegressionReport(id));
+  ipcMain.handle('aiObservability:createUsabilityReview', (_event, input: AiUsabilityHumanReviewInput) =>
+    store.createAiUsabilityReview(input),
+  );
+  ipcMain.handle('aiObservability:listUsabilityReviews', (_event, limit?: number) => store.listAiUsabilityReviews(limit));
+  ipcMain.handle('aiObservability:getUsabilityReviewSummary', (_event, input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    store.buildAiUsabilityReviewSummary(input ?? {}),
+  );
+  ipcMain.handle('aiObservability:createUsabilityReplayExperiment', (_event, input: AiUsabilityReplayExperimentInput) =>
+    store.createAiUsabilityReplayExperiment(input),
+  );
+  ipcMain.handle('aiObservability:listUsabilityReplayExperiments', (_event, limit?: number) =>
+    store.listAiUsabilityReplayExperiments(limit),
+  );
+  ipcMain.handle('aiObservability:getUsabilityReplaySummary', (_event, input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    store.buildAiUsabilityReplaySummary(input ?? {}),
+  );
+  ipcMain.handle('aiObservability:createModelGrade', (_event, input: AiModelGradeInput) => store.createAiModelGrade(input));
+  ipcMain.handle('aiObservability:listModelGrades', (_event, limit?: number) => store.listAiModelGrades(limit));
+  ipcMain.handle('aiObservability:getModelGradeSummary', (_event, input?: Pick<AiRegressionReportInput, 'since' | 'until'>) =>
+    store.buildAiModelGradeSummary(input ?? {}),
+  );
   ipcMain.handle('records:list', (_event, studentId: string, filters) => store.listRecords(studentId, filters));
   ipcMain.handle('records:create', (_event, input) => store.createRecord(input));
   ipcMain.handle('records:update', (_event, recordId: string, input) => store.updateRecord(recordId, input));

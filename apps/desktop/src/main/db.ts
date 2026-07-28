@@ -27,12 +27,25 @@ import type {
   AiConversationSessionInput,
   AiConversationSessionUpdateInput,
   AiConversationWorkspace,
+  AiIntentRoute,
+  AiModelGrade,
+  AiModelGradeInput,
+  AiModelGradeSummary,
+  AiModelGraderMode,
   AiRegressionGate,
   AiRegressionGateStatus,
   AiRegressionReport,
   AiRegressionReportInput,
+  AiSubIntent,
   AiTelemetryLatency,
   AiTelemetrySnapshot,
+  AiTelemetryUsability,
+  AiUsabilityHumanReview,
+  AiUsabilityHumanReviewInput,
+  AiUsabilityHumanReviewSummary,
+  AiUsabilityReplayExperiment,
+  AiUsabilityReplayExperimentInput,
+  AiUsabilityReplaySummary,
   BootstrapData,
   DeepSeekSettings,
   DeepSeekSettingsInput,
@@ -647,6 +660,59 @@ function emptyTelemetrySnapshot(): AiTelemetrySnapshot {
     latency: { count: 0, averageMs: 0, p50Ms: 0, p95Ms: 0 },
     tokenBudget: { promptTokens: 0, completionTokens: 0, totalTokens: 0, knownTaskCount: 0 },
     contextBudget: { sourceCount: 0, knowledgeSnippetCount: 0, graphNodeCount: 0, taskCount: 0 },
+    usability: {
+      sampleCount: 0,
+      passedCount: 0,
+      failedCount: 0,
+      averageScore: 0,
+      minScore: 0,
+      profileCounts: {},
+      issueCounts: {},
+    },
+    humanUsability: emptyHumanUsabilitySummary(),
+    usabilityReplay: emptyUsabilityReplaySummary(),
+    modelGrader: emptyModelGradeSummary(),
+  };
+}
+
+function emptyHumanUsabilitySummary(): AiUsabilityHumanReviewSummary {
+  return {
+    sampleCount: 0,
+    averageTeacherScore: 0,
+    minTeacherScore: 0,
+    passedCount: 0,
+    needsRewriteCount: 0,
+    averageRoundsToUseful: 0,
+    routeCounts: {},
+    issueCounts: {},
+    latestReviewedAt: '',
+  };
+}
+
+function emptyUsabilityReplaySummary(): AiUsabilityReplaySummary {
+  return {
+    experimentCount: 0,
+    improvedCount: 0,
+    unresolvedCount: 0,
+    improvementRate: 0,
+    averageScoreDelta: 0,
+    averageRoundsDelta: 0,
+    issueTransitionCounts: {},
+    latestCreatedAt: '',
+  };
+}
+
+function emptyModelGradeSummary(): AiModelGradeSummary {
+  return {
+    sampleCount: 0,
+    passedCount: 0,
+    failedCount: 0,
+    averageOverallScore: 0,
+    minOverallScore: 0,
+    averageGradeAppropriatenessScore: 0,
+    issueCounts: {},
+    graderModeCounts: {},
+    latestReviewedAt: '',
   };
 }
 
@@ -660,6 +726,18 @@ function parseTelemetrySnapshot(value: unknown): AiTelemetrySnapshot {
     : {};
   const contextBudget = parsed.contextBudget && typeof parsed.contextBudget === 'object' && !Array.isArray(parsed.contextBudget)
     ? parsed.contextBudget as Record<string, unknown>
+    : {};
+  const usability = parsed.usability && typeof parsed.usability === 'object' && !Array.isArray(parsed.usability)
+    ? parsed.usability as Record<string, unknown>
+    : {};
+  const humanUsability = parsed.humanUsability && typeof parsed.humanUsability === 'object' && !Array.isArray(parsed.humanUsability)
+    ? parsed.humanUsability as Record<string, unknown>
+    : {};
+  const usabilityReplay = parsed.usabilityReplay && typeof parsed.usabilityReplay === 'object' && !Array.isArray(parsed.usabilityReplay)
+    ? parsed.usabilityReplay as Record<string, unknown>
+    : {};
+  const modelGrader = parsed.modelGrader && typeof parsed.modelGrader === 'object' && !Array.isArray(parsed.modelGrader)
+    ? parsed.modelGrader as Record<string, unknown>
     : {};
   const windowValue = parsed.window && typeof parsed.window === 'object' && !Array.isArray(parsed.window)
     ? parsed.window as Record<string, unknown>
@@ -700,6 +778,47 @@ function parseTelemetrySnapshot(value: unknown): AiTelemetrySnapshot {
       knowledgeSnippetCount: toNumber(contextBudget.knowledgeSnippetCount),
       graphNodeCount: toNumber(contextBudget.graphNodeCount),
       taskCount: toNumber(contextBudget.taskCount),
+    },
+    usability: {
+      sampleCount: toNumber(usability.sampleCount),
+      passedCount: toNumber(usability.passedCount),
+      failedCount: toNumber(usability.failedCount),
+      averageScore: toNumber(usability.averageScore),
+      minScore: toNumber(usability.minScore),
+      profileCounts: counts(usability.profileCounts),
+      issueCounts: counts(usability.issueCounts),
+    },
+    humanUsability: {
+      sampleCount: toNumber(humanUsability.sampleCount),
+      averageTeacherScore: toNumber(humanUsability.averageTeacherScore),
+      minTeacherScore: toNumber(humanUsability.minTeacherScore),
+      passedCount: toNumber(humanUsability.passedCount),
+      needsRewriteCount: toNumber(humanUsability.needsRewriteCount),
+      averageRoundsToUseful: toNumber(humanUsability.averageRoundsToUseful),
+      routeCounts: counts(humanUsability.routeCounts),
+      issueCounts: counts(humanUsability.issueCounts),
+      latestReviewedAt: String(humanUsability.latestReviewedAt ?? ''),
+    },
+    usabilityReplay: {
+      experimentCount: toNumber(usabilityReplay.experimentCount),
+      improvedCount: toNumber(usabilityReplay.improvedCount),
+      unresolvedCount: toNumber(usabilityReplay.unresolvedCount),
+      improvementRate: toNumber(usabilityReplay.improvementRate),
+      averageScoreDelta: toNumber(usabilityReplay.averageScoreDelta),
+      averageRoundsDelta: toNumber(usabilityReplay.averageRoundsDelta),
+      issueTransitionCounts: counts(usabilityReplay.issueTransitionCounts),
+      latestCreatedAt: String(usabilityReplay.latestCreatedAt ?? ''),
+    },
+    modelGrader: {
+      sampleCount: toNumber(modelGrader.sampleCount),
+      passedCount: toNumber(modelGrader.passedCount),
+      failedCount: toNumber(modelGrader.failedCount),
+      averageOverallScore: toNumber(modelGrader.averageOverallScore),
+      minOverallScore: toNumber(modelGrader.minOverallScore),
+      averageGradeAppropriatenessScore: toNumber(modelGrader.averageGradeAppropriatenessScore),
+      issueCounts: counts(modelGrader.issueCounts),
+      graderModeCounts: counts(modelGrader.graderModeCounts),
+      latestReviewedAt: String(modelGrader.latestReviewedAt ?? ''),
     },
   };
 }
@@ -1394,6 +1513,9 @@ export class OmniEduStore {
         JSON.stringify({
           ok: result.ok,
           usage: result.usage ?? null,
+          schemaValid: result.harness?.schemaValid ?? null,
+          educationGrade: result.harness?.educationGrade ?? null,
+          usabilityGrade: result.harness?.usabilityGrade ?? null,
           contentPreview: result.content.slice(0, 160),
         }),
         result.errorMessage ?? '',
@@ -1421,6 +1543,351 @@ export class OmniEduStore {
         ],
       );
     }
+  }
+
+  async createAiUsabilityReview(input: AiUsabilityHumanReviewInput): Promise<AiUsabilityHumanReview> {
+    const timestamp = now();
+    const sampleId = input.sampleId?.trim();
+    const prompt = input.prompt?.trim();
+    const route = String(input.route ?? '').trim() as AiIntentRoute;
+    const subIntent = String(input.subIntent ?? '').trim() as AiSubIntent;
+    const teacherScore = Math.round(Number(input.teacherScore));
+    const roundsToUseful = Math.round(Number(input.roundsToUseful));
+    const reviewedAt = normalizeIsoDate(input.reviewedAt) || timestamp;
+    if (!sampleId) throw new Error('sampleId is required for AI usability human review');
+    if (!prompt) throw new Error('prompt is required for AI usability human review');
+    if (!route) throw new Error('route is required for AI usability human review');
+    if (!subIntent) throw new Error('subIntent is required for AI usability human review');
+    if (!Number.isFinite(teacherScore) || teacherScore < 1 || teacherScore > 5) {
+      throw new Error('teacherScore must be an integer from 1 to 5');
+    }
+    if (!Number.isFinite(roundsToUseful) || roundsToUseful < 1 || roundsToUseful > 12) {
+      throw new Error('roundsToUseful must be an integer from 1 to 12');
+    }
+    const review: AiUsabilityHumanReview = {
+      id: `aireview_${randomUUID()}`,
+      sampleId,
+      runId: input.runId?.trim() ?? '',
+      sessionId: input.sessionId?.trim() ?? '',
+      prompt,
+      route,
+      subIntent,
+      model: input.model?.trim() ?? '',
+      teacherScore,
+      needsRewrite: Boolean(input.needsRewrite),
+      roundsToUseful,
+      mainIssueCode: input.mainIssueCode?.trim() || (input.needsRewrite ? 'unspecified' : 'none'),
+      teacherNote: input.teacherNote?.trim() ?? '',
+      reviewedAt,
+      createdAt: timestamp,
+    };
+    await this.run(
+      `INSERT INTO ai_usability_reviews (
+          id, sample_id, run_id, session_id, prompt, route, sub_intent, model,
+          teacher_score, needs_rewrite, rounds_to_useful, main_issue_code, teacher_note,
+          reviewed_at, created_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        review.id,
+        review.sampleId,
+        review.runId,
+        review.sessionId,
+        review.prompt,
+        review.route,
+        review.subIntent,
+        review.model,
+        review.teacherScore,
+        review.needsRewrite ? 1 : 0,
+        review.roundsToUseful,
+        review.mainIssueCode,
+        review.teacherNote,
+        review.reviewedAt,
+        review.createdAt,
+      ],
+    );
+    const row = (await this.all(`SELECT * FROM ai_usability_reviews WHERE id = ?`, [review.id]))[0];
+    return this.mapAiUsabilityReview(row);
+  }
+
+  async listAiUsabilityReviews(limit = 100): Promise<AiUsabilityHumanReview[]> {
+    const boundedLimit = clampNumber(Math.round(Number(limit) || 100), 1, 500);
+    const rows = await this.all(
+      `SELECT * FROM ai_usability_reviews ORDER BY reviewed_at DESC, created_at DESC LIMIT ?`,
+      [boundedLimit],
+    );
+    return rows.map((row) => this.mapAiUsabilityReview(row));
+  }
+
+  async getAiUsabilityReview(id: string): Promise<AiUsabilityHumanReview | null> {
+    const row = (await this.all(`SELECT * FROM ai_usability_reviews WHERE id = ?`, [id]))[0];
+    return row ? this.mapAiUsabilityReview(row) : null;
+  }
+
+  async buildAiUsabilityReviewSummary(input: Pick<AiRegressionReportInput, 'since' | 'until'> = {}): Promise<AiUsabilityHumanReviewSummary> {
+    const since = normalizeIsoDate(input.since);
+    const until = normalizeIsoDate(input.until);
+    const clauses: string[] = [];
+    const params: SqlValue[] = [];
+    if (since) {
+      clauses.push('reviewed_at >= ?');
+      params.push(since);
+    }
+    if (until) {
+      clauses.push('reviewed_at <= ?');
+      params.push(until);
+    }
+    const rows = await this.all(
+      `SELECT * FROM ai_usability_reviews${clauses.length ? ` WHERE ${clauses.join(' AND ')}` : ''}
+       ORDER BY reviewed_at DESC, created_at DESC`,
+      params,
+    );
+    const summary = emptyHumanUsabilitySummary();
+    const scores: number[] = [];
+    const rounds: number[] = [];
+    for (const row of rows) {
+      const score = toNumber(row.teacher_score);
+      const roundCount = toNumber(row.rounds_to_useful);
+      summary.sampleCount += 1;
+      scores.push(score);
+      rounds.push(roundCount);
+      if (score >= 4 && Number(row.needs_rewrite ?? 0) !== 1) summary.passedCount += 1;
+      if (Number(row.needs_rewrite ?? 0) === 1) summary.needsRewriteCount += 1;
+      incrementCount(summary.routeCounts, String(row.route ?? 'unknown'));
+      incrementCount(summary.issueCounts, String(row.main_issue_code ?? 'unknown'));
+      const reviewedAt = String(row.reviewed_at ?? '');
+      if (!summary.latestReviewedAt || reviewedAt > summary.latestReviewedAt) summary.latestReviewedAt = reviewedAt;
+    }
+    summary.averageTeacherScore = average(scores);
+    summary.minTeacherScore = scores.length ? Math.min(...scores) : 0;
+    summary.averageRoundsToUseful = average(rounds);
+    return summary;
+  }
+
+  async createAiUsabilityReplayExperiment(input: AiUsabilityReplayExperimentInput): Promise<AiUsabilityReplayExperiment> {
+    const beforeReviewId = input.beforeReviewId?.trim();
+    const afterReviewId = input.afterReviewId?.trim();
+    if (!beforeReviewId) throw new Error('beforeReviewId is required for AI usability replay experiment');
+    if (!afterReviewId) throw new Error('afterReviewId is required for AI usability replay experiment');
+    if (beforeReviewId === afterReviewId) throw new Error('beforeReviewId and afterReviewId must be different');
+    const [beforeReview, afterReview] = await Promise.all([
+      this.getAiUsabilityReview(beforeReviewId),
+      this.getAiUsabilityReview(afterReviewId),
+    ]);
+    if (!beforeReview) throw new Error(`before review not found: ${beforeReviewId}`);
+    if (!afterReview) throw new Error(`after review not found: ${afterReviewId}`);
+    const timestamp = now();
+    const experiment = {
+      id: `aireplay_${randomUUID()}`,
+      beforeReviewId,
+      afterReviewId,
+      replayPrompt: input.replayPrompt?.trim() || afterReview.prompt || beforeReview.prompt,
+      modelBefore: input.modelBefore?.trim() || beforeReview.model,
+      modelAfter: input.modelAfter?.trim() || afterReview.model,
+      promptVersionBefore: input.promptVersionBefore?.trim() || '',
+      promptVersionAfter: input.promptVersionAfter?.trim() || '',
+      experimentNote: input.experimentNote?.trim() || '',
+      createdAt: timestamp,
+    };
+    await this.run(
+      `INSERT INTO ai_usability_replay_experiments (
+          id, before_review_id, after_review_id, replay_prompt, model_before, model_after,
+          prompt_version_before, prompt_version_after, experiment_note, created_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        experiment.id,
+        experiment.beforeReviewId,
+        experiment.afterReviewId,
+        experiment.replayPrompt,
+        experiment.modelBefore,
+        experiment.modelAfter,
+        experiment.promptVersionBefore,
+        experiment.promptVersionAfter,
+        experiment.experimentNote,
+        experiment.createdAt,
+      ],
+    );
+    const row = (await this.all(this.usabilityReplayExperimentSelectSql('WHERE replay.id = ?'), [experiment.id]))[0];
+    return this.mapAiUsabilityReplayExperiment(row);
+  }
+
+  async listAiUsabilityReplayExperiments(limit = 50): Promise<AiUsabilityReplayExperiment[]> {
+    const boundedLimit = clampNumber(Math.round(Number(limit) || 50), 1, 200);
+    const rows = await this.all(
+      `${this.usabilityReplayExperimentSelectSql()} ORDER BY replay.created_at DESC LIMIT ?`,
+      [boundedLimit],
+    );
+    return rows.map((row) => this.mapAiUsabilityReplayExperiment(row));
+  }
+
+  async buildAiUsabilityReplaySummary(input: Pick<AiRegressionReportInput, 'since' | 'until'> = {}): Promise<AiUsabilityReplaySummary> {
+    const since = normalizeIsoDate(input.since);
+    const until = normalizeIsoDate(input.until);
+    const clauses: string[] = [];
+    const params: SqlValue[] = [];
+    if (since) {
+      clauses.push('replay.created_at >= ?');
+      params.push(since);
+    }
+    if (until) {
+      clauses.push('replay.created_at <= ?');
+      params.push(until);
+    }
+    const rows = await this.all(
+      `${this.usabilityReplayExperimentSelectSql(clauses.length ? `WHERE ${clauses.join(' AND ')}` : '')} ORDER BY replay.created_at DESC`,
+      params,
+    );
+    const experiments = rows.map((row) => this.mapAiUsabilityReplayExperiment(row));
+    const summary = emptyUsabilityReplaySummary();
+    const scoreDeltas: number[] = [];
+    const roundDeltas: number[] = [];
+    for (const experiment of experiments) {
+      summary.experimentCount += 1;
+      if (experiment.improved) summary.improvedCount += 1;
+      if (!experiment.improved || experiment.issueAfter !== 'none' || experiment.scoreAfter < 4) summary.unresolvedCount += 1;
+      scoreDeltas.push(experiment.scoreDelta);
+      roundDeltas.push(experiment.roundsDelta);
+      incrementCount(summary.issueTransitionCounts, `${experiment.issueBefore}->${experiment.issueAfter}`);
+      if (!summary.latestCreatedAt || experiment.createdAt > summary.latestCreatedAt) summary.latestCreatedAt = experiment.createdAt;
+    }
+    summary.improvementRate = summary.experimentCount ? Number((summary.improvedCount / summary.experimentCount).toFixed(2)) : 0;
+    summary.averageScoreDelta = average(scoreDeltas);
+    summary.averageRoundsDelta = average(roundDeltas);
+    return summary;
+  }
+
+  async createAiModelGrade(input: AiModelGradeInput): Promise<AiModelGrade> {
+    const timestamp = now();
+    const sampleId = input.sampleId?.trim();
+    const prompt = input.prompt?.trim();
+    const answerMarkdown = input.answerMarkdown?.trim();
+    const route = String(input.route ?? '').trim() as AiIntentRoute;
+    const subIntent = String(input.subIntent ?? '').trim() as AiSubIntent;
+    const reviewedAt = normalizeIsoDate(input.reviewedAt) || timestamp;
+    if (!sampleId) throw new Error('sampleId is required for AI model grade');
+    if (!prompt) throw new Error('prompt is required for AI model grade');
+    if (!answerMarkdown) throw new Error('answerMarkdown is required for AI model grade');
+    if (!route) throw new Error('route is required for AI model grade');
+    if (!subIntent) throw new Error('subIntent is required for AI model grade');
+    const scores = [
+      this.normalizeModelGradeScore(input.evidenceScore, 'evidenceScore'),
+      this.normalizeModelGradeScore(input.actionabilityScore, 'actionabilityScore'),
+      this.normalizeModelGradeScore(input.safetyScore, 'safetyScore'),
+      this.normalizeModelGradeScore(input.gradeAppropriatenessScore, 'gradeAppropriatenessScore'),
+      this.normalizeModelGradeScore(input.concisionScore, 'concisionScore'),
+      this.normalizeModelGradeScore(input.teacherControlScore, 'teacherControlScore'),
+    ];
+    const overallScore = average(scores);
+    const issueCodes = Array.isArray(input.issueCodes)
+      ? input.issueCodes.map((item) => String(item).trim()).filter(Boolean).slice(0, 12)
+      : [];
+    const passed = overallScore >= 4 && scores.every((score) => score >= 3) && !issueCodes.includes('unsafe_student_label');
+    const graderMode = input.graderMode === 'llm_judge' ? 'llm_judge' : 'deterministic_proxy';
+    const grade: AiModelGrade = {
+      id: `aimodelgrade_${randomUUID()}`,
+      sampleId,
+      prompt,
+      answerMarkdown,
+      route,
+      subIntent,
+      targetGrade: input.targetGrade?.trim() ?? '',
+      modelUnderReview: input.modelUnderReview?.trim() ?? '',
+      graderModel: input.graderModel?.trim() || (graderMode === 'llm_judge' ? 'unknown-llm-judge' : 'deterministic-model-grader-proxy-v1'),
+      graderMode,
+      evidenceScore: scores[0],
+      actionabilityScore: scores[1],
+      safetyScore: scores[2],
+      gradeAppropriatenessScore: scores[3],
+      concisionScore: scores[4],
+      teacherControlScore: scores[5],
+      overallScore,
+      passed,
+      issueCodes,
+      graderRationale: input.graderRationale?.trim() ?? '',
+      reviewedAt,
+      createdAt: timestamp,
+    };
+    await this.run(
+      `INSERT INTO ai_model_grades (
+          id, sample_id, prompt, answer_markdown, route, sub_intent, target_grade,
+          model_under_review, grader_model, grader_mode,
+          evidence_score, actionability_score, safety_score, grade_appropriateness_score,
+          concision_score, teacher_control_score, overall_score, passed,
+          issue_codes_json, grader_rationale, reviewed_at, created_at
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        grade.id,
+        grade.sampleId,
+        grade.prompt,
+        grade.answerMarkdown,
+        grade.route,
+        grade.subIntent,
+        grade.targetGrade,
+        grade.modelUnderReview,
+        grade.graderModel,
+        grade.graderMode,
+        grade.evidenceScore,
+        grade.actionabilityScore,
+        grade.safetyScore,
+        grade.gradeAppropriatenessScore,
+        grade.concisionScore,
+        grade.teacherControlScore,
+        grade.overallScore,
+        grade.passed ? 1 : 0,
+        JSON.stringify(grade.issueCodes),
+        grade.graderRationale,
+        grade.reviewedAt,
+        grade.createdAt,
+      ],
+    );
+    const row = (await this.all(`SELECT * FROM ai_model_grades WHERE id = ?`, [grade.id]))[0];
+    return this.mapAiModelGrade(row);
+  }
+
+  async listAiModelGrades(limit = 50): Promise<AiModelGrade[]> {
+    const boundedLimit = clampNumber(Math.round(Number(limit) || 50), 1, 200);
+    const rows = await this.all(
+      `SELECT * FROM ai_model_grades ORDER BY reviewed_at DESC, created_at DESC LIMIT ?`,
+      [boundedLimit],
+    );
+    return rows.map((row) => this.mapAiModelGrade(row));
+  }
+
+  async buildAiModelGradeSummary(input: Pick<AiRegressionReportInput, 'since' | 'until'> = {}): Promise<AiModelGradeSummary> {
+    const since = normalizeIsoDate(input.since);
+    const until = normalizeIsoDate(input.until);
+    const clauses: string[] = [];
+    const params: SqlValue[] = [];
+    if (since) {
+      clauses.push('reviewed_at >= ?');
+      params.push(since);
+    }
+    if (until) {
+      clauses.push('reviewed_at <= ?');
+      params.push(until);
+    }
+    const rows = await this.all(
+      `SELECT * FROM ai_model_grades${clauses.length ? ` WHERE ${clauses.join(' AND ')}` : ''}
+       ORDER BY reviewed_at DESC, created_at DESC`,
+      params,
+    );
+    const summary = emptyModelGradeSummary();
+    const overallScores: number[] = [];
+    const gradeAppropriatenessScores: number[] = [];
+    for (const row of rows) {
+      const grade = this.mapAiModelGrade(row);
+      summary.sampleCount += 1;
+      if (grade.passed) summary.passedCount += 1;
+      else summary.failedCount += 1;
+      overallScores.push(grade.overallScore);
+      gradeAppropriatenessScores.push(grade.gradeAppropriatenessScore);
+      incrementCount(summary.graderModeCounts, grade.graderMode);
+      for (const issueCode of grade.issueCodes) incrementCount(summary.issueCounts, issueCode);
+      if (!summary.latestReviewedAt || grade.reviewedAt > summary.latestReviewedAt) summary.latestReviewedAt = grade.reviewedAt;
+    }
+    summary.averageOverallScore = average(overallScores);
+    summary.minOverallScore = overallScores.length ? Math.min(...overallScores) : 0;
+    summary.averageGradeAppropriatenessScore = average(gradeAppropriatenessScores);
+    return summary;
   }
 
   async startAiAgentRun(input: {
@@ -2261,6 +2728,16 @@ export class OmniEduStore {
       graphNodeCount: 0,
       taskCount: taskRows.length,
     };
+    const usabilityScores: number[] = [];
+    const usability: AiTelemetryUsability = {
+      sampleCount: 0,
+      passedCount: 0,
+      failedCount: 0,
+      averageScore: 0,
+      minScore: 0,
+      profileCounts: {},
+      issueCounts: {},
+    };
     for (const row of taskRows) {
       const result = jsonObject(row.result_json);
       const usage = result.usage && typeof result.usage === 'object' && !Array.isArray(result.usage)
@@ -2277,7 +2754,32 @@ export class OmniEduStore {
       contextBudget.sourceCount += toNumber(payload.sourceCount);
       contextBudget.knowledgeSnippetCount += toNumber(payload.knowledgeSnippetCount);
       contextBudget.graphNodeCount += toNumber(payload.graphNodeCount);
+
+      const usabilityGrade = result.usabilityGrade && typeof result.usabilityGrade === 'object' && !Array.isArray(result.usabilityGrade)
+        ? result.usabilityGrade as Record<string, unknown>
+        : {};
+      if (Object.keys(usabilityGrade).length) {
+        const score = toNumber(usabilityGrade.score);
+        usability.sampleCount += 1;
+        usabilityScores.push(score);
+        if (usabilityGrade.passed === true) usability.passedCount += 1;
+        else usability.failedCount += 1;
+        incrementCount(usability.profileCounts, String(usabilityGrade.profile ?? 'unknown'));
+        const issues = Array.isArray(usabilityGrade.issues) ? usabilityGrade.issues : [];
+        for (const item of issues) {
+          if (item && typeof item === 'object' && !Array.isArray(item)) {
+            incrementCount(usability.issueCounts, String((item as Record<string, unknown>).code ?? 'unknown'));
+          }
+        }
+      }
     }
+    usability.averageScore = average(usabilityScores);
+    usability.minScore = usabilityScores.length ? Math.min(...usabilityScores) : 0;
+    const [humanUsability, usabilityReplay, modelGrader] = await Promise.all([
+      this.buildAiUsabilityReviewSummary({ since, until }),
+      this.buildAiUsabilityReplaySummary({ since, until }),
+      this.buildAiModelGradeSummary({ since, until }),
+    ]);
 
     return {
       generatedAt: now(),
@@ -2298,6 +2800,10 @@ export class OmniEduStore {
       latency,
       tokenBudget,
       contextBudget,
+      usability,
+      humanUsability,
+      usabilityReplay,
+      modelGrader,
     };
   }
 
@@ -2306,6 +2812,15 @@ export class OmniEduStore {
     const runningCount = snapshot.statusCounts.running ?? 0;
     const failedArtifacts = snapshot.artifactCounts.failed ?? 0;
     const pendingConfirmations = snapshot.confirmationCounts.pending ?? 0;
+    const minimumUsabilityAverageScore = Number(input.minimumUsabilityAverageScore ?? 75);
+    const minimumTeacherReviewSamples = Number(input.minimumTeacherReviewSamples ?? 0);
+    const minimumTeacherScore = Number(input.minimumTeacherScore ?? 4);
+    const maximumTeacherRoundsToUseful = Number(input.maximumTeacherRoundsToUseful ?? 2);
+    const minimumReplayExperimentCount = Number(input.minimumReplayExperimentCount ?? 0);
+    const minimumReplayImprovementRate = Number(input.minimumReplayImprovementRate ?? 0.6);
+    const minimumModelGradeSamples = Number(input.minimumModelGradeSamples ?? 0);
+    const minimumModelGradeScore = Number(input.minimumModelGradeScore ?? 4);
+    const minimumGradeAppropriatenessScore = Number(input.minimumGradeAppropriatenessScore ?? 4);
     const gates: AiRegressionGate[] = [
       {
         id: 'agent_runs_terminal',
@@ -2351,6 +2866,86 @@ export class OmniEduStore {
         detail: snapshot.latency.count > 0 ? `p50=${snapshot.latency.p50Ms}ms, p95=${snapshot.latency.p95Ms}ms。` : '当前窗口缺少 completed_at，暂不能计算延迟。',
         evidence: { latency: snapshot.latency },
       },
+      {
+        id: 'usability_quality_gate',
+        label: '教师可用性评分',
+        status: snapshot.contextBudget.taskCount === 0
+          ? 'warning'
+          : snapshot.usability.sampleCount === 0
+            ? 'warning'
+            : snapshot.usability.failedCount > 0 || snapshot.usability.averageScore < minimumUsabilityAverageScore
+              ? 'failed'
+              : 'passed',
+        detail: snapshot.contextBudget.taskCount === 0
+          ? '当前窗口没有 AI console 任务样本。'
+          : snapshot.usability.sampleCount === 0
+            ? '当前 AI console 任务缺少 usabilityGrade，无法评估教师可用性。'
+            : `samples=${snapshot.usability.sampleCount}, passed=${snapshot.usability.passedCount}, average=${snapshot.usability.averageScore}, min=${snapshot.usability.minScore}。`,
+        evidence: { usability: snapshot.usability, minimumAverageScore: minimumUsabilityAverageScore },
+      },
+      {
+        id: 'teacher_review_score_gate',
+        label: '真实教师评分回读',
+        status: snapshot.humanUsability.sampleCount < minimumTeacherReviewSamples
+          ? 'failed'
+          : snapshot.humanUsability.sampleCount === 0
+            ? 'warning'
+            : snapshot.humanUsability.averageTeacherScore < minimumTeacherScore
+              || snapshot.humanUsability.averageRoundsToUseful > maximumTeacherRoundsToUseful
+              || snapshot.humanUsability.needsRewriteCount > 0
+                ? 'failed'
+                : 'passed',
+        detail: snapshot.humanUsability.sampleCount === 0
+          ? '当前窗口没有真实教师人工评分样本。'
+          : `samples=${snapshot.humanUsability.sampleCount}, avgScore=${snapshot.humanUsability.averageTeacherScore}/5, avgRounds=${snapshot.humanUsability.averageRoundsToUseful}, needsRewrite=${snapshot.humanUsability.needsRewriteCount}。`,
+        evidence: {
+          humanUsability: snapshot.humanUsability,
+          minimumTeacherReviewSamples,
+          minimumTeacherScore,
+          maximumTeacherRoundsToUseful,
+        },
+      },
+      {
+        id: 'usability_replay_improvement_gate',
+        label: '失败样本 before/after 回放',
+        status: snapshot.usabilityReplay.experimentCount < minimumReplayExperimentCount
+          ? 'failed'
+          : snapshot.usabilityReplay.experimentCount === 0
+            ? 'warning'
+            : snapshot.usabilityReplay.improvementRate < minimumReplayImprovementRate
+              ? 'failed'
+              : 'passed',
+        detail: snapshot.usabilityReplay.experimentCount === 0
+          ? '当前窗口没有 before/after 回放实验，无法量化改造是否真的更好。'
+          : `experiments=${snapshot.usabilityReplay.experimentCount}, improved=${snapshot.usabilityReplay.improvedCount}, rate=${snapshot.usabilityReplay.improvementRate}, avgScoreDelta=${snapshot.usabilityReplay.averageScoreDelta}, avgRoundsDelta=${snapshot.usabilityReplay.averageRoundsDelta}。`,
+        evidence: {
+          usabilityReplay: snapshot.usabilityReplay,
+          minimumReplayExperimentCount,
+          minimumReplayImprovementRate,
+        },
+      },
+      {
+        id: 'model_grader_quality_gate',
+        label: '模型 Grader 质量裁判',
+        status: snapshot.modelGrader.sampleCount < minimumModelGradeSamples
+          ? 'failed'
+          : snapshot.modelGrader.sampleCount === 0
+            ? 'warning'
+            : snapshot.modelGrader.failedCount > 0
+              || snapshot.modelGrader.averageOverallScore < minimumModelGradeScore
+              || snapshot.modelGrader.averageGradeAppropriatenessScore < minimumGradeAppropriatenessScore
+                ? 'failed'
+                : 'passed',
+        detail: snapshot.modelGrader.sampleCount === 0
+          ? '当前窗口没有模型 grader 样本；无法用独立裁判复核小智输出质量。'
+          : `samples=${snapshot.modelGrader.sampleCount}, passed=${snapshot.modelGrader.passedCount}, avg=${snapshot.modelGrader.averageOverallScore}/5, gradeFit=${snapshot.modelGrader.averageGradeAppropriatenessScore}/5。`,
+        evidence: {
+          modelGrader: snapshot.modelGrader,
+          minimumModelGradeSamples,
+          minimumModelGradeScore,
+          minimumGradeAppropriatenessScore,
+        },
+      },
     ];
     if (input.expectedEvalTotal != null || input.expectedEvalPassed != null) {
       const total = Number(input.expectedEvalTotal ?? 0);
@@ -2361,6 +2956,17 @@ export class OmniEduStore {
         status: total > 0 && passed === total ? 'passed' : 'failed',
         detail: total > 0 ? `${passed}/${total} router eval passed。` : '缺少 router eval 总数。',
         evidence: { expectedEvalTotal: total, expectedEvalPassed: passed },
+      });
+    }
+    if (input.expectedUsabilityEvalTotal != null || input.expectedUsabilityEvalPassed != null) {
+      const total = Number(input.expectedUsabilityEvalTotal ?? 0);
+      const passed = Number(input.expectedUsabilityEvalPassed ?? 0);
+      gates.push({
+        id: 'usability_eval_baseline',
+        label: 'Usability eval 样本集',
+        status: total > 0 && passed === total ? 'passed' : 'failed',
+        detail: total > 0 ? `${passed}/${total} usability eval cases passed。` : '缺少 usability eval 总数。',
+        evidence: { expectedUsabilityEvalTotal: total, expectedUsabilityEvalPassed: passed },
       });
     }
     const status: AiRegressionGateStatus = gates.some((gate) => gate.status === 'failed')
@@ -2717,6 +3323,62 @@ export class OmniEduStore {
         report_json TEXT NOT NULL DEFAULT '{}',
         created_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS ai_usability_reviews (
+        id TEXT PRIMARY KEY,
+        sample_id TEXT NOT NULL,
+        run_id TEXT NOT NULL DEFAULT '',
+        session_id TEXT NOT NULL DEFAULT '',
+        prompt TEXT NOT NULL,
+        route TEXT NOT NULL,
+        sub_intent TEXT NOT NULL DEFAULT '',
+        model TEXT NOT NULL DEFAULT '',
+        teacher_score INTEGER NOT NULL,
+        needs_rewrite INTEGER NOT NULL DEFAULT 0,
+        rounds_to_useful INTEGER NOT NULL DEFAULT 1,
+        main_issue_code TEXT NOT NULL DEFAULT 'none',
+        teacher_note TEXT NOT NULL DEFAULT '',
+        reviewed_at TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS ai_usability_replay_experiments (
+        id TEXT PRIMARY KEY,
+        before_review_id TEXT NOT NULL,
+        after_review_id TEXT NOT NULL,
+        replay_prompt TEXT NOT NULL DEFAULT '',
+        model_before TEXT NOT NULL DEFAULT '',
+        model_after TEXT NOT NULL DEFAULT '',
+        prompt_version_before TEXT NOT NULL DEFAULT '',
+        prompt_version_after TEXT NOT NULL DEFAULT '',
+        experiment_note TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        UNIQUE(before_review_id, after_review_id),
+        FOREIGN KEY (before_review_id) REFERENCES ai_usability_reviews(id),
+        FOREIGN KEY (after_review_id) REFERENCES ai_usability_reviews(id)
+      );
+      CREATE TABLE IF NOT EXISTS ai_model_grades (
+        id TEXT PRIMARY KEY,
+        sample_id TEXT NOT NULL,
+        prompt TEXT NOT NULL,
+        answer_markdown TEXT NOT NULL,
+        route TEXT NOT NULL,
+        sub_intent TEXT NOT NULL DEFAULT '',
+        target_grade TEXT NOT NULL DEFAULT '',
+        model_under_review TEXT NOT NULL DEFAULT '',
+        grader_model TEXT NOT NULL DEFAULT '',
+        grader_mode TEXT NOT NULL DEFAULT 'deterministic_proxy',
+        evidence_score INTEGER NOT NULL,
+        actionability_score INTEGER NOT NULL,
+        safety_score INTEGER NOT NULL,
+        grade_appropriateness_score INTEGER NOT NULL,
+        concision_score INTEGER NOT NULL,
+        teacher_control_score INTEGER NOT NULL,
+        overall_score INTEGER NOT NULL,
+        passed INTEGER NOT NULL DEFAULT 0,
+        issue_codes_json TEXT NOT NULL DEFAULT '[]',
+        grader_rationale TEXT NOT NULL DEFAULT '',
+        reviewed_at TEXT NOT NULL,
+        created_at TEXT NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS teacher_resources (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -2833,6 +3495,15 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_document_artifacts_session ON document_artifacts(session_id, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_document_artifacts_message ON document_artifacts(message_id, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_regression_reports_created ON ai_regression_reports(created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_usability_reviews_reviewed ON ai_usability_reviews(reviewed_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_usability_reviews_route ON ai_usability_reviews(route, reviewed_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_usability_reviews_sample ON ai_usability_reviews(sample_id, reviewed_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_usability_replay_created ON ai_usability_replay_experiments(created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_usability_replay_before ON ai_usability_replay_experiments(before_review_id, created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_usability_replay_after ON ai_usability_replay_experiments(after_review_id, created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_model_grades_reviewed ON ai_model_grades(reviewed_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_model_grades_route ON ai_model_grades(route, reviewed_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_model_grades_mode ON ai_model_grades(grader_mode, reviewed_at DESC);
       CREATE INDEX IF NOT EXISTS idx_teacher_resources_status ON teacher_resources(parse_status, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_resource_chunks_resource ON resource_chunks(resource_id, chunk_index);
       CREATE INDEX IF NOT EXISTS idx_resource_chunks_metadata ON resource_chunks(subject, grade, knowledge_point, question_type);
@@ -3631,6 +4302,131 @@ export class OmniEduStore {
       snapshot,
       gates: parseRegressionGates(row.gates_json),
       reportJson: jsonObject(row.report_json),
+      createdAt: String(row.created_at ?? ''),
+    };
+  }
+
+  private mapAiUsabilityReview(row: Row): AiUsabilityHumanReview {
+    return {
+      id: String(row.id ?? ''),
+      sampleId: String(row.sample_id ?? ''),
+      runId: String(row.run_id ?? ''),
+      sessionId: String(row.session_id ?? ''),
+      prompt: String(row.prompt ?? ''),
+      route: String(row.route ?? 'general_qa') as AiIntentRoute,
+      subIntent: String(row.sub_intent ?? ''),
+      model: String(row.model ?? ''),
+      teacherScore: Number(row.teacher_score ?? 0),
+      needsRewrite: Number(row.needs_rewrite ?? 0) === 1,
+      roundsToUseful: Number(row.rounds_to_useful ?? 0),
+      mainIssueCode: String(row.main_issue_code ?? 'none'),
+      teacherNote: String(row.teacher_note ?? ''),
+      reviewedAt: String(row.reviewed_at ?? ''),
+      createdAt: String(row.created_at ?? ''),
+    };
+  }
+
+  private normalizeModelGradeScore(value: unknown, fieldName: string) {
+    const score = Math.round(Number(value));
+    if (!Number.isFinite(score) || score < 1 || score > 5) {
+      throw new Error(`${fieldName} must be an integer from 1 to 5`);
+    }
+    return score;
+  }
+
+  private mapAiModelGrade(row: Row): AiModelGrade {
+    const mode = String(row.grader_mode ?? 'deterministic_proxy') === 'llm_judge' ? 'llm_judge' : 'deterministic_proxy';
+    const issueCodes = (() => {
+      try {
+        const parsed = JSON.parse(String(row.issue_codes_json ?? '[]'));
+        return Array.isArray(parsed) ? parsed.map((item) => String(item)).filter(Boolean) : [];
+      } catch {
+        return [];
+      }
+    })();
+    return {
+      id: String(row.id ?? ''),
+      sampleId: String(row.sample_id ?? ''),
+      prompt: String(row.prompt ?? ''),
+      answerMarkdown: String(row.answer_markdown ?? ''),
+      route: String(row.route ?? 'general_qa') as AiIntentRoute,
+      subIntent: String(row.sub_intent ?? ''),
+      targetGrade: String(row.target_grade ?? ''),
+      modelUnderReview: String(row.model_under_review ?? ''),
+      graderModel: String(row.grader_model ?? ''),
+      graderMode: mode as AiModelGraderMode,
+      evidenceScore: Number(row.evidence_score ?? 0),
+      actionabilityScore: Number(row.actionability_score ?? 0),
+      safetyScore: Number(row.safety_score ?? 0),
+      gradeAppropriatenessScore: Number(row.grade_appropriateness_score ?? 0),
+      concisionScore: Number(row.concision_score ?? 0),
+      teacherControlScore: Number(row.teacher_control_score ?? 0),
+      overallScore: Number(row.overall_score ?? 0),
+      passed: Number(row.passed ?? 0) === 1,
+      issueCodes,
+      graderRationale: String(row.grader_rationale ?? ''),
+      reviewedAt: String(row.reviewed_at ?? ''),
+      createdAt: String(row.created_at ?? ''),
+    };
+  }
+
+  private usabilityReplayExperimentSelectSql(whereClause = '') {
+    return `
+      SELECT
+        replay.id,
+        replay.before_review_id,
+        replay.after_review_id,
+        replay.replay_prompt,
+        replay.model_before,
+        replay.model_after,
+        replay.prompt_version_before,
+        replay.prompt_version_after,
+        replay.experiment_note,
+        replay.created_at,
+        before_review.teacher_score AS score_before,
+        after_review.teacher_score AS score_after,
+        before_review.rounds_to_useful AS rounds_before,
+        after_review.rounds_to_useful AS rounds_after,
+        before_review.main_issue_code AS issue_before,
+        after_review.main_issue_code AS issue_after,
+        before_review.needs_rewrite AS needs_rewrite_before,
+        after_review.needs_rewrite AS needs_rewrite_after
+      FROM ai_usability_replay_experiments replay
+      JOIN ai_usability_reviews before_review ON before_review.id = replay.before_review_id
+      JOIN ai_usability_reviews after_review ON after_review.id = replay.after_review_id
+      ${whereClause}
+    `;
+  }
+
+  private mapAiUsabilityReplayExperiment(row: Row): AiUsabilityReplayExperiment {
+    const scoreBefore = Number(row.score_before ?? 0);
+    const scoreAfter = Number(row.score_after ?? 0);
+    const roundsBefore = Number(row.rounds_before ?? 0);
+    const roundsAfter = Number(row.rounds_after ?? 0);
+    const issueBefore = String(row.issue_before ?? 'unknown');
+    const issueAfter = String(row.issue_after ?? 'unknown');
+    const scoreDelta = scoreAfter - scoreBefore;
+    const roundsDelta = roundsBefore - roundsAfter;
+    const afterNeedsRewrite = Number(row.needs_rewrite_after ?? 0) === 1;
+    return {
+      id: String(row.id ?? ''),
+      beforeReviewId: String(row.before_review_id ?? ''),
+      afterReviewId: String(row.after_review_id ?? ''),
+      replayPrompt: String(row.replay_prompt ?? ''),
+      modelBefore: String(row.model_before ?? ''),
+      modelAfter: String(row.model_after ?? ''),
+      promptVersionBefore: String(row.prompt_version_before ?? ''),
+      promptVersionAfter: String(row.prompt_version_after ?? ''),
+      experimentNote: String(row.experiment_note ?? ''),
+      scoreBefore,
+      scoreAfter,
+      scoreDelta,
+      roundsBefore,
+      roundsAfter,
+      roundsDelta,
+      issueBefore,
+      issueAfter,
+      improved: scoreDelta > 0 && roundsDelta >= 0 && !afterNeedsRewrite,
       createdAt: String(row.created_at ?? ''),
     };
   }

@@ -16,6 +16,7 @@ import type { OmniEduStore } from './db';
 import { gradeEducationalReply } from './ai-harness/education-grader';
 import { parseStructuredReply, structuredReplyToMarkdown } from './ai-harness/schema';
 import { createAiToolExecutionState, executeAiToolCall, getModelToolDefinitions } from './ai-harness/tool-registry';
+import { buildUsabilityInstructions, gradeUsabilityReply } from './ai-harness/usability-policy';
 
 type DeepSeekMessage = {
   role: 'system' | 'user' | 'assistant' | 'tool';
@@ -100,6 +101,7 @@ export function buildAiSystemPrompt(router: AiRouterDecision) {
     '如果上下文不足，明确写入 unknowns，不要用流畅文字掩盖缺口。',
     'processSummary 只能复述提供的 Agent loop 轨迹，不展示模型内部隐式推理。',
     '中文回答，语气专业、克制、适合老师工作台。',
+    buildUsabilityInstructions(router),
     '只返回合法 JSON，不要使用 Markdown 代码围栏。',
     '必须返回 xiazhi.reply.v2 JSON。facts 是可核验事实；evidence 是来源说明；inferences 是推断；risks 是隐私/写入/证据缺口等边界。',
     'routeCheck 必须说明当前 route 校验已通过。学生诊断必须有 facts 或 unknowns；三元题组必须包含原题、相似题、变式题；写入型报告必须要求老师确认。',
@@ -439,6 +441,41 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         artifacts: parsed.reply.artifacts,
         harness,
         errorMessage: `Education Grader 未通过：${educationGrade.issues.map((item) => item.message).join('；')}`,
+      };
+    }
+    const usabilityGrade = gradeUsabilityReply({
+      reply: parsed.reply,
+      router: context.router,
+    });
+    harness.usabilityGrade = usabilityGrade;
+    await emitTrace(context, {
+      phase: 'reflect',
+      status: usabilityGrade.passed ? 'succeeded' : 'blocked',
+      label: '教师可用性评分',
+      detail: usabilityGrade.passed
+        ? `Usability Grader 通过，profile=${usabilityGrade.profile}，score=${usabilityGrade.score}。`
+        : `Usability Grader 未通过，score=${usabilityGrade.score}：${usabilityGrade.issues.map((item) => item.code).join('、')}`,
+      outputSummary: {
+        profile: usabilityGrade.profile,
+        score: usabilityGrade.score,
+        passed: usabilityGrade.passed,
+        issues: usabilityGrade.issues,
+      },
+    });
+    if (!usabilityGrade.passed) {
+      return {
+        ok: false,
+        model,
+        content: '',
+        toolRuns: context.toolRuns,
+        sources: context.sources,
+        knowledgeSnippets: context.knowledgeSnippets,
+        graphNodes: context.graphNodes,
+        similarQuestions: context.similarQuestions,
+        structuredReply: parsed.reply,
+        artifacts: parsed.reply.artifacts,
+        harness,
+        errorMessage: `Usability Grader 未通过：${usabilityGrade.issues.map((item) => item.message).join('；')}`,
       };
     }
     const responseContent = parsed.reply ? structuredReplyToMarkdown(parsed.reply) : content;

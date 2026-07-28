@@ -7,6 +7,7 @@ import type {
   AiStructuredReply,
   AiStructuredRisk,
 } from '../../shared/contracts';
+import { structuredReplyToTeacherMarkdown } from './usability-policy';
 
 const ARTIFACT_TYPES = new Set(['markdown', 'pdf', 'docx', 'exercise_set', 'report_draft']);
 const RISK_LEVELS = new Set(['normal', 'sensitive', 'safeguarding']);
@@ -162,21 +163,5 @@ export function parseStructuredReply(raw: string, router: AiRouterDecision): { r
 }
 
 export function structuredReplyToMarkdown(reply: AiStructuredReply) {
-  const blocks = [reply.answerMarkdown.trim()];
-  if (reply.facts.length) {
-    blocks.push(['## 事实', ...reply.facts.map((item) => `- ${item.statement}（来源：${item.sourceId}，置信度：${item.confidence}）`)].join('\n'));
-  }
-  if (reply.evidence.length) {
-    blocks.push(['## 证据', ...reply.evidence.map((item) => `- ${item.sourceId}：${item.note}`)].join('\n'));
-  }
-  if (reply.inferences.length) blocks.push(['## 推断', ...reply.inferences.map((item) => `- ${item}`)].join('\n'));
-  if (reply.unknowns.length) blocks.push(['## 未知', ...reply.unknowns.map((item) => `- ${item}`)].join('\n'));
-  if (reply.risks.length) {
-    blocks.push(['## 风险与边界', ...reply.risks.map((item) => `- ${item.category}/${item.level}：${item.mitigation}`)].join('\n'));
-  }
-  if (reply.teacherConfirmations.length) {
-    blocks.push(['## 需要老师确认', ...reply.teacherConfirmations.map((item) => `- ${item}`)].join('\n'));
-  }
-  if (reply.nextActions.length) blocks.push(['## 下一步', ...reply.nextActions.map((item) => `- ${item}`)].join('\n'));
-  return blocks.join('\n\n');
+  return structuredReplyToTeacherMarkdown(reply);
 }

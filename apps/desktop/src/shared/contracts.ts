@@ -637,6 +637,166 @@ export type AiTelemetryLatency = {
   p95Ms: number;
 };
 
+export type AiTelemetryUsability = {
+  sampleCount: number;
+  passedCount: number;
+  failedCount: number;
+  averageScore: number;
+  minScore: number;
+  profileCounts: Record<string, number>;
+  issueCounts: Record<string, number>;
+};
+
+export type AiUsabilityHumanReviewInput = {
+  sampleId: string;
+  prompt: string;
+  route: AiIntentRoute;
+  subIntent: AiSubIntent | string;
+  teacherScore: number;
+  needsRewrite: boolean;
+  roundsToUseful: number;
+  mainIssueCode: string;
+  teacherNote?: string;
+  runId?: string;
+  sessionId?: string;
+  model?: string;
+  reviewedAt?: string;
+};
+
+export type AiUsabilityHumanReview = {
+  id: string;
+  sampleId: string;
+  runId: string;
+  sessionId: string;
+  prompt: string;
+  route: AiIntentRoute;
+  subIntent: string;
+  model: string;
+  teacherScore: number;
+  needsRewrite: boolean;
+  roundsToUseful: number;
+  mainIssueCode: string;
+  teacherNote: string;
+  reviewedAt: string;
+  createdAt: string;
+};
+
+export type AiUsabilityHumanReviewSummary = {
+  sampleCount: number;
+  averageTeacherScore: number;
+  minTeacherScore: number;
+  passedCount: number;
+  needsRewriteCount: number;
+  averageRoundsToUseful: number;
+  routeCounts: Record<string, number>;
+  issueCounts: Record<string, number>;
+  latestReviewedAt: string;
+};
+
+export type AiUsabilityReplayExperimentInput = {
+  beforeReviewId: string;
+  afterReviewId: string;
+  replayPrompt?: string;
+  modelBefore?: string;
+  modelAfter?: string;
+  promptVersionBefore?: string;
+  promptVersionAfter?: string;
+  experimentNote?: string;
+};
+
+export type AiUsabilityReplayExperiment = {
+  id: string;
+  beforeReviewId: string;
+  afterReviewId: string;
+  replayPrompt: string;
+  modelBefore: string;
+  modelAfter: string;
+  promptVersionBefore: string;
+  promptVersionAfter: string;
+  experimentNote: string;
+  scoreBefore: number;
+  scoreAfter: number;
+  scoreDelta: number;
+  roundsBefore: number;
+  roundsAfter: number;
+  roundsDelta: number;
+  issueBefore: string;
+  issueAfter: string;
+  improved: boolean;
+  createdAt: string;
+};
+
+export type AiUsabilityReplaySummary = {
+  experimentCount: number;
+  improvedCount: number;
+  unresolvedCount: number;
+  improvementRate: number;
+  averageScoreDelta: number;
+  averageRoundsDelta: number;
+  issueTransitionCounts: Record<string, number>;
+  latestCreatedAt: string;
+};
+
+export type AiModelGraderMode = 'deterministic_proxy' | 'llm_judge';
+
+export type AiModelGradeInput = {
+  sampleId: string;
+  prompt: string;
+  answerMarkdown: string;
+  route: AiIntentRoute;
+  subIntent: AiSubIntent | string;
+  targetGrade?: string;
+  modelUnderReview?: string;
+  graderModel?: string;
+  graderMode?: AiModelGraderMode;
+  evidenceScore: number;
+  actionabilityScore: number;
+  safetyScore: number;
+  gradeAppropriatenessScore: number;
+  concisionScore: number;
+  teacherControlScore: number;
+  issueCodes?: string[];
+  graderRationale?: string;
+  reviewedAt?: string;
+};
+
+export type AiModelGrade = {
+  id: string;
+  sampleId: string;
+  prompt: string;
+  answerMarkdown: string;
+  route: AiIntentRoute;
+  subIntent: string;
+  targetGrade: string;
+  modelUnderReview: string;
+  graderModel: string;
+  graderMode: AiModelGraderMode;
+  evidenceScore: number;
+  actionabilityScore: number;
+  safetyScore: number;
+  gradeAppropriatenessScore: number;
+  concisionScore: number;
+  teacherControlScore: number;
+  overallScore: number;
+  passed: boolean;
+  issueCodes: string[];
+  graderRationale: string;
+  reviewedAt: string;
+  createdAt: string;
+};
+
+export type AiModelGradeSummary = {
+  sampleCount: number;
+  passedCount: number;
+  failedCount: number;
+  averageOverallScore: number;
+  minOverallScore: number;
+  averageGradeAppropriatenessScore: number;
+  issueCounts: Record<string, number>;
+  graderModeCounts: Record<string, number>;
+  latestReviewedAt: string;
+};
+
 export type AiTelemetrySnapshot = {
   generatedAt: string;
   window: {
@@ -666,6 +826,10 @@ export type AiTelemetrySnapshot = {
     graphNodeCount: number;
     taskCount: number;
   };
+  usability: AiTelemetryUsability;
+  humanUsability: AiUsabilityHumanReviewSummary;
+  usabilityReplay: AiUsabilityReplaySummary;
+  modelGrader: AiModelGradeSummary;
 };
 
 export type AiRegressionReport = {
@@ -685,6 +849,17 @@ export type AiRegressionReportInput = {
   until?: string;
   expectedEvalTotal?: number;
   expectedEvalPassed?: number;
+  expectedUsabilityEvalTotal?: number;
+  expectedUsabilityEvalPassed?: number;
+  minimumUsabilityAverageScore?: number;
+  minimumTeacherReviewSamples?: number;
+  minimumTeacherScore?: number;
+  maximumTeacherRoundsToUseful?: number;
+  minimumReplayExperimentCount?: number;
+  minimumReplayImprovementRate?: number;
+  minimumModelGradeSamples?: number;
+  minimumModelGradeScore?: number;
+  minimumGradeAppropriatenessScore?: number;
 };
 
 export type AiConfirmationStatus = 'pending' | 'confirmed' | 'rejected' | 'failed';
@@ -787,6 +962,19 @@ export type AiEducationGradeReport = {
   issues: AiEducationGraderIssue[];
 };
 
+export type AiUsabilityIssue = {
+  severity: 'info' | 'warning' | 'critical';
+  code: string;
+  message: string;
+};
+
+export type AiUsabilityGradeReport = {
+  passed: boolean;
+  score: number;
+  profile: string;
+  issues: AiUsabilityIssue[];
+};
+
 export type AiStructuredReply = {
   schemaVersion: 'xiazhi.reply.v2';
   route: AiIntentRoute;
@@ -837,6 +1025,7 @@ export type AiHarnessRunSummary = {
   schemaValid: boolean;
   schemaErrors: string[];
   educationGrade?: AiEducationGradeReport;
+  usabilityGrade?: AiUsabilityGradeReport;
   trace: AiAgentTraceStep[];
 };
 

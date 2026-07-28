@@ -1071,6 +1071,16 @@ input.hidden[type="file"] {
   flex-wrap: wrap;
 }
 
+.ai-confirmation-more {
+  padding: 9px 10px;
+  border: 1px dashed rgba(245, 158, 11, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 251, 235, 0.68);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
 .prompt-attachment-trigger {
   display: inline-grid;
   width: 32px;
@@ -1480,6 +1490,125 @@ input.hidden[type="file"] {
 
 .settings-status {
   min-width: 0;
+}
+
+.usability-review-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.usability-review-summary {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.usability-review-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.usability-review-form,
+.usability-review-import,
+.usability-review-failures {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-soft);
+}
+
+.replay-before-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(91, 141, 239, 0.28);
+  border-radius: 6px;
+  background: rgba(91, 141, 239, 0.08);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.usability-review-form h3,
+.usability-review-import h3,
+.usability-review-failures h3 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.usability-review-import p,
+.usability-review-failures p,
+.section-subhead span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.usability-review-import textarea,
+.usability-review-form textarea {
+  min-height: auto;
+  resize: vertical;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  min-height: 16px;
+  padding: 0;
+}
+
+.section-subhead {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.usability-review-failures article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.failure-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.usability-review-failures strong,
+.usability-review-failures span {
+  display: block;
+}
+
+.usability-review-failures span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .archive-summary {
@@ -1990,6 +2119,8 @@ input.hidden[type="file"] {
   .ai-context-strip,
   .capability-grid,
   .settings-grid,
+  .usability-review-summary,
+  .usability-review-workspace,
   .two-column-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -2017,6 +2148,8 @@ input.hidden[type="file"] {
   .ai-context-strip,
   .capability-grid,
   .settings-grid,
+  .usability-review-summary,
+  .usability-review-workspace,
   .two-column-list,
   .timeline-item,
   .evidence-row,

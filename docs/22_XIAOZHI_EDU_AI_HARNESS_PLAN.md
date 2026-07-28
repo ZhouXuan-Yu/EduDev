@@ -926,7 +926,8 @@ imported
 任务：
 
 - [x] 规则 grader：证据、隐私、写入、题组结构。
-- [ ] 模型 grader：教师可用性、非模板化、年级适切。
+- [x] 模型 grader proxy：教师可用性、非模板化、年级适切的确定性代理评分、落库、telemetry 和 gate 已接入。
+- [ ] 真实 LLM-as-judge：外部模型裁判、多模型一致性和真实样本复核尚未接入。
 - [x] bad-case 数据集。
 - [x] eval report 输出。
 
@@ -938,8 +939,8 @@ imported
 
 当前边界：
 
-- v1 是确定性规则 grader；模型 grader 与教师人工评分未接入。
-- 当前门禁：`npm run test:ai-education-grader`。
+- v1 是确定性规则 grader；Phase 12 v1.5 已补充模型 grader proxy 与年级适切评分维度，但真实 LLM-as-judge 仍未接入。
+- 当前门禁：`npm run test:ai-education-grader`、`npm run test:ai-model-grader`。
 
 ### Phase 7：三元题组闭环 v1
 
@@ -1068,17 +1069,28 @@ imported
 
 任务：
 
-- 减少模板化废话。
-- 根据任务控制回复长度。
-- 产物入口自然化。
-- 确认队列减少打扰。
-- 老师常用工作流快捷入口。
+- [x] 减少模板化废话。
+- [x] 根据任务控制回复长度。
+- [x] 产物入口自然化。
+- [x] 确认队列减少打扰。
+- [x] 老师常用工作流快捷入口。
 
 验收：
 
-- 教师人工评分平均 >= 4/5。
-- 返工量下降。
-- 常见任务 1-2 轮内完成。
+- [ ] 教师人工评分平均 >= 4/5。
+- [ ] 返工量下降。
+- [ ] 常见任务 1-2 轮内完成。
+
+当前边界：
+
+- Phase 12 v1 当前完成的是确定性可用性策略、prompt 指令、fail-closed grader、教师可读 formatter、确认队列 UI 降噪和本地 smoke。
+- Phase 12 v1.1 当前完成的是 25 条代表性 proxy 样本集、可用性人工评分 rubric、`usability_quality_gate` 和 `usability_eval_baseline` 回归报告整合。
+- Phase 12 v1.2 当前完成的是人工评分 SQLite/Store/IPC/preload 基础设施、`humanUsability` telemetry、`teacher_review_score_gate`、seeded human-review smoke 和 DeepSeek live replay 脚本。
+- Phase 12 v1.3 当前完成的是设置页人工评分 UI、CSV/TSV 导入、失败样本回放入口和真实 Electron UI smoke。
+- Phase 12 v1.4 当前完成的是 before/after replay experiment SQLite/Store/IPC/preload/UI 基础设施、`AiTelemetrySnapshot.usabilityReplay`、`usability_replay_improvement_gate`、`npm run test:ai-replay` 和 Electron UI smoke 回读。
+- Phase 12 v1.5 当前完成的是模型 grader proxy 基础设施、`ai_model_grades`、年级适切评分维度、`AiTelemetrySnapshot.modelGrader`、`model_grader_quality_gate`、设置页模型裁判样本展示和 `npm run test:ai-model-grader`。
+- 尚未完成外部真实老师评分样本收集、真实返工量统计、真实 DeepSeek live 输出绑定二次评分、真实 LLM-as-judge 裁判和评分趋势图。
+- 当前门禁：`npm run test:ai-usability`、`npm run test:ai-human-review`、`npm run test:ai-replay`、`npm run test:ai-model-grader`、`npm run test:ai-human-review-ui`、`npm run test:ai-observability`；配置 `DEEPSEEK_API_KEY` 后运行 `npm run test:ai-live-usability`。
 
 ## 16. 后续开发顺序
 
@@ -1099,10 +1111,10 @@ imported
 12. 教师可用性打磨
 ```
 
-不要先做大而全 UI，也不要先继续堆 system prompt。小智下一步最该做的是：
+不要先做大而全 UI，也不要只继续堆 system prompt。小智下一步最该做的是：
 
 ```text
-Phase 12 教师可用性打磨
+Phase 12 v1.6 外部真实老师样本 + live 绑定 + LLM-as-judge
 ```
 
 ## 17. 每轮开发的固定检查清单
@@ -1126,17 +1138,25 @@ Phase 12 教师可用性打磨
 下一轮建议直接实现：
 
 ```text
-Phase 12 教师可用性打磨 v1
+Phase 12 v1.6 外部真实老师样本 + live 绑定 + LLM-as-judge
 ```
 
 预计改动文件：
 
 - `apps/desktop/src/main/ai-harness/*`
-- `apps/desktop/src/main/deepseek.ts`
+- `apps/desktop/scripts/*usability*.mjs`
+- `apps/desktop/scripts/*live*.mjs`
+- `apps/desktop/src/main/db.ts`
+- `apps/desktop/src/main/index.ts`
+- `apps/desktop/src/preload/index.ts`
 - `apps/desktop/src/renderer/App.tsx`
 - `apps/desktop/src/renderer/styles.css`
-- `apps/desktop/scripts/*usability*.mjs`
+- `apps/desktop/src/shared/contracts.ts`
+- `docs/23_XIAOZHI_USABILITY_EVAL_RUBRIC.md`
 - `docs/22_XIAOZHI_EDU_AI_HARNESS_PLAN.md`
+- `2.Memory.md`
+- `3.Learning.md`
+- `4.Wiki.md`
 
 ## 19. 当前实施状态
 
@@ -1219,7 +1239,7 @@ Phase 12 教师可用性打磨 v1
 
 尚未完成：
 
-- 模型 grader、教师人工评分和年级适切开放评分未接入。
+- 当时模型 grader、教师人工评分和年级适切开放评分未接入；当前 Phase 12 v1.5 已补齐模型 grader proxy 与年级适切评分工程口径，真实 LLM-as-judge 仍未完成。
 
 ### 2026-07-28：Phase 7 三元题组闭环 v1 第一段已完成
 
@@ -1302,6 +1322,109 @@ Phase 12 教师可用性打磨 v1
 - 还没有 Observability UI 仪表盘、回归报告 Markdown/HTML 导出和失败样本自动回放。
 - token budget 只统计已写入 usage 的任务；真实 DeepSeek live usage 仍需单独验收。
 - 历史会话 UI 尚未按 runId 展开完整 `ai_agent_events` / `ai_tool_runs` 轨迹。
+
+### 2026-07-29：Phase 12 教师可用性打磨 v1 第一段已完成
+
+- 已新增 `AiUsabilityGradeReport` 和 `AiUsabilityIssue` 共享契约，并把 `usabilityGrade` 接入 `AiHarnessRunSummary`。
+- 已新增 `apps/desktop/src/main/ai-harness/usability-policy.ts`，集中管理 route-aware profile、DeepSeek 可用性指令、确定性 Usability Grader 和教师可读 Markdown formatter。
+- `runDeepSeekChat()` 已在 schema 与 Education Grader 之后执行 Usability Grader；可用性 critical 未通过时 fail-closed，不作为成功答案展示。
+- Usability Grader 当前会拦截“当前为普通问答模式/无法自动切换/请手动切换学生数据”等退化话术，并检查过长泛答、标题过多、下一步过多、写入缺确认等问题。
+- `structuredReplyToMarkdown()` 已切换到教师可读 formatter：普通问答/工作台帮助不机械展开所有字段，学生诊断等任务按需展示“依据/教学判断/下一步/需要老师确认/产物”。
+- AI 页快捷提示已改为老师常用工作流入口；Confirmation Queue 默认只展示最近 2 个待确认项，其余折叠提示，减少对当前对话的打断。
+- 已新增 `apps/desktop/scripts/ai-usability-smoke.mjs` 与 `npm run test:ai-usability`。
+- 本轮门禁：`npm run test:ai-usability`、`npm run test:ai-structured-reply`、`npm run test:ai-education-grader`、`npm run test:ai-harness`、`npm run test:ai-agent-runtime`、`npm run test:ai-observability`、`npm run test:ai-document-export`、`npm run build`、`git diff --check`。
+
+尚未完成：
+
+- 教师人工评分平均 >= 4/5、返工量下降、常见任务 1-2 轮内完成率尚未用真实样本集证明。
+- 当时模型 grader、年级适切开放评分和真实 DeepSeek live 可用性样本回放仍是后续工作；当前 v1.5 已完成模型 grader proxy 和年级适切评分工程口径，真实 DeepSeek live 与真实 LLM-as-judge 仍未完成。
+- 当前是确定性规则版可用性门禁，不等于完整教育 AI 质量评估体系。
+
+### 2026-07-29：Phase 12 v1.1 教师样本集 proxy + Usability 回归报告整合已完成
+
+- 已新增 `apps/desktop/src/main/ai-harness/usability-eval-cases.ts`，包含 25 条代表性教师任务 proxy 样本，覆盖 8 类 route 和主要失败模式。
+- `npm run test:ai-usability` 已接入 proxy 样本集，要求样本数不少于 20 且全部 case 按预期通过；当前 25/25，suiteAverageScore=89。
+- `recordAiConsoleRun()` 已把 `harness.usabilityGrade` 摘要写入 `ai_tasks.result_json`，不保存隐藏推理链或长上下文。
+- `AiTelemetrySnapshot` 已新增 `usability` 汇总，覆盖 sampleCount、passedCount、failedCount、averageScore、minScore、profileCounts 和 issueCounts。
+- `createAiRegressionReport()` 已新增 `usability_quality_gate`；当真实 AI console task 缺少 usabilityGrade 时 warning，存在未通过评分或平均分低于阈值时 failed。
+- `AiRegressionReportInput` 已新增 `expectedUsabilityEvalTotal`、`expectedUsabilityEvalPassed`、`minimumUsabilityAverageScore`，并生成 `usability_eval_baseline`。
+- `apps/desktop/scripts/ai-observability-smoke.mjs` 已验证 SQLite readback 中的 usability snapshot、`usability_quality_gate` 和 `usability_eval_baseline`。
+- 已新增 `docs/23_XIAOZHI_USABILITY_EVAL_RUBRIC.md`，定义真实老师人工评分 1-5 分口径和必须记录字段。
+- 本轮门禁：`npm run test:ai-usability`、`npm run test:ai-observability`、`npm run test:ai-structured-reply`、`npm run test:ai-education-grader`、`npm run test:ai-harness`、`npm run test:ai-agent-runtime`、`npm run test:ai-document-export`、`npm run build`。
+
+尚未完成：
+
+- 25 条样本是 proxy 样本，不是真实老师人工评分；教师人工评分平均 >= 4/5 仍未完成。
+- 当时专门人工评分 UI / CSV 导入、返工量统计、常见任务 1-2 轮完成率、真实 DeepSeek live 执行结果和模型 grader 仍是后续工作；当前 UI 与模型 grader proxy 已完成，真实 DeepSeek live、真实 LLM-as-judge 和真实返工统计仍未完成。
+
+### 2026-07-29：Phase 12 v1.2 教师人工评分基础设施 + Live replay 脚本已完成
+
+- 已新增 `AiUsabilityHumanReviewInput`、`AiUsabilityHumanReview`、`AiUsabilityHumanReviewSummary` 共享契约。
+- 已新增 `ai_usability_reviews` SQLite 表和 reviewed/route/sample 索引。
+- 已实现 `createAiUsabilityReview()`、`listAiUsabilityReviews()`、`buildAiUsabilityReviewSummary()`，覆盖评分写入、列表和聚合。
+- 已新增 `AiTelemetrySnapshot.humanUsability`，并在 `createAiRegressionReport()` 中加入 `teacher_review_score_gate`。
+- 已新增 `aiObservability:createUsabilityReview`、`aiObservability:listUsabilityReviews`、`aiObservability:getUsabilityReviewSummary` IPC/preload API。
+- 已新增 `apps/desktop/scripts/ai-usability-human-review-smoke.mjs` 与 `npm run test:ai-human-review`，验证 seeded review 写入、summary、snapshot 和 gate readback。
+- 已新增 `apps/desktop/scripts/ai-live-usability-replay.mjs` 与 `npm run test:ai-live-usability`；无 `DEEPSEEK_API_KEY` 时 skipped，有 key 时执行真实 Electron/DeepSeek 可用性回放。
+
+尚未完成：
+
+- 当前是人工评分基础设施和 seeded smoke，不是外部真实老师样本验收。
+- 还没有专门人工评分 UI / CSV 导入、失败样本回放页面和评分趋势图。
+- 本轮没有 `DEEPSEEK_API_KEY`，真实 DeepSeek live replay 未执行，只验证了 skipped 边界和构建链路。
+- Phase 12 总体验收中的教师平均分 >= 4/5、返工量下降、常见任务 1-2 轮完成仍未勾选。
+
+### 2026-07-29：Phase 12 v1.3 人工评分 UI / CSV 导入 / 失败样本回放已完成
+
+- 设置页新增“小智质量评审”面板，显示人工样本数、平均评分、需重写数量和平均有用轮次。
+- 单条评分表单已接入 `createAiUsabilityReview()`，覆盖 rubric 必填字段和 review 时间、模型等辅助字段。
+- CSV / TSV 导入已接入浏览器 FileReader 和 textarea 粘贴入口；导入后逐条走 preload / Store 校验和写入。
+- 失败样本回放列表已接入：低分、需重写或 issueCode 非 none 的样本可一键回填到 AI 输入框重新运行。
+- 新增 `apps/desktop/scripts/ai-usability-review-ui-smoke.mjs` 与 `npm run test:ai-human-review-ui`，通过真实 Electron 设置页验证 UI 表单、CSV 导入、失败回放和 SQLite summary readback。
+
+尚未完成：
+
+- 当前 UI smoke 使用 seeded UI 样本，不等于外部真实老师样本集验收。
+- 失败样本回放只是 prompt 回填，尚未绑定旧回复、新回复、二次评分、模型版本和 prompt 版本。
+- Phase 12 总体验收中的教师平均分 >= 4/5、返工量下降、常见任务 1-2 轮完成仍未勾选。
+
+### 2026-07-29：Phase 12 v1.4 before/after replay experiment 基础设施已完成
+
+- 已新增 `AiUsabilityReplayExperimentInput`、`AiUsabilityReplayExperiment`、`AiUsabilityReplaySummary` 共享契约。
+- 已新增 `ai_usability_replay_experiments` SQLite 表和 created/before/after 索引；实验行绑定两条真实 `ai_usability_reviews`，分数、轮次和 issue delta 通过 SQLite join 回读计算。
+- 已实现 `createAiUsabilityReplayExperiment()`、`listAiUsabilityReplayExperiments()`、`buildAiUsabilityReplaySummary()`，并在 `AiTelemetrySnapshot.usabilityReplay` 中汇总 experimentCount、improvedCount、improvementRate、averageScoreDelta、averageRoundsDelta 和 issueTransitionCounts。
+- `createAiRegressionReport()` 已新增 `usability_replay_improvement_gate`；无 replay 实验时默认 warning，调用方要求最小实验数或改善率不达标时 failed。
+- 主进程 / preload 已暴露 `createAiUsabilityReplayExperiment`、`listAiUsabilityReplayExperiments`、`getAiUsabilityReplaySummary`。
+- 设置页“小智质量评审”已支持在失败样本中“设为 before”，保存下一条 after 人工评分时自动创建 before/after replay experiment，并展示 replay KPI 与实验列表。
+- 已新增 `apps/desktop/scripts/ai-usability-replay-smoke.mjs` 与 `npm run test:ai-replay`，验证 replay 写入、列表、summary、snapshot 和 regression gate readback。
+- `npm run test:ai-human-review-ui` 已扩展为真实 Electron UI 验证：表单保存、CSV 导入、失败样本回放、选择 before、保存 after、replay summary/list readback。
+- `npm run test:ai-observability` 已 seed replay 实验，保证 `usability_replay_improvement_gate` 与其余 gates 全部 passed。
+
+尚未完成：
+
+- 本轮仍是 seeded replay 实验，不等于外部真实老师样本集验收。
+- `npm run test:ai-live-usability` 仍需 `DEEPSEEK_API_KEY` 才能执行真实 DeepSeek live；当前 replay 实验尚未自动绑定 live 输出、模型版本 token usage 和二次人工评分。
+- 评分趋势图、真实 LLM-as-judge、真实返工量下降统计和常见任务 1-2 轮完成率仍是 Phase 12 v1.6+ 工作。
+
+### 2026-07-29：Phase 12 v1.5 模型 grader proxy + 年级适切评分基础设施已完成
+
+- 已新增 `AiModelGradeInput`、`AiModelGrade`、`AiModelGradeSummary` 共享契约，明确区分 `deterministic_proxy` 与未来 `llm_judge`。
+- 已新增 `apps/desktop/src/main/ai-harness/model-grader.ts`，提供本地确定性 proxy grader，按 evidence、actionability、safety、gradeAppropriateness、concision、teacherControl 六个维度评分。
+- 已新增 `ai_model_grades` SQLite 表和 reviewed/route/mode 索引，记录 sample、prompt、answerMarkdown、route、subIntent、targetGrade、被评模型、grader 模型、grader 模式、六维分数、overall、passed、issueCodes 与 graderRationale。
+- `OmniEduStore` 已新增 `createAiModelGrade()`、`listAiModelGrades()`、`buildAiModelGradeSummary()`，所有分数写入前均归一到 1-5 范围。
+- `AiTelemetrySnapshot.modelGrader` 已汇总 sampleCount、passedCount、failedCount、averageOverallScore、averageGradeAppropriatenessScore、routeCounts、issueCounts 和 latestReviewedAt。
+- `createAiRegressionReport()` 已新增 `model_grader_quality_gate`，可按最小样本数、最低整体评分和最低年级适切评分做门禁。
+- 主进程 / preload 已暴露 `createAiModelGrade`、`listAiModelGrades`、`getAiModelGradeSummary`。
+- 设置页“小智质量评审”已新增模型 grader KPI 与样本列表，方便老师/开发者回看模型裁判样本，而不是只看终端输出。
+- 已新增 `apps/desktop/scripts/ai-model-grader-smoke.mjs` 与 `npm run test:ai-model-grader`，验证好样本写入、坏样本 issue 捕获、summary、snapshot 和 regression gate readback。
+- `npm run test:ai-observability` 已 seed 模型 grader 样本并要求 `model_grader_quality_gate` passed；`npm run test:ai-human-review-ui` 已验证设置页模型裁判面板真实可见。
+
+尚未完成：
+
+- v1.5 是 deterministic proxy 和工程落点，不等于真实外部模型裁判；未来 LLM-as-judge 必须写入同一张 `ai_model_grades` 表，并标记 `graderMode = llm_judge`。
+- 当前 seeded model grade 不能替代外部真实老师样本，也不能证明真实返工量下降。
+- 真实 DeepSeek live 输出仍未自动绑定 after review、promptVersion、token usage 和模型 grader 样本。
+- 年级适切评分当前是启发式维度，后续需要用真实年级/学科样本和老师人工复核校准。
 
 ## 20. 长期不可变底线
 

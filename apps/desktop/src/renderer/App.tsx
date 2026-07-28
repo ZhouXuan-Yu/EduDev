@@ -43,6 +43,15 @@ import type {
   AiConversationMessage,
   AiConversationSession,
   AiAgentTraceStep,
+  AiIntentRoute,
+  AiModelGrade,
+  AiModelGradeSummary,
+  AiSubIntent,
+  AiUsabilityHumanReview,
+  AiUsabilityHumanReviewInput,
+  AiUsabilityHumanReviewSummary,
+  AiUsabilityReplayExperiment,
+  AiUsabilityReplaySummary,
   AttachmentImportResult,
   DeepSeekSettings,
   DocumentArtifactExportResult,
@@ -113,6 +122,109 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
   },
 };
 
+const aiIntentRouteOptions: AiIntentRoute[] = [
+  'general_qa',
+  'student_diagnosis',
+  'error_analysis',
+  'practice_design',
+  'lesson_design',
+  'report_draft',
+  'knowledge_retrieval',
+  'workspace_help',
+];
+
+const aiSubIntentOptions: AiSubIntent[] = [
+  'casual_greeting',
+  'capability_intro',
+  'concept_explanation',
+  'student_progress',
+  'student_weakness',
+  'student_profile_review',
+  'risk_support',
+  'mistake_reasoning',
+  'error_pattern_summary',
+  'correction_guidance',
+  'triplet_practice',
+  'similar_questions',
+  'homework_plan',
+  'lesson_plan',
+  'teaching_sequence',
+  'classroom_activity',
+  'parent_summary',
+  'monthly_report',
+  'weekly_report',
+  'export_document',
+  'resource_search',
+  'source_citation',
+  'knowledge_graph_lookup',
+  'usage_help',
+  'settings_help',
+  'data_management_help',
+  'safety_boundary',
+];
+
+const routeLabels: Record<AiIntentRoute, string> = {
+  general_qa: '普通问答',
+  student_diagnosis: '学生诊断',
+  error_analysis: '错因分析',
+  practice_design: '练习设计',
+  lesson_design: '备课设计',
+  report_draft: '报告草稿',
+  knowledge_retrieval: '知识检索',
+  workspace_help: '工作台帮助',
+};
+
+const emptyHumanUsabilitySummary: AiUsabilityHumanReviewSummary = {
+  sampleCount: 0,
+  averageTeacherScore: 0,
+  minTeacherScore: 0,
+  passedCount: 0,
+  needsRewriteCount: 0,
+  averageRoundsToUseful: 0,
+  routeCounts: {},
+  issueCounts: {},
+  latestReviewedAt: '',
+};
+
+const emptyUsabilityReplaySummary: AiUsabilityReplaySummary = {
+  experimentCount: 0,
+  improvedCount: 0,
+  unresolvedCount: 0,
+  improvementRate: 0,
+  averageScoreDelta: 0,
+  averageRoundsDelta: 0,
+  issueTransitionCounts: {},
+  latestCreatedAt: '',
+};
+
+const emptyModelGradeSummary: AiModelGradeSummary = {
+  sampleCount: 0,
+  passedCount: 0,
+  failedCount: 0,
+  averageOverallScore: 0,
+  minOverallScore: 0,
+  averageGradeAppropriatenessScore: 0,
+  issueCounts: {},
+  graderModeCounts: {},
+  latestReviewedAt: '',
+};
+
+const initialUsabilityReviewForm: AiUsabilityHumanReviewInput = {
+  sampleId: '',
+  prompt: '',
+  route: 'student_diagnosis',
+  subIntent: 'student_progress',
+  teacherScore: 4,
+  needsRewrite: false,
+  roundsToUseful: 1,
+  mainIssueCode: 'none',
+  teacherNote: '',
+  runId: '',
+  sessionId: '',
+  model: '',
+  reviewedAt: new Date().toISOString().slice(0, 16),
+};
+
 type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'intake' | 'mistakes' | 'review' | 'search' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
@@ -161,12 +273,12 @@ type AiRenameTarget = {
 };
 
 const aiPromptSuggestions = [
-  '分析当前学生最近 30 天的主要错因，并给出可执行的巩固练习建议',
-  '根据老师知识库，为当前学生生成一份本周学习干预计划',
-  '把最近的学习记录整理成家长能看懂的沟通摘要',
-  '从当前学生的错题记录中提炼 3 个优先突破知识点',
-  '生成一份复盘报告草稿，保留证据引用和老师确认事项',
-  '检查当前学生档案还缺哪些信息，列出补全清单',
+  '查小A最近7天错题，给我3个今天能用的练习',
+  '根据小A学习进度生成三元题组草稿，先不要保存',
+  '把小A本周记录整理成家长沟通草稿，语气克制一点',
+  '看看小A档案还缺哪些关键信息，只列补全清单',
+  '把当前知识点做成15分钟课堂导入和2个检查点',
+  '查看待确认项，告诉我哪些值得保存、哪些先拒绝',
 ];
 
 function Badge({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'green' | 'blue' | 'amber' | 'red' }) {
@@ -196,10 +308,10 @@ function PromptSuggestionPanel({
     <PromptSuggestion className="ai-suggestion-panel">
       <PromptSuggestion.Header>
         <PromptSuggestion.Title>
-          What do you want to work on?
+          今天想让小智做什么？
         </PromptSuggestion.Title>
         <PromptSuggestion.Description>
-          Ask a question or start from one of the suggestions below.
+          直接说学生、时间、目标；小智会自己路由到学生数据、题库、知识库或确认队列。
         </PromptSuggestion.Description>
       </PromptSuggestion.Header>
       <PromptSuggestion.Items>
@@ -349,6 +461,58 @@ function formatDate(value: string) {
   return new Date(value).toLocaleDateString('zh-CN');
 }
 
+function parseDelimitedLine(line: string, delimiter: string) {
+  const values: string[] = [];
+  let current = '';
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const next = line[index + 1];
+    if (char === '"' && quoted && next === '"') {
+      current += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === delimiter && !quoted) {
+      values.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  values.push(current.trim());
+  return values;
+}
+
+function parseUsabilityReviewCsv(text: string): AiUsabilityHumanReviewInput[] {
+  const lines = text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (lines.length < 2) return [];
+  const delimiter = lines[0].includes('\t') ? '\t' : ',';
+  const headers = parseDelimitedLine(lines[0], delimiter).map((header) => header.trim());
+  return lines.slice(1).map((line) => {
+    const values = parseDelimitedLine(line, delimiter);
+    const row = Object.fromEntries(headers.map((header, index) => [header, values[index] ?? '']));
+    return {
+      sampleId: row.sampleId || row.id || '',
+      prompt: row.prompt || '',
+      route: (row.route || 'general_qa') as AiIntentRoute,
+      subIntent: row.subIntent || row.sub_intent || 'concept_explanation',
+      teacherScore: Number(row.teacherScore || row.teacher_score || 0),
+      needsRewrite: /^(true|1|yes|y|是|需要)$/i.test(row.needsRewrite || row.needs_rewrite || ''),
+      roundsToUseful: Number(row.roundsToUseful || row.rounds_to_useful || 1),
+      mainIssueCode: row.mainIssueCode || row.main_issue_code || 'none',
+      teacherNote: row.teacherNote || row.teacher_note || '',
+      reviewedAt: row.reviewedAt || row.reviewed_at || '',
+      runId: row.runId || row.run_id || '',
+      sessionId: row.sessionId || row.session_id || '',
+      model: row.model || '',
+    };
+  });
+}
+
 export function App() {
   const [activeView, setActiveView] = useState<ViewKey>('ai');
   const [dataRoot, setDataRoot] = useState('正在连接本地数据目录');
@@ -369,6 +533,16 @@ export function App() {
   const [aiResult, setAiResult] = useState<AiConsoleRunResult | null>(null);
   const [activeAiArtifact, setActiveAiArtifact] = useState<AiArtifact | null>(null);
   const [artifactPanelWidth, setArtifactPanelWidth] = useState(420);
+  const [aiUsabilityReviews, setAiUsabilityReviews] = useState<AiUsabilityHumanReview[]>([]);
+  const [aiUsabilitySummary, setAiUsabilitySummary] = useState<AiUsabilityHumanReviewSummary>(emptyHumanUsabilitySummary);
+  const [aiUsabilityReplayExperiments, setAiUsabilityReplayExperiments] = useState<AiUsabilityReplayExperiment[]>([]);
+  const [aiUsabilityReplaySummary, setAiUsabilityReplaySummary] = useState<AiUsabilityReplaySummary>(emptyUsabilityReplaySummary);
+  const [aiModelGrades, setAiModelGrades] = useState<AiModelGrade[]>([]);
+  const [aiModelGradeSummary, setAiModelGradeSummary] = useState<AiModelGradeSummary>(emptyModelGradeSummary);
+  const [selectedReplayBeforeReviewId, setSelectedReplayBeforeReviewId] = useState('');
+  const [usabilityReviewForm, setUsabilityReviewForm] = useState<AiUsabilityHumanReviewInput>(initialUsabilityReviewForm);
+  const [usabilityCsvText, setUsabilityCsvText] = useState('');
+  const [usabilityImporting, setUsabilityImporting] = useState(false);
   const [aiFolders, setAiFolders] = useState<AiConversationFolder[]>([]);
   const [aiSessions, setAiSessions] = useState<AiConversationSession[]>([]);
   const [archivedAiFolders, setArchivedAiFolders] = useState<AiConversationFolder[]>([]);
@@ -493,6 +667,23 @@ export function App() {
     if (items) setAiConfirmations(items);
   }
 
+  async function refreshAiUsabilityReviews() {
+    const [reviews, summary, replayExperiments, replaySummary, modelGrades, modelGradeSummary] = await Promise.all([
+      window.omniEdu?.listAiUsabilityReviews(100),
+      window.omniEdu?.getAiUsabilityReviewSummary(),
+      window.omniEdu?.listAiUsabilityReplayExperiments(50),
+      window.omniEdu?.getAiUsabilityReplaySummary(),
+      window.omniEdu?.listAiModelGrades(20),
+      window.omniEdu?.getAiModelGradeSummary(),
+    ]);
+    setAiUsabilityReviews(reviews ?? []);
+    setAiUsabilitySummary(summary ?? emptyHumanUsabilitySummary);
+    setAiUsabilityReplayExperiments(replayExperiments ?? []);
+    setAiUsabilityReplaySummary(replaySummary ?? emptyUsabilityReplaySummary);
+    setAiModelGrades(modelGrades ?? []);
+    setAiModelGradeSummary(modelGradeSummary ?? emptyModelGradeSummary);
+  }
+
   async function openAiConversation(sessionId: string) {
     const detail = await window.omniEdu?.getAiConversationSession(sessionId);
     if (!detail) return;
@@ -610,6 +801,7 @@ export function App() {
     }
     await refreshAiConversations();
     await refreshAiConfirmations();
+    await refreshAiUsabilityReviews();
     setActiveStudentId((current) => current || data.students[0]?.id || '');
     setStatus('本地数据已连接。');
   }
@@ -1205,6 +1397,96 @@ export function App() {
     } catch (error) {
       setStatus(error instanceof Error ? error.message : '拒绝待办项失败');
     }
+  }
+
+  function resetUsabilityReviewForm() {
+    setUsabilityReviewForm({
+      ...initialUsabilityReviewForm,
+      reviewedAt: new Date().toISOString().slice(0, 16),
+      model: deepSeekSettings.model || initialUsabilityReviewForm.model,
+    });
+  }
+
+  function buildUsabilityReviewInput(raw: AiUsabilityHumanReviewInput): AiUsabilityHumanReviewInput {
+    return {
+      ...raw,
+      sampleId: raw.sampleId.trim(),
+      prompt: raw.prompt.trim(),
+      subIntent: String(raw.subIntent).trim(),
+      mainIssueCode: raw.mainIssueCode.trim() || 'none',
+      teacherNote: raw.teacherNote?.trim() ?? '',
+      runId: raw.runId?.trim() ?? '',
+      sessionId: raw.sessionId?.trim() ?? '',
+      model: raw.model?.trim() || deepSeekSettings.model || '',
+      teacherScore: Number(raw.teacherScore),
+      roundsToUseful: Number(raw.roundsToUseful),
+      reviewedAt: raw.reviewedAt || new Date().toISOString(),
+    };
+  }
+
+  async function submitAiUsabilityReview() {
+    try {
+      const saved = await window.omniEdu?.createAiUsabilityReview(buildUsabilityReviewInput(usabilityReviewForm));
+      if (selectedReplayBeforeReviewId && saved && saved.id !== selectedReplayBeforeReviewId) {
+        await window.omniEdu?.createAiUsabilityReplayExperiment({
+          beforeReviewId: selectedReplayBeforeReviewId,
+          afterReviewId: saved.id,
+          replayPrompt: saved.prompt,
+          modelAfter: saved.model,
+          promptVersionAfter: 'manual-ui-v1.4',
+          experimentNote: '由设置页人工评分表单创建的 before/after replay experiment。',
+        });
+        setSelectedReplayBeforeReviewId('');
+      }
+      await refreshAiUsabilityReviews();
+      resetUsabilityReviewForm();
+      setStatus(selectedReplayBeforeReviewId ? '已保存人工评分，并创建 before/after 回放实验。' : '已保存小智人工评分样本。');
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '保存人工评分失败');
+    }
+  }
+
+  async function importAiUsabilityCsv() {
+    const rows = parseUsabilityReviewCsv(usabilityCsvText);
+    if (!rows.length) {
+      setStatus('CSV 至少需要表头和一行样本。');
+      return;
+    }
+    setUsabilityImporting(true);
+    try {
+      let imported = 0;
+      for (const row of rows) {
+        await window.omniEdu?.createAiUsabilityReview(buildUsabilityReviewInput(row));
+        imported += 1;
+      }
+      setUsabilityCsvText('');
+      await refreshAiUsabilityReviews();
+      setStatus(`已导入 ${imported} 条小智人工评分样本。`);
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '导入人工评分 CSV 失败');
+    } finally {
+      setUsabilityImporting(false);
+    }
+  }
+
+  function replayAiUsabilityReview(review: AiUsabilityHumanReview) {
+    setAiPrompt(review.prompt);
+    setActiveView('ai');
+    setStatus(`已把失败样本 ${review.sampleId} 放入小智输入框，可重新运行对比。`);
+  }
+
+  function selectReplayBeforeReview(review: AiUsabilityHumanReview) {
+    setSelectedReplayBeforeReviewId(review.id);
+    setUsabilityReviewForm({
+      ...usabilityReviewForm,
+      sampleId: `${review.sampleId}_after`,
+      prompt: review.prompt,
+      route: review.route,
+      subIntent: review.subIntent,
+      model: deepSeekSettings.model || review.model || usabilityReviewForm.model,
+      reviewedAt: new Date().toISOString().slice(0, 16),
+    });
+    setStatus(`已选择 ${review.sampleId} 作为 before 样本。保存下一条评分时会创建 before/after 实验。`);
   }
 
   async function saveDeepSeekSettings() {
@@ -1886,6 +2168,8 @@ export function App() {
     };
     const liveTrace = buildAiTrace(aiPrompt, aiResult, liveArtifacts);
     const liveThoughtSteps = liveTrace.thoughtSteps;
+    const visibleConfirmations = aiConfirmations.slice(0, 2);
+    const hiddenConfirmationCount = Math.max(0, aiConfirmations.length - visibleConfirmations.length);
     const renderSessionList = (folderId: string | null) => {
       const folderSessions = sessionsInFolder(folderId);
       if (!folderSessions.length) {
@@ -2216,12 +2500,12 @@ export function App() {
               <div className="ai-confirmation-queue-header">
                 <div>
                   <strong>待老师确认</strong>
-                  <span>小智生成的写入项确认前不会保存到报告库。</span>
+                  <span>只提醒最近关键项；确认前不会写入本地业务数据。</span>
                 </div>
                 <Badge tone="amber">{aiConfirmations.length} 项</Badge>
               </div>
               <div className="ai-confirmation-items">
-                {aiConfirmations.slice(0, 3).map((item) => (
+                {visibleConfirmations.map((item) => (
                   <article className="ai-confirmation-card" key={item.id}>
                     <div>
                       <div className="ai-confirmation-title">
@@ -2243,6 +2527,11 @@ export function App() {
                     </div>
                   </article>
                 ))}
+                {hiddenConfirmationCount ? (
+                  <div className="ai-confirmation-more">
+                    还有 {hiddenConfirmationCount} 项已收起，处理完当前两项后再继续展示，避免打断老师当前对话。
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : null}
@@ -2675,6 +2964,10 @@ export function App() {
   }
 
   function renderSettingsView() {
+    const failedUsabilityReviews = aiUsabilityReviews
+      .filter((review) => review.needsRewrite || review.teacherScore <= 3 || review.mainIssueCode !== 'none')
+      .slice(0, 6);
+    const selectedReplayBeforeReview = aiUsabilityReviews.find((review) => review.id === selectedReplayBeforeReviewId);
     return (
       <div className="page-grid">
         <section className="work-panel span-2">
@@ -2735,6 +3028,284 @@ export function App() {
         <section className="work-panel span-2">
           <WorkspaceLabel
             number="03"
+            title="小智质量评审"
+            description="人工评分、CSV 导入和失败样本回放都写入本地 SQLite，不用 proxy 样本冒充真实老师反馈。"
+          />
+          <div className="usability-review-panel" data-testid="ai-usability-review-panel">
+            <div className="usability-review-summary">
+              <ProKpiCard
+                label="人工样本"
+                value={aiUsabilitySummary.sampleCount}
+                detail="来自 ai_usability_reviews，可被回归报告读取"
+                trend="humanUsability"
+                icon={<ListChecks size={18} />}
+              />
+              <ProKpiCard
+                label="平均评分"
+                value={aiUsabilitySummary.sampleCount ? `${aiUsabilitySummary.averageTeacherScore}/5` : '暂无'}
+                detail={`最低分 ${aiUsabilitySummary.minTeacherScore || '暂无'}，目标 >= 4/5`}
+                trend="teacherScore"
+                icon={<BarChart3 size={18} />}
+              />
+              <ProKpiCard
+                label="需重写"
+                value={aiUsabilitySummary.needsRewriteCount}
+                detail="needsRewrite 为 true 的样本会进入失败回放"
+                trend="rework"
+                icon={<ShieldCheck size={18} />}
+              />
+              <ProKpiCard
+                label="有用轮次"
+                value={aiUsabilitySummary.sampleCount ? aiUsabilitySummary.averageRoundsToUseful : '暂无'}
+                detail="目标：常见任务 1-2 轮内可用"
+                trend="roundsToUseful"
+                icon={<MessageSquare size={18} />}
+              />
+              <ProKpiCard
+                label="回放实验"
+                value={aiUsabilityReplaySummary.experimentCount}
+                detail={aiUsabilityReplaySummary.experimentCount ? `改善率 ${aiUsabilityReplaySummary.improvementRate}` : '尚未绑定 before/after'}
+                trend={`Δ分 ${aiUsabilityReplaySummary.averageScoreDelta}`}
+                icon={<Database size={18} />}
+              />
+              <ProKpiCard
+                label="模型 Grader"
+                value={aiModelGradeSummary.sampleCount}
+                detail={aiModelGradeSummary.sampleCount ? `通过 ${aiModelGradeSummary.passedCount}，失败 ${aiModelGradeSummary.failedCount}` : '尚未导入裁判样本'}
+                trend={`年级适切 ${aiModelGradeSummary.averageGradeAppropriatenessScore || '暂无'}`}
+                icon={<ShieldCheck size={18} />}
+              />
+            </div>
+
+            <div className="usability-review-workspace">
+              <div className="usability-review-form" data-testid="ai-usability-review-form">
+                <h3>单条评分录入</h3>
+                {selectedReplayBeforeReview ? (
+                  <div className="replay-before-banner" data-testid="selected-replay-before">
+                    <span>before 样本：{selectedReplayBeforeReview.sampleId} · {selectedReplayBeforeReview.teacherScore}/5 · {selectedReplayBeforeReview.mainIssueCode}</span>
+                    <button className="secondary-action compact-button" onClick={() => setSelectedReplayBeforeReviewId('')}>取消绑定</button>
+                  </div>
+                ) : null}
+                <div className="form-grid">
+                  <label>
+                    sampleId
+                    <input
+                      value={usabilityReviewForm.sampleId}
+                      placeholder="teacher_review_001"
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, sampleId: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    route
+                    <select
+                      value={usabilityReviewForm.route}
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, route: event.target.value as AiIntentRoute })}
+                    >
+                      {aiIntentRouteOptions.map((route) => (
+                        <option key={route} value={route}>{routeLabels[route]} · {route}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    subIntent
+                    <select
+                      value={String(usabilityReviewForm.subIntent)}
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, subIntent: event.target.value })}
+                    >
+                      {aiSubIntentOptions.map((subIntent) => (
+                        <option key={subIntent} value={subIntent}>{subIntent}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    teacherScore
+                    <input
+                      type="number"
+                      min={1}
+                      max={5}
+                      value={usabilityReviewForm.teacherScore}
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, teacherScore: Number(event.target.value) })}
+                    />
+                  </label>
+                  <label>
+                    roundsToUseful
+                    <input
+                      type="number"
+                      min={1}
+                      max={12}
+                      value={usabilityReviewForm.roundsToUseful}
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, roundsToUseful: Number(event.target.value) })}
+                    />
+                  </label>
+                  <label>
+                    mainIssueCode
+                    <input
+                      value={usabilityReviewForm.mainIssueCode}
+                      placeholder="none / evidence_gap / too_long"
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, mainIssueCode: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    model
+                    <input
+                      value={usabilityReviewForm.model ?? ''}
+                      placeholder={deepSeekSettings.model}
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, model: event.target.value })}
+                    />
+                  </label>
+                  <label>
+                    reviewedAt
+                    <input
+                      type="datetime-local"
+                      value={String(usabilityReviewForm.reviewedAt ?? '').slice(0, 16)}
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, reviewedAt: event.target.value })}
+                    />
+                  </label>
+                  <label className="full">
+                    prompt
+                    <textarea
+                      rows={3}
+                      value={usabilityReviewForm.prompt}
+                      placeholder="老师真实问小智的问题"
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, prompt: event.target.value })}
+                    />
+                  </label>
+                  <label className="full">
+                    teacherNote
+                    <textarea
+                      rows={3}
+                      value={usabilityReviewForm.teacherNote ?? ''}
+                      placeholder="老师为什么给这个分数，哪里需要改"
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, teacherNote: event.target.value })}
+                    />
+                  </label>
+                  <label className="checkbox-row full">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(usabilityReviewForm.needsRewrite)}
+                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, needsRewrite: event.target.checked })}
+                    />
+                    这条回复需要老师明显重写
+                  </label>
+                  <button className="primary-action wide" onClick={submitAiUsabilityReview} data-testid="save-ai-usability-review">
+                    <CheckCircle2 size={16} />
+                    保存人工评分
+                  </button>
+                </div>
+              </div>
+
+              <div className="usability-review-import" data-testid="ai-usability-csv-import">
+                <h3>CSV / TSV 导入</h3>
+                <p>表头至少包含 sampleId、prompt、route、subIntent、teacherScore、needsRewrite、roundsToUseful、mainIssueCode。</p>
+                <input
+                  type="file"
+                  accept=".csv,.tsv,.txt"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = () => setUsabilityCsvText(String(reader.result ?? ''));
+                    reader.readAsText(file, 'utf-8');
+                    event.currentTarget.value = '';
+                  }}
+                />
+                <textarea
+                  rows={8}
+                  value={usabilityCsvText}
+                  placeholder="sampleId,prompt,route,subIntent,teacherScore,needsRewrite,roundsToUseful,mainIssueCode,teacherNote&#10;teacher_001,请看小A最近错题,student_diagnosis,student_progress,4,false,2,none,可直接使用"
+                  onChange={(event) => setUsabilityCsvText(event.target.value)}
+                />
+                <button className="secondary-action wide" disabled={usabilityImporting} onClick={importAiUsabilityCsv} data-testid="import-ai-usability-csv">
+                  <UploadCloud size={16} />
+                  {usabilityImporting ? '导入中' : '导入评分 CSV'}
+                </button>
+              </div>
+            </div>
+
+            <div className="usability-review-failures" data-testid="ai-usability-failure-replay">
+              <div className="section-subhead">
+                <h3>失败样本回放</h3>
+                <span>低分、需重写或 issueCode 非 none 的样本会出现在这里。</span>
+              </div>
+              {failedUsabilityReviews.length ? failedUsabilityReviews.map((review) => (
+                <article key={review.id}>
+                  <div>
+                    <strong>{review.sampleId}</strong>
+                    <span>{routeLabels[review.route] ?? review.route} · {review.subIntent} · {review.teacherScore}/5 · {review.mainIssueCode}</span>
+                    <p>{review.prompt}</p>
+                  </div>
+                  <div className="failure-actions">
+                    <button className="secondary-action compact-button" onClick={() => replayAiUsabilityReview(review)}>
+                      回放到 AI 输入
+                    </button>
+                    <button className="secondary-action compact-button" onClick={() => selectReplayBeforeReview(review)} data-testid="select-replay-before">
+                      设为 before
+                    </button>
+                  </div>
+                </article>
+              )) : (
+                <div className="empty-state">暂无失败样本。导入低分或需重写样本后，可一键放回 AI 输入框重新验证。</div>
+              )}
+            </div>
+            <div className="usability-review-failures" data-testid="ai-usability-replay-experiments">
+              <div className="section-subhead">
+                <h3>before/after 回放实验</h3>
+                <span>每条实验都来自两条真实 ai_usability_reviews，delta 由 SQLite join 回读计算。</span>
+              </div>
+              {aiUsabilityReplayExperiments.length ? aiUsabilityReplayExperiments.map((experiment) => (
+                <article key={experiment.id}>
+                  <div>
+                    <strong>{experiment.improved ? '已改善' : '未完全改善'} · Δ{experiment.scoreDelta}/5</strong>
+                    <span>{experiment.issueBefore} → {experiment.issueAfter} · 有用轮次 Δ{experiment.roundsDelta} · {experiment.modelBefore || 'unknown'} → {experiment.modelAfter || 'unknown'}</span>
+                    <p>{experiment.replayPrompt}</p>
+                  </div>
+                  <button
+                    className="secondary-action compact-button"
+                    onClick={() => {
+                      setAiPrompt(experiment.replayPrompt);
+                      setActiveView('ai');
+                      setStatus(`已把 replay experiment ${experiment.id} 的 prompt 放入小智输入框。`);
+                    }}
+                  >
+                    再次回放
+                  </button>
+                </article>
+              )) : (
+                <div className="empty-state">暂无 before/after 实验。先在失败样本中点击“设为 before”，再保存改进后的人工评分。</div>
+              )}
+            </div>
+            <div className="usability-review-failures" data-testid="ai-model-grader-panel">
+              <div className="section-subhead">
+                <h3>模型 Grader 裁判样本</h3>
+                <span>用于复核证据、可执行性、安全、年级适切、简洁和老师控制权；无样本时回归报告只 warning。</span>
+              </div>
+              {aiModelGrades.length ? aiModelGrades.slice(0, 6).map((grade) => (
+                <article key={grade.id}>
+                  <div>
+                    <strong>{grade.passed ? '通过' : '未通过'} · {grade.overallScore}/5 · {grade.sampleId}</strong>
+                    <span>{routeLabels[grade.route] ?? grade.route} · {grade.subIntent} · {grade.graderMode} · 年级适切 {grade.gradeAppropriatenessScore}/5</span>
+                    <p>{grade.issueCodes.length ? `issues: ${grade.issueCodes.join(', ')}` : grade.graderRationale}</p>
+                  </div>
+                  <button
+                    className="secondary-action compact-button"
+                    onClick={() => {
+                      setAiPrompt(grade.prompt);
+                      setActiveView('ai');
+                      setStatus(`已把模型 grader 样本 ${grade.sampleId} 的 prompt 放入小智输入框。`);
+                    }}
+                  >
+                    回放 prompt
+                  </button>
+                </article>
+              )) : (
+                <div className="empty-state">暂无模型 grader 样本。后续 live / LLM-as-judge 输出应写入 ai_model_grades，而不是只保存在脚本日志。</div>
+              )}
+            </div>
+          </div>
+        </section>
+        <section className="work-panel span-2">
+          <WorkspaceLabel
+            number="04"
             title="已归档 AI 对话"
             description="从 AI 中控台左侧栏归档的文件夹和对话会保留在这里。"
           />
@@ -2779,7 +3350,7 @@ export function App() {
           </div>
         </section>
         <section className="work-panel">
-          <WorkspaceLabel number="04" title="本地安全规则" />
+          <WorkspaceLabel number="05" title="本地安全规则" />
           <div className="system-list">
             <span><Database size={16} />SQLite 保存结构化数据。</span>
             <span><HardDrive size={16} />附件保存为本地文件路径和元数据。</span>

@@ -21,6 +21,12 @@
     "test:ai-knowledge-graph": "tsc --noEmit && node scripts/ai-knowledge-graph-smoke.mjs",
     "test:ai-document-export": "tsc --noEmit && node scripts/ai-document-export-smoke.mjs",
     "test:ai-observability": "tsc --noEmit && node scripts/ai-observability-smoke.mjs",
+    "test:ai-usability": "tsc --noEmit && node scripts/ai-usability-smoke.mjs",
+    "test:ai-human-review": "tsc --noEmit && node scripts/ai-usability-human-review-smoke.mjs",
+    "test:ai-replay": "tsc --noEmit && node scripts/ai-usability-replay-smoke.mjs",
+    "test:ai-model-grader": "tsc --noEmit && node scripts/ai-model-grader-smoke.mjs",
+    "test:ai-human-review-ui": "npm run build && node scripts/ai-usability-review-ui-smoke.mjs",
+    "test:ai-live-usability": "npm run build && node scripts/ai-live-usability-replay.mjs",
     "verify:30-students": "npm run test:smoke"
   },
   "dependencies": {
