@@ -97,6 +97,10 @@ export function App() {
   const [studentQuery, setStudentQuery] = useState('');
   const [recordKeyword, setRecordKeyword] = useState('');
   const [recordTypeFilter, setRecordTypeFilter] = useState('');
+  const [recordSubjectFilter, setRecordSubjectFilter] = useState('');
+  const [recordTagFilter, setRecordTagFilter] = useState('');
+  const [recordStartDate, setRecordStartDate] = useState('');
+  const [recordEndDate, setRecordEndDate] = useState('');
   const [studentForm, setStudentForm] = useState<StudentInput>(initialStudentForm);
   const [editingStudent, setEditingStudent] = useState(false);
   const [recordForm, setRecordForm] = useState({
@@ -139,7 +143,11 @@ export function App() {
     if (!studentId) return;
     const nextRecords = await window.omniEdu?.listRecords(studentId, {
       type: recordTypeFilter || undefined,
+      subject: recordSubjectFilter || undefined,
+      tag: recordTagFilter || undefined,
       keyword: recordKeyword || undefined,
+      startDate: recordStartDate || undefined,
+      endDate: recordEndDate || undefined,
     });
     const nextReports = await window.omniEdu?.listReports(studentId);
     setRecords(nextRecords ?? []);
@@ -166,7 +174,7 @@ export function App() {
         tags: activeStudent.tags,
       });
     }
-  }, [activeStudent?.id, recordTypeFilter, recordKeyword]);
+  }, [activeStudent?.id, recordTypeFilter, recordSubjectFilter, recordTagFilter, recordKeyword, recordStartDate, recordEndDate]);
 
   async function submitStudent() {
     if (!studentForm.displayName?.trim()) {
@@ -370,7 +378,11 @@ export function App() {
                     <option value="">全部类型</option>
                     {Object.entries(recordTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
                   </select>
+                  <input placeholder="科目" value={recordSubjectFilter} onChange={(event) => setRecordSubjectFilter(event.target.value)} />
+                  <input placeholder="标签" value={recordTagFilter} onChange={(event) => setRecordTagFilter(event.target.value)} />
                   <input placeholder="搜索记录" value={recordKeyword} onChange={(event) => setRecordKeyword(event.target.value)} />
+                  <input type="date" aria-label="开始日期" value={recordStartDate} onChange={(event) => setRecordStartDate(event.target.value)} />
+                  <input type="date" aria-label="结束日期" value={recordEndDate} onChange={(event) => setRecordEndDate(event.target.value)} />
                 </div>
               </div>
 

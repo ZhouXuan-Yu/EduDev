@@ -7,6 +7,7 @@ import type {
   Attachment,
   BootstrapData,
   LearningRecord,
+  LearningRecordFilters,
   LearningRecordInput,
   LearningRecordUpdateInput,
   ReviewDraftInput,
@@ -175,12 +176,28 @@ export class OmniEduStore {
     return this.listStudents('');
   }
 
-  listRecords(studentId: string, filters: { type?: string; keyword?: string } = {}): LearningRecord[] {
+  listRecords(studentId: string, filters: LearningRecordFilters = {}): LearningRecord[] {
     const params: SqlValue[] = [studentId];
     let where = 'WHERE student_id = ?';
     if (filters.type) {
       where += ' AND record_type = ?';
       params.push(filters.type);
+    }
+    if (filters.subject?.trim()) {
+      where += ' AND subject = ?';
+      params.push(filters.subject.trim());
+    }
+    if (filters.tag?.trim()) {
+      where += ' AND tags LIKE ?';
+      params.push(`%${filters.tag.trim()}%`);
+    }
+    if (filters.startDate) {
+      where += ' AND occurred_at >= ?';
+      params.push(new Date(`${filters.startDate}T00:00:00`).toISOString());
+    }
+    if (filters.endDate) {
+      where += ' AND occurred_at <= ?';
+      params.push(new Date(`${filters.endDate}T23:59:59`).toISOString());
     }
     const keyword = filters.keyword?.trim();
     if (keyword) {

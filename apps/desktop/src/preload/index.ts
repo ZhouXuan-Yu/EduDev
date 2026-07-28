@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { LearningRecordInput, LearningRecordUpdateInput, ReviewDraftInput, StudentInput } from '../shared/contracts';
+import type { LearningRecordFilters, LearningRecordInput, LearningRecordUpdateInput, ReviewDraftInput, StudentInput } from '../shared/contracts';
 
 const api = {
   bootstrap: () => ipcRenderer.invoke('app:bootstrap'),
@@ -9,7 +9,7 @@ const api = {
   updateStudent: (id: string, input: StudentInput) => ipcRenderer.invoke('students:update', id, input),
   archiveStudent: (id: string) => ipcRenderer.invoke('students:archive', id),
   openStudentFolder: (id: string) => ipcRenderer.invoke('students:openFolder', id),
-  listRecords: (studentId: string, filters = {}) => ipcRenderer.invoke('records:list', studentId, filters),
+  listRecords: (studentId: string, filters: LearningRecordFilters = {}) => ipcRenderer.invoke('records:list', studentId, filters),
   createRecord: (input: LearningRecordInput) => ipcRenderer.invoke('records:create', input),
   updateRecord: (recordId: string, input: LearningRecordUpdateInput) => ipcRenderer.invoke('records:update', recordId, input),
   importAttachments: (studentId: string, recordId: string) => ipcRenderer.invoke('attachments:import', studentId, recordId),

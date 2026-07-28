@@ -290,14 +290,15 @@ h3 {
 }
 
 .inline-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(100px, 1fr));
   gap: 8px;
-  min-width: 280px;
+  min-width: min(520px, 100%);
 }
 
 .inline-actions select,
 .inline-actions input {
-  min-width: 120px;
+  min-width: 0;
 }
 
 .content-grid {
