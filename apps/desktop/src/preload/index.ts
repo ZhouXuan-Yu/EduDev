@@ -1,11 +1,24 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type {
+  AiConsoleRunInput,
+  AiConsoleRunResult,
+  AiConversationDetail,
+  AiConversationFolderInput,
+  AiConversationFolderUpdateInput,
+  AiConversationMessageInput,
+  AiConversationSessionInput,
+  AiConversationSessionUpdateInput,
+  AiConversationWorkspace,
   AttachmentImportResult,
   ExportDataRootResult,
+  KnowledgeImportResult,
+  KnowledgeOverview,
   LearningRecordFilters,
   LearningRecordInput,
   LearningRecordUpdateInput,
   ReviewDraftInput,
+  DeepSeekSettings,
+  DeepSeekSettingsInput,
   StudentInput,
 } from '../shared/contracts';
 
@@ -13,6 +26,12 @@ const api = {
   bootstrap: () => ipcRenderer.invoke('app:bootstrap'),
   getDataRoot: () => ipcRenderer.invoke('app:getDataRoot') as Promise<string>,
   getPlatformOverview: () => ipcRenderer.invoke('app:getPlatformOverview'),
+  getDeepSeekSettings: () => ipcRenderer.invoke('settings:getDeepSeek') as Promise<DeepSeekSettings>,
+  saveDeepSeekSettings: (input: DeepSeekSettingsInput) => ipcRenderer.invoke('settings:saveDeepSeek', input) as Promise<DeepSeekSettings>,
+  getKnowledgeOverview: () => ipcRenderer.invoke('knowledge:getOverview') as Promise<KnowledgeOverview>,
+  importKnowledgeResources: () => ipcRenderer.invoke('knowledge:import') as Promise<KnowledgeImportResult>,
+  importKnowledgeResourcePaths: (sourcePaths: string[]) => ipcRenderer.invoke('knowledge:importPaths', sourcePaths) as Promise<KnowledgeImportResult>,
+  showKnowledgeResource: (filePath: string) => ipcRenderer.invoke('knowledge:showResource', filePath),
   exportDataRoot: () => ipcRenderer.invoke('app:exportDataRoot') as Promise<ExportDataRootResult | null>,
   listStudents: (query = '') => ipcRenderer.invoke('students:list', query),
   createStudent: (input: StudentInput) => ipcRenderer.invoke('students:create', input),
@@ -29,6 +48,23 @@ const api = {
   updateReport: (id: string, contentMd: string, parentSummary?: string) => ipcRenderer.invoke('reports:update', id, contentMd, parentSummary),
   listReports: (studentId: string) => ipcRenderer.invoke('reports:list', studentId),
   searchAll: (keyword: string) => ipcRenderer.invoke('search:all', keyword),
+  runDeepSeek: (input: AiConsoleRunInput) => ipcRenderer.invoke('ai:runDeepSeek', input) as Promise<AiConsoleRunResult>,
+  listAiConversations: () => ipcRenderer.invoke('aiConversations:list') as Promise<AiConversationWorkspace>,
+  createAiConversationFolder: (input: AiConversationFolderInput) => ipcRenderer.invoke('aiConversations:createFolder', input) as Promise<AiConversationWorkspace>,
+  createAiConversationSession: (input: AiConversationSessionInput) => ipcRenderer.invoke('aiConversations:createSession', input) as Promise<AiConversationDetail>,
+  getAiConversationSession: (sessionId: string) => ipcRenderer.invoke('aiConversations:getSession', sessionId) as Promise<AiConversationDetail>,
+  appendAiConversationMessage: (sessionId: string, input: AiConversationMessageInput) =>
+    ipcRenderer.invoke('aiConversations:appendMessage', sessionId, input) as Promise<AiConversationDetail>,
+  moveAiConversationSession: (sessionId: string, folderId: string | null) =>
+    ipcRenderer.invoke('aiConversations:moveSession', sessionId, folderId) as Promise<AiConversationWorkspace>,
+  renameAiConversationFolder: (folderId: string, input: AiConversationFolderUpdateInput) =>
+    ipcRenderer.invoke('aiConversations:renameFolder', folderId, input) as Promise<AiConversationWorkspace>,
+  renameAiConversationSession: (sessionId: string, input: AiConversationSessionUpdateInput) =>
+    ipcRenderer.invoke('aiConversations:renameSession', sessionId, input) as Promise<AiConversationWorkspace>,
+  archiveAiConversationFolder: (folderId: string) =>
+    ipcRenderer.invoke('aiConversations:archiveFolder', folderId) as Promise<AiConversationWorkspace>,
+  archiveAiConversationSession: (sessionId: string) =>
+    ipcRenderer.invoke('aiConversations:archiveSession', sessionId) as Promise<AiConversationWorkspace>,
 };
 
 contextBridge.exposeInMainWorld('omniEdu', api);

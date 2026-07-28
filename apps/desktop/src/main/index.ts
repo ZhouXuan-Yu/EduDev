@@ -1,6 +1,21 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { runDeepSeekChat } from './deepseek';
 import { OmniEduStore } from './db';
+import type {
+  AiAgentTraceStep,
+  AiConsoleRunInput,
+  AiConsoleRunResult,
+  AiConversationFolderInput,
+  AiConversationFolderUpdateInput,
+  AiConversationMessageInput,
+  AiConversationSessionInput,
+  AiConversationSessionUpdateInput,
+  DeepSeekSettingsInput,
+} from '../shared/contracts';
+import { routeAiPrompt } from './ai-harness/router';
+import { runAiAgentLoop } from './ai-harness/agent-loop';
 
 let store: OmniEduStore;
 
@@ -15,15 +30,22 @@ function createWindow() {
     title: 'Omni-Edu Agent',
     backgroundColor: '#eef1f3',
     webPreferences: {
-      preload: join(__dirname, '../preload/index.mjs'),
+      preload: join(__dirname, '../preload/index.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
-      sandbox: false,
+      sandbox: true,
     },
   });
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url);
+    try {
+      const protocol = new URL(url).protocol;
+      if (protocol === 'http:' || protocol === 'https:') {
+        shell.openExternal(url);
+      }
+    } catch {
+      // Ignore malformed or non-URL navigation attempts.
+    }
     return { action: 'deny' };
   });
 
@@ -34,13 +56,52 @@ function createWindow() {
   }
 }
 
+function loadLocalEnv() {
+  const envPath = join(process.cwd(), '.env.local');
+  if (!existsSync(envPath)) return;
+  const lines = readFileSync(envPath, 'utf8').split(/\r?\n/);
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const separatorIndex = trimmed.indexOf('=');
+    if (separatorIndex <= 0) continue;
+    const key = trimmed.slice(0, separatorIndex).trim();
+    const rawValue = trimmed.slice(separatorIndex + 1).trim();
+    if (!key || process.env[key]) continue;
+    process.env[key] = rawValue.replace(/^['"]|['"]$/g, '');
+  }
+}
+
 app.whenReady().then(async () => {
+  loadLocalEnv();
   store = new OmniEduStore(process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'));
   await store.init();
 
   ipcMain.handle('app:bootstrap', () => store.init());
   ipcMain.handle('app:getDataRoot', () => store.getDataRoot());
   ipcMain.handle('app:getPlatformOverview', () => store.getPlatformOverview());
+  ipcMain.handle('settings:getDeepSeek', () => store.getDeepSeekSettings());
+  ipcMain.handle('settings:saveDeepSeek', (_event, input: DeepSeekSettingsInput) => store.saveDeepSeekSettings(input));
+  ipcMain.handle('knowledge:getOverview', () => store.getKnowledgeOverview());
+  ipcMain.handle('knowledge:import', async () => {
+    const result = await dialog.showOpenDialog({
+      title: '选择要导入教师知识库的资源',
+      properties: ['openFile', 'multiSelections'],
+      filters: [
+        { name: '教学资源', extensions: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'webp', 'bmp', 'md', 'txt'] },
+        { name: '全部文件', extensions: ['*'] },
+      ],
+    });
+    if (result.canceled) return store.importKnowledgeResources([]);
+    return store.importKnowledgeResources(result.filePaths);
+  });
+  ipcMain.handle('knowledge:importPaths', (_event, sourcePaths: string[]) => store.importKnowledgeResources(sourcePaths));
+  ipcMain.handle('knowledge:showResource', async (_event, filePath: string) => {
+    if (!(await store.isManagedLocalPath(filePath))) {
+      throw new Error('只能打开本地数据目录内的知识资源');
+    }
+    shell.showItemInFolder(filePath);
+  });
   ipcMain.handle('app:exportDataRoot', async () => {
     const result = await dialog.showOpenDialog({
       title: '选择完整数据目录备份位置',
@@ -53,7 +114,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('students:create', (_event, input) => store.createStudent(input));
   ipcMain.handle('students:update', (_event, id: string, input) => store.updateStudent(id, input));
   ipcMain.handle('students:archive', (_event, id: string) => store.archiveStudent(id));
-  ipcMain.handle('students:openFolder', (_event, id: string) => shell.openPath(join(store.getDataRoot(), 'students', id)));
+  ipcMain.handle('students:openFolder', (_event, id: string) => shell.openPath(store.getStudentFolder(id)));
   ipcMain.handle('students:export', async (_event, id: string) => {
     const result = await dialog.showOpenDialog({
       title: '选择学生档案导出位置',
@@ -70,14 +131,134 @@ app.whenReady().then(async () => {
       title: '选择要复制到学生档案的附件',
       properties: ['openFile', 'multiSelections'],
     });
-    if (result.canceled) return { status: 'canceled', records: store.listRecords(studentId), items: [] };
+    if (result.canceled) return { status: 'canceled', records: await store.listRecords(studentId), items: [] };
     return store.importAttachments(studentId, recordId, result.filePaths);
   });
-  ipcMain.handle('attachments:show', (_event, filePath: string) => shell.showItemInFolder(filePath));
+  ipcMain.handle('attachments:show', async (_event, filePath: string) => {
+    if (!(await store.isManagedLocalPath(filePath))) {
+      throw new Error('只能打开本地数据目录内的附件');
+    }
+    shell.showItemInFolder(filePath);
+  });
   ipcMain.handle('reports:generate', (_event, input) => store.generateReview(input));
   ipcMain.handle('reports:update', (_event, id: string, contentMd: string, parentSummary?: string) => store.updateReport(id, contentMd, parentSummary));
   ipcMain.handle('reports:list', (_event, studentId: string) => store.listReports(studentId));
   ipcMain.handle('search:all', (_event, keyword: string) => store.search(keyword));
+  ipcMain.handle('aiConversations:list', () => store.listAiConversationWorkspace());
+  ipcMain.handle('aiConversations:createFolder', (_event, input: AiConversationFolderInput) => store.createAiConversationFolder(input));
+  ipcMain.handle('aiConversations:createSession', (_event, input: AiConversationSessionInput) => store.createAiConversationSession(input));
+  ipcMain.handle('aiConversations:getSession', (_event, sessionId: string) => store.getAiConversationSession(sessionId));
+  ipcMain.handle('aiConversations:appendMessage', (_event, sessionId: string, input: AiConversationMessageInput) =>
+    store.appendAiConversationMessage(sessionId, input),
+  );
+  ipcMain.handle('aiConversations:moveSession', (_event, sessionId: string, folderId: string | null) =>
+    store.moveAiConversationSession(sessionId, folderId),
+  );
+  ipcMain.handle('aiConversations:renameFolder', (_event, folderId: string, input: AiConversationFolderUpdateInput) =>
+    store.renameAiConversationFolder(folderId, input),
+  );
+  ipcMain.handle('aiConversations:renameSession', (_event, sessionId: string, input: AiConversationSessionUpdateInput) =>
+    store.renameAiConversationSession(sessionId, input),
+  );
+  ipcMain.handle('aiConversations:archiveFolder', (_event, folderId: string) =>
+    store.archiveAiConversationFolder(folderId),
+  );
+  ipcMain.handle('aiConversations:archiveSession', (_event, sessionId: string) =>
+    store.archiveAiConversationSession(sessionId),
+  );
+  ipcMain.handle('ai:runDeepSeek', async (_event, input: AiConsoleRunInput) => {
+    const deepSeekSettings = await store.getDeepSeekRuntimeSettings();
+    const apiKey = deepSeekSettings.apiKey;
+    const prompt = input.prompt?.trim() ?? '';
+    const router = routeAiPrompt(prompt, { hasStudent: Boolean(input.studentId) });
+    const agentRunId = await store.startAiAgentRun({
+      sessionId: input.sessionId,
+      prompt,
+      route: router.route,
+      subIntent: router.route,
+      model: deepSeekSettings.model,
+      studentId: input.studentId,
+    });
+
+    if (!prompt) {
+      const trace: AiAgentTraceStep[] = [
+        {
+          phase: 'guardrail',
+          status: 'blocked',
+          label: '输入校验',
+          detail: '任务为空，未执行路由后的工具调用。',
+          inputSummary: { promptLength: 0 },
+          outputSummary: { blockedReason: 'empty_prompt' },
+        },
+      ];
+      for (const step of trace) await store.recordAiAgentEvent(agentRunId, step);
+      const result: AiConsoleRunResult = {
+        ok: false,
+        model: deepSeekSettings.model,
+        content: '',
+        toolRuns: [],
+        sources: [],
+        harness: {
+          agentRunId,
+          router,
+          selectedContext: [],
+          schemaValid: false,
+          schemaErrors: ['请输入 AI 任务。'],
+          trace,
+        },
+        errorMessage: '请输入 AI 任务。',
+      };
+      await store.completeAiAgentRun(agentRunId, 'blocked', result.errorMessage);
+      await store.recordAiConsoleRun(input, result);
+      return result;
+    }
+
+    try {
+      const context = await runAiAgentLoop({ store, prompt, studentId: input.studentId, agentRunId });
+
+      if (!apiKey) {
+        const configStep: AiAgentTraceStep = {
+          phase: 'guardrail',
+          status: 'blocked',
+          label: 'DeepSeek 配置',
+          detail: '缺少 DeepSeek API Key，已保留本地路由与工具轨迹，但未进入模型调用。',
+          outputSummary: { blockedReason: 'missing_deepseek_api_key' },
+        };
+        context.trace.push(configStep);
+        await store.recordAiAgentEvent(agentRunId, configStep);
+        const result: AiConsoleRunResult = {
+          ok: false,
+          model: deepSeekSettings.model,
+          content: '',
+          toolRuns: context.toolRuns,
+          sources: context.sources,
+          knowledgeSnippets: context.knowledgeSnippets,
+          graphNodes: context.graphNodes,
+          harness: {
+            agentRunId,
+            router: context.router,
+            selectedContext: context.selectedContext,
+            schemaValid: false,
+            schemaErrors: ['缺少 DeepSeek API Key。'],
+            trace: context.trace,
+          },
+          errorMessage: '缺少 DeepSeek API Key。请在设置页保存 DeepSeek API 配置。',
+        };
+        await store.completeAiAgentRun(agentRunId, 'blocked', result.errorMessage);
+        await store.recordAiConsoleRun(input, result);
+        return result;
+      }
+
+      const result = await runDeepSeekChat({ prompt, ...context }, apiKey, deepSeekSettings.model);
+      await store.completeAiAgentRun(agentRunId, result.ok ? 'succeeded' : 'failed', result.errorMessage ?? '');
+      await store.recordAiConsoleRun(input, result);
+      return result;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '小智 Agent 运行失败。';
+      await store.completeAiAgentRun(agentRunId, 'failed', message);
+      throw error;
+    }
+  });
 
   createWindow();
 
