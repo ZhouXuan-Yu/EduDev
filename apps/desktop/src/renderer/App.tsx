@@ -336,6 +336,11 @@ export function App() {
             <IconButton label="查看历史复盘"><History size={18} /></IconButton>
             <button className="secondary-action" onClick={async () => {
               if (!activeStudent) return;
+              const result = await window.omniEdu?.exportStudent(activeStudent.id);
+              if (result) setStatus(`已导出学生档案：${result.exportPath}（${result.fileCount} 个文件）`);
+            }}><FileText size={17} />导出</button>
+            <button className="secondary-action" onClick={async () => {
+              if (!activeStudent) return;
               setStudents((await window.omniEdu?.archiveStudent(activeStudent.id)) ?? []);
               setStatus('学生已归档，未物理删除任何资料。');
             }}><Archive size={17} />归档</button>

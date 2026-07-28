@@ -1,11 +1,12 @@
 import { createHash, randomUUID } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync, copyFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import { createRequire } from 'node:module';
 import initSqlJs, { type Database, type SqlJsStatic, type SqlValue } from 'sql.js';
 import type {
   Attachment,
   BootstrapData,
+  ExportStudentResult,
   LearningRecord,
   LearningRecordFilters,
   LearningRecordInput,
@@ -438,6 +439,29 @@ export class OmniEduStore {
     };
   }
 
+  exportStudentArchive(studentId: string, destinationRoot: string): ExportStudentResult {
+    const student = this.listStudents('').find((item) => item.id === studentId);
+    if (!student) throw new Error('学生不存在');
+    const safeName = student.displayName.replace(/[\\/:*?"<>|]/g, '_') || student.id;
+    const exportPath = join(destinationRoot, `${safeName}-${student.id}`);
+    mkdirSync(exportPath, { recursive: true });
+
+    const metadata = {
+      exportedAt: now(),
+      student,
+      records: this.listRecords(studentId),
+      reports: this.listReports(studentId),
+    };
+    writeFileSync(join(exportPath, 'metadata.json'), JSON.stringify(metadata, null, 2), 'utf8');
+
+    let fileCount = 1;
+    const sourceStudentRoot = this.studentRoot(studentId);
+    if (existsSync(sourceStudentRoot)) {
+      fileCount += this.copyDirectory(sourceStudentRoot, join(exportPath, 'files'));
+    }
+    return { exportPath, fileCount };
+  }
+
   private migrate() {
     this.db.run(`
       PRAGMA foreign_keys = ON;
@@ -571,6 +595,22 @@ export class OmniEduStore {
 
   private studentRoot(studentId: string) {
     return join(this.dataRoot, 'students', studentId);
+  }
+
+  private copyDirectory(source: string, target: string): number {
+    mkdirSync(target, { recursive: true });
+    let copied = 0;
+    for (const entry of readdirSync(source, { withFileTypes: true })) {
+      const sourcePath = join(source, entry.name);
+      const targetPath = join(target, entry.name);
+      if (entry.isDirectory()) {
+        copied += this.copyDirectory(sourcePath, targetPath);
+      } else if (entry.isFile()) {
+        copyFileSync(sourcePath, targetPath);
+        copied += 1;
+      }
+    }
+    return copied;
   }
 
   private touchStudent(studentId: string) {

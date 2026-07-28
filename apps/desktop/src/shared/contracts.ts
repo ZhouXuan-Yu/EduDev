@@ -123,6 +123,11 @@ export type SearchResult = {
   records: LearningRecord[];
 };
 
+export type ExportStudentResult = {
+  exportPath: string;
+  fileCount: number;
+};
+
 export type BootstrapData = {
   dataRoot: string;
   students: Student[];

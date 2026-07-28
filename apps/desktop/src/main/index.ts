@@ -45,6 +45,14 @@ app.whenReady().then(async () => {
   ipcMain.handle('students:update', (_event, id: string, input) => store.updateStudent(id, input));
   ipcMain.handle('students:archive', (_event, id: string) => store.archiveStudent(id));
   ipcMain.handle('students:openFolder', (_event, id: string) => shell.openPath(join(store.getDataRoot(), 'students', id)));
+  ipcMain.handle('students:export', async (_event, id: string) => {
+    const result = await dialog.showOpenDialog({
+      title: '选择学生档案导出位置',
+      properties: ['openDirectory', 'createDirectory'],
+    });
+    if (result.canceled || !result.filePaths[0]) return null;
+    return store.exportStudentArchive(id, result.filePaths[0]);
+  });
   ipcMain.handle('records:list', (_event, studentId: string, filters) => store.listRecords(studentId, filters));
   ipcMain.handle('records:create', (_event, input) => store.createRecord(input));
   ipcMain.handle('records:update', (_event, recordId: string, input) => store.updateRecord(recordId, input));

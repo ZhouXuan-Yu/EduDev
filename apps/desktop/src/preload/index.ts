@@ -9,6 +9,7 @@ const api = {
   updateStudent: (id: string, input: StudentInput) => ipcRenderer.invoke('students:update', id, input),
   archiveStudent: (id: string) => ipcRenderer.invoke('students:archive', id),
   openStudentFolder: (id: string) => ipcRenderer.invoke('students:openFolder', id),
+  exportStudent: (id: string) => ipcRenderer.invoke('students:export', id),
   listRecords: (studentId: string, filters: LearningRecordFilters = {}) => ipcRenderer.invoke('records:list', studentId, filters),
   createRecord: (input: LearningRecordInput) => ipcRenderer.invoke('records:create', input),
   updateRecord: (recordId: string, input: LearningRecordUpdateInput) => ipcRenderer.invoke('records:update', recordId, input),
