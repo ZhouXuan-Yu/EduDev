@@ -87,9 +87,18 @@ export type ReviewReport = {
   reportType: string;
   title: string;
   contentMd: string;
+  parentSummary: string;
+  qualityChecks: ReviewQualityCheck[];
   sourceRecordIds: string[];
   createdAt: string;
   updatedAt: string;
+};
+
+export type ReviewQualityCheck = {
+  key: string;
+  label: string;
+  passed: boolean;
+  detail: string;
 };
 
 export type ReviewDraftInput = {

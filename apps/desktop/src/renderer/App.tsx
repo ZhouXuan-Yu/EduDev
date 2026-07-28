@@ -256,7 +256,7 @@ export function App() {
 
   async function saveReport() {
     if (!activeReport) return;
-    const saved = await window.omniEdu?.updateReport(activeReport.id, activeReport.contentMd);
+    const saved = await window.omniEdu?.updateReport(activeReport.id, activeReport.contentMd, activeReport.parentSummary);
     if (saved) {
       setActiveReport(saved);
       await refreshRecords();
@@ -469,7 +469,24 @@ export function App() {
               </div>
               <label>结束日期<input type="date" value={reviewForm.endDate} onChange={(event) => setReviewForm({ ...reviewForm, endDate: event.target.value })} /></label>
               {activeReport ? (
-                <textarea className="report-editor" value={activeReport.contentMd} onChange={(event) => setActiveReport({ ...activeReport, contentMd: event.target.value })} />
+                <>
+                  <textarea className="report-editor" value={activeReport.contentMd} onChange={(event) => setActiveReport({ ...activeReport, contentMd: event.target.value })} />
+                  <label className="full report-summary-field">
+                    家长沟通版摘要
+                    <textarea value={activeReport.parentSummary} onChange={(event) => setActiveReport({ ...activeReport, parentSummary: event.target.value })} />
+                  </label>
+                  <div className="quality-list">
+                    {activeReport.qualityChecks.map((check) => (
+                      <article key={check.key} className={check.passed ? 'passed' : 'failed'}>
+                        <CheckCircle2 size={15} />
+                        <div>
+                          <strong>{check.label}</strong>
+                          <p>{check.detail}</p>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </>
               ) : (
                 <div className="markdown-preview">
                   <strong>等待生成</strong>

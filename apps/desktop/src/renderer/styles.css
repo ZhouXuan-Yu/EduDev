@@ -583,6 +583,49 @@ textarea {
   line-height: 1.55;
 }
 
+.report-summary-field {
+  margin-top: 10px;
+}
+
+.report-summary-field textarea {
+  min-height: 88px;
+}
+
+.quality-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.quality-list article {
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: white;
+}
+
+.quality-list article.passed svg {
+  color: var(--green);
+}
+
+.quality-list article.failed {
+  border-color: rgba(179, 64, 53, 0.38);
+}
+
+.quality-list article.failed svg {
+  color: var(--coral);
+}
+
+.quality-list p {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .report-list {
   display: grid;
   gap: 8px;

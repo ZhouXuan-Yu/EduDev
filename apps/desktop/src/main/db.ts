@@ -11,6 +11,7 @@ import type {
   LearningRecordUpdateInput,
   ReviewDraftInput,
   ReviewReport,
+  ReviewQualityCheck,
   SearchResult,
   Student,
   StudentInput,
@@ -57,6 +58,10 @@ function formatDate(date: string) {
 function requireNonEmpty(value: string | undefined, message: string) {
   if (!value?.trim()) throw new Error(message);
   return value.trim();
+}
+
+function hasColumn(rows: Row[], columnName: string) {
+  return rows.some((row) => String(row.name) === columnName);
 }
 
 export class OmniEduStore {
@@ -284,6 +289,9 @@ export class OmniEduStore {
     const topTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
     const recentEvidence = records.slice(0, 5);
     const title = `${student.displayName}${input.subject ? ` ${input.subject}` : ''}阶段复盘`;
+    const parentSummary = records.length
+      ? `本阶段围绕${input.subject || '主要科目'}共记录 ${records.length} 条学习证据，后续建议继续关注${topTags[0]?.[0] ?? '核心薄弱点'}，并用每周记录观察改善情况。`
+      : '当前时间范围内学习记录不足，建议先补充课堂、作业或沟通证据后再形成家长沟通摘要。';
     const contentMd = [
       `# ${title}`,
       '',
@@ -315,8 +323,9 @@ export class OmniEduStore {
       '3. 一周后回看时间线，确认问题是否减少而不是只看单次表现。',
       '',
       '## 七、家长沟通版摘要',
-      '本阶段建议以具体证据说明学生的稳定进步和仍需练习的方向，表达保持克制，避免制造额外焦虑。',
+      parentSummary,
     ].join('\n');
+    const qualityChecks = this.buildReportQualityChecks(records, contentMd, parentSummary);
 
     const timestamp = now();
     const report: ReviewReport = {
@@ -328,6 +337,8 @@ export class OmniEduStore {
       reportType: input.reportType,
       title,
       contentMd,
+      parentSummary,
+      qualityChecks,
       sourceRecordIds: records.map((record) => record.id),
       createdAt: timestamp,
       updatedAt: timestamp,
@@ -335,8 +346,8 @@ export class OmniEduStore {
     this.run(
       `INSERT INTO review_reports (
         id, student_id, subject, start_date, end_date, report_type, title, content_md,
-        source_record_ids, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        parent_summary, quality_checks_json, source_record_ids, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         report.id,
         report.studentId,
@@ -346,6 +357,8 @@ export class OmniEduStore {
         report.reportType,
         report.title,
         report.contentMd,
+        report.parentSummary,
+        JSON.stringify(report.qualityChecks),
         JSON.stringify(report.sourceRecordIds),
         report.createdAt,
         report.updatedAt,
@@ -358,11 +371,24 @@ export class OmniEduStore {
     return report;
   }
 
-  updateReport(id: string, contentMd: string): ReviewReport {
-    this.run(`UPDATE review_reports SET content_md = ?, updated_at = ? WHERE id = ?`, [contentMd, now(), id]);
+  updateReport(id: string, contentMd: string, parentSummary?: string): ReviewReport {
+    const existing = this.all(`SELECT parent_summary, source_record_ids FROM review_reports WHERE id = ?`, [id])[0];
+    if (!existing) throw new Error('复盘报告不存在');
+    const nextParentSummary = parentSummary ?? String(existing.parent_summary ?? '');
+    const sourceRecordIds = jsonArray(existing.source_record_ids);
+    const qualityChecks = this.buildReportQualityChecks(
+      sourceRecordIds.map((recordId) => ({ id: recordId }) as LearningRecord),
+      contentMd,
+      nextParentSummary,
+    );
+    this.run(
+      `UPDATE review_reports
+          SET content_md = ?, parent_summary = ?, quality_checks_json = ?, updated_at = ?
+        WHERE id = ?`,
+      [contentMd, nextParentSummary, JSON.stringify(qualityChecks), now(), id],
+    );
     this.save();
     const report = this.all(`SELECT * FROM review_reports WHERE id = ?`, [id])[0];
-    if (!report) throw new Error('复盘报告不存在');
     return this.mapReport(report);
   }
 
@@ -439,6 +465,8 @@ export class OmniEduStore {
         report_type TEXT NOT NULL,
         title TEXT NOT NULL,
         content_md TEXT NOT NULL,
+        parent_summary TEXT NOT NULL DEFAULT '',
+        quality_checks_json TEXT NOT NULL DEFAULT '[]',
         source_record_ids TEXT NOT NULL DEFAULT '[]',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL,
@@ -464,6 +492,13 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_attachments_record ON attachments(record_id);
       CREATE INDEX IF NOT EXISTS idx_local_tasks_status ON local_tasks(status, updated_at DESC);
     `);
+    const reportColumns = this.all(`PRAGMA table_info(review_reports)`);
+    if (!hasColumn(reportColumns, 'parent_summary')) {
+      this.db.run(`ALTER TABLE review_reports ADD COLUMN parent_summary TEXT NOT NULL DEFAULT ''`);
+    }
+    if (!hasColumn(reportColumns, 'quality_checks_json')) {
+      this.db.run(`ALTER TABLE review_reports ADD COLUMN quality_checks_json TEXT NOT NULL DEFAULT '[]'`);
+    }
   }
 
   private seedIfEmpty() {
@@ -588,10 +623,58 @@ export class OmniEduStore {
       reportType: String(row.report_type ?? ''),
       title: String(row.title ?? ''),
       contentMd: String(row.content_md ?? ''),
+      parentSummary: String(row.parent_summary ?? ''),
+      qualityChecks: this.parseQualityChecks(row.quality_checks_json),
       sourceRecordIds: jsonArray(row.source_record_ids),
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
     };
+  }
+
+  private buildReportQualityChecks(records: Array<Pick<LearningRecord, 'id'>>, contentMd: string, parentSummary: string): ReviewQualityCheck[] {
+    const hasEvidence = records.length > 0;
+    return [
+      {
+        key: 'has_evidence',
+        label: '包含真实证据',
+        passed: hasEvidence,
+        detail: hasEvidence ? `引用 ${records.length} 条学习记录。` : '当前报告没有可追溯学习记录。',
+      },
+      {
+        key: 'has_next_steps',
+        label: '包含下阶段建议',
+        passed: contentMd.includes('下阶段建议') && /\n1\./.test(contentMd),
+        detail: '检查报告是否给出可执行的下一步。',
+      },
+      {
+        key: 'has_parent_summary',
+        label: '包含家长沟通版摘要',
+        passed: parentSummary.trim().length >= 20,
+        detail: parentSummary.trim() ? '家长摘要已单独保存。' : '缺少家长可读摘要。',
+      },
+      {
+        key: 'editable',
+        label: '保持教师可编辑',
+        passed: true,
+        detail: '报告以 Markdown 保存，老师可继续修改。',
+      },
+    ];
+  }
+
+  private parseQualityChecks(value: unknown): ReviewQualityCheck[] {
+    if (typeof value !== 'string') return [];
+    try {
+      const parsed = JSON.parse(value);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.map((item) => ({
+        key: String(item.key ?? ''),
+        label: String(item.label ?? ''),
+        passed: Boolean(item.passed),
+        detail: String(item.detail ?? ''),
+      }));
+    } catch {
+      return [];
+    }
   }
 }
 

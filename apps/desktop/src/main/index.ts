@@ -58,7 +58,7 @@ app.whenReady().then(async () => {
   });
   ipcMain.handle('attachments:show', (_event, filePath: string) => shell.showItemInFolder(filePath));
   ipcMain.handle('reports:generate', (_event, input) => store.generateReview(input));
-  ipcMain.handle('reports:update', (_event, id: string, contentMd: string) => store.updateReport(id, contentMd));
+  ipcMain.handle('reports:update', (_event, id: string, contentMd: string, parentSummary?: string) => store.updateReport(id, contentMd, parentSummary));
   ipcMain.handle('reports:list', (_event, studentId: string) => store.listReports(studentId));
   ipcMain.handle('search:all', (_event, keyword: string) => store.search(keyword));
 

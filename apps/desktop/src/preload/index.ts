@@ -15,7 +15,7 @@ const api = {
   importAttachments: (studentId: string, recordId: string) => ipcRenderer.invoke('attachments:import', studentId, recordId),
   showAttachment: (filePath: string) => ipcRenderer.invoke('attachments:show', filePath),
   generateReview: (input: ReviewDraftInput) => ipcRenderer.invoke('reports:generate', input),
-  updateReport: (id: string, contentMd: string) => ipcRenderer.invoke('reports:update', id, contentMd),
+  updateReport: (id: string, contentMd: string, parentSummary?: string) => ipcRenderer.invoke('reports:update', id, contentMd, parentSummary),
   listReports: (studentId: string) => ipcRenderer.invoke('reports:list', studentId),
   searchAll: (keyword: string) => ipcRenderer.invoke('search:all', keyword),
 };
