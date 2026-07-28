@@ -29,25 +29,6 @@ const recordTypeLabels: Record<string, string> = {
   summary: '阶段总结',
 };
 
-const todo = [
-  ['done', '工程骨架：Electron + Vite + React + TypeScript'],
-  ['done', '安全 IPC：Renderer 只通过 preload 调用 Main'],
-  ['done', 'SQLite：students / learning_records / attachments / review_reports'],
-  ['done', '学生档案：创建、编辑、归档、搜索'],
-  ['done', '学习记录：类型、科目、正文、标签、时间线'],
-  ['done', '附件管理：复制到学生目录，只入库元数据'],
-  ['done', '阶段复盘：按范围聚合记录并生成可编辑 Markdown'],
-  ['next', '本地搜索：学生和记录关键词检索，后续升级 FTS'],
-];
-
-const reviewChecks = [
-  ['MVP 边界', '未引入账号、云同步、机构排课、家长端或学生端入口。'],
-  ['本地优先', 'SQLite 保存结构化数据，附件复制到本机学生目录。'],
-  ['教师可修正', '学生画像、学习记录和复盘 Markdown 都保留编辑入口。'],
-  ['证据链', '复盘只聚合时间范围内真实学习记录和手动标签。'],
-  ['演示闭环', '新建学生、加记录、挂附件、看时间线、生成复盘均已接入真实 IPC。'],
-];
-
 const initialStudentForm: StudentInput = {
   displayName: '',
   grade: '',
@@ -563,30 +544,6 @@ export function App() {
         </div>
       </section>
 
-      <aside className="audit-panel" aria-label="对抗性审查">
-        <div className="panel-heading tight">
-          <div>
-            <span className="eyebrow">Adversarial Review</span>
-            <h2>对抗性审查</h2>
-          </div>
-          <CheckCircle2 size={19} />
-        </div>
-        <div className="audit-list">
-          {reviewChecks.map(([title, body]) => (
-            <article key={title}>
-              <CheckCircle2 size={16} />
-              <div>
-                <strong>{title}</strong>
-                <p>{body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-        <div className="todo-block">
-          <h3>开发 Todo</h3>
-          {todo.map(([state, item]) => <label key={item}><input type="checkbox" checked={state === 'done'} readOnly />{item}</label>)}
-        </div>
-      </aside>
     </main>
   );
 }

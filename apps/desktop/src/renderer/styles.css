@@ -41,25 +41,18 @@ button {
 
 .app-shell {
   display: grid;
-  grid-template-columns: 280px minmax(620px, 1fr) 320px;
+  grid-template-columns: 280px minmax(620px, 1fr);
   min-height: 100vh;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(238, 241, 243, 0.88)),
     #eef1f3;
 }
 
-.sidebar,
-.audit-panel {
+.sidebar {
   min-height: 100vh;
   border-right: 1px solid var(--line);
   background: rgba(251, 252, 252, 0.92);
   padding: 18px;
-}
-
-.audit-panel {
-  border-right: 0;
-  border-left: 1px solid var(--line);
-  overflow-y: auto;
 }
 
 .brand-row {
@@ -80,7 +73,6 @@ button {
 .panel-heading p,
 .student-card span,
 .timeline-body p,
-.audit-list p,
 .storage-list span {
   color: var(--muted);
 }
@@ -680,9 +672,7 @@ textarea {
   text-align: left;
 }
 
-.storage-list,
-.audit-list,
-.todo-block {
+.storage-list {
   display: grid;
   gap: 10px;
 }
@@ -695,64 +685,9 @@ textarea {
   line-height: 1.45;
 }
 
-.audit-list article {
-  display: grid;
-  grid-template-columns: 18px 1fr;
-  gap: 9px;
-  padding: 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: white;
-}
-
-.audit-list svg {
-  color: var(--green);
-  margin-top: 2px;
-}
-
-.audit-list p {
-  margin-top: 3px;
-  font-size: 13px;
-  line-height: 1.45;
-}
-
-.todo-block {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid var(--line);
-}
-
-.todo-block h3 {
-  margin-bottom: 2px;
-}
-
-.todo-block label {
-  display: grid;
-  grid-template-columns: 16px 1fr;
-  align-items: start;
-  gap: 8px;
-  color: var(--muted);
-  font-weight: 600;
-  line-height: 1.45;
-}
-
-.todo-block input {
-  width: 16px;
-  height: 16px;
-  min-height: auto;
-  margin: 2px 0 0;
-}
-
 @media (max-width: 1280px) {
   .app-shell {
     grid-template-columns: 260px minmax(0, 1fr);
-  }
-
-  .audit-panel {
-    grid-column: 1 / -1;
-    min-height: auto;
-    border-top: 1px solid var(--line);
-    border-left: 0;
   }
 }
 
@@ -763,8 +698,7 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .sidebar,
-  .audit-panel {
+  .sidebar {
     min-height: auto;
   }
 
@@ -775,8 +709,7 @@ textarea {
 
 @media (max-width: 640px) {
   .workspace,
-  .sidebar,
-  .audit-panel {
+  .sidebar {
     padding: 14px;
   }
 
