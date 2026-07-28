@@ -8,6 +8,7 @@ import type {
   BootstrapData,
   LearningRecord,
   LearningRecordInput,
+  LearningRecordUpdateInput,
   ReviewDraftInput,
   ReviewReport,
   SearchResult,
@@ -51,6 +52,11 @@ function fileType(fileName: string) {
 
 function formatDate(date: string) {
   return date.slice(0, 10);
+}
+
+function requireNonEmpty(value: string | undefined, message: string) {
+  if (!value?.trim()) throw new Error(message);
+  return value.trim();
 }
 
 export class OmniEduStore {
@@ -102,6 +108,7 @@ export class OmniEduStore {
   }
 
   createStudent(input: StudentInput): Student[] {
+    const displayName = requireNonEmpty(input.displayName, '学生显示名不能为空');
     const id = `student_${randomUUID()}`;
     const timestamp = now();
     this.run(
@@ -111,7 +118,7 @@ export class OmniEduStore {
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', ?, ?)`,
       [
         id,
-        input.displayName.trim(),
+        displayName,
         input.realName ?? '',
         input.grade ?? '',
         input.school ?? '',
@@ -131,6 +138,7 @@ export class OmniEduStore {
   }
 
   updateStudent(id: string, input: StudentInput): Student[] {
+    const displayName = requireNonEmpty(input.displayName, '学生显示名不能为空');
     this.run(
       `UPDATE students
           SET display_name = ?, real_name = ?, grade = ?, school = ?, subjects = ?,
@@ -138,7 +146,7 @@ export class OmniEduStore {
               tags = ?, updated_at = ?
         WHERE id = ?`,
       [
-        input.displayName.trim(),
+        displayName,
         input.realName ?? '',
         input.grade ?? '',
         input.school ?? '',
@@ -182,6 +190,7 @@ export class OmniEduStore {
   }
 
   createRecord(input: LearningRecordInput): LearningRecord[] {
+    const title = requireNonEmpty(input.title, '学习记录标题不能为空');
     const id = `record_${randomUUID()}`;
     const timestamp = now();
     this.run(
@@ -193,7 +202,7 @@ export class OmniEduStore {
         input.studentId,
         input.recordType,
         input.subject ?? '',
-        input.title.trim(),
+        title,
         input.content ?? '',
         JSON.stringify(input.tags ?? []),
         input.occurredAt || timestamp,
@@ -205,6 +214,31 @@ export class OmniEduStore {
     mkdirSync(join(this.studentRoot(input.studentId), 'records', id, 'attachments'), { recursive: true });
     this.save();
     return this.listRecords(input.studentId);
+  }
+
+  updateRecord(recordId: string, input: LearningRecordUpdateInput): LearningRecord[] {
+    const title = requireNonEmpty(input.title, '学习记录标题不能为空');
+    const record = this.all(`SELECT student_id FROM learning_records WHERE id = ?`, [recordId])[0];
+    if (!record) throw new Error('学习记录不存在');
+    const studentId = String(record.student_id);
+    this.run(
+      `UPDATE learning_records
+          SET record_type = ?, subject = ?, title = ?, content = ?, tags = ?, occurred_at = ?, updated_at = ?
+        WHERE id = ?`,
+      [
+        input.recordType,
+        input.subject ?? '',
+        title,
+        input.content ?? '',
+        JSON.stringify(input.tags ?? []),
+        input.occurredAt || now(),
+        now(),
+        recordId,
+      ],
+    );
+    this.touchStudent(studentId);
+    this.save();
+    return this.listRecords(studentId);
   }
 
   importAttachments(studentId: string, recordId: string, sourcePaths: string[]): LearningRecord[] {

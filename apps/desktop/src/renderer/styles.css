@@ -141,6 +141,11 @@ button {
   padding: 0 14px;
 }
 
+.compact-button {
+  min-height: 34px;
+  padding: 0 12px;
+}
+
 .primary-action.wide {
   margin-top: 14px;
 }
@@ -454,6 +459,11 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+}
+
+.record-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .record-head time {

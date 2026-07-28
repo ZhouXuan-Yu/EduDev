@@ -107,6 +107,7 @@ export function App() {
     tags: '',
     occurredAt: new Date().toISOString().slice(0, 16),
   });
+  const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
   const [reviewForm, setReviewForm] = useState({
     subject: '数学',
     startDate: new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10),
@@ -187,19 +188,49 @@ export function App() {
       setStatus('请先选择学生，并填写记录标题。');
       return;
     }
-    const nextRecords = await window.omniEdu?.createRecord({
-      studentId: activeStudent.id,
+    const payload = {
       recordType: recordForm.recordType,
       subject: recordForm.subject,
       title: recordForm.title,
       content: recordForm.content,
       tags: splitList(recordForm.tags),
       occurredAt: new Date(recordForm.occurredAt).toISOString(),
-    });
+    };
+    const nextRecords = editingRecordId
+      ? await window.omniEdu?.updateRecord(editingRecordId, payload)
+      : await window.omniEdu?.createRecord({
+          studentId: activeStudent.id,
+          ...payload,
+        });
     setRecords(nextRecords ?? []);
     await refreshStudents();
-    setRecordForm({ ...recordForm, title: '', content: '', tags: '' });
-    setStatus('学习记录已保存到 SQLite。');
+    resetRecordForm();
+    setStatus(editingRecordId ? '学习记录已更新。' : '学习记录已保存到 SQLite。');
+  }
+
+  function resetRecordForm() {
+    setEditingRecordId(null);
+    setRecordForm({
+      recordType: 'mistake',
+      subject: activeStudent?.subjects[0] ?? '数学',
+      title: '',
+      content: '',
+      tags: '',
+      occurredAt: new Date().toISOString().slice(0, 16),
+    });
+  }
+
+  function editRecord(record: LearningRecord) {
+    setEditingRecordId(record.id);
+    setRecordForm({
+      recordType: record.recordType,
+      subject: record.subject,
+      title: record.title,
+      content: record.content,
+      tags: record.tags.join('、'),
+      occurredAt: record.occurredAt.slice(0, 16),
+    });
+    setStatus('已载入学习记录，可在右侧修改后保存。');
   }
 
   async function importAttachment(recordId: string) {
@@ -367,6 +398,11 @@ export function App() {
                           <FolderOpen size={15} />
                         </button>
                       ))}
+                      <div className="record-actions">
+                        <button className="secondary-action compact-button" onClick={() => editRecord(record)}>
+                          编辑记录
+                        </button>
+                      </div>
                       <button className="upload-zone" onClick={() => importAttachment(record.id)}>
                         <UploadCloud size={18} />
                         导入附件并复制到学生目录
@@ -404,7 +440,7 @@ export function App() {
               <div className="panel-heading tight">
                 <div>
                   <h2>添加学习记录</h2>
-                  <p>教师输入优先，AI 后续只做辅助归纳。</p>
+                  <p>{editingRecordId ? '正在编辑已保存记录，附件会继续保留。' : '教师输入优先，AI 后续只做辅助归纳。'}</p>
                 </div>
                 <PanelRightOpen size={18} />
               </div>
@@ -414,7 +450,8 @@ export function App() {
                 <label className="full">标题<input value={recordForm.title} onChange={(event) => setRecordForm({ ...recordForm, title: event.target.value })} /></label>
                 <label className="full">正文<textarea value={recordForm.content} onChange={(event) => setRecordForm({ ...recordForm, content: event.target.value })} /></label>
                 <label className="full">标签<input value={recordForm.tags} onChange={(event) => setRecordForm({ ...recordForm, tags: event.target.value })} placeholder="一次函数、审题、计算粗心" /></label>
-                <button className="primary-action wide" onClick={submitRecord}><Plus size={16} />保存学习记录</button>
+                <button className="primary-action wide" onClick={submitRecord}><Plus size={16} />{editingRecordId ? '保存记录修改' : '保存学习记录'}</button>
+                {editingRecordId ? <button className="secondary-action full-button" onClick={resetRecordForm}>取消编辑</button> : null}
               </div>
             </section>
 

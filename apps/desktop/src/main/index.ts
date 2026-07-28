@@ -47,6 +47,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('students:openFolder', (_event, id: string) => shell.openPath(join(store.getDataRoot(), 'students', id)));
   ipcMain.handle('records:list', (_event, studentId: string, filters) => store.listRecords(studentId, filters));
   ipcMain.handle('records:create', (_event, input) => store.createRecord(input));
+  ipcMain.handle('records:update', (_event, recordId: string, input) => store.updateRecord(recordId, input));
   ipcMain.handle('attachments:import', async (_event, studentId: string, recordId: string) => {
     const result = await dialog.showOpenDialog({
       title: '选择要复制到学生档案的附件',

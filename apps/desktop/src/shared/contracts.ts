@@ -57,6 +57,15 @@ export type LearningRecordInput = {
   occurredAt?: string;
 };
 
+export type LearningRecordUpdateInput = {
+  recordType: string;
+  subject?: string;
+  title: string;
+  content?: string;
+  tags?: string[];
+  occurredAt?: string;
+};
+
 export type Attachment = {
   id: string;
   studentId: string;
