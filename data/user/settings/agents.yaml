@@ -1,0 +1,17 @@
+capabilities:
+  solve:
+    temperature: 0.3
+    max_tokens: 2048
+  research:
+    temperature: 0.4
+    max_tokens: 4096
+  question:
+    temperature: 0.4
+    max_tokens: 2048
+  visualize:
+    temperature: 0.3
+    max_tokens: 4096
+  chat:
+    temperature: 0.2
+    responding:
+      max_tokens: 4096

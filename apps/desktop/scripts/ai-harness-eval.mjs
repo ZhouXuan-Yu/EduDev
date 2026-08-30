@@ -23,7 +23,7 @@ async function run() {
 
     const { runAiHarnessEvalSuite } = await import(pathToFileURL(outfile).href);
     const report = runAiHarnessEvalSuite();
-    assert.equal(report.total, 96, 'AI harness eval suite should contain 96 cases');
+    assert.equal(report.total, 125, 'AI harness eval suite should contain 125 cases');
     assert.equal(report.failed, 0, JSON.stringify(report.cases.filter((item) => !item.passed), null, 2));
 
     console.log(JSON.stringify({

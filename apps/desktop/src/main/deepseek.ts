@@ -11,21 +11,24 @@ import type {
   ResourceChunk,
   SimilarQuestionMatch,
   Student,
+  XiazhiCapabilityName,
 } from '../shared/contracts';
 import type { OmniEduStore } from './db';
 import { gradeEducationalReply } from './ai-harness/education-grader';
 import { parseStructuredReply, structuredReplyToMarkdown } from './ai-harness/schema';
-import { createAiToolExecutionState, executeAiToolCall, getModelToolDefinitions } from './ai-harness/tool-registry';
+import { createAiToolExecutionState, executeAiToolCall, getModelToolDefinitions, getProgressiveModelToolDefinitions, progressiveToolNames } from './ai-harness/tool-registry';
+import type { LearningAnalytics } from './ai-harness/learning-analytics';
 import { buildUsabilityInstructions, gradeUsabilityReply } from './ai-harness/usability-policy';
+import { buildAgentHarnessInstructions, selectDeepTutorCapability } from './ai-harness/agent-harness-profile';
 
-type DeepSeekMessage = {
+export type DeepSeekMessage = {
   role: 'system' | 'user' | 'assistant' | 'tool';
   content: string | null;
   tool_calls?: DeepSeekToolCall[];
   tool_call_id?: string;
 };
 
-type DeepSeekToolCall = {
+export type DeepSeekToolCall = {
   id?: string;
   type?: 'function';
   function?: {
@@ -40,8 +43,9 @@ type DeepSeekUsage = {
   total_tokens?: number;
 };
 
-type DeepSeekResponse = {
+export type DeepSeekResponse = {
   choices?: Array<{
+    finish_reason?: 'stop' | 'length' | 'content_filter' | 'tool_calls' | 'insufficient_system_resource' | string | null;
     message?: {
       content?: string;
       tool_calls?: DeepSeekToolCall[];
@@ -70,7 +74,20 @@ export type DeepSeekContext = {
   toolRuns: AiConsoleToolRun[];
   selectedContext: AiHarnessRunSummary['selectedContext'];
   trace: AiAgentTraceStep[];
+  learningAnalytics?: LearningAnalytics;
 };
+
+function learningAnalyticsBinding(context: DeepSeekContext): AiConsoleRunResult['learningAnalytics'] | undefined {
+  const analytics = context.learningAnalytics;
+  if (!analytics) return undefined;
+  return {
+    schemaVersion: analytics.schemaVersion,
+    startDate: analytics.window.startDate,
+    endDate: analytics.window.endDate,
+    subject: analytics.window.subject,
+    sourceRecordIds: analytics.evidence.sourceRecordIds.slice(0, 100),
+  };
+}
 
 function routeInstruction(route: AiRouterDecision['route']) {
   const instructions: Record<AiRouterDecision['route'], string> = {
@@ -86,7 +103,10 @@ function routeInstruction(route: AiRouterDecision['route']) {
   return instructions[route];
 }
 
-export function buildAiSystemPrompt(router: AiRouterDecision) {
+export function buildAiSystemPrompt(
+  router: AiRouterDecision,
+  capability: XiazhiCapabilityName = selectDeepTutorCapability(router),
+) {
   return [
     '你是“小智”，Omni-Edu Agent 的教师 AI 中控台。',
     '你的用户是 K-12 独立教师或小微教研团队，不是学生端聊天用户。',
@@ -94,6 +114,7 @@ export function buildAiSystemPrompt(router: AiRouterDecision) {
     `当前 route：${router.route}，subIntent：${router.subIntent}，受众：${router.audience}，动作级别：${router.actionLevel}，风险级别：${router.riskLevel}。`,
     `已抽取槽位：${JSON.stringify(router.slots)}。`,
     routeInstruction(router.route),
+    ...buildAgentHarnessInstructions(router, capability),
     '不要声称读取了未提供的 PDF、Word、图片原文或未接入的知识图谱。',
     '涉及保存复盘、题组、学生标签或知识图谱关系时，只能提出草稿和待确认项，不能宣称已经写入。',
     '三元题组中来自本地题库的题必须标注 sourceKind=local_bank 或引用题库来源；模型临时生成的变式题必须标注 generated，不得冒充题库命中。',
@@ -252,12 +273,15 @@ async function emitTrace(context: DeepSeekContext, step: AiAgentTraceStep) {
   }
 }
 
-async function requestDeepSeek(params: {
+export async function requestDeepSeekCompletion(params: {
   apiKey: string;
   model: string;
   messages: DeepSeekMessage[];
   signal: AbortSignal;
   tools?: ReturnType<typeof getModelToolDefinitions>;
+  temperature?: number;
+  maxTokens?: number;
+  responseFormat?: 'json_object' | 'none';
 }) {
   const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
     method: 'POST',
@@ -269,8 +293,9 @@ async function requestDeepSeek(params: {
       model: params.model,
       messages: params.messages,
       stream: false,
-      temperature: 0.2,
-      response_format: { type: 'json_object' },
+      temperature: params.temperature ?? 0.2,
+      ...(params.maxTokens ? { max_tokens: params.maxTokens } : {}),
+      ...(params.responseFormat === 'none' ? {} : { response_format: { type: 'json_object' } }),
       ...(params.tools?.length ? { tools: params.tools, tool_choice: 'auto' } : {}),
     }),
     signal: params.signal,
@@ -281,6 +306,81 @@ async function requestDeepSeek(params: {
     throw new Error(data.error?.message || `DeepSeek 请求失败：HTTP ${response.status}`);
   }
   return data;
+}
+
+export function requestStructuredReplyRepair(params: {
+  apiKey: string;
+  model: string;
+  messages: DeepSeekMessage[];
+  signal: AbortSignal;
+}) {
+  return requestDeepSeekCompletion({
+    ...params,
+    tools: [],
+    temperature: 0,
+    maxTokens: 8_000,
+    responseFormat: 'json_object',
+  });
+}
+
+export type StructuredJsonRecovery = {
+  attempted: boolean;
+  reason?: 'empty_content' | 'length';
+  firstFinishReason?: string;
+  finalFinishReason?: string;
+};
+
+function structuredJsonIssue(response: DeepSeekResponse): StructuredJsonRecovery['reason'] | undefined {
+  const choice = response.choices?.[0];
+  if (choice?.finish_reason === 'length') return 'length';
+  if (!choice?.message?.content?.trim()) return 'empty_content';
+  return undefined;
+}
+
+/**
+ * DeepSeek documents two JSON-mode edge cases: an occasional empty content
+ * and a partial object when finish_reason=length. Retry either condition once
+ * without tools and at temperature 0; semantic/schema validation still runs
+ * afterwards and remains fail-closed.
+ */
+export async function recoverStructuredJsonCompletion(params: {
+  initial: DeepSeekResponse;
+  apiKey: string;
+  model: string;
+  messages: DeepSeekMessage[];
+  signal: AbortSignal;
+}): Promise<{ response: DeepSeekResponse; recovery: StructuredJsonRecovery }> {
+  const reason = structuredJsonIssue(params.initial);
+  const firstFinishReason = String(params.initial.choices?.[0]?.finish_reason ?? 'unknown');
+  if (!reason) {
+    return { response: params.initial, recovery: { attempted: false, firstFinishReason } };
+  }
+
+  const partial = params.initial.choices?.[0]?.message?.content?.trim() ?? '';
+  const retryMessages: DeepSeekMessage[] = [
+    ...params.messages,
+    ...(partial ? [{ role: 'assistant' as const, content: partial.slice(-12_000) }] : []),
+    {
+      role: 'user',
+      content: reason === 'length'
+        ? '上一条 JSON 因输出长度上限被截断。请压缩 answerMarkdown 和数组内容，只返回一个完整的 xiazhi.reply.v2 JSON object。不得调用工具或新增事实。'
+        : '上一条 JSON 模式返回了空 content。请重新返回一个完整的 xiazhi.reply.v2 JSON object。不得调用工具或新增事实。',
+    },
+  ];
+  const response = await requestStructuredReplyRepair({
+    apiKey: params.apiKey,
+    model: params.model,
+    messages: retryMessages,
+    signal: params.signal,
+  });
+  const finalFinishReason = String(response.choices?.[0]?.finish_reason ?? 'unknown');
+  if (!response.choices?.[0]?.message?.content?.trim()) {
+    throw new Error('DeepSeek JSON 模式连续返回空 content（已受控重试 1 次）。');
+  }
+  return {
+    response,
+    recovery: { attempted: true, reason, firstFinishReason, finalFinishReason },
+  };
 }
 
 export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, model = DEFAULT_DEEPSEEK_MODEL): Promise<AiConsoleRunResult> {
@@ -300,19 +400,35 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
   };
 
   try {
-    const tools = context.store ? getModelToolDefinitions(context.router) : [];
-    let data = await requestDeepSeek({ apiKey, model, messages, signal: controller.signal, tools });
-    const firstMessage = data.choices?.[0]?.message;
-    const toolCalls = firstMessage?.tool_calls ?? [];
-    if (toolCalls.length && context.store) {
-      const state = createAiToolExecutionState(context.router, context);
+    const initialToolNames = context.store ? progressiveToolNames(context.router) : [];
+    let exposedToolNames = new Set(initialToolNames);
+    const tools = context.store ? getProgressiveModelToolDefinitions(context.router) : [];
+    let data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools });
+    const MAX_TOOL_ROUNDS = 3;
+    const MAX_TOOL_CALLS = 8;
+    let toolRound = 0;
+    let totalToolCalls = 0;
+    let state: ReturnType<typeof createAiToolExecutionState> | undefined;
+    while (context.store && (data.choices?.[0]?.message?.tool_calls?.length ?? 0) > 0 && toolRound < MAX_TOOL_ROUNDS && totalToolCalls < MAX_TOOL_CALLS) {
+      const message = data.choices?.[0]?.message;
+      const toolCalls = (message?.tool_calls ?? []).slice(0, Math.min(4, MAX_TOOL_CALLS - totalToolCalls));
+      if (!toolCalls.length) break;
+      state ??= createAiToolExecutionState(context.router, context);
+      toolRound += 1;
       messages.push({
         role: 'assistant',
-        content: firstMessage?.content ?? null,
+        content: message?.content ?? null,
         tool_calls: toolCalls,
       });
-
-      for (const toolCall of toolCalls.slice(0, 4)) {
+      await emitTrace(context, {
+        phase: 'plan',
+        status: 'running',
+        label: `Agent loop 第 ${toolRound} 轮工具计划`,
+        detail: `模型请求 ${toolCalls.length} 个工具；本轮仍受 ${MAX_TOOL_ROUNDS} 轮/${MAX_TOOL_CALLS} 次总预算约束。`,
+        outputSummary: { toolRound, toolCalls: toolCalls.length, maxToolRounds: MAX_TOOL_ROUNDS, maxToolCalls: MAX_TOOL_CALLS },
+      });
+      for (const toolCall of toolCalls) {
+        totalToolCalls += 1;
         const modelToolCall = toModelToolCall(toolCall);
         const execution = await executeAiToolCall({
           store: context.store,
@@ -346,6 +462,20 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
           tool_call_id: toolCall.id ?? execution.toolRun.name,
           content: JSON.stringify(execution.modelResult),
         });
+        if (execution.toolRun.name === 'load_tools' && Array.isArray(execution.modelResult.loadedToolNames)) {
+          for (const name of execution.modelResult.loadedToolNames) {
+            if (typeof name === 'string') exposedToolNames.add(name);
+          }
+          await emitTrace(context, {
+            phase: 'plan',
+            status: execution.modelResult.loadedToolNames.length ? 'succeeded' : 'blocked',
+            label: '按需工具 schema 已加载',
+            detail: execution.modelResult.loadedToolNames.length
+              ? `下一轮仅向模型暴露：${execution.modelResult.loadedToolNames.join('、')}。`
+              : '当前 route 没有可加载的额外工具。',
+            outputSummary: { loadedToolNames: execution.modelResult.loadedToolNames, toolsExecuted: false },
+          });
+        }
       }
 
       context.student = state.student;
@@ -356,24 +486,70 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
       context.sources = state.sources;
       context.toolRuns = state.toolRuns;
       context.selectedContext = state.selectedContext;
+      context.learningAnalytics = state.learningAnalytics;
       harness.selectedContext = context.selectedContext;
+      const budgetExhausted = toolRound >= MAX_TOOL_ROUNDS || totalToolCalls >= MAX_TOOL_CALLS;
       messages.push({
         role: 'user',
-        content: '工具结果已返回。请基于工具结果和已提供上下文，严格返回 xiazhi.reply.v2 JSON；不要再请求工具。',
+        content: budgetExhausted
+          ? '工具预算已到上限。请停止请求工具，只基于已返回的真实结果严格返回 xiazhi.reply.v2 JSON；证据不足写入 unknowns。'
+          : '工具结果已返回。请观察结果并决定是否还需要一个必要工具；如果不需要，严格返回 xiazhi.reply.v2 JSON。',
       });
-      data = await requestDeepSeek({ apiKey, model, messages, signal: controller.signal });
+      data = await requestDeepSeekCompletion({
+        apiKey,
+        model,
+        messages,
+        signal: controller.signal,
+        tools: budgetExhausted ? [] : getModelToolDefinitions(context.router, { toolNames: [...exposedToolNames], includeLoader: true }),
+      });
     }
-
-    let content = data.choices?.[0]?.message?.content?.trim();
-    if (!content) throw new Error('DeepSeek 返回为空。');
-    let parsed = parseStructuredReply(content, context.router);
-    if (!parsed.reply) {
+    if ((data.choices?.[0]?.message?.tool_calls?.length ?? 0) > 0) {
       await emitTrace(context, {
         phase: 'guardrail',
         status: 'blocked',
-        label: '结构化回复修复',
-        detail: `第一次 xiazhi.reply.v2 校验失败，执行一次受控 JSON repair。错误：${parsed.errors.join('；')}`,
-        outputSummary: { schemaErrors: parsed.errors, repairAttempted: true },
+        label: 'Agent loop 工具预算硬终止',
+        detail: `模型仍请求工具，但已达到 ${MAX_TOOL_ROUNDS} 轮/${MAX_TOOL_CALLS} 次上限；不再执行新的工具调用。`,
+        outputSummary: { toolRound, totalToolCalls, maxToolRounds: MAX_TOOL_ROUNDS, maxToolCalls: MAX_TOOL_CALLS, hardStop: true },
+      });
+      messages.push({
+        role: 'user',
+        content: '工具调用已被宿主硬终止。只返回 xiazhi.reply.v2 JSON，不要输出工具调用。',
+      });
+      data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools: [] });
+    }
+
+    const recoveredJson = await recoverStructuredJsonCompletion({
+      initial: data,
+      apiKey,
+      model,
+      messages,
+      signal: controller.signal,
+    });
+    data = recoveredJson.response;
+    if (recoveredJson.recovery.attempted) {
+      await emitTrace(context, {
+        phase: 'guardrail',
+        status: 'succeeded',
+        label: 'JSON 模式响应恢复',
+        detail: recoveredJson.recovery.reason === 'length'
+          ? '检测到 finish_reason=length，已用无工具、零温度请求生成压缩后的完整 JSON。'
+          : '检测到 JSON 模式空 content，已用无工具、零温度请求重试一次。',
+        outputSummary: recoveredJson.recovery,
+      });
+    }
+    let content = data.choices?.[0]?.message?.content?.trim();
+    if (!content) throw new Error('DeepSeek JSON 模式没有返回可用 content。');
+    let parsed = parseStructuredReply(content, context.router);
+    const MAX_JSON_REPAIRS = 2;
+    let repairAttempt = 0;
+    while (!parsed.reply && repairAttempt < MAX_JSON_REPAIRS) {
+      repairAttempt += 1;
+      await emitTrace(context, {
+        phase: 'guardrail',
+        status: 'blocked',
+        label: `结构化回复修复（第 ${repairAttempt} 次）`,
+        detail: `xiazhi.reply.v2 校验失败，执行受控 JSON repair。错误：${parsed.errors.join('；')}`,
+        outputSummary: { schemaErrors: parsed.errors, repairAttempt, maxRepairs: MAX_JSON_REPAIRS },
       });
       messages.push({ role: 'assistant', content });
       messages.push({
@@ -382,13 +558,19 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
           '你的上一条回复没有通过本地 xiazhi.reply.v2 校验。',
           `校验错误：${parsed.errors.join('；')}`,
           `必须保持 route=${context.router.route}，subIntent=${context.router.subIntent}。`,
-          '只修复 JSON 结构和缺失字段，不要新增工具调用，不要编造未提供证据。',
+          '只修复 JSON 语法、字段类型和缺失字段，不要新增工具调用，不要编造未提供证据。',
+          '只返回一个 JSON object，首字符必须是 {，末字符必须是 }，不要 Markdown 围栏、解释文字或额外对象。',
           '重新返回一个合法 xiazhi.reply.v2 JSON。',
         ].join('\n'),
       });
-      const repairData = await requestDeepSeek({ apiKey, model, messages, signal: controller.signal });
+      const repairData = await requestStructuredReplyRepair({
+        apiKey,
+        model,
+        messages,
+        signal: controller.signal,
+      });
       content = repairData.choices?.[0]?.message?.content?.trim();
-      if (!content) throw new Error('DeepSeek repair 返回为空。');
+      if (!content) throw new Error(`DeepSeek 第 ${repairAttempt} 次 repair 返回为空。`);
       data = repairData;
       parsed = parseStructuredReply(content, context.router);
     }
@@ -404,6 +586,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         knowledgeSnippets: context.knowledgeSnippets,
         graphNodes: context.graphNodes,
         similarQuestions: context.similarQuestions,
+        learningAnalytics: learningAnalyticsBinding(context),
         harness,
         errorMessage: `DeepSeek xiazhi.reply.v2 结构化回复校验失败：${parsed.errors.join('；') || '未知错误'}`,
       };
@@ -437,6 +620,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         knowledgeSnippets: context.knowledgeSnippets,
         graphNodes: context.graphNodes,
         similarQuestions: context.similarQuestions,
+        learningAnalytics: learningAnalyticsBinding(context),
         structuredReply: parsed.reply,
         artifacts: parsed.reply.artifacts,
         harness,
@@ -472,6 +656,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         knowledgeSnippets: context.knowledgeSnippets,
         graphNodes: context.graphNodes,
         similarQuestions: context.similarQuestions,
+        learningAnalytics: learningAnalyticsBinding(context),
         structuredReply: parsed.reply,
         artifacts: parsed.reply.artifacts,
         harness,
@@ -489,6 +674,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
       knowledgeSnippets: context.knowledgeSnippets,
       graphNodes: context.graphNodes,
       similarQuestions: context.similarQuestions,
+      learningAnalytics: learningAnalyticsBinding(context),
       structuredReply: parsed.reply,
       artifacts: parsed.reply?.artifacts ?? [],
       harness,
@@ -508,6 +694,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
       knowledgeSnippets: context.knowledgeSnippets,
       graphNodes: context.graphNodes,
       similarQuestions: context.similarQuestions,
+      learningAnalytics: learningAnalyticsBinding(context),
       harness,
       errorMessage: error instanceof Error ? error.message : 'DeepSeek 调用失败。',
     };

@@ -2,6 +2,7 @@ import type { AiAgentTraceStep, AiConsoleToolRun } from '../../shared/contracts'
 import type { OmniEduStore } from '../db';
 import { routeAiPrompt } from './router';
 import { compileAiContext, type CompiledAiContext } from './tool-registry';
+import { buildAiRoleProfileGuidance } from './role-profile';
 
 export type AiAgentLoopResult = CompiledAiContext & {
   agentRunId?: string;
@@ -41,7 +42,7 @@ export async function runAiAgentLoop(params: {
     phase: 'route',
     status: 'succeeded',
     label: '任务识别',
-    detail: `Router dry-run 判定为 ${router.route}/${router.subIntent}，置信度 ${Math.round(router.confidence * 100)}%。动作级别：${router.actionLevel}；风险级别：${router.riskLevel}。`,
+    detail: `Router dry-run 判定为 ${router.route}/${router.subIntent}，置信度 ${Math.round(router.confidence * 100)}%。动作级别：${router.actionLevel}；风险级别：${router.riskLevel}；角色策略：${router.roleProfile ?? 'teacher'}。`,
     inputSummary: {
       promptLength: params.prompt.length,
       hasSelectedStudent: Boolean(params.studentId),
@@ -55,6 +56,7 @@ export async function runAiAgentLoop(params: {
       riskLevel: router.riskLevel,
       slots: router.slots,
       needsStudent: router.needsStudent,
+      roleProfile: router.roleProfile ?? 'teacher',
     },
   });
 
@@ -76,12 +78,13 @@ export async function runAiAgentLoop(params: {
     status: router.allowedTools.length ? 'succeeded' : 'skipped',
     label: '工具计划',
     detail: router.allowedTools.length
-      ? `本轮允许调用：${router.allowedTools.join(' → ')}。上下文策略：${router.contextPolicy.reason}`
-      : `本轮无需调用本地工具。上下文策略：${router.contextPolicy.reason}`,
+      ? `本轮允许调用：${router.allowedTools.join(' → ')}。上下文策略：${router.contextPolicy.reason} 角色指导：${buildAiRoleProfileGuidance(router.roleProfile)}`
+      : `本轮无需调用本地工具。上下文策略：${router.contextPolicy.reason} 角色指导：${buildAiRoleProfileGuidance(router.roleProfile)}`,
     outputSummary: {
       allowedTools: router.allowedTools,
       selectedContext: router.contextPolicy.include,
       contextReason: router.contextPolicy.reason,
+      roleProfile: router.roleProfile ?? 'teacher',
     },
   });
 

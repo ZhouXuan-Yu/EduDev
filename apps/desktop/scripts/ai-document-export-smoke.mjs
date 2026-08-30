@@ -66,9 +66,16 @@ async function run() {
               assert.equal(readFileSync(markdown.filePath, 'utf8'), contentMd);
               const pdf = readFileSync(exported.find((item) => item.type === 'pdf').filePath);
               assert.equal(pdf.subarray(0, 5).toString('utf8'), '%PDF-');
+              assert.ok(pdf.includes(Buffer.from('/Subtype /Type0')), 'pdf should use a Unicode CID font');
+              assert.ok(pdf.includes(Buffer.from('<FEFF')), 'pdf text should be encoded as UTF-16BE');
+              assert.ok(!pdf.includes(Buffer.from('(?')), 'pdf should not replace CJK text with question marks');
               const docx = readFileSync(exported.find((item) => item.type === 'docx').filePath);
               assert.equal(docx.subarray(0, 2).toString('utf8'), 'PK');
               assert.ok(docx.includes(Buffer.from('word/document.xml')), 'docx zip should contain document.xml entry');
+              assert.ok(docx.includes(Buffer.from('word/styles.xml')), 'docx zip should contain reusable styles');
+              assert.ok(docx.includes(Buffer.from('Heading1')), 'docx should preserve heading styles');
+              assert.ok(docx.includes(Buffer.from('<w:styles')), 'docx styles XML should be well-formed enough to contain styles root');
+              assert.ok(docx.includes(Buffer.from('<w:pStyle w:val="Heading1"/>')), 'docx document should bind heading paragraph style');
 
               const listed = await store.listDocumentArtifacts('session_document_smoke');
               assert.equal(listed.length, 3);

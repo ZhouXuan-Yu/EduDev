@@ -123,6 +123,8 @@ async function run() {
               });
               await store.createAiModelGrade(gradeAiReplyWithModelProxy({
                 sampleId: 'observability_model_grade_001',
+                runId,
+                sessionId: 'session_observability_smoke',
                 prompt,
                 answerMarkdown: [
                   '小A当前更像是分数应用题条件筛选不稳。',
@@ -136,10 +138,14 @@ async function run() {
                 subIntent: router.subIntent,
                 targetGrade: '小学五年级',
                 modelUnderReview: 'deepseek-smoke',
+                promptVersion: 'observability-v1.4',
+                totalTokens: 200,
                 reviewedAt: '2026-07-29T08:13:00.000Z',
               }));
               await store.createAiModelGrade(gradeAiReplyWithModelProxy({
                 sampleId: 'observability_model_grade_002',
+                runId,
+                sessionId: 'session_observability_smoke',
                 prompt: '基于小A错题出一组三元题组。',
                 answerMarkdown: [
                   '这组三元题组先复现原题结构，再做相似变式，最后做条件反转。',
@@ -154,6 +160,8 @@ async function run() {
                 subIntent: 'triplet_practice',
                 targetGrade: '小学五年级',
                 modelUnderReview: 'deepseek-smoke',
+                promptVersion: 'observability-v1.4',
+                totalTokens: 200,
                 reviewedAt: '2026-07-29T08:14:00.000Z',
               }));
 
@@ -256,8 +264,11 @@ async function run() {
               assert.equal(snapshot.humanUsability.needsRewriteCount, 0);
               assert.equal(snapshot.usabilityReplay.experimentCount, 1);
               assert.equal(snapshot.usabilityReplay.improvedCount, 1);
+              assert.equal(snapshot.usabilityReplay.liveLinkedCount, 1);
               assert.equal(snapshot.modelGrader.sampleCount, 2);
               assert.equal(snapshot.modelGrader.passedCount, 2);
+              assert.equal(snapshot.modelGrader.runLinkedCount, 2);
+              assert.equal(snapshot.modelGrader.tokenKnownCount, 2);
               assert.equal(snapshot.modelGrader.averageOverallScore, 5);
               assert.ok(snapshot.latency.p50Ms > 0, 'latency should be measurable');
 
@@ -276,6 +287,8 @@ async function run() {
                 minimumModelGradeSamples: 2,
                 minimumModelGradeScore: 4,
                 minimumGradeAppropriatenessScore: 4,
+                minimumLiveLinkedReplayCount: 1,
+                minimumRunLinkedModelGradeCount: 2,
               });
               assert.equal(report.status, 'passed');
               assert.equal(report.snapshot.runCount, 1);
@@ -286,6 +299,7 @@ async function run() {
               assert.ok(report.gates.some((gate) => gate.id === 'teacher_review_score_gate'));
               assert.ok(report.gates.some((gate) => gate.id === 'usability_replay_improvement_gate'));
               assert.ok(report.gates.some((gate) => gate.id === 'model_grader_quality_gate'));
+              assert.ok(report.gates.some((gate) => gate.id === 'live_evidence_binding_gate'));
               assert.equal(report.reportJson.schemaVersion, 'xiazhi.observability.v1');
               const readback = await store.getAiRegressionReport(report.id);
               assert.ok(readback, 'regression report should be readable');

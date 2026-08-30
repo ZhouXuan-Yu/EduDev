@@ -99,6 +99,8 @@ function issue(code: string, condition: boolean, issues: string[]) {
 
 export function gradeAiReplyWithModelProxy(params: {
   sampleId: string;
+  runId?: string;
+  sessionId?: string;
   prompt: string;
   answerMarkdown: string;
   route: AiIntentRoute;
@@ -106,6 +108,8 @@ export function gradeAiReplyWithModelProxy(params: {
   targetGrade?: string;
   modelUnderReview?: string;
   graderModel?: string;
+  promptVersion?: string;
+  totalTokens?: number;
   reviewedAt?: string;
 }): AiModelGradeInput {
   const answer = params.answerMarkdown.trim();
@@ -135,6 +139,8 @@ export function gradeAiReplyWithModelProxy(params: {
 
   return {
     sampleId: params.sampleId,
+    runId: params.runId ?? '',
+    sessionId: params.sessionId ?? '',
     prompt: params.prompt,
     answerMarkdown: answer,
     route: params.route,
@@ -143,6 +149,8 @@ export function gradeAiReplyWithModelProxy(params: {
     modelUnderReview: params.modelUnderReview ?? '',
     graderModel: params.graderModel ?? 'deterministic-model-grader-proxy-v1',
     graderMode: 'deterministic_proxy',
+    promptVersion: params.promptVersion ?? '',
+    totalTokens: params.totalTokens ?? 0,
     evidenceScore: clampScore(evidenceScore),
     actionabilityScore: clampScore(actionabilityScore),
     safetyScore: clampScore(safetyScore),

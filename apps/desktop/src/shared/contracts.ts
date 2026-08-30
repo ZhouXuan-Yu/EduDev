@@ -77,6 +77,58 @@ export type LearningRecordFilters = {
   offset?: number;
 };
 
+export type TeacherNotebookRecordType = 'solve' | 'question' | 'research' | 'chat' | 'co_writer' | 'tutorbot' | 'guided_learning';
+
+export type TeacherNotebook = {
+  id: string;
+  name: string;
+  description: string;
+  color: string;
+  icon: string;
+  status: 'active' | 'deleted';
+  version: number;
+  recordCount: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type TeacherNotebookRecord = {
+  id: string;
+  notebookId: string;
+  recordType: TeacherNotebookRecordType;
+  title: string;
+  summary: string;
+  userQuery: string;
+  output: string;
+  metadata: Record<string, unknown>;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type TeacherNotebookInput = {
+  name: string;
+  description?: string;
+  color?: string;
+  icon?: string;
+};
+
+export type TeacherNotebookUpdateInput = Partial<TeacherNotebookInput> & { version: number };
+
+export type TeacherNotebookRecordInput = {
+  notebookId: string;
+  recordType: TeacherNotebookRecordType;
+  title: string;
+  userQuery?: string;
+  output: string;
+  summary?: string;
+  metadata?: Record<string, unknown>;
+};
+
+export type TeacherNotebookRecordUpdateInput = Partial<Omit<TeacherNotebookRecordInput, 'notebookId'>> & { version: number };
+
 export type Attachment = {
   id: string;
   studentId: string;
@@ -217,6 +269,277 @@ export type QuestionSearchFilters = {
   questionType?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   limit?: number;
+};
+
+export type QuestionNotebookCategory = {
+  id: string;
+  name: string;
+  status: 'active' | 'deleted';
+  version: number;
+  entryCount: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type QuestionNotebookEntry = QuestionBankItem & {
+  bookmarked: boolean;
+  version: number;
+  categories: QuestionNotebookCategory[];
+  usageCount: number;
+  lastUsedAt: string;
+};
+
+export type QuestionNotebookListResult = {
+  items: QuestionNotebookEntry[];
+  total: number;
+};
+
+export type QuestionNotebookUsage = {
+  id: string;
+  questionId: string;
+  usageType: 'exercise_set' | 'learning_record' | 'manual';
+  usageId: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+};
+
+export type QuestionNotebookFilters = {
+  query?: string;
+  categoryId?: string;
+  bookmarked?: boolean;
+  sourceKind?: QuestionBankSourceKind;
+  limit?: number;
+  offset?: number;
+};
+
+export type QuestionNotebookCategoryInput = {
+  name: string;
+};
+
+export type QuestionNotebookCategoryUpdateInput = {
+  name: string;
+  version: number;
+};
+
+export type QuestionNotebookBookmarkInput = {
+  questionId: string;
+  bookmarked: boolean;
+  version?: number;
+};
+
+export type QuestionNotebookUsageInput = {
+  questionId: string;
+  usageType: 'exercise_set' | 'learning_record' | 'manual';
+  usageId?: string;
+  metadata?: Record<string, unknown>;
+};
+
+export type TeachingBookStatus = 'draft' | 'spine_ready' | 'compiling' | 'ready' | 'partial' | 'error' | 'archived';
+export type TeachingPageStatus = 'pending' | 'planning' | 'generating' | 'ready' | 'partial' | 'error';
+export type TeachingBlockStatus = 'pending' | 'generating' | 'ready' | 'error' | 'hidden';
+export type TeachingBlockType = 'text' | 'chapter' | 'quiz' | 'card' | 'figure' | 'concept_graph' | 'prompt' | 'callout' | 'section' | 'timeline' | 'code' | 'deep_explanation' | 'interactive' | 'animation' | 'user_note';
+export type TeachingContentType = 'theory' | 'derivation' | 'history' | 'practice' | 'concept' | 'overview';
+export type TeachingSourceKind = 'knowledge_resource' | 'knowledge_chunk' | 'teacher_notebook' | 'question_notebook' | 'manual';
+
+export type TeachingSourceRef = {
+  kind: TeachingSourceKind;
+  ref: string;
+  title: string;
+  snippet: string;
+  fingerprint: string;
+  status: 'available' | 'missing' | 'stale';
+};
+
+export type TeachingBook = {
+  id: string;
+  title: string;
+  description: string;
+  status: TeachingBookStatus;
+  language: string;
+  targetLevel: string;
+  version: number;
+  chapterCount: number;
+  pageCount: number;
+  sourceCount: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type TeachingBookInput = {
+  title: string;
+  description?: string;
+  language?: string;
+  targetLevel?: string;
+};
+
+export type TeachingBookUpdateInput = Partial<TeachingBookInput> & { version: number; status?: TeachingBookStatus };
+
+export type TeachingBookChapter = {
+  id: string;
+  bookId: string;
+  title: string;
+  learningObjectives: string[];
+  contentType: TeachingContentType;
+  prerequisites: string[];
+  summary: string;
+  order: number;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TeachingBookChapterInput = {
+  bookId: string;
+  title: string;
+  learningObjectives?: string[];
+  contentType?: TeachingContentType;
+  prerequisites?: string[];
+  summary?: string;
+  order?: number;
+};
+
+export type TeachingBookPage = {
+  id: string;
+  bookId: string;
+  chapterId: string;
+  title: string;
+  learningObjectives: string[];
+  contentType: TeachingContentType;
+  status: TeachingPageStatus;
+  order: number;
+  version: number;
+  blockCount: number;
+  error: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TeachingBookPageInput = {
+  bookId: string;
+  chapterId: string;
+  title: string;
+  learningObjectives?: string[];
+  contentType?: TeachingContentType;
+  order?: number;
+};
+
+export type TeachingBookBlock = {
+  id: string;
+  pageId: string;
+  type: TeachingBlockType;
+  status: TeachingBlockStatus;
+  title: string;
+  params: Record<string, unknown>;
+  payload: Record<string, unknown>;
+  sourceAnchors: TeachingSourceRef[];
+  metadata: Record<string, unknown>;
+  order: number;
+  version: number;
+  error: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TeachingBookBlockInput = {
+  pageId: string;
+  type: TeachingBlockType;
+  title?: string;
+  params?: Record<string, unknown>;
+  payload?: Record<string, unknown>;
+  sourceAnchors?: TeachingSourceRef[];
+  metadata?: Record<string, unknown>;
+  order?: number;
+  status?: TeachingBlockStatus;
+};
+
+export type TeachingBookSourceInput = TeachingSourceRef & { bookId: string };
+
+export type TeachingBookHealth = {
+  bookId: string;
+  status: 'healthy' | 'stale' | 'missing_sources';
+  sourceCount: number;
+  staleSourceRefs: string[];
+  missingSourceRefs: string[];
+  stalePageIds: string[];
+  staleBlockIds: string[];
+  checkedAt: string;
+};
+
+export type TeachingBookInvalidation = {
+  id: string;
+  bookId: string;
+  kind: TeachingSourceKind;
+  ref: string;
+  status: 'open' | 'resolved';
+  stalePageIds: string[];
+  staleBlockIds: string[];
+  detectedAt: string;
+  resolvedAt: string;
+};
+
+export type TeachingBookPatchStatus = 'draft' | 'applied' | 'rejected' | 'undone';
+export type TeachingBookPatchInput = {
+  bookId: string;
+  blockId: string;
+  baseVersion: number;
+  title?: string;
+  payload?: Record<string, unknown>;
+  reason?: string;
+};
+export type TeachingBookSelectionPatchInput = {
+  bookId: string;
+  blockId: string;
+  baseVersion: number;
+  selectionStart: number;
+  selectionEnd: number;
+  selectedText: string;
+  replacementText: string;
+  mode?: 'react_edit' | 'automark';
+  reason?: string;
+};
+export type TeachingBookPatch = {
+  id: string;
+  bookId: string;
+  pageId: string;
+  blockId: string;
+  baseVersion: number;
+  resultVersion: number;
+  operation: 'replace_block' | 'replace_selection' | 'automark_selection';
+  beforeTitle: string;
+  afterTitle: string;
+  beforePayload: Record<string, unknown>;
+  afterPayload: Record<string, unknown>;
+  reason: string;
+  status: TeachingBookPatchStatus;
+  error: string;
+  createdAt: string;
+  appliedAt: string;
+  undoneAt: string;
+  selectionStart: number;
+  selectionEnd: number;
+  selectedTextHash: string;
+  selectedText: string;
+};
+
+export type TeachingBookDetail = {
+  book: TeachingBook;
+  chapters: TeachingBookChapter[];
+  pages: TeachingBookPage[];
+  blocks: TeachingBookBlock[];
+  sources: TeachingSourceRef[];
+  health: TeachingBookHealth;
+};
+
+export type TeachingBookMarkdownPreview = {
+  schemaVersion: 'omni.teaching.book.markdown.v1';
+  markdown: string;
+  fallbackCount: number;
+  blockCount: number;
+  sourceRefs: string[];
+  requiresTeacherReview: true;
+  writesFile: false;
 };
 
 export type SimilarQuestionMatch = QuestionBankItem & {
@@ -375,6 +698,19 @@ export type ExportStudentResult = {
 export type ExportDataRootResult = {
   exportPath: string;
   fileCount: number;
+  manifestPath: string;
+  verified: boolean;
+};
+
+export type DataBackupVerificationResult = {
+  backupPath: string;
+  manifestPath: string;
+  verified: boolean;
+  fileCount: number;
+  missingFiles: string[];
+  changedFiles: string[];
+  unexpectedFiles: string[];
+  errorMessage?: string;
 };
 
 export type DocumentArtifactType = 'markdown' | 'pdf' | 'docx';
@@ -441,6 +777,33 @@ export type AiConsoleSource = {
   count: string | number;
 };
 
+export type ReviewReminderItem = {
+  id: string;
+  knowledgePointId: string;
+  name: string;
+  moduleId: string;
+  moduleName: string;
+  type: 'memory' | 'concept' | 'procedure' | 'design';
+  dueAt: number;
+  state: 'due' | 'upcoming';
+};
+
+export type ReviewReminder = {
+  schemaVersion: 'omni.review.reminder.v1';
+  status: 'due' | 'upcoming' | 'clear';
+  generatedAt: number;
+  horizonSeconds: number;
+  dueCount: number;
+  upcomingCount: number;
+  nextAt: number | null;
+  timezone: string;
+  timezoneInvariant: true;
+  source: 'omni_edu_learning_records';
+  rawRecordsIncluded: false;
+  requiresTeacherReview: true;
+  items: ReviewReminderItem[];
+};
+
 export type AiIntentRoute =
   | 'general_qa'
   | 'student_diagnosis'
@@ -457,12 +820,15 @@ export type AiActionLevel = 'answer' | 'draft' | 'write';
 
 export type AiRiskLevel = 'normal' | 'sensitive' | 'safeguarding';
 
+export type AiRoleProfileId = 'teacher' | 'peer' | 'research_assistant';
+
 export type AiSubIntent =
   | 'casual_greeting'
   | 'capability_intro'
   | 'concept_explanation'
   | 'student_progress'
   | 'student_weakness'
+  | 'review_queue'
   | 'student_profile_review'
   | 'risk_support'
   | 'mistake_reasoning'
@@ -470,6 +836,11 @@ export type AiSubIntent =
   | 'correction_guidance'
   | 'triplet_practice'
   | 'similar_questions'
+  | 'question_notebook'
+  | 'book_workspace'
+  | 'memory_trace'
+  | 'memory_summary'
+  | 'memory_synthesis'
   | 'homework_plan'
   | 'lesson_plan'
   | 'teaching_sequence'
@@ -481,6 +852,9 @@ export type AiSubIntent =
   | 'resource_search'
   | 'source_citation'
   | 'knowledge_graph_lookup'
+  | 'research_workspace'
+  | 'visualization'
+  | 'attached_source_exploration'
   | 'usage_help'
   | 'settings_help'
   | 'data_management_help'
@@ -496,13 +870,221 @@ export type AiRouterSlots = {
 };
 
 export type AiContextKey =
+  | 'user_input'
   | 'student_lookup'
   | 'student_profile'
   | 'learning_records'
   | 'attachment_metadata'
+  | 'attached_sources'
+  | 'teacher_notebook'
+  | 'question_notebook'
+  | 'teaching_book'
   | 'teacher_knowledge'
   | 'knowledge_graph'
-  | 'question_bank';
+  | 'question_bank'
+  | 'memory_trace'
+  | 'memory_summary'
+  | 'memory_synthesis';
+
+export type AiMemorySurface = 'chat' | 'notebook' | 'quiz' | 'kb' | 'book' | 'partner' | 'cowriter';
+export type AiMemoryL3Slot = 'recent' | 'profile' | 'scope' | 'preferences';
+
+export type AiMemoryEntryStatus = 'active' | 'disabled' | 'deleted';
+export type AiMemoryEntryOrigin = 'derived' | 'teacher';
+
+export type AiMemoryEvidenceRef = {
+  ref: string;
+  kind: 'run' | 'event';
+  id: string;
+  label: string;
+};
+
+export type AiMemoryEntry = {
+  id: string;
+  documentId: string;
+  surface: AiMemorySurface;
+  section: string;
+  text: string;
+  refs: AiMemoryEvidenceRef[];
+  status: AiMemoryEntryStatus;
+  origin: AiMemoryEntryOrigin;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+};
+
+export type AiMemoryDocument = {
+  id: string;
+  layer: 'L2';
+  surface: AiMemorySurface;
+  title: string;
+  version: number;
+  entryCount: number;
+  activeEntryCount: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AiMemoryDocumentDetail = {
+  document: AiMemoryDocument;
+  entries: AiMemoryEntry[];
+};
+
+export type AiMemorySummaryDraftEntry = {
+  section: string;
+  text: string;
+  refs: AiMemoryEvidenceRef[];
+  origin: 'derived';
+  requiresTeacherReview: true;
+};
+
+export type AiMemorySummaryDraft = {
+  layer: 'L2';
+  surface: AiMemorySurface;
+  sourceRunId: string;
+  entries: AiMemorySummaryDraftEntry[];
+  bounded: true;
+  rawPromptIncluded: false;
+  hiddenReasoningIncluded: false;
+};
+
+export type AiMemoryEntryInput = {
+  surface: AiMemorySurface;
+  section?: string;
+  text: string;
+  refs: string[];
+  origin?: AiMemoryEntryOrigin;
+};
+
+export type AiMemoryEntryUpdateInput = {
+  version: number;
+  section?: string;
+  text?: string;
+  refs?: string[];
+  status?: AiMemoryEntryStatus;
+};
+
+export type AiMemoryRevision = {
+  id: string;
+  documentId: string;
+  entryId: string;
+  action: 'create' | 'edit' | 'disable' | 'restore' | 'delete';
+  before: Record<string, unknown> | null;
+  after: Record<string, unknown> | null;
+  createdAt: string;
+};
+
+export type AiMemoryL3Entry = {
+  id: string;
+  documentId: string;
+  slot: AiMemoryL3Slot;
+  text: string;
+  sourceDocuments: AiMemorySurface[];
+  status: Exclude<AiMemoryEntryStatus, 'deleted'>;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AiMemoryL3Document = {
+  id: string;
+  layer: 'L3';
+  slot: AiMemoryL3Slot;
+  title: string;
+  version: number;
+  entryCount: number;
+  activeEntryCount: number;
+  updatedAt: string;
+};
+
+export type AiMemoryL3DocumentDetail = {
+  document: AiMemoryL3Document;
+  entries: AiMemoryL3Entry[];
+};
+
+export type AiMemoryL3Draft = {
+  layer: 'L3';
+  slot: AiMemoryL3Slot;
+  entries: Array<{
+    text: string;
+    sourceDocuments: AiMemorySurface[];
+    requiresTeacherReview: true;
+  }>;
+  bounded: true;
+  rawPromptIncluded: false;
+  hiddenReasoningIncluded: false;
+};
+
+export type AiMemoryL3EntryInput = {
+  slot: AiMemoryL3Slot;
+  text: string;
+  sourceDocuments: AiMemorySurface[];
+};
+
+export type AiMemoryL3EntryUpdateInput = {
+  version: number;
+  text?: string;
+  status?: Exclude<AiMemoryEntryStatus, 'deleted'>;
+};
+
+export type AiMemoryGraphNode = {
+  id: string;
+  kind: 'l2_entry' | 'l3_entry' | 'run' | 'event';
+  label: string;
+  status: string;
+};
+
+export type AiMemoryGraphEdge = {
+  from: string;
+  to: string;
+  kind: 'derived_from' | 'evidence';
+};
+
+export type AiMemoryEvidenceGraph = {
+  nodes: AiMemoryGraphNode[];
+  edges: AiMemoryGraphEdge[];
+  bounded: true;
+  rawPromptIncluded: false;
+  hiddenReasoningIncluded: false;
+};
+
+export type AiMemoryGovernanceReport = {
+  policyVersion: 'memory-governance.v1';
+  l2Documents: number;
+  l2ActiveEntries: number;
+  l3Documents: number;
+  l3ActiveEntries: number;
+  danglingEvidenceRefs: number;
+  disabledEntries: number;
+  deletedEntries: number;
+  graphNodes: number;
+  graphEdges: number;
+  bounded: true;
+  writableByAi: false;
+};
+
+export type AiMemoryTraceEvent = {
+  sequence: number;
+  phase: AiAgentTraceStep['phase'];
+  status: AiAgentTraceStep['status'];
+  label: string;
+  toolName: string;
+  createdAt: string;
+  inputKeys: string[];
+  outputKeys: string[];
+};
+
+export type AiMemoryTraceSummary = {
+  layer: 'L1';
+  runId: string;
+  status: AiAgentRunStatus | 'missing';
+  eventCount: number;
+  events: AiMemoryTraceEvent[];
+  bounded: true;
+  rawPromptIncluded: false;
+  hiddenReasoningIncluded: false;
+};
 
 export type AiContextPolicy = {
   include: AiContextKey[];
@@ -524,6 +1106,7 @@ export type AiRouterDecision = {
   clarificationQuestion?: string;
   allowedTools: string[];
   contextPolicy: AiContextPolicy;
+  roleProfile?: AiRoleProfileId;
 };
 
 export type AiConsoleToolRun = {
@@ -540,12 +1123,18 @@ export type AiConsoleToolRun = {
 export type AiModelToolJsonSchema = {
   type: 'object';
   properties: Record<string, {
-    type: 'string' | 'number' | 'boolean';
+    type: 'string' | 'number' | 'boolean' | 'array' | 'object';
     description?: string;
     enum?: string[];
     minimum?: number;
     maximum?: number;
     maxLength?: number;
+    maxItems?: number;
+    items?: {
+      type: 'string' | 'object';
+      properties?: Record<string, { type: 'string'; enum?: string[]; maxLength?: number }>;
+      required?: string[];
+    };
   }>;
   required?: string[];
   additionalProperties: false;
@@ -596,10 +1185,232 @@ export type AiAgentTraceStep = {
   outputSummary?: Record<string, unknown>;
 };
 
-export type AiAgentRunStatus = 'running' | 'succeeded' | 'failed' | 'blocked' | 'waiting_confirmation';
+export type AiAgentRunStatus = 'running' | 'succeeded' | 'failed' | 'blocked' | 'waiting_confirmation' | 'waiting_input';
+
+export type AiCapabilityCheckpointStatus = 'pending' | 'resolved' | 'expired' | 'cancelled';
+
+export type AiCapabilityCheckpoint = {
+  id: string;
+  runId: string;
+  capabilityName: XiazhiCapabilityName;
+  checkpointType: 'user_input' | 'confirmation' | 'cancelled' | 'timeout' | 'continuation' | 'budget_approval';
+  state: Record<string, unknown>;
+  status: AiCapabilityCheckpointStatus;
+  expiresAt: string;
+  createdAt: string;
+  resolvedAt: string;
+};
+
+export type AiMasteryQuestionStatus = 'pending' | 'answered' | 'graded' | 'cancelled' | 'expired';
+
+export type AiMasteryQuestion = {
+  id: string;
+  runId: string;
+  turnId: string;
+  studentId: string;
+  knowledgePointId: string;
+  knowledgePointName: string;
+  stem: string;
+  options: string[];
+  expectedAnswer: string;
+  status: AiMasteryQuestionStatus;
+  answer: string;
+  isCorrect?: boolean;
+  createdAt: string;
+  answeredAt?: string;
+  gradedAt?: string;
+};
+
+export type AiMasteryPathModule = {
+  id: string;
+  name: string;
+  order: number;
+  knowledgePoints: Array<{
+    id: string;
+    name: string;
+    type: 'memory' | 'procedure' | 'concept' | 'design';
+  }>;
+};
+
+export type AiMasteryPath = {
+  id: string;
+  studentId: string;
+  version: number;
+  mode: 'replace' | 'append';
+  modules: AiMasteryPathModule[];
+  status: 'active' | 'archived';
+  createdAt: string;
+  updatedAt: string;
+};
+
+/**
+ * Cross-process DeepTutor bridge contracts. These are deliberately separate
+ * from model-facing reply contracts: the sidecar can request work, but the
+ * Electron host remains the authority for data, permissions and writes.
+ */
+export type XiazhiBridgeProtocolVersion = 'xiazhi.bridge.v1';
+export type XiazhiCapabilityManifestVersion = 'xiazhi.capability.manifest.v1';
+export type XiazhiCapabilityRequestVersion = 'xiazhi.capability.request.v1';
+export type XiazhiCapabilityEventVersion = 'xiazhi.capability.event.v1';
+export type XiazhiCapabilityResultVersion = 'xiazhi.capability.result.v1';
+
+export type XiazhiCapabilityName =
+  | 'chat'
+  | 'deep_solve'
+  | 'deep_question'
+  | 'deep_research'
+  | 'visualize'
+  | 'mastery_path';
+
+export type XiazhiBridgeRequest = {
+  type: 'request';
+  id: string;
+  method: 'handshake' | 'start_turn' | 'cancel_turn' | 'shutdown';
+  params: Record<string, unknown>;
+};
+
+export type XiazhiBridgeResponse = {
+  type: 'response';
+  id: string;
+  ok: boolean;
+  result?: Record<string, unknown>;
+  error?: {
+    code: string;
+    message: string;
+    retryable: boolean;
+  };
+};
+
+export type XiazhiCapabilityManifest = {
+  schemaVersion: XiazhiCapabilityManifestVersion;
+  bridgeProtocol: XiazhiBridgeProtocolVersion;
+  sidecarVersion: string;
+  capabilities: Array<{
+    name: XiazhiCapabilityName;
+    version: string;
+    enabled: boolean;
+    readOnly: boolean;
+  }>;
+};
+
+export type XiazhiCapabilityRequest = {
+  schemaVersion: XiazhiCapabilityRequestVersion;
+  turnId: string;
+  capability: XiazhiCapabilityName;
+  prompt: string;
+  context: Record<string, unknown>;
+  budgets: {
+    maxEvents: number;
+    maxWallMs: number;
+  };
+};
+
+export type XiazhiCapabilityEvent = {
+  schemaVersion: XiazhiCapabilityEventVersion;
+  turnId: string;
+  sequence: number;
+  phase: 'stage' | 'tool_request' | 'tool_result' | 'result' | 'error' | 'done';
+  status: 'running' | 'awaiting_host' | 'succeeded' | 'failed' | 'cancelled';
+  label: string;
+  detail: string;
+  publicSummary?: Record<string, unknown>;
+};
+
+export type XiazhiCapabilityResult = {
+  schemaVersion: XiazhiCapabilityResultVersion;
+  turnId: string;
+  status: 'succeeded' | 'failed' | 'cancelled';
+  answerMarkdown: string;
+  publicSummary: Record<string, unknown>;
+};
+
+export type XiazhiHostToolRequest = {
+  schemaVersion: 'xiazhi.host_tool.request.v1';
+  requestId: string;
+  turnId: string;
+  capability: XiazhiCapabilityName;
+  prompt: string;
+  toolName: string;
+  arguments: Record<string, unknown>;
+};
+
+export type XiazhiHostToolResult = {
+  schemaVersion: 'xiazhi.host_tool.result.v1';
+  requestId: string;
+  turnId: string;
+  status: 'used' | 'blocked' | 'failed';
+  review: {
+    ok: boolean;
+    reason: string;
+    errors: string[];
+  };
+  modelResult: Record<string, unknown>;
+};
+
+export type XiazhiUserInputRequest = {
+  schemaVersion: 'xiazhi.user_input.request.v1';
+  requestId: string;
+  turnId: string;
+  prompt: string;
+  questions?: Array<{
+    id: string;
+    question: string;
+    options?: string[];
+  }>;
+  expiresAt?: string;
+};
+
+export type XiazhiUserInputResult = {
+  schemaVersion: 'xiazhi.user_input.result.v1';
+  requestId: string;
+  turnId: string;
+  status: 'answered' | 'cancelled' | 'expired';
+  text: string;
+  answers?: Array<{ id: string; value: string }>;
+};
+
+/**
+ * Host-owned model boundary. The Python sidecar may request a completion, but
+ * never receives API keys; Electron main resolves the provider and returns a
+ * bounded OpenAI-compatible response.
+ */
+export type XiazhiModelRequest = {
+  schemaVersion: 'xiazhi.model.request.v1';
+  requestId: string;
+  turnId: string;
+  capability: XiazhiCapabilityName;
+  model: string;
+  messages: Array<Record<string, unknown>>;
+  tools?: Array<Record<string, unknown>>;
+  temperature?: number;
+  maxTokens?: number;
+};
+
+export type XiazhiModelResult = {
+  schemaVersion: 'xiazhi.model.result.v1';
+  requestId: string;
+  turnId: string;
+  status: 'succeeded' | 'blocked' | 'failed';
+  response?: {
+    choices: Array<Record<string, unknown>>;
+    usage?: Record<string, unknown>;
+    recovery?: {
+      attempted: boolean;
+      reason?: 'empty_content' | 'length';
+      firstFinishReason?: string;
+      finalFinishReason?: string;
+    };
+  };
+  error?: {
+    code: string;
+    message: string;
+    retryable: boolean;
+  };
+};
 
 export type AiAgentRun = {
   id: string;
+  parentRunId: string;
   sessionId: string;
   prompt: string;
   route: AiIntentRoute;
@@ -611,6 +1422,31 @@ export type AiAgentRun = {
   createdAt: string;
   completedAt: string;
   updatedAt: string;
+};
+
+export type XiazhiContinuationResult = {
+  ok: boolean;
+  runId?: string;
+  turnId?: string;
+  parentRunId?: string;
+  continuationToken?: string;
+  approvalRequired?: boolean;
+  approvalCheckpointId?: string;
+  requestedBudgets?: { maxEvents: number; maxWallMs: number };
+  errorMessage?: string;
+};
+
+export type XiazhiRunMutationAction = 'retry' | 'branch' | 'regenerate';
+
+export type XiazhiRunMutationResult = {
+  ok: boolean;
+  action: XiazhiRunMutationAction;
+  sourceRunId: string;
+  runId?: string;
+  turnId?: string;
+  parentRunId?: string;
+  reused?: boolean;
+  errorMessage?: string;
 };
 
 export type AiAgentEvent = AiAgentTraceStep & {
@@ -708,6 +1544,8 @@ export type AiUsabilityReplayExperiment = {
   id: string;
   beforeReviewId: string;
   afterReviewId: string;
+  beforeRunId: string;
+  afterRunId: string;
   replayPrompt: string;
   modelBefore: string;
   modelAfter: string;
@@ -730,6 +1568,7 @@ export type AiUsabilityReplaySummary = {
   experimentCount: number;
   improvedCount: number;
   unresolvedCount: number;
+  liveLinkedCount: number;
   improvementRate: number;
   averageScoreDelta: number;
   averageRoundsDelta: number;
@@ -741,6 +1580,8 @@ export type AiModelGraderMode = 'deterministic_proxy' | 'llm_judge';
 
 export type AiModelGradeInput = {
   sampleId: string;
+  runId?: string;
+  sessionId?: string;
   prompt: string;
   answerMarkdown: string;
   route: AiIntentRoute;
@@ -749,6 +1590,8 @@ export type AiModelGradeInput = {
   modelUnderReview?: string;
   graderModel?: string;
   graderMode?: AiModelGraderMode;
+  promptVersion?: string;
+  totalTokens?: number;
   evidenceScore: number;
   actionabilityScore: number;
   safetyScore: number;
@@ -763,6 +1606,8 @@ export type AiModelGradeInput = {
 export type AiModelGrade = {
   id: string;
   sampleId: string;
+  runId: string;
+  sessionId: string;
   prompt: string;
   answerMarkdown: string;
   route: AiIntentRoute;
@@ -771,6 +1616,8 @@ export type AiModelGrade = {
   modelUnderReview: string;
   graderModel: string;
   graderMode: AiModelGraderMode;
+  promptVersion: string;
+  totalTokens: number;
   evidenceScore: number;
   actionabilityScore: number;
   safetyScore: number;
@@ -792,8 +1639,11 @@ export type AiModelGradeSummary = {
   averageOverallScore: number;
   minOverallScore: number;
   averageGradeAppropriatenessScore: number;
+  runLinkedCount: number;
+  tokenKnownCount: number;
   issueCounts: Record<string, number>;
   graderModeCounts: Record<string, number>;
+  promptVersionCounts: Record<string, number>;
   latestReviewedAt: string;
 };
 
@@ -857,14 +1707,16 @@ export type AiRegressionReportInput = {
   maximumTeacherRoundsToUseful?: number;
   minimumReplayExperimentCount?: number;
   minimumReplayImprovementRate?: number;
+  minimumLiveLinkedReplayCount?: number;
   minimumModelGradeSamples?: number;
   minimumModelGradeScore?: number;
   minimumGradeAppropriatenessScore?: number;
+  minimumRunLinkedModelGradeCount?: number;
 };
 
 export type AiConfirmationStatus = 'pending' | 'confirmed' | 'rejected' | 'failed';
 
-export type AiConfirmationActionType = 'create_review_report' | 'save_exercise_set';
+export type AiConfirmationActionType = 'create_review_report' | 'save_exercise_set' | 'save_mastery_state';
 
 export type AiConfirmationPayload = {
   studentId: string;
@@ -877,6 +1729,18 @@ export type AiConfirmationPayload = {
   parentSummary?: string;
   sourceRecordIds?: string[];
   exerciseSet?: ExerciseSetDraftPayload;
+  masteryOperation?: 'assess' | 'build';
+  masteryAssessment?: {
+    knowledgePointId: string;
+    knowledgePointName: string;
+    knowledgeType: 'concept' | 'design';
+    passed: boolean;
+    feedback?: string;
+  };
+  masteryPath?: {
+    mode: 'replace' | 'append';
+    modules: AiMasteryPathModule[];
+  };
 };
 
 export type AiConfirmationItem = {
@@ -914,6 +1778,8 @@ export type AiConfirmationDecisionResult = {
   readback?: {
     report?: ReviewReport;
     exerciseSet?: ExerciseSet;
+    masteryPath?: AiMasteryPath;
+    masteryAttempt?: { studentId: string; knowledgePointId: string; passed: boolean };
   };
 };
 
@@ -1020,6 +1886,8 @@ export type AiHarnessEvalReport = {
 
 export type AiHarnessRunSummary = {
   agentRunId?: string;
+  harnessVersion?: string;
+  selectedCapability?: XiazhiCapabilityName;
   router: AiRouterDecision;
   selectedContext: AiContextKey[];
   schemaValid: boolean;
@@ -1049,6 +1917,13 @@ export type AiConsoleRunResult = {
   structuredReply?: AiStructuredReply;
   artifacts?: AiConsoleArtifactRequest[];
   confirmations?: AiConfirmationItem[];
+  learningAnalytics?: {
+    schemaVersion: 'omni.learning.analytics.v1';
+    startDate: string;
+    endDate: string;
+    subject: string;
+    sourceRecordIds: string[];
+  };
   harness?: AiHarnessRunSummary;
   usage?: {
     promptTokens?: number;

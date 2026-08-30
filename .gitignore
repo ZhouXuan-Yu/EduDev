@@ -1,4 +1,5 @@
 node_modules/
+apps/desktop/test-results/
 dist/
 out/
 coverage/
@@ -6,3 +7,5 @@ coverage/
 .env.*
 *.log
 *-review.png
+__pycache__/
+*.py[cod]

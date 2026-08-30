@@ -1,4 +1,5 @@
 import type { AiContextPolicy, AiIntentRoute, AiRouterDecision, AiRouterSlots, AiSubIntent } from '../../shared/contracts';
+import { inferAiRoleProfile } from './role-profile';
 
 const ROUTE_ORDER: AiIntentRoute[] = [
   'report_draft',
@@ -32,14 +33,15 @@ const ROUTE_KEYWORDS: Record<AiIntentRoute, RegExp[]> = {
   error_analysis: [
     /错题|错在哪里|错误原因|为什么错|失分点|易错点|订正|解题思路|这道题/,
     /小[\p{L}\p{N}_-]{1,12}.*(错题|错因|失分|订正)/u,
+    /附件.*(分析|错误|题目)|分析.*附件|图片中|图中|照片中|OCR/,
   ],
   practice_design: [
-    /练习|作业|题组|三元题组|相似题|变式题|巩固|训练|出题|周练/,
+    /练习|作业|题组|三元题组|相似题|变式题|巩固|训练|出题|周练|复习队列|间隔复习|到期复习|待复习/,
     /小[\p{L}\p{N}_-]{1,12}.*(题目|题组|练习|作业|训练|相似题|变式题|巩固|抽取)/u,
   ],
   lesson_design: [/教案|课堂|课时|讲解|导入|板书|教学设计|课程设计|备课|知识讲解|课堂活动/],
   report_draft: [/报告|复盘|家长|沟通摘要|阶段总结|月报|周报|可编辑|docx?|pdf|导出/],
-  knowledge_retrieval: [/知识库|资料|讲义|教材|文档|引用|来源|查找|检索|根据.*材料|知识点|知识点图谱|关联|关系|先修/],
+  knowledge_retrieval: [/知识库|资料|讲义|教材|文档|笔记|备课本|历史草稿|notebook|引用|来源|查找|检索|根据.*材料|附件中|上传的文件|文档中|文件中|知识点|知识点图谱|关联|关系|先修/],
   workspace_help: [
     /怎么用|如何操作|API Key|DeepSeek/i,
     /(怎么|如何).*(导入|配置|设置|新建|归档|备份|打开|保存|使用)/,
@@ -172,8 +174,23 @@ function pickRoute(prompt: string, slots: AiRouterSlots): { route: AiIntentRoute
   if (/(分析当前学生|当前学生|这个学生).*(错因|学习|表现|掌握|薄弱)/.test(trimmed)) {
     return { route: 'student_diagnosis', confidence: 0.86 };
   }
+  if (/(复习队列|间隔复习|到期复习|待复习)/.test(trimmed) && (slots.studentRefs.length > 0 || /当前学生|这个学生|学生/.test(trimmed))) {
+    return { route: 'student_diagnosis', confidence: 0.88 };
+  }
   if (/(板书|导入|总结流程|课时安排).*(流程|练习|总结)|生成.*(板书|导入)/.test(trimmed)) {
     return { route: 'lesson_design', confidence: 0.86 };
+  }
+  if (/(题目笔记本|题目收藏|收藏题目|收藏夹|收藏|错题本|题目书签|分类题目|我的题目)/.test(trimmed)) {
+    return { route: 'practice_design', confidence: 0.89 };
+  }
+  if (/(专题讲义|单元备课包|教材工作区|教学包|课程讲义|讲义包|章节页面|内容块|讲义健康|讲义引用|知识库漂移|来源漂移|重新生成.*(页面|块)|备课包状态|规划讲义|章节规划|生成章节大纲|章节骨架|来源探索|spine|source explorer)/i.test(trimmed)) {
+    return { route: 'lesson_design', confidence: 0.9 };
+  }
+  if (/(笔记|备课本|历史草稿|notebook)/i.test(trimmed)) {
+    return { route: 'knowledge_retrieval', confidence: 0.88 };
+  }
+  if (/(附件.*(分析|错误|题目)|分析.*附件|图片中|图中|照片中|OCR)/i.test(trimmed)) {
+    return { route: 'error_analysis', confidence: 0.88 };
   }
   if (/(题目|题组|练习|作业|训练|相似题|变式题|巩固|抽取|周练)/.test(trimmed)) {
     return { route: 'practice_design', confidence: 0.85 };
@@ -228,12 +245,16 @@ function routeNeedsStudent(route: AiIntentRoute) {
 function inferSubIntent(route: AiIntentRoute, prompt: string, slots: AiRouterSlots, risk: AiRouterDecision['riskLevel']): AiSubIntent {
   if (/忽略之前规则|上传所有附件原文|直接写入学生档案|手机号|身份证|自动保存.*标签/.test(prompt)) return 'safety_boundary';
   if (risk === 'safeguarding') return 'risk_support';
+  if (/研究|教研报告|文献综述|研究提纲|deep\s*research|research\s*assistant/i.test(prompt)) return 'research_workspace';
+  if (/可视化|流程图|概念图|关系图|mermaid|visualize/i.test(prompt)) return 'visualization';
+  if (/附件|图片中|图中|照片中|上传的文件|文档中|文件中|材料中/i.test(prompt)) return 'attached_source_exploration';
   switch (route) {
     case 'general_qa':
       if (/^(你?好|您好|hello|hi|嗨|在吗)/i.test(prompt)) return 'casual_greeting';
       if (/你是谁|小智能做什么|介绍一下|能不能自动读取学生数据/.test(prompt)) return 'capability_intro';
       return 'concept_explanation';
     case 'student_diagnosis':
+      if (/复习队列|间隔复习|到期复习|待复习/.test(prompt)) return 'review_queue';
       if (/画像|档案|阶段目标|标签|永久/.test(prompt)) return 'student_profile_review';
       if (/薄弱|弱点|短板|掌握情况|掌握/.test(prompt)) return 'student_weakness';
       return 'student_progress';
@@ -242,10 +263,13 @@ function inferSubIntent(route: AiIntentRoute, prompt: string, slots: AiRouterSlo
       if (/订正|讲解思路|改正|纠错/.test(prompt)) return 'correction_guidance';
       return 'mistake_reasoning';
     case 'practice_design':
+      if (/复习队列|间隔复习|到期复习|待复习/.test(prompt)) return 'review_queue';
+      if (/题目笔记本|题目收藏|收藏题目|收藏夹|收藏|错题本|题目书签|分类题目|我的题目/.test(prompt)) return 'question_notebook';
       if (/三元题组|原题|变式/.test(prompt)) return 'triplet_practice';
       if (/相似题|同类题|类似题/.test(prompt)) return 'similar_questions';
       return 'homework_plan';
     case 'lesson_design':
+      if (/专题讲义|单元备课包|教材工作区|教学包|课程讲义|讲义包|章节页面|内容块|讲义健康|讲义引用|知识库漂移|来源漂移|重新生成.*(页面|块)|备课包状态|规划讲义|章节规划|生成章节大纲|章节骨架|来源探索|spine|source explorer/i.test(prompt)) return 'book_workspace';
       if (/活动|互动|检查点|课堂练习/.test(prompt)) return 'classroom_activity';
       if (/顺序|流程|课时安排|板书|导入|讲解版/.test(prompt)) return 'teaching_sequence';
       return 'lesson_plan';
@@ -267,15 +291,32 @@ function inferSubIntent(route: AiIntentRoute, prompt: string, slots: AiRouterSlo
   }
 }
 
-function allowedToolsFor(policy: AiContextPolicy) {
-  const tools: string[] = [];
+function allowedToolsFor(policy: AiContextPolicy, route: AiIntentRoute) {
+  const tools: string[] = ['ask_user'];
   if (policy.include.includes('student_lookup')) tools.push('resolve_student_reference');
   if (policy.include.includes('student_profile')) tools.push('get_student_profile');
   if (policy.include.includes('learning_records')) tools.push('search_learning_records');
+  if (policy.include.includes('learning_records') && route === 'error_analysis') tools.push('classify_error_patterns');
+  if (policy.include.includes('learning_records') && (route === 'student_diagnosis' || route === 'report_draft')) tools.push('analyze_learning_progress');
+  if (policy.include.includes('learning_records')) tools.push('mastery_status');
+  if (policy.include.includes('learning_records')) tools.push('get_review_queue');
+  if (policy.include.includes('learning_records')) tools.push('mastery_quiz', 'mastery_grade');
+  if (policy.include.includes('learning_records')) tools.push('mastery_assess', 'mastery_build');
   if (policy.include.includes('attachment_metadata')) tools.push('list_attachment_metadata');
+  if (policy.include.includes('attached_sources')) tools.push('explore_attached_sources');
+  if (policy.include.includes('attachment_metadata') && route === 'error_analysis') tools.push('analyze_geometry_figure');
+  if (policy.include.includes('teacher_notebook')) tools.push('analyze_notebook_context');
   if (policy.include.includes('teacher_knowledge')) tools.push('search_teacher_knowledge');
   if (policy.include.includes('knowledge_graph')) tools.push('query_knowledge_graph');
+  if (policy.include.includes('teacher_knowledge') && ['knowledge_retrieval', 'lesson_design', 'report_draft'].includes(route)) tools.push('generate_research_outline');
+  if (policy.include.includes('knowledge_graph') && ['knowledge_retrieval', 'lesson_design', 'report_draft'].includes(route)) tools.push('render_learning_mermaid');
   if (policy.include.includes('question_bank')) tools.push('search_similar_questions');
+  if (policy.include.includes('question_notebook')) tools.push('search_question_notebook');
+  if (policy.include.includes('teaching_book')) tools.push('inspect_teaching_book', 'refresh_teaching_book_health', 'draft_teaching_book_patch', 'draft_teaching_book_selection_patch', 'draft_teaching_book_markdown');
+  if (policy.include.includes('memory_trace')) tools.push('inspect_memory_trace');
+  if (policy.include.includes('memory_summary')) tools.push('inspect_memory_summary', 'draft_memory_summary');
+  if (policy.include.includes('memory_synthesis')) tools.push('inspect_memory_synthesis', 'draft_memory_synthesis', 'inspect_memory_graph', 'inspect_memory_governance');
+  if (policy.include.includes('teaching_book') && policy.include.includes('teacher_knowledge')) tools.push('plan_teaching_book');
   return tools;
 }
 
@@ -300,11 +341,117 @@ function buildClarificationQuestion(params: {
 
 export function routeAiPrompt(prompt: string, options: { hasStudent: boolean }): AiRouterDecision {
   const slots = extractSlots(prompt);
-  const picked = pickRoute(prompt, slots);
-  const contextPolicy = ROUTE_POLICIES[picked.route];
+  const researchRequested = /研究|教研报告|文献综述|研究提纲|deep\s*research|research\s*assistant/i.test(prompt);
+  const visualizationRequested = /可视化|流程图|概念图|关系图|mermaid|visualize/i.test(prompt);
+  const questionNotebookRequested = /题目笔记本|题目收藏|收藏题目|收藏夹|收藏|错题本|题目书签|分类题目|我的题目/.test(prompt);
+  const memorySummaryRequested = /L2|表面摘要|可编辑摘要|记忆摘要|近期事实|偏好摘要|memory summary|surface summary/i.test(prompt);
+  const memorySynthesisRequested = /L3|综合记忆|综合摘要|跨 surface|cross[- ]surface|memory synthesis|profile memory|preferences memory/i.test(prompt);
+  const memoryRequested = !memorySummaryRequested && /查看.*(L1|运行轨迹|处理过程|Agent trace)|L1.*(记忆|证据)|memory trace|run history|运行历史|小智.*轨迹|memory evidence/i.test(prompt);
+  const teachingBookPlanRequested = /规划讲义|章节规划|生成章节大纲|章节骨架|来源探索|spine|source explorer/i.test(prompt);
+  const teachingBookRequested = teachingBookPlanRequested || /专题讲义|单元备课包|教材工作区|教学包|课程讲义|讲义包|章节页面|内容块|讲义健康|刷新.*(来源|健康)|失效队列|来源指纹|编辑讲义|修改内容块|改写讲义|讲义 patch|撤销讲义|修改讲义.*撤销|支持撤销|讲义引用|知识库漂移|来源漂移|重新生成.*(页面|块)|备课包状态|选区|局部改写|自动批注|自动标注|CoWriter|co-writer/.test(prompt);
+  const attachedSourceRequested = /附件|图片中|图中|照片中|上传的文件|文档中|文件中|材料中/i.test(prompt);
+  const researchMode = researchRequested && !teachingBookRequested;
+  const visualizationMode = visualizationRequested && !teachingBookRequested;
+  const picked = teachingBookRequested
+    ? { route: 'lesson_design' as const, confidence: 0.98 }
+    : researchMode
+      ? { route: 'knowledge_retrieval' as const, confidence: 0.94 }
+      : visualizationRequested
+        ? { route: 'lesson_design' as const, confidence: 0.94 }
+        : pickRoute(prompt, slots);
+  const basePolicy = ROUTE_POLICIES[picked.route];
+  const notebookRequested = !questionNotebookRequested && /笔记|备课本|历史草稿|notebook/i.test(prompt);
+  const contextPolicy = memoryRequested
+    ? {
+        ...basePolicy,
+        include: ['memory_trace' as const],
+        recordLimit: 0,
+        knowledgeLimit: 0,
+        graphNodeLimit: 0,
+        reason: '记忆检查只读取本地 L1 run/event/tool 摘要；不读取学生正文，不返回 prompt 原文或隐藏推理。',
+      }
+    : memorySynthesisRequested
+    ? {
+        ...basePolicy,
+        include: ['memory_synthesis' as const],
+        recordLimit: 0,
+        knowledgeLimit: 0,
+        graphNodeLimit: 0,
+        reason: 'L3 综合只读取已确认的 L2 surface 条目，候选需教师审核；不读取学生正文、原始 prompt 或隐藏推理。',
+      }
+    : memorySummaryRequested
+    ? {
+        ...basePolicy,
+        include: ['memory_summary' as const],
+        recordLimit: 0,
+        knowledgeLimit: 0,
+        graphNodeLimit: 0,
+        reason: 'L2 表面摘要只读本地教师可见摘要与 evidence refs；草稿不自动写入正式记忆，不读取学生正文或隐藏推理。',
+      }
+    : attachedSourceRequested
+    ? {
+        ...basePolicy,
+        include: [...new Set([...basePolicy.include.filter((item) => ['student_lookup', 'student_profile', 'attachment_metadata'].includes(item)), 'attached_sources' as const])],
+        recordLimit: 0,
+        knowledgeLimit: 0,
+        graphNodeLimit: 0,
+        reason: '附件探索只读取当前已授权的本地来源句柄和脱敏 OCR 片段；无附件或无脱敏文本时明确返回未知，不读取全部原文件。',
+      }
+    : researchRequested
+    ? {
+        ...basePolicy,
+        include: ['teacher_knowledge' as const],
+        recordLimit: 0,
+        knowledgeLimit: 6,
+        graphNodeLimit: 0,
+        reason: '研究提纲只读本地教师知识切片并返回来源与未知项；不联网、不读取学生数据、不自动写文件。',
+      }
+    : visualizationMode
+    ? {
+        ...basePolicy,
+        include: ['knowledge_graph' as const],
+        recordLimit: 0,
+        knowledgeLimit: 0,
+        graphNodeLimit: 12,
+        reason: '可视化只读本地知识图谱摘要并生成受限 Mermaid；不执行脚本、不加载外链、不写文件。',
+      }
+    : teachingBookPlanRequested
+    ? {
+        ...basePolicy,
+        include: ['teaching_book' as const, 'teacher_knowledge' as const],
+        recordLimit: 0,
+        knowledgeLimit: 6,
+        graphNodeLimit: 0,
+        reason: '章节规划先按需探索老师知识库的 bounded 主题/来源，再生成讲义章节候选；不读取学生数据，不自动写入讲义。',
+      }
+    : teachingBookRequested
+    ? {
+        ...basePolicy,
+        include: ['teaching_book' as const],
+        recordLimit: 0,
+        knowledgeLimit: 0,
+        graphNodeLimit: 0,
+        reason: '专题讲义/单元备课包任务只读取结构化讲义目录、内容块和来源健康，不默认读取学生隐私或大段知识库正文。',
+      }
+    : questionNotebookRequested
+    ? {
+        ...basePolicy,
+        include: ['question_notebook' as const],
+        recordLimit: 0,
+        knowledgeLimit: 0,
+        graphNodeLimit: 0,
+        reason: '题目收藏/分类任务只读取现有题库上的 Question Notebook 轻量索引，不读取学生或教师知识库上下文。',
+      }
+    : notebookRequested
+    ? {
+        ...basePolicy,
+        include: [...new Set([...basePolicy.include, 'teacher_notebook' as const])],
+        reason: `${basePolicy.reason} 本轮明确请求备课本内容，按需读取教师备课本目录与有限细节。`,
+      }
+    : basePolicy;
   const riskLevel = inferRisk(prompt);
-  const needsStudent = routeNeedsStudent(picked.route);
-  const subIntent = inferSubIntent(picked.route, prompt, slots, riskLevel);
+  const needsStudent = memoryRequested || memorySummaryRequested || memorySynthesisRequested || questionNotebookRequested || teachingBookRequested || researchMode || visualizationMode ? false : routeNeedsStudent(picked.route) || attachedSourceRequested;
+  const subIntent = memoryRequested ? 'memory_trace' : memorySynthesisRequested ? 'memory_synthesis' : memorySummaryRequested ? 'memory_summary' : teachingBookRequested ? 'book_workspace' : researchMode ? 'research_workspace' : visualizationMode ? 'visualization' : inferSubIntent(picked.route, prompt, slots, riskLevel);
   const clarificationQuestion = buildClarificationQuestion({
     needsStudent,
     hasStudent: options.hasStudent,
@@ -320,9 +467,10 @@ export function routeAiPrompt(prompt: string, options: { hasStudent: boolean }):
     actionLevel: inferActionLevel(picked.route, slots),
     riskLevel,
     slots,
-    needsStudent: needsStudent || hasExplicitStudentReference(prompt, slots),
+    needsStudent: needsStudent || (!questionNotebookRequested && !memoryRequested && !memorySummaryRequested && !memorySynthesisRequested && !researchMode && !visualizationMode && hasExplicitStudentReference(prompt, slots)),
     clarificationQuestion,
-    allowedTools: allowedToolsFor(contextPolicy),
+    allowedTools: allowedToolsFor(contextPolicy, picked.route),
     contextPolicy,
+    roleProfile: inferAiRoleProfile(prompt),
   };
 }

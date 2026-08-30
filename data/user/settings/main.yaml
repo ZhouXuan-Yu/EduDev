@@ -1,0 +1,23 @@
+system:
+  language: zh
+logging:
+  level: WARNING
+  save_to_file: false
+  console_output: false
+tools:
+  web_search:
+    enabled: false
+capabilities:
+  solve:
+    max_rounds: 8
+    max_replans: 1
+  research:
+    researching:
+      note_agent_mode: auto
+      tool_timeout: 30
+      tool_max_retries: 1
+  question:
+    exploring:
+      max_iterations: 4
+      tool_summarizer:
+        enabled: false

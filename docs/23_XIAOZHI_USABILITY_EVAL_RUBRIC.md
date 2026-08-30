@@ -39,22 +39,23 @@
 - `npm run test:ai-human-review`：seeded 人工评分样本写入 `ai_usability_reviews`，并验证列表、summary、snapshot 和 `teacher_review_score_gate` readback。
 - `npm run test:ai-replay`：seeded before/after 人工评分样本写入 `ai_usability_replay_experiments`，并验证 delta、summary、snapshot 和 `usability_replay_improvement_gate` readback。
 - `npm run test:ai-model-grader`：seeded 模型裁判样本写入 `ai_model_grades`，并验证模型 grader proxy、年级适切评分、summary、snapshot 和 `model_grader_quality_gate` readback。
+- `npm run test:ai-live-evidence`：seeded live-ready run 绑定 after review、replay experiment、model grade、promptVersion 和 token usage，并验证 `live_evidence_binding_gate` readback。
 - `npm run test:ai-human-review-ui`：真实 Electron 设置页保存人工评分、CSV/TSV 导入、失败样本回放、选择 before、保存 after，并从 SQLite summary / replay summary readback。
-- `npm run test:ai-observability`：回归报告包含 `usability_quality_gate`、`teacher_review_score_gate`、`usability_replay_improvement_gate`、`model_grader_quality_gate` 和 `usability_eval_baseline`。
+- `npm run test:ai-observability`：回归报告包含 `usability_quality_gate`、`teacher_review_score_gate`、`usability_replay_improvement_gate`、`model_grader_quality_gate`、`live_evidence_binding_gate` 和 `usability_eval_baseline`。
 - `npm run test:ai-live-usability`：配置 `DEEPSEEK_API_KEY` 后跑真实 DeepSeek 可用性回放；无 key 时明确 skipped。
 
 ## 当前存储与 API
 
 - 人工评分表：`ai_usability_reviews`。
 - before/after 回放实验表：`ai_usability_replay_experiments`。
-- 模型裁判样本表：`ai_model_grades`。
+- 模型裁判样本表：`ai_model_grades`；v1.6 起应记录 `runId`、`sessionId`、`promptVersion` 和 `totalTokens`，用于把 live 输出接入质量证据链。
 - 写入 API：`OmniEduStore.createAiUsabilityReview()` / preload `createAiUsabilityReview()`。
 - 读取 API：`listAiUsabilityReviews()`、`getAiUsabilityReviewSummary()`。
 - replay API：`createAiUsabilityReplayExperiment()`、`listAiUsabilityReplayExperiments()`、`getAiUsabilityReplaySummary()`。
 - model grader API：`createAiModelGrade()`、`listAiModelGrades()`、`getAiModelGradeSummary()`。
 - UI 入口：设置页“小智质量评审”面板，支持单条录入、CSV/TSV 导入、失败样本回放到 AI 输入框、把失败样本设为 before 后保存 after 评分形成回放实验，并展示模型 grader 裁判样本汇总。
 - telemetry 字段：`AiTelemetrySnapshot.humanUsability`、`AiTelemetrySnapshot.usabilityReplay`、`AiTelemetrySnapshot.modelGrader`。
-- 回归 gate：`teacher_review_score_gate`、`usability_replay_improvement_gate`、`model_grader_quality_gate`。
+- 回归 gate：`teacher_review_score_gate`、`usability_replay_improvement_gate`、`model_grader_quality_gate`、`live_evidence_binding_gate`。
 
 ## 当前边界
 
@@ -62,6 +63,7 @@
 - seeded human-review smoke 用于验证工程链路，不代表外部老师真实评分。
 - v1.4 before/after replay experiment 已能绑定两条人工评分 review 并计算分数/轮次/issue 改善，但当前 smoke 仍是 seeded 样本，不代表外部老师真实评分。
 - v1.5 model grader 已接入本地 deterministic proxy、`ai_model_grades`、年级适切评分维度和 regression gate；它是 LLM-as-judge 的工程落点，不等于已经执行真实外部模型裁判。
+- v1.6 live evidence binding 已能把 runId、promptVersion、token usage、after review、replay experiment 和 model grade 串成可回读证据链；当前专项 smoke 仍是 seeded 工程验收，不代表外部老师真实评分。
 - 已接入真实 DeepSeek live 样本回放脚本，但本地无 `DEEPSEEK_API_KEY` 时只会 skipped。
-- 尚未接入真实外部老师样本集、live DeepSeek 输出自动绑定二次评分、趋势图和真实 LLM-as-judge 裁判。
+- 尚未接入真实外部老师样本集、趋势图和真实 LLM-as-judge 裁判。
 - 只有真实老师样本平均分 >= 4/5、返工量下降、常见任务 1-2 轮内完成后，才可把 Phase 12 的最终人工验收标记为完成。

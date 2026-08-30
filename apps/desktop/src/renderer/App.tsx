@@ -10,11 +10,10 @@ import {
   FileSearch,
   FileText,
   Folder,
-  FolderPlus,
   FolderOpen,
   HardDrive,
+  History,
   Home,
-  Inbox,
   Layers3,
   ListChecks,
   MessageSquare,
@@ -29,29 +28,36 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { ChatAttachment, ChatAttachmentGroup, ChatAttachmentInput } from './heroui-pro/components/chat-attachment';
-import { ChatListView } from './heroui-pro/components/chat-list-view';
 import { ChainOfThought } from './heroui-pro/components/chain-of-thought';
 import { ChatConversation } from './heroui-pro/components/chat-conversation';
 import { ChatMessage } from './heroui-pro/components/chat-message';
 import { Markdown } from './heroui-pro/components/markdown';
 import { PromptInput } from './heroui-pro/components/prompt-input';
 import { PromptSuggestion } from './heroui-pro/components/prompt-suggestion';
+import { MistakesWorkspace } from './components/MistakesWorkspace';
+import { QuestionNotebookWorkspace } from './components/QuestionNotebookWorkspace';
+import { TeacherNotebookWorkspace } from './components/TeacherNotebookWorkspace';
+import { AiObservabilityWorkspace } from './components/AiObservabilityWorkspace';
+import { TeachingBookWorkspace } from './components/TeachingBookWorkspace';
+import { MemoryGovernanceWorkspace } from './components/MemoryGovernanceWorkspace';
+import { MasteryPathWorkspace } from './components/MasteryPathWorkspace';
+import { GlobalSearchWorkspace } from './components/GlobalSearchWorkspace';
+import { ReviewReminderPanel } from './components/ReviewReminderPanel';
+import { StudentProfileLifecycle, type StudentFormMode } from './components/StudentProfileLifecycle';
+import { DataBackupPanel } from './components/DataBackupPanel';
+import { AiConversationSidebar, type AiConversationTarget } from './components/AiConversationSidebar';
+import { ReviewReportWorkspace } from './components/ReviewReportWorkspace';
+import { AiQualityReviewWorkspace } from './components/AiQualityReviewWorkspace';
 import type {
   AiConfirmationItem,
   AiConsoleRunResult,
   AiConversationFolder,
   AiConversationMessage,
   AiConversationSession,
+  AiConversationWorkspace,
   AiAgentTraceStep,
-  AiIntentRoute,
-  AiModelGrade,
-  AiModelGradeSummary,
-  AiSubIntent,
-  AiUsabilityHumanReview,
-  AiUsabilityHumanReviewInput,
-  AiUsabilityHumanReviewSummary,
-  AiUsabilityReplayExperiment,
-  AiUsabilityReplaySummary,
+  XiazhiCapabilityEvent,
+  XiazhiUserInputRequest,
   AttachmentImportResult,
   DeepSeekSettings,
   DocumentArtifactExportResult,
@@ -122,110 +128,8 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
   },
 };
 
-const aiIntentRouteOptions: AiIntentRoute[] = [
-  'general_qa',
-  'student_diagnosis',
-  'error_analysis',
-  'practice_design',
-  'lesson_design',
-  'report_draft',
-  'knowledge_retrieval',
-  'workspace_help',
-];
 
-const aiSubIntentOptions: AiSubIntent[] = [
-  'casual_greeting',
-  'capability_intro',
-  'concept_explanation',
-  'student_progress',
-  'student_weakness',
-  'student_profile_review',
-  'risk_support',
-  'mistake_reasoning',
-  'error_pattern_summary',
-  'correction_guidance',
-  'triplet_practice',
-  'similar_questions',
-  'homework_plan',
-  'lesson_plan',
-  'teaching_sequence',
-  'classroom_activity',
-  'parent_summary',
-  'monthly_report',
-  'weekly_report',
-  'export_document',
-  'resource_search',
-  'source_citation',
-  'knowledge_graph_lookup',
-  'usage_help',
-  'settings_help',
-  'data_management_help',
-  'safety_boundary',
-];
-
-const routeLabels: Record<AiIntentRoute, string> = {
-  general_qa: '普通问答',
-  student_diagnosis: '学生诊断',
-  error_analysis: '错因分析',
-  practice_design: '练习设计',
-  lesson_design: '备课设计',
-  report_draft: '报告草稿',
-  knowledge_retrieval: '知识检索',
-  workspace_help: '工作台帮助',
-};
-
-const emptyHumanUsabilitySummary: AiUsabilityHumanReviewSummary = {
-  sampleCount: 0,
-  averageTeacherScore: 0,
-  minTeacherScore: 0,
-  passedCount: 0,
-  needsRewriteCount: 0,
-  averageRoundsToUseful: 0,
-  routeCounts: {},
-  issueCounts: {},
-  latestReviewedAt: '',
-};
-
-const emptyUsabilityReplaySummary: AiUsabilityReplaySummary = {
-  experimentCount: 0,
-  improvedCount: 0,
-  unresolvedCount: 0,
-  improvementRate: 0,
-  averageScoreDelta: 0,
-  averageRoundsDelta: 0,
-  issueTransitionCounts: {},
-  latestCreatedAt: '',
-};
-
-const emptyModelGradeSummary: AiModelGradeSummary = {
-  sampleCount: 0,
-  passedCount: 0,
-  failedCount: 0,
-  averageOverallScore: 0,
-  minOverallScore: 0,
-  averageGradeAppropriatenessScore: 0,
-  issueCounts: {},
-  graderModeCounts: {},
-  latestReviewedAt: '',
-};
-
-const initialUsabilityReviewForm: AiUsabilityHumanReviewInput = {
-  sampleId: '',
-  prompt: '',
-  route: 'student_diagnosis',
-  subIntent: 'student_progress',
-  teacherScore: 4,
-  needsRewrite: false,
-  roundsToUseful: 1,
-  mainIssueCode: 'none',
-  teacherNote: '',
-  runId: '',
-  sessionId: '',
-  model: '',
-  reviewedAt: new Date().toISOString().slice(0, 16),
-};
-
-type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'intake' | 'mistakes' | 'review' | 'search' | 'team' | 'analytics' | 'settings';
+type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
   id: string;
@@ -245,6 +149,15 @@ type AiArtifact = {
 
 type AiThoughtStep = Pick<AiAgentTraceStep, 'label' | 'detail'>;
 
+type DeepTutorContinuationNotice = {
+  runId: string;
+  continuationToken: string;
+  continuationCount: number;
+  approvalCheckpointId?: string;
+  approvalRequired?: boolean;
+  requestedBudgets?: { maxEvents: number; maxWallMs: number };
+};
+
 type AiTraceSource = {
   title: string;
   source: string;
@@ -256,20 +169,6 @@ type AiTraceTool = {
   state: 'output-available' | 'requires-action' | 'input-streaming' | 'output-error';
   argsText: string;
   output: Record<string, unknown>;
-};
-
-type AiSessionContextMenu = {
-  type: 'session' | 'folder';
-  id: string;
-  name: string;
-  x: number;
-  y: number;
-};
-
-type AiRenameTarget = {
-  type: 'session' | 'folder';
-  id: string;
-  value: string;
 };
 
 const aiPromptSuggestions = [
@@ -461,58 +360,6 @@ function formatDate(value: string) {
   return new Date(value).toLocaleDateString('zh-CN');
 }
 
-function parseDelimitedLine(line: string, delimiter: string) {
-  const values: string[] = [];
-  let current = '';
-  let quoted = false;
-  for (let index = 0; index < line.length; index += 1) {
-    const char = line[index];
-    const next = line[index + 1];
-    if (char === '"' && quoted && next === '"') {
-      current += '"';
-      index += 1;
-    } else if (char === '"') {
-      quoted = !quoted;
-    } else if (char === delimiter && !quoted) {
-      values.push(current.trim());
-      current = '';
-    } else {
-      current += char;
-    }
-  }
-  values.push(current.trim());
-  return values;
-}
-
-function parseUsabilityReviewCsv(text: string): AiUsabilityHumanReviewInput[] {
-  const lines = text
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-  if (lines.length < 2) return [];
-  const delimiter = lines[0].includes('\t') ? '\t' : ',';
-  const headers = parseDelimitedLine(lines[0], delimiter).map((header) => header.trim());
-  return lines.slice(1).map((line) => {
-    const values = parseDelimitedLine(line, delimiter);
-    const row = Object.fromEntries(headers.map((header, index) => [header, values[index] ?? '']));
-    return {
-      sampleId: row.sampleId || row.id || '',
-      prompt: row.prompt || '',
-      route: (row.route || 'general_qa') as AiIntentRoute,
-      subIntent: row.subIntent || row.sub_intent || 'concept_explanation',
-      teacherScore: Number(row.teacherScore || row.teacher_score || 0),
-      needsRewrite: /^(true|1|yes|y|是|需要)$/i.test(row.needsRewrite || row.needs_rewrite || ''),
-      roundsToUseful: Number(row.roundsToUseful || row.rounds_to_useful || 1),
-      mainIssueCode: row.mainIssueCode || row.main_issue_code || 'none',
-      teacherNote: row.teacherNote || row.teacher_note || '',
-      reviewedAt: row.reviewedAt || row.reviewed_at || '',
-      runId: row.runId || row.run_id || '',
-      sessionId: row.sessionId || row.session_id || '',
-      model: row.model || '',
-    };
-  });
-}
-
 export function App() {
   const [activeView, setActiveView] = useState<ViewKey>('ai');
   const [dataRoot, setDataRoot] = useState('正在连接本地数据目录');
@@ -520,6 +367,7 @@ export function App() {
   const [students, setStudents] = useState<Student[]>([]);
   const [records, setRecords] = useState<LearningRecord[]>([]);
   const [reports, setReports] = useState<ReviewReport[]>([]);
+  const [reviewReportSelectionId, setReviewReportSelectionId] = useState('');
   const [activeStudentId, setActiveStudentId] = useState('');
   const [studentQuery, setStudentQuery] = useState('');
   const [recordKeyword, setRecordKeyword] = useState('');
@@ -530,35 +378,27 @@ export function App() {
   const [recordEndDate, setRecordEndDate] = useState('');
   const [aiPrompt, setAiPrompt] = useState('帮我分析当前学生最近一个月的主要错因，并结合老师知识库生成巩固练习建议。');
   const [aiRunning, setAiRunning] = useState(false);
+  const [deepTutorEvents, setDeepTutorEvents] = useState<XiazhiCapabilityEvent[]>([]);
+  const [deepTutorContinuation, setDeepTutorContinuation] = useState<DeepTutorContinuationNotice | null>(null);
+  const continuationInFlightRef = useRef(false);
+  const [pendingUserInput, setPendingUserInput] = useState<XiazhiUserInputRequest | null>(null);
+  const [userInputText, setUserInputText] = useState('');
   const [aiResult, setAiResult] = useState<AiConsoleRunResult | null>(null);
   const [activeAiArtifact, setActiveAiArtifact] = useState<AiArtifact | null>(null);
   const [artifactPanelWidth, setArtifactPanelWidth] = useState(420);
-  const [aiUsabilityReviews, setAiUsabilityReviews] = useState<AiUsabilityHumanReview[]>([]);
-  const [aiUsabilitySummary, setAiUsabilitySummary] = useState<AiUsabilityHumanReviewSummary>(emptyHumanUsabilitySummary);
-  const [aiUsabilityReplayExperiments, setAiUsabilityReplayExperiments] = useState<AiUsabilityReplayExperiment[]>([]);
-  const [aiUsabilityReplaySummary, setAiUsabilityReplaySummary] = useState<AiUsabilityReplaySummary>(emptyUsabilityReplaySummary);
-  const [aiModelGrades, setAiModelGrades] = useState<AiModelGrade[]>([]);
-  const [aiModelGradeSummary, setAiModelGradeSummary] = useState<AiModelGradeSummary>(emptyModelGradeSummary);
-  const [selectedReplayBeforeReviewId, setSelectedReplayBeforeReviewId] = useState('');
-  const [usabilityReviewForm, setUsabilityReviewForm] = useState<AiUsabilityHumanReviewInput>(initialUsabilityReviewForm);
-  const [usabilityCsvText, setUsabilityCsvText] = useState('');
-  const [usabilityImporting, setUsabilityImporting] = useState(false);
   const [aiFolders, setAiFolders] = useState<AiConversationFolder[]>([]);
   const [aiSessions, setAiSessions] = useState<AiConversationSession[]>([]);
   const [archivedAiFolders, setArchivedAiFolders] = useState<AiConversationFolder[]>([]);
   const [archivedAiSessions, setArchivedAiSessions] = useState<AiConversationSession[]>([]);
   const [aiMessages, setAiMessages] = useState<AiConversationMessage[]>([]);
+  const [aiMutationRunningId, setAiMutationRunningId] = useState('');
   const [aiConfirmations, setAiConfirmations] = useState<AiConfirmationItem[]>([]);
   const [activeAiSessionId, setActiveAiSessionId] = useState<string>('');
-  const [newAiFolderName, setNewAiFolderName] = useState('');
-  const [creatingAiFolder, setCreatingAiFolder] = useState(false);
-  const [aiContextMenu, setAiContextMenu] = useState<AiSessionContextMenu | null>(null);
-  const [aiRenameTarget, setAiRenameTarget] = useState<AiRenameTarget | null>(null);
   const aiSubmitInFlightRef = useRef(false);
   const [deepSeekSettings, setDeepSeekSettings] = useState<DeepSeekSettings>(initialDeepSeekSettings);
   const [deepSeekForm, setDeepSeekForm] = useState({ apiKey: '', model: 'deepseek-v4-flash' });
   const [studentForm, setStudentForm] = useState<StudentInput>(initialStudentForm);
-  const [editingStudent, setEditingStudent] = useState(false);
+  const [studentFormMode, setStudentFormMode] = useState<StudentFormMode>('closed');
   const [recordForm, setRecordForm] = useState({
     recordType: 'mistake',
     subject: '数学',
@@ -568,46 +408,24 @@ export function App() {
     occurredAt: new Date().toISOString().slice(0, 16),
   });
   const [editingRecordId, setEditingRecordId] = useState<string | null>(null);
-  const [reviewForm, setReviewForm] = useState({
-    subject: '数学',
-    startDate: new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10),
-    endDate: new Date().toISOString().slice(0, 10),
-    reportType: 'monthly',
-  });
-  const [activeReport, setActiveReport] = useState<ReviewReport | null>(null);
   const [status, setStatus] = useState('本地工作台正在准备。');
   const [attachmentImport, setAttachmentImport] = useState<AttachmentImportResult | null>(null);
   const [knowledgeOverview, setKnowledgeOverview] = useState<KnowledgeOverview>(emptyKnowledgeOverview);
   const [knowledgeImport, setKnowledgeImport] = useState<KnowledgeImportResult | null>(null);
 
-  const activeStudent = useMemo(
-    () => students.find((student) => student.id === activeStudentId) ?? students[0],
-    [students, activeStudentId],
-  );
+  const activeStudent = useMemo(() => {
+    const selected = students.find((student) => student.id === activeStudentId);
+    if (activeView === 'students') return selected ?? students.find((student) => student.status === 'active') ?? students[0];
+    return selected?.status === 'active' ? selected : students.find((student) => student.status === 'active');
+  }, [students, activeStudentId, activeView]);
 
-  const recentStudents = students.slice(0, 6);
+  const recentStudents = students.filter((student) => student.status === 'active').slice(0, 6);
   const activeAttachments = records.flatMap((record) =>
     record.attachments.map((attachment) => ({
       ...attachment,
       recordTitle: record.title,
     })),
   );
-
-  useEffect(() => {
-    if (!aiContextMenu) return undefined;
-    const closeMenu = () => setAiContextMenu(null);
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') closeMenu();
-    };
-    window.addEventListener('click', closeMenu);
-    window.addEventListener('scroll', closeMenu, true);
-    window.addEventListener('keydown', closeOnEscape);
-    return () => {
-      window.removeEventListener('click', closeMenu);
-      window.removeEventListener('scroll', closeMenu, true);
-      window.removeEventListener('keydown', closeOnEscape);
-    };
-  }, [aiContextMenu]);
 
   const mistakeRecords = records.filter((record) => record.recordType === 'mistake');
   const toolPlan = [
@@ -617,7 +435,7 @@ export function App() {
     { name: 'search_teacher_knowledge', label: '检索老师知识库', status: knowledgeOverview.counts.chunks ? `${knowledgeOverview.counts.chunks} 个切片` : '待导入资源', description: '检索已解析的老师资源切片，PDF/Word 等重型解析会进入待处理队列。' },
     { name: 'query_knowledge_graph', label: '查询知识图谱', status: knowledgeOverview.counts.nodes ? `${knowledgeOverview.counts.nodes} 节点` : '待生成节点', description: '读取资源、章节和来源关系，所有节点来自本地真实资源。' },
     { name: 'generate_review_draft', label: '生成复盘草稿', status: '需老师确认', description: '生成内容不会直接保存，必须由老师编辑确认。' },
-    { name: 'generate_mistake_triplet', label: '生成三元题组', status: '未接入', description: '后续生成原题、相似题和巩固题，并保留来源。' },
+    { name: 'generate_mistake_triplet', label: '生成三元题组', status: '需老师确认', description: '已连接本地题库召回与 generated 来源边界；保存必须经过确认队列。' },
   ];
   const knowledgePipeline = [
     { label: '资源导入', status: `${knowledgeOverview.counts.resources} 个资源`, detail: '已落 teacher_resources，本地复制保存原始文件路径和 hash。' },
@@ -633,10 +451,15 @@ export function App() {
     { key: 'ai', label: 'AI', icon: <Sparkles size={18} /> },
     { key: 'knowledge', label: '知识库', icon: <FileSearch size={18} /> },
     { key: 'students', label: '学生', icon: <Users size={18} /> },
+    { key: 'mastery', label: '学习路径', icon: <ListChecks size={18} /> },
     { key: 'intake', label: '录入', icon: <ClipboardList size={18} /> },
     { key: 'mistakes', label: '错题', icon: <BookOpenCheck size={18} /> },
     { key: 'review', label: '复盘', icon: <FileText size={18} /> },
     { key: 'search', label: '搜索', icon: <Search size={18} /> },
+    { key: 'question_notebook', label: '题本', icon: <BookOpenCheck size={18} /> },
+    { key: 'notebook', label: '备课本', icon: <BookOpenCheck size={18} /> },
+    { key: 'book', label: '讲义', icon: <BookOpenCheck size={18} /> },
+    { key: 'memory', label: 'L2 记忆', icon: <History size={18} /> },
     { key: 'team', label: '团队', icon: <Layers3 size={18} /> },
     { key: 'analytics', label: '看板', icon: <BarChart3 size={18} /> },
     { key: 'settings', label: '设置', icon: <Settings size={18} /> },
@@ -667,23 +490,6 @@ export function App() {
     if (items) setAiConfirmations(items);
   }
 
-  async function refreshAiUsabilityReviews() {
-    const [reviews, summary, replayExperiments, replaySummary, modelGrades, modelGradeSummary] = await Promise.all([
-      window.omniEdu?.listAiUsabilityReviews(100),
-      window.omniEdu?.getAiUsabilityReviewSummary(),
-      window.omniEdu?.listAiUsabilityReplayExperiments(50),
-      window.omniEdu?.getAiUsabilityReplaySummary(),
-      window.omniEdu?.listAiModelGrades(20),
-      window.omniEdu?.getAiModelGradeSummary(),
-    ]);
-    setAiUsabilityReviews(reviews ?? []);
-    setAiUsabilitySummary(summary ?? emptyHumanUsabilitySummary);
-    setAiUsabilityReplayExperiments(replayExperiments ?? []);
-    setAiUsabilityReplaySummary(replaySummary ?? emptyUsabilityReplaySummary);
-    setAiModelGrades(modelGrades ?? []);
-    setAiModelGradeSummary(modelGradeSummary ?? emptyModelGradeSummary);
-  }
-
   async function openAiConversation(sessionId: string) {
     const detail = await window.omniEdu?.getAiConversationSession(sessionId);
     if (!detail) return;
@@ -711,63 +517,42 @@ export function App() {
     setStatus('已新建 AI 对话。');
   }
 
-  async function createAiFolder() {
-    const name = newAiFolderName.trim();
-    if (!name) {
-      setStatus('文件夹名称不能为空。');
-      return;
-    }
-    const workspace = await window.omniEdu?.createAiConversationFolder({ name });
-    if (!workspace) return;
+  function applyAiConversationWorkspace(workspace: AiConversationWorkspace) {
     setAiFolders(workspace.folders);
     setAiSessions(workspace.sessions);
     setArchivedAiFolders(workspace.archivedFolders);
     setArchivedAiSessions(workspace.archivedSessions);
-    setNewAiFolderName('');
-    setCreatingAiFolder(false);
+  }
+
+  async function createAiFolder(name: string) {
+    const workspace = await window.omniEdu?.createAiConversationFolder({ name });
+    if (!workspace) throw new Error('当前运行环境没有可用的对话文件夹通道。');
+    applyAiConversationWorkspace(workspace);
     setStatus(`已新建文件夹：${name}`);
   }
 
   async function moveAiConversation(sessionId: string, folderId: string | null) {
     const workspace = await window.omniEdu?.moveAiConversationSession(sessionId, folderId);
-    if (!workspace) return;
-    setAiFolders(workspace.folders);
-    setAiSessions(workspace.sessions);
-    setArchivedAiFolders(workspace.archivedFolders);
-    setArchivedAiSessions(workspace.archivedSessions);
+    if (!workspace) throw new Error('移动对话没有返回本地工作区。');
+    applyAiConversationWorkspace(workspace);
     setStatus(folderId ? '对话已移动到文件夹。' : '对话已移动到未归档。');
   }
 
-  async function renameAiConversationTarget() {
-    if (!aiRenameTarget) return;
-    const value = aiRenameTarget.value.trim();
-    if (!value) {
-      setStatus('名称不能为空。');
-      return;
-    }
-    const workspace = aiRenameTarget.type === 'folder'
-      ? await window.omniEdu?.renameAiConversationFolder(aiRenameTarget.id, { name: value })
-      : await window.omniEdu?.renameAiConversationSession(aiRenameTarget.id, { title: value });
-    if (!workspace) return;
-    setAiFolders(workspace.folders);
-    setAiSessions(workspace.sessions);
-    setArchivedAiFolders(workspace.archivedFolders);
-    setArchivedAiSessions(workspace.archivedSessions);
-    setAiRenameTarget(null);
-    setAiContextMenu(null);
+  async function renameAiConversationTarget(target: AiConversationTarget, value: string) {
+    const workspace = target.type === 'folder'
+      ? await window.omniEdu?.renameAiConversationFolder(target.id, { name: value })
+      : await window.omniEdu?.renameAiConversationSession(target.id, { title: value });
+    if (!workspace) throw new Error('重命名没有返回本地工作区。');
+    applyAiConversationWorkspace(workspace);
     setStatus(`已重命名为：${value}`);
   }
 
-  async function archiveAiConversationTarget(target = aiContextMenu) {
-    if (!target) return;
+  async function archiveAiConversationTarget(target: AiConversationTarget) {
     const workspace = target.type === 'folder'
       ? await window.omniEdu?.archiveAiConversationFolder(target.id)
       : await window.omniEdu?.archiveAiConversationSession(target.id);
-    if (!workspace) return;
-    setAiFolders(workspace.folders);
-    setAiSessions(workspace.sessions);
-    setArchivedAiFolders(workspace.archivedFolders);
-    setArchivedAiSessions(workspace.archivedSessions);
+    if (!workspace) throw new Error('归档没有返回本地工作区。');
+    applyAiConversationWorkspace(workspace);
     if (target.type === 'session' && activeAiSessionId === target.id) {
       setActiveAiSessionId('');
       setAiMessages([]);
@@ -783,7 +568,6 @@ export function App() {
         setActiveAiArtifact(null);
       }
     }
-    setAiContextMenu(null);
     setStatus(target.type === 'folder' ? '文件夹及其中对话已归档。' : '对话已归档。');
   }
 
@@ -801,9 +585,14 @@ export function App() {
     }
     await refreshAiConversations();
     await refreshAiConfirmations();
-    await refreshAiUsabilityReviews();
+    const pendingInputs = await window.omniEdu?.listPendingDeepTutorInputs();
+    if (pendingInputs?.length) {
+      setPendingUserInput(pendingInputs[0]);
+      setUserInputText('');
+      setStatus('已恢复一项等待输入；提交后会由新的受限运行接管。');
+    }
     setActiveStudentId((current) => current || data.students[0]?.id || '');
-    setStatus('本地数据已连接。');
+    if (!pendingInputs?.length) setStatus('本地数据已连接。');
   }
 
   async function refreshStudents(query = studentQuery) {
@@ -833,6 +622,34 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    const unsubscribe = window.omniEdu?.onDeepTutorEvent?.((event) => {
+      setDeepTutorEvents((current) => {
+        if (current.some((item) => item.turnId === event.turnId && item.sequence === event.sequence)) return current;
+        return [...current, event].slice(-64);
+      });
+      const summary = event.publicSummary;
+      const token = summary && typeof summary.continuationToken === 'string' ? summary.continuationToken : '';
+      if (summary?.continuationAvailable === true && token) {
+        setDeepTutorContinuation({
+          runId: String(summary.runId ?? ''),
+          continuationToken: token,
+          continuationCount: Number(summary.continuationCount ?? 0),
+        });
+      }
+    });
+    const unsubscribeInput = window.omniEdu?.onDeepTutorInputRequest?.((request) => {
+      setPendingUserInput(request);
+      setUserInputText('');
+      setStatus('小智需要一项补充信息后继续。');
+    });
+    const unsubscribeConfirmation = window.omniEdu?.onDeepTutorConfirmation?.((item) => {
+      setAiConfirmations((current) => [item, ...current.filter((existing) => existing.id !== item.id)]);
+      setStatus('DeepTutor 已生成待教师确认的题组草稿');
+    });
+    return () => { unsubscribe?.(); unsubscribeInput?.(); unsubscribeConfirmation?.(); };
+  }, []);
+
+  useEffect(() => {
     if (activeStudent) {
       refreshRecords(activeStudent.id).catch(() => setStatus('读取学习记录失败'));
       setStudentForm({
@@ -856,15 +673,20 @@ export function App() {
 
   async function submitStudent() {
     if (!studentForm.displayName?.trim()) {
-      setStatus('学生显示名不能为空。');
-      return;
+      throw new Error('学生显示名不能为空。');
     }
+    const editingStudent = studentFormMode === 'edit';
+    const previousIds = new Set(students.map((student) => student.id));
     const saved = editingStudent && activeStudent
       ? await window.omniEdu?.updateStudent(activeStudent.id, studentForm)
       : await window.omniEdu?.createStudent(studentForm);
-    setStudents(saved ?? []);
-    setActiveStudentId((saved ?? [])[0]?.id ?? activeStudentId);
-    setEditingStudent(false);
+    if (!saved) throw new Error('当前运行环境没有可用的学生保存通道。');
+    const savedStudentId = editingStudent && activeStudent
+      ? activeStudent.id
+      : saved.find((student: Student) => !previousIds.has(student.id))?.id ?? saved.find((student: Student) => student.status === 'active')?.id ?? '';
+    setStudents(saved);
+    setActiveStudentId(savedStudentId);
+    setStudentFormMode('closed');
     setStudentForm(initialStudentForm);
     setStatus(editingStudent ? '学生档案已更新。' : '学生档案已创建。');
     await refreshOverview();
@@ -873,6 +695,10 @@ export function App() {
   async function submitRecord() {
     if (!activeStudent || !recordForm.title.trim()) {
       setStatus('请先选择学生，并填写记录标题。');
+      return;
+    }
+    if (activeStudent.status === 'archived') {
+      setStatus('归档学生为只读状态，不能新增或修改学习记录。');
       return;
     }
     const payload = {
@@ -923,21 +749,30 @@ export function App() {
 
   async function importAttachment(recordId: string) {
     if (!activeStudent) return;
+    if (activeStudent.status === 'archived') {
+      setStatus('归档学生为只读状态，不能继续导入附件。');
+      return;
+    }
     setAttachmentImport({ status: 'copying', records, items: [] });
     setStatus('正在复制附件到学生本地目录。');
-    const result = await window.omniEdu?.importAttachments(activeStudent.id, recordId);
-    if (!result) return;
-    setAttachmentImport(result);
-    setRecords(result.records ?? []);
-    await refreshStudents();
-    const okCount = result.items.filter((item) => item.ok).length;
-    const failedCount = result.items.length - okCount;
-    if (result.status === 'canceled') {
-      setStatus('已取消附件导入。');
-    } else if (failedCount > 0) {
-      setStatus(`附件导入完成：成功 ${okCount} 个，失败 ${failedCount} 个。`);
-    } else {
-      setStatus(`附件已复制：${okCount} 个文件。`);
+    try {
+      const result = await window.omniEdu?.importAttachments(activeStudent.id, recordId);
+      if (!result) throw new Error('附件导入没有返回结果，请重试。');
+      setAttachmentImport(result);
+      setRecords(result.records ?? []);
+      await refreshStudents();
+      const okCount = result.items.filter((item) => item.ok).length;
+      const failedCount = result.items.length - okCount;
+      if (result.status === 'canceled') {
+        setStatus('已取消附件导入。');
+      } else if (failedCount > 0) {
+        setStatus(`附件导入完成：成功 ${okCount} 个，失败 ${failedCount} 个。`);
+      } else {
+        setStatus(`附件已复制：${okCount} 个文件。`);
+      }
+    } catch (error) {
+      setAttachmentImport({ status: 'failed', records, items: [{ sourcePath: '', fileName: '附件选择或复制', ok: false, fileSize: 0, errorMessage: error instanceof Error ? error.message : '附件导入失败' }] });
+      setStatus(error instanceof Error ? error.message : '附件导入失败，请重试。');
     }
   }
 
@@ -956,31 +791,6 @@ export function App() {
       setStatus(`知识资源导入完成：成功 ${okCount} 个，失败 ${failedCount} 个。`);
     } else {
       setStatus(`知识资源已导入：${okCount} 个文件。`);
-    }
-  }
-
-  async function generateReview() {
-    if (!activeStudent) return;
-    const report = await window.omniEdu?.generateReview({
-      studentId: activeStudent.id,
-      ...reviewForm,
-    });
-    if (report) {
-      setActiveReport(report);
-      setReports([report, ...reports]);
-      setStatus('复盘草稿已生成，可继续编辑。');
-      setActiveView('review');
-      await refreshOverview();
-    }
-  }
-
-  async function saveReport() {
-    if (!activeReport) return;
-    const saved = await window.omniEdu?.updateReport(activeReport.id, activeReport.contentMd, activeReport.parentSummary);
-    if (saved) {
-      setActiveReport(saved);
-      await refreshRecords();
-      setStatus('复盘已保存。');
     }
   }
 
@@ -1013,14 +823,18 @@ export function App() {
     }));
   }
 
-  async function exportAiArtifact(artifact: AiArtifact | null) {
+  async function exportAiArtifact(artifact: AiArtifact | null, useLocalWorkspace = false) {
     if (!artifact) return;
     if (!artifact.content.trim()) {
-      setStatus('文档产物正文为空，不能导出。');
+      const message = '文档产物正文为空，不能导出。';
+      setActiveAiArtifact({ ...artifact, exportStatus: 'failed', errorMessage: message });
+      setStatus(message);
       return;
     }
+    setActiveAiArtifact({ ...artifact, errorMessage: undefined });
     setStatus(`正在导出 ${artifact.type} 文件。`);
     try {
+      const dataRoot = useLocalWorkspace ? await window.omniEdu?.getDataRoot() : '';
       const exported = await window.omniEdu?.exportDocumentArtifact({
         artifactId: artifact.id,
         sessionId: activeAiSessionId,
@@ -1029,6 +843,7 @@ export function App() {
         fileName: artifact.fileName,
         contentMd: artifact.content,
         description: artifact.description,
+        destinationRoot: dataRoot ? `${dataRoot}/exports/ai-artifacts` : undefined,
       });
       if (!exported) {
         setStatus('已取消文档产物导出。');
@@ -1239,10 +1054,137 @@ export function App() {
     return { thoughtSteps: steps, contextSources, toolRuns };
   }
 
-  async function runAiConsole() {
+  async function submitPendingUserInput() {
+    if (!pendingUserInput) return;
+    const text = userInputText.trim();
+    if (!text) {
+      setStatus('请先填写小智需要的补充信息。');
+      return;
+    }
+    const result = await window.omniEdu?.deepTutorSubmitUserInput({
+      requestId: pendingUserInput.requestId,
+      turnId: pendingUserInput.turnId,
+      text,
+    });
+    if (result?.ok) {
+      setPendingUserInput(null);
+      setUserInputText('');
+      setStatus(result.runId ? '已提交补充信息，小智正在由恢复运行继续。' : '已提交补充信息，小智正在继续。');
+    } else {
+      setStatus(result?.errorMessage || '补充信息提交失败，请重试。');
+    }
+  }
+
+  async function cancelPendingUserInput() {
+    if (!pendingUserInput) return;
+    await window.omniEdu?.deepTutorCancelTurn(pendingUserInput.turnId);
+    setPendingUserInput(null);
+    setUserInputText('');
+    setStatus('已取消等待输入，本轮小智任务已停止。');
+  }
+
+  async function continueDeepTutorBudget() {
+    if (!deepTutorContinuation || continuationInFlightRef.current) return;
+    continuationInFlightRef.current = true;
+    setAiRunning(true);
+    setStatus('小智正在从预算检查点继续，不重复上一轮已完成内容。');
+    try {
+      const result = await window.omniEdu?.deepTutorContinueTurn({
+        continuationToken: deepTutorContinuation.continuationToken,
+        budgets: { maxEvents: 64, maxWallMs: 120_000 },
+      });
+      if (!result?.ok || !result.runId) {
+        if (result?.approvalRequired && result.approvalCheckpointId) {
+          setDeepTutorContinuation((current) => current ? {
+            ...current,
+            approvalCheckpointId: result.approvalCheckpointId,
+            approvalRequired: true,
+            requestedBudgets: result.requestedBudgets,
+          } : current);
+          setStatus('续写预算超出原上限，请先确认追加预算。');
+          return;
+        }
+        setStatus(result?.errorMessage || '续写检查点已失效，请重新发起任务。');
+        setDeepTutorContinuation(null);
+        return;
+      }
+      setDeepTutorContinuation(null);
+      const deadline = Date.now() + 120_000;
+      let run = await window.omniEdu?.getAiAgentRun(result.runId);
+      while (run && (run.status === 'running' || run.status === 'waiting_input') && Date.now() < deadline) {
+        await new Promise((resolve) => window.setTimeout(resolve, 120));
+        run = await window.omniEdu?.getAiAgentRun(result.runId);
+      }
+      if (run?.status === 'succeeded') setStatus('小智已完成预算续写。');
+      else if (run?.status === 'blocked') setStatus('续写再次触发预算边界，可继续次数有限。');
+      else setStatus(run?.errorMessage || '续写未能完成，请检查运行轨迹。');
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '续写检查点调用失败。');
+    } finally {
+      setAiRunning(false);
+      continuationInFlightRef.current = false;
+    }
+  }
+
+  async function approveDeepTutorBudget() {
+    if (!deepTutorContinuation?.approvalCheckpointId || continuationInFlightRef.current) return;
+    continuationInFlightRef.current = true;
+    setAiRunning(true);
+    setStatus('正在提交追加预算审批，并继续当前任务。');
+    try {
+      const result = await window.omniEdu?.deepTutorApproveBudget(deepTutorContinuation.approvalCheckpointId);
+      if (!result?.ok || !result.runId) {
+        setStatus(result?.errorMessage || '预算审批已失效，请重新发起任务。');
+        return;
+      }
+      setDeepTutorContinuation(null);
+      setStatus('预算已获批，小智正在继续当前任务。');
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '预算审批调用失败。');
+    } finally {
+      setAiRunning(false);
+      continuationInFlightRef.current = false;
+    }
+  }
+
+  async function mutateAiRunFromMessage(runId: string, action: 'retry' | 'branch' | 'regenerate') {
+    if (!runId || aiMutationRunningId) return;
+    setAiMutationRunningId(runId);
+    setAiRunning(true);
+    setStatus(action === 'retry' ? '小智正在重试失败运行。' : action === 'branch' ? '小智正在创建对话分支。' : '小智正在重新生成当前结果。');
+    try {
+      const idempotencyKey = `${action}-${runId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const result = await window.omniEdu?.deepTutorMutateRun({
+        sourceRunId: runId,
+        action,
+        idempotencyKey,
+        budgets: { maxEvents: 64, maxWallMs: 120_000 },
+      });
+      if (!result?.ok || !result.runId) {
+        setStatus(result?.errorMessage || '运行变更未被接受。');
+        return;
+      }
+      const deadline = Date.now() + 120_000;
+      let run = await window.omniEdu?.getAiAgentRun(result.runId);
+      while (run && (run.status === 'running' || run.status === 'waiting_input') && Date.now() < deadline) {
+        await new Promise((resolve) => window.setTimeout(resolve, 120));
+        run = await window.omniEdu?.getAiAgentRun(result.runId);
+      }
+      if (run?.status === 'succeeded') setStatus('小智已完成运行变更，过程可在事件轨迹中查看。');
+      else setStatus(run?.errorMessage || '运行变更未能完成，请检查事件轨迹。');
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : '运行变更调用失败。');
+    } finally {
+      setAiRunning(false);
+      setAiMutationRunningId('');
+    }
+  }
+
+  async function runAiConsole(promptOverride?: string) {
     if (aiSubmitInFlightRef.current) return;
     aiSubmitInFlightRef.current = true;
-    if (!aiPrompt.trim()) {
+    const requestedPrompt = (promptOverride ?? aiPrompt).trim();
+    if (!requestedPrompt) {
       aiSubmitInFlightRef.current = false;
       setStatus('请输入 AI 任务。');
       return;
@@ -1250,7 +1192,7 @@ export function App() {
     let sessionId = activeAiSessionId;
     if (!sessionId) {
       const detail = await window.omniEdu?.createAiConversationSession({
-        title: aiPrompt.trim().slice(0, 40),
+        title: requestedPrompt.slice(0, 40),
         studentId: activeStudent?.id,
       });
       if (detail) {
@@ -1263,11 +1205,11 @@ export function App() {
       setStatus('无法创建本地对话记录。');
       return;
     }
-    const prompt = aiPrompt.trim();
+    const prompt = requestedPrompt;
     setAiRunning(true);
     setAiResult(null);
     setActiveAiArtifact(null);
-    setStatus('正在调用 DeepSeek。');
+    setStatus('小智正在启动 DeepTutor AgentLoop。');
     try {
       const userDetail = await window.omniEdu?.appendAiConversationMessage(sessionId, {
         role: 'user',
@@ -1279,7 +1221,7 @@ export function App() {
         },
       });
       if (userDetail) setAiMessages(userDetail.messages);
-      const result = await window.omniEdu?.runDeepSeek({
+      const result = await window.omniEdu?.runDeepTutorConsole({
         prompt,
         sessionId,
         studentId: activeStudent?.id,
@@ -1294,6 +1236,7 @@ export function App() {
           role: 'assistant',
           content: result.ok ? result.content : result.errorMessage || 'DeepSeek 调用失败。',
           metadata: {
+            agentRunId: result.harness?.agentRunId ?? '',
             ok: result.ok,
             model: result.model,
             errorMessage: result.errorMessage ?? '',
@@ -1307,7 +1250,7 @@ export function App() {
         if (assistantDetail) setAiMessages(assistantDetail.messages);
         await refreshAiConfirmations();
         await refreshAiConversations(sessionId);
-        setStatus(result.ok ? 'DeepSeek 已返回结果。' : result.errorMessage || 'DeepSeek 调用失败。');
+        setStatus(result.ok ? '小智已完成 DeepTutor AgentLoop。' : result.errorMessage || '小智 AgentLoop 调用失败。');
       } else {
         const fallbackResult = {
           ok: false,
@@ -1324,6 +1267,7 @@ export function App() {
           role: 'assistant',
           content: fallbackResult.errorMessage,
           metadata: {
+            agentRunId: '',
             ok: false,
             model: fallbackResult.model,
             errorMessage: fallbackResult.errorMessage,
@@ -1354,6 +1298,7 @@ export function App() {
         role: 'assistant',
         content: message,
         metadata: {
+          agentRunId: '',
           ok: false,
           model: failedResult.model,
           errorMessage: message,
@@ -1376,8 +1321,9 @@ export function App() {
       const result = await window.omniEdu?.confirmAiConfirmation(item.id);
       await refreshAiConfirmations();
       if (result?.readback?.report) {
-        setActiveReport(result.readback.report);
+        setReviewReportSelectionId(result.readback.report.id);
         await refreshRecords(result.readback.report.studentId);
+        setActiveView('review');
         setStatus(`已确认并保存：${result.readback.report.title}`);
       } else if (result?.readback?.exerciseSet) {
         setStatus(`已确认并保存题组：${result.readback.exerciseSet.title}`);
@@ -1399,96 +1345,6 @@ export function App() {
     }
   }
 
-  function resetUsabilityReviewForm() {
-    setUsabilityReviewForm({
-      ...initialUsabilityReviewForm,
-      reviewedAt: new Date().toISOString().slice(0, 16),
-      model: deepSeekSettings.model || initialUsabilityReviewForm.model,
-    });
-  }
-
-  function buildUsabilityReviewInput(raw: AiUsabilityHumanReviewInput): AiUsabilityHumanReviewInput {
-    return {
-      ...raw,
-      sampleId: raw.sampleId.trim(),
-      prompt: raw.prompt.trim(),
-      subIntent: String(raw.subIntent).trim(),
-      mainIssueCode: raw.mainIssueCode.trim() || 'none',
-      teacherNote: raw.teacherNote?.trim() ?? '',
-      runId: raw.runId?.trim() ?? '',
-      sessionId: raw.sessionId?.trim() ?? '',
-      model: raw.model?.trim() || deepSeekSettings.model || '',
-      teacherScore: Number(raw.teacherScore),
-      roundsToUseful: Number(raw.roundsToUseful),
-      reviewedAt: raw.reviewedAt || new Date().toISOString(),
-    };
-  }
-
-  async function submitAiUsabilityReview() {
-    try {
-      const saved = await window.omniEdu?.createAiUsabilityReview(buildUsabilityReviewInput(usabilityReviewForm));
-      if (selectedReplayBeforeReviewId && saved && saved.id !== selectedReplayBeforeReviewId) {
-        await window.omniEdu?.createAiUsabilityReplayExperiment({
-          beforeReviewId: selectedReplayBeforeReviewId,
-          afterReviewId: saved.id,
-          replayPrompt: saved.prompt,
-          modelAfter: saved.model,
-          promptVersionAfter: 'manual-ui-v1.4',
-          experimentNote: '由设置页人工评分表单创建的 before/after replay experiment。',
-        });
-        setSelectedReplayBeforeReviewId('');
-      }
-      await refreshAiUsabilityReviews();
-      resetUsabilityReviewForm();
-      setStatus(selectedReplayBeforeReviewId ? '已保存人工评分，并创建 before/after 回放实验。' : '已保存小智人工评分样本。');
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : '保存人工评分失败');
-    }
-  }
-
-  async function importAiUsabilityCsv() {
-    const rows = parseUsabilityReviewCsv(usabilityCsvText);
-    if (!rows.length) {
-      setStatus('CSV 至少需要表头和一行样本。');
-      return;
-    }
-    setUsabilityImporting(true);
-    try {
-      let imported = 0;
-      for (const row of rows) {
-        await window.omniEdu?.createAiUsabilityReview(buildUsabilityReviewInput(row));
-        imported += 1;
-      }
-      setUsabilityCsvText('');
-      await refreshAiUsabilityReviews();
-      setStatus(`已导入 ${imported} 条小智人工评分样本。`);
-    } catch (error) {
-      setStatus(error instanceof Error ? error.message : '导入人工评分 CSV 失败');
-    } finally {
-      setUsabilityImporting(false);
-    }
-  }
-
-  function replayAiUsabilityReview(review: AiUsabilityHumanReview) {
-    setAiPrompt(review.prompt);
-    setActiveView('ai');
-    setStatus(`已把失败样本 ${review.sampleId} 放入小智输入框，可重新运行对比。`);
-  }
-
-  function selectReplayBeforeReview(review: AiUsabilityHumanReview) {
-    setSelectedReplayBeforeReviewId(review.id);
-    setUsabilityReviewForm({
-      ...usabilityReviewForm,
-      sampleId: `${review.sampleId}_after`,
-      prompt: review.prompt,
-      route: review.route,
-      subIntent: review.subIntent,
-      model: deepSeekSettings.model || review.model || usabilityReviewForm.model,
-      reviewedAt: new Date().toISOString().slice(0, 16),
-    });
-    setStatus(`已选择 ${review.sampleId} 作为 before 样本。保存下一条评分时会创建 before/after 实验。`);
-  }
-
   async function saveDeepSeekSettings() {
     const saved = await window.omniEdu?.saveDeepSeekSettings({
       apiKey: deepSeekForm.apiKey,
@@ -1503,15 +1359,15 @@ export function App() {
 
   function startNewStudent() {
     setActiveView('students');
-    setEditingStudent(false);
+    setStudentFormMode('create');
     setStudentForm(initialStudentForm);
     setStatus('填写学生档案后保存到本地。');
   }
 
   function loadActiveStudentForEdit() {
-    if (!activeStudent) return;
+    if (!activeStudent || activeStudent.status === 'archived') return;
     setActiveView('students');
-    setEditingStudent(true);
+    setStudentFormMode('edit');
     setStudentForm({
       displayName: activeStudent.displayName,
       realName: activeStudent.realName,
@@ -1542,7 +1398,7 @@ export function App() {
             }}
           />
         </div>
-        <button className="primary-action" onClick={startNewStudent}>
+        <button data-testid="student-create" className="primary-action" onClick={startNewStudent}>
           <Plus size={17} />
           新建学生
         </button>
@@ -1550,10 +1406,14 @@ export function App() {
           {students.map((student) => (
             <button
               key={student.id}
-              className={`student-row ${student.id === activeStudent?.id ? 'active' : ''}`}
-              onClick={() => setActiveStudentId(student.id)}
+              data-testid={`student-row-${student.id}`}
+              className={`student-row ${student.id === activeStudent?.id ? 'active' : ''} ${student.status === 'archived' ? 'archived' : ''}`}
+              onClick={() => {
+                setActiveStudentId(student.id);
+                setStudentFormMode('closed');
+              }}
             >
-              <span className="student-row-name">{student.displayName}</span>
+              <span className="student-row-name">{student.displayName}{student.status === 'archived' ? <em data-testid={`student-row-status-${student.id}`}>已归档</em> : null}</span>
               <span>{student.grade || '未填年级'} · {(student.subjects.length ? student.subjects : ['未填科目']).join(' / ')}</span>
               <span className="student-row-meta">
                 <ClipboardList size={14} />
@@ -1569,41 +1429,9 @@ export function App() {
     );
   }
 
-  function renderStudentProfile() {
-    if (!activeStudent) return <EmptyState>请选择或创建学生。</EmptyState>;
-    return (
-      <section className="profile-grid">
-        <article className="profile-block primary">
-          <WorkspaceLabel number="02" title={activeStudent.displayName} description="学生长期档案" />
-          <div className="profile-line">
-            <span>年级</span>
-            <strong>{activeStudent.grade || '未填写'}</strong>
-          </div>
-          <div className="profile-line">
-            <span>科目</span>
-            <strong>{activeStudent.subjects.length ? activeStudent.subjects.join(' / ') : '未填写'}</strong>
-          </div>
-          <div className="profile-tags">
-            {activeStudent.tags.length ? activeStudent.tags.map((tag) => <Badge key={tag} tone="blue">{tag}</Badge>) : <Badge>未设置标签</Badge>}
-          </div>
-        </article>
-        <article className="profile-block">
-          <h3>当前问题</h3>
-          <p>{activeStudent.currentIssues || '还没有记录当前问题。'}</p>
-        </article>
-        <article className="profile-block">
-          <h3>阶段目标</h3>
-          <p>{activeStudent.goals || '还没有设置阶段目标。'}</p>
-        </article>
-        <article className="profile-block">
-          <h3>家长关注点</h3>
-          <p>{activeStudent.parentConcerns || '还没有记录家长关注点。'}</p>
-        </article>
-      </section>
-    );
-  }
 
   function renderTimeline(showFilters = true) {
+    const readOnly = activeStudent?.status === 'archived';
     return (
       <section className="work-panel">
         <div className="panel-heading">
@@ -1624,7 +1452,7 @@ export function App() {
         </div>
         <div className="timeline">
           {records.map((record) => (
-            <article className="timeline-item" key={record.id}>
+            <article className="timeline-item" data-testid={`timeline-record-${record.id}`} key={record.id}>
               <time>{formatTime(record.occurredAt)}</time>
               <div className="timeline-body">
                 <div className="record-head">
@@ -1632,10 +1460,12 @@ export function App() {
                     <Badge tone={record.recordType === 'mistake' ? 'amber' : 'neutral'}>{recordTypeLabels[record.recordType] ?? record.recordType}</Badge>
                     <Badge>{record.subject || '全部'}</Badge>
                   </div>
-                  <div className="record-actions">
-                    <button className="secondary-action compact-button" onClick={() => editRecord(record)}>编辑</button>
-                    <button className="secondary-action compact-button" onClick={() => importAttachment(record.id)}>导入附件</button>
-                  </div>
+                  {readOnly ? <span className="student-readonly-label">归档档案只读</span> : (
+                    <div className="record-actions">
+                      <button className="secondary-action compact-button" onClick={() => editRecord(record)}>编辑</button>
+                      <button className="secondary-action compact-button" onClick={() => importAttachment(record.id)}>导入附件</button>
+                    </div>
+                  )}
                 </div>
                 <h3>{record.title}</h3>
                 <p>{record.content || '暂无正文'}</p>
@@ -1700,142 +1530,6 @@ export function App() {
     );
   }
 
-  function renderStudentForm() {
-    return (
-      <section className="work-panel form-panel">
-        <WorkspaceLabel number="04" title={editingStudent ? '编辑学生档案' : '新建学生档案'} description="只记录老师需要长期追踪的信息。" />
-        <div className="form-grid">
-          <label className="full">
-            显示名
-            <input value={studentForm.displayName ?? ''} onChange={(event) => setStudentForm({ ...studentForm, displayName: event.target.value })} />
-          </label>
-          <label>
-            真实姓名
-            <input value={studentForm.realName ?? ''} onChange={(event) => setStudentForm({ ...studentForm, realName: event.target.value })} />
-          </label>
-          <label>
-            年级
-            <input value={studentForm.grade ?? ''} onChange={(event) => setStudentForm({ ...studentForm, grade: event.target.value })} />
-          </label>
-          <label>
-            学校
-            <input value={studentForm.school ?? ''} onChange={(event) => setStudentForm({ ...studentForm, school: event.target.value })} />
-          </label>
-          <label>
-            科目
-            <input value={(studentForm.subjects ?? []).join('、')} onChange={(event) => setStudentForm({ ...studentForm, subjects: splitList(event.target.value) })} />
-          </label>
-          <label className="full">
-            阶段目标
-            <input value={studentForm.goals ?? ''} onChange={(event) => setStudentForm({ ...studentForm, goals: event.target.value })} />
-          </label>
-          <label className="full">
-            当前问题
-            <textarea value={studentForm.currentIssues ?? ''} onChange={(event) => setStudentForm({ ...studentForm, currentIssues: event.target.value })} />
-          </label>
-          <label className="full">
-            家长关注点
-            <textarea value={studentForm.parentConcerns ?? ''} onChange={(event) => setStudentForm({ ...studentForm, parentConcerns: event.target.value })} />
-          </label>
-          <label className="full">
-            标签
-            <input value={(studentForm.tags ?? []).join('、')} onChange={(event) => setStudentForm({ ...studentForm, tags: splitList(event.target.value) })} />
-          </label>
-          <button className="primary-action wide" onClick={submitStudent}>
-            <Plus size={16} />
-            {editingStudent ? '保存学生' : '创建学生'}
-          </button>
-          {activeStudent ? <button className="secondary-action full-button" onClick={loadActiveStudentForEdit}>载入当前学生</button> : null}
-        </div>
-      </section>
-    );
-  }
-
-  function renderReviewEditor() {
-    return (
-      <div className="review-layout">
-        <section className="work-panel">
-          <WorkspaceLabel number="01" title="复盘条件" description="选择学生、时间和科目后生成草稿。" />
-          <div className="form-grid single">
-            <label>
-              开始日期
-              <input type="date" value={reviewForm.startDate} onChange={(event) => setReviewForm({ ...reviewForm, startDate: event.target.value })} />
-            </label>
-            <label>
-              结束日期
-              <input type="date" value={reviewForm.endDate} onChange={(event) => setReviewForm({ ...reviewForm, endDate: event.target.value })} />
-            </label>
-            <label>
-              科目
-              <input value={reviewForm.subject} onChange={(event) => setReviewForm({ ...reviewForm, subject: event.target.value })} />
-            </label>
-            <button className="primary-action wide" onClick={generateReview}>
-              <FileText size={16} />
-              生成复盘
-            </button>
-          </div>
-          <div className="evidence-list">
-            <h3>当前源记录</h3>
-            {records.slice(0, 6).map((record) => (
-              <article key={record.id}>
-                <span>{formatDate(record.occurredAt)}</span>
-                <strong>{record.title}</strong>
-              </article>
-            ))}
-            {!records.length ? <EmptyState>当前筛选范围内没有源记录。</EmptyState> : null}
-          </div>
-        </section>
-
-        <section className="work-panel editor-panel">
-          <WorkspaceLabel number="02" title="报告编辑器" description="草稿必须由老师确认后保存。" />
-          {activeReport ? (
-            <>
-              <textarea className="report-editor" value={activeReport.contentMd} onChange={(event) => setActiveReport({ ...activeReport, contentMd: event.target.value })} />
-              <button className="primary-action wide" onClick={saveReport}>
-                <CheckCircle2 size={16} />
-                保存复盘
-              </button>
-            </>
-          ) : (
-            <EmptyState>还没有生成复盘草稿。</EmptyState>
-          )}
-        </section>
-
-        <section className="work-panel">
-          <WorkspaceLabel number="03" title="家长版与质量检查" description="报告不允许脱离证据链。" />
-          {activeReport ? (
-            <>
-              <label className="full">
-                家长沟通版摘要
-                <textarea value={activeReport.parentSummary} onChange={(event) => setActiveReport({ ...activeReport, parentSummary: event.target.value })} />
-              </label>
-              {renderQualityChecks()}
-            </>
-          ) : (
-            <EmptyState>生成复盘后显示质量检查。</EmptyState>
-          )}
-        </section>
-      </div>
-    );
-  }
-
-  function renderQualityChecks() {
-    if (!activeReport) return null;
-    return (
-      <div className="quality-list">
-        {activeReport.qualityChecks.map((check) => (
-          <article key={check.key} className={check.passed ? 'passed' : 'failed'}>
-            <ShieldCheck size={15} />
-            <div>
-              <strong>{check.label}</strong>
-              <p>{check.detail}</p>
-            </div>
-          </article>
-        ))}
-      </div>
-    );
-  }
-
   function renderTodayView() {
     return (
       <div className="page-grid today-grid">
@@ -1877,8 +1571,13 @@ export function App() {
           </div>
         </section>
 
+        <section className="work-panel span-2 review-reminder-card" data-testid="review-reminder-card">
+          <WorkspaceLabel number="04" title="复习提醒" description="每次打开工作台都从本地学习记录重新计算，不保存第二份队列。" />
+          <ReviewReminderPanel activeStudent={activeStudent} onOpenEvidence={() => setActiveView('students')} setStatus={setStatus} />
+        </section>
+
         <section className="work-panel span-2">
-          <WorkspaceLabel number="04" title="当前学生证据" description={activeStudent ? activeStudent.displayName : '未选择学生'} />
+          <WorkspaceLabel number="05" title="当前学生证据" description={activeStudent ? activeStudent.displayName : '未选择学生'} />
           {records.slice(0, 4).map((record) => (
             <article className="evidence-row" key={record.id}>
               <time>{formatDate(record.occurredAt)}</time>
@@ -1986,7 +1685,7 @@ export function App() {
                 <Badge tone="amber">写入需确认</Badge>
                 <Badge tone={deepSeekSettings.configured ? 'blue' : 'amber'}>{deepSeekSettings.configured ? `DeepSeek ${deepSeekSettings.model}` : 'DeepSeek 未配置'}</Badge>
               </div>
-              <button className="primary-action" disabled={aiRunning} onClick={runAiConsole}>
+              <button className="primary-action" disabled={aiRunning} onClick={() => runAiConsole()}>
                 <Sparkles size={17} />
                 {aiRunning ? '调用中' : '运行 DeepSeek'}
               </button>
@@ -1999,7 +1698,7 @@ export function App() {
             ))}
           </div>
 
-          <div className="ai-output-placeholder">
+          <div className="ai-output-placeholder" data-testid="ai-output">
             <WorkspaceLabel number="03" title="AI 输出区" description="回答必须带证据引用和老师确认入口。" />
             {aiResult?.ok ? (
               <article className="ai-answer-card">
@@ -2024,7 +1723,7 @@ export function App() {
                 ) : null}
               </article>
             ) : (
-              <div className="assistant-empty">
+              <div className="assistant-empty" data-testid={aiResult?.errorMessage ? 'ai-output-error' : 'ai-output-empty'}>
                 <Sparkles size={22} />
                 <div>
                   <strong>{aiResult?.errorMessage ? 'DeepSeek 调用失败' : '等待运行'}</strong>
@@ -2099,8 +1798,6 @@ export function App() {
     const selectedArtifact = activeAiArtifact ?? liveArtifacts[0] ?? null;
     const hasAiTurn = Boolean(aiRunning || aiMessages.length);
     const activeAiSession = aiSessions.find((session) => session.id === activeAiSessionId) ?? null;
-    const sessionsInFolder = (folderId: string | null) =>
-      aiSessions.filter((session) => (session.folderId ?? null) === folderId);
     const readThoughtSteps = (message: AiConversationMessage): AiThoughtStep[] => {
       const raw = message.metadata.thoughtSteps;
       if (!Array.isArray(raw)) return [];
@@ -2167,94 +1864,13 @@ export function App() {
         }));
     };
     const liveTrace = buildAiTrace(aiPrompt, aiResult, liveArtifacts);
-    const liveThoughtSteps = liveTrace.thoughtSteps;
+    const deepTutorThoughtSteps: AiThoughtStep[] = deepTutorEvents.map((event) => ({
+      label: `${event.label} · ${event.sequence}`,
+      detail: event.detail,
+    }));
+    const liveThoughtSteps = deepTutorThoughtSteps.length ? deepTutorThoughtSteps : liveTrace.thoughtSteps;
     const visibleConfirmations = aiConfirmations.slice(0, 2);
     const hiddenConfirmationCount = Math.max(0, aiConfirmations.length - visibleConfirmations.length);
-    const renderSessionList = (folderId: string | null) => {
-      const folderSessions = sessionsInFolder(folderId);
-      if (!folderSessions.length) {
-        return <div className="ai-session-empty">暂无对话</div>;
-      }
-      return (
-        <ChatListView.Root<AiConversationSession>
-          aria-label={folderId ? '文件夹对话' : '未归档对话'}
-          className="ai-session-list"
-          density="compact"
-          selectionMode="none"
-          onAction={(key) => openAiConversation(String(key))}
-        >
-          {folderSessions.map((session) => (
-            <ChatListView.Item
-              id={session.id}
-              key={session.id}
-              textValue={session.title}
-            >
-              <ChatListView.ItemContent
-                className={session.id === activeAiSessionId ? 'active' : ''}
-                data-session-id={session.id}
-                draggable
-                onContextMenu={(event) => {
-                  event.preventDefault();
-                  setAiContextMenu({
-                    type: 'session',
-                    id: session.id,
-                    name: session.title,
-                    x: event.clientX,
-                    y: event.clientY,
-                  });
-                }}
-                onDragStart={(event) => {
-                  event.dataTransfer.setData('text/plain', session.id);
-                  event.dataTransfer.effectAllowed = 'move';
-                }}
-              >
-                <ChatListView.Icon>
-                  <MessageSquare size={15} />
-                </ChatListView.Icon>
-                <ChatListView.Text>
-                  <ChatListView.Title>
-                    {aiRenameTarget?.type === 'session' && aiRenameTarget.id === session.id ? (
-                      <input
-                        autoFocus
-                        className="ai-inline-rename"
-                        value={aiRenameTarget.value}
-                        onChange={(event) => setAiRenameTarget({ ...aiRenameTarget, value: event.target.value })}
-                        onClick={(event) => event.stopPropagation()}
-                        onKeyDown={(event) => {
-                          if (event.key === 'Enter') void renameAiConversationTarget();
-                          if (event.key === 'Escape') setAiRenameTarget(null);
-                        }}
-                      />
-                    ) : session.title}
-                  </ChatListView.Title>
-                  <ChatListView.Preview>
-                    {session.lastResponsePreview || session.lastPrompt || '新对话'}
-                  </ChatListView.Preview>
-                </ChatListView.Text>
-                <ChatListView.Meta>{session.messageCount}</ChatListView.Meta>
-              </ChatListView.ItemContent>
-            </ChatListView.Item>
-          ))}
-        </ChatListView.Root>
-      );
-    };
-    const renderDropZone = (folderId: string | null, children: ReactNode) => (
-      <div
-        className="ai-folder-dropzone"
-        data-folder-id={folderId ?? 'inbox'}
-        onDragOver={(event) => {
-          event.preventDefault();
-          event.dataTransfer.dropEffect = 'move';
-        }}
-        onDrop={(event) => {
-          event.preventDefault();
-          const sessionId = event.dataTransfer.getData('text/plain');
-          if (sessionId) moveAiConversation(sessionId, folderId);
-        }}
-      >
-        {children}
-      </div>
-    );
     const startArtifactResize = (event: React.PointerEvent<HTMLDivElement>) => {
       event.preventDefault();
       const startX = event.clientX;
@@ -2278,124 +1894,17 @@ export function App() {
 
     return (
       <div className={`ai-console-v2 ${activeAiArtifact ? 'with-artifact' : ''}`} style={consoleGridStyle}>
-        <aside className="work-panel ai-session-sidebar">
-          <div className="ai-session-header">
-            <WorkspaceLabel
-              number="01"
-              title="对话"
-              description="本地保存，可拖入文件夹分类。"
-            />
-            <button className="icon-button" aria-label="新建对话" onClick={() => startNewAiConversation(activeAiSession?.folderId ?? null)}>
-              <Plus size={16} />
-            </button>
-          </div>
-
-          <div className="ai-folder-actions">
-            {creatingAiFolder ? (
-              <div className="ai-folder-create">
-                <input
-                  aria-label="文件夹名称"
-                  placeholder="文件夹名称"
-                  value={newAiFolderName}
-                  onChange={(event) => setNewAiFolderName(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === 'Enter') createAiFolder();
-                    if (event.key === 'Escape') {
-                      setCreatingAiFolder(false);
-                      setNewAiFolderName('');
-                    }
-                  }}
-                />
-                <button className="primary-action compact-button" onClick={createAiFolder}>保存</button>
-              </div>
-            ) : (
-              <button className="secondary-action wide" onClick={() => setCreatingAiFolder(true)}>
-                <FolderPlus size={16} />
-                新建文件夹
-              </button>
-            )}
-          </div>
-
-          <div className="ai-folder-group">
-            {renderDropZone(null, (
-              <>
-                <div className="ai-folder-title">
-                  <Inbox size={15} />
-                  <span>未归档</span>
-                  <em>{sessionsInFolder(null).length}</em>
-                </div>
-                {renderSessionList(null)}
-              </>
-            ))}
-          </div>
-
-          <div className="ai-folder-group">
-            {aiFolders.map((folder) => (
-              <section className="ai-folder" key={folder.id}>
-                {renderDropZone(folder.id, (
-                  <>
-                    <div
-                      className="ai-folder-title"
-                      onContextMenu={(event) => {
-                        event.preventDefault();
-                        setAiContextMenu({
-                          type: 'folder',
-                          id: folder.id,
-                          name: folder.name,
-                          x: event.clientX,
-                          y: event.clientY,
-                        });
-                      }}
-                    >
-                      <Folder size={15} />
-                      <span>
-                        {aiRenameTarget?.type === 'folder' && aiRenameTarget.id === folder.id ? (
-                          <input
-                            autoFocus
-                            className="ai-inline-rename"
-                            value={aiRenameTarget.value}
-                            onChange={(event) => setAiRenameTarget({ ...aiRenameTarget, value: event.target.value })}
-                            onClick={(event) => event.stopPropagation()}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter') void renameAiConversationTarget();
-                              if (event.key === 'Escape') setAiRenameTarget(null);
-                            }}
-                          />
-                        ) : folder.name}
-                      </span>
-                      <em>{sessionsInFolder(folder.id).length}</em>
-                    </div>
-                    {renderSessionList(folder.id)}
-                  </>
-                ))}
-              </section>
-            ))}
-          </div>
-
-          {aiContextMenu ? (
-            <div
-              className="ai-context-menu"
-              style={{ left: aiContextMenu.x, top: aiContextMenu.y }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <button
-                onClick={() => {
-                  setAiRenameTarget({
-                    type: aiContextMenu.type,
-                    id: aiContextMenu.id,
-                    value: aiContextMenu.name,
-                  });
-                  setAiContextMenu(null);
-                }}
-              >
-                重命名
-              </button>
-              <button onClick={() => void archiveAiConversationTarget(aiContextMenu)}>
-                归档
-              </button>
-            </div>
-          ) : null}
-        </aside>
+        <AiConversationSidebar
+          folders={aiFolders}
+          sessions={aiSessions}
+          activeSessionId={activeAiSessionId}
+          onOpenSession={openAiConversation}
+          onNewSession={startNewAiConversation}
+          onCreateFolder={createAiFolder}
+          onMoveSession={moveAiConversation}
+          onRename={renameAiConversationTarget}
+          onArchive={archiveAiConversationTarget}
+        />
 
         <section className="work-panel ai-chat-surface">
           <div className="ai-chat-header">
@@ -2427,6 +1936,8 @@ export function App() {
                   }
                   const thoughtSteps = readThoughtSteps(message);
                   const messageArtifacts = readArtifacts(message);
+                  const messageRunId = String(message.metadata.agentRunId ?? '');
+                  const messageOk = message.metadata.ok === true;
                   return (
                     <ChatMessage.Assistant key={message.id}>
                       <ChatMessage.Avatar show alt="Omni-Edu AI" fallback="AI" />
@@ -2446,9 +1957,11 @@ export function App() {
                           </ChainOfThought>
                         ) : null}
 
-                        <ChatMessage.Content>
-                          <Markdown>{message.content}</Markdown>
-                        </ChatMessage.Content>
+                        <div data-testid={messageOk ? 'ai-output-success' : 'ai-output-error'}>
+                          <ChatMessage.Content>
+                            <Markdown>{message.content}</Markdown>
+                          </ChatMessage.Content>
+                        </div>
 
                         {messageArtifacts.length ? (
                           <div className="ai-output-links" aria-label="生成的文档">
@@ -2457,6 +1970,7 @@ export function App() {
                                 className="ai-output-link"
                                 key={artifact.id}
                                 onClick={() => setActiveAiArtifact(artifact)}
+                                data-testid={`ai-artifact-open-${artifact.id}`}
                               >
                                 {artifact.title}
                               </button>
@@ -2464,10 +1978,83 @@ export function App() {
                           </div>
                         ) : null}
 
+                        {messageRunId ? (
+                          <div className="ai-run-actions" aria-label="运行变更">
+                            {!messageOk ? (
+                              <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'retry')}>
+                                重试本轮
+                              </button>
+                            ) : null}
+                            <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'branch')}>
+                              创建分支
+                            </button>
+                            <button className="ghost-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'regenerate')}>
+                              重新生成
+                            </button>
+                          </div>
+                        ) : null}
+
                       </ChatMessage.Body>
                     </ChatMessage.Assistant>
                   );
                 })}
+
+                {pendingUserInput ? (
+                  <ChatMessage.Assistant>
+                    <ChatMessage.Avatar show alt="Omni-Edu AI" fallback="AI" />
+                    <ChatMessage.Body>
+                      <div className="ai-user-input-card" role="dialog" aria-label="小智补充信息">
+                        <strong>小智需要补充信息</strong>
+                        <p>{pendingUserInput.prompt}</p>
+                        {pendingUserInput.questions?.map((question) => (
+                          <div className="ai-user-input-question" key={question.id}>
+                            <span>{question.question}</span>
+                            {question.options?.length ? <small>{question.options.join(' / ')}</small> : null}
+                          </div>
+                        ))}
+                        <textarea
+                          aria-label="补充信息"
+                          className="ai-user-input-textarea"
+                          value={userInputText}
+                          onChange={(event) => setUserInputText(event.target.value.slice(0, 4_000))}
+                          placeholder="输入后提交，小智会从当前步骤继续"
+                          rows={3}
+                        />
+                        <div className="ai-user-input-actions">
+                          <button className="primary-action compact-button" onClick={() => void submitPendingUserInput()}>
+                            提交并继续
+                          </button>
+                          <button className="secondary-action compact-button" onClick={() => void cancelPendingUserInput()}>
+                            取消本轮
+                          </button>
+                        </div>
+                      </div>
+                    </ChatMessage.Body>
+                  </ChatMessage.Assistant>
+                ) : null}
+
+                {deepTutorContinuation ? (
+                  <ChatMessage.Assistant>
+                    <ChatMessage.Avatar show alt="Omni-Edu AI" fallback="AI" />
+                    <ChatMessage.Body>
+                      <div className="ai-continuation-card" role="status" aria-label="小智预算续写">
+                        <strong>{deepTutorContinuation.approvalRequired ? '追加预算需要确认' : '本轮已安全暂停'}</strong>
+                        <p>{deepTutorContinuation.approvalRequired
+                          ? `请求预算：${deepTutorContinuation.requestedBudgets?.maxEvents ?? '-'} 个事件 / ${deepTutorContinuation.requestedBudgets?.maxWallMs ?? '-'}ms。确认后才会继续。`
+                          : '小智已保存当前可见进度。继续后会沿用同一任务上下文，并受限于剩余续写次数。'}</p>
+                        {deepTutorContinuation.approvalRequired ? (
+                          <button className="primary-action compact-button" disabled={aiRunning} onClick={() => void approveDeepTutorBudget()}>
+                            批准追加预算并继续
+                          </button>
+                        ) : (
+                          <button className="primary-action compact-button" disabled={aiRunning} onClick={() => void continueDeepTutorBudget()}>
+                            继续当前任务
+                          </button>
+                        )}
+                      </div>
+                    </ChatMessage.Body>
+                  </ChatMessage.Assistant>
+                ) : null}
 
                 {aiRunning ? (
                   <ChatMessage.Assistant>
@@ -2496,7 +2083,7 @@ export function App() {
           </div>
 
           {aiConfirmations.length ? (
-            <div className="ai-confirmation-queue" aria-label="小智待确认写入项">
+            <div className="ai-confirmation-queue" aria-label="小智待确认写入项" data-testid="ai-confirmation-queue">
               <div className="ai-confirmation-queue-header">
                 <div>
                   <strong>待老师确认</strong>
@@ -2506,22 +2093,22 @@ export function App() {
               </div>
               <div className="ai-confirmation-items">
                 {visibleConfirmations.map((item) => (
-                  <article className="ai-confirmation-card" key={item.id}>
+                  <article className="ai-confirmation-card" key={item.id} data-testid={`ai-confirmation-${item.id}`}>
                     <div>
                       <div className="ai-confirmation-title">
                         <FileText size={15} />
                         <strong>{item.title}</strong>
-                        <Badge tone="blue">{item.actionType === 'create_review_report' ? '复盘报告' : item.actionType}</Badge>
+                        <Badge tone="blue">{item.actionType === 'create_review_report' ? '复盘报告' : item.actionType === 'save_exercise_set' ? '三元题组' : item.actionType === 'save_mastery_state' ? '掌握度写入' : item.actionType}</Badge>
                       </div>
                       <p>{item.description || '确认后才会写入本地数据。'}</p>
                       <blockquote>{item.previewMd.slice(0, 160)}{item.previewMd.length > 160 ? '…' : ''}</blockquote>
                     </div>
                     <div className="ai-confirmation-actions">
-                      <button className="primary-action compact-button" onClick={() => void confirmAiItem(item)}>
+                      <button className="primary-action compact-button" onClick={() => void confirmAiItem(item)} data-testid={`ai-confirm-${item.id}`}>
                         <CheckCircle2 size={15} />
                         确认保存
                       </button>
-                      <button className="secondary-action compact-button" onClick={() => void rejectAiItem(item)}>
+                      <button className="secondary-action compact-button" onClick={() => void rejectAiItem(item)} data-testid={`ai-reject-${item.id}`}>
                         拒绝
                       </button>
                     </div>
@@ -2571,7 +2158,7 @@ export function App() {
                   </PromptInput.Attachments>
                 ) : null}
                 <PromptInput.Content>
-                  <PromptInput.TextArea placeholder="输入要生成的复盘、练习、PDF 或 Word 文档需求" />
+                  <PromptInput.TextArea data-testid="ai-prompt-input" placeholder="输入要生成的复盘、练习、PDF 或 Word 文档需求" />
                 </PromptInput.Content>
                 <PromptInput.Toolbar>
                   <PromptInput.ToolbarStart>
@@ -2623,7 +2210,7 @@ export function App() {
         ) : null}
 
         {activeAiArtifact ? (
-          <aside className="work-panel ai-artifact-panel">
+          <aside className="work-panel ai-artifact-panel" data-testid="ai-artifact-panel">
             <div className="panel-heading">
               <div>
                 <h2>{selectedArtifact.title}</h2>
@@ -2650,20 +2237,21 @@ export function App() {
                 </ChatAttachment>
               </ChatAttachmentGroup>
               {selectedArtifact.filePath ? (
-                <p className="artifact-export-meta">
+                <p className="artifact-export-meta" data-testid="ai-artifact-export-meta">
                   已生成：{selectedArtifact.filePath}
                   {selectedArtifact.contentHash ? ` · sha256 ${selectedArtifact.contentHash.slice(0, 12)}` : ''}
                 </p>
               ) : null}
-              {selectedArtifact.errorMessage ? <p className="artifact-export-error">{selectedArtifact.errorMessage}</p> : null}
+              {selectedArtifact.errorMessage ? <p className="artifact-export-error" data-testid="ai-artifact-export-error">{selectedArtifact.errorMessage}</p> : null}
               <Markdown>{selectedArtifact.content}</Markdown>
             </div>
             <div className="quick-actions">
-              <button className="primary-action" onClick={() => exportAiArtifact(selectedArtifact)}>
+              <button className="primary-action" onClick={() => exportAiArtifact(selectedArtifact, true)} data-testid="ai-artifact-export">
                 <FileDown size={16} />
-                导出 {selectedArtifact.type}
+                导出到本地工作目录
               </button>
-              <button className="secondary-action" onClick={() => showAiArtifactFile(selectedArtifact)}>
+              <button className="secondary-action" onClick={() => exportAiArtifact(selectedArtifact)} data-testid="ai-artifact-export-choose">选择位置导出</button>
+              <button className="secondary-action" onClick={() => showAiArtifactFile(selectedArtifact)} data-testid="ai-artifact-show">
                 <CheckCircle2 size={16} />
                 在文件夹中显示
               </button>
@@ -2782,7 +2370,28 @@ export function App() {
       <div className="split-workspace">
         {renderStudentDirectory()}
         <div className="stack">
-          {renderStudentProfile()}
+          <StudentProfileLifecycle
+            activeStudent={activeStudent}
+            formMode={studentFormMode}
+            form={studentForm}
+            onFormChange={setStudentForm}
+            onSave={submitStudent}
+            onStartEdit={loadActiveStudentForEdit}
+            onCancelForm={() => {
+              setStudentFormMode('closed');
+              setStudentForm(initialStudentForm);
+              setStatus('已取消学生档案编辑。');
+            }}
+            onStudentsChanged={async (nextStudents, archivedStudentId) => {
+              setStudents(nextStudents);
+              const nextActive = nextStudents.find((student) => student.status === 'active' && student.id !== archivedStudentId);
+              setActiveStudentId(nextActive?.id ?? archivedStudentId);
+              setStudentFormMode('closed');
+              setStudentForm(initialStudentForm);
+              await refreshOverview();
+            }}
+            setStatus={setStatus}
+          />
           {renderTimeline(true)}
           <section className="work-panel">
             <WorkspaceLabel number="04" title="附件与历史复盘" description="大文件只保存路径和元数据。" />
@@ -2802,7 +2411,7 @@ export function App() {
                 <h3>复盘</h3>
                 {reports.slice(0, 8).map((report) => (
                   <button className="report-row" key={report.id} onClick={() => {
-                    setActiveReport(report);
+                    setReviewReportSelectionId(report.id);
                     setActiveView('review');
                   }}>
                     <strong>{report.title}</strong>
@@ -2848,59 +2457,69 @@ export function App() {
   }
 
   function renderMistakesView() {
-    const pipeline = [
-      { label: '错题图片导入', status: '本地附件能力已接通' },
-      { label: 'OCR 识别', status: '未接入' },
-      { label: '教师校正', status: '待 OCR 接入后实现' },
-      { label: '知识点与错因标签', status: '使用学习记录标签预留' },
-      { label: '相似题召回', status: '未接入' },
-      { label: '三元题组输出', status: '未接入' },
-    ];
     return (
-      <div className="page-grid">
-        <section className="work-panel span-2">
-          <WorkspaceLabel number="01" title="错题资产工作区" description="先建立透明流程，不伪造 OCR 或 AI 结果。" />
-          <div className="pipeline-list">
-            {pipeline.map((step, index) => (
-              <article key={step.label}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <strong>{step.label}</strong>
-                <Badge tone={step.status === '未接入' ? 'amber' : 'neutral'}>{step.status}</Badge>
-              </article>
-            ))}
-          </div>
-        </section>
-        <section className="work-panel">
-          <WorkspaceLabel number="02" title="当前学生错题记录" />
-          {mistakeRecords.map((record) => (
-            <article className="evidence-row" key={record.id}>
-              <time>{formatDate(record.occurredAt)}</time>
-              <strong>{record.title}</strong>
-              <button className="link-button" onClick={() => editRecord(record)}>校正记录</button>
-            </article>
-          ))}
-          {!mistakeRecords.length ? <EmptyState>当前学生没有错题类型记录。</EmptyState> : null}
-        </section>
-        <section className="work-panel">
-          <WorkspaceLabel number="03" title="AI 任务状态" />
-          <div className="system-list">
-            <span><Sparkles size={16} />待处理 AI/OCR 任务：{overview.pendingAiTasks}</span>
-            <span><Database size={16} />原始附件仍保存在本地目录。</span>
-          </div>
-        </section>
-      </div>
+      <MistakesWorkspace
+        activeStudent={activeStudent}
+        records={records}
+        attachmentImport={attachmentImport}
+        aiResult={aiResult}
+        aiRunning={aiRunning}
+        confirmations={aiConfirmations}
+        onImportAttachment={importAttachment}
+        onSendAi={async (prompt) => {
+          setAiPrompt(prompt);
+          setActiveView('ai');
+          await runAiConsole(prompt);
+        }}
+        onConfirm={confirmAiItem}
+        onReject={rejectAiItem}
+        setStatus={setStatus}
+      />
     );
   }
 
   function renderSearchView() {
-    return (
-      <div className="split-workspace">
-        {renderStudentDirectory()}
-        <div className="stack">
-          {renderTimeline(true)}
-        </div>
-      </div>
-    );
+    const openStudentFromSearch = async (student: Student) => {
+      setStudentQuery('');
+      setStudents((await window.omniEdu?.listStudents('')) ?? []);
+      setActiveStudentId(student.id);
+      setActiveView('students');
+      setStatus(`已打开学生：${student.displayName}`);
+    };
+    const openRecordFromSearch = async (record: LearningRecord) => {
+      setStudentQuery('');
+      setRecordTypeFilter(''); setRecordSubjectFilter(''); setRecordTagFilter(''); setRecordKeyword(record.title); setRecordStartDate(''); setRecordEndDate('');
+      setStudents((await window.omniEdu?.listStudents('')) ?? []);
+      setActiveStudentId(record.studentId);
+      setActiveView('students');
+      setStatus(`已打开记录所属学生，时间线将定位到：${record.title}`);
+    };
+    return <GlobalSearchWorkspace setStatus={setStatus} onOpenStudent={openStudentFromSearch} onOpenRecord={openRecordFromSearch} />;
+  }
+
+  function renderQuestionNotebookView() {
+    return <QuestionNotebookWorkspace setStatus={setStatus} />;
+  }
+
+  function renderTeachingBookView() {
+    return <TeachingBookWorkspace setStatus={setStatus} />;
+  }
+
+  function renderTeacherNotebookView() {
+    return <TeacherNotebookWorkspace setStatus={setStatus} />;
+  }
+
+  function renderMemoryView() {
+    return <MemoryGovernanceWorkspace setStatus={setStatus} />;
+  }
+
+  function renderMasteryPathView() {
+    return <MasteryPathWorkspace activeStudent={activeStudent} setStatus={setStatus} onOpenAi={() => {
+      if (!activeStudent) return;
+      setAiPrompt(`请基于${activeStudent.displayName}现有学习证据，生成或调整学习路径草稿，并说明每个模块的依据。`);
+      setActiveView('ai');
+      setStatus('已打开小智并预填学习路径规划任务；提交后仍需教师确认才能写入。');
+    }} />;
   }
 
   function renderTeamView() {
@@ -2933,8 +2552,11 @@ export function App() {
   function renderAnalyticsView() {
     return (
       <div className="page-grid">
+        <div className="span-2">
+          <AiObservabilityWorkspace />
+        </div>
         <section className="work-panel span-2">
-          <WorkspaceLabel number="01" title="经营看板骨架" description="当前只展示已有本地聚合，不展示假趋势。" />
+          <WorkspaceLabel number="01" title="教师工作台概览" description="只展示已有本地聚合，不展示假趋势。" />
           <div className="pro-kpi-grid large">
             <ProKpiCard label="在读学生" value={overview.analytics.activeStudents} detail="当前可服务学生档案" trend="本地聚合" icon={<Users size={18} />} />
             <ProKpiCard label="学习记录" value={overview.analytics.totalRecords} detail="AI 中控台可检索证据" trend="可调用" icon={<ClipboardList size={18} />} />
@@ -2943,12 +2565,12 @@ export function App() {
           </div>
         </section>
         <section className="work-panel span-2">
-          <WorkspaceLabel number="02" title="AI 与知识库建设进度" description="看板需要覆盖 AI、知识库和图谱的真实建设状态。" />
+          <WorkspaceLabel number="02" title="AI 与知识资产状态" description="以下状态来自当前已接入的数据层、工具注册表和确认队列。" />
           <div className="capability-grid">
-            <article><Sparkles size={18} /><strong>AI 中控台</strong><span>一级入口已完成，工具调用待接入</span></article>
-            <article><FileSearch size={18} /><strong>老师知识库</strong><span>资源导入、解析队列和图谱骨架已完成</span></article>
-            <article><Database size={18} /><strong>知识图谱</strong><span>nodes / edges 数据表待落地</span></article>
-            <article><ListChecks size={18} /><strong>老师确认</strong><span>AI 写入动作需要确认队列</span></article>
+            <article><Sparkles size={18} /><strong>AI 中控台</strong><span>AgentLoop、按需工具、结构校验与运行审计已接入</span></article>
+            <article><FileSearch size={18} /><strong>老师知识库</strong><span>{knowledgeOverview.counts.resources} 个资源 · {knowledgeOverview.counts.chunks} 个切片</span></article>
+            <article><Database size={18} /><strong>知识图谱</strong><span>{knowledgeOverview.counts.nodes} 个节点 · {knowledgeOverview.counts.edges} 条边</span></article>
+            <article><ListChecks size={18} /><strong>老师确认</strong><span>{aiConfirmations.length} 个当前待确认动作</span></article>
           </div>
         </section>
         <section className="work-panel">
@@ -2964,30 +2586,11 @@ export function App() {
   }
 
   function renderSettingsView() {
-    const failedUsabilityReviews = aiUsabilityReviews
-      .filter((review) => review.needsRewrite || review.teacherScore <= 3 || review.mainIssueCode !== 'none')
-      .slice(0, 6);
-    const selectedReplayBeforeReview = aiUsabilityReviews.find((review) => review.id === selectedReplayBeforeReviewId);
     return (
       <div className="page-grid">
         <section className="work-panel span-2">
           <WorkspaceLabel number="01" title="本地数据与备份" description="本地优先，大附件不写入数据库。" />
-          <div className="path-box">{dataRoot}</div>
-          <div className="quick-actions">
-            <button className="secondary-action" onClick={async () => {
-              const result = await window.omniEdu?.exportDataRoot();
-              if (result) setStatus(`完整数据目录已备份：${result.exportPath}`);
-            }}><HardDrive size={17} />备份完整数据目录</button>
-            <button className="secondary-action" onClick={async () => {
-              if (!activeStudent) return;
-              const result = await window.omniEdu?.exportStudent(activeStudent.id);
-              if (result) setStatus(`已导出学生档案：${result.exportPath}`);
-            }}><FileText size={17} />导出当前学生</button>
-            <button className="secondary-action" onClick={() => activeStudent && window.omniEdu?.openStudentFolder(activeStudent.id)}>
-              <FolderOpen size={17} />
-              打开学生目录
-            </button>
-          </div>
+          <DataBackupPanel dataRoot={dataRoot} setStatus={setStatus} />
         </section>
         <section className="work-panel span-2">
           <WorkspaceLabel number="02" title="DeepSeek API 配置" description="API Key 只保存在本地设置中，界面不会回显明文。" />
@@ -3026,282 +2629,15 @@ export function App() {
           </div>
         </section>
         <section className="work-panel span-2">
-          <WorkspaceLabel
-            number="03"
-            title="小智质量评审"
-            description="人工评分、CSV 导入和失败样本回放都写入本地 SQLite，不用 proxy 样本冒充真实老师反馈。"
+          <AiQualityReviewWorkspace
+            model={deepSeekSettings.model}
+            setStatus={setStatus}
+            onReplayPrompt={(prompt, label) => {
+              setAiPrompt(prompt);
+              setActiveView('ai');
+              setStatus(`已把质量样本 ${label} 放入小智输入框，可重新运行对比。`);
+            }}
           />
-          <div className="usability-review-panel" data-testid="ai-usability-review-panel">
-            <div className="usability-review-summary">
-              <ProKpiCard
-                label="人工样本"
-                value={aiUsabilitySummary.sampleCount}
-                detail="来自 ai_usability_reviews，可被回归报告读取"
-                trend="humanUsability"
-                icon={<ListChecks size={18} />}
-              />
-              <ProKpiCard
-                label="平均评分"
-                value={aiUsabilitySummary.sampleCount ? `${aiUsabilitySummary.averageTeacherScore}/5` : '暂无'}
-                detail={`最低分 ${aiUsabilitySummary.minTeacherScore || '暂无'}，目标 >= 4/5`}
-                trend="teacherScore"
-                icon={<BarChart3 size={18} />}
-              />
-              <ProKpiCard
-                label="需重写"
-                value={aiUsabilitySummary.needsRewriteCount}
-                detail="needsRewrite 为 true 的样本会进入失败回放"
-                trend="rework"
-                icon={<ShieldCheck size={18} />}
-              />
-              <ProKpiCard
-                label="有用轮次"
-                value={aiUsabilitySummary.sampleCount ? aiUsabilitySummary.averageRoundsToUseful : '暂无'}
-                detail="目标：常见任务 1-2 轮内可用"
-                trend="roundsToUseful"
-                icon={<MessageSquare size={18} />}
-              />
-              <ProKpiCard
-                label="回放实验"
-                value={aiUsabilityReplaySummary.experimentCount}
-                detail={aiUsabilityReplaySummary.experimentCount ? `改善率 ${aiUsabilityReplaySummary.improvementRate}` : '尚未绑定 before/after'}
-                trend={`Δ分 ${aiUsabilityReplaySummary.averageScoreDelta}`}
-                icon={<Database size={18} />}
-              />
-              <ProKpiCard
-                label="模型 Grader"
-                value={aiModelGradeSummary.sampleCount}
-                detail={aiModelGradeSummary.sampleCount ? `通过 ${aiModelGradeSummary.passedCount}，失败 ${aiModelGradeSummary.failedCount}` : '尚未导入裁判样本'}
-                trend={`年级适切 ${aiModelGradeSummary.averageGradeAppropriatenessScore || '暂无'}`}
-                icon={<ShieldCheck size={18} />}
-              />
-            </div>
-
-            <div className="usability-review-workspace">
-              <div className="usability-review-form" data-testid="ai-usability-review-form">
-                <h3>单条评分录入</h3>
-                {selectedReplayBeforeReview ? (
-                  <div className="replay-before-banner" data-testid="selected-replay-before">
-                    <span>before 样本：{selectedReplayBeforeReview.sampleId} · {selectedReplayBeforeReview.teacherScore}/5 · {selectedReplayBeforeReview.mainIssueCode}</span>
-                    <button className="secondary-action compact-button" onClick={() => setSelectedReplayBeforeReviewId('')}>取消绑定</button>
-                  </div>
-                ) : null}
-                <div className="form-grid">
-                  <label>
-                    sampleId
-                    <input
-                      value={usabilityReviewForm.sampleId}
-                      placeholder="teacher_review_001"
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, sampleId: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    route
-                    <select
-                      value={usabilityReviewForm.route}
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, route: event.target.value as AiIntentRoute })}
-                    >
-                      {aiIntentRouteOptions.map((route) => (
-                        <option key={route} value={route}>{routeLabels[route]} · {route}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    subIntent
-                    <select
-                      value={String(usabilityReviewForm.subIntent)}
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, subIntent: event.target.value })}
-                    >
-                      {aiSubIntentOptions.map((subIntent) => (
-                        <option key={subIntent} value={subIntent}>{subIntent}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    teacherScore
-                    <input
-                      type="number"
-                      min={1}
-                      max={5}
-                      value={usabilityReviewForm.teacherScore}
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, teacherScore: Number(event.target.value) })}
-                    />
-                  </label>
-                  <label>
-                    roundsToUseful
-                    <input
-                      type="number"
-                      min={1}
-                      max={12}
-                      value={usabilityReviewForm.roundsToUseful}
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, roundsToUseful: Number(event.target.value) })}
-                    />
-                  </label>
-                  <label>
-                    mainIssueCode
-                    <input
-                      value={usabilityReviewForm.mainIssueCode}
-                      placeholder="none / evidence_gap / too_long"
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, mainIssueCode: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    model
-                    <input
-                      value={usabilityReviewForm.model ?? ''}
-                      placeholder={deepSeekSettings.model}
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, model: event.target.value })}
-                    />
-                  </label>
-                  <label>
-                    reviewedAt
-                    <input
-                      type="datetime-local"
-                      value={String(usabilityReviewForm.reviewedAt ?? '').slice(0, 16)}
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, reviewedAt: event.target.value })}
-                    />
-                  </label>
-                  <label className="full">
-                    prompt
-                    <textarea
-                      rows={3}
-                      value={usabilityReviewForm.prompt}
-                      placeholder="老师真实问小智的问题"
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, prompt: event.target.value })}
-                    />
-                  </label>
-                  <label className="full">
-                    teacherNote
-                    <textarea
-                      rows={3}
-                      value={usabilityReviewForm.teacherNote ?? ''}
-                      placeholder="老师为什么给这个分数，哪里需要改"
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, teacherNote: event.target.value })}
-                    />
-                  </label>
-                  <label className="checkbox-row full">
-                    <input
-                      type="checkbox"
-                      checked={Boolean(usabilityReviewForm.needsRewrite)}
-                      onChange={(event) => setUsabilityReviewForm({ ...usabilityReviewForm, needsRewrite: event.target.checked })}
-                    />
-                    这条回复需要老师明显重写
-                  </label>
-                  <button className="primary-action wide" onClick={submitAiUsabilityReview} data-testid="save-ai-usability-review">
-                    <CheckCircle2 size={16} />
-                    保存人工评分
-                  </button>
-                </div>
-              </div>
-
-              <div className="usability-review-import" data-testid="ai-usability-csv-import">
-                <h3>CSV / TSV 导入</h3>
-                <p>表头至少包含 sampleId、prompt、route、subIntent、teacherScore、needsRewrite、roundsToUseful、mainIssueCode。</p>
-                <input
-                  type="file"
-                  accept=".csv,.tsv,.txt"
-                  onChange={(event) => {
-                    const file = event.target.files?.[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = () => setUsabilityCsvText(String(reader.result ?? ''));
-                    reader.readAsText(file, 'utf-8');
-                    event.currentTarget.value = '';
-                  }}
-                />
-                <textarea
-                  rows={8}
-                  value={usabilityCsvText}
-                  placeholder="sampleId,prompt,route,subIntent,teacherScore,needsRewrite,roundsToUseful,mainIssueCode,teacherNote&#10;teacher_001,请看小A最近错题,student_diagnosis,student_progress,4,false,2,none,可直接使用"
-                  onChange={(event) => setUsabilityCsvText(event.target.value)}
-                />
-                <button className="secondary-action wide" disabled={usabilityImporting} onClick={importAiUsabilityCsv} data-testid="import-ai-usability-csv">
-                  <UploadCloud size={16} />
-                  {usabilityImporting ? '导入中' : '导入评分 CSV'}
-                </button>
-              </div>
-            </div>
-
-            <div className="usability-review-failures" data-testid="ai-usability-failure-replay">
-              <div className="section-subhead">
-                <h3>失败样本回放</h3>
-                <span>低分、需重写或 issueCode 非 none 的样本会出现在这里。</span>
-              </div>
-              {failedUsabilityReviews.length ? failedUsabilityReviews.map((review) => (
-                <article key={review.id}>
-                  <div>
-                    <strong>{review.sampleId}</strong>
-                    <span>{routeLabels[review.route] ?? review.route} · {review.subIntent} · {review.teacherScore}/5 · {review.mainIssueCode}</span>
-                    <p>{review.prompt}</p>
-                  </div>
-                  <div className="failure-actions">
-                    <button className="secondary-action compact-button" onClick={() => replayAiUsabilityReview(review)}>
-                      回放到 AI 输入
-                    </button>
-                    <button className="secondary-action compact-button" onClick={() => selectReplayBeforeReview(review)} data-testid="select-replay-before">
-                      设为 before
-                    </button>
-                  </div>
-                </article>
-              )) : (
-                <div className="empty-state">暂无失败样本。导入低分或需重写样本后，可一键放回 AI 输入框重新验证。</div>
-              )}
-            </div>
-            <div className="usability-review-failures" data-testid="ai-usability-replay-experiments">
-              <div className="section-subhead">
-                <h3>before/after 回放实验</h3>
-                <span>每条实验都来自两条真实 ai_usability_reviews，delta 由 SQLite join 回读计算。</span>
-              </div>
-              {aiUsabilityReplayExperiments.length ? aiUsabilityReplayExperiments.map((experiment) => (
-                <article key={experiment.id}>
-                  <div>
-                    <strong>{experiment.improved ? '已改善' : '未完全改善'} · Δ{experiment.scoreDelta}/5</strong>
-                    <span>{experiment.issueBefore} → {experiment.issueAfter} · 有用轮次 Δ{experiment.roundsDelta} · {experiment.modelBefore || 'unknown'} → {experiment.modelAfter || 'unknown'}</span>
-                    <p>{experiment.replayPrompt}</p>
-                  </div>
-                  <button
-                    className="secondary-action compact-button"
-                    onClick={() => {
-                      setAiPrompt(experiment.replayPrompt);
-                      setActiveView('ai');
-                      setStatus(`已把 replay experiment ${experiment.id} 的 prompt 放入小智输入框。`);
-                    }}
-                  >
-                    再次回放
-                  </button>
-                </article>
-              )) : (
-                <div className="empty-state">暂无 before/after 实验。先在失败样本中点击“设为 before”，再保存改进后的人工评分。</div>
-              )}
-            </div>
-            <div className="usability-review-failures" data-testid="ai-model-grader-panel">
-              <div className="section-subhead">
-                <h3>模型 Grader 裁判样本</h3>
-                <span>用于复核证据、可执行性、安全、年级适切、简洁和老师控制权；无样本时回归报告只 warning。</span>
-              </div>
-              {aiModelGrades.length ? aiModelGrades.slice(0, 6).map((grade) => (
-                <article key={grade.id}>
-                  <div>
-                    <strong>{grade.passed ? '通过' : '未通过'} · {grade.overallScore}/5 · {grade.sampleId}</strong>
-                    <span>{routeLabels[grade.route] ?? grade.route} · {grade.subIntent} · {grade.graderMode} · 年级适切 {grade.gradeAppropriatenessScore}/5</span>
-                    <p>{grade.issueCodes.length ? `issues: ${grade.issueCodes.join(', ')}` : grade.graderRationale}</p>
-                  </div>
-                  <button
-                    className="secondary-action compact-button"
-                    onClick={() => {
-                      setAiPrompt(grade.prompt);
-                      setActiveView('ai');
-                      setStatus(`已把模型 grader 样本 ${grade.sampleId} 的 prompt 放入小智输入框。`);
-                    }}
-                  >
-                    回放 prompt
-                  </button>
-                </article>
-              )) : (
-                <div className="empty-state">暂无模型 grader 样本。后续 live / LLM-as-judge 输出应写入 ai_model_grades，而不是只保存在脚本日志。</div>
-              )}
-            </div>
-          </div>
         </section>
         <section className="work-panel span-2">
           <WorkspaceLabel
@@ -3366,10 +2702,15 @@ export function App() {
     if (activeView === 'ai') return renderAIConsoleViewV2();
     if (activeView === 'knowledge') return renderKnowledgeBaseView();
     if (activeView === 'students') return renderStudentsView();
+    if (activeView === 'mastery') return renderMasteryPathView();
     if (activeView === 'intake') return renderIntakeView();
     if (activeView === 'mistakes') return renderMistakesView();
-    if (activeView === 'review') return renderReviewEditor();
+    if (activeView === 'review') return <ReviewReportWorkspace activeStudent={activeStudent} records={records} reports={reports} selectedReportId={reviewReportSelectionId} onReportsChanged={(nextReports) => { setReports(nextReports); void refreshOverview(); }} setStatus={setStatus} />;
     if (activeView === 'search') return renderSearchView();
+    if (activeView === 'question_notebook') return renderQuestionNotebookView();
+    if (activeView === 'notebook') return renderTeacherNotebookView();
+    if (activeView === 'book') return renderTeachingBookView();
+    if (activeView === 'memory') return renderMemoryView();
     if (activeView === 'team') return renderTeamView();
     if (activeView === 'analytics') return renderAnalyticsView();
     return renderSettingsView();
@@ -3387,7 +2728,7 @@ export function App() {
         </div>
         <nav>
           {navItems.map((item) => (
-            <button key={item.key} className={activeView === item.key ? 'active' : ''} onClick={() => setActiveView(item.key)}>
+            <button key={item.key} data-testid={`nav-${item.key}`} className={activeView === item.key ? 'active' : ''} onClick={() => setActiveView(item.key)}>
               {item.icon}
               <span>{item.label}</span>
             </button>
@@ -3402,13 +2743,7 @@ export function App() {
             <h1>{navItems.find((item) => item.key === activeView)?.label}</h1>
           </div>
           <div className="toolbar">
-            <IconButton label="打开学生目录" onClick={() => activeStudent && window.omniEdu?.openStudentFolder(activeStudent.id)}><FolderOpen size={18} /></IconButton>
-            <button className="secondary-action" onClick={loadActiveStudentForEdit}><Users size={17} />编辑学生</button>
-            <button className="secondary-action" onClick={async () => {
-              if (!activeStudent) return;
-              setStudents((await window.omniEdu?.archiveStudent(activeStudent.id)) ?? []);
-              setStatus('学生已归档，资料未物理删除。');
-            }}><Archive size={17} />归档</button>
+            <button data-testid="topbar-student-workspace" className="secondary-action" onClick={() => setActiveView('students')}><Users size={17} />学生档案</button>
           </div>
         </header>
         {renderCurrentView()}

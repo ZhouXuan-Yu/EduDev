@@ -7,6 +7,7 @@ import type {
   AiStructuredReply,
   AiStructuredRisk,
 } from '../../shared/contracts';
+import { jsonrepair } from 'jsonrepair';
 import { structuredReplyToTeacherMarkdown } from './usability-policy';
 
 const ARTIFACT_TYPES = new Set(['markdown', 'pdf', 'docx', 'exercise_set', 'report_draft']);
@@ -79,6 +80,72 @@ function hasTripletShape(answerMarkdown: string) {
   return /原题/.test(answerMarkdown) && /相似题/.test(answerMarkdown) && /变式题/.test(answerMarkdown);
 }
 
+function extractJsonObject(raw: string): { value?: unknown; extracted: boolean } {
+  const text = String(raw ?? '')
+    .replace(/^\uFEFF/, '')
+    .replace(/^\s*```(?:json)?\s*/i, '')
+    .replace(/\s*```\s*$/i, '')
+    .trim();
+  const candidates = [text];
+  let start = -1;
+  let depth = 0;
+  let inString = false;
+  let escaped = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (char === '\\') escaped = true;
+      else if (char === '"') inString = false;
+      continue;
+    }
+    if (char === '"') { inString = true; continue; }
+    if (char === '{') { if (start < 0) start = index; depth += 1; }
+    else if (char === '}' && start >= 0) {
+      depth -= 1;
+      if (depth === 0) {
+        candidates.push(text.slice(start, index + 1));
+        // Keep scanning. Some providers prepend a small JSON metadata object
+        // before the actual reply; the contract object should win if present.
+        start = -1;
+      }
+    }
+  }
+  const firstBrace = text.indexOf('{');
+  const lastBrace = text.lastIndexOf('}');
+  if (firstBrace >= 0 && lastBrace > firstBrace) {
+    candidates.push(text.slice(firstBrace, lastBrace + 1));
+  }
+  const uniqueCandidates = [...new Set(candidates)];
+  let firstParsed: unknown;
+  for (const candidate of uniqueCandidates) {
+    try {
+      const value = JSON.parse(candidate) as unknown;
+      firstParsed ??= value;
+      if (value && typeof value === 'object' && (value as Record<string, unknown>).schemaVersion === 'xiazhi.reply.v2') {
+        return { value, extracted: candidate !== text };
+      }
+    } catch { /* try next bounded candidate */ }
+  }
+  // Provider JSON mode is a hint rather than a guarantee. Repair only a
+  // bounded, complete object envelope, then run the exact same xiazhi.reply.v2
+  // semantic validation below. This handles common LLM syntax drift such as a
+  // trailing comma or a raw newline without accepting truncated JSON or
+  // inventing contract fields.
+  for (const candidate of uniqueCandidates) {
+    const bounded = candidate.trim();
+    if (bounded.length > 64_000 || !bounded.startsWith('{') || !bounded.endsWith('}')) continue;
+    try {
+      const value = JSON.parse(jsonrepair(bounded)) as unknown;
+      firstParsed ??= value;
+      if (value && typeof value === 'object' && (value as Record<string, unknown>).schemaVersion === 'xiazhi.reply.v2') {
+        return { value, extracted: true };
+      }
+    } catch { /* retain fail-closed behavior */ }
+  }
+  return firstParsed === undefined ? { extracted: false } : { value: firstParsed, extracted: true };
+}
+
 function validateRouteSpecific(reply: AiStructuredReply, router: AiRouterDecision) {
   const errors: string[] = [];
   const needsEvidenceBoundaries = router.route === 'student_diagnosis'
@@ -107,12 +174,18 @@ function validateRouteSpecific(reply: AiStructuredReply, router: AiRouterDecisio
 
 export function parseStructuredReply(raw: string, router: AiRouterDecision): { reply?: AiStructuredReply; errors: string[] } {
   const errors: string[] = [];
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(raw);
-  } catch {
+  const extracted = extractJsonObject(raw);
+  const parsed = extracted.value;
+  if (parsed === undefined) {
+    const normalized = raw.replace(/^\uFEFF/, '').trim();
+    if (!normalized) return { errors: ['模型没有返回 JSON content。'] };
+    if (normalized.startsWith('{') && !normalized.endsWith('}')) {
+      return { errors: ['模型返回的 JSON 不完整，可能因输出长度上限被截断。'] };
+    }
     return { errors: ['模型没有返回合法 JSON。'] };
   }
+  // Fenced/prose-wrapped JSON is normalized locally; the wrapper itself is not
+  // a contract error because the object still undergoes the same validation.
 
   if (!parsed || typeof parsed !== 'object') return { errors: ['模型返回不是 JSON object。'] };
   const value = parsed as Record<string, unknown>;

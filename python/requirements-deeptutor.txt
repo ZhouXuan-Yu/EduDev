@@ -1,0 +1,4 @@
+# DeepTutor AgentLoop client seam used by the vendored runtime.
+# DeepTutor production support is Python 3.11-3.13; local Python 3.14 is only
+# a smoke-test environment and is not the deployment baseline.
+openai>=2.53,<3

@@ -7,11 +7,18 @@ import type {
   Attachment,
   AttachmentImportItem,
   AttachmentImportResult,
+  DataBackupVerificationResult,
   AiConfirmationCreateInput,
   AiConfirmationDecisionResult,
   AiConfirmationItem,
   AiConfirmationPayload,
   AiConfirmationStatus,
+  AiCapabilityCheckpoint,
+  AiCapabilityCheckpointStatus,
+  AiMasteryQuestion,
+  AiMasteryQuestionStatus,
+  AiMasteryPath,
+  AiMasteryPathModule,
   AiAgentEvent,
   AiAgentRun,
   AiAgentRunStatus,
@@ -31,6 +38,26 @@ import type {
   AiModelGrade,
   AiModelGradeInput,
   AiModelGradeSummary,
+  AiMemoryTraceSummary,
+  AiMemoryDocument,
+  AiMemoryDocumentDetail,
+  AiMemoryEntry,
+  AiMemoryEntryInput,
+  AiMemoryEntryUpdateInput,
+  AiMemoryRevision,
+  AiMemorySurface,
+  AiMemorySummaryDraft,
+  AiMemoryL3Document,
+  AiMemoryL3DocumentDetail,
+  AiMemoryL3Draft,
+  AiMemoryL3Entry,
+  AiMemoryL3EntryInput,
+  AiMemoryL3EntryUpdateInput,
+  AiMemoryL3Slot,
+  AiMemoryEvidenceGraph,
+  AiMemoryGraphEdge,
+  AiMemoryGraphNode,
+  AiMemoryGovernanceReport,
   AiModelGraderMode,
   AiRegressionGate,
   AiRegressionGateStatus,
@@ -67,6 +94,32 @@ import type {
   LearningRecordFilters,
   LearningRecordInput,
   LearningRecordUpdateInput,
+  TeacherNotebook,
+  TeacherNotebookInput,
+  TeacherNotebookRecord,
+  TeacherNotebookRecordInput,
+  TeacherNotebookRecordUpdateInput,
+  TeacherNotebookUpdateInput,
+  TeachingBook,
+  TeachingBookBlock,
+  TeachingBookBlockInput,
+  TeachingBookChapter,
+  TeachingBookChapterInput,
+  TeachingBookDetail,
+  TeachingBookHealth,
+  TeachingBookInvalidation,
+  TeachingBookPatch,
+  TeachingBookPatchInput,
+  TeachingBookSelectionPatchInput,
+  TeachingBookInput,
+  TeachingBookPage,
+  TeachingBookPageInput,
+  TeachingBookSourceInput,
+  TeachingBookUpdateInput,
+  TeachingSourceRef,
+  TeachingBlockStatus,
+  TeachingBookStatus,
+  TeachingPageStatus,
   MistakeImageAnalysis,
   MistakeImageAnalysisInput,
   MistakeImageCorrectionInput,
@@ -75,6 +128,15 @@ import type {
   PlatformOverview,
   QuestionBankItem,
   QuestionBankItemInput,
+  QuestionNotebookBookmarkInput,
+  QuestionNotebookCategory,
+  QuestionNotebookCategoryInput,
+  QuestionNotebookCategoryUpdateInput,
+  QuestionNotebookEntry,
+  QuestionNotebookFilters,
+  QuestionNotebookListResult,
+  QuestionNotebookUsage,
+  QuestionNotebookUsageInput,
   QuestionSearchFilters,
   SanitizedProblemText,
   ResourceChunk,
@@ -93,9 +155,44 @@ const DEFAULT_RECORD_PAGE_SIZE = 100;
 const MAX_RECORD_PAGE_SIZE = 500;
 const FTS_MATCH_LIMIT = 500;
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
+const AI_MEMORY_SURFACES: AiMemorySurface[] = ['chat', 'notebook', 'quiz', 'kb', 'book', 'partner', 'cowriter'];
+const AI_MEMORY_L3_SLOTS: AiMemoryL3Slot[] = ['recent', 'profile', 'scope', 'preferences'];
+const AI_MEMORY_TEXT_MAX = 1_000;
+const AI_MEMORY_REF_MAX = 8;
+
+function assertAiMemorySurface(surface: string): asserts surface is AiMemorySurface {
+  if (!AI_MEMORY_SURFACES.includes(surface as AiMemorySurface)) {
+    throw new Error('L2 memory surface invalid');
+  }
+}
+
+function assertAiMemoryL3Slot(slot: string): asserts slot is AiMemoryL3Slot {
+  if (!AI_MEMORY_L3_SLOTS.includes(slot as AiMemoryL3Slot)) throw new Error(`invalid L3 slot: ${slot}`);
+}
+
+function normalizeMemoryText(text: string) {
+  const normalized = String(text ?? '').replace(/\s+/g, ' ').trim();
+  if (!normalized) throw new Error('L2 memory text cannot be empty');
+  if (normalized.length > AI_MEMORY_TEXT_MAX) throw new Error('L2 memory text exceeds 1000 characters');
+  const banned = ['always', 'never', 'mastered', 'expert in', '总是', '从来不', '完全掌握', '专家'];
+  if (banned.some((phrase) => normalized.toLowerCase().includes(phrase.toLowerCase()))) {
+    throw new Error('L2 memory text contains an absolute claim');
+  }
+  return normalized;
+}
 
 function now() {
   return new Date().toISOString();
+}
+
+function parseJsonObject(value: unknown): Record<string, unknown> {
+  if (typeof value !== 'string' || !value.trim()) return {};
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed as Record<string, unknown> : {};
+  } catch {
+    return {};
+  }
 }
 
 function normalizeIsoDate(value?: string) {
@@ -263,6 +360,11 @@ function jsonObject(value: unknown): Record<string, unknown> {
   }
 }
 
+function inputObject(value: unknown): Record<string, unknown> {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>;
+  return jsonObject(value);
+}
+
 function jsonUnknownArray(value: unknown): unknown[] {
   if (Array.isArray(value)) return value;
   if (typeof value !== 'string') return [];
@@ -277,6 +379,20 @@ function jsonUnknownArray(value: unknown): unknown[] {
 function parseAiConfirmationPayload(value: unknown): AiConfirmationPayload {
   const parsed = jsonObject(value);
   const exerciseSet = parseExerciseSetDraftPayload(parsed.exerciseSet);
+  const rawAssessment = parsed.masteryAssessment && typeof parsed.masteryAssessment === 'object' ? parsed.masteryAssessment as Record<string, unknown> : undefined;
+  const rawPath = parsed.masteryPath && typeof parsed.masteryPath === 'object' ? parsed.masteryPath as Record<string, unknown> : undefined;
+  const masteryAssessment = rawAssessment?.knowledgePointId && rawAssessment.knowledgePointName
+    ? {
+        knowledgePointId: String(rawAssessment.knowledgePointId),
+        knowledgePointName: String(rawAssessment.knowledgePointName),
+        knowledgeType: rawAssessment.knowledgeType === 'design' ? 'design' as const : 'concept' as const,
+        passed: rawAssessment.passed === true,
+        feedback: String(rawAssessment.feedback ?? ''),
+      }
+    : undefined;
+  const masteryPath = rawPath && Array.isArray(rawPath.modules)
+    ? { mode: rawPath.mode === 'append' ? 'append' as const : 'replace' as const, modules: rawPath.modules as AiMasteryPathModule[] }
+    : undefined;
   return {
     studentId: String(parsed.studentId ?? ''),
     subject: String(parsed.subject ?? ''),
@@ -288,6 +404,9 @@ function parseAiConfirmationPayload(value: unknown): AiConfirmationPayload {
     parentSummary: String(parsed.parentSummary ?? ''),
     sourceRecordIds: Array.isArray(parsed.sourceRecordIds) ? parsed.sourceRecordIds.map(String) : [],
     exerciseSet,
+    masteryOperation: parsed.masteryOperation === 'assess' || parsed.masteryOperation === 'build' ? parsed.masteryOperation : undefined,
+    masteryAssessment,
+    masteryPath,
   };
 }
 
@@ -488,32 +607,35 @@ function escapeXml(value: string) {
     .replace(/'/g, '&apos;');
 }
 
-function escapePdfText(value: string) {
-  return value
-    .replace(/\\/g, '\\\\')
-    .replace(/\(/g, '\\(')
-    .replace(/\)/g, '\\)')
-    .replace(/[^\x20-\x7E]/g, '?');
+function utf16beHex(value: string) {
+  const utf16le = Buffer.from(value, 'utf16le');
+  const bytes = Buffer.alloc(utf16le.length);
+  for (let index = 0; index < utf16le.length; index += 2) {
+    bytes[index] = utf16le[index + 1] ?? 0;
+    bytes[index + 1] = utf16le[index] ?? 0;
+  }
+  return `FEFF${bytes.toString('hex').toUpperCase()}`;
 }
 
 function createPdfBuffer(title: string, markdown: string) {
   const lines = [`${title}`, ...markdownToPlainText(markdown).split('\n')]
-    .flatMap((line) => line.match(/.{1,86}/g) ?? [''])
-    .slice(0, 42);
+    .flatMap((line) => line.match(/.{1,44}/gu) ?? [''])
+    .slice(0, 48);
   const commands = [
     'BT',
     '/F1 11 Tf',
     '50 790 Td',
-    '14 TL',
-    ...lines.map((line, index) => `${index === 0 ? '' : 'T* '}(${escapePdfText(line)}) Tj`),
+    '16 TL',
+    ...lines.map((line, index) => `${index === 0 ? '' : 'T* '}<${utf16beHex(line)}> Tj`),
     'ET',
   ].join('\n');
   const objects = [
     '<< /Type /Catalog /Pages 2 0 R >>',
     '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
-    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>',
     `<< /Length ${Buffer.byteLength(commands, 'utf8')} >>\nstream\n${commands}\nendstream`,
+    '<< /Type /Font /Subtype /Type0 /BaseFont /STSong-Light /Encoding /UniGB-UCS2-H /DescendantFonts [6 0 R] >>',
+    '<< /Type /Font /Subtype /CIDFontType0 /BaseFont /STSong-Light /CIDSystemInfo << /Registry (Adobe) /Ordering (GB1) /Supplement 4 >> /DW 1000 >>',
   ];
   const chunks: string[] = ['%PDF-1.4\n'];
   const offsets = [0];
@@ -608,14 +730,60 @@ function createZipBuffer(entries: { name: string; data: Buffer }[]) {
   return Buffer.concat([localFiles, centralDirectory, end]);
 }
 
+function markdownToDocxBlocks(title: string, markdown: string) {
+  const blocks: Array<{ text: string; style: string }> = [{ text: title, style: 'Title' }];
+  let inCode = false;
+  for (const rawLine of markdown.replace(/\r\n/g, '\n').split('\n')) {
+    const line = rawLine.trimEnd();
+    if (line.trim().startsWith('```')) {
+      inCode = !inCode;
+      continue;
+    }
+    if (!line.trim()) continue;
+    if (inCode) {
+      blocks.push({ text: line, style: 'Code' });
+      continue;
+    }
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      blocks.push({ text: heading[2].replace(/[\*_`~]/g, ''), style: `Heading${heading[1].length}` });
+      continue;
+    }
+    const bullet = line.match(/^\s*[-*]\s+(.+)$/);
+    if (bullet) {
+      blocks.push({ text: bullet[1], style: 'ListBullet' });
+      continue;
+    }
+    const numbered = line.match(/^\s*\d+[.)]\s+(.+)$/);
+    if (numbered) {
+      blocks.push({ text: numbered[1], style: 'ListNumber' });
+      continue;
+    }
+    const quote = line.match(/^\s*>\s+(.+)$/);
+    blocks.push({ text: quote ? quote[1] : line, style: quote ? 'Quote' : 'Normal' });
+  }
+  return blocks;
+}
+
 function createDocxBuffer(title: string, markdown: string) {
-  const paragraphs = [title, ...markdownToPlainText(markdown).split('\n')]
-    .map((line) => `<w:p><w:r><w:t xml:space="preserve">${escapeXml(line)}</w:t></w:r></w:p>`)
+  const paragraphs = markdownToDocxBlocks(title, markdown)
+    .map((block) => `<w:p><w:pPr><w:pStyle w:val="${block.style}"/></w:pPr><w:r><w:t xml:space="preserve">${escapeXml(block.text)}</w:t></w:r></w:p>`)
     .join('');
   const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
   <w:body>${paragraphs}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1440" w:right="1440" w:bottom="1440" w:left="1440"/></w:sectPr></w:body>
 </w:document>`;
+  const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+  <w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:pPr><w:jc w:val="center"/></w:pPr><w:rPr><w:b/><w:sz w:val="32"/></w:rPr></w:style>
+  <w:style w:type="paragraph" w:styleId="Heading1"><w:name w:val="heading 1"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:sz w:val="28"/></w:rPr></w:style>
+  <w:style w:type="paragraph" w:styleId="Heading2"><w:name w:val="heading 2"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:sz w:val="24"/></w:rPr></w:style>
+  <w:style w:type="paragraph" w:styleId="Heading3"><w:name w:val="heading 3"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:rPr><w:b/><w:sz w:val="20"/></w:rPr></w:style>
+  <w:style w:type="paragraph" w:styleId="Code"><w:name w:val="Code"/><w:basedOn w:val="Normal"/><w:rPr><w:rFonts w:ascii="Consolas" w:hAnsi="Consolas"/><w:shd w:fill="F3F4F6"/></w:rPr></w:style>
+  <w:style w:type="paragraph" w:styleId="Quote"><w:name w:val="Quote"/><w:basedOn w:val="Normal"/><w:pPr><w:ind w:left="720"/></w:pPr><w:rPr><w:i/></w:rPr></w:style>
+  <w:style w:type="paragraph" w:styleId="ListBullet"><w:name w:val="List Bullet"/><w:basedOn w:val="Normal"/><w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr></w:style>
+  <w:style w:type="paragraph" w:styleId="ListNumber"><w:name w:val="List Number"/><w:basedOn w:val="Normal"/><w:pPr><w:ind w:left="720" w:hanging="360"/></w:pPr></w:style>
+</w:styles>`;
   return createZipBuffer([
     {
       name: '[Content_Types].xml',
@@ -624,6 +792,7 @@ function createDocxBuffer(title: string, markdown: string) {
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+  <Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>
 </Types>`, 'utf8'),
     },
     {
@@ -633,7 +802,15 @@ function createDocxBuffer(title: string, markdown: string) {
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
 </Relationships>`, 'utf8'),
     },
+    {
+      name: 'word/_rels/document.xml.rels',
+      data: Buffer.from(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`, 'utf8'),
+    },
     { name: 'word/document.xml', data: Buffer.from(documentXml, 'utf8') },
+    { name: 'word/styles.xml', data: Buffer.from(stylesXml, 'utf8') },
   ]);
 }
 
@@ -694,6 +871,7 @@ function emptyUsabilityReplaySummary(): AiUsabilityReplaySummary {
     experimentCount: 0,
     improvedCount: 0,
     unresolvedCount: 0,
+    liveLinkedCount: 0,
     improvementRate: 0,
     averageScoreDelta: 0,
     averageRoundsDelta: 0,
@@ -710,8 +888,11 @@ function emptyModelGradeSummary(): AiModelGradeSummary {
     averageOverallScore: 0,
     minOverallScore: 0,
     averageGradeAppropriatenessScore: 0,
+    runLinkedCount: 0,
+    tokenKnownCount: 0,
     issueCounts: {},
     graderModeCounts: {},
+    promptVersionCounts: {},
     latestReviewedAt: '',
   };
 }
@@ -803,6 +984,7 @@ function parseTelemetrySnapshot(value: unknown): AiTelemetrySnapshot {
       experimentCount: toNumber(usabilityReplay.experimentCount),
       improvedCount: toNumber(usabilityReplay.improvedCount),
       unresolvedCount: toNumber(usabilityReplay.unresolvedCount),
+      liveLinkedCount: toNumber(usabilityReplay.liveLinkedCount),
       improvementRate: toNumber(usabilityReplay.improvementRate),
       averageScoreDelta: toNumber(usabilityReplay.averageScoreDelta),
       averageRoundsDelta: toNumber(usabilityReplay.averageRoundsDelta),
@@ -816,8 +998,11 @@ function parseTelemetrySnapshot(value: unknown): AiTelemetrySnapshot {
       averageOverallScore: toNumber(modelGrader.averageOverallScore),
       minOverallScore: toNumber(modelGrader.minOverallScore),
       averageGradeAppropriatenessScore: toNumber(modelGrader.averageGradeAppropriatenessScore),
+      runLinkedCount: toNumber(modelGrader.runLinkedCount),
+      tokenKnownCount: toNumber(modelGrader.tokenKnownCount),
       issueCounts: counts(modelGrader.issueCounts),
       graderModeCounts: counts(modelGrader.graderModeCounts),
+      promptVersionCounts: counts(modelGrader.promptVersionCounts),
       latestReviewedAt: String(modelGrader.latestReviewedAt ?? ''),
     },
   };
@@ -850,6 +1035,15 @@ function parseRegressionGates(value: unknown): AiRegressionGate[] {
 export class OmniEduStore {
   private db!: sqlite3.Database;
   private dbPath: string;
+  /**
+   * Event sequence allocation is a read-then-write operation.  Sidecar events,
+   * host checkpoints, and model observations can arrive concurrently for one
+   * run, so serialize only that run's allocation instead of relying on a
+   * racy MAX(sequence) query.
+   */
+  private readonly aiAgentEventLocks = new Map<string, Promise<void>>();
+  private continuationClaimQueue: Promise<void> = Promise.resolve();
+  private aiAgentActionQueue: Promise<void> = Promise.resolve();
 
   constructor(private dataRoot: string) {
     this.dbPath = join(dataRoot, 'app.db');
@@ -1162,6 +1356,98 @@ export class OmniEduStore {
     await this.touchStudent(studentId);
     await this.upsertRecordFts(recordId);
     return this.listRecords(studentId);
+  }
+
+  async createTeacherNotebook(input: TeacherNotebookInput): Promise<TeacherNotebook> {
+    const name = requireNonEmpty(input.name, '教师备课本名称不能为空').slice(0, 160);
+    const id = `notebook_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO teacher_notebooks (id, name, description, color, icon, status, version, created_at, updated_at, deleted_at)
+       VALUES (?, ?, ?, ?, ?, 'active', 1, ?, ?, '')`,
+      [id, name, String(input.description ?? '').trim().slice(0, 2_000), String(input.color ?? '#3B82F6').slice(0, 32), String(input.icon ?? 'book').slice(0, 64), timestamp, timestamp],
+    );
+    return this.getTeacherNotebookOrThrow(id);
+  }
+
+  async listTeacherNotebooks(includeDeleted = false): Promise<TeacherNotebook[]> {
+    const rows = await this.all(
+      `SELECT n.*, COUNT(r.id) AS record_count
+         FROM teacher_notebooks n
+         LEFT JOIN teacher_notebook_records r ON r.notebook_id = n.id AND r.deleted_at = ''
+        ${includeDeleted ? '' : `WHERE n.status = 'active'`}
+        GROUP BY n.id
+        ORDER BY n.updated_at DESC`,
+    );
+    return rows.map((row) => this.mapTeacherNotebook(row));
+  }
+
+  async updateTeacherNotebook(id: string, input: TeacherNotebookUpdateInput): Promise<TeacherNotebook> {
+    const version = Math.max(1, Math.trunc(Number(input.version)));
+    const timestamp = now();
+    const result = await this.runWithChanges(
+      `UPDATE teacher_notebooks
+          SET name = COALESCE(?, name), description = COALESCE(?, description), color = COALESCE(?, color), icon = COALESCE(?, icon), version = version + 1, updated_at = ?
+        WHERE id = ? AND status = 'active' AND version = ?`,
+      [input.name == null ? null : requireNonEmpty(input.name, '教师备课本名称不能为空').slice(0, 160), input.description == null ? null : String(input.description).trim().slice(0, 2_000), input.color == null ? null : String(input.color).slice(0, 32), input.icon == null ? null : String(input.icon).slice(0, 64), timestamp, id, version],
+    );
+    if (!result) throw new Error('备课本不存在、已删除或版本冲突，请刷新后重试');
+    return this.getTeacherNotebookOrThrow(id);
+  }
+
+  async deleteTeacherNotebook(id: string): Promise<TeacherNotebook> {
+    const timestamp = now();
+    const changed = await this.runWithChanges(`UPDATE teacher_notebooks SET status = 'deleted', version = version + 1, updated_at = ?, deleted_at = ? WHERE id = ? AND status = 'active'`, [timestamp, timestamp, id]);
+    if (!changed) throw new Error('备课本不存在或已删除');
+    return this.getTeacherNotebookOrThrow(id);
+  }
+
+  async restoreTeacherNotebook(id: string): Promise<TeacherNotebook> {
+    const changed = await this.runWithChanges(`UPDATE teacher_notebooks SET status = 'active', version = version + 1, updated_at = ?, deleted_at = '' WHERE id = ? AND status = 'deleted'`, [now(), id]);
+    if (!changed) throw new Error('备课本不存在或未删除');
+    return this.getTeacherNotebookOrThrow(id);
+  }
+
+  async listTeacherNotebookRecords(notebookId: string, includeDeleted = false): Promise<TeacherNotebookRecord[]> {
+    const rows = await this.all(`SELECT * FROM teacher_notebook_records WHERE notebook_id = ? ${includeDeleted ? '' : `AND deleted_at = ''`} ORDER BY created_at ASC`, [notebookId]);
+    return rows.map((row) => this.mapTeacherNotebookRecord(row));
+  }
+
+  async addTeacherNotebookRecord(input: TeacherNotebookRecordInput): Promise<TeacherNotebookRecord> {
+    const notebook = await this.getTeacherNotebook(input.notebookId);
+    if (!notebook || notebook.status !== 'active') throw new Error('备课本不存在或已删除');
+    const allowedTypes = new Set(['solve', 'question', 'research', 'chat', 'co_writer', 'tutorbot', 'guided_learning']);
+    if (!allowedTypes.has(input.recordType)) throw new Error('不支持的备课本记录类型');
+    const id = `notebook_record_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO teacher_notebook_records (id, notebook_id, record_type, title, summary, user_query, output, metadata_json, version, created_at, updated_at, deleted_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, '')`,
+      [id, input.notebookId, input.recordType, requireNonEmpty(input.title, '笔记标题不能为空').slice(0, 240), String(input.summary ?? '').trim().slice(0, 2_000), String(input.userQuery ?? '').trim().slice(0, 4_000), String(input.output ?? '').slice(0, 100_000), JSON.stringify(input.metadata ?? {}), timestamp, timestamp],
+    );
+    await this.run(`UPDATE teacher_notebooks SET version = version + 1, updated_at = ? WHERE id = ?`, [timestamp, input.notebookId]);
+    return this.getTeacherNotebookRecordOrThrow(id);
+  }
+
+  async updateTeacherNotebookRecord(id: string, input: TeacherNotebookRecordUpdateInput): Promise<TeacherNotebookRecord> {
+    const version = Math.max(1, Math.trunc(Number(input.version)));
+    const changed = await this.runWithChanges(
+      `UPDATE teacher_notebook_records
+          SET record_type = COALESCE(?, record_type), title = COALESCE(?, title), summary = COALESCE(?, summary), user_query = COALESCE(?, user_query), output = COALESCE(?, output), metadata_json = COALESCE(?, metadata_json), version = version + 1, updated_at = ?
+        WHERE id = ? AND deleted_at = '' AND version = ?`,
+      [input.recordType ?? null, input.title == null ? null : requireNonEmpty(input.title, '笔记标题不能为空').slice(0, 240), input.summary == null ? null : String(input.summary).trim().slice(0, 2_000), input.userQuery == null ? null : String(input.userQuery).trim().slice(0, 4_000), input.output == null ? null : String(input.output).slice(0, 100_000), input.metadata == null ? null : JSON.stringify(input.metadata), now(), id, version],
+    );
+    if (!changed) throw new Error('笔记不存在、已删除或版本冲突，请刷新后重试');
+    return this.getTeacherNotebookRecordOrThrow(id);
+  }
+
+  async deleteTeacherNotebookRecord(id: string): Promise<TeacherNotebookRecord> {
+    const timestamp = now();
+    const row = (await this.all(`SELECT notebook_id FROM teacher_notebook_records WHERE id = ? AND deleted_at = ''`, [id]))[0];
+    if (!row) throw new Error('笔记不存在或已删除');
+    await this.run(`UPDATE teacher_notebook_records SET deleted_at = ?, updated_at = ?, version = version + 1 WHERE id = ? AND deleted_at = ''`, [timestamp, timestamp, id]);
+    await this.run(`UPDATE teacher_notebooks SET version = version + 1, updated_at = ? WHERE id = ?`, [timestamp, String(row.notebook_id)]);
+    return this.getTeacherNotebookRecordOrThrow(id);
   }
 
   async importAttachments(studentId: string, recordId: string, sourcePaths: string[]): Promise<AttachmentImportResult> {
@@ -1512,6 +1798,7 @@ export class OmniEduStore {
         }),
         JSON.stringify({
           ok: result.ok,
+          agentRunId: result.harness?.agentRunId ?? '',
           usage: result.usage ?? null,
           schemaValid: result.harness?.schemaValid ?? null,
           educationGrade: result.harness?.educationGrade ?? null,
@@ -1744,6 +2031,7 @@ export class OmniEduStore {
       summary.experimentCount += 1;
       if (experiment.improved) summary.improvedCount += 1;
       if (!experiment.improved || experiment.issueAfter !== 'none' || experiment.scoreAfter < 4) summary.unresolvedCount += 1;
+      if (experiment.afterRunId) summary.liveLinkedCount += 1;
       scoreDeltas.push(experiment.scoreDelta);
       roundDeltas.push(experiment.roundsDelta);
       incrementCount(summary.issueTransitionCounts, `${experiment.issueBefore}->${experiment.issueAfter}`);
@@ -1763,6 +2051,7 @@ export class OmniEduStore {
     const route = String(input.route ?? '').trim() as AiIntentRoute;
     const subIntent = String(input.subIntent ?? '').trim() as AiSubIntent;
     const reviewedAt = normalizeIsoDate(input.reviewedAt) || timestamp;
+    const totalTokens = Math.max(0, Math.round(Number(input.totalTokens ?? 0)));
     if (!sampleId) throw new Error('sampleId is required for AI model grade');
     if (!prompt) throw new Error('prompt is required for AI model grade');
     if (!answerMarkdown) throw new Error('answerMarkdown is required for AI model grade');
@@ -1785,6 +2074,8 @@ export class OmniEduStore {
     const grade: AiModelGrade = {
       id: `aimodelgrade_${randomUUID()}`,
       sampleId,
+      runId: input.runId?.trim() ?? '',
+      sessionId: input.sessionId?.trim() ?? '',
       prompt,
       answerMarkdown,
       route,
@@ -1793,6 +2084,8 @@ export class OmniEduStore {
       modelUnderReview: input.modelUnderReview?.trim() ?? '',
       graderModel: input.graderModel?.trim() || (graderMode === 'llm_judge' ? 'unknown-llm-judge' : 'deterministic-model-grader-proxy-v1'),
       graderMode,
+      promptVersion: input.promptVersion?.trim() ?? '',
+      totalTokens,
       evidenceScore: scores[0],
       actionabilityScore: scores[1],
       safetyScore: scores[2],
@@ -1808,15 +2101,18 @@ export class OmniEduStore {
     };
     await this.run(
       `INSERT INTO ai_model_grades (
-          id, sample_id, prompt, answer_markdown, route, sub_intent, target_grade,
+          id, sample_id, run_id, session_id, prompt, answer_markdown, route, sub_intent, target_grade,
           model_under_review, grader_model, grader_mode,
+          prompt_version, total_tokens,
           evidence_score, actionability_score, safety_score, grade_appropriateness_score,
           concision_score, teacher_control_score, overall_score, passed,
           issue_codes_json, grader_rationale, reviewed_at, created_at
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         grade.id,
         grade.sampleId,
+        grade.runId,
+        grade.sessionId,
         grade.prompt,
         grade.answerMarkdown,
         grade.route,
@@ -1825,6 +2121,8 @@ export class OmniEduStore {
         grade.modelUnderReview,
         grade.graderModel,
         grade.graderMode,
+        grade.promptVersion,
+        grade.totalTokens,
         grade.evidenceScore,
         grade.actionabilityScore,
         grade.safetyScore,
@@ -1878,9 +2176,12 @@ export class OmniEduStore {
       summary.sampleCount += 1;
       if (grade.passed) summary.passedCount += 1;
       else summary.failedCount += 1;
+      if (grade.runId) summary.runLinkedCount += 1;
+      if (grade.totalTokens > 0) summary.tokenKnownCount += 1;
       overallScores.push(grade.overallScore);
       gradeAppropriatenessScores.push(grade.gradeAppropriatenessScore);
       incrementCount(summary.graderModeCounts, grade.graderMode);
+      incrementCount(summary.promptVersionCounts, grade.promptVersion || 'unknown');
       for (const issueCode of grade.issueCodes) incrementCount(summary.issueCounts, issueCode);
       if (!summary.latestReviewedAt || grade.reviewedAt > summary.latestReviewedAt) summary.latestReviewedAt = grade.reviewedAt;
     }
@@ -1891,6 +2192,7 @@ export class OmniEduStore {
   }
 
   async startAiAgentRun(input: {
+    parentRunId?: string;
     sessionId?: string;
     prompt: string;
     route: string;
@@ -1901,10 +2203,11 @@ export class OmniEduStore {
     const timestamp = now();
     const runId = `run_${randomUUID()}`;
     await this.run(
-      `INSERT INTO ai_agent_runs (id, session_id, prompt, route, sub_intent, status, model, student_id, error_message, created_at, completed_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, 'running', ?, ?, '', ?, NULL, ?)`,
+      `INSERT INTO ai_agent_runs (id, parent_run_id, session_id, prompt, route, sub_intent, status, model, student_id, error_message, created_at, completed_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'running', ?, ?, '', ?, NULL, ?)`,
       [
         runId,
+        input.parentRunId ?? '',
         input.sessionId ?? '',
         input.prompt,
         input.route,
@@ -1918,7 +2221,92 @@ export class OmniEduStore {
     return runId;
   }
 
+  async saveAiAgentRunRequest(runId: string, request: Record<string, unknown>) {
+    const normalizedRunId = requireNonEmpty(runId, 'AI run id cannot be empty').slice(0, 180);
+    const payload = JSON.stringify(request ?? {});
+    if (payload.length > 120_000) throw new Error('AI run request snapshot is too large.');
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO ai_agent_run_requests (run_id, request_json, created_at, updated_at)
+       VALUES (?, ?, ?, ?)
+       ON CONFLICT(run_id) DO UPDATE SET request_json = excluded.request_json, updated_at = excluded.updated_at`,
+      [normalizedRunId, payload, timestamp, timestamp],
+    );
+  }
+
+  async getAiAgentRunRequest(runId: string): Promise<Record<string, unknown> | null> {
+    const normalizedRunId = String(runId ?? '').slice(0, 180);
+    const row = (await this.all(`SELECT request_json FROM ai_agent_run_requests WHERE run_id = ?`, [normalizedRunId]))[0]
+      ?? (await this.all(`SELECT request_json FROM ai_agent_run_actions WHERE child_run_id = ? ORDER BY created_at DESC LIMIT 1`, [normalizedRunId]))[0];
+    return row ? jsonObject(row.request_json) : null;
+  }
+
+  async createAiAgentChildRun(input: {
+    sourceRunId: string;
+    action: 'retry' | 'branch' | 'regenerate';
+    idempotencyKey: string;
+    prompt: string;
+    route: string;
+    subIntent?: string;
+    model?: string;
+    studentId?: string;
+    sessionId?: string;
+    request: Record<string, unknown>;
+  }): Promise<{ runId: string; reused: boolean }> {
+    let release!: () => void;
+    const previous = this.aiAgentActionQueue;
+    this.aiAgentActionQueue = new Promise<void>((resolve) => { release = resolve; });
+    await previous;
+    try {
+      const sourceRunId = requireNonEmpty(input.sourceRunId, 'Source run id cannot be empty').slice(0, 180);
+      const idempotencyKey = requireNonEmpty(input.idempotencyKey, 'Idempotency key cannot be empty').slice(0, 180);
+      const existing = (await this.all(
+        `SELECT child_run_id FROM ai_agent_run_actions
+         WHERE source_run_id = ? AND action = ? AND idempotency_key = ? LIMIT 1`,
+        [sourceRunId, input.action, idempotencyKey],
+      ))[0];
+      if (existing?.child_run_id) return { runId: String(existing.child_run_id), reused: true };
+      const requestJson = JSON.stringify(input.request ?? {});
+      if (requestJson.length > 120_000) throw new Error('AI child request snapshot is too large.');
+      await this.run('BEGIN IMMEDIATE');
+      try {
+        const runId = await this.startAiAgentRun({
+          parentRunId: sourceRunId,
+          sessionId: input.sessionId,
+          prompt: input.prompt,
+          route: input.route,
+          subIntent: input.subIntent,
+          model: input.model,
+          studentId: input.studentId,
+        });
+        const timestamp = now();
+        await this.run(
+          `INSERT INTO ai_agent_run_actions (id, source_run_id, action, idempotency_key, child_run_id, request_json, created_at)
+           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+          [`run_action_${randomUUID()}`, sourceRunId, input.action, idempotencyKey, runId, requestJson, timestamp],
+        );
+        await this.run('COMMIT');
+        return { runId, reused: false };
+      } catch (error) {
+        await this.run('ROLLBACK').catch(() => undefined);
+        throw error;
+      }
+    } finally {
+      release();
+    }
+  }
+
   async recordAiAgentEvent(runId: string, event: AiAgentTraceStep) {
+    const previous = this.aiAgentEventLocks.get(runId) ?? Promise.resolve();
+    let release!: () => void;
+    const current = new Promise<void>((resolveCurrent) => {
+      release = resolveCurrent;
+    });
+    const chain = previous.then(() => current);
+    this.aiAgentEventLocks.set(runId, chain);
+    await previous;
+
+    try {
     const timestamp = now();
     const sequenceRow = (await this.all(
       `SELECT COALESCE(MAX(sequence), 0) + 1 AS next_sequence FROM ai_agent_events WHERE run_id = ?`,
@@ -1942,6 +2330,12 @@ export class OmniEduStore {
         timestamp,
       ],
     );
+    } finally {
+      release();
+      if (this.aiAgentEventLocks.get(runId) === chain) {
+        this.aiAgentEventLocks.delete(runId);
+      }
+    }
   }
 
   async completeAiAgentRun(runId: string, status: AiAgentRunStatus, errorMessage = '') {
@@ -1954,10 +2348,386 @@ export class OmniEduStore {
     );
   }
 
+  async reopenAiAgentRun(runId: string) {
+    await this.run(
+      `UPDATE ai_agent_runs
+       SET status = 'running', error_message = '', completed_at = NULL, updated_at = ?
+       WHERE id = ?`,
+      [now(), runId],
+    );
+  }
+
+  async createAiCapabilityCheckpoint(input: {
+    runId: string;
+    capabilityName: string;
+    checkpointType: 'user_input' | 'confirmation' | 'cancelled' | 'timeout' | 'continuation' | 'budget_approval';
+    state?: Record<string, unknown>;
+    expiresAt?: string;
+  }): Promise<AiCapabilityCheckpoint> {
+    const id = `checkpoint_${randomUUID()}`;
+    const createdAt = now();
+    const expiresAt = input.expiresAt ?? new Date(Date.now() + 120_000).toISOString();
+    await this.run(
+      `INSERT INTO ai_capability_checkpoints (
+        id, run_id, capability_name, checkpoint_type, state_json, status, expires_at, created_at, resolved_at
+      ) VALUES (?, ?, ?, ?, ?, 'pending', ?, ?, NULL)`,
+      [id, input.runId, input.capabilityName, input.checkpointType, JSON.stringify(input.state ?? {}), expiresAt, createdAt],
+    );
+    return this.getAiCapabilityCheckpointOrThrow(id);
+  }
+
+  async claimAiContinuation(token: string): Promise<AiCapabilityCheckpoint | null> {
+    let release!: () => void;
+    const previous = this.continuationClaimQueue;
+    this.continuationClaimQueue = new Promise<void>((resolve) => { release = resolve; });
+    await previous;
+    try {
+      return await this.claimAiContinuationExclusive(token);
+    } finally {
+      release();
+    }
+  }
+
+  async getPendingAiContinuation(token: string): Promise<AiCapabilityCheckpoint | null> {
+    const normalizedToken = String(token ?? '').trim().slice(0, 180);
+    if (!normalizedToken) return null;
+    const rows = await this.all(
+      `SELECT * FROM ai_capability_checkpoints
+       WHERE checkpoint_type = 'continuation' AND status = 'pending'
+       ORDER BY created_at ASC LIMIT 200`,
+    );
+    const row = rows.find((candidate) => String(jsonObject(candidate.state_json).continuationToken ?? '') === normalizedToken);
+    if (!row) return null;
+    if (String(row.expires_at ?? '') && Date.parse(String(row.expires_at)) <= Date.now()) {
+      await this.run(
+        `UPDATE ai_capability_checkpoints SET status = 'expired', resolved_at = ? WHERE id = ? AND status = 'pending'`,
+        [now(), String(row.id)],
+      );
+      return null;
+    }
+    return this.mapAiCapabilityCheckpoint(row, true);
+  }
+
+  async claimAiBudgetApproval(checkpointId: string): Promise<AiCapabilityCheckpoint | null> {
+    let release!: () => void;
+    const previous = this.continuationClaimQueue;
+    this.continuationClaimQueue = new Promise<void>((resolve) => { release = resolve; });
+    await previous;
+    try {
+      const id = String(checkpointId ?? '').trim().slice(0, 180);
+      if (!id) return null;
+      const row = (await this.all(
+        `SELECT * FROM ai_capability_checkpoints WHERE id = ? AND checkpoint_type = 'budget_approval' AND status = 'pending'`,
+        [id],
+      ))[0];
+      if (!row) return null;
+      if (String(row.expires_at ?? '') && Date.parse(String(row.expires_at)) <= Date.now()) {
+        await this.run(`UPDATE ai_capability_checkpoints SET status = 'expired', resolved_at = ? WHERE id = ? AND status = 'pending'`, [now(), id]);
+        return null;
+      }
+      await this.run('BEGIN IMMEDIATE');
+      try {
+        const claimed = await this.runWithChanges(
+          `UPDATE ai_capability_checkpoints SET status = 'resolved', resolved_at = ? WHERE id = ? AND status = 'pending'`,
+          [now(), id],
+        );
+        if (!claimed) {
+          await this.run('ROLLBACK');
+          return null;
+        }
+        await this.run('COMMIT');
+      } catch (error) {
+        await this.run('ROLLBACK').catch(() => undefined);
+        throw error;
+      }
+      return this.mapAiCapabilityCheckpoint({ ...(await this.all(`SELECT * FROM ai_capability_checkpoints WHERE id = ?`, [id]))[0], status: 'resolved' }, true);
+    } finally {
+      release();
+    }
+  }
+
+  async getPendingAiBudgetApproval(continuationToken: string): Promise<AiCapabilityCheckpoint | null> {
+    const token = String(continuationToken ?? '').trim().slice(0, 180);
+    if (!token) return null;
+    const rows = await this.all(
+      `SELECT * FROM ai_capability_checkpoints
+       WHERE checkpoint_type = 'budget_approval' AND status = 'pending'
+       ORDER BY created_at DESC LIMIT 200`,
+    );
+    const row = rows.find((candidate) => String(jsonObject(candidate.state_json).continuationToken ?? '') === token);
+    if (!row) return null;
+    if (String(row.expires_at ?? '') && Date.parse(String(row.expires_at)) <= Date.now()) {
+      await this.run(`UPDATE ai_capability_checkpoints SET status = 'expired', resolved_at = ? WHERE id = ? AND status = 'pending'`, [now(), String(row.id)]);
+      return null;
+    }
+    return this.mapAiCapabilityCheckpoint(row);
+  }
+
+  private async claimAiContinuationExclusive(token: string): Promise<AiCapabilityCheckpoint | null> {
+    const normalizedToken = requireNonEmpty(token, 'Continuation token cannot be empty').slice(0, 180);
+    const rows = await this.all(
+      `SELECT * FROM ai_capability_checkpoints
+       WHERE checkpoint_type = 'continuation' AND status = 'pending'
+       ORDER BY created_at ASC LIMIT 200`,
+    );
+    const row = rows.find((candidate) => {
+      const state = jsonObject(candidate.state_json);
+      return String(state.continuationToken ?? '') === normalizedToken;
+    });
+    if (!row) return null;
+    const expiresAt = String(row.expires_at ?? '');
+    if (expiresAt && Date.parse(expiresAt) <= Date.now()) {
+      await this.run(
+        `UPDATE ai_capability_checkpoints SET status = 'expired', resolved_at = ? WHERE id = ? AND status = 'pending'`,
+        [now(), String(row.id)],
+      );
+      return null;
+    }
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      const claimedByThisCaller = await this.runWithChanges(
+        `UPDATE ai_capability_checkpoints SET status = 'resolved', resolved_at = ? WHERE id = ? AND status = 'pending'`,
+        [now(), String(row.id)],
+      );
+      if (!claimedByThisCaller) {
+        await this.run('ROLLBACK');
+        return null;
+      }
+      await this.run('COMMIT');
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+    // The continuation state contains the original request snapshot so the
+    // host can resume it. Never route that private snapshot through the
+    // renderer-facing checkpoint mapper (it may include system prompt and
+    // host-tool schemas).
+    return this.mapAiCapabilityCheckpoint(
+      (await this.all(`SELECT * FROM ai_capability_checkpoints WHERE id = ?`, [String(row.id)]))[0],
+      true,
+    );
+  }
+
+  async getAiCapabilityCheckpoint(id: string): Promise<AiCapabilityCheckpoint | null> {
+    const row = (await this.all(`SELECT * FROM ai_capability_checkpoints WHERE id = ?`, [id]))[0];
+    return row ? this.mapAiCapabilityCheckpoint(row) : null;
+  }
+
+  async getPendingAiCapabilityCheckpoint(runId: string): Promise<AiCapabilityCheckpoint | null> {
+    const row = (await this.all(
+      `SELECT * FROM ai_capability_checkpoints WHERE run_id = ? AND status = 'pending' ORDER BY created_at DESC LIMIT 1`,
+      [runId],
+    ))[0];
+    return row ? this.mapAiCapabilityCheckpoint(row) : null;
+  }
+
+  async listPendingAiUserInputCheckpoints(limit = 20): Promise<AiCapabilityCheckpoint[]> {
+    const boundedLimit = Math.max(1, Math.min(Math.trunc(Number(limit) || 20), 100));
+    const rows = await this.all(
+      `SELECT * FROM ai_capability_checkpoints
+       WHERE checkpoint_type = 'user_input' AND status = 'pending'
+       ORDER BY created_at DESC LIMIT ?`,
+      [boundedLimit],
+    );
+    const result: AiCapabilityCheckpoint[] = [];
+    for (const row of rows) {
+      if (String(row.expires_at ?? '') && Date.parse(String(row.expires_at)) <= Date.now()) {
+        await this.run(`UPDATE ai_capability_checkpoints SET status = 'expired', resolved_at = ? WHERE id = ? AND status = 'pending'`, [now(), String(row.id)]);
+        continue;
+      }
+      result.push(this.mapAiCapabilityCheckpoint(row));
+    }
+    return result;
+  }
+
+  async claimAiUserInputCheckpoint(checkpointId: string, state: Record<string, unknown>): Promise<boolean> {
+    const id = String(checkpointId ?? '').trim().slice(0, 180);
+    if (!id) return false;
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      const changed = await this.runWithChanges(
+        `UPDATE ai_capability_checkpoints
+         SET status = 'resolved', state_json = ?, resolved_at = ?
+         WHERE id = ? AND checkpoint_type = 'user_input' AND status = 'pending'`,
+        [JSON.stringify(state ?? {}), now(), id],
+      );
+      if (!changed) {
+        await this.run('ROLLBACK');
+        return false;
+      }
+      await this.run('COMMIT');
+      return true;
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+  }
+
+  async resolveAiCapabilityCheckpoint(id: string, status: Exclude<AiCapabilityCheckpointStatus, 'pending'>, state?: Record<string, unknown>) {
+    const timestamp = now();
+    await this.run(
+      `UPDATE ai_capability_checkpoints
+       SET status = ?, state_json = ?, resolved_at = ?
+       WHERE id = ? AND status = 'pending'`,
+      [status, JSON.stringify(state ?? {}), timestamp, id],
+    );
+    return this.getAiCapabilityCheckpoint(id);
+  }
+
+  async createAiMasteryQuestion(input: {
+    runId: string;
+    turnId: string;
+    studentId: string;
+    knowledgePointId: string;
+    knowledgePointName: string;
+    stem: string;
+    options: string[];
+    expectedAnswer: string;
+  }): Promise<AiMasteryQuestion> {
+    const [question] = await this.createAiMasteryQuestions({ ...input, questions: [input] });
+    return question;
+  }
+
+  async createAiMasteryQuestions(input: {
+    runId: string;
+    turnId: string;
+    studentId: string;
+    questions: Array<{
+      knowledgePointId: string;
+      knowledgePointName: string;
+      stem: string;
+      options: string[];
+      expectedAnswer: string;
+    }>;
+  }): Promise<AiMasteryQuestion[]> {
+    const normalizedQuestions = input.questions.slice(0, 5);
+    if (!normalizedQuestions.length) throw new Error('Mastery question batch cannot be empty');
+    const ids = normalizedQuestions.map(() => `mastery_question_${randomUUID()}`);
+    const createdAt = now();
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      for (let index = 0; index < normalizedQuestions.length; index += 1) {
+        const question = normalizedQuestions[index];
+        await this.run(
+          `INSERT INTO ai_mastery_questions (
+            id, run_id, turn_id, student_id, knowledge_point_id, knowledge_point_name,
+            stem, options_json, expected_answer, status, answer, is_correct, created_at,
+            answered_at, graded_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', '', NULL, ?, NULL, NULL)`,
+          [ids[index], input.runId, input.turnId, input.studentId, question.knowledgePointId, question.knowledgePointName, question.stem, JSON.stringify(question.options.slice(0, 8)), question.expectedAnswer, new Date(Date.parse(createdAt) + index).toISOString()],
+        );
+      }
+      await this.run('COMMIT');
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+    const questions = await Promise.all(ids.map((id) => this.getAiMasteryQuestion(id)));
+    return questions.filter((question): question is AiMasteryQuestion => Boolean(question));
+  }
+
+  async getAiMasteryQuestion(id: string): Promise<AiMasteryQuestion | null> {
+    const row = (await this.all(`SELECT * FROM ai_mastery_questions WHERE id = ?`, [id]))[0];
+    return row ? this.mapAiMasteryQuestion(row) : null;
+  }
+
+  async getPendingAiMasteryQuestion(studentId: string): Promise<AiMasteryQuestion | null> {
+    return (await this.getPendingAiMasteryQuestions(studentId, 1))[0] ?? null;
+  }
+
+  async getPendingAiMasteryQuestions(studentId: string, limit = 20): Promise<AiMasteryQuestion[]> {
+    const normalizedStudentId = requireNonEmpty(studentId, 'Mastery pending question requires studentId');
+    const boundedLimit = Math.min(20, Math.max(1, Math.trunc(limit)));
+    const rows = await this.all(
+      `SELECT * FROM ai_mastery_questions
+       WHERE student_id = ? AND status IN ('pending', 'answered')
+       ORDER BY created_at ASC, id ASC LIMIT ?`,
+      [normalizedStudentId, boundedLimit],
+    );
+    return rows.map((row) => this.mapAiMasteryQuestion(row));
+  }
+
+  async answerAiMasteryQuestion(id: string, answer: string) {
+    const timestamp = now();
+    await this.run(
+      `UPDATE ai_mastery_questions SET status = 'answered', answer = ?, answered_at = ?
+       WHERE id = ? AND status = 'pending'`,
+      [answer.slice(0, 2_000), timestamp, id],
+    );
+    return this.getAiMasteryQuestion(id);
+  }
+
+  async gradeAiMasteryQuestion(id: string, isCorrect: boolean) {
+    const timestamp = now();
+    await this.run(
+      `UPDATE ai_mastery_questions SET status = 'graded', is_correct = ?, graded_at = ?
+       WHERE id = ? AND status = 'answered'`,
+      [isCorrect ? 1 : 0, timestamp, id],
+    );
+    return this.getAiMasteryQuestion(id);
+  }
+
+  async cancelAiMasteryQuestion(id: string) {
+    await this.run(
+      `UPDATE ai_mastery_questions SET status = 'cancelled'
+       WHERE id = ? AND status IN ('pending', 'answered')`,
+      [id],
+    );
+    return this.getAiMasteryQuestion(id);
+  }
+
+  async getAiMasteryPath(studentId: string): Promise<AiMasteryPath | null> {
+    const row = (await this.all(`SELECT * FROM ai_mastery_paths WHERE student_id = ? AND status = 'active'`, [studentId]))[0];
+    return row ? this.mapAiMasteryPath(row) : null;
+  }
+
+  async upsertAiMasteryPath(input: { studentId: string; mode: 'replace' | 'append'; modules: AiMasteryPathModule[] }): Promise<AiMasteryPath> {
+    const existing = await this.getAiMasteryPath(input.studentId);
+    const modules = input.mode === 'append' && existing
+      ? [
+          ...existing.modules,
+          ...input.modules.map((module, moduleOffset) => ({
+            ...module,
+            id: `mastery_m${existing.modules.length + moduleOffset}`,
+            order: existing.modules.length + moduleOffset,
+            knowledgePoints: module.knowledgePoints.map((point, pointOffset) => ({
+              ...point,
+              id: `mastery_m${existing.modules.length + moduleOffset}_kp${pointOffset}`,
+            })),
+          })),
+        ]
+      : input.modules;
+    const pathId = existing?.id ?? `mastery_path_${randomUUID()}`;
+    const version = (existing?.version ?? 0) + 1;
+    const timestamp = now();
+    if (existing) {
+      await this.run(
+        `UPDATE ai_mastery_paths SET version = ?, mode = ?, modules_json = ?, status = 'active', updated_at = ? WHERE id = ?`,
+        [version, input.mode, JSON.stringify(modules), timestamp, pathId],
+      );
+    } else {
+      await this.run(
+        `INSERT INTO ai_mastery_paths (id, student_id, version, mode, modules_json, status, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, 'active', ?, ?)`,
+        [pathId, input.studentId, version, input.mode, JSON.stringify(modules), timestamp, timestamp],
+      );
+    }
+    return (await this.getAiMasteryPath(input.studentId))!;
+  }
+
   async getAiAgentRun(runId: string): Promise<AiAgentRun | null> {
     const row = (await this.all(`SELECT * FROM ai_agent_runs WHERE id = ?`, [runId]))[0];
     if (!row) return null;
     return this.mapAiAgentRun(row);
+  }
+
+  async listAiAgentRuns(limit = 20): Promise<AiAgentRun[]> {
+    const boundedLimit = Math.min(50, Math.max(1, Math.trunc(limit) || 20));
+    const rows = await this.all(
+      `SELECT * FROM ai_agent_runs ORDER BY created_at DESC LIMIT ?`,
+      [boundedLimit],
+    );
+    return rows.map((row) => this.mapAiAgentRun(row));
   }
 
   async listAiAgentEvents(runId: string): Promise<AiAgentEvent[]> {
@@ -1968,8 +2738,331 @@ export class OmniEduStore {
     return rows.map((row) => this.mapAiAgentEvent(row));
   }
 
+  async getAiMemoryTrace(runId: string, limit = 50): Promise<AiMemoryTraceSummary> {
+    const boundedLimit = Math.min(50, Math.max(1, Math.trunc(limit) || 50));
+    const run = await this.getAiAgentRun(requireNonEmpty(runId, '运行 ID 不能为空'));
+    if (!run) {
+      return { layer: 'L1', runId, status: 'missing', eventCount: 0, events: [], bounded: true, rawPromptIncluded: false, hiddenReasoningIncluded: false };
+    }
+    const events = (await this.listAiAgentEvents(runId)).slice(-boundedLimit);
+    return {
+      layer: 'L1',
+      runId,
+      status: run.status,
+      eventCount: events.length,
+      events: events.map((event) => ({
+        sequence: event.sequence,
+        phase: event.phase,
+        status: event.status,
+        label: String(event.label).slice(0, 160),
+        toolName: String(event.toolName ?? '').slice(0, 120),
+        createdAt: event.createdAt,
+        inputKeys: Object.keys(event.inputSummary ?? {}).slice(0, 24),
+        outputKeys: Object.keys(event.outputSummary ?? {}).slice(0, 24),
+      })),
+      bounded: true,
+      rawPromptIncluded: false,
+      hiddenReasoningIncluded: false,
+    };
+  }
+
+  async listAiMemoryDocuments(): Promise<AiMemoryDocument[]> {
+    const rows = await this.all(
+      `SELECT d.*,
+        COUNT(e.id) AS entry_count,
+        SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) AS active_entry_count
+       FROM ai_memory_documents d
+       LEFT JOIN ai_memory_entries e ON e.document_id = d.id
+       WHERE d.layer = 'L2'
+       GROUP BY d.id
+       ORDER BY d.updated_at DESC`,
+    );
+    return rows.map((row) => this.mapAiMemoryDocument(row));
+  }
+
+  async getAiMemoryDocument(surface: AiMemorySurface): Promise<AiMemoryDocumentDetail | null> {
+    assertAiMemorySurface(surface);
+    const row = (await this.all(
+      `SELECT d.*,
+        COUNT(e.id) AS entry_count,
+        SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) AS active_entry_count
+       FROM ai_memory_documents d
+       LEFT JOIN ai_memory_entries e ON e.document_id = d.id
+       WHERE d.layer = 'L2' AND d.surface = ?
+       GROUP BY d.id`,
+      [surface],
+    ))[0];
+    if (!row) return null;
+    const entries = await this.all(
+      `SELECT e.*, d.surface
+       FROM ai_memory_entries e
+       JOIN ai_memory_documents d ON d.id = e.document_id
+       WHERE e.document_id = ?
+       ORDER BY CASE WHEN e.status = 'active' THEN 0 ELSE 1 END, e.updated_at DESC`,
+      [String(row.id)],
+    );
+    return {
+      document: this.mapAiMemoryDocument(row),
+      entries: entries.map((entry) => this.mapAiMemoryEntry(entry)),
+    };
+  }
+
+  async listAiMemoryRevisions(entryId: string, limit = 50): Promise<AiMemoryRevision[]> {
+    const id = requireNonEmpty(entryId, 'L2 memory entry ID cannot be empty');
+    const boundedLimit = Math.min(100, Math.max(1, Math.trunc(limit) || 50));
+    const rows = await this.all(
+      `SELECT * FROM ai_memory_revisions WHERE entry_id = ? ORDER BY created_at DESC LIMIT ?`,
+      [id, boundedLimit],
+    );
+    return rows.map((row) => this.mapAiMemoryRevision(row));
+  }
+
+  async draftAiMemorySummary(surface: AiMemorySurface, runId?: string, limit = 8): Promise<AiMemorySummaryDraft> {
+    assertAiMemorySurface(surface);
+    const boundedLimit = Math.min(8, Math.max(1, Math.trunc(limit) || 8));
+    const requestedRunId = String(runId ?? '').trim();
+    const run = requestedRunId
+      ? await this.getAiAgentRun(requestedRunId)
+      : (await this.listAiAgentRuns(1))[0] ?? null;
+    if (!run) {
+      return { layer: 'L2', surface, sourceRunId: '', entries: [], bounded: true, rawPromptIncluded: false, hiddenReasoningIncluded: false };
+    }
+    const events = (await this.listAiAgentEvents(run.id))
+      .filter((event) => event.status !== 'pending')
+      .slice(-boundedLimit);
+    return {
+      layer: 'L2',
+      surface,
+      sourceRunId: run.id,
+      entries: events.map((event) => ({
+        section: 'Recent activity',
+        text: `Observed ${event.phase} stage: ${event.status}${event.toolName ? `; tool=${event.toolName}` : ''}.`,
+        refs: [{ ref: `ai_agent_event:${event.id}`, kind: 'event' as const, id: event.id, label: `${event.phase} event` }],
+        origin: 'derived' as const,
+        requiresTeacherReview: true as const,
+      })),
+      bounded: true,
+      rawPromptIncluded: false,
+      hiddenReasoningIncluded: false,
+    };
+  }
+
+  async createAiMemoryEntry(input: AiMemoryEntryInput): Promise<AiMemoryEntry> {
+    assertAiMemorySurface(input.surface);
+    if (input.origin && input.origin !== 'teacher') throw new Error('Derived L2 summaries must remain drafts until teacher review');
+    const text = normalizeMemoryText(input.text);
+    const section = String(input.section ?? 'Teacher notes').replace(/\s+/g, ' ').trim().slice(0, 120) || 'Teacher notes';
+    const refs = await this.validateAiMemoryRefs(input.refs);
+    const timestamp = now();
+    const document = await this.ensureAiMemoryDocument(input.surface);
+    const entryId = `memory_entry_${randomUUID()}`;
+    const revisionId = `memory_revision_${randomUUID()}`;
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      await this.run(
+        `INSERT INTO ai_memory_entries (id, document_id, section, text, refs_json, status, origin, version, created_at, updated_at, deleted_at)
+         VALUES (?, ?, ?, ?, ?, 'active', 'teacher', 1, ?, ?, NULL)`,
+        [entryId, document.id, section, text, JSON.stringify(refs), timestamp, timestamp],
+      );
+      await this.run(
+        `INSERT INTO ai_memory_revisions (id, document_id, entry_id, action, before_json, after_json, created_at)
+         VALUES (?, ?, ?, 'create', NULL, ?, ?)`,
+        [revisionId, document.id, entryId, JSON.stringify({ section, text, refs, status: 'active', origin: 'teacher', version: 1 }), timestamp],
+      );
+      await this.run(`UPDATE ai_memory_documents SET version = version + 1, updated_at = ? WHERE id = ?`, [timestamp, document.id]);
+      await this.run('COMMIT');
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+    const detail = await this.getAiMemoryDocument(input.surface);
+    const created = detail?.entries.find((entry) => entry.id === entryId);
+    if (!created) throw new Error('L2 memory entry readback failed');
+    return created;
+  }
+
+  async updateAiMemoryEntry(entryId: string, input: AiMemoryEntryUpdateInput): Promise<AiMemoryEntry> {
+    const id = requireNonEmpty(entryId, 'L2 memory entry ID cannot be empty');
+    const row = (await this.all(
+      `SELECT e.*, d.surface, d.version AS document_version FROM ai_memory_entries e JOIN ai_memory_documents d ON d.id = e.document_id WHERE e.id = ?`,
+      [id],
+    ))[0];
+    if (!row) throw new Error('L2 memory entry not found');
+    const current = this.mapAiMemoryEntry(row);
+    if (current.version !== input.version) throw new Error('L2 memory entry version conflict');
+    const text = input.text == null ? current.text : normalizeMemoryText(input.text);
+    const section = input.section == null ? current.section : String(input.section).replace(/\s+/g, ' ').trim().slice(0, 120) || current.section;
+    const refs = input.refs == null ? current.refs : await this.validateAiMemoryRefs(input.refs);
+    const status = input.status ?? (current.status === 'deleted' ? 'disabled' : current.status);
+    const nextVersion = current.version + 1;
+    const timestamp = now();
+    const before = { section: current.section, text: current.text, refs: current.refs, status: current.status, origin: current.origin, version: current.version };
+    const after = { section, text, refs, status, origin: current.origin, version: nextVersion };
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      await this.run(
+        `UPDATE ai_memory_entries SET section = ?, text = ?, refs_json = ?, status = ?, version = ?, updated_at = ?, deleted_at = CASE WHEN ? = 'deleted' THEN ? ELSE NULL END WHERE id = ? AND version = ?`,
+        [section, text, JSON.stringify(refs), status, nextVersion, timestamp, status, timestamp, id, input.version],
+      );
+      await this.run(
+        `INSERT INTO ai_memory_revisions (id, document_id, entry_id, action, before_json, after_json, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [`memory_revision_${randomUUID()}`, String(row.document_id), id, status === 'disabled' ? 'disable' : status === 'active' && current.status === 'disabled' ? 'restore' : 'edit', JSON.stringify(before), JSON.stringify(after), timestamp],
+      );
+      await this.run(`UPDATE ai_memory_documents SET version = version + 1, updated_at = ? WHERE id = ?`, [timestamp, String(row.document_id)]);
+      await this.run('COMMIT');
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+    const updatedRow = (await this.all(`SELECT e.*, d.surface FROM ai_memory_entries e JOIN ai_memory_documents d ON d.id = e.document_id WHERE e.id = ?`, [id]))[0];
+    if (!updatedRow) throw new Error('L2 memory entry readback failed');
+    return this.mapAiMemoryEntry(updatedRow);
+  }
+
+  async deleteAiMemoryEntry(entryId: string, version: number): Promise<AiMemoryEntry> {
+    return this.updateAiMemoryEntry(entryId, { version, status: 'deleted' });
+  }
+
+  async listAiMemoryL3Documents(): Promise<AiMemoryL3Document[]> {
+    const rows = await this.all(`
+      SELECT d.*, COUNT(e.id) AS entry_count,
+        SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) AS active_entry_count
+      FROM ai_memory_l3_documents d
+      LEFT JOIN ai_memory_l3_entries e ON e.document_id = d.id
+      GROUP BY d.id ORDER BY d.updated_at DESC
+    `);
+    return rows.map((row) => this.mapAiMemoryL3Document(row));
+  }
+
+  async getAiMemoryL3Document(slot: AiMemoryL3Slot): Promise<AiMemoryL3DocumentDetail | null> {
+    assertAiMemoryL3Slot(slot);
+    const row = (await this.all(`SELECT d.*, COUNT(e.id) AS entry_count, SUM(CASE WHEN e.status = 'active' THEN 1 ELSE 0 END) AS active_entry_count FROM ai_memory_l3_documents d LEFT JOIN ai_memory_l3_entries e ON e.document_id = d.id WHERE d.slot = ? GROUP BY d.id`, [slot]))[0];
+    if (!row) return null;
+    const entries = await this.all(`SELECT * FROM ai_memory_l3_entries WHERE document_id = ? ORDER BY updated_at DESC`, [String(row.id)]);
+    return { document: this.mapAiMemoryL3Document(row), entries: entries.map((entry) => this.mapAiMemoryL3Entry(entry, slot)) };
+  }
+
+  async draftAiMemoryL3(slot: AiMemoryL3Slot, limit = 8): Promise<AiMemoryL3Draft> {
+    assertAiMemoryL3Slot(slot);
+    const boundedLimit = Math.min(8, Math.max(1, limit));
+    const rows = await this.all(`SELECT d.surface, e.section, e.text FROM ai_memory_documents d JOIN ai_memory_entries e ON e.document_id = d.id WHERE e.status = 'active' ORDER BY e.updated_at DESC LIMIT ?`, [boundedLimit * 3]);
+    const grouped = new Map<string, AiMemorySurface[]>();
+    for (const row of rows) {
+      const text = normalizeMemoryText(String(row.text ?? '')).slice(0, AI_MEMORY_TEXT_MAX);
+      if (!text) continue;
+      const key = `${String(row.section ?? 'Recent activity')}: ${text}`;
+      const surfaces = grouped.get(key) ?? [];
+      const surface = String(row.surface ?? 'chat') as AiMemorySurface;
+      if (!surfaces.includes(surface)) surfaces.push(surface);
+      grouped.set(key, surfaces);
+    }
+    const prefix = slot === 'profile' ? 'Cross-surface learner profile: ' : slot === 'preferences' ? 'Teacher preference signal: ' : slot === 'scope' ? 'Current learning scope: ' : 'Recent cross-surface activity: ';
+    return {
+      layer: 'L3', slot,
+      entries: [...grouped.entries()].slice(0, boundedLimit).map(([text, sourceDocuments]) => ({ text: `${prefix}${text}`, sourceDocuments, requiresTeacherReview: true as const })),
+      bounded: true, rawPromptIncluded: false, hiddenReasoningIncluded: false,
+    };
+  }
+
+  async createAiMemoryL3Entry(input: AiMemoryL3EntryInput): Promise<AiMemoryL3Entry> {
+    assertAiMemoryL3Slot(input.slot);
+    const text = normalizeMemoryText(input.text);
+    if (!text) throw new Error('L3 entry text is required');
+    const sourceDocuments = [...new Set(input.sourceDocuments)].filter((surface) => { assertAiMemorySurface(surface); return true; });
+    if (!sourceDocuments.length) throw new Error('L3 entry requires at least one source surface');
+    const document = await this.ensureAiMemoryL3Document(input.slot);
+    const now = new Date().toISOString();
+    const id = `memory_l3_entry_${randomUUID()}`;
+    await this.run(`INSERT INTO ai_memory_l3_entries (id, document_id, text, source_documents_json, status, version, created_at, updated_at) VALUES (?, ?, ?, ?, 'active', 1, ?, ?)`, [id, document.id, text, JSON.stringify(sourceDocuments), now, now]);
+    await this.run(`UPDATE ai_memory_l3_documents SET version = version + 1, updated_at = ? WHERE id = ?`, [now, document.id]);
+    const detail = await this.getAiMemoryL3Document(input.slot);
+    const entry = detail?.entries.find((item) => item.id === id);
+    if (!entry) throw new Error('L3 entry readback failed');
+    return entry;
+  }
+
+  async updateAiMemoryL3Entry(entryId: string, input: AiMemoryL3EntryUpdateInput): Promise<AiMemoryL3Entry> {
+    const row = (await this.all(`SELECT e.*, d.slot FROM ai_memory_l3_entries e JOIN ai_memory_l3_documents d ON d.id = e.document_id WHERE e.id = ?`, [entryId]))[0];
+    if (!row) throw new Error('L3 entry not found');
+    if (Number(row.version) !== input.version) throw new Error('L3 entry version conflict; refresh before editing');
+    const slot = String(row.slot) as AiMemoryL3Slot;
+    const text = input.text == null ? String(row.text) : normalizeMemoryText(input.text);
+    const status = input.status ?? String(row.status) as AiMemoryL3Entry['status'];
+    const now = new Date().toISOString();
+    const changed = await this.runWithChanges(`UPDATE ai_memory_l3_entries SET text = ?, status = ?, version = version + 1, updated_at = ? WHERE id = ? AND version = ?`, [text, status, now, entryId, input.version]);
+    if (!changed) throw new Error('L3 entry version conflict; refresh before editing');
+    await this.run(`UPDATE ai_memory_l3_documents SET version = version + 1, updated_at = ? WHERE slot = ?`, [now, slot]);
+    const detail = await this.getAiMemoryL3Document(slot);
+    const entry = detail?.entries.find((item) => item.id === entryId);
+    if (!entry) throw new Error('L3 entry readback failed');
+    return entry;
+  }
+
+  async getAiMemoryEvidenceGraph(limit = 200): Promise<AiMemoryEvidenceGraph> {
+    const boundedLimit = Math.min(200, Math.max(1, Math.trunc(limit) || 200));
+    const nodes = new Map<string, AiMemoryGraphNode>();
+    const edges: AiMemoryGraphEdge[] = [];
+    const addNode = (node: AiMemoryGraphNode) => { if (nodes.size < boundedLimit || nodes.has(node.id)) nodes.set(node.id, node); };
+    const l2Rows = await this.all(`SELECT e.id, e.section, e.status, e.refs_json, d.surface FROM ai_memory_entries e JOIN ai_memory_documents d ON d.id = e.document_id WHERE e.status = 'active' ORDER BY e.updated_at DESC LIMIT ?`, [boundedLimit]);
+    for (const row of l2Rows) {
+      const id = `l2:${String(row.id)}`;
+      addNode({ id, kind: 'l2_entry', label: `L2 ${String(row.surface)} / ${String(row.section ?? 'entry')}`.slice(0, 160), status: String(row.status) });
+      for (const ref of jsonUnknownArray(row.refs_json)) {
+        if (!ref || typeof ref !== 'object') continue;
+        const item = ref as Record<string, unknown>;
+        const refId = String(item.id ?? '').trim();
+        const kind = String(item.kind ?? '');
+        if (!refId || (kind !== 'event' && kind !== 'run')) continue;
+        const evidenceId = `${kind}:${refId}`;
+        addNode({ id: evidenceId, kind: kind === 'event' ? 'event' : 'run', label: `${kind} ${refId}`.slice(0, 160), status: 'evidence' });
+        edges.push({ from: id, to: evidenceId, kind: 'evidence' });
+      }
+    }
+    const l3Rows = await this.all(`SELECT e.id, e.status, e.source_documents_json, d.slot FROM ai_memory_l3_entries e JOIN ai_memory_l3_documents d ON d.id = e.document_id WHERE e.status = 'active' ORDER BY e.updated_at DESC LIMIT ?`, [boundedLimit]);
+    for (const row of l3Rows) {
+      const id = `l3:${String(row.id)}`;
+      addNode({ id, kind: 'l3_entry', label: `L3 ${String(row.slot)}`, status: String(row.status) });
+      for (const surface of jsonUnknownArray(row.source_documents_json).map(String)) {
+        for (const candidate of l2Rows) {
+          if (String(candidate.surface) === surface) edges.push({ from: id, to: `l2:${String(candidate.id)}`, kind: 'derived_from' });
+        }
+      }
+    }
+    const allowedIds = new Set(nodes.keys());
+    return { nodes: [...nodes.values()], edges: edges.filter((edge) => allowedIds.has(edge.from) && allowedIds.has(edge.to)).slice(0, boundedLimit * 2), bounded: true, rawPromptIncluded: false, hiddenReasoningIncluded: false };
+  }
+
+  async getAiMemoryGovernanceReport(): Promise<AiMemoryGovernanceReport> {
+    const count = async (sql: string, params: SqlValue[] = []) => Number((await this.all(sql, params))[0]?.count ?? 0);
+    const l2Documents = await count(`SELECT COUNT(*) AS count FROM ai_memory_documents WHERE layer = 'L2'`);
+    const l2ActiveEntries = await count(`SELECT COUNT(*) AS count FROM ai_memory_entries WHERE status = 'active'`);
+    const disabledEntries = await count(`SELECT COUNT(*) AS count FROM ai_memory_entries WHERE status = 'disabled'`);
+    const deletedEntries = await count(`SELECT COUNT(*) AS count FROM ai_memory_entries WHERE status = 'deleted'`);
+    const l3Documents = await count(`SELECT COUNT(*) AS count FROM ai_memory_l3_documents WHERE layer = 'L3'`);
+    const l3ActiveEntries = await count(`SELECT COUNT(*) AS count FROM ai_memory_l3_entries WHERE status = 'active'`);
+    const refs = await this.all(`SELECT refs_json FROM ai_memory_entries WHERE status = 'active'`);
+    const [eventRows, runRows] = await Promise.all([
+      this.all(`SELECT id FROM ai_agent_events`),
+      this.all(`SELECT id FROM ai_agent_runs`),
+    ]);
+    const eventIds = new Set(eventRows.map((row) => String(row.id)));
+    const runIds = new Set(runRows.map((row) => String(row.id)));
+    let danglingEvidenceRefs = 0;
+    for (const row of refs) {
+      for (const ref of jsonUnknownArray(row.refs_json)) {
+        if (!ref || typeof ref !== 'object') continue;
+        const item = ref as Record<string, unknown>;
+        const kind = String(item.kind ?? ''); const id = String(item.id ?? '');
+        if (kind === 'event' && !eventIds.has(id)) danglingEvidenceRefs += 1;
+        if (kind === 'run' && !runIds.has(id)) danglingEvidenceRefs += 1;
+      }
+    }
+    const graph = await this.getAiMemoryEvidenceGraph(200);
+    return { policyVersion: 'memory-governance.v1', l2Documents, l2ActiveEntries, l3Documents, l3ActiveEntries, danglingEvidenceRefs, disabledEntries, deletedEntries, graphNodes: graph.nodes.length, graphEdges: graph.edges.length, bounded: true, writableByAi: false };
+  }
+
   async createAiConfirmation(input: AiConfirmationCreateInput): Promise<AiConfirmationItem> {
-    if (input.actionType !== 'create_review_report' && input.actionType !== 'save_exercise_set') {
+    if (input.actionType !== 'create_review_report' && input.actionType !== 'save_exercise_set' && input.actionType !== 'save_mastery_state') {
       throw new Error('当前确认队列只支持创建复盘报告或保存三元题组');
     }
     const payload = parseAiConfirmationPayload(JSON.stringify(input.payload));
@@ -1981,8 +3074,19 @@ export class OmniEduStore {
       requireNonEmpty(payload.contentMd, '确认项报告正文不能为空');
       requireNonEmpty(payload.startDate, '确认项缺少开始日期');
       requireNonEmpty(payload.endDate, '确认项缺少结束日期');
-    } else {
+    } else if (input.actionType === 'save_exercise_set') {
       requireNonEmpty(payload.exerciseSet?.contentMd || payload.contentMd, '确认项题组正文不能为空');
+    }
+    if (input.actionType === 'save_mastery_state') {
+      if (payload.masteryOperation === 'build') {
+        if (!payload.masteryPath?.modules?.length) throw new Error('Mastery path confirmation requires modules');
+      } else if (payload.masteryOperation === 'assess') {
+        if (!payload.masteryAssessment?.knowledgePointId || !payload.masteryAssessment.knowledgePointName) {
+          throw new Error('Mastery assessment confirmation requires a knowledge point');
+        }
+      } else {
+        throw new Error('Invalid mastery confirmation operation');
+      }
     }
 
     const timestamp = now();
@@ -2062,9 +3166,12 @@ export class OmniEduStore {
       const readback = await this.executeAiConfirmation(existing);
       if (existing.actionType === 'create_review_report' && !readback?.report) throw new Error('确认后未能读回复盘报告');
       if (existing.actionType === 'save_exercise_set' && !readback?.exerciseSet) throw new Error('确认后未能读回三元题组');
+      if (existing.actionType === 'save_mastery_state' && !readback?.masteryPath && !readback?.masteryAttempt) throw new Error('Mastery confirmation did not produce a readback');
       const result = {
         reportId: readback?.report?.id,
         exerciseSetId: readback?.exerciseSet?.id,
+        masteryPathId: readback?.masteryPath?.id,
+        masteryAttempt: readback?.masteryAttempt,
         actionType: existing.actionType,
       };
       await this.run(
@@ -2257,6 +3364,363 @@ export class OmniEduStore {
     return item;
   }
 
+  /** DeepTutor Book Workspace adapter: a local, structured "专题讲义/单元备课包".
+   * The book is an overlay over existing knowledge resources; source content is
+   * never copied into the book tables, only bounded anchors and fingerprints.
+   */
+  async createTeachingBook(input: TeachingBookInput): Promise<TeachingBook> {
+    const title = requireNonEmpty(input.title, '讲义标题不能为空').slice(0, 200);
+    const timestamp = now();
+    const book: TeachingBook = {
+      id: `teaching_book_${randomUUID()}`,
+      title,
+      description: String(input.description ?? '').trim().slice(0, 1_000),
+      status: 'draft',
+      language: String(input.language ?? 'zh-CN').slice(0, 40),
+      targetLevel: String(input.targetLevel ?? '').trim().slice(0, 80),
+      version: 1,
+      chapterCount: 0,
+      pageCount: 0,
+      sourceCount: 0,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+      deletedAt: '',
+    };
+    await this.run(`INSERT INTO teaching_books (id, title, description, status, language, target_level, version, created_at, updated_at, deleted_at) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, '')`, [book.id, book.title, book.description, book.status, book.language, book.targetLevel, timestamp, timestamp]);
+    return book;
+  }
+
+  async listTeachingBooks(includeDeleted = false): Promise<TeachingBook[]> {
+    const where = includeDeleted ? '' : `WHERE b.deleted_at = ''`;
+    const rows = await this.all(`SELECT b.*, COUNT(DISTINCT c.id) AS chapter_count, COUNT(DISTINCT p.id) AS page_count, COUNT(DISTINCT s.id) AS source_count
+      FROM teaching_books b
+      LEFT JOIN teaching_book_chapters c ON c.book_id = b.id
+      LEFT JOIN teaching_book_pages p ON p.book_id = b.id
+      LEFT JOIN teaching_book_sources s ON s.book_id = b.id
+      ${where} GROUP BY b.id ORDER BY b.updated_at DESC`, []);
+    return rows.map((row) => this.mapTeachingBook(row));
+  }
+
+  async getTeachingBook(id: string): Promise<TeachingBookDetail | undefined> {
+    const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
+    const bookRow = (await this.all(`SELECT b.*, COUNT(DISTINCT c.id) AS chapter_count, COUNT(DISTINCT p.id) AS page_count, COUNT(DISTINCT s.id) AS source_count FROM teaching_books b LEFT JOIN teaching_book_chapters c ON c.book_id = b.id LEFT JOIN teaching_book_pages p ON p.book_id = b.id LEFT JOIN teaching_book_sources s ON s.book_id = b.id WHERE b.id = ? GROUP BY b.id`, [bookId]))[0];
+    if (!bookRow) return undefined;
+    const [chapterRows, pageRows, blockRows, sourceRows] = await Promise.all([
+      this.all(`SELECT * FROM teaching_book_chapters WHERE book_id = ? ORDER BY sort_order, created_at`, [bookId]),
+      this.all(`SELECT p.*, COUNT(b.id) AS block_count FROM teaching_book_pages p LEFT JOIN teaching_book_blocks b ON b.page_id = p.id WHERE p.book_id = ? GROUP BY p.id ORDER BY p.sort_order, p.created_at`, [bookId]),
+      this.all(`SELECT b.* FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE p.book_id = ? ORDER BY b.sort_order, b.created_at`, [bookId]),
+      this.all(`SELECT * FROM teaching_book_sources WHERE book_id = ? ORDER BY created_at`, [bookId]),
+    ]);
+    const health = await this.getTeachingBookHealth(bookId);
+    return {
+      book: this.mapTeachingBook(bookRow),
+      chapters: chapterRows.map((row) => this.mapTeachingBookChapter(row)),
+      pages: pageRows.map((row) => this.mapTeachingBookPage(row)),
+      blocks: blockRows.map((row) => this.mapTeachingBookBlock(row)),
+      sources: sourceRows.map((row) => this.mapTeachingSource(row)),
+      health,
+    };
+  }
+
+  async updateTeachingBook(id: string, input: TeachingBookUpdateInput): Promise<TeachingBook> {
+    const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
+    const current = (await this.all(`SELECT * FROM teaching_books WHERE id = ? AND deleted_at = ''`, [bookId]))[0];
+    if (!current || Number(current.version ?? 0) !== Math.trunc(input.version)) throw new Error('讲义不存在、已归档或版本冲突');
+    const title = input.title == null ? String(current.title) : requireNonEmpty(input.title, '讲义标题不能为空').slice(0, 200);
+    const status = input.status && ['draft', 'spine_ready', 'compiling', 'ready', 'partial', 'error', 'archived'].includes(input.status) ? input.status : String(current.status);
+    const timestamp = now();
+    await this.run(`UPDATE teaching_books SET title = ?, description = ?, language = ?, target_level = ?, status = ?, version = version + 1, updated_at = ? WHERE id = ? AND version = ? AND deleted_at = ''`, [title, input.description == null ? String(current.description ?? '') : String(input.description).slice(0, 1_000), input.language == null ? String(current.language ?? 'zh-CN') : String(input.language).slice(0, 40), input.targetLevel == null ? String(current.target_level ?? '') : String(input.targetLevel).slice(0, 80), status, timestamp, bookId, Math.trunc(input.version)]);
+    const row = (await this.all(`SELECT b.*, COUNT(DISTINCT c.id) AS chapter_count, COUNT(DISTINCT p.id) AS page_count, COUNT(DISTINCT s.id) AS source_count FROM teaching_books b LEFT JOIN teaching_book_chapters c ON c.book_id = b.id LEFT JOIN teaching_book_pages p ON p.book_id = b.id LEFT JOIN teaching_book_sources s ON s.book_id = b.id WHERE b.id = ? GROUP BY b.id`, [bookId]))[0];
+    if (!row) throw new Error('讲义更新后无法回读');
+    return this.mapTeachingBook(row);
+  }
+
+  async deleteTeachingBook(id: string): Promise<TeachingBook> {
+    const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
+    const timestamp = now();
+    const changed = await this.runWithChanges(`UPDATE teaching_books SET deleted_at = ?, status = 'archived', version = version + 1, updated_at = ? WHERE id = ? AND deleted_at = ''`, [timestamp, timestamp, bookId]);
+    if (!changed) throw new Error('讲义不存在或已归档');
+    const row = (await this.all(`SELECT b.*, 0 AS chapter_count, 0 AS page_count, 0 AS source_count FROM teaching_books b WHERE b.id = ?`, [bookId]))[0];
+    if (!row) throw new Error('讲义归档后无法回读');
+    return this.mapTeachingBook(row);
+  }
+
+  async createTeachingBookChapter(input: TeachingBookChapterInput): Promise<TeachingBookChapter> {
+    const bookId = requireNonEmpty(input.bookId, '讲义 ID 不能为空');
+    if (!(await this.getTeachingBook(bookId))) throw new Error('讲义不存在或已归档');
+    const timestamp = now();
+    const chapter: TeachingBookChapter = { id: `teaching_chapter_${randomUUID()}`, bookId, title: requireNonEmpty(input.title, '章节标题不能为空').slice(0, 200), learningObjectives: (input.learningObjectives ?? []).map(String).slice(0, 12), contentType: input.contentType ?? 'theory', prerequisites: (input.prerequisites ?? []).map(String).slice(0, 12), summary: String(input.summary ?? '').slice(0, 1_000), order: Math.max(0, Math.trunc(input.order ?? 0)), version: 1, createdAt: timestamp, updatedAt: timestamp };
+    await this.run(`INSERT INTO teaching_book_chapters (id, book_id, title, learning_objectives_json, content_type, prerequisites_json, summary, sort_order, version, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`, [chapter.id, chapter.bookId, chapter.title, JSON.stringify(chapter.learningObjectives), chapter.contentType, JSON.stringify(chapter.prerequisites), chapter.summary, chapter.order, timestamp, timestamp]);
+    return chapter;
+  }
+
+  async createTeachingBookPage(input: TeachingBookPageInput): Promise<TeachingBookPage> {
+    const bookId = requireNonEmpty(input.bookId, '讲义 ID 不能为空');
+    const chapterId = requireNonEmpty(input.chapterId, '章节 ID 不能为空');
+    const chapter = (await this.all(`SELECT id FROM teaching_book_chapters WHERE id = ? AND book_id = ?`, [chapterId, bookId]))[0];
+    if (!chapter) throw new Error('章节不存在或不属于该讲义');
+    const timestamp = now();
+    const page: TeachingBookPage = { id: `teaching_page_${randomUUID()}`, bookId, chapterId, title: requireNonEmpty(input.title, '页面标题不能为空').slice(0, 200), learningObjectives: (input.learningObjectives ?? []).map(String).slice(0, 12), contentType: input.contentType ?? 'theory', status: 'pending', order: Math.max(0, Math.trunc(input.order ?? 0)), version: 1, blockCount: 0, error: '', createdAt: timestamp, updatedAt: timestamp };
+    await this.run(`INSERT INTO teaching_book_pages (id, book_id, chapter_id, title, learning_objectives_json, content_type, status, sort_order, version, error, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, 1, '', ?, ?)`, [page.id, page.bookId, page.chapterId, page.title, JSON.stringify(page.learningObjectives), page.contentType, page.order, timestamp, timestamp]);
+    return page;
+  }
+
+  async upsertTeachingBookBlock(input: TeachingBookBlockInput, id?: string, version?: number): Promise<TeachingBookBlock> {
+    const pageId = requireNonEmpty(input.pageId, '页面 ID 不能为空');
+    const page = (await this.all(`SELECT id FROM teaching_book_pages WHERE id = ?`, [pageId]))[0];
+    if (!page) throw new Error('页面不存在');
+    const timestamp = now();
+    const blockId = id?.trim() || `teaching_block_${randomUUID()}`;
+    if (id) {
+      const changed = await this.runWithChanges(`UPDATE teaching_book_blocks SET type = ?, status = ?, title = ?, params_json = ?, payload_json = ?, source_anchors_json = ?, metadata_json = ?, sort_order = ?, version = version + 1, error = '', updated_at = ? WHERE id = ? AND page_id = ? AND version = ?`, [input.type, input.status ?? 'ready', String(input.title ?? '').slice(0, 200), JSON.stringify(inputObject(input.params)), JSON.stringify(inputObject(input.payload)), JSON.stringify((input.sourceAnchors ?? []).slice(0, 20)), JSON.stringify(inputObject(input.metadata)), Math.max(0, Math.trunc(input.order ?? 0)), timestamp, blockId, pageId, Math.trunc(version ?? 0)]);
+      if (!changed) throw new Error('内容块不存在或版本冲突');
+    } else {
+      await this.run(`INSERT INTO teaching_book_blocks (id, page_id, type, status, title, params_json, payload_json, source_anchors_json, metadata_json, sort_order, version, error, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, '', ?, ?)`, [blockId, pageId, input.type, input.status ?? 'ready', String(input.title ?? '').slice(0, 200), JSON.stringify(inputObject(input.params)), JSON.stringify(inputObject(input.payload)), JSON.stringify((input.sourceAnchors ?? []).slice(0, 20)), JSON.stringify(inputObject(input.metadata)), Math.max(0, Math.trunc(input.order ?? 0)), timestamp, timestamp]);
+    }
+    const row = (await this.all(`SELECT * FROM teaching_book_blocks WHERE id = ?`, [blockId]))[0];
+    if (!row) throw new Error('内容块写入后无法回读');
+    return this.mapTeachingBookBlock(row);
+  }
+
+  async addTeachingBookSource(input: TeachingBookSourceInput): Promise<TeachingSourceRef> {
+    const bookId = requireNonEmpty(input.bookId, '讲义 ID 不能为空');
+    if (!(await this.getTeachingBook(bookId))) throw new Error('讲义不存在或已归档');
+    const ref = requireNonEmpty(input.ref, '来源引用不能为空').slice(0, 240);
+    const source: TeachingSourceRef = { kind: input.kind, ref, title: String(input.title ?? '').slice(0, 240), snippet: String(input.snippet ?? '').slice(0, 600), fingerprint: String(input.fingerprint ?? '').slice(0, 200), status: input.status ?? 'available' };
+    await this.run(`INSERT OR REPLACE INTO teaching_book_sources (id, book_id, kind, ref, title, snippet, fingerprint, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM teaching_book_sources WHERE id = ?), ?), ?)`, [`teaching_source_${createHash('sha1').update(`${bookId}:${source.kind}:${source.ref}`).digest('hex').slice(0, 20)}`, bookId, source.kind, source.ref, source.title, source.snippet, source.fingerprint, source.status, `teaching_source_${createHash('sha1').update(`${bookId}:${source.kind}:${source.ref}`).digest('hex').slice(0, 20)}`, now(), now()]);
+    return source;
+  }
+
+  async regenerateTeachingBookBlock(id: string, version: number): Promise<TeachingBookBlock> {
+    const blockId = requireNonEmpty(id, '内容块 ID 不能为空');
+    const changed = await this.runWithChanges(`UPDATE teaching_book_blocks SET status = 'pending', error = '', version = version + 1, updated_at = ? WHERE id = ? AND version = ?`, [now(), blockId, Math.trunc(version)]);
+    if (!changed) throw new Error('内容块不存在或版本冲突');
+    const row = (await this.all(`SELECT * FROM teaching_book_blocks WHERE id = ?`, [blockId]))[0];
+    if (!row) throw new Error('内容块重生成后无法回读');
+    return this.mapTeachingBookBlock(row);
+  }
+
+  async regenerateTeachingBookPage(id: string, version: number): Promise<TeachingBookPage> {
+    const pageId = requireNonEmpty(id, '页面 ID 不能为空');
+    const changed = await this.runWithChanges(`UPDATE teaching_book_pages SET status = 'pending', error = '', version = version + 1, updated_at = ? WHERE id = ? AND version = ?`, [now(), pageId, Math.trunc(version)]);
+    if (!changed) throw new Error('页面不存在或版本冲突');
+    const row = (await this.all(`SELECT p.*, COUNT(b.id) AS block_count FROM teaching_book_pages p LEFT JOIN teaching_book_blocks b ON b.page_id = p.id WHERE p.id = ? GROUP BY p.id`, [pageId]))[0];
+    if (!row) throw new Error('页面重生成后无法回读');
+    return this.mapTeachingBookPage(row);
+  }
+
+  async getTeachingBookHealth(id: string): Promise<TeachingBookHealth> {
+    const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
+    const sources = await this.all(`SELECT * FROM teaching_book_sources WHERE book_id = ?`, [bookId]);
+    const staleSourceRefs: string[] = [];
+    const missingSourceRefs: string[] = [];
+    for (const row of sources) {
+      const kind = String(row.kind);
+      const ref = String(row.ref);
+      let current = '';
+      if (kind === 'knowledge_resource') {
+        const source = (await this.all(`SELECT content_hash, local_path FROM teacher_resources WHERE id = ?`, [ref]))[0];
+        current = source ? String(source.content_hash ?? '') : '';
+      } else if (kind === 'knowledge_chunk') {
+        const source = (await this.all(`SELECT r.content_hash FROM resource_chunks c INNER JOIN teacher_resources r ON r.id = c.resource_id WHERE c.id = ?`, [ref]))[0];
+        current = source ? String(source.content_hash ?? '') : '';
+      } else if (kind === 'teacher_notebook') {
+        const source = (await this.all(`SELECT updated_at FROM teacher_notebook_records WHERE id = ? AND deleted_at = ''`, [ref]))[0];
+        current = source ? String(source.updated_at ?? '') : '';
+      } else if (kind === 'question_notebook') {
+        const source = (await this.all(`SELECT updated_at FROM question_bank_items WHERE id = ?`, [ref]))[0];
+        current = source ? String(source.updated_at ?? '') : '';
+      } else current = String(row.fingerprint ?? '');
+      if (!current) missingSourceRefs.push(ref);
+      else if (String(row.fingerprint ?? '') && current !== String(row.fingerprint)) staleSourceRefs.push(ref);
+    }
+    const affected = [...staleSourceRefs, ...missingSourceRefs];
+    const blockRows = affected.length ? await this.all(`SELECT b.id, b.page_id, b.source_anchors_json FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE p.book_id = ?`, [bookId]) : [];
+    const staleBlockIds: string[] = [];
+    // Anchors are validated by reference without exposing source content.
+    for (const row of blockRows) {
+      const anchors = Array.isArray(jsonUnknownArray(row.source_anchors_json)) ? jsonUnknownArray(row.source_anchors_json) : [];
+      if (anchors.some((anchor) => affected.includes(String((anchor as Record<string, unknown>).ref ?? '')))) staleBlockIds.push(String(row.id));
+    }
+    const uniqueBlocks = [...new Set(staleBlockIds)];
+    const pageRows = uniqueBlocks.length ? await this.all(`SELECT DISTINCT page_id FROM teaching_book_blocks WHERE id IN (${uniqueBlocks.map(() => '?').join(',')})`, uniqueBlocks) : [];
+    const stalePageIds = [...new Set(pageRows.map((row) => String(row.page_id)))];
+    return { bookId, status: missingSourceRefs.length ? 'missing_sources' : staleSourceRefs.length ? 'stale' : 'healthy', sourceCount: sources.length, staleSourceRefs, missingSourceRefs, stalePageIds, staleBlockIds: uniqueBlocks, checkedAt: now() };
+  }
+
+  /**
+   * Persist the latest source health without changing authored book content.
+   * The baseline fingerprint stays immutable; only source status and the
+   * local invalidation queue move. This keeps drift reviewable and granular.
+   */
+  async refreshTeachingBookHealth(id: string): Promise<TeachingBookHealth> {
+    const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
+    const health = await this.getTeachingBookHealth(bookId);
+    const sources = await this.all(`SELECT * FROM teaching_book_sources WHERE book_id = ?`, [bookId]);
+    const blocks = await this.all(`SELECT b.id, b.page_id, b.source_anchors_json FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE p.book_id = ?`, [bookId]);
+    const timestamp = health.checkedAt;
+    const staleRefs = new Set(health.staleSourceRefs);
+    const missingRefs = new Set(health.missingSourceRefs);
+
+    for (const source of sources) {
+      const kind = String(source.kind) as TeachingSourceRef['kind'];
+      const ref = String(source.ref);
+      const status: TeachingSourceRef['status'] = missingRefs.has(ref) ? 'missing' : staleRefs.has(ref) ? 'stale' : 'available';
+      await this.run(`UPDATE teaching_book_sources SET status = ?, updated_at = ? WHERE book_id = ? AND kind = ? AND ref = ?`, [status, timestamp, bookId, kind, ref]);
+
+      const affectedBlockIds = blocks.filter((block) => {
+        const anchors = jsonUnknownArray(block.source_anchors_json);
+        return anchors.some((anchor) => String((anchor as Record<string, unknown>).ref ?? '') === ref);
+      }).map((block) => String(block.id));
+      const affectedPageIds = [...new Set(blocks.filter((block) => affectedBlockIds.includes(String(block.id))).map((block) => String(block.page_id)))];
+      const invalidationId = `teaching_invalidation_${createHash('sha1').update(`${bookId}:${kind}:${ref}`).digest('hex').slice(0, 20)}`;
+      if (status === 'available') {
+        await this.run(`INSERT INTO teaching_book_invalidations (id, book_id, kind, ref, status, stale_page_ids_json, stale_block_ids_json, detected_at, resolved_at)
+          VALUES (?, ?, ?, ?, 'resolved', ?, ?, ?, ?)
+          ON CONFLICT(book_id, kind, ref) DO UPDATE SET status = 'resolved', resolved_at = excluded.resolved_at`, [invalidationId, bookId, kind, ref, JSON.stringify(affectedPageIds), JSON.stringify(affectedBlockIds), timestamp, timestamp]);
+      } else {
+        await this.run(`INSERT INTO teaching_book_invalidations (id, book_id, kind, ref, status, stale_page_ids_json, stale_block_ids_json, detected_at, resolved_at)
+          VALUES (?, ?, ?, ?, 'open', ?, ?, ?, '')
+          ON CONFLICT(book_id, kind, ref) DO UPDATE SET status = 'open', stale_page_ids_json = excluded.stale_page_ids_json, stale_block_ids_json = excluded.stale_block_ids_json, detected_at = excluded.detected_at, resolved_at = ''`, [invalidationId, bookId, kind, ref, JSON.stringify(affectedPageIds), JSON.stringify(affectedBlockIds), timestamp]);
+      }
+    }
+
+    const current = (await this.all(`SELECT status FROM teaching_books WHERE id = ? AND deleted_at = ''`, [bookId]))[0];
+    const currentStatus = String(current?.status ?? '');
+    if (['ready', 'partial'].includes(currentStatus)) {
+      const nextStatus = health.status === 'healthy' ? 'ready' : 'partial';
+      if (nextStatus !== currentStatus) await this.run(`UPDATE teaching_books SET status = ?, updated_at = ? WHERE id = ? AND deleted_at = ''`, [nextStatus, timestamp, bookId]);
+    }
+    return health;
+  }
+
+  async listTeachingBookInvalidations(id: string, includeResolved = false): Promise<TeachingBookInvalidation[]> {
+    const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
+    const rows = await this.all(`SELECT * FROM teaching_book_invalidations WHERE book_id = ? ${includeResolved ? '' : "AND status = 'open'"} ORDER BY detected_at DESC`, [bookId]);
+    return rows.map((row) => ({
+      id: String(row.id),
+      bookId: String(row.book_id),
+      kind: String(row.kind) as TeachingSourceRef['kind'],
+      ref: String(row.ref),
+      status: String(row.status) === 'resolved' ? 'resolved' : 'open',
+      stalePageIds: jsonArray(row.stale_page_ids_json),
+      staleBlockIds: jsonArray(row.stale_block_ids_json),
+      detectedAt: String(row.detected_at ?? ''),
+      resolvedAt: String(row.resolved_at ?? ''),
+    }));
+  }
+
+  async proposeTeachingBookBlockPatch(input: TeachingBookPatchInput): Promise<TeachingBookPatch> {
+    const bookId = requireNonEmpty(input.bookId, '讲义 ID 不能为空');
+    const blockId = requireNonEmpty(input.blockId, '内容块 ID 不能为空');
+    const row = (await this.all("SELECT b.*, p.book_id FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE b.id = ? AND p.book_id = ?", [blockId, bookId]))[0];
+    if (!row) throw new Error('内容块不存在或不属于该讲义');
+    if (Number(row.version ?? 0) !== Math.trunc(input.baseVersion)) throw new Error('内容块已被修改，无法基于旧版本生成 patch');
+    const beforeTitle = String(row.title ?? '').slice(0, 200);
+    const afterTitle = input.title == null ? beforeTitle : String(input.title).trim().slice(0, 200);
+    const beforePayload = inputObject(jsonObject(row.payload_json));
+    const afterPayload = input.payload == null ? beforePayload : inputObject(input.payload);
+    if (JSON.stringify(afterPayload).length > 12_000) throw new Error('patch payload 超出 12000 字符上限');
+    const timestamp = now();
+    const patch: TeachingBookPatch = {
+      id: 'teaching_patch_' + randomUUID(), bookId, pageId: String(row.page_id), blockId,
+      baseVersion: Math.trunc(input.baseVersion), resultVersion: 0, operation: 'replace_block',
+      beforeTitle, afterTitle, beforePayload, afterPayload,
+      reason: String(input.reason ?? '').trim().slice(0, 600), status: 'draft', error: '',
+      createdAt: timestamp, appliedAt: '', undoneAt: '',
+      selectionStart: 0, selectionEnd: 0, selectedTextHash: '', selectedText: '',
+    };
+    await this.run("INSERT INTO teaching_book_patches (id, book_id, page_id, block_id, base_version, result_version, operation, before_title, after_title, before_payload_json, after_payload_json, reason, status, error, created_at, applied_at, undone_at, selection_start, selection_end, selected_text_hash, selected_text) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 'draft', '', ?, '', '', 0, 0, '', '')", [patch.id, patch.bookId, patch.pageId, patch.blockId, patch.baseVersion, patch.operation, patch.beforeTitle, patch.afterTitle, JSON.stringify(patch.beforePayload), JSON.stringify(patch.afterPayload), patch.reason, timestamp]);
+    return patch;
+  }
+
+  async proposeTeachingBookSelectionPatch(input: TeachingBookSelectionPatchInput): Promise<TeachingBookPatch> {
+    const bookId = requireNonEmpty(input.bookId, '讲义 ID 不能为空');
+    const blockId = requireNonEmpty(input.blockId, '内容块 ID 不能为空');
+    const start = Math.trunc(input.selectionStart);
+    const end = Math.trunc(input.selectionEnd);
+    if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end <= start || end - start > 20_000) throw new Error('选区边界无效或超出长度上限');
+    const row = (await this.all("SELECT b.*, p.book_id FROM teaching_book_blocks b INNER JOIN teaching_book_pages p ON p.id = b.page_id WHERE b.id = ? AND p.book_id = ?", [blockId, bookId]))[0];
+    if (!row) throw new Error('内容块不存在或不属于该讲义');
+    const currentVersion = Number(row.version ?? 0);
+    if (currentVersion !== Math.trunc(input.baseVersion)) throw new Error('内容块已被修改，无法基于旧版本生成选区 patch');
+    const beforePayload = inputObject(jsonObject(row.payload_json));
+    const text = typeof beforePayload.text === 'string' ? beforePayload.text : '';
+    if (end > text.length) throw new Error('选区超出内容块文本范围');
+    const selectedText = text.slice(start, end);
+    if (selectedText !== String(input.selectedText ?? '')) throw new Error('选区文本已漂移，请重新选择后再试');
+    const replacementText = String(input.replacementText ?? '');
+    if (!replacementText.trim()) throw new Error('替换文本不能为空');
+    if (replacementText.length > 20_000) throw new Error('替换文本超出 20000 字符上限');
+    const afterPayload = inputObject({ ...beforePayload, text: `${text.slice(0, start)}${replacementText}${text.slice(end)}` });
+    const timestamp = now();
+    const operation = input.mode === 'automark' ? 'automark_selection' : 'replace_selection';
+    const patch: TeachingBookPatch = {
+      id: 'teaching_patch_' + randomUUID(), bookId, pageId: String(row.page_id), blockId,
+      baseVersion: currentVersion, resultVersion: 0, operation,
+      beforeTitle: String(row.title ?? '').slice(0, 200), afterTitle: String(row.title ?? '').slice(0, 200),
+      beforePayload, afterPayload, reason: String(input.reason ?? '').trim().slice(0, 600), status: 'draft', error: '',
+      createdAt: timestamp, appliedAt: '', undoneAt: '', selectionStart: start, selectionEnd: end,
+      selectedTextHash: createHash('sha256').update(selectedText).digest('hex'), selectedText: selectedText.slice(0, 20_000),
+    };
+    await this.run("INSERT INTO teaching_book_patches (id, book_id, page_id, block_id, base_version, result_version, operation, before_title, after_title, before_payload_json, after_payload_json, reason, status, error, created_at, applied_at, undone_at, selection_start, selection_end, selected_text_hash, selected_text) VALUES (?, ?, ?, ?, ?, 0, ?, ?, ?, ?, ?, ?, 'draft', '', ?, '', '', ?, ?, ?, ?)", [patch.id, patch.bookId, patch.pageId, patch.blockId, patch.baseVersion, patch.operation, patch.beforeTitle, patch.afterTitle, JSON.stringify(patch.beforePayload), JSON.stringify(patch.afterPayload), patch.reason, timestamp, start, end, patch.selectedTextHash, patch.selectedText]);
+    return patch;
+  }
+
+  async applyTeachingBookPatch(id: string): Promise<TeachingBookPatch> {
+    const patchId = requireNonEmpty(id, 'patch ID 不能为空');
+    const patchRow = (await this.all("SELECT * FROM teaching_book_patches WHERE id = ?", [patchId]))[0];
+    if (!patchRow || String(patchRow.status) !== 'draft') throw new Error('patch 不存在、已应用或不可应用');
+    const patchBlockId = String(patchRow.block_id ?? '');
+    const patchPageId = String(patchRow.page_id ?? '');
+    const patchBaseVersion = Number(patchRow.base_version ?? 0);
+    const block = (await this.all("SELECT version, payload_json FROM teaching_book_blocks WHERE id = ? AND page_id = ?", [patchBlockId, patchPageId]))[0];
+    if (!block || Number(block.version ?? 0) !== patchBaseVersion) {
+      await this.run("UPDATE teaching_book_patches SET status = 'rejected', error = ? WHERE id = ? AND status = 'draft'", ['内容块已被老师修改，patch 被拒绝', patchId]);
+      throw new Error('内容块版本冲突，未覆盖老师修改');
+    }
+    const selectionStart = Number(patchRow.selection_start ?? 0);
+    const selectionEnd = Number(patchRow.selection_end ?? 0);
+    const selectedTextHash = String(patchRow.selected_text_hash ?? '');
+    if (selectedTextHash) {
+      const currentPayload = inputObject(jsonObject(block.payload_json));
+      const currentText = typeof currentPayload.text === 'string' ? currentPayload.text : '';
+      const currentSelectedText = currentText.slice(selectionStart, selectionEnd);
+      const currentHash = createHash('sha256').update(currentSelectedText).digest('hex');
+      if (currentHash !== selectedTextHash) {
+        await this.run("UPDATE teaching_book_patches SET status = 'rejected', error = ? WHERE id = ? AND status = 'draft'", ['选区已漂移，patch 被拒绝', patchId]);
+        throw new Error('选区已漂移，未覆盖老师修改');
+      }
+    }
+    const timestamp = now();
+    const changed = await this.runWithChanges("UPDATE teaching_book_blocks SET title = ?, payload_json = ?, version = version + 1, updated_at = ? WHERE id = ? AND page_id = ? AND version = ?", [String(patchRow.after_title ?? ''), String(patchRow.after_payload_json ?? '{}'), timestamp, patchBlockId, patchPageId, patchBaseVersion]);
+    if (!changed) throw new Error('patch 应用失败，内容块版本已变化');
+    await this.run("UPDATE teaching_book_patches SET status = 'applied', result_version = ?, applied_at = ?, error = '' WHERE id = ? AND status = 'draft'", [patchBaseVersion + 1, timestamp, patchId]);
+    return this.mapTeachingBookPatch((await this.all("SELECT * FROM teaching_book_patches WHERE id = ?", [patchId]))[0]);
+  }
+
+  async undoTeachingBookPatch(id: string): Promise<TeachingBookPatch> {
+    const patchId = requireNonEmpty(id, 'patch ID 不能为空');
+    const patchRow = (await this.all("SELECT * FROM teaching_book_patches WHERE id = ?", [patchId]))[0];
+    if (!patchRow || String(patchRow.status) !== 'applied') throw new Error('只能撤销已应用且未撤销的 patch');
+    const patchBlockId = String(patchRow.block_id ?? '');
+    const patchPageId = String(patchRow.page_id ?? '');
+    const patchResultVersion = Number(patchRow.result_version ?? 0);
+    const block = (await this.all("SELECT version FROM teaching_book_blocks WHERE id = ? AND page_id = ?", [patchBlockId, patchPageId]))[0];
+    if (!block || Number(block.version ?? 0) !== patchResultVersion) throw new Error('内容块已被再次修改，撤销被阻止');
+    const timestamp = now();
+    const changed = await this.runWithChanges("UPDATE teaching_book_blocks SET title = ?, payload_json = ?, version = version + 1, updated_at = ? WHERE id = ? AND page_id = ? AND version = ?", [String(patchRow.before_title ?? ''), String(patchRow.before_payload_json ?? '{}'), timestamp, patchBlockId, patchPageId, patchResultVersion]);
+    if (!changed) throw new Error('撤销失败，内容块版本已变化');
+    await this.run("UPDATE teaching_book_patches SET status = 'undone', undone_at = ? WHERE id = ? AND status = 'applied'", [timestamp, patchId]);
+    return this.mapTeachingBookPatch((await this.all("SELECT * FROM teaching_book_patches WHERE id = ?", [patchId]))[0]);
+  }
+
+  async listTeachingBookPatches(id: string): Promise<TeachingBookPatch[]> {
+    const bookId = requireNonEmpty(id, '讲义 ID 不能为空');
+    const rows = await this.all("SELECT * FROM teaching_book_patches WHERE book_id = ? ORDER BY created_at DESC LIMIT 100", [bookId]);
+    return rows.map((row) => this.mapTeachingBookPatch(row));
+  }
+
   async searchQuestionBank(filters: QuestionSearchFilters = {}) {
     const clauses: string[] = [];
     const params: SqlValue[] = [];
@@ -2314,6 +3778,210 @@ export class OmniEduStore {
     });
   }
 
+  /**
+   * DeepTutor Question Notebook adapter: the canonical question remains in
+   * question_bank_items; this layer stores only bookmark/category/usage
+   * overlays so categorisation never duplicates or mutates question content.
+   */
+  async listQuestionNotebook(filters: QuestionNotebookFilters = {}): Promise<QuestionNotebookListResult> {
+    const clauses: string[] = [];
+    const params: SqlValue[] = [];
+    const query = filters.query?.trim().slice(0, 240) ?? '';
+    const categoryId = filters.categoryId?.trim();
+    if (filters.bookmarked != null) {
+      clauses.push(`COALESCE(b.bookmarked, 0) = ?`);
+      params.push(filters.bookmarked ? 1 : 0);
+    }
+    if (filters.sourceKind) {
+      clauses.push('q.source_kind = ?');
+      params.push(filters.sourceKind);
+    }
+    if (categoryId) {
+      clauses.push(`EXISTS (
+        SELECT 1 FROM question_notebook_category_links l
+        INNER JOIN question_notebook_categories c ON c.id = l.category_id AND c.status = 'active'
+        WHERE l.question_id = q.id AND l.category_id = ?
+      )`);
+      params.push(categoryId);
+    }
+    const tokens = searchTokens(query).slice(0, 8);
+    if (tokens.length) {
+      clauses.push(`(${tokens.map(() => '(q.stem LIKE ? OR q.analysis LIKE ? OR q.tags LIKE ? OR q.knowledge_point LIKE ?)').join(' OR ')})`);
+      for (const token of tokens) {
+        const like = `%${token}%`;
+        params.push(like, like, like, like);
+      }
+    }
+    const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
+    const countRows = await this.all(
+      `SELECT COUNT(*) AS count FROM question_bank_items q
+       LEFT JOIN question_notebook_bookmarks b ON b.question_id = q.id
+       ${where}`,
+      params,
+    );
+    const total = Number(countRows[0]?.count ?? 0);
+    const limit = Math.max(1, Math.min(Math.trunc(filters.limit ?? 20), 50));
+    const offset = Math.max(0, Math.trunc(filters.offset ?? 0));
+    const rows = await this.all(
+      `SELECT q.*, COALESCE(b.bookmarked, 0) AS notebook_bookmarked,
+              COALESCE(b.version, 0) AS notebook_version,
+              COALESCE(u.usage_count, 0) AS usage_count,
+              COALESCE(u.last_used_at, '') AS last_used_at
+       FROM question_bank_items q
+       LEFT JOIN question_notebook_bookmarks b ON b.question_id = q.id
+       LEFT JOIN (
+         SELECT question_id, COUNT(*) AS usage_count, MAX(created_at) AS last_used_at
+         FROM question_bank_usage GROUP BY question_id
+       ) u ON u.question_id = q.id
+       ${where}
+       ORDER BY notebook_bookmarked DESC, last_used_at DESC, q.updated_at DESC
+       LIMIT ? OFFSET ?`,
+      [...params, limit, offset],
+    );
+    const items = await Promise.all(rows.map(async (row) => {
+      const item = this.mapQuestionBankItem(row);
+      const categories = await this.listQuestionNotebookCategoriesForQuestion(item.id);
+      return {
+        ...item,
+        bookmarked: Number(row.notebook_bookmarked ?? 0) === 1,
+        version: Math.max(0, Number(row.notebook_version ?? 0)),
+        categories,
+        usageCount: Math.max(0, Number(row.usage_count ?? 0)),
+        lastUsedAt: String(row.last_used_at ?? ''),
+      } satisfies QuestionNotebookEntry;
+    }));
+    return { items, total };
+  }
+
+  async getQuestionNotebookEntry(questionId: string): Promise<QuestionNotebookEntry | undefined> {
+    const id = requireNonEmpty(questionId, '题目 ID 不能为空');
+    const result = await this.listQuestionNotebook({ query: '', limit: 50 });
+    const direct = result.items.find((item) => item.id === id);
+    if (direct) return direct;
+    const rows = await this.all(`SELECT q.*, COALESCE(b.bookmarked, 0) AS notebook_bookmarked, COALESCE(b.version, 0) AS notebook_version, COALESCE(u.usage_count, 0) AS usage_count, COALESCE(u.last_used_at, '') AS last_used_at
+      FROM question_bank_items q
+      LEFT JOIN question_notebook_bookmarks b ON b.question_id = q.id
+      LEFT JOIN (SELECT question_id, COUNT(*) AS usage_count, MAX(created_at) AS last_used_at FROM question_bank_usage GROUP BY question_id) u ON u.question_id = q.id
+      WHERE q.id = ?`, [id]);
+    const row = rows[0];
+    if (!row) return undefined;
+    const item = this.mapQuestionBankItem(row);
+    return {
+      ...item,
+      bookmarked: Number(row.notebook_bookmarked ?? 0) === 1,
+      version: Math.max(0, Number(row.notebook_version ?? 0)),
+      categories: await this.listQuestionNotebookCategoriesForQuestion(item.id),
+      usageCount: Math.max(0, Number(row.usage_count ?? 0)),
+      lastUsedAt: String(row.last_used_at ?? ''),
+    };
+  }
+
+  async setQuestionNotebookBookmark(input: QuestionNotebookBookmarkInput): Promise<QuestionNotebookEntry> {
+    const questionId = requireNonEmpty(input.questionId, '题目 ID 不能为空');
+    const question = await this.getQuestionBankItem(questionId);
+    if (!question) throw new Error('题目不存在或已不在本地题库');
+    const timestamp = now();
+    const current = (await this.all(`SELECT version FROM question_notebook_bookmarks WHERE question_id = ?`, [questionId]))[0];
+    const currentVersion = current ? Number(current.version ?? 1) : 0;
+    if (input.version != null && Math.trunc(input.version) !== currentVersion) throw new Error('题目收藏版本冲突，请刷新后重试');
+    if (current) {
+      const changed = await this.runWithChanges(`UPDATE question_notebook_bookmarks SET bookmarked = ?, version = version + 1, updated_at = ? WHERE question_id = ? AND version = ?`, [input.bookmarked ? 1 : 0, timestamp, questionId, currentVersion]);
+      if (!changed) throw new Error('题目收藏版本冲突，请刷新后重试');
+    } else {
+      await this.run(`INSERT INTO question_notebook_bookmarks (question_id, bookmarked, version, created_at, updated_at) VALUES (?, ?, 1, ?, ?)`, [questionId, input.bookmarked ? 1 : 0, timestamp, timestamp]);
+    }
+    const updated = await this.getQuestionNotebookEntry(questionId);
+    if (!updated) throw new Error('题目收藏更新后无法回读');
+    return updated;
+  }
+
+  async listQuestionNotebookCategories(includeDeleted = false): Promise<QuestionNotebookCategory[]> {
+    const where = includeDeleted ? '' : `WHERE c.status = 'active'`;
+    const rows = await this.all(`SELECT c.*, COUNT(l.question_id) AS entry_count FROM question_notebook_categories c LEFT JOIN question_notebook_category_links l ON l.category_id = c.id ${where} GROUP BY c.id ORDER BY c.name`, []);
+    return rows.map((row) => this.mapQuestionNotebookCategory(row));
+  }
+
+  async createQuestionNotebookCategory(input: QuestionNotebookCategoryInput): Promise<QuestionNotebookCategory> {
+    const name = requireNonEmpty(input.name, '题目分类名称不能为空').slice(0, 100);
+    const timestamp = now();
+    const category: QuestionNotebookCategory = { id: `question_category_${randomUUID()}`, name, status: 'active', version: 1, entryCount: 0, createdAt: timestamp, updatedAt: timestamp, deletedAt: '' };
+    try {
+      await this.run(`INSERT INTO question_notebook_categories (id, name, status, version, created_at, updated_at, deleted_at) VALUES (?, ?, 'active', 1, ?, ?, '')`, [category.id, category.name, timestamp, timestamp]);
+    } catch (error) {
+      if (String(error).toLowerCase().includes('unique')) throw new Error('题目分类名称已存在');
+      throw error;
+    }
+    return category;
+  }
+
+  async updateQuestionNotebookCategory(id: string, input: QuestionNotebookCategoryUpdateInput): Promise<QuestionNotebookCategory> {
+    const categoryId = requireNonEmpty(id, '题目分类 ID 不能为空');
+    const name = requireNonEmpty(input.name, '题目分类名称不能为空').slice(0, 100);
+    const changed = await this.runWithChanges(`UPDATE question_notebook_categories SET name = ?, version = version + 1, updated_at = ? WHERE id = ? AND status = 'active' AND version = ?`, [name, now(), categoryId, Math.trunc(input.version)]);
+    if (!changed) throw new Error('题目分类不存在、已删除或版本冲突');
+    const updated = (await this.listQuestionNotebookCategories(true)).find((item) => item.id === categoryId);
+    if (!updated) throw new Error('题目分类更新后无法回读');
+    return updated;
+  }
+
+  async deleteQuestionNotebookCategory(id: string): Promise<QuestionNotebookCategory> {
+    const categoryId = requireNonEmpty(id, '题目分类 ID 不能为空');
+    const changed = await this.runWithChanges(`UPDATE question_notebook_categories SET status = 'deleted', version = version + 1, updated_at = ?, deleted_at = ? WHERE id = ? AND status = 'active'`, [now(), now(), categoryId]);
+    if (!changed) throw new Error('题目分类不存在或已删除');
+    const deleted = (await this.listQuestionNotebookCategories(true)).find((item) => item.id === categoryId);
+    if (!deleted) throw new Error('题目分类删除后无法回读');
+    return deleted;
+  }
+
+  async restoreQuestionNotebookCategory(id: string): Promise<QuestionNotebookCategory> {
+    const categoryId = requireNonEmpty(id, '题目分类 ID 不能为空');
+    const changed = await this.runWithChanges(`UPDATE question_notebook_categories SET status = 'active', version = version + 1, updated_at = ?, deleted_at = '' WHERE id = ? AND status = 'deleted'`, [now(), categoryId]);
+    if (!changed) throw new Error('题目分类不存在或未删除');
+    const restored = (await this.listQuestionNotebookCategories(true)).find((item) => item.id === categoryId);
+    if (!restored) throw new Error('题目分类恢复后无法回读');
+    return restored;
+  }
+
+  async addQuestionNotebookCategory(questionId: string, categoryId: string): Promise<QuestionNotebookEntry> {
+    const qid = requireNonEmpty(questionId, '题目 ID 不能为空');
+    const cid = requireNonEmpty(categoryId, '题目分类 ID 不能为空');
+    if (!(await this.getQuestionBankItem(qid))) throw new Error('题目不存在或已不在本地题库');
+    const category = (await this.listQuestionNotebookCategories()).find((item) => item.id === cid);
+    if (!category) throw new Error('题目分类不存在、已删除或不可用');
+    await this.run(`INSERT OR IGNORE INTO question_notebook_category_links (question_id, category_id, created_at) VALUES (?, ?, ?)`, [qid, cid, now()]);
+    const entry = await this.getQuestionNotebookEntry(qid);
+    if (!entry) throw new Error('题目分类更新后无法回读');
+    return entry;
+  }
+
+  async removeQuestionNotebookCategory(questionId: string, categoryId: string): Promise<QuestionNotebookEntry> {
+    const qid = requireNonEmpty(questionId, '题目 ID 不能为空');
+    const cid = requireNonEmpty(categoryId, '题目分类 ID 不能为空');
+    await this.runWithChanges(`DELETE FROM question_notebook_category_links WHERE question_id = ? AND category_id = ?`, [qid, cid]);
+    const entry = await this.getQuestionNotebookEntry(qid);
+    if (!entry) throw new Error('题目不存在或已不在本地题库');
+    return entry;
+  }
+
+  async recordQuestionBankUsage(input: QuestionNotebookUsageInput): Promise<QuestionNotebookUsage> {
+    const questionId = requireNonEmpty(input.questionId, '题目 ID 不能为空');
+    if (!(await this.getQuestionBankItem(questionId))) throw new Error('题目不存在或已不在本地题库');
+    const usageType = input.usageType === 'exercise_set' || input.usageType === 'learning_record' ? input.usageType : 'manual';
+    const usageId = String(input.usageId ?? '').trim().slice(0, 160);
+    const id = `question_usage_${randomUUID()}`;
+    const createdAt = now();
+    await this.run(`INSERT OR IGNORE INTO question_bank_usage (id, question_id, usage_type, usage_id, metadata_json, created_at) VALUES (?, ?, ?, ?, ?, ?)`, [id, questionId, usageType, usageId, JSON.stringify(input.metadata ?? {}), createdAt]);
+    const row = (await this.all(`SELECT * FROM question_bank_usage WHERE question_id = ? AND usage_type = ? AND usage_id = ? ORDER BY created_at DESC LIMIT 1`, [questionId, usageType, usageId]))[0];
+    if (!row) throw new Error('题目历史引用写入后无法回读');
+    return this.mapQuestionNotebookUsage(row);
+  }
+
+  async listQuestionNotebookUsage(questionId: string, limit = 20): Promise<QuestionNotebookUsage[]> {
+    const id = requireNonEmpty(questionId, '题目 ID 不能为空');
+    const rows = await this.all(`SELECT * FROM question_bank_usage WHERE question_id = ? ORDER BY created_at DESC LIMIT ?`, [id, Math.max(1, Math.min(Math.trunc(limit), 50))]);
+    return rows.map((row) => this.mapQuestionNotebookUsage(row));
+  }
+
   async saveExerciseSetFromDraft(studentId: string, draft: ExerciseSetDraftPayload): Promise<ExerciseSet> {
     requireNonEmpty(studentId, '题组缺少学生 ID');
     const title = requireNonEmpty(draft.title || '小智三元题组', '题组标题不能为空');
@@ -2351,6 +4019,11 @@ export class OmniEduStore {
         exerciseSet.updatedAt,
       ],
     );
+    for (const questionId of exerciseSet.sourceQuestionIds) {
+      if (await this.getQuestionBankItem(questionId)) {
+        await this.recordQuestionBankUsage({ questionId, usageType: 'exercise_set', usageId: exerciseSet.id, metadata: { studentId, title: exerciseSet.title } });
+      }
+    }
     await this.touchStudent(studentId);
     return exerciseSet;
   }
@@ -2545,9 +4218,77 @@ export class OmniEduStore {
   }
 
   async exportDataRoot(destinationRoot: string): Promise<ExportDataRootResult> {
-    const exportPath = join(destinationRoot, `OmniEduData-backup-${new Date().toISOString().replace(/[:.]/g, '-')}`);
+    const destination = destinationRoot.trim();
+    if (!destination) throw new Error('备份目标目录不能为空');
+    if (await isInsideRoot(this.dataRoot, destination)) {
+      throw new Error('备份目标不能位于当前数据目录内，避免递归覆盖源数据');
+    }
+    const exportPath = join(destination, `OmniEduData-backup-${new Date().toISOString().replace(/[:.]/g, '-')}`);
     const fileCount = this.copyDirectory(this.dataRoot, exportPath);
-    return { exportPath, fileCount };
+    const manifestPath = join(exportPath, 'omni-edu-backup-manifest.v1.json');
+    const entries = await this.collectBackupManifestEntries(exportPath);
+    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries }, null, 2), 'utf8');
+    const verification = await this.verifyDataBackup(exportPath);
+    if (!verification.verified) throw new Error(`备份完整性验证失败：${verification.errorMessage || '文件校验不一致'}`);
+    return { exportPath, fileCount, manifestPath, verified: true };
+  }
+
+  async verifyDataBackup(backupPath: string): Promise<DataBackupVerificationResult> {
+    const resolvedBackup = backupPath.trim();
+    const manifestPath = join(resolvedBackup, 'omni-edu-backup-manifest.v1.json');
+    const base: DataBackupVerificationResult = {
+      backupPath: resolvedBackup,
+      manifestPath,
+      verified: false,
+      fileCount: 0,
+      missingFiles: [],
+      changedFiles: [],
+      unexpectedFiles: [],
+    };
+    try {
+      if (!existsSync(manifestPath)) return { ...base, errorMessage: '备份清单不存在或不是 Omni-Edu v1 备份' };
+      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string; files?: Array<{ path?: string; size?: number; sha256?: string }> };
+      if (parsed.schemaVersion !== 'omni-edu-backup-manifest.v1' || !Array.isArray(parsed.files)) return { ...base, errorMessage: '备份清单版本或结构无效' };
+      const expected = new Map(parsed.files.flatMap((item) => {
+        const relativePath = String(item.path ?? '').replace(/\\/g, '/');
+        const sha256 = String(item.sha256 ?? '');
+        const size = Number(item.size ?? -1);
+        if (!relativePath || relativePath.startsWith('/') || relativePath.includes('..') || !/^[a-f0-9]{64}$/.test(sha256) || !Number.isFinite(size) || size < 0) return [];
+        return [[relativePath, { size, sha256 }]] as const;
+      }));
+      if (expected.size !== parsed.files.length) return { ...base, errorMessage: '备份清单包含非法路径或重复条目' };
+      const actual = await this.collectBackupManifestEntries(resolvedBackup);
+      const actualMap = new Map(actual.map((item) => [item.path, item]));
+      const missingFiles = [...expected.keys()].filter((path) => !actualMap.has(path));
+      const changedFiles: string[] = [];
+      for (const [path, expectedItem] of expected.entries()) {
+        const actualItem = actualMap.get(path);
+        if (actualItem && (actualItem.size !== expectedItem.size || actualItem.sha256 !== expectedItem.sha256)) changedFiles.push(path);
+      }
+      const unexpectedFiles = [...actualMap.keys()].filter((path) => !expected.has(path));
+      return { ...base, verified: !missingFiles.length && !changedFiles.length && !unexpectedFiles.length, fileCount: expected.size, missingFiles, changedFiles, unexpectedFiles, errorMessage: missingFiles.length || changedFiles.length || unexpectedFiles.length ? '备份文件与清单不一致' : undefined };
+    } catch (error) {
+      return { ...base, errorMessage: error instanceof Error ? error.message : '备份清单读取失败' };
+    }
+  }
+
+  private async collectBackupManifestEntries(root: string): Promise<Array<{ path: string; size: number; sha256: string }>> {
+    const files: string[] = [];
+    const walk = (current: string) => {
+      if (!existsSync(current)) return;
+      for (const entry of readdirSync(current, { withFileTypes: true })) {
+        if (entry.name === 'omni-edu-backup-manifest.v1.json') continue;
+        const fullPath = join(current, entry.name);
+        if (entry.isDirectory()) walk(fullPath);
+        else if (entry.isFile()) files.push(fullPath);
+      }
+    };
+    walk(root);
+    const entries = await Promise.all(files.map(async (filePath) => {
+      const stat = statSync(filePath);
+      return { path: filePath.slice(root.length + 1).replace(/\\/g, '/'), size: stat.size, sha256: await hashFileSha256(filePath) };
+    }));
+    return entries.sort((a, b) => a.path.localeCompare(b.path));
   }
 
   async exportDocumentArtifact(input: DocumentArtifactExportInput): Promise<DocumentArtifactExportResult> {
@@ -2818,9 +4559,11 @@ export class OmniEduStore {
     const maximumTeacherRoundsToUseful = Number(input.maximumTeacherRoundsToUseful ?? 2);
     const minimumReplayExperimentCount = Number(input.minimumReplayExperimentCount ?? 0);
     const minimumReplayImprovementRate = Number(input.minimumReplayImprovementRate ?? 0.6);
+    const minimumLiveLinkedReplayCount = Number(input.minimumLiveLinkedReplayCount ?? 0);
     const minimumModelGradeSamples = Number(input.minimumModelGradeSamples ?? 0);
     const minimumModelGradeScore = Number(input.minimumModelGradeScore ?? 4);
     const minimumGradeAppropriatenessScore = Number(input.minimumGradeAppropriatenessScore ?? 4);
+    const minimumRunLinkedModelGradeCount = Number(input.minimumRunLinkedModelGradeCount ?? 0);
     const gates: AiRegressionGate[] = [
       {
         id: 'agent_runs_terminal',
@@ -2946,6 +4689,26 @@ export class OmniEduStore {
           minimumGradeAppropriatenessScore,
         },
       },
+      {
+        id: 'live_evidence_binding_gate',
+        label: 'Live 输出证据链绑定',
+        status: snapshot.usabilityReplay.liveLinkedCount < minimumLiveLinkedReplayCount
+          || snapshot.modelGrader.runLinkedCount < minimumRunLinkedModelGradeCount
+            ? 'failed'
+            : snapshot.usabilityReplay.liveLinkedCount === 0 && snapshot.modelGrader.runLinkedCount === 0
+              ? 'warning'
+              : 'passed',
+        detail: snapshot.usabilityReplay.liveLinkedCount === 0 && snapshot.modelGrader.runLinkedCount === 0
+          ? '当前窗口没有绑定 runId 的 after review/replay/model grade；无法证明 live 输出已进入质量证据链。'
+          : `liveLinkedReplay=${snapshot.usabilityReplay.liveLinkedCount}, runLinkedModelGrades=${snapshot.modelGrader.runLinkedCount}, tokenKnownModelGrades=${snapshot.modelGrader.tokenKnownCount}。`,
+        evidence: {
+          liveLinkedReplayCount: snapshot.usabilityReplay.liveLinkedCount,
+          runLinkedModelGradeCount: snapshot.modelGrader.runLinkedCount,
+          tokenKnownModelGradeCount: snapshot.modelGrader.tokenKnownCount,
+          minimumLiveLinkedReplayCount,
+          minimumRunLinkedModelGradeCount,
+        },
+      },
     ];
     if (input.expectedEvalTotal != null || input.expectedEvalPassed != null) {
       const total = Number(input.expectedEvalTotal ?? 0);
@@ -3068,6 +4831,145 @@ export class OmniEduStore {
         updated_at TEXT NOT NULL,
         FOREIGN KEY (student_id) REFERENCES students(id)
       );
+      CREATE TABLE IF NOT EXISTS teacher_notebooks (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        color TEXT NOT NULL DEFAULT '#3B82F6',
+        icon TEXT NOT NULL DEFAULT 'book',
+        status TEXT NOT NULL DEFAULT 'active',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        deleted_at TEXT NOT NULL DEFAULT ''
+      );
+      CREATE TABLE IF NOT EXISTS teacher_notebook_records (
+        id TEXT PRIMARY KEY,
+        notebook_id TEXT NOT NULL,
+        record_type TEXT NOT NULL,
+        title TEXT NOT NULL,
+        summary TEXT NOT NULL DEFAULT '',
+        user_query TEXT NOT NULL DEFAULT '',
+        output TEXT NOT NULL DEFAULT '',
+        metadata_json TEXT NOT NULL DEFAULT '{}',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        deleted_at TEXT NOT NULL DEFAULT '',
+        FOREIGN KEY (notebook_id) REFERENCES teacher_notebooks(id)
+      );
+      CREATE TABLE IF NOT EXISTS teaching_books (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        description TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'draft',
+        language TEXT NOT NULL DEFAULT 'zh-CN',
+        target_level TEXT NOT NULL DEFAULT '',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        deleted_at TEXT NOT NULL DEFAULT ''
+      );
+      CREATE TABLE IF NOT EXISTS teaching_book_chapters (
+        id TEXT PRIMARY KEY,
+        book_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        learning_objectives_json TEXT NOT NULL DEFAULT '[]',
+        content_type TEXT NOT NULL DEFAULT 'theory',
+        prerequisites_json TEXT NOT NULL DEFAULT '[]',
+        summary TEXT NOT NULL DEFAULT '',
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (book_id) REFERENCES teaching_books(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS teaching_book_pages (
+        id TEXT PRIMARY KEY,
+        book_id TEXT NOT NULL,
+        chapter_id TEXT NOT NULL,
+        title TEXT NOT NULL,
+        learning_objectives_json TEXT NOT NULL DEFAULT '[]',
+        content_type TEXT NOT NULL DEFAULT 'theory',
+        status TEXT NOT NULL DEFAULT 'pending',
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        version INTEGER NOT NULL DEFAULT 1,
+        error TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (book_id) REFERENCES teaching_books(id) ON DELETE CASCADE,
+        FOREIGN KEY (chapter_id) REFERENCES teaching_book_chapters(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS teaching_book_blocks (
+        id TEXT PRIMARY KEY,
+        page_id TEXT NOT NULL,
+        type TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        title TEXT NOT NULL DEFAULT '',
+        params_json TEXT NOT NULL DEFAULT '{}',
+        payload_json TEXT NOT NULL DEFAULT '{}',
+        source_anchors_json TEXT NOT NULL DEFAULT '[]',
+        metadata_json TEXT NOT NULL DEFAULT '{}',
+        sort_order INTEGER NOT NULL DEFAULT 0,
+        version INTEGER NOT NULL DEFAULT 1,
+        error TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (page_id) REFERENCES teaching_book_pages(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS teaching_book_sources (
+        id TEXT PRIMARY KEY,
+        book_id TEXT NOT NULL,
+        kind TEXT NOT NULL,
+        ref TEXT NOT NULL,
+        title TEXT NOT NULL DEFAULT '',
+        snippet TEXT NOT NULL DEFAULT '',
+        fingerprint TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'available',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        UNIQUE(book_id, kind, ref),
+        FOREIGN KEY (book_id) REFERENCES teaching_books(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS teaching_book_invalidations (
+        id TEXT PRIMARY KEY,
+        book_id TEXT NOT NULL,
+        kind TEXT NOT NULL,
+        ref TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'open',
+        stale_page_ids_json TEXT NOT NULL DEFAULT '[]',
+        stale_block_ids_json TEXT NOT NULL DEFAULT '[]',
+        detected_at TEXT NOT NULL,
+        resolved_at TEXT NOT NULL DEFAULT '',
+        UNIQUE(book_id, kind, ref),
+        FOREIGN KEY (book_id) REFERENCES teaching_books(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS teaching_book_patches (
+        id TEXT PRIMARY KEY,
+        book_id TEXT NOT NULL,
+        page_id TEXT NOT NULL,
+        block_id TEXT NOT NULL,
+        base_version INTEGER NOT NULL,
+        result_version INTEGER NOT NULL DEFAULT 0,
+        operation TEXT NOT NULL DEFAULT 'replace_block',
+        before_title TEXT NOT NULL DEFAULT '',
+        after_title TEXT NOT NULL DEFAULT '',
+        before_payload_json TEXT NOT NULL DEFAULT '{}',
+        after_payload_json TEXT NOT NULL DEFAULT '{}',
+        reason TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'draft',
+        error TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        applied_at TEXT NOT NULL DEFAULT '',
+        undone_at TEXT NOT NULL DEFAULT '',
+        selection_start INTEGER NOT NULL DEFAULT 0,
+        selection_end INTEGER NOT NULL DEFAULT 0,
+        selected_text_hash TEXT NOT NULL DEFAULT '',
+        selected_text TEXT NOT NULL DEFAULT '',
+        FOREIGN KEY (book_id) REFERENCES teaching_books(id) ON DELETE CASCADE,
+        FOREIGN KEY (page_id) REFERENCES teaching_book_pages(id) ON DELETE CASCADE,
+        FOREIGN KEY (block_id) REFERENCES teaching_book_blocks(id) ON DELETE CASCADE
+      );
       CREATE TABLE IF NOT EXISTS attachments (
         id TEXT PRIMARY KEY,
         student_id TEXT NOT NULL,
@@ -3131,6 +5033,41 @@ export class OmniEduStore {
         tags TEXT NOT NULL DEFAULT '[]',
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS question_notebook_categories (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL UNIQUE,
+        status TEXT NOT NULL DEFAULT 'active',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        deleted_at TEXT NOT NULL DEFAULT ''
+      );
+      CREATE TABLE IF NOT EXISTS question_notebook_bookmarks (
+        question_id TEXT PRIMARY KEY,
+        bookmarked INTEGER NOT NULL DEFAULT 1,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (question_id) REFERENCES question_bank_items(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS question_notebook_category_links (
+        question_id TEXT NOT NULL,
+        category_id TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        PRIMARY KEY (question_id, category_id),
+        FOREIGN KEY (question_id) REFERENCES question_bank_items(id) ON DELETE CASCADE,
+        FOREIGN KEY (category_id) REFERENCES question_notebook_categories(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS question_bank_usage (
+        id TEXT PRIMARY KEY,
+        question_id TEXT NOT NULL,
+        usage_type TEXT NOT NULL DEFAULT 'manual',
+        usage_id TEXT NOT NULL DEFAULT '',
+        metadata_json TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL,
+        UNIQUE (question_id, usage_type, usage_id),
+        FOREIGN KEY (question_id) REFERENCES question_bank_items(id) ON DELETE CASCADE
       );
       CREATE TABLE IF NOT EXISTS exercise_sets (
         id TEXT PRIMARY KEY,
@@ -3239,6 +5176,7 @@ export class OmniEduStore {
       );
       CREATE TABLE IF NOT EXISTS ai_agent_runs (
         id TEXT PRIMARY KEY,
+        parent_run_id TEXT NOT NULL DEFAULT '',
         session_id TEXT NOT NULL DEFAULT '',
         prompt TEXT NOT NULL,
         route TEXT NOT NULL,
@@ -3251,6 +5189,26 @@ export class OmniEduStore {
         completed_at TEXT,
         updated_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS ai_agent_run_requests (
+        run_id TEXT PRIMARY KEY,
+        request_json TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (run_id) REFERENCES ai_agent_runs(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS ai_agent_run_actions (
+        id TEXT PRIMARY KEY,
+        source_run_id TEXT NOT NULL,
+        action TEXT NOT NULL,
+        idempotency_key TEXT NOT NULL,
+        child_run_id TEXT NOT NULL,
+        request_json TEXT NOT NULL DEFAULT '{}',
+        created_at TEXT NOT NULL,
+        UNIQUE(source_run_id, action, idempotency_key),
+        FOREIGN KEY (source_run_id) REFERENCES ai_agent_runs(id) ON DELETE CASCADE,
+        FOREIGN KEY (child_run_id) REFERENCES ai_agent_runs(id) ON DELETE CASCADE
+      );
+      CREATE INDEX IF NOT EXISTS idx_ai_agent_run_actions_child ON ai_agent_run_actions(child_run_id, created_at DESC);
       CREATE TABLE IF NOT EXISTS ai_agent_events (
         id TEXT PRIMARY KEY,
         run_id TEXT NOT NULL,
@@ -3265,6 +5223,109 @@ export class OmniEduStore {
         created_at TEXT NOT NULL,
         FOREIGN KEY (run_id) REFERENCES ai_agent_runs(id) ON DELETE CASCADE
       );
+      CREATE TABLE IF NOT EXISTS ai_memory_documents (
+        id TEXT PRIMARY KEY,
+        layer TEXT NOT NULL DEFAULT 'L2',
+        surface TEXT NOT NULL,
+        title TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        UNIQUE(layer, surface)
+      );
+      CREATE TABLE IF NOT EXISTS ai_memory_entries (
+        id TEXT PRIMARY KEY,
+        document_id TEXT NOT NULL,
+        section TEXT NOT NULL DEFAULT 'Recent activity',
+        text TEXT NOT NULL,
+        refs_json TEXT NOT NULL DEFAULT '[]',
+        status TEXT NOT NULL DEFAULT 'active',
+        origin TEXT NOT NULL DEFAULT 'derived',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        deleted_at TEXT,
+        FOREIGN KEY (document_id) REFERENCES ai_memory_documents(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS ai_memory_revisions (
+        id TEXT PRIMARY KEY,
+        document_id TEXT NOT NULL,
+        entry_id TEXT NOT NULL,
+        action TEXT NOT NULL,
+        before_json TEXT,
+        after_json TEXT,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (document_id) REFERENCES ai_memory_documents(id) ON DELETE CASCADE,
+        FOREIGN KEY (entry_id) REFERENCES ai_memory_entries(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS ai_memory_l3_documents (
+        id TEXT PRIMARY KEY,
+        layer TEXT NOT NULL DEFAULT 'L3',
+        slot TEXT NOT NULL,
+        title TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        UNIQUE(layer, slot)
+      );
+      CREATE TABLE IF NOT EXISTS ai_memory_l3_entries (
+        id TEXT PRIMARY KEY,
+        document_id TEXT NOT NULL,
+        text TEXT NOT NULL,
+        source_documents_json TEXT NOT NULL DEFAULT '[]',
+        status TEXT NOT NULL DEFAULT 'active',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (document_id) REFERENCES ai_memory_l3_documents(id) ON DELETE CASCADE
+      );
+      CREATE TABLE IF NOT EXISTS ai_capability_checkpoints (
+        id TEXT PRIMARY KEY,
+        run_id TEXT NOT NULL,
+        capability_name TEXT NOT NULL,
+        checkpoint_type TEXT NOT NULL,
+        state_json TEXT NOT NULL DEFAULT '{}',
+        status TEXT NOT NULL DEFAULT 'pending',
+        expires_at TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        resolved_at TEXT,
+        FOREIGN KEY (run_id) REFERENCES ai_agent_runs(id) ON DELETE CASCADE
+      );
+      CREATE INDEX IF NOT EXISTS idx_ai_capability_checkpoints_run_status
+        ON ai_capability_checkpoints(run_id, status, created_at DESC);
+      CREATE TABLE IF NOT EXISTS ai_mastery_questions (
+        id TEXT PRIMARY KEY,
+        run_id TEXT NOT NULL,
+        turn_id TEXT NOT NULL,
+        student_id TEXT NOT NULL,
+        knowledge_point_id TEXT NOT NULL,
+        knowledge_point_name TEXT NOT NULL,
+        stem TEXT NOT NULL,
+        options_json TEXT NOT NULL DEFAULT '[]',
+        expected_answer TEXT NOT NULL,
+        status TEXT NOT NULL DEFAULT 'pending',
+        answer TEXT NOT NULL DEFAULT '',
+        is_correct INTEGER,
+        created_at TEXT NOT NULL,
+        answered_at TEXT,
+        graded_at TEXT,
+        FOREIGN KEY (run_id) REFERENCES ai_agent_runs(id) ON DELETE CASCADE
+      );
+      CREATE INDEX IF NOT EXISTS idx_ai_mastery_questions_run_status
+        ON ai_mastery_questions(run_id, status, created_at DESC);
+      CREATE TABLE IF NOT EXISTS ai_mastery_paths (
+        id TEXT PRIMARY KEY,
+        student_id TEXT NOT NULL,
+        version INTEGER NOT NULL DEFAULT 1,
+        mode TEXT NOT NULL DEFAULT 'replace',
+        modules_json TEXT NOT NULL DEFAULT '[]',
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+      );
+      CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_mastery_paths_student_active
+        ON ai_mastery_paths(student_id) WHERE status = 'active';
       CREATE TABLE IF NOT EXISTS ai_conversation_folders (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
@@ -3358,6 +5419,8 @@ export class OmniEduStore {
       CREATE TABLE IF NOT EXISTS ai_model_grades (
         id TEXT PRIMARY KEY,
         sample_id TEXT NOT NULL,
+        run_id TEXT NOT NULL DEFAULT '',
+        session_id TEXT NOT NULL DEFAULT '',
         prompt TEXT NOT NULL,
         answer_markdown TEXT NOT NULL,
         route TEXT NOT NULL,
@@ -3366,6 +5429,8 @@ export class OmniEduStore {
         model_under_review TEXT NOT NULL DEFAULT '',
         grader_model TEXT NOT NULL DEFAULT '',
         grader_mode TEXT NOT NULL DEFAULT 'deterministic_proxy',
+        prompt_version TEXT NOT NULL DEFAULT '',
+        total_tokens INTEGER NOT NULL DEFAULT 0,
         evidence_score INTEGER NOT NULL,
         actionability_score INTEGER NOT NULL,
         safety_score INTEGER NOT NULL,
@@ -3481,6 +5546,16 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_mistake_image_student ON mistake_image_analyses(student_id, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_mistake_image_record ON mistake_image_analyses(record_id, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_question_bank_lookup ON question_bank_items(subject, knowledge_point, difficulty);
+      CREATE INDEX IF NOT EXISTS idx_question_notebook_bookmark ON question_notebook_bookmarks(bookmarked, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_question_notebook_category ON question_notebook_category_links(category_id, question_id);
+      CREATE INDEX IF NOT EXISTS idx_question_bank_usage ON question_bank_usage(question_id, created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_teaching_book_updated ON teaching_books(updated_at DESC, deleted_at);
+      CREATE INDEX IF NOT EXISTS idx_teaching_chapter_book ON teaching_book_chapters(book_id, sort_order);
+      CREATE INDEX IF NOT EXISTS idx_teaching_page_book ON teaching_book_pages(book_id, sort_order);
+      CREATE INDEX IF NOT EXISTS idx_teaching_block_page ON teaching_book_blocks(page_id, sort_order);
+      CREATE INDEX IF NOT EXISTS idx_teaching_source_book ON teaching_book_sources(book_id, kind, ref);
+      CREATE INDEX IF NOT EXISTS idx_teaching_invalidation_book ON teaching_book_invalidations(book_id, status, detected_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_teaching_patch_book ON teaching_book_patches(book_id, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_exercise_sets_student ON exercise_sets(student_id, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_local_tasks_status ON local_tasks(status, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_sync_operations_status ON sync_operations(sync_status, updated_at DESC);
@@ -3490,6 +5565,9 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_ai_confirmation_run ON ai_confirmation_items(run_id, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_agent_runs_session ON ai_agent_runs(session_id, created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_agent_events_run ON ai_agent_events(run_id, sequence ASC);
+      CREATE INDEX IF NOT EXISTS idx_ai_memory_entries_document ON ai_memory_entries(document_id, status, updated_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_memory_revisions_entry ON ai_memory_revisions(entry_id, created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_ai_memory_l3_entries_document ON ai_memory_l3_entries(document_id, status, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_conversation_sessions_folder ON ai_conversation_sessions(folder_id, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_ai_conversation_messages_session ON ai_conversation_messages(session_id, created_at ASC);
       CREATE INDEX IF NOT EXISTS idx_document_artifacts_session ON document_artifacts(session_id, updated_at DESC);
@@ -3506,7 +5584,6 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_ai_model_grades_mode ON ai_model_grades(grader_mode, reviewed_at DESC);
       CREATE INDEX IF NOT EXISTS idx_teacher_resources_status ON teacher_resources(parse_status, updated_at DESC);
       CREATE INDEX IF NOT EXISTS idx_resource_chunks_resource ON resource_chunks(resource_id, chunk_index);
-      CREATE INDEX IF NOT EXISTS idx_resource_chunks_metadata ON resource_chunks(subject, grade, knowledge_point, question_type);
       CREATE INDEX IF NOT EXISTS idx_knowledge_edges_source ON knowledge_edges(source_node_id);
       CREATE INDEX IF NOT EXISTS idx_ai_tool_runs_task ON ai_tool_runs(task_id);
     `);
@@ -3517,6 +5594,10 @@ export class OmniEduStore {
     }
     if (!hasColumn(reportColumns, 'quality_checks_json')) {
       await this.run(`ALTER TABLE review_reports ADD COLUMN quality_checks_json TEXT NOT NULL DEFAULT '[]'`);
+    }
+    const aiAgentRunColumns = await this.all(`PRAGMA table_info(ai_agent_runs)`);
+    if (!hasColumn(aiAgentRunColumns, 'parent_run_id')) {
+      await this.run(`ALTER TABLE ai_agent_runs ADD COLUMN parent_run_id TEXT NOT NULL DEFAULT ''`);
     }
     const aiFolderColumns = await this.all(`PRAGMA table_info(ai_conversation_folders)`);
     if (!hasColumn(aiFolderColumns, 'archived_at')) {
@@ -3553,6 +5634,29 @@ export class OmniEduStore {
     if (!hasColumn(edgeColumns, 'evidence_kind')) {
       await this.run(`ALTER TABLE knowledge_edges ADD COLUMN evidence_kind TEXT NOT NULL DEFAULT 'inferred'`);
     }
+    const modelGradeColumns = await this.all(`PRAGMA table_info(ai_model_grades)`);
+    for (const [column, definition] of [
+      ['run_id', `TEXT NOT NULL DEFAULT ''`],
+      ['session_id', `TEXT NOT NULL DEFAULT ''`],
+      ['prompt_version', `TEXT NOT NULL DEFAULT ''`],
+      ['total_tokens', `INTEGER NOT NULL DEFAULT 0`],
+    ] as const) {
+      if (!hasColumn(modelGradeColumns, column)) {
+        await this.run(`ALTER TABLE ai_model_grades ADD COLUMN ${column} ${definition}`);
+      }
+    }
+    const teachingPatchColumns = await this.all(`PRAGMA table_info(teaching_book_patches)`);
+    for (const [column, definition] of [
+      ['selection_start', `INTEGER NOT NULL DEFAULT 0`],
+      ['selection_end', `INTEGER NOT NULL DEFAULT 0`],
+      ['selected_text_hash', `TEXT NOT NULL DEFAULT ''`],
+      ['selected_text', `TEXT NOT NULL DEFAULT ''`],
+    ] as const) {
+      if (!hasColumn(teachingPatchColumns, column)) {
+        await this.run(`ALTER TABLE teaching_book_patches ADD COLUMN ${column} ${definition}`);
+      }
+    }
+    await this.run(`CREATE INDEX IF NOT EXISTS idx_ai_model_grades_run ON ai_model_grades(run_id, reviewed_at DESC)`);
     await this.run(`CREATE INDEX IF NOT EXISTS idx_resource_chunks_metadata ON resource_chunks(subject, grade, knowledge_point, question_type)`);
     await this.seedPlatformDefaults();
     await this.rebuildRecordFtsIfEmpty();
@@ -3886,6 +5990,18 @@ export class OmniEduStore {
     return this.mapAiConfirmationItem(row);
   }
 
+  private async getAiCapabilityCheckpointOrThrow(id: string): Promise<AiCapabilityCheckpoint> {
+    const row = (await this.all(`SELECT * FROM ai_capability_checkpoints WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('能力 checkpoint 不存在');
+    return this.mapAiCapabilityCheckpoint(row);
+  }
+
+  private async getAiMasteryQuestionOrThrow(id: string): Promise<AiMasteryQuestion> {
+    const row = (await this.all(`SELECT * FROM ai_mastery_questions WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('Mastery 题目不存在');
+    return this.mapAiMasteryQuestion(row);
+  }
+
   private async getMistakeImageAnalysisOrThrow(id: string): Promise<MistakeImageAnalysis> {
     const row = (await this.all(`SELECT * FROM mistake_image_analyses WHERE id = ?`, [id]))[0];
     if (!row) throw new Error('错题图片解析记录不存在');
@@ -3912,6 +6028,34 @@ export class OmniEduStore {
     if (item.actionType === 'save_exercise_set') {
       const exerciseSet = await this.createExerciseSetFromConfirmation(item.payload);
       return { exerciseSet };
+    }
+    if (item.actionType === 'save_mastery_state') {
+      const studentId = requireNonEmpty(item.payload.studentId, 'Mastery confirmation missing studentId');
+      const student = (await this.listStudents('')).find((candidate) => candidate.id === studentId);
+      if (!student) throw new Error('Student does not exist');
+      if (item.payload.masteryOperation === 'build') {
+        const pathPayload = item.payload.masteryPath;
+        if (!pathPayload?.modules?.length) throw new Error('Mastery path confirmation missing modules');
+        const masteryPath = await this.upsertAiMasteryPath({ studentId, mode: pathPayload.mode, modules: pathPayload.modules });
+        return { masteryPath };
+      }
+      const assessment = item.payload.masteryAssessment;
+      if (!assessment) throw new Error('Mastery assessment confirmation missing payload');
+      if (!['concept', 'design'].includes(assessment.knowledgeType)) throw new Error('Only concept/design assessment can be confirmed');
+      await this.createRecord({
+        studentId,
+        recordType: 'mastery_attempt',
+        subject: 'mastery_assessment',
+        title: `Mastery assessment: ${assessment.knowledgePointName}`,
+        content: JSON.stringify({
+          knowledgePoint: assessment.knowledgePointName,
+          knowledgeType: assessment.knowledgeType,
+          isCorrect: assessment.passed,
+          feedback: assessment.feedback ?? '',
+        }),
+        tags: [assessment.knowledgePointName, 'mastery_assess'],
+      });
+      return { masteryAttempt: { studentId, knowledgePointId: assessment.knowledgePointId, passed: assessment.passed } };
     }
     throw new Error(`不支持的确认动作：${item.actionType}`);
   }
@@ -4023,6 +6167,15 @@ export class OmniEduStore {
     });
   }
 
+  private runWithChanges(sql: string, params: SqlValue[] = []) {
+    return new Promise<boolean>((resolveRun, reject) => {
+      this.db.run(sql, params, function onRun(error) {
+        if (error) reject(error);
+        else resolveRun(this.changes > 0);
+      });
+    });
+  }
+
   private all(sql: string, params: SqlValue[] = []) {
     return new Promise<Row[]>((resolveAll, reject) => {
       this.db.all(sql, params, (error, rows: Row[]) => {
@@ -4118,6 +6271,59 @@ export class OmniEduStore {
     };
   }
 
+  private async getTeacherNotebook(id: string): Promise<TeacherNotebook | null> {
+    const row = (await this.all(`SELECT n.*, COUNT(r.id) AS record_count FROM teacher_notebooks n LEFT JOIN teacher_notebook_records r ON r.notebook_id = n.id AND r.deleted_at = '' WHERE n.id = ? GROUP BY n.id`, [id]))[0];
+    return row ? this.mapTeacherNotebook(row) : null;
+  }
+
+  private async getTeacherNotebookOrThrow(id: string) {
+    const notebook = await this.getTeacherNotebook(id);
+    if (!notebook) throw new Error('备课本不存在');
+    return notebook;
+  }
+
+  private async getTeacherNotebookRecordOrThrow(id: string) {
+    const row = (await this.all(`SELECT * FROM teacher_notebook_records WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('备课本笔记不存在');
+    return this.mapTeacherNotebookRecord(row);
+  }
+
+  private mapTeacherNotebook(row: Row): TeacherNotebook {
+    const status = String(row.status ?? 'active');
+    return {
+      id: String(row.id ?? ''),
+      name: String(row.name ?? ''),
+      description: String(row.description ?? ''),
+      color: String(row.color ?? '#3B82F6'),
+      icon: String(row.icon ?? 'book'),
+      status: status === 'deleted' ? 'deleted' : 'active',
+      version: Math.max(1, Number(row.version ?? 1)),
+      recordCount: Number(row.record_count ?? 0),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+      deletedAt: String(row.deleted_at ?? ''),
+    };
+  }
+
+  private mapTeacherNotebookRecord(row: Row): TeacherNotebookRecord {
+    const type = String(row.record_type ?? 'chat');
+    const allowed = new Set(['solve', 'question', 'research', 'chat', 'co_writer', 'tutorbot', 'guided_learning']);
+    return {
+      id: String(row.id ?? ''),
+      notebookId: String(row.notebook_id ?? ''),
+      recordType: (allowed.has(type) ? type : 'chat') as TeacherNotebookRecord['recordType'],
+      title: String(row.title ?? ''),
+      summary: String(row.summary ?? ''),
+      userQuery: String(row.user_query ?? ''),
+      output: String(row.output ?? ''),
+      metadata: jsonObject(row.metadata_json),
+      version: Math.max(1, Number(row.version ?? 1)),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+      deletedAt: String(row.deleted_at ?? ''),
+    };
+  }
+
   private mapReport(row: Row): ReviewReport {
     return {
       id: String(row.id),
@@ -4133,6 +6339,52 @@ export class OmniEduStore {
       sourceRecordIds: jsonArray(row.source_record_ids),
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private mapTeachingBook(row: Row): TeachingBook {
+    return { id: String(row.id ?? ''), title: String(row.title ?? ''), description: String(row.description ?? ''), status: String(row.status ?? 'draft') as TeachingBookStatus, language: String(row.language ?? 'zh-CN'), targetLevel: String(row.target_level ?? ''), version: Math.max(1, Number(row.version ?? 1)), chapterCount: Math.max(0, Number(row.chapter_count ?? 0)), pageCount: Math.max(0, Number(row.page_count ?? 0)), sourceCount: Math.max(0, Number(row.source_count ?? 0)), createdAt: String(row.created_at ?? ''), updatedAt: String(row.updated_at ?? ''), deletedAt: String(row.deleted_at ?? '') };
+  }
+
+  private mapTeachingBookChapter(row: Row): TeachingBookChapter {
+    return { id: String(row.id ?? ''), bookId: String(row.book_id ?? ''), title: String(row.title ?? ''), learningObjectives: jsonArray(row.learning_objectives_json).slice(0, 12), contentType: String(row.content_type ?? 'theory') as TeachingBookChapter['contentType'], prerequisites: jsonArray(row.prerequisites_json).slice(0, 12), summary: String(row.summary ?? ''), order: Math.max(0, Number(row.sort_order ?? 0)), version: Math.max(1, Number(row.version ?? 1)), createdAt: String(row.created_at ?? ''), updatedAt: String(row.updated_at ?? '') };
+  }
+
+  private mapTeachingBookPage(row: Row): TeachingBookPage {
+    return { id: String(row.id ?? ''), bookId: String(row.book_id ?? ''), chapterId: String(row.chapter_id ?? ''), title: String(row.title ?? ''), learningObjectives: jsonArray(row.learning_objectives_json).slice(0, 12), contentType: String(row.content_type ?? 'theory') as TeachingBookPage['contentType'], status: String(row.status ?? 'pending') as TeachingPageStatus, order: Math.max(0, Number(row.sort_order ?? 0)), version: Math.max(1, Number(row.version ?? 1)), blockCount: Math.max(0, Number(row.block_count ?? 0)), error: String(row.error ?? ''), createdAt: String(row.created_at ?? ''), updatedAt: String(row.updated_at ?? '') };
+  }
+
+  private mapTeachingBookBlock(row: Row): TeachingBookBlock {
+    return { id: String(row.id ?? ''), pageId: String(row.page_id ?? ''), type: String(row.type ?? 'text') as TeachingBookBlock['type'], status: String(row.status ?? 'pending') as TeachingBlockStatus, title: String(row.title ?? ''), params: jsonObject(row.params_json), payload: jsonObject(row.payload_json), sourceAnchors: (jsonUnknownArray(row.source_anchors_json) as TeachingSourceRef[]).slice(0, 20), metadata: jsonObject(row.metadata_json), order: Math.max(0, Number(row.sort_order ?? 0)), version: Math.max(1, Number(row.version ?? 1)), error: String(row.error ?? ''), createdAt: String(row.created_at ?? ''), updatedAt: String(row.updated_at ?? '') };
+  }
+
+  private mapTeachingSource(row: Row): TeachingSourceRef {
+    return { kind: String(row.kind) as TeachingSourceRef['kind'], ref: String(row.ref ?? ''), title: String(row.title ?? ''), snippet: String(row.snippet ?? ''), fingerprint: String(row.fingerprint ?? ''), status: String(row.status ?? 'available') as TeachingSourceRef['status'] };
+  }
+
+  private mapTeachingBookPatch(row: Row): TeachingBookPatch {
+    return {
+      id: String(row.id ?? ''),
+      bookId: String(row.book_id ?? ''),
+      pageId: String(row.page_id ?? ''),
+      blockId: String(row.block_id ?? ''),
+      baseVersion: Math.max(1, Number(row.base_version ?? 1)),
+      resultVersion: Math.max(0, Number(row.result_version ?? 0)),
+      operation: (String(row.operation ?? 'replace_block') === 'replace_selection' || String(row.operation ?? '') === 'automark_selection' ? String(row.operation) : 'replace_block') as TeachingBookPatch['operation'],
+      beforeTitle: String(row.before_title ?? ''),
+      afterTitle: String(row.after_title ?? ''),
+      beforePayload: jsonObject(row.before_payload_json),
+      afterPayload: jsonObject(row.after_payload_json),
+      reason: String(row.reason ?? ''),
+      status: String(row.status ?? 'draft') as TeachingBookPatch['status'],
+      error: String(row.error ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      appliedAt: String(row.applied_at ?? ''),
+      undoneAt: String(row.undone_at ?? ''),
+      selectionStart: Math.max(0, Number(row.selection_start ?? 0)),
+      selectionEnd: Math.max(0, Number(row.selection_end ?? 0)),
+      selectedTextHash: String(row.selected_text_hash ?? ''),
+      selectedText: String(row.selected_text ?? ''),
     };
   }
 
@@ -4157,6 +6409,46 @@ export class OmniEduStore {
     };
   }
 
+  private async getQuestionBankItem(id: string): Promise<QuestionBankItem | undefined> {
+    const row = (await this.all(`SELECT * FROM question_bank_items WHERE id = ?`, [id]))[0];
+    return row ? this.mapQuestionBankItem(row) : undefined;
+  }
+
+  private mapQuestionNotebookCategory(row: Row): QuestionNotebookCategory {
+    return {
+      id: String(row.id ?? ''),
+      name: String(row.name ?? ''),
+      status: String(row.status ?? 'active') === 'deleted' ? 'deleted' : 'active',
+      version: Math.max(1, Number(row.version ?? 1)),
+      entryCount: Math.max(0, Number(row.entry_count ?? 0)),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+      deletedAt: String(row.deleted_at ?? ''),
+    };
+  }
+
+  private async listQuestionNotebookCategoriesForQuestion(questionId: string): Promise<QuestionNotebookCategory[]> {
+    const rows = await this.all(`SELECT c.*, COUNT(l2.question_id) AS entry_count
+      FROM question_notebook_categories c
+      INNER JOIN question_notebook_category_links l ON l.category_id = c.id AND l.question_id = ?
+      LEFT JOIN question_notebook_category_links l2 ON l2.category_id = c.id
+      WHERE c.status = 'active'
+      GROUP BY c.id ORDER BY c.name`, [questionId]);
+    return rows.map((row) => this.mapQuestionNotebookCategory(row));
+  }
+
+  private mapQuestionNotebookUsage(row: Row): QuestionNotebookUsage {
+    const usageType = String(row.usage_type ?? 'manual');
+    return {
+      id: String(row.id ?? ''),
+      questionId: String(row.question_id ?? ''),
+      usageType: usageType === 'exercise_set' || usageType === 'learning_record' ? usageType : 'manual',
+      usageId: String(row.usage_id ?? ''),
+      metadata: jsonObject(row.metadata_json),
+      createdAt: String(row.created_at ?? ''),
+    };
+  }
+
   private mapExerciseSet(row: Row): ExerciseSet {
     return {
       id: String(row.id),
@@ -4172,9 +6464,123 @@ export class OmniEduStore {
     };
   }
 
+  private async ensureAiMemoryDocument(surface: AiMemorySurface): Promise<AiMemoryDocument> {
+    const existing = await this.getAiMemoryDocument(surface);
+    if (existing) return existing.document;
+    const id = `memory_doc_${surface}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT OR IGNORE INTO ai_memory_documents (id, layer, surface, title, version, created_at, updated_at) VALUES (?, 'L2', ?, ?, 1, ?, ?)`,
+      [id, surface, `小智 ${surface} L2 summary`, timestamp, timestamp],
+    );
+    const created = await this.getAiMemoryDocument(surface);
+    if (!created) throw new Error('L2 memory document readback failed');
+    return created.document;
+  }
+
+  private async ensureAiMemoryL3Document(slot: AiMemoryL3Slot): Promise<AiMemoryL3Document> {
+    const existing = await this.getAiMemoryL3Document(slot);
+    if (existing) return existing.document;
+    const now = new Date().toISOString();
+    const id = `memory_l3_${randomUUID()}`;
+    await this.run(`INSERT OR IGNORE INTO ai_memory_l3_documents (id, layer, slot, title, version, created_at, updated_at) VALUES (?, 'L3', ?, ?, 1, ?, ?)`, [id, slot, `L3 ${slot}`, now, now]);
+    const created = await this.getAiMemoryL3Document(slot);
+    if (!created) throw new Error('L3 document create readback failed');
+    return created.document;
+  }
+
+  private async validateAiMemoryRefs(refs: string[]) {
+    const unique = [...new Set((Array.isArray(refs) ? refs : []).map((ref) => String(ref ?? '').trim()).filter(Boolean))];
+    if (!unique.length) throw new Error('L2 memory entry requires at least one evidence ref');
+    if (unique.length > AI_MEMORY_REF_MAX) throw new Error('L2 memory entry supports at most 8 evidence refs');
+    const result: Array<{ ref: string; kind: 'run' | 'event'; id: string; label: string }> = [];
+    for (const ref of unique) {
+      if (ref.startsWith('ai_agent_event:')) {
+        const id = ref.slice('ai_agent_event:'.length).trim();
+        if (!id || !/^event_[A-Za-z0-9_-]+$/.test(id)) throw new Error('Invalid L2 event evidence ref');
+        const row = (await this.all(`SELECT id, phase, status, tool_name FROM ai_agent_events WHERE id = ?`, [id]))[0];
+        if (!row) throw new Error(`L2 event evidence not found: ${id}`);
+        result.push({ ref, kind: 'event', id, label: `${String(row.phase ?? 'event')}:${String(row.status ?? '')}`.slice(0, 120) });
+        continue;
+      }
+      if (ref.startsWith('ai_agent_run:')) {
+        const id = ref.slice('ai_agent_run:'.length).trim();
+        if (!id || !/^run_[A-Za-z0-9_-]+$/.test(id)) throw new Error('Invalid L2 run evidence ref');
+        const row = (await this.all(`SELECT id, route, status FROM ai_agent_runs WHERE id = ?`, [id]))[0];
+        if (!row) throw new Error(`L2 run evidence not found: ${id}`);
+        result.push({ ref, kind: 'run', id, label: `${String(row.route ?? 'run')}:${String(row.status ?? '')}`.slice(0, 120) });
+        continue;
+      }
+      throw new Error('L2 evidence refs must point to ai_agent_run or ai_agent_event');
+    }
+    return result;
+  }
+
+  private mapAiMemoryDocument(row: Row): AiMemoryDocument {
+    return {
+      id: String(row.id ?? ''),
+      layer: 'L2',
+      surface: String(row.surface ?? 'chat') as AiMemorySurface,
+      title: String(row.title ?? ''),
+      version: Math.max(1, Number(row.version ?? 1)),
+      entryCount: Math.max(0, Number(row.entry_count ?? 0)),
+      activeEntryCount: Math.max(0, Number(row.active_entry_count ?? 0)),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private mapAiMemoryEntry(row: Row): AiMemoryEntry {
+    return {
+      id: String(row.id ?? ''),
+      documentId: String(row.document_id ?? ''),
+      surface: String(row.surface ?? 'chat') as AiMemorySurface,
+      section: String(row.section ?? ''),
+      text: String(row.text ?? ''),
+      refs: Array.isArray(row.refs_json) ? row.refs_json as AiMemoryEntry['refs'] : jsonUnknownArray(row.refs_json).filter((item): item is AiMemoryEntry['refs'][number] => Boolean(item && typeof item === 'object')) as AiMemoryEntry['refs'],
+      status: String(row.status ?? 'active') as AiMemoryEntry['status'],
+      origin: String(row.origin ?? 'teacher') as AiMemoryEntry['origin'],
+      version: Math.max(1, Number(row.version ?? 1)),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+      deletedAt: String(row.deleted_at ?? ''),
+    };
+  }
+
+  private mapAiMemoryRevision(row: Row): AiMemoryRevision {
+    return {
+      id: String(row.id ?? ''),
+      documentId: String(row.document_id ?? ''),
+      entryId: String(row.entry_id ?? ''),
+      action: String(row.action ?? 'edit') as AiMemoryRevision['action'],
+      before: row.before_json ? jsonObject(row.before_json) : null,
+      after: row.after_json ? jsonObject(row.after_json) : null,
+      createdAt: String(row.created_at ?? ''),
+    };
+  }
+
+  private mapAiMemoryL3Document(row: Row): AiMemoryL3Document {
+    return {
+      id: String(row.id), layer: 'L3', slot: String(row.slot) as AiMemoryL3Slot,
+      title: String(row.title ?? `L3 ${row.slot}`), version: Number(row.version ?? 1),
+      entryCount: Number(row.entry_count ?? 0), activeEntryCount: Number(row.active_entry_count ?? 0),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private mapAiMemoryL3Entry(row: Row, slot: AiMemoryL3Slot): AiMemoryL3Entry {
+    return {
+      id: String(row.id), documentId: String(row.document_id), slot,
+      text: String(row.text ?? ''), sourceDocuments: jsonUnknownArray(row.source_documents_json).map(String).filter((surface): surface is AiMemorySurface => AI_MEMORY_SURFACES.includes(surface as AiMemorySurface)),
+      status: String(row.status ?? 'active') as AiMemoryL3Entry['status'], version: Number(row.version ?? 1),
+      createdAt: String(row.created_at ?? ''), updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
   private mapAiAgentRun(row: Row): AiAgentRun {
     return {
       id: String(row.id),
+      parentRunId: String(row.parent_run_id ?? ''),
       sessionId: String(row.session_id ?? ''),
       prompt: String(row.prompt ?? ''),
       route: String(row.route ?? 'general_qa') as AiAgentRun['route'],
@@ -4202,6 +6608,66 @@ export class OmniEduStore {
       inputSummary: jsonObject(row.input_summary_json),
       outputSummary: jsonObject(row.output_summary_json),
       createdAt: String(row.created_at ?? ''),
+    };
+  }
+
+  private mapAiCapabilityCheckpoint(row: Row, exposePrivateState = false): AiCapabilityCheckpoint {
+    const checkpointType = String(row.checkpoint_type ?? 'user_input') as AiCapabilityCheckpoint['checkpointType'];
+    const state = jsonObject(row.state_json);
+    const safeState = (checkpointType === 'continuation' || checkpointType === 'budget_approval') && !exposePrivateState
+      ? {
+          continuationAvailable: checkpointType === 'continuation',
+          approvalRequired: checkpointType === 'budget_approval',
+          sourceRunId: String(state.sourceRunId ?? row.run_id ?? ''),
+          continuationCount: Number(state.continuationCount ?? 0),
+          ...(checkpointType === 'budget_approval' ? { requestedBudgets: state.requestedBudgets } : {}),
+        }
+      : state;
+    return {
+      id: String(row.id),
+      runId: String(row.run_id ?? ''),
+      capabilityName: String(row.capability_name ?? 'chat') as AiCapabilityCheckpoint['capabilityName'],
+      checkpointType,
+      state: safeState,
+      status: String(row.status ?? 'pending') as AiCapabilityCheckpointStatus,
+      expiresAt: String(row.expires_at ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      resolvedAt: String(row.resolved_at ?? ''),
+    };
+  }
+
+  private mapAiMasteryQuestion(row: Row): AiMasteryQuestion {
+    const isCorrect = row.is_correct == null ? undefined : Number(row.is_correct) === 1;
+    return {
+      id: String(row.id),
+      runId: String(row.run_id ?? ''),
+      turnId: String(row.turn_id ?? ''),
+      studentId: String(row.student_id ?? ''),
+      knowledgePointId: String(row.knowledge_point_id ?? ''),
+      knowledgePointName: String(row.knowledge_point_name ?? ''),
+      stem: String(row.stem ?? ''),
+      options: jsonArray(row.options_json),
+      expectedAnswer: String(row.expected_answer ?? ''),
+      status: String(row.status ?? 'pending') as AiMasteryQuestionStatus,
+      answer: String(row.answer ?? ''),
+      ...(isCorrect == null ? {} : { isCorrect }),
+      createdAt: String(row.created_at ?? ''),
+      ...(row.answered_at ? { answeredAt: String(row.answered_at) } : {}),
+      ...(row.graded_at ? { gradedAt: String(row.graded_at) } : {}),
+    };
+  }
+
+  private mapAiMasteryPath(row: Row): AiMasteryPath {
+    const modules = jsonUnknownArray(row.modules_json);
+    return {
+      id: String(row.id),
+      studentId: String(row.student_id ?? ''),
+      version: Math.max(1, Number(row.version ?? 1)),
+      mode: String(row.mode ?? 'replace') as AiMasteryPath['mode'],
+      modules: modules as AiMasteryPathModule[],
+      status: String(row.status ?? 'active') as AiMasteryPath['status'],
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
     };
   }
 
@@ -4347,6 +6813,8 @@ export class OmniEduStore {
     return {
       id: String(row.id ?? ''),
       sampleId: String(row.sample_id ?? ''),
+      runId: String(row.run_id ?? ''),
+      sessionId: String(row.session_id ?? ''),
       prompt: String(row.prompt ?? ''),
       answerMarkdown: String(row.answer_markdown ?? ''),
       route: String(row.route ?? 'general_qa') as AiIntentRoute,
@@ -4355,6 +6823,8 @@ export class OmniEduStore {
       modelUnderReview: String(row.model_under_review ?? ''),
       graderModel: String(row.grader_model ?? ''),
       graderMode: mode as AiModelGraderMode,
+      promptVersion: String(row.prompt_version ?? ''),
+      totalTokens: Number(row.total_tokens ?? 0),
       evidenceScore: Number(row.evidence_score ?? 0),
       actionabilityScore: Number(row.actionability_score ?? 0),
       safetyScore: Number(row.safety_score ?? 0),
@@ -4376,6 +6846,8 @@ export class OmniEduStore {
         replay.id,
         replay.before_review_id,
         replay.after_review_id,
+        before_review.run_id AS before_run_id,
+        after_review.run_id AS after_run_id,
         replay.replay_prompt,
         replay.model_before,
         replay.model_after,
@@ -4412,6 +6884,8 @@ export class OmniEduStore {
       id: String(row.id ?? ''),
       beforeReviewId: String(row.before_review_id ?? ''),
       afterReviewId: String(row.after_review_id ?? ''),
+      beforeRunId: String(row.before_run_id ?? ''),
+      afterRunId: String(row.after_run_id ?? ''),
       replayPrompt: String(row.replay_prompt ?? ''),
       modelBefore: String(row.model_before ?? ''),
       modelAfter: String(row.model_after ?? ''),

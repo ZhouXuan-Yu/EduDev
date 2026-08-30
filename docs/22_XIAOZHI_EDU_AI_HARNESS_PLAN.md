@@ -1089,8 +1089,9 @@ imported
 - Phase 12 v1.3 当前完成的是设置页人工评分 UI、CSV/TSV 导入、失败样本回放入口和真实 Electron UI smoke。
 - Phase 12 v1.4 当前完成的是 before/after replay experiment SQLite/Store/IPC/preload/UI 基础设施、`AiTelemetrySnapshot.usabilityReplay`、`usability_replay_improvement_gate`、`npm run test:ai-replay` 和 Electron UI smoke 回读。
 - Phase 12 v1.5 当前完成的是模型 grader proxy 基础设施、`ai_model_grades`、年级适切评分维度、`AiTelemetrySnapshot.modelGrader`、`model_grader_quality_gate`、设置页模型裁判样本展示和 `npm run test:ai-model-grader`。
-- 尚未完成外部真实老师评分样本收集、真实返工量统计、真实 DeepSeek live 输出绑定二次评分、真实 LLM-as-judge 裁判和评分趋势图。
-- 当前门禁：`npm run test:ai-usability`、`npm run test:ai-human-review`、`npm run test:ai-replay`、`npm run test:ai-model-grader`、`npm run test:ai-human-review-ui`、`npm run test:ai-observability`；配置 `DEEPSEEK_API_KEY` 后运行 `npm run test:ai-live-usability`。
+- Phase 12 v1.6 当前完成的是 live evidence binding 工程第一段：`runId`、`promptVersion`、`totalTokens` 可进入 after review、replay experiment、model grade、telemetry 和 `live_evidence_binding_gate`，并新增 `npm run test:ai-live-evidence`。
+- 尚未完成外部真实老师评分样本收集、真实返工量统计、真实 LLM-as-judge 裁判和评分趋势图；真实 DeepSeek live 执行仍需要 `DEEPSEEK_API_KEY`。
+- 当前门禁：`npm run test:ai-usability`、`npm run test:ai-human-review`、`npm run test:ai-replay`、`npm run test:ai-model-grader`、`npm run test:ai-live-evidence`、`npm run test:ai-human-review-ui`、`npm run test:ai-observability`；配置 `DEEPSEEK_API_KEY` 后运行 `npm run test:ai-live-usability`。
 
 ## 16. 后续开发顺序
 
@@ -1114,7 +1115,7 @@ imported
 不要先做大而全 UI，也不要只继续堆 system prompt。小智下一步最该做的是：
 
 ```text
-Phase 12 v1.6 外部真实老师样本 + live 绑定 + LLM-as-judge
+Phase 12 v1.7 外部真实老师样本 + 真实 LLM-as-judge + 评分趋势图
 ```
 
 ## 17. 每轮开发的固定检查清单
@@ -1138,7 +1139,7 @@ Phase 12 v1.6 外部真实老师样本 + live 绑定 + LLM-as-judge
 下一轮建议直接实现：
 
 ```text
-Phase 12 v1.6 外部真实老师样本 + live 绑定 + LLM-as-judge
+Phase 12 v1.7 外部真实老师样本 + 真实 LLM-as-judge + 评分趋势图
 ```
 
 预计改动文件：
@@ -1426,7 +1427,35 @@ Phase 12 v1.6 外部真实老师样本 + live 绑定 + LLM-as-judge
 - 真实 DeepSeek live 输出仍未自动绑定 after review、promptVersion、token usage 和模型 grader 样本。
 - 年级适切评分当前是启发式维度，后续需要用真实年级/学科样本和老师人工复核校准。
 
+### 2026-07-29：Phase 12 v1.6 live evidence binding 工程第一段已完成
+
+- 已扩展 `AiUsabilityReplayExperiment` / `AiUsabilityReplaySummary`，在 replay readback 中暴露 `beforeRunId`、`afterRunId` 和 `liveLinkedCount`。
+- 已扩展 `AiModelGradeInput` / `AiModelGrade` / `AiModelGradeSummary`，模型 grader 样本现在可记录 `runId`、`sessionId`、`promptVersion`、`totalTokens`，并汇总 `runLinkedCount`、`tokenKnownCount`、`promptVersionCounts`。
+- `ai_model_grades` 已增加 `run_id`、`session_id`、`prompt_version`、`total_tokens` 字段和 run 索引；旧库通过启动迁移补齐字段。
+- `recordAiConsoleRun()` 已把 harness 的 `agentRunId` 写入 `ai_tasks.result_json`，便于后续从任务记录反查同一轮运行证据。
+- `createAiRegressionReport()` 已新增 `live_evidence_binding_gate`，可用 `minimumLiveLinkedReplayCount` 与 `minimumRunLinkedModelGradeCount` 对 replay/model-grade 的 run 绑定数量做 release gate。
+- `gradeAiReplyWithModelProxy()` 已支持传入 run/session/promptVersion/token usage，保证 deterministic proxy 与未来 `llm_judge` 可以沿用同一条证据链。
+- 设置页“小智质量评审”的 replay / model grader KPI 已显示 live/run 绑定数量；模型 grader 样本列表显示 runId、promptVersion 和 token 使用。
+- 已新增 `apps/desktop/scripts/ai-live-evidence-binding-smoke.mjs` 与 `npm run test:ai-live-evidence`，seed 同一条 runId，绑定 after review、replay experiment、model grade、telemetry 和 regression gate。
+- `npm run test:ai-observability` 已同步 seed run-linked replay/model-grade 样本，并要求 `live_evidence_binding_gate` passed。
+
+本轮门禁：
+
+- `npm run test:ai-live-evidence`：同一 runId 成功贯穿 after review、replay、model grade 和 `live_evidence_binding_gate`。
+- `npm run test:ai-observability`：13 个 gates 全部 passed，包含 `live_evidence_binding_gate`。
+- `npm run test:ai-model-grader`：模型 grader proxy readback 与质量 gate 通过。
+- `npm run test:ai-replay`：before/after replay readback 与改善 gate 通过。
+- `npm run test:ai-human-review-ui`：设置页质量评审 UI、人工评分、CSV 导入、回放和模型 grader 面板继续可用。
+
+尚未完成：
+
+- v1.6 是 seeded/live-ready 工程证据绑定，不等于真实 DeepSeek API 已执行；真实 live 仍需配置 `DEEPSEEK_API_KEY` 后运行 `npm run test:ai-live-usability`。
+- 外部真实老师评分样本、真实返工轮次、常见任务 1-2 轮完成率、评分趋势图和真实 LLM-as-judge 仍未完成。
+- 后续 `llm_judge` 必须写入同一张 `ai_model_grades`，并继续携带 runId、promptVersion、token usage，避免 proxy 与真实裁判趋势断裂。
+
 ## 20. 长期不可变底线
+
+DeepTutor Capability Runtime 的专项融合设计已沉淀在 `docs/24_DEEPTUTOR_OMNI_EDU_INTEGRATION_DESIGN.md`，77 项完整功能台账与生产验收矩阵位于 `docs/25_DEEPTUTOR_FEATURE_INVENTORY_AND_PRODUCTION_MATRIX.md`。后续把固定预取改为真正 agent loop、引入 Deep Solve/Question/Mastery/Research/Visualize 时，以两份文档的 Electron 宿主控制面、Python sidecar、HostToolProxy、A/B/C/D 处置、隐私边界、统一 DoD 和 48 条新增 Capability eval 为实施基线；不得绕过本文件既有 route、确认、grader、可观测和长期底线。
 
 - 不做学校级平台。
 - 不做学生端、家长端、完整 LMS。
@@ -1438,3 +1467,15 @@ Phase 12 v1.6 外部真实老师样本 + live 绑定 + LLM-as-judge
 - 不把生成题冒充本地题库题。
 - 不把知识图谱节点冒充正文证据。
 - 不让 UI 模板伪装成真实 agent 执行过程。
+
+## 21. 前端接线执行基线（2026-08-12）
+
+后续前端开发只以 `docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md` 的逐项状态为准：先复用已有主进程/SQLite/typed preload，再补真实用户入口、状态呈现和 Electron E2E，不重复造后端规则。当前优先闭环是错题图片 → `needs_ocr` → 教师修正 → 脱敏 → 小智 → 三元题组草稿 → 教师确认/拒绝；题本收藏和文档导出随后补完整 renderer E2E。
+
+无 API Key 时主进程必须 fail-fast 并返回 blocked trace；模型回复必须通过 `xiazhi.reply.v2`，最多两次受控 repair，失败仍保持 blocked/failed。任何 E2E 需覆盖 1366×768 与 1920×1080，并把原生文件选择器 fixture、真实 provider 缺失等限制写进验收证据，不能将低层 smoke 或 proxy 结果冒充完整产品验收。
+
+## 22. Agent Harness v1 已落地（2026-08-12）
+
+当前 AI 中控台已从“固定 chat capability”改为版本化驾驭工程：route/subIntent 选择 capability、能力和 route 共用权限映射、Prompt 分层注入、上下文与工具状态跨调用保持、`waiting_input` 交互式续接、最终 schema/教育/可用性门禁和 SQLite trace 形成同一条证据链。Console 使用 `omni_console` profile 进入统一 AgentLoop；原生高级 Capability 与 Console 集成 profile 保持明确区分。
+
+详细实现、映射与验收命令迁移到 `docs/27_XIAOZHI_AGENT_HARNESS_ENGINEERING.md`。后续演进优先新增版本化 profile/eval，不在 `App.tsx`、HostToolProxy 和 system prompt 中复制三份路由规则。
