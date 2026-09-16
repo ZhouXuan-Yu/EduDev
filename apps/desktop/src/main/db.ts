@@ -216,6 +216,13 @@ export const schemaMigrations: DbMigration[] = [
       await db.run(`CREATE INDEX IF NOT EXISTS idx_knowledge_import_items_job ON knowledge_import_job_items(job_id, status)`);
     },
   },
+  {
+    version: 3,
+    name: 'add_document_artifact_managed_flag',
+    up: async (db) => {
+      await db.run(`ALTER TABLE document_artifacts ADD COLUMN is_managed INTEGER NOT NULL DEFAULT 0`);
+    },
+  },
 ];
 const FTS_MATCH_LIMIT = 500;
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
@@ -4717,6 +4724,7 @@ export class OmniEduStore {
       ? input.destinationRoot.trim()
       : this.resolveInsideDataRoot('exports', 'ai-artifacts');
     mkdirSync(exportRoot, { recursive: true });
+    const isManaged = await this.isManagedLocalPath(exportRoot);
     const timestamp = now();
     const id = input.artifactId?.trim() || `artifact_${randomUUID()}`;
     const targetPrefix = id.replace(/[^a-zA-Z0-9_-]/g, '').slice(-12) || String(Date.now());
@@ -4731,8 +4739,8 @@ export class OmniEduStore {
       await this.run(
         `INSERT OR REPLACE INTO document_artifacts (
           id, session_id, message_id, title, artifact_type, file_name, mime_type, description,
-          content_md, file_path, file_size, content_hash, status, error_message, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM document_artifacts WHERE id = ?), ?), ?)`,
+          content_md, file_path, file_size, content_hash, status, error_message, is_managed, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, COALESCE((SELECT created_at FROM document_artifacts WHERE id = ?), ?), ?)`,
         [
           id,
           input.sessionId ?? '',
@@ -4748,6 +4756,7 @@ export class OmniEduStore {
           contentHash,
           'exported',
           '',
+          isManaged ? 1 : 0,
           id,
           timestamp,
           timestamp,
@@ -4758,8 +4767,8 @@ export class OmniEduStore {
       await this.run(
         `INSERT OR REPLACE INTO document_artifacts (
           id, session_id, message_id, title, artifact_type, file_name, mime_type, description,
-          content_md, file_path, file_size, content_hash, status, error_message, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, '', 'failed', ?, COALESCE((SELECT created_at FROM document_artifacts WHERE id = ?), ?), ?)`,
+          content_md, file_path, file_size, content_hash, status, error_message, is_managed, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, '', 'failed', ?, 0, COALESCE((SELECT created_at FROM document_artifacts WHERE id = ?), ?), ?)`,
         [
           id,
           input.sessionId ?? '',
@@ -7215,6 +7224,7 @@ export class OmniEduStore {
       contentHash: String(row.content_hash ?? ''),
       status,
       errorMessage: String(row.error_message ?? ''),
+      isManaged: Number(row.is_managed ?? 0) === 1,
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
     };
