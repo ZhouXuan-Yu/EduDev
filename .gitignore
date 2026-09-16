@@ -1,5 +1,8 @@
 node_modules/
 apps/desktop/test-results/
+apps/desktop/.tmp-*/
+.tmp-*/
+.codebase-memory/
 dist/
 out/
 coverage/

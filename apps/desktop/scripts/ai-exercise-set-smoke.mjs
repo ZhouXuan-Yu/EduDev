@@ -248,7 +248,7 @@ async function run() {
                 endDate: '2026-08-10',
                 reportType: 'ai_draft',
                 title: '复盘报告',
-                contentMd: '## 复盘\n正文',
+                contentMd: '## 复盘\\n正文',
                 sourceRecordIds: [],
               },
             });

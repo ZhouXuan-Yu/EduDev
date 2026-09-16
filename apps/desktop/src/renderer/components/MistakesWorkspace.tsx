@@ -258,7 +258,7 @@ export function MistakesWorkspace({
       </section>
 
       <section className="work-panel span-2" data-testid="mistake-triplet-panel">
-        <div className="panel-heading"><div><h3>4. 三元题组预览</h3><p className="muted">编辑只改变当前预览；当前确认接口仍保存生成时的原始载荷，预览编辑尚不能覆盖写回。</p></div></div>
+        <div className="panel-heading"><div><h3>4. 三元题组预览</h3><p className="muted">编辑题干与答案将随确认写入题组；来源与题型保持原始确认预览，不可修改。</p></div></div>
         {pendingTriplet ? <div className="info-box" data-testid="mistake-triplet-edit-boundary">确认时将以当前编辑后的题干与答案写入题组；来源与题型保持原始确认预览，不可修改。</div> : null}
         {!tripletDraft.length ? <p data-testid="mistake-triplet-empty">暂无题组草稿。完成脱敏后发送小智分析。</p> : tripletDraft.map((item, index) => (
           <article className="triplet-item" key={`${item.role}-${index}`} data-testid={`mistake-triplet-item-${index}`}>

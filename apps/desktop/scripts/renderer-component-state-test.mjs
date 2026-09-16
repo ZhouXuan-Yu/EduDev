@@ -3,6 +3,16 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { createServer } from 'vite';
 
+let assertCount = 0;
+for (const key of ['match', 'doesNotMatch', 'equal', 'notEqual', 'ok', 'deepEqual', 'rejects', 'strictEqual']) {
+  if (typeof assert[key] !== 'function') continue;
+  const original = assert[key].bind(assert);
+  assert[key] = (...args) => {
+    assertCount += 1;
+    return original(...args);
+  };
+}
+
 const server = await createServer({
   appType: 'custom',
   optimizeDeps: { noDiscovery: true },
@@ -63,6 +73,27 @@ try {
   assert.match(mistakeLoading, /data-testid="mistakes-workspace"/);
   assert.match(mistakeLoading, /data-testid="mistake-image-import-panel"/);
   assert.match(mistakeLoading, /data-testid="mistake-import-record_component_mistake"/);
+
+  const pendingTripletConfirmation = {
+    id: 'confirm_component_triplet', runId: 'run_component_triplet', sessionId: '', studentId: 'student_component',
+    actionType: 'save_exercise_set', status: 'pending', title: '组件三元题组', description: '', previewMd: '## 预览',
+    payload: {
+      studentId: 'student_component', subject: '数学', startDate: '', endDate: '', reportType: 'exercise_set', title: '组件三元题组', contentMd: '## 预览',
+      exerciseSet: { title: '组件三元题组', contentMd: '## 预览', items: [{ role: 'original', sourceKind: 'generated', stem: '原题干', answer: '原答案', analysis: '', knowledgePoint: '', difficulty: 'easy', teacherObservation: '' }] },
+    },
+    result: {}, errorMessage: '', createdAt: '', updatedAt: '', confirmedAt: '', rejectedAt: '',
+  };
+  const mistakePendingTriplet = renderToStaticMarkup(React.createElement(MistakesWorkspace, {
+    activeStudent: { id: 'student_component', displayName: '小智测试学生', realName: '', grade: '', school: '', subjects: ['数学'], goals: '', currentIssues: '', parentConcerns: '', teacherNotes: '', tags: [], status: 'active', createdAt: '', updatedAt: '', recordCount: 1, attachmentBytes: 0 },
+    records: [mistakeRecord], attachmentImport: null, aiResult: null, aiRunning: false, confirmations: [pendingTripletConfirmation],
+    onImportAttachment: async () => undefined, onSendAi: async () => undefined, onConfirm: async () => undefined, onReject: async () => undefined, setStatus: noop,
+  }));
+  assert.match(mistakePendingTriplet, /data-testid="mistake-triplet-confirmation"/);
+  assert.match(mistakePendingTriplet, /data-testid="mistake-triplet-confirm"/);
+  assert.match(mistakePendingTriplet, /data-testid="mistake-triplet-reject"/);
+  assert.match(mistakePendingTriplet, /编辑后的题干与答案/, 'triplet panel must state that edited values are saved on confirm');
+  assert.doesNotMatch(mistakePendingTriplet, /不会同步到待确认载荷/, 'the stale no-sync warning must be removed');
+  assert.doesNotMatch(mistakePendingTriplet, /尚不能覆盖写回/, 'the stale preview-only subtitle must be removed');
 
   const masteryStudent = { id: 'student_mastery_component', displayName: '小智路径学生', realName: '', grade: '八年级', school: '', subjects: ['数学'], goals: '', currentIssues: '', parentConcerns: '', teacherNotes: '', tags: [], status: 'active', createdAt: '', updatedAt: '', recordCount: 0, attachmentBytes: 0 };
   const masteryLoading = renderToStaticMarkup(React.createElement(MasteryPathWorkspace, { activeStudent: masteryStudent, setStatus: noop, onOpenAi: noop }));
@@ -291,7 +322,7 @@ try {
   assert.equal(validateUsabilityReview(parsedQualityRows[0]), '');
   assert.match(validateUsabilityReview({ ...parsedQualityRows[0], teacherScore: 6 }), /1 到 5/);
 
-  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 79, total: 79 }, null, 2));
+  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: assertCount, total: assertCount }, null, 2));
 } finally {
   await server.close();
 }

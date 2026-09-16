@@ -14,7 +14,7 @@
 | OCR 待处理 | `mistakeImages:createAnalysis`、`createMistakeImageAnalysis` | `createMistakeImageAnalysis`、`create-ocr-*` | 已接线：真实 `needs_ocr`，不伪造 OCR 文本 | 同一 smoke 验证 `listMistakeImageAnalyses` 回读 `needs_ocr` | 当前没有 OCR 引擎，教师输入/修正是明确的人审入口 |
 | 教师修正与脱敏 | `mistakeImages:updateCorrection`、`mistakeImages:sanitize` | `mistake-correction-input`、`mistake-sanitize-button`、`mistake-save-correction` | 已接线：保存后状态为 `teacher_corrected`，显示替换记录 | smoke 验证手机号脱敏与 SQLite 回读 | 只上传脱敏文本；原图路径不进入模型请求 |
 | 小智分析入口 | `ai:runDeepSeek` / `ai:runDeepTutorConsole` | `runAiConsole`、`mistake-send-ai`、AI 对话区 | 已接线：切换到 AI 视图，失败消息可见 | smoke 在无 API Key 情况点击并验证 `ai-output-error` | 真实 provider、合法 key 和模型质量需单独 live gate |
-| 三元题组草稿 | `confirmations`、`save_exercise_set` | `mistake-triplet-panel`、可编辑 stem/answer、来源标签 | 已接线：草稿可编辑，确认/拒绝分离，显示 `local_bank/teacher_resource/generated` | smoke 验证拒绝零写入、确认后 exercise set 回读与重启持久化 | **已知缺口**：编辑值只在 renderer 预览，现有确认接口仍保存原始 payload；UI 已明确警告，不能宣称编辑后保存 |
+| 三元题组草稿 | `confirmations`、`save_exercise_set`、`aiConfirmations:confirm`（接收 `AiConfirmationConfirmInput`，可选 `exerciseSetEdit`） | `mistake-triplet-panel`、可编辑 stem/answer、来源标签 | 已接线：草稿可编辑，确认时把编辑后的题干/答案提交给确认契约（main 侧校验数量一致、题干非空、长度上限，role/sourceKind/questionId 保持原始值不可伪造），确认/拒绝分离，显示 `local_bank/teacher_resource/generated` | smoke 验证拒绝零写入、编辑确认后 exercise set 题干/答案与编辑值一致、来源保持、contentMd 重建、确认项 payload_json 记录执行值、重启回读 | 编辑覆盖仅对 `save_exercise_set` 开放，覆盖字段仅 stem/answer；其他动作带覆盖被拒绝；真实 provider 质量仍待 live gate |
 | 已确认题组回读 | `exerciseSets:list`、`listExerciseSets` | `ExerciseSetLibrary`、错题工作区第 5 步 | 已接线：loading/empty/error/content、只读刷新、题目角色与来源标签 | component 新增 5 个状态；Electron 新增 9 个路径，覆盖确认后 UI 回读、来源、刷新零写入、学生隔离、重启与双视口 | 正式题组只读；修改必须重新生成草稿并再次教师确认，不复制题本或另建数据真源 |
 | 复习提醒 | `review:getReminder`、`getReviewReminder` | `ReviewReminderPanel`、“今日”导航 | 已接线：no-student/loading/error/clear/upcoming/due、只读刷新、证据跳转、隐私边界 | component 新增 6 个状态；主 Electron 新增 10 个路径，覆盖真实到期记录、刷新零写入、清空、学生隔离、重启与双视口 | 实时派生自本地学习记录，不保存第二份队列；只返回知识点/调度投影，不含正文、答案或附件路径 |
 | 本地复盘报告生命周期 | `reports:generate/update/list`、`review_reports`、初始 Markdown 快照 | `generateReview/updateReport/listReports`、`ReviewReportWorkspace`、“复盘”导航 | 已接线：no-student/idle/generating/draft/saving/saved/error、历史、证据、质量检查、学生隔离 | component 新增 8 个状态；Electron 新增 15 个路径，覆盖日期零写入、生成、SQLite 编辑保存、源记录、质量检查、历史、隔离、初始文件、重启与双视口 | 生成立即写 SQLite 草稿和初始 Markdown；后续“保存修改”只更新 SQLite，不重写快照；最终文件必须用文档导出 |
@@ -63,4 +63,4 @@ npm run test:smoke
 
 1. 重新从 typed preload 与主进程 handler 反向审计下一项“后端已实现但教师入口/状态/E2E不完整”的能力，不按 API 数量机械新增页面。
 2. 优先补真实用户动作、SQLite/file readback 和重启证据，不新增后端能力或独立 smoke。
-3. “编辑后的题组覆盖确认 payload”需要调整现有后端契约，不属于当前只补前端/E2E阶段；完成前保持 UI 警告和不完成状态。
+3. “编辑后的题组覆盖确认 payload”已于 2026-09-16 完成：`aiConfirmations:confirm` 接收 `AiConfirmationConfirmInput.exerciseSetEdit`，教师编辑的题干/答案随确认写入 `exercise_sets`，来源不可伪造，主 smoke 与专项 smoke 均已覆盖。

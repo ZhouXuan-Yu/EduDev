@@ -1911,6 +1911,11 @@ async function run() {
   assert.ok(knowledgeAfterRestart.counts.chunks >= 1, 'knowledge chunks should persist after restart');
   const exerciseSetsAfterRestart = await second.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id);
   assert.ok(exerciseSetsAfterRestart.some((item) => item.id === confirmedExerciseSet.id), 'UI-confirmed exercise set should persist after restart');
+  const editedSetAfterRestart = exerciseSetsAfterRestart.find((item) => item.id === editedExerciseSet.id);
+  assert.equal(editedSetAfterRestart?.items?.[0]?.stem, editedTripletStem, 'teacher-edited triplet stem must persist after restart');
+  assert.equal(editedSetAfterRestart?.items?.[0]?.answer, editedTripletAnswer, 'teacher-edited triplet answer must persist after restart');
+  assert.equal(editedSetAfterRestart?.items?.[0]?.sourceKind, originalSourceKind, 'edited triplet source kind must stay truthful after restart');
+  assert.match(editedSetAfterRestart?.contentMd ?? '', /教师编辑后的题干/, 'edited contentMd must persist after restart');
   const notebookAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), notebookQuestions.local.id);
   assert.equal(notebookAfterRestart?.bookmarked, true, 'question notebook bookmark should persist after restart');
   const uiCreatedQuestionAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id);
