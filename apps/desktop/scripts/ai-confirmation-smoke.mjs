@@ -68,13 +68,13 @@ async function run() {
             assert.ok(pending.some((item) => item.id === confirmItem.id), 'created item should appear in pending queue');
             assert.equal((await store.listReports(student.id)).length, beforeReports.length, 'pending confirmation still must not write reports');
 
-            const confirmed = await store.confirmAiConfirmation(confirmItem.id);
+            const confirmed = await store.confirmAiConfirmation({ id: confirmItem.id });
             assert.equal(confirmed.item.status, 'confirmed');
             assert.ok(confirmed.readback?.report, 'confirmation should return report readback');
             assert.equal(confirmed.readback.report.title, payload.title);
             assert.equal(confirmed.readback.report.contentMd, payload.contentMd);
             assert.equal((await store.listReports(student.id)).length, beforeReports.length + 1, 'confirming should write exactly one report');
-            await assert.rejects(() => store.confirmAiConfirmation(confirmItem.id), /只能确认待确认项/);
+            await assert.rejects(() => store.confirmAiConfirmation({ id: confirmItem.id }), /只能确认待确认项/);
 
             await store.close();
             return {

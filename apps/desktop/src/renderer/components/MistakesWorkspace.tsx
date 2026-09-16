@@ -259,7 +259,7 @@ export function MistakesWorkspace({
 
       <section className="work-panel span-2" data-testid="mistake-triplet-panel">
         <div className="panel-heading"><div><h3>4. 三元题组预览</h3><p className="muted">编辑只改变当前预览；当前确认接口仍保存生成时的原始载荷，预览编辑尚不能覆盖写回。</p></div></div>
-        {pendingTriplet ? <div className="warning-box" data-testid="mistake-triplet-edit-boundary">请核对原始确认预览：当前本地编辑不会同步到待确认载荷，不能把编辑后的预览视为已保存。</div> : null}
+        {pendingTriplet ? <div className="info-box" data-testid="mistake-triplet-edit-boundary">确认时将以当前编辑后的题干与答案写入题组；来源与题型保持原始确认预览，不可修改。</div> : null}
         {!tripletDraft.length ? <p data-testid="mistake-triplet-empty">暂无题组草稿。完成脱敏后发送小智分析。</p> : tripletDraft.map((item, index) => (
           <article className="triplet-item" key={`${item.role}-${index}`} data-testid={`mistake-triplet-item-${index}`}>
             <span className="status-chip">{item.role}</span><span className="status-chip" data-testid={`mistake-triplet-source-${index}`}>{item.sourceKind}</span>
@@ -267,7 +267,7 @@ export function MistakesWorkspace({
             <label>答案<textarea value={item.answer} onChange={(event) => setTripletDraft((current) => current.map((entry, entryIndex) => entryIndex === index ? { ...entry, answer: event.target.value } : entry))} data-testid={`mistake-triplet-answer-${index}`} /></label>
           </article>
         ))}
-        {pendingTriplet ? <div className="confirmation-inline" data-testid="mistake-triplet-confirmation"><strong>待教师确认：{pendingTriplet.title}</strong><div className="toolbar-row"><button className="primary-action" onClick={() => onConfirm(pendingTriplet)} data-testid="mistake-triplet-confirm">确认并写入</button><button className="secondary-action" onClick={() => onReject(pendingTriplet)} data-testid="mistake-triplet-reject">拒绝（零写入）</button></div></div> : null}
+        {pendingTriplet ? <div className="confirmation-inline" data-testid="mistake-triplet-confirmation"><strong>待教师确认：{pendingTriplet.title}</strong><div className="toolbar-row"><button className="primary-action" onClick={() => confirmTripletWithEdits(pendingTriplet)} disabled={confirmingTriplet} data-testid="mistake-triplet-confirm">{confirmingTriplet ? '确认写入中…' : '确认并写入'}</button><button className="secondary-action" onClick={() => onReject(pendingTriplet)} disabled={confirmingTriplet} data-testid="mistake-triplet-reject">拒绝（零写入）</button></div></div> : null}
       </section>
 
       <section className="work-panel span-2" data-testid="exercise-set-library">
