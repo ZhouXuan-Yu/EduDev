@@ -70,7 +70,7 @@ def _run_ocr(request_id: str, image_path: str) -> dict:
             "message": _load_error or "OCR models are not available",
         }
     try:
-        result, _elapse = engine(image_path)
+        result = engine(image_path)
     except Exception as error:  # noqa: BLE001 - boundary diagnostics only
         return {
             "schemaVersion": RESULT_SCHEMA,
@@ -80,21 +80,19 @@ def _run_ocr(request_id: str, image_path: str) -> dict:
             "code": "IMAGE_READ_FAILED",
             "message": f"{type(error).__name__}: {error}",
         }
+    txts = list(getattr(result, "txts", None) or [])
+    scores = getattr(result, "scores", None)
+    boxes = getattr(result, "boxes", None)
     lines = []
     low_confidence_count = 0
-    for entry in result or []:
+    for index, text in enumerate(txts):
         try:
-            box, text, score = entry[0], entry[1], entry[2]
-            confidence = float(score)
+            confidence = float(scores[index]) if scores is not None and index < len(scores) else 1.0
             if confidence < LOW_CONFIDENCE_THRESHOLD:
                 low_confidence_count += 1
-            lines.append(
-                {
-                    "text": str(text),
-                    "confidence": confidence,
-                    "bbox": [[float(x), float(y)] for x, y in box],
-                }
-            )
+            raw_box = boxes[index] if boxes is not None and index < len(boxes) else [[0, 0], [0, 0], [0, 0], [0, 0]]
+            bbox = [[float(x), float(y)] for x, y in raw_box]
+            lines.append({"text": str(text), "confidence": confidence, "bbox": bbox})
         except (TypeError, ValueError, IndexError):
             continue
     return {
