@@ -1,5 +1,7 @@
 # 小智教师可用性评测 Rubric v1
 
+> 状态：当前有效的人工评分口径；工程总约束见 `22_XIAOZHI_EDU_AI_HARNESS_PLAN.md`。本文中的历史样本数量和测试结果必须以当前代码与本轮运行结果复核，不能直接作为发布证明。
+
 ## 定位
 
 本文件定义小智教师可用性评测的人工评分口径。当前代码中已经有 `apps/desktop/src/main/ai-harness/usability-eval-cases.ts` 的 25 条代表性 proxy 样本，用于本地回归；这些样本不能替代真实老师人工评分。

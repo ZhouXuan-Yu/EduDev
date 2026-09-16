@@ -2,11 +2,14 @@
 
 面向 K-12 独立教师与小微教研团队的本地优先 AI 教学工作台。
 
-Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把教师本机的学生档案、学习记录、错题图片、题库、知识库和 AI 分析组织成一个可验证、可确认、可导出的桌面端闭环。
+Omni-Edu Agent 不是学校级平台，也不是完整 LMS。最终目标是把教师本机 30–40GB 的教材、讲义、试题和解析沉淀为可检索、可追溯的知识库与题库，并把学生错题照片转化为可修正、可确认、可导出的针对性练习。
 
 ```text
-本地题库索引 -> 错题图片解析 -> 脱敏上云分析 -> 本地相似题召回 -> 三元题组输出
+教师资料 -> 解析与索引 -> 知识库/题库 -> 智能组卷 -> 教师确认 -> 试卷与解析
+学生错题照片 -> 本地 OCR -> 教师修正 -> 错因/知识点 -> 针对性练习
 ```
+
+上述是最终产品基线；下方“已落地能力”和 [前端 E2E 覆盖矩阵](docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md) 才代表当前实现状态。
 
 ## UI 预览
 
@@ -176,10 +179,14 @@ apps/desktop/src/renderer/          React UI
 apps/desktop/src/shared/            主进程 / renderer 共享契约
 apps/desktop/scripts/               smoke、eval 和本地门禁脚本
 apps/desktop/src/renderer/heroui-pro/ 本地复用的 HeroUI Pro 源码组件
-docs/                               UI、知识库、小智 harness 方案文档
+docs/00_DOCUMENTATION_INDEX.md      后续开发必读的文档地图与冲突优先级
+docs/11_STRATEGIC_PRODUCT_PRD.md    最终产品、用户、闭环与模块方案
+docs/12_TECH_SELECTION_OVERVIEW.md  本地存储、OCR、检索、安全与发布架构
+docs/17_FRONTEND_HEROUI_PRO_DESIGN_ARCHITECTURE.md 前端信息架构与验收规则
+docs/22_XIAOZHI_EDU_AI_HARNESS_PLAN.md 小智 Agent 工程基线
 docs/23_XIAOZHI_USABILITY_EVAL_RUBRIC.md 小智教师可用性人工评分口径
-docs/24_DEEPTUTOR_OMNI_EDU_INTEGRATION_DESIGN.md DeepTutor 核心能力融合设计与实施记录（持续更新）
-docs/25_DEEPTUTOR_FEATURE_INVENTORY_AND_PRODUCTION_MATRIX.md DeepTutor 77 项功能台账与生产验收矩阵（持续更新）
+docs/24_DEEPTUTOR_OMNI_EDU_INTEGRATION_DESIGN.md DeepTutor 复用范围与宿主边界
+docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md 当前前端接线与 E2E 完成证据
 1.Agent.md                          Agent 工作规则
 2.Memory.md                         当前进度记录
 3.Learning.md                       复盘和踩坑记录
