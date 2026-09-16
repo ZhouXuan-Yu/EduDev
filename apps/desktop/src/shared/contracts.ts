@@ -782,6 +782,7 @@ export type DocumentArtifactExportResult = {
   contentHash: string;
   status: DocumentArtifactStatus;
   errorMessage: string;
+  isManaged: boolean;
   createdAt: string;
   updatedAt: string;
 };

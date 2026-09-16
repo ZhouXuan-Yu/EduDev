@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, safeStorage, shell } from 'electron';
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
@@ -230,6 +230,9 @@ async function selectDataBackupVerifyRoot() {
 
 async function openStudentFolder(studentId: string) {
   const folderPath = store.getStudentFolder(studentId);
+  if (!(await store.isManagedLocalPath(folderPath))) {
+    throw new Error('只能打开本地数据目录内的学生目录');
+  }
   if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && process.env.OMNI_EDU_E2E_OPEN_PATH_MODE === '1') {
     if (app.isPackaged) throw new Error('E2E open-path adapter is disabled in packaged builds');
     if (!isAbsolute(folderPath) || !existsSync(folderPath)) throw new Error('学生档案目录不存在');
@@ -734,6 +737,13 @@ function createWindow() {
     return { action: 'deny' };
   });
 
+  window.webContents.on('will-navigate', (event, url) => {
+    const devUrl = process.env.ELECTRON_RENDERER_URL;
+    if (devUrl && url.startsWith(devUrl)) return;
+    if (url.startsWith('file://')) return;
+    event.preventDefault();
+  });
+
   if (process.env.ELECTRON_RENDERER_URL) {
     window.loadURL(process.env.ELECTRON_RENDERER_URL);
   } else {
@@ -876,7 +886,13 @@ async function createAiConfirmationsFromResult(
 
 app.whenReady().then(async () => {
   loadLocalEnv();
-  store = new OmniEduStore(process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'));
+  const secretCrypto = safeStorage.isEncryptionAvailable()
+    ? {
+        encryptString: (plaintext: string) => safeStorage.encryptString(plaintext).toString('base64'),
+        decryptString: (encryptedBase64: string) => safeStorage.decryptString(Buffer.from(encryptedBase64, 'base64')),
+      }
+    : undefined;
+  store = new OmniEduStore(process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'), secretCrypto);
 
   const handleUserInputRequest = async (request: XiazhiUserInputRequest): Promise<XiazhiUserInputResult> => {
     const binding = deepTutorRuns.get(request.turnId);
@@ -1643,23 +1659,7 @@ app.whenReady().then(async () => {
     }
     return getDeepTutorSidecar().cancelTurn(turnId);
   });
-  ipcMain.handle('ai:deepTutorStop', async () => {
-    const result = await getDeepTutorSidecar().stop();
-    for (const [requestId, pending] of pendingDeepTutorInputs) {
-      for (const question of pending.request.questions ?? []) {
-        if (question.id.startsWith('mastery_question_')) await store.cancelAiMasteryQuestion(question.id);
-      }
-      await store.resolveAiCapabilityCheckpoint(pending.checkpointId, 'cancelled', { requestId, reason: 'sidecar_stopped' });
-      pending.resolve?.({ schemaVersion: 'xiazhi.user_input.result.v1', requestId, turnId: pending.request.turnId, status: 'cancelled', text: '' });
-    }
-    pendingDeepTutorInputs.clear();
-    for (const binding of deepTutorRuns.values()) {
-      if (binding.timeoutHandle) clearTimeout(binding.timeoutHandle);
-      await store.completeAiAgentRun(binding.runId, 'blocked', 'DeepTutor sidecar stopped by host.');
-    }
-    deepTutorRuns.clear();
-    return result;
-  });
+  ipcMain.handle('ai:deepTutorStop', async () => shutdownSidecarAndCleanup());
   await store.init();
 
   ipcMain.handle('app:bootstrap', () => store.init());
@@ -1742,6 +1742,9 @@ app.whenReady().then(async () => {
     const artifact = await store.getDocumentArtifact(id);
     if (!artifact || artifact.status !== 'exported' || !artifact.filePath || !existsSync(artifact.filePath)) {
       throw new Error('文档产物文件不存在或尚未成功导出');
+    }
+    if (artifact.isManaged && !(await store.isManagedLocalPath(artifact.filePath))) {
+      throw new Error('只能打开本地数据目录内的文档产物');
     }
     shell.showItemInFolder(artifact.filePath);
   });
@@ -2030,4 +2033,35 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+async function shutdownSidecarAndCleanup() {
+  const result = deepTutorSidecar ? await deepTutorSidecar.stop() : undefined;
+  for (const [requestId, pending] of pendingDeepTutorInputs) {
+    for (const question of pending.request.questions ?? []) {
+      if (question.id.startsWith('mastery_question_')) await store.cancelAiMasteryQuestion(question.id);
+    }
+    await store.resolveAiCapabilityCheckpoint(pending.checkpointId, 'cancelled', { requestId, reason: 'sidecar_stopped' });
+    pending.resolve?.({ schemaVersion: 'xiazhi.user_input.result.v1', requestId, turnId: pending.request.turnId, status: 'cancelled', text: '' });
+  }
+  pendingDeepTutorInputs.clear();
+  for (const binding of deepTutorRuns.values()) {
+    if (binding.timeoutHandle) clearTimeout(binding.timeoutHandle);
+    await store.completeAiAgentRun(binding.runId, 'blocked', 'DeepTutor sidecar stopped by host.');
+  }
+  deepTutorRuns.clear();
+  return result;
+}
+
+let quittingCleanupDone = false;
+app.on('before-quit', (event) => {
+  if (quittingCleanupDone) return;
+  quittingCleanupDone = true;
+  event.preventDefault();
+  void shutdownSidecarAndCleanup()
+    .catch(() => undefined)
+    .finally(async () => {
+      await store.close().catch(() => undefined);
+      app.quit();
+    });
 });

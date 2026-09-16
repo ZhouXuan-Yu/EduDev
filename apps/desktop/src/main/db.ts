@@ -168,6 +168,11 @@ const IMPORTABLE_RESOURCE_EXTENSIONS = new Set([
   '.jpg', '.jpeg', '.png', '.webp', '.bmp', '.md', '.txt', '.markdown', '.csv',
 ]);
 
+export type SecretCryptoProvider = {
+  encryptString: (plaintext: string) => string;
+  decryptString: (encryptedBase64: string) => string;
+};
+
 export type DbMigrationRunner = {
   run: (sql: string, params?: SqlValue[]) => Promise<void>;
   all: (sql: string, params?: SqlValue[]) => Promise<Record<string, unknown>[]>;
@@ -1116,7 +1121,7 @@ export class OmniEduStore {
   private continuationClaimQueue: Promise<void> = Promise.resolve();
   private aiAgentActionQueue: Promise<void> = Promise.resolve();
 
-  constructor(private dataRoot: string) {
+  constructor(private dataRoot: string, private secretCrypto?: SecretCryptoProvider) {
     this.dbPath = join(dataRoot, 'app.db');
   }
 
@@ -1217,27 +1222,38 @@ export class OmniEduStore {
 
   async getDeepSeekRuntimeSettings(): Promise<{ apiKey?: string; model: string; updatedAt: string }> {
     const row = (await this.all(`SELECT value_json, updated_at FROM app_settings WHERE key = 'deepseek'`))[0];
-    if (!row) {
-      return {
-        apiKey: process.env.DEEPSEEK_API_KEY,
-        model: process.env.DEEPSEEK_MODEL || DEFAULT_DEEPSEEK_MODEL,
-        updatedAt: '',
-      };
-    }
+    const envFallback = () => ({
+      apiKey: process.env.DEEPSEEK_API_KEY,
+      model: process.env.DEEPSEEK_MODEL || DEFAULT_DEEPSEEK_MODEL,
+      updatedAt: '',
+    });
+    if (!row) return envFallback();
+    let parsed: Record<string, unknown>;
     try {
-      const parsed = JSON.parse(String(row.value_json));
-      return {
-        apiKey: typeof parsed.apiKey === 'string' ? parsed.apiKey : process.env.DEEPSEEK_API_KEY,
-        model: typeof parsed.model === 'string' && parsed.model.trim() ? parsed.model.trim() : DEFAULT_DEEPSEEK_MODEL,
-        updatedAt: String(row.updated_at ?? ''),
-      };
+      parsed = JSON.parse(String(row.value_json));
     } catch {
-      return {
-        apiKey: process.env.DEEPSEEK_API_KEY,
-        model: process.env.DEEPSEEK_MODEL || DEFAULT_DEEPSEEK_MODEL,
-        updatedAt: String(row.updated_at ?? ''),
-      };
+      return envFallback();
     }
+    const model = typeof parsed.model === 'string' && parsed.model.trim() ? parsed.model.trim() : DEFAULT_DEEPSEEK_MODEL;
+    const updatedAt = String(row.updated_at ?? '');
+    if (typeof parsed.apiKeyEncrypted === 'string' && parsed.apiKeyEncrypted) {
+      if (!this.secretCrypto) return { apiKey: undefined, model, updatedAt };
+      try {
+        return { apiKey: this.secretCrypto.decryptString(parsed.apiKeyEncrypted), model, updatedAt };
+      } catch {
+        return { apiKey: undefined, model, updatedAt };
+      }
+    }
+    if (typeof parsed.apiKey === 'string' && parsed.apiKey) {
+      if (!this.secretCrypto) return { apiKey: parsed.apiKey, model, updatedAt };
+      const encrypted = this.secretCrypto.encryptString(parsed.apiKey);
+      await this.run(
+        `UPDATE app_settings SET value_json = ?, updated_at = ? WHERE key = 'deepseek'`,
+        [JSON.stringify({ apiKeyEncrypted: encrypted, model }), now()],
+      );
+      return { apiKey: parsed.apiKey, model, updatedAt };
+    }
+    return { apiKey: process.env.DEEPSEEK_API_KEY, model, updatedAt };
   }
 
   async saveDeepSeekSettings(input: DeepSeekSettingsInput): Promise<DeepSeekSettings> {
@@ -1245,10 +1261,13 @@ export class OmniEduStore {
     const apiKey = input.apiKey?.trim() || existing.apiKey || '';
     const model = input.model?.trim() || existing.model || DEFAULT_DEEPSEEK_MODEL;
     const timestamp = now();
+    const valueJson = this.secretCrypto && apiKey
+      ? JSON.stringify({ apiKeyEncrypted: this.secretCrypto.encryptString(apiKey), model })
+      : JSON.stringify({ apiKey, model });
     await this.run(
       `INSERT OR REPLACE INTO app_settings (key, value_json, updated_at)
        VALUES ('deepseek', ?, ?)`,
-      [JSON.stringify({ apiKey, model }), timestamp],
+      [valueJson, timestamp],
     );
     return this.getDeepSeekSettings();
   }
