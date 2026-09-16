@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "heroui-pro": {
+      "type": "http",
+      "url": "https://gateway.shunquan.wang/proxy/heroui-pro-mcp/mcp",
+      "headers": {
+        "x-heroui-personal-token": "${HEROUI_PRO_TOKEN}",
+        "x-proxy-key": "${HEROUI_PRO_TOKEN}"
+      }
+    }
+  }
+}
