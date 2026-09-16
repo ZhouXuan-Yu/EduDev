@@ -76,6 +76,7 @@ import type {
   SanitizedProblemText,
   SimilarQuestionMatch,
   ExerciseSet,
+  ExerciseSetProposeInput,
   ReviewDraftInput,
   DeepSeekSettings,
   DeepSeekSettingsInput,
@@ -247,6 +248,8 @@ const api = {
   listTeachingBookPatches: (id: string) => ipcRenderer.invoke('teachingBook:listPatches', id) as Promise<TeachingBookPatch[]>,
   listExerciseSets: (studentId: string) =>
     ipcRenderer.invoke('exerciseSets:list', studentId) as Promise<ExerciseSet[]>,
+  proposeExerciseSetFromQuestions: (input: ExerciseSetProposeInput) =>
+    ipcRenderer.invoke('exerciseSets:proposeFromQuestions', input) as Promise<AiConfirmationItem>,
   listAiConfirmations: (status: AiConfirmationStatus | 'all' = 'pending') =>
     ipcRenderer.invoke('aiConfirmations:list', status) as Promise<AiConfirmationItem[]>,
   confirmAiConfirmation: (input: AiConfirmationConfirmInput) =>

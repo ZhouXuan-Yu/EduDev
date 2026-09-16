@@ -42,6 +42,7 @@ import type {
   XiazhiContinuationResult,
   XiazhiRunMutationAction,
   XiazhiRunMutationResult,
+  ExerciseSetProposeInput,
 } from '../shared/contracts';
 import { routeAiPrompt } from './ai-harness/router';
 import { runAiAgentLoop } from './ai-harness/agent-loop';
@@ -1884,6 +1885,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('teachingBook:undoPatch', (_event, id: string) => store.undoTeachingBookPatch(id));
   ipcMain.handle('teachingBook:listPatches', (_event, id: string) => store.listTeachingBookPatches(id));
   ipcMain.handle('exerciseSets:list', (_event, studentId: string) => store.listExerciseSets(studentId));
+  ipcMain.handle('exerciseSets:proposeFromQuestions', (_event, input: ExerciseSetProposeInput) => store.proposeExerciseSetFromQuestions(input));
   ipcMain.handle('aiConfirmations:list', (_event, status = 'pending') => store.listAiConfirmations(status));
   ipcMain.handle('aiConfirmations:confirm', (_event, input: AiConfirmationConfirmInput) => store.confirmAiConfirmation(input));
   ipcMain.handle('aiConfirmations:reject', (_event, id: string) => store.rejectAiConfirmation(id));

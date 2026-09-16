@@ -152,6 +152,7 @@ import type {
   KnowledgeImportJob,
   KnowledgeImportJobItem,
   KnowledgeImportDirectoryResult,
+  ExerciseSetProposeInput,
 } from '../shared/contracts';
 
 type SqlValue = string | number | null | Buffer;
@@ -226,6 +227,20 @@ export const schemaMigrations: DbMigration[] = [
     name: 'add_document_artifact_managed_flag',
     up: async (db) => {
       await db.run(`ALTER TABLE document_artifacts ADD COLUMN is_managed INTEGER NOT NULL DEFAULT 0`);
+    },
+  },
+  {
+    version: 4,
+    name: 'create_question_bank_fts',
+    up: async (db) => {
+      await db.run(`CREATE VIRTUAL TABLE IF NOT EXISTS question_bank_fts USING fts5(
+        id UNINDEXED,
+        stem,
+        answer,
+        analysis,
+        knowledge_point,
+        tags
+      )`);
     },
   },
 ];
@@ -2119,6 +2134,71 @@ export class OmniEduStore {
     );
   }
 
+  async proposeExerciseSetFromQuestions(input: ExerciseSetProposeInput): Promise<AiConfirmationItem> {
+    const studentId = requireNonEmpty(input.studentId, '缺少学生 ID');
+    const student = (await this.listStudents('')).find((item) => item.id === studentId);
+    if (!student) throw new Error('学生不存在');
+    const originalStem = requireNonEmpty(input.originalStem, '原题题干不能为空').slice(0, MAX_EXERCISE_STEM_CHARS);
+    const originalAnswer = (input.originalAnswer ?? '').trim().slice(0, MAX_EXERCISE_ANSWER_CHARS);
+    const sourceIds = [...new Set((input.sourceQuestionIds ?? []).map((id) => String(id).trim()).filter(Boolean))];
+    if (sourceIds.length === 0) throw new Error('请至少选择一道相似题');
+    if (sourceIds.length > 6) throw new Error('一次最多选择 6 道相似题');
+    const items: ExerciseSetItem[] = [{
+      role: 'original',
+      sourceKind: 'teacher_resource',
+      stem: originalStem,
+      answer: originalAnswer,
+      analysis: '',
+      knowledgePoint: input.knowledgePoint?.trim() ?? '',
+      difficulty: 'medium',
+      teacherObservation: '教师录入的原题（学生错题）。',
+    }];
+    for (const questionId of sourceIds) {
+      const question = await this.getQuestionBankItem(questionId);
+      if (!question) throw new Error(`题目不存在：${questionId}`);
+      items.push({
+        role: 'similar',
+        questionId: question.id,
+        sourceKind: question.sourceKind,
+        stem: question.stem,
+        answer: question.answer,
+        analysis: question.analysis,
+        knowledgePoint: question.knowledgePoint,
+        difficulty: question.difficulty,
+        teacherObservation: '教师从本地题库召回。',
+      });
+    }
+    const title = (input.title ?? '').trim() || `${student.displayName} 针对性练习`;
+    const contentMd = this.buildExerciseSetContentMdFromItems(title, items);
+    return this.createAiConfirmation({
+      runId: '',
+      sessionId: '',
+      studentId,
+      actionType: 'save_exercise_set',
+      title,
+      description: '教师从本地题库召回并组装的针对性练习草稿，确认后才保存到题组库。',
+      previewMd: contentMd,
+      payload: {
+        studentId,
+        subject: input.subject?.trim() ?? '',
+        startDate: '',
+        endDate: '',
+        reportType: 'exercise_set',
+        title,
+        contentMd,
+        sourceRecordIds: [],
+        exerciseSet: {
+          title,
+          subject: input.subject?.trim() ?? '',
+          knowledgePoint: input.knowledgePoint?.trim() ?? '',
+          contentMd,
+          sourceQuestionIds: sourceIds,
+          items,
+        },
+      },
+    });
+  }
+
   async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {
     const trimmed = keyword.trim();
     const boundedLimit = Math.max(1, Math.min(Math.trunc(limit), 20));
@@ -3804,6 +3884,7 @@ export class OmniEduStore {
         item.updatedAt,
       ],
     );
+    await this.upsertQuestionBankFts(item.id);
     return item;
   }
 
@@ -4190,16 +4271,14 @@ export class OmniEduStore {
     }
     const tokens = searchTokens(query);
     if (tokens.length) {
-      clauses.push(`(${tokens.map(() => '(stem LIKE ? OR analysis LIKE ? OR tags LIKE ? OR knowledge_point LIKE ?)').join(' OR ')})`);
-      for (const token of tokens) {
-        const like = `%${token}%`;
-        params.push(like, like, like, like);
-      }
+      const matched = await this.questionTextMatchClause(tokens);
+      clauses.push(matched.clause);
+      params.push(...matched.params);
     }
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
     const limit = Math.max(1, Math.min(Math.trunc(filters.limit ?? 8), 20));
     const rows = await this.all(
-      `SELECT * FROM question_bank_items
+      `SELECT * FROM question_bank_items q
        ${where}
        ORDER BY
          CASE WHEN knowledge_point = ? THEN 0 ELSE 1 END,
@@ -4249,11 +4328,9 @@ export class OmniEduStore {
     }
     const tokens = searchTokens(query).slice(0, 8);
     if (tokens.length) {
-      clauses.push(`(${tokens.map(() => '(q.stem LIKE ? OR q.analysis LIKE ? OR q.tags LIKE ? OR q.knowledge_point LIKE ?)').join(' OR ')})`);
-      for (const token of tokens) {
-        const like = `%${token}%`;
-        params.push(like, like, like, like);
-      }
+      const matched = await this.questionTextMatchClause(tokens);
+      clauses.push(matched.clause);
+      params.push(...matched.params);
     }
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
     const countRows = await this.all(
@@ -6105,6 +6182,7 @@ export class OmniEduStore {
     await this.run(`CREATE INDEX IF NOT EXISTS idx_resource_chunks_metadata ON resource_chunks(subject, grade, knowledge_point, question_type)`);
     await this.seedPlatformDefaults();
     await this.rebuildRecordFtsIfEmpty();
+    await this.rebuildQuestionBankFtsIfEmpty();
   }
 
   private async applyPendingSchemaMigrations() {
@@ -7510,6 +7588,74 @@ export class OmniEduStore {
     } catch {
       // FTS remains optional and can be rebuilt by later maintenance tasks.
     }
+  }
+
+  private async upsertQuestionBankFts(questionId: string) {
+    try {
+      const row = (await this.all(`SELECT * FROM question_bank_items WHERE id = ?`, [questionId]))[0];
+      if (!row) return;
+      await this.run(`DELETE FROM question_bank_fts WHERE id = ?`, [questionId]);
+      await this.run(
+        `INSERT INTO question_bank_fts (id, stem, answer, analysis, knowledge_point, tags)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          String(row.id),
+          String(row.stem ?? ''),
+          String(row.answer ?? ''),
+          String(row.analysis ?? ''),
+          String(row.knowledge_point ?? ''),
+          String(row.tags ?? ''),
+        ],
+      );
+    } catch {
+      // Keep question writes successful even if the optional FTS index cannot update.
+    }
+  }
+
+  private async rebuildQuestionBankFts() {
+    await this.run(`DELETE FROM question_bank_fts`);
+    const rows = await this.all(`SELECT id FROM question_bank_items`);
+    for (const row of rows) {
+      await this.upsertQuestionBankFts(String(row.id));
+    }
+  }
+
+  private async rebuildQuestionBankFtsIfEmpty() {
+    try {
+      const itemCount = Number((await this.all(`SELECT COUNT(*) AS count FROM question_bank_items`))[0]?.count ?? 0);
+      const ftsCount = Number((await this.all(`SELECT COUNT(*) AS count FROM question_bank_fts`))[0]?.count ?? 0);
+      if (itemCount > 0 && ftsCount === 0) await this.rebuildQuestionBankFts();
+    } catch {
+      // FTS remains optional and can be rebuilt by later maintenance tasks.
+    }
+  }
+
+  private async questionBankFtsMatchIds(tokens: string[]): Promise<string[] | null> {
+    if (!tokens.length) return null;
+    const expression = tokens.map((token) => `"${token.replace(/"/g, '""')}"`).join(' OR ');
+    try {
+      const rows = await this.all(
+        `SELECT id FROM question_bank_fts WHERE question_bank_fts MATCH ? ORDER BY rank LIMIT 50`,
+        [expression],
+      );
+      return rows.map((row) => String(row.id));
+    } catch {
+      return null;
+    }
+  }
+
+  private async questionTextMatchClause(tokens: string[]): Promise<{ clause: string; params: SqlValue[] }> {
+    const ftsIds = await this.questionBankFtsMatchIds(tokens);
+    if (ftsIds && ftsIds.length > 0) {
+      return { clause: `q.id IN (${ftsIds.map(() => '?').join(', ')})`, params: ftsIds };
+    }
+    const clause = `(${tokens.map(() => '(q.stem LIKE ? OR q.analysis LIKE ? OR q.tags LIKE ? OR q.knowledge_point LIKE ?)').join(' OR ')})`;
+    const params: SqlValue[] = [];
+    for (const token of tokens) {
+      const like = `%${token}%`;
+      params.push(like, like, like, like);
+    }
+    return { clause, params };
   }
 
   private async upsertRecordFts(recordId: string) {

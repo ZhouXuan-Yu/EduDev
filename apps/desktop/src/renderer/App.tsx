@@ -2486,6 +2486,7 @@ export function App() {
         }}
         onConfirm={confirmAiItem}
         onReject={rejectAiItem}
+        onProposed={() => void refreshAiConfirmations()}
         setStatus={setStatus}
       />
     );

@@ -728,6 +728,16 @@ export type KnowledgeImportDirectoryResult = {
   job: KnowledgeImportJob;
 };
 
+export type ExerciseSetProposeInput = {
+  studentId: string;
+  title?: string;
+  subject?: string;
+  knowledgePoint?: string;
+  originalStem: string;
+  originalAnswer?: string;
+  sourceQuestionIds: string[];
+};
+
 export type ExportStudentResult = {
   exportPath: string;
   fileCount: number;

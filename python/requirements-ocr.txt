@@ -1,0 +1,3 @@
+# RapidOCR + ONNX Runtime worker for Omni-Edu (Windows desktop, CPU).
+# RapidOCR >= 1.4 bundles the ONNX models and pulls onnxruntime automatically.
+rapidocr-onnxruntime>=1.4,<2

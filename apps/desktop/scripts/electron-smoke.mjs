@@ -1077,6 +1077,31 @@ async function run() {
   }, { studentId: knownStudent.id, expectedCount: exerciseCountBeforePanelReject });
   assert.equal((await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length, exerciseCountBeforePanelReject, 'rejecting triplet from UI must leave zero exercise-set writes');
 
+  // Teacher-driven similar-question recall: search the local bank from the
+  // mistake text, select a question, propose a set, then confirm from the panel.
+  const e2eSimilarQuestion = await first.page.evaluate(() => window.omniEdu.createQuestionBankItem({
+    subject: '数学', grade: '八年级', knowledgePoint: '一次函数', questionType: '解答题', difficulty: 'medium',
+    stem: 'E2E 相似题 的题目：求一次函数斜率。已知 y = 3x - 1 与 y 轴交于一点，求该点坐标。', answer: '(0, -1)。', analysis: '令 x = 0 求截距。',
+    sourceTitle: '本地题库', sourceKind: 'local_bank', tags: ['E2E'],
+  }));
+  await first.page.getByTestId('nav-mistakes').click();
+  await first.page.getByTestId('mistake-similar-search').click();
+  await first.page.getByTestId(`mistake-similar-item-${e2eSimilarQuestion.id}`).waitFor({ state: 'visible' });
+  await first.page.getByTestId(`mistake-similar-select-${e2eSimilarQuestion.id}`).click();
+  await first.page.getByTestId('mistake-similar-propose').click();
+  await first.page.waitForFunction(async (questionId) => {
+    const confirmations = await window.omniEdu.listAiConfirmations('pending');
+    return confirmations.some((item) => item.actionType === 'save_exercise_set' && item.payload.exerciseSet?.items?.some((entry) => entry.questionId === questionId));
+  }, e2eSimilarQuestion.id);
+  const setsBeforeProposedConfirm = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
+  await first.page.getByTestId('mistake-triplet-confirm').click();
+  await first.page.waitForFunction(async ({ studentId, expectedCount }) => (await window.omniEdu.listExerciseSets(studentId)).length === expectedCount, { studentId: knownStudent.id, expectedCount: setsBeforeProposedConfirm + 1 });
+  const proposedExerciseSet = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id))[0];
+  assert.equal(proposedExerciseSet.items[0]?.sourceKind, 'teacher_resource', 'teacher original in a proposed set must keep truthful provenance');
+  assert.equal(proposedExerciseSet.items[1]?.stem, 'E2E 相似题 的题目：求一次函数斜率。已知 y = 3x - 1 与 y 轴交于一点，求该点坐标。', 'recalled question must come from the canonical bank row');
+  assert.equal(proposedExerciseSet.items[1]?.sourceKind, 'local_bank', 'recalled local question must keep its source label');
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-similar-recall-1366x768.png'), fullPage: true });
+
   // Question notebook: seed canonical local/generated questions through the
   // existing IPC, then exercise source display, bookmark and no-hit states.
   const notebookQuestions = await first.page.evaluate(async () => {
@@ -1968,6 +1993,9 @@ async function run() {
   assert.equal(editedSetAfterRestart?.items?.[0]?.answer, editedTripletAnswer, 'teacher-edited triplet answer must persist after restart');
   assert.equal(editedSetAfterRestart?.items?.[0]?.sourceKind, originalSourceKind, 'edited triplet source kind must stay truthful after restart');
   assert.match(editedSetAfterRestart?.contentMd ?? '', /教师编辑后的题干/, 'edited contentMd must persist after restart');
+  const proposedSetAfterRestart = exerciseSetsAfterRestart.find((item) => item.id === proposedExerciseSet.id);
+  assert.equal(proposedSetAfterRestart?.items?.[1]?.stem, 'E2E 相似题 的题目：求一次函数斜率。已知 y = 3x - 1 与 y 轴交于一点，求该点坐标。', 'teacher-recalled similar question must persist after restart');
+  assert.equal(proposedSetAfterRestart?.items?.[1]?.sourceKind, 'local_bank', 'recalled source label must persist after restart');
   const notebookAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), notebookQuestions.local.id);
   assert.equal(notebookAfterRestart?.bookmarked, true, 'question notebook bookmark should persist after restart');
   const uiCreatedQuestionAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id);

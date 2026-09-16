@@ -6,6 +6,7 @@ import type {
   AttachmentImportResult,
   LearningRecord,
   MistakeImageAnalysis,
+  QuestionBankItem,
   Student,
 } from '../../shared/contracts';
 import { ExerciseSetLibrary } from './ExerciseSetLibrary';
@@ -21,6 +22,7 @@ type MistakesWorkspaceProps = {
   onSendAi: (prompt: string) => Promise<void>;
   onConfirm: (item: AiConfirmationItem, exerciseSetEdit?: AiConfirmationExerciseSetEdit) => Promise<void>;
   onReject: (item: AiConfirmationItem) => Promise<void>;
+  onProposed?: () => void;
   setStatus: (message: string) => void;
 };
 
@@ -41,6 +43,7 @@ export function MistakesWorkspace({
   onSendAi,
   onConfirm,
   onReject,
+  onProposed,
   setStatus,
 }: MistakesWorkspaceProps) {
   const [analyses, setAnalyses] = useState<MistakeImageAnalysis[]>([]);
@@ -49,6 +52,12 @@ export function MistakesWorkspace({
   const [loading, setLoading] = useState(false);
   const [savingCorrection, setSavingCorrection] = useState(false);
   const [confirmingTriplet, setConfirmingTriplet] = useState(false);
+  const [similarResults, setSimilarResults] = useState<QuestionBankItem[]>([]);
+  const [selectedSimilarIds, setSelectedSimilarIds] = useState<string[]>([]);
+  const [searchingSimilar, setSearchingSimilar] = useState(false);
+  const [proposingSet, setProposingSet] = useState(false);
+  const [similarError, setSimilarError] = useState('');
+  const [searchedSimilar, setSearchedSimilar] = useState(false);
   const [tripletDraft, setTripletDraft] = useState<Array<{ role: string; stem: string; answer: string; sourceKind: 'local_bank' | 'teacher_resource' | 'generated' }>>([]);
 
   const mistakeRecords = useMemo(() => records.filter((record) => record.recordType === 'mistake'), [records]);
@@ -191,6 +200,61 @@ export function MistakesWorkspace({
     }
   }
 
+  async function searchSimilarQuestions() {
+    if (!draft.text.trim()) {
+      setStatus('请先输入或校正题目文本，再检索本地相似题。');
+      return;
+    }
+    setSearchingSimilar(true);
+    setSimilarError('');
+    try {
+      const results = await window.omniEdu?.searchQuestionBank({ query: draft.text.trim(), limit: 8 }) ?? [];
+      setSimilarResults(results);
+      setSelectedSimilarIds([]);
+      setSearchedSimilar(true);
+      if (results.length) setStatus(`本地题库命中 ${results.length} 道相似题，可选择后生成题组草稿。`);
+      else setStatus('本地题库没有命中相似题。');
+    } catch (error) {
+      setSimilarError(error instanceof Error ? error.message : '相似题检索失败。');
+    } finally {
+      setSearchingSimilar(false);
+    }
+  }
+
+  function toggleSimilarSelection(questionId: string) {
+    setSelectedSimilarIds((current) => {
+      if (current.includes(questionId)) return current.filter((id) => id !== questionId);
+      if (current.length >= 6) return current;
+      return [...current, questionId];
+    });
+  }
+
+  async function proposeFromSelected() {
+    if (!activeStudent || !draft.text.trim() || selectedSimilarIds.length === 0) return;
+    setProposingSet(true);
+    setSimilarError('');
+    try {
+      const confirmation = await window.omniEdu?.proposeExerciseSetFromQuestions({
+        studentId: activeStudent.id,
+        title: `${activeStudent.displayName} 针对性练习`,
+        originalStem: draft.text.trim(),
+        originalAnswer: '',
+        sourceQuestionIds: selectedSimilarIds,
+      });
+      if (confirmation) {
+        setSelectedSimilarIds([]);
+        setSimilarResults([]);
+        setSearchedSimilar(false);
+        onProposed?.();
+        setStatus('已生成题组草稿；请在待确认区核对并确认写入。');
+      }
+    } catch (error) {
+      setSimilarError(error instanceof Error ? error.message : '生成题组草稿失败。');
+    } finally {
+      setProposingSet(false);
+    }
+  }
+
   const pendingTriplet = tripletConfirmation;
 
   return (
@@ -267,6 +331,28 @@ export function MistakesWorkspace({
             <label>答案<textarea value={item.answer} onChange={(event) => setTripletDraft((current) => current.map((entry, entryIndex) => entryIndex === index ? { ...entry, answer: event.target.value } : entry))} data-testid={`mistake-triplet-answer-${index}`} /></label>
           </article>
         ))}
+        <div className="similar-recall-panel" data-testid="mistake-similar-panel">
+          <div className="toolbar-row">
+            <button className="secondary-action" onClick={searchSimilarQuestions} disabled={searchingSimilar || !draft.text.trim()} data-testid="mistake-similar-search">{searchingSimilar ? '检索中…' : '检索本地相似题'}</button>
+            <button className="primary-action" onClick={proposeFromSelected} disabled={proposingSet || !selectedSimilarIds.length || !activeStudent} data-testid="mistake-similar-propose">{proposingSet ? '生成草稿中…' : `生成题组草稿${selectedSimilarIds.length ? `（已选 ${selectedSimilarIds.length}）` : ''}`}</button>
+          </div>
+          {similarError ? <div className="warning-box" data-testid="mistake-similar-error">{similarError}</div> : null}
+          {searchedSimilar && !similarResults.length ? <p data-testid="mistake-similar-empty">本地题库没有命中相似题；可先在题库页录入，或改用小智生成。</p> : null}
+          {similarResults.length ? (
+            <div className="similar-results-list" data-testid="mistake-similar-results">
+              {similarResults.map((question) => (
+                <label key={question.id} className="similar-result-row" data-testid={`mistake-similar-item-${question.id}`}>
+                  <input type="checkbox" checked={selectedSimilarIds.includes(question.id)} onChange={() => toggleSimilarSelection(question.id)} disabled={!selectedSimilarIds.includes(question.id) && selectedSimilarIds.length >= 6} data-testid={`mistake-similar-select-${question.id}`} />
+                  <div>
+                    <span className="status-chip" data-testid={`mistake-similar-source-${question.id}`}>{question.sourceKind}</span>
+                    <strong>{question.stem}</strong>
+                    <p>{question.answer}{question.knowledgePoint ? `｜${question.knowledgePoint}` : ''}{question.difficulty ? `｜难度：${question.difficulty}` : ''}</p>
+                  </div>
+                </label>
+              ))}
+            </div>
+          ) : null}
+        </div>
         {pendingTriplet ? <div className="confirmation-inline" data-testid="mistake-triplet-confirmation"><strong>待教师确认：{pendingTriplet.title}</strong><div className="toolbar-row"><button className="primary-action" onClick={() => confirmTripletWithEdits(pendingTriplet)} disabled={confirmingTriplet} data-testid="mistake-triplet-confirm">{confirmingTriplet ? '确认写入中…' : '确认并写入'}</button><button className="secondary-action" onClick={() => onReject(pendingTriplet)} disabled={confirmingTriplet} data-testid="mistake-triplet-reject">拒绝（零写入）</button></div></div> : null}
       </section>
 
