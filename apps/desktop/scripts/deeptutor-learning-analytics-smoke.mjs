@@ -111,12 +111,12 @@ async function run() {
               },
             });
             assert.equal((await store.listReports(student.id)).length, beforeReports.length);
-            const confirmed = await store.confirmAiConfirmation(confirmation.id);
+            const confirmed = await store.confirmAiConfirmation({ id: confirmation.id });
             assert.equal(confirmed.item.status, 'confirmed');
             assert.equal(confirmed.readback.report.reportType, 'learning_analytics');
             assert.deepEqual(confirmed.readback.report.sourceRecordIds, analytics.evidence.sourceRecordIds);
             assert.equal((await store.listReports(student.id)).length, beforeReports.length + 1);
-            await assert.rejects(() => store.confirmAiConfirmation(confirmation.id), /只能确认待确认项/);
+            await assert.rejects(() => store.confirmAiConfirmation({ id: confirmation.id }), /只能确认待确认项/);
 
             await store.close();
             return { ok: true, cases: 8, recordCount: analytics.metrics.recordCount, sourceRecordCount: analytics.evidence.sourceRecordIds.length, reportConfirmed: true };

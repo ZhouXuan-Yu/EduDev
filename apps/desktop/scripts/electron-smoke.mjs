@@ -473,7 +473,7 @@ async function run() {
   assert.ok(assessEvents.some((event) => event.phase === 'observe' && event.outputSummary?.status === 'used'), 'mastery_assess should produce a used observation');
   const assessConfirmation = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'))).find((item) => item.runId === assessTurn.result?.runId && item.actionType === 'save_mastery_state');
   assert.ok(assessConfirmation, 'mastery_assess must create a teacher confirmation before writeback');
-  const assessConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation(id), assessConfirmation.id);
+  const assessConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation({ id }), assessConfirmation.id);
   assert.equal(assessConfirmationResult.item.status, 'confirmed', 'confirmed mastery_assess should write back');
   assert.ok(assessConfirmationResult.readback?.masteryAttempt, 'mastery_assess confirmation should return a bounded readback');
   const wrongGateTurn = await first.page.evaluate((student) => window.omniEdu.deepTutorStartTurn({
@@ -521,7 +521,7 @@ async function run() {
   assert.equal(preBuildPath, null, 'mastery_build must not mutate the path before teacher confirmation');
   const buildConfirmation = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'))).find((item) => item.runId === masteryBuildTurn.result?.runId && item.actionType === 'save_mastery_state');
   assert.ok(buildConfirmation, 'mastery_build must create a teacher confirmation before writeback');
-  const buildConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation(id), buildConfirmation.id);
+  const buildConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation({ id }), buildConfirmation.id);
   assert.equal(buildConfirmationResult.item.status, 'confirmed', 'confirmed mastery_build should persist the path');
   const masteryPath = await first.page.evaluate((studentId) => window.omniEdu.getAiMasteryPath(studentId), knownStudent.id);
   assert.equal(masteryPath?.modules?.[0]?.knowledgePoints?.[0]?.id, 'mastery_m0_kp0', 'mastery_build should persist deterministic point IDs');
@@ -543,7 +543,7 @@ async function run() {
   assert.equal(masteryAppendRun?.status, 'succeeded', 'mastery_build append should complete');
   const appendConfirmation = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'))).find((item) => item.runId === masteryAppendTurn.result?.runId && item.actionType === 'save_mastery_state');
   assert.ok(appendConfirmation, 'mastery_build append must create a teacher confirmation');
-  const appendConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation(id), appendConfirmation.id);
+  const appendConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation({ id }), appendConfirmation.id);
   assert.equal(appendConfirmationResult.item.status, 'confirmed', 'confirmed mastery_build append should persist');
   const appendedPath = await first.page.evaluate((studentId) => window.omniEdu.getAiMasteryPath(studentId), knownStudent.id);
   assert.equal(appendedPath?.version, 2, 'mastery_build append should increment path version');
@@ -584,7 +584,7 @@ async function run() {
   assert.ok(pathAssessEvents.some((event) => event.phase === 'observe' && event.outputSummary?.status === 'used'), 'path-backed mastery_assess should produce a used observation');
   const pathAssessConfirmation = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'))).find((item) => item.runId === pathAssessTurn.result?.runId && item.actionType === 'save_mastery_state');
   assert.ok(pathAssessConfirmation, 'path-backed mastery_assess must require confirmation');
-  const pathAssessConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation(id), pathAssessConfirmation.id);
+  const pathAssessConfirmationResult = await first.page.evaluate((id) => window.omniEdu.confirmAiConfirmation({ id }), pathAssessConfirmation.id);
   assert.equal(pathAssessConfirmationResult.item.status, 'confirmed', 'path-backed mastery_assess confirmation should succeed');
   const invalidBuildTurn = await first.page.evaluate((student) => window.omniEdu.deepTutorStartTurn({
     turnId: 'electron-mastery-build-invalid',
@@ -943,24 +943,42 @@ async function run() {
   await first.page.waitForTimeout(120);
   const correctedAnalysis = await first.page.evaluate((studentId) => window.omniEdu.listMistakeImageAnalyses(studentId), knownStudent.id);
   assert.equal(correctedAnalysis[0]?.ocrStatus, 'teacher_corrected', 'teacher correction should persist through preload and SQLite');
-  const exerciseCountBeforeFrontendReject = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
+  const exerciseCountBeforeFrontendConfirm = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
   await first.page.getByTestId('mistake-send-ai').click();
   await first.page.getByTestId('ai-output-error').waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId('ai-output-error').textContent(), /API Key|凭证|配置|DeepSeek/i, 'no provider key must show an actionable frontend error');
   await first.page.getByTestId('nav-mistakes').click();
   await first.page.getByTestId('mistake-triplet-panel').waitFor({ state: 'visible' });
-  await first.page.getByTestId('mistake-triplet-stem-0').fill('教师编辑后的题干');
-  assert.equal(await first.page.getByTestId('mistake-triplet-stem-0').inputValue(), '教师编辑后的题干', 'triplet preview should support teacher editing');
-  await first.page.getByTestId('mistake-triplet-reject').click();
-  await first.page.waitForTimeout(120);
-  const rejectedExerciseCount = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
-  assert.equal(rejectedExerciseCount, exerciseCountBeforeFrontendReject, 'rejecting triplet from UI must leave zero exercise-set writes');
+  assert.match(await first.page.getByTestId('mistake-triplet-edit-boundary').textContent(), /编辑后的题干与答案/, 'triplet panel must state that edited values are saved on confirm');
+  const editedTripletStem = '教师编辑后的题干：求一次函数 y = 2x + 3 与 y 轴的交点。';
+  const editedTripletAnswer = '教师编辑后的答案：交点为 (0, 3)。';
+  await first.page.getByTestId('mistake-triplet-stem-0').fill(editedTripletStem);
+  await first.page.getByTestId('mistake-triplet-answer-0').fill(editedTripletAnswer);
+  assert.equal(await first.page.getByTestId('mistake-triplet-stem-0').inputValue(), editedTripletStem, 'triplet preview should support teacher editing');
+  const originalSourceKind = deepQuestionConfirmation.payload.exerciseSet.items[0].sourceKind;
+  await first.page.getByTestId('mistake-triplet-confirm').click();
+  await first.page.waitForFunction(async ({ studentId, expectedCount }) => {
+    const sets = await window.omniEdu.listExerciseSets(studentId);
+    return sets.length === expectedCount;
+  }, { studentId: knownStudent.id, expectedCount: exerciseCountBeforeFrontendConfirm + 1 });
+  const editedExerciseSets = await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id);
+  const editedExerciseSet = editedExerciseSets[0];
+  assert.ok(editedExerciseSet, 'edited triplet confirm should create a SQLite exercise set');
+  assert.equal(editedExerciseSet.items[0]?.stem, editedTripletStem, 'edited stem must be persisted through the confirmation contract');
+  assert.equal(editedExerciseSet.items[0]?.answer, editedTripletAnswer, 'edited answer must be persisted through the confirmation contract');
+  assert.equal(editedExerciseSet.items[0]?.sourceKind, originalSourceKind, 'confirming an edit must preserve the original source kind');
+  assert.match(editedExerciseSet.contentMd, /教师编辑后的题干/, 'saved contentMd must reflect the edited items');
+  const editedConfirmationReadback = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('all'))).find((item) => item.id === deepQuestionConfirmation.id);
+  assert.equal(editedConfirmationReadback?.status, 'confirmed', 'edited confirmation must settle as confirmed');
+  assert.equal(editedConfirmationReadback?.payload.exerciseSet?.items?.[0]?.stem, editedTripletStem, 'confirmation payload_json must record the executed edit');
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-triplet-edited-confirm-1366x768.png'), fullPage: true });
   await first.page.setViewportSize({ width: 1920, height: 1080 });
   await first.page.getByTestId('mistakes-workspace').waitFor({ state: 'visible' });
   const viewport1920 = await first.page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight }));
   assert.deepEqual(viewport1920, { width: 1920, height: 1080 }, 'mistake workflow must be verified at 1920x1080');
   assert.ok(await first.page.getByTestId('mistake-image-import-panel').isVisible(), 'mistake import panel must remain visible at 1920x1080');
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-mistakes-1920x1080.png'), fullPage: true });
+  await first.page.setViewportSize({ width: 1366, height: 768 });
 
   // Confirm path: create a fresh upstream draft, then persist it from a real
   // renderer click and read the resulting exercise set back through preload.
@@ -1024,6 +1042,34 @@ async function run() {
   await first.page.getByTestId(`student-row-${knownStudent.id}`).click();
   await first.page.getByTestId('nav-mistakes').click();
   await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).waitFor({ state: 'visible' });
+
+  // Reject path: a fresh pending triplet must be rejectable from the panel with zero writes.
+  const rejectTurn = await first.page.evaluate((student) => window.omniEdu.deepTutorStartTurn({
+    turnId: 'electron-deep-question-reject-ui',
+    capability: 'deep_question',
+    prompt: '再生成一组三元题组草稿供教师拒绝。',
+    context: {
+      language: 'zh', sessionId: 'electron-capability-session', studentId: student.id, dryRun: true,
+      configOverrides: { mode: 'custom', topic: '分数加法', num_questions: 1, difficulty: 'easy' },
+    },
+    budgets: { maxEvents: 96, maxWallMs: 120000 },
+  }), knownStudent);
+  assert.equal(rejectTurn.ok, true, 'third deep_question turn should be accepted for the UI reject path');
+  const rejectRun = await waitForRun(first.page, rejectTurn.result?.runId, 12000);
+  assert.equal(rejectRun?.status, 'succeeded', 'UI reject source run should succeed');
+  await first.page.waitForFunction(async (runId) => {
+    const confirmations = await window.omniEdu.listAiConfirmations('pending');
+    return confirmations.some((item) => item.runId === runId);
+  }, rejectTurn.result?.runId);
+  const exerciseCountBeforePanelReject = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
+  await first.page.getByTestId('nav-mistakes').click();
+  await first.page.getByTestId('mistake-triplet-panel').waitFor({ state: 'visible' });
+  await first.page.getByTestId('mistake-triplet-reject').click();
+  await first.page.waitForFunction(async ({ studentId, expectedCount }) => {
+    const sets = await window.omniEdu.listExerciseSets(studentId);
+    return sets.length === expectedCount;
+  }, { studentId: knownStudent.id, expectedCount: exerciseCountBeforePanelReject });
+  assert.equal((await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length, exerciseCountBeforePanelReject, 'rejecting triplet from UI must leave zero exercise-set writes');
 
   // Question notebook: seed canonical local/generated questions through the
   // existing IPC, then exercise source display, bookmark and no-hit states.
