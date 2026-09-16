@@ -26,6 +26,7 @@ try {
   const { TeachingBookWorkspace } = await server.ssrLoadModule('/src/renderer/components/TeachingBookWorkspace.tsx');
   const { MemoryGovernanceWorkspace } = await server.ssrLoadModule('/src/renderer/components/MemoryGovernanceWorkspace.tsx');
   const { MistakesWorkspace } = await server.ssrLoadModule('/src/renderer/components/MistakesWorkspace.tsx');
+  const { KnowledgeImportPanel } = await server.ssrLoadModule('/src/renderer/components/KnowledgeImportPanel.tsx');
   const { MasteryPathWorkspace, MasteryPathState } = await server.ssrLoadModule('/src/renderer/components/MasteryPathWorkspace.tsx');
   const { GlobalSearchWorkspace, GlobalSearchState } = await server.ssrLoadModule('/src/renderer/components/GlobalSearchWorkspace.tsx');
   const { ExerciseSetLibraryState } = await server.ssrLoadModule('/src/renderer/components/ExerciseSetLibrary.tsx');
@@ -94,6 +95,11 @@ try {
   assert.match(mistakePendingTriplet, /编辑后的题干与答案/, 'triplet panel must state that edited values are saved on confirm');
   assert.doesNotMatch(mistakePendingTriplet, /不会同步到待确认载荷/, 'the stale no-sync warning must be removed');
   assert.doesNotMatch(mistakePendingTriplet, /尚不能覆盖写回/, 'the stale preview-only subtitle must be removed');
+
+  const knowledgeImportIdle = renderToStaticMarkup(React.createElement(KnowledgeImportPanel, { setStatus: noop }));
+  assert.match(knowledgeImportIdle, /data-testid="knowledge-import-panel"/);
+  assert.match(knowledgeImportIdle, /data-testid="knowledge-import-directory"/);
+  assert.match(knowledgeImportIdle, /导入文件夹/, 'knowledge import panel must expose the folder import entry');
 
   const masteryStudent = { id: 'student_mastery_component', displayName: '小智路径学生', realName: '', grade: '八年级', school: '', subjects: ['数学'], goals: '', currentIssues: '', parentConcerns: '', teacherNotes: '', tags: [], status: 'active', createdAt: '', updatedAt: '', recordCount: 0, attachmentBytes: 0 };
   const masteryLoading = renderToStaticMarkup(React.createElement(MasteryPathWorkspace, { activeStudent: masteryStudent, setStatus: noop, onOpenAi: noop }));

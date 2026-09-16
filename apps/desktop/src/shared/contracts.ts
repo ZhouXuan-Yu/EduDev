@@ -690,6 +690,44 @@ export type KnowledgeImportResult = {
   overview: KnowledgeOverview;
 };
 
+export type KnowledgeImportJobStatus = 'queued' | 'scanning' | 'importing' | 'partial_failed' | 'ready' | 'cancelled' | 'failed';
+
+export type KnowledgeImportJobItemStatus = 'queued' | 'succeeded' | 'duplicate' | 'failed' | 'cancelled';
+
+export type KnowledgeImportJobItem = {
+  id: string;
+  jobId: string;
+  sourcePath: string;
+  fileName: string;
+  status: KnowledgeImportJobItemStatus;
+  resourceId: string;
+  fileSize: number;
+  contentHash: string;
+  errorMessage: string;
+  createdAt: string;
+};
+
+export type KnowledgeImportJob = {
+  id: string;
+  rootPath: string;
+  status: KnowledgeImportJobStatus;
+  totalFiles: number;
+  processedFiles: number;
+  succeededFiles: number;
+  duplicateFiles: number;
+  failedFiles: number;
+  cancelRequested: boolean;
+  lastError: string;
+  createdAt: string;
+  updatedAt: string;
+  completedAt: string;
+  items: KnowledgeImportJobItem[];
+};
+
+export type KnowledgeImportDirectoryResult = {
+  job: KnowledgeImportJob;
+};
+
 export type ExportStudentResult = {
   exportPath: string;
   fileCount: number;

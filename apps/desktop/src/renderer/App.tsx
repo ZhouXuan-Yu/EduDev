@@ -35,6 +35,7 @@ import { Markdown } from './heroui-pro/components/markdown';
 import { PromptInput } from './heroui-pro/components/prompt-input';
 import { PromptSuggestion } from './heroui-pro/components/prompt-suggestion';
 import { MistakesWorkspace } from './components/MistakesWorkspace';
+import { KnowledgeImportPanel } from './components/KnowledgeImportPanel';
 import { QuestionNotebookWorkspace } from './components/QuestionNotebookWorkspace';
 import { TeacherNotebookWorkspace } from './components/TeacherNotebookWorkspace';
 import { AiObservabilityWorkspace } from './components/AiObservabilityWorkspace';
@@ -363,6 +364,7 @@ function formatDate(value: string) {
 
 export function App() {
   const [activeView, setActiveView] = useState<ViewKey>('ai');
+  const [advancedNavOpen, setAdvancedNavOpen] = useState(false);
   const [dataRoot, setDataRoot] = useState('正在连接本地数据目录');
   const [overview, setOverview] = useState<PlatformOverview>(emptyOverview);
   const [students, setStudents] = useState<Student[]>([]);
@@ -449,22 +451,31 @@ export function App() {
 
   const navItems: Array<{ key: ViewKey; label: string; icon: ReactNode }> = [
     { key: 'today', label: '今日', icon: <Home size={18} /> },
-    { key: 'ai', label: 'AI', icon: <Sparkles size={18} /> },
+    { key: 'ai', label: '小智', icon: <Sparkles size={18} /> },
     { key: 'knowledge', label: '知识库', icon: <FileSearch size={18} /> },
+    { key: 'question_notebook', label: '题库', icon: <BookOpenCheck size={18} /> },
+    { key: 'mistakes', label: '错题训练', icon: <BookOpenCheck size={18} /> },
     { key: 'students', label: '学生', icon: <Users size={18} /> },
+    { key: 'settings', label: '设置', icon: <Settings size={18} /> },
     { key: 'mastery', label: '学习路径', icon: <ListChecks size={18} /> },
     { key: 'intake', label: '录入', icon: <ClipboardList size={18} /> },
-    { key: 'mistakes', label: '错题', icon: <BookOpenCheck size={18} /> },
     { key: 'review', label: '复盘', icon: <FileText size={18} /> },
     { key: 'search', label: '搜索', icon: <Search size={18} /> },
-    { key: 'question_notebook', label: '题本', icon: <BookOpenCheck size={18} /> },
     { key: 'notebook', label: '备课本', icon: <BookOpenCheck size={18} /> },
     { key: 'book', label: '讲义', icon: <BookOpenCheck size={18} /> },
-    { key: 'memory', label: 'L2 记忆', icon: <History size={18} /> },
+    { key: 'memory', label: '记忆', icon: <History size={18} /> },
     { key: 'team', label: '团队', icon: <Layers3 size={18} /> },
-    { key: 'analytics', label: '看板', icon: <BarChart3 size={18} /> },
-    { key: 'settings', label: '设置', icon: <Settings size={18} /> },
+    { key: 'analytics', label: '分析', icon: <BarChart3 size={18} /> },
   ];
+
+  const primaryNavKeys: ViewKey[] = ['today', 'ai', 'knowledge', 'question_notebook', 'mistakes', 'students', 'settings'];
+  const advancedNavKeys: ViewKey[] = ['mastery', 'intake', 'review', 'search', 'notebook', 'book', 'memory', 'team', 'analytics'];
+  const primaryNavItems = navItems.filter((item) => primaryNavKeys.includes(item.key));
+  const advancedNavItems = navItems.filter((item) => advancedNavKeys.includes(item.key));
+
+  useEffect(() => {
+    if ((advancedNavKeys as string[]).includes(activeView)) setAdvancedNavOpen(true);
+  }, [activeView]);
 
   async function refreshOverview() {
     const nextOverview = await window.omniEdu?.getPlatformOverview();
@@ -2271,9 +2282,10 @@ export function App() {
       <div className="knowledge-layout">
         <section className="work-panel">
           <WorkspaceLabel number="01" title="资源导入" description="PDF、Word、PPT、图片等资源将进入老师专属知识库。" />
+          <KnowledgeImportPanel setStatus={setStatus} onImported={() => void refreshKnowledgeOverview()} />
           <button className="primary-action wide" onClick={importKnowledgeResources}>
             <FileSearch size={17} />
-            导入知识资源
+            导入单个知识资源
           </button>
           {knowledgeImport ? (
             <div className="import-status-list">
@@ -2728,12 +2740,30 @@ export function App() {
           </div>
         </div>
         <nav>
-          {navItems.map((item) => (
+          {primaryNavItems.map((item) => (
             <button key={item.key} data-testid={`nav-${item.key}`} className={activeView === item.key ? 'active' : ''} onClick={() => setActiveView(item.key)}>
               {item.icon}
               <span>{item.label}</span>
             </button>
           ))}
+          <button
+            type="button"
+            className={advancedNavOpen ? 'active' : ''}
+            data-testid="nav-more"
+            aria-expanded={advancedNavOpen}
+            onClick={() => setAdvancedNavOpen((current) => !current)}
+          >
+            <Layers3 size={18} />
+            <span>{advancedNavOpen ? '收起高级入口' : '高级入口'}</span>
+          </button>
+          {advancedNavOpen
+            ? advancedNavItems.map((item) => (
+              <button key={item.key} data-testid={`nav-${item.key}`} className={activeView === item.key ? 'active' : ''} onClick={() => setActiveView(item.key)}>
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            ))
+            : null}
         </nav>
       </aside>
 

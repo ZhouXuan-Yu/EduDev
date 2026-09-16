@@ -1,5 +1,6 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { copyFile, mkdir, readFile, readdir, rm, stat } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import { hashFileSha256, isInsideRoot, resolveInsideRoot } from './local-file-security';
@@ -148,6 +149,9 @@ import type {
   StudentInput,
   AiConfirmationConfirmInput,
   AiConfirmationExerciseSetEdit,
+  KnowledgeImportJob,
+  KnowledgeImportJobItem,
+  KnowledgeImportDirectoryResult,
 } from '../shared/contracts';
 
 type SqlValue = string | number | null | Buffer;
@@ -157,16 +161,62 @@ const DEFAULT_RECORD_PAGE_SIZE = 100;
 const MAX_RECORD_PAGE_SIZE = 500;
 const MAX_EXERCISE_STEM_CHARS = 8000;
 const MAX_EXERCISE_ANSWER_CHARS = 4000;
+const MAX_IMPORT_DIRECTORY_DEPTH = 16;
+const MAX_IMPORT_FILES_PER_JOB = 10000;
+const IMPORTABLE_RESOURCE_EXTENSIONS = new Set([
+  '.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx',
+  '.jpg', '.jpeg', '.png', '.webp', '.bmp', '.md', '.txt', '.markdown', '.csv',
+]);
+
+export type DbMigrationRunner = {
+  run: (sql: string, params?: SqlValue[]) => Promise<void>;
+  all: (sql: string, params?: SqlValue[]) => Promise<Record<string, unknown>[]>;
+};
 
 export type DbMigration = {
   version: number;
   name: string;
-  up: (store: OmniEduStore) => Promise<void>;
+  up: (db: DbMigrationRunner) => Promise<void>;
 };
 
 // 版本真源：schema_migrations 表。v1 = 历史声明式收敛完成后的基线；
 // 新结构变更必须注册为 v2+ 迁移（裸 SQL/守卫 DDL，禁止调用业务方法）。
-export const schemaMigrations: DbMigration[] = [];
+export const schemaMigrations: DbMigration[] = [
+  {
+    version: 2,
+    name: 'create_knowledge_import_jobs',
+    up: async (db) => {
+      await db.run(`CREATE TABLE IF NOT EXISTS knowledge_import_jobs (
+        id TEXT PRIMARY KEY,
+        root_path TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL,
+        total_files INTEGER NOT NULL DEFAULT 0,
+        processed_files INTEGER NOT NULL DEFAULT 0,
+        succeeded_files INTEGER NOT NULL DEFAULT 0,
+        duplicate_files INTEGER NOT NULL DEFAULT 0,
+        failed_files INTEGER NOT NULL DEFAULT 0,
+        cancel_requested INTEGER NOT NULL DEFAULT 0,
+        last_error TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        completed_at TEXT NOT NULL DEFAULT ''
+      )`);
+      await db.run(`CREATE TABLE IF NOT EXISTS knowledge_import_job_items (
+        id TEXT PRIMARY KEY,
+        job_id TEXT NOT NULL,
+        source_path TEXT NOT NULL,
+        file_name TEXT NOT NULL,
+        status TEXT NOT NULL,
+        resource_id TEXT NOT NULL DEFAULT '',
+        file_size INTEGER NOT NULL DEFAULT 0,
+        content_hash TEXT NOT NULL DEFAULT '',
+        error_message TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL
+      )`);
+      await db.run(`CREATE INDEX IF NOT EXISTS idx_knowledge_import_items_job ON knowledge_import_job_items(job_id, status)`);
+    },
+  },
+];
 const FTS_MATCH_LIMIT = 500;
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
 const AI_MEMORY_SURFACES: AiMemorySurface[] = ['chat', 'notebook', 'quiz', 'kb', 'book', 'partner', 'cowriter'];
@@ -1073,6 +1123,8 @@ export class OmniEduStore {
       this.db = await this.openDatabase(this.dbPath);
     }
     await this.migrate();
+    await this.applyPendingSchemaMigrations();
+    await this.recoverInterruptedImportJobs();
     await this.seedIfEmpty();
     return {
       dataRoot: this.dataRoot,
@@ -1685,51 +1737,23 @@ export class OmniEduStore {
   }
 
   async importKnowledgeResources(sourcePaths: string[]): Promise<KnowledgeImportResult> {
-    const resourceRoot = this.resolveInsideDataRoot('teacher_resources');
-    mkdirSync(resourceRoot, { recursive: true });
-    const items: AttachmentImportItem[] = [];
     const resources: KnowledgeImportResult['resources'] = [];
+    const items: AttachmentImportItem[] = [];
+    const timestamp = now();
     for (const sourcePath of sourcePaths) {
       const originalName = basename(sourcePath);
       try {
-        const stat = statSync(sourcePath);
-        if (!stat.isFile()) throw new Error('不是可导入的文件');
-        const id = `resource_${randomUUID()}`;
-        const timestamp = now();
-        const targetName = `${Date.now()}-${id.slice(-8)}-${originalName}`;
-        const targetPath = resolveInsideRoot(resourceRoot, targetName);
-        copyFileSync(sourcePath, targetPath);
-        const hash = await hashFileSha256(targetPath);
-        const resourceType = fileType(originalName);
-        const isText = canParseAsLocalText(originalName);
-        const title = titleFromFileName(originalName);
-        const parseStatus = isText ? 'ready' : 'needs_parser';
-        const parseEngine = isText ? 'local-text' : 'Docling/MinerU 待接入';
-        await this.run(
-          `INSERT INTO teacher_resources (
-            id, title, resource_type, original_file_name, local_path, file_size,
-            content_hash, parse_status, parse_engine, created_at, updated_at
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          [id, title, resourceType, originalName, targetPath, stat.size, hash, parseStatus, parseEngine, timestamp, timestamp],
-        );
-        await this.ensureTeacherLibraryNode();
-        await this.createResourceGraph(id, title, resourceType, stat.size, timestamp);
-        if (isText) {
-          const text = readFileSync(targetPath, 'utf8');
-          await this.createResourceChunksAndGraph(id, title, text, timestamp);
-        } else {
-          await this.enqueueResourceParseTask(id, title, resourceType, timestamp);
-        }
+        const imported = await this.importResourceFile(sourcePath, timestamp);
         const saved = (await this.all(
           `SELECT r.*, COUNT(c.id) AS chunk_count
              FROM teacher_resources r
              LEFT JOIN resource_chunks c ON c.resource_id = r.id
             WHERE r.id = ?
             GROUP BY r.id`,
-          [id],
+          [imported.resourceId],
         ))[0];
         resources.push(this.mapTeacherResource(saved));
-        items.push({ sourcePath, fileName: originalName, ok: true, fileSize: stat.size });
+        items.push({ sourcePath, fileName: originalName, ok: true, fileSize: imported.fileSize });
       } catch (error) {
         items.push({
           sourcePath,
@@ -1743,6 +1767,330 @@ export class OmniEduStore {
     const failed = items.filter((item) => !item.ok).length;
     const status = items.length === 0 ? 'canceled' : failed === 0 ? 'succeeded' : failed === items.length ? 'failed' : 'partial';
     return { status, resources, items, overview: await this.getKnowledgeOverview() };
+  }
+
+  private async importResourceFile(sourcePath: string, timestamp: string) {
+    const originalName = basename(sourcePath);
+    const sourceStat = await stat(sourcePath);
+    if (!sourceStat.isFile()) throw new Error('不是可导入的文件');
+    const contentHash = await hashFileSha256(sourcePath);
+    const existing = (await this.all(`SELECT id FROM teacher_resources WHERE content_hash = ? LIMIT 1`, [contentHash]))[0];
+    if (existing) {
+      return { status: 'duplicate' as const, resourceId: String(existing.id), fileSize: sourceStat.size, contentHash };
+    }
+    const resourceRoot = this.resolveInsideDataRoot('teacher_resources');
+    await mkdir(resourceRoot, { recursive: true });
+    const id = `resource_${randomUUID()}`;
+    const targetName = `${Date.now()}-${id.slice(-8)}-${originalName}`;
+    const targetPath = resolveInsideRoot(resourceRoot, targetName);
+    await copyFile(sourcePath, targetPath);
+    const copiedHash = await hashFileSha256(targetPath);
+    if (copiedHash !== contentHash) {
+      await rm(targetPath, { force: true }).catch(() => undefined);
+      throw new Error('复制后内容校验不一致，已放弃导入');
+    }
+    const resourceType = fileType(originalName);
+    const isText = canParseAsLocalText(originalName);
+    const title = titleFromFileName(originalName);
+    const parseStatus = isText ? 'ready' : 'needs_parser';
+    const parseEngine = isText ? 'local-text' : 'Docling/MinerU 待接入';
+    await this.run(
+      `INSERT INTO teacher_resources (
+        id, title, resource_type, original_file_name, local_path, file_size,
+        content_hash, parse_status, parse_engine, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, title, resourceType, originalName, targetPath, sourceStat.size, contentHash, parseStatus, parseEngine, timestamp, timestamp],
+    );
+    await this.ensureTeacherLibraryNode();
+    await this.createResourceGraph(id, title, resourceType, sourceStat.size, timestamp);
+    if (isText) {
+      const text = await readFile(targetPath, 'utf8');
+      await this.createResourceChunksAndGraph(id, title, text, timestamp);
+    } else {
+      await this.enqueueResourceParseTask(id, title, resourceType, timestamp);
+    }
+    return { status: 'succeeded' as const, resourceId: id, fileSize: sourceStat.size, contentHash };
+  }
+
+  async createKnowledgeImportJob(rootPath: string): Promise<KnowledgeImportJob> {
+    const trimmedRoot = rootPath.trim();
+    requireNonEmpty(trimmedRoot, '导入目录不能为空');
+    const id = `import_job_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO knowledge_import_jobs (
+        id, root_path, status, total_files, processed_files, succeeded_files,
+        duplicate_files, failed_files, cancel_requested, last_error, created_at, updated_at, completed_at
+      ) VALUES (?, ?, 'queued', 0, 0, 0, 0, 0, 0, '', ?, ?, '')`,
+      [id, trimmedRoot, timestamp, timestamp],
+    );
+    return this.getKnowledgeImportJobOrThrow(id);
+  }
+
+  async createKnowledgeImportJobFromPaths(sourcePaths: string[]): Promise<KnowledgeImportJob> {
+    const paths = sourcePaths.map((sourcePath) => sourcePath.trim()).filter(Boolean);
+    if (paths.length === 0) throw new Error('导入文件列表不能为空');
+    if (paths.length > MAX_IMPORT_FILES_PER_JOB) throw new Error(`单次导入最多支持 ${MAX_IMPORT_FILES_PER_JOB} 个文件，请分批导入`);
+    const id = `import_job_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO knowledge_import_jobs (
+        id, root_path, status, total_files, processed_files, succeeded_files,
+        duplicate_files, failed_files, cancel_requested, last_error, created_at, updated_at, completed_at
+      ) VALUES (?, '', 'queued', ?, 0, 0, 0, 0, 0, '', ?, ?, '')`,
+      [id, paths.length, timestamp, timestamp],
+    );
+    for (const sourcePath of paths) {
+      await this.run(
+        `INSERT INTO knowledge_import_job_items (
+          id, job_id, source_path, file_name, status, resource_id, file_size, content_hash, error_message, created_at
+        ) VALUES (?, ?, ?, ?, 'queued', '', 0, '', '', ?)`,
+        [`import_item_${randomUUID()}`, id, sourcePath, basename(sourcePath), timestamp],
+      );
+    }
+    return this.getKnowledgeImportJobOrThrow(id);
+  }
+
+  async runKnowledgeImportJob(jobId: string): Promise<KnowledgeImportJob> {
+    const job = await this.getKnowledgeImportJobOrThrow(jobId);
+    if (job.status !== 'queued') throw new Error('只能运行待处理状态的导入任务');
+    const timestamp = now();
+    await this.updateKnowledgeImportJob(jobId, { status: 'scanning' });
+    let files: string[] = [];
+    if (job.rootPath) {
+      try {
+        files = await this.walkImportDirectory(job.rootPath);
+      } catch (error) {
+        await this.run(
+          `UPDATE knowledge_import_jobs
+              SET status = 'failed', last_error = ?, updated_at = ?, completed_at = ?
+            WHERE id = ?`,
+          [error instanceof Error ? error.message : '目录扫描失败', timestamp, timestamp, jobId],
+        );
+        return this.getKnowledgeImportJobOrThrow(jobId);
+      }
+    } else {
+      files = job.items.filter((item) => item.status === 'queued').map((item) => item.sourcePath);
+    }
+    if (files.length === 0) {
+      await this.run(
+        `UPDATE knowledge_import_jobs
+            SET status = 'ready', total_files = 0, updated_at = ?, completed_at = ?
+          WHERE id = ?`,
+        [timestamp, timestamp, jobId],
+      );
+      return this.getKnowledgeImportJobOrThrow(jobId);
+    }
+    await this.run(
+      `UPDATE knowledge_import_jobs SET status = 'importing', total_files = ?, updated_at = ? WHERE id = ?`,
+      [files.length, timestamp, jobId],
+    );
+    let processed = 0;
+    let succeeded = 0;
+    let duplicate = 0;
+    let failed = 0;
+    for (const sourcePath of files) {
+      const cancelRow = (await this.all(`SELECT cancel_requested FROM knowledge_import_jobs WHERE id = ?`, [jobId]))[0];
+      if (cancelRow && Number(cancelRow.cancel_requested) === 1) {
+        const cancelledAt = now();
+        await this.run(
+          `UPDATE knowledge_import_jobs SET status = 'cancelled', updated_at = ?, completed_at = ? WHERE id = ?`,
+          [cancelledAt, cancelledAt, jobId],
+        );
+        return this.getKnowledgeImportJobOrThrow(jobId);
+      }
+      processed += 1;
+      const fileName = basename(sourcePath);
+      const queuedRow = (await this.all(
+        `SELECT id FROM knowledge_import_job_items WHERE job_id = ? AND source_path = ? AND status = 'queued' LIMIT 1`,
+        [jobId, sourcePath],
+      ))[0];
+      const itemId = queuedRow ? String(queuedRow.id) : `import_item_${randomUUID()}`;
+      try {
+        const imported = await this.importResourceFile(sourcePath, timestamp);
+        if (imported.status === 'duplicate') {
+          duplicate += 1;
+          await this.upsertKnowledgeImportJobItem(itemId, queuedRow ? 'update' : 'insert', {
+            jobId, sourcePath, fileName, status: 'duplicate', resourceId: imported.resourceId,
+            fileSize: imported.fileSize, contentHash: imported.contentHash, errorMessage: '', timestamp,
+          });
+        } else {
+          succeeded += 1;
+          await this.upsertKnowledgeImportJobItem(itemId, queuedRow ? 'update' : 'insert', {
+            jobId, sourcePath, fileName, status: 'succeeded', resourceId: imported.resourceId,
+            fileSize: imported.fileSize, contentHash: imported.contentHash, errorMessage: '', timestamp,
+          });
+        }
+      } catch (error) {
+        failed += 1;
+        await this.upsertKnowledgeImportJobItem(itemId, queuedRow ? 'update' : 'insert', {
+          jobId, sourcePath, fileName, status: 'failed', resourceId: '', fileSize: 0, contentHash: '',
+          errorMessage: error instanceof Error ? error.message.slice(0, 4000) : '导入失败', timestamp,
+        });
+      }
+      await this.run(
+        `UPDATE knowledge_import_jobs
+            SET processed_files = ?, succeeded_files = ?, duplicate_files = ?, failed_files = ?, updated_at = ?
+          WHERE id = ?`,
+        [processed, succeeded, duplicate, failed, now(), jobId],
+      );
+    }
+    const finalStatus = failed === 0 ? 'ready' : 'partial_failed';
+    const completedAt = now();
+    await this.run(
+      `UPDATE knowledge_import_jobs SET status = ?, updated_at = ?, completed_at = ? WHERE id = ?`,
+      [finalStatus, completedAt, completedAt, jobId],
+    );
+    return this.getKnowledgeImportJobOrThrow(jobId);
+  }
+
+  async cancelKnowledgeImportJob(jobId: string): Promise<KnowledgeImportJob> {
+    const job = await this.getKnowledgeImportJobOrThrow(jobId);
+    const timestamp = now();
+    if (job.status === 'queued') {
+      await this.run(
+        `UPDATE knowledge_import_jobs
+            SET status = 'cancelled', cancel_requested = 1, updated_at = ?, completed_at = ?
+          WHERE id = ?`,
+        [timestamp, timestamp, jobId],
+      );
+      return this.getKnowledgeImportJobOrThrow(jobId);
+    }
+    if (job.status !== 'scanning' && job.status !== 'importing') {
+      throw new Error('只能取消进行中的导入任务');
+    }
+    await this.run(`UPDATE knowledge_import_jobs SET cancel_requested = 1, updated_at = ? WHERE id = ?`, [timestamp, jobId]);
+    return this.getKnowledgeImportJobOrThrow(jobId);
+  }
+
+  async retryKnowledgeImportJob(jobId: string): Promise<KnowledgeImportJob> {
+    const job = await this.getKnowledgeImportJobOrThrow(jobId);
+    if (job.status !== 'failed' && job.status !== 'partial_failed' && job.status !== 'cancelled') {
+      throw new Error('只能重试已结束的导入任务');
+    }
+    const failedPaths = [...new Set(job.items.filter((item) => item.status === 'failed').map((item) => item.sourcePath).filter(Boolean))];
+    if (failedPaths.length === 0) {
+      throw new Error('该导入任务没有可重试的失败文件');
+    }
+    const retryJob = await this.createKnowledgeImportJobFromPaths(failedPaths);
+    await this.runKnowledgeImportJob(retryJob.id);
+    return this.getKnowledgeImportJobOrThrow(retryJob.id);
+  }
+
+  async listKnowledgeImportJobs(limit = 10): Promise<KnowledgeImportJob[]> {
+    const boundedLimit = Math.max(1, Math.min(Math.trunc(limit) || 10, 50));
+    const rows = await this.all(`SELECT * FROM knowledge_import_jobs ORDER BY created_at DESC LIMIT ?`, [boundedLimit]);
+    return rows.map((row) => this.mapKnowledgeImportJob(row));
+  }
+
+  async getKnowledgeImportJob(jobId: string): Promise<KnowledgeImportJob | null> {
+    const row = (await this.all(`SELECT * FROM knowledge_import_jobs WHERE id = ?`, [jobId]))[0];
+    if (!row) return null;
+    const items = await this.all(`SELECT * FROM knowledge_import_job_items WHERE job_id = ? ORDER BY created_at ASC, id ASC`, [jobId]);
+    return this.mapKnowledgeImportJob(row, items);
+  }
+
+  private async getKnowledgeImportJobOrThrow(jobId: string): Promise<KnowledgeImportJob> {
+    const job = await this.getKnowledgeImportJob(jobId);
+    if (!job) throw new Error('导入任务不存在');
+    return job;
+  }
+
+  private async updateKnowledgeImportJob(jobId: string, patch: { status: KnowledgeImportJob['status'] }) {
+    await this.run(`UPDATE knowledge_import_jobs SET status = ?, updated_at = ? WHERE id = ?`, [patch.status, now(), jobId]);
+  }
+
+  private mapKnowledgeImportJob(row: Record<string, unknown>, itemRows?: Record<string, unknown>[]): KnowledgeImportJob {
+    return {
+      id: String(row.id),
+      rootPath: String(row.root_path ?? ''),
+      status: String(row.status) as KnowledgeImportJob['status'],
+      totalFiles: Number(row.total_files ?? 0),
+      processedFiles: Number(row.processed_files ?? 0),
+      succeededFiles: Number(row.succeeded_files ?? 0),
+      duplicateFiles: Number(row.duplicate_files ?? 0),
+      failedFiles: Number(row.failed_files ?? 0),
+      cancelRequested: Number(row.cancel_requested ?? 0) === 1,
+      lastError: String(row.last_error ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+      completedAt: String(row.completed_at ?? ''),
+      items: (itemRows ?? []).map((itemRow) => ({
+        id: String(itemRow.id),
+        jobId: String(itemRow.job_id),
+        sourcePath: String(itemRow.source_path ?? ''),
+        fileName: String(itemRow.file_name ?? ''),
+        status: String(itemRow.status) as KnowledgeImportJobItem['status'],
+        resourceId: String(itemRow.resource_id ?? ''),
+        fileSize: Number(itemRow.file_size ?? 0),
+        contentHash: String(itemRow.content_hash ?? ''),
+        errorMessage: String(itemRow.error_message ?? ''),
+        createdAt: String(itemRow.created_at ?? ''),
+      })),
+    };
+  }
+
+  private async upsertKnowledgeImportJobItem(
+    itemId: string,
+    mode: 'insert' | 'update',
+    item: {
+      jobId: string;
+      sourcePath: string;
+      fileName: string;
+      status: KnowledgeImportJobItem['status'];
+      resourceId: string;
+      fileSize: number;
+      contentHash: string;
+      errorMessage: string;
+      timestamp: string;
+    },
+  ) {
+    if (mode === 'update') {
+      await this.run(
+        `UPDATE knowledge_import_job_items
+            SET status = ?, resource_id = ?, file_size = ?, content_hash = ?, error_message = ?
+          WHERE id = ?`,
+        [item.status, item.resourceId, item.fileSize, item.contentHash, item.errorMessage, itemId],
+      );
+      return;
+    }
+    await this.run(
+      `INSERT INTO knowledge_import_job_items (
+        id, job_id, source_path, file_name, status, resource_id, file_size, content_hash, error_message, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [itemId, item.jobId, item.sourcePath, item.fileName, item.status, item.resourceId, item.fileSize, item.contentHash, item.errorMessage, item.timestamp],
+    );
+  }
+
+  private async walkImportDirectory(rootPath: string): Promise<string[]> {
+    const files: string[] = [];
+    const visit = async (dir: string, depth: number) => {
+      if (depth > MAX_IMPORT_DIRECTORY_DEPTH) throw new Error(`导入目录层级超过 ${MAX_IMPORT_DIRECTORY_DEPTH} 层，已停止扫描`);
+      const entries = await readdir(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        if (files.length >= MAX_IMPORT_FILES_PER_JOB) {
+          throw new Error(`单次导入最多支持 ${MAX_IMPORT_FILES_PER_JOB} 个文件，请分批导入`);
+        }
+        const fullPath = join(dir, entry.name);
+        if (entry.isDirectory()) {
+          await visit(fullPath, depth + 1);
+        } else if (entry.isFile() && IMPORTABLE_RESOURCE_EXTENSIONS.has(extname(entry.name).toLowerCase())) {
+          files.push(fullPath);
+        }
+      }
+    };
+    await visit(rootPath, 0);
+    return files;
+  }
+
+  private async recoverInterruptedImportJobs() {
+    const timestamp = now();
+    await this.run(
+      `UPDATE knowledge_import_jobs
+          SET status = 'failed', last_error = 'interrupted_by_restart', updated_at = ?, completed_at = ?
+        WHERE status IN ('queued', 'scanning', 'importing') AND completed_at = ''`,
+      [timestamp, timestamp],
+    );
   }
 
   async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {
@@ -5766,7 +6114,7 @@ export class OmniEduStore {
       try {
         const recheck = await this.all(`SELECT version FROM schema_migrations WHERE version = ?`, [migration.version]);
         if (recheck.length === 0) {
-          await migration.up(this);
+          await migration.up({ run: (sql, params) => this.run(sql, params), all: (sql, params) => this.all(sql, params) });
           await this.run(
             `INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)`,
             [migration.version, migration.name, now()],

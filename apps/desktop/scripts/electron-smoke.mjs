@@ -16,6 +16,11 @@ const controlledAttachmentBytes = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABC
 writeFileSync(controlledAttachmentPath, controlledAttachmentBytes);
 const artifactRoot = join(appRoot, 'test-results', 'electron-e2e');
 mkdirSync(artifactRoot, { recursive: true });
+const knowledgeImportFixtureDir = mkdtempSync(join(tmpdir(), 'omni-edu-knowledge-e2e-'));
+writeFileSync(join(knowledgeImportFixtureDir, 'e2e-讲义.md'), '# E2E 目录导入讲义\n\n一次函数图像与斜率。', 'utf8');
+writeFileSync(join(knowledgeImportFixtureDir, 'e2e-试题.txt'), 'E2E 目录导入试题文本。', 'utf8');
+writeFileSync(join(knowledgeImportFixtureDir, 'e2e-重复讲义.md'), '# E2E 目录导入讲义\n\n一次函数图像与斜率。', 'utf8');
+writeFileSync(join(knowledgeImportFixtureDir, 'e2e-扫描卷.pdf'), '%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF', 'utf8');
 const activeApps = new Set();
 
 async function launchApp(options = {}) {
@@ -30,6 +35,7 @@ async function launchApp(options = {}) {
       OMNI_EDU_E2E_STUDENT_EXPORT_DIALOG_QUEUE: JSON.stringify([[studentExportRoot], []]),
       OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE: JSON.stringify(options.backupExportDialogQueue ?? [dataBackupDestinationRoot, '']),
       OMNI_EDU_E2E_DATA_BACKUP_VERIFY_DIALOG_QUEUE: JSON.stringify(options.backupVerifyDialogQueue ?? ['$last', '$last', '']),
+      OMNI_EDU_E2E_DIRECTORY_DIALOG_QUEUE: JSON.stringify(options.directoryDialogQueue ?? [knowledgeImportFixtureDir, null]),
       OMNI_EDU_E2E_OPEN_PATH_MODE: '1',
     },
   });
@@ -783,6 +789,7 @@ async function run() {
   // Review reports: use the existing reports:generate/update/list chain from
   // teacher-visible controls. Generation persists a SQLite draft plus an
   // initial Markdown snapshot; later edits intentionally update SQLite only.
+  await first.page.getByTestId('nav-more').click();
   await first.page.getByTestId('nav-review').click();
   await first.page.getByTestId('review-report-workspace').waitFor({ state: 'visible' });
   const reportsBeforeReviewValidation = await first.page.evaluate((studentId) => window.omniEdu.listReports(studentId), knownStudent.id);
@@ -1136,7 +1143,7 @@ async function run() {
   await first.page.getByTestId('question-notebook-usage-empty').waitFor({ state: 'visible' });
   await first.page.getByTestId(`question-notebook-usage-record-${uiCreatedQuestion.id}`).click();
   await first.page.waitForFunction(async (questionId) => (await window.omniEdu.listQuestionNotebookUsage(questionId)).length === 1, uiCreatedQuestion.id);
-  assert.match(await first.page.getByTestId(`question-notebook-usage-${uiCreatedQuestion.id}`).textContent(), /manual/, 'manual classroom usage should render from SQLite readback');
+  await first.page.waitForFunction((questionId) => document.querySelector(`[data-testid="question-notebook-usage-${questionId}"]`)?.textContent?.includes('manual'), uiCreatedQuestion.id, { timeout: 30_000 });
 
   await first.page.getByTestId(`question-notebook-delete-category-${uiQuestionCategory.id}`).click();
   await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories(true)).find((category) => category.id === categoryId)?.status === 'deleted', uiQuestionCategory.id);
@@ -1248,9 +1255,8 @@ async function run() {
   teachingBookDetail = await first.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
   const teachingBlockFixture = teachingBookDetail.blocks[0];
   assert.equal(teachingBlockFixture.sourceAnchors[0]?.ref, teachingSourceRef, 'block should retain the selected source anchor');
-  await first.page.getByTestId('teaching-book-preview').waitFor({ state: 'visible' });
-  assert.match(await first.page.getByTestId('teaching-book-preview').textContent(), /斜率表示/, 'compiled preview should show persisted block content');
-  assert.match(await first.page.getByTestId('teaching-book-preview-meta').textContent(), /writesFile=false/, 'preview must remain read-only');
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="teaching-book-preview"]')?.textContent?.includes('斜率表示'), undefined, { timeout: 30_000 });
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="teaching-book-preview-meta"]')?.textContent?.includes('writesFile=false'), undefined, { timeout: 30_000 });
 
   await first.page.getByTestId(`teaching-book-block-edit-${teachingBlockFixture.id}`).click();
   await first.page.getByTestId('teaching-book-patch-title').fill('斜率定义（候选修订）');
@@ -1650,6 +1656,27 @@ async function run() {
   assert.ok(knowledgeImport.overview.counts.nodes >= 2, 'knowledge graph nodes should be created');
   assert.ok(knowledgeImport.overview.counts.edges >= 1, 'knowledge graph edges should be created');
 
+  // Directory import: a real click on the folder import control must produce a
+  // persistent job with SHA-256 dedupe, honest needs_parser state and UI readback.
+  await first.page.getByTestId('nav-knowledge').click();
+  await first.page.getByTestId('knowledge-import-directory').click();
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="knowledge-import-job-status"]')?.textContent === 'ready', undefined, { timeout: 30_000 });
+  const directoryImportJobs = await first.page.evaluate(() => window.omniEdu.listKnowledgeImportJobs(5));
+  const directoryImportJob = directoryImportJobs[0];
+  assert.equal(directoryImportJob.status, 'ready', 'directory import click must settle a ready job');
+  assert.equal(directoryImportJob.succeededFiles, 3, 'unique fixture files must be imported');
+  assert.equal(directoryImportJob.duplicateFiles, 1, 'same-content file must be deduplicated');
+  assert.equal(directoryImportJob.failedFiles, 0, 'fixture directory must have no failures');
+  assert.equal(directoryImportJob.items.length, 4, 'every scanned file must have a job item');
+  const knowledgeAfterDirectoryImport = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
+  assert.equal(knowledgeAfterDirectoryImport.counts.resources, 4, 'directory import must grow resources by exactly the unique files');
+  assert.ok(knowledgeAfterDirectoryImport.resources.some((resource) => resource.parseStatus === 'needs_parser'), 'binary resource must stay truthful needs_parser');
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-knowledge-import-1366x768.png'), fullPage: true });
+  const jobCountBeforeCanceledDialog = directoryImportJobs.length;
+  await first.page.getByTestId('knowledge-import-directory').click();
+  await first.page.waitForTimeout(300);
+  assert.equal((await first.page.evaluate(() => window.omniEdu.listKnowledgeImportJobs(5))).length, jobCountBeforeCanceledDialog, 'cancelled directory dialog must leave zero job writes');
+
   await first.page.getByTestId('nav-students').click();
   await first.page.getByTestId('student-create').click();
   await first.page.getByTestId('student-profile-form').waitFor({ state: 'visible' });
@@ -1929,8 +1956,11 @@ async function run() {
   await second.page.getByTestId('data-backup-verify-success').waitFor({ state: 'visible', timeout: 15_000 });
   assert.equal((await second.page.getByTestId('data-backup-verify-path').textContent())?.trim(), dataBackupExportPath, 'an external backup must remain verifiable after application restart');
   const knowledgeAfterRestart = await second.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
-  assert.equal(knowledgeAfterRestart.counts.resources, 1, 'knowledge resources should persist after restart');
+  assert.equal(knowledgeAfterRestart.counts.resources, 4, 'knowledge resources should persist after restart');
   assert.ok(knowledgeAfterRestart.counts.chunks >= 1, 'knowledge chunks should persist after restart');
+  const directoryImportJobAfterRestart = (await second.page.evaluate(() => window.omniEdu.listKnowledgeImportJobs(5))).find((job) => job.id === directoryImportJob.id);
+  assert.equal(directoryImportJobAfterRestart?.status, 'ready', 'directory import job must persist after restart');
+  assert.equal(directoryImportJobAfterRestart?.duplicateFiles, 1, 'dedupe evidence must persist after restart');
   const exerciseSetsAfterRestart = await second.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id);
   assert.ok(exerciseSetsAfterRestart.some((item) => item.id === confirmedExerciseSet.id), 'UI-confirmed exercise set should persist after restart');
   const editedSetAfterRestart = exerciseSetsAfterRestart.find((item) => item.id === editedExerciseSet.id);
@@ -1968,6 +1998,7 @@ async function run() {
   await second.page.getByTestId('student-status-archived').waitFor({ state: 'visible' });
   assert.equal(await second.page.getByTestId('student-edit').isDisabled(), true, 'restart UI must preserve archived read-only state');
   await second.page.getByTestId(`student-row-${knownStudent.id}`).click();
+  await second.page.getByTestId('nav-more').click();
   await second.page.getByTestId('nav-mastery').click();
   await second.page.getByTestId('mastery-path-content').waitFor({ state: 'visible' });
   assert.match(await second.page.getByTestId('mastery-path-workspace').textContent(), /版本 v2/, 'restart UI must render the persisted mastery path');

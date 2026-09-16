@@ -66,6 +66,7 @@ let store: OmniEduStore;
 let deepTutorSidecar: DeepTutorSidecarClient | undefined;
 let mainWindow: BrowserWindow | undefined;
 let e2eAttachmentDialogQueue: string[][] | undefined;
+let e2eDirectoryDialogQueue: Array<string | null> | undefined;
 let e2eStudentExportDialogQueue: string[][] | undefined;
 let e2eDataBackupExportDialogQueue: string[] | undefined;
 let e2eDataBackupVerifyDialogQueue: string[] | undefined;
@@ -115,6 +116,38 @@ async function selectAttachmentPaths() {
   return dialog.showOpenDialog({
     title: '选择要复制到学生档案的附件',
     properties: ['openFile', 'multiSelections'],
+  });
+}
+
+function consumeE2eDirectoryDialogSelection() {
+  if (process.env.OMNI_EDU_E2E_DIALOG_MODE !== '1') return null;
+  if (app.isPackaged) throw new Error('E2E directory dialog adapter is disabled in packaged builds');
+  let queue = e2eDirectoryDialogQueue;
+  if (!queue) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(process.env.OMNI_EDU_E2E_DIRECTORY_DIALOG_QUEUE ?? '[]');
+    } catch {
+      throw new Error('E2E directory dialog queue must be valid JSON');
+    }
+    if (!Array.isArray(parsed) || parsed.length > 20 || !parsed.every((entry) => (typeof entry === 'string' && isAbsolute(entry)) || entry === null)) {
+      throw new Error('E2E directory dialog queue must contain bounded absolute paths or null (cancel) entries');
+    }
+    queue = parsed as Array<string | null>;
+    e2eDirectoryDialogQueue = queue;
+  }
+  const entry = queue.shift();
+  if (entry === undefined) throw new Error('E2E directory dialog queue is exhausted');
+  if (entry === null) return { canceled: true, filePaths: [] };
+  return { canceled: false, filePaths: [entry] };
+}
+
+async function selectKnowledgeImportDirectory() {
+  const controlledSelection = consumeE2eDirectoryDialogSelection();
+  if (controlledSelection) return controlledSelection;
+  return dialog.showOpenDialog({
+    title: '选择要导入的教师资料文件夹',
+    properties: ['openDirectory'],
   });
 }
 
@@ -1649,6 +1682,20 @@ app.whenReady().then(async () => {
     return store.importKnowledgeResources(result.filePaths);
   });
   ipcMain.handle('knowledge:importPaths', (_event, sourcePaths: string[]) => store.importKnowledgeResources(sourcePaths));
+  ipcMain.handle('knowledge:importDirectory', async () => {
+    const selection = await selectKnowledgeImportDirectory();
+    if (selection.canceled || !selection.filePaths[0]) return null;
+    const job = await store.createKnowledgeImportJob(selection.filePaths[0]);
+    return store.runKnowledgeImportJob(job.id);
+  });
+  ipcMain.handle('knowledge:importDirectoryPaths', async (_event, sourcePath: string) => {
+    const job = await store.createKnowledgeImportJob(sourcePath);
+    return store.runKnowledgeImportJob(job.id);
+  });
+  ipcMain.handle('knowledge:listImportJobs', (_event, limit: number) => store.listKnowledgeImportJobs(limit));
+  ipcMain.handle('knowledge:getImportJob', (_event, jobId: string) => store.getKnowledgeImportJob(jobId));
+  ipcMain.handle('knowledge:cancelImportJob', (_event, jobId: string) => store.cancelKnowledgeImportJob(jobId));
+  ipcMain.handle('knowledge:retryImportJob', (_event, jobId: string) => store.retryKnowledgeImportJob(jobId));
   ipcMain.handle('knowledge:showResource', async (_event, filePath: string) => {
     if (!(await store.isManagedLocalPath(filePath))) {
       throw new Error('只能打开本地数据目录内的知识资源');
