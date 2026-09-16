@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import type {
   AiConfirmationDecisionResult,
+  AiConfirmationConfirmInput,
   AiAgentEvent,
   AiAgentRun,
   AiMemoryTraceSummary,
@@ -241,8 +242,8 @@ const api = {
     ipcRenderer.invoke('exerciseSets:list', studentId) as Promise<ExerciseSet[]>,
   listAiConfirmations: (status: AiConfirmationStatus | 'all' = 'pending') =>
     ipcRenderer.invoke('aiConfirmations:list', status) as Promise<AiConfirmationItem[]>,
-  confirmAiConfirmation: (id: string) =>
-    ipcRenderer.invoke('aiConfirmations:confirm', id) as Promise<AiConfirmationDecisionResult>,
+  confirmAiConfirmation: (input: AiConfirmationConfirmInput) =>
+    ipcRenderer.invoke('aiConfirmations:confirm', input) as Promise<AiConfirmationDecisionResult>,
   rejectAiConfirmation: (id: string) =>
     ipcRenderer.invoke('aiConfirmations:reject', id) as Promise<AiConfirmationDecisionResult>,
   searchAll: (keyword: string) => ipcRenderer.invoke('search:all', keyword) as Promise<SearchResult>,

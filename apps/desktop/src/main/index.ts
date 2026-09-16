@@ -15,6 +15,7 @@ import type {
   XiazhiUserInputResult,
   AiConfirmationItem,
   AiConfirmationPayload,
+  AiConfirmationConfirmInput,
   AiMasteryPathModule,
   AiConsoleRunInput,
   AiConsoleRunResult,
@@ -1834,7 +1835,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('teachingBook:listPatches', (_event, id: string) => store.listTeachingBookPatches(id));
   ipcMain.handle('exerciseSets:list', (_event, studentId: string) => store.listExerciseSets(studentId));
   ipcMain.handle('aiConfirmations:list', (_event, status = 'pending') => store.listAiConfirmations(status));
-  ipcMain.handle('aiConfirmations:confirm', (_event, id: string) => store.confirmAiConfirmation(id));
+  ipcMain.handle('aiConfirmations:confirm', (_event, input: AiConfirmationConfirmInput) => store.confirmAiConfirmation(input));
   ipcMain.handle('aiConfirmations:reject', (_event, id: string) => store.rejectAiConfirmation(id));
   ipcMain.handle('search:all', (_event, keyword: string) => store.search(keyword));
   ipcMain.handle('aiConversations:list', () => store.listAiConversationWorkspace());
