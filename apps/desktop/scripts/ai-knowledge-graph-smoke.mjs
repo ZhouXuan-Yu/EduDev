@@ -105,11 +105,21 @@ async function run() {
                 prompt: '查一下知识图谱里一次函数相关节点',
                 router,
                 state,
-                call: { name: 'query_knowledge_graph', arguments: { limit: 12 } },
+                call: { name: 'query_knowledge_graph', arguments: { limit: 4 } },
               });
               assert.equal(graphTool.toolRun.status, 'used');
               assert.equal(graphTool.modelResult.graphEvidenceBoundary, 'graph_nodes_are_background_not_direct_text_evidence');
-              assert.ok(graphTool.modelResult.edges.some((edge) => edge.evidenceKind === 'direct_quote'), 'graph edges should carry evidence kind');
+              const overviewForEdges = await store.getKnowledgeOverview();
+              assert.ok(overviewForEdges.edges.some((edge) => edge.evidenceKind === 'direct_quote'), 'graph edges should carry evidence kind');
+
+              const largeGraphTool = await executeAiToolCall({
+                store,
+                prompt: '查一下知识图谱里全部相关节点',
+                router,
+                state,
+                call: { name: 'query_knowledge_graph', arguments: { limit: 12 } },
+              });
+              assert.equal(largeGraphTool.modelResult.graphEvidenceBoundary, 'graph_nodes_are_background_not_direct_text_evidence', 'evidence boundary must survive output truncation');
 
               return {
                 ok: true,

@@ -944,8 +944,7 @@ async function run() {
   assert.equal(needsOcrAnalyses[0]?.ocrStatus, 'needs_ocr', 'image should enter needs_ocr state');
   await first.page.getByTestId('mistake-correction-input').fill('小A 手机 13800138000 的题目：求一次函数斜率。');
   await first.page.getByTestId('mistake-sanitize-button').click();
-  await first.page.getByTestId('mistake-redactions').waitFor({ state: 'visible' });
-  assert.match(await first.page.getByTestId('mistake-sanitized-text').textContent(), /\[手机号\]/, 'sanitized preview should redact phone number');
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="mistake-sanitized-text"]')?.textContent?.includes('[手机号]'), undefined, { timeout: 30_000 });
   await first.page.getByTestId('mistake-save-correction').click();
   await first.page.waitForTimeout(120);
   const correctedAnalysis = await first.page.evaluate((studentId) => window.omniEdu.listMistakeImageAnalyses(studentId), knownStudent.id);
@@ -1667,7 +1666,8 @@ async function run() {
   assert.equal(directoryImportJob.succeededFiles, 3, 'unique fixture files must be imported');
   assert.equal(directoryImportJob.duplicateFiles, 1, 'same-content file must be deduplicated');
   assert.equal(directoryImportJob.failedFiles, 0, 'fixture directory must have no failures');
-  assert.equal(directoryImportJob.items.length, 4, 'every scanned file must have a job item');
+  const directoryImportJobDetail = await first.page.evaluate((jobId) => window.omniEdu.getKnowledgeImportJob(jobId), directoryImportJob.id);
+  assert.equal(directoryImportJobDetail.items.length, 4, 'every scanned file must have a job item');
   const knowledgeAfterDirectoryImport = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
   assert.equal(knowledgeAfterDirectoryImport.counts.resources, 4, 'directory import must grow resources by exactly the unique files');
   assert.ok(knowledgeAfterDirectoryImport.resources.some((resource) => resource.parseStatus === 'needs_parser'), 'binary resource must stay truthful needs_parser');

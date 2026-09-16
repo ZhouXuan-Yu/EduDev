@@ -1,11 +1,11 @@
 import { build } from 'esbuild';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import assert from 'node:assert/strict';
 
-const appRoot = new URL('..', import.meta.url).pathname.replace(/^\//, '').replaceAll('/', '\\');
+const appRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 const tempRoot = mkdtempSync(join(tmpdir(), 'omni-review-reminder-'));
 const outfile = join(tempRoot, 'review-reminder.mjs');
 await build({ entryPoints: [join(appRoot, 'src/main/ai-harness/review-reminder.ts')], bundle: true, platform: 'node', format: 'esm', outfile, logLevel: 'silent' });

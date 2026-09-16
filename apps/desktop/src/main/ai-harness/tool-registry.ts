@@ -1005,7 +1005,7 @@ function boundedPayload(payload: Record<string, unknown>, maxChars = DEFAULT_TOO
   // Keep only non-content status fields that help the AgentLoop decide whether
   // to continue. Never spread the original payload: that would make a result
   // marked "truncated" carry the full record/attachment text anyway.
-  for (const key of ['ok', 'count', 'studentId', 'toolName', 'reason', 'rawRecordsIncluded']) {
+  for (const key of ['ok', 'count', 'studentId', 'toolName', 'reason', 'rawRecordsIncluded', 'graphEvidenceBoundary']) {
     if (key in payload && (typeof payload[key] === 'string' || typeof payload[key] === 'number' || typeof payload[key] === 'boolean')) {
       compact[key] = payload[key];
     }

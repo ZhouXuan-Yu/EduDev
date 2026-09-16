@@ -23,17 +23,17 @@ async function run() {
     await page.waitForFunction(() => Boolean(window.omniEdu));
 
     await page.getByRole('button', { name: '设置' }).click();
-    const panel = page.getByTestId('ai-usability-review-panel');
+    const panel = page.getByTestId('ai-quality-review-workspace');
     await assertVisible(panel, 'human review panel should be visible');
-    await assertVisible(page.getByTestId('ai-model-grader-panel'), 'model grader panel should be visible');
+    await assertVisible(page.getByTestId('ai-quality-model-grades'), 'model grader panel should be visible');
 
-    const form = page.getByTestId('ai-usability-review-form');
+    const form = page.getByTestId('ai-quality-review-form');
     await form.locator('input[placeholder="teacher_review_001"]').fill('ui_review_manual_001');
     await form.locator('textarea[placeholder="老师真实问小智的问题"]').fill('请看小A最近错题，给我今天能用的补救建议。');
     await form.locator('input[type="number"]').nth(0).fill('5');
     await form.locator('input[type="number"]').nth(1).fill('1');
-    await form.locator('textarea[placeholder="老师为什么给这个分数，哪里需要改"]').fill('UI smoke：这条样本可直接使用。');
-    await page.getByTestId('save-ai-usability-review').click();
+    await form.locator('textarea[placeholder="评分依据与需要改进之处"]').fill('UI smoke：这条样本可直接使用。');
+    await page.getByTestId('ai-quality-save').click();
 
     await page.waitForFunction(async () => {
       const summary = await window.omniEdu?.getAiUsabilityReviewSummary();
@@ -44,39 +44,38 @@ async function run() {
       'sampleId,prompt,route,subIntent,teacherScore,needsRewrite,roundsToUseful,mainIssueCode,teacherNote',
       'ui_review_csv_002,小智刚才回答太长，帮我回放失败样本,workspace_help,usage_help,2,true,3,too_long,需要重写',
     ].join('\n');
-    const csvImport = page.getByTestId('ai-usability-csv-import');
-    await csvImport.locator('textarea').fill(csv);
-    await page.getByTestId('import-ai-usability-csv').click();
+    await page.getByTestId('ai-quality-csv-text').fill(csv);
+    await page.getByTestId('ai-quality-import').click();
 
     await page.waitForFunction(async () => {
       const summary = await window.omniEdu?.getAiUsabilityReviewSummary();
       return summary?.sampleCount === 2 && summary.needsRewriteCount === 1;
     });
 
-    const failureReplay = page.getByTestId('ai-usability-failure-replay');
+    const failureReplay = page.getByTestId('ai-quality-failures');
     await assertVisible(failureReplay.getByText('ui_review_csv_002'), 'CSV failure sample should be listed');
-    await failureReplay.getByRole('button', { name: '回放到 AI 输入' }).click();
+    await failureReplay.locator('[data-testid^="ai-quality-replay-"]').first().click();
     await page.waitForFunction(() => {
       const textarea = document.querySelector('textarea');
       return textarea?.value.includes('小智刚才回答太长');
     });
 
     await page.getByRole('button', { name: '设置' }).click();
-    const refreshedFailureReplay = page.getByTestId('ai-usability-failure-replay');
-    await refreshedFailureReplay.getByTestId('select-replay-before').first().click();
-    await assertVisible(page.getByTestId('selected-replay-before'), 'selected before sample should be visible');
+    const refreshedFailureReplay = page.getByTestId('ai-quality-failures');
+    await refreshedFailureReplay.locator('[data-testid^="ai-quality-before-"]').first().click();
+    await assertVisible(page.getByTestId('ai-quality-selected-before'), 'selected before sample should be visible');
     await form.locator('input[placeholder="teacher_review_001"]').fill('ui_review_csv_002_after');
     await form.locator('input[type="number"]').nth(0).fill('5');
     await form.locator('input[type="number"]').nth(1).fill('1');
-    await form.locator('input[placeholder="none / evidence_gap / too_long"]').fill('none');
-    await form.locator('textarea[placeholder="老师为什么给这个分数，哪里需要改"]').fill('UI smoke：改造后能直接进入操作，不再让老师手动切模块。');
-    await page.getByTestId('save-ai-usability-review').click();
+    await form.locator('input[placeholder="none / evidence_gap"]').fill('none');
+    await form.locator('textarea[placeholder="评分依据与需要改进之处"]').fill('UI smoke：改造后能直接进入操作，不再让老师手动切模块。');
+    await page.getByTestId('ai-quality-save').click();
 
     await page.waitForFunction(async () => {
       const summary = await window.omniEdu?.getAiUsabilityReplaySummary();
       return summary?.experimentCount === 1 && summary.improvedCount === 1 && summary.averageScoreDelta === 3;
     });
-    await assertVisible(page.getByTestId('ai-usability-replay-experiments').getByText('已改善'), 'replay experiment should be listed');
+    await assertVisible(page.getByTestId('ai-quality-experiments').getByText('已改善'), 'replay experiment should be listed');
 
     const summary = await page.evaluate(() => window.omniEdu?.getAiUsabilityReviewSummary());
     const reviews = await page.evaluate(() => window.omniEdu?.listAiUsabilityReviews(10));
