@@ -1,4 +1,4 @@
-import type { AiContextPolicy, AiIntentRoute, AiRouterDecision, AiRouterSlots, AiSubIntent } from '../../shared/contracts';
+import type { AiContextPolicy, AiExecutionMode, AiIntentRoute, AiRouterDecision, AiRouterSlots, AiSubIntent } from '../../shared/contracts';
 import { inferAiRoleProfile } from './role-profile';
 
 const ROUTE_ORDER: AiIntentRoute[] = [
@@ -28,6 +28,8 @@ const ROUTE_KEYWORDS: Record<AiIntentRoute, RegExp[]> = {
   student_diagnosis: [
     /分析.*学生|当前学生|这个学生|最近.*表现|薄弱点|错因|学习问题|掌握情况|诊断|画像|阶段目标|学习进度/,
     /学生.*(最近|稳定|表现|薄弱|掌握|永久|标记|手机号|身份证|ADHD|自残|自杀|伤害)/i,
+    /(?:这个孩子|那个孩子|孩子).*(?:学习|成绩|考试|考不好|学不会|表现|掌握|薄弱|错题)/u,
+    /(?:他|她|TA).{0,8}(?:最近|学习|成绩|考试|考不好|学不会|表现|掌握|薄弱|错题)/iu,
     /小[\p{L}\p{N}_-]{1,12}.*(学习|进度|表现|掌握|薄弱|错因|记录|档案)/u,
   ],
   error_analysis: [
@@ -36,7 +38,7 @@ const ROUTE_KEYWORDS: Record<AiIntentRoute, RegExp[]> = {
     /附件.*(分析|错误|题目)|分析.*附件|图片中|图中|照片中|OCR/,
   ],
   practice_design: [
-    /练习|作业|题组|三元题组|相似题|变式题|巩固|训练|出题|周练|复习队列|间隔复习|到期复习|待复习/,
+    /练习|作业|题组|三元题组|相似题|变式题|巩固|训练|出题|\d+\s*道题|[一二三四五六七八九十]+道题|周练|复习队列|间隔复习|到期复习|待复习/,
     /小[\p{L}\p{N}_-]{1,12}.*(题目|题组|练习|作业|训练|相似题|变式题|巩固|抽取)/u,
   ],
   lesson_design: [/教案|课堂|课时|讲解|导入|板书|教学设计|课程设计|备课|知识讲解|课堂活动/],
@@ -115,12 +117,16 @@ function unique(values: string[]) {
 }
 
 function extractStudentRefs(prompt: string) {
-  const refs = prompt.match(/小[A-Za-z0-9_-]{1,12}|小[\u4e00-\u9fa5]{1,3}/g) ?? [];
+  const latinRefs = prompt.match(/小[A-Za-z0-9_-]{1,12}/g) ?? [];
+  const chineseRefs = Array.from(prompt.matchAll(/小([\u4e00-\u9fa5]{1,3})(?=最近|这周|本周|学习|表现|掌握|薄弱|错题|错因|记录|档案|题目|练习|作业)/g), (match) => `小${match[1]}`);
+  const refs = [...latinRefs, ...chineseRefs];
   return unique(refs.map((ref) => ref.trim()).filter((ref) => ref !== '小智' && ref !== '小智能'));
 }
 
 function hasExplicitStudentReference(prompt: string, slots: AiRouterSlots) {
-  return slots.studentRefs.length > 0 || /学生|当前学生|这个学生/u.test(prompt);
+  return slots.studentRefs.length > 0
+    || /学生|当前学生|这个学生|这个孩子|那个孩子/u.test(prompt)
+    || /(?:他|她|TA).{0,8}(?:最近|学习|成绩|考试|考不好|学不会|表现|掌握|薄弱|错题)/iu.test(prompt);
 }
 
 function scoreRoute(prompt: string, route: AiIntentRoute) {
@@ -192,7 +198,7 @@ function pickRoute(prompt: string, slots: AiRouterSlots): { route: AiIntentRoute
   if (/(附件.*(分析|错误|题目)|分析.*附件|图片中|图中|照片中|OCR)/i.test(trimmed)) {
     return { route: 'error_analysis', confidence: 0.88 };
   }
-  if (/(题目|题组|练习|作业|训练|相似题|变式题|巩固|抽取|周练)/.test(trimmed)) {
+  if (/(题目|题组|练习|作业|训练|相似题|变式题|巩固|抽取|周练|\d+\s*道题|[一二三四五六七八九十]+道题)/.test(trimmed)) {
     return { route: 'practice_design', confidence: 0.85 };
   }
   if (/(错题|错因|失分|失分原因|错的点|错误原因|订正|纠错)/.test(trimmed)) {
@@ -472,5 +478,73 @@ export function routeAiPrompt(prompt: string, options: { hasStudent: boolean }):
     allowedTools: allowedToolsFor(contextPolicy, picked.route),
     contextPolicy,
     roleProfile: inferAiRoleProfile(prompt),
+  };
+}
+
+export type AiExecutionDecision = {
+  mode: AiExecutionMode;
+  reason: string;
+};
+
+// Default is the low-latency direct path. Set OMNI_EDU_AI_EXECUTION_MODE=structured
+// (or OMNI_EDU_DISABLE_DIRECT_AI=1) to roll back to the full structured chain.
+function directExecutionDisabled() {
+  const configuredMode = typeof process !== 'undefined'
+    ? String(process.env.OMNI_EDU_AI_EXECUTION_MODE ?? '').trim().toLowerCase()
+    : '';
+  const disabled = typeof process !== 'undefined'
+    ? String(process.env.OMNI_EDU_DISABLE_DIRECT_AI ?? '').trim().toLowerCase()
+    : '';
+  return configuredMode === 'structured' || configuredMode === 'full' || ['1', 'true', 'yes'].includes(disabled);
+}
+
+const DIRECT_STUDENT_REFERENCE_PATTERN = /学生|该生|当前学生|这个学生|这个孩子|那个孩子|孩子|小[A-Za-z0-9_-]{1,12}|小[\u4e00-\u9fa5]{1,3}(?=最近|这周|本周|学习|表现|掌握|薄弱|错题|错因|记录|档案|题目|练习|作业)|(?:他|她|TA).{0,8}(?:最近|学习|成绩|考试|考不好|学不会|表现|掌握|薄弱|错题)/iu;
+const DIRECT_LOCAL_CONTEXT_PATTERN = /记录|档案|知识库|附件|上文|上述|前文|本地|数据库|图谱|题库|资料|讲义|文档|文件|图片|材料|错题|成绩|表现|学习进度|标签|家长|阶段目标|学习记录|学生资料/u;
+const DIRECT_ACTION_PATTERN = /生成|创建|输出|导出|保存|修改|删除|归档|更新|发布|提交|报告|复盘|题组|练习|题目|作业|教案|PDF|Word|docx?|markdown|查询|查找|检索|读取|分析|调用|工具|根据|结合|基于|搜索|打开|导入|上传|下载/u;
+const DIRECT_SENSITIVE_PATTERN = /诊断|干预|抑郁|自残|自杀|ADHD|多动|智力|隐私|身份证|手机号|电话|敏感|危险|违法|暴力|性侵|伤害/u;
+const DIRECT_MULTI_INTENT_PATTERN = /并且|然后|顺便|同时|另外|以及|还要|再帮我/u;
+const DIRECT_GREETING_PATTERN = /^(你?好|您好|hello|hi|嗨|在吗|早上好|晚上好)[\s!！。.?？~～]*$/iu;
+const DIRECT_THANKS_PATTERN = /^(谢谢|感谢|多谢|谢啦|辛苦了|好的谢谢)[\s!！。.?？~～]*$/u;
+const DIRECT_CAPABILITY_PATTERN = /^(你能做什么|你会什么|你有什么能力|你是谁|介绍一下(?:你自己|你)?|小智能做什么)[\s!！。.?？~～]*$/u;
+const DIRECT_GENERAL_QUESTION_PATTERN = /什么是|是什么|如何理解|解释(?:一下|下)?|请解释|有什么区别|区别是什么|定义|原理|为什么|怎么计算|如何计算|能否|是否|是多少|谁是|何时|哪里/u;
+
+export function decideExecutionMode(
+  prompt: string,
+  options: { hasStudent?: boolean; router?: AiRouterDecision } = {},
+): AiExecutionDecision {
+  const trimmed = prompt.trim();
+  if (directExecutionDisabled()) {
+    return { mode: 'structured', reason: '环境开关已要求所有任务走 structured。' };
+  }
+  if (!trimmed) {
+    return { mode: 'structured', reason: '空输入不能进入 direct。' };
+  }
+
+  const router = options.router ?? routeAiPrompt(trimmed, { hasStudent: Boolean(options.hasStudent) });
+  const isDirectConversation = DIRECT_GREETING_PATTERN.test(trimmed)
+    || DIRECT_THANKS_PATTERN.test(trimmed)
+    || DIRECT_CAPABILITY_PATTERN.test(trimmed);
+  const isStandaloneGeneralQuestion = router.route === 'general_qa'
+    && router.subIntent === 'concept_explanation'
+    && DIRECT_GENERAL_QUESTION_PATTERN.test(trimmed);
+
+  if (router.route !== 'general_qa' || (!isDirectConversation && !isStandaloneGeneralQuestion)) {
+    return { mode: 'structured', reason: '任务不是明确的寒暄、致谢、能力说明或独立通识问答。' };
+  }
+  if (router.clarificationQuestion || router.riskLevel !== 'normal' || router.needsStudent) {
+    return { mode: 'structured', reason: '任务存在澄清、学生或风险边界，需进入 structured。' };
+  }
+  if (DIRECT_STUDENT_REFERENCE_PATTERN.test(trimmed)) {
+    return { mode: 'structured', reason: '检测到学生引用，需读取并审计本地证据。' };
+  }
+  if (DIRECT_LOCAL_CONTEXT_PATTERN.test(trimmed)) {
+    return { mode: 'structured', reason: '检测到本地上下文意图，需按需装配证据。' };
+  }
+  if (DIRECT_ACTION_PATTERN.test(trimmed) || DIRECT_SENSITIVE_PATTERN.test(trimmed) || DIRECT_MULTI_INTENT_PATTERN.test(trimmed)) {
+    return { mode: 'structured', reason: '检测到工具、写入、产物、敏感或复合意图，需进入 structured。' };
+  }
+  return {
+    mode: 'direct',
+    reason: isDirectConversation ? '明确的轻量对话意图。' : '独立通识问答不需要本地上下文。',
   };
 }

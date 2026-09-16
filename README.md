@@ -4,8 +4,11 @@
 
 Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把教师本机的学生档案、学习记录、错题图片、题库、知识库和 AI 分析组织成一个可验证、可确认、可导出的桌面端闭环。
 
+后续产品范围、模块边界、技术选型和上市否决项统一以 [最终产品与模块架构基线](docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md) 为准。旧规划与该基线冲突时，以该基线为最高优先级，但“已完成”状态仍以当前代码和真实验收证据为准。
+
 ```text
-本地题库索引 -> 错题图片解析 -> 脱敏上云分析 -> 本地相似题召回 -> 三元题组输出
+教师资料 -> 解析与索引 -> 题库/知识库 -> 按蓝图组卷 -> 教师确认 -> 试卷与解析
+学生错题照片 -> 本地 OCR -> 教师校正 -> 错因/知识点 -> 相似或变式题 -> 针对性练习
 ```
 
 ## UI 预览
@@ -180,6 +183,7 @@ docs/                               UI、知识库、小智 harness 方案文档
 docs/23_XIAOZHI_USABILITY_EVAL_RUBRIC.md 小智教师可用性人工评分口径
 docs/24_DEEPTUTOR_OMNI_EDU_INTEGRATION_DESIGN.md DeepTutor 核心能力融合设计与实施记录（持续更新）
 docs/25_DEEPTUTOR_FEATURE_INVENTORY_AND_PRODUCTION_MATRIX.md DeepTutor 77 项功能台账与生产验收矩阵（持续更新）
+docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md 最终产品、模块方案、技术选型与上市门禁
 1.Agent.md                          Agent 工作规则
 2.Memory.md                         当前进度记录
 3.Learning.md                       复盘和踩坑记录

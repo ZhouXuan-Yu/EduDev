@@ -1109,6 +1109,8 @@ export type AiRouterDecision = {
   roleProfile?: AiRoleProfileId;
 };
 
+export type AiExecutionMode = 'direct' | 'structured';
+
 export type AiConsoleToolRun = {
   name: string;
   label: string;
@@ -1891,6 +1893,8 @@ export type AiHarnessRunSummary = {
   router: AiRouterDecision;
   selectedContext: AiContextKey[];
   schemaValid: boolean;
+  schemaApplicable?: boolean;
+  graderApplicable?: boolean;
   schemaErrors: string[];
   educationGrade?: AiEducationGradeReport;
   usabilityGrade?: AiUsabilityGradeReport;
@@ -1907,6 +1911,7 @@ export type AiConsoleRunInput = {
 
 export type AiConsoleRunResult = {
   ok: boolean;
+  executionMode: AiExecutionMode;
   model: string;
   content: string;
   toolRuns: AiConsoleToolRun[];

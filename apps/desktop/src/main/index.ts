@@ -2,7 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
-import { buildAiSystemPrompt, recoverStructuredJsonCompletion, requestDeepSeekCompletion, requestStructuredReplyRepair, runDeepSeekChat, type DeepSeekMessage } from './deepseek';
+import { buildAiSystemPrompt, recoverStructuredJsonCompletion, requestDeepSeekCompletion, requestStructuredReplyRepair, runDeepSeekChat, runDirectDeepSeekChat, type DeepSeekMessage } from './deepseek';
 import { OmniEduStore } from './db';
 import type {
   AiAgentEvent,
@@ -42,7 +42,7 @@ import type {
   XiazhiRunMutationAction,
   XiazhiRunMutationResult,
 } from '../shared/contracts';
-import { routeAiPrompt } from './ai-harness/router';
+import { decideExecutionMode, routeAiPrompt } from './ai-harness/router';
 import { runAiAgentLoop } from './ai-harness/agent-loop';
 import { parseStructuredReply, structuredReplyToMarkdown } from './ai-harness/schema';
 import { boundDeepTutorEventDetail } from './ai-harness/deeptutor-event-bounds';
@@ -1255,8 +1255,9 @@ app.whenReady().then(async () => {
   ipcMain.handle('ai:deepTutorRunConsole', async (_event, input: AiConsoleRunInput): Promise<AiConsoleRunResult> => {
     const prompt = input.prompt?.trim() ?? '';
     const router = routeAiPrompt(prompt, { hasStudent: Boolean(input.studentId) });
-    const capability = selectDeepTutorCapability(router);
+    const execution = decideExecutionMode(prompt, { router, hasStudent: Boolean(input.studentId) });
     const settings = await store.getDeepSeekRuntimeSettings();
+    const capability = selectDeepTutorCapability(router);
     const request: XiazhiCapabilityRequest = {
       schemaVersion: 'xiazhi.capability.request.v1',
       turnId: `console-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -1277,24 +1278,154 @@ app.whenReady().then(async () => {
       budgets: { maxEvents: 64, maxWallMs: 120_000 },
     };
     if (!prompt) {
-      return {
+      const runId = await store.startAiAgentRun({
+        sessionId: input.sessionId,
+        prompt,
+        route: router.route,
+        subIntent: router.subIntent,
+        model: settings.model,
+        studentId: input.studentId,
+      });
+      const trace: AiAgentTraceStep[] = [
+        {
+          phase: 'route',
+          status: 'succeeded',
+          label: 'AI 任务路由',
+          detail: '空输入未进入模型、工具或 DeepTutor。',
+          outputSummary: { executionMode: 'structured', route: router.route, subIntent: router.subIntent },
+        },
+        {
+          phase: 'finalize',
+          status: 'blocked',
+          label: 'AI 任务结束',
+          detail: '请输入 AI 任务。',
+          outputSummary: { blockedReason: 'empty_prompt' },
+        },
+      ];
+      for (const step of trace) await store.recordAiAgentEvent(runId, step);
+      await store.completeAiAgentRun(runId, 'blocked', '请输入 AI 任务。');
+      const result: AiConsoleRunResult = {
         ok: false,
+        executionMode: 'structured',
         model: settings.model,
         content: '',
         toolRuns: [],
         sources: [],
         harness: {
+          agentRunId: runId,
           harnessVersion: XIAZHI_AGENT_HARNESS_VERSION,
           selectedCapability: capability,
           router,
           selectedContext: [],
           schemaValid: false,
+          schemaApplicable: true,
+          graderApplicable: true,
           schemaErrors: ['请输入 AI 任务。'],
-          trace: [],
+          trace,
         },
         errorMessage: '请输入 AI 任务。',
       };
+      await store.recordAiConsoleRun(input, result);
+      return result;
     }
+
+    if (execution.mode === 'direct') {
+      const runId = await store.startAiAgentRun({
+        sessionId: input.sessionId,
+        prompt,
+        route: router.route,
+        subIntent: router.subIntent,
+        model: settings.model,
+        studentId: input.studentId,
+      });
+      const trace: AiAgentTraceStep[] = [{
+        phase: 'route',
+        status: 'succeeded',
+        label: 'AI 轻量路由',
+        detail: execution.reason,
+        outputSummary: { executionMode: 'direct', route: router.route, subIntent: router.subIntent },
+      }];
+      await store.recordAiAgentEvent(runId, trace[0]);
+
+      const makeDirectResult = (resultInput: {
+        ok: boolean;
+        content: string;
+        errorMessage?: string;
+        usage?: AiConsoleRunResult['usage'];
+        finalStatus: 'succeeded' | 'failed';
+        finalDetail: string;
+      }): AiConsoleRunResult => ({
+        ok: resultInput.ok,
+        executionMode: 'direct',
+        model: settings.model,
+        content: resultInput.content,
+        toolRuns: [],
+        sources: [],
+        usage: resultInput.usage,
+        harness: {
+          agentRunId: runId,
+          harnessVersion: XIAZHI_AGENT_HARNESS_VERSION,
+          router,
+          selectedContext: [],
+          schemaValid: false,
+          schemaApplicable: false,
+          graderApplicable: false,
+          schemaErrors: [],
+          trace: [...trace, {
+            phase: 'finalize',
+            status: resultInput.finalStatus,
+            label: 'AI 轻量回复',
+            detail: resultInput.finalDetail,
+            outputSummary: { executionMode: 'direct', route: router.route },
+          }],
+        },
+        ...(resultInput.errorMessage ? { errorMessage: resultInput.errorMessage } : {}),
+      });
+
+      if (!settings.apiKey) {
+        const errorMessage = '缺少 DeepSeek API Key，请在设置页保存 DeepSeek API 配置。';
+        const result = makeDirectResult({
+          ok: false,
+          content: '',
+          errorMessage,
+          finalStatus: 'failed',
+          finalDetail: errorMessage,
+        });
+        await store.recordAiAgentEvent(runId, result.harness!.trace[1]);
+        await store.completeAiAgentRun(runId, 'failed', errorMessage);
+        await store.recordAiConsoleRun(input, result);
+        return result;
+      }
+
+      try {
+        const response = await runDirectDeepSeekChat(prompt, settings.apiKey, settings.model);
+        const result = makeDirectResult({
+          ok: true,
+          content: response.content,
+          usage: response.usage,
+          finalStatus: 'succeeded',
+          finalDetail: '普通文本回复已完成。',
+        });
+        await store.recordAiAgentEvent(runId, result.harness!.trace[1]);
+        await store.completeAiAgentRun(runId, 'succeeded');
+        await store.recordAiConsoleRun(input, result);
+        return result;
+      } catch (error) {
+        const errorMessage = boundedDeepTutorText(error, 800);
+        const result = makeDirectResult({
+          ok: false,
+          content: '',
+          errorMessage,
+          finalStatus: 'failed',
+          finalDetail: errorMessage,
+        });
+        await store.recordAiAgentEvent(runId, result.harness!.trace[1]);
+        await store.completeAiAgentRun(runId, 'failed', errorMessage);
+        await store.recordAiConsoleRun(input, result);
+        return result;
+      }
+    }
+
     const { runId } = await startDeepTutorTurn(request);
     const deadline = Date.now() + request.budgets.maxWallMs + 2_000;
     let run = await store.getAiAgentRun(runId);
@@ -1448,6 +1579,7 @@ app.whenReady().then(async () => {
       if (run?.status !== 'failed') await store.completeAiAgentRun(runId, 'failed', errorMessage);
       const result: AiConsoleRunResult = {
         ok: false,
+        executionMode: 'structured',
         model: settings.model,
         content: '',
         toolRuns: consoleToolRuns,
@@ -1459,6 +1591,8 @@ app.whenReady().then(async () => {
           router,
           selectedContext: router.contextPolicy.include,
           schemaValid: Boolean(parsed.reply),
+          schemaApplicable: true,
+          graderApplicable: true,
           schemaErrors: parsed.errors,
           educationGrade,
           usabilityGrade,
@@ -1469,8 +1603,9 @@ app.whenReady().then(async () => {
       await store.recordAiConsoleRun(input, result);
       return result;
     }
-    const result: AiConsoleRunResult = {
+      const result: AiConsoleRunResult = {
       ok: true,
+      executionMode: 'structured',
       model: settings.model,
       content: structuredReplyToMarkdown(parsed.reply),
       toolRuns: consoleToolRuns,
@@ -1491,6 +1626,8 @@ app.whenReady().then(async () => {
         router,
         selectedContext: router.contextPolicy.include,
         schemaValid: true,
+        schemaApplicable: true,
+        graderApplicable: true,
         schemaErrors: [],
         educationGrade,
         usabilityGrade,
@@ -1887,6 +2024,7 @@ app.whenReady().then(async () => {
       for (const step of trace) await store.recordAiAgentEvent(agentRunId, step);
       const result: AiConsoleRunResult = {
         ok: false,
+        executionMode: 'structured',
         model: deepSeekSettings.model,
         content: '',
         toolRuns: [],
@@ -1896,6 +2034,8 @@ app.whenReady().then(async () => {
           router,
           selectedContext: [],
           schemaValid: false,
+          schemaApplicable: true,
+          graderApplicable: true,
           schemaErrors: ['请输入 AI 任务。'],
           trace,
         },
@@ -1923,6 +2063,7 @@ app.whenReady().then(async () => {
       for (const step of trace) await store.recordAiAgentEvent(agentRunId, step);
       const result: AiConsoleRunResult = {
         ok: false,
+        executionMode: 'structured',
         model: deepSeekSettings.model,
         content: '',
         toolRuns: [],
@@ -1932,6 +2073,8 @@ app.whenReady().then(async () => {
           router,
           selectedContext: [],
           schemaValid: false,
+          schemaApplicable: true,
+          graderApplicable: true,
           schemaErrors: ['缂哄皯 DeepSeek API Key銆?',],
           trace,
         },

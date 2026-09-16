@@ -73,6 +73,8 @@
     "test:deeptutor-research-visualization": "tsc --noEmit && node scripts/deeptutor-research-visualization-smoke.mjs",
     "test:ai-human-review-ui": "npm run build && node scripts/ai-usability-review-ui-smoke.mjs",
     "test:ai-live-usability": "npm run build && node scripts/ai-live-usability-replay.mjs",
+    "test:ai-execution-routing": "node scripts/ai-execution-routing-smoke.mjs",
+    "test:ai-enter-submit": "node scripts/ai-enter-submit-smoke.mjs",
     "verify:30-students": "npm run test:smoke"
   },
   "dependencies": {

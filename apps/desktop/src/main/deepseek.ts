@@ -308,6 +308,52 @@ export async function requestDeepSeekCompletion(params: {
   return data;
 }
 
+const DIRECT_DEEPSEEK_SYSTEM_PROMPT = [
+  '你是“小智”，Omni-Edu Agent 的教师工作台助手。',
+  '当前任务属于寒暄、致谢、能力说明或独立通识问答。直接给出简洁、准确、自然的中文回答。',
+  '不要读取、猜测或提及学生档案、学习记录、附件、知识库和工具调用；不要输出隐藏推理过程。',
+].join('\n');
+
+export async function runDirectDeepSeekChat(
+  prompt: string,
+  apiKey: string,
+  model = DEFAULT_DEEPSEEK_MODEL,
+): Promise<{ content: string; usage?: { promptTokens?: number; completionTokens?: number; totalTokens?: number } }> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 45_000);
+  try {
+    const data = await requestDeepSeekCompletion({
+      apiKey,
+      model,
+      messages: [
+        { role: 'system', content: DIRECT_DEEPSEEK_SYSTEM_PROMPT },
+        { role: 'user', content: prompt.trim().slice(0, 16_000) },
+      ],
+      tools: [],
+      temperature: 0.2,
+      maxTokens: 2_000,
+      responseFormat: 'none',
+      signal: controller.signal,
+    });
+    const content = data.choices?.[0]?.message?.content?.trim() ?? '';
+    if (!content) throw new Error('DeepSeek 普通文本模式没有返回可用 content。');
+    if (content.length > 16_000) throw new Error('DeepSeek 普通文本回答超过轻量模式长度上限。');
+    if (/sk-[A-Za-z0-9]{20,}|Bearer\s+[A-Za-z0-9._-]{20,}/i.test(content)) {
+      throw new Error('DeepSeek 普通文本回答触发敏感凭据检查，已阻断展示。');
+    }
+    return {
+      content,
+      usage: {
+        promptTokens: data.usage?.prompt_tokens,
+        completionTokens: data.usage?.completion_tokens,
+        totalTokens: data.usage?.total_tokens,
+      },
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 export function requestStructuredReplyRepair(params: {
   apiKey: string;
   model: string;
@@ -395,6 +441,8 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
     router: context.router,
     selectedContext: context.selectedContext,
     schemaValid: false,
+    schemaApplicable: true,
+    graderApplicable: true,
     schemaErrors: [],
     trace: context.trace,
   };
@@ -579,6 +627,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
     if (!parsed.reply) {
       return {
         ok: false,
+        executionMode: 'structured',
         model,
         content: '',
         toolRuns: context.toolRuns,
@@ -613,6 +662,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
     if (!educationGrade.passed) {
       return {
         ok: false,
+        executionMode: 'structured',
         model,
         content: '',
         toolRuns: context.toolRuns,
@@ -649,6 +699,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
     if (!usabilityGrade.passed) {
       return {
         ok: false,
+        executionMode: 'structured',
         model,
         content: '',
         toolRuns: context.toolRuns,
@@ -667,6 +718,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
 
     return {
       ok: true,
+      executionMode: 'structured',
       model,
       content: responseContent,
       toolRuns: context.toolRuns,
@@ -687,6 +739,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
   } catch (error) {
     return {
       ok: false,
+      executionMode: 'structured',
       model,
       content: '',
       toolRuns: context.toolRuns,

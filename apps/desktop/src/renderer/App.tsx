@@ -1208,8 +1208,9 @@ export function App() {
     const prompt = requestedPrompt;
     setAiRunning(true);
     setAiResult(null);
+    setDeepTutorEvents([]);
     setActiveAiArtifact(null);
-    setStatus('小智正在启动 DeepTutor AgentLoop。');
+    setStatus('小智正在生成回复。');
     try {
       const userDetail = await window.omniEdu?.appendAiConversationMessage(sessionId, {
         role: 'user',
@@ -1230,8 +1231,11 @@ export function App() {
       });
       if (result) {
         setAiResult(result);
-        const artifacts = buildAiArtifacts(prompt, result);
-        const trace = buildAiTrace(prompt, result, artifacts);
+        const isStructuredResult = result.executionMode === 'structured';
+        const artifacts = isStructuredResult ? buildAiArtifacts(prompt, result) : [];
+        const trace = isStructuredResult
+          ? buildAiTrace(prompt, result, artifacts)
+          : { thoughtSteps: [], contextSources: [], toolRuns: [] };
         const assistantDetail = await window.omniEdu?.appendAiConversationMessage(sessionId, {
           role: 'assistant',
           content: result.ok ? result.content : result.errorMessage || 'DeepSeek 调用失败。',
@@ -1240,20 +1244,26 @@ export function App() {
             ok: result.ok,
             model: result.model,
             errorMessage: result.errorMessage ?? '',
-            thoughtSteps: trace.thoughtSteps,
-            contextSources: trace.contextSources,
-            toolRuns: trace.toolRuns,
-            artifacts,
+            executionMode: result.executionMode,
+            ...(isStructuredResult ? {
+              thoughtSteps: trace.thoughtSteps,
+              contextSources: trace.contextSources,
+              toolRuns: trace.toolRuns,
+              artifacts,
+            } : {}),
             confirmations: result.confirmations ?? [],
           },
         });
         if (assistantDetail) setAiMessages(assistantDetail.messages);
         await refreshAiConfirmations();
         await refreshAiConversations(sessionId);
-        setStatus(result.ok ? '小智已完成 DeepTutor AgentLoop。' : result.errorMessage || '小智 AgentLoop 调用失败。');
+        setStatus(result.ok
+          ? result.executionMode === 'direct' ? '小智已回复。' : '小智已完成 DeepTutor AgentLoop。'
+          : result.errorMessage || (result.executionMode === 'direct' ? '小智回复失败。' : '小智 AgentLoop 调用失败。'));
       } else {
         const fallbackResult = {
           ok: false,
+          executionMode: 'structured' as const,
           model: deepSeekSettings.model || 'deepseek-v4-flash',
           content: '',
           toolRuns: [],
@@ -1285,6 +1295,7 @@ export function App() {
       const message = error instanceof Error ? error.message : 'DeepSeek 调用失败。';
       const failedResult = {
         ok: false,
+        executionMode: 'structured' as const,
         model: deepSeekSettings.model || 'deepseek-v4-flash',
         content: '',
         toolRuns: [],
@@ -1794,7 +1805,7 @@ export function App() {
       },
     ];
 
-    const liveArtifacts = buildAiArtifacts(aiPrompt, aiResult);
+    const liveArtifacts = aiResult?.executionMode === 'direct' ? [] : buildAiArtifacts(aiPrompt, aiResult);
     const selectedArtifact = activeAiArtifact ?? liveArtifacts[0] ?? null;
     const hasAiTurn = Boolean(aiRunning || aiMessages.length);
     const activeAiSession = aiSessions.find((session) => session.id === activeAiSessionId) ?? null;
@@ -1863,12 +1874,16 @@ export function App() {
           errorMessage: String(artifact.errorMessage ?? ''),
         }));
     };
-    const liveTrace = buildAiTrace(aiPrompt, aiResult, liveArtifacts);
+    const liveTrace = aiResult?.executionMode === 'direct'
+      ? { thoughtSteps: [], contextSources: [], toolRuns: [] }
+      : buildAiTrace(aiPrompt, aiResult, liveArtifacts);
     const deepTutorThoughtSteps: AiThoughtStep[] = deepTutorEvents.map((event) => ({
       label: `${event.label} · ${event.sequence}`,
       detail: event.detail,
     }));
-    const liveThoughtSteps = deepTutorThoughtSteps.length ? deepTutorThoughtSteps : liveTrace.thoughtSteps;
+    const liveThoughtSteps = aiResult?.executionMode === 'direct'
+      ? []
+      : deepTutorThoughtSteps.length ? deepTutorThoughtSteps : liveTrace.thoughtSteps;
     const visibleConfirmations = aiConfirmations.slice(0, 2);
     const hiddenConfirmationCount = Math.max(0, aiConfirmations.length - visibleConfirmations.length);
     const startArtifactResize = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -2060,20 +2075,8 @@ export function App() {
                   <ChatMessage.Assistant>
                     <ChatMessage.Avatar show alt="Omni-Edu AI" fallback="AI" />
                     <ChatMessage.Body>
-                      <ChainOfThought defaultExpanded isStreaming>
-                        <ChainOfThought.Trigger>正在组织上下文</ChainOfThought.Trigger>
-                        <ChainOfThought.Content>
-                          <ChainOfThought.Steps>
-                            {liveThoughtSteps.map((step) => (
-                              <ChainOfThought.Step key={step.label} label={step.label}>
-                                {step.detail}
-                              </ChainOfThought.Step>
-                            ))}
-                          </ChainOfThought.Steps>
-                        </ChainOfThought.Content>
-                      </ChainOfThought>
                       <ChatMessage.Content>
-                        <p>正在根据当前上下文生成回复。</p>
+                        <p>小智正在生成回复。</p>
                       </ChatMessage.Content>
                     </ChatMessage.Body>
                   </ChatMessage.Assistant>

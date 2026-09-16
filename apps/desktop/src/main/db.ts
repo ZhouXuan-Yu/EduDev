@@ -1798,9 +1798,12 @@ export class OmniEduStore {
         }),
         JSON.stringify({
           ok: result.ok,
+          executionMode: result.executionMode,
           agentRunId: result.harness?.agentRunId ?? '',
           usage: result.usage ?? null,
           schemaValid: result.harness?.schemaValid ?? null,
+          schemaApplicable: result.harness?.schemaApplicable ?? true,
+          graderApplicable: result.harness?.graderApplicable ?? true,
           educationGrade: result.harness?.educationGrade ?? null,
           usabilityGrade: result.harness?.usabilityGrade ?? null,
           contentPreview: result.content.slice(0, 160),
