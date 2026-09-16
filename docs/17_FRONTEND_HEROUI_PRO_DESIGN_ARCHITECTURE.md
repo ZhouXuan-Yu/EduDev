@@ -86,6 +86,15 @@ get_docs             取安装、主题、Styling、Composition 指南
 get_theme_variables  取设计令牌
 ```
 
+MCP 工具**只在会话启动时加载**，未加载、未批准或非交互会话里用直连脚本执行同一流程（共用同一 token）：
+
+```bash
+npm run heroui:mcp -- list             # 列出全部组件
+npm run heroui:mcp -- docs <组件...>    # 组件文档（anatomy / props / 示例）
+npm run heroui:mcp -- css <组件...>     # BEM 样式
+npm run heroui:mcp -- guide theming    # 指南
+```
+
 ### 7.2 落地来源与降级
 
 组件用**本地源码**落地：`D:\WorkProject\HeroUIPro\herouipro-v3\src\components\<kebab-case>`。本项目以 vendor 源码接入（`apps/desktop/src/renderer/heroui-pro/`），**不是 npm 依赖**；禁止使用未安装的 `@heroui-pro/*` 包别名。

@@ -1783,6 +1783,15 @@ export type AiConfirmationDecisionResult = {
   };
 };
 
+export type AiConfirmationExerciseSetEdit = {
+  items: Array<{ stem: string; answer: string }>;
+};
+
+export type AiConfirmationConfirmInput = {
+  id: string;
+  exerciseSetEdit?: AiConfirmationExerciseSetEdit;
+};
+
 export type AiConsoleArtifactRequest = {
   id: string;
   title: string;

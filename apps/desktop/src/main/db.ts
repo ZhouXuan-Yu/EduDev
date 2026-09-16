@@ -146,6 +146,8 @@ import type {
   SearchResult,
   Student,
   StudentInput,
+  AiConfirmationConfirmInput,
+  AiConfirmationExerciseSetEdit,
 } from '../shared/contracts';
 
 type SqlValue = string | number | null | Buffer;
@@ -153,6 +155,8 @@ type Row = Record<string, unknown>;
 
 const DEFAULT_RECORD_PAGE_SIZE = 100;
 const MAX_RECORD_PAGE_SIZE = 500;
+const MAX_EXERCISE_STEM_CHARS = 8000;
+const MAX_EXERCISE_ANSWER_CHARS = 4000;
 const FTS_MATCH_LIMIT = 500;
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
 const AI_MEMORY_SURFACES: AiMemorySurface[] = ['chat', 'notebook', 'quiz', 'kb', 'book', 'partner', 'cowriter'];
@@ -3158,15 +3162,20 @@ export class OmniEduStore {
     return { item: await this.getAiConfirmationOrThrow(id) };
   }
 
-  async confirmAiConfirmation(id: string): Promise<AiConfirmationDecisionResult> {
-    const existing = await this.getAiConfirmationOrThrow(id);
-    if (existing.status !== 'pending') throw new Error('只能确认待确认项');
-    const timestamp = now();
+  async confirmAiConfirmation(input: AiConfirmationConfirmInput): Promise<AiConfirmationDecisionResult> {
+    const id = requireNonEmpty(input.id, '确认项 ID 不能为空');
+    await this.run('BEGIN IMMEDIATE');
     try {
-      const readback = await this.executeAiConfirmation(existing);
+      const existing = await this.getAiConfirmationOrThrow(id);
+      if (existing.status !== 'pending') throw new Error('只能确认待确认项');
+      const payload = input.exerciseSetEdit
+        ? this.mergeExerciseSetEdit(existing, input.exerciseSetEdit)
+        : existing.payload;
+      const readback = await this.executeAiConfirmation({ ...existing, payload });
       if (existing.actionType === 'create_review_report' && !readback?.report) throw new Error('确认后未能读回复盘报告');
       if (existing.actionType === 'save_exercise_set' && !readback?.exerciseSet) throw new Error('确认后未能读回三元题组');
       if (existing.actionType === 'save_mastery_state' && !readback?.masteryPath && !readback?.masteryAttempt) throw new Error('Mastery confirmation did not produce a readback');
+      const timestamp = now();
       const result = {
         reportId: readback?.report?.id,
         exerciseSetId: readback?.exerciseSet?.id,
@@ -3176,21 +3185,73 @@ export class OmniEduStore {
       };
       await this.run(
         `UPDATE ai_confirmation_items
-            SET status = 'confirmed', result_json = ?, error_message = '', updated_at = ?, confirmed_at = ?
+            SET status = 'confirmed', payload_json = ?, result_json = ?, error_message = '', updated_at = ?, confirmed_at = ?
           WHERE id = ?`,
-        [JSON.stringify(result), timestamp, timestamp, id],
+        [JSON.stringify(payload), JSON.stringify(result), timestamp, timestamp, id],
       );
+      await this.run('COMMIT');
       return { item: await this.getAiConfirmationOrThrow(id), readback };
     } catch (error) {
-      const message = error instanceof Error ? error.message : '确认项执行失败';
-      await this.run(
-        `UPDATE ai_confirmation_items
-            SET status = 'failed', error_message = ?, updated_at = ?
-          WHERE id = ?`,
-        [message, timestamp, id],
-      );
+      await this.run('ROLLBACK').catch(() => undefined);
+      const latest = await this.getAiConfirmationOrThrow(id).catch(() => undefined);
+      if (latest && latest.status === 'pending') {
+        const message = error instanceof Error ? error.message : '确认项执行失败';
+        const timestamp = now();
+        await this.run(
+          `UPDATE ai_confirmation_items
+              SET status = 'failed', error_message = ?, updated_at = ?
+            WHERE id = ?`,
+          [message, timestamp, id],
+        );
+      }
       throw error;
     }
+  }
+
+  private mergeExerciseSetEdit(existing: AiConfirmationItem, edit: AiConfirmationExerciseSetEdit) {
+    if (existing.actionType !== 'save_exercise_set') {
+      throw new Error('当前确认项不支持编辑覆盖，只能按原始预览确认');
+    }
+    const originalItems = existing.payload.exerciseSet?.items ?? [];
+    const edits = Array.isArray(edit.items) ? edit.items : [];
+    if (edits.length === 0) return existing.payload;
+    if (edits.length !== originalItems.length) {
+      throw new Error(`编辑题数与确认预览不一致（${edits.length} / ${originalItems.length}），请刷新后重试`);
+    }
+    const mergedItems: ExerciseSetItem[] = originalItems.map((original, index) => {
+      const stem = requireNonEmpty(String(edits[index]?.stem ?? '').trim(), `第 ${index + 1} 题的题干不能为空`);
+      const answer = String(edits[index]?.answer ?? '').trim();
+      if (stem.length > MAX_EXERCISE_STEM_CHARS) throw new Error(`第 ${index + 1} 题的题干超过 ${MAX_EXERCISE_STEM_CHARS} 字符上限`);
+      if (answer.length > MAX_EXERCISE_ANSWER_CHARS) throw new Error(`第 ${index + 1} 题的答案超过 ${MAX_EXERCISE_ANSWER_CHARS} 字符上限`);
+      return { ...original, stem, answer };
+    });
+    const draft: ExerciseSetDraftPayload = {
+      ...(existing.payload.exerciseSet ?? {
+        title: existing.payload.title || '小智三元题组',
+        contentMd: existing.payload.contentMd,
+        items: [],
+      }),
+      items: mergedItems,
+      contentMd: this.buildExerciseSetContentMdFromItems(existing.payload.exerciseSet?.title || existing.payload.title || '小智三元题组', mergedItems),
+    };
+    return { ...existing.payload, exerciseSet: draft };
+  }
+
+  private buildExerciseSetContentMdFromItems(title: string, items: ExerciseSetItem[]): string {
+    const roleLabels: Record<ExerciseSetItem['role'], string> = {
+      original: '原题（来源）',
+      similar: '相似题（本地命中）',
+      variant: '变式题（待教师复核）',
+    };
+    const lines = [`# ${title}`, ''];
+    items.forEach((item, index) => {
+      lines.push(`## ${index + 1}. ${roleLabels[item.role] ?? item.role}`, '');
+      lines.push(`**题干**：${item.stem}`, '');
+      lines.push(`**答案**：${item.answer}`, '');
+      if (item.analysis) lines.push(`**解析**：${item.analysis}`, '');
+      lines.push(`> 知识点：${item.knowledgePoint || '未标注'}｜难度：${item.difficulty}｜来源：${item.sourceKind}`, '');
+    });
+    return lines.join('\n');
   }
 
   async generateReview(input: ReviewDraftInput): Promise<ReviewReport> {
