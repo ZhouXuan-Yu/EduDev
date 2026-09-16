@@ -157,7 +157,7 @@ export type AttachmentImportResult = {
   items: AttachmentImportItem[];
 };
 
-export type MistakeImageOcrStatus = 'needs_ocr' | 'sanitized' | 'teacher_corrected' | 'failed';
+export type MistakeImageOcrStatus = 'needs_ocr' | 'ocr_done' | 'sanitized' | 'teacher_corrected' | 'failed';
 
 export type MistakeImageRedaction = {
   kind: 'phone' | 'id_card' | 'student_name' | 'email';
@@ -178,6 +178,7 @@ export type MistakeImageAnalysis = {
   localPath: string;
   ocrStatus: MistakeImageOcrStatus;
   extractedText: string;
+  ocrConfidence: number;
   sanitizedText: string;
   redactions: MistakeImageRedaction[];
   teacherCorrectedText: string;

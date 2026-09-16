@@ -243,6 +243,13 @@ export const schemaMigrations: DbMigration[] = [
       )`);
     },
   },
+  {
+    version: 5,
+    name: 'add_mistake_analysis_ocr_confidence',
+    up: async (db) => {
+      await db.run(`ALTER TABLE mistake_image_analyses ADD COLUMN ocr_confidence REAL NOT NULL DEFAULT 0`);
+    },
+  },
 ];
 const FTS_MATCH_LIMIT = 500;
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
@@ -1728,7 +1735,6 @@ export class OmniEduStore {
       [studentId],
     );
     return rows.map((row) => this.mapMistakeImageAnalysis(row));
-  }
 
   async getKnowledgeOverview(): Promise<KnowledgeOverview> {
     const resources = (await this.all(
@@ -6832,8 +6838,9 @@ export class OmniEduStore {
       recordId: String(row.record_id ?? ''),
       attachmentId: String(row.attachment_id ?? ''),
       localPath: String(row.local_path ?? ''),
-      ocrStatus: (status === 'sanitized' || status === 'teacher_corrected' || status === 'failed') ? status : 'needs_ocr',
+      ocrStatus: (status === 'sanitized' || status === 'teacher_corrected' || status === 'failed' || status === 'ocr_done') ? status : 'needs_ocr',
       extractedText: String(row.extracted_text ?? ''),
+      ocrConfidence: Number(row.ocr_confidence ?? 0),
       sanitizedText: String(row.sanitized_text ?? ''),
       redactions: parseMistakeImageRedactions(row.redactions_json),
       teacherCorrectedText: String(row.teacher_corrected_text ?? ''),
