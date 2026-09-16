@@ -50,6 +50,7 @@ import { ReviewReportWorkspace } from './components/ReviewReportWorkspace';
 import { AiQualityReviewWorkspace } from './components/AiQualityReviewWorkspace';
 import type {
   AiConfirmationItem,
+  AiConfirmationExerciseSetEdit,
   AiConsoleRunResult,
   AiConversationFolder,
   AiConversationMessage,
@@ -1316,9 +1317,9 @@ export function App() {
     }
   }
 
-  async function confirmAiItem(item: AiConfirmationItem) {
+  async function confirmAiItem(item: AiConfirmationItem, exerciseSetEdit?: AiConfirmationExerciseSetEdit) {
     try {
-      const result = await window.omniEdu?.confirmAiConfirmation(item.id);
+      const result = await window.omniEdu?.confirmAiConfirmation({ id: item.id, exerciseSetEdit });
       await refreshAiConfirmations();
       if (result?.readback?.report) {
         setReviewReportSelectionId(result.readback.report.id);

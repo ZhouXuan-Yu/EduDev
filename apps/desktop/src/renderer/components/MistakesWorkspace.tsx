@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type {
+  AiConfirmationExerciseSetEdit,
   AiConfirmationItem,
   AiConsoleRunResult,
   AttachmentImportResult,
@@ -18,7 +19,7 @@ type MistakesWorkspaceProps = {
   confirmations: AiConfirmationItem[];
   onImportAttachment: (recordId: string) => Promise<void>;
   onSendAi: (prompt: string) => Promise<void>;
-  onConfirm: (item: AiConfirmationItem) => Promise<void>;
+  onConfirm: (item: AiConfirmationItem, exerciseSetEdit?: AiConfirmationExerciseSetEdit) => Promise<void>;
   onReject: (item: AiConfirmationItem) => Promise<void>;
   setStatus: (message: string) => void;
 };
@@ -47,6 +48,7 @@ export function MistakesWorkspace({
   const [draft, setDraft] = useState<AnalysisDraft>({ text: '', sanitizedText: '', redactions: [] });
   const [loading, setLoading] = useState(false);
   const [savingCorrection, setSavingCorrection] = useState(false);
+  const [confirmingTriplet, setConfirmingTriplet] = useState(false);
   const [tripletDraft, setTripletDraft] = useState<Array<{ role: string; stem: string; answer: string; sourceKind: 'local_bank' | 'teacher_resource' | 'generated' }>>([]);
 
   const mistakeRecords = useMemo(() => records.filter((record) => record.recordType === 'mistake'), [records]);
@@ -170,6 +172,23 @@ export function MistakesWorkspace({
       return;
     }
     await onSendAi(`请分析当前学生的错题，并基于以下脱敏题目文本检索本地相似题，生成原题、相似题、变式题三元题组草稿。只使用可验证来源，保留 generated/source 标记，不要自动保存。\n\n学生：${activeStudent.displayName}\n脱敏题目：\n${text}`);
+  }
+
+  async function confirmTripletWithEdits(item: AiConfirmationItem) {
+    if (confirmingTriplet) return;
+    const originalItems = item.payload.exerciseSet?.items ?? [];
+    const edits: AiConfirmationExerciseSetEdit = {
+      items: originalItems.map((original, index) => ({
+        stem: tripletDraft[index]?.stem ?? original.stem,
+        answer: tripletDraft[index]?.answer ?? original.answer,
+      })),
+    };
+    setConfirmingTriplet(true);
+    try {
+      await onConfirm(item, edits.items.length ? edits : undefined);
+    } finally {
+      setConfirmingTriplet(false);
+    }
   }
 
   const pendingTriplet = tripletConfirmation;
