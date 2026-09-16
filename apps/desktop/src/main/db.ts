@@ -157,6 +157,16 @@ const DEFAULT_RECORD_PAGE_SIZE = 100;
 const MAX_RECORD_PAGE_SIZE = 500;
 const MAX_EXERCISE_STEM_CHARS = 8000;
 const MAX_EXERCISE_ANSWER_CHARS = 4000;
+
+export type DbMigration = {
+  version: number;
+  name: string;
+  up: (store: OmniEduStore) => Promise<void>;
+};
+
+// 版本真源：schema_migrations 表。v1 = 历史声明式收敛完成后的基线；
+// 新结构变更必须注册为 v2+ 迁移（裸 SQL/守卫 DDL，禁止调用业务方法）。
+export const schemaMigrations: DbMigration[] = [];
 const FTS_MATCH_LIMIT = 500;
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
 const AI_MEMORY_SURFACES: AiMemorySurface[] = ['chat', 'notebook', 'quiz', 'kb', 'book', 'partner', 'cowriter'];
@@ -5719,6 +5729,55 @@ export class OmniEduStore {
     await this.run(`CREATE INDEX IF NOT EXISTS idx_resource_chunks_metadata ON resource_chunks(subject, grade, knowledge_point, question_type)`);
     await this.seedPlatformDefaults();
     await this.rebuildRecordFtsIfEmpty();
+  }
+
+  private async applyPendingSchemaMigrations() {
+    await this.run(`CREATE TABLE IF NOT EXISTS schema_migrations (
+      version INTEGER PRIMARY KEY,
+      name TEXT NOT NULL,
+      applied_at TEXT NOT NULL
+    )`);
+    const appliedRows = await this.all(`SELECT version FROM schema_migrations ORDER BY version ASC`);
+    const applied = new Set(appliedRows.map((row) => Number(row.version)));
+    if (applied.size === 0) {
+      await this.run(
+        `INSERT INTO schema_migrations (version, name, applied_at) VALUES (1, 'baseline_declarative_convergence', ?)`,
+        [now()],
+      );
+      applied.add(1);
+    }
+    const registered = [...schemaMigrations].sort((a, b) => a.version - b.version);
+    for (let index = 1; index < registered.length; index += 1) {
+      if (registered[index].version === registered[index - 1].version) {
+        throw new Error(`schema 迁移版本重复：v${registered[index].version}（${registered[index].name}）`);
+      }
+    }
+    if (registered.some((migration) => migration.version <= 1)) {
+      throw new Error('schema 迁移版本必须大于基线 1');
+    }
+    const maxApplied = applied.size ? Math.max(...applied) : 1;
+    const maxKnown = registered.length ? registered[registered.length - 1].version : 1;
+    if (maxApplied > maxKnown) {
+      throw new Error(`数据库 schema 版本 v${maxApplied} 高于当前程序支持的 v${maxKnown}，请升级应用后再打开。`);
+    }
+    const pending = registered.filter((migration) => !applied.has(migration.version));
+    for (const migration of pending) {
+      await this.run('BEGIN IMMEDIATE');
+      try {
+        const recheck = await this.all(`SELECT version FROM schema_migrations WHERE version = ?`, [migration.version]);
+        if (recheck.length === 0) {
+          await migration.up(this);
+          await this.run(
+            `INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)`,
+            [migration.version, migration.name, now()],
+          );
+        }
+        await this.run('COMMIT');
+      } catch (error) {
+        await this.run('ROLLBACK').catch(() => undefined);
+        throw new Error(`schema 迁移 v${migration.version}（${migration.name}）失败：${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
   }
 
   private async seedIfEmpty() {

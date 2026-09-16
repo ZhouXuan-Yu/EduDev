@@ -1,8 +1,8 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
-更新时间：2026-08-12
+更新时间：2026-09-16
 
-> 状态：当前实现证据真源。产品目标见 `11_STRATEGIC_PRODUCT_PRD.md`。本表保留 2026-08-12 的已验证快照；后续修改必须用本轮实际测试更新，不能沿用旧计数宣称当前通过。
+> 状态：当前实现证据真源。产品目标见 `11_STRATEGIC_PRODUCT_PRD.md`。本表保留各轮已验证快照；后续修改必须用本轮实际测试更新，不能沿用旧计数宣称当前通过。
 
 这份矩阵把“主进程/SQLite 已实现”与“老师在界面上可用、可验收”分开记录。`backend` 只表示已有安全入口，`frontend` 表示 renderer 已通过 typed preload 接线，`e2e` 表示现有 Electron smoke 从用户点击路径验证过。任何一列未完成，都不能称为生产闭环。
 
@@ -45,17 +45,20 @@
 - **E2E 已验证**：在 Electron 生产构建中，从点击开始验证最终状态和数据 readback；不能用单独的函数调用替代。
 - **live 未验证**：没有可用的真实 provider/API Key 时，只能报告 no-key/blocked；不能把 proxy 或 deterministic 结果称为真实模型质量。
 
-## 本轮验收命令
+## 本轮验收命令（2026-09-16）
 
 ```powershell
-cd D:\WorkProject\EduProject\apps\desktop
+cd <repo>/apps/desktop
 npm run build
 npm run test:renderer-components
-npm run test:ai-structured-reply
 npm run test:smoke
+npm run test:ai-exercise-set
+npm run test:ai-confirmation
+npm run test:ai-harness
+npm run test:ai-observability
 ```
 
-`test:smoke` 在同一份 Electron 流程中使用 1366×768 和 1920×1080 两个 viewport，当前前端验收 207/207：在既有 191 条上新增小智质量评审 16 条用户路径，覆盖空表单/非法 CSV 零写入、人工评分、SQLite summary、失败样本回放到当前 AI 输入、before/after 关联实验、score delta、合法 CSV 导入、只读 `graderMode`、重启和双视口。组件状态验收为 79/79。两张质量评审截图已人工复核无裁切、重叠或不可达操作，并持久化到 `apps/desktop/test-results/electron-e2e/`（Git 忽略）：1366 评分态 SHA-256 为 `46B583B32B4363EDAA4C5653C5AE064CD7FE73BA214E4AB332C14C00B879F5A4`，1920 实验态为 `BCE546CD9997A69C4C5473A692CD936B350AD0807B541C7499BA7B45FAD25254`。
+`test:smoke` 在同一份 Electron 流程中使用 1366×768 和 1920×1080 两个 viewport，前端路径清单 207/207。本轮（2026-09-16）把三元题组确认升级为「编辑覆盖」契约：教师在错题面板编辑题干/答案后点击确认，编辑值经 `AiConfirmationConfirmInput.exerciseSetEdit` 进入 main 侧校验（数量一致、题干非空、长度上限，role/sourceKind/questionId 不可伪造），`contentMd` 重建、确认项 `payload_json` 记录执行值，重启后编辑值仍可回读；面板拒绝仍零写入。组件状态验收为运行时动态计数的 137/137（`renderer-component-state-test.mjs` 汇总不再硬编码）。已知 flaky 点（讲义导出与学生档案保存的瞬态成功反馈）已改为单次原子轮询（成功文本 + 错误分支同一 tick 判定，错误 fail-fast），真实证据仍以 SQLite/文件 readback 断言为准。
 
 本轮通过重新索引后的代码图和定向文本比对审计 140 个 preload 方法。没有 renderer 调用的 15 个方法中，`runDeepSeek` 是已被 `runDeepTutorConsole` 替代的兼容入口，若干 `get*`/`list*` 是测试 readback 或内部详情入口；不能按“未调用数量”机械新增页面。真正的优先级以教师可见操作是否完整和主 Electron 是否有用户路径为准。
 

@@ -1301,10 +1301,13 @@ async function run() {
 
   await first.page.waitForFunction(() => !(document.querySelector('[data-testid="teaching-book-export"]'))?.disabled);
   await first.page.getByTestId('teaching-book-export').click();
-  await first.page.waitForFunction(() => Boolean(document.querySelector('[data-testid="teaching-book-success"]')?.textContent?.includes('讲义已导出') || document.querySelector('[data-testid="teaching-book-error"]')));
-  const teachingBookExportError = await first.page.getByTestId('teaching-book-error').textContent().catch(() => '');
-  assert.equal(teachingBookExportError, '', `teaching book export UI should not fail: ${teachingBookExportError}`);
-  assert.match(await first.page.getByTestId('teaching-book-success').textContent(), /讲义已导出/, 'export click should render the persisted artifact path');
+  await first.page.waitForFunction(() => {
+    const successText = document.querySelector('[data-testid="teaching-book-success"]')?.textContent ?? '';
+    if (successText.includes('讲义已导出')) return true;
+    const errorText = document.querySelector('[data-testid="teaching-book-error"]')?.textContent ?? '';
+    if (errorText) throw new Error(`teaching book export UI should not fail: ${errorText}`);
+    return false;
+  }, undefined, { timeout: 45_000 });
   const teachingBookArtifactReadback = await first.page.evaluate(async (artifactId) => {
     const direct = await window.omniEdu.getDocumentArtifact(artifactId);
     const artifacts = await window.omniEdu.listDocumentArtifacts();
@@ -1654,7 +1657,14 @@ async function run() {
   await first.page.getByTestId('student-form-real-name').fill('本地真实姓名仅用于导出验收');
   await first.page.getByTestId('student-form-grade').fill('八年级');
   await first.page.getByTestId('student-form-save').click();
-  await first.page.getByTestId('student-lifecycle-feedback-success').waitFor({ state: 'visible' });
+  await first.page.waitForFunction(async () => {
+    const created = (await window.omniEdu.listStudents('档案生命周期验收学生'))[0];
+    const successVisible = Boolean(document.querySelector('[data-testid="student-lifecycle-feedback-success"]'));
+    if (successVisible && created?.id) return true;
+    const errorText = document.querySelector('[data-testid="student-lifecycle-feedback-error"]')?.textContent ?? '';
+    if (errorText) throw new Error(`student lifecycle save should not fail: ${errorText}`);
+    return false;
+  }, undefined, { timeout: 30_000 });
   const lifecycleStudentCreated = (await first.page.evaluate(() => window.omniEdu.listStudents('档案生命周期验收学生')))[0];
   assert.ok(lifecycleStudentCreated?.id, 'student created from renderer form must be readable from SQLite');
   assert.equal(lifecycleStudentCreated.grade, '八年级');
@@ -1672,13 +1682,25 @@ async function run() {
   await first.page.getByTestId('student-form-display-name').fill('档案生命周期验收学生-已编辑');
   await first.page.getByTestId('student-form-grade').fill('九年级');
   await first.page.getByTestId('student-form-save').click();
-  await first.page.getByTestId('student-lifecycle-feedback-success').waitFor({ state: 'visible' });
+  await first.page.waitForFunction(async () => {
+    const edited = (await window.omniEdu.listStudents('档案生命周期验收学生-已编辑'))[0];
+    const successVisible = Boolean(document.querySelector('[data-testid="student-lifecycle-feedback-success"]'));
+    if (successVisible && edited?.id) return true;
+    const errorText = document.querySelector('[data-testid="student-lifecycle-feedback-error"]')?.textContent ?? '';
+    if (errorText) throw new Error(`student lifecycle edit should not fail: ${errorText}`);
+    return false;
+  }, undefined, { timeout: 30_000 });
   const lifecycleStudent = (await first.page.evaluate(() => window.omniEdu.listStudents('档案生命周期验收学生-已编辑')))[0];
   assert.equal(lifecycleStudent.id, lifecycleStudentCreated.id, 'editing must preserve the selected student identity');
   assert.equal(lifecycleStudent.grade, '九年级', 'renderer edit must persist through students:update');
 
   await first.page.getByTestId('student-open-folder').click();
-  await first.page.getByTestId('student-lifecycle-feedback-success').waitFor({ state: 'visible' });
+  await first.page.waitForFunction(() => {
+    if (document.querySelector('[data-testid="student-lifecycle-feedback-success"]')) return true;
+    const errorText = document.querySelector('[data-testid="student-lifecycle-feedback-error"]')?.textContent ?? '';
+    if (errorText) throw new Error(`student folder open should not fail: ${errorText}`);
+    return false;
+  }, undefined, { timeout: 30_000 });
   assert.match(await first.page.getByTestId('student-lifecycle-feedback-success').textContent(), /已打开/, 'open-folder action must expose visible success feedback');
 
   await first.page.getByTestId('student-export').click();
@@ -2010,7 +2032,7 @@ async function run() {
       cases: [
         'native attachment dialog adapter click', 'attachment copy and hash readback', 'attachment source retained',
         'attachment cancel zero writes', 'attachment status feedback', 'needs_ocr persisted', 'teacher correction persisted', 'phone sanitized',
-        'missing credential actionable', 'triplet preview editable', 'triplet reject zero writes', 'triplet confirm writes exercise set',
+        'missing credential actionable', 'triplet preview editable', 'triplet reject zero writes', 'triplet edited confirm persists edited values',
         'exercise source kinds retained', 'local_bank source visible', 'generated source visible', 'bookmark persisted',
         'bookmarked-only filter hit', 'question search no-hit state', 'question search hit state', 'artifact export file and hash',
         'PDF UI click export', 'PDF Unicode file bytes', 'PDF SQLite metadata readback',
