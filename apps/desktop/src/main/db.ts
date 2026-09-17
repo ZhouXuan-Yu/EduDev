@@ -153,6 +153,15 @@ import type {
   KnowledgeImportJobItem,
   KnowledgeImportDirectoryResult,
   ExerciseSetProposeInput,
+  PaperBlueprint,
+  PaperBlueprintInput,
+  PaperDifficultyMix,
+  PaperItem,
+  PaperItemUpdateInput,
+  PaperTypeSpec,
+  PaperValidationIssue,
+  PaperValidationResult,
+  PaperExportResult,
 } from '../shared/contracts';
 
 type SqlValue = string | number | null | Buffer;
@@ -248,6 +257,63 @@ export const schemaMigrations: DbMigration[] = [
     name: 'add_mistake_analysis_ocr_confidence',
     up: async (db) => {
       await db.run(`ALTER TABLE mistake_image_analyses ADD COLUMN ocr_confidence REAL NOT NULL DEFAULT 0`);
+    },
+  },
+  {
+    version: 6,
+    name: 'create_paper_blueprints_and_papers',
+    up: async (db) => {
+      await db.run(`CREATE TABLE IF NOT EXISTS paper_blueprints (
+        id TEXT PRIMARY KEY,
+        title TEXT NOT NULL,
+        subject TEXT NOT NULL DEFAULT '',
+        grade TEXT NOT NULL DEFAULT '',
+        textbook_version TEXT NOT NULL DEFAULT '',
+        scope TEXT NOT NULL DEFAULT '',
+        knowledge_points_json TEXT NOT NULL DEFAULT '[]',
+        type_specs_json TEXT NOT NULL DEFAULT '[]',
+        difficulty_mix_json TEXT NOT NULL DEFAULT '',
+        total_points INTEGER NOT NULL DEFAULT 0,
+        duration_minutes INTEGER NOT NULL DEFAULT 0,
+        source_preference TEXT NOT NULL DEFAULT 'any',
+        status TEXT NOT NULL DEFAULT 'active',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )`);
+      await db.run(`CREATE TABLE IF NOT EXISTS papers (
+        id TEXT PRIMARY KEY,
+        blueprint_id TEXT NOT NULL,
+        blueprint_version INTEGER NOT NULL DEFAULT 0,
+        student_id TEXT NOT NULL DEFAULT '',
+        title TEXT NOT NULL,
+        subject TEXT NOT NULL DEFAULT '',
+        status TEXT NOT NULL DEFAULT 'draft',
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )`);
+      await db.run(`CREATE TABLE IF NOT EXISTS paper_items (
+        id TEXT PRIMARY KEY,
+        paper_id TEXT NOT NULL,
+        order_index INTEGER NOT NULL DEFAULT 0,
+        question_id TEXT NOT NULL DEFAULT '',
+        source_kind TEXT NOT NULL DEFAULT 'local_bank',
+        question_type TEXT NOT NULL DEFAULT '',
+        difficulty TEXT NOT NULL DEFAULT 'medium',
+        knowledge_point TEXT NOT NULL DEFAULT '',
+        stem TEXT NOT NULL,
+        answer TEXT NOT NULL DEFAULT '',
+        analysis TEXT NOT NULL DEFAULT '',
+        points INTEGER NOT NULL DEFAULT 0,
+        locked INTEGER NOT NULL DEFAULT 0,
+        teacher_edited INTEGER NOT NULL DEFAULT 0,
+        version INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )`);
+      await db.run(`CREATE INDEX IF NOT EXISTS idx_paper_items_paper ON paper_items(paper_id, order_index)`);
+      await db.run(`CREATE INDEX IF NOT EXISTS idx_papers_blueprint ON papers(blueprint_id, created_at DESC)`);
     },
   },
 ];
@@ -2245,8 +2311,7 @@ export class OmniEduStore {
     });
   }
 
-  async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {
-    const trimmed = keyword.trim();
+  async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {    const trimmed = keyword.trim();
     const boundedLimit = Math.max(1, Math.min(Math.trunc(limit), 20));
     if (!trimmed) {
       return (await this.all(

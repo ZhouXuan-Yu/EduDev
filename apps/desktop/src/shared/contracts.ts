@@ -739,6 +739,134 @@ export type ExerciseSetProposeInput = {
   sourceQuestionIds: string[];
 };
 
+export type PaperTypeSpec = {
+  questionType: string;
+  count: number;
+  pointsPerQuestion: number;
+};
+
+export type PaperDifficultyMix = {
+  easy: number;
+  medium: number;
+  hard: number;
+};
+
+export type PaperSourcePreference = 'local_bank' | 'teacher_resource' | 'any';
+
+export type PaperBlueprintStatus = 'active' | 'archived';
+
+export type PaperBlueprintInput = {
+  title: string;
+  subject?: string;
+  grade?: string;
+  textbookVersion?: string;
+  scope?: string;
+  knowledgePoints?: string[];
+  typeSpecs?: PaperTypeSpec[];
+  difficultyMix?: PaperDifficultyMix;
+  durationMinutes?: number;
+  sourcePreference?: PaperSourcePreference;
+};
+
+export type PaperBlueprint = {
+  id: string;
+  title: string;
+  subject: string;
+  grade: string;
+  textbookVersion: string;
+  scope: string;
+  knowledgePoints: string[];
+  typeSpecs: PaperTypeSpec[];
+  difficultyMix: PaperDifficultyMix | null;
+  totalPoints: number;
+  durationMinutes: number;
+  sourcePreference: PaperSourcePreference;
+  status: PaperBlueprintStatus;
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PaperInput = {
+  blueprintId: string;
+  title?: string;
+  studentId?: string;
+};
+
+export type PaperItem = {
+  id: string;
+  paperId: string;
+  orderIndex: number;
+  questionId: string;
+  sourceKind: QuestionBankSourceKind;
+  questionType: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  knowledgePoint: string;
+  stem: string;
+  answer: string;
+  analysis: string;
+  points: number;
+  locked: boolean;
+  teacherEdited: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PaperStatus = 'draft' | 'ready';
+
+export type Paper = {
+  id: string;
+  blueprintId: string;
+  studentId: string;
+  title: string;
+  subject: string;
+  status: PaperStatus;
+  totalPoints: number;
+  items: PaperItem[];
+  version: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PaperRecallMissing = {
+  questionType: string;
+  requested: number;
+  found: number;
+};
+
+export type PaperValidationIssue = {
+  code: string;
+  level: 'error' | 'warning';
+  message: string;
+};
+
+export type PaperValidationResult = {
+  ok: boolean;
+  totalPoints: number;
+  expectedPoints: number;
+  itemCount: number;
+  issues: PaperValidationIssue[];
+  typeCoverage: Array<{ questionType: string; requested: number; actual: number }>;
+  knowledgeCoverage: { requested: string[]; covered: string[]; missing: string[] };
+};
+
+export type PaperItemUpdateInput = {
+  id: string;
+  version: number;
+  stem?: string;
+  answer?: string;
+  analysis?: string;
+  points?: number;
+  locked?: boolean;
+  orderIndex?: number;
+};
+
+export type PaperExportResult = {
+  paper: DocumentArtifactExportResult;
+  answerSheet: DocumentArtifactExportResult;
+  analysis: DocumentArtifactExportResult;
+};
+
 export type ExportStudentResult = {
   exportPath: string;
   fileCount: number;
