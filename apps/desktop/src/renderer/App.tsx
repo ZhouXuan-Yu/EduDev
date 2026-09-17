@@ -131,7 +131,7 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
 };
 
 
-type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
+type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'paper' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
   id: string;
@@ -454,6 +454,7 @@ export function App() {
     { key: 'ai', label: '小智', icon: <Sparkles size={18} /> },
     { key: 'knowledge', label: '知识库', icon: <FileSearch size={18} /> },
     { key: 'question_notebook', label: '题库', icon: <BookOpenCheck size={18} /> },
+    { key: 'paper', label: '智能组卷', icon: <FileText size={18} /> },
     { key: 'mistakes', label: '错题训练', icon: <BookOpenCheck size={18} /> },
     { key: 'students', label: '学生', icon: <Users size={18} /> },
     { key: 'settings', label: '设置', icon: <Settings size={18} /> },
@@ -468,7 +469,7 @@ export function App() {
     { key: 'analytics', label: '分析', icon: <BarChart3 size={18} /> },
   ];
 
-  const primaryNavKeys: ViewKey[] = ['today', 'ai', 'knowledge', 'question_notebook', 'mistakes', 'students', 'settings'];
+  const primaryNavKeys: ViewKey[] = ['today', 'ai', 'knowledge', 'question_notebook', 'paper', 'mistakes', 'students', 'settings'];
   const advancedNavKeys: ViewKey[] = ['mastery', 'intake', 'review', 'search', 'notebook', 'book', 'memory', 'team', 'analytics'];
   const primaryNavItems = navItems.filter((item) => primaryNavKeys.includes(item.key));
   const advancedNavItems = navItems.filter((item) => advancedNavKeys.includes(item.key));

@@ -2794,6 +2794,7 @@ export class OmniEduStore {
       points: Number(row.points ?? 0),
       locked: Number(row.locked ?? 0) === 1,
       teacherEdited: Number(row.teacher_edited ?? 0) === 1,
+      version: Number(row.version ?? 1),
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
     };

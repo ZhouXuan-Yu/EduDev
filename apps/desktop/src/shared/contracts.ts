@@ -810,6 +810,7 @@ export type PaperItem = {
   points: number;
   locked: boolean;
   teacherEdited: boolean;
+  version: number;
   createdAt: string;
   updatedAt: string;
 };
