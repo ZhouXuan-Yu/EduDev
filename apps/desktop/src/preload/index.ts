@@ -193,6 +193,8 @@ const api = {
     ipcRenderer.invoke('mistakeImages:updateCorrection', id, input) as Promise<MistakeImageAnalysis>,
   listMistakeImageAnalyses: (studentId: string) =>
     ipcRenderer.invoke('mistakeImages:list', studentId) as Promise<MistakeImageAnalysis[]>,
+  runMistakeImageOcr: (analysisId: string) =>
+    ipcRenderer.invoke('mistakeImages:runOcr', analysisId) as Promise<MistakeImageAnalysis>,
   sanitizeProblemText: (text: string, studentId?: string) =>
     ipcRenderer.invoke('mistakeImages:sanitizeText', text, studentId) as Promise<SanitizedProblemText>,
   generateReview: (input: ReviewDraftInput) => ipcRenderer.invoke('reports:generate', input),

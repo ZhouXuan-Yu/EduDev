@@ -1671,6 +1671,7 @@ export class OmniEduStore {
       localPath,
       ocrStatus: status,
       extractedText,
+      ocrConfidence: 0,
       sanitizedText: sanitized.sanitizedText,
       redactions: sanitized.redactions,
       teacherCorrectedText: '',
@@ -1735,6 +1736,45 @@ export class OmniEduStore {
       [studentId],
     );
     return rows.map((row) => this.mapMistakeImageAnalysis(row));
+  }
+
+  async applyMistakeOcrResult(id: string, result: { text: string; confidence: number; lowConfidenceCount: number; modelVersion: string }): Promise<MistakeImageAnalysis> {
+    const existing = await this.getMistakeImageAnalysisOrThrow(id);
+    const text = result.text.trim();
+    if (!text) throw new Error('OCR 没有识别出任何文字，请教师手动输入或更换更清晰的图片');
+    const timestamp = now();
+    await this.run(
+      `UPDATE mistake_image_analyses
+          SET ocr_status = 'ocr_done',
+              extracted_text = ?,
+              ocr_confidence = ?,
+              error_message = '',
+              updated_at = ?
+        WHERE id = ?`,
+      [text, result.confidence, timestamp, id],
+    );
+    if (existing.attachmentId) {
+      await this.run(`UPDATE attachments SET extracted_text = ? WHERE id = ?`, [text, existing.attachmentId]);
+    }
+    await this.touchStudent(existing.studentId);
+    return this.getMistakeImageAnalysisOrThrow(id);
+  }
+
+  async markMistakeOcrFailed(id: string, message: string): Promise<MistakeImageAnalysis> {
+    await this.getMistakeImageAnalysisOrThrow(id);
+    await this.run(
+      `UPDATE mistake_image_analyses
+          SET ocr_status = 'failed', error_message = ?, updated_at = ?
+        WHERE id = ?`,
+      [message.slice(0, 2000), now(), id],
+    );
+    return this.getMistakeImageAnalysisOrThrow(id);
+  }
+
+  async getMistakeImageAnalysis(id: string): Promise<MistakeImageAnalysis | null> {
+    const row = (await this.all(`SELECT * FROM mistake_image_analyses WHERE id = ?`, [id]))[0];
+    return row ? this.mapMistakeImageAnalysis(row) : null;
+  }
 
   async getKnowledgeOverview(): Promise<KnowledgeOverview> {
     const resources = (await this.all(

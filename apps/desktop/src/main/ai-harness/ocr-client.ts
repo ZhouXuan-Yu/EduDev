@@ -1,4 +1,4 @@
-import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
+import { spawn, spawnSync, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { createInterface, type Interface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -23,12 +23,17 @@ export type OcrImageResult =
 const MAX_FRAME_BYTES = 2_000_000;
 const OCR_TIMEOUT_MS = 120_000;
 
-function localPythonCommand() {
+function ocrPythonCommand() {
   if (process.env.OMNI_EDU_PYTHON) return { command: process.env.OMNI_EDU_PYTHON, args: [] };
   if (process.platform !== 'win32') return { command: 'python3', args: [] };
   const candidates = ['C:\\Python314\\python.exe', 'D:\\Anaconda\\python.exe', 'C:\\Windows\\py.exe'];
-  const command = candidates.find((candidate) => existsSync(candidate)) ?? 'py';
-  return { command, args: /(?:^|[\\/])py(?:\.exe)?$/i.test(command) ? ['-3'] : [] };
+  for (const candidate of candidates) {
+    if (!existsSync(candidate)) continue;
+    const args = /(?:^|[\\/])py(?:\.exe)?$/i.test(candidate) ? ['-3'] : [];
+    const probe = spawnSync(candidate, [...args, '-c', 'import rapidocr'], { stdio: 'ignore', timeout: 15_000 });
+    if (probe.status === 0) return { command: candidate, args };
+  }
+  return { command: candidates.find((candidate) => existsSync(candidate)) ?? 'py', args: [] };
 }
 
 type PendingRequest = {
@@ -49,7 +54,7 @@ export class OcrWorkerClient {
 
   private ensureStarted() {
     if (this.child) return;
-    const python = localPythonCommand();
+    const python = ocrPythonCommand();
     const sidecarRoot = join(this.repoRoot, 'python');
     this.child = spawn(python.command, [...python.args, '-m', 'omni_edu_ocr'], {
       cwd: this.repoRoot,

@@ -50,6 +50,7 @@ import { parseStructuredReply, structuredReplyToMarkdown } from './ai-harness/sc
 import { boundDeepTutorEventDetail } from './ai-harness/deeptutor-event-bounds';
 import { getModelToolDefinitions, progressiveToolNames, type CompiledAiContext } from './ai-harness/tool-registry';
 import { DeepTutorSidecarClient } from './ai-harness/sidecar-client';
+import { OcrWorkerClient } from './ai-harness/ocr-client';
 import { executeHostToolRequest } from './ai-harness/host-tool-proxy';
 import {
   isConsoleRunPendingStatus,
@@ -65,6 +66,14 @@ import { gradeUsabilityReply } from './ai-harness/usability-policy';
 
 let store: OmniEduStore;
 let deepTutorSidecar: DeepTutorSidecarClient | undefined;
+let ocrWorker: OcrWorkerClient | undefined;
+
+const getOcrWorker = () => {
+  if (!ocrWorker) {
+    ocrWorker = new OcrWorkerClient(resolveRepoRoot());
+  }
+  return ocrWorker;
+};
 let mainWindow: BrowserWindow | undefined;
 let e2eAttachmentDialogQueue: string[][] | undefined;
 let e2eDirectoryDialogQueue: Array<string | null> | undefined;
@@ -1842,6 +1851,27 @@ app.whenReady().then(async () => {
   ipcMain.handle('mistakeImages:updateCorrection', (_event, id: string, input) => store.updateMistakeImageCorrection(id, input));
   ipcMain.handle('mistakeImages:list', (_event, studentId: string) => store.listMistakeImageAnalyses(studentId));
   ipcMain.handle('mistakeImages:sanitizeText', (_event, text: string, studentId?: string) => store.sanitizeProblemText(text, studentId));
+  ipcMain.handle('mistakeImages:runOcr', async (_event, analysisId: string) => {
+    const analysis = await store.getMistakeImageAnalysis(analysisId);
+    if (!analysis) throw new Error('错题图片解析记录不存在');
+    if (!(await store.isManagedLocalPath(analysis.localPath)) || !existsSync(analysis.localPath)) {
+      throw new Error('错题图片文件不在本地受管目录内或已缺失');
+    }
+    const result = await getOcrWorker().runOcr(analysis.localPath);
+    if (!result.ok) {
+      await store.markMistakeOcrFailed(analysisId, `${result.code}: ${result.message}`);
+      throw new Error(result.message);
+    }
+    const confidence = result.lines.length
+      ? Math.min(...result.lines.map((line) => line.confidence))
+      : 0;
+    return store.applyMistakeOcrResult(analysisId, {
+      text: result.lines.map((line) => line.text).join('\n'),
+      confidence,
+      lowConfidenceCount: result.lowConfidenceCount,
+      modelVersion: result.modelVersion,
+    });
+  });
   ipcMain.handle('reports:generate', (_event, input) => store.generateReview(input));
   ipcMain.handle('reports:update', (_event, id: string, contentMd: string, parentSummary?: string) => store.updateReport(id, contentMd, parentSummary));
   ipcMain.handle('reports:list', (_event, studentId: string) => store.listReports(studentId));
@@ -2039,6 +2069,7 @@ app.on('window-all-closed', () => {
 
 async function shutdownSidecarAndCleanup() {
   const result = deepTutorSidecar ? await deepTutorSidecar.stop() : undefined;
+  if (ocrWorker) await ocrWorker.stop();
   for (const [requestId, pending] of pendingDeepTutorInputs) {
     for (const question of pending.request.questions ?? []) {
       if (question.id.startsWith('mastery_question_')) await store.cancelAiMasteryQuestion(question.id);

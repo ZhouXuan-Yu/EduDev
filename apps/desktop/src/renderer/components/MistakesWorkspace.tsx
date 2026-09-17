@@ -58,6 +58,8 @@ export function MistakesWorkspace({
   const [proposingSet, setProposingSet] = useState(false);
   const [similarError, setSimilarError] = useState('');
   const [searchedSimilar, setSearchedSimilar] = useState(false);
+  const [ocrRunning, setOcrRunning] = useState(false);
+  const [ocrError, setOcrError] = useState('');
   const [tripletDraft, setTripletDraft] = useState<Array<{ role: string; stem: string; answer: string; sourceKind: 'local_bank' | 'teacher_resource' | 'generated' }>>([]);
 
   const mistakeRecords = useMemo(() => records.filter((record) => record.recordType === 'mistake'), [records]);
@@ -255,6 +257,29 @@ export function MistakesWorkspace({
     }
   }
 
+  async function runOcr(analysisId: string) {
+    if (ocrRunning) return;
+    setOcrRunning(true);
+    setOcrError('');
+    try {
+      const updated = await window.omniEdu?.runMistakeImageOcr(analysisId);
+      if (updated) {
+        setAnalyses((current) => current.map((item) => (item.id === updated.id ? updated : item)));
+        setDraft((current) => ({ ...current, text: updated.teacherCorrectedText || updated.extractedText }));
+        setStatus(updated.ocrStatus === 'ocr_done'
+          ? `OCR 完成（最低置信度 ${Math.round((updated.ocrConfidence ?? 0) * 100)}%）；请教师核对并修正识别文本。`
+          : `OCR 结束：${updated.ocrStatus}`);
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'OCR 识别失败。';
+      setOcrError(message);
+      setStatus(message);
+      void window.omniEdu?.listMistakeImageAnalyses(activeStudent?.id ?? '').then((items) => items && setAnalyses(items));
+    } finally {
+      setOcrRunning(false);
+    }
+  }
+
   const pendingTriplet = tripletConfirmation;
 
   return (
@@ -303,11 +328,19 @@ export function MistakesWorkspace({
       </section>
 
       <section className="work-panel" data-testid="mistake-ocr-panel">
-        <div className="panel-heading"><div><h3>2. OCR / 教师校正</h3><p className="muted">没有真实 OCR 结果时保持 needs_ocr，不编造识别文本。</p></div></div>
+        <div className="panel-heading"><div><h3>2. OCR / 教师校正</h3><p className="muted">本地 RapidOCR 识别；没有真实 OCR 结果时保持 needs_ocr，不编造识别文本。</p></div></div>
         {loading ? <p data-testid="mistake-loading">正在读取或保存错题状态…</p> : null}
         {!analyses.length ? <p data-testid="mistake-ocr-empty">暂无 OCR 任务。</p> : (
           <>
             <label>分析记录<select value={selectedAnalysis?.id ?? ''} onChange={(event) => setSelectedAnalysisId(event.target.value)} data-testid="mistake-analysis-select">{analyses.map((item) => <option key={item.id} value={item.id}>{item.ocrStatus} · {item.id.slice(-8)}</option>)}</select></label>
+            {selectedAnalysis?.ocrStatus === 'needs_ocr' ? (
+              <div className="toolbar-row">
+                <button className="primary-action" onClick={() => void runOcr(selectedAnalysis.id)} disabled={ocrRunning} data-testid="mistake-ocr-run">{ocrRunning ? '识别中…' : '本地 OCR 识别'}</button>
+                {ocrRunning ? <span className="status-chip" data-testid="mistake-ocr-progress">RapidOCR 识别中，请稍候…</span> : null}
+              </div>
+            ) : null}
+            {ocrError ? <div className="warning-box" data-testid="mistake-ocr-error">{ocrError}</div> : null}
+            {selectedAnalysis?.ocrStatus === 'ocr_done' ? <div className="info-box" data-testid="mistake-ocr-done">OCR 已完成（最低置信度 {Math.round((selectedAnalysis.ocrConfidence ?? 0) * 100)}%）；低置信度内容请教师重点核对。</div> : null}
             <label>教师校正文本<textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text: event.target.value })} placeholder="粘贴 OCR 结果或手动输入题干" data-testid="mistake-correction-input" /></label>
             <div className="toolbar-row"><button className="secondary-action" onClick={previewSanitized} disabled={loading || !draft.text.trim()} data-testid="mistake-sanitize-button">生成脱敏预览</button><button className="primary-action" onClick={saveCorrection} disabled={savingCorrection || !draft.text.trim()} data-testid="mistake-save-correction">{savingCorrection ? '保存中…' : '保存教师校正'}</button></div>
           </>

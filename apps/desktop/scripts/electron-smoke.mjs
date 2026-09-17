@@ -7,6 +7,7 @@ import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 
 const appRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+const repoRoot = dirname(appRoot);
 const dataRoot = mkdtempSync(join(tmpdir(), 'omni-edu-smoke-'));
 const attachmentSourceRoot = mkdtempSync(join(tmpdir(), 'omni-edu-attachment-source-'));
 const studentExportRoot = mkdtempSync(join(tmpdir(), 'omni-edu-student-export-'));
@@ -14,6 +15,30 @@ const dataBackupDestinationRoot = mkdtempSync(join(tmpdir(), 'omni-edu-data-back
 const controlledAttachmentPath = join(attachmentSourceRoot, 'teacher-selected-mistake.png');
 const controlledAttachmentBytes = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64');
 writeFileSync(controlledAttachmentPath, controlledAttachmentBytes);
+
+// OCR fixture: a real Chinese-text image rendered with a Windows font. The
+// section is skipped (honestly reported) when Python or the font is missing.
+let ocrFixturePath = null;
+try {
+  const ocrFixtureRoot = mkdtempSync(join(tmpdir(), 'omni-edu-ocr-fixture-'));
+  const pythonBin = process.env.OMNI_EDU_PYTHON
+    || ['C:\\Python314\\python.exe', 'D:\\Anaconda\\python.exe', 'C:\\Windows\\py.exe'].find((candidate) => existsSync(candidate));
+  if (pythonBin) {
+    execFileSync(pythonBin, ['-c', [
+      'import sys',
+      "from PIL import Image, ImageDraw, ImageFont",
+      "out = sys.argv[1]",
+      "font = ImageFont.truetype('C:/Windows/Fonts/simhei.ttf', 42)",
+      "image = Image.new('RGB', (900, 140), 'white')",
+      "ImageDraw.Draw(image).text((20, 40), '一次函数斜率 求 y = 2x + 3 的斜率', fill='black', font=font)",
+      "image.save(out + '/ocr-fixture.png')",
+    ].join('\n'), ocrFixtureRoot], { stdio: 'ignore' });
+    if (existsSync(join(ocrFixtureRoot, 'ocr-fixture.png'))) ocrFixturePath = join(ocrFixtureRoot, 'ocr-fixture.png');
+  }
+} catch {
+  ocrFixturePath = null;
+}
+if (!ocrFixturePath) console.error('OCR E2E section skipped: python or Chinese font unavailable');
 const artifactRoot = join(appRoot, 'test-results', 'electron-e2e');
 mkdirSync(artifactRoot, { recursive: true });
 const knowledgeImportFixtureDir = mkdtempSync(join(tmpdir(), 'omni-edu-knowledge-e2e-'));
@@ -31,7 +56,7 @@ async function launchApp(options = {}) {
       OMNI_EDU_DATA_ROOT: dataRoot,
       OMNI_EDU_REPO_ROOT: dirname(dirname(appRoot)),
       OMNI_EDU_E2E_DIALOG_MODE: '1',
-      OMNI_EDU_E2E_ATTACHMENT_DIALOG_QUEUE: JSON.stringify([[controlledAttachmentPath], []]),
+      OMNI_EDU_E2E_ATTACHMENT_DIALOG_QUEUE: JSON.stringify([[controlledAttachmentPath], [], ...(ocrFixturePath ? [[ocrFixturePath]] : [])]),
       OMNI_EDU_E2E_STUDENT_EXPORT_DIALOG_QUEUE: JSON.stringify([[studentExportRoot], []]),
       OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE: JSON.stringify(options.backupExportDialogQueue ?? [dataBackupDestinationRoot, '']),
       OMNI_EDU_E2E_DATA_BACKUP_VERIFY_DIALOG_QUEUE: JSON.stringify(options.backupVerifyDialogQueue ?? ['$last', '$last', '']),
@@ -1102,6 +1127,60 @@ async function run() {
   assert.equal(proposedExerciseSet.items[1]?.sourceKind, 'local_bank', 'recalled local question must keep its source label');
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-similar-recall-1366x768.png'), fullPage: true });
 
+  // Local OCR: import a real Chinese-text fixture, run the RapidOCR worker from
+  // the panel, verify honest ocr_done state, teacher correction and re-sanitize.
+  if (ocrFixturePath) {
+    const mistakeRecordBeforeOcr = (await first.page.evaluate((studentId) => window.omniEdu.listRecords(studentId, { type: 'mistake' }), knownStudent.id)).find((record) => record.id === mistakeRecord.id);
+    const attachmentCountBeforeOcr = mistakeRecordBeforeOcr.attachments.length;
+    await first.page.getByTestId(`mistake-import-${mistakeRecord.id}`).click();
+    await first.page.waitForFunction(async ({ studentId, recordId, expectedCount }) => {
+      const record = (await window.omniEdu.listRecords(studentId, { type: 'mistake' })).find((item) => item.id === recordId);
+      return record?.attachments.length === expectedCount;
+    }, { studentId: knownStudent.id, recordId: mistakeRecord.id, expectedCount: attachmentCountBeforeOcr + 1 });
+    const ocrRecord = (await first.page.evaluate((studentId) => window.omniEdu.listRecords(studentId, { type: 'mistake' }), knownStudent.id)).find((record) => record.id === mistakeRecord.id);
+    const ocrAttachment = ocrRecord.attachments.find((attachment) => attachment.fileName === 'ocr-fixture.png') ?? ocrRecord.attachments[ocrRecord.attachments.length - 1];
+    assert.equal(ocrAttachment.fileName, 'ocr-fixture.png', 'OCR fixture attachment must be imported from the dialog queue');
+    await first.page.getByTestId(`create-ocr-${ocrAttachment.id}`).click();
+    await first.page.waitForFunction(async ({ studentId, attachmentId }) => {
+      const analyses = await window.omniEdu.listMistakeImageAnalyses(studentId);
+      return analyses.some((item) => item.attachmentId === attachmentId);
+    }, { studentId: knownStudent.id, attachmentId: ocrAttachment.id });
+    await first.page.getByTestId('mistake-ocr-run').click();
+    let ocrPollLog = [];
+    let ocrPollResult = null;
+    for (let attempt = 0; attempt < 36; attempt += 1) {
+      const poll = await first.page.evaluate(async ({ studentId, attachmentId }) => {
+        const analyses = await window.omniEdu.listMistakeImageAnalyses(studentId);
+        const matching = analyses.filter((item) => item.attachmentId === attachmentId);
+        const statuses = matching.map((item) => item.ocrStatus);
+        const errorText = document.querySelector('[data-testid="mistake-ocr-error"]')?.textContent ?? '';
+        return { statuses, errorText, buttonText: document.querySelector('[data-testid="mistake-ocr-run"]')?.textContent ?? 'NO_BUTTON' };
+      }, { studentId: knownStudent.id, attachmentId: ocrAttachment.id });
+      if (attempt % 3 === 0) ocrPollLog.push({ attempt, ...poll });
+      if (poll.statuses.includes('ocr_done') || poll.errorText) {
+        ocrPollResult = poll;
+        break;
+      }
+      await new Promise((resolveWait) => setTimeout(resolveWait, 5000));
+    }
+    if (!ocrPollResult?.statuses.includes('ocr_done')) {
+      throw new Error(`local OCR must settle as ocr_done: ${JSON.stringify(ocrPollLog)}`);
+    }
+    const ocrAnalysisDetail = (await first.page.evaluate((studentId) => window.omniEdu.listMistakeImageAnalyses(studentId), knownStudent.id)).find((item) => item.attachmentId === ocrAttachment.id);
+    assert.ok(ocrAnalysisDetail.extractedText.includes('一次函数'), `recognized text must contain the fixture content: ${ocrAnalysisDetail.extractedText}`);
+    assert.ok(ocrAnalysisDetail.ocrConfidence >= 0, 'ocr confidence must be reported');
+    await first.page.waitForFunction(() => document.querySelector('[data-testid="mistake-correction-input"]')?.value?.includes('一次函数'), undefined, { timeout: 30_000 });
+    await first.page.getByTestId('mistake-save-correction').click();
+    await first.page.waitForFunction(async ({ studentId, attachmentId }) => {
+      const analyses = await window.omniEdu.listMistakeImageAnalyses(studentId);
+      return analyses.some((item) => item.attachmentId === attachmentId && item.ocrStatus === 'teacher_corrected');
+    }, { studentId: knownStudent.id, attachmentId: ocrAttachment.id });
+    const ocrCorrected = (await first.page.evaluate((studentId) => window.omniEdu.listMistakeImageAnalyses(studentId), knownStudent.id)).find((item) => item.attachmentId === ocrAttachment.id);
+    assert.equal(ocrCorrected.ocrStatus, 'teacher_corrected', 'teacher correction after OCR must persist');
+    assert.ok(ocrCorrected.sanitizedText.length > 0, 'sanitized text must be regenerated after OCR correction');
+    await first.page.screenshot({ path: join(artifactRoot, 'frontend-ocr-1366x768.png'), fullPage: true });
+  }
+
   // Question notebook: seed canonical local/generated questions through the
   // existing IPC, then exercise source display, bookmark and no-hit states.
   const notebookQuestions = await first.page.evaluate(async () => {
@@ -1996,6 +2075,14 @@ async function run() {
   const proposedSetAfterRestart = exerciseSetsAfterRestart.find((item) => item.id === proposedExerciseSet.id);
   assert.equal(proposedSetAfterRestart?.items?.[1]?.stem, 'E2E 相似题 的题目：求一次函数斜率。已知 y = 3x - 1 与 y 轴交于一点，求该点坐标。', 'teacher-recalled similar question must persist after restart');
   assert.equal(proposedSetAfterRestart?.items?.[1]?.sourceKind, 'local_bank', 'recalled source label must persist after restart');
+  if (ocrFixturePath) {
+    const ocrRecordAfterRestart = (await second.page.evaluate((studentId) => window.omniEdu.listRecords(studentId, { type: 'mistake' }), knownStudent.id)).find((record) => record.id === mistakeRecord.id);
+    const ocrAttachmentAfterRestart = ocrRecordAfterRestart.attachments.find((attachment) => attachment.fileName === 'ocr-fixture.png');
+    assert.ok(ocrAttachmentAfterRestart, 'OCR fixture attachment must persist after restart');
+    const ocrAnalysisAfterRestart = (await second.page.evaluate((studentId) => window.omniEdu.listMistakeImageAnalyses(studentId), knownStudent.id)).find((item) => item.attachmentId === ocrAttachmentAfterRestart.id);
+    assert.equal(ocrAnalysisAfterRestart?.ocrStatus, 'teacher_corrected', 'OCR analysis must persist after restart');
+    assert.ok(ocrAnalysisAfterRestart?.extractedText.includes('一次函数'), 'recognized OCR text must persist after restart');
+  }
   const notebookAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), notebookQuestions.local.id);
   assert.equal(notebookAfterRestart?.bookmarked, true, 'question notebook bookmark should persist after restart');
   const uiCreatedQuestionAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id);
