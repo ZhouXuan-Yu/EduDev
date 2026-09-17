@@ -162,6 +162,7 @@ import type {
   PaperValidationIssue,
   PaperValidationResult,
   PaperExportResult,
+  PaperCreateInput,
 } from '../shared/contracts';
 
 type SqlValue = string | number | null | Buffer;
@@ -2402,7 +2403,7 @@ export class OmniEduStore {
     return row ? this.mapPaperBlueprint(row) : null;
   }
 
-  async createPaperFromBlueprint(input: { blueprintId: string; title?: string; studentId?: string }): Promise<Paper> {
+  async createPaperFromBlueprint(input: PaperCreateInput): Promise<Paper> {
     const blueprint = await this.getPaperBlueprintOrThrow(requireNonEmpty(input.blueprintId, '缺少组卷蓝图 ID'));
     if (blueprint.status !== 'active') throw new Error('已归档的蓝图不能用于组卷');
     if (blueprint.typeSpecs.length === 0) throw new Error('蓝图没有题型配置，无法组卷');

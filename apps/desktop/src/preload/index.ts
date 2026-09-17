@@ -77,6 +77,13 @@ import type {
   SimilarQuestionMatch,
   ExerciseSet,
   ExerciseSetProposeInput,
+  Paper,
+  PaperBlueprint,
+  PaperBlueprintInput,
+  PaperCreateInput,
+  PaperExportResult,
+  PaperItemUpdateInput,
+  PaperValidationResult,
   ReviewDraftInput,
   DeepSeekSettings,
   DeepSeekSettingsInput,
@@ -252,6 +259,30 @@ const api = {
     ipcRenderer.invoke('exerciseSets:list', studentId) as Promise<ExerciseSet[]>,
   proposeExerciseSetFromQuestions: (input: ExerciseSetProposeInput) =>
     ipcRenderer.invoke('exerciseSets:proposeFromQuestions', input) as Promise<AiConfirmationItem>,
+  listPaperBlueprints: (includeArchived = false) =>
+    ipcRenderer.invoke('papers:listBlueprints', includeArchived) as Promise<PaperBlueprint[]>,
+  getPaperBlueprint: (id: string) =>
+    ipcRenderer.invoke('papers:getBlueprint', id) as Promise<PaperBlueprint | null>,
+  createPaperBlueprint: (input: PaperBlueprintInput) =>
+    ipcRenderer.invoke('papers:createBlueprint', input) as Promise<PaperBlueprint>,
+  updatePaperBlueprint: (id: string, version: number, input: PaperBlueprintInput) =>
+    ipcRenderer.invoke('papers:updateBlueprint', id, version, input) as Promise<PaperBlueprint>,
+  archivePaperBlueprint: (id: string, version: number) =>
+    ipcRenderer.invoke('papers:archiveBlueprint', id, version) as Promise<PaperBlueprint>,
+  createPaper: (input: PaperCreateInput) =>
+    ipcRenderer.invoke('papers:create', input) as Promise<Paper>,
+  listPapers: (limit?: number) =>
+    ipcRenderer.invoke('papers:list', limit ?? 30) as Promise<Paper[]>,
+  getPaper: (id: string) =>
+    ipcRenderer.invoke('papers:get', id) as Promise<Paper | null>,
+  updatePaperItem: (input: PaperItemUpdateInput) =>
+    ipcRenderer.invoke('papers:updateItem', input) as Promise<Paper>,
+  replacePaperItem: (paperId: string, itemId: string, questionId: string) =>
+    ipcRenderer.invoke('papers:replaceItem', paperId, itemId, questionId) as Promise<Paper>,
+  validatePaper: (id: string) =>
+    ipcRenderer.invoke('papers:validate', id) as Promise<PaperValidationResult>,
+  exportPaper: (id: string, destinationRoot?: string) =>
+    ipcRenderer.invoke('papers:export', id, destinationRoot) as Promise<PaperExportResult>,
   listAiConfirmations: (status: AiConfirmationStatus | 'all' = 'pending') =>
     ipcRenderer.invoke('aiConfirmations:list', status) as Promise<AiConfirmationItem[]>,
   confirmAiConfirmation: (input: AiConfirmationConfirmInput) =>
