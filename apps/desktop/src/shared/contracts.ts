@@ -793,6 +793,8 @@ export type PaperInput = {
   studentId?: string;
 };
 
+export type PaperCreateInput = PaperInput;
+
 export type PaperItem = {
   id: string;
   paperId: string;

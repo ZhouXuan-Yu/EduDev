@@ -2311,7 +2311,560 @@ export class OmniEduStore {
     });
   }
 
-  async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {    const trimmed = keyword.trim();
+  async createPaperBlueprint(input: PaperBlueprintInput): Promise<PaperBlueprint> {
+    const title = requireNonEmpty(input.title, '组卷蓝图标题不能为空').slice(0, 160);
+    const typeSpecs = this.normalizePaperTypeSpecs(input.typeSpecs ?? []);
+    const difficultyMix = this.normalizePaperDifficultyMix(input.difficultyMix);
+    const knowledgePoints = [...new Set((input.knowledgePoints ?? []).map((point) => String(point).trim()).filter(Boolean))].slice(0, 40);
+    const totalPoints = typeSpecs.reduce((sum, spec) => sum + spec.count * spec.pointsPerQuestion, 0);
+    const id = `paper_blueprint_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO paper_blueprints (
+        id, title, subject, grade, textbook_version, scope, knowledge_points_json, type_specs_json,
+        difficulty_mix_json, total_points, duration_minutes, source_preference, status, version, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'active', 1, ?, ?)`,
+      [
+        id,
+        title,
+        input.subject?.trim() ?? '',
+        input.grade?.trim() ?? '',
+        input.textbookVersion?.trim() ?? '',
+        input.scope?.trim() ?? '',
+        JSON.stringify(knowledgePoints),
+        JSON.stringify(typeSpecs),
+        difficultyMix ? JSON.stringify(difficultyMix) : '',
+        totalPoints,
+        Math.max(0, Math.trunc(input.durationMinutes ?? 0)),
+        input.sourcePreference === 'local_bank' || input.sourcePreference === 'teacher_resource' ? input.sourcePreference : 'any',
+        timestamp,
+        timestamp,
+      ],
+    );
+    return this.getPaperBlueprintOrThrow(id);
+  }
+
+  async updatePaperBlueprint(id: string, version: number, input: PaperBlueprintInput): Promise<PaperBlueprint> {
+    const existing = await this.getPaperBlueprintOrThrow(id);
+    if (existing.version !== version) throw new Error('蓝图已被其他修改更新，请刷新后重试（版本冲突）');
+    const title = requireNonEmpty(input.title, '组卷蓝图标题不能为空').slice(0, 160);
+    const typeSpecs = this.normalizePaperTypeSpecs(input.typeSpecs ?? []);
+    const difficultyMix = this.normalizePaperDifficultyMix(input.difficultyMix);
+    const knowledgePoints = [...new Set((input.knowledgePoints ?? []).map((point) => String(point).trim()).filter(Boolean))].slice(0, 40);
+    const totalPoints = typeSpecs.reduce((sum, spec) => sum + spec.count * spec.pointsPerQuestion, 0);
+    await this.run(
+      `UPDATE paper_blueprints
+          SET title = ?, subject = ?, grade = ?, textbook_version = ?, scope = ?,
+              knowledge_points_json = ?, type_specs_json = ?, difficulty_mix_json = ?,
+              total_points = ?, duration_minutes = ?, source_preference = ?, version = version + 1, updated_at = ?
+        WHERE id = ? AND version = ?`,
+      [
+        title,
+        input.subject?.trim() ?? '',
+        input.grade?.trim() ?? '',
+        input.textbookVersion?.trim() ?? '',
+        input.scope?.trim() ?? '',
+        JSON.stringify(knowledgePoints),
+        JSON.stringify(typeSpecs),
+        difficultyMix ? JSON.stringify(difficultyMix) : '',
+        totalPoints,
+        Math.max(0, Math.trunc(input.durationMinutes ?? 0)),
+        input.sourcePreference === 'local_bank' || input.sourcePreference === 'teacher_resource' ? input.sourcePreference : 'any',
+        now(),
+        id,
+        version,
+      ],
+    );
+    return this.getPaperBlueprintOrThrow(id);
+  }
+
+  async archivePaperBlueprint(id: string, version: number): Promise<PaperBlueprint> {
+    const existing = await this.getPaperBlueprintOrThrow(id);
+    if (existing.version !== version) throw new Error('蓝图已被其他修改更新，请刷新后重试（版本冲突）');
+    await this.run(
+      `UPDATE paper_blueprints SET status = 'archived', version = version + 1, updated_at = ? WHERE id = ? AND version = ?`,
+      [now(), id, version],
+    );
+    return this.getPaperBlueprintOrThrow(id);
+  }
+
+  async listPaperBlueprints(includeArchived = false): Promise<PaperBlueprint[]> {
+    const rows = await this.all(
+      includeArchived
+        ? `SELECT * FROM paper_blueprints ORDER BY updated_at DESC`
+        : `SELECT * FROM paper_blueprints WHERE status = 'active' ORDER BY updated_at DESC`,
+    );
+    return rows.map((row) => this.mapPaperBlueprint(row));
+  }
+
+  async getPaperBlueprint(id: string): Promise<PaperBlueprint | null> {
+    const row = (await this.all(`SELECT * FROM paper_blueprints WHERE id = ?`, [id]))[0];
+    return row ? this.mapPaperBlueprint(row) : null;
+  }
+
+  async createPaperFromBlueprint(input: { blueprintId: string; title?: string; studentId?: string }): Promise<Paper> {
+    const blueprint = await this.getPaperBlueprintOrThrow(requireNonEmpty(input.blueprintId, '缺少组卷蓝图 ID'));
+    if (blueprint.status !== 'active') throw new Error('已归档的蓝图不能用于组卷');
+    if (blueprint.typeSpecs.length === 0) throw new Error('蓝图没有题型配置，无法组卷');
+    const studentId = input.studentId?.trim() ?? '';
+    if (studentId) {
+      const student = (await this.listStudents('')).find((item) => item.id === studentId);
+      if (!student) throw new Error('学生不存在');
+    }
+    const paperId = `paper_${randomUUID()}`;
+    const timestamp = now();
+    const title = (input.title ?? '').trim() || `${blueprint.title} 试卷`;
+    await this.run(
+      `INSERT INTO papers (
+        id, blueprint_id, blueprint_version, student_id, title, subject, status, version, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, 'draft', 1, ?, ?)`,
+      [paperId, blueprint.id, blueprint.version, studentId, title.slice(0, 160), blueprint.subject, timestamp, timestamp],
+    );
+    const recall = await this.recallPaperItems(blueprint);
+    let orderIndex = 0;
+    for (const item of recall.items) {
+      await this.run(
+        `INSERT INTO paper_items (
+          id, paper_id, order_index, question_id, source_kind, question_type, difficulty,
+          knowledge_point, stem, answer, analysis, points, locked, teacher_edited, version, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, 1, ?, ?)`,
+        [
+          `paper_item_${randomUUID()}`,
+          paperId,
+          orderIndex,
+          item.questionId,
+          item.sourceKind,
+          item.questionType,
+          item.difficulty,
+          item.knowledgePoint,
+          item.stem,
+          item.answer,
+          item.analysis,
+          item.points,
+          timestamp,
+          timestamp,
+        ],
+      );
+      orderIndex += 1;
+    }
+    return this.getPaperOrThrow(paperId);
+  }
+
+  async listPapers(limit = 30): Promise<Paper[]> {
+    const boundedLimit = Math.max(1, Math.min(Math.trunc(limit) || 30, 100));
+    const rows = await this.all(`SELECT * FROM papers ORDER BY created_at DESC LIMIT ?`, [boundedLimit]);
+    const papers: Paper[] = [];
+    for (const row of rows) papers.push(await this.mapPaperWithItems(row));
+    return papers;
+  }
+
+  async getPaper(id: string): Promise<Paper | null> {
+    const row = (await this.all(`SELECT * FROM papers WHERE id = ?`, [requireNonEmpty(id, '缺少试卷 ID')]))[0];
+    return row ? this.mapPaperWithItems(row) : null;
+  }
+
+  async updatePaperItem(input: PaperItemUpdateInput): Promise<Paper> {
+    const itemId = requireNonEmpty(input.id, '缺少试卷题目 ID');
+    const current = await this.getPaperItemOrThrow(itemId);
+    const version = Math.trunc(input.version ?? 0);
+    if (current.version !== version) throw new Error('题目已被其他修改更新，请刷新后重试（版本冲突）');
+    const stem = input.stem === undefined ? current.stem : requireNonEmpty(input.stem, '题干不能为空').slice(0, MAX_EXERCISE_STEM_CHARS);
+    const answer = input.answer === undefined ? current.answer : String(input.answer).trim().slice(0, MAX_EXERCISE_ANSWER_CHARS);
+    const analysis = input.analysis === undefined ? current.analysis : String(input.analysis).trim().slice(0, MAX_EXERCISE_ANSWER_CHARS);
+    const points = input.points === undefined ? current.points : Math.max(0, Math.min(Math.trunc(input.points), 200));
+    const locked = input.locked === undefined ? current.locked : Boolean(input.locked);
+    const orderIndex = input.orderIndex === undefined ? current.orderIndex : Math.max(0, Math.trunc(input.orderIndex));
+    const teacherEdited = current.teacherEdited
+      || stem !== current.stem || answer !== current.answer || analysis !== current.analysis || points !== current.points;
+    await this.run(
+      `UPDATE paper_items
+          SET stem = ?, answer = ?, analysis = ?, points = ?, locked = ?, order_index = ?, teacher_edited = ?, version = version + 1, updated_at = ?
+        WHERE id = ? AND version = ?`,
+      [stem, answer, analysis, points, locked ? 1 : 0, orderIndex, teacherEdited ? 1 : 0, now(), itemId, version],
+    );
+    await this.run(`UPDATE papers SET version = version + 1, updated_at = ? WHERE id = ?`, [now(), current.paperId]);
+    return this.getPaperOrThrow(current.paperId);
+  }
+
+  async replacePaperItem(paperId: string, itemId: string, questionId: string): Promise<Paper> {
+    const paper = await this.getPaperOrThrow(paperId);
+    const item = paper.items.find((entry) => entry.id === itemId);
+    if (!item) throw new Error('试卷题目不存在');
+    if (item.locked) throw new Error('该题已锁定，请先解锁再换题');
+    const question = await this.getQuestionBankItem(requireNonEmpty(questionId, '缺少替换题目 ID'));
+    if (!question) throw new Error('替换题目不存在');
+    if (paper.items.some((entry) => entry.id !== itemId && entry.questionId === question.id)) {
+      throw new Error('替换题目已在试卷中，请勿重复加入');
+    }
+    await this.run(
+      `UPDATE paper_items
+          SET question_id = ?, source_kind = ?, question_type = ?, difficulty = ?, knowledge_point = ?,
+              stem = ?, answer = ?, analysis = ?, teacher_edited = 1, version = version + 1, updated_at = ?
+        WHERE id = ?`,
+      [
+        question.id,
+        question.sourceKind,
+        question.questionType,
+        question.difficulty,
+        question.knowledgePoint,
+        question.stem,
+        question.answer,
+        question.analysis,
+        now(),
+        itemId,
+      ],
+    );
+    await this.run(`UPDATE papers SET version = version + 1, updated_at = ? WHERE id = ?`, [now(), paperId]);
+    return this.getPaperOrThrow(paperId);
+  }
+
+  async validatePaper(id: string): Promise<PaperValidationResult> {
+    const paper = await this.getPaperOrThrow(id);
+    const blueprint = await this.getPaperBlueprint(paper.blueprintId);
+    const issues: PaperValidationIssue[] = [];
+    const typeCoverage = (blueprint?.typeSpecs ?? []).map((spec) => ({
+      questionType: spec.questionType,
+      requested: spec.count,
+      actual: paper.items.filter((item) => item.questionType === spec.questionType).length,
+    }));
+    for (const coverage of typeCoverage) {
+      if (coverage.actual < coverage.requested) {
+        issues.push({ code: 'type_shortage', level: 'error', message: `${coverage.questionType} 数量不足：需要 ${coverage.requested} 道，当前 ${coverage.actual} 道。` });
+      } else if (coverage.actual > coverage.requested) {
+        issues.push({ code: 'type_surplus', level: 'warning', message: `${coverage.questionType} 数量超出蓝图：需要 ${coverage.requested} 道，当前 ${coverage.actual} 道。` });
+      }
+    }
+    const emptyStem = paper.items.filter((item) => !item.stem.trim());
+    if (emptyStem.length) issues.push({ code: 'empty_stem', level: 'error', message: `有 ${emptyStem.length} 道题缺少题干。` });
+    const missingAnswer = paper.items.filter((item) => !item.answer.trim());
+    if (missingAnswer.length) issues.push({ code: 'missing_answer', level: 'error', message: `有 ${missingAnswer.length} 道题缺少答案。` });
+    const missingAnalysis = paper.items.filter((item) => !item.analysis.trim());
+    if (missingAnalysis.length) issues.push({ code: 'missing_analysis', level: 'warning', message: `有 ${missingAnalysis.length} 道题缺少解析。` });
+    const questionIds = paper.items.map((item) => item.questionId).filter(Boolean);
+    const duplicateIds = questionIds.filter((questionId, index) => questionIds.indexOf(questionId) !== index);
+    if (duplicateIds.length) issues.push({ code: 'duplicate_question', level: 'error', message: `试卷内有 ${new Set(duplicateIds).size} 道重复题目。` });
+    const requestedPoints = blueprint?.totalPoints ?? 0;
+    if (requestedPoints > 0 && paper.totalPoints !== requestedPoints) {
+      issues.push({ code: 'points_mismatch', level: 'warning', message: `总分 ${paper.totalPoints} 与蓝图 ${requestedPoints} 不一致。` });
+    }
+    const requestedPoints2 = (blueprint?.knowledgePoints ?? []);
+    const covered = [...new Set(paper.items.map((item) => item.knowledgePoint).filter(Boolean))];
+    const missingPoints = requestedPoints2.filter((point) => !covered.includes(point));
+    if (missingPoints.length) {
+      issues.push({ code: 'knowledge_gap', level: 'warning', message: `蓝图知识点未覆盖：${missingPoints.join('、')}。` });
+    }
+    return {
+      ok: !issues.some((issue) => issue.level === 'error'),
+      totalPoints: paper.totalPoints,
+      expectedPoints: requestedPoints,
+      itemCount: paper.items.length,
+      issues,
+      typeCoverage,
+      knowledgeCoverage: { requested: requestedPoints2, covered, missing: missingPoints },
+    };
+  }
+
+  async exportPaper(id: string, destinationRoot?: string): Promise<PaperExportResult> {
+    const paper = await this.getPaperOrThrow(id);
+    if (paper.items.length === 0) throw new Error('试卷还没有题目，无法导出');
+    const directory = destinationRoot?.trim() || this.resolveInsideDataRoot('exports', 'papers');
+    const paperMd = this.buildPaperMarkdown(paper);
+    const answerSheetMd = this.buildAnswerSheetMarkdown(paper);
+    const analysisMd = this.buildPaperAnalysisMarkdown(paper);
+    const paperArtifact = await this.exportDocumentArtifact({
+      artifactId: `${paper.id}_paper`,
+      title: `${paper.title}（试卷）`,
+      type: 'markdown',
+      fileName: `${paper.title}-试卷.md`,
+      contentMd: paperMd,
+      description: '试卷正文（不含答案）。',
+      destinationRoot: directory,
+    });
+    const answerSheetArtifact = await this.exportDocumentArtifact({
+      artifactId: `${paper.id}_answer_sheet`,
+      title: `${paper.title}（答题纸）`,
+      type: 'markdown',
+      fileName: `${paper.title}-答题纸.md`,
+      contentMd: answerSheetMd,
+      description: '答题纸（题号与作答空位）。',
+      destinationRoot: directory,
+    });
+    const analysisArtifact = await this.exportDocumentArtifact({
+      artifactId: `${paper.id}_analysis`,
+      title: `${paper.title}（解析）`,
+      type: 'markdown',
+      fileName: `${paper.title}-解析.md`,
+      contentMd: analysisMd,
+      description: '参考答案与解析。',
+      destinationRoot: directory,
+    });
+    return { paper: paperArtifact, answerSheet: answerSheetArtifact, analysis: analysisArtifact };
+  }
+
+  private async getPaperBlueprintOrThrow(id: string): Promise<PaperBlueprint> {
+    const blueprint = await this.getPaperBlueprint(id);
+    if (!blueprint) throw new Error('组卷蓝图不存在');
+    return blueprint;
+  }
+
+  private async getPaperOrThrow(id: string): Promise<Paper> {
+    const paper = await this.getPaper(id);
+    if (!paper) throw new Error('试卷不存在');
+    return paper;
+  }
+
+  private async getPaperItemOrThrow(id: string): Promise<PaperItem & { paperId: string }> {
+    const row = (await this.all(`SELECT * FROM paper_items WHERE id = ?`, [id]))[0];
+    if (!row) throw new Error('试卷题目不存在');
+    return { ...this.mapPaperItem(row), paperId: String(row.paper_id) };
+  }
+
+  private normalizePaperTypeSpecs(specs: PaperTypeSpec[]): PaperTypeSpec[] {
+    const normalized: PaperTypeSpec[] = [];
+    for (const spec of specs) {
+      const questionType = String(spec?.questionType ?? '').trim().slice(0, 40);
+      const count = Math.max(0, Math.min(Math.trunc(spec?.count ?? 0), 100));
+      const pointsPerQuestion = Math.max(0, Math.min(Math.trunc(spec?.pointsPerQuestion ?? 0), 200));
+      if (!questionType || count === 0) continue;
+      const existing = normalized.find((entry) => entry.questionType === questionType);
+      if (existing) {
+        existing.count += count;
+      } else {
+        normalized.push({ questionType, count, pointsPerQuestion });
+      }
+    }
+    if (normalized.length === 0) throw new Error('蓝图至少需要一个题型配置');
+    if (normalized.length > 12) throw new Error('题型种类最多 12 个');
+    return normalized;
+  }
+
+  private normalizePaperDifficultyMix(mix?: PaperDifficultyMix | null): PaperDifficultyMix | null {
+    if (!mix) return null;
+    const easy = Math.max(0, Math.min(Math.trunc(mix.easy ?? 0), 100));
+    const medium = Math.max(0, Math.min(Math.trunc(mix.medium ?? 0), 100));
+    const hard = Math.max(0, Math.min(Math.trunc(mix.hard ?? 0), 100));
+    if (easy + medium + hard === 0) return null;
+    return { easy, medium, hard };
+  }
+
+  private async recallPaperItems(blueprint: PaperBlueprint) {
+    const usedQuestionIds = new Set<string>();
+    const items: Array<{
+      questionId: string;
+      sourceKind: QuestionBankItem['sourceKind'];
+      questionType: string;
+      difficulty: PaperItem['difficulty'];
+      knowledgePoint: string;
+      stem: string;
+      answer: string;
+      analysis: string;
+      points: number;
+    }> = [];
+    const missing: Array<{ questionType: string; requested: number; found: number }> = [];
+    for (const spec of blueprint.typeSpecs) {
+      for (const difficulty of this.paperDifficultySequence(spec.count, blueprint.difficultyMix)) {
+        if (items.filter((item) => item.questionType === spec.questionType).length >= spec.count) break;
+        const candidate = await this.pickPaperCandidate(blueprint, spec, difficulty, usedQuestionIds);
+        if (!candidate) continue;
+        usedQuestionIds.add(candidate.id);
+        items.push({
+          questionId: candidate.id,
+          sourceKind: candidate.sourceKind,
+          questionType: spec.questionType,
+          difficulty: candidate.difficulty,
+          knowledgePoint: candidate.knowledgePoint,
+          stem: candidate.stem,
+          answer: candidate.answer,
+          analysis: candidate.analysis,
+          points: spec.pointsPerQuestion,
+        });
+      }
+      const found = items.filter((item) => item.questionType === spec.questionType).length;
+      if (found < spec.count) missing.push({ questionType: spec.questionType, requested: spec.count, found });
+    }
+    return { items, missing };
+  }
+
+  private paperDifficultySequence(count: number, mix: PaperDifficultyMix | null): Array<PaperItem['difficulty']> {
+    if (!mix) return Array.from({ length: count }, () => 'any' as unknown as PaperItem['difficulty']);
+    const total = mix.easy + mix.medium + mix.hard;
+    const easyTarget = Math.round((mix.easy / total) * count);
+    const mediumTarget = Math.round((mix.medium / total) * count);
+    const hardTarget = Math.max(0, count - easyTarget - mediumTarget);
+    const sequence: Array<PaperItem['difficulty']> = [
+      ...Array.from({ length: easyTarget }, () => 'easy' as const),
+      ...Array.from({ length: mediumTarget }, () => 'medium' as const),
+      ...Array.from({ length: hardTarget }, () => 'hard' as const),
+    ];
+    // Fallback rounds let the recall continue when a difficulty bucket is empty.
+    return [...sequence, ...Array.from({ length: count }, () => 'medium' as const), ...Array.from({ length: count }, () => 'easy' as const), ...Array.from({ length: count }, () => 'hard' as const)];
+  }
+
+  private async pickPaperCandidate(
+    blueprint: PaperBlueprint,
+    spec: PaperTypeSpec,
+    difficulty: PaperItem['difficulty'],
+    usedQuestionIds: Set<string>,
+  ): Promise<QuestionBankItem | null> {
+    const clauses = [`question_type = ?`];
+    const params: SqlValue[] = [spec.questionType];
+    if (blueprint.subject) {
+      clauses.push('subject = ?');
+      params.push(blueprint.subject);
+    }
+    if (difficulty === 'easy' || difficulty === 'medium' || difficulty === 'hard') {
+      clauses.push('difficulty = ?');
+      params.push(difficulty);
+    }
+    if (blueprint.sourcePreference !== 'any') {
+      clauses.push('source_kind = ?');
+      params.push(blueprint.sourcePreference);
+    }
+    const rows = await this.all(
+      `SELECT * FROM question_bank_items WHERE ${clauses.join(' AND ')} ORDER BY updated_at DESC, id ASC LIMIT 200`,
+      params,
+    );
+    const candidates = rows.map((row) => this.mapQuestionBankItem(row));
+    const preferred = blueprint.knowledgePoints.length
+      ? candidates.filter((candidate) => blueprint.knowledgePoints.includes(candidate.knowledgePoint))
+      : [];
+    const ordered = [...preferred, ...candidates.filter((candidate) => !preferred.includes(candidate))];
+    return ordered.find((candidate) => !usedQuestionIds.has(candidate.id)) ?? null;
+  }
+
+  private mapPaperBlueprint(row: Row): PaperBlueprint {
+    const typeSpecs = jsonUnknownArray(row.type_specs_json)
+      .map((entry) => {
+        const spec = entry as Record<string, unknown>;
+        return {
+          questionType: String(spec.questionType ?? ''),
+          count: Number(spec.count ?? 0),
+          pointsPerQuestion: Number(spec.pointsPerQuestion ?? 0),
+        };
+      })
+      .filter((spec) => spec.questionType && spec.count > 0);
+    const mixRaw = String(row.difficulty_mix_json ?? '');
+    let difficultyMix: PaperDifficultyMix | null = null;
+    if (mixRaw) {
+      try {
+        const parsed = JSON.parse(mixRaw) as Record<string, unknown>;
+        difficultyMix = { easy: Number(parsed.easy ?? 0), medium: Number(parsed.medium ?? 0), hard: Number(parsed.hard ?? 0) };
+      } catch {
+        difficultyMix = null;
+      }
+    }
+    return {
+      id: String(row.id),
+      title: String(row.title ?? ''),
+      subject: String(row.subject ?? ''),
+      grade: String(row.grade ?? ''),
+      textbookVersion: String(row.textbook_version ?? ''),
+      scope: String(row.scope ?? ''),
+      knowledgePoints: jsonUnknownArray(row.knowledge_points_json).map((point) => String(point)).filter(Boolean),
+      typeSpecs,
+      difficultyMix,
+      totalPoints: Number(row.total_points ?? 0),
+      durationMinutes: Number(row.duration_minutes ?? 0),
+      sourcePreference: (String(row.source_preference ?? 'any') === 'local_bank' || String(row.source_preference ?? 'any') === 'teacher_resource')
+        ? String(row.source_preference) as PaperBlueprint['sourcePreference']
+        : 'any',
+      status: String(row.status ?? 'active') === 'archived' ? 'archived' : 'active',
+      version: Number(row.version ?? 1),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private mapPaperItem(row: Row): PaperItem {
+    const difficulty = normalizeDifficulty(row.difficulty);
+    const sourceKind = String(row.source_kind ?? 'local_bank');
+    return {
+      id: String(row.id),
+      paperId: String(row.paper_id ?? ''),
+      orderIndex: Number(row.order_index ?? 0),
+      questionId: String(row.question_id ?? ''),
+      sourceKind: (sourceKind === 'teacher_resource' || sourceKind === 'generated') ? sourceKind : 'local_bank',
+      questionType: String(row.question_type ?? ''),
+      difficulty,
+      knowledgePoint: String(row.knowledge_point ?? ''),
+      stem: String(row.stem ?? ''),
+      answer: String(row.answer ?? ''),
+      analysis: String(row.analysis ?? ''),
+      points: Number(row.points ?? 0),
+      locked: Number(row.locked ?? 0) === 1,
+      teacherEdited: Number(row.teacher_edited ?? 0) === 1,
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private async mapPaperWithItems(row: Row): Promise<Paper> {
+    const paperId = String(row.id);
+    const itemRows = await this.all(
+      `SELECT * FROM paper_items WHERE paper_id = ? ORDER BY order_index ASC, created_at ASC`,
+      [paperId],
+    );
+    const items = itemRows.map((itemRow) => this.mapPaperItem(itemRow));
+    return {
+      id: paperId,
+      blueprintId: String(row.blueprint_id ?? ''),
+      studentId: String(row.student_id ?? ''),
+      title: String(row.title ?? ''),
+      subject: String(row.subject ?? ''),
+      status: String(row.status ?? 'draft') === 'ready' ? 'ready' : 'draft',
+      totalPoints: items.reduce((sum, item) => sum + item.points, 0),
+      items,
+      version: Number(row.version ?? 1),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+    };
+  }
+
+  private buildPaperMarkdown(paper: Paper): string {
+    const lines = [`# ${paper.title}`, ''];
+    if (paper.subject || paper.items.length) {
+      lines.push(`学科：${paper.subject || '未设置'}｜题目数：${paper.items.length}｜总分：${paper.totalPoints}`, '');
+    }
+    lines.push('---', '');
+    let currentType = '';
+    let number = 0;
+    for (const item of paper.items) {
+      if (item.questionType && item.questionType !== currentType) {
+        currentType = item.questionType;
+        lines.push('', `## ${currentType}`, '');
+      }
+      number += 1;
+      lines.push(`**${number}.** （${item.points} 分）${item.stem}`, '');
+      lines.push('', '');
+    }
+    return lines.join('\n');
+  }
+
+  private buildAnswerSheetMarkdown(paper: Paper): string {
+    const lines = [`# ${paper.title} 答题纸`, ''];
+    if (paper.items.length) {
+      lines.push(`题目数：${paper.items.length}｜总分：${paper.totalPoints}`, '', '---', '');
+    }
+    paper.items.forEach((item, index) => {
+      lines.push(`**${index + 1}.** （${item.points} 分）`, '', '作答：', '', '');
+    });
+    return lines.join('\n');
+  }
+
+  private buildPaperAnalysisMarkdown(paper: Paper): string {
+    const lines = [`# ${paper.title} 参考答案与解析`, ''];
+    paper.items.forEach((item, index) => {
+      lines.push(`## ${index + 1}. ${item.knowledgePoint || item.questionType || '题目'}`, '');
+      lines.push(`**题干**：${item.stem}`, '');
+      lines.push(`**答案**：${item.answer || '（缺少答案，请教师补充）'}`, '');
+      if (item.analysis) lines.push(`**解析**：${item.analysis}`, '');
+      lines.push(`> 来源：${item.sourceKind}${item.questionId ? `｜题目 ID：${item.questionId}` : ''}${item.teacherEdited ? '｜教师已修改' : ''}`, '');
+    });
+    return lines.join('\n');
+  }
+
+  async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {
+    const trimmed = keyword.trim();
     const boundedLimit = Math.max(1, Math.min(Math.trunc(limit), 20));
     if (!trimmed) {
       return (await this.all(

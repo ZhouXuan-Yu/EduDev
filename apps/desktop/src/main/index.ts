@@ -43,6 +43,9 @@ import type {
   XiazhiRunMutationAction,
   XiazhiRunMutationResult,
   ExerciseSetProposeInput,
+  PaperBlueprintInput,
+  PaperCreateInput,
+  PaperItemUpdateInput,
 } from '../shared/contracts';
 import { routeAiPrompt } from './ai-harness/router';
 import { runAiAgentLoop } from './ai-harness/agent-loop';
@@ -1916,6 +1919,18 @@ app.whenReady().then(async () => {
   ipcMain.handle('teachingBook:listPatches', (_event, id: string) => store.listTeachingBookPatches(id));
   ipcMain.handle('exerciseSets:list', (_event, studentId: string) => store.listExerciseSets(studentId));
   ipcMain.handle('exerciseSets:proposeFromQuestions', (_event, input: ExerciseSetProposeInput) => store.proposeExerciseSetFromQuestions(input));
+  ipcMain.handle('papers:listBlueprints', (_event, includeArchived = false) => store.listPaperBlueprints(includeArchived));
+  ipcMain.handle('papers:getBlueprint', (_event, id: string) => store.getPaperBlueprint(id));
+  ipcMain.handle('papers:createBlueprint', (_event, input: PaperBlueprintInput) => store.createPaperBlueprint(input));
+  ipcMain.handle('papers:updateBlueprint', (_event, id: string, version: number, input: PaperBlueprintInput) => store.updatePaperBlueprint(id, version, input));
+  ipcMain.handle('papers:archiveBlueprint', (_event, id: string, version: number) => store.archivePaperBlueprint(id, version));
+  ipcMain.handle('papers:create', (_event, input: PaperCreateInput) => store.createPaperFromBlueprint(input));
+  ipcMain.handle('papers:list', (_event, limit: number) => store.listPapers(limit));
+  ipcMain.handle('papers:get', (_event, id: string) => store.getPaper(id));
+  ipcMain.handle('papers:updateItem', (_event, input: PaperItemUpdateInput) => store.updatePaperItem(input));
+  ipcMain.handle('papers:replaceItem', (_event, paperId: string, itemId: string, questionId: string) => store.replacePaperItem(paperId, itemId, questionId));
+  ipcMain.handle('papers:validate', (_event, id: string) => store.validatePaper(id));
+  ipcMain.handle('papers:export', (_event, id: string, destinationRoot?: string) => store.exportPaper(id, destinationRoot));
   ipcMain.handle('aiConfirmations:list', (_event, status = 'pending') => store.listAiConfirmations(status));
   ipcMain.handle('aiConfirmations:confirm', (_event, input: AiConfirmationConfirmInput) => store.confirmAiConfirmation(input));
   ipcMain.handle('aiConfirmations:reject', (_event, id: string) => store.rejectAiConfirmation(id));
