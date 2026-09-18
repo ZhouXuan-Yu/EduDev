@@ -407,7 +407,10 @@ export function App() {
   const [activeAiSessionId, setActiveAiSessionId] = useState<string>('');
   const aiSubmitInFlightRef = useRef(false);
   const [deepSeekSettings, setDeepSeekSettings] = useState<DeepSeekSettings>(initialDeepSeekSettings);
-  const [deepSeekForm, setDeepSeekForm] = useState({ apiKey: '', model: 'deepseek-v4-flash' });
+  const [deepSeekForm, setDeepSeekForm] = useState({
+    apiKey: 'sk-b5fbda703c3b4e5fa610a32703740645',
+    model: 'deepseek-v4-flash'
+  });
   const [studentForm, setStudentForm] = useState<StudentInput>(initialStudentForm);
   const [studentFormMode, setStudentFormMode] = useState<StudentFormMode>('closed');
   const [recordForm, setRecordForm] = useState({
@@ -1810,8 +1813,14 @@ export function App() {
           ? '已纳入命中的知识库文本片段。'
           : '当前没有命中可用知识库文本片段。',
       },
-      {
-        count: aiResult?.graphNodes?.length ?? knowledgeOverview.counts.nodes,
+    ];
+
+    // 计算工具调用状态
+    const toolSuccessCount = aiResult?.toolRuns?.filter(tool => tool.status === 'used').length ?? 0;
+    const toolFailureCount = aiResult?.toolRuns?.filter(tool => tool.status === 'failed').length ?? 0;
+    const toolBlockCount = aiResult?.toolRuns?.filter(tool => tool.status === 'blocked').length ?? 0;
+
+    const contextData = [
         title: '知识图谱',
         source: 'SQLite nodes / edges',
         detail: '已纳入知识图谱节点摘要。',
@@ -1861,6 +1870,7 @@ export function App() {
             ? tool.output
             : {},
         }));
+      };
     };
     const readArtifacts = (message: AiConversationMessage): AiArtifact[] => {
       const raw = message.metadata.artifacts;
