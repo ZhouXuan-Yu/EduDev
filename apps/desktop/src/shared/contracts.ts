@@ -956,6 +956,43 @@ export type VectorIndexBuildResult =
   | { ok: true; indexedTotal: number; indexedCount: number; model: string; dims: number; pendingChunks: number }
   | { ok: false; code: string; message: string; indexedTotal: number; pendingChunks: number };
 
+export type ParseJobStatus = 'queued' | 'running' | 'partial_failed' | 'ready' | 'cancelled' | 'failed';
+
+export type ParseJobItemStatus = 'queued' | 'succeeded' | 'failed' | 'cancelled';
+
+export type ParseJobItem = {
+  id: string;
+  jobId: string;
+  resourceId: string;
+  status: ParseJobItemStatus;
+  errorMessage: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type ParseJob = {
+  id: string;
+  status: ParseJobStatus;
+  totalResources: number;
+  processedResources: number;
+  succeededResources: number;
+  failedResources: number;
+  cancelRequested: boolean;
+  lastError: string;
+  createdAt: string;
+  updatedAt: string;
+  completedAt: string;
+  items: ParseJobItem[];
+};
+
+export type ParseResourceOutcome =
+  | { ok: true; text: string; engine: string; engineVersion: string; pageCount: number }
+  | { ok: false; code: string; message: string };
+
+export type ParseProvider = {
+  parseResource: (resourceId: string) => Promise<ParseResourceOutcome>;
+};
+
 export type ExportStudentResult = {
   exportPath: string;
   fileCount: number;

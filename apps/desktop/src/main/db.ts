@@ -374,6 +374,35 @@ export const schemaMigrations: DbMigration[] = [
       await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_paper_versions_no ON paper_versions(paper_id, version_no)`);
     },
   },
+  {
+    version: 9,
+    name: 'create_parse_jobs',
+    up: async (db) => {
+      await db.run(`CREATE TABLE IF NOT EXISTS parse_jobs (
+        id TEXT PRIMARY KEY,
+        status TEXT NOT NULL,
+        total_resources INTEGER NOT NULL DEFAULT 0,
+        processed_resources INTEGER NOT NULL DEFAULT 0,
+        succeeded_resources INTEGER NOT NULL DEFAULT 0,
+        failed_resources INTEGER NOT NULL DEFAULT 0,
+        cancel_requested INTEGER NOT NULL DEFAULT 0,
+        last_error TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        completed_at TEXT NOT NULL DEFAULT ''
+      )`);
+      await db.run(`CREATE TABLE IF NOT EXISTS parse_job_items (
+        id TEXT PRIMARY KEY,
+        job_id TEXT NOT NULL,
+        resource_id TEXT NOT NULL,
+        status TEXT NOT NULL,
+        error_message TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )`);
+      await db.run(`CREATE INDEX IF NOT EXISTS idx_parse_job_items_job ON parse_job_items(job_id, status)`);
+    },
+  },
 ];
 const FTS_MATCH_LIMIT = 500;
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
@@ -1291,6 +1320,7 @@ export class OmniEduStore {
     private dataRoot: string,
     private secretCrypto?: SecretCryptoProvider,
     private vectorSearch?: VectorSearchProvider,
+    private parseProvider?: ParseProvider,
   ) {
     this.dbPath = join(dataRoot, 'app.db');
   }
