@@ -34,6 +34,10 @@ import { ChatMessage } from './heroui-pro/components/chat-message';
 import { Markdown } from './heroui-pro/components/markdown';
 import { PromptInput } from './heroui-pro/components/prompt-input';
 import { PromptSuggestion } from './heroui-pro/components/prompt-suggestion';
+import { EnhancedPromptInput } from './heroui-pro/components/enhanced-prompt-input';
+import { AiChatMessageAssistant } from './heroui-pro/components/chat-message/ai-chat-message-assistant';
+import { ContextIndicator, ToolStatusIndicator } from './heroui-pro/components/context-indicator';
+import { EnhancedChainOfThought } from './heroui-pro/components/chain-of-thought/enhanced-chain-of-thought';
 import { MistakesWorkspace } from './components/MistakesWorkspace';
 import { KnowledgeImportPanel } from './components/KnowledgeImportPanel';
 import { KnowledgeResourcePanel } from './components/KnowledgeResourcePanel';
@@ -1958,64 +1962,55 @@ export function App() {
                   const messageArtifacts = readArtifacts(message);
                   const messageRunId = String(message.metadata.agentRunId ?? '');
                   const messageOk = message.metadata.ok === true;
+
                   return (
-                    <ChatMessage.Assistant key={message.id}>
-                      <ChatMessage.Avatar show alt="Omni-Edu AI" fallback="AI" />
-                      <ChatMessage.Body>
-                        {thoughtSteps.length ? (
-                          <ChainOfThought defaultExpanded>
-                            <ChainOfThought.Trigger>思考过程摘要</ChainOfThought.Trigger>
-                            <ChainOfThought.Content>
-                              <ChainOfThought.Steps>
-                                {thoughtSteps.map((step) => (
-                                  <ChainOfThought.Step key={step.label} label={step.label}>
-                                    {step.detail}
-                                  </ChainOfThought.Step>
-                                ))}
-                              </ChainOfThought.Steps>
-                            </ChainOfThought.Content>
-                          </ChainOfThought>
-                        ) : null}
-
-                        <div data-testid={messageOk ? 'ai-output-success' : 'ai-output-error'}>
-                          <ChatMessage.Content>
-                            <Markdown>{message.content}</Markdown>
-                          </ChatMessage.Content>
+                    <AiChatMessageAssistant
+                      key={message.id}
+                      message={{
+                        id: message.id,
+                        role: 'assistant',
+                        content: message.content,
+                        metadata: {
+                          thoughtSteps: thoughtSteps,
+                          toolRuns: message.metadata.toolRuns ?? [],
+                          agentRunId: message.metadata.agentRunId,
+                          ok: message.metadata.ok,
+                          model: message.metadata.model,
+                          errorMessage: message.metadata.errorMessage,
+                        },
+                      }}
+                    >
+                      {messageArtifacts.length ? (
+                        <div className="ai-output-links" aria-label="生成的文档">
+                          {messageArtifacts.map((artifact) => (
+                            <button
+                              className="ai-output-link"
+                              key={artifact.id}
+                              onClick={() => setActiveAiArtifact(artifact)}
+                              data-testid={`ai-artifact-open-${artifact.id}`}
+                            >
+                              {artifact.title}
+                            </button>
+                          ))}
                         </div>
+                      ) : null}
 
-                        {messageArtifacts.length ? (
-                          <div className="ai-output-links" aria-label="生成的文档">
-                            {messageArtifacts.map((artifact) => (
-                              <button
-                                className="ai-output-link"
-                                key={artifact.id}
-                                onClick={() => setActiveAiArtifact(artifact)}
-                                data-testid={`ai-artifact-open-${artifact.id}`}
-                              >
-                                {artifact.title}
-                              </button>
-                            ))}
-                          </div>
-                        ) : null}
-
-                        {messageRunId ? (
-                          <div className="ai-run-actions" aria-label="运行变更">
-                            {!messageOk ? (
-                              <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'retry')}>
-                                重试本轮
-                              </button>
-                            ) : null}
-                            <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'branch')}>
-                              创建分支
+                      {messageRunId ? (
+                        <div className="ai-run-actions" aria-label="运行变更">
+                          {!messageOk ? (
+                            <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'retry')}>
+                              重试本轮
                             </button>
-                            <button className="ghost-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'regenerate')}>
-                              重新生成
-                            </button>
-                          </div>
-                        ) : null}
-
-                      </ChatMessage.Body>
-                    </ChatMessage.Assistant>
+                          ) : null}
+                          <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'branch')}>
+                            创建分支
+                          </button>
+                          <button className="ghost-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'regenerate')}>
+                            重新生成
+                          </button>
+                        </div>
+                      ) : null}
+                    </AiChatMessageAssistant>
                   );
                 })}
 
@@ -2080,18 +2075,13 @@ export function App() {
                   <ChatMessage.Assistant>
                     <ChatMessage.Avatar show alt="Omni-Edu AI" fallback="AI" />
                     <ChatMessage.Body>
-                      <ChainOfThought defaultExpanded isStreaming>
-                        <ChainOfThought.Trigger>正在组织上下文</ChainOfThought.Trigger>
-                        <ChainOfThought.Content>
-                          <ChainOfThought.Steps>
-                            {liveThoughtSteps.map((step) => (
-                              <ChainOfThought.Step key={step.label} label={step.label}>
-                                {step.detail}
-                              </ChainOfThought.Step>
-                            ))}
-                          </ChainOfThought.Steps>
-                        </ChainOfThought.Content>
-                      </ChainOfThought>
+                      <EnhancedChainOfThought
+                        defaultExpanded={true}
+                        isStreaming={true}
+                        steps={liveThoughtSteps}
+                        title="正在组织上下文"
+                        subtitle={`${liveThoughtSteps.length} 个思考步骤`}
+                      />
                       <ChatMessage.Content>
                         <p>正在根据当前上下文生成回复。</p>
                       </ChatMessage.Content>
@@ -2152,16 +2142,25 @@ export function App() {
             }}
           >
             <ChatAttachmentInput.Dropzone className="ai-composer-block">
-            <PromptInput
-              layout="inline"
+            <EnhancedPromptInput
               value={aiPrompt}
               onSubmit={runAiConsole}
               onValueChange={setAiPrompt}
               status={aiRunning ? 'streaming' : 'ready'}
+              contextSources={contextItems}
+              toolStatus={{
+                successful: toolSuccessCount,
+                failed: toolFailureCount,
+                blocked: toolBlockCount,
+              }}
+              suggestions={aiPromptSuggestions}
+              placeholder="输入要生成的复盘、练习、PDF 或 Word 文档需求..."
+              disabled={aiRunning}
+              maxChars={4000}
             >
-              <PromptInput.Shell>
+              <EnhancedPromptInput.Shell>
                 {activeAttachments.length ? (
-                  <PromptInput.Attachments>
+                  <EnhancedPromptInput.Attachments>
                     {activeAttachments.slice(0, 4).map((attachment) => (
                       <ChatAttachment
                         key={attachment.id}
@@ -2175,19 +2174,19 @@ export function App() {
                     {activeAttachments.length > 4 ? (
                       <span className="ai-attachment-overflow">+{activeAttachments.length - 4}</span>
                     ) : null}
-                  </PromptInput.Attachments>
+                  </EnhancedPromptInput.Attachments>
                 ) : null}
-                <PromptInput.Content>
-                  <PromptInput.TextArea data-testid="ai-prompt-input" placeholder="输入要生成的复盘、练习、PDF 或 Word 文档需求" />
-                </PromptInput.Content>
-                <PromptInput.Toolbar>
-                  <PromptInput.ToolbarStart>
+                <EnhancedPromptInput.Content>
+                  <EnhancedPromptInput.TextArea data-testid="ai-prompt-input" placeholder="输入要生成的复盘、练习、PDF 或 Word 文档需求" />
+                </EnhancedPromptInput.Content>
+                <EnhancedPromptInput.Toolbar>
+                  <EnhancedPromptInput.ToolbarStart>
                     <ChatAttachmentInput.Trigger className="prompt-attachment-trigger" aria-label="选择附件元数据">
                       <UploadCloud size={16} />
                     </ChatAttachmentInput.Trigger>
-                  </PromptInput.ToolbarStart>
-                  <PromptInput.ToolbarEnd>
-                    <PromptInput.Send
+                  </EnhancedPromptInput.ToolbarStart>
+                  <EnhancedPromptInput.ToolbarEnd>
+                    <EnhancedPromptInput.Send
                       aria-label="运行 DeepSeek"
                       onClick={(event) => {
                         event.preventDefault();
@@ -2195,22 +2194,26 @@ export function App() {
                       }}
                     >
                       <Sparkles size={16} />
-                    </PromptInput.Send>
-                  </PromptInput.ToolbarEnd>
-                </PromptInput.Toolbar>
-              </PromptInput.Shell>
-            </PromptInput>
-              <div className="ai-composer-footer">
-                <div className="ai-context-strip">
-                  {contextItems.map((item) => (
-                    <button className="ai-context-chip" key={item.title} title={item.detail}>
-                      <strong>{item.count}</strong>
-                      <span>{item.title}</span>
-                      <em>{item.source}</em>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                    </EnhancedPromptInput.Send>
+                  </EnhancedPromptInput.ToolbarEnd>
+                </EnhancedPromptInput.Toolbar>
+              </EnhancedPromptInput.Shell>
+            </EnhancedPromptInput>
+            <div className="ai-composer-footer">
+              <ContextIndicator
+                sources={contextItems}
+                isLoading={aiRunning}
+                title="当前上下文"
+              />
+              {toolSuccessCount > 0 || toolFailureCount > 0 || toolBlockCount > 0 ? (
+                <ToolStatusIndicator
+                  successful={toolSuccessCount}
+                  failed={toolFailureCount}
+                  blocked={toolBlockCount}
+                  loading={aiRunning}
+                />
+              ) : null}
+            </div>
             </ChatAttachmentInput.Dropzone>
           </ChatAttachmentInput>
         </section>
