@@ -25,6 +25,8 @@
     "test:vector": "node scripts/vector-smoke.mjs",
     "test:knowledge-search-ui": "node scripts/knowledge-search-electron-smoke.mjs",
     "test:error-review-write": "node scripts/error-review-write-smoke.mjs",
+    "test:parse-queue": "node scripts/parse-queue-smoke.mjs",
+    "test:ai-paper-candidates": "node scripts/ai-paper-candidates-smoke.mjs",
     "test:ai-structured-reply": "tsc --noEmit && node scripts/ai-structured-reply-smoke.mjs",
     "test:ai-education-grader": "tsc --noEmit && node scripts/ai-education-grader-smoke.mjs",
     "test:ai-exercise-set": "tsc --noEmit && node scripts/ai-exercise-set-smoke.mjs",

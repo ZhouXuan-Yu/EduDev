@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type {
+  AiGeneratedPaperCandidate,
   DocumentArtifactExportResult,
   Paper,
   PaperBlueprint,
   PaperBlueprintInput,
+  PaperCandidateGenerateResult,
   PaperItem,
   PaperTypeSpec,
   PaperValidationResult,
@@ -55,6 +57,11 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
   const [versionPreview, setVersionPreview] = useState<PaperVersionDetail | null>(null);
   const [pendingRestoreId, setPendingRestoreId] = useState('');
   const [versionBusy, setVersionBusy] = useState(false);
+  const [candidatesBusy, setCandidatesBusy] = useState(false);
+  const [candidateProposal, setCandidateProposal] = useState<PaperCandidateGenerateResult | null>(null);
+  const [candidateEdits, setCandidateEdits] = useState<Record<number, AiGeneratedPaperCandidate>>({});
+  const [candidateSelected, setCandidateSelected] = useState<Record<number, boolean>>({});
+  const [candidateConfirmBusy, setCandidateConfirmBusy] = useState(false);
 
   const selectedBlueprint = useMemo(
     () => blueprints.find((item) => item.id === selectedBlueprintId) ?? null,
@@ -395,6 +402,85 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
     }
   }
 
+  async function generateCandidates() {
+    if (!selectedPaper) return;
+    setCandidatesBusy(true);
+    setCandidateProposal(null);
+    setCandidateEdits({});
+    setCandidateSelected({});
+    try {
+      const result = await window.omniEdu?.generatePaperAiCandidates(selectedPaper.id);
+      if (!result) throw new Error('生成候选题目没有返回结果。');
+      const edits: Record<number, AiGeneratedPaperCandidate> = {};
+      const selected: Record<number, boolean> = {};
+      result.candidates.forEach((candidate, index) => {
+        edits[index] = candidate;
+        selected[index] = true;
+      });
+      setCandidateEdits(edits);
+      setCandidateSelected(selected);
+      setCandidateProposal(result);
+      showNotice(`已生成 ${result.candidates.length} 道候选题目（模型 ${result.model}），请复核后确认写入。`);
+    } catch (error) {
+      showError(error, '生成候选题目失败。');
+    } finally {
+      setCandidatesBusy(false);
+    }
+  }
+
+  function updateCandidate(index: number, patch: Partial<AiGeneratedPaperCandidate>) {
+    setCandidateEdits((current) => ({ ...current, [index]: { ...current[index], ...patch } }));
+  }
+
+  async function confirmCandidates() {
+    if (!candidateProposal) return;
+    const selectedList = candidateProposal.candidates
+      .map((candidate, index) => ({ candidate, index }))
+      .filter(({ index }) => candidateSelected[index])
+      .map(({ candidate, index }) => ({ ...(candidateEdits[index] ?? candidate), index }));
+    if (!selectedList.length) {
+      showError(null, '请至少勾选一道候选题目。');
+      return;
+    }
+    setCandidateConfirmBusy(true);
+    try {
+      const decision = await window.omniEdu?.confirmAiConfirmation({
+        id: candidateProposal.confirmation.id,
+        paperCandidatesEdit: { candidates: selectedList },
+      });
+      if (!decision?.readback?.paperCandidates) throw new Error('确认后未能读回候选题目写入。');
+      if (selectedPaper) {
+        const refreshed = await window.omniEdu?.getPaper(selectedPaper.id);
+        if (refreshed) setPapers((current) => current.map((paper) => (paper.id === refreshed.id ? refreshed : paper)));
+      }
+      setCandidateProposal(null);
+      setCandidateEdits({});
+      setCandidateSelected({});
+      setValidation(null);
+      showNotice(`已写入 ${selectedList.length} 道 AI 生成题目（题库与试卷，来源已标注 ai_generated）。`);
+    } catch (error) {
+      showError(error, '确认写入候选题目失败。');
+    } finally {
+      setCandidateConfirmBusy(false);
+    }
+  }
+
+  async function rejectCandidates() {
+    if (!candidateProposal) return;
+    setCandidateConfirmBusy(true);
+    try {
+      await window.omniEdu?.rejectAiConfirmation(candidateProposal.confirmation.id);
+      setCandidateProposal(null);
+      setCandidateEdits({});
+      setCandidateSelected({});
+      showNotice('已拒绝本次 AI 候选题目；题库与试卷均未写入。');
+    } catch (error) {
+      showError(error, '拒绝候选题目失败。');
+    } finally {
+      setCandidateConfirmBusy(false);
+    }
+  }
+
   const sortedItems = selectedPaper ? [...selectedPaper.items].sort((a, b) => a.orderIndex - b.orderIndex) : [];
 
   return (
@@ -467,7 +553,7 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
         </div>
         <div className="paper-list" data-testid="paper-list">
           {papers.map((paper) => (
-            <button key={paper.id} className={paper.id === selectedPaperId ? 'active' : ''} onClick={() => { setSelectedPaperId(paper.id); setValidation(null); setExports({}); }} data-testid={`paper-card-${paper.id}`}>
+            <button key={paper.id} className={paper.id === selectedPaperId ? 'active' : ''} onClick={() => { setSelectedPaperId(paper.id); setValidation(null); setExports({}); setCandidateProposal(null); setCandidateEdits({}); setCandidateSelected({}); }} data-testid={`paper-card-${paper.id}`}>
               <strong>{paper.title}</strong>
               <span>{paper.items.length} 题 · {paper.totalPoints} 分 · v{paper.version}</span>
             </button>
@@ -481,6 +567,7 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
           <div className="panel-heading">
             <div><h3>{selectedPaper.title}</h3><p className="muted">{sortedItems.length} 道题 · 总分 {selectedPaper.totalPoints} · v{selectedPaper.version}；锁定的题目不能被换题。</p></div>
             <div className="toolbar-row">
+              <button className="secondary-action" onClick={() => void generateCandidates()} disabled={candidatesBusy || candidateConfirmBusy} data-testid="paper-ai-generate">{candidatesBusy ? '生成中…' : 'AI 生成候选题目'}</button>
               <button className="secondary-action" onClick={runValidation} data-testid="paper-validate">校验试卷</button>
               <button className="primary-action" onClick={exportPaperArtifacts} disabled={exporting} data-testid="paper-export">{exporting ? '导出中…' : '导出试卷 / 答题纸 / 解析'}</button>
             </div>
@@ -496,6 +583,43 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
                   ))}
                 </ul>
               ) : <p data-testid="paper-validation-clean">没有发现问题。</p>}
+            </div>
+          ) : null}
+          {candidateProposal ? (
+            <div className="paper-ai-candidates" data-testid="paper-ai-candidates">
+              <header className="panel-heading">
+                <div>
+                  <strong>AI 候选题目（{candidateProposal.candidates.length} 道）</strong>
+                  <span className="status-chip" data-testid="paper-ai-source">ai_generated · {candidateProposal.model}</span>
+                  <span className="muted" data-testid="paper-ai-gaps">{candidateProposal.gapSummary.length ? `缺口：${candidateProposal.gapSummary.join('；')}` : '按蓝图约束生成（无校验缺口）'}</span>
+                </div>
+              </header>
+              <p className="muted">生成内容仅作候选；教师可编辑、勾选，确认后才写入题库与试卷。</p>
+              {candidateProposal.candidates.map((candidate, index) => {
+                const draft = candidateEdits[index] ?? candidate;
+                return (
+                  <article className="paper-ai-candidate" key={index} data-testid={`paper-ai-candidate-${index}`}>
+                    <header>
+                      <label className="checkbox-label"><input type="checkbox" checked={candidateSelected[index] !== false} onChange={(event) => setCandidateSelected((current) => ({ ...current, [index]: event.target.checked }))} data-testid={`paper-ai-candidate-${index}-select`} />入选</label>
+                      <span className="status-chip">ai_generated</span>
+                      <span className="status-chip">第 {index + 1} 道</span>
+                    </header>
+                    <div className="form-grid compact-form-grid">
+                      <label>题型<input value={draft.questionType} onChange={(event) => updateCandidate(index, { questionType: event.target.value })} data-testid={`paper-ai-candidate-${index}-type`} /></label>
+                      <label>难度<select value={draft.difficulty} onChange={(event) => updateCandidate(index, { difficulty: event.target.value as AiGeneratedPaperCandidate['difficulty'] })} data-testid={`paper-ai-candidate-${index}-difficulty`}><option value="easy">易</option><option value="medium">中</option><option value="hard">难</option></select></label>
+                      <label>分值<input type="number" value={draft.points} onChange={(event) => updateCandidate(index, { points: Number(event.target.value) || 0 })} data-testid={`paper-ai-candidate-${index}-points`} /></label>
+                      <label className="full">知识点<input value={draft.knowledgePoint} onChange={(event) => updateCandidate(index, { knowledgePoint: event.target.value })} data-testid={`paper-ai-candidate-${index}-knowledge`} /></label>
+                      <label className="full">题干<textarea value={draft.stem} onChange={(event) => updateCandidate(index, { stem: event.target.value })} data-testid={`paper-ai-candidate-${index}-stem`} /></label>
+                      <label className="full">答案<textarea value={draft.answer} onChange={(event) => updateCandidate(index, { answer: event.target.value })} data-testid={`paper-ai-candidate-${index}-answer`} /></label>
+                      <label className="full">解析<textarea value={draft.analysis} onChange={(event) => updateCandidate(index, { analysis: event.target.value })} data-testid={`paper-ai-candidate-${index}-analysis`} /></label>
+                    </div>
+                  </article>
+                );
+              })}
+              <div className="toolbar-row">
+                <button className="primary-action" onClick={() => void confirmCandidates()} disabled={candidateConfirmBusy} data-testid="paper-ai-confirm">{candidateConfirmBusy ? '写入中…' : '确认写入题库与试卷'}</button>
+                <button className="danger-action" onClick={() => void rejectCandidates()} disabled={candidateConfirmBusy} data-testid="paper-ai-reject">拒绝</button>
+              </div>
             </div>
           ) : null}
           {Object.keys(exports).length ? (

@@ -12,7 +12,20 @@ export type ParsePage = {
 };
 
 export type ParseDocumentResult =
-  | { ok: true; engine: string; engineVersion: string; text: string; pages: ParsePage[]; truncated: boolean; title: string }
+  | {
+      ok: true;
+      engine: string;
+      engineVersion: string;
+      text: string;
+      pages: ParsePage[];
+      truncated: boolean;
+      title: string;
+      textLayer: 'full' | 'scan' | 'partial_scan';
+      ocrPages: number[];
+      ocrEngine: string;
+      ocrUnavailable: string;
+      ocrPageLimitReached: boolean;
+    }
   | { ok: false; code: string; message: string };
 
 export class ParseWorkerClient {
@@ -26,6 +39,7 @@ export class ParseWorkerClient {
       timeoutMs: 600_000,
       maxFrameBytes: 8_000_000,
       pythonModules: ['pypdf', 'docx', 'pptx'],
+      pythonOptionalModules: ['rapidocr', 'fitz'],
     });
   }
 
@@ -66,6 +80,11 @@ export class ParseWorkerClient {
       pages,
       truncated: response.truncated === true,
       title: String(response.title ?? ''),
+      textLayer: response.textLayer === 'scan' || response.textLayer === 'partial_scan' ? response.textLayer : 'full',
+      ocrPages: Array.isArray(response.ocrPages) ? response.ocrPages.map((page) => Number(page)).filter((page) => Number.isInteger(page) && page > 0) : [],
+      ocrEngine: String(response.ocrEngine ?? ''),
+      ocrUnavailable: String(response.ocrUnavailable ?? ''),
+      ocrPageLimitReached: response.ocrPageLimitReached === true,
     };
   }
 

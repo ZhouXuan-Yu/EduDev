@@ -1434,9 +1434,12 @@ export type AiModelToolJsonSchema = {
     maximum?: number;
     maxLength?: number;
     maxItems?: number;
+    minItems?: number;
     items?: {
       type: 'string' | 'object';
-      properties?: Record<string, { type: 'string'; enum?: string[]; maxLength?: number }>;
+      description?: string;
+      maxLength?: number;
+      properties?: Record<string, { type: 'string' | 'number' | 'boolean'; description?: string; enum?: string[]; maxLength?: number; minimum?: number; maximum?: number }>;
       required?: string[];
     };
   }>;
@@ -2020,7 +2023,7 @@ export type AiRegressionReportInput = {
 
 export type AiConfirmationStatus = 'pending' | 'confirmed' | 'rejected' | 'failed';
 
-export type AiConfirmationActionType = 'create_review_report' | 'save_exercise_set' | 'save_mastery_state' | 'save_error_review';
+export type AiConfirmationActionType = 'create_review_report' | 'save_exercise_set' | 'save_mastery_state' | 'save_error_review' | 'save_paper_candidates';
 
 export type AiErrorReviewItem = {
   recordId: string;
@@ -2050,6 +2053,61 @@ export type ErrorReviewWriteback = {
   window: { startDate: string; endDate: string };
 };
 
+export type AiGeneratedPaperCandidate = {
+  stem: string;
+  answer: string;
+  analysis: string;
+  questionType: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  knowledgePoint: string;
+  points: number;
+};
+
+export type AiPaperCandidatesPayload = {
+  paperId: string;
+  paperTitle: string;
+  blueprintVersion: number;
+  model: string;
+  gapSummary: string[];
+  candidates: AiGeneratedPaperCandidate[];
+};
+
+export type PaperCandidateGenerateResult = {
+  confirmation: AiConfirmationItem;
+  candidates: AiGeneratedPaperCandidate[];
+  gapSummary: string[];
+  model: string;
+};
+
+export type QuestionGeneratorContext = {
+  subject: string;
+  grade: string;
+  scope: string;
+  knowledgePoints: string[];
+  typeSpecs: PaperTypeSpec[];
+  difficultyMix: PaperDifficultyMix | null;
+  durationMinutes: number;
+  gaps: string[];
+  existingStems: string[];
+};
+
+export type QuestionGeneratorProvider = {
+  generatePaperCandidates: (context: QuestionGeneratorContext) => Promise<{ model: string; candidates: AiGeneratedPaperCandidate[] }>;
+};
+
+export type AiPaperCandidatesWriteback = {
+  paperId: string;
+  questionIds: string[];
+  paperItemIds: string[];
+};
+
+export type PaperCandidatesProposeInput = {
+  paperId: string;
+  model: string;
+  gapSummary?: string[];
+  candidates: AiGeneratedPaperCandidate[];
+};
+
 export type AiConfirmationPayload = {
   studentId: string;
   subject?: string;
@@ -2074,6 +2132,7 @@ export type AiConfirmationPayload = {
     modules: AiMasteryPathModule[];
   };
   errorReview?: AiErrorReviewPayload;
+  paperCandidates?: AiPaperCandidatesPayload;
 };
 
 export type AiConfirmationItem = {
@@ -2114,6 +2173,7 @@ export type AiConfirmationDecisionResult = {
     masteryPath?: AiMasteryPath;
     masteryAttempt?: { studentId: string; knowledgePointId: string; passed: boolean };
     errorReview?: ErrorReviewWriteback;
+    paperCandidates?: AiPaperCandidatesWriteback;
   };
 };
 
@@ -2121,9 +2181,14 @@ export type AiConfirmationExerciseSetEdit = {
   items: Array<{ stem: string; answer: string }>;
 };
 
+export type AiConfirmationPaperCandidatesEdit = {
+  candidates: Array<AiGeneratedPaperCandidate & { index: number }>;
+};
+
 export type AiConfirmationConfirmInput = {
   id: string;
   exerciseSetEdit?: AiConfirmationExerciseSetEdit;
+  paperCandidatesEdit?: AiConfirmationPaperCandidatesEdit;
 };
 
 export type AiConsoleArtifactRequest = {

@@ -2118,7 +2118,7 @@ export function App() {
                       <div className="ai-confirmation-title">
                         <FileText size={15} />
                         <strong>{item.title}</strong>
-                        <Badge tone="blue">{item.actionType === 'create_review_report' ? '复盘报告' : item.actionType === 'save_exercise_set' ? '三元题组' : item.actionType === 'save_mastery_state' ? '掌握度写入' : item.actionType}</Badge>
+                        <Badge tone="blue">{item.actionType === 'create_review_report' ? '复盘报告' : item.actionType === 'save_exercise_set' ? '三元题组' : item.actionType === 'save_mastery_state' ? '掌握度写入' : item.actionType === 'save_paper_candidates' ? '组卷候选题目' : item.actionType}</Badge>
                       </div>
                       <p>{item.description || '确认后才会写入本地数据。'}</p>
                       <blockquote>{item.previewMd.slice(0, 160)}{item.previewMd.length > 160 ? '…' : ''}</blockquote>

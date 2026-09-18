@@ -349,6 +349,7 @@ export async function recoverStructuredJsonCompletion(params: {
   model: string;
   messages: DeepSeekMessage[];
   signal: AbortSignal;
+  retryInstruction?: string;
 }): Promise<{ response: DeepSeekResponse; recovery: StructuredJsonRecovery }> {
   const reason = structuredJsonIssue(params.initial);
   const firstFinishReason = String(params.initial.choices?.[0]?.finish_reason ?? 'unknown');
@@ -357,14 +358,15 @@ export async function recoverStructuredJsonCompletion(params: {
   }
 
   const partial = params.initial.choices?.[0]?.message?.content?.trim() ?? '';
+  const defaultRetry = reason === 'length'
+    ? '上一条 JSON 因输出长度上限被截断。请压缩 answerMarkdown 和数组内容，只返回一个完整的 xiazhi.reply.v2 JSON object。不得调用工具或新增事实。'
+    : '上一条 JSON 模式返回了空 content。请重新返回一个完整的 xiazhi.reply.v2 JSON object。不得调用工具或新增事实。';
   const retryMessages: DeepSeekMessage[] = [
     ...params.messages,
     ...(partial ? [{ role: 'assistant' as const, content: partial.slice(-12_000) }] : []),
     {
       role: 'user',
-      content: reason === 'length'
-        ? '上一条 JSON 因输出长度上限被截断。请压缩 answerMarkdown 和数组内容，只返回一个完整的 xiazhi.reply.v2 JSON object。不得调用工具或新增事实。'
-        : '上一条 JSON 模式返回了空 content。请重新返回一个完整的 xiazhi.reply.v2 JSON object。不得调用工具或新增事实。',
+      content: params.retryInstruction ?? defaultRetry,
     },
   ];
   const response = await requestStructuredReplyRepair({

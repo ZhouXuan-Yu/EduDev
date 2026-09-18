@@ -311,6 +311,7 @@ function allowedToolsFor(policy: AiContextPolicy, route: AiIntentRoute) {
   if (policy.include.includes('teacher_knowledge') && ['knowledge_retrieval', 'lesson_design', 'report_draft'].includes(route)) tools.push('generate_research_outline');
   if (policy.include.includes('knowledge_graph') && ['knowledge_retrieval', 'lesson_design', 'report_draft'].includes(route)) tools.push('render_learning_mermaid');
   if (policy.include.includes('question_bank')) tools.push('search_similar_questions');
+  if (policy.include.includes('question_bank') && route === 'practice_design') tools.push('generate_paper_question_candidates');
   if (policy.include.includes('question_notebook')) tools.push('search_question_notebook');
   if (policy.include.includes('teaching_book')) tools.push('inspect_teaching_book', 'refresh_teaching_book_health', 'draft_teaching_book_patch', 'draft_teaching_book_selection_patch', 'draft_teaching_book_markdown');
   if (policy.include.includes('memory_trace')) tools.push('inspect_memory_trace');

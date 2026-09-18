@@ -969,6 +969,74 @@ app.whenReady().then(async () => {
         };
       },
     },
+    {
+      generatePaperCandidates: async (context) => {
+        const deepSeekSettings = await store.getDeepSeekRuntimeSettings();
+        if (!deepSeekSettings.apiKey) {
+          throw new Error('缺少 DeepSeek API Key。请在设置页保存 DeepSeek API 配置后再生成候选题目。');
+        }
+        const blueprintLines = [
+          `学科：${context.subject || '未设置'}｜年级：${context.grade || '未设置'}｜范围：${context.scope || '未设置'}`,
+          `知识点：${context.knowledgePoints.join('、') || '未标注'}`,
+          `题型配置：${context.typeSpecs.map((spec) => `${spec.questionType} ${spec.count} 道 × ${spec.pointsPerQuestion} 分`).join('；')}`,
+          context.difficultyMix ? `难度配比：易 ${context.difficultyMix.easy}% / 中 ${context.difficultyMix.medium}% / 难 ${context.difficultyMix.hard}%` : '',
+          `用时：${context.durationMinutes} 分钟`,
+        ].filter(Boolean).join('\n');
+        const gapLines = context.gaps.length
+          ? `\n需要填补的缺口：\n${context.gaps.map((gap) => `- ${gap}`).join('\n')}`
+          : '\n当前没有校验缺口，请按蓝图约束直接出题。';
+        const existingLines = context.existingStems.length
+          ? `\n试卷已有题目（新题不得重复或雷同）：\n${context.existingStems.map((stem) => `- ${stem.slice(0, 120)}`).join('\n')}`
+          : '';
+        const messages: DeepSeekMessage[] = [
+          {
+            role: 'system',
+            content: '你是资深教研出题助手。你只输出一个 JSON object：{"candidates":[...]}。candidates 是 1-8 道题的数组，每题含 stem(题干)、answer(答案)、analysis(解析)、questionType(题型)、difficulty(easy/medium/hard 之一)、knowledgePoint(知识点)、points(整数分值)。题干、答案、解析必须完整，解析要讲清解题思路。题干不得与已有题目重复或雷同。不得输出 JSON 以外的任何内容。',
+          },
+          {
+            role: 'user',
+            content: `请按以下组卷蓝图生成候选题目，优先填补缺口：\n${blueprintLines}${gapLines}${existingLines}\n\n直接返回 JSON object，不要调用工具，不要输出多余文字。`,
+          },
+        ];
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 90_000);
+        try {
+          const initial = await requestDeepSeekCompletion({
+            apiKey: deepSeekSettings.apiKey,
+            model: deepSeekSettings.model,
+            messages,
+            responseFormat: 'json_object',
+            maxTokens: 8_000,
+            signal: controller.signal,
+          });
+          const { response } = await recoverStructuredJsonCompletion({
+            initial,
+            apiKey: deepSeekSettings.apiKey,
+            model: deepSeekSettings.model,
+            messages,
+            signal: controller.signal,
+            retryInstruction: '上一条 JSON 因输出长度上限被截断或为空。请压缩解析文字，只返回一个完整的 {"candidates":[...]} JSON object。不得调用工具或新增事实。',
+          });
+          const raw = response.choices?.[0]?.message?.content?.trim() ?? '';
+          if (!raw) throw new Error('模型返回了空内容，无法解析候选题目');
+          let parsed: unknown;
+          try {
+            parsed = JSON.parse(raw);
+          } catch {
+            throw new Error('模型返回的内容不是有效 JSON，无法解析候选题目');
+          }
+          const candidates = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+            ? (parsed as Record<string, unknown>).candidates
+            : undefined;
+          if (!Array.isArray(candidates) || !candidates.length) {
+            throw new Error('模型返回的 JSON 缺少 candidates 数组');
+          }
+          return { model: deepSeekSettings.model, candidates };
+        } finally {
+          clearTimeout(timeout);
+        }
+      },
+    },
   );
 
   const handleUserInputRequest = async (request: XiazhiUserInputRequest): Promise<XiazhiUserInputResult> => {
@@ -2092,6 +2160,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('papers:updateItem', (_event, input: PaperItemUpdateInput) => store.updatePaperItem(input));
   ipcMain.handle('papers:replaceItem', (_event, paperId: string, itemId: string, questionId: string) => store.replacePaperItem(paperId, itemId, questionId));
   ipcMain.handle('papers:validate', (_event, id: string) => store.validatePaper(id));
+  ipcMain.handle('papers:generateAiCandidates', (_event, paperId: string) => store.generatePaperCandidates(paperId));
   ipcMain.handle('papers:export', (_event, id: string, destinationRoot?: string) => store.exportPaper(id, destinationRoot));
   ipcMain.handle('papers:reorderItems', (_event, input: PaperReorderInput) => store.reorderPaperItems(input));
   ipcMain.handle('papers:archiveVersion', (_event, paperId: string, note?: string) => store.archivePaperVersion(paperId, note ?? ''));

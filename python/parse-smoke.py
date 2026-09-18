@@ -76,15 +76,56 @@ def main() -> int:
     bad_schema = _handle({"schemaVersion": "wrong.v1", "requestId": "bad", "type": "engines"})
     assert bad_schema["ok"] is False and bad_schema["code"] == "BAD_SCHEMA", f"bad schema must fail closed: {bad_schema}"
 
+    # Scan-PDF fallback: an image-only PDF (no text layer) must be OCR-ed when
+    # rapidocr+pymupdf are available, and fail closed with an actionable scan
+    # message when they are not.
+    import importlib.util
+
+    scan_pdf_path = output_dir / "parse-scan-fixture.pdf"
+    scan_text = "一次函数 斜率 测试卷"
+    build_scan_pdf(scan_pdf_path, scan_text)
+    scan_result = _handle({"schemaVersion": "xiazhi.parse.request.v1", "requestId": "parse-scan", "type": "parse", "filePath": str(scan_pdf_path), "extension": ".pdf"})
+    scan_deps = bool(importlib.util.find_spec("rapidocr")) and bool(importlib.util.find_spec("fitz"))
+    scan_summary = {}
+    if scan_deps:
+        assert scan_result["ok"] is True, f"scan pdf must be OCR-ed when deps are present: {scan_result}"
+        assert scan_result["engine"] == "pypdf+rapidocr", f"scan engine must be declared truthfully: {scan_result['engine']}"
+        assert scan_result["textLayer"] == "scan", f"scan textLayer must be declared: {scan_result['textLayer']}"
+        assert scan_result["ocrPages"] == [1], f"scan page must be recorded: {scan_result['ocrPages']}"
+        ocr_text = scan_result["text"]
+        expected_tokens = [token for token in ("一次函数", "斜率", "测试卷") if token in ocr_text]
+        assert expected_tokens, f"scan OCR text must contain expected tokens: {ocr_text!r}"
+        scan_summary = {"scanOcrOk": True, "scanEngine": scan_result["engine"], "scanTokens": expected_tokens}
+    else:
+        assert scan_result["ok"] is False, f"scan pdf without OCR deps must fail closed: {scan_result}"
+        assert "扫描件" in scan_result.get("message", ""), f"scan failure must be actionable: {scan_result}"
+
     print(json.dumps({
         "ok": True,
         "pdfEngine": pdf_result["engine"],
         "pdfChars": len(pdf_result["text"]),
         "docxChars": len(docx_result["text"]),
         "doclingAvailable": bool(available.get("docling")),
+        "rapidocrAvailable": bool(available.get("rapidocr")),
+        "pymupdfAvailable": bool(available.get("pymupdf")),
         "errorPathsFailClosed": True,
+        "scanPdf": scan_summary or {"scanOcrOk": False, "failClosed": True},
     }, ensure_ascii=False))
     return 0
+
+
+def build_scan_pdf(path: Path, text: str) -> None:
+    """Renders text into an image-only PDF (no text layer) with Pillow."""
+    from PIL import Image, ImageDraw, ImageFont
+
+    font_path = Path("C:/Windows/Fonts/simhei.ttf")
+    try:
+        font = ImageFont.truetype(str(font_path), 36)
+    except Exception:  # noqa: BLE001 - fall back to the default bitmap font
+        font = ImageFont.load_default()
+    image = Image.new("RGB", (880, 160), "white")
+    ImageDraw.Draw(image).text((24, 40), text, fill="black", font=font)
+    image.save(str(path), format="PDF")
 
 
 if __name__ == "__main__":

@@ -149,6 +149,7 @@ import type {
   StudentInput,
   AiConfirmationConfirmInput,
   AiConfirmationExerciseSetEdit,
+  AiConfirmationPaperCandidatesEdit,
   KnowledgeImportJob,
   KnowledgeImportJobItem,
   KnowledgeImportDirectoryResult,
@@ -179,6 +180,11 @@ import type {
   ParseJobItemStatus,
   ParseJobStatus,
   ParseProvider,
+  AiGeneratedPaperCandidate,
+  AiPaperCandidatesPayload,
+  PaperCandidateGenerateResult,
+  PaperCandidatesProposeInput,
+  QuestionGeneratorProvider,
 } from '../shared/contracts';
 import { buildErrorTaxonomyAnalysis, buildErrorTaxonomyMarkdown } from './ai-harness/error-taxonomy';
 
@@ -189,6 +195,28 @@ const DEFAULT_RECORD_PAGE_SIZE = 100;
 const MAX_RECORD_PAGE_SIZE = 500;
 const MAX_EXERCISE_STEM_CHARS = 8000;
 const MAX_EXERCISE_ANSWER_CHARS = 4000;
+const MAX_PAPER_CANDIDATES = 8;
+
+function normalizePaperCandidates(value: unknown): AiGeneratedPaperCandidate[] {
+  if (!Array.isArray(value)) return [];
+  const normalized: AiGeneratedPaperCandidate[] = [];
+  for (const entry of value.slice(0, MAX_PAPER_CANDIDATES)) {
+    if (!entry || typeof entry !== 'object') continue;
+    const row = entry as Record<string, unknown>;
+    const stem = String(row.stem ?? '').trim().slice(0, MAX_EXERCISE_STEM_CHARS);
+    if (!stem) continue;
+    normalized.push({
+      stem,
+      answer: String(row.answer ?? '').trim().slice(0, MAX_EXERCISE_ANSWER_CHARS),
+      analysis: String(row.analysis ?? '').trim().slice(0, MAX_EXERCISE_ANSWER_CHARS),
+      questionType: String(row.questionType ?? '').trim().slice(0, 40),
+      difficulty: row.difficulty === 'easy' || row.difficulty === 'hard' ? row.difficulty : 'medium',
+      knowledgePoint: String(row.knowledgePoint ?? '').trim().slice(0, 80),
+      points: Math.max(0, Math.min(Math.trunc(Number(row.points) || 0), 200)),
+    });
+  }
+  return normalized;
+}
 const MAX_IMPORT_DIRECTORY_DEPTH = 16;
 const ERROR_REVIEW_CATEGORIES = new Set(['structural', 'deviation', 'application', 'metacognitive', 'unknown']);
 const ERROR_REVIEW_LABELS: Record<string, string> = {
@@ -668,6 +696,17 @@ function parseAiConfirmationPayload(value: unknown): AiConfirmationPayload {
           })),
       }
     : undefined;
+  const rawPaper = parsed.paperCandidates && typeof parsed.paperCandidates === 'object' ? parsed.paperCandidates as Record<string, unknown> : undefined;
+  const paperCandidates = rawPaper
+    ? {
+        paperId: String(rawPaper.paperId ?? ''),
+        paperTitle: String(rawPaper.paperTitle ?? ''),
+        blueprintVersion: Math.max(0, Number(rawPaper.blueprintVersion ?? 0)),
+        model: String(rawPaper.model ?? ''),
+        gapSummary: Array.isArray(rawPaper.gapSummary) ? rawPaper.gapSummary.map(String) : [],
+        candidates: normalizePaperCandidates(rawPaper.candidates),
+      }
+    : undefined;
   return {
     studentId: String(parsed.studentId ?? ''),
     subject: String(parsed.subject ?? ''),
@@ -683,6 +722,7 @@ function parseAiConfirmationPayload(value: unknown): AiConfirmationPayload {
     masteryAssessment,
     masteryPath,
     errorReview,
+    paperCandidates,
   };
 }
 
@@ -1326,6 +1366,7 @@ export class OmniEduStore {
     private secretCrypto?: SecretCryptoProvider,
     private vectorSearch?: VectorSearchProvider,
     private parseProvider?: ParseProvider,
+    private questionGenerator?: QuestionGeneratorProvider,
   ) {
     this.dbPath = join(dataRoot, 'app.db');
   }
@@ -2877,6 +2918,157 @@ export class OmniEduStore {
       typeCoverage,
       knowledgeCoverage: { requested: requestedPoints2, covered, missing: missingPoints },
     };
+  }
+
+  async generatePaperCandidates(paperId: string): Promise<PaperCandidateGenerateResult> {
+    if (!this.questionGenerator) throw new Error('题目生成引擎未初始化，无法生成候选题目');
+    const paper = await this.getPaperOrThrow(paperId);
+    const blueprint = await this.getPaperBlueprint(paper.blueprintId);
+    if (!blueprint || blueprint.status !== 'active') throw new Error('试卷对应的蓝图不存在或已归档，无法生成候选题目');
+    const validation = await this.validatePaper(paperId);
+    const gaps = [
+      ...validation.typeCoverage
+        .filter((coverage) => coverage.actual < coverage.requested)
+        .map((coverage) => `${coverage.questionType} 还缺 ${coverage.requested - coverage.actual} 道`),
+      ...validation.knowledgeCoverage.missing.map((point) => `知识点未覆盖：${point}`),
+    ];
+    const generated = await this.questionGenerator.generatePaperCandidates({
+      subject: blueprint.subject,
+      grade: blueprint.grade,
+      scope: blueprint.scope,
+      knowledgePoints: blueprint.knowledgePoints,
+      typeSpecs: blueprint.typeSpecs,
+      difficultyMix: blueprint.difficultyMix,
+      durationMinutes: blueprint.durationMinutes,
+      gaps,
+      existingStems: paper.items.map((item) => item.stem),
+    });
+    const model = String(generated?.model ?? '').trim();
+    const candidates = normalizePaperCandidates(generated?.candidates);
+    if (!candidates.length) throw new Error('生成引擎没有返回有效候选题目');
+    const confirmation = await this.proposePaperCandidates({ paperId: paper.id, model, gapSummary: gaps, candidates });
+    return { confirmation, candidates, gapSummary: gaps, model };
+  }
+
+  async proposePaperCandidates(input: PaperCandidatesProposeInput): Promise<AiConfirmationItem> {
+    const paperId = requireNonEmpty(input.paperId, '缺少试卷 ID');
+    const paper = await this.getPaperOrThrow(paperId);
+    const blueprint = await this.getPaperBlueprint(paper.blueprintId);
+    if (!blueprint || blueprint.status !== 'active') throw new Error('试卷对应的蓝图不存在或已归档，无法提交候选题目');
+    const candidates = normalizePaperCandidates(input.candidates);
+    if (!candidates.length) throw new Error('没有有效候选题目');
+    const model = String(input.model ?? '').trim();
+    const gaps = Array.isArray(input.gapSummary) ? input.gapSummary.map(String).filter(Boolean) : [];
+    const previewMd = candidates
+      .map((candidate, index) => `- ${index + 1}. [${candidate.questionType || '未设题型'}/${candidate.difficulty}/${candidate.points}分] ${candidate.stem.slice(0, 80)}${candidate.stem.length > 80 ? '…' : ''}（知识点：${candidate.knowledgePoint || '未标注'}）`)
+      .join('\n');
+    const gapText = gaps.length ? `缺口：${gaps.join('；')}` : '按蓝图约束生成（无校验缺口）';
+    return this.createAiConfirmation({
+      studentId: '',
+      actionType: 'save_paper_candidates',
+      title: `AI 候选题目（${paper.title}）`,
+      description: `${gapText}。AI 生成内容仅作候选，教师确认后才写入题库与试卷。`,
+      previewMd: `# AI 候选题目\n\n${gapText}\n\n${previewMd}`,
+      payload: {
+        studentId: '',
+        subject: blueprint.subject,
+        startDate: '',
+        endDate: '',
+        reportType: 'paper_candidates',
+        title: `AI 候选题目（${paper.title}）`,
+        contentMd: '',
+        paperCandidates: {
+          paperId: paper.id,
+          paperTitle: paper.title,
+          blueprintVersion: blueprint.version,
+          model,
+          gapSummary: gaps,
+          candidates,
+        },
+      },
+    });
+  }
+
+  private async createPaperCandidatesFromConfirmation(payload: AiConfirmationPayload) {
+    const draft = payload.paperCandidates;
+    if (!draft) throw new Error('确认项缺少候选题目载荷');
+    const paper = await this.getPaperOrThrow(draft.paperId);
+    const blueprint = await this.getPaperBlueprint(paper.blueprintId);
+    if (!blueprint) throw new Error('试卷对应的蓝图已不存在，无法写入候选题目');
+    const candidates = normalizePaperCandidates(draft.candidates);
+    if (!candidates.length) throw new Error('确认项没有有效候选题目');
+    const sourceTitle = draft.model ? `AI 生成（${draft.model}）` : 'AI 生成';
+    const questionIds: string[] = [];
+    const paperItemIds: string[] = [];
+    const timestamp = now();
+    const maxOrderRow = (await this.all(`SELECT COALESCE(MAX(order_index), -1) AS max_order FROM paper_items WHERE paper_id = ?`, [paper.id]))[0];
+    let orderIndex = Math.max(0, Number(maxOrderRow?.max_order ?? -1)) + 1;
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      for (const candidate of candidates) {
+        const questionId = `question_${randomUUID()}`;
+        await this.run(
+          `INSERT INTO question_bank_items (
+            id, subject, grade, knowledge_point, question_type, difficulty, stem,
+            answer, analysis, source_title, source_kind, tags, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'generated', ?, ?, ?)`,
+          [
+            questionId,
+            blueprint.subject,
+            blueprint.grade,
+            candidate.knowledgePoint,
+            candidate.questionType,
+            candidate.difficulty,
+            candidate.stem,
+            candidate.answer,
+            candidate.analysis,
+            sourceTitle,
+            JSON.stringify(['ai_generated']),
+            timestamp,
+            timestamp,
+          ],
+        );
+        await this.upsertQuestionBankFts(questionId);
+        const paperItemId = `paper_item_${randomUUID()}`;
+        await this.run(
+          `INSERT INTO paper_items (
+            id, paper_id, order_index, question_id, source_kind, question_type, difficulty,
+            knowledge_point, stem, answer, analysis, points, locked, teacher_edited, version, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, 'generated', ?, ?, ?, ?, ?, ?, ?, 0, 0, 1, ?, ?)`,
+          [
+            paperItemId,
+            paper.id,
+            orderIndex,
+            questionId,
+            candidate.questionType,
+            candidate.difficulty,
+            candidate.knowledgePoint,
+            candidate.stem,
+            candidate.answer,
+            candidate.analysis,
+            candidate.points,
+            timestamp,
+            timestamp,
+          ],
+        );
+        orderIndex += 1;
+        questionIds.push(questionId);
+        paperItemIds.push(paperItemId);
+      }
+      await this.run(`UPDATE papers SET version = version + 1, updated_at = ? WHERE id = ?`, [timestamp, paper.id]);
+      await this.run('COMMIT');
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+    const qbPlaceholders = questionIds.map(() => '?').join(', ');
+    const itemPlaceholders = paperItemIds.map(() => '?').join(', ');
+    const qbRows = await this.all(`SELECT id FROM question_bank_items WHERE id IN (${qbPlaceholders})`, questionIds);
+    const itemRows = await this.all(`SELECT id FROM paper_items WHERE id IN (${itemPlaceholders})`, paperItemIds);
+    if (qbRows.length !== questionIds.length || itemRows.length !== paperItemIds.length) {
+      throw new Error('候选题目写入后未能全部读回');
+    }
+    return { paperId: paper.id, questionIds, paperItemIds };
   }
 
   async exportPaper(id: string, destinationRoot?: string): Promise<PaperExportResult> {
@@ -4921,12 +5113,14 @@ export class OmniEduStore {
   }
 
   async createAiConfirmation(input: AiConfirmationCreateInput): Promise<AiConfirmationItem> {
-    if (input.actionType !== 'create_review_report' && input.actionType !== 'save_exercise_set' && input.actionType !== 'save_mastery_state' && input.actionType !== 'save_error_review') {
-      throw new Error('当前确认队列只支持创建复盘报告或保存三元题组');
+    if (input.actionType !== 'create_review_report' && input.actionType !== 'save_exercise_set' && input.actionType !== 'save_mastery_state' && input.actionType !== 'save_error_review' && input.actionType !== 'save_paper_candidates') {
+      throw new Error('当前确认队列不支持该动作类型');
     }
     const payload = parseAiConfirmationPayload(JSON.stringify(input.payload));
     const studentId = input.studentId || payload.studentId;
-    requireNonEmpty(studentId, '确认项缺少学生 ID');
+    if (input.actionType !== 'save_paper_candidates') {
+      requireNonEmpty(studentId, '确认项缺少学生 ID');
+    }
     requireNonEmpty(input.title, '确认项标题不能为空');
     requireNonEmpty(input.previewMd, '确认项预览不能为空');
     if (input.actionType === 'create_review_report') {
@@ -4955,6 +5149,13 @@ export class OmniEduStore {
         if (!ERROR_REVIEW_CATEGORIES.has(item.category)) throw new Error(`错因分类非法：${String(item.category)}`);
         requireNonEmpty(item.recordId, '错因复核确认项缺少来源记录 ID');
       }
+    }
+    if (input.actionType === 'save_paper_candidates') {
+      const draft = payload.paperCandidates;
+      if (!draft?.candidates?.length) throw new Error('候选题目确认项缺少题目');
+      requireNonEmpty(draft.paperId, '候选题目确认项缺少试卷 ID');
+      requireNonEmpty(draft.paperTitle, '候选题目确认项缺少试卷标题');
+      for (const candidate of draft.candidates) requireNonEmpty(candidate.stem, '候选题目题干不能为空');
     }
 
     const timestamp = now();
@@ -5030,9 +5231,9 @@ export class OmniEduStore {
     const id = requireNonEmpty(input.id, '确认项 ID 不能为空');
     const preflight = await this.getAiConfirmationOrThrow(id);
     if (preflight.status !== 'pending') throw new Error('只能确认待确认项');
-    const payload = input.exerciseSetEdit
-      ? this.mergeExerciseSetEdit(preflight, input.exerciseSetEdit)
-      : preflight.payload;
+    let payload = preflight.payload;
+    if (input.exerciseSetEdit) payload = this.mergeExerciseSetEdit(preflight, input.exerciseSetEdit);
+    if (input.paperCandidatesEdit) payload = this.mergePaperCandidatesEdit(preflight, input.paperCandidatesEdit);
     const timestamp = now();
     try {
       const existing = await this.getAiConfirmationOrThrow(id);
@@ -5042,11 +5243,13 @@ export class OmniEduStore {
       if (existing.actionType === 'save_exercise_set' && !readback?.exerciseSet) throw new Error('确认后未能读回三元题组');
       if (existing.actionType === 'save_mastery_state' && !readback?.masteryPath && !readback?.masteryAttempt) throw new Error('Mastery confirmation did not produce a readback');
       if (existing.actionType === 'save_error_review' && !readback?.errorReview) throw new Error('确认后未能读回错因复核记录');
+      if (existing.actionType === 'save_paper_candidates' && !readback?.paperCandidates) throw new Error('确认后未能读回候选题目写入');
       const result = {
         reportId: readback?.report?.id,
         exerciseSetId: readback?.exerciseSet?.id,
         masteryPathId: readback?.masteryPath?.id,
         masteryAttempt: readback?.masteryAttempt,
+        paperCandidatesPaperId: readback?.paperCandidates?.paperId,
         actionType: existing.actionType,
       };
       await this.run(
@@ -5098,6 +5301,40 @@ export class OmniEduStore {
       contentMd: this.buildExerciseSetContentMdFromItems(existing.payload.exerciseSet?.title || existing.payload.title || '小智三元题组', mergedItems),
     };
     return { ...existing.payload, exerciseSet: draft };
+  }
+
+  private mergePaperCandidatesEdit(existing: AiConfirmationItem, edit: AiConfirmationPaperCandidatesEdit) {
+    if (existing.actionType !== 'save_paper_candidates') {
+      throw new Error('当前确认项不支持候选题目编辑覆盖，只能按原始预览确认');
+    }
+    const draft = existing.payload.paperCandidates;
+    if (!draft?.candidates?.length) throw new Error('确认项没有候选题目载荷');
+    const edits = Array.isArray(edit?.candidates) ? edit.candidates : [];
+    if (!edits.length) throw new Error('至少保留一道候选题目才能确认写入');
+    if (edits.length > draft.candidates.length) throw new Error('编辑题数超过确认预览题数，请刷新后重试');
+    const seen = new Set<number>();
+    const merged = edits.map((entry) => {
+      const index = Math.trunc(Number(entry?.index));
+      if (!Number.isInteger(index) || index < 0 || index >= draft.candidates.length) {
+        throw new Error('候选题目编辑包含非法序号');
+      }
+      if (seen.has(index)) throw new Error('候选题目编辑包含重复序号');
+      seen.add(index);
+      const original = draft.candidates[index];
+      const stem = requireNonEmpty(String(entry?.stem ?? '').trim(), `第 ${index + 1} 道候选题目的题干不能为空`);
+      if (stem.length > MAX_EXERCISE_STEM_CHARS) throw new Error(`第 ${index + 1} 道候选题目的题干超过 ${MAX_EXERCISE_STEM_CHARS} 字符上限`);
+      return {
+        stem,
+        answer: String(entry?.answer ?? '').trim().slice(0, MAX_EXERCISE_ANSWER_CHARS),
+        analysis: String(entry?.analysis ?? '').trim().slice(0, MAX_EXERCISE_ANSWER_CHARS),
+        questionType: String(entry?.questionType ?? original.questionType).trim().slice(0, 40),
+        difficulty: entry?.difficulty === 'easy' || entry?.difficulty === 'hard' || entry?.difficulty === 'medium' ? entry.difficulty : original.difficulty,
+        knowledgePoint: String(entry?.knowledgePoint ?? original.knowledgePoint).trim().slice(0, 80),
+        points: Math.max(0, Math.min(Math.trunc(Number(entry?.points ?? original.points) || 0), 200)),
+      };
+    });
+    const nextDraft = { ...draft, candidates: merged };
+    return { ...existing.payload, paperCandidates: nextDraft };
   }
 
   private buildExerciseSetContentMdFromItems(title: string, items: ExerciseSetItem[]): string {
@@ -8077,6 +8314,10 @@ export class OmniEduStore {
           window: review.window,
         },
       };
+    }
+    if (item.actionType === 'save_paper_candidates') {
+      const paperCandidates = await this.createPaperCandidatesFromConfirmation(item.payload);
+      return { paperCandidates };
     }
     throw new Error(`不支持的确认动作：${item.actionType}`);
   }

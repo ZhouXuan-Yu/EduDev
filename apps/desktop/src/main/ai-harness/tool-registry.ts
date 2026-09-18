@@ -603,6 +603,44 @@ export const AI_TOOL_REGISTRY: ToolDescriptor[] = [
     },
   },
   {
+    name: 'generate_paper_question_candidates',
+    label: '提交组卷候选题目',
+    description: '按老师指定的组卷试卷，提交 AI 生成的候选题目（题干/答案/解析/题型/难度/知识点/分值）。只创建待老师确认的本地确认项；确认前不写入题库或试卷，确认后题目来源标注为 ai_generated。',
+    contextKey: 'question_bank',
+    effect: 'draft',
+    privacy: 'local_only',
+    allowedRoutes: ['practice_design'],
+    maxOutputChars: 6_000,
+    parameters: {
+      type: 'object',
+      properties: {
+        paperId: { type: 'string', description: '智能组卷工作区中的试卷 ID。', maxLength: 160 },
+        gapSummary: { type: 'array', description: '可选的缺口说明（题型缺口或知识点缺口）。', items: { type: 'string', maxLength: 200 }, maxItems: 8 },
+        candidates: {
+          type: 'array',
+          description: 'AI 生成的候选题目，1-8 道。',
+          items: {
+            type: 'object',
+            properties: {
+              stem: { type: 'string', description: '题干。', maxLength: 8000 },
+              answer: { type: 'string', description: '答案。', maxLength: 4000 },
+              analysis: { type: 'string', description: '解析，讲清解题思路。', maxLength: 4000 },
+              questionType: { type: 'string', description: '题型，如 选择题/填空题/解答题。', maxLength: 40 },
+              difficulty: { type: 'string', description: '难度。', enum: ['easy', 'medium', 'hard'] },
+              knowledgePoint: { type: 'string', description: '知识点。', maxLength: 80 },
+              points: { type: 'number', description: '分值，整数，0-200。', minimum: 0, maximum: 200 },
+            },
+            required: ['stem', 'answer', 'analysis', 'questionType', 'difficulty', 'knowledgePoint', 'points'],
+          },
+          minItems: 1,
+          maxItems: 8,
+        },
+      },
+      required: ['paperId', 'candidates'],
+      additionalProperties: false,
+    },
+  },
+  {
     name: 'inspect_teaching_book',
     label: '检查专题讲义工作区',
     description: '读取 DeepTutor Book Workspace 适配后的专题讲义/单元备课包目录、页面、内容块和来源健康；仅返回 bounded 元数据与引用，不直接写入或盲目重生成。',
@@ -2178,6 +2216,58 @@ export async function executeAiToolCall(params: {
         review,
         toolRun,
         modelResult: boundedPayload({ ok: result.total > 0, analysis, ...outputSummary }, tool.maxOutputChars).payload,
+      };
+    }
+
+    if (tool.name === 'generate_paper_question_candidates') {
+      const paperId = String(args.paperId ?? '').trim();
+      if (!paperId) {
+        const toolRun = createToolRun(tool, 'blocked', '需要老师显式指定试卷 ID 才能提交候选题目；上下文预加载不会自动生成。', inputSummary, { reason: 'paper_id_required' });
+        state.toolRuns.push(toolRun);
+        return { review, toolRun, modelResult: { ok: false, reason: 'paper_id_required' } };
+      }
+      const paper = await store.getPaper(paperId);
+      if (!paper) {
+        const toolRun = createToolRun(tool, 'blocked', '指定的试卷不存在；请先检查智能组卷工作区中的试卷 ID。', inputSummary, { reason: 'paper_not_found' });
+        state.toolRuns.push(toolRun);
+        return { review, toolRun, modelResult: { ok: false, reason: 'paper_not_found' } };
+      }
+      const confirmation = await store.proposePaperCandidates({
+        paperId: paper.id,
+        model: '小智 Agent（AI 控制台）',
+        gapSummary: Array.isArray(args.gapSummary) ? args.gapSummary.map(String).slice(0, 8) : [],
+        candidates: Array.isArray(args.candidates) ? args.candidates : [],
+      });
+      const candidateCount = confirmation.payload.paperCandidates?.candidates.length ?? 0;
+      const outputSummary = {
+        paperId: paper.id,
+        paperTitle: paper.title,
+        candidateCount,
+        writeback: 'teacher_confirmation',
+        pendingConfirmation: { actionType: 'save_paper_candidates' },
+      };
+      const toolRun = createToolRun(tool, 'used', `已提交 ${candidateCount} 道候选题目；等待老师确认后才写入题库与试卷（来源 ai_generated）。`, inputSummary, outputSummary);
+      state.toolRuns.push(toolRun);
+      addSource(state.sources, {
+        id: `paper:${paper.id}`,
+        title: `组卷试卷：${paper.title}`,
+        type: 'SQLite / ai_confirmation_items',
+        detail: '候选题目已进入确认队列；确认前不写入题库或试卷。',
+        count: candidateCount,
+      });
+      return {
+        review,
+        toolRun,
+        modelResult: boundedPayload({
+          ok: true,
+          confirmationId: confirmation.id,
+          actionType: 'save_paper_candidates',
+          writeback: 'teacher_confirmation',
+          paperId: paper.id,
+          paperTitle: paper.title,
+          candidateCount,
+          gapSummary: confirmation.payload.paperCandidates?.gapSummary ?? [],
+        }, tool.maxOutputChars).payload,
       };
     }
 

@@ -128,9 +128,11 @@ export function KnowledgeResourcePanel({ setStatus, onOverviewChanged, refreshTo
     if (batchBusy || !batchJob) return;
     setBatchBusy(true);
     try {
-      const job = await window.omniEdu?.retryParseJob(batchJob.id);
-      setBatchJob(job);
-      setStatus(job.status === 'ready' ? `重试完成：${job.succeededResources} 个资源就绪。` : `重试结束：${job.failedResources} 个仍失败。`);
+      const retried = await window.omniEdu?.retryParseJob(batchJob.id);
+      if (retried) {
+        setBatchJob(retried);
+        setStatus(retried.status === 'ready' ? `重试完成：${retried.succeededResources} 个资源就绪。` : `重试结束：${retried.failedResources} 个仍失败。`);
+      }
       await load();
       onOverviewChanged?.();
     } catch (error) {
@@ -190,6 +192,24 @@ export function KnowledgeResourcePanel({ setStatus, onOverviewChanged, refreshTo
       <p className="muted" data-testid="knowledge-parse-engines">
         可用解析引擎：{availableEngines.length ? availableEngines.map((engine) => `${engine.name}${engine.version ? `@${engine.version}` : ''}`).join('、') : '未检测到（PDF/DOCX 需要本地依赖）'}
       </p>
+      <div className="toolbar-row">
+        <button className="primary-action compact-button" onClick={() => void startBatchParse()} disabled={batchBusy} data-testid="knowledge-batch-parse">{batchBusy ? '批量解析中…' : '批量解析待处理资源'}</button>
+        {batchJob && (batchJob.status === 'queued' || batchJob.status === 'running') ? (
+          <button className="secondary-action compact-button" onClick={() => void cancelBatchParse()} data-testid="knowledge-batch-parse-cancel">取消解析</button>
+        ) : null}
+        {batchJob && (batchJob.status === 'partial_failed' || batchJob.status === 'failed' || batchJob.status === 'cancelled') ? (
+          <button className="secondary-action compact-button" onClick={() => void retryBatchParse()} disabled={batchBusy} data-testid="knowledge-batch-parse-retry">重试失败项</button>
+        ) : null}
+      </div>
+      {batchJob ? (
+        <div className="parse-job-status" data-testid="knowledge-batch-parse-progress">
+          <span className="status-chip" data-testid="knowledge-batch-parse-status">{batchJob.status}</span>
+          <span data-testid="knowledge-batch-parse-counts">
+            {batchJob.processedResources}/{batchJob.totalResources} 处理中（成功 {batchJob.succeededResources} · 失败 {batchJob.failedResources}）
+          </span>
+          {batchJob.lastError ? <span className="warning-text" data-testid="knowledge-batch-parse-error">{batchJob.lastError}</span> : null}
+        </div>
+      ) : null}
       {loading ? <div className="empty-state" data-testid="knowledge-resource-loading">正在读取资料列表…</div> : null}
       {errorMessage ? <div className="warning-box" data-testid="knowledge-resource-error">{errorMessage}</div> : null}
       <div className="resource-source-list" data-testid="knowledge-resource-list">

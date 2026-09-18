@@ -87,6 +87,7 @@ import type {
   PaperBlueprintInput,
   PaperCreateInput,
   PaperExportResult,
+  PaperCandidateGenerateResult,
   PaperItemUpdateInput,
   PaperReorderInput,
   PaperValidationResult,
@@ -307,6 +308,8 @@ const api = {
     ipcRenderer.invoke('papers:replaceItem', paperId, itemId, questionId) as Promise<Paper>,
   validatePaper: (id: string) =>
     ipcRenderer.invoke('papers:validate', id) as Promise<PaperValidationResult>,
+  generatePaperAiCandidates: (paperId: string) =>
+    ipcRenderer.invoke('papers:generateAiCandidates', paperId) as Promise<PaperCandidateGenerateResult>,
   exportPaper: (id: string, destinationRoot?: string) =>
     ipcRenderer.invoke('papers:export', id, destinationRoot) as Promise<PaperExportResult>,
   reorderPaperItems: (input: PaperReorderInput) =>

@@ -82,6 +82,74 @@ async function run() {
             assert.equal(badParamReview.ok, false);
             assert.ok(badParamReview.errors.some((error) => error.includes('超过最大值')));
 
+            // 组卷候选题目工具：practice_design 暴露、真实试卷提交进入确认队列、缺参/不存在试卷 blocked。
+            assert.ok(tools.some((tool) => tool.function.name === 'generate_paper_question_candidates'), 'practice_design should expose paper candidate tool');
+            const blueprint = await store.createPaperBlueprint({
+              title: '工具调用测试蓝图',
+              subject: '数学',
+              grade: '初二',
+              textbookVersion: '人教版',
+              scope: '一次函数',
+              knowledgePoints: ['一次函数'],
+              typeSpecs: [{ questionType: '解答题', count: 2, pointsPerQuestion: 10 }],
+              difficultyMix: { easy: 0, medium: 100, hard: 0 },
+              durationMinutes: 45,
+              sourcePreference: 'any',
+            });
+            const paper = await store.createPaperFromBlueprint({ blueprintId: blueprint.id });
+            const candidateResult = await executeAiToolCall({
+              store,
+              prompt,
+              router,
+              state,
+              call: {
+                name: 'generate_paper_question_candidates',
+                arguments: {
+                  paperId: paper.id,
+                  candidates: [
+                    {
+                      stem: '已知一次函数 y = 2x - 1，求 x = 3 时的函数值。',
+                      answer: 'y = 5',
+                      analysis: '代入 x = 3 得 y = 6 - 1 = 5。',
+                      questionType: '解答题',
+                      difficulty: 'easy',
+                      knowledgePoint: '一次函数',
+                      points: 10,
+                    },
+                  ],
+                },
+              },
+            });
+            assert.equal(candidateResult.review.ok, true, 'candidate tool call must pass review');
+            assert.equal(candidateResult.toolRun.status, 'used', 'candidate tool must be used');
+            assert.equal(candidateResult.modelResult.ok, true, 'candidate tool model result must be ok');
+            assert.equal(candidateResult.modelResult.actionType, 'save_paper_candidates', 'tool must report the confirmation action');
+            const pending = await store.listAiConfirmations('pending');
+            const proposal = pending.find((item) => item.actionType === 'save_paper_candidates');
+            assert.ok(proposal, 'tool must leave a pending confirmation item');
+            assert.equal(proposal.payload.paperCandidates.paperId, paper.id, 'confirmation must reference the paper');
+
+            const missingPaperId = await executeAiToolCall({
+              store,
+              prompt,
+              router,
+              state,
+              call: { name: 'generate_paper_question_candidates', arguments: { candidates: [] } },
+            });
+            assert.equal(missingPaperId.review.ok, false, 'missing paperId must fail schema review');
+            assert.equal(missingPaperId.toolRun.status, 'blocked', 'missing paperId must be blocked');
+            assert.ok(missingPaperId.review.errors.some((error) => error.includes('缺少必填参数')), 'schema must report the missing required param');
+
+            const missingPaper = await executeAiToolCall({
+              store,
+              prompt,
+              router,
+              state,
+              call: { name: 'generate_paper_question_candidates', arguments: { paperId: 'paper_missing', candidates: [] } },
+            });
+            assert.equal(missingPaper.toolRun.status, 'blocked', 'missing paper must be blocked');
+            assert.equal(missingPaper.modelResult.reason, 'paper_not_found');
+
             await store.close();
             return {
               ok: true,
@@ -111,8 +179,23 @@ async function run() {
     const result = await runToolCallingSmoke(dataRoot);
     console.log(JSON.stringify(result, null, 2));
   } finally {
-    rmSync(bundleRoot, { recursive: true, force: true });
-    rmSync(dataRoot, { recursive: true, force: true });
+    await cleanupWithRetry(bundleRoot);
+    await cleanupWithRetry(dataRoot);
+  }
+}
+
+async function cleanupWithRetry(target) {
+  for (let attempt = 0; attempt < 10; attempt += 1) {
+    try {
+      rmSync(target, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      if (attempt === 9) {
+        console.error(`cleanup warning (${target}): ${error instanceof Error ? error.message : String(error)}`);
+        return;
+      }
+      await new Promise((resolveWait) => setTimeout(resolveWait, 150));
+    }
   }
 }
 

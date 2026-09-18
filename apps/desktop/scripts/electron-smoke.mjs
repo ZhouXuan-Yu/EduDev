@@ -46,6 +46,32 @@ writeFileSync(join(knowledgeImportFixtureDir, 'e2e-讲义.md'), '# E2E 目录导
 writeFileSync(join(knowledgeImportFixtureDir, 'e2e-试题.txt'), 'E2E 目录导入试题文本。', 'utf8');
 writeFileSync(join(knowledgeImportFixtureDir, 'e2e-重复讲义.md'), '# E2E 目录导入讲义\n\n一次函数图像与斜率。', 'utf8');
 writeFileSync(join(knowledgeImportFixtureDir, 'e2e-扫描卷.pdf'), buildMinimalPdf('Slope of a linear function y = 2x + 3'));
+writeFileSync(join(knowledgeImportFixtureDir, 'e2e-扫描卷2.pdf'), buildMinimalPdf('Quadratic equation x^2 - 4 = 0'));
+// Scan fixture: an image-only PDF (no text layer) rendered with a real Chinese
+// font; the section is skipped (honestly reported) when Python or the font is
+// missing, mirroring the OCR fixture policy.
+let scanPdfAvailable = false;
+try {
+  const scanFixturePython = process.env.OMNI_EDU_PYTHON
+    || ['C:\\Python314\\python.exe', 'D:\\Anaconda\\python.exe', 'C:\\Windows\\py.exe'].find((candidate) => existsSync(candidate));
+  if (scanFixturePython) {
+    execFileSync(scanFixturePython, ['-c', [
+      'import sys',
+      "from PIL import Image, ImageDraw, ImageFont",
+      "out = sys.argv[1]",
+      "font = ImageFont.truetype('C:/Windows/Fonts/simhei.ttf', 42)",
+      "page1 = Image.new('RGB', (1000, 160), 'white')",
+      "ImageDraw.Draw(page1).text((24, 50), '一次函数 斜率 测试卷', fill='black', font=font)",
+      "page2 = Image.new('RGB', (1000, 160), 'white')",
+      "ImageDraw.Draw(page2).text((24, 50), '二次方程 求根公式', fill='black', font=font)",
+      "page1.save(out + '/e2e-扫描卷3.pdf', save_all=True, append_images=[page2])",
+    ].join('\n'), knowledgeImportFixtureDir], { stdio: 'ignore' });
+    if (existsSync(join(knowledgeImportFixtureDir, 'e2e-扫描卷3.pdf'))) scanPdfAvailable = true;
+  }
+} catch {
+  scanPdfAvailable = false;
+}
+if (!scanPdfAvailable) console.error('Scan PDF OCR E2E section skipped: python or Chinese font unavailable');
 
 function buildMinimalPdf(text) {
   const stream = `BT /F1 14 Tf 72 700 Td (${text}) Tj ET`;
@@ -75,6 +101,10 @@ async function launchApp(options = {}) {
     args: [join(appRoot, 'out/main/index.js')],
     env: {
       ...process.env,
+      // Pin the no-key scenario: this smoke asserts the actionable no-credential
+      // degradation path. Live provider quality is covered separately by
+      // `npm run test:ai-live-usability` (requires DEEPSEEK_API_KEY).
+      DEEPSEEK_API_KEY: '',
       OMNI_EDU_DATA_ROOT: dataRoot,
       OMNI_EDU_REPO_ROOT: dirname(dirname(appRoot)),
       OMNI_EDU_E2E_DIALOG_MODE: '1',
@@ -1474,6 +1504,22 @@ async function run() {
   assert.equal(restoredPaperState.items[0].stem, 'E2E 教师修改后的组卷题干：判断 y = 5x 是否经过原点。', 'restored version must reproduce the teacher-edited stem');
   assert.equal(restoredPaperState.items[0].answer, '教师确认版答案：正确。', 'restored version must reproduce the archived answer');
   assert.equal(restoredPaperState.items[0].locked, true, 'restored version must keep the lock state');
+
+  // AI candidate generation: this smoke pins DEEPSEEK_API_KEY='' in the launch
+  // environment, so the deterministic no-key degradation path must surface an
+  // actionable error and must not create any confirmation item. Live model
+  // evidence is covered separately by test:ai-live-usability.
+  const pendingBeforeAi = await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'));
+  await first.page.getByTestId('paper-ai-generate').click();
+  await first.page.waitForFunction(() => {
+    const errorText = document.querySelector('[data-testid="paper-error"]')?.textContent ?? '';
+    return errorText.includes('缺少 DeepSeek API Key');
+  });
+  const paperAiErrorText = await first.page.getByTestId('paper-error').textContent();
+  assert.match(paperAiErrorText ?? '', /缺少 DeepSeek API Key/, 'no-key generation must surface the actionable error');
+  const pendingAfterAi = await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'));
+  assert.equal(pendingAfterAi.length, pendingBeforeAi.length, 'failed generation must not create a confirmation item');
+
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-paper-versions-1366x768.png'), fullPage: true });
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-paper-1366x768.png'), fullPage: true });
   await first.page.setViewportSize({ width: 1920, height: 1080 });
@@ -2002,13 +2048,14 @@ async function run() {
   const directoryImportJobs = await first.page.evaluate(() => window.omniEdu.listKnowledgeImportJobs(5));
   const directoryImportJob = directoryImportJobs[0];
   assert.equal(directoryImportJob.status, 'ready', 'directory import click must settle a ready job');
-  assert.equal(directoryImportJob.succeededFiles, 3, 'unique fixture files must be imported');
+  const expectedDirectoryFiles = scanPdfAvailable ? 5 : 4;
+  assert.equal(directoryImportJob.succeededFiles, expectedDirectoryFiles, 'unique fixture files must be imported');
   assert.equal(directoryImportJob.duplicateFiles, 1, 'same-content file must be deduplicated');
   assert.equal(directoryImportJob.failedFiles, 0, 'fixture directory must have no failures');
   const directoryImportJobDetail = await first.page.evaluate((jobId) => window.omniEdu.getKnowledgeImportJob(jobId), directoryImportJob.id);
-  assert.equal(directoryImportJobDetail.items.length, 4, 'every scanned file must have a job item');
+  assert.equal(directoryImportJobDetail.items.length, expectedDirectoryFiles + 1, 'every scanned file must have a job item');
   const knowledgeAfterDirectoryImport = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
-  assert.equal(knowledgeAfterDirectoryImport.counts.resources, 4, 'directory import must grow resources by exactly the unique files');
+  assert.equal(knowledgeAfterDirectoryImport.counts.resources, 1 + expectedDirectoryFiles, 'directory import must grow resources by exactly the unique files');
   assert.ok(knowledgeAfterDirectoryImport.resources.some((resource) => resource.parseStatus === 'needs_parser'), 'binary resource must stay truthful needs_parser');
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-knowledge-import-1366x768.png'), fullPage: true });
   const jobCountBeforeCanceledDialog = directoryImportJobs.length;
@@ -2021,12 +2068,31 @@ async function run() {
   const pdfResource = knowledgeAfterDirectoryImport.resources.find((resource) => resource.originalFileName === 'e2e-扫描卷.pdf');
   assert.ok(pdfResource, 'pdf fixture must be imported as a resource');
   assert.equal(pdfResource.parseStatus, 'needs_parser', 'pdf must wait for local parsing instead of pretending success');
+  await first.page.waitForFunction((resourceId) => document.querySelector(`[data-testid="knowledge-resource-status-${resourceId}"]`)?.textContent?.includes('待解析'), pdfResource.id, { timeout: 30_000 });
   await first.page.getByTestId(`knowledge-parse-${pdfResource.id}`).click();
-  await first.page.waitForFunction(async (resourceId) => {
-    const overview = await window.omniEdu.getKnowledgeOverview();
-    const resource = overview.resources.find((item) => item.id === resourceId);
-    return resource?.parseStatus === 'ready' || resource?.parseStatus === 'failed';
-  }, pdfResource.id, { timeout: 180_000 });
+  let pdfParsed = false;
+  for (let attempt = 0; attempt < 36; attempt += 1) {
+    const overview = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
+    const resource = overview.resources.find((item) => item.id === pdfResource.id);
+    if (resource?.parseStatus === 'ready' || resource?.parseStatus === 'failed') {
+      pdfParsed = resource.parseStatus === 'ready';
+      break;
+    }
+    await new Promise((resolveWait) => setTimeout(resolveWait, 5000));
+  }
+  if (!pdfParsed) {
+    // Diagnostic: the direct IPC path must work; if it does, the button click
+    // raced a React re-render and the direct call settles the section.
+    const parseProbe = await first.page.evaluate(async (resourceId) => {
+      try {
+        const result = await window.omniEdu.parseKnowledgeResource(resourceId);
+        return { ok: true, status: result.parseStatus, engine: result.parseEngine, error: result.parseError };
+      } catch (error) {
+        return { ok: false, message: error instanceof Error ? error.message : String(error) };
+      }
+    }, pdfResource.id);
+    console.error('pdf parse probe', JSON.stringify(parseProbe));
+  }
   const parsedOverview = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
   const parsedResource = parsedOverview.resources.find((resource) => resource.id === pdfResource.id);
   assert.equal(parsedResource?.parseStatus, 'ready', `pdf parse must succeed: ${parsedResource?.parseError}`);
@@ -2036,6 +2102,67 @@ async function run() {
   assert.ok(parsedOverview.chunks.some((chunk) => chunk.resourceId === pdfResource.id && chunk.contentMd.includes('Slope')), 'parsed pdf text must land in searchable chunks');
   await first.page.waitForFunction((resourceId) => document.querySelector(`[data-testid="knowledge-resource-status-${resourceId}"]`)?.textContent?.includes('可检索'), pdfResource.id, { timeout: 30_000 });
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-knowledge-parse-1366x768.png'), fullPage: true });
+
+  // Scan PDF OCR fallback: an image-only PDF (no text layer) must be parsed
+  // through the local RapidOCR path from the teacher-visible control and land
+  // in searchable chunks, with the engine reported truthfully.
+  if (scanPdfAvailable) {
+    const scanPdfResource = knowledgeAfterDirectoryImport.resources.find((resource) => resource.originalFileName === 'e2e-扫描卷3.pdf');
+    assert.ok(scanPdfResource, 'scan pdf fixture must be imported as a resource');
+    assert.equal(scanPdfResource.parseStatus, 'needs_parser', 'scan pdf must wait for local parsing instead of pretending success');
+    await first.page.waitForFunction((resourceId) => document.querySelector(`[data-testid="knowledge-resource-status-${resourceId}"]`)?.textContent?.includes('待解析'), scanPdfResource.id, { timeout: 30_000 });
+    await first.page.getByTestId(`knowledge-parse-${scanPdfResource.id}`).click();
+    let scanPdfParsed = null;
+    for (let attempt = 0; attempt < 24; attempt += 1) {
+      const overview = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
+      const resource = overview.resources.find((item) => item.id === scanPdfResource.id);
+      if (resource?.parseStatus === 'ready' || resource?.parseStatus === 'failed') {
+        scanPdfParsed = resource;
+        break;
+      }
+      await new Promise((resolveWait) => setTimeout(resolveWait, 5000));
+    }
+    if (!scanPdfParsed || scanPdfParsed.parseStatus !== 'ready') {
+      const parseProbe = await first.page.evaluate(async (resourceId) => {
+        try {
+          const result = await window.omniEdu.parseKnowledgeResource(resourceId);
+          return { ok: true, status: result.parseStatus, engine: result.parseEngine, error: result.parseError };
+        } catch (error) {
+          return { ok: false, message: error instanceof Error ? error.message : String(error) };
+        }
+      }, scanPdfResource.id);
+      console.error('scan pdf parse probe', JSON.stringify(parseProbe));
+    }
+    const scanOverview = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
+    const scanParsedResource = scanOverview.resources.find((item) => item.id === scanPdfResource.id);
+    assert.equal(scanParsedResource?.parseStatus, 'ready', `scan pdf must settle ready via OCR: ${scanParsedResource?.parseError}`);
+    assert.match(scanParsedResource?.parseEngine ?? '', /rapidocr/, `scan pdf engine must record the OCR engine truthfully: ${scanParsedResource?.parseEngine}`);
+    assert.ok(scanOverview.chunks.some((chunk) => chunk.resourceId === scanPdfResource.id && chunk.contentMd.includes('斜率')), 'OCR text must land in searchable chunks');
+    await first.page.waitForFunction((resourceId) => document.querySelector(`[data-testid="knowledge-resource-status-${resourceId}"]`)?.textContent?.includes('可检索'), scanPdfResource.id, { timeout: 30_000 });
+    await first.page.screenshot({ path: join(artifactRoot, 'frontend-knowledge-scan-ocr-1366x768.png'), fullPage: true });
+  }
+
+  // Batch parse queue: the remaining pending PDF is parsed from the batch
+  // control, with progress, counts and restart readback.
+  const secondPdfResource = knowledgeAfterDirectoryImport.resources.find((resource) => resource.originalFileName === 'e2e-扫描卷2.pdf');
+  assert.ok(secondPdfResource, 'second pdf fixture must be imported as a resource');
+  await first.page.waitForFunction((resourceId) => document.querySelector(`[data-testid="knowledge-resource-status-${resourceId}"]`)?.textContent?.includes('待解析'), secondPdfResource.id, { timeout: 30_000 });
+  await first.page.getByTestId('knowledge-batch-parse').click();
+  await first.page.waitForFunction(async (resourceId) => {
+    const overview = await window.omniEdu.getKnowledgeOverview();
+    const resource = overview.resources.find((item) => item.id === resourceId);
+    return resource?.parseStatus === 'ready' || resource?.parseStatus === 'failed';
+  }, secondPdfResource.id, { timeout: 180_000 });
+  const batchJobReadback = await first.page.evaluate(() => window.omniEdu.listParseJobs(5));
+  assert.ok(batchJobReadback.length >= 1, 'batch parse must persist a job record');
+  assert.equal(batchJobReadback[0].status, 'ready', 'batch parse job must settle as ready');
+  assert.equal(batchJobReadback[0].succeededResources, 1, 'batch parse must report the parsed resource count');
+  const afterBatchOverview = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
+  const secondParsed = afterBatchOverview.resources.find((resource) => resource.id === secondPdfResource.id);
+  assert.equal(secondParsed?.parseStatus, 'ready', `batch parse must settle the second pdf as ready: ${secondParsed?.parseError}`);
+  assert.ok(afterBatchOverview.chunks.some((chunk) => chunk.resourceId === secondPdfResource.id && chunk.contentMd.includes('Quadratic')), 'batch-parsed pdf text must land in searchable chunks');
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="knowledge-batch-parse-status"]')?.textContent === 'ready', undefined, { timeout: 30_000 });
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-knowledge-batch-parse-1366x768.png'), fullPage: true });
 
   // Knowledge search box and the vector index panel are covered by
   // scripts/knowledge-search-electron-smoke.mjs: keeping them out of this long
@@ -2320,7 +2447,7 @@ async function run() {
   await second.page.getByTestId('data-backup-verify-success').waitFor({ state: 'visible', timeout: 15_000 });
   assert.equal((await second.page.getByTestId('data-backup-verify-path').textContent())?.trim(), dataBackupExportPath, 'an external backup must remain verifiable after application restart');
   const knowledgeAfterRestart = await second.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
-  assert.equal(knowledgeAfterRestart.counts.resources, 4, 'knowledge resources should persist after restart');
+  assert.equal(knowledgeAfterRestart.counts.resources, 1 + expectedDirectoryFiles, 'knowledge resources should persist after restart');
   assert.ok(knowledgeAfterRestart.counts.chunks >= 1, 'knowledge chunks should persist after restart');
   const directoryImportJobAfterRestart = (await second.page.evaluate(() => window.omniEdu.listKnowledgeImportJobs(5))).find((job) => job.id === directoryImportJob.id);
   assert.equal(directoryImportJobAfterRestart?.status, 'ready', 'directory import job must persist after restart');
@@ -2329,6 +2456,17 @@ async function run() {
   assert.equal(parsedResourceAfterRestart?.parseStatus, 'ready', 'parsed resource status must persist after restart');
   assert.match(parsedResourceAfterRestart?.parseEngine ?? '', /pypdf|docling/, 'recorded parse engine must persist after restart');
   assert.ok((parsedResourceAfterRestart?.chunkCount ?? 0) >= 1, 'parsed chunks must persist after restart');
+  const secondParsedAfterRestart = knowledgeAfterRestart.resources.find((resource) => resource.id === secondPdfResource.id);
+  assert.equal(secondParsedAfterRestart?.parseStatus, 'ready', 'batch-parsed resource must persist after restart');
+  assert.ok((secondParsedAfterRestart?.chunkCount ?? 0) >= 1, 'batch-parsed chunks must persist after restart');
+  if (scanPdfAvailable) {
+    const scanParsedAfterRestart = knowledgeAfterRestart.resources.find((resource) => resource.originalFileName === 'e2e-扫描卷3.pdf');
+    assert.equal(scanParsedAfterRestart?.parseStatus, 'ready', 'scan-OCR resource must persist after restart');
+    assert.match(scanParsedAfterRestart?.parseEngine ?? '', /rapidocr/, 'scan OCR engine label must persist after restart');
+    assert.ok((scanParsedAfterRestart?.chunkCount ?? 0) >= 1, 'scan OCR chunks must persist after restart');
+  }
+  const parseJobsAfterRestart = await second.page.evaluate(() => window.omniEdu.listParseJobs(5));
+  assert.ok(parseJobsAfterRestart.some((job) => job.status === 'ready'), 'batch parse job must persist after restart');
   const exerciseSetsAfterRestart = await second.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id);
   assert.ok(exerciseSetsAfterRestart.some((item) => item.id === confirmedExerciseSet.id), 'UI-confirmed exercise set should persist after restart');
   const editedSetAfterRestart = exerciseSetsAfterRestart.find((item) => item.id === editedExerciseSet.id);
@@ -2526,12 +2664,15 @@ async function run() {
         'paper lock state persistence', 'paper validation summary readback', 'paper three-artifact export with file hash readback',
         'paper export separates answers from paper body', 'paper restart readback', 'paper dual-viewport capture',
         'paper drag reorder persists and reverts', 'paper version save with note', 'paper version preview read-only', 'paper version restore with confirm', 'paper version restart readback',
+        'paper AI candidate no-key error actionable', 'paper AI candidate failure zero confirmations',
         'error taxonomy read-only classification with UTC window', 'error taxonomy unknown handling and boundary', 'error taxonomy zero writes',
         'error review teacher category correction', 'error review confirm writes learning record', 'error review pending zero writes', 'error review restart readback',
         'local pdf parse from teacher control with truthful engine', 'parsed pdf chunks become searchable', 'parsed resource restart readback',
+        'scan pdf parsed through local OCR with truthful engine', 'scan pdf OCR text becomes searchable', 'scan pdf restart readback',
+        'batch parse queue parses remaining pending resources', 'batch parse job readback', 'batch parse restart readback',
         'artifact library lists exported files with hash', 'artifact filters by type and status', 'artifact open from teacher control', 'artifact dual-viewport capture',      ],
-      passed: 235,
-      total: 235,
+      passed: 243,
+      total: 243,
       viewports: ['1366x768', '1920x1080'],
       screenshots: [
         join(artifactRoot, 'frontend-mistakes-1366x768.png'),
@@ -2575,6 +2716,8 @@ async function run() {
         join(artifactRoot, 'frontend-error-taxonomy-1366x768.png'),
         join(artifactRoot, 'frontend-error-review-writeback-1366x768.png'),
         join(artifactRoot, 'frontend-knowledge-parse-1366x768.png'),
+        join(artifactRoot, 'frontend-knowledge-scan-ocr-1366x768.png'),
+        join(artifactRoot, 'frontend-knowledge-batch-parse-1366x768.png'),
         join(artifactRoot, 'frontend-artifacts-1366x768.png'),
         join(artifactRoot, 'frontend-artifacts-1920x1080.png'),
       ],

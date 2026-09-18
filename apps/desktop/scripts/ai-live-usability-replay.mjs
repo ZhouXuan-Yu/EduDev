@@ -121,12 +121,43 @@ async function run() {
       });
     }
 
+    // Live paper candidate generation: blueprint → paper → live model generates
+    // candidates → teacher confirms → question bank + paper readback. This is
+    // the live-provider evidence for the W07 phase 3 flow (fake-provider
+    // evidence lives in test:ai-paper-candidates).
+    const liveBlueprint = await page.evaluate(() => window.omniEdu.createPaperBlueprint({
+      title: 'Live AI 候选蓝图',
+      subject: '数学',
+      grade: '八年级',
+      textbookVersion: '人教版',
+      scope: '一次函数',
+      knowledgePoints: ['一次函数'],
+      typeSpecs: [{ questionType: '解答题', count: 1, pointsPerQuestion: 10 }],
+      difficultyMix: { easy: 100, medium: 0, hard: 0 },
+      durationMinutes: 30,
+      sourcePreference: 'any',
+    }));
+    const livePaper = await page.evaluate((blueprintId) => window.omniEdu.createPaper({ blueprintId }), liveBlueprint.id);
+    const generated = await page.evaluate((paperId) => window.omniEdu.generatePaperAiCandidates(paperId), livePaper.id);
+    assert.ok(generated.candidates.length >= 1, 'live model should return at least one valid candidate');
+    assert.ok(generated.confirmation.payload.paperCandidates.model, 'live proposal should record the model name');
+    const liveDecision = await page.evaluate((confirmationId) => window.omniEdu.confirmAiConfirmation({ id: confirmationId }), generated.confirmation.id);
+    assert.equal(liveDecision.item.status, 'confirmed', 'live candidate confirmation should settle as confirmed');
+    assert.ok(liveDecision.readback.paperCandidates.questionIds.length >= 1, 'live write should read back question ids');
+    const livePaperAfter = await page.evaluate((paperId) => window.omniEdu.getPaper(paperId), livePaper.id);
+    assert.ok(livePaperAfter.items.some((item) => item.sourceKind === 'generated'), 'live paper should contain ai_generated items');
+
     console.log(JSON.stringify({
       ok: true,
       skipped: false,
       model: savedSettings.model,
       sampleCount: cases.length,
       cases,
+      livePaperCandidates: {
+        candidateCount: generated.candidates.length,
+        model: generated.confirmation.payload.paperCandidates.model,
+        confirmedQuestionIds: liveDecision.readback.paperCandidates.questionIds.length,
+      },
     }, null, 2));
   } catch (error) {
     throw new Error([

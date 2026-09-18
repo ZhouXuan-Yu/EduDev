@@ -115,6 +115,7 @@ try {
   assert.match(knowledgeResourceEmpty, /data-testid="knowledge-parse-engines"/);
   assert.match(knowledgeResourceEmpty, /data-testid="knowledge-search-input"/);
   assert.match(knowledgeResourceEmpty, /data-testid="knowledge-search-submit"/);
+  assert.match(knowledgeResourceEmpty, /data-testid="knowledge-batch-parse"/);
 
   const vectorPanel = renderToStaticMarkup(React.createElement(VectorIndexPanel, { setStatus: noop }));
   assert.match(vectorPanel, /data-testid="vector-index-panel"/);

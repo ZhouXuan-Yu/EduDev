@@ -15,6 +15,8 @@ export type NdjsonWorkerOptions = {
   maxFrameBytes?: number;
   /** Optional python modules (checked with importlib.find_spec, never imported) used to pick the right interpreter. */
   pythonModules?: string[];
+  /** Preferred extra modules: an interpreter satisfying pythonModules+these wins; otherwise the first pythonModules-only match is used. */
+  pythonOptionalModules?: string[];
   /** Kill the worker after this many idle milliseconds so heavy python deps are not held resident. */
   idleTimeoutMs?: number;
 };
@@ -121,12 +123,15 @@ export class NdjsonWorkerClient {
 
   private resolvePython(): { command: string; args: string[] } {
     const probeModules = this.options.pythonModules ?? [];
-    const cacheKey = `${this.options.moduleName}:${probeModules.join(',')}`;
+    const preferredModules = this.options.pythonOptionalModules ?? [];
+    const cacheKey = `${this.options.moduleName}:${probeModules.join(',')}${preferredModules.length ? `:pref:${preferredModules.join(',')}` : ''}`;
     const cached = pythonResolutionCache.get(cacheKey);
     if (cached) return cached;
     const candidates = localPythonCandidates();
     const snippet = probeModules.length ? moduleProbeSnippet(probeModules) : '';
-    let resolved = { command: candidates.find((candidate) => existsSync(candidate)) ?? candidates[0], args: [] as string[] };
+    const preferredSnippet = probeModules.length && preferredModules.length ? moduleProbeSnippet([...probeModules, ...preferredModules]) : '';
+    const fallback = { command: candidates.find((candidate) => existsSync(candidate)) ?? candidates[0], args: [] as string[] };
+    let resolved: { command: string; args: string[] } | null = null;
     for (const candidate of candidates) {
       if (!existsSync(candidate)) continue;
       const args = pythonArgsFor(candidate);
@@ -135,11 +140,21 @@ export class NdjsonWorkerClient {
         break;
       }
       const probe = spawnSync(candidate, [...args, '-c', snippet], { stdio: 'ignore', timeout: 15_000 });
-      if (probe.status === 0) {
-        resolved = { command: candidate, args };
-        break;
+      if (probe.status !== 0) continue;
+      if (preferredSnippet) {
+        const preferred = spawnSync(candidate, [...args, '-c', preferredSnippet], { stdio: 'ignore', timeout: 15_000 });
+        if (preferred.status === 0) {
+          resolved = { command: candidate, args };
+          break;
+        }
+        fallback.command = candidate;
+        fallback.args = args;
+        continue;
       }
+      resolved = { command: candidate, args };
+      break;
     }
+    resolved = resolved ?? fallback;
     pythonResolutionCache.set(cacheKey, resolved);
     return resolved;
   }
