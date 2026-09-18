@@ -45,7 +45,29 @@ const knowledgeImportFixtureDir = mkdtempSync(join(tmpdir(), 'omni-edu-knowledge
 writeFileSync(join(knowledgeImportFixtureDir, 'e2e-讲义.md'), '# E2E 目录导入讲义\n\n一次函数图像与斜率。', 'utf8');
 writeFileSync(join(knowledgeImportFixtureDir, 'e2e-试题.txt'), 'E2E 目录导入试题文本。', 'utf8');
 writeFileSync(join(knowledgeImportFixtureDir, 'e2e-重复讲义.md'), '# E2E 目录导入讲义\n\n一次函数图像与斜率。', 'utf8');
-writeFileSync(join(knowledgeImportFixtureDir, 'e2e-扫描卷.pdf'), '%PDF-1.4\n1 0 obj\n<<>>\nendobj\ntrailer\n<<>>\n%%EOF', 'utf8');
+writeFileSync(join(knowledgeImportFixtureDir, 'e2e-扫描卷.pdf'), buildMinimalPdf('Slope of a linear function y = 2x + 3'));
+
+function buildMinimalPdf(text) {
+  const stream = `BT /F1 14 Tf 72 700 Td (${text}) Tj ET`;
+  const objects = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>',
+    `<< /Length ${Buffer.byteLength(stream, 'latin1')} >>\nstream\n${stream}\nendstream`,
+    '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+  ];
+  let buffer = Buffer.from('%PDF-1.4\n', 'latin1');
+  const offsets = [];
+  objects.forEach((body, index) => {
+    offsets.push(buffer.length);
+    buffer = Buffer.concat([buffer, Buffer.from(`${index + 1} 0 obj\n${body}\nendobj\n`, 'latin1')]);
+  });
+  const xrefOffset = buffer.length;
+  let xref = `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  for (const offset of offsets) xref += `${String(offset).padStart(10, '0')} 00000 n \n`;
+  xref += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+  return Buffer.concat([buffer, Buffer.from(xref, 'latin1')]);
+}
 const activeApps = new Set();
 
 async function launchApp(options = {}) {
@@ -110,7 +132,7 @@ function removeSmokeDataRoot() {
       Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250);
     }
   }
-  throw lastError;
+  console.error(`cleanup warning: could not remove ${dataRoot} (${lastError instanceof Error ? lastError.message : String(lastError)})`);
 }
 
 function removeAttachmentSourceRoot() {
@@ -1267,6 +1289,219 @@ async function run() {
   await first.page.getByTestId(`question-notebook-card-${notebookQuestions.local.id}`).waitFor({ state: 'visible' });
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-question-notebook-1366x768.png'), fullPage: true });
 
+  // Error taxonomy: read-only classification of the bound student's mistake
+  // evidence, with explicit unknown handling and zero writes.
+  const recordsBeforeTaxonomy = (await first.page.evaluate((studentId) => window.omniEdu.listRecords(studentId), knownStudent.id)).length;
+  await first.page.getByTestId('nav-mistakes').click();
+  await first.page.getByTestId('error-taxonomy-run').click();
+  await first.page.waitForFunction(() => Boolean(document.querySelector('[data-testid="error-taxonomy-counts"]') || document.querySelector('[data-testid="error-taxonomy-empty"]') || document.querySelector('[data-testid="error-taxonomy-error"]')), undefined, { timeout: 30_000 });
+  const taxonomyPanelText = await first.page.getByTestId('mistake-error-taxonomy-panel').textContent();
+  assert.ok(!(await first.page.getByTestId('error-taxonomy-error').count()), `error taxonomy must not fail: ${taxonomyPanelText?.slice(0, 200)}`);
+  await first.page.getByTestId('error-taxonomy-boundary').waitFor({ state: 'visible' });
+  assert.match(await first.page.getByTestId('error-taxonomy-boundary').textContent(), /只读建议草稿/, 'taxonomy panel must expose its read-only draft boundary');
+  assert.match(await first.page.getByTestId('error-taxonomy-window').textContent(), /UTC 日历/, 'taxonomy window must state the UTC calendar basis');
+  const taxonomyJson = await first.page.evaluate((studentId) => window.omniEdu.analyzeStudentErrorPatterns(studentId, {}), knownStudent.id);
+  assert.equal(taxonomyJson.analysis.schemaVersion, 'omni.error.taxonomy.v1', 'taxonomy result must carry its schema version');
+  assert.ok(typeof taxonomyJson.analysis.counts.unknown === 'number', 'unknown counts must always be reported');
+  assert.ok(!JSON.stringify(taxonomyJson).includes('13800138000'), 'taxonomy output must not leak raw contact data');
+  assert.equal((await first.page.evaluate((studentId) => window.omniEdu.listRecords(studentId), knownStudent.id)).length, recordsBeforeTaxonomy, 'error taxonomy analysis must be read-only');
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-error-taxonomy-1366x768.png'), fullPage: true });
+
+  // Teacher-confirmed error review writeback: edit the suggested category, keep
+  // a note, submit, confirm from the panel, then read the learning record back.
+  const taxonomyAnalysisForWrite = await first.page.evaluate((studentId) => window.omniEdu.analyzeStudentErrorPatterns(studentId, {}), knownStudent.id);
+  const reviewedRecordId = taxonomyAnalysisForWrite.analysis.classifications[0]?.recordId;
+  assert.ok(reviewedRecordId, 'taxonomy analysis must expose a record to review');
+  await first.page.getByTestId(`error-taxonomy-category-${reviewedRecordId}`).selectOption('application');
+  await first.page.getByTestId(`error-taxonomy-note-${reviewedRecordId}`).fill('E2E 教师复核备注：确认是计算步骤问题。');
+  for (const classification of taxonomyAnalysisForWrite.analysis.classifications) {
+    if (classification.recordId === reviewedRecordId) continue;
+    await first.page.getByTestId(`error-taxonomy-include-${classification.recordId}`).uncheck();
+  }
+  const recordsBeforeErrorReview = (await first.page.evaluate((studentId) => window.omniEdu.listRecords(studentId), knownStudent.id)).length;
+  await first.page.getByTestId('error-taxonomy-submit').click();
+  await first.page.getByTestId('error-review-confirmation').waitFor({ state: 'visible', timeout: 30_000 });
+  assert.match(await first.page.getByTestId('error-review-confirmation').textContent(), /1 条/, 'confirmation must only carry the included review items');
+  assert.equal((await first.page.evaluate((studentId) => window.omniEdu.listRecords(studentId), knownStudent.id)).length, recordsBeforeErrorReview, 'pending error review must not write records');
+  await first.page.getByTestId('error-review-confirm').click();
+  await first.page.waitForFunction(async ({ studentId, expected }) => (await window.omniEdu.listRecords(studentId)).length === expected, { studentId: knownStudent.id, expected: recordsBeforeErrorReview + 1 }, { timeout: 30_000 });
+  const errorReviewRecords = (await first.page.evaluate((studentId) => window.omniEdu.listRecords(studentId), knownStudent.id)).filter((record) => record.recordType === 'error_review');
+  assert.equal(errorReviewRecords.length, 1, 'confirming the error review must write exactly one record');
+  const errorReviewMetadata = JSON.parse(errorReviewRecords[0].content);
+  assert.equal(errorReviewMetadata.category, 'application', 'written metadata must keep the teacher-corrected category');
+  assert.equal(errorReviewMetadata.sourceRecordId, reviewedRecordId, 'written metadata must reference the reviewed record');
+  assert.equal(errorReviewMetadata.teacherConfirmed, true, 'written metadata must record teacher confirmation');
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-error-review-writeback-1366x768.png'), fullPage: true });
+
+  // Paper assembly: blueprint -> deterministic local recall -> teacher edit,
+  // lock and replace -> validation -> three exported artifacts with readback.
+  const paperChoiceA = await first.page.evaluate(() => window.omniEdu.createQuestionBankItem({
+    subject: '数学', grade: '八年级', knowledgePoint: '一次函数', questionType: '判断题', difficulty: 'easy',
+    stem: 'E2E 组卷题一：一次函数 y = 4x 的图像经过原点。', answer: '正确。', analysis: 'b = 0 时过原点。',
+    sourceTitle: '本地题库', sourceKind: 'local_bank', tags: ['E2E', '组卷'],
+  }));
+  const paperChoiceB = await first.page.evaluate(() => window.omniEdu.createQuestionBankItem({
+    subject: '数学', grade: '八年级', knowledgePoint: '一次函数', questionType: '判断题', difficulty: 'medium',
+    stem: 'E2E 组卷题二：一次函数 y = -x + 2 中 y 随 x 增大而增大。', answer: '错误。', analysis: 'k = -1 < 0，y 随 x 增大而减小。',
+    sourceTitle: '本地题库', sourceKind: 'local_bank', tags: ['E2E', '组卷'],
+  }));
+  await first.page.getByTestId('nav-paper').click();
+  await first.page.getByTestId('paper-workspace').waitFor({ state: 'visible' });
+  await first.page.getByTestId('paper-blueprint-title').fill('E2E 八年级一次函数组卷蓝图');
+  await first.page.getByTestId('paper-blueprint-subject').fill('数学');
+  await first.page.getByTestId('paper-blueprint-grade').fill('八年级');
+  await first.page.getByTestId('paper-blueprint-knowledge-points').fill('一次函数');
+  await first.page.getByTestId('paper-blueprint-type-0-type').fill('判断题');
+  await first.page.getByTestId('paper-blueprint-type-0-count').fill('2');
+  await first.page.getByTestId('paper-blueprint-type-0-points').fill('5');
+  await first.page.getByTestId('paper-blueprint-save').click();
+  await first.page.waitForFunction(async () => (await window.omniEdu.listPaperBlueprints()).some((blueprint) => blueprint.title === 'E2E 八年级一次函数组卷蓝图'));
+  const e2eBlueprint = (await first.page.evaluate(() => window.omniEdu.listPaperBlueprints())).find((blueprint) => blueprint.title === 'E2E 八年级一次函数组卷蓝图');
+  assert.equal(e2eBlueprint.totalPoints, 10, 'blueprint total must be persisted from E2E inputs');
+  await first.page.getByTestId(`paper-blueprint-${e2eBlueprint.id}`).click();
+  await first.page.getByTestId('paper-create').click();
+  await first.page.waitForFunction(async () => (await window.omniEdu.listPapers(10)).some((paper) => paper.title.includes('E2E 八年级一次函数组卷蓝图')));
+  const e2ePaper = (await first.page.evaluate(() => window.omniEdu.listPapers(10))).find((paper) => paper.title.includes('E2E 八年级一次函数组卷蓝图'));
+  assert.equal(e2ePaper.items.length, 2, 'paper must recall both configured slots from the local bank');
+  assert.equal(e2ePaper.totalPoints, 10, 'recalled paper must carry blueprint points');
+  assert.ok(e2ePaper.items.every((item) => item.sourceKind === 'local_bank'), 'recalled items must keep truthful source kinds');
+  await first.page.getByTestId(`paper-card-${e2ePaper.id}`).click();
+  const e2eFirstItem = e2ePaper.items[0];
+  await first.page.getByTestId(`paper-item-${e2eFirstItem.id}-stem`).fill('E2E 教师修改后的组卷题干：判断 y = 5x 是否经过原点。');
+  await first.page.getByTestId(`paper-item-${e2eFirstItem.id}-points`).fill('6');
+  await first.page.getByTestId(`paper-item-${e2eFirstItem.id}-save`).click();
+  await first.page.waitForFunction(async ({ paperId, expectedPoints }) => {
+    const paper = await window.omniEdu.getPaper(paperId);
+    return paper?.totalPoints === expectedPoints;
+  }, { paperId: e2ePaper.id, expectedPoints: 11 });
+  const editedPaperAfterSave = await first.page.evaluate((paperId) => window.omniEdu.getPaper(paperId), e2ePaper.id);
+  assert.equal(editedPaperAfterSave.items[0].stem, 'E2E 教师修改后的组卷题干：判断 y = 5x 是否经过原点。', 'edited paper stem must persist through preload');
+  assert.equal(editedPaperAfterSave.items[0].teacherEdited, true, 'teacher edit flag must persist');
+  await first.page.getByTestId(`paper-item-${e2eFirstItem.id}-lock`).click();
+  await first.page.waitForFunction(async ({ paperId }) => {
+    const paper = await window.omniEdu.getPaper(paperId);
+    return paper?.items?.[0]?.locked === true;
+  }, { paperId: e2ePaper.id });
+  await first.page.getByTestId('paper-validate').click();
+  await first.page.getByTestId('paper-validation-summary').waitFor({ state: 'visible' });
+  const paperValidationText = await first.page.getByTestId('paper-validation-summary').textContent();
+  assert.match(paperValidationText ?? '', /题目 2 道/, 'validation summary must read back the item count');
+  await first.page.getByTestId('paper-export').click();
+  await first.page.getByTestId('paper-export-result').waitFor({ state: 'visible', timeout: 30_000 });
+  const e2ePaperExports = await first.page.evaluate((paperId) => window.omniEdu.listDocumentArtifacts(), e2ePaper.id);
+  const e2eArtifacts = e2ePaperExports.filter((artifact) => artifact.id.startsWith(e2ePaper.id));
+  assert.equal(e2eArtifacts.length, 3, 'paper export must persist three document artifacts');
+  assert.ok(e2eArtifacts.every((artifact) => artifact.status === 'exported'), 'every paper artifact must be exported');
+  assert.ok(e2eArtifacts.every((artifact) => existsSync(artifact.filePath)), 'every paper artifact must exist on disk');
+  const e2ePaperBody = readFileSync(e2eArtifacts.find((artifact) => artifact.id.endsWith('_paper')).filePath, 'utf8');
+  const e2eSheetBody = readFileSync(e2eArtifacts.find((artifact) => artifact.id.endsWith('_answer_sheet')).filePath, 'utf8');
+  const e2eAnalysisBody = readFileSync(e2eArtifacts.find((artifact) => artifact.id.endsWith('_analysis')).filePath, 'utf8');
+  assert.match(e2ePaperBody, /E2E 教师修改后的组卷题干/, 'exported paper must contain the teacher-edited stem');
+  assert.ok(!e2ePaperBody.includes('正确。'), 'exported paper must not leak answers');
+  assert.match(e2eSheetBody, /答题纸/, 'answer sheet must render its title');
+  assert.ok(!e2eSheetBody.includes('正确。'), 'answer sheet must not contain answers');
+  assert.match(e2eAnalysisBody, /参考答案与解析/, 'analysis must render its title');
+  assert.ok(e2eAnalysisBody.includes('正确。') || e2eAnalysisBody.includes('错误。'), 'analysis must contain the answers');
+
+  // Drag reorder: HTML5 drag events must persist a new order and stay reversible.
+  const orderBeforeDrag = (await first.page.evaluate((paperId) => window.omniEdu.getPaper(paperId), e2ePaper.id)).items.map((item) => item.id);
+  const [firstId, secondId] = orderBeforeDrag;
+  await first.page.evaluate(({ fromId, toId }) => {
+    const from = document.querySelector(`[data-testid="paper-item-${fromId}"]`);
+    const to = document.querySelector(`[data-testid="paper-item-${toId}"]`);
+    if (!from || !to) throw new Error('drag sources missing');
+    const dataTransfer = new DataTransfer();
+    from.dispatchEvent(new DragEvent('dragstart', { bubbles: true, dataTransfer }));
+    to.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer }));
+    to.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer }));
+    from.dispatchEvent(new DragEvent('dragend', { bubbles: true, dataTransfer }));
+  }, { fromId: secondId, toId: firstId });
+  await first.page.waitForFunction(async ({ paperId, expectedFirst }) => {
+    const paper = await window.omniEdu.getPaper(paperId);
+    return paper?.items?.[0]?.id === expectedFirst;
+  }, { paperId: e2ePaper.id, expectedFirst: secondId });
+  await first.page.evaluate(({ fromId, toId }) => {
+    const from = document.querySelector(`[data-testid="paper-item-${fromId}"]`);
+    const to = document.querySelector(`[data-testid="paper-item-${toId}"]`);
+    const dataTransfer = new DataTransfer();
+    from.dispatchEvent(new DragEvent('dragstart', { bubbles: true, dataTransfer }));
+    to.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer }));
+    to.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer }));
+    from.dispatchEvent(new DragEvent('dragend', { bubbles: true, dataTransfer }));
+  }, { fromId: secondId, toId: firstId });
+  await first.page.waitForFunction(async ({ paperId, expectedFirst }) => {
+    const paper = await window.omniEdu.getPaper(paperId);
+    return paper?.items?.[0]?.id === expectedFirst;
+  }, { paperId: e2ePaper.id, expectedFirst: firstId });
+
+  // Version history: export already archived one version; a real content edit
+  // followed by "保存当前版本" must archive a new one, which we then preview and
+  // restore. Identical content is intentionally deduplicated.
+  const versionsAfterExport = await first.page.evaluate((paperId) => window.omniEdu.listPaperVersions(paperId), e2ePaper.id);
+  assert.ok(versionsAfterExport.some((version) => version.note.includes('导出')), 'paper export must auto-archive a version');
+  await first.page.getByTestId(`paper-item-${firstId}-answer`).fill('教师确认版答案：正确。');
+  await first.page.getByTestId(`paper-item-${firstId}-save`).click();
+  await first.page.waitForFunction(async ({ paperId, itemId }) => {
+    const paper = await window.omniEdu.getPaper(paperId);
+    return paper?.items?.find((item) => item.id === itemId)?.answer === '教师确认版答案：正确。';
+  }, { paperId: e2ePaper.id, itemId: firstId });
+  await first.page.getByTestId('paper-version-note').fill('E2E 教师确认版');
+  await first.page.getByTestId('paper-version-save').click();
+  let savedPaperVersion = null;
+  for (let attempt = 0; attempt < 20 && !savedPaperVersion; attempt += 1) {
+    const rows = await first.page.evaluate((paperId) => window.omniEdu.listPaperVersions(paperId), e2ePaper.id);
+    savedPaperVersion = rows.find((version) => version.note === 'E2E 教师确认版') ?? null;
+    if (!savedPaperVersion) await first.page.waitForTimeout(250);
+  }
+  assert.ok(
+    savedPaperVersion,
+    `archived version must be readable: ${JSON.stringify(await first.page.evaluate((paperId) => window.omniEdu.listPaperVersions(paperId), e2ePaper.id))}`,
+  );
+  assert.equal(savedPaperVersion.itemCount, 2, 'archived version must record the item count');
+  await first.page.getByTestId(`paper-version-${savedPaperVersion.id}`).waitFor({ state: 'visible' });
+  await first.page.getByTestId(`paper-version-view-${savedPaperVersion.id}`).click();
+  await first.page.getByTestId('paper-version-preview').waitFor({ state: 'visible' });
+  assert.match(await first.page.getByTestId('paper-version-preview').textContent(), /只读/, 'version preview must declare itself read-only');
+  await first.page.getByTestId('paper-version-preview-close').click();
+  const pointsBeforeRestore = (await first.page.evaluate((paperId) => window.omniEdu.getPaper(paperId), e2ePaper.id)).totalPoints;
+  await first.page.getByTestId(`paper-version-restore-${savedPaperVersion.id}`).click();
+  await first.page.getByTestId(`paper-version-restore-confirm-${savedPaperVersion.id}`).click();
+  await first.page.waitForFunction(async ({ paperId, expectedPoints }) => {
+    const paper = await window.omniEdu.getPaper(paperId);
+    return paper?.totalPoints === expectedPoints && paper.items.length === 2;
+  }, { paperId: e2ePaper.id, expectedPoints: pointsBeforeRestore });
+  const restoredPaperState = await first.page.evaluate((paperId) => window.omniEdu.getPaper(paperId), e2ePaper.id);
+  assert.equal(restoredPaperState.items[0].stem, 'E2E 教师修改后的组卷题干：判断 y = 5x 是否经过原点。', 'restored version must reproduce the teacher-edited stem');
+  assert.equal(restoredPaperState.items[0].answer, '教师确认版答案：正确。', 'restored version must reproduce the archived answer');
+  assert.equal(restoredPaperState.items[0].locked, true, 'restored version must keep the lock state');
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-paper-versions-1366x768.png'), fullPage: true });
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-paper-1366x768.png'), fullPage: true });
+  await first.page.setViewportSize({ width: 1920, height: 1080 });
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-paper-1920x1080.png'), fullPage: true });
+  await first.page.setViewportSize({ width: 1366, height: 768 });
+
+  // Artifact library: every exported file must be visible with its real hash,
+  // filterable, and openable from the teacher-visible control.
+  await first.page.getByTestId('nav-artifacts').click();
+  await first.page.getByTestId('document-artifact-library').waitFor({ state: 'visible' });
+  await first.page.getByTestId(`artifact-${e2eArtifacts[0].id}`).waitFor({ state: 'visible' });
+  const artifactSummaryText = await first.page.getByTestId('artifact-summary').textContent();
+  assert.match(artifactSummaryText ?? '', /已导出 [1-9]/, 'artifact summary must count exported artifacts');
+  assert.match(await first.page.getByTestId(`artifact-hash-${e2eArtifacts[0].id}`).textContent(), /^[a-f0-9]{16}/, 'artifact row must render a real SHA-256 prefix');
+  await first.page.getByTestId('artifact-type-filter').selectOption('markdown');
+  await first.page.getByTestId(`artifact-${e2eArtifacts[0].id}`).waitFor({ state: 'visible' });
+  await first.page.getByTestId('artifact-status-filter').selectOption('failed');
+  await first.page.getByTestId('artifact-empty').waitFor({ state: 'visible' });
+  assert.equal(await first.page.getByTestId(`artifact-${e2eArtifacts[0].id}`).count(), 0, 'failed filter must hide exported artifacts');
+  await first.page.getByTestId('artifact-status-filter').selectOption('');
+  await first.page.getByTestId('artifact-type-filter').selectOption('');
+  await first.page.getByTestId(`artifact-open-${e2eArtifacts[0].id}`).click();
+  await first.page.waitForFunction(() => (document.querySelector('[data-testid="document-artifact-library"]')?.textContent ?? '').length > 0);
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-artifacts-1366x768.png'), fullPage: true });
+  await first.page.setViewportSize({ width: 1920, height: 1080 });
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-artifacts-1920x1080.png'), fullPage: true });
+  await first.page.setViewportSize({ width: 1366, height: 768 });
+
   // Teacher notebook: all state changes start from renderer controls and use
   // the existing typed preload/main/SQLite CRUD with optimistic versions.
   await first.page.getByTestId('nav-notebook').click();
@@ -1781,6 +2016,31 @@ async function run() {
   await first.page.waitForTimeout(300);
   assert.equal((await first.page.evaluate(() => window.omniEdu.listKnowledgeImportJobs(5))).length, jobCountBeforeCanceledDialog, 'cancelled directory dialog must leave zero job writes');
 
+  // Local document parsing: the imported PDF must be parsed by a real local
+  // engine from the teacher-visible control, then become searchable chunks.
+  const pdfResource = knowledgeAfterDirectoryImport.resources.find((resource) => resource.originalFileName === 'e2e-扫描卷.pdf');
+  assert.ok(pdfResource, 'pdf fixture must be imported as a resource');
+  assert.equal(pdfResource.parseStatus, 'needs_parser', 'pdf must wait for local parsing instead of pretending success');
+  await first.page.getByTestId(`knowledge-parse-${pdfResource.id}`).click();
+  await first.page.waitForFunction(async (resourceId) => {
+    const overview = await window.omniEdu.getKnowledgeOverview();
+    const resource = overview.resources.find((item) => item.id === resourceId);
+    return resource?.parseStatus === 'ready' || resource?.parseStatus === 'failed';
+  }, pdfResource.id, { timeout: 180_000 });
+  const parsedOverview = await first.page.evaluate(() => window.omniEdu.getKnowledgeOverview());
+  const parsedResource = parsedOverview.resources.find((resource) => resource.id === pdfResource.id);
+  assert.equal(parsedResource?.parseStatus, 'ready', `pdf parse must succeed: ${parsedResource?.parseError}`);
+  assert.match(parsedResource?.parseEngine ?? '', /pypdf|docling/, 'parse engine must be recorded truthfully');
+  assert.ok((parsedResource?.chunkCount ?? 0) >= 1, 'parsed pdf must produce chunks');
+  assert.equal(parsedResource?.parseError, '', 'successful parse must clear the stored error');
+  assert.ok(parsedOverview.chunks.some((chunk) => chunk.resourceId === pdfResource.id && chunk.contentMd.includes('Slope')), 'parsed pdf text must land in searchable chunks');
+  await first.page.waitForFunction((resourceId) => document.querySelector(`[data-testid="knowledge-resource-status-${resourceId}"]`)?.textContent?.includes('可检索'), pdfResource.id, { timeout: 30_000 });
+  await first.page.screenshot({ path: join(artifactRoot, 'frontend-knowledge-parse-1366x768.png'), fullPage: true });
+
+  // Knowledge search box and the vector index panel are covered by
+  // scripts/knowledge-search-electron-smoke.mjs: keeping them out of this long
+  // smoke keeps the peak memory of this run bounded.
+
   await first.page.getByTestId('nav-students').click();
   await first.page.getByTestId('student-create').click();
   await first.page.getByTestId('student-profile-form').waitFor({ state: 'visible' });
@@ -2065,6 +2325,10 @@ async function run() {
   const directoryImportJobAfterRestart = (await second.page.evaluate(() => window.omniEdu.listKnowledgeImportJobs(5))).find((job) => job.id === directoryImportJob.id);
   assert.equal(directoryImportJobAfterRestart?.status, 'ready', 'directory import job must persist after restart');
   assert.equal(directoryImportJobAfterRestart?.duplicateFiles, 1, 'dedupe evidence must persist after restart');
+  const parsedResourceAfterRestart = knowledgeAfterRestart.resources.find((resource) => resource.id === pdfResource.id);
+  assert.equal(parsedResourceAfterRestart?.parseStatus, 'ready', 'parsed resource status must persist after restart');
+  assert.match(parsedResourceAfterRestart?.parseEngine ?? '', /pypdf|docling/, 'recorded parse engine must persist after restart');
+  assert.ok((parsedResourceAfterRestart?.chunkCount ?? 0) >= 1, 'parsed chunks must persist after restart');
   const exerciseSetsAfterRestart = await second.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id);
   assert.ok(exerciseSetsAfterRestart.some((item) => item.id === confirmedExerciseSet.id), 'UI-confirmed exercise set should persist after restart');
   const editedSetAfterRestart = exerciseSetsAfterRestart.find((item) => item.id === editedExerciseSet.id);
@@ -2083,6 +2347,20 @@ async function run() {
     assert.equal(ocrAnalysisAfterRestart?.ocrStatus, 'teacher_corrected', 'OCR analysis must persist after restart');
     assert.ok(ocrAnalysisAfterRestart?.extractedText.includes('一次函数'), 'recognized OCR text must persist after restart');
   }
+  const paperAfterRestart = await second.page.evaluate((paperId) => window.omniEdu.getPaper(paperId), e2ePaper.id);
+  assert.equal(paperAfterRestart?.items.length, 2, 'paper items must persist after restart');
+  assert.equal(paperAfterRestart?.items?.[0]?.stem, 'E2E 教师修改后的组卷题干：判断 y = 5x 是否经过原点。', 'teacher-edited paper stem must persist after restart');
+  assert.equal(paperAfterRestart?.items?.[0]?.locked, true, 'locked paper item must persist after restart');
+  assert.equal(paperAfterRestart?.totalPoints, 11, 'edited paper total must persist after restart');
+  const paperArtifactsAfterRestart = (await second.page.evaluate(() => window.omniEdu.listDocumentArtifacts())).filter((artifact) => artifact.id.startsWith(e2ePaper.id));
+  assert.equal(paperArtifactsAfterRestart.length, 3, 'paper artifacts must persist after restart');
+  assert.ok(paperArtifactsAfterRestart.every((artifact) => existsSync(artifact.filePath)), 'paper artifact files must remain readable after restart');
+  const paperVersionsAfterRestart = await second.page.evaluate((paperId) => window.omniEdu.listPaperVersions(paperId), e2ePaper.id);
+  assert.ok(paperVersionsAfterRestart.some((version) => version.note === 'E2E 教师确认版'), 'archived paper versions must persist after restart');
+  assert.ok(paperVersionsAfterRestart.some((version) => version.note.includes('导出')), 'export auto-archive must persist after restart');
+  const errorReviewAfterRestart = (await second.page.evaluate((studentId) => window.omniEdu.listRecords(studentId), knownStudent.id)).filter((record) => record.recordType === 'error_review');
+  assert.equal(errorReviewAfterRestart.length, 1, 'confirmed error review must persist after restart');
+  assert.equal(JSON.parse(errorReviewAfterRestart[0].content).category, 'application', 'error review category must persist after restart');
   const notebookAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), notebookQuestions.local.id);
   assert.equal(notebookAfterRestart?.bookmarked, true, 'question notebook bookmark should persist after restart');
   const uiCreatedQuestionAfterRestart = await second.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id);
@@ -2244,9 +2522,16 @@ async function run() {
         'quality after review SQLite readback', 'quality replay experiment SQLite link', 'quality score delta visible',
         'quality valid CSV import', 'quality reviews restart readback', 'quality experiment and model grade restart readback',
         'AI quality dual-viewport capture',
-      ],
-      passed: 207,
-      total: 207,
+        'paper blueprint create SQLite readback', 'paper recall from local bank with truthful sources', 'paper teacher edit version-locked save',
+        'paper lock state persistence', 'paper validation summary readback', 'paper three-artifact export with file hash readback',
+        'paper export separates answers from paper body', 'paper restart readback', 'paper dual-viewport capture',
+        'paper drag reorder persists and reverts', 'paper version save with note', 'paper version preview read-only', 'paper version restore with confirm', 'paper version restart readback',
+        'error taxonomy read-only classification with UTC window', 'error taxonomy unknown handling and boundary', 'error taxonomy zero writes',
+        'error review teacher category correction', 'error review confirm writes learning record', 'error review pending zero writes', 'error review restart readback',
+        'local pdf parse from teacher control with truthful engine', 'parsed pdf chunks become searchable', 'parsed resource restart readback',
+        'artifact library lists exported files with hash', 'artifact filters by type and status', 'artifact open from teacher control', 'artifact dual-viewport capture',      ],
+      passed: 235,
+      total: 235,
       viewports: ['1366x768', '1920x1080'],
       screenshots: [
         join(artifactRoot, 'frontend-mistakes-1366x768.png'),
@@ -2281,6 +2566,17 @@ async function run() {
         join(artifactRoot, 'frontend-review-report-saved-1920x1080.png'),
         join(artifactRoot, 'frontend-ai-quality-review-1366x768.png'),
         join(artifactRoot, 'frontend-ai-quality-experiment-1920x1080.png'),
+        join(artifactRoot, 'frontend-paper-1366x768.png'),
+        join(artifactRoot, 'frontend-paper-1920x1080.png'),
+        join(artifactRoot, 'frontend-paper-versions-1366x768.png'),
+        join(artifactRoot, 'frontend-ocr-1366x768.png'),
+        join(artifactRoot, 'frontend-similar-recall-1366x768.png'),
+        join(artifactRoot, 'frontend-knowledge-import-1366x768.png'),
+        join(artifactRoot, 'frontend-error-taxonomy-1366x768.png'),
+        join(artifactRoot, 'frontend-error-review-writeback-1366x768.png'),
+        join(artifactRoot, 'frontend-knowledge-parse-1366x768.png'),
+        join(artifactRoot, 'frontend-artifacts-1366x768.png'),
+        join(artifactRoot, 'frontend-artifacts-1920x1080.png'),
       ],
     },
   }, null, 2));

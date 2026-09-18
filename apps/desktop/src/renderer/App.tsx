@@ -36,6 +36,10 @@ import { PromptInput } from './heroui-pro/components/prompt-input';
 import { PromptSuggestion } from './heroui-pro/components/prompt-suggestion';
 import { MistakesWorkspace } from './components/MistakesWorkspace';
 import { KnowledgeImportPanel } from './components/KnowledgeImportPanel';
+import { KnowledgeResourcePanel } from './components/KnowledgeResourcePanel';
+import { PaperWorkspace } from './components/PaperWorkspace';
+import { DocumentArtifactLibrary } from './components/DocumentArtifactLibrary';
+import { VectorIndexPanel } from './components/VectorIndexPanel';
 import { QuestionNotebookWorkspace } from './components/QuestionNotebookWorkspace';
 import { TeacherNotebookWorkspace } from './components/TeacherNotebookWorkspace';
 import { AiObservabilityWorkspace } from './components/AiObservabilityWorkspace';
@@ -131,7 +135,7 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
 };
 
 
-type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'paper' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
+type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'paper' | 'artifacts' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
   id: string;
@@ -415,6 +419,7 @@ export function App() {
   const [attachmentImport, setAttachmentImport] = useState<AttachmentImportResult | null>(null);
   const [knowledgeOverview, setKnowledgeOverview] = useState<KnowledgeOverview>(emptyKnowledgeOverview);
   const [knowledgeImport, setKnowledgeImport] = useState<KnowledgeImportResult | null>(null);
+  const [knowledgeRevision, setKnowledgeRevision] = useState(0);
 
   const activeStudent = useMemo(() => {
     const selected = students.find((student) => student.id === activeStudentId);
@@ -457,6 +462,7 @@ export function App() {
     { key: 'paper', label: '智能组卷', icon: <FileText size={18} /> },
     { key: 'mistakes', label: '错题训练', icon: <BookOpenCheck size={18} /> },
     { key: 'students', label: '学生', icon: <Users size={18} /> },
+    { key: 'artifacts', label: '产物', icon: <FileText size={18} /> },
     { key: 'settings', label: '设置', icon: <Settings size={18} /> },
     { key: 'mastery', label: '学习路径', icon: <ListChecks size={18} /> },
     { key: 'intake', label: '录入', icon: <ClipboardList size={18} /> },
@@ -469,7 +475,7 @@ export function App() {
     { key: 'analytics', label: '分析', icon: <BarChart3 size={18} /> },
   ];
 
-  const primaryNavKeys: ViewKey[] = ['today', 'ai', 'knowledge', 'question_notebook', 'paper', 'mistakes', 'students', 'settings'];
+  const primaryNavKeys: ViewKey[] = ['today', 'ai', 'knowledge', 'question_notebook', 'paper', 'mistakes', 'students', 'artifacts', 'settings'];
   const advancedNavKeys: ViewKey[] = ['mastery', 'intake', 'review', 'search', 'notebook', 'book', 'memory', 'team', 'analytics'];
   const primaryNavItems = navItems.filter((item) => primaryNavKeys.includes(item.key));
   const advancedNavItems = navItems.filter((item) => advancedNavKeys.includes(item.key));
@@ -795,6 +801,7 @@ export function App() {
     if (!result) return;
     setKnowledgeImport(result);
     setKnowledgeOverview(result.overview);
+    setKnowledgeRevision((current) => current + 1);
     await refreshOverview();
     const okCount = result.items.filter((item) => item.ok).length;
     const failedCount = result.items.length - okCount;
@@ -2283,7 +2290,7 @@ export function App() {
       <div className="knowledge-layout">
         <section className="work-panel">
           <WorkspaceLabel number="01" title="资源导入" description="PDF、Word、PPT、图片等资源将进入老师专属知识库。" />
-          <KnowledgeImportPanel setStatus={setStatus} onImported={() => void refreshKnowledgeOverview()} />
+          <KnowledgeImportPanel setStatus={setStatus} onImported={() => { setKnowledgeRevision((current) => current + 1); void refreshKnowledgeOverview(); }} />
           <button className="primary-action wide" onClick={importKnowledgeResources}>
             <FileSearch size={17} />
             导入单个知识资源
@@ -2318,6 +2325,8 @@ export function App() {
             {!resources.length ? <EmptyState>还没有导入老师知识资源。TXT / Markdown 会立刻切片，PDF、Word、PPT、图片会先进入解析队列。</EmptyState> : null}
           </div>
         </section>
+
+        <KnowledgeResourcePanel setStatus={setStatus} refreshToken={knowledgeRevision} onOverviewChanged={() => void refreshKnowledgeOverview()} />
 
         <section className="work-panel">
           <WorkspaceLabel number="02" title="解析管线" description="前期主解析 Docling，复杂教材和扫描件使用 MinerU 增强。" />
@@ -2607,6 +2616,7 @@ export function App() {
           <WorkspaceLabel number="01" title="本地数据与备份" description="本地优先，大附件不写入数据库。" />
           <DataBackupPanel dataRoot={dataRoot} setStatus={setStatus} />
         </section>
+        <VectorIndexPanel setStatus={setStatus} />
         <section className="work-panel span-2">
           <WorkspaceLabel number="02" title="DeepSeek API 配置" description="API Key 只保存在本地设置中，界面不会回显明文。" />
           <div className="settings-grid">
@@ -2723,6 +2733,8 @@ export function App() {
     if (activeView === 'review') return <ReviewReportWorkspace activeStudent={activeStudent} records={records} reports={reports} selectedReportId={reviewReportSelectionId} onReportsChanged={(nextReports) => { setReports(nextReports); void refreshOverview(); }} setStatus={setStatus} />;
     if (activeView === 'search') return renderSearchView();
     if (activeView === 'question_notebook') return renderQuestionNotebookView();
+    if (activeView === 'paper') return <PaperWorkspace setStatus={setStatus} />;
+    if (activeView === 'artifacts') return <DocumentArtifactLibrary setStatus={setStatus} />;
     if (activeView === 'notebook') return renderTeacherNotebookView();
     if (activeView === 'book') return renderTeachingBookView();
     if (activeView === 'memory') return renderMemoryView();

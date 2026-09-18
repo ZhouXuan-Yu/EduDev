@@ -163,7 +163,19 @@ import type {
   PaperValidationResult,
   PaperExportResult,
   PaperCreateInput,
+  Paper,
+  PaperReorderInput,
+  PaperVersionSummary,
+  PaperVersionDetail,
+  ErrorTaxonomyResult,
+  ErrorTaxonomyAnalysis,
+  TeacherResource,
+  AiErrorReviewItem,
+  ErrorReviewProposeInput,
+  ErrorCategory,
+  ErrorConfidence,
 } from '../shared/contracts';
+import { buildErrorTaxonomyAnalysis, buildErrorTaxonomyMarkdown } from './ai-harness/error-taxonomy';
 
 type SqlValue = string | number | null | Buffer;
 type Row = Record<string, unknown>;
@@ -173,7 +185,14 @@ const MAX_RECORD_PAGE_SIZE = 500;
 const MAX_EXERCISE_STEM_CHARS = 8000;
 const MAX_EXERCISE_ANSWER_CHARS = 4000;
 const MAX_IMPORT_DIRECTORY_DEPTH = 16;
-const MAX_IMPORT_FILES_PER_JOB = 10000;
+const ERROR_REVIEW_CATEGORIES = new Set(['structural', 'deviation', 'application', 'metacognitive', 'unknown']);
+const ERROR_REVIEW_LABELS: Record<string, string> = {
+  structural: '知识结构',
+  deviation: '题意偏差',
+  application: '应用错误',
+  metacognitive: '元认知',
+  unknown: '证据不足',
+};const MAX_IMPORT_FILES_PER_JOB = 10000;
 const IMPORTABLE_RESOURCE_EXTENSIONS = new Set([
   '.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx',
   '.jpg', '.jpeg', '.png', '.webp', '.bmp', '.md', '.txt', '.markdown', '.csv',
@@ -182,6 +201,17 @@ const IMPORTABLE_RESOURCE_EXTENSIONS = new Set([
 export type SecretCryptoProvider = {
   encryptString: (plaintext: string) => string;
   decryptString: (encryptedBase64: string) => string;
+};
+
+export type VectorSearchProvider = {
+  query: (text: string, limit: number) => Promise<Array<{ id: string; score: number }>>;
+};
+
+export type VectorIndexMeta = {
+  model: string;
+  dims: number;
+  indexedCount: number;
+  updatedAt: string;
 };
 
 export type DbMigrationRunner = {
@@ -262,8 +292,7 @@ export const schemaMigrations: DbMigration[] = [
   },
   {
     version: 6,
-    name: 'create_paper_blueprints_and_papers',
-    up: async (db) => {
+    name: 'create_paper_blueprints_and_papers',    up: async (db) => {
       await db.run(`CREATE TABLE IF NOT EXISTS paper_blueprints (
         id TEXT PRIMARY KEY,
         title TEXT NOT NULL,
@@ -315,6 +344,34 @@ export const schemaMigrations: DbMigration[] = [
       )`);
       await db.run(`CREATE INDEX IF NOT EXISTS idx_paper_items_paper ON paper_items(paper_id, order_index)`);
       await db.run(`CREATE INDEX IF NOT EXISTS idx_papers_blueprint ON papers(blueprint_id, created_at DESC)`);
+    },
+  },
+  {
+    version: 7,
+    name: 'add_teacher_resource_parse_error',
+    up: async (db) => {
+      await db.run(`ALTER TABLE teacher_resources ADD COLUMN parse_error TEXT NOT NULL DEFAULT ''`);
+    },
+  },
+  {
+    version: 8,
+    name: 'create_paper_versions',
+    up: async (db) => {
+      await db.run(`CREATE TABLE IF NOT EXISTS paper_versions (
+        id TEXT PRIMARY KEY,
+        paper_id TEXT NOT NULL,
+        version_no INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        subject TEXT NOT NULL DEFAULT '',
+        blueprint_id TEXT NOT NULL DEFAULT '',
+        blueprint_version INTEGER NOT NULL DEFAULT 0,
+        total_points INTEGER NOT NULL DEFAULT 0,
+        item_count INTEGER NOT NULL DEFAULT 0,
+        items_json TEXT NOT NULL DEFAULT '[]',
+        note TEXT NOT NULL DEFAULT '',
+        created_at TEXT NOT NULL
+      )`);
+      await db.run(`CREATE UNIQUE INDEX IF NOT EXISTS idx_paper_versions_no ON paper_versions(paper_id, version_no)`);
     },
   },
 ];
@@ -558,6 +615,25 @@ function parseAiConfirmationPayload(value: unknown): AiConfirmationPayload {
   const masteryPath = rawPath && Array.isArray(rawPath.modules)
     ? { mode: rawPath.mode === 'append' ? 'append' as const : 'replace' as const, modules: rawPath.modules as AiMasteryPathModule[] }
     : undefined;
+  const rawReview = parsed.errorReview && typeof parsed.errorReview === 'object' ? parsed.errorReview as Record<string, unknown> : undefined;
+  const errorReview = rawReview && Array.isArray(rawReview.items) && rawReview.items.length
+    ? {
+        taxonomyVersion: String(rawReview.taxonomyVersion ?? ''),
+        window: {
+          startDate: String((rawReview.window as Record<string, unknown> | undefined)?.startDate ?? ''),
+          endDate: String((rawReview.window as Record<string, unknown> | undefined)?.endDate ?? ''),
+        },
+        items: rawReview.items
+          .filter((entry): entry is Record<string, unknown> => Boolean(entry) && typeof entry === 'object')
+          .map((entry) => ({
+            recordId: String(entry.recordId ?? ''),
+            category: String(entry.category ?? 'unknown') as ErrorCategory,
+            confidence: (entry.confidence === 'high' || entry.confidence === 'low' ? entry.confidence : 'medium') as ErrorConfidence,
+            note: String(entry.note ?? ''),
+            evidence: Array.isArray(entry.evidence) ? entry.evidence.map(String) : [],
+          })),
+      }
+    : undefined;
   return {
     studentId: String(parsed.studentId ?? ''),
     subject: String(parsed.subject ?? ''),
@@ -572,6 +648,7 @@ function parseAiConfirmationPayload(value: unknown): AiConfirmationPayload {
     masteryOperation: parsed.masteryOperation === 'assess' || parsed.masteryOperation === 'build' ? parsed.masteryOperation : undefined,
     masteryAssessment,
     masteryPath,
+    errorReview,
   };
 }
 
@@ -1210,7 +1287,11 @@ export class OmniEduStore {
   private continuationClaimQueue: Promise<void> = Promise.resolve();
   private aiAgentActionQueue: Promise<void> = Promise.resolve();
 
-  constructor(private dataRoot: string, private secretCrypto?: SecretCryptoProvider) {
+  constructor(
+    private dataRoot: string,
+    private secretCrypto?: SecretCryptoProvider,
+    private vectorSearch?: VectorSearchProvider,
+  ) {
     this.dbPath = join(dataRoot, 'app.db');
   }
 
@@ -2519,6 +2600,203 @@ export class OmniEduStore {
     return this.getPaperOrThrow(paperId);
   }
 
+  async reorderPaperItems(input: PaperReorderInput): Promise<Paper> {
+    const paper = await this.getPaperOrThrow(requireNonEmpty(input.paperId, '缺少试卷 ID'));
+    const orderedIds = (input.orderedItemIds ?? []).map((id) => String(id));
+    const currentIds = paper.items.map((item) => item.id);
+    if (orderedIds.length !== currentIds.length) throw new Error('排序列表与试卷题目数量不一致，请刷新后重试');
+    const unique = new Set(orderedIds);
+    if (unique.size !== orderedIds.length) throw new Error('排序列表存在重复题目');
+    for (const itemId of currentIds) {
+      if (!unique.has(itemId)) throw new Error('排序列表与试卷题目不一致，请刷新后重试');
+    }
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      for (const [index, itemId] of orderedIds.entries()) {
+        const current = paper.items.find((item) => item.id === itemId);
+        if (!current || current.orderIndex === index) continue;
+        await this.run(
+          `UPDATE paper_items SET order_index = ?, version = version + 1, updated_at = ? WHERE id = ?`,
+          [index, now(), itemId],
+        );
+      }
+      await this.run(`UPDATE papers SET version = version + 1, updated_at = ? WHERE id = ?`, [now(), paper.id]);
+      await this.run('COMMIT');
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+    return this.getPaperOrThrow(paper.id);
+  }
+
+  async archivePaperVersion(paperId: string, note = ''): Promise<PaperVersionSummary> {
+    const paper = await this.getPaperOrThrow(requireNonEmpty(paperId, '缺少试卷 ID'));
+    const latestRows = await this.all(
+      `SELECT * FROM paper_versions WHERE paper_id = ? ORDER BY version_no DESC LIMIT 1`,
+      [paper.id],
+    );
+    if (latestRows.length) {
+      const latest = this.mapPaperVersion(latestRows[0], true);
+      if (this.paperContentFingerprint(latest.items) === this.paperContentFingerprint(paper.items)) {
+        return latest;
+      }
+    }
+    const rows = await this.all(`SELECT MAX(version_no) AS max_no FROM paper_versions WHERE paper_id = ?`, [paper.id]);
+    const nextNo = Number(rows[0]?.max_no ?? 0) + 1;
+    const id = `paper_version_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO paper_versions (
+        id, paper_id, version_no, title, subject, blueprint_id, blueprint_version,
+        total_points, item_count, items_json, note, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id,
+        paper.id,
+        nextNo,
+        paper.title,
+        paper.subject,
+        paper.blueprintId,
+        paper.version,
+        paper.totalPoints,
+        paper.items.length,
+        JSON.stringify(paper.items),
+        note.trim().slice(0, 400),
+        timestamp,
+      ],
+    );
+    return this.mapPaperVersion((await this.all(`SELECT * FROM paper_versions WHERE id = ?`, [id]))[0], false);
+  }
+
+  async listPaperVersions(paperId: string): Promise<PaperVersionSummary[]> {
+    const rows = await this.all(
+      `SELECT * FROM paper_versions WHERE paper_id = ? ORDER BY version_no DESC`,
+      [requireNonEmpty(paperId, '缺少试卷 ID')],
+    );
+    return rows.map((row) => this.mapPaperVersion(row, false));
+  }
+
+  async getPaperVersion(versionId: string): Promise<PaperVersionDetail | null> {
+    const row = (await this.all(`SELECT * FROM paper_versions WHERE id = ?`, [requireNonEmpty(versionId, '缺少版本 ID')]))[0];
+    return row ? this.mapPaperVersion(row, true) : null;
+  }
+
+  async restorePaperVersion(paperId: string, versionId: string): Promise<Paper> {
+    const paper = await this.getPaperOrThrow(requireNonEmpty(paperId, '缺少试卷 ID'));
+    const snapshot = await this.getPaperVersion(requireNonEmpty(versionId, '缺少版本 ID'));
+    if (!snapshot) throw new Error('试卷版本不存在');
+    if (snapshot.paperId !== paper.id) throw new Error('该版本不属于当前试卷');
+    await this.archivePaperVersion(paper.id, `恢复 v${snapshot.versionNo} 前的自动存档`);
+    const timestamp = now();
+    await this.run('BEGIN IMMEDIATE');
+    try {
+      await this.run(`DELETE FROM paper_items WHERE paper_id = ?`, [paper.id]);
+      for (const [index, item] of snapshot.items.entries()) {
+        await this.run(
+          `INSERT INTO paper_items (
+            id, paper_id, order_index, question_id, source_kind, question_type, difficulty,
+            knowledge_point, stem, answer, analysis, points, locked, teacher_edited, version, created_at, updated_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
+          [
+            `paper_item_${randomUUID()}`,
+            paper.id,
+            index,
+            item.questionId,
+            item.sourceKind,
+            item.questionType,
+            item.difficulty,
+            item.knowledgePoint,
+            item.stem,
+            item.answer,
+            item.analysis,
+            item.points,
+            item.locked ? 1 : 0,
+            item.teacherEdited ? 1 : 0,
+            timestamp,
+            timestamp,
+          ],
+        );
+      }
+      await this.run(`UPDATE papers SET version = version + 1, updated_at = ? WHERE id = ?`, [timestamp, paper.id]);
+      await this.run('COMMIT');
+    } catch (error) {
+      await this.run('ROLLBACK').catch(() => undefined);
+      throw error;
+    }
+    return this.getPaperOrThrow(paper.id);
+  }
+
+  /** Version dedupe must only look at teacher-visible content, never row metadata (version/updatedAt). */
+  private paperContentFingerprint(items: PaperItem[]): string {
+    return JSON.stringify(
+      [...items]
+        .sort((a, b) => a.orderIndex - b.orderIndex)
+        .map((item, index) => ({
+          order: index,
+          questionId: item.questionId,
+          sourceKind: item.sourceKind,
+          questionType: item.questionType,
+          difficulty: item.difficulty,
+          knowledgePoint: item.knowledgePoint,
+          stem: item.stem,
+          answer: item.answer,
+          analysis: item.analysis,
+          points: item.points,
+          locked: item.locked,
+        })),
+    );
+  }
+
+  private async getPaperVersionOrThrow(versionId: string): Promise<PaperVersionDetail> {
+    const version = await this.getPaperVersion(versionId);
+    if (!version) throw new Error('试卷版本不存在');
+    return version;
+  }
+
+  private mapPaperVersion(row: Row, withItems: boolean): PaperVersionDetail {
+    const snapshotItems = jsonUnknownArray(row.items_json).map((entry) => this.mapSnapshotPaperItem(entry));
+    return {
+      id: String(row.id),
+      paperId: String(row.paper_id ?? ''),
+      versionNo: Number(row.version_no ?? 0),
+      title: String(row.title ?? ''),
+      subject: String(row.subject ?? ''),
+      blueprintId: String(row.blueprint_id ?? ''),
+      blueprintVersion: Number(row.blueprint_version ?? 0),
+      totalPoints: Number(row.total_points ?? 0),
+      itemCount: Number(row.item_count ?? snapshotItems.length),
+      note: String(row.note ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      items: withItems ? snapshotItems : [],
+    };
+  }
+
+  /** Snapshot rows are stored as PaperItem JSON, so they map from camelCase directly. */
+  private mapSnapshotPaperItem(value: unknown): PaperItem {
+    const item = (value && typeof value === 'object' ? value : {}) as Record<string, unknown>;
+    const difficulty = item.difficulty === 'easy' || item.difficulty === 'hard' ? item.difficulty : 'medium';
+    const sourceKind = String(item.sourceKind ?? 'local_bank');
+    return {
+      id: String(item.id ?? ''),
+      paperId: String(item.paperId ?? ''),
+      orderIndex: Number(item.orderIndex ?? 0),
+      questionId: String(item.questionId ?? ''),
+      sourceKind: (sourceKind === 'teacher_resource' || sourceKind === 'generated') ? sourceKind : 'local_bank',
+      questionType: String(item.questionType ?? ''),
+      difficulty,
+      knowledgePoint: String(item.knowledgePoint ?? ''),
+      stem: String(item.stem ?? ''),
+      answer: String(item.answer ?? ''),
+      analysis: String(item.analysis ?? ''),
+      points: Number(item.points ?? 0),
+      locked: item.locked === true,
+      teacherEdited: item.teacherEdited === true,
+      version: Number(item.version ?? 1),
+      createdAt: String(item.createdAt ?? ''),
+      updatedAt: String(item.updatedAt ?? ''),
+    };
+  }
+
   async validatePaper(id: string): Promise<PaperValidationResult> {
     const paper = await this.getPaperOrThrow(id);
     const blueprint = await this.getPaperBlueprint(paper.blueprintId);
@@ -2599,6 +2877,7 @@ export class OmniEduStore {
       description: '参考答案与解析。',
       destinationRoot: directory,
     });
+    await this.archivePaperVersion(paper.id, '导出试卷 / 答题纸 / 解析');
     return { paper: paperArtifact, answerSheet: answerSheetArtifact, analysis: analysisArtifact };
   }
 
@@ -2865,6 +3144,133 @@ export class OmniEduStore {
     return lines.join('\n');
   }
 
+  async analyzeStudentErrorPatterns(
+    studentId: string,
+    input: { startDate?: string; endDate?: string; subject?: string } = {},
+  ): Promise<ErrorTaxonomyResult> {
+    const resolvedStudentId = requireNonEmpty(studentId, '缺少学生 ID');
+    const student = (await this.listStudents('')).find((item) => item.id === resolvedStudentId);
+    if (!student) throw new Error('学生不存在');
+    const records = await this.listRecords(resolvedStudentId, { limit: MAX_RECORD_PAGE_SIZE });
+    const analysis: ErrorTaxonomyAnalysis = buildErrorTaxonomyAnalysis({
+      studentId: resolvedStudentId,
+      records,
+      startDate: input.startDate?.trim() || undefined,
+      endDate: input.endDate?.trim() || undefined,
+      subject: input.subject?.trim() || undefined,
+    });
+    return { analysis, markdown: buildErrorTaxonomyMarkdown(analysis, student.displayName) };
+  }
+
+  async getKnowledgeResource(id: string): Promise<TeacherResource | null> {
+    const row = (await this.all(
+      `SELECT r.*, COUNT(c.id) AS chunk_count
+         FROM teacher_resources r
+         LEFT JOIN resource_chunks c ON c.resource_id = r.id
+        WHERE r.id = ?
+        GROUP BY r.id`,
+      [id],
+    ))[0];
+    return row ? this.mapTeacherResource(row) : null;
+  }
+
+  async applyResourceParseResult(resourceId: string, result: { text: string; engine: string; engineVersion: string; pageCount: number }): Promise<TeacherResource> {
+    const existingRow = (await this.all(`SELECT * FROM teacher_resources WHERE id = ?`, [resourceId]))[0];
+    if (!existingRow) throw new Error('知识资源不存在');
+    const text = result.text.trim();
+    if (!text) throw new Error('解析没有提取到任何文本，资源保持待解析状态');
+    const timestamp = now();
+    const engineLabel = result.engineVersion ? `${result.engine}@${result.engineVersion}` : result.engine;
+    await this.run(
+      `UPDATE teacher_resources
+          SET parse_status = 'ready', parse_engine = ?, parse_error = '', updated_at = ?
+        WHERE id = ?`,
+      [engineLabel.slice(0, 120), timestamp, resourceId],
+    );
+    await this.createResourceChunksAndGraph(resourceId, String(existingRow.title ?? ''), text, timestamp);
+    await this.run(
+      `UPDATE ai_tasks
+          SET status = 'succeeded', result_json = ?, updated_at = ?
+        WHERE task_type = 'resource_parse' AND input_hash = ? AND status IN ('pending', 'running', 'retrying')`,
+      [JSON.stringify({ resourceId, engine: engineLabel, pageCount: result.pageCount, chars: text.length }), timestamp, createHash('sha256').update(resourceId).digest('hex')],
+    );
+    const resource = await this.getKnowledgeResource(resourceId);
+    if (!resource) throw new Error('知识资源解析后未能读回');
+    return resource;
+  }
+
+  async markResourceParseFailed(resourceId: string, message: string): Promise<TeacherResource> {
+    const timestamp = now();
+    await this.run(
+      `UPDATE teacher_resources
+          SET parse_status = 'failed', parse_error = ?, updated_at = ?
+        WHERE id = ?`,
+      [message.slice(0, 2000), timestamp, resourceId],
+    );
+    await this.run(
+      `UPDATE ai_tasks
+          SET status = 'failed', error_message = ?, updated_at = ?
+        WHERE task_type = 'resource_parse' AND input_hash = ? AND status IN ('pending', 'running', 'retrying')`,
+      [message.slice(0, 2000), timestamp, createHash('sha256').update(resourceId).digest('hex')],
+    );
+    const resource = await this.getKnowledgeResource(resourceId);
+    if (!resource) throw new Error('知识资源不存在');
+    return resource;
+  }
+
+  async proposeErrorReview(input: ErrorReviewProposeInput): Promise<AiConfirmationItem> {
+    const studentId = requireNonEmpty(input.studentId, '缺少学生 ID');
+    const student = (await this.listStudents('')).find((item) => item.id === studentId);
+    if (!student) throw new Error('学生不存在');
+    const analysis = (await this.analyzeStudentErrorPatterns(studentId, {
+      startDate: input.startDate,
+      endDate: input.endDate,
+      subject: input.subject,
+    })).analysis;
+    const byRecord = new Map(analysis.classifications.map((classification) => [classification.recordId, classification]));
+    const items: AiErrorReviewItem[] = [];
+    for (const entry of input.items ?? []) {
+      const recordId = String(entry?.recordId ?? '').trim();
+      const classification = byRecord.get(recordId);
+      if (!classification) throw new Error(`记录不在本次错因分析范围内，已拒绝写入：${recordId || '(空)'}`);
+      if (!ERROR_REVIEW_CATEGORIES.has(entry.category)) throw new Error(`错因分类非法：${String(entry.category)}`);
+      items.push({
+        recordId,
+        category: entry.category,
+        confidence: classification.confidence,
+        note: String(entry.note ?? '').trim().slice(0, 500),
+        evidence: classification.evidence.slice(0, 6),
+      });
+    }
+    if (!items.length) throw new Error('没有可提交的错因条目，请先运行错因分析');
+    const title = `${student.displayName} 错因复核（${items.length} 条）`;
+    const previewMd = items
+      .map((item, index) => `- ${index + 1}. ${ERROR_REVIEW_LABELS[item.category] ?? item.category}（${item.recordId}）${item.note ? `：${item.note}` : ''}`)
+      .join('\n');
+    return this.createAiConfirmation({
+      studentId,
+      actionType: 'save_error_review',
+      title,
+      description: '教师在本地错因分析结果上复核后的写入草稿；确认后才写入学习记录。',
+      previewMd,
+      payload: {
+        studentId,
+        subject: analysis.window.subject,
+        startDate: analysis.window.startDate,
+        endDate: analysis.window.endDate,
+        reportType: 'error_review',
+        title,
+        contentMd: `# ${title}\n\n${previewMd}`,
+        sourceRecordIds: items.map((item) => item.recordId),
+        errorReview: {
+          taxonomyVersion: analysis.schemaVersion,
+          window: { startDate: analysis.window.startDate, endDate: analysis.window.endDate },
+          items,
+        },
+      },
+    });
+  }
+
   async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {
     const trimmed = keyword.trim();
     const boundedLimit = Math.max(1, Math.min(Math.trunc(limit), 20));
@@ -2895,7 +3301,7 @@ export class OmniEduStore {
       const like = `%${trimmed}%`;
       params.push(like, like, like);
     }
-    return (await this.all(
+    const keywordHits = (await this.all(
       `SELECT c.*, r.title AS resource_title
          FROM resource_chunks c
          JOIN teacher_resources r ON r.id = c.resource_id
@@ -2908,6 +3314,99 @@ export class OmniEduStore {
         LIMIT ?`,
       [...params, boundedLimit],
     )).map(this.mapResourceChunk);
+    return this.augmentWithVectorHits(trimmed, keywordHits, boundedLimit);
+  }
+
+  async listChunksPendingEmbedding(limit = 200): Promise<ResourceChunk[]> {
+    const boundedLimit = Math.max(1, Math.min(Math.trunc(limit) || 200, 500));
+    const rows = await this.all(
+      `SELECT c.*, r.title AS resource_title
+         FROM resource_chunks c
+         JOIN teacher_resources r ON r.id = c.resource_id
+        WHERE c.embedding_status != 'indexed' AND TRIM(c.content_md) != ''
+        ORDER BY c.created_at ASC, c.chunk_index ASC
+        LIMIT ?`,
+      [boundedLimit],
+    );
+    return rows.map((row) => this.mapResourceChunk(row));
+  }
+
+  async markChunksIndexed(chunkIds: string[]): Promise<number> {
+    let updated = 0;
+    for (const chunkId of chunkIds) {
+      await this.run(`UPDATE resource_chunks SET embedding_status = 'indexed' WHERE id = ?`, [chunkId]);
+      updated += 1;
+    }
+    return updated;
+  }
+
+  async getResourceChunksByIds(chunkIds: string[]): Promise<ResourceChunk[]> {
+    if (!chunkIds.length) return [];
+    const placeholders = chunkIds.map(() => '?').join(', ');
+    const rows = await this.all(
+      `SELECT c.*, r.title AS resource_title
+         FROM resource_chunks c
+         JOIN teacher_resources r ON r.id = c.resource_id
+        WHERE c.id IN (${placeholders})`,
+      chunkIds,
+    );
+    const byId = new Map(rows.map((row) => [String(row.id), this.mapResourceChunk(row)]));
+    return chunkIds.map((chunkId) => byId.get(chunkId)).filter((chunk): chunk is ResourceChunk => Boolean(chunk));
+  }
+
+  async countPendingEmbeddingChunks(): Promise<number> {
+    return this.scalarCount('resource_chunks', `embedding_status != 'indexed' AND TRIM(content_md) != ''`);
+  }
+
+  async resetChunkEmbeddings(): Promise<void> {
+    await this.run(`UPDATE resource_chunks SET embedding_status = 'pending'`);
+  }
+
+  async getVectorIndexMeta(): Promise<VectorIndexMeta | null> {
+    const row = (await this.all(`SELECT value_json FROM app_settings WHERE key = 'vector_index'`))[0];
+    if (!row) return null;
+    try {
+      const parsed = JSON.parse(String(row.value_json)) as Record<string, unknown>;
+      return {
+        model: String(parsed.model ?? ''),
+        dims: Number(parsed.dims ?? 0),
+        indexedCount: Number(parsed.indexedCount ?? 0),
+        updatedAt: String(parsed.updatedAt ?? ''),
+      };
+    } catch {
+      return null;
+    }
+  }
+
+  async saveVectorIndexMeta(meta: VectorIndexMeta): Promise<VectorIndexMeta> {
+    await this.run(
+      `INSERT OR REPLACE INTO app_settings (key, value_json, updated_at) VALUES ('vector_index', ?, ?)`,
+      [JSON.stringify(meta), now()],
+    );
+    return meta;
+  }
+
+  async clearVectorIndexMeta(): Promise<void> {
+    await this.run(`DELETE FROM app_settings WHERE key = 'vector_index'`);
+  }
+
+  private async augmentWithVectorHits(trimmed: string, keywordHits: ResourceChunk[], boundedLimit: number): Promise<ResourceChunk[]> {
+    if (keywordHits.length >= boundedLimit || !this.vectorSearch) return keywordHits;
+    let hits: Array<{ id: string; score: number }> = [];
+    try {
+      hits = await this.vectorSearch.query(trimmed, boundedLimit * 2);
+    } catch {
+      return keywordHits;
+    }
+    if (!hits.length) return keywordHits;
+    const seen = new Set(keywordHits.map((chunk) => chunk.id));
+    const pendingIds = hits.map((hit) => hit.id).filter((id) => !seen.has(id));
+    if (!pendingIds.length) return keywordHits;
+    const vectorChunks = await this.getResourceChunksByIds(pendingIds);
+    const ordered = hits
+      .map((hit) => vectorChunks.find((chunk) => chunk.id === hit.id))
+      .filter((chunk): chunk is ResourceChunk => Boolean(chunk));
+    return [...keywordHits, ...ordered].slice(0, boundedLimit);
   }
 
   async recordAiConsoleRun(input: { prompt: string; studentId?: string; timeRange?: string; knowledgeScope?: string }, result: AiConsoleRunResult) {
@@ -4196,7 +4695,7 @@ export class OmniEduStore {
   }
 
   async createAiConfirmation(input: AiConfirmationCreateInput): Promise<AiConfirmationItem> {
-    if (input.actionType !== 'create_review_report' && input.actionType !== 'save_exercise_set' && input.actionType !== 'save_mastery_state') {
+    if (input.actionType !== 'create_review_report' && input.actionType !== 'save_exercise_set' && input.actionType !== 'save_mastery_state' && input.actionType !== 'save_error_review') {
       throw new Error('当前确认队列只支持创建复盘报告或保存三元题组');
     }
     const payload = parseAiConfirmationPayload(JSON.stringify(input.payload));
@@ -4220,6 +4719,15 @@ export class OmniEduStore {
         }
       } else {
         throw new Error('Invalid mastery confirmation operation');
+      }
+    }
+    if (input.actionType === 'save_error_review') {
+      const review = payload.errorReview;
+      if (!review?.items?.length) throw new Error('错因复核确认项缺少条目');
+      if (!review.taxonomyVersion) throw new Error('错因复核确认项缺少 taxonomy 版本');
+      for (const item of review.items) {
+        if (!ERROR_REVIEW_CATEGORIES.has(item.category)) throw new Error(`错因分类非法：${String(item.category)}`);
+        requireNonEmpty(item.recordId, '错因复核确认项缺少来源记录 ID');
       }
     }
 
@@ -4307,6 +4815,7 @@ export class OmniEduStore {
       if (existing.actionType === 'create_review_report' && !readback?.report) throw new Error('确认后未能读回复盘报告');
       if (existing.actionType === 'save_exercise_set' && !readback?.exerciseSet) throw new Error('确认后未能读回三元题组');
       if (existing.actionType === 'save_mastery_state' && !readback?.masteryPath && !readback?.masteryAttempt) throw new Error('Mastery confirmation did not produce a readback');
+      if (existing.actionType === 'save_error_review' && !readback?.errorReview) throw new Error('确认后未能读回错因复核记录');
       const result = {
         reportId: readback?.report?.id,
         exerciseSetId: readback?.exerciseSet?.id,
@@ -7267,8 +7776,7 @@ export class OmniEduStore {
       const exerciseSet = await this.createExerciseSetFromConfirmation(item.payload);
       return { exerciseSet };
     }
-    if (item.actionType === 'save_mastery_state') {
-      const studentId = requireNonEmpty(item.payload.studentId, 'Mastery confirmation missing studentId');
+    if (item.actionType === 'save_mastery_state') {      const studentId = requireNonEmpty(item.payload.studentId, 'Mastery confirmation missing studentId');
       const student = (await this.listStudents('')).find((candidate) => candidate.id === studentId);
       if (!student) throw new Error('Student does not exist');
       if (item.payload.masteryOperation === 'build') {
@@ -7294,6 +7802,55 @@ export class OmniEduStore {
         tags: [assessment.knowledgePointName, 'mastery_assess'],
       });
       return { masteryAttempt: { studentId, knowledgePointId: assessment.knowledgePointId, passed: assessment.passed } };
+    }
+    if (item.actionType === 'save_error_review') {
+      const studentId = requireNonEmpty(item.payload.studentId, '错因复核确认项缺少学生 ID');
+      const review = item.payload.errorReview;
+      if (!review?.items?.length) throw new Error('错因复核确认项缺少条目');
+      const recordIds = [...new Set(review.items.map((entry) => entry.recordId))];
+      const placeholders = recordIds.map(() => '?').join(', ');
+      const owned = await this.all(
+        `SELECT id, student_id FROM learning_records WHERE id IN (${placeholders})`,
+        recordIds,
+      );
+      const ownedIds = new Set(owned.filter((row) => String(row.student_id) === studentId).map((row) => String(row.id)));
+      const foreignIds = recordIds.filter((recordId) => !ownedIds.has(recordId));
+      if (foreignIds.length) throw new Error('错因复核引用的记录不属于当前学生或已不存在，已拒绝写入');
+      const createdRecordIds: string[] = [];
+      for (const entry of review.items) {
+        const created = await this.createRecord({
+          studentId,
+          recordType: 'error_review',
+          subject: review.window ? 'error_review' : '',
+          title: `错因复核：${ERROR_REVIEW_LABELS[entry.category] ?? entry.category}`,
+          content: JSON.stringify({
+            category: entry.category,
+            confidence: entry.confidence,
+            note: entry.note,
+            evidence: entry.evidence.slice(0, 6),
+            sourceRecordId: entry.recordId,
+            taxonomyVersion: review.taxonomyVersion,
+            window: review.window,
+            teacherConfirmed: true,
+          }),
+          tags: [entry.category, 'error_review'],
+        });
+        const createdRecord = created.find((record) => record.recordType === 'error_review');
+        if (!createdRecord) throw new Error('错因复核记录创建后未能读回');
+        createdRecordIds.push(createdRecord.id);
+      }
+      const readback = await this.all(
+        `SELECT id FROM learning_records WHERE id IN (${createdRecordIds.map(() => '?').join(', ')})`,
+        createdRecordIds,
+      );
+      if (readback.length !== createdRecordIds.length) throw new Error('错因复核写入后未能全部读回');
+      return {
+        errorReview: {
+          createdRecordIds,
+          taxonomyVersion: review.taxonomyVersion,
+          window: review.window,
+        },
+      };
     }
     throw new Error(`不支持的确认动作：${item.actionType}`);
   }
@@ -8156,6 +8713,7 @@ export class OmniEduStore {
       contentHash: String(row.content_hash ?? ''),
       parseStatus: String(row.parse_status ?? 'queued') as KnowledgeImportResult['resources'][number]['parseStatus'],
       parseEngine: String(row.parse_engine ?? ''),
+      parseError: String(row.parse_error ?? ''),
       chunkCount: Number(row.chunk_count ?? 0),
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),

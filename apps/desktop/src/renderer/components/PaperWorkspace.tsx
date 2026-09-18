@@ -7,6 +7,8 @@ import type {
   PaperItem,
   PaperTypeSpec,
   PaperValidationResult,
+  PaperVersionDetail,
+  PaperVersionSummary,
   QuestionBankItem,
 } from '../../shared/contracts';
 
@@ -47,6 +49,12 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
   const [exporting, setExporting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [notice, setNotice] = useState('');
+  const [draggingItemId, setDraggingItemId] = useState('');
+  const [versionNote, setVersionNote] = useState('');
+  const [versions, setVersions] = useState<PaperVersionSummary[]>([]);
+  const [versionPreview, setVersionPreview] = useState<PaperVersionDetail | null>(null);
+  const [pendingRestoreId, setPendingRestoreId] = useState('');
+  const [versionBusy, setVersionBusy] = useState(false);
 
   const selectedBlueprint = useMemo(
     () => blueprints.find((item) => item.id === selectedBlueprintId) ?? null,
@@ -186,7 +194,7 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
     setValidation(null);
     setExports({});
     try {
-      const paper = await window.omniEdu?.createPaper(selectedBlueprint.id);
+      const paper = await window.omniEdu?.createPaper({ blueprintId: selectedBlueprint.id });
       if (!paper) throw new Error('组卷没有返回结果。');
       await loadPapers(paper.id);
       if (paper.items.length === 0) {
@@ -272,8 +280,94 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
     }
   }
 
-  async function runValidation() {
+  const loadVersions = useCallback(async (paperId: string) => {
+    if (!paperId) {
+      setVersions([]);
+      return;
+    }
+    try {
+      const rows = await window.omniEdu?.listPaperVersions(paperId) ?? [];
+      setVersions(rows);
+    } catch (error) {
+      showError(error, '读取试卷版本失败。');
+    }
+  }, [showError]);
+
+  useEffect(() => {
+    setVersionPreview(null);
+    setPendingRestoreId('');
+    void loadVersions(selectedPaperId);
+  }, [selectedPaperId, loadVersions]);
+
+  async function reorderItems(draggedId: string, targetId: string) {
+    if (!selectedPaper || draggedId === targetId) return;
+    const ordered = [...selectedPaper.items].sort((a, b) => a.orderIndex - b.orderIndex).map((item) => item.id);
+    const fromIndex = ordered.indexOf(draggedId);
+    const toIndex = ordered.indexOf(targetId);
+    if (fromIndex < 0 || toIndex < 0) return;
+    ordered.splice(toIndex, 0, ...ordered.splice(fromIndex, 1));
+    setBusyItemId(draggedId);
+    try {
+      const updated = await window.omniEdu?.reorderPaperItems({ paperId: selectedPaper.id, orderedItemIds: ordered });
+      if (updated) {
+        setPapers((current) => current.map((paper) => (paper.id === updated.id ? updated : paper)));
+        setValidation(null);
+        showNotice('题序已保存（含键盘上移/下移的等价操作）。');
+      }
+    } catch (error) {
+      showError(error, '调整题序失败。');
+    } finally {
+      setBusyItemId('');
+      setDraggingItemId('');
+    }
+  }
+
+  async function saveVersion() {
     if (!selectedPaper) return;
+    setVersionBusy(true);
+    try {
+      const version = await window.omniEdu?.archivePaperVersion(selectedPaper.id, versionNote.trim() || '教师手动保存');
+      if (!version) throw new Error('保存版本没有返回结果。');
+      setVersionNote('');
+      await loadVersions(selectedPaper.id);
+      showNotice(`已保存试卷版本 v${version.versionNo}（${version.itemCount} 题 / ${version.totalPoints} 分）。`);
+    } catch (error) {
+      showError(error, '保存试卷版本失败。');
+    } finally {
+      setVersionBusy(false);
+    }
+  }
+
+  async function previewVersion(versionId: string) {
+    try {
+      const detail = await window.omniEdu?.getPaperVersion(versionId);
+      setVersionPreview(detail ?? null);
+    } catch (error) {
+      showError(error, '读取版本内容失败。');
+    }
+  }
+
+  async function restoreVersion(versionId: string) {
+    if (!selectedPaper) return;
+    setVersionBusy(true);
+    try {
+      const restored = await window.omniEdu?.restorePaperVersion(selectedPaper.id, versionId);
+      if (restored) {
+        setPapers((current) => current.map((paper) => (paper.id === restored.id ? restored : paper)));
+        setValidation(null);
+        setExports({});
+        setPendingRestoreId('');
+        await loadVersions(selectedPaper.id);
+        showNotice('已恢复到所选版本；恢复前的状态已自动存档为新版本。');
+      }
+    } catch (error) {
+      showError(error, '恢复试卷版本失败。');
+    } finally {
+      setVersionBusy(false);
+    }
+  }
+
+  async function runValidation() {    if (!selectedPaper) return;
     try {
       const result = await window.omniEdu?.validatePaper(selectedPaper.id);
       setValidation(result ?? null);
@@ -420,10 +514,68 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
             </div>
           ) : null}
           {!sortedItems.length ? <p className="empty-state" data-testid="paper-editor-empty">这份试卷还没有题目；请调整蓝图后重新生成，或在题库中补充题目。</p> : null}
+          <section className="paper-versions" data-testid="paper-version-panel">
+            <div className="panel-heading">
+              <div>
+                <h4>版本历史</h4>
+                <p className="muted">导出会自动存档；恢复旧版本时，恢复前的状态会先自动存档，不会丢失修改。</p>
+              </div>
+            </div>
+            <div className="toolbar-row">
+              <input value={versionNote} onChange={(event) => setVersionNote(event.target.value)} placeholder="版本备注（可选）" data-testid="paper-version-note" />
+              <button className="secondary-action compact-button" onClick={() => void saveVersion()} disabled={versionBusy} data-testid="paper-version-save">{versionBusy ? '保存中…' : '保存当前版本'}</button>
+            </div>
+            <div className="paper-version-list" data-testid="paper-version-list">
+              {versions.map((version) => (
+                <article className="paper-version-row" key={version.id} data-testid={`paper-version-${version.id}`}>
+                  <div>
+                    <strong data-testid={`paper-version-title-${version.id}`}>v{version.versionNo} · {version.title}</strong>
+                    <span data-testid={`paper-version-meta-${version.id}`}>{version.itemCount} 题 · {version.totalPoints} 分 · 蓝图快照 v{version.blueprintVersion} · {version.createdAt}</span>
+                    {version.note ? <p className="muted" data-testid={`paper-version-note-${version.id}`}>{version.note}</p> : null}
+                  </div>
+                  <div className="toolbar-row">
+                    <button className="secondary-action compact-button" onClick={() => void previewVersion(version.id)} data-testid={`paper-version-view-${version.id}`}>查看</button>
+                    {pendingRestoreId === version.id ? (
+                      <>
+                        <button className="danger-action compact-button" onClick={() => void restoreVersion(version.id)} disabled={versionBusy} data-testid={`paper-version-restore-confirm-${version.id}`}>确认恢复</button>
+                        <button className="secondary-action compact-button" onClick={() => setPendingRestoreId('')} data-testid={`paper-version-restore-cancel-${version.id}`}>取消</button>
+                      </>
+                    ) : (
+                      <button className="secondary-action compact-button" onClick={() => setPendingRestoreId(version.id)} data-testid={`paper-version-restore-${version.id}`}>恢复此版本</button>
+                    )}
+                  </div>
+                </article>
+              ))}
+              {!versions.length ? <p className="empty-state" data-testid="paper-version-empty">还没有存档版本；导出或手动保存后会出现在这里。</p> : null}
+            </div>
+            {versionPreview ? (
+              <div className="paper-version-preview" data-testid="paper-version-preview">
+                <strong>v{versionPreview.versionNo} 内容预览（只读）</strong>
+                {versionPreview.items.map((item, index) => (
+                  <article key={`${versionPreview.id}-${index}`} data-testid={`paper-version-preview-item-${index}`}>
+                    <span className="status-chip">{index + 1}</span>
+                    <span className="status-chip">{item.sourceKind}</span>
+                    <p>{item.stem.slice(0, 120)}</p>
+                  </article>
+                ))}
+                <button className="secondary-action compact-button" onClick={() => setVersionPreview(null)} data-testid="paper-version-preview-close">关闭预览</button>
+              </div>
+            ) : null}
+          </section>
           <div className="paper-item-list" data-testid="paper-item-list">
             {sortedItems.map((item, index) => (
-              <article className="paper-item" key={item.id} data-testid={`paper-item-${item.id}`}>
+              <article
+                className="paper-item"
+                key={item.id}
+                data-testid={`paper-item-${item.id}`}
+                draggable
+                onDragStart={() => setDraggingItemId(item.id)}
+                onDragEnd={() => setDraggingItemId('')}
+                onDragOver={(event) => { if (draggingItemId && draggingItemId !== item.id) event.preventDefault(); }}
+                onDrop={(event) => { event.preventDefault(); void reorderItems(draggingItemId, item.id); }}
+              >
                 <header>
+                  <span className="status-chip drag-handle" data-testid={`paper-item-${item.id}-handle`} title="拖拽调整题序；也可用键盘上移/下移">⠿</span>
                   <span className="status-chip">{index + 1}</span>
                   <span className="status-chip" data-testid={`paper-item-${item.id}-type`}>{item.questionType || '未设题型'}</span>
                   <span className="status-chip" data-testid={`paper-item-${item.id}-source`}>{item.sourceKind}</span>

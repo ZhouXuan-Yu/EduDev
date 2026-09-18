@@ -51,6 +51,8 @@ React renderer
 
 通用主线使用 Docling，将页面、段落、标题、表格、图片和坐标转换为内部中间表示。DOCX/PPTX/PDF 的原生库只作为格式降级或导出工具。每个 chunk 保存 sourceId、page、section、bbox、contentHash、parserVersion 和 evidenceStrength。
 
+实现说明（2026-09-17，W09）：`python/omni_edu_parse` worker 默认执行顺序为**本地原生库优先（pypdf / python-docx / python-pptx / 纯文本）→ Docling 回退**，可用 `OMNI_EDU_PARSE_ENGINE=docling` 强制 Docling 优先。理由：Docling 首次使用需下载模型且 CPU 推理慢，桌面端 30–40GB 批量导入需要确定性吞吐与离线可用；扫描件、复杂表格等原生提取失败的场景仍由 Docling 兜底。每个资源记录真实使用的 `parseEngine`（名称@版本），解析失败写入 `parse_error` 并保持可重试，不伪造成功。
+
 解析失败不能阻塞整个批次；原文件仍可管理，状态明确为待处理/不支持/失败。升级 parser 后按 fingerprint 定位受影响资源，禁止盲目全库重建。
 
 ### 4.2 OCR 选型

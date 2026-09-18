@@ -54,6 +54,10 @@ import type {
   ExportDataRootResult,
   KnowledgeImportResult,
   KnowledgeImportJob,
+  TeacherResource,
+  ResourceChunk,
+  VectorIndexStatusView,
+  VectorIndexBuildResult,
   KnowledgeOverview,
   LearningRecordFilters,
   LearningRecordInput,
@@ -83,7 +87,12 @@ import type {
   PaperCreateInput,
   PaperExportResult,
   PaperItemUpdateInput,
+  PaperReorderInput,
   PaperValidationResult,
+  PaperVersionDetail,
+  PaperVersionSummary,
+  ErrorTaxonomyResult,
+  ErrorReviewProposeInput,
   ReviewDraftInput,
   DeepSeekSettings,
   DeepSeekSettingsInput,
@@ -136,6 +145,12 @@ const api = {
   getKnowledgeImportJob: (jobId: string) => ipcRenderer.invoke('knowledge:getImportJob', jobId) as Promise<KnowledgeImportJob | null>,
   cancelKnowledgeImportJob: (jobId: string) => ipcRenderer.invoke('knowledge:cancelImportJob', jobId) as Promise<KnowledgeImportJob>,
   retryKnowledgeImportJob: (jobId: string) => ipcRenderer.invoke('knowledge:retryImportJob', jobId) as Promise<KnowledgeImportJob>,
+  listKnowledgeParseEngines: () => ipcRenderer.invoke('knowledge:parseEngines') as Promise<Array<{ name: string; available: boolean; version: string }>>,
+  parseKnowledgeResource: (resourceId: string) => ipcRenderer.invoke('knowledge:parseResource', resourceId) as Promise<TeacherResource>,
+  searchTeacherKnowledge: (keyword: string, limit?: number) => ipcRenderer.invoke('knowledge:search', keyword, limit ?? 8) as Promise<ResourceChunk[]>,
+  getVectorIndexStatus: () => ipcRenderer.invoke('knowledge:vectorStatus') as Promise<VectorIndexStatusView>,
+  buildVectorIndex: () => ipcRenderer.invoke('knowledge:buildVectorIndex') as Promise<VectorIndexBuildResult>,
+  resetVectorIndex: () => ipcRenderer.invoke('knowledge:resetVectorIndex') as Promise<{ ok: boolean; pendingChunks: number }>,
   showKnowledgeResource: (filePath: string) => ipcRenderer.invoke('knowledge:showResource', filePath),
   exportDataRoot: () => ipcRenderer.invoke('app:exportDataRoot') as Promise<ExportDataRootResult | null>,
   verifyDataBackup: () => ipcRenderer.invoke('app:verifyDataBackup') as Promise<DataBackupVerificationResult | null>,
@@ -202,6 +217,10 @@ const api = {
     ipcRenderer.invoke('mistakeImages:list', studentId) as Promise<MistakeImageAnalysis[]>,
   runMistakeImageOcr: (analysisId: string) =>
     ipcRenderer.invoke('mistakeImages:runOcr', analysisId) as Promise<MistakeImageAnalysis>,
+  analyzeStudentErrorPatterns: (studentId: string, input?: { startDate?: string; endDate?: string; subject?: string }) =>
+    ipcRenderer.invoke('mistakes:analyzeErrorPatterns', studentId, input ?? {}) as Promise<ErrorTaxonomyResult>,
+  proposeErrorReview: (input: ErrorReviewProposeInput) =>
+    ipcRenderer.invoke('mistakes:proposeErrorReview', input) as Promise<AiConfirmationItem>,
   sanitizeProblemText: (text: string, studentId?: string) =>
     ipcRenderer.invoke('mistakeImages:sanitizeText', text, studentId) as Promise<SanitizedProblemText>,
   generateReview: (input: ReviewDraftInput) => ipcRenderer.invoke('reports:generate', input),
@@ -283,6 +302,16 @@ const api = {
     ipcRenderer.invoke('papers:validate', id) as Promise<PaperValidationResult>,
   exportPaper: (id: string, destinationRoot?: string) =>
     ipcRenderer.invoke('papers:export', id, destinationRoot) as Promise<PaperExportResult>,
+  reorderPaperItems: (input: PaperReorderInput) =>
+    ipcRenderer.invoke('papers:reorderItems', input) as Promise<Paper>,
+  archivePaperVersion: (paperId: string, note?: string) =>
+    ipcRenderer.invoke('papers:archiveVersion', paperId, note ?? '') as Promise<PaperVersionSummary>,
+  listPaperVersions: (paperId: string) =>
+    ipcRenderer.invoke('papers:listVersions', paperId) as Promise<PaperVersionSummary[]>,
+  getPaperVersion: (versionId: string) =>
+    ipcRenderer.invoke('papers:getVersion', versionId) as Promise<PaperVersionDetail | null>,
+  restorePaperVersion: (paperId: string, versionId: string) =>
+    ipcRenderer.invoke('papers:restoreVersion', paperId, versionId) as Promise<Paper>,
   listAiConfirmations: (status: AiConfirmationStatus | 'all' = 'pending') =>
     ipcRenderer.invoke('aiConfirmations:list', status) as Promise<AiConfirmationItem[]>,
   confirmAiConfirmation: (input: AiConfirmationConfirmInput) =>

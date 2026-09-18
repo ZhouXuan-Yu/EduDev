@@ -1,48 +1,15 @@
-import type { LearningRecord } from '../../shared/contracts';
+import type {
+  ErrorCategory,
+  ErrorClassification,
+  ErrorConfidence,
+  ErrorTaxonomyAnalysis,
+  ErrorTaxonomyInput,
+  LearningRecord,
+} from '../../shared/contracts';
+
+export type { ErrorCategory, ErrorClassification, ErrorConfidence, ErrorTaxonomyAnalysis, ErrorTaxonomyInput };
 
 export const ERROR_TAXONOMY_SCHEMA_VERSION = 'omni.error.taxonomy.v1' as const;
-
-export type ErrorCategory = 'structural' | 'deviation' | 'application' | 'metacognitive' | 'unknown';
-export type ErrorConfidence = 'high' | 'medium' | 'low';
-
-export type ErrorClassification = {
-  recordId: string;
-  category: ErrorCategory;
-  confidence: ErrorConfidence;
-  evidence: string[];
-  needsTeacherReview: boolean;
-};
-
-export type ErrorTaxonomyAnalysis = {
-  schemaVersion: typeof ERROR_TAXONOMY_SCHEMA_VERSION;
-  studentId: string;
-  window: {
-    startDate: string;
-    endDate: string;
-    subject: string;
-    timezone: 'UTC-calendar';
-  };
-  counts: Record<ErrorCategory, number>;
-  classifications: ErrorClassification[];
-  evidence: {
-    sourceRecordIds: string[];
-    includedRecordCount: number;
-    excludedRecordCount: number;
-    unknownRecordIds: string[];
-  };
-  facts: string[];
-  unknowns: string[];
-  recalculationKey: string;
-};
-
-export type ErrorTaxonomyInput = {
-  studentId: string;
-  records: LearningRecord[];
-  startDate?: string;
-  endDate?: string;
-  subject?: string;
-  nowMs?: number;
-};
 
 function isoDate(value: Date) {
   return value.toISOString().slice(0, 10);

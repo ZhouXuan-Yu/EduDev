@@ -617,6 +617,7 @@ export type TeacherResource = {
   contentHash: string;
   parseStatus: TeacherResourceParseStatus;
   parseEngine: string;
+  parseError: string;
   chunkCount: number;
   createdAt: string;
   updatedAt: string;
@@ -869,6 +870,91 @@ export type PaperExportResult = {
   answerSheet: DocumentArtifactExportResult;
   analysis: DocumentArtifactExportResult;
 };
+
+export type PaperVersionSummary = {
+  id: string;
+  paperId: string;
+  versionNo: number;
+  title: string;
+  subject: string;
+  blueprintId: string;
+  blueprintVersion: number;
+  totalPoints: number;
+  itemCount: number;
+  note: string;
+  createdAt: string;
+};
+
+export type PaperVersionDetail = PaperVersionSummary & {
+  items: PaperItem[];
+};
+
+export type PaperReorderInput = {
+  paperId: string;
+  orderedItemIds: string[];
+};
+
+export type ErrorCategory = 'structural' | 'deviation' | 'application' | 'metacognitive' | 'unknown';
+
+export type ErrorConfidence = 'high' | 'medium' | 'low';
+
+export type ErrorClassification = {
+  recordId: string;
+  category: ErrorCategory;
+  confidence: ErrorConfidence;
+  evidence: string[];
+  needsTeacherReview: boolean;
+};
+
+export type ErrorTaxonomyAnalysis = {
+  schemaVersion: 'omni.error.taxonomy.v1';
+  studentId: string;
+  window: {
+    startDate: string;
+    endDate: string;
+    subject: string;
+    timezone: 'UTC-calendar';
+  };
+  counts: Record<ErrorCategory, number>;
+  classifications: ErrorClassification[];
+  evidence: {
+    sourceRecordIds: string[];
+    includedRecordCount: number;
+    excludedRecordCount: number;
+    unknownRecordIds: string[];
+  };
+  facts: string[];
+  unknowns: string[];
+  recalculationKey: string;
+};
+
+export type ErrorTaxonomyInput = {
+  studentId: string;
+  records: LearningRecord[];
+  startDate?: string;
+  endDate?: string;
+  subject?: string;
+  nowMs?: number;
+};
+
+export type ErrorTaxonomyResult = {
+  analysis: ErrorTaxonomyAnalysis;
+  markdown: string;
+};
+
+export type VectorIndexStatusView = {
+  available: boolean;
+  model: string;
+  dims: number;
+  indexedCount: number;
+  pendingChunks: number;
+  modelError: string;
+  updatedAt: string;
+};
+
+export type VectorIndexBuildResult =
+  | { ok: true; indexedTotal: number; indexedCount: number; model: string; dims: number; pendingChunks: number }
+  | { ok: false; code: string; message: string; indexedTotal: number; pendingChunks: number };
 
 export type ExportStudentResult = {
   exportPath: string;
@@ -1897,7 +1983,35 @@ export type AiRegressionReportInput = {
 
 export type AiConfirmationStatus = 'pending' | 'confirmed' | 'rejected' | 'failed';
 
-export type AiConfirmationActionType = 'create_review_report' | 'save_exercise_set' | 'save_mastery_state';
+export type AiConfirmationActionType = 'create_review_report' | 'save_exercise_set' | 'save_mastery_state' | 'save_error_review';
+
+export type AiErrorReviewItem = {
+  recordId: string;
+  category: ErrorCategory;
+  confidence: ErrorConfidence;
+  note: string;
+  evidence: string[];
+};
+
+export type AiErrorReviewPayload = {
+  taxonomyVersion: string;
+  window: { startDate: string; endDate: string };
+  items: AiErrorReviewItem[];
+};
+
+export type ErrorReviewProposeInput = {
+  studentId: string;
+  startDate?: string;
+  endDate?: string;
+  subject?: string;
+  items: Array<{ recordId: string; category: ErrorCategory; note?: string }>;
+};
+
+export type ErrorReviewWriteback = {
+  createdRecordIds: string[];
+  taxonomyVersion: string;
+  window: { startDate: string; endDate: string };
+};
 
 export type AiConfirmationPayload = {
   studentId: string;
@@ -1922,6 +2036,7 @@ export type AiConfirmationPayload = {
     mode: 'replace' | 'append';
     modules: AiMasteryPathModule[];
   };
+  errorReview?: AiErrorReviewPayload;
 };
 
 export type AiConfirmationItem = {
@@ -1961,6 +2076,7 @@ export type AiConfirmationDecisionResult = {
     exerciseSet?: ExerciseSet;
     masteryPath?: AiMasteryPath;
     masteryAttempt?: { studentId: string; knowledgePointId: string; passed: boolean };
+    errorReview?: ErrorReviewWriteback;
   };
 };
 

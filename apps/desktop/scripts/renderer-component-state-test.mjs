@@ -27,6 +27,10 @@ try {
   const { MemoryGovernanceWorkspace } = await server.ssrLoadModule('/src/renderer/components/MemoryGovernanceWorkspace.tsx');
   const { MistakesWorkspace } = await server.ssrLoadModule('/src/renderer/components/MistakesWorkspace.tsx');
   const { KnowledgeImportPanel } = await server.ssrLoadModule('/src/renderer/components/KnowledgeImportPanel.tsx');
+  const { KnowledgeResourcePanel } = await server.ssrLoadModule('/src/renderer/components/KnowledgeResourcePanel.tsx');
+  const { DocumentArtifactLibrary } = await server.ssrLoadModule('/src/renderer/components/DocumentArtifactLibrary.tsx');
+  const { VectorIndexPanel } = await server.ssrLoadModule('/src/renderer/components/VectorIndexPanel.tsx');
+  const { PaperWorkspace } = await server.ssrLoadModule('/src/renderer/components/PaperWorkspace.tsx');
   const { MasteryPathWorkspace, MasteryPathState } = await server.ssrLoadModule('/src/renderer/components/MasteryPathWorkspace.tsx');
   const { GlobalSearchWorkspace, GlobalSearchState } = await server.ssrLoadModule('/src/renderer/components/GlobalSearchWorkspace.tsx');
   const { ExerciseSetLibraryState } = await server.ssrLoadModule('/src/renderer/components/ExerciseSetLibrary.tsx');
@@ -95,11 +99,41 @@ try {
   assert.match(mistakePendingTriplet, /编辑后的题干与答案/, 'triplet panel must state that edited values are saved on confirm');
   assert.doesNotMatch(mistakePendingTriplet, /不会同步到待确认载荷/, 'the stale no-sync warning must be removed');
   assert.doesNotMatch(mistakePendingTriplet, /尚不能覆盖写回/, 'the stale preview-only subtitle must be removed');
+  assert.match(mistakePendingTriplet, /data-testid="mistake-error-taxonomy-panel"/);
+  assert.match(mistakePendingTriplet, /data-testid="error-taxonomy-run"/);
+  assert.match(mistakePendingTriplet, /data-testid="error-taxonomy-start"/);
+  assert.match(mistakePendingTriplet, /错因分类建议/);
 
   const knowledgeImportIdle = renderToStaticMarkup(React.createElement(KnowledgeImportPanel, { setStatus: noop }));
   assert.match(knowledgeImportIdle, /data-testid="knowledge-import-panel"/);
   assert.match(knowledgeImportIdle, /data-testid="knowledge-import-directory"/);
   assert.match(knowledgeImportIdle, /导入文件夹/, 'knowledge import panel must expose the folder import entry');
+
+  const knowledgeResourceEmpty = renderToStaticMarkup(React.createElement(KnowledgeResourcePanel, { setStatus: noop }));
+  assert.match(knowledgeResourceEmpty, /data-testid="knowledge-resource-panel"/);
+  assert.match(knowledgeResourceEmpty, /data-testid="knowledge-resource-list"/);
+  assert.match(knowledgeResourceEmpty, /data-testid="knowledge-parse-engines"/);
+  assert.match(knowledgeResourceEmpty, /data-testid="knowledge-search-input"/);
+  assert.match(knowledgeResourceEmpty, /data-testid="knowledge-search-submit"/);
+
+  const vectorPanel = renderToStaticMarkup(React.createElement(VectorIndexPanel, { setStatus: noop }));
+  assert.match(vectorPanel, /data-testid="vector-index-panel"/);
+  assert.match(vectorPanel, /data-testid="vector-index-build"/);
+  assert.match(vectorPanel, /data-testid="vector-index-reset"/);
+  assert.match(vectorPanel, /降级/, 'vector panel must state the keyword-search degradation path');
+
+  const artifactLibraryEmpty = renderToStaticMarkup(React.createElement(DocumentArtifactLibrary, { setStatus: noop }));
+  assert.match(artifactLibraryEmpty, /data-testid="document-artifact-library"/);
+  assert.match(artifactLibraryEmpty, /data-testid="artifact-type-filter"/);
+  assert.match(artifactLibraryEmpty, /data-testid="artifact-list"/);
+
+  const paperWorkspaceEmpty = renderToStaticMarkup(React.createElement(PaperWorkspace, { setStatus: noop }));
+  assert.match(paperWorkspaceEmpty, /data-testid="paper-workspace"/);
+  assert.match(paperWorkspaceEmpty, /data-testid="paper-blueprint-empty"/);
+  assert.match(paperWorkspaceEmpty, /data-testid="paper-list-empty"/);
+  assert.match(paperWorkspaceEmpty, /data-testid="paper-blueprint-save"/);
+  assert.match(paperWorkspaceEmpty, /data-testid="paper-create"/);
+  assert.match(paperWorkspaceEmpty, /智能组卷/);
 
   const masteryStudent = { id: 'student_mastery_component', displayName: '小智路径学生', realName: '', grade: '八年级', school: '', subjects: ['数学'], goals: '', currentIssues: '', parentConcerns: '', teacherNotes: '', tags: [], status: 'active', createdAt: '', updatedAt: '', recordCount: 0, attachmentBytes: 0 };
   const masteryLoading = renderToStaticMarkup(React.createElement(MasteryPathWorkspace, { activeStudent: masteryStudent, setStatus: noop, onOpenAi: noop }));

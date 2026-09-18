@@ -4,6 +4,8 @@ import type {
   AiConfirmationItem,
   AiConsoleRunResult,
   AttachmentImportResult,
+  ErrorCategory,
+  ErrorTaxonomyResult,
   LearningRecord,
   MistakeImageAnalysis,
   QuestionBankItem,
@@ -60,6 +62,13 @@ export function MistakesWorkspace({
   const [searchedSimilar, setSearchedSimilar] = useState(false);
   const [ocrRunning, setOcrRunning] = useState(false);
   const [ocrError, setOcrError] = useState('');
+  const [errorAnalysis, setErrorAnalysis] = useState<ErrorTaxonomyResult | null>(null);
+  const [errorRange, setErrorRange] = useState({ start: '', end: '' });
+  const [errorSubject, setErrorSubject] = useState('');
+  const [analyzingError, setAnalyzingError] = useState(false);
+  const [errorTaxonomyError, setErrorTaxonomyError] = useState('');
+  const [reviewEdits, setReviewEdits] = useState<Record<string, { category: ErrorCategory; note: string; include: boolean }>>({});
+  const [proposingReview, setProposingReview] = useState(false);
   const [tripletDraft, setTripletDraft] = useState<Array<{ role: string; stem: string; answer: string; sourceKind: 'local_bank' | 'teacher_resource' | 'generated' }>>([]);
 
   const mistakeRecords = useMemo(() => records.filter((record) => record.recordType === 'mistake'), [records]);
@@ -280,9 +289,88 @@ export function MistakesWorkspace({
     }
   }
 
-  const pendingTriplet = tripletConfirmation;
+  async function analyzeErrorPatterns() {
+    if (!activeStudent) {
+      setStatus('请先选择学生后再分析错因。');
+      return;
+    }
+    setAnalyzingError(true);
+    setErrorTaxonomyError('');
+    try {
+      const result = await window.omniEdu?.analyzeStudentErrorPatterns(activeStudent.id, {
+        startDate: errorRange.start || undefined,
+        endDate: errorRange.end || undefined,
+        subject: errorSubject.trim() || undefined,
+      });
+      setErrorAnalysis(result ?? null);
+      if (result) {
+        const total = Object.values(result.analysis.counts).reduce((sum, count) => sum + count, 0);
+        setStatus(total
+          ? `错因分析完成：${total} 条证据已分类，其中 ${result.analysis.classifications.filter((item) => item.needsTeacherReview).length} 条需要教师复核。`
+          : '当前时间范围内没有可分类的错题证据，结果保持 unknown。');
+      }
+    } catch (error) {
+      setErrorTaxonomyError(error instanceof Error ? error.message : '错因分析失败。');
+    } finally {
+      setAnalyzingError(false);
+    }
+  }
 
-  return (
+  const pendingTriplet = tripletConfirmation;
+  const pendingErrorReview = confirmations.find(
+    (item) => item.actionType === 'save_error_review' && item.status === 'pending' && item.studentId === activeStudent?.id,
+  );
+
+  useEffect(() => {
+    if (!errorAnalysis) {
+      setReviewEdits({});
+      return;
+    }
+    setReviewEdits((current) => {
+      const next: Record<string, { category: ErrorCategory; note: string; include: boolean }> = {};
+      for (const classification of errorAnalysis.analysis.classifications) {
+        next[classification.recordId] = current[classification.recordId] ?? { category: classification.category, note: '', include: true };
+      }
+      return next;
+    });
+  }, [errorAnalysis]);
+
+  async function submitErrorReview() {
+    if (!errorAnalysis || !activeStudent) {
+      setStatus('请先运行错因分析并选择学生。');
+      return;
+    }
+    const items = errorAnalysis.analysis.classifications
+      .filter((classification) => reviewEdits[classification.recordId]?.include !== false)
+      .map((classification) => ({
+        recordId: classification.recordId,
+        category: reviewEdits[classification.recordId]?.category ?? classification.category,
+        note: reviewEdits[classification.recordId]?.note ?? '',
+      }));
+    if (!items.length) {
+      setErrorTaxonomyError('请至少勾选一条要保存的错因条目。');
+      return;
+    }
+    setProposingReview(true);
+    setErrorTaxonomyError('');
+    try {
+      const confirmation = await window.omniEdu?.proposeErrorReview({
+        studentId: activeStudent.id,
+        startDate: errorAnalysis.analysis.window.startDate,
+        endDate: errorAnalysis.analysis.window.endDate,
+        subject: errorAnalysis.analysis.window.subject || undefined,
+        items,
+      });
+      if (confirmation) {
+        onProposed?.();
+        setStatus(`已生成错因复核确认项（${items.length} 条）；确认后才会写入学习记录。`);
+      }
+    } catch (error) {
+      setErrorTaxonomyError(error instanceof Error ? error.message : '提交错因复核失败。');
+    } finally {
+      setProposingReview(false);
+    }
+  }  return (
     <div className="page-grid mistakes-workspace" data-testid="mistakes-workspace">
       <section className="work-panel span-2">
         <div className="panel-heading">
@@ -398,6 +486,98 @@ export function MistakesWorkspace({
         </div>
         <div className="warning-box" data-testid="exercise-set-readonly-boundary">这里是正式题组回读，不提供隐式编辑。需要修改时应重新生成草稿并再次经过教师确认。</div>
         <ExerciseSetLibrary activeStudent={activeStudent} setStatus={setStatus} />
+      </section>
+
+      <section className="work-panel span-2" data-testid="mistake-error-taxonomy-panel">
+        <div className="panel-heading">
+          <div>
+            <h3>6. 错因分类建议（只读草稿）</h3>
+            <p className="muted">复用 DeepTutor 四类 taxonomy（structural / deviation / application / metacognitive）；证据不足一律记为 unknown，不自动写入学生档案。</p>
+          </div>
+        </div>
+        <div className="toolbar-row">
+          <label>开始日期<input type="date" value={errorRange.start} onChange={(event) => setErrorRange({ ...errorRange, start: event.target.value })} data-testid="error-taxonomy-start" /></label>
+          <label>结束日期<input type="date" value={errorRange.end} onChange={(event) => setErrorRange({ ...errorRange, end: event.target.value })} data-testid="error-taxonomy-end" /></label>
+          <label>学科<input value={errorSubject} onChange={(event) => setErrorSubject(event.target.value)} placeholder="全部" data-testid="error-taxonomy-subject" /></label>
+          <button className="primary-action" onClick={() => void analyzeErrorPatterns()} disabled={analyzingError || !activeStudent} data-testid="error-taxonomy-run">{analyzingError ? '分析中…' : '分析错因'}</button>
+        </div>
+        {!activeStudent ? <p className="empty-state" data-testid="error-taxonomy-no-student">请先选择学生。</p> : null}
+        {errorTaxonomyError ? <div className="warning-box" data-testid="error-taxonomy-error">{errorTaxonomyError}</div> : null}
+        {errorAnalysis ? (
+          <>
+            <div className="error-taxonomy-counts" data-testid="error-taxonomy-counts">
+              {(['structural', 'deviation', 'application', 'metacognitive', 'unknown'] as const).map((category) => (
+                <span key={category} className="status-chip" data-testid={`error-taxonomy-count-${category}`}>{category}：{errorAnalysis.analysis.counts[category] ?? 0}</span>
+              ))}
+            </div>
+            <p className="muted" data-testid="error-taxonomy-window">
+              时间范围 {errorAnalysis.analysis.window.startDate} 至 {errorAnalysis.analysis.window.endDate}（UTC 日历）｜纳入 {errorAnalysis.analysis.evidence.includedRecordCount} 条证据
+            </p>
+            <div className="error-taxonomy-records" data-testid="error-taxonomy-classifications">
+              {errorAnalysis.analysis.classifications.map((item) => (
+                <article key={item.recordId} data-testid={`error-taxonomy-item-${item.recordId}`}>
+                  <span className="status-chip">{item.confidence}</span>
+                  <span>{item.evidence.join('；') || '无可用证据'}</span>
+                  {item.needsTeacherReview ? <span className="status-chip" data-testid={`error-taxonomy-review-${item.recordId}`}>需教师复核</span> : null}
+                  <div className="toolbar-row">
+                    <label className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={reviewEdits[item.recordId]?.include !== false}
+                        onChange={(event) => setReviewEdits((current) => ({ ...current, [item.recordId]: { category: current[item.recordId]?.category ?? item.category, note: current[item.recordId]?.note ?? '', include: event.target.checked } }))}
+                        data-testid={`error-taxonomy-include-${item.recordId}`}
+                      />
+                      纳入保存
+                    </label>
+                    <label>教师修正分类
+                      <select
+                        value={reviewEdits[item.recordId]?.category ?? item.category}
+                        onChange={(event) => setReviewEdits((current) => ({ ...current, [item.recordId]: { category: event.target.value as ErrorCategory, note: current[item.recordId]?.note ?? '', include: current[item.recordId]?.include !== false } }))}
+                        data-testid={`error-taxonomy-category-${item.recordId}`}
+                      >
+                        {(['structural', 'deviation', 'application', 'metacognitive', 'unknown'] as const).map((category) => (
+                          <option key={category} value={category}>{category}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label>教师备注
+                      <input
+                        value={reviewEdits[item.recordId]?.note ?? ''}
+                        onChange={(event) => setReviewEdits((current) => ({ ...current, [item.recordId]: { category: current[item.recordId]?.category ?? item.category, note: event.target.value, include: current[item.recordId]?.include !== false } }))}
+                        placeholder="可选：写给自己的复核说明"
+                        data-testid={`error-taxonomy-note-${item.recordId}`}
+                      />
+                    </label>
+                  </div>
+                </article>
+              ))}
+              {!errorAnalysis.analysis.classifications.length ? <p data-testid="error-taxonomy-empty">时间范围内没有可分类的错题/订正记录；结果保持 unknown。</p> : null}
+            </div>
+            {errorAnalysis.analysis.unknowns.length ? (
+              <div className="info-box" data-testid="error-taxonomy-unknowns">{errorAnalysis.analysis.unknowns.join('；')}</div>
+            ) : null}
+            <div className="warning-box" data-testid="error-taxonomy-boundary">以上是只读建议草稿：错因是带证据的推断而不是学生标签。只有教师确认后，才会以「错因复核」学习记录写入本地数据库。</div>
+            {errorAnalysis.analysis.classifications.length ? (
+              <div className="toolbar-row">
+                <button className="primary-action" onClick={() => void submitErrorReview()} disabled={proposingReview} data-testid="error-taxonomy-submit">{proposingReview ? '提交中…' : '提交保存（需教师确认）'}</button>
+              </div>
+            ) : null}
+            {pendingErrorReview ? (
+              <div className="confirmation-inline" data-testid="error-review-confirmation">
+                <strong>待教师确认：{pendingErrorReview.title}</strong>
+                <p className="muted">确认后会把 {pendingErrorReview.payload.errorReview?.items.length ?? 0} 条错因复核写入该学生的学习记录。</p>
+                <div className="toolbar-row">
+                  <button className="primary-action" onClick={() => void onConfirm(pendingErrorReview)} data-testid="error-review-confirm">确认写入</button>
+                  <button className="secondary-action" onClick={() => void onReject(pendingErrorReview)} data-testid="error-review-reject">拒绝（零写入）</button>
+                </div>
+              </div>
+            ) : null}
+            <details data-testid="error-taxonomy-markdown-panel">
+              <summary>教师可读文本（只读）</summary>
+              <pre data-testid="error-taxonomy-markdown">{errorAnalysis.markdown}</pre>
+            </details>
+          </>
+        ) : null}
       </section>
     </div>
   );

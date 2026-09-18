@@ -1,7 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, safeStorage, shell } from 'electron';
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { dirname, extname, isAbsolute, join, resolve } from 'node:path';
 import { buildAiSystemPrompt, recoverStructuredJsonCompletion, requestDeepSeekCompletion, requestStructuredReplyRepair, runDeepSeekChat, type DeepSeekMessage } from './deepseek';
 import { OmniEduStore } from './db';
 import type {
@@ -46,6 +46,8 @@ import type {
   PaperBlueprintInput,
   PaperCreateInput,
   PaperItemUpdateInput,
+  PaperReorderInput,
+  ErrorReviewProposeInput,
 } from '../shared/contracts';
 import { routeAiPrompt } from './ai-harness/router';
 import { runAiAgentLoop } from './ai-harness/agent-loop';
@@ -54,6 +56,8 @@ import { boundDeepTutorEventDetail } from './ai-harness/deeptutor-event-bounds';
 import { getModelToolDefinitions, progressiveToolNames, type CompiledAiContext } from './ai-harness/tool-registry';
 import { DeepTutorSidecarClient } from './ai-harness/sidecar-client';
 import { OcrWorkerClient } from './ai-harness/ocr-client';
+import { ParseWorkerClient } from './ai-harness/parse-client';
+import { VectorIndexClient, vectorModelAvailable, vectorModelInfo } from './ai-harness/vector-client';
 import { executeHostToolRequest } from './ai-harness/host-tool-proxy';
 import {
   isConsoleRunPendingStatus,
@@ -70,12 +74,32 @@ import { gradeUsabilityReply } from './ai-harness/usability-policy';
 let store: OmniEduStore;
 let deepTutorSidecar: DeepTutorSidecarClient | undefined;
 let ocrWorker: OcrWorkerClient | undefined;
+let parseWorker: ParseWorkerClient | undefined;
+let vectorWorker: VectorIndexClient | undefined;
+
+const VECTOR_BATCH_SIZE = 200;
+
+const vectorIndexPath = () => join(process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'), 'index', 'vectors');
+
+const getVectorWorker = () => {
+  if (!vectorWorker) {
+    vectorWorker = new VectorIndexClient(resolveRepoRoot());
+  }
+  return vectorWorker;
+};
 
 const getOcrWorker = () => {
   if (!ocrWorker) {
     ocrWorker = new OcrWorkerClient(resolveRepoRoot());
   }
   return ocrWorker;
+};
+
+const getParseWorker = () => {
+  if (!parseWorker) {
+    parseWorker = new ParseWorkerClient(resolveRepoRoot());
+  }
+  return parseWorker;
 };
 let mainWindow: BrowserWindow | undefined;
 let e2eAttachmentDialogQueue: string[][] | undefined;
@@ -905,7 +929,18 @@ app.whenReady().then(async () => {
         decryptString: (encryptedBase64: string) => safeStorage.decryptString(Buffer.from(encryptedBase64, 'base64')),
       }
     : undefined;
-  store = new OmniEduStore(process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'), secretCrypto);
+  store = new OmniEduStore(
+    process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'),
+    secretCrypto,
+    {
+      query: async (text: string, limit: number) => {
+        const meta = await store.getVectorIndexMeta();
+        if (!meta || meta.indexedCount === 0) return [];
+        const result = await getVectorWorker().query(vectorIndexPath(), text, limit);
+        return result.ok ? result.results : [];
+      },
+    },
+  );
 
   const handleUserInputRequest = async (request: XiazhiUserInputRequest): Promise<XiazhiUserInputResult> => {
     const binding = deepTutorRuns.get(request.turnId);
@@ -1709,6 +1744,93 @@ app.whenReady().then(async () => {
   ipcMain.handle('knowledge:getImportJob', (_event, jobId: string) => store.getKnowledgeImportJob(jobId));
   ipcMain.handle('knowledge:cancelImportJob', (_event, jobId: string) => store.cancelKnowledgeImportJob(jobId));
   ipcMain.handle('knowledge:retryImportJob', (_event, jobId: string) => store.retryKnowledgeImportJob(jobId));
+  ipcMain.handle('knowledge:parseEngines', () => getParseWorker().engines());
+  ipcMain.handle('knowledge:search', (_event, keyword: string, limit: number) => store.searchKnowledge(keyword, limit));
+  ipcMain.handle('knowledge:vectorStatus', async () => {
+    const meta = await store.getVectorIndexMeta();
+    const pendingChunks = await store.countPendingEmbeddingChunks();
+    const modelInfo = vectorModelInfo();
+    const available = vectorModelAvailable();
+    return {
+      available,
+      model: meta?.model || modelInfo.model,
+      dims: meta?.dims || modelInfo.dims,
+      indexedCount: meta?.indexedCount ?? 0,
+      pendingChunks,
+      modelError: available ? '' : '缺少本地依赖：sentence-transformers / lancedb',
+      updatedAt: meta?.updatedAt ?? '',
+    };
+  });
+  ipcMain.handle('knowledge:buildVectorIndex', async () => {
+    let indexedTotal = 0;
+    let model = '';
+    let dims = 0;
+    let indexedCount = 0;
+    for (let round = 0; round < 20; round += 1) {
+      const pending = await store.listChunksPendingEmbedding(VECTOR_BATCH_SIZE);
+      if (!pending.length) break;
+      const result = await getVectorWorker().index(
+        vectorIndexPath(),
+        pending.map((chunk) => ({ id: chunk.id, text: `${chunk.resourceTitle} ${chunk.heading} ${chunk.contentMd}`.slice(0, 4000) })),
+      );
+      if (!result.ok) {
+        return {
+          ok: false as const,
+          code: result.code,
+          message: result.message,
+          indexedTotal,
+          pendingChunks: await store.countPendingEmbeddingChunks(),
+        };
+      }
+      await store.markChunksIndexed(pending.map((chunk) => chunk.id));
+      indexedTotal += result.indexed;
+      model = result.model;
+      dims = result.dims;
+      indexedCount = result.indexedCount;
+      if (pending.length < VECTOR_BATCH_SIZE) break;
+    }
+    if (indexedTotal > 0 || indexedCount > 0) {
+      await store.saveVectorIndexMeta({ model, dims, indexedCount, updatedAt: new Date().toISOString() });
+    }
+    return {
+      ok: true as const,
+      indexedTotal,
+      indexedCount,
+      model,
+      dims,
+      pendingChunks: await store.countPendingEmbeddingChunks(),
+    };
+  });
+  ipcMain.handle('knowledge:resetVectorIndex', async () => {
+    await store.resetChunkEmbeddings();
+    await store.clearVectorIndexMeta();
+    return { ok: true, pendingChunks: await store.countPendingEmbeddingChunks() };
+  });
+  ipcMain.handle('knowledge:parseResource', async (_event, resourceId: string) => {
+    const resource = await store.getKnowledgeResource(resourceId);
+    if (!resource) throw new Error('知识资源不存在');
+    if (!(await store.isManagedLocalPath(resource.localPath)) || !existsSync(resource.localPath)) {
+      throw new Error('资源文件不在本地受管目录内或已缺失');
+    }
+    let result;
+    try {
+      result = await getParseWorker().parse(resource.localPath, extname(resource.localPath).toLowerCase());
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '文档解析 worker 调用失败';
+      await store.markResourceParseFailed(resourceId, message);
+      throw new Error(message);
+    }
+    if (!result.ok) {
+      await store.markResourceParseFailed(resourceId, `${result.code}: ${result.message}`);
+      throw new Error(result.message);
+    }
+    return store.applyResourceParseResult(resourceId, {
+      text: result.text,
+      engine: result.engine,
+      engineVersion: result.engineVersion,
+      pageCount: result.pages.length,
+    });
+  });
   ipcMain.handle('knowledge:showResource', async (_event, filePath: string) => {
     if (!(await store.isManagedLocalPath(filePath))) {
       throw new Error('只能打开本地数据目录内的知识资源');
@@ -1758,6 +1880,11 @@ app.whenReady().then(async () => {
     }
     if (artifact.isManaged && !(await store.isManagedLocalPath(artifact.filePath))) {
       throw new Error('只能打开本地数据目录内的文档产物');
+    }
+    if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && process.env.OMNI_EDU_E2E_OPEN_PATH_MODE === '1') {
+      if (app.isPackaged) throw new Error('E2E open-path adapter is disabled in packaged builds');
+      if (!existsSync(artifact.filePath)) throw new Error('文档产物文件不存在或尚未成功导出');
+      return;
     }
     shell.showItemInFolder(artifact.filePath);
   });
@@ -1931,6 +2058,14 @@ app.whenReady().then(async () => {
   ipcMain.handle('papers:replaceItem', (_event, paperId: string, itemId: string, questionId: string) => store.replacePaperItem(paperId, itemId, questionId));
   ipcMain.handle('papers:validate', (_event, id: string) => store.validatePaper(id));
   ipcMain.handle('papers:export', (_event, id: string, destinationRoot?: string) => store.exportPaper(id, destinationRoot));
+  ipcMain.handle('papers:reorderItems', (_event, input: PaperReorderInput) => store.reorderPaperItems(input));
+  ipcMain.handle('papers:archiveVersion', (_event, paperId: string, note?: string) => store.archivePaperVersion(paperId, note ?? ''));
+  ipcMain.handle('papers:listVersions', (_event, paperId: string) => store.listPaperVersions(paperId));
+  ipcMain.handle('papers:getVersion', (_event, versionId: string) => store.getPaperVersion(versionId));
+  ipcMain.handle('papers:restoreVersion', (_event, paperId: string, versionId: string) => store.restorePaperVersion(paperId, versionId));
+  ipcMain.handle('mistakes:analyzeErrorPatterns', (_event, studentId: string, input: { startDate?: string; endDate?: string; subject?: string } = {}) =>
+    store.analyzeStudentErrorPatterns(studentId, input));
+  ipcMain.handle('mistakes:proposeErrorReview', (_event, input: ErrorReviewProposeInput) => store.proposeErrorReview(input));
   ipcMain.handle('aiConfirmations:list', (_event, status = 'pending') => store.listAiConfirmations(status));
   ipcMain.handle('aiConfirmations:confirm', (_event, input: AiConfirmationConfirmInput) => store.confirmAiConfirmation(input));
   ipcMain.handle('aiConfirmations:reject', (_event, id: string) => store.rejectAiConfirmation(id));
@@ -2085,6 +2220,8 @@ app.on('window-all-closed', () => {
 async function shutdownSidecarAndCleanup() {
   const result = deepTutorSidecar ? await deepTutorSidecar.stop() : undefined;
   if (ocrWorker) await ocrWorker.stop();
+  if (parseWorker) await parseWorker.stop();
+  if (vectorWorker) await vectorWorker.stop();
   for (const [requestId, pending] of pendingDeepTutorInputs) {
     for (const question of pending.request.questions ?? []) {
       if (question.id.startsWith('mastery_question_')) await store.cancelAiMasteryQuestion(question.id);
