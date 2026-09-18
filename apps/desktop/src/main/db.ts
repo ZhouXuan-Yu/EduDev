@@ -174,6 +174,11 @@ import type {
   ErrorReviewProposeInput,
   ErrorCategory,
   ErrorConfidence,
+  ParseJob,
+  ParseJobItem,
+  ParseJobItemStatus,
+  ParseJobStatus,
+  ParseProvider,
 } from '../shared/contracts';
 import { buildErrorTaxonomyAnalysis, buildErrorTaxonomyMarkdown } from './ai-harness/error-taxonomy';
 
@@ -1337,6 +1342,7 @@ export class OmniEduStore {
     await this.migrate();
     await this.applyPendingSchemaMigrations();
     await this.recoverInterruptedImportJobs();
+    await this.recoverInterruptedParseJobs();
     await this.seedIfEmpty();
     return {
       dataRoot: this.dataRoot,
@@ -3299,6 +3305,196 @@ export class OmniEduStore {
         },
       },
     });
+  }
+
+  async createParseJob(): Promise<ParseJob> {
+    if (!this.parseProvider) throw new Error('解析引擎未初始化，无法批量解析');
+    const rows = await this.all(`SELECT id FROM teacher_resources WHERE parse_status IN ('needs_parser', 'failed') ORDER BY created_at ASC`);
+    if (!rows.length) throw new Error('没有待解析的资源（needs_parser / failed 状态）');
+    const id = `parse_job_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO parse_jobs (
+        id, status, total_resources, processed_resources, succeeded_resources,
+        failed_resources, cancel_requested, last_error, created_at, updated_at, completed_at
+      ) VALUES (?, 'queued', ?, 0, 0, 0, 0, '', ?, ?, '')`,
+      [id, rows.length, timestamp, timestamp],
+    );
+    for (const row of rows) {
+      await this.run(
+        `INSERT INTO parse_job_items (
+          id, job_id, resource_id, status, error_message, created_at, updated_at
+        ) VALUES (?, ?, ?, 'queued', '', ?, ?)`,
+        [`parse_job_item_${randomUUID()}`, id, String(row.id), timestamp, timestamp],
+      );
+    }
+    return this.getParseJobOrThrow(id);
+  }
+
+  async runParseJob(jobId: string): Promise<ParseJob> {
+    if (!this.parseProvider) throw new Error('解析引擎未初始化，无法批量解析');
+    const job = await this.getParseJobOrThrow(jobId);
+    if (job.status !== 'queued') throw new Error('只能运行待处理状态的解析任务');
+    const timestamp = now();
+    await this.run(`UPDATE parse_jobs SET status = 'running', updated_at = ? WHERE id = ?`, [timestamp, jobId]);
+    let processed = 0;
+    let succeeded = 0;
+    let failed = 0;
+    for (const item of job.items) {
+      const cancelRow = (await this.all(`SELECT cancel_requested FROM parse_jobs WHERE id = ?`, [jobId]))[0];
+      if (cancelRow && Number(cancelRow.cancel_requested) === 1) {
+        await this.run(
+          `UPDATE parse_jobs SET status = 'cancelled', updated_at = ?, completed_at = ? WHERE id = ?`,
+          [now(), now(), jobId],
+        );
+        await this.run(
+          `UPDATE parse_job_items SET status = 'cancelled', updated_at = ? WHERE job_id = ? AND status = 'queued'`,
+          [now(), jobId],
+        );
+        return this.getParseJobOrThrow(jobId);
+      }
+      processed += 1;
+      const resource = await this.getKnowledgeResource(item.resourceId);
+      if (!resource) {
+        failed += 1;
+        await this.run(
+          `UPDATE parse_job_items SET status = 'failed', error_message = '资源不存在', updated_at = ? WHERE id = ?`,
+          [now(), item.id],
+        );
+      } else {
+        const outcome = await this.parseProvider.parseResource(resource.id);
+        if (outcome.ok) {
+          succeeded += 1;
+          await this.run(
+            `UPDATE parse_job_items SET status = 'succeeded', error_message = '', updated_at = ? WHERE id = ?`,
+            [now(), item.id],
+          );
+        } else {
+          failed += 1;
+          await this.run(
+            `UPDATE parse_job_items SET status = 'failed', error_message = ?, updated_at = ? WHERE id = ?`,
+            [outcome.message.slice(0, 2000), now(), item.id],
+          );
+        }
+      }
+      await this.run(
+        `UPDATE parse_jobs
+            SET processed_resources = ?, succeeded_resources = ?, failed_resources = ?, updated_at = ?
+          WHERE id = ?`,
+        [processed, succeeded, failed, now(), jobId],
+      );
+    }
+    const finalStatus = failed === 0 ? 'ready' : 'partial_failed';
+    await this.run(
+      `UPDATE parse_jobs SET status = ?, updated_at = ?, completed_at = ? WHERE id = ?`,
+      [finalStatus, now(), now(), jobId],
+    );
+    return this.getParseJobOrThrow(jobId);
+  }
+
+  async cancelParseJob(jobId: string): Promise<ParseJob> {
+    const job = await this.getParseJobOrThrow(jobId);
+    const timestamp = now();
+    if (job.status === 'queued') {
+      await this.run(
+        `UPDATE parse_jobs SET status = 'cancelled', cancel_requested = 1, updated_at = ?, completed_at = ? WHERE id = ?`,
+        [timestamp, timestamp, jobId],
+      );
+      await this.run(
+        `UPDATE parse_job_items SET status = 'cancelled', updated_at = ? WHERE job_id = ? AND status = 'queued'`,
+        [timestamp, jobId],
+      );
+      return this.getParseJobOrThrow(jobId);
+    }
+    if (job.status !== 'running') throw new Error('只能取消进行中的解析任务');
+    await this.run(`UPDATE parse_jobs SET cancel_requested = 1, updated_at = ? WHERE id = ?`, [timestamp, jobId]);
+    return this.getParseJobOrThrow(jobId);
+  }
+
+  async retryParseJob(jobId: string): Promise<ParseJob> {
+    const job = await this.getParseJobOrThrow(jobId);
+    if (job.status !== 'failed' && job.status !== 'partial_failed' && job.status !== 'cancelled') {
+      throw new Error('只能重试已结束的解析任务');
+    }
+    const failedResourceIds = job.items.filter((item) => item.status === 'failed').map((item) => item.resourceId);
+    if (!failedResourceIds.length) throw new Error('该解析任务没有可重试的失败资源');
+    const id = `parse_job_${randomUUID()}`;
+    const timestamp = now();
+    await this.run(
+      `INSERT INTO parse_jobs (
+        id, status, total_resources, processed_resources, succeeded_resources,
+        failed_resources, cancel_requested, last_error, created_at, updated_at, completed_at
+      ) VALUES (?, 'queued', ?, 0, 0, 0, 0, '', ?, ?, '')`,
+      [id, failedResourceIds.length, timestamp, timestamp],
+    );
+    for (const resourceId of failedResourceIds) {
+      await this.run(
+        `INSERT INTO parse_job_items (
+          id, job_id, resource_id, status, error_message, created_at, updated_at
+        ) VALUES (?, ?, ?, 'queued', '', ?, ?)`,
+        [`parse_job_item_${randomUUID()}`, id, resourceId, timestamp, timestamp],
+      );
+    }
+    await this.runParseJob(id);
+    return this.getParseJobOrThrow(id);
+  }
+
+  async listParseJobs(limit = 10): Promise<ParseJob[]> {
+    const boundedLimit = Math.max(1, Math.min(Math.trunc(limit) || 10, 50));
+    const rows = await this.all(`SELECT * FROM parse_jobs ORDER BY created_at DESC LIMIT ?`, [boundedLimit]);
+    return rows.map((row) => this.mapParseJob(row));
+  }
+
+  async getParseJob(jobId: string): Promise<ParseJob | null> {
+    const row = (await this.all(`SELECT * FROM parse_jobs WHERE id = ?`, [jobId]))[0];
+    if (!row) return null;
+    const items = await this.all(`SELECT * FROM parse_job_items WHERE job_id = ? ORDER BY created_at ASC, id ASC`, [jobId]);
+    return this.mapParseJob(row, items);
+  }
+
+  private async getParseJobOrThrow(jobId: string): Promise<ParseJob> {
+    const job = await this.getParseJob(jobId);
+    if (!job) throw new Error('解析任务不存在');
+    return job;
+  }
+
+  private mapParseJob(row: Row, itemRows?: Row[]): ParseJob {
+    return {
+      id: String(row.id),
+      status: String(row.status) as ParseJobStatus,
+      totalResources: Number(row.total_resources ?? 0),
+      processedResources: Number(row.processed_resources ?? 0),
+      succeededResources: Number(row.succeeded_resources ?? 0),
+      failedResources: Number(row.failed_resources ?? 0),
+      cancelRequested: Number(row.cancel_requested ?? 0) === 1,
+      lastError: String(row.last_error ?? ''),
+      createdAt: String(row.created_at ?? ''),
+      updatedAt: String(row.updated_at ?? ''),
+      completedAt: String(row.completed_at ?? ''),
+      items: (itemRows ?? []).map((itemRow) => ({
+        id: String(itemRow.id),
+        jobId: String(itemRow.job_id ?? ''),
+        resourceId: String(itemRow.resource_id ?? ''),
+        status: String(itemRow.status) as ParseJobItemStatus,
+        errorMessage: String(itemRow.error_message ?? ''),
+        createdAt: String(itemRow.created_at ?? ''),
+        updatedAt: String(itemRow.updated_at ?? ''),
+      })),
+    };
+  }
+
+  private async recoverInterruptedParseJobs() {
+    const timestamp = now();
+    await this.run(
+      `UPDATE parse_jobs
+          SET status = 'failed', last_error = 'interrupted_by_restart', updated_at = ?, completed_at = ?
+        WHERE status IN ('queued', 'running') AND completed_at = ''`,
+      [timestamp, timestamp],
+    );
+    await this.run(
+      `UPDATE parse_job_items SET status = 'cancelled', updated_at = ? WHERE status = 'queued'`,
+      [timestamp],
+    );
   }
 
   async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {

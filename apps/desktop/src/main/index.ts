@@ -940,6 +940,35 @@ app.whenReady().then(async () => {
         return result.ok ? result.results : [];
       },
     },
+    {
+      parseResource: async (resourceId: string) => {
+        const resource = await store.getKnowledgeResource(resourceId);
+        if (!resource) return { ok: false, code: 'MISSING_RESOURCE', message: '资源不存在' };
+        if (!(await store.isManagedLocalPath(resource.localPath)) || !existsSync(resource.localPath)) {
+          const message = '资源文件不在本地受管目录内或已缺失';
+          await store.markResourceParseFailed(resourceId, message);
+          return { ok: false, code: 'PATH_REJECTED', message };
+        }
+        const result = await getParseWorker().parse(resource.localPath, extname(resource.localPath).toLowerCase());
+        if (!result.ok) {
+          await store.markResourceParseFailed(resourceId, `${result.code}: ${result.message}`);
+          return { ok: false, code: result.code, message: result.message };
+        }
+        await store.applyResourceParseResult(resourceId, {
+          text: result.text,
+          engine: result.engine,
+          engineVersion: result.engineVersion,
+          pageCount: result.pages.length,
+        });
+        return {
+          ok: true,
+          text: result.text,
+          engine: result.engine,
+          engineVersion: result.engineVersion,
+          pageCount: result.pages.length,
+        };
+      },
+    },
   );
 
   const handleUserInputRequest = async (request: XiazhiUserInputRequest): Promise<XiazhiUserInputResult> => {
@@ -1745,6 +1774,12 @@ app.whenReady().then(async () => {
   ipcMain.handle('knowledge:cancelImportJob', (_event, jobId: string) => store.cancelKnowledgeImportJob(jobId));
   ipcMain.handle('knowledge:retryImportJob', (_event, jobId: string) => store.retryKnowledgeImportJob(jobId));
   ipcMain.handle('knowledge:parseEngines', () => getParseWorker().engines());
+  ipcMain.handle('knowledge:createParseJob', () => store.createParseJob());
+  ipcMain.handle('knowledge:runParseJob', (_event, jobId: string) => store.runParseJob(jobId));
+  ipcMain.handle('knowledge:cancelParseJob', (_event, jobId: string) => store.cancelParseJob(jobId));
+  ipcMain.handle('knowledge:retryParseJob', (_event, jobId: string) => store.retryParseJob(jobId));
+  ipcMain.handle('knowledge:listParseJobs', (_event, limit: number) => store.listParseJobs(limit));
+  ipcMain.handle('knowledge:getParseJob', (_event, jobId: string) => store.getParseJob(jobId));
   ipcMain.handle('knowledge:search', (_event, keyword: string, limit: number) => store.searchKnowledge(keyword, limit));
   ipcMain.handle('knowledge:vectorStatus', async () => {
     const meta = await store.getVectorIndexMeta();
