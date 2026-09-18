@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import type { ResourceChunk, TeacherResource } from '../../shared/contracts';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { ParseJob, ResourceChunk, TeacherResource } from '../../shared/contracts';
 
 type KnowledgeResourcePanelProps = {
   setStatus: (message: string) => void;
@@ -32,6 +32,9 @@ export function KnowledgeResourcePanel({ setStatus, onOverviewChanged, refreshTo
   const [searching, setSearching] = useState(false);
   const [searched, setSearched] = useState(false);
   const [searchError, setSearchError] = useState('');
+  const [batchJob, setBatchJob] = useState<ParseJob | null>(null);
+  const [batchBusy, setBatchBusy] = useState(false);
+  const batchTimerRef = useRef<number | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -75,6 +78,67 @@ export function KnowledgeResourcePanel({ setStatus, onOverviewChanged, refreshTo
   }
 
   const availableEngines = engines.filter((engine) => engine.available);
+
+  const stopBatchPolling = useCallback(() => {
+    if (batchTimerRef.current !== null) {
+      window.clearInterval(batchTimerRef.current);
+      batchTimerRef.current = null;
+    }
+  }, []);
+
+  useEffect(() => stopBatchPolling, [stopBatchPolling]);
+
+  async function startBatchParse() {
+    if (batchBusy) return;
+    setBatchBusy(true);
+    setErrorMessage('');
+    try {
+      const job = await window.omniEdu?.createParseJob();
+      if (!job) throw new Error('创建批量解析任务没有返回结果。');
+      setBatchJob(job);
+      const finished = await window.omniEdu?.runParseJob(job.id);
+      if (finished) {
+        setBatchJob(finished);
+        setStatus(finished.status === 'ready'
+          ? `批量解析完成：${finished.succeededResources} 个资源就绪。`
+          : `批量解析部分完成：${finished.succeededResources} 个成功，${finished.failedResources} 个失败，可重试。`);
+      }
+      await load();
+      onOverviewChanged?.();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : '批量解析失败。');
+    } finally {
+      setBatchBusy(false);
+      stopBatchPolling();
+    }
+  }
+
+  async function cancelBatchParse() {
+    if (!batchJob) return;
+    try {
+      const updated = await window.omniEdu?.cancelParseJob(batchJob.id);
+      if (updated) setBatchJob(updated);
+      setStatus('已请求取消批量解析；当前资源处理完成后停止。');
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : '取消批量解析失败。');
+    }
+  }
+
+  async function retryBatchParse() {
+    if (batchBusy || !batchJob) return;
+    setBatchBusy(true);
+    try {
+      const job = await window.omniEdu?.retryParseJob(batchJob.id);
+      setBatchJob(job);
+      setStatus(job.status === 'ready' ? `重试完成：${job.succeededResources} 个资源就绪。` : `重试结束：${job.failedResources} 个仍失败。`);
+      await load();
+      onOverviewChanged?.();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : '重试批量解析失败。');
+    } finally {
+      setBatchBusy(false);
+    }
+  }
 
   async function runSearch() {
     const query = searchQuery.trim();
