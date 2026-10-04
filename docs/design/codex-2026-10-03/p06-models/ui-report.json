@@ -1,0 +1,124 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "First setup without environment credentials saves a verified key and obtains official models from the visible form",
+      "pass": true
+    },
+    {
+      "name": "Actual official model directory reaches the formal renderer without credential disclosure",
+      "pass": true
+    },
+    {
+      "name": "Visible settings entry opens reused Hana settings structure with real typed data",
+      "pass": true
+    },
+    {
+      "name": "Model/key/save/list remain reachable without horizontal overflow at both required viewports",
+      "pass": true
+    },
+    {
+      "name": "Teacher save verifies the real key and default, clears the key form and exposes only masked state",
+      "pass": true
+    },
+    {
+      "name": "Actual Windows safeStorage ciphertext is committed in SQLite and decrypts in main",
+      "pass": true
+    },
+    {
+      "name": "Stale formal save is refused without changing the real committed configuration",
+      "pass": true
+    },
+    {
+      "name": "Invalid key input produces an actionable failure, clears the form and preserves saved configuration",
+      "pass": true
+    },
+    {
+      "name": "Application restart without environment credentials reads encrypted configuration and preserves the selected default",
+      "pass": true
+    },
+    {
+      "name": "Empty conversation picker commits its own model independently of the global default",
+      "pass": true
+    },
+    {
+      "name": "Actual Flash conversation completes through the formal composer and leaves the input empty",
+      "pass": true
+    },
+    {
+      "name": "A truthfully locks a bound conversation instead of pretending a native model switch exists",
+      "pass": true
+    },
+    {
+      "name": "Existing Flash native history continues while the changed global default is Pro",
+      "pass": true
+    },
+    {
+      "name": "Second official Pro model completes a real fresh-conversation request using the same harness",
+      "pass": true
+    },
+    {
+      "name": "Real active run refuses concurrent provider settings and supports stopping",
+      "pass": true
+    },
+    {
+      "name": "Another Electron renderer is denied access to provider settings",
+      "pass": true
+    },
+    {
+      "name": "Legacy settings project formal DeepSeek state and cannot switch formal Pi to another provider",
+      "pass": true
+    },
+    {
+      "name": "Unreadable encrypted key preserves public history and can be replaced through the actual settings form",
+      "pass": true
+    }
+  ],
+  "models": [
+    {
+      "model": "deepseek-flash",
+      "runId": "run_37135640-2d05-40a8-947a-1887f5acf184",
+      "completed": true
+    },
+    {
+      "model": "deepseek-flash",
+      "runId": "run_6c674b5f-9867-4938-af0d-1f4957a0059c",
+      "completed": true
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "runId": "run_db3f5685-0ede-470a-b34a-d3da1d831f7e",
+      "completed": true
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "rootWidth": 1351,
+      "scrollWidth": 1351,
+      "modelLayout": "flex",
+      "modelTitleWidth": 127.19792175292969,
+      "modelTitleHeight": 17.135417938232422,
+      "modelTitleLineHeight": 17.1429,
+      "saveVisible": true
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "rootWidth": 1920,
+      "scrollWidth": 1920,
+      "modelLayout": "flex",
+      "modelTitleWidth": 127.19792175292969,
+      "modelTitleHeight": 17.135417938232422,
+      "modelTitleLineHeight": 17.1429,
+      "saveVisible": true
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron, Windows safeStorage, SQLite, live DeepSeek official catalogue and fresh-conversation chat; synthetic prompts only.",
+    "A covers empty-conversation selection and default settings; bound-history native switching and full settings navigation remain B/C.",
+    "No VPN-off, installer or full Codex pixel-match proof."
+  ],
+  "rendererErrors": []
+}

@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Production assembler preserves origin fingerprint after native switch; safeHistory=false",
+      "pass": true
+    },
+    {
+      "name": "Production assembler preserves origin fingerprint after native switch; safeHistory=true",
+      "pass": true
+    },
+    {
+      "name": "Restore intent before SDK empty-branch bootstrap survives exit, without inventing a user message",
+      "pass": true
+    },
+    {
+      "name": "Native restoration already written before exit is recovered without repeating that model change; safeHistory=false",
+      "pass": true
+    },
+    {
+      "name": "Native restoration already written before exit is recovered without repeating that model change; safeHistory=true",
+      "pass": true
+    },
+    {
+      "name": "Forged model origin never bypasses the original education/memory/control snapshot fingerprint",
+      "pass": true
+    },
+    {
+      "name": "Full request capacity includes system and output before allowing an idle switch",
+      "pass": true
+    },
+    {
+      "name": "Malformed restore receipt and unknown versions are rejected by production identity admission",
+      "pass": true
+    },
+    {
+      "name": "Native manual compaction after a switch uses the actual Pro model, then same-history Flash can reopen the compacted branch",
+      "pass": true
+    },
+    {
+      "name": "No unexpected or live provider requests; native summary uses one controlled request",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual production Pi assembler/native authority epochs/SQLite/JSONL and owned synthetic history; one controlled native summary request, no live provider calls"
+}

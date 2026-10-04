@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "tag": "v0.450.0",
+  "license": "Apache-2.0",
+  "url": "https://github.com/liliMozi/openhanako/blob/v0.450.0/core/model-image-preprocess.ts",
+  "sourceSha256": "e3cb6d0d4376305ffb77d85aff00b20239397388dd3a8063f98370fc0d9a0cb9",
+  "moduleSha256": "1e2b174c88732744434802cbf3d5f5d7157851652c6c6758de745088688f831f",
+  "adapterSourceSha256": "c3ceac10b4f9420cb06593a2fe2420eb9b4cda74915d8b5be29a4ccccff87070",
+  "adapterSha256": "bcda04650d28310023eac215848704e5fc314c62a43c7dda6c5a2ad69c0f30a3",
+  "licenseSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+  "adaptation": "Only SDK import/header; original normalization/preprocessing bodies and two adapter bodies. Native Pi1.0.2 prompt already processes images: do not preprocess prompt twice. No authority granted."
+}

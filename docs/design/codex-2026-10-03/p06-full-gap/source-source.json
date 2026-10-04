@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-03",
+  "license": "Apache-2.0",
+  "adaptation": "Original overlay functions extracted via TypeScript AST; 48px -> 36px screenshot baseline. Replace ZCode custom 1.1-step zoom-level conversion with Electron native 1.2**level, because this host passes getZoomLevel(). Menu pattern referenced, product commands localized.",
+  "menuSource": "packages/desktop/src/main/desktopApplicationMenu.ts",
+  "menuSourceSha256": "da050e1714044503ad6b2bd4a02131797094e2c7fb100f23817f6535dff2993d",
+  "files": [
+    {
+      "source": "packages/desktop/src/main/desktopWindowButtonPosition.ts",
+      "sourceSha256": "116b7f4603c37525d150736f661ccf54901d9a689b4564e5d81f123cb2282332",
+      "output": "src/main/desktop-chrome/zcode-overlay.ts",
+      "outputSha256": "3e054381d3005fb88090edccc31bb4bc155f0c55ee8fe48d07f4193242bb886a"
+    },
+    {
+      "source": "LICENSE",
+      "sourceSha256": "fa36dc312bc4946b1c22dba3c726ad8d3052b353f81424e7b997dbb3d9b40a49",
+      "output": "src/main/desktop-chrome/ZCODE-LICENSE",
+      "outputSha256": "fa36dc312bc4946b1c22dba3c726ad8d3052b353f81424e7b997dbb3d9b40a49"
+    }
+  ],
+  "zoomSource": "packages/desktop/src/main/desktopZoom.ts",
+  "zoomSourceSha256": "3054cea32e6231428268d03886a4b9ca04b6aa6a91042c1692f778547dfe11c6"
+}

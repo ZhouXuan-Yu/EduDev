@@ -1,0 +1,18 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+import {parseDeepSeekCapabilities,readDeepSeekCapabilities,resolveDeepSeekCapabilities} from '../../src/main/xiaozhi-agent/model-capabilities.ts';
+const root=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-image-capabilities-')),observedAt=new Date().toISOString();
+const entry={id:'deepseek-flash',name:'Flash',context_window:1048576,max_output_tokens:393216};
+const parse=input=>parseDeepSeekCapabilities({object:'list',data:[input]},observedAt);
+const file=path.join(root,'deepseek-capabilities.v1.json'),save=value=>fs.writeFileSync(file,JSON.stringify(value));let checks=0;
+const check=async(name,fn)=>{await fn();checks++;console.log('PASS '+name);};const oldFetch=globalThis.fetch;
+try{
+ await check('Official image modality projected without unrelated private fields',()=>{const c=parse({...entry,input_modalities:['text','image'],api_capabilities:{secret:'must-drop'}});assert.deepEqual(c.models[0].inputModalities,['text','image']);assert(!JSON.stringify(c).includes('must-drop'));});
+ await check('Text model stays text-only and absence stays unknown',()=>{assert.deepEqual(parse({...entry,id:'deepseek-v4-pro',input_modalities:['text']}).models[0].inputModalities,['text']);assert(!Object.hasOwn(parse(entry).models[0],'inputModalities'));});
+ await check('Invalid/duplicate/unknown/image-only metadata fails closed',()=>{for(const input of [null,{},[],['image'],['text','text'],['text','audio'],['text','image','video']])assert.throws(()=>parse({...entry,input_modalities:input}),/configuration/);});
+ await check('Official/cache roundtrip preserves modalities without changing schema1',async()=>{save(parse({...entry,input_modalities:['text','image']}));const c=await readDeepSeekCapabilities(root,entry.id);assert.deepEqual(c.inputModalities,['text','image']);assert.equal(c.source,'cache');assert.equal(c.stale,false);});
+ await check('Older cache keeps capacity and unknown image capability',async()=>{save(parse(entry));const c=await readDeepSeekCapabilities(root,entry.id);assert.equal(c.contextWindow,1048576);assert.equal(c.inputModalities,undefined);});
+ await check('Tampered cached modalities rejected',async()=>{const c=parse(entry);c.models[0].inputModalities=['image'];save(c);assert.equal(await readDeepSeekCapabilities(root,entry.id),undefined);});
+ await check('Successful fresh official removal never revives image capability',async()=>{const c=parse({...entry,input_modalities:['text','image']});c.observedAt=c.models[0].observedAt='2026-01-01T00:00:00Z';save(c);globalThis.fetch=async()=>new Response(JSON.stringify({object:'list',data:[{...entry,id:'deepseek-v4-pro',input_modalities:['text']}]}));await assert.rejects(resolveDeepSeekCapabilities(root,entry.id,'fixture'),/configuration/);assert.equal(await readDeepSeekCapabilities(root,entry.id),undefined);});
+ await check('Offline stale capability is explicitly stale, never fresh',async()=>{const c=parse({...entry,input_modalities:['text','image']});c.observedAt=c.models[0].observedAt='2026-01-01T00:00:00Z';save(c);globalThis.fetch=async()=>{throw new Error('offline');};const result=await resolveDeepSeekCapabilities(root,entry.id,'fixture');assert.equal(result.stale,true);assert.deepEqual(result.inputModalities,['text','image']);});
+}finally{globalThis.fetch=oldFetch;}
+const report={success:true,checks,boundary:'Deterministic catalogue boundaries only; no image upload grant or formal UI acceptance.'};fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({...report,root}));

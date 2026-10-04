@@ -1,0 +1,61 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+import {OmniEduStore} from '../../src/main/db';
+import {createAttachmentImportService} from '../../src/main/xiaozhi-agent/attachment-import-service';
+import {createAttachmentReadTools} from '../../src/main/xiaozhi-agent/attachment-read-tools';
+import {attachmentStartHash} from '../../src/main/xiaozhi-agent/attachment-send-state';
+import {sanitizeOfficeDocumentText} from '../../src/main/xiaozhi-agent/office-document-tools';
+const output=process.argv[2],data=path.join(output,'data'),store=new OmniEduStore(data),checks:{name:string;pass:boolean}[]=[];
+const report:{success:boolean;checks:typeof checks;error?:string}={success:false,checks};
+const check=(name:string)=>{checks.push({name,pass:true});console.log('PASS '+name);};
+globalThis.fetch=async()=>{throw new Error('No network in native attachment-read acceptance');};
+const signal=()=>new AbortController().signal;
+const close=()=>new Promise<void>((resolve,reject)=>(store as any).db.close((e:Error|null)=>e?reject(e):resolve()));
+try{
+ await store.init();const id=(await store.createAiConversationSession({title:'实读本地合成附件',folderId:null})).session.id;
+ const student='合成学生'+randomUUID().slice(0,8);await store.createStudent({displayName:student,realName:student});
+ const sources=path.join(output,'sources');fs.mkdirSync(sources);const file=path.join(sources,'必要教研.txt');
+ fs.writeFileSync(file,`课堂37分钟\n练习8道\n学生${student} 电话18012345678 邮箱edu-fixture@example.invalid\n不需要的尾行`);
+ const state=store.xiaozhiState.attachments,imports=store.xiaozhiState.attachmentImports;
+ const importer=createAttachmentImportService({dataRoot:data,state,imports});const selected=await importer.importFile(id,file,signal());
+ let current=true,allow=true,hold=false,heldStarted=false,heldResolve:()=>void=()=>{};
+ const tools=createAttachmentReadTools({sessionId:id,state,importer,isCurrent:()=>current,
+  authorize:async row=>{const detail=await store.getAiConversationSession(id);return allow&&!detail.session.archivedAt&&detail.messages.some(v=>v.id===row.messageId&&v.metadata.agentRunId===row.runId);},
+  sanitize:async text=>{if(hold)await new Promise<void>(resolve=>{heldStarted=true;heldResolve=resolve;});return sanitizeOfficeDocumentText(store,text);}});
+ const exec=async(name:string,args:unknown,s=signal())=>tools.find(t=>t.name===name)!.execute(randomUUID(),args,s,undefined,undefined as never);
+ const payload=(r:any)=>JSON.parse(r.content[0].text);
+ let getterCalls=0;const accessor={};Object.defineProperty(accessor,'id',{enumerable:true,get(){getterCalls++;return selected.id;}});
+ for(const args of [accessor,{id:selected.id,revision:0,path:file},{id:selected.id,revision:0,[Symbol('hidden')]:1},Object.create({id:selected.id,revision:0}),{id:selected.id,revision:0,lineCount:101}])assert((await exec('office_read_attachment',args)).isError);
+ assert.equal(getterCalls,0);assert((await exec('office_list_attachments',{absolutePath:file})).isError);check('Getter/prototype/symbol/path/extra/range inputs are rejected without invoking accessors');
+ assert.equal(payload(await exec('office_list_attachments',{})).items.length,0);assert((await exec('office_read_attachment',{id:selected.id,revision:0})).isError);check('Unsent draft is never listed or read');
+ const row=(await state.get(id,selected.id))!,selection=[{id:row.id,revision:row.revision}],prompt='实际读取必要教研';
+ const commandId=`xicmd_${randomUUID()}`,hash=attachmentStartHash(id,prompt,selection,[row]);await store.xiaozhiState.claimCommand(commandId,id,hash);
+ const admitted=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId,prompt,hash,model:'deepseek-flash',selections:selection,attachments:[row]});
+ const submitted=admitted.attachments[0],args={id:submitted.id,revision:submitted.revision};
+ const catalog=payload(await exec('office_list_attachments',{limit:1}));assert.equal(catalog.items[0].id,submitted.id);assert(!JSON.stringify(catalog).includes(data));check('Actual native message/run/submitted facts admit safe paged ID metadata, never captured paths');
+ const read=payload(await exec('office_read_attachment',{...args,startLine:2,lineCount:2}));
+ assert(read.success&&read.text.includes('8')&&read.text.includes('[学生姓名]'));assert(!read.text.includes(student)&&!read.text.includes('18012345678')&&!read.text.includes('edu-fixture@example.invalid'));
+ assert.equal(read.source.locator.start,2);assert.equal(read.source.locator.end,3);assert(!read.text.includes('37')&&!read.text.includes('不需要'));check('Real selected-copy read gives only requested lines, redacts actual known student/phone/email and retains source version');
+ fs.unlinkSync(file);assert(payload(await exec('office_read_attachment',{...args,lineCount:1})).text.includes('37'));check('Original deletion does not invalidate immutable captured history');
+ const stale=await exec('office_read_attachment',{...args,revision:0});assert(stale.isError);assert.equal((stale.details as any).error.code,'changed');check('Stale revision refuses body');
+ const foreign=(await store.createAiConversationSession({title:'另一会话',folderId:null})).session.id;
+ const foreignTools=createAttachmentReadTools({sessionId:foreign,state,importer,isCurrent:()=>true,authorize:async()=>true,sanitize:async v=>v});
+ assert((await foreignTools[1].execute(randomUUID(),args,signal(),undefined,undefined as never)).isError);check('Another session cannot read the submitted ID even with a permissive fixture authority callback');
+ allow=false;assert((await exec('office_read_attachment',args)).isError);allow=true;check('Current message/run authorization loss refuses body');
+ hold=true;const controller=new AbortController(),pending=exec('office_read_attachment',args,controller.signal);
+ for(let n=0;n<100&&!heldStarted;n++)await new Promise(r=>setTimeout(r,10));assert(heldStarted,'Expected actual read to reach sanitizer delivery gate');controller.abort();heldResolve();hold=false;
+ const stopped=await pending;assert(stopped.isError&&!JSON.stringify(stopped.content).includes(student));check('Cancel after actual file read and before sanitized delivery emits no late body');
+ current=false;assert((await exec('office_list_attachments',{})).isError);current=true;check('Stopped owner cannot list or deliver metadata');
+ const captured=(await state.get(id,submitted.id))!;const target=path.join(data,'xiaozhi-pi','attachments',id,captured.path);fs.chmodSync(target,0o644);fs.writeFileSync(target,'篡改副本');
+ const changed=await exec('office_read_attachment',args);assert(changed.isError&&!JSON.stringify(changed.content).includes('篡改副本'));check('Changed captured bytes refuse before model delivery and preserve original SQLite version');
+ const remaining=(await state.get(id,submitted.id))!;assert.equal(remaining.version,captured.version);assert.equal(remaining.contentSha256,captured.contentSha256);assert.equal(remaining.state,'submitted');check('Read/failure/cancel never change the existing submitted attachment facts');
+ const imageFile=path.join(sources,'图像.png');fs.copyFileSync('scripts/xiaozhi-agent/fixtures/attachment-rgb.png',imageFile);
+ const image=await importer.importFile(id,imageFile,signal()),imageRow=(await state.get(id,image.id))!,imageSelection=[{id:image.id,revision:image.revision}],imageCommand=`xicmd_${randomUUID()}`;
+ const imageHash=attachmentStartHash(id,'合成图像',imageSelection,[imageRow]);await store.xiaozhiState.claimCommand(imageCommand,id,imageHash);
+ const imageSend=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId:imageCommand,prompt:'合成图像',hash:imageHash,model:'deepseek-flash',selections:imageSelection,attachments:[imageRow]});
+ const imageResult=await exec('office_read_attachment',{id:image.id,revision:imageSend.attachments[0].revision});
+ assert(imageResult.isError);assert.equal((imageResult.details as any).error.code,'needs_ocr');assert(!JSON.stringify(imageResult).includes('base64'));check('Submitted real image refuses text reading before any image bytes are delivered');
+ const page1=payload(await exec('office_list_attachments',{limit:1})),page2=payload(await exec('office_list_attachments',{limit:1,offset:1}));
+ assert.equal(page1.total,2);assert.equal(page1.nextOffset,1);assert.equal(page2.nextOffset,null);assert.notEqual(page1.items[0].id,page2.items[0].id);check('Actual two submitted attachments paginate deterministically without drafts or duplicate IDs');
+ report.success=true;
+}catch(error){report.error=String(error instanceof Error?error.stack:error).slice(0,1800);throw error;}
+finally{fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');await close();}

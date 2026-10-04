@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "name": "empty-state.styles.ts",
+      "sha256": "ddb2f0fc06177262ee33aefa2ade0f7ddcc9616df4fd1c699320b1b38cab50ce"
+    },
+    {
+      "name": "empty-state.tsx",
+      "sha256": "f05e2b80a27e82767c8b68e6e94434caf23b86767efe93df85853f084e239652"
+    },
+    {
+      "name": "index.ts",
+      "sha256": "f33cd398f96bc1c1b3baba2b7e68ad7921841a14fc244383351e9450fa36ed04"
+    }
+  ],
+  "source": "D:/WorkProject/HeroUIPro/herouipro-v3/src/components/empty-state",
+  "lookup": "HeroUI MCP docs returned HTTP 504; local source fallback"
+}

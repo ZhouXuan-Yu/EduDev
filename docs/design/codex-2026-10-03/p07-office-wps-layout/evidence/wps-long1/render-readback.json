@@ -1,0 +1,444 @@
+{
+  "success": true,
+  "files": [
+    {
+      "kind": "docx",
+      "engine": "Actual WPS COM",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-2.png"
+        },
+        {
+          "page": 3,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-3.png"
+        },
+        {
+          "page": 4,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-4.png"
+        },
+        {
+          "page": 5,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-5.png"
+        },
+        {
+          "page": 6,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-6.png"
+        },
+        {
+          "page": 7,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-7.png"
+        },
+        {
+          "page": 8,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-8.png"
+        }
+      ],
+      "missing": [],
+      "allMarkersPresent": true
+    },
+    {
+      "kind": "xlsx",
+      "engine": "Actual WPS COM",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-2.png"
+        },
+        {
+          "page": 3,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-3.png"
+        },
+        {
+          "page": 4,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-4.png"
+        },
+        {
+          "page": 5,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-5.png"
+        },
+        {
+          "page": 6,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-6.png"
+        },
+        {
+          "page": 7,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-7.png"
+        },
+        {
+          "page": 8,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-8.png"
+        },
+        {
+          "page": 9,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-9.png"
+        },
+        {
+          "page": 10,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-10.png"
+        },
+        {
+          "page": 11,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-11.png"
+        }
+      ],
+      "missing": [],
+      "allMarkersPresent": true
+    },
+    {
+      "kind": "pptx",
+      "engine": "Actual WPS COM",
+      "pages": [
+        {
+          "page": 1,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-2.png"
+        },
+        {
+          "page": 3,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-3.png"
+        },
+        {
+          "page": 4,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-4.png"
+        },
+        {
+          "page": 5,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-5.png"
+        },
+        {
+          "page": 6,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-6.png"
+        },
+        {
+          "page": 7,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-7.png"
+        },
+        {
+          "page": 8,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-8.png"
+        },
+        {
+          "page": 9,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-9.png"
+        },
+        {
+          "page": 10,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-10.png"
+        },
+        {
+          "page": 11,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-11.png"
+        },
+        {
+          "page": 12,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-12.png"
+        },
+        {
+          "page": 13,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-13.png"
+        },
+        {
+          "page": 14,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-14.png"
+        },
+        {
+          "page": 15,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-15.png"
+        },
+        {
+          "page": 16,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-16.png"
+        },
+        {
+          "page": 17,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-17.png"
+        },
+        {
+          "page": 18,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-18.png"
+        },
+        {
+          "page": 19,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-19.png"
+        },
+        {
+          "page": 20,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-20.png"
+        },
+        {
+          "page": 21,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-21.png"
+        },
+        {
+          "page": 22,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-22.png"
+        },
+        {
+          "page": 23,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-23.png"
+        },
+        {
+          "page": 24,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-24.png"
+        },
+        {
+          "page": 25,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-25.png"
+        },
+        {
+          "page": 26,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-26.png"
+        },
+        {
+          "page": 27,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-27.png"
+        },
+        {
+          "page": 28,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-28.png"
+        },
+        {
+          "page": 29,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-29.png"
+        }
+      ],
+      "missing": [],
+      "allMarkersPresent": true
+    },
+    {
+      "kind": "pdf",
+      "engine": "Original Hana/embedded Chromium",
+      "pages": [
+        {
+          "page": 1,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-2.png"
+        },
+        {
+          "page": 3,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-3.png"
+        },
+        {
+          "page": 4,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-4.png"
+        },
+        {
+          "page": 5,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-5.png"
+        },
+        {
+          "page": 6,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-6.png"
+        },
+        {
+          "page": 7,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-7.png"
+        },
+        {
+          "page": 8,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-8.png"
+        },
+        {
+          "page": 9,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-9.png"
+        },
+        {
+          "page": 10,
+          "width": 594.9599609375,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "pdf-page-10.png"
+        }
+      ],
+      "missing": [],
+      "allMarkersPresent": true
+    }
+  ],
+  "boundary": "Real WPS exported page marker presence (layout CR/LF and inferred spaces adjacent to marker digits allowed) and glyph bounds; actual exact content requires COM/OOXML readback, images need visual inspection."
+}

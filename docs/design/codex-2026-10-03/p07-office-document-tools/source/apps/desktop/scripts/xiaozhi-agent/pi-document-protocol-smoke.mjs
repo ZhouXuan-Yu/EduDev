@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { randomUUID } from 'node:crypto';
+import { transformSync } from '@swc/core';
+const source=fs.readFileSync(new URL('../../src/shared/xiaozhi-documents.ts',import.meta.url),'utf8');
+const js=transformSync(source,{jsc:{parser:{syntax:'typescript'},target:'es2022'},module:{type:'es6'}}).code;
+const {DOCUMENT_SCHEMA,DOCUMENT_MAX_INPUT,DOCUMENT_MAX_OUTPUT,validDocumentRequest,validDocumentResult}=await import(`data:text/javascript;base64,${Buffer.from(js).toString('base64')}`);
+const id=`xifile_${randomUUID()}`,request={schemaVersion:DOCUMENT_SCHEMA,requestId:id,filename:'课堂.docx',bytes:new Uint8Array([1])};
+let passed=0;
+const check=(name,fn)=>{fn();++passed;console.log(`PASS ${name}`);};
+check('Versioned buffer request accepted',()=>assert(validDocumentRequest(request)));
+for(const [name,override]of [['schema',{schemaVersion:'v2'}],['identity',{requestId:'arbitrary'}],['path',{filename:'../课堂.docx'}],['binary',{bytes:[1]}],['macro',{filename:'unsafe.docm'}],['size',{bytes:new Uint8Array(DOCUMENT_MAX_INPUT+1)}],['extra executable',{command:'run'}]])check(`Reject invalid ${name} request`,()=>assert(!validDocumentRequest({...request,...override})));
+const result={ok:true,schemaVersion:DOCUMENT_SCHEMA,requestId:id,format:'docx',markdown:'# 真实正文',parser:'hana-anydoc-0.1.2',warnings:[]};
+check('Strict result accepted',()=>assert(validDocumentResult(result,id)));
+for(const [name,override]of [['identity',{requestId:'other'}],['parser',{parser:'cloud'}],['format',{format:'exe'}],['output size',{markdown:'a'.repeat(DOCUMENT_MAX_OUTPUT+1)}],['warnings',{warnings:['a'.repeat(121)]}],['raw diagnostic',{stderr:'private'}]])check(`Reject invalid ${name} result`,()=>assert(!validDocumentResult({...result,...override},id)));
+check('Known failure accepted without raw diagnostic',()=>assert(validDocumentResult({ok:false,schemaVersion:DOCUMENT_SCHEMA,requestId:id,error:'needs_ocr'},id)));
+check('Unknown failure rejected',()=>assert(!validDocumentResult({ok:false,schemaVersion:DOCUMENT_SCHEMA,requestId:id,error:'raw private error'},id)));
+console.log(JSON.stringify({passed,total:passed,scope:'Strict protocol guards only; native extraction verified separately in Electron UI'}));

@@ -1,0 +1,34 @@
+[
+  {
+    "file": "docs/design/codex-2026-10-03/workspace-reference.png",
+    "width": 2559,
+    "height": 1529,
+    "mainWhiteStartRow500": 459,
+    "sidebarRgb": [
+      246,
+      253,
+      252
+    ],
+    "titleRgb": [
+      230,
+      249,
+      247
+    ]
+  },
+  {
+    "file": "apps/desktop/test-results/xiaozhi-agent/pi-shell-reading-7Fav0X/reference-proportion-native.png",
+    "width": 2558,
+    "height": 1529,
+    "mainWhiteStartRow500": 459,
+    "sidebarRgb": [
+      246,
+      253,
+      252
+    ],
+    "titleRgb": [
+      230,
+      249,
+      247
+    ]
+  }
+]

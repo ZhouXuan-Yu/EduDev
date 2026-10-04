@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "xiaozhi.hana.sources.v1",
+  "license": "Apache-2.0",
+  "commit": null,
+  "provenance": "Two complementary local source snapshots, not a Git checkout",
+  "entries": [
+    {
+      "source": "D:\\WorkProject\\开源\\openhanako\\lib\\file-ref\\resource-io.ts",
+      "version": "0.449.0",
+      "sourceSha256": "6d4fd111c4c3cc33881b5553a23406e415d6660049d196a80fa7abd78f640329",
+      "destination": "lib/file-ref/resource-io.ts",
+      "vendoredSha256": "6e128aa881074f287f410951bc9c2af6d35c127d0706fea13fec1ed88611c30e",
+      "changes": [
+        "license/typecheck header",
+        "extensionless relative imports for Electron TypeScript build",
+        "non-overwrite copy uses COPYFILE_EXCL to refuse a target created after existence check",
+        "optional AbortSignal checked immediately before synchronous exclusive copy after asynchronous FileRef resolution"
+      ]
+    },
+    {
+      "source": "D:\\WorkProject\\开源\\openhanako\\lib\\file-metadata.ts",
+      "version": "0.449.0",
+      "sourceSha256": "6ade1f9a9e74eabb6533c8553865d88cd3a804d55ce1c2a868e679f2b1b6216b",
+      "destination": "lib/file-metadata.ts",
+      "vendoredSha256": "b6e782385012ea4d605baf0a32352412ae773ea479e91249b2ee501bb53e089d",
+      "changes": [
+        "license/typecheck header",
+        "extensionless relative imports for Electron TypeScript build"
+      ]
+    },
+    {
+      "source": "D:\\WorkProject\\开源\\openhanako-0.449.0\\shared\\link-aware-fs.ts",
+      "version": "0.449.0",
+      "sourceSha256": "37782812d41bee2dad1d33600b842282107e37ababbabeb0da8fe3509ec3f984",
+      "destination": "shared/link-aware-fs.ts",
+      "vendoredSha256": "a70664b9cefd1e91931d24b1cefd5f572967e0052a5d63793ad27a10f03f1670",
+      "changes": [
+        "license/typecheck header",
+        "extensionless relative imports for Electron TypeScript build"
+      ]
+    },
+    {
+      "source": "D:\\WorkProject\\开源\\openhanako\\lib\\tools\\web-reader.ts",
+      "version": "0.449.0",
+      "sourceSha256": "1ab3a71291f55e798a631e5b950f5c0731a16d913d7302c15d8bf8315d3f74dd",
+      "destination": "lib/tools/web-reader.ts",
+      "vendoredSha256": "fda1343eb45a9e5338ebefbafc7c25a8c3aed85b522a94e901a56087e066c8e5",
+      "changes": [
+        "license/typecheck header",
+        "extensionless relative imports for Electron TypeScript build"
+      ]
+    },
+    {
+      "source": "D:\\WorkProject\\开源\\openhanako\\lib\\tools\\search-rate-limiter.ts",
+      "version": "0.449.0",
+      "sourceSha256": "ad5d54a381a140c25dca5c68b4768cf7ee1183d1d2718ab5771226d4b47d43a2",
+      "destination": "lib/tools/search-rate-limiter.ts",
+      "vendoredSha256": "b0faba7648d23e30e472948b4d83f8efadf607acec5566e2bf1e2a7db65af977",
+      "changes": [
+        "license/typecheck header",
+        "extensionless relative imports for Electron TypeScript build"
+      ]
+    },
+    {
+      "source": "D:\\WorkProject\\开源\\openhanako\\lib\\tools\\web-search.ts",
+      "version": "0.449.0",
+      "sourceSha256": "ee400f4b51946195fa55c6e1a96fe06b30f5ecf5f8ee4d771ed2a1e3de0dc2b1",
+      "destination": "lib/tools/anysearch.ts",
+      "vendoredSha256": "b7d829a877f52d4e954ff0d23dc2d6eddf13d41fa5f62d95fb0940931711ca31",
+      "functions": [
+        "throwIfRateLimited",
+        "throwIfHttpError",
+        "clampResultsToRange",
+        "anySearchLanguage",
+        "anySearchResultsFrom",
+        "anySearchMetadataFrom",
+        "throwIfAnySearchEnvelopeError",
+        "searchAnySearch"
+      ],
+      "changes": [
+        "AST extraction; no provider fallback/global config/Pi/browser dependency",
+        "injected bounded fetch and task signal",
+        "zh-CN locale",
+        "1-10 results cap",
+        "JSON parse without global error bus"
+      ]
+    }
+  ]
+}

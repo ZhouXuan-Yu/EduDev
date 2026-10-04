@@ -1,0 +1,406 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Unified formal entry embeds the existing encrypted model form and live official model directory",
+      "pass": true
+    },
+    {
+      "name": "Six real capabilities are reachable from one setting navigation",
+      "pass": true
+    },
+    {
+      "name": "Hana multi-token ranking opens an actionable backup setting",
+      "pass": true
+    },
+    {
+      "name": "Hana NFKC search resolves full-width API text without indexing credential values",
+      "pass": true
+    },
+    {
+      "name": "Search empty state, Escape and official clear control work",
+      "pass": true
+    },
+    {
+      "name": "Unified permission page selects an actual authorized directory through the existing typed chooser",
+      "pass": true
+    },
+    {
+      "name": "Existing memory scope saves and revokes through the unified permission page and actual SQLite readback",
+      "pass": true
+    },
+    {
+      "name": "Hana builtin full preview works embedded without weakening edit permissions",
+      "pass": true
+    },
+    {
+      "name": "Actual local skill import defaults off and explicit enable/revoke persists from unified settings",
+      "pass": true
+    },
+    {
+      "name": "Existing CAS skill editor saves a new version while leaving authority disabled",
+      "pass": true
+    },
+    {
+      "name": "Display preferences persist only the original versioned booleans",
+      "pass": true
+    },
+    {
+      "name": "Storage failure shows a visible failure and does not claim preference success",
+      "pass": true
+    },
+    {
+      "name": "Returning and restarting the same owned profile preserve the actual workspace disclosures",
+      "pass": true
+    },
+    {
+      "name": "Unknown preference schema falls back safely and never turns a stored path into authority",
+      "pass": true
+    },
+    {
+      "name": "Real archived folder/session opens public saved history read-only without creating a run",
+      "pass": true
+    },
+    {
+      "name": "Backup chooser cancellation has visible feedback and no new backup",
+      "pass": true
+    },
+    {
+      "name": "Actual existing local backup service exports and verifies a real owned data directory",
+      "pass": true
+    },
+    {
+      "name": "Existing backup integrity service verifies the exported files from the visible setting action",
+      "pass": true
+    },
+    {
+      "name": "Non-backup selection shows an actionable failure instead of a success banner",
+      "pass": true
+    },
+    {
+      "name": "A secondary renderer cannot invoke either local backup action",
+      "pass": true
+    },
+    {
+      "name": "Exhausted controlled chooser shows bounded human feedback and releases local ownership",
+      "pass": true
+    },
+    {
+      "name": "All six real setting pages fit both actual native content viewports with reachable navigation and actions",
+      "pass": true
+    },
+    {
+      "name": "Real official DeepSeek reply completes through the preserved formal composer after unified settings",
+      "pass": true
+    },
+    {
+      "name": "Actual live run survives native Settings→Back unchanged and blocks local backups until stopped",
+      "pass": true
+    },
+    {
+      "name": "Bound conversation directory remains locked after real native history exists",
+      "pass": true
+    },
+    {
+      "name": "Source teacher fixtures remain byte-identical and renderer has no runtime exceptions",
+      "pass": true
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "tab": "models",
+      "mainWidth": 1113,
+      "mainScroll": 1113,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1095.666748046875,
+        "y": 478.375,
+        "right": 1159.666748046875,
+        "bottom": 514.375
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "tab": "skills",
+      "mainWidth": 1128,
+      "mainScroll": 1128,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 412,
+        "y": 219.48959350585938,
+        "right": 532,
+        "bottom": 251.48959350585938
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "tab": "permissions",
+      "mainWidth": 1128,
+      "mainScroll": 1128,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1067.3333740234375,
+        "y": 300.8020935058594,
+        "right": 1155.3333740234375,
+        "bottom": 332.8020935058594
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "tab": "interface",
+      "mainWidth": 1128,
+      "mainScroll": 1128,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1115.3333740234375,
+        "y": 394.88543701171875,
+        "right": 1155.3333740234375,
+        "bottom": 414.88543701171875
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "tab": "archives",
+      "mainWidth": 1128,
+      "mainScroll": 1128,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 1067.3333740234375,
+        "y": 365.3020935058594,
+        "right": 1155.3333740234375,
+        "bottom": 397.3020935058594
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "tab": "backup",
+      "mainWidth": 1128,
+      "mainScroll": 1128,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1366,
+      "bodyScroll": 1366,
+      "actionRect": {
+        "x": 432.66668701171875,
+        "y": 350.6875,
+        "right": 580.6666870117188,
+        "bottom": 386.6875
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "tab": "models",
+      "mainWidth": 1682,
+      "mainScroll": 1682,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1380.3333740234375,
+        "y": 478.375,
+        "right": 1444.3333740234375,
+        "bottom": 514.375
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "tab": "skills",
+      "mainWidth": 1682,
+      "mainScroll": 1682,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 689,
+        "y": 219.48959350585938,
+        "right": 809,
+        "bottom": 251.48959350585938
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "tab": "permissions",
+      "mainWidth": 1682,
+      "mainScroll": 1682,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1344.3333740234375,
+        "y": 300.8020935058594,
+        "right": 1432.3333740234375,
+        "bottom": 332.8020935058594
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "tab": "interface",
+      "mainWidth": 1682,
+      "mainScroll": 1682,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1392.3333740234375,
+        "y": 394.88543701171875,
+        "right": 1432.3333740234375,
+        "bottom": 414.88543701171875
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "tab": "archives",
+      "mainWidth": 1682,
+      "mainScroll": 1682,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 1344.3333740234375,
+        "y": 365.3020935058594,
+        "right": 1432.3333740234375,
+        "bottom": 397.3020935058594
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "tab": "backup",
+      "mainWidth": 1682,
+      "mainScroll": 1682,
+      "contentWidth": 780,
+      "navWidth": 237,
+      "navScroll": 237,
+      "bodyWidth": 1920,
+      "bodyScroll": 1920,
+      "actionRect": {
+        "x": 709.6666870117188,
+        "y": 350.6875,
+        "right": 857.6666870117188,
+        "bottom": 386.6875
+      },
+      "backRect": {
+        "x": 24,
+        "y": 51.66666793823242,
+        "right": 132,
+        "bottom": 83.66666793823242
+      }
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron + owned fresh SQLite/profile, live official DeepSeek catalogue and chat, actual local backup/readback; synthetic teacher files only.",
+    "Native chooser returns controlled in main; browser storage failure injected only for the owned profile.",
+    "Archive fixtures created via existing typed APIs; archive creation UI and OS chooser clicking not claimed.",
+    "No full Codex pixel-match, VPN-off or installer proof."
+  ],
+  "rendererErrors": []
+}

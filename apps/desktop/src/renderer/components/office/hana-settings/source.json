@@ -1,0 +1,26 @@
+{
+  "sourceRoot": "D:\\WorkProject\\开源\\openhanako",
+  "license": "Apache-2.0",
+  "files": [
+    {
+      "sha256": "4d7ff16df637364f0aaf8930ff1d5e15f810f4cb68ca88980327459459d87803",
+      "source": "desktop/src/react/settings/components/SettingsPrimitives.tsx",
+      "bytes": 2489,
+      "file": "SettingsPrimitives.tsx"
+    },
+    {
+      "sha256": "6ed77c351ae6b995becca7f62c2c215b44931a66509127b4eee65a47b7d2d676",
+      "source": "desktop/src/react/settings/components/settings-components.module.css",
+      "bytes": 10795,
+      "file": "settings-components.module.css"
+    },
+    {
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "source": "LICENSE",
+      "bytes": 10760,
+      "file": "LICENSE"
+    }
+  ],
+  "version": "0.449.0",
+  "project": "HanaAgent"
+}

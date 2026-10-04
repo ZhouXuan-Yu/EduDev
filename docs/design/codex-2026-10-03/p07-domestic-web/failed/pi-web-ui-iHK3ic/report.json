@@ -1,0 +1,60 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Existing/new app settings default to system DNS and expose only safe web preferences",
+      "pass": true
+    },
+    {
+      "name": "Teacher explicitly selects domestic resolver and saves through actual HeroUI/Hana settings",
+      "pass": true
+    },
+    {
+      "name": "Natural DeepSeek actually searches, reads MOE body, receives real URL/time and produces a sourced education answer",
+      "pass": true
+    },
+    {
+      "name": "Actual public explanation/tool/next explanation/final ordering is preserved; composer empty",
+      "pass": true
+    },
+    {
+      "name": "Independent native web capability is present once; public receipt omits query/body and records returned sources",
+      "pass": true
+    },
+    {
+      "name": "Actual 1366x768 source/time and resident composer are accessible",
+      "pass": true
+    },
+    {
+      "name": "Actual 1920x1080 source/time and resident composer are accessible",
+      "pass": true
+    },
+    {
+      "name": "Explicit source click reaches native opener after recorded-source/DNS validation; forged URL refused",
+      "pass": true
+    },
+    {
+      "name": "Actual secondary window denied both network-setting and source-open typed endpoints",
+      "pass": true
+    },
+    {
+      "name": "Stale network preference cannot overwrite teacher selection",
+      "pass": true
+    },
+    {
+      "name": "Running network task rejects setting mutation; actual stop reaches interrupted terminal",
+      "pass": true
+    },
+    {
+      "name": "Actual restart preserves source history/preferences/native prefix and does not replay interrupted network task",
+      "pass": true
+    }
+  ],
+  "model": "deepseek-flash",
+  "boundaries": [
+    "Actual isolated formal Electron/Pi/DeepSeek plus real anonymous AnySearch and MOE HTTP body",
+    "AliDNS explicitly chosen in app settings; current system fake DNS failure retained; no OS proxy/DNS/VPN changes or VPN-off claim",
+    "OS source launch intercepted after real user click and main source/DNS validation; no user browser modified"
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(actual.ok&&actual.value.web.dnsMode===dns&&actual.value.web.enabled===enabled)\n\n    at settings (file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-web-ui-smoke.mjs:15:216)\n    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-web-ui-smoke.mjs:40:2"
+}

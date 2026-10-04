@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual stale stored credential fails official authentication and old missing default is shown explicitly",
+      "pass": true
+    },
+    {
+      "name": "Independent invalid candidate produces actual authentication failure and keeps previous configuration",
+      "pass": true
+    },
+    {
+      "name": "Supplied real key verifies independently with edge whitespace, enables valid candidate and is not saved yet",
+      "pass": true
+    },
+    {
+      "name": "Explicit save commits actual Windows-encrypted replacement/default and preserves legacy row",
+      "pass": true
+    },
+    {
+      "name": "Original HeroUI/Hana settings controls are reachable in both required content sizes",
+      "pass": true
+    },
+    {
+      "name": "Secondary Electron frame cannot validate credentials through the formal endpoint",
+      "pass": true
+    },
+    {
+      "name": "Restart without environment key reads actual encrypted replacement and selected default",
+      "pass": true
+    },
+    {
+      "name": "Actual formal Pi/DeepSeek chat completes with replacement credential and empty composer",
+      "pass": true
+    },
+    {
+      "name": "Actual running agent reserves the same host owner against concurrent credential verification",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual isolated formal Electron UI, supplied DeepSeek key, official catalogue, Windows safeStorage and real Pi chat. No real teacher data upload or real profile migration."
+}

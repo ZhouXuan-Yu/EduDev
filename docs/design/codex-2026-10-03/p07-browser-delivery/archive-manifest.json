@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T13:11:06.511Z",
+  "files": [
+    {
+      "file": "source/1.Agent.md",
+      "bytes": 122323,
+      "sha256": "e0bfa971c409f65a6651a746875dd5dfdd959e4f8b52207992e87a4b3b971d56"
+    },
+    {
+      "file": "source/2.Memory.md",
+      "bytes": 265627,
+      "sha256": "5dd081a9a0e6f8203b21a840136ceec75ce6b53335869de8568c71d31673f817"
+    },
+    {
+      "file": "source/3.Learning.md",
+      "bytes": 197960,
+      "sha256": "5fb6848cdb069dbefa1c7209d8504b6f7546262faf8b0252e47af2e10128b7b1"
+    },
+    {
+      "file": "source/4.Wiki.md",
+      "bytes": 164848,
+      "sha256": "145d4de193a79d5d07d58f3c15efbd2029a1216941540a9e2c024ca1588d5905"
+    },
+    {
+      "file": "source/测试样例说明书.md",
+      "bytes": 19609,
+      "sha256": "f77b62a3230ff772ed267eaa38cc8228ad53692b6faf217368225cb9ee52b464"
+    },
+    {
+      "file": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 54115,
+      "sha256": "0c0cc26d2cba7f6f4672f48907dd87c8c81efcda785ad905249988c32877f300"
+    },
+    {
+      "file": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 87307,
+      "sha256": "432bbf2c8aba99c216176de4d2042cdf9bd6b8d9f67b4810e42aae0c2adec3b7"
+    },
+    {
+      "file": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 72056,
+      "sha256": "b84d1469a699ecb8005ba430c2cac087fe3486b21baee05fd9b6a5ce803d97a6"
+    },
+    {
+      "file": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 76640,
+      "sha256": "28955915038a1abd5eb64c8672fec3c010133189541ffb0a662698c018d8ccd1"
+    },
+    {
+      "file": "source/docs/158_PI_BROWSER_SCREENSHOT_DELIVERY_CONTRACT.md",
+      "bytes": 3040,
+      "sha256": "acac0b0e9bee871162e7436b415fc29065356a725a9d68160bbf1d23885fdc99"
+    },
+    {
+      "file": "source/docs/159_PI_BROWSER_SCREENSHOT_DELIVERY_ACCEPTANCE.md",
+      "bytes": 7432,
+      "sha256": "c44077f06ad483ef32190ddbc2a5cc70d5729d98fafdaf5534979cb34a6bf929"
+    },
+    {
+      "file": "source/docs/testing/本轮执行记录_2026_10_04.md",
+      "bytes": 9533,
+      "sha256": "edd04b061b8e12f60eef981fdc79a2a5aad4e2242f6eaa11e136f89b724d1d25"
+    },
+    {
+      "file": "source/docs/design/codex-2026-10-03/browser-capture-pro-reference.json",
+      "bytes": 24170,
+      "sha256": "2065b68923cb463e844f4f8b45c187cc8a0d2eefa5016c74d3324c4275199762"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-browser.ts",
+      "bytes": 2976,
+      "sha256": "66b9c846980b0cf4265069ea3f9f9aa33f987f0047d711fc50a465fafd38615e"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-browser-capture.ts",
+      "bytes": 2483,
+      "sha256": "75cd35bc63247955b73c990e584762fdf4b39e0c25de2011f9b0cda067a4ec9f"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-agent.ts",
+      "bytes": 6297,
+      "sha256": "b9d1f46b6833709722368e9a3e7ecea44ea5b6c735feb3394feb389de552eda0"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-projection.ts",
+      "bytes": 11548,
+      "sha256": "21d0e15ffa8c1b2a6ea928017ba60beb12d58595857824bdfc8dc2d0b15f2426"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/office-agent.ts",
+      "bytes": 1380,
+      "sha256": "3c15887a3612798c2b4860e66e7d6c4ce2f726cee4fd79a430ef68808a494bf3"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/browser-host.ts",
+      "bytes": 18727,
+      "sha256": "65fa73ca1ec4e9b0dc8ffecd55dc1cf89e69073fc0f12cd3e4c43e334c6ba06d"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/browser-tools.ts",
+      "bytes": 3856,
+      "sha256": "42c0270747ac1dbb3ce2f4f0821fa7cbd23f952b0cd38d71f193400afb076301"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/browser-capture-reader.ts",
+      "bytes": 2041,
+      "sha256": "429327efb32252ae0ea2bfd76dc2c54a7f7bd6c2847c573c9694e366ce649fec"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 58456,
+      "sha256": "ef51239517fc845128953f32f4c7cd321cbd490b0fa78a766fde506b77a795e2"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 68100,
+      "sha256": "e7a89cb2ebd62246637a5b2d1058603605807072ca43114b8f6c6b8576ddb645"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+      "bytes": 8794,
+      "sha256": "30b706931e41e6e66f3b0fd8e88f03f86572c934b5daaae832a600b279a60aef"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/browser/screenshot-filename.ts",
+      "bytes": 746,
+      "sha256": "42e29a9ff051d12eccd57e9450e40860196abda43bbc80361d6f50d50dcf7215"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/browser/screenshot-source.json",
+      "bytes": 627,
+      "sha256": "c70f8400e8a3a357b007d0fcb51ed95c15e19a20d544aa1a84b3f993f7a972b5"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/browser/LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "file": "source/apps/desktop/src/preload/index.ts",
+      "bytes": 33464,
+      "sha256": "1baee9010b1718e052797229e1e4be09dce5b9e6cbddadfdea3807df9cc87d13"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/OfficeBrowserCapture.tsx",
+      "bytes": 3238,
+      "sha256": "2ed558bbcb685998aaf2c49eec750a3547b508c2978c08f6048dae2aa6d48167"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/OfficeToolProcess.tsx",
+      "bytes": 6929,
+      "sha256": "ae66787655dcb5f0232fb9cd73031f21a6dc4070726d931aab5d208bcd1b2e0a"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/pi-attachments.css",
+      "bytes": 1848,
+      "sha256": "5bb5c6c5f01d12cf1a2622014738c533c38e55b75f89185cf879cdbf4388f008"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/reuse-hana-browser-capture.mjs",
+      "bytes": 1871,
+      "sha256": "bed84066a5d64bb25c187965fd0b03b453bc03113670bfeeb6417c94fce35ca2"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-browser-native-worker.ts",
+      "bytes": 11818,
+      "sha256": "200952b228e158ecf6cea1d7df49ab9dbfe1d47eb1134aceede13d0f35c7f0e9"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-browser-native-smoke.mjs",
+      "bytes": 1499,
+      "sha256": "13b29bba6a397413b752025c1fd68d5c38649a2665d8d48f6754be1e15a3bc88"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-browser-delivery-ui-smoke.mjs",
+      "bytes": 12817,
+      "sha256": "a260e1df73d579c0210197eefbcaf155a61a79cc1641b7300da1dc975381774f"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/archive-browser-delivery.mjs",
+      "bytes": 3870,
+      "sha256": "68e69f0280538006dc537c423ba022016f933af4bb96f527555f1fa73d3a4bd0"
+    },
+    {
+      "file": "evidence/pi-browser-native-XOx9FE.json",
+      "bytes": 2777,
+      "sha256": "5384d1baa31a763dd5a3ae96dfa5679b068523121fc0dd40bd3e724946e90cfc"
+    },
+    {
+      "file": "evidence/pi-browser-native-WN56o8.json",
+      "bytes": 2897,
+      "sha256": "63563b607a678a42ac5eaf6a8560e3852f37e9431bc19363288397898f040eb1"
+    },
+    {
+      "file": "evidence/pi-browser-delivery-vsDjUj.json",
+      "bytes": 2371,
+      "sha256": "0834f92c0c9d00ae0a408161efb0ca02f9c7a8e7e74ddcf9b9a1ae0c9f3297dd"
+    },
+    {
+      "file": "upstream/hana/browser-screenshot-file.ts",
+      "bytes": 3545,
+      "sha256": "14c737f36feb548eae57a357f1c1a0546525d49177f23605a11296cfe958f989"
+    }
+  ],
+  "boundary": "Explicit source/license/doc/MCP and sanitized A/C reports only; no database, native conversation, keys, profile, material, PNG/media or build binary. Daily/no-VPN/installer/full Codex objective NOT_ACCEPTED."
+}

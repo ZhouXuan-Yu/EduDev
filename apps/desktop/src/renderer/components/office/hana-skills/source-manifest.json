@@ -1,0 +1,35 @@
+{
+  "source": "D:/WorkProject/开源/openhanako",
+  "version": "0.449.0",
+  "license": "Apache-2.0",
+  "files": [
+    {
+      "file": "SkillRow.tsx",
+      "upstream": "desktop/src/react/settings/tabs/skills/SkillRow.tsx",
+      "sourceSha256": "42de2df4b7fe2f85101fd9df79c04f5fee5e704aea49cae1cd9cf79f02938d10",
+      "outputSha256": "72a34a96df293be0c62641f439e8871d0abf7bcd002f9f2205c20a11a0242af3",
+      "adaptation": "Public typed props, title, keyboard preview through extraActions, disable/archive and HeroUI native Switch; remove platform/store/i18n"
+    },
+    {
+      "file": "SkillRow.module.css",
+      "upstream": "desktop/src/react/settings/Settings.module.css",
+      "sourceSha256": "e51a5d011b9d4cd14db1a1fb700ab8fdb232dd3f373970ac40dd4ba1f5588b10",
+      "outputSha256": "5b698dc3a776c67b5949d7aa16364467a675c3c9fec4ee04a027315b60e9fefc",
+      "adaptation": "Exact skill row/delete CSS closure plus keyboard focus visibility; tokens supplied by education settings parent"
+    },
+    {
+      "file": "SkillBadgeView.tsx",
+      "upstream": "desktop/src/react/components/input/SkillBadgeView.tsx",
+      "sourceSha256": "ca9f93e8a2d204e16ee2149461f9b9f7b7ad3a0c7bd785cd1002ccfa9218f9f1",
+      "outputSha256": "04cbb392bea12a6ca6d22e02733f80b7862eb4a94de332b9939566d7f98bdba1",
+      "adaptation": "Replace Tiptap wrapper/node attrs with span/name; no editor dependency"
+    },
+    {
+      "file": "SkillBadgeView.module.css",
+      "upstream": "desktop/src/react/components/input/SkillBadgeView.module.css",
+      "sourceSha256": "20eb51e16ef0613341ac9adff0e5a27c9adf19775a3999597876084fde0857aa",
+      "outputSha256": "d073a391d4767f16272109386d73418e01a51c08c520cd8f5d35f6e06e1fcac4",
+      "adaptation": "Original CSS unchanged after notice"
+    }
+  ]
+}

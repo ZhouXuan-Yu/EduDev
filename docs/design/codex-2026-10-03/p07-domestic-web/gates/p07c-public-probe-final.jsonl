@@ -1,0 +1,9 @@
+{"dnsMode":"system","target":"anysearch","elapsedMs":9,"error":"permission_denied"}
+{"dnsMode":"system","target":"bing","elapsedMs":1,"error":"permission_denied"}
+{"dnsMode":"system","target":"moe","elapsedMs":2,"error":"permission_denied"}
+{"dnsMode":"alidns","target":"anysearch","elapsedMs":3029,"results":[{"title":"教育部关于印发义务教育课程方案和课程标准（2022年版）的 ...","url":"http://www.moe.gov.cn/srcsite/A26/s8001/202204/t20220420_619921.html"},{"title":"《义务教育课程方案和课程标准（2022年版）》全文","url":"http://www.esidea.bnu.edu.cn/xwdt/jyxw/129678.html"},{"title":"教育部关于印发义务教育课程方案和课程标准（2022年版）的 ...","url":"https://www.waizi.org.cn/doc/131287.html"}]}
+{"dnsMode":"alidns","target":"bing","status":200,"elapsedMs":723,"type":"text/html; charset=utf-8","length":99138,"title":"教育部 义务教育课程方案 2022 - 搜索","location":null}
+{"dnsMode":"alidns","target":"moe","status":302,"elapsedMs":710,"type":null,"length":0,"location":"http://www.moe.gov.cn/"}
+{"dnsMode":"cloudflare","target":"anysearch","elapsedMs":2043,"results":[{"title":"教育部关于印发义务教育课程方案和课程标准（2022年版）的通知","url":"http://www.moe.gov.cn/srcsite/A26/s8001/202204/t20220420_619921.html"},{"title":"[PDF] 义务教育课程方案（2022年版）","url":"http://www.moe.gov.cn/srcsite/A26/s8001/202204/W020220420582343217634.pdf"},{"title":"教育部印发《义务教育课程方案和课程标准（2022年版）》","url":"http://www.moe.gov.cn/jyb_xwfb/gzdt_gzdt/s5987/202204/t20220421_620068.html"}]}
+{"dnsMode":"cloudflare","target":"bing","status":301,"elapsedMs":1366,"type":null,"length":0,"location":"https://www.bing.com/?q=%E6%95%99%E8%82%B2%E9%83%A8%20%E4%B9%89%E5%8A%A1%E6%95%99%E8%82%B2%E8%AF%BE%E7%A8%8B%E6%96%B9%E6%A1%88%202022&mkt=zh-CN"}
+{"dnsMode":"cloudflare","target":"moe","status":302,"elapsedMs":1296,"type":null,"length":0,"location":"http://www.moe.gov.cn/"}

@@ -1,0 +1,81 @@
+{
+  "suite": "pi-model-settings-boundaries",
+  "success": true,
+  "checks": [
+    {
+      "name": "Compatibility reads configured environment without creating or disclosing stored secrets",
+      "pass": true
+    },
+    {
+      "name": "Strict inputs reject provider/URL injection, bad revision, unknown schema and malformed key",
+      "pass": true
+    },
+    {
+      "name": "Saving new key writes authenticated ciphertext, CAS revision and no plaintext",
+      "pass": true
+    },
+    {
+      "name": "Restarted state/service decrypts the committed key and default",
+      "pass": true
+    },
+    {
+      "name": "Stale save cannot overwrite key or default and makes no provider request",
+      "pass": true
+    },
+    {
+      "name": "Provider authentication rejection preserves the previous credential and revision",
+      "pass": true
+    },
+    {
+      "name": "Unavailable secure storage rejects new keys without plaintext fallback",
+      "pass": true
+    },
+    {
+      "name": "Fresh empty conversation model selection persists independently of default",
+      "pass": true
+    },
+    {
+      "name": "Default change affects new conversations and preserves an existing native binding",
+      "pass": true
+    },
+    {
+      "name": "History-only and archived conversations cannot masquerade as empty selections",
+      "pass": true
+    },
+    {
+      "name": "Transport failure projects a safe error with last official cache and no raw exception",
+      "pass": true
+    },
+    {
+      "name": "Successful official removal replaces cache and forbids removed model default",
+      "pass": true
+    },
+    {
+      "name": "Oversized/malformed official responses cannot replace last valid catalogue",
+      "pass": true
+    },
+    {
+      "name": "Concurrent state CAS permits one committed revision",
+      "pass": true
+    },
+    {
+      "name": "Unknown schema fails closed; unreadable ciphertext permits explicit replacement without credential fallback",
+      "pass": true
+    },
+    {
+      "name": "Typed API rejects extra fields and sanitizes unknown failures",
+      "pass": true
+    },
+    {
+      "name": "All new channels reject non-main-frame sender before host execution",
+      "pass": true
+    },
+    {
+      "name": "Busy state is visible without leaking private session binding",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Disposable real SQLite and bounded simulated provider responses; Windows safeStorage and live provider/UI are separate gates."
+  ]
+}

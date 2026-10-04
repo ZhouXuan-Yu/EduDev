@@ -1,0 +1,37 @@
+[
+  {
+    "sha256": "8d9cfb5b54e68afccf5fd7a2030c6fe25a9b0b3707ce6ac85a29a3c9420ffc35",
+    "bytes": 86477,
+    "file": "settings-1366.png"
+  },
+  {
+    "sha256": "ffeb806f16cd77fdc736403b94bcf108f5bce97c29ff81b69f0973f6b52cd83b",
+    "bytes": 97095,
+    "file": "settings-1920.png"
+  },
+  {
+    "sha256": "3718d52749eec18b556e5603f9d85def27e7f21d99d2fdecc24dc69b8a844c4d",
+    "bytes": 3955,
+    "file": "ui-report.json"
+  },
+  {
+    "sha256": "5b3b89d96b4c69e95ea24ed7a10c3bb2d9d7b16ee94761b1d43ef9100009bc99",
+    "bytes": 2491,
+    "file": "boundary-report.json"
+  },
+  {
+    "sha256": "72f09e033494b1770b545a16843efd99b926600e6f2e9a41924555a909423816",
+    "bytes": 854,
+    "file": "host-report.json"
+  },
+  {
+    "sha256": "91d06f4e8de7f55914ffbaff23f6dfee832840dcc7707ac1c23331d2d83cb732",
+    "bytes": 522,
+    "file": "hana-source.json"
+  },
+  {
+    "bytes": 6488,
+    "file": "native-report.json",
+    "sha256": "fcbd81ad11a76c205616d8c02e62673ba9f3c85a0e38e97e9b222b0b504b196f"
+  }
+]

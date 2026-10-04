@@ -1,0 +1,486 @@
+{
+  "schemaVersion": "xiaozhi.public-acceptance.v1",
+  "slice": "P07-D2-B-local-attachment-entry",
+  "createdAt": "2026-10-04T06:11:55.366Z",
+  "boundary": "Formal attachment UI24/native SQLite/Pi Photon, actual isolated DeepSeek/Pi controls6 (manual compact admission, not short-context summary success), Office preview23, strict boundary10 with doubles, source6 and owner6; final renderer/build/main gates in 137. Pending files remain local and block ordinary text-only start before D2-C. No file/model image delivery, actual teacher upload/profile changes, VPN-off/installer/full Codex claim. Only explicit safe reports/logs/synthetic screenshots/references and runtime hashes; no DB/WAL/profile/native JSONL/worker bootstrap/env/key/private original source paths/file bytes. Earlier immutable archives unchanged.",
+  "entries": [
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-dependency.log",
+      "file": "gates/p07d2b-dependency.log",
+      "bytes": 346,
+      "sha256": "823559791423a049f53279bdd659e496921ac0f8370ac45ad3114b70be85a9a7"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-build2.log",
+      "file": "gates/p07d2b-build2.log",
+      "bytes": 336,
+      "sha256": "4078bcf296b1be51ad37f2428f9155bdde2f4fd26f197ad388254809ccfb5e5b"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-build5.log",
+      "file": "gates/p07d2b-build5.log",
+      "bytes": 323,
+      "sha256": "a405a191d4ea364a0a0c1e1ab02d3c98c8c0ae65f7b57882cbb9b3e2dcd8aa63"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-build8.log",
+      "file": "gates/p07d2b-build8.log",
+      "bytes": 25815,
+      "sha256": "6f140b2399a49e311011a08c7fd4e423a5ff472b8912c46466fd14fbc01a4bc4"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-build-final.log",
+      "file": "gates/p07d2b-build-final.log",
+      "bytes": 25815,
+      "sha256": "5a1836e819a9e62b121a49fe88e730ee1b87ecaeb61fa122f3762ca67ab1e12b"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-ui1.log",
+      "file": "gates/p07d2b-ui1.log",
+      "bytes": 1722,
+      "sha256": "40660e5ad4900b204ca58f7c615922b1c9ef303b93dbb120378efa029ba31583"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-ui2.log",
+      "file": "gates/p07d2b-ui2.log",
+      "bytes": 1977,
+      "sha256": "fbfaca59f911e4642e8eafb0c6c14feb5461816f095956a4cf3d694efe85033d"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-ui3.log",
+      "file": "gates/p07d2b-ui3.log",
+      "bytes": 2240,
+      "sha256": "ff129a50bb014285783f0b5883c42253e97fb5765581fba6d271750b858d8d6e"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-live1.log",
+      "file": "gates/p07d2b-live1.log",
+      "bytes": 599,
+      "sha256": "137d182fff223ea5aebf8ba74ab413fd282e8ea35e67bf9c0b19500fb6aaea2c"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-live-final.log",
+      "file": "gates/p07d2b-live-final.log",
+      "bytes": 599,
+      "sha256": "87e93545e1c07db136c10bd8efd45c9a25e8bbe4a192c32cad141b63e159d62a"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-live-final2.log",
+      "file": "gates/p07d2b-live-final2.log",
+      "bytes": 742,
+      "sha256": "8066e5ab46fad5a3ebac597b7915fa534891d88e7052d19c0a445a2c0f1ef881"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-documents-ui.log",
+      "file": "gates/p07d2b-documents-ui.log",
+      "bytes": 1919,
+      "sha256": "adedd8716bb4328988a01cf78909107978743a7ea75efb27d975e91beb335b0b"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-boundary-final.log",
+      "file": "gates/p07d2b-boundary-final.log",
+      "bytes": 100,
+      "sha256": "d0842fb77e2f9ef6481b102ff8e6b9ad8fecaaadd474aeda505cb92ab1db84c0"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-renderer-final.log",
+      "file": "gates/p07d2b-renderer-final.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-settings-owner.log",
+      "file": "gates/p07d2b-settings-owner.log",
+      "bytes": 310,
+      "sha256": "65a0f16011576b6492ba9d6213d9f53ba0ba8b9f8f43e19899d003ac7672bd38"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-source.log",
+      "file": "gates/p07d2b-source.log",
+      "bytes": 374,
+      "sha256": "38d03a9ef8398ba314e3ee4dd411ffac5291ea91079fc6e83dfbcb1e6bc7b423"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-hana-source.log",
+      "file": "gates/p07d2b-hana-source.log",
+      "bytes": 202,
+      "sha256": "012032baec2072daeeae33222b88d11611c3fea96b974006a0d1a43dbd97487c"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-main-smoke.log",
+      "file": "gates/p07d2b-main-smoke.log",
+      "bytes": 38973,
+      "sha256": "d3523d09130dae63915c286a4198b6106c7bd49881987a99699acad182295428"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-main-smoke-final.log",
+      "file": "gates/p07d2b-main-smoke-final.log",
+      "bytes": 38973,
+      "sha256": "a2b05cddfc066c68bb2e28c6ea44d113242efa0eacf3b8c709d87798e0b8718a"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/p07d2b-diff-check.log",
+      "file": "gates/p07d2b-diff-check.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-UI0xuR/report.json",
+      "file": "reports/pi-attachment-entry-ui-UI0xuR/report.json",
+      "bytes": 2834,
+      "sha256": "d767413491fd17fd5e18671e38ff01cbc6050cda78f235cf5ce0599739847d61"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-7kJePL/report.json",
+      "file": "reports/pi-attachment-entry-ui-7kJePL/report.json",
+      "bytes": 3042,
+      "sha256": "b011fef725b68f3ec8e6a1fb52b434bc63e17f30bcd00719397eb4f23afca976"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-fVx03J/report.json",
+      "file": "reports/pi-attachment-entry-ui-fVx03J/report.json",
+      "bytes": 3567,
+      "sha256": "3bc3133d5e8115f6d553b8802c2338fb005b2f07003df70f005f3cf27467db66"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-live-ujP54s/report.json",
+      "file": "reports/pi-attachment-entry-live-ujP54s/report.json",
+      "bytes": 948,
+      "sha256": "25814d07e79c9ac7e7ef30f2b3fb5caec59ff086eef2a5c9b4dba61a7b341964"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-live-Yz47x4/report.json",
+      "file": "reports/pi-attachment-entry-live-Yz47x4/report.json",
+      "bytes": 948,
+      "sha256": "25814d07e79c9ac7e7ef30f2b3fb5caec59ff086eef2a5c9b4dba61a7b341964"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-live-rsEirD/report.json",
+      "file": "reports/pi-attachment-entry-live-rsEirD/report.json",
+      "bytes": 1134,
+      "sha256": "e9dcb942de37993042ec621221df87de3a2f3fbbe0d4019883d6fa447ba66958"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-office-documents-ui-l0Pmrq/report.json",
+      "file": "reports/pi-office-documents-ui-l0Pmrq/report.json",
+      "bytes": 3248,
+      "sha256": "ac980bc0f361640ed6c83679b37cf808f9b90f227335a24dbb034012304f5125"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-boundary-67AmUU/report.json",
+      "file": "reports/pi-attachment-entry-boundary-67AmUU/report.json",
+      "bytes": 1456,
+      "sha256": "d96c72162103dfa67011ac62c52460f11475d8ea2c210e9eadd8d6c106f1ffe6"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-source-eJs7OS/report.json",
+      "file": "reports/pi-attachment-entry-source-eJs7OS/report.json",
+      "bytes": 2831,
+      "sha256": "9d76406b9bf3fe6684695e3bfac6140e5d5c02d932770160d2f41e2fca54c1d2"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-host-lock-DLe7i2/report.json",
+      "file": "reports/pi-model-host-lock-DLe7i2/report.json",
+      "bytes": 854,
+      "sha256": "72f09e033494b1770b545a16843efd99b926600e6f2e9a41924555a909423816"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-fVx03J/cards-1366x768.png",
+      "file": "screenshots/cards-1366x768.png",
+      "bytes": 106330,
+      "sha256": "5760248b524a850946dd4f592aefd7027a0bea5716d9d45185bd2a943b035be3"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-fVx03J/cards-1920x1080.png",
+      "file": "screenshots/cards-1920x1080.png",
+      "bytes": 118983,
+      "sha256": "033ad83fba428be7c391adc2bc0cffeae17fcea8b40465be3fecda0c8d689a6f"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-fVx03J/preview-1366x768.png",
+      "file": "screenshots/preview-1366x768.png",
+      "bytes": 105596,
+      "sha256": "789b5a837dc13f46f9e1be5567d7aad7c3a050f97679729a9d2af22beb7f0963"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-fVx03J/preview-1920x1080.png",
+      "file": "screenshots/preview-1920x1080.png",
+      "bytes": 129489,
+      "sha256": "f154751c36fce50523b36f60e45c41d10bbb5ac4a85653dee85b8f9b92c7cabe"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-attachment-entry-ui-7kJePL/failure.png",
+      "file": "failed/preview-cancellation.png",
+      "bytes": 106612,
+      "sha256": "0a25d5c55d4e8aa193bbdb7a90dce0c42f8ff2a9505fd3c684ae7af437c3d8bd"
+    },
+    {
+      "source": "docs/132_PI_ATTACHMENT_ENTRY_DELIVERY_CONTRACT.md",
+      "file": "references/132_PI_ATTACHMENT_ENTRY_DELIVERY_CONTRACT.md",
+      "bytes": 7868,
+      "sha256": "a8ed1a491c44bb578a19d044db82895cb1ebe57e6deb06c534c18f74e22ab49f"
+    },
+    {
+      "source": "docs/136_PI_ATTACHMENT_ENTRY_UI_REFINEMENT.md",
+      "file": "references/136_PI_ATTACHMENT_ENTRY_UI_REFINEMENT.md",
+      "bytes": 2829,
+      "sha256": "b35e160261fc9cfbbdc335ca1d2dbe06b10a21d938db5f384d4ab16c61b5645c"
+    },
+    {
+      "source": "docs/137_PI_ATTACHMENT_ENTRY_UI_ACCEPTANCE.md",
+      "file": "references/137_PI_ATTACHMENT_ENTRY_UI_ACCEPTANCE.md",
+      "bytes": 8932,
+      "sha256": "6a1012135e408e41cdc7658c3992f8f7eeb86998160754adcaddfdf129f0d1fd"
+    },
+    {
+      "source": "1.Agent.md",
+      "file": "references/1.Agent.md",
+      "bytes": 105792,
+      "sha256": "fc89c694c809c1ec28157c59c8c789f582080533f9e0f9ecef2243b66f296c3e"
+    },
+    {
+      "source": "2.Memory.md",
+      "file": "references/2.Memory.md",
+      "bytes": 238809,
+      "sha256": "184e71de0da429056bc1f1626179955005b451657aab61b96a994fa825774f6c"
+    },
+    {
+      "source": "3.Learning.md",
+      "file": "references/3.Learning.md",
+      "bytes": 180781,
+      "sha256": "e12f6e1dc27bf7d7f7de58ec21fbb9293c5e52ff5fa921a6bf7c96ce64795bd2"
+    },
+    {
+      "source": "4.Wiki.md",
+      "file": "references/4.Wiki.md",
+      "bytes": 148610,
+      "sha256": "694cb276ba50221c04731dc04de66b95fb658cbeb4071444448e80f625b30615"
+    },
+    {
+      "source": "docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "file": "references/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 44047,
+      "sha256": "95d648da2dc7c7a0dce66147b6a7cd4cdafbfa23b53ae41bcd4be915b9475e11"
+    },
+    {
+      "source": "docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "file": "references/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 75118,
+      "sha256": "22bf9e05fe3f887fd09989400e90e0031d820e4575d0db6e93b5dea6afb9fd52"
+    },
+    {
+      "source": "docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "file": "references/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 59394,
+      "sha256": "cfe43952841c30107edef94663237edc249512952b2ba475aad8d9ed7ff660b3"
+    },
+    {
+      "source": "docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "file": "references/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 64259,
+      "sha256": "ab6fc653e421211448cf3a494677f2073deb629c1c3b5f7e75b78d7670518f44"
+    }
+  ],
+  "runtime": [
+    {
+      "file": "src/main/xiaozhi-agent/local-utility-host.ts",
+      "bytes": 1999,
+      "sha256": "51cdd6d93648ed3b0a99b0df2246b858c8831ac18be72a18548953e2d23d9dc5"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/document-host.ts",
+      "bytes": 888,
+      "sha256": "0c6398b20e88d89b636323b25761ba27cf1644c066c2235e11005eabec12c76d"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/image-host.ts",
+      "bytes": 1444,
+      "sha256": "a18a7569e767e0386d8d849f8b5891cd5535642c2173701682113ed521b61613"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/image-worker.ts",
+      "bytes": 2324,
+      "sha256": "0780e79b4c7c690e4545f33c2a7b3ea82aee72b3b800f7b448cc31b109df4947"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/image-header.ts",
+      "bytes": 707,
+      "sha256": "0c11e01a2747bf40243b09038f8cbcd56f2e5629da269b81bd296619a9892469"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/attachment-coordinator.ts",
+      "bytes": 6272,
+      "sha256": "48ef18cf0d930e171aeb3b31e534f061aa766a73f58f1009c82aec8e4ce4fe01"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/attachment-api.ts",
+      "bytes": 1025,
+      "sha256": "d7f6ece93cdc5e5c21a446d76e03f5059069238c390dfecbb5d515ba6a0a0430"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/attachment-import-service.ts",
+      "bytes": 8734,
+      "sha256": "0c042dc3fd21d737cedba834035f880f81ae47fdfa5a581a07a91624e49609f5"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 46789,
+      "sha256": "b9d6165354778f15edb47c87952c8ff98be60f49a3917f89e4e938ecc31906c3"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/ipc.ts",
+      "bytes": 8355,
+      "sha256": "68419cb3dd750e24d5e930e03f684e8aaa2dd1d65fa15e3bbdf579490e4b0547"
+    },
+    {
+      "file": "src/shared/xiaozhi-attachments.ts",
+      "bytes": 4542,
+      "sha256": "598a1a4ea09686e7321be53f8092e14581ec7f301fbf602bc73f30eda28058c0"
+    },
+    {
+      "file": "src/shared/xiaozhi-images.ts",
+      "bytes": 3418,
+      "sha256": "d11a589f03697603eeeef9e9854f9b0982e99df0829aafc8a77d767276737bc7"
+    },
+    {
+      "file": "src/preload/index.ts",
+      "bytes": 32293,
+      "sha256": "f3f522eb83b0635f9a7d5fbe415a1239cd3dabacb5609e20b00708a893d0a457"
+    },
+    {
+      "file": "src/renderer/components/office/usePiAttachments.tsx",
+      "bytes": 8998,
+      "sha256": "110457ab849df9638ad62dbe0f9a81ce3fa97830fd9fd66a6a7dad29d7a54b9a"
+    },
+    {
+      "file": "src/renderer/components/office/pi-attachments.css",
+      "bytes": 976,
+      "sha256": "81581544481f1d307314d3a1826b761e4422b7bc4e2ee5d51a5f072c043e7694"
+    },
+    {
+      "file": "src/renderer/components/office/OfficeComposer.tsx",
+      "bytes": 11302,
+      "sha256": "b52b21a3e1c2c9ad90295cc9d236ab28db53f9748e9d8f6193bbc80e11ef3d32"
+    },
+    {
+      "file": "src/renderer/components/office/PiEducationWorkspace.tsx",
+      "bytes": 18827,
+      "sha256": "9216884fb0fa2eb8a61204b27a1ba382123d66f267be17dc45093a7115ff9feb"
+    },
+    {
+      "file": "electron.vite.config.ts",
+      "bytes": 922,
+      "sha256": "fdcd5425c07e17e604e786ea540630075f6d140c64b7171613b69afcdd1e2be1"
+    },
+    {
+      "file": "package.json",
+      "bytes": 15045,
+      "sha256": "e624c8833a3d8fb5e07906affec4375d6990851d1758dc4642f94c0b7f3f7c39"
+    },
+    {
+      "file": "package-lock.json",
+      "bytes": 448283,
+      "sha256": "06b5bee97252752c1f4c5ae6c58efb3f76baa28605f98a920027283e64f16c23"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/pi-attachment-entry-ui-smoke.mjs",
+      "bytes": 15641,
+      "sha256": "f691c98e0a57500208031d3a2d028a6631689550ed6d4f29e25ca2db68ffc345"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/pi-attachment-entry-boundary-smoke.mjs",
+      "bytes": 6432,
+      "sha256": "762b9e6bbd0f819cb057e801c5757aaa25822c56f2a0a1f5b03af048bcc034e0"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/pi-attachment-entry-live-smoke.mjs",
+      "bytes": 6602,
+      "sha256": "1a453083e4edf0bb54b869c7e1dc6b71bc38cd41753158e784b2cf6e0916fd62"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/pi-attachment-entry-source-smoke.mjs",
+      "bytes": 2607,
+      "sha256": "93a98cec9a35e2a97a1cd9db19a2913ddf12e3d2cbd689d75e5423a5cfd2165a"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/archive-attachment-entry-ui.mjs",
+      "bytes": 6371,
+      "sha256": "81308c6ab39daa5e600114250a2671d8d227853038510a2697fa60865ecf7fcd"
+    },
+    {
+      "file": "out/main/index.js",
+      "bytes": 1135509,
+      "sha256": "4842ea33fdaf62752706d1ab2af04e54d5d86d2ad6d240a475bddf8d98c00eab"
+    },
+    {
+      "file": "out/main/image-worker.js",
+      "bytes": 2276,
+      "sha256": "bbf92d4066b85d7eb0485d6e83beb834869618e173c7e47144742d5e20d9cd2f"
+    },
+    {
+      "file": "out/main/document-worker.js",
+      "bytes": 4664,
+      "sha256": "98f0c55e13fd9cad781f96dcf0601588debd35bae29342fc54fd49bc6df0aec7"
+    },
+    {
+      "file": "out/preload/index.cjs",
+      "bytes": 19872,
+      "sha256": "8ff7aefd2914e5726dad0f7d891f960494df5d10c534b4c57c249a67407a340a"
+    },
+    {
+      "file": "out/renderer/index.html",
+      "bytes": 404,
+      "sha256": "9f13dc357e4a0174c99cc2cc681e0b4123f60912cf5aa9f159168d90804d98b8"
+    },
+    {
+      "file": "out/renderer/assets/index-CKw3Alzb.js",
+      "bytes": 4082668,
+      "sha256": "af3cab75f4e0246799d7ca46b8ef04523ebcdcdf68d70199251b04009946f161"
+    },
+    {
+      "file": "out/main/document-host-omWQgMyH.js",
+      "bytes": 805,
+      "sha256": "bf7babb763c8bf577b0a429cdfce8a343e19354ca623cbbe8a6f5ab30613ea5c"
+    },
+    {
+      "file": "out/main/image-header-Bv6CrrlJ.js",
+      "bytes": 3342,
+      "sha256": "83668f242a40604f88726d90168e6d0ffecf8200511f308e23e6b3d219d33b06"
+    },
+    {
+      "file": "out/main/image-host-CggmTR1t.js",
+      "bytes": 1337,
+      "sha256": "10b5ee39bbab7eb254325f41eabc4bbe07739e0dc7f9cf30bd2f31e61ac36997"
+    },
+    {
+      "file": "out/main/local-utility-host-B5-4knRg.js",
+      "bytes": 1852,
+      "sha256": "66b0e0a43cb72c5dfe7b969c869b042c791ea3c8dbb6ef89be3e6bc95626241a"
+    },
+    {
+      "file": "out/main/office-generator.js",
+      "bytes": 8143,
+      "sha256": "bff63e090792801ec3fa2abfaabd65c54d80eed0703f544321d4f0e27268adde"
+    },
+    {
+      "file": "out/main/office-pdf-renderer-DS1sNXgh.js",
+      "bytes": 7290,
+      "sha256": "248012e1d402be4169a81943b82c6240b2d15500d03e6c2c7cc9a4314301d211"
+    },
+    {
+      "file": "out/main/pi-session-EVqq5_wH.js",
+      "bytes": 108155,
+      "sha256": "0c549c5b74945f71a9665850d360aaf56831accc8158b9ad57997b1a8d96ab2e"
+    },
+    {
+      "file": "out/main/xiaozhi-documents-CSeYBu6S.js",
+      "bytes": 1891,
+      "sha256": "fa69e30f81a08c6ae040bc1d9cc0d00793f566f0886fea99c8a3c62e6ef45cfd"
+    },
+    {
+      "file": "out/main/xiaozhi-office-draft-97IC6p4o.js",
+      "bytes": 2068,
+      "sha256": "053d8708c6a34b26d613857fd9fed5fe53b52bcbef64206dbc775a0dae60cfbb"
+    }
+  ]
+}

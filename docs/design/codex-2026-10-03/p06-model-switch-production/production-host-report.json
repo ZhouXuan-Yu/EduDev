@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Real production host exposes unlocked bound selection and changes model without a new run, message or approval",
+      "pass": true
+    },
+    {
+      "name": "Native switch exit after mutation is recovered by public snapshot without a credential or prompt",
+      "pass": true
+    },
+    {
+      "name": "Exit before native intent aborts only the unexecuted selection and retains source on restart",
+      "pass": true
+    },
+    {
+      "name": "Close waits for native mutation ownership, blocks late commit and next host recovers without replay",
+      "pass": true
+    },
+    {
+      "name": "Archive during model receipt refuses commit and recovery, never reactivates archived conversation",
+      "pass": true
+    },
+    {
+      "name": "Official model removal refuses selection before native intent or registry mutation",
+      "pass": true
+    },
+    {
+      "name": "Complete request capacity failure keeps the real source model and has a stable typed UI error",
+      "pass": true
+    },
+    {
+      "name": "Migration adds baseline to a prior B1 model table idempotently without altering model/history facts",
+      "pass": true
+    },
+    {
+      "name": "All idle host scenarios preserve the original owned UI source database",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual production host/service/SDK/SQLite/JSONL; owned real-UI data copy and controlled official catalogue, no provider completions claimed"
+}

@@ -1,0 +1,13 @@
+/* finesse component adapter: existing Pro approval and HeroUI interactive states. */
+.xiaozhi-pi-workspace .pi-office-artifact .chat-tool__trigger-label > span { overflow-wrap: anywhere; }
+.xiaozhi-pi-workspace .pi-office-review { min-width: 0; }
+.xiaozhi-pi-workspace .pi-office-review > p, .xiaozhi-pi-workspace .pi-office-sources p { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.xiaozhi-pi-workspace .pi-office-preview, .xiaozhi-pi-workspace .pi-office-editor, .xiaozhi-pi-workspace .pi-office-sources { max-height: 340px; overflow: auto; padding: 8px 2px; }
+.xiaozhi-pi-workspace .pi-office-preview [data-slot='markdown-root'] { font-size: 14px; }
+.xiaozhi-pi-workspace .pi-office-editor, .xiaozhi-pi-workspace .pi-office-section, .xiaozhi-pi-workspace .pi-office-table-row { display: flex; flex-direction: column; gap: 10px; }
+.xiaozhi-pi-workspace .pi-office-editor input, .xiaozhi-pi-workspace .pi-office-editor textarea { width: 100%; min-width: 0; }
+.xiaozhi-pi-workspace .pi-office-section { padding-block: 8px; }
+.xiaozhi-pi-workspace .pi-office-actions { display: flex; justify-content: flex-end; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.xiaozhi-pi-workspace .pi-office-actions button { border-radius: 16px; }
+.xiaozhi-pi-workspace .pi-office-artifact [role='alert'] { color: var(--danger); }
+@media (max-height: 850px) { .xiaozhi-pi-workspace .pi-office-preview, .xiaozhi-pi-workspace .pi-office-editor, .xiaozhi-pi-workspace .pi-office-sources { max-height: 210px; } }

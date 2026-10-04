@@ -1,0 +1,35 @@
+{
+  "version": "0.449.0",
+  "license": "Apache-2.0",
+  "licenseSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+  "records": [
+    {
+      "source": "desktop/src/react/settings/components/SettingsRow.tsx",
+      "sourceSha256": "07357d4ee0c77682b0717a6c9b2d489a1e6e80e4aca4ed07598632b90c0df146",
+      "output": "SettingsRow.tsx",
+      "outputSha256": "07357d4ee0c77682b0717a6c9b2d489a1e6e80e4aca4ed07598632b90c0df146",
+      "adaptation": "Exact complete file; existing SettingsPrimitives and CSS dependencies retained"
+    },
+    {
+      "source": "desktop/src/react/settings/components/SettingsSection.tsx",
+      "sourceSha256": "76064a65955bfc3fd972aa3368b011adaf7d4855e13e98bd915831b4eff9824a",
+      "output": "SettingsSection.tsx",
+      "outputSha256": "76064a65955bfc3fd972aa3368b011adaf7d4855e13e98bd915831b4eff9824a",
+      "adaptation": "Exact complete file; existing SettingsPrimitives and CSS dependencies retained"
+    },
+    {
+      "source": "desktop/src/react/settings/settings-search-index.ts",
+      "sourceSha256": "c50f7e40dc1c4aa10d27370af9a4f7696c6a4a156240cece2a2cb3a892231652",
+      "output": "settings-search.ts",
+      "outputSha256": "fced265620882c7fc064404242eab6fcee4e4e16b0aa0cea78cdfa0c74267eb9",
+      "adaptation": "Exact types and normalization/ranking/search functions; excluded unsupported Hana built-in settings data and builder"
+    },
+    {
+      "source": "desktop/src/react/settings/Settings.module.css",
+      "sourceSha256": "e51a5d011b9d4cd14db1a1fb700ab8fdb232dd3f373970ac40dd4ba1f5588b10",
+      "output": "workspace-nav.module.css",
+      "outputSha256": "8161f8cb2890a63006f749db8ae97c72fa071f76a2a3b94b3604a2e8cdab1f78",
+      "adaptation": "Exact navigation/search-result rules; local tokens and layout live in pi-settings-workspace.css, no Hana store or image assets"
+    }
+  ]
+}

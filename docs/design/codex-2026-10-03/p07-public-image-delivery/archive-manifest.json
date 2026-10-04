@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T11:02:17.208Z",
+  "files": [
+    {
+      "file": "source/1.Agent.md",
+      "bytes": 116995,
+      "sha256": "6c1fc55438c56f310c3c9d035a86c6eb69fd2b2d2be5f5a3ded83a0b5910928d"
+    },
+    {
+      "file": "source/2.Memory.md",
+      "bytes": 257130,
+      "sha256": "1f7c7b75b4652f5d0e0030b379b3eb215b0fbc61f885a59732929c6fbb7bbb7b"
+    },
+    {
+      "file": "source/3.Learning.md",
+      "bytes": 192333,
+      "sha256": "dd8bf1ba7ff9d8a94961dc4c4b807c174ee5c260895795442eb03f8f4ec2055c"
+    },
+    {
+      "file": "source/4.Wiki.md",
+      "bytes": 159968,
+      "sha256": "a8deda5b76da9b4f04b9947c38042821cb0732f19ea52735facbd7a5b0100033"
+    },
+    {
+      "file": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 50241,
+      "sha256": "c925039d02fd7cc8aacf2a051409286d03fbd05046478e8ea6fb91b66b1e2531"
+    },
+    {
+      "file": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 82899,
+      "sha256": "60b181d46cc7ec36e4cedea89ba421f2e5c2a232279f96979d4ae2ae67c7d682"
+    },
+    {
+      "file": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 67825,
+      "sha256": "25e0268c9f2de18365f768a7a7c45678f21edbbd5069bd787f2c8c0f1ea9ac17"
+    },
+    {
+      "file": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 72294,
+      "sha256": "f08b35dd9f2ec58f0829a956b78dfb2e83490385e2c13d2011aa526c4c37c5c4"
+    },
+    {
+      "file": "source/docs/150_PI_PUBLIC_IMAGE_DELIVERY_CONTRACT.md",
+      "bytes": 4375,
+      "sha256": "87909b2db7c4fa692f25ee9f41e884b5513d72e46485de73e8f45893c47c0818"
+    },
+    {
+      "file": "source/docs/151_PI_PUBLIC_IMAGE_DELIVERY_ACCEPTANCE.md",
+      "bytes": 7415,
+      "sha256": "e8677b2129e1098f699220f4b4224f0985ab90fd6cc64b810f190fe7cff40d65"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-public-images.ts",
+      "bytes": 3304,
+      "sha256": "e4132a8e1ff9719ab55892ef717d78ff912f4b0428a00a2b3009c47b0c36a403"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-agent.ts",
+      "bytes": 6123,
+      "sha256": "d1e75bdc54f21e21f751db21f2d996d3842092133f71c19772886f80579bddba"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/office-agent.ts",
+      "bytes": 1309,
+      "sha256": "546aeb4c54e69c61fee214ad14f79e62e367251a27235e028fe976b32dc08b2e"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-projection.ts",
+      "bytes": 11419,
+      "sha256": "7095139a24331061f66b13096a185bb0071bdf6a97aca72e675eeabfd15d3b70"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/attachment-import-service.ts",
+      "bytes": 9496,
+      "sha256": "80e298848ebdfca365e48a49127047f0d306d8f6106a0b229cfed80d997abc35"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/image-host.ts",
+      "bytes": 2424,
+      "sha256": "e1711211791aa5682ddc9a0ad6ce3113f7a49b885a9550966b74773a49086cfe"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/image-worker.ts",
+      "bytes": 2643,
+      "sha256": "6096690a2c0b4f03ab7a7c31986bc53b0cf30a36856c75689bf80f6f709bc7e9"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/model-image-worker.ts",
+      "bytes": 2010,
+      "sha256": "ed16ba2918d224fb0b1ebb0c1f02cc7de80c26f9a369e4920c557ce499ea10d0"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/public-image-runtime.ts",
+      "bytes": 9355,
+      "sha256": "e0cf4a75027496c0bfd33be3277247735e16c52aaa7e217a5079a9e9e09cfc25"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 66000,
+      "sha256": "61a11802e5fc5d4908f57935a37571b3cba7edc8a629afb38cbfa35d5436e4c9"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 54851,
+      "sha256": "99ff8feaec5262e3705386b4d5dec0f440a67de286b8e277057b7eff7fc899c0"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/native-compaction.ts",
+      "bytes": 2746,
+      "sha256": "d03fe21bfe1a692fbb5557f3346f16d24cd829a9334dae6ba0bea981cd658847"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/model-capabilities.ts",
+      "bytes": 6014,
+      "sha256": "41271d5d86e6e6f56722d705c0072dd4fd3d74eb46a41986e709e78151ecdc1c"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/pi-image-adapter.ts",
+      "bytes": 513,
+      "sha256": "bcda04650d28310023eac215848704e5fc314c62a43c7dda6c5a2ad69c0f30a3"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/core/model-image-preprocess.ts",
+      "bytes": 10186,
+      "sha256": "1e2b174c88732744434802cbf3d5f5d7157851652c6c6758de745088688f831f"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/core/model-image-LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/core/model-image-source-manifest.json",
+      "bytes": 815,
+      "sha256": "6d5b27b944174b4173eb765f2049a4614896d59925fa0681ee5bd477a554ba0f"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/OfficeToolProcess.tsx",
+      "bytes": 6725,
+      "sha256": "9efc00196de478e157738681d13d6f8487889267f7856cbc49f7a22ae05672d3"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/PiControlCards.tsx",
+      "bytes": 6738,
+      "sha256": "239d3c1bcffda910019e96c725c0258227d9a9050a551e5f16bd2f7f9bc52286"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-public-image-native-worker.ts",
+      "bytes": 10294,
+      "sha256": "d21138216c6248238c065be3b43aeb664f75312238bf376b4e44c3f5eba1917b"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-public-image-native-smoke.mjs",
+      "bytes": 1923,
+      "sha256": "149671b46a2b48be8c524e740e72be20bf449f2803a2e8a2c996fd44d0c8f167"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-public-image-ui-smoke.mjs",
+      "bytes": 15640,
+      "sha256": "63cd5f1a6c1f8371b279ed72872cf59dcd03e69ac5bb7f125edf4220f80d728c"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-image-capabilities-smoke.mjs",
+      "bytes": 3631,
+      "sha256": "ca36356329171549c34aa6234ff7ca89de4a7d66005e4f22d67208f0dd931e13"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/reuse-hana-model-images.mjs",
+      "bytes": 2957,
+      "sha256": "6ceba3c43a7258f01f2b4eea4334236fa1ceeb860db77cd431e69e1cfca54450"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/archive-public-image-delivery.mjs",
+      "bytes": 4938,
+      "sha256": "06f79c6cd8924571760be020f4750efdbcad71a9dc96cb36663ea3fe312f8297"
+    },
+    {
+      "file": "upstream/core/model-image-preprocess.ts",
+      "bytes": 10076,
+      "sha256": "e3cb6d0d4376305ffb77d85aff00b20239397388dd3a8063f98370fc0d9a0cb9"
+    },
+    {
+      "file": "upstream/desktop/src/react/utils/chat-image-send-preflight.ts",
+      "bytes": 8520,
+      "sha256": "96fb5fde238807fca8668d9a3b01188d79c91684c0fc844bb1b81b733797967e"
+    },
+    {
+      "file": "upstream/lib/sandbox/read-image-vision.ts",
+      "bytes": 8458,
+      "sha256": "41f7a811d9884858308991ee5cacbfee51c6de2af66a286b9b8728a8016d783d"
+    },
+    {
+      "file": "upstream/lib/pi-sdk/index.ts",
+      "bytes": 10900,
+      "sha256": "c3ceac10b4f9420cb06593a2fe2420eb9b4cda74915d8b5be29a4ccccff87070"
+    },
+    {
+      "file": "upstream/LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "file": "upstream/source-manifest.json",
+      "bytes": 935,
+      "sha256": "8893a747ba576c3423445d20354a15f1722a7022a7745092adc9e8a5bc46f6f6"
+    },
+    {
+      "file": "evidence/native.json",
+      "bytes": 1999,
+      "sha256": "11a42b6b89e38b4b4bbe904b4b34bf51e51ce489151bac93919415cddcec1b9e"
+    },
+    {
+      "file": "evidence/formal-ui.json",
+      "bytes": 2783,
+      "sha256": "4cd79a93534f0245249bcd6c2cf1d9934244f6a747528d930bc321bbd2355542"
+    },
+    {
+      "file": "evidence/capabilities.json",
+      "bytes": 142,
+      "sha256": "e971d40f9ab735f734398da63c93ac9223c2d63ea2a392b132b56f9dc6d020bb"
+    },
+    {
+      "file": "evidence/auto-boundaries.json",
+      "bytes": 1557,
+      "sha256": "7711d0de9d30047920ad417ce2112ec76300f95835677c1c0276ed9410c4938f"
+    },
+    {
+      "file": "reference/heroui-pro-chat-tools.json",
+      "bytes": 26441,
+      "sha256": "2378c2f09e86b54dccac4dc5d735a2c72a879d2a9977f47e23d7cf769b15f951"
+    },
+    {
+      "file": "evidence/gates.json",
+      "bytes": 715,
+      "sha256": "609734b4036a8eb705acb0dc9b865c9380dc43b4a9cf1211aca0cee9430b23cb"
+    }
+  ],
+  "boundary": "Explicit allowlist source/reference and safe reports; no raw images, DB/native, keys, profiles, dependencies or binaries."
+}

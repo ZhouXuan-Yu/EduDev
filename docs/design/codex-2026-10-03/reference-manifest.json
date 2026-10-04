@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "capturedFrom": "User supplied Codex desktop screenshots, 2026-10-03",
+  "designContract": "../../67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+  "appVersion": null,
+  "windowsScale": null,
+  "devicePixelRatio": null,
+  "cssViewport": null,
+  "references": [
+    {
+      "id": "R1",
+      "file": "process-reference.png",
+      "originalAttachment": "codex-clipboard-dd0b5670-fde9-4275-b96f-297084d2d4f4.png",
+      "width": 912,
+      "height": 1104,
+      "sha256": "f8dc2005f6fe9a52d9f6223ab9b43123f668d45ea20265fb2499cdc9c25d65b2",
+      "scope": "Cropped public commentary, tool receipts, image preview, compaction"
+    },
+    {
+      "id": "R2",
+      "file": "workspace-reference.png",
+      "originalAttachment": "codex-clipboard-1f003d32-0ea2-44bc-9c20-d0515eedb346.png",
+      "width": 2559,
+      "height": 1529,
+      "sha256": "27e994ccee801aad556e4c65e4d10bbce5ac044de9d99fd83b3b47a641ee0843",
+      "scope": "Window, navigation, conversation, composer, file tabs and preview",
+      "sampledCornerColor": "#e6f9f7"
+    }
+  ],
+  "calibrationStatus": "Pending; physical pixels must not be used as CSS pixels",
+  "implementationStatus": "Design frozen; full visual parity pending"
+}

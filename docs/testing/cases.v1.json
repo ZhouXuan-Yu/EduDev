@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "manualDefault": "UNVERIFIED",
+  "manualGuide": "../../测试样例说明书.md",
+  "feedbackLedger": "用户问题待复现.md",
+  "cases": [
+    {"id":"NET-01","name":"自然搜索与官方正文","automatic":"web","manualRequired":true},
+    {"id":"NET-02","name":"自然请求内置浏览器与错误页","automatic":"web-partial-explicit-tool","manualRequired":true},
+    {"id":"NET-03","name":"联网开关与权限","automatic":"web","manualRequired":true},
+    {"id":"NET-04","name":"停止与重启","automatic":"web","manualRequired":true},
+    {"id":"NET-05","name":"原配置与DNS差异","automatic":null,"manualRequired":true},
+    {"id":"NET-06","name":"无VPN","automatic":null,"manualRequired":true},
+    {"id":"IMG-01","name":"打印OCR校正","automatic":"ocr","manualRequired":true},
+    {"id":"IMG-02","name":"OCR拒绝取消","automatic":"ocr","manualRequired":true},
+    {"id":"IMG-03","name":"OCR冷恢复","automatic":"ocr","manualRequired":true},
+    {"id":"IMG-04","name":"正式公开图视觉","automatic":null,"manualRequired":true},
+    {"id":"IMG-05","name":"不支持视觉和撤销","automatic":null,"manualRequired":true},
+    {"id":"IMG-06","name":"损坏文件及复杂图片","automatic":null,"manualRequired":true},
+    {"id":"FILE-01","name":"正文实读与清空输入","automatic":null,"manualRequired":true},
+    {"id":"FILE-02","name":"目录授权边界","automatic":null,"manualRequired":true},
+    {"id":"FILE-03","name":"编辑确认与拒绝","automatic":null,"manualRequired":true},
+    {"id":"FILE-04","name":"真实Office产物","automatic":null,"manualRequired":true},
+    {"id":"CTRL-01","name":"队列编辑撤回","automatic":null,"manualRequired":true},
+    {"id":"CTRL-02","name":"停止后新任务","automatic":null,"manualRequired":true},
+    {"id":"CTRL-03","name":"中断冷恢复","automatic":null,"manualRequired":true},
+    {"id":"CFG-01","name":"已保存凭证真实请求","automatic":null,"manualRequired":true},
+    {"id":"CFG-02","name":"凭证及能力失败","automatic":null,"manualRequired":true},
+    {"id":"VIEW-01","name":"双尺寸关键控件","automatic":"web-and-ocr-partial","manualRequired":true},
+    {"id":"VIEW-02","name":"真实进度与执行状态","automatic":null,"manualRequired":true}
+  ]
+}

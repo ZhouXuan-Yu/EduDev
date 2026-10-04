@@ -1,0 +1,76 @@
+﻿{
+    "success":  false,
+    "mode":  "render",
+    "before":  [
+                   {
+                       "id":  4428,
+                       "start":  "2026-09-29T05:43:31.4199256Z",
+                       "hwnd":  0
+                   },
+                   {
+                       "id":  66568,
+                       "start":  "2026-10-03T17:11:29.1186891Z",
+                       "hwnd":  0
+                   }
+               ],
+    "applications":  [
+                         {
+                             "kind":  "docx",
+                             "pid":  45060,
+                             "hwnd":  0,
+                             "identity":  "registered-automation-start-time",
+                             "version":  "12.0",
+                             "initialCount":  0,
+                             "owned":  true,
+                             "text":  "教师修订-docx-f90008d1\r教学安排\r已核对中文末段-631fc2c1\r阶段\r\u0007分钟\r\u0007练习题数\r\u0007\r\u0007复习\r\u000741\r\u00078\r\u0007\r\u0007\r",
+                             "tables":  1,
+                             "pages":  1,
+                             "inputUnchanged":  true,
+                             "renderBytes":  33764
+                         },
+                         {
+                             "kind":  "xlsx",
+                             "pid":  33976,
+                             "hwnd":  4920424,
+                             "identity":  "hwnd",
+                             "version":  "12.0",
+                             "initialCount":  0,
+                             "owned":  true,
+                             "sheets":  1,
+                             "values":  [
+                                            [
+                                                "教师修订-xlsx-ac2ab68f",
+                                                null,
+                                                null,
+                                                "教学安排",
+                                                null,
+                                                null,
+                                                "已核对中文末段-6a8168ce",
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                null,
+                                                "阶段",
+                                                "分钟",
+                                                "练习题数",
+                                                "复习",
+                                                41,
+                                                8
+                                            ]
+                                        ],
+                             "inputUnchanged":  true,
+                             "renderBytes":  33409
+                         },
+                         {
+                             "kind":  "pptx",
+                             "pid":  61852,
+                             "hwnd":  0,
+                             "identity":  "registered-automation-start-time",
+                             "version":  "12.0",
+                             "initialCount":  0,
+                             "owned":  true
+                         }
+                     ],
+    "boundary":  "Actual WPS COM only; no existing user instance may be altered."
+}

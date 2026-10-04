@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "upstream": "Hana0.449.0",
+  "license": "Apache-2.0",
+  "adaptation": "Only provenance and ts-nocheck header; no parser logic changes",
+  "files": [
+    {
+      "name": "index.ts",
+      "source": "lib/document-extract/index.ts",
+      "sourceSha256": "20514b0f99ce7c4f4bea789530557a0dcf7054df59ec2728642a69abf8228227",
+      "outputSha256": "defc6b8dc3c386862029bd7217a3697dada581200e774aa6718a785d9beece37",
+      "sourceBytes": 3695,
+      "outputBytes": 3791
+    },
+    {
+      "name": "types.ts",
+      "source": "lib/document-extract/types.ts",
+      "sourceSha256": "ee9684bb60c472f16b74ea0f29e826c9bed506d5a5c1ecd3d5639466d1130dd0",
+      "outputSha256": "0ac66e7d2a2c0ddcc6e7d633fd88e6fb0080c722a1557402eba4f589ba4510a6",
+      "sourceBytes": 369,
+      "outputBytes": 465
+    },
+    {
+      "name": "anydoc-loader.ts",
+      "source": "lib/document-extract/anydoc-loader.ts",
+      "sourceSha256": "d8dc7663bef8e98e398f30103a714c8d9be4221acef9fc4039b6166c6f8eb8bf",
+      "outputSha256": "9c0f4eebfd6b32e7a0770e99091437ccb09739d829c48b251be3da24c03eef7d",
+      "sourceBytes": 1696,
+      "outputBytes": 1792
+    },
+    {
+      "name": "LICENSE",
+      "source": "LICENSE",
+      "sourceSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "outputSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "sourceBytes": 10760,
+      "outputBytes": 10760
+    }
+  ]
+}

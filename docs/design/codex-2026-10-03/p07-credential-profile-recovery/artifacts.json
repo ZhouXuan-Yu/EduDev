@@ -1,0 +1,286 @@
+{
+  "schemaVersion": "xiaozhi.public-acceptance.v1",
+  "slice": "M10-real-profile-credential-recovery",
+  "createdAt": "2026-10-04T05:20:13.478Z",
+  "boundary": "Corrects 123 real-profile claim while preserving previous immutable evidence. Actual Windows native profile4, formal isolated UI12 with real foreign-profile ciphertext and real Pi/DeepSeek, boundary19 with simulated HTTP, renderer79 and final build/main207. Real provider settings CAS revision2/default deepseek-flash in matched userData; other settings unchanged; independent restarted real-profile read-only and official catalogue/completion200. No actual teacher conversation, whole Store init/migration/recovery, VPN-off/installer/full Codex claim. Safe explicit reports/cleared-key screenshots/logs and source/runtime hashes only. No Local State/profile key material, DB/WAL/env/private probe/ciphertext/native JSONL/worker/bootstrap/teacher files/credential. Prior archives unchanged.",
+  "entries": [
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-user-reply-recheck.log",
+      "file": "gates/credential-user-reply-recheck.log",
+      "bytes": 1041,
+      "sha256": "aa52ed3fb19a01fb542a6561e06df4a46d3d45be8d312c0e2349a29f4c5e317c"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-profile-ui12.log",
+      "file": "gates/credential-profile-ui12.log",
+      "bytes": 1333,
+      "sha256": "d9131724c03e30be0f8214597b95b20bcf6c40ab06b340914bd716ebaae4a57d"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-profile-boundary.log",
+      "file": "gates/credential-profile-boundary.log",
+      "bytes": 165,
+      "sha256": "7f054ef2592da868255f31fdb9dd5bbd696838525456f18ffed3a44177c1c00f"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-profile-renderer.log",
+      "file": "gates/credential-profile-renderer.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-profile-build.log",
+      "file": "gates/credential-profile-build.log",
+      "bytes": 25591,
+      "sha256": "f97efd7899d7e69eca1def98df6b6c23fd67c034eb290b3d2fa347d8362756bf"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-profile-main-smoke.log",
+      "file": "gates/credential-profile-main-smoke.log",
+      "bytes": 38749,
+      "sha256": "a1ba9d1569b1e676d2611e055a88458e8b36a7600f035027324902643f5b2493"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-profile-diff-check.log",
+      "file": "gates/credential-profile-diff-check.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-recovery-ui-SEaaPt/report.json",
+      "file": "pi-credential-recovery-ui-SEaaPt/report.json",
+      "bytes": 1511,
+      "sha256": "8acc64cf20c9c365ee98722cf12b908196376615e7ccf1d145a33473fb82c50c"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-recovery-ui-8bx1qB/report.json",
+      "file": "pi-credential-recovery-ui-8bx1qB/report.json",
+      "bytes": 1931,
+      "sha256": "6334181983207e6f265572a8c6c839e262b3506dfeccc476e65e75a9d224080d"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-settings-boundary-Y2Lyqd/report.json",
+      "file": "pi-model-settings-boundary-Y2Lyqd/report.json",
+      "bytes": 2642,
+      "sha256": "43b4a694fb57a44e0bdec2d4cd74c229ce1e378c9f6e0555285214214e5c7852"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-profile-HAsxTq/report.json",
+      "file": "pi-credential-profile-HAsxTq/report.json",
+      "bytes": 584,
+      "sha256": "87580bbaf87248b5e9f5079c03fa212e78fc33c3837e2d12163d703f44ed7a5f"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-profile-CKvbq1/replace/report.json",
+      "file": "pi-credential-profile-CKvbq1/replace/report.json",
+      "bytes": 558,
+      "sha256": "44bbc4297e8fdd2a3e95c755171528174543e3a0f98421a4a370d9da54096e5d"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-profile-R2OgRe/inspect/report.json",
+      "file": "pi-credential-profile-R2OgRe/inspect/report.json",
+      "bytes": 484,
+      "sha256": "31726ac46fa4e6b08a9afafbd05e5f967c2ea1f785dec134e14f8d3059e4dc84"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-original-helper-profile-b49a8961/report.json",
+      "file": "credential-original-helper-profile-b49a8961/report.json",
+      "bytes": 551,
+      "sha256": "a3e626c7df3b77f4e67beea96c5a1ccd5aebad873f35313ade4d557995af39aa"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-current-readonly-8a9ce0fa/report.json",
+      "file": "failed/credential-current-readonly-8a9ce0fa/report.json",
+      "bytes": 251,
+      "sha256": "edadeed2c47cc81815fba13e81417b398318c538a9b4a00d20eaac9ad4d266e2"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/credential-profile-check-efe48028/report.json",
+      "file": "failed/credential-profile-check-efe48028/report.json",
+      "bytes": 273,
+      "sha256": "7ae58e5b3d313ec7fd57257a9256a0d75c7e6c2d205b1f822e76f8260ee0b0c6"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-profile-WaY8WI/inspect/report.json",
+      "file": "failed/pi-credential-profile-WaY8WI/inspect/report.json",
+      "bytes": 172,
+      "sha256": "6455ca559a94ef5c9d5cb431a76ba2aa4c18d8b5ec1b07ee0ba17a2b81010001"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-profile-yxiJux/report.json",
+      "file": "failed/pi-credential-profile-yxiJux/report.json",
+      "bytes": 369,
+      "sha256": "12d4c5fe67876180b5ac24b63dd8d6aaada7c130e07cac581a45d353dbec9729"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-recovery-ui-8bx1qB/settings-1366.png",
+      "file": "screenshots/settings-1366.png",
+      "bytes": 94109,
+      "sha256": "631b491f4da30829c4bbe3011735f02bb71a2282e82a2d83a1230079e0085da3"
+    },
+    {
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-credential-recovery-ui-8bx1qB/settings-1920.png",
+      "file": "screenshots/settings-1920.png",
+      "bytes": 149256,
+      "sha256": "8a739de22e07cf78ccdb754e314d91c463ff92449f1a8641d774e48ffa2954ef"
+    },
+    {
+      "source": "docs/134_DEEPSEEK_REAL_PROFILE_CREDENTIAL_CONTRACT.md",
+      "file": "references/134_DEEPSEEK_REAL_PROFILE_CREDENTIAL_CONTRACT.md",
+      "bytes": 2907,
+      "sha256": "456f1984b94c565cd2ed8547942fcd6f03fba498e8f920f61f4c2c919dfb22a7"
+    },
+    {
+      "source": "docs/135_DEEPSEEK_REAL_PROFILE_CREDENTIAL_ACCEPTANCE.md",
+      "file": "references/135_DEEPSEEK_REAL_PROFILE_CREDENTIAL_ACCEPTANCE.md",
+      "bytes": 7276,
+      "sha256": "5a98b6a4cdf67d2a9b30cbac64be8c5caff64e918e4d97060bb5c722fa00c2e6"
+    },
+    {
+      "source": "docs/123_DEEPSEEK_CREDENTIAL_RECOVERY_ACCEPTANCE.md",
+      "file": "references/123_DEEPSEEK_CREDENTIAL_RECOVERY_ACCEPTANCE.md",
+      "bytes": 6418,
+      "sha256": "6cde57c9ce82e2315038df78b13d5c660e82de26fefe907aa40a88f06afe587d"
+    },
+    {
+      "source": "1.Agent.md",
+      "file": "references/1.Agent.md",
+      "bytes": 104445,
+      "sha256": "d8a1bd09af635d777371234cce6741d6d4616a1eff9075b1409025703d45d484"
+    },
+    {
+      "source": "2.Memory.md",
+      "file": "references/2.Memory.md",
+      "bytes": 236946,
+      "sha256": "210c4f883afb91d93363eeb369d05331005e7e885051a3d3fa1c6507b623d070"
+    },
+    {
+      "source": "3.Learning.md",
+      "file": "references/3.Learning.md",
+      "bytes": 179468,
+      "sha256": "993fc74ae0c79b0e45b9f82b84b6c2e2661e5da5c98b4a77a4274e2acd747d39"
+    },
+    {
+      "source": "4.Wiki.md",
+      "file": "references/4.Wiki.md",
+      "bytes": 147166,
+      "sha256": "6b46e71feb1eb8b54289ffcb99b4791ce08796b7ddd9263476544a34d0442bd2"
+    },
+    {
+      "source": "docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "file": "references/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 42902,
+      "sha256": "bb65dcccdcdc7d68d823a675ae123d6e582549a49fcda69a21b0dcd750e6bb7c"
+    },
+    {
+      "source": "docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "file": "references/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 73820,
+      "sha256": "f26e6947d93873c77a104b157dd9abcb444c49b407481d8155fe380ba60f2d37"
+    },
+    {
+      "source": "docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "file": "references/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 57673,
+      "sha256": "19e77de0a4559cae3c6cdffe78945baa91a888a30eb5a00f7c87225e170bb5ef"
+    },
+    {
+      "source": "docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "file": "references/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 62931,
+      "sha256": "79c6110e1b090847c4c3f0106b3e224cf50f4ecf727e35c737baf7fef09cf70a"
+    }
+  ],
+  "runtime": [
+    {
+      "file": "scripts/xiaozhi-agent/credential-profile-worker.ts",
+      "bytes": 8231,
+      "sha256": "cd935361a96e7ce260c706e089c9e0824a71ff9ab1628cf68b9df07155a5ab36"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/pi-credential-profile-smoke.mjs",
+      "bytes": 5339,
+      "sha256": "4ebc4b9bc5b134fa780856986682c2de9db96d058cc18a9c421943262ee4ed3c"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/pi-credential-recovery-ui-smoke.mjs",
+      "bytes": 12415,
+      "sha256": "ac20c4fcbb0e1e810539e5f8d14853a5cbd6d8bdee04139a4413d6c66898f1b0"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/pi-model-settings-boundary-smoke.mjs",
+      "bytes": 13664,
+      "sha256": "bec74d1a933be8773eb1c55ad612f36bf6f6c94a5926d32327477a45bf2084d2"
+    },
+    {
+      "file": "scripts/xiaozhi-agent/archive-credential-profile.mjs",
+      "bytes": 5342,
+      "sha256": "6fab4870f1074150eb415beb97480b2d25b3737910ebd76923c1e4a1bf0a8feb"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/model-settings.ts",
+      "bytes": 9609,
+      "sha256": "c709a20b71a435bfc03a35c547a9e54bb0629e4133869f5ea06e71a4fac677b5"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/model-settings-state.ts",
+      "bytes": 3931,
+      "sha256": "42530e85d4a906dd6287e9800f8eb714e654f3e69e58e52edfb7da8d9adfa4c8"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/model-settings-api.ts",
+      "bytes": 2603,
+      "sha256": "bb235297bb64825cf99e3e5f501cb21e10d4ce6f772c85fac834228a27293a51"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/ipc.ts",
+      "bytes": 7759,
+      "sha256": "2034ef3783c9ec7a14ed7cea13da14a419497365a22cf1cbb38fa05b212cbe4c"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 46038,
+      "sha256": "4561dc20108055146833fd4498ca7cc107879a527459d3c8a36dec34a3231888"
+    },
+    {
+      "file": "src/main/xiaozhi-agent/model-capabilities.ts",
+      "bytes": 5492,
+      "sha256": "5f4394aad3b14b98946c9b14ff635bc8ff35595153954785d0bc3a99568a0e5d"
+    },
+    {
+      "file": "src/shared/xiaozhi-settings.ts",
+      "bytes": 2314,
+      "sha256": "876e76a7ce6d8e6042561bd5285832989a99aa0fb67708c610039a7166528c74"
+    },
+    {
+      "file": "src/renderer/components/office/PiModelSettings.tsx",
+      "bytes": 9352,
+      "sha256": "0e2e49d10dc6f3434721881cc63d3ed4bdc950ec20a51759bc0e240876767ec2"
+    },
+    {
+      "file": "src/preload/index.ts",
+      "bytes": 31008,
+      "sha256": "5feaf69c562026774444b1e94c65ec260d5313e20fd4ff04f75872a1283ef5a8"
+    },
+    {
+      "file": "out/main/index.js",
+      "bytes": 1110907,
+      "sha256": "3cbe370dfd5b3d5e84f32b84061813c361600f36de05f147bcbfc4dcd5868a6e"
+    },
+    {
+      "file": "out/preload/index.cjs",
+      "bytes": 19248,
+      "sha256": "80f16a8ae9855df5ab841a8bd3d4991e03d530ae770a37323d3f37031cc63cfb"
+    },
+    {
+      "file": "out/renderer/index.html",
+      "bytes": 404,
+      "sha256": "a4804cbf9ac6f38a9000b2e016c93cf72db0db093ee7fc7b68a812567454c1c0"
+    },
+    {
+      "file": "out/renderer/assets/index-CMajNv0Z.js",
+      "bytes": 4069808,
+      "sha256": "8930fbaf88e211d2f5ab88597b4c559a53c71d6dad2b3fe313541727c5272588"
+    }
+  ]
+}

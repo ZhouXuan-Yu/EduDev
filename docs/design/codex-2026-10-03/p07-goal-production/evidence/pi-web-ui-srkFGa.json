@@ -1,0 +1,139 @@
+{
+  "directory": "pi-web-ui-srkFGa",
+  "success": true,
+  "checks": [
+    {
+      "name": "Absent web preferences default to automatic DNS and expose only safe web preferences",
+      "pass": true
+    },
+    {
+      "name": "Natural initial run uses absent default preferences without changing settings",
+      "pass": true
+    },
+    {
+      "name": "Natural DeepSeek actually searches, reads MOE body, receives real URL/time and produces a sourced education answer",
+      "pass": true
+    },
+    {
+      "name": "Actual HeroUI automatic choice saves via typed settings after natural default run",
+      "pass": true
+    },
+    {
+      "name": "Actual public explanation/tool/next explanation/final ordering is preserved; composer empty",
+      "pass": true
+    },
+    {
+      "name": "Independent native web capability is present once; public receipt omits query/body and records returned sources",
+      "pass": true
+    },
+    {
+      "name": "Actual 1366x768 source/time and resident composer are accessible",
+      "pass": true
+    },
+    {
+      "name": "Actual 1920x1080 source/time and resident composer are accessible",
+      "pass": true
+    },
+    {
+      "name": "Explicit source click reaches native opener after recorded-source/DNS validation; forged URL refused",
+      "pass": true
+    },
+    {
+      "name": "Actual secondary window denied both network-setting and source-open typed endpoints",
+      "pass": true
+    },
+    {
+      "name": "Stale network preference cannot overwrite teacher selection",
+      "pass": true
+    },
+    {
+      "name": "Running network task rejects setting mutation; actual stop reaches interrupted terminal",
+      "pass": true
+    },
+    {
+      "name": "Actual restart preserves source history/preferences/native prefix and does not replay interrupted network task",
+      "pass": true
+    },
+    {
+      "name": "Formal DeepSeek actually opens and reads real MOE DOM with default auto DNS",
+      "pass": true
+    },
+    {
+      "name": "Chat browser button shows actual MOE page with visible body",
+      "pass": true
+    },
+    {
+      "name": "Actual browser failure shows original Pro state, typed chat reason and no fabricated source or privileged IPC",
+      "pass": true
+    },
+    {
+      "name": "Actual inaccessible public page produces a failed tool and human error receipt without fake source",
+      "pass": true
+    },
+    {
+      "name": "Explicit web disable removes future tools while prior native capability/history remain readable",
+      "pass": true
+    },
+    {
+      "name": "Formal renderer completes all actions without page errors",
+      "pass": true
+    }
+  ],
+  "layer": "C: isolated formal Electron",
+  "humanAccepted": false,
+  "boundaries": [
+    "Actual isolated formal Electron/Pi/DeepSeek plus real anonymous AnySearch and MOE HTTP body",
+    "Default automatic recovery used on current system fake DNS; explicit choices preserved; no OS proxy/DNS/VPN changes or VPN-off claim",
+    "OS source launch intercepted after real user click and main source/DNS validation; no user browser modified"
+  ],
+  "build": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-build4",
+    "files": 323,
+    "sha256": "3b81b5e6a608ae849d7daf11c4d7aecff2f52d508bb2407493386f5b8b9952d6"
+  },
+  "scriptSha256": "d0261e28b9c7855a66d2f85d2317f427329d11bc7657032fb9100fe9177467de",
+  "previousFailures": [
+    {
+      "directory": "pi-web-ui-FefUeb",
+      "checks": 5,
+      "buildSha256": null,
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-web-ui-iHK3ic",
+      "checks": 12,
+      "buildSha256": null,
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-web-ui-NL9blZ",
+      "checks": 1,
+      "buildSha256": null,
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-web-ui-PGJEb9",
+      "checks": 0,
+      "buildSha256": null,
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-web-ui-SoGCs3",
+      "checks": 7,
+      "buildSha256": null,
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-web-ui-UFNZ2R",
+      "checks": 6,
+      "buildSha256": null,
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-web-ui-xwjMYj",
+      "checks": 11,
+      "buildSha256": null,
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Fresh owned profile configures live DeepSeek from the visible encrypted-key form",
+      "pass": true
+    },
+    {
+      "name": "Active run disables the actual menu and main rejects concurrent model mutation",
+      "pass": true
+    },
+    {
+      "name": "Initial Flash response is verified in real provider native history, and sent draft clears",
+      "pass": true
+    },
+    {
+      "name": "Visible bound-history menu switches Flash to Pro with same native file, history prefix, origin snapshot and no new run",
+      "pass": true
+    },
+    {
+      "name": "Stale selector cannot change a committed model or silently replace conversation",
+      "pass": true
+    },
+    {
+      "name": "Live Pro continuation recalls prior Flash history; native assistant.model confirms actual requested model",
+      "pass": true
+    },
+    {
+      "name": "Visible menu switches Pro back to Flash in the same native history",
+      "pass": true
+    },
+    {
+      "name": "Live Flash continuation retains the same initial history across both switches",
+      "pass": true
+    },
+    {
+      "name": "Existing HeroUI model menu is reachable with real history at both required viewports",
+      "pass": true
+    },
+    {
+      "name": "Restart preserves model selection, one conversation/native identity and public turns without replay",
+      "pass": true
+    },
+    {
+      "name": "Real provider recalls original history after application restart",
+      "pass": true
+    },
+    {
+      "name": "No renderer exceptions",
+      "pass": true
+    }
+  ],
+  "models": [
+    {
+      "model": "deepseek-flash",
+      "runId": "run_c08bbac1-cede-4cbe-b308-45c045e98de9",
+      "completed": true
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "runId": "run_aae26cc5-7d61-48a3-aefa-70eee667c0cc",
+      "completed": true
+    },
+    {
+      "model": "deepseek-flash",
+      "runId": "run_a3df6e8f-ebc1-4de8-b414-dea31d893ce2",
+      "completed": true
+    },
+    {
+      "model": "deepseek-flash",
+      "runId": "run_1dc4a6cb-87b4-40d4-9fb2-26afdc60054c",
+      "completed": true
+    }
+  ],
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1.5,
+      "overflow": false
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "dpr": 1.5,
+      "overflow": false
+    }
+  ],
+  "boundary": "Formal Electron visible model menu, same conversation and real DeepSeek; no full pixel-match/VPN-off/installer claim"
+}

@@ -1,0 +1,37 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import { fileURLToPath } from 'node:url';
+import { DatabaseSync } from 'node:sqlite';
+import { _electron as electron } from 'playwright';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),tests=fs.realpathSync(path.join(root,'test-results/xiaozhi-agent'));
+const source=fs.realpathSync(path.resolve(root,process.argv[2]||'missing')),relative=path.relative(tests,source);
+assert(!relative.startsWith('..')&&!path.isAbsolute(relative)&&path.basename(source)==='data');
+const output=fs.mkdtempSync(path.join(tests,'pi-queue-existing-')),data=path.join(output,'data');fs.cpSync(source,data,{recursive:true,errorOnExist:true,force:false});
+const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});
+const legacy=db.prepare("SELECT * FROM xiaozhi_pi_controls WHERE kind='instruction' AND schema_version=1 AND state='applied'").get();assert(legacy);
+const binding=db.prepare('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(legacy.conversation_id);db.close();assert(binding);
+const file=path.join(data,'xiaozhi-pi',binding.session_file),before=fs.readFileSync(file,'utf8'),session=legacy.conversation_id;
+const cfg=fs.readFileSync(path.join(root,'.env.local'),'utf8'),pick=name=>cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`,'m'))?.[1]?.trim();
+const key=pick('DEEPSEEK_API_KEY'),model=pick('DEEPSEEK_MODEL')||'deepseek-flash';assert(key);
+const checks=[],report={success:false,suite:'pi-queue-existing-history',checks,boundaries:['Real Electron/DeepSeek; explicitly copied prior v1 instruction/SDK test history only']};
+let app,page;
+const snap=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session);
+const until=async fn=>{const end=Date.now()+120000;while(Date.now()<end){if(await fn())return;await new Promise(resolve=>setTimeout(resolve,80));}throw new Error('Legacy queue acceptance timed out');};
+const check=(name,fn)=>{fn();checks.push({name,pass:true});};
+try{
+  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(root,'../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_XIAOZHI_PI:'1',DEEPSEEK_API_KEY:key,DEEPSEEK_MODEL:model};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
+  app=await electron.launch({args:[path.join(root,'out/main/index.js')],env,timeout:60000});page=await app.firstWindow();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await page.getByTestId(`ai-conversation-session-${session}`).click();await page.waitForFunction(()=>!document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
+  let state=await snap();check('Prior v1 instructions read as revision zero without rewriting original native history',()=>{assert.equal(state.controls.find(item=>item.id===legacy.id).revision,0);assert.equal(state.controls.find(item=>item.id===legacy.id).state,'applied');assert.equal(fs.readFileSync(file,'utf8'),before);});
+  await page.getByTestId('office-prompt-input').fill('本次合成验收请用 ask_teacher 问我新的教具选择：纸条还是圆片，给这两个选项，等待我回答，再给一句活动建议，不操作文件，不用文本提问代替工具。');await page.getByTestId('office-prompt-input').press('Enter');
+  await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});
+  await page.getByTestId('office-prompt-input').fill('活动建议里必须提及教师复核。');await page.getByTestId('pi-queue-submit').click();
+  await until(async()=>(await snap()).controls.some(item=>item.kind==='instruction'&&item.state==='queued'));
+  const item=(await snap()).controls.find(item=>item.kind==='instruction'&&item.state==='queued'),card=page.locator(`[data-testid="pi-queued-instruction"][data-control-id="${item.id}"]`);
+  await card.getByTestId('pi-instruction-edit').click();const text='活动建议里必须提及教师再次复核。';await card.getByTestId('pi-instruction-text').fill(text);await card.getByTestId('pi-instruction-save').click();
+  await until(async()=>(await snap()).controls.find(value=>value.id===item.id).revision===1);await page.getByTestId('pi-question-option-0').click();await page.getByTestId('pi-question-submit').click();await until(async()=>!(await snap()).running);state=await snap();
+  const history=fs.readFileSync(file,'utf8').trim().split('\n').map(JSON.parse),count=text=>history.filter(entry=>entry.type==='message'&&entry.message.role==='user'&&entry.message.content.some(part=>part.type==='text'&&part.text===text)).length;
+  check('Existing bound SDK history continues with v2 edited command consumed once',()=>{assert.equal(state.projection.turns.at(-1).status,'completed');assert.equal(count(text),1);assert.equal(count(item.text),0);assert(fs.readFileSync(file,'utf8').startsWith(before));});
+  check('Original v1 receipt and explicitly named test source remain unchanged',()=>{assert.equal(state.controls.find(item=>item.id===legacy.id).state,'applied');assert.equal(fs.readFileSync(path.join(source,'xiaozhi-pi',binding.session_file),'utf8'),before);});
+  report.success=true;
+}catch(error){report.error=String(error.stack).replaceAll(key,'[credential]').slice(0,4000);if(page)report.snapshot=await snap().catch(()=>undefined);process.exitCode=1;}finally{await app?.close().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({...report,report:path.relative(root,path.join(output,'report.json'))}));}

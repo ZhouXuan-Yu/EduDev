@@ -1,0 +1,444 @@
+{
+  "schemaVersion": 1,
+  "purpose": "P06d-B actual control and menu slice, not complete Codex parity",
+  "artifacts": [
+    {
+      "file": "control-question-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-ui-PXoiay\\question-1366x768.png",
+      "bytes": 73274,
+      "sha256": "af103868b975e9af48540fa8b833285d959a0ec37e91f6194762b8810a5264ae"
+    },
+    {
+      "file": "control-question-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-ui-PXoiay\\question-1920x1080.png",
+      "bytes": 95731,
+      "sha256": "3298a34a26ee5e45020ed49947e98e8a40d45fcdcfa755533bb582420312a939"
+    },
+    {
+      "file": "control-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-ui-PXoiay\\report.json",
+      "bytes": 2632,
+      "sha256": "3b121f732e10f977305e2a8c724969d26216ed7b653f1a23a79a36517fcce643"
+    },
+    {
+      "file": "queue-queue-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-queue-ui-KwUErj\\queue-1366x768.png",
+      "bytes": 144585,
+      "sha256": "55dce74f5b53ab942804326ef3c4b6bc528c19eb0aeaf1e1028408749408518e"
+    },
+    {
+      "file": "queue-queue-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-queue-ui-KwUErj\\queue-1920x1080.png",
+      "bytes": 166230,
+      "sha256": "04a6c4a238fcb34b03a4732b7523596f1d5ef987bd70e8b1c34063a6830f3c7c"
+    },
+    {
+      "file": "queue-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-queue-ui-KwUErj\\report.json",
+      "bytes": 2192,
+      "sha256": "edc4b434f8c3def8bfee586afbe669e42b84bfbd3e34312160f99f447d441574"
+    },
+    {
+      "file": "menus-models-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\models-1366x768.png",
+      "bytes": 55585,
+      "sha256": "8bd07d0178a798025696cdb9873cbba9d87c7bf750d5acb7f35602f5297fd3d3"
+    },
+    {
+      "file": "menus-models-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\models-1920x1080.png",
+      "bytes": 62927,
+      "sha256": "df556e63d66b26d9775103ef011d39be81cde6b69089395e47c9a62ec8cc8b74"
+    },
+    {
+      "file": "menus-permissions-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\permissions-1366x768.png",
+      "bytes": 61582,
+      "sha256": "da3c2efa24274474c91ef302bdcf58088500fe10ba7d2eaa9222af7d2e4dbb81"
+    },
+    {
+      "file": "menus-permissions-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\permissions-1920x1080.png",
+      "bytes": 69210,
+      "sha256": "bc8c7e7ba221b170e5d2e9bb16cabee4c06693f364be05d8f989ea3b82656129"
+    },
+    {
+      "file": "menus-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\report.json",
+      "bytes": 22447,
+      "sha256": "53875082203847995dda4a845ac524b3bbafea23ce617f143e489c352c41a004"
+    },
+    {
+      "file": "menus-workspace-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\workspace-1366x768.json",
+      "bytes": 9107,
+      "sha256": "d10058032ed6067d21043303b89867978e6df38564e8a61e9f780d16b891e72c"
+    },
+    {
+      "file": "menus-workspace-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\workspace-1366x768.png",
+      "bytes": 54169,
+      "sha256": "316419c3de48d9e5189b5d96428280e5c2028f7cc14ee388776dec5ca6a629ab"
+    },
+    {
+      "file": "menus-workspace-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\workspace-1920x1080.json",
+      "bytes": 9134,
+      "sha256": "2337c6c76900aa6c279505446a886907f10bf11a121e7f049951c328c09f88a7"
+    },
+    {
+      "file": "menus-workspace-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-1eDv07\\workspace-1920x1080.png",
+      "bytes": 61972,
+      "sha256": "79b4fc013f66a47434aabe44ce0f79cf383a5cded864c0ddd5c906d13e3b6e1f"
+    },
+    {
+      "file": "settings-archives-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\archives-1366.png",
+      "bytes": 57896,
+      "sha256": "e20a5162d49f86862fc3219b494affabaf398ad26e78d41a89ee96166a831053"
+    },
+    {
+      "file": "settings-archives-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\archives-1920.png",
+      "bytes": 68688,
+      "sha256": "17c598a9ed199f59ef43e03a4a9c5f82605796c5814cf27f9c58e237f53d05f3"
+    },
+    {
+      "file": "settings-backup-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\backup-1366.png",
+      "bytes": 74720,
+      "sha256": "411b408f63aefcbd4f7f95abc86cf512ec2f609c3bcaee544a19aac976134d6c"
+    },
+    {
+      "file": "settings-backup-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\backup-1920.png",
+      "bytes": 86728,
+      "sha256": "370c63c56af7577a08d405c8a865a8af6f337da16c4521b9b44db12bd4bf1aec"
+    },
+    {
+      "file": "settings-interface-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\interface-1366.png",
+      "bytes": 64689,
+      "sha256": "7ab58e8fd5b792765dd44fb8363901e5c839ddb0035997e3968335a6c3751c30"
+    },
+    {
+      "file": "settings-interface-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\interface-1920.png",
+      "bytes": 76028,
+      "sha256": "a29618e307c32b2641d24930b83cc47537ff6716d9d1fd51f18d212dbfada4ab"
+    },
+    {
+      "file": "settings-models-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\models-1366.png",
+      "bytes": 94911,
+      "sha256": "41b74a332806666ed5f11295c0ac7481897aba2938ce572bd24b2fa1988a7ff4"
+    },
+    {
+      "file": "settings-models-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\models-1920.png",
+      "bytes": 113203,
+      "sha256": "7798adad910d5572aa5f63610f5c08a1f156334e3a79840660ce08a19467888c"
+    },
+    {
+      "file": "settings-permissions-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\permissions-1366.png",
+      "bytes": 86832,
+      "sha256": "24ac0e5f26d4e51047a4e61e5a3b848edf93d6e3c60b3b44a76deb720c326aa9"
+    },
+    {
+      "file": "settings-permissions-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\permissions-1920.png",
+      "bytes": 99931,
+      "sha256": "64f37998eef3f6c627c8496d2aef4c482fb2be6ea8d2792971aa3bf189de459d"
+    },
+    {
+      "file": "settings-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\report.json",
+      "bytes": 10581,
+      "sha256": "4922e6438eb810e86a6e50df66593fb40c36113aeae660959229d4496283faf0"
+    },
+    {
+      "file": "settings-skills-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\skills-1366.png",
+      "bytes": 120280,
+      "sha256": "2af97488b49f4dfa94e78ea0137d35fa9a3202aa2630f2b3b8adda774df024d6"
+    },
+    {
+      "file": "settings-skills-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-QcXMZd\\skills-1920.png",
+      "bytes": 135069,
+      "sha256": "10967a6262aa2f76e191a059548ced0750671ea1495e244c762fac7ddab8aa6a"
+    },
+    {
+      "file": "approval-approval-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-process-approval-ui-DTwvhU\\approval-1366x768.png",
+      "bytes": 79010,
+      "sha256": "cd424d94da8750e2f12b3583607aa1bdfee562d028ed958403c8f479834eee1e"
+    },
+    {
+      "file": "approval-approval-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-process-approval-ui-DTwvhU\\approval-1920x1080.png",
+      "bytes": 111431,
+      "sha256": "963216a7ca02099cae8b164058998e478857489116eb4ac93f3c6ad85a6a45eb"
+    },
+    {
+      "file": "approval-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-process-approval-ui-DTwvhU\\report.json",
+      "bytes": 774,
+      "sha256": "81390d191bf4c01103aa2c28ba736bc05341727476ebd78cc90d042f05337a76"
+    },
+    {
+      "file": "models-history-models-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-history-model-ui-3I0Jce\\history-models-1366.png",
+      "bytes": 143414,
+      "sha256": "f8006c596bd3dd830a3d5fe97d867579f9f83e330bf73034f29514c3afd7515b"
+    },
+    {
+      "file": "models-history-models-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-history-model-ui-3I0Jce\\history-models-1920.png",
+      "bytes": 190109,
+      "sha256": "9d5858e66188b0a8a95aec3e20004e08fa9911c181e82ae40c9da73c6f27570f"
+    },
+    {
+      "file": "models-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-history-model-ui-3I0Jce\\report.json",
+      "bytes": 2485,
+      "sha256": "d01bb0258c6474d56f4dc7cbf2bd4b9567824f33701189c5b7008943b45a9e6e"
+    },
+    {
+      "file": "log-p06db-build-final3.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-build-final3.log",
+      "bytes": 25156,
+      "sha256": "498b386af976f59eafb8fb6d0118d26c765ca24c95d1d10fbd62a5eced9111c4"
+    },
+    {
+      "file": "log-p06db-renderer-final2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-renderer-final2.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "file": "log-p06db-pro-source.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-pro-source.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    },
+    {
+      "file": "log-p06db-menus-ui-final3.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-menus-ui-final3.log",
+      "bytes": 952,
+      "sha256": "d01b85605ee6a429decc450aef5f62347d5708f59eac3684330e66e0707ff99a"
+    },
+    {
+      "file": "log-p06db-settings-ui-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-settings-ui-final.log",
+      "bytes": 2464,
+      "sha256": "80447a2425819da5b49945aa2fc868a911f8314ec3cd29187bb0193b333bef61"
+    },
+    {
+      "file": "log-p06db-queue-ui-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-queue-ui-final.log",
+      "bytes": 1429,
+      "sha256": "51f7e312b47764699aed870f966f0566dc8f7c1981f84788b4a21672a4d22d54"
+    },
+    {
+      "file": "log-p06db-approval-ui-final2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-approval-ui-final2.log",
+      "bytes": 641,
+      "sha256": "a59abadbb5766c2bfd1c9999b77ff16ba8c57677df25918ec4b9eafd104be9ca"
+    },
+    {
+      "file": "log-p06db-model-ui-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-model-ui-final.log",
+      "bytes": 1374,
+      "sha256": "dc57d23f5fda1ac711d01045963a80a6c9bb927698b9e52dde3ff0ef9b34a1a7"
+    },
+    {
+      "file": "log-p06db-control-ui-final3.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-control-ui-final3.log",
+      "bytes": 2317,
+      "sha256": "d9b68d4ec7f56e7c0dc663ea8446738f137818ca49167fdef9b754284b6169b6"
+    },
+    {
+      "file": "log-p06db-smoke-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-smoke-final.log",
+      "bytes": 38314,
+      "sha256": "c3883076af195d88c1a083356c077a6af1cf213cd01da70b052f53f832c169c2"
+    },
+    {
+      "file": "log-p06db-menus-ui.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-menus-ui.log",
+      "bytes": 401,
+      "sha256": "ac76878c45da8f293e0117c069bd58ba6c92248c8b9e41f60e99dfc2b9b84b51"
+    },
+    {
+      "file": "log-p06db-menus-ui2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-menus-ui2.log",
+      "bytes": 1276,
+      "sha256": "24e930a3f8cd87cd12f836a337341370871e549dfda18f399259a041f1740d0e"
+    },
+    {
+      "file": "log-p06db-menus-ui3.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-menus-ui3.log",
+      "bytes": 881,
+      "sha256": "e1e97f1067f99bd52823c0746804ebdd34377e20942502ea4560d4e447448539"
+    },
+    {
+      "file": "log-p06db-menus-ui-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-menus-ui-final.log",
+      "bytes": 489,
+      "sha256": "bab24c4cb9ac48b0a041608778fcfd1a0c1f6f661728a4c290156ec2d1ae6355"
+    },
+    {
+      "file": "log-p06db-settings-ui.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06db-settings-ui.log",
+      "bytes": 1375,
+      "sha256": "4f0cdd6f524af3753eeb6a32df0017076964539a4c19b63e019ba09f6c71f0a4"
+    },
+    {
+      "file": "failureDraft-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-7Wa6KB\\report.json",
+      "bytes": 19697,
+      "sha256": "37a544fb81d0b9c1e465aae46f4290303b0537bf5bf202f1fc9791f6d1d5607b"
+    },
+    {
+      "file": "failureDraft-failure.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-7Wa6KB\\failure.png",
+      "bytes": 54909,
+      "sha256": "f908d710e66130bfeea45469813483026c2661ab20878fc5d1ab1242470ba97f"
+    },
+    {
+      "file": "failureSidebar-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-scoqC5\\report.json",
+      "bytes": 11171,
+      "sha256": "a7e561688fc6e398d8e31e7102a944c7b3a51795968e3786ec9aaccd45a46a04"
+    },
+    {
+      "file": "failureSidebar-failure.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-scoqC5\\failure.png",
+      "bytes": 49415,
+      "sha256": "0a3adadf551816fe278c48d7e0bb6664d072fd992fb8d34299b975568e1f7bec"
+    },
+    {
+      "file": "failureHiddenSelector-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-YVXoTE\\report.json",
+      "bytes": 2046,
+      "sha256": "5c5ec5feabf236af6026f53ba0f42f88e02ceaf8166c133be8139c3ea2ecbcce"
+    },
+    {
+      "file": "failureHiddenSelector-failure.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-YVXoTE\\failure.png",
+      "bytes": 88759,
+      "sha256": "5f9355805539a4c978d42c30b12eacab75ed9ca4b27c8a61839c346249cb662e"
+    },
+    {
+      "file": "source-OfficeComposerState.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\OfficeComposerState.tsx",
+      "bytes": 3142,
+      "sha256": "b5606f6f8c439b91808702f5ba8f3d12e9d87c1436cd55c07d23ca8b22637c09"
+    },
+    {
+      "file": "source-OfficeComposer.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\OfficeComposer.tsx",
+      "bytes": 10872,
+      "sha256": "6c370994351fcef741cd722add633d8f8575acdcde74076511a5ee4fc4d3be14"
+    },
+    {
+      "file": "source-PiControlCards.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\PiControlCards.tsx",
+      "bytes": 6738,
+      "sha256": "239d3c1bcffda910019e96c725c0258227d9a9050a551e5f16bd2f7f9bc52286"
+    },
+    {
+      "file": "source-PiCopyApproval.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\PiCopyApproval.tsx",
+      "bytes": 3181,
+      "sha256": "ec71730331fd23d0fe137596ef49bae3ac9a44ad9d44b850b6f38e6c86010924"
+    },
+    {
+      "file": "source-PiEducationWorkspace.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\PiEducationWorkspace.tsx",
+      "bytes": 16664,
+      "sha256": "2a5f3b7db50750d629eb51b5b508cd1cb6323acedfbc815f922d63cbd8787c5f"
+    },
+    {
+      "file": "source-PiWorkspaceShell.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\PiWorkspaceShell.tsx",
+      "bytes": 3856,
+      "sha256": "012668792b97055fda917be7416798eb3df59947463a2f30fbc889a1bd37f80d"
+    },
+    {
+      "file": "source-pi-control-surfaces.css",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\pi-control-surfaces.css",
+      "bytes": 5036,
+      "sha256": "29d653f2d1c3207bc14fa17fc25b4409fefae81620325806842b1d11a5ff8604"
+    },
+    {
+      "file": "source-pi-education-workspace.css",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\pi-education-workspace.css",
+      "bytes": 13132,
+      "sha256": "63483faca8de7e2f698ad4625cfd69234e81191c914da08b067718158c07c58e"
+    },
+    {
+      "file": "source-App.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\App.tsx",
+      "bytes": 129210,
+      "sha256": "0b583a226afb7f7fcb7e93f20dfd6bb8f062dd710c24715bc03581fc6f1c2ebb"
+    },
+    {
+      "file": "script-pi-control-menus-ui-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-control-menus-ui-smoke.mjs",
+      "bytes": 6379,
+      "sha256": "47ad8c9dd3073cf5527a9f48d1d3200d6b9b16cf1bb1c165b919b1f6d142fcb5"
+    },
+    {
+      "file": "script-pi-control-ui-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-control-ui-smoke.mjs",
+      "bytes": 16640,
+      "sha256": "926f9b898cf8a229e1768245abc223097ef0181fb5f2ce10de8a3646054ba133"
+    },
+    {
+      "file": "script-pi-queue-ui-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-queue-ui-smoke.mjs",
+      "bytes": 14627,
+      "sha256": "66a8bb028a6b90e2fd95b32a207f940ab0dc62f6fc819bed679ac622610af93c"
+    },
+    {
+      "file": "script-pi-settings-workspace-ui-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-settings-workspace-ui-smoke.mjs",
+      "bytes": 21171,
+      "sha256": "c254c9b5fcc5eb729015b17c473452466171d42fd95ea4df4e353f1d5dffe5de"
+    },
+    {
+      "file": "script-pi-public-process-approval-ui-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-public-process-approval-ui-smoke.mjs",
+      "bytes": 11519,
+      "sha256": "91353536561e14bdcb045de114fefba1ef73d4bd6ac3ea3df7eeae51efba7f65"
+    },
+    {
+      "file": "script-pi-history-model-switch-ui-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-history-model-switch-ui-smoke.mjs",
+      "bytes": 10902,
+      "sha256": "c86ada9af535ad19edd493a772cdeddcfeb8c99d40c1074ed0c62d5f7d96aea2"
+    },
+    {
+      "file": "script-capture-workspace-metrics.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\capture-workspace-metrics.mjs",
+      "bytes": 3410,
+      "sha256": "fc13abe35dd880a970f4046d903f4ea267a2857c1dd34ee01c61d2d6c40790c2"
+    },
+    {
+      "file": "pro-workspace-source.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\heroui-pro\\workspace-source.json",
+      "bytes": 8724,
+      "sha256": "8858783e97211c08c132c1843d36a628c2bd654c79e47cec007c7e0b0541e105"
+    },
+    {
+      "file": "contract-99.md",
+      "source": "D:\\WorkProject\\EduProject\\docs\\99_CODEX_CONTROL_SURFACES_DELIVERY_CONTRACT.md",
+      "bytes": 6154,
+      "sha256": "a53ecd2911d210666029c14c6e50509ba6a51e5ca7a2ef7a746a33589a08ade1"
+    }
+  ]
+}

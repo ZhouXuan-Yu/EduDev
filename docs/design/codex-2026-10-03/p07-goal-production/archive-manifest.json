@@ -1,0 +1,232 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T12:46:33.900Z",
+  "files": [
+    {
+      "file": "source/1.Agent.md",
+      "bytes": 121169,
+      "sha256": "8f0ed7d2b3b052d2f9959b5d79d622f861d358bd8b17bfca29d969247d29c44d"
+    },
+    {
+      "file": "source/2.Memory.md",
+      "bytes": 264044,
+      "sha256": "c42b51c54e9f05feb0bef2979234a6c338d9a36a31bc2cd11705de805aa5b145"
+    },
+    {
+      "file": "source/3.Learning.md",
+      "bytes": 196674,
+      "sha256": "e0e76fea2cf299bdcd8218937b176a2bab167b8becdd681015271a1b51f801e7"
+    },
+    {
+      "file": "source/4.Wiki.md",
+      "bytes": 163752,
+      "sha256": "b922c0d27a65d3f5048fc239069bd2555b14068a93d8061b00cb6a911c740d74"
+    },
+    {
+      "file": "source/测试样例说明书.md",
+      "bytes": 19086,
+      "sha256": "ef1a6bb4041ebc813127a8f3c2922846a5279ee1b42586f61c34986afabfe182"
+    },
+    {
+      "file": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 53322,
+      "sha256": "c9c1c4ac36f693b72372492bbcdbd64f81be381bc115bd6b85972520bfb3b103"
+    },
+    {
+      "file": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 86526,
+      "sha256": "5b1b2b41d321c2a8cc093d9baf3fdaf972399a7a7dbb14573de9aec2d1aab982"
+    },
+    {
+      "file": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 71101,
+      "sha256": "adc0134f22b60433325bc1d7c199355f4e26bfb8b19f7445079c111ddc9d4c21"
+    },
+    {
+      "file": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 75840,
+      "sha256": "a336c2132fa26e8ab8ac9677075cabaaee9e15dd182c959ff7819b7e2ab51d24"
+    },
+    {
+      "file": "source/docs/156_PI_PERSISTENT_GOAL_PRODUCTION_CONTRACT.md",
+      "bytes": 4559,
+      "sha256": "49c6b3bcc86c36ebf97b5092545c350a3cb79215a20b410905d22675b46e182a"
+    },
+    {
+      "file": "source/docs/157_PI_PERSISTENT_GOAL_PRODUCTION_ACCEPTANCE.md",
+      "bytes": 9587,
+      "sha256": "d9247319da0c564b1cf1a8e42cd9cdcb1c523d4610f9849e5797eadb800fbdae"
+    },
+    {
+      "file": "source/docs/testing/持续目标样例补充.md",
+      "bytes": 2819,
+      "sha256": "4ca7974bc715bf58e1473fa330fcef5e191c2a242a2a094aa0554410cbc409e5"
+    },
+    {
+      "file": "source/docs/testing/本轮执行记录_2026_10_04.md",
+      "bytes": 8444,
+      "sha256": "6e64a250ba9b58973f38dd86ff49abacce8e809486390797422985806da7e09a"
+    },
+    {
+      "file": "source/docs/design/codex-2026-10-03/p07-goal-pro-reference.json",
+      "bytes": 44132,
+      "sha256": "02166e517fe41591ed40401021dc7ad145b639b5aebefbe0eb8397b3d16c8b42"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-goal.ts",
+      "bytes": 2548,
+      "sha256": "2afd03ee6b124ca9498938d2e527d4186ffaf39d5175c59c1f97bfd2a92f33c6"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-agent.ts",
+      "bytes": 6230,
+      "sha256": "ac92c6195c1402355e797f6043e42311957041363c858075a502779d234a3512"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-projection.ts",
+      "bytes": 11461,
+      "sha256": "006b5a1a04e51d91769c7d7503a78e5ae2f84f98eedbd49ca8a2b99b705dcb1e"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/goal-state.ts",
+      "bytes": 5576,
+      "sha256": "ec0ed2385232f2bf155bd1080d632e0f4dc992c400152a00528bfe63142c1855"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/goal-coordinator.ts",
+      "bytes": 9226,
+      "sha256": "a761616afff14e97a7644a7f22bdb32a30f2c8cae68eed2e9e35cd8c06533580"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "bytes": 5287,
+      "sha256": "b06d69a9512e8014d3629c700b4e457a86b67b0cbec00687997ed11213dc8514"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 67829,
+      "sha256": "b3cab50b4eeec295fd6ea07000bb9267056714c7e3ef36796ef03a6a5d580422"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 57091,
+      "sha256": "c771564f5372a531d903e1205564233567d2a842c4883b92e8774f941321dacd"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+      "bytes": 8631,
+      "sha256": "128e7347a654e6af2d73f6e680129939533ea2630a48afab51f12b5e04b40ab5"
+    },
+    {
+      "file": "source/apps/desktop/src/preload/index.ts",
+      "bytes": 33222,
+      "sha256": "ef3843fab6c5ca055ab17a70c37811cbfe305f3ca419cd83d9679c5ac65a15c4"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/PiGoalControl.tsx",
+      "bytes": 6258,
+      "sha256": "7230dc63d6008ceca698b9edf7288b27afd0384b8b5791b0a4b94e240d8f3765"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/pi-goal.css",
+      "bytes": 1277,
+      "sha256": "5c0517cf13e37bbd98f83c8b4e47d9ebcd94373ad9e79faabf0980b15f6c4a4c"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/PiEducationWorkspace.tsx",
+      "bytes": 19622,
+      "sha256": "efdea2fe75686984df36ecda4a0b87ebea6f44a39a4d70c3e618ba4ad9ee4635"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-goal-state-worker.ts",
+      "bytes": 13219,
+      "sha256": "888aed3b2a0e46ec79b6d77cc0ff4ccd26073362a45c771e943d5cff85262472"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-goal-state-smoke.mjs",
+      "bytes": 1456,
+      "sha256": "392895ab17bb88690bb95edeed3d0757b356eb65208eb7c54d81f09a311a9030"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-goal-ui-smoke.mjs",
+      "bytes": 14741,
+      "sha256": "7c4c1a1ce1290c6ce40542d784a06de26af6fe568e549bda2838c8ca3f753859"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-web-ui-smoke.mjs",
+      "bytes": 16956,
+      "sha256": "d0261e28b9c7855a66d2f85d2317f427329d11bc7657032fb9100fe9177467de"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/archive-goal-production.mjs",
+      "bytes": 4399,
+      "sha256": "6aeeacf902a6c2b760e4518a421746760475b0054bf54152819b9f11168cf6b5"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/goal-native-source.lock.json",
+      "bytes": 710,
+      "sha256": "358e5b5098f159863b65bdc821189e0f0dbd052d4414894968895cdee1c971a8"
+    },
+    {
+      "file": "evidence/pi-goal-state-NHWhVR.json",
+      "bytes": 3057,
+      "sha256": "493be09361e98612dae2e0b7d82e97a0746c1a97885d9be75a4e156098846811"
+    },
+    {
+      "file": "evidence/pi-goal-ui-BRwT0l.json",
+      "bytes": 3680,
+      "sha256": "e3284b343000dae5a80798e9bb59e62f1e8a33d0d6853dd404185305fb990493"
+    },
+    {
+      "file": "evidence/pi-web-ui-srkFGa.json",
+      "bytes": 4691,
+      "sha256": "82c556bc95da201845fd4c1b922253118f5df7ea598cc44f7af846b91c3c678f"
+    },
+    {
+      "file": "evidence/deepseek-cache-live-rHuyAF.json",
+      "bytes": 928,
+      "sha256": "6df8e77985d7326d7ac43c0571af36e151835df87aa7e3ef7e53736590a10aec"
+    },
+    {
+      "file": "evidence/pi-auto-boundary-Q00AHI.json",
+      "bytes": 1592,
+      "sha256": "5a7ed65fe8ee74ec273540e9e970b85da140d11cd9d5c8297bf4e7d53800bda0"
+    },
+    {
+      "file": "upstream/hana/task-registry.ts",
+      "bytes": 21776,
+      "sha256": "2a4ad8276b7c5ae657799498fcc72bfba194027c8923e57b9d2a357a55a4558e"
+    },
+    {
+      "file": "upstream/hana/safe-fs.ts",
+      "bytes": 4770,
+      "sha256": "4ae5b56ff853d064292a167ef9dfba91f38378c42e3bc6b6f504b74bb4dba74a"
+    },
+    {
+      "file": "upstream/hana/LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "file": "upstream/pi/agent-loop.ts",
+      "bytes": 29088,
+      "sha256": "e773e822a2587caf314e6bb66ea6370fce3468b7eecd26d6a67afe673f81eabc"
+    },
+    {
+      "file": "upstream/pi/types.ts",
+      "bytes": 20955,
+      "sha256": "347efd535342c1d5fbd6b731168c57fcbb201a6652707f8e22e1b66fe3b69c2d"
+    },
+    {
+      "file": "upstream/pi/agent-session.ts",
+      "bytes": 158139,
+      "sha256": "fa1a4f2d84efd0aab8f4a74301d1106395130d3cc59bd665c558280f27dceb03"
+    },
+    {
+      "file": "upstream/pi/LICENSE",
+      "bytes": 1069,
+      "sha256": "0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48"
+    }
+  ],
+  "boundary": "Explicit source/license/doc and sanitized report allowlist only. No DB, native conversation, credentials, profile, materials, images or binaries. Limited A/B/C acceptance; daily manual, no-VPN and full objective NOT_ACCEPTED."
+}

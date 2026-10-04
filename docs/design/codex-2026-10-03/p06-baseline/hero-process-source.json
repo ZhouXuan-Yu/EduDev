@@ -1,0 +1,31 @@
+{
+  "source": "D:\\WorkProject\\HeroUIPro\\herouipro-v3\\src\\components\\chat-tool",
+  "sourcePackage": "@ag-ui/pro 1.0.0-beta.7",
+  "license": "SEE LICENSE IN LICENSE; root license unavailable, see existing README",
+  "files": [
+    {
+      "file": "chat-tool.tsx",
+      "sourceSha256": "80f20aa2f974cb44cf8f41f52ae7f3efc6b76799b7984897cde657a26de4d534",
+      "outputSha256": "80f20aa2f974cb44cf8f41f52ae7f3efc6b76799b7984897cde657a26de4d534",
+      "identical": true
+    },
+    {
+      "file": "chat-tool-group.tsx",
+      "sourceSha256": "aefa52038645f18c6536b881701a80be41a22db252a0e351078b6a61b3a54779",
+      "outputSha256": "aefa52038645f18c6536b881701a80be41a22db252a0e351078b6a61b3a54779",
+      "identical": true
+    },
+    {
+      "file": "chat-tool.styles.ts",
+      "sourceSha256": "e20c528139684e32c2c9ad636450bbcd2bc30d0cf6398cc6f81ea3c5ebae51a0",
+      "outputSha256": "e20c528139684e32c2c9ad636450bbcd2bc30d0cf6398cc6f81ea3c5ebae51a0",
+      "identical": true
+    },
+    {
+      "file": "index.ts",
+      "sourceSha256": "b4434b518505bbdeeed9c526dbb7eb05a523be3ab6da65458aaa2d708972e93e",
+      "outputSha256": "b4434b518505bbdeeed9c526dbb7eb05a523be3ab6da65458aaa2d708972e93e",
+      "identical": true
+    }
+  ]
+}

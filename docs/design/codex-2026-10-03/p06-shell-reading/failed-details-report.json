@@ -1,0 +1,21 @@
+{
+  "suite": "pi-persistent-approval-ui",
+  "success": false,
+  "model": "deepseek-flash",
+  "checks": [
+    {
+      "name": "Native directory cancellation grants no workspace",
+      "pass": true
+    },
+    {
+      "name": "Private education data root cannot become office workspace",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron and real DeepSeek tools; synthetic teacher work directory",
+    "Crash cut explicitly injected after physical copy, never model reasoning/history",
+    "No full office editing, installer, or VPN-off claim"
+  ],
+  "failure": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByText('工作目录：教学工作目录。文件复制逐次确认。') to be visible\u001b[22m\n\u001b[2m    61 × locator resolved to hidden <p>工作目录：教学工作目录。文件复制逐次确认。学生原图与个人信息正文保持本地。</p>\u001b[22m\n\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-approval-ui-smoke.mjs:80:111"
+}

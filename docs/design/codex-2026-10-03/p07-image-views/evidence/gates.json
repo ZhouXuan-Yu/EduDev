@@ -1,0 +1,24 @@
+{
+  "build": {
+    "exitCode": 0,
+    "logSha256": "a8f3e9126732abbeea3b2b798866c9fb8e5c9cd6746906057d5f70d0188c7445"
+  },
+  "main": {
+    "passed": 207,
+    "total": 207,
+    "exitCode": 0,
+    "logSha256": "59fab7db29e4cf92b83d3a432ca37a17322b6c78a4b0630749b142809708a1ee"
+  },
+  "renderer": {
+    "passed": 79,
+    "total": 79,
+    "exitCode": 0,
+    "logSha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+  },
+  "proSource": {
+    "passed": 6,
+    "total": 6,
+    "report": "pi-attachment-entry-source-Bp8yy7"
+  },
+  "acceptance": "NOT_ACCEPTED: isolated slice only; earlier failures retained, daily configuration/human/no-VPN/installer/full parity pending"
+}

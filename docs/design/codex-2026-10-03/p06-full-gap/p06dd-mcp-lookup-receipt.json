@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-04",
+  "requestedComponents": [
+    "chat-conversation",
+    "sidebar",
+    "scroll-shadow"
+  ],
+  "tool": "HeroUI Pro get_component_docs",
+  "responseCharacters": 221140,
+  "isError": false,
+  "boundary": "Documentation lookup only; existing Pro originals unchanged and separately hash-verified. Not Codex source or runtime acceptance."
+}

@@ -1,0 +1,238 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual native shell anchors/colors and reachable composer at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Actual native shell anchors/colors and reachable composer at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Actual UI submission creates durable long Chinese/English history through the real provider",
+      "pass": true
+    },
+    {
+      "name": "Actual wheel-up reading stays put while new real public deltas arrive and the run completes",
+      "pass": true
+    },
+    {
+      "name": "Original Pro return-to-latest button reaches the actual final message",
+      "pass": true
+    }
+  ],
+  "model": "deepseek-flash",
+  "boundaries": [
+    "Actual Electron/main/typed API and real DeepSeek; synthetic teacher text only",
+    "Actual native geometry/captions, wheel/button actions and streamed public text; no fabricated history",
+    "Composition event protocol only, not Windows manual IME; original reference DPR/font unknown; full goal pending"
+  ],
+  "referenceLayout": {
+    "metrics": {
+      "width": 1705,
+      "height": 1019,
+      "dpr": 1.5,
+      "body": 1019,
+      "rail": {
+        "x": 0,
+        "y": 36,
+        "width": 52,
+        "height": 983.3333740234375,
+        "color": "rgb(230, 249, 247)"
+      },
+      "sidebar": {
+        "x": 52,
+        "y": 44,
+        "width": 254,
+        "height": 975.3333740234375,
+        "color": "rgb(246, 253, 252)"
+      },
+      "header": {
+        "x": 306,
+        "y": 44,
+        "width": 1093.3333740234375,
+        "height": 52,
+        "color": "rgb(255, 255, 255)"
+      },
+      "titlebar": {
+        "x": 0,
+        "y": 0,
+        "width": 1705.3333740234375,
+        "height": 36,
+        "color": "rgb(230, 249, 247)"
+      },
+      "input": {
+        "x": 388.66668701171875,
+        "y": 910,
+        "width": 928,
+        "height": 91.33333587646484,
+        "color": "rgba(0, 0, 0, 0)"
+      }
+    },
+    "window": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1706,
+        "height": 1019
+      },
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 1705,
+        "height": 1019
+      },
+      "scale": 1.5,
+      "zoom": 1,
+      "size": {
+        "width": 2558,
+        "height": 1529
+      }
+    }
+  },
+  "viewports": [
+    {
+      "metrics": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "body": 768,
+        "rail": {
+          "x": 0,
+          "y": 36,
+          "width": 52,
+          "height": 732,
+          "color": "rgb(230, 249, 247)"
+        },
+        "sidebar": {
+          "x": 52,
+          "y": 44,
+          "width": 254,
+          "height": 724,
+          "color": "rgb(246, 253, 252)"
+        },
+        "header": {
+          "x": 306,
+          "y": 44,
+          "width": 754,
+          "height": 52,
+          "color": "rgb(255, 255, 255)"
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 36,
+          "color": "rgb(230, 249, 247)"
+        },
+        "input": {
+          "x": 322,
+          "y": 658.6666870117188,
+          "width": 722,
+          "height": 91.33333587646484,
+          "color": "rgba(0, 0, 0, 0)"
+        }
+      },
+      "window": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1368,
+          "height": 769
+        },
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 768
+        },
+        "scale": 1.5,
+        "zoom": 1,
+        "size": {
+          "width": 2052,
+          "height": 1154
+        }
+      }
+    },
+    {
+      "metrics": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "body": 1080,
+        "rail": {
+          "x": 0,
+          "y": 36,
+          "width": 52,
+          "height": 1044,
+          "color": "rgb(230, 249, 247)"
+        },
+        "sidebar": {
+          "x": 52,
+          "y": 44,
+          "width": 254,
+          "height": 1036,
+          "color": "rgb(246, 253, 252)"
+        },
+        "header": {
+          "x": 306,
+          "y": 44,
+          "width": 1308,
+          "height": 52,
+          "color": "rgb(255, 255, 255)"
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 36,
+          "color": "rgb(230, 249, 247)"
+        },
+        "input": {
+          "x": 496,
+          "y": 970.6666870117188,
+          "width": 928,
+          "height": 91.33333587646484,
+          "color": "rgba(0, 0, 0, 0)"
+        }
+      },
+      "window": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1922,
+          "height": 1081
+        },
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "scale": 1.5,
+        "zoom": 1,
+        "size": {
+          "width": 2883,
+          "height": 1622
+        }
+      }
+    }
+  ],
+  "readingBeforeFile": {
+    "scrollTop": 650,
+    "height": 867,
+    "scrollHeight": 8068,
+    "id": "aimsg_cfee2b7a-1609-4d25-892a-21311d699b0b",
+    "index": 9,
+    "offset": -3.6354141235351562,
+    "text": "合成段落9：教师备课先确认分数单位，再用图示比较不同分母；Teaching note 9: compare, explain, check. 所有建议均为教研草稿，不对应真实学生。"
+  },
+  "readingInFile": {
+    "offset": -7288.30224609375,
+    "text": "合成段落9：教师备课先确认分数单位，再用图示比较不同分母；Teaching note 9: compare, explain, check. 所有建议均为教研草稿，不对应真实学生。",
+    "scrollTop": 7934.66650390625
+  },
+  "error": "AssertionError [ERR_ASSERTION]: File reparent/reflow must preserve the same real paragraph position\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-shell-reading-ui-smoke.mjs:48:150",
+  "rendererErrors": []
+}

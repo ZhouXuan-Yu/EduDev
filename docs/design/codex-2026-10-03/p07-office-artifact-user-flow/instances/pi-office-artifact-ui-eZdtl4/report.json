@@ -1,0 +1,55 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Natural DeepSeek task opens actual Office draft review with zero pre-approval file or official fact",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1366x768 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1920x1080 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Teacher rejection leaves zero output/fact and no repeated same-path proposal",
+      "pass": true
+    },
+    {
+      "name": "Actual DOCX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved DOCX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual PDF teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved PDF receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual XLSX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved XLSX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual PPTX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved PPTX receipt opens actual version-checked local Office preview",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual isolated Electron/Pi/DeepSeek, typed teacher revision/approval and four real Office files with SQLite/independent readback. Synthetic data only. WPS application/layout not yet claimed.",
+  "error": "Error: Command failed: C:/Users/ZhouXuan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\verify-office-artifact-readback.py D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-office-artifact-ui-eZdtl4\\teacher-workspace D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-office-artifact-ui-eZdtl4\\readback-expected.json\nTraceback (most recent call last):\r\n  File \"D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\verify-office-artifact-readback.py\", line 40, in <module>\r\n    assert marker in text, f'{file.name}: expected marker missing'\r\n           ^^^^^^^^^^^^^^\r\nAssertionError: 课堂计划.pdf: expected marker missing\r\n\n    at genericNodeError (node:internal/errors:985:15)\n    at wrappedFn (node:internal/errors:539:14)\n    at checkExecSyncError (node:child_process:925:11)\n    at execFileSync (node:child_process:961:15)\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs:53:26"
+}

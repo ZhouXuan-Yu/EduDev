@@ -1,0 +1,732 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-04",
+  "purpose": "P06d-F native smooth interruption and keyboard reading acceptance; historical drift attribution and full Codex parity remain unconfirmed; next P07-A",
+  "bundles": {
+    "out/main/index.js": "c3b95062a3028a3e4d2b3dbfe0770f7c420f9d8483338bd557f7c27ae102ac45",
+    "out/preload/index.cjs": "31086148b16d7b6315c52a160c2d024c8b8c985b2b8f560987b719c20c691b73",
+    "out/renderer/assets/index-BM1rsdTp.js": "5d6cd6d498a391644b9c9053f3e8e01231562aff863434fcdd1d599052313db8"
+  },
+  "artifacts": [
+    {
+      "file": "diagnostic1-long-history-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\long-history-native.png",
+      "bytes": 562941,
+      "sha256": "f18f6c568900f115e9a6d52b58f55cae33622cc5bbd4b93c7afaa524da648daf"
+    },
+    {
+      "file": "diagnostic1-long-history.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\long-history.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "diagnostic1-long-history.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\long-history.png",
+      "bytes": 355184,
+      "sha256": "9b81497258a8327932ef57bfe448a08f9385e483a33014023bea696cbcfcf00c"
+    },
+    {
+      "file": "diagnostic1-reference-proportion-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\reference-proportion-native.png",
+      "bytes": 86890,
+      "sha256": "405bdf78bb58d19dd4184db7fd70be865aa66d947fd692cdea0d96bd7a5c9bf2"
+    },
+    {
+      "file": "diagnostic1-reference-proportion.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\reference-proportion.json",
+      "bytes": 1127,
+      "sha256": "eaaa3fe6690d155a6bac99919b4983cf1387e5d9bc794093ca6e01fdcb5b6eeb"
+    },
+    {
+      "file": "diagnostic1-reference-proportion.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\reference-proportion.png",
+      "bytes": 86602,
+      "sha256": "c37aff98c31db26a9fa5d28cde37be9cf0d79568907afeabe65e29d764015ade"
+    },
+    {
+      "file": "diagnostic1-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\report.json",
+      "bytes": 126931,
+      "sha256": "82ddeffafcaa8d273ef1716e963f2919f0a8cddedb828cd3edb4df3dd36711a7"
+    },
+    {
+      "file": "diagnostic1-shell-1366x768-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\shell-1366x768-native.png",
+      "bytes": 113417,
+      "sha256": "126bc6c3759777230f5201691b53f43df267d6dcbf0ab7a23f58965f4e219cf9"
+    },
+    {
+      "file": "diagnostic1-shell-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\shell-1366x768.json",
+      "bytes": 1065,
+      "sha256": "e97e0851c997182b0c16b93283cd891ad0df3b5651d3b215b9e6b66f005d3710"
+    },
+    {
+      "file": "diagnostic1-shell-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\shell-1366x768.png",
+      "bytes": 80061,
+      "sha256": "cd7aa104efb44a975a10c023941ffcdd6aada16e2d19b10d20f06960aac1d339"
+    },
+    {
+      "file": "diagnostic1-shell-1920x1080-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\shell-1920x1080-native.png",
+      "bytes": 121264,
+      "sha256": "c97a6fb841665922cdb9d05daf5c56d2506c651fdfd66d0b2072c60dd5dfe004"
+    },
+    {
+      "file": "diagnostic1-shell-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\shell-1920x1080.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "diagnostic1-shell-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-Xp6ajE\\shell-1920x1080.png",
+      "bytes": 91287,
+      "sha256": "cfb8bf2aeb86e4f8e577e7bf12c4712c0385febfe7dff029d2d5a4fb80d1be92"
+    },
+    {
+      "file": "diagnostic2-middle-long-history-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\long-history-native.png",
+      "bytes": 471150,
+      "sha256": "9cde5b495386075aad3181b3dc2f1980588a30a57682d2b26e23f8116ed8c052"
+    },
+    {
+      "file": "diagnostic2-middle-long-history.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\long-history.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "diagnostic2-middle-long-history.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\long-history.png",
+      "bytes": 300010,
+      "sha256": "21d747704608c86dfec47fff1743b56692a29f6dae51effe10b0750c6e880f58"
+    },
+    {
+      "file": "diagnostic2-middle-reference-proportion-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\reference-proportion-native.png",
+      "bytes": 86890,
+      "sha256": "405bdf78bb58d19dd4184db7fd70be865aa66d947fd692cdea0d96bd7a5c9bf2"
+    },
+    {
+      "file": "diagnostic2-middle-reference-proportion.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\reference-proportion.json",
+      "bytes": 1127,
+      "sha256": "eaaa3fe6690d155a6bac99919b4983cf1387e5d9bc794093ca6e01fdcb5b6eeb"
+    },
+    {
+      "file": "diagnostic2-middle-reference-proportion.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\reference-proportion.png",
+      "bytes": 86602,
+      "sha256": "c37aff98c31db26a9fa5d28cde37be9cf0d79568907afeabe65e29d764015ade"
+    },
+    {
+      "file": "diagnostic2-middle-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\report.json",
+      "bytes": 147593,
+      "sha256": "4b09b0fd8687db26804e07d077b0f92d9bb26a08237e77145588b5cf6b62678b"
+    },
+    {
+      "file": "diagnostic2-middle-shell-1366x768-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\shell-1366x768-native.png",
+      "bytes": 113417,
+      "sha256": "126bc6c3759777230f5201691b53f43df267d6dcbf0ab7a23f58965f4e219cf9"
+    },
+    {
+      "file": "diagnostic2-middle-shell-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\shell-1366x768.json",
+      "bytes": 1065,
+      "sha256": "e97e0851c997182b0c16b93283cd891ad0df3b5651d3b215b9e6b66f005d3710"
+    },
+    {
+      "file": "diagnostic2-middle-shell-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\shell-1366x768.png",
+      "bytes": 80061,
+      "sha256": "cd7aa104efb44a975a10c023941ffcdd6aada16e2d19b10d20f06960aac1d339"
+    },
+    {
+      "file": "diagnostic2-middle-shell-1920x1080-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\shell-1920x1080-native.png",
+      "bytes": 121264,
+      "sha256": "c97a6fb841665922cdb9d05daf5c56d2506c651fdfd66d0b2072c60dd5dfe004"
+    },
+    {
+      "file": "diagnostic2-middle-shell-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\shell-1920x1080.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "diagnostic2-middle-shell-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-pIw18y\\shell-1920x1080.png",
+      "bytes": 91287,
+      "sha256": "cfb8bf2aeb86e4f8e577e7bf12c4712c0385febfe7dff029d2d5a4fb80d1be92"
+    },
+    {
+      "file": "failed-native-animation-failure.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\failure.png",
+      "bytes": 302768,
+      "sha256": "64409fe687c248775ab2c232fb4a8f48b4e4df5ef61a8556e1ad4971fbb73097"
+    },
+    {
+      "file": "failed-native-animation-reference-proportion-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\reference-proportion-native.png",
+      "bytes": 86890,
+      "sha256": "405bdf78bb58d19dd4184db7fd70be865aa66d947fd692cdea0d96bd7a5c9bf2"
+    },
+    {
+      "file": "failed-native-animation-reference-proportion.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\reference-proportion.json",
+      "bytes": 1127,
+      "sha256": "eaaa3fe6690d155a6bac99919b4983cf1387e5d9bc794093ca6e01fdcb5b6eeb"
+    },
+    {
+      "file": "failed-native-animation-reference-proportion.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\reference-proportion.png",
+      "bytes": 86602,
+      "sha256": "c37aff98c31db26a9fa5d28cde37be9cf0d79568907afeabe65e29d764015ade"
+    },
+    {
+      "file": "failed-native-animation-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\report.json",
+      "bytes": 210084,
+      "sha256": "12769e3e8476cdafabe667830993606dacc09c0c9272b29a90f96ceff6a3b360"
+    },
+    {
+      "file": "failed-native-animation-shell-1366x768-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\shell-1366x768-native.png",
+      "bytes": 113417,
+      "sha256": "126bc6c3759777230f5201691b53f43df267d6dcbf0ab7a23f58965f4e219cf9"
+    },
+    {
+      "file": "failed-native-animation-shell-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\shell-1366x768.json",
+      "bytes": 1065,
+      "sha256": "e97e0851c997182b0c16b93283cd891ad0df3b5651d3b215b9e6b66f005d3710"
+    },
+    {
+      "file": "failed-native-animation-shell-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\shell-1366x768.png",
+      "bytes": 80061,
+      "sha256": "cd7aa104efb44a975a10c023941ffcdd6aada16e2d19b10d20f06960aac1d339"
+    },
+    {
+      "file": "failed-native-animation-shell-1920x1080-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\shell-1920x1080-native.png",
+      "bytes": 121264,
+      "sha256": "c97a6fb841665922cdb9d05daf5c56d2506c651fdfd66d0b2072c60dd5dfe004"
+    },
+    {
+      "file": "failed-native-animation-shell-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\shell-1920x1080.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "failed-native-animation-shell-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-hJmnW6\\shell-1920x1080.png",
+      "bytes": 91287,
+      "sha256": "cfb8bf2aeb86e4f8e577e7bf12c4712c0385febfe7dff029d2d5a4fb80d1be92"
+    },
+    {
+      "file": "failed-single-wheel-fixture-failure.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\failure.png",
+      "bytes": 526001,
+      "sha256": "dbeb9b0c6746a8fc4ef84ec946ec48169d9158a7de177dcbc2b4462a4140f9c7"
+    },
+    {
+      "file": "failed-single-wheel-fixture-reference-proportion-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\reference-proportion-native.png",
+      "bytes": 86890,
+      "sha256": "405bdf78bb58d19dd4184db7fd70be865aa66d947fd692cdea0d96bd7a5c9bf2"
+    },
+    {
+      "file": "failed-single-wheel-fixture-reference-proportion.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\reference-proportion.json",
+      "bytes": 1127,
+      "sha256": "eaaa3fe6690d155a6bac99919b4983cf1387e5d9bc794093ca6e01fdcb5b6eeb"
+    },
+    {
+      "file": "failed-single-wheel-fixture-reference-proportion.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\reference-proportion.png",
+      "bytes": 86602,
+      "sha256": "c37aff98c31db26a9fa5d28cde37be9cf0d79568907afeabe65e29d764015ade"
+    },
+    {
+      "file": "failed-single-wheel-fixture-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\report.json",
+      "bytes": 127981,
+      "sha256": "cdf66501bbefdbbd85a61ed19a953bdb488abce636bf3d78b5ab3c2ed5496957"
+    },
+    {
+      "file": "failed-single-wheel-fixture-shell-1366x768-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\shell-1366x768-native.png",
+      "bytes": 113417,
+      "sha256": "126bc6c3759777230f5201691b53f43df267d6dcbf0ab7a23f58965f4e219cf9"
+    },
+    {
+      "file": "failed-single-wheel-fixture-shell-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\shell-1366x768.json",
+      "bytes": 1065,
+      "sha256": "e97e0851c997182b0c16b93283cd891ad0df3b5651d3b215b9e6b66f005d3710"
+    },
+    {
+      "file": "failed-single-wheel-fixture-shell-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\shell-1366x768.png",
+      "bytes": 80061,
+      "sha256": "cd7aa104efb44a975a10c023941ffcdd6aada16e2d19b10d20f06960aac1d339"
+    },
+    {
+      "file": "failed-single-wheel-fixture-shell-1920x1080-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\shell-1920x1080-native.png",
+      "bytes": 121264,
+      "sha256": "c97a6fb841665922cdb9d05daf5c56d2506c651fdfd66d0b2072c60dd5dfe004"
+    },
+    {
+      "file": "failed-single-wheel-fixture-shell-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\shell-1920x1080.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "failed-single-wheel-fixture-shell-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-0Veaft\\shell-1920x1080.png",
+      "bytes": 91287,
+      "sha256": "cfb8bf2aeb86e4f8e577e7bf12c4712c0385febfe7dff029d2d5a4fb80d1be92"
+    },
+    {
+      "file": "reading-final-1920-long-history-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\long-history-native.png",
+      "bytes": 550442,
+      "sha256": "75f7c51c2aad42253be282931e0828a1b1839fcda583fbb478292c13cc7b110e"
+    },
+    {
+      "file": "reading-final-1920-long-history.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\long-history.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "reading-final-1920-long-history.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\long-history.png",
+      "bytes": 338069,
+      "sha256": "9132480b84fc0fcdc71a329aa44cc962b67a3ae89ac4caf90516c15901b18a26"
+    },
+    {
+      "file": "reading-final-1920-reference-proportion-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\reference-proportion-native.png",
+      "bytes": 86890,
+      "sha256": "405bdf78bb58d19dd4184db7fd70be865aa66d947fd692cdea0d96bd7a5c9bf2"
+    },
+    {
+      "file": "reading-final-1920-reference-proportion.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\reference-proportion.json",
+      "bytes": 1127,
+      "sha256": "eaaa3fe6690d155a6bac99919b4983cf1387e5d9bc794093ca6e01fdcb5b6eeb"
+    },
+    {
+      "file": "reading-final-1920-reference-proportion.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\reference-proportion.png",
+      "bytes": 86602,
+      "sha256": "c37aff98c31db26a9fa5d28cde37be9cf0d79568907afeabe65e29d764015ade"
+    },
+    {
+      "file": "reading-final-1920-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\report.json",
+      "bytes": 172660,
+      "sha256": "3f7309af1e18fdd2574f1080654d745e627d73d0c2dfd47d587b2fde860ed54d"
+    },
+    {
+      "file": "reading-final-1920-shell-1366x768-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\shell-1366x768-native.png",
+      "bytes": 113417,
+      "sha256": "126bc6c3759777230f5201691b53f43df267d6dcbf0ab7a23f58965f4e219cf9"
+    },
+    {
+      "file": "reading-final-1920-shell-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\shell-1366x768.json",
+      "bytes": 1065,
+      "sha256": "e97e0851c997182b0c16b93283cd891ad0df3b5651d3b215b9e6b66f005d3710"
+    },
+    {
+      "file": "reading-final-1920-shell-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\shell-1366x768.png",
+      "bytes": 80061,
+      "sha256": "cd7aa104efb44a975a10c023941ffcdd6aada16e2d19b10d20f06960aac1d339"
+    },
+    {
+      "file": "reading-final-1920-shell-1920x1080-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\shell-1920x1080-native.png",
+      "bytes": 121264,
+      "sha256": "c97a6fb841665922cdb9d05daf5c56d2506c651fdfd66d0b2072c60dd5dfe004"
+    },
+    {
+      "file": "reading-final-1920-shell-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\shell-1920x1080.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "reading-final-1920-shell-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-55Ntl1\\shell-1920x1080.png",
+      "bytes": 91287,
+      "sha256": "cfb8bf2aeb86e4f8e577e7bf12c4712c0385febfe7dff029d2d5a4fb80d1be92"
+    },
+    {
+      "file": "reading-final-1366-long-history-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\long-history-native.png",
+      "bytes": 419011,
+      "sha256": "3d0117a0a85240e50726d398092f58bba91697ff3d3e21c8bf13ff4bc2cad905"
+    },
+    {
+      "file": "reading-final-1366-long-history.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\long-history.json",
+      "bytes": 1065,
+      "sha256": "e97e0851c997182b0c16b93283cd891ad0df3b5651d3b215b9e6b66f005d3710"
+    },
+    {
+      "file": "reading-final-1366-long-history.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\long-history.png",
+      "bytes": 267792,
+      "sha256": "f53c9f00c53c5b0b1142a2ce3570db2597a1398f9edc4887a734e01d39ce2f62"
+    },
+    {
+      "file": "reading-final-1366-reference-proportion-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\reference-proportion-native.png",
+      "bytes": 86890,
+      "sha256": "405bdf78bb58d19dd4184db7fd70be865aa66d947fd692cdea0d96bd7a5c9bf2"
+    },
+    {
+      "file": "reading-final-1366-reference-proportion.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\reference-proportion.json",
+      "bytes": 1127,
+      "sha256": "eaaa3fe6690d155a6bac99919b4983cf1387e5d9bc794093ca6e01fdcb5b6eeb"
+    },
+    {
+      "file": "reading-final-1366-reference-proportion.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\reference-proportion.png",
+      "bytes": 86602,
+      "sha256": "c37aff98c31db26a9fa5d28cde37be9cf0d79568907afeabe65e29d764015ade"
+    },
+    {
+      "file": "reading-final-1366-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\report.json",
+      "bytes": 182798,
+      "sha256": "ae127943a31d142920e7380d517caf623714228170391d473ec348b7479f94f6"
+    },
+    {
+      "file": "reading-final-1366-shell-1366x768-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\shell-1366x768-native.png",
+      "bytes": 113417,
+      "sha256": "126bc6c3759777230f5201691b53f43df267d6dcbf0ab7a23f58965f4e219cf9"
+    },
+    {
+      "file": "reading-final-1366-shell-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\shell-1366x768.json",
+      "bytes": 1065,
+      "sha256": "e97e0851c997182b0c16b93283cd891ad0df3b5651d3b215b9e6b66f005d3710"
+    },
+    {
+      "file": "reading-final-1366-shell-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\shell-1366x768.png",
+      "bytes": 80061,
+      "sha256": "cd7aa104efb44a975a10c023941ffcdd6aada16e2d19b10d20f06960aac1d339"
+    },
+    {
+      "file": "reading-final-1366-shell-1920x1080-native.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\shell-1920x1080-native.png",
+      "bytes": 121264,
+      "sha256": "c97a6fb841665922cdb9d05daf5c56d2506c651fdfd66d0b2072c60dd5dfe004"
+    },
+    {
+      "file": "reading-final-1366-shell-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\shell-1920x1080.json",
+      "bytes": 1072,
+      "sha256": "408e537b655adc09827eb49df0eaf5df6d62b534a8a8d0a3021e48104e08f61d"
+    },
+    {
+      "file": "reading-final-1366-shell-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-reading-NOm6wY\\shell-1920x1080.png",
+      "bytes": 91287,
+      "sha256": "cfb8bf2aeb86e4f8e577e7bf12c4712c0385febfe7dff029d2d5a4fb80d1be92"
+    },
+    {
+      "file": "process-after-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-A1qTbY\\after-1366x768.json",
+      "bytes": 10471,
+      "sha256": "63817d1bede6635b266bf04d173a52112c121b653f3b093a3e6556378b18c208"
+    },
+    {
+      "file": "process-after-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-A1qTbY\\after-1366x768.png",
+      "bytes": 113583,
+      "sha256": "fbcc2371a871d0ca7783768d813ba987021559954ac3604607c86ca8c65a8c66"
+    },
+    {
+      "file": "process-after-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-A1qTbY\\after-1920x1080.json",
+      "bytes": 10461,
+      "sha256": "33f73fa3c2c307e1e391febcdd5ffb5da0757c4811f238335f0be18e1edb5eae"
+    },
+    {
+      "file": "process-after-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-A1qTbY\\after-1920x1080.png",
+      "bytes": 141949,
+      "sha256": "6ef46f1715a7de3bc5274cc42753a8df60485f63c529ef4a6455619d8c2d67be"
+    },
+    {
+      "file": "process-live-process.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-A1qTbY\\live-process.png",
+      "bytes": 182479,
+      "sha256": "2bf9694cfa45119387bfc9bc450c33b2e0e023e1d4b7219e5a2e32b24aeb0f79"
+    },
+    {
+      "file": "process-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-A1qTbY\\report.json",
+      "bytes": 2727,
+      "sha256": "ba4b028d6ca0aba1710d42eedb7a1fa95dec9227089c2beb3ab60e086595a5ec"
+    },
+    {
+      "file": "approval-approval-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-process-approval-ui-k8W8WQ\\approval-1366x768.png",
+      "bytes": 83234,
+      "sha256": "99274836c55bca5c0c464201dae36f5ff79d0400eacde36da744dc7c5bfabf26"
+    },
+    {
+      "file": "approval-approval-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-process-approval-ui-k8W8WQ\\approval-1920x1080.png",
+      "bytes": 116220,
+      "sha256": "4479b596e274190d3c7c7878e08c0ea4bc8d0626a166872f35a2672e0ae6c0a1"
+    },
+    {
+      "file": "approval-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-process-approval-ui-k8W8WQ\\report.json",
+      "bytes": 774,
+      "sha256": "81390d191bf4c01103aa2c28ba736bc05341727476ebd78cc90d042f05337a76"
+    },
+    {
+      "file": "menus-models-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\models-1366x768.png",
+      "bytes": 57750,
+      "sha256": "63d71fb2ecd84db2d973dd1704c09d078946880eeafe3252712e46d376b27f03"
+    },
+    {
+      "file": "menus-models-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\models-1920x1080.png",
+      "bytes": 63170,
+      "sha256": "a83fa1f957250dbf1f68911add60ce2ec1ba630f4237b94601cce3635c9de715"
+    },
+    {
+      "file": "menus-permissions-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\permissions-1366x768.png",
+      "bytes": 63667,
+      "sha256": "cff082a356e3c4a6972257a4b71a131d914fb6bfa20e5dd8bc727f28e57e6cfd"
+    },
+    {
+      "file": "menus-permissions-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\permissions-1920x1080.png",
+      "bytes": 69461,
+      "sha256": "6663fc0b4d3e3144cc24a15c6fe0c7aee9e63953d99c3f991c14bdc960b70d19"
+    },
+    {
+      "file": "menus-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\report.json",
+      "bytes": 22447,
+      "sha256": "da7ac873bb152e41887d65b16956cebec130cec17ecc01bef0ead78abdd41cfe"
+    },
+    {
+      "file": "menus-workspace-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\workspace-1366x768.json",
+      "bytes": 9111,
+      "sha256": "0b8b9bfaf902b7efa6d57930e9153f0d33b19d7874dcd3e67f230d970a10dfea"
+    },
+    {
+      "file": "menus-workspace-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\workspace-1366x768.png",
+      "bytes": 56348,
+      "sha256": "6fff932198b767de1358fd3e525593234d50fe4336715b13f6ddd325e776c876"
+    },
+    {
+      "file": "menus-workspace-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\workspace-1920x1080.json",
+      "bytes": 9130,
+      "sha256": "5200c4fe2033604540a4579e434649a2eeba6c2084faff1451cc17a3c64f2d27"
+    },
+    {
+      "file": "menus-workspace-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-control-menus-Sj3qPH\\workspace-1920x1080.png",
+      "bytes": 62593,
+      "sha256": "29dc71f487d567a12e95eb290094bf898e5330168f1f11068e082b4f8338d407"
+    },
+    {
+      "file": "p06df-approval-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-approval-final.log",
+      "bytes": 641,
+      "sha256": "e25db4f3b1b837a49582e09f8412b4f158959ddbaf9642712cc041187a6e4f34"
+    },
+    {
+      "file": "p06df-build1.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-build1.log",
+      "bytes": 25156,
+      "sha256": "c5e6a30ff99d2c09eda70307cf5b5be0446474f1f21d9ca9b550ce9a4b5f9947"
+    },
+    {
+      "file": "p06df-build2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-build2.log",
+      "bytes": 25156,
+      "sha256": "b723f5458e1f8026d7504287a8fd80984a11c6a9890ee5f916dc8cf71e7d5e05"
+    },
+    {
+      "file": "p06df-diff-check.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-diff-check.log",
+      "bytes": 3060,
+      "sha256": "9e07a6a5735fc631b268e40151ab0edc676be66d159fefa268cefeca03f0b3a0"
+    },
+    {
+      "file": "p06df-menus-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-menus-final.log",
+      "bytes": 952,
+      "sha256": "2bec5cc06a3f4384dec9a05270cdadceaec46cb86b607e8bc21962f6279a1347"
+    },
+    {
+      "file": "p06df-pro-docs.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-pro-docs.json",
+      "bytes": 13879,
+      "sha256": "c7d1c58b703f8abdcb8c39e6611f662901e175a97ba7cfe96e423893373b1921"
+    },
+    {
+      "file": "p06df-process-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-process-final.log",
+      "bytes": 1726,
+      "sha256": "92d0ecf1490be02edb48db1e13f2ebaa578ec1930036bf9f18718af77d0bd43a"
+    },
+    {
+      "file": "p06df-reading1.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-reading1.log",
+      "bytes": 1277,
+      "sha256": "724bd49adb3515f5c7073e404de2805a668cc1a8ac506e18a1f0a77463b42ef0"
+    },
+    {
+      "file": "p06df-reading2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-reading2.log",
+      "bytes": 1378,
+      "sha256": "be9cf96674fb93edc0c905a9036e26b3d3b1cc59ef1a4e8af6a7085acf351845"
+    },
+    {
+      "file": "p06df-reading3-interrupt.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-reading3-interrupt.log",
+      "bytes": 926,
+      "sha256": "eaef05c863adb8b929c3a525f6aef91530500acc72026ebe9e355164533cf937"
+    },
+    {
+      "file": "p06df-reading4-fix.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-reading4-fix.log",
+      "bytes": 926,
+      "sha256": "5194ea0ba1aa3d035ce4630094a494b37ec19e77ba01fb576645f46ae05794ab"
+    },
+    {
+      "file": "p06df-reading5-keyboard.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-reading5-keyboard.log",
+      "bytes": 1597,
+      "sha256": "0a71a1a5b8180578fdc91c2029442c91f70f530f205074df14cb62956e784f01"
+    },
+    {
+      "file": "p06df-reading6-1366.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-reading6-1366.log",
+      "bytes": 1597,
+      "sha256": "4abacaf7923c1202d773faa2948f1e4e3151a7040d73c531c2387b381509c9c8"
+    },
+    {
+      "file": "p06df-renderer1.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-renderer1.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "file": "p06df-renderer2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-renderer2.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "file": "p06df-smoke-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-smoke-final.log",
+      "bytes": 38314,
+      "sha256": "af92a90fd7f9755976493ce7088c6ecc52bfc319b46fd5bbb04e455031100ed5"
+    },
+    {
+      "file": "p06df-source-chrome.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-source-chrome.log",
+      "bytes": 62,
+      "sha256": "b1d998e460f4757d763ba32bc1b09c0d5227764b35a554bb2b4e1bafa04d807c"
+    },
+    {
+      "file": "p06df-source-pro.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06df-source-pro.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    },
+    {
+      "file": "source-OfficeReadingPosition.ts",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\OfficeReadingPosition.ts",
+      "bytes": 4808,
+      "sha256": "dde8428292228f95f8e33f59528f4065b28de7c9955d11ec8d11ae28a04595ec"
+    },
+    {
+      "file": "source-OfficeConversation.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\OfficeConversation.tsx",
+      "bytes": 6808,
+      "sha256": "ef7320ea1979e783683b7a978987254446b9161676d4909b3bc66b9bd46e0971"
+    },
+    {
+      "file": "source-OfficeComposerState.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\OfficeComposerState.tsx",
+      "bytes": 3309,
+      "sha256": "8717f3d5a4d48f24040273c03c2cdc61faa6a6f41d4ad280065f631a74754cbe"
+    },
+    {
+      "file": "source-chat-conversation.tsx",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\heroui-pro\\components\\chat-conversation\\chat-conversation.tsx",
+      "bytes": 10584,
+      "sha256": "1ad55ab418784bd2efc1d271c4e48abd763a0b0494168245396e3914af82ef8f"
+    },
+    {
+      "file": "source-workspace-source.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\heroui-pro\\workspace-source.json",
+      "bytes": 8724,
+      "sha256": "8858783e97211c08c132c1843d36a628c2bd654c79e47cec007c7e0b0541e105"
+    },
+    {
+      "file": "source-pi-shell-reading-ui-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-shell-reading-ui-smoke.mjs",
+      "bytes": 17908,
+      "sha256": "cfb91260c88e1915d706897d30421106feefc3f905a653c74ddbae5367f6f244"
+    },
+    {
+      "file": "source-observe-reading.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\observe-reading.mjs",
+      "bytes": 3003,
+      "sha256": "560ce8c344a4856ec683b1a4ba357d215cfa8b25f767cbd2e278b66cf8f1a771"
+    },
+    {
+      "file": "107_CODEX_STREAM_READING_DELIVERY_CONTRACT.md",
+      "source": "D:\\WorkProject\\EduProject\\docs\\107_CODEX_STREAM_READING_DELIVERY_CONTRACT.md",
+      "bytes": 5094,
+      "sha256": "0aece38a656a3e8eca016ff2d354fe12f309d02079f68dd4c4bd2421c92a0076"
+    },
+    {
+      "file": "108_CODEX_STREAM_READING_ACCEPTANCE.md",
+      "source": "D:\\WorkProject\\EduProject\\docs\\108_CODEX_STREAM_READING_ACCEPTANCE.md",
+      "bytes": 7174,
+      "sha256": "668f42e41eeec2c18bd7d95e75fcc6741897aeaf8fe9ef7946840d14130ba2d6"
+    },
+    {
+      "file": "109_XIAOZHI_OFFICE_TOOLS_AND_GOAL_CONTRACT.md",
+      "source": "D:\\WorkProject\\EduProject\\docs\\109_XIAOZHI_OFFICE_TOOLS_AND_GOAL_CONTRACT.md",
+      "bytes": 8423,
+      "sha256": "bdbd724055897e49e99ca21fd42b89c6372623a6c92020c8a6210d211fd77d7e"
+    }
+  ]
+}

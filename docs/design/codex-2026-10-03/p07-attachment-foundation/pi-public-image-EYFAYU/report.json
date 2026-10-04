@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "model": "deepseek-flash",
+  "imageSha256": "1a05b31a2960f001c3f16ed5fa914cd64041893e8316b480a77d90335858dfca",
+  "boundary": "Synthetic RGB only. Direct official HTTP capability probe, not Pi/attachment/OCR proof. No student/teacher image, key, response body or request saved.",
+  "status": 200,
+  "nonempty": true,
+  "correctColorOrder": true
+}

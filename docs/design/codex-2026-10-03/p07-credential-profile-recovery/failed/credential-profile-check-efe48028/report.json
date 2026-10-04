@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "readOnly": true,
+  "scope": "Existing real configuration, no Store initialization/migration/recovery, no teacher data or key in report",
+  "stage": "decrypt",
+  "error": "read_only_verification_failed",
+  "observedAt": "2026-10-04T05:04:28.572Z"
+}

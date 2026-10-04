@@ -1,0 +1,249 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual native shell anchors/colors and reachable composer at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Actual native shell anchors/colors and reachable composer at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Actual UI submission creates durable long Chinese/English history through the real provider",
+      "pass": true
+    },
+    {
+      "name": "Actual wheel-up reading stays put while new real public deltas arrive and the run completes",
+      "pass": true
+    }
+  ],
+  "model": "deepseek-flash",
+  "boundaries": [
+    "Actual Electron/main/typed API and real DeepSeek; synthetic teacher text only",
+    "Actual native geometry/captions, wheel/button actions and streamed public text; no fabricated history",
+    "Composition event protocol only, not Windows manual IME; original reference DPR/font unknown; full goal pending"
+  ],
+  "referenceLayout": {
+    "metrics": {
+      "width": 1705,
+      "height": 1019,
+      "dpr": 1.5,
+      "body": 1019,
+      "rail": {
+        "x": 0,
+        "y": 36,
+        "width": 52,
+        "height": 983.3333740234375,
+        "color": "rgb(230, 249, 247)"
+      },
+      "sidebar": {
+        "x": 52,
+        "y": 44,
+        "width": 254,
+        "height": 975.3333740234375,
+        "color": "rgb(246, 253, 252)"
+      },
+      "header": {
+        "x": 306,
+        "y": 44,
+        "width": 1093.3333740234375,
+        "height": 52,
+        "color": "rgb(255, 255, 255)"
+      },
+      "titlebar": {
+        "x": 0,
+        "y": 0,
+        "width": 1705.3333740234375,
+        "height": 36,
+        "color": "rgb(230, 249, 247)"
+      },
+      "input": {
+        "x": 388.66668701171875,
+        "y": 910,
+        "width": 928,
+        "height": 91.33333587646484,
+        "color": "rgba(0, 0, 0, 0)"
+      }
+    },
+    "window": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1706,
+        "height": 1019
+      },
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 1705,
+        "height": 1019
+      },
+      "scale": 1.5,
+      "zoom": 1,
+      "size": {
+        "width": 2558,
+        "height": 1529
+      }
+    }
+  },
+  "viewports": [
+    {
+      "metrics": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "body": 768,
+        "rail": {
+          "x": 0,
+          "y": 36,
+          "width": 52,
+          "height": 732,
+          "color": "rgb(230, 249, 247)"
+        },
+        "sidebar": {
+          "x": 52,
+          "y": 44,
+          "width": 254,
+          "height": 724,
+          "color": "rgb(246, 253, 252)"
+        },
+        "header": {
+          "x": 306,
+          "y": 44,
+          "width": 754,
+          "height": 52,
+          "color": "rgb(255, 255, 255)"
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 36,
+          "color": "rgb(230, 249, 247)"
+        },
+        "input": {
+          "x": 322,
+          "y": 658.6666870117188,
+          "width": 722,
+          "height": 91.33333587646484,
+          "color": "rgba(0, 0, 0, 0)"
+        }
+      },
+      "window": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1368,
+          "height": 769
+        },
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 768
+        },
+        "scale": 1.5,
+        "zoom": 1,
+        "size": {
+          "width": 2052,
+          "height": 1154
+        }
+      }
+    },
+    {
+      "metrics": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "body": 1080,
+        "rail": {
+          "x": 0,
+          "y": 36,
+          "width": 52,
+          "height": 1044,
+          "color": "rgb(230, 249, 247)"
+        },
+        "sidebar": {
+          "x": 52,
+          "y": 44,
+          "width": 254,
+          "height": 1036,
+          "color": "rgb(246, 253, 252)"
+        },
+        "header": {
+          "x": 306,
+          "y": 44,
+          "width": 1308,
+          "height": 52,
+          "color": "rgb(255, 255, 255)"
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 36,
+          "color": "rgb(230, 249, 247)"
+        },
+        "input": {
+          "x": 496,
+          "y": 970.6666870117188,
+          "width": 928,
+          "height": 91.33333587646484,
+          "color": "rgba(0, 0, 0, 0)"
+        }
+      },
+      "window": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1922,
+          "height": 1081
+        },
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "scale": 1.5,
+        "zoom": 1,
+        "size": {
+          "width": 2883,
+          "height": 1622
+        }
+      }
+    }
+  ],
+  "liveBefore": {
+    "scrollTop": 0,
+    "height": 819,
+    "scrollHeight": 5705,
+    "id": "aimsg_06c6d1bd-897f-4ffc-8932-7a517acaf23e",
+    "index": 0,
+    "offset": 40,
+    "text": "阅读以下合成教研材料，只回复“已阅读”，不要调用工具。"
+  },
+  "liveThread": "aisession_e3ea89ae-ed93-4f99-a72f-86025c7b6426",
+  "liveAfter": {
+    "scrollTop": 0,
+    "height": 819,
+    "scrollHeight": 5799,
+    "id": "aimsg_06c6d1bd-897f-4ffc-8932-7a517acaf23e",
+    "index": 0,
+    "offset": 40,
+    "text": "阅读以下合成教研材料，只回复“已阅读”，不要调用工具。"
+  },
+  "afterThread": "aisession_e3ea89ae-ed93-4f99-a72f-86025c7b6426",
+  "liveCompleted": {
+    "scrollTop": 0,
+    "height": 867,
+    "scrollHeight": 6980,
+    "id": "aimsg_06c6d1bd-897f-4ffc-8932-7a517acaf23e",
+    "index": 0,
+    "offset": 40,
+    "text": "阅读以下合成教研材料，只回复“已阅读”，不要调用工具。"
+  },
+  "error": "locator.evaluate: Error: Missing actual reading paragraph\n    at eval (eval at evaluate (:311:30), <anonymous>:1:410)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at reading (D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-shell-reading-ui-smoke.mjs:30:59)\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-shell-reading-ui-smoke.mjs:45:104\n    at until (D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-shell-reading-ui-smoke.mjs:17:93)\n    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-shell-reading-ui-smoke.mjs:45:68",
+  "rendererErrors": []
+}

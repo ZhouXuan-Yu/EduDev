@@ -1,0 +1,58 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Fresh SQLite migration is additive and idempotent; old sessions start with empty attachment facts",
+      "pass": true
+    },
+    {
+      "name": "Concurrent repeated selection deduplicates a real captured source and preserves original bytes",
+      "pass": true
+    },
+    {
+      "name": "Original Hana metadata and source identity capture real image bytes; public projection excludes private paths/hash and upload data",
+      "pass": true
+    },
+    {
+      "name": "Same physical file has distinct session ownership; forged cross-session attachment IDs cannot be opened",
+      "pass": true
+    },
+    {
+      "name": "Preview resolves a captured version and refuses changed files without rewriting historical metadata",
+      "pass": true
+    },
+    {
+      "name": "Remove uses real revision CAS; old selection stays removed and explicit reselection creates a new attachment fact",
+      "pass": true
+    },
+    {
+      "name": "Multi-attachment bind is atomic on stale selection; submitted message/run facts are immutable and repeat use gets a new reference",
+      "pass": true
+    },
+    {
+      "name": "SQLite enforces per-session eight-draft limit independently of UI locks",
+      "pass": true
+    },
+    {
+      "name": "Native filesystem rejects credential paths, linked ancestors/hardlinks, traversal, spoofed image, unsupported SVG and oversized text",
+      "pass": true
+    },
+    {
+      "name": "Cancelled/current-owner and changed workspace lease create no attachment records",
+      "pass": true
+    },
+    {
+      "name": "Strict revision selectors reject unknown keys/symbols and do not execute accessor input",
+      "pass": true
+    },
+    {
+      "name": "Actual SQLite reopen preserves submitted/removed revisions and rejects unknown row schema without silent fallback",
+      "pass": true
+    },
+    {
+      "name": "Explicit prior formal-test SQLite copy accepts repeated migration without changing messages, sessions, settings or native bindings",
+      "pass": true
+    }
+  ],
+  "boundary": "Real SQLite and native local filesystem; synthetic fixtures and explicit prior isolated test DB copy only. No chooser, production attachment IPC, model image upload, OCR or viewed-image receipt claim."
+}

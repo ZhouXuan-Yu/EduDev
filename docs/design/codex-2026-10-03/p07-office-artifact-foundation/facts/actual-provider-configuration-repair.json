@@ -1,0 +1,10 @@
+{
+  "success": true,
+  "configurationSaved": true,
+  "version": 1,
+  "defaultModel": "deepseek-flash",
+  "encrypted": true,
+  "legacyAndOtherSettingsUnchanged": true,
+  "completionHttpStatus": 200,
+  "completionTextPresent": true
+}

@@ -1,0 +1,1476 @@
+{
+  "scope": "Installed Pi production dependency closure, including shared packages; not incremental installer growth",
+  "measuredAt": "2026-10-02T11:14:15.274Z",
+  "platform": "win32",
+  "arch": "x64",
+  "packages": 236,
+  "totalBytes": 215697292,
+  "nativeBindings": [
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui/native/darwin/prebuilds/darwin-arm64/darwin-modifiers.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui/native/darwin/prebuilds/darwin-x64/darwin-modifiers.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui/native/win32/prebuilds/win32-arm64/win32-console-mode.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui/native/win32/prebuilds/win32-x64/win32-console-mode.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-arm64",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-arm64/clipboard.darwin-arm64.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-universal",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-universal/clipboard.darwin-universal.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-x64",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-x64/clipboard.darwin-x64.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-arm64-gnu",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-arm64-gnu/clipboard.linux-arm64-gnu.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-riscv64-gnu",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-riscv64-gnu/clipboard.linux-riscv64-gnu.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-x64-gnu",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-x64-gnu/clipboard.linux-x64-gnu.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-win32-arm64-msvc",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-win32-arm64-msvc/clipboard.win32-arm64-msvc.node"
+    },
+    {
+      "package": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-win32-x64-msvc",
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-win32-x64-msvc/clipboard.win32-x64-msvc.node"
+    }
+  ],
+  "entries": [
+    {
+      "path": "node_modules/@anthropic-ai/sdk",
+      "version": "0.91.1",
+      "license": "MIT",
+      "installedBytes": 4087920
+    },
+    {
+      "path": "node_modules/@aws-crypto/sha256-browser",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 43051
+    },
+    {
+      "path": "node_modules/@aws-crypto/sha256-js",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 128713
+    },
+    {
+      "path": "node_modules/@aws-crypto/supports-web-crypto",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 28366
+    },
+    {
+      "path": "node_modules/@aws-crypto/util",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 30653
+    },
+    {
+      "path": "node_modules/@aws-sdk/client-bedrock-runtime",
+      "version": "3.1048.0",
+      "license": "Apache-2.0",
+      "installedBytes": 806195
+    },
+    {
+      "path": "node_modules/@aws-sdk/core",
+      "version": "3.978.1",
+      "license": "Apache-2.0",
+      "installedBytes": 571679
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-env",
+      "version": "3.972.72",
+      "license": "Apache-2.0",
+      "installedBytes": 19452
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-http",
+      "version": "3.972.74",
+      "license": "Apache-2.0",
+      "installedBytes": 24815
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-http/node_modules/@smithy/node-http-handler",
+      "version": "4.12.1",
+      "license": "Apache-2.0",
+      "installedBytes": 128867
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-ini",
+      "version": "3.973.17",
+      "license": "Apache-2.0",
+      "installedBytes": 53400
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-login",
+      "version": "3.972.79",
+      "license": "Apache-2.0",
+      "installedBytes": 34173
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-node",
+      "version": "3.972.84",
+      "license": "Apache-2.0",
+      "installedBytes": 40839
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-process",
+      "version": "3.972.72",
+      "license": "Apache-2.0",
+      "installedBytes": 23594
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-sso",
+      "version": "3.973.16",
+      "license": "Apache-2.0",
+      "installedBytes": 37700
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-sso/node_modules/@aws-sdk/token-providers",
+      "version": "3.1138.0",
+      "license": "Apache-2.0",
+      "installedBytes": 38250
+    },
+    {
+      "path": "node_modules/@aws-sdk/credential-provider-web-identity",
+      "version": "3.972.78",
+      "license": "Apache-2.0",
+      "installedBytes": 31256
+    },
+    {
+      "path": "node_modules/@aws-sdk/eventstream-handler-node",
+      "version": "3.972.35",
+      "license": "Apache-2.0",
+      "installedBytes": 27669
+    },
+    {
+      "path": "node_modules/@aws-sdk/middleware-eventstream",
+      "version": "3.972.30",
+      "license": "Apache-2.0",
+      "installedBytes": 22688
+    },
+    {
+      "path": "node_modules/@aws-sdk/middleware-websocket",
+      "version": "3.972.54",
+      "license": "Apache-2.0",
+      "installedBytes": 58395
+    },
+    {
+      "path": "node_modules/@aws-sdk/nested-clients",
+      "version": "3.997.46",
+      "license": "Apache-2.0",
+      "installedBytes": 843322
+    },
+    {
+      "path": "node_modules/@aws-sdk/nested-clients/node_modules/@smithy/node-http-handler",
+      "version": "4.12.1",
+      "license": "Apache-2.0",
+      "installedBytes": 128867
+    },
+    {
+      "path": "node_modules/@aws-sdk/signature-v4-multi-region",
+      "version": "3.996.47",
+      "license": "Apache-2.0",
+      "installedBytes": 38617
+    },
+    {
+      "path": "node_modules/@aws-sdk/token-providers",
+      "version": "3.1048.0",
+      "license": "Apache-2.0",
+      "installedBytes": 37650
+    },
+    {
+      "path": "node_modules/@aws-sdk/types",
+      "version": "3.974.6",
+      "license": "Apache-2.0",
+      "installedBytes": 53767
+    },
+    {
+      "path": "node_modules/@aws-sdk/util-locate-window",
+      "version": "3.965.10",
+      "license": "Apache-2.0",
+      "installedBytes": 14066
+    },
+    {
+      "path": "node_modules/@aws-sdk/xml-builder",
+      "version": "3.972.41",
+      "license": "Apache-2.0",
+      "installedBytes": 41741
+    },
+    {
+      "path": "node_modules/@aws/lambda-invoke-store",
+      "version": "0.3.0",
+      "license": "Apache-2.0",
+      "installedBytes": 29557
+    },
+    {
+      "path": "node_modules/@babel/runtime",
+      "version": "7.29.7",
+      "license": "MIT",
+      "installedBytes": 247667
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-agent-core",
+      "version": "0.80.3",
+      "license": "MIT",
+      "installedBytes": 1127414
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-ai",
+      "version": "0.80.3",
+      "license": "MIT",
+      "installedBytes": 5895313
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent",
+      "version": "0.80.3",
+      "license": "MIT",
+      "installedBytes": 12276625
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@anthropic-ai/sdk",
+      "version": "0.91.1",
+      "license": "MIT",
+      "installedBytes": 4087920
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-crypto/crc32",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 43876
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-crypto/sha256-browser",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 43051
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-crypto/sha256-js",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 128713
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-crypto/supports-web-crypto",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 28366
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-crypto/util",
+      "version": "5.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 30653
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/client-bedrock-runtime",
+      "version": "3.1048.0",
+      "license": "Apache-2.0",
+      "installedBytes": 806195
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/core",
+      "version": "3.974.11",
+      "license": "Apache-2.0",
+      "installedBytes": 615872
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-env",
+      "version": "3.972.37",
+      "license": "Apache-2.0",
+      "installedBytes": 19116
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-http",
+      "version": "3.972.39",
+      "license": "Apache-2.0",
+      "installedBytes": 26907
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-ini",
+      "version": "3.972.41",
+      "license": "Apache-2.0",
+      "installedBytes": 53189
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-login",
+      "version": "3.972.41",
+      "license": "Apache-2.0",
+      "installedBytes": 33115
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-node",
+      "version": "3.972.42",
+      "license": "Apache-2.0",
+      "installedBytes": 39623
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-process",
+      "version": "3.972.37",
+      "license": "Apache-2.0",
+      "installedBytes": 23522
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-sso",
+      "version": "3.972.41",
+      "license": "Apache-2.0",
+      "installedBytes": 37247
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/credential-provider-web-identity",
+      "version": "3.972.41",
+      "license": "Apache-2.0",
+      "installedBytes": 32247
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/eventstream-handler-node",
+      "version": "3.972.16",
+      "license": "Apache-2.0",
+      "installedBytes": 27857
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/middleware-eventstream",
+      "version": "3.972.12",
+      "license": "Apache-2.0",
+      "installedBytes": 22002
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/middleware-websocket",
+      "version": "3.972.19",
+      "license": "Apache-2.0",
+      "installedBytes": 57897
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/nested-clients",
+      "version": "3.997.9",
+      "license": "Apache-2.0",
+      "installedBytes": 804946
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/signature-v4-multi-region",
+      "version": "3.996.27",
+      "license": "Apache-2.0",
+      "installedBytes": 38684
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/token-providers",
+      "version": "3.1048.0",
+      "license": "Apache-2.0",
+      "installedBytes": 37650
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/types",
+      "version": "3.973.8",
+      "license": "Apache-2.0",
+      "installedBytes": 44949
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/util-locate-window",
+      "version": "3.965.5",
+      "license": "Apache-2.0",
+      "installedBytes": 14126
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws-sdk/xml-builder",
+      "version": "3.972.24",
+      "license": "Apache-2.0",
+      "installedBytes": 58304
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@aws/lambda-invoke-store",
+      "version": "0.2.4",
+      "license": "Apache-2.0",
+      "installedBytes": 27651
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@babel/runtime",
+      "version": "7.29.2",
+      "license": "MIT",
+      "installedBytes": 247667
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-agent-core",
+      "version": "0.80.3",
+      "license": "MIT",
+      "installedBytes": 1127414
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-ai",
+      "version": "0.80.3",
+      "license": "MIT",
+      "installedBytes": 5895313
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@earendil-works/pi-tui",
+      "version": "0.80.3",
+      "license": "MIT",
+      "installedBytes": 1787237
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@google/genai",
+      "version": "1.52.0",
+      "license": "Apache-2.0",
+      "installedBytes": 14406520
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 142555
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-arm64",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 1447937
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-universal",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 2955255
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-darwin-x64",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 1494054
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-arm64-gnu",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 1284382
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-arm64-musl",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 420
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-riscv64-gnu",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 1227130
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-x64-gnu",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 1378795
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-linux-x64-musl",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 535
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-win32-arm64-msvc",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 1110531
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mariozechner/clipboard-win32-x64-msvc",
+      "version": "0.3.9",
+      "license": "MIT",
+      "installedBytes": 1352184
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@mistralai/mistralai",
+      "version": "2.2.6",
+      "license": "Apache-2.0",
+      "installedBytes": 9688067
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@nodable/entities",
+      "version": "2.1.0",
+      "license": "MIT",
+      "installedBytes": 60255
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@opentelemetry/api",
+      "version": "1.9.0",
+      "license": "Apache-2.0",
+      "installedBytes": 1218213
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@opentelemetry/semantic-conventions",
+      "version": "1.41.1",
+      "license": "Apache-2.0",
+      "installedBytes": 11840286
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/aspromise",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 9055
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/base64",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 9224
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/codegen",
+      "version": "2.0.5",
+      "license": "BSD-3-Clause",
+      "installedBytes": 9749
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/eventemitter",
+      "version": "1.1.1",
+      "license": "BSD-3-Clause",
+      "installedBytes": 10310
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/fetch",
+      "version": "1.1.1",
+      "license": "BSD-3-Clause",
+      "installedBytes": 14872
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/float",
+      "version": "1.0.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 26968
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/path",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 7770
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/pool",
+      "version": "1.1.0",
+      "license": "BSD-3-Clause",
+      "installedBytes": 6249
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@protobufjs/utf8",
+      "version": "1.1.1",
+      "license": "BSD-3-Clause",
+      "installedBytes": 41228
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@silvia-odwyer/photon-node",
+      "version": "0.3.4",
+      "license": "Apache-2.0",
+      "installedBytes": 2265687
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/core",
+      "version": "3.24.3",
+      "license": "Apache-2.0",
+      "installedBytes": 1338802
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/credential-provider-imds",
+      "version": "4.3.3",
+      "license": "Apache-2.0",
+      "installedBytes": 52960
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/fetch-http-handler",
+      "version": "5.4.3",
+      "license": "Apache-2.0",
+      "installedBytes": 33234
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/is-array-buffer",
+      "version": "2.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 15373
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/node-http-handler",
+      "version": "4.7.3",
+      "license": "Apache-2.0",
+      "installedBytes": 100991
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/signature-v4",
+      "version": "5.4.3",
+      "license": "Apache-2.0",
+      "installedBytes": 89796
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/types",
+      "version": "4.14.2",
+      "license": "Apache-2.0",
+      "installedBytes": 151526
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/util-buffer-from",
+      "version": "2.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 17134
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@smithy/util-utf8",
+      "version": "2.3.0",
+      "license": "Apache-2.0",
+      "installedBytes": 19355
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/@types/node",
+      "version": "22.19.19",
+      "license": "MIT",
+      "installedBytes": 2427022
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/agent-base",
+      "version": "7.1.4",
+      "license": "MIT",
+      "installedBytes": 23962
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/balanced-match",
+      "version": "4.0.4",
+      "license": "MIT",
+      "installedBytes": 17584
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/base64-js",
+      "version": "1.5.1",
+      "license": "MIT",
+      "installedBytes": 9624
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/bignumber.js",
+      "version": "9.3.1",
+      "license": "MIT",
+      "installedBytes": 351589
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/bowser",
+      "version": "2.14.1",
+      "license": "MIT",
+      "installedBytes": 258293
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/brace-expansion",
+      "version": "5.0.6",
+      "license": "MIT",
+      "installedBytes": 47612
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/buffer-equal-constant-time",
+      "version": "1.0.1",
+      "license": "BSD-3-Clause",
+      "installedBytes": 5232
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/chalk",
+      "version": "5.6.2",
+      "license": "MIT",
+      "installedBytes": 44342
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/cross-spawn",
+      "version": "7.0.6",
+      "license": "MIT",
+      "installedBytes": 16094
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/data-uri-to-buffer",
+      "version": "4.0.1",
+      "license": "MIT",
+      "installedBytes": 10049
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/debug",
+      "version": "4.4.3",
+      "license": "MIT",
+      "installedBytes": 42793
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/diff",
+      "version": "8.0.4",
+      "license": "BSD-3-Clause",
+      "installedBytes": 519469
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/ecdsa-sig-formatter",
+      "version": "1.0.11",
+      "license": "Apache-2.0",
+      "installedBytes": 20588
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/extend",
+      "version": "3.0.2",
+      "license": "MIT",
+      "installedBytes": 23461
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/fast-xml-builder",
+      "version": "1.2.0",
+      "license": "MIT",
+      "installedBytes": 205574
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/fast-xml-parser",
+      "version": "5.7.3",
+      "license": "MIT",
+      "installedBytes": 989112
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/fetch-blob",
+      "version": "3.2.0",
+      "license": "MIT",
+      "installedBytes": 21755
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/formdata-polyfill",
+      "version": "4.0.10",
+      "license": "MIT",
+      "installedBytes": 32220
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/gaxios",
+      "version": "7.1.4",
+      "license": "Apache-2.0",
+      "installedBytes": 644448
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/gcp-metadata",
+      "version": "8.1.2",
+      "license": "Apache-2.0",
+      "installedBytes": 56762
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/get-east-asian-width",
+      "version": "1.6.0",
+      "license": "MIT",
+      "installedBytes": 14592
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/glob",
+      "version": "13.0.6",
+      "license": "BlueOak-1.0.0",
+      "installedBytes": 1607230
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/google-auth-library",
+      "version": "10.6.2",
+      "license": "Apache-2.0",
+      "installedBytes": 585688
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/google-logging-utils",
+      "version": "1.1.3",
+      "license": "Apache-2.0",
+      "installedBytes": 63510
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs",
+      "version": "4.2.11",
+      "license": "ISC",
+      "installedBytes": 32535
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/highlight.js",
+      "version": "10.7.3",
+      "license": "BSD-3-Clause",
+      "installedBytes": 1710256
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/hosted-git-info",
+      "version": "9.0.3",
+      "license": "ISC",
+      "installedBytes": 28422
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/http-proxy-agent",
+      "version": "7.0.2",
+      "license": "MIT",
+      "installedBytes": 17260
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/https-proxy-agent",
+      "version": "7.0.6",
+      "license": "MIT",
+      "installedBytes": 27706
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/ignore",
+      "version": "7.0.5",
+      "license": "MIT",
+      "installedBytes": 63384
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/isexe",
+      "version": "2.0.0",
+      "license": "ISC",
+      "installedBytes": 10956
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/jiti",
+      "version": "2.7.0",
+      "license": "MIT",
+      "installedBytes": 1751293
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/json-bigint",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installedBytes": 37345
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/json-schema-to-ts",
+      "version": "3.1.1",
+      "license": "MIT",
+      "installedBytes": 121555
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/jwa",
+      "version": "2.0.1",
+      "license": "MIT",
+      "installedBytes": 14052
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/jws",
+      "version": "4.0.1",
+      "license": "MIT",
+      "installedBytes": 18822
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/long",
+      "version": "5.3.2",
+      "license": "Apache-2.0",
+      "installedBytes": 139458
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/lru-cache",
+      "version": "11.4.0",
+      "license": "BlueOak-1.0.0",
+      "installedBytes": 2704472
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/marked",
+      "version": "18.0.5",
+      "license": "MIT",
+      "installedBytes": 450269
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/minimatch",
+      "version": "10.2.5",
+      "license": "BlueOak-1.0.0",
+      "installedBytes": 536120
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/minipass",
+      "version": "7.1.3",
+      "license": "BlueOak-1.0.0",
+      "installedBytes": 366791
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/ms",
+      "version": "2.1.3",
+      "license": "MIT",
+      "installedBytes": 6721
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/node-domexception",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installedBytes": 29162
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/node-fetch",
+      "version": "3.3.2",
+      "license": "MIT",
+      "installedBytes": 107319
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/openai",
+      "version": "6.26.0",
+      "license": "Apache-2.0",
+      "installedBytes": 7500030
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/p-retry",
+      "version": "4.6.2",
+      "license": "MIT",
+      "installedBytes": 11032
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/p-retry/node_modules/@types/retry",
+      "version": "0.12.0",
+      "license": "MIT",
+      "installedBytes": 7654
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/partial-json",
+      "version": "0.1.7",
+      "license": "MIT",
+      "installedBytes": 21852
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/path-expression-matcher",
+      "version": "1.5.0",
+      "license": "MIT",
+      "installedBytes": 145152
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/path-key",
+      "version": "3.1.1",
+      "license": "MIT",
+      "installedBytes": 4553
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/path-scurry",
+      "version": "2.0.2",
+      "license": "BlueOak-1.0.0",
+      "installedBytes": 535680
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile",
+      "version": "4.1.2",
+      "license": "MIT",
+      "installedBytes": 29875
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/node_modules/retry",
+      "version": "0.12.0",
+      "license": "MIT",
+      "installedBytes": 32210
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/protobufjs",
+      "version": "7.6.4",
+      "license": "BSD-3-Clause",
+      "installedBytes": 3033917
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/retry",
+      "version": "0.13.1",
+      "license": "MIT",
+      "installedBytes": 18852
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/safe-buffer",
+      "version": "5.2.1",
+      "license": "MIT",
+      "installedBytes": 32101
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/semver",
+      "version": "7.8.0",
+      "license": "ISC",
+      "installedBytes": 100030
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/shebang-command",
+      "version": "2.0.0",
+      "license": "MIT",
+      "installedBytes": 2556
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/shebang-regex",
+      "version": "3.0.0",
+      "license": "MIT",
+      "installedBytes": 2828
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/signal-exit",
+      "version": "3.0.7",
+      "license": "ISC",
+      "installedBytes": 9958
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/strnum",
+      "version": "2.3.0",
+      "license": "MIT",
+      "installedBytes": 13204
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/ts-algebra",
+      "version": "2.0.0",
+      "license": "MIT",
+      "installedBytes": 101154
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/tslib",
+      "version": "2.8.1",
+      "license": "0BSD",
+      "installedBytes": 90359
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/typebox",
+      "version": "1.1.38",
+      "license": "MIT",
+      "installedBytes": 1468289
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/undici",
+      "version": "8.5.0",
+      "license": "MIT",
+      "installedBytes": 1681007
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/undici-types",
+      "version": "6.21.0",
+      "license": "MIT",
+      "installedBytes": 83680
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/web-streams-polyfill",
+      "version": "3.3.3",
+      "license": "MIT",
+      "installedBytes": 9036205
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/which",
+      "version": "2.0.2",
+      "license": "ISC",
+      "installedBytes": 9975
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/ws",
+      "version": "8.21.0",
+      "license": "MIT",
+      "installedBytes": 151087
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/xml-naming",
+      "version": "0.1.0",
+      "license": "MIT",
+      "installedBytes": 18717
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/yaml",
+      "version": "2.9.0",
+      "license": "ISC",
+      "installedBytes": 685953
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/zod",
+      "version": "3.25.76",
+      "license": "MIT",
+      "installedBytes": 3594196
+    },
+    {
+      "path": "node_modules/@earendil-works/pi-coding-agent/node_modules/zod-to-json-schema",
+      "version": "3.25.2",
+      "license": "ISC",
+      "installedBytes": 219264
+    },
+    {
+      "path": "node_modules/@google/genai",
+      "version": "1.52.0",
+      "license": "Apache-2.0",
+      "installedBytes": 14406520
+    },
+    {
+      "path": "node_modules/@google/genai/node_modules/p-retry",
+      "version": "4.6.2",
+      "license": "MIT",
+      "installedBytes": 11032
+    },
+    {
+      "path": "node_modules/@mistralai/mistralai",
+      "version": "2.2.6",
+      "license": "Apache-2.0",
+      "installedBytes": 9688067
+    },
+    {
+      "path": "node_modules/@opentelemetry/api",
+      "version": "1.9.0",
+      "license": "Apache-2.0",
+      "installedBytes": 1218213
+    },
+    {
+      "path": "node_modules/@opentelemetry/semantic-conventions",
+      "version": "1.43.0",
+      "license": "Apache-2.0",
+      "installedBytes": 12006437
+    },
+    {
+      "path": "node_modules/@protobufjs/aspromise",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 9055
+    },
+    {
+      "path": "node_modules/@protobufjs/base64",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 9224
+    },
+    {
+      "path": "node_modules/@protobufjs/codegen",
+      "version": "2.0.5",
+      "license": "BSD-3-Clause",
+      "installedBytes": 9749
+    },
+    {
+      "path": "node_modules/@protobufjs/eventemitter",
+      "version": "1.1.1",
+      "license": "BSD-3-Clause",
+      "installedBytes": 10310
+    },
+    {
+      "path": "node_modules/@protobufjs/fetch",
+      "version": "1.1.1",
+      "license": "BSD-3-Clause",
+      "installedBytes": 14872
+    },
+    {
+      "path": "node_modules/@protobufjs/float",
+      "version": "1.0.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 26968
+    },
+    {
+      "path": "node_modules/@protobufjs/path",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 7770
+    },
+    {
+      "path": "node_modules/@protobufjs/pool",
+      "version": "1.1.0",
+      "license": "BSD-3-Clause",
+      "installedBytes": 6249
+    },
+    {
+      "path": "node_modules/@protobufjs/utf8",
+      "version": "1.1.2",
+      "license": "BSD-3-Clause",
+      "installedBytes": 42558
+    },
+    {
+      "path": "node_modules/@smithy/core",
+      "version": "3.35.1",
+      "license": "Apache-2.0",
+      "installedBytes": 1797416
+    },
+    {
+      "path": "node_modules/@smithy/credential-provider-imds",
+      "version": "4.5.2",
+      "license": "Apache-2.0",
+      "installedBytes": 80309
+    },
+    {
+      "path": "node_modules/@smithy/fetch-http-handler",
+      "version": "5.8.0",
+      "license": "Apache-2.0",
+      "installedBytes": 50303
+    },
+    {
+      "path": "node_modules/@smithy/is-array-buffer",
+      "version": "2.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 15373
+    },
+    {
+      "path": "node_modules/@smithy/node-http-handler",
+      "version": "4.7.3",
+      "license": "Apache-2.0",
+      "installedBytes": 100991
+    },
+    {
+      "path": "node_modules/@smithy/signature-v4",
+      "version": "5.7.4",
+      "license": "Apache-2.0",
+      "installedBytes": 106103
+    },
+    {
+      "path": "node_modules/@smithy/types",
+      "version": "4.19.0",
+      "license": "Apache-2.0",
+      "installedBytes": 316339
+    },
+    {
+      "path": "node_modules/@smithy/util-buffer-from",
+      "version": "2.2.0",
+      "license": "Apache-2.0",
+      "installedBytes": 17134
+    },
+    {
+      "path": "node_modules/@smithy/util-utf8",
+      "version": "2.3.0",
+      "license": "Apache-2.0",
+      "installedBytes": 19355
+    },
+    {
+      "path": "node_modules/@types/node",
+      "version": "22.20.1",
+      "license": "MIT",
+      "installedBytes": 2438452
+    },
+    {
+      "path": "node_modules/@types/retry",
+      "version": "0.12.0",
+      "license": "MIT",
+      "installedBytes": 7654
+    },
+    {
+      "path": "node_modules/agent-base",
+      "version": "7.1.4",
+      "license": "MIT",
+      "installedBytes": 23962
+    },
+    {
+      "path": "node_modules/base64-js",
+      "version": "1.5.1",
+      "license": "MIT",
+      "installedBytes": 9624
+    },
+    {
+      "path": "node_modules/bignumber.js",
+      "version": "9.3.1",
+      "license": "MIT",
+      "installedBytes": 351589
+    },
+    {
+      "path": "node_modules/bowser",
+      "version": "2.14.1",
+      "license": "MIT",
+      "installedBytes": 258293
+    },
+    {
+      "path": "node_modules/buffer-equal-constant-time",
+      "version": "1.0.1",
+      "license": "BSD-3-Clause",
+      "installedBytes": 5232
+    },
+    {
+      "path": "node_modules/data-uri-to-buffer",
+      "version": "4.0.1",
+      "license": "MIT",
+      "installedBytes": 10049
+    },
+    {
+      "path": "node_modules/debug",
+      "version": "4.4.3",
+      "license": "MIT",
+      "installedBytes": 42793
+    },
+    {
+      "path": "node_modules/ecdsa-sig-formatter",
+      "version": "1.0.11",
+      "license": "Apache-2.0",
+      "installedBytes": 20588
+    },
+    {
+      "path": "node_modules/extend",
+      "version": "3.0.2",
+      "license": "MIT",
+      "installedBytes": 23461
+    },
+    {
+      "path": "node_modules/fetch-blob",
+      "version": "3.2.0",
+      "license": "MIT",
+      "installedBytes": 21755
+    },
+    {
+      "path": "node_modules/formdata-polyfill",
+      "version": "4.0.10",
+      "license": "MIT",
+      "installedBytes": 32220
+    },
+    {
+      "path": "node_modules/gaxios",
+      "version": "7.3.1",
+      "license": "Apache-2.0",
+      "installedBytes": 679009
+    },
+    {
+      "path": "node_modules/gcp-metadata",
+      "version": "8.1.2",
+      "license": "Apache-2.0",
+      "installedBytes": 56762
+    },
+    {
+      "path": "node_modules/google-auth-library",
+      "version": "10.9.1",
+      "license": "Apache-2.0",
+      "installedBytes": 601779
+    },
+    {
+      "path": "node_modules/google-logging-utils",
+      "version": "1.1.3",
+      "license": "Apache-2.0",
+      "installedBytes": 63510
+    },
+    {
+      "path": "node_modules/http-proxy-agent",
+      "version": "7.0.2",
+      "license": "MIT",
+      "installedBytes": 17260
+    },
+    {
+      "path": "node_modules/https-proxy-agent",
+      "version": "7.0.6",
+      "license": "MIT",
+      "installedBytes": 27706
+    },
+    {
+      "path": "node_modules/ignore",
+      "version": "7.0.5",
+      "license": "MIT",
+      "installedBytes": 63384
+    },
+    {
+      "path": "node_modules/json-bigint",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installedBytes": 37345
+    },
+    {
+      "path": "node_modules/json-schema-to-ts",
+      "version": "3.1.1",
+      "license": "MIT",
+      "installedBytes": 121555
+    },
+    {
+      "path": "node_modules/jwa",
+      "version": "2.0.1",
+      "license": "MIT",
+      "installedBytes": 14052
+    },
+    {
+      "path": "node_modules/jws",
+      "version": "4.0.1",
+      "license": "MIT",
+      "installedBytes": 18822
+    },
+    {
+      "path": "node_modules/long",
+      "version": "5.3.2",
+      "license": "Apache-2.0",
+      "installedBytes": 139458
+    },
+    {
+      "path": "node_modules/ms",
+      "version": "2.1.3",
+      "license": "MIT",
+      "installedBytes": 6721
+    },
+    {
+      "path": "node_modules/node-domexception",
+      "version": "1.0.0",
+      "license": "MIT",
+      "installedBytes": 29162
+    },
+    {
+      "path": "node_modules/node-fetch",
+      "version": "3.3.2",
+      "license": "MIT",
+      "installedBytes": 107319
+    },
+    {
+      "path": "node_modules/openai",
+      "version": "6.26.0",
+      "license": "Apache-2.0",
+      "installedBytes": 7500030
+    },
+    {
+      "path": "node_modules/partial-json",
+      "version": "0.1.7",
+      "license": "MIT",
+      "installedBytes": 21852
+    },
+    {
+      "path": "node_modules/protobufjs",
+      "version": "7.6.6",
+      "license": "BSD-3-Clause",
+      "installedBytes": 3053104
+    },
+    {
+      "path": "node_modules/retry",
+      "version": "0.13.1",
+      "license": "MIT",
+      "installedBytes": 18852
+    },
+    {
+      "path": "node_modules/safe-buffer",
+      "version": "5.2.1",
+      "license": "MIT",
+      "installedBytes": 32101
+    },
+    {
+      "path": "node_modules/ts-algebra",
+      "version": "2.0.0",
+      "license": "MIT",
+      "installedBytes": 101154
+    },
+    {
+      "path": "node_modules/tslib",
+      "version": "2.8.1",
+      "license": "0BSD",
+      "installedBytes": 90359
+    },
+    {
+      "path": "node_modules/typebox",
+      "version": "1.1.38",
+      "license": "MIT",
+      "installedBytes": 1468289
+    },
+    {
+      "path": "node_modules/undici-types",
+      "version": "6.21.0",
+      "license": "MIT",
+      "installedBytes": 83680
+    },
+    {
+      "path": "node_modules/web-streams-polyfill",
+      "version": "3.3.3",
+      "license": "MIT",
+      "installedBytes": 9036205
+    },
+    {
+      "path": "node_modules/ws",
+      "version": "8.22.0",
+      "license": "MIT",
+      "installedBytes": 151410
+    },
+    {
+      "path": "node_modules/yaml",
+      "version": "2.9.0",
+      "license": "ISC",
+      "installedBytes": 685953
+    },
+    {
+      "path": "node_modules/zod",
+      "version": "4.6.5",
+      "license": "MIT",
+      "installedBytes": 6140311
+    },
+    {
+      "path": "node_modules/zod-to-json-schema",
+      "version": "3.25.2",
+      "license": "ISC",
+      "installedBytes": 219264
+    }
+  ]
+}

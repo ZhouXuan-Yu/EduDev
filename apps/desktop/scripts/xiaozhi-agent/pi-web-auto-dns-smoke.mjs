@@ -1,0 +1,23 @@
+import '../office-agent/register-source.mjs';
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+import {resolveOfficePublicAddresses,officeWebUrl} from '../../src/main/office-agent/office-network.ts';
+const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-web-auto-dns-')),checks=[];
+const signal=AbortSignal.timeout(10000),publicAddress=[{address:'223.5.5.5',family:4}],virtual=[{address:'198.18.0.22',family:4}];
+let calls=0;const dependencies={system:async()=>virtual,public:async(host,_signal,mode)=>{assert.equal(host,'www.moe.gov.cn');assert.equal(mode,'alidns');calls++;return publicAddress;}};
+const check=name=>{checks.push({name,pass:true});console.log('PASS '+name);};
+let success=false,error;
+try{
+ assert.deepEqual(await resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',dependencies),publicAddress);assert.equal(calls,1);check('Virtual-only proxy DNS uses checked domestic public answer');
+ for(const address of ['198.19.255.254','::ffff:198.18.0.22']){await resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',{...dependencies,system:async()=>[{address,family:address.includes(':')?6:4}]});}assert.equal(calls,3);check('Entire benchmark range and mapped IPv4 detected');
+ for(const address of ['127.0.0.1','10.0.0.1','192.168.1.1','169.254.169.254','::1','fc00::1']){const before=calls;await assert.rejects(resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',{...dependencies,system:async()=>[{address,family:address.includes(':')?6:4}]}),/permission_denied/);assert.equal(calls,before);}check('Actual loopback/private/link-local addresses denied without public DNS disclosure');
+ for(const answers of [[...virtual,{address:'10.0.0.1',family:4}],[...publicAddress,...virtual]]){const before=calls;await assert.rejects(resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',{...dependencies,system:async()=>answers}),/permission_denied/);assert.equal(calls,before);}check('Mixed unsafe DNS denied without fallback');
+ const before=calls;assert.deepEqual(await resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',{...dependencies,system:async()=>publicAddress}),publicAddress);assert.equal(calls,before);check('Working system public DNS stays on system answer');
+ for(const code of ['ENOTFOUND','EAI_AGAIN','ETIMEOUT','ETIMEDOUT'])assert.deepEqual(await resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',{...dependencies,system:async()=>{throw Object.assign(new Error(code),{code});}}),publicAddress);check('Normal DNS lookup failures fall back');
+ const beforeFailure=calls;await assert.rejects(resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',{...dependencies,system:async()=>{throw new Error('unexpected');}}),/unexpected/);assert.equal(calls,beforeFailure);check('Unexpected lookup failure is not silently recovered');
+ for(const host of ['localhost','teacher.local','teacher.local.','teacher.internal','teacher.lan','teacher.home','teacher','fixture.invalid']){await assert.rejects(resolveOfficePublicAddresses(host,signal,'auto',dependencies),/permission_denied/);}check('Local and reserved names blocked before lookup or disclosure');
+ await assert.rejects(resolveOfficePublicAddresses('www.moe.gov.cn',signal,'system',dependencies),/dns_blocked/);check('Explicit system choice preserved and classified as DNS blocked');
+ await assert.rejects(resolveOfficePublicAddresses('www.moe.gov.cn',signal,'auto',{...dependencies,public:async()=>[{address:'10.0.0.1',family:4}]}),/permission_denied/);check('Fallback answers revalidated');
+ const abort=new AbortController();let pendingResolve;const pending=new Promise(resolve=>pendingResolve=resolve);const waited=resolveOfficePublicAddresses('www.moe.gov.cn',abort.signal,'auto',{...dependencies,system:()=>pending});const beforeAbort=calls;abort.abort(new Error('cancelled'));await assert.rejects(waited,/cancelled/);pendingResolve(virtual);await new Promise(r=>setTimeout(r,0));assert.equal(calls,beforeAbort);check('Stop interrupts actual waiting lookup and prevents late fallback');
+ for(const raw of ['http://127.0.0.1','http://[::ffff:127.0.0.1]','https://u:p@www.moe.gov.cn','file:///private'])assert.throws(()=>officeWebUrl(raw),/permission_denied/);check('Existing URL and credential boundary unchanged');
+ success=true;
+}catch(caught){error=String(caught.stack);process.exitCode=1;}finally{fs.writeFileSync(path.join(output,'report.json'),JSON.stringify({success,checks,error,boundary:'Actual resolver logic with injected DNS dependencies; not real public network or UI proof'},null,2));console.log(JSON.stringify({success,checks:checks.length,error,output}));}

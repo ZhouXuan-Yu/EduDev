@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual confirmed production write is physical before ledger outcome at main cut",
+      "pass": true
+    },
+    {
+      "name": "Restart marks uncertain without replay or false completed write",
+      "pass": true
+    },
+    {
+      "name": "Recovery action reachable at actual native 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Recovery action reachable at actual native 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Teacher verify uses existing file, reports applied and does not rewrite bytes or modification time",
+      "pass": true
+    },
+    {
+      "name": "Explicit teacher undo removes only the new artifact before outcome cut",
+      "pass": true
+    },
+    {
+      "name": "Restart marks undo uncertain and cannot recreate the removed file",
+      "pass": true
+    },
+    {
+      "name": "Visible undo verification classifies absence as reverted without file replay",
+      "pass": true
+    },
+    {
+      "name": "Final normal restart preserves verified undo and zero artifacts",
+      "pass": true
+    }
+  ],
+  "boundary": "Real DeepSeek natural create, actual native teacher approval/undo/verify, production main physical-file cuts with true owned Electron tree kills and SQLite/files. Synthetic only. Cut seam unavailable to packaged IPC."
+}

@@ -1,0 +1,59 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Natural DeepSeek task opens actual Office draft review with zero pre-approval file or official fact",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1366x768 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1920x1080 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Teacher rejection leaves zero output/fact and no repeated same-path proposal",
+      "pass": true
+    },
+    {
+      "name": "Actual DOCX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved DOCX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual PDF teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved PDF receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual XLSX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved XLSX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual PPTX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved PPTX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Four natural saved formats independently preserve exact teacher edits; XLSX number and PDF A4 are real",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual isolated Electron/Pi/DeepSeek, typed teacher revision/approval and four real Office files with SQLite/independent readback. Synthetic data only. WPS application/layout not yet claimed.",
+  "error": "Error: Actual run ended before Office review: running undefined\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs:17:258\n    at async until (file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs:13:94)\n    at async proposal (file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs:17:65)\n    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs:54:81"
+}

@@ -1,0 +1,112 @@
+{
+  "suite": "pi-skill-settings-formal-ui",
+  "success": true,
+  "model": "deepseek-flash",
+  "checks": [
+    {
+      "name": "Teacher opens real skill settings with four builtins and safe projected metadata",
+      "pass": true
+    },
+    {
+      "name": "Builtin full preview uses local official Modal and does not expose edit or archive",
+      "pass": true
+    },
+    {
+      "name": "Native chooser cancellation has visible feedback and zero catalog change",
+      "pass": true
+    },
+    {
+      "name": "Invalid local package shows actual failure and does not publish a skill",
+      "pass": true
+    },
+    {
+      "name": "Real page directory import defaults disabled and full local original preview remains available",
+      "pass": true
+    },
+    {
+      "name": "Management import and close remain reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Management import and close remain reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Teacher explicitly enables imported package with one current revision",
+      "pass": true
+    },
+    {
+      "name": "Old renderer revision cannot disable current enabled package",
+      "pass": true
+    },
+    {
+      "name": "Hana input badge shows actual selected skill",
+      "pass": true
+    },
+    {
+      "name": "Real DeepSeek executes native custom skill and registered reference read with actual facts",
+      "pass": true
+    },
+    {
+      "name": "Native model expansion is sanitized; scripts stay unexposed and send clears badge once",
+      "pass": true
+    },
+    {
+      "name": "Actual native manual compaction commits with real provider usage and append-only history",
+      "pass": true
+    },
+    {
+      "name": "Page edit publishes version two disabled; original package bytes remain unchanged",
+      "pass": true
+    },
+    {
+      "name": "Edited-disabled authority isolates old instructions/results/actual summary in real next provider run",
+      "pass": true
+    },
+    {
+      "name": "Explicit re-enable delivers only version two through actual native expansion/reference read",
+      "pass": true
+    },
+    {
+      "name": "Page disable revokes latest model context without erasing public history or original effects",
+      "pass": true
+    },
+    {
+      "name": "Actual restart retains disabled catalog and clean native branch with original history intact",
+      "pass": true
+    },
+    {
+      "name": "New actual conversation uses same global current skill version without old conversation memory",
+      "pass": true
+    },
+    {
+      "name": "Page archive retains source and version metadata and shows archived list",
+      "pass": true
+    },
+    {
+      "name": "Explicit re-import after archive creates new disabled version without overwriting old files",
+      "pass": true
+    },
+    {
+      "name": "Active real teacher question locks global skill modification in visible settings",
+      "pass": true
+    },
+    {
+      "name": "Source corruption fails before real provider and visible recovery does not promise a new-session bypass",
+      "pass": true
+    },
+    {
+      "name": "Actual page disables corrupt source and normal real provider work resumes safely",
+      "pass": true
+    },
+    {
+      "name": "All selected original source files remain byte-identical after complete UI workflow",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual Electron/main/typed preload/HeroUI and real official DeepSeek; synthetic local package only",
+    "Native OS chooser return controlled by owned main-process dialog injection; Windows chooser clicking not claimed",
+    "Complete Codex visual parity, actual VPN-off and installer remain pending"
+  ]
+}

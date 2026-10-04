@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "suite": "pi-real-public-process",
+  "model": "deepseek-flash",
+  "checks": [
+    {
+      "name": "Actual public text is already visible while the real model/tool run is still active",
+      "pass": true
+    },
+    {
+      "name": "Natural educational request streams public explanations around actual registered tools and preserves facts",
+      "pass": true
+    },
+    {
+      "name": "Real tool durations and actual total usage reach final main projection",
+      "pass": true
+    },
+    {
+      "name": "Actual UI preserves ordered call/segment identities and dark commentary",
+      "pass": true
+    },
+    {
+      "name": "Native public text matches persisted segmented projection; private reasoning is absent from DOM",
+      "pass": true
+    },
+    {
+      "name": "Actual consecutive calls use existing Pro ChatToolGroup and reveal individual measured evidence",
+      "pass": true
+    },
+    {
+      "name": "Process and composer remain reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Process and composer remain reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Real missing-file failure is expanded automatically while completed work remains",
+      "pass": true
+    },
+    {
+      "name": "Actual native compaction displays completed fine row with real elapsed time and private summary hidden",
+      "pass": true
+    },
+    {
+      "name": "Real pending question and stop remain actionable with new process rows",
+      "pass": true
+    },
+    {
+      "name": "Actual restart retains measured durations, original public order and history",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron/main/preload and real DeepSeek with synthetic educational files only",
+    "Native directory chooser return controlled in owned main; no Windows manual chooser claim",
+    "Reference DPR unknown; full Codex shell/image/files/settings and VPN-off/installer still pending"
+  ],
+  "liveObservation": {
+    "runId": "run_69d3cee4-139e-4dc4-be55-7edb2f83ac1a",
+    "segments": 1,
+    "actualCalls": 0
+  }
+}

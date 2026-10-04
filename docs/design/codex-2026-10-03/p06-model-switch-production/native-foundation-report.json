@@ -1,0 +1,111 @@
+{
+  "suite": "pi-history-model-switch-b1",
+  "success": true,
+  "checks": [
+    {
+      "name": "Real native setModel round trip preserves exact JSONL messages, header and creation fingerprint",
+      "pass": true
+    },
+    {
+      "name": "Crash after prepared: reopen real native file and SQLite, recover once, no replay on second recovery",
+      "pass": true
+    },
+    {
+      "name": "Crash after intent: reopen real native file and SQLite, recover once, no replay on second recovery",
+      "pass": true
+    },
+    {
+      "name": "Crash after native: reopen real native file and SQLite, recover once, no replay on second recovery",
+      "pass": true
+    },
+    {
+      "name": "Crash after receipt: reopen real native file and SQLite, recover once, no replay on second recovery",
+      "pass": true
+    },
+    {
+      "name": "Crash after committed: reopen real native file and SQLite, recover once, no replay on second recovery",
+      "pass": true
+    },
+    {
+      "name": "Aborted pre-native intent allows a later native switch without resurrecting old request",
+      "pass": true
+    },
+    {
+      "name": "Concurrent durable prepare and stale CAS rejected across independent SQLite handles",
+      "pass": true
+    },
+    {
+      "name": "Binding conflict rolls back transition and ledger in the same SQLite statement",
+      "pass": true
+    },
+    {
+      "name": "Archiving between native receipt and commit atomically rejects, never unarchives or aborts actual native change",
+      "pass": true
+    },
+    {
+      "name": "Runtime host lock, permission denial and Hana target context guard reject before native intent",
+      "pass": true
+    },
+    {
+      "name": "Hana uses current context usage and token-estimation fallback with its original capacity reserve",
+      "pass": true
+    },
+    {
+      "name": "Unrecorded native model_change cannot be accepted because it matches a target model string",
+      "pass": true
+    },
+    {
+      "name": "Native mutation throwing after appendModelChange is recoverable without calling setModel again",
+      "pass": true
+    },
+    {
+      "name": "Foreign native identity/file and unsafe saved path rejected without mutating history",
+      "pass": true
+    },
+    {
+      "name": "Altered native receipt rejected with ledger unchanged",
+      "pass": true
+    },
+    {
+      "name": "Unexpected user/tool/compaction history inside a pending idle switch cannot be adopted",
+      "pass": true
+    },
+    {
+      "name": "Ledger revision conflict rolls back binding and transition, recovery requires exact original revision",
+      "pass": true
+    },
+    {
+      "name": "Authority isolation branch cannot silently restore removed model markers or old messages in B1",
+      "pass": true
+    },
+    {
+      "name": "Unknown ledger schema and malformed native IDs fail closed",
+      "pass": true
+    },
+    {
+      "name": "Already-selected model is a real no-op with no new native entries or revision bump",
+      "pass": true
+    },
+    {
+      "name": "Damaged native JSONL cannot be silently tolerated by SDK during identity mutation",
+      "pass": true
+    },
+    {
+      "name": "A stale cached manager cannot overwrite or adopt another file writer",
+      "pass": true
+    },
+    {
+      "name": "Duplicate IDs and cyclic parents rejected before native branch traversal",
+      "pass": true
+    },
+    {
+      "name": "All actual native switching and recovery instances make zero provider requests",
+      "pass": true
+    },
+    {
+      "name": "Neither transition persistence nor native history contains the synthetic credential",
+      "pass": true
+    }
+  ],
+  "boundary": "Real Pi SDK/SQLite/JSONL instances; no production UI or provider completion claimed"
+}

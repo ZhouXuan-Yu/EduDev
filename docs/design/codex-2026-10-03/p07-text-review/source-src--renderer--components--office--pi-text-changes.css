@@ -1,0 +1,10 @@
+/* Existing Pro surfaces, with local text review kept inside the conversation. */
+.xiaozhi-pi-workspace .pi-text-change .chat-tool__trigger-label > span { overflow-wrap: anywhere; }
+.xiaozhi-pi-workspace .pi-text-review { min-width: 0; }
+.xiaozhi-pi-workspace .pi-text-review [data-slot='code-block'] { margin: 10px 0; max-height: 300px; overflow: auto; border-radius: 12px; }
+.xiaozhi-pi-workspace .pi-text-review pre { font-size: 13px; line-height: 1.65; }
+.xiaozhi-pi-workspace .pi-text-review p { font-size: 13px; color: #777d7c; }
+.xiaozhi-pi-workspace .pi-text-change-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.xiaozhi-pi-workspace .pi-text-change-actions button { border-radius: 16px; }
+.xiaozhi-pi-workspace .pi-text-change [role='alert'] { color: #b33f3f; }
+@media (max-height: 850px) { .xiaozhi-pi-workspace .pi-text-review [data-slot='code-block'] { max-height: 180px; } }

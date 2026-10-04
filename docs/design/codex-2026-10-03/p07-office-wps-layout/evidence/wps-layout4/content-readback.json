@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "checks": [
+    "Actual WPS Word content and independent DOCX all paragraphs/table cells preserve exact spaces and values",
+    "Actual WPS Excel complete used range equals OOXML, preserving numeric types, literal digits and no formulas",
+    "Actual WPS presentation all paragraph characters/ordered text and table character counts retained across original autoPage fragments"
+  ],
+  "sourceHashes": {
+    "docx": "4d3cedc1e66fc422bbd2ccfc39670c5bc42ae02c3490d708724304139146dc58",
+    "xlsx": "6d9544370c897bdb5ac7cc4560c3afecafe3c08375ed984bb6d748d7b35e8604",
+    "pptx": "c87601ae8d2aa6e64b1f263c2a3401760a933962fdebe507fe362c3dbe60740b"
+  },
+  "boundary": "Exact Word/Excel content from actual WPS COM; PPT paragraphs ordered, table fragments all character counts incl. spaces, visual inspection still required for ordering/clipping."
+}

@@ -1,0 +1,20 @@
+.xiaozhi-pi-workspace .office-plan { display: block; border: 0; background: transparent; box-shadow: none; }
+.xiaozhi-pi-workspace :is(.office-plan,.pi-live-task-strip) [data-slot='chain-of-thought-trigger'] { padding: 0; gap: 8px; min-height: 28px; color: #777d7c; font-size: 14px; font-weight: 400; width: 100%; justify-content: flex-start; }
+.xiaozhi-pi-workspace :is(.office-plan,.pi-live-task-strip) [data-slot='chain-of-thought-content'] { padding: 10px 0 0 24px; }
+.xiaozhi-pi-workspace :is(.office-plan,.pi-live-task-strip) [data-slot='chain-of-thought-steps'] { gap: 10px; }
+.xiaozhi-pi-workspace .pi-plan-count { margin-left: auto; flex-shrink: 0; font-size: 12px; color: #8a908d; }
+.xiaozhi-pi-workspace .pi-plan-step-line { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; line-height: 1.7; color: #4d5855; }
+.xiaozhi-pi-workspace .pi-plan-step-line > svg { margin-top: 4px; flex-shrink: 0; }
+.xiaozhi-pi-workspace .pi-plan-step-line > span:first-of-type { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.xiaozhi-pi-workspace .pi-plan-step-state { color: #8a908d; font-size: 12px; flex-shrink: 0; }
+.xiaozhi-pi-workspace .pi-live-task-strip { border: 1px solid #eceeed; border-radius: 16px 16px 0 0; margin: 0 14px -1px; padding: 8px 12px; background: #fff; box-shadow: none; }
+.xiaozhi-pi-workspace .pi-live-task-strip [data-slot='chain-of-thought-content'] { max-height: 200px; overflow: auto; }
+.xiaozhi-pi-workspace .pi-plan-current { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
+.xiaozhi-pi-workspace .pi-plan-title { flex-shrink: 0; }
+.xiaozhi-pi-workspace .office-turn-notice { color: #777d7c; font-size: 14px; font-weight: 400; padding-top: 12px; gap: 8px; }
+.xiaozhi-pi-workspace .office-turn-notice strong { font-weight: 400; }
+.xiaozhi-pi-workspace .office-turn-notice > div { flex: 1; min-width: 0; }
+.xiaozhi-pi-workspace .office-turn-notice[data-state='failed'] { color: #a34e42; }
+.xiaozhi-pi-workspace .office-turn-notice button { border: 1px solid #eceeed; border-radius: 16px; background: #fff; font-weight: 400; }
+.xiaozhi-pi-workspace .pi-retry-hint { padding: 8px 16px; margin: 0; color: #777d7c; font-size: 13px; line-height: 1.7; }
+@container (max-width: 440px) { .xiaozhi-pi-workspace .pi-live-task-strip { margin-inline: 0; } .xiaozhi-pi-workspace .pi-live-task-strip .pi-plan-current { display: none; } }

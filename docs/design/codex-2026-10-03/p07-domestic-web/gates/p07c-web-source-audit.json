@@ -1,0 +1,49 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "file": "lib/tools/anysearch.ts",
+      "version": "0.449.0",
+      "sha": "b7d829a877f52d4e954ff0d23dc2d6eddf13d41fa5f62d95fb0940931711ca31",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "lib/tools/web-reader.ts",
+      "version": "0.449.0",
+      "sha": "fda1343eb45a9e5338ebefbafc7c25a8c3aed85b522a94e901a56087e066c8e5",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "lib/tools/search-rate-limiter.ts",
+      "version": "0.449.0",
+      "sha": "b0faba7648d23e30e472948b4d83f8efadf607acec5566e2bf1e2a7db65af977",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "chat-source/index.ts",
+      "sha": "c222976a49dde942cc88afb4f038a7ee5e348db410723399d35a911eace49792",
+      "provenance": "Existing local Pro source; README license boundary"
+    },
+    {
+      "file": "chat-source/chat-source.tsx",
+      "sha": "e4c8e30f36139f23d6d47e9462e9e3d8b066b5ee2e7621202956e60490a0e744",
+      "provenance": "Existing local Pro source; README license boundary"
+    },
+    {
+      "file": "chat-source/chat-sources.tsx",
+      "sha": "2f4517f6cb5293be8686b70113b1f5c3d87779924dccff0def254179ae50e84f",
+      "provenance": "Existing local Pro source; README license boundary"
+    },
+    {
+      "file": "chat-source/chat-source.styles.ts",
+      "sha": "9d089e3fe5146ffaef08b0881101dc6b653930814839eaab7cc3412e04dc674a",
+      "provenance": "Existing local Pro source; README license boundary"
+    },
+    {
+      "file": "chat-tool/chat-tool.tsx",
+      "sha": "80f20aa2f974cb44cf8f41f52ae7f3efc6b76799b7984897cde657a26de4d534",
+      "provenance": "Existing local Pro source; README license boundary"
+    }
+  ],
+  "boundary": "Original source hashes only; does not establish Codex source identity or runtime behavior"
+}

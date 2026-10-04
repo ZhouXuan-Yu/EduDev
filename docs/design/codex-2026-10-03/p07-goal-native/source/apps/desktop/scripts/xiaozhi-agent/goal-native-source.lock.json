@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "pi": "1.0.2",
+  "hana": "0.450.0",
+  "files": {
+    "hana/task-registry.ts": "2a4ad8276b7c5ae657799498fcc72bfba194027c8923e57b9d2a357a55a4558e",
+    "hana/safe-fs.ts": "4ae5b56ff853d064292a167ef9dfba91f38378c42e3bc6b6f504b74bb4dba74a",
+    "hana/LICENSE": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+    "pi/agent-loop.ts": "e773e822a2587caf314e6bb66ea6370fce3468b7eecd26d6a67afe673f81eabc",
+    "pi/types.ts": "347efd535342c1d5fbd6b731168c57fcbb201a6652707f8e22e1b66fe3b69c2d",
+    "pi/agent-session.ts": "fa1a4f2d84efd0aab8f4a74301d1106395130d3cc59bd665c558280f27dceb03",
+    "pi/LICENSE": "0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48"
+  }
+}

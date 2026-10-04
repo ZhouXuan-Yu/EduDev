@@ -1,0 +1,22 @@
+{
+  "repository": "https://github.com/openai/codex-plugin-cc",
+  "commit": "db52e28f4d9ded852ab3942cea316258ae4ef346",
+  "upstreamPath": "plugins/codex/scripts/lib/app-server.mjs",
+  "license": "Apache-2.0",
+  "sourceSha256": "6a2449d61f480483898369d437680951a62789fc0ad5893573ce93265b904d0e",
+  "extractedSymbols": [
+    "buildJsonRpcError",
+    "createProtocolError",
+    "AppServerClientBase",
+    "SpawnedCodexAppServerClient"
+  ],
+  "vendoredSha256": "38106117f738b72584f908959c2d8b0be564aa48a65c611a7b04fcd04ce47c98",
+  "adaptations": [
+    "private native binary/env; no shell or broker",
+    "streaming enabled; private reasoning notifications opt-out",
+    "bounded stderr/chunk buffer; malformed line content omitted; stdin errors disconnect",
+    "owned-PID shutdown helper",
+    "send failure removes pending request",
+    "upstream implicit types retained; strict facade"
+  ]
+}

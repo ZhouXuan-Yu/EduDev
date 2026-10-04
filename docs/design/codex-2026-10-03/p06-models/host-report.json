@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Provider validation reserves a global lock before network wait",
+      "pass": true
+    },
+    {
+      "name": "Successful commit releases the global reservation and returns an unlocked public view",
+      "pass": true
+    },
+    {
+      "name": "Workspace chooser blocks settings in the reverse direction",
+      "pass": true
+    },
+    {
+      "name": "Reserved startup blocks credential mutation before model execution",
+      "pass": true
+    },
+    {
+      "name": "Closing during validation rejects a late configuration commit",
+      "pass": true
+    },
+    {
+      "name": "Owned source database is unchanged",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual production-host ownership gates and disposable existing-schema SQLite; controlled provider and chooser barriers."
+  ]
+}

@@ -1,0 +1,86 @@
+/* Adapted from Hana 0.449.0, Apache-2.0. See source-manifest.json and LICENSE. */
+.skills-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+    padding: 5px var(--space-12);
+    background: transparent;
+    cursor: default;
+    transition: background var(--duration-fast);
+}
+
+.skills-list-item:hover {
+    background: var(--overlay-light);
+}
+
+.skills-list-item.skill-install-highlight,
+.skill-bundle-header.skill-bundle-highlight {
+    background: rgba(var(--accent-rgb), 0.085);
+    box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.22);
+}
+
+.skills-list-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.skills-list-name {
+    font-size: var(--fs-ui);
+    font-weight: 600;
+    color: var(--text);
+}
+
+.skills-list-name-hint {
+    font-size: var(--fs-caption);
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-left: 6px;
+    opacity: 0.6;
+}
+
+.skills-list-desc {
+    font-size: var(--fs-hint);
+    color: var(--text-muted);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.skills-list-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.skill-card-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: none;
+    color: var(--text-muted);
+    font-size: var(--fs-hint);
+    cursor: default;
+    border-radius: var(--radius-input, 6px);
+    opacity: 0;
+    transition: all var(--duration-fast);
+}
+
+.skills-list-item:hover .skill-card-delete {
+    opacity: 1;
+}
+
+.skill-card-delete:hover {
+    color: var(--danger);
+    background: var(--overlay-light);
+}
+
+
+.skills-list-item:focus-within .skill-card-delete { opacity: 1; }

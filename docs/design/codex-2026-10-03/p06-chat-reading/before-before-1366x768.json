@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "name": "before-1366x768",
+  "capturedAt": "2026-10-03T13:33:40.259Z",
+  "renderer": {
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "dpr": 1.0000000298023224,
+    "visualViewport": {
+      "width": 1366,
+      "height": 768,
+      "scale": 1
+    },
+    "screen": {
+      "width": 1366,
+      "height": 768
+    },
+    "regions": {
+      "workspace": {
+        "selector": "[data-testid=\"xiaozhi-pi-workspace\"]",
+        "present": true,
+        "rect": {
+          "x": 0,
+          "y": 36,
+          "width": 1366,
+          "height": 732
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "24px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgb(230, 249, 247)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "0px"
+      },
+      "sidebar": {
+        "selector": "[data-testid=\"ai-conversation-sidebar\"]",
+        "present": true,
+        "rect": {
+          "x": 62,
+          "y": 36,
+          "width": 304,
+          "height": 732
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "24px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgb(245, 251, 251)",
+        "borderRadius": "0px",
+        "padding": "8px 12px",
+        "gap": "0px"
+      },
+      "header": {
+        "selector": ".ai-chat-header",
+        "present": true,
+        "rect": {
+          "x": 366,
+          "y": 36,
+          "width": 694,
+          "height": 62
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "24px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "padding": "0px 20px",
+        "gap": "12px"
+      },
+      "conversation": {
+        "selector": "[data-testid=\"office-conversation\"]",
+        "present": true,
+        "rect": {
+          "x": 366,
+          "y": 98,
+          "width": 694,
+          "height": 532.6666870117188
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "readingColumn": {
+        "selector": ".office-conversation-content",
+        "present": true,
+        "rect": {
+          "x": 366,
+          "y": 98,
+          "width": 694,
+          "height": 267
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "30px 28px 16px",
+        "gap": "normal"
+      },
+      "composer": {
+        "selector": ".office-composer-container",
+        "present": true,
+        "rect": {
+          "x": 390,
+          "y": 630.6666870117188,
+          "width": 646,
+          "height": 119.33333587646484
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "8px 28px 20px",
+        "gap": "normal"
+      },
+      "input": {
+        "selector": "[data-testid=\"office-prompt-input\"]",
+        "present": true,
+        "rect": {
+          "x": 436.66668701171875,
+          "y": 653.3333740234375,
+          "width": 552.6666870117188,
+          "height": 28
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "inspection": {
+        "selector": "[data-testid=\"xiaozhi-pi-inspector\"]",
+        "present": true,
+        "rect": {
+          "x": 1060,
+          "y": 54,
+          "width": 290,
+          "height": 303.4583435058594
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "color": "rgb(119, 125, 124)",
+        "background": "rgb(255, 255, 255)",
+        "borderRadius": "20px",
+        "padding": "16px 18px",
+        "gap": "normal"
+      },
+      "assistant": {
+        "selector": "[data-slot=\"chat-message-assistant\"]",
+        "present": false
+      },
+      "tool": {
+        "selector": ".office-tool [data-slot=\"chat-tool-trigger\"]",
+        "present": false
+      }
+    }
+  },
+  "native": {
+    "bounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1360,
+      "height": 902
+    },
+    "contentBounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1360,
+      "height": 902
+    },
+    "zoomFactor": 1,
+    "displayScaleFactor": 1.5
+  },
+  "screenshot": {
+    "file": "before-1366x768.png",
+    "width": 1366,
+    "height": 768
+  }
+}

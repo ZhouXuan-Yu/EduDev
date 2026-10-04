@@ -320,12 +320,13 @@ export const PromptInputTextArea = ({
     rows: 1,
     value,
     onKeyDown: (e: ReactKeyboardEvent<HTMLTextAreaElement>) => {
+      onKeyDown?.(e);
+      if (e.defaultPrevented || e.nativeEvent.isComposing || e.nativeEvent.keyCode === 229) return;
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         if (isGenerating && !allowSubmitWhileRunning) return;
         onSubmit?.();
       }
-      onKeyDown?.(e);
     },
     onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setValue(e.target.value);

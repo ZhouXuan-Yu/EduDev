@@ -1,0 +1,22 @@
+/* finesse component scope: education workbench tokens; actual async states and native controls. */
+.pi-skills-dialog, .pi-skill-tag {
+  --space-16: 16px; --space-12: 12px; --fs-ui: 14px; --fs-caption: 12px; --fs-hint: 12px;
+  --text: #303332; --text-muted: #777d7c; --overlay-light: #f4f6f5; --duration-fast: 150ms;
+  --duration-instant: 100ms; --accent: #3b7ff0; --accent-light: #eef4ff; --accent-rgb: 59,127,240; --radius-sm: 8px;
+  --danger: #b33f3f;
+}
+.pi-skills-dialog { width: min(100%, 980px); max-width: 980px; max-height: calc(100vh - 48px); color: var(--text); font-family: 'Segoe UI', 'Microsoft YaHei UI', sans-serif; }
+.pi-skills-dialog [data-slot="modal-body"] { min-height: 0; overflow-y: auto; }
+.pi-skills-dialog p { font-size: 13px; line-height: 1.6; color: var(--text-muted); }
+.pi-skills-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.pi-skills-layout { display: grid; grid-template-columns: minmax(280px, .9fr) minmax(0, 1fr); gap: 18px; min-height: 290px; }
+.pi-skills-details { min-width: 0; border-left: 1px solid #eceeed; padding-left: 18px; }
+.pi-skills-details h3 { margin: 0; font-size: 15px; }
+.pi-skills-details h3 span { font-weight: 400; color: var(--text-muted); font-size: 12px; }
+.pi-skills-details pre, .pi-skills-details textarea { width: 100%; box-sizing: border-box; margin: 12px 0; padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; overflow: auto; font-size: 13px; line-height: 1.65; max-height: 300px; border: 1px solid #eceeed; border-radius: 10px; background: #fafbfa; color: var(--text); }
+.pi-skills-details textarea { height: 260px; resize: vertical; min-height: 120px; }
+.pi-skills-archive { border-top: 1px solid #eceeed; margin-top: 16px; padding-top: 12px; display: flex; align-items: center; gap: 8px; }
+.pi-skills-archive p { flex: 1; }
+.pi-skill-tag { display: flex; align-items: center; gap: 4px; padding: 8px 14px 0; }
+@media (max-width: 700px) { .pi-skills-layout { grid-template-columns: minmax(0, 1fr); } .pi-skills-details { border-left: 0; border-top: 1px solid #eceeed; padding: 12px 0 0; } }
+@media (prefers-reduced-motion: reduce) { .pi-skills-dialog, .pi-skill-tag { --duration-fast: 0ms; --duration-instant: 0ms; } }

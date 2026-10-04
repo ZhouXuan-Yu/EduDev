@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "mode": "replace",
+  "readOnly": false,
+  "targetProfileMatched": true,
+  "recordedRunningCount": 0,
+  "configurationSaved": true,
+  "legacyAndOtherSettingsUnchanged": true,
+  "version": 2,
+  "defaultModel": "deepseek-flash",
+  "encrypted": true,
+  "matchesAuthorizedLocalKey": true,
+  "catalogueHttpStatus": 200,
+  "availableModelIds": [
+    "deepseek-flash",
+    "deepseek-v4-pro"
+  ],
+  "defaultInOfficialCatalogue": true,
+  "completionHttpStatus": 200,
+  "completionTextPresent": true,
+  "observedAt": "2026-10-04T05:09:49.560Z"
+}

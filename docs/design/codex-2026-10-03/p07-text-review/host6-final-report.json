@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Another global local job refuses undo before any file effect",
+      "pass": true
+    },
+    {
+      "name": "Idle host executes explicit undo and releases its global owner",
+      "pass": true
+    },
+    {
+      "name": "Archived session cannot disclose review or undo a file",
+      "pass": true
+    },
+    {
+      "name": "Undo reserves the existing global owner before asynchronous authority reads",
+      "pass": true
+    },
+    {
+      "name": "Close waits and refuses late file work after a pending authority read",
+      "pass": true
+    },
+    {
+      "name": "Original isolated fixture source remains byte-identical",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual production host locks, archived authority, SQLite and file effects; controlled async barriers. No provider/UI claim."
+}

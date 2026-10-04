@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "mode": "inspect",
+  "readOnly": true,
+  "targetProfileMatched": true,
+  "error": "decryption_failed",
+  "observedAt": "2026-10-04T05:09:38.287Z"
+}

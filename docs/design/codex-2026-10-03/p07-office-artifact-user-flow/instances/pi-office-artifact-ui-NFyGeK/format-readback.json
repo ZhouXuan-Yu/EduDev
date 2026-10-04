@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "files": [
+    {
+      "path": "课堂计划.docx",
+      "format": "docx",
+      "markersPresent": true,
+      "bytes": 9896
+    },
+    {
+      "path": "课堂计划.pdf",
+      "format": "pdf",
+      "markersPresent": true,
+      "bytes": 48758
+    },
+    {
+      "path": "课堂计划.xlsx",
+      "format": "xlsx",
+      "markersPresent": true,
+      "bytes": 6976
+    },
+    {
+      "path": "课堂计划.pptx",
+      "format": "pptx",
+      "markersPresent": true,
+      "bytes": 65952
+    }
+  ]
+}

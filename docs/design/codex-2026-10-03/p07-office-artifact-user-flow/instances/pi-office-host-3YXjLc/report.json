@@ -1,0 +1,23 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "A concurrent settings/local job denies verification before any fact or file effect",
+      "pass": true
+    },
+    {
+      "name": "Idle explicit verification registers real existing bytes and releases the original global owner",
+      "pass": true
+    },
+    {
+      "name": "Archived conversation denies local draft disclosure and recovery publication",
+      "pass": true
+    },
+    {
+      "name": "Verification holds global idle owner during awaited authorization and blocks starts/chooser",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual original global host owner, closing/archived authorization, SQLite and real XLSX/FS. Controlled async cut/barriers only; no provider/UI.",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'busy'\n- 'permission_denied'\n\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-host-smoke.mjs:26:162"
+}

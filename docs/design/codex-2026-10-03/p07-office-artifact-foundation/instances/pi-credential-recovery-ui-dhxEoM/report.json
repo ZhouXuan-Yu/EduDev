@@ -1,0 +1,27 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual stale stored credential fails official authentication and old missing default is shown explicitly",
+      "pass": true
+    },
+    {
+      "name": "Independent invalid candidate produces actual authentication failure and keeps previous configuration",
+      "pass": true
+    },
+    {
+      "name": "Supplied real key verifies independently with edge whitespace, enables valid candidate and is not saved yet",
+      "pass": true
+    },
+    {
+      "name": "Explicit save commits actual Windows-encrypted replacement/default and preserves legacy row",
+      "pass": true
+    },
+    {
+      "name": "Original HeroUI/Hana settings controls are reachable in both required content sizes",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual isolated formal Electron UI, supplied DeepSeek key, official catalogue, Windows safeStorage and real Pi chat. No real teacher data upload or real profile migration.",
+  "error": "electronApplication.evaluate: Target page, context or browser has been closed\nBrowser logs:\n\n<launching> \"D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js\" \"--user-data-dir=D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-credential-recovery-ui-dhxEoM\\profile\" \n<launched> pid=40760\n[pid=40760][out] \n[pid=40760][err] Debugger listening on ws://127.0.0.1:64055/9803c082-e6cf-44e7-9c58-fe24c96f2161\n[pid=40760][err] For help, see: https://nodejs.org/learn/getting-started/debugging\n[pid=40760][err] Debugger attached.\n[pid=40760][err] \n[pid=40760][err] DevTools listening on ws://127.0.0.1:64059/devtools/browser/c911442e-5d74-4257-bd9a-1cb2c43c5ce2\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-credential-recovery-ui-smoke.mjs:31:25"
+}

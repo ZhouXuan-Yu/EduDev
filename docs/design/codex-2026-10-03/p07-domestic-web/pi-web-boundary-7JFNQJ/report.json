@@ -1,0 +1,58 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Necessary query sanitization happens before actual fixed anonymous POST; unsafe encoded source removed",
+      "pass": true
+    },
+    {
+      "name": "Original Hana once wrapper preserves result and makes zero duplicate HTTP request",
+      "pass": true
+    },
+    {
+      "name": "Original once rejects same call ID with different arguments",
+      "pass": true
+    },
+    {
+      "name": "Accessor and unknown-key input rejected without invoking accessors",
+      "pass": true
+    },
+    {
+      "name": "Original Hana HTML reader strips script/chrome; bounded sanitized body and actual URL/time have separate receipts",
+      "pass": true
+    },
+    {
+      "name": "Private/credential/encoded-student URL and private redirect rejected before target transport",
+      "pass": true
+    },
+    {
+      "name": "Successful empty result stays explicitly empty without invented source",
+      "pass": true
+    },
+    {
+      "name": "Real HTTP rate/service classifications preserved without remote error payload",
+      "pass": true
+    },
+    {
+      "name": "1MiB and unsupported binary boundaries fail explicitly",
+      "pass": true
+    },
+    {
+      "name": "Aborted and stale-run invocations cannot perform network work",
+      "pass": true
+    },
+    {
+      "name": "Independent app_settings CAS preserves prior encrypted-provider row and explicit disabled preference",
+      "pass": true
+    },
+    {
+      "name": "Source opener accepts only recorded session URL; settings refuse arbitrary resolver, secrets and schema",
+      "pass": true
+    },
+    {
+      "name": "Typed public projection retains URL/time/read kind and human label across JSON readback",
+      "pass": true
+    }
+  ],
+  "boundary": "Real adapter/reader/Pi once/state/projection; mocked HTTP transport, not real provider/UI/noVPN proof"
+}

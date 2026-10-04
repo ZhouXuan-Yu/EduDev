@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Long title is selected through actual imported-disabled then teacher-enabled Skills UI",
+      "pass": true
+    },
+    {
+      "name": "Selected long skill, permission, model, preview and send remain inside one row at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Condensed picker still exposes full selected title and real preview at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Selected long skill, permission, model, preview and send remain inside one row at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Condensed picker still exposes full selected title and real preview at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Actual file-panel split safely wraps narrow controls and retains the send button",
+      "pass": true
+    },
+    {
+      "name": "Opening and closing the real file split retain the same unsent draft and selected skill",
+      "pass": true
+    },
+    {
+      "name": "Removing the selected skill restores the normal composer",
+      "pass": true
+    },
+    {
+      "name": "Starting a different actual conversation clears ephemeral input and skill selection",
+      "pass": true
+    }
+  ],
+  "boundary": "Formal Electron with owned fresh data/profile; actual original Skills import/enable/picker and DOM geometry. No model completion claim from this layout suite."
+}

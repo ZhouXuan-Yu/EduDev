@@ -1,4 +1,6 @@
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } from './desktop-chrome';
+import { restoreWindowGeometry, installWindowGeometry } from './desktop-chrome/window-geometry';
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
@@ -14,6 +16,7 @@ import type {
   XiazhiUserInputRequest,
   XiazhiUserInputResult,
   AiConfirmationItem,
+  AiExerciseSetTeacherEdits,
   AiConfirmationPayload,
   AiMasteryPathModule,
   AiConsoleRunInput,
@@ -60,6 +63,8 @@ import { buildReviewReminder } from './ai-harness/review-reminder';
 import { renderTeachingBookMarkdown } from './ai-harness/teaching-book-renderer';
 import { gradeEducationalReply } from './ai-harness/education-grader';
 import { gradeUsabilityReply } from './ai-harness/usability-policy';
+import { isTripletGraphRequest, runTripletGraph } from './ai-harness/triplet-graph';
+import { registerXiaozhiIpc } from './xiaozhi-agent/ipc';
 
 let store: OmniEduStore;
 let deepTutorSidecar: DeepTutorSidecarClient | undefined;
@@ -69,6 +74,17 @@ let e2eStudentExportDialogQueue: string[][] | undefined;
 let e2eDataBackupExportDialogQueue: string[] | undefined;
 let e2eDataBackupVerifyDialogQueue: string[] | undefined;
 let lastE2eDataBackupExportPath = '';
+let e2eTripletModelCallCount = 0;
+
+function e2eTripletModelRequest(content: string, delayMs = 0) {
+  return async () => {
+    e2eTripletModelCallCount += 1;
+    const forcedFailures = Math.min(3, Math.max(0, Number(process.env.OMNI_EDU_E2E_TRIPLET_NETWORK_FAILURES) || 0));
+    if (e2eTripletModelCallCount <= forcedFailures) throw new TypeError('fetch failed');
+    if (delayMs) await new Promise((resolve) => setTimeout(resolve, delayMs));
+    return { choices: [{ message: { content } }] };
+  };
+}
 
 function resolveRepoRoot() {
   const explicit = process.env.OMNI_EDU_REPO_ROOT?.trim();
@@ -240,6 +256,14 @@ function boundedDeepTutorText(value: unknown, limit = 8000) {
   return text.length <= limit ? text : `${text.slice(0, limit)}...[truncated]`;
 }
 
+function modelFailureMessage(value: unknown, provider: 'deepseek' | 'glm' = 'deepseek'): string {
+  const detail = boundedDeepTutorText(value, 800);
+  if (/fetch failed|ECONNRESET|ENOTFOUND|ETIMEDOUT|TLS handshake/i.test(detail)) {
+    return `无法连接 ${provider === 'glm' ? '智谱 GLM' : 'DeepSeek'} API。请检查网络、代理或防火墙后重试；请求尚未到达服务端，不能据此判断密钥是否有效。`;
+  }
+  return detail;
+}
+
 function handleDeepTutorSidecarExit(error: Error) {
   const detail = `DeepTutor sidecar disconnected: ${boundedDeepTutorText(error.message, 800)}`;
   for (const [turnId, binding] of [...deepTutorRuns.entries()]) {
@@ -320,9 +344,10 @@ async function executeDeepTutorModelRequest(request: XiazhiModelRequest): Promis
     requestId: request.requestId,
     turnId: request.turnId,
   };
-  const settings = await store.getDeepSeekRuntimeSettings();
+  const pinnedProvider = deepTutorRuns.get(request.turnId)?.requestSnapshot.context.provider;
+  const settings = await store.getDeepSeekRuntimeSettings(pinnedProvider === 'glm' || pinnedProvider === 'deepseek' ? pinnedProvider : undefined);
   if (!settings.apiKey) {
-    return { ...base, status: 'blocked', error: { code: 'MISSING_MODEL_CREDENTIAL', message: 'DeepSeek API Key 未配置，模型请求已在 Electron main 阻断。', retryable: false } };
+    return { ...base, status: 'blocked', error: { code: 'MISSING_MODEL_CREDENTIAL', message: `${settings.provider === 'glm' ? '智谱 GLM' : 'DeepSeek'} API Key 未配置，模型请求已在 Electron main 阻断。`, retryable: false } };
   }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 45_000);
@@ -330,6 +355,7 @@ async function executeDeepTutorModelRequest(request: XiazhiModelRequest): Promis
     const tools = Array.isArray(request.tools) ? request.tools as ReturnType<typeof import('./ai-harness/tool-registry').getModelToolDefinitions> : undefined;
     const messages = sanitizeDeepTutorMessages(request.messages);
     const initial = await requestDeepSeekCompletion({
+      provider: settings.provider,
       apiKey: settings.apiKey,
       model: settings.model,
       messages,
@@ -348,6 +374,7 @@ async function executeDeepTutorModelRequest(request: XiazhiModelRequest): Promis
       ? { response: initial, recovery: { attempted: false } }
       : await recoverStructuredJsonCompletion({
           initial,
+          provider: settings.provider,
           apiKey: settings.apiKey,
           model: settings.model,
           messages,
@@ -365,7 +392,7 @@ async function executeDeepTutorModelRequest(request: XiazhiModelRequest): Promis
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return { ...base, status: 'failed', error: { code: 'MODEL_PROVIDER_ERROR', message: boundedDeepTutorText(message, 800), retryable: true } };
+    return { ...base, status: 'failed', error: { code: 'MODEL_PROVIDER_ERROR', message: modelFailureMessage(message, settings.provider), retryable: true } };
   } finally {
     clearTimeout(timeout);
   }
@@ -672,13 +699,14 @@ function persistDeepTutorEvent(event: XiazhiCapabilityEvent) {
 app.setName('OmniEduAgent');
 
 function createWindow() {
+  const { maximized, ...geometry } = restoreWindowGeometry();
   const window = new BrowserWindow({
-    width: 1360,
-    height: 900,
+    ...geometry,
     minWidth: 1100,
     minHeight: 720,
     title: 'Omni-Edu Agent',
     backgroundColor: '#eef1f3',
+    ...nativeChromeOptions(),
     webPreferences: {
       preload: join(__dirname, '../preload/index.cjs'),
       contextIsolation: true,
@@ -687,6 +715,8 @@ function createWindow() {
     },
   });
   mainWindow = window;
+  installDesktopChrome(window);
+  installWindowGeometry(window, maximized, geometry);
 
   window.webContents.setWindowOpenHandler(({ url }) => {
     try {
@@ -708,6 +738,7 @@ function createWindow() {
 }
 
 function loadLocalEnv() {
+  if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) return;
   const envPath = join(process.cwd(), '.env.local');
   if (!existsSync(envPath)) return;
   const lines = readFileSync(envPath, 'utf8').split(/\r?\n/);
@@ -766,7 +797,8 @@ async function createAiConfirmationsFromResult(
   if (contentMd && (reportArtifact || result.structuredReply.route === 'report_draft')) {
     const range = result.learningAnalytics ?? { ...defaultAiReportRange(), subject: '', sourceRecordIds: [] };
     const title = reportArtifact?.title || '小智复盘草稿';
-    confirmations.push(await store.createAiConfirmation({
+    const existingReport = await store.getAiConfirmationForRunAction(agentRunId, 'create_review_report');
+    confirmations.push(existingReport ?? await store.createAiConfirmation({
       runId: agentRunId,
       sessionId: input.sessionId,
       studentId: input.studentId,
@@ -794,6 +826,11 @@ async function createAiConfirmationsFromResult(
     (artifact) => artifact.type === 'exercise_set' && artifact.requiresTeacherConfirmation,
   );
   if (contentMd && exerciseArtifact) {
+    const existing = await store.getAiConfirmationForRunAction(agentRunId, 'save_exercise_set');
+    if (existing) {
+      confirmations.push(existing);
+      return confirmations;
+    }
     const similarQuestions = result.similarQuestions ?? [];
     const title = exerciseArtifact.title || '小智三元题组草稿';
     confirmations.push(await store.createAiConfirmation({
@@ -816,12 +853,13 @@ async function createAiConfirmationsFromResult(
           .map((item) => item.sourceId)
           .filter((sourceId) => sourceId.startsWith('record_')),
         exerciseSet: {
-          title,
-          subject: result.harness?.router.slots.subject ?? '',
-          knowledgePoint: result.harness?.router.slots.knowledgePoint ?? '',
-          contentMd,
-          sourceQuestionIds: similarQuestions.map((item) => item.id),
-          items: similarQuestions.slice(0, 3).map((question, index) => ({
+          ...(result.structuredReply.exerciseSetDraft ?? {
+            title,
+            subject: result.harness?.router.slots.subject ?? '',
+            knowledgePoint: result.harness?.router.slots.knowledgePoint ?? '',
+            contentMd,
+            sourceQuestionIds: similarQuestions.map((item) => item.id),
+            items: similarQuestions.slice(0, 3).map((question, index) => ({
             role: index === 0 ? 'original' : 'similar',
             questionId: question.id,
             sourceKind: question.sourceKind,
@@ -831,7 +869,8 @@ async function createAiConfirmationsFromResult(
             knowledgePoint: question.knowledgePoint,
             difficulty: question.difficulty,
             teacherObservation: `观察学生是否能迁移 ${question.knowledgePoint || '当前知识点'}。`,
-          })),
+            })),
+          }),
         },
       },
     }));
@@ -1257,6 +1296,25 @@ app.whenReady().then(async () => {
     const router = routeAiPrompt(prompt, { hasStudent: Boolean(input.studentId) });
     const execution = decideExecutionMode(prompt, { router, hasStudent: Boolean(input.studentId) });
     const settings = await store.getDeepSeekRuntimeSettings();
+    if (process.env.OMNI_EDU_XIAZHI_TRIPLET_GRAPH !== '0' && isTripletGraphRequest(prompt, input.intent)) {
+      const sanitized = await store.sanitizeProblemText(prompt.slice(0, 8_000), input.studentId);
+      const safeInput = { ...input, prompt: sanitized.sanitizedText };
+      const e2eReply = process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged
+        ? process.env.OMNI_EDU_E2E_TRIPLET_REPLY
+        : undefined;
+      const e2eModelDelayMs = e2eReply ? Math.min(30_000, Math.max(0, Number(process.env.OMNI_EDU_E2E_TRIPLET_MODEL_DELAY_MS) || 0)) : 0;
+      const e2eRetrieveDelayMs = e2eReply ? Math.min(30_000, Math.max(0, Number(process.env.OMNI_EDU_E2E_TRIPLET_RETRIEVE_DELAY_MS) || 0)) : 0;
+      const result = await runTripletGraph({
+        store, input: safeInput, apiKey: settings.apiKey, model: settings.model, provider: settings.provider,
+        testRetrieveDelayMs: e2eRetrieveDelayMs,
+        ...(e2eReply ? { modelRequest: e2eTripletModelRequest(e2eReply, e2eModelDelayMs) } : {}),
+      });
+      if (result.ok && result.harness?.agentRunId) {
+        result.confirmations = await createAiConfirmationsFromResult(safeInput, result, result.harness.agentRunId);
+      }
+      await store.recordAiConsoleRun(safeInput, result);
+      return result;
+    }
     const capability = selectDeepTutorCapability(router);
     const request: XiazhiCapabilityRequest = {
       schemaVersion: 'xiazhi.capability.request.v1',
@@ -1269,6 +1327,7 @@ app.whenReady().then(async () => {
         studentId: input.studentId ?? '',
         model: settings.model,
         modelProxy: 'deepseek',
+        provider: settings.provider,
         executionProfile: 'omni_console',
         systemPrompt: buildAiSystemPrompt(router, capability),
         harnessVersion: XIAZHI_AGENT_HARNESS_VERSION,
@@ -1383,7 +1442,7 @@ app.whenReady().then(async () => {
       });
 
       if (!settings.apiKey) {
-        const errorMessage = '缺少 DeepSeek API Key，请在设置页保存 DeepSeek API 配置。';
+        const errorMessage = `缺少${settings.provider === 'glm' ? '智谱 GLM' : 'DeepSeek'} API Key，请在设置页保存当前供应商配置。`;
         const result = makeDirectResult({
           ok: false,
           content: '',
@@ -1398,7 +1457,7 @@ app.whenReady().then(async () => {
       }
 
       try {
-        const response = await runDirectDeepSeekChat(prompt, settings.apiKey, settings.model);
+        const response = await runDirectDeepSeekChat(prompt, settings.apiKey, settings.model, settings.provider);
         const result = makeDirectResult({
           ok: true,
           content: response.content,
@@ -1411,7 +1470,7 @@ app.whenReady().then(async () => {
         await store.recordAiConsoleRun(input, result);
         return result;
       } catch (error) {
-        const errorMessage = boundedDeepTutorText(error, 800);
+        const errorMessage = modelFailureMessage(error instanceof Error ? error.message : error, settings.provider);
         const result = makeDirectResult({
           ok: false,
           content: '',
@@ -1472,6 +1531,7 @@ app.whenReady().then(async () => {
           const repairTimeout = setTimeout(() => repairController.abort(), 45_000);
           try {
             const repairData = await requestStructuredReplyRepair({
+              provider: settings.provider,
               apiKey: settings.apiKey,
               model: settings.model,
               messages: [
@@ -1575,7 +1635,7 @@ app.whenReady().then(async () => {
         : '';
     if (!run || run.status !== 'succeeded' || !parsed.reply || qualityError) {
       const errorEvent = [...events].reverse().find((event) => event.status === 'failed' && event.outputSummary?.sidecarPhase !== 'done');
-      const errorMessage = qualityError || errorEvent?.detail || run?.errorMessage || parsed.errors.join('；') || 'DeepTutor 运行失败。';
+      const errorMessage = modelFailureMessage(qualityError || errorEvent?.detail || run?.errorMessage || parsed.errors.join('；') || 'DeepTutor 运行失败。', settings.provider);
       if (run?.status !== 'failed') await store.completeAiAgentRun(runId, 'failed', errorMessage);
       const result: AiConsoleRunResult = {
         ok: false,
@@ -1634,6 +1694,44 @@ app.whenReady().then(async () => {
         trace,
       },
     };
+    await store.recordAiConsoleRun(input, result);
+    return result;
+  });
+  ipcMain.handle('aiGraph:listRecoverableTriplets', (_event, sessionId: string) => store.listRecoverableTripletRuns(sessionId));
+  ipcMain.handle('aiGraph:resumeTriplet', async (_event, request: { runId?: string; sessionId?: string }): Promise<AiConsoleRunResult> => {
+    const runId = String(request?.runId ?? '').slice(0, 180);
+    const sessionId = String(request?.sessionId ?? '').slice(0, 180);
+    const run = await store.getAiAgentRun(runId);
+    const snapshot = await store.getAiAgentRunRequest(runId);
+    const storedInput = snapshot?.input;
+    const provider = snapshot?.provider === 'glm' ? 'glm' : snapshot?.provider === 'deepseek' ? 'deepseek' : null;
+    const model = typeof snapshot?.model === 'string' ? snapshot.model.slice(0, 120) : '';
+    if (!run || !sessionId || run.sessionId !== sessionId || snapshot?.schemaVersion !== 'xiazhi.triplet.request.v1'
+      || !storedInput || typeof storedInput !== 'object' || Array.isArray(storedInput) || !provider || !model) {
+      throw new Error('三元题组恢复快照无效或不属于当前会话。');
+    }
+    const input = storedInput as AiConsoleRunInput;
+    if (input.sessionId !== sessionId || input.studentId !== run.studentId || !isTripletGraphRequest(input.prompt ?? '', input.intent)) {
+      throw new Error('三元题组恢复请求与原任务不一致。');
+    }
+    const settings = await store.getDeepSeekRuntimeSettings(provider);
+    if (!settings.apiKey) throw new Error(`缺少${provider === 'glm' ? '智谱 GLM' : 'DeepSeek'} API Key，原任务仍可恢复。`);
+    if (!await store.claimRecoverableTripletRun(runId, sessionId)) throw new Error('该任务已被恢复、已确认，或没有可用检查点。');
+    if (run.status === 'failed') {
+      const retryNumber = (await store.listAiAgentEvents(runId)).filter((event) => event.label === '网络恢复重试').length + 1;
+      await store.recordAiAgentEvent(runId, {
+        phase: 'route', status: 'succeeded', label: '网络恢复重试',
+        detail: '从原检查点继续，保留原供应商与模型。',
+        outputSummary: { graphVersion: 'xiazhi.langgraph.triplet.v1', retryNumber },
+      });
+    }
+    const e2eReply = process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged
+      ? process.env.OMNI_EDU_E2E_TRIPLET_REPLY : undefined;
+    const result = await runTripletGraph({
+      store, input, resumeRunId: runId, apiKey: settings.apiKey, provider, model,
+      ...(e2eReply ? { modelRequest: e2eTripletModelRequest(e2eReply) } : {}),
+    });
+    if (result.ok) result.confirmations = await createAiConfirmationsFromResult(input, result, runId);
     await store.recordAiConsoleRun(input, result);
     return result;
   });
@@ -1769,8 +1867,27 @@ app.whenReady().then(async () => {
   ipcMain.handle('ai:deepTutorListPendingInputs', () => listPendingDeepTutorInputs());
   ipcMain.handle('app:getDataRoot', () => store.getDataRoot());
   ipcMain.handle('app:getPlatformOverview', () => store.getPlatformOverview());
-  ipcMain.handle('settings:getDeepSeek', () => store.getDeepSeekSettings());
-  ipcMain.handle('settings:saveDeepSeek', (_event, input: DeepSeekSettingsInput) => store.saveDeepSeekSettings(input));
+  const settingsSender = (event: Electron.IpcMainInvokeEvent) => event.sender === mainWindow?.webContents && event.senderFrame === event.sender.mainFrame;
+  const publicProviderSettings = async () => {
+    const legacy = await store.getDeepSeekSettings();
+    if (!xiaozhi.enabled) return legacy;
+    const current = await xiaozhi.modelSettingsView();
+    const deepseek = { configured: current.configured, model: current.defaultModel, maskedApiKey: current.maskedApiKey };
+    return { provider: 'deepseek' as const, ...deepseek, updatedAt: '', providers: { ...legacy.providers, deepseek } };
+  };
+  ipcMain.handle('settings:getDeepSeek', event => { if (!settingsSender(event)) throw new Error('permission_denied'); return publicProviderSettings(); });
+  ipcMain.handle('settings:saveDeepSeek', async (event, input: DeepSeekSettingsInput) => {
+    if (!settingsSender(event)) throw new Error('permission_denied');
+    if (!xiaozhi.enabled) return store.saveDeepSeekSettings(input);
+    if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(key => !['provider','apiKey','model'].includes(key))
+      || input.provider !== undefined && input.provider !== 'deepseek') throw new Error('invalid_input');
+    const { validSettingsInput } = await import('./xiaozhi-agent/model-settings');
+    const current = await xiaozhi.modelSettingsView();
+    const request = { schemaVersion: 'xiaozhi.settings.v1' as const, version: current.version, defaultModel: input.model, ...(input.apiKey ? { apiKey: input.apiKey } : {}) };
+    if (!validSettingsInput(request)) throw new Error('invalid_input');
+    await xiaozhi.saveModelSettings(request);
+    return publicProviderSettings();
+  });
   ipcMain.handle('knowledge:getOverview', () => store.getKnowledgeOverview());
   ipcMain.handle('knowledge:import', async () => {
     const result = await dialog.showOpenDialog({
@@ -1791,17 +1908,28 @@ app.whenReady().then(async () => {
     }
     shell.showItemInFolder(filePath);
   });
-  ipcMain.handle('app:exportDataRoot', async () => {
-    const result = await selectDataBackupExportRoot();
-    if (result.canceled || !result.filePaths[0]) return null;
-    const exported = await store.exportDataRoot(result.filePaths[0]);
-    if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
-    return exported;
+  ipcMain.handle('app:exportDataRoot', async event => {
+    if (!settingsSender(event)) throw new Error('permission_denied');
+    const action = async (assertCurrent: () => void) => {
+      const result = await selectDataBackupExportRoot();
+      assertCurrent();
+      if (!settingsSender(event)) throw new Error('permission_denied');
+      if (result.canceled || !result.filePaths[0]) return null;
+      const exported = await store.exportDataRoot(result.filePaths[0]);
+      if (process.env.OMNI_EDU_E2E_DIALOG_MODE === '1' && !app.isPackaged) lastE2eDataBackupExportPath = exported.exportPath;
+      return exported;
+    };
+    return xiaozhi.withLocalSettingsJob(action);
   });
-  ipcMain.handle('app:verifyDataBackup', async () => {
-    const result = await selectDataBackupVerifyRoot();
-    if (result.canceled || !result.filePaths[0]) return null;
-    return store.verifyDataBackup(result.filePaths[0]);
+  ipcMain.handle('app:verifyDataBackup', async event => {
+    if (!settingsSender(event)) throw new Error('permission_denied');
+    return xiaozhi.withLocalSettingsJob(async assertCurrent => {
+      const result = await selectDataBackupVerifyRoot();
+      assertCurrent();
+      if (!settingsSender(event)) throw new Error('permission_denied');
+      if (result.canceled || !result.filePaths[0]) return null;
+      return store.verifyDataBackup(result.filePaths[0]);
+    });
   });
   ipcMain.handle('students:list', (_event, query: string) => store.listStudents(query));
   ipcMain.handle('students:create', (_event, input) => store.createStudent(input));
@@ -1971,7 +2099,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('teachingBook:listPatches', (_event, id: string) => store.listTeachingBookPatches(id));
   ipcMain.handle('exerciseSets:list', (_event, studentId: string) => store.listExerciseSets(studentId));
   ipcMain.handle('aiConfirmations:list', (_event, status = 'pending') => store.listAiConfirmations(status));
-  ipcMain.handle('aiConfirmations:confirm', (_event, id: string) => store.confirmAiConfirmation(id));
+  ipcMain.handle('aiConfirmations:confirm', (_event, id: string, edits?: AiExerciseSetTeacherEdits) => store.confirmAiConfirmation(id, edits));
   ipcMain.handle('aiConfirmations:reject', (_event, id: string) => store.rejectAiConfirmation(id));
   ipcMain.handle('search:all', (_event, keyword: string) => store.search(keyword));
   ipcMain.handle('aiConversations:list', () => store.listAiConversationWorkspace());
@@ -2050,14 +2178,16 @@ app.whenReady().then(async () => {
     // receive an actionable error promptly instead of waiting for the full
     // local AgentLoop (and its retrieval/tool work) to finish first.
     if (!apiKey) {
+      const providerLabel = deepSeekSettings.provider === 'glm' ? '智谱 GLM' : 'DeepSeek';
+      const missingCredentialMessage = `缺少${providerLabel} API Key，请在设置页保存当前供应商配置。`;
       const trace: AiAgentTraceStep[] = [
         {
           phase: 'guardrail',
           status: 'blocked',
-          label: 'DeepSeek 閰嶇疆',
-          detail: '缂哄皯 DeepSeek API Key锛屽凡鍦ㄦā鍨嬭姹傚墠闃诲锛屼繚鐣欐湰鍦伴敊璇建杩广€?',
+          label: `${providerLabel} 配置`,
+          detail: missingCredentialMessage,
           inputSummary: { route: router.route, subIntent: router.subIntent },
-          outputSummary: { blockedReason: 'missing_deepseek_api_key' },
+          outputSummary: { blockedReason: 'missing_provider_api_key', provider: deepSeekSettings.provider },
         },
       ];
       for (const step of trace) await store.recordAiAgentEvent(agentRunId, step);
@@ -2075,10 +2205,10 @@ app.whenReady().then(async () => {
           schemaValid: false,
           schemaApplicable: true,
           graderApplicable: true,
-          schemaErrors: ['缂哄皯 DeepSeek API Key銆?',],
+          schemaErrors: [missingCredentialMessage],
           trace,
         },
-        errorMessage: '缂哄皯 DeepSeek API Key銆傝鍦ㄨ缃〉淇濆瓨 DeepSeek API 閰嶇疆銆?',
+        errorMessage: missingCredentialMessage,
       };
       await store.completeAiAgentRun(agentRunId, 'blocked', result.errorMessage);
       await store.recordAiConsoleRun(input, result);
@@ -2088,7 +2218,7 @@ app.whenReady().then(async () => {
     try {
       const context = await runAiAgentLoop({ store, prompt, studentId: input.studentId, agentRunId });
 
-      const result = await runDeepSeekChat({ store, prompt, ...context }, apiKey, deepSeekSettings.model);
+      const result = await runDeepSeekChat({ store, prompt, ...context }, apiKey, deepSeekSettings.model, deepSeekSettings.provider);
       const confirmations = await createAiConfirmationsFromResult(input, result, agentRunId);
       if (confirmations.length) {
         const confirmationStep: AiAgentTraceStep = {
@@ -2112,6 +2242,15 @@ app.whenReady().then(async () => {
     }
   });
 
+  const xiaozhi = registerXiaozhiIpc({ ipcMain, store,
+    dataRoot: process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData'), window: () => mainWindow });
+  let xiaozhiClosing = false;
+  app.on('before-quit', event => {
+    if (xiaozhiClosing) return;
+    event.preventDefault(); xiaozhiClosing = true;
+    void xiaozhi.close().finally(() => app.quit());
+  });
+  registerDesktopChromeIpc(ipcMain, () => mainWindow);
   createWindow();
 
   app.on('activate', () => {

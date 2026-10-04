@@ -1,0 +1,103 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual native Store initializes repeated additive private import migration without attachments",
+      "pass": true
+    },
+    {
+      "name": "Concurrent explicit outside-directory selections create one verified local copy and one draft without modifying source or exposing private paths",
+      "pass": true
+    },
+    {
+      "name": "Imported outside-directory file preserves already frozen Pi workspace and native binding",
+      "pass": true
+    },
+    {
+      "name": "Local original preview returns real synthetic PNG bytes by ledger ID with no original or staging path",
+      "pass": true
+    },
+    {
+      "name": "Submitted immutable copy remains locally readable after original source deletion; no original path fallback",
+      "pass": true
+    },
+    {
+      "name": "Source version change creates a distinct copied version while submitted historical text stays unchanged",
+      "pass": true
+    },
+    {
+      "name": "Removed draft cannot be previewed; explicit reselection reuses verified copy with a new draft reference",
+      "pass": true
+    },
+    {
+      "name": "Cross-session forged reference is rejected and same selected source retains separate session ownership",
+      "pass": true
+    },
+    {
+      "name": "Ninth distinct selection is refused before a new copy intent and native SQLite retains eight drafts",
+      "pass": true
+    },
+    {
+      "name": "Native single-file grant rejects credentials, linked ancestors/hardlinks, private app files, invalid path, spoofed PNG and size overflow without creating intents",
+      "pass": true
+    },
+    {
+      "name": "Cancellation at source entry, durable intent, actual file and ready stages adds no public draft and never uploads or replays",
+      "pass": true
+    },
+    {
+      "name": "Cancellation after actual native SQL registration removes only its newly created late draft",
+      "pass": true
+    },
+    {
+      "name": "Cancelled deduplicated selection retains the earlier valid draft without changing revision or count",
+      "pass": true
+    },
+    {
+      "name": "Tampered managed copy fails captured version/hash instead of silently serving original source",
+      "pass": true
+    },
+    {
+      "name": "Actual native DB close/reopen preserves draft/submitted/removed facts, copy intents and historical preview without reading deleted originals",
+      "pass": true
+    },
+    {
+      "name": "Unknown import schema and corrupted original source identity are rejected without silent fallback",
+      "pass": true
+    },
+    {
+      "name": "Explicit old isolated native Store DB copy receives repeat additive migration while prior sessions/messages/settings/attachments/native binding rows remain identical",
+      "pass": true
+    },
+    {
+      "name": "Actual owned OS forced termination at intent, native restart and second reopen recover without copy replay or public attachment creation",
+      "pass": true
+    },
+    {
+      "name": "Actual owned OS forced termination at file, native restart and second reopen recover without copy replay or public attachment creation",
+      "pass": true
+    },
+    {
+      "name": "Actual owned OS forced termination at ready, native restart and second reopen recover without copy replay or public attachment creation",
+      "pass": true
+    }
+  ],
+  "boundary": "D2-A only: actual Electron native sqlite3/OmniEduStore, real owned files and OS forced terminations. No chooser/renderer/send/Pi/vision/OCR claim. No network or real teacher data.",
+  "terminations": [
+    {
+      "stage": "intent",
+      "exitCode": 1,
+      "signal": null
+    },
+    {
+      "stage": "file",
+      "exitCode": 1,
+      "signal": null
+    },
+    {
+      "stage": "ready",
+      "exitCode": 1,
+      "signal": null
+    }
+  ]
+}

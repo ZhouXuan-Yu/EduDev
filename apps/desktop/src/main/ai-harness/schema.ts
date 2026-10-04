@@ -6,6 +6,8 @@ import type {
   AiStructuredFact,
   AiStructuredReply,
   AiStructuredRisk,
+  ExerciseSetDraftPayload,
+  ExerciseSetItem,
 } from '../../shared/contracts';
 import { jsonrepair } from 'jsonrepair';
 import { structuredReplyToTeacherMarkdown } from './usability-policy';
@@ -74,6 +76,42 @@ function normalizeRouteCheck(value: unknown, fallbackRoute: AiIntentRoute): AiRo
     passed: Boolean(item.passed),
     notes: isStringArray(item.notes) ? item.notes : [],
   };
+}
+
+function normalizeExerciseSetDraft(value: unknown): { draft?: ExerciseSetDraftPayload; errors: string[] } {
+  if (value === undefined) return { errors: [] };
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return { errors: ['exerciseSetDraft 必须是 object。'] };
+  const raw = value as Record<string, unknown>;
+  if (!Array.isArray(raw.items) || raw.items.length !== 3) return { errors: ['exerciseSetDraft 必须包含原题、相似题、变式题各一项。'] };
+  const roles = ['original', 'similar', 'variant'] as const;
+  const items: ExerciseSetItem[] = [];
+  const errors: string[] = [];
+  for (const [index, role] of roles.entries()) {
+    const item = raw.items[index];
+    if (!item || typeof item !== 'object' || Array.isArray(item)) { errors.push(`${role} 必须是题目对象。`); continue; }
+    const candidate = item as Record<string, unknown>;
+    const sourceKind = candidate.sourceKind;
+    const difficulty = candidate.difficulty;
+    const stem = String(candidate.stem ?? '').trim();
+    const answer = String(candidate.answer ?? '').trim();
+    const analysis = String(candidate.analysis ?? '').trim();
+    if (candidate.role !== role) errors.push(`题组第 ${index + 1} 项必须为 ${role}。`);
+    if (!['local_bank', 'teacher_resource', 'generated'].includes(String(sourceKind))) errors.push(`${role} 的来源类型无效。`);
+    if (!['easy', 'medium', 'hard'].includes(String(difficulty))) errors.push(`${role} 的难度无效。`);
+    if (!stem || !answer || !analysis || stem.length > 4_000 || answer.length > 2_000 || analysis.length > 4_000) errors.push(`${role} 的题干、答案或解析缺失或超长。`);
+    if (sourceKind === 'local_bank' && !String(candidate.questionId ?? '').trim()) errors.push(`${role} 的本地题库来源缺少 questionId。`);
+    items.push({
+      role,
+      ...(sourceKind === 'local_bank' ? { questionId: String(candidate.questionId ?? '').trim().slice(0, 160) } : {}),
+      sourceKind: sourceKind as ExerciseSetItem['sourceKind'],
+      stem: stem.slice(0, 4_000), answer: answer.slice(0, 2_000), analysis: analysis.slice(0, 4_000),
+      knowledgePoint: String(candidate.knowledgePoint ?? '').slice(0, 160),
+      difficulty: difficulty as ExerciseSetItem['difficulty'],
+      teacherObservation: String(candidate.teacherObservation ?? '').slice(0, 1_000),
+    });
+  }
+  if (errors.length) return { errors };
+  return { draft: { title: String(raw.title ?? '三元题组草稿').slice(0, 160), subject: String(raw.subject ?? '').slice(0, 80), knowledgePoint: String(raw.knowledgePoint ?? '').slice(0, 160), contentMd: String(raw.contentMd ?? '').slice(0, 16_000), items, sourceQuestionIds: items.map((item) => item.questionId).filter((id): id is string => Boolean(id)) }, errors: [] };
 }
 
 function hasTripletShape(answerMarkdown: string) {
@@ -213,6 +251,8 @@ export function parseStructuredReply(raw: string, router: AiRouterDecision): { r
   if (route !== router.route) errors.push(`route 必须匹配 router dry-run：${router.route}。`);
   const subIntent = typeof value.subIntent === 'string' ? value.subIntent : router.subIntent;
   if (subIntent !== router.subIntent) errors.push(`subIntent 必须匹配 router dry-run：${router.subIntent}。`);
+  const exerciseSetDraft = normalizeExerciseSetDraft(value.exerciseSetDraft);
+  errors.push(...exerciseSetDraft.errors);
 
   const reply: AiStructuredReply = {
     schemaVersion: 'xiazhi.reply.v2',
@@ -227,6 +267,7 @@ export function parseStructuredReply(raw: string, router: AiRouterDecision): { r
     teacherConfirmations: isStringArray(value.teacherConfirmations) ? value.teacherConfirmations : [],
     nextActions: isStringArray(value.nextActions) ? value.nextActions : [],
     artifacts,
+    ...(exerciseSetDraft.draft ? { exerciseSetDraft: exerciseSetDraft.draft } : {}),
     routeCheck: normalizeRouteCheck(value.routeCheck, router.route),
     processSummary: isStringArray(value.processSummary) ? value.processSummary : [],
   };

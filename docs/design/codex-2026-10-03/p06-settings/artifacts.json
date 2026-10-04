@@ -1,0 +1,185 @@
+{
+  "boundary": "Explicit reports/screenshots/logs/source manifests only; no database, credential, native private history or summaries",
+  "artifacts": [
+    {
+      "name": "ui/archives-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\archives-1366.png",
+      "bytes": 57896,
+      "sha256": "e20a5162d49f86862fc3219b494affabaf398ad26e78d41a89ee96166a831053"
+    },
+    {
+      "name": "ui/archives-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\archives-1920.png",
+      "bytes": 68688,
+      "sha256": "17c598a9ed199f59ef43e03a4a9c5f82605796c5814cf27f9c58e237f53d05f3"
+    },
+    {
+      "name": "ui/backup-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\backup-1366.png",
+      "bytes": 74173,
+      "sha256": "8a204498d35d65336c247d4988a18fbb4442d1de67ec8f089019927f5de492ed"
+    },
+    {
+      "name": "ui/backup-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\backup-1920.png",
+      "bytes": 86087,
+      "sha256": "249e6c3ae3e0d408d70944c6f5d0f94dce114c75b2db0d43ef678179e57d22d1"
+    },
+    {
+      "name": "ui/interface-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\interface-1366.png",
+      "bytes": 64689,
+      "sha256": "7ab58e8fd5b792765dd44fb8363901e5c839ddb0035997e3968335a6c3751c30"
+    },
+    {
+      "name": "ui/interface-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\interface-1920.png",
+      "bytes": 76028,
+      "sha256": "a29618e307c32b2641d24930b83cc47537ff6716d9d1fd51f18d212dbfada4ab"
+    },
+    {
+      "name": "ui/models-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\models-1366.png",
+      "bytes": 94911,
+      "sha256": "41b74a332806666ed5f11295c0ac7481897aba2938ce572bd24b2fa1988a7ff4"
+    },
+    {
+      "name": "ui/models-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\models-1920.png",
+      "bytes": 113203,
+      "sha256": "7798adad910d5572aa5f63610f5c08a1f156334e3a79840660ce08a19467888c"
+    },
+    {
+      "name": "ui/permissions-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\permissions-1366.png",
+      "bytes": 86832,
+      "sha256": "24ac0e5f26d4e51047a4e61e5a3b848edf93d6e3c60b3b44a76deb720c326aa9"
+    },
+    {
+      "name": "ui/permissions-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\permissions-1920.png",
+      "bytes": 99931,
+      "sha256": "64f37998eef3f6c627c8496d2aef4c482fb2be6ea8d2792971aa3bf189de459d"
+    },
+    {
+      "name": "ui/report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\report.json",
+      "bytes": 10581,
+      "sha256": "4922e6438eb810e86a6e50df66593fb40c36113aeae660959229d4496283faf0"
+    },
+    {
+      "name": "ui/skills-1366.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\skills-1366.png",
+      "bytes": 120280,
+      "sha256": "2af97488b49f4dfa94e78ea0137d35fa9a3202aa2630f2b3b8adda774df024d6"
+    },
+    {
+      "name": "ui/skills-1920.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-workspace-ui-H8Y85u\\skills-1920.png",
+      "bytes": 135069,
+      "sha256": "10967a6262aa2f76e191a059548ced0750671ea1495e244c762fac7ddab8aa6a"
+    },
+    {
+      "name": "local-job-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-settings-job-Wk67Qg\\report.json",
+      "bytes": 977,
+      "sha256": "fe2b04bf3ce53a6d187766d4f36489af4870e6dc0aec2434ee0c106e40d84304"
+    },
+    {
+      "name": "model-lock-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-model-host-lock-fi7Mmc\\report.json",
+      "bytes": 854,
+      "sha256": "72f09e033494b1770b545a16843efd99b926600e6f2e9a41924555a909423816"
+    },
+    {
+      "name": "skills-modal-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-skill-settings-ui-PPOo0w\\report.json",
+      "bytes": 3697,
+      "sha256": "c3c42b243e6ca6a7f9b3fd362de4dbe599d4db5f0e27ed643ba092d713c51d07"
+    },
+    {
+      "name": "logs/p06cc-build-final3.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-build-final3.log",
+      "bytes": 25156,
+      "sha256": "0871ae0813b8152fb74f4570080c2870ade887fef11eed77a4b59e7cbffabbe6"
+    },
+    {
+      "name": "logs/p06cc-ui-final4.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-ui-final4.log",
+      "bytes": 2464,
+      "sha256": "093c14049873439d3ea4e85fe5ef551afd4643ae40f1f08ea54e1f982c9a4dd1"
+    },
+    {
+      "name": "logs/p06cc-renderer-final2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-renderer-final2.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "name": "logs/p06cc-main-smoke-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-main-smoke-final.log",
+      "bytes": 13055,
+      "sha256": "a7d14c543238f35d554ac8c573f80edd55fb85af9fa3bcf26a40dccdc518d54b"
+    },
+    {
+      "name": "logs/p06cc-job-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-job-final.log",
+      "bytes": 769,
+      "sha256": "589bedc4c04ae28bf7dc99b3136d413399c847d900a0bd884d835b09f2eb0104"
+    },
+    {
+      "name": "logs/p06cc-model-lock.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-model-lock.log",
+      "bytes": 310,
+      "sha256": "0bfcdbf3e7911192c5ff8228010b096a0d7492e32e1b7a7e19fe8db6f81756bb"
+    },
+    {
+      "name": "logs/p06cc-skills-modal2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-skills-modal2.log",
+      "bytes": 2464,
+      "sha256": "41b7cff6b3a437aef605adbd5ecabd6e8f98f08ae25523d230eaf9d17fcb5702"
+    },
+    {
+      "name": "logs/p06cc-hana-source.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-hana-source.log",
+      "bytes": 85,
+      "sha256": "b4a04e724d40ac4ba067dde3367aa789f3dbf8b7807afde2e43c1a9ddd32f61c"
+    },
+    {
+      "name": "logs/p06cc-pro-source.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-pro-source.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    },
+    {
+      "name": "logs/p06cc-final-diff.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-final-diff.log",
+      "bytes": 3060,
+      "sha256": "9e07a6a5735fc631b268e40151ab0edc676be66d159fefa268cefeca03f0b3a0"
+    },
+    {
+      "name": "logs/p06cc-scoped-whitespace.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-scoped-whitespace.json",
+      "bytes": 392,
+      "sha256": "eefdd264bc48046aad5f9d10ba417f1725ebf535442cb81a6baef49f7f4e090c"
+    },
+    {
+      "name": "logs/p06cc-out-identity.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\p06cc-out-identity.json",
+      "bytes": 63,
+      "sha256": "93da01df742634b93a4b84ea55e6044d1793e0787deff1f239a3eae5fcac1419"
+    },
+    {
+      "name": "sources/hana-settings-workspace.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\hana-settings\\workspace-source.json",
+      "bytes": 1865,
+      "sha256": "c15fc98e029b26ad2c9aa7e4ec9dbb02750ea7a98233c32d56491ef7d3e78922"
+    },
+    {
+      "name": "sources/hana-settings-foundation.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\renderer\\components\\office\\hana-settings\\source.json",
+      "bytes": 839,
+      "sha256": "2bd448cf5a1214d4577f764fe2bea2d694d118f520f52afff558d1f72575ffce"
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "success": true,
+  "observedAt": "2026-10-04T00:41:49.398Z",
+  "endpoint": "https://api.deepseek.com/v1/models",
+  "configuredModel": "deepseek-flash",
+  "models": [
+    {
+      "id": "deepseek-flash",
+      "name": "DeepSeek-V4.1-Flash",
+      "contextWindow": 1048576,
+      "maxOutputTokens": 393216,
+      "inputModalities": [
+        "text",
+        "image"
+      ],
+      "outputModalities": [
+        "text"
+      ],
+      "effortLevels": [
+        "low",
+        "high",
+        "max"
+      ]
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "name": "DeepSeek-V4-Pro",
+      "contextWindow": 1048576,
+      "maxOutputTokens": 393216,
+      "inputModalities": [
+        "text"
+      ],
+      "outputModalities": [
+        "text"
+      ],
+      "effortLevels": [
+        "low",
+        "high",
+        "max"
+      ]
+    }
+  ],
+  "httpStatus": 200
+}

@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual OmniEduStore initializes the additive attachment schema with original native sqlite3",
+      "pass": true
+    },
+    {
+      "name": "Real production SQLite callback adapter captures two actual local files with distinct stable source identities",
+      "pass": true
+    },
+    {
+      "name": "Actual production SQL rejects stale batch without partial mutation, commits materialized multi-file CAS and refuses removing submitted history",
+      "pass": true
+    },
+    {
+      "name": "Actual store repeat initialization and close/reopen preserve original attachment revisions and message/run references",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual Electron native sqlite3 and OmniEduStore initialization; synthetic isolated files, source state/service APIs. No renderer/chooser, model delivery or viewed-image receipt proof."
+}

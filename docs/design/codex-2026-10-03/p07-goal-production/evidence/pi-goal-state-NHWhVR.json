@@ -1,0 +1,104 @@
+{
+  "directory": "pi-goal-state-NHWhVR",
+  "success": true,
+  "checks": [
+    {
+      "name": "Strict typed goal boundary rejects accessors and extra authority fields",
+      "pass": true
+    },
+    {
+      "name": "Actual SQLite goal binds exactly one admitted run",
+      "pass": true
+    },
+    {
+      "name": "Identical create command is idempotent and cannot restart the run",
+      "pass": true
+    },
+    {
+      "name": "Conflicting duplicate objective cannot overwrite a goal",
+      "pass": true
+    },
+    {
+      "name": "Only one live goal is admitted per conversation",
+      "pass": true
+    },
+    {
+      "name": "Stale revision is rejected before stop",
+      "pass": true
+    },
+    {
+      "name": "Cross-conversation mutation cannot pause another goal",
+      "pass": true
+    },
+    {
+      "name": "Pause commits before cancellation; late stop cannot overwrite pause",
+      "pass": true
+    },
+    {
+      "name": "Cold initialization preserves pause and makes no implicit start",
+      "pass": true
+    },
+    {
+      "name": "Explicit resume admits a fresh run and retains criteria",
+      "pass": true
+    },
+    {
+      "name": "Only matching current run can enter and exit teacher waiting",
+      "pass": true
+    },
+    {
+      "name": "Model report cannot write completion or arbitrary state",
+      "pass": true
+    },
+    {
+      "name": "Current sanitized context and evidence come from main SQLite/tool facts",
+      "pass": true
+    },
+    {
+      "name": "Plain-text boundary returns original Pi continuation and runnable current custom context",
+      "pass": true
+    },
+    {
+      "name": "Provider error never forces continuation",
+      "pass": true
+    },
+    {
+      "name": "Stopped owner cannot supply new context",
+      "pass": true
+    },
+    {
+      "name": "Model review proposal alone cannot be accepted without durable result",
+      "pass": true
+    },
+    {
+      "name": "All teacher criteria plus successful durable native run/result are required for completion",
+      "pass": true
+    },
+    {
+      "name": "Completed goal cannot be revived by resume",
+      "pass": true
+    },
+    {
+      "name": "Repeated report-only turns with no new effect stop as no progress without a running budget",
+      "pass": true
+    },
+    {
+      "name": "Cold recovery interrupts active goal while completed result remains immutable",
+      "pass": true
+    },
+    {
+      "name": "Goal schema migration is idempotent on the same real database",
+      "pass": true
+    },
+    {
+      "name": "Actual production Pi session forces one original boundary continuation then runs real read and review tools with one native user",
+      "pass": true
+    },
+    {
+      "name": "Cold ordinary chat preserves old native bytes while excluding goal custom context/tool and forced continuation",
+      "pass": true
+    }
+  ],
+  "humanAccepted": false,
+  "boundary": "A: actual Electron SQLite/production controller/runtime; start/stop transport and native event are declared fixtures, no rendered UI or provider claim."
+}

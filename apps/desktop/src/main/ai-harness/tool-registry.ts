@@ -15,6 +15,7 @@ import type {
   Student,
 } from '../../shared/contracts';
 import type { OmniEduStore } from '../db';
+import { cloneToolInvocationInput, snapshotToolInvocationInput } from './vendor/openhanako-tool-input-snapshot';
 import { buildMasterySnapshot } from './mastery-snapshot';
 import { buildMasteryPolicy } from './mastery-policy';
 import { buildLearningAnalytics, buildLearningAnalyticsMarkdown, type LearningAnalytics } from './learning-analytics';
@@ -909,15 +910,16 @@ function findStudentByPrompt(prompt: string, students: Student[], explicitName?:
 
 function parseToolArguments(value: Record<string, unknown> | string | null | undefined) {
   if (!value) return {};
+  let raw: unknown = value;
   if (typeof value === 'string') {
-    const parsed = JSON.parse(value || '{}');
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      throw new Error('工具参数必须是 JSON object。');
-    }
-    return parsed as Record<string, unknown>;
+    raw = JSON.parse(value || '{}');
   }
-  if (typeof value === 'object' && !Array.isArray(value)) return value;
-  throw new Error('工具参数必须是 object。');
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('工具参数必须是 JSON object。');
+  const snapshot = snapshotToolInvocationInput(raw);
+  if (!snapshot.ok) throw new Error(snapshot.reason === 'input_too_large' ? '工具参数超过安全边界。' : '工具参数包含非 JSON 数据。');
+  const executionCopy = cloneToolInvocationInput(snapshot.value);
+  if (!executionCopy.ok) throw new Error('工具参数快照无法复制。');
+  return executionCopy.value as Record<string, unknown>;
 }
 
 function normalizeNumber(value: unknown) {

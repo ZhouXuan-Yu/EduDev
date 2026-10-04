@@ -1,0 +1,11 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Native encryption and immediate decryption in owned profile",
+      "pass": true
+    }
+  ],
+  "scope": "Actual native safeStorage in two owned profiles and separate processes; synthetic plaintext only.",
+  "error": "The expression evaluated to a falsy value:\n\n  assert(restart.result.decryptionSucceeded)\n"
+}

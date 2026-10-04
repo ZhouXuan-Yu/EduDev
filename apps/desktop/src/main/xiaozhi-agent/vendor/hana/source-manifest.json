@@ -1,0 +1,91 @@
+{
+  "version": "0.449.0",
+  "license": "Apache-2.0",
+  "rows": [
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/pi-sdk/session-options.ts",
+      "sourceSha256": "60abe1334bbc8e62abb38709d34391c938d746f2573a201f44e937d3c9560ab5",
+      "outputSha256": "97e58180902f483e1574415dc1ecf992fcc6c71b85c2edd326cde8ce043ee442",
+      "adaptations": [
+        "AST extraction; fixed SDK version instead of import.meta/global module discovery"
+      ]
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/session-execution-registry.ts",
+      "sourceSha256": "d32ee7bb7da7171b2863ee48062ddd9f2d8a0721866022087d526c04228433bf",
+      "outputSha256": "1ea9625d5544139d1e7ebfffa8d931c75fc14f358d8f9de0eee295347161ba9f",
+      "adaptations": [
+        "AST extraction of explicit sessionId cancellation registry; excludes Hana path-discovery wrapper"
+      ]
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/pi-sdk/tool-outcome-adapter.ts",
+      "sourceSha256": "5eadfff6f745b8225c5b6d5a3438792853bd002cdbf7b1bc1dcbc839405d3e2f",
+      "outputSha256": "54059c69001d2ddaa5954202377dab7756f0b86ca529ae4a47e52d9518244b6c",
+      "adaptations": []
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako-0.449.0",
+      "path": "shared/tool-outcome.ts",
+      "sourceSha256": "09e2a0eb069df998dc5a448d86a7e259d213991f83c8926725c94c0242ed89cb",
+      "outputSha256": "ea0e3b4c5553b37e4100f2de2e32327af3443ca8eaa63a5283bb6fa3d499350b",
+      "adaptations": []
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/pi-sdk/stream-guard.ts",
+      "sourceSha256": "b9d3ba06770a5a9c8c95d5fdd471b4e940d014cc3b6f8c70cecaad1443ae68d1",
+      "outputSha256": "6f5a2f9abfadd55885609fbdb6bf6895a064bf49543f3cf9448abced46dd634b",
+      "adaptations": []
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/tool-protocol-sanitizer.ts",
+      "sourceSha256": "01c96e0a444250da6b3393891996e4c9d0caa3dbed67b656629c77663c9bae1b",
+      "outputSha256": "5c8a720c664f14952f03f961804c6fe0a2d9002990596ca1cd5b210bb8486e03",
+      "adaptations": []
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "core/session-compaction-runtime.ts",
+      "sourceSha256": "c58e762e260943565da416c39a34611db9f96ff75d5580396d33a7d8b65da37e",
+      "outputSha256": "a185a59f8c9ae2c6939b972c84b384b09e71d6962f167c6f5d95408ac6b02cc7",
+      "adaptations": [
+        "AST extraction of proportional reserve and native prepareNextTurnWithContext wrapper",
+        "Required injected compaction callback replaces cache/persona dependency closure",
+        "Education host checks complete request and propagates failures instead of swallowing unsafe continuation"
+      ]
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/skills/session-skill-snapshot.ts",
+      "sourceSha256": "909a971658773d33853f0a84df0a6ebf7475be0fa11eb36c5aa02d7bc13868c5",
+      "outputSha256": "da0328be63dfcf7637e3bb0cde84637f7d56fec36d76a7f048eb1355172d0a7d",
+      "adaptations": [
+        "TypeScript no-check header only; original independent pointer implementation retained"
+      ]
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/skills/skill-file-identity.ts",
+      "sourceSha256": "82d58f512947fc54031d9ed7bc4632e04cac17a2645622510242aee5578e4193",
+      "outputSha256": "6933c99325b6778b7efe8fdf0010fe57a039166b31b50630d794435f9c790948",
+      "adaptations": [
+        "TypeScript no-check header only; original independent pointer implementation retained"
+      ]
+    },
+    {
+      "sourceRoot": "D:/WorkProject/开源/openhanako",
+      "path": "lib/skills/skill-package-installer.ts",
+      "sourceSha256": "c7a9d77fa9120f55be9ef9b8190d5617a62a37fae695848d9bd2cb1557e9e4c9",
+      "outputSha256": "2ee4c35545c879a0c87f927c1dd54a06e860a4d46f7d8ea6fe7731ddcb079884",
+      "adaptations": [
+        "AST extraction: safe name and destination containment guards plus error type only",
+        "Main adds bounded no-link package read and immutable fresh-version publication; no archive/network/overwrite installer"
+      ]
+    }
+  ]
+}

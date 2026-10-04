@@ -1,0 +1,66 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Teacher grants owned synthetic directory and known student fixture through typed application APIs",
+      "pass": true
+    },
+    {
+      "name": "Natural real DeepSeek task uses native Office tools for all four actual formats",
+      "pass": true
+    },
+    {
+      "name": "Actual model tool-result history contains the necessary redacted body, never synthetic known name/phone/email",
+      "pass": true
+    },
+    {
+      "name": "Actual source identities and extracted-line ranges are explicit; no fabricated original page index",
+      "pass": true
+    },
+    {
+      "name": "Public original tool source rows are populated from actual safe receipts",
+      "pass": true
+    },
+    {
+      "name": "Public explanation, real tools and subsequent response remain separate actual segments",
+      "pass": true
+    },
+    {
+      "name": "Teacher sees factual numeric summary and actual document titles",
+      "pass": true
+    },
+    {
+      "name": "Actual 1366x768 public sources and local document comparison are reachable",
+      "pass": true
+    },
+    {
+      "name": "Actual 1920x1080 public sources and local document comparison are reachable",
+      "pass": true
+    },
+    {
+      "name": "Same native history is appended without changing original identities; real bounded follow-up reads lines 2–3",
+      "pass": true
+    },
+    {
+      "name": "Natural scanned-PDF task produces real failed tool and truthful local OCR guidance",
+      "pass": true
+    },
+    {
+      "name": "Composer stop cancels an actual read utility and prevents late model continuation (dispatch held by test)",
+      "pass": true
+    },
+    {
+      "name": "All actual source bytes remain unchanged across successful and stopped agent tasks",
+      "pass": true
+    },
+    {
+      "name": "App restart restores native history and next actual Office read; no interrupted task replay",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual Electron/natural teacher tasks/DeepSeek/Pi native Office tool/utility/file provenance",
+    "Synthetic known student name, phone and email only; no original teacher or student data",
+    "No export or original page position claim; marker and private JSONL asserted locally but never archived"
+  ]
+}

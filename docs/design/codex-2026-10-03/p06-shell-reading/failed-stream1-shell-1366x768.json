@@ -1,0 +1,63 @@
+{
+  "metrics": {
+    "width": 1366,
+    "height": 768,
+    "dpr": 1.5,
+    "body": 768,
+    "rail": {
+      "x": 0,
+      "y": 36,
+      "width": 52,
+      "height": 732,
+      "color": "rgb(230, 249, 247)"
+    },
+    "sidebar": {
+      "x": 52,
+      "y": 44,
+      "width": 254,
+      "height": 724,
+      "color": "rgb(246, 253, 252)"
+    },
+    "header": {
+      "x": 306,
+      "y": 44,
+      "width": 754,
+      "height": 52,
+      "color": "rgb(255, 255, 255)"
+    },
+    "titlebar": {
+      "x": 0,
+      "y": 0,
+      "width": 1366,
+      "height": 36,
+      "color": "rgb(230, 249, 247)"
+    },
+    "input": {
+      "x": 322,
+      "y": 658.6666870117188,
+      "width": 722,
+      "height": 91.33333587646484,
+      "color": "rgba(0, 0, 0, 0)"
+    }
+  },
+  "window": {
+    "bounds": {
+      "x": 0,
+      "y": 0,
+      "width": 1368,
+      "height": 769
+    },
+    "content": {
+      "x": 0,
+      "y": 0,
+      "width": 1366,
+      "height": 768
+    },
+    "scale": 1.5,
+    "zoom": 1,
+    "size": {
+      "width": 2052,
+      "height": 1154
+    }
+  }
+}

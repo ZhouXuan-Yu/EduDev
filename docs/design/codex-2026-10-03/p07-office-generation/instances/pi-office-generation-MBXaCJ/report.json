@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "checks": [],
+  "boundary": "Actual embedded Electron/four generation libraries/original Hana printToPDF; synthetic inputs, no agent/teacher confirmation/official export path yet",
+  "error": "electronApplication.evaluate: TypeError: A dynamic import callback was not specified.\n    at importModuleDynamicallyCallback (node:internal/modules/esm/utils:279:9)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:48)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at Object.snapshot (file:///D:/WorkProject/EduProject/apps/desktop/out/main/index.js:16733:26)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/main/index.js:17532:17\n    at Session.<anonymous> (node:electron/js2c/browser_init:2:120546)\n    at Session.emit (node:events:509:28)\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-office-generator-electron-smoke.mjs:11:12"
+}

@@ -1,0 +1,21 @@
+﻿{
+    "success":  false,
+    "mode":  "probe",
+    "before":  [
+                   {
+                       "id":  4428,
+                       "start":  "2026-09-29T05:43:31.4199256Z",
+                       "hwnd":  0
+                   },
+                   {
+                       "id":  66568,
+                       "start":  "2026-10-03T17:11:29.1186891Z",
+                       "hwnd":  0
+                   }
+               ],
+    "applications":  [
+
+                     ],
+    "boundary":  "Actual WPS COM only; no existing user instance may be altered.",
+    "error":  "COM returned no verifiable new HWND owner or an existing user process"
+}

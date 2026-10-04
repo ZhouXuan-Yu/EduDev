@@ -1,18 +1,37 @@
 import { _electron as electron } from 'playwright';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve, relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
+import { DatabaseSync } from 'node:sqlite';
 
 const appRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+// A current user window can keep its immutable out build; acceptance may use an isolated new build.
+const buildRoot=process.env.OMNI_EDU_TEST_BUILD_ROOT?resolve(process.env.OMNI_EDU_TEST_BUILD_ROOT):join(appRoot,'out');
+if(process.env.OMNI_EDU_TEST_BUILD_ROOT){const checked=relative(join(appRoot,'test-results'),buildRoot);if(!checked||checked.startsWith('..')||isAbsolute(checked))throw new Error('Test build must be inside desktop test-results');}
 const dataRoot = mkdtempSync(join(tmpdir(), 'omni-edu-smoke-'));
+const userDataRoot = mkdtempSync(join(tmpdir(), 'omni-edu-smoke-profile-'));
 const attachmentSourceRoot = mkdtempSync(join(tmpdir(), 'omni-edu-attachment-source-'));
 const studentExportRoot = mkdtempSync(join(tmpdir(), 'omni-edu-student-export-'));
 const dataBackupDestinationRoot = mkdtempSync(join(tmpdir(), 'omni-edu-data-backup-'));
 const controlledAttachmentPath = join(attachmentSourceRoot, 'teacher-selected-mistake.png');
 const controlledAttachmentBytes = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=', 'base64');
+const tripletSuccessMode = process.env.OMNI_EDU_E2E_TRIPLET_SUCCESS === '1';
+const tripletSuccessReply = JSON.stringify({
+  schemaVersion: 'xiazhi.reply.v2', route: 'practice_design', subIntent: 'triplet_practice',
+  answerMarkdown: '## 原题\n求一次函数斜率。\n## 相似题\n求 y=2x+1 的斜率。\n## 变式题\n由两点求斜率。\n本地题库未命中，均为 generated 草稿。',
+  facts: [], evidence: [], inferences: [], unknowns: ['本地题库未命中相似题。'],
+  risks: [{ level: 'normal', category: 'evidence_gap', mitigation: '生成题不标注为本地题库题。' }],
+  teacherConfirmations: ['请教师校正并确认后保存。'], nextActions: ['校正题干和解析。'],
+  artifacts: [], routeCheck: { kind: 'practice_design', passed: true, notes: ['三元题组草稿。'] },
+  processSummary: ['本地相似题检索未命中。'],
+  exerciseSetDraft: {
+    title: '一次函数斜率三元题组', subject: '数学', knowledgePoint: '一次函数斜率', contentMd: '原题、相似题、变式题。',
+    items: ['original', 'similar', 'variant'].map((role, index) => ({ role, sourceKind: 'generated', stem: [`求一次函数斜率。`, '求 y=2x+1 的斜率。', '由两点求斜率。'][index], answer: ['待教师校正', '2', '待教师校正'][index], analysis: '教师需核对解法与来源。', knowledgePoint: '一次函数斜率', difficulty: 'easy', teacherObservation: '请老师核对。' })),
+  },
+});
 writeFileSync(controlledAttachmentPath, controlledAttachmentBytes);
 const artifactRoot = join(appRoot, 'test-results', 'electron-e2e');
 mkdirSync(artifactRoot, { recursive: true });
@@ -20,12 +39,15 @@ const activeApps = new Set();
 
 async function launchApp(options = {}) {
   const app = await electron.launch({
-    args: [join(appRoot, 'out/main/index.js')],
+    args: [join(buildRoot, 'main/index.js'), `--user-data-dir=${userDataRoot}`],
     env: {
       ...process.env,
+      DEEPSEEK_API_KEY: tripletSuccessMode ? 'test-only-key' : '',
+      OMNI_EDU_E2E_TRIPLET_REPLY: tripletSuccessMode ? tripletSuccessReply : '',
       OMNI_EDU_DATA_ROOT: dataRoot,
       OMNI_EDU_REPO_ROOT: dirname(dirname(appRoot)),
       OMNI_EDU_E2E_DIALOG_MODE: '1',
+      OMNI_EDU_XIAOZHI_PI: '0', // Preserve legacy education-path regression; Pi has its real UI suite.
       OMNI_EDU_E2E_ATTACHMENT_DIALOG_QUEUE: JSON.stringify([[controlledAttachmentPath], []]),
       OMNI_EDU_E2E_STUDENT_EXPORT_DIALOG_QUEUE: JSON.stringify([[studentExportRoot], []]),
       OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE: JSON.stringify(options.backupExportDialogQueue ?? [dataBackupDestinationRoot, '']),
@@ -39,6 +61,13 @@ async function launchApp(options = {}) {
   const handle = { app, page };
   activeApps.add(app);
   return handle;
+}
+
+async function navigate(page, view) {
+  if (await page.getByTestId('ai-return-workspace').isVisible()) {
+    await page.getByTestId('ai-return-workspace').click();
+  }
+  await page.getByTestId(`nav-${view}`).click();
 }
 
 async function closeApp(app) {
@@ -182,7 +211,7 @@ async function run() {
   // AI conversation library: exercise the existing renderer -> typed preload
   // -> main -> SQLite lifecycle from teacher-visible controls. Archive remains
   // a reversible-in-data visibility state, but no restore UI/IPC is invented.
-  await first.page.getByTestId('nav-ai').click();
+  await navigate(first.page, 'ai');
   await first.page.getByTestId('ai-conversation-sidebar').waitFor({ state: 'visible' });
   const conversationWorkspaceBefore = await first.page.evaluate(() => window.omniEdu.listAiConversations());
   await first.page.getByTestId('ai-conversation-folder-new').click();
@@ -751,12 +780,12 @@ async function run() {
   assert.ok(reviewReminderRecord, 'review reminder fixture must persist through the existing record API');
   await first.page.reload();
   await first.page.waitForLoadState('domcontentloaded');
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${knownStudent.id}`).click();
 
   // Review reminder: view the existing review:getReminder calculation from
   // the Today navigation, then prove refresh is read-only and students are isolated.
-  await first.page.getByTestId('nav-today').click();
+  await navigate(first.page, 'today');
   await first.page.getByTestId('review-reminder-due').waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId('review-reminder-due').textContent(), /复习提醒前端验收知识点/, 'due reminder must render the knowledge point calculated from SQLite records');
   assert.match(await first.page.getByTestId('review-reminder-boundary').textContent(), /不包含学习记录正文、答案或附件路径/, 'reminder UI must expose its bounded privacy projection');
@@ -772,18 +801,18 @@ async function run() {
   await first.page.getByTestId(`student-row-${knownStudent.id}`).waitFor({ state: 'visible' });
   assert.match(await first.page.locator('.topbar h1').textContent(), /学生/, 'review reminder evidence CTA must open the student workspace');
   await first.page.getByTestId(`student-row-${emptyMasteryStudent.id}`).click();
-  await first.page.getByTestId('nav-today').click();
+  await navigate(first.page, 'today');
   await first.page.getByTestId('review-reminder-clear').waitFor({ state: 'visible' });
   assert.equal(await first.page.getByTestId('review-reminder-due').count(), 0, 'due reminder must not leak to a student without learning records');
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${knownStudent.id}`).click();
-  await first.page.getByTestId('nav-today').click();
+  await navigate(first.page, 'today');
   await first.page.getByTestId('review-reminder-due').waitFor({ state: 'visible' });
 
   // Review reports: use the existing reports:generate/update/list chain from
   // teacher-visible controls. Generation persists a SQLite draft plus an
   // initial Markdown snapshot; later edits intentionally update SQLite only.
-  await first.page.getByTestId('nav-review').click();
+  await navigate(first.page, 'review');
   await first.page.getByTestId('review-report-workspace').waitFor({ state: 'visible' });
   const reportsBeforeReviewValidation = await first.page.evaluate((studentId) => window.omniEdu.listReports(studentId), knownStudent.id);
   await first.page.getByTestId('review-report-start-date').fill('2026-08-12');
@@ -829,25 +858,25 @@ async function run() {
   assert.match(await first.page.getByTestId('review-report-boundary').textContent(), /Markdown 初始快照不代表最终稿/, 'review UI must disclose the file/SQLite boundary');
   assert.equal(readFileSync(initialReviewSnapshotPath, 'utf8'), initialReviewSnapshot, 'SQLite save must not be misreported as rewriting the initial Markdown snapshot');
 
-  await first.page.getByTestId('nav-today').click();
-  await first.page.getByTestId('nav-review').click();
+  await navigate(first.page, 'today');
+  await navigate(first.page, 'review');
   await first.page.getByTestId(`review-report-history-${generatedReviewReport.id}`).waitFor({ state: 'visible' });
   await first.page.getByTestId(`review-report-history-${generatedReviewReport.id}`).click();
   assert.equal(await first.page.getByTestId('review-report-content').inputValue(), revisedReviewContent, 'history reopen must read the saved SQLite report');
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${emptyMasteryStudent.id}`).click();
-  await first.page.getByTestId('nav-review').click();
+  await navigate(first.page, 'review');
   await first.page.getByTestId('review-report-history-empty').waitFor({ state: 'visible' });
   assert.equal(await first.page.getByTestId(`review-report-history-${generatedReviewReport.id}`).count(), 0, 'review history must not leak across students');
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${knownStudent.id}`).click();
-  await first.page.getByTestId('nav-review').click();
+  await navigate(first.page, 'review');
   await first.page.getByTestId(`review-report-history-${generatedReviewReport.id}`).waitFor({ state: 'visible' });
   await first.page.getByTestId(`review-report-history-${generatedReviewReport.id}`).click();
   await first.page.setViewportSize({ width: 1920, height: 1080 });
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-review-report-saved-1920x1080.png'), fullPage: true });
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  await first.page.getByTestId('nav-mastery').click();
+  await navigate(first.page, 'mastery');
   await first.page.getByTestId('mastery-path-content').waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId('mastery-path-workspace').textContent(), /版本 v2/, 'mastery path UI must render the confirmed SQLite version');
   assert.match(await first.page.getByTestId('mastery-path-module-0').textContent(), /Functions/, 'mastery path UI must preserve module order and name');
@@ -857,14 +886,14 @@ async function run() {
   await first.page.getByTestId('mastery-path-content').waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId('mastery-path-workspace').textContent(), /版本 v2/, 'mastery path refresh must return the same SQLite readback');
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-mastery-path-1366x768.png') });
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${emptyMasteryStudent.id}`).click();
-  await first.page.getByTestId('nav-mastery').click();
+  await navigate(first.page, 'mastery');
   await first.page.getByTestId('mastery-path-empty').waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId('mastery-path-empty').textContent(), /还没有教师确认的学习路径/, 'student without a path must show a truthful empty state');
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${knownStudent.id}`).click();
-  await first.page.getByTestId('nav-mastery').click();
+  await navigate(first.page, 'mastery');
   await first.page.getByTestId('mastery-path-content').waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId('mastery-path-workspace').textContent(), /Functions/, 'switching back must not leak the other student empty state');
   await first.page.getByTestId('mastery-path-open-ai').click();
@@ -872,7 +901,7 @@ async function run() {
   await masteryAiPrompt.waitFor({ state: 'visible' });
   assert.match(await masteryAiPrompt.inputValue(), new RegExp(knownStudent.displayName), 'mastery CTA must prefill a student-bound AI planning task');
   await first.page.setViewportSize({ width: 1920, height: 1080 });
-  await first.page.getByTestId('nav-mastery').click();
+  await navigate(first.page, 'mastery');
   await first.page.getByTestId('mastery-path-content').waitFor({ state: 'visible' });
   await first.page.screenshot({ path: join(artifactRoot, 'frontend-mastery-path-1920x1080.png') });
   await first.page.setViewportSize({ width: 1366, height: 768 });
@@ -880,7 +909,7 @@ async function run() {
   // Global search: the existing search:all handler already aggregates students
   // and records across the local SQLite store. Exercise it only from renderer
   // controls, including validation, no-hit, navigation and dual viewports.
-  await first.page.getByTestId('nav-search').click();
+  await navigate(first.page, 'search');
   await first.page.getByTestId('global-search-idle').waitFor({ state: 'visible' });
   await first.page.getByTestId('global-search-submit').click();
   await first.page.getByTestId('global-search-error').waitFor({ state: 'visible' });
@@ -892,7 +921,7 @@ async function run() {
   await first.page.getByTestId(`global-search-student-${knownStudent.id}`).click();
   await first.page.getByTestId(`student-row-${knownStudent.id}`).waitFor({ state: 'visible' });
   assert.match(await first.page.locator('.topbar h1').textContent(), /学生/, 'student search result must navigate to the student workspace');
-  await first.page.getByTestId('nav-search').click();
+  await navigate(first.page, 'search');
   await first.page.getByTestId('global-search-input').fill('错题图片前端验收');
   await first.page.getByTestId('global-search-submit').click();
   await first.page.getByTestId(`global-search-record-${mistakeRecord.id}`).waitFor({ state: 'visible' });
@@ -904,12 +933,12 @@ async function run() {
   await first.page.getByTestId(`timeline-record-${mistakeRecord.id}`).waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId(`timeline-record-${mistakeRecord.id}`).textContent(), /错题图片前端验收/, 'record result must open its owning student timeline');
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  await first.page.getByTestId('nav-search').click();
+  await navigate(first.page, 'search');
   await first.page.getByTestId('global-search-input').fill('NO_HIT_GLOBAL_SEARCH_7E41');
   await first.page.getByTestId('global-search-submit').click();
   await first.page.getByTestId('global-search-empty').waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId('global-search-empty').textContent(), /没有找到/, 'global search must show a truthful no-hit state');
-  await first.page.getByTestId('nav-mistakes').click();
+  await navigate(first.page, 'mistakes');
   await first.page.getByTestId('mistakes-workspace').waitFor({ state: 'visible' });
   const viewport1366 = await first.page.evaluate(() => ({ width: window.innerWidth, height: window.innerHeight }));
   assert.deepEqual(viewport1366, { width: 1366, height: 768 }, 'mistake workflow must be verified at 1366x768');
@@ -945,9 +974,91 @@ async function run() {
   assert.equal(correctedAnalysis[0]?.ocrStatus, 'teacher_corrected', 'teacher correction should persist through preload and SQLite');
   const exerciseCountBeforeFrontendReject = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
   await first.page.getByTestId('mistake-send-ai').click();
+  if (tripletSuccessMode) {
+    await first.page.getByTestId('ai-output-success').last().waitFor({ state: 'visible' });
+    const firstGraphRun = (await first.page.evaluate(() => window.omniEdu.listAiAgentRuns(10))).find((item) => item.prompt?.includes('脱敏题目：'));
+    assert.equal(firstGraphRun?.status, 'succeeded', 'graph draft must have SQLite succeeded terminal state');
+    const checkpointDb = new DatabaseSync(join(dataRoot, 'app.db'));
+    const checkpointRows = checkpointDb.prepare('SELECT checkpoint_id, checkpoint_blob, metadata_blob FROM ai_graph_checkpoints WHERE thread_id = ? ORDER BY checkpoint_id').all(firstGraphRun.id);
+    const writeRows = checkpointDb.prepare('SELECT value_blob FROM ai_graph_checkpoint_writes WHERE thread_id = ?').all(firstGraphRun.id);
+    assert.ok(checkpointRows.length >= 4, 'LangGraph must persist node checkpoints into SQLite');
+    assert.ok(writeRows.length >= 4, 'LangGraph must persist pending node writes into SQLite');
+    const checkpointEvents = (await first.page.evaluate((runId) => window.omniEdu.listAiAgentEvents(runId), firstGraphRun.id)).filter((event) => event.outputSummary?.checkpointId);
+    assert.equal(checkpointEvents.length, checkpointRows.length, 'each persisted graph checkpoint must have an auditable event');
+    assert.ok(checkpointEvents.every((event) => checkpointRows.some((row) => row.checkpoint_id === event.outputSummary.checkpointId)));
+    const checkpointText = [
+      ...checkpointRows.flatMap((row) => [row.checkpoint_blob, row.metadata_blob]),
+      ...writeRows.map((row) => row.value_blob),
+    ].map((value) => Buffer.from(value).toString('utf8')).join('\n');
+    assert.doesNotMatch(checkpointText, /13800138000|小A|test-only-key/, 'checkpoint must not contain raw student text or API key');
+    checkpointDb.close();
+    const firstPending = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'))).find((item) => item.runId === firstGraphRun.id);
+    assert.ok(firstPending, 'graph draft must enter teacher confirmation queue');
+    assert.deepEqual(firstPending.payload.exerciseSet?.items?.map((item) => item.role), ['original', 'similar', 'variant']);
+    assert.ok(firstPending.payload.exerciseSet.items.every((item) => item.sourceKind === 'generated'));
+    const seenSuccessRunIds = await first.page.evaluate(() => Array.from(document.querySelectorAll('[data-testid="ai-output-success"]')).map((item) => item.getAttribute('data-run-id')).filter(Boolean));
+    assert.ok(seenSuccessRunIds.includes(firstGraphRun.id), 'assistant message must link to the persisted graph run');
+    await navigate(first.page, 'mistakes');
+    await first.page.getByTestId('mistake-triplet-stem-0').fill('教师编辑后的原题');
+    await first.page.getByTestId('mistake-triplet-reject').click();
+    assert.equal((await first.page.evaluate((id) => window.omniEdu.listExerciseSets(id), knownStudent.id)).length, exerciseCountBeforeFrontendReject, 'rejection must not save exercise set');
+    await first.page.getByTestId('mistake-send-ai').click();
+    await first.page.waitForFunction((seenIds) => Array.from(document.querySelectorAll('[data-testid="ai-output-success"]')).some((item) => item.getAttribute('data-run-id') && !seenIds.includes(item.getAttribute('data-run-id'))), seenSuccessRunIds);
+    const secondRunId = await first.page.evaluate((seenIds) => Array.from(document.querySelectorAll('[data-testid="ai-output-success"]')).map((item) => item.getAttribute('data-run-id')).find((id) => id && !seenIds.includes(id)), seenSuccessRunIds);
+    const secondGraphRun = await first.page.evaluate((id) => window.omniEdu.getAiAgentRun(id), secondRunId);
+    assert.ok(secondGraphRun, 'second graph run must have a succeeded terminal state');
+    await first.page.waitForFunction(async (runId) => (await window.omniEdu.listAiConfirmations('pending')).some((item) => item.runId === runId), secondGraphRun.id);
+    const secondPending = (await first.page.evaluate(() => window.omniEdu.listAiConfirmations('pending'))).find((item) => item.runId === secondGraphRun?.id);
+    assert.ok(secondPending, 'second graph draft must be independently confirmable');
+    await navigate(first.page, 'mistakes');
+    await first.page.getByTestId('mistake-triplet-stem-0').fill('教师确认后的原题：求斜率');
+    await first.page.getByTestId('mistake-triplet-answer-0').fill('教师确认答案：2');
+    await first.page.getByTestId('mistake-triplet-confirm').click();
+    await first.page.waitForFunction(async ({ studentId, count }) => (await window.omniEdu.listExerciseSets(studentId)).length === count + 1, { studentId: knownStudent.id, count: exerciseCountBeforeFrontendReject });
+    const savedSet = (await first.page.evaluate((id) => window.omniEdu.listExerciseSets(id), knownStudent.id))[0];
+    assert.deepEqual(savedSet.items.map((item) => item.role), ['original', 'similar', 'variant']);
+    assert.ok(savedSet.items.every((item) => item.sourceKind === 'generated'));
+    assert.equal(savedSet.items[0].stem, '教师确认后的原题：求斜率', 'teacher edit must be persisted instead of model draft');
+    assert.equal(savedSet.items[0].answer, '教师确认答案：2', 'teacher answer edit must be persisted');
+    assert.match(savedSet.contentMd, /教师确认后的原题：求斜率/, 'readback markdown must reflect teacher edit');
+    await closeApp(first.app);
+    const reopened = await launchApp();
+    const afterRestart = await reopened.page.evaluate((id) => window.omniEdu.listExerciseSets(id), knownStudent.id);
+    assert.ok(afterRestart.some((item) => item.id === savedSet.id && item.items[0].stem === '教师确认后的原题：求斜率'), 'teacher-edited graph output must survive Electron restart');
+    console.log(JSON.stringify({ suite: 'electron-triplet-graph-acceptance', passed: true, evidence: 'teacher correction -> LangGraph -> reject zero writes -> edit and confirm -> SQLite readback -> restart' }));
+    return;
+  }
   await first.page.getByTestId('ai-output-error').waitFor({ state: 'visible' });
+  if (process.env.OMNI_EDU_E2E_DIAGNOSTICS === '1' && !/API Key|凭证|配置|DeepSeek/i.test(await first.page.getByTestId('ai-output-error').textContent())) {
+    const diagnosticDb = new DatabaseSync(join(dataRoot, 'app.db'), { readOnly: true });
+    try {
+      const diagnostic = {
+        stage: 'legacy-no-provider-error',
+        attachmentRows: diagnosticDb.prepare('SELECT COUNT(*) AS count FROM xiaozhi_pi_attachments').get().count,
+        foreignKeyViolations: diagnosticDb.prepare('PRAGMA foreign_key_check').all().map(row => ({ table: row.table, parent: row.parent })),
+        runs: diagnosticDb.prepare(`SELECT route,sub_intent,status,
+          (SELECT COUNT(*) FROM ai_graph_checkpoints c WHERE c.thread_id=r.id) AS checkpoints,
+          (SELECT COUNT(*) FROM ai_graph_checkpoint_writes w WHERE w.thread_id=r.id) AS writes
+          FROM ai_agent_runs r ORDER BY created_at DESC LIMIT 5`).all(),
+        boundary: 'Owned synthetic smoke DB metadata only; no prompts, student data, keys or paths.',
+      };
+      writeFileSync(join(artifactRoot, 'legacy-no-provider-diagnostic.json'), JSON.stringify(diagnostic, null, 2));
+    } finally { diagnosticDb.close(); }
+  }
   assert.match(await first.page.getByTestId('ai-output-error').textContent(), /API Key|凭证|配置|DeepSeek/i, 'no provider key must show an actionable frontend error');
-  await first.page.getByTestId('nav-mistakes').click();
+  const graphRunEvidence = await first.page.evaluate(async () => {
+    const runs = await window.omniEdu.listAiAgentRuns(10);
+    const run = runs.find((item) => item.prompt?.includes('脱敏题目：'));
+    return run ? { status: run.status, events: await window.omniEdu.listAiAgentEvents(run.id) } : null;
+  });
+  assert.ok(graphRunEvidence, 'mistake action must persist an AI run in SQLite');
+  assert.equal(graphRunEvidence.status, 'failed', 'model failure must leave a terminal run');
+  assert.ok(graphRunEvidence.events.some((event) => event.outputSummary?.graphVersion === 'xiazhi.langgraph.triplet.v1'), 'mistake action must reach LangGraph runtime');
+  if (process.env.OMNI_EDU_E2E_TRIPLET_ONLY === '1') {
+    console.log(JSON.stringify({ suite: 'electron-triplet-graph', passed: true, route: 'mistake button -> typed IPC -> LangGraph -> SQLite terminal event', provider: 'failure path' }));
+    return;
+  }
+  await navigate(first.page, 'mistakes');
   await first.page.getByTestId('mistake-triplet-panel').waitFor({ state: 'visible' });
   await first.page.getByTestId('mistake-triplet-stem-0').fill('教师编辑后的题干');
   assert.equal(await first.page.getByTestId('mistake-triplet-stem-0').inputValue(), '教师编辑后的题干', 'triplet preview should support teacher editing');
@@ -985,7 +1096,7 @@ async function run() {
     .find((item) => item.runId === confirmTurn.result?.runId);
   assert.ok(confirmationForUi, 'fresh exercise-set confirmation should be available to the renderer');
   const exerciseCountBeforeConfirm = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;
-  await first.page.getByTestId('nav-ai').click();
+  await navigate(first.page, 'ai');
   await first.page.getByTestId(`ai-confirm-${confirmationForUi.id}`).click();
   await first.page.waitForFunction(async ({ studentId, expectedCount }) => {
     const sets = await window.omniEdu.listExerciseSets(studentId);
@@ -998,7 +1109,7 @@ async function run() {
 
   // Teacher-visible readback: the confirmed set must be available from the
   // mistake workflow without direct preload calls or a separate duplicate workspace.
-  await first.page.getByTestId('nav-mistakes').click();
+  await navigate(first.page, 'mistakes');
   await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).textContent(), new RegExp(confirmedExerciseSet.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'confirmed exercise-set title must render from SQLite readback');
   assert.match(await first.page.getByTestId('exercise-set-readonly-boundary').textContent(), /不提供隐式编辑/, 'formal exercise-set readback must expose its read-only boundary');
@@ -1015,14 +1126,14 @@ async function run() {
   await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).waitFor({ state: 'visible' });
   assert.equal((await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length, confirmedExerciseSets.length, 'refresh must be read-only and preserve SQLite row count');
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${emptyMasteryStudent.id}`).click();
-  await first.page.getByTestId('nav-mistakes').click();
+  await navigate(first.page, 'mistakes');
   await first.page.getByTestId('exercise-set-empty').waitFor({ state: 'visible' });
   assert.equal(await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).count(), 0, 'exercise sets must not leak across students');
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId(`student-row-${knownStudent.id}`).click();
-  await first.page.getByTestId('nav-mistakes').click();
+  await navigate(first.page, 'mistakes');
   await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).waitFor({ state: 'visible' });
 
   // Question notebook: seed canonical local/generated questions through the
@@ -1041,7 +1152,7 @@ async function run() {
     return { local, generated };
   });
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  await first.page.getByTestId('nav-question_notebook').click();
+  await navigate(first.page, 'question_notebook');
   await first.page.getByTestId(`question-notebook-card-${notebookQuestions.local.id}`).waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId(`question-notebook-source-${notebookQuestions.local.id}`).textContent(), /local_bank/, 'local question source must be visible');
   assert.match(await first.page.getByTestId(`question-notebook-source-${notebookQuestions.generated.id}`).textContent(), /generated/, 'generated question source must be visible');
@@ -1113,7 +1224,7 @@ async function run() {
 
   // Teacher notebook: all state changes start from renderer controls and use
   // the existing typed preload/main/SQLite CRUD with optimistic versions.
-  await first.page.getByTestId('nav-notebook').click();
+  await navigate(first.page, 'notebook');
   await first.page.getByTestId('teacher-notebook-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('teacher-notebook-empty').waitFor({ state: 'visible' });
   await first.page.getByTestId('teacher-notebook-name').fill('一次函数备课本');
@@ -1154,7 +1265,7 @@ async function run() {
   // renderer controls. Patch proposals must leave authored content unchanged
   // until the teacher explicitly applies them.
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  await first.page.getByTestId('nav-book').click();
+  await navigate(first.page, 'book');
   await first.page.getByTestId('teaching-book-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('teaching-book-empty').waitFor({ state: 'visible' });
   await first.page.getByTestId('teaching-book-title').fill('一次函数前端创作验收讲义');
@@ -1203,6 +1314,7 @@ async function run() {
   const teachingBlockFixture = teachingBookDetail.blocks[0];
   assert.equal(teachingBlockFixture.sourceAnchors[0]?.ref, teachingSourceRef, 'block should retain the selected source anchor');
   await first.page.getByTestId('teaching-book-preview').waitFor({ state: 'visible' });
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="teaching-book-preview"]')?.textContent?.includes('斜率表示'));
   assert.match(await first.page.getByTestId('teaching-book-preview').textContent(), /斜率表示/, 'compiled preview should show persisted block content');
   assert.match(await first.page.getByTestId('teaching-book-preview-meta').textContent(), /writesFile=false/, 'preview must remain read-only');
 
@@ -1256,9 +1368,12 @@ async function run() {
   await first.page.waitForFunction(() => !(document.querySelector('[data-testid="teaching-book-export"]'))?.disabled);
   await first.page.getByTestId('teaching-book-export').click();
   await first.page.waitForFunction(() => Boolean(document.querySelector('[data-testid="teaching-book-success"]')?.textContent?.includes('讲义已导出') || document.querySelector('[data-testid="teaching-book-error"]')));
-  const teachingBookExportError = await first.page.getByTestId('teaching-book-error').textContent().catch(() => '');
-  assert.equal(teachingBookExportError, '', `teaching book export UI should not fail: ${teachingBookExportError}`);
-  assert.match(await first.page.getByTestId('teaching-book-success').textContent(), /讲义已导出/, 'export click should render the persisted artifact path');
+  const teachingBookExportFeedback = await first.page.evaluate(() => ({
+    error: document.querySelector('[data-testid="teaching-book-error"]')?.textContent ?? '',
+    success: document.querySelector('[data-testid="teaching-book-success"]')?.textContent ?? '',
+  }));
+  assert.equal(teachingBookExportFeedback.error, '', `teaching book export UI should not fail: ${teachingBookExportFeedback.error}`);
+  assert.match(teachingBookExportFeedback.success, /讲义已导出/, 'export click should render the persisted artifact path');
   const teachingBookArtifactReadback = await first.page.evaluate(async (artifactId) => {
     const direct = await window.omniEdu.getDocumentArtifact(artifactId);
     const artifacts = await window.omniEdu.listDocumentArtifacts();
@@ -1312,7 +1427,7 @@ async function run() {
   assert.equal(observabilityRun?.status, 'succeeded', 'observability fixture run should complete');
 
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  await first.page.getByTestId('nav-analytics').click();
+  await navigate(first.page, 'analytics');
   await first.page.getByTestId('ai-observability-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('ai-observability-summary').waitFor({ state: 'visible' });
   await first.page.getByTestId(`ai-run-item-${observabilityRun.id}`).click();
@@ -1342,7 +1457,7 @@ async function run() {
   // use the existing run/event evidence. Drafts must be zero-write until a
   // teacher clicks adopt; all mutations are verified through preload/SQLite.
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  await first.page.getByTestId('nav-memory').click();
+  await navigate(first.page, 'memory');
   await first.page.getByTestId('memory-governance-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('memory-l2-empty').waitFor({ state: 'visible' });
   const l2CountBeforeDraft = (await first.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat')))?.entries.length ?? 0;
@@ -1465,7 +1580,7 @@ async function run() {
   }, knownStudent.id);
   await first.page.reload();
   await first.page.waitForLoadState('domcontentloaded');
-  await first.page.getByTestId('nav-ai').click();
+  await navigate(first.page, 'ai');
   await first.page.locator(`[data-session-id="${artifactFixture.sessionId}"]`).click();
   await first.page.getByTestId(`ai-artifact-open-${artifactFixture.markdownId}`).click();
   await first.page.getByTestId('ai-artifact-export').click();
@@ -1601,7 +1716,7 @@ async function run() {
   assert.ok(knowledgeImport.overview.counts.nodes >= 2, 'knowledge graph nodes should be created');
   assert.ok(knowledgeImport.overview.counts.edges >= 1, 'knowledge graph edges should be created');
 
-  await first.page.getByTestId('nav-students').click();
+  await navigate(first.page, 'students');
   await first.page.getByTestId('student-create').click();
   await first.page.getByTestId('student-profile-form').waitFor({ state: 'visible' });
   await first.page.getByTestId('student-form-display-name').fill('档案生命周期验收学生');
@@ -1691,7 +1806,7 @@ async function run() {
     graderRationale: '确定性 fixture，只用于验证只读 UI 和 graderMode 边界。',
   }));
 
-  await first.page.getByTestId('nav-settings').click();
+  await navigate(first.page, 'settings');
   await first.page.getByTestId('ai-quality-review-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('ai-quality-review-loading').waitFor({ state: 'hidden' });
   assert.match(await first.page.getByTestId('ai-quality-review-boundary').textContent(), /不把 proxy 冒充真实模型裁判/, 'quality UI must disclose deterministic proxy versus llm_judge');
@@ -1730,7 +1845,7 @@ async function run() {
   await first.page.getByTestId(`ai-quality-replay-${qualityBeforeReview.id}`).click();
   await first.page.getByTestId('ai-prompt-input').waitFor({ state: 'visible' });
   assert.equal(await first.page.getByTestId('ai-prompt-input').inputValue(), qualityBeforeReview.prompt, 'quality replay must place the selected prompt into the real AI input');
-  await first.page.getByTestId('nav-settings').click();
+  await navigate(first.page, 'settings');
   await first.page.getByTestId(`ai-quality-before-${qualityBeforeReview.id}`).waitFor({ state: 'visible' });
   await first.page.getByTestId(`ai-quality-before-${qualityBeforeReview.id}`).click();
   await first.page.getByTestId('ai-quality-selected-before').waitFor({ state: 'visible' });
@@ -1850,7 +1965,7 @@ async function run() {
   assert.equal(conversationWorkspaceAfterRestart.archivedFolders.find((folder) => folder.id === conversationFolder.id)?.name, 'AI 对话前端验收-已重命名', 'renamed archived folder must persist after restart');
   assert.ok(conversationWorkspaceAfterRestart.archivedSessions.some((session) => session.id === conversationSession.id), 'individually archived session must persist after restart');
   assert.ok(conversationWorkspaceAfterRestart.archivedSessions.some((session) => session.id === folderArchiveSession.id), 'folder cascade archived session must persist after restart');
-  await second.page.getByTestId('nav-settings').click();
+  await navigate(second.page, 'settings');
   assert.match(await second.page.locator('body').textContent(), /AI 对话前端验收-已重命名/, 'settings UI must render the archived conversation folder after restart');
   await second.page.getByTestId(`ai-quality-review-${qualityBeforeReview.id}`).waitFor({ state: 'visible' });
   await second.page.getByTestId(`ai-quality-experiment-${qualityExperiment.id}`).waitFor({ state: 'visible' });
@@ -1890,36 +2005,36 @@ async function run() {
   const lifecycleStudentAfterRestart = (await second.page.evaluate(() => window.omniEdu.listStudents('档案生命周期验收学生-已编辑')))[0];
   assert.equal(lifecycleStudentAfterRestart?.status, 'archived', 'renderer-confirmed student archive must persist after restart');
   assert.equal(lifecycleStudentAfterRestart?.grade, '九年级', 'renderer-edited student profile must persist after restart');
-  await second.page.getByTestId('nav-students').click();
+  await navigate(second.page, 'students');
   await second.page.getByTestId(`student-row-${lifecycleStudent.id}`).click();
   await second.page.getByTestId('student-status-archived').waitFor({ state: 'visible' });
   assert.equal(await second.page.getByTestId('student-edit').isDisabled(), true, 'restart UI must preserve archived read-only state');
   await second.page.getByTestId(`student-row-${knownStudent.id}`).click();
-  await second.page.getByTestId('nav-mastery').click();
+  await navigate(second.page, 'mastery');
   await second.page.getByTestId('mastery-path-content').waitFor({ state: 'visible' });
   assert.match(await second.page.getByTestId('mastery-path-workspace').textContent(), /版本 v2/, 'restart UI must render the persisted mastery path');
-  await second.page.getByTestId('nav-today').click();
+  await navigate(second.page, 'today');
   await second.page.getByTestId('review-reminder-due').waitFor({ state: 'visible' });
   assert.match(await second.page.getByTestId('review-reminder-due').textContent(), /复习提醒前端验收知识点/, 'restart UI must recalculate the same due reminder from persisted learning records');
   const reportsAfterRestart = await second.page.evaluate((studentId) => window.omniEdu.listReports(studentId), knownStudent.id);
   const reviewAfterRestart = reportsAfterRestart.find((report) => report.id === generatedReviewReport.id);
   assert.equal(reviewAfterRestart?.contentMd, revisedReviewContent, 'teacher-edited report content must persist after restart');
   assert.equal(reviewAfterRestart?.parentSummary, revisedParentSummary, 'teacher-edited parent summary must persist after restart');
-  await second.page.getByTestId('nav-review').click();
+  await navigate(second.page, 'review');
   await second.page.getByTestId(`review-report-history-${generatedReviewReport.id}`).waitFor({ state: 'visible' });
   await second.page.getByTestId(`review-report-history-${generatedReviewReport.id}`).click();
   assert.equal(await second.page.getByTestId('review-report-content').inputValue(), revisedReviewContent, 'restart UI must reopen the same SQLite report');
   assert.ok(existsSync(initialReviewSnapshotPath), 'initial Markdown snapshot must remain readable after restart');
   assert.equal(readFileSync(initialReviewSnapshotPath, 'utf8'), initialReviewSnapshot, 'restart must preserve the truthful initial-snapshot boundary');
-  await second.page.getByTestId('nav-mistakes').click();
+  await navigate(second.page, 'mistakes');
   await second.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).waitFor({ state: 'visible' });
   assert.match(await second.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).textContent(), new RegExp(confirmedExerciseSet.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'restart UI must render the persisted confirmed exercise set');
-  await second.page.getByTestId('nav-search').click();
+  await navigate(second.page, 'search');
   await second.page.getByTestId('global-search-input').fill('错题图片前端验收');
   await second.page.getByTestId('global-search-submit').click();
   await second.page.getByTestId(`global-search-record-${mistakeRecord.id}`).waitFor({ state: 'visible' });
   assert.match(await second.page.getByTestId(`global-search-record-${mistakeRecord.id}`).textContent(), /错题图片前端验收/, 'global search must read the same persisted SQLite record after restart');
-  await second.page.getByTestId('nav-analytics').click();
+  await navigate(second.page, 'analytics');
   await second.page.getByTestId(`ai-regression-item-${observabilityReport.id}`).waitFor({ state: 'visible' });
   assert.equal((await second.page.locator('body').textContent())?.includes(observabilityRawPrompt), false, 'raw prompt must remain absent after restart');
   const l2AfterRestart = await second.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'));
@@ -1928,7 +2043,7 @@ async function run() {
   const l3AfterRestart = await second.page.evaluate(() => window.omniEdu.getAiMemoryL3Document('profile'));
   assert.equal(l3AfterRestart?.entries.find((entry) => entry.id === l3Entry.id)?.status, 'active', 'restored L3 entry should persist after restart');
   assert.match(l3AfterRestart?.entries.find((entry) => entry.id === l3Entry.id)?.text ?? '', /跨表面学习者画像/, 'teacher-edited L3 text should persist after restart');
-  await second.page.getByTestId('nav-memory').click();
+  await navigate(second.page, 'memory');
   await second.page.getByTestId(`memory-l2-entry-${retainedL2Id}`).waitFor({ state: 'visible' });
   assert.match(await second.page.getByTestId(`memory-l2-text-${retainedL2Id}`).inputValue(), /另一窗口已更新/, 'restart UI should render current L2 readback');
   const teachingBookAfterRestart = await second.page.evaluate((bookId) => window.omniEdu.getTeachingBook(bookId), teachingBookFixture.id);
@@ -1940,10 +2055,10 @@ async function run() {
   assert.equal(teachingBookArtifactAfterRestart?.contentHash, teachingBookArtifact.contentHash, 'teaching book export hash should remain stable after restart');
   assert.ok(existsSync(teachingBookArtifactAfterRestart.filePath), 'teaching book export file should remain readable after restart');
   assert.ok((await second.page.evaluate(() => window.omniEdu.listTeachingBooks(true))).find((book) => book.id === archivedTeachingBookFixture.id)?.deletedAt, 'archived teaching book should persist after restart');
-  await second.page.getByTestId('nav-book').click();
+  await navigate(second.page, 'book');
   await second.page.getByTestId(`teaching-book-item-${teachingBookFixture.id}`).waitFor({ state: 'visible' });
   await second.page.setViewportSize({ width: 1366, height: 768 });
-  await second.page.getByTestId('nav-question_notebook').click();
+  await navigate(second.page, 'question_notebook');
   await second.page.getByTestId(`question-notebook-card-${notebookQuestions.local.id}`).waitFor({ state: 'visible' });
   assert.equal(await second.page.getByTestId(`question-notebook-bookmark-${notebookQuestions.local.id}`).getAttribute('aria-label'), '取消收藏', 'restart UI should render the persisted bookmark');
   await closeApp(second.app);
@@ -2068,9 +2183,16 @@ async function run() {
 }
 
 run()
-  .catch((error) => {
-    console.error(error);
+  .catch(async (error) => {
     process.exitCode = 1;
+    console.error(error);
+    for (const app of activeApps) {
+      for (const page of app.windows()) {
+        await page.screenshot({ path: join(artifactRoot, 'failure.png'), fullPage: true }).catch(() => undefined);
+        const feedback = await page.locator('[data-testid^="student-lifecycle-feedback-"]').allTextContents().catch(() => []);
+        console.error(JSON.stringify({ failureFeedback: feedback }));
+      }
+    }
   })
   .finally(async () => {
     await Promise.all([...activeApps].map((app) => closeApp(app)));

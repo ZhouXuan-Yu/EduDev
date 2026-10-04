@@ -1,0 +1,15 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual OmniEduStore initializes the additive attachment schema with original native sqlite3",
+      "pass": true
+    },
+    {
+      "name": "Real production SQLite callback adapter captures two actual local files with distinct stable source identities",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual Electron native sqlite3 and OmniEduStore initialization; synthetic isolated files, source state/service APIs. No renderer/chooser, model delivery or viewed-image receipt proof.",
+  "error": "Error: changed\n    at Object.bind (file:///D:/WorkProject/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-native-ggXZXd/worker.mjs:1108:48)\n    at async file:///D:/WorkProject/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-native-ggXZXd/worker.mjs:8122:18"
+}

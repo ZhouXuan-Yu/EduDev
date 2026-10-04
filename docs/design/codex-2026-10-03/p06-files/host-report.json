@@ -1,0 +1,97 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Strict schema, fields, session/request identity, path/ADS/UNC/traversal/depth validation",
+      "pass": true
+    },
+    {
+      "name": "Actual Hana-backed directory list projects only relative ordinary entries; credential names hidden",
+      "pass": true
+    },
+    {
+      "name": "Actual UTF-8 preview equals disk bytes without cloud sanitation or model calls",
+      "pass": true
+    },
+    {
+      "name": "Actual nested Markdown list/preview carries version and source",
+      "pass": true
+    },
+    {
+      "name": "File change rejects old expected version",
+      "pass": true
+    },
+    {
+      "name": "Changed workspace lease rejects old preview authority",
+      "pass": true
+    },
+    {
+      "name": "Missing file has explicit not_found, no raw absolute path",
+      "pass": true
+    },
+    {
+      "name": "Root escape and secret-file read are denied by main path guard",
+      "pass": true
+    },
+    {
+      "name": "Hardlink and junction are not listed or previewed",
+      "pass": true
+    },
+    {
+      "name": "Oversize text rejected before content allocation",
+      "pass": true
+    },
+    {
+      "name": "Invalid UTF-8/NUL is unsupported without partial body disclosure",
+      "pass": true
+    },
+    {
+      "name": "Only signature-verified local raster images are previewed",
+      "pass": true
+    },
+    {
+      "name": "Office/PDF/binary unsupported metadata is honest and contains no body",
+      "pass": true
+    },
+    {
+      "name": "Directory count is bounded and reports partial, not a complete listing",
+      "pass": true
+    },
+    {
+      "name": "Cancelled and timed out reads return terminal structured errors",
+      "pass": true
+    },
+    {
+      "name": "No-workspace failure never falls back to private session files",
+      "pass": true
+    },
+    {
+      "name": "Real IPC functions reject wrong sender/extra fields before read",
+      "pass": true
+    },
+    {
+      "name": "Matching scoped cancellation/duplicate ID is enforced in real IPC handler",
+      "pass": true
+    },
+    {
+      "name": "All operations preserve original outside bytes",
+      "pass": true
+    },
+    {
+      "name": "Authority change during read discards already-read result",
+      "pass": true
+    },
+    {
+      "name": "Real IPC concurrency limit rejects ninth request and cancelled work returns no data",
+      "pass": true
+    },
+    {
+      "name": "Actual IPC timeout returns at deadline while blocked native work still holds its bounded slot",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual bounded filesystem/Hana readonly service and real IPC handler functions with sender seam",
+    "Synthetic data only; no provider/UI claims"
+  ]
+}

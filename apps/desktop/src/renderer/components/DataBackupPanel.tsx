@@ -1,5 +1,6 @@
 import { CheckCircle2, HardDrive, LoaderCircle, ShieldCheck, TriangleAlert, XCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Button } from '@heroui/react';
 import type { DataBackupVerificationResult, ExportDataRootResult } from '../../shared/contracts';
 
 export type DataBackupPanelStatus =
@@ -22,6 +23,9 @@ export type DataBackupPanelState = {
 type DataBackupPanelProps = {
   dataRoot: string;
   setStatus?: (message: string) => void;
+  modern?: boolean;
+  disabled?: boolean;
+  onBusyChange?: (busy: boolean) => void;
 };
 
 function issueList(label: string, items: string[]) {
@@ -78,12 +82,18 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
   return null;
 }
 
-export function DataBackupPanel({ dataRoot, setStatus }: DataBackupPanelProps) {
-  const [state, setState] = useState<DataBackupPanelState>({ status: 'idle', message: '' });
+export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled = false, onBusyChange }: DataBackupPanelProps) {
+  const [state, updateState] = useState<DataBackupPanelState>({ status: 'idle', message: '' });
+  const live = useRef(true), lock = useRef(false);
+  useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
+  const setState = (next: DataBackupPanelState) => { if (live.current) updateState(next); };
   const busy = state.status === 'exporting' || state.status === 'verifying';
+  useEffect(() => { onBusyChange?.(busy); return () => onBusyChange?.(false); }, [busy, onBusyChange]);
 
   const exportBackup = async () => {
-    setState({ status: 'exporting', message: '正在复制本地数据并生成 SHA-256 manifest…' });
+    if (disabled || lock.current) return;
+    lock.current = true;
+    setState({ status: 'exporting', message: modern ? '正在创建本地备份…' : '正在复制本地数据并生成 SHA-256 manifest…' });
     try {
       if (!window.omniEdu?.exportDataRoot) throw new Error('完整备份接口不可用，请重新启动应用。');
       const result = await window.omniEdu.exportDataRoot();
@@ -97,14 +107,16 @@ export function DataBackupPanel({ dataRoot, setStatus }: DataBackupPanelProps) {
       setState({ status: result.verified ? 'export_success' : 'error', message, exportResult: result });
       setStatus?.(message);
     } catch (error) {
-      const message = error instanceof Error ? error.message : '完整数据备份失败。';
+      const message = modern ? '备份未完成。请确认任务已结束、目标位置可写且空间充足，再重试。' : error instanceof Error ? error.message : '完整数据备份失败。';
       setState({ status: 'error', message });
       setStatus?.(message);
-    }
+    } finally { lock.current = false; }
   };
 
   const verifyBackup = async () => {
-    setState({ status: 'verifying', message: '正在逐文件核对大小与 SHA-256…' });
+    if (disabled || lock.current) return;
+    lock.current = true;
+    setState({ status: 'verifying', message: modern ? '正在检查备份文件…' : '正在逐文件核对大小与 SHA-256…' });
     try {
       if (!window.omniEdu?.verifyDataBackup) throw new Error('备份校验接口不可用，请重新启动应用。');
       const result = await window.omniEdu.verifyDataBackup();
@@ -120,12 +132,26 @@ export function DataBackupPanel({ dataRoot, setStatus }: DataBackupPanelProps) {
       setState({ status: result.verified ? 'verify_success' : 'verification_failed', message, verificationResult: result });
       setStatus?.(message);
     } catch (error) {
-      const message = error instanceof Error ? error.message : '备份完整性校验失败。';
+      const message = modern ? '无法检查该备份。请重新选择小智创建的备份目录。' : error instanceof Error ? error.message : '备份完整性校验失败。';
       setState({ status: 'error', message });
       setStatus?.(message);
-    }
+    } finally { lock.current = false; }
   };
 
+  if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">
+    <p>为本机的资料、对话和工作成果创建完整备份。</p>
+    <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
+    <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>{state.status === 'exporting' ? '正在备份…' : '创建本地备份'}</Button>
+      <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
+    <div aria-live="polite">
+      {state.status === 'idle' ? <p data-testid="data-backup-idle">选择资料目录之外的位置保存备份。</p>
+        : <div role={['error','verification_failed'].includes(state.status) ? 'alert' : 'status'} data-testid={`data-backup-${state.status === 'export_success' ? 'export-success' : state.status === 'verify_success' ? 'verify-success' : state.status === 'verification_failed' ? 'verify-failed' : busy ? 'loading' : state.status}`}>
+          <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}
+          {state.verificationResult && <p className="pi-settings-location" data-testid="data-backup-verify-path">{state.verificationResult.backupPath}</p>}
+        </div>}
+    </div>
+    {disabled && <p>任务结束后可创建或检查备份。</p>}
+  </section>;
   return (
     <div className="data-backup-panel" data-testid="data-backup-panel">
       <div className="path-box" data-testid="data-root-path">{dataRoot}</div>

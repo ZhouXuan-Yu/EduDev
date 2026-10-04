@@ -1,0 +1,100 @@
+{
+  "suite": "pi-persistent-approval-ui",
+  "success": true,
+  "model": "deepseek-flash",
+  "checks": [
+    {
+      "name": "Native directory cancellation grants no workspace",
+      "pass": true
+    },
+    {
+      "name": "Private education data root cannot become office workspace",
+      "pass": true
+    },
+    {
+      "name": "Visible native chooser grants only selected synthetic folder",
+      "pass": true
+    },
+    {
+      "name": "Real provider copy waits on durable approval with zero file writes",
+      "pass": true
+    },
+    {
+      "name": "Repeated command maps same run; changed input is rejected without duplicate messages",
+      "pass": true
+    },
+    {
+      "name": "Approval cannot be granted by another conversation identity",
+      "pass": true
+    },
+    {
+      "name": "Approval controls reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Approval controls reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Teacher approves once; Hana copy commits and readback hash matches",
+      "pass": true
+    },
+    {
+      "name": "Authorized file text is sanitized before entering private model history",
+      "pass": true
+    },
+    {
+      "name": "Bound SDK history cannot silently switch its workspace",
+      "pass": true
+    },
+    {
+      "name": "Legacy student confirmation UI excludes Pi file approvals",
+      "pass": true
+    },
+    {
+      "name": "Repeated approval remains idempotent after outcome commit",
+      "pass": true
+    },
+    {
+      "name": "Reject keeps durable rejection and zero target writes",
+      "pass": true
+    },
+    {
+      "name": "Stopping approval invalidates late grant with zero writes",
+      "pass": true
+    },
+    {
+      "name": "Frozen source hash refuses changed source after approval",
+      "pass": true
+    },
+    {
+      "name": "Real process crash invalidates old approval; repeated command never replays",
+      "pass": true
+    },
+    {
+      "name": "New turn after killed approval does not resume old copy",
+      "pass": true
+    },
+    {
+      "name": "Crash after physical copy is uncertain; teacher verifies read-only with no replay",
+      "pass": true
+    },
+    {
+      "name": "Verified outcome and selected workspace persist across another restart",
+      "pass": true
+    },
+    {
+      "name": "Completed command remains idempotent after actual app restart",
+      "pass": true
+    },
+    {
+      "name": "Crash between command claim and run creation is visible and never replays",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron and real DeepSeek tools; synthetic teacher work directory",
+    "Crash cut explicitly injected after physical copy, never model reasoning/history",
+    "No full office editing, installer, or VPN-off claim"
+  ]
+}

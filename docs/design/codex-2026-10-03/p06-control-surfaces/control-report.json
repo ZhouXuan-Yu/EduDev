@@ -1,0 +1,92 @@
+{
+  "suite": "pi-control-formal-ui",
+  "success": true,
+  "model": "deepseek-flash",
+  "checks": [
+    {
+      "name": "Real model plan and durable question reach formal waiting_input UI",
+      "pass": true
+    },
+    {
+      "name": "Actual resident stop icon has a visible square while waiting for the teacher",
+      "pass": true
+    },
+    {
+      "name": "Actual free-answer primitive uses normal 15px text",
+      "pass": true
+    },
+    {
+      "name": "Question actions reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Question actions reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Cross-conversation and extra authority fields are rejected",
+      "pass": true
+    },
+    {
+      "name": "Visible native steering queue accepts once and clears composer",
+      "pass": true
+    },
+    {
+      "name": "Queued command replay is idempotent and mode conflict is rejected",
+      "pass": true
+    },
+    {
+      "name": "Follow-up remains queued while teacher question waits",
+      "pass": true
+    },
+    {
+      "name": "Selecting an actual suggested answer does not dispatch until explicit send",
+      "pass": true
+    },
+    {
+      "name": "Concurrent identical answers acknowledge the same committed result",
+      "pass": true
+    },
+    {
+      "name": "Teacher answer resumes SDK; native steer and followUp are actually consumed",
+      "pass": true
+    },
+    {
+      "name": "Every real assistant text segment remains intact across followUp and finalization",
+      "pass": true
+    },
+    {
+      "name": "Repeated answered question acknowledges without another run",
+      "pass": true
+    },
+    {
+      "name": "Completed plan and queue receipts restore across actual restart",
+      "pass": true
+    },
+    {
+      "name": "Concurrent queue admission remains bounded at 16 pending instructions",
+      "pass": true
+    },
+    {
+      "name": "Stop releases live question and refuses late answer without new run",
+      "pass": true
+    },
+    {
+      "name": "Actual process crash retains plan/question but never replays queued instruction",
+      "pass": true
+    },
+    {
+      "name": "Teacher free answer explicitly starts a new safe run after crash",
+      "pass": true
+    },
+    {
+      "name": "Natural teacher request invokes real clarification without tool names in the prompt",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Real DeepSeek and formal Electron with synthetic teacher prompts",
+    "Actual owned process kill; no provider history fixture",
+    "P04-A only; full budget/compaction/education memory and VPN-off remain pending"
+  ]
+}

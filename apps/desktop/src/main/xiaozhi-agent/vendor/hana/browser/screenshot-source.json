@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "upstream": "Hana v0.450.0",
+  "url": "https://github.com/liliMozi/openhanako/blob/v0.450.0/lib/session-files/browser-screenshot-file.ts",
+  "sourceSha256": "14c737f36feb548eae57a357f1c1a0546525d49177f23605a11296cfe958f989",
+  "outputSha256": "42e29a9ff051d12eccd57e9450e40860196abda43bbc80361d6f50d50dcf7215",
+  "functions": [
+    "browserScreenshotExt",
+    "browserScreenshotFilename"
+  ],
+  "adaptation": "Exact original function bodies. Owned education session directory, durable public receipt, hash verification and permission checks outside vendor. Existing Apache-2.0 LICENSE in same directory."
+}

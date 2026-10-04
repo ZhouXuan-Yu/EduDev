@@ -1,6 +1,7 @@
-import { Folder, FolderPlus, Inbox, MessageSquare, Plus } from 'lucide-react';
+import { ArrowLeft, Folder, FolderPlus, Inbox, MessageSquare, Plus, Search, SquarePen } from 'lucide-react';
 import { useEffect, useState, type DragEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ChatListView } from '../heroui-pro/components/chat-list-view';
+import { Sidebar } from '../heroui-pro/components/sidebar';
 import type { AiConversationFolder, AiConversationSession } from '../../shared/contracts';
 
 export type AiConversationTarget = {
@@ -17,6 +18,7 @@ export type AiConversationFeedbackState = {
 };
 
 type AiConversationSidebarProps = {
+  codexStyle?: boolean;
   folders: AiConversationFolder[];
   sessions: AiConversationSession[];
   activeSessionId: string;
@@ -26,6 +28,7 @@ type AiConversationSidebarProps = {
   onMoveSession: (sessionId: string, folderId: string | null) => Promise<void>;
   onRename: (target: AiConversationTarget, value: string) => Promise<void>;
   onArchive: (target: AiConversationTarget) => Promise<void>;
+  onLeaveAi: () => void;
 };
 
 export function AiConversationFeedback({ state }: { state: AiConversationFeedbackState }) {
@@ -46,7 +49,8 @@ export function AiConversationArchiveConfirmation({ target, busy, onConfirm, onC
   );
 }
 
-export function AiConversationSidebar({ folders, sessions, activeSessionId, onOpenSession, onNewSession, onCreateFolder, onMoveSession, onRename, onArchive }: AiConversationSidebarProps) {
+export function AiConversationSidebar({ codexStyle = false, folders, sessions, activeSessionId, onOpenSession, onNewSession, onCreateFolder, onMoveSession, onRename, onArchive, onLeaveAi }: AiConversationSidebarProps) {
+  const [searchOpen, setSearchOpen] = useState(false), [search, setSearch] = useState('');
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [folderName, setFolderName] = useState('');
   const [contextTarget, setContextTarget] = useState<ContextTarget | null>(null);
@@ -69,7 +73,7 @@ export function AiConversationSidebar({ folders, sessions, activeSessionId, onOp
     };
   }, [contextTarget]);
 
-  const sessionsInFolder = (folderId: string | null) => sessions.filter((session) => (session.folderId ?? null) === folderId);
+  const sessionsInFolder = (folderId: string | null) => sessions.filter((session) => (session.folderId ?? null) === folderId && (!codexStyle || session.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())));
 
   async function runAction(message: string, successMessage: string, action: () => Promise<void>) {
     setBusy(true);
@@ -162,12 +166,18 @@ export function AiConversationSidebar({ folders, sessions, activeSessionId, onOp
     </div>
   );
 
+  const Container = codexStyle ? Sidebar : 'aside';
   return (
-    <aside className="work-panel ai-session-sidebar" data-testid="ai-conversation-sidebar">
+    <Container className={`work-panel ai-session-sidebar${codexStyle ? ' pi-conversation-sidebar' : ''}`} data-testid="ai-conversation-sidebar">
+      {!codexStyle && <button className="ai-sidebar-return" onClick={onLeaveAi} data-testid="ai-return-workspace"><ArrowLeft size={16} /><span>工作台</span></button>}
       <div className="ai-session-header">
-        <div className="workspace-label"><span>01</span><div><h2>对话</h2><p>本地保存，可拖入文件夹分类。</p></div></div>
-        <button className="icon-button" aria-label="新建对话" onClick={() => void onNewSession(sessions.find((session) => session.id === activeSessionId)?.folderId ?? null)} disabled={busy} data-testid="ai-conversation-new"><Plus size={16} /></button>
+        <div className="workspace-label"><div><h2>小智</h2>{!codexStyle && <p>本地会话</p>}</div></div>
+        {codexStyle ? <button className="icon-button" aria-label="搜索对话" aria-expanded={searchOpen} onClick={()=>{setSearchOpen(value=>!value);setSearch('');}} data-testid="pi-conversation-search"><Search size={18}/></button> : <button className="icon-button" aria-label="新建对话" onClick={() => void onNewSession(sessions.find((session) => session.id === activeSessionId)?.folderId ?? null)} disabled={busy} data-testid="ai-conversation-new"><Plus size={16} /></button>}
       </div>
+      {codexStyle && <>
+        {searchOpen && <input className="pi-conversation-search-input" aria-label="搜索本地对话" placeholder="搜索对话…" autoFocus value={search} onChange={event=>setSearch(event.target.value)} onKeyDown={event=>{if(event.key==='Escape'){setSearchOpen(false);setSearch('');}}} data-testid="pi-conversation-search-input"/>}
+        <button className="pi-new-chat" aria-label="新建对话" onClick={()=>void onNewSession(sessions.find(session=>session.id===activeSessionId)?.folderId??null)} disabled={busy} data-testid="ai-conversation-new"><SquarePen size={18}/><span>新聊天</span></button>
+      </>}
       <div className="ai-folder-actions">
         {creatingFolder ? (
           <div className="ai-folder-create">
@@ -184,6 +194,6 @@ export function AiConversationSidebar({ folders, sessions, activeSessionId, onOp
       </div>
       {contextTarget ? <div className="ai-context-menu" style={{ left: contextTarget.x, top: contextTarget.y }} onClick={(event) => event.stopPropagation()} data-testid="ai-conversation-context-menu"><button onClick={() => { setRenameTarget({ ...contextTarget, value: contextTarget.name }); setContextTarget(null); }} data-testid="ai-conversation-context-rename">重命名</button><button onClick={() => { setArchiveTarget(contextTarget); setContextTarget(null); }} data-testid="ai-conversation-context-archive">归档</button></div> : null}
       {archiveTarget ? <AiConversationArchiveConfirmation target={archiveTarget} busy={busy} onConfirm={() => void archive()} onCancel={() => setArchiveTarget(null)} /> : null}
-    </aside>
+    </Container>
   );
 }

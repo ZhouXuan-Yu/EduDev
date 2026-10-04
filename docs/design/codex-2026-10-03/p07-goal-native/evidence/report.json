@@ -1,0 +1,225 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "layer": "source",
+      "name": "Exact installed Pi 1.0.2 and pinned official source/license downloaded",
+      "pass": true
+    },
+    {
+      "layer": "Hana",
+      "name": "Original task registration/progress persisted with exact parent/run metadata",
+      "pass": true
+    },
+    {
+      "layer": "Hana",
+      "name": "Original queries return isolated clones",
+      "pass": true
+    },
+    {
+      "layer": "Hana-limit",
+      "name": "Paused original task becomes recovering on cold load; cannot grant resume authority",
+      "pass": true
+    },
+    {
+      "layer": "Hana",
+      "name": "Original parent-session abort affects only actual matching task",
+      "pass": true
+    },
+    {
+      "layer": "Hana",
+      "name": "Original completed evidence survives cold load",
+      "pass": true
+    },
+    {
+      "layer": "Hana-limit",
+      "name": "Re-register revives completed task; main goal CAS must prohibit it",
+      "pass": true
+    },
+    {
+      "layer": "Hana-limit",
+      "name": "Original failed persistence still returns in-memory task; not formal goal truth",
+      "pass": true
+    },
+    {
+      "layer": "A",
+      "name": "Native continue makes exactly one next request without fake user input",
+      "pass": true
+    },
+    {
+      "layer": "A",
+      "name": "Native tool continuation satisfies continue without third request or duplicate tool",
+      "pass": true
+    },
+    {
+      "layer": "A",
+      "name": "Actual follow-up queue satisfies native continuation once",
+      "pass": true
+    },
+    {
+      "layer": "A",
+      "name": "Native end skips pending queues and new provider request",
+      "pass": true
+    },
+    {
+      "layer": "A",
+      "name": "Provider error invokes final boundary but ignores continue and makes no next request",
+      "pass": true
+    },
+    {
+      "layer": "A",
+      "name": "Aborted native signal admits no new transport request",
+      "pass": true
+    },
+    {
+      "layer": "B",
+      "name": "Official DeepSeek and original AgentSession continue from actual persisted turn boundary",
+      "pass": true
+    },
+    {
+      "layer": "B",
+      "name": "One native teacher prompt; continued context is explicit original custom message, not fake teacher input",
+      "pass": true
+    },
+    {
+      "layer": "B",
+      "name": "Actual local tool read and exact unique result; no duplicate read or source writes",
+      "pass": true
+    },
+    {
+      "layer": "B",
+      "name": "Native checkpoint binds real assistant entry; original tool entry and public segments retained",
+      "pass": true
+    },
+    {
+      "layer": "B",
+      "name": "Original native cold reopen preserves checkpoint without new request",
+      "pass": true
+    }
+  ],
+  "sources": [
+    {
+      "file": "hana/task-registry.ts",
+      "url": "https://raw.githubusercontent.com/liliMozi/openhanako/v0.450.0/lib/task-registry.ts",
+      "bytes": 21776,
+      "sha256": "2a4ad8276b7c5ae657799498fcc72bfba194027c8923e57b9d2a357a55a4558e"
+    },
+    {
+      "file": "hana/safe-fs.ts",
+      "url": "https://raw.githubusercontent.com/liliMozi/openhanako/v0.450.0/shared/safe-fs.ts",
+      "bytes": 4770,
+      "sha256": "4ae5b56ff853d064292a167ef9dfba91f38378c42e3bc6b6f504b74bb4dba74a"
+    },
+    {
+      "file": "hana/LICENSE",
+      "url": "https://raw.githubusercontent.com/liliMozi/openhanako/v0.450.0/LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "file": "pi/agent-loop.ts",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/v1.0.2/packages/agent/src/agent-loop.ts",
+      "bytes": 29088,
+      "sha256": "e773e822a2587caf314e6bb66ea6370fce3468b7eecd26d6a67afe673f81eabc"
+    },
+    {
+      "file": "pi/types.ts",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/v1.0.2/packages/agent/src/types.ts",
+      "bytes": 20955,
+      "sha256": "347efd535342c1d5fbd6b731168c57fcbb201a6652707f8e22e1b66fe3b69c2d"
+    },
+    {
+      "file": "pi/agent-session.ts",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/v1.0.2/packages/coding-agent/src/core/agent-session.ts",
+      "bytes": 158139,
+      "sha256": "fa1a4f2d84efd0aab8f4a74301d1106395130d3cc59bd665c558280f27dceb03"
+    },
+    {
+      "file": "pi/LICENSE",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/v1.0.2/LICENSE",
+      "bytes": 1069,
+      "sha256": "0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48"
+    }
+  ],
+  "requests": [
+    {
+      "model": "deepseek-flash",
+      "userMessages": 1,
+      "messageRoles": [
+        "system",
+        "user"
+      ],
+      "status": 200
+    },
+    {
+      "model": "deepseek-flash",
+      "userMessages": 2,
+      "messageRoles": [
+        "system",
+        "user",
+        "assistant",
+        "user"
+      ],
+      "status": 200
+    },
+    {
+      "model": "deepseek-flash",
+      "userMessages": 2,
+      "messageRoles": [
+        "system",
+        "user",
+        "assistant",
+        "user",
+        "assistant",
+        "tool"
+      ],
+      "status": 200
+    }
+  ],
+  "previousFailures": [
+    "pi-goal-native-nvzxr4: guessed setTools API; source corrected to state.tools",
+    "pi-goal-native-cdKJ1T: error still invokes finishTurn before hard exit; incorrect test assumption corrected",
+    "pi-goal-native-T9cXrl: original AgentSession rejected continue without runnable custom context; original checkpoint retained, not production success",
+    "pi-goal-native-uTEkO4: original task update left older tasks.json and newer .tmp; swallowed persistence failure, exact cause unavailable before logger capture. Positive assertion failed; cannot count as stable storage."
+  ],
+  "boundary": "A: original Pi scheduler with declared synthetic transport; B: original AgentSession and official DeepSeek, synthetic local read-only material; Hana runtime persistence candidate only. Production goal/SQLite/preload/UI/recovery NOT implemented or accepted.",
+  "sourceLockSha256": "358e5b5098f159863b65bdc821189e0f0dbd052d4414894968895cdee1c971a8",
+  "hanaAdaptation": {
+    "atomicBodySha256": "f69a5e2e54eda8c829d48c29efb2b168322c4969ac5a431a1a4ddfdeec9fbb39",
+    "boundary": "Original atomicWriteSync AST body. Logger is test-only console seam; original TaskRegistry body unchanged. No schedule, cron, or production state."
+  },
+  "hanaWarnings": [
+    "no handler for type \"education\", task lost registered without abort support",
+    "failed to persist tasks: EEXIST: file already exists, mkdir 'D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-native-E6W1SV\\file-not-directory'"
+  ],
+  "official": {
+    "model": "deepseek-flash",
+    "answer": "{\"code\":\"EDUGOAL3C60B9285A70\",\"lessons\":3}",
+    "readCalls": 1,
+    "boundaries": [
+      {
+        "entryId": "bdf67b5f",
+        "toolEntries": [],
+        "outcome": "completed",
+        "canContinue": false
+      },
+      {
+        "entryId": "1d90fb73",
+        "toolEntries": [
+          "d29c999c"
+        ],
+        "outcome": "completed",
+        "canContinue": true
+      },
+      {
+        "entryId": "c77dc16b",
+        "toolEntries": [],
+        "outcome": "completed",
+        "canContinue": false
+      }
+    ],
+    "nativeSha256": "3b7a44ecea80558425a6036d099efe005983ff9855915bcd8851f1531d377250",
+    "sourceSha256": "178f8dd4eb32276c0799889341d3aa8ac1eb82bb154655826ff21e8d4163e1c2"
+  },
+  "scriptSha256": "fb627f2177bdb933abf50b2754f37441b2a6a4c3e4ae25a9ebe6e1df25dd990a"
+}

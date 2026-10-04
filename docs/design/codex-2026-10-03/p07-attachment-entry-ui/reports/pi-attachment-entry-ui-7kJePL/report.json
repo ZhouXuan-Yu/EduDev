@@ -1,0 +1,87 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Native selected files register in actual ledger and all four formats display real decoded bounded thumbnails",
+      "pass": true
+    },
+    {
+      "name": "Public metadata excludes private paths, image bytes and thumbnail data",
+      "pass": true
+    },
+    {
+      "name": "Selecting the same unchanged file retains its actual draft identity",
+      "pass": true
+    },
+    {
+      "name": "Partial selection preserves the real Office success and rejects unsupported or signature-only corrupt image bytes",
+      "pass": true
+    },
+    {
+      "name": "Actual text and Office bytes appear in local-only original HeroUI preview",
+      "pass": true
+    },
+    {
+      "name": "Image preview reads the authorized managed copy and validates actual Pi decoding",
+      "pass": true
+    },
+    {
+      "name": "Before D2-C, pending attachments never silently vanish into a text-only send; draft text is retained",
+      "pass": true
+    },
+    {
+      "name": "Host also refuses text-only start with pending drafts before D2-C; renderer cannot bypass the pending-file rule",
+      "pass": true
+    },
+    {
+      "name": "Attachment cards and original preview close are reachable at native 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Attachment cards and original preview close are reachable at native 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Formal remove advances ledger revision; old preview selection is rejected",
+      "pass": true
+    },
+    {
+      "name": "Eight-draft maximum is enforced in SQLite and shown for partial native selection",
+      "pass": true
+    },
+    {
+      "name": "New session clears local cards without removing the previous session ledger",
+      "pass": true
+    },
+    {
+      "name": "A selection from another session cannot read a private attachment copy",
+      "pass": true
+    },
+    {
+      "name": "Cancelled native chooser has no late registration when its selected paths arrive",
+      "pass": true
+    },
+    {
+      "name": "Attachment grant does not change the teaching workspace or send a provider task",
+      "pass": true
+    },
+    {
+      "name": "Strict typed boundary rejects renderer-supplied paths",
+      "pass": true
+    },
+    {
+      "name": "Secondary renderer cannot invoke attachment access",
+      "pass": true
+    },
+    {
+      "name": "Child frame has no usable main-frame attachment authority",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Formal UI/main-frame typed IPC/native SQLite/real Pi Photon utility; native dialog result controlled in owned main process",
+    "No key/provider/teacher upload/model-view receipt or attachment send claim",
+    "D2-C durable message/run binding and D3/D4 remain pending"
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(!stopped.ok&&stopped.error==='cancelled')\n\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-attachment-entry-ui-smoke.mjs:81:74"
+}

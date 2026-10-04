@@ -1,0 +1,95 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Original Pro index.ts byte-identical",
+      "pass": true
+    },
+    {
+      "name": "Original Pro chat-attachment.tsx byte-identical",
+      "pass": true
+    },
+    {
+      "name": "Original Pro chat-attachment-group.tsx byte-identical",
+      "pass": true
+    },
+    {
+      "name": "Original Pro chat-attachment-input.tsx byte-identical",
+      "pass": true
+    },
+    {
+      "name": "Original Pro chat-attachment.styles.ts byte-identical",
+      "pass": true
+    },
+    {
+      "name": "Direct exact dimension dependency and existing Pi/Photon licenses verified",
+      "pass": true
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "image-size",
+      "version": "2.0.3",
+      "license": "MIT",
+      "files": 118,
+      "bytes": 95250
+    },
+    {
+      "name": "Pi coding agent",
+      "version": "0.80.3",
+      "license": "MIT",
+      "files": 18525,
+      "bytes": 127212985
+    },
+    {
+      "name": "Photon",
+      "version": "0.3.4",
+      "license": "Apache-2.0",
+      "files": 7,
+      "bytes": 2265687
+    }
+  ],
+  "sources": [
+    {
+      "file": "chat-attachment/index.ts",
+      "sha256": "31eda9157916cee8563f387bb00ba89f9e57f143c3ea2324d3751be475b4ed00",
+      "bytes": 1928
+    },
+    {
+      "file": "chat-attachment/chat-attachment.tsx",
+      "sha256": "fec0687e2c426482e916c1a0b4107d3ada188b90b726114fcaa782d66790730e",
+      "bytes": 5464
+    },
+    {
+      "file": "chat-attachment/chat-attachment-group.tsx",
+      "sha256": "ecbe035e20e8b8fa6643c79e877809cb7962cd6853ae5f71366f06f4e8bfb66e",
+      "bytes": 746
+    },
+    {
+      "file": "chat-attachment/chat-attachment-input.tsx",
+      "sha256": "700f2df398346ee28c0b14a7101009314ebce7c3625b5d9a66e3bc3d6f4c2c80",
+      "bytes": 9122
+    },
+    {
+      "file": "chat-attachment/chat-attachment.styles.ts",
+      "sha256": "e066c94a0c72ed7ae60b8d5a4e3e72c86ecf2f1ad58a447fbb17206d5fc4f0c6",
+      "bytes": 685
+    },
+    {
+      "file": "node_modules/@earendil-works/pi-coding-agent/dist/utils/image-resize.js",
+      "sha256": "87a8f1d940612932991b122b66b47cef13a981744b837f738d00c7ccf46aa20b",
+      "bytes": 3875
+    },
+    {
+      "file": "node_modules/@earendil-works/pi-coding-agent/dist/utils/image-resize-core.js",
+      "sha256": "5f6f1464c21e196a5742b943a403aa843fb319c9d2ff024ca04bb809a18de261",
+      "bytes": 4846
+    },
+    {
+      "file": "node_modules/@earendil-works/pi-coding-agent/node_modules/@silvia-odwyer/photon-node/photon_rs_bg.wasm",
+      "sha256": "10468181565c56004c867f3a4af96f89a0ef5a63a72f2b5fb12c1f1992a3615c",
+      "bytes": 1881634
+    }
+  ],
+  "boundary": "Pro attachment five original source bodies, existing Pi resize API/Photon WASM and dependency identity only. Pro paid license remains SEE LICENSE; no MIT/Codex official source/installer claim."
+}

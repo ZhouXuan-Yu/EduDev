@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual filesystem/read/lease route returns only requested extracted line and safe public title",
+      "pass": true
+    },
+    {
+      "name": "Source changed during asynchronous privacy boundary is rejected before returning body",
+      "pass": true
+    },
+    {
+      "name": "Current-run loss during privacy boundary discards already parsed text",
+      "pass": true
+    },
+    {
+      "name": "Workspace lease changed during privacy boundary discards parsed text",
+      "pass": true
+    },
+    {
+      "name": "A single huge extracted line is bounded and explicitly marked partial",
+      "pass": true
+    },
+    {
+      "name": "Out-of-range line is explicit failure, not an empty success",
+      "pass": true
+    },
+    {
+      "name": "Explicit source path remains readable beyond bounded directory display range",
+      "pass": true
+    },
+    {
+      "name": "Real 50MiB-plus source fails before parser process creation",
+      "pass": true
+    }
+  ],
+  "boundary": "Real FS/authority and exact tool implementation; parser transport doubled for deterministic race/partial guards. Not real Office parsing/provider proof."
+}

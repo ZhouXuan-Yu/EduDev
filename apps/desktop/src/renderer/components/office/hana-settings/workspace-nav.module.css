@@ -1,0 +1,105 @@
+/* Hana 0.449.0 Apache-2.0; exact selected navigation/search rules. See workspace-source.json. */
+.settings-search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-height: 0;
+}
+
+.settings-search-results-title {
+    padding: 3px 10px 5px;
+    color: var(--text-muted);
+    font-size: var(--fs-hint);
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.settings-search-result {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+    width: 100%;
+    min-height: 48px;
+    padding: 7px 10px;
+    font-family: inherit;
+    text-align: left;
+    color: var(--text);
+    background: none;
+    border: none;
+    border-radius: var(--radius-input, 6px);
+    cursor: default;
+    transition:
+        background var(--duration-fast) var(--ease-out),
+        color var(--duration-fast) var(--ease-out);
+}
+
+.settings-search-result:hover {
+    background: var(--bg-hover);
+}
+
+.settings-search-result-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--fs-ui);
+    font-weight: 600;
+    color: inherit;
+    letter-spacing: 0;
+}
+
+.settings-search-result-path {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-muted);
+    font-size: var(--fs-hint);
+    letter-spacing: 0;
+}
+
+.settings-search-empty {
+    padding: var(--space-16) 10px;
+    color: var(--text-muted);
+    font-size: var(--fs-caption);
+    line-height: 1.4;
+    letter-spacing: 0;
+}
+
+.settings-nav-item {
+    font-family: inherit;
+    text-align: left;
+    padding: var(--space-8) var(--space-12);
+    border-radius: var(--radius-input, 6px);
+    font-size: var(--fs-body);
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: default;
+    transition: all var(--duration-fast) var(--ease-out);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.settings-nav-item svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.settings-nav-item.active svg {
+    opacity: 1;
+}
+
+.settings-nav-item:hover {
+    background: var(--bg-hover);
+    color: var(--text);
+}
+
+.settings-nav-item.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 600;
+}

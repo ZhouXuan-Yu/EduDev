@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "suite": "pi-auto-boundaries",
+  "checks": [
+    {
+      "name": "Official catalogue validates capacity/IDs and projects only safe fields",
+      "pass": true
+    },
+    {
+      "name": "Versioned same-model stale cache survives metadata transport failure",
+      "pass": true
+    },
+    {
+      "name": "Successful official list removing target rejects and persists removal",
+      "pass": true
+    },
+    {
+      "name": "Oversized/redirected or malformed metadata cannot replace valid cache",
+      "pass": true
+    },
+    {
+      "name": "Unknown future cache and cancelled fetch never provide fabricated capability",
+      "pass": true
+    },
+    {
+      "name": "Complete request estimate includes Unicode, reasoning, system prompt, tools and output",
+      "pass": true
+    },
+    {
+      "name": "Hana wrapper preserves prior SDK context/model hook and adopts native compacted history",
+      "pass": true
+    },
+    {
+      "name": "Compaction failure propagates instead of continuing over unsafe history",
+      "pass": true
+    },
+    {
+      "name": "Fixed native 1.0.2 preparation deep adapter loads through actual ESM export",
+      "pass": true
+    },
+    {
+      "name": "Latest large tool-result batch keeps matching call and selects a real native cut",
+      "pass": true
+    },
+    {
+      "name": "Distinct automatic compactions preserve multiple cards and failure truth in one run",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Unit boundary responses are deterministic, not live provider evidence"
+  ]
+}

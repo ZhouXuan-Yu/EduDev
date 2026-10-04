@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actionable durable wait, local review and rejection contain no private content in events/model and no file effect",
+      "pass": true
+    },
+    {
+      "name": "Teacher revision invalidates old confirmation and saves only revised actual XLSX with real stage events",
+      "pass": true
+    },
+    {
+      "name": "Strict local inputs, cross-session access and concurrent decisions cannot produce a second file",
+      "pass": true
+    },
+    {
+      "name": "Source change during teacher revision resolves the waiter as conflict instead of waiting forever",
+      "pass": true
+    },
+    {
+      "name": "Stop, revoke and malicious tool paths release original waiter without raw error or write replay",
+      "pass": true
+    },
+    {
+      "name": "All three formal Office channels reject secondary frame before any host invocation",
+      "pass": true
+    },
+    {
+      "name": "Compaction includes actual artifact identity/outcomes but no draft, output or source hash; exclusion removes old run",
+      "pass": true
+    },
+    {
+      "name": "Original native prefix and creation identity stay byte-identical with independent Office capability and Pi once",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual Pi registry/once/teacher wait, SQLite, FS and XLSX library; injected model protocol only. No live provider/UI/WPS claim."
+}

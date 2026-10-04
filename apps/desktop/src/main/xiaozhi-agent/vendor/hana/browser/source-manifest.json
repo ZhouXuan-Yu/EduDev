@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "upstream": "Hana v0.450.0",
+  "license": "Apache-2.0",
+  "sourceUrl": "https://raw.githubusercontent.com/liliMozi/openhanako/v0.450.0/desktop/main.cjs",
+  "sourceSha256": "6f1a787c7010c5255dce23dc5610fb788a927661e1c0b2e38dd6960546903c55",
+  "snapshotOriginalSha256": "605deb53e3ed1dee0a01579d156487681bc8148c1ebda6d5b3e74dcf33cda09b",
+  "snapshotSha256": "5ffb59bbd702316cbdbb794220f762024083e99a1c4c15d270435097c24b8efc",
+  "waitSourceUrl": "https://raw.githubusercontent.com/liliMozi/openhanako/v0.450.0/desktop/src/shared/browser-wait.cjs",
+  "waitSha256": "a44a46e2ddccc5df2c0d0c8721425cb013314e8bac262b279f786adfa7ddf3aa",
+  "adaptation": "Original DOM/ref/group/truncation; omit input value fallbacks/flags before cloud. Main policy, transport and authorization outside vendor."
+}

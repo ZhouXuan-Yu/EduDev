@@ -1,0 +1,76 @@
+{
+  "suite": "pi-queue-formal-ui",
+  "success": true,
+  "model": "deepseek-flash",
+  "checks": [
+    {
+      "name": "Real composer queues identical text under separate durable IDs",
+      "pass": true
+    },
+    {
+      "name": "Actual question and queue editor drafts survive file-panel reparenting without delivery",
+      "pass": true
+    },
+    {
+      "name": "Visible editor commits revised text and mode while preserving original ID",
+      "pass": true
+    },
+    {
+      "name": "Visible withdraw records truthful state before SDK delivery",
+      "pass": true
+    },
+    {
+      "name": "Mutation replay is idempotent; stale, foreign and extra authority fields rejected",
+      "pass": true
+    },
+    {
+      "name": "Queue mutation actions reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Queue mutation actions reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Native SDK receives edited follow-up once, original duplicate once, withdrawn never",
+      "pass": true
+    },
+    {
+      "name": "Delivered command cannot be withdrawn retroactively",
+      "pass": true
+    },
+    {
+      "name": "Actual restart retains revision/mode and withdrawal without requeue",
+      "pass": true
+    },
+    {
+      "name": "Concurrent edits have one winner and one revision increment",
+      "pass": true
+    },
+    {
+      "name": "Stop/edit race cannot deliver or revive a command",
+      "pass": true
+    },
+    {
+      "name": "Withdrawal releases a pending slot without dropping other queued commands",
+      "pass": true
+    },
+    {
+      "name": "Editing is available during actual model streaming, not only teacher waits",
+      "pass": true
+    },
+    {
+      "name": "Durable dispatching is locked but never mislabeled delivered",
+      "pass": true
+    },
+    {
+      "name": "Real crash at dispatch gap recovers interrupted and never replays queued text",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Real Electron and DeepSeek; synthetic teacher commands only",
+    "Dispatch-gap delay is a main-only E2E seam; kill/restart are actual owned processes",
+    "B3a only; education memory scope and full UI remain pending"
+  ]
+}

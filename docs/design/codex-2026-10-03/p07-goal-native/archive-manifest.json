@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T11:53:50.218Z",
+  "files": [
+    {
+      "file": "source/1.Agent.md",
+      "bytes": 119936,
+      "sha256": "3e1d1076f32fad66377472f5d5312d76859a6038d7320b065fc273778660681d"
+    },
+    {
+      "file": "source/2.Memory.md",
+      "bytes": 261964,
+      "sha256": "43bda5cb12e88130154fb1faa32154ef838543f02243f65d66db55e1afe58163"
+    },
+    {
+      "file": "source/3.Learning.md",
+      "bytes": 195385,
+      "sha256": "57f99f525f0e2c0860b1c705a6c056c4e7ee8eecb81fb061fd67f5821fe72e14"
+    },
+    {
+      "file": "source/4.Wiki.md",
+      "bytes": 162475,
+      "sha256": "e3e69f72234552d91746a834efa7f471f75648c3bc46916e79eb33b07df9de6f"
+    },
+    {
+      "file": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 52356,
+      "sha256": "47ab93fc0d14b3ba1c441c19551b8512d0ae031f5a002b556eaf87164735f1a6"
+    },
+    {
+      "file": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 85405,
+      "sha256": "86ef9a456b41922e488b44dcc5914014fc9dbb6f1ca3a43816702439d47edd7f"
+    },
+    {
+      "file": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 69919,
+      "sha256": "9b8c984afdac286c7773f1a424a4dbc73b6c225c352e9e2e8f466c5c4d8ad69a"
+    },
+    {
+      "file": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 74427,
+      "sha256": "67ead51be782478fa67171a0adc0d291f6100e4e20e8dcaf14f7259fb9f59e0b"
+    },
+    {
+      "file": "source/docs/154_PI_PERSISTENT_GOAL_NATIVE_CONTRACT.md",
+      "bytes": 6105,
+      "sha256": "7af027e0770e52437a405da14a7fde8d8eacecdecca0d016c7e4307ef330edc0"
+    },
+    {
+      "file": "source/docs/155_PI_PERSISTENT_GOAL_NATIVE_ACCEPTANCE.md",
+      "bytes": 7269,
+      "sha256": "960a33b60e92e86b38530f966145ac4b0b0b160e8cc6443763292810e51b89a9"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-goal-native-preflight.mjs",
+      "bytes": 18832,
+      "sha256": "fb627f2177bdb933abf50b2754f37441b2a6a4c3e4ae25a9ebe6e1df25dd990a"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/goal-native-source.lock.json",
+      "bytes": 710,
+      "sha256": "358e5b5098f159863b65bdc821189e0f0dbd052d4414894968895cdee1c971a8"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/archive-goal-native.mjs",
+      "bytes": 2561,
+      "sha256": "37365152b629fc0832c2cc59a0131e1a807a4e35f65e6b26ff36dcd63d196659"
+    },
+    {
+      "file": "upstream/hana/task-registry.ts",
+      "bytes": 21776,
+      "sha256": "2a4ad8276b7c5ae657799498fcc72bfba194027c8923e57b9d2a357a55a4558e"
+    },
+    {
+      "file": "upstream/hana/safe-fs.ts",
+      "bytes": 4770,
+      "sha256": "4ae5b56ff853d064292a167ef9dfba91f38378c42e3bc6b6f504b74bb4dba74a"
+    },
+    {
+      "file": "upstream/hana/LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "file": "upstream/pi/agent-loop.ts",
+      "bytes": 29088,
+      "sha256": "e773e822a2587caf314e6bb66ea6370fce3468b7eecd26d6a67afe673f81eabc"
+    },
+    {
+      "file": "upstream/pi/types.ts",
+      "bytes": 20955,
+      "sha256": "347efd535342c1d5fbd6b731168c57fcbb201a6652707f8e22e1b66fe3b69c2d"
+    },
+    {
+      "file": "upstream/pi/agent-session.ts",
+      "bytes": 158139,
+      "sha256": "fa1a4f2d84efd0aab8f4a74301d1106395130d3cc59bd665c558280f27dceb03"
+    },
+    {
+      "file": "upstream/pi/LICENSE",
+      "bytes": 1069,
+      "sha256": "0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48"
+    },
+    {
+      "file": "evidence/report.json",
+      "bytes": 7564,
+      "sha256": "ca9c829bb9af58411e891add103d421054e773e3197eff9b338752141f55b27e"
+    }
+  ],
+  "boundary": "Original source/license and explicit script/doc/report allowlist only; no native, DB, keys, profile, raw materials or binaries. Source/A/B preflight; production E NOT implemented, full objective NOT_ACCEPTED."
+}

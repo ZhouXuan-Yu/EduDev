@@ -1,0 +1,169 @@
+{
+  "date": "2026-10-03",
+  "files": [
+    {
+      "file": "ui-model-report.json",
+      "sha256": "0f1d3ca4aa2b172bcb494d5fa96c5486cdee9375f3659c88c06981b1ea1a3f7a",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-history-model-ui-ZA9F90/report.json",
+      "bytes": 2485
+    },
+    {
+      "file": "ui-model-1366.png",
+      "sha256": "a01a9e49a8c30437a6d76adf9970c92cf497f84be0327470aee181b74c7dbcf0",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-history-model-ui-ZA9F90/history-models-1366.png",
+      "bytes": 148816
+    },
+    {
+      "file": "ui-model-1920.png",
+      "sha256": "b09025a78c8569cfcd25af737ebbdaa13aac2bf60201c5da57e2aefc28fdf498",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-history-model-ui-ZA9F90/history-models-1920.png",
+      "bytes": 192326
+    },
+    {
+      "file": "ui-approval-stop-report.json",
+      "sha256": "57b0b9e8bd86ff7d3bcfdf3879fcf6b79919b1258ea1dadd84c85c6972232d15",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-process-approval-ui-iYxogy/report.json",
+      "bytes": 1772
+    },
+    {
+      "file": "ui-approval-stop-1366.png",
+      "sha256": "2ebcf51e14ed36df92fcaf632e08c964fcd9d22cf08d11ff5ac6c9b891216229",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-process-approval-ui-iYxogy/model-menu-stable-1366.png",
+      "bytes": 150174
+    },
+    {
+      "file": "ui-approval-stop-1920.png",
+      "sha256": "3db6a721b09dd85dd00a975db2f805b6ec24242c283fe51348dda4624431372d",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-process-approval-ui-iYxogy/model-menu-stable-1920.png",
+      "bytes": 221582
+    },
+    {
+      "file": "before-toolbar-fix-1366.png",
+      "sha256": "2e8dc209a6bb4e974ffbc76bfb65016d680b0ac9fbbc1ec99046be451628e7c3",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-process-approval-ui-KNFcsl/model-menu-stable-1366.png",
+      "bytes": 156646
+    },
+    {
+      "file": "production-assembly-report.json",
+      "sha256": "c7ec63165359b3ad903edff628e2e8c65241093f5ddfc52045da76e073e9ce40",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-assembly-A02kF1/report.json",
+      "bytes": 1682
+    },
+    {
+      "file": "production-host-report.json",
+      "sha256": "d77d1e5385d8ee277c9f49c150f0f52904bae1486213f47c4c3ba34deddc2a82",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-switch-host-7VicZk/report.json",
+      "bytes": 1484
+    },
+    {
+      "file": "native-foundation-report.json",
+      "sha256": "42a67c26a9fae167e53ce1e8fa7b31997db268750b61800bfb29281a208c79c3",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-history-model-switch-SWNLsd/report.json",
+      "bytes": 3745
+    },
+    {
+      "file": "migration-report.json",
+      "sha256": "08e0f8a1e97b3e3795737a98dcbff9cbe8e0fbaeadaadd177e3a1c4dae23c53a",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-state-migration-TwVAar/report.json",
+      "bytes": 1328
+    },
+    {
+      "file": "model-state-report.json",
+      "sha256": "5b3b89d96b4c69e95ea24ed7a10c3bb2d9d7b16ee94761b1d43ef9100009bc99",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-settings-boundary-FwBeDU/report.json",
+      "bytes": 2491
+    },
+    {
+      "file": "host-lock-report.json",
+      "sha256": "72f09e033494b1770b545a16843efd99b926600e6f2e9a41924555a909423816",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-model-host-lock-RYLia0/report.json",
+      "bytes": 854
+    },
+    {
+      "file": "skill-authority-report.json",
+      "sha256": "687f4316d2168ccb3daf346d9b0b17a46a61629903e8d9e9277cab3f31f3a752",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-skill-authority-Ryq7Je/report.json",
+      "bytes": 3346
+    },
+    {
+      "file": "auto-control-report.json",
+      "sha256": "e1231a49e809e214f55bc0a75c478018621209bb46989e1e380f260caacf4e44",
+      "source": "apps/desktop/test-results/xiaozhi-agent/pi-auto-edge-oy06Vo/report.json",
+      "bytes": 1192
+    },
+    {
+      "file": "build-final2.log",
+      "sha256": "f654b8165579ceed7cb248d73a4374fee67d287b916372bea0a9d6c7b2955cfa",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-build-final2.log",
+      "bytes": 25156
+    },
+    {
+      "file": "renderer-final2.log",
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-renderer-final2.log",
+      "bytes": 194
+    },
+    {
+      "file": "main-smoke-final3.log",
+      "sha256": "9b7a6be75548ecc3076916532d760f3ba56d95f666ed5d8d5e45a5b33e645489",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-main-smoke-final3.log",
+      "bytes": 13055
+    },
+    {
+      "file": "main-smoke-final2-failure.log",
+      "sha256": "6adf66d3cabac46101bc74fdb80d4424c696d110a726586856831e88e8366182",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-main-smoke-final2.log",
+      "bytes": 610
+    },
+    {
+      "file": "hana-source-audit.log",
+      "sha256": "f7265de028bf4e457e93f3ef70b38a02459f9e08f89cc9a1e79d546876e35851",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-source.log",
+      "bytes": 229
+    },
+    {
+      "file": "pro-source-audit.log",
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-prosource.log",
+      "bytes": 98
+    },
+    {
+      "file": "ui-model-final.log",
+      "sha256": "882a7e87b5845e07692a0da458cd0d4f155e33203ca96b7d84ea470c54be27e2",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-ui-final.log",
+      "bytes": 1374
+    },
+    {
+      "file": "ui-approval-stop-final.log",
+      "sha256": "4f9f88743f2ba70a43c4ab0805d028cae83317755e918f7274b9eb39dc697381",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-approval-model-final.log",
+      "bytes": 1296
+    },
+    {
+      "file": "auto-control-final.log",
+      "sha256": "e9934f1d8bdaada3cd3ba397417bc8f31554fd7a01adb5ae202a812750b669b9",
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-auto-edge3.log",
+      "bytes": 804
+    },
+    {
+      "file": "hana-model-switch-source.json",
+      "sha256": "b3a3f8939414ccaf24723e1bbc09ba28e8d1e38b53b58c8858f7471e0b9eeb41",
+      "source": "apps/desktop/src/main/xiaozhi-agent/vendor/hana/model-switch-source-manifest.json",
+      "bytes": 761
+    },
+    {
+      "file": "diff-final2.log",
+      "bytes": 2910,
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-diff-final2.log",
+      "sha256": "463c7f467142c01301edefe60f973f4ee0bde231900c0962b59acd666718e607"
+    },
+    {
+      "file": "scoped-whitespace-final.json",
+      "bytes": 535,
+      "source": "apps/desktop/test-results/xiaozhi-agent/p06cb2-scoped-whitespace-final.json",
+      "sha256": "cf619e8464feb89d97df1e8ce1ffd8aebbbf62ac18f3092cd906b209f31c0833"
+    }
+  ],
+  "boundary": "Formal same-history model and approval/stop acceptance; native controlled summary separately identified; full visual/settings/VPN/installer remain incomplete",
+  "build": "index-C46Ivngh"
+}

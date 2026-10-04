@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "files": [
+    {
+      "path": "1.Agent.md",
+      "sha256": "3071e41134d05fe1579f9687367a5fbf5cbeb17fc5146020aad920dca82c58d2",
+      "size": 114733
+    },
+    {
+      "path": "2.Memory.md",
+      "sha256": "5c90fe965b0a100b9b9052a8e8fdca00fc10d838a9899d0ada3724162e923bea",
+      "size": 253426
+    },
+    {
+      "path": "3.Learning.md",
+      "sha256": "b56911b0e37b441dcb19dcad5cc4413b43ec5baae024bba4bb1e6942f131986c",
+      "size": 190276
+    },
+    {
+      "path": "4.Wiki.md",
+      "sha256": "3b11a1190eb9a84f5674dd4e803ae3e79848aeb882b7505114655f116fb18ef8",
+      "size": 157922
+    },
+    {
+      "path": "docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "sha256": "eaec85dc49a76c0a67caf29f2dd87acf34a396968ecc48b665c4c2b7758c09fc",
+      "size": 48640
+    },
+    {
+      "path": "docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "sha256": "295e630230ab4a3e05be5b817dde21516cbec9c1425a5dba7bdaae2922afa759",
+      "size": 82002
+    },
+    {
+      "path": "docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "sha256": "514570f0d23acdc7add08cdeb154e6abcfe40d0e3cdaa92a716512a8ac3680f3",
+      "size": 66404
+    },
+    {
+      "path": "docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "sha256": "476ce536b670f059a8cfc6cc87e51c753c9f5cfc4a5c1c0460375c7e26fc9e8d",
+      "size": 69965
+    },
+    {
+      "path": "docs/146_PI_ATTACHMENT_LOCAL_OCR_DELIVERY_CONTRACT.md",
+      "sha256": "3b6b48ca748e5de40632102b53b02af7a2fd19443345c7a4d398c264f8d36066",
+      "size": 4587
+    },
+    {
+      "path": "docs/147_PI_ATTACHMENT_LOCAL_OCR_ACCEPTANCE.md",
+      "sha256": "35f16068428ac5cd2ad2538962dbb45341c6afbe03763c08baf1e1cbe6c44aee",
+      "size": 10673
+    },
+    {
+      "path": "python/omni_edu_ocr/worker.py",
+      "sha256": "94d3e48dda43fed348057c97b045f05ca990f86104a6a6a2611e3cdc538768d5",
+      "size": 4514
+    },
+    {
+      "path": "python/omni_edu_ocr/requirements-windows.lock.txt",
+      "sha256": "bc0ef1e30448a8e4ecd81efae2ea47c19ecfa16e6e30a83e66847c44d9a47180",
+      "size": 524
+    },
+    {
+      "path": "python/omni_edu_ocr/SOURCE.md",
+      "sha256": "2bb55f7d7e66faf110c3e7ddd6c211d1355665ba352c33ff7f67b529a299817e",
+      "size": 1614
+    },
+    {
+      "path": "apps/desktop/src/shared/xiaozhi-ocr.ts",
+      "sha256": "4a996106695aa2b3aa67d975332581a5da1bd3d8ec65fbe2ae64df68fcc9470f",
+      "size": 3262
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/attachment-ocr-state.ts",
+      "sha256": "e13a7895033df1bd79a6a5d2f37eaea1e29911b1b17825d284990abb6a8a17c4",
+      "size": 6251
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/ocr-host.ts",
+      "sha256": "8416e18dd39d79341e1f74cdb93e506961cd7fd92f9a5c8c211d5b92c74c5f7f",
+      "size": 3720
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/ocr-runtime-manifest.json",
+      "sha256": "962067e76c240b8cc3a0d66c5caf2433cb883e7fd78f111ce61a34dee9b277b0",
+      "size": 110215
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/local-utility-host.ts",
+      "sha256": "4f7fb94183d65a6e143bd8eb93d1a4ad56c744c0816aa4817a5171a66431c60d",
+      "size": 2261
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/session-state.ts",
+      "sha256": "c1617393b69393acdada4fb168868744f1bf1c29b2fe5427e78538d62c6781e0",
+      "size": 5142
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/attachment-coordinator.ts",
+      "sha256": "2380725e33f723308f8eff5139a613842fba47e36a82dfb2679f17d81eb067d5",
+      "size": 8647
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/attachment-api.ts",
+      "sha256": "c26998d8b043616982c827511d4203891d7352f9c7909d43f4f61310039f515c",
+      "size": 1060
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/attachment-read-tools.ts",
+      "sha256": "28bffa71da57584c9e7f68495cd517e49958a55a2f8fbcb9aa8e4477da19f37c",
+      "size": 7674
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "sha256": "fd6e6cf9dee4ac3fce403fe8fa07b7b8311200d69359bd85802e5565ee2c818f",
+      "size": 53086
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "sha256": "ceabfab0af01ea357fd16987e155cfacb80fc91b85a2d0ae7152019cb47fd106",
+      "size": 62697
+    },
+    {
+      "path": "apps/desktop/src/preload/index.ts",
+      "sha256": "c99d53332a5235d488aba3fc24f5e9215dfe86479c9143b444b8be52117aa687",
+      "size": 33039
+    },
+    {
+      "path": "apps/desktop/src/renderer/index.html",
+      "sha256": "fab86dc07997dbb84c1f4c4080669fada023719e40a9cf2943f9129b16c73ea1",
+      "size": 469
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/AttachmentOcrPanel.tsx",
+      "sha256": "d649c374162011e06287ecf795a427cf65a1fe9a36e5960285becbca052b5830",
+      "size": 4542
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/usePiAttachments.tsx",
+      "sha256": "b75b41f9e1a18e8b89c56dd8421bc91d056c8dd429401501308748dbf1c9f325",
+      "size": 10950
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/pi-attachments.css",
+      "sha256": "cc8e0120ab7ac6c58150e54efdf16f0d48b27098d1734ac84a8aa5f9457458f4",
+      "size": 1735
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/rapidocr-source-probe.py",
+      "sha256": "fc9494db4d0ba4240f75eb1b2c26f3c08bef5c5c10c72b8d1ad307ec13446378",
+      "size": 1786
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/lock-ocr-runtime.mjs",
+      "sha256": "607f87b44dd400f78e63771fd2d3e3a5144450a8d1514358d8239bdf30a8e742",
+      "size": 4626
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/pi-attachment-ocr-native-worker.ts",
+      "sha256": "e9ec99306526f031ec2ea10ffedd8d704b32e2e644cb9b5c19a3665043d57ce9",
+      "size": 8316
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/pi-attachment-ocr-native-smoke.mjs",
+      "sha256": "cd495b0096388e9c8fe5203d95ca375cd9711cb33841c2144a89bb00e98a88a8",
+      "size": 1613
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/pi-attachment-ocr-ui-smoke.mjs",
+      "sha256": "036a8217ed064738f278c0206b646dd63c3430db7ec3315d82731c050abb3b52",
+      "size": 13215
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/archive-local-ocr.mjs",
+      "sha256": "821f967a8cf5780d32d4fe34b8a8cf0a2455e7291b72c7a8d13b7a22705a93d9",
+      "size": 2941
+    }
+  ],
+  "original": [
+    {
+      "name": "RapidOCR-LICENSE",
+      "url": "https://raw.githubusercontent.com/RapidAI/RapidOCR/v3.9.2/LICENSE",
+      "sha256": "3e0af25fdd06aa9586ae97adb00ea927ebe5a3805ac77d2d3a81ce5f55693333"
+    },
+    {
+      "name": "MODEL_LICENSES.md",
+      "url": "https://raw.githubusercontent.com/RapidAI/RapidOCR/f65c7da00e72c19c258245e8e0e5f33af14488be/python/MODEL_LICENSES.md",
+      "sha256": "c5fd0e8603d3df743355b546121e6fe0f4ef8ff455c5a85c1681fd3ae520e153"
+    }
+  ],
+  "runtime": {
+    "engine": "rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1",
+    "files": 576,
+    "totalBytes": 270805763
+  },
+  "boundary": "Source and original license/model notices only. No private images/OCR text, DB, native histories, profiles, credentials or compiled runtime binaries."
+}

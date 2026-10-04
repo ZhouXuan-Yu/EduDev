@@ -1,0 +1,31 @@
+{
+  "tag": "v0.450.0",
+  "base": "https://raw.githubusercontent.com/liliMozi/openhanako/v0.450.0/",
+  "files": [
+    {
+      "name": "core/model-image-preprocess.ts",
+      "bytes": 10076,
+      "sha256": "e3cb6d0d4376305ffb77d85aff00b20239397388dd3a8063f98370fc0d9a0cb9"
+    },
+    {
+      "name": "desktop/src/react/utils/chat-image-send-preflight.ts",
+      "bytes": 8520,
+      "sha256": "96fb5fde238807fca8668d9a3b01188d79c91684c0fc844bb1b81b733797967e"
+    },
+    {
+      "name": "lib/sandbox/read-image-vision.ts",
+      "bytes": 8458,
+      "sha256": "41f7a811d9884858308991ee5cacbfee51c6de2af66a286b9b8728a8016d783d"
+    },
+    {
+      "name": "lib/pi-sdk/index.ts",
+      "bytes": 10900,
+      "sha256": "c3ceac10b4f9420cb06593a2fe2420eb9b4cda74915d8b5be29a4ccccff87070"
+    },
+    {
+      "name": "LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    }
+  ]
+}

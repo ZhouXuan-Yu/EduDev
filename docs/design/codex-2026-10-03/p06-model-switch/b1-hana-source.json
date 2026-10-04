@@ -1,0 +1,14 @@
+{
+  "version": "0.449.0",
+  "license": "Apache-2.0",
+  "source": "D:/WorkProject/开源/openhanako/core/session-coordinator.ts",
+  "sourceSha256": "2fcf13833f206dd30a1c549863616dcf8f54fd4404db60d3a7583f3ee2536e8b",
+  "output": "core/model-switch-context.ts",
+  "outputSha256": "fca14d8098499c820e2fef9ad2007e182084c5b307adf5b5dae35df71118a398",
+  "licenseSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+  "adaptations": [
+    "AST extract createModelContextTooLargeError and context admission before native setModel",
+    "Hana i18n replaced by fixed context_limit; estimateTokens uses already locked Pi 0.80.3",
+    "Durable education SQLite/native recovery is separate host code; no copied Persona or coordinator authority"
+  ]
+}

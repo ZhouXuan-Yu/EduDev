@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual pending approval remains reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Actual pending approval remains reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Teacher rejection stays visible and performs zero file write",
+      "pass": true
+    },
+    {
+      "name": "Teacher approval performs one actual verified copy with measured process state",
+      "pass": true
+    },
+    {
+      "name": "Actual restart retains both teacher decisions and copy readback without replay",
+      "pass": true
+    }
+  ],
+  "boundary": "Formal real DeepSeek and actual local copy with synthetic owned files; native chooser return controlled; no real teacher data or external writes"
+}

@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T11:36:42.522Z",
+  "files": [
+    {
+      "file": "source/1.Agent.md",
+      "bytes": 118937,
+      "sha256": "56384769e6b5806918966304fd8cd7f89bf6b216e4a561b253da125ff2ef4068"
+    },
+    {
+      "file": "source/2.Memory.md",
+      "bytes": 260395,
+      "sha256": "5d02f44351db5dd6b99bcadeaf49b55c15503e9d9b8e0ae34211134c417df20a"
+    },
+    {
+      "file": "source/3.Learning.md",
+      "bytes": 194333,
+      "sha256": "f453ed6d653688f388f10e6eb354d88b39afd143b1b0c9bfe9036253755b75b5"
+    },
+    {
+      "file": "source/4.Wiki.md",
+      "bytes": 161569,
+      "sha256": "a801a7dd393bcbe70d886884ece4d7107c36fc3cf32e2373b94558e8da7c5b44"
+    },
+    {
+      "file": "source/测试样例说明书.md",
+      "bytes": 18734,
+      "sha256": "b5352edce099e868cc33f9370b5a75fc2f4879c96432e8b87b655de7f1c0ffba"
+    },
+    {
+      "file": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 51778,
+      "sha256": "2ba127a59edc74de44b269c938c60664c19fc5e7d4d4cba26075520fc2dae4e1"
+    },
+    {
+      "file": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 84563,
+      "sha256": "ff866e7e51180fe7fbb84bd5f1b708ae96d84ff2520936f3ed67f9722ef2d89c"
+    },
+    {
+      "file": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 68880,
+      "sha256": "d07a9f4d37d1544bfcbc7ab4f665c62c2d8575f89a28244a066e60572ef337b4"
+    },
+    {
+      "file": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 73536,
+      "sha256": "614077ed284d4a338f5293c60b8116bd9d661df73a4015e99fc80f78ae02287a"
+    },
+    {
+      "file": "source/docs/152_PI_IMAGE_VIEW_RECEIPT_CONTRACT.md",
+      "bytes": 3168,
+      "sha256": "9a7a06d34f7754c416e0ddbaa389bc1647a87e5e189e42abdc1520b4dd7cad90"
+    },
+    {
+      "file": "source/docs/153_PI_IMAGE_VIEW_RECEIPT_ACCEPTANCE.md",
+      "bytes": 7606,
+      "sha256": "c40848c40b8d4e9876b2d1a09b9059a8b1d79c0848b4e9cc606d266acb93800d"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-public-images.ts",
+      "bytes": 4226,
+      "sha256": "e6b4b9f607195a7ddbc709fedbfc2f1157bbd12ac9e0500d592b884ceaed459e"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/office-agent.ts",
+      "bytes": 1309,
+      "sha256": "546aeb4c54e69c61fee214ad14f79e62e367251a27235e028fe976b32dc08b2e"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-projection.ts",
+      "bytes": 11419,
+      "sha256": "7095139a24331061f66b13096a185bb0071bdf6a97aca72e675eeabfd15d3b70"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/public-image-runtime.ts",
+      "bytes": 9420,
+      "sha256": "aa431a3818a29b81be66ca855003e18a8deeeff7d63b3f70b647d1943f1e96a9"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/OfficeImageViews.tsx",
+      "bytes": 1171,
+      "sha256": "315364bd4256857db3783861ad09f35741b925049d7f9b5920252bfbe58410a8"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/OfficeConversation.tsx",
+      "bytes": 7529,
+      "sha256": "6c25be743a49e0f970d57ea58068556391c2ec5e64608f9b3070a1569cdc01f4"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/OfficeToolProcess.tsx",
+      "bytes": 6725,
+      "sha256": "9efc00196de478e157738681d13d6f8487889267f7856cbc49f7a22ae05672d3"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/PiEducationWorkspace.tsx",
+      "bytes": 19244,
+      "sha256": "b5e66a9b90ddcd6703338ea2560e4cadcd6f78fbc1eca083ebebc5ef7e84d019"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/usePiAttachments.tsx",
+      "bytes": 13482,
+      "sha256": "d196dbd931dab31a8caa5b75da14187fd66148dd7965c00b87b3bdbb9b89e843"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/pi-attachments.css",
+      "bytes": 1848,
+      "sha256": "5bb5c6c5f01d12cf1a2622014738c533c38e55b75f89185cf879cdbf4388f008"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/heroui-pro/components/chat-attachment/chat-attachment.tsx",
+      "bytes": 5464,
+      "sha256": "fec0687e2c426482e916c1a0b4107d3ada188b90b726114fcaa782d66790730e"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/heroui-pro/components/chat-tool/chat-tool.tsx",
+      "bytes": 16416,
+      "sha256": "80f20aa2f974cb44cf8f41f52ae7f3efc6b76799b7984897cde657a26de4d534"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-public-image-native-worker.ts",
+      "bytes": 11950,
+      "sha256": "d6450152a54bc191ecf93b820767fa073d82f20b7a824235676efee64d89a2ba"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-public-image-native-smoke.mjs",
+      "bytes": 1923,
+      "sha256": "149671b46a2b48be8c524e740e72be20bf449f2803a2e8a2c996fd44d0c8f167"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-public-image-ui-smoke.mjs",
+      "bytes": 21148,
+      "sha256": "fed24f72a8d9ac636c575b33064757ecf9bfb15196c0611bd10582532a6d2fb6"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-image-views-history-ui-smoke.mjs",
+      "bytes": 7617,
+      "sha256": "6d1474be30c14a62c24bd260d8b43e386a2e91916691f2634be8e644b4fabe9f"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/archive-image-views.mjs",
+      "bytes": 4440,
+      "sha256": "1a15e3f3ad9388caae91ab9085fa813f1f65229b6153c294d36b3e1a180ed0e2"
+    },
+    {
+      "file": "evidence/native.json",
+      "bytes": 2736,
+      "sha256": "6529f5f84a4e3e71ad941eceda12d014165f5f6c976f6f62547503dee0c7a7b1"
+    },
+    {
+      "file": "evidence/formal-ui.json",
+      "bytes": 4718,
+      "sha256": "c2d7734bdbb115e8dcf4a800f3ef7c0ac5cac387364f46dcafa9628fdf41a2b8"
+    },
+    {
+      "file": "evidence/cold-history.json",
+      "bytes": 53328,
+      "sha256": "49f1a0b9c864f2475ea9dfc4c23a8465c3aa1a37e01609f1e5dbcfc0c3a0f97c"
+    },
+    {
+      "file": "evidence/changed-refusal.json",
+      "bytes": 53377,
+      "sha256": "cc3f0c12ecae90f335249f66bd1129f7102b2fe88c0b176f94d283f2ea40f36b"
+    },
+    {
+      "file": "evidence/legacy-history.json",
+      "bytes": 53207,
+      "sha256": "ed919ec6c1eb042a31a237fccb0c19746a0c1fdd736869c8c0cf8f0acdb1c903"
+    },
+    {
+      "file": "reference/pro-list.json",
+      "bytes": 3179,
+      "sha256": "14f1d65c2611f6c89d4def7ff429501dec95d241549d5f6c2a774ae292c75dcc"
+    },
+    {
+      "file": "reference/pro-docs.json",
+      "bytes": 49923,
+      "sha256": "c3f43bc404dc40de5eba438bcc4f3e1c5891f2f07c5647736b332c1098318caf"
+    },
+    {
+      "file": "evidence/gates.json",
+      "bytes": 689,
+      "sha256": "102cfa81caaf5bd91282dd0da9dbd03fe16b202a25e9f8669acad145b8933f93"
+    }
+  ],
+  "boundary": "Explicit source/reference/report allowlist; excludes raw pictures, DB/native, credentials, profile/dependencies/binaries. No whole-product acceptance."
+}

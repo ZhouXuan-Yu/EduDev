@@ -1,0 +1,58 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Pending reject approval locks model mutation",
+      "pass": true
+    },
+    {
+      "name": "Actual pending approval remains reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Actual pending approval remains reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Teacher rejection stays visible and performs zero file write",
+      "pass": true
+    },
+    {
+      "name": "Same-history model switch after reject preserves teacher decision and creates no extra effect",
+      "pass": true
+    },
+    {
+      "name": "Pending approve approval locks model mutation",
+      "pass": true
+    },
+    {
+      "name": "Teacher approval performs one actual verified copy with measured process state",
+      "pass": true
+    },
+    {
+      "name": "Same-history model switch after approve preserves teacher decision and creates no extra effect",
+      "pass": true
+    },
+    {
+      "name": "Real active run stops through the composer before same-history model switching",
+      "pass": true
+    },
+    {
+      "name": "Idle switch after stop retains approvals and cannot resume cancelled work",
+      "pass": true
+    },
+    {
+      "name": "Same-history model menu is reachable in stable captures at both actual window sizes",
+      "pass": true
+    },
+    {
+      "name": "Actual restart retains both teacher decisions and copy readback without replay",
+      "pass": true
+    },
+    {
+      "name": "Restart after switching and stopping keeps selected model and cannot replay file effects",
+      "pass": true
+    }
+  ],
+  "boundary": "Formal real DeepSeek and actual local copy with synthetic owned files; native chooser return controlled; no real teacher data or external writes"
+}

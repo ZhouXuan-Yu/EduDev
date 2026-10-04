@@ -1,0 +1,13 @@
+.desktop-native-frame { --desktop-content-height: calc(100dvh - 36px); height: 100dvh; overflow: hidden; background: #e6f9f7; }
+.desktop-titlebar { width: 100%; display: flex; align-items: center; background: #e6f9f7; -webkit-app-region: drag; user-select: none; }
+.desktop-titlebar-safe { margin-left: env(titlebar-area-x,0px); width: env(titlebar-area-width,calc(100% - 140px)); height: 100%; display: flex; align-items: center; gap: 2px; padding-left: 10px; }
+.desktop-titlebar-safe .button { -webkit-app-region: no-drag; min-height: 26px; height: 26px; min-width: 40px; padding: 0 9px; font-size: 14px; color: #778484; font-weight: 400; border-radius: 5px; box-shadow: none; background: transparent; }
+.desktop-titlebar-safe .button--icon-only { min-width: 28px; width: 28px; padding: 0; }
+.desktop-titlebar-safe .button:hover { background: #d7ebeb; color: #405454; }
+.desktop-content { height: var(--desktop-content-height); overflow: hidden; }
+.desktop-content .app-shell { min-height: var(--desktop-content-height); height: var(--desktop-content-height); overflow-y: auto; }
+.desktop-content .app-shell-ai, .desktop-content .app-shell-ai>.workspace, .desktop-content .ai-console-v3, .desktop-content .ai-console-v3.with-artifact { min-height: 0; height: var(--desktop-content-height); }
+.desktop-native-frame .desktop-content .ai-console-v3.xiaozhi-pi-workspace { height: var(--desktop-content-height); }
+.desktop-native-frame .pi-shell .sidebar__provider { min-height: 0; height: 100%; }
+.desktop-content .xiaozhi-pi-workspace .pi-shell { margin-top: 8px; height: calc(100% - 8px); border-top-left-radius: 16px; overflow: hidden; }
+.desktop-frame-notice { position: absolute; z-index: 200; top: 40px; left: 360px; padding: 8px 12px; background: #fff; border: 1px solid #e8eaea; border-radius: 8px; color: #596565; }

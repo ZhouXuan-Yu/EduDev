@@ -1,0 +1,21 @@
+{
+  "version": "0.1.0",
+  "name": "omni-edu-desktop-prototype",
+  "dependencies": {
+    "docx": {
+      "version": "9.8.1",
+      "resolved": "https://registry.npmjs.org/docx/-/docx-9.8.1.tgz",
+      "overridden": false
+    },
+    "exceljs": {
+      "version": "4.4.0",
+      "resolved": "https://registry.npmjs.org/exceljs/-/exceljs-4.4.0.tgz",
+      "overridden": false
+    },
+    "pptxgenjs": {
+      "version": "4.0.1",
+      "resolved": "https://registry.npmjs.org/pptxgenjs/-/pptxgenjs-4.0.1.tgz",
+      "overridden": false
+    }
+  }
+}

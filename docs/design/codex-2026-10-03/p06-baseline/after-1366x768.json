@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "name": "after-1366x768",
+  "capturedAt": "2026-10-03T06:52:57.336Z",
+  "renderer": {
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "dpr": 1.0000000298023224,
+    "visualViewport": {
+      "width": 1366,
+      "height": 768,
+      "scale": 1
+    },
+    "screen": {
+      "width": 1366,
+      "height": 768
+    },
+    "regions": {
+      "workspace": {
+        "selector": "[data-testid=\"xiaozhi-pi-workspace\"]",
+        "present": true,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 768
+        },
+        "fontFamily": "\"Helvetica Neue\", \"Microsoft YaHei\", Arial, sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "24px",
+        "color": "rgb(17, 24, 39)",
+        "background": "rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "0px"
+      },
+      "sidebar": {
+        "selector": "[data-testid=\"ai-conversation-sidebar\"]",
+        "present": true,
+        "rect": {
+          "x": 0,
+          "y": 0,
+          "width": 260,
+          "height": 768
+        },
+        "fontFamily": "\"Helvetica Neue\", \"Microsoft YaHei\", Arial, sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "24px",
+        "color": "rgb(17, 24, 39)",
+        "background": "rgb(236, 251, 252)",
+        "borderRadius": "0px",
+        "padding": "14px 10px",
+        "gap": "0px"
+      },
+      "header": {
+        "selector": ".ai-chat-header",
+        "present": true,
+        "rect": {
+          "x": 260,
+          "y": 0,
+          "width": 826,
+          "height": 56
+        },
+        "fontFamily": "\"Helvetica Neue\", \"Microsoft YaHei\", Arial, sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "24px",
+        "color": "rgb(17, 24, 39)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "0px 22px",
+        "gap": "16px"
+      },
+      "conversation": {
+        "selector": "[data-testid=\"office-conversation\"]",
+        "present": true,
+        "rect": {
+          "x": 292,
+          "y": 56,
+          "width": 762,
+          "height": 592.6666870117188
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "readingColumn": {
+        "selector": ".office-conversation-content",
+        "present": true,
+        "rect": {
+          "x": 292,
+          "y": -574.6666870117188,
+          "width": 746.6666870117188,
+          "height": 1856.71875
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "32px 28px 16px",
+        "gap": "normal"
+      },
+      "composer": {
+        "selector": ".office-composer-container",
+        "present": true,
+        "rect": {
+          "x": 260,
+          "y": 648.6666870117188,
+          "width": 826,
+          "height": 119.33333587646484
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "8px 28px 20px",
+        "gap": "normal"
+      },
+      "input": {
+        "selector": "[data-testid=\"office-prompt-input\"]",
+        "present": true,
+        "rect": {
+          "x": 306.66668701171875,
+          "y": 671.3333740234375,
+          "width": 732.6666870117188,
+          "height": 28
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "normal"
+      },
+      "inspection": {
+        "selector": "[data-testid=\"xiaozhi-pi-inspector\"]",
+        "present": true,
+        "rect": {
+          "x": 1086,
+          "y": 0,
+          "width": 280,
+          "height": 768
+        },
+        "fontFamily": "\"Helvetica Neue\", \"Microsoft YaHei\", Arial, sans-serif",
+        "fontSize": "14px",
+        "lineHeight": "21px",
+        "color": "rgb(120, 126, 124)",
+        "background": "rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "padding": "24px 18px",
+        "gap": "normal"
+      },
+      "assistant": {
+        "selector": "[data-slot=\"chat-message-assistant\"]",
+        "present": true,
+        "rect": {
+          "x": 320,
+          "y": -339.51043701171875,
+          "width": 690.6666870117188,
+          "height": 24.5
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "16px",
+        "lineHeight": "27.2px",
+        "color": "rgb(48, 51, 50)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "12px"
+      },
+      "tool": {
+        "selector": ".office-tool [data-slot=\"chat-tool-trigger\"]",
+        "present": true,
+        "rect": {
+          "x": 356,
+          "y": -235.0104217529297,
+          "width": 642.6666870117188,
+          "height": 36
+        },
+        "fontFamily": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+        "fontSize": "14px",
+        "lineHeight": "18.9px",
+        "color": "rgb(119, 125, 124)",
+        "background": "rgba(0, 0, 0, 0)",
+        "borderRadius": "0px",
+        "padding": "0px",
+        "gap": "8px"
+      }
+    }
+  },
+  "native": {
+    "bounds": {
+      "x": 173,
+      "y": 59,
+      "width": 1361,
+      "height": 901
+    },
+    "contentBounds": {
+      "x": 181,
+      "y": 115,
+      "width": 1346,
+      "height": 838
+    },
+    "zoomFactor": 1,
+    "displayScaleFactor": 1.5
+  },
+  "screenshot": {
+    "file": "after-1366x768.png",
+    "width": 1366,
+    "height": 768
+  }
+}

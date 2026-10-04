@@ -1,0 +1,80 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Natural teacher prompt selects real image tool and visible explicit public-purpose confirmation; no image is transmitted before the teacher answers",
+      "pass": true
+    },
+    {
+      "name": "Original HeroUI question and send-answer controls remain reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Original HeroUI question and send-answer controls remain reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Formal original Pi/official DeepSeek image request returns exact visual code/counts/positions, genuine received source and segmented public explanation while preserving original native prefix",
+      "pass": true
+    },
+    {
+      "name": "New run strips prior raw image and visible teacher rejection makes zero image requests or received receipt",
+      "pass": true
+    },
+    {
+      "name": "Cold formal application preserves original image body/receipt without replay; deleted original uses captured copy and requires a new confirmation before genuine delivery",
+      "pass": true
+    },
+    {
+      "name": "Stopping the actual question sends no image and cannot resume the stopped upload",
+      "pass": true
+    },
+    {
+      "name": "Stop while the real image utility has produced bytes exits the owned child and suppresses late preparation/transport",
+      "pass": true
+    },
+    {
+      "name": "Declared supplier-error transport fixture marks the formal delivery failed, with no false received receipt",
+      "pass": true
+    },
+    {
+      "name": "Actual 1366x768 original tool/source and truthful error receipt renders",
+      "pass": true
+    },
+    {
+      "name": "Actual 1920x1080 original tool/source and truthful error receipt renders",
+      "pass": true
+    },
+    {
+      "name": "No renderer errors or duplicate native image capability identity",
+      "pass": true
+    },
+    {
+      "name": "Original old-Pi test database remains byte-identical",
+      "pass": true
+    }
+  ],
+  "boundary": "Formal isolated Electron/real original Pi/official DeepSeek/image utility/unchanged Pro source; only self-created public synthetic image. One supplier-error case is a declared transport fixture. No real profile, student raw images, installer or no-VPN acceptance.",
+  "visualAnswer": {
+    "code": "VISION87444673",
+    "redSquares": 3,
+    "blueCircles": 2,
+    "redPosition": "left",
+    "bluePosition": "right",
+    "source": "公开图表.png"
+  },
+  "transports": [
+    {
+      "images": [
+        {
+          "role": "user",
+          "mime": "image/png",
+          "sha256": "a29585142f6f8706ea58ecbd97600c88f95b1e7f5504c58a3515ac84bb157365"
+        }
+      ],
+      "status": 200,
+      "fixture": false
+    }
+  ],
+  "rendererErrors": []
+}

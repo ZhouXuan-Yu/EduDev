@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Natural real-provider task proposes a local review with zero pre-approval write",
+      "pass": true
+    },
+    {
+      "name": "Pending review controls are reachable at actual native 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Pending review controls are reachable at actual native 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Teacher refusal is durable and creates no file",
+      "pass": true
+    },
+    {
+      "name": "Approval commits exactly the reviewed UTF8 file and one office capability marker",
+      "pass": true
+    },
+    {
+      "name": "Actual receipt opens a freshly version-checked file in the existing workspace panel",
+      "pass": true
+    },
+    {
+      "name": "Real Pi edit saves the reviewed version and leaves the native creation identity unchanged",
+      "pass": true
+    },
+    {
+      "name": "Teacher undo restores exact prior file bytes through the visible receipt",
+      "pass": true
+    },
+    {
+      "name": "Undo invalidates an open stale preview and refresh displays the actual restored version",
+      "pass": true
+    },
+    {
+      "name": "Typed renderer stale revision and cross-session review are refused without file effect",
+      "pass": true
+    },
+    {
+      "name": "Manual post-edit file change is preserved when teacher attempts undo",
+      "pass": true
+    },
+    {
+      "name": "Approval refuses changed source and never overwrites the teacher revision",
+      "pass": true
+    },
+    {
+      "name": "Composer stop invalidates waiting write and saves no cancelled artifact",
+      "pass": true
+    },
+    {
+      "name": "Real Electron process kill while waiting recovers as interrupted and never writes the proposed file",
+      "pass": true
+    },
+    {
+      "name": "Actual restart retains changes, does not replay, and rejects late approval",
+      "pass": true
+    },
+    {
+      "name": "SQLite readback matches visible durable state and revisions",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual Electron natural tasks, real DeepSeek/Pi tools, typed approval/review/undo and SQLite/file readback. Only owned synthetic fixtures. No real teacher data."
+}

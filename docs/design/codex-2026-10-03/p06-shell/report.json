@@ -1,0 +1,54 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Original Pro AppLayout/Sidebar and narrow rail are present with real current conversation",
+      "pass": true
+    },
+    {
+      "name": "Actual context-menu rename persists and reaches header/current selected row",
+      "pass": true
+    },
+    {
+      "name": "Actual new chat/search/Escape/current conversation switching preserve local facts",
+      "pass": true
+    },
+    {
+      "name": "Actual create-folder and pointer drag classification persist through typed main",
+      "pass": true
+    },
+    {
+      "name": "Actual shell/compact card/details/sidebar controls and input are reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Actual shell/compact card/details/sidebar controls and input are reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Skills settings remain real and reachable from new header",
+      "pass": true
+    },
+    {
+      "name": "Actual archive keeps local history and opens a new active conversation",
+      "pass": true
+    },
+    {
+      "name": "Actual restart retains closed-pane preferences, folders, archive and local conversation facts",
+      "pass": true
+    },
+    {
+      "name": "Narrow rail home invokes real teacher-workbench navigation",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron UI/typed main/local persistence in isolated synthetic data",
+    "No provider requests in this shell suite; real process suite is separate",
+    "Reference DPI unknown; native menu/title frame and file preview still pending"
+  ],
+  "preferencesBeforeRestart": "{\"schema\":1,\"sidebar\":false,\"aside\":false}",
+  "userData": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-shell-ui-ca08ah\\electron-profile",
+  "preferencesAfterRestart": "{\"schema\":1,\"sidebar\":false,\"aside\":false}",
+  "rendererErrors": []
+}

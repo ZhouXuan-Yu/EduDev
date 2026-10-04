@@ -1,0 +1,11 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual native Store initializes repeated additive private import migration without attachments",
+      "pass": true
+    }
+  ],
+  "boundary": "D2-A only: actual Electron native sqlite3/OmniEduStore, real owned files and process exits. No chooser/renderer/send/Pi/vision/OCR claim. No network or real teacher data.",
+  "error": "Error: invalid_input\n    at Object.current (file:///D:/WorkProject/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-import-native-eMT0EB/worker.mjs:1260:74)\n    at importOne (file:///D:/WorkProject/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-import-native-eMT0EB/worker.mjs:8651:94)"
+}

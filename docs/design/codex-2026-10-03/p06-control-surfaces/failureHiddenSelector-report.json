@@ -1,0 +1,38 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Unified formal entry embeds the existing encrypted model form and live official model directory",
+      "pass": true
+    },
+    {
+      "name": "Six real capabilities are reachable from one setting navigation",
+      "pass": true
+    },
+    {
+      "name": "Hana multi-token ranking opens an actionable backup setting",
+      "pass": true
+    },
+    {
+      "name": "Hana NFKC search resolves full-width API text without indexing credential values",
+      "pass": true
+    },
+    {
+      "name": "Search empty state, Escape and official clear control work",
+      "pass": true
+    },
+    {
+      "name": "Unified permission page selects an actual authorized directory through the existing typed chooser",
+      "pass": true
+    }
+  ],
+  "viewports": [],
+  "boundaries": [
+    "Actual formal Electron + owned fresh SQLite/profile, live official DeepSeek catalogue and chat, actual local backup/readback; synthetic teacher files only.",
+    "Native chooser returns controlled in main; browser storage failure injected only for the owned profile.",
+    "Archive fixtures created via existing typed APIs; archive creation UI and OS chooser clicking not claimed.",
+    "No full Codex pixel-match, VPN-off or installer proof."
+  ],
+  "error": "locator.isVisible: Error: strict mode violation: getByTestId('pi-memory-enabled') resolved to 2 elements:\n    1) <input type=\"checkbox\" data-testid=\"pi-memory-enabled\"/> aka getByTestId('pi-task-details').getByTestId('pi-memory-enabled')\n    2) <input type=\"checkbox\" data-testid=\"pi-memory-enabled\"/> aka getByTestId('pi-settings-main').getByTestId('pi-memory-enabled')\n\nCall log:\n\u001b[2m    - checking visibility of getByTestId('pi-memory-enabled')\u001b[22m\n\n    at memoryPanel (D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-settings-workspace-ui-smoke.mjs:34:81)\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-settings-workspace-ui-smoke.mjs:51:9",
+  "rendererErrors": []
+}

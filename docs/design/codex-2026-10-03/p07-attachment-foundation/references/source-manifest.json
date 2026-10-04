@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "upstream": "Hana0.449.0",
+  "license": "Apache-2.0",
+  "source": "D:/WorkProject/开源/openhanako/lib/session-files/session-file-registry.ts",
+  "sourceSha256": "a445b2f0cfeaef8b861dd3c5a52e6dec11693ed70cc846f609198aa22c326192",
+  "outputSha256": "2c78f4dab0831fea59ab51beaadd27fbc9fda0cb8012615d3d3fed3252815399",
+  "functions": [
+    {
+      "name": "buildSessionFileSourceKey",
+      "sha256": "5bb800ed4a7815eb2926b7930d6a28a6204fc975d1cd4ed5ac5b89b3db1065b7"
+    },
+    {
+      "name": "sessionFileOwnerKey",
+      "sha256": "791d6ba410a47a2cb5f589400b33e5efc68b5892b36c0ac6a5f141a385899c67"
+    }
+  ],
+  "adaptation": "AST extraction of two original functions; import node:crypto and export only. No native-sidecar storage or destructive registry methods."
+}

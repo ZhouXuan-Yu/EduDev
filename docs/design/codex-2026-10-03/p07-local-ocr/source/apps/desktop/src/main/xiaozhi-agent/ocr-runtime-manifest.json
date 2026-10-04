@@ -1,0 +1,2901 @@
+{
+  "schemaVersion": 1,
+  "engine": "rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1",
+  "platform": "win32-x64",
+  "workerSha256": "94d3e48dda43fed348057c97b045f05ca990f86104a6a6a2611e3cdc538768d5",
+  "original": [
+    {
+      "name": "RapidOCR-LICENSE",
+      "url": "https://raw.githubusercontent.com/RapidAI/RapidOCR/v3.9.2/LICENSE",
+      "sha256": "3e0af25fdd06aa9586ae97adb00ea927ebe5a3805ac77d2d3a81ce5f55693333"
+    },
+    {
+      "name": "MODEL_LICENSES.md",
+      "url": "https://raw.githubusercontent.com/RapidAI/RapidOCR/f65c7da00e72c19c258245e8e0e5f33af14488be/python/MODEL_LICENSES.md",
+      "sha256": "c5fd0e8603d3df743355b546121e6fe0f4ef8ff455c5a85c1681fd3ae520e153"
+    }
+  ],
+  "files": [
+    {
+      "path": "_internal/MSVCP140_1.dll",
+      "size": 35768,
+      "sha256": "206c931bf90fdad8816de3b5e2ef80b2bcaa9406c89ecc05fe6fddffe251e982"
+    },
+    {
+      "path": "_internal/PIL/_avif.cp312-win_amd64.pyd",
+      "size": 7893504,
+      "sha256": "6731dce52baab0b96b0eeb3c664844b5b42c2168ea8668af2430e2fbdd2dfbd8"
+    },
+    {
+      "path": "_internal/PIL/_imaging.cp312-win_amd64.pyd",
+      "size": 2632704,
+      "sha256": "c8c519ec72bf75b2945b4fc4afa854af2fca8b970a403134f9ddda3e164d85e9"
+    },
+    {
+      "path": "_internal/PIL/_imagingcms.cp312-win_amd64.pyd",
+      "size": 272384,
+      "sha256": "c89c633ae1bf3f26a327d14ff688db66628e19c9866ab925479f27dcb60a2d6f"
+    },
+    {
+      "path": "_internal/PIL/_imagingft.cp312-win_amd64.pyd",
+      "size": 2174976,
+      "sha256": "77c6d37de41733df40fb36d9af47644989ac17da036515e759303969edb22c48"
+    },
+    {
+      "path": "_internal/PIL/_imagingmath.cp312-win_amd64.pyd",
+      "size": 21504,
+      "sha256": "82ac45c41a008854d05f67deda298b65a7bed850d0d79a3af861ed583f6e7d62"
+    },
+    {
+      "path": "_internal/PIL/_imagingtk.cp312-win_amd64.pyd",
+      "size": 14848,
+      "sha256": "690cc1cae4a2dc8594a342b9241e691dcc89d81dad4cddcefdf285275365a2b1"
+    },
+    {
+      "path": "_internal/PIL/_webp.cp312-win_amd64.pyd",
+      "size": 416256,
+      "sha256": "9823cebb84f425af3ac1e7437259bc176e7ad7e25d7fa829b0e1a3e55c11be70"
+    },
+    {
+      "path": "_internal/Shapely.libs/geos-ae6efa0782962b98e358f10ea539ae5f.dll",
+      "size": 2564608,
+      "sha256": "094508747b6bb6eb785b2aa67d7899724ce78ee6cc375e7a66e11be3bcf5a08e"
+    },
+    {
+      "path": "_internal/Shapely.libs/geos_c-072b7a9224d16d3e4ab2395bb855b2d3.dll",
+      "size": 451072,
+      "sha256": "7e4d87ccb640eda92f150b7cee178ef13abe282acd36af08f6dca5eddaf931a4"
+    },
+    {
+      "path": "_internal/Shapely.libs/msvcp140-90bc62d4947a5878f1dc1057312f3be2.dll",
+      "size": 557704,
+      "sha256": "90bc62d4947a5878f1dc1057312f3be2137eb376039f4afda2f64c06353f2198"
+    },
+    {
+      "path": "_internal/_asyncio.pyd",
+      "size": 75056,
+      "sha256": "589cc7b16f8900d32760eafb8e26313e06208f343cadc06c6b9f9c716d96e865"
+    },
+    {
+      "path": "_internal/_bz2.pyd",
+      "size": 88880,
+      "sha256": "81328ba4b09d5e8a22badfc8379ffbddcd84900e1580384b0b7a190c2804f267"
+    },
+    {
+      "path": "_internal/_ctypes.pyd",
+      "size": 131888,
+      "sha256": "52716a0fc8bbf645d1f9a279bd87d1fc1eff1739916655c466121b34b04e537d"
+    },
+    {
+      "path": "_internal/_decimal.pyd",
+      "size": 263984,
+      "sha256": "35671726293c7295c3656d4a441da05a00deaf784e99b06bf0cbe281fb561573"
+    },
+    {
+      "path": "_internal/_elementtree.pyd",
+      "size": 137520,
+      "sha256": "897447c61c22514cbe62ffc0fffdf04f1bfce0ac16491f2762b49c6ac2edb4d3"
+    },
+    {
+      "path": "_internal/_hashlib.pyd",
+      "size": 70448,
+      "sha256": "48b476758c3c50fd6b44b4497a9d1368f7e75e550a983b6854e14b3e0d0ea7d6"
+    },
+    {
+      "path": "_internal/_lzma.pyd",
+      "size": 168240,
+      "sha256": "c334128b7be6c0d8c3bb7f8a6fa76573a331976520ccf4da6dc401225af30947"
+    },
+    {
+      "path": "_internal/_multiprocessing.pyd",
+      "size": 39728,
+      "sha256": "0681064f6996f95a08230cc89e8543c16a3dcd076508db640a787b0556ae6698"
+    },
+    {
+      "path": "_internal/_overlapped.pyd",
+      "size": 59696,
+      "sha256": "a1cac69303cb9eedeec2c3c699071328f478b1518947ef223bfc59dc9479921d"
+    },
+    {
+      "path": "_internal/_queue.pyd",
+      "size": 36144,
+      "sha256": "b548b883888893fca4e5b4fa594b075ababfe4953a12bed937cea1da98226633"
+    },
+    {
+      "path": "_internal/_socket.pyd",
+      "size": 87344,
+      "sha256": "aa5897e4d159af1bceb99a93c643c7dd43dab70de2dcdca30029ed9bb50fa17b"
+    },
+    {
+      "path": "_internal/_ssl.pyd",
+      "size": 180528,
+      "sha256": "35ef17999c0981408ebc0b7bf0efe0fe7ee1c238bcf10cba49bedfd22e50aa26"
+    },
+    {
+      "path": "_internal/_uuid.pyd",
+      "size": 29488,
+      "sha256": "cb1e8773d475ea226b44e840443963fec9f858a17c36b811676880def5d855e8"
+    },
+    {
+      "path": "_internal/_wmi.pyd",
+      "size": 41264,
+      "sha256": "626774285bf2eb50059f5a6ad3928b8f9baaf9b260b91c84015a552551f5815f"
+    },
+    {
+      "path": "_internal/api-ms-win-core-console-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "015bd08815c7b934a8952c3a7578e9ce59f21136e8a880d42bbd414bec2c6058"
+    },
+    {
+      "path": "_internal/api-ms-win-core-datetime-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "5534812cdbdae94ba45cb216e5eb9af686b853948df54365103555abbbaf9d9a"
+    },
+    {
+      "path": "_internal/api-ms-win-core-debug-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "837d2b1b2cd03e03fc6ccb050698b6b5763af17c201304872342a5eae9e0a2d2"
+    },
+    {
+      "path": "_internal/api-ms-win-core-errorhandling-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "de43b165f568c276c00e95acd454e3092f352a18e95874595f4f4658c06d2ec7"
+    },
+    {
+      "path": "_internal/api-ms-win-core-fibers-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "3cebc45bf479ad74cfabf2c6bfd4994d7ad639ed1221025981d19cedf9ce0416"
+    },
+    {
+      "path": "_internal/api-ms-win-core-fibers-l1-1-1.dll",
+      "size": 22872,
+      "sha256": "5ef70308bcca628ce6b0e2856b15b1c7ae340c3f9bbbc4c1071d8c191a34a5c3"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l1-1-0.dll",
+      "size": 27008,
+      "sha256": "250ac829f2617bcac1c6e5b8c4f630462e20765863ba573526a3e11bbfb94a9a"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l1-2-0.dll",
+      "size": 22888,
+      "sha256": "ae14079a114733f60ce87b92cba42acd8083c2cd67594e53bc37dc0b97a4b465"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l2-1-0.dll",
+      "size": 22912,
+      "sha256": "914bf26a298713119477ea0a8e7bd43171b91344ebe24fb47ad77c49686e3d87"
+    },
+    {
+      "path": "_internal/api-ms-win-core-handle-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "ab5489955e371b15f77906c08ec3c7affe2c7a46a08c514ca628768b4478974b"
+    },
+    {
+      "path": "_internal/api-ms-win-core-heap-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "c70f9644d8377fa39c5b71f2e9734c1400d7598904fdeb772e8502099982dcb7"
+    },
+    {
+      "path": "_internal/api-ms-win-core-interlocked-l1-1-0.dll",
+      "size": 22888,
+      "sha256": "f8129710188e407bb0e6f46d30aeba277d67b947ece5fe09e883fde2323f3ae6"
+    },
+    {
+      "path": "_internal/api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+      "size": 22888,
+      "sha256": "5200b16cb2ddc61cfc07373a9a84aa85a3ab50806ca96c879c883275832944c1"
+    },
+    {
+      "path": "_internal/api-ms-win-core-libraryloader-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "48786fb88b001dcd1f63acea903d3ca9cc0b3060d5a325e3f2f3cbc3bfd53166"
+    },
+    {
+      "path": "_internal/api-ms-win-core-localization-l1-2-0.dll",
+      "size": 22872,
+      "sha256": "9ec3898f7eba91faa28b51616c211a2689e3a13aeef8de6e13cb674e49d689eb"
+    },
+    {
+      "path": "_internal/api-ms-win-core-memory-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "3a6cbc524c99e1cd80d5368f5601402a37ad602528b1ab628093573ef638eb3b"
+    },
+    {
+      "path": "_internal/api-ms-win-core-namedpipe-l1-1-0.dll",
+      "size": 22888,
+      "sha256": "97145ef89c44949fcf0f04ac834a8bc7d687ef49ee73ae9fc32f3c11136b7201"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processenvironment-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "8bc7c10b1851aea644e9c9f381cdb935e091fee6b0be3d3aedc6fffaac96adb7"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processthreads-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "d8030b777617c71f0f94564607699dbf7561487d779db9756aed378c5675213f"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processthreads-l1-1-1.dll",
+      "size": 22872,
+      "sha256": "f5e676713340f73a03a3d41a6ec9883b431da7d16c7f07bd0a920fb80e6c0753"
+    },
+    {
+      "path": "_internal/api-ms-win-core-profile-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "f023d47e44d3eea6b0743580f57e8c6ba81e79d5ebfa7da26250076c647b980e"
+    },
+    {
+      "path": "_internal/api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "size": 22888,
+      "sha256": "9746d8930704153578a628c010638a5f818ffe5a927e25591b108e256dc6afca"
+    },
+    {
+      "path": "_internal/api-ms-win-core-string-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "7c53ae24c982d16ffd1bf7f918d115b11b7f30e57bc7feaa18cb9781e4abb926"
+    },
+    {
+      "path": "_internal/api-ms-win-core-synch-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "56d9d62ca5dba79a6581b8d574a7d8b2a64a5ecb71e47dcf06ed0285708b1859"
+    },
+    {
+      "path": "_internal/api-ms-win-core-synch-l1-2-0.dll",
+      "size": 22888,
+      "sha256": "f6482bbec5612c39ecb4822787a333f2b7570f7a5f922a4059be41ba957bb372"
+    },
+    {
+      "path": "_internal/api-ms-win-core-sysinfo-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "272d02765fdd3582618236c2d309abba069642f9bc1062ede069d0c144e17007"
+    },
+    {
+      "path": "_internal/api-ms-win-core-sysinfo-l1-2-0.dll",
+      "size": 22912,
+      "sha256": "8a0900788859d0eb51c2f48f50cc6ed376a120b518100fa20e11d7702ccde260"
+    },
+    {
+      "path": "_internal/api-ms-win-core-timezone-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "ff35de6c03812b332e140f17dade25c5dd4775156da9eeb1eaae3fddd27236ec"
+    },
+    {
+      "path": "_internal/api-ms-win-core-util-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "191ef3e98641a57296f19d572d8eb62489470ff1ef6030d136af170c2f835173"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-conio-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "54ee5ec719a051496ff60aa00dbeaa94b9a7d2cdac27fe9b7317f1a666b6a2aa"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-convert-l1-1-0.dll",
+      "size": 26992,
+      "sha256": "8b94662429171019fcd63c70bbf2095a075170599704a5e7dcdbe3da13f3a429"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-environment-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "39e5929593709e8af3bc9e0a75ec1155778d6f4a247f4cdfc58928ad6db88434"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-filesystem-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "5a8ecebac32edf4e1f3c5c6c1c8ea1a1add6cda4f9c9cb26f752fb295bea6865"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-heap-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "c71080cbcb43bf1f8f3e391deb12a582eb0abefc80946f340675a2c616e4feb4"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-locale-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "6c68648e524187e03c4ad9aaa4a99113c6ee9f29fb39cc0ed93f951975138e63"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-math-l1-1-0.dll",
+      "size": 31064,
+      "sha256": "d4fbcccbe29371cbce431e43b2eb4f7ba9a6f04a3d740a071f02457a505e9dc8"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-private-l1-1-0.dll",
+      "size": 76120,
+      "sha256": "29bf3d90617d3781d19b332d6ceb9f20ba5ce082ec74bf6c34d5d4aee56e48a1"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-process-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "47c1935942e3ac0812e4dcf18c0e265e565f0194a3349111c299712f5565f7ac"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-runtime-l1-1-0.dll",
+      "size": 26968,
+      "sha256": "72adc1b3677e0814d9c4ebf0964000e84bb2acf67336c8963061665e44f78029"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-stdio-l1-1-0.dll",
+      "size": 26968,
+      "sha256": "900afc3989673c9bb1a687ed38c192f46db9e6ba6d11a668898a539e7fc23798"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-string-l1-1-0.dll",
+      "size": 26968,
+      "sha256": "fcf12466cc12fd3b73611fc0763a5a1f9d44e90349513c34a0c83b0f36421793"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-time-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "886e57c4a6adb299b38f02945369f590a67da4e79a798359fc60aaa067212d7c"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-utility-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "5f8f26b216ade615b67a41f6fbbb910972fc6153315a65bb8f09912be50215b1"
+    },
+    {
+      "path": "_internal/base_library.zip",
+      "size": 1333490,
+      "sha256": "07a712a0f26281f49548d9d466795d6bf65130877ef97d78ed828b1e28667b6d"
+    },
+    {
+      "path": "_internal/certifi/cacert.pem",
+      "size": 240216,
+      "sha256": "9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f"
+    },
+    {
+      "path": "_internal/certifi/py.typed",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/charset_normalizer/cd.cp312-win_amd64.pyd",
+      "size": 115712,
+      "sha256": "2bdbc0805f85565d76f8d6166e451bfafa6d5490b06b36c9f423cd0102b4f149"
+    },
+    {
+      "path": "_internal/charset_normalizer/md.cp312-win_amd64.pyd",
+      "size": 208384,
+      "sha256": "b08be5d29125f39a92e22d0abe4b9160753f7a790fffd07258319a8e16394afa"
+    },
+    {
+      "path": "_internal/cv2/__init__.py",
+      "size": 6811,
+      "sha256": "674817e87409bc589608ef9f4dd4c1a49f600b5e85ca8b106b3b0a9eab5c46cc"
+    },
+    {
+      "path": "_internal/cv2/config-3.py",
+      "size": 748,
+      "sha256": "de28c7b5213cca148f09469916584611b3d66c1c8c432880259d6a3a92380213"
+    },
+    {
+      "path": "_internal/cv2/config.py",
+      "size": 123,
+      "sha256": "6c6367abce55995ae4a8d3c199420ec53afab287cb17dfc2f430378af75dd301"
+    },
+    {
+      "path": "_internal/cv2/cv2.pyd",
+      "size": 86293504,
+      "sha256": "f1e76ab01cf4d33af780adf8ada1a26c5eaeecc55d2cbe8a5e288195e8f9b0dd"
+    },
+    {
+      "path": "_internal/cv2/data/__init__.py",
+      "size": 73,
+      "sha256": "f4ce16721ed7f623a4dcc443ba600d1856db610cb2c3d53c13a8ca028cc68f6d"
+    },
+    {
+      "path": "_internal/cv2/load_config_py3.py",
+      "size": 253,
+      "sha256": "074dfaf20ac94f2ca3815393de3a394944470334c51a85b9521f452e0e17bb85"
+    },
+    {
+      "path": "_internal/cv2/mat_wrapper/__init__.py",
+      "size": 1164,
+      "sha256": "c44707ea1c76f35518ae572b6c1989d76c2ada7e850432e41805dfe112d4e306"
+    },
+    {
+      "path": "_internal/cv2/misc/__init__.py",
+      "size": 38,
+      "sha256": "495bd79594cce174673e372c85c4dd8f4ffdf2b3a73fd4623955b0d55de0d462"
+    },
+    {
+      "path": "_internal/cv2/misc/version.py",
+      "size": 95,
+      "sha256": "c93a418793fcb15b9b4316c0741b8336740e490e94f3b7d1ebe8cd5f6f23815c"
+    },
+    {
+      "path": "_internal/cv2/opencv_videoio_ffmpeg500_64.dll",
+      "size": 30876160,
+      "sha256": "7aabff029d1fa47cf56ede4dbbe05dc62da3208f07cd16471d4c966a33f9aa31"
+    },
+    {
+      "path": "_internal/cv2/typing/__init__.py",
+      "size": 4465,
+      "sha256": "f8a066f22a98b56641a69200f0aaf9c3b5832b2f59f57862e56289cced8d9179"
+    },
+    {
+      "path": "_internal/cv2/utils/__init__.py",
+      "size": 344,
+      "sha256": "2b16990b35b569af1ca7239dc10f7b24ec62f27a46626b1e2f1271d2e1aa3554"
+    },
+    {
+      "path": "_internal/cv2/version.py",
+      "size": 96,
+      "sha256": "fc17efee9203c23cac641981068621e80d3b0bbabe459f4133c9b2b4d91957fb"
+    },
+    {
+      "path": "_internal/libcrypto-3-x64.dll",
+      "size": 8003376,
+      "sha256": "276e6a57d4ec0dd50f47a6c1ae3e91bb7cf50d2356f8c81e01b97be1187ab098"
+    },
+    {
+      "path": "_internal/libffi-8.dll",
+      "size": 43824,
+      "sha256": "3d9a8c0e1170edb0480f11d2058b4538f3bd0eedfde8b67059fb5af21b435e78"
+    },
+    {
+      "path": "_internal/libssl-3-x64.dll",
+      "size": 1599280,
+      "sha256": "ac4d1375550da1ea038d3e1babbbd9a8f58971034f0fce1f26f90d7575af3730"
+    },
+    {
+      "path": "_internal/msvcp140.dll",
+      "size": 643512,
+      "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/DELVEWHEEL",
+      "size": 462,
+      "sha256": "4a71fefce03586c3347fcd8f3a994ad4af93717dc6e5d964d976e6134e3230fa"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/INSTALLER",
+      "size": 4,
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/METADATA",
+      "size": 6635,
+      "sha256": "451a9b8028000588e66b0b415587b6aef0bbc51a96d8e8a0cba0dc23acf64f99"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/RECORD",
+      "size": 113272,
+      "sha256": "d369f0bfd9ff61ee40e289e25976f215ed274a2117b960a52384e2c640e22386"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/WHEEL",
+      "size": 85,
+      "sha256": "e743de01ba6503a3e4234858398a1e69c07d512d51e8482ec9f3a7b1c707d165"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/entry_points.txt",
+      "size": 220,
+      "sha256": "ec26fade0c8bdac211a6c1dd003a65eb16885b925395423e93fcaa115af4052c"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/LICENSE.txt",
+      "size": 45831,
+      "sha256": "a804dff0ead9fadc5293456410bcbfc32bf024be9c4513459663fb7b442d2341"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/_core/include/numpy/libdivide/LICENSE.txt",
+      "size": 1039,
+      "sha256": "d544761558b510866c21f7e8a2d5716fca76e0b98117e3b6b86314db7244d150"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/_core/src/common/pythoncapi-compat/COPYING",
+      "size": 704,
+      "sha256": "aea41976c720f91bd19725c16916a1ace40eb1ea42620d340e587a5de4bbcea0"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/_core/src/highway/LICENSE",
+      "size": 21155,
+      "sha256": "d208152e2777ffd0126eacc1bd21c0320d69e4e6b622d21a2a12a47e8ef73763"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/_core/src/multiarray/dragon4_LICENSE.txt",
+      "size": 1441,
+      "sha256": "b0fd592d4ead563148e3977e7b589169d46a5ef2ff133c755a81af880a3fc919"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/_core/src/npysort/x86-simd-sort/LICENSE.md",
+      "size": 1542,
+      "sha256": "a732977853530066790c42817087f4829b518dd98d340c916acbfd227e39d3cb"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/_core/src/umath/svml/LICENSE",
+      "size": 1573,
+      "sha256": "585483905b13d4b42f800c55ba99e89d6e2e33ccd5f503e201c07531d148ff41"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/fft/pocketfft/LICENSE.md",
+      "size": 1523,
+      "sha256": "8db000e158c162e7249787852d8c69764706502ccee725c06641b31c1e95c8af"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/linalg/lapack_lite/LICENSE.txt",
+      "size": 2314,
+      "sha256": "19060ef465e1797d682ee0fc3081bd25ab1395e995e43d25c9d13c95d9a3cd6b"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/ma/LICENSE",
+      "size": 1616,
+      "sha256": "d78dbb208b80d92b4d333e41a4baae50d12444f46e53199fa7726a91de6e2da7"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/random/LICENSE.md",
+      "size": 3582,
+      "sha256": "b4bc2f4fa1c95778f1ed3dd8f14706bece399475b978f9f34b5d3cd72521b48a"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/random/src/distributions/LICENSE.md",
+      "size": 2805,
+      "sha256": "cf5619f25b112d5ce7c896efffc8e610bcb345dfadcc19f2c1460aa48fff2c9e"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/random/src/mt19937/LICENSE.md",
+      "size": 2986,
+      "sha256": "92c10699884321f1c2947fe2a70ab23b0fbf1507f756d89dd08f38c61fc3d4fa"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/random/src/pcg64/LICENSE.md",
+      "size": 1176,
+      "sha256": "41190663b77bee5302386495a07b7eabfbfa571aa0ae2f11da6764162062fc4f"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/random/src/philox/LICENSE.md",
+      "size": 1540,
+      "sha256": "322ac46d870c8aeead6c53adcccc839296fb3c8e456eae155081297daf7f8013"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/random/src/sfc64/LICENSE.md",
+      "size": 1253,
+      "sha256": "28cad82ce1379dc529df30da78ec012d7d0d1d576b03ddcb93388aee53659f59"
+    },
+    {
+      "path": "_internal/numpy-2.5.3.dist-info/licenses/numpy/random/src/splitmix64/LICENSE.md",
+      "size": 340,
+      "sha256": "454ec7350e478e037061850b67395753b425b1cb0a34bbc26290b020bf89d763"
+    },
+    {
+      "path": "_internal/numpy.libs/libscipy_openblas64_-ed4f167a5330424524f45258e7ca2c8d.dll",
+      "size": 20589056,
+      "sha256": "ed4f167a5330424524f45258e7ca2c8d7f03c0cba1f30ee4985553ac1f88ecf8"
+    },
+    {
+      "path": "_internal/numpy.libs/msvcp140-a4c2229bdc2a2a630acdc095b4d86008.dll",
+      "size": 575056,
+      "sha256": "a4c2229bdc2a2a630acdc095b4d86008e5c3e3bc7773174354f3da4f5beb9cde"
+    },
+    {
+      "path": "_internal/numpy/_core/_multiarray_tests.cp312-win_amd64.pyd",
+      "size": 65536,
+      "sha256": "8fdd39b1dcd81239b1fe0b10744afd76dc85c8575aa09429b392e323fb750f4b"
+    },
+    {
+      "path": "_internal/numpy/_core/_multiarray_umath.cp312-win_amd64.pyd",
+      "size": 3854848,
+      "sha256": "a9d5c4202cf109bf24305f3f1180e0509aaf661ba850612bd75df7cfd9f928b8"
+    },
+    {
+      "path": "_internal/numpy/fft/_pocketfft_umath.cp312-win_amd64.pyd",
+      "size": 276480,
+      "sha256": "3ed9c2f73c7dc165e41e98ecfd0a4f66481a5afec7e39148a2af317b9a4ff62e"
+    },
+    {
+      "path": "_internal/numpy/linalg/_umath_linalg.cp312-win_amd64.pyd",
+      "size": 112128,
+      "sha256": "15884ab8ded82bc5f834e429a63cc9cfdcc24f61737a5c563efb2c2f274213a8"
+    },
+    {
+      "path": "_internal/numpy/random/_bounded_integers.cp312-win_amd64.pyd",
+      "size": 208896,
+      "sha256": "031cbd54dcbef2ff3fda13889879a6442f17c31df6d008154708b31d7582309c"
+    },
+    {
+      "path": "_internal/numpy/random/_common.cp312-win_amd64.pyd",
+      "size": 174080,
+      "sha256": "8bd4fcd63a3f0643a81b4095a8221a4a3917dd86816ecbeea595db237071369f"
+    },
+    {
+      "path": "_internal/numpy/random/_generator.cp312-win_amd64.pyd",
+      "size": 624640,
+      "sha256": "8dd9ad224065d8c38d99149d6816a519eb769b3e01210164b3bcb186e7d59479"
+    },
+    {
+      "path": "_internal/numpy/random/_mt19937.cp312-win_amd64.pyd",
+      "size": 92672,
+      "sha256": "9b3aff503e8872d6e6b71b2d41a5a1304c02092cb75f5387194c3fa98c1a5610"
+    },
+    {
+      "path": "_internal/numpy/random/_pcg64.cp312-win_amd64.pyd",
+      "size": 105984,
+      "sha256": "f68a6a65df54920f091c6745694fd7adacc7311d980a429c8217385b43f8df26"
+    },
+    {
+      "path": "_internal/numpy/random/_philox.cp312-win_amd64.pyd",
+      "size": 89088,
+      "sha256": "1872654c8ade0ed9e11ca3f1b2714154f39a0cef46416b48e40c7e96a6dc2018"
+    },
+    {
+      "path": "_internal/numpy/random/_sfc64.cp312-win_amd64.pyd",
+      "size": 64000,
+      "sha256": "958af4dd25196f436d67b681c64a8639f0ec5a98dbb37124859def7eb353c0ab"
+    },
+    {
+      "path": "_internal/numpy/random/bit_generator.cp312-win_amd64.pyd",
+      "size": 173056,
+      "sha256": "1e7a030cfd348ab125a681eaf21b227be145d8329430b8d521f9bde520390267"
+    },
+    {
+      "path": "_internal/numpy/random/mtrand.cp312-win_amd64.pyd",
+      "size": 522752,
+      "sha256": "2dbf4488af25a9d6b2863b3eea53d4a39b692b3be579e970761730d310e8ea65"
+    },
+    {
+      "path": "_internal/onnxruntime-1.30.0.dist-info/INSTALLER",
+      "size": 4,
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+    },
+    {
+      "path": "_internal/onnxruntime-1.30.0.dist-info/METADATA",
+      "size": 5901,
+      "sha256": "3f79aefa7e4d6aec73c7af714b4bba9be1c69edbd8a1017e3f59b4d54dc18a68"
+    },
+    {
+      "path": "_internal/onnxruntime-1.30.0.dist-info/RECORD",
+      "size": 60839,
+      "sha256": "a98721a368ff81f6f2fbd9d96964199be968f4d73a7eca1fa499dde29b37f080"
+    },
+    {
+      "path": "_internal/onnxruntime-1.30.0.dist-info/REQUESTED",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/onnxruntime-1.30.0.dist-info/WHEEL",
+      "size": 101,
+      "sha256": "547199cfb31450578b25778938b82f94e190e69e750e6c850e3b6d657fa1a30f"
+    },
+    {
+      "path": "_internal/onnxruntime-1.30.0.dist-info/entry_points.txt",
+      "size": 77,
+      "sha256": "eea2d2e056c65f03d98df7695401a99e693d23a9ba1f90b1127c1c0b1d489a3b"
+    },
+    {
+      "path": "_internal/onnxruntime-1.30.0.dist-info/top_level.txt",
+      "size": 12,
+      "sha256": "ce4fdf2447a4ad39bd0cbc57d8bc067a0a2456a3fa6e5a8f845a0c22e87436ff"
+    },
+    {
+      "path": "_internal/onnxruntime/LICENSE",
+      "size": 1094,
+      "sha256": "c250d6278f0b47a6439fb7592b08b58a55eb9f535aa49a1db63211c3f982b674"
+    },
+    {
+      "path": "_internal/onnxruntime/Privacy.md",
+      "size": 4730,
+      "sha256": "a1e6108942be2f56d9ea93c342462d5ec15fd0510603dae7a654f417e0d4e95f"
+    },
+    {
+      "path": "_internal/onnxruntime/ThirdPartyNotices.txt",
+      "size": 344457,
+      "sha256": "c53a76501ef60db6f865f20599f220761201ac4057683acefdab37d861b86622"
+    },
+    {
+      "path": "_internal/onnxruntime/__init__.py",
+      "size": 21947,
+      "sha256": "aa5d395f33d6c3417f7e296cfda89270cb12b36a9f06c884966fafb99d0e04c4"
+    },
+    {
+      "path": "_internal/onnxruntime/backend/__init__.py",
+      "size": 334,
+      "sha256": "e48d5896c6b07fdc3a30d98ae1188dd7003e10442a94a2b061335907e9bf93a3"
+    },
+    {
+      "path": "_internal/onnxruntime/backend/backend.py",
+      "size": 10447,
+      "sha256": "75e6b2df1c12db84949497209968ef20cb392099f6b87bca2a116b8ca7e5dee7"
+    },
+    {
+      "path": "_internal/onnxruntime/backend/backend_rep.py",
+      "size": 2901,
+      "sha256": "bc5e6bed64391baaec2e1705b0de62bc86d5a583040a4c17b8754d4fd0960fc4"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/__init__.py",
+      "size": 251,
+      "sha256": "b91a78a4cb5fa1ac81859804b2216a1420f5dd8e8b528f3615d66c417f17f0b2"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/_ld_preload.py",
+      "size": 413,
+      "sha256": "962e9c6d9eb88437d49dd6ade26a6b516ce8c0b6b7450770d2ad84e7ab171701"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/_pybind_state.py",
+      "size": 1533,
+      "sha256": "9db5299d49dcc01bf9a60240f32ba00d82510384d37c2d206983840f98c3f920"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/build_and_package_info.py",
+      "size": 54,
+      "sha256": "1854d77677dac763c89d0e9022cc7c07ea57c0764788dd0659714de490f9a3e0"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/convert_npz_to_onnx_adapter.py",
+      "size": 1581,
+      "sha256": "3744a162bdf4bc141c3abf4ac8577801474472a596f3d29577cd2a4980a0750e"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/onnxruntime.dll",
+      "size": 18446176,
+      "sha256": "e42c5c917207ff706530315177e39dca2539695a6a8d968a22225e34291b1f12"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/onnxruntime_collect_build_info.py",
+      "size": 2109,
+      "sha256": "b03f19d92d794074afb8ed63eed82a24a78e44351ab70cd49b3bc2f148fd7003"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/onnxruntime_inference_collection.py",
+      "size": 86370,
+      "sha256": "412c602163a3c21ea9874280c1e5ce500feb263fb518de2050151e49c9c28c12"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/onnxruntime_providers_shared.dll",
+      "size": 21856,
+      "sha256": "46b999f9d5cd9d284091407e9f50a262624e6a71265fc428a1dfbd42d149bd81"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/onnxruntime_pybind11_state.pyd",
+      "size": 19112248,
+      "sha256": "c0b7c1a5524b702863d24d6c38b3fa5ad8199b25cb5e0893ac9b5a6661979f14"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/onnxruntime_validation.py",
+      "size": 6949,
+      "sha256": "a7d02f7973eeefc07e15de303ad0528acbd6de56ae32641ff42c498abb6d7e4f"
+    },
+    {
+      "path": "_internal/onnxruntime/capi/version_info.py",
+      "size": 34,
+      "sha256": "f269b55535c5f31831e8df2f14d7b44e28a4f6a760f55be2f5fdf66cf13d92dc"
+    },
+    {
+      "path": "_internal/onnxruntime/datasets/__init__.py",
+      "size": 473,
+      "sha256": "0ea45da4c7d1b437e1564090bb995399f490f861b87444c73567680787c0ee55"
+    },
+    {
+      "path": "_internal/onnxruntime/datasets/logreg_iris.onnx",
+      "size": 670,
+      "sha256": "8224784c98d73412d9fd99abcd57a38568bd590980d0fbe5916464531c52e8fc"
+    },
+    {
+      "path": "_internal/onnxruntime/datasets/mul_1.onnx",
+      "size": 130,
+      "sha256": "71f431c4e9321ec6fbeb158d02ed240459a7dcc98673fa79a4f439ce42efaf10"
+    },
+    {
+      "path": "_internal/onnxruntime/datasets/sigmoid.onnx",
+      "size": 103,
+      "sha256": "5340aba67a7e3475162ad794378af55f1718f55f9a5d74b4af60ecc7f7a624b6"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/CalTableFlatBuffers/KeyValue.py",
+      "size": 2250,
+      "sha256": "7be8c9161c3d7dbefbe5f0c22e759d6d149da09eaf183d1ceea4e79081bebcdb"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/CalTableFlatBuffers/TrtTable.py",
+      "size": 2682,
+      "sha256": "bebb9e2cfcb6455e51dcc49d21092a5bb4f10d248a3cca0e8b14aecc8b2fda81"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/CalTableFlatBuffers/__init__.py",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/__init__.py",
+      "size": 787,
+      "sha256": "725f368afb471d383e4dbbc8c6a459a5e0120923f7bef1b5e0b1c5724d690c56"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/base_quantizer.py",
+      "size": 26295,
+      "sha256": "4e562d2b96aba76be607833578ba1b25fef384fe3d6e74e039f22feecc6834db"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/calibrate.py",
+      "size": 58144,
+      "sha256": "365feab13dfcb32ed3a10de3f9d3e9cbaf6f528b1ad574099480287a86811e6e"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/cuda_quantizer.py",
+      "size": 27498,
+      "sha256": "a864556a468ffb5840e4f0024eeaaa475d664bd623fd836645e9cef05c81ff65"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/execution_providers/qnn/__init__.py",
+      "size": 120,
+      "sha256": "9ca281ed511b3b9ef81c32f6c5d24f0fc55e5e82b66b78ddf272c1c542e256f2"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/execution_providers/qnn/fusion_lpnorm.py",
+      "size": 5327,
+      "sha256": "bd4adb30da2b1c7effb8a8de2f58e590f8219e994f2033f3d2498dd13b74de67"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/execution_providers/qnn/fusion_spacetodepth.py",
+      "size": 6285,
+      "sha256": "bbf3b21e1a79d7d56806151565301591ecb9d3513dd54d0460c9025263703131"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/execution_providers/qnn/mixed_precision_overrides_utils.py",
+      "size": 18995,
+      "sha256": "3d37593da3f57190145eed787b82f48fbd703b9de5703d6cf323e46656a7e46d"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/execution_providers/qnn/preprocess.py",
+      "size": 16736,
+      "sha256": "9ba863d49fb513c9245db589cd082a934ce959f18fb5290dfe35183d8bcf5881"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/execution_providers/qnn/quant_config.py",
+      "size": 18986,
+      "sha256": "9eca73deb2ad39f8112ce6c42512cf2d5293796b7c5da5f921880def16ccf0a1"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/fusions/__init__.py",
+      "size": 246,
+      "sha256": "4031b69b3c9a0079d598790e06973831dc27e4d70dadab6d5b9c936af316b3c3"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/fusions/fusion.py",
+      "size": 12088,
+      "sha256": "03affbee5e6ec3e848c32a17ec33ce14be8efb2dea5e4f92d7a48c2efd4d722b"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/fusions/fusion_gelu.py",
+      "size": 10647,
+      "sha256": "dea38ee14f790130fa4b5e1dc82fb9faf19e69006be54f860ac8dfbc7aa82fdf"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/fusions/fusion_layernorm.py",
+      "size": 6146,
+      "sha256": "20f578c0f9747ec2b5574dbf2e0d2872cb84829025ac9ab11997c5893c298dce"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/fusions/replace_upsample_with_resize.py",
+      "size": 3427,
+      "sha256": "130b9c6b4f18bbfe9740ca1c935ec9db4a1121aa07c0bcce371dcd7746c64bf0"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/matmul_bnb4_quantizer.py",
+      "size": 9263,
+      "sha256": "6974cfb4adee43cd184de4a77ff6ef0484ea7284e7bf1342cc996d038652f223"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/matmul_nbits_quantizer.py",
+      "size": 81039,
+      "sha256": "350120ba9063119808d8ea26e0401261434e819331a0c2656789a558c66154de"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/neural_compressor/__init__.py",
+      "size": 68,
+      "sha256": "e121229502490e82b1329a289ed1d5b712dcb4be24cd90f9d23887ca5c5e3164"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/neural_compressor/onnx_model.py",
+      "size": 50836,
+      "sha256": "29a31f276e9e74addaf799b9de2491eee03af57d84879f9edf25aff1d437dfb6"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/neural_compressor/util.py",
+      "size": 2762,
+      "sha256": "e006d202b5c21f14fc3133e1467deba7e7b2b1df5a8eee5c8a16b5083316d83e"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/neural_compressor/weight_only.py",
+      "size": 37227,
+      "sha256": "23adb73b419d16e2b081052f878b713563c86ef6791d88cc483cdd3aff37b84e"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/onnx_model.py",
+      "size": 24528,
+      "sha256": "11a6ebf2d54f9da602667b2a5b777c15dd079b6f0e65baaca1864734fa921056"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/onnx_quantizer.py",
+      "size": 51001,
+      "sha256": "64c7252804e4d6985b72bb4a6d8f10a56dd8b7b86d6a2787891805e36aab54c9"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/__init__.py",
+      "size": 85,
+      "sha256": "21f297ac55ad452c9ed669200fd969c318a8d1fc3d715affd42755d5cbde7e28"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/activation.py",
+      "size": 4545,
+      "sha256": "1ba5c0299691215defaed8e92b8904bdbcd44a52cec3011ab975fd7b18081d98"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/argmax.py",
+      "size": 589,
+      "sha256": "a5f13dfde493676a2d4e451c5b094b8bb1c92ad375d241397362f3d127950034"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/attention.py",
+      "size": 2637,
+      "sha256": "787efe67731f3fac516427610c0c8dc561b6b369d920bc481055401edaa3ec44"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/base_operator.py",
+      "size": 1118,
+      "sha256": "beb0157ca25766f17b6617ab2b0e09506a2737236ea14d935a7c01cbe110dd01"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/binary_op.py",
+      "size": 2544,
+      "sha256": "a444074404bbe44329ecb1ba8f3595ee00d0b7fbf310f2c9108d347883aea220"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/concat.py",
+      "size": 2143,
+      "sha256": "7d91709daaa8399f5bd19bc6a412bf32b27356d79e260b96450dfdea4521f104"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/conv.py",
+      "size": 10203,
+      "sha256": "c21823670c7c8960940e1886a0c7d9f000f38fd94ccc86a662b6363ecee5f285"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/direct_q8.py",
+      "size": 3389,
+      "sha256": "c5658b5e83b57c9d055ce16cd0e757e69bcb570de6edbe9306953561163270ed"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/embed_layernorm.py",
+      "size": 4058,
+      "sha256": "d8bb19939526d042da4444968d2720632422a097a54592baa106f301c9528172"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/gather.py",
+      "size": 2230,
+      "sha256": "1cbefd0acbfefb34c0b395e61b5c4fec58f0ef645396aa5a77107ac3e3a6a8df"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/gavgpool.py",
+      "size": 2445,
+      "sha256": "c18ca311fde1fbf4028562a7b19d8dfa16811b5452bea462b59f98bdfc28f439"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/gemm.py",
+      "size": 6226,
+      "sha256": "49aa968ad2fe428b4f3bd292e80e226791ff39427b742fd9421af9c7a7a91834"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/lstm.py",
+      "size": 5238,
+      "sha256": "80edc0a82dedbe889594644328e2eb0513d1c847e70b611f6b370c2ce6780241"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/matmul.py",
+      "size": 8222,
+      "sha256": "39324939f06b609e0a4b1d62a67a09f1fff8e255c662818cdbaa9782d775a133"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/maxpool.py",
+      "size": 1393,
+      "sha256": "0374e2a71b861f48d8fdcb010e6d2d80f193d31b12e5fb37793c5d6d258b7314"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/norm.py",
+      "size": 1649,
+      "sha256": "7f77d489237859d33c8ae5c24a3113a2b4720c55122495b13b5d2f7a08ff744b"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/pad.py",
+      "size": 7951,
+      "sha256": "c8cf378eb642f3ca7915ae77c3728b41cef32254b3e86bf589238fbeae60b8ce"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/pooling.py",
+      "size": 2285,
+      "sha256": "2f4213ec6ebed974b1f7ec14cf9057e7d31ce3715f24483bf4dc16df2a840e12"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/qdq_base_operator.py",
+      "size": 823,
+      "sha256": "15ca3d259c6b5d0a158232af98716ecd3d26a205a8f7ec078836b9d428d38a8a"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/resize.py",
+      "size": 962,
+      "sha256": "04c7b29beec61ce4a71a9662b1af4191d424566097c0a00d0393699ca46768b2"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/softmax.py",
+      "size": 2714,
+      "sha256": "7b74e154e8764c6d41f25b86eb15a4a13fe109dbec3118ef4e54e37bc096f984"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/split.py",
+      "size": 2258,
+      "sha256": "f3647ae7efd1c39836ddfd2e7a4516a40de784ecde51674e420af62595f0ace7"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/operators/where.py",
+      "size": 3127,
+      "sha256": "c1de8f43b2e56eb253a9a98531c87f162a676ede087b03094803e8ccc4ebc0a2"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/preprocess.py",
+      "size": 5045,
+      "sha256": "554e225fb83c80e8151f4cde84e70e5ec556919a71ea41bf2c597018cdc1b3a7"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/qdq_loss_debug.py",
+      "size": 15829,
+      "sha256": "d4bf81b80d49724f49e65811a23ed03c46ed68a1cc92840b3130f889814e6b1a"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/qdq_quantizer.py",
+      "size": 74285,
+      "sha256": "8206bb08d04015fc292427c6b3fe0bd720644c5ac2473d2a1e1277bf8f7af488"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/quant_utils.py",
+      "size": 53010,
+      "sha256": "2efc449a45952aaee0ee7b3cf13bb530001f5208547d228738f4f7dec937e46d"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/quantize.py",
+      "size": 61377,
+      "sha256": "4f4f0fc8d01b284d026d1fadfe65b760cda1dafd7559f750e01afaf1567d018c"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/registry.py",
+      "size": 3919,
+      "sha256": "728aed9b1056b477575dedfe268f22692ceb3c4f20115ac314bb627dd2866d35"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/shape_inference.py",
+      "size": 10259,
+      "sha256": "e5aebf65f6838773ba363dfd4a319e6f497fdf1854504225e2affa8f0b777749"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/static_quantize_runner.py",
+      "size": 11341,
+      "sha256": "d22621c78f5f5ecd05dfcc2ca926bf872c803f56bf659c6a22110433b15a914d"
+    },
+    {
+      "path": "_internal/onnxruntime/quantization/tensor_quant_overrides.py",
+      "size": 21304,
+      "sha256": "433d83d0d008ef6c4b039697a837d98015cc6295398e1e479c27def919cbca4d"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/__init__.py",
+      "size": 528,
+      "sha256": "eeea7b88a724955cba51ca4820822505a2baf743b7daf68ec7269a4d6bf0cb15"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/check_onnx_model_mobile_usability.py",
+      "size": 1717,
+      "sha256": "873aa3ac8f57cfb2cfd6274f76f89153b10478b32f501d2a9724ea1e87f1945b"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/convert_onnx_models_to_ort.py",
+      "size": 17409,
+      "sha256": "494036024efd6557833cb9e4025c8d255be48a03a6dde4b61e2d3ba1292d2421"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/file_utils.py",
+      "size": 1572,
+      "sha256": "1eb34ae148e947ebb8ded2c10b6bf02a27a2b025510521676880ca6acc301062"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/logger.py",
+      "size": 333,
+      "sha256": "b37339f8091bebdcee6d73610a9b23228274e7681889e1d5e45b0e7c167a96b2"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/make_dynamic_shape_fixed.py",
+      "size": 2642,
+      "sha256": "dbccdd3e34fccb3f0012fe6190597f60d23ca90cdb98feb8865f86a973be3abd"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/mobile_helpers/__init__.py",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/mobile_helpers/coreml_supported_mlprogram_ops.md",
+      "size": 3114,
+      "sha256": "9114e3a9dea71ed4096b0109f833bf1fa80914aeffb6385e7d5ef01b29fc4f7b"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/mobile_helpers/coreml_supported_neuralnetwork_ops.md",
+      "size": 1958,
+      "sha256": "249070bf4e02fe8d8ad5458eb6d0ed6ab9c2ef1145650daebef2198381059960"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/mobile_helpers/nnapi_supported_ops.md",
+      "size": 2385,
+      "sha256": "b89ce7132cbb640765ae42907a858516ce79acf13e90e78f2098afef8d6bf7c4"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/mobile_helpers/usability_checker.py",
+      "size": 32378,
+      "sha256": "b04693f34f98c0dc14c506debf747647333369a191d3ab2519d26e529b927517"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/offline_tuning.py",
+      "size": 6368,
+      "sha256": "22cc333df3086d6c19281057e296adf33bb8b350f9b14cd584b8c3996cd09642"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/onnx_model_utils.py",
+      "size": 16818,
+      "sha256": "1bd5ac81f8aae3aa606e461364062ea592a7aa0648f864f446f7ab14f9f6b02e"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/onnx_randomizer.py",
+      "size": 3361,
+      "sha256": "f4bf7a77321fe7d710da842c991d8412c76b478847c041aba5991a8c48143c06"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/onnxruntime_test.py",
+      "size": 5770,
+      "sha256": "4afaa0c2b8e22297ffbec65f1e6904fc53d72640c0d7c999a70628ca332fe60d"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/optimize_onnx_model.py",
+      "size": 2015,
+      "sha256": "0d49bd477a82ea0d599d745d73b32eed4d3702b245e63e6820224b87f6a68572"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/__init__.py",
+      "size": 1307,
+      "sha256": "5ecab42ccfb312436c50b6d34efcb19f3e1d0f3a9ea5e13c044807cc9198383f"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/operator_type_usage_processors.py",
+      "size": 27032,
+      "sha256": "ae5f546ff4110b907417d32ed0b6d8f3a6ec5679147fb5d89f53edc02d4d3cd3"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/__init__.py",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/ArgType.py",
+      "size": 147,
+      "sha256": "12b457ae6c336b5c60556e0e004370fc1f3255ced67d66c061886200edc27368"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/ArgTypeAndIndex.py",
+      "size": 2093,
+      "sha256": "f12c749a652a8cde2e37b31e4d8eac70881e64eea0aee01187c32f94441d51d4"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Attribute.py",
+      "size": 11187,
+      "sha256": "4b9480e72f450761d670f20fc7df63cff79b4d5f393bc71311326019efc528ba"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/AttributeType.py",
+      "size": 346,
+      "sha256": "a6217cbbf53bccd139792af07108512e0bebd9ac4adb5fb8e7931cc488ded874"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Checkpoint.py",
+      "size": 4342,
+      "sha256": "d1c675e25b90cbfc3c1a56c317fc6818f5ad79ed94b9e40ce23b79f585f907da"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/DeprecatedKernelCreateInfos.py",
+      "size": 4648,
+      "sha256": "2ba4a5f653f13c4f21b86134b6e9c6f4c5c31586f326ce477389f32a3f1fb7cf"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/DeprecatedNodeIndexAndKernelDefHash.py",
+      "size": 2526,
+      "sha256": "2ebddcb357bcd0cd732db6758412b00ec4a5e9df33c6391b21f020ba24e4264a"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/DeprecatedSessionState.py",
+      "size": 3678,
+      "sha256": "37908def6c0939b0a660671b039cfda37bb592163127d6d54886852090834771"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/DeprecatedSubGraphSessionState.py",
+      "size": 2682,
+      "sha256": "0118c528f257fe9076293ad25021f3fe237f526ac1df14432ad51b21ea535fe4"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Dimension.py",
+      "size": 2262,
+      "sha256": "54741c095e62a74048866d4416db005c0fae329f2daa5bb505f8893f62d9b907"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/DimensionValue.py",
+      "size": 2574,
+      "sha256": "d785b581e423e7f57fe548aa82b1b6a05183802900212e5def5c5e999c263bf6"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/DimensionValueType.py",
+      "size": 174,
+      "sha256": "da49ae3de3d97bfad648c908edc78885ec072f7c2fbec0c48731fe2c1bac9b43"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/EdgeEnd.py",
+      "size": 1137,
+      "sha256": "68d758d5203c7c3caf1f556caa8e7192556e846b70dac526cb2f3a1e6b5611b9"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/FloatProperty.py",
+      "size": 2075,
+      "sha256": "aaaa51a5fcbd417b3b5878475004548efe6aff3b3cc224f6fa23a3283f6fe0d4"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Graph.py",
+      "size": 11039,
+      "sha256": "63f0278ecb20ac9ee8e28535c3e286fab3a5f0413c62e127bc35aeeeb18de7b1"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/InferenceSession.py",
+      "size": 3125,
+      "sha256": "d0581b3b25df5a270ab211b5df51b31ea3d3149be8568ac1c5354fd7133a64d5"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/IntProperty.py",
+      "size": 2037,
+      "sha256": "1235a2a3ec85c1f904fcdefae1b613683473d041d26759f425e3e42d23468ad9"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/KernelTypeStrArgsEntry.py",
+      "size": 3193,
+      "sha256": "94acba54c123be48afe4118e8ee816119b65a1b34cc2f95f7124526338c28809"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/KernelTypeStrResolver.py",
+      "size": 2867,
+      "sha256": "72e7c4b39b9310d105e9bbd941e9b30f3b5b12b36dbc3bb33290e80a7481a629"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/MapType.py",
+      "size": 2194,
+      "sha256": "c250bbea72fc742d2f759565128502f6ac206d50f09d2b7944244ee6bfd67e68"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Model.py",
+      "size": 7663,
+      "sha256": "08f6dedaad8e70a53c2db4a11c6b67206fe3ad6f377f79ef311e53ae0d4dc7dd"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/ModuleState.py",
+      "size": 4994,
+      "sha256": "ac631a80106ac8235b7b023ec54ca0c4dd3b9bb7cb0d0987d845884a615deecb"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Node.py",
+      "size": 10718,
+      "sha256": "2233386231aafecc074e22f0d35c6c49698061a66691565447771e8b76f263af"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/NodeEdge.py",
+      "size": 4183,
+      "sha256": "2e207dbf2413b0591f4514ee883730ad17d5696ad1cc000b3f9468a74aed18a8"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/NodeType.py",
+      "size": 151,
+      "sha256": "6c12dbbc35b388b2d1c618c202a952e3893f85d2166d6937bec47108338bcfb9"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/NodesToOptimizeIndices.py",
+      "size": 6144,
+      "sha256": "2a85a60028119caf2a18dc9788aa3a372c14bf3a6f618c464340326b28f26854"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/OpIdKernelTypeStrArgsEntry.py",
+      "size": 3387,
+      "sha256": "e965763e3def92a276359d7d556acf0312ada0609e889e8d4d53afb3cf41210e"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/OperatorSetId.py",
+      "size": 2099,
+      "sha256": "50e894f820af7b163738e5a4da1899c81234388b5c03a8e2653b04443671bb65"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/OptimizerGroup.py",
+      "size": 4135,
+      "sha256": "5eb8b93854d0f3cd5fcda55d4198d5be22f2139bc7d9a146180ad01391f565b5"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/ParameterOptimizerState.py",
+      "size": 3218,
+      "sha256": "00811a091704967e700bb5f70bcbe9ed39a6a71b9a1fbb7ddd40a98716f14490"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/PropertyBag.py",
+      "size": 5099,
+      "sha256": "417b34eb840dba0f291bdce35fd69610f98eeb708858970bfa430b80c3e4eef2"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/RuntimeOptimizationRecord.py",
+      "size": 4067,
+      "sha256": "2eb979942cdb50bdf6dd8d679e28feeef9fde5ddea34792254fc246e0e9249db"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/RuntimeOptimizationRecordContainerEntry.py",
+      "size": 3832,
+      "sha256": "3cceff47491b9c5dcadf6aa82ce20f5e67ae7507e3d29bda6cc40b07e163444c"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/RuntimeOptimizations.py",
+      "size": 2800,
+      "sha256": "a98902eb9c0caaeec58a75b65fda4f4de443e1b63bc5d22c39f5e7209a050c55"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/SequenceType.py",
+      "size": 1829,
+      "sha256": "8a230ecf28f35f38cedf3a1a77fa06dbe72defce96bfcbb82d6a053997667340"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Shape.py",
+      "size": 2352,
+      "sha256": "e18eb2537e491d25cacdbd810f339b92cb38ca2a29c12dc85e4481a457fcf052"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/SparseTensor.py",
+      "size": 3806,
+      "sha256": "dc465a8739723bfef758eccaf63647c2856ab1092adf8d3b01304e1b9e8a2c41"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/StringProperty.py",
+      "size": 2110,
+      "sha256": "65de5009c4a0bdfe688ee381455d7d806c903e1aa3264a0168c759d3a90e73b7"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/StringStringEntry.py",
+      "size": 2147,
+      "sha256": "22287bc51ab8cefbb8715578fd3002e2c6e3687f9d2ea64653af17d282da5a82"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/Tensor.py",
+      "size": 6802,
+      "sha256": "09922dc5b43e07d7099da4b91f004d593d5bb9ab7f2605fe5becce9fd9b5d5ae"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/TensorDataType.py",
+      "size": 500,
+      "sha256": "5a66e533c1a82c44bad8bd7611addd0bae79febb8ed93dd1d90d3ce4e2c215cf"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/TensorTypeAndShape.py",
+      "size": 2326,
+      "sha256": "9e852663525d90ef818e1821cae7af7fb732d06a24867874aff01c988b757e5e"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/TypeInfo.py",
+      "size": 2599,
+      "sha256": "4e81586731f4562b79555233b6875fccff9f08e73deef8011d7cfa63fb47c969"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/TypeInfoValue.py",
+      "size": 198,
+      "sha256": "6b654ace0711eafe2a89f7dae5ae4760d51a1ca0cb766b056c076c370ae64f94"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/ValueInfo.py",
+      "size": 2655,
+      "sha256": "642ea97a2a98458298c3fb22e019ad6546d144b7fd064903e336b8c64cb74076"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_flatbuffers_py/fbs/__init__.py",
+      "size": 251,
+      "sha256": "11f908aeb79417a4eb718a41a35349f06395fe9fe8fd85e0ddf4a9b413795d4a"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/ort_model_processor.py",
+      "size": 4472,
+      "sha256": "661d3b46670661fd3ea9b5d18a29b60d65061dbb2b11e1bafeb39cc7754b7b1c"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/types.py",
+      "size": 4468,
+      "sha256": "f2bdfc63b8216869faff89ae1164a97831e4637aec230001efab79603f2e3059"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/ort_format_model/utils.py",
+      "size": 2595,
+      "sha256": "ad444205df7fdb5e1271563d7641c5df159b9a1de10066de0cf1d725594c9a69"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/pytorch_export_contrib_ops.py",
+      "size": 5351,
+      "sha256": "68471ae0b5286875e6645538a21e91a29ca3defcc0c91a4ff61543f1ff7df553"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/pytorch_export_helpers.py",
+      "size": 6009,
+      "sha256": "7096488a2d16d18c3d591e481892bf2e2ce8afe800913ec902d91a501839ff7f"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/qdq_helpers/__init__.py",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/qdq_helpers/optimize_qdq_model.py",
+      "size": 1279,
+      "sha256": "f64a54d03ba47346441e78f03bb36a345505551b4ec7cc6014f5566695e411c4"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/qnn/add_trans_cast.py",
+      "size": 13748,
+      "sha256": "d0d634a88ddbffc2c6949717399cdfb07c99e3c1922b2c744ce12b55d0e5e8ff"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/qnn/gen_qnn_ctx_onnx_model.py",
+      "size": 16562,
+      "sha256": "983ba60e9ffccc28628c48ad09c7d8ee45b1af9b81a82d9ebca425555e0ffdcb"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/qnn/preprocess.py",
+      "size": 7440,
+      "sha256": "b9b0005f3b4d412555041c906b35d6291b7ed71ce6ab711601bd6b44792075b8"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/reduced_build_config_parser.py",
+      "size": 10161,
+      "sha256": "17d6cde7fca2e55ee72d0512dafb1fa3b81b601d5c66748042251364e76fa8cf"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/remove_initializer_from_input.py",
+      "size": 1031,
+      "sha256": "0b5bc365905e93e4cae92575aba7bfee4aa4c90cd2f22a8713c1b36607a18621"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/symbolic_shape_infer.py",
+      "size": 148547,
+      "sha256": "0c9e5d57104c5b959e0f3f1d8d8667f11e505e71737ffbb059c2a02b17a1807a"
+    },
+    {
+      "path": "_internal/onnxruntime/tools/update_onnx_opset.py",
+      "size": 1182,
+      "sha256": "7e995bd72a55fa9161bbc5ec8b9bbf6c37c8ec4b02e336a62644f389c7204367"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/__init__.py",
+      "size": 321,
+      "sha256": "d9cdb5dc2ab35eb73437a0aa7fffd37b977f487fecb5f2dd35d78daee801ed24"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/affinity_helper.py",
+      "size": 1442,
+      "sha256": "28e281bf3a01afec0e9344073062b3635bb2d6223b13a787a58c017531ccf98e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/benchmark.py",
+      "size": 33525,
+      "sha256": "351c3d7964922e61a579f522ca81f591e95b76a6f2bb2189804a28bffc6ffe75"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/benchmark_helper.py",
+      "size": 22997,
+      "sha256": "457c3703bbf8d5e9ec3c6237d40be862e4c00f92141dfc504304883f4e6a6b4c"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/bert_perf_test.py",
+      "size": 20792,
+      "sha256": "17c0108e019452b98dd25a0c2e24e0b2d33e334f1ab9fa0f238fae609918b587"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/bert_test_data.py",
+      "size": 23446,
+      "sha256": "f00147753b6c2aa68e011c11997850579f5f0706ada21a45787552780367e246"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/compare_bert_results.py",
+      "size": 8448,
+      "sha256": "5b318220653080e5b3c5eb1a58a1a28b45f2dc97dc63c2c592bf2a71e451daf8"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/constants.py",
+      "size": 1127,
+      "sha256": "1c199b7da44bacb09e9f5ab40bdb596090299f63413d7da9da1d3985ce434ec1"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/convert_generation.py",
+      "size": 145093,
+      "sha256": "3f5017dbadcb3d3d9c73462c16e1c2a9798d6305a11fa1b2c161e70aa5100c9a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/convert_tf_models_to_pytorch.py",
+      "size": 9244,
+      "sha256": "481280b78f94f1e6a2e4dfb71cacf80eedb1649e8ff3b64fe1001b53d2528355"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/convert_to_packing_mode.py",
+      "size": 16804,
+      "sha256": "f6fe159ad395ebe593e05ae021020b4a5bb6849245c0d5d28928f55b99dbe848"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/dynamo_onnx_helper.py",
+      "size": 7802,
+      "sha256": "f3caf4e0b733f3cb5933dc451a475bc8cc9ce6d2160f5568c98975f34b20c170"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/float16.py",
+      "size": 25190,
+      "sha256": "006a0d0a5c4592d18abd83ff9aa71bb8e63c76e2b335a33a63c3e998ac905dfb"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_attention.py",
+      "size": 52125,
+      "sha256": "d4c237f4a261eb5ab41acee46aa1de7fea973ee0c1c329729dee44da941f2766"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_attention_clip.py",
+      "size": 14096,
+      "sha256": "6b788ee194d8a0237c6e93a66cb8104af754a75ccab0bf94fe87ec3daf6fe289"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_attention_sam2.py",
+      "size": 21307,
+      "sha256": "b394cd22be618bc522a2b95f0331009492947dc9fa5a112fc390841b56c7dcf8"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_attention_unet.py",
+      "size": 56955,
+      "sha256": "080422913a6fcf829b089531f63a27673832df497fc3dba5ea15b544d9d752dc"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_attention_vae.py",
+      "size": 12379,
+      "sha256": "d49c18f839ec9e043299708885bfe1baedd2cef81772e28391f0bb76e4a57e06"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_bart_attention.py",
+      "size": 23926,
+      "sha256": "9117f8bac59059b4f0d7622d10e85859677ec04f46f402057ea0aaf623d7f1ff"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_base.py",
+      "size": 5966,
+      "sha256": "00ff160d74873db72ab06cd1391ca21cebcf0d8ca898c0d7942fa8505577e324"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_bias_add.py",
+      "size": 2041,
+      "sha256": "60e39949fba2dcd395d0651c3499914b3fa1a193a34274629a37c064f34e4f33"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_biasgelu.py",
+      "size": 2300,
+      "sha256": "bc66a6c6d84ebba8d7b3109155d4c568fdb9fbfb678f3f5356af75a48455fc8b"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_biassplitgelu.py",
+      "size": 4491,
+      "sha256": "a8dfd8163c13f2398151a0e86d3f5e191643093eaf4a56c9bc3d194ad80d149b"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_conformer_attention.py",
+      "size": 12002,
+      "sha256": "34aa36dc9782ace70963f77cf2331f1556a06b123bf78f798e2f75bf749246a3"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_constant_fold.py",
+      "size": 6014,
+      "sha256": "aa4b61c9809995297544cbdf9dc08299f903cc2b19e2d94e13d91fd7ea8434e0"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_embedlayer.py",
+      "size": 36674,
+      "sha256": "4714366614fde9dda0efe9bd41c4408f8983eb70e7dacd59cf6279f40ca42a9f"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_fastgelu.py",
+      "size": 18181,
+      "sha256": "470bca20124644c9363281fd8fa1ed15f401c87fc7c3a7869a3797f5db71fcb8"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_gelu.py",
+      "size": 10451,
+      "sha256": "4bd2626b4f08de35f069f6e8ef7c6ba8f3824fbacd1c29e90128d92c75a245c5"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_gelu_approximation.py",
+      "size": 1029,
+      "sha256": "5ec6b6bf99878c4b99af09dfd5b9b7502089f08d62b34766bb3cd781fe730e5e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_gemmfastgelu.py",
+      "size": 4208,
+      "sha256": "89174aea35fe2e5508046c6319abc9b192a02eb8fe84f057a4bbc0d77508a11e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_gpt_attention.py",
+      "size": 22508,
+      "sha256": "db4661a65900549debab5556c1c351991b3a399bbb9531ca228a77480c83494c"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_gpt_attention_megatron.py",
+      "size": 13639,
+      "sha256": "1e1a3079307195e6f59e23ce53f71f433bd4c0ce0b8f1095b99656544cb7226c"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_gpt_attention_no_past.py",
+      "size": 10830,
+      "sha256": "67f304755be0b4be42450c6042544d4ed112f2f5deca910425580c75e7a07f9f"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_group_norm.py",
+      "size": 7645,
+      "sha256": "3418a53ff4ce663961b944bcd4410464c0cd0f344fbe37bfaf8fd54f1f58949e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_layernorm.py",
+      "size": 20845,
+      "sha256": "a966f9669ee2b405c5c86787e32051aff5d2bcc66dd624ee9018bfbb359645e5"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_mha_dit.py",
+      "size": 24663,
+      "sha256": "f69cbc3b85f8cb72962682a8bb5c95e7fa6360a5f6dee5bf3d03ef7a2ee4851d"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_mha_mmdit.py",
+      "size": 25816,
+      "sha256": "97a28386b2a3d3ef50fadee1098716c73ce4514b8fbba1c550f68f259fc6c13e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_nhwc_conv.py",
+      "size": 3948,
+      "sha256": "49ee5e98f9ed5fb840d2adb4ca4970bb9452ca7ffa0ffbe9507328e19e54e471"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_options.py",
+      "size": 12726,
+      "sha256": "492424e033f827b16d1fbba1c2a9adc48d3be0665dddf74f883b7f6ffd146927"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_qordered_attention.py",
+      "size": 17137,
+      "sha256": "b35050f0ea256a1ae0c5a4ab8959a58b602a4e69ff7cd4191f62b15351e19913"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_qordered_gelu.py",
+      "size": 4410,
+      "sha256": "e27b8d2745bd983287f54c37b6e10e73c3bf95dda244b03ef2dd0251a3f1ec81"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_qordered_layernorm.py",
+      "size": 4932,
+      "sha256": "873595cf129594bfdf61de0dbfec6539bf406124231d8fe3dc7ce416ffa9fd72"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_qordered_matmul.py",
+      "size": 8541,
+      "sha256": "e668dd10f4dbf1a4ff6a301916a1329cce9f5d68c99a0e22069cf732b47e6b26"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_quickgelu.py",
+      "size": 2869,
+      "sha256": "7bb30cabd1b66a2228b68c6791dd1aefe5e6bf263ec18c9e7dd4e65ed04efdff"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_reshape.py",
+      "size": 6403,
+      "sha256": "01f4fcf2fdb61ba3e064fcd528cdfdfd076e5279486def1d6f1bcf0a1fb97648"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_rotary_attention.py",
+      "size": 79638,
+      "sha256": "a61bf811c90c8d1b9c8c9cfe39b3c6511a4843d5c4515b76a06929019ffda6a8"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_shape.py",
+      "size": 3763,
+      "sha256": "49bc030a4b9c2eddd4fa409dc4411a24025ae27591b4a754f35a87618732b5f9"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_simplified_layernorm.py",
+      "size": 7831,
+      "sha256": "468bcbf0ed275533194d682f5d0faf7f31ffd64f5f77484363bd28280bb42f2e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_skip_group_norm.py",
+      "size": 10855,
+      "sha256": "fdd2bf168b62b079dce2cd33bb203360d8c70739e1ff4886587b920fa0601b3a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_skiplayernorm.py",
+      "size": 11075,
+      "sha256": "0fc55c958525b88cc4808ba3e791c9e8f0fb3c1a3407864f9b51d1e4c92fc178"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_transpose.py",
+      "size": 7004,
+      "sha256": "3a4712fb4ddf42e21abbc326497c6e5f250866a95fa7bc58904fc3caecce9de3"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/fusion_utils.py",
+      "size": 13324,
+      "sha256": "0a8cd483a03075ef4478918970e7a63a94a4808a4f852394a35ccee30e687dff"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/huggingface_models.py",
+      "size": 4005,
+      "sha256": "f57d3c01de7bc66f8688f701e987074494f5d10044f8398650bdf6c643f73885"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/import_utils.py",
+      "size": 651,
+      "sha256": "fc82ec71045c4b26891edd65ea3a9c9f2e455b2ed0afa37fee12ace5a6aff283"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/io_binding_helper.py",
+      "size": 21845,
+      "sha256": "12a2dd838fdbef8ead398f01ee8f2ec5754e91b12cc042a122815d70aac8f5cb"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/large_model_exporter.py",
+      "size": 15323,
+      "sha256": "db43980613a13478c68878ac34b2475adcfb56596fb9d84ed11f35d860127130"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/machine_info.py",
+      "size": 7581,
+      "sha256": "b2ec6999f53eef207d5158e2fe1ba6da791cec000b6678af50a9208f5f1a8e0b"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/metrics.py",
+      "size": 5223,
+      "sha256": "0c48e80d01807f662afc1033ebac77c342999b5421bc6e1910d93cac8202d944"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/bart/__init__.py",
+      "size": 495,
+      "sha256": "17c1a697b803ee398cc8c2242af1e25cb7e3ee45b2cf5ef95f5fb9fe2685c799"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/bart/export.py",
+      "size": 4285,
+      "sha256": "3cd96191bbebc53c5248b5e9ceaa1ad362de92dcdff2b759a5c545071c3ea9c2"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/bert/__init__.py",
+      "size": 495,
+      "sha256": "17c1a697b803ee398cc8c2242af1e25cb7e3ee45b2cf5ef95f5fb9fe2685c799"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/bert/eval_squad.py",
+      "size": 12355,
+      "sha256": "21ffd1b1724752dd0eefcf852e77db4b80d779c7228609bb1c57610bc37318c0"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/gpt2/__init__.py",
+      "size": 495,
+      "sha256": "17c1a697b803ee398cc8c2242af1e25cb7e3ee45b2cf5ef95f5fb9fe2685c799"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/gpt2/benchmark_gpt2.py",
+      "size": 15930,
+      "sha256": "e7792b60735e24193c662c56a16ad91f109b7bdcf86c3622196d36b73c51fbcf"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/gpt2/convert_to_onnx.py",
+      "size": 20837,
+      "sha256": "e54c0245c0235b630afbcd4cd62817302a5d94e289f1e03488de6649a6390b91"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/gpt2/gpt2_helper.py",
+      "size": 41331,
+      "sha256": "844b5b8af29a1ffbc93982d78c5472cda113726e99084feb5ed5d8a923ada878"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/gpt2/gpt2_parity.py",
+      "size": 18248,
+      "sha256": "03deb72682b5cd06fa5201543a9d6cb6baa3a09fe5650da9beb14b6b452320c0"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/gpt2/gpt2_tester.py",
+      "size": 20071,
+      "sha256": "26a40a26f39f1ca70d727c2d0c8a7f93df181ee4fd0529957f3dad87c20863e7"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/gpt2/parity_check_helper.py",
+      "size": 5840,
+      "sha256": "c79e249ce3b82e0cd6be57b73771ee5b24534cd86171a9f031ad7602b79d0d3a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/__init__.py",
+      "size": 490,
+      "sha256": "c91d85b9c370fa3b7fdc26cdb7ecee33b0e695d3ead6b24add257c811212ccdd"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/benchmark.py",
+      "size": 27294,
+      "sha256": "7ee87da0a44a95dc7367b71c9e56fce01ea0f4d579db40a2311e99d319ec7e53"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/benchmark_all.py",
+      "size": 15793,
+      "sha256": "c2267a2e16ce9adfef355bb381c2d16973c1b9d3e8c9d2fd5d46c68b84f24e9c"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/benchmark_e2e.py",
+      "size": 25477,
+      "sha256": "ef8d5b57c652a80d0298fe6ab8bde032e217629de1c01a2284faeca8f108d8fa"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/convert_to_onnx.py",
+      "size": 43358,
+      "sha256": "af9e40eeb6005968819017c572d80be8ddebcbe109c960d5ea25a5c07b536426"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/dist_settings.py",
+      "size": 1659,
+      "sha256": "b3045ae5cdba1669cf265a1346a10b9cad0ead8984d6623f46b33dc9ffd0e61a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/llama_inputs.py",
+      "size": 20726,
+      "sha256": "c7bbf17c800c034426315b630d53523a803c9eb2afdb66d39d13507d2c8ad586"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/llama_parity.py",
+      "size": 11900,
+      "sha256": "315883916d93fcb9fcc8b4daad92dbb594e31349a555382905c95b98aa3fc9fb"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/llama_torch.py",
+      "size": 1732,
+      "sha256": "3886d2a60edb8df3cdf52cf219f6812a6cec6be6c61d04f1d17f9eb62125d199"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/llama/quant_kv_dataloader.py",
+      "size": 4959,
+      "sha256": "a625657691a6f5e066178c33826289a6b86e8ea4cf75da8e4716722e2cdc25d0"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/longformer/__init__.py",
+      "size": 495,
+      "sha256": "17c1a697b803ee398cc8c2242af1e25cb7e3ee45b2cf5ef95f5fb9fe2685c799"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/longformer/benchmark_longformer.py",
+      "size": 30230,
+      "sha256": "1ba2252097c80db9575b688122500b69ffcb7fd990bc0c6f13f4cd5e5770983f"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/longformer/convert_to_onnx.py",
+      "size": 15207,
+      "sha256": "499c0bb11858a4fedd8b6f3df74dd1efaf1e48ad334599519e24961000a65fff"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/longformer/generate_test_data.py",
+      "size": 9964,
+      "sha256": "c10c69828fef64184a465aae270501f451f7ff1c6fc830b7682099764bc00cb3"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/longformer/longformer_helper.py",
+      "size": 3123,
+      "sha256": "9f772b1189d5619c4dce8c9334ccd7dcb160c471fe15c6aab5d7d19b200c83ee"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/phi2/__init__.py",
+      "size": 490,
+      "sha256": "c91d85b9c370fa3b7fdc26cdb7ecee33b0e695d3ead6b24add257c811212ccdd"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/phi2/convert_to_onnx.py",
+      "size": 20998,
+      "sha256": "9dfb000d057d4fa77608c69298ecc65c5c43b6aacba97935f751626f11813249"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/phi2/inference_example.py",
+      "size": 17705,
+      "sha256": "e10ed58cd182beb8c86c2d5497c5bc4919dd6a2238d9c190d4be223b4bccc258"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/__init__.py",
+      "size": 495,
+      "sha256": "17c1a697b803ee398cc8c2242af1e25cb7e3ee45b2cf5ef95f5fb9fe2685c799"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/benchmark_sam2.py",
+      "size": 22468,
+      "sha256": "d8006cd2fcf50796cdd0469151432cb6f99ecf8863b75e6d78b2b73dda8409c8"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/convert_to_onnx.py",
+      "size": 10669,
+      "sha256": "835cb6a3aefd26d8d3124087267debf904afa2c2012814de533ea61931dcb672"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/image_decoder.py",
+      "size": 11093,
+      "sha256": "5c2c428085d228b2af3b80905c6bb212ea177839fdcb1cbc46799f42000b3967"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/image_encoder.py",
+      "size": 9788,
+      "sha256": "004161da976ac2626474a56ca309acd156bcc3cfa22a1b119391eee5e6a35b24"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/mask_decoder.py",
+      "size": 9066,
+      "sha256": "4309d98235b016c2dda0d9a7afb386f0a824e65ae965f1ce7851a0e4b2d7406d"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/nvtx_helper.py",
+      "size": 1312,
+      "sha256": "5c916e8c36fea76ef3089b3e3be66370a1007ad73975cd24785bec21880543a1"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/prompt_encoder.py",
+      "size": 8530,
+      "sha256": "4933c6e8f359e68566b8d75f796b87931c51d9c3a2c173789582a7be6de9c8d0"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/sam2_demo.py",
+      "size": 10822,
+      "sha256": "487e76d921133be4477aa1f6126f38f134ea7b68815d7620a7988373ec4f03ed"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/sam2_image_onnx_predictor.py",
+      "size": 12702,
+      "sha256": "6c1f9fedb8bb3526f45d578003a277bfd8e430c2431dd1e64b93dd5f550ed275"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/sam2/sam2_utils.py",
+      "size": 5667,
+      "sha256": "80dcea7ccc1d9886e4582bd1aca789d6e629cfd7ea171ac634643d8a433145f7"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/__init__.py",
+      "size": 495,
+      "sha256": "17c1a697b803ee398cc8c2242af1e25cb7e3ee45b2cf5ef95f5fb9fe2685c799"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/benchmark.py",
+      "size": 51085,
+      "sha256": "e4e958d566b813a3f8e980bd327d5a56ec027407852776ddb5f9ae2baf07af3e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/benchmark_controlnet.py",
+      "size": 13355,
+      "sha256": "85dd7209ab0fc7172eee0f4ed8183e0915b822c3ccf8f13c05b3737b64ddb56d"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/demo_txt2img.py",
+      "size": 3415,
+      "sha256": "98d8145ded936ba68d2b86fe8689bed19a3b78c2399570a5cb0f9d332008c6f3"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/demo_txt2img_xl.py",
+      "size": 10217,
+      "sha256": "d8d1fcc9235af611c75f46680183bc8125142218bfc0732c4c1f7e34b3e52c2f"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/demo_utils.py",
+      "size": 29376,
+      "sha256": "9f3e50cd71f2d762795684afb7e94ac4bb7873f5457f9f0ad0e2378688993f50"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/diffusion_models.py",
+      "size": 51716,
+      "sha256": "4b00048f0ea6234f2a371a6be9ff317de83f4eb85a7d478b9924a47de3d6b94b"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/diffusion_schedulers.py",
+      "size": 49468,
+      "sha256": "a21004b89354ffeae0cfdc30cfba5173bb4923540939ce738c9624bee8768cab"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/engine_builder.py",
+      "size": 11965,
+      "sha256": "6057baff40c8f7baa17dd964ca58aa5c2067a1b5ab4d559f265dae2fe1da017b"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/engine_builder_ort_cuda.py",
+      "size": 16241,
+      "sha256": "b7d723cafeb5ecca50b7f4bb72b9eca401dbc34593f117f794255191e2f0b95a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/engine_builder_ort_trt.py",
+      "size": 11451,
+      "sha256": "d0cf892d3dd9d7360f115909d133c266e85b2050acb5b062e5687adb754b730c"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/engine_builder_tensorrt.py",
+      "size": 16016,
+      "sha256": "f95085660793db7de3591d41f26cd2256129a0f3946c73564e759531799fd24e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/engine_builder_torch.py",
+      "size": 4306,
+      "sha256": "23fbe234dbf5e8c10c9250bac950722daddf20ac1da768922eac0209f9502b73"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/optimize_pipeline.py",
+      "size": 22238,
+      "sha256": "dcad854ed33700ab2c850f8941235522423a8b47dbcaefdba1ba0f13d904bc8d"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/ort_optimizer.py",
+      "size": 5853,
+      "sha256": "625f2c910a1761ba2e870e6d8b6cc239f6cc2db4a6de25e7880e462e643d037b"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/pipeline_stable_diffusion.py",
+      "size": 34029,
+      "sha256": "1035371e7be8e275f7bb8551c70e6ec874190b9f6ef91897ac8c4c87318fbcf8"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/stable_diffusion/trt_utilities.py",
+      "size": 432,
+      "sha256": "5d909fa86fe467bd9ef8bf69ecf946a9ce0d2ef159175878d00e86bb28facfc9"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/t5/__init__.py",
+      "size": 495,
+      "sha256": "17c1a697b803ee398cc8c2242af1e25cb7e3ee45b2cf5ef95f5fb9fe2685c799"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/t5/convert_to_onnx.py",
+      "size": 10510,
+      "sha256": "ef4b5834e19fc741e020780c75b4532dbb0996142411b5b8876c59bde4af35e1"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/t5/t5_decoder.py",
+      "size": 17188,
+      "sha256": "1a65137816af857d937c88d921f30db8c30bff7fba051a9eb5411702f3b114fa"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/t5/t5_encoder.py",
+      "size": 2319,
+      "sha256": "c528f2f409ac70c772083cd29febf9f715ea4badf8940b35126b0952c05a0741"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/t5/t5_encoder_decoder_init.py",
+      "size": 15421,
+      "sha256": "85fee8cc5be05d213f147d7ba7cf0c4b47e93c16e796c5187ca8277029269ef5"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/t5/t5_helper.py",
+      "size": 12941,
+      "sha256": "bc1914b46b062c5f01cac0c26de92dca9e0fcb661287d4fba02f3543319fdf2d"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/__init__.py",
+      "size": 490,
+      "sha256": "c91d85b9c370fa3b7fdc26cdb7ecee33b0e695d3ead6b24add257c811212ccdd"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/benchmark.py",
+      "size": 22447,
+      "sha256": "a5bf923c54146f20c1e9aa52b5601156076ee32fcff76f8a69b60f80b78591af"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/benchmark_all.py",
+      "size": 19368,
+      "sha256": "ccbcc1f38fdcc880c9491f9dc990978c9dea1afbe92b1f7b2e89e876f6e867bb"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/convert_to_onnx.py",
+      "size": 26611,
+      "sha256": "574ef30664fdfe29b72693e07407c6389130c7b79c9c9a16a16f259a9acb407f"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/whisper_chain.py",
+      "size": 15238,
+      "sha256": "085f54a06596987c258df68b923f33cabc6b8d5ca660cbc6603349edd14b21b2"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/whisper_decoder.py",
+      "size": 21893,
+      "sha256": "72fd5744228763c9e7c56f798398bcd1988051d94bfcff511924efc8ea6f69dc"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/whisper_encoder.py",
+      "size": 6373,
+      "sha256": "3d62a40c9f937516195be7099294526d4ef967904dd42788df55a9bd8809b463"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/whisper_encoder_decoder_init.py",
+      "size": 16833,
+      "sha256": "026a5873097da6dfdddd4062d3718e29bccb7e245e57edacbc78fb578e6909f6"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/whisper_helper.py",
+      "size": 51589,
+      "sha256": "323a94d83e1626fab1ec88cc83cb99401c21c6a3291d96e53ff825733b6bf0c1"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/whisper_inputs.py",
+      "size": 16041,
+      "sha256": "ad28c527d2e5cf6166a515c3cfc70ad8a173af66f997e9f87a8f15378eb78941"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/models/whisper/whisper_jump_times.py",
+      "size": 20039,
+      "sha256": "8821f897b7f78ec40927c7b955c608b8cf33c034e30f8e31b1015a8da7f2af88"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_exporter.py",
+      "size": 25340,
+      "sha256": "8c5145ab48060ed0ed2e08b4ce80d9b88511ddb6bfafa27e6b66fb220a110274"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model.py",
+      "size": 70237,
+      "sha256": "094e205567b47d328bb40045c227bf8e61de3ade8d6b869c8e39a784bc549dd1"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_bart.py",
+      "size": 5547,
+      "sha256": "c8b3d15bee18b99fc7ffac4de47e211365abd5b629ec49b866b3ff4f4842db4b"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_bert.py",
+      "size": 21937,
+      "sha256": "7ceb5ed7e6d64acd4dd4aea714a636fc42f30819389d6a746e493ad9f3e365c5"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_bert_keras.py",
+      "size": 19010,
+      "sha256": "88096740924264c181531e5f2c4adcec522757305ccf5e2771cf9100edecbea5"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_bert_tf.py",
+      "size": 25503,
+      "sha256": "11baba2de532c48cc4f3f2c6ff1bda3d1c6d448943da04ed54a139532786a11a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_clip.py",
+      "size": 1394,
+      "sha256": "4720598789cebd5ed33ff6ff48dfe748d80ae67a1586dc0e1db2a18930a27ddb"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_conformer.py",
+      "size": 1412,
+      "sha256": "94fe2bfa289dec99750003867593394bf30243ffe846af8a4e26c670ce86ae2e"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_gpt2.py",
+      "size": 3913,
+      "sha256": "dcb9b3807b8bbcee6dc8d1ca58689db6dcaaadca4813b68b0586d1ab38e89548"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_mmdit.py",
+      "size": 4578,
+      "sha256": "6da5415207b280013dda7a39e9ba662ec61ea63e8bc76e5005aa5423431ae41f"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_phi.py",
+      "size": 36339,
+      "sha256": "942856f8d1e4979616461c32302a703180d27d715d626231e39e920774d06ca4"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_sam2.py",
+      "size": 4981,
+      "sha256": "de6a238f57463dac3c81bf23240050cf0f6b2c70f520176954433e87e4e9b7a5"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_t5.py",
+      "size": 38056,
+      "sha256": "f9c97688e00b5cd31f7ffcc5b22f5e0a2c0824a5871439a35677d0f1c2104f1a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_tnlr.py",
+      "size": 8405,
+      "sha256": "e8c9449fdc91945de3556d7377d342474ab19cf8086b674485aca5bdb7fc742a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_unet.py",
+      "size": 9513,
+      "sha256": "3ac42a522dc093978c2b6c36fa3dbde28f5bc1c847d331f48188261195212d14"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_model_vae.py",
+      "size": 1513,
+      "sha256": "253a7772d7e01d1ed81119fd70d6295c1e1933cd97dc2813607b55760ac9ab16"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/onnx_utils.py",
+      "size": 2175,
+      "sha256": "18690ed1e6eca0fbd538f35f7980b4b4df4325688168b5d7ce342106b017bcd1"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/optimizer.py",
+      "size": 25784,
+      "sha256": "c12a594703333fdcd573df9beff6cf37b5618c1e871eaa74510624b7606acb33"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/past_helper.py",
+      "size": 6955,
+      "sha256": "b8346296780f033590f9908d88e8af07fa9052ba0e49266ee80d84660ea6bb4a"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/profile_result_processor.py",
+      "size": 12940,
+      "sha256": "7d9496576a77416906d9c82a7c4b75742f6b8259d8f1482f8825ace96e1a81e9"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/profiler.py",
+      "size": 13736,
+      "sha256": "7e9e360c7201bb855930325355c9449bcdd3121f873703d01b3d3f02fb4b3668"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/quantize_helper.py",
+      "size": 3011,
+      "sha256": "de55b623958ac8bbe547f8c7a19e3d48c5fc72eeb24b7370164076c76ad40839"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/shape_infer_helper.py",
+      "size": 5418,
+      "sha256": "9fb116d5d34fa28820ea942ad6a57ca2f9d6425fc3a993e65ebbcdb0ced05d44"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/shape_optimizer.py",
+      "size": 15468,
+      "sha256": "31c6e0b4bb266f78f40151d69d58a092d0e0c4c92d13451701dc9e9a0dcd3635"
+    },
+    {
+      "path": "_internal/onnxruntime/transformers/torch_onnx_export_helper.py",
+      "size": 3083,
+      "sha256": "b77a639be84b4ffc68fa7810e3f7bbf441b87644e02caa8f44ba5a61ec096ab4"
+    },
+    {
+      "path": "_internal/pyclipper/_pyclipper.cp312-win_amd64.pyd",
+      "size": 222720,
+      "sha256": "19123cdf15a7cfc6611f69bd13214c817a15d995cedc4f3d4bc777eb39348baa"
+    },
+    {
+      "path": "_internal/pyexpat.pyd",
+      "size": 226096,
+      "sha256": "509ca60f50b88275300392d49c47e345f713a29eb6b501ba8805bcd4914b437c"
+    },
+    {
+      "path": "_internal/python3.dll",
+      "size": 71984,
+      "sha256": "d59b99938eb86479c9defa3e8c42f1bd54f8ebe94b99dd086a4fa34089c9ed07"
+    },
+    {
+      "path": "_internal/python312.dll",
+      "size": 6985520,
+      "sha256": "b354a5caed2b89f811c5a7a1262aca49f7132d9d9c631607280d50f1036838fe"
+    },
+    {
+      "path": "_internal/rapidocr-3.9.2.dist-info/INSTALLER",
+      "size": 4,
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+    },
+    {
+      "path": "_internal/rapidocr-3.9.2.dist-info/METADATA",
+      "size": 1143,
+      "sha256": "39bcad37352500bddff188407efff244c0ddbefb348d1a097b0731a6cbf476a8"
+    },
+    {
+      "path": "_internal/rapidocr-3.9.2.dist-info/RECORD",
+      "size": 16382,
+      "sha256": "d08441d54f4ce422a50fe6f04ed6ef075b75af49816cbfc06b321523a51dd4d2"
+    },
+    {
+      "path": "_internal/rapidocr-3.9.2.dist-info/REQUESTED",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/rapidocr-3.9.2.dist-info/WHEEL",
+      "size": 91,
+      "sha256": "2b6eb4118ce7cd7b09601406aa623c553c4476265836f0d9c16f5c061f7efcc0"
+    },
+    {
+      "path": "_internal/rapidocr-3.9.2.dist-info/entry_points.txt",
+      "size": 48,
+      "sha256": "473040365748adcbf062c136e78524d581dee9ca48ef2d55ebd0fe0f43583625"
+    },
+    {
+      "path": "_internal/rapidocr-3.9.2.dist-info/top_level.txt",
+      "size": 9,
+      "sha256": "a8121202daa63dba2947a8b039e0a415268e810404a0681dec60ea7ddb950a2c"
+    },
+    {
+      "path": "_internal/rapidocr/__init__.py",
+      "size": 1048,
+      "sha256": "4b018fa0a163353d7da9a18b7d0115675514368d1f7998aaf414e0e2daa92feb"
+    },
+    {
+      "path": "_internal/rapidocr/__init__.pyi",
+      "size": 553,
+      "sha256": "395fe9059dabb8578b15a2b273dc2545f6a9373dc614c24b2d035a6dbe4057a8"
+    },
+    {
+      "path": "_internal/rapidocr/_version.py",
+      "size": 520,
+      "sha256": "ee75df466c93952db231db01fa345c5a41bdff474ae847d4c2bc338f8b365420"
+    },
+    {
+      "path": "_internal/rapidocr/cal_rec_boxes/__init__.py",
+      "size": 131,
+      "sha256": "8f7cf65adf36e703938210347f54edb00142dc8104e42b14aef8076b770faeb6"
+    },
+    {
+      "path": "_internal/rapidocr/cal_rec_boxes/main.py",
+      "size": 12190,
+      "sha256": "a5209c10af7b027469a5f31127a3e372a70ce3ea8d3f12e632838ca020abbe9c"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_cls/__init__.py",
+      "size": 187,
+      "sha256": "1410118b1cd0e64921e51e9da2194a18ebda8a1964fb0d776f96758ac97a7f50"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_cls/main.py",
+      "size": 3904,
+      "sha256": "a48b3197d5588f035668f5adfc6d60006fcd851049a840ad03718c57cead2c45"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_cls/utils.py",
+      "size": 2649,
+      "sha256": "bcadd799e971fe42a2935c2568ad9a0299e24b6e8c55f57abced42eaac324cd9"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_det/__init__.py",
+      "size": 183,
+      "sha256": "bd757fa9a88c5e07b1c54882ad2b1af5e51b1f59d09aeef4591fabf375bddc8c"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_det/main.py",
+      "size": 3733,
+      "sha256": "a56c0f51fd6a8c03a5abf2f0a5843b382b8f3257d1bfacf8d5ac6305d5e63024"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_det/utils.py",
+      "size": 10823,
+      "sha256": "01d25a0b1bbdcdd4aba70a23ae96714c5408df93b295c43ca194952e279adb9e"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_rec/__init__.py",
+      "size": 219,
+      "sha256": "b96427ed3a4dd9652849aab959ee4d7a61e2e1cfc68a8a94caf3aaca9a7fcd9d"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_rec/main.py",
+      "size": 6657,
+      "sha256": "84b7a55a8972d14a92800b66facc73976b8d0b06bd8888e551414dbec8d6d326"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_rec/typings.py",
+      "size": 2099,
+      "sha256": "02b88178edab41b275d14bf8f61ce7148c13328f79f330b78f7c3cb77f7c4737"
+    },
+    {
+      "path": "_internal/rapidocr/ch_ppocr_rec/utils.py",
+      "size": 6486,
+      "sha256": "ee16b3e71c85a8e55e572cd9b2d251f302642447fc4219d174d2092b9f3231f7"
+    },
+    {
+      "path": "_internal/rapidocr/cli.py",
+      "size": 1493,
+      "sha256": "a985f342fadb2ee2b4be4034c0527b8be24e3dd3544b4e3a97fad82b37961d52"
+    },
+    {
+      "path": "_internal/rapidocr/config.yaml",
+      "size": 4225,
+      "sha256": "06623941e188461a0bc263fe16175cb5e5f6f6b01f4387e546d3a741569fc021"
+    },
+    {
+      "path": "_internal/rapidocr/default_models.yaml",
+      "size": 71521,
+      "sha256": "db47df9d6b071721f1633667b41cfef1e40b5d7f09be030aaea8be801ca2f2f5"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/__init__.py",
+      "size": 74,
+      "sha256": "9be50628727edf5a8bee9062b389dfa05cf97f36fe757b224cb36a63ec694a80"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/base.py",
+      "size": 5607,
+      "sha256": "2767a940a57397d5a25838b806db256a219e66ff1219fb8efe20196b97b38e25"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/mnn/__init__.py",
+      "size": 161,
+      "sha256": "677bebb9ee78d8bbd66b1bd71154f57e2507b8b68a9969cd821ebfe15bd35b3d"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/mnn/main.py",
+      "size": 3103,
+      "sha256": "bf1d18a580aeeaba82c463ec5ecb7f1029cf8f557d983edd259f6de5df828311"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/onnxruntime/__init__.py",
+      "size": 177,
+      "sha256": "96136f90755258140f4da0878eb07ffdb0394091478aa5174abaa17221653b54"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/onnxruntime/main.py",
+      "size": 4527,
+      "sha256": "743b23a6c42d29e7aaf276ffcf40f3f5abb60458e6966007dca21306f01cd1ab"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/onnxruntime/provider_config.py",
+      "size": 8035,
+      "sha256": "6671aa43d720a3f4093e8eb5a5e89c05a94803aa8bbd04ced2a82246056e06f1"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/openvino/__init__.py",
+      "size": 181,
+      "sha256": "1457a5d69511afebfa798421dffe59ca642ef4296571f5a7ff0d9a02cf94e75c"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/openvino/device_config.py",
+      "size": 1852,
+      "sha256": "b164b227e451dc5d081bbc4abc3af12c0f861d3e90baf8c32f88e991fc1d3332"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/openvino/main.py",
+      "size": 3694,
+      "sha256": "3a2801ffd2bbe8eb9b2e06c630cc42fc6845d2a907ae88a007f2cec80290b011"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/paddle/__init__.py",
+      "size": 183,
+      "sha256": "2c33cd10377d1f83077e66fe32dfde74b1b71e6c6369716a1879f3cb1f814284"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/paddle/device_config.py",
+      "size": 3829,
+      "sha256": "8c9bb7413728f11ca54fa920812de47ee2973d0b9fc9bccc789b2d680085e79f"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/paddle/main.py",
+      "size": 5381,
+      "sha256": "82ce2d5702b96559244e632e8643286f4e4bf6f939ec2b7461955c56a8b9f4ac"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/__init__.py",
+      "size": 179,
+      "sha256": "ddf310f471db4e9e242fd76536808b4285596ce809200e9c86b45e7d722b0b31"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/device_config.py",
+      "size": 3030,
+      "sha256": "9d257474299f0da9367e6e567e3c0c7fbcc51255d82c039ed735497e8eb71630"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/main.py",
+      "size": 1149,
+      "sha256": "0e1763220d8e4d7c0d218da4d35eca00a43eda8793ef6e86d410768b3989be7c"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/__init__.py",
+      "size": 74,
+      "sha256": "9be50628727edf5a8bee9062b389dfa05cf97f36fe757b224cb36a63ec694a80"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/arch_config.yaml",
+      "size": 10904,
+      "sha256": "3bc09a1d74372260039edabd3a17cec3b61e97d7d2458459c05ed05fdccb5308"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/architectures/__init__.py",
+      "size": 832,
+      "sha256": "0c203d152e26139a021c3941854ae460b77115e4086e13e3e0ff2827f811643f"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/architectures/base_model.py",
+      "size": 4282,
+      "sha256": "8cf0c39c3320cc9e4f3c7d29b8f526100940c63511a231a03dafe0ccefd595da"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/__init__.py",
+      "size": 2302,
+      "sha256": "da272ebf54f50c18e10ce897c83d8f10a128a7ccb5ce364a2c54b1ac6b7c9767"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/det_mobilenet_v3.py",
+      "size": 8334,
+      "sha256": "af48169c0d579add19c381502f1ee47fe596c1977fdba3df37384cd3976b72e1"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_donut_swin.py",
+      "size": 47335,
+      "sha256": "f7b2e8c5811df0dbc4a962de68bdd68194b5e92958b76d0842c7728e5c643231"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_hgnet.py",
+      "size": 8341,
+      "sha256": "52c21bcea37f928c86a128754c0f6bdbb4a08291db78a4b71e6992f80d80c34e"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_lcnetv3.py",
+      "size": 15996,
+      "sha256": "b2f710810786f7da65beecba6bdbb0df93a3e43d3cff3bb71db3dab2a92a8d79"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_lcnetv4.py",
+      "size": 22267,
+      "sha256": "b521cfcd138c3136b08ca86578fd93aad1799cb5481880cdddd8d57a92953189"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_mobilenet_v3.py",
+      "size": 4822,
+      "sha256": "989984eb11a98c7647d956b0d7a2e5225a911459bd47dc91b122446b7627de7c"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_mv1_enhance.py",
+      "size": 6715,
+      "sha256": "7cc28be5e1f77da1dd52bb44d3292551f17882674a3fa275cdee7712ddb9f7f7"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_pphgnetv2.py",
+      "size": 61172,
+      "sha256": "dd826e8bcfa30093d8e2c2c2fc9267ce8cebec7c50630555ffd44de86a154506"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_pplcnet.py",
+      "size": 8901,
+      "sha256": "b1255333f373f71047e5911dfb9ba35594687dc2558b2d61db9bb30df9030fda"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/backbones/rec_svtrnet.py",
+      "size": 20222,
+      "sha256": "008694677216064473da95a66a70634b441d25c6278a6312578316a1f36941c8"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/common.py",
+      "size": 2295,
+      "sha256": "546a8e159922b503f3f1a2b5a07a9d2e6678ff71a7be6f04c7f52f5139e6d051"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/heads/__init__.py",
+      "size": 1237,
+      "sha256": "a971dd140dc07d23efd9bed62e298fc6a4321d4e9402246c9eb034a665617ccc"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/heads/cls_head.py",
+      "size": 596,
+      "sha256": "a6e232e46954b4029eafa792e0758abb4ecfcd177e1e50c0a88cf95aa8c11da0"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/heads/det_db_head.py",
+      "size": 4239,
+      "sha256": "d3a1e120d8cfc7cfac6f0dc47c0206ef64802bf2f97c080558d126d4d1b0b36d"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/heads/multiheadAttention.py",
+      "size": 5903,
+      "sha256": "1cd0dde2a5d1c36f13a14dafe22690be82283c3a64d9e12b6e93424a3e296581"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/heads/rec_ctc_head.py",
+      "size": 2842,
+      "sha256": "ed0a883fc2ad9fa4b7a6893fd606237e9ec1a86a0c5e99de3449339547b672dc"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/heads/rec_multi_head.py",
+      "size": 3511,
+      "sha256": "523ace040baa1a8cba217c902859e985431892729f57e0b97503f9b9af29307d"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/heads/rec_nrtr_head.py",
+      "size": 31728,
+      "sha256": "8762b3366ce22f39b2957f95ee176b54a96e04fffd4724f5ab7cf8108ba42883"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/main.py",
+      "size": 2340,
+      "sha256": "4d31c88e54bd98859078467a6292b1ec91ec82ea873903b28324c5fb26f3e2c3"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/necks/__init__.py",
+      "size": 1196,
+      "sha256": "182353d4ef2cd45dfff8aa8ed866158c94d7f828283e8535117f6e0495162d1a"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/necks/db_fpn.py",
+      "size": 30360,
+      "sha256": "2a012082e1065cb2591906105338c733bf7d8607dd052192cfd7c1260ab807d3"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/necks/intracl.py",
+      "size": 3410,
+      "sha256": "c3641dc1d23d069896f76552e26a8bdf5b1511121b639dd37db0f943aa2489a6"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/necks/rnn.py",
+      "size": 10050,
+      "sha256": "b739760c25f078c1dc801a558f31f54e545b8b8f92c411a1187e79fd395c9d3e"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/transforms/__init__.py",
+      "size": 1059,
+      "sha256": "f8645716c1093bee498f01d33cce2b2a73f4c464110e4db22d8cd1eb8b825489"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/transforms/stn.py",
+      "size": 4248,
+      "sha256": "8fe9c0dc45c6dbb17df456eeb57fbfffcce79c1c7cb1d2bf8c51b44f803342a6"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/transforms/tbsrn.py",
+      "size": 10633,
+      "sha256": "eafc9a3eb8896e46ccdc5afe4265be1447ebbee2cef6618fd68d3c06145a964d"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/transforms/tps.py",
+      "size": 10396,
+      "sha256": "06aa0ed234f84473a4f38284cafe1426d37824a5c2331fd07a262c04006950cc"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/transforms/tps_spatial_transformer.py",
+      "size": 5811,
+      "sha256": "d70f195757a458eabe8dd406b96627d0d2b3811093361d359dbbecd56a03e44c"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/pytorch/networks/transforms/tsrn.py",
+      "size": 7053,
+      "sha256": "49057d70a3aa2e8b85ee5ccf6a22ab05a58cd5549e76bf46f7ef6924ae84bd03"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/tensorrt/__init__.py",
+      "size": 171,
+      "sha256": "8cca0c575c708343d0b83acc4c3521be80e9e861f8fbce307c4b0e5e3090294f"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/tensorrt/engine_builder.py",
+      "size": 4991,
+      "sha256": "1588e2e8943d4b93fff638ab49686627528fff1b2f4765f7b71c4ee935023fd1"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/tensorrt/main.py",
+      "size": 14074,
+      "sha256": "07de6009a94bd7493248a6142dadd579405cf5479b56889f7feedc76bd42ad52"
+    },
+    {
+      "path": "_internal/rapidocr/inference_engine/tensorrt/memory_utils.py",
+      "size": 10011,
+      "sha256": "5fa0be06ed0be643680d555753dc69ed744d92f15ce04aabe5091938a3bfbf17"
+    },
+    {
+      "path": "_internal/rapidocr/main.py",
+      "size": 17127,
+      "sha256": "c2ae17098dde838ac3d2933eec5b218d5c4404ded9fe5d32df7c24fd0e54aa39"
+    },
+    {
+      "path": "_internal/rapidocr/models/.gitkeep",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/rapidocr/models/PP-OCRv6_det_small.onnx",
+      "size": 9929594,
+      "sha256": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f"
+    },
+    {
+      "path": "_internal/rapidocr/models/PP-OCRv6_rec_small.onnx",
+      "size": 21234383,
+      "sha256": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884"
+    },
+    {
+      "path": "_internal/rapidocr/models/ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+      "size": 585532,
+      "sha256": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c"
+    },
+    {
+      "path": "_internal/rapidocr/py.typed",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "_internal/rapidocr/utils/__init__.py",
+      "size": 74,
+      "sha256": "9be50628727edf5a8bee9062b389dfa05cf97f36fe757b224cb36a63ec694a80"
+    },
+    {
+      "path": "_internal/rapidocr/utils/download_file.py",
+      "size": 3436,
+      "sha256": "82dbc341379af4d535e04773eb0a1afadb3b45669283d4ee446339c428d2b7e9"
+    },
+    {
+      "path": "_internal/rapidocr/utils/download_models.py",
+      "size": 3979,
+      "sha256": "7f71f72ab2751323a236584f6ef2e3da67533154f6e800ab7b5348ef93156adc"
+    },
+    {
+      "path": "_internal/rapidocr/utils/load_image.py",
+      "size": 5334,
+      "sha256": "f6de151fdce9fdf6890650dc3f7305455a2cade9bbf7652a30a558ee3fbe3f59"
+    },
+    {
+      "path": "_internal/rapidocr/utils/log.py",
+      "size": 1179,
+      "sha256": "3928d19d7b195deb993d293e546e6166c1d71a69eb9eb9064e388f03ddfbf6f8"
+    },
+    {
+      "path": "_internal/rapidocr/utils/model_resolver.py",
+      "size": 3702,
+      "sha256": "aa21d7b6dcebcf44bea19d0235a9262519cc3ecd5301e71579df619b6d49e86b"
+    },
+    {
+      "path": "_internal/rapidocr/utils/output.py",
+      "size": 2387,
+      "sha256": "8467bbb4b3c140d1f1e8f214043baa7449a1d30b853af3da24fe26238a436314"
+    },
+    {
+      "path": "_internal/rapidocr/utils/parse_parameters.py",
+      "size": 3028,
+      "sha256": "e068cf420273d56c5f482a95c1e6e5aa5eec80cb9a3ab502b815473d677c1849"
+    },
+    {
+      "path": "_internal/rapidocr/utils/process_img.py",
+      "size": 5723,
+      "sha256": "abaf2ed615878f618a372cba6157bc6c41a494e05f6c41bf9f7c5c2ba1ee5772"
+    },
+    {
+      "path": "_internal/rapidocr/utils/to_json.py",
+      "size": 462,
+      "sha256": "647f41722b2fd21bb525379c3d1cc0644b12f18aea2ed3cbe8d3e7aef571376b"
+    },
+    {
+      "path": "_internal/rapidocr/utils/to_markdown.py",
+      "size": 4520,
+      "sha256": "3923cc5c0f346f6c6fbf997d0e21e0c3e9378504a3ca1174c51dc725f5ff11f3"
+    },
+    {
+      "path": "_internal/rapidocr/utils/typings.py",
+      "size": 1165,
+      "sha256": "a4cd1dacd8dd705f56aa199df8cad4ea0e5dd58717b94b4e3af79382231be607"
+    },
+    {
+      "path": "_internal/rapidocr/utils/utils.py",
+      "size": 3077,
+      "sha256": "86f8687db6424714be5a6fbd283f6e3b7b198691fb292efd12622b5b40197582"
+    },
+    {
+      "path": "_internal/rapidocr/utils/vis_res.py",
+      "size": 10047,
+      "sha256": "65ce9e6827855dae8be91b5e3a84143f76d55d1ef74551864b941ac5e6f95049"
+    },
+    {
+      "path": "_internal/select.pyd",
+      "size": 34608,
+      "sha256": "8258dd5693329c0fe96a0e613abd8d6fca13b864ee863c512e98e90f8f6aed4e"
+    },
+    {
+      "path": "_internal/setuptools/_vendor/jaraco/text/Lorem ipsum.txt",
+      "size": 1335,
+      "sha256": "37fedcffbf73c4eb9f058f47677cb33203a436ff9390e4d38a8e01c9dad28e0b"
+    },
+    {
+      "path": "_internal/shapely/_geometry_helpers.cp312-win_amd64.pyd",
+      "size": 227328,
+      "sha256": "8e65aeb9230fdcad1ec63ae9bcaa781a084a3fc94c4744e886a35328c8f4cc73"
+    },
+    {
+      "path": "_internal/shapely/_geos.cp312-win_amd64.pyd",
+      "size": 46080,
+      "sha256": "fa81c1de078db6956bb4327b7a2aeabecfef6e42827518ec10eec1f4b991c1ce"
+    },
+    {
+      "path": "_internal/shapely/lib.cp312-win_amd64.pyd",
+      "size": 157184,
+      "sha256": "662dab5d5a3c93b8a457118f0d96765c6a7b51538133754d7e2a540ef9ab65e3"
+    },
+    {
+      "path": "_internal/tqdm-4.70.1.dist-info/INSTALLER",
+      "size": 4,
+      "sha256": "ceebae7b8927a3227e5303cf5e0f1f7b34bb542ad7250ac03fbcde36ec2f1508"
+    },
+    {
+      "path": "_internal/tqdm-4.70.1.dist-info/METADATA",
+      "size": 57366,
+      "sha256": "a5da70b966afea3a759716041bad7187f2ece02c22348cf9e7c0a512bbf15f57"
+    },
+    {
+      "path": "_internal/tqdm-4.70.1.dist-info/RECORD",
+      "size": 4551,
+      "sha256": "7a04e67959483f924061efe86169c527d391b7b1e866ba177d3d35611573ef9b"
+    },
+    {
+      "path": "_internal/tqdm-4.70.1.dist-info/WHEEL",
+      "size": 91,
+      "sha256": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+    },
+    {
+      "path": "_internal/tqdm-4.70.1.dist-info/entry_points.txt",
+      "size": 39,
+      "sha256": "45e2421fb522dd9ca1e8cd7a1383a1b19d6853b5ad31709f6eda3206118edbd6"
+    },
+    {
+      "path": "_internal/tqdm-4.70.1.dist-info/licenses/LICENCE",
+      "size": 1985,
+      "sha256": "fcff87c3a47ce8028a8512aa182d4fcf0ad1c90544ee75cf9b343684cac194de"
+    },
+    {
+      "path": "_internal/tqdm-4.70.1.dist-info/top_level.txt",
+      "size": 5,
+      "sha256": "34b89424d7e673d02dd79b3b254462c2fa8c123522f46e4f30646b98c6333523"
+    },
+    {
+      "path": "_internal/ucrtbase.dll",
+      "size": 1362264,
+      "sha256": "3239227d27667ba20d10a880751924e5719de0078f9fce232d149d383f7681f6"
+    },
+    {
+      "path": "_internal/unicodedata.pyd",
+      "size": 1143600,
+      "sha256": "d766af041ce75cbf9c9c97a713c45e40ce25ecf3850dd491f005dabbed723949"
+    },
+    {
+      "path": "_internal/vcruntime140.dll",
+      "size": 178616,
+      "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7"
+    },
+    {
+      "path": "_internal/vcruntime140_1.dll",
+      "size": 50112,
+      "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e"
+    },
+    {
+      "path": "_internal/yaml/_yaml.cp312-win_amd64.pyd",
+      "size": 253952,
+      "sha256": "4fd0e84f50261ed0886cffcdd8008b055af3352546e649c3d741b50eae1f9b5f"
+    },
+    {
+      "path": "licenses/MODEL_LICENSES.md",
+      "size": 8398,
+      "sha256": "c5fd0e8603d3df743355b546121e6fe0f4ef8ff455c5a85c1681fd3ae520e153"
+    },
+    {
+      "path": "licenses/RapidOCR-LICENSE",
+      "size": 11422,
+      "sha256": "3e0af25fdd06aa9586ae97adb00ea927ebe5a3805ac77d2d3a81ce5f55693333"
+    },
+    {
+      "path": "omni-edu-ocr.exe",
+      "size": 8852986,
+      "sha256": "c463b3a9a22a407e601624ce278c76386e1210a5554d8510f6f8d5d2c0937a0a"
+    }
+  ],
+  "totalBytes": 270805763
+}

@@ -1,0 +1,103 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual ungranted conversation shows no_workspace and does not browse private history",
+      "pass": true
+    },
+    {
+      "name": "Teacher chooses directory through actual UI/native chooser/SQLite grant; original Pro FileTree receives real files",
+      "pass": true
+    },
+    {
+      "name": "Real bounded text preview exactly matches random disk facts",
+      "pass": true
+    },
+    {
+      "name": "Lazy real directory expansion and safe Markdown render no remote image, script or model request",
+      "pass": true
+    },
+    {
+      "name": "Original OSS Tabs switch real previews and close current tab without losing another file",
+      "pass": true
+    },
+    {
+      "name": "Actual local image decodes from signature-verified bounded bytes",
+      "pass": true
+    },
+    {
+      "name": "Unsupported PDF displays actual metadata and explicit unavailable content, not a fake preview",
+      "pass": true
+    },
+    {
+      "name": "Oversize real file shows actionable error and retains directory",
+      "pass": true
+    },
+    {
+      "name": "Actual file mutation cannot silently substitute old expected version",
+      "pass": true
+    },
+    {
+      "name": "Actual refresh obtains new file version and reads changed facts",
+      "pass": true
+    },
+    {
+      "name": "Real removed file is not presented from a stale cached tab",
+      "pass": true
+    },
+    {
+      "name": "Chat input, original tree/tab and real preview remain reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Chat input, original tree/tab and real preview remain reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Original Pro Resizable performs actual pointer drag and saves layout",
+      "pass": true
+    },
+    {
+      "name": "Filtering real loaded entries does not fabricate or query unauthorized paths",
+      "pass": true
+    },
+    {
+      "name": "Conversation switch cancels prior requests/bytes/tabs and requires its own workspace grant",
+      "pass": true
+    },
+    {
+      "name": "Actual typed IPC rejects traversal with no raw path disclosure",
+      "pass": true
+    },
+    {
+      "name": "Closing returns to compact context and reopening revalidates directory without persisting preview body",
+      "pass": true
+    },
+    {
+      "name": "Actual restart restores file mode/SQLite grant/layout and does not persist file text or resume model work",
+      "pass": true
+    },
+    {
+      "name": "Actual teacher archive removes file authority through production host, not only navigation",
+      "pass": true
+    },
+    {
+      "name": "Unknown remembered session cannot create phantom authority after restart",
+      "pass": true
+    },
+    {
+      "name": "Archived remembered session falls back to an actual active conversation after restart",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron/typed IPC/Hana filesystem/source bytes and restart; synthetic local files",
+    "Controlled native chooser result; no artificial file list/preview",
+    "No provider request or Office/PDF content preview claim; reference DPI and native frame pending"
+  ],
+  "panelWidthAfterDrag": 886.9375,
+  "preferences": "{\"schema\":1,\"sidebar\":true,\"aside\":true,\"files\":true}",
+  "panelWidthAfterRestart": 886.9375,
+  "rendererErrors": [],
+  "remoteRequests": []
+}

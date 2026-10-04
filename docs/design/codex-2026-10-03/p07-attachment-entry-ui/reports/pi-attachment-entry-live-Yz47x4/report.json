@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Separate original permission menu grants the actual teaching workspace",
+      "pass": true
+    },
+    {
+      "name": "Existing ordinary Pi/DeepSeek reply completes and the actual input clears",
+      "pass": true
+    },
+    {
+      "name": "Already-bound actual Pi conversation selects a specific file outside its unchanged workspace; no provider task is sent",
+      "pass": true
+    },
+    {
+      "name": "During a real Pi teacher wait, file addition is disabled and stop stays reachable",
+      "pass": true
+    },
+    {
+      "name": "Real text follow-up still enters the original queue with an empty input; visible stop interrupts it without delivery",
+      "pass": true
+    }
+  ],
+  "boundary": "Real DeepSeek/Pi and formal owned Electron UI. Synthetic text tasks only; selected attachment remains local, no attachment-reading/model-image claim. Actual teacher profile untouched."
+}

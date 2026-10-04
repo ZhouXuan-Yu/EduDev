@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "docx": {
+    "tables": 1,
+    "a4": true
+  },
+  "xlsx": {
+    "sheets": 2,
+    "numeric37": true,
+    "formulaIsLiteral": true
+  },
+  "pptx": {
+    "slides": 28,
+    "lastTableRow": true
+  },
+  "pdf": {
+    "pages": 10,
+    "a4": true,
+    "chineseAndTail": true
+  },
+  "boundary": "Actual generated formats independently parsed; not real teacher UI or WPS/Office rendering proof"
+}

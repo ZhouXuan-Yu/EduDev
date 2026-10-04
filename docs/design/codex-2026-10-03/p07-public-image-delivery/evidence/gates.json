@@ -1,0 +1,25 @@
+{
+  "build": {
+    "command": "npm run build -- --outDir test-results/xiaozhi-agent/pi-public-image-build",
+    "exitCode": 0,
+    "logSha256": "de8c280ed5f761929ee2887c0f898c8f1c77ceeca889ed895e3e197a0222a36a"
+  },
+  "main": {
+    "passed": 207,
+    "total": 207,
+    "ok": true,
+    "exitCode": 0,
+    "logSha256": "4dd164f695223f78c873d6d1f9ede26ee76b69736bd4317ec21a03d7584d305f"
+  },
+  "renderer": {
+    "passed": 79,
+    "total": 79,
+    "exitCode": 0
+  },
+  "proSource": {
+    "passed": 6,
+    "total": 6,
+    "reportDirectory": "pi-attachment-entry-source-NhTrtb"
+  },
+  "boundary": "Formal synthetic public-image slice only. No real profile, student uploads, installer, no-VPN or full Codex acceptance."
+}

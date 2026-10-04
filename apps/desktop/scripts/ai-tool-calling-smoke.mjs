@@ -82,6 +82,18 @@ async function run() {
             assert.equal(badParamReview.ok, false);
             assert.ok(badParamReview.errors.some((error) => error.includes('超过最大值')));
 
+            let getterCalls = 0;
+            const getterArgs = {};
+            Object.defineProperty(getterArgs, 'limit', { enumerable: true, get() { getterCalls += 1; return 2; } });
+            const getterReview = reviewModelToolCall({ name: 'search_learning_records', arguments: getterArgs }, router);
+            assert.equal(getterReview.ok, false);
+            assert.equal(getterCalls, 0, 'permission review must not evaluate tool argument accessors');
+            const cyclicArgs = { limit: 2 };
+            cyclicArgs.self = cyclicArgs;
+            assert.equal(reviewModelToolCall({ name: 'search_learning_records', arguments: cyclicArgs }, router).ok, false);
+            assert.equal(reviewModelToolCall({ name: 'search_learning_records', arguments: '{"__proto__":{"polluted":true}}' }, router).ok, false);
+            assert.equal(reviewModelToolCall({ name: 'search_learning_records', arguments: { limit: 'x'.repeat(2 * 1024 * 1024 + 1) } }, router).ok, false);
+
             await store.close();
             return {
               ok: true,

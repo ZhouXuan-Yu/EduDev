@@ -1,0 +1,107 @@
+{
+  "directory": "pi-goal-ui-BRwT0l",
+  "success": true,
+  "checks": [
+    {
+      "name": "Teacher creates a goal from visible controls; real DeepSeek returns strict education-office result and durable review candidate",
+      "pass": true
+    },
+    {
+      "name": "Production uses current SQLite context, real original Pi tool continuation and segmented requests without a second scheduler",
+      "pass": true
+    },
+    {
+      "name": "Real review-strip control reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Real review-strip control reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Real teacher-accept control reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Real teacher-accept control reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Actual teacher checks all criteria; completion commits locally with no extra model request",
+      "pass": true
+    },
+    {
+      "name": "Completed SQLite result/native survive cold restart with zero replay",
+      "pass": true
+    },
+    {
+      "name": "Real waiting-goal control reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Real waiting-goal control reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Visible pause cancels current teacher wait and durably retains the goal without an old resumable instruction",
+      "pass": true
+    },
+    {
+      "name": "Paused cold restart keeps exact native and makes zero automatic request",
+      "pass": true
+    },
+    {
+      "name": "Explicit resume uses the same native session with a fresh run and newly requested teacher decision",
+      "pass": true
+    },
+    {
+      "name": "Visible end interrupts resumed work and cannot replay the old confirmation",
+      "pass": true
+    },
+    {
+      "name": "Existing stop button interrupts persistent goal while preserving progress",
+      "pass": true
+    },
+    {
+      "name": "Ending an older interrupted goal does not abort or answer the unrelated ordinary chat run",
+      "pass": true
+    },
+    {
+      "name": "Ended goal remains ended across cold restart with zero resurrection",
+      "pass": true
+    },
+    {
+      "name": "Real renderer has no page errors; test-owned original database remains unchanged",
+      "pass": true
+    }
+  ],
+  "layer": "C: isolated formal Electron",
+  "humanAccepted": false,
+  "boundary": "Real UI, original Pi 1.0.2 and official DeepSeek. Synthetic education-office text only. No actual teacher profile, no-VPN, installed distribution, file-writing or general Codex completion claim.",
+  "build": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-goal-build4",
+    "files": 323,
+    "sha256": "3b81b5e6a608ae849d7daf11c4d7aecff2f52d508bb2407493386f5b8b9952d6"
+  },
+  "scriptSha256": "7c4c1a1ce1290c6ce40542d784a06de26af6fe568e549bda2838c8ca3f753859",
+  "previousFailures": [
+    {
+      "directory": "pi-goal-ui-7eIRHp",
+      "checks": 6,
+      "buildSha256": "845e9714ca3e54ec6e177cf7b2a43beee515154c9f6c983e60d498acf8a9c76f",
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-goal-ui-ANrmRI",
+      "checks": 6,
+      "buildSha256": "2b7dd7ef3f265160f912e7eb102585adafc80f5a5d9eebb019fc36dfbf86b977",
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    },
+    {
+      "directory": "pi-goal-ui-hHYsJ1",
+      "checks": 1,
+      "buildSha256": "2b7dd7ef3f265160f912e7eb102585adafc80f5a5d9eebb019fc36dfbf86b977",
+      "retainedAt": "Original isolated test directory and acceptance document 157"
+    }
+  ]
+}

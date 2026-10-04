@@ -1,0 +1,20 @@
+[
+  {
+    "sha256": "4d7ff16df637364f0aaf8930ff1d5e15f810f4cb68ca88980327459459d87803",
+    "file": "SettingsPrimitives.tsx",
+    "matches": true,
+    "bytes": 2489
+  },
+  {
+    "sha256": "6ed77c351ae6b995becca7f62c2c215b44931a66509127b4eee65a47b7d2d676",
+    "file": "settings-components.module.css",
+    "matches": true,
+    "bytes": 10795
+  },
+  {
+    "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+    "file": "LICENSE",
+    "matches": true,
+    "bytes": 10760
+  }
+]

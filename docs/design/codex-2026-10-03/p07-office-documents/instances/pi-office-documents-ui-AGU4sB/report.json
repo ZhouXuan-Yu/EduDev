@@ -1,0 +1,63 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Teacher grants actual local directory through formal UI; credential file remains excluded",
+      "pass": true
+    },
+    {
+      "name": "DOCX actual native bytes parse and appear in current local-only file panel",
+      "pass": true
+    },
+    {
+      "name": "XLSX actual native bytes parse and appear in current local-only file panel",
+      "pass": true
+    },
+    {
+      "name": "PPTX actual native bytes parse and appear in current local-only file panel",
+      "pass": true
+    },
+    {
+      "name": "PDF actual native bytes parse and appear in current local-only file panel",
+      "pass": true
+    },
+    {
+      "name": "Office source table/text facts are preserved; no remote document image or script is rendered",
+      "pass": true
+    },
+    {
+      "name": "Real image-only PDF returns explicit local OCR requirement",
+      "pass": true
+    },
+    {
+      "name": "Malformed real bytes fail safely without exposing native error detail",
+      "pass": true
+    },
+    {
+      "name": "Existing actual UTF8 preview remains compatible",
+      "pass": true
+    },
+    {
+      "name": "Real Office preview and chat input are reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Real Office preview and chat input are reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Typed cancellation returns a real terminal cancelled receipt with no late preview",
+      "pass": true
+    },
+    {
+      "name": "Version changed on disk cannot be parsed as the expected source",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual Electron utilityProcess/native AnyDoc 0.1.2/typed preview/UI with generated real Office/PDF files",
+    "No provider or export functionality claim; main fetch disabled during previews, no OS VPN setting changed",
+    "Controlled native chooser result; Office/WPS opening and packaged dependency gate remain pending"
+  ],
+  "error": "TypeError: Cannot read properties of undefined (reading 'length')\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-document-ui-smoke.mjs:70:103\n    at check (file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-document-ui-smoke.mjs:18:32)\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-document-ui-smoke.mjs:70:3"
+}

@@ -1,0 +1,46 @@
+{
+  "checks": [
+    {
+      "name": "Strict attachment request rejects symbols, arbitrary file bytes and accessors without invoking them",
+      "pass": true
+    },
+    {
+      "name": "Image and Office readers share exactly eight actual child slots",
+      "pass": true
+    },
+    {
+      "name": "Cancelled result retains its slot until actual exit and kills a late spawn; duplicate exit cannot double release",
+      "pass": true
+    },
+    {
+      "name": "Malformed decoder result fails closed without private diagnostic/body leakage",
+      "pass": true
+    },
+    {
+      "name": "Encoded image dimension bomb is rejected before creating any decoder process",
+      "pass": true
+    },
+    {
+      "name": "Thumbnail output rejects non-local image URLs",
+      "pass": true
+    },
+    {
+      "name": "Native picker reserves host owner synchronously before asynchronous selection",
+      "pass": true
+    },
+    {
+      "name": "Cancellation returns promptly but retains native chooser owner until late selection actually settles",
+      "pass": true
+    },
+    {
+      "name": "Archive after native picker starts rejects late paths before any file import",
+      "pass": true
+    },
+    {
+      "name": "Closing coordinator refuses new local attachment requests",
+      "pass": true
+    }
+  ],
+  "success": true,
+  "scope": "Actual strict contracts/host/coordinator with transport and store doubles; formal native SQLite/UI is a separate report."
+}

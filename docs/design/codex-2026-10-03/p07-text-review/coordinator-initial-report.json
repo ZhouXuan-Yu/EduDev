@@ -1,0 +1,19 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Waiter is installed before actionable event; local review, reject and safe receipt do not write",
+      "pass": true
+    },
+    {
+      "name": "Concurrent decisions, stale revision, cross-session and forged extra data cannot grant another write",
+      "pass": true
+    },
+    {
+      "name": "Edit goes through original Pi, post-approval apply, actual undo and conflict preservation",
+      "pass": true
+    }
+  ],
+  "boundary": "Real SDK/SQLite/FS/IPC handlers with injected model protocol. No provider or UI claim.",
+  "error": "AssertionError [ERR_ASSERTION]: Missing expected rejection.\n    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-coordinator-smoke.mjs:51:175\n    at async check (file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-coordinator-smoke.mjs:28:30)\n    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-coordinator-smoke.mjs:50:2"
+}

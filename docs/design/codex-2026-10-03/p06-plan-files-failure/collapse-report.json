@@ -1,0 +1,74 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual ungranted conversation shows no_workspace and does not browse private history",
+      "pass": true
+    },
+    {
+      "name": "Teacher chooses directory through actual UI/native chooser/SQLite grant; original Pro FileTree receives real files",
+      "pass": true
+    },
+    {
+      "name": "Real bounded text preview exactly matches random disk facts",
+      "pass": true
+    },
+    {
+      "name": "Lazy real directory expansion and safe Markdown render no remote image, script or model request",
+      "pass": true
+    },
+    {
+      "name": "Original OSS Tabs switch real previews and close current tab without losing another file",
+      "pass": true
+    },
+    {
+      "name": "Actual local image decodes from signature-verified bounded bytes",
+      "pass": true
+    },
+    {
+      "name": "Unsupported PDF displays actual metadata and explicit unavailable content, not a fake preview",
+      "pass": true
+    },
+    {
+      "name": "Oversize real file shows actionable error and retains directory",
+      "pass": true
+    },
+    {
+      "name": "Actual file mutation cannot silently substitute old expected version",
+      "pass": true
+    },
+    {
+      "name": "Actual preview failure refresh obtains new file version and reads changed facts",
+      "pass": true
+    },
+    {
+      "name": "Real removed file is not presented from a stale cached tab",
+      "pass": true
+    },
+    {
+      "name": "Chat input, original tree/tab and real preview remain reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Chat input, original tree/tab and real preview remain reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Original Pro Resizable performs actual pointer drag and saves layout",
+      "pass": true
+    },
+    {
+      "name": "Original file tree can actually close and reopen without discarding the local preview",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual formal Electron/typed IPC/Hana filesystem/source bytes and restart; synthetic local files",
+    "Controlled native chooser result; no artificial file list/preview",
+    "No provider request or Office/PDF content preview claim; reference DPI and native frame pending"
+  ],
+  "panelWidthAfterDrag": 886.9375,
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-files-explorer-toggle')\u001b[22m\n\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-workspace-files-ui-smoke.mjs:52:56",
+  "rendererErrors": [],
+  "remoteRequests": []
+}

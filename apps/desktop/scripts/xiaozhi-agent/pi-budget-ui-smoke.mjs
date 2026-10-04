@@ -1,0 +1,73 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {_electron as electron} from 'playwright';
+const appRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+const output=fs.mkdtempSync(path.join(appRoot,'test-results/xiaozhi-agent/pi-budget-ui-'));
+const dataRoot=path.join(output,'data'),folder=path.join(output,'备课资料');fs.mkdirSync(dataRoot);fs.mkdirSync(folder);
+fs.writeFileSync(path.join(folder,'分数课.md'),'分数加法：先观察分母是否相同，异分母先通分。来源：合成教研资料。');
+const cfg=fs.readFileSync(path.join(appRoot,'.env.local'),'utf8');
+const pick=name=>cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`,'m'))?.[1]?.trim();
+const key=pick('DEEPSEEK_API_KEY'),model=pick('DEEPSEEK_MODEL') || 'deepseek-flash';assert(key);
+const checks=[],report={suite:'pi-budget-formal-ui',success:false,checks,model,boundaries:['Actual formal Electron and real DeepSeek with synthetic teacher data','Token observation threshold is not a hard billing cap; cost unknown','B1 only; compact/education scoped memory/queue editing and full UI remain pending']};
+let app,page;
+const check=(name,fn)=>{fn();checks.push({name,pass:true});};
+const until=async(fn,ms=120000)=>{const end=Date.now()+ms;while(Date.now()<end){if(await fn())return;await new Promise(r=>setTimeout(r,100));}throw new Error('Budget acceptance condition timed out');};
+async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:dataRoot,OMNI_EDU_REPO_ROOT:path.resolve(appRoot,'../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_XIAOZHI_PI:'1',DEEPSEEK_API_KEY:key,DEEPSEEK_MODEL:model};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
+  app=await electron.launch({args:[path.join(appRoot,'out/main/index.js')],env,timeout:60000});page=await app.firstWindow();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await ready();}
+async function ready(){await page.waitForFunction(()=>!document.querySelector('[data-testid="office-prompt-input"]')?.disabled);await page.getByTestId('pi-budget-card').waitFor({state:'visible'});}
+async function id(){return page.locator('.office-composer-container').getAttribute('data-session-id');}
+async function snap(session){return page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session || await id());}
+async function fresh(){const old=await id();await page.getByTestId('ai-conversation-new').click();await page.waitForFunction(old=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')!==old,old);await ready();}
+async function settings(patch){const before=(await snap()).budgetSettings;await page.getByTestId('pi-budget-expand').click();for(const [key,value] of Object.entries(patch))await page.getByTestId(`pi-budget-${key}`).fill(String(['activeMs','waitMs'].includes(key)?value/1000:value));await page.getByTestId('pi-budget-save').click();await until(async()=>(await snap()).budgetSettings.version===before.version+1);return before;}
+async function send(text){const session=await id(),n=(await snap()).projection.turns.length;await page.getByTestId('office-prompt-input').fill(text);await page.getByTestId('office-prompt-input').press('Enter');await until(async()=>(await snap(session)).projection.turns.length>n);return session;}
+async function terminal(session){await until(async()=>!(await snap(session)).running);return snap(session);}
+function rows(){const db=new DatabaseSync(path.join(dataRoot,'app.db'),{readOnly:true});try{return {usage:db.prepare('SELECT * FROM xiaozhi_pi_usage').all().map(row=>({...row,value:JSON.parse(row.payload_json)})),bindings:db.prepare('SELECT * FROM xiaozhi_pi_session_bindings').all(),controls:db.prepare('SELECT * FROM xiaozhi_pi_controls').all().map(row=>({...row,value:JSON.parse(row.payload_json)}))};}finally{db.close();}}
+function nativeTokens(session){const binding=rows().bindings.find(row=>row.conversation_id===session);const lines=fs.readFileSync(path.join(dataRoot,'xiaozhi-pi',binding.session_file),'utf8').trim().split('\n').map(line=>JSON.parse(line));const result={input:0,output:0,cacheRead:0,cacheWrite:0,total:0};for(const entry of lines.filter(entry=>entry.type==='message'&&entry.message.role==='assistant'))for(const key of ['input','output','cacheRead','cacheWrite'])result[key]+=entry.message.usage[key];result.total=result.input+result.output+result.cacheRead+result.cacheWrite;return result;}
+async function choose(){await app.evaluate(({dialog},directory)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});},folder);await page.getByRole('button',{name:'选择教学工作目录',exact:true}).click();await until(async()=>Boolean((await snap()).workspace));}
+const ask='先用 ask_teacher 询问“分数课面向哪个年级？”，提供“三年级”“五年级”两个选项并等待真实回答，回答后给一句导入建议。不要写文件，不要只用文本提问。';
+try{
+  await launch();const session=await id();const before=await settings({maxModelCalls:3,activeMs:120000});
+  check('Visible budget form commits versioned per-conversation settings',()=>{assert.equal(before.version,0);});
+  const stateSettings=(await snap()).budgetSettings;assert.equal(stateSettings.budget.maxModelCalls,3);
+  const rejected=await page.evaluate(({id,version,budget})=>Promise.all([window.omniEdu.setXiaozhiBudget({sessionId:id,version:version-1,budget}),window.omniEdu.setXiaozhiBudget({sessionId:id,version,budget:{...budget,maxModelCalls:65}}),window.omniEdu.setXiaozhiBudget({sessionId:id,version,budget,apiKey:'not-accepted'})]),{id:session,...stateSettings});
+  check('Stale versions, invalid range and extra credential fields are rejected',()=>{assert.equal(rejected[0].error,'command_conflict');assert.equal(rejected[1].error,'invalid_input');assert.equal(rejected[2].error,'invalid_input');});
+  await send('请只回复一句中文：小智可以帮助教师备课。不要调用工具。');let result=await terminal(session),metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);
+  check('Real DeepSeek usage matches every private SDK assistant token field',()=>{assert.equal(result.projection.turns.at(-1).status,'completed');assert.equal(metric.modelCalls,1);assert.equal(metric.toolCalls,0);assert.deepEqual(metric.tokens,nativeTokens(session));assert(metric.tokens.total>0);assert.equal(metric.completeness,'reported');assert.equal(metric.cost,null);assert.equal(metric.budget.maxModelCalls,3);});
+  assert((await page.getByTestId('pi-usage-receipt').innerText()).includes('费用：未知'));
+  for(const [width,height] of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await page.getByTestId('pi-budget-save').evaluate(element=>element.scrollIntoView({block:'center'}));const bounds=await page.getByTestId('pi-budget-save').boundingBox();check(`Budget controls reachable at ${width}x${height}`,()=>{assert(bounds.y>=0&&bounds.y+bounds.height<=height);});await page.screenshot({path:path.join(output,`budget-${width}x${height}.png`)});}
+  await app.close();app=undefined;await launch();result=await snap(session);
+  check('Budget and real usage restore across actual application restart',()=>{assert.equal(result.budgetSettings.version,1);assert.equal(result.budgetSettings.budget.maxModelCalls,3);assert.deepEqual(result.usage[0].tokens,metric.tokens);assert.equal(result.usage[0].state,'completed');});
+  await fresh();const second=await id();check('Another conversation gets isolated default settings and no foreign metrics',()=>{const isolated=rows().usage.filter(row=>row.conversation_id===second);assert.equal(isolated.length,0);});assert.equal((await snap()).budgetSettings.version,0);
+  await settings({maxModelCalls:1,activeMs:120000});await send('请调用 office_list_files 列出当前工作目录，然后根据实际结果回复。不要提问，不要省略工具。');result=await terminal(second);metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);
+  check('One-model-request budget blocks the next SDK request after real tool result',()=>{assert.equal(metric.modelCalls,1);assert.equal(metric.exhausted,'model_calls');assert.equal(result.projection.turns.at(-1).status,'failed');assert(metric.toolCalls>=1);assert.equal(metric.completeness,'reported');assert.deepEqual(metric.tokens,nativeTokens(second));});
+  await fresh();const tokenSession=await id();await settings({maxTokens:1,activeMs:120000});await send('请调用 office_list_files 列出当前工作目录，然后回复实际结果。必须调用工具，不要提问。');result=await terminal(tokenSession);metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);
+  check('Actual provider token observation threshold blocks another request and keeps receipt',()=>{assert.equal(metric.exhausted,'tokens');assert.equal(metric.modelCalls,1);assert(metric.tokens.total>1);assert.equal(metric.state,'failed');assert.deepEqual(metric.tokens,nativeTokens(tokenSession));});
+  await fresh();const toolSession=await id();await choose();await settings({maxToolCalls:1,activeMs:120000});await send('请依次执行：先 office_file_stat 检查 分数课.md，再 office_read_text 读取 分数课.md，然后回复。不要提问，不要写文件。');result=await terminal(toolSession);metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);
+  check('Tool admission stops excess execution in the authorized folder',()=>{assert.equal(metric.toolCalls,1);assert.equal(metric.exhausted,'tool_calls');assert.equal(metric.state,'failed');assert.equal(fs.readdirSync(folder).length,1);});
+  await fresh();const questionSession=await id();await settings({activeMs:120000,waitMs:15000});await send(ask);await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});let first=(await snap()).usage.at(-1);
+  const busy=await page.evaluate(({session,settings})=>window.omniEdu.setXiaozhiBudget({sessionId:session,...settings}),{session:questionSession,settings:(await snap()).budgetSettings});check('Running budget is frozen against renderer updates',()=>assert.equal(busy.error,'busy'));
+  await new Promise(resolve=>setTimeout(resolve,2200));let later=(await snap()).usage.at(-1);
+  check('Real teacher question pauses activity time while waiting time grows',()=>{assert.equal(later.state,'waiting');assert(later.waitingMs-first.waitingMs>=2000);assert(later.activeMs-first.activeMs<=50);});
+  await page.getByTestId('pi-question-option-1').click();await page.getByTestId('pi-question-submit').click();result=await terminal(questionSession);metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);
+  check('Teacher answer resumes the same run with cumulative usage',()=>{assert.equal(metric.state,'completed');assert(metric.modelCalls>=2);assert.deepEqual(metric.tokens,nativeTokens(questionSession));assert(metric.waitingMs>=2000);});
+  await fresh();const expiredSession=await id();await settings({activeMs:120000,waitMs:1000});await send(ask);result=await terminal(expiredSession);metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);const q=result.controls.find(item=>item.kind==='question');assert(q);
+  const late=await page.evaluate(({session,q})=>window.omniEdu.answerXiaozhi({sessionId:session,controlId:q,answer:'五年级'}),{session:expiredSession,q:q.id});
+  check('Teacher wait limit interrupts and rejects late answers without effects',()=>{assert.equal(metric.exhausted,'wait_time');assert.equal(metric.state,'failed');assert.equal(late.error,'permission_denied');assert.equal(q.state,'interrupted');assert(!q.canResume);});
+  await fresh();const approvalSession=await id();await choose();await settings({activeMs:120000,waitMs:45000});await send('请调用 office_copy_file 将 分数课.md 复制成 课堂草稿.md，等待一次教师确认；不要重试，不要只给建议。');await page.locator('[data-testid="pi-copy-approval"][data-state="pending"]').waitFor({state:'visible',timeout:90000});first=(await snap()).usage.at(-1);
+  await new Promise(resolve=>setTimeout(resolve,31000));result=await snap();later=result.usage.at(-1);
+  check('Copy approval remains pending beyond old 30s timeout without consuming activity budget',()=>{assert(result.running);assert.equal(result.approvals.at(-1).state,'pending');assert.equal(later.state,'waiting');assert(later.waitingMs-first.waitingMs>=30000);assert(later.activeMs-first.activeMs<=50);assert(!fs.existsSync(path.join(folder,'课堂草稿.md')));});
+  await page.getByRole('button',{name:'停止本轮',exact:true}).click();result=await terminal(approvalSession);metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);
+  const lateApproval=await page.evaluate(({session,approval})=>window.omniEdu.decideXiaozhi({sessionId:session,approvalId:approval,decision:'approve'}),{session:approvalSession,approval:result.approvals.at(-1).id});
+  check('Stop preserves wait receipt, releases approval and denies late copy',()=>{assert.equal(metric.state,'interrupted');assert.equal(lateApproval.error,'permission_denied');assert(!fs.existsSync(path.join(folder,'课堂草稿.md')));});
+  await fresh();const timedSession=await id();await settings({activeMs:1000});await send('请详细写一个分数教学教案，至少两千字，逐段输出。');result=await terminal(timedSession);metric=result.usage.find(item=>item.runId===result.projection.turns.at(-1).id);
+  check('Active run limit actually aborts the real provider stream',()=>{assert.equal(metric.exhausted,'active_time');assert.equal(metric.state,'failed');assert(metric.activeMs>=900&&metric.activeMs<6000);assert.equal(result.projection.turns.at(-1).status,'failed');});
+  await fresh();const crashSession=await id();await send(ask);await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});const checkpoint=rows().usage.find(row=>row.conversation_id===crashSession).value;
+  execFileSync('taskkill',['/PID',String(app.process().pid),'/T','/F'],{windowsHide:true,stdio:'pipe'});await app.close().catch(()=>{});app=undefined;await launch();await page.getByTestId(`ai-conversation-session-${crashSession}`).click();await ready();result=await snap(crashSession);metric=result.usage.at(-1);
+  check('Actual crash marks last committed usage partial and never replays a run',()=>{assert.equal(metric.state,'interrupted');assert.equal(metric.completeness,'partial');assert.deepEqual(metric.tokens,checkpoint.tokens);assert(!result.running);assert.equal(metric.cost,null);});
+  report.success=true;
+}catch(error){report.error=String(error.stack).replaceAll(key,'[credential]').slice(0,3000);if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}finally{await app?.close().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({...report,report:path.relative(appRoot,path.join(output,'report.json'))}));}
+if(!report.success)process.exitCode=1;

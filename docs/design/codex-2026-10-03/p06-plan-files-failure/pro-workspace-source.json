@@ -1,0 +1,205 @@
+{
+  "source": "D:\\WorkProject\\HeroUIPro\\herouipro-v3\\src",
+  "sourcePackage": "@ag-ui/pro 1.0.0-beta.7",
+  "license": "SEE LICENSE IN LICENSE; existing README governs",
+  "roots": [
+    "components/app-layout/index.ts",
+    "components/sidebar/index.ts",
+    "components/file-tree/index.ts"
+  ],
+  "bytes": 182153,
+  "files": [
+    {
+      "file": "components/app-layout/index.ts",
+      "bytes": 1273,
+      "sourceSha256": "93ffc1ce2d14f856bb74ce23a6d584dda62a5187cbb908132d392b85a07d03b8",
+      "outputSha256": "93ffc1ce2d14f856bb74ce23a6d584dda62a5187cbb908132d392b85a07d03b8"
+    },
+    {
+      "file": "components/app-layout/app-layout.tsx",
+      "bytes": 22254,
+      "sourceSha256": "7eca5a9b14a555c4a6e0bd873d9edfb6bdf322dec0dadcd8bab855e3acadef62",
+      "outputSha256": "7eca5a9b14a555c4a6e0bd873d9edfb6bdf322dec0dadcd8bab855e3acadef62"
+    },
+    {
+      "file": "utils/compose.tsx",
+      "bytes": 1115,
+      "sourceSha256": "b8112c135009e2a25ef5665bd179d817614d8a5bb93a067e352016f62bd47c70",
+      "outputSha256": "b8112c135009e2a25ef5665bd179d817614d8a5bb93a067e352016f62bd47c70"
+    },
+    {
+      "file": "utils/cookie-storage.ts",
+      "bytes": 992,
+      "sourceSha256": "6e499b728ddb5b5de7ca6fbacc406273aa9da260c136e7aaa26f24aaedefbf3e",
+      "outputSha256": "6e499b728ddb5b5de7ca6fbacc406273aa9da260c136e7aaa26f24aaedefbf3e"
+    },
+    {
+      "file": "utils/keyboard-shortcut.ts",
+      "bytes": 1458,
+      "sourceSha256": "47583e18e9306e3069a30caba3d6a611a6f7a35307832038aef07b5220539491",
+      "outputSha256": "47583e18e9306e3069a30caba3d6a611a6f7a35307832038aef07b5220539491"
+    },
+    {
+      "file": "components/icons.tsx",
+      "bytes": 13505,
+      "sourceSha256": "71986eadd3d632a0a3de43f894d886e8ce5c01ebb78c0fa642b4da5189f8844f",
+      "outputSha256": "71986eadd3d632a0a3de43f894d886e8ce5c01ebb78c0fa642b4da5189f8844f"
+    },
+    {
+      "file": "components/resizable/index.ts",
+      "bytes": 1019,
+      "sourceSha256": "6db4c8e08188c7fa30e2c0f1ef1f15b7eb8d3b9719ced2a4a31972ad6506c42b",
+      "outputSha256": "6db4c8e08188c7fa30e2c0f1ef1f15b7eb8d3b9719ced2a4a31972ad6506c42b"
+    },
+    {
+      "file": "components/resizable/resizable.tsx",
+      "bytes": 9708,
+      "sourceSha256": "71729f9a21ec262f567c3e333bd17ec60a9b3e1b02bfc3e39fc13bcd964a54fc",
+      "outputSha256": "71729f9a21ec262f567c3e333bd17ec60a9b3e1b02bfc3e39fc13bcd964a54fc"
+    },
+    {
+      "file": "components/resizable/resizable.styles.ts",
+      "bytes": 1809,
+      "sourceSha256": "ea4a90f245220769dbc59fbb500bf75ccf6506c4347c523d1bbe9f148a0c24f9",
+      "outputSha256": "ea4a90f245220769dbc59fbb500bf75ccf6506c4347c523d1bbe9f148a0c24f9"
+    },
+    {
+      "file": "components/sheet/index.ts",
+      "bytes": 1362,
+      "sourceSha256": "a825b805054ebb6231e1f3c4d1c709f345ac31fad7c8f7c4fb81da68bb28ef23",
+      "outputSha256": "a825b805054ebb6231e1f3c4d1c709f345ac31fad7c8f7c4fb81da68bb28ef23"
+    },
+    {
+      "file": "components/sheet/sheet.tsx",
+      "bytes": 38226,
+      "sourceSha256": "f2a0d89cd3ea2bec49e0ccc29590485cf816a95f17436f33e4d47c565e1a731b",
+      "outputSha256": "f2a0d89cd3ea2bec49e0ccc29590485cf816a95f17436f33e4d47c565e1a731b"
+    },
+    {
+      "file": "components/sheet/browser.ts",
+      "bytes": 940,
+      "sourceSha256": "db0929c97c73508b1dcf4369dc061017e58b936f71a4e1e09dd3aaa5978290b0",
+      "outputSha256": "db0929c97c73508b1dcf4369dc061017e58b936f71a4e1e09dd3aaa5978290b0"
+    },
+    {
+      "file": "components/sheet/constants.ts",
+      "bytes": 358,
+      "sourceSha256": "2119f3e48722d8a636c38c7cc3c0b8cd1b4b79e8ce305c858debdf776d166b35",
+      "outputSha256": "2119f3e48722d8a636c38c7cc3c0b8cd1b4b79e8ce305c858debdf776d166b35"
+    },
+    {
+      "file": "components/sheet/context.tsx",
+      "bytes": 2636,
+      "sourceSha256": "f9643cef6d961e93c755736ed450af29ba2f7967933954c0545ddf5955d4fa2e",
+      "outputSha256": "f9643cef6d961e93c755736ed450af29ba2f7967933954c0545ddf5955d4fa2e"
+    },
+    {
+      "file": "components/sheet/types.ts",
+      "bytes": 204,
+      "sourceSha256": "b3f41ab3f3ab29bb6b3a7632d2a1a87519b5aa9551455596613f8ad61c344de0",
+      "outputSha256": "b3f41ab3f3ab29bb6b3a7632d2a1a87519b5aa9551455596613f8ad61c344de0"
+    },
+    {
+      "file": "components/sheet/helpers.ts",
+      "bytes": 3196,
+      "sourceSha256": "bc57362b655935218f68113e47470ddadf0e1f47424dfca0f8f340b0c4c27986",
+      "outputSha256": "bc57362b655935218f68113e47470ddadf0e1f47424dfca0f8f340b0c4c27986"
+    },
+    {
+      "file": "components/sheet/sheet.styles.ts",
+      "bytes": 1341,
+      "sourceSha256": "baa3f2efacaf82f63cbaf391e246f82a0a03affcd0387d5bae621193e1fd06d0",
+      "outputSha256": "baa3f2efacaf82f63cbaf391e246f82a0a03affcd0387d5bae621193e1fd06d0"
+    },
+    {
+      "file": "components/sheet/use-controlled.ts",
+      "bytes": 969,
+      "sourceSha256": "11ff81f84e108dcbec1ece8cbc332e79a167ece691330cbe80205b38cd63c506",
+      "outputSha256": "11ff81f84e108dcbec1ece8cbc332e79a167ece691330cbe80205b38cd63c506"
+    },
+    {
+      "file": "components/sheet/use-position-fixed.ts",
+      "bytes": 3567,
+      "sourceSha256": "ec27635bc1a87236455eb372efab962c6ca4a7056210087b866ae9d811c58e71",
+      "outputSha256": "ec27635bc1a87236455eb372efab962c6ca4a7056210087b866ae9d811c58e71"
+    },
+    {
+      "file": "components/sheet/use-prevent-scroll.ts",
+      "bytes": 6893,
+      "sourceSha256": "7fdcbcd039062c8c9f1705132f2900bdb3cb2809a0daac442fdc843bf9fbe78b",
+      "outputSha256": "7fdcbcd039062c8c9f1705132f2900bdb3cb2809a0daac442fdc843bf9fbe78b"
+    },
+    {
+      "file": "components/sheet/use-scale-background.ts",
+      "bytes": 2774,
+      "sourceSha256": "ba6bec576c732f73eb31b78762adf61933365342c877b0ec0053ba1dd93b6d68",
+      "outputSha256": "ba6bec576c732f73eb31b78762adf61933365342c877b0ec0053ba1dd93b6d68"
+    },
+    {
+      "file": "components/sheet/use-snap-points.ts",
+      "bytes": 12394,
+      "sourceSha256": "c88cf4a3e848567ece7221e68e4eed22795d8e921ccd8c8595af353becdb6ae0",
+      "outputSha256": "c88cf4a3e848567ece7221e68e4eed22795d8e921ccd8c8595af353becdb6ae0"
+    },
+    {
+      "file": "components/sidebar/sidebar.tsx",
+      "bytes": 26820,
+      "sourceSha256": "eaf0d5000b562c5edbd471f38c6b4ef0486bef4a4fd1f0879dad990b018eac0b",
+      "outputSha256": "eaf0d5000b562c5edbd471f38c6b4ef0486bef4a4fd1f0879dad990b018eac0b"
+    },
+    {
+      "file": "utils/tree-motion.tsx",
+      "bytes": 6486,
+      "sourceSha256": "6b70c060dbdc20eb439120cdc04d03a0b7144d44f093903961a9f8092179606f",
+      "outputSha256": "6b70c060dbdc20eb439120cdc04d03a0b7144d44f093903961a9f8092179606f"
+    },
+    {
+      "file": "components/sidebar/sidebar.styles.ts",
+      "bytes": 1613,
+      "sourceSha256": "c908db517c148b649ec0c53867d757ae9e53e77670936ffee8a2442e2660c2dd",
+      "outputSha256": "c908db517c148b649ec0c53867d757ae9e53e77670936ffee8a2442e2660c2dd"
+    },
+    {
+      "file": "components/app-layout/app-layout.styles.ts",
+      "bytes": 530,
+      "sourceSha256": "d1883dcaa0dc32046a3933f14ee3877f499c71f20de8179b8fd8ba3340bac2a9",
+      "outputSha256": "d1883dcaa0dc32046a3933f14ee3877f499c71f20de8179b8fd8ba3340bac2a9"
+    },
+    {
+      "file": "components/sidebar/index.ts",
+      "bytes": 2841,
+      "sourceSha256": "6a0fdcf49c42c12f4578ef99ee2cde50d0094ef155aad137e1010ae641160448",
+      "outputSha256": "6a0fdcf49c42c12f4578ef99ee2cde50d0094ef155aad137e1010ae641160448"
+    },
+    {
+      "file": "components/file-tree/index.ts",
+      "bytes": 1148,
+      "sourceSha256": "5ccd281ba8c334ee02fd8a2367672fb5902e9a65ac7d35054f3c0aaf42dcb3fd",
+      "outputSha256": "5ccd281ba8c334ee02fd8a2367672fb5902e9a65ac7d35054f3c0aaf42dcb3fd"
+    },
+    {
+      "file": "components/file-tree/file-tree.tsx",
+      "bytes": 9043,
+      "sourceSha256": "4eb03bb9d0f23b4f330119d368ee379410fefa3a06fb7a3e25ae6606f976ed46",
+      "outputSha256": "4eb03bb9d0f23b4f330119d368ee379410fefa3a06fb7a3e25ae6606f976ed46"
+    },
+    {
+      "file": "components/file-tree/file-tree.styles.ts",
+      "bytes": 1122,
+      "sourceSha256": "c8c087ca401a95626ccf1ed10e04f2e0fa189dc28cc7bcfcfe9f946b960d525d",
+      "outputSha256": "c8c087ca401a95626ccf1ed10e04f2e0fa189dc28cc7bcfcfe9f946b960d525d"
+    },
+    {
+      "file": "components/file-tree/use-file-tree.ts",
+      "bytes": 2510,
+      "sourceSha256": "4696f4deeef26ea684430902f87f57883da37496d8f2986b5ce26e9cf98ca8ce",
+      "outputSha256": "4696f4deeef26ea684430902f87f57883da37496d8f2986b5ce26e9cf98ca8ce"
+    },
+    {
+      "file": "components/file-tree/use-file-tree-drag.ts",
+      "bytes": 2047,
+      "sourceSha256": "98dc7605164cf47ef4603208b7f021bc77a404126679704a171b47be4ee69f89",
+      "outputSha256": "98dc7605164cf47ef4603208b7f021bc77a404126679704a171b47be4ee69f89"
+    }
+  ]
+}

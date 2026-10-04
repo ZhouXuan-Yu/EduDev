@@ -1,0 +1,353 @@
+{
+  "version": 1,
+  "scope": "P07-B1 finite local preview; B2/B3 and full goal pending",
+  "entries": [
+    {
+      "path": "logs/p07b1-build.log",
+      "bytes": 25369,
+      "sha256": "29200facb5360dca1fb558c104c0a93b1cd55a01d1b2b77c6774cecc92df2a36"
+    },
+    {
+      "path": "logs/p07b1-build2.log",
+      "bytes": 25334,
+      "sha256": "9f79ca87f6f1edb46ffb7412ac1740f99b7a53b29a8827ea225450a3fd5270e4"
+    },
+    {
+      "path": "logs/p07b1-build3.log",
+      "bytes": 25334,
+      "sha256": "748b4b8eeee91b4f06723ee95ad6a1c2f79322a9b6ab09befceac6733eb66822"
+    },
+    {
+      "path": "logs/p07b1-diff-check-final.log",
+      "bytes": 3190,
+      "sha256": "6a15379b3a60c637172f4d6938c0cac75baee65f59fbe171796aae2231b5c0a7"
+    },
+    {
+      "path": "logs/p07b1-diff-check.log",
+      "bytes": 3190,
+      "sha256": "6a15379b3a60c637172f4d6938c0cac75baee65f59fbe171796aae2231b5c0a7"
+    },
+    {
+      "path": "logs/p07b1-files-boundary.log",
+      "bytes": 1714,
+      "sha256": "603888e5cbeefd20dc88b59f1dfc4cf9ca3e80f242a46d38d9841da262b1e088"
+    },
+    {
+      "path": "logs/p07b1-files-ui.log",
+      "bytes": 2319,
+      "sha256": "1b8e8e61d06617011521d2136d503181531a26a72d694284e44a6cdb2db03a19"
+    },
+    {
+      "path": "logs/p07b1-pro.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    },
+    {
+      "path": "logs/p07b1-protocol-final.log",
+      "bytes": 756,
+      "sha256": "bcd74b9e21e57f1670b90283cbef28f989d2a06c2d6d76631000e873622da5e0"
+    },
+    {
+      "path": "logs/p07b1-protocol.log",
+      "bytes": 756,
+      "sha256": "bcd74b9e21e57f1670b90283cbef28f989d2a06c2d6d76631000e873622da5e0"
+    },
+    {
+      "path": "logs/p07b1-renderer-final.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "path": "logs/p07b1-renderer.log",
+      "bytes": 276,
+      "sha256": "e91c566aa759f46a80aa99fe1de66a1737111450301c25b95eb9fac50bb9efaf"
+    },
+    {
+      "path": "logs/p07b1-smoke-final.log",
+      "bytes": 38492,
+      "sha256": "5ebcc53e897b47f49f7cbaa1d5b733795fa94be2c4666d832d6eb1f232c14420"
+    },
+    {
+      "path": "logs/p07b1-source.log",
+      "bytes": 39,
+      "sha256": "cf32f9e28818577c6805c18f5f1bd9bfeb923682de76bfc44d66b387df375c21"
+    },
+    {
+      "path": "logs/p07b1-ui-final.log",
+      "bytes": 1919,
+      "sha256": "5f2fa70d30cf122a3d6f1529dae0c2173915770d9547ba26e2c3adb03c7d2680"
+    },
+    {
+      "path": "logs/p07b1-ui.log",
+      "bytes": 1530,
+      "sha256": "1fb050bf98c9db248458beb1079d9a9f7b58d1ac0d81998ff36466f89cd2df2d"
+    },
+    {
+      "path": "logs/p07b1-ui2.log",
+      "bytes": 1650,
+      "sha256": "f714175f5e99c4f46bb84b762661a31708fe5c13f73ef4bf4ecc6d6dc6c992b6"
+    },
+    {
+      "path": "logs/p07b1-ui3.log",
+      "bytes": 1899,
+      "sha256": "ea2162d0d861ca883901e23d2ffd82933e26fde9e12ae65f79b9f569a033e0af"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-AGU4sB/failure.png",
+      "bytes": 151608,
+      "sha256": "c6df244bc21654d97f8593ab1ed29564fca1b3176becec0379c82403b74b3c97"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-AGU4sB/office-1366x768.png",
+      "bytes": 134807,
+      "sha256": "996dbca5c165b187145095a076af30ef43f5c1e5896534ddcb39a4f3a5ac08a1"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-AGU4sB/office-1920x1080.png",
+      "bytes": 151608,
+      "sha256": "c6df244bc21654d97f8593ab1ed29564fca1b3176becec0379c82403b74b3c97"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-AGU4sB/report.json",
+      "bytes": 2389,
+      "sha256": "1c4e59b8c2bd7d3322153746c1bc08ba29d66f8eb5e1aff4dce57907a30700a6"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7BPiI/failure.png",
+      "bytes": 128609,
+      "sha256": "2fea5d4b0ffc0fbbefe3a9d0b2e69b0953928aa7694a2f4d22dad4ecf6add301"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7BPiI/office-1366x768.png",
+      "bytes": 135964,
+      "sha256": "dec9aa8431ad6576f0ce1ee0df260d0765395deeec948c04ac722fbc6032b3de"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7BPiI/office-1920x1080.png",
+      "bytes": 152511,
+      "sha256": "afbd84e0be9f0116fcd26d3ea2e24b8a6ce1ea3d5895b09e204768f46b8d72d3"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7BPiI/report.json",
+      "bytes": 2692,
+      "sha256": "fa10a84f864c87b89e70b269c2efc60d8a877b0267e8ed438be97b5b4826cd59"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7Blof/failure.png",
+      "bytes": 85126,
+      "sha256": "10bcb84d68ac0dc98a9a686149fb43525791d4d1fb8493213ddb8a9e48f3b9c8"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7Blof/office-1366x768.png",
+      "bytes": 136906,
+      "sha256": "6bc12158cf3700816ab8501984855a5ee38b8ac78e693a80cb498e55a5d76529"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7Blof/office-1920x1080.png",
+      "bytes": 153552,
+      "sha256": "9f0c766f8562df551c198df080bd2eb2ef178b5fa437a2a31695f2b13c2a91f3"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-O7Blof/report.json",
+      "bytes": 3139,
+      "sha256": "66dbc114d90191497215e165556c0f140a88154537dadac9a01f4c2bbd07e2c1"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-iJFcl1/office-1366x768.png",
+      "bytes": 137421,
+      "sha256": "93a3f8f65b9575cd3122c19c8ad7fb9fcf33ee29e3b6fc79d39e3831be64f6cf"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-iJFcl1/office-1920x1080.png",
+      "bytes": 154884,
+      "sha256": "9145286b589e49e20748bbd86eb1bc075f81ba01e87d91960def1e7b97b120c7"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-iJFcl1/report.json",
+      "bytes": 3248,
+      "sha256": "ac980bc0f361640ed6c83679b37cf808f9b90f227335a24dbb034012304f5125"
+    },
+    {
+      "path": "instances/pi-files-Cdo0No/report.json",
+      "bytes": 2775,
+      "sha256": "1979a70f6acad51d148beb310281289cf131aac1f8bb8d3225c05a7144640bf3"
+    },
+    {
+      "path": "instances/pi-files-ui-ONKzTP/report.json",
+      "bytes": 3854,
+      "sha256": "e8a8ed253010716d18232806ac2cc85446ee1fbcb30a0a9eea377a4b0fdb70e4"
+    },
+    {
+      "path": "source/apps/desktop/electron.vite.config.ts",
+      "bytes": 780,
+      "sha256": "cf14c0abcc833e74695a1e4ae298a49630e67b530f01be3ba0a64cdee6a012ad"
+    },
+    {
+      "path": "source/apps/desktop/package.json",
+      "bytes": 13624,
+      "sha256": "dac78af7824d8373a3c7b1d0257f641e9cc9ba04151d473b6344fc6aceff55dc"
+    },
+    {
+      "path": "source/apps/desktop/package-lock.json",
+      "bytes": 409781,
+      "sha256": "a7189ceb63eb289891a2642707b90cdfcd96d4dc0debd722c2953613e46a4fa6"
+    },
+    {
+      "path": "source/apps/desktop/src/shared/xiaozhi-documents.ts",
+      "bytes": 2441,
+      "sha256": "75adb8a76e6e30f7997ef6fbde52eb832a1260de3fa40b20078daa7e31f320c9"
+    },
+    {
+      "path": "source/apps/desktop/src/shared/xiaozhi-files.ts",
+      "bytes": 2664,
+      "sha256": "129defec96c1410649af33dfb0302f64153494b7a4664ab2323c76281990988e"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/document-host.ts",
+      "bytes": 2201,
+      "sha256": "aa12e19a06677eed86358172bc4156a9a17a26ffa28480920528af79830e580d"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/document-worker.ts",
+      "bytes": 2093,
+      "sha256": "f63d2ed060c71d405bdbf93e26f6c7b754a5a4e431a4682cbd0d8b25fb303c46"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/workspace-files.ts",
+      "bytes": 8925,
+      "sha256": "1e46bedc315abd9d48463f6e85d24e3acd3a8b0a83aff4daf9049690d35db338"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/workspace-file-api.ts",
+      "bytes": 2742,
+      "sha256": "11644a7f1e95314272efb0b6ca1e07aa8008a6c85dc6ca1dc8428ec7a5b9c752"
+    },
+    {
+      "path": "source/apps/desktop/src/renderer/components/office/PiWorkspaceFiles.tsx",
+      "bytes": 11371,
+      "sha256": "628cd72d7577d6326ac20d3f9ec00508f0a8bcec13df5938f81c393b2645de51"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/reuse-hana-document-extract.mjs",
+      "bytes": 2018,
+      "sha256": "a3f970411c352b7d77c51d45430400e7d8a0d9474f70d1898c68708b4440dd92"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-document-ui-smoke.mjs",
+      "bytes": 11694,
+      "sha256": "acbcfdcf46e60c37713964e96ccd58cc9532257f299a1275adb5dcbc8771050d"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-document-protocol-smoke.mjs",
+      "bytes": 2283,
+      "sha256": "122a96c1a345e32ea70b246519ede612c83a1b47b6df9d4f680004e404c0ce51"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/make-office-fixtures.py",
+      "bytes": 2915,
+      "sha256": "1b2b350b9fd93de3622770a8790d50febbdd28dfa9f78652e40e18ef279f9f30"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-workspace-files-smoke.mjs",
+      "bytes": 11540,
+      "sha256": "596c15c38a05cb950e653c7d44b65a6ac65d73a0161a46461f5c9e710af9ce7f"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-workspace-files-ui-smoke.mjs",
+      "bytes": 15117,
+      "sha256": "2c2f957392eeffe811e2faeede91476113554dcf24e3d58c7699a32bccbd7fac"
+    },
+    {
+      "path": "source/docs/114_PI_OFFICE_DOCUMENT_DELIVERY_CONTRACT.md",
+      "bytes": 5527,
+      "sha256": "3050ab9860e072c9d2cf16f3867071e43a763192bff009af1f30d37caa79dcb0"
+    },
+    {
+      "path": "source/docs/115_PI_OFFICE_DOCUMENT_PREVIEW_ACCEPTANCE.md",
+      "bytes": 8061,
+      "sha256": "757bbec962f3193ba5d4e8b6da96357514a5a9ebb23eef914c85feb4f947aa8b"
+    },
+    {
+      "path": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 50078,
+      "sha256": "45d75d5c4dc122ac487f75bbf5e6779717aa5aabba8694c64a50ee884cb1c827"
+    },
+    {
+      "path": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 45112,
+      "sha256": "23af05cdb61325e5d99108dbd03efa3699e5e9179f6e832dfd585da5411c563b"
+    },
+    {
+      "path": "source/third_party/anydoc-0.1.2.LICENSE",
+      "bytes": 1084,
+      "sha256": "03a9e7657aac6536fb6458bd220347c4e7f85bd0a51d8d9e8528530b7a682ade"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/anydoc-loader.ts",
+      "bytes": 1792,
+      "sha256": "9c0f4eebfd6b32e7a0770e99091437ccb09739d829c48b251be3da24c03eef7d"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/index.ts",
+      "bytes": 3791,
+      "sha256": "defc6b8dc3c386862029bd7217a3697dada581200e774aa6718a785d9beece37"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/source-manifest.json",
+      "bytes": 1451,
+      "sha256": "4c6cfc73462d7294faee0efb5bb31da44d08b547e7d891d7f03d73aa3062a371"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/types.ts",
+      "bytes": 465,
+      "sha256": "0ac66e7d2a2c0ddcc6e7d633fd88e6fb0080c722a1557402eba4f589ba4510a6"
+    }
+  ],
+  "runtimeHashes": [
+    {
+      "path": "out/main/document-host-BbDOjurP.js",
+      "bytes": 2086,
+      "sha256": "a0387cf1191ea45aef35b026c0bf2bf1b0c211faa4d93011b47bcb45bdad82df"
+    },
+    {
+      "path": "out/main/document-worker.js",
+      "bytes": 4664,
+      "sha256": "155168481de3e50f67971738af058f61aba34c4d820053667243dd675a2dfb17"
+    },
+    {
+      "path": "out/main/index.js",
+      "bytes": 1007643,
+      "sha256": "18cea9a80224b8000e650e159ec12054c43386c845627587ad0780261d120bc1"
+    },
+    {
+      "path": "out/main/pi-session-wVSUBgav.js",
+      "bytes": 129619,
+      "sha256": "ee8feda927a32b0562f183d5e6f1473b9e550deca5c8ca5d5feafdbace4fc069"
+    },
+    {
+      "path": "out/main/xiaozhi-documents-CPXy0b8w.js",
+      "bytes": 1883,
+      "sha256": "6bff43b6ee6f75a24e0302febbd2cd98f884e70dd3d38bc22ce0df2e83a276cf"
+    },
+    {
+      "path": "out/preload/index.cjs",
+      "bytes": 18667,
+      "sha256": "c437c30c2baa7871959c914a1772a462405ab2e5cc92424e91f41b1f08104a72"
+    },
+    {
+      "path": "out/renderer/assets/index-CualzS98.js",
+      "bytes": 4020904,
+      "sha256": "698fc7bcff1ff847d0ff1956e09f3ff3906c3d84d7248caca9def0dbd86d094f"
+    },
+    {
+      "path": "node_modules/@firecrawl/anydoc-win32-x64-msvc/anydoc.win32-x64-msvc.node",
+      "bytes": 8321024,
+      "sha256": "e8aa7bc19b35fb649580c67906aaafca48e7851b055149d86cf8d1dbcc276e9f"
+    }
+  ]
+}

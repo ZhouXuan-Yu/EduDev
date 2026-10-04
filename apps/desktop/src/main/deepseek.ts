@@ -6,6 +6,7 @@ import type {
   AiAgentTraceStep,
   AiHarnessRunSummary,
   AiRouterDecision,
+  AiProviderId,
   KnowledgeNode,
   LearningRecord,
   ResourceChunk,
@@ -20,6 +21,7 @@ import { createAiToolExecutionState, executeAiToolCall, getModelToolDefinitions,
 import type { LearningAnalytics } from './ai-harness/learning-analytics';
 import { buildUsabilityInstructions, gradeUsabilityReply } from './ai-harness/usability-policy';
 import { buildAgentHarnessInstructions, selectDeepTutorCapability } from './ai-harness/agent-harness-profile';
+import { chatCompletionsUrl } from './ai-provider-endpoint';
 
 export type DeepSeekMessage = {
   role: 'system' | 'user' | 'assistant' | 'tool';
@@ -57,7 +59,6 @@ export type DeepSeekResponse = {
   };
 };
 
-const DEEPSEEK_BASE_URL = 'https://api.deepseek.com';
 const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
 
 export type DeepSeekContext = {
@@ -274,6 +275,7 @@ async function emitTrace(context: DeepSeekContext, step: AiAgentTraceStep) {
 }
 
 export async function requestDeepSeekCompletion(params: {
+  provider?: AiProviderId;
   apiKey: string;
   model: string;
   messages: DeepSeekMessage[];
@@ -283,27 +285,33 @@ export async function requestDeepSeekCompletion(params: {
   maxTokens?: number;
   responseFormat?: 'json_object' | 'none';
 }) {
-  const response = await fetch(`${DEEPSEEK_BASE_URL}/chat/completions`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${params.apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      model: params.model,
-      messages: params.messages,
-      stream: false,
-      temperature: params.temperature ?? 0.2,
-      ...(params.maxTokens ? { max_tokens: params.maxTokens } : {}),
-      ...(params.responseFormat === 'none' ? {} : { response_format: { type: 'json_object' } }),
-      ...(params.tools?.length ? { tools: params.tools, tool_choice: 'auto' } : {}),
-    }),
-    signal: params.signal,
-  });
+  let response: Response;
+  try {
+    response = await fetch(chatCompletionsUrl(params.provider === 'glm' ? 'glm' : 'deepseek'), {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${params.apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: params.model,
+        messages: params.messages,
+        stream: false,
+        temperature: params.temperature ?? 0.2,
+        ...(params.maxTokens ? { max_tokens: params.maxTokens } : {}),
+        ...(params.responseFormat === 'none' ? {} : { response_format: { type: 'json_object' } }),
+        ...(params.tools?.length ? { tools: params.tools, tool_choice: 'auto' } : {}),
+      }),
+      signal: params.signal,
+    });
+  } catch (error) {
+    if (params.signal.aborted) throw new Error(`${params.provider === 'glm' ? '智谱 GLM' : 'DeepSeek'} 请求超时或已取消，请重试。`);
+    throw new Error(`无法连接 ${params.provider === 'glm' ? '智谱 GLM' : 'DeepSeek'} API。请检查网络、代理或防火墙后重试；尚未收到服务端响应，不能据此判断密钥是否有效。`);
+  }
 
   const data = (await response.json().catch(() => ({}))) as DeepSeekResponse;
   if (!response.ok) {
-    throw new Error(data.error?.message || `DeepSeek 请求失败：HTTP ${response.status}`);
+    throw new Error(data.error?.message || `${params.provider === 'glm' ? '智谱 GLM' : 'DeepSeek'} 请求失败：HTTP ${response.status}`);
   }
   return data;
 }
@@ -318,12 +326,14 @@ export async function runDirectDeepSeekChat(
   prompt: string,
   apiKey: string,
   model = DEFAULT_DEEPSEEK_MODEL,
+  provider: AiProviderId = 'deepseek',
 ): Promise<{ content: string; usage?: { promptTokens?: number; completionTokens?: number; totalTokens?: number } }> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 45_000);
   try {
     const data = await requestDeepSeekCompletion({
       apiKey,
+      provider,
       model,
       messages: [
         { role: 'system', content: DIRECT_DEEPSEEK_SYSTEM_PROMPT },
@@ -336,10 +346,10 @@ export async function runDirectDeepSeekChat(
       signal: controller.signal,
     });
     const content = data.choices?.[0]?.message?.content?.trim() ?? '';
-    if (!content) throw new Error('DeepSeek 普通文本模式没有返回可用 content。');
-    if (content.length > 16_000) throw new Error('DeepSeek 普通文本回答超过轻量模式长度上限。');
+    if (!content) throw new Error('模型普通文本模式没有返回可用 content。');
+    if (content.length > 16_000) throw new Error('模型普通文本回答超过轻量模式长度上限。');
     if (/sk-[A-Za-z0-9]{20,}|Bearer\s+[A-Za-z0-9._-]{20,}/i.test(content)) {
-      throw new Error('DeepSeek 普通文本回答触发敏感凭据检查，已阻断展示。');
+      throw new Error('模型普通文本回答触发敏感凭据检查，已阻断展示。');
     }
     return {
       content,
@@ -355,6 +365,7 @@ export async function runDirectDeepSeekChat(
 }
 
 export function requestStructuredReplyRepair(params: {
+  provider?: AiProviderId;
   apiKey: string;
   model: string;
   messages: DeepSeekMessage[];
@@ -390,6 +401,7 @@ function structuredJsonIssue(response: DeepSeekResponse): StructuredJsonRecovery
  * afterwards and remains fail-closed.
  */
 export async function recoverStructuredJsonCompletion(params: {
+  provider?: AiProviderId;
   initial: DeepSeekResponse;
   apiKey: string;
   model: string;
@@ -414,6 +426,7 @@ export async function recoverStructuredJsonCompletion(params: {
     },
   ];
   const response = await requestStructuredReplyRepair({
+    provider: params.provider,
     apiKey: params.apiKey,
     model: params.model,
     messages: retryMessages,
@@ -421,7 +434,7 @@ export async function recoverStructuredJsonCompletion(params: {
   });
   const finalFinishReason = String(response.choices?.[0]?.finish_reason ?? 'unknown');
   if (!response.choices?.[0]?.message?.content?.trim()) {
-    throw new Error('DeepSeek JSON 模式连续返回空 content（已受控重试 1 次）。');
+    throw new Error('模型 JSON 模式连续返回空 content（已受控重试 1 次）。');
   }
   return {
     response,
@@ -429,7 +442,7 @@ export async function recoverStructuredJsonCompletion(params: {
   };
 }
 
-export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, model = DEFAULT_DEEPSEEK_MODEL): Promise<AiConsoleRunResult> {
+export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, model = DEFAULT_DEEPSEEK_MODEL, provider: AiProviderId = 'deepseek'): Promise<AiConsoleRunResult> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 45_000);
   const messages: DeepSeekMessage[] = [
@@ -451,7 +464,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
     const initialToolNames = context.store ? progressiveToolNames(context.router) : [];
     let exposedToolNames = new Set(initialToolNames);
     const tools = context.store ? getProgressiveModelToolDefinitions(context.router) : [];
-    let data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools });
+    let data = await requestDeepSeekCompletion({ provider, apiKey, model, messages, signal: controller.signal, tools });
     const MAX_TOOL_ROUNDS = 3;
     const MAX_TOOL_CALLS = 8;
     let toolRound = 0;
@@ -544,6 +557,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
           : '工具结果已返回。请观察结果并决定是否还需要一个必要工具；如果不需要，严格返回 xiazhi.reply.v2 JSON。',
       });
       data = await requestDeepSeekCompletion({
+        provider,
         apiKey,
         model,
         messages,
@@ -563,10 +577,11 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         role: 'user',
         content: '工具调用已被宿主硬终止。只返回 xiazhi.reply.v2 JSON，不要输出工具调用。',
       });
-      data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools: [] });
+      data = await requestDeepSeekCompletion({ provider, apiKey, model, messages, signal: controller.signal, tools: [] });
     }
 
     const recoveredJson = await recoverStructuredJsonCompletion({
+      provider,
       initial: data,
       apiKey,
       model,
@@ -586,7 +601,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
       });
     }
     let content = data.choices?.[0]?.message?.content?.trim();
-    if (!content) throw new Error('DeepSeek JSON 模式没有返回可用 content。');
+    if (!content) throw new Error('模型 JSON 模式没有返回可用 content。');
     let parsed = parseStructuredReply(content, context.router);
     const MAX_JSON_REPAIRS = 2;
     let repairAttempt = 0;
@@ -612,13 +627,14 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         ].join('\n'),
       });
       const repairData = await requestStructuredReplyRepair({
+        provider,
         apiKey,
         model,
         messages,
         signal: controller.signal,
       });
       content = repairData.choices?.[0]?.message?.content?.trim();
-      if (!content) throw new Error(`DeepSeek 第 ${repairAttempt} 次 repair 返回为空。`);
+      if (!content) throw new Error(`模型第 ${repairAttempt} 次 repair 返回为空。`);
       data = repairData;
       parsed = parseStructuredReply(content, context.router);
     }
@@ -637,7 +653,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         similarQuestions: context.similarQuestions,
         learningAnalytics: learningAnalyticsBinding(context),
         harness,
-        errorMessage: `DeepSeek xiazhi.reply.v2 结构化回复校验失败：${parsed.errors.join('；') || '未知错误'}`,
+        errorMessage: `模型 xiazhi.reply.v2 结构化回复校验失败：${parsed.errors.join('；') || '未知错误'}`,
       };
     }
     const educationGrade = gradeEducationalReply({
@@ -749,7 +765,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
       similarQuestions: context.similarQuestions,
       learningAnalytics: learningAnalyticsBinding(context),
       harness,
-      errorMessage: error instanceof Error ? error.message : 'DeepSeek 调用失败。',
+      errorMessage: error instanceof Error ? error.message : '模型调用失败。',
     };
   } finally {
     clearTimeout(timeout);

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type {
   AiConfirmationItem,
+  AiExerciseSetTeacherEdits,
   AiConsoleRunResult,
   AttachmentImportResult,
   LearningRecord,
@@ -18,7 +19,7 @@ type MistakesWorkspaceProps = {
   confirmations: AiConfirmationItem[];
   onImportAttachment: (recordId: string) => Promise<void>;
   onSendAi: (prompt: string) => Promise<void>;
-  onConfirm: (item: AiConfirmationItem) => Promise<void>;
+  onConfirm: (item: AiConfirmationItem, edits?: AiExerciseSetTeacherEdits) => Promise<void>;
   onReject: (item: AiConfirmationItem) => Promise<void>;
   setStatus: (message: string) => void;
 };
@@ -51,7 +52,7 @@ export function MistakesWorkspace({
 
   const mistakeRecords = useMemo(() => records.filter((record) => record.recordType === 'mistake'), [records]);
   const selectedAnalysis = analyses.find((item) => item.id === selectedAnalysisId) ?? analyses[0];
-  const tripletConfirmation = confirmations.find((item) => item.actionType === 'save_exercise_set' && item.status === 'pending');
+  const tripletConfirmation = confirmations.find((item) => item.actionType === 'save_exercise_set' && item.status === 'pending' && item.studentId === activeStudent?.id);
 
   useEffect(() => {
     let cancelled = false;
@@ -84,13 +85,15 @@ export function MistakesWorkspace({
   }, [selectedAnalysis?.id, selectedAnalysis?.updatedAt]);
 
   useEffect(() => {
-    const items = aiResult?.similarQuestions?.slice(0, 3).map((item, index) => ({
-      role: index === 0 ? '原题（来源）' : index === 1 ? '相似题（本地命中）' : '变式题（待教师复核）',
+    const confirmationItems = tripletConfirmation?.payload.exerciseSet?.items;
+    const resultItems = aiResult?.structuredReply?.exerciseSetDraft?.items;
+    const items = (confirmationItems?.length ? confirmationItems : resultItems?.length ? resultItems : undefined)?.slice(0, 3).map((item) => ({
+      role: item.role === 'original' ? '原题（来源）' : item.role === 'similar' ? '相似题（本地命中）' : '变式题（待教师复核）',
       stem: item.stem,
       answer: item.answer,
       sourceKind: item.sourceKind,
-    })) ?? (tripletConfirmation?.payload.exerciseSet?.items?.slice(0, 3).map((item) => ({
-      role: item.role === 'original' ? '原题（来源）' : item.role === 'similar' ? '相似题（本地命中）' : '变式题（待教师复核）',
+    })) ?? (aiResult?.similarQuestions?.slice(0, 3).map((item, index) => ({
+      role: index === 0 ? '原题（来源）' : index === 1 ? '相似题（本地命中）' : '变式题（待教师复核）',
       stem: item.stem,
       answer: item.answer,
       sourceKind: item.sourceKind,
@@ -164,12 +167,12 @@ export function MistakesWorkspace({
   }
 
   async function sendForAnalysis() {
-    const text = draft.sanitizedText || draft.text;
+    const text = draft.sanitizedText;
     if (!activeStudent || !text.trim()) {
       setStatus('请先准备题目文本并生成脱敏预览。');
       return;
     }
-    await onSendAi(`请分析当前学生的错题，并基于以下脱敏题目文本检索本地相似题，生成原题、相似题、变式题三元题组草稿。只使用可验证来源，保留 generated/source 标记，不要自动保存。\n\n学生：${activeStudent.displayName}\n脱敏题目：\n${text}`);
+    await onSendAi(`请分析当前学生的错题，并基于以下脱敏题目文本检索本地相似题，生成原题、相似题、变式题三元题组草稿。只使用可验证来源，保留 generated/source 标记，不要自动保存。\n\n脱敏题目：\n${text}`);
   }
 
   const pendingTriplet = tripletConfirmation;
@@ -239,8 +242,7 @@ export function MistakesWorkspace({
       </section>
 
       <section className="work-panel span-2" data-testid="mistake-triplet-panel">
-        <div className="panel-heading"><div><h3>4. 三元题组预览</h3><p className="muted">编辑只改变当前预览；当前确认接口仍保存生成时的原始载荷，预览编辑尚不能覆盖写回。</p></div></div>
-        {pendingTriplet ? <div className="warning-box" data-testid="mistake-triplet-edit-boundary">请核对原始确认预览：当前本地编辑不会同步到待确认载荷，不能把编辑后的预览视为已保存。</div> : null}
+        <div className="panel-heading"><div><h3>4. 三元题组预览</h3><p className="muted">可校正题干和答案；点击确认后，校正内容与来源记录一同保存。</p></div></div>
         {!tripletDraft.length ? <p data-testid="mistake-triplet-empty">暂无题组草稿。完成脱敏后发送小智分析。</p> : tripletDraft.map((item, index) => (
           <article className="triplet-item" key={`${item.role}-${index}`} data-testid={`mistake-triplet-item-${index}`}>
             <span className="status-chip">{item.role}</span><span className="status-chip" data-testid={`mistake-triplet-source-${index}`}>{item.sourceKind}</span>
@@ -248,7 +250,7 @@ export function MistakesWorkspace({
             <label>答案<textarea value={item.answer} onChange={(event) => setTripletDraft((current) => current.map((entry, entryIndex) => entryIndex === index ? { ...entry, answer: event.target.value } : entry))} data-testid={`mistake-triplet-answer-${index}`} /></label>
           </article>
         ))}
-        {pendingTriplet ? <div className="confirmation-inline" data-testid="mistake-triplet-confirmation"><strong>待教师确认：{pendingTriplet.title}</strong><div className="toolbar-row"><button className="primary-action" onClick={() => onConfirm(pendingTriplet)} data-testid="mistake-triplet-confirm">确认并写入</button><button className="secondary-action" onClick={() => onReject(pendingTriplet)} data-testid="mistake-triplet-reject">拒绝（零写入）</button></div></div> : null}
+        {pendingTriplet ? <div className="confirmation-inline" data-testid="mistake-triplet-confirmation"><strong>待教师确认：{pendingTriplet.title}</strong><div className="toolbar-row"><button className="primary-action" onClick={() => onConfirm(pendingTriplet, tripletDraft.map(({ stem, answer }) => ({ stem, answer })))} disabled={tripletDraft.length !== pendingTriplet.payload.exerciseSet?.items?.length || tripletDraft.some((item) => !item.stem.trim())} data-testid="mistake-triplet-confirm">确认并写入</button><button className="secondary-action" onClick={() => onReject(pendingTriplet)} data-testid="mistake-triplet-reject">拒绝（零写入）</button></div></div> : null}
       </section>
 
       <section className="work-panel span-2" data-testid="exercise-set-library">

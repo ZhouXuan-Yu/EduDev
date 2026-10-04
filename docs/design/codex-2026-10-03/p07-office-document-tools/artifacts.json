@@ -1,0 +1,448 @@
+{
+  "version": 1,
+  "scope": "P07-B2 finite formal Office read; B3/C/D/E/P08/full Codex parity pending",
+  "entries": [
+    {
+      "path": "logs/p07b2-boundary-gate.log",
+      "bytes": 677,
+      "sha256": "8cfdd9a19f7a6760e28d175c89a1669f766bea3a44ab4ef26314d815b3ba948e"
+    },
+    {
+      "path": "logs/p07b2-boundary.log",
+      "bytes": 1093,
+      "sha256": "b9b71c4bc781dc05f02dfb899e5231a07c9007089a2d3b94d16771db78d79bd4"
+    },
+    {
+      "path": "logs/p07b2-boundary2.log",
+      "bytes": 1105,
+      "sha256": "eeb9cb3deccebd3a2420621a9b8b343166e8d619af0fae75e8eb1c267cc126f5"
+    },
+    {
+      "path": "logs/p07b2-boundary3.log",
+      "bytes": 677,
+      "sha256": "1fc6c6c8ac0f10f3162ef1849e5f4134ffd9cf2544ad303cdbd6cf8f8e006764"
+    },
+    {
+      "path": "logs/p07b2-build.log",
+      "bytes": 25334,
+      "sha256": "3fd61c2405f0511daaec023fb53fd091704a1b41640eaf430f9f8a9c9993fe06"
+    },
+    {
+      "path": "logs/p07b2-build2.log",
+      "bytes": 25334,
+      "sha256": "9b5513b06f04eea072e98cb690bfea99f8aeedc355fd241bff013cec167cf4d2"
+    },
+    {
+      "path": "logs/p07b2-build3.log",
+      "bytes": 25334,
+      "sha256": "4397f9fbd32eb3b8cd667d1680e50fd6d44bfabb2ac2aa058b0e0df25d3dce36"
+    },
+    {
+      "path": "logs/p07b2-build4.log",
+      "bytes": 25334,
+      "sha256": "5a8405a8e5a5c9a5c6b5b4ac585b49e7a5a3c74f137bdec9e717cee1dffbb048"
+    },
+    {
+      "path": "logs/p07b2-build5.log",
+      "bytes": 25334,
+      "sha256": "ea32478643997b90bbb582f38c203a15f02d80e8f3a465cb71f2f181f3c1b8a3"
+    },
+    {
+      "path": "logs/p07b2-diff-check.log",
+      "bytes": 3190,
+      "sha256": "6a15379b3a60c637172f4d6938c0cac75baee65f59fbe171796aae2231b5c0a7"
+    },
+    {
+      "path": "logs/p07b2-old-files-ui.log",
+      "bytes": 2319,
+      "sha256": "7f478be2224f79eca4c59d23ac0dc60320728df2e2a3a684f7cfedadb4226307"
+    },
+    {
+      "path": "logs/p07b2-old-files.log",
+      "bytes": 1714,
+      "sha256": "473aba028e408260e33f376ba11f9c56f6ea81b87f1a884b3f71f49a9695f797"
+    },
+    {
+      "path": "logs/p07b2-old-model.log",
+      "bytes": 1296,
+      "sha256": "3feab544b59a2117fedc9f1eea6560f6d0257811c04c82f60870c840968f842d"
+    },
+    {
+      "path": "logs/p07b2-preview-ui.log",
+      "bytes": 1919,
+      "sha256": "270cb639dd69cd6c476d575df04c1068c7450b00ed68363ff0d45516353028de"
+    },
+    {
+      "path": "logs/p07b2-pro-gate.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    },
+    {
+      "path": "logs/p07b2-protocol-gate.log",
+      "bytes": 756,
+      "sha256": "bcd74b9e21e57f1670b90283cbef28f989d2a06c2d6d76631000e873622da5e0"
+    },
+    {
+      "path": "logs/p07b2-read-safety-final.log",
+      "bytes": 728,
+      "sha256": "1f4af770189d7fa8a477d84afeaeabfd3734011e8cc33e39da43d47c8a596054"
+    },
+    {
+      "path": "logs/p07b2-read-safety.log",
+      "bytes": 645,
+      "sha256": "fca15bc9874f56617a09ceb0eedb4af46301bbee0d8ecee443e598f2eae9b347"
+    },
+    {
+      "path": "logs/p07b2-renderer-gate.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "path": "logs/p07b2-safety-gate.log",
+      "bytes": 728,
+      "sha256": "b0b621b70921fa67ee9ec3b447dbaa0b09dcd1c68898a1221811748ca78301db"
+    },
+    {
+      "path": "logs/p07b2-smoke-final.log",
+      "bytes": 38492,
+      "sha256": "0beeca7c66641c543aa48866578798e6f90e4e9505ddca8fe6d0c5ee27b053af"
+    },
+    {
+      "path": "logs/p07b2-source-gate.log",
+      "bytes": 39,
+      "sha256": "cf32f9e28818577c6805c18f5f1bd9bfeb923682de76bfc44d66b387df375c21"
+    },
+    {
+      "path": "logs/p07b2-ui-final.log",
+      "bytes": 1702,
+      "sha256": "9db44fd6f33abdd55bdf31d61ed5a2152990211d0bb1617c7d271a792df32f50"
+    },
+    {
+      "path": "logs/p07b2-ui-final2.log",
+      "bytes": 1960,
+      "sha256": "46dd9f8f6cb3f3bf5a1f98544bca04d8d22e519120cddfbf68922bb5b83baf28"
+    },
+    {
+      "path": "logs/p07b2-ui.log",
+      "bytes": 1591,
+      "sha256": "11abaae7a4366dee8890ef6effd776b016fce344426551ca4e7dfbef4897aa1e"
+    },
+    {
+      "path": "logs/p07b2-worker-boundary.log",
+      "bytes": 216,
+      "sha256": "3a428f5f14d0d3b5c191e77ea0157167d3efb1ab1e632cd5800bef69ad34e035"
+    },
+    {
+      "path": "logs/p07b2-worker-gate.log",
+      "bytes": 216,
+      "sha256": "3a428f5f14d0d3b5c191e77ea0157167d3efb1ab1e632cd5800bef69ad34e035"
+    },
+    {
+      "path": "instances/pi-office-boundary-TWaBMK/report.json",
+      "bytes": 1384,
+      "sha256": "e0d66d4d48bf1aab9e35a19434f8f4b83cbc30d59bbc70aebebd5bb3e662d34f"
+    },
+    {
+      "path": "instances/pi-office-boundary-lY53S9/report.json",
+      "bytes": 1396,
+      "sha256": "71949537bb7c097de2314b2130cf2aa8d585ebe51cb13cf250ddd415a6b87fdf"
+    },
+    {
+      "path": "instances/pi-office-boundary-ZKm7y9/report.json",
+      "bytes": 1093,
+      "sha256": "357b67d2e82369411bc942f771e3ae7f65eb9d3afb763c0b1dde83a3c484454e"
+    },
+    {
+      "path": "instances/pi-office-boundary-aKGKBM/report.json",
+      "bytes": 1093,
+      "sha256": "357b67d2e82369411bc942f771e3ae7f65eb9d3afb763c0b1dde83a3c484454e"
+    },
+    {
+      "path": "instances/pi-document-safety-43xF6t/report.json",
+      "bytes": 1062,
+      "sha256": "4746c86d5675f6f33547a76a0a3194051f15da55c75ab2fa87ca47e1e293ea73"
+    },
+    {
+      "path": "instances/pi-document-safety-Hvya3J/report.json",
+      "bytes": 1188,
+      "sha256": "764c64363d5979d3eb2d55579c4402d6cf614df144a944b53a7122e2722fd34b"
+    },
+    {
+      "path": "instances/pi-document-safety-pU2eY5/report.json",
+      "bytes": 1188,
+      "sha256": "764c64363d5979d3eb2d55579c4402d6cf614df144a944b53a7122e2722fd34b"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-y3Nkho/report.json",
+      "bytes": 2290,
+      "sha256": "45fb840955e97bba4d833aba34ba815abfce3567e4b284291dacce90825d8f95"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-y3Nkho/tool-1366x768.png",
+      "bytes": 288498,
+      "sha256": "aa3e14ff45cce078a0d0f013b57236075bbe8adb64dfaa4ce7c550ec5d424e33"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-y3Nkho/tool-1920x1080.png",
+      "bytes": 409453,
+      "sha256": "7f86af05ffefac066de3517678679db10b40904c12cd93d110332cf357b1396b"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-ZyTMXT/report.json",
+      "bytes": 2444,
+      "sha256": "2db52ec7e1f36bffc4ef273814358b971ee40076da9c3f7bfb5ab02ddaca7b92"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-ZyTMXT/tool-1366x768.png",
+      "bytes": 254240,
+      "sha256": "000d18926c50a2bb0f5b080cc1645aa83675c3087389e91c06e41b4b6796ccba"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-ZyTMXT/tool-1920x1080.png",
+      "bytes": 363180,
+      "sha256": "eabb7dcfb19bacda948e1ad88c06a61c3133a073880d037c566588538199d0f7"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-b27lxm/report.json",
+      "bytes": 2788,
+      "sha256": "e848750770115815d70a67200976b6c9d1ccd9e2313c44fc9b76426532ae5821"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-b27lxm/tool-1366x768.png",
+      "bytes": 265891,
+      "sha256": "3d187edcd1c14d5ab6dd4748f64147913f9d8ebb601b0247fb821e23cb221e53"
+    },
+    {
+      "path": "instances/pi-office-tool-ui-b27lxm/tool-1920x1080.png",
+      "bytes": 389992,
+      "sha256": "00d1c449ac36ebd06c9fec4fdb624f69ffaec67ccf84b57cc6b24a5a7453c1f9"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-tYtMQS/office-1366x768.png",
+      "bytes": 137436,
+      "sha256": "4aa690749af21d0abc21568ae020d899689837d7436e2d50374991395eb98aa9"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-tYtMQS/office-1920x1080.png",
+      "bytes": 154840,
+      "sha256": "c5a27389d302999cfc530a81caac368b8a65c319376eb5c210ad4fd2f8a9a214"
+    },
+    {
+      "path": "instances/pi-office-documents-ui-tYtMQS/report.json",
+      "bytes": 3248,
+      "sha256": "ac980bc0f361640ed6c83679b37cf808f9b90f227335a24dbb034012304f5125"
+    },
+    {
+      "path": "instances/pi-files-qRevNY/report.json",
+      "bytes": 2775,
+      "sha256": "1979a70f6acad51d148beb310281289cf131aac1f8bb8d3225c05a7144640bf3"
+    },
+    {
+      "path": "instances/pi-files-ui-F4sO2t/files-1366x768.png",
+      "bytes": 107541,
+      "sha256": "4a443213e669ccd4e154d4934495f21d10e2857ece13638a223c42f5e924d8bf"
+    },
+    {
+      "path": "instances/pi-files-ui-F4sO2t/files-1920x1080.png",
+      "bytes": 118785,
+      "sha256": "13beb2172ae5f8f8349ecb3041cca1649c5619490a0ff3e922914833cec7cf60"
+    },
+    {
+      "path": "instances/pi-files-ui-F4sO2t/files-narrow-1366x768.png",
+      "bytes": 91004,
+      "sha256": "71d40fd75a9dd42d80069b361447cde4ad3886ed0159fa9b2d6e3319033fc6c4"
+    },
+    {
+      "path": "instances/pi-files-ui-F4sO2t/files-narrow-1920x1080.png",
+      "bytes": 104342,
+      "sha256": "86b9e850ce46ef1612912cda07429e51f00748df9ddd8a9eb3685d8030dd45a5"
+    },
+    {
+      "path": "instances/pi-files-ui-F4sO2t/report.json",
+      "bytes": 3854,
+      "sha256": "e8a8ed253010716d18232806ac2cc85446ee1fbcb30a0a9eea377a4b0fdb70e4"
+    },
+    {
+      "path": "instances/pi-process-approval-ui-whNl7Q/model-menu-stable-1366.png",
+      "bytes": 160895,
+      "sha256": "59d60dc8d63e8c3dd89a235010d22c9f866330244534ee228fa9cde601487aba"
+    },
+    {
+      "path": "instances/pi-process-approval-ui-whNl7Q/model-menu-stable-1920.png",
+      "bytes": 243624,
+      "sha256": "d4e905a8af50bfbceefbc33920db40fd4b0c9a0cc81396f0c9d1ef84658082d9"
+    },
+    {
+      "path": "instances/pi-process-approval-ui-whNl7Q/report.json",
+      "bytes": 1772,
+      "sha256": "57b0b9e8bd86ff7d3bcfdf3879fcf6b79919b1258ea1dadd84c85c6972232d15"
+    },
+    {
+      "path": "source/apps/desktop/package.json",
+      "bytes": 14039,
+      "sha256": "cc22fb005f6aa957dcd020b8cc79da6ae8429ab8b421e09ba491ad8dff6e8c53"
+    },
+    {
+      "path": "source/apps/desktop/src/shared/xiaozhi-documents.ts",
+      "bytes": 2455,
+      "sha256": "a3f9d9e2f4cf964e6c5fdc5c96305c9e5aac07de3ef1bb7b3c3016cb66cdcd85"
+    },
+    {
+      "path": "source/apps/desktop/src/shared/xiaozhi-projection.ts",
+      "bytes": 9591,
+      "sha256": "13d9e6c66859942cdee58326e13825770a7a3d535b89479b7da2c03adbb30eb0"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/office-document-tools.ts",
+      "bytes": 5681,
+      "sha256": "602f86c734dd27e6e86280b5d91af64413258bf38edb00f18245d7dcc2d28e78"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/document-host.ts",
+      "bytes": 2364,
+      "sha256": "7d7e9e0f0c4d4467d96eba31cf95c8b550d3bd1174c424b21c7a23fec69779e5"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/workspace-files.ts",
+      "bytes": 9602,
+      "sha256": "b84bb7f39326711d03b12641cf4fcca91580653006e5dfea32cd7528d6676079"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 50176,
+      "sha256": "14aafceb58b4a383496a89da32e140bae3620f369a928fc55263399faf2855cc"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 43204,
+      "sha256": "83ba229d1e88f6f6b80f2865c5edb71cb2c255cb942a08131af2b94c39b5650e"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-document-tool-ui-smoke.mjs",
+      "bytes": 14646,
+      "sha256": "e8ed0362b212fc87eea5188f828768804e3c96077c31f0f5aac59002b30fa305"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs",
+      "bytes": 6513,
+      "sha256": "570d339bbf79770b0ee70f48f2dfa7b71c0c7c6bdfbf7056f8ebb0fb2b0a5f1f"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-document-read-safety-smoke.mjs",
+      "bytes": 5103,
+      "sha256": "da59a6936d8b50d57c1d9f5bf62221a4a59f84e38caaec67695522699923b229"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-document-host-boundary-smoke.mjs",
+      "bytes": 2655,
+      "sha256": "eb46d113630025b82610ea06e226f7f7c5c71d7e6d033af2cf27a99376118d26"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-document-protocol-smoke.mjs",
+      "bytes": 2283,
+      "sha256": "122a96c1a345e32ea70b246519ede612c83a1b47b6df9d4f680004e404c0ce51"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/make-office-fixtures.py",
+      "bytes": 3064,
+      "sha256": "e829c8f3f0232829c117cfee9158baf0f0cde5e6f33caf8b828cc10df0747bec"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/reuse-hana-document-extract.mjs",
+      "bytes": 2018,
+      "sha256": "a3f970411c352b7d77c51d45430400e7d8a0d9474f70d1898c68708b4440dd92"
+    },
+    {
+      "path": "source/docs/116_PI_OFFICE_DOCUMENT_TOOL_DELIVERY_CONTRACT.md",
+      "bytes": 4765,
+      "sha256": "8221148ec536e33161906e5be50ecb06a18a3864739752e5452e6c719cbedd97"
+    },
+    {
+      "path": "source/docs/117_PI_OFFICE_DOCUMENT_TOOL_ACCEPTANCE.md",
+      "bytes": 8859,
+      "sha256": "e1b27fbff4b8988fc62638cc7f2b820f90f0850c84ed70cc0452f0e3e0734647"
+    },
+    {
+      "path": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 51836,
+      "sha256": "748e0946826b0e375b07873fad118081b9af1dbcdb1e8b38a79f2ac9582c5acc"
+    },
+    {
+      "path": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 46457,
+      "sha256": "04dfad53bdff71a32e4a403d83be74981ff8fb6bf48b6bc7d980a75e63b480db"
+    },
+    {
+      "path": "source/third_party/anydoc-0.1.2.LICENSE",
+      "bytes": 1084,
+      "sha256": "03a9e7657aac6536fb6458bd220347c4e7f85bd0a51d8d9e8528530b7a682ade"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/anydoc-loader.ts",
+      "bytes": 1792,
+      "sha256": "9c0f4eebfd6b32e7a0770e99091437ccb09739d829c48b251be3da24c03eef7d"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/index.ts",
+      "bytes": 3791,
+      "sha256": "defc6b8dc3c386862029bd7217a3697dada581200e774aa6718a785d9beece37"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/LICENSE",
+      "bytes": 10760,
+      "sha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/source-manifest.json",
+      "bytes": 1451,
+      "sha256": "4c6cfc73462d7294faee0efb5bb31da44d08b547e7d891d7f03d73aa3062a371"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/vendor/hana/lib/document-extract/types.ts",
+      "bytes": 465,
+      "sha256": "0ac66e7d2a2c0ddcc6e7d633fd88e6fb0080c722a1557402eba4f589ba4510a6"
+    }
+  ],
+  "runtimeHashes": [
+    {
+      "path": "out/main/document-host-DBAJwWjo.js",
+      "bytes": 2298,
+      "sha256": "03946758ac8f98c04f06c87feb0db8a160d6fc843ec5791a17aba1c2d81bdbed"
+    },
+    {
+      "path": "out/main/document-worker.js",
+      "bytes": 4664,
+      "sha256": "98f0c55e13fd9cad781f96dcf0601588debd35bae29342fc54fd49bc6df0aec7"
+    },
+    {
+      "path": "out/main/index.js",
+      "bytes": 1015252,
+      "sha256": "1b538abd23c0327a4e95d783fa2ff3c06f18a0d84ef1dc6b914f1435ce12f2fd"
+    },
+    {
+      "path": "out/main/pi-session-CY3zojNm.js",
+      "bytes": 131042,
+      "sha256": "88cfefd6674c1d7a333c520178b2cdaee22fea36a3069d86986489e272be54bf"
+    },
+    {
+      "path": "out/main/xiaozhi-documents-CSeYBu6S.js",
+      "bytes": 1891,
+      "sha256": "fa69e30f81a08c6ae040bc1d9cc0d00793f566f0886fea99c8a3c62e6ef45cfd"
+    },
+    {
+      "path": "out/preload/index.cjs",
+      "bytes": 18667,
+      "sha256": "c437c30c2baa7871959c914a1772a462405ab2e5cc92424e91f41b1f08104a72"
+    },
+    {
+      "path": "out/renderer/assets/index-Bpg_2XBD.js",
+      "bytes": 4020950,
+      "sha256": "d778d4357d3b6bbd3dd49294fb38d511bfd351f703d99d0d66c71fcbf5a37556"
+    },
+    {
+      "path": "node_modules/@firecrawl/anydoc-win32-x64-msvc/anydoc.win32-x64-msvc.node",
+      "bytes": 8321024,
+      "sha256": "e8aa7bc19b35fb649580c67906aaafca48e7851b055149d86cf8d1dbcc276e9f"
+    }
+  ]
+}

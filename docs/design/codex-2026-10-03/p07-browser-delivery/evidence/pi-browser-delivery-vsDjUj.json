@@ -1,0 +1,68 @@
+{
+  "directory": "pi-browser-delivery-vsDjUj",
+  "success": true,
+  "checks": [
+    {
+      "name": "Isolated visible formal workspace uses current default web settings",
+      "pass": true
+    },
+    {
+      "name": "Exact NET-01 natural input actually searches and reads official MOE body",
+      "pass": true
+    },
+    {
+      "name": "Final NET-01 distinguishes notice signature March25, page publication April21 and autumn2022 implementation",
+      "pass": true
+    },
+    {
+      "name": "Exact NET-02 natural input opens real internal MOE browser, answers a column present in the current DOM and captures the page",
+      "pass": true
+    },
+    {
+      "name": "Delivered capture matches actual current URL, owned PNG hash and image dimensions",
+      "pass": true
+    },
+    {
+      "name": "Actual 1366x768 original Pro thumbnail and OSS preview display exact local screenshot",
+      "pass": true
+    },
+    {
+      "name": "Actual 1920x1080 original Pro thumbnail and OSS preview display exact local screenshot",
+      "pass": true
+    },
+    {
+      "name": "Actual typed main preview rejects forged identity and arbitrary path",
+      "pass": true
+    },
+    {
+      "name": "Secondary window cannot access capture endpoint",
+      "pass": true
+    },
+    {
+      "name": "Cold restore retains exact capture/native prefix; preview makes no model request, browser opening or tool replay",
+      "pass": true
+    },
+    {
+      "name": "Actual changed PNG refuses stale success and visible local retry recovers without cloud upload",
+      "pass": true
+    },
+    {
+      "name": "Exact invalid NET-02 input shows real failure state with no successful source or screenshot",
+      "pass": true
+    },
+    {
+      "name": "Natural delivery renderer has no page errors",
+      "pass": true
+    }
+  ],
+  "layer": "C: isolated formal Electron",
+  "boundary": "Original NET-01/NET-02 inputs, real MOE DOM and official DeepSeek; current network, no daily credential/VPN-off/installer claim.",
+  "build": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-browser-capture-build1",
+    "files": 323,
+    "sha256": "4ddacc05613d99a89c112b9bc2feeed43efbad99eb0cf3afd228967d3b0db903"
+  },
+  "scriptSha256": "a260e1df73d579c0210197eefbcaf155a61a79cc1641b7300da1dc975381774f",
+  "humanAccepted": false,
+  "previousFailures": []
+}

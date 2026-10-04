@@ -1,0 +1,40 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Existing/new app settings default to system DNS and expose only safe web preferences",
+      "pass": true
+    },
+    {
+      "name": "Teacher explicitly selects domestic resolver and saves through actual HeroUI/Hana settings",
+      "pass": true
+    },
+    {
+      "name": "Natural DeepSeek actually searches, reads MOE body, receives real URL/time and produces a sourced education answer",
+      "pass": true
+    },
+    {
+      "name": "Actual public explanation/tool/next explanation/final ordering is preserved; composer empty",
+      "pass": true
+    },
+    {
+      "name": "Independent native web capability is present once; public receipt omits query/body and records returned sources",
+      "pass": true
+    },
+    {
+      "name": "Actual 1366x768 source/time and resident composer are accessible",
+      "pass": true
+    },
+    {
+      "name": "Actual 1920x1080 source/time and resident composer are accessible",
+      "pass": true
+    }
+  ],
+  "model": "deepseek-flash",
+  "boundaries": [
+    "Actual isolated formal Electron/Pi/DeepSeek plus real anonymous AnySearch and MOE HTTP body",
+    "AliDNS explicitly chosen in app settings; current system fake DNS failure retained; no OS proxy/DNS/VPN changes or VPN-off claim",
+    "OS source launch intercepted after real user click and main source/DNS validation; no user browser modified"
+  ],
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"office-tool-step\"][data-item-id=\"call_00_OozBvrAsaL0p0pyNm9V95485\"]').getByTestId('pi-web-source-open').first()\u001b[22m\n\u001b[2m    - locator resolved to <a target=\"_blank\" rel=\"noopener noreferrer\" data-testid=\"pi-web-source-open\" class=\"chat-source__trigger-link\" href=\"http://www.moe.gov.cn/srcsite/A26/s8001/202204/t20220420_619921.html\">…</a>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-web-ui-smoke.mjs:33:285"
+}

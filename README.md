@@ -2,6 +2,12 @@
 
 面向 K-12 独立教师与小微教研团队的本地优先 AI 教学工作台。
 
+最新小智进度：[正式教育记忆与上下文隔离](docs/72_PI_MEMORY_MODEL_FORMAL_ACCEPTANCE.md)已通过最后真实DeepSeek页面26项、自动压缩/明确旧历史副本9项、原生17/状态13、组件79及最新主冒烟207。模型工具读取明确选择的有效脱敏事实；撤销后旧内容/推导/摘要不回灌，原对话保留。既定P04控制记忆范围完成，下一P05教育Skills；完整Harness继续按台账执行。
+
+用户最新两张Codex截图已原样保存，[实时过程与同款组件设计](docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md)固定布局、状态、来源、差距与验收清单，供上下文压缩后恢复。页面完整一比一、Skills、办公联网及实际无VPN/安装仍在执行。
+
+[模型记忆上下文隔离基础](docs/71_PI_MEMORY_CONTEXT_ISOLATION_FOUNDATION_ACCEPTANCE.md)保留历史基础15项证据；正式纵向接入与最终验收以docs/72为准，不能仅凭基础脚本推导用户闭环。实际无VPN/安装及旧Fallback整体仍待验收。
+
 Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把教师本机的学生档案、学习记录、错题图片、题库、知识库和 AI 分析组织成一个可验证、可确认、可导出的桌面端闭环。
 
 后续产品范围、模块边界、技术选型和上市否决项统一以 [最终产品与模块架构基线](docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md) 为准。旧规划与该基线冲突时，以该基线为最高优先级，但“已完成”状态仍以当前代码和真实验收证据为准。
@@ -12,6 +18,20 @@ Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把�
 ```
 
 ## UI 预览
+
+2026-10-03：[自动上下文整理与模型能力验收](docs/64_PI_AUTO_COMPACTION_ACCEPTANCE.md)完成真实自动18/18、队列/预算/退出边界7/7，默认策略与手动复验19/19。核验模型能力后自动整理，原历史/来源/计划/审批保留，用量按真实请求记录。下一项教育记忆作用域及队列编辑撤回，然后Skills、完整办公联网、模型设置与一比一界面、实际无VPN和安装；完整目标仍进行中。
+
+### 当前小智办公智能体改造（进行中）
+
+小智当前采用 Pi SDK / Hana 底层复用方向，定制教育智能体并接入 DeepSeek，国内 API 直连作为核心验收；功能与桌面交互参照 Codex。三元题组增量开发暂停，现有教育数据与隐私规则保留。方案见 [需求对齐](docs/48_XIAOZHI_EDUCATION_PI_ALIGNMENT.md)、[执行台账](docs/35_XIAZHI_OFFICE_AGENT_TODO.md)。
+
+正式小智已接嵌入式 Pi SDK、现有教师知识检索及 HeroUI Pro 消息/输入组件；真实 Electron + DeepSeek 11/11，发送清空、来源、停止/失败与重启续问通过，见 [正式入口验收](docs/53_PI_EDUCATION_PRODUCTION_ENTRY_ACCEPTANCE.md)。`OMNI_EDU_XIAOZHI_PI=0` 可回退旧入口，旧数据保留。此前 Codex app-server 实验留作对照。完整 Skills、办公联网、设置、Codex 一比一视觉、实际无 VPN 与安装包仍未完成；下面既有教育工作区表不能视为全部新 Harness 已完成。
+
+最新进度：[持久审批验收](docs/55_PI_PERSISTENT_APPROVAL_ACCEPTANCE.md)已完成授权目录复制范围，真实 Electron/DeepSeek 22/22。新会话先点输入栏“+”选择教学工作目录，文件复制逐次确认；拒绝/执行前停止零写，已有文件不覆盖，重启后旧审批失效，提交结果不确定只读核验。下一项控制与教育记忆，随后 Skills、完整办公联网、设置和一比一视觉；实际无 VPN 与安装验收仍待完成。
+
+[任务控制验收](docs/57_PI_CONTROL_ACCEPTANCE.md)已完成计划、澄清回答、运行中追加与真实消息分段，真实Electron/DeepSeek18/18。输入栏“补充本轮”在当前工具结束后送达，“接着处理”在任务收尾后处理；停止或重启不自动重发未送达指令，中断提问可由教师主动回答开启新一轮。下一项预算、上下文压缩和教育记忆；完整Harness与一比一界面仍按台账推进。
+
+[运行预算与用量验收](docs/59_PI_BUDGET_ACCEPTANCE.md)完成P04-B1，真实正式DeepSeek18/18。右侧“运行预算”可配置模型/工具/token观察阈值及活动/等待时间，按会话保存、每轮固定；超限停止后续调用。教师回答/审批等待暂停活动计时，费用无账单依据时显示未知。重启保留指标，崩溃读回为最后记录的下界。下一项原生上下文压缩与教育记忆作用域；完整P04仍未完成。
 
 ![Omni-Edu Agent UI](docs/image.png)
 
@@ -102,9 +122,11 @@ Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把�
 
 ## 快速开始
 
+完整的首次安装、隔离测试数据、Python sidecar、人工功能检查和 Electron E2E 说明见 [启动.md](启动.md)。以下命令启动的是完整 Electron 桌面应用，不是单独的浏览器前端：
+
 ```powershell
 cd D:\WorkProject\EduProject\apps\desktop
-npm install
+$env:OMNI_EDU_PYTHON = 'C:\Python314\python.exe'
 npm run dev
 ```
 

@@ -1,0 +1,13 @@
+import fs from 'node:fs';import path from 'node:path';import {createHash} from 'node:crypto';import {deflateSync} from 'node:zlib';import assert from 'node:assert/strict';
+// Entirely synthetic RGB stripes; no file chooser, student image or teacher data.
+const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-public-image-'));
+const config=fs.readFileSync('.env.local','utf8'),key=config.match(/^DEEPSEEK_API_KEY\s*=\s*(.*?)\s*$/m)?.[1]?.replace(/^['"]|['"]$/g,'');assert(key);
+const crc=bytes=>{let value=0xffffffff;for(const byte of bytes){value^=byte;for(let bit=0;bit<8;bit++)value=(value>>>1)^((value&1)?0xedb88320:0);}return (value^0xffffffff)>>>0;};
+const chunk=(name,bytes)=>{const type=Buffer.from(name),length=Buffer.alloc(4),sum=Buffer.alloc(4);length.writeUInt32BE(bytes.length);sum.writeUInt32BE(crc(Buffer.concat([type,bytes])));return Buffer.concat([length,type,bytes,sum]);};
+const ihdr=Buffer.alloc(13);ihdr.writeUInt32BE(96,0);ihdr.writeUInt32BE(64,4);ihdr[8]=8;ihdr[9]=2;
+const pixels=Buffer.alloc(64*(96*3+1));for(let y=0;y<64;y++)for(let x=0;x<96;x++)pixels[y*289+1+x*3+Math.floor(x/32)]=255;
+const png=Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',ihdr),chunk('IDAT',deflateSync(pixels)),chunk('IEND',Buffer.alloc(0))]);fs.writeFileSync(path.join(output,'synthetic-rgb.png'),png,{flag:'wx'});
+const report={success:false,endpoint:'https://api.deepseek.com/chat/completions',model:'deepseek-flash',imageSha256:createHash('sha256').update(png).digest('hex'),boundary:'Synthetic RGB only. Direct official HTTP capability probe, not Pi/attachment/OCR proof. No student/teacher image, key, response body or request saved.'};
+try{const response=await fetch(report.endpoint,{method:'POST',headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(45000),body:JSON.stringify({model:report.model,max_tokens:128,thinking:{type:'disabled'},messages:[{role:'user',content:[{type:'text',text:'图像有三块竖向颜色条。请仅按从左到右的顺序写三个中文颜色名称，不加解释。'},{type:'image_url',image_url:{url:`data:image/png;base64,${png.toString('base64')}`}}]}]})});report.status=response.status;
+ const value=await response.json();const answer=value.choices?.[0]?.message?.content||'';report.nonempty=Boolean(answer.trim());report.correctColorOrder=/红[\s\S]*绿[\s\S]*蓝/.test(answer);assert(response.ok&&report.nonempty&&report.correctColorOrder,'Actual vision capability not verified');report.success=true;
+}catch(error){report.error=String(error.message).replaceAll(key,'[credential]').slice(0,300);process.exitCode=1;}finally{fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({...report,output}));}

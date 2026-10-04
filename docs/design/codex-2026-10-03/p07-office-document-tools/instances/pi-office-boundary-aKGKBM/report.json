@@ -1,0 +1,33 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Known names are locally replaced longest-first and existing privacy boundary is explicitly reused",
+      "pass": true
+    },
+    {
+      "name": "Invalid path/format/ranges/extra fields return safe errors before any filesystem resolution",
+      "pass": true
+    },
+    {
+      "name": "Revoked run and aborted signal return cancelled/denied with no body or path",
+      "pass": true
+    },
+    {
+      "name": "Real native old session gains additive Office marker without changing old header/snapshot/prefix",
+      "pass": true
+    },
+    {
+      "name": "Unknown native capability versions fail closed, without rewriting creation identity",
+      "pass": true
+    },
+    {
+      "name": "Original Hana execution-once runs real document guard only once for duplicate call ID",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Strict main tool guards, privacy delegation and real SDK native identity/cached call; no actual parser or provider request",
+    "Actual parsing and real DeepSeek verified separately in Electron UI"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-03",
+  "boundary": "B1 native SDK SQLite JSONL foundation only; no production menu/provider acceptance",
+  "files": [
+    {
+      "file": "b1-hana-source.json",
+      "bytes": 761,
+      "sha256": "b3a3f8939414ccaf24723e1bbc09ba28e8d1e38b53b58c8858f7471e0b9eeb41"
+    },
+    {
+      "file": "b1-migration-report.json",
+      "bytes": 1328,
+      "sha256": "08e0f8a1e97b3e3795737a98dcbff9cbe8e0fbaeadaadd177e3a1c4dae23c53a"
+    },
+    {
+      "file": "b1-native-report.json",
+      "bytes": 3745,
+      "sha256": "42a67c26a9fae167e53ce1e8fa7b31997db268750b61800bfb29281a208c79c3"
+    }
+  ]
+}

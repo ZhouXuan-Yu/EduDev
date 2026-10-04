@@ -1,0 +1,98 @@
+{
+  "suite": "pi-skill-authority-native",
+  "success": true,
+  "checks": [
+    {
+      "name": "Separate skill delivery reuses one main RUN and does not mark education memory read",
+      "pass": true
+    },
+    {
+      "name": "Memory-only revocation isolates its suffix while retaining earlier valid Skill context",
+      "pass": true
+    },
+    {
+      "name": "Later skill revocation removes all Skill-derived/compacted text and retains memory blocked IDs after pruning its marker",
+      "pass": true
+    },
+    {
+      "name": "Both authority namespaces recover the union of prior revoked run identities after restart",
+      "pass": true
+    },
+    {
+      "name": "Reverse-order skill then memory revocation preserves all exclusions without reviving previous text",
+      "pass": true
+    },
+    {
+      "name": "Skill authority mismatch and malformed identities fail with stable errors",
+      "pass": true
+    },
+    {
+      "name": "Reviewed v1 history upgrades conservatively at the actual first main RUN while unchanged identity preserves context",
+      "pass": true
+    },
+    {
+      "name": "Subsequent v1-upgrade revocation restores original safe native prefix",
+      "pass": true
+    },
+    {
+      "name": "Legacy history with no proven RUN rejects without appending guessed migration markers",
+      "pass": true
+    },
+    {
+      "name": "Empty v1 history upgrades without fabricating a delivery or run",
+      "pass": true
+    },
+    {
+      "name": "Off-branch future markers and altered reviewed v1 identities reject before mutation",
+      "pass": true
+    },
+    {
+      "name": "Skill-only SDK crash recovers the proven shared run without replaying an unmatched tool",
+      "pass": true
+    },
+    {
+      "name": "Managed native resources contain only necessary sanitized text, preserve original package, and reuse Hana pointers",
+      "pass": true
+    },
+    {
+      "name": "Registered reference read is sanitized while scripts/original paths/arbitrary references reject",
+      "pass": true
+    },
+    {
+      "name": "Actual Pi explicit command expands the sanitized custom document and persists one native run",
+      "pass": true
+    },
+    {
+      "name": "Reopening after disabling custom Skill isolates old expanded text and emits accurate public receipt",
+      "pass": true
+    },
+    {
+      "name": "Old fixed-Skills adapter cannot reopen v2 history without managed authority handling",
+      "pass": true
+    },
+    {
+      "name": "500ms authority observer aborts active SDK stream and fences the failed runtime",
+      "pass": true
+    },
+    {
+      "name": "Even identical re-enabled instructions at a new teacher version change authority and fence old descriptor",
+      "pass": true
+    },
+    {
+      "name": "Authority mutation during sanitation is rejected before native resource delivery",
+      "pass": true
+    },
+    {
+      "name": "Tampered sanitized model cache refuses read instead of overwriting it",
+      "pass": true
+    },
+    {
+      "name": "Restart refuses a changed cache before native parsing and extra files cannot enter model resources",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Real Pi native manager/SDK and local managed packages with deterministic model streams",
+    "No production managed Skills host/UI/binding v4 or provider acceptance claimed"
+  ]
+}

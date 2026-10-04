@@ -1,0 +1,23 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Natural DeepSeek task opens actual Office draft review with zero pre-approval file or official fact",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1366x768 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1920x1080 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Teacher rejection leaves zero output/fact and no repeated same-path proposal",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual isolated Electron/Pi/DeepSeek, typed teacher revision/approval and four real Office files with SQLite/independent readback. Synthetic data only. WPS application/layout not yet claimed.",
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(numberField)\n\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs:39:3"
+}

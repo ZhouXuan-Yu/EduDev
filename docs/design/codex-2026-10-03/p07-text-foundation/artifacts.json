@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-04",
+  "boundary": "P07-A1 real Pi/SQLite/FS foundation only; no provider/IPC/UI/editor tool registration. Continue A2/A3 before full A acceptance.",
+  "bundles": {
+    "out/main/index.js": "70dbf9e72bb3f4fe3f44364918e1d45c23e5f303b56e364916ff0acd73602113",
+    "out/preload/index.cjs": "31086148b16d7b6315c52a160c2d024c8b8c985b2b8f560987b719c20c691b73",
+    "out/renderer/assets/index-BM1rsdTp.js": "5d6cd6d498a391644b9c9053f3e8e01231562aff863434fcdd1d599052313db8"
+  },
+  "sdk": {
+    "name": "@earendil-works/pi-coding-agent",
+    "version": "0.80.3",
+    "license": "MIT",
+    "files": {
+      "dist/index.js": {
+        "bytes": 4323,
+        "sha256": "03c5ed4d63554ff4e10d5c84891f84188dada936dcf696397e472d579a68b832"
+      },
+      "dist/core/tools/edit.js": {
+        "bytes": 13848,
+        "sha256": "c038e9d3a35c581128a6b2511f41016400ca3329dc380ab1d3bac3512ae9a287"
+      },
+      "dist/core/tools/write.js": {
+        "bytes": 8953,
+        "sha256": "09d3a785886a3bedf5df1bbe4440c43a8704fae2fb1a468d108a45fe5f9e9c27"
+      },
+      "dist/core/tools/edit-diff.js": {
+        "bytes": 18626,
+        "sha256": "e5be0b9f44195c329aa9e374122d1e19c931ceeee4c9c8df91518f06410cfaa8"
+      },
+      "dist/core/tools/file-mutation-queue.js": {
+        "bytes": 1786,
+        "sha256": "cd300f1ecae2b8d45a7c69011221f4f2e4e289865bf879df537c859889f26e5b"
+      }
+    }
+  },
+  "artifacts": [
+    {
+      "file": "initial18-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-text-change-foundation-GTEu7O\\report.json",
+      "bytes": 2661,
+      "sha256": "37361b0ba57933d7e99543761559a5f8d1e2cb1af51dc066e02b52945c9920a3"
+    },
+    {
+      "file": "concurrent20-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-text-change-foundation-VbmxqX\\report.json",
+      "bytes": 2921,
+      "sha256": "e65386cd08e078eb4727256b3eb42a4f474496bf9a67bbdc12adc450c7ba81c4"
+    },
+    {
+      "file": "final20-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-text-change-foundation-W2QfNr\\report.json",
+      "bytes": 2921,
+      "sha256": "e65386cd08e078eb4727256b3eb42a4f474496bf9a67bbdc12adc450c7ba81c4"
+    },
+    {
+      "file": "p07a-build1.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-build1.log",
+      "bytes": 25157,
+      "sha256": "2449b36edf4071e1973ac5da77e054e9983d9f9fe608e794a339a8d720470d08"
+    },
+    {
+      "file": "p07a-build2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-build2.log",
+      "bytes": 25157,
+      "sha256": "e7ea881389e100edc0d87ce19b0e8771f08cc0ca78824d8c9f182f9595d20802"
+    },
+    {
+      "file": "p07a-diff-check.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-diff-check.log",
+      "bytes": 3060,
+      "sha256": "9e07a6a5735fc631b268e40151ab0edc676be66d159fefa268cefeca03f0b3a0"
+    },
+    {
+      "file": "p07a-foundation-typecheck1.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-foundation-typecheck1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "p07a-foundation1.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-foundation1.log",
+      "bytes": 1976,
+      "sha256": "3152652571b819a16bf0da1a46ff7351ce980fee46fdafabb4afa3126088e300"
+    },
+    {
+      "file": "p07a-foundation2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-foundation2.log",
+      "bytes": 2150,
+      "sha256": "9a4d565422785401e179e771e304cd4318685252d8a57ed826d7819c65358b77"
+    },
+    {
+      "file": "p07a-foundation3.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-foundation3.log",
+      "bytes": 2150,
+      "sha256": "336ca37bf627c9c96769faaea8d7a70ea3417beef9b8b9995565bbbacb0d6615"
+    },
+    {
+      "file": "p07a-pro-source.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-pro-source.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    },
+    {
+      "file": "p07a-renderer1.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-renderer1.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "file": "p07a-smoke-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-smoke-final.log",
+      "bytes": 38315,
+      "sha256": "05f17dd68912b10eaec5e7c32d904ad6632fc3e0c9d828f4dd3acc6499349e2f"
+    },
+    {
+      "file": "p07a-smoke-final2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p07a-smoke-final2.log",
+      "bytes": 38315,
+      "sha256": "e6dcb260e32003bb34d10307deee635410133819326c065ab9cb29785705c7ba"
+    },
+    {
+      "file": "source-xiaozhi-changes.ts",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\shared\\xiaozhi-changes.ts",
+      "bytes": 1104,
+      "sha256": "a7393bb95434c2185db51bcca060edb3c710fcb98945ab7bcc9f27005b2ba175"
+    },
+    {
+      "file": "source-text-edit-proposal.ts",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\text-edit-proposal.ts",
+      "bytes": 4459,
+      "sha256": "cf31005fed28c51196da27d0fe52d84b9fb34c2c41eb175374f55cc90044976c"
+    },
+    {
+      "file": "source-text-change-state.ts",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\text-change-state.ts",
+      "bytes": 8387,
+      "sha256": "b414d79d583232f4ae7f466c1d6db6cf255cb2d660f58ad3a11d57e9373c2d13"
+    },
+    {
+      "file": "source-text-change-service.ts",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\text-change-service.ts",
+      "bytes": 11244,
+      "sha256": "3428c5177dd4ef92ce4d790eb5f0c6e661e51e1f07d85be62ac154b8ee8b4aa6"
+    },
+    {
+      "file": "source-session-state.ts",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\src\\main\\xiaozhi-agent\\session-state.ts",
+      "bytes": 4138,
+      "sha256": "e3231516f4203868619ecd5618c5b7036e3827c5b420fa77d7236160b9555feb"
+    },
+    {
+      "file": "source-pi-text-change-foundation-smoke.mjs",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-text-change-foundation-smoke.mjs",
+      "bytes": 19911,
+      "sha256": "d4c48a579960bdf87ace8cc24c48639f63b97d0d660390fe2c0fb27f4614c62c"
+    },
+    {
+      "file": "110_PI_OFFICE_TEXT_EDIT_DELIVERY_CONTRACT.md",
+      "source": "D:\\WorkProject\\EduProject\\docs\\110_PI_OFFICE_TEXT_EDIT_DELIVERY_CONTRACT.md",
+      "bytes": 6795,
+      "sha256": "c5b17654640c77c763c9d1e11fb7d19b589e38f07932afbd4329dbaf806ff791"
+    },
+    {
+      "file": "111_PI_OFFICE_TEXT_EDIT_FOUNDATION_ACCEPTANCE.md",
+      "source": "D:\\WorkProject\\EduProject\\docs\\111_PI_OFFICE_TEXT_EDIT_FOUNDATION_ACCEPTANCE.md",
+      "bytes": 6842,
+      "sha256": "bf457dea1d4ce6c979a07a10840a1d39456a10db81906c7bbca4a3be18928246"
+    },
+    {
+      "file": "LICENSE",
+      "source": "D:\\WorkProject\\EduProject\\third_party\\pi\\LICENSE",
+      "bytes": 1069,
+      "sha256": "0457f5bcec3b3b211605dfb5d1a49042fd638f3686a410fe099c24a25af13c48"
+    }
+  ]
+}

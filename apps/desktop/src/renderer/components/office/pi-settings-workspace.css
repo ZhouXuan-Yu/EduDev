@@ -1,0 +1,39 @@
+/* Screenshot palette is locked by docs/67. Layout adapter around original Hana/ HeroUI components. */
+.pi-settings-workspace { height:100%; min-height:0; display:flex; flex-direction:column; background:#fff; color:#303332;
+  --text:#303332; --text-muted:#787c7c; --bg-hover:#f3f5f4; --bg-card:#fff; --border:#eceeed; --accent:#303332; --accent-light:#eaf0ee;
+  --space-4:4px; --space-8:8px; --space-12:12px; --space-16:16px; --space-24:24px; --space-40:40px;
+  --fs-body:14px; --fs-ui:14px; --fs-hint:12px; --fs-caption:13px; --radius-input:10px; --radius-card:16px; --duration-fast:120ms; --ease-out:ease-out; }
+.pi-settings-workspace>header { height:64px; flex:none; display:flex; align-items:center; gap:24px; padding:0 24px; border-bottom:1px solid var(--border); }
+.pi-settings-workspace>header>span { font-size:14px; font-weight:600; }
+.pi-settings-workspace>header>[role=status] { color:var(--text-muted); font-weight:400; }
+.pi-settings-body { display:flex; flex:1; min-height:0; overflow:hidden; }
+.pi-settings-nav { display:flex; flex-direction:column; width:238px; flex:none; gap:4px; padding:24px 16px; overflow-y:auto; border-right:1px solid var(--border); background:#f7faf9; }
+.pi-settings-search { margin-bottom:18px; min-width:0; }
+.pi-settings-nav button { flex:none; width:100%; justify-content:flex-start; height:auto; min-height:40px; }
+.pi-settings-nav button>svg { flex:none; }
+.pi-settings-nav input { min-width:0; }
+.pi-settings-workspace .pi-settings-search input { padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; outline:0; }
+.pi-settings-main { min-width:0; flex:1; min-height:0; overflow:auto; overscroll-behavior:contain; padding:32px 28px; }
+.pi-settings-main>div, .pi-settings-main>section { width:100%; max-width:780px; margin-inline:auto; }
+.pi-settings-main h1 { margin:0 0 8px; font-size:24px; font-weight:600; line-height:1.35; }
+.pi-settings-main h2 { font-size:17px; font-weight:600; }
+.pi-settings-main p { margin:0; font-size:14px; color:var(--text-muted); line-height:1.65; }
+.pi-settings-main [role=alert] p, .pi-settings-main p[role=alert] { color:#ad342d; }
+.pi-settings-main [data-settings-surface=card] { padding:8px 20px; }
+.pi-settings-main .pi-settings-provider { padding:24px; }
+.pi-settings-workspace .pi-settings-embedded { height:auto; min-height:0; display:block; }
+.pi-settings-workspace .pi-settings-embedded>main { padding:0; overflow:visible; }
+.pi-settings-workspace .pi-skills-embedded { width:100%; max-width:780px; max-height:none; }
+.pi-settings-workspace .pi-skills-layout { grid-template-columns:minmax(0,1.35fr) minmax(0,1fr); }
+.pi-skills-embedded>p { margin-bottom:24px; }
+.pi-settings-actions { display:flex; align-items:center; flex-wrap:wrap; gap:12px; margin:16px 0; }
+.pi-settings-location { overflow-wrap:anywhere; }
+.pi-settings-state { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.pi-settings-archive-reader { min-height:280px; }
+.pi-settings-archive-reader .office-conversation { min-height:240px; height:auto; max-height:65vh; margin-top:16px; }
+.pi-settings-archive-reader .office-conversation-content { padding:16px 0; }
+.pi-settings-workspace .pi-memory-scope { width:100%; }
+.pi-settings-workspace .pi-memory-scope [data-slot=chat-tool-content] { overflow-wrap:anywhere; }
+.pi-settings-workspace .pi-settings-search [data-slot=search-field-clear-button] { min-height:0; width:auto; }
+@media(max-width:900px) { .pi-settings-nav { width:218px; padding:20px 12px; } .pi-settings-main { padding:24px; } .pi-settings-workspace .pi-skills-layout { grid-template-columns:minmax(0,1fr); } .pi-settings-workspace .pi-skills-details { border-left:0; border-top:1px solid var(--border); padding:16px 0 0; } }
+@media(prefers-reduced-motion:reduce) { .pi-settings-workspace { --duration-fast:0ms; } }

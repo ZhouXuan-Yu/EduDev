@@ -1,0 +1,40 @@
+{
+  "directory": "deepseek-cache-live-rHuyAF",
+  "success": true,
+  "humanAccepted": false,
+  "boundary": "Actual official API usage on synthetic fixed prefix with changed trailing task. Service cache is best effort; no 100% or production hit-rate claim, no complete requests or credentials archived.",
+  "requests": [
+    {
+      "index": 1,
+      "httpStatus": 200,
+      "input": 3240,
+      "hit": 3072,
+      "miss": 168,
+      "hitRate": 0.9481481481481482
+    },
+    {
+      "index": 2,
+      "httpStatus": 200,
+      "input": 3240,
+      "hit": 3072,
+      "miss": 168,
+      "hitRate": 0.9481481481481482
+    },
+    {
+      "index": 3,
+      "httpStatus": 200,
+      "input": 3240,
+      "hit": 3072,
+      "miss": 168,
+      "hitRate": 0.9481481481481482
+    },
+    {
+      "index": 4,
+      "httpStatus": 200,
+      "input": 3240,
+      "hit": 3072,
+      "miss": 168,
+      "hitRate": 0.9481481481481482
+    }
+  ]
+}

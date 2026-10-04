@@ -1,0 +1,86 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Natural DeepSeek task opens actual Office draft review with zero pre-approval file or official fact",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1366x768 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Actual native 1920x1080 approval/reject controls are reachable",
+      "pass": true
+    },
+    {
+      "name": "Teacher rejection leaves zero output/fact and no repeated same-path proposal",
+      "pass": true
+    },
+    {
+      "name": "Actual DOCX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved DOCX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual PDF teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved PDF receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual XLSX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved XLSX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Actual PPTX teacher-edited revision, stale refusal, saved fact and unchanged native identity",
+      "pass": true
+    },
+    {
+      "name": "Saved PPTX receipt opens actual version-checked local Office preview",
+      "pass": true
+    },
+    {
+      "name": "Four natural saved formats independently preserve exact teacher edits; XLSX number and PDF A4 are real",
+      "pass": true
+    },
+    {
+      "name": "Real provider new binary revision preserves original bytes and captures formal parent lineage",
+      "pass": true
+    },
+    {
+      "name": "Source changed during review is refused with no target file or official artifact",
+      "pass": true
+    },
+    {
+      "name": "Resident composer stop invalidates a pending Office write and leaves no output",
+      "pass": true
+    },
+    {
+      "name": "Actual secondary Electron window cannot call any Office review/revise/decide endpoint",
+      "pass": true
+    },
+    {
+      "name": "Real process kill while pending recovers without generation or write replay",
+      "pass": true
+    },
+    {
+      "name": "Real process kill after file install recovers uncertain; teacher read-only verify publishes once without rewriting",
+      "pass": true
+    },
+    {
+      "name": "Second real restart preserves all durable states and never replays prior refusals or installed files",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual isolated Electron/Pi/DeepSeek, typed teacher revision/approval and four real Office files with SQLite/independent readback. Synthetic data only. WPS application/layout not yet claimed."
+}

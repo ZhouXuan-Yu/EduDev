@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "upstream": "Hana0.449.0",
+  "license": "Apache-2.0",
+  "source": "D:/WorkProject/开源/openhanako/lib/session-files/bridge-inbound-files.ts",
+  "sourceSha256": "3601f3f3da0a3223c9b2d3850f01133eaad0ee972c3dd0631a338426ad75628a",
+  "outputSha256": "3bfe8721b7a48a3d2730a71ead61fe37b37bcbb4230b3d3c9ec7f4e789c048ff",
+  "fragments": [
+    {
+      "name": "MIME_EXTENSIONS",
+      "sha256": "d3273717ba318a1e8072ac96c54189809810814d1371bad5db0de40d9baaabba"
+    },
+    {
+      "name": "safeFilename",
+      "sha256": "0ea72c1e22f63cb1fdeb90874a0b23f1f01676d88aec6eda2eed668381aea24d"
+    },
+    {
+      "name": "removeUnsafeFilenameChars",
+      "sha256": "a56c4ad81864e5cd497201fb5e3407cdd53abe2b35333f55b521ed406fe69df2"
+    },
+    {
+      "name": "extensionFor",
+      "sha256": "ca81dcf9fe9f992b319ba3af4abacf9762f82975beba67efc319aba7841f860d"
+    }
+  ],
+  "adaptation": "Four original AST fragments; node:path import and safeFilename export only. No base64 input, filesystem writer, native-sidecar registry or upload path."
+}

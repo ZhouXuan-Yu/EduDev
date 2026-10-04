@@ -1,0 +1,88 @@
+{
+  "directory": "pi-browser-native-XOx9FE",
+  "success": true,
+  "checks": [
+    {
+      "name": "Strict browser boundary rejects accessors, extra action fields and missing ref epoch",
+      "pass": true
+    },
+    {
+      "name": "Actual native view renders fixture, original Hana snapshot has refs, password value omitted and Node/business IPC absent",
+      "pass": true
+    },
+    {
+      "name": "Cross-conversation tab identity denied",
+      "pass": true
+    },
+    {
+      "name": "Teacher rejection produces no button effect",
+      "pass": true
+    },
+    {
+      "name": "Actual authorized DOM action changes content; stale snapshot rejected",
+      "pass": true
+    },
+    {
+      "name": "Actual input insertion uses latest ref and values stay out of the model snapshot",
+      "pass": true
+    },
+    {
+      "name": "Actual select/change action works with explicit confirmation",
+      "pass": true
+    },
+    {
+      "name": "Private URLs and credential-bearing URLs refused before load",
+      "pass": true
+    },
+    {
+      "name": "Background POST outside explicit action scope is blocked",
+      "pass": true
+    },
+    {
+      "name": "Failure cannot become DOM or screenshot source; a new navigation recovers",
+      "pass": true
+    },
+    {
+      "name": "Actual screenshot returns a versioned local capture; fd/hash/PNG dimensions verify the exact image",
+      "pass": true
+    },
+    {
+      "name": "Capture endpoint selector rejects accessors and arbitrary paths",
+      "pass": true
+    },
+    {
+      "name": "Cross-session local bytes and changed file contents cannot become the original screenshot",
+      "pass": true
+    },
+    {
+      "name": "Navigation during actual capture refuses a mismatched URL/revision receipt",
+      "pass": true
+    },
+    {
+      "name": "Real native tabs switch and close independently",
+      "pass": true
+    },
+    {
+      "name": "Cancelled command admits no new browser operation",
+      "pass": true
+    },
+    {
+      "name": "Owned proxy requires ephemeral credentials and denies unauthorized/private target",
+      "pass": true
+    },
+    {
+      "name": "Actual HTTP virtual DNS denial shows original Pro state at two sizes; failure is not source or DOM success",
+      "pass": true
+    },
+    {
+      "name": "Same existing browser group switches from explicit system to auto and loads real HTTPS",
+      "pass": true
+    },
+    {
+      "name": "Actual domestic education site renders and returns real DOM snapshot",
+      "pass": true
+    }
+  ],
+  "boundary": "Real owned Electron browser DOM/views/session/network policy. Synthetic public-origin protocol fixture for actions, plus real public HTTPS via checked-IP proxy. Not formal business UI/Pi/teacher acceptance.",
+  "humanAccepted": false
+}

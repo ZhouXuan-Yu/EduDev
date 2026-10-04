@@ -1,0 +1,32 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Existing/new app settings default to system DNS and expose only safe web preferences",
+      "pass": true
+    },
+    {
+      "name": "Teacher explicitly selects domestic resolver and saves through actual HeroUI/Hana settings",
+      "pass": true
+    },
+    {
+      "name": "Natural DeepSeek actually searches, reads MOE body, receives real URL/time and produces a sourced education answer",
+      "pass": true
+    },
+    {
+      "name": "Actual public explanation/tool/next explanation/final ordering is preserved; composer empty",
+      "pass": true
+    },
+    {
+      "name": "Independent native web capability is present once; public receipt omits query/body and records returned sources",
+      "pass": true
+    }
+  ],
+  "model": "deepseek-flash",
+  "boundaries": [
+    "Actual isolated formal Electron/Pi/DeepSeek plus real anonymous AnySearch and MOE HTTP body",
+    "AliDNS explicitly chosen in app settings; current system fake DNS failure retained; no OS proxy/DNS/VPN changes or VPN-off claim",
+    "OS source launch intercepted after real user click and main source/DNS validation; no user browser modified"
+  ],
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n13 !== 3\n\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-web-ui-smoke.mjs:32:806"
+}

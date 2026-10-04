@@ -1,0 +1,78 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Original Pi edit proposes disjoint replacements, original diff and patch with zero filesystem effect",
+      "pass": true
+    },
+    {
+      "name": "Pi preserves UTF8 BOM and CRLF bytes on edit and exact undo",
+      "pass": true
+    },
+    {
+      "name": "Original SDK fuzzy Unicode matching is retained and its actual result is reviewed",
+      "pass": true
+    },
+    {
+      "name": "Pi rejects ambiguous, overlapping and no-change edits without a ledger entry or write",
+      "pass": true
+    },
+    {
+      "name": "Reject is durable, cannot execute, and keeps exact source",
+      "pass": true
+    },
+    {
+      "name": "Call identity and revision CAS refuse duplicates with different input and stale approvals",
+      "pass": true
+    },
+    {
+      "name": "Cross-session review, decision and apply cannot read or commit another session change",
+      "pass": true
+    },
+    {
+      "name": "Source changes before approval or after approval become conflict without overwriting teacher edits",
+      "pass": true
+    },
+    {
+      "name": "Original Pi write only captures a new artifact until approval, exclusive installation and undo remove that artifact",
+      "pass": true
+    },
+    {
+      "name": "A competing new target refuses approval without overwriting it or creating parent directories",
+      "pass": true
+    },
+    {
+      "name": "Undo conflict preserves a subsequent manual modification exactly",
+      "pass": true
+    },
+    {
+      "name": "Stop, cancellation and workspace revocation refuse approved effects",
+      "pass": true
+    },
+    {
+      "name": "Traversal, credentials, Windows path aliases, device names, unsupported formats and hardlinks are rejected",
+      "pass": true
+    },
+    {
+      "name": "Invalid UTF8, NUL, oversized text and invalid nested inputs never reach disk",
+      "pass": true
+    },
+    {
+      "name": "Recovery invalidates pending/approved intents idempotently and never writes files",
+      "pass": true
+    },
+    {
+      "name": "Ledger hash corruption and unknown schema fail closed before file effect",
+      "pass": true
+    },
+    {
+      "name": "Real child exits after intent/file and undo-intent/undo-file are classified by read-only verification without replay",
+      "pass": true
+    },
+    {
+      "name": "Old real isolated database copy migrates through production session-state without changing prior business/history facts",
+      "pass": true
+    }
+  ],
+  "boundary": "Real Pi0.80.3 tools/diff, SQLite, local files and child-process exits. No provider, UI/IPC, production tool registration or full P07-A claim."
+}

@@ -1,0 +1,72 @@
+{
+  "success": true,
+  "files": [
+    {
+      "kind": "docx",
+      "engine": "Actual WPS COM",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-1.png"
+        }
+      ],
+      "missing": [],
+      "allMarkersPresent": true
+    },
+    {
+      "kind": "xlsx",
+      "engine": "Actual WPS COM",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.3200073242188,
+          "height": 841.9199829101562,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-1.png"
+        }
+      ],
+      "missing": [],
+      "allMarkersPresent": true
+    },
+    {
+      "kind": "pptx",
+      "engine": "Actual WPS COM",
+      "pages": [
+        {
+          "page": 1,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-2.png"
+        },
+        {
+          "page": 3,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-3.png"
+        },
+        {
+          "page": 4,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 0,
+          "png": "pptx-page-4.png"
+        }
+      ],
+      "missing": [],
+      "allMarkersPresent": true
+    }
+  ],
+  "boundary": "Real WPS exported page marker presence (layout CR/LF and inferred spaces adjacent to marker digits allowed) and glyph bounds; actual exact content requires COM/OOXML readback, images need visual inspection."
+}

@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Proposal persists strict reviewed content and captured sources atomically with zero file/artifact effects",
+      "pass": true
+    },
+    {
+      "name": "Teacher revision replaces pending draft and invalidates stale confirmation before actual XLSX save",
+      "pass": true
+    },
+    {
+      "name": "Actual DOCX and PPTX generators commit bounded real library files into existing artifact facts",
+      "pass": true
+    },
+    {
+      "name": "Rejection leaves no file, source relationship or official artifact and cannot generate",
+      "pass": true
+    },
+    {
+      "name": "Same call is idempotent after teacher revision and actual save, different payload conflicts",
+      "pass": true
+    },
+    {
+      "name": "Source version changes before approval or after approval refuse output and retain manual bytes",
+      "pass": true
+    },
+    {
+      "name": "New binary revision preserves original file and stores explicit parent artifact plus file provenance",
+      "pass": true
+    },
+    {
+      "name": "Cross-session review/revise/decide/apply cannot access private draft",
+      "pass": true
+    },
+    {
+      "name": "Concurrent revision decisions and commits install one file and one official artifact",
+      "pass": true
+    },
+    {
+      "name": "Existing target and a competing creator never get overwritten",
+      "pass": true
+    },
+    {
+      "name": "Traversal, Windows aliases, credentials, hardlinks and unsupported model paths are rejected",
+      "pass": true
+    },
+    {
+      "name": "Stop, revoke and abort after actual generation discard output without installing",
+      "pass": true
+    },
+    {
+      "name": "Malformed/corrupt content and source rows fail closed before confirmation or file effects",
+      "pass": true
+    },
+    {
+      "name": "Official id conflict atomically rolls back saved state and lineage while preserving old fact",
+      "pass": true
+    },
+    {
+      "name": "Real child exits at prepared, intent, file and fact recover without regeneration or file replay",
+      "pass": true
+    },
+    {
+      "name": "Read-only uncertain verification preserves competing manual version and refuses publishing it",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual SQLite, local FS, original Pi queue, actual DOCX/XLSX/PPTX libraries and real process.exit73. PDF foundation separately Electron; no formal Pi tool, typed UI or teacher/WPS path claim."
+}

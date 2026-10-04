@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Chooser lifetime reserves the existing global model/Skills/memory/workspace/run owner",
+      "pass": true
+    },
+    {
+      "name": "Successful real file work releases ownership",
+      "pass": true
+    },
+    {
+      "name": "Failed work releases ownership without suppressing the error",
+      "pass": true
+    },
+    {
+      "name": "Closing waits for the chooser and refuses late file work",
+      "pass": true
+    },
+    {
+      "name": "Closed host refuses new local settings jobs",
+      "pass": true
+    },
+    {
+      "name": "Already-started file job settles before host close and finishes exactly once",
+      "pass": true
+    },
+    {
+      "name": "Original owned fixture database remains unchanged",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Actual production-host ownership gates and disposable existing-schema SQLite; controlled asynchronous chooser/file barriers, no provider request."
+  ]
+}

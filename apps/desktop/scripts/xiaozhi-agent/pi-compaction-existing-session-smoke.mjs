@@ -1,0 +1,44 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert/strict';
+import { DatabaseSync } from 'node:sqlite';
+import { _electron as electron } from 'playwright';
+const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const source = fs.realpathSync(path.resolve(appRoot, process.argv[2] || 'missing'));
+const testRoot = fs.realpathSync(path.join(appRoot, 'test-results/xiaozhi-agent'));
+const relative = path.relative(testRoot, source);
+assert(!relative.startsWith('..') && !path.isAbsolute(relative) && path.basename(source) === 'data', 'Only explicitly named isolated test data may be copied');
+const output = fs.mkdtempSync(path.join(testRoot, 'pi-compaction-existing-')), dataRoot = path.join(output, 'data');
+fs.cpSync(source, dataRoot, { recursive: true, errorOnExist: true, force: false });
+const cfg = fs.readFileSync(path.join(appRoot, '.env.local'), 'utf8'), pick = name => cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`, 'm'))?.[1]?.trim();
+const key = pick('DEEPSEEK_API_KEY'), model = pick('DEEPSEEK_MODEL') || 'deepseek-flash'; assert(key);
+const db = new DatabaseSync(path.join(dataRoot, 'app.db'), { readOnly: true });
+const bindings = db.prepare('SELECT * FROM xiaozhi_pi_session_bindings').all(); db.close();
+const read = binding => fs.readFileSync(path.join(dataRoot, 'xiaozhi-pi', binding.session_file), 'utf8');
+const binding = bindings.find(value => fs.existsSync(path.join(dataRoot, 'xiaozhi-pi', value.session_file)) && read(value).includes('"type":"compaction"')); assert(binding);
+const previous = read(binding), marker = previous.match(/教育验收码([a-f0-9]{8})/)?.[1]; assert(marker);
+const checks = [], report = { suite: 'pi-compaction-existing-session', success: false, model, checks, boundaries: ['Explicit disposable copy of completed real provider test data', 'Final bounded context formatter; native prior JSONL and approved directory identity retained'] };
+let app, page;
+const until = async fn => { const end = Date.now() + 120000; while (Date.now() < end) { if (await fn()) return; await new Promise(resolve => setTimeout(resolve, 100)); } throw new Error('Existing compaction continuation timed out'); };
+const check = (name, fn) => { fn(); checks.push({ name, pass: true }); };
+try {
+  const env = { ...process.env, OMNI_EDU_DATA_ROOT: dataRoot, OMNI_EDU_REPO_ROOT: path.resolve(appRoot, '../..'), OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_E2E_PI_COMPACT_COMMIT_DELAY_MS: '0', OMNI_EDU_XIAOZHI_PI: '1', DEEPSEEK_API_KEY: key, DEEPSEEK_MODEL: model };
+  delete env.ELECTRON_RUN_AS_NODE; delete env.NODE_OPTIONS;
+  app = await electron.launch({ args: [path.join(appRoot, 'out/main/index.js')], env, timeout: 60000 }); page = await app.firstWindow(); await page.getByTestId('xiaozhi-pi-workspace').waitFor({ state: 'visible', timeout: 30000 });
+  await page.getByTestId(`ai-conversation-session-${binding.conversation_id}`).click(); await page.waitForFunction(() => !document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
+  const snap = () => page.evaluate(id => window.omniEdu.getXiaozhiSnapshot(id), binding.conversation_id);
+  const n = (await snap()).projection.turns.length;
+  await page.getByTestId('office-prompt-input').fill('只回答原任务的教育验收码和年级，不要工具或文件操作。以下继续合成资料：\n' + '教学任务仍需教师复核，来源与审批以本地记录为准。'.repeat(160));
+  await page.getByTestId('office-prompt-input').press('Enter'); await until(async () => (await snap()).projection.turns.length > n && !(await snap()).running);
+  let state = await snap();
+  check('Final source resumes copied native history with original task facts', () => { assert.equal(state.projection.turns.at(-1).status, 'completed'); assert(state.projection.turns.at(-1).items.some(item => item.role === 'assistant' && item.text.includes(marker) && item.text.includes('五年级'))); });
+  const prefix = read(binding), count = prefix.split('\n').filter(line => line.includes('"type":"compaction"')).length;
+  await page.getByTestId('pi-compact').click(); await until(async () => (await snap()).projection.turns.length > n + 1 && !(await snap()).running); state = await snap();
+  const next = read(binding), entry = next.trim().split('\n').map(JSON.parse).filter(entry => entry.type === 'compaction').at(-1);
+  check('Final bounded formatter preserves exact source version and plan in fresh real compaction', () => { assert.equal(state.projection.turns.at(-1).status, 'completed'); assert(next.startsWith(prefix)); assert.equal(next.split('\n').filter(line => line.includes('"type":"compaction"')).length, count + 1); assert(entry.summary.includes('sourceSha256')); assert(entry.summary.includes('rejected')); assert(entry.summary.includes('整理教案草稿')); assert(entry.summary.includes('省略记录：')); });
+  check('Private summary remains absent from public projection and original test source is unchanged', () => { assert(!JSON.stringify(state).includes(entry.summary)); assert.equal(fs.readFileSync(path.join(source, 'xiaozhi-pi', binding.session_file), 'utf8'), previous); assert(state.usage.at(-1).tokens.total > 0); });
+  report.success = true;
+} catch (error) { report.error = String(error.stack).replaceAll(key, '[credential]').slice(0, 3000); }
+finally { await app?.close().catch(() => {}); fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify({ ...report, report: path.relative(appRoot, path.join(output, 'report.json')) })); }
+if (!report.success) process.exitCode = 1;

@@ -1,0 +1,20 @@
+{
+  "intentionalExistingMarkdownHardBreaks": 3,
+  "findings": [
+    {
+      "line": 110,
+      "file": "docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md"
+    },
+    {
+      "line": 111,
+      "file": "docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md"
+    },
+    {
+      "line": 112,
+      "file": "docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md"
+    }
+  ],
+  "files": 26,
+  "note": "Three existing two-space Markdown hard breaks preserved; no unexpected whitespace in the scoped files",
+  "unexpectedTrailingWhitespace": 0
+}

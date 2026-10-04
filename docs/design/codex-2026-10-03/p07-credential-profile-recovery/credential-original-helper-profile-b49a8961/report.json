@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "readOnly": true,
+  "scope": "Existing real configuration, no Store initialization/migration/recovery, no teacher data or key in report",
+  "version": 1,
+  "defaultModel": "deepseek-flash",
+  "encrypted": true,
+  "matchesAuthorizedLocalKey": true,
+  "recordedRunningCount": 0,
+  "catalogueHttpStatus": 200,
+  "availableModelIds": [
+    "deepseek-flash",
+    "deepseek-v4-pro"
+  ],
+  "defaultInOfficialCatalogue": true,
+  "completionHttpStatus": 200,
+  "completionTextPresent": true,
+  "observedAt": "2026-10-04T05:05:27.879Z"
+}

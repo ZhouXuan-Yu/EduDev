@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "purpose": "P06d reading and composer slice; not complete Codex visual parity",
+  "artifacts": [
+    {
+      "file": "before-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-workspace-baseline-3iPyqG\\report.json",
+      "bytes": 12317,
+      "sha256": "d703519eeaab66a357b9d8f7f0be29ece8f244f3d40c59983673f0bad17239bd"
+    },
+    {
+      "file": "before-before-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-workspace-baseline-3iPyqG\\before-1366x768.json",
+      "bytes": 5286,
+      "sha256": "d21ca42586e2e7d0b69f2bf3b0a0482cd05520fd60d768dd977a859ae88b3e4a"
+    },
+    {
+      "file": "before-before-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-workspace-baseline-3iPyqG\\before-1366x768.png",
+      "bytes": 49587,
+      "sha256": "7f533cbcdc63158d9514375414e7ca9a800937a90a90b9799879c8fa5b9cb4f7"
+    },
+    {
+      "file": "before-before-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-workspace-baseline-3iPyqG\\before-1920x1080.json",
+      "bytes": 5295,
+      "sha256": "81e1a22a294381c735f5e7d5d752d292768f2c8bf0cf4b7a0aa5e2f20e2bbf81"
+    },
+    {
+      "file": "before-before-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-workspace-baseline-3iPyqG\\before-1920x1080.png",
+      "bytes": 54439,
+      "sha256": "789eb2e7af9e3f1e0c8fb03903baceda30f4c71691e722edd2103c9192df5e3c"
+    },
+    {
+      "file": "process-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-QrIEtt\\report.json",
+      "bytes": 2727,
+      "sha256": "3b0c85475d85d67524231ecc80c2be0f298ecc9e936970a8c97eb97b6960341e"
+    },
+    {
+      "file": "process-live-process.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-QrIEtt\\live-process.png",
+      "bytes": 184804,
+      "sha256": "4e74bb4255271bc1dcf4f90959b398f1fcdf3854a934e49b091179e6981fb842"
+    },
+    {
+      "file": "process-after-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-QrIEtt\\after-1366x768.json",
+      "bytes": 9334,
+      "sha256": "4bef8805efd1a31f5394959a2f0877a37d7eeddc24b613e4565226dcc58e9643"
+    },
+    {
+      "file": "process-after-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-QrIEtt\\after-1366x768.png",
+      "bytes": 90496,
+      "sha256": "dd61d05013a2a132edbc352726a740a888dc2e8f919bcd389514ac14dc5b3576"
+    },
+    {
+      "file": "process-after-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-QrIEtt\\after-1920x1080.json",
+      "bytes": 9359,
+      "sha256": "8f2eb35922998cd3fe0693452aca20c31485a81e20e99b25ce42ae6ed611c6c9"
+    },
+    {
+      "file": "process-after-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-public-process-ui-QrIEtt\\after-1920x1080.png",
+      "bytes": 116287,
+      "sha256": "f5da83cf380be30fb18fb73b2d9848f3407bfe3799ee0af1c4dfa5700cc01149"
+    },
+    {
+      "file": "composer-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-composer-layout-jVR4nR\\report.json",
+      "bytes": 1397,
+      "sha256": "5a0138e8f7078922fc4c897f231bc585f5d60bf9d993c05bb135750221318c9a"
+    },
+    {
+      "file": "composer-selected-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-composer-layout-jVR4nR\\selected-1366x768.json",
+      "bytes": 8229,
+      "sha256": "513666202742c7245caf35760186ca2204ccb4851fae57d85df0f828fb96d601"
+    },
+    {
+      "file": "composer-selected-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-composer-layout-jVR4nR\\selected-1366x768.png",
+      "bytes": 78098,
+      "sha256": "48f1b8d13b0a7db1e7ce43cb07e15372075f745f4c12f37f6bc6a6c65bc986db"
+    },
+    {
+      "file": "composer-selected-1920x1080.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-composer-layout-jVR4nR\\selected-1920x1080.json",
+      "bytes": 8240,
+      "sha256": "158a496d321dfeadfaf9d69467b3d664d7c596c4d1dc829d9fd159e6f6265714"
+    },
+    {
+      "file": "composer-selected-1920x1080.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-composer-layout-jVR4nR\\selected-1920x1080.png",
+      "bytes": 79867,
+      "sha256": "da9f3e5d4c6f5972d1128d95096b2b027fc4c3fab51b5843f5a985d783ad2781"
+    },
+    {
+      "file": "composer-selected-with-files-1366x768.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-composer-layout-jVR4nR\\selected-with-files-1366x768.json",
+      "bytes": 7814,
+      "sha256": "1faeb1d034301b18ec1656e6f37bf6c79e08f6ea8715a8efacfab7221c4918b6"
+    },
+    {
+      "file": "composer-selected-with-files-1366x768.png",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-composer-layout-jVR4nR\\selected-with-files-1366x768.png",
+      "bytes": 58582,
+      "sha256": "f4e13ee8b802848b44283ee41584ba59bb7afbda1ddac6b81343414088357998"
+    },
+    {
+      "file": "approval-report.json",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-process-approval-ui-NbmawZ\\report.json",
+      "bytes": 774,
+      "sha256": "81390d191bf4c01103aa2c28ba736bc05341727476ebd78cc90d042f05337a76"
+    },
+    {
+      "file": "p06d-build.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-build.log",
+      "bytes": 837,
+      "sha256": "30646adc3333d477929a686ac1f9f7adc0c879df22c186f71aac7a657924206c"
+    },
+    {
+      "file": "p06d-build-final4.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-build-final4.log",
+      "bytes": 25156,
+      "sha256": "4a3a76679d223c918dab501fc480ee9c26b8f6f93fc6bf343326d4c87c752982"
+    },
+    {
+      "file": "p06d-renderer-final2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-renderer-final2.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "file": "p06d-process-ui.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-process-ui.log",
+      "bytes": 1618,
+      "sha256": "88b07d1761e0a835c5fbdcd64f39b3faeaff60a6b2c5c05b7485572bf6c449de"
+    },
+    {
+      "file": "p06d-process-ui-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-process-ui-final.log",
+      "bytes": 1410,
+      "sha256": "f459fb7d88c81a3638e7d65c4acde5a85b7cd7426a221d5d561abb2152576a13"
+    },
+    {
+      "file": "p06d-process-ui-final2.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-process-ui-final2.log",
+      "bytes": 1726,
+      "sha256": "f388823790cf0fae2a2d213fac77ac6fc6512ef261c2a7ea330cb7f76a1ffb3c"
+    },
+    {
+      "file": "p06d-composer-ui.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-composer-ui.log",
+      "bytes": 936,
+      "sha256": "ed9260936f71727d69e2ff4acc5078d3b0c7857d07d816da5f6f2843b7a006a0"
+    },
+    {
+      "file": "p06d-composer-ui-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-composer-ui-final.log",
+      "bytes": 903,
+      "sha256": "76db40766abcf5c2d5c6d3c3f28dd153cfac34c51debe3c0227ebce860e35e8c"
+    },
+    {
+      "file": "p06d-approval-ui-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-approval-ui-final.log",
+      "bytes": 641,
+      "sha256": "d4075e0a466beb6eacc580d14ea42603ff7faf587f580a952cfec29f8f14476b"
+    },
+    {
+      "file": "p06d-main-smoke-final.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-main-smoke-final.log",
+      "bytes": 38314,
+      "sha256": "1e0ceb045285a0e8e085946148bee18865cedc6c6be5ed47fcc7853d1984dc3f"
+    },
+    {
+      "file": "p06d-pro-source.log",
+      "source": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\p06d-pro-source.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Official current Flash image capability / Pro text-only",
+      "pass": true
+    },
+    {
+      "name": "Original Hana detects actual PNG regardless of declared MIME",
+      "pass": true
+    },
+    {
+      "name": "Original Hana rejects malformed image",
+      "pass": true
+    },
+    {
+      "name": "Original Hana/Pi tool-image preprocess produced real bounded image",
+      "pass": true
+    },
+    {
+      "name": "Actual original AgentSession prompt / provider visual code and 3 red / 2 blue",
+      "pass": true
+    },
+    {
+      "name": "Prompt image reached actual provider user image_url",
+      "pass": true
+    },
+    {
+      "name": "Native original JSONL contains actual image message",
+      "pass": true
+    },
+    {
+      "name": "Actual original Pi tool result / provider visual code and shape counts",
+      "pass": true
+    },
+    {
+      "name": "Pi lifts tool image to provider user message, not unsupported tool image",
+      "pass": true
+    },
+    {
+      "name": "Two independent native sessions remain within owned test directory",
+      "pass": true
+    }
+  ],
+  "payloads": [
+    {
+      "session": "prompt",
+      "model": "deepseek-flash",
+      "images": [
+        {
+          "role": "user",
+          "mime": "image/png",
+          "sha256": "a29585142f6f8706ea58ecbd97600c88f95b1e7f5504c58a3515ac84bb157365"
+        }
+      ]
+    },
+    {
+      "session": "tool",
+      "model": "deepseek-flash",
+      "images": []
+    },
+    {
+      "session": "tool",
+      "model": "deepseek-flash",
+      "images": [
+        {
+          "role": "user",
+          "mime": "image/png",
+          "sha256": "299f5ac6a0ce012f1447adab02ba51bde9bdd95aee1ba60c48e86c4048e3230c"
+        }
+      ]
+    }
+  ],
+  "upstream": {
+    "pi": "1.0.2",
+    "hana": "0.450.0"
+  },
+  "boundary": "Only original SDK/official provider with self-created public synthetic images. Formal Xiaozhi upload authorization/UI/history revocation still disabled and unaccepted. No student images, real profile, complete requests or keys archived.",
+  "models": [
+    {
+      "id": "deepseek-flash",
+      "name": "DeepSeek-V4.1-Flash",
+      "inputModalities": [
+        "text",
+        "image"
+      ],
+      "observedAt": "2026-10-04T10:09:18.071Z"
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "name": "DeepSeek-V4-Pro",
+      "inputModalities": [
+        "text"
+      ],
+      "observedAt": "2026-10-04T10:09:18.071Z"
+    }
+  ],
+  "images": [
+    {
+      "kind": "prompt",
+      "sha256": "a29585142f6f8706ea58ecbd97600c88f95b1e7f5504c58a3515ac84bb157365",
+      "width": 900,
+      "height": 480
+    },
+    {
+      "kind": "tool",
+      "sha256": "299f5ac6a0ce012f1447adab02ba51bde9bdd95aee1ba60c48e86c4048e3230c",
+      "preparedSha256": "299f5ac6a0ce012f1447adab02ba51bde9bdd95aee1ba60c48e86c4048e3230c",
+      "width": 900,
+      "height": 480
+    }
+  ],
+  "promptAnswer": "{\"code\":\"VISION87444673\",\"redSquares\":3,\"blueCircles\":2,\"redPosition\":\"left\",\"bluePosition\":\"right\"}",
+  "toolAnswer": "{\"code\":\"VISION2E1F965E\",\"redSquares\":3,\"blueCircles\":2,\"redPosition\":\"left\",\"bluePosition\":\"right\"}"
+}

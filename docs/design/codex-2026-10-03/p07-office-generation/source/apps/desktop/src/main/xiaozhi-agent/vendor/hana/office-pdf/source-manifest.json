@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "upstream": "Hana0.449.0",
+  "license": "Apache-2.0",
+  "source": "desktop/src/office-pdf-helper.cjs",
+  "sourceSha256": "db9c8def689d1bb64fd3443ed4680cbf12dedaed72410b95b8567f4066ad83f9",
+  "adaptations": [
+    "AST extraction of four original function bodies; renderJob exported as renderHanaPdfJob with injected BrowserWindow parameter",
+    "System fonts selected by main-controlled HTML; embedHanaFonts always false, no Hana product font fallback",
+    "No helper CLI/secondary application or arbitrary path invocation"
+  ],
+  "functions": [
+    {
+      "name": "delay",
+      "bodySha256": "5ddccd3eb48d713d156548404195b937a97f2c82a34dce1224706c013b7a2f9d"
+    },
+    {
+      "name": "withTimeout",
+      "bodySha256": "3c5bcd22782b724e763655e3b3f639dc0442298083b87ae792faecfe7f473b09"
+    },
+    {
+      "name": "waitForPageAssets",
+      "bodySha256": "4036a75c0150837f79dec29e5599a7a1526ce735e4b9c1ab0731ee82daaa0acb"
+    },
+    {
+      "name": "renderJob",
+      "bodySha256": "14326450b568db118a21352133a9be08f42b56ad99451f427b3aa42882cc7d45"
+    }
+  ],
+  "files": [
+    {
+      "name": "render-job.ts",
+      "outputSha256": "dd5bf72e8d0e07f41b92519b2d85a3dc421533dc1eb62abae76e67fc7fb47b32"
+    },
+    {
+      "name": "LICENSE",
+      "outputSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    }
+  ]
+}

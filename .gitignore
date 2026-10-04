@@ -9,3 +9,4 @@ coverage/
 *-review.png
 __pycache__/
 *.py[cod]
+.local-ocr/

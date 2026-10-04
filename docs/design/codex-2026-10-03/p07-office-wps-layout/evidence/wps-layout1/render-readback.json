@@ -1,0 +1,105 @@
+{
+  "success": false,
+  "files": [
+    {
+      "kind": "docx",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-2.png"
+        },
+        {
+          "page": 3,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-3.png"
+        },
+        {
+          "page": 4,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-4.png"
+        },
+        {
+          "page": 5,
+          "width": 595.2999877929688,
+          "height": 841.9000244140625,
+          "outsideGlyphs": 0,
+          "png": "docx-page-5.png"
+        }
+      ],
+      "missing": [
+        "第8行8列开始",
+        "第8行8列结束"
+      ],
+      "allMarkersPresent": false
+    },
+    {
+      "kind": "xlsx",
+      "pages": [
+        {
+          "page": 1,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 595.4400024414062,
+          "height": 841.6799926757812,
+          "outsideGlyphs": 0,
+          "png": "xlsx-page-2.png"
+        }
+      ],
+      "missing": [
+        "标题结束"
+      ],
+      "allMarkersPresent": false
+    },
+    {
+      "kind": "pptx",
+      "pages": [
+        {
+          "page": 1,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 35,
+          "png": "pptx-page-1.png"
+        },
+        {
+          "page": 2,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 35,
+          "png": "pptx-page-2.png"
+        },
+        {
+          "page": 3,
+          "width": 960.0,
+          "height": 540.0,
+          "outsideGlyphs": 700,
+          "png": "pptx-page-3.png"
+        }
+      ],
+      "missing": [
+        "第8行8列开始",
+        "第8行8列结束"
+      ],
+      "allMarkersPresent": false
+    }
+  ],
+  "boundary": "Real WPS exported page content and glyph bounds; images still need visual inspection for overlap/readability."
+}

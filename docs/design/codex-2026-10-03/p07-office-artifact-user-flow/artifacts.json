@@ -1,0 +1,523 @@
+{
+  "version": 1,
+  "scope": "Formal Office tool and teacher UI accepted with real DeepSeek20. WPS/Office layout and complete Codex parity remain pending.",
+  "entries": [
+    {
+      "path": "logs/p07b3b-user-typecheck1.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/p07b3b-user-typecheck2.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "logs/p07b3b-user-build1.log",
+      "bytes": 25517,
+      "sha256": "e5a6bf9b44b9024edf733d3ba29e0af6a3ff756508ab0306833fb3d99afb439e"
+    },
+    {
+      "path": "logs/p07b3b-user-build2.log",
+      "bytes": 25517,
+      "sha256": "4f683aa15e0d369b13fba4f89934b3fc76c27cb43e626d45eece18fdc065efc8"
+    },
+    {
+      "path": "logs/p07b3b-user-build3.log",
+      "bytes": 25517,
+      "sha256": "82382c8a04973c227b01c042100907ed519a9159dd600b8a7dd99e89cd66dc87"
+    },
+    {
+      "path": "logs/p07b3b-user-build4.log",
+      "bytes": 25517,
+      "sha256": "43b3948e0139386652bff1ce26f59522f9d4eb93b402927c8178b6d8a41521df"
+    },
+    {
+      "path": "logs/p07b3b-user-coordinator1.log",
+      "bytes": 1180,
+      "sha256": "b168492964cea6f78e809be6d4d3fc0129a6465f4b3e766040251713c2e27e01"
+    },
+    {
+      "path": "logs/p07b3b-user-coordinator2.log",
+      "bytes": 1180,
+      "sha256": "0596abee8d9bb50c21a73ff55da92296a438c5ba808f5cc66771364ba454c86f"
+    },
+    {
+      "path": "logs/p07b3b-user-coordinator-final.log",
+      "bytes": 1180,
+      "sha256": "886438a079c35c7607985d3fc8ad7f5ab9cc5ad783e75b2e83c5a82381ba649d"
+    },
+    {
+      "path": "logs/p07b3b-user-host1.log",
+      "bytes": 935,
+      "sha256": "67a62613935c5bf5ac3724a3612933fcbc5cd7a4469f28f4a4cb47915cbab599"
+    },
+    {
+      "path": "logs/p07b3b-user-host2.log",
+      "bytes": 831,
+      "sha256": "15f3acf4856d61cb9d0ff96568d10149b74ee4bf2ed381967f2c77170567500f"
+    },
+    {
+      "path": "logs/p07b3b-user-host-final.log",
+      "bytes": 831,
+      "sha256": "ba2578107377329eaa4b410c709783617d56ad6f743e9552707cfacf3048323e"
+    },
+    {
+      "path": "logs/p07b3b-user-foundation.log",
+      "bytes": 1965,
+      "sha256": "0645189a0e030a46249b30a9c9c9069a5c2cff2192d76d9bfcfc382b2effab8c"
+    },
+    {
+      "path": "logs/p07b3b-user-foundation-final.log",
+      "bytes": 1965,
+      "sha256": "0c011bcc65276e4e9e74c75d6310f38b8f934e445c30cceef414b595533311b9"
+    },
+    {
+      "path": "logs/p07b3b-user-text-compat.log",
+      "bytes": 1094,
+      "sha256": "6d9af128589851ac1e9c76b1d8c784833c818245bd4dd6cb724ba8b55386f2ee"
+    },
+    {
+      "path": "logs/p07b3b-user-renderer.log",
+      "bytes": 279,
+      "sha256": "845ee93c9a99cfa567821618fea78adbb3b01b9d13750b3c03e7d29b2305724f"
+    },
+    {
+      "path": "logs/p07b3b-user-renderer-final.log",
+      "bytes": 194,
+      "sha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+    },
+    {
+      "path": "logs/p07b3b-user-hana-pdf.log",
+      "bytes": 106,
+      "sha256": "1d1a318caf05e7f40f403aaa0767b00e3e166e50c0dfda71a12f18e7c310e177"
+    },
+    {
+      "path": "logs/p07b3b-user-hana-read.log",
+      "bytes": 39,
+      "sha256": "cf32f9e28818577c6805c18f5f1bd9bfeb923682de76bfc44d66b387df375c21"
+    },
+    {
+      "path": "logs/p07b3b-user-pro-source.log",
+      "bytes": 98,
+      "sha256": "d0fe7b03c7fb01563e98ecb01460e764a4d97e6be4bc4843d17ffb009b384b23"
+    },
+    {
+      "path": "logs/p07b3b-user-ui1.log",
+      "bytes": 866,
+      "sha256": "15da9b1739e2695cc3d3384a070ca56060d870ffe06d2048b42f2e1b09332d2a"
+    },
+    {
+      "path": "logs/p07b3b-user-ui2.log",
+      "bytes": 2790,
+      "sha256": "09aa9aa4487a4ee3a5ed5ff280a1ed31a944f5c4a725d345dcbeb1db310b9cc6"
+    },
+    {
+      "path": "logs/p07b3b-user-ui3.log",
+      "bytes": 2016,
+      "sha256": "b407a24f64036da3053cc12b890c4b4fd36d2388fb5fb0c0e1c88fe879dd9607"
+    },
+    {
+      "path": "logs/p07b3b-user-ui4.log",
+      "bytes": 2019,
+      "sha256": "04fd56a36326978fbed4c11251eaa0c5814e97de29d51682eec2fa56eff01dc3"
+    },
+    {
+      "path": "logs/p07b3b-user-ui5.log",
+      "bytes": 2117,
+      "sha256": "e78b7505ce5ca2743bd5b0bbc52e9731ba24afd3175ed0ce2287dad79543d9c2"
+    },
+    {
+      "path": "logs/p07b3b-user-smoke-final.log",
+      "bytes": 38675,
+      "sha256": "4fbb24b0253fcc5ac6cacfb92389f4a1bfe5453c579149deb0f7cbbdccfc68f8"
+    },
+    {
+      "path": "logs/p07b3b-user-diff-check.log",
+      "bytes": 3190,
+      "sha256": "6a15379b3a60c637172f4d6938c0cac75baee65f59fbe171796aae2231b5c0a7"
+    },
+    {
+      "path": "instances/pi-office-coordinator-CSTLwi/report.json",
+      "bytes": 1395,
+      "sha256": "189d3b5c996922ce6d88f576114ae412d1c5f1274b34c3a428abc277bf4cf558"
+    },
+    {
+      "path": "instances/pi-office-coordinator-IZhyNW/report.json",
+      "bytes": 1395,
+      "sha256": "189d3b5c996922ce6d88f576114ae412d1c5f1274b34c3a428abc277bf4cf558"
+    },
+    {
+      "path": "instances/pi-office-coordinator-R33JWX/report.json",
+      "bytes": 1395,
+      "sha256": "189d3b5c996922ce6d88f576114ae412d1c5f1274b34c3a428abc277bf4cf558"
+    },
+    {
+      "path": "instances/pi-office-host-3YXjLc/report.json",
+      "bytes": 1005,
+      "sha256": "8a79b45cbf15626ae11fcbf91c0727541d3bcb35ec7fd5bcaadad37afab286ba"
+    },
+    {
+      "path": "instances/pi-office-host-qzwXuT/report.json",
+      "bytes": 983,
+      "sha256": "d37eaf4a349f40680bed5504781fecffcd5624423e929a9bc16709a772aef977"
+    },
+    {
+      "path": "instances/pi-office-host-5gUCPM/report.json",
+      "bytes": 983,
+      "sha256": "d37eaf4a349f40680bed5504781fecffcd5624423e929a9bc16709a772aef977"
+    },
+    {
+      "path": "instances/pi-office-artifact-foundation-8O1g6j/report.json",
+      "bytes": 2623,
+      "sha256": "fd580c075a34eadd969d1e7055d1331f1fe016aef0bdda1943e1e3c93b9b8cdd"
+    },
+    {
+      "path": "instances/pi-office-artifact-foundation-fS2Gjf/report.json",
+      "bytes": 2623,
+      "sha256": "fd580c075a34eadd969d1e7055d1331f1fe016aef0bdda1943e1e3c93b9b8cdd"
+    },
+    {
+      "path": "instances/pi-text-coordinator-BunUbt/report.json",
+      "bytes": 1301,
+      "sha256": "f45f6dbd5d9939abf91c5fa453e627b8023bdbb54c35ef4b5742411a7d67b66e"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-YXP9ms/report.json",
+      "bytes": 977,
+      "sha256": "89f0c558f0bc856064da768f5379517e4e46c2c806ba3cbb3305c67555380a03"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-eZdtl4/report.json",
+      "bytes": 2926,
+      "sha256": "c17cf198cbc20396885324c618620e48d9d663f1b347233b81c3bb8644ce3b6e"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-eZdtl4/pdf-first-page.png",
+      "bytes": 47930,
+      "sha256": "278f9e8b9bb529b97c6112680862815e45b529377ce999bdb5797b44016aeeee"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-vP2pVA/report.json",
+      "bytes": 2513,
+      "sha256": "d10d7e7a83dabb22b3711e6b686f7774b6edb5b44d5ef598cd50fac41ea254b3"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-vP2pVA/format-readback.json",
+      "bytes": 526,
+      "sha256": "7d93722eb2c41a9c258796d96296ad2c0f79df51099bef64e84c9e89492f6425"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-ffAz2n/report.json",
+      "bytes": 2516,
+      "sha256": "f7b000bb39731b19acfd25e342e524548b252cf1633c0f95c874e37237a56a9c"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-ffAz2n/format-readback.json",
+      "bytes": 527,
+      "sha256": "6ddfed1195c81430e100f8f76d4e8521e0d6fbbcf1c8444e15d6251b4896b0b8"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/report.json",
+      "bytes": 2911,
+      "sha256": "3ce723b9b398b632cca8ce0d9746131a1c9e156b62ec39da7420709924c1422a"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/format-readback.json",
+      "bytes": 526,
+      "sha256": "9b0fe3c979a21c69c5045e4a1db235451b50675c3ae58faa54a7978608387cff"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/restart-state.png",
+      "bytes": 183282,
+      "sha256": "f76815fa35a7fd93829226bbcddf3a39bfec1cbb86f01617056593fef355b505"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/review-1366x768.png",
+      "bytes": 212338,
+      "sha256": "9f1bb6372f3052d83829b269ff01705dea87b416b7aed684da14f076536d9e72"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/review-1920x1080.png",
+      "bytes": 286920,
+      "sha256": "7f5d703ed75a7bca0e45870ad88c608d2def7e733cea1b14e60f427cb946c4be"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/saved-docx-open.png",
+      "bytes": 280419,
+      "sha256": "5fbdd607ba0196336d4f5073de780fd9f2dd1c852693388e6f9e0255fa426715"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/saved-pdf-open.png",
+      "bytes": 319321,
+      "sha256": "dd5c652661503424edfbad7ffeb423a798e1f3d87d1b1735e27c3455b1e78139"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/saved-pptx-open.png",
+      "bytes": 318615,
+      "sha256": "b4a1b909d3f6cc58982be6078801181db87d076f19d9904f33717b130123401a"
+    },
+    {
+      "path": "instances/pi-office-artifact-ui-NFyGeK/saved-xlsx-open.png",
+      "bytes": 308861,
+      "sha256": "ed880fecfe3019549c775c63830213b3bea4dafb2fbf8815d25af58e830e1817"
+    },
+    {
+      "path": "generated/课堂计划.docx",
+      "bytes": 9896,
+      "sha256": "9054a375d574e3b3c2d2bdffeaf53ce5a0df1a05dda305fe989446ec55957b3d"
+    },
+    {
+      "path": "generated/课堂计划.pdf",
+      "bytes": 48758,
+      "sha256": "21e1cc2c5b2eac45bc557f4ff7877c41f46b608e74c4c50883d8c98850602aed"
+    },
+    {
+      "path": "generated/课堂计划.xlsx",
+      "bytes": 6976,
+      "sha256": "1daf16b64880ba4adb885d5bcc2cfa46eef8bc97980dc2049c96786235c15ee9"
+    },
+    {
+      "path": "generated/课堂计划.pptx",
+      "bytes": 65952,
+      "sha256": "5e162689eba683b00ee11dbeef63a682e507733298ae13c150156fd6eceee373"
+    },
+    {
+      "path": "source/apps/desktop/package.json",
+      "bytes": 14958,
+      "sha256": "2af7c2ef9f54a7a5ef9c9d1e0fe800f82007f2d98d76b352784d93cf3236f561"
+    },
+    {
+      "path": "source/apps/desktop/src/shared/xiaozhi-office-artifacts.ts",
+      "bytes": 3393,
+      "sha256": "1825aeeb6356fa1acfc419971f4ad114db4e7b5471becd482a01d3b51677909f"
+    },
+    {
+      "path": "source/apps/desktop/src/shared/xiaozhi-agent.ts",
+      "bytes": 5515,
+      "sha256": "a188396169067b54a3e435fa51cc9bfa79a8a4a919387e338d971fc56ab301b8"
+    },
+    {
+      "path": "source/apps/desktop/src/shared/xiaozhi-projection.ts",
+      "bytes": 10238,
+      "sha256": "98ced95f60f9d3a67bfd848975caa859a7ae7703af4de73e77fe751f26be62b8"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/office-artifact-coordinator.ts",
+      "bytes": 9273,
+      "sha256": "23080842f8faff76dc0e730d0d1c58636f183859900c915af690430a292419ae"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/office-artifact-api.ts",
+      "bytes": 783,
+      "sha256": "e41f30b57c23020deb72f66e4436c8c1f029f0b9763a41903e83bbdb1dac5286"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts",
+      "bytes": 12899,
+      "sha256": "0b09fe047e3f6ff9423f478e33f616a4ca647e3f08ae9276154df017386e4a73"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/office-artifact-state.ts",
+      "bytes": 12914,
+      "sha256": "c5503a45039d2d2889576d2431ce318a4d45ae0fcfefd834aaa623b1f542bd93"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 52276,
+      "sha256": "e91fed5a2465899b8715cc25d96cdb147ed1957af932754294cc57952da253ff"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "bytes": 45422,
+      "sha256": "149d8d4b8c7f892f6e107dcf96a7538634b9d449568786e3901c59aa820bc29a"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/ipc.ts",
+      "bytes": 7546,
+      "sha256": "f71cbb54b7a8d88822ccc5d0fa3eafabb253d626912293c9ecce28946f651db6"
+    },
+    {
+      "path": "source/apps/desktop/src/main/xiaozhi-agent/compaction-context.ts",
+      "bytes": 3796,
+      "sha256": "ca1d3c58346220fcb228fd8a1618b2a7b5ce44ab50df80348facf8eda06842e0"
+    },
+    {
+      "path": "source/apps/desktop/src/preload/index.ts",
+      "bytes": 30598,
+      "sha256": "2714cc78e901690a319687dbf33c19250fc93245ff6a2160d3c82c43d692bb21"
+    },
+    {
+      "path": "source/apps/desktop/src/renderer/components/office/PiOfficeArtifactCard.tsx",
+      "bytes": 11240,
+      "sha256": "67369395857b329b7f6c498ec7952f4b61c528b6328921596a6562cec44a4dc3"
+    },
+    {
+      "path": "source/apps/desktop/src/renderer/components/office/pi-office-artifact.css",
+      "bytes": 1532,
+      "sha256": "3bbcdae13949f307152747a27663ae46fb7d42c90d75a5dd5ad7b6514bf2513a"
+    },
+    {
+      "path": "source/apps/desktop/src/renderer/components/office/OfficeComposerState.tsx",
+      "bytes": 3431,
+      "sha256": "42d68dab9f73c5efd71332e2b8d7eb08b8be9ee95cb4b5d1f99e5b3ea00d4cc5"
+    },
+    {
+      "path": "source/apps/desktop/src/renderer/components/office/PiEducationWorkspace.tsx",
+      "bytes": 18522,
+      "sha256": "e3a47d707c751650561c2d94b838e6b0e5028872e561fc0338d469330fc282cc"
+    },
+    {
+      "path": "source/apps/desktop/src/renderer/components/office/PiWorkspaceFiles.tsx",
+      "bytes": 11575,
+      "sha256": "fe464764024a61761422ae3b20ff7d8ec163b5de31ac4f95df2c29227069a34e"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-coordinator-smoke.mjs",
+      "bytes": 13922,
+      "sha256": "e26e951c8528f208b884a1c3b616bdaafabfb96811607109b56be03f8fa27f38"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-host-smoke.mjs",
+      "bytes": 5719,
+      "sha256": "477d5b55262abc4451c7f4bdc53805fa41d24577fbb61271830afd1b9fab1563"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs",
+      "bytes": 17695,
+      "sha256": "cbc14ce5702d6ef239cf6cb2fa612ad9a21797b675f6c8db97c7654d6803fa97"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-foundation-smoke.mjs",
+      "bytes": 19244,
+      "sha256": "99002f82aba74c0c70b57f5ccf741292c9e07f9546426bf6be8c0a83a668f037"
+    },
+    {
+      "path": "source/apps/desktop/scripts/xiaozhi-agent/verify-office-artifact-readback.py",
+      "bytes": 2546,
+      "sha256": "99fe6c5bba67828921fc25bedb238265b7947c09b1974a2bb0a4fcebfe7cb5c7"
+    },
+    {
+      "path": "source/1.Agent.md",
+      "bytes": 97078,
+      "sha256": "1b2a1e0046f744cfe1ce71b2f15d64a696f51f7cc5607312bba2b9c44fab30b9"
+    },
+    {
+      "path": "source/2.Memory.md",
+      "bytes": 225274,
+      "sha256": "cb47ad5896161753c1e01bb68003828516fe334a2d5a19861d02c485e6748a92"
+    },
+    {
+      "path": "source/3.Learning.md",
+      "bytes": 172094,
+      "sha256": "6a7267b6f18995158f92dbe151659b2f7d6a60ecabec43b9f1d5adb261fb4a90"
+    },
+    {
+      "path": "source/4.Wiki.md",
+      "bytes": 140279,
+      "sha256": "ba132412ad46964e395b2aef0fed567811e37f538c5eb4192ed7ec2aabb64cd7"
+    },
+    {
+      "path": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 37846,
+      "sha256": "02af251dc135ffde5dd5569ff5510b3680c86cd3d7c659aa0ec5af5e4acc3f4a"
+    },
+    {
+      "path": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 68261,
+      "sha256": "212e1e7c65d5cf3d1c16d514d67fa3a3fd35882777de4d4752cce56c28af44f7"
+    },
+    {
+      "path": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 50615,
+      "sha256": "1cbb004a0cda5b3958425192ccf988291541915b9c3fd9ebac194ea581c6a3e1"
+    },
+    {
+      "path": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 55802,
+      "sha256": "1fa9da72fbeea7e2e10e1f83b4e914541409cd0c576c0cec2c232e92136a8fa0"
+    },
+    {
+      "path": "source/docs/120_PI_OFFICE_APPROVAL_AND_ARTIFACT_CONTRACT.md",
+      "bytes": 7115,
+      "sha256": "3d32fe41e1e0042dd1d5237b3ec183fe0c8f82e27161746809588fa333f914a5"
+    },
+    {
+      "path": "source/docs/124_PI_OFFICE_ARTIFACT_USER_FLOW_CONTRACT.md",
+      "bytes": 6284,
+      "sha256": "d1f1c130342ee6b1833b35f763947da3a56e6cdb61fc75744bc537e138482937"
+    },
+    {
+      "path": "source/docs/125_PI_OFFICE_ARTIFACT_USER_FLOW_ACCEPTANCE.md",
+      "bytes": 8527,
+      "sha256": "dd2322e9232a0a7f9e52721b723a12eb5533181ebcd2c30f97cabba4e6cfefcf"
+    },
+    {
+      "path": "source/third_party/finesse/SKILL.md",
+      "bytes": 78876,
+      "sha256": "b3c95a871163a8fbed75dca16a6530170c6311627c577dd12e05242e412a2b8c"
+    },
+    {
+      "path": "source/third_party/finesse/references/component-scope.md",
+      "bytes": 9769,
+      "sha256": "9721dffd207817721ebf846002828bdecfeff49f8886a4a45fbd460ec8502485"
+    },
+    {
+      "path": "source/third_party/finesse/references/ai-console.md",
+      "bytes": 25716,
+      "sha256": "8914beb7a4c953713d35dac6cc60204ef6dd5a4f5d5504e75579037fdb1cb3af"
+    }
+  ],
+  "runtimeHashes": [
+    {
+      "path": "out/main/document-host-DBAJwWjo.js",
+      "bytes": 2298,
+      "sha256": "03946758ac8f98c04f06c87feb0db8a160d6fc843ec5791a17aba1c2d81bdbed"
+    },
+    {
+      "path": "out/main/document-worker.js",
+      "bytes": 4664,
+      "sha256": "98f0c55e13fd9cad781f96dcf0601588debd35bae29342fc54fd49bc6df0aec7"
+    },
+    {
+      "path": "out/main/index.js",
+      "bytes": 1058081,
+      "sha256": "891b0e1cc142f42665e2c324a39ed9faadc0af3d0fdf3f4f3b30d3749956d954"
+    },
+    {
+      "path": "out/main/office-generator.js",
+      "bytes": 5530,
+      "sha256": "e05d180c42c7ca5b1591d816d038dfc332dfdbd375f1283350f6be4ae8761b33"
+    },
+    {
+      "path": "out/main/office-pdf-renderer-DS1sNXgh.js",
+      "bytes": 7290,
+      "sha256": "248012e1d402be4169a81943b82c6240b2d15500d03e6c2c7cc9a4314301d211"
+    },
+    {
+      "path": "out/main/pi-session-Cp0EVdbS.js",
+      "bytes": 133153,
+      "sha256": "86951b9b50dfbaae721ff2fe6a698b24525bd0976a08903f2ccac359992d1d19"
+    },
+    {
+      "path": "out/main/xiaozhi-documents-CSeYBu6S.js",
+      "bytes": 1891,
+      "sha256": "fa69e30f81a08c6ae040bc1d9cc0d00793f566f0886fea99c8a3c62e6ef45cfd"
+    },
+    {
+      "path": "out/main/xiaozhi-office-draft-97IC6p4o.js",
+      "bytes": 2068,
+      "sha256": "053d8708c6a34b26d613857fd9fed5fe53b52bcbef64206dbc775a0dae60cfbb"
+    },
+    {
+      "path": "out/preload/index.cjs",
+      "bytes": 19053,
+      "sha256": "6d92359fae5fb8779d50384db7940e2313a657f01ee66d512cecff58b415558c"
+    },
+    {
+      "path": "out/renderer/assets/index-C7YrpuTD.js",
+      "bytes": 4043004,
+      "sha256": "6aa5e9ddf6b4b283e72baf579c53816c0d0904981b582d0cc9deabaac6054f3a"
+    }
+  ]
+}

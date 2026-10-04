@@ -1,0 +1,46 @@
+{
+  "suite": "pi-session-binding-migration",
+  "success": true,
+  "checks": [
+    {
+      "name": "Prior-schema test copy migrates idempotently without altering education/message/run facts",
+      "pass": true
+    },
+    {
+      "name": "Migration rerun preserves the private binding",
+      "pass": true
+    },
+    {
+      "name": "Unsupported binding version is rejected",
+      "pass": true
+    },
+    {
+      "name": "Workspace migration preserves grants and rejects future authority versions",
+      "pass": true
+    },
+    {
+      "name": "Crash during command creation becomes interrupted without replay or run creation",
+      "pass": true
+    },
+    {
+      "name": "Control migration preserves explicit question recovery, interrupts queued input, and rejects future versions",
+      "pass": true
+    },
+    {
+      "name": "Budget defaults and versioned CAS persist without rewriting teacher facts; future version rejected",
+      "pass": true
+    },
+    {
+      "name": "Usage projection whitelists public fields and excludes injected private payload",
+      "pass": true
+    },
+    {
+      "name": "Crash metric keeps last committed lower bound, unknown cost, and rejects future versions",
+      "pass": true
+    },
+    {
+      "name": "Clean schema creates exactly one binding table",
+      "pass": true
+    }
+  ]
+}

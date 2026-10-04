@@ -1,0 +1,7 @@
+import fs from 'node:fs';import path from 'node:path';import {spawn} from 'node:child_process';import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';import {build} from 'esbuild';
+const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-browser-native-'));
+await build({entryPoints:['scripts/xiaozhi-agent/pi-browser-native-worker.ts'],outfile:path.join(output,'worker.mjs'),bundle:true,platform:'node',target:'node24',format:'esm',packages:'external',logLevel:'warning'});
+const bootstrap=path.join(output,'bootstrap.cjs');fs.writeFileSync(bootstrap,`const {app}=require('electron');app.setPath('userData',${JSON.stringify(path.join(output,'profile'))});app.whenReady().then(async()=>{try{await import(${JSON.stringify(pathToFileURL(path.join(output,'worker.mjs')).href)});app.quit();}catch(error){console.error(String(error.stack).slice(0,2000));app.exit(1);}});\n`,{flag:'wx'});
+const env={...process.env};delete env.NODE_OPTIONS;delete env.ELECTRON_RUN_AS_NODE;
+const child=spawn(createRequire(import.meta.url)('electron'),[bootstrap,output],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});let log='';for(const stream of [child.stdout,child.stderr])stream.on('data',chunk=>{const value=String(chunk);log+=value;process.stdout.write(value);});
+const code=await new Promise(resolve=>child.once('exit',resolve));fs.writeFileSync(path.join(output,'worker.log'),log);console.log(JSON.stringify({exitCode:code,output}));if(code!==0)process.exitCode=1;

@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "files": [
+    {
+      "format": "docx",
+      "bytes": 10061,
+      "sha256": "0b46fda741821dc8ea9d03f08594ff87dee85f992091a7fb683ac218d873d4f2"
+    },
+    {
+      "format": "xlsx",
+      "bytes": 7306,
+      "sha256": "dad63239907cf910270afe39abbac13064a310272a5724a804d594c7ca440060"
+    },
+    {
+      "format": "pptx",
+      "bytes": 107071,
+      "sha256": "ed6cff7d5229470d93743201f5d1bf64cafcacb38d4d580ca958e4617c5348be"
+    }
+  ],
+  "boundary": "Actual production generator; synthetic accepted-size long Chinese title/heading/paragraph and eight-column table. Not WPS proof."
+}

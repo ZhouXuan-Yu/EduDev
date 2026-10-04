@@ -1,0 +1,29 @@
+﻿{
+    "success":  false,
+    "mode":  "probe",
+    "before":  [
+                   {
+                       "id":  4428,
+                       "start":  "2026-09-29T05:43:31.4199256Z",
+                       "hwnd":  0
+                   },
+                   {
+                       "id":  66568,
+                       "start":  "2026-10-03T17:11:29.1186891Z",
+                       "hwnd":  0
+                   }
+               ],
+    "applications":  [
+                         {
+                             "kind":  "docx",
+                             "pid":  35416,
+                             "hwnd":  0,
+                             "identity":  "registered-automation-start-time",
+                             "version":  "12.0",
+                             "initialCount":  0,
+                             "owned":  true
+                         }
+                     ],
+    "boundary":  "Actual WPS COM only; no existing user instance may be altered.",
+    "error":  "Unexpected COM process image"
+}

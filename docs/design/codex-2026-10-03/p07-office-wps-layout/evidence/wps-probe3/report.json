@@ -1,0 +1,46 @@
+﻿{
+    "success":  true,
+    "mode":  "probe",
+    "before":  [
+                   {
+                       "id":  4428,
+                       "start":  "2026-09-29T05:43:31.4199256Z",
+                       "hwnd":  0
+                   },
+                   {
+                       "id":  66568,
+                       "start":  "2026-10-03T17:11:29.1186891Z",
+                       "hwnd":  0
+                   }
+               ],
+    "applications":  [
+                         {
+                             "kind":  "docx",
+                             "pid":  62404,
+                             "hwnd":  0,
+                             "identity":  "registered-automation-start-time",
+                             "version":  "12.0",
+                             "initialCount":  0,
+                             "owned":  true
+                         },
+                         {
+                             "kind":  "xlsx",
+                             "pid":  46068,
+                             "hwnd":  7276896,
+                             "identity":  "hwnd",
+                             "version":  "12.0",
+                             "initialCount":  0,
+                             "owned":  true
+                         },
+                         {
+                             "kind":  "pptx",
+                             "pid":  1064,
+                             "hwnd":  0,
+                             "identity":  "registered-automation-start-time",
+                             "version":  "12.0",
+                             "initialCount":  0,
+                             "owned":  true
+                         }
+                     ],
+    "boundary":  "Actual WPS COM only; no existing user instance may be altered."
+}

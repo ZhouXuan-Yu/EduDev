@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Real provider tool completes before the native next-request budget failure; partial facts remain",
+      "pass": true
+    },
+    {
+      "name": "Real failure recovery action and previous evidence remain reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Real failure recovery action and previous evidence remain reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Preparing recovery cannot overwrite another unsent draft or start a run",
+      "pass": true
+    },
+    {
+      "name": "Actual failed task returns to the unsent composer without replaying tools or writes",
+      "pass": true
+    },
+    {
+      "name": "Prepared recovery draft survives real file reparenting",
+      "pass": true
+    },
+    {
+      "name": "Teacher edits and explicitly sends a new successful real request; previous failed turn and effects stay intact",
+      "pass": true
+    }
+  ],
+  "boundary": "Real DeepSeek/native budget failure and actual UI retry preparation, synthetic owned files; chooser controlled; no network fault/VPN-off/PDF claim"
+}

@@ -1,0 +1,22 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Known names are locally replaced longest-first and existing privacy boundary is explicitly reused",
+      "pass": true
+    },
+    {
+      "name": "Invalid path/format/ranges/extra fields return safe errors before any filesystem resolution",
+      "pass": true
+    },
+    {
+      "name": "Revoked run and aborted signal return cancelled/denied with no body or path",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Strict main tool guards, privacy delegation and real SDK native identity/cached call; no actual parser or provider request",
+    "Actual parsing and real DeepSeek verified separately in Electron UI"
+  ],
+  "error": "Error: ENOENT: no such file or directory, open 'D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-office-boundary-lY53S9\\state\\sessions\\2026-10-03T20-21-30-181Z_01a1036d-cdc5-7c4b-9d8b-774039de38aa.jsonl'\n    at Object.openSync (node:fs:560:18)\n    at Object.readFileSync (node:fs:444:35)\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs:26:131\n    at async check (file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs:9:30)\n    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-office-document-boundary-smoke.mjs:25:2"
+}

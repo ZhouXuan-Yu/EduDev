@@ -1,0 +1,58 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Strict image parameters reject accessors and arbitrary paths without executing them",
+      "pass": true
+    },
+    {
+      "name": "Text/unknown or cached-only capability cannot ask for or deliver an image",
+      "pass": true
+    },
+    {
+      "name": "Declined explicit public-purpose confirmation produces no prepared image or receipt",
+      "pass": true
+    },
+    {
+      "name": "Actual existing image utility decodes and prepares captured submitted image through original Hana/Pi",
+      "pass": true
+    },
+    {
+      "name": "Current prepared image is admitted; unrelated history and summarization images remain local",
+      "pass": true
+    },
+    {
+      "name": "Projection separates preparation/submission from actual response receipt and adds source only after response",
+      "pass": true
+    },
+    {
+      "name": "Final provider gate rejects arbitrary remote images outside captured authority",
+      "pass": true
+    },
+    {
+      "name": "New run clears image grants without replaying a received receipt or changing native image bodies",
+      "pass": true
+    },
+    {
+      "name": "Image context estimate uses native image tokens, independent from base64 transport size",
+      "pass": true
+    },
+    {
+      "name": "Supplier error never creates a received image receipt",
+      "pass": true
+    },
+    {
+      "name": "A stopped owner cannot emit a late successful receipt or continue image delivery",
+      "pass": true
+    },
+    {
+      "name": "Cold SQLite reopening preserves capture facts; deleted source uses local copy but still requires new confirmation",
+      "pass": true
+    },
+    {
+      "name": "Changed captured file is rejected again at request time, after an earlier confirmation",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual Electron/SQLite/captured-file/owned image utility. Confirmation and metadata responses are boundary fixtures, not official provider or rendered UI proof."
+}

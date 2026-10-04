@@ -1,0 +1,18 @@
+{
+  "build": "npm run build -- --outDir test-results/xiaozhi-agent/pi-image-build",
+  "buildExitCode": 0,
+  "renderer": {
+    "passed": 79,
+    "total": 79,
+    "exitCode": 0,
+    "logSha256": "bcc804a571b84399a79493669e4c4f674fe55c89685fe956f72a1f75b5374e20"
+  },
+  "main": {
+    "ok": true,
+    "passed": 207,
+    "total": 207,
+    "exitCode": 0,
+    "logSha256": "52edd965be4ad149157a108fec07256f364a71e00f4b947732281e785f2010b1"
+  },
+  "boundary": "Synthetic original SDK preflight only. No formal Xiaozhi image UI/authorization acceptance. Full logs/native/DB/images/keys/profiles/binaries excluded."
+}

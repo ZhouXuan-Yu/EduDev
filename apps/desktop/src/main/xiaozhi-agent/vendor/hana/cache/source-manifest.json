@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "sourceUrl": "https://raw.githubusercontent.com/liliMozi/openhanako/v0.450.0/lib/llm/cache-prefix-contract.ts",
+  "license": "Apache-2.0",
+  "sourceSha256": "f2c0ec19c4ef5655c284c1ac93f8f47af51a8aa0bda3c1f51fd5b0103d24ac9e",
+  "outputSha256": "8506f398adb1a0152d75318085da8c11fcdd4dcaf3a7ae47d67d2f426deb7908",
+  "adaptation": "Original full module plus TypeScript no-check/provenance header. Only summarizeCachePrefixContract is persisted by host; no full prompts."
+}

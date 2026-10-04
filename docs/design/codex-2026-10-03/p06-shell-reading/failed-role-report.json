@@ -1,0 +1,1962 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual native shell anchors/colors and reachable composer at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "Actual native shell anchors/colors and reachable composer at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "Actual UI submission creates durable long Chinese/English history through the real provider",
+      "pass": true
+    },
+    {
+      "name": "Actual wheel-up reading stays put while new real public deltas arrive and the run completes",
+      "pass": true
+    },
+    {
+      "name": "Original Pro return-to-latest button reaches the actual final message",
+      "pass": true
+    },
+    {
+      "name": "Opening a real file preserves the visible historical paragraph and unsent multiline draft",
+      "pass": true
+    },
+    {
+      "name": "Closing the original file panel restores the same reading anchor without model replay",
+      "pass": true
+    },
+    {
+      "name": "Native Settings/back preserves same session, historical reading anchor and multiline draft",
+      "pass": true
+    },
+    {
+      "name": "Original textarea remains focusable and Shift+Enter adds a line without submitting",
+      "pass": true
+    },
+    {
+      "name": "Browser composition protocol Enter does not submit or clear the current draft",
+      "pass": true
+    },
+    {
+      "name": "Actual native character input reaches the current live textarea after layout and settings returns",
+      "pass": true
+    }
+  ],
+  "model": "deepseek-flash",
+  "boundaries": [
+    "Actual Electron/main/typed API and real DeepSeek; synthetic teacher text only",
+    "Actual native geometry/captions, wheel/button actions and streamed public text; no fabricated history",
+    "Composition event protocol only, not Windows manual IME; original reference DPR/font unknown; full goal pending"
+  ],
+  "referenceLayout": {
+    "metrics": {
+      "width": 1705,
+      "height": 1019,
+      "dpr": 1.5,
+      "body": 1019,
+      "rail": {
+        "x": 0,
+        "y": 36,
+        "width": 52,
+        "height": 983.3333740234375,
+        "color": "rgb(230, 249, 247)"
+      },
+      "sidebar": {
+        "x": 52,
+        "y": 44,
+        "width": 254,
+        "height": 975.3333740234375,
+        "color": "rgb(246, 253, 252)"
+      },
+      "header": {
+        "x": 306,
+        "y": 44,
+        "width": 1093.3333740234375,
+        "height": 52,
+        "color": "rgb(255, 255, 255)"
+      },
+      "titlebar": {
+        "x": 0,
+        "y": 0,
+        "width": 1705.3333740234375,
+        "height": 36,
+        "color": "rgb(230, 249, 247)"
+      },
+      "input": {
+        "x": 388.66668701171875,
+        "y": 910,
+        "width": 928,
+        "height": 91.33333587646484,
+        "color": "rgba(0, 0, 0, 0)"
+      }
+    },
+    "window": {
+      "bounds": {
+        "x": 0,
+        "y": 0,
+        "width": 1706,
+        "height": 1019
+      },
+      "content": {
+        "x": 0,
+        "y": 0,
+        "width": 1705,
+        "height": 1019
+      },
+      "scale": 1.5,
+      "zoom": 1,
+      "size": {
+        "width": 2558,
+        "height": 1529
+      }
+    }
+  },
+  "viewports": [
+    {
+      "metrics": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "body": 768,
+        "rail": {
+          "x": 0,
+          "y": 36,
+          "width": 52,
+          "height": 732,
+          "color": "rgb(230, 249, 247)"
+        },
+        "sidebar": {
+          "x": 52,
+          "y": 44,
+          "width": 254,
+          "height": 724,
+          "color": "rgb(246, 253, 252)"
+        },
+        "header": {
+          "x": 306,
+          "y": 44,
+          "width": 754,
+          "height": 52,
+          "color": "rgb(255, 255, 255)"
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 36,
+          "color": "rgb(230, 249, 247)"
+        },
+        "input": {
+          "x": 322,
+          "y": 658.6666870117188,
+          "width": 722,
+          "height": 91.33333587646484,
+          "color": "rgba(0, 0, 0, 0)"
+        }
+      },
+      "window": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1368,
+          "height": 769
+        },
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1366,
+          "height": 768
+        },
+        "scale": 1.5,
+        "zoom": 1,
+        "size": {
+          "width": 2052,
+          "height": 1154
+        }
+      }
+    },
+    {
+      "metrics": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "body": 1080,
+        "rail": {
+          "x": 0,
+          "y": 36,
+          "width": 52,
+          "height": 1044,
+          "color": "rgb(230, 249, 247)"
+        },
+        "sidebar": {
+          "x": 52,
+          "y": 44,
+          "width": 254,
+          "height": 1036,
+          "color": "rgb(246, 253, 252)"
+        },
+        "header": {
+          "x": 306,
+          "y": 44,
+          "width": 1308,
+          "height": 52,
+          "color": "rgb(255, 255, 255)"
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 36,
+          "color": "rgb(230, 249, 247)"
+        },
+        "input": {
+          "x": 496,
+          "y": 970.6666870117188,
+          "width": 928,
+          "height": 91.33333587646484,
+          "color": "rgba(0, 0, 0, 0)"
+        }
+      },
+      "window": {
+        "bounds": {
+          "x": 0,
+          "y": 0,
+          "width": 1922,
+          "height": 1081
+        },
+        "content": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "scale": 1.5,
+        "zoom": 1,
+        "size": {
+          "width": 2883,
+          "height": 1622
+        }
+      }
+    }
+  ],
+  "liveBefore": {
+    "scrollTop": 0,
+    "height": 819,
+    "scrollHeight": 5811,
+    "id": "aimsg_88996be3-f46a-49b7-a4fe-c25865988d45",
+    "index": 0,
+    "offset": 40,
+    "text": "阅读以下合成教研材料，只回复“已阅读”，不要调用工具。"
+  },
+  "liveThread": "aisession_a0c891ff-5842-45df-9a6f-1da30cb40618",
+  "liveAfter": {
+    "scrollTop": 0,
+    "height": 819,
+    "scrollHeight": 5904,
+    "id": "aimsg_88996be3-f46a-49b7-a4fe-c25865988d45",
+    "index": 0,
+    "offset": 40,
+    "text": "阅读以下合成教研材料，只回复“已阅读”，不要调用工具。"
+  },
+  "afterThread": "aisession_a0c891ff-5842-45df-9a6f-1da30cb40618",
+  "liveCompleted": {
+    "scrollTop": 0,
+    "height": 867,
+    "scrollHeight": 7023,
+    "id": "aimsg_88996be3-f46a-49b7-a4fe-c25865988d45",
+    "index": 0,
+    "offset": 40,
+    "text": "阅读以下合成教研材料，只回复“已阅读”，不要调用工具。"
+  },
+  "readingBeforeFile": {
+    "scrollTop": 650,
+    "height": 867,
+    "scrollHeight": 7023,
+    "id": "aimsg_88996be3-f46a-49b7-a4fe-c25865988d45",
+    "index": 9,
+    "offset": -3.6354141235351562,
+    "text": "合成段落9：教师备课先确认分数单位，再用图示比较不同分母；Teaching note 9: compare, explain, check. 所有建议均为教研草稿，不对应真实学生。"
+  },
+  "readingInFile": {
+    "offset": -3.6354141235351562,
+    "text": "合成段落9：教师备课先确认分数单位，再用图示比较不同分母；Teaching note 9: compare, explain, check. 所有建议均为教研草稿，不对应真实学生。",
+    "scrollTop": 650
+  },
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '新聊天', exact: true }).first()\u001b[22m\n\n    at D:\\WorkProject\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-shell-reading-ui-smoke.mjs:55:86",
+  "readingEvents": [
+    {
+      "time": 10770.100000023842,
+      "type": "scroll",
+      "top": 4706.66650390625,
+      "height": 5547,
+      "trusted": true
+    },
+    {
+      "time": 10780.400000035763,
+      "type": "scrollTo",
+      "top": 4706.66650390625,
+      "height": 5547,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 5547
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 10789.800000011921,
+      "type": "scroll",
+      "top": 4835.33349609375,
+      "height": 5654,
+      "trusted": true
+    },
+    {
+      "time": 10791.600000023842,
+      "type": "scrollTo",
+      "top": 4835.33349609375,
+      "height": 5654,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 5654
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 12209.100000023842,
+      "type": "scroll",
+      "top": 4859.33349609375,
+      "height": 5678,
+      "trusted": true
+    },
+    {
+      "time": 12211.699999988079,
+      "type": "scrollTo",
+      "top": 4859.33349609375,
+      "height": 5678,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 5678
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 12753,
+      "type": "scroll",
+      "top": 4886.66650390625,
+      "height": 5705,
+      "trusted": true
+    },
+    {
+      "time": 12757.300000011921,
+      "type": "scrollTo",
+      "top": 4886.66650390625,
+      "height": 5705,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 5705
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 13001.699999988079,
+      "type": "scroll",
+      "top": 4929.33349609375,
+      "height": 5748,
+      "trusted": true
+    },
+    {
+      "time": 13005.5,
+      "type": "scrollTo",
+      "top": 4929.33349609375,
+      "height": 5748,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 5748
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 13078.800000011921,
+      "type": "scroll",
+      "top": 0,
+      "height": 5748,
+      "trusted": true
+    },
+    {
+      "time": 18789.100000023842,
+      "type": "scrollTo",
+      "top": 0,
+      "height": 7023,
+      "args": [
+        {
+          "behavior": "smooth",
+          "top": 7023
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 18797.900000035763,
+      "type": "scroll",
+      "top": 0.6666666865348816,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18804,
+      "type": "scroll",
+      "top": 2,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18810.100000023842,
+      "type": "scroll",
+      "top": 3.3333332538604736,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18816.30000001192,
+      "type": "scroll",
+      "top": 5.333333492279053,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18831.5,
+      "type": "scroll",
+      "top": 11.333333015441895,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18841.69999998808,
+      "type": "scroll",
+      "top": 19.33333396911621,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18847.600000023842,
+      "type": "scroll",
+      "top": 24,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18855.5,
+      "type": "scroll",
+      "top": 29.33333396911621,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18864.600000023842,
+      "type": "scroll",
+      "top": 41.33333206176758,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18871.5,
+      "type": "scroll",
+      "top": 48.66666793823242,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18877.30000001192,
+      "type": "scroll",
+      "top": 57.33333206176758,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18885.19999998808,
+      "type": "scroll",
+      "top": 66,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18890.80000001192,
+      "type": "scroll",
+      "top": 75.33333587646484,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18899,
+      "type": "scroll",
+      "top": 85.33333587646484,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18907.80000001192,
+      "type": "scroll",
+      "top": 108.66666412353516,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18915.80000001192,
+      "type": "scroll",
+      "top": 122,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18921.69999998808,
+      "type": "scroll",
+      "top": 136.6666717529297,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18931.900000035763,
+      "type": "scroll",
+      "top": 167.3333282470703,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18937.69999998808,
+      "type": "scroll",
+      "top": 184.6666717529297,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18945.5,
+      "type": "scroll",
+      "top": 203.3333282470703,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18950.900000035763,
+      "type": "scroll",
+      "top": 223.3333282470703,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18959,
+      "type": "scroll",
+      "top": 244,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18967,
+      "type": "scroll",
+      "top": 266.6666564941406,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18975,
+      "type": "scroll",
+      "top": 316.6666564941406,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18982.30000001192,
+      "type": "scroll",
+      "top": 344,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18992.600000023842,
+      "type": "scroll",
+      "top": 404.6666564941406,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 18998.600000023842,
+      "type": "scroll",
+      "top": 437.3333435058594,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19006.19999998808,
+      "type": "scroll",
+      "top": 473.3333435058594,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19013.80000001192,
+      "type": "scroll",
+      "top": 511.3333435058594,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19022.19999998808,
+      "type": "scroll",
+      "top": 594.6666870117188,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19030.80000001192,
+      "type": "scroll",
+      "top": 640,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19036.30000001192,
+      "type": "scroll",
+      "top": 690,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19046.5,
+      "type": "scroll",
+      "top": 796.6666870117188,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19052.69999998808,
+      "type": "scroll",
+      "top": 856,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19060.5,
+      "type": "scroll",
+      "top": 918.6666870117188,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19066.69999998808,
+      "type": "scroll",
+      "top": 987.3333129882812,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19074,
+      "type": "scroll",
+      "top": 1058.6666259765625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19082.30000001192,
+      "type": "scroll",
+      "top": 1134,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19090.5,
+      "type": "scroll",
+      "top": 1299.3333740234375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19096.19999998808,
+      "type": "scroll",
+      "top": 1389.3333740234375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19105,
+      "type": "scroll",
+      "top": 1482.6666259765625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19115.5,
+      "type": "scroll",
+      "top": 1680,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19123.69999998808,
+      "type": "scroll",
+      "top": 1782,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19131.30000001192,
+      "type": "scroll",
+      "top": 1888,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19139.80000001192,
+      "type": "scroll",
+      "top": 2102.666748046875,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19150.100000023842,
+      "type": "scroll",
+      "top": 2320,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19157.19999998808,
+      "type": "scroll",
+      "top": 2417.333251953125,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19168.19999998808,
+      "type": "scroll",
+      "top": 2618.666748046875,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19175.400000035763,
+      "type": "scroll",
+      "top": 2715.333251953125,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19184.100000023842,
+      "type": "scroll",
+      "top": 2809.333251953125,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19193.5,
+      "type": "scroll",
+      "top": 2987.333251953125,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19200.30000001192,
+      "type": "scroll",
+      "top": 3072,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19209,
+      "type": "scroll",
+      "top": 3153.333251953125,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19217.80000001192,
+      "type": "scroll",
+      "top": 3308,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19226.19999998808,
+      "type": "scroll",
+      "top": 3384,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19234.80000001192,
+      "type": "scroll",
+      "top": 3520,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19243.600000023842,
+      "type": "scroll",
+      "top": 3586,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19249.5,
+      "type": "scroll",
+      "top": 3650,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19258.600000023842,
+      "type": "scroll",
+      "top": 3770.666748046875,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19266.80000001192,
+      "type": "scroll",
+      "top": 3828,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19273,
+      "type": "scroll",
+      "top": 3884,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19283.400000035763,
+      "type": "scroll",
+      "top": 3990,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19288.900000035763,
+      "type": "scroll",
+      "top": 4040.666748046875,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19297,
+      "type": "scroll",
+      "top": 4090,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19307.19999998808,
+      "type": "scroll",
+      "top": 4183.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19313.19999998808,
+      "type": "scroll",
+      "top": 4228.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19321.400000035763,
+      "type": "scroll",
+      "top": 4272.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19327,
+      "type": "scroll",
+      "top": 4315.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19334.5,
+      "type": "scroll",
+      "top": 4356.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19342.5,
+      "type": "scroll",
+      "top": 4397.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19349.5,
+      "type": "scroll",
+      "top": 4474,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19364,
+      "type": "scroll",
+      "top": 4548.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19375.100000023842,
+      "type": "scroll",
+      "top": 4618,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19387.100000023842,
+      "type": "scroll",
+      "top": 4684.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19399.100000023842,
+      "type": "scroll",
+      "top": 4748,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19406.80000001192,
+      "type": "scroll",
+      "top": 4778.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19416.19999998808,
+      "type": "scroll",
+      "top": 4837.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19422.5,
+      "type": "scroll",
+      "top": 4866,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19428.80000001192,
+      "type": "scroll",
+      "top": 4894,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19435.30000001192,
+      "type": "scroll",
+      "top": 4922,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19441.69999998808,
+      "type": "scroll",
+      "top": 4948.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19448.19999998808,
+      "type": "scroll",
+      "top": 4974.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19455.900000035763,
+      "type": "scroll",
+      "top": 5000,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19461.900000035763,
+      "type": "scroll",
+      "top": 5025.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19468.400000035763,
+      "type": "scroll",
+      "top": 5050,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19474.19999998808,
+      "type": "scroll",
+      "top": 5074,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19480.80000001192,
+      "type": "scroll",
+      "top": 5097.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19487.19999998808,
+      "type": "scroll",
+      "top": 5120.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19492.900000035763,
+      "type": "scroll",
+      "top": 5142.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19500.900000035763,
+      "type": "scroll",
+      "top": 5186.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19507.69999998808,
+      "type": "scroll",
+      "top": 5208,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19515.69999998808,
+      "type": "scroll",
+      "top": 5228.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19521.5,
+      "type": "scroll",
+      "top": 5249.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19528.30000001192,
+      "type": "scroll",
+      "top": 5269.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19534.5,
+      "type": "scroll",
+      "top": 5289.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19540.69999998808,
+      "type": "scroll",
+      "top": 5308.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19546.69999998808,
+      "type": "scroll",
+      "top": 5327.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19552.600000023842,
+      "type": "scroll",
+      "top": 5346,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19558.5,
+      "type": "scroll",
+      "top": 5364,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19567.5,
+      "type": "scroll",
+      "top": 5399.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19575.600000023842,
+      "type": "scroll",
+      "top": 5416.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19582.5,
+      "type": "scroll",
+      "top": 5433.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19589.69999998808,
+      "type": "scroll",
+      "top": 5449.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19595.69999998808,
+      "type": "scroll",
+      "top": 5465.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19601.69999998808,
+      "type": "scroll",
+      "top": 5482,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19607.69999998808,
+      "type": "scroll",
+      "top": 5497.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19614.30000001192,
+      "type": "scroll",
+      "top": 5512.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19620.5,
+      "type": "scroll",
+      "top": 5527.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19628.80000001192,
+      "type": "scroll",
+      "top": 5556.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19634.600000023842,
+      "type": "scroll",
+      "top": 5570.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19641.600000023842,
+      "type": "scroll",
+      "top": 5584.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19648.400000035763,
+      "type": "scroll",
+      "top": 5598.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19654.400000035763,
+      "type": "scroll",
+      "top": 5612,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19660.19999998808,
+      "type": "scroll",
+      "top": 5625.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19666.100000023842,
+      "type": "scroll",
+      "top": 5638,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19672.19999998808,
+      "type": "scroll",
+      "top": 5650.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19679.900000035763,
+      "type": "scroll",
+      "top": 5663.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19686.100000023842,
+      "type": "scroll",
+      "top": 5675.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19692.5,
+      "type": "scroll",
+      "top": 5687.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19698.900000035763,
+      "type": "scroll",
+      "top": 5698.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19704.69999998808,
+      "type": "scroll",
+      "top": 5710.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19710.5,
+      "type": "scroll",
+      "top": 5722,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19716.19999998808,
+      "type": "scroll",
+      "top": 5732.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19722.100000023842,
+      "type": "scroll",
+      "top": 5744,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19729,
+      "type": "scroll",
+      "top": 5754.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19737.600000023842,
+      "type": "scroll",
+      "top": 5775.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19743.69999998808,
+      "type": "scroll",
+      "top": 5785.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19750.5,
+      "type": "scroll",
+      "top": 5795.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19756.100000023842,
+      "type": "scroll",
+      "top": 5805.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19762.900000035763,
+      "type": "scroll",
+      "top": 5814.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19768.600000023842,
+      "type": "scroll",
+      "top": 5824,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19774.80000001192,
+      "type": "scroll",
+      "top": 5833.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19780.900000035763,
+      "type": "scroll",
+      "top": 5842.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19788.900000035763,
+      "type": "scroll",
+      "top": 5851.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19794.400000035763,
+      "type": "scroll",
+      "top": 5860,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19800.19999998808,
+      "type": "scroll",
+      "top": 5868.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19806.100000023842,
+      "type": "scroll",
+      "top": 5876.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19812.900000035763,
+      "type": "scroll",
+      "top": 5884.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19818.69999998808,
+      "type": "scroll",
+      "top": 5892.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19824.80000001192,
+      "type": "scroll",
+      "top": 5900.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19831,
+      "type": "scroll",
+      "top": 5908.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19838.30000001192,
+      "type": "scroll",
+      "top": 5916,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19847.600000023842,
+      "type": "scroll",
+      "top": 5930.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19853,
+      "type": "scroll",
+      "top": 5938,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19858.900000035763,
+      "type": "scroll",
+      "top": 5944.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19865.19999998808,
+      "type": "scroll",
+      "top": 5951.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19871.69999998808,
+      "type": "scroll",
+      "top": 5958,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19877.5,
+      "type": "scroll",
+      "top": 5964.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19883.600000023842,
+      "type": "scroll",
+      "top": 5971.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19889.5,
+      "type": "scroll",
+      "top": 5977.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19898.19999998808,
+      "type": "scroll",
+      "top": 5983.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19904.30000001192,
+      "type": "scroll",
+      "top": 5989.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19910.30000001192,
+      "type": "scroll",
+      "top": 5995.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19916.400000035763,
+      "type": "scroll",
+      "top": 6000.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19923.19999998808,
+      "type": "scroll",
+      "top": 6006.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19929.400000035763,
+      "type": "scroll",
+      "top": 6012,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19935.30000001192,
+      "type": "scroll",
+      "top": 6017.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19943.19999998808,
+      "type": "scroll",
+      "top": 6028,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19949.80000001192,
+      "type": "scroll",
+      "top": 6032.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19958,
+      "type": "scroll",
+      "top": 6038,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19964.30000001192,
+      "type": "scroll",
+      "top": 6042.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19970.600000023842,
+      "type": "scroll",
+      "top": 6046.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19976.69999998808,
+      "type": "scroll",
+      "top": 6051.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19983.900000035763,
+      "type": "scroll",
+      "top": 6056,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19989.400000035763,
+      "type": "scroll",
+      "top": 6060,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 19995.400000035763,
+      "type": "scroll",
+      "top": 6064.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20002.600000023842,
+      "type": "scroll",
+      "top": 6068.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20010.100000023842,
+      "type": "scroll",
+      "top": 6076,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20018.100000023842,
+      "type": "scroll",
+      "top": 6080,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20024.19999998808,
+      "type": "scroll",
+      "top": 6084,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20030.900000035763,
+      "type": "scroll",
+      "top": 6087.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20036.600000023842,
+      "type": "scroll",
+      "top": 6090.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20042.600000023842,
+      "type": "scroll",
+      "top": 6094,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20050.400000035763,
+      "type": "scroll",
+      "top": 6097.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20055.69999998808,
+      "type": "scroll",
+      "top": 6100.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20061.5,
+      "type": "scroll",
+      "top": 6103.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20070.69999998808,
+      "type": "scroll",
+      "top": 6109.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20077.100000023842,
+      "type": "scroll",
+      "top": 6112,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20083.19999998808,
+      "type": "scroll",
+      "top": 6114.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20089.69999998808,
+      "type": "scroll",
+      "top": 6117.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20095.600000023842,
+      "type": "scroll",
+      "top": 6120,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20101.69999998808,
+      "type": "scroll",
+      "top": 6122,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20107.600000023842,
+      "type": "scroll",
+      "top": 6124.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20114,
+      "type": "scroll",
+      "top": 6126.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20120.19999998808,
+      "type": "scroll",
+      "top": 6129.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20128.19999998808,
+      "type": "scroll",
+      "top": 6131.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20134.30000001192,
+      "type": "scroll",
+      "top": 6133.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20141,
+      "type": "scroll",
+      "top": 6134.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20146.600000023842,
+      "type": "scroll",
+      "top": 6136.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20152.69999998808,
+      "type": "scroll",
+      "top": 6138.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20158.5,
+      "type": "scroll",
+      "top": 6140,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20164,
+      "type": "scroll",
+      "top": 6142,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20169.900000035763,
+      "type": "scroll",
+      "top": 6143.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20176.69999998808,
+      "type": "scroll",
+      "top": 6144.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20186.100000023842,
+      "type": "scroll",
+      "top": 6147.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20192.400000035763,
+      "type": "scroll",
+      "top": 6148,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20198.19999998808,
+      "type": "scroll",
+      "top": 6149.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20204.69999998808,
+      "type": "scroll",
+      "top": 6150,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20210.600000023842,
+      "type": "scroll",
+      "top": 6151.33349609375,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20216.600000023842,
+      "type": "scroll",
+      "top": 6152,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20223.80000001192,
+      "type": "scroll",
+      "top": 6152.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20229.100000023842,
+      "type": "scrollTo",
+      "top": 6152.66650390625,
+      "height": 7023,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 7023
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 20236.900000035763,
+      "type": "scroll",
+      "top": 6156.66650390625,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20264.80000001192,
+      "type": "scroll",
+      "top": 0,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20464.80000001192,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20714.30000001192,
+      "type": "scrollTo",
+      "top": 0,
+      "height": 7023,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 7023
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 20714.5,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": false
+    },
+    {
+      "time": 20716.600000023842,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 20716.80000001192,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": false
+    },
+    {
+      "time": 21091.600000023842,
+      "type": "scrollTo",
+      "top": 0,
+      "height": 7023,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 7023
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 21091.80000001192,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": false
+    },
+    {
+      "time": 21093.30000001192,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": true
+    },
+    {
+      "time": 21093.5,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": false
+    },
+    {
+      "time": 21388.30000001192,
+      "type": "scrollTo",
+      "top": 0,
+      "height": 0,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 0
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 21396.600000023842,
+      "type": "scrollTo",
+      "top": 0,
+      "height": 0,
+      "args": [
+        {
+          "behavior": "auto",
+          "top": 0
+        }
+      ],
+      "stack": "Error\n    at Element.scrollTo (eval at evaluate (:311:30), <anonymous>:1:418)\n    at file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/assets/index-TO1Rvh_r.js:40990:12"
+    },
+    {
+      "time": 21455.19999998808,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": false
+    },
+    {
+      "time": 21456.80000001192,
+      "type": "scroll",
+      "top": 650,
+      "height": 7023,
+      "trusted": false
+    }
+  ],
+  "rendererErrors": []
+}

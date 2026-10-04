@@ -1,0 +1,30 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "A concurrent settings/local job denies verification before any fact or file effect",
+      "pass": true
+    },
+    {
+      "name": "Idle explicit verification registers real existing bytes and releases the original global owner",
+      "pass": true
+    },
+    {
+      "name": "Archived conversation denies local draft disclosure and recovery publication",
+      "pass": true
+    },
+    {
+      "name": "Verification holds global idle owner during awaited authorization and blocks starts/chooser",
+      "pass": true
+    },
+    {
+      "name": "Close waits for actual owner then rejects late authority without publishing or replay",
+      "pass": true
+    },
+    {
+      "name": "Original isolated legacy source remains byte-identical",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual original global host owner, closing/archived authorization, SQLite and real XLSX/FS. Controlled async cut/barriers only; no provider/UI."
+}

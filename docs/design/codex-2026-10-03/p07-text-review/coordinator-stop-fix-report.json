@@ -1,0 +1,35 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Waiter is installed before actionable event; local review, reject and safe receipt do not write",
+      "pass": true
+    },
+    {
+      "name": "Concurrent decisions, stale revision, cross-session and forged extra data cannot grant another write",
+      "pass": true
+    },
+    {
+      "name": "Edit goes through original Pi, post-approval apply, actual undo and conflict preservation",
+      "pass": true
+    },
+    {
+      "name": "Native signal stop invalidates pending review, releases waiter and cannot replay after recovery",
+      "pass": true
+    },
+    {
+      "name": "Revoked directory and invalid tool parameters fail without raw content/root in model errors",
+      "pass": true
+    },
+    {
+      "name": "Only main frame IPC reaches review/decisions; denied calls make no service invocation",
+      "pass": true
+    },
+    {
+      "name": "Compaction preserves only safe current outcome indexes, exclusion prevents old changes revival",
+      "pass": true
+    }
+  ],
+  "boundary": "Real SDK/SQLite/FS/IPC handlers with injected model protocol. No provider or UI claim.",
+  "error": "TypeError: agent.sessionFile is not a function\n    at file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-coordinator-smoke.mjs:70:143\n    at async check (file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-coordinator-smoke.mjs:28:30)\n    at async file:///D:/WorkProject/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-coordinator-smoke.mjs:67:2"
+}

@@ -1,0 +1,71 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Actual native Store initializes repeated additive private import migration without attachments",
+      "pass": true
+    },
+    {
+      "name": "Concurrent explicit outside-directory selections create one verified local copy and one draft without modifying source or exposing private paths",
+      "pass": true
+    },
+    {
+      "name": "Imported outside-directory file preserves already frozen Pi workspace and native binding",
+      "pass": true
+    },
+    {
+      "name": "Local original preview returns real synthetic PNG bytes by ledger ID with no original or staging path",
+      "pass": true
+    },
+    {
+      "name": "Submitted immutable copy remains locally readable after original source deletion; no original path fallback",
+      "pass": true
+    },
+    {
+      "name": "Source version change creates a distinct copied version while submitted historical text stays unchanged",
+      "pass": true
+    },
+    {
+      "name": "Removed draft cannot be previewed; explicit reselection reuses verified copy with a new draft reference",
+      "pass": true
+    },
+    {
+      "name": "Cross-session forged reference is rejected and same selected source retains separate session ownership",
+      "pass": true
+    },
+    {
+      "name": "Ninth distinct selection is refused before a new copy intent and native SQLite retains eight drafts",
+      "pass": true
+    },
+    {
+      "name": "Native single-file grant rejects credentials, linked ancestors/hardlinks, private app files, invalid path, spoofed PNG and size overflow without creating intents",
+      "pass": true
+    },
+    {
+      "name": "Cancellation at source entry, durable intent, actual file and ready stages adds no public draft and never uploads or replays",
+      "pass": true
+    },
+    {
+      "name": "Tampered managed copy fails captured version/hash instead of silently serving original source",
+      "pass": true
+    },
+    {
+      "name": "Actual native DB close/reopen preserves draft/submitted/removed facts, copy intents and historical preview without reading deleted originals",
+      "pass": true
+    },
+    {
+      "name": "Unknown import schema and corrupted original source identity are rejected without silent fallback",
+      "pass": true
+    },
+    {
+      "name": "Explicit old isolated native Store DB copy receives repeat additive migration while prior sessions/messages/settings/attachments/native binding rows remain identical",
+      "pass": true
+    },
+    {
+      "name": "Actual process.exit73 at intent, native restart and second reopen recover without copy replay or public attachment creation",
+      "pass": true
+    }
+  ],
+  "boundary": "D2-A only: actual Electron native sqlite3/OmniEduStore, real owned files and process exits. No chooser/renderer/send/Pi/vision/OCR claim. No network or real teacher data.",
+  "error": "AssertionError [ERR_ASSERTION]: FATAL ERROR: Error::ThrowAsJavaScriptException napi_throw\r\n----- Native stack trace -----\r\n\r\n 1: 00007FF66FDD1E0A node::OnFatalError+362\r\n 2: 00007FF66FD96B7A napi_fatal_error+186\r\n 3: 00007FFA44F01B77 \r\n 4: 00007FFA44F01FE8 \r\n 5: 00007FFA44F1B72B napi_register_module_v1+8139\r\n 6: 00007FF66FD98D79 napi_ref_threadsafe_function+921\r\n 7: 00007FF66FD99075 napi_ref_threadsafe_function+1685\r\n 8: 00007FF66F1B43A3 uv_run+3763\r\n 9: 00007FF66F1B3F5A uv_run+2666\r\n10: 00007FF66F1B37FE uv_run+782\r\n11: 00007FF66E4FC0BA v8::Isolate::DisallowJavascriptExecutionScope::DisallowJavascriptExecutionScope+506\r\n12: 00007FF66FA5266D v8::SealHandleScope::SealHandleScope+317\r\n13: 00007FF66FA52449 node::FreeEnvironment+185\r\n14: 00007FF66FA522E2 v8::Isolate::GetIncumbentContext+29490\r\n15: 00007FF66D850C42 v8::Extensi\n\n134 !== 73\n\n    at file:///D:/WorkProject/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-import-native-nazLgS/worker.mjs:8955:14"
+}

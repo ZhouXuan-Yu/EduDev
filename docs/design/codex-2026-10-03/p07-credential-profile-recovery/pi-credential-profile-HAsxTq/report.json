@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Native encryption and immediate decryption in owned profile",
+      "pass": true
+    },
+    {
+      "name": "Separate restarted Electron process decrypts in the same profile",
+      "pass": true
+    },
+    {
+      "name": "Foreign profile cannot decrypt the same native ciphertext",
+      "pass": true
+    },
+    {
+      "name": "Wrong maintenance profile is rejected before writing",
+      "pass": true
+    }
+  ],
+  "scope": "Actual native safeStorage in two owned profiles and separate processes; synthetic plaintext only."
+}

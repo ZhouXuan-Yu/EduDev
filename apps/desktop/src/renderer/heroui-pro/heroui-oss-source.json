@@ -1,0 +1,10 @@
+{
+  "package": "@heroui/styles",
+  "version": "3.2.2",
+  "license": "MIT",
+  "source": "node_modules/@heroui/styles/dist/heroui.min.css",
+  "output": "heroui-oss.min.css",
+  "sha256": "4d7cc0ccc2b0ac66df4d38a60ffdfbdcce14f30a449cc4cf7f63299e90e27059",
+  "bytes": 410637,
+  "purpose": "Official precompiled OSS BEM, controls and themes; source @apply CSS needs Tailwind compilation absent in current renderer pipeline"
+}
