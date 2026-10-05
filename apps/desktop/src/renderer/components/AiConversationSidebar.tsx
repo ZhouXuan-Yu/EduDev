@@ -1,5 +1,7 @@
 import { ArrowLeft, Folder, FolderPlus, Inbox, MessageSquare, Plus, Search, SquarePen } from 'lucide-react';
-import { useEffect, useState, type DragEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { Button, Dropdown, Label, Modal } from '@heroui/react';
+import { createPortal } from 'react-dom';
 import { ChatListView } from '../heroui-pro/components/chat-list-view';
 import { Sidebar } from '../heroui-pro/components/sidebar';
 import type { AiConversationFolder, AiConversationSession } from '../../shared/contracts';
@@ -36,7 +38,14 @@ export function AiConversationFeedback({ state }: { state: AiConversationFeedbac
   return <div className={`ai-conversation-feedback ${state.status}`} role={state.status === 'error' ? 'alert' : 'status'} data-testid={`ai-conversation-${state.status}`}>{state.message}</div>;
 }
 
-export function AiConversationArchiveConfirmation({ target, busy, onConfirm, onCancel }: { target: AiConversationTarget; busy: boolean; onConfirm: () => void; onCancel: () => void }) {
+export function AiConversationArchiveConfirmation({ target, busy, onConfirm, onCancel, modal = false }: { target: AiConversationTarget; busy: boolean; onConfirm: () => void; onCancel: () => void; modal?: boolean }) {
+  if (modal) return <Modal.Backdrop isOpen isDismissable={false} isKeyboardDismissDisabled={busy} onOpenChange={open => { if (!open && !busy) onCancel(); }}>
+    <Modal.Container size="sm" scroll="inside"><Modal.Dialog role="alertdialog" className="pi-conversation-dialog pi-themed-surface" data-testid="ai-conversation-archive-confirmation">
+      <Modal.Header><Modal.Heading>确认归档{target.type === 'folder' ? '文件夹' : '对话'}？</Modal.Heading></Modal.Header>
+      <Modal.Body><p>{target.type === 'folder' ? '文件夹及其中对话将从小智侧栏隐藏，但本地消息不会删除。' : '对话将从小智侧栏隐藏，但本地消息不会删除。'}</p></Modal.Body>
+      <Modal.Footer><Button autoFocus variant="secondary" isDisabled={busy} onPress={onCancel} data-testid="ai-conversation-archive-cancel">取消</Button><Button variant="primary" isDisabled={busy} onPress={onConfirm} data-testid="ai-conversation-archive-confirm">{busy ? '归档中…' : '确认归档'}</Button></Modal.Footer>
+    </Modal.Dialog></Modal.Container>
+  </Modal.Backdrop>;
   return (
     <div className="ai-conversation-confirmation" role="alertdialog" aria-modal="true" data-testid="ai-conversation-archive-confirmation">
       <strong>确认归档{target.type === 'folder' ? '文件夹' : '对话'}？</strong>
@@ -58,9 +67,52 @@ export function AiConversationSidebar({ codexStyle = false, folders, sessions, a
   const [archiveTarget, setArchiveTarget] = useState<AiConversationTarget | null>(null);
   const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState<AiConversationFeedbackState>({ status: 'idle', message: '' });
+  const menuAnchor = useRef<HTMLSpanElement>(null);
+  const menuPopover = useRef<HTMLDivElement>(null);
+  const returnFocus = useRef<HTMLElement | null>(null);
+
+  function openMenu(target: AiConversationTarget, element: HTMLElement, point?: { x: number; y: number }) {
+    if (busy || renameTarget || archiveTarget) return;
+    const trigger = element.closest<HTMLElement>('[role="row"]') ?? element;
+    if (codexStyle) trigger.focus({ preventScroll: true });
+    returnFocus.current = trigger;
+    const rect = trigger.getBoundingClientRect();
+    const anchor = point ?? { x: rect.left + 12, y: rect.bottom };
+    // Keep the point inside the overlay's safe viewport inset; RAC owns panel collision/flip.
+    setContextTarget({ ...target, x: Math.max(12, Math.min(anchor.x, window.innerWidth - 12)), y: Math.max(12, Math.min(anchor.y, window.innerHeight - 12)) });
+  }
+
+  function keyboardMenu(event: KeyboardEvent<HTMLElement>, target: AiConversationTarget, trigger = event.currentTarget) {
+    if (!codexStyle || (event.target as HTMLElement).closest('input')) return;
+    if (event.key === 'ContextMenu' || (event.key === 'F10' && event.shiftKey)) {
+      event.preventDefault();
+      event.stopPropagation();
+      openMenu(target, trigger);
+    }
+  }
 
   useEffect(() => {
-    if (!contextTarget) return undefined;
+    if (!contextTarget || !codexStyle) return;
+    const closeOnOutsideScroll = (event: Event) => {
+      if (!menuPopover.current?.contains(event.target as Node)) setContextTarget(null);
+    };
+    window.addEventListener('scroll', closeOnOutsideScroll, { capture: true, passive: true });
+    return () => window.removeEventListener('scroll', closeOnOutsideScroll, true);
+  }, [contextTarget, codexStyle]);
+
+  useEffect(() => {
+    if (!codexStyle || contextTarget || renameTarget || archiveTarget || !returnFocus.current) return;
+    const frame = requestAnimationFrame(() => {
+      const trigger = returnFocus.current;
+      if (trigger?.isConnected) trigger.focus({ preventScroll: true });
+      else document.querySelector<HTMLElement>('[data-testid="ai-conversation-new"]')?.focus();
+      returnFocus.current = null;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [codexStyle, contextTarget, renameTarget, archiveTarget]);
+
+  useEffect(() => {
+    if (!contextTarget || codexStyle) return undefined;
     const close = () => setContextTarget(null);
     const closeOnEscape = (event: globalThis.KeyboardEvent) => { if (event.key === 'Escape') close(); };
     window.addEventListener('click', close);
@@ -71,7 +123,7 @@ export function AiConversationSidebar({ codexStyle = false, folders, sessions, a
       window.removeEventListener('scroll', close, true);
       window.removeEventListener('keydown', closeOnEscape);
     };
-  }, [contextTarget]);
+  }, [contextTarget, codexStyle]);
 
   const sessionsInFolder = (folderId: string | null) => sessions.filter((session) => (session.folderId ?? null) === folderId && (!codexStyle || session.title.toLocaleLowerCase().includes(search.toLocaleLowerCase())));
 
@@ -128,16 +180,13 @@ export function AiConversationSidebar({ codexStyle = false, folders, sessions, a
     return (
       <ChatListView.Root<AiConversationSession> aria-label={folderId ? '文件夹对话' : '未归档对话'} className="ai-session-list" density="compact" selectionMode="none" onAction={(key) => void onOpenSession(String(key))}>
         {folderSessions.map((session) => (
-          <ChatListView.Item id={session.id} key={session.id} textValue={session.title}>
+          <ChatListView.Item id={session.id} key={session.id} textValue={session.title}
+            onContextMenu={event => { event.preventDefault(); openMenu({ type: 'session', id: session.id, name: session.title }, event.currentTarget, { x: event.clientX, y: event.clientY }); }}>
             <ChatListView.ItemContent
               className={session.id === activeSessionId ? 'active' : ''}
               data-testid={`ai-conversation-session-${session.id}`}
               data-session-id={session.id}
               draggable={!busy}
-              onContextMenu={(event) => {
-                event.preventDefault();
-                setContextTarget({ type: 'session', id: session.id, name: session.title, x: event.clientX, y: event.clientY });
-              }}
               onDragStart={(event) => {
                 event.dataTransfer.setData('text/plain', session.id);
                 event.dataTransfer.effectAllowed = 'move';
@@ -147,7 +196,7 @@ export function AiConversationSidebar({ codexStyle = false, folders, sessions, a
               <ChatListView.Text>
                 <ChatListView.Title>
                   {renameTarget?.type === 'session' && renameTarget.id === session.id ? (
-                    <input autoFocus className="ai-inline-rename" value={renameTarget.value} onChange={(event) => setRenameTarget({ ...renameTarget, value: event.target.value })} onClick={(event) => event.stopPropagation()} onKeyDown={(event) => { if (event.key === 'Enter') void rename(); if (event.key === 'Escape') setRenameTarget(null); }} data-testid={`ai-conversation-rename-session-${session.id}`} />
+                    <input autoFocus aria-label="对话名称" disabled={busy} className="ai-inline-rename" value={renameTarget.value} onChange={(event) => setRenameTarget({ ...renameTarget, value: event.target.value })} onClick={(event) => event.stopPropagation()} onKeyDown={(event) => { event.stopPropagation(); if (event.key === 'Enter') void rename(); if (event.key === 'Escape' && !busy) setRenameTarget(null); }} data-testid={`ai-conversation-rename-session-${session.id}`} />
                   ) : session.title}
                 </ChatListView.Title>
                 <ChatListView.Preview>{session.lastResponsePreview || session.lastPrompt || '新对话'}</ChatListView.Preview>
@@ -168,7 +217,12 @@ export function AiConversationSidebar({ codexStyle = false, folders, sessions, a
 
   const Container = codexStyle ? Sidebar : 'aside';
   return (
-    <Container className={`work-panel ai-session-sidebar${codexStyle ? ' pi-conversation-sidebar' : ''}`} data-testid="ai-conversation-sidebar">
+    <Container className={`work-panel ai-session-sidebar${codexStyle ? ' pi-conversation-sidebar' : ''}`} data-testid="ai-conversation-sidebar" onKeyDownCapture={event => {
+      const row = (event.target as HTMLElement).closest<HTMLElement>('[role="row"]');
+      const id = row?.querySelector('[data-session-id]')?.getAttribute('data-session-id');
+      const session = sessions.find(value => value.id === id);
+      if (row && session) keyboardMenu(event, { type: 'session', id: session.id, name: session.title }, row);
+    }}>
       {!codexStyle && <button className="ai-sidebar-return" onClick={onLeaveAi} data-testid="ai-return-workspace"><ArrowLeft size={16} /><span>工作台</span></button>}
       <div className="ai-session-header">
         <div className="workspace-label"><div><h2>小智</h2>{!codexStyle && <p>本地会话</p>}</div></div>
@@ -190,10 +244,20 @@ export function AiConversationSidebar({ codexStyle = false, folders, sessions, a
       <AiConversationFeedback state={feedback} />
       <div className="ai-folder-group">{renderDropZone(null, <><div className="ai-folder-title"><Inbox size={15} /><span>未归档</span><em>{sessionsInFolder(null).length}</em></div>{renderSessionList(null)}</>)}</div>
       <div className="ai-folder-group">
-        {folders.map((folder) => <section className="ai-folder" key={folder.id} data-testid={`ai-conversation-folder-${folder.id}`}>{renderDropZone(folder.id, <><div className="ai-folder-title" onContextMenu={(event) => { event.preventDefault(); setContextTarget({ type: 'folder', id: folder.id, name: folder.name, x: event.clientX, y: event.clientY }); }}><Folder size={15} /><span>{renameTarget?.type === 'folder' && renameTarget.id === folder.id ? <input autoFocus className="ai-inline-rename" value={renameTarget.value} onChange={(event) => setRenameTarget({ ...renameTarget, value: event.target.value })} onClick={(event) => event.stopPropagation()} onKeyDown={(event) => { if (event.key === 'Enter') void rename(); if (event.key === 'Escape') setRenameTarget(null); }} data-testid={`ai-conversation-rename-folder-${folder.id}`} /> : folder.name}</span><em>{sessionsInFolder(folder.id).length}</em></div>{renderSessionList(folder.id)}</>)}</section>)}
+        {folders.map((folder) => <section className="ai-folder" key={folder.id} data-testid={`ai-conversation-folder-${folder.id}`}>{renderDropZone(folder.id, <><div className="ai-folder-title" tabIndex={codexStyle ? 0 : undefined} aria-label={`文件夹：${folder.name}`} onKeyDown={event => keyboardMenu(event, { type: 'folder', id: folder.id, name: folder.name })} onContextMenu={(event) => { event.preventDefault(); openMenu({ type: 'folder', id: folder.id, name: folder.name }, event.currentTarget, { x: event.clientX, y: event.clientY }); }}><Folder size={15} /><span>{renameTarget?.type === 'folder' && renameTarget.id === folder.id ? <input autoFocus aria-label="文件夹名称" disabled={busy} className="ai-inline-rename" value={renameTarget.value} onChange={(event) => setRenameTarget({ ...renameTarget, value: event.target.value })} onClick={(event) => event.stopPropagation()} onKeyDown={(event) => { event.stopPropagation(); if (event.key === 'Enter') void rename(); if (event.key === 'Escape' && !busy) setRenameTarget(null); }} data-testid={`ai-conversation-rename-folder-${folder.id}`} /> : folder.name}</span><em>{sessionsInFolder(folder.id).length}</em></div>{renderSessionList(folder.id)}</>)}</section>)}
       </div>
-      {contextTarget ? <div className="ai-context-menu" style={{ left: contextTarget.x, top: contextTarget.y }} onClick={(event) => event.stopPropagation()} data-testid="ai-conversation-context-menu"><button onClick={() => { setRenameTarget({ ...contextTarget, value: contextTarget.name }); setContextTarget(null); }} data-testid="ai-conversation-context-rename">重命名</button><button onClick={() => { setArchiveTarget(contextTarget); setContextTarget(null); }} data-testid="ai-conversation-context-archive">归档</button></div> : null}
-      {archiveTarget ? <AiConversationArchiveConfirmation target={archiveTarget} busy={busy} onConfirm={() => void archive()} onCancel={() => setArchiveTarget(null)} /> : null}
+      {codexStyle && typeof document !== 'undefined' && createPortal(<span ref={menuAnchor} data-testid="ai-conversation-menu-anchor" aria-hidden="true" style={{ position: 'fixed', left: contextTarget?.x ?? 0, top: contextTarget?.y ?? 0, width: 0, height: 0, pointerEvents: 'none' }} />, document.body)}
+      {contextTarget && codexStyle ? <Dropdown.Popover ref={menuPopover} isOpen triggerRef={menuAnchor} placement="bottom start" offset={2} containerPadding={12} onOpenChange={open => { if (!open) setContextTarget(null); }} className="dropdown__popover pi-office-menu" data-testid="ai-conversation-context-menu">
+        <Dropdown.Menu className="dropdown__menu" aria-label={`${contextTarget.type === 'folder' ? '文件夹' : '对话'}操作`} autoFocus="first" onClose={() => setContextTarget(null)} onAction={key => {
+          if (key === 'rename') setRenameTarget({ ...contextTarget, value: contextTarget.name });
+          if (key === 'archive') setArchiveTarget(contextTarget);
+          setContextTarget(null);
+        }}>
+          <Dropdown.Item id="rename" textValue="重命名" data-testid="ai-conversation-context-rename"><Label>重命名</Label></Dropdown.Item>
+          <Dropdown.Item id="archive" textValue="归档" data-testid="ai-conversation-context-archive"><Label>归档</Label></Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown.Popover> : contextTarget ? <div className="ai-context-menu" style={{ left: contextTarget.x, top: contextTarget.y }} onClick={(event) => event.stopPropagation()} data-testid="ai-conversation-context-menu"><button onClick={() => { setRenameTarget({ ...contextTarget, value: contextTarget.name }); setContextTarget(null); }} data-testid="ai-conversation-context-rename">重命名</button><button onClick={() => { setArchiveTarget(contextTarget); setContextTarget(null); }} data-testid="ai-conversation-context-archive">归档</button></div> : null}
+      {archiveTarget ? <AiConversationArchiveConfirmation modal={codexStyle} target={archiveTarget} busy={busy} onConfirm={() => void archive()} onCancel={() => setArchiveTarget(null)} /> : null}
     </Container>
   );
 }

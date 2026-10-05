@@ -38,6 +38,8 @@ export function createHanaOfficeTools(options: {
   /** Main-owned teacher wait budget; other tool execution keeps the existing 30s cap. */
   copyWaitMs?: number;
   limitsEnforced?: boolean;
+  /** Host-provided file identity; content SHA is not a version token. */
+  fileVersion?: (stat: fs.Stats) => string;
   beforeCopy?: (approval: OfficeCopyApproval, signal: AbortSignal) => Promise<boolean>;
   afterCopy?: (approval: OfficeCopyApproval, succeeded: boolean) => Promise<void>;
 }) {
@@ -156,8 +158,10 @@ export function createHanaOfficeTools(options: {
           const resolved = await resolveReadableFileRef({ type: 'path', path: file }, { cwd: root, allowedRoots: [root] });
           if (name === 'office_file_stat') {
             const stat = await statFileRef({ type: 'path', path: file }, { cwd: root });
+            const version = options.fileVersion?.(resolved.stat);
+            if (version && options.fileVersion!(fs.statSync(checkedPath(args.path))) !== version) return errorResult('conflict');
             data = { source: path.relative(root, file), size: stat.size, mime: stat.mime, kind: stat.kind,
-              isDirectory: stat.isDirectory, modifiedAt: stat.mtimeMs };
+              isDirectory: stat.isDirectory, modifiedAt: stat.mtimeMs, ...(version ? { version } : {}) };
           } else if (name === 'office_list_files') {
             if (!resolved.stat.isDirectory()) return errorResult('unsupported');
             const entries = fs.readdirSync(file, { withFileTypes: true });
@@ -166,10 +170,12 @@ export function createHanaOfficeTools(options: {
           } else {
             if (!resolved.stat.isFile() || !/\.(txt|md|csv|json|yaml|yml)$/i.test(file)) return errorResult('unsupported');
             if (resolved.stat.size > 65536) return errorResult('too_large');
+            const version = options.fileVersion?.(resolved.stat);
             const bytes = fs.readFileSync(file);
             if (bytes.length > 65536) return errorResult('too_large');
+            if (version && options.fileVersion!(fs.statSync(checkedPath(args.path))) !== version) return errorResult('conflict');
             const text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-            data = { source: path.relative(root, file), text, sha256: sha(bytes), untrusted: true };
+            data = { source: path.relative(root, file), text, sha256: sha(bytes), ...(version ? { version } : {}), untrusted: true };
           }
         }
         // A completed synchronous copy has committed; a late cancel cannot undo it.

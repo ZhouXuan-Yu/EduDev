@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { createAssistantMessageEventStream } from '@earendil-works/pi-ai';
 const { createPiXiaozhiSession } = await import('../../src/main/xiaozhi-agent/pi-session.ts');
+const { fileVersion } = await import('../../src/main/xiaozhi-agent/workspace-files.ts');
 const { guardAssistantMessageStream } = await import('../../src/main/xiaozhi-agent/vendor/hana/lib/pi-sdk/stream-guard.ts');
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 fs.mkdirSync(path.join(appRoot, 'test-results/xiaozhi-agent'), { recursive: true });
@@ -44,10 +45,13 @@ try {
   });
   inject([{ stopReason: 'toolUse', content: [call('office_read_text', { path: 'a.md' })] }, end]);
   await agent.prompt('第一轮读取'); assert.equal(lastTool().details.data.text, 'FACT_A');
+  assert.equal(lastTool().details.data.version, fileVersion(fs.statSync(path.join(workspace,'a.md'))));
+  assert.notEqual(lastTool().details.data.version,lastTool().details.data.sha256);
   fs.writeFileSync(path.join(workspace, 'a.md'), 'UPDATED_A');
   inject([{ stopReason: 'toolUse', content: [call('office_read_text', { path: 'a.md' })] }, end]);
   await agent.prompt('新轮使用相同调用编号读取');
   check('Reused call ID in a new run reads current facts, not old cached results', () => assert.equal(lastTool().details.data.text, 'UPDATED_A'));
+  check('Actual Pi run tool returns the current file version distinct from body SHA',()=>assert.equal(lastTool().details.data.version,fileVersion(fs.statSync(path.join(workspace,'a.md')))));
   inject([{ stopReason: 'toolUse', content: [call('office_read_text', { path: 'a.md' }, 'collision'), call('office_read_text', { path: 'b.md' }, 'collision')] }, end]);
   await agent.prompt('同一轮调用编号碰撞');
   check('Same call ID with different arguments becomes explicit conflict', () => {

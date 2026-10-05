@@ -4,9 +4,10 @@
 
 ## 当前最高优先级基线
 
-- 最终产品、模块边界、技术选型、数据模型和上市否决项以 `docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md` 为准。
+- 2026-10-05 用户指定最高工程合同为 `docs/goal/XIAOZHI_CODEX_GOAL.md`；每轮先读取该合同及同目录四份状态文件。产品、阶段、架构和完成定义在冲突处以 Master 为准。
+- 稳定架构、产品、验收、集成入口分别为 `docs/architecture/CURRENT.md`、`docs/product/CURRENT.md`、`docs/acceptance/CURRENT.md`、`docs/integrations/CURRENT.md`。`docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md` 保留历史业务口径，不覆盖新 Master。
 - 当前实现状态和前端验收以代码、SQLite/文件 readback、`docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md` 及本轮真实测试结果为准。规划文档不能作为“已完成”证据。
-- `1.Agent.md` 保存长期执行规则，`2.Memory.md` 保存当前进度与下一继续位置，`3.Learning.md` 保存教训，`4.Wiki.md` 保存稳定事实。它们与最终架构冲突时，以最终架构为产品方向，以当前代码证据为实现状态。
+- `1.Agent.md` 保存长期执行规则，`2.Memory.md` 保存当前进度与下一继续位置，`3.Learning.md` 保存教训，`4.Wiki.md` 保存稳定事实。方向冲突以 Master Goal 为准，实现状态以当前代码和真实证据为准。
 - 用户本轮明确要求优先于仓库文档；若新要求改变产品边界、数据真源或安全规则，必须先指出冲突并同步更新约束文档。
 
 ## 每轮工作记忆约束
@@ -174,7 +175,7 @@ npm run test:renderer-components
 
 - 涉及文件读取、索引、OCR 和 DeepSeek 调用时必须处理失败状态。
 - 不要硬编码 API Key；使用环境变量或本地加密配置。
-- 修改核心流程时同步更新共享契约、`docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md` 中受影响的稳定口径，以及四份协作文档。
+- 修改核心流程时同步更新共享契约、Goal 四份状态文件、对应稳定 CURRENT 文档及四份协作文档；旧编号文档保留证据，后续不逐切片新增编号文档。
 - 新增功能前先确认它属于 M01–M12，且不会绕过两条最终业务闭环。
 - 提交前至少运行相关 lint、typecheck 或最小可用测试。
 - 所有 Python Worker/sidecar 输出必须有版本化协议、超时、取消、错误码和 bounded stderr。

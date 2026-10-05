@@ -1,5 +1,36 @@
 # 小智办公智能体 TodoList
 
+## 2026-10-05 当前任务入口已迁移
+
+以 [Master Goal](goal/XIAOZHI_CODEX_GOAL.md) 为最高合同，以 [CURRENT_STATE](goal/CURRENT_STATE.md) / [能力矩阵](goal/CAPABILITY_MATRIX.md) / [验收](goal/ACCEPTANCE.md) 为当前队列。当前Phase0 DOING：架构/上游/依赖/数据/UI/测试审计先闭合，随后Phase1真实Pi工作台。下方167自动标题等下一项为历史，相关缺口保留入新矩阵，不直接继续旧优先级。五空间、Glass视觉与教育能力适配按新合同；不继续堆编号报告或独立smoke。
+
+## 2026-10-04 当前队列：设置真实路径组合通过
+
+- [x] 166/167固定165 build4 mwZl43 C32/exit0，原六设置入口/密文配置/官方模型菜单/v2技能/实际备份verify/双尺寸/Flash200/设置返回同run停止/侧栏搜索改名取消确认归档/冷恢复native保持，三测试误判原记录留存。没有生产改动或新79/207，不当Pro推理/备份恢复/同DPI。
+- [ ] **下一唯一：自动标题普通append+附件原子发布一致性合同。** 真实/skill前缀标题已确认，复用Pi命令/Hana现有机制，保raw prompt/native/教师名/旧数据和原子性，先合同再实际普通/附件/改名/冷验收。
+- [ ] 之后全D1–D7剩余设计、最终八组、P08 Windows安装/备份恢复、原NET/IMG日常人工及真实无VPN；缺设置参考独立等待，整体active/NOT_ACCEPTED。日常原out恢复59252/21430590可见，未build/升级；63652收尾不在原因未知。三元暂停，无子agent/commit/push，下方下一全D为历史。
+
+## 2026-10-04 当前队列：内建技能能力对齐通过
+
+- [x] 164/165：v2说明对齐联网/浏览器/Office，冻结v1、原不可变包/CAS升级保教师配置与旧native，审阅前格式错误清晰分类；最终build4 KmkppR C9/独立DOCX/A10+原25/22/14+Office9/renderer79/main207通过，首次失败全留。
+- [ ] **下一唯一：全D1–D7教师入口/模型权限设置真实路径与最终八组、P08安装/备份准备，先冻结合同。** 缺同款设置截图独立等待；原日常两反馈/人工/noVPN安装仍未关闭。
+- [ ] 当前日常63652/out0dd7…保持，修复只在隔离build4，不能声称当前日常已经升级；正式升级先备份、核版本。整体active/NOT_ACCEPTED，三元暂停，无子agent/commit/push；下方163下一Skills为历史。
+
+163最终运行补充（优先）：62244最后已不在原因未知，未强杀；盘点无窗口后标准build exit0，323文件SHA0dd7…与已验隔离相同，已正常打开默认profile63652/10292696/响应True。下一保持63652/out，不把下方62244/未build中间记录当当前；D实际AI/人工仍未验证。25源清单过且保留重建前快照，closeout JSON另记。
+
+## 2026-10-04 当前队列：保存配置与正式工具已验
+
+- [x] 162/163 CFG-01/02 0PMZJy15含1typed模型边界，UI verify不保存/cache非鉴权/Windows密文保存/真实list-read/冷恢复磁盘新码/无效save保旧/同native切Pro/text-only实拒图零上传/错误后新任务；9次SDK200，双尺寸/独立回读与actual cache核过，首次误断言全部留存。
+- [ ] **下一唯一：内建Skills与当前工具对齐。** education-skills.ts仍“未注册联网/无Office生成”，先核原Pi/Hana资源/版本/撤销/cache并冻结合同，再显式教育查证/教学办公自然联网Word、旧新/停止/冷恢复，不重复loop/权限；静态差异不是原用户故障已证实根因。
+- [ ] 缺Codex Skills/模型权限设置参照继续独立等待；全D1–D7/P08实际noVPN安装/备份恢复/最终八组与日常两反馈/人工未签认。62244/out/profile保持，整体active，三元暂停，无子agent/commit/push；下方CFG下一历史。
+
+## 2026-10-04 当前队列：自然FILE与可编辑Word已验
+
+- [x] 160/161原FILE-01/03/04和自然FILE02：真实附件码/数量/来源、授权list/read/公开拒绝、diff拒绝原SHA/新任务再确认37→41、四周负责人空栏Word审批/真实生成/SQLite/独立26段2表/双尺寸/冷恢复；GQqHCP14。修复模型旧拒绝永久禁止的新任务边界，宿主批准/CAS不放宽。
+- [x] 原WPS所有权脚本可选docx副本编辑保存重开，原用户实例/原稿保持；2页A4/字形0/所有标记，真实页图查看。协调器各8/renderer79/build2/main2 207；四C失败/main1超时全留161，不称3次稳定或所有Word分页完善。
+- [ ] **下一唯一CFG-01/02现有正式可见设置：导入/验证/保存→实际对话→冷重启，用owned设置副本且撤掉envKey，错误/目录缓存不能冒充验证。** 然后Skills/模型权限设置参照/全D/P08无VPN安装/最终八组与日常人工。
+- [ ] 两原反馈/人工/日常保存配置未关闭；日常62244/out保持，整体active/NOT_ACCEPTED。三元暂停，无子agent/commit/push；下方FILE下一历史。
+
 ## 2026-10-04 当前队列：自然浏览器截图已交付
 
 - [x] 158/159完整自然NET-01/02：真正搜索/正文/三种日期，官网当前栏目、页面PNG引用/typed主frame/原Pro附件与OSS Modal、双尺寸/冷恢复/变文件/本地重试/失败无来源。C13/A21/renderer79/main207/source verify过，仅隔离当前网络。

@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T14:15:23.867Z",
+  "files": [
+    {
+      "file": "source/1.Agent.md",
+      "bytes": 124423,
+      "sha256": "56f568f4fd7f5d60ab41dcf4fdd1acb381b7d1280841504c7a15f8909876ae1e"
+    },
+    {
+      "file": "source/2.Memory.md",
+      "bytes": 268792,
+      "sha256": "9aa5bd02e62ac0c0887b6a3f21d6f52f104a4cd0e815ff944b933ff14272cd02"
+    },
+    {
+      "file": "source/3.Learning.md",
+      "bytes": 200302,
+      "sha256": "22ebab55ce888d8fbe94464f459a03652725eae6e5bf18606655902138007f5a"
+    },
+    {
+      "file": "source/4.Wiki.md",
+      "bytes": 166504,
+      "sha256": "e5dfe5b9b87825c99c26c229c3980cc924886dc46eea7d94bab612a6a8c1bfb4"
+    },
+    {
+      "file": "source/测试样例说明书.md",
+      "bytes": 20896,
+      "sha256": "dc53a864abb13938b53bfd36c1f3b99757e862818bb8ffabc024e14892ae7a37"
+    },
+    {
+      "file": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 55672,
+      "sha256": "857bb22ba3289c327a64495ac02a1d0990a62f46a0f5a5b0c6ba8663890b8035"
+    },
+    {
+      "file": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 88784,
+      "sha256": "45aff95c38c36476b8befc8e1d1ec6a0c3b4a3c08df354b0f851b44d0ebb3110"
+    },
+    {
+      "file": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 74171,
+      "sha256": "babc924c8ced1b11a47eb7102c8c59357cb32fe2bc7326637944b060043c319a"
+    },
+    {
+      "file": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 78710,
+      "sha256": "dca25d4802932bcb1cc224cedb106764a8dd29f77a8dcc2c020a95a010c28042"
+    },
+    {
+      "file": "source/docs/162_PI_SAVED_CREDENTIAL_TOOL_FLOW_CONTRACT.md",
+      "bytes": 3431,
+      "sha256": "097a038be47d54bb4bf4a89cde0b2f2a8079fad10eb6e84d64de85011ef98c9c"
+    },
+    {
+      "file": "source/docs/163_PI_SAVED_CREDENTIAL_TOOL_FLOW_ACCEPTANCE.md",
+      "bytes": 9036,
+      "sha256": "03d10825ba56b59abcaf74c2729b45904cf36a79e4648c91bedfc2efce720def"
+    },
+    {
+      "file": "source/docs/testing/本轮执行记录_2026_10_04.md",
+      "bytes": 12896,
+      "sha256": "68657f4357845d8c3b0eca3c0b1b3a988e2400026e7293d6a57c737235f521be"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/model-settings.ts",
+      "bytes": 9609,
+      "sha256": "c709a20b71a435bfc03a35c547a9e54bb0629e4133869f5ea06e71a4fac677b5"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/model-settings-api.ts",
+      "bytes": 2603,
+      "sha256": "bb235297bb64825cf99e3e5f501cb21e10d4ce6f772c85fac834228a27293a51"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/model-settings-state.ts",
+      "bytes": 3937,
+      "sha256": "51fe2ba9a58059efeb05ac63b4739c9e9bd3121d68b5f3ac5f5efc0b1ea014ca"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/public-image-runtime.ts",
+      "bytes": 9420,
+      "sha256": "aa431a3818a29b81be66ca855003e18a8deeeff7d63b3f70b647d1943f1e96a9"
+    },
+    {
+      "file": "source/apps/desktop/src/shared/xiaozhi-settings.ts",
+      "bytes": 2314,
+      "sha256": "876e76a7ce6d8e6042561bd5285832989a99aa0fb67708c610039a7166528c74"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/PiModelSettings.tsx",
+      "bytes": 9352,
+      "sha256": "0e2e49d10dc6f3434721881cc63d3ed4bdc950ec20a51759bc0e240876767ec2"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-saved-credential-tools-ui-smoke.mjs",
+      "bytes": 19657,
+      "sha256": "3a587fb2c86bbaea4218d8ac2e05cec1d8cac63ce9b8b6c524c9297cf496a089"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-saved-credential-readback.mjs",
+      "bytes": 4655,
+      "sha256": "cf4c8e9d9df693d9bf8d5a11312f13feb3b20b23d5ae4047dbb791abafcbcde6"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/archive-saved-credential-tools.mjs",
+      "bytes": 4017,
+      "sha256": "a37243b1b5a2fa2baaf593af94882d8f099b2ab1ff229f49fed86e3d6ddd6d60"
+    },
+    {
+      "file": "evidence/formal-ui.json",
+      "bytes": 5340,
+      "sha256": "3ceebc0a73eec02f77796e97aaa0c880c3e5ea0c85bcc452fe97c53bc21c8c03"
+    },
+    {
+      "file": "evidence/readonly-metrics.json",
+      "bytes": 3436,
+      "sha256": "a4d74dc2e9e201e5a6b1c32c74d440c3e8ee15a3abecb828d35a7a1c485dccbb"
+    },
+    {
+      "file": "evidence/readonly-first-failure.json",
+      "bytes": 522,
+      "sha256": "e58872d2b3326944c8d9b8c783b8070a0807c1f6c7b25563ba80948c1e44f966"
+    },
+    {
+      "file": "evidence/archive-first-failure.json",
+      "bytes": 471,
+      "sha256": "951189a8ebda642b931149aca60600836fbd3e77cdf6239af81b4a396fd664b3"
+    }
+  ],
+  "boundary": "Explicit source/docs and safe CFG/C/cache metrics only. No credentials/ciphertexts/profile/DB/native/media/build. Complete Codex goal not accepted."
+}

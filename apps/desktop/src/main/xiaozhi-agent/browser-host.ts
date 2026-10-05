@@ -34,7 +34,10 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     const job=(async()=>{const proxy=await createPublicBrowserProxy(dnsMode);if(disposed){await proxy.close();throw new Error('cancelled');}
       const electron=await electronRuntime();const window=new electron.BaseWindow({width:1100,height:760,title:'小智 · 浏览器',show:false,backgroundColor:'#ffffff'});window.setMenu(null);
       const status=new electron.WebContentsView({webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,devTools:false}});
-      status.webContents.setWindowOpenHandler(()=>({action:'deny'}));status.webContents.on('will-navigate',event=>event.preventDefault());
+      status.webContents.setWindowOpenHandler(()=>({action:'deny'}));
+      // Only this main-owned local status view may close its own browser group.
+      // It exposes no preload or general navigation/IPC authority to web pages.
+      status.webContents.on('will-navigate',(event,url)=>{event.preventDefault();if(url==='xiaozhi-browser:close')void closeGroup(id);});
       const value:Group={window,status,tabs:new Map(),active:'',proxy,busy:false,closing:false};
       try{if(process.env.ELECTRON_RENDERER_URL&&!options.statusFile){const url=new URL('browser-status.html',process.env.ELECTRON_RENDERER_URL+'/');url.hash='loading';await status.webContents.loadURL(url.href);}else await status.webContents.loadFile(options.statusFile||path.resolve(import.meta.dirname,'../renderer/browser-status.html'),{hash:'loading'});}catch(error){status.webContents.close();window.destroy();await proxy.close();throw error;}
       groups.set(id,value);window.contentView.addChildView(status);const [width,height]=window.getContentSize();status.setBounds({x:0,y:0,width,height});
@@ -112,8 +115,10 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
           if(tab.state!=='ready')throw new Error(tab.error||'network');
           const url=await safeUrl(wc.getURL()),revision=tab.revision;
           const samePage=()=>{check();if(wc.isDestroyed()||tab!.state!=='ready'||tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');};
-          activate();await waitOfficeAbort(wc.executeJavaScript('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))'),AbortSignal.any([context.signal,AbortSignal.timeout(5000)]));samePage();
-          const image=await waitOfficeAbort(wc.capturePage(undefined,{stayAwake:true}),context.signal);samePage();if(image.isEmpty())throw new Error('network');
+          // Native capture makes the page visible and keeps the system awake.
+          // Do not wait on a renderer RAF that can suspend while occluded.
+          activate();samePage();
+          const image=await waitOfficeAbort(wc.capturePage(undefined,{stayAwake:true}),AbortSignal.any([context.signal,AbortSignal.timeout(15000)]));samePage();if(image.isEmpty())throw new Error('network');
           const bytes=image.toPNG(),size=image.getSize(),capture={schemaVersion:BROWSER_CAPTURE_SCHEMA,id:browserScreenshotFilename({base64:bytes.toString('base64'),mimeType:'image/png'}),sha256:createHash('sha256').update(bytes).digest('hex'),size:bytes.length,width:size.width,height:size.height,title:(await options.sanitize(wc.getTitle())).slice(0,200),url,observedAt:new Date().toISOString()};
           if(!validBrowserCapture(capture))throw new Error('too_large');samePage();
           const relative=path.join(createHash('sha256').update(id).digest('hex'),capture.id),file=approvedFile(options.root,relative);

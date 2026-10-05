@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import {testMain} from '../acceptance/build-root.mjs';
+import {fingerprint,sha256} from '../acceptance/evidence.mjs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
@@ -15,13 +17,15 @@ const file=path.join(data,'xiaozhi-pi',binding.session_file),before=fs.readFileS
 const cfg=fs.readFileSync(path.join(root,'.env.local'),'utf8'),pick=name=>cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`,'m'))?.[1]?.trim();
 const key=pick('DEEPSEEK_API_KEY'),model=pick('DEEPSEEK_MODEL')||'deepseek-flash';assert(key);
 const checks=[],report={success:false,suite:'pi-queue-existing-history',checks,boundaries:['Real Electron/DeepSeek; explicitly copied prior v1 instruction/SDK test history only']};
+const buildRoot=path.dirname(path.dirname(testMain(root))),fixed=fingerprint(buildRoot);
+Object.assign(report,{layer:'C isolated formal Electron',humanAccepted:false,build:{root:buildRoot,files:fixed.files.length,sha256:fixed.sha256},scriptSha256:sha256(fs.readFileSync(fileURLToPath(import.meta.url)))});
 let app,page;
 const snap=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session);
 const until=async fn=>{const end=Date.now()+120000;while(Date.now()<end){if(await fn())return;await new Promise(resolve=>setTimeout(resolve,80));}throw new Error('Legacy queue acceptance timed out');};
 const check=(name,fn)=>{fn();checks.push({name,pass:true});};
 try{
   const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(root,'../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_XIAOZHI_PI:'1',DEEPSEEK_API_KEY:key,DEEPSEEK_MODEL:model};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
-  app=await electron.launch({args:[path.join(root,'out/main/index.js')],env,timeout:60000});page=await app.firstWindow();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await page.getByTestId(`ai-conversation-session-${session}`).click();await page.waitForFunction(()=>!document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
+  app=await electron.launch({args:[testMain(root),`--user-data-dir=${path.join(output,'profile')}`],env,timeout:60000});page=await app.firstWindow();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await page.getByTestId(`ai-conversation-session-${session}`).click();await page.waitForFunction(()=>!document.querySelector('[data-testid="office-prompt-input"]')?.disabled);
   let state=await snap();check('Prior v1 instructions read as revision zero without rewriting original native history',()=>{assert.equal(state.controls.find(item=>item.id===legacy.id).revision,0);assert.equal(state.controls.find(item=>item.id===legacy.id).state,'applied');assert.equal(fs.readFileSync(file,'utf8'),before);});
   await page.getByTestId('office-prompt-input').fill('本次合成验收请用 ask_teacher 问我新的教具选择：纸条还是圆片，给这两个选项，等待我回答，再给一句活动建议，不操作文件，不用文本提问代替工具。');await page.getByTestId('office-prompt-input').press('Enter');
   await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});
@@ -33,5 +37,5 @@ try{
   const history=fs.readFileSync(file,'utf8').trim().split('\n').map(JSON.parse),count=text=>history.filter(entry=>entry.type==='message'&&entry.message.role==='user'&&entry.message.content.some(part=>part.type==='text'&&part.text===text)).length;
   check('Existing bound SDK history continues with v2 edited command consumed once',()=>{assert.equal(state.projection.turns.at(-1).status,'completed');assert.equal(count(text),1);assert.equal(count(item.text),0);assert(fs.readFileSync(file,'utf8').startsWith(before));});
   check('Original v1 receipt and explicitly named test source remain unchanged',()=>{assert.equal(state.controls.find(item=>item.id===legacy.id).state,'applied');assert.equal(fs.readFileSync(path.join(source,'xiaozhi-pi',binding.session_file),'utf8'),before);});
-  report.success=true;
+  assert.equal(fingerprint(buildRoot).sha256,fixed.sha256);report.success=true;
 }catch(error){report.error=String(error.stack).replaceAll(key,'[credential]').slice(0,4000);if(page)report.snapshot=await snap().catch(()=>undefined);process.exitCode=1;}finally{await app?.close().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({...report,report:path.relative(root,path.join(output,'report.json'))}));}

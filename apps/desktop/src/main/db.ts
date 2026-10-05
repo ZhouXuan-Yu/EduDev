@@ -2,7 +2,9 @@ import { createHash, randomUUID } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
+import {MaterialRepository} from './assets/material-repository';
 import { createXiaozhiSessionState } from './xiaozhi-agent/session-state';
+import { conversationTitle } from './xiaozhi-agent/conversation-title';
 import { hashFileSha256, isInsideRoot, resolveInsideRoot } from './local-file-security';
 import type {
   Attachment,
@@ -1042,6 +1044,7 @@ function parseRegressionGates(value: unknown): AiRegressionGate[] {
 }
 
 export class OmniEduStore {
+  readonly materials: MaterialRepository;
   readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values) });
   private db!: sqlite3.Database;
   private dbPath: string;
@@ -1059,6 +1062,15 @@ export class OmniEduStore {
 
   constructor(private dataRoot: string) {
     this.dbPath = join(dataRoot, 'app.db');
+    this.materials = new MaterialRepository({
+    root: join(this.dataRoot, 'teacher_resources'),
+    all: (sql, params) => this.all(sql, params),
+    mapResource: row => this.mapTeacherResource(row),
+    mapChunk: row => this.mapResourceChunk(row),
+    commit: (id, content, engine, hash, signal) => this.commitMaterialText(id, content, engine, hash, signal),
+    reuse: (id, engine) => this.run(`UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?`, [engine,now(),id]),
+    failure: (id, code) => this.failMaterialText(id, code),
+  });
   }
 
   async init(): Promise<BootstrapData> {
@@ -1098,7 +1110,6 @@ export class OmniEduStore {
       }
       this.recoveredInterruptedRuns = true;
     }
-    await this.seedIfEmpty();
     return {
       dataRoot: this.dataRoot,
       students: await this.listStudents(''),
@@ -1732,12 +1743,13 @@ export class OmniEduStore {
     };
   }
 
-  async importKnowledgeResources(sourcePaths: string[]): Promise<KnowledgeImportResult> {
+  async importKnowledgeResources(sourcePaths: string[], signal = new AbortController().signal): Promise<KnowledgeImportResult> {
     const resourceRoot = this.resolveInsideDataRoot('teacher_resources');
     mkdirSync(resourceRoot, { recursive: true });
     const items: AttachmentImportItem[] = [];
     const resources: KnowledgeImportResult['resources'] = [];
     for (const sourcePath of sourcePaths) {
+      if (signal.aborted) break;
       const originalName = basename(sourcePath);
       try {
         const stat = statSync(sourcePath);
@@ -1751,8 +1763,8 @@ export class OmniEduStore {
         const resourceType = fileType(originalName);
         const isText = canParseAsLocalText(originalName);
         const title = titleFromFileName(originalName);
-        const parseStatus = isText ? 'ready' : 'needs_parser';
-        const parseEngine = isText ? 'local-text' : 'Docling/MinerU 待接入';
+        const parseStatus = 'needs_parser';
+        const parseEngine = isText ? 'local-text-v1:pending' : 'hana-anydoc-0.1.2:pending';
         await this.run(
           `INSERT INTO teacher_resources (
             id, title, resource_type, original_file_name, local_path, file_size,
@@ -1762,12 +1774,7 @@ export class OmniEduStore {
         );
         await this.ensureTeacherLibraryNode();
         await this.createResourceGraph(id, title, resourceType, stat.size, timestamp);
-        if (isText) {
-          const text = readFileSync(targetPath, 'utf8');
-          await this.createResourceChunksAndGraph(id, title, text, timestamp);
-        } else {
-          await this.enqueueResourceParseTask(id, title, resourceType, timestamp);
-        }
+        await this.materials.ingest(id, signal);
         const saved = (await this.all(
           `SELECT r.*, COUNT(c.id) AS chunk_count
              FROM teacher_resources r
@@ -1789,8 +1796,36 @@ export class OmniEduStore {
       }
     }
     const failed = items.filter((item) => !item.ok).length;
-    const status = items.length === 0 ? 'canceled' : failed === 0 ? 'succeeded' : failed === items.length ? 'failed' : 'partial';
+    const status = signal.aborted || items.length === 0 ? 'canceled' : failed === 0 ? 'succeeded' : failed === items.length ? 'failed' : 'partial';
     return { status, resources, items, overview: await this.getKnowledgeOverview() };
+  }
+
+  /** Existing chunk/metadata/graph algorithm, isolated transaction on the same DB. */
+  private async commitMaterialText(id: string, content: string, engine: string, hash: string, signal: AbortSignal) {
+    const work = new OmniEduStore(this.dataRoot);
+    work.db = await this.openDatabase(this.dbPath);
+    try {
+      await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');
+      try {
+        signal.throwIfAborted();
+        const resource = await work.materials.resource(id);
+        if (resource.contentHash !== hash) throw new Error('source_changed');
+        if (resource.chunkCount > 0) throw new Error('partial_existing');
+        const timestamp = now();
+        await work.createResourceChunksAndGraph(id, resource.title, content, timestamp);
+        signal.throwIfAborted();
+        await work.run(`UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?`, [engine, timestamp, id]);
+        await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying')`, [JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
+        signal.throwIfAborted();
+        await work.run('COMMIT');
+      } catch (error) { await work.run('ROLLBACK').catch(() => undefined); throw error; }
+    } finally { await work.close(); }
+  }
+
+  private async failMaterialText(id: string, code: string) {
+    await this.run(`UPDATE teacher_resources SET parse_status=?,parse_engine=?,updated_at=? WHERE id=?`,
+      [code==='unsupported'||code==='needs_ocr'||code==='cancelled'?'needs_parser':code==='partial_existing'?'partial':'failed',`hana-anydoc-0.1.2:${code}`,now(),id]);
+    await this.run(`UPDATE ai_tasks SET status='failed',error_message=?,updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying')`, [code,now(),createHash('sha256').update(id).digest('hex')]);
   }
 
   async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {
@@ -1801,6 +1836,7 @@ export class OmniEduStore {
         `SELECT c.*, r.title AS resource_title
            FROM resource_chunks c
            JOIN teacher_resources r ON r.id = c.resource_id
+          WHERE r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')
           ORDER BY c.quality_score DESC, c.created_at DESC, c.chunk_index ASC
           LIMIT ?`,
         [boundedLimit],
@@ -1827,7 +1863,7 @@ export class OmniEduStore {
       `SELECT c.*, r.title AS resource_title
          FROM resource_chunks c
          JOIN teacher_resources r ON r.id = c.resource_id
-        WHERE ${clauses.join(' OR ')}
+        WHERE r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') AND (${clauses.join(' OR ')})
         ORDER BY
           CASE WHEN c.contains_personal_data = 1 THEN 1 ELSE 0 END,
           c.quality_score DESC,
@@ -4258,10 +4294,10 @@ export class OmniEduStore {
     const sessionId = `aisession_${randomUUID()}`;
     await this.run(
       `INSERT INTO ai_conversation_sessions (
-        id, folder_id, title, student_id, last_prompt, last_response_preview,
+        id, folder_id, title, title_source, student_id, last_prompt, last_response_preview,
         message_count, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, '', '', 0, ?, ?)`,
-      [sessionId, folderId, title, input.studentId ?? '', timestamp, timestamp],
+      ) VALUES (?, ?, ?, ?, ?, '', '', 0, ?, ?)`,
+      [sessionId, folderId, title, title === '新对话' ? 'automatic' : 'manual', input.studentId ?? '', timestamp, timestamp],
     );
     return this.getAiConversationSession(sessionId);
   }
@@ -4294,16 +4330,15 @@ export class OmniEduStore {
       [sessionId],
     ))[0];
     const messageCount = Number(messageCountRow?.count ?? 0);
-    const nextTitle = String(session.title ?? '') === '新对话' && role === 'user'
-      ? content.slice(0, 40)
-      : String(session.title ?? '新对话');
+    const nextTitle = conversationTitle(content);
     const lastPrompt = role === 'user' ? content.slice(0, 240) : String(session.last_prompt ?? '');
     const lastResponsePreview = role === 'assistant' ? content.slice(0, 240) : String(session.last_response_preview ?? '');
     await this.run(
       `UPDATE ai_conversation_sessions
-          SET title = ?, last_prompt = ?, last_response_preview = ?, message_count = ?, updated_at = ?
+          SET title = CASE WHEN title_source = 'automatic' AND title = '新对话' AND ? = 'user' THEN ? ELSE title END,
+              last_prompt = ?, last_response_preview = ?, message_count = ?, updated_at = ?
         WHERE id = ?`,
-      [nextTitle, lastPrompt, lastResponsePreview, messageCount, timestamp, sessionId],
+      [role, nextTitle, lastPrompt, lastResponsePreview, messageCount, timestamp, sessionId],
     );
     return this.getAiConversationSession(sessionId);
   }
@@ -4330,7 +4365,7 @@ export class OmniEduStore {
   async renameAiConversationSession(sessionId: string, input: AiConversationSessionUpdateInput): Promise<AiConversationWorkspace> {
     const title = requireNonEmpty(input.title, '对话名称不能为空').slice(0, 80);
     await this.run(
-      `UPDATE ai_conversation_sessions SET title = ?, updated_at = ? WHERE id = ?`,
+      `UPDATE ai_conversation_sessions SET title = ?, title_source = 'manual', updated_at = ? WHERE id = ?`,
       [title, now(), sessionId],
     );
     return this.listAiConversationWorkspace();
@@ -5800,6 +5835,9 @@ export class OmniEduStore {
       await this.run(`ALTER TABLE ai_conversation_folders ADD COLUMN archived_at TEXT`);
     }
     const aiSessionColumns = await this.all(`PRAGMA table_info(ai_conversation_sessions)`);
+    if (!hasColumn(aiSessionColumns, 'title_source')) {
+      await this.run(`ALTER TABLE ai_conversation_sessions ADD COLUMN title_source TEXT NOT NULL DEFAULT 'legacy' CHECK(title_source IN ('legacy','automatic','manual'))`);
+    }
     if (!hasColumn(aiSessionColumns, 'archived_at')) {
       await this.run(`ALTER TABLE ai_conversation_sessions ADD COLUMN archived_at TEXT`);
     }
@@ -5858,39 +5896,6 @@ export class OmniEduStore {
     await this.rebuildRecordFtsIfEmpty();
   }
 
-  private async seedIfEmpty() {
-    const count = Number((await this.all('SELECT COUNT(*) AS count FROM students'))[0]?.count ?? 0);
-    if (count > 0) return;
-    await this.createStudent({
-      displayName: '小A',
-      grade: '初二',
-      subjects: ['数学', '英语'],
-      goals: '期末数学稳定在 90 分以上',
-      currentIssues: '函数图像理解不稳，移项和符号错误反复出现。',
-      parentConcerns: '希望看到每月进步反馈。',
-      tags: ['函数', '计算细节', '家长高关注'],
-    });
-    const studentId = (await this.listStudents('小A'))[0].id;
-    await this.createRecord({
-      studentId,
-      recordType: 'mistake',
-      subject: '数学',
-      title: '一次函数图像与参数关系',
-      content: '连续三次把 k 值正负与图像走向对应做错，需要从图像变化重新讲解。',
-      tags: ['一次函数', '概念混淆'],
-      occurredAt: new Date(Date.now() - 86400000).toISOString(),
-    });
-    await this.createRecord({
-      studentId,
-      recordType: 'homework',
-      subject: '数学',
-      title: '方程应用题订正',
-      content: '能列式，但单位转换和未知数说明不稳定。',
-      tags: ['审题', '表达规范'],
-      occurredAt: new Date(Date.now() - 2 * 86400000).toISOString(),
-    });
-  }
-
   private async seedPlatformDefaults() {
     const timestamp = now();
     if (await this.scalarCount('users') === 0) {
@@ -5926,32 +5931,7 @@ export class OmniEduStore {
         ],
       );
     }
-    if (await this.scalarCount('question_bank_items') === 0) {
-      await this.createQuestionBankItem({
-        subject: '数学',
-        grade: '初二',
-        knowledgePoint: '一次函数',
-        questionType: '解答题',
-        difficulty: 'medium',
-        stem: '已知一次函数 y = kx + b 经过点 (0, 2) 和 (3, 8)，求 k、b，并判断图像随 x 增大如何变化。',
-        answer: 'b = 2，3k + 2 = 8，所以 k = 2；图像随 x 增大而增大。',
-        analysis: '先用 x=0 得到截距 b，再代入另一点求斜率 k；k>0 表示递增。',
-        sourceTitle: '内置演示题库',
-        tags: ['一次函数', 'k值', '图像性质'],
-      });
-      await this.createQuestionBankItem({
-        subject: '数学',
-        grade: '初二',
-        knowledgePoint: '一次函数',
-        questionType: '变式题',
-        difficulty: 'medium',
-        stem: '一次函数 y = -3x + 5 的图像经过哪些象限？函数值随 x 增大如何变化？',
-        answer: '经过第一、二、四象限；函数值随 x 增大而减小。',
-        analysis: 'b>0，k<0，所以图像过一二四象限；斜率为负表示递减。',
-        sourceTitle: '内置演示题库',
-        tags: ['一次函数', '象限', '增减性'],
-      });
-    }
+
   }
 
   private async ensureTeacherLibraryNode() {

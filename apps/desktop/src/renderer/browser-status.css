@@ -1,4 +1,7 @@
-html,body,#root{margin:0;min-height:100%;background:#fff;color:#252525;font-family:"Segoe UI","Microsoft YaHei",sans-serif}
-main{min-height:100vh;display:grid;place-items:center;padding:32px;box-sizing:border-box}
+html,body,#root{margin:0;min-height:100%;font-family:"Segoe UI","Microsoft YaHei",sans-serif}
+main{min-height:100vh;display:grid;place-items:center;padding:32px;box-sizing:border-box;background:var(--pi-paper);color:var(--pi-ink)}
 main .empty-state{max-width:560px;text-align:center}
 main .empty-state__description{line-height:1.7}
+main .empty-state__title{color:var(--pi-ink)}
+main .empty-state__description,.browser-recovery-note{color:var(--pi-muted)}
+.browser-recovery-note{font-size:14px;line-height:1.7;margin:20px 0 16px}

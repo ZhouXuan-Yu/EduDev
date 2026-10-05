@@ -6,7 +6,7 @@ import type { OfficeProjectedItem, OfficeProjectedTurn, OfficeProjection } from 
 import { ChatConversation } from '../../heroui-pro/components/chat-conversation';
 import { ChatMessage } from '../../heroui-pro/components/chat-message';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
-import { StreamMarkdown } from '../../heroui-pro/components/markdown';
+import { OfficeMarkdown } from './OfficeMarkdown';
 import { ChainOfThought } from '../../heroui-pro/components/chain-of-thought';
 import './office-conversation.css';
 import { OfficeToolProcess } from './OfficeToolProcess';
@@ -65,7 +65,7 @@ export function OfficeConversation({ projection, onLoadEarlier, onRetry, retryLa
               if (item.kind === 'compaction') return <ChatTool key={`${item.id}:${item.status === 'failed'}`} className="office-compaction" state={item.status === 'failed' ? 'output-error' : item.status === 'inProgress' ? 'input-available' : 'output-available'} defaultExpanded={item.status === 'failed'} data-item-id={item.id} data-testid="pi-compaction-card" data-state={item.status || 'completed'}><ChatTool.Trigger><Minimize2 size={15} aria-hidden="true" />{item.label || '压缩上下文'}<span className="office-step-state">{item.status === 'inProgress' ? '进行中' : item.status === 'failed' ? '未完成' : '已完成'}</span></ChatTool.Trigger><ChatTool.Content><p>{item.text || '上下文已压缩。'}</p></ChatTool.Content></ChatTool>;
               if (item.kind === 'plan') return renderPlan?.(item) ?? <ChainOfThought key={item.id} defaultExpanded className="office-plan" data-item-id={item.id} data-testid="pi-task-plan"><ChainOfThought.Trigger><ListTodo size={16} aria-hidden="true" />任务计划</ChainOfThought.Trigger><ChainOfThought.Content><ChainOfThought.Steps>{(item.text || '').split('\n\n').filter(Boolean).map((step,index)=><ChainOfThought.Step key={index}>{step}</ChainOfThought.Step>)}</ChainOfThought.Steps></ChainOfThought.Content></ChainOfThought>;
               const isStreaming = turn.status === 'running' && item === turn.items.at(-1) && item.role === 'assistant';
-              const body = <StreamMarkdown animated={false} isStreaming={isStreaming}>{item.text ?? ''}</StreamMarkdown>;
+              const body = <OfficeMarkdown animated={false} isStreaming={isStreaming}>{item.text ?? ''}</OfficeMarkdown>;
               return item.role === 'user'
                 ? <ChatMessage.User key={item.id} data-item-id={item.id}>{renderAttachments?.(item)}<ChatMessage.Bubble>{body}</ChatMessage.Bubble></ChatMessage.User>
                 : <ChatMessage.Assistant key={item.id} data-item-id={item.id} data-phase={item.phase}><ChatMessage.Content>{body}{item.truncated && <p className="office-history-notice">这段内容较长，当前显示部分内容。</p>}</ChatMessage.Content></ChatMessage.Assistant>;

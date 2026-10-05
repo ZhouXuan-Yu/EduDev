@@ -1,3 +1,4 @@
+import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob} from '../shared/materials';
 import { contextBridge, ipcRenderer } from 'electron';
 import type {GoalMutation,GoalResult} from '../shared/xiaozhi-goal';
 import type {XiaozhiAttachmentInput,XiaozhiAttachmentSelectedInput,XiaozhiAttachmentResult,XiaozhiAttachment,XiaozhiAttachmentChoice,XiaozhiAttachmentPreview} from '../shared/xiaozhi-attachments';
@@ -189,6 +190,11 @@ const api = {
   getPlatformOverview: () => ipcRenderer.invoke('app:getPlatformOverview'),
   getDeepSeekSettings: () => ipcRenderer.invoke('settings:getDeepSeek') as Promise<DeepSeekSettings>,
   saveDeepSeekSettings: (input: DeepSeekSettingsInput) => ipcRenderer.invoke('settings:saveDeepSeek', input) as Promise<DeepSeekSettings>,
+  listMaterials: (input:MaterialQuery) => ipcRenderer.invoke('materials:list',input) as Promise<MaterialPage>,
+  getMaterialJob: () => ipcRenderer.invoke('materials:job') as Promise<MaterialJob>,
+  getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
+  retryMaterial: (resourceId:string) => ipcRenderer.invoke('materials:retry',{schemaVersion:'xiaozhi.materials.v1',resourceId}) as Promise<MaterialRetry>,
+  cancelMaterialImport: () => ipcRenderer.invoke('materials:cancel') as Promise<{schemaVersion:'xiaozhi.materials.v1';stopped:boolean}>,
   getKnowledgeOverview: () => ipcRenderer.invoke('knowledge:getOverview') as Promise<KnowledgeOverview>,
   importKnowledgeResources: () => ipcRenderer.invoke('knowledge:import') as Promise<KnowledgeImportResult>,
   importKnowledgeResourcePaths: (sourcePaths: string[]) => ipcRenderer.invoke('knowledge:importPaths', sourcePaths) as Promise<KnowledgeImportResult>,

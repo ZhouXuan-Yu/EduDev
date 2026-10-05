@@ -1,5 +1,91 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-05 P3-03：教师资料与跨会话教学文件目录接受
+
+Goal ACTIVE；Current Phase：Phase3 Five Product Spaces DOING。P3-03仅教师资料目录与跨会话教学文件目录实现层 A/C 接受；完整Phase3、Goal、日常、发布与人工仍 NOT_ACCEPTED。新接口使用真实本地事实，旧模拟业务兼容和测试样例书专项不再投入。
+
+固定build4：324文件/SHA 52d657eb2cae96eaeee305aca02ef1fe061fe547eb52c80ec92e713ff99a42fe；正常 build/typecheck 实际进程exit0，日志build4.log；renderer123/123 exit0；真实DeepSeek/Pi正式Electron工作台18/18、Office及目录45/45，均exit0/report.success=true/rendererErrors=[]，同一固定build与当前脚本SHA。实际8次独立userData/sessionData与main已加载模块核验，无旧test-runtime；最终38 PNG逐张查看（工作台21、目录/当前预览/冷恢复17），浅暗1366×768/1920×1080，本轮控件可达/可读。目录标题测量light11.65/dark13.07，只表示已测标题，不是全页WCAG证明。原教育隔离legacy-test回归207/207、suite.ok=true、独立exit0，在build2执行；build4只改生产导航归一与清除旧定位提示，main/shared/legacy业务不变，不冒称207在build4重跑或新教育闭环。证据/源码副本/失败报告见 apps/desktop/test-results/goal/phase3-materials-20261005/closeout.json；manifest SHA 278185debf61bf5944a97e91153740a2b7914b57c648c31d13647c42af82d8dd。
+
+新增路径：production nav-materials → native chooser/typed本地导入 → 实际SQLite与文件readback →筛选/摘录/定位失败；nav-teaching →全会话真实artifact记录 →原授权preview/缺失文件失败 →来源对话 →真实kill/cold恢复。无mock-only UI代替闭环。测试资料全部owned synthetic，定位OSdispatch截获范围明确。PDF/Office资料正文尚未接入本目录，传统教师页面与全教育闭环仍OPEN。Next：P3-04：先比较并复用现有本地 Office/PDF 正文读取与导入接缝，补真实资料收录、状态/失败恢复和超过100份的全量目录访问，贯通 typed 主进程与教师页面；随后完成传统备课/讲义/题本及学生页的教师化整理，再进行完整Phase3验收。之后继续Phase4 DeepTutor教育能力、Phase5 OpenMAIC互动课、Phase6飞轮、Phase7加固、Phase8 Golden A–G。禁止恢复第二Agent Loop。
+
+## 2026-10-05 P3-01/P3-02：五空间导航与聊天连续性接受
+
+Goal ACTIVE；Current Phase：Phase3 Five Product Spaces DOING。P3-01/P3-02仅导航与聊天连续性实现层 A/C 接受；完整 Phase3、Goal、日常、发布、人工仍 NOT_ACCEPTED。旧接口模拟数据不作为新能力真源，跳过测试样例书与旧模拟业务兼容投入。 固定 build5：324 文件，SHA 335e3ffc90b7d88d0bade37a5ad1c1f30d506c3184b235ff774123e433b7e3b6。正常 build/typecheck exit0；renderer 115/115；正式真实 DeepSeek/Pi 工作台18/18、设置39/39，均 exit0/report.success=true/rendererErrors=[]，同一构建与当前脚本 SHA；实际6次独立 userData/sessionData 与main已加载模块核验，未加载旧 test-runtime。最终工作台21 PNG逐张查看，覆盖五空间浅暗双尺寸1366×768/1920×1080、冷恢复；只接受导航、连续性与本轮控件可达/可读，不代表传统页面整体设计已完成。设置专项全部PNG归档，未宣称逐张人工审阅。 原教育207本轮build4隔离回归沿用，非build5重跑；整体传统页设计/资料与教学产物闭环未因此接受。首旧构建/Tooltip/低对比失败保留于apps/desktop/test-results/goal/phase3-spaces-20261005/closeout.json，各自修复后终验18。Next P3-03：将资料页面改为教师资料管理，移除管线/数据库/图谱技术展示；建立跨会话教学 Office 产物目录与重新打开入口。随后继续完整 Phase3、Phase4 DeepTutor、Phase5 OpenMAIC、Phase6 飞轮、Phase7 加固、Phase8 Golden A–G。
+
+## 2026-10-05 P2-04：Phase2 Runtime 阶段接受
+
+本轮正常build/tsc、renderer111；确定性边界39+11、无预算4；真实DeepSeek/Pi控制30、保存工具16、自动整理21、浏览器20，共87项及26最终PNG逐张审阅、12实际独立启动。首浏览器白名单误报保留，修后20项；前轮相同生产/build的207教育与17正式仅复用证据未重跑。Phase2实现A/C接受，完整Goal/日常/人工/发布仍未接受。详见Goal PHASE2_RUNTIME_CONTRACT、ACCEPTANCE及apps/desktop/test-results/goal/phase2-accept-20261005/closeout.json。Next P3-01五产品空间。
+
+## 2026-10-05 P2-03 生产唯一 Pi 装配接受
+
+Goal ACTIVE；Current Phase：Phase2 Pi Runtime Consolidation DOING；Current Task：P2-03 限定 A/C 接受。完整 Phase2、Goal、发布与人工验收仍 NOT_ACCEPTED。用户的新接口真实数据优先、旧模拟兼容停止、跳过测试样例书专项规则继续生效。
+
+Done：main/index.ts 从约2300行减为502行；Direct/DeepTutor Sidecar/Graph 的旧状态、闭包与注册移入 legacy-ai/test-runtime.ts。生产只装配 Pi；两普通旧名经同一 Pi Facade，9旧编排名明确退役。测试模块在显式隔离 opt-in 时动态加载，factory 再核当前真实 packaged/env/data/profile 策略；教育 Domain、传统业务及历史只读保持。
+
+Evidence：owned build 324 文件/SHA ee048bf95d934b5b9dbef6925931153591aeabda333c018971542eb01e5cebd8；正常 npm build/tsc exit0，renderer111/111，运行边界39/39，原教育隔离回归207/207 exit0，正式真实DeepSeek/Pi UI 2cvNGJ 17/17 exit0、rendererErrors=[]。V8 Inspector 实际主进程已加载脚本清单证明正常启动和实际请求/冷重试均不含 test-runtime；原教育回归反向断言该隔离模块确实加载。最终6PNG逐张审阅，浅暗双尺寸输入控件可达、回复和历史可读；本轮无UI源修改，不宣称Codex像素一比一。
+
+新鲜/重复/冷启动的学生、学习记录、题库均无自动演示注入。真实页面发送清空输入，旧别名并发同commandId只新增一次Pi run，结果与SQLite正文相同，cold receipt/native JSONL SHA保持。新接口继续取真实本地事实；没有清空日常库、猜测已有记录、回填模拟结果或投入旧三元/续跑兼容。
+
+Failed：初次抽取后相对导入深度错误，首tsc失败；修正shared和dynamic type import路径后tsc/build通过。诊断读取两次工作目录错配，仅只读且已重读。正式17/17和教育207/207本轮首次运行通过；不宣称三连稳定。
+
+Doing/Next：P2-04 全Phase2验收：真实工具调用、权限确认/控制、自动上下文整理、恢复、当前无运行预算与provider真实缓存口径；之后Phase3五产品空间，再Phase4/5教育能力。移走旧编排不等于DeepTutor/OpenMAIC个性化能力已完成。
+
+Blocked：无当前阻塞。Open：用户日常联网/图片/凭证反馈、无VPN/安装、完整教育黄金A–G、分发许可/安全、全UI人工与完整Goal。未替换日常out，Master与HEAD 20aa86656cdb5a0f85e0e11fa21863b50233fcb1 保持；未提交/push，无新依赖/Schema/预算/密钥/系统proxy/DNS/VPN修改。先前P2-01首启动profile偏好可能触及的事实保留，本轮所有实际测试独立profile已核验。
+
+证据：apps/desktop/test-results/goal/phase2-retire-20261005/；交付合同：docs/goal/PHASE2_P2_03_DELIVERY.md。
+
+
+## 2026-10-05 普通请求单Pi与无模拟注入接受、用户新接口范围修订
+
+Goal ACTIVE；Current Phase：Phase2 Pi Runtime Consolidation DOING。普通教师旧别名与生产无模拟注入限定 A/C接受，完整 Phase2/Goal/发布/人工 NOT_ACCEPTED。
+
+用户明确旧接口数据为模拟，可删除，以新接口为主；跳过测试样例书专项。旧学生/范围/三元/续跑兼容不再作为交付目标，不将放弃兼容记作教育能力已完成。
+
+生产：两个旧普通请求别名投递同一 Pi host，native done 后核 SQLite终态，公开 receipt/真实回复/工具/来源，不伪造grader；增量可选commandId跨别名并发/冷重试只一次run。删除db.init自动小A/两条学习记录和空题库两道演示题注入，迁入原验收显式typed fixture。默认老师/字典/空模板保留；已有无来源标记的记录未按姓名批删，日常库未清空。
+
+固定 owned build2：323/SHA 9afa29f2d4083689c4945ea51619427327b7d6c6d4bebbf8758035ab64b580b1；正常build/tsc exit0，renderer111/111，原边界扩展34/34，原教育207/207（明确隔离legacy回归、显式fixture），正式真实DeepSeek/Pi UI iZe6lx 15/15 exit0、rendererErrors=[]。fresh/repeated/cold三业务表0；两旧别名同命令只有一个新增Pi run，返回与SQLite正文逐字相同，cold receipt/native JSONL SHA原样。6PNG实际审阅：兼容回复浅暗双尺寸4、原真实回复及旧历史2；无UI源修改/不宣称像素一比一。
+
+首失败保留：qBUGFd功能10已过但cold locator变成两个assistant，改last；9W53Od实际两run均succeeded，模型在“兼容”和编号间加空格使硬编码复合字符串断言误报，改独立随机编号，并加返回正文与SQLite完全相同断言。未改模型输出，不删除失败，不宣称三连稳定。
+
+Next：P2-03：抽出/退役旧 Direct、DeepTutor 与 Graph 编排装配；生产只注册 Pi 当前请求和控制，保确定性教育 Domain。停止为旧模拟参数补业务兼容。新接口从真实本地事实读取，不回填模拟结果。之后 P2-04阶段验收，再 Phase3五产品空间。
+
+Master、HEAD、daily out SHA保持，无提交/push/新依赖/Schema/预算/密钥或系统DNS/proxy/VPN变更。本轮最终运行已核实际profile隔离；原P2-01首次默认profile偏好可能触及的事实保持。原用户日常联网/图片/凭证、无VPN/安装、完整教育黄金A–G、分发许可/安全/全UI人工仍OPEN。
+
+稳定口径：新接口真实本地数据优先；旧模拟回填不进入生产，唯一Pi完整装配仍待P2-03。
+
+
+## 2026-10-05 Phase2 P2-01 启动与旧 Runtime 边界接受
+
+Goal ACTIVE；Current Phase：Phase2 Pi Runtime Consolidation DOING。P2-01 限定实现 A/C 接受，完整 Phase2 / Goal / 发布 / 人工验收 NOT_ACCEPTED。跳过测试样例说明书专项，Master 唯一主线。
+
+固定 owned build3：323/SHA 81acedfc0e0cad93d3a7d30189c83792a1b160406fa9f5b19789b0175d7c17fe；正常 build/tsc exit0，renderer111/111，运行边界22/22，原教育207/207（另核实际 profile 与 legacy-test），正式真实 DeepSeek/Pi UI vazbqj 13/13、rendererErrors=[]。最终10 PNG逐张读取；准备/失败浅暗双尺寸8处正文对比最低5.39336466369807，旧历史与实际教学回复2图。发送清空、唯一 succeeded Pi run、冷重启无再投递。详见 docs/goal/PHASE2_P2_01_ACCEPTANCE.md 与 apps/desktop/test-results/goal/phase2-runtime-20261005/closeout.json。
+
+新真实用户路径：启动prepare/error/retry/leave、侧栏旧对话无重放、env=0真实Pi教学回复与冷恢复。原教育207在明确隔离legacy-test运行；不能充作正式Pi教育能力验收。
+
+Next：P2-02旧 Console/直接请求兼容 Facade 到同一 Pi，先请求校验、单次投递与原 AiConsoleRunResult 接缝，再续跑/停止/问答/重试。禁用旧入口不等于教育能力迁移完成；P2-03重复装配退役、P2-04完整阶段验收随后。
+
+## 2026-10-04 最新：当前设置组合C
+
+166/167沿165最终build4 SHAa5b2c8…，mwZl43 C32/exit0：六设置页真实动作与双原生尺寸、env空后密文保存/Flash200、官方Flash/Pro菜单、v2技能、目录记忆/显示/备份verify取消错误busy/真实侧栏搜索改名与归档取消确认/冷恢复native保持零重放。typed归档文件夹夹具与真实会话UI归档分别记录；Pro仅菜单、备份不是恢复、截图不是同DPI。3个测试误判全部保留167。无生产改动/新build/79/207。真实自动标题/skill前缀已确认但未修，两保存路径下一合同。日常63652收尾不在原因未知，恢复原out59252/窗口21430590可见，旧out保持；日常D/E/全目标未验，下方PID为历史。
+
+## 2026-10-04 当前：内建技能与工具对齐
+
+164/165最终隔离build4 SHAa5b2c8…，KmkppR C9：真实选择器/预览、旧profile v1→v2保关闭与native前缀、显式原NET01搜索正文/日期、原FILE04 Word审阅确认/SQLite与实际文件hash、双尺寸按钮/冷恢复零重放；独立DOCX48段1表4空栏。原技能A25/22/14，新增升级A10/协调器A9，renderer79/main207/exit0；n1RGWT误assert表格与MYmfJo真短行失败保留。只是有限C，新版NET03/停止C未新增。日常63652/out0dd7…保持，D/E及整体未验；详情以165为准，下方163为历史。
+
+163最后运行补充优先：旧62244已不在原因未明，盘点无小智窗口才标准build exit0；out323/SHA0dd7…与已验build2逐文件相同，默认日常profile可见63652/10292696/响应True。未新跑79/207或D AI任务；下方“未新build/62244/out3b81保持”是验收阶段事实。25源清单核过/重建前快照及独立closeout记录保持，下一仍内建Skills自然任务。
+
+## 2026-10-04 保存配置专项（当前）
+
+162/163 CFG可见verify/save→Windows密文→实际Pi list/read→冷启动新磁盘码，0PMZJy15 exit0（含1typed模型边界），9次SDK200/匹配保存密钥，actual env空/无legacy；cache非鉴权、无效save保旧/同native切Pro/text-only实拒图零上传/错误后新任务。1366/1920清字段图与独立SQLite/native/PNG/usage核过，两C定位误断言/readonly初错保留。
+
+本轮仅验收工具/文档、无生产改动或新build/79/207；沿161固定build2 SHA0dd7…，62244/out3b81…保持。下一内建Skills旧能力说明与正式显式技能任务对齐，再全D/P08；完整Codex/日常用户两反馈/人工/noVPN安装未验。
+
+## 2026-10-04 自然办公文件/Word切片（当前）
+
+160/161原FILE01/03/04+自然FILE02正式页面→原Pi/Hana/main工具→typed审阅/确认→实际文件/SQLite→原Pro预览→冷重启，GQqHCP14；实际修复新教师任务被旧拒绝永久禁止的说明边界，旧批准不复用。26段2表独立docx读、WPS owned副本真正编辑保存重开、2页A4/字形0/全部标记，双尺寸截图实际核。
+
+协调器8ORE03/FFsefR各8、renderer79、隔离build2 SHA0dd7…、main2 207/oktrue/Node exit0。四个原C失败/main1学生反馈超时保留；main1不能由shell后续返回0称通过。第4周负责人段跨页仍有版式限制，不关闭其他格式/整体视觉。日常62244/out/配置保持，CFG保存凭证、原用户反馈/人工/noVPN安装仍独立。下一CFG-01/02→Skills参照/全D/P08。
+
 ## 2026-10-04 浏览器截图实际交付（当前）
 
 158/159真实原NET-01/02自然页面发送→原Pi/Hana搜索/正文/browser→当前页面capture→durable引用→typed主frame预览→原Pro附件/OSS Modal；C vsDjUj13，A WN56o8 21，renderer79/main207 exit0，同isolated323文件SHA4ddacc…、双尺寸图实际核。来源与落款/发布/实施时间在真实工具正文中分别存在；冷恢复/变文件本地重试/非法ID/path/secondary拒绝/invalid页无fake截图实测。

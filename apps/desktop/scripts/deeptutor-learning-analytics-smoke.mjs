@@ -129,7 +129,7 @@ async function run() {
       platform: 'node',
       format: 'esm',
       outfile,
-      external: ['sqlite3'],
+      external: ['sqlite3', '@earendil-works/pi-coding-agent'],
       logLevel: 'silent',
     });
     const { runSmoke } = await import(pathToFileURL(outfile).href);

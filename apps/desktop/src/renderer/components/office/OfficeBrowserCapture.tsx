@@ -18,7 +18,7 @@ export function OfficeBrowserCapture({capture,sessionId}:{capture:BrowserCapture
   </ChatAttachment><span className="pi-attachment-caption">网页截图</span></div>
   <p className="pi-attachment-local-note">{capture.title} · {new Date(capture.observedAt).toLocaleString('zh-CN')}<br/>本地截图，可查看；未发送给模型。</p>
   {reading&&<p role="status">正在读取截图…</p>}{error&&<p role="alert" data-testid="pi-browser-capture-error">{error} <Button variant="ghost" size="sm" onPress={()=>void read()}>重试</Button></p>}
-  <Modal.Backdrop isOpen={open} onOpenChange={setOpen}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-attachment-dialog" data-testid="pi-browser-capture-preview">
+  <Modal.Backdrop isOpen={open} onOpenChange={setOpen}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-attachment-dialog pi-themed-surface" data-testid="pi-browser-capture-preview">
    <Modal.Header><Modal.Heading>网页截图</Modal.Heading><p>{capture.title}</p></Modal.Header><Modal.Body aria-busy={reading}>
     {reading?<p role="status">正在读取截图…</p>:error?<div role="alert"><p>{error}</p><Button variant="ghost" size="sm" onPress={()=>void read()}>重试</Button></div>:image?<img src={image} alt={capture.title} data-testid="pi-browser-capture-image"/>:null}
    </Modal.Body><Modal.Footer><Button variant="secondary" data-testid="pi-browser-capture-close" onPress={()=>setOpen(false)}>关闭</Button></Modal.Footer>

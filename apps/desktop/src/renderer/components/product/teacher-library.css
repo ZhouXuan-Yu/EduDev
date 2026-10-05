@@ -1,0 +1,59 @@
+.teacher-library { max-width: 1440px; margin: 0 auto; color: var(--pi-ink); font-size: 14px; }
+.teacher-library-heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
+.teacher-library-heading h1 { font-size: 25px; font-weight: 600; letter-spacing: -.5px; margin: 0 0 8px; }
+.teacher-library-heading p, .teacher-library-count, .teacher-library-caption, .teacher-library-detail header p { margin: 0; color: var(--pi-muted); line-height: 1.65; }
+.teacher-library-toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; }
+.teacher-library-search { flex: 1; min-width: 0; max-width: 520px; }
+.teacher-library .search-field__group { background: var(--pi-soft); color: var(--pi-ink); border: 1px solid var(--pi-line); min-height: 42px; }
+.teacher-library .search-field__input { color: var(--pi-ink); font-size: 14px; background: transparent; min-width: 0; }
+.teacher-library .search-field .search-field__input { border: 0; box-shadow: none; border-radius: 0; background: transparent; }
+.teacher-library .search-field__input::placeholder { color: var(--pi-muted); }
+.teacher-library .search-field__clear-button, .teacher-library .search-field__search-icon { color: var(--pi-muted); }
+.teacher-library .button { min-height: 40px; font-size: 14px; }
+.teacher-library .button:not(.button--primary) { color: var(--pi-ink); }
+.teacher-library-count { margin-bottom: 18px; font-size: 13px; }
+.teacher-library-grid { display: grid; grid-template-columns: minmax(250px, .42fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.teacher-library-list { background: transparent; min-width: 0; border: 0; padding: 0; }
+.teacher-library-list .list-view__item { min-height: 80px; background: transparent; border: 1px solid transparent; border-radius: 12px; padding: 14px 12px; gap: 12px; color: var(--pi-ink); cursor: var(--cursor-interactive, pointer); }
+.teacher-library-list .list-view__item[data-selected] { background: var(--pi-soft); border-color: var(--pi-line); box-shadow: 0 1px 3px rgb(0 0 0 / 4%); }
+.teacher-library-list .list-view__item[data-hovered] { background: var(--pi-hover); }
+.teacher-library-list .list-view__item[data-focus-visible] { outline: 2px solid var(--pi-focus); outline-offset: 2px; }
+.teacher-library-list .list-view__title { color: var(--pi-ink); font-size: 14px; font-weight: 550; overflow-wrap: anywhere; }
+.teacher-library-list .list-view__item-content { display: flex; flex-direction: column; align-items: start; gap: 6px; flex: 1; min-width: 0; border: 0; padding: 0; background: transparent; box-shadow: none; }
+.teacher-library-list .list-view__title, .teacher-library-list .list-view__description { white-space: normal; overflow: visible; text-overflow: clip; width: 100%; }
+.teacher-library-list .list-view__description { color: var(--pi-muted); font-size: 12px; overflow-wrap: anywhere; }
+.teacher-library-state { font-size: 12px; color: var(--pi-muted); flex-shrink: 0; max-width: 90px; line-height: 1.5; }
+.teacher-library-state[data-tone='error'], .teacher-library-error { color: var(--pi-danger); }
+.teacher-library-state[data-tone='waiting'] { color: var(--pi-muted); }
+.teacher-library-detail { min-width: 0; min-height: 380px; padding: 24px; border: 1px solid var(--pi-line); border-radius: 16px; background: var(--pi-paper); }
+.teacher-library-detail header { display: flex; gap: 20px; align-items: start; justify-content: space-between; margin-bottom: 20px; }
+.teacher-library-detail h2 { margin: 0 0 8px; font-size: 19px; font-weight: 600; overflow-wrap: anywhere; }
+.teacher-library-detail header p { font-size: 12px; overflow-wrap: anywhere; }
+.teacher-library-detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.teacher-library-caption { font-size: 12px; margin: 16px 0; }
+.teacher-library-excerpt { padding: 14px 0; }
+.teacher-library-excerpt h3 { color: var(--pi-muted); font-size: 13px; font-weight: 500; margin: 0 0 14px; }
+.teacher-library-detail .markdown { --markdown-ink: var(--pi-ink); color: var(--pi-ink); overflow-wrap: anywhere; line-height: 1.75; }
+.teacher-library-detail .markdown pre { white-space: pre-wrap; }
+.teacher-library-empty { color: var(--pi-muted); padding: 36px 12px; }
+.teacher-library-empty .empty-state__title { color: var(--pi-ink); font-size: 16px; }
+.teacher-library-empty .empty-state__description { color: var(--pi-muted); font-size: 13px; line-height: 1.7; }
+.teacher-library-empty .empty-state__media { background: var(--pi-soft); color: var(--pi-muted); }
+.teacher-library-notice, .teacher-library-error { margin: 12px 0; line-height: 1.7; }
+.teacher-library-import-failures { color: var(--pi-danger); padding-left: 20px; font-size: 13px; }
+.teacher-artifact-preview { height: max(420px, calc(100vh - 350px)); min-width: 0; border: 1px solid var(--pi-line); border-radius: 12px; overflow: hidden; }
+.teacher-artifact-preview .pi-file-panel { background: var(--pi-paper); color: var(--pi-ink); border: 0; }
+.teacher-artifact-preview .pi-file-toolbar, .teacher-artifact-preview .pi-file-explorer { border-color: var(--pi-line); }
+.teacher-artifact-preview .pi-file-toolbar-empty, .teacher-artifact-preview .pi-file-breadcrumb, .teacher-artifact-preview .pi-file-empty { color: var(--pi-muted); }
+.teacher-artifact-preview .pi-file-preview, .teacher-artifact-preview .pi-file-preview .markdown { --markdown-ink: var(--pi-ink); color: var(--pi-ink); }
+.teacher-artifact-preview .pi-file-breadcrumb > span, .teacher-artifact-preview .pi-file-explorer input { border-color: var(--pi-line); background: var(--pi-paper); color: var(--pi-ink); }
+.teacher-artifact-preview .pi-file-toolbar .tabs__tab[data-selected] { border-color: var(--pi-line); background: var(--pi-soft); color: var(--pi-ink); }
+.teacher-artifact-preview .pi-file-toolbar .tabs__tab, .teacher-artifact-preview .pi-file-explorer [role='alert'] { color: var(--pi-muted); }
+@media (max-width: 1150px) { .teacher-library-grid { grid-template-columns: minmax(230px, .45fr) minmax(0, 1fr); gap: 16px; } .teacher-library-detail { padding: 18px; } .teacher-library-list .list-view__item { flex-wrap: wrap; } .teacher-library-state { margin-left: 31px; max-width: none; } }
+@media (max-width: 800px) { .teacher-library-grid { grid-template-columns: minmax(0, 1fr); } .teacher-library-heading { align-items: start; gap: 12px; } .teacher-library-heading h1 { font-size: 22px; } .teacher-library-heading p { max-width: 260px; } }
+.teacher-library-directory { min-width: 0; }
+.teacher-library-directory .teacher-library-list { max-height: max(300px, calc(100vh - 350px)); overflow-y: auto; }
+.teacher-library .teacher-library-pagination { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; margin: 18px 0 0; color: var(--pi-ink); }
+.teacher-library-pagination .pagination__summary { color: var(--pi-muted); }
+.teacher-library-pagination button { color: var(--pi-ink); }
+.teacher-library-pagination button:disabled { color: var(--pi-muted); }

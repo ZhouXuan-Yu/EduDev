@@ -16,6 +16,22 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
   const [explorerOpen,setExplorerOpen]=useState(true);
   const [error,setError]=useState(''),[previewError,setPreviewError]=useState(''),[partial,setPartial]=useState(false),[loading,setLoading]=useState(false),[reading,setReading]=useState(false);
   const authority=useRef(''),epoch=useRef(0),previewEpoch=useRef(0),requests=useRef(new Set<string>()),loadedCount=useRef(0);
+  const toolbar=useRef<HTMLDivElement>(null);
+  // Keep the current original HeroUI tab visible when the split pane resizes.
+  // Scroll only its horizontal scroller; never move the chat or steal focus.
+  useEffect(()=>{
+    const root=toolbar.current,scroller=root?.querySelector<HTMLElement>('[data-slot="scroll-shadow"]');
+    if(!root||!scroller)return;
+    let frame=0;
+    const schedule=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{
+      const tab=root.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');if(!tab)return;
+      const current=tab.getBoundingClientRect(),viewport=scroller.getBoundingClientRect();
+      const offset=current.left<viewport.left?current.left-viewport.left:current.right>viewport.right?current.right-viewport.right:0;
+      if(offset)scroller.scrollLeft+=offset;
+    });};
+    const observer=new ResizeObserver(schedule);observer.observe(scroller);schedule();
+    return()=>{observer.disconnect();cancelAnimationFrame(frame);};
+  },[selected,tabs]);
   const fileFacts=[...changes.filter(item=>item.path===selected),...officeArtifacts.filter(item=>item.path===selected)].map(item=>`${item.id}:${item.revision}`).join('|');
   const previousFacts=useRef({selected,facts:fileFacts});
   const request=()=>{const id=`xifile_${crypto.randomUUID()}`;requests.current.add(id);return id;};
@@ -74,7 +90,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     {entry.kind==='directory'&&directories[entry.path]?.length?tree(entry.path):undefined}
   </FileTree.Item>);}
   return <section className="pi-file-panel" aria-label="本地文件工作面板" data-testid="pi-file-panel">
-    <div className="pi-file-toolbar">
+    <div className="pi-file-toolbar" ref={toolbar}>
         {!!tabs.length?<Tabs selectedKey={selected||undefined} onSelectionChange={key=>{const entry=tabs.find(tab=>tab.path===key);if(entry&&entry.path!==selected)void openFile(entry);}} data-testid="pi-file-tabs">
           <Tabs.ListContainer><Tabs.List aria-label="已打开的教学文件">{tabs.map(tab=><Tabs.Tab key={tab.path} id={tab.path}><FileText size={14}/><span>{tab.name}</span><Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
         </Tabs>:<span className="pi-file-toolbar-empty"><FileText size={16}/>本地文件</span>}

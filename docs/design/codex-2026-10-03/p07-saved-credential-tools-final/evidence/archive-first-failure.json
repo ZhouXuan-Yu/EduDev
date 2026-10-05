@@ -1,0 +1,8 @@
+{
+  "success": false,
+  "exitCode": 1,
+  "error": "AssertionError: Payload refused",
+  "reason": "The initial archive guard matched a static data URI prefix in its own script rather than an encoded image payload.",
+  "partialArchive": "p07-saved-credential-tools",
+  "recovery": "Keep the initial partial source archive. Preflight actual long payloads in every file before any write, then create a separate final archive. No credentials or binary files were archived."
+}

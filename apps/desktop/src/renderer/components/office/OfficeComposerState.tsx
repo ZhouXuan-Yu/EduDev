@@ -1,6 +1,7 @@
 import { createContext, useContext, useRef, useState, type ReactNode } from 'react';
 import type { OfficeReadingBookmark } from './OfficeReadingPosition';
 import type {OfficeDraft} from '../../../shared/xiaozhi-office-draft';
+import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 
 /** Ephemeral input state only; the session-keyed provider survives layout reparenting. */
 function useDraftState() {
@@ -8,6 +9,7 @@ function useDraftState() {
   const [submitting, setSubmitting] = useState(false);
   const [stopping, setStopping] = useState(false);
   const [failedPrompt, setFailedPrompt] = useState<string>();
+  const [failedPresentation,setFailedPresentation]=useState<XiaozhiMessagePresentation>();
   const [stopFailed, setStopFailed] = useState(false);
   const sendLock = useRef(false), stopLock = useRef(false);
   const [queueMode, setQueueMode] = useState<'steer' | 'followUp'>('steer');
@@ -16,7 +18,7 @@ function useDraftState() {
   const [controlDrafts, setControlDrafts] = useState<Record<string, OfficeControlDraft>>({});
   const controlLocks = useRef(new Map<string, { current: boolean }>());
   const readingBookmark = useRef<OfficeReadingBookmark | undefined>(undefined);
-  return { draft, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
+  return { draft, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,failedPresentation,setFailedPresentation,
     stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill,
     controlDrafts, setControlDrafts, controlLocks, readingBookmark };
 }

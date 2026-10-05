@@ -1,5 +1,5 @@
 import { BookOpen, Folder, Link as LinkIcon, PanelRightClose } from 'lucide-react';
-import { Button } from '@heroui/react';
+import { Button, Tooltip } from '@heroui/react';
 import { WebSource } from './OfficeToolProcess';
 import { ChatSources } from '../../heroui-pro/components/chat-source';
 import type { XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
@@ -8,6 +8,7 @@ import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import { PiMemoryScope } from './PiMemoryScope';
 import { PiBudgetCard } from './PiBudgetCard';
 import {useState} from 'react';
+import { workspaceStatus } from './workspace-status';
 
 export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,onCompact,onRefresh}: {
   sessionId:string;snapshot?:XiaozhiWorkspaceSnapshot;compactBusy:boolean;compacting:boolean;
@@ -15,13 +16,12 @@ export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,on
 }) {
   const [browserMessage,setBrowserMessage]=useState('');
   const current=snapshot?.projection.turns.at(-1);
-  const state=snapshot?.running ? current?.status==='waiting_approval'?'等待确认':current?.status==='waiting_input'?'等待补充':'运行中'
-    : current?.status==='failed'?'未完成':current?.status==='interrupted'?'已停止':current?'已完成':'等待提问';
+  const status=workspaceStatus(snapshot,compactBusy||compacting);
   const sources=[...new Map((current?.items.flatMap(item=>item.sources||[])||[]).map(source=>[source.url||source.title,source])).values()].sort((a,b)=>Number(b.kind==='read')-Number(a.kind==='read'));
   const sourceRow=(source:typeof sources[number])=>source.url ? <WebSource key={source.url} source={source} sessionId={sessionId}/> : <li key={source.title} title={source.title}><BookOpen size={16}/><span>{source.title}</span></li>;
   return <div className="pi-context-card" data-testid="xiaozhi-pi-inspector" aria-label="小智任务与来源">
-    <div className="pi-context-header"><span>{snapshot?.workspace?.label||'教师工作区'}</span><AppLayout.AsideTrigger aria-label="收起任务资料"><PanelRightClose size={17}/></AppLayout.AsideTrigger></div>
-    <div className="pi-context-status" data-testid="xiaozhi-pi-status"><BookOpen size={17}/><span>{state}</span></div>
+    <div className="pi-context-header"><span>{snapshot?.workspace?.label||'教师工作区'}</span><Tooltip><AppLayout.AsideTrigger aria-label="收起任务资料"><PanelRightClose size={17}/></AppLayout.AsideTrigger><Tooltip.Content>收起任务资料</Tooltip.Content></Tooltip></div>
+    <div className="pi-context-status" data-testid="xiaozhi-pi-status" data-state={status.state} role="status" aria-live="polite"><BookOpen size={17} aria-hidden="true"/><span>{status.label}</span></div>
     <div className="pi-context-location"><Folder size={17}/><span>{snapshot?.workspace?'教学工作目录':'教师知识库'}</span><span className="pi-context-local">本地</span></div>
     {snapshot?.browser?.open&&<section data-testid="pi-browser-panel"><Button size="sm" variant="ghost" data-testid="pi-browser-show" onPress={async()=>{const result=await window.omniEdu?.showXiaozhiBrowser(sessionId);setBrowserMessage(result?.ok?'':'浏览器已关闭，请让小智重新打开页面。');await onRefresh();}}>打开浏览器</Button>{snapshot.browser.tabs?.filter(tab=>tab.active).map(tab=><p key={tab.tabId}>{tab.title||new URL(tab.url).hostname}</p>)}{browserMessage&&<p role="status">{browserMessage}</p>}</section>}
     <section className="pi-context-sources" data-testid="pi-web-aside"><h4><LinkIcon size={16}/>来源</h4>

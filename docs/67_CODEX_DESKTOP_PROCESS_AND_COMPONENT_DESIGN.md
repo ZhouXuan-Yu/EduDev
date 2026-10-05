@@ -1,5 +1,39 @@
 # 小智 × Codex 桌面：实时过程与组件设计基准
 
+## 2026-10-05 当前视觉与执行基准
+
+用户新 [Master Goal](goal/XIAOZHI_CODEX_GOAL.md) 将视觉更新为Apple-like Liquid Glass × Codex Productivity × Education Warmth；Codex一致体感以公开工作摘要、工具、计划、审批、交付、停止恢复等真实行为衡量。下方旧像素/下一项不覆盖新合同，历史截图与组件证据保留。当前 [Phase0](goal/CURRENT_STATE.md)，官方HeroUI MCP glass查询可用，逐组件Pro授权/迁移门禁尚未闭合，新Shell未实现或视觉验收。稳定产品入口 [CURRENT](product/CURRENT.md)，不展示模型私有Chain-of-Thought。
+
+## 2026-10-04 当前检查点：现有设置与侧栏路径
+
+166/167仍原Hana设置、Skills行/搜索与HeroUI导航/会话；HeroUI MCP Sidebar文档已核，menu未提供该名称；Finesse本地固定参考已读，无新组件copy/专有同源声明。固定165 build4 mwZl43 C32/exit0，六页双原生内容尺寸操作可达/780阅读宽、env空密文保存/Flash200/模型菜单/技能v2、备份verify、侧栏搜索改名/真实归档取消确认和冷恢复native保持。实际查看models1366与skills1920，不当同DPI或官方设置一比一；3次测试误判原记录全留，无生产改动/新79/207。
+
+**下一四根→本文§1/2/5/8/9→35→167：自动标题两条保存路径合同。** 真实/skill前缀标题已确认，不能只改普通append遗漏附件原子trigger/覆教师名；之后全D/P08/最终八组。日常63652收尾不在原因未知，恢复原out59252/窗口21430590可见，未升级最新隔离。原用户问题/人工/noVPN安装及整体active/NOT_ACCEPTED，缺设置参考继续独立等待；下方63652存活/下一全D为历史。
+
+## 2026-10-04 当前检查点：技能与正式工具一致
+
+164/165继续原Pi按需/显式技能与Hana SkillRow/Badge、原HeroUI预览/审阅组件，未新造组件/loop。HeroUI MCP Modal/Switch/Button当前文档已核，Finesse沿本地参考，Pro source未由接口提供，不冒称新copy或Codex同源。内建v2说明实际联网、正文日期与确认后办公文件，旧v1目录/native身份冻结，原epoch隔离旧指令/摘要且公开历史保留；格式未进入审阅的错误不冒充教师拒绝。
+
+最终build4 SHAa5b2c8…/C9/两尺寸按钮与独立DOCX、A10+Office9+原25/22/14、renderer79/main207过；实际看1366截图不等于同DPI全页像素一致。首次n1RGWT误强求表格与MYmfJo真实短行失败保留165。日常63652/out0dd7…保持，源码修复未加载日常窗口。
+
+**下一四根→本文§1/2/5/8/9→35→165：冻结全D1–D7/模型权限设置可见路径/最终八组与P08安装备份准备合同。** 缺官方设置截图独立等待，日常原问题/人工/noVPN安装及整体仍active/NOT_ACCEPTED。下方163下一为历史。
+
+163最终运行补充：旧62244最后已不在、原因未知，未强杀；无窗口后标准build exit0，323文件SHA0dd7…与已验隔离逐文件一致，默认profile可见63652/handle10292696/响应True。保持当前窗口/out，不沿用下方旧PID/未build中间记录。25源归档保持生成快照，最后状态另存closeout；无新79/207、D AI/同DPI未验，下一仍内建Skills能力对齐。
+
+## 2026-10-04 当前检查点：保存配置与冷恢复
+
+162/163现有Hana449 SettingsPrimitives/Pro ListView/OSS字段绑定真实verify/save/cache/failed run，无新组件/vendor修改。C15含1typed边界/9次200/同native冷恢复新码实读/Pro拒图零上传/错误后新任务，两内容视口清字段控件可达。PNG2049×1152/2880×1620不是同DPI全页像素一致。两C定位误断言/readonly初错永久保留；无新build/79/207或Finesse/Pro copy声明，原闭包保持。
+
+下一唯一四根→本文§1/2/5/8/9→35→163：核内建Skills旧“无联网/Office”与当前工具、原资源/版本/撤销/cache，先合同后显式教育查证/教学办公自然任务与旧新/冷/停止；不扩权限/第二loop，不凭静态差异归因原故障。缺设置参照独立等待，之后全D/P08最终八组；62244/out/profile保持，整体active/原两反馈/人工/noVPN安装未关闭。以下CFG下一为历史。
+
+## 2026-10-04 当前恢复检查点：自然办公文件与真实可编辑Word
+
+160/161复用现有原Pro审阅/文件预览与Pi/Hana正式工具，未加新组件或改vendor。原FILE提示词C14，真实diff/拒绝/新任务重审/批准/Office表格和本地typed产物/冷恢复；两尺寸确认与面板已查看。拒绝仅阻止同run自动重放，新的教师要求重新读版本/新审阅/新确认；公开过程按实际tool与分段，不填私有推理。
+
+WPS副本实际编辑保存重开，26段2表/2页A4与原稿一致；第4周负责人段跨页不称所有版式优化。MCP/Finesse沿已有参照，无新调用/新copy，不伪称Codex专有同源。协调器各8/renderer79/build2/main2 207与四C首次失败/main1超时保留161；完整同DPI/Skills设置仍未验。
+
+下一唯一四根→本文§1/2/5/8/9→35→161→CFG-01/02可见导入验证保存/真实调用/冷重启，owned配置副本不靠env；然后缺参照Skills模型权限/全D/P08最终八组。62244/out保持，原用户反馈/人工/noVPN安装未关闭，整体active；以下FILE下一历史。
+
 ## 2026-10-04 当前恢复检查点：自然浏览器截图可查看
 
 158/159原Hana450截图命名+原安全browser/DOM→capture公开引用/现有工具durable facts→typed预览→原Pro附件与既有OSS Modal，本地真实截图有加载/错误/本地重试/关闭，缩略图contain。工具组保留细行/公开说明，非图片已上传或模型私有思考。NET-01/02原文C13，A21/renderer79/main207；同isolatedbuild4ddacc…和两图实际核，未更新日常out或判完整同DPI。

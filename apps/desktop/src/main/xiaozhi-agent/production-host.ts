@@ -30,6 +30,7 @@ import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
 import type { OmniEduStore } from '../db';
 import { createEducationTools } from './education-tools';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../shared/xiaozhi-projection';
+import {publicMessageText} from '../../shared/xiaozhi-message-presentation';
 import { createPiApprovalCoordinator } from './approval-coordinator';
 import { createTextChangeService } from './text-change-service';
 import { createTextChangeCoordinator } from './text-change-coordinator';
@@ -37,6 +38,7 @@ import { changeSummary } from './text-change-state';
 import {createOfficeArtifactCoordinator} from './office-artifact-coordinator';
 import {createOfficeArtifactService} from './office-artifact-service';
 import {officeSummary} from './office-artifact-state';
+import {createOfficeDeliveryPresentation,officeDeliveryText} from './office-delivery-presentation';
 import type {OfficeArtifactDecision,OfficeArtifactResult,OfficeArtifactSummary} from '../../shared/xiaozhi-office-artifacts';
 import type { XiaozhiChangeDecision, XiaozhiChangeResult, XiaozhiChangeSummary } from '../../shared/xiaozhi-changes';
 import { publicApproval } from './persistent-state';
@@ -59,11 +61,13 @@ import type { OfficeProjectedTurn, OfficeProjection } from '../../shared/office-
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
-type Active = { runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void> };
+type Active = { runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
 export function createXiaozhiProductionHost(options: { store: OmniEduStore; dataRoot: string; emit: (event: XiaozhiAgentEvent) => void;
+  /** Main-owned isolated legacy regression only; product launches always enable Pi. */
+  enabled?: boolean;
   /** Main-only acceptance seam; packaged IPC never installs it. */
   afterCompactCommit?: () => Promise<void>; afterAutoCompactCommit?: () => Promise<void>; beforeAutoCompactCommit?: () => Promise<void>;
   afterInstructionDispatch?: (signal: AbortSignal) => Promise<void>;
@@ -80,7 +84,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   const choosing = new Set<string>();
   const configuring = new Set<string>();
   const queueing = new Map<string,{hash:string;result:Promise<XiaozhiActionResult>}>();
-  const enabled = process.env.OMNI_EDU_XIAOZHI_PI !== '0';
+  const enabled = options.enabled !== false;
   const browser=createXiaozhiBrowserHost({root:path.join(root,'browser-captures'),sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const memory = createPiMemoryScope(store, { modelAccess: 'available' });
   let closing = false;
@@ -119,8 +123,11 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     try { await skillsReady; return await action(); } finally { skillsMutating = false; }
   }
   const publicEvent = (id: string, run: Active, payload: XiaozhiAgentEventPayload) => {
-    const event = { ...payload, sessionId: id, runId: run.runId, sequence: ++run.sequence } as XiaozhiAgentEvent;
-    run.turn = applyXiaozhiEvent(run.turn, event); try { options.emit(event); } catch { /* UI lifetime does not own execution. */ }
+    run.officePresentation ??= createOfficeDeliveryPresentation(run.runId);
+    for (const visible of run.officePresentation.events(payload)) {
+      const event = { ...visible, sessionId: id, runId: run.runId, sequence: ++run.sequence } as XiaozhiAgentEvent;
+      run.turn = applyXiaozhiEvent(run.turn, event); try { options.emit(event); } catch { /* UI lifetime does not own execution. */ }
+    }
   };
   const approvals = createPiApprovalCoordinator({ store, dataRoot: options.dataRoot,
     isCurrent: (id, run) => !closing && active.get(id)?.runId === run && !active.get(id)?.stopped,
@@ -177,7 +184,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         const runId = String(message.metadata.agentRunId || message.id), row = runs.get(runId);
         projection.turns.push({ id: runId, status: row?.status === 'running' ? 'running' : row?.status === 'failed' ? 'failed'
           : row?.status === 'blocked' ? 'interrupted' : 'completed',
-          items: [{ id: message.id, kind: 'message', role: 'user', text: message.content,
+          items: [{ id: message.id, kind: 'message', role: 'user', text: row && message.metadata.piVersion==='xiaozhi.pi.education.v1' ? publicMessageText(message.content,message.metadata.presentation) : message.content,
             ...(messageAttachments.some(item=>item.messageId===message.id&&item.runId===runId)?{attachments:messageAttachments.filter(item=>item.messageId===message.id&&item.runId===runId)}:{}) }],
           ...(row?.error_message ? { error: String(row.error_message) } : {}) });
       } else if (message.role === 'assistant') {
@@ -388,11 +395,22 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       }).catch(() => { failure ||= 'configuration'; });
       if (run.stopped) failure = 'cancelled';
       await run.usageWrites.catch(()=>{failure ||= 'configuration';});
+      let deliveryText: string | undefined;
+      try { if (run.officePresentation?.hasArtifacts) {
+        const rows=(await store.xiaozhiState.officeArtifacts.list(id)).map(officeSummary);
+        deliveryText=officeDeliveryText(run.runId,rows,failure==='cancelled'?'stopped':failure?'failed':undefined);
+      } } catch { failure ||= 'configuration'; }
+      if (deliveryText) text=deliveryText;
       const status: 'interrupted' | 'failed' | 'completed' = failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed';
       const terminal = { kind: 'status' as const, status, ...(failure ? { error: failure } : {}) };
       run.turn = applyXiaozhiEvent(run.turn, { ...terminal, sessionId: id, runId: run.runId, sequence: run.sequence + 1 });
       const lastText = [...run.turn.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
-      if (!failure && text) {
+      if (deliveryText) {
+        // The model's original final text remains in the native transcript.
+        // Persist the same local delivery presentation for live and cold views.
+        if(lastText?.phase==='final_answer')lastText.phase='commentary';
+        run.turn.items.push({id:`${run.runId}:office-delivery`,kind:'message',role:'assistant',phase:'final_answer',text:deliveryText});
+      } else if (!failure && text) {
         if (lastText) lastText.text = text;
         else run.turn.items.push({ id: `${run.runId}:final`, kind: 'message', role: 'assistant', phase: 'final_answer', text });
       }
@@ -421,6 +439,26 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     }
   }
   const host = {
+    /** Main-only completion join. Never starts/replays a run or owns another model loop. */
+    async waitForRun(id: string, runId: string): Promise<XiaozhiWorkspaceSnapshot> {
+      if (!validId(id) || typeof runId !== 'string' || runId.length > 180) throw new Error('invalid_input');
+      const detail = await store.getAiConversationSession(id);
+      const row = await store.getAiAgentRun(runId);
+      if (detail.session.archivedAt || row?.sessionId !== id
+        || !detail.messages.some(message => message.role === 'user' && message.metadata.agentRunId === runId
+          && message.metadata.piVersion === 'xiaozhi.pi.education.v1')) throw new Error('permission_denied');
+      const run = active.get(id);
+      if (run?.runId === runId) await run.done;
+      if ((await store.getAiConversationSession(id)).session.archivedAt) throw new Error('permission_denied');
+      const committed = await store.getAiAgentRun(runId), state = await snapshot(id);
+      const turn = state.projection.turns.find(item => item.id === runId);
+      // Appended text is not proof the terminal run/command transaction committed.
+      if (turn && committed?.status !== 'succeeded') {
+        turn.status = committed?.status === 'blocked' ? 'interrupted' : 'failed';
+        turn.error ||= committed?.errorMessage || XIAOZHI_ERRORS.configuration;
+      }
+      return {...state,projection:{...state.projection,model:committed?.model||state.projection.model}};
+    },
     mutateGoal:createGoalController({store,closing:()=>closing,busy:id=>active.has(id)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating||starting.size>0,
       stop:async(id,runId,goalId):Promise<unknown>=>{const owner=active.get(id);return owner?.runId===runId&&owner.goalId===goalId?await host.stop(id):undefined;},start:async(id,prompt,commandId,goalId):Promise<XiaozhiStartResult>=>await host.start({sessionId:id,prompt,commandId},'prompt',goalId)}),
     async resolveFileWorkspace(id:string) {
@@ -564,6 +602,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if (skillsMutating || configuring.has('provider')) return { ok: false, error: 'busy' };
       if(!validXiaozhiStart(input)||(operation==='compact'&&input.attachments))return {ok:false,error:'invalid_input'};
       input = { ...input, prompt: input.prompt.trim()||ATTACHMENT_ONLY_PROMPT,
+        ...(input.presentation?{presentation:{version:1,skill:input.presentation.skill,text:input.presentation.text}}:{}),
         ...(input.attachments?{attachments:input.attachments.map(s=>({id:s.id,revision:s.revision}))}:{}) };
       const id = input.sessionId;
       try {await recoverModel(id);
@@ -572,7 +611,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       // Retain the exact historical prompt hash; compact has a distinct command identity.
       let selectedRows:Awaited<ReturnType<typeof store.xiaozhiState.attachments.list>>=[];
       if(input.attachments){try{selectedRows=await store.xiaozhiState.attachments.list(id);if(input.attachments.some(s=>!selectedRows.some(row=>row.id===s.id)))return {ok:false,error:'attachment_changed'};}catch{return {ok:false,error:'configuration'};}}
-      const hash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt, ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}) })).digest('hex');
+      const hash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt, ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
       const result = (async (): Promise<XiaozhiStartResult> => {
@@ -609,10 +648,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         const settings = await modelSettings.runtime(id);
         if(input.attachments){
           if(closing||run.stopped)throw new Error('cancelled');
-          const admitted=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId:input.commandId,prompt:input.prompt,hash,model:settings.model,attachments:drafts,selections:input.attachments});
+          const admitted=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId:input.commandId,prompt:input.prompt,...(input.presentation?{presentation:input.presentation}:{}),hash,model:settings.model,attachments:drafts,selections:input.attachments});
           run.runId=admitted.runId;
           run.turn.id=admitted.runId;
-          run.turn.items.push({id:admitted.messageId,kind:'message',role:'user',text:input.prompt,attachments:admitted.attachments});
+          run.turn.items.push({id:admitted.messageId,kind:'message',role:'user',text:publicMessageText(input.prompt,input.presentation),attachments:admitted.attachments});
           await options.afterAttachmentSendStage?.('committed');
         }else{
           run.runId = await store.startAiAgentRun({ sessionId: id, prompt: input.prompt.trim(), route: 'knowledge_retrieval', subIntent: 'pi_education', model: settings.model });
@@ -622,9 +661,9 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         if(goalId){const goal=await store.xiaozhiState.goals.get(goalId);if(!goal||goal.sessionId!==id||goal.state!=='active')throw new Error('command_conflict');const bound=await store.xiaozhiState.goals.bind(goal,run.runId);publicEvent(id,run,{kind:'goal',goal:publicGoal(bound)});}
         run.turn.id = run.runId;
         if(!input.attachments){
-          const saved = await store.appendAiConversationMessage(id, { role: 'user', content: input.prompt.trim(), metadata: { agentRunId: run.runId, piVersion: 'xiaozhi.pi.education.v1' } });
+          const saved = await store.appendAiConversationMessage(id, { role: 'user', content: input.prompt.trim(), metadata: { agentRunId: run.runId, piVersion: 'xiaozhi.pi.education.v1',...(input.presentation?{presentation:input.presentation}:{}) } });
           const user = saved.messages.at(-1)!;
-          run.turn.items.push({ id: user.id, kind: 'message', role: 'user', text: user.content });
+          run.turn.items.push({ id: user.id, kind: 'message', role: 'user', text: publicMessageText(user.content,user.metadata.presentation) });
         }
         publicEvent(id, run, { kind: 'status', status: 'running' });
         run.done = execute(id, input.prompt.trim(), run, settings);

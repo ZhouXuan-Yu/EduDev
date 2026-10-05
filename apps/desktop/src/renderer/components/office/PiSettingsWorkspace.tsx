@@ -17,6 +17,7 @@ import { searchSettings, type SettingsSearchEntry } from './hana-settings/settin
 import navStyles from './hana-settings/workspace-nav.module.css';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
 import './pi-settings-workspace.css';
+import { ProductRail } from '../product/ProductRail';
 
 const tabs = [
   { id: 'models', label: '模型与连接', icon: Plug },
@@ -125,7 +126,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
     finally { if (live.current && archiveRequest.current === own) setArchiveLoading(false); }
   }
   const title = tabs.find(item => item.id === tab)!.label;
-  return <div className="pi-settings-workspace" data-testid="pi-settings-workspace" data-tab={tab}>
+  return <div className="product-settings-frame pi-themed-surface"><ProductRail active="settings" disabled={busy}/><div className="pi-settings-workspace pi-themed-surface" data-testid="pi-settings-workspace" data-tab={tab}>
     <header><Button variant="ghost" size="sm" data-testid="nav-ai" isDisabled={busy} onPress={onBack}><ArrowLeft size={17}/>返回小智</Button><span>设置</span>{busy && <span role="status">正在保存或处理本地资料…</span>}</header>
     <div className="pi-settings-body">
       <nav className="pi-settings-nav" aria-label="小智设置分类">
@@ -166,5 +167,5 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
         {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsSection></SettingsStack></SettingsPage>}
       </main>
     </div>
-  </div>;
+  </div></div>;
 }

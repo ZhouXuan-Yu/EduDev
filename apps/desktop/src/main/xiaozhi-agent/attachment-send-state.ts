@@ -4,13 +4,15 @@ import type {PrivateAttachment} from './attachment-state';
 import {publicAttachment} from './attachment-state';
 import type {XiaozhiAttachmentSelection} from '../../shared/xiaozhi-attachments';
 import {validXiaozhiStart} from '../../shared/xiaozhi-start';
+import {conversationTitle} from './conversation-title';
+import type {XiaozhiMessagePresentation} from '../../shared/xiaozhi-message-presentation';
 
-type Input={sessionId:string;commandId:string;prompt:string;hash:string;model:string;attachments:PrivateAttachment[];selections:XiaozhiAttachmentSelection[]};
+type Input={sessionId:string;commandId:string;prompt:string;presentation?:XiaozhiMessagePresentation;hash:string;model:string;attachments:PrivateAttachment[];selections:XiaozhiAttachmentSelection[]};
 const stamp=()=>new Date().toISOString();
 const privateSelection=(selection:XiaozhiAttachmentSelection,row:PrivateAttachment)=>({id:selection.id,revision:selection.revision,version:row.version,sha256:row.contentSha256});
-export function attachmentStartHash(sessionId:string,prompt:string,selections:XiaozhiAttachmentSelection[],rows:PrivateAttachment[]){
+export function attachmentStartHash(sessionId:string,prompt:string,selections:XiaozhiAttachmentSelection[],rows:PrivateAttachment[],presentation?:XiaozhiMessagePresentation){
  const attachments=selections.map(s=>{const row=rows.find(v=>v.id===s.id);if(!row)throw new Error('attachment_changed');return privateSelection(s,row);});
- return createHash('sha256').update(JSON.stringify({sessionId,prompt,attachments})).digest('hex');
+ return createHash('sha256').update(JSON.stringify({sessionId,prompt,attachments,...(presentation?{presentation}: {})})).digest('hex');
 }
 
 /** Like the existing office artifact publication trigger: one statement owns every visible fact. */
@@ -27,7 +29,10 @@ export function createAttachmentSendState(sql:Sql){
     run_id TEXT NOT NULL UNIQUE REFERENCES ai_agent_runs(id),message_id TEXT NOT NULL UNIQUE REFERENCES ai_conversation_messages(id),
     prompt TEXT NOT NULL,model TEXT NOT NULL,selection_json TEXT NOT NULL CHECK(json_valid(selection_json) AND json_type(selection_json)='array' AND json_array_length(selection_json) BETWEEN 1 AND 8),
     created_at TEXT NOT NULL)`);
-   await sql.run(`CREATE TRIGGER IF NOT EXISTS xiaozhi_pi_attachment_send_publish AFTER INSERT ON xiaozhi_pi_attachment_sends BEGIN
+   const columns=await sql.all('PRAGMA table_info(xiaozhi_pi_attachment_sends)');
+   if(!columns.some(column=>column.name==='display_title'))await sql.run("ALTER TABLE xiaozhi_pi_attachment_sends ADD COLUMN display_title TEXT NOT NULL DEFAULT ''");
+   if(!columns.some(column=>column.name==='presentation_json'))await sql.run("ALTER TABLE xiaozhi_pi_attachment_sends ADD COLUMN presentation_json TEXT NOT NULL DEFAULT ''");
+   const trigger=`CREATE TRIGGER xiaozhi_pi_attachment_send_publish AFTER INSERT ON xiaozhi_pi_attachment_sends BEGIN
     SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM ai_conversation_sessions WHERE id=NEW.conversation_id AND archived_at IS NULL)
       THEN RAISE(ABORT,'attachment_permission_denied') END;
     SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM xiaozhi_pi_commands WHERE command_id=NEW.command_id AND schema_version=1
@@ -41,26 +46,41 @@ export function createAttachmentSendState(sql:Sql){
     INSERT INTO ai_agent_runs(id,session_id,prompt,route,sub_intent,status,model,created_at,updated_at)
       VALUES(NEW.run_id,NEW.conversation_id,NEW.prompt,'knowledge_retrieval','pi_education','running',NEW.model,NEW.created_at,NEW.created_at);
     INSERT INTO ai_conversation_messages(id,session_id,role,content,metadata_json,created_at)
-      VALUES(NEW.message_id,NEW.conversation_id,'user',NEW.prompt,json_object('agentRunId',NEW.run_id,'piVersion','xiaozhi.pi.education.v1','attachmentSendVersion',1),NEW.created_at);
+      VALUES(NEW.message_id,NEW.conversation_id,'user',NEW.prompt,
+        CASE WHEN NEW.presentation_json='' THEN json_object('agentRunId',NEW.run_id,'piVersion','xiaozhi.pi.education.v1','attachmentSendVersion',1)
+        ELSE json_object('agentRunId',NEW.run_id,'piVersion','xiaozhi.pi.education.v1','attachmentSendVersion',1,'presentation',json(NEW.presentation_json)) END,NEW.created_at);
     UPDATE xiaozhi_pi_attachments SET state='submitted',revision=revision+1,run_id=NEW.run_id,message_id=NEW.message_id,updated_at=NEW.created_at
       WHERE conversation_id=NEW.conversation_id AND id IN(SELECT json_extract(value,'$.id') FROM json_each(NEW.selection_json));
     UPDATE xiaozhi_pi_commands SET status='running',run_id=NEW.run_id,updated_at=NEW.created_at WHERE command_id=NEW.command_id;
-    UPDATE ai_conversation_sessions SET title=CASE WHEN title='新对话' THEN substr(NEW.prompt,1,40) ELSE title END,
+    UPDATE ai_conversation_sessions SET title=CASE WHEN title_source='automatic' AND title='新对话' THEN NEW.display_title ELSE title END,
       last_prompt=substr(NEW.prompt,1,240),message_count=(SELECT COUNT(*) FROM ai_conversation_messages WHERE session_id=NEW.conversation_id),updated_at=NEW.created_at WHERE id=NEW.conversation_id;
-   END`);
+   END`;
+   const current=(await sql.all("SELECT sql FROM sqlite_master WHERE type='trigger' AND name='xiaozhi_pi_attachment_send_publish'"))[0];
+   if(String(current?.sql??'')!==trigger){
+    await sql.run('SAVEPOINT xiaozhi_attachment_title_v2');
+    try{
+     await sql.run('DROP TRIGGER IF EXISTS xiaozhi_pi_attachment_send_publish');
+     await sql.run(trigger);
+     await sql.run('RELEASE xiaozhi_attachment_title_v2');
+    }catch(error){
+     await sql.run('ROLLBACK TO xiaozhi_attachment_title_v2');
+     await sql.run('RELEASE xiaozhi_attachment_title_v2');
+     throw error;
+    }
+   }
   },
   async admit(input:Input){
-   if(!validXiaozhiStart({sessionId:input.sessionId,commandId:input.commandId,prompt:input.prompt,attachments:input.selections})
+   if(!validXiaozhiStart({sessionId:input.sessionId,commandId:input.commandId,prompt:input.prompt,attachments:input.selections,...(input.presentation?{presentation:input.presentation}:{})})
     ||!input.prompt.trim()||!Array.isArray(input.attachments)||typeof input.model!=='string'||!/^[-.A-Za-z0-9_]{1,120}$/.test(input.model)
-    ||input.hash!==attachmentStartHash(input.sessionId,input.prompt,input.selections,input.attachments))throw new Error('invalid_input');
+    ||input.hash!==attachmentStartHash(input.sessionId,input.prompt,input.selections,input.attachments,input.presentation))throw new Error('invalid_input');
    let row=await get(input.commandId);
    if(row){if(row.conversation_id!==input.sessionId||row.request_hash!==input.hash)throw new Error('command_conflict');}
    else{
     if(!sql.change)throw new Error('configuration');
     const selections=input.selections.map(s=>privateSelection(s,input.attachments.find(v=>v.id===s.id)!));
     try{
-     await sql.change(`INSERT INTO xiaozhi_pi_attachment_sends(command_id,schema_version,conversation_id,request_hash,run_id,message_id,prompt,model,selection_json,created_at)
-      VALUES(?,1,?,?,?,?,?,?,?,?)`,[input.commandId,input.sessionId,input.hash,`run_${randomUUID()}`,`aimsg_${randomUUID()}`,input.prompt,input.model,JSON.stringify(selections),stamp()]);
+     await sql.change(`INSERT INTO xiaozhi_pi_attachment_sends(command_id,schema_version,conversation_id,request_hash,run_id,message_id,prompt,model,selection_json,created_at,display_title,presentation_json)
+      VALUES(?,1,?,?,?,?,?,?,?,?,?,?)`,[input.commandId,input.sessionId,input.hash,`run_${randomUUID()}`,`aimsg_${randomUUID()}`,input.prompt,input.model,JSON.stringify(selections),stamp(),conversationTitle(input.prompt),input.presentation?JSON.stringify(input.presentation):'']);
     }catch(error){
      const message=error instanceof Error?error.message:'';
      if(message.includes('attachment_changed'))throw new Error('attachment_changed');

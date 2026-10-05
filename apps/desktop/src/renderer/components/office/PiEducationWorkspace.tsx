@@ -3,6 +3,7 @@ import type { AiConversationWorkspace } from '../../../shared/contracts';
 import type { XiaozhiWorkspaceSnapshot,XiaozhiStartInput } from '../../../shared/xiaozhi-agent';
 import { XIAOZHI_SETTINGS_SCHEMA, XIAOZHI_SETTINGS_ERRORS, type XiaozhiSettingsView } from '../../../shared/xiaozhi-settings';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../../shared/xiaozhi-projection';
+import {publicMessageText,type XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 import { AiConversationSidebar } from '../AiConversationSidebar';
 import { PiConversationSurface } from './PiConversationSurface';
 import { PiTaskPlan } from './PiTaskPlan';
@@ -16,10 +17,12 @@ import { PiControlCards } from './PiControlCards';
 import { PiSkillSettings } from './PiSkillSettings';
 import { PiWorkspaceShell } from './PiWorkspaceShell';
 import { PiWorkspaceContext } from './PiWorkspaceContext';
+import { PiWorkspaceActivity } from './PiWorkspaceActivity';
 import { PiWorkspaceFiles } from './PiWorkspaceFiles';
 import {usePiAttachments} from './usePiAttachments';
 import { useDesktopCommands, useDesktopNavigation } from '../desktop/DesktopFrame';
 import './pi-education-workspace.css';
+import './pi-workspace-glass.css';
 
 export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { onLeave: () => void; onSettings: () => void; visible?: boolean }) {
   const navigation=useDesktopNavigation(),navigationRef=useRef(navigation);navigationRef.current=navigation;
@@ -133,12 +136,12 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     });
     return () => { live = false; active.current=false; version.current++; unsubscribe?.(); };
   }, [hasEntered]);
-  async function send(prompt: string) {
+  async function send(prompt: string,presentation?:XiaozhiMessagePresentation) {
     if (!id || !window.omniEdu) throw new Error('configuration');
     setNotice('');
     setSnapshot(previous => previous ? { ...previous, running: true, projection: { ...previous.projection,
-      turns: [...previous.projection.turns, { id: 'pending-send', status: 'running', items: [{ id: 'pending-user', kind: 'message', role: 'user', text: prompt }] }] } } : previous);
-    if (!attempt.current || attempt.current.sessionId !== id || attempt.current.prompt !== prompt) attempt.current = { sessionId: id, prompt, commandId: `xicmd_${crypto.randomUUID()}`,
+      turns: [...previous.projection.turns, { id: 'pending-send', status: 'running', items: [{ id: 'pending-user', kind: 'message', role: 'user', text: publicMessageText(prompt,presentation) }] }] } } : previous);
+    if (!attempt.current || attempt.current.sessionId !== id || attempt.current.prompt !== prompt || JSON.stringify(attempt.current.presentation)!==JSON.stringify(presentation)) attempt.current = { sessionId: id, prompt, ...(presentation?{presentation}:{}), commandId: `xicmd_${crypto.randomUUID()}`,
       ...(attachments.selections.length?{attachments:attachments.selections}:{}) };
     let result;
     try{result=await window.omniEdu.startXiaozhi(attempt.current);}catch(error){await hydrate(id).catch(()=>undefined);throw error;}
@@ -189,7 +192,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         if (!result?.ok) throw new Error('queue_mutation_failed');
       }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
       <OfficeComposer visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
-        taskSummary={<><PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)}/>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} compact/>}</>}
+        taskSummary={<><PiWorkspaceActivity snapshot={snapshot} compactBusy={compactBusy}/><PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)}/>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} compact/>}</>}
         skills={snapshot?.skills}
         disabled={!snapshot || !id || modelSelecting || returnHydrating} model={projection?.model || 'DeepSeek'} models={models?.models.map(item => ({ id: item.id, label: item.id })) || [{ id: projection?.model || 'DeepSeek', label: projection?.model || 'DeepSeek' }]}
         onModelChange={!models?.sessionModel || models.sessionModel.locked || models.locked ? undefined : model => {

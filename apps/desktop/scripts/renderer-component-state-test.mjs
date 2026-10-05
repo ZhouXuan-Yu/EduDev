@@ -25,7 +25,121 @@ try {
   const { AiConversationSidebar, AiConversationFeedback, AiConversationArchiveConfirmation } = await server.ssrLoadModule('/src/renderer/components/AiConversationSidebar.tsx');
   const { ReviewReportWorkspaceState } = await server.ssrLoadModule('/src/renderer/components/ReviewReportWorkspace.tsx');
   const { AiQualityReviewWorkspace, AiQualityReviewState, parseUsabilityReviewCsv, validateUsabilityReview } = await server.ssrLoadModule('/src/renderer/components/AiQualityReviewWorkspace.tsx');
+  const {validMaterialQuery,validMaterialBodyQuery,materialTerms,materialFailureText}=await server.ssrLoadModule('/src/shared/materials.ts');
+  const materialRequest={schemaVersion:'xiaozhi.materials.v1',query:'教案 PDF',offset:0};
+  assert(validMaterialQuery(materialRequest)); assert(!validMaterialQuery({...materialRequest,path:'D:/private'}));
+  assert(!validMaterialQuery({...materialRequest,offset:-1}));assert(!validMaterialQuery({...materialRequest,offset:NaN}));assert(!validMaterialQuery({...materialRequest,query:'a'.repeat(129)}));
+  assert.deepEqual(materialTerms('  ＰＤＦ  教案  '),['pdf','教案']);
+  assert(validMaterialBodyQuery({schemaVersion:'xiaozhi.materials.v1',resourceId:'resource_12345678-1234-1234-1234-123456789012',offset:10}));assert(!validMaterialBodyQuery({schemaVersion:'xiaozhi.materials.v1',resourceId:'../../private',offset:0}));
+  assert.match(materialFailureText('hana-anydoc-0.1.2:cancelled'),/保存在本机/);assert.match(materialFailureText('hana-anydoc-0.1.2:source_changed'),/新的版本/);
+  assert.match(materialFailureText('hana-anydoc-0.1.2:needs_ocr'),/文字识别/);assert.doesNotMatch(materialFailureText('unknown-private-path'),/unknown-private-path/);
   const noop = () => undefined;
+  const { PRODUCT_SPACES, productSpaceFor, isProductView } = await server.ssrLoadModule('/src/renderer/components/product/product-spaces.ts');
+  assert.deepEqual(PRODUCT_SPACES.map(item => item.label), ['问小智', '我的资料', '教学内容', '学生', '设置']);
+  for (const view of ['memory', 'team', 'checkpoint', 'today', '', '__proto__']) assert.equal(isProductView(view), false);
+  assert.equal(productSpaceFor('search'), 'students'); // The current search indexes students/records, not materials.
+  for (const item of PRODUCT_SPACES) assert.equal(productSpaceFor(item.view), item.id);
+  const productNavigationCases = 4;
+  const {matchesMaterial,materialReadiness}=await server.ssrLoadModule('/src/renderer/components/product/material-library.ts');
+  assert(matchesMaterial('ＭＤ　分数','五年级分数教学.md'));
+  assert(!matchesMaterial('pptx 分数','分数课.docx'));
+  assert(matchesMaterial('','没有资料正文'));
+  assert.equal(materialReadiness({parseStatus:'needs_parser',chunkCount:0}).label,'已保存，正文待处理');
+  assert.equal(materialReadiness({parseStatus:'failed',chunkCount:12}).tone,'error');
+  assert.equal(materialReadiness({parseStatus:'partial',chunkCount:3}).label,'部分内容可用');
+  assert.equal(materialReadiness({parseStatus:'ready',chunkCount:0}).tone,'waiting');
+  assert.equal(materialReadiness({parseStatus:'parsed',chunkCount:3}).tone,'ready');
+  const materialDirectoryCases=8; const materialContractCases=6;
+  const { OfficeMarkdown } = await server.ssrLoadModule('/src/renderer/components/office/OfficeMarkdown.tsx');
+  const markdown = (text, isStreaming = false) => renderToStaticMarkup(React.createElement(OfficeMarkdown, { animated: false, isStreaming }, text));
+  const inlineMarkdown = markdown('课堂 `37` 分钟。');
+  assert.match(inlineMarkdown, /data-slot="markdown-inline-code"[^>]*>37<\/code>/);
+  assert.doesNotMatch(inlineMarkdown, /data-slot="code-block"/);
+  const fencedJson = markdown('```json\n{"课程":"分数课堂","分钟":37}\n```');
+  assert.match(fencedJson, /data-slot="code-block"/);
+  assert.match(fencedJson, /data-slot="code-block-header"/);
+  assert.match(fencedJson, /aria-label="Copy code"/);
+  assert.match(fencedJson, /<pre[^>]*><code[^>]*>\{&quot;课程&quot;:&quot;分数课堂&quot;,&quot;分钟&quot;:37\}<\/code><\/pre>/);
+  const unlabeledFence = markdown('```\n37\n8\n```');
+  assert.match(unlabeledFence, /data-slot="code-block"/);
+  assert.match(unlabeledFence, /<code[^>]*>37\n8<\/code>/);
+  const partialFence = markdown('```json\n{"分钟":37', true);
+  assert.match(partialFence, /data-slot="code-block"/);
+  assert.match(partialFence, /&quot;分钟&quot;:37/);
+  const escapedFence = markdown('```html\n<script>alert("合成样本")</script>\n```');
+  assert.match(escapedFence, /&lt;script&gt;alert\(&quot;合成样本&quot;\)&lt;\/script&gt;/);
+  assert.doesNotMatch(escapedFence, /<script>/);
+  const markdownCases = 5;
+  const { workspaceStatus } = await server.ssrLoadModule('/src/renderer/components/office/workspace-status.ts');
+  const { PiWorkspaceActivity } = await server.ssrLoadModule('/src/renderer/components/office/PiWorkspaceActivity.tsx');
+  const { applyXiaozhiEvent } = await server.ssrLoadModule('/src/shared/xiaozhi-projection.ts');
+  const emptyPi = { enabled: true, running: false, legacyHistory: false, projection: {
+    schemaVersion: 'xiaozhi.office.projection.v1', threadId: 'synthetic', provider: 'deepseek', model: '',
+    epoch: 0, sourceSequence: 0, needsHydration: false, hasMoreHistory: false, turns: [],
+  } };
+  const piTurn = (status, patch = {}) => ({ ...emptyPi, ...patch, projection: {
+    ...emptyPi.projection, turns: [{ id: 'historical', status, items: [] }], ...patch.projection,
+  } });
+  const publicStatusCases = [
+    [undefined, false, 'loading', '正在读取会话'],
+    [emptyPi, false, 'idle', '等待提问'],
+    [piTurn('completed'), false, 'ended', '上轮已结束'],
+    [piTurn('completed', { legacyHistory: true }), false, 'history', '历史记录'],
+    [piTurn('failed'), false, 'failed', '上轮未完成'],
+    [piTurn('interrupted'), false, 'stopped', '上轮已停止'],
+    [piTurn('running'), false, 'recovering', '正在恢复会话'],
+    [piTurn('waiting_approval'), false, 'recovering', '正在恢复会话'],
+    [piTurn('waiting_input'), false, 'recovering', '正在恢复会话'],
+    [piTurn('running', { running: true }), false, 'running', '运行中'],
+    [piTurn('waiting_approval', { running: true }), false, 'approval', '等待确认'],
+    [piTurn('waiting_input', { running: true }), false, 'input', '等待补充'],
+    [piTurn('completed', { running: true }), false, 'running', '运行中'],
+    [{ ...emptyPi, running: true, operation: 'compact' }, false, 'compacting', '正在整理上下文'],
+    [piTurn('completed'), true, 'compacting', '正在整理上下文'],
+    [piTurn('failed', { interruptedSend: true }), false, 'send_interrupted', '发送已中断'],
+    [piTurn('running', { running: true, interruptedSend: true }), false, 'running', '运行中'],
+    [piTurn('completed', { projection: { needsHydration: true } }), false, 'recovering', '正在恢复会话'],
+  ];
+  for (const [snapshot, busy, state, label] of publicStatusCases)
+    assert.deepEqual(workspaceStatus(snapshot, busy), { state, label });
+  const compactSnapshot = piTurn('running', { running: true });
+  const compactEvent = { kind: 'compaction', sessionId: 'synthetic', runId: 'historical', sequence: 1, id: 1, automatic: true, state: 'running' };
+  compactSnapshot.projection.turns[0] = applyXiaozhiEvent(compactSnapshot.projection.turns[0], compactEvent);
+  assert.equal(workspaceStatus(compactSnapshot).state, 'compacting');
+  compactSnapshot.projection.turns[0] = applyXiaozhiEvent(compactSnapshot.projection.turns[0], { ...compactEvent, sequence: 2, state: 'completed' });
+  assert.equal(workspaceStatus(compactSnapshot).state, 'running');
+  compactSnapshot.projection.turns[0] = applyXiaozhiEvent(compactSnapshot.projection.turns[0], { ...compactEvent, sequence: 3, id: 2 });
+  assert.equal(workspaceStatus(compactSnapshot).state, 'compacting');
+  compactSnapshot.projection.turns[0] = applyXiaozhiEvent(compactSnapshot.projection.turns[0], { kind: 'status', sessionId: 'synthetic', runId: 'historical', sequence: 4, status: 'interrupted' });
+  compactSnapshot.running = false;
+  assert.equal(workspaceStatus(compactSnapshot).state, 'stopped');
+  const activity = snapshot => renderToStaticMarkup(React.createElement(PiWorkspaceActivity, { snapshot }));
+  // Terminal or old in-progress entries must not leave a live working indicator.
+  for (const status of ['completed', 'failed', 'interrupted']) {
+    const terminal = piTurn(status);
+    terminal.projection.turns[0].items = [{ kind: 'compaction', status: 'inProgress', text: 'private-summary-marker' }];
+    assert.equal(activity(terminal), '');
+  }
+  const liveTools = piTurn('running', { running: true });
+  liveTools.projection.turns[0].items = [
+    { kind: 'tool', label: '旧工具', status: 'completed', text: 'private-tool-payload' },
+    { kind: 'tool', label: '读取授权资料', status: 'inProgress', text: 'private-tool-payload' },
+  ];
+  assert.match(activity(liveTools), /正在执行：读取授权资料/);
+  assert.doesNotMatch(activity(liveTools), /旧工具|private-tool-payload/);
+  liveTools.projection.turns[0].items[1].status = 'completed';
+  assert.doesNotMatch(activity(liveTools), /正在执行/);
+  const automatic = piTurn('running', { running: true });
+  automatic.projection.turns[0] = applyXiaozhiEvent(automatic.projection.turns[0], compactEvent);
+  automatic.projection.turns[0].items.at(-1).text = 'private-summary-marker';
+  assert.match(activity(automatic), /data-state="compacting"/);
+  assert.doesNotMatch(activity(automatic), /private-summary-marker/);
+  for (const waiting of ['waiting_input', 'waiting_approval']) {
+    const markup = activity(piTurn(waiting, { running: true }));
+    assert.match(markup, /role="status"/);
+    assert.doesNotMatch(markup, /data-slot="spinner"/);
+  }
+  const publicActivityCases = 4;
   const loading = renderToStaticMarkup(React.createElement(QuestionNotebookWorkspace, { setStatus: noop }));
   assert.match(loading, /data-testid="question-notebook-workspace"/);
   assert.match(loading, /data-testid="question-notebook-loading"/);
@@ -210,6 +324,13 @@ try {
   assert.match(conversationPopulated, /data-testid="ai-conversation-folder-folder_component"/);
   assert.match(conversationPopulated, /data-testid="ai-conversation-session-session_component"/);
   assert.match(conversationPopulated, /一次函数复盘/);
+  // Codex sidebar must also render without a browser document; its pointer anchor is a client portal.
+  const codexConversation = renderToStaticMarkup(React.createElement(AiConversationSidebar, {
+    ...conversationBaseProps, codexStyle: true,
+    folders: [{ id: 'folder_keyboard', name: '合成办公分类', createdAt: '', updatedAt: '' }],
+  }));
+  assert.match(codexConversation, /tabindex="0" aria-label="文件夹：合成办公分类"/);
+  assert.doesNotMatch(codexConversation, /data-testid="ai-conversation-context-menu"/);
   const conversationWorking = renderToStaticMarkup(React.createElement(AiConversationFeedback, { state: { status: 'working', message: '正在移动对话…' } }));
   assert.match(conversationWorking, /data-testid="ai-conversation-working"/);
   const conversationSuccess = renderToStaticMarkup(React.createElement(AiConversationFeedback, { state: { status: 'success', message: '移动对话完成。' } }));
@@ -291,7 +412,7 @@ try {
   assert.equal(validateUsabilityReview(parsedQualityRows[0]), '');
   assert.match(validateUsabilityReview({ ...parsedQualityRows[0], teacherScore: 6 }), /1 到 5/);
 
-  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 79, total: 79 }, null, 2));
+  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 84 + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases, total: 84 + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases }, null, 2));
 } finally {
   await server.close();
 }

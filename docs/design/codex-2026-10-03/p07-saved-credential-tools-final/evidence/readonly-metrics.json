@@ -1,0 +1,130 @@
+{
+  "success": true,
+  "scriptSha256": "cf4c8e9d9df693d9bf8d5a11312f13feb3b20b23d5ae4047dbb791abafcbcde6",
+  "uiReportSha256": "517f2e45d43b79eaf04e53e4787598012c7347555dc90cd74a403f1f1e73fa95",
+  "buildSha256": "0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981",
+  "configurationEncrypted": true,
+  "legacyCredentialAbsent": true,
+  "ledger": {
+    "current_model": "deepseek-v4-pro",
+    "origin_model": "deepseek-flash",
+    "revision": 1
+  },
+  "actualRequests": 9,
+  "usage": [
+    {
+      "model": "deepseek-flash",
+      "input": 4537,
+      "output": 82,
+      "cacheRead": 1536,
+      "cacheWrite": 0,
+      "promptTokens": 6073,
+      "cacheHitPercent": 25.292277292935943
+    },
+    {
+      "model": "deepseek-flash",
+      "input": 202,
+      "output": 121,
+      "cacheRead": 6144,
+      "cacheWrite": 0,
+      "promptTokens": 6346,
+      "cacheHitPercent": 96.81689253072801
+    },
+    {
+      "model": "deepseek-flash",
+      "input": 211,
+      "output": 51,
+      "cacheRead": 6400,
+      "cacheWrite": 0,
+      "promptTokens": 6611,
+      "cacheHitPercent": 96.80834972016336
+    },
+    {
+      "model": "deepseek-flash",
+      "input": 141,
+      "output": 99,
+      "cacheRead": 6656,
+      "cacheWrite": 0,
+      "promptTokens": 6797,
+      "cacheHitPercent": 97.92555539208475
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "input": 7103,
+      "output": 42,
+      "cacheRead": 0,
+      "cacheWrite": 0,
+      "promptTokens": 7103,
+      "cacheHitPercent": 0
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "input": 220,
+      "output": 160,
+      "cacheRead": 7040,
+      "cacheWrite": 0,
+      "promptTokens": 7260,
+      "cacheHitPercent": 96.96969696969697
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "input": 162,
+      "output": 224,
+      "cacheRead": 7296,
+      "cacheWrite": 0,
+      "promptTokens": 7458,
+      "cacheHitPercent": 97.82783588093322
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "input": 138,
+      "output": 49,
+      "cacheRead": 7680,
+      "cacheWrite": 0,
+      "promptTokens": 7818,
+      "cacheHitPercent": 98.23484267075978
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "input": 194,
+      "output": 82,
+      "cacheRead": 7808,
+      "cacheWrite": 0,
+      "promptTokens": 8002,
+      "cacheHitPercent": 97.57560609847538
+    }
+  ],
+  "aggregate": {
+    "promptTokens": 63468,
+    "cacheRead": 50560,
+    "output": 910,
+    "cacheHitPercent": 79.66219197075691
+  },
+  "screenshots": [
+    {
+      "file": "saved-settings-1366.png",
+      "sha256": "7470b413b1bb248002e19e51b5b2621b269f9a3217eaf91da86532e82261af80",
+      "width": 2049,
+      "height": 1152
+    },
+    {
+      "file": "saved-settings-1920.png",
+      "sha256": "c808f0d9f814f797985c7f208cce0a0056216775205b118e2a09aaa065a668ed",
+      "width": 2880,
+      "height": 1620
+    },
+    {
+      "file": "invalid-save.png",
+      "sha256": "ab396d3eb0f28a85a6de341ed4dd4d318ae08792c54284896a237a99e36f686a",
+      "width": 2558,
+      "height": 1529
+    },
+    {
+      "file": "unsupported-image.png",
+      "sha256": "2dd9b84d037833f432e24f99c49608d9ec293c9d6ccfe53bb62b5f204c2f2ec2",
+      "width": 2558,
+      "height": 1529
+    }
+  ],
+  "boundary": "Readonly verification of this C run only; SDK input excludes cached tokens. Actual per-request cache hits, not a promised hit rate or zero API cost. No new provider requests or native/model/profile data copied."
+}

@@ -1,0 +1,155 @@
+{
+  "directory": "pi-saved-credential-tools-0PMZJy",
+  "success": true,
+  "checks": [
+    {
+      "name": "Fresh owned profile has no legacy or environment credential; workspace authorized before the first native run",
+      "pass": true
+    },
+    {
+      "name": "CFG-02 invalid candidate actually fails official authentication without saving a key",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 valid independent verification is not a save; official catalogue cache cannot validate an absent runtime credential",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 unsaved candidate cannot drive a formal chat or create a native session despite a cached official list",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 visible save clears password and commits actual Windows-encrypted key and official default; public settings contain no key",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 cleared settings/save/verify controls reachable at 1366x768",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 cleared settings/save/verify controls reachable at 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 formal original Pi tools read the random authorized file using the UI-saved key in actual HTTP 200 SDK requests",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 cold restart with empty environment restores saved configuration and exact native prefix without replay or provider requests",
+      "pass": true
+    },
+    {
+      "name": "CFG-01 cold follow-up actually rereads changed disk code/41, not the old answer, with the same saved credential",
+      "pass": true
+    },
+    {
+      "name": "CFG-02 actual invalid save clears the candidate, reports authentication failure and preserves the working ciphertext/revision/default",
+      "pass": true
+    },
+    {
+      "name": "CFG-02 main rejects a nonexistent model with real official validation and keeps configuration (typed boundary, not UI choice)",
+      "pass": true
+    },
+    {
+      "name": "CFG-02 visible official model switch retains the existing native history and leaves the new-chat default unchanged",
+      "pass": true
+    },
+    {
+      "name": "CFG-02 formal text-only model explicitly refuses image understanding; zero image bytes/native image blocks/received receipts and no automatic model switch",
+      "pass": true
+    },
+    {
+      "name": "CFG-02 after configuration/capability failures, a new natural text-tool task succeeds using the preserved key and explicitly chosen model",
+      "pass": true
+    }
+  ],
+  "layer": "C: isolated formal Electron",
+  "humanAccepted": false,
+  "build": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-natural-file-build2",
+    "files": 323,
+    "sha256": "0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981"
+  },
+  "scriptSha256": "3a587fb2c86bbaea4218d8ac2e05cec1d8cac63ce9b8b6c524c9297cf496a089",
+  "transports": [
+    {
+      "model": "deepseek-flash",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-flash",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-flash",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-flash",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    },
+    {
+      "model": "deepseek-v4-pro",
+      "credentialMatchesSaved": true,
+      "imageParts": 0,
+      "status": 200
+    }
+  ],
+  "freshUnsupportedCapability": {
+    "id": "deepseek-v4-pro",
+    "inputModalities": [
+      "text"
+    ],
+    "source": "official",
+    "observedAt": "2026-10-04T14:01:50.787Z"
+  },
+  "previousFailures": [
+    {
+      "directory": "pi-saved-credential-tools-6El8Qt",
+      "error": "locator.isVisible: Error: strict mode violation: getByText('DeepSeek 凭证不可用，请检查 API Key。', { exact: true }) resolved to 2 elements:",
+      "checks": 3,
+      "buildSha256": "0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981",
+      "scriptSha256": "dbf19dfff5dcd11bc7bcb2926ac904aadec69b76a982a58b310fca0f32b2602b"
+    },
+    {
+      "directory": "pi-saved-credential-tools-eliXWp",
+      "error": "locator.innerText: Timeout 30000ms exceeded.",
+      "checks": 3,
+      "buildSha256": "0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981",
+      "scriptSha256": "c441e3c1797dc1a44606aa528dd310a64f2bf8d525bb8cf2da0121876756007c"
+    }
+  ],
+  "boundary": "Actual UI verification/save, Windows safeStorage, official DeepSeek catalogue and native tools; both environment credentials empty. Dialog chooser selects only owned synthetic files. No daily profile, VPN-off, installer or full Codex style claim."
+}

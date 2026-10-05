@@ -1,0 +1,9 @@
+{
+  "success": false,
+  "exitCode": 1,
+  "stage": "read-only native shape check",
+  "error": "TypeError: r.message?.content?.some is not a function",
+  "reason": "Native custom messages may hold string content; the verifier incorrectly assumed all content was an array.",
+  "scriptSha256": null,
+  "evidence": "First tool invocation output retained; initial readback did not produce a success file. Subsequent local logging command had a syntax error and one workdir typo; neither made API requests or product changes."
+}

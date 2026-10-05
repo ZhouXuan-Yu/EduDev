@@ -1,0 +1,92 @@
+/* Shared semantic tokens only. Keep workspace layout overrides in the main entry
+   so a separate browser status entry cannot hoist them before legacy styles. */
+.ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface {
+  --pi-ink: #263b39;
+  --pi-muted: #596d69;
+  --pi-line: rgb(38 59 57 / 10%);
+  --pi-paper: #fcfdfb;
+  --pi-soft: #eef3ef;
+  --pi-chrome: rgb(247 251 248 / 80%);
+  --pi-overlay: rgb(252 253 251 / 88%);
+  --pi-hover: rgb(38 59 57 / 6%);
+  --pi-active: rgb(38 59 57 / 10%);
+  --pi-accent: #2565ce;
+  --pi-danger: #a93432;
+  --pi-needs: #8c4e16;
+  --pi-focus: #2565ce;
+  --pi-blur: 20px;
+  --pi-shadow: 0 2px 8px rgb(38 59 57 / 4%), 0 14px 28px rgb(38 59 57 / 5%);
+  --foreground: var(--pi-ink);
+  --muted: var(--pi-muted);
+  --background: var(--pi-paper);
+  --surface: var(--pi-paper);
+  --surface-secondary: var(--pi-soft);
+  --overlay: var(--pi-paper);
+  --default: var(--pi-soft);
+  --default-foreground: var(--pi-ink);
+  /* Derived theme values resolve where declared. Rebind field/hover tokens
+     here so portals do not inherit the root theme's light computed colors. */
+  --default-hover: color-mix(in srgb, var(--pi-soft) 92%, var(--pi-ink));
+  --accent-hover: color-mix(in srgb, var(--pi-accent) 92%, #000);
+  --field-background: var(--pi-paper);
+  --field-foreground: var(--pi-ink);
+  --field-placeholder: var(--pi-muted);
+  --field-border: var(--pi-line);
+  --field-hover: var(--pi-soft);
+  --field-focus: var(--pi-paper);
+  --field-border-hover: var(--pi-muted);
+  --field-border-focus: var(--pi-focus);
+  --accent: var(--pi-accent);
+  --accent-foreground: #fff;
+  --accent-soft: var(--pi-soft);
+  --accent-soft-foreground: var(--pi-ink);
+  --segment: var(--pi-paper);
+  --segment-foreground: var(--pi-ink);
+  /* Legacy form labels/fields read these aliases; keep them inside this
+     workspace and its portals instead of changing the application theme. */
+  --text: var(--pi-ink);
+  --text-secondary: var(--pi-muted);
+  --text-muted: var(--pi-muted);
+  --text-light: var(--pi-muted);
+  --bg-card: var(--pi-paper);
+  --bg-hover: var(--pi-hover);
+  --border: var(--pi-line);
+  --accent-light: var(--pi-soft);
+  --overlay-light: var(--pi-soft);
+  --line-strong: var(--pi-line);
+  --danger: var(--pi-danger);
+  --focus: var(--pi-focus);
+  color: var(--pi-ink);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  .ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface {
+    --pi-ink: #e3eae6;
+    --pi-muted: #a8b9b2;
+    --pi-line: rgb(227 234 230 / 12%);
+    --pi-paper: #192420;
+    --pi-soft: #22302a;
+    --pi-chrome: rgb(25 36 32 / 82%);
+    --pi-overlay: rgb(29 41 35 / 92%);
+    --pi-hover: rgb(227 234 230 / 8%);
+    --pi-active: rgb(227 234 230 / 12%);
+    --pi-accent: #2565ce;
+    --pi-danger: #ffaba3;
+    --pi-needs: #edc08f;
+    --pi-focus: #8db9ff;
+    --pi-shadow: 0 2px 8px rgb(0 12 8 / 12%), 0 14px 28px rgb(0 12 8 / 16%);
+    color-scheme: dark;
+  }
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface { --pi-chrome: var(--pi-soft); --pi-overlay: var(--pi-paper); }
+}
+@media (forced-colors: active) {
+  .ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface {
+    --pi-ink: CanvasText; --pi-muted: CanvasText; --pi-paper: Canvas; --pi-soft: Canvas;
+    --pi-chrome: Canvas; --pi-overlay: Canvas; --pi-line: CanvasText;
+    --pi-active: Canvas; --pi-accent: Highlight; --pi-danger: CanvasText;
+    --pi-needs: CanvasText; --pi-focus: Highlight;
+    background: Canvas; box-shadow: none;
+  }
+}

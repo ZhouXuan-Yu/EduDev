@@ -1,4 +1,5 @@
 import {testMain} from '../acceptance/build-root.mjs';
+import {fingerprint,sha256} from '../acceptance/evidence.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,6 +13,8 @@ const output=fs.mkdtempSync(path.join(root,'test-results/xiaozhi-agent/pi-queue-
 const cfg=fs.readFileSync(path.join(root,'.env.local'),'utf8'),pick=name=>cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`,'m'))?.[1]?.trim();
 const key=pick('DEEPSEEK_API_KEY'),model=pick('DEEPSEEK_MODEL')||'deepseek-flash';assert(key);
 const checks=[],report={suite:'pi-queue-formal-ui',success:false,model,checks,boundaries:['Real Electron and DeepSeek; synthetic teacher commands only','Dispatch-gap delay is a main-only E2E seam; kill/restart are actual owned processes','B3a only; education memory scope and full UI remain pending']};
+const buildRoot=path.dirname(path.dirname(testMain(root))),fixed=fingerprint(buildRoot),errors=[];
+Object.assign(report,{layer:'C isolated formal Electron',humanAccepted:false,build:{root:buildRoot,files:fixed.files.length,sha256:fixed.sha256},scriptSha256:sha256(fs.readFileSync(fileURLToPath(import.meta.url)))});
 let app,page;
 const until=async(fn,ms=120000)=>{const end=Date.now()+ms;while(Date.now()<end){if(await fn())return;await new Promise(resolve=>setTimeout(resolve,80));}throw new Error('Queue acceptance condition timed out');};
 const check=(name,fn)=>{fn();checks.push({name,pass:true});console.log(`PASS ${name}`);};
@@ -20,13 +23,13 @@ const snap=async session=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id
 const card=control=>page.locator(`[data-testid="pi-queued-instruction"][data-control-id="${control}"]`);
 async function ready(){await page.waitForFunction(()=>!document.querySelector('[data-testid="office-prompt-input"]')?.disabled);}
 async function launch(delay=0){const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_REPO_ROOT:path.resolve(root,'../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_PI_QUEUE_DISPATCH_DELAY_MS:String(delay),DEEPSEEK_API_KEY:key,DEEPSEEK_MODEL:model};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
-  app=await electron.launch({args:[testMain(root),`--user-data-dir=${path.join(output,'profile')}`],env,timeout:60000});page=await app.firstWindow();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await ready();}
+  app=await electron.launch({args:[testMain(root),`--user-data-dir=${path.join(output,'profile')}`],env,timeout:60000});page=await app.firstWindow();page.on('pageerror',error=>errors.push(String(error).replaceAll(key,'[credential]')));await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await ready();}
 async function fresh(){const previous=await id();await page.getByTestId('ai-conversation-new').click();await page.waitForFunction(value=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')!==value,previous);await ready();}
 async function send(text){const session=await id(),n=(await snap()).projection.turns.length;await page.getByTestId('office-prompt-input').fill(text);await page.getByTestId('office-prompt-input').press('Enter');await until(async()=>(await snap(session)).projection.turns.length>n);return session;}
 async function terminal(session){await until(async()=>!(await snap(session)).running);return snap(session);}
 async function ask(){const session=await send('帮我准备一份分数课导入，请先问我面向哪个年级，给三年级和五年级两个选项，等我回答后再给一句建议，不操作文件。');await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});return session;}
 async function queue(text,mode='steer'){await page.getByTestId(mode==='steer'?'pi-queue-mode-steer':'pi-queue-mode-followup').click();const n=(await snap()).controls.filter(item=>item.kind==='instruction').length;
-  await page.getByTestId('office-prompt-input').fill(text);await page.getByTestId('pi-queue-submit').click();await until(async()=>(await snap()).controls.filter(item=>item.kind==='instruction').length>n);return (await snap()).controls.filter(item=>item.kind==='instruction').at(-1);}
+  await page.getByTestId('office-prompt-input').fill(text);await page.getByTestId('pi-queue-submit').click();await until(async()=>(await snap()).controls.filter(item=>item.kind==='instruction').length>n);assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');return (await snap()).controls.filter(item=>item.kind==='instruction').at(-1);}
 function native(session){const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{const binding=db.prepare('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(session);return fs.readFileSync(path.join(data,'xiaozhi-pi',binding.session_file),'utf8').trim().split('\n').map(JSON.parse);}finally{db.close();}}
 const occurrences=(session,text)=>native(session).filter(entry=>entry.type==='message'&&entry.message.role==='user'&&entry.message.content.some(part=>part.type==='text'&&part.text===text)).length;
 const mutate=input=>page.evaluate(input=>window.omniEdu.mutateXiaozhiQueue(input),input);
@@ -88,7 +91,7 @@ try{
   check('Durable dispatching is locked but never mislabeled delivered',()=>{assert.equal(state.controls.find(item=>item.id===pending.id).state,'dispatching');assert.equal(blocked.error,'permission_denied');assert.equal(occurrences(crash,pending.text),0);});
   await kill();await launch();await page.getByTestId(`ai-conversation-session-${crash}`).click();await ready();state=await snap();
   check('Real crash at dispatch gap recovers interrupted and never replays queued text',()=>{assert(!state.running);assert.equal(state.controls.find(item=>item.id===pending.id).state,'interrupted');assert.equal(occurrences(crash,pending.text),0);});
-  report.success=true;
+  assert.deepEqual(errors,[]);assert.equal(fingerprint(buildRoot).sha256,fixed.sha256);report.rendererErrors=errors;report.success=true;
 }catch(error){report.error=String(error.stack).replaceAll(key,'[credential]').slice(0,5000);if(page){await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});report.snapshot=await snap().catch(()=>undefined);}}
 finally{await app?.close().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,error:report.error,report:path.relative(root,path.join(output,'report.json'))}));}
 if(!report.success)process.exitCode=1;

@@ -141,7 +141,7 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   {notice&&<p role="alert" data-testid="pi-attachment-error">{notice} <Button variant="ghost" size="sm" onPress={()=>void refresh()}>重新读取</Button></p>}
  </section>;
  const modal=selected&&<Modal.Backdrop isOpen onOpenChange={value=>{if(!value)closePreview();}}>
-  <Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-attachment-dialog" data-testid="pi-attachment-preview">
+  <Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-attachment-dialog pi-themed-surface" data-testid="pi-attachment-preview">
    <Modal.Header><Modal.Heading>{selected.name}</Modal.Heading><p>本地预览 · 原文件保存在本机</p></Modal.Header>
    <Modal.Body aria-busy={reading}>
     {reading?<p role="status">正在读取附件…</p>:previewError?<div role="alert"><p>{previewError}</p><Button variant="ghost" size="sm" onPress={()=>void open(selected)}>重试</Button></div>:

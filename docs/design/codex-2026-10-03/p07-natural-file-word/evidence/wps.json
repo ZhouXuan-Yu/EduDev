@@ -1,0 +1,55 @@
+{
+  "success": true,
+  "readback": {
+    "success": true,
+    "paragraphs": 26,
+    "tables": 2,
+    "rows": [
+      5,
+      5
+    ],
+    "wps": {
+      "version": "12.0",
+      "pages": 2,
+      "editSavedAndReopened": true,
+      "originalUnchanged": true
+    }
+  },
+  "render": {
+    "success": true,
+    "files": [
+      {
+        "kind": "docx",
+        "allMarkersPresent": true,
+        "pages": [
+          {
+            "page": 1,
+            "width": 595.2999877929688,
+            "height": 841.9000244140625,
+            "outsideGlyphs": 0
+          },
+          {
+            "page": 2,
+            "width": 595.2999877929688,
+            "height": 841.9000244140625,
+            "outsideGlyphs": 0
+          }
+        ]
+      }
+    ]
+  },
+  "applications": [
+    {
+      "kind": "docx",
+      "owned": true,
+      "identity": "registered-automation-start-time",
+      "version": "12.0",
+      "tables": 2,
+      "pages": 2,
+      "inputUnchanged": true,
+      "renderBytes": 65838,
+      "editedCopySavedAndReopened": true
+    }
+  ],
+  "boundary": "Only owned synthetic Word and new WPS instance; no actual document/media/private native history archived."
+}

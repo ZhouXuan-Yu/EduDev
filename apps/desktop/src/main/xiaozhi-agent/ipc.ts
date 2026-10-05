@@ -11,8 +11,9 @@ import { registerWorkspaceFileIpc } from './workspace-file-api';
 import { registerModelSettingsIpc } from './model-settings-api';
 import { registerTextChangeIpc } from './text-change-api';
 import {registerOfficeArtifactIpc} from './office-artifact-api';
+import type { RuntimeAuthority } from './runtime-authority';
 
-export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduStore; dataRoot: string; window: () => BrowserWindow | undefined }) {
+export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduStore; dataRoot: string; window: () => BrowserWindow | undefined; authority: RuntimeAuthority }) {
   const commitDelay = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1'
     ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_COMPACT_COMMIT_DELAY_MS) || 0)) : 0;
   const testing = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1';
@@ -23,7 +24,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   const queueDelay = testing ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_QUEUE_DISPATCH_DELAY_MS) || 0)) : 0;
   const autoCompaction = testing && process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION !== undefined
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
-  const host = createXiaozhiProductionHost({ ...options, autoCompaction,
+  const host = createXiaozhiProductionHost({ ...options, enabled: options.authority.mode === 'pi', autoCompaction,
     ...(['prepared','intent','file','fact'].includes(officeCut||'')?{afterOfficeArtifactStage:async(stage:'prepared'|'intent'|'file'|'fact')=>{
       if(stage!==officeCut)return;fs.writeFileSync(path.join(options.dataRoot,`.e2e-pi-office-${stage}`),'durable-stage-reached');await new Promise(resolve=>setTimeout(resolve,30000));
     }}:{}),
@@ -64,7 +65,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     const result = await dialog.showOpenDialog(current, { title: '导入本地教育技能（选择包含 SKILL.md 的目录）', properties: ['openDirectory'] });
     return result.canceled ? undefined : result.filePaths[0];
   } });
-  options.ipcMain.handle('xiaozhi:enabled', () => host.enabled);
+  options.ipcMain.handle('xiaozhi:enabled', event => { if (!fromMain(event)) throw new Error('permission_denied'); return host.enabled; });
   options.ipcMain.handle('xiaozhi:snapshot', (event, id) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.snapshot(id); });
   options.ipcMain.handle('xiaozhi:goal-mutate',(event,input)=>fromMain(event)?host.mutateGoal(input):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:browser-show',(event,id)=>fromMain(event)?host.showBrowser(id):{ok:false,error:'permission_denied'});

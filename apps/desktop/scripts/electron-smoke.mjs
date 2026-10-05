@@ -5,7 +5,9 @@ import { dirname, join, resolve, relative, isAbsolute } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import assert from 'node:assert/strict';
+import {seedLegacyEducationFixture} from './acceptance/legacy-education-fixture.mjs';
 import { DatabaseSync } from 'node:sqlite';
+import {inspectLoadedMainModules} from './acceptance/build-root.mjs';
 
 const appRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 // A current user window can keep its immutable out build; acceptance may use an isolated new build.
@@ -48,6 +50,7 @@ async function launchApp(options = {}) {
       OMNI_EDU_REPO_ROOT: dirname(dirname(appRoot)),
       OMNI_EDU_E2E_DIALOG_MODE: '1',
       OMNI_EDU_XIAOZHI_PI: '0', // Preserve legacy education-path regression; Pi has its real UI suite.
+      OMNI_EDU_E2E_LEGACY_RUNTIME: '1', // Main validates independent OS-temporary data/profile roots.
       OMNI_EDU_E2E_ATTACHMENT_DIALOG_QUEUE: JSON.stringify([[controlledAttachmentPath], []]),
       OMNI_EDU_E2E_STUDENT_EXPORT_DIALOG_QUEUE: JSON.stringify([[studentExportRoot], []]),
       OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE: JSON.stringify(options.backupExportDialogQueue ?? [dataBackupDestinationRoot, '']),
@@ -56,14 +59,24 @@ async function launchApp(options = {}) {
     },
   });
   const page = await app.firstWindow();
+  const launchProfile = await app.evaluate(({ app }) => ({ userData: app.getPath('userData'), sessionData: app.getPath('sessionData') }));
+  assert.equal(launchProfile.userData, userDataRoot, 'regression must isolate app preferences');
+  assert.equal(launchProfile.sessionData, userDataRoot, 'regression must isolate Chromium profile');
   await page.waitForLoadState('domcontentloaded');
   await page.waitForFunction(() => Boolean(window.omniEdu));
+  assert.equal(await page.evaluate(() => window.omniEdu.isXiaozhiEnabled()), false, 'explicit isolated regression must select its legacy test runtime');
+  assert((await inspectLoadedMainModules(app,join(buildRoot,'main/index.js'))).some(url=>/test-runtime-/.test(url)), 'explicit isolated regression must actually load its historical test module');
   const handle = { app, page };
   activeApps.add(app);
   return handle;
 }
 
 async function navigate(page, view) {
+  // Reload now has an explicit preparing state; wait for actual navigation before choosing a branch.
+  await page.waitForFunction(() => {
+    const visible = (id) => { const element = document.querySelector(`[data-testid="${id}"]`); return element && element.getClientRects().length > 0 && getComputedStyle(element).visibility !== 'hidden'; };
+    return visible('ai-return-workspace') || visible('nav-ai');
+  });
   if (await page.getByTestId('ai-return-workspace').isVisible()) {
     await page.getByTestId('ai-return-workspace').click();
   }
@@ -162,9 +175,15 @@ async function waitForCheckpointStatus(page, checkpointId, expectedStatus, timeo
 async function run() {
   const first = await launchApp();
   await first.page.setViewportSize({ width: 1366, height: 768 });
-  const bootstrap = await first.page.evaluate(() => window.omniEdu.bootstrap());
+  let bootstrap = await first.page.evaluate(() => window.omniEdu.bootstrap());
   assert.equal(typeof bootstrap.dataRoot, 'string');
-  assert.ok(bootstrap.students.length >= 1, 'seed student should exist');
+  assert.equal(bootstrap.students.length, 0, 'fresh app must not manufacture demo students');
+  // Explicit test-only fixture through typed IPC; never part of production bootstrap.
+  await first.page.evaluate(`(${seedLegacyEducationFixture.toString()})(window.omniEdu)`);
+  await first.page.reload();
+  await first.page.waitForFunction(() => Boolean(window.omniEdu));
+  bootstrap = await first.page.evaluate(() => window.omniEdu.bootstrap());
+  assert.equal(bootstrap.students.length, 1, 'explicit isolated education fixture should exist');
 
   const deepTutorManifest = await first.page.evaluate(() => window.omniEdu.deepTutorHandshake());
   assert.equal(deepTutorManifest.runtime, 'DeepTutor.AgentLoop');

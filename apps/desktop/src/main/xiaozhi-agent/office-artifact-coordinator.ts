@@ -72,7 +72,12 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
      }catch(rawError){
       await cancel(runId).catch(()=>undefined);if(proposal)await publish(sessionId,proposal.id).catch(()=>undefined);
       if(signal?.aborted||(rawError instanceof Error&&['cancelled','budget_exhausted'].includes(rawError.message)))throw new Error(rawError instanceof Error&&rawError.message==='budget_exhausted'?'budget_exhausted':'cancelled');
-      return {content:[{type:'text' as const,text:JSON.stringify({success:false,message:error(rawError)==='conflict'?'拟内容、来源或目标已变化，本次没有覆盖。':'本次办公文件未确认保存；请检查授权、拟内容与实际状态，不可宣称交付。'})}],details:{success:false},isError:true};
+      const code=error(rawError);
+      const message=code==='conflict'?'拟内容、来源或目标已变化，本次没有覆盖。'
+       :!proposal&&code==='invalid_input'?'文档结构、表格行列或来源格式不正确，尚未进入教师审阅，也没有生成文件。请按工具格式修正草稿。'
+       :!proposal?'文档草稿未成功提交教师审阅，也没有生成文件。请检查当前授权、目标目录与拟内容，不可声称教师已拒绝。'
+       :'本次办公文件未确认保存；请检查授权、拟内容与实际状态，不可宣称交付。';
+      return {content:[{type:'text' as const,text:JSON.stringify({success:false,error:code,message})}],details:{success:false},isError:true};
      }
     }
    }];

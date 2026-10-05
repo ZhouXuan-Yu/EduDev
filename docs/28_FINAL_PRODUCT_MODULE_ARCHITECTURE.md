@@ -1,5 +1,207 @@
 # Omni-Edu Agent 最终产品与模块架构基线
 
+## 2026-10-05 P3-03：教师资料与跨会话教学文件目录接受
+
+根据Master，M02/M04资料与M09/M10教学文件的产品入口由薄renderer适配提供：教师资料页使用现有 getKnowledgeOverview/importKnowledgeResources/showKnowledgeResource，显示实际资源/摘录和收录状态，已添加不等于已解析。当前仅TXT/Markdown真的收录；PDF/Office/图片仍正文待处理，不伪称可检索。资源最近100份、摘录最近24块、教学文件最近100份；筛选仅当前已载入名称/格式，非全文或全库检索。教学默认artifacts，跨会话目录显示真实保存事实，历史保存内容与当前本地文件预览分开展示；预览仍复用已有会话授权/version校验，定位由main核实际路径/产物ID后发送OS文件夹定位。文件不存在必须失败，不以旧摘要冒充当前内容。外链/图片不在目录Markdown中自动加载。旧knowledge工程页仅legacy-test，备课/讲义/题本入口保留。
+
+主进程/shared/preload/数据库Schema/依赖/供应商/凭证/权限/隐私规则本轮未改；Pi 1.0.2仍唯一生产编排，无运行预算，自动整理接缝保持。资料只通过已有typed本地导入与目录；教学文件通过真实document_artifacts和原PiWorkspaceFiles授权宿主，不新增文件访问旁路。
+
+Goal ACTIVE；Current Phase：Phase3 Five Product Spaces DOING。P3-03仅教师资料目录与跨会话教学文件目录实现层 A/C 接受；完整Phase3、Goal、日常、发布与人工仍 NOT_ACCEPTED。新接口使用真实本地事实，旧模拟业务兼容和测试样例书专项不再投入。 当前typed数据上限保持原最近100/24；下一步补真实多格式收录与全量访问，需增量合同/兼容验证，不能默默扩大权限或自动上传原资料。Next：P3-04：先比较并复用现有本地 Office/PDF 正文读取与导入接缝，补真实资料收录、状态/失败恢复和超过100份的全量目录访问，贯通 typed 主进程与教师页面；随后完成传统备课/讲义/题本及学生页的教师化整理，再进行完整Phase3验收。之后继续Phase4 DeepTutor教育能力、Phase5 OpenMAIC互动课、Phase6飞轮、Phase7加固、Phase8 Golden A–G。禁止恢复第二Agent Loop。
+
+## 2026-10-05 P3-01/P3-02：五空间导航与聊天连续性接受
+
+依据Master Goal，生产主入口固定问小智/我的资料/教学内容/学生/设置。M01–M12领域数据与typed能力仍由现有主进程/本地文件负责；产品空间是导航层，不替代业务事实。问小智跨空间保持同一Pi组件/宿主/会话，禁止为恢复界面重发请求。学生/学习记录Search放学生空间，资料页尚需教师化整理；旧技术view不进入生产。P3-01/P3-02仅导航连续性A/C接受，完整Phase3与后续教育能力仍OPEN；Next P3-03：将资料页面改为教师资料管理，移除管线/数据库/图谱技术展示；建立跨会话教学 Office 产物目录与重新打开入口。随后继续完整 Phase3、Phase4 DeepTutor、Phase5 OpenMAIC、Phase6 飞轮、Phase7 加固、Phase8 Golden A–G。
+
+## 2026-10-05 P2-04：Phase2 Runtime 阶段接受
+
+Phase2唯一生产Pi/重复Runtime隔离/Domain保留已实现层A/C接受；12实际main库存无历史test-runtime。Pi原生prepare/compact/append与Hana工具批次接缝保持，正式无运行预算，真实usage持久化；生产源码本轮未修改。旧模拟业务不注入，新接口本地事实优先。Next P3-01五产品空间；教育Domain作为Phase4/5能力迁移，不恢复第二Loop。完整Goal/人工/发布未接受。详见Goal CURRENT_STATE、PHASE2_RUNTIME_CONTRACT与apps/desktop/test-results/goal/phase2-accept-20261005/。
+
+## 2026-10-05 P2-03 生产唯一 Pi 装配接受
+
+Goal ACTIVE；Current Phase：Phase2 Pi Runtime Consolidation DOING；Current Task：P2-03 限定 A/C 接受。完整 Phase2、Goal、发布与人工验收仍 NOT_ACCEPTED。用户的新接口真实数据优先、旧模拟兼容停止、跳过测试样例书专项规则继续生效。
+
+Done：main/index.ts 从约2300行减为502行；Direct/DeepTutor Sidecar/Graph 的旧状态、闭包与注册移入 legacy-ai/test-runtime.ts。生产只装配 Pi；两普通旧名经同一 Pi Facade，9旧编排名明确退役。测试模块在显式隔离 opt-in 时动态加载，factory 再核当前真实 packaged/env/data/profile 策略；教育 Domain、传统业务及历史只读保持。
+
+Evidence：owned build 324 文件/SHA ee048bf95d934b5b9dbef6925931153591aeabda333c018971542eb01e5cebd8；正常 npm build/tsc exit0，renderer111/111，运行边界39/39，原教育隔离回归207/207 exit0，正式真实DeepSeek/Pi UI 2cvNGJ 17/17 exit0、rendererErrors=[]。V8 Inspector 实际主进程已加载脚本清单证明正常启动和实际请求/冷重试均不含 test-runtime；原教育回归反向断言该隔离模块确实加载。最终6PNG逐张审阅，浅暗双尺寸输入控件可达、回复和历史可读；本轮无UI源修改，不宣称Codex像素一比一。
+
+新鲜/重复/冷启动的学生、学习记录、题库均无自动演示注入。真实页面发送清空输入，旧别名并发同commandId只新增一次Pi run，结果与SQLite正文相同，cold receipt/native JSONL SHA保持。新接口继续取真实本地事实；没有清空日常库、猜测已有记录、回填模拟结果或投入旧三元/续跑兼容。
+
+Failed：初次抽取后相对导入深度错误，首tsc失败；修正shared和dynamic type import路径后tsc/build通过。诊断读取两次工作目录错配，仅只读且已重读。正式17/17和教育207/207本轮首次运行通过；不宣称三连稳定。
+
+Doing/Next：P2-04 全Phase2验收：真实工具调用、权限确认/控制、自动上下文整理、恢复、当前无运行预算与provider真实缓存口径；之后Phase3五产品空间，再Phase4/5教育能力。移走旧编排不等于DeepTutor/OpenMAIC个性化能力已完成。
+
+Blocked：无当前阻塞。Open：用户日常联网/图片/凭证反馈、无VPN/安装、完整教育黄金A–G、分发许可/安全、全UI人工与完整Goal。未替换日常out，Master与HEAD 20aa86656cdb5a0f85e0e11fa21863b50233fcb1 保持；未提交/push，无新依赖/Schema/预算/密钥/系统proxy/DNS/VPN修改。先前P2-01首启动profile偏好可能触及的事实保留，本轮所有实际测试独立profile已核验。
+
+证据：apps/desktop/test-results/goal/phase2-retire-20261005/；交付合同：docs/goal/PHASE2_P2_03_DELIVERY.md。
+
+
+## 2026-10-05 普通请求单Pi与无模拟注入接受、用户新接口范围修订
+
+Goal ACTIVE；Current Phase：Phase2 Pi Runtime Consolidation DOING。普通教师旧别名与生产无模拟注入限定 A/C接受，完整 Phase2/Goal/发布/人工 NOT_ACCEPTED。
+
+用户明确旧接口数据为模拟，可删除，以新接口为主；跳过测试样例书专项。旧学生/范围/三元/续跑兼容不再作为交付目标，不将放弃兼容记作教育能力已完成。
+
+生产：两个旧普通请求别名投递同一 Pi host，native done 后核 SQLite终态，公开 receipt/真实回复/工具/来源，不伪造grader；增量可选commandId跨别名并发/冷重试只一次run。删除db.init自动小A/两条学习记录和空题库两道演示题注入，迁入原验收显式typed fixture。默认老师/字典/空模板保留；已有无来源标记的记录未按姓名批删，日常库未清空。
+
+固定 owned build2：323/SHA 9afa29f2d4083689c4945ea51619427327b7d6c6d4bebbf8758035ab64b580b1；正常build/tsc exit0，renderer111/111，原边界扩展34/34，原教育207/207（明确隔离legacy回归、显式fixture），正式真实DeepSeek/Pi UI iZe6lx 15/15 exit0、rendererErrors=[]。fresh/repeated/cold三业务表0；两旧别名同命令只有一个新增Pi run，返回与SQLite正文逐字相同，cold receipt/native JSONL SHA原样。6PNG实际审阅：兼容回复浅暗双尺寸4、原真实回复及旧历史2；无UI源修改/不宣称像素一比一。
+
+首失败保留：qBUGFd功能10已过但cold locator变成两个assistant，改last；9W53Od实际两run均succeeded，模型在“兼容”和编号间加空格使硬编码复合字符串断言误报，改独立随机编号，并加返回正文与SQLite完全相同断言。未改模型输出，不删除失败，不宣称三连稳定。
+
+Next：P2-03：抽出/退役旧 Direct、DeepTutor 与 Graph 编排装配；生产只注册 Pi 当前请求和控制，保确定性教育 Domain。停止为旧模拟参数补业务兼容。新接口从真实本地事实读取，不回填模拟结果。之后 P2-04阶段验收，再 Phase3五产品空间。
+
+Master、HEAD、daily out SHA保持，无提交/push/新依赖/Schema/预算/密钥或系统DNS/proxy/VPN变更。本轮最终运行已核实际profile隔离；原P2-01首次默认profile偏好可能触及的事实保持。原用户日常联网/图片/凭证、无VPN/安装、完整教育黄金A–G、分发许可/安全/全UI人工仍OPEN。
+
+稳定口径：新接口真实本地数据优先；旧模拟回填不进入生产，唯一Pi完整装配仍待P2-03。
+
+
+## 2026-10-05 Phase2 P2-01 启动与旧 Runtime 边界接受
+
+Goal ACTIVE；Current Phase：Phase2 Pi Runtime Consolidation DOING。P2-01 限定实现 A/C 接受，完整 Phase2 / Goal / 发布 / 人工验收 NOT_ACCEPTED。跳过测试样例说明书专项，Master 唯一主线。
+
+RuntimeAuthority 由 main 决定，正常开发旧 env=0 与打包策略仍 Pi；legacy-test 仅明确 opt-in、未打包、独立 OS 临时数据/配置目录且无重解析。11 个旧编排 IPC 校验主窗口主 frame + runtime；sidecar 另有内部保护；生产不重建旧 pending input。Host 默认 Pi；App 准备/失败/重试不显示旧 Console。显式 launcher --user-data-dir 在 ready 前同步 app userData/sessionData，无 switch 不改路径。保教育 Domain、旧数据与传统页面，不新增 loop/依赖/Schema/预算/上传。
+
+M01/M10：正式运行入口只有Pi发起Agent循环；旧代码/typed名称保留至兼容与Domain移交验收。尚未以Facade迁移旧返回契约，不声称重复装配已经物理移除。
+
+Next：P2-02旧 Console/直接请求兼容 Facade 到同一 Pi，先请求校验、单次投递与原 AiConsoleRunResult 接缝，再续跑/停止/问答/重试。禁用旧入口不等于教育能力迁移完成；P2-03重复装配退役、P2-04完整阶段验收随后。
+
+## 2026-10-05 Goal主线恢复、Phase1整体验收与Phase2入口
+
+Goal ACTIVE；Phase1 Master九项主工作台完成实现层A/C验收（非完整Goal/发布/人工接受）；Current Phase：Phase2 Pi Runtime Consolidation DOING。
+
+生产只加OfficeMarkdown薄适配器：沿原Pro StreamMarkdown/CodeBlock，pre恢复Streamdown2.5 data-block标记；app-owned CSS绑定原Shiki双主题到现有workspace media/semantic色。原vendor未改，无新依赖/Schema/IPC/model/权限/预算/上传变化；原OfficeConversation仅替换import/调用。inline、JSON fence、无语言fence、部分stream、HTML escaping边界5项加入原组件suite。
+
+最终固定隔离build2，323文件/SHA 35c105f473b34db2ccdb7050b31a776294f0ba019a65f7b5fa70e56da612fdaa，正常npm run build含tsc exit0；renderer111/111，原Shell真实Pi/DeepSeek 1IvLdM 15项、原控制tc9lZN 30项、原教育主流程207均exit0，两个UI报告rendererErrors[]且绑定同build/script SHA。当前实际审阅9PNG：Shell浅暗双原生1366×768/1920×1080+dark cold5，原问答/驻留计划/补充/停止4。Shell35关键文字/代码标签/全部实际token颜色对比≥4.5，最低5.329007293127842；表格与真实渲染JSON实读核随机编号/37/8/分数课堂，冷恢复不重放。保上一轮文件32和Office28有限A/C原报告；各自所有冻结生产源码SHA当前相同，本轮未伪称重新执行。九项映射详见PHASE1_ACCEPTANCE_2026_10_05.md与owned results.json。
+
+首次2LZ7WT：真实fence误渲inline，修兼容接缝；fZwHSm：原runner硬编码旧304/62而当前254/52，按当前布局事实修断言保滚动/可达/不裁切；u9Lu08：误要求持久化files:false，原schema只保存files:true，读端默认false，修测试保完整冷恢复。s5JOqA功能15成功但实际dark图审代码低对比，退回补原主题接缝和全部token断言；均保报告/PNG/日志。不删除首次失败，不追认为三次连续稳定。先前学生保存success提示间歇失败保持OPEN，当前main207通过未改学生源码，列Phase7稳定性欠项。
+
+Next：Phase2 P2-01：按已核实旧IPC→Console/Graph/sidecar入站清单冻结RuntimeAuthority与兼容合同，移除正式环境回到旧编排的开关，逐条将旧聊天/续跑/停止迁移到Pi；保确定性教育Domain、旧数据和传统页面。不得直接删除agent-loop.ts或整搬DeepTutor/OpenMAIC Runtime。见docs/goal/PHASE2_RUNTIME_CONTRACT.md。
+
+跳过测试样例书专项，唯一主线Master Goal；不无限重验已通过Shell小片，不将Phase2–8能力倒塞Phase1。日常原反馈/配置D、无VPN/安装E、完整Codex体感与像素对齐、教育黄金A–G、云视觉、WPS本轮版式、安全/Pro分发许可及三连稳定仍开放。没有改变Master、HEAD、daily out/profile/key、系统DNS/proxy/VPN，无提交/push。本轮不估算缓存命中率。
+
+## 2026-10-05 文件面板主题与真实导航有限验收
+
+M01/M09/M10稳定口径：复用现有Hana只读文件/Office解析、typed IPC、SQLite会话授权，以及原HeroUI Pro FileTree/Markdown和OSS Tabs/Resizable。生产仅两处：glass覆盖文件筛选placeholder使用语义muted色且opacity1；PiWorkspaceFiles在当前选中项或原Tabs滚动容器尺寸变化时，用scoped ref/ResizeObserver/rAF仅调整横向scrollLeft，使当前页签保持可见，不滚聊天、不抢焦点，卸载清理。文件正文不进模型、不持久化；未新增依赖/Schema/IPC/权限/loop/预算或自动上传。
+
+Goal ACTIVE；Phase1 Codex Shell DOING / NOT_ACCEPTED。本轮仅M01/M09/M10只读文件面板有限A/C通过，完整Master DoD不降低。
+
+下一唯一：Phase1按Master第2247段完成整体requirements与证据审计（sidebar/chat/composer/history/working/summary/plan/tool/progress/artifacts/files/approval/steer/retry/resume/compaction/model/skills/settings/glass）。先映射现有源码/固定build/各有限closeout，列最早缺口并完成正式实例与真实视觉，再决定Phase1接受；学生提示间歇风险列入主路径欠项。不得无限重复已关闭文件小切片或跳到Phase2。之后按Master执行唯一Pi runtime、五产品空间、教育能力/飞轮和黄金A–G。
+
+
+## 2026-10-05 公开中文与教师确认办公交付有限验收
+
+M01/M10：复用现有Office本地事实、Pi原生事件与宿主publicItems，新增office-delivery-presentation薄适配器。实际Office终态之后的模型文字先缓冲到message_end：非最终摘要继续展示并保后续工具/控制事件；最终草稿总结不作为公开交付，宿主从本轮实际Office状态生成回执并持久化。原模型文本仍在native中。拒绝/停止/冲突/uncertain分别说明，不据旧run文件推导本轮成功，不把保存等同整任务完成。普通聊天不新增Office查询。教师修改正文保持本地；没有为修正旧37总结自动上传确认版。有效提示后缀强调默认简体中文和实际工具，不改旧创建identity/能力指纹或权限。无新依赖/表/IPC/第二runtime/预算。
+
+公开文件交付、原生模型总结、教师确认正文属于不同来源，不能混同。office_delivery是本轮真实状态派生显示，不是新业务事实表。保存结果不等同完整任务完成，失败和已做/未做分开。
+
+Goal ACTIVE；Phase1 Codex Shell DOING / NOT_ACCEPTED。完整Master DoD保持，本轮仅M01/M10办公交付事实与默认中文公开过程有限A/C验收。
+
+下一唯一：Phase1 Files/Artifacts完整面板验收。既有FILE面板当前证据只有浅色宽窄；冻结现有Hana文件宿主、HeroUI预览/来源与当前主题复用合同，补文件导航、版本变化/损坏/失败返回、冷恢复、浅暗双尺寸与真实PNG，保只读权限和本地事实。完整Shell验收后进入Phase2唯一Pi runtime、Phase3五空间、教育适配/飞轮/黄金A–G。
+
+
+## M10创建身份与当前执行规则分离（2026-10-05稳定口径）
+
+新增 creation-prompt-identity 薄适配器，只以当前规则或单个已核旧 copy 规则计算准确创建身份。pi-session 沿原创建版本验证 control/memory 等能力指纹，校验完再使用当前有效提示及原有能力后缀。新会话只使用当前身份；未知规则、模型/目录/工具/provider/权限变化、extra fields 或缺快照仍拒绝。原历史/创建记录不重写，当前宿主权限和教师新审阅/确认仍是真源。无新依赖、表、IPC、迁移表或第二 runtime。
+
+M01/M10会话创建identity是持久化历史的版本身份，有效提示是当前执行规则；两者不能因可审核文案更新被混同。历史身份桥接不授予目录/联网/复制权限。Pi继续管理历史和自动整理；无需改本地优先、脱敏上云或教师确认边界。
+
+Goal ACTIVE；Phase1 Codex Shell DOING / NOT_ACCEPTED。本轮仅 M01/M10 已识别旧创建身份兼容有限 A/C 通过，保持完整 Master DoD。
+
+下一唯一：Phase1 公开中文摘要与教师修订后事实一致性。先冻结当前实际旧37正文/已确认41文件差异与英文过程的交付合同，比较现有 Hana/Pi 公开事件、Office确认结果/产物回执，复用成熟接缝；以原真实教师编辑→确认→文件→公开回复→cold链路逐字段验收，不能用模型说已完成或测试回读替代文件真源。之后完成 Shell，再 Phase2 唯一 Pi runtime、Phase3 五空间、教育适配/飞轮/黄金 A–G。
+
+
+## M10公开工作过程与当前请求接缝（2026-10-05稳定口径）
+
+复用 workspaceStatus、已有 Pi 公开 projection、OSS Spinner 和现有主题，在输入栏上方增加活动状态；收起资料栏仍可见。仅当前 inProgress 工具显示执行标签，审批/补充不转动，自动整理显示真实状态，终态不残留 working；不展示私有 reasoning/summary。pi-session 只将既有脱敏 protectedContext 放在当前教师请求之前，保原文本和同会话权限；不新增编排器、依赖、表、IPC、运行预算或新的记忆系统。
+
+Pi SDK继续为唯一目标编排器；native整理提交与公开run终结不同，工作状态只能读本地当前快照，不得据历史inProgress/私有summary伪造活动。教师修订与文件事实为真源，模型总结不应覆盖教师修订；当前正文旧值观察仍OPEN，后续验收应逐字段对照。旧配置恢复必须可识别版本迁移，未知指纹不能盲接。
+
+完整 Goal ACTIVE；Phase1 Codex Shell DOING / NOT_ACCEPTED。本轮只接受 M01/M10 真实工作过程的有限 A/C 切片。
+
+下一唯一：先定位原 copied pi-auto-ui-ik9wla 会话的创建快照/配置指纹兼容失败（aXLjJ8），冻结可识别版本的迁移、回滚和原字节验收合同，再修复；不得用 fresh seed 通过关闭旧兼容、放松权限指纹或重写 native JSONL。之后补齐 Shell：中文公开摘要、教师修订后正文与实际文件数值一致；再 Phase2 唯一 Pi runtime、Phase3 五空间与教育能力/飞轮/黄金 A–G。
+
+
+## 2026-10-05 教师公开消息切片验收结果
+
+选择技能时只给自动生成的执行命令附presentation v1（version/skill/text），主进程严校exact prompt、版本/字段/访问器；公开投影仅使用匹配本地主Pi运行的元数据。普通append保raw content并写metadata；附件ledger增presentation_json空默认列，原子同statement写metadata，新请求hash绑定presentation，旧请求hash保持。旧未知/手写命令/代码不猜测裁切，损坏metadata回退原文。即时pending、运行中、完成、归档、cold投影一致；失败显式重试携带原presentation并保新草稿，Pi/native/执行prompt/技能扩展/工具权限保持。无新依赖/第二runtime/运行预算/凭证变化。
+
+依测试样例说明书为A/C有限切片，不是日常D、无VPN安装E或连续3次稳定，不关闭用户原凭证/联网/图片失败。NET、cache命中、OCR/视觉/四格式Office及全harness本轮未重新验；日常out SHA0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981、Master SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302及HEAD20aa86656cdb5a0f85e0e11fa21863b50233fcb1保持，日常profile/key不改，无commit/push。
+
+最新完整产品/工程合同仍以docs/goal/XIAOZHI_CODEX_GOAL.md为准。
+
+下一唯一：继续Phase1联网过程、来源预览与内置浏览器工作台验收。按测试样例说明书NET-01/02/03/04，核当前构建真实搜索→正文→浏览页面/截图→来源打开、错误/重试/停止/冷恢复与浅暗双尺寸；先比较Hana/Pi现有实现并冻结合同，复用现有工具/权限/浏览器宿主。原自动压缩、不设运行预算、国内DeepSeek保持；缓存命中率另以真实usage统计，不能拿提示词长度推算。之后Phase2唯一Pi、Phase3五空间与教育适配/飞轮/黄金A–G。D/E、连续三次稳定、Pro许可与安全修补仍OPEN，三元暂停。
+
+## 2026-10-05 会话菜单切片验收结果
+
+M01/M10会话菜单有限切片通过；Phase1完整Codex Shell仍DOING / NOT_ACCEPTED，整体Goal ACTIVE。
+
+现有HeroUI3.2.2 MIT Dropdown.Menu/Item/Popover与React Aria1.19.0 Apache-2.0复用；宿主仅选择目标/鼠标键盘锚点，成熟组件负责导航、焦点/碰撞。锚点Portal到body，避开玻璃backdrop创建的fixed参照，12px安全内距；复用标准dropdown BEM样式和pi主题。Shift+F10/ContextMenu/上下键/Home/End/Enter/Escape、取消/成功后焦点恢复及被归档移除后聚焦新聊天，busy编辑锁和外部滚动关闭已接。原非Codex菜单/归档分支保持。无新增依赖、Pro源码、表/IPC/迁移/凭证/运行预算/第二runtime，Pi自动压缩不改。
+
+按测试样例说明书记录C隔离正式Electron单轮有限通过；不是日常D、无VPN/安装E、连续3次稳定，不关闭用户原凭证/联网/图片失败。联网、缓存命中率、OCR/视觉/四格式办公及全harness本轮未新验。日常out323文件SHA0dd7…、默认profile/钥、Master和HEAD保护，无commit/push；原Pro许可hold保持。
+
+证据入口：apps/desktop/test-results/goal/context-menu-20261005/closeout.json；本轮构建/日志与原始专项report/PNG逐文件SHA回读，所有首失败保持。
+
+下一唯一：Phase1教师化公开消息投影。最终真实归档截图仍显示自动注入的/skill:teaching-office命令；先核其编码与projection来源，复用已有消息契约，只在公开UI呈现教师原输入，保native原文、技能选择、来源与旧会话兼容，冻结后以真实发送/工具/冷恢复及浅暗双尺寸验收。随后补齐其余Shell状态，再Phase2唯一Pi runtime、Phase3五空间、教育适配/飞轮及黄金A–G。D/E、连续3次稳定、安全修补和Pro发布许可仍OPEN，三元暂停保持。
+
+## 2026-10-05 设置与弹层切片验收结果
+
+M01/M10设置、模型菜单、归档确认与附件/OCR弹层有限切片通过；Phase1完整Codex Shell仍DOING / NOT_ACCEPTED，整体Goal ACTIVE。
+
+稳定口径：设置和附件/归档portal统一pi-themed-surface；应用CSS覆盖Hana状态透明度，vendor许可/源不改。Codex归档使用既有OSS Modal，旧入口modal=false保持原行为；本地真源、权限/教师确认、typed服务和原Pi compaction不变。右键菜单仍待独立适配。
+
+精确证据与SHA回读：apps/desktop/test-results/goal/overlays-20261005/closeout.json；原始专项报告及首次失败独立目录保留，最终命令/日志见docs/acceptance/CURRENT.md。前面layout/标题/controls为历史，不覆盖。
+
+下一唯一：继续Phase1，先冻结会话右键菜单合同，复用成熟ContextMenu/Menu适配器，补Shift+F10/上下键/Enter/Escape与焦点恢复、屏幕边缘避让及native浅暗双尺寸；当前仍是fixed原始div，不能因归档Modal已验就称会话菜单完成。其余Shell状态验完后再Phase2唯一Pi runtime、Phase3五空间、教育适配/飞轮与黄金A–G；D/E、安全修补及Pro许可仍OPEN，三元暂停保持。
+
+## 2026-10-05 布局与暗色控件切片验收结果
+
+M01/M10布局与暗色控件有限切片通过；Phase1完整Codex Shell仍DOING / NOT_ACCEPTED，整体Goal ACTIVE。
+
+M01/M10稳定口径：原AppLayout content按父内容区高度约束，壳顶部/输入/控制固定在真实可用区域；只由各内容pane滚动。既有HeroUI控件和Portal局部语义主题贯通浅暗色。后端、权限、来源、教师确认、业务闭环与原自动压缩不变。
+
+证据入口：apps/desktop/test-results/goal/layout-20261005/closeout.json；原始报告在apps/desktop/test-results/xiaozhi-agent上述独立目录，build5.log、renderer-build5.log、main-build5.log及四专项最终日志在owned layout目录。前面历史标题/controls/glass结果保留，以下新增记录为当前有限状态。
+
+下一唯一：继续Phase1，冻结设置工作区、会话管理与附件/OCR弹层合同，核浅暗主题、错误/重试与可达性，再用真实native双尺寸验收。完整Shell后继续Phase2唯一Pi runtime、Phase3五空间、教育适配/飞轮与黄金A–G；日常人工D、无VPN/安装E、安全修补及Pro许可仍开放。
+
+## 2026-10-05 自动标题兼容切片验收结果
+
+M01/M10：ai_conversation_sessions增title_source（旧行legacy/新默认automatic/自定manual，任何rename设manual）；旧“新对话”来源无法推断，保原标题不重写。普通UPDATE按当前行来源与默认名决定，保并发教师rename。附件send增display_title默认空列；发布仍一个SQL statement原子提交，schemaVersion1/get旧command回执不变；trigger升级savepoint失败恢复旧trigger。无新依赖、公开IPC、运行预算、上传或第二runtime；原自动压缩保持。
+
+自动标题本地fallback兼容切片有限通过；Phase1完整Shell仍DOING / NOT_ACCEPTED，Goal ACTIVE。普通append与附件原子publish共用conversationTitle，合法/skill前缀不挤占任务标题，保原提示词/Pi原生记录；不是新增LLM语义摘要命名。
+
+稳定口径：旧legacy标题不猜来源、新默认自动、自定/rename手工；共享Unicode标题派生只影响显示，原消息/索引/native权限保持。测试与下一项见Goal/CURRENT与acceptance/CURRENT，两个教育业务闭环/三元暂停范围不扩。
+
+## 2026-10-05 M01/M10工作区主题与文件来源版本
+
+Pi在idle与每轮Hana工具宿主传入现有workspace-files.fileVersion。office_read_text/file_stat回传来源version，正文sha256保持独立；读取前后版本变化拒绝。Office.sources.version继续使用原版本CAS，不将SHA当版本，不放宽教师确认/权限，不迁移历史native记录。旧adapter未传回调保持旧字段。无新依赖、表、IPC或第二编排器，默认自动压缩与无运行预算策略保持。
+
+工作区仅复用既有布局和OSS Tooltip、官方glass语义token；正文/输入/审批保持实底。最终隔离build5真实NET/FILE、Word确认/冷恢复及WPS编辑保存重开有限通过；完整Phase1、日常人工和无VPN安装尚未完成。具体状态和下一项以[CURRENT_STATE](goal/CURRENT_STATE.md)、[验收入口](acceptance/CURRENT.md)为准。
+
+## 2026-10-05 最高工程合同更新
+
+用户新指定 [Master Goal](goal/XIAOZHI_CODEX_GOAL.md) 为最高Source of Truth；本文在冲突处保留为历史业务基线。当前执行 [Phase0状态](goal/CURRENT_STATE.md) 与 [能力矩阵](goal/CAPABILITY_MATRIX.md)，稳定架构入口为 [CURRENT](architecture/CURRENT.md)。167后旧自动标题优先级已转入Phase1/3；五空间、Glass×Codex×Education、唯一Pi与教育能力适配按新Master阶段推进。历史有效证据不追认新Goal验收完成。
+
+## 2026-10-04 M01/M10当前设置组合验收
+
+166/167只改验收脚本/文档，无生产、数据真源、表、IPC、权限或依赖变化。沿原Hana设置/原HeroUI/current v2技能与Pi唯一loop，普通目录cache、fresh鉴权、密文保存、真实请求和主动取消分别核；会话模型不改默认、归档不删历史、备份verify不当restore。有限C32不是D/E/全Codex完成。原自动标题/skill前缀已真确认，普通append+附件原子trigger需下一合同统一，不重写历史。两教育闭环/三元暂停/本地优先保持；恢复日常原out59252，未升级隔离最新二进制。
+
+## 2026-10-04 M01/M09/M10内建技能版本
+
+164/165：教育办公内建说明v2对齐本轮注册联网/浏览器/文本/Office；技能本身不新增权限。原v1资源/native身份冻结，不可变新版本+catalog CAS保启停/教师包，原Pi/Hana epoch隔离旧指令/摘要、公开历史保留；SDK-only旧adapter保持v1，生产host用managed source。Office格式未提出审阅可修参数，真实拒绝/停止/冲突不重放，既有schema/教师确认/脱敏保持。无新表、IPC、依赖、预算或第二loop；两业务闭环/三元暂停不变。有限C9/A/renderer79/main207不是D/noVPN/安装/全Codex完成，日常out仍旧0dd7…。
+
+163收尾运行补充：没有新增生产代码，旧窗口62244消失原因未知；无窗口后标准build exit0，当前out323/SHA0dd7…与已验隔离相同并正常打开默认profile63652。两教育闭环/凭证/权限未改变；源码快照与最新runtime记录分开，启动不替代日常人工。下一仍Skills能力说明与正式自然任务对齐。
+
+## 2026-10-04 M01/M10保存配置验收口径
+
+162/163不改变方向、真源、表或IPC。候选验证与提交分开，官方cache不赋凭证/上传权限；实际safeStorage配置同profile冷恢复，错误save不覆有效配置。新对话默认与显式历史模型分别保存，文本模型不试发图/自动换供应商；原必要脱敏/教师确认/版本/无累计预算/自动压缩保持。
+
+有限C15含typed边界、独立回读及9次真实200，不代表固定cache率/完整Codex/noVPN。下一核内建Skills能力说明与当前注册教育办公工具、保留原权限/native版本后显式技能实测；两教育闭环/三元暂停范围不扩。
+
+## 2026-10-04 M01/M09/M10教师重新发起写入的稳定边界
+
+拒绝、停止、冲突后的同run不得自动重试或重放；新的教师任务（即使内容同上次）重新实读当前版本、提出新审阅并取得新确认，旧批准不可复用。uncertain必须先只读核验。160/161仅明确原Pi工具与system提示，原SQLite/CAS/路径/教师确认/native唯一loop及学生本地优先不改，无新表/IPC/依赖。
+
+自然办公FILE切片C14及现有WPS12.0副本编辑保存重开有限通过；当前真实两页Word内容/表格完整，第4周负责人段跨页不称完美版式。日常窗口/标准out保持。下一CFG可见保存配置实际调用/重启，后续全D/P08；完整产品与Codex目标仍active，两个教育闭环/三元暂停范围不扩。
+
 ## 2026-10-04 M01/M10网页截图交付补充（当前）
 
 158/159将网页截图接至既有工具publicItems SQLite事实与owned本机PNG，schema1公开引用不包含原路径/bytes。主frame typed selector按实际本会话completed工具/归档/hash/version授权本地预览，Hana450原文件命名函数及既有Pi/Hana DOM/网络边界复用。无新表、依赖、第二权限真源或自动云图上传。
@@ -822,3 +1024,10 @@ M10/M01 新增 `xiaozhi_pi_session_bindings` 私有版本化绑定，复用现�
 - [LanceDB Embedded Quickstart](https://docs.lancedb.com/quickstart)
 - [BAAI bge-small-zh-v1.5 模型卡](https://huggingface.co/BAAI/bge-small-zh-v1.5)
 - [BAAI bge-m3 模型卡](https://huggingface.co/BAAI/bge-m3)
+
+
+### 2026-10-05 M10公开联网浏览器稳定口径
+
+生产沿现有 Pi customTools、Hana v0.450.0 DOM/ref/wait/截图文件名与 Electron WebContentsView。删除截图前可能挂起的 renderer RAF 前置等待，原生 capturePage(stayAwake) 受15秒工具取消/超时、samePage/revision及文件hash校验约束；此为单次工具边界，不是运行预算。失败页复用 OSS Button，固定返回动作只被本地 status view 的 will-navigate 消费并关闭本会话窗口，保失败历史/其他会话，不重放模型或偷偷重新联网。截图 Modal 加同一主题边界。共享颜色 token 从 glass 抽为独立 theme CSS，布局覆盖仅留主入口；status HTML 与主入口同 HeroUI layer 顺序。无新依赖/表/共享 IPC/第二 runtime，自动压缩和无预算规则保持。
+
+依测试样例说明书仅有限 A/C，不关闭原用户日常凭证/联网/图片失败。D/E、三连稳定、完整 harness/办公四格式/云视觉、缓存命中率仍需独立真实验收；本轮未改变或重验自动压缩/usage策略。日常 out 323 文件/SHA 0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981、Master SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302、HEAD 20aa86656cdb5a0f85e0e11fa21863b50233fcb1保持；未重启日常窗口、改 profile/key、系统代理/DNS/VPN或提交/push。

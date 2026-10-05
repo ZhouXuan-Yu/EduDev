@@ -1,0 +1,21 @@
+{
+  "buildLogSha256": "7468915afd60230888638194601a880748a031d2410c5dcce6a0f6a73aa93581",
+  "renderer": {
+    "suite": "renderer-component-states",
+    "passed": 79,
+    "total": 79
+  },
+  "main": {
+    "passed": 207,
+    "total": 207,
+    "ok": true,
+    "nodeExitCode": 0,
+    "logSha256": "483e45c1785347fb3519df9ebf51b82103fac9f14dee4a3e16d959eda14ea448"
+  },
+  "firstMain": {
+    "passed": false,
+    "reason": "student-lifecycle-feedback-success wait timeout; cause unverified",
+    "logSha256": "6910a669e42455275f9cbcf53f6e9c4a2e9cfc29084ce7679b0b18fc049cb004"
+  },
+  "boundary": "Logs/raw runtime/profile/DB/media remain owned test-results; first failures are not deleted."
+}

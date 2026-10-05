@@ -1,0 +1,32 @@
+.product-rail { width:52px; flex:0 0 52px; min-height:0; display:flex; align-items:center; flex-direction:column; gap:12px; padding:14px 5px 16px; }
+.product-rail button { width:42px; height:42px; min-width:42px; flex:none; padding:0; border:0; border-radius:12px; box-shadow:none; color:var(--pi-muted); background:transparent; }
+.product-rail button:hover { background:var(--pi-hover); color:var(--pi-ink); }
+.product-rail button[aria-current="page"] { background:var(--pi-active); color:var(--pi-ink); }
+.xiaozhi-pi-workspace .product-rail button[aria-current="page"] { background:var(--pi-active); color:var(--pi-ink); }
+.product-rail .product-rail-settings { margin-top:auto; }
+.product-rail-tooltip { pointer-events:none; background:var(--pi-paper); color:var(--pi-ink); }
+.product-workspace, .product-settings-frame { height:100%; min-height:0; min-width:0; display:flex; overflow:hidden; color:var(--pi-ink); background:var(--pi-soft); font-family:'Segoe UI','Microsoft YaHei UI',sans-serif; }
+.product-workspace { --surface:var(--pi-paper); --surface-soft:var(--pi-soft); --text:var(--pi-ink); --muted:var(--pi-muted); --line:var(--pi-line); --line-strong:var(--pi-line); --accent:var(--pi-accent); }
+.product-settings-frame>.pi-settings-workspace { flex:1; min-width:0; border-radius:20px 0 0 20px; overflow:hidden; }
+.product-layout { --sidebar-width:254px; flex:1; min-width:0; margin-top:8px; height:calc(100% - 8px); }
+.product-layout .app-layout__body { min-width:0; min-height:0; border-radius:20px 0 0 20px; background:var(--pi-paper); overflow:hidden; }
+.product-layout .app-layout__main { padding:0; min-height:0; min-width:0; overflow:auto; }
+.product-layout [data-slot="sidebar"] { background:var(--pi-chrome); color:var(--pi-ink); }
+.product-layout [data-slot="sidebar-header"] { height:74px; min-height:74px; display:flex; flex-direction:row; justify-content:flex-start; align-items:center; padding:0 20px; }
+.product-layout [data-slot="sidebar-header"] strong { font-size:20px; font-weight:600; }
+.product-layout [data-slot="sidebar-content"] { padding:6px 10px; }
+.product-layout [data-slot="sidebar-footer"] { padding:14px 10px; }
+.product-page-link { width:100%; justify-content:flex-start; min-height:40px; flex-shrink:0; margin-top:4px; border-radius:10px; color:var(--pi-ink); font-size:14px; }
+.product-page-link[aria-current="page"] { background:var(--pi-active); }
+.product-header { height:52px; min-height:52px; display:flex; align-items:center; gap:12px; padding:0 20px; border-bottom:1px solid var(--pi-line); background:var(--pi-chrome); font-size:14px; }
+.product-header-path { color:var(--pi-muted); }
+.product-space-content { min-width:0; padding:24px; color:var(--pi-ink); }
+.product-notice { font-size:13px; color:var(--pi-muted); line-height:1.6; margin:0 0 16px; overflow-wrap:anywhere; }
+.product-space-content .work-panel { background:var(--pi-paper); border-color:var(--pi-line); box-shadow:none; }
+.product-workspace .product-space-content .danger-action { color:var(--pi-danger); background:color-mix(in srgb,var(--pi-danger) 8%,var(--pi-paper)); border-color:color-mix(in srgb,var(--pi-danger) 40%,var(--pi-paper)); }
+.product-space-content .student-lifecycle-panel,.product-space-content .review-reminder-items article,.product-space-content .mastery-path-header,.product-space-content .mastery-path-module,.product-space-content .mastery-path-meta span,.product-space-content .global-search-workspace>header,.product-space-content .global-search-results>section,.product-space-content .global-search-list>button { background:var(--pi-paper); }
+.product-space-content .workspace-label p,.product-space-content .empty-state { color:var(--pi-muted); }
+.product-space-content input,.product-space-content select,.product-space-content textarea { color:var(--pi-ink); background:var(--pi-paper); border-color:var(--pi-line); }
+@supports (backdrop-filter:blur(1px)) { .product-layout [data-slot="sidebar"],.product-header { backdrop-filter:blur(20px) saturate(1.12); } }
+@media(max-width:900px) { .product-layout { --sidebar-width:218px; } .product-space-content { padding:16px; } }
+@media(forced-colors:active) { .product-rail button[aria-current="page"],.product-page-link[aria-current="page"] { outline:2px solid Highlight; } }

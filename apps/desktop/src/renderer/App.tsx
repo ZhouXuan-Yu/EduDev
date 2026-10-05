@@ -50,7 +50,12 @@ import { StudentProfileLifecycle, type StudentFormMode } from './components/Stud
 import { DataBackupPanel } from './components/DataBackupPanel';
 import { AiConversationSidebar, type AiConversationTarget } from './components/AiConversationSidebar';
 import { PiEducationWorkspace } from './components/office/PiEducationWorkspace';
+import { PiRuntimeStartup } from './components/office/PiRuntimeStartup';
 import { useDesktopCommands, useDesktopNavigation } from './components/desktop/DesktopFrame';
+import { ProductSpaceShell } from './components/product/ProductSpaceShell';
+import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
+import { TeachingArtifactsWorkspace } from './components/product/TeachingArtifactsWorkspace';
+import { isProductView } from './components/product/product-spaces';
 import { AiRunInspector } from './components/AiRunInspector';
 import { ReviewReportWorkspace } from './components/ReviewReportWorkspace';
 import { AiQualityReviewWorkspace } from './components/AiQualityReviewWorkspace';
@@ -143,7 +148,7 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
 };
 
 
-type ViewKey = 'today' | 'ai' | 'knowledge' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
+type ViewKey = 'today' | 'ai' | 'knowledge' | 'artifacts' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
   id: string;
@@ -375,20 +380,41 @@ function formatDate(value: string) {
 }
 
 export function App() {
-  const [piEnabled, setPiEnabled] = useState(false);
+  const [runtime, setRuntime] = useState<'preparing' | 'pi' | 'legacy-test' | 'failed'>('preparing');
+  const [runtimeAttempt, setRuntimeAttempt] = useState(0);
+  const piEnabled = runtime === 'pi';
   useEffect(() => {
     let mounted = true;
-    void window.omniEdu?.isXiaozhiEnabled?.().then(enabled => { if (mounted) setPiEnabled(enabled); });
-    return () => { mounted = false; };
-  }, []);
+    let lookupTimer: ReturnType<typeof setTimeout> | undefined;
+    setRuntime('preparing');
+    void (async () => {
+      try {
+        const enabled = await Promise.race([
+          window.omniEdu?.isXiaozhiEnabled?.(),
+          new Promise<never>((_, reject) => { lookupTimer = setTimeout(() => reject(new Error('startup_unavailable')), 10_000); }),
+        ]);
+        if (mounted) setRuntime(enabled === true ? 'pi' : enabled === false ? 'legacy-test' : 'failed');
+      } catch { if (mounted) setRuntime('failed'); }
+      finally { clearTimeout(lookupTimer); }
+    })();
+    return () => { mounted = false; clearTimeout(lookupTimer); };
+  }, [runtimeAttempt]);
   const desktopNavigation=useDesktopNavigation();
   const [activeView, updateActiveView] = useState<ViewKey>('ai');
-  function setActiveView(view:ViewKey){updateActiveView(view);desktopNavigation.navigate({view});}
+  function setActiveView(view:ViewKey){
+    const target = runtime === 'legacy-test' || isProductView(view) ? view : 'ai';
+    if(target !== activeView)setStatus('');
+    updateActiveView(target);desktopNavigation.navigate({view:target});
+  }
   useEffect(()=>{
     const view=desktopNavigation.target.view;
     const valid:ViewKey[]=['today','ai','knowledge','students','mastery','intake','mistakes','review','search','question_notebook','notebook','book','memory','team','analytics','settings'];
-    if(valid.includes(view as ViewKey))updateActiveView(view as ViewKey);
-  },[desktopNavigation.target.view]);
+    if(runtime !== 'legacy-test' || valid.includes(view as ViewKey)){
+      const target = runtime === 'legacy-test' || isProductView(view) ? view as ViewKey : 'ai';
+      if(target !== activeView)setStatus('');
+      updateActiveView(target);
+    }
+  },[desktopNavigation.target.view,runtime]);
   useDesktopCommands(command=>{
     if(command==='settings'){setActiveView('settings');return true;}
     if(command==='new-chat'||command==='sidebar'||command==='files'){setActiveView('ai');return false;}
@@ -1854,6 +1880,7 @@ export function App() {
 
   function renderAIConsoleViewV2() {
     if (piEnabled) return <PiEducationWorkspace onLeave={() => setActiveView('today')} onSettings={() => setActiveView('settings')} />;
+    if (runtime !== 'legacy-test') return <PiRuntimeStartup failed={runtime === 'failed'} onRetry={() => setRuntimeAttempt(value => value + 1)} onLeave={() => setActiveView('today')} />;
     const liveArtifacts = aiResult?.executionMode === 'direct' ? [] : buildAiArtifacts(aiPrompt, aiResult);
     const selectedArtifact = activeAiArtifact ?? liveArtifacts[0] ?? null;
     const hasAiTurn = Boolean(aiRunning || aiMessages.length);
@@ -2756,9 +2783,11 @@ export function App() {
     return renderSettingsView();
   }
 
-  if (piEnabled && (activeView === 'ai' || activeView === 'settings')) return <>
-    <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('today')} onSettings={() => setActiveView('settings')} /></div>
-    {activeView === 'settings' && <PiSettingsWorkspace onBack={() => setActiveView('ai')} />}
+  if ((runtime === 'preparing' || runtime === 'failed') && (activeView === 'ai' || activeView === 'settings')) return <PiRuntimeStartup failed={runtime === 'failed'} onRetry={() => setRuntimeAttempt(value => value + 1)} onLeave={() => setActiveView('knowledge')} />;
+  if (runtime !== 'legacy-test') return <>
+    {piEnabled && <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('knowledge')} onSettings={() => setActiveView('settings')} /></div>}
+    {activeView === 'settings' ? <PiSettingsWorkspace onBack={() => setActiveView('ai')} /> : activeView !== 'ai' &&
+      <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}
   </>;
   return (
     <main className={`app-shell ${activeView === 'ai' ? 'app-shell-ai' : ''}`}>

@@ -1,10 +1,11 @@
 import {useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Spinner} from '@heroui/react';
+import {Button,Spinner} from '@heroui/react';
 import {Globe,TriangleAlert} from 'lucide-react';
 import {EmptyState} from './heroui-pro/components/empty-state';
 import './heroui-pro/heroui-pro.min.css';
 import './heroui-pro/heroui-oss.min.css';
+import './components/office/pi-workspace-theme.css';
 import './browser-status.css';
 
 const messages:Record<string,[string,string]>={
@@ -16,6 +17,6 @@ const messages:Record<string,[string,string]>={
  network:['网页未能打开','连接失败，网站可能暂时不可用。请检查网络后重试或选择其他来源。'],
 };
 function Status(){const[state,setState]=useState(()=>location.hash.slice(1)||'loading');useEffect(()=>{const change=()=>setState(location.hash.slice(1));addEventListener('hashchange',change);return()=>removeEventListener('hashchange',change);},[]);const[title,description]=messages[state]||messages.network;
- return <main data-testid="browser-load-state" data-state={state} aria-live="polite"><EmptyState><EmptyState.Header><EmptyState.Media variant="icon">{state==='loading'?<Spinner aria-label="正在加载网页"/>:state==='cancelled'?<Globe size={28}/>:<TriangleAlert size={28}/>}</EmptyState.Media><EmptyState.Title>{title}</EmptyState.Title><EmptyState.Description>{description}</EmptyState.Description></EmptyState.Header></EmptyState></main>;
+ return <main className="pi-themed-surface" data-testid="browser-load-state" data-state={state} aria-live="polite"><EmptyState><EmptyState.Header><EmptyState.Media variant="icon">{state==='loading'?<Spinner aria-label="正在加载网页"/>:state==='cancelled'?<Globe size={28}/>:<TriangleAlert size={28}/>}</EmptyState.Media><EmptyState.Title>{title}</EmptyState.Title><EmptyState.Description>{description}</EmptyState.Description></EmptyState.Header>{state!=='loading'&&<><p className="browser-recovery-note">返回聊天后，可修改地址或重新发送任务重试。已完成的结果仍保留。</p><Button variant="secondary" data-testid="browser-return-chat" onPress={()=>{location.href='xiaozhi-browser:close';}}>返回聊天</Button></>}</EmptyState></main>;
 }
 createRoot(document.getElementById('root')!).render(<Status/>);

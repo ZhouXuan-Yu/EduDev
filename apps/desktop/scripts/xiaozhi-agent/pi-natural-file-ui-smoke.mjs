@@ -35,7 +35,26 @@ async function launch(){const env={...process.env,DEEPSEEK_API_KEY:key,DEEPSEEK_
 async function begin(text){const prior=(await snapshot()).projection.turns.at(-1)?.id;await page.getByTestId('office-prompt-input').fill(text);await page.locator('.office-composer [data-slot="prompt-input-send"]').click();assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');return prior;}
 async function completed(prior){return until(async()=>{const s=await snapshot(),t=s.projection.turns.at(-1);if(t?.id!==prior&&!s.running){assert.equal(t.status,'completed',t.error);return t;}});}
 async function run(text){return completed(await begin(text));}
-async function proposed(text,kind){const prior=await begin(text);return until(async()=>{const s=await snapshot(),pending=s[kind]?.find(r=>r.state==='pending');if(pending)return pending;const t=s.projection.turns.at(-1);if(t?.id!==prior&&!s.running)throw new Error('Natural task ended before review: '+JSON.stringify(t));});}
+async function proposed(text,kind){
+ const prior=await begin(text);let answered=false;
+ return until(async()=>{
+  const s=await snapshot(),pending=s[kind]?.find(r=>r.state==='pending');if(pending)return pending;
+  // This is a synthetic teacher's explicit scope choice, never an automatic
+  // production answer or a replacement prompt/guessed document result.
+  const question=kind==='officeArtifacts'&&s.controls?.find(r=>r.kind==='question'&&r.state==='pending');
+  if(question){
+   assert(!answered,'Unexpected second clarification requires manual diagnosis');
+   const card=page.locator(`[data-testid="pi-teacher-question"][data-control-id="${question.id}"]`);
+   assert.equal((await snapshot()).projection.turns.at(-1).status,'waiting_input');
+   const answer='通用型教研活动，不限定学科；请你拟定四周目标与任务，负责人一栏留空。';
+   await card.getByTestId('pi-question-answer').fill(answer);await card.getByTestId('pi-question-submit').click();
+   await until(async()=>(await snapshot()).controls.find(r=>r.id===question.id)?.state==='answered',10000);
+   answered=true;report.teacherClarification={question:question.text,answer,via:'actual visible answer field and submit button'};
+   check('Optional FILE-04 scope clarification is visibly answered by the synthetic teacher and durably resumes the real run');
+  }
+  const t=s.projection.turns.at(-1);if(t?.id!==prior&&!s.running)throw new Error('Natural task ended before review: '+JSON.stringify(t));
+ });
+}
 async function resize(width,height){await app.evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(s.width,s.height),{width,height});await page.waitForFunction(s=>innerWidth===s.width&&innerHeight===s.height,{width,height});}
 async function openArtifact(row){const card=officeCard(row.id),trigger=card.locator('[data-slot="chat-tool-trigger"]');if(await trigger.getAttribute('aria-expanded')!=='true')await trigger.click();await card.getByTestId('pi-office-open').click();await page.getByTestId('pi-file-panel').waitFor();await until(async()=>{const text=await page.getByTestId('pi-file-preview').innerText();if(/无法|未能|损坏/.test(text))throw new Error('Actual Word preview failed: '+text);return /4周|四周|第[一1]周/.test(text)&&text.includes('负责人');});}
 try{

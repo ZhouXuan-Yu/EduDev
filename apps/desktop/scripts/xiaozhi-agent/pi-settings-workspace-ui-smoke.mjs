@@ -2,7 +2,12 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { DatabaseSync } from 'node:sqlite';
 import { _electron as electron } from 'playwright';
+import { testMain, assertIsolatedPiMain } from '../acceptance/build-root.mjs';
+import { fingerprint, sha256 } from '../acceptance/evidence.mjs';
+import {measureTextContrast,assertWorkspaceChrome} from './capture-workspace-metrics.mjs';
 const desktop = process.cwd(), output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-settings-workspace-ui-'));
 const data = path.join(output, 'data'), profile = path.join(output, 'profile'), working = path.join(output, 'teaching-work'), backupRoot = path.join(output, 'backup-target'), skillRoot = path.join(output, 'teacher-skill');
 for (const directory of [working, backupRoot, skillRoot]) fs.mkdirSync(directory);
@@ -11,7 +16,12 @@ const skillText = '---\nname: office-review\ndescription: 整理合成教研纪�
 fs.writeFileSync(path.join(skillRoot, 'SKILL.md'), skillText);
 const cfg = fs.readFileSync('.env.local', 'utf8'), apiKey = process.env.DEEPSEEK_API_KEY || cfg.match(/^DEEPSEEK_API_KEY\s*=\s*(.*?)\s*$/m)?.[1]?.replace(/^['"]|['"]$/g, ''); assert(apiKey);
 const sha = file => createHash('sha256').update(fs.readFileSync(file)).digest('hex'), sourceHashes = [sha(path.join(working, 'meeting.txt')), sha(path.join(skillRoot, 'SKILL.md'))];
-const errors = [], report = { success: false, checks: [], viewports: [], boundaries: ['Actual formal Electron + owned fresh SQLite/profile, live official DeepSeek catalogue and chat, actual local backup/readback; synthetic teacher files only.', 'Native chooser returns controlled in main; browser storage failure injected only for the owned profile.', 'Archive fixtures created via existing typed APIs; archive creation UI and OS chooser clicking not claimed.', 'No full Codex pixel-match, VPN-off or installer proof.'] };
+const errors = [], report = { success: false, checks: [], viewports: [], launches: [], boundaries: ['Actual formal Electron + owned fresh SQLite/profile, live official DeepSeek catalogue and chat, actual local backup/readback; synthetic teacher files only.', 'Native chooser returns controlled in main; browser storage failure injected only for the owned profile.', 'Archive fixtures created via existing typed APIs; archive creation UI and OS chooser clicking not claimed.', 'No full Codex pixel-match, VPN-off or installer proof.'] };
+const buildRoot = path.dirname(path.dirname(testMain(desktop))), fixed = fingerprint(buildRoot);
+Object.assign(report, { layer: 'C isolated formal Electron', humanAccepted: false, build: { root: buildRoot, files: fixed.files.length, sha256: fixed.sha256 }, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))) });
+const query = (sql, values = []) => { const db = new DatabaseSync(path.join(data, 'app.db'), { readOnly: true }); try { return db.prepare(sql).all(...values); } finally { db.close(); } };
+const config = () => query('SELECT value_json FROM app_settings WHERE key=?', ['xiaozhi.provider.v1'])[0]?.value_json;
+const requests = [];
 let app, page, id, archivedId, backupPath;
 const check = name => { report.checks.push({ name, pass: true }); console.log(`PASS ${name}`); };
 async function until(fn, ms = 90000) { const end = Date.now() + ms; while (Date.now() < end) { if (await fn()) return; await new Promise(resolve => setTimeout(resolve, 80)); } throw new Error('Settings workspace UI condition timed out'); }
@@ -25,10 +35,27 @@ async function launch() {
   for (const key of Object.keys(env)) if (key.startsWith('OMNI_EDU_E2E_DATA_BACKUP_')) delete env[key];
   env.OMNI_EDU_E2E_DATA_BACKUP_EXPORT_DIALOG_QUEUE = JSON.stringify(['', backupRoot]);
   env.OMNI_EDU_E2E_DATA_BACKUP_VERIFY_DIALOG_QUEUE = JSON.stringify(['$last', working]);
-  app = await electron.launch({ args: [path.join(desktop, 'out/main/index.js'), `--user-data-dir=${profile}`], env, timeout: 60000 }); page = await app.firstWindow(); page.on('pageerror', error => errors.push(String(error).replaceAll(apiKey, '[redacted]')));
+  app = await electron.launch({ args: [testMain(desktop), `--user-data-dir=${profile}`], env, timeout: 60000 }); report.launches.push(await assertIsolatedPiMain(app,testMain(desktop),profile));page = await app.firstWindow(); page.on('pageerror', error => errors.push(String(error).replaceAll(apiKey, '[redacted]')));
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({ timeout: 60000 }); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled()); id = await page.locator('.office-composer-container').getAttribute('data-session-id');
+  assert(await app.evaluate(() => process.env.DEEPSEEK_API_KEY === '' && process.env.DEEPSEEK_MODEL === '' && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1'));
+  // Observe only safe transport facts; original SDK requests/responses remain unchanged.
+  await app.evaluate((_, expectedKey) => {
+    globalThis.currentSettingsRequests = []; const original = globalThis.fetch;
+    globalThis.fetch = async function(input, init) {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input?.url; let record;
+      if (typeof url === 'string' && url.startsWith('https://api.deepseek.com/') && url.endsWith('/chat/completions') && typeof init?.body === 'string') {
+        const body = JSON.parse(init.body), headers = new Headers(init.headers || input?.headers);
+        record = { model: body.model, credentialMatchesSaved: headers.get('authorization') === `Bearer ${expectedKey}`, status: null };
+        globalThis.currentSettingsRequests.push(record);
+      }
+      try { const response = await original.apply(this, arguments); if (record) record.status = response.status; return response; }
+      catch (error) { if (record) { record.errorName = error.name; record.aborted = Boolean(init?.signal?.aborted); } throw error; }
+    };
+  }, apiKey);
+  await page.evaluate(() => { globalThis.currentSettingsEvents = []; window.omniEdu.onXiaozhiEvent(e => globalThis.currentSettingsEvents.push(e)); });
 }
-async function open() { await page.getByRole('button', { name: '小智模型设置', exact: true }).click(); await page.getByTestId('pi-settings-workspace').waitFor(); await until(async () => await page.getByTestId('pi-settings-key').count() === 1 && !await page.getByTestId('pi-settings-key').isDisabled()); }
+async function close() { if (!app) return; requests.push(...await app.evaluate(() => globalThis.currentSettingsRequests)); await app.close(); app = undefined; }
+async function open() { await page.getByRole('button', { name: '设置', exact: true }).click(); await page.getByTestId('pi-settings-workspace').waitFor(); await until(async () => await page.getByTestId('pi-settings-key').count() === 1 && !await page.getByTestId('pi-settings-key').isDisabled()); }
 async function tab(name) { await page.getByTestId(`pi-settings-tab-${name}`).click(); await until(async () => await page.getByTestId('pi-settings-workspace').getAttribute('data-tab') === name); }
 async function preference(name) { await page.getByTestId(`pi-preference-${name}`).locator('[data-slot="switch-content"]').click(); }
 const permissionMemory = () => page.getByTestId('pi-settings-main');
@@ -39,8 +66,17 @@ async function stableCapture(name) {
   await page.screenshot({ path: path.join(output, `${name}.png`) });
 }
 try {
-  await launch(); await open(); await page.getByTestId('pi-settings-key').fill(apiKey); await page.getByTestId('pi-settings-save').click(); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
+  await launch(); await open(); await page.getByTestId('pi-settings-key').fill(apiKey); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-ask').isDisabled());assert.equal(await page.locator('[data-testid=product-rail]:visible').locator('button:disabled').count(),5); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
   assert.equal(await page.getByTestId('pi-settings-key').inputValue(), ''); assert((await settings()).value.models.length >= 2); check('Unified formal entry embeds the existing encrypted model form and live official model directory');
+  const savedConfig = config(); assert(savedConfig && !savedConfig.includes(apiKey));
+  // A normal read intentionally labels the locally cached official directory as cache.
+  const fresh = await page.evaluate(sessionId => window.omniEdu.getXiaozhiSettings({ sessionId, refresh: true }), id); assert(fresh.ok && !fresh.value.catalogueError);
+  const official = fresh.value.models; report.models = official.map(({ id, source, stale, inputModalities }) => ({ id, source, stale, inputModalities }));
+  assert(official.some(v => v.id === 'deepseek-flash' && v.source === 'official' && !v.stale));
+  assert(official.some(v => v.id === 'deepseek-v4-pro' && v.source === 'official' && !v.stale));
+  await page.getByTestId('pi-settings-default-model').click(); await page.getByRole('menuitemradio', { name: 'deepseek-flash', exact: true }).click(); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-ask').isDisabled());assert.equal(await page.locator('[data-testid=product-rail]:visible').locator('button:disabled').count(),5); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
+  const storedConfig = config(); assert(storedConfig && !storedConfig.includes(apiKey)); report.defaultModel = (await settings()).value.defaultModel;
+  assert.equal(report.defaultModel, 'deepseek-flash'); check('Fresh official model menu saves the current Flash default with encrypted local credentials');
   assert.equal(await page.locator('[data-testid^="pi-settings-tab-"]').count(), 6); check('Six real capabilities are reachable from one setting navigation');
   const input = page.getByTestId('pi-settings-search');
   await input.fill('backup verify'); await page.getByTestId('pi-settings-search-results').getByRole('button', { name: /检查已有备份/ }).click(); assert.equal(await page.getByTestId('pi-settings-workspace').getAttribute('data-tab'), 'backup'); check('Hana multi-token ranking opens an actionable backup setting');
@@ -52,6 +88,7 @@ try {
   await memoryPanel(); await permissionMemory().getByTestId('pi-memory-enabled').check(); await permissionMemory().getByTestId('pi-memory-save').click(); await until(async () => (await snapshot()).memoryScope.enabled);
   await permissionMemory().getByTestId('pi-memory-clear').click(); await until(async () => !(await snapshot()).memoryScope.enabled && (await snapshot()).memoryScope.version >= 2); check('Existing memory scope saves and revokes through the unified permission page and actual SQLite readback');
   await tab('skills'); await page.getByTestId('pi-skill-preview-lesson-preparation').click(); await page.getByTestId('pi-skill-full-document').waitFor(); assert(!await page.getByTestId('pi-skill-edit').isVisible()); check('Hana builtin full preview works embedded without weakening edit permissions');
+  const currentSkills = (await skills()).value.skills; assert(currentSkills.filter(v => v.origin === 'builtin').every(v => v.version === 2)); report.skillVersions = currentSkills.map(({ name, version, enabled, origin }) => ({ name, version, enabled, origin })); check('Current settings expose the reviewed builtin skill version two through the existing skill manager');
   await chooser(skillRoot); await page.getByTestId('pi-skill-import').click(); await until(async () => (await skills()).value.skills.some(item => item.name === 'office-review'));
   assert.equal((await skills()).value.skills.find(item => item.name === 'office-review').enabled, false);
   await page.getByTestId('pi-skill-enabled-office-review').locator('[data-slot="switch-content"]').click(); await until(async () => (await skills()).value.skills.find(item => item.name === 'office-review').enabled);
@@ -61,8 +98,8 @@ try {
   let preferences = await page.evaluate(() => JSON.parse(localStorage.getItem('xiaozhi.ui.v1'))); assert.deepEqual(preferences, { schema: 1, sidebar: false, aside: false, files: true }); check('Display preferences persist only the original versioned booleans');
   await page.evaluate(() => { window.__settingsRestoreStorage = Storage.prototype.setItem; Storage.prototype.setItem = function(key, value) { if (key === 'xiaozhi.ui.v1') throw new Error('owned storage unavailable'); return window.__settingsRestoreStorage.call(this, key, value); }; });
   await preference('sidebar'); assert.match(await page.getByTestId('pi-preference-notice').innerText(), /未能保存/); assert.equal(await page.getByTestId('pi-preference-sidebar').getAttribute('data-selected'), null); await page.evaluate(() => { Storage.prototype.setItem = window.__settingsRestoreStorage; delete window.__settingsRestoreStorage; }); check('Storage failure shows a visible failure and does not claim preference success');
-  await page.getByTestId('nav-ai').click(); await page.getByTestId('xiaozhi-pi-workspace').waitFor(); assert.equal(await page.getByTestId('pi-rail-chats').getAttribute('aria-pressed'), 'false'); assert(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed') === 'true');
-  await app.close(); app = undefined; await launch(); assert.equal(await page.getByTestId('pi-rail-chats').getAttribute('aria-pressed'), 'false'); assert.equal(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed'), 'true'); check('Returning and restarting the same owned profile preserve the actual workspace disclosures');
+  await page.getByTestId('nav-ai').click(); await page.getByTestId('xiaozhi-pi-workspace').waitFor(); assert.equal(await page.locator('.sidebar__offcanvas-wrapper').boundingBox().then(box=>box.width), 0); assert(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed') === 'true');
+  const beforeColdId = id; await close(); await launch(); assert.equal(id, beforeColdId); assert.equal(config(), storedConfig); assert.equal((await page.evaluate(() => globalThis.currentSettingsEvents)).filter(e => e.kind === 'tool_start').length, 0); assert.equal(await page.locator('.sidebar__offcanvas-wrapper').boundingBox().then(box=>box.width), 0); assert.equal(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed'), 'true'); check('Returning and restarting the same owned profile preserve actual disclosures, encrypted configuration and session without replay');
   await open(); await tab('interface'); await preference('sidebar'); await preference('aside'); await preference('files');
   await page.getByTestId('nav-ai').click(); await page.getByTestId('xiaozhi-pi-workspace').waitFor(); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled());
   await page.evaluate(() => localStorage.setItem('xiaozhi.ui.v1', JSON.stringify({ schema: 999, sidebar: false, aside: false, files: true, path: 'must-not-authorize' })));
@@ -75,10 +112,12 @@ try {
   await chooser(backupRoot); await page.getByTestId('data-backup-export').click(); await page.getByTestId('data-backup-export-success').waitFor({ timeout: 60000 }); backupPath = await page.getByTestId('data-backup-export-path').innerText(); assert(fs.existsSync(path.join(backupPath, 'app.db'))); assert(fs.readdirSync(backupRoot).length === 1); check('Actual existing local backup service exports and verifies a real owned data directory');
   await page.getByTestId('data-backup-verify').click(); await page.getByTestId('data-backup-verify-success').waitFor({ timeout: 60000 }); check('Existing backup integrity service verifies the exported files from the visible setting action');
   await page.getByTestId('data-backup-verify').click(); await page.getByTestId('data-backup-verify-failed').waitFor(); check('Non-backup selection shows an actionable failure instead of a success banner');
-  const denied = await app.evaluate(async ({ BrowserWindow }, preload) => { const side = new BrowserWindow({ show: false, webPreferences: { preload, contextIsolation: true, sandbox: false } }); try { await side.loadURL('about:blank'); return await side.webContents.executeJavaScript(`Promise.all([window.omniEdu.exportDataRoot(),window.omniEdu.verifyDataBackup()].map(p=>p.then(()=>false,e=>String(e).includes('permission_denied'))))`); } finally { side.destroy(); } }, path.join(desktop, 'out/preload/index.cjs')); assert.deepEqual(denied, [true, true]); check('A secondary renderer cannot invoke either local backup action');
+  const denied = await app.evaluate(async ({ BrowserWindow }, preload) => { const side = new BrowserWindow({ show: false, webPreferences: { preload, contextIsolation: true, sandbox: false } }); try { await side.loadURL('about:blank'); return await side.webContents.executeJavaScript(`Promise.all([window.omniEdu.exportDataRoot(),window.omniEdu.verifyDataBackup()].map(p=>p.then(()=>false,e=>String(e).includes('permission_denied'))))`); } finally { side.destroy(); } }, path.join(buildRoot, 'preload/index.cjs')); assert.deepEqual(denied, [true, true]); check('A secondary renderer cannot invoke either local backup action');
   await page.getByTestId('data-backup-export').click(); await page.getByTestId('data-backup-error').waitFor(); assert(!await page.getByTestId('data-backup-export').isDisabled()); check('Exhausted controlled chooser shows bounded human feedback and releases local ownership');
   await chooser(working);
-  for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 1080 }]) {
+  report.contrast=[];
+  for (const theme of ['light','dark']) for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 1080 }]) {
+    await page.emulateMedia({colorScheme:theme});
     await app.evaluate(({ BrowserWindow }, size) => BrowserWindow.getAllWindows()[0].setContentSize(size.width, size.height), viewport); await until(async () => await page.evaluate(size => innerWidth === size.width && innerHeight === size.height, viewport));
     for (const name of ['models', 'skills', 'permissions', 'interface', 'archives', 'backup']) {
       await tab(name);
@@ -87,21 +126,81 @@ try {
       const measurements = await page.evaluate(control => { const main = document.querySelector('[data-testid="pi-settings-main"]'), nav = document.querySelector('.pi-settings-nav'), content = main.querySelector(':scope>div,:scope>section'), action = document.querySelector(`[data-testid="${control}"]`).getBoundingClientRect(), back = document.querySelector('[data-testid="nav-ai"]').getBoundingClientRect(); return { mainWidth: main.clientWidth, mainScroll: main.scrollWidth, contentWidth: content.getBoundingClientRect().width, navWidth: nav.clientWidth, navScroll: nav.scrollWidth, bodyWidth: document.documentElement.clientWidth, bodyScroll: document.documentElement.scrollWidth, actionRect: { x: action.x, y: action.y, right: action.right, bottom: action.bottom }, backRect: { x: back.x, y: back.y, right: back.right, bottom: back.bottom } }; }, control);
       assert(measurements.mainScroll <= measurements.mainWidth + 1, `${name} main overflow`); assert(measurements.contentWidth >= 700 && measurements.contentWidth <= 781, `${name} reading width`); assert(measurements.navScroll <= measurements.navWidth + 1); assert(measurements.bodyScroll <= measurements.bodyWidth + 1);
       for (const rect of [measurements.actionRect, measurements.backRect]) assert(rect.x >= 0 && rect.y >= 0 && rect.right <= viewport.width && rect.bottom <= viewport.height, `${name} complete action reachable`);
-      report.viewports.push({ ...viewport, tab: name, ...measurements }); await stableCapture(`${name}-${viewport.width}`);
+      const color=await page.getByTestId('pi-settings-workspace').evaluate(n=>getComputedStyle(n).backgroundColor);
+      const intensity=color.match(/[\d.]+/g).slice(0,3).map(Number).reduce((a,b)=>a+b,0);
+      assert(theme==='dark'?intensity<384:intensity>500,`${theme} settings surface: ${color}`);
+      for(const [label,locator]of [['heading',page.getByTestId('pi-settings-main').locator('h1').first()],['description',page.getByTestId('pi-settings-main').locator('p').first()],['navigation',page.getByTestId(`pi-settings-tab-${name}`)]]){
+        const contrast=await measureTextContrast(locator);report.contrast.push({theme,width:viewport.width,tab:name,label,...contrast});assert(contrast.ratio>=4.5,`${theme} ${name} ${label} contrast ${contrast.ratio}`);
+      }
+      if(name==='models'){
+        for(const [label,locator,pseudo]of [
+          ['search-placeholder',page.getByTestId('pi-settings-search'),'::placeholder'],
+          ['credential-placeholder',page.getByTestId('pi-settings-key'),'::placeholder'],
+          ['default-model-trigger',page.getByTestId('pi-settings-default-model'),null],
+          ['save-button',page.getByTestId('pi-settings-save'),null],
+        ]){const contrast=await measureTextContrast(locator,pseudo);report.contrast.push({theme,width:viewport.width,label,...contrast});assert(contrast.ratio>=4.5,`${theme} ${label} contrast ${contrast.ratio}`);}
+        const fieldBackground=await page.getByTestId('pi-settings-search').evaluate(n=>getComputedStyle(n.parentElement).backgroundColor);
+        const sum=fieldBackground.match(/[\d.]+/g).slice(0,3).map(Number).reduce((a,b)=>a+b,0);assert(theme==='dark'?sum<384:sum>500,`${theme} search field background ${fieldBackground}`);
+        await page.getByTestId('pi-settings-default-model').hover();
+        await page.waitForFunction(()=>!document.querySelector('[data-testid="pi-settings-default-model"]').getAnimations().some(a=>a.playState==='running'));
+        const hover=await measureTextContrast(page.getByTestId('pi-settings-default-model'));report.contrast.push({theme,width:viewport.width,label:'default-model-hover',...hover});assert(hover.ratio>=4.5,`${theme} hovered default-model contrast ${hover.ratio}`);
+        await page.getByTestId('pi-settings-default-model').click();const menu=page.getByRole('menu');await menu.waitFor();
+        await stableCapture(`model-menu-${theme}-${viewport.width}`);
+        const label=menu.getByRole('menuitemradio',{name:'deepseek-flash',exact:true}).locator('[data-slot="label"]');
+        const contrast=await measureTextContrast(label);report.contrast.push({theme,width:viewport.width,label:'default-model-menu',...contrast});assert(contrast.ratio>=4.5);
+        await page.keyboard.press('Escape');await menu.waitFor({state:'hidden'});await page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='pi-settings-default-model');
+      }
+      if(name==='skills')for(const locator of [page.locator('[class*="skills-list-name-hint"]').first(),page.locator('[class*="skills-list-desc"]').first()]){const contrast=await measureTextContrast(locator);report.contrast.push({theme,width:viewport.width,label:'skill-version-status-description',...contrast});assert(contrast.ratio>=4.5,`${theme} skill metadata contrast ${contrast.ratio}`);}
+      report.viewports.push({theme,...viewport,tab:name,...measurements});await stableCapture(`${name}-${theme}-${viewport.width}`);
     }
-  } check('All six real setting pages fit both actual native content viewports with reachable navigation and actions');
+  } check('All six real setting pages and default-model portals fit light/dark native viewports with readable text and real Escape focus restoration');
+  await page.emulateMedia({colorScheme:'light'});
   await page.getByTestId('nav-ai').click(); await page.getByTestId('xiaozhi-pi-workspace').waitFor(); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled());
   const marker = '设置验收合成教研纪要';
+  await page.getByRole('button', { name: '选择模型', exact: true }).click(); await page.getByRole('menuitemradio', { name: 'deepseek-v4-pro', exact: true }).click(); await until(async () => (await snapshot()).projection.model === 'deepseek-v4-pro' && !await page.getByTestId('office-prompt-input').isDisabled()); assert.equal(config(), storedConfig);
+  await page.getByRole('button', { name: '选择模型', exact: true }).click(); await page.getByRole('menuitemradio', { name: 'deepseek-flash', exact: true }).click(); await until(async () => (await snapshot()).projection.model === 'deepseek-flash' && !await page.getByTestId('office-prompt-input').isDisabled()); assert.equal(config(), storedConfig); check('Current conversation model menu selects both actual official models while preserving saved default configuration');
+  await page.getByTestId('pi-skill-picker').click(); await page.getByRole('menuitemradio', { name: '教学办公文稿', exact: true }).click();
   await page.getByTestId('office-prompt-input').fill(`这是合成办公连接验收。不要调用工具，仅回复“${marker}”。`); await page.getByRole('button', { name: '发送消息', exact: true }).click(); await until(async () => (await snapshot()).projection.turns.length > 0); await until(async () => !(await snapshot()).running);
-  const completed = (await snapshot()).projection.turns.at(-1); assert.equal(completed.status, 'completed'); assert(completed.items.some(item => item.role === 'assistant' && item.text?.includes(marker))); assert.equal(await page.getByTestId('office-prompt-input').inputValue(), ''); check('Real official DeepSeek reply completes through the preserved formal composer after unified settings');
+  const completed = (await snapshot()).projection.turns.at(-1);assert.equal(completed.items.find(v=>v.role==='user').text,`这是合成办公连接验收。不要调用工具，仅回复“${marker}”。`);check('Ordinary selected-skill live and completed public bubble presents teacher input without the injected command'); assert.equal(completed.status, 'completed'); assert(completed.items.some(item => item.role === 'assistant' && item.text?.includes(marker))); assert.equal(await page.getByTestId('office-prompt-input').inputValue(), ''); check('Real official DeepSeek reply completes through the preserved formal composer after unified settings');
+  report.titleObservation = { raw: query('SELECT title FROM ai_conversation_sessions WHERE id=?', [id])[0].title, rendered: await page.getByTestId(`ai-conversation-session-${id}`).innerText(), rawPromptPrefix: query('SELECT content FROM ai_conversation_messages WHERE session_id=? AND role=? ORDER BY created_at LIMIT 1', [id, 'user'])[0].content.slice(0, 80) };
+  assert(report.titleObservation.raw.startsWith('这是合成办公连接验收。'));assert(!report.titleObservation.raw.includes('/skill:'));assert(report.titleObservation.rawPromptPrefix.startsWith('/skill:teaching-office '));assert(report.titleObservation.rendered.includes(report.titleObservation.raw));check('Ordinary selected-skill send has a task-only persisted/rendered title while the original prompt retains its Pi command');
+  const manualPrompt='/skill:teaching-office 仅回复“MANUAL-'+marker+'”，不要调用工具。';
+  await page.getByTestId('office-prompt-input').fill(manualPrompt);await page.getByRole('button',{name:'发送消息',exact:true}).click();await until(async()=>{const v=await snapshot();return v.projection.turns.length===2&&!v.running;});
+  const manualTurn=(await snapshot()).projection.turns.at(-1);assert.equal(manualTurn.status,'completed');assert.equal(manualTurn.items.find(v=>v.role==='user').text,manualPrompt);assert(manualTurn.items.some(v=>v.role==='assistant'&&v.text?.includes('MANUAL-'+marker)));check('Actual user-typed skill command stays visible and executes through Pi rather than being stripped as an automatic prefix');
+  for(const theme of ['light','dark'])for(const size of [[1366,768],[1920,1080]]){
+    await page.emulateMedia({colorScheme:theme});await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(...size),size);await page.waitForFunction(([w,h])=>innerWidth===w&&innerHeight===h,size);
+    await page.locator('.chat-message--user').first().scrollIntoViewIfNeeded();assert(!(await page.locator('.chat-message--user').first().innerText()).startsWith('/skill:'));assert((await page.locator('.chat-message--user').nth(1).innerText()).startsWith('/skill:teaching-office '));await stableCapture('public-message-'+theme+'-'+size[0]);
+  }check('Ordinary automatic input and explicit literal command retain distinct public rendering in both native sizes and themes');
+  await page.emulateMedia({colorScheme:'light'});
+  await page.getByTestId(`ai-conversation-session-${id}`).click({button:'right'});await page.getByTestId('ai-conversation-context-rename').click();await page.getByTestId(`ai-conversation-rename-session-${id}`).fill('新对话');await page.getByTestId(`ai-conversation-rename-session-${id}`).press('Enter');await until(()=>query('SELECT title_source FROM ai_conversation_sessions WHERE id=?',[id])[0].title_source==='manual');
+  report.stoppedRequestOffset = requests.length + (await app.evaluate(() => globalThis.currentSettingsRequests)).length;
   await page.getByTestId('office-prompt-input').fill('这是合成教研办公验收。请不要调用工具，分成15段详细写一篇分数课教研方案，每段至少100字。'); await page.getByRole('button', { name: '发送消息', exact: true }).click(); await until(async () => (await snapshot()).running);
   const runId = (await snapshot()).projection.turns.at(-1).id;
   await app.evaluate(({ Menu, BrowserWindow }) => { const item = Menu.getApplicationMenu().getMenuItemById('settings'); item.click(item, BrowserWindow.getAllWindows()[0], { triggeredByAccelerator: false }); });
   await page.getByTestId('pi-settings-workspace').waitFor(); await tab('backup'); await until(async () => await page.getByTestId('data-backup-export').isDisabled()); assert((await snapshot()).running);
   assert(await page.evaluate(async () => { try { await window.omniEdu.exportDataRoot(); return false; } catch(error) { return String(error).includes('busy'); } }));
-  await page.getByTestId('nav-ai').click(); await page.getByTestId('xiaozhi-pi-workspace').waitFor(); assert((await snapshot()).running); assert.equal((await snapshot()).projection.turns.at(-1).id, runId); await page.getByRole('button', { name: '停止本轮', exact: true }).click(); await until(async () => !(await snapshot()).running); check('Actual live run survives native Settings→Back unchanged and blocks local backups until stopped');
+  await page.getByTestId('nav-ai').click(); await page.getByTestId('xiaozhi-pi-workspace').waitFor(); assert((await snapshot()).running); assert.equal((await snapshot()).projection.turns.at(-1).id, runId); await page.getByRole('button', { name: '停止本轮', exact: true }).click(); await until(async () => !(await snapshot()).running); assert.equal((await snapshot()).projection.turns.at(-1).status, 'interrupted'); assert.match((await snapshot()).projection.turns.at(-1).error, /已停止本轮/); report.stoppedRunId = runId; check('Actual live run survives native Settings→Back unchanged and blocks local backups until stopped');
+  assert.equal(query('SELECT title FROM ai_conversation_sessions WHERE id=?',[id])[0].title,'新对话');check('Real subsequent ordinary task and stop preserve the teacher rename to the default label');
   await open(); await tab('permissions'); assert(await page.getByTestId('pi-settings-workspace-choose').isDisabled()); check('Bound conversation directory remains locked after real native history exists');
+  await page.getByTestId('nav-ai').click(); await page.getByTestId('xiaozhi-pi-workspace').waitFor(); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled());
+  const liveId = id, nativeFile = path.join(data, 'xiaozhi-pi', query('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?', [liveId])[0].session_file), nativeBytes = fs.readFileSync(nativeFile);
+  await page.getByTestId(`ai-conversation-session-${liveId}`).click({ button: 'right' }); await page.getByTestId('ai-conversation-context-rename').click(); const renamed = '合成教研设置复核'; await page.getByTestId(`ai-conversation-rename-session-${liveId}`).fill(renamed); await page.getByTestId(`ai-conversation-rename-session-${liveId}`).press('Enter'); await until(() => query('SELECT title FROM ai_conversation_sessions WHERE id=?', [liveId])[0].title === renamed);
+  await page.getByTestId('pi-conversation-search').click(); await page.getByTestId('pi-conversation-search-input').fill('设置复核'); assert(await page.getByTestId(`ai-conversation-session-${liveId}`).isVisible()); await page.getByTestId('pi-conversation-search-input').fill('无此对话随机标题'); assert.equal(await page.getByTestId(`ai-conversation-session-${liveId}`).count(), 0); await page.getByTestId('pi-conversation-search-input').press('Escape'); await page.getByTestId(`ai-conversation-session-${liveId}`).waitFor(); assert(fs.readFileSync(nativeFile).equals(nativeBytes)); check('Original sidebar renames and filters the real conversation while retaining original native message bytes');
+  for(const theme of ['light','dark'])for(const size of [[1366,768],[1920,1080]]){
+    await page.emulateMedia({colorScheme:theme});await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(...size),size);await page.waitForFunction(([w,h])=>innerWidth===w&&innerHeight===h,size);
+    await page.getByTestId(`ai-conversation-session-${liveId}`).click({button:'right'});await page.getByTestId('ai-conversation-context-archive').click();const dialog=page.getByRole('alertdialog');await dialog.waitFor();
+    await page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='ai-conversation-archive-cancel');
+    for(let i=0;i<4;i++){await page.keyboard.press('Tab');assert(await dialog.evaluate(n=>n.contains(document.activeElement)),'Archive modal must trap keyboard focus');}
+    for(const locator of [dialog.locator('p'),page.getByTestId('ai-conversation-archive-cancel'),page.getByTestId('ai-conversation-archive-confirm')]){const contrast=await measureTextContrast(locator);report.contrast.push({theme,width:size[0],label:'archive-confirmation',...contrast});assert(contrast.ratio>=4.5);}
+    const r=await dialog.boundingBox();assert(r&&r.x>=0&&r.y>=0&&r.x+r.width<=size[0]+1&&r.y+r.height<=size[1]+1);await stableCapture(`archive-dialog-${theme}-${size[0]}`);
+    await page.keyboard.press('Escape');await dialog.waitFor({state:'hidden'});assert.equal(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?',[liveId])[0].archived_at,null);report.viewports.push({theme,width:size[0],height:size[1],surface:'archive-dialog',chrome:await assertWorkspaceChrome(page)});
+  }check('Real archive confirmation traps focus and Escape cancels without mutation across native light/dark viewports');
+  await page.emulateMedia({colorScheme:'light'});
+  await page.getByTestId(`ai-conversation-session-${liveId}`).click({ button: 'right' }); await page.getByTestId('ai-conversation-context-archive').click(); await page.getByTestId('ai-conversation-archive-cancel').click(); assert.equal(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?', [liveId])[0].archived_at, null);
+  await page.getByTestId(`ai-conversation-session-${liveId}`).click({ button: 'right' }); await page.getByTestId('ai-conversation-context-archive').click(); await page.getByTestId('ai-conversation-archive-confirm').click(); await until(async () => await page.locator('.office-composer-container').getAttribute('data-session-id') !== liveId); id = await page.locator('.office-composer-container').getAttribute('data-session-id'); assert(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?', [liveId])[0].archived_at); check('Actual live conversation archive cancellation preserves history and confirmation creates a fresh conversation from the sidebar');
+  await open(); await tab('archives'); await page.getByTestId(`pi-archive-read-${liveId}`).click(); await page.getByTestId('pi-settings-archive-reader').getByText(marker, { exact: true }).waitFor(); assert.equal((await snapshot()).projection.turns.length, 0); assert(fs.readFileSync(nativeFile).equals(nativeBytes));assert.equal(await page.getByTestId('pi-settings-archive-reader').locator('.chat-message--user').first().innerText(),`这是合成办公连接验收。不要调用工具，仅回复“${marker}”。`);check('Archived real selected-skill message uses the same public overlay without editing native history');
+  await page.getByTestId('nav-ai').click(); await close(); await launch(); assert.equal(config(), storedConfig); assert(fs.readFileSync(nativeFile).equals(nativeBytes)); assert.equal(query('SELECT title FROM ai_conversation_sessions WHERE id=?', [liveId])[0].title, renamed); assert.equal((await page.evaluate(() => globalThis.currentSettingsEvents)).filter(e => e.kind === 'tool_start').length, 0); await open(); await tab('archives'); await page.getByTestId(`pi-archive-read-${liveId}`).click(); await page.getByTestId('pi-settings-archive-reader').getByText(marker, { exact: true }).waitFor(); check('Actual archived live reply and teacher title remain readable after cold restart with unchanged native bytes and zero startup tool replay');
   assert.equal(sha(path.join(working, 'meeting.txt')), sourceHashes[0]); assert.equal(sha(path.join(skillRoot, 'SKILL.md')), sourceHashes[1]); assert.deepEqual(errors, []); check('Source teacher fixtures remain byte-identical and renderer has no runtime exceptions');
-  report.success = true;
+  assert.equal(fingerprint(buildRoot).sha256, fixed.sha256); report.success = true;
 } catch (error) { process.exitCode = 1; report.error = String(error.stack || error).replaceAll(apiKey, '[redacted]').slice(0, 2200); await page?.getByTestId('pi-settings-key').fill('').catch(() => {}); await page?.screenshot({ path: path.join(output, 'failure.png') }).catch(() => {}); }
-finally { await app?.close().catch(() => {}); report.rendererErrors = errors; fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify({ success: report.success, checks: report.checks.length, output, error: report.error })); }
+finally { await close().catch(() => {}); report.requests = requests; report.rendererErrors = errors; if (report.success && (!requests.some((v,i) => i < report.stoppedRequestOffset && v.status === 200) || requests.some((v,i) => !v.credentialMatchesSaved || (v.status !== 200 && !(i >= report.stoppedRequestOffset && report.stoppedRunId && v.aborted === true))))) { report.success = false; report.error = 'Actual saved credential transport evidence failed'; process.exitCode = 1; } fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify({ success: report.success, checks: report.checks.length, output, error: report.error })); }

@@ -1,0 +1,127 @@
+/* Scoped adaptation of the public HeroUI glass theme. Existing Pro components
+   retain layout, disclosure and file authority; reading surfaces stay opaque. */
+@import './pi-workspace-theme.css';
+.ai-console-v3.xiaozhi-pi-workspace {
+  background: linear-gradient(135deg, #e8efed 0%, #edf3f0 52%, #f0eee8 100%);
+}
+.pi-themed-surface :is(input, textarea)::placeholder {
+  color: var(--pi-muted);
+  opacity: 1;
+}
+.xiaozhi-pi-workspace :is(.office-conversation, .office-composer-container),
+.pi-themed-surface :is(.office-conversation, .office-composer-container) {
+  --office-ink: var(--pi-ink);
+  --office-muted: var(--pi-muted);
+  --office-line: var(--pi-line);
+  --office-accent: var(--pi-accent);
+  --office-paper: var(--pi-paper);
+  --office-user: var(--pi-soft);
+  --office-danger: var(--pi-danger);
+}
+.xiaozhi-pi-workspace :is(.pi-icon-rail, .pi-shell) { background: transparent; }
+.ai-console-v3.xiaozhi-pi-workspace .pi-conversation-sidebar {
+  background: var(--pi-chrome);
+  backdrop-filter: blur(var(--pi-blur)) saturate(120%);
+  border-right: 1px solid var(--pi-line);
+}
+.xiaozhi-pi-workspace .pi-shell .app-layout__body {
+  background: var(--pi-paper);
+  border-radius: 20px 0 0 20px;
+  border: 1px solid var(--pi-line);
+  border-right: 0;
+  box-shadow: var(--pi-shadow);
+}
+.ai-console-v3.xiaozhi-pi-workspace .ai-chat-surface { background: var(--pi-paper); }
+.ai-console-v3.xiaozhi-pi-workspace .ai-chat-header {
+  background: var(--pi-chrome);
+  backdrop-filter: blur(var(--pi-blur));
+  border-color: var(--pi-line);
+}
+.xiaozhi-pi-workspace :is(.pi-icon-rail button, .ai-chat-header button, .ai-session-header button) { color: var(--pi-muted); }
+.xiaozhi-pi-workspace :is(.ai-chat-header-title strong, .pi-conversation-sidebar .ai-session-header h2) { color: var(--pi-ink); }
+.xiaozhi-pi-workspace :is(.pi-icon-rail button, .ai-chat-header button, .ai-session-header button, .pi-new-chat):hover { background: var(--pi-hover); }
+.xiaozhi-pi-workspace .pi-icon-rail button[aria-pressed='true'] { background: var(--pi-active); color: var(--pi-ink); }
+.ai-console-v3.xiaozhi-pi-workspace :is(.pi-new-chat, .ai-folder-title, .chat-list-view__title, [data-slot='chat-list-view-title']) { color: var(--pi-ink); }
+.ai-console-v3.xiaozhi-pi-workspace .office-turn [data-slot='chat-message-bubble'] { background: var(--pi-soft); color: var(--pi-ink); }
+.xiaozhi-pi-workspace .office-turn [data-slot='chat-message-bubble'] [data-slot='markdown'] { color: var(--pi-ink); }
+.xiaozhi-pi-workspace .pi-goal-new button { color: var(--pi-muted); }
+.xiaozhi-pi-workspace .pi-workspace-activity {
+  display: flex; align-items: center; gap: 8px; min-height: 28px;
+  margin: 0 12px 8px; color: var(--pi-muted); font-size: 14px; line-height: 1.6;
+}
+.xiaozhi-pi-workspace .pi-workspace-activity > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xiaozhi-pi-workspace .pi-workspace-activity > :first-child { flex-shrink: 0; }
+.xiaozhi-pi-workspace .pi-workspace-activity:is([data-state='approval'], [data-state='input']) { color: var(--pi-needs); }
+.xiaozhi-pi-workspace .ai-chat-header { color: var(--pi-ink); }
+.xiaozhi-pi-workspace .ai-chat-header-title { color: var(--pi-muted); }
+.ai-console-v3.xiaozhi-pi-workspace :is(.chat-list-view__item-content.active, [data-slot='chat-list-view-item-content'].active) { background: var(--pi-active); }
+.ai-console-v3.xiaozhi-pi-workspace .ai-folder-actions > button { color: var(--pi-muted); }
+.xiaozhi-pi-workspace .pi-conversation-search-input { background: var(--pi-paper); border-color: var(--pi-line); color: var(--pi-ink); }
+.xiaozhi-pi-workspace .pi-shell .app-layout__aside {
+  /* The shell lives below desktop chrome; a viewport-height aside would
+     create scrollable overflow in the hidden outer shell and move its header. */
+  height: 100%;
+  min-height: 0;
+  background: var(--pi-soft);
+  padding: 16px 12px;
+  border-left: 1px solid var(--pi-line);
+}
+.xiaozhi-pi-workspace .pi-shell-files :is(.app-layout__aside, .app-layout__aside-panel) { padding: 0; background: var(--pi-paper); }
+.xiaozhi-pi-workspace .pi-context-card {
+  background: var(--pi-overlay);
+  backdrop-filter: blur(var(--pi-blur));
+  color: var(--pi-muted);
+  padding: 16px;
+  border: 1px solid var(--pi-line);
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgb(38 59 57 / 3%);
+}
+.xiaozhi-pi-workspace .pi-context-card :is(section, .pi-task-details) { border-color: var(--pi-line); }
+.xiaozhi-pi-workspace :is(.pi-context-header, .pi-context-status, .pi-context-location, .pi-context-local, .pi-history-note, .pi-context-sources p) { color: var(--pi-muted); }
+.xiaozhi-pi-workspace .pi-context-status { color: var(--pi-ink); }
+.xiaozhi-pi-workspace .pi-context-status[data-state='approval'],
+.xiaozhi-pi-workspace .pi-context-status[data-state='input'] { color: var(--pi-needs); font-weight: 600; }
+.xiaozhi-pi-workspace .pi-context-status:is([data-state='failed'], [data-state='send_interrupted']) { color: var(--pi-danger); }
+.xiaozhi-pi-workspace :is(.pi-context-sources h4, .pi-task-details [data-slot='chat-tool-trigger'], .pi-context-header button, .pi-context-sources li, .pi-context-sources a) { color: var(--pi-ink); }
+.xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-shell'] {
+  border-color: var(--pi-line);
+  box-shadow: 0 2px 8px rgb(38 59 57 / 4%), 0 8px 22px rgb(38 59 57 / 3%);
+  border-radius: 24px;
+}
+.xiaozhi-pi-workspace .office-composer :is(.office-model-picker, .office-skill-picker) { color: var(--pi-muted); }
+.xiaozhi-pi-workspace .office-composer .office-permission { color: var(--pi-needs); }
+.xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-send'] { background: var(--pi-accent); color: #fff; }
+.xiaozhi-pi-workspace :is(.pi-copy-approval, .pi-queued-instruction, .pi-skill-preview) { background: var(--pi-paper); color: var(--pi-ink); border-color: var(--pi-line); }
+.xiaozhi-pi-workspace .pi-copy-approval { border-left: 3px solid var(--pi-needs); }
+.xiaozhi-pi-workspace .pi-question-answer textarea { background: var(--pi-paper); color: var(--pi-ink); border-color: var(--pi-line); }
+.xiaozhi-pi-workspace .pi-file-panel { background: var(--pi-paper); color: var(--pi-ink); border-color: var(--pi-line); }
+.xiaozhi-pi-workspace :is(.pi-file-toolbar, .pi-file-reading .tabs__list-container, .pi-file-explorer) { border-color: var(--pi-line); }
+.xiaozhi-pi-workspace .pi-file-toolbar { background: var(--pi-chrome); backdrop-filter: blur(var(--pi-blur)); }
+.xiaozhi-pi-workspace :is(.pi-file-toolbar > button, .pi-file-toolbar-empty, .pi-file-toolbar .tabs__tab, .pi-file-breadcrumb, .pi-file-empty) { color: var(--pi-muted); }
+.xiaozhi-pi-workspace .pi-file-toolbar .tabs__tab[data-selected] { background: var(--pi-paper); color: var(--pi-ink); border-color: var(--pi-line); }
+.xiaozhi-pi-workspace .pi-file-breadcrumb > span { border-color: var(--pi-line); }
+.xiaozhi-pi-workspace .pi-file-preview { color: var(--pi-ink); }
+.xiaozhi-pi-workspace .pi-file-preview .markdown { --markdown-ink: var(--pi-ink); color: var(--pi-ink); }
+.xiaozhi-pi-workspace .pi-file-explorer input { background: var(--pi-paper); color: var(--pi-ink); border-color: var(--pi-line); }
+.xiaozhi-pi-workspace .pi-file-explorer input::placeholder { color: var(--pi-muted); opacity: 1; }
+.xiaozhi-pi-workspace .pi-file-explorer [role='alert'] { color: var(--pi-danger); }
+.xiaozhi-pi-workspace :is(button, input, textarea, [role='tab'], [role='treeitem'], a):focus-visible {
+  outline: 2px solid var(--pi-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ai-console-v3.xiaozhi-pi-workspace { background: linear-gradient(135deg, #172722, #222b23 65%, #29291f); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xiaozhi-pi-workspace *, .xiaozhi-pi-workspace *::before, .xiaozhi-pi-workspace *::after {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (forced-colors: active) {
+  .ai-console-v3.xiaozhi-pi-workspace :is(.pi-conversation-sidebar, .pi-context-card, .ai-chat-header, .pi-file-toolbar) { backdrop-filter: none; }
+  .xiaozhi-pi-workspace :is([aria-pressed='true'], [data-slot='chat-list-view-item-content'].active) { outline: 1px solid Highlight; outline-offset: -1px; }
+}

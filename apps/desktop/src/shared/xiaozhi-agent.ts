@@ -54,6 +54,6 @@ export type XiaozhiAgentEventPayload = (
 export type XiaozhiAgentEvent = { sessionId: string; runId: string; sequence: number } & XiaozhiAgentEventPayload;
 export type XiaozhiAgentResult = { ok: true; runId: string; text: string; truncated: boolean }
   | { ok: false; runId: string; error: XiaozhiAgentError };
-export type XiaozhiStartInput = { sessionId: string; prompt: string; commandId: string; attachments?: import('./xiaozhi-attachments').XiaozhiAttachmentSelection[] };
+export type XiaozhiStartInput = { sessionId: string; prompt: string; commandId: string; presentation?: import('./xiaozhi-message-presentation').XiaozhiMessagePresentation; attachments?: import('./xiaozhi-attachments').XiaozhiAttachmentSelection[] };
 export type XiaozhiStartResult = { ok: true; runId: string } | { ok: false; error: XiaozhiAgentError };
 export type XiaozhiWorkspaceSnapshot = { enabled: boolean; projection: OfficeProjection; running: boolean; operation?: 'compact'; modelCapabilities?: XiaozhiModelCapabilities; contextPolicy?: XiaozhiContextPolicy; legacyHistory: boolean; interruptedSend?: boolean; approvals?: XiaozhiApproval[]; changes?: XiaozhiChangeSummary[]; officeArtifacts?: OfficeArtifactSummary[]; controls?: XiaozhiControl[]; goal?: import('./xiaozhi-goal').XiaozhiGoal; workspace?: { label: string }; budgetSettings?: XiaozhiBudgetSettings; limitsEnforced?: boolean; browser?:XiaozhiBrowserStatus; usage?: XiaozhiUsage[]; memoryScope?: XiaozhiMemoryScope; skills?: XiaozhiSkill[] };

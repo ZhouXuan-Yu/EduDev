@@ -9,6 +9,8 @@ const {registerOfficeArtifactIpc}=await import('../../src/main/xiaozhi-agent/off
 const {createPiXiaozhiSession}=await import('../../src/main/xiaozhi-agent/pi-session.ts');
 const {getPiProtectedContext}=await import('../../src/main/xiaozhi-agent/compaction-context.ts');
 const {fileVersion}=await import('../../src/main/xiaozhi-agent/workspace-files.ts');
+const {createHanaOfficeTools}=await import('../../src/main/office-agent/hana-tool-adapter.ts');
+const {createOfficeDeliveryPresentation,officeDeliveryText}=await import('../../src/main/xiaozhi-agent/office-delivery-presentation.ts');
 const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-office-coordinator-'));
 const workspace=path.join(output,'workspace'),dataRoot=path.join(output,'data'),stateRoot=path.join(output,'sdk');for(const root of[workspace,dataRoot,stateRoot])fs.mkdirSync(root);
 const db=new DatabaseSync(path.join(dataRoot,'ledger.db')),sessionId=`aisession_${randomUUID()}`,other=`aisession_${randomUUID()}`,runId='owned-office-run';
@@ -30,6 +32,51 @@ const report={success:false,checks:[],boundary:'Actual Pi registry/once/teacher 
 const check=async(name,fn)=>{await fn();report.checks.push({name,pass:true});console.log('PASS '+name);};let agent;
 globalThis.fetch=async()=>{throw new Error('No network in coordinator gate');};
 try{
+ await check('Office public delivery uses current-run actual outcomes, blocks stale post-review prose and preserves tools/ordinary messages',async()=>{
+  const row={schemaVersion:'xiaozhi.office-artifact.v1',id:'synthetic',runId,callId:'save',path:'课堂[37].xlsx',format:'xlsx',state:'saved',revision:5,artifactId:'synthetic-artifact',sourceCount:0};
+  const view=createOfficeDeliveryPresentation(runId);
+  assert.equal(view.hasArtifacts,false);
+  assert.equal(view.events({kind:'text_delta',delta:'先读取资料。'}).length,1);
+  assert.equal(view.events({kind:'office_artifact',artifact:{...row,runId:'foreign'}}).length,1);
+  assert.equal(view.hasArtifacts,false);
+  assert.equal(view.events({kind:'text_delta',delta:'不受其他轮影响。'}).length,1);
+  assert.equal(view.events({kind:'office_artifact',artifact:row}).length,1);
+  assert.equal(view.hasArtifacts,true);
+  assert.equal(view.events({kind:'text_delta',delta:'The file still contains 37 minutes and old title.'}).length,0);
+  assert.equal(view.events({kind:'tool_start',callId:'next',tool:'office_read_document'}).length,1);
+  assert.deepEqual(view.events({kind:'assistant_end',segment:3,final:true}),[{kind:'assistant_end',segment:3,final:true}]);
+  view.events({kind:'assistant_start',segment:4});
+  assert.deepEqual(view.events({kind:'text_delta',delta:'接下来核对资料。'}),[]);
+  assert.deepEqual(view.events({kind:'assistant_end',segment:4,final:false}),[{kind:'text_delta',delta:'接下来核对资料。'},{kind:'assistant_end',segment:4,final:false}]);
+  const text=officeDeliveryText(runId,[row,{...row,runId:'foreign',path:'不属于本轮.xlsx'}]);
+  assert(text.includes('已保存')&&text.includes('课堂\\[37\\]\\.xlsx')&&!text.includes('不属于本轮'));
+  assert.equal(officeDeliveryText('empty',[row]),undefined);
+  for(const state of ['pending','rejected','conflict','failed','interrupted','uncertain']){
+   const receipt=officeDeliveryText(runId,[{...row,state,artifactId:null}], 'stopped');
+   assert(receipt.startsWith('本轮已停止。'));assert(!receipt.includes('已保存的文件'));
+  }
+  assert(officeDeliveryText(runId,[row,{...row,path:'尚未完成.pdf',state:'uncertain'}],'failed').includes('请先核验保存结果'));
+ });
+ await check('Actual Hana text version enters the existing Office source CAS and teacher review; body SHA is rejected',async()=>{
+  const filename='正文来源.txt';fs.writeFileSync(path.join(workspace,filename),'教研资料37分钟');
+  const host=createHanaOfficeTools({workspace,sessionId,runId,fileVersion});
+  const read=await host.execute('office_read_text','version-read',{path:filename});assert(read.success);
+  const wrong=await tool.execute('wrong-body-sha',proposal('错误版本',[{path:filename,version:read.data.sha256}]),new AbortController().signal);
+  assert(wrong.isError);assert.equal(JSON.parse(wrong.content[0].text).error,'conflict');assert(!fs.existsSync(path.join(workspace,'错误版本.xlsx')));
+  const work=tool.execute('correct-read-version',proposal('正确来源',[{path:filename,version:read.data.version}]),new AbortController().signal),row=await pending('correct-read-version');
+  assert((await coordinator.review(address(row))).ok);assert((await decide(row,'reject')).ok);assert((await work).isError);assert(!fs.existsSync(path.join(workspace,row.path)));
+ });
+ await check('Invalid row width or webpage-as-file source returns pre-review format error, zero wait/ledger/file effects',async()=>{
+  const before=(await state.list(sessionId)).length,eventCount=events.length;
+  const badRow=proposal('bad-row');badRow.draft.sections[0].table.rows[0]=['缺失列'];
+  const badSource=proposal('bad-source',[{path:'https://www.moe.gov.cn/',version:'1'}]);
+  for(const [index,raw]of [badRow,badSource].entries()){
+   const result=await tool.execute('invalid-'+index,raw,new AbortController().signal),body=JSON.parse(result.content[0].text);
+   assert(result.isError&&!body.success);assert.equal(body.error,'invalid_input');assert(body.message.includes('尚未进入教师审阅'));
+   assert(!fs.existsSync(path.join(workspace,raw.path)));
+  }
+  assert.equal((await state.list(sessionId)).length,before);assert.equal(events.length,eventCount);
+ });
  await check('Actionable durable wait, local review and rejection contain no private content in events/model and no file effect',async()=>{
   const work=tool.execute('reject',proposal('私有名字'),new AbortController().signal),row=await pending('reject');
   const review=await coordinator.review(address(row));assert(review.ok&&review.value.draft.title==='私有正文标题');assert(!fs.existsSync(path.join(workspace,row.path)));

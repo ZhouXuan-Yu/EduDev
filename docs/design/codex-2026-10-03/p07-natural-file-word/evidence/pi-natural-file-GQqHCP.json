@@ -1,0 +1,101 @@
+{
+  "directory": "pi-natural-file-GQqHCP",
+  "success": true,
+  "checks": [
+    {
+      "name": "FILE-01 exact natural prompt actually reads random attachment body and cites code/37/8/source with cleared composer",
+      "pass": true
+    },
+    {
+      "name": "FILE-01 submitted history opens actual captured body without re-upload",
+      "pass": true
+    },
+    {
+      "name": "FILE-02 natural list/read uses actual authorized folder and file-only random code",
+      "pass": true
+    },
+    {
+      "name": "FILE-02 unauthorized sibling is explicitly refused without its secret body or successful tool result",
+      "pass": true
+    },
+    {
+      "name": "FILE-03 exact natural edit reject preserves random code and all unrelated bytes; actual review and durable result",
+      "pass": true
+    },
+    {
+      "name": "FILE-03 exact natural edit approve preserves random code and all unrelated bytes; actual review and durable result",
+      "pass": true
+    },
+    {
+      "name": "FILE-04 exact natural Word task proposes four actual weekly goals/tasks and blank owner cells, with no pre-approval file",
+      "pass": true
+    },
+    {
+      "name": "FILE-04 1366x768 real Word review/approve/reject controls reachable",
+      "pass": true
+    },
+    {
+      "name": "FILE-04 1920x1080 real Word review/approve/reject controls reachable",
+      "pass": true
+    },
+    {
+      "name": "FILE-04 approval creates one actual DOCX whose SQLite receipt/hash/size match disk",
+      "pass": true
+    },
+    {
+      "name": "FILE-04 independent python-docx readback exactly matches all reviewed paragraphs and table cells",
+      "pass": true
+    },
+    {
+      "name": "FILE-04 saved Word opens actual version-checked preview at both sizes",
+      "pass": true
+    },
+    {
+      "name": "FILE-04 cold reopen preserves exact Word/native prefix/one artifact and reopens without tool replay",
+      "pass": true
+    },
+    {
+      "name": "No renderer errors; fixed build unchanged; WPS fixture is exact approved DOCX copy",
+      "pass": true
+    }
+  ],
+  "layer": "C: isolated formal Electron",
+  "build": {
+    "root": "D:\\WorkProject\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-natural-file-build2",
+    "files": 323,
+    "sha256": "0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981"
+  },
+  "scriptSha256": "600cbedcdfaffb50e158b10ecae445add8f7f1fa681b655356222d1053c6070d",
+  "boundary": "Original FILE-01/03/04 natural prompts, actual formal tools/approval/local files and cold restore; WPS reported separately. No daily credentials, VPN-off, installer or other Office-format claim.",
+  "humanAccepted": false,
+  "previousFailures": [
+    {
+      "directory": "pi-natural-file-gnqkcD",
+      "checks": 3,
+      "buildSha256": "4ddacc05613d99a89c112b9bc2feeed43efbad99eb0cf3afd228967d3b0db903",
+      "scriptSha256": "9740bc35d791753f6ac0ac45bd42d97be9bfb271ed49eb46f9372aa0f08a09b0",
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:"
+    },
+    {
+      "directory": "pi-natural-file-HnL8oG",
+      "checks": 4,
+      "buildSha256": "4ddacc05613d99a89c112b9bc2feeed43efbad99eb0cf3afd228967d3b0db903",
+      "scriptSha256": "b5d904422020b525b81f0e51c32100054cc989431d8b9f3eeb42073ee7e5f644",
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:"
+    },
+    {
+      "directory": "pi-natural-file-KwXDKJ",
+      "checks": 2,
+      "buildSha256": "4ddacc05613d99a89c112b9bc2feeed43efbad99eb0cf3afd228967d3b0db903",
+      "scriptSha256": "2730d97ac28da25da158560683226ed7d9279793fa5c30aab57566d9e53a46c6",
+      "error": "Error: Natural FILE condition timed out"
+    },
+    {
+      "directory": "pi-natural-file-mKhVje",
+      "checks": 5,
+      "buildSha256": "4ddacc05613d99a89c112b9bc2feeed43efbad99eb0cf3afd228967d3b0db903",
+      "scriptSha256": "600cbedcdfaffb50e158b10ecae445add8f7f1fa681b655356222d1053c6070d",
+      "error": "Error: Natural task ended before review: {\"id\":\"run_1b091cd9-a5de-4ab0-adda-fd41ac044f92\",\"status\":\"completed\",\"items\":[{\"id\":\"aimsg_36562fb9-d98c-4130-8343-378951129641\",\"kind\":\"message\",\"role\":\"user\",\"text\":\"把课堂37分钟改为41分钟，其余保留，先展示变更让我确认。\"},{\"id\":\"run_1b091cd9-a5de-4ab0-adda-fd41ac044f92:segment:1\",\"kind\":\"message\",\"role\":\"assistant\",\"phase\":\"final_answer\",\"text\":\"我无法重复提交这次修改。\\n\\n说明一下当前情况：\\n\\n- 上一轮我已就“课堂37分钟”改为“课堂41分钟”提出审阅，**你选择了拒绝**，该次没有写入，文件保持原样。\\n- 按规则，同一处修改在被拒绝后不能重复请求；本地记录也显示这次编辑的状态是“已拒绝”。\\n- 本次请求与上次的目标内容、位置完全相同，因此我不能再次发起同一个编辑。\\n\\n**当前文件真实状态**（来自此前实际读取）：03-资料实读.txt 仍为 核验码 EDU-60B44C4B、课堂37分钟、练习8道。\\n\\n**如需继续，可以这样处理：**\\n\\n1. 换一种改法，例如把课堂时长写为“41分钟”之外的表述，或同时调整其他字段——我会按新要求重新提出审阅；\\n2. 若你想保留 37 分钟不动，我也可以帮你基于现有内容起草别的教学文档（新文件，不覆盖原件）。\\n\\n告诉我你的选择即可。\"}],\"elapsedMs\":4185}"
+    }
+  ]
+}

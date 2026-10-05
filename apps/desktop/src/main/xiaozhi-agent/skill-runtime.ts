@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { loadSkillsFromDir, type LoadSkillsResult, type ToolDefinition } from '@earendil-works/pi-coding-agent';
-import { EDUCATION_SKILLS, skillDocument } from './education-skills';
+// Legacy SDK-only adapter preserves v1 native snapshots. Production uses managed-skills and reviewed current versions.
+import { LEGACY_EDUCATION_SKILLS as EDUCATION_SKILLS, legacySkillDocument as skillDocument } from './education-skills-legacy-v1';
 import { snapshotSkillsForSession, resolveSessionSkillsForRuntime } from './vendor/hana/lib/skills/session-skill-snapshot';
 
 const hash = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Dropdown, Label } from '@heroui/react';
+import { Button, Dropdown, Label, Tooltip } from '@heroui/react';
 import { BookOpen, ChevronDown, Mic, Plus, ShieldCheck } from 'lucide-react';
 import type { XiaozhiSkill } from '../../../shared/xiaozhi-skills';
 import type { OfficeRunStatus } from '../../../shared/office-agent';
@@ -10,6 +10,7 @@ import './pi-skill-settings.css';
 import './office-conversation.css';
 import './pi-control-surfaces.css';
 import {ATTACHMENT_ONLY_PROMPT} from '../../../shared/xiaozhi-start';
+import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 
 export interface OfficeModelOption { id: string; label: string; disabled?: boolean }
 export interface OfficeComposerProps {
@@ -20,7 +21,7 @@ export interface OfficeComposerProps {
   models: OfficeModelOption[];
   permissionLabel: string;
   disabled?: boolean;
-  onSubmit: (prompt: string) => void | Promise<void>;
+  onSubmit: (prompt: string, presentation?: XiaozhiMessagePresentation) => void | Promise<void>;
   onStop: () => void | Promise<void>;
   onModelChange?: (model: string) => void;
   onPermissions?: () => void;
@@ -44,7 +45,7 @@ export function OfficeComposer(props: OfficeComposerProps) {
 function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel, disabled = false, visible=true,
   onSubmit, onStop, onModelChange, onPermissions, onAttach, onWorkspace, attachments, attachDisabled=false,sendBlocked=false,hasAttachments=false, onVoice, onQueue, skills = [], taskSummary, attachLabel = '添加附件' }: OfficeComposerProps) {
   const { draft, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
-    stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
+    failedPresentation,setFailedPresentation,stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
   const skill = skills.find(item => item.name === skillName);
   const [openMenu,setOpenMenu]=useState<'permissions'|'skills'|'models'>();
   const menuChange=(menu:'permissions'|'skills'|'models',open:boolean)=>setOpenMenu(previous=>open?menu:previous===menu?undefined:previous);
@@ -52,16 +53,18 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
   useEffect(() => { if (skillName && !skills.some(item => item.name === skillName)) { setSkillName(''); setShowSkill(false); } }, [skills, skillName]);
   const running = status === 'running' || status === 'waiting_approval' || status === 'waiting_input';
 
-  async function send(prompt: string, clearDraft: boolean) {
+  async function send(prompt: string, clearDraft: boolean, retryPresentation?: XiaozhiMessagePresentation) {
     if (disabled || (!running&&sendBlocked) || (running && !onQueue) || sendLock.current || (!prompt.trim()&&(running||!hasAttachments))) return;
     sendLock.current = true;
     setSubmitting(true);
     setFailedPrompt(undefined);
     if (clearDraft) setDraft('');
     const text=prompt.trim()||ATTACHMENT_ONLY_PROMPT;
-    const outgoing = !running && skill && !text.startsWith('/skill:') ? `/skill:${skill.name} ${text}` : text;
-    try { if (running && onQueue) await onQueue(outgoing,queueMode); else await onSubmit(outgoing); setSkillName(''); setShowSkill(false); }
-    catch { setFailedPrompt(outgoing); }
+    const injected = clearDraft && !running && skill && !text.startsWith('/skill:');
+    const outgoing = injected ? `/skill:${skill.name} ${text}` : text;
+    const presentation = injected ? {version:1 as const,skill:skill.name,text} : retryPresentation;
+    try { if (running && onQueue) await onQueue(outgoing,queueMode); else await onSubmit(outgoing,presentation); setSkillName(''); setShowSkill(false);setFailedPresentation(undefined); }
+    catch { setFailedPrompt(outgoing);setFailedPresentation(presentation); }
     finally { sendLock.current = false; setSubmitting(false); }
   }
 
@@ -80,7 +83,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
     <div className="office-composer-container" data-session-id={sessionId}>
       {taskSummary}
       {running && onQueue && <div className="pi-queue-actions"><Button size="sm" variant="ghost" data-testid="pi-queue-mode-steer" aria-pressed={queueMode==='steer'} onPress={()=>setQueueMode('steer')}>补充本轮</Button><Button size="sm" variant="ghost" data-testid="pi-queue-mode-followup" aria-pressed={queueMode==='followUp'} onPress={()=>setQueueMode('followUp')}>接着处理</Button><Button size="sm" data-testid="pi-queue-submit" isDisabled={disabled || submitting || !draft.trim()} onPress={()=>void send(draft,true)}>发送补充</Button></div>}
-      {failedPrompt && <div className="office-send-error" role="alert"><span>消息未发送。你的新输入已保留。</span><Button size="sm" variant="ghost" isDisabled={running || submitting || disabled} onPress={() => void send(failedPrompt, false)}>重试发送</Button><Button size="sm" variant="ghost" onPress={() => setFailedPrompt(undefined)}>关闭</Button></div>}
+      {failedPrompt && <div className="office-send-error" role="alert"><span>消息未发送。你的新输入已保留。</span><Button size="sm" variant="ghost" isDisabled={running || submitting || disabled} onPress={() => void send(failedPrompt, false,failedPresentation)}>重试发送</Button><Button size="sm" variant="ghost" onPress={() => {setFailedPrompt(undefined);setFailedPresentation(undefined);}}>关闭</Button></div>}
       {stopFailed && <p className="office-send-error" role="alert">停止请求未送达，任务可能仍在运行，请重试。</p>}
       {stopping && <p className="office-history-notice" role="status">正在请求停止…</p>}
       {skill && showSkill && <section className="pi-skill-preview" data-testid="pi-skill-preview" aria-label="教育技能说明">
@@ -98,7 +101,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
           </PromptInput.Content>
           <PromptInput.Toolbar>
             <PromptInput.ToolbarStart>
-              <Button variant="ghost" isIconOnly aria-label={attachLabel} isDisabled={disabled || attachDisabled || !onAttach} onPress={onAttach}><Plus size={20} /></Button>
+              <Tooltip><Button variant="ghost" isIconOnly aria-label={attachLabel} isDisabled={disabled || attachDisabled || !onAttach} onPress={onAttach}><Plus size={20} /></Button><Tooltip.Content>{attachLabel}</Tooltip.Content></Tooltip>
               <Dropdown isOpen={visible&&openMenu==='permissions'} onOpenChange={open=>menuChange('permissions',open)}>
                 <Button variant="ghost" size="sm" className="office-permission" aria-label={permissionLabel} data-testid="pi-permission-picker" isDisabled={disabled}><ShieldCheck size={15} /><span title={permissionLabel}>{permissionLabel}</span></Button>
                 <Dropdown.Popover className="pi-office-menu" placement="top start">
@@ -112,7 +115,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
               </Dropdown>
               {skills.length > 0 && <><Dropdown isOpen={visible&&openMenu==='skills'} onOpenChange={open=>menuChange('skills',open)}>
                 <Button variant="ghost" size="sm" className="office-skill-picker" aria-label="选择教育技能" data-testid="pi-skill-picker" isDisabled={disabled || running || submitting}><BookOpen size={15} /><span title={skill?.title || '选择教育技能'}>{skill?.title || '技能'}</span><ChevronDown size={13} /></Button>
-                <Dropdown.Popover><Dropdown.Menu aria-label="教育技能" selectionMode="single" selectedKeys={[skillName || 'automatic']} onAction={key => {
+                  <Dropdown.Popover className="pi-office-menu" placement="top start"><Dropdown.Menu aria-label="教育技能" selectionMode="single" selectedKeys={[skillName || 'automatic']} onAction={key => {
                   if (!running && !sendLock.current) { setSkillName(key === 'automatic' ? '' : String(key)); setShowSkill(false); }
                 }}>
                   <Dropdown.Item id="automatic" key="automatic" textValue="按任务自动选择"><Label>按任务自动选择</Label><Dropdown.ItemIndicator /></Dropdown.Item>
@@ -134,7 +137,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
                   </Dropdown.Menu>
                 </Dropdown.Popover>
               </Dropdown>
-              <Button variant="ghost" isIconOnly aria-label={onVoice ? '语音输入' : '语音输入尚未配置'} isDisabled={disabled || !onVoice} onPress={onVoice}><Mic size={17} /></Button>
+              <Tooltip><Button variant="ghost" isIconOnly aria-label={onVoice ? '语音输入' : '语音输入尚未配置'} isDisabled={disabled || !onVoice} onPress={onVoice}><Mic size={17} /></Button><Tooltip.Content>{onVoice ? '语音输入' : '语音输入尚未配置'}</Tooltip.Content></Tooltip>
               <PromptInput.Send aria-label={running ? '停止本轮' : '发送消息'} isDisabled={disabled || stopping || (!running && (submitting || sendBlocked || (!draft.trim()&&!hasAttachments)))} />
             </PromptInput.ToolbarEnd>
           </PromptInput.Toolbar>

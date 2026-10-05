@@ -1,0 +1,27 @@
+// Explicit source and sanitized evidence only; never walk a profile or native ledger.
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {fileURLToPath} from 'node:url';
+import {sha256} from '../acceptance/evidence.mjs';
+const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),root=path.resolve(desktop,'../..');
+const target=path.join(root,'docs/design/codex-2026-10-03/p07-natural-file-word');assert(!fs.existsSync(target),'Keep earlier archives immutable');
+const entries=[],add=(name,bytes)=>{const text=bytes.toString();assert(!/sk-[a-zA-Z0-9]{16,}/.test(text),'Key refused');assert(!/data:image\/[a-z]+;base64,[a-zA-Z0-9+/]{256}/.test(text),'Image payload refused');const file=path.resolve(target,name);assert(file.startsWith(target+path.sep));fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,bytes,{flag:'wx'});entries.push({file:name,bytes:bytes.length,sha256:sha256(bytes)});};
+const files=['1.Agent.md','2.Memory.md','3.Learning.md','4.Wiki.md','测试样例说明书.md','docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md','docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md','docs/35_XIAZHI_OFFICE_AGENT_TODO.md','docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md','docs/160_PI_NATURAL_FILE_WORD_ACCEPTANCE_CONTRACT.md','docs/161_PI_NATURAL_FILE_WORD_ACCEPTANCE.md','docs/testing/本轮执行记录_2026_10_04.md',
+ ...['pi-session.ts','text-change-coordinator.ts','text-change-service.ts','text-change-state.ts','office-artifact-coordinator.ts','office-artifact-service.ts','office-artifact-state.ts','office-generator.ts','attachment-read-tools.ts'].map(n=>'apps/desktop/src/main/xiaozhi-agent/'+n),
+ ...['PiOfficeArtifactCard.tsx','PiTextChangeCard.tsx'].map(n=>'apps/desktop/src/renderer/components/office/'+n),
+ ...['pi-natural-file-ui-smoke.mjs','pi-office-wps-acceptance.ps1','verify-natural-word.py','verify-office-wps-render.py','archive-natural-file-word.mjs'].map(n=>'apps/desktop/scripts/xiaozhi-agent/'+n)];
+for(const file of files){assert(fs.existsSync(path.join(root,file)),file);add('source/'+file,fs.readFileSync(path.join(root,file)));}
+for(const directory of ['pi-text-coordinator-8ORE03','pi-office-coordinator-FFsefR','pi-natural-file-GQqHCP']){
+ const r=JSON.parse(fs.readFileSync(path.join(desktop,'test-results/xiaozhi-agent',directory,'report.json')));assert(r.success&&r.checks.every(c=>c.pass));
+ add('evidence/'+directory+'.json',Buffer.from(JSON.stringify({directory,success:r.success,checks:r.checks.map(c=>({name:c.name,pass:c.pass})),layer:r.layer,build:r.build,scriptSha256:r.scriptSha256,boundary:r.boundary,humanAccepted:false,previousFailures:r.previousFailures?.map(f=>({directory:f.directory,checks:f.checks,buildSha256:f.buildSha256,scriptSha256:f.scriptSha256,error:f.error?.split('\n')[0]}))},null,2)+'\n'));
+}
+const test='test-results/xiaozhi-agent/pi-natural-file-GQqHCP',wps=JSON.parse(fs.readFileSync(path.join(desktop,test,'wps-render/report.json'),'utf8').replace(/^\uFEFF/,'')),readback=JSON.parse(fs.readFileSync(path.join(desktop,test,'wps-readback.json'),'utf8').replace(/^\uFEFF/,'')),render=JSON.parse(fs.readFileSync(path.join(desktop,test,'wps-render/render-readback.json')));
+assert(wps.success&&readback.success&&render.success);
+add('evidence/wps.json',Buffer.from(JSON.stringify({success:true,readback,render:{success:render.success,files:render.files.map(f=>({kind:f.kind,allMarkersPresent:f.allMarkersPresent,pages:f.pages.map(p=>({page:p.page,width:p.width,height:p.height,outsideGlyphs:p.outsideGlyphs}))}))},applications:wps.applications.map(a=>({kind:a.kind,owned:a.owned,identity:a.identity,version:a.version,tables:a.tables,pages:a.pages,inputUnchanged:a.inputUnchanged,renderBytes:a.renderBytes,editedCopySavedAndReopened:Boolean(a.editCopy)})),boundary:'Only owned synthetic Word and new WPS instance; no actual document/media/private native history archived.'},null,2)+'\n'));
+const main1=fs.readFileSync(path.join(desktop,'test-results/xiaozhi-agent/pi-natural-file-main1.log'),'utf8'),main2=fs.readFileSync(path.join(desktop,'test-results/xiaozhi-agent/pi-natural-file-main2.log'),'utf8');const passed=JSON.parse(main2.slice(main2.indexOf('{')));assert(passed.ok&&passed.frontendAcceptance?.passed===207&&passed.frontendAcceptance.total===207);
+const rendererLog=fs.readFileSync(path.join(desktop,'test-results/xiaozhi-agent/pi-natural-file-renderer1.log'),'utf8'),renderer=JSON.parse(rendererLog.slice(rendererLog.indexOf('{')));assert(renderer.passed===79&&renderer.total===79);
+add('evidence/gates.json',Buffer.from(JSON.stringify({buildLogSha256:sha256(fs.readFileSync(path.join(desktop,'test-results/xiaozhi-agent/pi-natural-file-build2.log'))),renderer,main:{passed:207,total:207,ok:passed.ok,nodeExitCode:0,logSha256:sha256(main2)},firstMain:{passed:false,reason:'student-lifecycle-feedback-success wait timeout; cause unverified',logSha256:sha256(main1)},boundary:'Logs/raw runtime/profile/DB/media remain owned test-results; first failures are not deleted.'},null,2)+'\n'));
+fs.writeFileSync(path.join(target,'archive-manifest.json'),JSON.stringify({version:1,createdAt:new Date().toISOString(),files:entries,boundary:'Explicit source/docs and sanitized A/C/WPS/gates only; no credentials/profile/database/native ledgers/attachments/DOCX/PDF/PNG/build. Overall Codex goal NOT_ACCEPTED.'},null,2)+'\n',{flag:'wx'});
+for(const entry of entries)assert.equal(sha256(fs.readFileSync(path.join(target,entry.file))),entry.sha256);
+console.log(JSON.stringify({success:true,files:entries.length,target}));

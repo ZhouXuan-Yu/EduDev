@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "createdAt": "2026-10-04T13:43:22.889Z",
+  "files": [
+    {
+      "file": "source/1.Agent.md",
+      "bytes": 123361,
+      "sha256": "d68f5dd039982c586d85fea90b17c105453a9495a4e4a345b1f3022bc4c2cbba"
+    },
+    {
+      "file": "source/2.Memory.md",
+      "bytes": 267349,
+      "sha256": "cf8db74383df8e0a30f3d9a22c57ac5402d3160edfd9d5a920f28a9cdffbdea8"
+    },
+    {
+      "file": "source/3.Learning.md",
+      "bytes": 199365,
+      "sha256": "b099c808e70a45fbcfe196a48b320c5d8f6b5a0573be77ca406904a69956d5a9"
+    },
+    {
+      "file": "source/4.Wiki.md",
+      "bytes": 165771,
+      "sha256": "c43aa6e23c56ca3959f4a52db4fbb18a65d0208ab086e49d02ddd6a63d9a9053"
+    },
+    {
+      "file": "source/测试样例说明书.md",
+      "bytes": 20256,
+      "sha256": "f5de70d2bcbea015fe2ecd1c402dc1e1099dbe37fc4d2760be80679f42271320"
+    },
+    {
+      "file": "source/docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md",
+      "bytes": 54956,
+      "sha256": "f00cd02a93592aea0db5326e9d86282b14f202e024fbd245ee210e0efa429260"
+    },
+    {
+      "file": "source/docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md",
+      "bytes": 88107,
+      "sha256": "785c4d511dc3f8542536ed2da24bee6ba9f835a8bc123fb2ad278fe8dba6c440"
+    },
+    {
+      "file": "source/docs/35_XIAZHI_OFFICE_AGENT_TODO.md",
+      "bytes": 73180,
+      "sha256": "5e3dce91aa6dc43387b2f1deb971c2fa479b280905a809141ec38a318fc16e11"
+    },
+    {
+      "file": "source/docs/67_CODEX_DESKTOP_PROCESS_AND_COMPONENT_DESIGN.md",
+      "bytes": 77752,
+      "sha256": "4c6c8bd010737704981d29210e04798d8f57c09c02140fa5e2d47fab424571b3"
+    },
+    {
+      "file": "source/docs/160_PI_NATURAL_FILE_WORD_ACCEPTANCE_CONTRACT.md",
+      "bytes": 3505,
+      "sha256": "23547c500f2b2337b78552d74b3c0c8f677b8b0acdd93fc546eedfda6df95966"
+    },
+    {
+      "file": "source/docs/161_PI_NATURAL_FILE_WORD_ACCEPTANCE.md",
+      "bytes": 7002,
+      "sha256": "b7a40d89c3a95221a43db1a3d0406cc806bf1984ebe1c024527c8eb1fad02c98"
+    },
+    {
+      "file": "source/docs/testing/本轮执行记录_2026_10_04.md",
+      "bytes": 11209,
+      "sha256": "5d7899a6ae6dc46d50bd6b622252c24d8efcbf62b62e50ef674f844012c11628"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "bytes": 68599,
+      "sha256": "33378e5ae94c1490194977431b99d83a1d60b9810936905dbe1e63427f1f3e1a"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/text-change-coordinator.ts",
+      "bytes": 8684,
+      "sha256": "920b292f1d75641b702059616d5a70c792c3b30b216aeab3f1fa8e08d4a3ff92"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/text-change-service.ts",
+      "bytes": 11244,
+      "sha256": "3428c5177dd4ef92ce4d790eb5f0c6e661e51e1f07d85be62ac154b8ee8b4aa6"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/text-change-state.ts",
+      "bytes": 9055,
+      "sha256": "8536c15b31ee35b6936f8ed92d0e73c457d225283f7744f97d0ef2bea404a2f4"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/office-artifact-coordinator.ts",
+      "bytes": 9273,
+      "sha256": "23080842f8faff76dc0e730d0d1c58636f183859900c915af690430a292419ae"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts",
+      "bytes": 12899,
+      "sha256": "0b09fe047e3f6ff9423f478e33f616a4ca647e3f08ae9276154df017386e4a73"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/office-artifact-state.ts",
+      "bytes": 12914,
+      "sha256": "c5503a45039d2d2889576d2431ce318a4d45ae0fcfefd834aaa623b1f542bd93"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/office-generator.ts",
+      "bytes": 7580,
+      "sha256": "4e1b7564c7b032b2a6c1caa1b0cee408ba3dbef0c1ebe41fd85488512db6e426"
+    },
+    {
+      "file": "source/apps/desktop/src/main/xiaozhi-agent/attachment-read-tools.ts",
+      "bytes": 7674,
+      "sha256": "28bffa71da57584c9e7f68495cd517e49958a55a2f8fbcb9aa8e4477da19f37c"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/PiOfficeArtifactCard.tsx",
+      "bytes": 11240,
+      "sha256": "67369395857b329b7f6c498ec7952f4b61c528b6328921596a6562cec44a4dc3"
+    },
+    {
+      "file": "source/apps/desktop/src/renderer/components/office/PiTextChangeCard.tsx",
+      "bytes": 6659,
+      "sha256": "fa6995f0166b61915b56806dc788dd9f83e88430a0723561376674e197644150"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-natural-file-ui-smoke.mjs",
+      "bytes": 16476,
+      "sha256": "600cbedcdfaffb50e158b10ecae445add8f7f1fa681b655356222d1053c6070d"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/pi-office-wps-acceptance.ps1",
+      "bytes": 9262,
+      "sha256": "95a1fc69e7f733a326468f5b3b6071c11703824a7d5e3d8f3bfb2003e2c353d5"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/verify-natural-word.py",
+      "bytes": 1952,
+      "sha256": "18d4ae315d021de9a38af8d5e92530e2c2cdb7d8555cf6c4fb25805380abdd4c"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/verify-office-wps-render.py",
+      "bytes": 2536,
+      "sha256": "9a261b1784aa2bd2043b5cfb44982ea3d6f00a3cb4c24f9dcbb21cdc9111a180"
+    },
+    {
+      "file": "source/apps/desktop/scripts/xiaozhi-agent/archive-natural-file-word.mjs",
+      "bytes": 5580,
+      "sha256": "41d80295f2e9edf53fd26b8d2d87bf15a1effd6afa4f8e661b89e24be7d51e52"
+    },
+    {
+      "file": "evidence/pi-text-coordinator-8ORE03.json",
+      "bytes": 1373,
+      "sha256": "afad40de108cb91c5f04df8d26c7877ac0f8d8c5182ac4fa43a2443cc7892784"
+    },
+    {
+      "file": "evidence/pi-office-coordinator-FFsefR.json",
+      "bytes": 1469,
+      "sha256": "6ba2a287d914f568e228c74207d89fb5dece044858947e58cdaf6f4f61e7adb8"
+    },
+    {
+      "file": "evidence/pi-natural-file-GQqHCP.json",
+      "bytes": 5438,
+      "sha256": "3c3f20b46e8c27e257d60965171aa9319f48a659f1f6dbabefb4f36366995bea"
+    },
+    {
+      "file": "evidence/wps.json",
+      "bytes": 1173,
+      "sha256": "0e3cecfa65d79b88c9b89f0b087ef62ff699af566bd12b70c57ec79ee9056599"
+    },
+    {
+      "file": "evidence/gates.json",
+      "bytes": 685,
+      "sha256": "0236f04a32bf76a98bed3950640f4b4e7b5796158698fee704f6b63f04399cdd"
+    }
+  ],
+  "boundary": "Explicit source/docs and sanitized A/C/WPS/gates only; no credentials/profile/database/native ledgers/attachments/DOCX/PDF/PNG/build. Overall Codex goal NOT_ACCEPTED."
+}

@@ -1,0 +1,13 @@
+/* Original Pro CodeBlock/Shiki styling uses a class theme; this workspace uses
+   the system media theme. Bind both to the same existing semantic surface. */
+.office-markdown [data-slot='code-block'] {
+  color: var(--office-ink, var(--foreground));
+}
+.office-markdown [data-slot='code-block-code'] :is(.shiki, .shiki span) {
+  color: var(--shiki-light, var(--office-ink, var(--foreground)));
+}
+@media (prefers-color-scheme: dark) {
+  .office-markdown [data-slot='code-block-code'] :is(.shiki, .shiki span) {
+    color: var(--shiki-dark, var(--office-ink, var(--foreground)));
+  }
+}

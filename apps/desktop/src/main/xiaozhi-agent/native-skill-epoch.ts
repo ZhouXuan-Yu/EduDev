@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { createPiAuthorityEpoch, validateNativeAuthorityEntries, type NativeAuthorityManager } from './native-authority-epoch';
-import { EDUCATION_SKILLS, skillDocument } from './education-skills';
+import { LEGACY_EDUCATION_SKILLS, legacySkillDocument } from './education-skills-legacy-v1';
 import { SKILL_LIMITS, validSkillName, exactSkillObject } from './skill-catalog-state';
 
 export type SkillAuthorityIdentity = { name: string; sha256: string };
@@ -11,7 +11,7 @@ function validIdentity(value: unknown): value is SkillAuthorityIdentity[] {
     && validSkillName(item.name) && typeof item.sha256 === 'string' && /^[a-f0-9]{64}$/.test(item.sha256))
     && new Set(value.map(item => item.name)).size === value.length;
 }
-export const legacySkillIdentity = () => EDUCATION_SKILLS.map(item => ({ name: item.name, sha256: createHash('sha256').update(skillDocument(item)).digest('hex') }));
+export const legacySkillIdentity = () => LEGACY_EDUCATION_SKILLS.map(item => ({ name: item.name, sha256: createHash('sha256').update(legacySkillDocument(item)).digest('hex') }));
 /** Upgrade only provable main-run boundaries; no inferred model history or summaries. */
 export function createPiSkillEpoch(manager: NativeAuthorityManager, identity: SkillAuthorityIdentity[]) {
   if (!validIdentity(identity)) throw new Error('configuration');

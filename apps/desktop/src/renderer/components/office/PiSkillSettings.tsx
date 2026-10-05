@@ -94,7 +94,7 @@ export function PiSkillSettings({ running, onClose, onChanged, embedded = false,
   </>;
   if (embedded) return <section className="pi-skills-dialog pi-skills-embedded" data-testid="pi-skills-settings"><h1>技能</h1><p>整理小智处理教育与办公任务的工作方法。</p>{content}</section>;
   return <Modal.Backdrop isOpen isDismissable={!busy} onOpenChange={open => { if (!open && !lock.current) onClose(); }}>
-    <Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-skills-dialog" data-testid="pi-skills-settings">
+    <Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-skills-dialog pi-themed-surface" data-testid="pi-skills-settings">
       <Modal.Header><Modal.Heading>技能</Modal.Heading><p>整理小智处理教育与办公任务的工作方法。</p></Modal.Header>
       <Modal.Body>{content}</Modal.Body>
       <Modal.Footer><Button variant="secondary" data-testid="pi-skills-close" isDisabled={busy} onPress={onClose}>关闭</Button></Modal.Footer>

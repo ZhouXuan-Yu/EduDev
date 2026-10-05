@@ -1906,6 +1906,8 @@ export type AiHarnessRunSummary = {
 
 export type AiConsoleRunInput = {
   prompt: string;
+  /** Pi compatibility: reuse an explicit command only with an existing session. */
+  commandId?: string;
   intent?: 'mistake_triplet';
   sessionId?: string;
   studentId?: string;
@@ -1941,6 +1943,8 @@ export type AiConsoleRunResult = {
     totalTokens?: number;
   };
   errorMessage?: string;
+  /** Host-owned receipt; does not claim legacy structured grading or approval. */
+  runtimeReceipt?: { schemaVersion: 'xiaozhi.pi.console.v1'; sessionId: string; commandId: string; runId: string };
 };
 
 export type AiConversationFolder = {

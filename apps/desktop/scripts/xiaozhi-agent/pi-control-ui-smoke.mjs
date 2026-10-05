@@ -1,4 +1,6 @@
-import {testMain} from '../acceptance/build-root.mjs';
+import {assertWorkspaceChrome, measureTextContrast} from './capture-workspace-metrics.mjs';
+import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
+import {fingerprint,sha256} from '../acceptance/evidence.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -12,24 +14,33 @@ const output=fs.mkdtempSync(path.join(appRoot,'test-results/xiaozhi-agent/pi-con
 const cfg=fs.readFileSync(path.join(appRoot,'.env.local'),'utf8');
 const pick=name=>cfg.match(new RegExp(`^${name}\\s*=\\s*["']?([^\\r\\n"']+)`,'m'))?.[1]?.trim();
 const key=pick('DEEPSEEK_API_KEY'),model=pick('DEEPSEEK_MODEL') || 'deepseek-flash';assert(key);
-const checks=[],report={suite:'pi-control-formal-ui',success:false,model,checks,boundaries:['Real DeepSeek and formal Electron with synthetic teacher prompts','Actual owned process kill; no provider history fixture','P04-A only; full budget/compaction/education memory and VPN-off remain pending']};
+const checks=[],report={suite:'pi-control-formal-ui',success:false,model,checks,boundaries:['Real DeepSeek and formal Electron with synthetic teacher prompts','Actual owned process kill; no provider history fixture','Finite control/Shell slice; full education memory, daily human and VPN-off remain pending; no run budget']};
+const buildRoot=path.dirname(path.dirname(testMain(appRoot))),fixed=fingerprint(buildRoot),errors=[];
+Object.assign(report,{layer:'C isolated formal Electron',humanAccepted:false,build:{root:buildRoot,files:fixed.files.length,sha256:fixed.sha256},scriptSha256:sha256(fs.readFileSync(fileURLToPath(import.meta.url)))});
 let app,page;
 const check=(name,fn)=>{fn();checks.push({name,pass:true});};
 const until=async(fn,ms=120000)=>{const end=Date.now()+ms;while(Date.now()<end){if(await fn())return;await new Promise(r=>setTimeout(r,100));}throw new Error('Control acceptance condition timed out');};
 async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:dataRoot,OMNI_EDU_REPO_ROOT:path.resolve(appRoot,'../..'),OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_XIAOZHI_PI:'1',DEEPSEEK_API_KEY:key,DEEPSEEK_MODEL:model};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;
-  app=await electron.launch({args:[testMain(appRoot),`--user-data-dir=${path.join(output,'profile')}`],env,timeout:60000});page=await app.firstWindow();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await ready();}
+  app=await electron.launch({args:[testMain(appRoot),`--user-data-dir=${path.join(output,'profile')}`],env,timeout:60000});page=await app.firstWindow();page.on('pageerror',error=>errors.push(String(error).replaceAll(key,'[credential]')));await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:30000});await ready();
+  (report.launches||=[]).push(await assertIsolatedPiMain(app,testMain(appRoot),path.join(output,'profile')));
+  assert.equal((await snap()).limitsEnforced,false);
+}
 async function ready(){await page.waitForFunction(()=>!document.querySelector('[data-testid="office-prompt-input"]')?.disabled);}
 async function id(){return page.locator('.office-composer-container').getAttribute('data-session-id');}
 async function snap(session){return page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session || await id());}
 function rows(){const db=new DatabaseSync(path.join(dataRoot,'app.db'),{readOnly:true});try{return {controls:db.prepare('SELECT * FROM xiaozhi_pi_controls ORDER BY created_at,rowid').all().map(row=>({...row,payload:JSON.parse(row.payload_json)})),runs:db.prepare("SELECT * FROM ai_agent_runs WHERE sub_intent='pi_education'").all(),bindings:db.prepare('SELECT * FROM xiaozhi_pi_session_bindings').all()};}finally{db.close();}}
 async function fresh(){const old=await id();await page.getByTestId('ai-conversation-new').click();await page.waitForFunction(old=>document.querySelector('.office-composer-container')?.getAttribute('data-session-id')!==old,old);await ready();}
 const task='请先调用 update_plan 设两步：确定年级（in_progress）、给教学导入建议（pending）。然后必须调用 ask_teacher 提问“这次分数课面向哪个年级？”建议选项为“三年级”和“五年级”。等待回答后按回答给出一句教学导入建议，再 update_plan 将两步均设为 completed。不要写文件，不要反复提问，不要只用文字代替工具。';
-async function ask(){await page.getByTestId('office-prompt-input').fill(task);await page.getByTestId('office-prompt-input').press('Enter');await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});return (await snap()).controls.find(item=>item.kind==='question'&&item.state==='pending');}
+async function ask(){await page.getByTestId('office-prompt-input').fill(task);await page.getByTestId('office-prompt-input').press('Enter');await page.getByTestId('pi-workspace-activity').waitFor({state:'visible'});assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');await page.locator('[data-testid="pi-teacher-question"][data-state="pending"]').waitFor({state:'visible',timeout:90000});return (await snap()).controls.find(item=>item.kind==='question'&&item.state==='pending');}
 async function terminal(session){await until(async()=>!(await snap(session)).running);return snap(session);}
 async function kill(){const pid=app.process().pid;execFileSync('taskkill',['/PID',String(pid),'/T','/F'],{windowsHide:true,stdio:'pipe'});await app.close().catch(()=>{});app=undefined;}
 try{
   await launch();const session=await id(),question=await ask();let state=await snap();
   check('Real model plan and durable question reach formal waiting_input UI',()=>{assert.equal(state.projection.turns.at(-1).status,'waiting_input');assert(state.controls.some(item=>item.kind==='plan'&&item.steps[0].status==='in_progress'));assert.equal(rows().controls.find(row=>row.id===question.id).state,'pending');});
+  const activity=page.getByTestId('pi-workspace-activity');await page.waitForFunction(()=>document.querySelector('[data-testid="pi-workspace-activity"]')?.getAttribute('data-state')==='input');
+  assert.equal(await activity.getAttribute('role'),'status');assert.equal(await activity.locator('[data-slot="spinner"]').count(),0);
+  await page.getByTestId('pi-aside-toggle').click();await page.getByTestId('xiaozhi-pi-inspector').waitFor({state:'hidden'});assert(await activity.isVisible());
+  check('Actual waiting-input status remains visible without a working spinner when inspector is closed',()=>{});
   const nativePlan=state.controls.find(item=>item.kind==='plan'),planCard=page.getByTestId('pi-task-plan'),livePlan=page.getByTestId('pi-live-task');
   assert(await livePlan.isVisible());assert.equal(await planCard.getByTestId('pi-plan-step').count(),nativePlan.steps.length);
   for(let index=0;index<nativePlan.steps.length;index++)assert.equal(await planCard.getByTestId('pi-plan-step').nth(index).getAttribute('data-state'),nativePlan.steps[index].status);
@@ -39,7 +50,24 @@ try{
   check('Actual resident stop icon has a visible square while waiting for the teacher',()=>assert(stopSquare&&stopSquare.width===12&&stopSquare.height===12));
   const textStyle=await page.getByTestId('pi-question-answer').evaluate(element=>({font:getComputedStyle(element).fontSize,weight:getComputedStyle(element).fontWeight}));
   check('Actual free-answer primitive uses normal 15px text',()=>{assert.equal(textStyle.font,'15px');assert.equal(textStyle.weight,'400');});
-  for(const [w,h] of [[1366,768],[1920,1080]]){await page.setViewportSize({width:w,height:h});const bounds=await page.getByTestId('pi-question-option-1').boundingBox();check(`Question actions reachable at ${w}x${h}`,()=>assert(bounds&&bounds.y>=0&&bounds.y+bounds.height<=h));await page.screenshot({path:path.join(output,`question-${w}x${h}.png`)});}
+  report.layout=[]; report.contrast=[];
+  for(const theme of ['light','dark'])for(const [w,h] of [[1366,768],[1920,1080]]){
+    await page.emulateMedia({colorScheme:theme});
+    await app.browserWindow(page).then(win=>win.evaluate((window,size)=>window.setContentSize(...size),[w,h]));
+    await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width:w,height:h});
+    await page.getByTestId('pi-question-answer').focus();
+    await page.getByTestId('pi-question-option-1').scrollIntoViewIfNeeded();
+    const bounds=await page.getByTestId('pi-question-option-1').boundingBox();
+    const chrome=await assertWorkspaceChrome(page); report.layout.push({theme,w,h,...chrome});
+    check(`Question, header/input and scroll ownership at ${theme} ${w}x${h}`,()=>assert(bounds&&bounds.x>=0&&bounds.x+bounds.width<=w+1&&bounds.y>=36&&bounds.y+bounds.height<=h+1));
+    const activityBox=await activity.boundingBox();assert(activityBox&&activityBox.y>=36&&activityBox.y+activityBox.height<=h+1);
+    for(const selector of ['.pi-question-text','.pi-option-number','.pi-live-task-strip [data-slot="chain-of-thought-trigger"]','.pi-workspace-activity']){
+      const contrast=await measureTextContrast(page.locator(selector).first());report.contrast.push({theme,selector,...contrast});assert(contrast.ratio>=4.5,`${selector} contrast ${contrast.ratio}`);
+    }
+    check(`Actual question and resident plan text contrast at ${theme} ${w}x${h}`,()=>{});
+    await page.screenshot({path:path.join(output,`question-${theme}-${w}x${h}.png`),animations:'disabled'});
+  }
+  await page.emulateMedia({colorScheme:'light'});
   const wrong=await page.evaluate(q=>window.omniEdu.answerXiaozhi({sessionId:`aisession_${crypto.randomUUID()}`,controlId:q,answer:'五年级'}),question.id);
   const extra=await page.evaluate(q=>window.omniEdu.answerXiaozhi({sessionId:document.querySelector('.office-composer-container').getAttribute('data-session-id'),controlId:q,answer:'五年级',apiKey:'not-a-secret-fixture'}),question.id);
   check('Cross-conversation and extra authority fields are rejected',()=>{assert.equal(wrong.error,'permission_denied');assert.equal(extra.error,'invalid_input');});
@@ -57,6 +85,7 @@ try{
   const racingAnswers=await page.evaluate(({session,q})=>Promise.all([window.omniEdu.answerXiaozhi({sessionId:session,controlId:q,answer:'五年级'}),window.omniEdu.answerXiaozhi({sessionId:session,controlId:q,answer:'五年级'})]),{session,q:question.id});
   check('Concurrent identical answers acknowledge the same committed result',()=>assert(racingAnswers.every(item=>item.ok)));
   state=await terminal(session);
+  await activity.waitFor({state:'hidden'});check('Real completed run removes resident working status',()=>{});
   const transcript=fs.readFileSync(path.join(dataRoot,'xiaozhi-pi',rows().bindings.find(row=>row.conversation_id===session).session_file),'utf8');
   check('Teacher answer resumes SDK; native steer and followUp are actually consumed',()=>{assert.equal(state.projection.turns.at(-1).status,'completed');assert.equal(rows().controls.find(row=>row.id===question.id).state,'answered');assert(rows().controls.filter(row=>row.kind==='instruction').every(row=>row.state==='applied'));assert(transcript.includes('纸片通分'));assert(transcript.includes('教师复核提醒'));const text=state.projection.turns.at(-1).items.map(item=>item.text||'').join('\n');assert(text.includes('纸片通分'));assert(text.includes('教师复核'));const history=transcript.trim().split('\n').map(line=>JSON.parse(line));for(const queued of rows().controls.filter(row=>row.kind==='instruction'))assert.equal(history.filter(entry=>entry.type==='message'&&entry.message.role==='user'&&entry.message.content.some(part=>part.type==='text'&&part.text===queued.payload.text)).length,1);});
   check('Every real assistant text segment remains intact across followUp and finalization',()=>{
@@ -72,6 +101,7 @@ try{
   const capped=await page.evaluate(session=>Promise.all(Array.from({length:20},(_,i)=>window.omniEdu.queueXiaozhi({sessionId:session,commandId:`xicmd_${crypto.randomUUID()}`,text:`并发队列边界${i}，等待教师回答前不执行。`,mode:'steer'}))),stoppedSession);
   check('Concurrent queue admission remains bounded at 16 pending instructions',()=>{assert.equal(capped.filter(item=>item.ok).length,16);assert.equal(capped.filter(item=>item.error==='busy').length,4);assert.equal(rows().controls.filter(row=>row.conversation_id===stoppedSession&&row.kind==='instruction').length,16);});
   await page.getByRole('button',{name:'停止本轮',exact:true}).click();await terminal(stoppedSession);
+  await page.getByTestId('pi-workspace-activity').waitFor({state:'hidden'});check('Stopped actual run leaves no stale working status',()=>{});
   const late=await page.evaluate(({session,q})=>window.omniEdu.answerXiaozhi({sessionId:session,controlId:q,answer:'五年级'}),{session:stoppedSession,q:stopped.id});
   check('Stop releases live question and refuses late answer without new run',()=>{assert.equal(late.error,'permission_denied');assert.equal(rows().controls.find(row=>row.id===stopped.id).state,'interrupted');assert(!rows().controls.find(row=>row.id===stopped.id).payload.canResume);});
   await fresh();const crashSession=await id(),crashed=await ask();await page.getByTestId('office-prompt-input').fill('不要在重启后自动发送这条未送达指令。');await page.getByTestId('pi-queue-submit').click();await until(async()=>rows().controls.some(row=>row.conversation_id===crashSession&&row.kind==='instruction'));
@@ -98,6 +128,6 @@ try{
     const nextText=fs.readFileSync(path.join(dataRoot,'xiaozhi-pi',legacy.session_file),'utf8');
     check('Copied prior SDK history upgrades controls without changing identity or replaying effects',()=>{assert.equal(migrated.projection.turns.at(-1).status,'completed');assert(nextText.startsWith(priorText));assert(nextText.includes('xiaozhi.education.controls.v1'));assert.equal(rows().bindings.find(row=>row.conversation_id===legacy.conversation_id).session_file,legacy.session_file);});
   }
-  report.success=true;
+  assert.deepEqual(errors,[]);assert.equal(fingerprint(buildRoot).sha256,fixed.sha256);report.rendererErrors=errors;report.success=true;
 }catch(error){report.error=String(error).replaceAll(key,'[credential]');if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}finally{await app?.close().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({...report,report:path.relative(appRoot,path.join(output,'report.json'))}));}
 if(!report.success)process.exitCode=1;

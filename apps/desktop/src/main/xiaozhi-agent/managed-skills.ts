@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { loadSkillsFromDir, parseFrontmatter } from '@earendil-works/pi-coding-agent';
-import { EDUCATION_SKILLS, skillDocument } from './education-skills';
+import { EDUCATION_SKILLS, EDUCATION_SKILL_VERSION, skillDocument } from './education-skills';
+import { LEGACY_EDUCATION_SKILLS, legacySkillDocument } from './education-skills-legacy-v1';
 import { assertInstallTargetInsideRoot, sanitizeSkillName } from './vendor/hana/lib/skills/skill-package-installer';
 import { SKILL_LIMITS, validSkillName, validSkillRelative, type PrivateManagedSkill, type PrivateSkillCatalog,
   type SkillPackageFile, type createPiSkillCatalogState } from './skill-catalog-state';
@@ -106,10 +107,14 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     // Metadata cannot relabel a teacher package as an application-reviewed Skill.
     const builtins = catalog.skills.filter(item => item.origin === 'builtin');
     if (builtins.length !== EDUCATION_SKILLS.length) throw new Error('configuration');
-    for (const definition of EDUCATION_SKILLS) {
-      const item = builtins.find(skill => skill.name === definition.name);
-      const expectedFiles = filesOf(new Map([['SKILL.md', Buffer.from(skillDocument(definition))]]));
-      if (!item || item.version !== 1 || item.title !== definition.title || item.description !== definition.description
+    for (const currentDefinition of EDUCATION_SKILLS) {
+      const item = builtins.find(skill => skill.name === currentDefinition.name);
+      const definition = item?.version === 1 ? LEGACY_EDUCATION_SKILLS.find(skill => skill.name === item.name)
+        : item?.version === EDUCATION_SKILL_VERSION ? currentDefinition : undefined;
+      if (!item || !definition) throw new Error('configuration');
+      const document = item.version === 1 ? legacySkillDocument(definition) : skillDocument(definition);
+      const expectedFiles = filesOf(new Map([['SKILL.md', Buffer.from(document)]]));
+      if (item.title !== definition.title || item.description !== definition.description
         || item.archived || JSON.stringify(item.files) !== JSON.stringify(expectedFiles)) throw new Error('configuration');
     }
     if (catalog.skills.some(item => item.origin === 'teacher' && EDUCATION_SKILLS.some(builtin => builtin.name === item.name))) throw new Error('configuration');
@@ -172,15 +177,28 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     return { revision: catalog.revision + 1, skills: structuredClone(catalog.skills) };
   }
   return {
-    async initialize() {
+    initialize() { return mutate(async () => {
       await state.migrateSkillCatalog();
-      const current = await readCatalog();
-      if (current.revision) return current;
-      const skills = EDUCATION_SKILLS.map(item => writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(item))]]), 'builtin', 1));
-      options.assertIdle();
-      if (await state.saveSkillCatalog(0, skills)) return { revision: 1, skills };
-      return readCatalog();
-    },
+      // On CAS loss reread the winner, preserving its enable choices and teacher packages.
+      // Interrupted/unpublished immutable directories remain inert; never rewrite old files.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const current = await readCatalog();
+        const outdated = current.skills.filter(item => item.origin === 'builtin' && item.version !== EDUCATION_SKILL_VERSION);
+        if (current.revision && !outdated.length) return current;
+        outdated.forEach(verify);
+        options.assertIdle();
+        const fresh = () => EDUCATION_SKILLS.map(item => writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(item))]]), 'builtin', EDUCATION_SKILL_VERSION));
+        const skills = !current.revision ? fresh() : current.skills.map(item => {
+          if (item.origin !== 'builtin' || item.version === EDUCATION_SKILL_VERSION) return item;
+          const definition = EDUCATION_SKILLS.find(skill => skill.name === item.name)!;
+          return { ...writeVersion(new Map([['SKILL.md', Buffer.from(skillDocument(definition))]]), 'builtin', EDUCATION_SKILL_VERSION), enabled: item.enabled };
+        });
+        outdated.forEach(verify); // A source changed during capture cannot publish a silently repaired catalog.
+        options.assertIdle();
+        if (await state.saveSkillCatalog(current.revision, skills)) return { revision: current.revision + 1, skills };
+      }
+      throw new Error('stale_version');
+    }); },
     catalog: readCatalog,
     async preview(name: string) {
       if (!validSkillName(name)) throw new Error('invalid_input');

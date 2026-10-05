@@ -1,5 +1,70 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import assert from 'node:assert/strict';
+
+/** Wait for real finite theme/focus transitions; keep live infinite spinners. */
+export async function settleWorkspaceTransitions(page) {
+  return page.evaluate(async () => {
+    const finite=document.getAnimations().filter(animation=>animation.playState==='running'&&Number.isFinite(animation.effect?.getComputedTiming().endTime));
+    const durations=finite.map(animation=>animation.effect?.getComputedTiming().endTime);
+    let timer;
+    try{await Promise.race([Promise.allSettled(finite.map(animation=>animation.finished)),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Finite theme transition did not settle')),2000);})]);}
+    finally{clearTimeout(timer);}
+    return {count:finite.length,durations};
+  });
+}
+
+/** Chrome must never own hidden scroll; only history/side panes may scroll. */
+export async function assertWorkspaceChrome(page) {
+  const result = await page.evaluate(() => {
+    const sample = element => {
+      const rect = element.getBoundingClientRect();
+      return { className: element.className, rect: {x: rect.x, y: rect.y, width: rect.width, height: rect.height},
+        scrollTop: element.scrollTop, overflow: element.scrollHeight - element.clientHeight };
+    };
+    return {width: innerWidth, height: innerHeight, header: sample(document.querySelector('.ai-chat-header')),
+      input: sample(document.querySelector('[data-testid="office-prompt-input"]')),
+      parents: [...document.querySelectorAll('.pi-shell, .app-layout__body, .app-layout__main, .ai-chat-surface, .ai-conversation-frame')].map(sample)};
+  });
+  for (const parent of result.parents) {
+    assert(parent.overflow <= 1, `${parent.className}: ${parent.overflow}px hidden overflow`);
+    assert.equal(parent.scrollTop, 0, `${parent.className} moved the chrome`);
+  }
+  for (const part of [result.header, result.input]) {
+    const r = part.rect;
+    assert(r.width > 0 && r.height > 0 && r.x >= 0 && r.y >= 36 && r.x+r.width <= result.width+1 && r.y+r.height <= result.height+1, 'Header/input clipped');
+  }
+  return result;
+}
+
+/** Contrast of real foreground against the composed ancestor backgrounds. */
+export async function measureTextContrast(locator, pseudo = null) {
+  return locator.evaluate((element, pseudo) => {
+    // Let Chromium convert its computed rgb/oklab/color-mix values to sRGB.
+    // Parsing their numeric tokens as RGB yields false contrast failures.
+    const canvas = document.createElement('canvas'); canvas.width = canvas.height = 1;
+    const context = canvas.getContext('2d', {willReadFrequently: true});
+    const rgba = value => {
+      if (!CSS.supports('color', value)) throw new Error(`Unsupported computed color: ${value}`);
+      context.clearRect(0, 0, 1, 1); context.fillStyle = value; context.fillRect(0, 0, 1, 1);
+      const c = [...context.getImageData(0, 0, 1, 1).data]; return [...c.slice(0, 3), c[3]/255];
+    };
+    const rawForeground = rgba(getComputedStyle(element, pseudo).color);
+    let opacity = pseudo ? Number(getComputedStyle(element, pseudo).opacity) : 1;
+    for(let current=element;current;current=current.parentElement) opacity *= Number(getComputedStyle(current).opacity);
+    let remaining = 1, background = [0, 0, 0];
+    for (let current=element; current && remaining>0; current=current.parentElement) {
+      const c=rgba(getComputedStyle(current).backgroundColor), alpha=c[3] ?? 1;
+      background=background.map((v,i)=>v+(c[i]||0)*alpha*remaining); remaining*=1-alpha;
+    }
+    background=background.map(v=>v+255*remaining);
+    const alpha=rawForeground[3]*opacity;
+    const foreground=background.map((v,i)=>rawForeground[i]*alpha+v*(1-alpha));
+    const luminance=c=>c.slice(0,3).map(v=>v/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4).reduce((v,c,i)=>v+c*[0.2126,0.7152,0.0722][i],0);
+    const a=luminance(foreground), b=luminance(background);
+    return { foreground, background, opacity, ratio: (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05) };
+  }, pseudo);
+}
 
 /** Read actual renderer geometry/style and owned Electron window; never model state. */
 export async function captureWorkspaceMetrics(page, app, directory, name) {

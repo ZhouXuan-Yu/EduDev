@@ -55,7 +55,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
     }catch{if(live.current)setNotice('验证没有完成，请重试。');}
     finally{lock.current=false;if(live.current){setBusy(false);setVerifying(false);}}
   }
-  return <div className={`pi-model-settings${embedded ? ' pi-settings-embedded' : ''}`} data-testid="pi-model-settings">
+  return <div className={`pi-model-settings${embedded ? ' pi-settings-embedded' : ' pi-themed-surface'}`} data-testid="pi-model-settings">
     {!embedded && <header><Button variant="ghost" size="sm" data-testid="nav-ai" onPress={onBack}><ArrowLeft size={17} />返回小智</Button><span>设置</span></header>}
     <main>
       <SettingsPage tab="models"><SettingsStack gap="lg">
@@ -70,7 +70,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
               <SettingsInline justify="end"><Button type="button" variant="secondary" data-testid="pi-settings-verify" isDisabled={disabled||!key.trim()} onPress={()=>void verify()}>{verifying?'正在验证…':'验证密钥'}</Button></SettingsInline>
               <div className="pi-settings-model-field"><Label>新对话默认模型</Label><Dropdown>
                 <Button variant="secondary" data-testid="pi-settings-default-model" isDisabled={disabled || !view?.models.length}>{model || (view?.models.length ? '请选择官方模型' : '等待模型列表')}<ChevronDown size={15} /></Button>
-                <Dropdown.Popover><Dropdown.Menu aria-label="新对话默认模型" selectionMode="single" selectedKeys={[model]} onAction={id => { if (!disabled && view?.models.some(item => item.id === String(id))) setModel(String(id)); }}>
+                <Dropdown.Popover className="pi-office-menu"><Dropdown.Menu aria-label="新对话默认模型" selectionMode="single" selectedKeys={[model]} onAction={id => { if (!disabled && view?.models.some(item => item.id === String(id))) setModel(String(id)); }}>
                   {view?.models.map(item => <Dropdown.Item key={item.id} id={item.id} textValue={item.id}><Label>{item.id}</Label><Dropdown.ItemIndicator /></Dropdown.Item>)}
                 </Dropdown.Menu></Dropdown.Popover>
               </Dropdown></div>
