@@ -1,0 +1,29 @@
+.student-training{max-width:1080px;margin-inline:auto;display:grid;gap:20px;min-width:0;color:var(--foreground);padding:8px 0 28px;}
+.student-training-header,.student-training-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.student-training h2{display:flex;align-items:center;gap:10px;font-size:22px;margin:0;}
+.student-training :is(p,h3){margin:0;line-height:1.65;overflow-wrap:anywhere;}
+.student-training p{color:var(--muted);font-size:14px;}
+.student-training-warning{color:var(--warning)!important;}
+.student-training-form{padding:20px;border:1px solid var(--separator);border-radius:16px;background:var(--surface);display:grid;gap:12px;}
+.student-training-form fieldset{border:0;padding:0;min-width:0;display:grid;gap:16px;}
+.student-training-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+.student-training-fields label{display:grid;gap:8px;font-size:14px;min-width:0;}
+.student-training-fields :is(input,select,textarea){border:1px solid var(--separator);background:var(--surface-secondary);color:var(--foreground);font:inherit;padding:10px;border-radius:10px;min-width:0;width:100%;}
+.student-training-fields textarea{min-height:88px;resize:vertical;max-height:200px;}
+.student-training-fields :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.student-training-historical{display:flex;gap:8px;align-items:start;font-size:14px;}
+.student-training-sources{display:flex;gap:8px;flex-wrap:wrap;}
+.student-training-sources button{max-width:100%;white-space:normal;}
+.student-training-results{display:grid;gap:12px;}
+.student-training-results article{padding-block:12px;border-bottom:1px solid var(--separator);display:grid;gap:6px;}
+.student-training .pi-training-calendar{max-height:480px;}
+.student-training .pi-training-day{background:var(--surface);color:var(--foreground);border-color:var(--separator);}
+.student-training-legacy{min-width:0;}
+@media(max-width:700px){.student-training-fields{grid-template-columns:minmax(0,1fr)}.student-training-form{padding:16px}.student-training h2{font-size:20px}}
+
+.student-practice-form,.student-practice-details{display:grid;gap:12px;min-width:0;}
+.student-practice-form>label:not(.student-training-historical){display:grid;gap:8px;font-size:14px;}
+.student-practice-form>label>select{width:100%;min-width:0;max-width:100%;padding:10px;border:1px solid var(--separator);border-radius:10px;background:var(--surface-secondary);color:var(--foreground);font:inherit;}
+.student-practice-items{max-height:420px;overflow:auto;min-width:0;border:1px solid var(--separator);border-radius:12px;padding:12px;display:grid;gap:16px;}
+.student-practice-items article{display:grid;gap:10px;padding:8px;min-width:0;overflow-wrap:anywhere;}
+.student-practice-items details{font-size:14px;color:var(--muted);}

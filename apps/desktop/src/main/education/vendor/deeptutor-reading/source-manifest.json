@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/HKUDS/DeepTutor",
+  "revision": "f07029cfcf2c8dfccdb671cdfc343db8334f5741",
+  "version": "1.6.13",
+  "license": "Apache-2.0",
+  "files": [
+    {
+      "source": "deeptutor/reading/search.py",
+      "destination": "search.py",
+      "bytes": 8179,
+      "sha256": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530"
+    },
+    {
+      "source": "deeptutor/reading/models.py",
+      "destination": "models.py",
+      "bytes": 19899,
+      "sha256": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1"
+    },
+    {
+      "source": "LICENSE",
+      "destination": "LICENSE",
+      "bytes": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    }
+  ],
+  "dependencies": "Python stdlib only; no AgentLoop, Store, HTTP or model",
+  "adaptations": "None in vendored files. Namespace loading and protocol live in reading-worker.py."
+}

@@ -1,5 +1,8 @@
+import {Button} from '@heroui/react';
+import {useDesktopNavigation} from './desktop/DesktopFrame';
 import { useCallback, useEffect, useState } from 'react';
 import type { ExerciseSet, Student } from '../../shared/contracts';
+import {PracticeSourceButton} from './office/PiPracticeReview';
 
 type ExerciseSetLibraryProps = {
   activeStudent?: Student;
@@ -33,6 +36,7 @@ export function ExerciseSetLibraryState({
   errorMessage,
   onRefresh,
 }: ExerciseSetLibraryStateProps) {
+  const navigation=useDesktopNavigation();
   if (!activeStudent) {
     return <p data-testid="exercise-set-no-student">请选择学生后查看已确认题组。</p>;
   }
@@ -54,7 +58,7 @@ export function ExerciseSetLibraryState({
     return (
       <div className="exercise-set-empty" data-testid="exercise-set-empty">
         <p>当前学生还没有已确认题组。</p>
-        <span>三元题组只有经过教师确认后才会写入这里；草稿和拒绝项不会出现。</span>
+        <span>练习只有经过教师确认后才会写入这里；草稿和拒绝项不会出现。</span>
         <div><button className="secondary-action compact-button" type="button" onClick={onRefresh} data-testid="exercise-set-refresh">重新读取</button></div>
       </div>
     );
@@ -73,13 +77,13 @@ export function ExerciseSetLibraryState({
             <time dateTime={exerciseSet.createdAt}>{new Date(exerciseSet.createdAt).toLocaleString('zh-CN')}</time>
           </div>
           <details data-testid={`exercise-set-details-${exerciseSet.id}`}>
-            <summary>查看题组内容与来源</summary>
+            <summary>查看练习内容与来源</summary>
             <div className="exercise-set-items">
               {exerciseSet.items.map((item, index) => (
                 <section key={`${item.role}-${item.questionId ?? index}`} data-testid={`exercise-set-item-${exerciseSet.id}-${index}`}>
                   <div className="exercise-set-item-meta">
                     <span className="status-chip">{roleLabels[item.role]}</span>
-                    <span className={`status-chip source-${item.sourceKind}`} data-testid={`exercise-set-source-${exerciseSet.id}-${index}`}>{sourceLabels[item.sourceKind]}</span>
+                    <span className={`status-chip source-${item.sourceKind}`} data-testid={`exercise-set-source-${exerciseSet.id}-${index}`}>{item.sourceKind==='generated'&&exerciseSet.reviewSource?'小智生成 · 已教师核对':sourceLabels[item.sourceKind]}</span>
                     <span className="status-chip">{item.difficulty}</span>
                   </div>
                   <h4>{item.stem}</h4>
@@ -90,6 +94,7 @@ export function ExerciseSetLibraryState({
               ))}
             </div>
           </details>
+          {exerciseSet.reviewSource&&<div className="student-training-actions"><PracticeSourceButton source={exerciseSet.reviewSource}/><Button variant="secondary" data-testid="exercise-training-open" onPress={()=>navigation.navigate({view:'mastery'})}>学习计划与结果</Button></div>}
         </article>
       ))}
     </div>

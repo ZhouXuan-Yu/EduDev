@@ -9,8 +9,12 @@ import type {
   Student,
 } from '../../shared/contracts';
 import { ExerciseSetLibrary } from './ExerciseSetLibrary';
+import {StudentMistakeOcr} from './students/StudentMistakeOcr';
+import {StudentMistakeFacts} from './students/StudentMistakeFacts';
+import {MISTAKE_OCR_SCHEMA,MISTAKE_OCR_ERRORS} from '../../shared/mistake-ocr';
 
 type MistakesWorkspaceProps = {
+  piEnabled?:boolean;
   activeStudent?: Student;
   records: LearningRecord[];
   attachmentImport: AttachmentImportResult | null;
@@ -19,6 +23,7 @@ type MistakesWorkspaceProps = {
   confirmations: AiConfirmationItem[];
   onImportAttachment: (recordId: string) => Promise<void>;
   onSendAi: (prompt: string) => Promise<void>;
+  onFactsSaved?: (studentId:string)=>Promise<void>;
   onConfirm: (item: AiConfirmationItem, edits?: AiExerciseSetTeacherEdits) => Promise<void>;
   onReject: (item: AiConfirmationItem) => Promise<void>;
   setStatus: (message: string) => void;
@@ -31,6 +36,7 @@ type AnalysisDraft = {
 };
 
 export function MistakesWorkspace({
+  piEnabled=false,
   activeStudent,
   records,
   attachmentImport,
@@ -39,6 +45,7 @@ export function MistakesWorkspace({
   confirmations,
   onImportAttachment,
   onSendAi,
+  onFactsSaved,
   onConfirm,
   onReject,
   setStatus,
@@ -48,6 +55,7 @@ export function MistakesWorkspace({
   const [draft, setDraft] = useState<AnalysisDraft>({ text: '', sanitizedText: '', redactions: [] });
   const [loading, setLoading] = useState(false);
   const [savingCorrection, setSavingCorrection] = useState(false);
+  const [recognizing,setRecognizing]=useState(false);
   const [tripletDraft, setTripletDraft] = useState<Array<{ role: string; stem: string; answer: string; sourceKind: 'local_bank' | 'teacher_resource' | 'generated' }>>([]);
 
   const mistakeRecords = useMemo(() => records.filter((record) => record.recordType === 'mistake'), [records]);
@@ -61,6 +69,7 @@ export function MistakesWorkspace({
       return undefined;
     }
     setLoading(true);
+    setAnalyses([]);setSelectedAnalysisId('');
     window.omniEdu?.listMistakeImageAnalyses(activeStudent.id)
       .then((items) => {
         if (cancelled) return;
@@ -103,6 +112,8 @@ export function MistakesWorkspace({
 
   async function createNeedsOcr(record: LearningRecord, attachment: LearningRecord['attachments'][number]) {
     if (!activeStudent) return;
+    const previous=analyses.find(item=>item.attachmentId===attachment.id&&item.recordId===record.id);
+    if(previous){setSelectedAnalysisId(previous.id);return;}
     setLoading(true);
     try {
       const analysis = await window.omniEdu?.createMistakeImageAnalysis({
@@ -114,7 +125,7 @@ export function MistakesWorkspace({
       if (analysis) {
         setAnalyses((current) => [analysis, ...current.filter((item) => item.id !== analysis.id)]);
         setSelectedAnalysisId(analysis.id);
-        setStatus('已建立 needs_ocr 任务；当前未伪造 OCR 文本，请教师粘贴或校正识别结果。');
+        setStatus('已选择错题图片，可识别文字或手动校正。');
       }
     } catch (error) {
       setStatus(error instanceof Error ? error.message : '建立 OCR 任务失败。');
@@ -153,7 +164,9 @@ export function MistakesWorkspace({
     }
     setSavingCorrection(true);
     try {
-      const saved = await window.omniEdu?.updateMistakeImageCorrection(selectedAnalysis.id, { extractedText: draft.text });
+      let saved:MistakeImageAnalysis|undefined;
+      if(selectedAnalysis.localOcr&&selectedAnalysis.version){const result=await window.omniEdu?.correctMistakeOcr({schemaVersion:MISTAKE_OCR_SCHEMA,studentId:selectedAnalysis.studentId,analysisId:selectedAnalysis.id,version:selectedAnalysis.version,requestId:crypto.randomUUID(),text:draft.text});if(!result?.ok)throw new Error(result?MISTAKE_OCR_ERRORS[result.error]:'保存校正未完成，请重试。');saved=result.analysis;}
+      else saved=await window.omniEdu?.updateMistakeImageCorrection(selectedAnalysis.id, { extractedText: draft.text });
       if (saved) {
         setAnalyses((current) => current.map((item) => item.id === saved.id ? saved : item));
         setDraft({ text: saved.teacherCorrectedText || saved.extractedText, sanitizedText: saved.sanitizedText, redactions: saved.redactions.map((item) => `${item.kind}:${item.count}`) });
@@ -172,6 +185,8 @@ export function MistakesWorkspace({
       setStatus('请先准备题目文本并生成脱敏预览。');
       return;
     }
+    if(piEnabled&&(selectedAnalysis?.ocrStatus!=='teacher_corrected'||draft.text!==selectedAnalysis.teacherCorrectedText)){setStatus('请先保存当前校正文字，再交给小智。');return;}
+    if(piEnabled){await onSendAi(`请根据当前学生真实保存的学习记录核对这道错题。先读取学生证据，再分析以下教师已校正的脱敏文字；这些文字不表示已确认实际作答、成绩或错因。缺少实际答案、表现、知识点或难度时先请我补充，不编造来源，不自动保存题目或学习结果。\n\n教师校正文字：\n${text}`);return;}
     await onSendAi(`请分析当前学生的错题，并基于以下脱敏题目文本检索本地相似题，生成原题、相似题、变式题三元题组草稿。只使用可验证来源，保留 generated/source 标记，不要自动保存。\n\n脱敏题目：\n${text}`);
   }
 
@@ -183,7 +198,7 @@ export function MistakesWorkspace({
         <div className="panel-heading">
           <div>
             <h2>错题资产工作区</h2>
-            <p className="muted">导入 → needs_ocr → 教师校正 → 脱敏预览 → 小智分析；每一步都显示真实状态。</p>
+            <p className="muted">导入图片、识别文字并校正，原图与校正结果保存在本机。</p>
           </div>
           <span className="status-chip" data-testid="mistakes-student-state">{activeStudent ? `当前学生：${activeStudent.displayName}` : '请先选择学生'}</span>
         </div>
@@ -195,7 +210,7 @@ export function MistakesWorkspace({
             ['教师校正', selectedAnalysis?.ocrStatus === 'teacher_corrected' ? '已校正' : '可编辑'],
             ['脱敏预览', draft.sanitizedText ? '已生成' : '未生成'],
             ['小智分析', aiRunning ? '运行中' : aiResult?.ok ? '已返回' : '待发送'],
-            ['三元题组', pendingTriplet ? '待教师确认' : tripletDraft.length ? '可编辑预览' : '等待召回'],
+            [piEnabled?'个性化练习':'三元题组', piEnabled?'在小智中核对':pendingTriplet ? '待教师确认' : tripletDraft.length ? '可编辑预览' : '等待召回'],
           ].map(([label, state], index) => (
             <article key={label} data-testid={`mistakes-pipeline-${index + 1}`}><span>{String(index + 1).padStart(2, '0')}</span><strong>{label}</strong><span className="status-chip">{state}</span></article>
           ))}
@@ -215,7 +230,7 @@ export function MistakesWorkspace({
             <div className="toolbar-row">
               <button className="secondary-action compact-button" onClick={() => void onImportAttachment(record.id)} disabled={!activeStudent || loading || attachmentImport?.status === 'copying'} data-testid={`mistake-import-${record.id}`}>导入附件</button>
               {record.attachments.filter((attachment) => attachment.fileType === 'image').map((attachment) => (
-                <button className="link-button" key={attachment.id} onClick={() => createNeedsOcr(record, attachment)} disabled={loading} data-testid={`create-ocr-${attachment.id}`}>建立 OCR 任务</button>
+                <button className="link-button" key={attachment.id} onClick={() => createNeedsOcr(record, attachment)} disabled={loading||recognizing||savingCorrection} data-testid={`create-ocr-${attachment.id}`}>处理图片文字</button>
               ))}
             </div>
           </article>
@@ -223,25 +238,28 @@ export function MistakesWorkspace({
       </section>
 
       <section className="work-panel" data-testid="mistake-ocr-panel">
-        <div className="panel-heading"><div><h3>2. OCR / 教师校正</h3><p className="muted">没有真实 OCR 结果时保持 needs_ocr，不编造识别文本。</p></div></div>
+        <div className="panel-heading"><div><h3>2. 图片文字与教师校正</h3><p className="muted">请核对实际识别结果，校正后保存。</p></div></div>
         {loading ? <p data-testid="mistake-loading">正在读取或保存错题状态…</p> : null}
         {!analyses.length ? <p data-testid="mistake-ocr-empty">暂无 OCR 任务。</p> : (
           <>
-            <label>分析记录<select value={selectedAnalysis?.id ?? ''} onChange={(event) => setSelectedAnalysisId(event.target.value)} data-testid="mistake-analysis-select">{analyses.map((item) => <option key={item.id} value={item.id}>{item.ocrStatus} · {item.id.slice(-8)}</option>)}</select></label>
-            <label>教师校正文本<textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text: event.target.value })} placeholder="粘贴 OCR 结果或手动输入题干" data-testid="mistake-correction-input" /></label>
-            <div className="toolbar-row"><button className="secondary-action" onClick={previewSanitized} disabled={loading || !draft.text.trim()} data-testid="mistake-sanitize-button">生成脱敏预览</button><button className="primary-action" onClick={saveCorrection} disabled={savingCorrection || !draft.text.trim()} data-testid="mistake-save-correction">{savingCorrection ? '保存中…' : '保存教师校正'}</button></div>
+            <label>分析记录<select disabled={recognizing||savingCorrection} value={selectedAnalysis?.id ?? ''} onChange={(event) => setSelectedAnalysisId(event.target.value)} data-testid="mistake-analysis-select">{analyses.map((item) => <option key={item.id} value={item.id}>{item.ocrStatus==='teacher_corrected'?'已校正':item.localOcr?'待校正':'待识别'} · {records.find(record=>record.id===item.recordId)?.title||'错题图片'}</option>)}</select></label>
+            {selectedAnalysis?.attachmentId&&<StudentMistakeOcr key={selectedAnalysis.id} analysis={selectedAnalysis} onBusy={setRecognizing} onAnalysis={saved=>setAnalyses(current=>current.map(item=>item.id===saved.id?saved:item))}/>}
+            <label>教师校正文本<textarea disabled={recognizing||savingCorrection} value={draft.text} onChange={(event) => setDraft({ ...draft, text: event.target.value,sanitizedText:'' })} placeholder="识别图片或手动输入题干" data-testid="mistake-correction-input" /></label>
+            <div className="toolbar-row"><button className="secondary-action" onClick={previewSanitized} disabled={loading || recognizing||savingCorrection||!draft.text.trim()} data-testid="mistake-sanitize-button">生成脱敏预览</button><button className="primary-action" onClick={saveCorrection} disabled={savingCorrection||recognizing||!draft.text.trim()} data-testid="mistake-save-correction">{savingCorrection ? '保存中…' : '保存教师校正'}</button></div>
           </>
         )}
       </section>
 
       <section className="work-panel span-2" data-testid="mistake-sanitized-panel">
-        <div className="panel-heading"><div><h3>3. 脱敏预览与小智分析</h3><p className="muted">发送给小智的内容只使用脱敏文本，保留来源和未知项。</p></div><button className="primary-action" onClick={sendForAnalysis} disabled={aiRunning || !draft.sanitizedText} data-testid="mistake-send-ai">{aiRunning ? '小智分析中…' : '发送小智分析'}</button></div>
+        <div className="panel-heading"><div><h3>3. 脱敏预览与小智分析</h3><p className="muted">发送给小智的内容只使用脱敏文本，保留来源和未知项。</p></div><button className="primary-action" onClick={sendForAnalysis} disabled={aiRunning || !draft.sanitizedText||recognizing||savingCorrection||(piEnabled&&(selectedAnalysis?.ocrStatus!=='teacher_corrected'||draft.text!==selectedAnalysis.teacherCorrectedText))} data-testid="mistake-send-ai">{aiRunning ? '小智分析中…' : piEnabled?'交给小智核对':'发送小智分析'}</button></div>
         <div className="preview-grid"><article><h4>脱敏文本</h4><pre data-testid="mistake-sanitized-text">{draft.sanitizedText || '尚未生成脱敏预览。'}</pre></article><article><h4>替换记录</h4><p data-testid="mistake-redactions">{draft.redactions.length ? draft.redactions.join('、') : '未发现敏感字段。'}</p></article></div>
         {aiResult && !aiResult.ok ? <div className="warning-box" data-testid="mistake-ai-failed">{aiResult.errorMessage || '小智分析失败；未生成题组。'}</div> : null}
         {aiResult?.ok ? <div className="success-box" data-testid="mistake-ai-success">小智已返回结构化结果；相似题来源会显示为本地命中或 generated。</div> : null}
       </section>
 
-      <section className="work-panel span-2" data-testid="mistake-triplet-panel">
+      {piEnabled&&selectedAnalysis&&<StudentMistakeFacts key={selectedAnalysis.id} analysis={selectedAnalysis} title={records.find(r=>r.id===selectedAnalysis.recordId)?.title||'错题照片'} onAnalysis={saved=>setAnalyses(current=>current.map(item=>item.id===saved.id?saved:item))} onBusy={setRecognizing} onSendAi={onSendAi} onFactsSaved={onFactsSaved}/>}
+
+      {!piEnabled&&<section className="work-panel span-2" data-testid="mistake-triplet-panel">
         <div className="panel-heading"><div><h3>4. 三元题组预览</h3><p className="muted">可校正题干和答案；点击确认后，校正内容与来源记录一同保存。</p></div></div>
         {!tripletDraft.length ? <p data-testid="mistake-triplet-empty">暂无题组草稿。完成脱敏后发送小智分析。</p> : tripletDraft.map((item, index) => (
           <article className="triplet-item" key={`${item.role}-${index}`} data-testid={`mistake-triplet-item-${index}`}>
@@ -251,16 +269,16 @@ export function MistakesWorkspace({
           </article>
         ))}
         {pendingTriplet ? <div className="confirmation-inline" data-testid="mistake-triplet-confirmation"><strong>待教师确认：{pendingTriplet.title}</strong><div className="toolbar-row"><button className="primary-action" onClick={() => onConfirm(pendingTriplet, tripletDraft.map(({ stem, answer }) => ({ stem, answer })))} disabled={tripletDraft.length !== pendingTriplet.payload.exerciseSet?.items?.length || tripletDraft.some((item) => !item.stem.trim())} data-testid="mistake-triplet-confirm">确认并写入</button><button className="secondary-action" onClick={() => onReject(pendingTriplet)} data-testid="mistake-triplet-reject">拒绝（零写入）</button></div></div> : null}
-      </section>
+      </section>}
 
       <section className="work-panel span-2" data-testid="exercise-set-library">
         <div className="panel-heading">
           <div>
-            <h3>5. 已确认题组</h3>
-            <p className="muted">只读展示当前学生已由教师确认并写入 SQLite 的题组；generated 来源始终明确标识。</p>
+            <h3>已确认练习</h3>
+            <p className="muted">查看当前学生的练习内容、题目来源和教师核对记录。</p>
           </div>
         </div>
-        <div className="warning-box" data-testid="exercise-set-readonly-boundary">这里是正式题组回读，不提供隐式编辑。需要修改时应重新生成草稿并再次经过教师确认。</div>
+        <div className="warning-box" data-testid="exercise-set-readonly-boundary">这里保留确认时的题目版本。需要修改时，请让小智重新准备练习，再核对保存。</div>
         <ExerciseSetLibrary activeStudent={activeStudent} setStatus={setStatus} />
       </section>
     </div>

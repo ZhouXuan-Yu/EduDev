@@ -7,7 +7,7 @@ import {createAttachmentState,type PrivateAttachment,publicAttachment,attachment
 const format=(name:string):XiaozhiAttachmentFormat=>/\.md$/i.test(name)?'markdown':/\.(txt|csv|json|yaml|yml|log)$/i.test(name)?'text':/\.(png|jpe?g|webp|gif)$/i.test(name)?'image':isOfficeDocument(name)?'office':(()=>{throw new Error('unsupported');})();
 const limit=(kind:XiaozhiAttachmentFormat)=>kind==='office'?DOCUMENT_MAX_INPUT:kind==='image'?4*1048576:1048576;
 /** Selection registers a local reference, never uploads or claims the agent viewed it. */
-export function createAttachmentService(options:{state:ReturnType<typeof createAttachmentState>;resolve:(sessionId:string)=>Promise<WorkspaceLease>;isCurrent?:()=>boolean}){
+export function createAttachmentReader(options:{resolve:(sessionId:string)=>Promise<WorkspaceLease>;isCurrent?:()=>boolean}){
  const current=(signal:AbortSignal)=>{signal.throwIfAborted();if(options.isCurrent?.()===false)throw new Error('cancelled');};
  async function readCaptured(sessionId:string,relative:string,signal:AbortSignal,includeBytes=false){
   if(!validAttachmentSession(sessionId)||!validAttachmentPath(relative))throw new Error('invalid_input');current(signal);
@@ -38,13 +38,18 @@ export function createAttachmentService(options:{state:ReturnType<typeof createA
   }finally{await handle.close();}
  }
  async function capture(sessionId:string,relative:string,signal:AbortSignal){return (await readCaptured(sessionId,relative,signal)).candidate;}
+ return {capture,async readBytes(sessionId:string,relative:string,signal:AbortSignal){const result=await readCaptured(sessionId,relative,signal,true);return {candidate:result.candidate,bytes:result.bytes!};}};
+}
+export function createAttachmentService(options:{state:ReturnType<typeof createAttachmentState>;resolve:(sessionId:string)=>Promise<WorkspaceLease>;isCurrent?:()=>boolean}){
+ const {capture,readBytes}=createAttachmentReader(options);
+ const current=(signal:AbortSignal)=>{signal.throwIfAborted();if(options.isCurrent?.()===false)throw new Error('cancelled');};
  async function verify(row:PrivateAttachment,signal:AbortSignal){
   if(row.state==='removed')throw new Error('permission_denied');const latest=await capture(row.sessionId,row.path,signal);
   if(latest.workspaceVersion!==row.workspaceVersion||latest.version!==row.version||latest.contentSha256!==row.contentSha256)throw new Error('changed');return latest;
  }
  return {capture,verify,
   /** Main-only bounded bytes for explicitly selected local import. Never projected or sent to a model. */
-  async readBytes(sessionId:string,relative:string,signal:AbortSignal){const result=await readCaptured(sessionId,relative,signal,true);return {candidate:result.candidate,bytes:result.bytes!};},
+  readBytes,
   async select(sessionId:string,relative:string,signal:AbortSignal){const candidate=await capture(sessionId,relative,signal);current(signal);return publicAttachment(await options.state.register(candidate));},
   async preview(sessionId:string,selection:XiaozhiAttachmentSelection,signal:AbortSignal){
    if(!validAttachmentSelection(selection))throw new Error('invalid_input');

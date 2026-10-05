@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import {createPracticeReviewCoordinator} from '../education/practice-review-coordinator';
+import {validPracticeReview,type PracticeReviewDecision,type PracticeReviewResult,type PracticeReviewSummary} from '../../shared/practice-review';
 import {validBrowserCaptureInput,validBrowserCapture,type BrowserCaptureResult} from '../../shared/xiaozhi-browser-capture';
 import {readBrowserCapture} from './browser-capture-reader';
 import {createGoalRuntime,createGoalController} from './goal-coordinator';
@@ -14,6 +16,10 @@ import {validXiaozhiStart,ATTACHMENT_ONLY_PROMPT} from '../../shared/xiaozhi-sta
 import {createPiWebTools} from './web-tools';
 import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
+import {createQuestionContextProvider} from '../education/question-context-provider';
+import type {QuestionContextSource} from '../../shared/question-context';
+import {createQuestionReviewCoordinator} from '../education/question-review-coordinator';
+import {validQuestionReview,type QuestionReviewDecision,type QuestionReviewResult,type QuestionReviewSummary} from '../../shared/question-review';
 import type {XiaozhiWebInput} from '../../shared/xiaozhi-web';
 import {createOfficeDocumentTools,sanitizeOfficeDocumentText} from './office-document-tools';
 import path from 'node:path';
@@ -29,6 +35,14 @@ import type { PiXiaozhiOptions } from './pi-session';
 import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
 import type { OmniEduStore } from '../db';
 import { createEducationTools } from './education-tools';
+import {createMaterialTools} from '../assets/material-tools';
+import {createEducationCapabilityProvider} from '../education/capability-provider';
+import {createEducationSearchTools} from '../education/search-provider';
+import {createStudentContextProvider} from '../education/student-context-provider';
+import {createLearningProvider} from '../education/learning-provider';
+import {createLearningReviewCoordinator} from '../education/learning-review-coordinator';
+import {validLearningReview,type LearningReviewDecision,type LearningReviewResult,type LearningReviewSummary} from '../../shared/learning-review';
+import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../shared/xiaozhi-projection';
 import {publicMessageText} from '../../shared/xiaozhi-message-presentation';
 import { createPiApprovalCoordinator } from './approval-coordinator';
@@ -71,6 +85,9 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   /** Main-only acceptance seam; packaged IPC never installs it. */
   afterCompactCommit?: () => Promise<void>; afterAutoCompactCommit?: () => Promise<void>; beforeAutoCompactCommit?: () => Promise<void>;
   afterInstructionDispatch?: (signal: AbortSignal) => Promise<void>;
+  afterLearningReviewWrite?:(isCurrent:()=>boolean)=>Promise<void>;
+  afterQuestionReviewWrite?:(isCurrent:()=>boolean)=>Promise<void>;
+  afterPracticeReviewWrite?:()=>Promise<void>;
   /** Main-only isolated acceptance cut; packaged IPC never supplies it. */
   afterTextChangeStage?: (stage: 'intent' | 'file' | 'undo-intent' | 'undo-file') => Promise<void>;
   afterOfficeArtifactStage?: (stage:'prepared'|'intent'|'file'|'fact')=>Promise<void>;
@@ -80,8 +97,16 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   const { store } = options;
   const root = path.join(options.dataRoot, 'xiaozhi-pi');
   const active = new Map<string, Active>();
-  const starting = new Map<string, { hash: string; result: Promise<XiaozhiStartResult> }>();
+  const starting = new Map<string, { sessionId: string; hash: string; result: Promise<XiaozhiStartResult> }>();
+  // A late idle decision must not regain authority after a start/stop cycle.
+  const learningDecisionGeneration = new Map<string, number>();
+  const invalidateLearningDecisions = (id: string) => {
+    const next = (learningDecisionGeneration.get(id) || 0) + 1;
+    learningDecisionGeneration.set(id, next); return next;
+  };
+  const conversationStarting = (id: string) => [...starting.values()].some(item => item.sessionId === id);
   const choosing = new Set<string>();
+  const balanceQueries=new Set<AbortController>();
   const configuring = new Set<string>();
   const queueing = new Map<string,{hash:string;result:Promise<XiaozhiActionResult>}>();
   const enabled = options.enabled !== false;
@@ -129,6 +154,22 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       run.turn = applyXiaozhiEvent(run.turn, event); try { options.emit(event); } catch { /* UI lifetime does not own execution. */ }
     }
   };
+  const learningReviews=createLearningReviewCoordinator({store,
+    afterWrite:options.afterLearningReviewWrite,
+    isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+    canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+    emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'learning_review',review});}
+  });
+  const practiceReviews=createPracticeReviewCoordinator({store,afterWrite:options.afterPracticeReviewWrite,
+    isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+    canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+    emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'practice_review',review});}
+  });
+  const questionReviews=createQuestionReviewCoordinator({store,afterWrite:options.afterQuestionReviewWrite,
+    isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+    canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+    emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'question_review',review});}
+  });
   const approvals = createPiApprovalCoordinator({ store, dataRoot: options.dataRoot,
     isCurrent: (id, run) => !closing && active.get(id)?.runId === run && !active.get(id)?.stopped,
     emit: (id, runId, payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id, run, payload); } });
@@ -159,6 +200,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     emit:(id,runId,payload)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,payload);}
   });
   const controls = createPiControlCoordinator({ store,
+    sanitize:async text=>(await createStudentContextSanitizer(store))(text),
     isCurrent:(id,runId) => !closing && active.get(id)?.runId === runId && !active.get(id)?.stopped,
     emit:(id,runId,payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id,run,payload); },
     resume:async (item,answer):Promise<XiaozhiActionResult> => {
@@ -174,6 +216,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       model, epoch: 1, sourceSequence: 0, needsHydration: false, hasMoreHistory: false, turns: [] };
     if (!id) return { enabled, projection, running: false, legacyHistory: false };
     const detail = await store.getAiConversationSession(id);
+    const selectedStudent=detail.session.studentId?(await store.listStudents('')).find(student=>student.id===detail.session.studentId):undefined;
     const binding = await store.xiaozhiState.getBinding(id); if (binding) projection.model = binding.model;
     const modelCapabilities = await readDeepSeekCapabilities(root, projection.model);
     const runs = new Map((await store.xiaozhiState.runs(id)).map(row => [String(row.id), row]));
@@ -202,6 +245,9 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       }
     }
     const workspace = await store.xiaozhiState.workspace(id);
+    const storedLearningReviews=detail.session.studentId&&selectedStudent?.status==='active'&&!detail.session.archivedAt?await store.learningReviews.list(id):[];
+    const storedPracticeReviews=!detail.session.archivedAt&&selectedStudent?.status==='active'?await store.practiceReviews.list(id):[];
+    const storedQuestionReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.questionReviews.list(id):[];
     const storedApprovals = (await store.xiaozhiState.approvals(id)).map(publicApproval);
     const changes = (await store.xiaozhiState.changes.list(id)).map(changeSummary);
     const artifacts=(await store.xiaozhiState.officeArtifacts.list(id)).map(officeSummary);
@@ -236,11 +282,11 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if (index >= 0) projection.turns[index] = applyXiaozhiEvent(projection.turns[index],
         { kind: 'usage', usage: metrics, sessionId: id, runId: metrics.runId, sequence: 0 });
     }
-    return { enabled, projection, running: Boolean(current), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
+    return { enabled, projection, running: Boolean(current), ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
-      approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}) };
+      practiceReviews:storedPracticeReviews,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}) };
   }
   function modelCoordinator(id:string,owner?:Active) {
     return createNativeModelSwitch({state:store.xiaozhiState.modelSwitch,root,
@@ -278,6 +324,9 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     if(sessionFile && (!inside(root,sessionFile) || binding?.model!==settings.model))throw new Error('configuration');
     const ledger=await store.xiaozhiState.modelSwitch?.current(id), coordinator=modelCoordinator(id,owner);
     const web = await store.xiaozhiState.modelSettings.web();
+    const studentId=(await store.getAiConversationSession(id)).session.studentId||'';
+    let observedLearning:(Awaited<ReturnType<typeof store.studentContext.learningSnapshot>>&{reviewVersion:number})|undefined;
+    const observedQuestions=new Map<string,QuestionContextSource>();
     return {stateRoot,workspace,apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,
       ...(owner?.goalId?{goal:createGoalRuntime({store,sessionId:id,goalId:owner.goalId,runId,
         current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
@@ -322,6 +371,15 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:excluded=>getPiProtectedContext(store,id,excluded),
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
+      questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);}),
+      questionReviewTools:questionReviews.tools(id,runId,observedQuestions),
+      practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions)},
+      materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+      educationCapabilityTools:createEducationCapabilityProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped).tools,
+      educationSearchTools:createEducationSearchTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+      studentContext:{studentId,tools:createStudentContextProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped)},
+      studentLearning:{studentId,tools:createLearningProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,facts=>{observedLearning=facts;})},
+      studentLearningReview:{studentId,tools:learningReviews.tools(id,runId,()=>observedLearning)},
       ...(ledger?{modelHistory:{authorize:manager=>coordinator.authorize(manager,id),
         beforeLoad:(manager,authority)=>coordinator.beforeAuthorityLoad(manager,ledger,authority),
         align:(session,authority)=>coordinator.alignAuthorityBranch(session,ledger,authority)}}:{})};
@@ -351,7 +409,9 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     try {
       if (!settings.apiKey) throw new Error('authentication');
       if (run.stopped) throw new Error('cancelled');
-      const cleanPrompt = (await store.sanitizeProblemText(prompt)).sanitizedText;
+      const cleanPrompt = await (await createStudentContextSanitizer(store))(prompt);
+      const selected=(await store.getAiConversationSession(id)).session.studentId;
+      if(selected){try{await store.studentContext.snapshot(selected);}catch{throw new Error('permission_denied');}}
       const capabilities = await resolveDeepSeekCapabilities(root, settings.model, settings.apiKey, run.abort.signal);
       const { createPiXiaozhiSession } = await import('./pi-session');
       if (run.stopped) throw new Error('cancelled');
@@ -383,7 +443,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if (result.ok) text = result.text; else failure = result.error;
     } catch (error) {
       const code = error instanceof Error ? error.message : '';
-      failure = code === 'authentication' || code === 'cancelled' || code === 'memory_scope_changed' || code === 'skill_source_changed' || code === 'skill_scope_changed' ? code : 'configuration';
+      failure = code === 'authentication' || code === 'cancelled' || code === 'permission_denied' || code === 'memory_scope_changed' || code === 'skill_source_changed' || code === 'skill_scope_changed' ? code : 'configuration';
     } finally {
       await run.agent?.dispose().catch(() => { failure ||= 'configuration'; });
       await controls.finish(id,run.runId).catch(() => { failure ||= 'configuration'; });
@@ -439,6 +499,26 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     }
   }
   const host = {
+    reviewPractice:practiceReviews.review,
+    practiceSource:practiceReviews.source,
+    async decidePractice(input:PracticeReviewDecision):Promise<PracticeReviewResult<PracticeReviewSummary>>{
+      if(!validPracticeReview(input,true))return{ok:false,error:'invalid_input'};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return practiceReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
+    reviewQuestions:questionReviews.review,
+    async decideQuestions(input:QuestionReviewDecision):Promise<QuestionReviewResult<QuestionReviewSummary>>{
+      if(!validQuestionReview(input,true))return{ok:false,error:'invalid_input'};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return questionReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
+    reviewLearning:learningReviews.review,
+    learningHistory:learningReviews.history,
+    async decideLearning(input:LearningReviewDecision):Promise<LearningReviewResult<LearningReviewSummary>>{
+      if(!validLearningReview(input,true))return{ok:false,error:'invalid_input'};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return learningReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
     /** Main-only completion join. Never starts/replays a run or owns another model loop. */
     async waitForRun(id: string, runId: string): Promise<XiaozhiWorkspaceSnapshot> {
       if (!validId(id) || typeof runId !== 'string' || runId.length > 180) throw new Error('invalid_input');
@@ -497,6 +577,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       return work;
     },
     modelSettingsView: async(query?:{refresh?:boolean;sessionId?:string})=>{if(query?.sessionId)await recoverModel(query.sessionId);return modelSettings.view(query);},
+    async queryProviderBalance(){
+      if(closing)throw new Error('busy');const controller=new AbortController();balanceQueries.add(controller);
+      try{return await modelSettings.balance(controller.signal);}finally{balanceQueries.delete(controller);}
+    },
     async saveWebSettings(input:XiaozhiWebInput) { return mutateSettings(()=>store.xiaozhiState.modelSettings.saveWeb(input,()=>{if(closing||!configuring.has('provider'))throw new Error('busy');})); },
     async verifyModelCredential(input:XiaozhiCredentialInput) {return mutateSettings(()=>modelSettings.verify(input));},
     async saveModelSettings(input: XiaozhiSettingsInput) {
@@ -552,6 +636,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       }catch{return {ok:false,error:'configuration'};}finally{configuring.delete(id);}
     },
     mutateQueue: createQueueMutationHandler({store,
+      sanitize:async text=>(await createStudentContextSanitizer(store))(text),
       current: (id,runId) => { const run=active.get(id); return !closing && run?.runId === runId && !run.stopped && run.agent?.diagnostics().running
         ? {agent:run.agent,releaseSlot:controlId=>run.instructions.delete(controlId)} : undefined; },
       notify: item => { const run=active.get(item.sessionId); if (run?.runId === item.runId && !run.stopped) publicEvent(item.sessionId,run,{kind:'control',control:publicControl(item)}); } }),
@@ -569,7 +654,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         if (closing || !run || run.operation === 'compact' || run.stopped || !run.agent?.diagnostics().running) return {ok:false,error:'busy'};
         if(run.instructions.size >= 16)return {ok:false,error:'busy'};
         run.instructions.add(input.commandId); // Reserve in the live owner before async sanitation/persistence.
-        const text = (await store.sanitizeProblemText(input.text.trim())).sanitizedText;
+        const text = await (await createStudentContextSanitizer(store))(input.text.trim());
         if (closing || run.stopped || active.get(input.sessionId) !== run || !run.agent.diagnostics().running) return {ok:false,error:'busy'};
         const item = { id:input.commandId,sessionId:input.sessionId,runId:run.runId,kind:'instruction' as const,state:'queued' as const,text,mode:input.mode,revision:0,requestHash:hash };
         if (!await store.xiaozhiState.putControl(item)) return {ok:false,error:'command_conflict'};
@@ -614,6 +699,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const hash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt, ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
+      const admission = invalidateLearningDecisions(id);
       const result = (async (): Promise<XiaozhiStartResult> => {
       await skillsReady;
       const previous = await store.xiaozhiState.command(input.commandId);
@@ -623,12 +709,14 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         return previous.run_id ? { ok: true, runId: String(previous.run_id) } : { ok: false, error: 'configuration' };
       }
       if (await store.xiaozhiState.control(input.commandId)) return {ok:false,error:'command_conflict'};
+      if(admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if (closing || skillsMutating || active.has(id) || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
       const run: Active = { runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: new AbortController(), instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         usage:{runId:'',budget:{...DEFAULT_PI_BUDGET},limitsEnforced:false,modelCalls:0,toolCalls:0,tokens:null,completeness:'unknown',cost:null,activeMs:0,waitingMs:0,state:'running'},usageWrites:Promise.resolve() };
       active.set(id, run); // Reserve before awaits; UI locks are not the ownership gate.
       try {
         const detail = await store.getAiConversationSession(id); if (detail.session.archivedAt) throw new Error('invalid_input');
+        if(detail.session.studentId){try{await store.studentContext.snapshot(detail.session.studentId);}catch{throw new Error('permission_denied');}}
         const drafts=operation==='prompt'?(await store.xiaozhiState.attachments.list(id)).filter(row=>row.state==='draft'):[];
         if(drafts.length&&!input.attachments){active.delete(id);return {ok:false,error:'attachment_changed'};}
         if(input.attachments&&(drafts.length!==input.attachments.length||input.attachments.some(s=>!drafts.some(row=>row.id===s.id&&row.revision===s.revision))))throw new Error('attachment_changed');
@@ -677,7 +765,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         return { ok: false, error:run.stopped||closing?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'?'permission_denied':code==='command_conflict'?'command_conflict':'configuration' };
       }
       })().catch((): XiaozhiStartResult => ({ ok: false, error: 'configuration' }));
-      starting.set(input.commandId, { hash, result });
+      starting.set(input.commandId, { sessionId:id, hash, result });
       try { return await result; } finally { starting.delete(input.commandId); }
     },
     attachments,
@@ -699,21 +787,23 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     },
     async stop(id: string) {
       if (!validId(id)) return { ok: false };
+      invalidateLearningDecisions(id);
       attachments.cancelSession(id);
       browser.cancel(id);
       const run = active.get(id); if (!run) return { ok: true };
       run.stopped = true; run.abort.abort();
       if(run.goalId){const goal=await store.xiaozhiState.goals.interrupt(id,run.runId,'教师停止了本轮执行，已保存进度。');if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-      await controls.finish(id,run.runId); await approvals.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); return { ok: true };
+      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); practiceReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); return { ok: true };
     },
     async close() {
       closing = true; for (const run of active.values()) { run.stopped = true; run.abort.abort(); }
+      for(const controller of balanceQueries)controller.abort();
       await attachments.close();
       await browser.dispose();
       await Promise.allSettled([...modelWrites]);
       await Promise.allSettled([...localSettingsJobs]);
       await Promise.allSettled([...starting.values()].map(item => item.result));
-      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); }
+      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); practiceReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); }
       await Promise.allSettled([...active.values()].map(run => run.done));
     },
   };

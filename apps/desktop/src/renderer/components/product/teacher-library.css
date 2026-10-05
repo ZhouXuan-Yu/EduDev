@@ -32,6 +32,7 @@
 .teacher-library-detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
 .teacher-library-caption { font-size: 12px; margin: 16px 0; }
 .teacher-library-excerpt { padding: 14px 0; }
+.teacher-library-excerpt[data-source] { border-left: 2px solid var(--pi-focus); padding-left: 16px; }
 .teacher-library-excerpt h3 { color: var(--pi-muted); font-size: 13px; font-weight: 500; margin: 0 0 14px; }
 .teacher-library-detail .markdown { --markdown-ink: var(--pi-ink); color: var(--pi-ink); overflow-wrap: anywhere; line-height: 1.75; }
 .teacher-library-detail .markdown pre { white-space: pre-wrap; }

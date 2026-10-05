@@ -5,6 +5,7 @@
   "type": "module",
   "main": "out/main/index.js",
   "scripts": {
+    "verify:deeptutor-question": "node scripts/education/reuse-deeptutor-question.mjs --verify",
     "verify:hana-pdf-renderer": "node scripts/xiaozhi-agent/reuse-hana-pdf-renderer.mjs --verify",
     "test:xiaozhi-office-draft": "node scripts/xiaozhi-agent/pi-office-draft-protocol-smoke.mjs",
     "test:xiaozhi-office-generation": "node scripts/xiaozhi-agent/pi-office-generator-electron-smoke.mjs",
@@ -19,8 +20,13 @@
     "verify:hana-documents": "node scripts/xiaozhi-agent/reuse-hana-document-extract.mjs --verify",
     "test:xiaozhi-document-protocol": "node scripts/xiaozhi-agent/pi-document-protocol-smoke.mjs",
     "test:xiaozhi-document-ui": "node scripts/xiaozhi-agent/pi-office-document-ui-smoke.mjs",
+    "start": "node scripts/start-desktop.mjs",
+    "test:daily-entry": "node scripts/daily-entry-smoke.mjs",
+    "verify:deeptutor-reading": "node scripts/education/reuse-deeptutor-reading.mjs --verify",
+    "test:education-capabilities": "node scripts/education/capability-boundary-smoke.mjs",
+    "test:education-journeys": "node scripts/education/golden-teacher-journeys.mjs",
     "dev": "electron-vite dev",
-    "build": "tsc --noEmit && electron-vite build",
+    "build": "node scripts/sync-pi-package-capabilities.mjs && tsc --noEmit && electron-vite build",
     "preview": "electron-vite preview",
     "test:smoke": "npm run build && node scripts/electron-smoke.mjs",
     "test:renderer-components": "node scripts/renderer-component-state-test.mjs",
@@ -152,6 +158,7 @@
     "@langchain/core": "1.1.48",
     "@langchain/langgraph": "1.4.17",
     "@langchain/langgraph-checkpoint": "1.1.5",
+    "@narumitw/pi-usage": "0.62.0",
     "@react-aria/utils": "^3.34.1",
     "@vitejs/plugin-react": "^4.3.4",
     "docx": "9.8.1",
@@ -164,6 +171,8 @@
     "jsonrepair": "3.14.0",
     "lucide-react": "^0.468.0",
     "motion": "^12.42.2",
+    "pi-goal-x": "0.32.3",
+    "pi-web-access": "0.36.0",
     "pptxgenjs": "4.0.1",
     "react": "^19.2.8",
     "react-aria-components": "^1.19.0",
@@ -195,6 +204,7 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "esbuild": "0.25.12",
     "playwright": "^1.62.0"
   }
 }

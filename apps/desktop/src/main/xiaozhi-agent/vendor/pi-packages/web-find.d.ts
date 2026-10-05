@@ -1,0 +1,1 @@
+export function findContent(text:string,queries:string[],mode:'exact'|'case-insensitive'|'fuzzy'):{text:string;matchCount:number;returnedMatches:number;queryResults:Array<{query:string;matchCount:number}>};

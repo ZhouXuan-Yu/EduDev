@@ -3,6 +3,7 @@ import type { XiaozhiQueueMutationInput, XiaozhiActionResult } from '../../share
 import type { PrivateControl } from './control-state';
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
 export function createQueueMutationHandler(options: { store: OmniEduStore;
+  sanitize?:(text:string)=>Promise<string>;
   current: (id: string, runId: string) => { agent: Agent; releaseSlot: (id: string) => void } | undefined;
   notify: (item: PrivateControl) => void }) {
   return async (input: XiaozhiQueueMutationInput): Promise<XiaozhiActionResult> => {
@@ -15,7 +16,7 @@ export function createQueueMutationHandler(options: { store: OmniEduStore;
     try {
       const item = await options.store.xiaozhiState.control(input.controlId);
       if (!item || item.kind !== 'instruction' || item.sessionId !== input.sessionId) return {ok:false,error:'permission_denied'};
-      const patch = input.action === 'edit' ? {text:(await options.store.sanitizeProblemText(input.text.trim())).sanitizedText,mode:input.mode} : undefined;
+      const patch = input.action === 'edit' ? {text:options.sanitize?await options.sanitize(input.text.trim()):(await options.store.sanitizeProblemText(input.text.trim())).sanitizedText,mode:input.mode} : undefined;
       if (patch && (!patch.text.trim() || patch.text.length > 8192)) return {ok:false,error:'invalid_input'};
       const revision = item.revision ?? 0;
       if (revision === input.revision + 1 && (patch ? item.text === patch.text && item.mode === patch.mode && item.state !== 'withdrawn' : item.state === 'withdrawn')) return {ok:true};

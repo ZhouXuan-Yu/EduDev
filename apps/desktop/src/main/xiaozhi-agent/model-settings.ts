@@ -1,4 +1,7 @@
 import type { OmniEduStore } from '../db';
+import {queryDeepSeekBalance} from './vendor/pi-packages/usage-query.js';
+import packageManifest from './vendor/pi-packages/source-manifest.json' with {type:'json'};
+import type {XiaozhiProviderBalance} from '../../shared/xiaozhi-settings';
 import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
 import { fetchDeepSeekCatalogue, readDeepSeekCatalogue } from './model-capabilities';
 import { XIAOZHI_SETTINGS_SCHEMA, type XiaozhiSettingsInput, type XiaozhiSettingsView, type XiaozhiSessionModelInput, type XiaozhiSessionModel, type XiaozhiCredentialInput, type XiaozhiCredentialView } from '../../shared/xiaozhi-settings';
@@ -77,10 +80,21 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     return { schemaVersion: XIAOZHI_SETTINGS_SCHEMA, version: saved.revision, provider: 'deepseek', configured: Boolean(settings.apiKey),
       maskedApiKey: settings.apiKey ? '••••••••' + settings.apiKey.slice(-4) : '', defaultModel: settings.model,
       web: await store.xiaozhiState.modelSettings.web(), locked: options.busy(), models: catalogue?.models || [], catalogue: catalogue ? catalogue.models[0].source : 'unavailable',
+      packages:packageManifest.packages.map(item=>({name:item.name,version:item.version,label:item.name==='pi-web-access'?'联网资料定位':item.name==='pi-goal-x'?'长任务目标增强':'模型账户余额',state:item.name==='pi-goal-x'?'staged' as const:'active' as const,scope:item.name==='pi-web-access'?'已接入网页关键词定位；其他搜索供应商与视频能力待接入。':item.name==='pi-goal-x'?'已安装；现有目标功能继续使用，增强能力正在适配。':'已接入当前已保存DeepSeek账户的官方余额查询。'})),
       ...(catalogueError ? { catalogueError } : {}), ...(credentialError ? { credentialError } : {}), ...(selection ? { sessionModel: { ...selection, locked: selection.locked || options.busy() } } : {}) };
   }
   return {
     runtime, model, sessionModel, view,
+    async balance(signal:AbortSignal):Promise<XiaozhiProviderBalance>{
+      const saved=await store.xiaozhiState.modelSettings.configuration(),current=await runtime();
+      if(!current.apiKey)throw new Error('authentication');
+      const guard=async()=>{signal.throwIfAborted();if((await store.xiaozhiState.modelSettings.configuration()).revision!==saved.revision||(await runtime()).apiKey!==current.apiKey)throw new Error('conflict');};
+      try{
+        const report=await queryDeepSeekBalance(current.apiKey,signal,guard);await guard();
+        const metric=(id:string)=>String(report.metrics.find(m=>m.id===id)?.value??'');
+        return{provider:'deepseek',source:'official',engine:'@narumitw/pi-usage@0.62.0',observedAt:new Date(report.capturedAt).toISOString(),available:metric('api-availability')==='available',balances:(['CNY','USD'] as const).filter(currency=>metric(currency.toLowerCase()+'-total')!=='').map(currency=>({currency,total:metric(currency.toLowerCase()+'-total'),granted:metric(currency.toLowerCase()+'-granted'),toppedUp:metric(currency.toLowerCase()+'-topped-up')}))};
+      }catch(error){const message=error instanceof Error?error.message:'';throw new Error(message==='conflict'?'conflict':/\b(401|403)\b/.test(message)?'authentication':/timed out|timeout/i.test(message)?'timeout':signal.aborted?'busy':'transport');}
+    },
     async verify(input:XiaozhiCredentialInput):Promise<XiaozhiCredentialView> {
       const catalogue=await fetchDeepSeekCatalogue(root,input.apiKey.trim());
       options.assertMutation?.();

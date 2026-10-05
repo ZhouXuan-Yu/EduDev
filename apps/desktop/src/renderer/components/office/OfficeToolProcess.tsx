@@ -6,6 +6,9 @@ import { ChatSource } from '../../heroui-pro/components/chat-source';
 import { XIAOZHI_WEB_ERRORS, type XiaozhiPublicSource } from '../../../shared/xiaozhi-web';
 import { formatProcessDuration, processNeedsAttention } from './office-process';
 import {OfficeBrowserCapture} from './OfficeBrowserCapture';
+import {MaterialSourceLink} from '../product/MaterialSourceNavigation';
+import {QuestionSourceLink} from './PiQuestionSource';
+import {StudentSourceLink} from '../students/StudentSourceNavigation';
 
 function toolState(item: OfficeProjectedItem): ToolPartState {
   if (item.status === 'completed') return 'output-available';
@@ -48,7 +51,7 @@ function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: 
       {item.imageDelivery&&<p data-testid="pi-image-delivery" data-image-state={item.imageDelivery.state}>{item.imageDelivery.title}：{
         item.imageDelivery.state==='prepared'?'已准备，尚未确认送达。':item.imageDelivery.state==='submitting'?'正在发送，尚未确认送达。'
         :item.imageDelivery.state==='received'?'供应商已接收并返回有效响应。':item.imageDelivery.state==='interrupted'?'已停止，未确认送达。':'未确认送达，请查看本轮结果。'}</p>}
-      {!!item.sources?.length && <><p>引用资料</p><ul>{item.sources.map((source, index) => source.url ? <WebSource key={index} source={source} sessionId={sessionId}/> : <li key={index}>{source.title}</li>)}</ul></>}
+      {!!item.sources?.length && <><p>引用资料</p><ul>{item.sources.map((source, index) => source.question ? <QuestionSourceLink key={index} source={source}/> : source.student ? <StudentSourceLink key={index} source={source}/> : source.material ? <MaterialSourceLink key={index} source={source}/> : source.url ? <WebSource key={index} source={source} sessionId={sessionId}/> : <li key={index}>{source.title}</li>)}</ul></>}
       {item.webEmpty && <p data-testid="pi-web-empty">本次搜索没有返回可用来源，请调整关键词。</p>}
       {item.status === 'failed' && <p data-testid="pi-web-error">{item.webError ? XIAOZHI_WEB_ERRORS[item.webError] : '该操作没有完成。请查看本轮提示；已完成的操作仍保留。'}</p>}
       {item.status === 'declined' && <p>教师已拒绝该操作。</p>}

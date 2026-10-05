@@ -43,3 +43,23 @@ export function resolveRuntimeAuthority(input: {
 export function requireLegacyRuntime(authority: RuntimeAuthority): void {
   if (authority.mode !== 'legacy-test') throw new Error('legacy_runtime_retired: 旧版任务不能继续，请在小智中重新发起。');
 }
+
+/** Only an explicitly isolated acceptance profile may hide its test window. */
+export function isBackgroundAcceptance(input: {
+  packaged: boolean; env: NodeJS.ProcessEnv; dataRoot: string; profileRoot: string; repoRoot: string;
+}): boolean {
+  if (input.packaged || input.env.OMNI_EDU_E2E_DIALOG_MODE !== '1' || input.env.OMNI_EDU_E2E_VISIBLE === '1') return false;
+  try {
+    const owned = path.resolve(input.repoRoot, 'apps/desktop/test-results');
+    const temporary = fs.realpathSync(tmpdir());
+    const inside = (base: string, target: string) => { const relative = path.relative(base, target); return Boolean(relative) && !path.isAbsolute(relative) && relative !== '..' && !relative.startsWith('..' + path.sep); };
+    return [input.dataRoot, input.profileRoot].every(root => {
+      if (!path.isAbsolute(root)) return false;
+      const real = fs.realpathSync(root);
+      if (!fs.statSync(real).isDirectory()) return false;
+      if (inside(owned, real)) return true;
+      const relative = path.relative(temporary, real);
+      return inside(temporary, real) && /^omni-edu-[\w-]+$/.test(relative.split(path.sep)[0]);
+    });
+  } catch { return false; }
+}

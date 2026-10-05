@@ -8,6 +8,7 @@ type ActionFeedback = {
   tone: 'success' | 'error' | 'neutral';
   message: string;
   exportResult?: ExportStudentResult;
+  studentId?: string;
 };
 
 type Props = {
@@ -15,7 +16,7 @@ type Props = {
   formMode: StudentFormMode;
   form: StudentInput;
   onFormChange: (form: StudentInput) => void;
-  onSave: () => Promise<void>;
+  onSave: () => Promise<string>;
   onStartEdit: () => void;
   onCancelForm: () => void;
   onStudentsChanged: (students: Student[], archivedStudentId: string) => Promise<void> | void;
@@ -43,12 +44,10 @@ export function StudentProfileLifecycle({
 
   useEffect(() => {
     setConfirmArchive(false);
-    // Creating a student changes activeStudent.id before the save promise
-    // settles. Keep that in-flight feedback alive; other student switches
-    // still clear operation state to avoid cross-profile messages.
-    if (busyAction === 'save') return;
-    setFeedback(null);
-    setBusyAction('');
+    // React may batch the parent selection change with the completed save.
+    // Preserve the receipt by its actual saved ID, not by transient busy state.
+    setFeedback(current => current?.studentId === activeStudent?.id ? current : null);
+    if (busyAction !== 'save') setBusyAction('');
   }, [activeStudent?.id]);
 
   const archived = activeStudent?.status === 'archived';
@@ -119,16 +118,17 @@ export function StudentProfileLifecycle({
 
   async function saveStudent() {
     if (busyAction) return;
+    const startingStudentId = activeStudent?.id;
     setBusyAction('save');
     setFeedback(null);
     try {
-      await onSave();
+      const studentId = await onSave();
       const message = formMode === 'edit' ? '学生档案已更新。' : '学生档案已创建。';
-      setFeedback({ tone: 'success', message });
+      setFeedback({ tone: 'success', message, studentId });
       setStatus(message);
     } catch (error) {
       const message = error instanceof Error ? error.message : '保存学生档案失败。';
-      setFeedback({ tone: 'error', message });
+      setFeedback({ tone: 'error', message, studentId: startingStudentId });
       setStatus(message);
     } finally {
       setBusyAction('');
@@ -187,7 +187,7 @@ export function StudentProfileLifecycle({
         </>
       )}
 
-      {feedback ? (
+      {feedback && (!feedback.studentId || feedback.studentId === activeStudent?.id) ? (
         <section className={`student-lifecycle-feedback ${feedback.tone}`} data-testid={`student-lifecycle-feedback-${feedback.tone}`} aria-live="polite">
           {feedback.tone === 'success' ? <CheckCircle2 size={18} /> : feedback.tone === 'error' ? <ShieldAlert size={18} /> : <X size={18} />}
           <div><strong>{feedback.message}</strong>{feedback.exportResult ? <code data-testid="student-export-path">{feedback.exportResult.exportPath}</code> : null}</div>

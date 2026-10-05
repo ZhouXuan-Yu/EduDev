@@ -4,10 +4,10 @@ import { ArrowLeft, ArrowRight, PanelLeft } from 'lucide-react';
 import type { DesktopChromeState, DesktopCommand, DesktopMenu } from '../../../shared/desktop-chrome';
 import './desktop-frame.css';
 
-type Target={view:string;sessionId?:string};
+type Target={view:string;sessionId?:string;draft?:string};
 type Handler=(command:DesktopCommand)=>boolean;
-type Navigation={target:Target;canBack:boolean;canForward:boolean;navigate:(target:Target)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;flush:()=>void};
-const empty:Navigation={target:{view:'ai'},canBack:false,canForward:false,navigate:()=>{},reject:()=>{},register:()=>()=>{},flush:()=>{}};
+type Navigation={target:Target;canBack:boolean;canForward:boolean;navigate:(target:Target)=>void;consumeDraft:(sessionId:string)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;flush:()=>void};
+const empty:Navigation={target:{view:'ai'},canBack:false,canForward:false,navigate:()=>{},consumeDraft:()=>{},reject:()=>{},register:()=>()=>{},flush:()=>{}};
 const NavigationContext=createContext<Navigation>(empty);
 export const useDesktopNavigation=()=>useContext(NavigationContext);
 export function useDesktopCommands(handler:Handler,priority=0) {
@@ -35,6 +35,7 @@ export function DesktopFrame({children}:{children:ReactNode}) {
     const entries=old.entries.filter(keep),before=old.entries.slice(0,old.index+1).filter(keep).length;
     return {entries:entries.length?entries:[{view:'ai'}],index:Math.max(0,before-1)};
   }),[]);
+  const consumeDraft=useCallback((sessionId:string)=>setHistory(old=>({...old,entries:old.entries.map(entry=>{if(entry.sessionId!==sessionId||entry.draft===undefined)return entry;const {draft:_draft,...target}=entry;return target;})})),[]);
   const command=useCallback((value:DesktopCommand)=>{
     if(value==='back'||value==='forward'){setHistory(old=>({...old,index:Math.max(0,Math.min(old.entries.length-1,old.index+(value==='back'?-1:1)))}));return;}
     if(!deliver(value)&&pending.current.length<8)pending.current.push(value);
@@ -49,7 +50,7 @@ export function DesktopFrame({children}:{children:ReactNode}) {
     try{const result=await window.omniEdu?.openDesktopMenu(group,box.left,box.bottom);if(!result?.ok)throw new Error();setNotice('');}
     catch{setNotice('无法打开窗口菜单，请重试。');}
   }
-  const navigation={target:history.entries[history.index],canBack:history.index>0,canForward:history.index<history.entries.length-1,navigate,reject,register,flush};
+  const navigation={target:history.entries[history.index],canBack:history.index>0,canForward:history.index<history.entries.length-1,navigate,consumeDraft,reject,register,flush};
   return <NavigationContext.Provider value={navigation}>
     {chrome?.enabled?<div className="desktop-native-frame" data-testid="desktop-native-frame">
       <header className="desktop-titlebar" data-testid="desktop-titlebar" style={{height:chrome.height}}>

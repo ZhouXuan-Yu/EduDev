@@ -4,6 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { createHash, randomUUID } from 'node:crypto';
+import {registerHooks} from 'node:module';
+// These host-admission boundaries never execute the Electron extraction utility.
+registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess={};',shortCircuit:true};return next(specifier,context);}});
 const { createXiaozhiProductionHost } = await import('../../src/main/xiaozhi-agent/production-host.ts');
 const { createXiaozhiSessionState } = await import('../../src/main/xiaozhi-agent/session-state.ts');
 const fixture = path.resolve('test-results/xiaozhi-agent/pi-control-ui-2AWPBO/data/app.db'), output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-model-host-lock-'));

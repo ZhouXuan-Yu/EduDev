@@ -47,6 +47,12 @@ import { MasteryPathWorkspace } from './components/MasteryPathWorkspace';
 import { GlobalSearchWorkspace } from './components/GlobalSearchWorkspace';
 import { ReviewReminderPanel } from './components/ReviewReminderPanel';
 import { StudentProfileLifecycle, type StudentFormMode } from './components/StudentProfileLifecycle';
+import {StudentConversationAction} from './components/students/StudentConversationAction';
+import {StudentTrainingWorkspace} from './components/students/StudentTrainingWorkspace';
+import {MistakeRecordContent} from './components/students/MistakeRecordContent';
+import {recordTypeLabels} from './components/students/record-type-labels';
+import {StudentSourceNavigation,StudentEvidencePanel} from './components/students/StudentSourceNavigation';
+import type {StudentContextSourceView} from '../shared/student-context';
 import { DataBackupPanel } from './components/DataBackupPanel';
 import { AiConversationSidebar, type AiConversationTarget } from './components/AiConversationSidebar';
 import { PiEducationWorkspace } from './components/office/PiEducationWorkspace';
@@ -54,6 +60,8 @@ import { PiRuntimeStartup } from './components/office/PiRuntimeStartup';
 import { useDesktopCommands, useDesktopNavigation } from './components/desktop/DesktopFrame';
 import { ProductSpaceShell } from './components/product/ProductSpaceShell';
 import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
+import {MaterialSourceNavigation} from './components/product/MaterialSourceNavigation';
+import type {MaterialSourceView} from '../shared/materials';
 import { TeachingArtifactsWorkspace } from './components/product/TeachingArtifactsWorkspace';
 import { isProductView } from './components/product/product-spaces';
 import { AiRunInspector } from './components/AiRunInspector';
@@ -84,15 +92,6 @@ import type {
   Student,
   StudentInput,
 } from '../shared/contracts';
-
-const recordTypeLabels: Record<string, string> = {
-  class: '课堂',
-  homework: '作业',
-  exam: '试卷',
-  mistake: '错题',
-  communication: '沟通',
-  summary: '阶段总结',
-};
 
 const emptyOverview: PlatformOverview = {
   tagCount: 0,
@@ -401,6 +400,8 @@ export function App() {
   }, [runtimeAttempt]);
   const desktopNavigation=useDesktopNavigation();
   const [activeView, updateActiveView] = useState<ViewKey>('ai');
+  const [materialSourceView,setMaterialSourceView]=useState<MaterialSourceView>();
+  const [studentSourceView,setStudentSourceView]=useState<StudentContextSourceView>();
   function setActiveView(view:ViewKey){
     const target = runtime === 'legacy-test' || isProductView(view) ? view : 'ai';
     if(target !== activeView)setStatus('');
@@ -427,6 +428,7 @@ export function App() {
   const [reports, setReports] = useState<ReviewReport[]>([]);
   const [reviewReportSelectionId, setReviewReportSelectionId] = useState('');
   const [activeStudentId, setActiveStudentId] = useState('');
+  const activeStudentIdRef=useRef('');
   const [studentQuery, setStudentQuery] = useState('');
   const [recordKeyword, setRecordKeyword] = useState('');
   const [recordTypeFilter, setRecordTypeFilter] = useState('');
@@ -477,6 +479,7 @@ export function App() {
     if (activeView === 'students') return selected ?? students.find((student) => student.status === 'active') ?? students[0];
     return selected?.status === 'active' ? selected : students.find((student) => student.status === 'active');
   }, [students, activeStudentId, activeView]);
+  activeStudentIdRef.current=activeStudent?.id||'';
 
   const recentStudents = students.filter((student) => student.status === 'active').slice(0, 6);
   const activeAttachments = records.flatMap((record) =>
@@ -673,6 +676,7 @@ export function App() {
       endDate: recordEndDate || undefined,
     });
     const nextReports = await window.omniEdu?.listReports(studentId);
+    if(activeStudentIdRef.current!==studentId)return;
     setRecords(nextRecords ?? []);
     setReports(nextReports ?? []);
     await refreshOverview();
@@ -751,6 +755,7 @@ export function App() {
     setStudentForm(initialStudentForm);
     setStatus(editingStudent ? '学生档案已更新。' : '学生档案已创建。');
     await refreshOverview();
+    return savedStudentId;
   }
 
   async function submitRecord() {
@@ -1590,7 +1595,7 @@ export function App() {
                   )}
                 </div>
                 <h3>{record.title}</h3>
-                <p>{record.content || '暂无正文'}</p>
+                <MistakeRecordContent content={record.content}/>
                 <div className="record-tags">
                   {record.tags.map((tag) => <span key={tag}><Tag size={13} />{tag}</span>)}
                 </div>
@@ -1613,18 +1618,18 @@ export function App() {
 
   function renderRecordForm() {
     return (
-      <section className="work-panel form-panel">
+      <section className="work-panel form-panel" data-testid="learning-record-form">
         <WorkspaceLabel number="02" title={editingRecordId ? '编辑学习记录' : '添加学习记录'} description="一条记录只服务一件事实，方便复盘引用。" />
         <div className="form-grid">
           <label>
             记录类型
-            <select value={recordForm.recordType} onChange={(event) => setRecordForm({ ...recordForm, recordType: event.target.value })}>
+            <select data-testid="record-form-type" value={recordForm.recordType} onChange={(event) => setRecordForm({ ...recordForm, recordType: event.target.value })}>
               {Object.entries(recordTypeLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
             </select>
           </label>
           <label>
             科目
-            <input value={recordForm.subject} onChange={(event) => setRecordForm({ ...recordForm, subject: event.target.value })} />
+            <input data-testid="record-form-subject" value={recordForm.subject} onChange={(event) => setRecordForm({ ...recordForm, subject: event.target.value })} />
           </label>
           <label>
             发生时间
@@ -1632,17 +1637,17 @@ export function App() {
           </label>
           <label className="full">
             标题
-            <input value={recordForm.title} onChange={(event) => setRecordForm({ ...recordForm, title: event.target.value })} />
+            <input data-testid="record-form-title" value={recordForm.title} onChange={(event) => setRecordForm({ ...recordForm, title: event.target.value })} />
           </label>
           <label className="full">
             正文
-            <textarea value={recordForm.content} onChange={(event) => setRecordForm({ ...recordForm, content: event.target.value })} />
+            <textarea data-testid="record-form-content" value={recordForm.content} onChange={(event) => setRecordForm({ ...recordForm, content: event.target.value })} />
           </label>
           <label className="full">
             标签
             <input value={recordForm.tags} onChange={(event) => setRecordForm({ ...recordForm, tags: event.target.value })} placeholder="一次函数、审题、计算粗心" />
           </label>
-          <button className="primary-action wide" onClick={submitRecord}>
+          <button data-testid="record-form-save" className="primary-action wide" onClick={submitRecord}>
             <Plus size={16} />
             {editingRecordId ? '保存修改' : '保存记录'}
           </button>
@@ -2416,6 +2421,8 @@ export function App() {
       <div className="split-workspace">
         {renderStudentDirectory()}
         <div className="stack">
+          {piEnabled&&<StudentConversationAction student={activeStudent}/>}
+          {studentSourceView?.student.id===activeStudent?.id&&studentSourceView&&<StudentEvidencePanel view={studentSourceView} onClose={()=>setStudentSourceView(undefined)}/>}
           <StudentProfileLifecycle
             activeStudent={activeStudent}
             formMode={studentFormMode}
@@ -2505,6 +2512,7 @@ export function App() {
   function renderMistakesView() {
     return (
       <MistakesWorkspace
+        piEnabled={piEnabled}
         activeStudent={activeStudent}
         records={records}
         attachmentImport={attachmentImport}
@@ -2512,7 +2520,14 @@ export function App() {
         aiRunning={aiRunning}
         confirmations={aiConfirmations}
         onImportAttachment={importAttachment}
+        onFactsSaved={async studentId=>{await refreshRecords(studentId);await refreshStudents();}}
         onSendAi={async (prompt) => {
+          if(piEnabled){
+            if(!activeStudent)return;
+            try{const detail=await window.omniEdu?.createStudentConversation({schemaVersion:'xiaozhi.education.student-context.v1',studentId:activeStudent.id});if(!detail)throw new Error();desktopNavigation.navigate({view:'ai',sessionId:detail.session.id,draft:prompt});}
+            catch{setStatus('学习对话未打开，请检查学生状态后重试。');}
+            return;
+          }
           setAiPrompt(prompt);
           setActiveView('ai');
           await runAiConsole(prompt, 'mistake_triplet');
@@ -2560,6 +2575,7 @@ export function App() {
   }
 
   function renderMasteryPathView() {
+    if(piEnabled)return <StudentTrainingWorkspace activeStudent={activeStudent} setStatus={setStatus}/>;
     return <MasteryPathWorkspace activeStudent={activeStudent} setStatus={setStatus} onOpenAi={() => {
       if (!activeStudent) return;
       setAiPrompt(`请基于${activeStudent.displayName}现有学习证据，生成或调整学习路径草稿，并说明每个模块的依据。`);
@@ -2784,11 +2800,17 @@ export function App() {
   }
 
   if ((runtime === 'preparing' || runtime === 'failed') && (activeView === 'ai' || activeView === 'settings')) return <PiRuntimeStartup failed={runtime === 'failed'} onRetry={() => setRuntimeAttempt(value => value + 1)} onLeave={() => setActiveView('knowledge')} />;
-  if (runtime !== 'legacy-test') return <>
+  if (runtime !== 'legacy-test') return <StudentSourceNavigation.Provider value={async source=>{
+    if(!window.omniEdu)throw new Error('unavailable');
+    const verified=await window.omniEdu.getStudentContextSource(source);setStudentSourceView(verified);setActiveStudentId(verified.student.id);setActiveView('students');
+  }}><MaterialSourceNavigation.Provider value={async source=>{
+    if(!window.omniEdu)throw new Error('unavailable');
+    const verified=await window.omniEdu.getMaterialSource(source);setMaterialSourceView(verified);setActiveView('knowledge');
+  }}>
     {piEnabled && <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('knowledge')} onSettings={() => setActiveView('settings')} /></div>}
     {activeView === 'settings' ? <PiSettingsWorkspace onBack={() => setActiveView('ai')} /> : activeView !== 'ai' &&
-      <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}
-  </>;
+      <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace sourceView={materialSourceView}/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}
+  </MaterialSourceNavigation.Provider></StudentSourceNavigation.Provider>;
   return (
     <main className={`app-shell ${activeView === 'ai' ? 'app-shell-ai' : ''}`}>
       <aside className="global-nav" aria-label="全局导航">

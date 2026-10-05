@@ -6,14 +6,16 @@ import { SettingsPage, SettingsSurface, SettingsStack, SettingsInline } from './
 import { XIAOZHI_SETTINGS_SCHEMA, XIAOZHI_SETTINGS_ERRORS, type XiaozhiSettingsView } from '../../../shared/xiaozhi-settings';
 import './pi-model-settings.css';
 import {PiWebSettings} from './PiWebSettings';
+import {PiProviderBalance} from './PiProviderBalance';
 
 export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { onBack: () => void; embedded?: boolean; onBusyChange?: (busy: boolean) => void }) {
   const [view, setView] = useState<XiaozhiSettingsView>(), [model, setModel] = useState(''), [key, setKey] = useState('');
   const [busy, setBusy] = useState(false), [verifying,setVerifying]=useState(false), [loading, setLoading] = useState(true), [notice, setNotice] = useState('');
   const live = useRef(true), lock = useRef(false), stamp = useRef(0);
   const [webBusy,setWebBusy]=useState(false);
-  const disabled = loading || busy || webBusy || !view || view.locked;
-  useEffect(() => { onBusyChange?.(busy||webBusy); return () => onBusyChange?.(false); }, [busy,webBusy, onBusyChange]);
+  const [balanceBusy,setBalanceBusy]=useState(false);
+  const disabled = loading || busy || webBusy || balanceBusy || !view || view.locked;
+  useEffect(() => { onBusyChange?.(busy||webBusy||balanceBusy); return () => onBusyChange?.(false); }, [busy,webBusy,balanceBusy, onBusyChange]);
   function accept(next: XiaozhiSettingsView) { setView(next); setModel(next.models.length && !next.models.some(item => item.id === next.defaultModel) ? (next.models.find(item=>item.id==='deepseek-flash')?.id||next.models[0].id) : next.defaultModel); }
   async function reload(refresh = false) {
     if (lock.current) return;
@@ -89,6 +91,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
           <p>以上为模型官方能力。每轮实际回复上限由当前任务设置控制。</p>
         </SettingsStack>
         <PiWebSettings locked={busy||!!view?.locked} onBusyChange={setWebBusy}/>
+        <PiProviderBalance view={view} onBusyChange={setBalanceBusy}/>
         {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}
       </SettingsStack></SettingsPage>
     </main>

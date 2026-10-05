@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/HKUDS/DeepTutor",
+  "revision": "f07029cfcf2c8dfccdb671cdfc343db8334f5741",
+  "version": "1.6.13",
+  "license": "Apache-2.0",
+  "files": [
+    {
+      "source": "deeptutor/learning/mastery.py",
+      "destination": "mastery.py",
+      "bytes": 1552,
+      "sha256": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6"
+    },
+    {
+      "source": "deeptutor/learning/scheduler.py",
+      "destination": "scheduler.py",
+      "bytes": 21752,
+      "sha256": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6"
+    },
+    {
+      "source": "deeptutor/learning/grading.py",
+      "destination": "grading.py",
+      "bytes": 1982,
+      "sha256": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c"
+    },
+    {
+      "source": "deeptutor/learning/models.py",
+      "destination": "models.py",
+      "bytes": 21406,
+      "sha256": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c"
+    },
+    {
+      "source": "deeptutor/learning/policy.py",
+      "destination": "policy.py",
+      "bytes": 20098,
+      "sha256": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4"
+    },
+    {
+      "source": "LICENSE",
+      "destination": "LICENSE",
+      "bytes": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    }
+  ],
+  "dependencies": "Python 3.11+ stdlib; no added npm/pip dependency. Original models.py depends on Pydantic but is NOT imported.",
+  "adaptations": "Original mastery/scheduler/grading run unmodified. models.py AST: two original enums and three DTO field sets projected to stdlib dataclasses; model_copy maps to copy.copy/deepcopy. policy.py AST: selected original constants and seven gate/status/due functions. No LearningStore, AgentLoop, API or pending subsystem.",
+  "modelProjection": [
+    "KnowledgeType",
+    "ErrorType",
+    "LearningEvidence",
+    "RepetitionState",
+    "ReviewTask"
+  ],
+  "policyProjection": [
+    "QUANTITATIVE_GATE",
+    "QUALITATIVE_TYPES",
+    "_QUALITATIVE_PASS_DISPLAY",
+    "gate_threshold",
+    "is_assessed_mastered",
+    "mastery_source",
+    "is_mastered",
+    "display_mastery",
+    "objective_status",
+    "due_reviews"
+  ]
+}

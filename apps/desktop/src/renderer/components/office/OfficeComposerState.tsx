@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import type { OfficeReadingBookmark } from './OfficeReadingPosition';
 import type {OfficeDraft} from '../../../shared/xiaozhi-office-draft';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
@@ -34,11 +34,20 @@ export function useOfficeComposerState() {
   const local = useDraftState();
   return useContext(DraftContext) ?? local;
 }
+/** Teacher requested continuation draft only; never auto-send or restore it on Back. */
+export function OfficeComposerSeed({text,onConsumed}:{text?:string;onConsumed:()=>void}){
+  const state=useOfficeComposerState();
+  useEffect(()=>{if(text){if(!state.draft&&!state.submitting)state.setDraft(text);onConsumed();}},[text]);
+  return null;
+}
 
 interface OfficeControlDraft {
   answer: string; text: string; mode: 'steer' | 'followUp'; revision: number;
   editing: boolean; busy: boolean; error: string;
   officeDraft?:OfficeDraft;officeRevision?:number;
+  learningDraft?:import('../../../shared/learning-review').LearningReviewDraft;
+  practiceDraft?:import('../../../shared/practice-review').PracticeReviewDraft;
+  questionDraft?:import('../../../shared/question-review').QuestionReviewDraft;
 }
 /** UI drafts and mutual exclusion survive layout changes; main still validates every action. */
 export function useOfficeControlState(id: string, initial: Partial<OfficeControlDraft> = {}) {

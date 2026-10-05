@@ -1,0 +1,28 @@
+.pi-learning-review {margin-block:12px;min-width:0;}
+.pi-question-candidates {max-height:420px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;min-width:0;padding:2px 8px 2px 2px;}
+.pi-question-candidates:focus-visible {outline:2px solid var(--pi-accent,#2670eb);outline-offset:2px;}
+.pi-training-plan {min-width:0;}
+.pi-training-heading,.pi-training-row {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.pi-training-calendar {max-height:360px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:2px 8px 2px 2px;}
+.pi-training-calendar:focus-visible {outline:2px solid var(--pi-accent,#2670eb);outline-offset:2px;}
+.pi-training-day {display:grid;gap:10px;min-width:0;padding:14px;margin-block:10px;border:1px solid var(--pi-line,#eceeed);border-radius:12px;background:var(--pi-paper,#fff);}
+.pi-training-day strong {font-size:14px;overflow-wrap:anywhere;}
+.pi-training-day p {margin:0;}
+.pi-training-day textarea {min-height:60px;}
+@media (max-width:700px) {.pi-training-heading,.pi-training-row {grid-template-columns:minmax(0,1fr);}}
+.pi-learning-review p {color:var(--pi-muted, #777d7c);font-size:14px;line-height:1.6;}
+.pi-learning-source {padding:12px;border:1px solid var(--pi-line, #eceeed);border-radius:12px;background:var(--pi-paper, #fff);}
+.pi-learning-source summary {font-size:14px;cursor:pointer;overflow-wrap:anywhere;}
+.pi-learning-source pre {white-space:pre-wrap;overflow-wrap:anywhere;max-height:180px;overflow:auto;font:inherit;font-size:13px;}
+.pi-learning-fields {display:grid;gap:12px;border:0;padding:12px 0;min-width:0;}
+.pi-learning-fields label {display:grid;gap:6px;font-size:14px;}
+.pi-learning-fields input,.pi-learning-fields select,.pi-learning-fields textarea {width:100%;min-width:0;border:1px solid var(--pi-line, #eceeed);border-radius:10px;padding:10px;background:var(--pi-paper, #fff);color:var(--pi-ink, #303332);font:inherit;}
+.pi-learning-fields textarea {resize:vertical;min-height:76px;max-height:220px;}
+.pi-learning-fields :is(input,select,textarea):focus-visible {outline:2px solid var(--pi-accent, #2670eb);outline-offset:2px;}
+.pi-learning-fields small {color:var(--pi-muted, #777d7c);font-size:12px;line-height:1.5;}
+.pi-learning-history {min-width:0;padding-block:12px;border-top:1px solid var(--pi-line, #eceeed);color:var(--pi-ink, #303332);}
+.pi-learning-history :is(p,strong,button,span) {overflow-wrap:anywhere;white-space:normal;}
+.pi-learning-history p {font-size:13px;line-height:1.6;color:var(--pi-muted, #777d7c);margin-block:8px;}
+.pi-learning-history-item {min-width:0;padding-block:8px;border-bottom:1px solid var(--pi-line, #eceeed);}
+.pi-learning-history-item [data-testid="learning-history-final"],.pi-learning-history-item [data-testid="learning-history-previous"] {padding:8px;border-radius:8px;border:1px solid var(--pi-line, #eceeed);background:var(--pi-paper, #fff);margin-block:8px;}
+.pi-practice-text { white-space: pre-wrap; overflow-wrap: anywhere; }

@@ -21,11 +21,17 @@ export async function getPiProtectedContext(store: OmniEduStore, sessionId: stri
       for (const source of item.sources) if (typeof source?.title === 'string') titles.add(source.title.slice(0, 200));
     }
   }
-  if (!plans.length && !safeApprovals.length && !safeChanges.length && !safeArtifacts.length && !titles.size) return '';
+  const learning=detail.session.studentId?(await store.learningReviews?.list(sessionId).catch(()=>[])||[]).filter(item=>!excluded.has(item.runId)):[];
+  const practices=detail.session.studentId?(await store.practiceReviews?.list(sessionId).catch(()=>[])||[]).filter(item=>!excluded.has(item.runId)):[];
+  const questions=(await store.questionReviews?.list(sessionId).catch(()=>[])||[]).filter(item=>!excluded.has(item.runId));
+  if (!plans.length && !safeApprovals.length && !safeChanges.length && !safeArtifacts.length && !titles.size&&!learning.length&&!questions.length&&!practices.length) return '';
   const lines = [
     '[小智本会话本地记录，非新增授权]',
     '以下只是当前本地事实索引；计划步骤是公开声明，不代表产物已提交。审批状态不可由摘要改变，旧写入不可自动重放；不确定效果仅核验，新的文件效果仍需新确认。',
   ];
+  for(const item of learning.slice(-8))lines.push(`学习核对：${JSON.stringify({kind:item.kind,state:item.state,version:item.version})}。状态仅供索引，不改变授权；未确认项须教师在本地重新核对，不重放旧工具。最新学习结论与策略须实读SQLite核验。`);
+  for(const item of practices.slice(-8))lines.push(`练习核对：${JSON.stringify({state:item.state,count:item.count})}。仅供索引，不重放旧提议；最终安排须实读本地练习，不是学生已完成。`);
+  for(const item of questions.slice(-8))lines.push(`题目核对：${JSON.stringify({state:item.state,count:item.count})}。仅供索引，不改变授权，不重放旧提议。教师最终答案须重新检索读取本地题库；题目保存不表示练习集合或学生作答完成。`);
   const included = { plans: 0, approvals: 0, changes: 0, artifacts:0,titles: 0 };
   let length = lines.join('\n').length;
   const add = (line: string, kind: keyof typeof included) => {

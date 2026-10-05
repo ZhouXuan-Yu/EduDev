@@ -126,9 +126,10 @@ Omni-Edu Agent 不是学校级平台，也不是完整 LMS。当前目标是把�
 
 ```powershell
 cd D:\WorkProject\EduProject\apps\desktop
-$env:OMNI_EDU_PYTHON = 'C:\Python314\python.exe'
-npm run dev
+npm start
 ```
+
+也可以双击根目录的“启动小智.cmd”。日常启动会先构建当前版本，重复启动只保留一个窗口；旧 dist 已移出产品目录，隔离验收窗口默认后台运行。需要开发时才使用 npm run dev。
 
 构建生产产物：
 

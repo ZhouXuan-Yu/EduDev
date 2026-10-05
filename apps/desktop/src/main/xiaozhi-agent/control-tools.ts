@@ -8,12 +8,13 @@ const short = (v: unknown, max: number): v is string => typeof v === 'string' &&
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 const result = (data: unknown) => ({ content: [{ type: 'text' as const, text: JSON.stringify(data) }], details: { success: true } });
 export function createPiControlCoordinator(options: { store: OmniEduStore; isCurrent: (id: string, run: string) => boolean;
+  sanitize?:(text:string)=>Promise<string>;
   emit: (id: string, run: string, payload: XiaozhiAgentEventPayload) => void;
   resume: (item: PrivateControl, answer: string) => Promise<XiaozhiActionResult> }) {
   const { store } = options;
   const waits = new Map<string, { item: PrivateControl; resolve: (answer: string | undefined) => void }>();
   const notify = (item: PrivateControl) => options.emit(item.sessionId, item.runId, { kind: 'control', control: publicControl(item) });
-  const clean = async (text: string) => (await store.sanitizeProblemText(text)).sanitizedText;
+  const clean = async (text: string) => options.sanitize?options.sanitize(text):(await store.sanitizeProblemText(text)).sanitizedText;
   async function cancel(run: string) {
     for (const [id, entry] of waits) if (entry.item.runId === run) { waits.delete(id); entry.resolve(undefined); }
   }

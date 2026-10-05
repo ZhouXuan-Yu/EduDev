@@ -8,6 +8,16 @@ export type MaterialPage={schemaVersion:typeof MATERIALS_SCHEMA;resources:Teache
 export type MaterialBody={schemaVersion:typeof MATERIALS_SCHEMA;resource:TeacherResource;chunks:ResourceChunk[];total:number;offset:number;hasMore:boolean};
 export type MaterialRetry={schemaVersion:typeof MATERIALS_SCHEMA;resource:TeacherResource};
 export type MaterialJob={schemaVersion:typeof MATERIALS_SCHEMA;active:boolean};
+export const MATERIAL_SOURCE_SCHEMA='xiaozhi.material-source.v1' as const;
+export type MaterialSource={schemaVersion:typeof MATERIAL_SOURCE_SCHEMA;resourceId:string;version:string;offset:number;chunkId:string;bodyVersion:string};
+export type MaterialSourceView={source:MaterialSource;body:MaterialBody};
+export function validMaterialSource(v:unknown):v is MaterialSource {
+ if(!object(v)||Object.keys(v).length!==6)return false;
+ return v.schemaVersion===MATERIAL_SOURCE_SCHEMA&&materialId(v.resourceId)&&offset(v.offset)
+  &&typeof v.chunkId==='string'&&/^chunk_[a-f0-9-]{36}$/i.test(v.chunkId)
+  &&typeof v.version==='string'&&/^[a-f0-9]{64}$/i.test(v.version)
+  &&typeof v.bodyVersion==='string'&&/^[a-f0-9]{64}$/i.test(v.bodyVersion);
+}
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 export const materialId=(v:unknown):v is string=>typeof v==='string'&&/^resource_[a-f0-9-]{36}$/i.test(v);
 const offset=(v:unknown)=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=0&&v<=10000000;

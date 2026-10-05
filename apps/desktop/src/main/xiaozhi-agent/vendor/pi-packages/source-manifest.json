@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "packages": [
+    {
+      "name": "pi-web-access",
+      "version": "0.36.0",
+      "license": "MIT",
+      "licenseFile": "pi-web-access.LICENSE",
+      "licenseSha256": "871b3c6c64e030c0647ca33543716bdae9511ae2d6a85d6f4ce63783bab52c8f"
+    },
+    {
+      "name": "@narumitw/pi-usage",
+      "version": "0.62.0",
+      "license": "MIT",
+      "licenseFile": "_narumitw_pi-usage.LICENSE",
+      "licenseSha256": "5293e92f073f47012e723990a8605431b438757e9c6eb00c89868b1203e157da"
+    },
+    {
+      "name": "pi-goal-x",
+      "version": "0.32.3",
+      "license": "MIT",
+      "licenseFile": "pi-goal-x.LICENSE",
+      "licenseSha256": "2907d5e82cf6526f2d6cb64440f88e5db245efa444e5f242feca0ed7ea2d20a2"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "web-find.js",
+      "sha256": "b2230fa98a7bb3619aa134674878f2bb4545b43356b0eddc907b3627f15a643a",
+      "sources": [
+        {
+          "path": "node_modules/pi-web-access/content-find.ts",
+          "sha256": "aa9411fca11ef104d8cadc7d0d9e9b632ee6ba8849a179b470e572a8f2222819"
+        }
+      ]
+    },
+    {
+      "file": "usage-query.js",
+      "sha256": "97adc4da5b0eb5ab1bba0dfc16cafc20cb4f2c5a76fa54eb473a9955faebaeeb",
+      "sources": [
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/core.ts",
+          "sha256": "e300785bab5be726a6f71a5cce7c32339538de10b215e37ec14e57b1206a5922"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/oauth-credential-source.ts",
+          "sha256": "0890881f0b5f89aefe7e79c06427f966adab99e0eb20ca449936ce5b62911dd0"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/baseten.ts",
+          "sha256": "2ec39d6a52e806e58c9bf9d05b9a9a78d50137b36e3d8c5d22517e44369bcc0c"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/codex.ts",
+          "sha256": "1aeb282fe988d580459b5efc419d1aa6100725b76f02e40e59e7396577a8dd7c"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/deepseek.ts",
+          "sha256": "609c5d714174b5ed22cc5e2b0c43fcf691ffd7107757748e9c29c40886ebf443"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/fireworks.ts",
+          "sha256": "014703a5b95d09229f9693a06a60dc25b75cdacd16692b6d6af1cbe49694192c"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/github-copilot.ts",
+          "sha256": "b93abe83ba94f07c1e1c4fbbbb0f596b6dd69149b56e19004b0b193812c19b45"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/kimi-coding.ts",
+          "sha256": "62a675d812755261cdbd6871dad49f197e0fabf15dbede64e9cc3cb93900cdb2"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/minimax.ts",
+          "sha256": "3d3d4fe5664030e9706979abcd4e43573cb4770239dcb2600291a7bcfbf386cf"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/moonshot.ts",
+          "sha256": "6d70618a41f6617015522acd5a4e991f3563f9a263ba3d26b701033bbe5f2482"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/openai-companion-usage.ts",
+          "sha256": "dcffe82020bf026d98f353c5881e8754c3a78b3937ceca0fb2df35989b04d7f7"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/openai-chatgpt.ts",
+          "sha256": "77511df2f1608ca7b0c42b3070bc1f7645113952fcab91608ea7513f27c64ee4"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/opencode-zen.ts",
+          "sha256": "fe12e4ba8f275fb088107d6850e8f95499ee986131c7732fbf5f227b45a502ef"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/openrouter.ts",
+          "sha256": "fc4174c420cdd64b36b83c947cf018715446e5f558d66c00214c8a5dcc0045b1"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/vercel-ai-gateway.ts",
+          "sha256": "3d3064acb2c0ed419dbcbfa20494c8384a4f89f717e4e21fed62fcf262dae715"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/xai.ts",
+          "sha256": "b7f7003b189b10aafee935cfa122d599509d262bbc42a328212458328c462474"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/zai-errors.ts",
+          "sha256": "57b06ab7cc12d80ce4d711b7ef26d4a28c931a9445cc2723a8bdc63fd67a0545"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/providers/zai.ts",
+          "sha256": "20123d2a7b15f5c7db603748aac4821ad83c8b517fd4613b278ed77ba80f47ae"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/usage-targets.ts",
+          "sha256": "ace24c2f0e1b84b218c9094d64e01820623fe640dbf89b3c5a7aab62c84d915b"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/openai-companion-auth.ts",
+          "sha256": "c497b6213c111bdb0bb976d1e360b584644de968756edf98e6dcfc9a37f38869"
+        },
+        {
+          "path": "node_modules/@narumitw/pi-usage/src/query.ts",
+          "sha256": "84fc7234f858b2a5e2eb1684a7b4a3c154d5c924943d4cd8371b7d754583132e"
+        }
+      ]
+    }
+  ]
+}

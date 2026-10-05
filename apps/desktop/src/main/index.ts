@@ -3,9 +3,11 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } from './desktop-chrome';
 import { restoreWindowGeometry, installWindowGeometry } from './desktop-chrome/window-geometry';
 import { existsSync, readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { isAbsolute, join } from 'node:path';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
+import {registerMistakeOcrIpc} from './students/mistake-ocr-api';
 import type { AiExerciseSetTeacherEdits, AiConversationFolderInput, AiConversationFolderUpdateInput, AiConversationMessageInput, AiConversationSessionInput, AiConversationSessionUpdateInput, AiModelGradeInput, AiRegressionReportInput, AiUsabilityHumanReviewInput, AiUsabilityReplayExperimentInput, DeepSeekSettingsInput, DocumentArtifactExportInput, AiMemorySurface, AiMemoryEntryInput, AiMemoryEntryUpdateInput, AiMemoryL3Slot, AiMemoryL3EntryInput, AiMemoryL3EntryUpdateInput, AiMemoryEvidenceGraph, ReviewReminder } from '../shared/contracts';
 import { buildMasterySnapshot } from './ai-harness/mastery-snapshot';
 import { buildMasteryPolicy } from './ai-harness/mastery-policy';
@@ -13,13 +15,14 @@ import { buildReviewReminder } from './ai-harness/review-reminder';
 import { renderTeachingBookMarkdown } from './ai-harness/teaching-book-renderer';
 import { registerXiaozhiIpc } from './xiaozhi-agent/ipc';
 import { createPiConsoleFacade } from './xiaozhi-agent/console-facade';
-import { resolveRuntimeAuthority, applyLaunchProfile } from './xiaozhi-agent/runtime-authority';
+import { resolveRuntimeAuthority, applyLaunchProfile, isBackgroundAcceptance } from './xiaozhi-agent/runtime-authority';
 
 // Electron app preferences also need the launcher's explicit profile, before ready.
 applyLaunchProfile({ profile: app.commandLine.getSwitchValue('user-data-dir'), setPath: (name, directory) => app.setPath(name, directory) });
 
 let store: OmniEduStore;
 let mainWindow: BrowserWindow | undefined;
+let backgroundAcceptance = false;
 let e2eAttachmentDialogQueue: string[][] | undefined;
 let e2eStudentExportDialogQueue: string[][] | undefined;
 let e2eDataBackupExportDialogQueue: string[] | undefined;
@@ -151,6 +154,7 @@ function createWindow() {
     minWidth: 1100,
     minHeight: 720,
     title: 'Omni-Edu Agent',
+    show: !backgroundAcceptance,
     backgroundColor: '#eef1f3',
     ...nativeChromeOptions(),
     webPreferences: {
@@ -158,6 +162,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      backgroundThrottling: !backgroundAcceptance,
     },
   });
   mainWindow = window;
@@ -176,7 +181,7 @@ function createWindow() {
     return { action: 'deny' };
   });
 
-  if (process.env.ELECTRON_RENDERER_URL) {
+  if (process.env.NODE_ENV === 'development' && process.env.ELECTRON_RENDERER_URL) {
     window.loadURL(process.env.ELECTRON_RENDERER_URL);
   } else {
     window.loadFile(join(__dirname, '../renderer/index.html'));
@@ -200,12 +205,34 @@ function loadLocalEnv() {
   }
 }
 
-app.whenReady().then(async () => {
+const ownsDesktop = app.requestSingleInstanceLock();
+const desktopRevision = () => createHash('sha256').update([
+  __filename, join(__dirname, '../preload/index.cjs'), join(__dirname, '../renderer/index.html'),
+].map(file => existsSync(file) ? readFileSync(file).toString('base64') : '').join('\n')).digest('hex');
+const openedRevision = desktopRevision();
+if (!ownsDesktop) app.quit();
+else app.on('second-instance', () => {
+  if (desktopRevision() !== openedRevision) {
+    // The launcher rebuilt out while this process still holds the old renderer/main.
+    app.relaunch();
+    app.quit();
+    return;
+  }
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  if (backgroundAcceptance) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.show();
+  mainWindow.focus();
+});
+
+if (ownsDesktop) app.whenReady().then(async () => {
   loadLocalEnv();
   const dataRoot = process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData');
   const authority = resolveRuntimeAuthority({ packaged: app.isPackaged, env: process.env, dataRoot, profileRoot: app.getPath('userData') });
   store = new OmniEduStore(dataRoot);
   await store.init();
+  backgroundAcceptance = isBackgroundAcceptance({ packaged: app.isPackaged, env: process.env, dataRoot,
+    profileRoot: app.getPath('userData'), repoRoot: process.env.OMNI_EDU_REPO_ROOT || join(process.cwd(), '../..') });
   const legacyTestRuntime = authority.mode === 'legacy-test'
     ? (await import('./legacy-ai/test-runtime')).registerLegacyTestRuntime({store,authority,window:()=>mainWindow})
     : undefined;
@@ -219,6 +246,14 @@ app.whenReady().then(async () => {
   ipcMain.handle('app:getDataRoot', () => store.getDataRoot());
   ipcMain.handle('app:getPlatformOverview', () => store.getPlatformOverview());
   const settingsSender = (event: Electron.IpcMainInvokeEvent) => event.sender === mainWindow?.webContents && event.senderFrame === event.sender.mainFrame;
+  ipcMain.handle('students:createConversation',async(event,input)=>{
+    if(!settingsSender(event))throw new Error('permission_denied');
+    const {createStudentConversation}=await import('./students/context-service');return createStudentConversation(store,input);
+  });
+  ipcMain.handle('students:contextSource',async(event,input)=>{
+    if(!settingsSender(event))throw new Error('permission_denied');
+    const {getStudentContextSource}=await import('./students/context-service');return getStudentContextSource(store,input);
+  });
   const publicProviderSettings = async () => {
     const legacy = await store.getDeepSeekSettings();
     if (!xiaozhi.enabled) return legacy;
@@ -449,7 +484,13 @@ app.whenReady().then(async () => {
   ipcMain.handle('search:all', (_event, keyword: string) => store.search(keyword));
   ipcMain.handle('aiConversations:list', () => store.listAiConversationWorkspace());
   ipcMain.handle('aiConversations:createFolder', (_event, input: AiConversationFolderInput) => store.createAiConversationFolder(input));
-  ipcMain.handle('aiConversations:createSession', (_event, input: AiConversationSessionInput) => store.createAiConversationSession(input));
+  ipcMain.handle('aiConversations:createSession', async(event, input: AiConversationSessionInput) => {
+    if(!settingsSender(event))throw new Error('permission_denied');
+    const {plainStudentInput,validStudentId}=await import('../shared/student-context');
+    if(!plainStudentInput(input,['title','folderId','studentId'])||input.title!==undefined&&typeof input.title!=='string'||input.folderId!==undefined&&input.folderId!==null&&typeof input.folderId!=='string')throw new Error('invalid_input');
+    if(input.studentId!==undefined&&input.studentId!==''){if(!validStudentId(input.studentId))throw new Error('invalid_input');await store.studentContext.snapshot(input.studentId);}
+    return store.createAiConversationSession(input);
+  });
   ipcMain.handle('aiConversations:getSession', (_event, sessionId: string) => store.getAiConversationSession(sessionId));
   ipcMain.handle('aiConversations:appendMessage', (_event, sessionId: string, input: AiConversationMessageInput) =>
     store.appendAiConversationMessage(sessionId, input),
@@ -471,13 +512,14 @@ app.whenReady().then(async () => {
   );
 
   const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
+  const mistakeOcr=registerMistakeOcrIpc({ipcMain,repository:store.mistakeOcr,facts:store.mistakeFacts,allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});
   if (authority.mode === 'pi') registerPiConsoleEndpoints({ipcMain,authority,window:()=>mainWindow,run:input=>piConsole.run(input)});
   let xiaozhiClosing = false;
   app.on('before-quit', event => {
     if (xiaozhiClosing) return;
     event.preventDefault(); xiaozhiClosing = true;
-    void xiaozhi.close().finally(() => app.quit());
+    void Promise.allSettled([xiaozhi.close(),mistakeOcr.close()]).finally(() => app.quit());
   });
   registerDesktopChromeIpc(ipcMain, () => mainWindow);
   createWindow();

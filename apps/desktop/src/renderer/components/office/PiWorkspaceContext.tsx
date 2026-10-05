@@ -1,5 +1,6 @@
 import { BookOpen, Folder, Link as LinkIcon, PanelRightClose } from 'lucide-react';
 import { Button, Tooltip } from '@heroui/react';
+import {QuestionSourceLink} from './PiQuestionSource';
 import { WebSource } from './OfficeToolProcess';
 import { ChatSources } from '../../heroui-pro/components/chat-source';
 import type { XiaozhiWorkspaceSnapshot } from '../../../shared/xiaozhi-agent';
@@ -9,6 +10,9 @@ import { PiMemoryScope } from './PiMemoryScope';
 import { PiBudgetCard } from './PiBudgetCard';
 import {useState} from 'react';
 import { workspaceStatus } from './workspace-status';
+import {MaterialSourceLink} from '../product/MaterialSourceNavigation';
+import {StudentSourceLink} from '../students/StudentSourceNavigation';
+import {PiLearningHistory} from './PiLearningHistory';
 
 export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,onCompact,onRefresh}: {
   sessionId:string;snapshot?:XiaozhiWorkspaceSnapshot;compactBusy:boolean;compacting:boolean;
@@ -17,8 +21,8 @@ export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,on
   const [browserMessage,setBrowserMessage]=useState('');
   const current=snapshot?.projection.turns.at(-1);
   const status=workspaceStatus(snapshot,compactBusy||compacting);
-  const sources=[...new Map((current?.items.flatMap(item=>item.sources||[])||[]).map(source=>[source.url||source.title,source])).values()].sort((a,b)=>Number(b.kind==='read')-Number(a.kind==='read'));
-  const sourceRow=(source:typeof sources[number])=>source.url ? <WebSource key={source.url} source={source} sessionId={sessionId}/> : <li key={source.title} title={source.title}><BookOpen size={16}/><span>{source.title}</span></li>;
+  const sources=[...new Map((current?.items.flatMap(item=>item.sources||[])||[]).map(source=>[source.question?`${source.question.questionId}:${source.question.version}`:source.url||source.title,source])).values()].sort((a,b)=>Number(b.kind==='read')-Number(a.kind==='read'));
+  const sourceRow=(source:typeof sources[number])=>source.question?<QuestionSourceLink key={`${source.question.questionId}:${source.question.version}`} source={source}/>:source.student?<StudentSourceLink key={source.title} source={source}/>:source.material ? <MaterialSourceLink key={source.title} source={source}/> : source.url ? <WebSource key={source.url} source={source} sessionId={sessionId}/> : <li key={source.title} title={source.title}><BookOpen size={16}/><span>{source.title}</span></li>;
   return <div className="pi-context-card" data-testid="xiaozhi-pi-inspector" aria-label="小智任务与来源">
     <div className="pi-context-header"><span>{snapshot?.workspace?.label||'教师工作区'}</span><Tooltip><AppLayout.AsideTrigger aria-label="收起任务资料"><PanelRightClose size={17}/></AppLayout.AsideTrigger><Tooltip.Content>收起任务资料</Tooltip.Content></Tooltip></div>
     <div className="pi-context-status" data-testid="xiaozhi-pi-status" data-state={status.state} role="status" aria-live="polite"><BookOpen size={17} aria-hidden="true"/><span>{status.label}</span></div>
@@ -27,6 +31,7 @@ export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,on
     <section className="pi-context-sources" data-testid="pi-web-aside"><h4><LinkIcon size={16}/>来源</h4>
       {sources.length ? <><ul>{sources.slice(0,3).map(sourceRow)}</ul>{sources.length>3&&<ChatSources defaultExpanded={false}><ChatSources.Trigger>查看全部（{sources.length}）</ChatSources.Trigger><ChatSources.Content><ul>{sources.slice(3).map(sourceRow)}</ul></ChatSources.Content></ChatSources>}</> : <p>调用资料后显示实际来源。</p>}
     </section>
+    {snapshot?.studentContext?.status==='active'&&<PiLearningHistory key={`${sessionId}:${snapshot.studentContext.id}`} sessionId={sessionId} revision={(snapshot.learningReviews||[]).map(item=>`${item.id}:${item.state}:${item.version}`).join('|')}/>}
     <ChatTool state="output-available" defaultExpanded={false} data-testid="pi-task-details" className="pi-task-details">
       <ChatTool.Trigger data-testid="pi-task-details-expand">任务详情</ChatTool.Trigger>
       <ChatTool.Content>

@@ -1,0 +1,114 @@
+{
+  "archify_skill_revision": "3c4e4a50b0ebba92ffc0859ae12f34d90de523ae",
+  "candidate_structural_checks": {
+    "edudev-current": {
+      "valid": true,
+      "errors": [],
+      "components": 13,
+      "connections": 15,
+      "boundaries": 4,
+      "sources": 17,
+      "official_archify_finalize": "not-run (dependency install unavailable)"
+    },
+    "deeptutor-capability": {
+      "valid": true,
+      "errors": [],
+      "components": 13,
+      "connections": 14,
+      "boundaries": 3,
+      "sources": 23,
+      "official_archify_finalize": "not-run (dependency install unavailable)"
+    },
+    "openmaic-capability": {
+      "valid": true,
+      "errors": [],
+      "components": 11,
+      "connections": 12,
+      "boundaries": 3,
+      "sources": 16,
+      "official_archify_finalize": "not-run (dependency install unavailable)"
+    },
+    "xiaozhi-target-integration": {
+      "valid": true,
+      "errors": [],
+      "components": 22,
+      "connections": 30,
+      "boundaries": 4,
+      "sources": 0,
+      "official_archify_finalize": "not-run (dependency install unavailable)"
+    }
+  },
+  "static_html_checks": {
+    "edudev-current": {
+      "html_parse": true,
+      "title": "EduDev / 小智当前生产架构",
+      "svg_count": 1,
+      "button_count": 21,
+      "input_count": 1,
+      "unique_dom_ids": true,
+      "has_theme_toggle": true,
+      "has_search_logic": false,
+      "has_node_detail_logic": true,
+      "external_script_count": 0,
+      "external_stylesheet_count": 0,
+      "inline_svg": true,
+      "size_bytes": 32333
+    },
+    "deeptutor-capability": {
+      "html_parse": true,
+      "title": "DeepTutor 1.6.13 能力架构与迁移边界",
+      "svg_count": 1,
+      "button_count": 21,
+      "input_count": 1,
+      "unique_dom_ids": true,
+      "has_theme_toggle": true,
+      "has_search_logic": false,
+      "has_node_detail_logic": true,
+      "external_script_count": 0,
+      "external_stylesheet_count": 0,
+      "inline_svg": true,
+      "size_bytes": 33247
+    },
+    "openmaic-capability": {
+      "html_parse": true,
+      "title": "OpenMAIC 1.2.0-rc.1 内容/互动课堂架构与迁移边界",
+      "svg_count": 1,
+      "button_count": 19,
+      "input_count": 1,
+      "unique_dom_ids": true,
+      "has_theme_toggle": true,
+      "has_search_logic": false,
+      "has_node_detail_logic": true,
+      "external_script_count": 0,
+      "external_stylesheet_count": 0,
+      "inline_svg": true,
+      "size_bytes": 29380
+    },
+    "xiaozhi-target-integration": {
+      "html_parse": true,
+      "title": "小智目标融合架构",
+      "svg_count": 1,
+      "button_count": 31,
+      "input_count": 1,
+      "unique_dom_ids": true,
+      "has_theme_toggle": true,
+      "has_search_logic": false,
+      "has_node_detail_logic": true,
+      "external_script_count": 0,
+      "external_stylesheet_count": 0,
+      "inline_svg": true,
+      "size_bytes": 36691
+    }
+  },
+  "browser_visual_check": {
+    "status": "blocked_by_environment",
+    "attempts": [
+      "Chromium CLI trivial local HTML: timed out without screenshot",
+      "Playwright + Chromium file://: net::ERR_BLOCKED_BY_ADMINISTRATOR",
+      "Playwright + Chromium localhost HTTP: net::ERR_BLOCKED_BY_ADMINISTRATOR"
+    ],
+    "evidence": "visual-check/browser-check-blocked.txt",
+    "visual_review": "not-claimed"
+  },
+  "delivery_note": "Archify official finalize was not run; these are repository-evidenced Archify-compatible fallback artifacts. Structural/static checks pass; browser/perceptual check is environment-blocked."
+}

@@ -1,3 +1,4 @@
+import {registerPracticeReviewIpc} from '../education/practice-review-api';
 import type { IpcMain, BrowserWindow } from 'electron';
 import { app, dialog, safeStorage, shell } from 'electron';
 import {registerWebIpc} from './web-api';
@@ -11,12 +12,18 @@ import { registerWorkspaceFileIpc } from './workspace-file-api';
 import { registerModelSettingsIpc } from './model-settings-api';
 import { registerTextChangeIpc } from './text-change-api';
 import {registerOfficeArtifactIpc} from './office-artifact-api';
+import {registerLearningReviewIpc} from '../education/learning-review-api';
+import {registerQuestionReviewIpc} from '../education/question-review-api';
+import {registerQuestionContextIpc} from '../education/question-context-api';
+import {registerStudentTrainingIpc} from '../education/student-training-api';
 import type { RuntimeAuthority } from './runtime-authority';
+import {isBackgroundAcceptance} from './runtime-authority';
 
 export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduStore; dataRoot: string; window: () => BrowserWindow | undefined; authority: RuntimeAuthority }) {
   const commitDelay = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1'
     ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_COMPACT_COMMIT_DELAY_MS) || 0)) : 0;
   const testing = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1';
+  const learningStop=process.env.OMNI_EDU_E2E_PI_LEARNING_CUT==='stop'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''});let learningStopHeld=false;
   const textCut = testing ? process.env.OMNI_EDU_E2E_PI_TEXT_CUT_STAGE : undefined;
   const officeCut=testing?process.env.OMNI_EDU_E2E_PI_OFFICE_CUT_STAGE:undefined;
   const testWindow = testing ? Number(process.env.OMNI_EDU_E2E_PI_CONTEXT_WINDOW) : 0;
@@ -25,6 +32,8 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   const autoCompaction = testing && process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION !== undefined
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const host = createXiaozhiProductionHost({ ...options, enabled: options.authority.mode === 'pi', autoCompaction,
+    ...(testing&&process.env.OMNI_EDU_E2E_PI_LEARNING_CUT==='1'?{afterLearningReviewWrite:async()=>{fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-learning-uncommitted'),'uncommitted');await new Promise(resolve=>setTimeout(resolve,30000));}}:{}),
+    ...(learningStop?{afterLearningReviewWrite:async(isCurrent:()=>boolean)=>{if(learningStopHeld)return;learningStopHeld=true;fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-learning-uncommitted'),'uncommitted');const end=Date.now()+30000;while(isCurrent()&&Date.now()<end)await new Promise(resolve=>setTimeout(resolve,40));if(isCurrent())throw new Error('cancelled');}}:{}),
     ...(['prepared','intent','file','fact'].includes(officeCut||'')?{afterOfficeArtifactStage:async(stage:'prepared'|'intent'|'file'|'fact')=>{
       if(stage!==officeCut)return;fs.writeFileSync(path.join(options.dataRoot,`.e2e-pi-office-${stage}`),'durable-stage-reached');await new Promise(resolve=>setTimeout(resolve,30000));
     }}:{}),
@@ -59,6 +68,11 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerModelSettingsIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerLearningReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerQuestionReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerPracticeReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerStudentTrainingIpc({ipcMain:options.ipcMain,allowed:fromMain,repository:options.store.learningReviews});
+  registerQuestionContextIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerWorkspaceFileIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});
   registerSkillManagementIpc({ ipcMain: options.ipcMain, allowed: fromMain, host, choose: async () => {
     const current = options.window(); if (!current || current.isDestroyed()) return;

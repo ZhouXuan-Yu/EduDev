@@ -1,0 +1,4 @@
+.pi-question-source-content {color:var(--foreground);line-height:1.7;overflow-wrap:anywhere;min-width:0;}
+.pi-question-source-content p {margin:0 0 12px;color:var(--muted);}
+.pi-question-source-content h3 {font-size:15px;font-weight:600;margin:20px 0 8px;}
+.pi-question-source-content div {white-space:pre-wrap;}

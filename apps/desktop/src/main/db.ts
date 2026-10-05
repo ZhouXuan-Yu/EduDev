@@ -3,6 +3,14 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync,
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import {MaterialRepository} from './assets/material-repository';
+import {StudentContextRepository} from './students/context-repository';
+import {MistakeOcrRepository,mistakeAnalysisVersion} from './students/mistake-ocr-repository';
+import {validMistakeOcrProvenance} from '../shared/mistake-ocr';
+import {MistakeFactsRepository} from './students/mistake-facts-repository';
+import {validMistakeFactsReceipt} from '../shared/mistake-facts';
+import {LearningReviewRepository} from './education/learning-review-repository';
+import {QuestionReviewRepository} from './education/question-review-repository';
+import {PracticeReviewRepository} from './education/practice-review-repository';
 import { createXiaozhiSessionState } from './xiaozhi-agent/session-state';
 import { conversationTitle } from './xiaozhi-agent/conversation-title';
 import { hashFileSha256, isInsideRoot, resolveInsideRoot } from './local-file-security';
@@ -1044,7 +1052,38 @@ function parseRegressionGates(value: unknown): AiRegressionGate[] {
 }
 
 export class OmniEduStore {
+  readonly mistakeFacts = new MistakeFactsRepository({dataRoot:()=>this.dataRoot,all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),map:row=>this.mapMistakeImageAnalysis(row),sanitize:(text,id)=>this.sanitizeProblemText(text,id),correct:(id,text)=>this.updateMistakeImageCorrection(id,{extractedText:text},true),createQuestion:input=>this.createQuestionBankItem(input),createRecord:(input,id)=>this.createRecord(input,id),transaction:async action=>{
+    const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+    try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
+      const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),map:row=>work.mapMistakeImageAnalysis(row),sanitize:(text,id)=>work.sanitizeProblemText(text,id),correct:(id,text)=>work.updateMistakeImageCorrection(id,{extractedText:text},true),createQuestion:input=>work.createQuestionBankItem(input),createRecord:(input,id)=>work.createRecord(input,id)});await work.exec('COMMIT;');return result;
+    }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+  }});
+  readonly mistakeOcr = new MistakeOcrRepository({dataRoot:()=>this.dataRoot,all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),map:row=>this.mapMistakeImageAnalysis(row),sanitize:(text,id)=>this.sanitizeProblemText(text,id),correct:(id,text)=>this.updateMistakeImageCorrection(id,{extractedText:text},true),transaction:async action=>{
+    const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+    try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
+      const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),map:row=>work.mapMistakeImageAnalysis(row),sanitize:(text,id)=>work.sanitizeProblemText(text,id),correct:(id,text)=>work.updateMistakeImageCorrection(id,{extractedText:text},true)});await work.exec('COMMIT;');return result;
+    }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+  }});
+  readonly practiceReviews = new PracticeReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),save:(id,draft)=>this.saveExerciseSetFromDraft(id,draft),exercises:id=>this.listExerciseSets(id),lineage:(studentId,id)=>this.questionReviews.parentsForStudent(studentId,id),transaction:async action=>{
+    const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+    try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
+      const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),save:(id,draft)=>work.saveExerciseSetFromDraft(id,draft),exercises:id=>work.listExerciseSets(id),lineage:(studentId,id)=>work.questionReviews.parentsForStudent(studentId,id)});await work.exec('COMMIT;');return result;
+    }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+  }});
+  readonly questionReviews = new QuestionReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
+    const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+    try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
+      const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input)});await work.exec('COMMIT;');return result;
+    }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+  }});
+  readonly learningReviews = new LearningReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),snapshot:(...args)=>this.studentContext.learningSnapshot(...args),createRecord:(input,id)=>this.createRecord(input,id),practiceSource:(studentId,id)=>this.practiceReviews.source(studentId,id),transaction:async action=>{
+    const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+    try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
+      const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),snapshot:(...args)=>work.studentContext.learningSnapshot(...args),createRecord:(input,id)=>work.createRecord(input,id),practiceSource:(studentId,id)=>work.practiceReviews.sourceOn({all:(sql,params)=>work.all(sql,params),read:id=>work.getQuestionBankItem(id),exercises:id=>work.listExerciseSets(id)},studentId,id)});await work.exec('COMMIT;');return result;
+    }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+  }});
   readonly materials: MaterialRepository;
+  readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
   readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values) });
   private db!: sqlite3.Database;
   private dbPath: string;
@@ -1379,9 +1418,11 @@ export class OmniEduStore {
     return this.withAttachments(records);
   }
 
-  async createRecord(input: LearningRecordInput): Promise<LearningRecord[]> {
+  async createRecord(input: LearningRecordInput, hostRecordId?:string): Promise<LearningRecord[]> {
     const title = requireNonEmpty(input.title, '学习记录标题不能为空');
-    const id = `record_${randomUUID()}`;
+    // Optional host identity supports atomic, idempotent teacher result writes; IPC never supplies it.
+    if(hostRecordId&&!/^record_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(hostRecordId))throw new Error('invalid_input');
+    const id = hostRecordId||`record_${randomUUID()}`;
     const timestamp = now();
     await this.run(
       `INSERT INTO learning_records (
@@ -1661,11 +1702,12 @@ export class OmniEduStore {
       await this.run(`UPDATE attachments SET extracted_text = ? WHERE id = ?`, [extractedText, attachmentId]);
     }
     await this.touchStudent(studentId);
-    return analysis;
+    return this.getMistakeImageAnalysisOrThrow(analysis.id);
   }
 
-  async updateMistakeImageCorrection(id: string, input: MistakeImageCorrectionInput): Promise<MistakeImageAnalysis> {
+  async updateMistakeImageCorrection(id: string, input: MistakeImageCorrectionInput, localOcrAuthorized=false): Promise<MistakeImageAnalysis> {
     const existing = await this.getMistakeImageAnalysisOrThrow(id);
+    if(existing.localOcr&&!localOcrAuthorized)throw new Error('请使用图片校正版本确认入口。');
     const correctedText = requireNonEmpty(input.extractedText, '老师修正文不能为空');
     const sanitized = await this.sanitizeProblemText(correctedText, existing.studentId);
     const timestamp = now();
@@ -3286,9 +3328,9 @@ export class OmniEduStore {
   async listAiConfirmations(status: AiConfirmationStatus | 'all' = 'pending'): Promise<AiConfirmationItem[]> {
     const allowedStatuses = new Set(['pending', 'confirmed', 'rejected', 'failed']);
     const rows = status === 'all'
-      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type <> 'pi_office_copy' ORDER BY updated_at DESC`)
+      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_practice_candidate') ORDER BY updated_at DESC`)
       : await this.all(
-        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type <> 'pi_office_copy' ORDER BY updated_at DESC`,
+        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_practice_candidate') ORDER BY updated_at DESC`,
         [allowedStatuses.has(status) ? status : 'pending'],
       );
     return rows.map((row) => this.mapAiConfirmationItem(row));
@@ -3948,10 +3990,10 @@ export class OmniEduStore {
     }
     const tokens = searchTokens(query);
     if (tokens.length) {
-      clauses.push(`(${tokens.map(() => '(stem LIKE ? OR analysis LIKE ? OR tags LIKE ? OR knowledge_point LIKE ?)').join(' OR ')})`);
+      clauses.push(`(${tokens.map(() => '(stem LIKE ? OR analysis LIKE ? OR tags LIKE ? OR knowledge_point LIKE ? OR source_title LIKE ?)').join(' OR ')})`);
       for (const token of tokens) {
         const like = `%${token}%`;
-        params.push(like, like, like, like);
+        params.push(like, like, like, like, like);
       }
     }
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
@@ -3969,7 +4011,7 @@ export class OmniEduStore {
     return rows.map((row) => {
       const item = this.mapQuestionBankItem(row);
       const matchedToken = queryTokens.find((token) =>
-        [item.stem, item.analysis, item.knowledgePoint, item.tags.join('、')].some((text) => text.includes(token)),
+        [item.stem, item.analysis, item.knowledgePoint, item.sourceTitle, item.tags.join('、')].some((text) => text.includes(token)),
       );
       return {
         ...item,
@@ -4231,7 +4273,9 @@ export class OmniEduStore {
 
   async listExerciseSets(studentId: string): Promise<ExerciseSet[]> {
     const rows = await this.all(`SELECT * FROM exercise_sets WHERE student_id = ? ORDER BY created_at DESC`, [studentId]);
-    return rows.map((row) => this.mapExerciseSet(row));
+    const reviewed=await this.all(`SELECT json_extract(result_json,'$.exercise.id') AS exercise_id FROM ai_confirmation_items WHERE student_id=? AND action_type='pi_practice_candidate' AND status='confirmed'`,[studentId]);
+    const ids=new Set(reviewed.map(r=>String(r.exercise_id)));
+    return rows.map((row) => {const exercise=this.mapExerciseSet(row);return ids.has(exercise.id)?{...exercise,reviewSource:{schemaVersion:'xiaozhi.education.practice-review.v1' as const,studentId,exerciseId:exercise.id}}:exercise;});
   }
 
   async search(keyword: string): Promise<SearchResult> {
@@ -5819,6 +5863,9 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_ai_tool_runs_task ON ai_tool_runs(task_id);
     `);
     await this.ensureFts();
+    const mistakeColumns=await this.all('PRAGMA table_info(mistake_image_analyses)');
+    if(!hasColumn(mistakeColumns,'local_ocr_json'))await this.run("ALTER TABLE mistake_image_analyses ADD COLUMN local_ocr_json TEXT NOT NULL DEFAULT ''");
+    if(!hasColumn(mistakeColumns,'confirmed_facts_json'))await this.run("ALTER TABLE mistake_image_analyses ADD COLUMN confirmed_facts_json TEXT NOT NULL DEFAULT ''");
     const reportColumns = await this.all(`PRAGMA table_info(review_reports)`);
     if (!hasColumn(reportColumns, 'parent_summary')) {
       await this.run(`ALTER TABLE review_reports ADD COLUMN parent_summary TEXT NOT NULL DEFAULT ''`);
@@ -6161,7 +6208,7 @@ export class OmniEduStore {
   }
 
   private async getAiConfirmationOrThrow(id: string): Promise<AiConfirmationItem> {
-    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type <> 'pi_office_copy'`, [id]))[0];
+    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_practice_candidate')`, [id]))[0];
     if (!row) throw new Error('确认项不存在');
     return this.mapAiConfirmationItem(row);
   }
@@ -6430,7 +6477,12 @@ export class OmniEduStore {
 
   private mapMistakeImageAnalysis(row: Row): MistakeImageAnalysis {
     const status = String(row.ocr_status ?? 'needs_ocr');
-    return {
+    let provenance:unknown;try{provenance=JSON.parse(String(row.local_ocr_json||'null'));}catch{throw new Error('unavailable');}
+    if(row.local_ocr_json&&!validMistakeOcrProvenance(provenance))throw new Error('unavailable');
+    let facts:unknown;try{facts=JSON.parse(String(row.confirmed_facts_json||'null'));}catch{throw new Error('unavailable');}
+    if(row.confirmed_facts_json&&!validMistakeFactsReceipt(facts))throw new Error('unavailable');
+    const analysis:MistakeImageAnalysis = {
+      ...(validMistakeFactsReceipt(facts)?{confirmedFacts:facts}:{}),
       id: String(row.id),
       studentId: String(row.student_id ?? ''),
       recordId: String(row.record_id ?? ''),
@@ -6444,7 +6496,9 @@ export class OmniEduStore {
       errorMessage: String(row.error_message ?? ''),
       createdAt: String(row.created_at ?? ''),
       updatedAt: String(row.updated_at ?? ''),
+      ...(validMistakeOcrProvenance(provenance)?{localOcr:provenance}:{}),
     };
+    return {...analysis,version:mistakeAnalysisVersion(analysis)};
   }
 
   private async getTeacherNotebook(id: string): Promise<TeacherNotebook | null> {

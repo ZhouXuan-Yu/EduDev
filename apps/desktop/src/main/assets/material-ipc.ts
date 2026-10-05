@@ -1,6 +1,6 @@
 import {dialog,ipcMain,type BrowserWindow} from 'electron';
 import type {OmniEduStore} from '../db';
-import {MATERIALS_SCHEMA,materialId,validMaterialQuery,validMaterialBodyQuery} from '../../shared/materials';
+import {MATERIALS_SCHEMA,materialId,validMaterialQuery,validMaterialBodyQuery,validMaterialSource} from '../../shared/materials';
 
 /** Main-owned native file selection; public retry accepts an ID, never a path. */
 export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined){
@@ -11,6 +11,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  ipcMain.handle('materials:list',(event,input)=>{check(event);if(!validMaterialQuery(input))throw new Error('invalid_input');return store.materials.list(input);});
  ipcMain.handle('materials:job',event=>{check(event);return {schemaVersion:MATERIALS_SCHEMA,active:!!active};});
  ipcMain.handle('materials:body',(event,input)=>{check(event);if(!validMaterialBodyQuery(input))throw new Error('invalid_input');return store.materials.body(input);});
+ ipcMain.handle('materials:source',(event,input)=>{check(event);if(!validMaterialSource(input))throw new Error('invalid_input');return store.materials.source(input);});
  ipcMain.handle('materials:retry',(event,input)=>{check(event);if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==2||input.schemaVersion!==MATERIALS_SCHEMA||!materialId(input.resourceId))throw new Error('invalid_input');return job(event,async signal=>({schemaVersion:MATERIALS_SCHEMA,resource:await store.materials.ingest(input.resourceId,signal)}));});
  ipcMain.handle('materials:cancel',event=>{check(event);active?.abort();return {schemaVersion:MATERIALS_SCHEMA,stopped:!!active};});
  ipcMain.handle('knowledge:import',event=>job(event,async signal=>{

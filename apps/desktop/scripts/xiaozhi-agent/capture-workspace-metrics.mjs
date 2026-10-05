@@ -3,15 +3,32 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 
 /** Wait for real finite theme/focus transitions; keep live infinite spinners. */
-export async function settleWorkspaceTransitions(page) {
-  return page.evaluate(async () => {
-    const finite=document.getAnimations().filter(animation=>animation.playState==='running'&&Number.isFinite(animation.effect?.getComputedTiming().endTime));
+export async function settleWorkspaceTransitions(page, options={}) {
+  return page.evaluate(async ({hiddenSnapshot}) => {
+    const finite=document.getAnimations().filter(animation=>{
+      const element=animation.effect?.target;
+      return animation.playState==='running'&&Number.isFinite(animation.effect?.getComputedTiming().endTime)
+        &&element instanceof Element&&element.getClientRects().length>0&&getComputedStyle(element).visibility!=='hidden';
+    });
     const durations=finite.map(animation=>animation.effect?.getComputedTiming().endTime);
-    let timer;
-    try{await Promise.race([Promise.allSettled(finite.map(animation=>animation.finished)),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('Finite theme transition did not settle')),2000);})]);}
-    finally{clearTimeout(timer);}
-    return {count:finite.length,durations};
-  });
+    // Static screenshot policy only: Windows suppresses the compositor of a
+    // hidden acceptance window even with backgroundThrottling=false. Advance
+    // finite transitions to their real end styles, as screenshot animations:
+    // 'disabled' does; leave infinite animations and product code untouched.
+    // The caller checks native BrowserWindow.isVisible; Chromium can report
+    // visibilityState=visible even when Windows has never shown that window.
+    const advanced=hiddenSnapshot===true;
+    if(advanced)for(const animation of finite)animation.finish();
+    const remaining=Math.max(0,...finite.map(animation=>Number(animation.effect?.getComputedTiming().endTime)-Number(animation.currentTime||0)));
+    const deadline=performance.now()+Math.min(10000,Math.max(2000,remaining+500));
+    // Hidden Electron can reach finished/idle without resolving the captured
+    // Animation.finished promise. Verify actual state instead of that receipt.
+    while(finite.some(animation=>animation.playState==='running'||animation.pending)){
+      if(performance.now()>deadline)throw new Error('Finite theme transition did not settle: '+JSON.stringify(finite.filter(a=>a.playState==='running'||a.pending).map(a=>({time:a.currentTime,end:a.effect?.getComputedTiming().endTime,target:a.effect?.target?.tagName,transition:a.transitionProperty}))));
+      await new Promise(resolve=>setTimeout(resolve,25));
+    }
+    return {count:finite.length,durations,advancedHiddenSnapshot:advanced};
+  }, {hiddenSnapshot:options.hiddenSnapshot===true});
 }
 
 /** Chrome must never own hidden scroll; only history/side panes may scroll. */

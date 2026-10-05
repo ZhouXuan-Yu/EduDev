@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/HKUDS/DeepTutor",
+  "revision": "f07029cfcf2c8dfccdb671cdfc343db8334f5741",
+  "version": "1.6.13",
+  "license": "Apache-2.0",
+  "files": [
+    {
+      "source": "deeptutor/agents/question/pipeline.py",
+      "destination": "pipeline.py",
+      "bytes": 93545,
+      "sha256": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1"
+    },
+    {
+      "source": "LICENSE",
+      "destination": "LICENSE",
+      "bytes": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    }
+  ],
+  "projection": {
+    "enum": "QuestionType",
+    "constants": [
+      "_CHOICE_KEYS",
+      "_FILL_IN_BLANK_TOKEN",
+      "_CONCEPT_ANSWERS"
+    ],
+    "methods": [
+      "_parse_quiz_payload",
+      "_normalize_quiz_payload",
+      "_collect_quiz_issues"
+    ]
+  },
+  "dependencies": "Python 3.11+ stdlib only; original module imports never execute. No AgentLoop/Store/LLM/Pydantic.",
+  "adaptations": "Unmodified Git blobs. Worker extracts exact AST enum/constants and three original method bodies with original decorators into a projected class; template is host-owned SimpleNamespace. Strict JSON parser injection rejects duplicate keys/nonfinite values; EduDev bounds and schema outside original bodies."
+}

@@ -10,6 +10,64 @@ const server = await createServer({
 });
 
 try {
+  const {MistakeFactsSummary}=await server.ssrLoadModule('/src/renderer/components/students/StudentMistakeFacts.tsx');
+  const {mistakePracticePrompt}=await server.ssrLoadModule('/src/shared/mistake-facts.ts');
+  const cyclePrompt=mistakePracticePrompt('已脱敏的照片题名');assert(cyclePrompt.includes('已脱敏的照片题名'));assert(cyclePrompt.includes('5道'));assert(cyclePrompt.includes('完整14天'));assert(cyclePrompt.includes('教师最终保存'));assert(cyclePrompt.includes('不编造作答'));assert(!/education_|Schema|MCP|AgentLoop/.test(cyclePrompt));
+  assert.equal(renderToStaticMarkup(React.createElement(MistakeFactsSummary,{analysis:{},onSend:()=>{}})),'');
+  const factsSummary={analysis:{confirmedFacts:{facts:{title:'<script>教师题目</script>',subject:'数学',knowledgePoint:'勾股定理',actualAnswer:'7厘米',result:'incorrect',errorCause:'直接相加',difficulty:'medium'}}},onSend:()=>{}};
+  const factsMarkup=renderToStaticMarkup(React.createElement(MistakeFactsSummary,factsSummary));assert(!factsMarkup.includes('<script>'));assert.match(factsMarkup,/7厘米/);assert.match(factsMarkup,/错误/);assert.match(factsMarkup,/请小智准备5道练习/);
+  const factsMissing=renderToStaticMarkup(React.createElement(MistakeFactsSummary,{...factsSummary,busy:true,analysis:{confirmedFacts:{facts:{...factsSummary.analysis.confirmedFacts.facts,actualAnswer:''}}}}));assert.match(factsMissing,/未作答/);assert.match(factsMissing,/mistake-facts-ask[^>]*disabled/);
+  const {MistakeRecordContent}=await server.ssrLoadModule('/src/renderer/components/students/MistakeRecordContent.tsx');
+  const recordContent={schemaVersion:'xiaozhi.education.mistake-facts.v1',knowledgePoint:'勾股定理',actualAnswer:'<script>7厘米</script>',expectedAnswer:'5厘米',errorCause:'直接相加',result:'incorrect',difficulty:'medium',sourceSha256:'a'.repeat(64)};
+  const recordMarkup=renderToStaticMarkup(React.createElement(MistakeRecordContent,{content:JSON.stringify(recordContent)}));assert(!recordMarkup.includes('<script>'));assert.match(recordMarkup,/5厘米/);assert.match(recordMarkup,/错误/);assert(!recordMarkup.includes(recordContent.sourceSha256));assert(!recordMarkup.includes('schemaVersion'));
+  const malformedMarkup=renderToStaticMarkup(React.createElement(MistakeRecordContent,{content:JSON.stringify({...recordContent,actualAnswer:{text:'错误结构'}})}));assert.match(malformedMarkup,/内容不完整/);assert(!malformedMarkup.includes('schemaVersion'));
+  const originalMarkup=renderToStaticMarkup(React.createElement(MistakeRecordContent,{content:'教师原始记录 <script>'}));assert.match(originalMarkup,/教师原始记录/);assert(!originalMarkup.includes('<script>'));
+  const mistakeFactsCases=7;
+  const {MistakeRecognitionState}=await server.ssrLoadModule('/src/renderer/components/students/StudentMistakeOcr.tsx');
+  const photoBase={analysis:{id:'local',ocrStatus:'needs_ocr',version:'a'.repeat(64)},busy:false,error:'',onStart:()=>{},onCancel:()=>{}};
+  const photoEmpty=renderToStaticMarkup(React.createElement(MistakeRecognitionState,photoBase));assert.match(photoEmpty,/student-mistake-ocr-start/);assert(!photoEmpty.includes('student-mistake-ocr-original'));
+  const photoBusy=renderToStaticMarkup(React.createElement(MistakeRecognitionState,{...photoBase,busy:true}));assert.match(photoBusy,/student-mistake-ocr-cancel/);assert(!photoBusy.includes('student-mistake-ocr-start'));
+  const photoCorrected=renderToStaticMarkup(React.createElement(MistakeRecognitionState,{...photoBase,analysis:{...photoBase.analysis,ocrStatus:'teacher_corrected',localOcr:{original:'<script>识别原文</script>'}}}));assert(!photoCorrected.includes('<script>'));assert.match(photoCorrected,/已保存/);assert.match(photoCorrected,/student-mistake-ocr-start[^>]*disabled/);
+  const photoFailure=renderToStaticMarkup(React.createElement(MistakeRecognitionState,{...photoBase,error:'图片已变化'}));assert.match(photoFailure,/role="alert"/);assert.match(photoFailure,/图片已变化/);
+  const mistakeOcrCases=4;
+  const {StudentPracticeResult,PracticeResultDetails}=await server.ssrLoadModule('/src/renderer/components/students/StudentPracticeResult.tsx');
+  const practiceForm=renderToStaticMarkup(React.createElement(StudentPracticeResult,{studentId:'student_local',topic:{name:'勾股',subject:'数学'},disabled:false,onChange:()=>{}}));assert.match(practiceForm,/正在读取已确认练习/);assert.match(practiceForm,/training-practice-select[^>]*disabled/);assert(!practiceForm.includes('training-practice-score-earned'));
+  const actualPractice={schemaVersion:'xiaozhi.education.practice-result.v1',exerciseId:'exercise_local',version:'0'.repeat(64),title:'教师实际练习',answers:[{index:0,answer:'<script>实际回答</script>',result:'incorrect',feedback:'核对前提'}],score:{earned:6,max:10}};
+  const actualMarkup=renderToStaticMarkup(React.createElement(PracticeResultDetails,{value:actualPractice,studentId:'student_local'}));assert(!actualMarkup.includes('<script>'));assert.match(actualMarkup,/实际回答/);assert(actualMarkup.includes('教师记录分数：6 / 10'));assert.match(actualMarkup,/practice-source-open/);
+  const unscored=renderToStaticMarkup(React.createElement(PracticeResultDetails,{value:{...actualPractice,score:undefined,answers:[{...actualPractice.answers[0],answer:''}]},studentId:'student_local'}));assert.match(unscored,/未作答/);assert(!unscored.includes('教师记录分数'));
+  const practiceResultCases=4;
+  const {PiPracticeReview,PracticeQuestionList}=await server.ssrLoadModule('/src/renderer/components/office/PiPracticeReview.tsx');
+  const practiceBase={sessionId:'aisession_local',onRefresh:async()=>{},review:{id:'xipractice_local',runId:'airun_local',callId:'call_local',state:'pending',count:2}};
+  const practicePending=renderToStaticMarkup(React.createElement(PiPracticeReview,practiceBase));assert.match(practicePending,/正在读取练习/);assert.match(practicePending,/practice-review-confirm[^>]*disabled/);
+  const practiceRejected=renderToStaticMarkup(React.createElement(PiPracticeReview,{...practiceBase,review:{...practiceBase.review,state:'rejected'}}));assert.match(practiceRejected,/已拒绝，未保存/);assert(!practiceRejected.includes('data-testid="practice-review-confirm"'));
+  const practiceView={questions:[{question:{stem:'<script>教学数据</script>',answer:'13厘米',analysis:'勾股定理',knowledgePoint:'勾股'},source:{},parents:[]}]},practiceDraft={title:'练习',reason:'实际核对',subject:'数学',knowledgePoint:'勾股',items:[{index:0,role:'variant',teacherObservation:'核对单位'}]};
+  const practiceList=renderToStaticMarkup(React.createElement(PracticeQuestionList,{view:practiceView,draft:practiceDraft}));assert(!practiceList.includes('<script>'));assert.match(practiceList,/13厘米/);assert(!practiceList.includes('practice-review-remove'));
+  const practiceReviewCases=6;
+  const {PiQuestionReview}=await server.ssrLoadModule('/src/renderer/components/office/PiQuestionReview.tsx');
+  const questionReviewBase={sessionId:'aisession_local',onRefresh:async()=>{},review:{id:'xiquestion_local',runId:'airun_local',callId:'call_local',state:'pending',count:2}};
+  const pendingQuestionMarkup=renderToStaticMarkup(React.createElement(PiQuestionReview,questionReviewBase));
+  assert.match(pendingQuestionMarkup,/正在读取待核对题目/);assert.match(pendingQuestionMarkup,/question-review-confirm[^>]*disabled/);
+  const rejectedQuestionMarkup=renderToStaticMarkup(React.createElement(PiQuestionReview,{...questionReviewBase,review:{...questionReviewBase.review,state:'rejected'}}));assert.match(rejectedQuestionMarkup,/已拒绝，未保存/);assert(!rejectedQuestionMarkup.includes('data-testid="question-review-confirm"'));
+  const questionReviewCases=4;
+
+  const {PiTrainingPlan}=await server.ssrLoadModule('/src/renderer/components/office/PiTrainingPlan.tsx');
+  const training={schemaVersion:'xiaozhi.education.training-plan.v1',title:'教师两周计划',startDate:'2026-10-06',topics:[{id:'kp_'+'a'.repeat(64),name:'等式变形',subject:'数学',type:'concept'}],days:Array.from({length:14},(_,i)=>({day:i+1,pointId:i===6?null:'kp_'+'a'.repeat(64),activity:i===6?'rest':'review',count:i===6?0:3,difficulty:'warmup',notes:'核对适用前提'}))};
+  const trainingReadonly=renderToStaticMarkup(React.createElement(PiTrainingPlan,{plan:training}));assert.match(trainingReadonly,/第 14 天/);assert.match(trainingReadonly,/2026-10-19/);assert.match(trainingReadonly,/实际完成后需另记学习结果/);assert(!trainingReadonly.includes('<input'));assert(!trainingReadonly.includes('<select'));assert(!trainingReadonly.includes('kp_'));
+  const trainingEditable=renderToStaticMarkup(React.createElement(PiTrainingPlan,{plan:training,onChange:()=>{}}));assert.match(trainingEditable,/training-count-14/);assert.match(trainingEditable,/training-topic-7[^>]*disabled/);assert.match(trainingEditable,/training-notes-1/);
+  const trainingInvalidDate=renderToStaticMarkup(React.createElement(PiTrainingPlan,{plan:{...training,startDate:''},onChange:()=>{}}));assert.match(trainingInvalidDate,/请选择开始日期/);
+  const trainingEscaped=renderToStaticMarkup(React.createElement(PiTrainingPlan,{plan:{...training,title:'<script>private</script>'}}));assert(!trainingEscaped.includes('<script>'));assert.match(trainingEscaped,/&lt;script&gt;/);
+  const trainingPlanCases=4;
+  const {QuestionContextContent}=await server.ssrLoadModule('/src/renderer/components/office/PiQuestionSource.tsx');
+  const questionMarkup=renderToStaticMarkup(React.createElement(QuestionContextContent,{view:{question:{subject:'数学',grade:'初二',knowledgePoint:'勾股',questionType:'计算',sourceTitle:'教师题目',sourceKind:'local_bank',stem:'<script>bad</script>',answer:'',analysis:''}}}));
+  assert.match(questionMarkup,/尚未保存答案/);assert.match(questionMarkup,/尚未保存解析/);assert(!questionMarkup.includes('<script>'));assert.match(questionMarkup,/仍需教师核对/);
+  const questionSourceCases=4;
+  const {StudentTrainingState}=await server.ssrLoadModule('/src/renderer/components/students/StudentTrainingWorkspace.tsx');
+  const trainingStudent={id:'student_local',displayName:'训练验收',status:'active'},renderTraining=props=>renderToStaticMarkup(React.createElement(StudentTrainingState,{student:trainingStudent,loading:false,error:'',onRefresh:()=>{},onContinue:()=>{},...props}));
+  assert.match(renderTraining({loading:true}),/正在读取学习计划/);assert.match(renderTraining({student:undefined}),/请先选择学生/);assert.match(renderTraining({error:'无法读取本地计划'}),/role="alert"/);
+  const trainingView={plan:{id:'local',version:4,confirmedAt:'2026-10-05T12:00:00Z',plan:training,reason:'实际来源核对',sourceCurrent:true,strategyCurrent:true,sources:[]},results:[],totalResults:0};
+  const currentTraining=renderTraining({value:trainingView});assert.match(currentTraining,/教师两周计划/);assert.match(currentTraining,/版本 4/);assert(!currentTraining.includes('student-training-stale'));assert(!currentTraining.includes('kp_'));
+  const staleTraining=renderTraining({value:{...trainingView,plan:{...trainingView.plan,sourceCurrent:false}}});assert.match(staleTraining,/这份安排是历史计划/);
+  const trainingWorkspaceCases=5;
   const { QuestionNotebookWorkspace } = await server.ssrLoadModule('/src/renderer/components/QuestionNotebookWorkspace.tsx');
   const { TeacherNotebookWorkspace } = await server.ssrLoadModule('/src/renderer/components/TeacherNotebookWorkspace.tsx');
   const { AiObservabilityWorkspace } = await server.ssrLoadModule('/src/renderer/components/AiObservabilityWorkspace.tsx');
@@ -151,6 +209,11 @@ try {
   const teacherNotebookLoading = renderToStaticMarkup(React.createElement(TeacherNotebookWorkspace, { setStatus: noop }));
   assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-workspace"/);
   assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-loading"/);
+  assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-search"/);
+  assert.match(teacherNotebookLoading, /data-slot="list-view"/);
+  assert.doesNotMatch(teacherNotebookLoading, /SQLite|版本锁|软删除|可检查语境/);
+  assert.match(teacherNotebookLoading, /<fieldset disabled/);
+  const teacherNotebookCases=4;
 
   const observabilityLoading = renderToStaticMarkup(React.createElement(AiObservabilityWorkspace));
   assert.match(observabilityLoading, /data-testid="ai-observability-workspace"/);
@@ -412,7 +475,7 @@ try {
   assert.equal(validateUsabilityReview(parsedQualityRows[0]), '');
   assert.match(validateUsabilityReview({ ...parsedQualityRows[0], teacherScore: 6 }), /1 到 5/);
 
-  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 84 + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases, total: 84 + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases }, null, 2));
+  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 84 + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases, total: 84 + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases }, null, 2));
 } finally {
   await server.close();
 }

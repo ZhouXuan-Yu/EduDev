@@ -986,6 +986,7 @@ async function run() {
   await first.page.getByTestId('mistake-correction-input').fill('小A 手机 13800138000 的题目：求一次函数斜率。');
   await first.page.getByTestId('mistake-sanitize-button').click();
   await first.page.getByTestId('mistake-redactions').waitFor({ state: 'visible' });
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="mistake-sanitized-text"]')?.textContent?.includes('[手机号]'));
   assert.match(await first.page.getByTestId('mistake-sanitized-text').textContent(), /\[手机号\]/, 'sanitized preview should redact phone number');
   await first.page.getByTestId('mistake-save-correction').click();
   await first.page.waitForTimeout(120);
@@ -1131,7 +1132,7 @@ async function run() {
   await navigate(first.page, 'mistakes');
   await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).textContent(), new RegExp(confirmedExerciseSet.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'confirmed exercise-set title must render from SQLite readback');
-  assert.match(await first.page.getByTestId('exercise-set-readonly-boundary').textContent(), /不提供隐式编辑/, 'formal exercise-set readback must expose its read-only boundary');
+  assert.match(await first.page.getByTestId('exercise-set-readonly-boundary').textContent(), /保留确认时的题目版本.*重新准备练习/, 'formal exercise-set readback must expose its read-only boundary');
   await first.page.getByTestId(`exercise-set-details-${confirmedExerciseSet.id}`).locator('summary').click();
   for (let index = 0; index < confirmedExerciseSet.items.length; index += 1) {
     const expectedSourceLabel = { local_bank: '本地题库', teacher_resource: '教师资源', generated: '小智生成' }[confirmedExerciseSet.items[index].sourceKind];
@@ -1220,6 +1221,7 @@ async function run() {
   await first.page.getByTestId('question-notebook-usage-empty').waitFor({ state: 'visible' });
   await first.page.getByTestId(`question-notebook-usage-record-${uiCreatedQuestion.id}`).click();
   await first.page.waitForFunction(async (questionId) => (await window.omniEdu.listQuestionNotebookUsage(questionId)).length === 1, uiCreatedQuestion.id);
+  await first.page.waitForFunction(questionId => document.querySelector(`[data-testid="question-notebook-usage-${questionId}"]`)?.textContent?.includes('manual'), uiCreatedQuestion.id);
   assert.match(await first.page.getByTestId(`question-notebook-usage-${uiCreatedQuestion.id}`).textContent(), /manual/, 'manual classroom usage should render from SQLite readback');
 
   await first.page.getByTestId(`question-notebook-delete-category-${uiQuestionCategory.id}`).click();
@@ -1253,6 +1255,7 @@ async function run() {
   const teacherNotebookFixture = (await first.page.evaluate(() => window.omniEdu.listTeacherNotebooks())).find((item) => item.name === '一次函数备课本');
   assert.ok(teacherNotebookFixture, 'teacher notebook create click should persist a notebook');
   await first.page.getByTestId('teacher-notebook-record-title').fill('斜率课堂导入');
+  await first.page.getByTestId('teacher-notebook-record-form').locator('summary').click();
   await first.page.getByTestId('teacher-notebook-record-query').fill('如何用生活情境解释一次函数斜率？');
   await first.page.getByTestId('teacher-notebook-record-summary').fill('以速度变化建立斜率直觉。');
   await first.page.getByTestId('teacher-notebook-record-output').fill('先比较相同时间内路程变化，再抽象为纵向变化量与横向变化量之比。');

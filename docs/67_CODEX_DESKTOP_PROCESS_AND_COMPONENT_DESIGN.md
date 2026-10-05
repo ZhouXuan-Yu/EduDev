@@ -1,5 +1,57 @@
 # 小智 × Codex 桌面：实时过程与组件设计基准
 
+## 2026-10-06 DT-05 同源五题与两周训练（当前）
+
+沿用原ChatTool、HeroUI Button、现有题目/练习/计划编辑卡和传统结果UI。补验五题全部内容控件与冷恢复首末字段；已确认表单只读，浅暗双尺寸无水平溢出。工作过程展示工具/公开摘要；不显示私有CoT。全桌面Codex像素/交互/组件一致仍OPEN。
+
+Evidence：固定build-a 340文件/SHA 084bf520ca6b5ebe6d5595cc7df6be486bd933eebd610153dd2856b6241d1126，默认out逐文件一致。build/typecheck exit0；组件171/171、领域160/160（education-boundary-dS4I2L）；正式Pi/真实DeepSeek照片完整链21/21（education-journey-cctc7q，4次启动，rendererErrors=0），旧结果副本2/2（education-journey-dmiKuo，55→55消息），冷恢复视觉2/2（education-journey-zWgsj5，63→63消息）。原链28图与冷恢复首末题8图合计36张浅暗1366×768/1920×1080已逐张查看；静态滚动位置不替代全Codex视觉一致或原生动画验收。固定build-a旧业务smoke207/207、exit0（smoke-a.log）。精确命令、哈希、内容校正、SQLite读回与范围：apps/desktop/test-results/goal/dt05-photo-cycle-20261006/closeout.json。
+
+Doing/Next：Phase4/5 DOING，Goal ACTIVE。本轮接受的是owned印刷数学照片与显式合成学习作答的完整C/F实例，完整DT-05仍OPEN。下一唯一任务：核对并复用讲义结构与可靠检索能力，完成检索质量对比和M04/M05/M06/M07/M09联合验收，再依次MA-01至05→JOIN→Phase6–8。所有DeepTutor模式、完整Codex组件/体感、浏览器/MCP、长期偏好、日常人工、安装/无VPN及既有audit5（2 moderate/3 high）发布门禁仍OPEN。日常旧main PID27584（02:52:05）保留未重启，磁盘构建不是旧窗口加载证明。未提交/push、改凭据或网络/VPN、第三方工作树；无新增依赖。
+
+以下内容保留历史；当前进度与下一任务以上述收尾为准。
+
+
+
+## 2026-10-06 DT-05 照片学习事实与来源根题（当前）
+
+复用现有HeroUI Button及教师表单，追加显式事实核对、失败反馈、放弃/取消、已确认摘要与小智草稿入口。Pro MCP再次transport失败后使用项目已有合法组件。生产页面隐藏已无正式路径的三元面板，隔离历史入口保留。12图逐张检查仅接受该照片表单与状态，不是整个Codex像素/自然动态设计完成；不展示私有推理链。
+
+Evidence：最终build-f 340文件/SHA de02aa8acf282e5b76e43027e5a630cb2385feead9ce438039f83928b2f3459b，默认out逐文件一致；build/typecheck exit0、组件170/170、统一领域160/160（education-boundary-KZBdUV），正式Pi/真实DeepSeek照片事实14/14（education-journey-Ddv96H，3次启动/rendererErrors=0）、旧结果副本2/2（education-journey-RMLfIe，55→55消息）。12张浅暗双尺寸图已逐张实际查看。最终固定build-f旧业务smoke207/207、exit0（smoke-f.log）；隔离旧runtime不替代正式Pi/provider验收。精确命令、哈希、读回、失败与视觉范围：apps/desktop/test-results/goal/dt05-photo-facts-20261006/closeout.json。
+
+Doing/Next：Current Phase=4/5 DOING，完整DT-05/Golden C/F及Goal ACTIVE。下一唯一教育任务为照片同源5变式→教师确认题目/练习→个性化14天→实际结果再分析；随后MA/JOIN/Phase6–8。完整Codex设计、所有DeepTutor模式、课堂、长期偏好、浏览器/MCP、日常人工、安装/无VPN与既有audit5发布门禁仍OPEN。未提交/push、改凭据、网络/VPN或第三方工作树；日常旧进程未重启。
+
+
+收尾补齐：传统学生档案时间线复用已有shared/learning-source-preview，显示实际作答、参考答案、表现、错因和难度，隐藏内部Schema/ID/hash；薄组件不另造解析器，正常自由文本保留。实际冷启动验证揭示原选择ID在fallback学生已可用时仍为空，最终比较真正activeStudent.id，保留迟到更新保护。新增档案真实路径和4张浅暗双尺寸图，与原8图合计12图；当前14项仍仅是照片事实/根题/只读Pi续接，不冒称已生成5题。
+
+失败留存：build-e首次Object.hasOwn超出现有TS lib，最终复用原摘要函数；CZrABU揭示冷启动记录读取缺口并修复；X0gypp已有真实可读记录，截图断言在滚动布局完成前取几何，最终同build-f等待真实可达位置。smoke-d.log再次出现隔离旧no-provider外键错误，同build-d带诊断复验207通过；该历史间歇根因仍OPEN，不能归因或宣称照片/样式修复了它。最终build-f回归及当前正式Pi/真实DeepSeek、领域、组件和兼容均通过；原失败/旧构建保留。日常旧main PID27584未重启，待确认状态与正式数据保持。
+以下旧记录保留历史；本轮状态以上述记录为准。
+
+
+## 2026-10-06 DT-05 真实照片 OCR 与 Pi 草稿（当前）
+
+本轮复用现有 HeroUI Button、学生页布局和状态样式，加入可见本地识别状态、取消、原文详情与版本化校正。Pro MCP 查询 transport 失败后按项目规则用既有组件，没有第二套视觉系统。四张浅暗双尺寸截图已验；这是当前学生照片页面限定验收，不是全 Codex 像素一致完成。Pi 草稿不显示私有思维链或自动推断成绩。
+
+Evidence（本轮照片前置切片）：固定 build-c 340 文件，SHA 6f9309b5aa178021b3dcdac20089f583edfbfa43fbc43139a97d0a5089225f8f；build/typecheck exit0，组件164/164，统一领域155/155，正式五空间照片路径8/8，旧数据库副本兼容2/2。四张浅暗双尺寸实际 Electron 截图已逐张检查。最终固定 build-c 的旧业务 smoke207/207、exit0；该隔离旧 runtime 回归不能替代新版 Pi/真实 provider 验收。精确命令、源码/报告哈希、失败留存与读回：apps/desktop/test-results/goal/dt05-photo-20261006/closeout.json。
+
+Current Phase=4/5 DOING；完整 DT-05/Golden C/F 与 Goal ACTIVE。Next：教师实际作答/错因/知识点/难度→原学习事实与照片来源根题→5道有来源练习→教师确认14天计划→实际结果再评估。日常旧进程未重启；完整 Codex 设计、所有 DeepTutor 模式、浏览器/MCP、安装与无 VPN 人工验收和既有 audit5 发布门禁仍 OPEN。未提交、push 或更改凭据。
+
+以下旧记录保留历史；本轮状态以上述记录为准。
+
+## 2026-10-06 DT-05 练习实际结果与重新分析（当前）
+
+当前StudentTrainingWorkspace保留新版学生左导航/面包屑/现有主题。新增独立StudentPracticeResult复用现有teacher form fields、Button、PracticeSourceButton与checkbox-label；与计划、实际结果和来源同页，不再新建另一聊天壳。逐题长内容内部滚动、参考答案可展开、可选分数默认关闭、逐题表现默认空且必须显式选择、保存/取消在表单末端。实际结果以题号/表现/作答/反馈/分数和来源展示，不给教师暴露private ID或schema。
+
+公开过程仍来自现有Pi工具/核对事件：先读取实际证据→提出安排→等待教师→保存最终版本；不展示私有思维链。练习只是安排；只有教师保存的实际结果进入重新分析，禁止视觉上假装已完成。
+
+Evidence：最终build-c 341文件/SHA 34004180d6173abcf458bd8fd4e2d933390afd504e5f413b46233d3a9cebf750，默认out逐文件一致。build含typecheck exit0、组件160/160、统一领域149/149（education-boundary-qANG7X）；当前正式Pi/真实DeepSeek8/8（education-journey-WTTeTd，2次启动/rendererErrors=0）、旧题目核对数据副本3/3（JnXVj8，33→33模型消息）、当前练习→计划/结果跨入口副本2/2（cVAg2R，55→55消息）均固定build-c。8张静态Electron浅暗1366×768/1920×1080截图逐张查看；保存/取消/来源可达，长逐题列表内部滚动、无横向溢出，分数复选框复用既有checkbox-label且几何断言通过。相关旧业务smoke207/207固定build-b；其main/preload与最终build-c逐文件相同，c仅给新表单复用既有复选框样式。没有把旧runtime smoke称为新版真实教育验收。精确命令/源码与报告SHA/读回/失败留存：apps/desktop/test-results/goal/dt05-result-20261006/closeout.json。
+
+截图仅当前静态滚动页面限定验收；完整Codex像素、全组件与原生动态目标保持OPEN。
+
+Doing/Next：Current Phase=Phase4/5 DOING；完整DT-05/Goal ACTIVE。下一唯一教育任务先对照现有本地OCR/教师校正、题库/错题、Pi和DeepTutor question/learning能力，冻结完整Golden C/F合同，再贯通实际照片→本地OCR与教师校正→错因/知识点/学生历史/难度→5道有来源练习→教师确认的个性化14天训练→实际结果与重新评估。当前单知识点两题结果链不冒称该完整场景。之后MA-01至05→JOIN→Phase6/7/8。完整Codex像素/原生动态、全部DeepTutor模式、课堂、长期偏好、日常人工、安装/无VPN和既有audit5发布门禁仍OPEN。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+
 ## 2026-10-05 当前视觉与执行基准
 
 用户新 [Master Goal](goal/XIAOZHI_CODEX_GOAL.md) 将视觉更新为Apple-like Liquid Glass × Codex Productivity × Education Warmth；Codex一致体感以公开工作摘要、工具、计划、审批、交付、停止恢复等真实行为衡量。下方旧像素/下一项不覆盖新合同，历史截图与组件证据保留。当前 [Phase0](goal/CURRENT_STATE.md)，官方HeroUI MCP glass查询可用，逐组件Pro授权/迁移门禁尚未闭合，新Shell未实现或视觉验收。稳定产品入口 [CURRENT](product/CURRENT.md)，不展示模型私有Chain-of-Thought。

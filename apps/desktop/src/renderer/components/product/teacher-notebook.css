@@ -1,0 +1,28 @@
+.teacher-notebook-grid { display: grid; grid-template-columns: minmax(220px, .32fr) minmax(0, 1fr); align-items: start; gap: 28px; }
+.teacher-notebook-main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.teacher-notebook-main .teacher-library-detail { min-height: 0; }
+.teacher-notebook-directory { min-width: 0; }
+.teacher-notebook-directory .teacher-library-list { max-height: calc(100vh - 300px); overflow-y: auto; }
+.teacher-notebook-check { display: inline-flex; align-items: center; gap: 8px; color: var(--pi-muted); font-size: 13px; margin: 0 0 16px; white-space: nowrap; }
+.teacher-notebook-workspace .teacher-notebook-check input { width: 16px; height: 16px; margin: 0; accent-color: var(--pi-accent); }
+.teacher-notebook-fields { display: flex; flex-direction: column; gap: 16px; border: 0; padding: 0; margin: 0 0 20px; min-width: 0; }
+.teacher-notebook-fields label { display: flex; flex-direction: column; gap: 8px; color: var(--pi-ink); font-size: 13px; min-width: 0; }
+.teacher-notebook-fields input, .teacher-notebook-fields textarea, .teacher-notebook-fields select { width: 100%; min-width: 0; border: 1px solid var(--pi-line); background: var(--pi-soft); color: var(--pi-ink); font: inherit; line-height: 1.6; border-radius: 10px; padding: 10px 12px; box-shadow: none; }
+.teacher-notebook-fields textarea { resize: vertical; }
+.teacher-notebook-fields :is(input,textarea,select):focus-visible { outline: 2px solid var(--pi-focus); outline-offset: 2px; }
+.teacher-notebook-fields:disabled { opacity: .65; }
+.teacher-notebook-record-identity { display: grid; grid-template-columns: 140px minmax(0,1fr); gap: 16px; }
+.teacher-notebook-workspace .teacher-notebook-record-list { display: flex; flex-direction: column; gap: 0; }
+.teacher-notebook-workspace .teacher-notebook-record { display: block; border: 0; border-bottom: 1px solid var(--pi-line); border-radius: 0; padding: 16px 0; background: transparent; box-shadow: none; }
+.teacher-notebook-record h3, .teacher-notebook-record-form h3 { margin: 8px 0 16px; font-size: 17px; font-weight: 550; color: var(--pi-ink); }
+.teacher-notebook-record-meta { color: var(--pi-muted); font-size: 12px; }
+.teacher-notebook-workspace .teacher-notebook-record-form { border: 0; background: transparent; border-radius: 0; padding: 20px 0 0; margin: 0; }
+.teacher-notebook-fields details { color: var(--pi-muted); font-size: 13px; }
+.teacher-notebook-fields details summary { cursor: var(--cursor-interactive, pointer); margin-bottom: 16px; }
+.teacher-notebook-fields details label + label { margin-top: 16px; }
+.teacher-notebook-workspace .teacher-library-detail-actions { margin-bottom: 0; }
+.teacher-notebook-workspace .teacher-notebook-record .teacher-library-detail-actions { margin-top: 16px; }
+.teacher-notebook-workspace .button--danger-soft { color: var(--pi-danger); }
+@media(max-width:1100px) { .teacher-notebook-grid { grid-template-columns: minmax(190px,.3fr) minmax(0,1fr); gap: 20px; } .teacher-notebook-main .teacher-library-detail header { flex-wrap: wrap; gap: 12px; } }
+@media(max-width:800px) { .teacher-notebook-grid { grid-template-columns: minmax(0,1fr); } .teacher-notebook-directory .teacher-library-list { max-height: 240px; } }
+

@@ -42,6 +42,9 @@ export type XiaozhiAgentEventPayload = (
   | { kind: 'approval'; approval: XiaozhiApproval }
   | { kind: 'change'; change: XiaozhiChangeSummary }
   | { kind: 'office_artifact'; artifact: OfficeArtifactSummary }
+  | { kind:'learning_review';review:import('./learning-review').LearningReviewSummary }
+  | { kind:'question_review';review:import('./question-review').QuestionReviewSummary }
+  | { kind:'practice_review';review:import('./practice-review').PracticeReviewSummary }
   | { kind: 'control'; control: XiaozhiControl }
     | {kind:'goal';goal:import('./xiaozhi-goal').XiaozhiGoal}
   | { kind:'image_delivery'; image:import('./xiaozhi-public-images').PublicImageDelivery }
@@ -56,4 +59,4 @@ export type XiaozhiAgentResult = { ok: true; runId: string; text: string; trunca
   | { ok: false; runId: string; error: XiaozhiAgentError };
 export type XiaozhiStartInput = { sessionId: string; prompt: string; commandId: string; presentation?: import('./xiaozhi-message-presentation').XiaozhiMessagePresentation; attachments?: import('./xiaozhi-attachments').XiaozhiAttachmentSelection[] };
 export type XiaozhiStartResult = { ok: true; runId: string } | { ok: false; error: XiaozhiAgentError };
-export type XiaozhiWorkspaceSnapshot = { enabled: boolean; projection: OfficeProjection; running: boolean; operation?: 'compact'; modelCapabilities?: XiaozhiModelCapabilities; contextPolicy?: XiaozhiContextPolicy; legacyHistory: boolean; interruptedSend?: boolean; approvals?: XiaozhiApproval[]; changes?: XiaozhiChangeSummary[]; officeArtifacts?: OfficeArtifactSummary[]; controls?: XiaozhiControl[]; goal?: import('./xiaozhi-goal').XiaozhiGoal; workspace?: { label: string }; budgetSettings?: XiaozhiBudgetSettings; limitsEnforced?: boolean; browser?:XiaozhiBrowserStatus; usage?: XiaozhiUsage[]; memoryScope?: XiaozhiMemoryScope; skills?: XiaozhiSkill[] };
+export type XiaozhiWorkspaceSnapshot = { enabled: boolean; projection: OfficeProjection; running: boolean; operation?: 'compact'; modelCapabilities?: XiaozhiModelCapabilities; contextPolicy?: XiaozhiContextPolicy; legacyHistory: boolean; interruptedSend?: boolean; approvals?: XiaozhiApproval[]; changes?: XiaozhiChangeSummary[]; officeArtifacts?: OfficeArtifactSummary[]; controls?: XiaozhiControl[]; goal?: import('./xiaozhi-goal').XiaozhiGoal; workspace?: { label: string }; budgetSettings?: XiaozhiBudgetSettings; limitsEnforced?: boolean; browser?:XiaozhiBrowserStatus; usage?: XiaozhiUsage[]; memoryScope?: XiaozhiMemoryScope; skills?: XiaozhiSkill[];practiceReviews?:import('./practice-review').PracticeReviewSummary[];questionReviews?:import('./question-review').QuestionReviewSummary[];learningReviews?:import('./learning-review').LearningReviewSummary[];studentContext?:import('./student-context').StudentContextSelection };

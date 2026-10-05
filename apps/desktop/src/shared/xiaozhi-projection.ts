@@ -18,6 +18,13 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   skill_scope_changed: '可用技能或授权版本已变更，后续调用已停止。请刷新技能设置后继续；原对话和已完成操作保留。',
 };
 const labels: Record<string, string> = { read: '读取教育技能', search_teacher_knowledge: '检索老师知识库', office_read_text: '读取授权资料',
+  office_list_materials:'查找资料库文件',office_read_material:'读取资料库正文',
+  education_verify_material_quote:'核验资料引用',
+  education_search_materials:'查找资料正文',
+  education_search_questions:'检索本地题库',education_read_question:'读取题目与解析',
+  education_read_student_context:'读取当前学生学习记录',
+  education_analyse_learning:'核对学习证据与复习顺序',
+  education_propose_learning_change:'请教师核对学习建议',
   report_goal_progress:'记录目标进度',office_list_attachments:'查看已发送附件',office_read_attachment:'读取已发送附件',office_view_public_image:'确认公开图片分析',
   office_browser:'浏览网页',office_web_search:'联网搜索',office_web_fetch:'读取公开网页',office_file_stat: '检查资料信息', office_list_files: '查看授权文件目录', office_copy_file: '复制教学资料', office_create_text: '创建教学文档', office_edit_text: '修改教学文档', office_create_document:'生成办公文档', office_read_document:'读取办公文档',update_plan:'更新任务计划',ask_teacher:'请教师补充', read_education_memory:'读取本会话教育记忆', read_session_process:'查看本会话过程' };
 /** Public process only. Preserve text segments around tools; no SDK reasoning. */
@@ -57,6 +64,11 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
   } else if (event.kind === 'usage') {
     const { activeMs, waitingMs } = event.usage;
     if (Number.isFinite(activeMs) && activeMs >= 0 && Number.isFinite(waitingMs) && waitingMs >= 0 && Number.isFinite(activeMs + waitingMs)) next.elapsedMs = activeMs + waitingMs;
+  } else if (event.kind === 'question_review'||event.kind==='practice_review') {
+    const item=next.items.find(item=>item.kind==='tool'&&item.id===event.review.callId);
+    if(item)item.status=event.review.state==='pending'?'waiting_approval':event.review.state==='rejected'?'declined':'completed';
+    if(event.review.state==='pending')next.status='waiting_approval';
+    else if(next.status==='waiting_approval')next.status='running';
   } else if (event.kind === 'approval') {
     const item = next.items.find(item => item.kind === 'tool' && item.id === event.approval.callId);
     if (item) item.status = event.approval.state === 'pending' ? 'waiting_approval' : event.approval.state === 'rejected' ? 'declined'

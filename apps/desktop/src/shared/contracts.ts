@@ -171,6 +171,9 @@ export type SanitizedProblemText = {
 };
 
 export type MistakeImageAnalysis = {
+  confirmedFacts?: import('./mistake-facts').MistakeFactsReceipt;
+  version?: string;
+  localOcr?: import('./mistake-ocr').MistakeOcrProvenance;
   id: string;
   studentId: string;
   recordId: string;
@@ -572,6 +575,7 @@ export type ExerciseSet = {
   sourceQuestionIds: string[];
   createdAt: string;
   updatedAt: string;
+  reviewSource?: import('./practice-review').PracticeSourceInput;
 };
 
 export type ExerciseSetDraftPayload = {

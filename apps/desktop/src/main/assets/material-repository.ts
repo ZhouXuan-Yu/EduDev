@@ -5,6 +5,10 @@ import {MATERIALS_SCHEMA,MATERIAL_PAGE_SIZE,materialTerms,type MaterialQuery,typ
 import type {TeacherResource,ResourceChunk} from '../../shared/contracts';
 import {DOCUMENT_SCHEMA,DOCUMENT_MAX_INPUT,DOCUMENT_MAX_OUTPUT,isOfficeDocument,type DocumentFailure} from '../../shared/xiaozhi-documents';
 import {extractLocalDocument} from '../xiaozhi-agent/document-host';
+import type {MaterialSource,MaterialSourceView} from '../../shared/materials';
+import {EDUCATION_SEARCH_MAX_BYTES,EDUCATION_SEARCH_MAX_UNITS} from '../../shared/education-capabilities';
+import {materialBodyVersion,type MaterialReadingUnit} from './material-source';
+export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:string};
 
 type Row=Record<string,unknown>;
 type SqlValue=string|number|null;
@@ -18,7 +22,8 @@ export type MaterialRepositoryHost={
 /** Business adapter only: same SQLite facts and existing Hana worker, no runtime. */
 export class MaterialRepository {
  private readonly active=new Set<string>();
- constructor(private readonly host:MaterialRepositoryHost){}
+ private readonly host:MaterialRepositoryHost;
+ constructor(host:MaterialRepositoryHost){this.host=host;}
  async resource(id:string):Promise<TeacherResource>{
   const row=(await this.host.all(`SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?`,[id]))[0];
   if(!row)throw new Error('material_not_found');return this.host.mapResource(row);
@@ -38,6 +43,27 @@ export class MaterialRepository {
   const rows=readable?await this.host.all(`SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index ASC,c.id ASC LIMIT ? OFFSET ?`,[resource.id,10,input.offset]):[];
   const total=readable?resource.chunkCount:0;
   return {schemaVersion:MATERIALS_SCHEMA,resource,chunks:rows.map(this.host.mapChunk),total,offset:input.offset,hasMore:input.offset+rows.length<total};
+ }
+ /** One SQLite statement is a consistent snapshot across resources and derivatives. */
+ async readingSnapshot(resourceId?:string):Promise<MaterialReadingSnapshot>{
+  if(resourceId)await this.resource(resourceId);
+  const rows=await this.host.all(`SELECT c.*,r.title AS resource_title,r.original_file_name AS source_name,r.content_hash AS source_version,r.parse_status AS source_status FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id
+   WHERE r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted') ${resourceId?'AND r.id=?':''} ORDER BY r.id,c.chunk_index,c.id LIMIT ?`,[...(resourceId?[resourceId]:[]),EDUCATION_SEARCH_MAX_UNITS+1]);
+  if(rows.length>EDUCATION_SEARCH_MAX_UNITS)throw new Error('too_large');
+  let bytes=0,last='',offset=0;const units:MaterialReadingUnit[]=[];
+  for(const row of rows){const chunk=this.host.mapChunk(row);bytes+=Buffer.byteLength(chunk.contentMd,'utf8');if(bytes>EDUCATION_SEARCH_MAX_BYTES)throw new Error('too_large');
+   if(chunk.resourceId!==last){last=chunk.resourceId;offset=0;}
+   units.push({resourceId:chunk.resourceId,version:String(row.source_version),title:String(row.source_name),offset:offset++,chunk});
+  }
+  return {units,fingerprint:createHash('sha256').update(JSON.stringify(rows)).digest('hex')};
+ }
+ async source(input:MaterialSource):Promise<MaterialSourceView>{
+  const body=await this.body({schemaVersion:MATERIALS_SCHEMA,resourceId:input.resourceId,offset:input.offset});
+  const chunk=body.chunks[0];
+  if(body.resource.contentHash!==input.version||!chunk||chunk.id!==input.chunkId||materialBodyVersion(chunk)!==input.bodyVersion)throw new Error('source_changed');
+  const after=await this.resource(input.resourceId);
+  if(after.contentHash!==body.resource.contentHash||after.parseStatus!==body.resource.parseStatus)throw new Error('source_changed');
+  return {source:input,body:{...body,chunks:[chunk],hasMore:input.offset+1<body.total}};
  }
  async ingest(id:string,signal:AbortSignal):Promise<TeacherResource>{
   if(this.active.has(id))throw new Error('material_busy');this.active.add(id);

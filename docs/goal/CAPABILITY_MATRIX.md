@@ -1,5 +1,359 @@
 # 小智能力与复用矩阵
 
+## 2026-10-06 DT-05 同源五题与两周训练（当前）
+
+DT-05照片5变式/教师题目与练习确认/14天计划/5实际作答反馈/再分析/冷恢复=本次owned实例接受。完整DT-05讲义结构、可靠检索质量对比与联合验收仍OPEN；MA/JOIN与Phase6–8不因此关闭。Done：当前照片入口发送完整教师可编辑草稿→唯一Pi实读原错题与学习事实→真实DeepSeek提出5道同源简答变式→教师修订确认5子题→Pi重读最终版本→确认五题练习/5引用→依真实错因制定完整14天→逐题录入实际表现与8/10→重新分析与修订14天→冷恢复不重放。读回为1原题+5子题、1五题练习、5引用、3真实记录（照片原事件/教师事实/本次逐题结果）及2计划版本。原照片与根题不变。
+
+Evidence：固定build-a 340文件/SHA 084bf520ca6b5ebe6d5595cc7df6be486bd933eebd610153dd2856b6241d1126，默认out逐文件一致。build/typecheck exit0；组件171/171、领域160/160（education-boundary-dS4I2L）；正式Pi/真实DeepSeek照片完整链21/21（education-journey-cctc7q，4次启动，rendererErrors=0），旧结果副本2/2（education-journey-dmiKuo，55→55消息），冷恢复视觉2/2（education-journey-zWgsj5，63→63消息）。原链28图与冷恢复首末题8图合计36张浅暗1366×768/1920×1080已逐张查看；静态滚动位置不替代全Codex视觉一致或原生动画验收。固定build-a旧业务smoke207/207、exit0（smoke-a.log）。精确命令、哈希、内容校正、SQLite读回与范围：apps/desktop/test-results/goal/dt05-photo-cycle-20261006/closeout.json。
+
+Doing/Next：Phase4/5 DOING，Goal ACTIVE。本轮接受的是owned印刷数学照片与显式合成学习作答的完整C/F实例，完整DT-05仍OPEN。下一唯一任务：核对并复用讲义结构与可靠检索能力，完成检索质量对比和M04/M05/M06/M07/M09联合验收，再依次MA-01至05→JOIN→Phase6–8。所有DeepTutor模式、完整Codex组件/体感、浏览器/MCP、长期偏好、日常人工、安装/无VPN及既有audit5（2 moderate/3 high）发布门禁仍OPEN。日常旧main PID27584（02:52:05）保留未重启，磁盘构建不是旧窗口加载证明。未提交/push、改凭据或网络/VPN、第三方工作树；无新增依赖。
+
+以下内容保留历史；当前进度与下一任务以上述收尾为准。
+
+
+
+## 2026-10-06 DT-05 照片学习事实与来源根题（当前）
+
+|能力|当前状态|
+|---|---|
+|实际照片OCR/校正/取消/恢复|前置切片保持，本轮重验|
+|照片→教师实际作答/表现/错因/知识点/难度→根题+学习事实|本轮限定接受，1根题/2记录；原图片记录保留|
+|Pi/真实DeepSeek实读同来源根题与脱敏实际证据|本轮限定接受；不等于已生成练习|
+|照片完整5变式/练习集合/14天/结果再分析Golden C/F|NEXT/DOING|
+|OpenMAIC课堂、长期偏好、完整Codex设计/MCP/浏览器|保持原OPEN|
+
+Evidence：最终build-f 340文件/SHA de02aa8acf282e5b76e43027e5a630cb2385feead9ce438039f83928b2f3459b，默认out逐文件一致；build/typecheck exit0、组件170/170、统一领域160/160（education-boundary-KZBdUV），正式Pi/真实DeepSeek照片事实14/14（education-journey-Ddv96H，3次启动/rendererErrors=0）、旧结果副本2/2（education-journey-RMLfIe，55→55消息）。12张浅暗双尺寸图已逐张实际查看。最终固定build-f旧业务smoke207/207、exit0（smoke-f.log）；隔离旧runtime不替代正式Pi/provider验收。精确命令、哈希、读回、失败与视觉范围：apps/desktop/test-results/goal/dt05-photo-facts-20261006/closeout.json。
+
+Doing/Next：Current Phase=4/5 DOING，完整DT-05/Golden C/F及Goal ACTIVE。下一唯一教育任务为照片同源5变式→教师确认题目/练习→个性化14天→实际结果再分析；随后MA/JOIN/Phase6–8。完整Codex设计、所有DeepTutor模式、课堂、长期偏好、浏览器/MCP、日常人工、安装/无VPN与既有audit5发布门禁仍OPEN。未提交/push、改凭据、网络/VPN或第三方工作树；日常旧进程未重启。
+
+
+收尾补齐：传统学生档案时间线复用已有shared/learning-source-preview，显示实际作答、参考答案、表现、错因和难度，隐藏内部Schema/ID/hash；薄组件不另造解析器，正常自由文本保留。实际冷启动验证揭示原选择ID在fallback学生已可用时仍为空，最终比较真正activeStudent.id，保留迟到更新保护。新增档案真实路径和4张浅暗双尺寸图，与原8图合计12图；当前14项仍仅是照片事实/根题/只读Pi续接，不冒称已生成5题。
+
+失败留存：build-e首次Object.hasOwn超出现有TS lib，最终复用原摘要函数；CZrABU揭示冷启动记录读取缺口并修复；X0gypp已有真实可读记录，截图断言在滚动布局完成前取几何，最终同build-f等待真实可达位置。smoke-d.log再次出现隔离旧no-provider外键错误，同build-d带诊断复验207通过；该历史间歇根因仍OPEN，不能归因或宣称照片/样式修复了它。最终build-f回归及当前正式Pi/真实DeepSeek、领域、组件和兼容均通过；原失败/旧构建保留。日常旧main PID27584未重启，待确认状态与正式数据保持。
+以下旧记录保留历史；本轮状态以上述记录为准。
+
+
+## 2026-10-06 DT-05 真实照片 OCR 与 Pi 草稿（当前）
+
+|能力|当前状态|
+|---|---|
+|真实照片本地 OCR / 取消 / 同源缓存 / 校正 / 冷恢复|本轮限定接受|
+|校正文本进入绑定学生的正式 Pi 草稿|本轮限定接受；教师自行发送|
+|实际作答、错因/知识点/难度与照片根题原子落库|NEXT，尚未完成|
+|完整照片→5变式→14天→结果再评估 Golden C/F|DOING；不能用已有两题链冒称完成|
+|原生 MCP、goal-x SQLite 接入、完整浏览器插件|OPEN；装包不等于接入|
+
+Evidence（本轮照片前置切片）：固定 build-c 340 文件，SHA 6f9309b5aa178021b3dcdac20089f583edfbfa43fbc43139a97d0a5089225f8f；build/typecheck exit0，组件164/164，统一领域155/155，正式五空间照片路径8/8，旧数据库副本兼容2/2。四张浅暗双尺寸实际 Electron 截图已逐张检查。最终固定 build-c 的旧业务 smoke207/207、exit0；该隔离旧 runtime 回归不能替代新版 Pi/真实 provider 验收。精确命令、源码/报告哈希、失败留存与读回：apps/desktop/test-results/goal/dt05-photo-20261006/closeout.json。
+
+Current Phase=4/5 DOING；完整 DT-05/Golden C/F 与 Goal ACTIVE。Next：教师实际作答/错因/知识点/难度→原学习事实与照片来源根题→5道有来源练习→教师确认14天计划→实际结果再评估。日常旧进程未重启；完整 Codex 设计、所有 DeepTutor 模式、浏览器/MCP、安装与无 VPN 人工验收和既有 audit5 发布门禁仍 OPEN。未提交、push 或更改凭据。
+
+以下旧记录保留历史；本轮状态以上述记录为准。
+
+## 2026-10-06 DT-05 练习实际结果与重新分析（当前）
+
+|能力|当前状态|剩余|
+|---|---|---|
+|已确认练习关联实际作答/表现/反馈/可选分数|当前页→原writer→读回/来源/重启限定接受|完整错题照片与五道个性化练习|
+|Pi/DeepTutor使用实际结果修订训练|真实DeepSeek、教师版本2确认已验|完整Golden C/F、多知识点个性化与全部模式|
+|传统练习→学生计划与结果|当前构建跨入口副本2/2，零模型重放|日常人工/完整课堂JOIN|
+
+复用：practice-result.v1只是现有student-training.v1的可选关联字段；旧输入/digest/记录保持不变。使用原exercise_sets、question_bank_usage、ai_confirmation_items及learning_records，无新增表/列/迁移/依赖/第二编排。确认练习sourceOn与结果writer共用原BEGIN IMMEDIATE；校验活跃学生、确认ledger digest、实际练习快照SHA、计划科目/知识点及完整逐题索引。答案/反馈/分数绑定原防重digest，重复不写、改动冲突、失败回滚；原concept/design质性门禁不放宽。Pi通过原education_analyse_learning收到脱敏实际答案/反馈/可选分数和整体结果，私有学生/练习ID不出现在回执正文，不自动打分或补造结果。
+
+Evidence：最终build-c 341文件/SHA 34004180d6173abcf458bd8fd4e2d933390afd504e5f413b46233d3a9cebf750，默认out逐文件一致。build含typecheck exit0、组件160/160、统一领域149/149（education-boundary-qANG7X）；当前正式Pi/真实DeepSeek8/8（education-journey-WTTeTd，2次启动/rendererErrors=0）、旧题目核对数据副本3/3（JnXVj8，33→33模型消息）、当前练习→计划/结果跨入口副本2/2（cVAg2R，55→55消息）均固定build-c。8张静态Electron浅暗1366×768/1920×1080截图逐张查看；保存/取消/来源可达，长逐题列表内部滚动、无横向溢出，分数复选框复用既有checkbox-label且几何断言通过。相关旧业务smoke207/207固定build-b；其main/preload与最终build-c逐文件相同，c仅给新表单复用既有复选框样式。没有把旧runtime smoke称为新版真实教育验收。精确命令/源码与报告SHA/读回/失败留存：apps/desktop/test-results/goal/dt05-result-20261006/closeout.json。
+
+Doing/Next：Current Phase=Phase4/5 DOING；完整DT-05/Goal ACTIVE。下一唯一教育任务先对照现有本地OCR/教师校正、题库/错题、Pi和DeepTutor question/learning能力，冻结完整Golden C/F合同，再贯通实际照片→本地OCR与教师校正→错因/知识点/学生历史/难度→5道有来源练习→教师确认的个性化14天训练→实际结果与重新评估。当前单知识点两题结果链不冒称该完整场景。之后MA-01至05→JOIN→Phase6/7/8。完整Codex像素/原生动态、全部DeepTutor模式、课堂、长期偏好、日常人工、安装/无VPN和既有audit5发布门禁仍OPEN。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+
+## 2026-10-06 Pi 插件目录与安装复核
+
+网页关键词定位/余额查询：限定生产；goal-x：安装待适配；原生MCP/交互浏览器：待接；第三方MCP/background：兼容门禁未过。安装与实际能力分别记录。
+
+详见 [Pi包清单](../integrations/PI_PACKAGES.md)。本轮证据：apps/desktop/test-results/goal/pi-packages-review-20261006/closeout.json；既有audit 5项（2 moderate/3 high）仍为发布待处理项。当前教育阶段4/5与完整Goal ACTIVE保持。
+
+## 2026-10-06 DT-05 学生练习集合与传统来源读回（当前）
+
+|能力|当前状态|剩余|
+|---|---|---|
+|唯一Pi实际题库→题目核对→练习教师最终安排→原writer保存|限定接受|学习路径/真实结果续接与完整DT-05|
+|当前学生传统练习与同版本父题来源|真实provider/SQLite/双主题双尺寸已验|完整跨模式谱系与Golden C/F|
+|拒绝/停止/冷恢复/防重/旧数据副本|本次切片已验|新action生产OS强杀与日常人工|
+|Pi包|web/usage限定生产，goal-x STAGED|MCP/目标Adapter/后台兼容包|
+
+Evidence：固定build-c 341文件/SHA 15cba713c2dea8db351973b488c9314909caf31e5ea55d837c525159b0545207，默认out逐文件一致；build/typecheck exit0、统一145/145（education-boundary-wraImL，新增18项）、组件156/156、当前唯一Pi/真实DeepSeek9/9（education-journey-ADH5Jm，3次启动/rendererErrors=0）、旧真实题目核对数据副本3/3（5RLgDA，3题/33→33模型消息，0新增事实）、相关旧业务smoke207/207均当前固定build-c。八张实际Electron浅暗1366×768/1920×1080图逐张查看；核对/拒绝/关闭可达、长内容内部滚动、无横向溢出。完整命令、源码/报告SHA、SQLite读回、失败留存与视觉边界：apps/desktop/test-results/goal/dt05-practice-20261006/closeout.json。领域故障回滚使用真实SQLite测试ports；原writer保存由真实页面证明，不冒称生产OS强杀。
+
+Doing/Next：Current Phase=Phase4/5 DOING；Current Task=DT-05练习集合限定接受、学习路径/实际结果续接DOING；完整Goal ACTIVE。下一唯一教育任务先冻结现有练习→路径/实际学习结果的兼容合同，再将已确认练习接现有学习计划/精通路径与教师实际作答/成绩记录，唯一Pi/DeepTutor重新评估并继续下一轮练习。完整DT-05/Golden C/F后依次MA-01至05→JOIN→Phase6/7/8。完整Codex像素/原生动态、全部DeepTutor模式、课堂、长期偏好、日常人工、安装/无VPN与既有audit5发布门禁仍OPEN。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+
+## 2026-10-06 DT-05 教师出题核对与题本保存（当前）
+
+|能力|当前状态|剩余|
+|---|---|---|
+|唯一Pi实读原题→原DeepTutor格式→教师编辑→题本原子保存|限定接受|练习集合/跨入口谱系与实际结果|
+|来源初稿/教师最终稿/子题版本与拒绝恢复|真实SQLite与冷恢复已验|生产OS强杀、完整学习路径|
+|Pi包|web/usage限定生产，goal-x STAGED|原生MCP/目标Adapter与兼容后台包|
+
+Evidence：固定341文件/SHA e80b3052e86609b0156b7f91f735b534b9ba47c92d04a9cd83b81abdb0190ab2；原源码verify/build/typecheck exit0、统一127/127、当前组件150/150、当前唯一Pi/真实DeepSeek教师核对10/10（education-journey-R7dHLl），3次启动、rendererErrors=0。浅暗1366×768/1920×1080四图实际逐张查看：确认/拒绝与输入可达，窄窗题目字段在内部滚动区，无横向溢出。相关历史回归207/207是在build-a、最终元数据/摘要绑定/重试修复之前，不能当成最终构建全部回归。精确命令、SHA、版本、失败留存、SQLite读回与视觉范围：apps/desktop/test-results/goal/dt05-review-20261006/closeout.json。
+
+Doing/Next：DT-05仍DOING、完整Goal ACTIVE。下一唯一教育任务先冻结练习集合的旧数据兼容合同，再把已核对题目接入现有exercise_sets/question_bank_usage及跨入口谱系读取，贯通传统练习、学习路径和实际结果；完整DT-05/Golden C/F后再MA-01至05→JOIN→Phase6/7/8。完整Codex像素/原生动态、日常人工、安装/无VPN、既有audit5发布门禁及其余Master未完项保持OPEN。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+
+## 2026-10-06 DT-05 原测验格式能力复用（当前）
+
+Current Phase：Phase4/5 DOING；Current Task：DT-05第2项DOING，完整Goal ACTIVE。上一轮为真实进展，其题库来源接缝6/99/146/8/207和4图报告本轮只读复核，未冒称重跑。
+
+|能力|当前状态|剩余|
+|---|---|---|
+|原DeepTutor quiz格式校验Adapter|内部Worker门禁通过|9新增真实原函数/进程；未注册生产工具|
+|DT-05可编辑题目/练习候选|DOING|同一确认ledger/Pi/当前UI/真实provider|
+|教师确认保存谱系/练习路径|OPEN|增量兼容+原子保存+实际结果|
+
+Evidence：npm run verify:deeptutor-question exit0；build/typecheck0、统一108/108（Q99ECJ，含9项新增原函数/真实进程/坏源码/取消等，与既有教育/SQLite/IPC/Pi回归）、renderer146/146。固定341文件/SHA fdda34a0a700f51827110cc796dd6992ce6f40fbcf0f758991665b380fec5f3c，out一致。精确源码/许可证/AST检查/命令/报告/边界：apps/desktop/test-results/goal/dt05-quiz-20261006/closeout.json。未改UI，renderer字节与上一轮build-a完全一致；本轮未执行新候选真实provider/页面/图审，也不以旧207回归代替新功能验收。
+
+Doing/Next：继续DT-05第2项原格式Adapter→同一ai_confirmation_items可编辑题目/练习候选→Pi/真实DeepSeek及当前教师核对UI；第3项先冻结谱系增量兼容迁移合同，再教师编辑/确认/原子题库及exercise保存；第4项传统练习/路径与实际结果；第5项完整DT-05/Golden C/F→MA-01至05→JOIN→Phase6/7/8。全Goal及教育/课堂/长期偏好/CI/安装/无VPN/原生动态未完成项保持OPEN。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+
+## 2026-10-06 DT-05 真实题库来源接缝（当前）
+
+Current Phase：Phase4/5 DOING；Current Task：DT-05 DOING，第1项真实题库来源接缝限定接受；完整Goal ACTIVE。
+
+|能力|真实状态|证据/剩余|
+|---|---|---|
+|DT-05真实题库检索/答案解析读取与本地来源|限定接受|当前UI真实6、边界99、组件146、Pi8、冷恢复、4图|
+|DT-05题目/测验候选与教师编辑保存|DOING，未交付|下一固定DeepTutor纯归一适配+同库确认及谱系|
+|DT-05练习/精通路径完整闭环|OPEN|后续真实作答与Golden C/F|
+
+question-context.v1复用searchQuestionBank/getQuestionNotebookEntry，两个Pi只读工具education_search_questions/education_read_question。每run主进程发现别名+题目事实SHA；答案/解析按需脱敏完整读取，超长拒绝、异步后重新核版本/租约。SHA不含收藏/分类覆盖层；模型不获原ID/私人字段/假确认。questions:context-source主frame→typed preload→HeroUI来源Modal只在本地展示全文。原生question-context身份在持久SessionManager.open前验证，未知版本/移除能力拒绝且JSONL字节不变；旧未标记兼容。无新Schema/依赖/Store/Loop。
+
+固定337文件/SHA 674fc8daf1620bfcba385a31f4fe12da9d8326c1993314d292367c494e9134d3；build/typecheck0、统一99/99（pvBYRJ）、renderer146/146、Pi协议8/8（CKxuuD）、当前唯一Pi/真实DeepSeek题库6/6（yTcdQR）、相关历史回归207/207。rendererErrors=0；浅暗1366×768/1920×1080共4张来源页图实际逐张查看，中文题干/答案/解析与关闭控件可达，无横向溢出，仅接受本来源对话框，不接受完整Codex像素/原生动态。精确命令/源码SHA/构建/报告/失败留存：apps/desktop/test-results/goal/dt05-question-20261006/closeout.json。
+
+下一唯一教育任务：DT-05第2项，固定DeepTutor纯测验归一与协议Adapter→唯一Pi可编辑题目/练习候选；第3项同一确认账本教师编辑/确认/原子题库和练习保存及父子谱系（先冻结增量兼容迁移合同）；第4项传统练习/路径/实际结果；第5项完整DT-05与Golden C/F，再MA-01至05→JOIN→Phase6/7/8。完整DeepTutor、OpenMAIC课堂、日常人工、完整Codex/Golden/安装/无VPN仍OPEN。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+
+## 2026-10-06 DT-04 学生计划与实际结果续接（当前）
+
+|能力|当前真实状态|证据/边界|
+|---|---|---|
+|DT-04两周计划及实际结果续接|限定教育领域接受|gsPCmm14真实、89边界；同一SQLite与Pi，非全模式|
+|传统学生学习计划|新版既有入口已接|来源/历史提示/表单/继续草稿/旧路径，12图|
+|新结果评估与再规划|当前真实DeepSeek已接|2事实、version6首日2、冷恢复不重放|
+|DT-05题目/测验/学习路径|NEXT，未接受|强schema/来源/教师编辑/实际产物待合同|
+|MA/完整Golden与安装|OPEN|未以本切片关闭|
+
+Pi包继续复用已锁版本：pi-web-access0.36.0关键词定位与@narumitw/pi-usage0.62.0余额限定生产，pi-goal-x0.32.3已安装STAGED；不兼容的MCP/background未强装。CLI全局安装不构成桌面已启用证据；原生MCP/目标SQLite适配分别后续，详见docs/integrations/PI_PACKAGES.md。
+
+下一唯一教育任务 DT-05：先核现有Question/Practice/Grading领域、Pi与DeepTutor原实现，冻结教师可编辑的题目/练习/学习路径纵向合同，再接真实来源与同库确认；随后 MA-01至05→JOIN→Phase6/7/8。完整DeepTutor模式、OpenMAIC课堂、Codex像素/原生动态、日常人工、完整Golden与安装/无VPN仍OPEN；Goal ACTIVE。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+
+## 2026-10-05 当前教育能力增量
+
+|能力|真实状态|证据与缺口|
+|---|---|---|
+|DT-03学习评估/复习策略|限定领域接受|原11/10/6实例只读复核+当前81边界，不代表全DeepTutor|
+|DT-04十四天训练|核心确认/保存/冷恢复接受，整体DOING|真实Pi/DeepSeek9；学生计划入口及实际结果续接OPEN|
+|训练卡/学习历史|新五空间接入|日期/数量/难度/说明可编辑，12图逐张查看/窄窗滚动可达|
+|题目/测验/学习路径、互动课|OPEN|后续DT-05/MA，模式菜单不算融合|
+
+Pi包状态不变：web-access关键词定位与usage余额限定生产，goal-x staged；不兼容MCP/background未强装。下一先贯通既有学生“学习计划”入口读取同一已确认计划及陈旧/空/失败状态，再补教师友好的结构化实际学习结果录入与重新分析/继续训练，不开第二事实库、不把安排当完成；然后DT-05题目/测验/学习路径→MA-01至05→JOIN→Phase6/7/8。完整Golden F、DeepTutor全模式、OpenMAIC互动课、日常人工、像素/动态、安装/无VPN与既有audit5项仍OPEN。
+
+以下旧记录保留历史；当前状态以上述记录为准。
+
+## 2026-10-05 Pi包复用切片
+
+|能力|真实状态|证据/缺口|
+|---|---|---|
+|web-access0.36.0|INSTALLED，关键词定位PRODUCTION限定接受|真实Pi读取公开DeepSeek正文find31匹配，9ExwIF；其他搜索/PDF/视频OPEN|
+|pi-usage0.62.0|INSTALLED，余额PRODUCTION限定接受|当前保存密钥→官方余额200→中文按钮→冷恢复；不设预算|
+|goal-x0.32.3|INSTALLED/STAGED|GoalCore与现有SQLite目标未适配；原现有目标继续|
+|MCP/后台扩展|未安装兼容性不匹配包|原生MCP有API但无live配置；后台兼容候选待核|
+|DT-03取消|本轮门禁已接受，整体任务仍DOING|真实Stop事务回滚/新确认/重复冲突/冷恢复6，统一76|
+
+下一沿DT-03整体合同→DT-04/05→MA/JOIN；完整Goal ACTIVE。详细包决策PI_PACKAGES.md，当前证据closeout.json。
+
+
+## 2026-10-05 DeepTutor功能对齐与学习会话恢复（已验收子集）
+
+Current Phase：Phase4/5 DOING；Current Task：DT-03 DOING；完整Goal ACTIVE。
+
+Done：实际融合程度逐项对齐官方清单，见CAPABILITY_MATRIX/EDUCATION_BRANCH_TODOLIST最新功能表；既有检索/引文/学生上下文/算法/教师核对与历史已融合，完整测验、学习路径、两周训练、视频及互动课未完成。本轮修复恢复旧会话时先写入后校验的问题：全部学生/学习/核对范围和工具先验证，复用Pi公开解析及内存SessionManager迁移后才持久打开；未知分支/版本、错学生、移除或错工具拒绝且JSONL字节不变，未绑定普通聊天保持空范围。无需新依赖/Schema/Store/循环。
+
+Evidence：固定337文件/SHA 806bfe0dfc046374c13ef86434ca16e55193c09621a2b76582b7e5cea6b30df4，build/typecheck exit0、renderer133/133、统一边界64/64（新增7项原生身份）、本轮真实DeepSeek教师核对/冷恢复/事务退出回滚11/11、历史回归207/207。正式4次隔离Pi启动、rendererErrors=0；4张当前浅暗双尺寸图实际查看，1366暗图确认按钮需卡内滚动，本轮不接受完整Codex动态/像素效果。完整命令/报告/SHA：apps/desktop/test-results/goal/phase4-learning-20261005/native-scope/closeout.json。
+
+Doing/Next：生产宿主并发取消/确认门禁→完整DT-03逐条接受→DT-04两周训练（真实证据→教师修订确认→本地计划→冷恢复）→DT-05题目/测验/学习路径→MA-01至05→JOIN→Phase6/7/8；Phase3UX欠项保持OPEN，不转回模拟样例或只做底层测试。
+
+Failed：前置测试脚本转义/重复导入已修，最终上述门禁无失败；旧失败报告保留。Blocked：无当前外部阻塞。
+
+Runtime：npm start exit0，默认out与固定构建一致；单个日常main PID60468创建于2026-10-05T21:07:20.5459380+08:00并加载默认out/main/index.js，未读取或注入日常事实；日常DOM/人工、安装/无VPN与完整Golden仍未验。Last verified commit：90d67381a08db8ba040211921288b55c87de3f55；Master SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302。未提交/push、修改凭据/网络/VPN或第三方工作树。
+
+以下保留历史，当前状态以上述记录为准。
+
+
+## 2026-10-05 用户功能纠偏：DeepTutor当前融合程度（当前定位）
+
+定位结论：已有真实的部分能力融合，尚未交付完整DeepTutor学习工作空间。只读核验本轮官方README及远端main，upstream仍为f07029cfcf2c8dfccdb671cdfc343db8334f5741（v1.6.13）。用户列举的功能是上游能力清单，不能直接作为EduDev已完成清单。Master §11/12要求选择性吸收教育能力，Pi仍为唯一生产编排。原上游专用Loop/Session/账号/CLI与第二LearningStore不能随模式一起搬入。
+
+|上游功能/教师结果|小智当前实际程度|当前入口/下一交付|
+|---|---|---|
+|聊天、提问与有来源辅导|已有唯一Pi+DeepSeek聊天、资料正文读取/搜索/原文核验；不是完整DeepTutor辅导模式|问小智；资料先收录再提问，DT-01a/01b限定接受|
+|知识与阅读|复用原reading搜索/匹配，教师点击来源可定位并继续读已收录段落；全文沉浸阅读/书籍进度未融合|我的资料→问小智；Book/Reading学习状态待DT-05适配|
+|学生学习上下文|当前新版学生档案绑定固定对话，必要脱敏读取实际记录、分页与来源；普通聊天不自动选学生|学生档案→问小智；DT-02限定接受|
+|掌握度/评分/复习|原mastery/scheduler/grading已执行；显式证据分析、教师编辑确认/拒绝、策略版本与跨会话确认历史可用；完整精通路径未完成|同一学生对话与学习核对卡/资料侧栏历史；DT-03 DOING|
+|测验、题目生成、解题、学习路径|既有领域/历史回归不等于新版Pi完整闭环；当前DT-05 OPEN|接入Question/Practice/Grading workflow并保留来源和教师修订|
+|接下来两周训练、长期学习|尚无完整真实学习状态→教师确认→持久训练计划闭环|DT-04 OPEN；DT-03收口后的首个功能交付|
+|课程学习、可视化、互动课堂|OpenMAIC只做过审计，正式生成/渲染未完成；DeepTutor对应完整模式未融合|DT-05与MA-01至05，教学内容空间统一入口|
+|研究|已有Pi联网/浏览器工具，不能称已迁入DeepTutor Research workflow|按教育资料研究需求适配，最终用有来源真实产物验收|
+|任务板|已有运行计划/Goal，未融合DeepTutor三列学习任务板、笔记及可恢复归档；两者不等价|训练计划阶段复用上游任务领域/UI接缝，沿同一SQLite；不以静态卡片冒充完成|
+|连接学习语境|本地资料/学生事实/已确认学习策略已接；书籍、笔记本、题库、共写草稿统一上下文仍有缺口|DT-05/MA/JOIN；必要本地范围由宿主选择，不能默认整库上传|
+|沉浸视频|YouTube字幕/时间戳辅导/继续进度未融合|记录为未融合候选；国内可用与本地优先要求下另审素材来源，不在当前DT-03扩建视频平台|
+|子代理、Partner、外部CLI|未迁入DeepTutor这些模式；当前Master禁止第二生产编排|保持Pi，不能为了功能菜单接回Codex/Claude CLI或第二Runtime|
+|多引擎知识库|当前资料索引/正文搜索不代表已迁LlamaIndex/PageIndex/GraphRAG/LightRAG/WeKnora/IMA/MarginNote/Kiwix全部后端|选择性知识能力适配；高级GraphRAG与多服务不属于当前单机闭环|
+|可检查记忆|已有Pi教育记忆接缝；不是DeepTutor L1/L2/L3 Memory Graph全量迁移|Phase6无感飞轮、版本/评估/回滚仍OPEN|
+
+实际可体验路径：从新版学生档案选择学生→问小智→“根据已保存的学习记录，分析当前问题和复习先后；不足的证据请说明”→打开来源核对；要求校正时在核对卡编辑确认→查看资料侧栏的学习核对历史。已有记录若只有自由文字，当前不会凭空补为结构化成绩/掌握事实；这个输入与引导缺口随DT-04/05闭环解决，不能要求教师理解内部JSON来替代产品交付。
+
+真实旧证据本轮只读回核验：DT-01a LIumb0 4/4；DT-01b FeErHd 7/7；DT-02 8mHAh4 9/9；DT-03教师核对GwcHvH 11/11；跨会话历史1DXgrz 10/10，报告均success=true。精确SHA/构建在apps/desktop/test-results/goal/phase4-learning-20261005/native-scope/deeptutor-prior-evidence-readback.json。这是既有实例证据复核，不能称本轮重新跑过全部功能。
+
+下一步执行队列：1 DT-03学习能力恢复拒绝无副作用（已按本轮子集验收）→2 生产宿主并发取消/确认门禁→3 完整DT-03按合同核对→4 DT-04真实两周训练计划（建议/修订/确认/本地保存/冷恢复）→5 DT-05题目、测验、学习路径和知识检索→6 MA-01至05→7 JOIN→Phase6/7/8。用户感知结果为每个任务的完成定义；不转回测试样例书，不再把测试数当功能完成度。Phase3既有UX欠项保留OPEN。
+
+官方来源：https://github.com/HKUDS/DeepTutor/blob/f07029cfcf2c8dfccdb671cdfc343db8334f5741/README.md 。以下是历史记录；冲突状态以本节与最新CURRENT_STATE为准。
+
+
+## 2026-10-05 DT-03 跨会话学习核对历史（已验收子集）
+
+Current Phase：Phase4/5 DOING；Current Task：DT-03 DOING；完整Goal ACTIVE。
+
+Done：同一新版问小智资料侧栏可读取当前学生跨会话的已确认历史，展开实际教师最终结果、编辑前宿主候选、前一确认版本及保留率差异。主进程固定当前学生；确认/写入仍局限原候选会话。分页真实7版本→首屏5→较早2；其他学生为真实空历史。原记录被教师从新版页面编辑后，历史仍可读且标记需重核，链接只打开实读当前版本。无新Schema/Store/依赖/模型工具/第二Loop。
+
+Doing：完整DT-03尚未接受，学习核对历史是其中一个已验证子集。Next：新learning-review native身份兼容/未知版本/移除/错误工具与无副作用拒绝→生产宿主并发取消→完整DT-03逐条接受→DT-04/05→MA-01至05→JOIN→Phase6/7/8；Phase3旧欠项继续OPEN，完整Goal ACTIVE。
+
+Failed：本轮最终10项实例无失败；GlaZHd的前置8项保留，作为较早构建证据。既有yzQ60K/2jRs1N/QvtXBi/0382P4失败不覆盖。Blocked：无当前外部阻塞。
+
+Evidence：固定337文件/SHA 7d5299a4beea1317bc791a7da1e02081253b6ab1f2b588a1f2ea269180217a5b；build/typecheck exit0、统一领域边界57/57、renderer133/133、正式唯一Pi真实DeepSeek历史10/10、相关历史回归207/207。两次正常冷启动；4张浅暗1366×768/1920×1080图逐张实际查看，均为当前新五空间。207历史legacy画面仅作回归，不作新版UI证据。 实例 apps/desktop/test-results/education-journey-1DXgrz/report.json，边界 apps/desktop/test-results/education-boundary-FQ7cOz/report.json，精确命令与source/artifact hash见 apps/desktop/test-results/goal/phase4-learning-20261005/history-closeout.json。
+
+Runtime：npm start exit0；默认out与固定验收副本逐字匹配。日常单个main PID16260创建于2026-10-05T20:24:41.59548+08:00，未读取或注入日常事实；日常DOM/人工未验，静态截图不接受原生动态或完整Codex体感。
+
+Last verified commit：90d67381a08db8ba040211921288b55c87de3f55；Master SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302。未提交/push、改凭据/系统网络/VPN或第三方工作树。安装、无VPN及完整Golden仍未验。
+
+以下保留历史，当前状态以上述记录为准。
+
+## 2026-10-05 DT-03 教师核对与策略事务（已验证子集，完整任务仍进行中）
+
+Current Phase：Phase4/5 DOING；完整 Goal ACTIVE。Current Task：DT-03；保持用户确认的新版五空间/学生目录/四块档案/生命周期/证据时间线。
+
+Done：唯一Pi实读证据→原本地评分建议→同新版工作台教师编辑/确认/拒绝→同一SQLite确认行原子保存校正/复习策略→确认后本轮重新分析最终结果→冷恢复与真实事务强制退出回滚，已在隔离真实DeepSeek实例验证11/11。原学习记录、发生时间与练习计数保持；拒绝不产生效果。build/typecheck exit0、统一边界51/51、renderer133/133、相关历史回归207/207；浅暗1366×768/1920×1080四图实际查看。
+
+Doing：完整DT-03仍DOING，未将单链通过作为个性化辅导或完整Codex体验完成。跨会话版本历史可视化、新核对native身份兼容/移除/错误版本及宿主并发取消仍需正式门禁。Phase3既有欠项、DT-04/05、MA-01至05、JOIN、Phase6–8继续OPEN。
+
+Failed：保留yzQ60K原JSON视觉失败、2jRs1N只kill启动PID的重启失败；QvtXBi虽然10项通过，人工发现初始提议与宿主评分候选的公开表述不一致，已修实际候选回执并要求确认后本轮实读。0382P4在强制退出后直接读未由宿主恢复的WAL报I/O，改为正常生产冷启动恢复后只读核对，无删库/手改数据。上述报告不覆盖或冒称完整通过。
+
+Blocked：无当前外部阻塞。Next：依次补跨会话版本历史→核对native身份门禁→宿主并发取消→完整DT-03逐条接受→DT-04/05→MA-01至05→JOIN→Phase6/7/8；维持Master完整目标。
+
+Evidence：apps/desktop/test-results/education-journey-GwcHvH/report.json；apps/desktop/test-results/education-boundary-7mjrS3/report.json；apps/desktop/test-results/goal/phase4-learning-20261005/teacher-review-closeout.json与teacher-review-semantic-*.log。固定构建337文件/SHA ee4872bd4f5e66c8ddee8906fc7da5a766d47168f23721fc6fbdb50de9400c67，默认out与验收副本逐字相同。旧legacy截图只作回归，不作为新版图审。日常窗口人工、安装/无VPN与完整Golden仍未验。
+
+Runtime：npm start exit0；当前单个日常main PID66716加载默认out/main/index.js，重建后SHA与固定验收副本仍相同。未读取/注入日常事实；日常DOM/人工未验。
+
+Last verified commit：90d67381a08db8ba040211921288b55c87de3f55；Master SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302。未提交/push、改凭据/系统网络/日常事实；无新依赖/Schema。
+
+
+## 2026-10-05 DT-03 原学习算法与真实证据（进行中）
+
+Current Phase：Phase4/5能力支线 DOING，完整 Goal ACTIVE。Current Task：DT-03；合同 docs/goal/PHASE4_LEARNING_STRATEGY_CONTRACT.md。
+
+Done：固定 DeepTutor f07029cfcf2c8dfccdb671cdfc343db8334f5741 原 mastery/scheduler/grading/policy、必要 DTO 原字段与 Apache-2.0；6文件78198字节逐字复用，无 npm/pip 依赖。复用 reading 宿主的受限 Python Worker；一致 SQLite 全记录快照不静默截200条，strict 显式证据/有效时间/作废/跨科隔离。原算法掌握度、预计保留率、遗忘风险、到期顺序及同证据v1差异通过唯一Pi工具读取。新学生页保持，工具来源沿既有typed入口回读。
+
+Doing：实际评分/错因建议与教师编辑、确认、拒绝、同库原子事务/版本回放/崩溃恢复；这些未交付前不能接受完整DT-03。默认复习保留率0.9目前是只读估计，教师策略还未可编辑。启发式grading仅本地适配，尚未作为正式可纠正UI能力开放。
+
+Failed：首次 policy AST 漏普通 Assign 常量，已修并实跑；只读实例 lSmXj8/t02tKp 虽自动7项通过，人工回答复核分别发现自填确认标记被升格/质性子集重复计数，以及全正确记录被描述为非正确风险依据，均不计最终接受。修正确认来源、实际lastOutcome和条件风险解释，保留报告。首次英文公开说明仍是Phase3未解决项。
+
+Blocked：无当前本地推进阻塞。Next：完成同 ai_confirmation_items 的独立 learning action/Service/Repository→strict mainFrame IPC+typed preload→同新版工作台教师核对表单→确认+注释/策略同SQLite事务→实读来源版本校验/并发/停止/冷恢复；不改原学习FACT。然后DT-04/05→MA-01至05→JOIN→Phase6/7/8。
+
+Evidence：本轮最后build/typecheck exit0，337文件/SHA42af3d9b333e6c6e39a267d2ea3bb8df134b19c693a04c7254aa640cf46c7568，固定副本 apps/desktop/test-results/goal/phase4-learning-20261005/final-build。38统一边界 education-boundary-9HNFfM、renderer133/133；正式Pi真实DeepSeek只读7项 education-journey-xBepFt，来源/空档案/冷恢复通过；4张浅暗双尺寸图实际查看，人工核对教师确认来源/计数/近期结果语义。默认入口8项 daily-entry-sFaBVy，4张新版学生图已逐张查看；固定337文件构建历史回归207项通过（historical-report.json），旧版截图不作新版验收。npm start exit0，日常PID57056加载默认out/main/index.js，重建后SHA仍相同；日常DOM/人工/安装/无VPN未验。完整DT-03教师写入仍未完成。未提交/push、改凭据或日常事实。
+
+Last verified commit：90d67381a08db8ba040211921288b55c87de3f55；Master SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302。以下保留原历史。
+
+
+## 2026-10-05 用户确认新版学生页：识别与实例复核
+
+新版学生布局/默认构建识别补充验收8/8；学生context保持DT-02限定接受，DT-03/04/05和MA均未新增完成。本轮页面识别不是完整AI或Golden验收。详情docs/design/CURRENT.md。
+
+以下既有记录保留原历史范围。
+
+## 2026-10-05 DT-02 学生上下文与新版页面（最新）
+
+|能力|当前状态|证据/下一缺口|
+|---|---|---|
+|固定学生对话/必要脱敏历史/实读来源/冷恢复|DT-02限定A/C接受|25边界、9真实DeepSeek、8图；PHASE4_STUDENT_CONTEXT_ACCEPTANCE.md|
+|结构化掌握度/错因/评分/复习|DT-03 NEXT|版本/教师确认/拒绝/差异回放未完成|
+|两周训练/题目路径/Golden F|OPEN|DT-04/05|
+|互动课堂SDK/Golden E|OPEN|MA-01至05|
+|完整页面/Codex体验/安装/无VPN/飞轮|OPEN|保留Phase3/6/7/8欠项|
+
+以下既有记录保留历史范围，当前状态以上述记录为准。
+
+
+## 2026-10-05 DT-02入口修复与新版页面统一
+
+学生档案入口/保存回执/切换/校验/冷恢复：限定接受（7正式路径、133组件、207历史回归、5图）。新版页面与日常构建切换已核。DT-02-context、学生策略/Golden F、OpenMAIC/Golden E仍OPEN；详见docs/goal/PHASE4_STUDENT_CONTEXT_ACCEPTANCE.md，不得把学生页能创建当教育Provider完成。
+
+
+## 2026-10-05 DT-01b 正文搜索与来源定位
+
+|能力|当前状态|证据/缺口|
+|---|---|---|
+|全正文检索/继续阅读/教师来源定位|限定A/C接受|真实51份74段、目录外23/24段，重启与陈旧正文拒绝；docs/goal/PHASE4_DT_01B_ACCEPTANCE.md|
+|真实学生学习上下文|NEXT|DT-02，学生保存反馈smoke失败需核|
+|掌握度/两周训练/Golden F|OPEN|DT-03/04，不能用阅读能力代替|
+|OpenMAIC/Golden E|OPEN|MA-01至05尚未集成|
+
+历史条目保留原范围；当前进度以上述记录和 Master 为准。
+
+## 2026-10-05 能力支线恢复与 DT-01a 引文核验
+
+新增能力：education_verify_material_quote，Pi→MaterialRepository/脱敏→原DeepTutor worker→公开中文结果→native/SQLite。Backend与现有typed聊天IPC已贯通；OpenMAIC与学生个性化仅审计/合同完成，没有生产集成。
+
+Goal ACTIVE。按本轮用户纠偏，当前工作转为 Phase4/5 能力支线；Phase3欠项保留OPEN，不因切换优先级记完成。详细顺序：docs/goal/EDUCATION_BRANCH_TODOLIST.md；当前限定验收：docs/goal/PHASE4_DT_01A_ACCEPTANCE.md。
+
+Done（限定A/C）：固定新版DeepTutor源码的只读引文核验已接 Pi / EducationCapabilityProvider，真实DeepSeek正反核验、持久结果与冷恢复通过；11边界、12相关工具回归、133组件、正式Electron4场景及5张静态图审。原Python源码/Apache许可证逐字复用，无第二Loop/Store、新依赖或Schema。学生个性化/Golden F、OpenMAIC SDK/Golden E仍OPEN。
+
+Next唯一：DT-01b，复用同一原版search_units补全资料正文搜索与来源定位；再DT-02学生真实事实→DT-03掌握度/复习→DT-04两周训练→DT-05题目/学习路径；随后MA-01 DSL本地合同→generation→renderer→编辑/导入→真实互动课堂。不能回到旧模拟样例兼容循环。
+
+Failed/Open：原legacy全套smoke最新exit1（题本SQLite回执早于React显示）；两处断言已改为等待真实DOM，未全套重跑，不能声称207通过。Phase3完整39项、备课本全图审/整体验收、完整Goal/无VPN/安装/许可安全/人工仍OPEN。正式首4次图审失败与第五成功均保留；最后一次最终构建验收报告见closeout，不能宣称连续稳定。
+
+日常版本统一：npm start/根启动小智.cmd先成功构建后开当前out，旧dist可恢复归档，release不跟随旧dev URL，单实例聚焦/版本变化重启；owned验收窗口隐藏。此前日常入口5/5有限验收、两图审及备课本独立8场景通过，不代表完整Phase3。默认out本轮有意更新；未清空日常事实、改密钥/供应商/DNS/proxy/VPN或提交/push。Last verified commit：90d67381a08db8ba040211921288b55c87de3f55，工作树保留既有改动。
+
+## 2026-10-05 P3-04：资料收录、全量目录与真实正文工具接受
+
+Goal ACTIVE；Current Phase：Phase3 Five Product Spaces DOING。P3-04仅资料收录、全量目录与正文工具实现层 A/C 接受；完整Phase3、Goal、日常、发布与人工仍 NOT_ACCEPTED。以下为当前生效状态，后文各轮记录保留历史范围。新接口只取真实本地事实，旧模拟业务兼容与测试样例书专项不再投入，不自动补回演示种子。
+
+|能力|状态|实际依据/剩余范围|
+|---|---|---|
+|本地PDF文本层、DOCX/PPTX/XLSX/TXT/MD收录|P3-04限定A/C接受|实际原件hash/SQLite正文/页面；扫描OCR OPEN|
+|资料目录全库名称/格式、正文分页|P3-04限定A/C接受|121份50/50/21、35段超过24；不是全文搜索|
+|取消、损坏/缺失、同hash与强制退出恢复|P3-04限定A/C接受|正式真实worker/SQLite/cold；保原件与旧正文|
+|Pi按ID读取资料正文、脱敏与恢复marker|P3-04限定A/C接受|真实DeepSeek最终回答/成功工具+12边界；不上传整库|
+|传统教学/学生教师化、教学产物全量分页|OPEN Next P3-05|既有入口保留，待合同与真实页面验收|
+|DeepTutor/OpenMAIC/飞轮/Golden/安装与人工|OPEN|继续Phase4–8，不能用本轮资料验收代替|
+
+边界：PDF只接受已验证文本层路径，扫描OCR未完成；旧doc/xls/ppt不支持。目录查找按全库名称/格式，不是资料全文搜索；Unicode归一仅查询侧，SQLite lower不承诺全Unicode等价。原生选择单批50文件、既有15秒/50MiB输入/1MiB解析输出均为工具边界，不是运行预算。资料收录不等于教师确认；失败保留旧已提交派生正文且不伪称ready。教学Office产物目录仍最近100份，完整分页待后续合同。日常安装、无VPN、WPS版式、人工、全Codex体感、安全/许可、完整教育Golden均OPEN；未以隔离验收替换日常out。
+
+Evidence：固定build9，323文件/SHA 52d6321cd1b974c26ae4ce8c06459bb157744a1660851d54475893780e193f9e；正常build/typecheck exit0，renderer129/129、资料/Office工具边界12/12、真实DeepSeek正式Electron工作台31/31、原教育隔离legacy-test回归207/207，均独立exit0。31项report.success=true/rendererErrors=[]，四次实际独立profile启动、当前构建/脚本指纹与main已加载模块核验；207本轮确实在最终build9重跑，不能作为新教育黄金闭环。37最终PNG归档，其中21张逐张视觉审阅，覆盖本轮资料空/正文/失败/冷恢复及正文工具浅暗1366×768/1920×1080；其他16张只归档。本轮控件可达/可读，不宣称全部Codex像素一致或全页WCAG。归档：apps/desktop/test-results/goal/phase3-ingestion-20261005/closeout.json，SHA 36d6820c3685aef39c4c6b6f85a38efbb1ab11ef7f1d513b29b09d1ae7238585；精确命令与失败见PHASE3_PRODUCT_SPACES_CONTRACT。
+
+Next：P3-05，整理传统备课、讲义、题本与学生页面的教师操作体验，盘点实际 typed 入口、业务事实和失败状态，先冻结增量合同，再逐切片实现与验收；随后完整Phase3验收，再Phase4 DeepTutor教育能力、Phase5 OpenMAIC互动课、Phase6飞轮、Phase7加固、Phase8 Golden A–G。Pi保持唯一生产编排。
+
+Last verified commit：90d67381a08db8ba040211921288b55c87de3f55。本轮开始HEAD为20aa86656cdb5a0f85e0e11fa21863b50233fcb1，执行中观察到外部提交推进，保留其内容；本Agent未提交或push。Master2584行/SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302保持。daily out323文件/SHA 0dd7d497084c683cb11f1ea2ba79d509f8f7cc377b266261d69a338343389981本轮未变；P3-03曾意外重建并精确恢复的历史保留。没有新Schema/依赖/vendor/密钥/供应商/系统DNS、proxy、VPN变更，没有清空日常数据。
+
+
 ## 2026-10-05 P3-03：教师资料与跨会话教学文件目录接受
 
 Goal ACTIVE；Current Phase：Phase3 Five Product Spaces DOING。P3-03仅教师资料目录与跨会话教学文件目录实现层 A/C 接受；完整Phase3、Goal、日常、发布与人工仍 NOT_ACCEPTED。新接口使用真实本地事实，旧模拟业务兼容和测试样例书专项不再投入。

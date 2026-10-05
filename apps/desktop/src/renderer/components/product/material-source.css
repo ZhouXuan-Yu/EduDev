@@ -1,0 +1,6 @@
+.pi-material-source.button { height: auto; min-height: 32px; max-width: 100%; min-width: 0; white-space: normal; text-align: left; justify-content: start; padding: 6px 0; }
+.pi-material-source.button > svg { flex-shrink: 0; }
+.pi-material-source.button > span { overflow-wrap: anywhere; min-width: 0; white-space: normal; }
+.xiaozhi-pi-workspace .pi-context-sources li:has(.pi-material-source) { flex-direction: column; align-items: stretch; gap: 4px; }
+.xiaozhi-pi-workspace .pi-context-sources .pi-material-source.button { width: 100%; }
+.xiaozhi-pi-workspace .pi-context-sources .pi-material-source.button > span { white-space: normal; overflow: visible; text-overflow: clip; }

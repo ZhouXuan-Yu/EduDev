@@ -1,0 +1,25 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
+import {createModelSettings} from '../../src/main/xiaozhi-agent/model-settings.ts';
+import {createModelSettingsApi,registerModelSettingsIpc} from '../../src/main/xiaozhi-agent/model-settings-api.ts';
+export async function piPackageBoundaries(check,output){
+ const root=path.resolve('src/main/xiaozhi-agent/vendor/pi-packages'),manifest=JSON.parse(fs.readFileSync(path.join(root,'source-manifest.json'))),hash=b=>createHash('sha256').update(b).digest('hex');
+ await check('Reviewed installed packages match versions, MIT notices, original hashes and sole Pi 1.0.2 SDK',async()=>{
+  assert.equal(manifest.packages.length,3);for(const p of manifest.packages){assert.equal(JSON.parse(fs.readFileSync(path.resolve('node_modules',p.name,'package.json'))).version,p.version);assert.equal(hash(fs.readFileSync(path.join(root,p.licenseFile))),p.licenseSha256);}
+  for(const o of manifest.outputs){assert.equal(hash(fs.readFileSync(path.join(root,o.file))),o.sha256);for(const s of o.sources)assert.equal(hash(fs.readFileSync(s.path)),s.sha256);}
+  for(const sdk of ['pi-ai','pi-agent-core','pi-coding-agent','pi-tui'])assert.equal(JSON.parse(fs.readFileSync(path.resolve('node_modules/@earendil-works',sdk,'package.json'))).version,'1.0.2');
+ });
+ const original=globalThis.fetch;let revision=0,key='owned-boundary-credential',calls=0,mode='good',release,entered;
+ const state={configuration:async()=>({revision,defaultModel:'deepseek-flash'}),web:async()=>({version:0,enabled:true,dnsMode:'auto'})};
+ const model=createModelSettings({store:{xiaozhiState:{modelSettings:state},getDeepSeekRuntimeSettings:async()=>({apiKey:key,model:'deepseek-flash'})},root:path.join(output,'package-balance'),busy:()=>false});
+ const payload={is_available:true,balance_infos:[{currency:'CNY',total_balance:'12.34',granted_balance:'1.00',topped_up_balance:'11.34'}]};
+ try{
+ globalThis.fetch=async(url,init)=>{calls++;assert.equal(url,'https://api.deepseek.com/user/balance');assert.equal(init.redirect,'error');assert.equal(new Headers(init.headers).get('authorization'),'Bearer '+key);if(mode==='held'){entered();await new Promise(r=>{release=r;});}if(mode==='auth')return new Response('RAW_PRIVATE_REMOTE_KEY',{status:401});if(mode==='malformed')return Response.json({...payload,is_available:'true'});if(mode==='redirect')return new Response('',{status:302});if(mode==='large')return new Response('x'.repeat(2*1024*1024));return Response.json(payload);};
+ await check('Original usage fixed query/parser project exact official balance without key or run budget',async()=>{const v=await model.balance(new AbortController().signal);assert.equal(v.engine,'@narumitw/pi-usage@0.62.0');assert(v.available);assert.deepEqual(v.balances,[{currency:'CNY',total:'12.34',granted:'1.00',toppedUp:'11.34'}]);assert(!JSON.stringify(v).includes(key));});
+ await check('Missing key and aborted balance fail before account transport',async()=>{const before=calls,prior=key;key='';await assert.rejects(model.balance(new AbortController().signal),/authentication/);key=prior;const abort=new AbortController();abort.abort();await assert.rejects(model.balance(abort.signal),/busy/);assert.equal(calls,before);});
+ await check('Auth, malformed schema, redirects and body limits never project raw provider errors',async()=>{for(const item of ['auth','malformed','redirect','large']){mode=item;await assert.rejects(model.balance(new AbortController().signal),item==='auth'?/^Error: authentication$/:/^Error: transport$/);}mode='good';});
+ await check('A changed credential revision discards the in-flight balance response',async()=>{mode='held';const ready=new Promise(r=>{entered=r;});const pending=model.balance(new AbortController().signal);await ready;revision++;release();await assert.rejects(pending,/conflict/);mode='good';});
+ const api=createModelSettingsApi({queryProviderBalance:()=>model.balance(new AbortController().signal)});
+ await check('Typed balance API cannot take a URL, key, provider or accessor',async()=>{const before=calls;let invoked=false;for(const input of [{},{url:'http://localhost'},{apiKey:key},{get provider(){invoked=true;return'deepseek';}}])assert.deepEqual(await api.balance(input),{ok:false,error:'invalid_input'});assert(!invoked);assert.equal(calls,before);assert((await api.balance()).ok);});
+ await check('Balance IPC requires main-frame authorization and cannot accept renderer credentials',async()=>{const handlers=new Map();registerModelSettingsIpc({ipcMain:{handle:(name,fn)=>handlers.set(name,fn)},allowed:e=>e.main===true,host:{queryProviderBalance:()=>model.balance(new AbortController().signal)}});const run=handlers.get('xiaozhi:provider-balance');assert(run);assert.deepEqual(await run({main:false}),{ok:false,error:'permission_denied'});assert.deepEqual(await run({main:true},{apiKey:key}),{ok:false,error:'invalid_input'});assert((await run({main:true})).ok);});
+ }finally{release?.();globalThis.fetch=original;}
+}

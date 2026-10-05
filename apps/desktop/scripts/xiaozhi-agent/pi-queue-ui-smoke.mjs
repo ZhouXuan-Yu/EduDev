@@ -82,8 +82,8 @@ try{
   await page.getByRole('button',{name:'停止本轮',exact:true}).click();await terminal(capSession);
   await fresh();const streaming=await send('请写一篇约两千字的五年级分数课教案，逐段写，暂时不要提问或操作文件。');
   await until(async()=>(await snap(streaming)).running&&(await snap(streaming)).projection.turns.at(-1).items.some(item=>item.role==='assistant'&&(item.text||'').length>40));
-  const streamed=await queue('后续只回复：待修改的指令。','followUp');await card(streamed.id).getByTestId('pi-instruction-edit').click();
-  const newText='后续只回复：模型输出期间修改成功。';await card(streamed.id).getByTestId('pi-instruction-text').fill(newText);await card(streamed.id).getByTestId('pi-instruction-save').click();state=await terminal(streaming);
+  const streamed=await queue('后续只回复：待修改的指令。','followUp');const streamingEdit=card(streamed.id).getByTestId('pi-instruction-edit');assert(await streamingEdit.isVisible());assert(await streamingEdit.isEnabled());await streamingEdit.focus();await streamingEdit.press('Enter'); // Actual keyboard activation remains stable while streaming moves the chat; native assertions below still require revised delivery.
+  const newText='后续只回复：模型输出期间修改成功。';await card(streamed.id).getByTestId('pi-instruction-text').fill(newText);const streamingSave=card(streamed.id).getByTestId('pi-instruction-save');assert(await streamingSave.isVisible());assert(await streamingSave.isEnabled());await streamingSave.focus();await streamingSave.press('Enter');state=await terminal(streaming);
   check('Editing is available during actual model streaming, not only teacher waits',()=>{assert.equal(state.projection.turns.at(-1).status,'completed');assert.equal(occurrences(streaming,newText),1);assert.equal(occurrences(streaming,streamed.text),0);assert(state.projection.turns.at(-1).items.some(item=>item.role==='assistant'&&item.text.includes('模型输出期间修改成功')));});
   await app.close();app=undefined;await launch(20000);await fresh();const crash=await ask(),pending=await queue('不要在崩溃后自动重发这条指令。');
   await page.getByTestId('pi-question-option-1').click();await page.getByTestId('pi-question-submit').click();const marker=path.join(data,'.e2e-pi-queue-dispatching');await until(()=>fs.existsSync(marker));

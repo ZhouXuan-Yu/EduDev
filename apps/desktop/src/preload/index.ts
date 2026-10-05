@@ -1,8 +1,15 @@
-import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob} from '../shared/materials';
+import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
 import { contextBridge, ipcRenderer } from 'electron';
+import type {MistakeFactsInput,MistakeFactsResult} from '../shared/mistake-facts';
+import type {XiaozhiProviderBalance} from '../shared/xiaozhi-settings';
+import type {LearningHistoryInput,LearningHistoryPage,LearningReviewInput,LearningReviewDecision,LearningReviewResult,LearningReviewSummary,LearningReviewView} from '../shared/learning-review';
+import type {QuestionReviewInput,QuestionReviewDecision,QuestionReviewResult,QuestionReviewSummary,QuestionReviewView} from '../shared/question-review';
+import type {PracticeReviewInput,PracticeReviewDecision,PracticeReviewResult,PracticeReviewSummary,PracticeReviewView,PracticeSourceInput} from '../shared/practice-review';
+import type {StudentTrainingInput,StudentTrainingSource,StudentTrainingResultInput,StudentTrainingView,StudentTrainingEvidence,StudentTrainingReceipt} from '../shared/student-training';
 import type {GoalMutation,GoalResult} from '../shared/xiaozhi-goal';
 import type {XiaozhiAttachmentInput,XiaozhiAttachmentSelectedInput,XiaozhiAttachmentResult,XiaozhiAttachment,XiaozhiAttachmentChoice,XiaozhiAttachmentPreview} from '../shared/xiaozhi-attachments';
 import type {AttachmentOcrReview,AttachmentOcrDecision} from '../shared/xiaozhi-ocr';
+import type {MistakeOcrInput,MistakeOcrCorrection,MistakeOcrResult} from '../shared/mistake-ocr';
 import type {LocalImagePreview} from '../shared/xiaozhi-images';
 import type {XiaozhiWebInput,XiaozhiWebPreferences,XiaozhiWebSourceInput} from '../shared/xiaozhi-web';
 import { DESKTOP_COMMANDS, type DesktopChromeState, type DesktopCommand, type DesktopMenu } from '../shared/desktop-chrome';
@@ -151,6 +158,7 @@ const api = {
   previewXiaozhiBrowserCapture:(input:import('../shared/xiaozhi-browser-capture').BrowserCaptureInput)=>ipcRenderer.invoke('xiaozhi:browser-capture-preview',input) as Promise<import('../shared/xiaozhi-browser-capture').BrowserCaptureResult>,
   startXiaozhi: (input: XiaozhiStartInput) => ipcRenderer.invoke('xiaozhi:start', input) as Promise<XiaozhiStartResult>,
   stopXiaozhi: (id: string) => ipcRenderer.invoke('xiaozhi:stop', id) as Promise<{ ok: boolean }>,
+  queryXiaozhiBalance:()=>ipcRenderer.invoke('xiaozhi:provider-balance') as Promise<XiaozhiSettingsResult<XiaozhiProviderBalance>>,
   selectXiaozhiWorkspace: (id: string) => ipcRenderer.invoke('xiaozhi:workspace', id) as Promise<XiaozhiActionResult>,
   chooseXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-choose',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>,
   listXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-list',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachment[]>>,
@@ -164,6 +172,17 @@ const api = {
   listXiaozhiFiles: (input:XiaozhiFileInput) => ipcRenderer.invoke('xiaozhi:files-list',input) as Promise<XiaozhiFileResult<XiaozhiFileList>>,
   previewXiaozhiFile: (input:XiaozhiPreviewInput) => ipcRenderer.invoke('xiaozhi:files-preview',input) as Promise<XiaozhiFileResult<XiaozhiFilePreview>>,
   cancelXiaozhiFile: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:files-cancel',input) as Promise<{ok:boolean}>,
+  reviewXiaozhiLearning:(input:LearningReviewInput)=>ipcRenderer.invoke('xiaozhi:learning-review',input) as Promise<LearningReviewResult<LearningReviewView>>,
+  reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
+  reviewXiaozhiPractice:(input:PracticeReviewInput)=>ipcRenderer.invoke('xiaozhi:practice-review',input) as Promise<PracticeReviewResult<PracticeReviewView>>,
+  decideXiaozhiPractice:(input:PracticeReviewDecision)=>ipcRenderer.invoke('xiaozhi:practice-decide',input) as Promise<PracticeReviewResult<PracticeReviewSummary>>,
+  readPracticeSource:(input:PracticeSourceInput)=>ipcRenderer.invoke('education:practice-source',input) as Promise<PracticeReviewResult<PracticeReviewView>>,
+  decideXiaozhiQuestions:(input:QuestionReviewDecision)=>ipcRenderer.invoke('xiaozhi:question-decide',input) as Promise<QuestionReviewResult<QuestionReviewSummary>>,
+  learningXiaozhiHistory:(input:LearningHistoryInput)=>ipcRenderer.invoke('xiaozhi:learning-history',input) as Promise<LearningReviewResult<LearningHistoryPage>>,
+  getStudentTraining:(input:StudentTrainingInput)=>ipcRenderer.invoke('students:training',input) as Promise<LearningReviewResult<StudentTrainingView>>,
+  getStudentTrainingSource:(input:StudentTrainingSource)=>ipcRenderer.invoke('students:training-source',input) as Promise<LearningReviewResult<StudentTrainingEvidence>>,
+  recordStudentTrainingResult:(input:StudentTrainingResultInput)=>ipcRenderer.invoke('students:training-result',input) as Promise<LearningReviewResult<StudentTrainingReceipt>>,
+  decideXiaozhiLearning:(input:LearningReviewDecision)=>ipcRenderer.invoke('xiaozhi:learning-decide',input) as Promise<LearningReviewResult<LearningReviewSummary>>,
   decideXiaozhi: (input: XiaozhiDecisionInput) => ipcRenderer.invoke('xiaozhi:decide', input) as Promise<XiaozhiActionResult>,
   reviewXiaozhiChange: (input: XiaozhiChangeReviewInput) => ipcRenderer.invoke('xiaozhi:change-review', input) as Promise<XiaozhiChangeResult<XiaozhiChangeReview>>,
   decideXiaozhiChange: (input: XiaozhiChangeDecision) => ipcRenderer.invoke('xiaozhi:change-decide', input) as Promise<XiaozhiChangeResult<XiaozhiChangeSummary>>,
@@ -193,6 +212,10 @@ const api = {
   listMaterials: (input:MaterialQuery) => ipcRenderer.invoke('materials:list',input) as Promise<MaterialPage>,
   getMaterialJob: () => ipcRenderer.invoke('materials:job') as Promise<MaterialJob>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
+  getMaterialSource: (input:MaterialSource) => ipcRenderer.invoke('materials:source',input) as Promise<MaterialSourceView>,
+  createStudentConversation: (input:import('../shared/student-context').StudentConversationInput) => ipcRenderer.invoke('students:createConversation',input) as Promise<import('../shared/contracts').AiConversationDetail>,
+  getQuestionContextSource:(input:import('../shared/question-context').QuestionContextSource)=>ipcRenderer.invoke('questions:context-source',input) as Promise<{ok:true;value:import('../shared/question-context').QuestionContextView}|{ok:false;error:'invalid_input'|'permission_denied'|'source_changed'|'unavailable'}>,
+  getStudentContextSource: (input:import('../shared/student-context').StudentContextSource) => ipcRenderer.invoke('students:contextSource',input) as Promise<import('../shared/student-context').StudentContextSourceView>,
   retryMaterial: (resourceId:string) => ipcRenderer.invoke('materials:retry',{schemaVersion:'xiaozhi.materials.v1',resourceId}) as Promise<MaterialRetry>,
   cancelMaterialImport: () => ipcRenderer.invoke('materials:cancel') as Promise<{schemaVersion:'xiaozhi.materials.v1';stopped:boolean}>,
   getKnowledgeOverview: () => ipcRenderer.invoke('knowledge:getOverview') as Promise<KnowledgeOverview>,
@@ -258,6 +281,10 @@ const api = {
   showAttachment: (filePath: string) => ipcRenderer.invoke('attachments:show', filePath),
   createMistakeImageAnalysis: (input: MistakeImageAnalysisInput) =>
     ipcRenderer.invoke('mistakeImages:createAnalysis', input) as Promise<MistakeImageAnalysis>,
+  startMistakeOcr:(input:MistakeOcrInput)=>ipcRenderer.invoke('mistakeOcr:start',input) as Promise<MistakeOcrResult>,
+  correctMistakeOcr:(input:MistakeOcrCorrection)=>ipcRenderer.invoke('mistakeOcr:correct',input) as Promise<MistakeOcrResult>,
+  cancelMistakeOcr:(input:MistakeOcrInput)=>ipcRenderer.invoke('mistakeOcr:cancel',input) as Promise<{ok:boolean}>,
+  confirmMistakeFacts:(input:MistakeFactsInput)=>ipcRenderer.invoke('mistakeFacts:confirm',input) as Promise<MistakeFactsResult>,
   updateMistakeImageCorrection: (id: string, input: MistakeImageCorrectionInput) =>
     ipcRenderer.invoke('mistakeImages:updateCorrection', id, input) as Promise<MistakeImageAnalysis>,
   listMistakeImageAnalyses: (studentId: string) =>

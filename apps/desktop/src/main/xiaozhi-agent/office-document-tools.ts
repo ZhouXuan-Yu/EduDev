@@ -6,11 +6,12 @@ import {XIAOZHI_FILES_SCHEMA,XIAOZHI_FILE_ERRORS,type XiaozhiFileError} from '..
 type PrivacyStore={sanitizeProblemText:(text:string)=>Promise<{sanitizedText:string}>;listStudents:(query:string)=>Promise<{displayName?:string;realName?:string}[]>};
 /** Reuse the existing education patterns plus known local names; no name list leaves main. */
 export async function sanitizeOfficeDocumentText(store:PrivacyStore,text:string):Promise<string>{
-  const standard=await store.sanitizeProblemText(text);
+  return (await createOfficeDocumentSanitizer(store))(text);
+}
+/** A bounded local search can reuse one name inventory; no names enter worker/model. */
+export async function createOfficeDocumentSanitizer(store:PrivacyStore):Promise<(text:string)=>Promise<string>>{
   const names=[...new Set((await store.listStudents('')).flatMap(student=>[student.realName,student.displayName]).filter((name):name is string=>!!name&&name.trim().length>=2))].sort((a,b)=>b.length-a.length);
-  let value=standard.sanitizedText;
-  for(const name of names)value=value.split(name).join('[学生姓名]');
-  return value;
+  return async text=>{let value=(await store.sanitizeProblemText(text)).sanitizedText;for(const name of names)value=value.split(name).join('[学生姓名]');return value;};
 }
 type Options={sessionId:string;runId:string;isCurrent:()=>boolean;resolve:(id:string)=>Promise<WorkspaceLease>;sanitize:(text:string)=>Promise<string>};
 /** One actual readonly tool, sharing the local preview/authority/parser boundary. */
