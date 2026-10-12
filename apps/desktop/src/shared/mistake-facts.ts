@@ -8,6 +8,10 @@ export const MISTAKE_FACTS_SCHEMA='xiaozhi.education.mistake-facts.v1' as const;
 export function mistakePracticePrompt(sanitizedTitle:string){
  return `请先实际读取当前学生已保存的学习证据，查找并完整读取题名“${sanitizedTitle}”对应的真实题库来源。依据已保存的实际作答、教师错因、知识点、难度、掌握情况与历史，准备5道有来源、题干自足的简答变式题，针对该学生的错误逐步练习；不要把原题重复算作这5道题。请提交可编辑的题目核对卡，等待我逐题确认。题目确认后重新检索并完整读取教师最终保存的这5道题，组成5题练习，提交练习核对卡等待我确认；保留同一照片原题的来源。练习确认后实际核对最新学情，提出完整14天训练计划，结合错因、已有证据与难度安排练习、复习及检查，等待我编辑确认。整个过程不自动确认，不编造作答、成绩或已完成的训练；缺少证据如实说明。`;
 }
+/** Five-question task stays separate from the optional long-term learning plan. */
+export function mistakeVariantPrompt(sanitizedTitle:string){
+ return `请完成当前学生题名“${sanitizedTitle}”的5道变式练习。先实际读取已保存学习证据，查找并完整读取对应照片根题，再查询本地关联题并实读用于参考的内容；没有候选如实说明，不伪造检索结果。依据真实错因、知识点、年级和难度，围绕原题起草恰好5道自足变式，原题不计入5题。请体现不同训练目的（如条件辨析、逆向求解、多步骤应用、对比判断、错因纠正），不要仅重复换数；不引入超出学生年级的知识。图形关系、数据、选项、单位和适用条件须完整，不能引用未提供的图或写同上。通过当前题目工具一次提交全部5题，保留实际实读原题来源，不冒充教材原题。能够形式化的计算使用现有数学检查；不支持的部分明确尚未验证，不能用模型自信代替正确性。检查失败先按原修复回执修正，未通过候选保持隔离，不降级检查范围。等待我在同一张题目卡集中核对这5题，未确认不保存。确认后重新检索并完整读取教师最终保存的五题，再组成恰好5题变式练习，保留照片原题来源和每题训练观察，等待我确认练习安排；最终读取已保存练习汇报。此次只做五题练习，不自动提出14天计划、不导出、不编造学生作答或成绩；拒绝或停止后不自动重复提交。`;
+}
 export type MistakeFacts={title:string;subject:string;knowledgePoint:string;knowledgeType:LearningType;difficulty:'easy'|'medium'|'hard';stem:string;expectedAnswer:string;analysis:string;actualAnswer:string;result:'correct'|'incorrect'|'partial';errorCause:string;occurredAt:string};
 export type MistakeFactsInput={schemaVersion:typeof MISTAKE_FACTS_SCHEMA;source:MistakeOcrInput;facts:MistakeFacts};
 export type MistakeFactsReceipt={schemaVersion:typeof MISTAKE_FACTS_SCHEMA;requestId:string;analysisVersion:string;sourceSha256:string;sourceVersion:string;correctedSha256:string;facts:MistakeFacts;question:QuestionContextSource;recordId:string;recordSha256:string;confirmedAt:string;digest:string};

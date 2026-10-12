@@ -43,6 +43,11 @@ export function createPiPersistentState(sql: Sql) {
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1, path TEXT NOT NULL,
         label TEXT NOT NULL, updated_at TEXT NOT NULL,
         FOREIGN KEY(conversation_id) REFERENCES ai_conversation_sessions(id))`);
+      await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_paper_outputs (
+        conversation_id TEXT NOT NULL, workspace_hash TEXT NOT NULL, schema_version INTEGER NOT NULL DEFAULT 1,
+        path TEXT NOT NULL, label TEXT NOT NULL, selection INTEGER NOT NULL,
+        PRIMARY KEY(conversation_id,workspace_hash),
+        FOREIGN KEY(conversation_id) REFERENCES ai_conversation_sessions(id))`);
       await sql.run(`CREATE UNIQUE INDEX IF NOT EXISTS pi_copy_call_identity ON ai_confirmation_items(session_id,run_id,json_extract(payload_json,'$.callId')) WHERE action_type='pi_office_copy'`);
     },
     async recover() {
@@ -79,6 +84,17 @@ export function createPiPersistentState(sql: Sql) {
     async setWorkspace(id: string, path: string, label: string) {
       await sql.run(`INSERT INTO xiaozhi_pi_workspaces(conversation_id,path,label,updated_at) VALUES(?,?,?,?)
         ON CONFLICT(conversation_id) DO UPDATE SET path=excluded.path,label=excluded.label,updated_at=excluded.updated_at`, [id, path, label, time()]);
+    },
+    async paperOutput(id:string,hash?:string){
+      const row=(await sql.all(`SELECT * FROM xiaozhi_pi_paper_outputs WHERE conversation_id=?${hash===undefined?'':' AND workspace_hash=?'} ORDER BY selection DESC LIMIT 1`,hash===undefined?[id]:[id,hash]))[0];
+      if(!row)return null;
+      if(Number(row.schema_version)!==1||typeof row.path!=='string'||!row.path||typeof row.label!=='string'||row.label.length>200||typeof row.workspace_hash!=='string'||!/^[a-f0-9]{64}$/.test(row.workspace_hash)||!Number.isSafeInteger(Number(row.selection))||Number(row.selection)<1)throw new Error('configuration');
+      return {path:row.path,label:row.label,hash:row.workspace_hash};
+    },
+    async setPaperOutput(id:string,path:string,label:string,hash:string){
+      await sql.run(`INSERT INTO xiaozhi_pi_paper_outputs(conversation_id,workspace_hash,path,label,selection)
+        VALUES(?,?,?,?,(SELECT COALESCE(MAX(selection),0)+1 FROM xiaozhi_pi_paper_outputs WHERE conversation_id=?))
+        ON CONFLICT(conversation_id,workspace_hash) DO UPDATE SET path=excluded.path,label=excluded.label,selection=excluded.selection`,[id,hash,path,label,id]);
     },
     getApproval, transition,
     async approvals(session: string) {

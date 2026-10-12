@@ -1,0 +1,16 @@
+.question-math-text {
+  min-width: 0;
+  max-width: 100%;
+  margin-block: .65em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-x: auto;
+}
+.question-math-text math { white-space: normal; }
+.question-math-text math[display="block"] { margin-block: .65em; }
+.question-math-text > small[role="alert"] { display: block; color: var(--danger, #b42318); }
+.question-math-table { white-space: normal; }
+.question-math-table [data-slot="markdown"], .question-math-table [data-slot="markdown-block"] { min-width: 0; max-width: 100%; }
+.question-math-table table { width: 100%; border-collapse: collapse; margin-block: .8em; font-size: inherit; }
+.question-math-table th, .question-math-table td { border: 1px solid var(--border, #c7d2ce); padding: .55em .75em; text-align: start; vertical-align: top; }
+.question-math-table th { font-weight: 650; background: var(--surface-secondary, #e8efec); }

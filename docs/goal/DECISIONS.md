@@ -1,5 +1,305 @@
 # Goal 决策记录
 
+<!-- kb-s6-current:start -->
+## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
+
+Current Phase：4/5 DOING；Master未完成。Goal工具本轮读取为历史blocked，不能用文档伪称已恢复；本轮无技术阻塞，按用户继续指示推进。Current Task：扫描资料中断不再重复已完成页。Last verified commit：488f8109d68027a6eb488e9d04c4eb5073d153cd（保护dirty，未提交）。Previous turn：C3候选结构化转写。Next：复杂整卷候选自动整理与集中审核。
+
+Done（本片限定）：复用现PDFium/RapidOCR逐页处理与MaterialRepository/确定性队列，私有v2请求支持已完成页接续；进度缓存按资料SHA/worker SHA/引擎绑定、严格页序/大小/完整性/路径校验、临时文件原子替换。停止或重启保留页进度；全部完成仍走现source CAS/lease/SQLite事务才提交正文，未完成页不是可检索事实。旧v1图片/预览/layout与正文引擎身份保留。损坏缓存重识别，旧runtime完整保留回滚。无新包、模型下载、额外模型调用、AgentLoop、DDL或IPC。
+
+Evidence：apps/desktop/test-results/goal/kb-ocr-resume-20261012/progress.json；build/type exit0 SHA77a4ba6b3181df787756c9ff1f7064ba37fde3fa02d4f01dc740b321b0e0a3f6/348。正式Electron education-journey-MzsnED：3项/3启动/0renderer错误，真实六页物理扫描→完成1页后UI停止→零部分正文→重启/教师重试从第2页→六页事务提交→再次重启精确冷读，模型0次。缓存实例5项包含损坏/源版本隔离/恢复。没有修改前端，不新增视觉验收声明；没有反复运行旧全套。
+
+Failed/Learning：首次patch上下文不匹配未写入；一次测试文件编辑工作目录错导致FileNotFoundError，纠正后完成。首E8mP4j实例已过，检查到接续流增加wire体积后，有限扩大传输边界而不放宽文档上限，重建并用最终MzsnED闭环核对。原始日志、两个实例与回滚before保留。
+
+Doing/Next：执行表docs/goal/FEATURE_FIRST_EXECUTION.md。知识库/智能组卷整体DOING；下一整卷候选集中整理/审核→复杂100分卷与答案修复隔离→错题同类/变式→长教材/目录/30–40GB/安装→OpenMAIC互动课堂→Hermes教师反馈技能晋升/回滚。Pi唯一编排。每片功能可用后做对应必要实例，旧无关全套不作为独立功能前置；具体风险才加定向验证。
+
+限界：仍为50页/50MiB/1MiB正文边界，不等于长教材或40GB验收。复杂图/公式自动识别及可靠答案、跨学科24题质量、安装、完整OpenMAIC/Hermes仍OPEN。上轮候选由明确用户参考转写产生，不证明自主看图。三项目复用清单是实施计划，本轮未复制OpenMAIC/Hermes代码或复核其HEAD。独立harness审计块保持。
+<!-- kb-s6-current:end -->
+
+<!-- harness-audit-20261012:start -->
+## 2026-10-12 Harness审计设计（独立分支）
+
+本轮为独立的Harness审计/设计交付，未实施业务修复；Master ACTIVE、Phase4/5 DOING及上方教育分支状态保持。交付索引：`docs/audit/harness-2026-10-12/README.md`。
+
+架构推荐B：保留Pi原生loop/provider/session/compaction与现领域事务，重构GoalTask、ToolExecutor、Evidence/Verifier、EventJournal等宿主控制面。A可作adapter过渡但不作为最终目标；不引入第二AgentLoop、Codex CLI、DeepTutor/OpenMAIC server runtime或默认国外judge。新模块与接口均为设计待实施。
+
+<!-- harness-audit-20261012:end -->
+
+
+## 2026-10-11 KB-S5-B限定接受，接续S6（历史读点）
+
+采用现QuestionDocument完整原图、docx ImageRun、Hana PDF和HeroUI Checkbox；无新依赖或AgentLoop。OpenMAIC的PPTX专用OMML不作为Word转换器直接复制。现SQLite历史兼容saver的父子写顺序修复仅用于兼容，生产仍唯一Pi。
+
+本片仅接受自然物理扫描的一道8分图文题及原图交付；不是自然数学100分卷、复杂公式/图表完整正确性、可编辑公式或答案正确性证明。WPS实际打开、S6更广自然材料/质量、hybrid/ai_original、5变式/自动修复隔离、30–40GB及安装仍OPEN。
+
+
+## 2026-10-10 KB-S5-A限定接受，下一图公式联合验收（历史读点）
+
+KEEP现Office宿主/生成器/Pi等待/题库/Paper确认快照；EXTEND确定性编译、v2拟稿/派生谱系及最终源CAS写租约；不新增AgentLoop、文档真源或依赖。S5-A仅文字范围接受，图公式另走完整原图及教师区域核对，不抄LaTeX或丢图。
+
+
+## 2026-10-09 KB-S4-B限定接受，下一S5/S6（历史读点）
+
+S4-B不新增AgentLoop/向量服务/数据库真源；本地确定性召回+同Pi题面实读比较+现PracticeReview批准。受控教学筛选成功不宣称普遍语义精度。官方目录不含旧默认deepseek-v4-flash；只修新配置默认为deepseek-flash，不改已有显式模型、历史或凭证。导出按确定性已确认Paper快照编译，同Office宿主审批，不让模型抄写整卷或走旧无版本导出。
+
+
+## 2026-10-09 KB-S4-A限定接受，下一S4-B（历史读点）
+
+S4拆为A本地关联候选与B同Pi练习/语义质量；A不增加embedding模型、DDL或另一个AgentLoop。既有Pi负责B语义判断和受审练习，不能把旧固定0.9/0.6分值作语义置信。Office继续使用现文件宿主；未知窗口不得编造。
+
+
+## 2026-10-09 KB-S3限定接受，下一S4（历史读点）
+
+KEEP唯一Pi/现题库/来源/CAS/Office；EXTEND薄paper领域/shared/typedIPC/nativepaper_review；ADAPT现HeroUI Button/Modal与Golden runner。复用审核action而非新表，真实teacher session可无student/run；整卷不写exercise_sets，不绕过写文件审批。
+
+KB-S3 source_only整卷蓝图/审核/快照 LIMITED_ACCEPTED。build a0f860ac56680a4ddb1fa7798edd1e7c90812fae92f73b7a1156dddee7338448 /340文件；build/typecheck exit0、领域274、组件200/200、正式新版Electron12项/3启动/0 renderer错误、补充冷副本视觉3项/1启动/0模型请求、兼容smoke207/207。32张最终浅暗1366×768/1920×1080截图实际查看。23道教师UI创建对照，20道唯一题满足10×3+6×5+4×10=100；重复/缺答案/错年级、编辑废止、拒绝、精确缺口、真实源变化与恢复、幂等、停止无晚写、两次冷读和真实DeepSeek同Pi等待教师审批通过。原题不改，不自动补题，answerVerified=false；自制文字对照不是自然扫描卷或数学正确性证据。证据：apps/desktop/test-results/goal/kb-paper-20261009/closeout.json。
+
+
+## 2026-10-09 KB-S2-B限定接受，下一S3（历史读点）
+
+KEEP questionFacts/validQuestionDocument/questionFactConflicts/questionVersion；EXTEND薄shared内容比较和现题本/Pi；ADAPT现runner。无新DDL/IPC/包/运行时，无自动原题合并。S3沿原ai_confirmation_items独立paper action/整卷快照，禁止向≤8题且学生强绑定PracticeReview硬塞整卷或虚构学生。
+
+KB-S2-B 保守同题候选/版本绑定 LIMITED_ACCEPTED。build cb0a5c473cbffc23d483cd2c2027f80405ac1fdbb57b44495fa4402072e8c79f /340文件；build/typecheck exit0、领域258、组件194/194、正式新版Electron12项/3启动/0 renderer错误、兼容smoke207/207。12张浅暗1366×768/1920×1080截图已实际查看。28道教师UI创建对照：跨记录ID/CRLF同题2条，改数值条件保持独立；20+2分页，真实Pi/DeepSeek同次10条安全别名/duplicateOf，源变化拒绝、精确恢复、两次冷启与索引重建通过。仅本地保守候选，绝不自动合并/删题或证明答案正确；页面范围current_page、Pi范围returned_candidates。证据：apps/desktop/test-results/goal/kb-identity-20261009/closeout.json。
+
+
+## 2026-10-09 KB-S2-A 关键词底座限定接受（历史读点）
+
+KEEP原题库、typed preload、Pi别名/版本/脱敏与来源读回；EXTEND统一query facade和可重建索引；ADAPT现题本控件与Golden runner。无新包、模型、服务或第二Agent。source_only仍禁止AI补缺口。S3依赖已验结构化过滤/去重/来源，语义相似随S4继续，不把未验S2整体标完成。
+
+KB-S2-A 关键词检索底座限定接受。当前build `443eae07f599fda05dfc5f241f85a8f62c942bc5cc9855cbc5e48f69777e3314` / 340文件；build/typecheck exit0，领域252、组件194/194、正式新版Electron11项/3启动/0 renderer错误、兼容smoke207/207。8张当前浅暗1366×768/1920×1080截图已实际查看。28道教师UI创建对照题，六项硬过滤命中22道、20+2分页；真实Pi/DeepSeek读10条并标hasMore；冷恢复、索引删除重建、旧来源拒绝与精确恢复均通过。不是语义Top10、同题指纹、答案正确性、100分卷、数学Word/PDF或30–40GB验收。证据：`apps/desktop/test-results/goal/kb-retrieval-20261009/closeout.json`。
+
+
+## 当前最高专题优先级：知识库与智能组卷（2026-10-09）
+
+最新排程决定：教育专题优先，通用解题研究保留为依赖参考，不作为独立前置产品线。缺题/不确定/验证失败必须进入明确缺口或待审，不能偷补过关。
+
+用户最新指示：整理上下文，集中完成知识库与智能组卷。当前唯一执行索引：[KB_EXAM_ACTIVE_TASK.md](KB_EXAM_ACTIVE_TASK.md)（仓库绝对定位 `docs/goal/KB_EXAM_ACTIVE_TASK.md`）。接续为 **KB-S2检索→S3纯题库100分卷→S4错题相似练习→S5/S6 Word/PDF联合验收→KB-002三模式/5变式→KB-003增量30–40GB**。R3/R4只按组卷/变式所需嵌入，通用解题长线及其他模式延后；下方旧节的R2→R3→R4线性Next不再是当前执行顺序。Master及知识库四项产品决策保持。
+
+
+## 2026-10-09 B5-B限定接受与R2接续
+
+决定：同Pi、现题库真源、OSS Modal/Button/presenter复用；退休的是来源弹窗重复答案展示，非历史数据入口。R2可信缓存需完整条件/图/选项/版本匹配，加独立答案核对或有效receipt；origin或题面批准单独不够。
+
+本节是当前读点，下方同日旧节保留历史证据，不能覆盖本节。M05/M10 B5-B仅来源事实一致性保护已接受：answer/analysis镜像冲突及v2题干冲突由同一只读helper检测；typed IPC保留安全错误，题本/同Pi来源弹窗拒绝展示冲突正文，精确恢复后可读。旧v1摘要语义、questionVersion、批准与原图未被自动修复或重写。
+
+当前build 367d53b3d85dbb2e1855cbb7db977859f94129e529aec6898f40b2dca8d3f6bf / 340文件，正式前后、冻结快照与兼容smoke后一致。build/typecheck exit0；领域243、组件194/194、兼容smoke207/207；真实DeepSeek/Pi Electron24项/4启动/0 renderer错误。32张当前浅暗1366×768/1920×1080截图与4份原图实际查看；三个隔离标量故障均拒绝、精确恢复、冷启一致；原生手动压缩1次后冷继续通过。此压缩不是新的自然自动阈值基准，smoke仅兼容路径，不作新版视觉依据。
+
+物理扫描无独立标准答案仍missing，图15未知标记不认作答案；教师自制跨页算术仅来源绑定对照，answerVerified=false。完整B5独立质量、可靠求解/五tools、语义Top10、100分卷/Office、30–40GB、自然教师、安装/VPN-off与完整Codex体验仍OPEN。
+
+**Next：R2保守同题指纹/中文检索、硬过滤/版本与可信复用合同→R3受限AST/SymPy→R4同Pi五tools→R5–R7错题/组卷/Office/容量。** 不因缺物理答案停止后续，也不凭题面批准/来源标签把答案当正确。Master ACTIVE、Phase4/5 DOING。证据：`apps/desktop/test-results/goal/b5-facts-20261009/closeout.json`；首次RED/build/组件失败与回滚副本保留。无DDL/依赖/第二runtime/日常资料或凭据改动，无提交/push，另一worktree保留。
+
+
+## 2026-10-09 本轮低成本解题路线审查交付
+
+本轮维持路线A、可选GPU B；高价搜题非核心，未经授权爬虫禁用。Math bank AGPL仅设计参考；Edu-RAG/Math-GPT授权待核，后者模型Python执行/LLM验证异常路径不采用。LanceDB HEAD bcf5ee2…仅研究快照，不升级生产包。没有新增运行时/DDL/依赖或产品边界决策。
+
+完整设计：`docs/architecture/XIAOZHI_SOLVER_OPEN_SOURCE_TECHNICAL_REVIEW.md`；实施：`docs/goal/XIAOZHI_SOLVER_IMPLEMENTATION_TODOLIST.md`。证据：`apps/desktop/test-results/goal/solver-audit-20261009/requested-route-review/readback.json` / `supplement.json`。Master ACTIVE、Phase4/5 DOING；本轮未重跑build/provider/Electron/上游测试，当前B5-B草稿未接受，资料/凭据/另一worktree保留，无提交或push。
+
+
+## 2026-10-09 B5-A：题本来源与答案声明的限定接受
+
+复用现题本/QuestionDocument，不复制第三方题库UI或增来源数据库。仅界面翻译既有origin，不回写sourceKind、answerVerified或批准；未知来源保留待确认。参考答案永不因题面核对而变标准答案，后续验证须独立范围与receipt。
+
+仅接受B5-A来源/答案声明与本切片UI；完整B5独立图义/公式/条件/答案质量仍DOING。物理扫描卷无独立标准答案，仍missing；教师自制跨页算术只是来源绑定对照，不是扫描答案gold。answerVerified=false，不上传原图/私有路径，不将模型自评作证明。原生手动压缩1次与冷继续已验，不是新的自然自动阈值基准。完整可靠解题、Top10、100分数学卷/Office、40GB、自然教师、安装/VPN-off、完整Codex体验及Master后续阶段仍OPEN。
+
+**Next：B5-B逐题独立对照来源/公式/必要条件与答案质量 → R2可信同题零额外生成、相似Top10 → R3受限AST/SymPy → R4同Pi五tools → R5–R7错题/组卷/Office/30–40GB。** 不重复B4四类兼容代替新质量任务，不把本轮文案修复当完整解题完成。
+
+Evidence：`apps/desktop/test-results/goal/b5-source-20261009/closeout.json`；正式 `education-journey-n5msKi`，含当前源/加载脚本、固定build、日志、24张已查看截图、失败与回滚点。 本地/远端HEAD 488f8109d68027a6eb488e9d04c4eb5073d153cd（dirty），Master SHA未改，Phase4/5 DOING、Master ACTIVE。无DDL、新依赖、第二runtime、日常资料/凭据变更、提交或push；另一worktree保留。历史节保留当时范围，不覆盖本节。
+
+## 2026-10-09 B4-D：单区域完整审核与新旧版本同构建兼容的限定接受
+
+选择适配已有multi而非再写single六项writer/UI；fresh与legacy同call不得两种id分叉，已有legacy原校验复用，冲突拒绝。pending main确认必须完整projection，不能依赖renderer自检。可见未知来源标记可记录现象，但未核实必要内容保持missing；来源答案、教师补解和数学验证是三种独立事实。
+
+只接受已核对文本传递和版本/权限/恢复安全。真实扫描原图已查看，图15深色标记显式记录来源不明；未核实的必要读数保持missing。物理卷没有独立标准答案，算术跨页资料是教师自制绑定控制，不能作为扫描答案gold。answerVerified=false；Pi只获必要文本，不发原图/私有路径。原生手动压缩1次＋冷继续不是新的自然自动阈值基准。完整B4/B5、可靠解题、语义Top10、100分数学卷/Office、40GB、自然教师、安装/VPN-off和完整Codex一致性仍OPEN。
+
+**Next：B5原图/公式/来源/答案质量合同与独立核对 → R2可信同题零额外生成/相似Top10 → R3受限AST/SymPy → R4同Pi五tools → R5–R7错题、三模式组卷、Office与30–40GB。** 现题本可见`teacher_resource`/`generated`内部来源文案，列为B5/R2产品文案待修，不把40截图限定核对当整页UX完成。
+
+Evidence：`apps/desktop/test-results/goal/question-projection-20261009/b4d-closeout.json`，含当前源码/加载脚本、build、命令、首次失败、40张已查看截图及回滚快照。 本地/远端HEAD 488f8109d68027a6eb488e9d04c4eb5073d153cd（dirty保留），Master SHA未变、Phase4/5 DOING、Master ACTIVE。没有DDL、新依赖、第二运行时、日常数据/凭据变更、提交/push；另一worktree保留。历史节只保留其当时范围。
+
+## 2026-10-09 B4-C：新多区域审核与完整转写传递的限定接受
+
+范围成功更新使六项coverage全部missing，保留草稿文字；失败/停止不能提交新范围版本。全部核对是文本覆盖声明，不证明答案、图义或数学正确。只由主进程原receipt/source CAS/资产/绑定授权，模型无直接事实写权限。Pi原生手动compaction与冷恢复复用，不建第二运行时或token预算；该实测不是自动阈值基准。
+
+接受范围是教师提供六项文本的完整传递与版本/审核/恢复安全，不是每个图义已经独立判真。图15已有深色标记，来源不明，须补明确原图审查；物理卷无独立标准答案，保持 missing；跨页算术是教师自制来源控制，不冒充扫描卷答案gold。完整B4/B5、可靠解题、语义Top10、100分数学卷、40GB、自然教师、安装/VPN-off与完整Codex一致性仍OPEN。
+
+**Next：B4-D：原图细节/不明标记质量审查、单区域新审核与新旧版本联合正式门禁 → B5 → R2可信同题复用/Top10 → R3受限AST/SymPy → R4同Pi五tools → R5–R7。**
+
+Evidence：`apps/desktop/test-results/goal/question-projection-20261009/b4c-closeout.json`；正式 `education-journey-cHFfHO`，定点视觉 `education-journey-otIM5j`。本地/远端 HEAD `488f8109d68027a6eb488e9d04c4eb5073d153cd`；Master/日常数据/凭据/另一worktree未改，未提交或push。Phase **4/5 DOING**，Master **ACTIVE**。以下旧节仅保留当时证据，不能覆盖本节。
+
+
+## 2026-10-09 B4-B Goal续行记录
+
+B4-B不新建候选事实库：原批准effect的digest/draft/saved不改，追加contextRevisions，当前题版本指向最后after；源/全图/绑定与CAS提交前后核对。历史聊天归档不撤销本地教师已批准题所有权；失效学生关联拒绝修改。借由模型输入伪造projection或caller身份不能授权。
+
+Evidence：`apps/desktop/test-results/goal/question-projection-20261009/`；正式 `education-journey-H1dgFq`。兼容冒烟 **207/207，exit 0**；见最终b4b-closeout.json。Phase4/5 DOING、Master ACTIVE。
+
+## 2026-10-09 最新审查读回与实施边界
+
+保持普通桌面A为默认，GPU整页B可选，核Paddle/RapidOCR/权重与依赖许可再引入；不接付费专业搜题为核心、不用私有接口爬虫。SymPy受限AST、未知/冲突隔离；B4现草稿仍须真实ledger/资产校验，旧题不能凭tag升级。新LanceDBHEAD不触发自动升级。
+
+方案：`docs/architecture/XIAOZHI_SOLVER_OPEN_SOURCE_TECHNICAL_REVIEW.md`；开发卡：`docs/goal/XIAOZHI_SOLVER_IMPLEMENTATION_TODOLIST.md`；本次证据：`apps/desktop/test-results/goal/solver-audit-20261009/final-current-review/`。以下历史仅保留当时范围。
+
+
+## 2026-10-09 本轮低成本解题路线审查与交接
+
+低成本主线采用既有Pi/RapidOCR/SQLite/审批与Office；Paddle公式/版面、BGE/LanceDB、受限SymPy按POC接入。math-worksheets-skill列R3/R6局部适配候选，拒绝直接采样PASS/字符串parser；FastAPI仅可选transport。百度高价搜题/私有爬虫不作核心。
+
+收尾仅同步报告旧进度和第12项目退出策略，不修改Master、运行时或数据规则。题面完整性与来源审核、数学验算分别接受，B3通过不能越过B4/B5。
+
+方案：`docs/architecture/XIAOZHI_SOLVER_OPEN_SOURCE_TECHNICAL_REVIEW.md`；任务卡：`docs/goal/XIAOZHI_SOLVER_IMPLEMENTATION_TODOLIST.md`；证据：`apps/desktop/test-results/goal/solver-audit-20261009/requested-review/`。以下历史保留其当时范围。
+
+
+## 2026-10-09 B3 多区域原图与来源答案审核：纵切限定接受
+
+保持 question-document.v1 和多区域 review.v2；原件答案只在实际 answer 区域＋教师核对后标 source。教师自补为 teacher。停止沿现 owner 取消信号贯通 renderer，lease/CAS 同时防写；idle恢复沿现授权，未新建运行时。
+
+Phase **4/5 DOING**，Master **ACTIVE**。只接受 B3 多区域原图/来源审核纵切，不接受完整原题转写、数学正确性、B4/B5 或完整 KB-EXAM-001。
+
+最终 build `df2a6f837b39d5feaa66df56b4239101552ebd613c23277a2ef4b4e317c99828` / 340 文件与当前 out、正式流程前后逐文件一致。build/typecheck、renderer **181/181**、领域 **225**、真实 DeepSeek/Pi 正式 Electron **12 项 / 3 启动 / 0 renderer 错误**、全部 5 张原件像素对照和旧兼容 **207/207** 通过。12 张深浅主题、1366×768/1920×1080 截图及 5 张原图实际查看。停止真实范围渲染子进程实测 **1617ms / SIGTERM**，不外推其他设备或完整性能基准。
+
+真实物理扫描题两块原图完整保留条件、图14/图15、表、选项与小题；**手工文字仅摘要，缺少例如“不更换实验器材”等完整条件，不能单独作为 LLM 完整题面**。该卷没有独立答案 gold，答案保持 missing。另 3 页算术对照为明确教师自制材料，只验证跨页及来源锚点，不冒充该卷标准答案；来源答案与教师补解分别保存。scope 更改须重确认，source CAS、外帧拒绝、真正确认 SQL 事务中 main 强制死亡/回滚、冷恢复、损坏整组报错/恢复与幂等均通过。
+
+复用同 Pi、ai_confirmation_items、question_bank_items/document_json 与 QuestionAssets；取消修复沿现 owner AbortSignal，不新增 AgentLoop、DDL、依赖或模型。SDK 12 条 assistant usage 保留，cacheRead 是 SDK 报告 token，不是题库命中率；SDK 价格 0 表示这里未知，不等于账单免费。
+
+**Next：B4 完整必要题面上下文精确合同 → B5 联合验收 → R2 可信精确复用/相似 Top10 → R3 受限 AST/SymPy → R4 同 Pi 五 tools → R5–R7 两 MVP、Office、三组卷模式和 30–40GB。** 不得通过删除 document 或仅发 stem 绕过 `document_context_unavailable`。完整解题/语义检索/数学导出/40GB、自然教师、设备/安装/VPN-off 仍 OPEN；Master 其他 DT/MA/JOIN 与 Phase6–8 保持 OPEN。
+
+Evidence：`apps/desktop/test-results/goal/original-multi-20261009/closeout.json`；最终正式路径 `education-journey-15t76q`。本地/远端 HEAD `488f8109d68027a6eb488e9d04c4eb5073d153cd`（dirty 保留）；未提交/push，不改日常资料、凭据、历史或另一 worktree。Master SHA 未变。以下历史保留其当时范围，以本节和最新真实证据为准。
+
+## 2026-10-09 解题成本路线决策
+
+采用现Pi＋固定本地OCR/PDFium＋同SQLite题库优先/中文FTS＋受限SymPy＋DeepSeek；embedding/LanceDB/公式模型只在专项POC后按需启用。高资源整页视觉为可退A的B方案。AGPL Math bank只设计对照，Edu-RAG/Math-GPT许可待核实不复制；Math-GPT执行生成Python/LLM verifier不作为验证底座。FastAPI只薄计算transport，不开第二Agent/事实DB。最新用户本轮先审查/方案，未继续产品实施；B3草稿待正式接受，Next按solver清单B3→B4/B5→R2–R7。MasterACTIVE，原优先级及双MVP不变。
+
+## 2026-10-09 B2-c 原页文字区域：生产纵切限定接受
+
+裁决：当前固定RapidOCR/PDFium延伸文字框是复用成本最小的生产路线；S/M公式增强仍未通过质量/发行/设备门禁。HeroUI官方Checkbox compound与现安装源码复用，旧label CSS只在新面板纠正。主帧opaque引用→源CAS→固定exe→hash cache→typed preload→现原页UI；不使用第二Agent/FastAPI事实库，不静默用LLM补漏图/选项。
+
+Phase **4/5 DOING**，Master Goal **ACTIVE**。仅接受B2-c文字区域切片；完整B2、R1-B、KB-EXAM-001、可靠解题与两条最终业务闭环仍OPEN。
+
+最终build `85d8e4d7ecf997f052bf56f532c73e09d5f0710dfc7bc993ffaf8ab8b408f872`（340文件）与当前out逐文件一致；build/typecheck、renderer179、领域216、原生兼容11、正式Electron11/2启动/0 renderer错误、旧smoke207/207通过；16张深浅双尺寸截图实际查看。
+
+公开物理扫描卷6页共304待校正文字行；UI识别＋回读实测每页7.851–8.900秒，不是纯模型基准或总体准确率。Page4 S₂→zS、Page6 U₀→U。且部分选项漏识别，原图完整保留；不能称完整切题/数学正确/来源答案。临时校对稿未存为正式题目，重启只复用派生候选cache；本片0模型请求，不等于整个解题成本0。S/M公式POC未推广；自然教师/日常profile、安装、16GB、VPN-off、30–40GB未验。
+
+下一步：知识库方案§41 B3完整多块/跨页题目与来源答案审核→B4完整必要Pi上下文→B5联合验收→R2可信精确/语义Top10→R3受限SymPy→R4同Pi五tools→R5–R7组卷/错题双MVP、Office/三模式与30–40GB。Master其他DT/MA/JOIN与Phase6–8保持OPEN。
+
+Evidence：`apps/desktop/test-results/goal/material-layout-20261009/closeout.json`（含source/build清单、commands、first-failures、manual-review和16张实际查看的截图）；正式当前UI为`education-journey-NEu3AR`，旧207仅兼容证据。
+
+以下历史保持当时范围，当前状态以本节与真实证据为准。
+
+## 2026-10-09 B2-b 版面/公式可行性结论（包含失败，非生产完成）
+
+替换§34历史首选：S质量不足不作默认，M仅清晰公式候选；保持原图和教师校正，公式商业发行/16GB/真实树取消未通过不得默认上生产。FastAPI只可选纯计算transport，不承载第二Agent或事实DB。
+
+6页公开扫描卷保留304文字行四边形，单页3.609–4.263秒。S中文/单位/LaTeX质量失败；M三清晰crop主要内容匹配预先人工转写（1.494–2.331秒），退化单位错误、图表180秒超时、空白两次减号。没有完整题界/数学正确性/总体准确率证明。CPU实验设备i7-13650HX/约32GiB，不是16GB基准。
+
+仅测试env安装71个hash锁包与官方本地权重，未改生产OCR/资料/数据库/凭据。商业发行闭包、Windows进程树强制取消和安装/设备门禁未接受。原正式out SHA e128d1521fb00761a3b8f3ecd8248fb21ccda6362ee419792d4fd90d153a060f/340文件与Master/worker/manifest未变，无新产品UI或solver完成证据；未提交/push。
+
+Next：知识库方案§38 B2-c版本化候选协议/现teacher入口合同→B3多块/跨页/来源答案→B4完整Pi题面→B5联合验收→R2可信检索→R3受限验证→R4五tools→R5–R7双闭环/Office/三模式/大库。Phase4/5 DOING，Master ACTIVE；本片不将完整B2、KB-EXAM-001或可靠解题标完成。
+
+Evidence：apps/desktop/test-results/goal/layout-formula-20261009/closeout.json、manual-review.json、first-failures.json；知识库方案§37为结论、§38为下一合同草案。下方原历史证据保持其范围。
+
+## 2026-10-09 B2-a 后台资料整理（限定接受）
+
+复用现ai_tasks.resource_parse和MaterialRepository，不复制Hana内存authority/disk-snapshot task-store，不迁DeepTutor/OpenMAIC loop。借现SQLite CAS实现确定性consumer，无新表；保守不抢活PID；任务目录有界100+选中项。公式候选官方卡Apache声明与固定revision保留，独立许可文件404，不以此称完整权重合规/部署已完成。
+
+B2-a 后台资料整理已实现，已验最终build e128d1521fb00761a3b8f3ecd8248fb21ccda6362ee419792d4fd90d153a060f/340文件：build/typecheck、renderer177、统一领域209（新增队列17）、正式Electron11/4启动/0 renderer错误及12张双尺寸深浅截图通过。实际deepseek-flash/Pi实读触发优先解析，SDK usage单独保留，不算账单/单题成本。同一最终build兼容207/207通过。仅B2-a持久后台整理切片接受；完整B2/R1-B/KB-EXAM-001未完成。
+
+Phase4/5 DOING，Master Goal ACTIVE。仅本机确定性任务消费，无新依赖/DDL/AgentLoop/公式模型安装；不把OCR正文当原题、标准答案或已审核事实。新队列仅显式采用资料，旧占位不自动消费；旧同步入口保留。单文件整体提交与重启，不承诺页级checkpoint、30–40GB吞吐、PID复用抢占或自然教师/安装验收。Git本地/远端HEAD均488f8109d68027a6eb488e9d04c4eb5073d153cd，dirty保留、未提交/push；日常资料/配置/历史及另一worktree未改。
+
+Next：B2-b真实版面块与唯一公式候选许可/设备POC（方案§34）→B3多块/跨页/源答案教师校正→B4完整必要Pi图/公式上下文→B5联合验收→R2可信检索/Top10→R3受限SymPy→R4同Pi五tools→R5–R7双MVP/Office/三模式/大库；Master其余DT/MA/JOIN/Phase6–8保持OPEN。
+
+Evidence：apps/desktop/test-results/goal/material-background-20261009/（commands、first-failures、source-manifest、visual-review、native-usage与真实readback）；完整收口见该目录closeout.json；最终207在accepted-build5运行，之前build3的207仅为历史证据。下方历史保留，以本节与实际证据为准。
+
+
+## 2026-10-09 B1 原题资产与教师审核：单题单页切片接受
+
+延续A及唯一Pi；现PDFium+MaterialRepository/Sqlite/ledger与HeroUI ChatTool直接扩展，不迁DeepTutor MinerU/LLM循环或OpenMAIC IndexedDB媒体真源。正式资产使用exclusive link发布并去掉temp（读前nlink=1），不能rename覆盖同名已批准图。文件先于SQLite提交，失败孤儿保留且无事实权利；本片不做自动GC。未知标准答案不接受模型在原题工具提交；教师补解来源teacher，不标source。
+
+仅接受单题、单页、一个原件区域的原题审核/入库切片。完整B1/R1-B、KB-EXAM-001、可靠解题、100分组卷/错题Top10/数学导出/30–40GB仍OPEN；Phase4/5 DOING，Master Goal ACTIVE。
+
+最终build/typecheck通过；renderer174/174、统一领域192（新增原题边界17）、真实DeepSeek正式Electron13/4次启动/0 renderer错误、独立原PDF与候选/正式PNG逐像素对照2项通过。8张深浅主题、1366×768/1920×1080原题审核与题本截图已实际查看。最终accepted-build4与当前out逐文件一致，采用现evidence.mjs指纹SHA `991bcce76eab745609ccb8fa012ff2d17711749366261656e753514d0fa94a0b`（340文件）；旧smoke207通过于build3 `d16dfa9b639d55c0b517b5b94c754a18b6f8c5e56fc160ed4ed4ccc936989da4`，main与最终不同，不能称全207在最终构建运行。
+
+真实Pi请求证明本轮正文实读→工具→审核流程，不证明数学答案正确；教师交互为隔离Electron自动操作，不是独立人类教师签收。当前答案origin=missing，未新增学生事实。原图只在本机显示，Pi题面reader遇document仍明确拒绝不完整文本读取；完整上下文待B4，不允许漏图解题。
+
+Next：B2真实版面/题块定位、唯一公式候选许可/权重/设备POC、现SQLite上的确定性持久解析任务与任务优先→B3完整题块/跨页/来源答案校正→B4题本/Pi完整必要上下文→B5原图/公式/答案与恢复联合验收→R2可信精确复用/语义Top10→R3受限验证→R4同Pi五tools/讲解→R5–R7双业务闭环/导出/三模式/大库，继续Master其余任务。
+
+Evidence：`apps/desktop/test-results/goal/original-review-20261009/closeout.json`。本地/远端HEAD `488f8109d68027a6eb488e9d04c4eb5073d153cd`一致；dirty保留。无新依赖/DDL/Worker或AgentLoop，无提交/push；测试使用隔离资料/数据/profile，未改日常凭据、资料、历史或另一worktree。Master SHA未变：`dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302`。
+
+以下保留历史，当前实现状态以本节和最新真实证据为准。
+
+
+## 2026-10-09 解题路线当前复核（审查交付）
+
+继续采用A：现Pi/RapidOCR/PDFium/SQLite，公式只选一个候选POC；按评测引入小中文embedding/可重建LanceDB、受限SymPy与DeepSeek。B为GPU本地增强，统一合同可降级A；未知许可不复制，AGPL仅设计参考。
+
+当前Phase4/5 DOING、Master Goal ACTIVE。本次仅完成源码/许可/方案复核；既有R1-A文字、B1题面存储及原页预览保持限定接受，完整原题、可靠求解、语义Top10、100分/数学导出/40GB仍OPEN。下一实施：R1-B/B1正式题图与原题审核writer精确合同→B2–B5真实原题闭环→R2可信检索→R3受限验证→R4同Pi五tools/讲解→R5–R7两业务闭环，再继续Master。
+
+Evidence：apps/desktop/test-results/goal/solver-audit-20261009/current-review/。本次不提交/push、不改凭据/资料/另一worktree。
+
+
+## 2026-10-09 R1-B/B1 原页保真预览（最新，限定范围）
+
+本片选择现PDFium能力加薄源授权/回执适配，不复制DeepTutor的MinerU/LLM抽题循环或OpenMAIC的DSL/IndexedDB资产真源。原页读取与OCR收录分开，预览不改变parseStatus/chunks。继续复用现SQLite/教师ledger；未来canonical document和文本兼容投影须同事务。
+
+仅接受B1原页/区域预览小切片，完整B1/R1-B/KB001与可靠解题仍OPEN，Phase4/5 DOING，Goal ACTIVE。现“我的资料”可在本机查看PDF原页、翻页、放大、停止、重试；源变化/丢失/坏文件诚实提示。保留图、表、公式及选项的原件栅格，不等于自动切题、公式转写或答案正确。无新依赖/DDL/模型调用/另一AgentLoop，无原题/答案/学生事实写入。
+
+最终out与accepted-build3逐文件一致，SHA b3e51f18bbe0ff8604918a3a4dc846020136679dc6e5f4333686827ad3839843 / 340文件。最终build/typecheck通过、renderer174、领域175、正式Electron12/2次启动/0 renderer错误/前后build一致，3项独立原件像素对照通过，8张深浅双尺寸原页截图已查看（仅预览面板；不代替完整Shell/动画/教师D/安装E）。PDF13及旧smoke207在accepted-build2通过，其main/preload与最终完全一致，renderer不同；不混称全207在最终build运行。旧image宿主10通过，同新固定runtime。证据：apps/desktop/test-results/goal/material-preview-20261009/closeout.json；逐命令/首失败/回滚与指纹均保留。
+
+Next：B1正式question-assets/v1同源快照、现ledger原题类别与内部writer精确合同/实现→B2真实版面/唯一公式候选POC/持久确定性后台任务→B3教师校正确认→B4题本/Pi完整必要上下文→B5逐题原图/答案/故障恢复验收。然后R2–R7及KB001纯题库100分/错题Top10/Word-PDF/重启双闭环，继续Master其他任务。
+
+以下保留历史，当前状态以上节为准。
+
+
+## 2026-10-09 R1-B/B1 题面与版本底座（最新，限定范围）
+
+- 同question_bank_items扩展document_json，不创建第二题目真源或新AgentLoop。
+- 文档内部源/图/公式/出处全部纳入现题目SHA；旧无document的原SHA保持逐字节兼容；present但损坏的document不得丢弃再作旧SHA。
+- 公共QuestionBankItemInput保持不变，document由未来原题审核主进程内部writer写入；格式验证不授予资产权限/教师批准。
+- 文本Pi接口暂时拒绝structured original，明确缺上下文，B4再适配完整授权内容；没有暗中自动上传图像。
+- B3内部writer必须同事务生成document权威题面及既有stem/answer/analysis兼容投影，二者不允许独立编辑成两套答案。AI补解保存ai_generated候选，不作为source答案。
+
+只接受R1-B/B1题面存储与版本底座小切片；完整B1、R1-B、KB001、Phase4/5及Master Goal仍OPEN/DOING/ACTIVE。题面合同结构合格不等于原件真实、完整、数学正确或教师已确认。
+
+Next：补齐B1同源题图资产根/哈希/授权与现审核ledger原题类别/内部writer合同，再B2真实版面与唯一公式候选POC/持久任务→B3教师校正确认→B4题本与Pi完整上下文→B5原件逐题/故障/冷恢复。R2–R7及KB001双闭环保持OPEN。
+
+以下保留历史，当前状态以上节为准。
+
+
+## 2026-10-09 解题路线审查复核（最新）
+
+推荐组合仍为现Pi+RapidOCR+SQLite，公式/布局候选逐一许可与设备POC，小语义/可重建索引按评测，固定数学AST/SymPy验证，DeepSeek候选生成；Qwen显式替代。高成本商业搜题不作核心，无未授权爬虫。原题可信解析优先复用；不精确语义命中不套答案。SymPy最新HEAD补核不自动装到产品；AGPL及未知许可不直接复制。保持R1-A文字接受、R1-B为下一实施；本轮先方案无新增产品代码/DDL/依赖。Master不改。
+
+
+## 2026-10-09 R1-A 扫描PDF文字前置验收（当前）
+
+仅接受R1-A文字前置，完整S1/KB001/Phase4/5仍OPEN/DOING，Goal ACTIVE。新版资料页面真实6页扫描卷→本地fixedexe→同SQLite实际页码→停止/重试/坏或加密PDF/源CAS/真实主进程死亡/冷恢复；无模型调用、题目/答案或学生事实写入。下一唯一任务R1-B：完整原题图/公式/来源→教师校正确认→原题库/Pi读取。
+
+Pi仍唯一编排；PDFium5.14.0/RapidOCR3.9.2固定本地exe，无新增Agent/DDL/云传输。新PDF OCR片段machine_extracted/background，私密仍unverified，不批改历史事实；真实pageNumber加入bodyVersion，旧未知页hash原样，过时定位须重读。识别文字不等于公式/题目/答案正确。
+
+以下保留历史；当前状态与下一任务以上节为准。
+
+
+## 2026-10-09 低成本解题审查与路线修正（当前）
+
+当前用户路线：开源、本地题库、低成本国内API主体；高成本商业搜题不作核心，无未授权爬虫。本轮先审计方案，不扩PDF草稿/大改。建议A（现Pi/RapidOCR/SQLite＋可插拔公式/语义＋受限SymPy/DeepSeek），B为高资源本地增强，具体新包待许可/设备POC锁定。
+
+可信原题先复用，语义不套答案；固定AST验证，禁止模型Python执行；receipt限定检查范围。AI补解为候选/教师独立gold，FastAPI可选薄transport默认stdio，无第二Agent/事实库。Mathbank AGPL仅参考；EduRAG/MathGPT未核许可不复制；MathVerify Windows先验。
+
+KB001两闭环、三模式、持久确定性任务优先、疑点隔离和教师确认原四决策保持。[依据](../architecture/XIAOZHI_SOLVER_OPEN_SOURCE_TECHNICAL_REVIEW.md)。
+
+以下旧记录保留历史；本轮状态与下一任务以上节为准。
+
+
+## 2026-10-08 知识库与智能组卷专题（当前）
+
+用户2026-10-08指定优先完成“本地知识库＋智能组卷＋错题相似练习”，随后继续原Goal。原Master保持2584行/SHA dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302；Phase4/5 DOING、Goal ACTIVE。旧“下一唯一任务讲义”仅为历史，本次优先级以本节为准。
+
+四决策冻结：首期组卷和错题相似题同时交付；source_only/hybrid/ai_original；持久后台增量任务与任务优先（确定性调度，非Agent）；自动修复疑点隔离。正式发布沿原教师预览确认和文件审批，auto-ready不豁免；修复候选最多2次不是Agent token预算。原题不能复用generated writer冒充教材出处。
+
+[知识库与智能组卷专题](XIAOZHI_KNOWLEDGE_EXAM_TECHNICAL_PLAN.md#19-2026-10-08-本地源码审查与进度)
+
+以下旧记录保留历史；当前优先级以上述专题为准。
+
+
 ## 2026-10-06 DT-05 同源五题与两周训练（当前）
 
 决策：现有教育工具/审核/writer已支持完整链，生产仅增强原照片入口草稿，测试复用原Golden runner/OCR/facts/practice/plan路径。未新增数据库迁移、IPC、Agent runtime或包。原AI内容错误走教师修正，保留原稿与最终稿，不通过隐式改SQLite伪造模型正确性。

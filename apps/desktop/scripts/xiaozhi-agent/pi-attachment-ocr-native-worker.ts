@@ -1,10 +1,10 @@
-import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID,createHash} from 'node:crypto';
 import {OmniEduStore} from '../../src/main/db';
 import {createAttachmentImportService} from '../../src/main/xiaozhi-agent/attachment-import-service';
 import {createAttachmentReadTools} from '../../src/main/xiaozhi-agent/attachment-read-tools';
 import {attachmentStartHash} from '../../src/main/xiaozhi-agent/attachment-send-state';
 import {sanitizeOfficeDocumentText} from '../../src/main/xiaozhi-agent/office-document-tools';
-import {recognizeLocalImage} from '../../src/main/xiaozhi-agent/ocr-host';
+import {recognizeLocalImage,recognizeLocalPdf} from '../../src/main/xiaozhi-agent/ocr-host';
 import {LOCAL_OCR_SCHEMA,validLocalOcrReceipt,validOcrDecision} from '../../src/shared/xiaozhi-ocr';
 const output=process.argv[2],data=path.join(output,'data'),checks:{name:string;pass:boolean}[]=[];
 const report:{success:boolean;checks:typeof checks;error?:string}={success:false,checks};let store=new OmniEduStore(data);
@@ -52,8 +52,13 @@ try{
  const abort=new AbortController();abort.abort();await assert.rejects(recognizeLocalImage(bytes,abort.signal));check('Missing runtime and already cancelled call fail without a fallback download or worker delivery');
  const brokenRuntime=path.resolve(output,'broken-runtime'),model=path.join(brokenRuntime,'_internal','rapidocr','models','PP-OCRv6_rec_small.onnx');
  assert(brokenRuntime.startsWith(path.resolve(output)+path.sep)&&model.startsWith(brokenRuntime+path.sep));
- fs.cpSync(path.resolve('.local-ocr/dist/omni-edu-ocr'),brokenRuntime,{recursive:true,force:false,errorOnExist:true});fs.unlinkSync(model);
+ fs.cpSync(path.resolve('.local-ocr/layout-v1-dist/omni-edu-ocr'),brokenRuntime,{recursive:true,force:false,errorOnExist:true});fs.unlinkSync(model);
  await assert.rejects(recognizeLocalImage(bytes,signal(),brokenRuntime),/ENOENT|configuration/);check('Actual independent runtime copy with a missing original recognition model refuses before spawning or downloading');
+ const inventory=JSON.parse(fs.readFileSync('test-results/goal/kb-exam-samples-20261008/inventory.json','utf8')),sample=inventory.files.find((x:{alias:string})=>x.alias==='sample-03');
+ const pdfBytes=fs.readFileSync(path.resolve('../../test',sample.filename)),progress:number[]=[];
+ const pdf=await recognizeLocalPdf(pdfBytes,signal(),item=>progress.push(item.page));
+ assert.equal(createHash('sha256').update(pdfBytes).digest('hex'),sample.sha256);assert.deepEqual(pdf.pages.map(item=>item.page),[1,2,3,4,5,6]);assert(pdf.pages.every(item=>item.text.trim()));assert.deepEqual(progress,[1,2,3,4,5,6]);
+ fs.writeFileSync(path.join(output,'pdf-receipt.json'),JSON.stringify(pdf));check('The new frozen runtime retains actual six-page PDF v1 text and progress without a layout-only protocol substitution');
  const before=await store.xiaozhiState.attachments.get(id,submitted.id);assert.deepEqual(before,submitted);report.success=true;
 }catch(error){report.error=String(error instanceof Error?error.stack:error).slice(0,2200);throw error;}
 finally{fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');await close();console.log(JSON.stringify({success:report.success,checks:checks.length}));}

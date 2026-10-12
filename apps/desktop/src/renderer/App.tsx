@@ -1,3 +1,4 @@
+import {PaperBlueprintWorkspace} from './components/PaperBlueprintWorkspace';
 import {
   Archive,
   AlertCircle,
@@ -147,7 +148,7 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
 };
 
 
-type ViewKey = 'today' | 'ai' | 'knowledge' | 'artifacts' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
+type ViewKey = 'today' | 'ai' | 'knowledge' | 'artifacts' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'paper' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
   id: string;
@@ -409,7 +410,7 @@ export function App() {
   }
   useEffect(()=>{
     const view=desktopNavigation.target.view;
-    const valid:ViewKey[]=['today','ai','knowledge','students','mastery','intake','mistakes','review','search','question_notebook','notebook','book','memory','team','analytics','settings'];
+    const valid:ViewKey[]=['today','ai','knowledge','students','mastery','intake','mistakes','review','search','paper','question_notebook','notebook','book','memory','team','analytics','settings'];
     if(runtime !== 'legacy-test' || valid.includes(view as ViewKey)){
       const target = runtime === 'legacy-test' || isProductView(view) ? view as ViewKey : 'ai';
       if(target !== activeView)setStatus('');
@@ -518,6 +519,7 @@ export function App() {
     { key: 'mistakes', label: '错题', icon: <BookOpenCheck size={18} /> },
     { key: 'review', label: '复盘', icon: <FileText size={18} /> },
     { key: 'search', label: '搜索', icon: <Search size={18} /> },
+    { key: 'paper', label: '组卷', icon: <BookOpenCheck size={18} /> },
     { key: 'question_notebook', label: '题本', icon: <BookOpenCheck size={18} /> },
     { key: 'notebook', label: '备课本', icon: <BookOpenCheck size={18} /> },
     { key: 'book', label: '讲义', icon: <BookOpenCheck size={18} /> },
@@ -2790,6 +2792,7 @@ export function App() {
     if (activeView === 'mistakes') return renderMistakesView();
     if (activeView === 'review') return <ReviewReportWorkspace activeStudent={activeStudent} records={records} reports={reports} selectedReportId={reviewReportSelectionId} onReportsChanged={(nextReports) => { setReports(nextReports); void refreshOverview(); }} setStatus={setStatus} />;
     if (activeView === 'search') return renderSearchView();
+    if (activeView === 'paper') return <PaperBlueprintWorkspace/>;
     if (activeView === 'question_notebook') return renderQuestionNotebookView();
     if (activeView === 'notebook') return renderTeacherNotebookView();
     if (activeView === 'book') return renderTeachingBookView();

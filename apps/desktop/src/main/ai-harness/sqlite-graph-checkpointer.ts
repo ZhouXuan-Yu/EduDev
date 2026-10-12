@@ -31,6 +31,7 @@ function boundedId(value: unknown, label: string, allowEmpty = false): string {
 export class SqliteGraphCheckpointer extends BaseCheckpointSaver {
   private readonly db: sqlite3.Database;
   private readonly ready: Promise<void>;
+  private readonly pendingPuts = new Map<string, Promise<RunnableConfig>>();
 
   constructor(dbPath: string, private readonly onCheckpoint?: (checkpoint: { id: string; step: number; source: string }) => Promise<void>) {
     super();
@@ -108,9 +109,15 @@ export class SqliteGraphCheckpointer extends BaseCheckpointSaver {
   }
 
   async put(config: RunnableConfig, checkpoint: Checkpoint, metadata: CheckpointMetadata, _newVersions: ChannelVersions): Promise<RunnableConfig> {
-    await this.ready;
     const { threadId, checkpointNs, checkpointId: parentId } = this.configParts(config);
     const checkpointId = boundedId(checkpoint.id, 'checkpoint_id');
+    const key = JSON.stringify([threadId, checkpointNs, checkpointId]);
+    const previous = this.pendingPuts.get(key);
+    // Register synchronously: LangGraph can start putWrites while this checkpoint
+    // is still being serialized, even with sync durability.
+    const operation = (async (): Promise<RunnableConfig> => {
+    await this.ready;
+    await previous;
     const [[checkpointType, checkpointBlob], [metadataType, metadataBlob]] = await Promise.all([
       this.serde.dumpsTyped(copyCheckpoint(checkpoint)), this.serde.dumpsTyped(metadata),
     ]);
@@ -123,12 +130,17 @@ export class SqliteGraphCheckpointer extends BaseCheckpointSaver {
     );
     await this.onCheckpoint?.({ id: checkpointId, step: metadata.step, source: metadata.source });
     return { configurable: { thread_id: threadId, checkpoint_ns: checkpointNs, checkpoint_id: checkpointId } };
+    })();
+    this.pendingPuts.set(key, operation);
+    try { return await operation; }
+    finally { if (this.pendingPuts.get(key) === operation) this.pendingPuts.delete(key); }
   }
 
   async putWrites(config: RunnableConfig, writes: PendingWrite[], taskId: string): Promise<void> {
     await this.ready;
     const { threadId, checkpointNs, checkpointId } = this.configParts(config);
     if (!checkpointId) throw new Error('Graph checkpoint writes need a checkpoint_id.');
+    await this.pendingPuts.get(JSON.stringify([threadId, checkpointNs, checkpointId]));
     const boundedTaskId = boundedId(taskId, 'task_id');
     for (const [index, [channel, value]] of writes.entries()) {
       const writeIdx = WRITES_IDX_MAP[channel] ?? index;

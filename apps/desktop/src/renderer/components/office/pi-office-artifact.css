@@ -10,4 +10,14 @@
 .xiaozhi-pi-workspace .pi-office-actions { display: flex; justify-content: flex-end; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
 .xiaozhi-pi-workspace .pi-office-actions button { border-radius: 16px; }
 .xiaozhi-pi-workspace .pi-office-artifact [role='alert'] { color: var(--danger); }
+.xiaozhi-pi-workspace .pi-office-rich-preview figure { margin: 10px 0; padding: 8px; background: #fff; border-radius: 8px; }
+.xiaozhi-pi-workspace .pi-office-rich-preview img { display: block; max-width: 100%; height: auto; }
+.xiaozhi-pi-workspace .pi-office-rich-preview figcaption { color: #555; font-size: 12px; margin-top: 6px; }
+.xiaozhi-pi-workspace .pi-office-rich-preview p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.xiaozhi-pi-workspace .pi-office-rich-preview h3 { margin-top: 16px; font-size: 15px; }
+.xiaozhi-pi-workspace .pi-office-artifact [data-slot='checkbox-content'] { display: flex; flex-direction: row; align-items: flex-start; gap: 8px; }
+.xiaozhi-pi-workspace .pi-office-artifact [data-slot='checkbox-control'] { flex-shrink: 0; margin-top: 2px; }
 @media (max-height: 850px) { .xiaozhi-pi-workspace .pi-office-preview, .xiaozhi-pi-workspace .pi-office-editor, .xiaozhi-pi-workspace .pi-office-sources { max-height: 210px; } }
+.xiaozhi-pi-workspace .pi-office-rich-preview table { width:100%; border-collapse:collapse; margin-block:12px; table-layout:fixed; }
+.xiaozhi-pi-workspace .pi-office-rich-preview th, .xiaozhi-pi-workspace .pi-office-rich-preview td { border:1px solid var(--border,#c7d2ce); padding:8px; vertical-align:top; overflow-wrap:anywhere; }
+.xiaozhi-pi-workspace .pi-office-rich-preview th { background:var(--surface-secondary,#e8efec); }

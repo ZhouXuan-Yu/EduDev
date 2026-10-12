@@ -23,6 +23,10 @@ export default defineConfig(({ command }) => ({
         fs.mkdirSync(resolve(options.dir,'vendor/deeptutor-question'),{recursive:true});
         for(const file of ['pipeline.py','LICENSE','source-manifest.json'])
           fs.copyFileSync(resolve('src/main/education/vendor/deeptutor-question',file),resolve(options.dir,'vendor/deeptutor-question',file));
+        fs.copyFileSync(resolve('src/main/education/math-worker.py'),resolve(options.dir,'math-worker.py'));
+        fs.mkdirSync(resolve(options.dir,'vendor/math'),{recursive:true});
+        for(const file of ['sympy-1.14.0-py3-none-any.whl','mpmath-1.3.0-py3-none-any.whl','SymPy.LICENSE','mpmath.LICENSE','source-manifest.json'])
+          fs.copyFileSync(resolve('src/main/education/vendor/math',file),resolve(options.dir,'vendor/math',file));
       },
     }],
     build: { rollupOptions: { input: { index: resolve('src/main/index.ts'), 'document-worker': resolve('src/main/xiaozhi-agent/document-worker.ts'), 'image-worker': resolve('src/main/xiaozhi-agent/image-worker.ts'), 'office-generator': resolve('src/main/xiaozhi-agent/office-generator.ts') }, output: { chunkFileNames: '[name]-[hash].js' } } },

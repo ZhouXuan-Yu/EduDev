@@ -8,6 +8,7 @@ import { isAbsolute, join } from 'node:path';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
 import {registerMistakeOcrIpc} from './students/mistake-ocr-api';
+import {registerMistakeSimilarIpc} from './students/mistake-similar-api';
 import type { AiExerciseSetTeacherEdits, AiConversationFolderInput, AiConversationFolderUpdateInput, AiConversationMessageInput, AiConversationSessionInput, AiConversationSessionUpdateInput, AiModelGradeInput, AiRegressionReportInput, AiUsabilityHumanReviewInput, AiUsabilityReplayExperimentInput, DeepSeekSettingsInput, DocumentArtifactExportInput, AiMemorySurface, AiMemoryEntryInput, AiMemoryEntryUpdateInput, AiMemoryL3Slot, AiMemoryL3EntryInput, AiMemoryL3EntryUpdateInput, AiMemoryEvidenceGraph, ReviewReminder } from '../shared/contracts';
 import { buildMasterySnapshot } from './ai-harness/mastery-snapshot';
 import { buildMasteryPolicy } from './ai-harness/mastery-policy';
@@ -513,16 +514,18 @@ if (ownsDesktop) app.whenReady().then(async () => {
 
   const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
   const mistakeOcr=registerMistakeOcrIpc({ipcMain,repository:store.mistakeOcr,facts:store.mistakeFacts,allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
+  const mistakeSimilar=registerMistakeSimilarIpc({ipcMain,find:(input,signal)=>store.findMistakeSimilar(input,signal),allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});
   if (authority.mode === 'pi') registerPiConsoleEndpoints({ipcMain,authority,window:()=>mainWindow,run:input=>piConsole.run(input)});
   let xiaozhiClosing = false;
   app.on('before-quit', event => {
     if (xiaozhiClosing) return;
     event.preventDefault(); xiaozhiClosing = true;
-    void Promise.allSettled([xiaozhi.close(),mistakeOcr.close()]).finally(() => app.quit());
+    void Promise.allSettled([xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialQueue.close()]).finally(() => app.quit());
   });
   registerDesktopChromeIpc(ipcMain, () => mainWindow);
   createWindow();
+  void store.materialQueue.start();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

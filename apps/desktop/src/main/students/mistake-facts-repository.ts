@@ -3,6 +3,7 @@ import {MISTAKE_FACTS_SCHEMA,validMistakeFactsInput,validMistakeFactsReceipt,typ
 import {QUESTION_CONTEXT_SCHEMA} from '../../shared/question-context';
 import type {QuestionBankItem,QuestionBankItemInput,LearningRecordInput} from '../../shared/contracts';
 import {questionVersion} from '../education/question-context-provider';
+import {readQuestionDocument} from '../../shared/question-document';
 import {MistakeOcrRepository,type MistakeOcrSql} from './mistake-ocr-repository';
 import {MISTAKE_OCR_SCHEMA} from '../../shared/mistake-ocr';
 export type MistakeFactsSql=MistakeOcrSql&{createQuestion:(input:QuestionBankItemInput)=>Promise<QuestionBankItem>;createRecord:(input:LearningRecordInput,id:string)=>Promise<unknown>};
@@ -17,6 +18,7 @@ export class MistakeFactsRepository{
   const q=(await sql.all('SELECT * FROM question_bank_items WHERE id=?',[r.question.questionId]))[0],record=(await sql.all('SELECT * FROM learning_records WHERE id=? AND student_id=?',[r.recordId,studentId]))[0];
   if(!q||!record||record.record_type!=='mistake'||record.subject!==r.facts.subject||record.content!==content(r)||record.occurred_at!==r.facts.occurredAt||hash(String(record.content))!==r.recordSha256)throw new Error('source_changed');
   const question:QuestionBankItem={id:String(q.id),subject:String(q.subject),grade:String(q.grade),knowledgePoint:String(q.knowledge_point),questionType:String(q.question_type),difficulty:q.difficulty as QuestionBankItem['difficulty'],stem:String(q.stem),answer:String(q.answer),analysis:String(q.analysis),sourceTitle:String(q.source_title),sourceKind:q.source_kind as QuestionBankItem['sourceKind'],tags:JSON.parse(String(q.tags)),createdAt:String(q.created_at),updatedAt:String(q.updated_at)};
+  const document=readQuestionDocument(q.document_json);if(document)question.document=document;
   if(questionVersion(question)!==r.question.version)throw new Error('source_changed');
  }
  async confirm(input:MistakeFactsInput,signal:AbortSignal){

@@ -1,12 +1,13 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import type {MistakeImageAnalysis} from '../../../shared/contracts';
-import {MISTAKE_FACTS_SCHEMA,MISTAKE_FACTS_ERRORS,validMistakeFacts,mistakePracticePrompt,type MistakeFacts,type MistakeFactsInput} from '../../../shared/mistake-facts';
+import {MISTAKE_FACTS_SCHEMA,MISTAKE_FACTS_ERRORS,validMistakeFacts,mistakePracticePrompt,mistakeVariantPrompt,type MistakeFacts,type MistakeFactsInput} from '../../../shared/mistake-facts';
 import {MISTAKE_OCR_SCHEMA} from '../../../shared/mistake-ocr';
+import {MistakeSimilarQuestions} from './MistakeSimilarQuestions';
 
-export function MistakeFactsSummary({analysis,onSend,busy=false}:{analysis:MistakeImageAnalysis;onSend:()=>void;busy?:boolean}){
+export function MistakeFactsSummary({analysis,onSend,onVariants,busy=false}:{analysis:MistakeImageAnalysis;onSend:()=>void;onVariants?:()=>void;busy?:boolean}){
  const value=analysis.confirmedFacts;if(!value)return null;const f=value.facts;
- return <div data-testid="mistake-facts-confirmed"><p role="status">题目与实际作答已保存，照片来源保留在本机。</p><dl className="detail-list"><dt>题目</dt><dd>{f.title}</dd><dt>知识点</dt><dd>{f.subject} · {f.knowledgePoint}</dd><dt>实际作答</dt><dd>{f.actualAnswer||'未作答'}</dd><dt>实际表现</dt><dd>{{correct:'正确',incorrect:'错误',partial:'部分正确'}[f.result]}</dd><dt>教师核对的错因</dt><dd>{f.errorCause}</dd><dt>难度</dt><dd>{{easy:'基础',medium:'中等',hard:'较难'}[f.difficulty]}</dd></dl><Button isDisabled={busy} onPress={onSend} data-testid="mistake-facts-ask">请小智准备5道练习</Button></div>;
+ return <div data-testid="mistake-facts-confirmed"><p role="status">题目与实际作答已保存，照片来源保留在本机。</p><dl className="detail-list"><dt>题目</dt><dd>{f.title}</dd><dt>知识点</dt><dd>{f.subject} · {f.knowledgePoint}</dd><dt>实际作答</dt><dd>{f.actualAnswer||'未作答'}</dd><dt>实际表现</dt><dd>{{correct:'正确',incorrect:'错误',partial:'部分正确'}[f.result]}</dd><dt>教师核对的错因</dt><dd>{f.errorCause}</dd><dt>难度</dt><dd>{{easy:'基础',medium:'中等',hard:'较难'}[f.difficulty]}</dd></dl><div className="toolbar-row">{onVariants&&<Button isDisabled={busy} onPress={onVariants} data-testid="mistake-facts-variants">生成5道变式练习</Button>}<Button variant="secondary" isDisabled={busy} onPress={onSend} data-testid="mistake-facts-ask">请小智准备5道练习</Button></div></div>;
 }
 export function StudentMistakeFacts({analysis,title,onAnalysis,onBusy,onSendAi,onFactsSaved}:{analysis:MistakeImageAnalysis;title:string;onAnalysis:(v:MistakeImageAnalysis)=>void;onBusy:(v:boolean)=>void;onSendAi:(prompt:string)=>Promise<void>;onFactsSaved?:(studentId:string)=>Promise<void>}){
  const initial=():MistakeFacts=>({title,subject:'',knowledgePoint:'',knowledgeType:'procedure',difficulty:'medium',stem:analysis.teacherCorrectedText,expectedAnswer:'',analysis:'',actualAnswer:'',result:'' as MistakeFacts['result'],errorCause:'',occurredAt:new Date().toISOString()});
@@ -19,12 +20,12 @@ export function StudentMistakeFacts({analysis,title,onAnalysis,onBusy,onSendAi,o
   const input=pending.current||{schemaVersion:MISTAKE_FACTS_SCHEMA,source:{schemaVersion:MISTAKE_OCR_SCHEMA,studentId:analysis.studentId,analysisId:analysis.id,version:analysis.version,requestId:crypto.randomUUID()},facts};pending.current=input;const current=epoch.current;setBusy(true);onBusy(true);setError('');
   try{const result=await window.omniEdu?.confirmMistakeFacts(input);if(current!==epoch.current)return;if(!result?.ok)throw new Error(result?MISTAKE_FACTS_ERRORS[result.error]:'未完成保存，请重试。');onAnalysis(result.analysis);setEditing(false);pending.current=undefined;try{await onFactsSaved?.(analysis.studentId);}catch{setError('题目与实际作答已保存，列表刷新失败，请重新进入学生页面。');}}catch(cause){if(current===epoch.current)setError(cause instanceof Error?cause.message:'未完成保存，请重试。');}finally{if(current===epoch.current){setBusy(false);onBusy(false);}}
  }
- async function ask(){
+ async function ask(variants=false){
   const receipt=analysis.confirmedFacts;if(!receipt)return;setBusy(true);setError('');
-  try{const clean=await window.omniEdu?.sanitizeProblemText(receipt.facts.title,analysis.studentId);if(!clean)throw new Error('题目来源暂时无法读取。');await onSendAi(mistakePracticePrompt(clean.sanitizedText));}catch(cause){setError(cause instanceof Error?cause.message:'没有完成交接，请重试。');}finally{setBusy(false);}
+  try{const clean=await window.omniEdu?.sanitizeProblemText(receipt.facts.title,analysis.studentId);if(!clean)throw new Error('题目来源暂时无法读取。');await onSendAi((variants?mistakeVariantPrompt:mistakePracticePrompt)(clean.sanitizedText));}catch(cause){setError(cause instanceof Error?cause.message:'没有完成交接，请重试。');}finally{setBusy(false);}
  }
  if(analysis.ocrStatus!=='teacher_corrected'||!analysis.localOcr)return null;
- if(analysis.confirmedFacts)return <section className="work-panel span-2" data-testid="student-mistake-facts"><h3>已确认的错题与学习事实</h3><MistakeFactsSummary analysis={analysis} busy={busy} onSend={()=>void ask()}/>{error&&<p role="alert">{error}</p>}</section>;
+ if(analysis.confirmedFacts)return <section className="work-panel span-2" data-testid="student-mistake-facts"><h3>已确认的错题与学习事实</h3><MistakeFactsSummary analysis={analysis} busy={busy} onSend={()=>void ask()} onVariants={()=>void ask(true)}/><MistakeSimilarQuestions studentId={analysis.studentId} receipt={analysis.confirmedFacts}/>{error&&<p role="alert">{error}</p>}</section>;
  return <section className="work-panel span-2" data-testid="student-mistake-facts"><div className="panel-heading"><div><h3>核对题目与实际作答</h3><p className="muted">请根据真实记录填写；校正图片文字不会自动判断成绩。</p></div>{!editing&&<Button onPress={()=>{setFacts(initial());setEditing(true);}} data-testid="mistake-facts-edit">填写学习事实</Button>}</div>{editing&&<>
   <div className="form-grid">
    <label>题目名称<input value={facts.title} disabled={busy} onChange={e=>edit('title',e.target.value)} data-testid="mistake-facts-title"/></label>

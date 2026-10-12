@@ -10,7 +10,9 @@ const desktop=process.cwd(),buildRoot=path.resolve(process.env.OMNI_EDU_TEST_BUI
 assert(buildRoot.startsWith(path.join(desktop,'test-results')+path.sep)&&fs.existsSync(path.join(buildRoot,'main/index.js')));
 const output=fs.mkdtempSync(path.resolve(`test-results/xiaozhi-agent/${views?'pi-image-views-ui':'pi-public-image-ui'}-`)),data=path.join(output,'data'),profile=path.join(output,'profile');
 let oldSource,oldHash;if(process.argv[2]){oldSource=fs.realpathSync(process.argv[2]);assert(oldSource.startsWith(fs.realpathSync('test-results/xiaozhi-agent')+path.sep)&&path.basename(oldSource)==='data');oldHash=createHash('sha256').update(fs.readFileSync(path.join(oldSource,'app.db'))).digest('hex');fs.cpSync(oldSource,data,{recursive:true,force:false,errorOnExist:true});}
-const fixture='test-results/xiaozhi-agent/pi-public-image-preflight-LanGoJ',image=path.join(output,'公开图表.png');fs.copyFileSync(path.join(fixture,'prompt-public-synthetic.png'),image);
+const fixture=path.resolve(process.env.OMNI_EDU_TEST_IMAGE_FIXTURE_ROOT||'test-results/xiaozhi-agent/pi-public-image-preflight-LanGoJ');
+assert(fs.realpathSync(fixture).startsWith(fs.realpathSync(path.join(desktop,'test-results'))+path.sep),'Synthetic fixture must stay in owned test-results');
+const image=path.join(output,'公开图表.png');fs.copyFileSync(path.join(fixture,'prompt-public-synthetic.png'),image);
 const code=JSON.parse(JSON.parse(fs.readFileSync(path.join(fixture,'report.json'))).promptAnswer).code;
 const key=fs.readFileSync('.env.local','utf8').match(/^DEEPSEEK_API_KEY\s*=\s*(.*?)\s*$/m)?.[1]?.replace(/^['"]|['"]$/g,'');assert(key);
 const report={success:false,checks:[],boundary:'Formal isolated Electron/real original Pi/official DeepSeek/image utility/unchanged Pro source; only self-created public synthetic image. One supplier-error case is a declared transport fixture. No real profile, student raw images, installer or no-VPN acceptance.'};

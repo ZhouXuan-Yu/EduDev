@@ -1,0 +1,15 @@
+{
+  "queriedAt": "2026-10-12",
+  "method": "HeroUI Pro MCP get_component_docs",
+  "documentationCharacters": 179013,
+  "officialDocumentationUrls": [
+    "https://heroui.pro/docs/react/components/chat-tool",
+    "https://heroui.pro/docs/react/components/timeline",
+    "https://heroui.pro/docs/react/components/stepper",
+    "https://heroui.pro/docs/react/components/resizable",
+    "https://heroui.pro/docs/react/components/file-tree",
+    "/en/docs/react/components/disclosure"
+  ],
+  "rawDocsInConversationToolResult": true,
+  "sourceLicenseNotInferredFromAccess": true
+}

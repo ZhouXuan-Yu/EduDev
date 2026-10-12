@@ -1,4 +1,11 @@
+import {createOriginalQuestionCoordinator} from '../education/original-question-coordinator';
+import {validOriginalInput,type OriginalQuestionDecision} from '../../shared/original-question-review';
 import fs from 'node:fs';
+import {createPaperCoordinator} from '../education/paper-coordinator';
+import {assertPaperOffice,createPaperExportTool} from '../education/paper-export';
+import {isPaperOfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {resolvePaperOfficeImages} from '../education/paper-office-images';
+import {validPaperCreate,validPaperReview,type PaperCreateInput,type PaperDecision} from '../../shared/paper-blueprint';
 import {createPracticeReviewCoordinator} from '../education/practice-review-coordinator';
 import {validPracticeReview,type PracticeReviewDecision,type PracticeReviewResult,type PracticeReviewSummary} from '../../shared/practice-review';
 import {validBrowserCaptureInput,validBrowserCapture,type BrowserCaptureResult} from '../../shared/xiaozhi-browser-capture';
@@ -18,6 +25,8 @@ import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
 import {createQuestionContextProvider} from '../education/question-context-provider';
 import type {QuestionContextSource} from '../../shared/question-context';
+import {createQuestionCollectionCoordinator} from '../education/question-collection-coordinator';
+import {validQuestionCollection,type QuestionCollectionInput,type QuestionCollectionDecision} from '../../shared/question-collection';
 import {createQuestionReviewCoordinator} from '../education/question-review-coordinator';
 import {validQuestionReview,type QuestionReviewDecision,type QuestionReviewResult,type QuestionReviewSummary} from '../../shared/question-review';
 import type {XiaozhiWebInput} from '../../shared/xiaozhi-web';
@@ -40,6 +49,8 @@ import {createEducationCapabilityProvider} from '../education/capability-provide
 import {createEducationSearchTools} from '../education/search-provider';
 import {createStudentContextProvider} from '../education/student-context-provider';
 import {createLearningProvider} from '../education/learning-provider';
+import {createMistakeSimilarProvider,type ObservedMistakeLearning} from '../education/mistake-similar-provider';
+import type {QuestionAliases} from '../education/question-aliases';
 import {createLearningReviewCoordinator} from '../education/learning-review-coordinator';
 import {validLearningReview,type LearningReviewDecision,type LearningReviewResult,type LearningReviewSummary} from '../../shared/learning-review';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
@@ -60,7 +71,7 @@ import { publicControl } from './control-state';
 import { createPiControlCoordinator } from './control-tools';
 import { DEFAULT_PI_BUDGET, validPiBudget } from './budget-state';
 import type { XiaozhiBudgetInput, XiaozhiUsage } from '../../shared/xiaozhi-agent';
-import { authorizedWorkspace } from './workspace-authority';
+import { authorizedWorkspace,workspaceHash } from './workspace-authority';
 import { getPiProtectedContext } from './compaction-context';
 import type { XiaozhiCompactInput } from '../../shared/xiaozhi-agent';
 import { readDeepSeekCapabilities, resolveDeepSeekCapabilities,fetchDeepSeekCatalogue } from './model-capabilities';
@@ -87,6 +98,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   afterInstructionDispatch?: (signal: AbortSignal) => Promise<void>;
   afterLearningReviewWrite?:(isCurrent:()=>boolean)=>Promise<void>;
   afterQuestionReviewWrite?:(isCurrent:()=>boolean)=>Promise<void>;
+  afterOriginalReviewWrite?:(isCurrent:()=>boolean)=>Promise<void>;
   afterPracticeReviewWrite?:()=>Promise<void>;
   /** Main-only isolated acceptance cut; packaged IPC never supplies it. */
   afterTextChangeStage?: (stage: 'intent' | 'file' | 'undo-intent' | 'undo-file') => Promise<void>;
@@ -160,12 +172,27 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'learning_review',review});}
   });
+  const paperReviews=createPaperCoordinator({store,
+    isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+    canWrite:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+    emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'paper_review',review});}
+  });
   const practiceReviews=createPracticeReviewCoordinator({store,afterWrite:options.afterPracticeReviewWrite,
     isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'practice_review',review});}
   });
   const questionReviews=createQuestionReviewCoordinator({store,afterWrite:options.afterQuestionReviewWrite,
+    isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+    canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+    emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'question_review',review});}
+  });
+  const questionCollections=createQuestionCollectionCoordinator({store,questions:questionReviews,papers:paperReviews,afterWrite:options.afterQuestionReviewWrite,
+    isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+    canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+    emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'question_collection',review});}
+  });
+  const originalReviews=createOriginalQuestionCoordinator({store,afterWrite:options.afterOriginalReviewWrite,
     isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'question_review',review});}
@@ -191,7 +218,11 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   const officeArtifacts=createOfficeArtifactCoordinator({state:store.xiaozhiState.officeArtifacts,
     sanitize:text=>sanitizeOfficeDocumentText(store,text),
     service:createOfficeArtifactService({state:store.xiaozhiState.officeArtifacts,dataRoot:options.dataRoot,
+      validatePaperDraft:async(id,draft)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);},
+      resolvePaperImages:async(id,draft,signal)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);return resolvePaperOfficeImages(draft,store.originalQuestions,signal);},
+      commitPaperDraft:async(id,draft,install)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');await store.papers.withConfirmedSource(id,draft.paperSource.paperId,draft.paperSource.digest,paper=>{assertPaperOffice(paper,draft);install();});},
       workspace:async id=>(await host.resolveFileWorkspace(id)).path,
+      paperWorkspace:resolvePaperOutput,
       isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
       afterStage:options.afterOfficeArtifactStage,
       onState:artifact=>{for(const [id,run] of active)if(run.runId===artifact.runId){publicEvent(id,run,{kind:'office_artifact',artifact});break;}}
@@ -208,6 +239,19 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         prompt:`继续上次中断的教师澄清。上次问题：${item.text}\n教师回答：${answer}\n只按本次回答继续任务；旧复制、旧审批及未完成效果不要自动重放，所有文件效果需要新确认。` });
       return outcome.ok ? {ok:true} : outcome;
     } });
+  async function authorizePaperConversation(id:string){
+    if(!validId(id))throw new Error('invalid_input');
+    const detail=await store.getAiConversationSession(id);
+    if(detail.session.archivedAt||detail.session.studentId&&!(await store.listStudents('')).some(s=>s.id===detail.session.studentId&&s.status==='active'))throw new Error('permission_denied');
+  }
+  async function resolvePaperOutput(id:string,hash?:string):Promise<string|null>{
+    if(closing||choosing.has(id))throw new Error('busy');await authorizePaperConversation(id);
+    const grant=await store.xiaozhiState.paperOutput(id,hash),legacy=grant?null:await store.xiaozhiState.workspace(id);
+    const raw=grant?.path||legacy?.path;if(!raw)return null;
+    const directory=authorizedWorkspace(raw,options.dataRoot);
+    if(hash!==undefined&&workspaceHash(directory)!==hash)throw new Error('permission_denied');
+    if(closing||choosing.has(id))throw new Error('busy');await authorizePaperConversation(id);return directory;
+  }
   async function snapshot(id = '',settlementRead=0): Promise<XiaozhiWorkspaceSnapshot> {
     if (id && !validId(id)) throw new Error('invalid_input');
     if (id) await recoverModel(id);
@@ -245,9 +289,12 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       }
     }
     const workspace = await store.xiaozhiState.workspace(id);
+    const paperOutput=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.xiaozhiState.paperOutput(id):null;
     const storedLearningReviews=detail.session.studentId&&selectedStudent?.status==='active'&&!detail.session.archivedAt?await store.learningReviews.list(id):[];
+    const storedPaperReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.papers.list(id):[];
     const storedPracticeReviews=!detail.session.archivedAt&&selectedStudent?.status==='active'?await store.practiceReviews.list(id):[];
-    const storedQuestionReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.questionReviews.list(id):[];
+    const storedQuestionCollections=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.questionReviews.collections.list(id):[];
+    const storedQuestionReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?[...await store.questionReviews.list(id),...await store.originalQuestions.list(id)]:[];
     const storedApprovals = (await store.xiaozhiState.approvals(id)).map(publicApproval);
     const changes = (await store.xiaozhiState.changes.list(id)).map(changeSummary);
     const artifacts=(await store.xiaozhiState.officeArtifacts.list(id)).map(officeSummary);
@@ -286,7 +333,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
-      practiceReviews:storedPracticeReviews,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}) };
+      paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
   }
   function modelCoordinator(id:string,owner?:Active) {
     return createNativeModelSwitch({state:store.xiaozhiState.modelSwitch,root,
@@ -320,13 +367,16 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     await skillsReady;
     const stateRoot=path.join(root,id), privateWorkspace=path.join(stateRoot,'workspace'); fs.mkdirSync(privateWorkspace,{recursive:true});
     const grant=await store.xiaozhiState.workspace(id), workspace=grant?authorizedWorkspace(grant.path,options.dataRoot):privateWorkspace;
+    const paperOutput=await store.xiaozhiState.paperOutput(id);
     const binding=await store.xiaozhiState.getBinding(id), sessionFile=binding?path.resolve(root,binding.sessionFile):undefined;
     if(sessionFile && (!inside(root,sessionFile) || binding?.model!==settings.model))throw new Error('configuration');
     const ledger=await store.xiaozhiState.modelSwitch?.current(id), coordinator=modelCoordinator(id,owner);
     const web = await store.xiaozhiState.modelSettings.web();
     const studentId=(await store.getAiConversationSession(id)).session.studentId||'';
     let observedLearning:(Awaited<ReturnType<typeof store.studentContext.learningSnapshot>>&{reviewVersion:number})|undefined;
+    const observedMaterials=new Map<string,string>();
     const observedQuestions=new Map<string,QuestionContextSource>();
+    const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     return {stateRoot,workspace,apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,
       ...(owner?.goalId?{goal:createGoalRuntime({store,sessionId:id,goalId:owner.goalId,runId,
         current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
@@ -367,18 +417,23 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       ...(grant ? { officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         sanitize:text=>sanitizeOfficeDocumentText(store,text)}) } : {}),
+      ...(grant||paperOutput?{paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})}}:{}),
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:excluded=>getPiProtectedContext(store,id,excluded),
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
-      questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);}),
+      questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases),
       questionReviewTools:questionReviews.tools(id,runId,observedQuestions),
+      questionCollectionTools:questionCollections.tools(id,runId,observedQuestions),
       practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions)},
-      materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
+      paperReview:{studentId,tools:paperReviews.tools(id,runId)},
+      originalQuestionReviewTools:originalReviews.tools(id,runId,observedMaterials),
+      materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version)=>observedMaterials.set(resourceId,version)),
       educationCapabilityTools:createEducationCapabilityProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped).tools,
       educationSearchTools:createEducationSearchTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       studentContext:{studentId,tools:createStudentContextProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped)},
-      studentLearning:{studentId,tools:createLearningProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,facts=>{observedLearning=facts;})},
+      studentLearning:{studentId,tools:createLearningProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(facts,delivered)=>{observedLearning=facts;observedMistakeLearning={facts,delivered};})},
+      studentSimilar:{studentId,tools:createMistakeSimilarProvider({store,sessionId:id,studentId,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,observed:()=>observedMistakeLearning,aliases:questionAliases})},
       studentLearningReview:{studentId,tools:learningReviews.tools(id,runId,()=>observedLearning)},
       ...(ledger?{modelHistory:{authorize:manager=>coordinator.authorize(manager,id),
         beforeLoad:(manager,authority)=>coordinator.beforeAuthorityLoad(manager,ledger,authority),
@@ -499,6 +554,20 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     }
   }
   const host = {
+    listPapers:paperReviews.list,
+    listPaperGenerationContexts:paperReviews.generationContexts,
+    reviewPaper:paperReviews.review,
+    cancelPaper:paperReviews.cancelInput,
+    async createPaper(input:PaperCreateInput){
+      if(!validPaperCreate(input))return{ok:false as const,error:'invalid_input' as const};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return paperReviews.create(input,'','',()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
+    async decidePaper(input:PaperDecision){
+      if(!validPaperReview(input,true))return{ok:false as const,error:'invalid_input' as const};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return paperReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
     reviewPractice:practiceReviews.review,
     practiceSource:practiceReviews.source,
     async decidePractice(input:PracticeReviewDecision):Promise<PracticeReviewResult<PracticeReviewSummary>>{
@@ -506,11 +575,43 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
       return practiceReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
     },
-    reviewQuestions:questionReviews.review,
+    reviewOriginal:originalReviews.review,
+    reviewOriginalMulti:originalReviews.reviewMulti,
+    originalGallery:originalReviews.gallery,
+    completeOriginalContext:(input:import('../../shared/question-context-edit').QuestionContextEditInput)=>originalReviews.completeContext(input,()=>!closing),
+    async decideOriginalMulti(input:import('../../shared/original-multi-review').OriginalMultiDecision){
+      const {validMultiDecision}=await import('../../shared/original-multi-review');if(!validMultiDecision(input))return{ok:false as const,error:'invalid_input' as const};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return originalReviews.decideMulti(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
+    async reviseOriginalMulti(input:import('../../shared/original-multi-review').OriginalMultiRevise){
+      const {validMultiRevise}=await import('../../shared/original-multi-review');if(!validMultiRevise(input))return{ok:false as const,error:'invalid_input' as const};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return originalReviews.reviseMulti(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)),owner?.abort.signal);
+    },
+    originalImage:originalReviews.image,
+    async decideOriginal(input:OriginalQuestionDecision){
+      if(!validOriginalInput(input,true))return {ok:false as const,error:'invalid_input' as const};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return originalReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
+    async reviewQuestions(input:import('../../shared/question-review').QuestionReviewInput){
+      if(!validQuestionReview(input))return{ok:false as const,error:'invalid_input' as const};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      const member=(await store.questionReviews.list(input.sessionId)).find(r=>r.id===input.id);
+      const collectionRun=owner&&member?.collectionId&&questionCollections.canEdit(input.sessionId,member.collectionId,owner.runId)?owner.runId:undefined;
+      return questionReviews.review(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)),collectionRun);
+    },
     async decideQuestions(input:QuestionReviewDecision):Promise<QuestionReviewResult<QuestionReviewSummary>>{
       if(!validQuestionReview(input,true))return{ok:false,error:'invalid_input'};
       const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
       return questionReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
+    reviewQuestionCollection:questionCollections.review,
+    async decideQuestionCollection(input:QuestionCollectionDecision){
+      if(!validQuestionCollection(input,true))return{ok:false as const,error:'invalid_input' as const};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return questionCollections.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
     },
     reviewLearning:learningReviews.review,
     learningHistory:learningReviews.history,
@@ -665,6 +766,17 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       queueing.set(input.commandId,{hash,result});
       try {return await result;} finally {queueing.delete(input.commandId);}
     },
+    async selectPaperOutput(id:string,choose:()=>Promise<string|undefined>):Promise<XiaozhiActionResult>{
+      if(!validId(id))return {ok:false,error:'invalid_input'};
+      if(active.has(id)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||closing||skillsMutating)return {ok:false,error:'busy'};
+      choosing.add(id);
+      try{
+        await authorizePaperConversation(id);const selected=await choose();if(!selected)return {ok:true};
+        if(closing||active.has(id))return {ok:false,error:'busy'};await authorizePaperConversation(id);
+        const directory=authorizedWorkspace(selected,options.dataRoot);
+        await store.xiaozhiState.setPaperOutput(id,directory,path.basename(directory).slice(0,200),workspaceHash(directory));return {ok:true};
+      }catch{return {ok:false,error:'permission_denied'};}finally{choosing.delete(id);}
+    },
     async selectWorkspace(id: string, choose: () => Promise<string | undefined>): Promise<XiaozhiActionResult> {
       if (!validId(id)) return { ok: false, error: 'invalid_input' };
       if (active.has(id) || choosing.has(id) || configuring.has(id) || configuring.has('provider') || closing || skillsMutating) return { ok: false, error: 'busy' };
@@ -793,7 +905,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const run = active.get(id); if (!run) return { ok: true };
       run.stopped = true; run.abort.abort();
       if(run.goalId){const goal=await store.xiaozhiState.goals.interrupt(id,run.runId,'教师停止了本轮执行，已保存进度。');if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); practiceReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); return { ok: true };
+      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); return { ok: true };
     },
     async close() {
       closing = true; for (const run of active.values()) { run.stopped = true; run.abort.abort(); }
@@ -803,7 +915,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       await Promise.allSettled([...modelWrites]);
       await Promise.allSettled([...localSettingsJobs]);
       await Promise.allSettled([...starting.values()].map(item => item.result));
-      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); practiceReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); }
+      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); }
       await Promise.allSettled([...active.values()].map(run => run.done));
     },
   };

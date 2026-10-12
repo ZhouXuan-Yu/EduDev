@@ -29,31 +29,7 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
   return {content:[{type:'text' as const,text:JSON.stringify({success:saved,file:await options.sanitize(row.path),format:row.format,outcome:row.state,
    ...(saved?{artifactId:row.artifactId}:{}),sourceCount:row.sourceCount,message:saved?'教师已确认，真实办公文件已保存并核验。最终正文为教师本地确认版本，未回传模型；只报告文件路径、格式和保存状态，不复述未重新实读的正文、标题或表格值。':row.state==='rejected'?'教师拒绝，本次没有写入。':row.state==='conflict'?'拟内容、来源或目标已变化，本次没有覆盖。':row.state==='uncertain'?'保存中断，效果尚未确认；需要教师只读核验，不可重新执行本次写入。':'本次未确认完成，请查看实际状态。'})}],details:{success:saved},isError:!saved};
  }
- return {
-  cancel,
-  async review(value:OfficeArtifactReviewInput):Promise<OfficeArtifactResult<OfficeArtifactReview>>{
-   if(!input(value,['schemaVersion','sessionId','draftId']))return {ok:false,error:'invalid_input'};
-   try{return {ok:true,value:await options.service.review(value.sessionId,value.draftId)};}catch(raw){return {ok:false,error:error(raw)};}
-  },
-  async revise(value:OfficeArtifactReviseInput):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
-   if(!input(value,['schemaVersion','sessionId','draftId','revision','draft'])||!Number.isSafeInteger(value.revision)||value.revision<0)return {ok:false,error:'invalid_input'};
-   try{const waiting=currentWait(value);await options.service.revise(value.sessionId,value.draftId,value.revision,value.draft);const row=await publish(value.sessionId,value.draftId);if(row.state!=='pending')waiting.finish(false);return {ok:true,value:row};}catch(raw){return {ok:false,error:error(raw)};}
-  },
-  async decide(value:OfficeArtifactDecision):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
-   if(!input(value,['schemaVersion','sessionId','draftId','revision','action'])||!Number.isSafeInteger(value.revision)||value.revision<0||!['approve','reject','verify'].includes(value.action))return {ok:false,error:'invalid_input'};
-   try{
-    const waiting=value.action==='verify'?undefined:currentWait(value);await options.service.decide(value);const row=await publish(value.sessionId,value.draftId);
-    waiting?.finish(row.state==='approved'&&options.isCurrent(waiting.sessionId,waiting.runId));return {ok:true,value:row};
-   }catch(raw){return {ok:false,error:error(raw)};}
-  },
-  tools(sessionId:string,runId:string,wait:Wait):ToolDefinition[]{
-   const text=(maxLength:number)=>({type:'string',minLength:1,maxLength});
-   // Pi converts each anyOf branch in order. A type union preserves an already
-   // matching number/string (including numeric text) through its native validator.
-   const cell={type:['string','number'],maxLength:120};
-   return [{name:'office_create_document',label:'生成办公文档',description:'在已授权工作目录提出真实DOCX/PDF/XLSX/PPTX拟产物。相对目标路径须使用对应扩展、父目录已存在且目标不存在。draft采用xiaozhi.office-draft.v1，只有有限标题/章节/段落/文字或数字表格，不支持图片、公式对象、HTML或任意资源。sources仅列本次工具实读的文件路径和version（最多16）；无资料源用空数组，不猜版本。完整拟内容只本地教师审阅；教师可修改、拒绝或确认，确认后实际生成保存。拒绝/冲突/停止后不要重复本次写入。更新已有正式产物用parentArtifactId和新目标路径，保留旧版。',
-    parameters:{type:'object',additionalProperties:false,required:['path','format','draft','sources'],properties:{path:text(500),format:{type:'string',enum:['docx','pdf','xlsx','pptx']},parentArtifactId:text(64),sources:{type:'array',maxItems:16,items:{type:'object',additionalProperties:false,required:['path','version'],properties:{path:text(500),version:{type:'string',pattern:'^[a-f0-9]{64}$'}}}},draft:{type:'object',additionalProperties:false,required:['schemaVersion','title','sections'],properties:{schemaVersion:{type:'string',enum:['xiaozhi.office-draft.v1']},title:text(120),sections:{type:'array',minItems:1,maxItems:20,items:{type:'object',additionalProperties:false,required:['heading','paragraphs'],properties:{heading:text(120),paragraphs:{type:'array',maxItems:20,items:text(1000)},table:{type:'object',additionalProperties:false,required:['columns','rows'],properties:{columns:{type:'array',minItems:1,maxItems:8,items:text(120)},rows:{type:'array',minItems:1,maxItems:200,items:{type:'array',minItems:1,maxItems:8,items:cell}}}}}}}}}}} as ToolDefinition['parameters'],
-    execute:async(callId,raw,signal)=>{
+ async function runOffice(sessionId:string,runId:string,wait:Wait,callId:string,raw:unknown,signal?:AbortSignal){
      let proposal:OfficeArtifactSummary|undefined;
      try{
       proposal=await options.service.propose(sessionId,runId,callId,raw,signal);
@@ -79,6 +55,35 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
        :'本次办公文件未确认保存；请检查授权、拟内容与实际状态，不可宣称交付。';
       return {content:[{type:'text' as const,text:JSON.stringify({success:false,error:code,message})}],details:{success:false},isError:true};
      }
+
+ }
+ return {
+  cancel,runOffice,
+  async review(value:OfficeArtifactReviewInput):Promise<OfficeArtifactResult<OfficeArtifactReview>>{
+   if(!input(value,['schemaVersion','sessionId','draftId']))return {ok:false,error:'invalid_input'};
+   try{return {ok:true,value:await options.service.review(value.sessionId,value.draftId)};}catch(raw){return {ok:false,error:error(raw)};}
+  },
+  async revise(value:OfficeArtifactReviseInput):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
+   if(!input(value,['schemaVersion','sessionId','draftId','revision','draft'])||!Number.isSafeInteger(value.revision)||value.revision<0)return {ok:false,error:'invalid_input'};
+   try{const waiting=currentWait(value);await options.service.revise(value.sessionId,value.draftId,value.revision,value.draft);const row=await publish(value.sessionId,value.draftId);if(row.state!=='pending')waiting.finish(false);return {ok:true,value:row};}catch(raw){return {ok:false,error:error(raw)};}
+  },
+  async decide(value:OfficeArtifactDecision):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
+   if(!input(value,['schemaVersion','sessionId','draftId','revision','action','imagesReviewed'])||!Number.isSafeInteger(value.revision)||value.revision<0||!['approve','reject','verify'].includes(value.action))return {ok:false,error:'invalid_input'};
+   try{
+    const waiting=value.action==='verify'?undefined:currentWait(value);await options.service.decide(value);const row=await publish(value.sessionId,value.draftId);
+    waiting?.finish(row.state==='approved'&&options.isCurrent(waiting.sessionId,waiting.runId));return {ok:true,value:row};
+   }catch(raw){return {ok:false,error:error(raw)};}
+  },
+  tools(sessionId:string,runId:string,wait:Wait):ToolDefinition[]{
+   const text=(maxLength:number)=>({type:'string',minLength:1,maxLength});
+   // Pi converts each anyOf branch in order. A type union preserves an already
+   // matching number/string (including numeric text) through its native validator.
+   const cell={type:['string','number'],maxLength:120};
+   return [{name:'office_create_document',label:'生成办公文档',description:'在已授权工作目录提出真实DOCX/PDF/XLSX/PPTX拟产物。相对目标路径须使用对应扩展、父目录已存在且目标不存在。draft采用xiaozhi.office-draft.v1，只有有限标题/章节/段落/文字或数字表格，不支持图片、公式对象、HTML或任意资源。sources仅列本次工具实读的文件路径和version（最多16）；无资料源用空数组，不猜版本。完整拟内容只本地教师审阅；教师可修改、拒绝或确认，确认后实际生成保存。拒绝/冲突/停止后不要重复本次写入。更新已有正式产物用parentArtifactId和新目标路径，保留旧版。',
+    parameters:{type:'object',additionalProperties:false,required:['path','format','draft','sources'],properties:{path:text(500),format:{type:'string',enum:['docx','pdf','xlsx','pptx']},parentArtifactId:text(64),sources:{type:'array',maxItems:16,items:{type:'object',additionalProperties:false,required:['path','version'],properties:{path:text(500),version:{type:'string',pattern:'^[a-f0-9]{64}$'}}}},draft:{type:'object',additionalProperties:false,required:['schemaVersion','title','sections'],properties:{schemaVersion:{type:'string',enum:['xiaozhi.office-draft.v1']},title:text(120),sections:{type:'array',minItems:1,maxItems:20,items:{type:'object',additionalProperties:false,required:['heading','paragraphs'],properties:{heading:text(120),paragraphs:{type:'array',maxItems:20,items:text(1000)},table:{type:'object',additionalProperties:false,required:['columns','rows'],properties:{columns:{type:'array',minItems:1,maxItems:8,items:text(120)},rows:{type:'array',minItems:1,maxItems:200,items:{type:'array',minItems:1,maxItems:8,items:cell}}}}}}}}}}} as ToolDefinition['parameters'],
+    execute:async(callId,raw,signal)=>{
+     if(!raw||typeof raw!=='object'||!('draft' in raw)||(raw as {draft?:{schemaVersion?:unknown}}).draft?.schemaVersion!=='xiaozhi.office-draft.v1')return {content:[{type:'text',text:'文档格式不正确，未提出保存。'}],details:{success:false},isError:true};
+     return runOffice(sessionId,runId,wait,callId,raw,signal);
     }
    }];
   }

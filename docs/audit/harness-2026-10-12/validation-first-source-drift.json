@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-12T11:45:20.190047+08:00",
+  "scope": "documentation/source-reference validation only; zero application functional cases run",
+  "command": "python docs/audit/harness-2026-10-12/validate-audit-docs.py",
+  "checks": {
+    "requiredArtifacts": 17,
+    "missingArtifacts": [],
+    "sourceRecords": 80,
+    "sourceSymbolIssues": [
+      "E32 symbol/line mismatch"
+    ],
+    "sourceHashDrift": [
+      {
+        "id": "E32",
+        "file": "D:/WorkProject/EduProject/apps/desktop/src/main/db.ts",
+        "before": "c98619a12d99b1afad06359b920f071ec2b199d751e5d8c26a77266480953ee8",
+        "current": "c5af8bba88f1d00b9be7f217f12bf9e5955236b6b49fb77d71e3e0d1c25e4323"
+      }
+    ],
+    "localLinks": 88,
+    "brokenLocalLinks": [],
+    "unclosedCodeFences": [],
+    "secretPatternFiles": [],
+    "auditMarkdownTrailingWhitespace": [],
+    "goalSections": 10,
+    "missingGoalFields": [],
+    "stateDocuments": 12,
+    "stateMarkerIssues": [],
+    "masterBefore": "dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302",
+    "masterAfter": "dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302"
+  },
+  "applicationTests": {
+    "executed": 0,
+    "networkImageFailuresClosed": false,
+    "referenceRepositoriesExecuted": false,
+    "dailyElectronRestarted": false,
+    "providerRequests": 0
+  },
+  "gitDiffCheck": {
+    "pending": false,
+    "command": "git diff --check",
+    "exitCode": 0,
+    "outputLines": 75,
+    "log": "diff-check.txt",
+    "scope": "tracked workspace diff; untracked audit Markdown checked separately"
+  },
+  "passed": false
+}

@@ -48,6 +48,10 @@ interface OfficeControlDraft {
   learningDraft?:import('../../../shared/learning-review').LearningReviewDraft;
   practiceDraft?:import('../../../shared/practice-review').PracticeReviewDraft;
   questionDraft?:import('../../../shared/question-review').QuestionReviewDraft;
+  questionQuality?:{draftJson:string;quality:import('../../../shared/question-quality').QuestionQualityReview;reviewed:boolean};
+  originalDraft?:import('../../../shared/original-question-review').OriginalQuestionDraft;
+  originalMultiDraft?:import('../../../shared/original-multi-review').OriginalMultiDraft;
+  originalComplete?:boolean;
 }
 /** UI drafts and mutual exclusion survive layout changes; main still validates every action. */
 export function useOfficeControlState(id: string, initial: Partial<OfficeControlDraft> = {}) {

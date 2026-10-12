@@ -1,0 +1,22 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {pathToFileURL} from 'node:url';
+import {_electron as electron} from 'playwright';import {build} from 'esbuild';
+import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';import {fingerprint,sha256} from '../acceptance/evidence.mjs';
+const desktop=process.cwd(),output=fs.mkdtempSync(path.resolve('test-results/math-host-journey-')),main=testMain(desktop),buildRoot=path.dirname(path.dirname(main)),fixed=fingerprint(buildRoot),profile=path.join(output,'profile'),harness=path.join(output,'harness'),checks=[];
+const report={success:false,build:{sha256:fixed.sha256,files:fixed.files.length},checks,launches:[],limits:['Electron main executes an esbuild adapter of the unchanged production math host/shared contract against hash-identical frozen deployment assets','No renderer tool/teacher review route or natural-language correctness acceptance; A2b remains OPEN','Owned isolated profile/data; no provider call, daily database or external upload']};
+fs.mkdirSync(harness);
+const adapter=path.join(harness,'math-host.cjs');
+await build({entryPoints:['src/main/education/math-host.ts'],outfile:adapter,bundle:true,platform:'node',format:'cjs',target:'node22',define:{'import.meta.url':JSON.stringify(pathToFileURL(adapter).href)},logLevel:'silent'});
+for(const file of ['math-worker.py','vendor/math/sympy-1.14.0-py3-none-any.whl','vendor/math/mpmath-1.3.0-py3-none-any.whl','vendor/math/SymPy.LICENSE','vendor/math/mpmath.LICENSE','vendor/math/source-manifest.json']){const source=path.join(buildRoot,'main',file),target=path.join(harness,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(source,target);assert.equal(sha256(fs.readFileSync(source)),sha256(fs.readFileSync(target)));if(file==='math-worker.py')assert.equal(sha256(fs.readFileSync(source)),sha256(fs.readFileSync('src/main/education/math-worker.py')));}
+report.adapterSha256=sha256(fs.readFileSync(adapter));report.scriptSha256=sha256(fs.readFileSync('scripts/education/math-host-journey.mjs'));report.workerSha256=sha256(fs.readFileSync(path.join(harness,'math-worker.py')));
+const n=(a,b=1)=>({op:'number',numerator:String(a),denominator:String(b)}),e=(op,...args)=>({op,args}),x={op:'variable'},cases=[{kind:'expression',left:e('sqrt',e('add',e('power',n(5),n(2)),e('power',n(12),n(2)))),right:n(13)},{kind:'expression',left:e('add',n(1),n(1)),right:n(3)},{kind:'polynomial',left:e('power',x,n(2)),right:n(9),domain:'real',roots:[n(3)]},{kind:'polynomial',left:e('power',x,n(2)),right:n(9),domain:'real',roots:[n(-3),n(3)]}];
+let app;
+try{
+ for(let launch=0;launch<2;launch++){
+  const env={...process.env,OMNI_EDU_DATA_ROOT:path.join(output,'data'),OMNI_EDU_REPO_ROOT:path.resolve('../..'),OMNI_EDU_E2E_DIALOG_MODE:'1'};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;delete env.OMNI_EDU_E2E_LEGACY_AI;delete env.OMNI_EDU_E2E_VISIBLE;delete env.DEEPSEEK_API_KEY;
+  app=await electron.launch({args:[main,`--user-data-dir=${profile}`],env,timeout:60000});report.launches.push(await assertIsolatedPiMain(app,main,profile));
+  const result=await app.evaluate(async(_,input)=>{const require=process.getBuiltinModule('module').createRequire(input.adapter),{checkMath}=require(input.adapter),results=[];for(const item of input.cases)results.push(await checkMath(item,new AbortController().signal));const stop=new AbortController();stop.abort();let cancelled=false;try{await checkMath(input.cases[0],stop.signal);}catch{cancelled=true;}return{results,cancelled};},{adapter,cases});
+  assert.deepEqual(result.results.map(v=>v.state),['matched','mismatch','mismatch','matched']);assert(result.results.every(v=>v.conditionsVerified===false&&v.engine==='sympy-1.14.0'));assert(result.cancelled);checks.push({name:launch?'Cold Electron restart repeats local exact arithmetic/root-set checks without network':'Actual Electron main uses frozen local assets and original host; correct/incorrect/missing-root/complete-root results',pass:true});report.results=result.results;
+  await app.close();app=undefined;
+ }
+ assert.equal(fingerprint(buildRoot).sha256,fixed.sha256);report.success=true;
+}catch(error){report.error=String(error);throw error;}finally{if(app)await app.close().catch(()=>{});fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output}));}

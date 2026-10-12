@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-12T11:46:36.556817+08:00",
+  "scope": "documentation/source-reference validation only; zero application functional cases run",
+  "command": "python docs/audit/harness-2026-10-12/validate-audit-docs.py",
+  "checks": {
+    "requiredArtifacts": 17,
+    "missingArtifacts": [],
+    "sourceRecords": 80,
+    "sourceSymbolIssues": [],
+    "sourceHashDrift": [],
+    "localLinks": 88,
+    "brokenLocalLinks": [],
+    "unclosedCodeFences": [],
+    "secretPatternFiles": [],
+    "auditMarkdownTrailingWhitespace": [],
+    "goalSections": 10,
+    "missingGoalFields": [],
+    "stateDocuments": 12,
+    "stateMarkerIssues": [],
+    "masterBefore": "dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302",
+    "masterAfter": "dbc1619f5a0390a150b4b8940cbc0e2147623920ae2815c34a2b353860f41302"
+  },
+  "applicationTests": {
+    "executed": 0,
+    "networkImageFailuresClosed": false,
+    "referenceRepositoriesExecuted": false,
+    "dailyElectronRestarted": false,
+    "providerRequests": 0
+  },
+  "gitDiffCheck": {
+    "pending": false,
+    "command": "git diff --check",
+    "exitCode": 0,
+    "outputLines": 81,
+    "log": "diff-check.txt",
+    "scope": "tracked workspace diff; untracked audit Markdown checked separately"
+  },
+  "passed": true
+}

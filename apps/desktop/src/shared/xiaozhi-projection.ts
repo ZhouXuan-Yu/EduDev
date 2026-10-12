@@ -64,7 +64,11 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
   } else if (event.kind === 'usage') {
     const { activeMs, waitingMs } = event.usage;
     if (Number.isFinite(activeMs) && activeMs >= 0 && Number.isFinite(waitingMs) && waitingMs >= 0 && Number.isFinite(activeMs + waitingMs)) next.elapsedMs = activeMs + waitingMs;
-  } else if (event.kind === 'question_review'||event.kind==='practice_review') {
+  } else if (event.kind === 'question_collection') {
+    // Draft batches keep running; only the whole-paper review waits for the teacher.
+    if(event.review.state==='pending'&&event.review.phase==='review')next.status='waiting_approval';
+    else if(next.status==='waiting_approval')next.status='running';
+  } else if (event.kind === 'question_review'||event.kind==='practice_review'||event.kind==='paper_review') {
     const item=next.items.find(item=>item.kind==='tool'&&item.id===event.review.callId);
     if(item)item.status=event.review.state==='pending'?'waiting_approval':event.review.state==='rejected'?'declined':'completed';
     if(event.review.state==='pending')next.status='waiting_approval';

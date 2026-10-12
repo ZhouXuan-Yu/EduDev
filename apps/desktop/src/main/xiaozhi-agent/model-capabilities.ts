@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
+import {createDeepSeekFetch} from './deepseek-fetch';
 
 const ENDPOINT = 'https://api.deepseek.com/v1/models';
 const MAX_BYTES = 65536;
@@ -42,7 +43,10 @@ export async function readDeepSeekCapabilities(root: string, id: string): Promis
 export async function fetchDeepSeekCatalogue(root: string, apiKey: string, signal?: AbortSignal): Promise<DeepSeekCatalogue> {
   let temporary: string | undefined;
   try {
-    const response = await fetch(ENDPOINT, { headers: { Authorization: `Bearer ${apiKey}` },
+    // Use the desktop's existing network stack. Node TLS can fail while Chromium
+    // reaches the same official endpoint; never replace that failure with guessed capacity.
+    const request = await createDeepSeekFetch();
+    const response = await request(ENDPOINT, { headers: { Authorization: `Bearer ${apiKey}` }, credentials: 'omit',
       redirect: 'error', signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(10000)]) : AbortSignal.timeout(10000) });
     if (response.status === 401 || response.status === 403) throw new Error('authentication');
     if (!response.ok) throw new Error('transport');

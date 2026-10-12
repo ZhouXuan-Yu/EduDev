@@ -1,9 +1,18 @@
+import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared/question-context-edit';
+import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
+import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
 import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
+import type {MaterialTaskAction,MaterialQueueView} from '../shared/material-parse-task';
+import type {MaterialPreviewQuery,MaterialPreviewCancel,MaterialPreviewResult} from '../shared/material-page-preview';
+import type {LayoutQuery,LayoutCancel,MaterialLayoutResult} from '../shared/material-layout';
 import { contextBridge, ipcRenderer } from 'electron';
 import type {MistakeFactsInput,MistakeFactsResult} from '../shared/mistake-facts';
+import type {MistakeSimilarInput,MistakeSimilarResult} from '../shared/mistake-similar';
 import type {XiaozhiProviderBalance} from '../shared/xiaozhi-settings';
 import type {LearningHistoryInput,LearningHistoryPage,LearningReviewInput,LearningReviewDecision,LearningReviewResult,LearningReviewSummary,LearningReviewView} from '../shared/learning-review';
+import type {QuestionCollectionInput,QuestionCollectionDecision,QuestionCollectionResult,QuestionCollectionView} from '../shared/question-collection';
 import type {QuestionReviewInput,QuestionReviewDecision,QuestionReviewResult,QuestionReviewSummary,QuestionReviewView} from '../shared/question-review';
+import type {PaperGenerationQuery,PaperGenerationContext,PaperCreateInput,PaperReviewInput,PaperDecision,PaperCancelInput,PaperResult,PaperSummary,PaperView} from '../shared/paper-blueprint';
 import type {PracticeReviewInput,PracticeReviewDecision,PracticeReviewResult,PracticeReviewSummary,PracticeReviewView,PracticeSourceInput} from '../shared/practice-review';
 import type {StudentTrainingInput,StudentTrainingSource,StudentTrainingResultInput,StudentTrainingView,StudentTrainingEvidence,StudentTrainingReceipt} from '../shared/student-training';
 import type {GoalMutation,GoalResult} from '../shared/xiaozhi-goal';
@@ -160,6 +169,7 @@ const api = {
   stopXiaozhi: (id: string) => ipcRenderer.invoke('xiaozhi:stop', id) as Promise<{ ok: boolean }>,
   queryXiaozhiBalance:()=>ipcRenderer.invoke('xiaozhi:provider-balance') as Promise<XiaozhiSettingsResult<XiaozhiProviderBalance>>,
   selectXiaozhiWorkspace: (id: string) => ipcRenderer.invoke('xiaozhi:workspace', id) as Promise<XiaozhiActionResult>,
+  selectPaperOutput:(input:import('../shared/paper-export').PaperOutputInput)=>ipcRenderer.invoke('xiaozhi:paper-output',input) as Promise<XiaozhiActionResult>,
   chooseXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-choose',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>,
   listXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-list',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachment[]>>,
   removeXiaozhiAttachment:(input:XiaozhiAttachmentSelectedInput)=>ipcRenderer.invoke('xiaozhi:attachment-remove',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachment>>,
@@ -173,7 +183,23 @@ const api = {
   previewXiaozhiFile: (input:XiaozhiPreviewInput) => ipcRenderer.invoke('xiaozhi:files-preview',input) as Promise<XiaozhiFileResult<XiaozhiFilePreview>>,
   cancelXiaozhiFile: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:files-cancel',input) as Promise<{ok:boolean}>,
   reviewXiaozhiLearning:(input:LearningReviewInput)=>ipcRenderer.invoke('xiaozhi:learning-review',input) as Promise<LearningReviewResult<LearningReviewView>>,
+  completeOriginalQuestionContext:(input:QuestionContextEditInput)=>ipcRenderer.invoke('questions:complete-context',input) as Promise<QuestionContextEditResult>,
+  reviewOriginalQuestion:(input:OriginalQuestionInput)=>ipcRenderer.invoke('xiaozhi:original-review',input) as Promise<OriginalQuestionResult<OriginalQuestionView>>,
+  reviewOriginalMultiQuestion:(input:OriginalMultiInput)=>ipcRenderer.invoke('xiaozhi:original-multi-review',input) as Promise<OriginalMultiResult<OriginalMultiView>>,
+  decideOriginalMultiQuestion:(input:OriginalMultiDecision)=>ipcRenderer.invoke('xiaozhi:original-multi-decide',input) as Promise<OriginalMultiResult<QuestionReviewSummary>>,
+  reviseOriginalMultiQuestion:(input:OriginalMultiRevise)=>ipcRenderer.invoke('xiaozhi:original-multi-revise',input) as Promise<OriginalMultiResult<OriginalMultiView>>,
+  getOriginalQuestionGallery:(input:OriginalGalleryInput)=>ipcRenderer.invoke('questions:original-gallery',input) as Promise<OriginalMultiResult<OriginalGalleryImage[]>>,
+  decideOriginalQuestion:(input:OriginalQuestionDecision)=>ipcRenderer.invoke('xiaozhi:original-decide',input) as Promise<OriginalQuestionResult<QuestionReviewSummary>>,
+  getOriginalQuestionImage:(input:QuestionImageInput)=>ipcRenderer.invoke('questions:original-image',input) as Promise<OriginalQuestionResult<string>>,
+  reviewQuestionCollection:(input:QuestionCollectionInput)=>ipcRenderer.invoke('xiaozhi:question-collection-review',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
+  decideQuestionCollection:(input:QuestionCollectionDecision)=>ipcRenderer.invoke('xiaozhi:question-collection-decide',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
+  listPaperGenerationContexts:(input:PaperGenerationQuery)=>ipcRenderer.invoke('education:paper-generation-contexts',input) as Promise<PaperResult<PaperGenerationContext[]>>,
+  listPapers:()=>ipcRenderer.invoke('education:paper-list') as Promise<PaperResult<PaperSummary[]>>,
+  createPaper:(input:PaperCreateInput)=>ipcRenderer.invoke('education:paper-create',input) as Promise<PaperResult<PaperView>>,
+  reviewPaper:(input:PaperReviewInput)=>ipcRenderer.invoke('education:paper-review',input) as Promise<PaperResult<PaperView>>,
+  decidePaper:(input:PaperDecision)=>ipcRenderer.invoke('education:paper-decide',input) as Promise<PaperResult<PaperView>>,
+  cancelPaper:(input:PaperCancelInput)=>ipcRenderer.invoke('education:paper-cancel',input) as Promise<PaperResult<null>>,
   reviewXiaozhiPractice:(input:PracticeReviewInput)=>ipcRenderer.invoke('xiaozhi:practice-review',input) as Promise<PracticeReviewResult<PracticeReviewView>>,
   decideXiaozhiPractice:(input:PracticeReviewDecision)=>ipcRenderer.invoke('xiaozhi:practice-decide',input) as Promise<PracticeReviewResult<PracticeReviewSummary>>,
   readPracticeSource:(input:PracticeSourceInput)=>ipcRenderer.invoke('education:practice-source',input) as Promise<PracticeReviewResult<PracticeReviewView>>,
@@ -211,10 +237,18 @@ const api = {
   saveDeepSeekSettings: (input: DeepSeekSettingsInput) => ipcRenderer.invoke('settings:saveDeepSeek', input) as Promise<DeepSeekSettings>,
   listMaterials: (input:MaterialQuery) => ipcRenderer.invoke('materials:list',input) as Promise<MaterialPage>,
   getMaterialJob: () => ipcRenderer.invoke('materials:job') as Promise<MaterialJob>,
+  getMaterialQueue: (resourceId?:string) => ipcRenderer.invoke('materials:queue',resourceId) as Promise<MaterialQueueView>,
+  controlMaterialTask: (input:MaterialTaskAction) => ipcRenderer.invoke('materials:queue-action',input) as Promise<MaterialQueueView>,
+  importMaterialsBackground: () => ipcRenderer.invoke('materials:import-background') as Promise<KnowledgeImportResult>,
+  importMaterialsFolder: () => ipcRenderer.invoke('materials:import-folder') as Promise<import('../shared/materials').MaterialFolderResult>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialSource: (input:MaterialSource) => ipcRenderer.invoke('materials:source',input) as Promise<MaterialSourceView>,
+  getMaterialPagePreview:(input:MaterialPreviewQuery)=>ipcRenderer.invoke('materials:page-preview',input) as Promise<MaterialPreviewResult>,
+  getMaterialPageLayout:(input:LayoutQuery)=>ipcRenderer.invoke('materials:page-layout',input) as Promise<MaterialLayoutResult>,
+  cancelMaterialPageLayout:(input:LayoutCancel)=>ipcRenderer.invoke('materials:layout-cancel',input) as Promise<{schemaVersion:'xiaozhi.material-layout.v1';stopped:boolean}>,
+  cancelMaterialPagePreview:(input:MaterialPreviewCancel)=>ipcRenderer.invoke('materials:page-cancel',input) as Promise<{schemaVersion:'xiaozhi.material-page-preview.v1';stopped:boolean}>,
   createStudentConversation: (input:import('../shared/student-context').StudentConversationInput) => ipcRenderer.invoke('students:createConversation',input) as Promise<import('../shared/contracts').AiConversationDetail>,
-  getQuestionContextSource:(input:import('../shared/question-context').QuestionContextSource)=>ipcRenderer.invoke('questions:context-source',input) as Promise<{ok:true;value:import('../shared/question-context').QuestionContextView}|{ok:false;error:'invalid_input'|'permission_denied'|'source_changed'|'unavailable'}>,
+  getQuestionContextSource:(input:import('../shared/question-context').QuestionContextSource)=>ipcRenderer.invoke('questions:context-source',input) as Promise<import('../shared/question-context').QuestionContextResult>,
   getStudentContextSource: (input:import('../shared/student-context').StudentContextSource) => ipcRenderer.invoke('students:contextSource',input) as Promise<import('../shared/student-context').StudentContextSourceView>,
   retryMaterial: (resourceId:string) => ipcRenderer.invoke('materials:retry',{schemaVersion:'xiaozhi.materials.v1',resourceId}) as Promise<MaterialRetry>,
   cancelMaterialImport: () => ipcRenderer.invoke('materials:cancel') as Promise<{schemaVersion:'xiaozhi.materials.v1';stopped:boolean}>,
@@ -285,6 +319,8 @@ const api = {
   correctMistakeOcr:(input:MistakeOcrCorrection)=>ipcRenderer.invoke('mistakeOcr:correct',input) as Promise<MistakeOcrResult>,
   cancelMistakeOcr:(input:MistakeOcrInput)=>ipcRenderer.invoke('mistakeOcr:cancel',input) as Promise<{ok:boolean}>,
   confirmMistakeFacts:(input:MistakeFactsInput)=>ipcRenderer.invoke('mistakeFacts:confirm',input) as Promise<MistakeFactsResult>,
+  findMistakeSimilar:(input:MistakeSimilarInput)=>ipcRenderer.invoke('mistakeSimilar:find',input) as Promise<MistakeSimilarResult>,
+  cancelMistakeSimilar:(input:MistakeSimilarInput)=>ipcRenderer.invoke('mistakeSimilar:cancel',input) as Promise<{ok:boolean}>,
   updateMistakeImageCorrection: (id: string, input: MistakeImageCorrectionInput) =>
     ipcRenderer.invoke('mistakeImages:updateCorrection', id, input) as Promise<MistakeImageAnalysis>,
   listMistakeImageAnalyses: (studentId: string) =>

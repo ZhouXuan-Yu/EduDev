@@ -1,7 +1,10 @@
-import {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,HeadingLevel,WidthType,AlignmentType} from 'docx';
+import {isMathPaperOfficeSchema} from '../../shared/paper-export';
+import type {OfficeMathImage} from './office-pdf-renderer';
+import {Document,Packer,Paragraph,TextRun,ImageRun,Table,TableRow,TableCell,HeadingLevel,WidthType,AlignmentType} from 'docx';
 import ExcelJS from 'exceljs';import PptxGenJS from 'pptxgenjs';
 import {wrapTextWithAnsi} from '@earendil-works/pi-tui/dist/utils.js';
 import {validOfficeDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft,type OfficeOutputFormat} from '../../shared/xiaozhi-office-draft';
+import {officeImageSnapshot,officeFigureSize} from './office-images';
 const check=(signal?:AbortSignal)=>{if(signal?.aborted)throw new Error('cancelled');};
 /** Pi chooses Unicode/grapheme wrap boundaries; retain spaces that terminal wrapping trims. */
 function officeLines(text:string,width:number):string[]{
@@ -14,12 +17,15 @@ function officeLines(text:string,width:number):string[]{
   });
  });
 }
-async function docx(draft:OfficeDraft){
+async function docx(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>,mathImages:ReadonlyMap<string,OfficeMathImage>=new Map()){
  const children:(Paragraph|Table)[]=[new Paragraph({heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,children:[new TextRun(draft.title)]})];
- for(const section of draft.sections){
+ for(const [sectionIndex,section] of draft.sections.entries()){
   children.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun(section.heading)]}));
-  for(const value of section.paragraphs)children.push(new Paragraph({children:value.split('\n').flatMap((text,index)=>index?[new TextRun({break:1}),new TextRun(text)]:[new TextRun(text)])}));
-  if(section.table)children.push(new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:[section.table.columns,...section.table.rows].map((row,index)=>new TableRow({tableHeader:index===0,children:row.map(value=>new TableCell({children:[new Paragraph({text:String(value)})]}))}))}));
+  for(let i=0;i<=section.paragraphs.length;i++){
+   for(const f of section.figures?.filter(f=>f.afterParagraph===i)||[])children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:images.get(f.assetId)!,transformation:officeFigureSize(f),altText:{title:'原题'+f.role,description:'教师确认的本地原图；公式非可编辑对象',name:f.blockId}})]}));
+   if(i<section.paragraphs.length){const math=mathImages.get(`${sectionIndex}:${i}`);children.push(math?new Paragraph({children:[new ImageRun({type:'png',data:math.bytes,transformation:{width:math.width,height:math.height},altText:{title:'排版公式（非可编辑）',description:section.paragraphs[i],name:`math-${sectionIndex}-${i}`}})]}):new Paragraph({children:section.paragraphs[i].split('\n').flatMap((text,index)=>index?[new TextRun({break:1}),new TextRun(text)]:[new TextRun(text)])}));}
+  }
+  if(section.table)children.push(new Table({width:{size:100,type:WidthType.PERCENTAGE},rows:[section.table.columns,...section.table.rows].map((row,index)=>new TableRow({tableHeader:index===0,children:row.map((value,column)=>{const math=mathImages.get(`${sectionIndex}:table:${index}:${column}`);return new TableCell({children:[math?new Paragraph({children:[new ImageRun({type:'png',data:math.bytes,transformation:{width:math.width,height:math.height},altText:{title:'表格公式（非可编辑）',description:String(value),name:`table-${sectionIndex}-${index}-${column}`}})]}):new Paragraph({text:String(value)})]});})}))}));
  }
  return Packer.toBuffer(new Document({creator:'小智',title:draft.title,styles:{default:{document:{run:{font:'SimSun',size:22},paragraph:{spacing:{after:120}}}}},
   sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1134,bottom:1134,left:1134,right:1134}}},children}]}));
@@ -69,12 +75,15 @@ async function pptx(draft:OfficeDraft){
  return Buffer.from(await presentation.write({outputType:'nodebuffer',compression:true}) as Buffer);
 }
 /** No file-authority/tool API. The host receives bytes for a later reviewed, versioned commit. */
-export async function generateOfficeDocument(format:OfficeOutputFormat,draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number}):Promise<Buffer>{
+export async function generateOfficeDocument(format:OfficeOutputFormat,draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>}):Promise<Buffer>{
  if(!officeOutputFormat(format)||!validOfficeDraft(draft))throw new Error('invalid_input');check(options.signal);
  // Snapshot the strict data before an async library can observe caller mutations.
  const input=JSON.parse(JSON.stringify(draft)) as OfficeDraft;
+ const images=officeImageSnapshot(input,options.images);
+ if(images.size&&!['docx','pdf'].includes(format))throw new Error('invalid_input');
  try{
-  const bytes=format==='pdf'?await (await import('./office-pdf-renderer')).renderOfficePdf(input,options):format==='docx'?await docx(input):format==='xlsx'?await xlsx(input):await pptx(input);
+  const mathImages=format==='docx'&&isMathPaperOfficeSchema(input.schemaVersion)?await(await import('./office-pdf-renderer')).renderOfficeMathImages(input,options):new Map<string,OfficeMathImage>();
+  const bytes=format==='pdf'?await (await import('./office-pdf-renderer')).renderOfficePdf(input,{...options,images}):format==='docx'?await docx(input,images,mathImages):format==='xlsx'?await xlsx(input):await pptx(input);
   check(options.signal);if(!bytes.length||bytes.length>OFFICE_OUTPUT_MAX_BYTES)throw new Error('too_large');return bytes;
  }catch(error){const code=error instanceof Error?error.message:'';throw Object.assign(new Error(['cancelled','timeout','too_large','configuration','cleanup_failed'].includes(code)?code:'generation_failed'),{cause:error});}
 }

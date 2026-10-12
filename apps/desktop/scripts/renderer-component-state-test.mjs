@@ -10,6 +10,30 @@ const server = await createServer({
 });
 
 try {
+  const {QuestionContextEditor}=await server.ssrLoadModule('/src/renderer/components/QuestionContextEditor.tsx');
+  assert.equal(renderToStaticMarkup(React.createElement(QuestionContextEditor,{question:{stem:"无原图"},onSaved:async()=>{}})),'');
+
+  const {QuestionOriginalGallery}=await server.ssrLoadModule('/src/renderer/components/QuestionOriginalGallery.tsx');
+  const multiQuestion={id:'question-local',title:'原题',stem:'<script>条件</script>',answer:'',analysis:'',tags:[],document:{schemaVersion:'xiaozhi.question-document.v1',source:{resourceId:'resource_00000000-0000-0000-0000-000000000001',resourceVersion:'a'.repeat(64),parserVersion:'teacher-transcription.v2+fixture',ocrVersion:''},blocks:[{id:'transcription',kind:'text',text:'条件',anchors:[{page:1,box:[0,0,1,1]}]}],answer:{origin:'missing',text:'',anchors:[]},analysis:{origin:'missing',text:'',anchors:[]}}};
+  const contextEntry=renderToStaticMarkup(React.createElement(QuestionContextEditor,{question:multiQuestion,onSaved:async()=>{}}));assert(contextEntry.includes('补全题面供小智读取'));assert(!contextEntry.includes('question-context-save'));assert(!contextEntry.includes('<script>'));
+  const multiMissing=renderToStaticMarkup(React.createElement(QuestionOriginalGallery,{question:multiQuestion}));assert(multiMissing.includes('查看全部原图'));assert(multiMissing.includes('答案未知'));assert(!multiMissing.includes('<script>'));assert(!multiMissing.includes('data:image'));
+  const multiSource=renderToStaticMarkup(React.createElement(QuestionOriginalGallery,{question:{...multiQuestion,document:{...multiQuestion.document,answer:{origin:'source',text:'3',anchors:[{page:2,box:[0,0,1,1]}]}}}}));assert(multiSource.includes('教师核对的原件答案区域'));assert(multiSource.includes('未证明数学正确'));assert(!multiSource.includes('答案未知'));
+  const {QuestionProjectionFields}=await server.ssrLoadModule('/src/renderer/components/office/QuestionProjectionFields.tsx');
+  const {emptyQuestionProjection,resetQuestionProjectionCoverage,validQuestionProjection}=await server.ssrLoadModule('/src/shared/question-projection.ts');
+  const pendingProjection=emptyQuestionProjection('<script>待核对</script>');
+  const pendingFields=renderToStaticMarkup(React.createElement(QuestionProjectionFields,{value:pendingProjection,disabled:false,onChange:noop=>noop}));
+  assert(pendingFields.includes('已核对 0 / 6 项'));assert(pendingFields.includes('图形关系与标注'));assert(pendingFields.includes('尚未核对'));assert(pendingFields.includes('不把它当作标准答案'));assert(!pendingFields.includes('<script>'));
+  const completeProjection=Object.fromEntries(Object.keys(pendingProjection).map(key=>[key,{state:key==='statement'?'provided':'not_applicable',text:key==='statement'?'x + 2 = 5':''}]));
+  const completeFields=renderToStaticMarkup(React.createElement(QuestionProjectionFields,{value:completeProjection,disabled:true,onChange:noop=>noop}));
+  assert(completeFields.includes('已核对 6 / 6 项'));const resetProjection=resetQuestionProjectionCoverage(completeProjection);assert.equal(resetProjection.statement.text,completeProjection.statement.text);assert(!validQuestionProjection(resetProjection,true));assert(validQuestionProjection(completeProjection,true));
+  const originalMultiCases=4;
+  const {MaterialLayoutLines,MaterialLayoutPreview}=await server.ssrLoadModule('/src/renderer/components/product/MaterialLayoutPreview.tsx');
+  const layoutFixture={lines:[{id:'line-1',text:'<script>待校正</script>',quad:[[0,0],[1,0],[1,1],[0,1]],normalizedQuad:[[0,0],[1,0],[1,1],[0,1]],score:.99,kind:'text',needsReview:true}]};
+  const layoutLines=renderToStaticMarkup(React.createElement(MaterialLayoutLines,{layout:layoutFixture,selected:['line-1'],toggle:()=>{}}));
+  assert(!layoutLines.includes('<script>'));assert(layoutLines.includes('待校正'));assert(layoutLines.includes('materials-layout-line-1'));assert(layoutLines.includes('checkbox'));assert(!layoutLines.includes('99%'));
+  const layoutInitial=renderToStaticMarkup(React.createElement(MaterialLayoutPreview,{resource:{title:'源PDF',id:'resource-local',contentHash:'a'.repeat(64)},preview:{page:1,width:1,height:1,dataUrl:'data:image/png;base64,owned'},zoom:false,busy:true}));
+  assert(layoutInitial.includes('识别文字区域'));assert(/materials-layout-start[^>]*disabled/.test(layoutInitial));assert(layoutInitial.includes('文字框不代表完整题目'));assert(!layoutInitial.includes('schemaVersion'));
+  const materialLayoutCases=2;
   const {MistakeFactsSummary}=await server.ssrLoadModule('/src/renderer/components/students/StudentMistakeFacts.tsx');
   const {mistakePracticePrompt}=await server.ssrLoadModule('/src/shared/mistake-facts.ts');
   const cyclePrompt=mistakePracticePrompt('已脱敏的照片题名');assert(cyclePrompt.includes('已脱敏的照片题名'));assert(cyclePrompt.includes('5道'));assert(cyclePrompt.includes('完整14天'));assert(cyclePrompt.includes('教师最终保存'));assert(cyclePrompt.includes('不编造作答'));assert(!/education_|Schema|MCP|AgentLoop/.test(cyclePrompt));
@@ -47,8 +71,18 @@ try {
   const questionReviewBase={sessionId:'aisession_local',onRefresh:async()=>{},review:{id:'xiquestion_local',runId:'airun_local',callId:'call_local',state:'pending',count:2}};
   const pendingQuestionMarkup=renderToStaticMarkup(React.createElement(PiQuestionReview,questionReviewBase));
   assert.match(pendingQuestionMarkup,/正在读取待核对题目/);assert.match(pendingQuestionMarkup,/question-review-confirm[^>]*disabled/);
+  const originalQuestionMarkup=renderToStaticMarkup(React.createElement(PiQuestionReview,{...questionReviewBase,review:{...questionReviewBase.review,generationKind:'ai_original'}}));assert(originalQuestionMarkup.includes('AI原创 · 没有教材原题来源'));assert(!originalQuestionMarkup.includes('根据实读原题起草'));assert(originalQuestionMarkup.includes('question-review-confirm'));
   const rejectedQuestionMarkup=renderToStaticMarkup(React.createElement(PiQuestionReview,{...questionReviewBase,review:{...questionReviewBase.review,state:'rejected'}}));assert.match(rejectedQuestionMarkup,/已拒绝，未保存/);assert(!rejectedQuestionMarkup.includes('data-testid="question-review-confirm"'));
-  const questionReviewCases=4;
+  const {QuestionQualityReview}=await server.ssrLoadModule('/src/renderer/components/office/QuestionQualityReview.tsx');
+  const qualityBase={pending:true,busy:false,checked:false,reviewed:false,historyCount:0,onCheck:()=>{},onReviewed:()=>{}};
+  const qualityInitial=renderToStaticMarkup(React.createElement(QuestionQualityReview,qualityBase));assert(qualityInitial.includes('自动数学核验尚未执行'));assert(/question-quality-reviewed[^>]*disabled/.test(qualityInitial));
+  const quality={schemaVersion:'xiaozhi.education.question-quality.v1',revisionHash:'a'.repeat(64),state:'blocked',answerVerification:'not_run',duplicateScope:'batch_and_read_parents',items:[{state:'blocked',issues:['duplicate_batch']}]};
+  const qualityBlocked=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,quality,checked:true,historyCount:1}));assert(qualityBlocked.includes('候选仍被隔离'));assert(qualityBlocked.includes('完全重复'));assert(/question-quality-reviewed[^>]*disabled/.test(qualityBlocked));
+  const qualityManual=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,checked:true,quality:{...quality,state:'manual_review',items:[{state:'manual_review',issues:[]}]}}));assert(!/question-quality-reviewed[^>]*disabled/.test(qualityManual));assert(qualityManual.includes('需要人工复核'));
+  const qualityPrechecked=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,prechecked:true,quality:{...quality,state:'manual_review',items:[{state:'manual_review',issues:[],math:{state:'matched',conditionsVerified:false,calculation:'5 + 12 = 17',engine:'sympy-1.14.0'}}]}}));assert(qualityPrechecked.includes('本地计算只检查'));assert(qualityPrechecked.includes('这是小智提交时的检查结果'));assert(/question-quality-reviewed[^>]*disabled/.test(qualityPrechecked));
+  const qualityLegacy=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,pending:false,legacy:true}));assert(qualityLegacy.includes('历史版本未记录质量检查'));assert(!qualityLegacy.includes('question-quality-check'));
+  for(const [state,label]of [['matched','提交的计算符合'],['mismatch','禁止保存'],['basis_changed','旧计算未使用'],['unsupported','超出当前计算范围']]){const blocked=state==='mismatch',markup=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,checked:true,quality:{...quality,schemaVersion:'xiaozhi.education.question-quality.v2',state:blocked?'blocked':'manual_review',items:[{state:blocked?'blocked':'manual_review',issues:blocked?['math_mismatch']:[],math:{state,conditionsVerified:false,calculation:'(5 + 12) = 13',...(state==='basis_changed'?{}:{engine:'sympy-1.14.0'})}}]}}));assert(markup.includes(label));assert(markup.includes('对应关系'));assert(!markup.includes('整题正确</'));}
+  const questionReviewCases=14;
 
   const {PiTrainingPlan}=await server.ssrLoadModule('/src/renderer/components/office/PiTrainingPlan.tsx');
   const training={schemaVersion:'xiaozhi.education.training-plan.v1',title:'教师两周计划',startDate:'2026-10-06',topics:[{id:'kp_'+'a'.repeat(64),name:'等式变形',subject:'数学',type:'concept'}],days:Array.from({length:14},(_,i)=>({day:i+1,pointId:i===6?null:'kp_'+'a'.repeat(64),activity:i===6?'rest':'review',count:i===6?0:3,difficulty:'warmup',notes:'核对适用前提'}))};
@@ -59,7 +93,7 @@ try {
   const trainingPlanCases=4;
   const {QuestionContextContent}=await server.ssrLoadModule('/src/renderer/components/office/PiQuestionSource.tsx');
   const questionMarkup=renderToStaticMarkup(React.createElement(QuestionContextContent,{view:{question:{subject:'数学',grade:'初二',knowledgePoint:'勾股',questionType:'计算',sourceTitle:'教师题目',sourceKind:'local_bank',stem:'<script>bad</script>',answer:'',analysis:''}}}));
-  assert.match(questionMarkup,/尚未保存答案/);assert.match(questionMarkup,/尚未保存解析/);assert(!questionMarkup.includes('<script>'));assert.match(questionMarkup,/仍需教师核对/);
+  assert.match(questionMarkup,/暂无答案/);assert.match(questionMarkup,/暂无解析/);assert(!questionMarkup.includes('<script>'));assert.match(questionMarkup,/仍需教师核对/);
   const questionSourceCases=4;
   const {StudentTrainingState}=await server.ssrLoadModule('/src/renderer/components/students/StudentTrainingWorkspace.tsx');
   const trainingStudent={id:'student_local',displayName:'训练验收',status:'active'},renderTraining=props=>renderToStaticMarkup(React.createElement(StudentTrainingState,{student:trainingStudent,loading:false,error:'',onRefresh:()=>{},onContinue:()=>{},...props}));
@@ -69,6 +103,31 @@ try {
   const staleTraining=renderTraining({value:{...trainingView,plan:{...trainingView.plan,sourceCurrent:false}}});assert.match(staleTraining,/这份安排是历史计划/);
   const trainingWorkspaceCases=5;
   const { QuestionNotebookWorkspace } = await server.ssrLoadModule('/src/renderer/components/QuestionNotebookWorkspace.tsx');
+  const {QuestionAnswerEvidence}=await server.ssrLoadModule('/src/renderer/components/QuestionAnswerEvidence.tsx');
+  const {validQuestionDocument}=await server.ssrLoadModule('/src/shared/question-document.ts');
+  const evidenceAnchors=[{page:1,box:[0,0,1,1]}];
+  const evidenceDocument={schemaVersion:'xiaozhi.question-document.v1',source:{resourceId:'resource_11111111-1111-1111-1111-111111111111',resourceVersion:'a'.repeat(64),parserVersion:'ssr-fixture.v1',ocrVersion:''},blocks:[{id:'figure',kind:'image',assetId:'asset_22222222-2222-2222-2222-222222222222',sha256:'b'.repeat(64),mime:'image/png',width:100,height:100,anchors:evidenceAnchors}],answer:{origin:'source',text:'x = 3',anchors:evidenceAnchors},analysis:{origin:'teacher',text:'两边同减2',anchors:[]}};
+  assert(validQuestionDocument(evidenceDocument));
+  const evidenceQuestion={id:'question_source_test',stem:'x + 2 = 5',answer:'x = 3',analysis:'两边同减2',document:evidenceDocument};
+  const renderAnswer=q=>renderToStaticMarkup(React.createElement(QuestionAnswerEvidence,{question:{...evidenceQuestion,...q}}));
+  const sourceAnswer=renderAnswer({});
+  assert.match(sourceAnswer,/原资料提供/);assert.match(sourceAnswer,/教师补充/);assert.match(sourceAnswer,/尚未独立核对正确性/);assert.doesNotMatch(sourceAnswer,/标准答案|已验算|已证明正确/);
+  const generator={provider:'synthetic',model:'ssr',runId:'ssr-fixture'};
+  const generatedDocument={...evidenceDocument,answer:{origin:'ai_generated',text:'<script>untrusted</script>',anchors:[],generator},analysis:{origin:'ai_generated',text:evidenceQuestion.analysis,anchors:[],generator}};assert(validQuestionDocument(generatedDocument));
+  const generatedAnswer=renderAnswer({document:generatedDocument,answer:'<script>untrusted</script>'});
+  assert.match(generatedAnswer,/小智生成/);assert.match(generatedAnswer,/&lt;script&gt;/);assert.doesNotMatch(generatedAnswer,/<script>|标准答案|已验算/);
+  const missingDocument={...evidenceDocument,answer:{origin:'missing',text:'',anchors:[]},analysis:{origin:'missing',text:'',anchors:[]}};assert(validQuestionDocument(missingDocument));
+  const missingAnswer=renderAnswer({document:missingDocument,answer:'',analysis:''});
+  assert.match(missingAnswer,/尚未提供/);assert.match(missingAnswer,/暂无答案/);assert.doesNotMatch(missingAnswer,/原资料提供|教师补充<\/p>/);
+  const historicalAnswer=renderAnswer({document:undefined});
+  assert.match(historicalAnswer,/历史记录，来源待确认/);assert.doesNotMatch(historicalAnswer,/原资料提供|小智生成/);
+  const sourceModal=renderToStaticMarkup(React.createElement(QuestionContextContent,{view:{question:evidenceQuestion}}));
+  assert.match(sourceModal,/原资料提供/);assert.match(sourceModal,/教师补充/);assert.match(sourceModal,/尚未独立核对正确性/);assert.doesNotMatch(sourceModal,/标准答案/);
+  for(const field of ['answer','analysis']){const conflict=renderAnswer({[field]:'保密冲突文本'});assert.match(conflict,/question-fact-conflict/);assert.match(conflict,/role="alert"/);assert.doesNotMatch(conflict,/保密冲突文本|原资料提供|教师补充|x = 3/);}
+  const completeDocument={...evidenceDocument,schemaVersion:'xiaozhi.question-document.v2',context:{schemaVersion:'xiaozhi.question-projection.v1',sourceBlockIds:['figure'],projection:Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(key=>[key,{state:key==='statement'?'provided':'not_applicable',text:key==='statement'?evidenceQuestion.stem:''}]))}};assert(validQuestionDocument(completeDocument));
+  const conflictModal=renderToStaticMarkup(React.createElement(QuestionContextContent,{view:{question:{...evidenceQuestion,stem:'冲突题干',document:completeDocument}}}));
+  assert.match(conflictModal,/question-fact-conflict/);assert.doesNotMatch(conflictModal,/冲突题干|x = 3|两边同减2|原资料提供/);
+  const answerEvidenceCases=9;
   const { TeacherNotebookWorkspace } = await server.ssrLoadModule('/src/renderer/components/TeacherNotebookWorkspace.tsx');
   const { AiObservabilityWorkspace } = await server.ssrLoadModule('/src/renderer/components/AiObservabilityWorkspace.tsx');
   const { TeachingBookWorkspace } = await server.ssrLoadModule('/src/renderer/components/TeachingBookWorkspace.tsx');
@@ -107,7 +166,17 @@ try {
   assert.equal(materialReadiness({parseStatus:'partial',chunkCount:3}).label,'部分内容可用');
   assert.equal(materialReadiness({parseStatus:'ready',chunkCount:0}).tone,'waiting');
   assert.equal(materialReadiness({parseStatus:'parsed',chunkCount:3}).tone,'ready');
-  const materialDirectoryCases=8; const materialContractCases=6;
+  const {MaterialOcrNotice,MaterialExcerpt,MaterialBodyPanel}=await server.ssrLoadModule('/src/renderer/components/product/MaterialBodyPanel.tsx');
+  const ocrNotice=renderToStaticMarkup(React.createElement(MaterialOcrNotice));assert.match(ocrNotice,/尚未由教师核对/);assert.match(ocrNotice,/公式、题图和手写批注/);assert.match(ocrNotice,/不代表题目或答案已确认/);
+  const excerpt={id:'chunk_sample',heading:'正文',contentMd:'教师可读正文',chunkIndex:0,pageNumber:6};
+  assert.match(renderToStaticMarkup(React.createElement(MaterialExcerpt,{chunk:excerpt})),/原件第 6 页/);
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(MaterialExcerpt,{chunk:{...excerpt,pageNumber:null}})),/原件第/);
+  const pendingResource={id:'resource_00000000-0000-0000-0000-000000000001',title:'恢复中的资料',originalFileName:'恢复中的资料.pdf',resourceType:'pdf',contentHash:'a'.repeat(64),parseEngine:'parser:cancelled',parseStatus:'needs_parser',chunkCount:0,createdAt:'2026-10-09T00:00:00Z'};
+  const pendingPanel=status=>renderToStaticMarkup(React.createElement(MaterialBodyPanel,{resource:pendingResource,busy:false,revision:0,locate:()=>{},retry:()=>{},taskStatus:status}));
+  const runningPanel=pendingPanel('running');assert.match(runningPanel,/正在本机后台收录/);assert.doesNotMatch(runningPanel,/已停止收录|materials-retry/);
+  const queuedPanel=pendingPanel('pending');assert.match(queuedPanel,/等待本机后台收录/);assert.doesNotMatch(queuedPanel,/已停止收录|materials-retry/);
+  const cancelledPanel=pendingPanel('cancelled');assert.match(cancelledPanel,/已停止收录/);assert.match(cancelledPanel,/materials-retry/);
+  const materialDirectoryCases=14; const materialContractCases=6;
   const { OfficeMarkdown } = await server.ssrLoadModule('/src/renderer/components/office/OfficeMarkdown.tsx');
   const markdown = (text, isStreaming = false) => renderToStaticMarkup(React.createElement(OfficeMarkdown, { animated: false, isStreaming }, text));
   const inlineMarkdown = markdown('课堂 `37` 分钟。');
@@ -204,7 +273,15 @@ try {
   assert.match(loading, /data-testid="question-notebook-create-panel"/);
   assert.match(loading, /data-testid="question-notebook-create-question"/);
   assert.match(loading, /data-testid="question-notebook-category-admin"/);
+  for(const key of ['grade','subject','questionType','knowledgePoint','difficulty','sourceKind'])assert.match(loading,new RegExp('data-testid="question-notebook-filter-'+key+'"'));
+  assert.match(loading,/<button[^>]*disabled[^>]*data-testid="question-notebook-next"/);
+  assert.match(loading,/本地关键词检索/);
+  assert.match(loading,/data-testid="question-notebook-duplicate-scope"/);
+  assert.match(loading,/只比较当前页/);
+  assert.match(loading,/不表示答案已核验/);
+
   assert.match(loading, /data-testid="question-notebook-deleted-categories"/);
+  assert.doesNotMatch(loading.replace(/<[^>]+>/g,''),/canonical|generated|SQLite|软删除|版本锁|readback/);
 
   const teacherNotebookLoading = renderToStaticMarkup(React.createElement(TeacherNotebookWorkspace, { setStatus: noop }));
   assert.match(teacherNotebookLoading, /data-testid="teacher-notebook-workspace"/);
@@ -475,7 +552,28 @@ try {
   assert.equal(validateUsabilityReview(parsedQualityRows[0]), '');
   assert.match(validateUsabilityReview({ ...parsedQualityRows[0], teacherScore: 6 }), /1 到 5/);
 
-  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 84 + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases, total: 84 + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases }, null, 2));
+  const {PaperReviewPanel}=await server.ssrLoadModule('/src/renderer/components/PaperReviewPanel.tsx');
+  const {PaperBlueprintWorkspace}=await server.ssrLoadModule('/src/renderer/components/PaperBlueprintWorkspace.tsx');
+  const paperQuestion={id:'question_00000000-0000-0000-0000-000000000001',subject:'数学',grade:'初二',knowledgePoint:'勾股',questionType:'计算',difficulty:'medium',stem:'<script>求3+2</script>',answer:'5',analysis:'加法计算',sourceKind:'local_bank',sourceTitle:'教师题库',tags:[],createdAt:'2026-10-09',updatedAt:'2026-10-09'};
+  const paperView={id:'xipaper_00000000-0000-0000-0000-000000000001',sessionId:'aisession_00000000-0000-0000-0000-000000000001',runId:'',callId:'',requestId:'00000000-0000-0000-0000-000000000001',revision:1,title:'数学卷',state:'pending',count:1,totalPoints:100,complete:true,answerVerified:false,sourceCurrent:true,blueprint:{title:'数学卷',subject:'数学',grade:'初二',durationMinutes:90,totalPoints:100,mode:'source_only',sections:[{id:'one',label:'计算',questionType:'计算',count:1,points:100}]},selection:{items:[{sectionId:'one',number:1,points:100,question:paperQuestion,source:{schemaVersion:'xiaozhi.education.question-context.v1',questionId:paperQuestion.id,version:'a'.repeat(64)}}],shortages:[],scanned:1,scanComplete:false,excluded:{unsupported:0,missing_answer:0,source_unavailable:0},duplicateRecords:0}};
+  const paperMarkup=v=>renderToStaticMarkup(React.createElement(PaperReviewPanel,{view:v,onChanged:()=>{}}));
+  const paperPending=paperMarkup(paperView);assert(paperPending.includes('paper-confirm'));assert(paperPending.includes('100 分'));assert(paperPending.includes('尚未独立核对正确性'));assert(!paperPending.includes('<script>'));assert(paperPending.includes('未声称扫描全部题库'));
+  const paperShort=paperMarkup({...paperView,complete:false,selection:{...paperView.selection,shortages:[{sectionId:'one',label:'计算',required:2,selected:1,missing:1}]}});assert(paperShort.includes('缺 1 题'));assert(/paper-confirm[^>]*disabled/.test(paperShort));
+  const paperStale=paperMarkup({...paperView,sourceCurrent:false});assert(paperStale.includes('paper-source-changed'));assert(/paper-confirm[^>]*disabled/.test(paperStale));
+  const paperChanged=renderToStaticMarkup(React.createElement(PaperReviewPanel,{view:paperView,onChanged:()=>{},allowConfirm:false}));assert(paperChanged.includes('蓝图已修改'));assert(/paper-confirm[^>]*disabled/.test(paperChanged));
+  const paperConfirmed=paperMarkup({...paperView,state:'confirmed',digest:'a'.repeat(64)});assert(paperConfirmed.includes('已保存整卷快照'));assert(!paperConfirmed.includes('data-testid="paper-confirm"'));
+  const paperInitial=renderToStaticMarkup(React.createElement(PaperBlueprintWorkspace));assert(paperInitial.includes('智能组卷'));assert(paperInitial.includes('100 分 / 目标 100 分'));assert(paperInitial.includes('正在读取'));assert(!paperInitial.includes('schemaVersion'));
+  const {MistakeSimilarResults}=await server.ssrLoadModule('/src/renderer/components/students/MistakeSimilarQuestions.tsx');
+  const related={schemaVersion:'xiaozhi.mistake-similar.v1',receiptVersion:'a'.repeat(64),method:'local_knowledge_keyword_v1',requested:10,scanned:20,scanComplete:true,answerVerified:false,excluded:{unsupported:0,missingAnswer:0,sourceUnavailable:0,rootOrDuplicate:0},items:[{question:paperQuestion,source:paperView.selection.items[0].source,reasons:['同一知识点']}]};
+  const relatedMarkup=value=>renderToStaticMarkup(React.createElement(MistakeSimilarResults,{value}));
+  const relatedOne=relatedMarkup(related);assert(relatedOne.includes('1 / 10'));assert(relatedOne.includes('未自动补题'));assert(relatedOne.includes('同一知识点'));assert(!relatedOne.includes('<script>'));assert(relatedOne.includes('尚未独立核对正确性'));assert(!relatedOne.includes('查看原题图'));
+  const relatedEmpty=relatedMarkup({...related,items:[]});assert(relatedEmpty.includes('暂无可用关联题'));assert(relatedEmpty.includes('0 / 10'));
+  const relatedTen=relatedMarkup({...related,items:Array.from({length:10},(_,i)=>({...related.items[0],question:{...paperQuestion,id:paperQuestion.id.slice(0,-2)+String(i).padStart(2,'0')},source:{...related.items[0].source,questionId:paperQuestion.id.slice(0,-2)+String(i).padStart(2,'0')}}))});assert(relatedTen.includes('10 / 10'));assert(!relatedTen.includes('未自动补题'));assert(relatedTen.includes('语义与答案正确性需要教师核对'));
+  const originalPaper=paperMarkup({...paperView,blueprint:{...paperView.blueprint,mode:'ai_original'},selection:{...paperView.selection,items:paperView.selection.items.map(i=>({...i,question:{...i.question,sourceKind:'generated'},generation:{groupId:'xiquestion_safe',effectDigest:'a'.repeat(64),generationKind:'ai_original'}}))}});assert(originalPaper.includes('AI原创组卷'));assert(originalPaper.includes('无教材原题来源'));assert(originalPaper.includes('AI起草，教师核对保存版本'));assert(!originalPaper.includes('历史记录，来源待确认'));assert(!originalPaper.includes('xiquestion_safe'));
+  const hybridPaper=paperMarkup({...paperView,blueprint:{...paperView.blueprint,mode:'hybrid',sections:paperView.blueprint.sections.map(s=>({...s,generatedCount:0}))}});assert(hybridPaper.includes('混合组卷'));assert(hybridPaper.includes('paper-source-counts'));
+  assert(paperInitial.includes('paper-mode'));assert(paperInitial.includes('AI原创题'));assert(paperInitial.includes('原题与生成题混合'));
+  const paperCases=6+3+4;
+  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases, total: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases, materialLayoutCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases }, null, 2));
 } finally {
   await server.close();
 }

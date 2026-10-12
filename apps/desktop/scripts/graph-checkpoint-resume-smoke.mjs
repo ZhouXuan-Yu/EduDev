@@ -5,6 +5,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { Annotation, END, START, StateGraph } from '@langchain/langgraph';
+import { registerHooks } from 'node:module';
+// This Node test exercises SQLite only. Desktop imports are never invoked here.
+registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const app={};export const net={};export const utilityProcess={};',shortCircuit:true};return next(specifier,context);}});
 
 const dataRoot = mkdtempSync(join(tmpdir(), 'omni-edu-graph-checkpoint-'));
 const bundleDir = mkdtempSync(join(process.cwd(), '.checkpoint-smoke-'));
@@ -49,6 +52,11 @@ try {
     .compile({ checkpointer });
   const config = { configurable: { thread_id: runId }, durability: 'sync' };
   let saver = new SqliteGraphCheckpointer(dbPath);
+  const serialize = saver.serde.dumpsTyped.bind(saver.serde);
+  saver.serde.dumpsTyped = async value => {
+    if (value && typeof value === 'object' && 'channel_values' in value) await new Promise(resolve => setTimeout(resolve, 50));
+    return serialize(value);
+  };
   await assert.rejects(makeGraph(saver, true).invoke({ count: 0 }, config), /planned interruption/);
   const beforeRestart = await saver.getTuple(config);
   assert.equal(beforeRestart?.checkpoint.channel_values.count, 1, 'completed first node must be checkpointed');
@@ -64,7 +72,7 @@ try {
   for await (const item of saver.list(config)) history.push(item);
   assert.ok(history.length >= 3, 'checkpoint history must remain queryable after resume');
   await saver.close();
-  console.log(JSON.stringify({ suite: 'sqlite-graph-checkpoint-resume', passed: true, checkpoints: history.length, firstNodeExecutions: firstCalls, oldDbMigration: true }));
+  console.log(JSON.stringify({ suite: 'sqlite-graph-checkpoint-resume', passed: true, checkpoints: history.length, firstNodeExecutions: firstCalls, oldDbMigration: true, delayedParentSerialization: true }));
 } finally {
   if (realpathSync(dataRoot).startsWith(realpathSync(tmpdir()))) rmSync(dataRoot, { recursive: true, force: true });
   if (realpathSync(bundleDir).startsWith(realpathSync(process.cwd()))) rmSync(bundleDir, { recursive: true, force: true });

@@ -40,6 +40,11 @@ async function launch() {
   report.launches.push(await assertIsolatedPiMain(app, main, profile));
   page = await app.firstWindow(); page.on('pageerror', error => report.rendererErrors.push(String(error)));
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({ timeout: 60000 });
+  await page.waitForFunction(() => document.querySelector('.office-composer-container')?.getAttribute('data-session-id')?.startsWith('aisession_'), null, {timeout:60000});
+}
+async function settleSnapshot() {
+  const hiddenSnapshot = await app.evaluate(({BrowserWindow}) => !BrowserWindow.getAllWindows()[0].isVisible());
+  await settleWorkspaceTransitions(page, {hiddenSnapshot});
 }
 try {
   await launch();
@@ -92,7 +97,7 @@ try {
     await page.emulateMedia({colorScheme:theme});
     await app.evaluate(({BrowserWindow},size) => BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height), {width,height});
     await page.waitForFunction(size => innerWidth===size.width && innerHeight===size.height, {width,height});
-    await settleWorkspaceTransitions(page);
+    await settleSnapshot();
     await page.getByTestId('product-space-content').evaluate(el => { for (let p=el;p;p=p.parentElement) p.scrollTop=0; });
     await page.evaluate(() => document.activeElement?.blur());
     const geometry = await page.evaluate(() => ({ width:innerWidth, scrollWidth:document.documentElement.scrollWidth, titlebarTop:document.querySelector('[data-testid=desktop-titlebar]').getBoundingClientRect().top }));
@@ -113,7 +118,7 @@ try {
     await page.emulateMedia({colorScheme:theme});
     await app.evaluate(({BrowserWindow},size) => BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});
     await page.waitForFunction(size => innerWidth===size.width && innerHeight===size.height,{width,height});
-    await settleWorkspaceTransitions(page);
+    await settleSnapshot();
     const png = `current-${theme}-${width}x${height}.png`; await page.screenshot({path:path.join(output,png)}); report.screenshots.push(png);
   }
   await app.close(); app = undefined; await launch();

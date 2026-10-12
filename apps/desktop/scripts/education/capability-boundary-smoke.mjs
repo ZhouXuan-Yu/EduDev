@@ -17,10 +17,23 @@ const {learningBoundaries}=await import('./learning-boundaries.mjs');
 const {learningReviewBoundaries,learningReviewNativeBoundaries}=await import('./learning-review-boundaries.mjs');
 const {piPackageBoundaries}=await import('./pi-package-boundaries.mjs');
 const {questionContextBoundaries}=await import('./question-context-boundaries.mjs');
+const {questionDocumentBoundaries}=await import('./question-document-boundaries.mjs');
 const {questionDraftBoundaries}=await import('./question-draft-boundaries.mjs');
 const {questionReviewBoundaries}=await import('./question-review-boundaries.mjs');
+const {questionRepairBoundaries}=await import('./question-repair-boundaries.mjs');
+const {questionQualityBoundaries}=await import('./question-quality-boundaries.mjs');
+const {mathCheckBoundaries}=await import('./math-check-boundaries.mjs');
 const {practiceReviewBoundaries}=await import('./practice-review-boundaries.mjs');
+const {paperBoundaries}=await import('./paper-boundaries.mjs');
+const {paperGenerationBoundaries}=await import('./paper-generation-boundaries.mjs');
+const {mistakeSimilarBoundaries}=await import('./mistake-similar-boundaries.mjs');
+const {mistakeSimilarProviderBoundaries}=await import('./mistake-similar-provider-boundaries.mjs');
 const {mistakeOcrBoundaries}=await import('./mistake-ocr-boundaries.mjs');
+const {materialPdfBoundaries}=await import('./material-pdf-boundaries.mjs');
+const {materialPreviewBoundaries}=await import('./material-preview-boundaries.mjs');
+const {materialLayoutBoundaries}=await import('./material-layout-boundaries.mjs');
+const {originalQuestionBoundaries}=await import('./original-question-boundaries.mjs');
+const {materialQueueBoundaries}=await import('./material-queue-boundaries.mjs');
 const output=fs.mkdtempSync(path.resolve('test-results/education-boundary-')),workspace=path.join(output,'workspace'),stateRoot=path.join(output,'state');fs.mkdirSync(workspace);fs.mkdirSync(stateRoot);
 const checks=[],report={success:false,checks,scope:'Real original Python worker and native Pi identity; synthetic owned facts, no model request'};let agent;
 const check=async(name,fn)=>{await fn();checks.push({name,pass:true});console.log(`PASS ${name}`);};
@@ -29,11 +42,11 @@ const resourceId=`resource_${randomUUID()}`,version=createHash('sha256').update(
 const store={sanitizeProblemText:async text=>({sanitizedText:text.replace(/13800138000/g,'[手机号]')}),listStudents:async()=>[{realName:'合成隐私张甲'}],materials:{body:async()=>{reads++;return{resource:{originalFileName:'勾股定理.md',contentHash:actualVersion,parseStatus:'ready'},chunks:[{chunkIndex:0,contentMd:bodyText,containsPersonalData:privateBody}],total:1};},resource:async()=>({contentHash:actualVersion,parseStatus:'ready'})}};
 const tools=createEducationCapabilityProvider(store,()=>current).tools;
 const db=new DatabaseSync(':memory:');
-db.exec('CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,title TEXT,original_file_name TEXT,content_hash TEXT,parse_status TEXT); CREATE TABLE resource_chunks(id TEXT PRIMARY KEY,resource_id TEXT,chunk_index INTEGER,content_md TEXT,contains_personal_data INTEGER);');
-const put=(id,index,text,privacy=0)=>{const chunkId='chunk_'+randomUUID();db.prepare('INSERT INTO resource_chunks VALUES(?,?,?,?,?)').run(chunkId,id,index,text,privacy);return chunkId;};
+db.exec('CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,title TEXT,original_file_name TEXT,content_hash TEXT,parse_status TEXT); CREATE TABLE resource_chunks(id TEXT PRIMARY KEY,resource_id TEXT,chunk_index INTEGER,content_md TEXT,contains_personal_data INTEGER,page_number INTEGER);');
+const put=(id,index,text,privacy=0)=>{const chunkId='chunk_'+randomUUID();db.prepare('INSERT INTO resource_chunks VALUES(?,?,?,?,?,NULL)').run(chunkId,id,index,text,privacy);return chunkId;};
 const resources=[];for(let index=0;index<60;index++){const id='resource_'+randomUUID();resources.push(id);db.prepare('INSERT INTO teacher_resources VALUES(?,?,?,?,?)').run(id,'本地教学','教材.md',version,'ready');put(id,0,'基础资料关键词 alpha');}
 const target=resources[59],tail=put(target,99,'alpha beta；尾段证据',0);put(target,100,'合成隐私张甲 13800138000 alpha beta',1);put(target,101,'已脱敏合成隐私张甲 联系13800138000',0);
-const repo=new MaterialRepository({root:output,all:async(sql,params=[])=>db.prepare(sql).all(...params),mapResource:row=>({id:row.id,contentHash:row.content_hash,originalFileName:row.original_file_name,parseStatus:row.parse_status,chunkCount:Number(row.chunk_count)}),mapChunk:row=>({id:row.id,resourceId:row.resource_id,chunkIndex:row.chunk_index,contentMd:row.content_md,containsPersonalData:!!row.contains_personal_data})});
+const repo=new MaterialRepository({root:output,all:async(sql,params=[])=>db.prepare(sql).all(...params),mapResource:row=>({id:row.id,contentHash:row.content_hash,originalFileName:row.original_file_name,parseStatus:row.parse_status,chunkCount:Number(row.chunk_count)}),mapChunk:row=>({id:row.id,resourceId:row.resource_id,chunkIndex:row.chunk_index,contentMd:row.content_md,containsPersonalData:!!row.contains_personal_data,pageNumber:row.page_number})});
 const searchStore={...store,materials:repo},searchTools=createEducationSearchTools(searchStore,()=>current),search=async(query,extra={})=>searchTools[0].execute(randomUUID(),{query,...extra},signal());
 const execute=async(quote,extra={})=>tools[0].execute(randomUUID(),{resourceId,offset:0,version,quote,...extra},signal());
 const payload=result=>JSON.parse(result.content[0].text);
@@ -99,6 +112,13 @@ try{
   const view=await repo.source(value.hits[0].source);assert.equal(view.body.chunks[0].id,tail);assert.equal(view.body.chunks[0].chunkIndex,99);
   const selected=payload(await search('alpha beta',{resourceId:target}));assert.equal(selected.coverage.scope,'material');assert.equal(selected.coverage.totalChunks,4);
  });
+ await check('Real SQLite page citations remain unconfirmed and page changes invalidate receipts without changing historical unknown-page hashes',async()=>{
+  const old=payload(await search('alpha beta')).hits[0];assert.equal(old.originalPageLocated,false);
+  db.prepare('UPDATE resource_chunks SET page_number=6 WHERE id=?').run(tail);
+  const located=payload(await search('alpha beta'));assert.equal(located.teacherConfirmed,false);assert.equal(located.originalPageLocated,true);assert.equal(located.hits[0].pageNumber,6);assert(located.hits[0].citation.includes('6'));assert.notEqual(located.hits[0].source.bodyVersion,old.source.bodyVersion);await assert.rejects(repo.source(old.source),/source_changed/);
+  db.prepare('UPDATE resource_chunks SET page_number=5 WHERE id=?').run(tail);await assert.rejects(repo.source(located.hits[0].source),/source_changed/);
+  db.prepare('UPDATE resource_chunks SET page_number=NULL WHERE id=?').run(tail);assert.equal(payload(await search('alpha beta')).hits[0].source.bodyVersion,old.source.bodyVersion);assert((await repo.source(old.source)).body.chunks.length===1);
+ });
  await check('Original search preserves global exact precedence, normalised matching, terms ranking and honest 12-hit truncation',async()=>{
   const exact=await searchMaterialUnits(['alpha is here','beta here',...Array(60).fill('unrelated'),'alpha beta'],'alpha beta',signal());assert.equal(exact.mode,'exact');assert.equal(exact.hits[0].locator,62);
   assert.equal((await searchMaterialUnits(['alpha\n beta— is long'],'alpha beta is long',signal())).mode,'normalised');
@@ -141,11 +161,24 @@ try{
  await learningReviewBoundaries(check,output);
  await learningReviewNativeBoundaries(check,output,options,async native=>{agent=native;await prime();});agent=undefined;
  await piPackageBoundaries(check,output);
+ await questionDocumentBoundaries(check);
  await questionContextBoundaries(check,output,options,async native=>{agent=native;await prime();});agent=undefined;
  await questionDraftBoundaries(check,output);
  await questionReviewBoundaries(check,output,options,async native=>{agent=native;await prime();});agent=undefined;
+ await questionQualityBoundaries(check,output);
+ await questionRepairBoundaries(check,output);
+ await mathCheckBoundaries(check,output);
  await practiceReviewBoundaries(check,output,options,async native=>{agent=native;await prime();});agent=undefined;
+ await paperGenerationBoundaries(check,output);
+ await paperBoundaries(check,output,options,async native=>{agent=native;await prime();});agent=undefined;
  await mistakeOcrBoundaries(check,output);
+ await mistakeSimilarBoundaries(check);
+ await mistakeSimilarProviderBoundaries(check);
+ await materialPdfBoundaries(check);
+ await materialPreviewBoundaries(check,output);
+ await materialLayoutBoundaries(check,output);
+ await originalQuestionBoundaries(check,output);
+ await materialQueueBoundaries(check);
  report.success=true;
 }catch(error){report.error=String(error.stack);process.exitCode=1;}
 finally{await agent?.dispose();db.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,error:report.error,report:path.join(output,'report.json')}));}

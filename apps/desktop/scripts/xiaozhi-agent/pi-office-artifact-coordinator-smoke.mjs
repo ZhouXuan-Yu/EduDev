@@ -114,7 +114,7 @@ try{
   assert((await handlers.get('xiaozhi:office-review')({main:true},{})).ok);assert.equal(calls,1);
  });
  await check('Compaction includes actual artifact identity/outcomes but no draft, output or source hash; exclusion removes old run',async()=>{
-  const fake={xiaozhiState:{controls:async()=>[],approvals:async()=>[],officeArtifacts:state},getAiConversationSession:async()=>({messages:[]}),sanitizeProblemText:async text=>({sanitizedText:text})};
+  const fake={xiaozhiState:{controls:async()=>[],approvals:async()=>[],officeArtifacts:state},getAiConversationSession:async()=>({session:{studentId:''},messages:[]}),sanitizeProblemText:async text=>({sanitizedText:text})};
   const context=await getPiProtectedContext(fake,sessionId);assert(context.includes('办公产物')&&context.includes('artifact_'));assert(!context.includes('本地修改')&&!context.includes('私有正文')&&!context.includes('output')&&!context.includes('sha256'));assert.equal(await getPiProtectedContext(fake,sessionId,[runId]),'');
  });
  await check('Original native prefix and creation identity stay byte-identical with independent Office capability and Pi once',async()=>{

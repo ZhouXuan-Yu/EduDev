@@ -1,8 +1,18 @@
+import {PaperRepository,type PaperSql} from './education/paper-repository';
+import {findMistakeSimilar} from './education/mistake-similar';
+import type {MistakeSimilarInput} from '../shared/mistake-similar';
+import type {PaperBlueprint} from '../shared/paper-blueprint';
+import {questionVersion} from './education/question-context-provider';
 import { createHash, randomUUID } from 'node:crypto';
+import {readQuestionDocument} from '../shared/question-document';
+import {ensureQuestionDocumentColumn} from './education/question-document-migration';
+import {ensureQuestionRetrievalIndex,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import {MaterialRepository} from './assets/material-repository';
+import {MaterialParseQueue,type MaterialParseLease} from './assets/material-parse-queue';
+import type {MaterialOcrPage} from '../shared/material-pdf-ocr';
 import {StudentContextRepository} from './students/context-repository';
 import {MistakeOcrRepository,mistakeAnalysisVersion} from './students/mistake-ocr-repository';
 import {validMistakeOcrProvenance} from '../shared/mistake-ocr';
@@ -10,6 +20,9 @@ import {MistakeFactsRepository} from './students/mistake-facts-repository';
 import {validMistakeFactsReceipt} from '../shared/mistake-facts';
 import {LearningReviewRepository} from './education/learning-review-repository';
 import {QuestionReviewRepository} from './education/question-review-repository';
+import {OriginalQuestionRepository} from './education/original-question-repository';
+import {QuestionAssets} from './assets/question-assets';
+import {renderLocalPdfPage} from './xiaozhi-agent/ocr-host';
 import {PracticeReviewRepository} from './education/practice-review-repository';
 import { createXiaozhiSessionState } from './xiaozhi-agent/session-state';
 import { conversationTitle } from './xiaozhi-agent/conversation-title';
@@ -167,7 +180,7 @@ type Row = Record<string, unknown>;
 const DEFAULT_RECORD_PAGE_SIZE = 100;
 const MAX_RECORD_PAGE_SIZE = 500;
 const FTS_MATCH_LIMIT = 500;
-const DEFAULT_DEEPSEEK_MODEL = 'deepseek-v4-flash';
+const DEFAULT_DEEPSEEK_MODEL = 'deepseek-flash';
 const DEFAULT_GLM_MODEL = 'glm-4.5-air';
 const AI_MEMORY_SURFACES: AiMemorySurface[] = ['chat', 'notebook', 'quiz', 'kb', 'book', 'partner', 'cowriter'];
 const AI_MEMORY_L3_SLOTS: AiMemoryL3Slot[] = ['recent', 'profile', 'scope', 'preferences'];
@@ -1064,18 +1077,48 @@ export class OmniEduStore {
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),map:row=>work.mapMistakeImageAnalysis(row),sanitize:(text,id)=>work.sanitizeProblemText(text,id),correct:(id,text)=>work.updateMistakeImageCorrection(id,{extractedText:text},true)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
+  private async questionCandidatePage(subject:string,grade:string,after:string){
+    const rows=await this.all("SELECT * FROM question_bank_items WHERE subject=? AND grade=? AND source_kind IN ('local_bank','teacher_resource') AND id>? ORDER BY id COLLATE BINARY ASC LIMIT 200",[subject,grade,after]);
+    return rows.map(row=>{try{if(row.document_json&&!readQuestionDocument(row.document_json))return{id:String(row.id)};return{id:String(row.id),question:this.mapQuestionBankItem(row)};}catch{return{id:String(row.id)};}});
+  }
+  async findMistakeSimilar(input:MistakeSimilarInput,signal:AbortSignal){
+    const source=this.paperSql();return findMistakeSimilar({read:source.read,validate:source.validate,page:(subject,grade,after)=>this.questionCandidatePage(subject,grade,after),facts:(studentId,recordId,signal)=>this.mistakeFacts.forRecord(studentId,recordId,signal)},input,signal);
+  }
+  private paperSql():PaperSql{
+    return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),
+      page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,blueprint.grade,after),
+      validate:async q=>{if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(q.document.schemaVersion!=='xiaozhi.question-document.v2'||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
+    };
+  }
+  private async paperTransaction<T>(action:(sql:PaperSql)=>Promise<T>,readOnly=false):Promise<T>{
+    const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+    // Preview validation reads files asynchronously; it must not reserve the
+    // writer needed by Office delivery or exhaust libuv with waiting writers.
+    // Final installation still uses the original IMMEDIATE source lease.
+    try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; '+(readOnly?'PRAGMA query_only=ON; BEGIN;':'BEGIN IMMEDIATE;'));try{
+      const result=await action(work.paperSql());await work.exec('COMMIT;');return result;
+    }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+  }
+  readonly papers=new PaperRepository({...this.paperSql(),approvedGenerations:(sessionId,sql)=>this.questionReviews.approvedForPaper(sessionId,sql),transaction:action=>this.paperTransaction(action),readTransaction:action=>this.paperTransaction(action,true)});
   readonly practiceReviews = new PracticeReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),save:(id,draft)=>this.saveExerciseSetFromDraft(id,draft),exercises:id=>this.listExerciseSets(id),lineage:(studentId,id)=>this.questionReviews.parentsForStudent(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),save:(id,draft)=>work.saveExerciseSetFromDraft(id,draft),exercises:id=>work.listExerciseSets(id),lineage:(studentId,id)=>work.questionReviews.parentsForStudent(studentId,id)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
-  readonly questionReviews = new QuestionReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
+  readonly questionReviews = new QuestionReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),validate:q=>this.paperSql().validate(q),transaction:async action=>{
+    const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+    try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
+      const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input),validate:q=>work.paperSql().validate(q)});await work.exec('COMMIT;');return result;
+    }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+  }});
+  readonly originalQuestions = new OriginalQuestionRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),create:input=>this.createQuestionBankItem(input),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
-  }});
+  }},()=>this.materials,new QuestionAssets(()=>this.dataRoot),renderLocalPdfPage);
+  async readQuestionDocumentContext(questionId:string,version:string,signal?:AbortSignal){return this.originalQuestions.context(questionId,version,signal);}
   readonly learningReviews = new LearningReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),snapshot:(...args)=>this.studentContext.learningSnapshot(...args),createRecord:(input,id)=>this.createRecord(input,id),practiceSource:(studentId,id)=>this.practiceReviews.source(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
@@ -1083,10 +1126,12 @@ export class OmniEduStore {
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
   }});
   readonly materials: MaterialRepository;
+  readonly materialQueue: MaterialParseQueue;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
   readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values) });
   private db!: sqlite3.Database;
   private dbPath: string;
+  private questionRetrievalIndexed = false;
   /**
    * Event sequence allocation is a read-then-write operation.  Sidecar events,
    * host checkpoints, and model observations can arrive concurrently for one
@@ -1098,6 +1143,7 @@ export class OmniEduStore {
   private aiAgentActionQueue: Promise<void> = Promise.resolve();
   private aiConfirmationDecisionQueue: Promise<void> = Promise.resolve();
   private recoveredInterruptedRuns = false;
+  private initialization?: Promise<void>;
 
   constructor(private dataRoot: string) {
     this.dbPath = join(dataRoot, 'app.db');
@@ -1106,13 +1152,26 @@ export class OmniEduStore {
     all: (sql, params) => this.all(sql, params),
     mapResource: row => this.mapTeacherResource(row),
     mapChunk: row => this.mapResourceChunk(row),
-    commit: (id, content, engine, hash, signal) => this.commitMaterialText(id, content, engine, hash, signal),
-    reuse: (id, engine) => this.run(`UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?`, [engine,now(),id]),
-    failure: (id, code) => this.failMaterialText(id, code),
+    commit: (id, content, engine, hash, signal, pages, lease) => this.commitMaterialText(id, content, engine, hash, signal, pages, lease),
+    reuse: (id, engine, lease) => this.updateMaterialState(id,'ready',engine,lease),
+    failure: (id, code, lease) => this.failMaterialText(id, code, lease),
   });
+    this.materialQueue=new MaterialParseQueue({all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
   }
 
   async init(): Promise<BootstrapData> {
+    await (this.initialization ??= this.initialize().catch(error => {
+      this.initialization = undefined;
+      throw error;
+    }));
+    return {
+      dataRoot: this.dataRoot,
+      students: await this.listStudents(''),
+      overview: await this.getPlatformOverview(),
+    };
+  }
+
+  private async initialize(): Promise<void> {
     mkdirSync(this.dataRoot, { recursive: true });
     mkdirSync(this.resolveInsideDataRoot('students'), { recursive: true });
     mkdirSync(this.resolveInsideDataRoot('teacher_resources'), { recursive: true });
@@ -1149,11 +1208,6 @@ export class OmniEduStore {
       }
       this.recoveredInterruptedRuns = true;
     }
-    return {
-      dataRoot: this.dataRoot,
-      students: await this.listStudents(''),
-      overview: await this.getPlatformOverview(),
-    };
   }
 
   getDataRoot() {
@@ -1161,6 +1215,7 @@ export class OmniEduStore {
   }
 
   async close() {
+    await this.materialQueue.close();
     if (!this.db) return;
     const db = this.db;
     await new Promise<void>((resolveClose, reject) => {
@@ -1170,6 +1225,8 @@ export class OmniEduStore {
       });
     });
     this.db = undefined as unknown as sqlite3.Database;
+    this.initialization = undefined;
+    this.recoveredInterruptedRuns = false;
   }
 
   async isManagedLocalPath(filePath: string) {
@@ -1785,7 +1842,7 @@ export class OmniEduStore {
     };
   }
 
-  async importKnowledgeResources(sourcePaths: string[], signal = new AbortController().signal): Promise<KnowledgeImportResult> {
+  async importKnowledgeResources(sourcePaths: string[], signal = new AbortController().signal, background=false): Promise<KnowledgeImportResult> {
     const resourceRoot = this.resolveInsideDataRoot('teacher_resources');
     mkdirSync(resourceRoot, { recursive: true });
     const items: AttachmentImportItem[] = [];
@@ -1796,12 +1853,27 @@ export class OmniEduStore {
       try {
         const stat = statSync(sourcePath);
         if (!stat.isFile()) throw new Error('不是可导入的文件');
+        const sourceHash = await hashFileSha256(sourcePath);
+        signal.throwIfAborted();
+        const duplicate = await this.materials.duplicate(originalName,sourceHash,stat.size,signal);
+        if(duplicate){
+          const after=statSync(sourcePath);
+          if(after.size!==stat.size||after.mtimeMs!==stat.mtimeMs||after.ctimeMs!==stat.ctimeMs)throw new Error('source_changed');
+          resources.push(duplicate);
+          items.push({sourcePath,fileName:originalName,ok:true,fileSize:stat.size,reused:true});
+          continue;
+        }
         const id = `resource_${randomUUID()}`;
         const timestamp = now();
         const targetName = `${Date.now()}-${id.slice(-8)}-${originalName}`;
         const targetPath = resolveInsideRoot(resourceRoot, targetName);
         copyFileSync(sourcePath, targetPath);
         const hash = await hashFileSha256(targetPath);
+        const afterCopy=statSync(sourcePath);
+        if(signal.aborted||hash!==sourceHash||afterCopy.size!==stat.size||afterCopy.mtimeMs!==stat.mtimeMs||afterCopy.ctimeMs!==stat.ctimeMs){
+          rmSync(targetPath,{force:true});
+          signal.throwIfAborted();throw new Error('source_changed');
+        }
         const resourceType = fileType(originalName);
         const isText = canParseAsLocalText(originalName);
         const title = titleFromFileName(originalName);
@@ -1816,7 +1888,7 @@ export class OmniEduStore {
         );
         await this.ensureTeacherLibraryNode();
         await this.createResourceGraph(id, title, resourceType, stat.size, timestamp);
-        await this.materials.ingest(id, signal);
+        if(background)await this.materialQueue.enqueue(id,hash);else await this.materials.ingest(id, signal);
         const saved = (await this.all(
           `SELECT r.*, COUNT(c.id) AS chunk_count
              FROM teacher_resources r
@@ -1843,31 +1915,40 @@ export class OmniEduStore {
   }
 
   /** Existing chunk/metadata/graph algorithm, isolated transaction on the same DB. */
-  private async commitMaterialText(id: string, content: string, engine: string, hash: string, signal: AbortSignal) {
+  private async commitMaterialText(id: string, content: string, engine: string, hash: string, signal: AbortSignal, pages?: MaterialOcrPage[],lease?:MaterialParseLease) {
     const work = new OmniEduStore(this.dataRoot);
     work.db = await this.openDatabase(this.dbPath);
     try {
       await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');
       try {
         signal.throwIfAborted();
+        if(lease&&!await work.materialLeaseCurrent(lease))throw new Error('cancelled');
         const resource = await work.materials.resource(id);
         if (resource.contentHash !== hash) throw new Error('source_changed');
         if (resource.chunkCount > 0) throw new Error('partial_existing');
         const timestamp = now();
-        await work.createResourceChunksAndGraph(id, resource.title, content, timestamp);
+        await work.createResourceChunksAndGraph(id, resource.title, content, timestamp, pages);
         signal.throwIfAborted();
         await work.run(`UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?`, [engine, timestamp, id]);
-        await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying')`, [JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
+        if(lease)await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE id=? AND status='running' AND payload_json=?`,[JSON.stringify({resourceId:id,parser:engine}),timestamp,lease.taskId,lease.payload]);
+        else await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying') AND NOT (json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')='xiaozhi.material-parse-task.v1')`, [JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
         signal.throwIfAborted();
         await work.run('COMMIT');
       } catch (error) { await work.run('ROLLBACK').catch(() => undefined); throw error; }
     } finally { await work.close(); }
   }
 
-  private async failMaterialText(id: string, code: string) {
-    await this.run(`UPDATE teacher_resources SET parse_status=?,parse_engine=?,updated_at=? WHERE id=?`,
-      [code==='unsupported'||code==='needs_ocr'||code==='cancelled'?'needs_parser':code==='partial_existing'?'partial':'failed',`hana-anydoc-0.1.2:${code}`,now(),id]);
-    await this.run(`UPDATE ai_tasks SET status='failed',error_message=?,updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying')`, [code,now(),createHash('sha256').update(id).digest('hex')]);
+  private async materialLeaseCurrent(lease:MaterialParseLease){return (await this.all(`SELECT id FROM ai_tasks WHERE id=? AND task_type='resource_parse' AND status='running' AND payload_json=?`,[lease.taskId,lease.payload])).length===1;}
+  private async updateMaterialState(id:string,status:string,engine:string,lease?:MaterialParseLease){
+    const changed=await this.runWithChanges(`UPDATE teacher_resources SET parse_status=?,parse_engine=?,updated_at=? WHERE id=? ${lease?"AND EXISTS (SELECT 1 FROM ai_tasks WHERE id=? AND task_type='resource_parse' AND status='running' AND payload_json=?)":''}`,[status,engine,now(),id,...(lease?[lease.taskId,lease.payload]:[])]);
+    if(lease&&!changed)throw new Error('cancelled');
+  }
+  private async failMaterialText(id: string, code: string,lease?:MaterialParseLease) {
+    // Keep the identity of committed derivatives across missing/changed-file recovery.
+    const resource = await this.materials.resource(id);
+    const engine = resource.chunkCount > 0 ? resource.parseEngine.split(':')[0] : 'hana-anydoc-0.1.2';
+    await this.updateMaterialState(id,code==='unsupported'||code==='needs_ocr'||code==='cancelled'?'needs_parser':code==='partial_existing'?'partial':'failed',`${engine}:${code}`,lease);
+    if(!lease)await this.run(`UPDATE ai_tasks SET status='failed',error_message=?,updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying') AND NOT (json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')='xiaozhi.material-parse-task.v1')`, [code,now(),createHash('sha256').update(id).digest('hex')]);
   }
 
   async searchKnowledge(keyword: string, limit = 8): Promise<ResourceChunk[]> {
@@ -3328,9 +3409,9 @@ export class OmniEduStore {
   async listAiConfirmations(status: AiConfirmationStatus | 'all' = 'pending'): Promise<AiConfirmationItem[]> {
     const allowedStatuses = new Set(['pending', 'confirmed', 'rejected', 'failed']);
     const rows = status === 'all'
-      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_practice_candidate') ORDER BY updated_at DESC`)
+      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`)
       : await this.all(
-        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_practice_candidate') ORDER BY updated_at DESC`,
+        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`,
         [allowedStatuses.has(status) ? status : 'pending'],
       );
     return rows.map((row) => this.mapAiConfirmationItem(row));
@@ -3965,59 +4046,14 @@ export class OmniEduStore {
   }
 
   async searchQuestionBank(filters: QuestionSearchFilters = {}) {
-    const clauses: string[] = [];
-    const params: SqlValue[] = [];
-    const subject = filters.subject?.trim();
-    const knowledgePoint = filters.knowledgePoint?.trim();
-    const questionType = filters.questionType?.trim();
-    const difficulty = filters.difficulty;
-    const query = filters.query?.trim();
-    if (subject) {
-      clauses.push('subject = ?');
-      params.push(subject);
-    }
-    if (knowledgePoint) {
-      clauses.push('knowledge_point LIKE ?');
-      params.push(`%${knowledgePoint}%`);
-    }
-    if (questionType) {
-      clauses.push('question_type = ?');
-      params.push(questionType);
-    }
-    if (difficulty === 'easy' || difficulty === 'medium' || difficulty === 'hard') {
-      clauses.push('difficulty = ?');
-      params.push(difficulty);
-    }
-    const tokens = searchTokens(query);
-    if (tokens.length) {
-      clauses.push(`(${tokens.map(() => '(stem LIKE ? OR analysis LIKE ? OR tags LIKE ? OR knowledge_point LIKE ? OR source_title LIKE ?)').join(' OR ')})`);
-      for (const token of tokens) {
-        const like = `%${token}%`;
-        params.push(like, like, like, like, like);
-      }
-    }
-    const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
-    const limit = Math.max(1, Math.min(Math.trunc(filters.limit ?? 8), 20));
-    const rows = await this.all(
-      `SELECT * FROM question_bank_items
-       ${where}
-       ORDER BY
-         CASE WHEN knowledge_point = ? THEN 0 ELSE 1 END,
-         updated_at DESC
-       LIMIT ?`,
-      [...params, knowledgePoint ?? '', limit],
-    );
-    const queryTokens = [...new Set([...searchTokens(query), ...searchTokens(knowledgePoint)])];
-    return rows.map((row) => {
-      const item = this.mapQuestionBankItem(row);
-      const matchedToken = queryTokens.find((token) =>
-        [item.stem, item.analysis, item.knowledgePoint, item.sourceTitle, item.tags.join('、')].some((text) => text.includes(token)),
-      );
-      return {
-        ...item,
-        matchReason: matchedToken ? `命中关键词：${matchedToken}` : item.knowledgePoint ? `按知识点 ${item.knowledgePoint} 排序命中` : '按更新时间命中',
-        score: matchedToken ? 0.9 : 0.6,
-      };
+    const {rows,method} = await searchQuestionRows({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)},filters,this.questionRetrievalIndexed);
+    const tokens=questionSearchTokens(filters.query?.trim()??'');
+    return rows.map(row=>{
+      const item=this.mapQuestionBankItem(row);
+      const matched=tokens.find(token=>[item.stem,item.analysis,item.knowledgePoint,item.sourceTitle,item.tags.join('、')].some(text=>text.includes(token)));
+      return {...item,matchReason:matched?`命中关键词：${matched}`:'按筛选条件与更新时间命中',retrievalMethod:method,
+        // Legacy score field retained for old consumers; never a semantic or correctness confidence.
+        score:matched?0.9:0.6};
     });
   }
 
@@ -4027,34 +4063,13 @@ export class OmniEduStore {
    * overlays so categorisation never duplicates or mutates question content.
    */
   async listQuestionNotebook(filters: QuestionNotebookFilters = {}): Promise<QuestionNotebookListResult> {
-    const clauses: string[] = [];
-    const params: SqlValue[] = [];
-    const query = filters.query?.trim().slice(0, 240) ?? '';
-    const categoryId = filters.categoryId?.trim();
-    if (filters.bookmarked != null) {
-      clauses.push(`COALESCE(b.bookmarked, 0) = ?`);
-      params.push(filters.bookmarked ? 1 : 0);
-    }
-    if (filters.sourceKind) {
-      clauses.push('q.source_kind = ?');
-      params.push(filters.sourceKind);
-    }
-    if (categoryId) {
-      clauses.push(`EXISTS (
-        SELECT 1 FROM question_notebook_category_links l
-        INNER JOIN question_notebook_categories c ON c.id = l.category_id AND c.status = 'active'
-        WHERE l.question_id = q.id AND l.category_id = ?
-      )`);
-      params.push(categoryId);
-    }
-    const tokens = searchTokens(query).slice(0, 8);
-    if (tokens.length) {
-      clauses.push(`(${tokens.map(() => '(q.stem LIKE ? OR q.analysis LIKE ? OR q.tags LIKE ? OR q.knowledge_point LIKE ?)').join(' OR ')})`);
-      for (const token of tokens) {
-        const like = `%${token}%`;
-        params.push(like, like, like, like);
-      }
-    }
+    const {clauses,params,method}=questionRetrievalWhere(filters,this.questionRetrievalIndexed);
+    if(filters.offset!==undefined&&(!Number.isSafeInteger(filters.offset)||filters.offset<0))throw new Error('题目分页参数不正确');
+    if(filters.bookmarked!==undefined&&typeof filters.bookmarked!=='boolean')throw new Error('收藏筛选参数不正确');
+    if(filters.categoryId!==undefined&&(typeof filters.categoryId!=='string'||filters.categoryId.length>240||/[\x00-\x1f]/.test(filters.categoryId)))throw new Error('分类筛选参数不正确');
+    const categoryId=filters.categoryId?.trim();
+    if(filters.bookmarked!==undefined){clauses.push('COALESCE(b.bookmarked, 0) = ?');params.push(filters.bookmarked?1:0);}
+    if(categoryId){clauses.push(`EXISTS (SELECT 1 FROM question_notebook_category_links l INNER JOIN question_notebook_categories c ON c.id=l.category_id AND c.status='active' WHERE l.question_id=q.id AND l.category_id=?)`);params.push(categoryId);}
     const where = clauses.length ? `WHERE ${clauses.join(' AND ')}` : '';
     const countRows = await this.all(
       `SELECT COUNT(*) AS count FROM question_bank_items q
@@ -4077,7 +4092,7 @@ export class OmniEduStore {
          FROM question_bank_usage GROUP BY question_id
        ) u ON u.question_id = q.id
        ${where}
-       ORDER BY notebook_bookmarked DESC, last_used_at DESC, q.updated_at DESC
+       ORDER BY notebook_bookmarked DESC, last_used_at DESC, q.updated_at DESC, q.id ASC
        LIMIT ? OFFSET ?`,
       [...params, limit, offset],
     );
@@ -4093,7 +4108,7 @@ export class OmniEduStore {
         lastUsedAt: String(row.last_used_at ?? ''),
       } satisfies QuestionNotebookEntry;
     }));
-    return { items, total };
+    return { items, total, retrievalMethod:method };
   }
 
   async getQuestionNotebookEntry(questionId: string): Promise<QuestionNotebookEntry | undefined> {
@@ -5035,7 +5050,12 @@ export class OmniEduStore {
     return new Promise<sqlite3.Database>((resolveOpen, reject) => {
       const db = new sqlite3.Database(filePath, (error) => {
         if (error) reject(error);
-        else resolveOpen(db);
+        else {
+          // Busy run statements must not occupy the libuv pool needed by the
+          // other connection's source-file checks before its transaction commits.
+          db.serialize();
+          resolveOpen(db);
+        }
       });
     });
   }
@@ -5863,6 +5883,8 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_ai_tool_runs_task ON ai_tool_runs(task_id);
     `);
     await this.ensureFts();
+    await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});
+    this.questionRetrievalIndexed=await ensureQuestionRetrievalIndex({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)});
     const mistakeColumns=await this.all('PRAGMA table_info(mistake_image_analyses)');
     if(!hasColumn(mistakeColumns,'local_ocr_json'))await this.run("ALTER TABLE mistake_image_analyses ADD COLUMN local_ocr_json TEXT NOT NULL DEFAULT ''");
     if(!hasColumn(mistakeColumns,'confirmed_facts_json'))await this.run("ALTER TABLE mistake_image_analyses ADD COLUMN confirmed_facts_json TEXT NOT NULL DEFAULT ''");
@@ -6007,24 +6029,30 @@ export class OmniEduStore {
     );
   }
 
-  private async createResourceChunksAndGraph(resourceId: string, resourceTitle: string, content: string, timestamp: string) {
-    const chunks = splitIntoChunks(content);
+  private async createResourceChunksAndGraph(resourceId: string, resourceTitle: string, content: string, timestamp: string, pages?: MaterialOcrPage[]) {
+    const chunks = pages ? pages.flatMap(page => splitIntoChunks(page.text).map(chunk => ({...chunk, pageNumber:page.page}))) : splitIntoChunks(content).map(chunk => ({...chunk, pageNumber:null}));
     for (const [index, chunk] of chunks.entries()) {
       const chunkId = `chunk_${randomUUID()}`;
-      const metadata = inferResourceChunkMetadata(resourceTitle, chunk.heading, chunk.content);
+      const inferred = inferResourceChunkMetadata(resourceTitle, chunk.heading, chunk.content);
+      // OCR is a machine candidate; readable text is not a teacher confirmation.
+      const metadata = {...inferred,
+        sourceTrust: pages ? (inferred.containsPersonalData ? 'unverified' : 'machine_extracted') : inferred.sourceTrust,
+        evidenceStrength: pages ? 'background' : inferred.evidenceStrength,
+      };
       await this.run(
         `INSERT INTO resource_chunks (
           id, resource_id, chunk_index, heading, content_md, page_number, bbox_json,
           token_count, subject, grade, knowledge_point, question_type, difficulty,
           source_trust, contains_personal_data, quality_score, evidence_strength,
           embedding_status, created_at
-        ) VALUES (?, ?, ?, ?, ?, NULL, '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)`,
         [
           chunkId,
           resourceId,
           index,
           chunk.heading,
           chunk.content,
+          chunk.pageNumber,
           Math.ceil(chunk.content.length / 2),
           metadata.subject,
           metadata.grade,
@@ -6133,7 +6161,8 @@ export class OmniEduStore {
   private async enqueueResourceParseTask(resourceId: string, title: string, resourceType: string, timestamp: string) {
     await this.run(
       `INSERT INTO ai_tasks (id, task_type, status, input_hash, payload_json, result_json, error_message, retry_count, created_at, updated_at)
-       VALUES (?, 'resource_parse', 'pending', ?, ?, NULL, '', 0, ?, ?)`,
+       SELECT ?, 'resource_parse', 'pending', ?, ?, NULL, '', 0, ?, ?
+       WHERE NOT EXISTS (SELECT 1 FROM ai_tasks WHERE task_type='resource_parse' AND input_hash=?)`,
       [
         `task_${randomUUID()}`,
         createHash('sha256').update(resourceId).digest('hex'),
@@ -6145,6 +6174,7 @@ export class OmniEduStore {
         }),
         timestamp,
         timestamp,
+        createHash('sha256').update(resourceId).digest('hex'),
       ],
     );
   }
@@ -6208,7 +6238,7 @@ export class OmniEduStore {
   }
 
   private async getAiConfirmationOrThrow(id: string): Promise<AiConfirmationItem> {
-    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_practice_candidate')`, [id]))[0];
+    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate')`, [id]))[0];
     if (!row) throw new Error('确认项不存在');
     return this.mapAiConfirmationItem(row);
   }
@@ -6619,9 +6649,11 @@ export class OmniEduStore {
   }
 
   private mapQuestionBankItem(row: Row): QuestionBankItem {
+    const document=readQuestionDocument(row.document_json);
     const difficulty = String(row.difficulty ?? 'medium');
     const sourceKind = String(row.source_kind ?? 'local_bank');
     return {
+      ...(document?{document}:{}),
       id: String(row.id),
       subject: String(row.subject ?? ''),
       grade: String(row.grade ?? ''),

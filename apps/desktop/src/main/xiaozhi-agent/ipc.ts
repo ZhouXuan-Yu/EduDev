@@ -1,3 +1,6 @@
+import {registerOriginalQuestionIpc} from '../education/original-question-api';
+import {registerPaperIpc} from '../education/paper-api';
+import {validPaperOutput} from '../../shared/paper-export';
 import {registerPracticeReviewIpc} from '../education/practice-review-api';
 import type { IpcMain, BrowserWindow } from 'electron';
 import { app, dialog, safeStorage, shell } from 'electron';
@@ -32,6 +35,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   const autoCompaction = testing && process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION !== undefined
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const host = createXiaozhiProductionHost({ ...options, enabled: options.authority.mode === 'pi', autoCompaction,
+    ...(testing&&process.env.OMNI_EDU_E2E_PI_ORIGINAL_CUT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{afterOriginalReviewWrite:async()=>{fs.writeFileSync(path.join(options.dataRoot,'.e2e-original-uncommitted'),'uncommitted');await new Promise(resolve=>setTimeout(resolve,30000));}}:{}),
     ...(testing&&process.env.OMNI_EDU_E2E_PI_LEARNING_CUT==='1'?{afterLearningReviewWrite:async()=>{fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-learning-uncommitted'),'uncommitted');await new Promise(resolve=>setTimeout(resolve,30000));}}:{}),
     ...(learningStop?{afterLearningReviewWrite:async(isCurrent:()=>boolean)=>{if(learningStopHeld)return;learningStopHeld=true;fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-learning-uncommitted'),'uncommitted');const end=Date.now()+30000;while(isCurrent()&&Date.now()<end)await new Promise(resolve=>setTimeout(resolve,40));if(isCurrent())throw new Error('cancelled');}}:{}),
     ...(['prepared','intent','file','fact'].includes(officeCut||'')?{afterOfficeArtifactStage:async(stage:'prepared'|'intent'|'file'|'fact')=>{
@@ -70,7 +74,9 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerLearningReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerQuestionReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerOriginalQuestionIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerPracticeReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerPaperIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerStudentTrainingIpc({ipcMain:options.ipcMain,allowed:fromMain,repository:options.store.learningReviews});
   registerQuestionContextIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerWorkspaceFileIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});
@@ -101,6 +107,15 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
       const current = options.window(); if (!current) return;
       const result = await dialog.showOpenDialog(current, { title: '选择本会话的教学工作目录', properties: ['openDirectory'] });
       return result.canceled ? undefined : result.filePaths[0];
+    });
+  });
+  options.ipcMain.handle('xiaozhi:paper-output', (event,input) => {
+    if(!fromMain(event))return {ok:false,error:'permission_denied'};
+    if(!validPaperOutput(input))return {ok:false,error:'invalid_input'};
+    return host.selectPaperOutput(input.sessionId,async()=>{
+      const current=options.window();if(!current)return;
+      const result=await dialog.showOpenDialog(current,{title:'选择试卷保存文件夹（仅保存已确认试卷）',properties:['openDirectory']});
+      return result.canceled?undefined:result.filePaths[0];
     });
   });
   return host;

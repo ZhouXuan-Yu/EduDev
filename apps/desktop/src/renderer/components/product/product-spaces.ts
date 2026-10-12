@@ -16,6 +16,7 @@ export const PRODUCT_PAGES = {
     { view: 'notebook', label: '备课本' },
     { view: 'book', label: '讲义' },
     { view: 'question_notebook', label: '题本' },
+    { view: 'paper', label: '组卷' },
   ],
   students: [
     { view: 'students', label: '学生档案' },

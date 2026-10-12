@@ -1,3 +1,4 @@
+import type {QuestionDocument} from './question-document';
 export type StudentStatus = 'active' | 'archived';
 
 export type Student = {
@@ -149,6 +150,7 @@ export type AttachmentImportItem = {
   ok: boolean;
   fileSize: number;
   errorMessage?: string;
+  reused?: boolean;
 };
 
 export type AttachmentImportResult = {
@@ -235,6 +237,7 @@ export type ReviewDraftInput = {
 export type QuestionBankSourceKind = 'local_bank' | 'teacher_resource' | 'generated';
 
 export type QuestionBankItem = {
+  document?: QuestionDocument;
   id: string;
   subject: string;
   grade: string;
@@ -268,9 +271,11 @@ export type QuestionBankItemInput = {
 export type QuestionSearchFilters = {
   query?: string;
   subject?: string;
+  grade?: string;
   knowledgePoint?: string;
   questionType?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
+  sourceKind?: QuestionBankSourceKind;
   limit?: number;
 };
 
@@ -296,6 +301,7 @@ export type QuestionNotebookEntry = QuestionBankItem & {
 export type QuestionNotebookListResult = {
   items: QuestionNotebookEntry[];
   total: number;
+  retrievalMethod?: 'local_keyword_index' | 'local_keyword_scan';
 };
 
 export type QuestionNotebookUsage = {
@@ -307,8 +313,7 @@ export type QuestionNotebookUsage = {
   createdAt: string;
 };
 
-export type QuestionNotebookFilters = {
-  query?: string;
+export type QuestionNotebookFilters = Omit<QuestionSearchFilters, 'limit'> & {
   categoryId?: string;
   bookmarked?: boolean;
   sourceKind?: QuestionBankSourceKind;

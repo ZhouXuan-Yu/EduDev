@@ -1,0 +1,6 @@
+import type {IpcMain} from 'electron';
+import type {createOriginalQuestionCoordinator} from './original-question-coordinator';
+type Coordinator=ReturnType<typeof createOriginalQuestionCoordinator>;
+export function registerOriginalQuestionIpc(options:{ipcMain:IpcMain;allowed:(event:Electron.IpcMainInvokeEvent)=>boolean;host:{reviewOriginal:Coordinator['review'];decideOriginal:Coordinator['decide'];originalImage:Coordinator['image'];reviewOriginalMulti:Coordinator['reviewMulti'];decideOriginalMulti:Coordinator['decideMulti'];reviseOriginalMulti:Coordinator['reviseMulti'];originalGallery:Coordinator['gallery'];completeOriginalContext:Coordinator['completeContext']}}){
+ for(const [channel,method]of [['xiaozhi:original-review','reviewOriginal'],['xiaozhi:original-decide','decideOriginal'],['questions:original-image','originalImage'],['xiaozhi:original-multi-review','reviewOriginalMulti'],['xiaozhi:original-multi-decide','decideOriginalMulti'],['xiaozhi:original-multi-revise','reviseOriginalMulti'],['questions:original-gallery','originalGallery'],['questions:complete-context','completeOriginalContext']] as const)options.ipcMain.handle(channel,(event,input)=>options.allowed(event)?options.host[method](input):{ok:false,error:'permission_denied'});
+}

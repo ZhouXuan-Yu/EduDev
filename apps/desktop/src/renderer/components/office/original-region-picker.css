@@ -1,0 +1,7 @@
+.original-region-picker { max-height:calc(100dvh - 48px); }
+.original-region-picker p { color:var(--muted);font-size:14px;line-height:1.6; }
+.original-region-raster { width:100%;display:flex;justify-content:center;background:white;overflow:auto; }
+.original-region-raster .ReactCrop { max-width:100%; }
+.original-region-raster img { display:block;max-width:100%;max-height:min(60dvh,680px);width:auto;height:auto; }
+.original-region-picker .ReactCrop__crop-selection { outline:2px solid #2563eb; }
+.original-region-picker .ReactCrop__drag-handle::after { background:#2563eb;border:2px solid white; }

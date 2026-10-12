@@ -5,7 +5,8 @@ import {withFileMutationQueue} from '@earendil-works/pi-coding-agent';
 import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-authority';
 import {fileVersion} from './workspace-files';
 import {OFFICE_ARTIFACT_SCHEMA,officeRelativePath,validOfficeProposal,type OfficeArtifactDecision,type OfficeArtifactSource} from '../../shared/xiaozhi-office-artifacts';
-import {validOfficeDraft,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {validOfficeDraft,isPaperOfficeDraft,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {isRichPaperOfficeSchema} from '../../shared/paper-export';
 import {createOfficeArtifactState,officeSha,officeSummary,type PrivateOfficeArtifact} from './office-artifact-state';
 type Ledger=ReturnType<typeof createOfficeArtifactState>;
 const check=(signal?:AbortSignal)=>{if(signal?.aborted)throw new Error('cancelled');};
@@ -38,19 +39,28 @@ function sourceVersions(root:string,row:PrivateOfficeArtifact){
 }
 function missing(root:string,row:Pick<PrivateOfficeArtifact,'path'|'format'>){return !fs.existsSync(target(root,row));}
 /** Main application glue around original Pi mutation queue and existing Office generators. */
-export function createOfficeArtifactService(options:{state:Ledger;dataRoot:string;workspace:(sessionId:string)=>Promise<string|null>;isCurrent:(sessionId:string,runId:string)=>boolean;
- generate?: (format:PrivateOfficeArtifact['format'],draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal})=>Promise<Buffer>;
+export function createOfficeArtifactService(options:{state:Ledger;dataRoot:string;workspace:(sessionId:string)=>Promise<string|null>;paperWorkspace?:(sessionId:string,hash?:string)=>Promise<string|null>;isCurrent:(sessionId:string,runId:string)=>boolean;
+ validatePaperDraft?:(sessionId:string,draft:OfficeDraft)=>Promise<void>;
+ commitPaperDraft?:(sessionId:string,draft:OfficeDraft,install:()=>void)=>Promise<void>;
+ resolvePaperImages?:(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>Promise<Map<string,Buffer>>;
+ generate?: (format:PrivateOfficeArtifact['format'],draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;images?:ReadonlyMap<string,Buffer>})=>Promise<Buffer>;
  afterStage?:(stage:'prepared'|'intent'|'file'|'fact')=>Promise<void>;onState?:(summary:ReturnType<typeof officeSummary>)=>void}){
  const {state}=options;
+ const validatePaper=async(sessionId:string,draft:OfficeDraft)=>{if(isPaperOfficeDraft(draft)){if(!options.validatePaperDraft||!options.commitPaperDraft)throw new Error('permission_denied');await options.validatePaperDraft(sessionId,draft);}};
+ const images=async(sessionId:string,draft:OfficeDraft,signal?:AbortSignal)=>{
+  if(!isRichPaperOfficeSchema(draft.schemaVersion))return undefined;
+  if(!options.resolvePaperImages)throw new Error('permission_denied');return options.resolvePaperImages(sessionId,draft,signal);
+ };
  const notify=(row:PrivateOfficeArtifact)=>{try{options.onState?.(officeSummary(row));}catch{/* A UI lifetime cannot own file execution. */}};
  const current=(row:Pick<PrivateOfficeArtifact,'sessionId'|'runId'>,signal?:AbortSignal)=>{check(signal);if(!options.isCurrent(row.sessionId,row.runId))throw new Error('permission_denied');};
- async function authority(sessionId:string,row?:PrivateOfficeArtifact){
-  const raw=await options.workspace(sessionId);if(!raw)throw new Error('permission_denied');
+ async function authority(sessionId:string,row?:Pick<PrivateOfficeArtifact,'draft'>&Partial<Pick<PrivateOfficeArtifact,'sessionId'|'workspaceHash'>>){
+  const raw=row&&isPaperOfficeDraft(row.draft)&&options.paperWorkspace?await options.paperWorkspace(sessionId,row.workspaceHash):await options.workspace(sessionId);if(!raw)throw new Error('permission_denied');
   const root=authorizedWorkspace(raw,options.dataRoot);
-  if(row&&(row.sessionId!==sessionId||row.workspaceHash!==workspaceHash(root)))throw new Error('permission_denied');return root;
+  if(row&&(row.sessionId!==undefined&&row.sessionId!==sessionId||row.workspaceHash!==undefined&&row.workspaceHash!==workspaceHash(root)))throw new Error('permission_denied');return root;
  }
  async function owned(sessionId:string,id:string){const row=await state.get(id);if(!row||row.sessionId!==sessionId)throw new Error('permission_denied');return row;}
- async function recheck(row:PrivateOfficeArtifact,root:string,signal?:AbortSignal){
+ async function recheck(row:PrivateOfficeArtifact,root:string,signal?:AbortSignal,checkPaper=true){
+  if(checkPaper)await validatePaper(row.sessionId,row.draft);
   if(row.parentArtifactId){
    const parent=await state.parent(row.parentArtifactId),source=row.sources.find(s=>s.kind==='parent_artifact');
    if(!parent||!source||parent.session_id!==row.sessionId||parent.content_hash!==source.sha256||parent.file_path!==file(root,source.path))throw new Error('conflict');
@@ -83,7 +93,10 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  return {
   async propose(sessionId:string,runId:string,callId:string,raw:unknown,signal?:AbortSignal){
    current({sessionId,runId},signal);if(!validOfficeProposal(raw)||!callId||callId.length>128)throw new Error('invalid_input');
-   const input=JSON.parse(JSON.stringify(raw)) as typeof raw,root=await authority(sessionId);current({sessionId,runId},signal);
+   const input=JSON.parse(JSON.stringify(raw)) as typeof raw,root=await authority(sessionId,{draft:input.draft});current({sessionId,runId},signal);
+   if(isPaperOfficeDraft(input.draft)&&(input.sources.length||input.parentArtifactId||!['docx','pdf'].includes(input.format)))throw new Error('invalid_input');
+   await validatePaper(sessionId,input.draft);current({sessionId,runId},signal);
+   await images(sessionId,input.draft,signal);current({sessionId,runId},signal);
    const inputHash=officeSha(JSON.stringify(input)),existing=await state.call(sessionId,runId,callId);current({sessionId,runId},signal);
    if(existing){if(existing.inputHash!==inputHash||existing.workspaceHash!==workspaceHash(root))throw new Error('conflict');return officeSummary(existing);}
    if(!missing(root,input))throw new Error('conflict');
@@ -104,28 +117,33 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
      sources[existing]=parentSource;
     }else sources.push(parentSource);
    }
-   const rootNow=await authority(sessionId);current({sessionId,runId},signal);if(rootNow!==root)throw new Error('permission_denied');
+   const rootNow=await authority(sessionId,{draft:input.draft});current({sessionId,runId},signal);if(rootNow!==root)throw new Error('permission_denied');
    const row=await state.create({sessionId,runId,callId,path:input.path,format:input.format,draft:input.draft,sources,parentArtifactId:input.parentArtifactId??null,inputHash,workspaceHash:workspaceHash(root)});
    try{await recheck(row,root,signal);}catch(error){await state.transition(row,['pending'],'interrupted');throw error;}
    return officeSummary(row);
   },
   async review(sessionId:string,id:string){
    const row=await owned(sessionId,id),root=await authority(sessionId,row);target(root,row);
-   return {...officeSummary(row),draft:row.draft,sources:row.sources,parentArtifactId:row.parentArtifactId};
+   if(isRichPaperOfficeSchema(row.draft.schemaVersion))await validatePaper(sessionId,row.draft);
+   const resolved=await images(sessionId,row.draft);await authority(sessionId,row);
+   return {...officeSummary(row),draft:row.draft,sources:row.sources,parentArtifactId:row.parentArtifactId,...(resolved?{images:[...resolved].map(([assetId,bytes])=>({assetId,sha256:officeSha(bytes),dataUrl:'data:image/png;base64,'+bytes.toString('base64')}))}:{})};
   },
   async revise(sessionId:string,id:string,revision:number,draft:unknown){
    if(!Number.isSafeInteger(revision)||revision<0||!validOfficeDraft(draft))throw new Error('invalid_input');
    const content=JSON.parse(JSON.stringify(draft)) as OfficeDraft,row=await owned(sessionId,id),root=await authority(sessionId,row);current(row);
    return withFileMutationQueue(target(root,row),async()=>{
     const latest=await owned(sessionId,id);await recheck(latest,root);
+    if(isPaperOfficeDraft(latest.draft)&&(!isPaperOfficeDraft(content)||content.schemaVersion!==latest.draft.schemaVersion||JSON.stringify(content.paperSource)!==JSON.stringify(latest.draft.paperSource)))throw new Error('conflict');
+    if(!isPaperOfficeDraft(latest.draft)&&isPaperOfficeDraft(content))throw new Error('permission_denied');
+    await validatePaper(sessionId,content);current(latest);
     if(latest.revision!==revision||latest.state!=='pending')throw new Error('conflict');
     if(!compatible(root,latest))return conflict(latest);
     return officeSummary(await state.transition(latest,['pending'],'pending',{draft:content}));
    });
   },
   async decide(input:OfficeArtifactDecision){
-   if(!input||input.schemaVersion!==OFFICE_ARTIFACT_SCHEMA||Object.keys(input).some(k=>!['schemaVersion','sessionId','draftId','revision','action'].includes(k))
-    ||!Number.isSafeInteger(input.revision)||input.revision<0||!['approve','reject','verify'].includes(input.action))throw new Error('invalid_input');
+   if(!input||input.schemaVersion!==OFFICE_ARTIFACT_SCHEMA||Object.keys(input).some(k=>!['schemaVersion','sessionId','draftId','revision','action','imagesReviewed'].includes(k))
+    ||!Number.isSafeInteger(input.revision)||input.revision<0||!['approve','reject','verify'].includes(input.action)||(input.imagesReviewed!==undefined&&input.imagesReviewed!==true))throw new Error('invalid_input');
    const row=await owned(input.sessionId,input.draftId),root=await authority(input.sessionId,row);
    return withFileMutationQueue(target(root,row),async()=>{
     const latest=await owned(input.sessionId,input.draftId),active=await authority(input.sessionId,latest);
@@ -135,9 +153,11 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
      const outcome=outputMatches(root,latest);
      return officeSummary(await state.transition(latest,['uncertain'],outcome==='same'?'saved':outcome==='absent'?'interrupted':'conflict'));
     }
-    await recheck(latest,root);if(latest.state!=='pending')throw new Error('conflict');
+    await recheck(latest,root,undefined,input.action!=='reject');if(latest.state!=='pending')throw new Error('conflict');
+    if(input.action==='approve'&&isRichPaperOfficeSchema(latest.draft.schemaVersion)&&latest.draft.sections.some(s=>s.figures?.length)){if(input.imagesReviewed!==true)throw new Error('invalid_input');await images(input.sessionId,latest.draft);current(latest);}
+    else if(input.imagesReviewed!==undefined)throw new Error('invalid_input');
     if(input.action==='approve'&&!compatible(root,latest))return conflict(latest);
-    return officeSummary(await state.transition(latest,['pending'],input.action==='approve'?'approved':'rejected'));
+    return officeSummary(await state.transition(latest,['pending'],input.action==='approve'?'approved':'rejected',input.imagesReviewed?{imagesReviewed:true}:{}));
    });
   },
   async apply(sessionId:string,id:string,signal?:AbortSignal){
@@ -150,7 +170,8 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
     try{
      const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
      await recheck(latest,root,signal);
-     const bytes=await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal});
+     const resolved=await images(sessionId,latest.draft,signal);await recheck(latest,root,signal);
+     const bytes=await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal,images:resolved});
      await recheck(latest,root,signal);
      if(!compatible(root,latest))return conflict(latest);
      latest=await state.transition(latest,['generating'],'prepared',{output:bytes,resultPath:target(root,latest)});
@@ -159,7 +180,9 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
      latest=await state.transition(latest,['prepared'],'committing');
      notify(latest);
      await options.afterStage?.('intent');await recheck(latest,root,signal);
-     install(root,latest,signal);await options.afterStage?.('file');
+     if(isPaperOfficeDraft(latest.draft)){if(!options.commitPaperDraft)throw new Error('permission_denied');await options.commitPaperDraft(sessionId,latest.draft,()=>install(root,latest,signal));}
+     else install(root,latest,signal);
+     await options.afterStage?.('file');
      if(outputMatches(root,latest)!=='same')throw new Error('conflict');
      const saved=await state.transition(latest,['committing'],'saved');notify(saved);await options.afterStage?.('fact');return officeSummary(saved);
     }catch(error){

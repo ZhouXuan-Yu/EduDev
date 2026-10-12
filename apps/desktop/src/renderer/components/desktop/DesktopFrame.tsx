@@ -27,7 +27,11 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   const flush=useCallback(()=>{pending.current=pending.current.filter(command=>!deliver(command));},[deliver]);
   const register=useCallback((handler:Handler,priority:number)=>{const id=Symbol();handlers.current.set(id,{handler,priority});return ()=>{handlers.current.delete(id);};},[]);
   const navigate=useCallback((target:Target)=>setHistory(old=>{
-    const current=old.entries[old.index];if(current.view===target.view&&current.sessionId===target.sessionId)return old;
+    const current=old.entries[old.index];if(current.view===target.view&&current.sessionId===target.sessionId){
+      if(target.draft===undefined)return old;
+      // Same-session actions may prepare a new request without another history entry.
+      const entries=[...old.entries];entries[old.index]={...current,draft:target.draft};return {...old,entries};
+    }
     const entries=[...old.entries.slice(0,old.index+1),target].slice(-80);return {entries,index:entries.length-1};
   }),[]);
   const reject=useCallback((sessionId:string)=>setHistory(old=>{

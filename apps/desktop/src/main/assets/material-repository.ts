@@ -1,13 +1,14 @@
-import fs from 'node:fs/promises';
-import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {MATERIALS_SCHEMA,MATERIAL_PAGE_SIZE,materialTerms,type MaterialQuery,type MaterialBodyQuery,type MaterialPage,type MaterialBody} from '../../shared/materials';
 import type {TeacherResource,ResourceChunk} from '../../shared/contracts';
-import {DOCUMENT_SCHEMA,DOCUMENT_MAX_INPUT,DOCUMENT_MAX_OUTPUT,isOfficeDocument,type DocumentFailure} from '../../shared/xiaozhi-documents';
+import {DOCUMENT_SCHEMA,DOCUMENT_MAX_INPUT,DOCUMENT_MAX_OUTPUT,isOfficeDocument} from '../../shared/xiaozhi-documents';
 import {extractLocalDocument} from '../xiaozhi-agent/document-host';
 import type {MaterialSource,MaterialSourceView} from '../../shared/materials';
 import {EDUCATION_SEARCH_MAX_BYTES,EDUCATION_SEARCH_MAX_UNITS} from '../../shared/education-capabilities';
 import {materialBodyVersion,type MaterialReadingUnit} from './material-source';
+import type {MaterialOcrPage,MaterialOcrProgress} from '../../shared/material-pdf-ocr';
+import {readMaterialOriginal} from './material-original';
+import type {MaterialParseLease} from './material-parse-queue';
 export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:string};
 
 type Row=Record<string,unknown>;
@@ -15,18 +16,32 @@ type SqlValue=string|number|null;
 export type MaterialRepositoryHost={
  root:string;all:(sql:string,params?:SqlValue[])=>Promise<Row[]>;
  mapResource:(row:Row)=>TeacherResource;mapChunk:(row:Row)=>ResourceChunk;
- commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal)=>Promise<void>;
- reuse:(id:string,engine:string)=>Promise<void>;
- failure:(id:string,code:string)=>Promise<void>;
+ commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal,pages?:MaterialOcrPage[],lease?:MaterialParseLease)=>Promise<void>;
+ reuse:(id:string,engine:string,lease?:MaterialParseLease)=>Promise<void>;
+ failure:(id:string,code:string,lease?:MaterialParseLease)=>Promise<void>;
 };
 /** Business adapter only: same SQLite facts and existing Hana worker, no runtime. */
 export class MaterialRepository {
+ progress?:MaterialOcrProgress;
  private readonly active=new Set<string>();
  private readonly host:MaterialRepositoryHost;
  constructor(host:MaterialRepositoryHost){this.host=host;}
+ /** Reuse only the same named immutable content with an intact managed original. */
+ async duplicate(name:string,hash:string,size:number,signal:AbortSignal):Promise<TeacherResource|undefined>{
+  const rows=await this.host.all(`SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE original_file_name=? AND content_hash=? AND file_size=? ORDER BY created_at,r.id LIMIT 8`,[name,hash,size]);
+  for(const row of rows){signal.throwIfAborted();const resource=this.host.mapResource(row);
+   try{await this.original(resource.id,hash,signal);signal.throwIfAborted();return resource;}catch(error){if(signal.aborted)throw error;}
+  }
+ }
  async resource(id:string):Promise<TeacherResource>{
   const row=(await this.host.all(`SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE r.id=?`,[id]))[0];
   if(!row)throw new Error('material_not_found');return this.host.mapResource(row);
+ }
+ async original(id:string,version:string,signal:AbortSignal):Promise<Buffer>{
+  const resource=await this.resource(id);if(resource.contentHash!==version)throw new Error('source_changed');
+  const bytes=await readMaterialOriginal(this.host.root,resource.localPath,version,signal,DOCUMENT_MAX_INPUT);
+  signal.throwIfAborted();const after=await this.resource(id);
+  if(after.contentHash!==version||after.localPath!==resource.localPath)throw new Error('source_changed');return bytes;
  }
  async list(input:MaterialQuery):Promise<MaterialPage>{
   // instr treats %, _ and backslashes literally; all user terms are bound parameters.
@@ -65,40 +80,41 @@ export class MaterialRepository {
   if(after.contentHash!==body.resource.contentHash||after.parseStatus!==body.resource.parseStatus)throw new Error('source_changed');
   return {source:input,body:{...body,chunks:[chunk],hasMore:input.offset+1<body.total}};
  }
- async ingest(id:string,signal:AbortSignal):Promise<TeacherResource>{
+ async ingest(id:string,signal:AbortSignal,lease?:MaterialParseLease):Promise<TeacherResource>{
   if(this.active.has(id))throw new Error('material_busy');this.active.add(id);
   try{
-   const resource=await this.resource(id);let failure:DocumentFailure|'missing'|'source_changed'|'partial_existing'|undefined;
+   const resource=await this.resource(id);let failure:string|undefined;
    try{
     signal.throwIfAborted();
-    const root=await fs.realpath(this.host.root),stat=await fs.lstat(resource.localPath);
-    const actual=await fs.realpath(resource.localPath);
-    if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1||path.dirname(actual)!==root)throw new Error('missing');
-    if(stat.size>DOCUMENT_MAX_INPUT){failure='too_large';}
-    else {
-     const bytes=await fs.readFile(actual);signal.throwIfAborted();
+    {
+     const bytes=await this.original(id,resource.contentHash,signal);signal.throwIfAborted();
      const hash=createHash('sha256').update(bytes).digest('hex');
      if(hash!==resource.contentHash)failure='source_changed';
      else if(resource.chunkCount>0&&['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus))return resource;
      else if(resource.chunkCount>0&&/:(missing|source_changed)$/.test(resource.parseEngine)){
-      signal.throwIfAborted();await this.host.reuse(id,isOfficeDocument(resource.originalFileName)?'hana-anydoc-0.1.2':'local-text-v1');
+      signal.throwIfAborted();await this.host.reuse(id,resource.parseEngine.split(':')[0],lease);
      }
      else if(resource.chunkCount>0)failure='partial_existing';
      else {
-      let content='',engine='local-text-v1';
+      let content='',engine='local-text-v1',pages:MaterialOcrPage[]|undefined;
       if(/\.(txt|md)$/i.test(resource.originalFileName)){
        if(bytes.length>DOCUMENT_MAX_OUTPUT)failure='too_large';
        else {try{content=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{failure='text_unreadable';}}
       } else if(isOfficeDocument(resource.originalFileName)){
        const parsed=await extractLocalDocument({schemaVersion:DOCUMENT_SCHEMA,requestId:`xifile_${randomUUID()}`,filename:resource.originalFileName,bytes},signal);
-       if(parsed.ok){content=parsed.markdown;engine=parsed.parser;}else failure=parsed.error;
+       if(parsed.ok){content=parsed.markdown;engine=parsed.parser;}
+       else if(parsed.error==='needs_ocr'&&/\.pdf$/i.test(resource.originalFileName)){
+        const {recognizeLocalPdf}=await import('../xiaozhi-agent/ocr-host');
+        const ocr=await recognizeLocalPdf(bytes,signal,value=>{this.progress=value;},this.host.root);
+        pages=ocr.pages;content=pages.map(page=>page.text).join('\n\n');engine=ocr.engine;
+       }else failure=parsed.error;
       } else failure='unsupported';
-      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();const current=await fs.readFile(actual);if(createHash('sha256').update(current).digest('hex')!==hash)failure='source_changed';else await this.host.commit(id,content,engine,hash,signal);}}
+      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease);}}
      }
     }
-   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':code==='source_changed'?'source_changed':code==='partial_existing'?'partial_existing':code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
-   if(failure)await this.host.failure(id,failure);
+   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
+   if(failure)await this.host.failure(id,failure,lease);
    return await this.resource(id);
-  }finally{this.active.delete(id);}
+  }finally{this.progress=undefined;this.active.delete(id);}
  }
 }

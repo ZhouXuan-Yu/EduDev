@@ -1174,8 +1174,10 @@ async function run() {
   await first.page.setViewportSize({ width: 1366, height: 768 });
   await navigate(first.page, 'question_notebook');
   await first.page.getByTestId(`question-notebook-card-${notebookQuestions.local.id}`).waitFor({ state: 'visible' });
-  assert.match(await first.page.getByTestId(`question-notebook-source-${notebookQuestions.local.id}`).textContent(), /local_bank/, 'local question source must be visible');
-  assert.match(await first.page.getByTestId(`question-notebook-source-${notebookQuestions.generated.id}`).textContent(), /generated/, 'generated question source must be visible');
+  assert.match(await first.page.getByTestId(`question-notebook-source-${notebookQuestions.local.id}`).textContent(), /本地题库/, 'local question source must be visible in teacher language');
+  assert.match(await first.page.getByTestId(`question-notebook-source-${notebookQuestions.generated.id}`).textContent(), /小智生成内容/, 'generated question source must be visible in teacher language');
+  assert.equal((await first.page.evaluate(id => window.omniEdu.getQuestionNotebookEntry(id), notebookQuestions.local.id)).sourceKind, 'local_bank', 'display translation must preserve local provenance');
+  assert.equal((await first.page.evaluate(id => window.omniEdu.getQuestionNotebookEntry(id), notebookQuestions.generated.id)).sourceKind, 'generated', 'display translation must preserve generated provenance');
   const questionSourceOptions = await first.page.getByTestId('question-notebook-new-source-kind').locator('option').allTextContents();
   assert.equal(questionSourceOptions.some((label) => label.includes('generated')), false, 'teacher creation UI must not allow forged generated provenance');
   const questionCountBeforeEmptyCreate = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebook())).total;
@@ -1203,7 +1205,7 @@ async function run() {
   await first.page.getByTestId(`question-notebook-category-rename-input-${uiQuestionCategory.id}`).fill('本周复习');
   await first.page.getByTestId(`question-notebook-rename-category-${uiQuestionCategory.id}`).click();
   await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 2, uiQuestionCategory.id);
-  await first.page.waitForFunction(() => document.querySelector('[data-testid="question-notebook-success"]')?.textContent?.includes('版本锁重命名'));
+  await first.page.waitForFunction(() => document.querySelector('[data-testid="question-notebook-success"]')?.textContent?.includes('分类已重命名'));
   await first.page.waitForFunction((categoryId) => !(document.querySelector(`[data-testid="question-notebook-rename-category-${categoryId}"]`))?.disabled, uiQuestionCategory.id);
   uiQuestionCategory = (await first.page.evaluate(() => window.omniEdu.listQuestionNotebookCategories())).find((category) => category.id === uiQuestionCategory.id);
   assert.equal(uiQuestionCategory.name, '本周复习', 'category rename should use optimistic version readback');
@@ -1221,8 +1223,9 @@ async function run() {
   await first.page.getByTestId('question-notebook-usage-empty').waitFor({ state: 'visible' });
   await first.page.getByTestId(`question-notebook-usage-record-${uiCreatedQuestion.id}`).click();
   await first.page.waitForFunction(async (questionId) => (await window.omniEdu.listQuestionNotebookUsage(questionId)).length === 1, uiCreatedQuestion.id);
-  await first.page.waitForFunction(questionId => document.querySelector(`[data-testid="question-notebook-usage-${questionId}"]`)?.textContent?.includes('manual'), uiCreatedQuestion.id);
-  assert.match(await first.page.getByTestId(`question-notebook-usage-${uiCreatedQuestion.id}`).textContent(), /manual/, 'manual classroom usage should render from SQLite readback');
+  await first.page.waitForFunction(questionId => document.querySelector(`[data-testid="question-notebook-usage-${questionId}"]`)?.textContent?.includes('课堂使用'), uiCreatedQuestion.id);
+  assert.match(await first.page.getByTestId(`question-notebook-usage-${uiCreatedQuestion.id}`).textContent(), /课堂使用/, 'manual classroom usage should render in teacher language');
+  assert.equal((await first.page.evaluate(id => window.omniEdu.listQuestionNotebookUsage(id), uiCreatedQuestion.id))[0].usageType, 'manual', 'display translation must preserve stored manual usage');
 
   await first.page.getByTestId(`question-notebook-delete-category-${uiQuestionCategory.id}`).click();
   await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories(true)).find((category) => category.id === categoryId)?.status === 'deleted', uiQuestionCategory.id);

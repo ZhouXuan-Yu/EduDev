@@ -58,3 +58,25 @@
 .teacher-library-pagination .pagination__summary { color: var(--pi-muted); }
 .teacher-library-pagination button { color: var(--pi-ink); }
 .teacher-library-pagination button:disabled { color: var(--pi-muted); }
+.material-original { margin: 16px 0; padding: 16px; border: 1px solid var(--pi-line); border-radius: 16px; background: var(--pi-soft); min-width: 0; }
+.material-original .material-original-controls { display: flex; align-items: start; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.material-original h3 { font-size: 15px; font-weight: 600; color: var(--pi-ink); margin: 0; }
+.material-original-actions { display: flex; gap: 8px; }
+.material-original-zoom { display: flex; justify-content: end; margin: 8px 0; }
+.material-original-paper { max-height: 520px; max-height: min(520px, 65vh); overflow: auto; background: white; border: 1px solid var(--pi-line); border-radius: 8px; }
+.material-original-paper img { display: block; width: 100%; height: auto; max-width: none; }
+.material-original-paper img.is-enlarged { width: 1600px; }
+.material-original-paper:focus-visible { outline: 2px solid var(--pi-accent); outline-offset: 2px; }
+.material-layout-raster { position: relative; width: 100%; }
+.material-layout-raster.is-enlarged { width: 1600px; }
+.material-layout-overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
+.material-layout-overlay polygon { fill: rgba(40, 100, 210, .04); stroke: #2563eb; stroke-width: 1; vector-effect: non-scaling-stroke; cursor: pointer; }
+.material-layout-overlay polygon:hover, .material-layout-overlay polygon:focus-visible { fill: rgba(40, 100, 210, .20); stroke-width: 2; outline: none; }
+.material-layout-overlay polygon.is-selected { fill: rgba(40, 100, 210, .28); stroke-width: 2; }
+.material-layout { margin-top: 12px; color: var(--pi-ink); min-width: 0; }
+.material-layout-toolbar { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+.material-layout-toolbar p { margin: 0; }
+.material-layout-lines { display: grid; gap: 6px; max-height: 210px; overflow: auto; padding: 8px; border: 1px solid var(--pi-line); border-radius: 8px; }
+.material-layout-lines .checkbox { min-width: 0; width: 100%; }
+.material-layout-lines .checkbox__content { display: flex; width: 100%; gap: 10px; align-items: start; font-weight: 400; white-space: normal; overflow-wrap: anywhere; }
+.material-layout .text-area { width: 100%; color: var(--pi-ink); background: var(--pi-paper); }

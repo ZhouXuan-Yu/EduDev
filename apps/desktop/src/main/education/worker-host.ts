@@ -11,8 +11,8 @@ function localPython(){
  return {command,args:/(?:^|[\\/])py(?:\.exe)?$/i.test(command)?['-3']:[]};
 }
 /** Existing reading host shared by fixed reviewed workers; no arbitrary scripts. */
-export async function runEducationWorker<T>(worker:'reading'|'learning'|'question',input:Record<string,unknown>,schema:string,signal:AbortSignal,inputLimit:number,outputLimit:number,valid:(v:unknown)=>v is T,project:(v:T)=>T):Promise<T>{
- if(!['reading','learning','question'].includes(worker))throw new Error('invalid_input');
+export async function runEducationWorker<T>(worker:'reading'|'learning'|'question'|'math',input:Record<string,unknown>,schema:string,signal:AbortSignal,inputLimit:number,outputLimit:number,valid:(v:unknown)=>v is T,project:(v:T)=>T):Promise<T>{
+ if(!['reading','learning','question','math'].includes(worker))throw new Error('invalid_input');
  signal.throwIfAborted();
  const requestId=randomUUID(),bytes=Buffer.from(JSON.stringify({schemaVersion:schema,requestId,...input}));
  if(bytes.length>inputLimit)throw new Error('invalid_input');
@@ -23,7 +23,7 @@ export async function runEducationWorker<T>(worker:'reading'|'learning'|'questio
   let settled=false,released=false,out=Buffer.alloc(0),child:ReturnType<typeof spawn>;
   const release=()=>{if(!released){released=true;workers--;}};
   const finish=(error?:string,result?:T)=>{if(settled)return;settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);child?.kill();error?reject(new Error(error)):resolve(result!);};
-  const abort=()=>finish('cancelled');const timer=setTimeout(()=>finish('timeout'),5000);
+  const abort=()=>finish('cancelled');const timer=setTimeout(()=>finish('timeout'),worker==='math'?15000:5000);
   try{child=spawn(python.command,[...python.args,'-I','-S','-B','-X','utf8',path.join(path.dirname(fileURLToPath(import.meta.url)),worker+'-worker.py')],{env,windowsHide:true,stdio:['pipe','pipe','pipe']});}
   catch{clearTimeout(timer);release();reject(new Error('unavailable'));return;}
   child.once('error',()=>{release();finish('unavailable');});child.stderr!.on('data',()=>{});

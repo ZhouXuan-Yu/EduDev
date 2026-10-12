@@ -1,3 +1,4 @@
+import {reviewQuestionQuality} from './review-question-quality.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -41,6 +42,7 @@ export async function photoLearningCycleVisual(ctx){
 
 /** Compose the original journeys and production approvals, with no direct fact writes. */
 export async function photoLearningCycleJourney(ctx){
+ if(process.argv.includes('--variant-only'))return fivePhysicsVariants(ctx);
  const {data,output,report,navigate,until,check,restart,studentNative}=ctx;
  const page=()=>ctx.page(),app=()=>ctx.app();
  const photo=path.join(output,'勾股定理学生错题.png');
@@ -97,7 +99,7 @@ $taskFont.Dispose();$taskCanvas.Dispose();$taskImage.Dispose()
  finalQuestions[0]={...qview.draft.items[0],stem:await teacherItem.getByTestId('question-review-stem').inputValue(),answer:await teacherItem.getByTestId('question-review-answer').inputValue(),analysis:await teacherItem.getByTestId('question-review-analysis').inputValue()};
  await teacherItem.getByTestId('question-review-answer').fill('');await qcard.getByTestId('question-review-confirm').click();await qcard.getByRole('alert').waitFor();assert.equal(facts().questions.length,1);
  await teacherItem.getByTestId('question-review-answer').fill(finalQuestions[0].answer);await capture('five-question-review',qcard.getByTestId('question-review-confirm'));
- await qcard.getByTestId('question-review-confirm').click();await until(()=>facts().questionsReviewed[0].status==='confirmed');assert.equal(facts().questions.length,6);unchangedRoot();
+ await reviewQuestionQuality(qcard);await qcard.getByTestId('question-review-confirm').click();await until(()=>facts().questionsReviewed[0].status==='confirmed');assert.equal(facts().questions.length,6);unchangedRoot();
  const savedQuestions=JSON.parse(facts().questionsReviewed[0].result_json).saved;assert.equal(savedQuestions.length,5);
  check('Teacher edits one of five questions and invalid answer writes nothing; actual approval atomically saves five sourced child questions');
  await until(()=>facts().practicesReviewed.length===1,240000);const pr=facts().practicesReviewed[0],pview=JSON.parse(pr.payload_json),pcard=card('practice',pr.id);
@@ -138,3 +140,33 @@ $taskFont.Dispose();$taskCanvas.Dispose();$taskImage.Dispose()
  fs.writeFileSync(path.join(output,'readback.json'),JSON.stringify(report.result,null,2));
 }
 
+/** Natural scanned multi-part physics source; reuse existing OCR/facts and approval cards. */
+async function fivePhysicsVariants(ctx){
+ const {desktop,data,output,report,navigate,until,check,restart}=ctx,page=()=>ctx.page();
+ const prior=path.join(desktop,'test-results/education-journey-dnR4jc/data'),db=new DatabaseSync(path.join(prior,'app.db'),{readOnly:true});let original;
+ try{original=db.prepare('SELECT * FROM question_bank_items WHERE stem LIKE ?').get('%扁担%');}finally{db.close();}
+ assert(original);const doc=JSON.parse(original.document_json),image=doc.blocks.find(b=>b.kind==='image'),photo=path.join(prior,'question-assets/v1',image.assetId+'.png');assert.equal(sha256(fs.readFileSync(photo)),image.sha256);
+ const stem=original.stem.replace('如图6(a)所示','扁担作为杠杆').replace('如图6(b)所示','使用定滑轮');
+ await mistakeFactsJourney({...ctx,localFactsOnly:true,photoFixture:photo,photoTextMatches:['扁担','80','95'],correctedPhotoText:stem,teacherPhotoFacts:{subject:'物理',point:'杠杆平衡、定滑轮、功率与机械效率',stem,answer:original.answer,analysis:original.analysis,actual:'动力40N；省力；功率16W；速度越大效率越大。',cause:'验收学生模拟作答：动力臂比例倒置，混淆拉力与有用力，误认为加速会提高同载荷匀速提升效率。'}});
+ const base=report.result,parent=base.question,studentId=base.studentId;
+ const rows=sql=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(sql).all();}finally{db.close();}},facts=()=>Object.fromEntries(['question_bank_items','learning_records','mistake_image_analyses','exercise_sets','question_bank_usage','ai_confirmation_items'].map(t=>[t,rows('SELECT * FROM '+t+' ORDER BY rowid')]));
+ const reviews=type=>facts().ai_confirmation_items.filter(r=>r.action_type===type),before=facts();
+ report.boundaries=['Actual natural scanned source text crop → fixed local OCR → teacher confirms full verbal figure conditions and simulated owned student response → sole Pi/real DeepSeek → five source-linked variants → two distinct teacher approvals → practice → cold read','Original figure files remain in prior fixture; this input is text crop, not automatic geometry understanding. Teacher-provided references are not official independently verified answers. Not all-subject correctness, Office or large-library acceptance'];
+ await page().getByTestId('mistake-facts-variants').click();await until(async()=>await page().getByTestId('office-prompt-input').inputValue().then(v=>v.includes('此次只做五题练习')));const session=await ctx.selectSession();assert.equal((await ctx.snapshot()).studentContext.id,studentId);
+ const prompt=await page().getByTestId('office-prompt-input').inputValue();assert(prompt.includes('集中核对'));assert(!prompt.includes('完整14天'));await page().getByTestId('office-prompt-input').press('Enter');assert.equal(await page().getByTestId('office-prompt-input').inputValue(),'');
+ await until(()=>reviews('pi_question_candidate').some(r=>r.status==='pending'&&!r.superseded_by),300000);
+ let candidate=reviews('pi_question_candidate').filter(r=>r.status==='pending'&&!r.superseded_by).at(-1);const payload=JSON.parse(candidate.payload_json);assert.equal(payload.draft.items.length,5);assert(payload.sources.some(q=>q.id===parent.id));assert.equal(facts().question_bank_items.length,1);assert.deepEqual(facts().learning_records,before.learning_records);
+ const card=page().locator(`[data-testid=pi-question-review][data-review-id="${candidate.id}"]`);await card.getByTestId('question-review-item').last().waitFor();
+ fs.writeFileSync(path.join(output,'physics-five-review.json'),JSON.stringify({session,id:candidate.id,draft:payload.draft,mathPlans:payload.mathPlans,sources:payload.sources},null,2));
+ // Pause at a concrete candidate for independent content inspection; this is not a confirmation.
+ console.log('REVIEW '+path.join(output,'physics-five-review.json'));if(process.argv.includes('--teacher-review-gates'))await until(()=>fs.existsSync(path.join(output,'physics-five-review.ready')),300000);
+ check('Natural source OCR and actual teacher facts drive one five-variant candidate with its root source and no inferred outcome or premature question writes');
+ await reviewQuestionQuality(card);
+ for(const [theme,width,height]of[['light',1366,768],['dark',1920,1080]]){await page().emulateMedia({colorScheme:theme});await ctx.app().evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(s.width,s.height),{width,height});await card.getByTestId('question-review-confirm').scrollIntoViewIfNeeded();await page().screenshot({path:path.join(output,`physics-variants-${theme}-${width}.png`),animations:'disabled'});assert(await page().evaluate(()=>document.documentElement.scrollWidth<=innerWidth));report.visuals.push({png:`physics-variants-${theme}-${width}.png`,theme,width,height});}
+ await card.getByTestId('question-review-confirm').click();await until(()=>reviews('pi_question_candidate').find(r=>r.id===candidate.id).status==='confirmed');const saved=JSON.parse(reviews('pi_question_candidate').find(r=>r.id===candidate.id).result_json).saved;assert.equal(saved.length,5);assert.equal(facts().question_bank_items.length,6);
+ await until(()=>reviews('pi_practice_candidate').some(r=>r.status==='pending'),240000);const pr=reviews('pi_practice_candidate').at(-1),pv=JSON.parse(pr.payload_json);assert.equal(pv.questions.length,5);assert(pv.questions.every(q=>saved.some(s=>s.questionId===q.question.id)&&q.parents.some(p=>p.questionId===parent.id)));assert.equal(facts().exercise_sets.length,0);
+ const practice=page().locator(`[data-testid=pi-practice-review][data-review-id="${pr.id}"]`);await practice.getByTestId('practice-review-confirm').click();await until(()=>reviews('pi_practice_candidate').find(r=>r.id===pr.id).status==='confirmed');await until(async()=>!(await ctx.snapshot()).running,180000);
+ const final=facts();assert.equal(final.exercise_sets.length,1);assert.equal(final.question_bank_usage.length,5);assert.deepEqual(final.learning_records,before.learning_records);assert.deepEqual(final.mistake_image_analyses,before.mistake_image_analyses);assert.deepEqual(final.question_bank_items.find(q=>q.id===parent.id),parent);assert.equal(reviews('pi_student_learning_change').length,0);
+ const tools=ctx.studentNative(session).entries.filter(e=>e.message?.role==='toolResult').map(e=>({name:e.message.toolName,text:e.message.content.filter(p=>p.type==='text').map(p=>p.text).join('')}));assert(tools.some(t=>t.name==='education_find_similar_questions'));assert(tools.some(t=>t.name==='education_read_practice'&&t.text.includes('"found":true')));check('Two distinct explicit teacher approvals save exactly five sourced variants and one practice; sole Pi rereads final practice without creating a plan or student outcomes');
+ await restart();assert.deepEqual(facts(),final);check('Cold restart preserves the natural photo receipt, original question, five variant lineage and one exact practice with no fact changes');report.result={...base,variant:{session,questionReview:candidate.id,practiceReview:pr.id,questions:saved,exercise:final.exercise_sets[0],originalImageSha256:image.sha256}};fs.writeFileSync(path.join(output,'readback.json'),JSON.stringify(report.result,null,2));
+}
