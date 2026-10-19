@@ -122,7 +122,7 @@
      };
      ```
    - 校验顺序（缺一不可）：`analysisId` 非空 → 记录存在 → `localPath` 是受管路径且文件存在 → `confirmedUploadOriginal === true` → 有 API Key → provider 调用。**校验未通过时不得读取图片、不得编码 base64、不得调用 provider。**
-   - 云端结果：`applyMistakeOcrResult` 返回 `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`；`lowConfidenceCount` 固定 `0` 但不得展示为“高置信度”。
+   - 云端结果：`applyMistakeOcrResult` 以 `confidence=-1` 落库；IPC 返回前经 `apps/desktop/src/shared/mistake-ocr.ts` 归一化为 `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`；renderer 从 `listMistakeImageAnalyses` 读到的 `-1` 也必须经同一函数归一化。`lowConfidenceCount` 固定 `0` 但不得展示为“高置信度”。
    - 云端失败：调用 `markCloudOcrFailed`（新增私有方法或复用）只写 `error_message`，**不覆盖**已有 `ocr_done` 文本/状态；返回可行动错误。
    - 审计：返回 `audit`，并写一条 bounded 主进程日志（provider/model/requestId/confirmedAt/imageBytes），**不得**记录图片路径、base64、学生姓名或题干原文。由于本轮无迁移，不新增 SQLite 审计表；在 docs/26 明确该边界。
    - UI：OCR 面板新增次级按钮“云端识别（会上传原图）”；点击后弹出确认对话框，必须勾选“我确认会上传原图到云端”才可确认；取消/关闭零调用。结果区显示“云端识别：未提供置信度，必须教师复核”，不得显示百分比。
@@ -166,9 +166,9 @@
 
 #### Ownership
 
-- 仅上述 Target 文件。
+- 仅上述 Target 文件（含新增的 `main/mistake-ocr.ts`、`shared/mistake-ocr.ts`、`renderer/ai-context-sources.ts`）。
 - `MistakesWorkspace.tsx` 只允许改 OCR 面板（约 `269-283`、`418-432`）与新增同意对话框；不得改错因/题组区块。
-- 不触碰 `PaperWorkspace.tsx`、`db.ts`、`packages`、`python/`。
+- 不触碰 `PaperWorkspace.tsx`、`db.ts`、`packages`、`python/`。`db.ts` 必须在 T0 的 diff 中保持零改动。
 
 #### Observable acceptance
 
@@ -489,7 +489,7 @@ P（本文件）
 | --- | --- | --- | --- |
 | `apps/desktop/src/main/index.ts:2087-2127` | 现有本地 OCR 的受管路径守卫、`applyMistakeOcrResult`/`markMistakeOcrFailed` 状态机 | 自动 DeepSeek 回退分支（`2094-2116`） | 抽到 `main/mistake-ocr.ts` 纯编排，index 只做 IPC 接线 |
 | `apps/desktop/src/main/db.ts:1966-1994` | `applyMistakeOcrResult` 的文本/状态更新、attachment 回写 | 伪造 `confidence`、覆盖已有本地结果 | 云端结果用 `null` + `requiresReview`；DB 用 `-1` 哨兵，无迁移 |
-| `apps/desktop/src/main/db.ts:8517-8534` | `mapMistakeImageAnalysis` 的字段映射 | 把 `-1` 直接暴露为置信度 | 映射为 `ocrConfidence: null`、`requiresReview: true`、`ocrSource: 'cloud'` |
+| `apps/desktop/src/main/db.ts:8517-8534` | 只读参考 `mapMistakeImageAnalysis` 的字段映射 | **不得修改 `db.ts`**；不得把 `-1` 直接暴露为置信度 | 在 `apps/desktop/src/shared/mistake-ocr.ts` 归一化（`<0` → `null`/`requiresReview`/`ocrSource='cloud'`），main 与 renderer 共用 |
 | `apps/desktop/src/preload/index.ts:227-229` | typed IPC 绑定方式 | 通用 `analyzeImageWithDeepSeek` 暴露 | 新增 `runCloudOcr` 专用方法，输入必须含 `confirmedUploadOriginal: true` |
 | `python/vendor/deeptutor/capabilities/protocol.py:1-80` | bounded capability context / 隐私策略思想 | Python runtime、UnifiedContext 实现 | 转成 TS 输入类型 + main 侧白名单校验 |
 | `python/vendor/deeptutor/core/tool_protocol.py:1-80` | 显式参数 schema、`items` 必填等契约纪律 | BaseTool/ToolDefinition 代码 | TS discriminated union + IPC 注解；不退化为 `any` |
@@ -610,11 +610,9 @@ P（本文件）
 | `rejectAiConfirmation` / `confirmAiConfirmation` | `5217-5275` | T2 | 单事务、批量路径 |
 | `executeAiConfirmation` error_review 分支 | `8269-8320` | T2 | 改为事务 helper |
 | `run` / `runWithChanges` | `8423-8438` | **无人** | 复用，不修改语义 |
-| `mapMistakeImageAnalysis` | `8517-8534` | T0? | **T0 不改 db.ts**；云端字段映射由 T0 在 contracts/mistake-ocr 层完成则不改 DB；若必须映射 `-1`，T0 需与 Planner 重新确认，不能自行扩权 |
+| `mapMistakeImageAnalysis` | `8517-8534` | **无人** | **T0 不改 `db.ts`**；`-1` 哨兵由 `apps/desktop/src/shared/mistake-ocr.ts` 在 main IPC 返回与 renderer 列表加载时归一化；T0 的 `git diff apps/desktop/src/main/db.ts` 必须为空 |
 
-> 说明：D-P2 的 `-1` 哨兵需要 `mapMistakeImageAnalysis` 把 `-1` 映射为 `null`。该函数在 `db.ts`，但 T0 禁止改 `db.ts`。为保持 T0 边界，冻结方案改为：**T0 只在 `mistake-ocr.ts` 的返回值上做投影**（读取 `applyMistakeOcrResult` 返回值后，用 `toCloudAnalysis()` 覆盖 `ocrConfidence: null`、`requiresReview: true`、`ocrSource: 'cloud'`），DB 仍存 `-1`；`mapMistakeImageAnalysis` 本轮不改。T0 在报告中明确“DB 原始值 -1，IPC 投影为 null”。若 UI 重新 `listMistakeImageAnalyses` 读到 `-1`，T0 需在 renderer 侧做同样的投影（`MistakeImageAnalysis` 类型加可选派生字段，renderer 归一化）。**不得因此修改 db.ts。**
->
-> 补充：若 T0 认为必须改 `mapMistakeImageAnalysis` 才能避免 UI 显示 `-100%`，必须先向协调器申请扩权；未获批准则采用 renderer 投影方案。
+> 说明：D-P2 的 `-1` 哨兵**不**在 `mapMistakeImageAnalysis` 中处理。冻结方案：`applyMistakeOcrResult` 按现有签名接收 `confidence=-1` 并原样落库；新增 `apps/desktop/src/shared/mistake-ocr.ts` 提供 `normalizeMistakeImageAnalysis(analysis)`，把 `<0` 映射为 `ocrConfidence: null`、`requiresReview: true`、`ocrSource: 'cloud'`；`main/mistake-ocr.ts` 在 IPC 返回前调用它，`MistakesWorkspace.tsx` 在 `listMistakeImageAnalyses` 之后调用它。这样 `db.ts` 保持零改动，且 UI 不会显示 `-100%`。若后续确需在 DB 映射层处理，必须另立迁移/扩权，不在本轮。
 
 ### 3.3 迁移车道
 
