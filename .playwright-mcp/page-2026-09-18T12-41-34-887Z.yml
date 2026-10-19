@@ -1,0 +1,110 @@
+- main [ref=f2e3]:
+  - complementary "全局导航" [ref=f2e4]:
+    - generic [ref=f2e5]:
+      - generic [ref=f2e6]: OE
+      - generic [ref=f2e7]:
+        - strong [ref=f2e8]: Omni-Edu
+        - generic [ref=f2e9]: AI 教学资产
+    - navigation [ref=f2e10]:
+      - button "今日" [ref=f2e11] [cursor=pointer]
+      - button "小智" [ref=f2e16] [cursor=pointer]
+      - button "知识库" [ref=f2e20] [cursor=pointer]
+      - button "题库" [ref=f2e27] [cursor=pointer]
+      - button "智能组卷" [ref=f2e32] [cursor=pointer]
+      - button "错题训练" [ref=f2e37] [cursor=pointer]
+      - button "学生" [ref=f2e42] [cursor=pointer]
+      - button "产物" [ref=f2e49] [cursor=pointer]
+      - button "设置" [ref=f2e54] [cursor=pointer]
+      - button "高级入口" [ref=f2e59] [cursor=pointer]
+  - generic [ref=f2e65]:
+    - generic [ref=f2e66]:
+      - generic [ref=f2e67]:
+        - generic [ref=f2e68]: AI 中控台与本地教学资产
+        - heading "小智" [level=1] [ref=f2e69]
+      - button "学生档案" [ref=f2e71] [cursor=pointer]
+    - generic [ref=f2e77]:
+      - complementary [ref=f2e78]:
+        - generic [ref=f2e79]:
+          - generic [ref=f2e80]:
+            - generic [ref=f2e81]: "01"
+            - generic [ref=f2e82]:
+              - heading "对话" [level=2] [ref=f2e83]
+              - paragraph [ref=f2e84]: 本地保存，可拖入文件夹分类。
+          - button "新建对话" [ref=f2e85] [cursor=pointer]
+        - button "新建文件夹" [ref=f2e88] [cursor=pointer]
+        - generic [ref=f2e91]: 右键可重命名或归档；拖动对话可分类。
+        - generic [ref=f2e93]:
+          - generic [ref=f2e94]:
+            - generic [ref=f2e98]: 未归档
+            - emphasis [ref=f2e99]: "0"
+          - generic [ref=f2e100]: 暂无对话
+      - generic [ref=f2e102]:
+        - generic [ref=f2e104]:
+          - generic [ref=f2e105]: "02"
+          - generic [ref=f2e106]:
+            - heading "AI 中控台" [level=2] [ref=f2e107]
+            - paragraph [ref=f2e108]: 对话会写入本地 SQLite，可在左侧按文件夹分类。
+        - log [ref=f2e110]:
+          - generic [ref=f2e113]:
+            - generic [ref=f2e114]:
+              - heading "今天想让小智做什么？" [level=2] [ref=f2e115]
+              - paragraph [ref=f2e116]: 直接说学生、时间、目标；小智会自己路由到学生数据、题库、知识库或确认队列。
+            - generic [ref=f2e117]:
+              - button "查小A最近7天错题，给我3个今天能用的练习" [ref=f2e118] [cursor=pointer]
+              - button "根据小A学习进度生成三元题组草稿，先不要保存" [ref=f2e122] [cursor=pointer]
+              - button "把小A本周记录整理成家长沟通草稿，语气克制一点" [ref=f2e126] [cursor=pointer]
+              - button "看看小A档案还缺哪些关键信息，只列补全清单" [ref=f2e130] [cursor=pointer]
+              - button "把当前知识点做成15分钟课堂导入和2个检查点" [ref=f2e134] [cursor=pointer]
+              - button "查看待确认项，告诉我哪些值得保存、哪些先拒绝" [ref=f2e138] [cursor=pointer]
+        - generic [ref=f2e144]:
+          - generic [ref=f2e145]:
+            - generic [ref=f2e146]: 就绪
+            - generic [ref=f2e148]: 81/4000
+          - generic [ref=f2e150]:
+            - generic [ref=f2e151]:
+              - heading "当前上下文" [level=4] [ref=f2e152]
+              - generic [ref=f2e153]: 4 个数据源
+            - generic [ref=f2e154]:
+              - generic [ref=f2e155]:
+                - generic [ref=f2e156]: 📄
+                - generic [ref=f2e157]:
+                  - generic [ref=f2e158]: 学生档案
+                  - generic [ref=f2e159]: 请选择学生后纳入档案上下文。
+                - generic [ref=f2e160]:
+                  - generic [ref=f2e161]: 未选
+                  - generic [ref=f2e163]: SQLite
+              - generic [ref=f2e164]:
+                - generic [ref=f2e165]: 📄
+                - generic [ref=f2e166]:
+                  - generic [ref=f2e167]: 学习记录
+                  - generic [ref=f2e168]: 最近记录已按发生时间倒序纳入上下文。
+                - generic [ref=f2e169]:
+                  - generic [ref=f2e170]: "0"
+                  - generic [ref=f2e172]: SQLite
+              - generic [ref=f2e173]:
+                - generic [ref=f2e174]: 📄
+                - generic [ref=f2e175]:
+                  - generic [ref=f2e176]: 附件元数据
+                  - generic [ref=f2e177]: 只纳入文件数量和元数据，不读取或上传原始附件。
+                - generic [ref=f2e178]:
+                  - generic [ref=f2e179]: "0"
+                  - generic [ref=f2e181]: 本地文件系统
+              - generic [ref=f2e182]:
+                - generic [ref=f2e183]: 📄
+                - generic [ref=f2e184]:
+                  - generic [ref=f2e185]: 老师知识库
+                  - generic [ref=f2e186]: 当前没有命中可用知识库文本片段。
+                - generic [ref=f2e187]:
+                  - generic [ref=f2e188]: "0"
+                  - generic [ref=f2e190]: SQLite / 本地切片
+          - generic [ref=f2e192] [cursor=pointer]:
+            - generic [ref=f2e193]: 💡 快速建议
+            - generic [ref=f2e194]: ▼
+          - textbox "输入要生成的复盘、练习、PDF 或 Word 文档需求..." [ref=f2e196]: 请生成一份六年级数学期中考试试卷，参考上海市2020年小学数学课程标准，包含填空题、选择题、计算题、应用题，总分100分，附参考答案。输出为Markdown格式。
+          - generic [ref=f2e197]:
+            - generic [ref=f2e198]:
+              - button "选择附件元数据" [ref=f2e199] [cursor=pointer]: 📎
+              - generic [ref=f2e200]:
+                - button "🗑️" [ref=f2e201] [cursor=pointer]
+                - button "⛶" [ref=f2e202] [cursor=pointer]
+            - button "发送消息" [active] [ref=f2e204] [cursor=pointer]: 发送

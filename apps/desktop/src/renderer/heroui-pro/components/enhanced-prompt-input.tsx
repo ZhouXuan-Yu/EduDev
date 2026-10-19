@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { PromptInput } from '../prompt-input';
-import { ChatAttachmentInput } from '../chat-attachment-input';
-import { ContextIndicator } from '../context-indicator';
-import { ToolStatusIndicator } from '../context-indicator';
-import { Badge } from '../badge';
-import type { SourceInfo } from '../context-indicator';
+import { PromptInput } from './prompt-input';
+import { ChatAttachmentInput } from './chat-attachment';
+import { ContextIndicator } from './context-indicator';
+import { ToolStatusIndicator } from './context-indicator';
+import { Badge } from './badge';
+import type { SourceInfo } from './context-indicator';
 
 interface Suggestion {
   id: string;
@@ -77,9 +77,9 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
   const handleFilesSelected = useCallback((files: File[]) => {
     const fileNames = files.map(file => file.name).join('、');
     const fileMessage = `已选择 ${files.length} 个文件：${fileNames}。当前只纳入元数据，原始附件不上传。`;
-    setCharCount(prev => prev + fileMessage.length);
-    onValueChange(prev => prev + (prev ? '\n\n' : '') + fileMessage);
-  }, [onValueChange]);
+    setCharCount(value.length + fileMessage.length);
+    onValueChange(value + (value ? '\n\n' : '') + fileMessage);
+  }, [onValueChange, value]);
 
   // 自动调整文本框高度
   useEffect(() => {
@@ -102,7 +102,7 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
       onSubmit={handleSubmit}
       onValueChange={handleValueChange}
       status={status}
-      disabled={disabled}
+      isDisabled={disabled}
     >
       <PromptInput.Shell>
         {/* 状态指示器 */}
@@ -203,8 +203,7 @@ export const EnhancedPromptInput: React.FC<EnhancedPromptInputProps> = ({
             {/* 发送按钮 */}
             <PromptInput.Send
               aria-label="发送消息"
-              onClick={handleSubmit}
-              disabled={!value.trim() || disabled || aiRunning}
+              isDisabled={!value.trim() || disabled || aiRunning}
             >
               {aiRunning ? (
                 <span className="loading-spinner">🔄</span>
@@ -269,7 +268,6 @@ const SuggestionItem: React.FC<{
     <div
       className="suggestion-item"
       onClick={() => !disabled && onSelect(suggestion)}
-      disabled={disabled}
     >
       <div className="suggestion-label">{suggestion.label}</div>
       {suggestion.description && (

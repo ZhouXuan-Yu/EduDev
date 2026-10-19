@@ -2,7 +2,7 @@ import { app, BrowserWindow, dialog, ipcMain, safeStorage, shell } from 'electro
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, extname, isAbsolute, join, resolve } from 'node:path';
-import { buildAiSystemPrompt, recoverStructuredJsonCompletion, requestDeepSeekCompletion, requestStructuredReplyRepair, runDeepSeekChat, type DeepSeekMessage } from './deepseek';
+import { analyzeImageWithDeepSeek, buildAiSystemPrompt, recoverStructuredJsonCompletion, requestDeepSeekCompletion, requestStructuredReplyRepair, runDeepSeekChat, type DeepSeekMessage } from './deepseek';
 import { OmniEduStore } from './db';
 import type {
   AiAgentEvent,
@@ -2092,6 +2092,26 @@ app.whenReady().then(async () => {
     }
     const result = await getOcrWorker().runOcr(analysis.localPath);
     if (!result.ok) {
+      // 本地 OCR（rapidocr worker）不可用时，回退到 DeepSeek 图像识别
+      const deepSeekSettings = await store.getDeepSeekRuntimeSettings();
+      if (deepSeekSettings.apiKey) {
+        const vision = await analyzeImageWithDeepSeek({
+          imagePath: analysis.localPath,
+          prompt: '请识别这张错题图片中的全部文字，按行输出，保留数学符号和公式的原样书写（如分数、百分号）。不要解释，只输出图片中的文字内容。',
+          apiKey: deepSeekSettings.apiKey,
+          model: deepSeekSettings.model,
+        });
+        if (vision.ok) {
+          return store.applyMistakeOcrResult(analysisId, {
+            text: vision.text,
+            confidence: 0.85,
+            lowConfidenceCount: 0,
+            modelVersion: `deepseek-vision:${vision.model}`,
+          });
+        }
+        await store.markMistakeOcrFailed(analysisId, `LOCAL_OCR_FAILED: ${result.code}: ${result.message}；DEEPSEEK_VISION_FALLBACK: ${vision.message}`);
+        throw new Error(`本地 OCR 失败（${result.message}），DeepSeek 图像识别也失败：${vision.message}`);
+      }
       await store.markMistakeOcrFailed(analysisId, `${result.code}: ${result.message}`);
       throw new Error(result.message);
     }
@@ -2103,6 +2123,24 @@ app.whenReady().then(async () => {
       confidence,
       lowConfidenceCount: result.lowConfidenceCount,
       modelVersion: result.modelVersion,
+    });
+  });
+  ipcMain.handle('deepseek:analyzeImage', async (_event, input: { imagePath: string; prompt?: string }) => {
+    if (!input || typeof input.imagePath !== 'string' || !input.imagePath.trim()) {
+      throw new Error('缺少图片路径。');
+    }
+    if (!(await store.isManagedLocalPath(input.imagePath)) || !existsSync(input.imagePath)) {
+      throw new Error('图片文件不在本地受管目录内或已缺失');
+    }
+    const deepSeekSettings = await store.getDeepSeekRuntimeSettings();
+    if (!deepSeekSettings.apiKey) {
+      throw new Error('缺少 DeepSeek API Key。请在设置页保存 DeepSeek API 配置后再使用图像识别。');
+    }
+    return analyzeImageWithDeepSeek({
+      imagePath: input.imagePath,
+      prompt: (input.prompt ?? '请识别图片中的内容并给出结构化分析。').slice(0, 4_000),
+      apiKey: deepSeekSettings.apiKey,
+      model: deepSeekSettings.model,
     });
   });
   ipcMain.handle('reports:generate', (_event, input) => store.generateReview(input));

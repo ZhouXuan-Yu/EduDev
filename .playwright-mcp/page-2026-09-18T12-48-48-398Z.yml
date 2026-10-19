@@ -1,0 +1,110 @@
+- main [ref=f3e3]:
+  - complementary "全局导航" [ref=f3e4]:
+    - generic [ref=f3e5]:
+      - generic [ref=f3e6]: OE
+      - generic [ref=f3e7]:
+        - strong [ref=f3e8]: Omni-Edu
+        - generic [ref=f3e9]: AI 教学资产
+    - navigation [ref=f3e10]:
+      - button "今日" [ref=f3e11] [cursor=pointer]
+      - button "小智" [ref=f3e16] [cursor=pointer]
+      - button "知识库" [ref=f3e20] [cursor=pointer]
+      - button "题库" [ref=f3e27] [cursor=pointer]
+      - button "智能组卷" [ref=f3e32] [cursor=pointer]
+      - button "错题训练" [ref=f3e37] [cursor=pointer]
+      - button "学生" [ref=f3e42] [cursor=pointer]
+      - button "产物" [ref=f3e49] [cursor=pointer]
+      - button "设置" [ref=f3e54] [cursor=pointer]
+      - button "高级入口" [ref=f3e59] [cursor=pointer]
+  - generic [ref=f3e65]:
+    - generic [ref=f3e66]:
+      - generic [ref=f3e67]:
+        - generic [ref=f3e68]: AI 中控台与本地教学资产
+        - heading "小智" [level=1] [ref=f3e69]
+      - button "学生档案" [ref=f3e71] [cursor=pointer]
+    - generic [ref=f3e77]:
+      - complementary [ref=f3e78]:
+        - generic [ref=f3e79]:
+          - generic [ref=f3e80]:
+            - generic [ref=f3e81]: "01"
+            - generic [ref=f3e82]:
+              - heading "对话" [level=2] [ref=f3e83]
+              - paragraph [ref=f3e84]: 本地保存，可拖入文件夹分类。
+          - button "新建对话" [ref=f3e85] [cursor=pointer]
+        - button "新建文件夹" [ref=f3e88] [cursor=pointer]
+        - generic [ref=f3e91]: 右键可重命名或归档；拖动对话可分类。
+        - generic [ref=f3e93]:
+          - generic [ref=f3e94]:
+            - generic [ref=f3e98]: 未归档
+            - emphasis [ref=f3e99]: "0"
+          - generic [ref=f3e100]: 暂无对话
+      - generic [ref=f3e102]:
+        - generic [ref=f3e104]:
+          - generic [ref=f3e105]: "02"
+          - generic [ref=f3e106]:
+            - heading "AI 中控台" [level=2] [ref=f3e107]
+            - paragraph [ref=f3e108]: 对话会写入本地 SQLite，可在左侧按文件夹分类。
+        - log [ref=f3e110]:
+          - generic [ref=f3e113]:
+            - generic [ref=f3e114]:
+              - heading "今天想让小智做什么？" [level=2] [ref=f3e115]
+              - paragraph [ref=f3e116]: 直接说学生、时间、目标；小智会自己路由到学生数据、题库、知识库或确认队列。
+            - generic [ref=f3e117]:
+              - button "查小A最近7天错题，给我3个今天能用的练习" [ref=f3e118] [cursor=pointer]
+              - button "根据小A学习进度生成三元题组草稿，先不要保存" [ref=f3e122] [cursor=pointer]
+              - button "把小A本周记录整理成家长沟通草稿，语气克制一点" [ref=f3e126] [cursor=pointer]
+              - button "看看小A档案还缺哪些关键信息，只列补全清单" [ref=f3e130] [cursor=pointer]
+              - button "把当前知识点做成15分钟课堂导入和2个检查点" [ref=f3e134] [cursor=pointer]
+              - button "查看待确认项，告诉我哪些值得保存、哪些先拒绝" [ref=f3e138] [cursor=pointer]
+        - generic [ref=f3e144]:
+          - generic [ref=f3e145]:
+            - generic [ref=f3e146]: 就绪
+            - generic [ref=f3e148]: 36/4000
+          - generic [ref=f3e150]:
+            - generic [ref=f3e151]:
+              - heading "当前上下文" [level=4] [ref=f3e152]
+              - generic [ref=f3e153]: 4 个数据源
+            - generic [ref=f3e154]:
+              - generic [ref=f3e155]:
+                - generic [ref=f3e156]: 📄
+                - generic [ref=f3e157]:
+                  - generic [ref=f3e158]: 学生档案
+                  - generic [ref=f3e159]: 请选择学生后纳入档案上下文。
+                - generic [ref=f3e160]:
+                  - generic [ref=f3e161]: 未选
+                  - generic [ref=f3e163]: SQLite
+              - generic [ref=f3e164]:
+                - generic [ref=f3e165]: 📄
+                - generic [ref=f3e166]:
+                  - generic [ref=f3e167]: 学习记录
+                  - generic [ref=f3e168]: 最近记录已按发生时间倒序纳入上下文。
+                - generic [ref=f3e169]:
+                  - generic [ref=f3e170]: "0"
+                  - generic [ref=f3e172]: SQLite
+              - generic [ref=f3e173]:
+                - generic [ref=f3e174]: 📄
+                - generic [ref=f3e175]:
+                  - generic [ref=f3e176]: 附件元数据
+                  - generic [ref=f3e177]: 只纳入文件数量和元数据，不读取或上传原始附件。
+                - generic [ref=f3e178]:
+                  - generic [ref=f3e179]: "0"
+                  - generic [ref=f3e181]: 本地文件系统
+              - generic [ref=f3e182]:
+                - generic [ref=f3e183]: 📄
+                - generic [ref=f3e184]:
+                  - generic [ref=f3e185]: 老师知识库
+                  - generic [ref=f3e186]: 当前没有命中可用知识库文本片段。
+                - generic [ref=f3e187]:
+                  - generic [ref=f3e188]: "0"
+                  - generic [ref=f3e190]: SQLite / 本地切片
+          - generic [ref=f3e192] [cursor=pointer]:
+            - generic [ref=f3e193]: 💡 快速建议
+            - generic [ref=f3e194]: ▼
+          - textbox "输入要生成的复盘、练习、PDF 或 Word 文档需求..." [ref=f3e196]: 帮我分析当前学生最近一个月的主要错因，并结合老师知识库生成巩固练习建议。
+          - generic [ref=f3e197]:
+            - generic [ref=f3e198]:
+              - button "选择附件元数据" [ref=f3e199] [cursor=pointer]: 📎
+              - generic [ref=f3e200]:
+                - button "🗑️" [ref=f3e201] [cursor=pointer]
+                - button "⛶" [ref=f3e202] [cursor=pointer]
+            - button "发送消息" [ref=f3e204] [cursor=pointer]: 发送

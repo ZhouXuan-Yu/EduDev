@@ -1554,6 +1554,51 @@ input.hidden[type="file"] {
   margin-top: 8px;
 }
 
+.ai-thinking-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.ai-assistant-error {
+  margin-top: 10px;
+  padding: 12px;
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 10px;
+  background: rgba(220, 38, 38, 0.06);
+  font-size: 13px;
+}
+
+.ai-assistant-error strong {
+  display: block;
+  color: #b91c1c;
+  margin-bottom: 4px;
+}
+
+.ai-assistant-error p {
+  margin: 0;
+  color: #991b1b;
+}
+
+.ai-assistant-meta {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ai-assistant-meta span {
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-soft);
+}
+
 .ai-output-links,
 .ai-artifact-file {
   display: flex;

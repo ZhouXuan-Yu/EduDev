@@ -1,0 +1,180 @@
+- main [ref=f4e3]:
+  - complementary "全局导航" [ref=f4e4]:
+    - generic [ref=f4e5]:
+      - generic [ref=f4e6]: OE
+      - generic [ref=f4e7]:
+        - strong [ref=f4e8]: Omni-Edu
+        - generic [ref=f4e9]: AI 教学资产
+    - navigation [ref=f4e10]:
+      - button "今日" [ref=f4e11] [cursor=pointer]
+      - button "小智" [ref=f4e16] [cursor=pointer]
+      - button "知识库" [ref=f4e20] [cursor=pointer]
+      - button "题库" [ref=f4e27] [cursor=pointer]
+      - button "智能组卷" [ref=f4e32] [cursor=pointer]
+      - button "错题训练" [ref=f4e37] [cursor=pointer]
+      - button "学生" [ref=f4e42] [cursor=pointer]
+      - button "产物" [ref=f4e49] [cursor=pointer]
+      - button "设置" [ref=f4e54] [cursor=pointer]
+      - button "高级入口" [ref=f4e59] [cursor=pointer]
+  - generic [ref=f4e65]:
+    - generic [ref=f4e66]:
+      - generic [ref=f4e67]:
+        - generic [ref=f4e68]: AI 中控台与本地教学资产
+        - heading "小智" [level=1] [ref=f4e69]
+      - button "学生档案" [ref=f4e71] [cursor=pointer]
+    - generic [ref=f4e77]:
+      - complementary [ref=f4e78]:
+        - generic [ref=f4e79]:
+          - generic [ref=f4e80]:
+            - generic [ref=f4e81]: "01"
+            - generic [ref=f4e82]:
+              - heading "对话" [level=2] [ref=f4e83]
+              - paragraph [ref=f4e84]: 本地保存，可拖入文件夹分类。
+          - button "新建对话" [ref=f4e85] [cursor=pointer]
+        - button "新建文件夹" [ref=f4e88] [cursor=pointer]
+        - generic [ref=f4e91]: 右键可重命名或归档；拖动对话可分类。
+        - generic [ref=f4e93]:
+          - generic [ref=f4e94]:
+            - generic [ref=f4e98]: 未归档
+            - emphasis [ref=f4e99]: "1"
+          - grid "未归档对话" [ref=f4e205]:
+            - row "测试" [ref=f4e206] [cursor=pointer]:
+              - gridcell "测试" [ref=f4e207]
+      - generic [ref=f4e102]:
+        - generic [ref=f4e104]:
+          - generic [ref=f4e105]: "02"
+          - generic [ref=f4e106]:
+            - heading "测试" [level=2] [ref=f4e214]
+            - paragraph [ref=f4e108]: 对话会写入本地 SQLite，可在左侧按文件夹分类。
+        - log [ref=f4e110]:
+          - generic [ref=f4e111]:
+            - generic [ref=f4e215]: 请生成一份六年级数学期中考试试卷，总分100分，附参考答案。
+            - generic [ref=f4e218]:
+              - generic [ref=f4e219]: AI
+              - generic [ref=f4e221]:
+                - generic [ref=f4e222]:
+                  - heading [level=3] [ref=f4e223]:
+                    - button "思考过程 · 4 个步骤" [expanded] [ref=f4e224] [cursor=pointer]
+                  - group "思考过程 · 4 个步骤" [ref=f4e306]:
+                    - generic [ref=f4e309]:
+                      - generic [ref=f4e310]:
+                        - generic [ref=f4e311]: 任务识别
+                        - generic [ref=f4e314]: Router 判定为 paper_generation，置信度 92%。
+                      - generic [ref=f4e315]:
+                        - generic [ref=f4e316]: 上下文装配
+                        - generic [ref=f4e319]: 按需读取：学生档案。
+                      - generic [ref=f4e320]:
+                        - generic [ref=f4e321]: 结构校验
+                        - generic [ref=f4e324]: DeepSeek 返回已通过结构校验。
+                      - generic [ref=f4e325]:
+                        - generic [ref=f4e326]: 写入边界
+                        - generic [ref=f4e329]: 识别到写入意图，本轮只生成草稿和确认项，不直接写入本地数据。
+                - generic [ref=f4e228]:
+                  - heading "六年级数学期中考试试卷" [level=1] [ref=f4e230]
+                  - paragraph [ref=f4e232]:
+                    - strong [ref=f4e233]: 参考上海2020课标。
+                  - heading "一、填空题" [level=2] [ref=f4e235]
+                  - list [ref=f4e237]:
+                    - listitem [ref=f4e238]: 12和18的最大公因数是____。
+                    - listitem [ref=f4e239]: 把 3/4 化成百分数是____。
+                  - heading "二、应用题" [level=2] [ref=f4e241]
+                  - paragraph [ref=f4e243]: 一辆汽车全程240千米，前2小时行驶了全程的3/5，还要几小时到达？
+                  - heading "参考答案" [level=2] [ref=f4e245]
+                  - paragraph [ref=f4e247]: 一、1. 6 2. 75%
+                  - generic [ref=f4e249]:
+                    - generic [ref=f4e250]:
+                      - generic [ref=f4e251]: js
+                      - button "Copy code" [ref=f4e252] [cursor=pointer]
+                    - code [ref=f4e258]: // 示例代码块 const answer = 4 / 3;
+                - generic [ref=f4e259]:
+                  - heading [level=3] [ref=f4e260]:
+                    - button "3 次工具调用" [expanded] [ref=f4e261] [cursor=pointer]
+                  - group "3 次工具调用" [ref=f4e330]:
+                    - generic [ref=f4e333]:
+                      - heading [level=3] [ref=f4e335]:
+                        - button "load_student_profile" [ref=f4e336] [cursor=pointer]
+                      - heading [level=3] [ref=f4e346]:
+                        - button "query_question_bank" [ref=f4e347] [cursor=pointer]
+                      - heading [level=3] [ref=f4e357]:
+                        - button "write_confirmations" [ref=f4e358] [cursor=pointer]
+                - generic [ref=f4e265]:
+                  - button [ref=f4e266]:
+                    - button "复制回答" [ref=f4e267] [cursor=pointer]
+                  - button [ref=f4e271]:
+                    - button "重新生成" [ref=f4e272] [cursor=pointer]
+                  - button [ref=f4e275]:
+                    - button "创建分支" [ref=f4e276] [cursor=pointer]
+                - generic [ref=f4e281]: deepseek-v4-flash
+        - generic [ref=f4e144]:
+          - generic [ref=f4e145]:
+            - generic [ref=f4e146]: 就绪
+            - generic [ref=f4e148]: 30/4000
+          - generic [ref=f4e150]:
+            - generic [ref=f4e151]:
+              - heading "当前上下文" [level=4] [ref=f4e152]
+              - generic [ref=f4e153]: 4 个数据源
+            - generic [ref=f4e154]:
+              - generic [ref=f4e155]:
+                - generic [ref=f4e156]: 📄
+                - generic [ref=f4e157]:
+                  - generic [ref=f4e158]: 学生档案
+                  - generic [ref=f4e159]: 请选择学生后纳入档案上下文。
+                - generic [ref=f4e160]:
+                  - generic [ref=f4e161]: 未选
+                  - generic [ref=f4e163]: SQLite
+              - generic [ref=f4e164]:
+                - generic [ref=f4e165]: 📄
+                - generic [ref=f4e166]:
+                  - generic [ref=f4e167]: 学习记录
+                  - generic [ref=f4e168]: 最近记录已按发生时间倒序纳入上下文。
+                - generic [ref=f4e169]:
+                  - generic [ref=f4e170]: "0"
+                  - generic [ref=f4e172]: SQLite
+              - generic [ref=f4e173]:
+                - generic [ref=f4e174]: 📄
+                - generic [ref=f4e175]:
+                  - generic [ref=f4e176]: 附件元数据
+                  - generic [ref=f4e177]: 只纳入文件数量和元数据，不读取或上传原始附件。
+                - generic [ref=f4e178]:
+                  - generic [ref=f4e179]: "0"
+                  - generic [ref=f4e181]: 本地文件系统
+              - generic [ref=f4e182]:
+                - generic [ref=f4e183]: 📄
+                - generic [ref=f4e184]:
+                  - generic [ref=f4e185]: 老师知识库
+                  - generic [ref=f4e186]: 当前没有命中可用知识库文本片段。
+                - generic [ref=f4e187]:
+                  - generic [ref=f4e188]: "0"
+                  - generic [ref=f4e190]: SQLite / 本地切片
+          - generic [ref=f4e192] [cursor=pointer]:
+            - generic [ref=f4e193]: 💡 快速建议
+            - generic [ref=f4e194]: ▼
+          - textbox "输入要生成的复盘、练习、PDF 或 Word 文档需求..." [ref=f4e196]: 请生成一份六年级数学期中考试试卷，总分100分，附参考答案。
+          - generic [ref=f4e284]:
+            - generic [ref=f4e285]:
+              - heading "工具调用状态" [level=4] [ref=f4e286]
+              - generic [ref=f4e287]: 总计 3 个工具
+            - generic [ref=f4e288]:
+              - generic [ref=f4e289]:
+                - generic [ref=f4e290]: ✅
+                - generic [ref=f4e291]:
+                  - generic [ref=f4e292]: 成功
+                  - generic [ref=f4e293]: "2"
+              - generic [ref=f4e294]:
+                - generic [ref=f4e295]: ❌
+                - generic [ref=f4e296]:
+                  - generic [ref=f4e297]: 失败
+                  - generic [ref=f4e298]: "0"
+              - generic [ref=f4e299]:
+                - generic [ref=f4e300]: ⚠️
+                - generic [ref=f4e301]:
+                  - generic [ref=f4e302]: 阻塞
+                  - generic [ref=f4e303]: "1"
+            - generic [ref=f4e304]: "成功率: 67%"
+          - generic [ref=f4e197]:
+            - generic [ref=f4e198]:
+              - button "选择附件元数据" [ref=f4e199] [cursor=pointer]: 📎
+              - generic [ref=f4e200]:
+                - button "🗑️" [ref=f4e201] [cursor=pointer]
+                - button "⛶" [ref=f4e202] [cursor=pointer]
+            - button "发送消息" [ref=f4e204] [cursor=pointer]: 发送

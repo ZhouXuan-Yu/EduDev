@@ -30,6 +30,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNod
 import { ChatAttachment, ChatAttachmentGroup, ChatAttachmentInput } from './heroui-pro/components/chat-attachment';
 import { ChainOfThought } from './heroui-pro/components/chain-of-thought';
 import { ChatConversation } from './heroui-pro/components/chat-conversation';
+import { ChatLoader } from './heroui-pro/components/chat-loader';
 import { ChatMessage } from './heroui-pro/components/chat-message';
 import { Markdown } from './heroui-pro/components/markdown';
 import { PromptInput } from './heroui-pro/components/prompt-input';
@@ -1229,6 +1230,7 @@ export function App() {
       }
     }
     if (!sessionId) {
+      aiSubmitInFlightRef.current = false;
       setStatus('无法创建本地对话记录。');
       return;
     }
@@ -1821,10 +1823,12 @@ export function App() {
     const toolBlockCount = aiResult?.toolRuns?.filter(tool => tool.status === 'blocked').length ?? 0;
 
     const contextData = [
-        title: '知识图谱',
-        source: 'SQLite nodes / edges',
-        detail: '已纳入知识图谱节点摘要。',
-      },
+        {
+          count: aiResult?.graphNodes?.length ?? knowledgeOverview.counts.nodes,
+          title: '知识图谱',
+          source: 'SQLite nodes / edges',
+          detail: '已纳入知识图谱节点摘要。',
+        },
     ];
 
     const liveArtifacts = buildAiArtifacts(aiPrompt, aiResult);
@@ -1870,7 +1874,6 @@ export function App() {
             ? tool.output
             : {},
         }));
-      };
     };
     const readArtifacts = (message: AiConversationMessage): AiArtifact[] => {
       const raw = message.metadata.artifacts;
@@ -1971,7 +1974,6 @@ export function App() {
                   const thoughtSteps = readThoughtSteps(message);
                   const messageArtifacts = readArtifacts(message);
                   const messageRunId = String(message.metadata.agentRunId ?? '');
-                  const messageOk = message.metadata.ok === true;
 
                   return (
                     <AiChatMessageAssistant
@@ -1982,13 +1984,17 @@ export function App() {
                         content: message.content,
                         metadata: {
                           thoughtSteps: thoughtSteps,
-                          toolRuns: message.metadata.toolRuns ?? [],
-                          agentRunId: message.metadata.agentRunId,
-                          ok: message.metadata.ok,
-                          model: message.metadata.model,
-                          errorMessage: message.metadata.errorMessage,
+                          toolRuns: (message.metadata.toolRuns as AiTraceTool[] | undefined) ?? [],
+                          agentRunId: message.metadata.agentRunId as string | undefined,
+                          ok: message.metadata.ok as boolean | undefined,
+                          model: message.metadata.model as string | undefined,
+                          errorMessage: message.metadata.errorMessage as string | undefined,
                         },
                       }}
+                      mutationRunning={Boolean(aiMutationRunningId)}
+                      onRetry={messageRunId ? () => void mutateAiRunFromMessage(messageRunId, 'retry') : undefined}
+                      onBranch={messageRunId ? () => void mutateAiRunFromMessage(messageRunId, 'branch') : undefined}
+                      onRegenerate={messageRunId ? () => void mutateAiRunFromMessage(messageRunId, 'regenerate') : undefined}
                     >
                       {messageArtifacts.length ? (
                         <div className="ai-output-links" aria-label="生成的文档">
@@ -2004,25 +2010,22 @@ export function App() {
                           ))}
                         </div>
                       ) : null}
-
-                      {messageRunId ? (
-                        <div className="ai-run-actions" aria-label="运行变更">
-                          {!messageOk ? (
-                            <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'retry')}>
-                              重试本轮
-                            </button>
-                          ) : null}
-                          <button className="secondary-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'branch')}>
-                            创建分支
-                          </button>
-                          <button className="ghost-action compact-button" disabled={Boolean(aiMutationRunningId)} onClick={() => void mutateAiRunFromMessage(messageRunId, 'regenerate')}>
-                            重新生成
-                          </button>
-                        </div>
-                      ) : null}
                     </AiChatMessageAssistant>
                   );
                 })}
+
+                {aiRunning ? (
+                  <ChatMessage.Assistant>
+                    <ChatMessage.Avatar show alt="小智" fallback="AI" />
+                    <ChatMessage.Body>
+                      <div className="ai-thinking-status">
+                        <ChatLoader.Dots label="小智正在思考" />
+                        <span>小智正在运行 AgentLoop，本地工具调用会逐步显示…</span>
+                      </div>
+                      <ChatLoader.Skeleton label="正在生成回答" />
+                    </ChatMessage.Body>
+                  </ChatMessage.Assistant>
+                ) : null}
 
                 {pendingUserInput ? (
                   <ChatMessage.Assistant>
@@ -2152,78 +2155,44 @@ export function App() {
             }}
           >
             <ChatAttachmentInput.Dropzone className="ai-composer-block">
+            {activeAttachments.length ? (
+              <div className="ai-attachment-strip">
+                {activeAttachments.slice(0, 4).map((attachment) => (
+                  <ChatAttachment
+                    key={attachment.id}
+                    mediaType="document"
+                    name={`${attachment.fileName} · ${formatBytes(attachment.fileSize)}`}
+                  >
+                    <ChatAttachment.Preview />
+                    <ChatAttachment.Name />
+                  </ChatAttachment>
+                ))}
+                {activeAttachments.length > 4 ? (
+                  <span className="ai-attachment-overflow">+{activeAttachments.length - 4}</span>
+                ) : null}
+              </div>
+            ) : null}
             <EnhancedPromptInput
               value={aiPrompt}
               onSubmit={runAiConsole}
               onValueChange={setAiPrompt}
               status={aiRunning ? 'streaming' : 'ready'}
+              aiRunning={aiRunning}
               contextSources={contextItems}
               toolStatus={{
                 successful: toolSuccessCount,
                 failed: toolFailureCount,
                 blocked: toolBlockCount,
               }}
-              suggestions={aiPromptSuggestions}
+              suggestions={aiPromptSuggestions.map((prompt, index) => ({
+                id: `suggestion-${index}`,
+                label: prompt,
+                prompt,
+              }))}
               placeholder="输入要生成的复盘、练习、PDF 或 Word 文档需求..."
               disabled={aiRunning}
               maxChars={4000}
-            >
-              <EnhancedPromptInput.Shell>
-                {activeAttachments.length ? (
-                  <EnhancedPromptInput.Attachments>
-                    {activeAttachments.slice(0, 4).map((attachment) => (
-                      <ChatAttachment
-                        key={attachment.id}
-                        mediaType="document"
-                        name={`${attachment.fileName} · ${formatBytes(attachment.fileSize)}`}
-                      >
-                        <ChatAttachment.Preview />
-                        <ChatAttachment.Name />
-                      </ChatAttachment>
-                    ))}
-                    {activeAttachments.length > 4 ? (
-                      <span className="ai-attachment-overflow">+{activeAttachments.length - 4}</span>
-                    ) : null}
-                  </EnhancedPromptInput.Attachments>
-                ) : null}
-                <EnhancedPromptInput.Content>
-                  <EnhancedPromptInput.TextArea data-testid="ai-prompt-input" placeholder="输入要生成的复盘、练习、PDF 或 Word 文档需求" />
-                </EnhancedPromptInput.Content>
-                <EnhancedPromptInput.Toolbar>
-                  <EnhancedPromptInput.ToolbarStart>
-                    <ChatAttachmentInput.Trigger className="prompt-attachment-trigger" aria-label="选择附件元数据">
-                      <UploadCloud size={16} />
-                    </ChatAttachmentInput.Trigger>
-                  </EnhancedPromptInput.ToolbarStart>
-                  <EnhancedPromptInput.ToolbarEnd>
-                    <EnhancedPromptInput.Send
-                      aria-label="运行 DeepSeek"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        void runAiConsole();
-                      }}
-                    >
-                      <Sparkles size={16} />
-                    </EnhancedPromptInput.Send>
-                  </EnhancedPromptInput.ToolbarEnd>
-                </EnhancedPromptInput.Toolbar>
-              </EnhancedPromptInput.Shell>
-            </EnhancedPromptInput>
-            <div className="ai-composer-footer">
-              <ContextIndicator
-                sources={contextItems}
-                isLoading={aiRunning}
-                title="当前上下文"
-              />
-              {toolSuccessCount > 0 || toolFailureCount > 0 || toolBlockCount > 0 ? (
-                <ToolStatusIndicator
-                  successful={toolSuccessCount}
-                  failed={toolFailureCount}
-                  blocked={toolBlockCount}
-                  loading={aiRunning}
-                />
-              ) : null}
-            </div>
+            />
             </ChatAttachmentInput.Dropzone>
           </ChatAttachmentInput>
         </section>

@@ -1,10 +1,11 @@
 import React from 'react';
-import { Badge } from '../badge';
+import { Badge } from './badge';
+import type { BadgeProps } from './badge';
 
-interface SourceInfo {
+export interface SourceInfo {
   title: string;
   source: string;
-  count: number;
+  count: string | number;
   detail?: string;
 }
 
@@ -73,10 +74,11 @@ const ContextChip: React.FC<ContextChipProps> = ({ source }) => {
     }
   };
 
-  const getStatusColor = (sourceType: string, count: number) => {
-    if (count === 0) return 'gray';
-    if (count > 10) return 'blue';
-    if (count > 5) return 'green';
+  const getStatusColor = (sourceType: string, count: string | number): BadgeProps['tone'] => {
+    const numericCount = typeof count === 'number' ? count : 0;
+    if (numericCount === 0) return 'gray';
+    if (numericCount > 10) return 'blue';
+    if (numericCount > 5) return 'green';
     return 'amber';
   };
 

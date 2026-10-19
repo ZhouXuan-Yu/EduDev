@@ -14,6 +14,7 @@ import type {
   XiazhiCapabilityName,
 } from '../shared/contracts';
 import type { OmniEduStore } from './db';
+import { readFileSync } from 'node:fs';
 import { gradeEducationalReply } from './ai-harness/education-grader';
 import { parseStructuredReply, structuredReplyToMarkdown } from './ai-harness/schema';
 import { createAiToolExecutionState, executeAiToolCall, getModelToolDefinitions, getProgressiveModelToolDefinitions, progressiveToolNames } from './ai-harness/tool-registry';
@@ -21,9 +22,13 @@ import type { LearningAnalytics } from './ai-harness/learning-analytics';
 import { buildUsabilityInstructions, gradeUsabilityReply } from './ai-harness/usability-policy';
 import { buildAgentHarnessInstructions, selectDeepTutorCapability } from './ai-harness/agent-harness-profile';
 
+export type DeepSeekContentPart =
+  | { type: 'text'; text: string }
+  | { type: 'image_url'; image_url: { url: string } };
+
 export type DeepSeekMessage = {
   role: 'system' | 'user' | 'assistant' | 'tool';
-  content: string | null;
+  content: string | null | DeepSeekContentPart[];
   tool_calls?: DeepSeekToolCall[];
   tool_call_id?: string;
 };
@@ -51,6 +56,7 @@ export type DeepSeekResponse = {
       tool_calls?: DeepSeekToolCall[];
     };
   }>;
+  model?: string;
   usage?: DeepSeekUsage;
   error?: {
     message?: string;
@@ -323,6 +329,88 @@ export function requestStructuredReplyRepair(params: {
   });
 }
 
+// ─── 图像识别（DeepSeek vision） ──────────────────────────────────────────────
+
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const IMAGE_MIME_BY_EXT: Record<string, string> = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.gif': 'image/gif',
+};
+
+export type DeepSeekImageAnalysisResult =
+  | {
+      ok: true;
+      text: string;
+      model: string;
+      usage?: { promptTokens?: number; completionTokens?: number; totalTokens?: number };
+    }
+  | { ok: false; message: string };
+
+export async function analyzeImageWithDeepSeek(params: {
+  imagePath: string;
+  prompt: string;
+  apiKey: string;
+  model?: string;
+  signal?: AbortSignal;
+}): Promise<DeepSeekImageAnalysisResult> {
+  const { imagePath, prompt, apiKey, model = DEFAULT_DEEPSEEK_MODEL, signal } = params;
+  try {
+    const ext = imagePath.slice(imagePath.lastIndexOf('.')).toLowerCase();
+    const mime = IMAGE_MIME_BY_EXT[ext];
+    if (!mime) {
+      return { ok: false, message: `不支持的图片格式：${ext || '(无扩展名)'}。支持 png / jpg / jpeg / webp / gif。` };
+    }
+    const buffer = readFileSync(imagePath);
+    if (buffer.length > MAX_IMAGE_BYTES) {
+      return { ok: false, message: `图片过大（${Math.round(buffer.length / 1024 / 1024)}MB），上限 8MB。请压缩后重试。` };
+    }
+    const messages: DeepSeekMessage[] = [
+      {
+        role: 'system',
+        content: '你是教育场景的图像识别助手。请仔细观察图片，准确转写题干文字，并给出结构化的理解（已知条件、求解目标、涉及知识点）。只基于图片可见内容回答，不要编造。',
+      },
+      {
+        role: 'user',
+        content: [
+          { type: 'text', text: prompt },
+          { type: 'image_url', image_url: { url: `data:${mime};base64,${buffer.toString('base64')}` } },
+        ],
+      },
+    ];
+    const data = await requestDeepSeekCompletion({
+      apiKey,
+      model,
+      messages,
+      signal: signal ?? new AbortController().signal,
+      tools: [],
+      temperature: 0.1,
+      maxTokens: 8_000,
+      responseFormat: 'none',
+    });
+    const text = data.choices?.[0]?.message?.content?.trim() ?? '';
+    if (!text) {
+      return { ok: false, message: 'DeepSeek 图像识别返回了空内容，请重试或改用本地 OCR。' };
+    }
+    return {
+      ok: true,
+      text,
+      model: data.model ?? model,
+      usage: data.usage
+        ? {
+            promptTokens: data.usage.prompt_tokens,
+            completionTokens: data.usage.completion_tokens,
+            totalTokens: data.usage.total_tokens,
+          }
+        : undefined,
+    };
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : 'DeepSeek 图像识别失败' };
+  }
+}
+
 export type StructuredJsonRecovery = {
   attempted: boolean;
   reason?: 'empty_content' | 'length';
@@ -387,7 +475,7 @@ export async function recoverStructuredJsonCompletion(params: {
 
 export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, model = DEFAULT_DEEPSEEK_MODEL): Promise<AiConsoleRunResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 45_000);
+  const timeout = setTimeout(() => controller.abort(), 120_000);
   const messages: DeepSeekMessage[] = [
     { role: 'system', content: buildAiSystemPrompt(context.router) },
     { role: 'user', content: buildAiUserPrompt(context) },
@@ -405,7 +493,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
     const initialToolNames = context.store ? progressiveToolNames(context.router) : [];
     let exposedToolNames = new Set(initialToolNames);
     const tools = context.store ? getProgressiveModelToolDefinitions(context.router) : [];
-    let data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools });
+    let data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools, maxTokens: 8_000 });
     const MAX_TOOL_ROUNDS = 3;
     const MAX_TOOL_CALLS = 8;
     let toolRound = 0;
@@ -503,6 +591,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         messages,
         signal: controller.signal,
         tools: budgetExhausted ? [] : getModelToolDefinitions(context.router, { toolNames: [...exposedToolNames], includeLoader: true }),
+        maxTokens: 8_000,
       });
     }
     if ((data.choices?.[0]?.message?.tool_calls?.length ?? 0) > 0) {
@@ -517,7 +606,7 @@ export async function runDeepSeekChat(context: DeepSeekContext, apiKey: string, 
         role: 'user',
         content: '工具调用已被宿主硬终止。只返回 xiazhi.reply.v2 JSON，不要输出工具调用。',
       });
-      data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools: [] });
+      data = await requestDeepSeekCompletion({ apiKey, model, messages, signal: controller.signal, tools: [], maxTokens: 8_000 });
     }
 
     const recoveredJson = await recoverStructuredJsonCompletion({
