@@ -137,7 +137,7 @@
    - `.gitignore` 增加 `.playwright-mcp/` 与 `.orchestration/`；并执行 `git rm -r --cached .playwright-mcp`（只取消跟踪，不删除本地文件），使 `git ls-files .playwright-mcp` 为 0。
    - 更新 `docs/26`、`2.Memory.md`、`3.Learning.md` 的真实结果；不得把规划写成完成。
 6. **Tests**
-   - 新 `cloud-ocr-consent-smoke.mjs`，用 fake provider 与 fake deps，覆盖：
+   - 新 `cloud-ocr-consent-smoke.mjs`：用 esbuild 打包 `main/mistake-ocr.ts` + `shared/mistake-ocr.ts`，注入 fake deps/provider；不启动 Electron、不发网络请求。覆盖：
      - 未确认/`false`/缺字段 → provider 调用 0、`applyMistakeOcrResult` 0；
      - 确认 → provider 调用 1，结果为 `null` 置信度 + `requiresReview=true` + `ocrSource='cloud'`；
      - provider 失败 → 不写成功结果，`markCloudOcrFailed` 被调用，原有文本保留；
@@ -254,7 +254,7 @@
        answerSpacingLines?: number; // 1..10，默认 2
      };
      ```
-   - 校验（main 侧，拒绝而非静默截断）：类型/长度/整数范围；拒绝 `<`、`>`、控制字符与 `javascript:` 片段；只输出 Markdown 纯文本，不拼接 HTML。
+   - 校验（main 侧，拒绝而非静默截断）：类型/长度/整数范围；拒绝 HTML 标签模式（如 `<script`/`<img`）、`javascript:`/`data:` URL、除 `\n`/`\t` 外的控制字符；允许数学不等号 `<`/`>` 作为纯文本。只输出 Markdown 纯文本，不把模板拼进 HTML。
    - `exportPaper(id, destinationRoot?, template?)`；`buildAnswerSheetMarkdown(paper, template?)`：
      - 默认标题 `# <paper.title> 答题纸`；
      - 有 `titleLine` 时替换标题行；
@@ -334,7 +334,7 @@
      - 事务内重新读取确认项，断言 `status='pending'`；
      - 校验 `studentId` 非空；`review.items` 非空；所有 `recordId` 属于该学生且存在（沿用现有越权/窗口校验）；
      - 每条 `category` 必须在 `ERROR_REVIEW_CATEGORIES`（`structural/deviation/application/metacognitive/unknown`）；
-     - 用**裸 INSERT** 写 `learning_records`（`record_type='error_review'`，`content` 字段保持现有 JSON 结构：category/confidence/note/evidence/sourceRecordId/taxonomyVersion/window/teacherConfirmed=true；tags `[category,'error_review']`），**不要**调用 `createRecord`（它会 `mkdirSync`、`listRecords`，且不是事务友好的最小写入）；
+     - 用**裸 INSERT** 写 `learning_records`（`record_type='error_review'`；`title`/`subject`/`occurred_at` 复用现有 executor 的规则：`title = 错因复核：<label>`、`subject = review.window ? 'error_review' : ''`、`occurred_at = now()`；`content` 字段保持现有 JSON 结构：category/confidence/note/evidence/sourceRecordId/taxonomyVersion/window/teacherConfirmed=true；tags `[category,'error_review']`），**不要**调用 `createRecord`（它会 `mkdirSync`、`listRecords`，且不是事务友好的最小写入）；
      - 对每条新记录执行 `upsertRecordFts`；`touchStudent` 一次；
      - 事务内按 id 全量 readback，数量不符 → 抛错；
      - `UPDATE ai_confirmation_items SET status='confirmed', payload_json=?, result_json=?, confirmed_at=?, updated_at=? WHERE id=? AND status='pending'`，用 `runWithChanges` 断言命中 1 行；
@@ -357,7 +357,7 @@
      - 任一条失败 → 全部回滚；返回错误，所有项仍 pending。
    - `rejectAiConfirmationsBatch(input)`：
      - 校验 1..20、无重复、全部 `save_error_review` 且 `pending`；
-     - 单事务 `UPDATE ... SET status='rejected', rejected_at=?, updated_at=? WHERE id=? AND status='pending'`；
+     - 单事务内逐 id 执行 `UPDATE ... SET status='rejected', rejected_at=?, updated_at=? WHERE id=? AND status='pending'`，用 `runWithChanges` 断言每条命中；任一未命中 → `ROLLBACK`；
      - 任一未命中 → 回滚；成功返回全部项。
    - 重复确认/拒绝：第二次调用必须报“只能确认/拒绝待确认项”，零写入。
    - 并发：`BEGIN IMMEDIATE` + 事务内 re-read + `WHERE status='pending'` 保证单赢家；输家整体失败，不产生部分写入。
@@ -658,7 +658,7 @@ P（本文件）
 | A16 | T2 | `npm run test:error-review-write` | 批量确认/失败注入/拒绝/重复/重启断言 | 全过；失败注入后记录数=0、项仍 pending |
 | A17 | T2 | `npm run test:renderer-components` | 批量选择/按钮/状态 | 全过 |
 | A18 | T2 | `npm run test:smoke` | 多选→批量确认→记录 readback→重启 | 通过；内存被杀则 `BLOCKED` |
-| A19 | T2 | 并发/幂等（smoke 内） | 两个并发批次只有一个成功；总记录数正确 | 无重复写入 |
+| A19 | T2 | 并发/幂等（smoke 内，best-effort） | 两个并发批次最多一个成功；总记录数正确；重复确认必须拒绝 | 无重复写入；若 sqlite3 驱动不支持同连接并发事务，记录原因，仍必须通过重复确认拒绝断言 |
 | A20 | G0 | `nvidia-smi --query-gpu=name,memory.total,driver_version,compute_cap --format=csv,noheader` | RTX 5060 Laptop / 8151 MiB / 595.79 / 12.0 | 记录到报告 |
 | A21 | G0 | `C:\Users\ZhouXuan\AppData\Local\OmniEdu\venvs\gpu\Scripts\python.exe -c "import torch; ..."` | torch 版本、CUDA 版本、available、device、capability | 有值；false 时记录 blocker |
 | A22 | G0 | `...python.exe -c "import onnxruntime as ort; print(ort.get_available_providers())"` | providers 列表 | 含 `CUDAExecutionProvider`；否则 blocker + CPU fallback |
