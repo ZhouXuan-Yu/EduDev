@@ -3290,12 +3290,18 @@ export class OmniEduStore {
     return { paperId: paper.id, questionIds, paperItemIds };
   }
 
-  async exportPaper(id: string, destinationRoot?: string): Promise<PaperExportResult> {
+  async exportPaper(
+    id: string,
+    destinationRoot?: string,
+    template?: PaperAnswerSheetTemplate,
+  ): Promise<PaperExportResult> {
     const paper = await this.getPaperOrThrow(id);
     if (paper.items.length === 0) throw new Error('试卷还没有题目，无法导出');
+    // Validate before any file or artifact write so an invalid template leaves zero side effects.
+    const answerSheetTemplate = this.normalizePaperAnswerSheetTemplate(template);
     const directory = destinationRoot?.trim() || this.resolveInsideDataRoot('exports', 'papers');
     const paperMd = this.buildPaperMarkdown(paper);
-    const answerSheetMd = this.buildAnswerSheetMarkdown(paper);
+    const answerSheetMd = this.buildAnswerSheetMarkdown(paper, answerSheetTemplate);
     const analysisMd = this.buildPaperAnalysisMarkdown(paper);
     const paperArtifact = await this.exportDocumentArtifact({
       artifactId: `${paper.id}_paper`,
@@ -3568,13 +3574,55 @@ export class OmniEduStore {
     return lines.join('\n');
   }
 
-  private buildAnswerSheetMarkdown(paper: Paper): string {
-    const lines = [`# ${paper.title} 答题纸`, ''];
+  /**
+   * Answer-sheet template is an export-time parameter only. Reject invalid input
+   * instead of truncating, and render plain Markdown text (never HTML).
+   */
+  private normalizePaperAnswerSheetTemplate(template?: PaperAnswerSheetTemplate | null): PaperAnswerSheetTemplate {
+    if (template === undefined || template === null) return {};
+    if (typeof template !== 'object' || Array.isArray(template)) throw new Error('答题纸模板格式无效');
+    const readText = (
+      value: unknown,
+      label: string,
+      maxChars: number,
+      allowNewlines: boolean,
+    ): string | undefined => {
+      if (value === undefined || value === null) return undefined;
+      if (typeof value !== 'string') throw new Error(`${label}必须是文本`);
+      if ([...value].some((char) => { const code = char.charCodeAt(0); return (code < 32 && code !== 9 && code !== 10) || code === 127; })) throw new Error(`${label}包含不允许的控制字符`);
+      if (!allowNewlines && /[\r\n]/.test(value)) throw new Error(`${label}不能包含换行`);
+      const text = value.trim();
+      if (!text) return undefined;
+      if (text.length > maxChars) throw new Error(`${label}最多 ${maxChars} 个字符`);
+      if (/<\s*\/?\s*[a-zA-Z!][^>]*>/.test(text)) throw new Error(`${label}不能包含 HTML 标签`);
+      if (/(?:javascript|data)\s*:/i.test(text)) throw new Error(`${label}不能包含脚本或数据 URL`);
+      return text;
+    };
+    const titleLine = readText(template.titleLine, '答题纸标题', 120, false);
+    const examInfo = readText(template.examInfo, '考试信息', 300, false);
+    const instructions = readText(template.instructions, '作答说明', 1000, true);
+    let answerSpacingLines = 2;
+    if (template.answerSpacingLines !== undefined && template.answerSpacingLines !== null) {
+      const spacing = template.answerSpacingLines;
+      if (typeof spacing !== 'number' || !Number.isInteger(spacing)) throw new Error('答题空行数必须是整数');
+      if (spacing < 1 || spacing > 10) throw new Error('答题空行数必须在 1 到 10 之间');
+      answerSpacingLines = spacing;
+    }
+    return { titleLine, examInfo, instructions, answerSpacingLines };
+  }
+
+  private buildAnswerSheetMarkdown(paper: Paper, template?: PaperAnswerSheetTemplate): string {
+    const resolved = this.normalizePaperAnswerSheetTemplate(template);
+    const spacing = resolved.answerSpacingLines ?? 2;
+    const lines = [resolved.titleLine ? `# ${resolved.titleLine}` : `# ${paper.title} 答题纸`, ''];
+    if (resolved.examInfo) lines.push(resolved.examInfo, '');
     if (paper.items.length) {
       lines.push(`题目数：${paper.items.length}｜总分：${paper.totalPoints}`, '', '---', '');
     }
+    if (resolved.instructions) lines.push('## 作答说明', '', resolved.instructions, '');
     paper.items.forEach((item, index) => {
-      lines.push(`**${index + 1}.** （${item.points} 分）`, '', '作答：', '', '');
+      lines.push(`**${index + 1}.** （${item.points} 分）`, '', '作答：');
+      for (let line = 0; line < spacing; line += 1) lines.push('');
     });
     return lines.join('\n');
   }

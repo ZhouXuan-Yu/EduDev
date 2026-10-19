@@ -48,6 +48,8 @@ import type {
   PaperCreateInput,
   PaperItemUpdateInput,
   PaperReorderInput,
+  PaperCompareInput,
+  PaperAnswerSheetTemplate,
   ErrorReviewProposeInput,
   MistakeImageCloudOcrInput,
 } from '../shared/contracts';
@@ -2179,8 +2181,9 @@ app.whenReady().then(async () => {
   ipcMain.handle('papers:replaceItem', (_event, paperId: string, itemId: string, questionId: string) => store.replacePaperItem(paperId, itemId, questionId));
   ipcMain.handle('papers:validate', (_event, id: string) => store.validatePaper(id));
   ipcMain.handle('papers:generateAiCandidates', (_event, paperId: string) => store.generatePaperCandidates(paperId));
-  ipcMain.handle('papers:export', (_event, id: string, destinationRoot?: string) => store.exportPaper(id, destinationRoot));
+  ipcMain.handle('papers:export', (_event, id: string, destinationRoot?: string, template?: PaperAnswerSheetTemplate) => store.exportPaper(id, destinationRoot, template));
   ipcMain.handle('papers:reorderItems', (_event, input: PaperReorderInput) => store.reorderPaperItems(input));
+  ipcMain.handle('papers:compare', (_event, input: PaperCompareInput) => store.comparePapers(input));
   ipcMain.handle('papers:archiveVersion', (_event, paperId: string, note?: string) => store.archivePaperVersion(paperId, note ?? ''));
   ipcMain.handle('papers:listVersions', (_event, paperId: string) => store.listPaperVersions(paperId));
   ipcMain.handle('papers:getVersion', (_event, versionId: string) => store.getPaperVersion(versionId));
