@@ -524,7 +524,7 @@ P（本文件）
 | `D:\WorkProject\小智智能体借鉴项目\OpenMAIC\components\scene-renderers\quiz-renderer.tsx` | 题面/选项/答案分区的渲染信息架构 | React/Next/Tailwind/场景运行时 | 在 `PaperWorkspace.tsx` 用本项目 HeroUI/React 19 重写 |
 | `D:\WorkProject\小智智能体借鉴项目\OpenMAIC\tests\video-export\quiz-layout.test.ts` | 布局断言的测试组织方式 | 视频导出夹具 | 只借鉴断言层次；实际断言 Markdown 内容/空行 |
 | `python/vendor/deeptutor/agents/question/pipeline.py:144-290` | canonical question type taxonomy：`choice/concept/fill_in_blank/short_answer/written/coding`；allowed types/per-type counts 归一化 | Python pipeline、LLM 调用 | 在 TS 中建立 `questionType` 映射；对比只读，不重建题目 |
-| `python/vendor/deeptutor/agents/question/pipeline.py:1291-1360` | quiz payload 的 bounded normalize/repair 思路 | 修复模型 JSON 的完整逻辑 | 仅用于对比时的字符串/字段稳定化，不做语义修补 |
+| `python/vendor/deeptutor/agents/question/pipeline.py:1291-1360` | quiz payload 的 bounded normalize/repair 思路（仅用于读取健壮性） | 修复模型 JSON 的完整逻辑；用归一化掩盖教师可见差异 | 对比的 `changed` 判定仍用原文；归一化只用于 key 构造，且重复/歧义必须标 `ambiguous` |
 | `python/vendor/deeptutor/tools/question/question_extractor.py:150-180` | 题目字段集合（question/options/correct_answer/explanation/type） | MinerU/LLM 抽取实现 | 映射到 `PaperItem` 的 stem/answer/analysis/questionType |
 | `python/vendor/deeptutor/agents/question/mimic_source.py:42-60` | 上游题型 → canonical taxonomy 的映射表 | 复制映射代码/注释 | 手写 TS 映射，保留来源语义 |
 | `D:\WorkProject\HeroUIPro\herouipro-v3\src\components\data-grid\data-grid.tsx` | 对比表格（行/列/状态） | 新增 `recharts` 等依赖 | 零新增依赖才 vendor；否则用现有 `list-view`/原生表格 |
@@ -590,6 +590,7 @@ P（本文件）
 | 文件/目录 | T0 | T1 | T2 | G0 | 说明 |
 | --- | --- | --- | --- | --- | --- |
 | `apps/desktop/src/main/mistake-ocr.ts`（新） | 写 | - | - | - | T0 纯编排 + 依赖注入 |
+| `apps/desktop/src/shared/mistake-ocr.ts`（新） | 写 | - | - | - | T0 `-1` 哨兵归一化；main/renderer 共用 |
 | `apps/desktop/src/main/index.ts` | 改 OCR/AI 区块 | 加 `papers:compare`/导出参数 | 加 `aiConfirmations:*Batch` | - | 按区块；禁止整文件重写 |
 | `apps/desktop/src/main/deepseek.ts` | 改 `readFile` | - | - | - | |
 | `apps/desktop/src/main/db.ts` | **不动** | paper 区块 | confirmation/error_review 区块 | - | 见 3.2 |
@@ -607,6 +608,8 @@ P（本文件）
 | `apps/desktop/scripts/electron-smoke.mjs` | - | 加 paper E2E | 加 error batch E2E | - | 按现有锚点 |
 | `README.md`、`.gitignore`、`docs/26`、`2.Memory.md`、`3.Learning.md` | 写 | 写 docs/26、2.Memory | 写 docs/26、2.Memory | - | 文档按 T1→T2 合并 |
 | `.orchestration/run_a4dbfcb56a64/g0-gpu-baseline.md` | - | - | - | 写 | |
+| `.orchestration/run_a4dbfcb56a64/01-plan.md` | **禁止** | **禁止** | **禁止** | **禁止** | Planner P 独占；worker 只读 |
+| `.orchestration/run_a4dbfcb56a64/{t0,t1,t2}-report.md` | 写 t0 | 写 t1 | 写 t2 | - | 报告只由对应 worker 写 |
 | `package.json` / lockfile | **禁止** | **禁止** | **禁止** | **禁止** | 新增 smoke 用 `node scripts/<name>.mjs` 直跑 |
 
 ### 3.2 `db.ts` 区块归属
@@ -649,6 +652,7 @@ P（本文件）
 ## 4. Acceptance matrix
 
 > `Evidence` 必须是可复现的命令输出、SQLite 回读、真实文件 hash 或截图路径；不能只写“通过”。
+> 下表 G0 命令中的 `$VENV_PY` 指 `C:\Users\ZhouXuan\AppData\Local\OmniEdu\venvs\gpu\Scripts\python.exe`；在 PowerShell 中先 `$VENV_PY = "C:\Users\ZhouXuan\AppData\Local\OmniEdu\venvs\gpu\Scripts\python.exe"`，在 Git Bash 中先 `VENV_PY="/c/Users/ZhouXuan/AppData/Local/OmniEdu/venvs/gpu/Scripts/python.exe"`。
 
 | # | 任务 | 命令 | 预期证据 | Pass/Fail 判据 |
 | --- | --- | --- | --- | --- |
@@ -666,7 +670,7 @@ P（本文件）
 | A11 | T1 | `npm run test:paper-blueprint` | 对比/模板/零写入/重启断言 | 全过；新增用例可见 |
 | A12 | T1 | `npm run test:renderer-components` | 对比/模板 UI 状态 | 全过 |
 | A13 | T1 | `npm run test:smoke` | Electron 组卷段：对比→模板→导出→readback→重启；双视口截图 | 通过；若内存被杀则 `BLOCKED` + 原始错误 |
-| A14 | T1 | 手工/脚本 readback | `document_artifacts` 中答题纸行、SHA-256、文件字节含模板文本 | 三者一致；答题纸无答案 |
+| A14 | T1 | `node scripts/paper-blueprint-smoke.mjs`（导出/回读段） | `document_artifacts` 中答题纸行、SHA-256、文件字节含模板文本 | 三者一致；答题纸无答案 |
 | A15 | T2 | `npm run build` | 退出 0 | 通过 |
 | A16 | T2 | `npm run test:error-review-write` | 批量确认/失败注入/拒绝/重复/重启断言 | 全过；失败注入后记录数=0、项仍 pending |
 | A17 | T2 | `npm run test:renderer-components` | 批量选择/按钮/状态 | 全过 |
