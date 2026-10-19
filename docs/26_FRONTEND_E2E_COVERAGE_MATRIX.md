@@ -1,6 +1,6 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
-更新时间：2026-09-16
+更新时间：2026-10-19（T0 基线稳定化）
 
 > 状态：当前实现证据真源。产品目标见 `11_STRATEGIC_PRODUCT_PRD.md`。本表保留各轮已验证快照；后续修改必须用本轮实际测试更新，不能沿用旧计数宣称当前通过。
 
@@ -11,8 +11,8 @@
 | 能力 | 后端/主进程入口 | preload / renderer 入口 | 当前 UI 状态 | E2E 证据 | 边界与未完成 |
 | --- | --- | --- | --- | --- | --- |
 | 错题图片导入 | `attachments:import`、`store.importAttachments` | `window.omniEdu.importAttachments`、`MistakesWorkspace` | 已接线：导入中、成功、取消、部分失败/失败、空态 | Electron 点击具体错题“导入附件”，经生产 handler 的受控 E2E dialog 返回真实 PNG，验证复制、SHA-256、SQLite、取消零写入 | 非 E2E/打包版本仍调用原生系统 dialog；Playwright 不操作 Windows dialog 窗口本身，不能误报为 OS UI 自动化 |
-| OCR 待处理 | `mistakeImages:createAnalysis`、`createMistakeImageAnalysis` | `createMistakeImageAnalysis`、`create-ocr-*` | 已接线：真实 `needs_ocr`，不伪造 OCR 文本 | 同一 smoke 验证 `listMistakeImageAnalyses` 回读 `needs_ocr` | 当前没有 OCR 引擎，教师输入/修正是明确的人审入口 |
-| 教师修正与脱敏 | `mistakeImages:updateCorrection`、`mistakeImages:sanitize` | `mistake-correction-input`、`mistake-sanitize-button`、`mistake-save-correction` | 已接线：保存后状态为 `teacher_corrected`，显示替换记录 | smoke 验证手机号脱敏与 SQLite 回读 | 只上传脱敏文本；原图路径不进入模型请求 |
+| OCR 待处理 | `mistakeImages:createAnalysis`、`createMistakeImageAnalysis` | `createMistakeImageAnalysis`、`create-ocr-*` | 已接线：真实 `needs_ocr`，不伪造 OCR 文本 | 同一 smoke 验证 `listMistakeImageAnalyses` 回读 `needs_ocr` | 本地/云端 OCR 分别见下方两行；`needs_ocr` 仍是唯一初始状态，不允许用假文本跳过识别 |
+| 教师修正与脱敏 | `mistakeImages:updateCorrection`、`mistakeImages:sanitize` | `mistake-correction-input`、`mistake-sanitize-button`、`mistake-save-correction` | 已接线：保存后状态为 `teacher_corrected`，显示替换记录 | smoke 验证手机号脱敏与 SQLite 回读 | 常规 AI 分析只接收脱敏文本；云端 OCR 是唯一原图上传路径，必须教师显式同意 |
 | 小智分析入口 | `ai:runDeepSeek` / `ai:runDeepTutorConsole` | `runAiConsole`、`mistake-send-ai`、AI 对话区 | 已接线：切换到 AI 视图，失败消息可见 | smoke 在无 API Key 情况点击并验证 `ai-output-error` | 真实 provider、合法 key 和模型质量需单独 live gate |
 | 三元题组草稿 | `confirmations`、`save_exercise_set`、`aiConfirmations:confirm`（接收 `AiConfirmationConfirmInput`，可选 `exerciseSetEdit`） | `mistake-triplet-panel`、可编辑 stem/answer、来源标签 | 已接线：草稿可编辑，确认时把编辑后的题干/答案提交给确认契约（main 侧校验数量一致、题干非空、长度上限，role/sourceKind/questionId 保持原始值不可伪造），确认/拒绝分离，显示 `local_bank/teacher_resource/generated` | smoke 验证拒绝零写入、编辑确认后 exercise set 题干/答案与编辑值一致、来源保持、contentMd 重建、确认项 payload_json 记录执行值、重启回读 | 编辑覆盖仅对 `save_exercise_set` 开放，覆盖字段仅 stem/answer；其他动作带覆盖被拒绝；真实 provider 质量仍待 live gate |
 | 已确认题组回读 | `exerciseSets:list`、`listExerciseSets` | `ExerciseSetLibrary`、错题工作区第 5 步 | 已接线：loading/empty/error/content、只读刷新、题目角色与来源标签 | component 新增 5 个状态；Electron 新增 9 个路径，覆盖确认后 UI 回读、来源、刷新零写入、学生隔离、重启与双视口 | 正式题组只读；修改必须重新生成草稿并再次教师确认，不复制题本或另建数据真源 |
@@ -21,7 +21,8 @@
 | 教师确认队列 | `aiConfirmations:list/confirm/reject` | AI 面板与错题题组确认按钮 | 已接线：确认/拒绝走 typed preload，稳定 `data-testid` | smoke 从 AI 确认按钮点击并验证 SQLite `exercise_sets` + restart readback | 复杂并发确认、过期版本冲突仍需专项 E2E |
 | 知识库目录批量导入 | `knowledge:importDirectory/importDirectoryPaths/listImportJobs/getImportJob/cancelImportJob/retryImportJob`、`knowledge_import_jobs` 持久化任务 | `KnowledgeImportPanel`、知识库页 | 已接线：导入中/进度/取消/失败清单/历史与重试，稳定 `data-testid` | node smoke 8 用例（递归扫描、SHA-256 去重、重复导入零写入、排队/中途取消、部分失败重试修复、扫描失败、重启恢复）；Electron 点击「导入文件夹」→ ready 任务回读→取消对话框零写入→重启回读 | 目录对话框 E2E 经未打包适配器；Docling/OCR 解析仍未接入，PDF 落 needs_parser |
 | 题库检索与相似题直入口 | 迁移 v4 `question_bank_fts`（FTS5）、`questionBank:search`、`exerciseSets:proposeFromQuestions` | `QuestionNotebookWorkspace` 搜索框、`MistakesWorkspace` 相似题面板 | 已接线：FTS 优先（空表/损坏自动降级 LIKE）、相似题检索/勾选≤6 道/生成题组草稿→确认落库，来源标签不可伪造 | `test:question-bank-search` 7 用例；Electron 搜索→选相似题→草稿→确认→来源/正文一致→重启回读 | 组卷蓝图与批量选题编辑不在此行范围；PRD 四值来源枚举仍未落地 |
-| 本地 OCR（RapidOCR） | `mistakeImages:runOcr`、`OcrWorkerClient`、python `omni_edu_ocr`（rapidocr>=3 + PP-OCRv6 ONNX） | `MistakesWorkspace`「本地 OCR 识别」按钮、识别中/完成/失败态、置信度提示 | 已接线：needs_ocr → 本地识别 → ocr_done（置信度回填）→ 教师校正 → 脱敏保存 | `test:ocr`（PIL+simhei 中文样图实测识别 6 行、错误路径 fail-closed）；Electron 导入真实样图→识别→ocr_done 91%→校正→重启回读 | 公式/符号识别是 v1 精度（y=2x+3 拆行）；bbox 高亮、低置信度区域可视化、真实教师样本人审未做 |
+| 本地 OCR（RapidOCR） | `mistakeImages:runOcr`、`OcrWorkerClient`、python `omni_edu_ocr`（rapidocr>=3 + PP-OCRv6 ONNX） | `MistakesWorkspace`「本地 OCR 识别」按钮、识别中/完成/失败态、置信度提示 | 已接线：needs_ocr → 本地识别 → ocr_done（置信度回填）→ 教师校正 → 脱敏保存 | `test:ocr`（PIL+simhei 中文样图实测识别 6 行、错误路径 fail-closed）；Electron 导入真实样图→识别→ocr_done 91%→校正→重启回读 | 本地失败只标记失败并抛错，**不自动回退云端**（T0 已移除自动回退）；公式/符号精度 v1；bbox 高亮、低置信度区域可视化、真实教师样本人审未做 |
+| 云端 OCR（显式同意） | `mistakeImages:runCloudOcr`、`main/mistake-ocr.ts`、`shared/mistake-ocr.ts`、`deepseek.ts analyzeImageWithDeepSeek`（仅同意路径） | `MistakesWorkspace`「云端识别（会上传原图）」+ 勾选「我确认会上传原图到云端」的确认框；typed preload `runMistakeImageCloudOcr` | 已接线：未确认/取消零调用；确认后才上传原图；结果 `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`，显示“未提供置信度，必须教师复核”，不显示百分比 | `cloud-ocr-consent-smoke.mjs` 75/75（fake provider，无网络）：缺字段/false/取消=0 调用、确认=1 次、provider 失败/空文本零业务写入、本地失败零云端调用、审计序列化不含路径/base64 | 云端失败不调用 `applyMistakeOcrResult`/`markMistakeOcrFailed`，原 `needs_ocr` 保持；`db.ts` 零改动，以 `ocr_confidence=-1` 落库后归一化；审计仅 bounded 主进程日志，无 SQLite 审计表（本轮无迁移）；真实 DeepSeek 质量与教师样本未验证；未运行 Electron 点击 E2E |
 | 智能组卷 | 迁移 v6 `paper_blueprints`/`papers`/`paper_items`、迁移 v8 `paper_versions`、`papers:*`（蓝图 CRUD/按蓝图召回/题目编辑/换题/排序/校验/版本/导出/`generateAiCandidates`）、确认动作 `save_paper_candidates` | `PaperWorkspace.tsx`、「智能组卷」主导航入口 | 已接线：蓝图创建与版本锁编辑、确定性召回（FTS+元数据+难度配比）、题目编辑/锁定/换题、**拖拽排序**（含键盘上移下移替代）、校验面板、三产物导出、**版本历史**（导出自动存档、教师手动存档、详情预览、二次确认恢复，恢复前自动存档）、**AI 生成候选题目**（按蓝图+校验缺口生成→候选评审面板可编辑/勾选/来源 chip ai_generated→内联确认/拒绝→确认后单事务写入题库+试卷） | `test:paper-blueprint`（召回/总分/版本冲突/锁定防换题/重复题拒绝/题量不足/归档拒绝/导出内容边界/排序事务 3 类拒绝/版本去重/详情快照/恢复回滚）；`test:ai-paper-candidates`（fake 生成器：归一化、确认写入+FTS 读回、拒绝零写入、教师编辑合并、非法编辑 4 类拒绝、归档蓝图拒绝、重启持久化）；`test:ai-tool-calling`（工具暴露/提交进确认队列/缺参/不存在试卷）；`test:ai-live-usability` **真实 provider**（deepseek-flash 生成 1 道→确认→题库+试卷读回）；Electron 建蓝图→生成→编辑→锁定→校验→导出→拖拽重排可逆→保存版本→预览→恢复→重启回读→**无 Key 点 AI 生成→可执行错误+零确认项** | 试卷对比视图与答题纸排版模板未做；拖拽为 HTML5 DnD，触控与辅助技术未验收；AI 生成质量以 live 用例为证据，无真实教师标注集 |
 | 产物管理 | `documents:listArtifacts/getArtifact/showArtifact`、`document_artifacts` | `DocumentArtifactLibrary.tsx`、「产物」主导航入口 | 已接线：类型/状态筛选、真实 SHA-256 前缀、大小与文件名、在文件夹中查看（受管路径守卫） | Electron 导航→列表出现组卷三件套→摘要计数→markdown 筛选→failed 筛选空态→打开动作→双视口截图 | 未做批量导出/删除/重新导出；打开动作在未打包 E2E 走适配器，打包路径仍为系统文件管理器 |
 | 错因分类建议 | `mistakes:analyzeErrorPatterns`、`error-taxonomy.ts`（`omni.error.taxonomy.v1`、UTC 日历窗口 ≤366 天） | `MistakesWorkspace` 第 6 步面板（日期/学科筛选、四类计数、需教师复核标记、只读 Markdown） | 已接线：只读分析 + unknown 处理 + 只读边界文案；不写学生档案 | `test:deeptutor-error-taxonomy` 11/11（含 host round-trip 与 no-write）；Electron 点击分析→计数/UTC 窗口/边界→零写入校验→截图 | ~~错因建议不可编辑~~（已由下方确认写入补齐）；未做趋势与跨学科对比 |
@@ -76,3 +77,20 @@ npm run test:ai-observability
 1. 重新从 typed preload 与主进程 handler 反向审计下一项“后端已实现但教师入口/状态/E2E不完整”的能力，不按 API 数量机械新增页面。
 2. 优先补真实用户动作、SQLite/file readback 和重启证据，不新增后端能力或独立 smoke。
 3. “编辑后的题组覆盖确认 payload”已于 2026-09-16 完成：`aiConfirmations:confirm` 接收 `AiConfirmationConfirmInput.exerciseSetEdit`，教师编辑的题干/答案随确认写入 `exercise_sets`，来源不可伪造，主 smoke 与专项 smoke 均已覆盖。
+
+## T0 基线稳定化验收（2026-10-19）
+
+| 项 | 改动 | 证据 |
+| --- | --- | --- |
+| 隐私回退 | 删除 `mistakeImages:runOcr` 的自动 DeepSeek 视觉回退；删除通用 `deepseek:analyzeImage` handler 与 preload 方法 | `rg "deepseek:analyzeImage" apps/desktop/src` 0 命中；`rg "analyzeImageWithDeepSeek" apps/desktop/src/main/index.ts` 仅剩 import 与 `mistakeImages:runCloudOcr` 的 provider 注入 |
+| 显式同意 | 新增 `mistakeImages:runCloudOcr`；`confirmedUploadOriginal` 必须字面 `true`，缺省/`false` 在读取图片与调用 provider 前 fail-closed | `cloud-ocr-consent-smoke.mjs` 15 个 case / 75 断言：未确认、false、取消均 0 次 provider 调用；确认 1 次 |
+| 不伪造置信度 | 云端结果以 `ocr_confidence=-1` 落库，`db.ts` 零改动；`shared/mistake-ocr.ts` 归一化为 `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`；renderer 列表与 IPC 返回共用 | smoke 的 `confirmed-upload` 与 `normalize-sentinel` case；UI 对 `ocrConfidence !== number` 不显示百分比 |
+| 云端失败零写入 | provider 失败或空文本只返回可行动错误，不调用 `applyMistakeOcrResult`/`markMistakeOcrFailed`，原 `needs_ocr` 保持 | smoke 的 `provider-failure-no-write`、`provider-empty-text-no-write`（applyCalls=0、markFailedCalls=0） |
+| 审计边界 | 只记录 provider/model/requestId/confirmedAt/imageBytes；不记录图片路径、base64、学生姓名或题干原文 | smoke 断言审计 JSON 不含 `secret-original`、`C:/managed`、`base64`；无 SQLite 审计表（本轮无迁移） |
+| 异步 IO | `main/deepseek.ts` 的 `readFileSync(imagePath)` 改为 `stat` + `fs/promises.readFile`；先按 `stat.size` 超 8MB fail-closed，读取后再验 `buffer.length` | `rg "readFileSync\(imagePath\)" apps/desktop/src/main/deepseek.ts` 0 命中；`npm run build` 退出 0 |
+| 5 源上下文 | 新增 `renderer/ai-context-sources.ts`；`App.tsx` 合并为学生档案/学习记录/附件元数据/老师知识库/知识图谱，图谱 count 优先 `aiResult.graphNodes.length`，回退 `knowledgeOverview.counts.nodes`；删除 `contextData` | `test:renderer-components` 176/176，含 5 源、优先级与回退断言 |
+| 仓库卫生 | 删除根目录 scratch 脚本 `test-enhanced-components.js`；`.playwright-mcp/`、`.orchestration/` 加入 `.gitignore` 并 `git rm -r --cached` | `git ls-files .playwright-mcp .orchestration \| wc -l` = 0 |
+
+本轮门禁（本机实测）：`npm run build` 退出 0；`npm run test:renderer-components` 176/176；`npm run test:ai-mistake-image` ok=true（analysisCount=2，rawImageUploaded=false）；`node scripts/cloud-ocr-consent-smoke.mjs` 75/75；`git diff --check` 无 whitespace 错误。
+
+**证据分级与未验证项**：consent smoke 使用 fake provider，只证明工程链路与同意边界，不发起网络请求；真实 DeepSeek 云端识别质量、真实教师原图样本、完整 Electron 点击 E2E（云端确认对话框 → 上传 → 结果回读）在本轮标记为 `unknown`/未验证。W07 试卷对比与答题纸模板、W08 错因复核单事务与批量确认不在 T0，由 T1/T2 后续提交。
