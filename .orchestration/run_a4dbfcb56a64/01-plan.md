@@ -123,7 +123,7 @@
      ```
    - 校验顺序（缺一不可）：`analysisId` 非空 → 记录存在 → `localPath` 是受管路径且文件存在 → `confirmedUploadOriginal === true` → 有 API Key → provider 调用。**校验未通过时不得读取图片、不得编码 base64、不得调用 provider。**
    - 云端结果：`applyMistakeOcrResult` 以 `confidence=-1` 落库；IPC 返回前经 `apps/desktop/src/shared/mistake-ocr.ts` 归一化为 `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`；renderer 从 `listMistakeImageAnalyses` 读到的 `-1` 也必须经同一函数归一化。`lowConfidenceCount` 固定 `0` 但不得展示为“高置信度”。
-   - 云端失败：调用 `markCloudOcrFailed`（新增私有方法或复用）只写 `error_message`，**不覆盖**已有 `ocr_done` 文本/状态；返回可行动错误。
+   - 云端失败：**不写业务表**（不调用 `applyMistakeOcrResult`，不覆盖已有 `ocr_done` 文本/状态；原 `needs_ocr` 保持 `needs_ocr`），只在 IPC 返回可行动错误。T0 不改 `db.ts`，因此不新增 `markCloudOcrFailed` store 方法；UI 必须保留原分析记录并显示错误。
    - 审计：返回 `audit`，并写一条 bounded 主进程日志（provider/model/requestId/confirmedAt/imageBytes），**不得**记录图片路径、base64、学生姓名或题干原文。由于本轮无迁移，不新增 SQLite 审计表；在 docs/26 明确该边界。
    - UI：OCR 面板新增次级按钮“云端识别（会上传原图）”；点击后弹出确认对话框，必须勾选“我确认会上传原图到云端”才可确认；取消/关闭零调用。结果区显示“云端识别：未提供置信度，必须教师复核”，不得显示百分比。
 3. **P1 同步 IO**
@@ -134,7 +134,8 @@
 5. **Hygiene**
    - README 更新为当前现实：主导航 9 项（今日/小智/知识库/题库/智能组卷/错题训练/学生/产物/设置）、OCR/解析/向量已落地、W07/W08 状态；不得沿用“207 路径”等旧计数。
    - 删除根 `test-enhanced-components.js`。
-   - `.gitignore` 增加 `.playwright-mcp/` 与 `.orchestration/`；并执行 `git rm -r --cached .playwright-mcp`（只取消跟踪，不删除本地文件），使 `git ls-files .playwright-mcp` 为 0。
+   - `.gitignore` 增加 `.playwright-mcp/` 与 `.orchestration/`；并执行 `git rm -r --cached .playwright-mcp .orchestration`（只取消跟踪，不删除本地文件），使 `git ls-files .playwright-mcp` 为 0，且规划/报告不再出现在提交中。
+   - `index.ts` 顶部移除不再使用的 `analyzeImageWithDeepSeek` import（若已无其他调用）。
    - 更新 `docs/26`、`2.Memory.md`、`3.Learning.md` 的真实结果；不得把规划写成完成。
 6. **Tests**
    - 新 `cloud-ocr-consent-smoke.mjs`：用 esbuild 打包 `main/mistake-ocr.ts` + `shared/mistake-ocr.ts`，注入 fake deps/provider；不启动 Electron、不发网络请求。覆盖：
@@ -427,7 +428,7 @@
    - `ort.get_available_providers()` 必须含 `CUDAExecutionProvider`；若没有，记录完整 provider 列表、错误与 fallback。
 5. 安装 `rapidocr>=3,<4`、`sentence-transformers`、`lancedb`、`pillow`（与 `python/requirements-ocr.txt` 及现有 worker 兼容）。记录精确版本。
 6. GPU smoke（串行，避免同时占 8GB VRAM）：
-   - RapidOCR：复用 `python/ocr-smoke.py` 的样图生成与断言思路，用 venv 解释器运行；记录识别文本、行数、最低置信度、耗时、GPU/CPU provider。**不要修改** `python/ocr-smoke.py`。
+   - RapidOCR：复用 `python/ocr-smoke.py` 的样图生成与断言思路，用 venv 解释器运行；记录识别文本、行数、最低置信度、耗时、GPU/CPU provider。**不要修改** `python/ocr-smoke.py`。首次运行会下载/缓存 ONNX 模型：记录来源、耗时、缓存路径；无网络或下载失败时记录 blocker，不得伪造 GPU 结果。若当前 worker 未暴露 provider 配置，用独立 inline script 实例化 `RapidOCR`/ORT session 验证 CUDA provider；不得修改 `python/omni_edu_ocr/**`。
    - sentence-transformers：用 venv 执行 `SentenceTransformer('BAAI/bge-small-zh-v1.5', device='cuda')` 编码一句中文（如“一次函数图像的斜率表示纵向变化量与横向变化量之比。”）；记录 device、维度、耗时、`torch.cuda.max_memory_allocated()`。
    - 记录 `nvidia-smi` 的 VRAM 使用前后值。
 7. CPU fallback：
@@ -644,10 +645,11 @@ P（本文件）
 | A2 | T0 | `npm run test:renderer-components` | 组件断言计数；5 源上下文断言在输出中 | 全过；断言数不少于改动前 |
 | A3 | T0 | `npm run test:ai-mistake-image` | 原有错题图片/脱敏断言 | 全过；无回退相关失败 |
 | A4 | T0 | `node scripts/cloud-ocr-consent-smoke.mjs` | 每个 case 的 provider 调用次数、结果字段、审计字段 | 未确认=0 调用；确认=1 调用；失败/取消=0；审计无路径/base64 |
+| A4b | T0 | `node scripts/cloud-ocr-consent-smoke.mjs`（归一化 case） | `normalizeMistakeImageAnalysis` 对 `-1` 的输出 | `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`；非负值保持原样 |
 | A5 | T0 | `rg "deepseek:analyzeImage" apps/desktop/src` | 无输出 | 0 命中 |
 | A6 | T0 | `rg "analyzeImageWithDeepSeek" apps/desktop/src/main/index.ts` | 仅 provider 定义/导入，不在 runOcr 区块 | 无自动回退调用 |
 | A7 | T0 | `rg "readFileSync\(imagePath\)" apps/desktop/src/main/deepseek.ts` | 无输出 | 0 命中 |
-| A8 | T0 | `git ls-files .playwright-mcp \| wc -l`；`git check-ignore .orchestration/run_a4dbfcb56a64/01-plan.md` | `0`；输出忽略规则 | 0；`.orchestration/` 被忽略 |
+| A8 | T0 | `git ls-files .playwright-mcp .orchestration \| wc -l`；`git check-ignore .orchestration/run_a4dbfcb56a64/01-plan.md` | `0`；输出忽略规则 | 0；`.orchestration/` 被忽略 |
 | A9 | T0 | `git diff --check`；`git status --short --branch` | 无 whitespace 错误；提交后干净 | 全过 |
 | A10 | T1 | `npm run build` | 退出 0 | 通过 |
 | A11 | T1 | `npm run test:paper-blueprint` | 对比/模板/零写入/重启断言 | 全过；新增用例可见 |
