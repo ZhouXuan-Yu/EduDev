@@ -87,7 +87,7 @@
 - `.playwright-mcp/`（加入 `.gitignore`）
 
 为满足 typed IPC 四件套与可测试性，Planner 追加的最小扩展（不得再扩大）：
-- `apps/desktop/src/shared/contracts.ts`（仅新增云 OCR 输入/结果/审计类型）
+- `apps/desktop/src/shared/contracts.ts`（新增云 OCR 输入/结果/审计类型；`MistakeImageAnalysis.ocrConfidence` 改为 `number | null`，新增可选 `requiresReview?: boolean`、`ocrSource?: 'local' | 'cloud' | ''`）
 - `apps/desktop/src/main/mistake-ocr.ts`（**新建**：本地 OCR / 云端 OCR 的纯编排，依赖注入）
 - `apps/desktop/src/shared/mistake-ocr.ts`（**新建**：`-1` 哨兵 → `null`/`requiresReview`/`ocrSource` 的共享归一化）
 - `apps/desktop/src/renderer/ai-context-sources.ts`（**新建**：5 源上下文纯构造函数）
@@ -125,7 +125,7 @@
    - 云端结果：`applyMistakeOcrResult` 以 `confidence=-1` 落库；IPC 返回前经 `apps/desktop/src/shared/mistake-ocr.ts` 归一化为 `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`；renderer 从 `listMistakeImageAnalyses` 读到的 `-1` 也必须经同一函数归一化。`lowConfidenceCount` 固定 `0` 但不得展示为“高置信度”。
    - 云端失败：**不写业务表**（不调用 `applyMistakeOcrResult`，不覆盖已有 `ocr_done` 文本/状态；原 `needs_ocr` 保持 `needs_ocr`），只在 IPC 返回可行动错误。T0 不改 `db.ts`，因此不新增 `markCloudOcrFailed` store 方法；UI 必须保留原分析记录并显示错误。
    - 审计：返回 `audit`，并写一条 bounded 主进程日志（provider/model/requestId/confirmedAt/imageBytes），**不得**记录图片路径、base64、学生姓名或题干原文。由于本轮无迁移，不新增 SQLite 审计表；在 docs/26 明确该边界。
-   - UI：OCR 面板新增次级按钮“云端识别（会上传原图）”；点击后弹出确认对话框，必须勾选“我确认会上传原图到云端”才可确认；取消/关闭零调用。结果区显示“云端识别：未提供置信度，必须教师复核”，不得显示百分比。
+   - UI：OCR 面板新增次级按钮“云端识别（会上传原图）”；点击后弹出确认对话框，必须勾选“我确认会上传原图到云端”才可确认；取消/关闭零调用。结果区显示“云端识别：未提供置信度，必须教师复核”，不得显示百分比；`ocrConfidence === null` 时禁止走 `Math.round(... * 100)` 的百分比文案。
 3. **P1 同步 IO**
    - `apps/desktop/src/main/deepseek.ts:366`：`readFileSync` → `await readFile`（`node:fs/promises`）；先 `stat` 检查 `size > 8MB` 直接 fail-closed，读取后再校验 `buffer.length`。保留 `MAX_IMAGE_BYTES` 与现有错误文案。
 4. **P1 上下文回归**
@@ -141,7 +141,7 @@
    - 新 `cloud-ocr-consent-smoke.mjs`：用 esbuild 打包 `main/mistake-ocr.ts` + `shared/mistake-ocr.ts`，注入 fake deps/provider；不启动 Electron、不发网络请求。覆盖：
      - 未确认/`false`/缺字段 → provider 调用 0、`applyMistakeOcrResult` 0；
      - 确认 → provider 调用 1，结果为 `null` 置信度 + `requiresReview=true` + `ocrSource='cloud'`；
-     - provider 失败 → 不写成功结果，`markCloudOcrFailed` 被调用，原有文本保留；
+     - provider 失败 → 不写成功结果、不改已有 OCR 状态/文本，错误可行动；
      - 本地 OCR 失败 → 云端 provider 调用 0（无回退）；
      - 审计对象序列化后不含图片路径/base64；
      - 取消路径 → 零调用。
@@ -216,21 +216,32 @@
        | 'difficulty' | 'knowledgePoint' | 'sourceKind' | 'questionType'
        | 'locked' | 'teacherEdited';
 
-     type PaperCompareChange = { field: PaperCompareField; left: unknown; right: unknown };
+     type PaperCompareValue = string | number | boolean | null;
+     type PaperCompareChange = { field: PaperCompareField; left: PaperCompareValue; right: PaperCompareValue };
+
+     type PaperCompareSnapshot = {
+       stem: string; answer: string; analysis: string; points: number;
+       difficulty: string; knowledgePoint: string; sourceKind: string; questionType: string;
+     };
 
      type PaperCompareItem = {
        key: string;
        status: 'added' | 'removed' | 'changed' | 'unchanged' | 'ambiguous';
        leftIndex: number | null;
        rightIndex: number | null;
-       left: { stem: string; answer: string; analysis: string; points: number; difficulty: string; knowledgePoint: string; sourceKind: string; questionType: string } | null;
-       right: { ...同上 } | null;
+       left: PaperCompareSnapshot | null;
+       right: PaperCompareSnapshot | null;
        changes: PaperCompareChange[];
      };
 
+     type PaperCompareSide = {
+       kind: 'paper' | 'version'; id: string; title: string;
+       versionNo: number | null; totalPoints: number; itemCount: number;
+     };
+
      type PaperCompareResult = {
-       left: { kind: 'paper' | 'version'; id: string; title: string; versionNo: number | null; totalPoints: number; itemCount: number };
-       right: { ...同上 };
+       left: PaperCompareSide;
+       right: PaperCompareSide;
        summary: {
          added: number; removed: number; changed: number; unchanged: number; ambiguous: number;
          totalPointsDelta: number; orderChanged: boolean;
@@ -349,17 +360,17 @@
      type AiConfirmationBatchInput = { ids: string[] }; // 1..20，去重
      type AiConfirmationBatchResult = {
        items: AiConfirmationItem[];
-       readbacks: Array<AiConfirmationDecisionResult['readback'] | undefined>;
+       readbacks: Array<AiConfirmationDecisionResult['readback'] | null>;
      };
      ```
+   - 实现拆分（避免嵌套事务）：`validateErrorReviewConfirmation(item, payload)` 做纯校验；`writeErrorReviewConfirmationInTx(item, payload)` 只做裸 INSERT/FTS/readback/状态更新，**不发 `BEGIN`**。单条路径由 `commitErrorReviewConfirmation` 发 `BEGIN IMMEDIATE` 后调用；批量路径共用一个 `BEGIN IMMEDIATE`，逐条调用 `validate...` + `write...InTx`。
    - `confirmAiConfirmationsBatch(input)`：
      - 校验 1..20、无重复、全部 `actionType='save_error_review'`、全部 `pending`；混合 action 或任一非 pending → 整体拒绝，不做任何写入；
      - 单个 `BEGIN IMMEDIATE`，按输入顺序逐条执行与单条相同的校验/写入/readback/状态更新；
      - 任一条失败 → 全部回滚；返回错误，所有项仍 pending。
    - `rejectAiConfirmationsBatch(input)`：
      - 校验 1..20、无重复、全部 `save_error_review` 且 `pending`；
-     - 单事务内逐 id 执行 `UPDATE ... SET status='rejected', rejected_at=?, updated_at=? WHERE id=? AND status='pending'`，用 `runWithChanges` 断言每条命中；任一未命中 → `ROLLBACK`；
-     - 任一未命中 → 回滚；成功返回全部项。
+     - 单事务内逐 id 执行 `UPDATE ... SET status='rejected', rejected_at=?, updated_at=? WHERE id=? AND status='pending'`，用 `runWithChanges` 断言每条命中；任一未命中 → `ROLLBACK` 并整体失败；成功返回全部项。
    - 重复确认/拒绝：第二次调用必须报“只能确认/拒绝待确认项”，零写入。
    - 并发：`BEGIN IMMEDIATE` + 事务内 re-read + `WHERE status='pending'` 保证单赢家；输家整体失败，不产生部分写入。
 3. **UI**
