@@ -3,9 +3,15 @@ import type {
   AiGeneratedPaperCandidate,
   DocumentArtifactExportResult,
   Paper,
+  PaperAnswerSheetTemplate,
   PaperBlueprint,
   PaperBlueprintInput,
   PaperCandidateGenerateResult,
+  PaperCompareField,
+  PaperCompareItem,
+  PaperCompareRef,
+  PaperCompareResult,
+  PaperCompareValue,
   PaperItem,
   PaperTypeSpec,
   PaperValidationResult,
@@ -19,6 +25,41 @@ type PaperWorkspaceProps = {
 };
 
 type TypeSpecDraft = { questionType: string; count: string; pointsPerQuestion: string };
+
+const paperCompareStatusLabels: Record<PaperCompareItem['status'], string> = {
+  added: '新增',
+  removed: '删除',
+  changed: '变更',
+  unchanged: '未变',
+  ambiguous: '歧义',
+};
+
+const paperCompareFieldLabels: Record<PaperCompareField, string> = {
+  orderIndex: '题序',
+  stem: '题干',
+  answer: '答案',
+  analysis: '解析',
+  points: '分值',
+  difficulty: '难度',
+  knowledgePoint: '知识点',
+  sourceKind: '来源',
+  questionType: '题型',
+  locked: '锁定',
+  teacherEdited: '教师修改',
+};
+
+function formatPaperCompareValue(value: PaperCompareValue): string {
+  if (value === null) return '—';
+  if (typeof value === 'boolean') return value ? '是' : '否';
+  return String(value);
+}
+
+const emptyAnswerSheetTemplateDraft = {
+  titleLine: '',
+  examInfo: '',
+  instructions: '',
+  answerSpacingLines: '2',
+};
 
 const emptyBlueprintDraft = {
   title: '',
@@ -62,6 +103,16 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
   const [candidateEdits, setCandidateEdits] = useState<Record<number, AiGeneratedPaperCandidate>>({});
   const [candidateSelected, setCandidateSelected] = useState<Record<number, boolean>>({});
   const [candidateConfirmBusy, setCandidateConfirmBusy] = useState(false);
+  const [compareLeftKind, setCompareLeftKind] = useState<PaperCompareRef['kind']>('paper');
+  const [compareLeftPaperId, setCompareLeftPaperId] = useState('');
+  const [compareLeftVersionId, setCompareLeftVersionId] = useState('');
+  const [compareRightKind, setCompareRightKind] = useState<PaperCompareRef['kind']>('paper');
+  const [compareRightPaperId, setCompareRightPaperId] = useState('');
+  const [compareRightVersionId, setCompareRightVersionId] = useState('');
+  const [compareResult, setCompareResult] = useState<PaperCompareResult | null>(null);
+  const [comparing, setComparing] = useState(false);
+  const [compareError, setCompareError] = useState('');
+  const [answerSheetTemplate, setAnswerSheetTemplate] = useState(emptyAnswerSheetTemplateDraft);
 
   const selectedBlueprint = useMemo(
     () => blueprints.find((item) => item.id === selectedBlueprintId) ?? null,
@@ -306,6 +357,23 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
     void loadVersions(selectedPaperId);
   }, [selectedPaperId, loadVersions]);
 
+  useEffect(() => {
+    if (!papers.length) return;
+    const fallbackId = selectedPaperId || papers[0]?.id || '';
+    setCompareLeftPaperId((current) => (papers.some((paper) => paper.id === current) ? current : fallbackId));
+    setCompareRightPaperId((current) => (papers.some((paper) => paper.id === current) ? current : fallbackId));
+  }, [papers, selectedPaperId]);
+
+  useEffect(() => {
+    if (compareLeftKind !== 'version') return;
+    setCompareLeftVersionId((current) => (versions.some((version) => version.id === current) ? current : versions[0]?.id ?? ''));
+  }, [compareLeftKind, versions]);
+
+  useEffect(() => {
+    if (compareRightKind !== 'version') return;
+    setCompareRightVersionId((current) => (versions.some((version) => version.id === current) ? current : versions[0]?.id ?? ''));
+  }, [compareRightKind, versions]);
+
   async function reorderItems(draggedId: string, targetId: string) {
     if (!selectedPaper || draggedId === targetId) return;
     const ordered = [...selectedPaper.items].sort((a, b) => a.orderIndex - b.orderIndex).map((item) => item.id);
@@ -384,17 +452,59 @@ export function PaperWorkspace({ setStatus }: PaperWorkspaceProps) {
     }
   }
 
+  async function runPaperComparison() {
+    const left: PaperCompareRef = compareLeftKind === 'paper'
+      ? { kind: 'paper', id: compareLeftPaperId }
+      : { kind: 'version', id: compareLeftVersionId };
+    const right: PaperCompareRef = compareRightKind === 'paper'
+      ? { kind: 'paper', id: compareRightPaperId }
+      : { kind: 'version', id: compareRightVersionId };
+    if (!left.id || !right.id) {
+      setCompareError('请先选择左右两侧的试卷或版本。');
+      return;
+    }
+    setComparing(true);
+    setCompareError('');
+    setCompareResult(null);
+    try {
+      const result = await window.omniEdu?.comparePapers({ left, right });
+      if (!result) throw new Error('对比没有返回结果。');
+      setCompareResult(result);
+      showNotice(`只读对比完成：新增 ${result.summary.added}，删除 ${result.summary.removed}，变更 ${result.summary.changed}，歧义 ${result.summary.ambiguous}。`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '试卷对比失败。';
+      setCompareError(message);
+      showError(error, '试卷对比失败。');
+    } finally {
+      setComparing(false);
+    }
+  }
+
+  function buildAnswerSheetTemplate(): PaperAnswerSheetTemplate {
+    const spacing = answerSheetTemplate.answerSpacingLines.trim();
+    return {
+      titleLine: answerSheetTemplate.titleLine,
+      examInfo: answerSheetTemplate.examInfo,
+      instructions: answerSheetTemplate.instructions,
+      answerSpacingLines: spacing ? Number(spacing) : undefined,
+    };
+  }
+
   async function exportPaperArtifacts() {
     if (!selectedPaper) return;
     setExporting(true);
     try {
       const dataRoot = await window.omniEdu?.getDataRoot();
-      const result = await window.omniEdu?.exportPaper(selectedPaper.id, dataRoot ? `${dataRoot}/exports/papers` : undefined);
+      const result = await window.omniEdu?.exportPaper(
+        selectedPaper.id,
+        dataRoot ? `${dataRoot}/exports/papers` : undefined,
+        buildAnswerSheetTemplate(),
+      );
       if (!result) throw new Error('导出没有返回结果。');
       const failed = [result.paper, result.answerSheet, result.analysis].filter((artifact) => artifact.status !== 'exported');
       if (failed.length) throw new Error(`${failed.length} 个产物没有进入 exported 状态。`);
       setExports({ paper: result.paper, answerSheet: result.answerSheet, analysis: result.analysis });
-      showNotice('试卷、答题纸和解析已导出到本地文件。');
+      showNotice('试卷、答题纸和解析已导出到本地文件；答题纸使用本次导出设置（不跨重启保存）。');
     } catch (error) {
       showError(error, '导出试卷失败。');
     } finally {

@@ -317,10 +317,12 @@ const api = {
     ipcRenderer.invoke('papers:validate', id) as Promise<PaperValidationResult>,
   generatePaperAiCandidates: (paperId: string) =>
     ipcRenderer.invoke('papers:generateAiCandidates', paperId) as Promise<PaperCandidateGenerateResult>,
-  exportPaper: (id: string, destinationRoot?: string) =>
-    ipcRenderer.invoke('papers:export', id, destinationRoot) as Promise<PaperExportResult>,
+  exportPaper: (id: string, destinationRoot?: string, template?: PaperAnswerSheetTemplate) =>
+    ipcRenderer.invoke('papers:export', id, destinationRoot, template) as Promise<PaperExportResult>,
   reorderPaperItems: (input: PaperReorderInput) =>
     ipcRenderer.invoke('papers:reorderItems', input) as Promise<Paper>,
+  comparePapers: (input: PaperCompareInput) =>
+    ipcRenderer.invoke('papers:compare', input) as Promise<PaperCompareResult>,
   archivePaperVersion: (paperId: string, note?: string) =>
     ipcRenderer.invoke('papers:archiveVersion', paperId, note ?? '') as Promise<PaperVersionSummary>,
   listPaperVersions: (paperId: string) =>
