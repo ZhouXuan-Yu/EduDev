@@ -168,6 +168,16 @@ import type {
   PaperReorderInput,
   PaperVersionSummary,
   PaperVersionDetail,
+  PaperCompareInput,
+  PaperCompareRef,
+  PaperCompareResult,
+  PaperCompareItem,
+  PaperCompareSnapshot,
+  PaperCompareSide,
+  PaperCompareChange,
+  PaperCompareField,
+  PaperCompareValue,
+  PaperAnswerSheetTemplate,
   ErrorTaxonomyResult,
   ErrorTaxonomyAnalysis,
   TeacherResource,
@@ -2756,6 +2766,215 @@ export class OmniEduStore {
   async getPaperVersion(versionId: string): Promise<PaperVersionDetail | null> {
     const row = (await this.all(`SELECT * FROM paper_versions WHERE id = ?`, [requireNonEmpty(versionId, '缺少版本 ID')]))[0];
     return row ? this.mapPaperVersion(row, true) : null;
+  }
+
+  /** Read-only paper/version comparison. Never writes paper_versions or document_artifacts. */
+  async comparePapers(input: PaperCompareInput): Promise<PaperCompareResult> {
+    if (!input || typeof input !== 'object') throw new Error('试卷对比参数无效');
+    const left = await this.loadPaperCompareSide(input.left, '左侧');
+    const right = await this.loadPaperCompareSide(input.right, '右侧');
+    const leftKeys = left.items.map((item) => this.paperCompareKey(item));
+    const rightKeys = right.items.map((item) => this.paperCompareKey(item));
+    const leftCounts = this.countPaperCompareKeys(leftKeys);
+    const rightCounts = this.countPaperCompareKeys(rightKeys);
+    const rightIndicesByKey = new Map<string, number[]>();
+    rightKeys.forEach((key, index) => {
+      const indices = rightIndicesByKey.get(key) ?? [];
+      indices.push(index);
+      rightIndicesByKey.set(key, indices);
+    });
+    const ambiguousKeys = new Set<string>();
+    for (const key of new Set([...leftKeys, ...rightKeys])) {
+      if ((leftCounts.get(key) ?? 0) > 1 || (rightCounts.get(key) ?? 0) > 1) ambiguousKeys.add(key);
+    }
+    const matchedRightIndices = new Set<number>();
+    const matchedLeftIndices = new Set<number>();
+    const pairs: Array<{ key: string; leftIndex: number; rightIndex: number }> = [];
+    leftKeys.forEach((key, leftIndex) => {
+      if (ambiguousKeys.has(key)) return;
+      const rightIndices = rightIndicesByKey.get(key) ?? [];
+      if (rightIndices.length !== 1) return;
+      matchedLeftIndices.add(leftIndex);
+      matchedRightIndices.add(rightIndices[0]);
+      pairs.push({ key, leftIndex, rightIndex: rightIndices[0] });
+    });
+
+    const items: PaperCompareItem[] = [];
+    left.items.forEach((item, leftIndex) => {
+      const key = leftKeys[leftIndex];
+      if (ambiguousKeys.has(key)) {
+        items.push({
+          key,
+          status: 'ambiguous',
+          leftIndex,
+          rightIndex: null,
+          left: this.paperCompareSnapshot(item),
+          right: null,
+          changes: [],
+        });
+        return;
+      }
+      const pair = pairs.find((entry) => entry.leftIndex === leftIndex);
+      if (!pair) {
+        items.push({
+          key,
+          status: 'removed',
+          leftIndex,
+          rightIndex: null,
+          left: this.paperCompareSnapshot(item),
+          right: null,
+          changes: [],
+        });
+        return;
+      }
+      const rightItem = right.items[pair.rightIndex];
+      const changes = this.paperCompareChanges(item, rightItem, leftIndex, pair.rightIndex);
+      items.push({
+        key,
+        status: changes.length ? 'changed' : 'unchanged',
+        leftIndex,
+        rightIndex: pair.rightIndex,
+        left: this.paperCompareSnapshot(item),
+        right: this.paperCompareSnapshot(rightItem),
+        changes,
+      });
+    });
+    right.items.forEach((item, rightIndex) => {
+      if (matchedRightIndices.has(rightIndex)) return;
+      const key = rightKeys[rightIndex];
+      items.push({
+        key,
+        status: ambiguousKeys.has(key) ? 'ambiguous' : 'added',
+        leftIndex: null,
+        rightIndex,
+        left: null,
+        right: this.paperCompareSnapshot(item),
+        changes: [],
+      });
+    });
+
+    const countStatus = (status: PaperCompareItem['status']) => items.filter((item) => item.status === status).length;
+    const difficultyDelta: Record<string, number> = {};
+    for (const difficulty of ['easy', 'medium', 'hard'] as const) {
+      const delta = right.items.filter((item) => item.difficulty === difficulty).length
+        - left.items.filter((item) => item.difficulty === difficulty).length;
+      if (delta !== 0) difficultyDelta[difficulty] = delta;
+    }
+    const leftKnowledgePoints = new Set(left.items.map((item) => item.knowledgePoint.trim()).filter(Boolean));
+    const rightKnowledgePoints = new Set(right.items.map((item) => item.knowledgePoint.trim()).filter(Boolean));
+    const matchedLeftOrder = pairs.map((entry) => entry.key);
+    const matchedRightOrder = [...pairs].sort((a, b) => a.rightIndex - b.rightIndex).map((entry) => entry.key);
+
+    return {
+      left: left.side,
+      right: right.side,
+      summary: {
+        added: countStatus('added'),
+        removed: countStatus('removed'),
+        changed: countStatus('changed'),
+        unchanged: countStatus('unchanged'),
+        ambiguous: countStatus('ambiguous'),
+        totalPointsDelta: right.side.totalPoints - left.side.totalPoints,
+        orderChanged: matchedLeftOrder.some((key, index) => key !== matchedRightOrder[index]),
+        difficultyDelta,
+        knowledgePointsAdded: [...rightKnowledgePoints].filter((point) => !leftKnowledgePoints.has(point)).sort(),
+        knowledgePointsRemoved: [...leftKnowledgePoints].filter((point) => !rightKnowledgePoints.has(point)).sort(),
+      },
+      items,
+    };
+  }
+
+  private async loadPaperCompareSide(
+    ref: PaperCompareRef,
+    label: string,
+  ): Promise<{ side: PaperCompareSide; items: PaperItem[] }> {
+    if (!ref || typeof ref !== 'object') throw new Error(`${label}对比对象无效`);
+    const id = requireNonEmpty(ref.id, `${label}缺少试卷或版本 ID`);
+    if (ref.kind === 'paper') {
+      const paper = await this.getPaperOrThrow(id);
+      const items = [...paper.items].sort((a, b) => a.orderIndex - b.orderIndex);
+      return {
+        side: {
+          kind: 'paper',
+          id: paper.id,
+          title: paper.title,
+          versionNo: null,
+          totalPoints: paper.totalPoints,
+          itemCount: items.length,
+        },
+        items,
+      };
+    }
+    if (ref.kind === 'version') {
+      const version = await this.getPaperVersionOrThrow(id);
+      const items = [...version.items].sort((a, b) => a.orderIndex - b.orderIndex);
+      return {
+        side: {
+          kind: 'version',
+          id: version.id,
+          title: version.title,
+          versionNo: version.versionNo,
+          totalPoints: version.totalPoints,
+          itemCount: items.length,
+        },
+        items,
+      };
+    }
+    throw new Error(`${label}对比对象类型无效`);
+  }
+
+  private paperCompareKey(item: PaperItem): string {
+    const questionId = item.questionId.trim();
+    if (questionId) return `q:${questionId}`;
+    return `s:${this.normalizePaperCompareStem(item.stem)}`;
+  }
+
+  /** Matching-only normalization: trim, collapse whitespace, ASCII lowercase. Keeps punctuation. */
+  private normalizePaperCompareStem(stem: string): string {
+    return stem.trim().replace(/\s+/g, ' ').replace(/[A-Z]/g, (char) => char.toLowerCase());
+  }
+
+  private countPaperCompareKeys(keys: string[]): Map<string, number> {
+    const counts = new Map<string, number>();
+    for (const key of keys) counts.set(key, (counts.get(key) ?? 0) + 1);
+    return counts;
+  }
+
+  private paperCompareSnapshot(item: PaperItem): PaperCompareSnapshot {
+    return {
+      stem: item.stem,
+      answer: item.answer,
+      analysis: item.analysis,
+      points: item.points,
+      difficulty: item.difficulty,
+      knowledgePoint: item.knowledgePoint,
+      sourceKind: item.sourceKind,
+      questionType: item.questionType,
+    };
+  }
+
+  private paperCompareChanges(
+    left: PaperItem,
+    right: PaperItem,
+    leftIndex: number,
+    rightIndex: number,
+  ): PaperCompareChange[] {
+    const pairs: Array<[PaperCompareField, PaperCompareValue, PaperCompareValue]> = [
+      ['orderIndex', leftIndex, rightIndex],
+      ['stem', left.stem, right.stem],
+      ['answer', left.answer, right.answer],
+      ['analysis', left.analysis, right.analysis],
+      ['points', left.points, right.points],
+      ['difficulty', left.difficulty, right.difficulty],
+      ['knowledgePoint', left.knowledgePoint, right.knowledgePoint],
+      ['sourceKind', left.sourceKind, right.sourceKind],
+      ['questionType', left.questionType, right.questionType],
+      ['locked', left.locked, right.locked],
+      ['teacherEdited', left.teacherEdited, right.teacherEdited],
+    ];
+    return pairs
+      .filter(([, leftValue, rightValue]) => leftValue !== rightValue)
+      .map(([field, leftValue, rightValue]) => ({ field, left: leftValue, right: rightValue }));
   }
 
   async restorePaperVersion(paperId: string, versionId: string): Promise<Paper> {

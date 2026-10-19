@@ -920,6 +920,91 @@ export type PaperReorderInput = {
   orderedItemIds: string[];
 };
 
+export type PaperCompareRef =
+  | { kind: 'paper'; id: string }
+  | { kind: 'version'; id: string };
+
+export type PaperCompareInput = {
+  left: PaperCompareRef;
+  right: PaperCompareRef;
+};
+
+export type PaperCompareField =
+  | 'orderIndex'
+  | 'stem'
+  | 'answer'
+  | 'analysis'
+  | 'points'
+  | 'difficulty'
+  | 'knowledgePoint'
+  | 'sourceKind'
+  | 'questionType'
+  | 'locked'
+  | 'teacherEdited';
+
+export type PaperCompareValue = string | number | boolean | null;
+
+export type PaperCompareChange = {
+  field: PaperCompareField;
+  left: PaperCompareValue;
+  right: PaperCompareValue;
+};
+
+export type PaperCompareSnapshot = {
+  stem: string;
+  answer: string;
+  analysis: string;
+  points: number;
+  difficulty: string;
+  knowledgePoint: string;
+  sourceKind: string;
+  questionType: string;
+};
+
+export type PaperCompareItem = {
+  key: string;
+  status: 'added' | 'removed' | 'changed' | 'unchanged' | 'ambiguous';
+  leftIndex: number | null;
+  rightIndex: number | null;
+  left: PaperCompareSnapshot | null;
+  right: PaperCompareSnapshot | null;
+  changes: PaperCompareChange[];
+};
+
+export type PaperCompareSide = {
+  kind: 'paper' | 'version';
+  id: string;
+  title: string;
+  versionNo: number | null;
+  totalPoints: number;
+  itemCount: number;
+};
+
+export type PaperCompareResult = {
+  left: PaperCompareSide;
+  right: PaperCompareSide;
+  summary: {
+    added: number;
+    removed: number;
+    changed: number;
+    unchanged: number;
+    ambiguous: number;
+    totalPointsDelta: number;
+    orderChanged: boolean;
+    difficultyDelta: Record<string, number>;
+    knowledgePointsAdded: string[];
+    knowledgePointsRemoved: string[];
+  };
+  items: PaperCompareItem[];
+};
+
+export type PaperAnswerSheetTemplate = {
+  titleLine?: string;
+  examInfo?: string;
+  instructions?: string;
+  answerSpacingLines?: number;
+};
+
 export type ErrorCategory = 'structural' | 'deviation' | 'application' | 'metacognitive' | 'unknown';
 
 export type ErrorConfidence = 'high' | 'medium' | 'low';
