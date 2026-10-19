@@ -170,6 +170,8 @@ export type SanitizedProblemText = {
   containsSensitiveData: boolean;
 };
 
+export type MistakeImageOcrSource = 'local' | 'cloud' | '';
+
 export type MistakeImageAnalysis = {
   id: string;
   studentId: string;
@@ -178,11 +180,14 @@ export type MistakeImageAnalysis = {
   localPath: string;
   ocrStatus: MistakeImageOcrStatus;
   extractedText: string;
-  ocrConfidence: number;
+  /** null 表示来源未提供可信置信度（例如云端识别），不得伪造成 0 或百分比。 */
+  ocrConfidence: number | null;
   sanitizedText: string;
   redactions: MistakeImageRedaction[];
   teacherCorrectedText: string;
   errorMessage: string;
+  requiresReview?: boolean;
+  ocrSource?: MistakeImageOcrSource;
   createdAt: string;
   updatedAt: string;
 };
@@ -197,6 +202,27 @@ export type MistakeImageAnalysisInput = {
 
 export type MistakeImageCorrectionInput = {
   extractedText: string;
+};
+
+export type MistakeImageCloudOcrInput = {
+  analysisId: string;
+  /** 必须由教师显式确认后才允许上传原图；缺省或 false 一律拒绝。 */
+  confirmedUploadOriginal: true;
+  /** 仅用于本次操作说明，不进入模型、不落库。 */
+  teacherNote?: string;
+};
+
+export type MistakeImageCloudOcrAudit = {
+  provider: string;
+  model: string;
+  requestId: string;
+  confirmedAt: string;
+  imageBytes: number;
+};
+
+export type MistakeImageCloudOcrResult = {
+  analysis: MistakeImageAnalysis;
+  audit: MistakeImageCloudOcrAudit;
 };
 
 export type ReviewReport = {

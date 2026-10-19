@@ -14,7 +14,7 @@ import type {
   XiazhiCapabilityName,
 } from '../shared/contracts';
 import type { OmniEduStore } from './db';
-import { readFileSync } from 'node:fs';
+import { readFile, stat } from 'node:fs/promises';
 import { gradeEducationalReply } from './ai-harness/education-grader';
 import { parseStructuredReply, structuredReplyToMarkdown } from './ai-harness/schema';
 import { createAiToolExecutionState, executeAiToolCall, getModelToolDefinitions, getProgressiveModelToolDefinitions, progressiveToolNames } from './ai-harness/tool-registry';
@@ -363,7 +363,11 @@ export async function analyzeImageWithDeepSeek(params: {
     if (!mime) {
       return { ok: false, message: `不支持的图片格式：${ext || '(无扩展名)'}。支持 png / jpg / jpeg / webp / gif。` };
     }
-    const buffer = readFileSync(imagePath);
+    const fileInfo = await stat(imagePath);
+    if (fileInfo.size > MAX_IMAGE_BYTES) {
+      return { ok: false, message: `图片过大（${Math.round(fileInfo.size / 1024 / 1024)}MB），上限 8MB。请压缩后重试。` };
+    }
+    const buffer = await readFile(imagePath);
     if (buffer.length > MAX_IMAGE_BYTES) {
       return { ok: false, message: `图片过大（${Math.round(buffer.length / 1024 / 1024)}MB），上限 8MB。请压缩后重试。` };
     }

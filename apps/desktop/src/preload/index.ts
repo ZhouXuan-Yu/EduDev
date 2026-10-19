@@ -65,6 +65,8 @@ import type {
   LearningRecordUpdateInput,
   MistakeImageAnalysis,
   MistakeImageAnalysisInput,
+  MistakeImageCloudOcrInput,
+  MistakeImageCloudOcrResult,
   MistakeImageCorrectionInput,
   QuestionBankItem,
   QuestionBankItemInput,
@@ -225,8 +227,8 @@ const api = {
     ipcRenderer.invoke('mistakeImages:list', studentId) as Promise<MistakeImageAnalysis[]>,
   runMistakeImageOcr: (analysisId: string) =>
     ipcRenderer.invoke('mistakeImages:runOcr', analysisId) as Promise<MistakeImageAnalysis>,
-  analyzeImageWithDeepSeek: (input: { imagePath: string; prompt?: string }) =>
-    ipcRenderer.invoke('deepseek:analyzeImage', input) as Promise<{ ok: true; text: string; model: string; usage?: { promptTokens?: number; completionTokens?: number; totalTokens?: number } } | { ok: false; message: string }>,
+  runMistakeImageCloudOcr: (input: MistakeImageCloudOcrInput) =>
+    ipcRenderer.invoke('mistakeImages:runCloudOcr', input) as Promise<MistakeImageCloudOcrResult>,
   analyzeStudentErrorPatterns: (studentId: string, input?: { startDate?: string; endDate?: string; subject?: string }) =>
     ipcRenderer.invoke('mistakes:analyzeErrorPatterns', studentId, input ?? {}) as Promise<ErrorTaxonomyResult>,
   proposeErrorReview: (input: ErrorReviewProposeInput) =>

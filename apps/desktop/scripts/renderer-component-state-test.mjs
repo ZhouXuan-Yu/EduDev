@@ -363,6 +363,38 @@ try {
   assert.equal(validateUsabilityReview(parsedQualityRows[0]), '');
   assert.match(validateUsabilityReview({ ...parsedQualityRows[0], teacherScore: 6 }), /1 到 5/);
 
+  const { buildAiContextSources } = await server.ssrLoadModule('/src/renderer/ai-context-sources.ts');
+  const contextBase = {
+    activeStudent: masteryStudent,
+    records: [],
+    attachments: [],
+    knowledgeOverview: { counts: { chunks: 3, nodes: 2 } },
+    aiResult: null,
+  };
+  const fallbackContext = buildAiContextSources(contextBase);
+  assert.equal(fallbackContext.length, 5, 'AI console must expose five context sources');
+  assert.deepEqual(fallbackContext.map((item) => item.title), ['学生档案', '学习记录', '附件元数据', '老师知识库', '知识图谱']);
+  assert.equal(fallbackContext[3].count, 3, 'knowledge count must fall back to overview chunks');
+  assert.equal(fallbackContext[4].count, 2, 'graph count must fall back to overview nodes');
+  assert.equal(fallbackContext.filter((item) => item.title === '知识图谱').length, 1, 'graph source must appear exactly once');
+  const populatedContext = buildAiContextSources({
+    ...contextBase,
+    records: [{ id: 'record_context_1' }, { id: 'record_context_2' }],
+    attachments: [{ id: 'attachment_context_1' }],
+    aiResult: { graphNodes: new Array(7), knowledgeSnippets: new Array(4) },
+  });
+  assert.equal(populatedContext.length, 5);
+  assert.equal(populatedContext[1].count, 2);
+  assert.equal(populatedContext[2].count, 1);
+  assert.equal(populatedContext[3].count, 4, 'knowledge count must prefer aiResult knowledge snippets');
+  assert.equal(populatedContext[4].count, 7, 'graph count must prefer aiResult graph nodes');
+  const emptyAiContext = buildAiContextSources({
+    ...contextBase,
+    aiResult: { graphNodes: [], knowledgeSnippets: [] },
+  });
+  assert.equal(emptyAiContext[3].count, 0);
+  assert.equal(emptyAiContext[4].count, 0);
+
   console.log(JSON.stringify({ suite: 'renderer-component-states', passed: assertCount, total: assertCount }, null, 2));
 } finally {
   await server.close();

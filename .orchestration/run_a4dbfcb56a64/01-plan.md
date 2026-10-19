@@ -10,6 +10,8 @@
 
 ### 0.1 工作区事实（2026-10-19 读取）
 
+已读依据：`AGENTS.md`、`1.Agent.md`、`实施计划.md`、`docs/11_STRATEGIC_PRODUCT_PRD.md`、`docs/17_FRONTEND_HEROUI_PRO_DESIGN_ARCHITECTURE.md`、`docs/24_DEEPTUTOR_OMNI_EDU_INTEGRATION_DESIGN.md`、`docs/26_FRONTEND_E2E_COVERAGE_MATRIX.md`、`2.Memory.md`（当前进度段）、`docs/00_DOCUMENTATION_INDEX.md`、`docs/12_TECH_SELECTION_OVERVIEW.md`。
+
 - `git status --short --branch`：仅 `.claude/.auto-push-counter` 为已修改；`.orchestration/run_a4dbfcb56a64/specs/{R-acceptance,S-supervisor,T2-error-review}.md` 为未跟踪。**规划时没有未提交的业务代码**；T0 规范中提到的“上一会话未提交 AI 控制台/DeepSeek 视觉回退改动”已被 auto-sync 提交进 `7ae52f1`。T0 开工时必须重新执行 `git status`，以当时的 HEAD 为准，不得回滚未知改动。
 - `.orchestration/` 当前**未**被 `.gitignore` 忽略；`.playwright-mcp/` 有 26 个文件仍被 git 跟踪（`git ls-files .playwright-mcp | wc -l = 26`）。
 - 当前 schema 迁移最大版本为 **v9**（`apps/desktop/src/main/db.ts:411`）；本轮**禁止新增 v10**。v10 保留给后续 W09。
@@ -124,7 +126,7 @@
    - 校验顺序（缺一不可）：`analysisId` 非空 → 记录存在 → `localPath` 是受管路径且文件存在 → `confirmedUploadOriginal === true` → 有 API Key → provider 调用。**校验未通过时不得读取图片、不得编码 base64、不得调用 provider。**
    - 云端结果：`applyMistakeOcrResult` 以 `confidence=-1` 落库；IPC 返回前经 `apps/desktop/src/shared/mistake-ocr.ts` 归一化为 `ocrConfidence=null`、`requiresReview=true`、`ocrSource='cloud'`；renderer 从 `listMistakeImageAnalyses` 读到的 `-1` 也必须经同一函数归一化。`lowConfidenceCount` 固定 `0` 但不得展示为“高置信度”。
    - 云端失败：**不写业务表**（不调用 `applyMistakeOcrResult`，不覆盖已有 `ocr_done` 文本/状态；原 `needs_ocr` 保持 `needs_ocr`），只在 IPC 返回可行动错误。T0 不改 `db.ts`，因此不新增 `markCloudOcrFailed` store 方法；UI 必须保留原分析记录并显示错误。
-   - 审计：返回 `audit`，并写一条 bounded 主进程日志（provider/model/requestId/confirmedAt/imageBytes），**不得**记录图片路径、base64、学生姓名或题干原文。由于本轮无迁移，不新增 SQLite 审计表；在 docs/26 明确该边界。
+   - 审计：返回 `audit`，并写一条 bounded 主进程日志（provider/model/requestId/confirmedAt/imageBytes），**不得**记录图片路径、base64、学生姓名或题干原文。由于本轮无迁移，不新增 SQLite 审计表；在 docs/26 明确该边界。若协调器要求 SQLite 持久审计，必须另申请迁移车道，T0 不得自行加表。
    - UI：OCR 面板新增次级按钮“云端识别（会上传原图）”；点击后弹出确认对话框，必须勾选“我确认会上传原图到云端”才可确认；取消/关闭零调用。结果区显示“云端识别：未提供置信度，必须教师复核”，不得显示百分比；`ocrConfidence === null` 时禁止走 `Math.round(... * 100)` 的百分比文案。
 3. **P1 同步 IO**
    - `apps/desktop/src/main/deepseek.ts:366`：`readFileSync` → `await readFile`（`node:fs/promises`）；先 `stat` 检查 `size > 8MB` 直接 fail-closed，读取后再校验 `buffer.length`。保留 `MAX_IMAGE_BYTES` 与现有错误文案。

@@ -8,9 +8,11 @@ import type {
   ErrorTaxonomyResult,
   LearningRecord,
   MistakeImageAnalysis,
+  MistakeImageCloudOcrAudit,
   QuestionBankItem,
   Student,
 } from '../../shared/contracts';
+import { normalizeMistakeImageAnalysis, normalizeMistakeImageAnalyses } from '../../shared/mistake-ocr';
 import { ExerciseSetLibrary } from './ExerciseSetLibrary';
 
 type MistakesWorkspaceProps = {
@@ -62,6 +64,11 @@ export function MistakesWorkspace({
   const [searchedSimilar, setSearchedSimilar] = useState(false);
   const [ocrRunning, setOcrRunning] = useState(false);
   const [ocrError, setOcrError] = useState('');
+  const [cloudOcrDialogOpen, setCloudOcrDialogOpen] = useState(false);
+  const [cloudOcrConfirmed, setCloudOcrConfirmed] = useState(false);
+  const [cloudOcrRunning, setCloudOcrRunning] = useState(false);
+  const [cloudOcrError, setCloudOcrError] = useState('');
+  const [cloudOcrAudit, setCloudOcrAudit] = useState<MistakeImageCloudOcrAudit | null>(null);
   const [errorAnalysis, setErrorAnalysis] = useState<ErrorTaxonomyResult | null>(null);
   const [errorRange, setErrorRange] = useState({ start: '', end: '' });
   const [errorSubject, setErrorSubject] = useState('');
@@ -85,7 +92,7 @@ export function MistakesWorkspace({
     window.omniEdu?.listMistakeImageAnalyses(activeStudent.id)
       .then((items) => {
         if (cancelled) return;
-        setAnalyses(items ?? []);
+        setAnalyses(normalizeMistakeImageAnalyses(items ?? []));
         setSelectedAnalysisId((current) => current || items?.[0]?.id || '');
       })
       .catch(() => !cancelled && setStatus('读取错题 OCR 状态失败，请重试。'))
@@ -273,19 +280,53 @@ export function MistakesWorkspace({
     try {
       const updated = await window.omniEdu?.runMistakeImageOcr(analysisId);
       if (updated) {
-        setAnalyses((current) => current.map((item) => (item.id === updated.id ? updated : item)));
-        setDraft((current) => ({ ...current, text: updated.teacherCorrectedText || updated.extractedText }));
-        setStatus(updated.ocrStatus === 'ocr_done'
-          ? `OCR 完成（最低置信度 ${Math.round((updated.ocrConfidence ?? 0) * 100)}%）；请教师核对并修正识别文本。`
-          : `OCR 结束：${updated.ocrStatus}`);
+        const normalized = normalizeMistakeImageAnalysis(updated);
+        setAnalyses((current) => current.map((item) => (item.id === normalized.id ? normalized : item)));
+        setDraft((current) => ({ ...current, text: normalized.teacherCorrectedText || normalized.extractedText }));
+        setStatus(normalized.ocrStatus === 'ocr_done'
+          ? typeof normalized.ocrConfidence === 'number'
+            ? `OCR 完成（最低置信度 ${Math.round(normalized.ocrConfidence * 100)}%）；请教师核对并修正识别文本。`
+            : 'OCR 完成：来源未提供置信度，必须教师复核。'
+          : `OCR 结束：${normalized.ocrStatus}`);
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'OCR 识别失败。';
       setOcrError(message);
       setStatus(message);
-      void window.omniEdu?.listMistakeImageAnalyses(activeStudent?.id ?? '').then((items) => items && setAnalyses(items));
+      void window.omniEdu?.listMistakeImageAnalyses(activeStudent?.id ?? '').then((items) => items && setAnalyses(normalizeMistakeImageAnalyses(items)));
     } finally {
       setOcrRunning(false);
+    }
+  }
+
+  async function runCloudOcrRecognition() {
+    if (!selectedAnalysis || cloudOcrRunning || !cloudOcrConfirmed) return;
+    setCloudOcrRunning(true);
+    setCloudOcrError('');
+    setCloudOcrAudit(null);
+    try {
+      const result = await window.omniEdu?.runMistakeImageCloudOcr({
+        analysisId: selectedAnalysis.id,
+        confirmedUploadOriginal: true,
+      });
+      if (result) {
+        const normalized = normalizeMistakeImageAnalysis(result.analysis);
+        setAnalyses((current) => current.map((item) => (item.id === normalized.id ? normalized : item)));
+        setDraft((current) => ({ ...current, text: normalized.teacherCorrectedText || normalized.extractedText }));
+        setCloudOcrAudit(result.audit);
+        setCloudOcrDialogOpen(false);
+        setCloudOcrConfirmed(false);
+        setStatus('云端识别完成：未提供置信度，必须教师复核。');
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '云端识别失败。';
+      setCloudOcrError(message);
+      setStatus(message);
+      // 云端失败不写业务表：重新读取以保留原 needs_ocr / failed 状态。
+      const items = await window.omniEdu?.listMistakeImageAnalyses(activeStudent?.id ?? '');
+      if (items) setAnalyses(normalizeMistakeImageAnalyses(items));
+    } finally {
+      setCloudOcrRunning(false);
     }
   }
 
@@ -416,19 +457,43 @@ export function MistakesWorkspace({
       </section>
 
       <section className="work-panel" data-testid="mistake-ocr-panel">
-        <div className="panel-heading"><div><h3>2. OCR / 教师校正</h3><p className="muted">本地 RapidOCR 识别；没有真实 OCR 结果时保持 needs_ocr，不编造识别文本。</p></div></div>
+        <div className="panel-heading"><div><h3>2. OCR / 教师校正</h3><p className="muted">默认使用本地 RapidOCR；云端识别只有教师明确确认“会上传原图”后才会调用，且不提供可信置信度。</p></div></div>
         {loading ? <p data-testid="mistake-loading">正在读取或保存错题状态…</p> : null}
         {!analyses.length ? <p data-testid="mistake-ocr-empty">暂无 OCR 任务。</p> : (
           <>
             <label>分析记录<select value={selectedAnalysis?.id ?? ''} onChange={(event) => setSelectedAnalysisId(event.target.value)} data-testid="mistake-analysis-select">{analyses.map((item) => <option key={item.id} value={item.id}>{item.ocrStatus} · {item.id.slice(-8)}</option>)}</select></label>
-            {selectedAnalysis?.ocrStatus === 'needs_ocr' ? (
+            {selectedAnalysis && (selectedAnalysis.ocrStatus === 'needs_ocr' || selectedAnalysis.ocrStatus === 'failed') ? (
               <div className="toolbar-row">
-                <button className="primary-action" onClick={() => void runOcr(selectedAnalysis.id)} disabled={ocrRunning} data-testid="mistake-ocr-run">{ocrRunning ? '识别中…' : '本地 OCR 识别'}</button>
+                {selectedAnalysis.ocrStatus === 'needs_ocr' ? (
+                  <button className="primary-action" onClick={() => void runOcr(selectedAnalysis.id)} disabled={ocrRunning || cloudOcrRunning} data-testid="mistake-ocr-run">{ocrRunning ? '识别中…' : '本地 OCR 识别'}</button>
+                ) : null}
+                <button className="secondary-action" onClick={() => { setCloudOcrError(''); setCloudOcrDialogOpen(true); }} disabled={ocrRunning || cloudOcrRunning} data-testid="mistake-cloud-ocr-open">云端识别（会上传原图）</button>
                 {ocrRunning ? <span className="status-chip" data-testid="mistake-ocr-progress">RapidOCR 识别中，请稍候…</span> : null}
+                {cloudOcrRunning ? <span className="status-chip" data-testid="mistake-cloud-ocr-progress">云端识别中，请稍候…</span> : null}
+              </div>
+            ) : null}
+            {cloudOcrDialogOpen ? (
+              <div className="confirmation-inline" role="dialog" aria-modal="true" data-testid="mistake-cloud-ocr-dialog">
+                <strong>确认上传原图到云端？</strong>
+                <p>云端识别会把原始错题图片上传到 DeepSeek；图片可能包含学生姓名、学校等敏感信息，请确认已获得必要授权。</p>
+                <label>
+                  <input type="checkbox" checked={cloudOcrConfirmed} onChange={(event) => setCloudOcrConfirmed(event.target.checked)} data-testid="mistake-cloud-ocr-consent" />
+                  我确认会上传原图到云端
+                </label>
+                <div className="toolbar-row">
+                  <button className="secondary-action" onClick={() => { setCloudOcrDialogOpen(false); setCloudOcrConfirmed(false); }} disabled={cloudOcrRunning} data-testid="mistake-cloud-ocr-cancel">取消</button>
+                  <button className="primary-action" onClick={() => void runCloudOcrRecognition()} disabled={!cloudOcrConfirmed || cloudOcrRunning} data-testid="mistake-cloud-ocr-confirm">{cloudOcrRunning ? '上传识别中…' : '确认上传并识别'}</button>
+                </div>
               </div>
             ) : null}
             {ocrError ? <div className="warning-box" data-testid="mistake-ocr-error">{ocrError}</div> : null}
-            {selectedAnalysis?.ocrStatus === 'ocr_done' ? <div className="info-box" data-testid="mistake-ocr-done">OCR 已完成（最低置信度 {Math.round((selectedAnalysis.ocrConfidence ?? 0) * 100)}%）；低置信度内容请教师重点核对。</div> : null}
+            {cloudOcrError ? <div className="warning-box" data-testid="mistake-cloud-ocr-error">{cloudOcrError}</div> : null}
+            {selectedAnalysis?.ocrStatus === 'ocr_done' ? (
+              selectedAnalysis.ocrSource === 'cloud' || selectedAnalysis.requiresReview || typeof selectedAnalysis.ocrConfidence !== 'number'
+                ? <div className="info-box" data-testid="mistake-cloud-ocr-review">云端识别：未提供置信度，必须教师复核。</div>
+                : <div className="info-box" data-testid="mistake-ocr-done">OCR 已完成（最低置信度 {Math.round(selectedAnalysis.ocrConfidence * 100)}%）；低置信度内容请教师重点核对。</div>
+            ) : null}
+            {cloudOcrAudit ? <p className="muted" data-testid="mistake-cloud-ocr-audit">云端识别审计：{cloudOcrAudit.provider} / {cloudOcrAudit.model} / {cloudOcrAudit.requestId} / {cloudOcrAudit.imageBytes} 字节；未记录图片内容或路径。</p> : null}
             <label>教师校正文本<textarea value={draft.text} onChange={(event) => setDraft({ ...draft, text: event.target.value })} placeholder="粘贴 OCR 结果或手动输入题干" data-testid="mistake-correction-input" /></label>
             <div className="toolbar-row"><button className="secondary-action" onClick={previewSanitized} disabled={loading || !draft.text.trim()} data-testid="mistake-sanitize-button">生成脱敏预览</button><button className="primary-action" onClick={saveCorrection} disabled={savingCorrection || !draft.text.trim()} data-testid="mistake-save-correction">{savingCorrection ? '保存中…' : '保存教师校正'}</button></div>
           </>

@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain, safeStorage, shell } from 'electron';
 import { randomUUID } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
+import { stat } from 'node:fs/promises';
 import { dirname, extname, isAbsolute, join, resolve } from 'node:path';
 import { analyzeImageWithDeepSeek, buildAiSystemPrompt, recoverStructuredJsonCompletion, requestDeepSeekCompletion, requestStructuredReplyRepair, runDeepSeekChat, type DeepSeekMessage } from './deepseek';
 import { OmniEduStore } from './db';
@@ -48,6 +49,7 @@ import type {
   PaperItemUpdateInput,
   PaperReorderInput,
   ErrorReviewProposeInput,
+  MistakeImageCloudOcrInput,
 } from '../shared/contracts';
 import { routeAiPrompt } from './ai-harness/router';
 import { runAiAgentLoop } from './ai-harness/agent-loop';
@@ -56,6 +58,7 @@ import { boundDeepTutorEventDetail } from './ai-harness/deeptutor-event-bounds';
 import { getModelToolDefinitions, progressiveToolNames, type CompiledAiContext } from './ai-harness/tool-registry';
 import { DeepTutorSidecarClient } from './ai-harness/sidecar-client';
 import { OcrWorkerClient } from './ai-harness/ocr-client';
+import { runCloudOcr, runLocalOcr } from './mistake-ocr';
 import { ParseWorkerClient } from './ai-harness/parse-client';
 import { VectorIndexClient, vectorModelAvailable, vectorModelInfo } from './ai-harness/vector-client';
 import { executeHostToolRequest } from './ai-harness/host-tool-proxy';
@@ -93,6 +96,15 @@ const getOcrWorker = () => {
     ocrWorker = new OcrWorkerClient(resolveRepoRoot());
   }
   return ocrWorker;
+};
+
+const readOcrFileInfo = async (filePath: string) => {
+  try {
+    const info = await stat(filePath);
+    return { exists: info.isFile(), size: info.size };
+  } catch {
+    return { exists: false, size: 0 };
+  }
 };
 
 const getParseWorker = () => {
@@ -2084,64 +2096,32 @@ app.whenReady().then(async () => {
   ipcMain.handle('mistakeImages:updateCorrection', (_event, id: string, input) => store.updateMistakeImageCorrection(id, input));
   ipcMain.handle('mistakeImages:list', (_event, studentId: string) => store.listMistakeImageAnalyses(studentId));
   ipcMain.handle('mistakeImages:sanitizeText', (_event, text: string, studentId?: string) => store.sanitizeProblemText(text, studentId));
-  ipcMain.handle('mistakeImages:runOcr', async (_event, analysisId: string) => {
-    const analysis = await store.getMistakeImageAnalysis(analysisId);
-    if (!analysis) throw new Error('错题图片解析记录不存在');
-    if (!(await store.isManagedLocalPath(analysis.localPath)) || !existsSync(analysis.localPath)) {
-      throw new Error('错题图片文件不在本地受管目录内或已缺失');
-    }
-    const result = await getOcrWorker().runOcr(analysis.localPath);
-    if (!result.ok) {
-      // 本地 OCR（rapidocr worker）不可用时，回退到 DeepSeek 图像识别
-      const deepSeekSettings = await store.getDeepSeekRuntimeSettings();
-      if (deepSeekSettings.apiKey) {
-        const vision = await analyzeImageWithDeepSeek({
-          imagePath: analysis.localPath,
-          prompt: '请识别这张错题图片中的全部文字，按行输出，保留数学符号和公式的原样书写（如分数、百分号）。不要解释，只输出图片中的文字内容。',
-          apiKey: deepSeekSettings.apiKey,
-          model: deepSeekSettings.model,
-        });
-        if (vision.ok) {
-          return store.applyMistakeOcrResult(analysisId, {
-            text: vision.text,
-            confidence: 0.85,
-            lowConfidenceCount: 0,
-            modelVersion: `deepseek-vision:${vision.model}`,
-          });
-        }
-        await store.markMistakeOcrFailed(analysisId, `LOCAL_OCR_FAILED: ${result.code}: ${result.message}；DEEPSEEK_VISION_FALLBACK: ${vision.message}`);
-        throw new Error(`本地 OCR 失败（${result.message}），DeepSeek 图像识别也失败：${vision.message}`);
-      }
-      await store.markMistakeOcrFailed(analysisId, `${result.code}: ${result.message}`);
-      throw new Error(result.message);
-    }
-    const confidence = result.lines.length
-      ? Math.min(...result.lines.map((line) => line.confidence))
-      : 0;
-    return store.applyMistakeOcrResult(analysisId, {
-      text: result.lines.map((line) => line.text).join('\n'),
-      confidence,
-      lowConfidenceCount: result.lowConfidenceCount,
-      modelVersion: result.modelVersion,
+  ipcMain.handle('mistakeImages:runOcr', async (_event, analysisId: string) => runLocalOcr(analysisId, {
+    getAnalysis: (id) => store.getMistakeImageAnalysis(id),
+    isManagedLocalPath: (filePath) => store.isManagedLocalPath(filePath),
+    getFileInfo: readOcrFileInfo,
+    runLocalOcr: (imagePath) => getOcrWorker().runOcr(imagePath),
+    applyResult: (id, result) => store.applyMistakeOcrResult(id, result),
+    markFailed: (id, message) => store.markMistakeOcrFailed(id, message),
+  }));
+  ipcMain.handle('mistakeImages:runCloudOcr', async (_event, input: MistakeImageCloudOcrInput) => {
+    const outcome = await runCloudOcr(input, {
+      getAnalysis: (id) => store.getMistakeImageAnalysis(id),
+      isManagedLocalPath: (filePath) => store.isManagedLocalPath(filePath),
+      getFileInfo: readOcrFileInfo,
+      getApiSettings: async () => {
+        const settings = await store.getDeepSeekRuntimeSettings();
+        return { apiKey: settings.apiKey, model: settings.model };
+      },
+      analyzeImage: analyzeImageWithDeepSeek,
+      applyResult: (id, result) => store.applyMistakeOcrResult(id, result),
+      createRequestId: () => randomUUID(),
     });
-  });
-  ipcMain.handle('deepseek:analyzeImage', async (_event, input: { imagePath: string; prompt?: string }) => {
-    if (!input || typeof input.imagePath !== 'string' || !input.imagePath.trim()) {
-      throw new Error('缺少图片路径。');
-    }
-    if (!(await store.isManagedLocalPath(input.imagePath)) || !existsSync(input.imagePath)) {
-      throw new Error('图片文件不在本地受管目录内或已缺失');
-    }
-    const deepSeekSettings = await store.getDeepSeekRuntimeSettings();
-    if (!deepSeekSettings.apiKey) {
-      throw new Error('缺少 DeepSeek API Key。请在设置页保存 DeepSeek API 配置后再使用图像识别。');
-    }
-    return analyzeImageWithDeepSeek({
-      imagePath: input.imagePath,
-      prompt: (input.prompt ?? '请识别图片中的内容并给出结构化分析。').slice(0, 4_000),
-      apiKey: deepSeekSettings.apiKey,
-      model: deepSeekSettings.model,
-    });
+    if (!outcome.ok) throw new Error(outcome.message);
+    const { audit } = outcome.result;
+    // 只记录有界审计元数据；不得记录图片路径、base64、学生姓名或题干原文。
+    console.info(`[cloud-ocr] provider=${audit.provider} model=${audit.model} requestId=${audit.requestId} confirmedAt=${audit.confirmedAt} imageBytes=${audit.imageBytes}`);
+    return outcome.result;
   });
   ipcMain.handle('reports:generate', (_event, input) => store.generateReview(input));
   ipcMain.handle('reports:update', (_event, id: string, contentMd: string, parentSummary?: string) => store.updateReport(id, contentMd, parentSummary));

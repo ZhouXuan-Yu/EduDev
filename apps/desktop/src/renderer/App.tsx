@@ -39,6 +39,7 @@ import { EnhancedPromptInput } from './heroui-pro/components/enhanced-prompt-inp
 import { AiChatMessageAssistant } from './heroui-pro/components/chat-message/ai-chat-message-assistant';
 import { ContextIndicator, ToolStatusIndicator } from './heroui-pro/components/context-indicator';
 import { EnhancedChainOfThought } from './heroui-pro/components/chain-of-thought/enhanced-chain-of-thought';
+import { buildAiContextSources } from './ai-context-sources';
 import { MistakesWorkspace } from './components/MistakesWorkspace';
 import { KnowledgeImportPanel } from './components/KnowledgeImportPanel';
 import { KnowledgeResourcePanel } from './components/KnowledgeResourcePanel';
@@ -1786,50 +1787,18 @@ export function App() {
   }
 
   function renderAIConsoleViewV2() {
-    const contextItems = [
-      {
-        count: activeStudent?.displayName ?? '未选',
-        title: '学生档案',
-        source: 'SQLite',
-        detail: activeStudent
-          ? '阶段目标、当前问题、家长关注点和标签已纳入上下文。'
-          : '请选择学生后纳入档案上下文。',
-      },
-      {
-        count: records.length,
-        title: '学习记录',
-        source: 'SQLite',
-        detail: '最近记录已按发生时间倒序纳入上下文。',
-      },
-      {
-        count: activeAttachments.length,
-        title: '附件元数据',
-        source: '本地文件系统',
-        detail: '只纳入文件数量和元数据，不读取或上传原始附件。',
-      },
-      {
-        count: aiResult?.knowledgeSnippets?.length ?? knowledgeOverview.counts.chunks,
-        title: '老师知识库',
-        source: 'SQLite / 本地切片',
-        detail: aiResult?.knowledgeSnippets?.length
-          ? '已纳入命中的知识库文本片段。'
-          : '当前没有命中可用知识库文本片段。',
-      },
-    ];
+    const contextItems = buildAiContextSources({
+      activeStudent,
+      records,
+      attachments: activeAttachments,
+      knowledgeOverview,
+      aiResult,
+    });
 
     // 计算工具调用状态
     const toolSuccessCount = aiResult?.toolRuns?.filter(tool => tool.status === 'used').length ?? 0;
     const toolFailureCount = aiResult?.toolRuns?.filter(tool => tool.status === 'failed').length ?? 0;
     const toolBlockCount = aiResult?.toolRuns?.filter(tool => tool.status === 'blocked').length ?? 0;
-
-    const contextData = [
-        {
-          count: aiResult?.graphNodes?.length ?? knowledgeOverview.counts.nodes,
-          title: '知识图谱',
-          source: 'SQLite nodes / edges',
-          detail: '已纳入知识图谱节点摘要。',
-        },
-    ];
 
     const liveArtifacts = buildAiArtifacts(aiPrompt, aiResult);
     const selectedArtifact = activeAiArtifact ?? liveArtifacts[0] ?? null;
