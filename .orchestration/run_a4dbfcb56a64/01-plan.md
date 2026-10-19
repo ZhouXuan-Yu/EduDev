@@ -3,7 +3,7 @@
 > 角色：Planner P（只读）。本文件是 T0/T1/T2/G0 的执行契约，worker 不得自行扩大 Target。
 > 冻结日期：2026-10-19（Asia/Shanghai）。
 > 工作区：`C:\Users\ZhouXuan\orca\workspaces\EduProject\小智教育智能体`（git worktree，禁止 `cd` 到原仓库根）。
-> 基线：`HEAD = 7ae52f10d8ebbf3a0f1c707c49439f84d97b70b5`，branch `ZhouXuan-Yu/小智教育智能体`，`2026-10-19 16:35:24 +0800 auto-sync`。
+> 基线：规划开始时 `HEAD = 7ae52f10d8ebbf3a0f1c707c49439f84d97b70b5`（branch `ZhouXuan-Yu/小智教育智能体`，`2026-10-19 16:35:24 +0800 auto-sync`）；规划期间 auto-sync 继续提交，读取时已推进到 `e2ae4d5`。**T0 开工时必须重新执行 `git rev-parse HEAD`，以当时 HEAD 为基线；不得把本文件的 SHA 当作业务基线。**
 > 权威优先级：用户本轮要求 > `1.Agent.md` > `docs/00_DOCUMENTATION_INDEX.md` 指定文档 > `4.Wiki.md` > `2.Memory.md` > 代码/测试证据。
 
 ## 0. 基线证据与冻结裁决
@@ -677,12 +677,12 @@ P（本文件）
 | A18 | T2 | `npm run test:smoke` | 多选→批量确认→记录 readback→重启 | 通过；内存被杀则 `BLOCKED` |
 | A19 | T2 | 并发/幂等（smoke 内，best-effort） | 两个并发批次最多一个成功；总记录数正确；重复确认必须拒绝 | 无重复写入；若 sqlite3 驱动不支持同连接并发事务，记录原因，仍必须通过重复确认拒绝断言 |
 | A20 | G0 | `nvidia-smi --query-gpu=name,memory.total,driver_version,compute_cap --format=csv,noheader` | RTX 5060 Laptop / 8151 MiB / 595.79 / 12.0 | 记录到报告 |
-| A21 | G0 | `C:\Users\ZhouXuan\AppData\Local\OmniEdu\venvs\gpu\Scripts\python.exe -c "import torch; ..."` | torch 版本、CUDA 版本、available、device、capability | 有值；false 时记录 blocker |
-| A22 | G0 | `...python.exe -c "import onnxruntime as ort; print(ort.get_available_providers())"` | providers 列表 | 含 `CUDAExecutionProvider`；否则 blocker + CPU fallback |
-| A23 | G0 | `...python.exe python\ocr-smoke.py <tmp>` | 识别行数、文本、置信度、耗时 | ok=true；中文样例识别成功 |
-| A24 | G0 | `...python.exe -c "SentenceTransformer(...).encode(...)"` | device、dims=512、延迟、VRAM | 有值；CPU/GPU 对比表完整 |
+| A21 | G0 | `"$VENV_PY" -c "import torch; print(torch.__version__, torch.version.cuda, torch.cuda.is_available(), torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'n/a', torch.cuda.get_device_capability(0) if torch.cuda.is_available() else 'n/a')"` | torch 版本、CUDA 版本、available、device、capability | 有值；false 时记录 blocker |
+| A22 | G0 | `"$VENV_PY" -c "import onnxruntime as ort; print(ort.__version__, ort.get_available_providers())"` | providers 列表 | 含 `CUDAExecutionProvider`；否则 blocker + CPU fallback |
+| A23 | G0 | `"$VENV_PY" python/ocr-smoke.py <tmp>` | 识别行数、文本、置信度、耗时 | ok=true；中文样例识别成功 |
+| A24 | G0 | `"$VENV_PY" -c "from sentence_transformers import SentenceTransformer; m=SentenceTransformer('BAAI/bge-small-zh-v1.5', device='cuda'); ..."` | device、dims=512、延迟、VRAM | 有值；CPU/GPU 对比表完整 |
 | A25 | G0 | CPU fallback 运行 OCR/embedding | CPU provider/`device='cpu'` 结果 | 仍成功；报告含 CPU vs GPU 表 |
-| A26 | G0 | 报告文件检查 | `g0-gpu-baseline.md` 存在且含命令/版本/benchmark/VRAM/rollback/OMNI_EDU_PYTHON/blocker | 缺一项即 fail |
+| A26 | G0 | `test -f .orchestration/run_a4dbfcb56a64/g0-gpu-baseline.md && grep -E "torch.cuda.is_available\|get_available_providers\|VRAM\|OMNI_EDU_PYTHON\|rollback" .orchestration/run_a4dbfcb56a64/g0-gpu-baseline.md` | 报告存在且关键字段可检索 | 缺一项即 fail |
 | A27 | 全局 | `npm run test:db-migration` | v9 基线、无 v10 | 通过 |
 | A28 | 全局 | `npm run test:ai-confirmation` | 现有确认队列回归 | 通过（T2 必跑；T0/T1 建议跑） |
 | A29 | 全局 | `git diff --check` | 无输出 | 通过 |
@@ -696,7 +696,7 @@ P（本文件）
 | --- | --- | --- | --- | --- | --- |
 | R1 | **隐私泄露：自动上传原图** | 本地 OCR 失败自动回退；通用 `deepseek:analyzeImage` 被其他入口调用 | P0：违反产品红线，学生原图离开本机 | 删除回退与通用入口；新 IPC 必须 `confirmedUploadOriginal === true`；A4/A5/A6 守卫 | T0 |
 | R2 | **隐私泄露：日志/审计含图片** | 调试时打印 base64/路径；异常堆栈带路径 | P0/P1 | 审计只记录 provider/model/requestId/confirmedAt/imageBytes；A4 断言序列化不含路径/base64 | T0 |
-| R3 | **云端置信度伪造** | provider 不返回 confidence，用 0.85 兜底 | P1：教师误信低质量 OCR | `null` + `requiresReview=true`；UI 不显示百分比；A4/A11 断言 | T0 |
+| R3 | **云端置信度伪造** | provider 不返回 confidence，用 0.85 兜底 | P1：教师误信低质量 OCR | `null` + `requiresReview=true`；UI 不显示百分比；A4/A4b 断言 | T0 |
 | R4 | **同步 IO 冻 UI** | 8MB 图片 `readFileSync`；大文件/备份 | P1：主进程阻塞 | D-P8；A7 守卫；T2 新 helper 不用同步 IO | T0/T2 |
 | R5 | **迁移越权** | T1 为模板加列、T2 为批量加表 | P0：老库/新库分叉，无法回退 | D-P7；`schemaMigrations` 保持 v9；A27 + diff review | T1/T2 |
 | R6 | **事务部分写入** | 第 2 条记录失败但第 1 条已提交 | P0：学生档案出现半套错因记录 | D-P5；单事务 + 失败注入；A16 | T2 |
@@ -745,10 +745,10 @@ P（本文件）
 
 - 已检查：`D:\WorkProject\小智智能体借鉴项目\OpenMAIC` **没有** exam-paper / answer-sheet 模块；只有 quiz、slide、video export、PPTX/OMML。**不得声称复用了 OpenMAIC 的试卷/答题纸模块。**
 - 可复用（概念/测试模式）：
-  - `...\OpenMAIC\lib\quiz\grading.ts`：exact answer-key alignment、歧义不解析。
-  - `...\OpenMAIC\tests\quiz-answer-key.test.ts`：负向测试模式。
-  - `...\OpenMAIC\lib\video-export-app\quiz-layout.ts`：先测量再渲染的确定性思想。
-  - `...\OpenMAIC\lib\video-export\emit-hyperframes\quiz-question-list.ts`：题号/列表结构。
+  - `D:\WorkProject\小智智能体借鉴项目\OpenMAIC\lib\quiz\grading.ts`：exact answer-key alignment、歧义不解析。
+  - `D:\WorkProject\小智智能体借鉴项目\OpenMAIC\tests\quiz-answer-key.test.ts`：负向测试模式。
+  - `D:\WorkProject\小智智能体借鉴项目\OpenMAIC\lib\video-export-app\quiz-layout.ts`：先测量再渲染的确定性思想。
+  - `D:\WorkProject\小智智能体借鉴项目\OpenMAIC\lib\video-export\emit-hyperframes\quiz-question-list.ts`：题号/列表结构。
 - 禁止复制：Next.js/React 客户端代码、HyperFrames、PPTX/OMML、`temml`/`mathml2omml` 依赖、视频导出管线。
 - 本项目试卷/答题纸/解析必须继续走 `document_artifacts` + SHA-256 + status + readback；不得直接写文件绕过 artifact 管线。
 
@@ -772,7 +772,7 @@ P（本文件）
 - 固定 venv：`C:\Users\ZhouXuan\AppData\Local\OmniEdu\venvs\gpu`；不污染 `D:\Anaconda`。
 - 版本以实际安装日志为准，不复制 `ai-agent-book` 的旧 pin（`torch==2.1.2`/`ST==2.2.2`）。
 - 8GB VRAM 串行；记录 `nvidia-smi` 前后；不可用就记录 blocker + CPU fallback。
-- 运行入口通过 `OMNI_EDU_PYTHON`（`ndjson-worker.ts:35`、`sidecar-client.ts:38`）；不要在代码里硬编码 venv 路径。
+- 运行入口通过 `OMNI_EDU_PYTHON`（`apps/desktop/src/main/ai-harness/ndjson-worker.ts:35`、`apps/desktop/src/main/ai-harness/sidecar-client.ts:38`）；不要在代码里硬编码 venv 路径。
 
 ### 6.6 跨切面
 
