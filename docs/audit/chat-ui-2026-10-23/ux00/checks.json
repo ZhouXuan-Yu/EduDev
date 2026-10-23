@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-23",
+  "baselineCommit": "a54755725bb9fbeb1c7a2e19adfb85aa2a9ee11b",
+  "targetBranch": "main",
+  "stage": "UX-00 baseline only",
+  "productSourceChanged": false,
+  "mainSha256": "b8577682f802506f21f8948c4ca95ddf01361f5a1ea4fcb2f5ecc96438b89aeb",
+  "buildExit": 0,
+  "rendererComponents": "217/217",
+  "chatBoundaries": "16/16",
+  "electron": {
+    "report": "baseline.json",
+    "checks": 8,
+    "visuals": 60,
+    "rendererErrors": 0,
+    "sampleCountPerScenario": 30
+  },
+  "audit": {
+    "original": {
+      "info": 0,
+      "low": 1,
+      "moderate": 2,
+      "high": 7,
+      "critical": 1,
+      "total": 11
+    },
+    "current": {
+      "info": 0,
+      "low": 5,
+      "moderate": 2,
+      "high": 7,
+      "critical": 1,
+      "total": 15
+    },
+    "exit": 1,
+    "addedPackageWarnings": [
+      "@streamdown/math",
+      "micromark-extension-math",
+      "rehype-katex",
+      "remark-math"
+    ],
+    "fixed": false
+  },
+  "diffCheck": {
+    "exit": 0,
+    "output": []
+  },
+  "localEvidence": [
+    {
+      "path": "apps/desktop/test-results/chat-audit-20261023/ux00-build.log",
+      "sha256": "f0261c25aac6f0a1707ebce5bc98be8cee104edbe12d8528abcd9ac5f8f9d276"
+    },
+    {
+      "path": "apps/desktop/test-results/chat-audit-20261023/ux00-components.log",
+      "sha256": "690778949f23b0ab4117db6bd8b02ee36da83ea32d92bbd46524d00f1e41af81"
+    },
+    {
+      "path": "apps/desktop/test-results/chat-audit-20261023/ux00-boundaries.log",
+      "sha256": "8c37d44be080cbf9d23cf88b1fb5aa6c7f5c516576823ec572508712257abb29"
+    },
+    {
+      "path": "apps/desktop/test-results/chat-audit-20261023/ux00-final.log",
+      "sha256": "8a0c273ea36863e15cd13339879425a552fe5534ee5adbd36e178f4fe17dfea7"
+    },
+    {
+      "path": "apps/desktop/test-results/chat-audit-20261023/npm-audit-baseline.json",
+      "sha256": "d84c8e8ff9920aa16aeabda4b849e2a8a462abe7e7c140cc991b04b50c4691f3"
+    },
+    {
+      "path": "apps/desktop/test-results/chat-audit-20261023/npm-audit-original.json",
+      "sha256": "05e59aa750ada2aea75da0b4354ad6843301269d59df3a5ae635e4b74724c89c"
+    }
+  ],
+  "excluded": [
+    "full OCR to exercise closure",
+    "complex 100-point export",
+    "provider learning review",
+    "native IME input acceptance",
+    "Windows 125 percent DPI switch",
+    "teacher trial",
+    "installer"
+  ]
+}

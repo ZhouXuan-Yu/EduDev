@@ -5,6 +5,7 @@
   "type": "module",
   "main": "out/main/index.js",
   "scripts": {
+    "test:ux00-baseline": "node scripts/xiaozhi-agent/ux00-baseline.mjs",
     "verify:deeptutor-question": "node scripts/education/reuse-deeptutor-question.mjs --verify",
     "verify:hana-pdf-renderer": "node scripts/xiaozhi-agent/reuse-hana-pdf-renderer.mjs --verify",
     "test:xiaozhi-office-draft": "node scripts/xiaozhi-agent/pi-office-draft-protocol-smoke.mjs",
