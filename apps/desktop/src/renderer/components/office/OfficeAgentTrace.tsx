@@ -1,49 +1,38 @@
-import {useEffect,useRef,useState,type ReactNode} from 'react';
-import type {OfficeProjectedTurn} from '../../../shared/office-agent';
+import {memo,useEffect,useState} from 'react';
+import type {OfficeModelReasoning,OfficeProjectedTurn} from '../../../shared/office-agent';
 import {ChainOfThought} from '../../heroui-pro/components/chain-of-thought';
 import {formatProcessDuration} from './office-process';
-import {traceStage} from './agent-trace';
 import {OfficeMarkdown} from './OfficeMarkdown';
+import {reasoningPreview} from './reasoning-preview';
 
-/** Original Pro composition, using actual provider reasoning independently of execution records. */
-export function OfficeAgentTrace({turn,children}:{turn:OfficeProjectedTurn;children:ReactNode}){
-  const [expanded,setExpanded]=useState(turn.status!=='completed');
-  const prior=useRef(turn.status);
+/** DSH interaction policy on untouched HeroUI: one disclosure per real block. */
+const ReasoningRow=memo(function ReasoningRow({block,running,runId}:{block:OfficeModelReasoning;running:boolean;runId:string}){
+  const [expanded,setExpanded]=useState(false);
   const [now,setNow]=useState(Date.now);
-  const terminal=['completed','failed','interrupted'].includes(turn.status);
-  useEffect(()=>{
-    if(prior.current!==turn.status){
-      if(turn.status==='completed')setExpanded(false);
-      else if(['failed','interrupted','waiting_input','waiting_approval'].includes(turn.status))setExpanded(true);
-      prior.current=turn.status;
-    }
-  },[turn.status]);
-  useEffect(()=>{if(terminal)return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[terminal]);
-  const elapsed=terminal?(turn.traceElapsedMs??turn.elapsedMs):turn.startedAt?Math.max(turn.elapsedMs||0,now-turn.startedAt):turn.elapsedMs;
-  const duration=elapsed===undefined?'耗时未记录':formatProcessDuration(Math.max(0,elapsed));
-  const state=turn.status==='completed'?'已结束':turn.status==='failed'?'未完成':turn.status==='interrupted'?'已停止':turn.status==='waiting_input'?'等待补充':turn.status==='waiting_approval'?'等待确认':'进行中';
-  const failed=turn.items.some(item=>item.kind==='tool'&&['failed','declined'].includes(item.status||''));
-  const blocks=turn.modelReasoning||[];
-  const thinking=turn.status==='running'&&blocks.some(b=>b.status==='streaming');
-  const thinkingMs=blocks.reduce((sum,b)=>sum+(b.status==='streaming'&&!terminal?Math.max(b.durationMs,now-b.startedAt):b.durationMs),0);
-  const thinkingDuration=blocks.length?formatProcessDuration(Math.max(0,thinkingMs)):undefined;
-  return <ChainOfThought isExpanded={expanded} onExpandedChange={setExpanded} isStreaming={thinking} className="office-agent-trace" data-testid="agent-trace" data-run-id={turn.id} data-state={turn.status}>
-    <ChainOfThought.Trigger data-testid="agent-trace-toggle" aria-label={`模型思考，${state}，${thinkingDuration?'思考'+thinkingDuration+'，':''}执行${duration}`}>
-      <span>模型思考 · <span className="office-trace-state">{state}{failed?' · 含未完成操作':''}</span>{thinkingDuration&&<> · <span data-testid="model-thinking-duration">思考 {thinkingDuration}</span></>} · <span data-testid="office-turn-duration" className="office-trace-duration">执行 {duration}</span></span>
+  useEffect(()=>{if(!running)return;const timer=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(timer);},[running]);
+  const duration=formatProcessDuration(running?Math.max(block.durationMs,now-block.startedAt):block.durationMs);
+  const state=block.status==='interrupted'?'思考已停止':block.status==='failed'?'思考未完成':running?'思考中':'已思考';
+  const preview=expanded?'':reasoningPreview(block.text,running);
+  return <ChainOfThought isExpanded={expanded} onExpandedChange={setExpanded} isStreaming={running}
+    className="office-agent-trace" data-testid="agent-trace" data-run-id={runId} data-reasoning-id={block.id} data-thinking={running?'streaming':block.status}>
+    <ChainOfThought.Trigger data-testid="agent-trace-toggle" aria-label={`${state} ${duration}${preview?`，${preview}`:''}，${expanded?'收起':'展开'}推理内容`}>
+      <span className="office-reasoning-heading"><span>{state} <span data-testid="model-thinking-duration">{duration}</span></span>
+        {preview&&<span className="office-reasoning-preview" data-testid="reasoning-preview"> · {preview}</span>}
+      </span>
     </ChainOfThought.Trigger>
     <ChainOfThought.Content data-testid="agent-trace-content">
-      {expanded&&<><ChainOfThought.Steps>
-        {blocks.map((block,index)=><ChainOfThought.Step key={block.id} label={blocks.length>1?`模型思考 · 第 ${index+1} 段`:undefined}>
-          <div data-testid="model-reasoning" data-reasoning-id={block.id} data-status={block.status}>
-            <OfficeMarkdown animated={false} isStreaming={block.status==='streaming'&&!terminal}>{block.text}</OfficeMarkdown>
-            {block.truncated&&<p>推理内容较长，当前仅展示已保留的部分。</p>}
-            {['interrupted','failed'].includes(block.status)&&<p>此段思考未完成。</p>}
-          </div>
-        </ChainOfThought.Step>)}
-        {!blocks.length&&<ChainOfThought.Step><span data-testid="model-reasoning-empty">{terminal?'本次模型未返回推理内容。':'等待模型返回推理内容。'}</span></ChainOfThought.Step>}
-        {children&&<ChainOfThought.Step label="执行记录与工具结果"><ChainOfThought.Steps>{children}</ChainOfThought.Steps></ChainOfThought.Step>}
-        {!terminal&&(!turn.publicStages?.length||turn.status!=='running')&&<ChainOfThought.Step label={traceStage(turn)}><span>{turn.status==='running'?'等待真实公开阶段或操作记录。':'请在下方卡片处理，小智会等待你的决定。'}</span></ChainOfThought.Step>}
-      </ChainOfThought.Steps></>}
+      {expanded&&<ChainOfThought.Steps><ChainOfThought.Step>
+        <div data-testid="model-reasoning" data-reasoning-id={block.id} data-status={block.status}>
+          <OfficeMarkdown animated={false} isStreaming={running}>{block.text}</OfficeMarkdown>
+          {block.truncated&&<p>推理内容较长，当前仅展示已保留的部分。</p>}
+          {['interrupted','failed'].includes(block.status)&&<p>此段思考未完成。</p>}
+        </div>
+      </ChainOfThought.Step></ChainOfThought.Steps>}
     </ChainOfThought.Content>
   </ChainOfThought>;
+});
+
+export function OfficeAgentTrace({turn}:{turn:OfficeProjectedTurn}){
+  return <>{turn.modelReasoning?.filter(block=>block.text.trim()).map(block=><ReasoningRow key={block.id} block={block} runId={turn.id}
+    running={turn.status==='running'&&block.status==='streaming'}/>)}</>;
 }

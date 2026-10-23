@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-23 官方DSH交互对照（最新）
+
+参考deepseek-ai/deepseek-harness固定687f282e的ReasoningRow/use-disclosure及测试；学习每段默认收起、真实段落首行预览和独立工具，不复制其CSS、安装依赖或替换runtime。HeroUI原厂样式与亮色保持，未启用DSH可选外部翻译。见 [证据](../audit/chat-ui-2026-10-23/DSH_REASONING_DELIVERY.md)。
+
 ## 2026-10-23 官方推理组件接入（最新）
 
 HeroUI MCP和官方ChainOfThought文档已核：AgentTraceStreaming为组合示例、isStreaming只控制标题动效。供应商reasoning_content由现有Pi SDK解析为thinking_delta，本轮在应用边界接入真实内容与生命周期；原生SDK继续工具回传，不改vendor、不新建推理loop或翻译调用。样式保护/官方OSS→Pro顺序和亮色保持。见 [本轮证据](../audit/chat-ui-2026-10-23/MODEL_REASONING_DELIVERY.md)。

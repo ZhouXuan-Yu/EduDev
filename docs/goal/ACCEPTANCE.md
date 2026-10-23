@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-23 最新：DSH交互专项
+
+用户否决上一版默认阅读方式后，本轮按明确选择修正。dsh-reasoning-vCVd2I真实Electron21项、0控制台错误，涵盖默认收起/单行、手动展开保持、正文与工具分离、停止/失败/重启/导出、亮色双尺寸及官方CSS；边界17、轨迹19、renderer217＋样式6、同构建完整回归207通过。自动化不替代教师默认体验接受；见../audit/chat-ui-2026-10-23/DSH_REASONING_DELIVERY.md。
+
 ## 2026-10-23 最新：真实推理接入限定验收
 
 此前泛用阶段日志的“思考内容”不接受。批准方案后的最终模型专项为model-reasoning-8VaoYC：真实Electron/DeepSeek17项、0控制台错误，原生SDK与显示推理逐段SHA一致；工具回合、停止/失败、SQLite/重启、正文复制导出隔离及原厂亮色双尺寸状态通过。精确命令、构建SHA、回归和历史诊断见 MODEL_REASONING_DELIVERY.md；整体高级感、长历史性能和Master不据此宣称完成。

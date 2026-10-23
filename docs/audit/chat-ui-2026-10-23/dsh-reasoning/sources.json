@@ -1,0 +1,36 @@
+{
+  "repository": "deepseek-ai/deepseek-harness",
+  "commit": "687f282e8625c6b8d11ff58211a90524be2e4317",
+  "files": [
+    {
+      "path": "packages/client/ui-chat/src/client/chat/ReasoningRow.tsx",
+      "sha": "8bbd738f55045f31f0cf10ba2d2f370350ff8662",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/client/ui-chat/src/client/chat/ReasoningRow.tsx"
+    },
+    {
+      "path": "packages/client/ui-chat/src/client/chat/ReasoningRow.module.css",
+      "sha": "0fe5aabfd5bb50043cdf0611bafcf221abbd8502",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/client/ui-chat/src/client/chat/ReasoningRow.module.css"
+    },
+    {
+      "path": "packages/client/ui-chat/src/client/chat/ReasoningContent.tsx",
+      "sha": "2289bf3404103847a4674dbde04866e58ac00622",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/client/ui-chat/src/client/chat/ReasoningContent.tsx"
+    },
+    {
+      "path": "packages/client/ui-chat/src/client/chat/use-disclosure.ts",
+      "sha": "57a556bd0d06c27fcacdafe188ef827d9f3c9e56",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/client/ui-chat/src/client/chat/use-disclosure.ts"
+    },
+    {
+      "path": "packages/client/ui-chat/src/client/presentation-policy.ts",
+      "sha": "0bb38c7cdd9e3d783d1a81e1b45f05edcbed3081",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/client/ui-chat/src/client/presentation-policy.ts"
+    },
+    {
+      "path": "packages/client/ui-chat/tests/reasoning-row.client.spec.tsx",
+      "sha": "29ad9a4e4d4cd82bb5f8d2edd12acf9e1979cafe",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/687f282e8625c6b8d11ff58211a90524be2e4317/packages/client/ui-chat/tests/reasoning-row.client.spec.tsx"
+    }
+  ]
+}

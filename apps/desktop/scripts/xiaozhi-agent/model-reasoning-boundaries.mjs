@@ -11,6 +11,7 @@ try{
  const {applyXiaozhiEvent}=await server.ssrLoadModule('/src/shared/xiaozhi-projection.ts');
  const {OfficeAgentTrace}=await server.ssrLoadModule('/src/renderer/components/office/OfficeAgentTrace.tsx');
  const {splitAgentTrace}=await server.ssrLoadModule('/src/renderer/components/office/agent-trace.ts');
+ const {reasoningPreview}=await server.ssrLoadModule('/src/renderer/components/office/reasoning-preview.ts');
  const base={id:'r',status:'running',items:[]};
  const block={id:'reasoning:1:0',source:'provider',text:'先核对条件，再使用等式性质。',startedAt:Date.now(),durationMs:100,status:'streaming'};
  await check('provider reasoning never becomes a body or export item',()=>{
@@ -68,12 +69,24 @@ try{
  await check('only actual reasoning activates the original streaming component',()=>{
   const render=t=>renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:t,children:null}));
   assert(!render(base).includes('chain-of-thought--streaming'));const html=render({...base,modelReasoning:[block]});
-  assert.match(html,/data-testid="model-reasoning"/);assert.match(html,/先核对条件/);assert.match(html,/chain-of-thought--streaming/);
+  assert.match(html,/data-testid="agent-trace"/);assert(!html.includes('data-testid="model-reasoning"'));assert.match(html,/chain-of-thought--streaming/);assert.match(html,/aria-expanded="false"/);
   assert(!render({...base,modelReasoning:[{...block,status:'completed'}]}).includes('chain-of-thought--streaming'));
  });
  await check('missing reasoning is honest and separate from execution states',()=>{
   const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,status:'failed'},children:React.createElement('p',null,'等待模型回复')}));
-  assert.match(html,/本次模型未返回推理内容/);assert.match(html,/执行记录与工具结果/);
+  assert.equal(html,'');
+ });
+ await check('DSH preview advances only on completed paragraph first lines',()=>{
+  for(const [text,expected]of [['',''],['unfinished',''],['First\nDetails','First'],['First\n\nNext unfinished','First'],['First\n\nNext completed\nDetails','Next completed'],['First\r\n \r\nNext\r\n','Next'],['First\n\n**Next**\n','Next']])assert.equal(reasoningPreview(text,true),expected);
+ });
+ await check('settled preview restores first line without modifying the original',()=>{
+  const text='**First**\n\nLatest\n';assert.equal(reasoningPreview(text,false),'First');assert.equal(text,'**First**\n\nLatest\n');
+ });
+ await check('blank reasoning does not create empty disclosure rows',()=>{
+  const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:['',' \t\r\n'].map((text,i)=>({...block,id:`reasoning:${i}:0`,text}))}}));assert.equal(html,'');
+ });
+ await check('multiple real blocks get independent initially collapsed controls',()=>{
+  const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:[block,{...block,id:'reasoning:2:0',text:'Second unfinished'}]}}));assert.equal((html.match(/aria-expanded="false"/g)||[]).length,2);assert(!html.includes('Second unfinished'));
  });
  console.log(JSON.stringify({suite:'model-reasoning-boundaries',passed}));
 }finally{await server.close();}

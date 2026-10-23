@@ -11,8 +11,8 @@ import {captureStyleMatrix} from './ui-style-matrix.mjs';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 // Resume a successfully captured real streaming baseline without making another provider request.
 const resume=process.env.XIAOZHI_REASONING_RESUME?JSON.parse(fs.readFileSync(process.env.XIAOZHI_REASONING_RESUME,'utf8')):undefined;
-const output=fs.mkdtempSync(path.join(desktop,'test-results/model-reasoning-'));
-const temp=resume?.temp||fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-model-reasoning-'));
+const output=fs.mkdtempSync(path.join(desktop,'test-results/dsh-reasoning-'));
+const temp=resume?.temp||fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-dsh-reasoning-'));
 const dataRoot=path.join(temp,'data'),profile=path.join(temp,'profile'),exports=path.join(temp,'exports');
 for(const dir of [dataRoot,profile,exports])fs.mkdirSync(dir,{recursive:true});
 const env={...process.env,OMNI_EDU_DATA_ROOT:dataRoot,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),NODE_ENV:'development'};
@@ -22,7 +22,7 @@ const config=fs.readFileSync(process.env.XIAOZHI_AUDIT_ENV||path.join(desktop,'.
 for(const name of ['DEEPSEEK_API_KEY','DEEPSEEK_MODEL'])if(!env[name])env[name]=config.match(new RegExp('^'+name+'\\s*=\\s*(.*?)\\s*$','m'))?.[1]?.replace(/^['"]|['"]$/g,'');
 assert(env.DEEPSEEK_API_KEY);
 let app,page;const errors=[],checks=[];
-const report={suite:'model-reasoning-real-electron',success:false,provider:'real DeepSeek',model:env.DEEPSEEK_MODEL,temp,output,checks,errors};
+const report={suite:'dsh-reasoning-real-electron',success:false,provider:'real DeepSeek',model:env.DEEPSEEK_MODEL,temp,output,checks,errors};
 const check=(name,fn=()=>{})=>{fn();if(!checks.some(c=>c.name===name))checks.push({name,pass:true});console.log('PASS '+name);};
 const hash=text=>createHash('sha256').update(text).digest('hex');
 async function until(fn,ms=120000){const end=Date.now()+ms;while(Date.now()<end){if(await fn())return;await new Promise(r=>setTimeout(r,100));}throw Error('Timed out waiting for live reasoning condition');}
@@ -52,19 +52,22 @@ try{
    for(const name of ['streaming-reasoning','streaming-answer','completed-collapsed']){const file=path.join(resume.output,name+'.png');if(fs.existsSync(file))fs.copyFileSync(file,path.join(output,name+'.png'));}
  }else{
  await send('我是初中数学教师，请直接设计一元一次方程3(2x-1)=15的简短讲解，比较两种解法，指出两种典型错误，并给3道迁移练习和答案。总正文约600字，只依据题目，不需要使用工具。');
- const visual=await page.waitForFunction(()=>{const b=document.querySelector('[data-testid="model-reasoning"][data-status="streaming"]');return b?{chars:b.textContent.length,rootClass:b.closest('[data-testid="agent-trace"]').className}:false;},{},{timeout:120000});
+ const visual=await page.waitForFunction(()=>{const b=document.querySelector('[data-testid="agent-trace"][data-thinking="streaming"]');return b?{previewChars:b.querySelector('[data-testid="reasoning-preview"]')?.textContent.length||0,expanded:b.querySelector('[data-testid="agent-trace-toggle"]').getAttribute('aria-expanded'),bodyMounted:!!b.querySelector('[data-testid="model-reasoning"]'),rootClass:b.className}:false;},{},{timeout:120000});
  report.streamObservation=await visual.jsonValue();
- check('actual provider reasoning is visible while streaming');
+ check('real provider reasoning starts collapsed without mounting full drafts',()=>{assert.equal(report.streamObservation.expanded,'false');assert.equal(report.streamObservation.bodyMounted,false);});
  check('original Pro shimmer follows actual thinking',()=>assert(report.streamObservation.rootClass.includes('chain-of-thought--streaming')));
  await shot('streaming-reasoning');
  const live=await snap();assert(live.projection.turns.at(-1).items.every(i=>!i.text?.includes(live.projection.turns.at(-1).modelReasoning[0].text)));
  await until(async()=>{const t=(await snap()).projection.turns.at(-1);return t.status==='running'&&t.items.some(i=>i.role==='assistant'&&i.text?.length>30)&&page.getByTestId('agent-reply-body').last().isVisible();});
- check('answer continues streaming independently');await shot('streaming-answer');
+ check('answer continues streaming independently');assert.equal(await page.getByTestId('agent-trace-toggle').first().getAttribute('aria-expanded'),'false');await shot('streaming-answer');
+ await page.getByTestId('agent-trace-toggle').first().click();await page.getByTestId('model-reasoning').waitFor();
  ordinary=await done();assert.equal(ordinary.status,'completed',ordinary.error);
  check('nonempty provider reasoning with separate duration',()=>{assert(ordinary.modelReasoning?.some(b=>b.text.length>30&&b.source==='provider'));assert(ordinary.modelReasoning.every(b=>b.status==='completed'));assert(ordinary.modelReasoning.reduce((n,b)=>n+b.durationMs,0)<ordinary.traceElapsedMs);});
- await until(async()=>await page.getByTestId('agent-trace-toggle').last().getAttribute('aria-expanded')==='false');check('completion automatically folds reasoning');await shot('completed-collapsed');
+ check('manual expansion survives response completion',()=>{});assert.equal(await page.getByTestId('agent-trace-toggle').first().getAttribute('aria-expanded'),'true');await shot('completed-expanded');
+ await page.getByTestId('agent-trace-toggle').first().click();check('reader can collapse reasoning while the answer remains visible');assert.equal(await page.getByTestId('model-reasoning').count(),0);await shot('completed-collapsed');
  }
  report.ordinary=summary(ordinary);report.ordinarySession=await id();
+ check('generic phases and empty execution section are absent from ordinary replies',()=>{});assert.equal(await page.getByTestId('agent-public-stage').count(),0);assert.equal(await page.getByTestId('execution-trace').count(),0);
  await page.getByTestId('reply-copy').last().click();const copied=await app.evaluate(({clipboard})=>clipboard.readText());
  const body=ordinary.items.filter(i=>i.phase==='final_answer').at(-1).text;check('clipboard copies only actual answer',()=>assert.equal(copied.replace(/\r\n/g,'\n'),body.replace(/\r\n/g,'\n')));
  await page.getByTestId('reply-save').last().click();await page.getByTestId('reply-save-title').fill('推理与正文隔离验收');
@@ -75,6 +78,9 @@ try{
  const auditor=await createStyleAuditor(page,path.join(desktop,'src/renderer'));report.matrices=[];
  for(const size of [{width:1366,height:768},{width:1920,height:1080}])report.matrices.push(await captureStyleMatrix({app,page,auditor,rendererRoot:path.join(desktop,'src/renderer'),output,theme:'light',size}));
  check('official CSS parity and real hover focus active at both light sizes');
+ const toggle=page.getByTestId('agent-trace-toggle').first();if(await toggle.getAttribute('aria-expanded')==='true')await toggle.click();
+ const preview=await page.getByTestId('reasoning-preview').first().evaluate(el=>({whiteSpace:getComputedStyle(el).whiteSpace,overflow:getComputedStyle(el).textOverflow,height:el.getBoundingClientRect().height,pageOverflow:document.documentElement.scrollWidth>innerWidth}));
+ check('long reasoning preview is one line and never widens the page',()=>{assert.equal(preview.whiteSpace,'nowrap');assert.equal(preview.overflow,'ellipsis');assert(preview.height<36);assert.equal(preview.pageOverflow,false);});report.previewLayout=preview;
  const saved=rows('SELECT metadata_json FROM ai_conversation_messages WHERE role=\'assistant\'').map(r=>JSON.parse(r.metadata_json)).find(m=>m.agentRunId===ordinary.id);
  check('SQLite stores the exact sanitized reasoning projection',()=>assert.deepEqual(saved.modelReasoning.blocks,ordinary.modelReasoning));
  await app.close();await launch();const cold=(await snap()).projection.turns.find(t=>t.id===ordinary.id);check('restart preserves reasoning and timing exactly',()=>assert.deepEqual(cold.modelReasoning,ordinary.modelReasoning));
@@ -92,15 +98,17 @@ try{
  const native=nativeFiles(dataRoot).flatMap(file=>fs.readFileSync(file,'utf8').trim().split('\n').flatMap(line=>{const entry=JSON.parse(line);return entry.message?.role==='assistant'?entry.message.content.filter(b=>b.type==='thinking').map(b=>hash(b.thinking)):[];}));
  const publicHashes=[ordinary,tools].flatMap(t=>t.modelReasoning.map(b=>hash(b.text)));
  check('displayed reasoning matches actual native SDK blocks, without fabricating tool-round thoughts',()=>assert.deepEqual(native.sort(),publicHashes.sort()));report.nativeReasoningBlocks=native.length;
- if(await page.getByTestId('agent-trace-toggle').last().getAttribute('aria-expanded')==='false')await page.getByTestId('agent-trace-toggle').last().click();await shot('tool-reasoning-expanded');
+ assert.equal(await page.getByTestId('execution-trace').count(),1);assert.equal(await page.locator('[data-testid="agent-trace"] [data-testid="execution-trace"]').count(),0);
+ await page.getByTestId('execution-trace-toggle').click();check('actual tools expand independently from reasoning');await shot('tool-records-independent');
+ if(await page.getByTestId('agent-trace-toggle').first().getAttribute('aria-expanded')==='false')await page.getByTestId('agent-trace-toggle').first().click();await shot('tool-reasoning-expanded');
  await newChat();await send('请设计完整的七年级一元一次方程单元教学，包含8课时逐字稿、差异化练习及答案，总正文不少于8000字，不使用工具。');
- await page.locator('[data-testid="model-reasoning"][data-status="streaming"]').waitFor({state:'visible',timeout:120000});
+ await page.locator('[data-testid="agent-trace"][data-thinking="streaming"]').waitFor({state:'visible',timeout:120000});
  await page.getByRole('button',{name:'停止本轮',exact:true}).click();const stopped=await done();report.stopped=summary(stopped);
- check('stop during genuine reasoning retains incomplete text',()=>{assert.equal(stopped.status,'interrupted');assert(stopped.modelReasoning.some(b=>b.status==='interrupted'&&b.text.length>0));});await shot('stopped-reasoning');
+ check('stop during genuine reasoning retains incomplete text',()=>{assert.equal(stopped.status,'interrupted');assert(stopped.modelReasoning.some(b=>b.status==='interrupted'&&b.text.length>0));});assert.equal(await page.getByTestId('agent-trace-toggle').first().getAttribute('aria-expanded'),'false');await shot('stopped-collapsed');await page.getByTestId('agent-trace-toggle').first().click();await shot('stopped-reasoning');
  await app.close();await launch();const stoppedCold=(await snap()).projection.turns.find(t=>t.id===stopped.id);check('restart preserves stopped reasoning',()=>assert.deepEqual(stoppedCold.modelReasoning,stopped.modelReasoning));
  await newChat();
  await app.evaluate(({net})=>{globalThis.__reasoningFetch=net.fetch;net.fetch=(input,init)=>{if(String(typeof input==='string'?input:input.url).includes('api.deepseek.com')&&String(typeof input==='string'?input:input.url).includes('chat/completions'))return Promise.reject(Error('reasoning-audit-controlled-transport'));return globalThis.__reasoningFetch(input,init);};});
- try{await send('请回答2+2。');const failed=await done();report.failureCase=summary(failed);check('controlled transport failure cannot fabricate reasoning',()=>{assert.equal(failed.status,'failed');assert(!failed.modelReasoning?.length);});await shot('failed-no-reasoning');}
+ try{await send('请回答2+2。');const failed=await done();report.failureCase=summary(failed);check('controlled transport failure cannot fabricate reasoning',()=>{assert.equal(failed.status,'failed');assert(!failed.modelReasoning?.length);});assert.equal(await page.getByTestId('agent-trace').count(),0);await shot('failed-no-reasoning');}
  finally{await app.evaluate(({net})=>{net.fetch=globalThis.__reasoningFetch;delete globalThis.__reasoningFetch;});}
  check('renderer console has no uncaught errors',()=>assert.deepEqual(errors,[]));
  report.success=true;

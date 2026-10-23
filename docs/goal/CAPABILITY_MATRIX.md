@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-10-23 最新：M10 DSH披露策略
+
+原modelReasoning真实数据保持；renderer每段默认收起＋本地真实首行预览，全文按需挂载；手动阅读保持、实际工具独立、泛用遥测不铺聊天。未改backend/shared/DDL/vendor。真实21项与完整207通过，原厂亮色保持；详见DSH_REASONING_DELIVERY.md。
+
 ## 2026-10-23 最新：M10模型推理展示
 
 API reasoning_content经SDK thinking_delta进入主进程脱敏桥/独立typed事件/modelReasoning投影，既有assistant metadata版本化保存；原厂ChainOfThought展示实际返回文本与真实推理段状态、独立计时。原生SDK保留工具回传，正文/导出保持。真实Electron17项与原生块哈希对照通过；无新增循环/依赖/DDL/IPC，原厂亮色设计保持。详见MODEL_REASONING_DELIVERY.md。

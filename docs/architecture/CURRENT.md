@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-23 DSH展示修正（最新）
+
+只改renderer组合：每段推理独立披露/本地预览、执行入口分离、正文独立；原Pi/shared/SQLite不改，原厂HeroUI不改。用户已确认默认收起并保留手动展开。见 [本轮交付](../audit/chat-ui-2026-10-23/DSH_REASONING_DELIVERY.md)。
+
 ## 2026-10-23 模型推理输出通道（最新）
 
 用户批准供应商API推理文本接入。Pi唯一loop和原生reasoning回传保持；新main脱敏桥只转发thinking_delta，独立model_reasoning事件/modelReasoning投影，既有assistant metadata version1持久化，32段/65536字符。原SDK消息/签名留main，正文items不混入推理；无新DDL/IPC/依赖。停止先中断SDK再清理确认卡；原厂亮色组件样式保持。实证见 [本轮交付](../audit/chat-ui-2026-10-23/MODEL_REASONING_DELIVERY.md)。

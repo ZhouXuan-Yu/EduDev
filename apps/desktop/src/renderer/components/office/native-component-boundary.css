@@ -21,6 +21,9 @@
 [data-heroui-native] .office-turn-notice { display: flex; align-items: flex-start; gap: 10px; }
 [data-heroui-native] .office-turn-notice[data-state='failed'] { color: var(--danger); }
 [data-heroui-native] .office-trace-live { display: inline-flex; align-items: center; gap: 8px; }
+[data-heroui-native] .office-reasoning-heading { display: inline-flex; align-items: center; min-width: 0; }
+[data-heroui-native] .office-reasoning-heading > span:first-child { flex: none; }
+[data-heroui-native] .office-reasoning-preview { display: inline-block; max-inline-size: min(44ch, 38vw); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 [data-heroui-native] .office-send-error { display: flex; gap: 8px; color: var(--danger); }
 [data-heroui-native] .office-save-preview { max-height: 320px; overflow: auto; }
 [data-heroui-native] :is(.office-tool-evidence,.office-skill-preview) { max-height: 240px; overflow: auto; }
