@@ -34,7 +34,7 @@ export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,obs
     for(const resource of result.resources){current(signal);rows.push({resourceId:resource.id,title:(await clean(resource.originalFileName)).slice(0,200),status:resource.parseStatus,bodyAvailable:['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus)&&resource.chunkCount>0});}
     current(signal);payload={success:true,materials:rows,total:result.total,offset:result.offset,nextOffset:result.hasMore?result.offset+rows.length:null};
    }
-   return {content:[{type:'text',text:JSON.stringify(payload)}],details:{success:true,data:{sources}}};
+   return {content:[{type:'text',text:JSON.stringify(payload)}],details:{success:true,data:{sources,...(!body?{count:(payload.materials as unknown[]).length}:{})}}};
   }catch(error){const code=signal?.aborted?'cancelled':(error as Error).message==='permission_denied'?'permission_denied':(error as Error).message==='invalid_input'?'invalid_input':'read_failed';
    const message=code==='cancelled'?'资料读取已停止。':code==='permission_denied'?'当前任务已失效，未读取资料。':code==='invalid_input'?'资料查询参数不正确。':'资料正文读取失败，请检查收录状态后重试。';
    return {content:[{type:'text',text:message}],isError:true,details:{success:false,error:{code,message}}};

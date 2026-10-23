@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-23 对话专项限定接受
+
+本工作树标准build通过、217组件/16边界/207兼容/23正式Electron检查通过；最终实例chat-experience-qNkoc4、SQLite/文件与冷重启证据见 `../audit/chat-ui-2026-10-23/DELIVERY.md`。专项覆盖数学/草稿/真实阶段和结果摘要/复制修改Markdown保存/安全继续及回复来源；不等于整体教育四链路、Office版式、系统缩放或Master验收。下一轮 `NEXT_IMPLEMENTATION_PLAN.md` 为规划，未实施。
+
 <!-- kb-s6-current:start -->
 ## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
 

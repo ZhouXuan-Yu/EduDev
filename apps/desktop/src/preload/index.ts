@@ -162,6 +162,7 @@ const api = {
   verifyXiaozhiCredential: (input:XiaozhiCredentialInput)=>ipcRenderer.invoke('xiaozhi:settings-verify',input) as Promise<XiaozhiSettingsResult<XiaozhiCredentialView>>,
   selectXiaozhiModel: (input: XiaozhiSessionModelInput) => ipcRenderer.invoke('xiaozhi:model-select', input) as Promise<XiaozhiSettingsResult<XiaozhiSessionModel>>,
   getXiaozhiSnapshot: (id: string) => ipcRenderer.invoke('xiaozhi:snapshot', id) as Promise<XiaozhiWorkspaceSnapshot>,
+  exportXiaozhiReply: (input: import('../shared/reply-export').ReplyExportInput) => ipcRenderer.invoke('xiaozhi:reply-export', input) as Promise<import('../shared/reply-export').ReplyExportResult>,
   mutateXiaozhiGoal:(input:GoalMutation)=>ipcRenderer.invoke('xiaozhi:goal-mutate',input) as Promise<GoalResult>,
   showXiaozhiBrowser: (id:string)=>ipcRenderer.invoke('xiaozhi:browser-show',id) as Promise<XiaozhiActionResult>,
   previewXiaozhiBrowserCapture:(input:import('../shared/xiaozhi-browser-capture').BrowserCaptureInput)=>ipcRenderer.invoke('xiaozhi:browser-capture-preview',input) as Promise<import('../shared/xiaozhi-browser-capture').BrowserCaptureResult>,

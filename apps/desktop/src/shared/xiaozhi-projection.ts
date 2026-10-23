@@ -30,7 +30,9 @@ const labels: Record<string, string> = { read: '读取教育技能', search_teac
 /** Public process only. Preserve text segments around tools; no SDK reasoning. */
 export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgentEvent): OfficeProjectedTurn {
   const next = { ...turn, items: turn.items.map(item => ({ ...item })) };
-  if(event.kind === 'assistant_start') {
+  if(event.kind === 'activity') {
+    next.activity = { stage: event.stage, since: event.since };
+  } else if(event.kind === 'assistant_start') {
     next.items.push({id:`${turn.id}:segment:${event.segment}`,kind:'message',role:'assistant',phase:'commentary',text:''});
   } else if(event.kind === 'assistant_end') {
     const item=next.items.find(item=>item.id === `${turn.id}:segment:${event.segment}` && item.kind === 'message');
@@ -48,6 +50,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
   } else if (event.kind === 'tool_end') {
     const item = next.items.find(item => item.id === event.callId && item.kind === 'tool');
     if (item) { item.status = event.success ? 'completed' : item.status === 'declined' ? 'declined' : 'failed'; if (event.sources) item.sources = event.sources; if(event.webError)item.webError=event.webError; if(event.webEmpty !== undefined)item.webEmpty=event.webEmpty;
+      if(event.resultSummary)item.resultSummary=event.resultSummary;
       if(event.success&&event.browserCapture)item.browserCapture=event.browserCapture;
       if (typeof event.durationMs === 'number' && Number.isFinite(event.durationMs) && event.durationMs >= 0) item.durationMs = event.durationMs;
     }
@@ -124,7 +127,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     if (event.error) next.error = XIAOZHI_ERRORS[event.error];
     if (event.status !== 'running') {
       const lastText = [...next.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
-      if (lastText) lastText.phase = 'final_answer';
+      if (lastText) lastText.phase = event.status === 'completed' ? 'final_answer' : 'partial_answer';
       for (const item of next.items) if (item.kind === 'tool' && ['inProgress','waiting_input'].includes(item.status || '')) item.status = 'failed';
       for (const item of next.items) if (item.kind === 'compaction' && item.status === 'inProgress') { item.status = 'failed'; item.text = event.error ? XIAOZHI_ERRORS[event.error] : '压缩没有完成，原对话记录保留。'; }
     }

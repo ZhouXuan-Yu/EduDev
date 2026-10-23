@@ -4,11 +4,12 @@ export interface OfficeProjectedItem {
   id: string;
   kind: 'message' | 'tool' | 'plan' | 'compaction' | 'memory_isolation' | 'skill_isolation';
   role?: 'user' | 'assistant';
-  phase?: 'commentary' | 'final_answer';
+  phase?: 'commentary' | 'final_answer' | 'partial_answer';
   text?: string;
   label?: string;
   status?: string;
   durationMs?: number;
+  resultSummary?: { version: 1; text: string; count?: number; query?: string; scope: 'discovery' | 'read' | 'operation' };
   truncated?: boolean;
   sources?: import('./xiaozhi-web').XiaozhiPublicSource[];
   webError?: import('./xiaozhi-web').XiaozhiWebError;
@@ -24,6 +25,7 @@ export interface OfficeProjectedTurn {
   error?: string;
   /** Main-measured actual active + waiting time; absent in older history. */
   elapsedMs?: number;
+  activity?: { stage: 'preparing' | 'waiting_model' | 'responding'; since: number };
 }
 export interface OfficeProjection {
   schemaVersion: 'xiaozhi.office.projection.v1';

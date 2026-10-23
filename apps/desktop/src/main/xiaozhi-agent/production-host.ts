@@ -378,6 +378,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const observedQuestions=new Map<string,QuestionContextSource>();
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     return {stateRoot,workspace,apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,
+      sourceAvailability:async()=>{
+        const [knowledge,materials,questions,attachments]=await Promise.all([store.getKnowledgeOverview(),store.materials.list({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}),store.searchQuestionBank({limit:1}),store.xiaozhiState.attachments.list(id)]);
+        return {knowledge:knowledge.counts.chunks>0,materials:materials.total>0,questions:questions.length>0,attachments:attachments.some(row=>row.state==='submitted'),workspace:Boolean(await store.xiaozhiState.workspace(id))};
+      },
       ...(owner?.goalId?{goal:createGoalRuntime({store,sessionId:id,goalId:owner.goalId,runId,
         current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
         evidence:()=>owner.turn.items.filter(item=>item.kind==='tool'&&item.status==='completed'&&!['记录目标进度','更新任务计划','请教师补充'].includes(item.label||'')).map(item=>({runId,callId:item.id,label:(item.label||'已完成授权工具').slice(0,200)})),
@@ -462,6 +466,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   async function execute(id: string, prompt: string, run: Active, settings: Pick<Awaited<ReturnType<OmniEduStore['getDeepSeekRuntimeSettings']>>, 'provider' | 'apiKey' | 'model'>) {
     let failure: XiaozhiAgentError | undefined, text = '';
     try {
+      publicEvent(id,run,{kind:'activity',stage:'preparing',since:Date.now()});
       if (!settings.apiKey) throw new Error('authentication');
       if (run.stopped) throw new Error('cancelled');
       const cleanPrompt = await (await createStudentContextSanitizer(store))(prompt);
@@ -529,6 +534,8 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         if (lastText) lastText.text = text;
         else run.turn.items.push({ id: `${run.runId}:final`, kind: 'message', role: 'assistant', phase: 'final_answer', text });
       }
+      // Persist the same partial/final presentation before publishing the committed terminal state.
+      run.turn.items=applyXiaozhiEvent(run.turn,{...terminal,sessionId:id,runId:run.runId,sequence:run.sequence}).items;
       try {
         run.usage={...run.usage,state:status};
         await store.xiaozhiState.saveUsage(id,run.usage);

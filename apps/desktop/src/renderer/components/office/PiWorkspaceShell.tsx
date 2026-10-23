@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Tooltip } from '@heroui/react';
+import { Button, Tooltip, Dropdown, Label } from '@heroui/react';
 import { Folder, PanelRight } from 'lucide-react';
 import { AppLayout } from '../../heroui-pro/components/app-layout';
 import { Sidebar } from '../../heroui-pro/components/sidebar';
@@ -42,7 +42,7 @@ export function PiWorkspaceShell({title,sidebar,aside,files,children,onLeave,onS
         <Tooltip><Sidebar.Trigger aria-label="显示或隐藏会话侧栏" data-testid="pi-sidebar-toggle"/><Tooltip.Content>会话侧栏</Tooltip.Content></Tooltip>
         <div className="ai-chat-header-title"><Folder size={17}/><strong title={title}>{title}</strong></div>
         <div className="pi-header-spacer"/>
-        <Button variant="ghost" size="sm" data-testid="pi-skills-open" onPress={onSkills}>技能</Button>
+        <Dropdown><Button variant="ghost" size="sm" data-testid="pi-workspace-more" aria-label="更多工作区选项">更多</Button><Dropdown.Popover className="pi-office-menu"><Dropdown.Menu aria-label="更多工作区选项" onAction={key=>key==='skills'?onSkills():onSettings()}><Dropdown.Item id="skills" textValue="管理教育技能"><Label>管理教育技能</Label></Dropdown.Item><Dropdown.Item id="settings" textValue="设置"><Label>设置</Label></Dropdown.Item></Dropdown.Menu></Dropdown.Popover></Dropdown>
         {files&&<Tooltip><Button variant="ghost" isIconOnly size="sm" aria-label="显示或隐藏文件面板" aria-pressed={preferences.files} data-testid="pi-files-toggle" onPress={()=>update('files',!preferences.files)}><PanelRight size={18}/></Button><Tooltip.Content>文件面板</Tooltip.Content></Tooltip>}
         <Tooltip><AppLayout.AsideTrigger aria-label="显示或隐藏任务资料" data-testid="pi-aside-toggle"/><Tooltip.Content>任务与来源</Tooltip.Content></Tooltip>
       </div>}>{children}</AppLayout>

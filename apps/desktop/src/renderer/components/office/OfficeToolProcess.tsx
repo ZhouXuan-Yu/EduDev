@@ -43,15 +43,18 @@ function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: 
     defaultExpanded={attention} data-item-id={item.id} data-testid="office-tool-step">
     <ChatTool.Trigger><ActionIcon size={16} aria-hidden="true" /><span>{item.label || '授权工具'}{item.sources?.length ? ` · ${item.sources.map(source => source.title).join('、')}` : ''}</span>
       <span className="office-step-state">{status}</span>
+      {item.resultSummary?.count===0&&<span className="office-result-empty">未找到匹配</span>}
       {item.durationMs !== undefined && <span className="office-step-duration">{formatProcessDuration(item.durationMs)}</span>}
     </ChatTool.Trigger>
     <ChatTool.Content className="office-tool-evidence" data-testid="office-tool-evidence">
       {item.status==='completed'&&item.browserCapture&&sessionId&&<OfficeBrowserCapture capture={item.browserCapture} sessionId={sessionId}/>}
-      <p>{item.label || '授权工具'}：{status}。{item.durationMs !== undefined ? `实际用时 ${formatProcessDuration(item.durationMs)}。` : '未记录实际用时。'}</p>
+      <p>{item.resultSummary?.text || `${item.label || '授权工具'}：${status}。这条旧记录未保存结果摘要。`}</p>
+      {item.resultSummary?.query&&<p>查找条件：{item.resultSummary.query}</p>}
+      {item.durationMs!==undefined&&<p>实际用时 {formatProcessDuration(item.durationMs)}</p>}
       {item.imageDelivery&&<p data-testid="pi-image-delivery" data-image-state={item.imageDelivery.state}>{item.imageDelivery.title}：{
         item.imageDelivery.state==='prepared'?'已准备，尚未确认送达。':item.imageDelivery.state==='submitting'?'正在发送，尚未确认送达。'
         :item.imageDelivery.state==='received'?'供应商已接收并返回有效响应。':item.imageDelivery.state==='interrupted'?'已停止，未确认送达。':'未确认送达，请查看本轮结果。'}</p>}
-      {!!item.sources?.length && <><p>引用资料</p><ul>{item.sources.map((source, index) => source.question ? <QuestionSourceLink key={index} source={source}/> : source.student ? <StudentSourceLink key={index} source={source}/> : source.material ? <MaterialSourceLink key={index} source={source}/> : source.url ? <WebSource key={index} source={source} sessionId={sessionId}/> : <li key={index}>{source.title}</li>)}</ul></>}
+      {!!item.sources?.length && <><p>{item.resultSummary?.scope==='read'?'本次读取的资料':'本次发现或操作的对象（不等于回答依据）'}</p><ul>{item.sources.map((source, index) => source.question ? <QuestionSourceLink key={index} source={source}/> : source.student ? <StudentSourceLink key={index} source={source}/> : source.material ? <MaterialSourceLink key={index} source={source}/> : source.url ? <WebSource key={index} source={source} sessionId={sessionId}/> : <li key={index}>{source.title}</li>)}</ul></>}
       {item.webEmpty && <p data-testid="pi-web-empty">本次搜索没有返回可用来源，请调整关键词。</p>}
       {item.status === 'failed' && <p data-testid="pi-web-error">{item.webError ? XIAOZHI_WEB_ERRORS[item.webError] : '该操作没有完成。请查看本轮提示；已完成的操作仍保留。'}</p>}
       {item.status === 'declined' && <p>教师已拒绝该操作。</p>}
@@ -71,7 +74,7 @@ export function OfficeToolProcess({ items, sessionId }: { items: OfficeProjected
   return <ChatToolGroup key={`${items[0].id}:${attention}`} className="office-tool office-tool-group" active={active && !attention} data-state={state}
     defaultExpanded={attention} data-testid="office-tool-group" data-process-group-id={items[0].id} data-call-count={items.length}>
     <ChatToolGroup.Trigger><Workflow size={16} aria-hidden="true" /><span>{labels.slice(0, 3).join('、')}{labels.length > 3 ? '等操作' : ''}{objects.length ? ` · ${objects.slice(0, 3).join('、')}${objects.length > 3 ? '等资料' : ''}` : ''}</span>
-      <span className="office-step-state">{completed}/{items.length} 已完成{failed ? ' · 有未完成操作' : attention ? ' · 等待教师' : active ? ' · 执行中' : unknown ? ' · 等待状态同步' : ''}</span>
+      <span className="office-step-state">{completed}/{items.length} 项操作已完成{items.some(item=>item.resultSummary?.count===0)?' · 含无匹配结果':''}{failed ? ' · 有未完成操作' : attention ? ' · 等待教师' : active ? ' · 执行中' : unknown ? ' · 等待状态同步' : ''}</span>
     </ChatToolGroup.Trigger>
     <ChatToolGroup.Content className="office-tool-group-content">{items.map(item => <ToolStep key={item.id} item={item} sessionId={sessionId}/>)}</ChatToolGroup.Content>
   </ChatToolGroup>;

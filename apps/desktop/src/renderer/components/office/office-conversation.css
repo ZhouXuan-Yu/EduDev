@@ -73,6 +73,31 @@
 .office-turn-notice button { margin-left: auto; flex-shrink: 0; }
 .office-history-notice { font-size: 13px; color: var(--office-muted); }
 .office-conversation-empty { min-height: 220px; display: grid; place-items: center; font-size: 26px; font-weight: 500; }
+.office-conversation-empty { min-height: 340px; align-content: center; gap: 14px; text-align: center; }
+.office-conversation-empty h1 { font-size: 26px; line-height: 1.4; font-weight: 600; margin: 0; }
+.office-conversation-empty p { font-size: 15px; font-weight: 400; color: var(--office-muted); margin: 0; }
+.office-task-suggestions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; width: min(100%,480px); margin-top: 12px; }
+.office-task-suggestions button { white-space: normal; min-height: 46px; font-size: 14px; border-color: var(--office-line); }
+.office-turn [data-slot='chat-message-body'] { min-width: 0; width: 100%; }
+.office-commentary { font-size: 14px; color: var(--office-muted); border-left: 2px solid var(--office-line); padding-left: 12px; }
+.office-commentary summary { cursor: pointer; }
+.office-commentary > [data-slot='markdown'] { margin-top: 12px; }
+.office-partial-label { color: var(--office-muted); font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--office-line); }
+.office-reply-actions { display: flex; gap: 6px; padding-top: 10px; }
+.office-reply-actions button { width: auto; min-width: 64px; min-height: 34px; gap: 6px; padding: 6px 8px; color: var(--office-muted); font-size: 13px; }
+.office-reply-provenance,.office-reply-sources,.office-action-notice { font-size: 13px; color: var(--office-muted); margin: 12px 0 0; line-height: 1.6; }
+.office-reply-sources ul { padding-left: 20px; }
+.office-reply-sources summary { cursor: pointer; }
+.office-reply-dialog { padding: 20px; }
+.office-reply-dialog label { display: block; margin: 12px 0 6px; }
+.office-save-preview { max-height: 320px; overflow: auto; border: 1px solid var(--pi-line); border-radius: 12px; padding: 14px; margin-top: 12px; }
+.office-reply-dialog blockquote { max-height: 120px; overflow: auto; padding: 12px; border-left: 2px solid var(--pi-line); white-space: pre-wrap; }
+.office-reply-dialog :is(input,textarea) { width: 100%; font: inherit; }
+.pi-composer-queue { align-items: center; justify-content: space-between; font-size: 13px; }
+.pi-composer-queue label { display: flex; gap: 8px; align-items: center; }
+.pi-composer-queue select { max-width: 210px; padding: 5px 8px; border: 1px solid var(--office-line); border-radius: 8px; background: var(--office-paper); color: var(--office-ink); font: inherit; }
+.pi-wait-help { white-space: normal !important; font-size: 13px; }
+.office-result-empty { font-size: 12px; color: var(--office-muted); }
 .office-composer-container { width: min(100%, 940px); margin: 0 auto; padding: 8px 28px 20px; flex-shrink: 0; }
 .office-composer [data-slot='prompt-input-shell'] {
   background: var(--office-paper);

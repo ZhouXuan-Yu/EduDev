@@ -97,7 +97,9 @@ export async function fetchOfficePublicUrl(raw: string, options: {
       chunks.push(chunk);
     }
     const body = Buffer.concat(chunks).toString('utf8');
-    return { status: response.status, ok: response.ok, headers: new Headers(response.headers),
+    const headers = new Headers();
+    response.headers.forEach((value, name) => headers.append(name, value));
+    return { status: response.status, ok: response.ok, headers,
       text: async () => body, json: async () => JSON.parse(body) as unknown };
   } finally { await dispatcher.destroy(); }
 }

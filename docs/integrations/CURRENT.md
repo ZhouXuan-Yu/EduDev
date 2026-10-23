@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-23 数学与既有产物复用
+
+锁定@streamdown/math 1.0.3（Apache-2.0），复用KaTeX与现Pro Markdown/Actions/Modal；新增13包安装内容约302,174字节、MIT/ISC/Apache许可，无原生组件。新reply-export复用document_artifacts/既有Markdown导出，不替换Word/PDF审批。包体/Windows安装器未重验；完整边界见 `../audit/chat-ui-2026-10-23/DELIVERY.md`。下一轮优先复用现任务/来源/审核组件，不新增UI框架或Agent loop。
+
 <!-- kb-s6-current:start -->
 ## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
 

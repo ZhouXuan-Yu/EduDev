@@ -34,11 +34,13 @@ export type XiaozhiQueueInput = { sessionId: string; commandId: string; text: st
 export type XiaozhiQueueMutationInput = { sessionId: string; controlId: string; revision: number }
   & ({ action: 'edit'; text: string; mode: 'steer' | 'followUp' } | { action: 'withdraw' });
 export type XiaozhiAgentEventPayload = (
+  { kind: 'activity'; stage: 'preparing' | 'waiting_model' | 'responding'; since: number }
+  |
   { kind: 'text_delta'; delta: string }
   | { kind:'assistant_start'; segment:number }
   | { kind:'assistant_end'; segment:number; final:boolean }
   | { kind: 'tool_start'; callId: string; tool: string }
-  | { kind: 'tool_end'; callId: string; tool: string; success: boolean; durationMs?: number; source?: string; sources?: import('./xiaozhi-web').XiaozhiPublicSource[]; webError?: import('./xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:import('./xiaozhi-browser-capture').BrowserCapture }
+  | { kind: 'tool_end'; callId: string; tool: string; success: boolean; durationMs?: number; resultSummary?: import('./office-agent').OfficeProjectedItem['resultSummary']; source?: string; sources?: import('./xiaozhi-web').XiaozhiPublicSource[]; webError?: import('./xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:import('./xiaozhi-browser-capture').BrowserCapture }
   | { kind: 'approval'; approval: XiaozhiApproval }
   | { kind: 'change'; change: XiaozhiChangeSummary }
   | { kind: 'office_artifact'; artifact: OfficeArtifactSummary }

@@ -28,7 +28,7 @@ export function createEducationSearchTools(store:OmniEduStore,isCurrent:()=>bool
     const after=await store.materials.readingSnapshot(args.resourceId);current();if(after.fingerprint!==before.fingerprint)throw new Error('source_changed');
     const payload={schemaVersion:EDUCATION_SEARCH_SCHEMA,success:true,mode:result.mode,hits,truncated:result.truncated,
      coverage:{scope:args.resourceId?'material':'library',complete:true,resources:new Set(before.units.map(u=>u.resourceId)).size,totalChunks:before.units.length,searchedChunks:units.length,excludedPrivateChunks:before.units.length-units.length},originalPageLocated:hits.length>0&&hits.every(hit=>hit.originalPageLocated),teacherConfirmed:false};
-    return {content:[{type:'text',text:JSON.stringify(payload)}],details:{success:true,data:{sources:hits.map(hit=>({title:hit.citation,material:hit.source}))}}};
+    return {content:[{type:'text',text:JSON.stringify(payload)}],details:{success:true,data:{count:hits.length,sources:hits.map(hit=>({title:hit.citation,material:hit.source}))}}};
    }catch(error){
     const messages:Record<string,string>={invalid_input:'正文查找条件不正确，请换个关键词。',source_changed:'资料内容已变化，请重新查找。',permission_denied:'当前任务已失效，未交付查找结果。',cancelled:'正文查找已停止。',private_content:'含个人信息的查找条件未发送，请改用教学关键词。',too_large:'本次未完成搜索：资料正文过多，请先选择一份资料再查找。',material_not_found:'这份资料不存在，请重新选择。',busy:'本地查找正在忙，请稍后重试。',timeout:'本地正文查找超时，请重试。',unavailable:'本地正文查找暂不可用，请重试。'};
     const code=abort.aborted?'cancelled':(error as Error).message,safe=messages[code]?code:'unavailable',message=messages[safe];

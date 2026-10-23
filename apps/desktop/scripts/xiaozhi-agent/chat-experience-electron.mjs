@@ -1,0 +1,76 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
+import {fileURLToPath} from 'node:url';
+import {createHash} from 'node:crypto';
+import {DatabaseSync} from 'node:sqlite';
+import {_electron as electron} from 'playwright';
+const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
+const output=fs.mkdtempSync(path.join(desktop,'test-results/chat-experience-'));
+const temp=fs.mkdtempSync(path.join(os.tmpdir(),'omni-edu-chat-experience-'));
+const dataRoot=path.join(temp,'data'),profile=path.join(temp,'profile'),exports=path.join(temp,'teacher-exports');
+for(const folder of [dataRoot,profile,exports])fs.mkdirSync(folder);
+const env={...process.env,OMNI_EDU_DATA_ROOT:dataRoot,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),NODE_ENV:'development'};
+for(const key of Object.keys(env))if(key.startsWith('OMNI_EDU_E2E_'))delete env[key];
+for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'])delete env[key];
+const configPath=process.env.XIAOZHI_AUDIT_ENV||'D:/WorkProject/EduProject/apps/desktop/.env.local';
+const config=fs.existsSync(configPath)?fs.readFileSync(configPath,'utf8'):'';
+for(const name of ['DEEPSEEK_API_KEY','DEEPSEEK_MODEL'])if(!env[name])env[name]=config.match(new RegExp('^'+name+'\\s*=\\s*(.*?)\\s*$','m'))?.[1]?.replace(/^['"]|['"]$/g,'');
+assert(env.DEEPSEEK_API_KEY,'A locally configured real provider is required');
+let app,page;const checks=[],errors=[],report={suite:'chat-experience-real-electron',success:false,checks,errors,output,temp,provider:'real DeepSeek',model:env.DEEPSEEK_MODEL};
+const check=(name,fn=()=>{})=>{fn();checks.push({name,pass:true});console.log('PASS '+name);};
+const hash=text=>createHash('sha256').update(text).digest('hex');
+async function until(fn,timeout=120000){const end=Date.now()+timeout;while(Date.now()<end){if(await fn())return;await new Promise(r=>setTimeout(r,250));}throw Error('Timed out waiting for UI condition');}
+async function id(){return page.locator('.office-composer-container').getAttribute('data-session-id');}
+async function snap(){return page.evaluate(s=>window.omniEdu.getXiaozhiSnapshot(s),await id());}
+async function ready(){await page.getByTestId('office-prompt-input').waitFor();await until(()=>page.getByTestId('office-prompt-input').isEnabled(),30000);}
+async function launch(){app=await electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});page=await app.firstWindow();page.on('pageerror',e=>errors.push(String(e)));await ready();await page.setViewportSize({width:1366,height:768});}
+async function newChat(){const old=await id();await page.getByTestId('ai-conversation-new').click();await until(async()=>await id()!==old,30000);await ready();}
+async function send(prompt){await page.getByTestId('office-prompt-input').fill(prompt);await page.getByTestId('office-prompt-input').press('Enter');await until(async()=>await page.getByTestId('office-prompt-input').inputValue()==='',30000);}
+function rows(sql){const db=new DatabaseSync(path.join(dataRoot,'app.db'),{readOnly:true});try{return db.prepare(sql).all();}finally{db.close();}}
+try{
+ await launch();
+ check('formal renderer from current checkout',()=>assert(page.url().includes('/out/renderer/index.html')));
+ assert(await page.getByTestId('chat-suggestion-0').isVisible());assert(!await page.getByTestId('xiaozhi-pi-inspector').isVisible());checks.push({name:'teacher tasks and secondary panel default',pass:true});
+ await page.getByTestId('chat-suggestion-0').click();assert((await page.getByTestId('office-prompt-input').inputValue()).includes('备一节课'));
+ await page.getByTestId('office-prompt-input').fill('会话A未发送草稿');const first=await id();await newChat();await page.getByTestId('office-prompt-input').fill('会话B未发送草稿');const second=await id();await page.getByTestId('ai-conversation-session-'+first).click();await ready();check('session switch preserves unsent draft',()=>{});assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'会话A未发送草稿');
+ await app.close();await launch();check('restart restores unsent draft',()=>{});assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'会话A未发送草稿');
+ await page.getByTestId('office-prompt-input').fill('');
+ await page.evaluate(()=>{window.chatFixEvents=[];window.chatFixStart=performance.now();window.omniEdu.onXiaozhiEvent(e=>window.chatFixEvents.push({...e,at:performance.now()-window.chatFixStart}));});
+ await send('我是初中数学老师，明天上七年级一元一次方程，40分钟，学生基础偏弱。请给我一份可以直接上课的简短教学安排，含3道分层练习和答案，公式使用数学排版；明确哪些是假设、哪些需要我确认。');
+ await until(async()=>!(await snap()).running,150000);const initial=await snap(),turn=initial.projection.turns.at(-1);assert.equal(turn.status,'completed',turn.error);
+ const events=await page.evaluate(()=>window.chatFixEvents);report.first={firstTextMs:events.find(e=>e.kind==='text_delta')?.at,terminalMs:events.filter(e=>e.kind==='status').at(-1)?.at,toolCalls:events.filter(e=>e.kind==='tool_start').map(e=>e.tool),events};
+ check('empty sources do not trigger discovery or disabled memory tools',()=>assert(!report.first.toolCalls.some(name=>['search_teacher_knowledge','office_list_files','office_list_materials','office_list_attachments','education_search_questions','education_search_materials','read_education_memory'].includes(name))));
+ check('actual provider stages and rendered math',()=>{assert(events.some(e=>e.kind==='activity'&&e.stage==='preparing'));assert(events.some(e=>e.kind==='activity'&&e.stage==='waiting_model'));assert(events.some(e=>e.kind==='activity'&&e.stage==='responding'));});assert(await page.locator('.katex').count()>0);
+ for(const theme of ['light','dark'])for(const [width,height] of [[1366,768],[1920,1080]]){await page.emulateMedia({colorScheme:theme});await page.setViewportSize({width,height});const box=await page.getByTestId('office-prompt-input').boundingBox();assert(box&&box.y+box.height<=height);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);await page.screenshot({path:path.join(output,`reply-${theme}-${width}.png`)});check(`reply and composer reachable ${theme} ${width}x${height}`);}
+ await page.emulateMedia({colorScheme:'light'});await page.setViewportSize({width:1366,height:768});
+ await page.getByTestId('reply-copy').last().click();const copied=await app.evaluate(({clipboard})=>clipboard.readText());check('reply copy is actual clipboard text',()=>assert(copied.includes('方程')));
+ const paragraph=page.locator('.office-turn [data-phase="final_answer"] [data-slot="markdown"] p').first();await paragraph.scrollIntoViewIfNeeded();const selectionBox=await paragraph.boundingBox();await page.mouse.move(selectionBox.x+8,selectionBox.y+12);await page.mouse.down();await page.mouse.move(selectionBox.x+Math.min(280,selectionBox.width-10),selectionBox.y+12,{steps:10});await page.mouse.up();const selectionText=await page.evaluate(()=>window.getSelection()?.toString());assert(selectionText?.trim());
+ await page.getByTestId('reply-edit').last().click();await page.getByTestId('reply-edit-request').fill('把第三题难度降低，保持另外两题不变');await page.getByTestId('reply-edit-prepare').click();const draft=await page.getByTestId('office-prompt-input').inputValue();assert(draft.includes('把第三题难度降低'));assert(draft.includes(selectionText.slice(0,4000)));assert.equal(rows('SELECT id FROM ai_agent_runs').length,1);check('selected text edit prepares draft without an automatic model call');await page.getByTestId('office-prompt-input').fill('');
+ await page.getByTestId('reply-save').last().click();await page.getByTestId('reply-save-title').fill('一元一次方程备课');await page.screenshot({path:path.join(output,'teacher-save-preview.png')});await app.evaluate(({dialog})=>{dialog.showOpenDialog=async()=>({canceled:true,filePaths:[]});});await page.getByTestId('reply-save-confirm').click();await page.getByText('已取消，未保存。',{exact:true}).last().waitFor();check('cancel export writes no artifact',()=>assert.equal(rows('SELECT id FROM document_artifacts').length,0));
+ await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},exports);await page.getByTestId('reply-save-confirm').click();await page.getByTestId('reply-dialog').waitFor({state:'hidden'});const artifacts=rows('SELECT * FROM document_artifacts');check('teacher-confirmed export preserves exact source and lineage',()=>{assert.equal(artifacts.length,1);const item=turn.items.filter(i=>i.role==='assistant').at(-1);assert.equal(fs.readFileSync(artifacts[0].file_path,'utf8'),item.text);assert.equal(artifacts[0].session_id,first);assert.equal(artifacts[0].status,'exported');});
+ const sourceItem=turn.items.filter(i=>i.role==='assistant').at(-1),request={version:1,sessionId:first,runId:turn.id,itemId:sourceItem.id,requestId:'reply_'+crypto.randomUUID(),contentHash:'0'.repeat(64),title:'伪造结果'};
+ const rejected=await page.evaluate(r=>window.omniEdu.exportXiaozhiReply(r),request);check('changed reply rejected before native chooser/write',()=>assert.equal(rejected.error,'changed'));
+ const retryRequest={...request,requestId:'reply_'+crypto.randomUUID(),contentHash:hash(sourceItem.text),title:'重复保存边界核对'};
+ const firstSave=await page.evaluate(r=>window.omniEdu.exportXiaozhiReply(r),retryRequest);assert(firstSave.ok);const repeatedSave=await page.evaluate(r=>window.omniEdu.exportXiaozhiReply(r),retryRequest);check('same export request reads back the same artifact without another write',()=>{assert(repeatedSave.ok);assert.equal(repeatedSave.artifact.id,firstSave.artifact.id);assert.equal(rows('SELECT id FROM document_artifacts').length,2);});
+ fs.writeFileSync(firstSave.artifact.filePath,'教师在本机改过的内容');const changedFile=await page.evaluate(r=>window.omniEdu.exportXiaozhiReply(r),retryRequest);check('externally edited artifact is preserved rather than overwritten on retry',()=>{assert.equal(changedFile.error,'changed');assert.equal(fs.readFileSync(firstSave.artifact.filePath,'utf8'),'教师在本机改过的内容');});fs.writeFileSync(firstSave.artifact.filePath,sourceItem.text);
+ await page.getByTestId('product-nav-teaching').click();await page.getByTestId('teaching-artifacts-workspace').waitFor();await page.getByText('一元一次方程备课',{exact:true}).first().click();assert(await page.getByTestId('artifacts-detail').locator('.katex').count()>0);await page.getByTestId('artifacts-conversation').click();await ready();check('saved content opens with math through actual teaching library and source conversation');
+ await send('只依据当前对话，不查工具。请写一份不少于4000字的一元一次方程课堂逐字稿，从导入开始。');await until(async()=>{const s=await snap();return s.running&&s.projection.turns.at(-1).items.some(i=>i.role==='assistant'&&i.text?.length>30);},90000);await page.getByRole('button',{name:'停止本轮',exact:true}).click();await page.getByTestId('office-turn-continue').waitFor({timeout:30000});const stopped=await snap();assert.equal(stopped.projection.turns.at(-1).status,'interrupted');assert.equal(stopped.projection.turns.at(-1).items.filter(i=>i.role==='assistant').at(-1).phase,'partial_answer');
+ await page.getByTestId('office-turn-continue').click();assert((await page.getByTestId('office-prompt-input').inputValue()).includes('不重复写入'));check('stop offers safe continuation draft without replay',()=>assert.equal(rows('SELECT id FROM ai_agent_runs').length,2));await page.getByTestId('office-prompt-input').fill('');
+ await app.close();await launch();assert(await page.getByTestId('office-turn-continue').isVisible());assert.equal((await snap()).projection.turns.at(-1).items.filter(i=>i.role==='assistant').at(-1).phase,'partial_answer');check('restart restores partial presentation and saved artifact',()=>assert.equal(rows('SELECT * FROM document_artifacts')[0].content_hash,hash(fs.readFileSync(artifacts[0].file_path))));
+ await newChat();
+ const fixture=path.join(temp,'教师选择的通分资料.md');fs.writeFileSync(fixture,'# 通分示例\n教研核对标记 CHATFIX-731。异分母分数相加先通分，再相加；例子 1/2 + 1/3 = 5/6。');
+ await app.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});},fixture);
+ await page.getByRole('button',{name:'添加本地附件',exact:true}).click();await page.getByTestId('pi-attachment-count').waitFor();
+ await send('请先列出本会话已发送附件，再读取这个通分资料正文，回答教研核对标记和分数相加例子的答案。只用附件，不查知识库、题库和目录。');
+ await until(async()=>!(await snap()).running,150000);const attached=(await snap()).projection.turns.at(-1);assert.equal(attached.status,'completed',attached.error);const toolItems=attached.items.filter(i=>i.kind==='tool');
+ check('actual attachment discovery has bounded count and read summary',()=>{assert(toolItems.some(i=>i.label==='查看已发送附件'&&i.resultSummary?.count===1));assert(toolItems.some(i=>i.label==='读取已发送附件'&&i.resultSummary?.scope==='read'));assert(attached.items.some(i=>i.role==='assistant'&&i.text?.includes('CHATFIX-731')));});
+ await page.getByTestId('office-tool-group').last().locator('[data-slot="chat-tool-group-trigger"]').click().catch(()=>{});await page.screenshot({path:path.join(output,'actual-tool-results.png')});
+ await newChat();await send('请先使用ask_teacher问我这次分数课面向哪个年级，建议选项为三年级和五年级。等我选择并发送回答后，只给一句符合该年级的课堂导入。不要用普通文字代替提问工具。');
+ await page.getByTestId('pi-question-option-1').waitFor({timeout:90000});await page.getByTestId('pi-question-option-1').click();await page.getByTestId('pi-question-submit').click();await until(async()=>!(await snap()).running,120000);assert.equal((await snap()).projection.turns.at(-1).status,'completed');check('teacher clarification uses actual clickable choices and answer submission');await page.screenshot({path:path.join(output,'teacher-question.png')});
+ await page.getByTestId('product-nav-materials').click();await page.getByTestId('materials-import').waitFor();await app.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});},fixture);await page.getByTestId('materials-import').click();await until(()=>rows('SELECT id FROM teacher_resources').length>0,30000);
+ await page.getByTestId('product-space-workspace').getByTestId('product-nav-ask').click();await ready();await newChat();await send('请只用office_list_materials查找标题包含完全不存在QZX999的资料，关键词就是完全不存在QZX999。若没有匹配请如实说明，不要换工具检索，不生成教学内容。');await until(async()=>!(await snap()).running,150000);const emptyLookup=(await snap()).projection.turns.at(-1);assert.equal(emptyLookup.status,'completed',emptyLookup.error);check('real empty lookup is shown as no match rather than answer success',()=>{assert(emptyLookup.items.some(i=>i.kind==='tool'&&i.resultSummary?.count===0));});await page.screenshot({path:path.join(output,'actual-empty-result.png')});
+ report.readback={runs:rows('SELECT id,status FROM ai_agent_runs'),artifacts:rows('SELECT id,session_id,message_id,status,content_hash,file_path FROM document_artifacts')};assert.equal(errors.length,0);report.success=true;
+}catch(error){report.failure=String(error.stack).replace(/sk-[A-Za-z0-9_-]+/g,'[REDACTED]').slice(0,4500);process.exitCode=1;await page?.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}
+finally{await app?.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,passed:checks.length,failure:report.failure,output,temp}));}

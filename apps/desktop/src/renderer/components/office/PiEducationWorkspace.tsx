@@ -176,7 +176,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     } catch { if (idRef.current === target) setNotice('压缩请求未确认，请重试。'); }
     finally { compactLock.current = false; setCompactBusy(false); }
   }
-  return <OfficeComposerState key={id || 'loading'}><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
+  return <OfficeComposerState key={id || 'loading'} sessionId={id}><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>setSkillsOpen(true)}
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{

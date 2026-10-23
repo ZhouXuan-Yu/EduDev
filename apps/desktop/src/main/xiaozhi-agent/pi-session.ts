@@ -39,6 +39,9 @@ import {DEEPTUTOR_READING_REVISION} from '../../shared/education-capabilities';
 import {validMaterialSource} from '../../shared/materials';
 import {validStudentContextSource} from '../../shared/student-context';
 import {validQuestionContextSource} from '../../shared/question-context';
+import {availableChatTool,sourceAvailabilityText,type ChatSourceAvailability} from '../../shared/chat-source-availability';
+import {publicToolResult} from './public-tool-result';
+import type {OfficeProjectedItem} from '../../shared/office-agent';
 
 const PROVIDER = 'xiaozhi_deepseek';
 const MAX_TEXT = 65536;
@@ -52,6 +55,7 @@ export const XIAOZHI_EDUCATION_PROMPT = `你是小智，本地优先的教师教
 这是教师工作区。你的目标由用户教育任务和授权资料决定。`;
 
 export interface PiXiaozhiOptions {
+  sourceAvailability?: () => Promise<ChatSourceAvailability>;
   stateRoot: string;
   workspace: string;
   apiKey: string;
@@ -525,10 +529,16 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
     return budget!.wait(()=>def.execute(...args));
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])];
   let runTools = new Map(createHanaRunToolScope(definitions,options.limitsEnforced!==false).map(def => [def.name, def]));
+  const publicResults = new Map<string,NonNullable<OfficeProjectedItem['resultSummary']>>();
+  let publicStage='';
   const dispatchers: ToolDefinition[] = definitions.map(def => ({ ...def,
     execute: async (callId, args, signal, onUpdate, context) => {
       await checkMemory(); signal?.throwIfAborted(); budget!.tool(callId);
       const result = await runTools.get(def.name)!.execute(callId, args, signal, onUpdate, context);
+      const data=(result.details as {data?:{count?:unknown;sources?:unknown[]}}|undefined)?.data;
+      const rawQuery=(args as Record<string,unknown>)?.query ?? (args as Record<string,unknown>)?.keyword;
+      const query=typeof rawQuery==='string'&&options.sanitizeFileText ? await options.sanitizeFileText(rawQuery.slice(0,140)) : undefined;
+      publicResults.set(callId,publicToolResult(def.name,!result.isError,data,query));
       await checkMemory(); signal?.throwIfAborted(); return result;
     },
   }));
@@ -590,10 +600,18 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
     if(imageRuntime)args[1]=await imageRuntime.filterContext(args[1],!compacting,args[2]?.signal);
     if (!compacting) normalRequestAdmitted = false;
     if(automaticFailure)throw new Error(automaticFailure);
+    if(!compacting&&options.sourceAvailability){
+      const availability=await options.sourceAvailability();
+      args[2]?.signal?.throwIfAborted();
+      args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'?{...message,
+        content:message.content+'\n'+sourceAvailabilityText(availability),
+        ...(message.toolsAdded?{toolsAdded:message.toolsAdded.filter(tool=>availableChatTool(tool.name,availability)&&(tool.name!=='read_education_memory'||initialAuthority?.enabled===true))}:{})}:message)};
+    }
     // Final complete-request gate also applies to native summarization requests.
     if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');
     await checkMemory(); args[2]?.signal?.throwIfAborted(); budget!.model();
     skillEpoch?.beforeDelivery();
+    if(!compacting){publicStage='waiting_model';emit({kind:'activity',stage:'waiting_model',since:Date.now()});}
     if (!compacting) normalRequestAdmitted = true;
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
       const leading=args[1].messages.find(message=>message.role==='system');
@@ -742,8 +760,10 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
     } else if (event.type === 'message_update' && event.assistantMessageEvent.type === 'text_delta') {
       if (interrupted || memoryFailure || budget?.snapshot().exhausted) return;
       const delta = event.assistantMessageEvent.delta.slice(0, MAX_TEXT - streamedLength);
+      if(delta&&publicStage!=='responding'){publicStage='responding';emit({kind:'activity',stage:'responding',since:Date.now()});}
       streamedLength += delta.length; if (delta) emit({ kind: 'text_delta', delta });
     } else if (event.type === 'tool_execution_start' && names.includes(event.toolName)) {
+      publicStage='tool';
       if (!toolStartedAt.has(event.toolCallId)) toolStartedAt.set(event.toolCallId, performance.now());
       emit({ kind: 'tool_start', tool: event.toolName, callId: event.toolCallId.slice(0, 128) });
     } else if (event.type === 'tool_execution_end' && names.includes(event.toolName)) {
@@ -755,7 +775,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
       const rawSources = result?.details?.data?.sources;
       const sources = Array.isArray(rawSources) ? rawSources.slice(0, 12).flatMap(value => value && typeof value.title === 'string' ? [{ title: value.title.slice(0, 200), ...(typeof value.url==='string' && /^https?:\/\//.test(value.url) && value.url.length<=2048 ? {url:value.url}:{}), ...(typeof value.observedAt==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value.observedAt)?{observedAt:value.observedAt}:{}), ...(['read','search'].includes(value.kind||'')?{kind:value.kind}:{}), ...(!event.isError&&['education_search_materials','education_verify_material_quote','office_read_material'].includes(event.toolName)&&validMaterialSource(value.material)?{material:value.material}:{}), ...(!event.isError&&['education_read_student_context','education_analyse_learning'].includes(event.toolName)&&validStudentContextSource(value.student)?{student:value.student}:{}), ...(!event.isError&&['education_search_questions','education_read_question',MISTAKE_SIMILAR_TOOL].includes(event.toolName)&&validQuestionContextSource(value.question)?{question:value.question}:{}) }] : []) : [];
       const capture=result?.details?.data?.browserCapture;
-      emit({ kind: 'tool_end', tool: event.toolName, callId: event.toolCallId.slice(0, 128), success: !event.isError, ...(durationMs === undefined ? {} : { durationMs }), ...(source ? { source } : {}), ...(sources.length ? { sources } : {}), ...(result?.details?.data?.webError?{webError:result.details.data.webError}:{}), ...(typeof result?.details?.data?.webEmpty==='boolean'?{webEmpty:result.details.data.webEmpty}:{}), ...(!event.isError&&event.toolName==='office_browser'&&validBrowserCapture(capture)?{browserCapture:capture}:{}) });
+      emit({ kind: 'tool_end', tool: event.toolName, callId: event.toolCallId.slice(0, 128), success: !event.isError, resultSummary:event.isError?publicToolResult(event.toolName,false):publicResults.get(event.toolCallId), ...(durationMs === undefined ? {} : { durationMs }), ...(source ? { source } : {}), ...(sources.length ? { sources } : {}), ...(result?.details?.data?.webError?{webError:result.details.data.webError}:{}), ...(typeof result?.details?.data?.webEmpty==='boolean'?{webEmpty:result.details.data.webEmpty}:{}), ...(!event.isError&&event.toolName==='office_browser'&&validBrowserCapture(capture)?{browserCapture:capture}:{}) });
     }
   });
   async function abort() {

@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-23 对话体验增量（Pi与数据真源不变）
+
+shared可选activity/resultSummary与partial_answer贯通main→preload事件→projection→renderer；按请求过滤宿主已知空范围，关闭记忆不可读；OfficeMarkdown统一公式，仅展示时兼容TeX括号。回复Markdown新窄IPC由main重读持久Pi正文、核hash、系统目录确认后复用现有document_artifacts；无DDL。证据/兼容见 `../audit/chat-ui-2026-10-23/DELIVERY.md`。统一任务展示适配器与成果工作台是下一轮规划，未建立新Harness协议。
+
 <!-- kb-s6-current:start -->
 ## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
 

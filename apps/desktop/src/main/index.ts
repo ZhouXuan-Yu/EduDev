@@ -15,6 +15,7 @@ import { buildMasteryPolicy } from './ai-harness/mastery-policy';
 import { buildReviewReminder } from './ai-harness/review-reminder';
 import { renderTeachingBookMarkdown } from './ai-harness/teaching-book-renderer';
 import { registerXiaozhiIpc } from './xiaozhi-agent/ipc';
+import {registerReplyExport} from './xiaozhi-agent/reply-export';
 import { createPiConsoleFacade } from './xiaozhi-agent/console-facade';
 import { resolveRuntimeAuthority, applyLaunchProfile, isBackgroundAcceptance } from './xiaozhi-agent/runtime-authority';
 
@@ -513,6 +514,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   );
 
   const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
+  registerReplyExport({ipcMain,store,dataRoot,window:()=>mainWindow});
   const mistakeOcr=registerMistakeOcrIpc({ipcMain,repository:store.mistakeOcr,facts:store.mistakeFacts,allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const mistakeSimilar=registerMistakeSimilarIpc({ipcMain,find:(input,signal)=>store.findMistakeSimilar(input,signal),allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});

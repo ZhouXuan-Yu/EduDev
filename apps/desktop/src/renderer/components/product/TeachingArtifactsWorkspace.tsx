@@ -5,7 +5,7 @@ import {ListView} from '../../heroui-pro/components/list-view';
 import type {DocumentArtifactExportResult} from '../../../shared/contracts';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {PiWorkspaceFiles} from '../office/PiWorkspaceFiles';
-import {Markdown} from '../../heroui-pro/components/markdown';
+import {OfficeMarkdown as Markdown} from '../office/OfficeMarkdown';
 import {LibraryEmpty} from './LibraryEmpty';
 import {libraryDate,libraryFileSize,matchesMaterial} from './material-library';
 import './teacher-library.css';

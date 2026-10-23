@@ -2,10 +2,12 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import type { OfficeReadingBookmark } from './OfficeReadingPosition';
 import type {OfficeDraft} from '../../../shared/xiaozhi-office-draft';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
+import { readComposerDraft, writeComposerDraft } from './composer-drafts';
 
 /** Ephemeral input state only; the session-keyed provider survives layout reparenting. */
-function useDraftState() {
-  const [draft, setDraft] = useState('');
+function useDraftState(sessionId?: string) {
+  const [saved] = useState(() => readComposerDraft(sessionId));
+  const [draft, setDraft] = useState(saved.text);
   const [submitting, setSubmitting] = useState(false);
   const [stopping, setStopping] = useState(false);
   const [failedPrompt, setFailedPrompt] = useState<string>();
@@ -13,19 +15,22 @@ function useDraftState() {
   const [stopFailed, setStopFailed] = useState(false);
   const sendLock = useRef(false), stopLock = useRef(false);
   const [queueMode, setQueueMode] = useState<'steer' | 'followUp'>('steer');
-  const [skillName, setSkillName] = useState('');
+  const [skillName, setSkillName] = useState(saved.skill);
+  const draftRef = useRef(draft); draftRef.current = draft;
+  const [storageFailed, setStorageFailed] = useState(false);
+  useEffect(() => { if (sessionId) setStorageFailed(!writeComposerDraft(sessionId, { text: draft, skill: skillName })); }, [sessionId, draft, skillName]);
   const [showSkill, setShowSkill] = useState(false);
   const [controlDrafts, setControlDrafts] = useState<Record<string, OfficeControlDraft>>({});
   const controlLocks = useRef(new Map<string, { current: boolean }>());
   const readingBookmark = useRef<OfficeReadingBookmark | undefined>(undefined);
-  return { draft, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,failedPresentation,setFailedPresentation,
+  return { draft, draftRef, storageFailed, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,failedPresentation,setFailedPresentation,
     stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill,
     controlDrafts, setControlDrafts, controlLocks, readingBookmark };
 }
 const DraftContext = createContext<ReturnType<typeof useDraftState> | null>(null);
 
-export function OfficeComposerState({ children }: { children: ReactNode }) {
-  const state = useDraftState();
+export function OfficeComposerState({ children, sessionId }: { children: ReactNode; sessionId?: string }) {
+  const state = useDraftState(sessionId);
   return <DraftContext.Provider value={state}>{children}</DraftContext.Provider>;
 }
 

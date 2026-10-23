@@ -44,13 +44,13 @@ export function OfficeComposer(props: OfficeComposerProps) {
 
 function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel, disabled = false, visible=true,
   onSubmit, onStop, onModelChange, onPermissions, onAttach, onWorkspace, attachments, attachDisabled=false,sendBlocked=false,hasAttachments=false, onVoice, onQueue, skills = [], taskSummary, attachLabel = '添加附件' }: OfficeComposerProps) {
-  const { draft, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
+  const { draft, draftRef, storageFailed, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
     failedPresentation,setFailedPresentation,stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
   const skill = skills.find(item => item.name === skillName);
   const [openMenu,setOpenMenu]=useState<'permissions'|'skills'|'models'>();
   const menuChange=(menu:'permissions'|'skills'|'models',open:boolean)=>setOpenMenu(previous=>open?menu:previous===menu?undefined:previous);
   useEffect(()=>{if(!visible)setOpenMenu(undefined);},[visible]);
-  useEffect(() => { if (skillName && !skills.some(item => item.name === skillName)) { setSkillName(''); setShowSkill(false); } }, [skills, skillName]);
+  useEffect(() => { if (!disabled && skillName && !skills.some(item => item.name === skillName)) { setSkillName(''); setShowSkill(false); } }, [skills, skillName,disabled]);
   const running = status === 'running' || status === 'waiting_approval' || status === 'waiting_input';
 
   async function send(prompt: string, clearDraft: boolean, retryPresentation?: XiaozhiMessagePresentation) {
@@ -58,12 +58,11 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
     sendLock.current = true;
     setSubmitting(true);
     setFailedPrompt(undefined);
-    if (clearDraft) setDraft('');
     const text=prompt.trim()||ATTACHMENT_ONLY_PROMPT;
     const injected = clearDraft && !running && skill && !text.startsWith('/skill:');
     const outgoing = injected ? `/skill:${skill.name} ${text}` : text;
     const presentation = injected ? {version:1 as const,skill:skill.name,text} : retryPresentation;
-    try { if (running && onQueue) await onQueue(outgoing,queueMode); else await onSubmit(outgoing,presentation); setSkillName(''); setShowSkill(false);setFailedPresentation(undefined); }
+    try { if (running && onQueue) await onQueue(outgoing,queueMode); else await onSubmit(outgoing,presentation); if(clearDraft && draftRef.current === prompt)setDraft(''); setSkillName(''); setShowSkill(false);setFailedPresentation(undefined); }
     catch { setFailedPrompt(outgoing);setFailedPresentation(presentation); }
     finally { sendLock.current = false; setSubmitting(false); }
   }
@@ -82,8 +81,9 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
   return (
     <div className="office-composer-container" data-session-id={sessionId}>
       {taskSummary}
-      {running && onQueue && <div className="pi-queue-actions"><Button size="sm" variant="ghost" data-testid="pi-queue-mode-steer" aria-pressed={queueMode==='steer'} onPress={()=>setQueueMode('steer')}>补充本轮</Button><Button size="sm" variant="ghost" data-testid="pi-queue-mode-followup" aria-pressed={queueMode==='followUp'} onPress={()=>setQueueMode('followUp')}>接着处理</Button><Button size="sm" data-testid="pi-queue-submit" isDisabled={disabled || submitting || !draft.trim()} onPress={()=>void send(draft,true)}>发送补充</Button></div>}
-      {failedPrompt && <div className="office-send-error" role="alert"><span>消息未发送。你的新输入已保留。</span><Button size="sm" variant="ghost" isDisabled={running || submitting || disabled} onPress={() => void send(failedPrompt, false,failedPresentation)}>重试发送</Button><Button size="sm" variant="ghost" onPress={() => {setFailedPrompt(undefined);setFailedPresentation(undefined);}}>关闭</Button></div>}
+      {storageFailed && <p className="office-send-error" role="status">草稿暂时无法保存到本机，请在离开对话前复制保留。</p>}
+      {running && onQueue && <div className="pi-queue-actions pi-composer-queue"><label>补充处理时间 <select aria-label="补充处理时间" data-testid="pi-queue-mode" value={queueMode} onChange={e=>setQueueMode(e.target.value as 'steer'|'followUp')}><option value="steer">小智下一步开始时</option><option value="followUp">本轮结束后</option></select></label><Button size="sm" data-testid="pi-queue-submit" isDisabled={disabled || submitting || !draft.trim()} onPress={()=>void send(draft,true)}>发送补充</Button></div>}
+      {failedPrompt && <div className="office-send-error" role="alert"><span>消息未确认发送，原文保留在输入框，可修改后重新发送。</span><Button size="sm" variant="ghost" onPress={() => {setFailedPrompt(undefined);setFailedPresentation(undefined);}}>关闭提示</Button></div>}
       {stopFailed && <p className="office-send-error" role="alert">停止请求未送达，任务可能仍在运行，请重试。</p>}
       {stopping && <p className="office-history-notice" role="status">正在请求停止…</p>}
       {skill && showSkill && <section className="pi-skill-preview" data-testid="pi-skill-preview" aria-label="教育技能说明">
@@ -97,7 +97,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
           {attachments&&<PromptInput.Attachments>{attachments}</PromptInput.Attachments>}
           <PromptInput.Content>
             {skill && <div className="pi-skill-tag" data-testid="pi-skill-badge"><SkillBadgeView name={skill.title} /><Button size="sm" variant="ghost" aria-label="移除所选技能" onPress={() => { setSkillName(''); setShowSkill(false); }}>×</Button></div>}
-            <PromptInput.TextArea aria-label="给小智发送消息" placeholder="随心输入" data-testid="office-prompt-input" />
+            <PromptInput.TextArea aria-label="给小智发送消息" maxLength={running?8192:32768} placeholder={running ? '补充要求，小智会在下一步处理' : '告诉小智年级、课题和需要的内容，也可以添加资料…'} data-testid="office-prompt-input" />
           </PromptInput.Content>
           <PromptInput.Toolbar>
             <PromptInput.ToolbarStart>
@@ -137,7 +137,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
                   </Dropdown.Menu>
                 </Dropdown.Popover>
               </Dropdown>
-              <Tooltip><Button variant="ghost" isIconOnly aria-label={onVoice ? '语音输入' : '语音输入尚未配置'} isDisabled={disabled || !onVoice} onPress={onVoice}><Mic size={17} /></Button><Tooltip.Content>{onVoice ? '语音输入' : '语音输入尚未配置'}</Tooltip.Content></Tooltip>
+              {onVoice && <Tooltip><Button variant="ghost" isIconOnly aria-label="语音输入" isDisabled={disabled} onPress={onVoice}><Mic size={17} /></Button><Tooltip.Content>语音输入</Tooltip.Content></Tooltip>}
               <PromptInput.Send aria-label={running ? '停止本轮' : '发送消息'} isDisabled={disabled || stopping || (!running && (submitting || sendBlocked || (!draft.trim()&&!hasAttachments)))} />
             </PromptInput.ToolbarEnd>
           </PromptInput.Toolbar>
