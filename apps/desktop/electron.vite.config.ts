@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
+import {nativeComponentBoundary} from './scripts/css-native-boundary';
 
 export default defineConfig(({ command }) => ({
   main: {
@@ -43,6 +44,7 @@ export default defineConfig(({ command }) => ({
     },
   },
   renderer: {
+    css: {postcss: {plugins:[nativeComponentBoundary(resolve('src/renderer'))]}},
     build: { rollupOptions: { input: { index: resolve('src/renderer/index.html'), 'browser-status': resolve('src/renderer/browser-status.html') } } },
     resolve: {
       alias: {

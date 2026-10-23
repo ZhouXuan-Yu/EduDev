@@ -9,6 +9,8 @@ export interface OfficeProjectedItem {
   label?: string;
   status?: string;
   durationMs?: number;
+  /** Public event order only, never SDK-private transcript order. */
+  traceSequence?: number;
   resultSummary?: { version: 1; text: string; count?: number; query?: string; scope: 'discovery' | 'read' | 'operation' };
   truncated?: boolean;
   sources?: import('./xiaozhi-web').XiaozhiPublicSource[];
@@ -25,7 +27,30 @@ export interface OfficeProjectedTurn {
   error?: string;
   /** Main-measured actual active + waiting time; absent in older history. */
   elapsedMs?: number;
+  /** Wall time from first public preparing event to the host terminal decision. */
+  traceElapsedMs?: number;
+  /** First main-owned preparing event; never inferred from message wording. */
+  startedAt?: number;
   activity?: { stage: 'preparing' | 'waiting_model' | 'responding'; since: number };
+  publicStages?: OfficePublicStage[];
+  publicStagesOmitted?: number;
+  /** Only text actually returned by the provider reasoning channel; independent of answer/export. */
+  modelReasoning?: OfficeModelReasoning[];
+}
+export interface OfficeModelReasoning {
+  id: string;
+  source: 'provider';
+  text: string;
+  status: 'streaming' | 'completed' | 'interrupted' | 'failed';
+  /** First reasoning delta, not request dispatch or network wait. */
+  startedAt: number;
+  durationMs: number;
+  truncated?: boolean;
+}
+export interface OfficePublicStage {
+  stage: 'preparing' | 'waiting_model' | 'responding';
+  since: number;
+  sequence?: number;
 }
 export interface OfficeProjection {
   schemaVersion: 'xiaozhi.office.projection.v1';

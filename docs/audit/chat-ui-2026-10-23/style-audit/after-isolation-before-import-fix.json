@@ -1,0 +1,6206 @@
+{
+  "selector": "[data-testid=\"agent-trace-toggle\"]",
+  "label": "after light default",
+  "dom": {
+    "tag": "BUTTON",
+    "classes": "button button--sm button--ghost chain-of-thought__trigger",
+    "attributes": {
+      "data-slot": "chain-of-thought-trigger",
+      "data-testid": "agent-trace-toggle",
+      "data-rac": "",
+      "data-react-aria-pressable": "true",
+      "aria-label": "思考过程，已结束，35 秒",
+      "aria-expanded": "false",
+      "aria-controls": "react-aria5017231582-_r_4n_"
+    },
+    "rect": {
+      "x": 358.66668701171875,
+      "y": -430.5,
+      "width": 199.875,
+      "height": 32
+    },
+    "tokens": {
+      "--accent": "oklch(62.04% .195 253.83)",
+      "--accent-hover": "color-mix(in oklab, oklch(62.04% .195 253.83) 90%, oklch(99.11% 0 0) 10%)",
+      "--muted": "oklch(55.17% .0138 285.94)",
+      "--foreground": "oklch(21.03% .0059 285.89)",
+      "--background": "oklch(97.02% 0 0)",
+      "--surface": "oklch(100% 0 0)",
+      "--border": "oklch(90% .004 286.32)",
+      "--field-background": "oklch(100% 0 0)",
+      "--field-foreground": "oklch(21.03% .0059 285.89)",
+      "--office-muted": "oklch(55.17% .0138 285.94)",
+      "--office-ink": "oklch(21.03% .0059 285.89)",
+      "--pi-muted": "#596d69",
+      "--pi-ink": "#263b39"
+    },
+    "animations": [],
+    "text": "思考过程 · 已结束 · 35 秒"
+  },
+  "computed": {
+    "color": "oklch(0.2103 0.0059 285.89)",
+    "font-family": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+    "font-size": "14px",
+    "font-weight": "500",
+    "animation-duration": "0s",
+    "animation-name": "none",
+    "animation-play-state": "running",
+    "background-clip": "border-box",
+    "background-color": "rgba(0, 0, 0, 0)",
+    "background-image": "none",
+    "border-top-color": "oklch(0.9 0.004 286.32)",
+    "border-top-width": "0px",
+    "box-shadow": "none",
+    "display": "inline-flex",
+    "line-height": "20px",
+    "min-height": "0px",
+    "opacity": "1",
+    "outline-color": "oklch(0.2103 0.0059 285.89)",
+    "outline-style": "none",
+    "outline-width": "2.66667px",
+    "padding-bottom": "0px",
+    "padding-left": "12px",
+    "padding-right": "12px",
+    "padding-top": "0px",
+    "transform": "matrix(1, 0, 0, 1, 0, 0)",
+    "transition-duration": "0.25s, 0.1s, 0.1s",
+    "-webkit-text-fill-color": "oklch(0.2103 0.0059 285.89)",
+    "width": "199.875px"
+  },
+  "winners": {
+    "font-weight": {
+      "selector": ".button",
+      "value": "var(--font-weight-medium)",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "font-size": {
+      "selector": ".button",
+      "value": "var(--text-sm)",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "font-family": {
+      "selector": "button, input, select, optgroup, textarea",
+      "value": "inherit",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        1,
+        7
+      ]
+    },
+    "color": {
+      "selector": ".button",
+      "value": "var(--button-fg)",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        13
+      ]
+    },
+    "line-height": {
+      "selector": ".button",
+      "value": "var(--tw-leading,var(--text-sm--line-height))",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "display": {
+      "selector": ".button",
+      "value": "inline-flex",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "border-top-width": {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "value": "0px",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        0,
+        5
+      ]
+    },
+    "border-top-color": {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "value": "",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        0,
+        6
+      ]
+    },
+    "background-color": {
+      "selector": ".button",
+      "value": "var(--button-bg)",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        13
+      ]
+    },
+    "padding-top": {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "value": "0px",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        0,
+        5
+      ]
+    },
+    "padding-right": {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "value": "0px",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        0,
+        5
+      ]
+    },
+    "padding-bottom": {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "value": "0px",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        0,
+        5
+      ]
+    },
+    "padding-left": {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "value": "0px",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        0,
+        5
+      ]
+    },
+    "opacity": {
+      "selector": "button, input, select, optgroup, textarea",
+      "value": "1",
+      "important": false,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        6,
+        0,
+        0,
+        1,
+        7
+      ]
+    },
+    "border-radius": {
+      "selector": ".button",
+      "value": "calc(var(--radius) * 3)",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "width": {
+      "selector": ".button",
+      "value": "fit-content",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "gap": {
+      "selector": ".button",
+      "value": "calc(var(--spacing) * 2)",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "transition-duration": {
+      "selector": ".button",
+      "value": "",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        12
+      ]
+    },
+    "transform": {
+      "selector": ".button",
+      "value": "translateZ(0) var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,)",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        12
+      ]
+    },
+    "outline-style": {
+      "selector": ".button",
+      "value": "none",
+      "important": false,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        7,
+        0,
+        1,
+        0,
+        10
+      ]
+    },
+    "--background": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "oklch(97.02% 0 0)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        2
+      ],
+      "inheritedDepth": 5
+    },
+    "--foreground": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "var(--eclipse)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        2
+      ],
+      "inheritedDepth": 5
+    },
+    "--surface": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "var(--white)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        2
+      ],
+      "inheritedDepth": 5
+    },
+    "--muted": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "oklch(55.17% .0138 285.94)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        2
+      ],
+      "inheritedDepth": 5
+    },
+    "--accent": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "oklch(62.04% .195 253.83)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        4
+      ],
+      "inheritedDepth": 5
+    },
+    "--field-background": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "var(--white)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        4
+      ],
+      "inheritedDepth": 5
+    },
+    "--field-foreground": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "oklch(21.03% .0059 285.89)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        4
+      ],
+      "inheritedDepth": 5
+    },
+    "--border": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "oklch(90% .004 286.32)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        4
+      ],
+      "inheritedDepth": 5
+    },
+    "--accent-hover": {
+      "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+      "value": "color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%)",
+      "important": false,
+      "layers": [
+        "theme",
+        "theme",
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "sourceCandidates": [],
+      "rank": [
+        0,
+        1,
+        2,
+        0,
+        1,
+        0,
+        13
+      ],
+      "inheritedDepth": 5
+    },
+    "--office-ink": {
+      "selector": "[data-heroui-native]",
+      "value": "var(--foreground)",
+      "important": false,
+      "layers": [],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+      "line": 3581,
+      "sourceCandidates": [
+        {
+          "file": "components/office/native-component-boundary.css",
+          "line": 3
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        10000,
+        0,
+        1,
+        0,
+        66
+      ],
+      "inheritedDepth": 5
+    },
+    "--office-muted": {
+      "selector": "[data-heroui-native]",
+      "value": "var(--muted)",
+      "important": false,
+      "layers": [],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+      "line": 3581,
+      "sourceCandidates": [
+        {
+          "file": "components/office/native-component-boundary.css",
+          "line": 3
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        10000,
+        0,
+        1,
+        0,
+        66
+      ],
+      "inheritedDepth": 5
+    },
+    "--pi-ink": {
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface",
+      "value": "#263b39",
+      "important": false,
+      "layers": [],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+      "line": 642,
+      "sourceCandidates": [
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 3
+        },
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 63
+        },
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 82
+        },
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 85
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        10000,
+        0,
+        2,
+        0,
+        12
+      ],
+      "inheritedDepth": 11
+    },
+    "--pi-muted": {
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface",
+      "value": "#596d69",
+      "important": false,
+      "layers": [],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+      "line": 642,
+      "sourceCandidates": [
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 3
+        },
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 63
+        },
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 82
+        },
+        {
+          "file": "components/office/pi-workspace-theme.css",
+          "line": 85
+        }
+      ],
+      "rank": [
+        0,
+        1,
+        10000,
+        0,
+        2,
+        0,
+        12
+      ],
+      "inheritedDepth": 11
+    }
+  },
+  "rules": [
+    {
+      "selector": "input, textarea, select, button",
+      "specificity": {
+        "a": 0,
+        "b": 0,
+        "c": 1
+      },
+      "origin": "user-agent",
+      "order": 1,
+      "layers": [],
+      "line": 1,
+      "sourceCandidates": [],
+      "declarations": [
+        {
+          "name": "font-weight",
+          "value": "",
+          "important": false
+        },
+        {
+          "name": "font-size",
+          "value": "",
+          "important": false
+        },
+        {
+          "name": "font-family",
+          "value": "",
+          "important": false
+        },
+        {
+          "name": "color",
+          "value": "fieldtext",
+          "important": false
+        },
+        {
+          "name": "line-height",
+          "value": "normal",
+          "important": false
+        },
+        {
+          "name": "display",
+          "value": "inline-block",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": "input[type=\"button\" i], input[type=\"submit\" i], input[type=\"reset\" i], input[type=\"file\" i]::-webkit-file-upload-button, button",
+      "specificity": {
+        "a": 0,
+        "b": 0,
+        "c": 1
+      },
+      "origin": "user-agent",
+      "order": 3,
+      "layers": [],
+      "line": 1,
+      "sourceCandidates": [],
+      "declarations": [
+        {
+          "name": "border-top-width",
+          "value": "2px",
+          "important": false
+        },
+        {
+          "name": "border-top-color",
+          "value": "buttonborder",
+          "important": false
+        },
+        {
+          "name": "background-color",
+          "value": "buttonface",
+          "important": false
+        },
+        {
+          "name": "color",
+          "value": "buttontext",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "specificity": {
+        "a": 0,
+        "b": 0,
+        "c": 0
+      },
+      "origin": "regular",
+      "order": 5,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "column": 26049,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "declarations": [
+        {
+          "name": "border-top-width",
+          "value": "0px",
+          "important": false
+        },
+        {
+          "name": "border-top-color",
+          "value": "currentcolor",
+          "important": false
+        },
+        {
+          "name": "padding-top",
+          "value": "0px",
+          "important": false
+        },
+        {
+          "name": "padding-right",
+          "value": "0px",
+          "important": false
+        },
+        {
+          "name": "padding-bottom",
+          "value": "0px",
+          "important": false
+        },
+        {
+          "name": "padding-left",
+          "value": "0px",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": "*, ::after, ::before, ::backdrop",
+      "specificity": {
+        "a": 0,
+        "b": 0,
+        "c": 0
+      },
+      "origin": "regular",
+      "order": 6,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "column": 29606,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "declarations": [
+        {
+          "name": "border-top-color",
+          "value": "",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": "button, input, select, optgroup, textarea",
+      "specificity": {
+        "a": 0,
+        "b": 0,
+        "c": 1
+      },
+      "origin": "regular",
+      "order": 7,
+      "layers": [
+        "base"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "column": 27733,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "declarations": [
+        {
+          "name": "color",
+          "value": "inherit",
+          "important": false
+        },
+        {
+          "name": "opacity",
+          "value": "1",
+          "important": false
+        },
+        {
+          "name": "background-color",
+          "value": "#0000",
+          "important": false
+        },
+        {
+          "name": "border-radius",
+          "value": "0",
+          "important": false
+        },
+        {
+          "name": "font-weight",
+          "value": "inherit",
+          "important": false
+        },
+        {
+          "name": "font-size",
+          "value": "inherit",
+          "important": false
+        },
+        {
+          "name": "line-height",
+          "value": "inherit",
+          "important": false
+        },
+        {
+          "name": "font-family",
+          "value": "inherit",
+          "important": false
+        },
+        {
+          "name": "color",
+          "value": "inherit",
+          "important": false
+        },
+        {
+          "name": "opacity",
+          "value": "1",
+          "important": false
+        },
+        {
+          "name": "background-color",
+          "value": "rgba(0, 0, 0, 0)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": ".chain-of-thought__trigger",
+      "specificity": {
+        "a": 0,
+        "b": 1,
+        "c": 0
+      },
+      "origin": "regular",
+      "order": 9,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 1606,
+      "column": 32,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-pro.min.css",
+          "line": 1606
+        }
+      ],
+      "declarations": [
+        {
+          "name": "width",
+          "value": "fit-content",
+          "important": false
+        },
+        {
+          "name": "gap",
+          "value": "calc(var(--spacing, .25rem) * 2)",
+          "important": false
+        },
+        {
+          "name": "font-weight",
+          "value": "var(--font-weight-normal, 400)",
+          "important": false
+        },
+        {
+          "name": "color",
+          "value": "var(--muted)",
+          "important": false
+        },
+        {
+          "name": "transition-duration",
+          "value": "var(--tw-duration, var(--default-transition-duration, .15s))",
+          "important": false
+        },
+        {
+          "name": "background-color",
+          "value": "#0000",
+          "important": false
+        },
+        {
+          "name": "transform",
+          "value": "none",
+          "important": false
+        },
+        {
+          "name": "width",
+          "value": "fit-content",
+          "important": false
+        },
+        {
+          "name": "font-weight",
+          "value": "var(--font-weight-normal, 400)",
+          "important": false
+        },
+        {
+          "name": "color",
+          "value": "var(--muted)",
+          "important": false
+        },
+        {
+          "name": "transition-duration",
+          "value": "var(--tw-duration, var(--default-transition-duration, .15s))",
+          "important": false
+        },
+        {
+          "name": "background-color",
+          "value": "rgba(0, 0, 0, 0)",
+          "important": false
+        },
+        {
+          "name": "transform",
+          "value": "none",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": ".button",
+      "specificity": {
+        "a": 0,
+        "b": 1,
+        "c": 0
+      },
+      "origin": "regular",
+      "order": 10,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "column": 66812,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "declarations": [
+        {
+          "name": "gap",
+          "value": "calc(var(--spacing) * 2)",
+          "important": false
+        },
+        {
+          "name": "border-radius",
+          "value": "calc(var(--radius) * 3)",
+          "important": false
+        },
+        {
+          "name": "width",
+          "value": "fit-content",
+          "important": false
+        },
+        {
+          "name": "font-size",
+          "value": "var(--text-sm)",
+          "important": false
+        },
+        {
+          "name": "line-height",
+          "value": "var(--tw-leading,var(--text-sm--line-height))",
+          "important": false
+        },
+        {
+          "name": "font-weight",
+          "value": "var(--font-weight-medium)",
+          "important": false
+        },
+        {
+          "name": "outline-style",
+          "value": "none",
+          "important": false
+        },
+        {
+          "name": "display",
+          "value": "inline-flex",
+          "important": false
+        },
+        {
+          "name": "width",
+          "value": "fit-content",
+          "important": false
+        },
+        {
+          "name": "font-size",
+          "value": "var(--text-sm)",
+          "important": false
+        },
+        {
+          "name": "line-height",
+          "value": "var(--tw-leading,var(--text-sm--line-height))",
+          "important": false
+        },
+        {
+          "name": "font-weight",
+          "value": "var(--font-weight-medium)",
+          "important": false
+        },
+        {
+          "name": "outline-style",
+          "value": "none",
+          "important": false
+        },
+        {
+          "name": "display",
+          "value": "inline-flex",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": ".button",
+      "specificity": {
+        "a": 0,
+        "b": 1,
+        "c": 0
+      },
+      "origin": "regular",
+      "order": 12,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "column": 67471,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "declarations": [
+        {
+          "name": "transform",
+          "value": "translateZ(0) var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,)",
+          "important": false
+        },
+        {
+          "name": "transition-duration",
+          "value": "",
+          "important": false
+        },
+        {
+          "name": "transform",
+          "value": "translateZ(0) var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,)",
+          "important": false
+        }
+      ]
+    },
+    {
+      "selector": ".button",
+      "specificity": {
+        "a": 0,
+        "b": 1,
+        "c": 0
+      },
+      "origin": "regular",
+      "order": 13,
+      "layers": [
+        "components"
+      ],
+      "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+      "line": 12516,
+      "column": 68266,
+      "sourceCandidates": [
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        },
+        {
+          "file": "heroui-pro/heroui-oss.min.css",
+          "line": 2
+        }
+      ],
+      "declarations": [
+        {
+          "name": "background-color",
+          "value": "var(--button-bg)",
+          "important": false
+        },
+        {
+          "name": "color",
+          "value": "var(--button-fg)",
+          "important": false
+        },
+        {
+          "name": "background-color",
+          "value": "var(--button-bg)",
+          "important": false
+        },
+        {
+          "name": "color",
+          "value": "var(--button-fg)",
+          "important": false
+        }
+      ]
+    }
+  ],
+  "inherited": [
+    {
+      "depth": 1,
+      "rules": [
+        {
+          "selector": "h3",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 99
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "1.17em",
+              "important": false
+            },
+            {
+              "name": "font-weight",
+              "value": "bold",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "h1, h2, h3, h4, h5, h6",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26741,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "font-size",
+              "value": "inherit",
+              "important": false
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "inherit",
+              "important": false
+            },
+            {
+              "name": "font-weight",
+              "value": "inherit",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 2,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".chain-of-thought",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [
+            "components"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 1599,
+          "column": 23,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-pro.min.css",
+              "line": 1599
+            }
+          ],
+          "declarations": [
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "var(--text-sm, .875rem)",
+              "important": false
+            },
+            {
+              "name": "line-height",
+              "value": "var(--tw-leading, var(--text-sm--line-height, calc(1.25 / .875)))",
+              "important": false
+            },
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "var(--text-sm, .875rem)",
+              "important": false
+            },
+            {
+              "name": "line-height",
+              "value": "var(--tw-leading, var(--text-sm--line-height, calc(1.25 / .875)))",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 3,
+      "rules": [
+        {
+          "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "[data-heroui-native] .office-turn",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 3593,
+          "column": 35,
+          "sourceCandidates": [
+            {
+              "file": "components/office/native-component-boundary.css",
+              "line": 15
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "gap",
+              "value": "24px",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 4,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".chat-conversation__content",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [
+            "components"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 1808,
+          "column": 33,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-pro.min.css",
+              "line": 1808
+            }
+          ],
+          "declarations": [
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "[data-heroui-native] .office-conversation-content",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 3592,
+          "column": 51,
+          "sourceCandidates": [
+            {
+              "file": "components/office/native-component-boundary.css",
+              "line": 14
+            }
+          ],
+          "declarations": [
+            {
+              "name": "width",
+              "value": "min(100%, 940px)",
+              "important": false
+            },
+            {
+              "name": "width",
+              "value": "min(100%, 940px)",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 5,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 4821,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--background",
+              "value": "oklch(97.02% 0 0)",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--eclipse)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "oklch(55.17% .0138 285.94)",
+              "important": false
+            },
+            {
+              "name": "--background",
+              "value": "oklch(97.02% 0 0)",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--eclipse)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "oklch(55.17% .0138 285.94)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 5894,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--accent",
+              "value": "oklch(62.04% .195 253.83)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "oklch(21.03% .0059 285.89)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "oklch(90% .004 286.32)",
+              "important": false
+            },
+            {
+              "name": "--accent",
+              "value": "oklch(62.04% .195 253.83)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "oklch(21.03% .0059 285.89)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "oklch(90% .004 286.32)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 12,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 7929,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--accent-hover",
+              "value": "var(--accent)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "var(--accent)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 13,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 8066,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 63,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 64,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".chat-conversation",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 65,
+          "layers": [
+            "components"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 1793,
+          "column": 24,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-pro.min.css",
+              "line": 1793
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "calc(var(--spacing, .25rem) * 0)",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "var(--text-sm, .875rem)",
+              "important": false
+            },
+            {
+              "name": "line-height",
+              "value": "var(--tw-leading, var(--text-sm--line-height, calc(1.25 / .875)))",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "calc(var(--spacing, .25rem) * 0)",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "var(--text-sm, .875rem)",
+              "important": false
+            },
+            {
+              "name": "line-height",
+              "value": "var(--tw-leading, var(--text-sm--line-height, calc(1.25 / .875)))",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "[data-heroui-native]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 66,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 3581,
+          "column": 22,
+          "sourceCandidates": [
+            {
+              "file": "components/office/native-component-boundary.css",
+              "line": 3
+            }
+          ],
+          "declarations": [
+            {
+              "name": "font-family",
+              "value": "var(--default-font-family, var(--font-sans))",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "var(--text-base)",
+              "important": false
+            },
+            {
+              "name": "line-height",
+              "value": "var(--text-base--line-height)",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "important": false
+            },
+            {
+              "name": "--office-ink",
+              "value": "var(--foreground)",
+              "important": false
+            },
+            {
+              "name": "--office-muted",
+              "value": "var(--muted)",
+              "important": false
+            },
+            {
+              "name": "font-family",
+              "value": "var(--default-font-family, var(--font-sans))",
+              "important": false
+            },
+            {
+              "name": "font-size",
+              "value": "var(--text-base)",
+              "important": false
+            },
+            {
+              "name": "line-height",
+              "value": "var(--text-base--line-height)",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "var(--foreground)",
+              "important": false
+            },
+            {
+              "name": "--office-ink",
+              "value": "var(--foreground)",
+              "important": false
+            },
+            {
+              "name": "--office-muted",
+              "value": "var(--muted)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".office-conversation[data-heroui-native]",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 67,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 3591,
+          "column": 42,
+          "sourceCandidates": [
+            {
+              "file": "components/office/native-component-boundary.css",
+              "line": 13
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 6,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-conversation-frame",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 1850,
+          "column": 24,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 1364
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "16px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "16px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace .ai-conversation-frame",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 6,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 334,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 3
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3 .ai-conversation-frame",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 7,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 3527,
+          "column": 39,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 3042
+            },
+            {
+              "file": "styles.css",
+              "line": 3088
+            }
+          ],
+          "declarations": [
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "32px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "32px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3.xiaozhi-pi-workspace .ai-conversation-frame",
+          "specificity": {
+            "a": 0,
+            "b": 3,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 8,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 5922,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 57
+            }
+          ],
+          "declarations": [
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 7,
+      "rules": [
+        {
+          "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".work-panel, .directory-panel, .profile-block",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 1111,
+          "column": 16,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 478
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-radius",
+              "value": "6px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "border-top-width",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".work-panel, .directory-panel",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 6,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 1116,
+          "column": 18,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 486
+            }
+          ],
+          "declarations": [
+            {
+              "name": "padding-top",
+              "value": "16px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "16px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "16px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "16px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-chat-surface",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 7,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 1823,
+          "column": 18,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 1337
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "grid",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "grid",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace .ai-chat-surface",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 8,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 191,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "border-radius",
+              "value": "16px 0 0 16px",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3 .ai-chat-surface",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 9,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 3522,
+          "column": 33,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 3037
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-radius",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "box-shadow",
+              "value": "none",
+              "important": false
+            },
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "box-shadow",
+              "value": "none",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3.xiaozhi-pi-workspace .ai-chat-surface",
+          "specificity": {
+            "a": 0,
+            "b": 3,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 10,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 5238,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 52
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 34
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "border-radius",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "box-shadow",
+              "value": "none",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "box-shadow",
+              "value": "none",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3.xiaozhi-pi-workspace .ai-chat-surface",
+          "specificity": {
+            "a": 0,
+            "b": 3,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 11,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 752,
+          "column": 55,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 52
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 34
+            }
+          ],
+          "declarations": [
+            {
+              "name": "background-image",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 8,
+      "rules": [
+        {
+          "selector": "article, aside, footer, header, hgroup, main, nav, search, section",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "[data-app-layout][data-scroll-mode=\"content\"] .app-layout__main",
+          "specificity": {
+            "a": 0,
+            "b": 3,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [
+            "components"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 118,
+          "column": 67,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__main",
+          "specificity": {
+            "a": 0,
+            "b": 3,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 7,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 5098,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 51
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 9,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".app-layout__body",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [
+            "components"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 65,
+          "column": 23,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-pro.min.css",
+              "line": 65
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "calc(var(--spacing, .25rem) * 0)",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "calc(var(--spacing, .25rem) * 0)",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__body",
+          "specificity": {
+            "a": 0,
+            "b": 3,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 6,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 4950,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 50
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 27
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "border-radius",
+              "value": "16px 0 0 16px",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__body",
+          "specificity": {
+            "a": 0,
+            "b": 3,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 7,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 746,
+          "column": 52,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 50
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 27
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-radius",
+              "value": "20px 0 0 20px",
+              "important": false
+            },
+            {
+              "name": "box-shadow",
+              "value": "var(--pi-shadow)",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "border-top-width",
+              "value": "",
+              "important": false
+            },
+            {
+              "name": "box-shadow",
+              "value": "var(--pi-shadow)",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 10,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".sidebar__provider",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [
+            "components"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 11484,
+          "column": 24,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-pro.min.css",
+              "line": 11484
+            }
+          ],
+          "declarations": [
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "100svh",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "100svh",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "[data-app-layout][data-scroll-mode=\"content\"]",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [
+            "components"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 112,
+          "column": 49,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace .pi-shell",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 8,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 4645,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 48
+            },
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 119
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(246, 253, 252)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace :is(.pi-icon-rail, .pi-shell)",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 9,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 742,
+          "column": 54,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 21
+            }
+          ],
+          "declarations": [
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "transparent",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 11,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".xiaozhi-pi-workspace",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 65,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 1
+            },
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 12
+            },
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 13
+            }
+          ],
+          "declarations": [
+            {
+              "name": "gap",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(229, 244, 242)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v2",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 7,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 1520,
+          "column": 16,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 1034
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "grid",
+              "important": false
+            },
+            {
+              "name": "gap",
+              "value": "14px",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "680px",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "grid",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "680px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3, .ai-console-v3.with-artifact",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 8,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 3469,
+          "column": 46,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 2984
+            },
+            {
+              "file": "styles.css",
+              "line": 3091
+            }
+          ],
+          "declarations": [
+            {
+              "name": "gap",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "width",
+              "value": "100%",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(255, 255, 255)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 9,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12517,
+          "column": 154,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 3
+            },
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 63
+            },
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 82
+            },
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 85
+            }
+          ],
+          "declarations": [
+            {
+              "name": "--pi-ink",
+              "value": "#263b39",
+              "important": false
+            },
+            {
+              "name": "--pi-muted",
+              "value": "#596d69",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "var(--pi-muted)",
+              "important": false
+            },
+            {
+              "name": "--background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in srgb, var(--pi-accent) 92%, #000)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--accent",
+              "value": "var(--pi-accent)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "var(--pi-line)",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--pi-ink",
+              "value": "#263b39",
+              "important": false
+            },
+            {
+              "name": "--pi-muted",
+              "value": "#596d69",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "var(--pi-muted)",
+              "important": false
+            },
+            {
+              "name": "--background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in srgb, var(--pi-accent) 92%, #000)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--accent",
+              "value": "var(--pi-accent)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "var(--pi-line)",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "var(--pi-ink)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".desktop-content .app-shell-ai, .desktop-content .app-shell-ai > .workspace, .desktop-content .ai-console-v3, .desktop-content .ai-console-v3.with-artifact",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 10,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 12,
+          "column": 1271,
+          "sourceCandidates": [
+            {
+              "file": "components/desktop/desktop-frame.css",
+              "line": 9
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3.xiaozhi-pi-workspace",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 11,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 632,
+          "column": 3904,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 43
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 4
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 114
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "gap",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "#303332",
+              "important": false
+            },
+            {
+              "name": "font-family",
+              "value": "'Segoe UI', 'Microsoft YaHei UI', sans-serif",
+              "important": false
+            },
+            {
+              "name": "display",
+              "value": "flex",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(230, 249, 247)",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "rgb(48, 51, 50)",
+              "important": false
+            },
+            {
+              "name": "font-family",
+              "value": "\"Segoe UI\", \"Microsoft YaHei UI\", sans-serif",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 12,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 642,
+          "column": 154,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 3
+            },
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 63
+            },
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 82
+            },
+            {
+              "file": "components/office/pi-workspace-theme.css",
+              "line": 85
+            }
+          ],
+          "declarations": [
+            {
+              "name": "--pi-ink",
+              "value": "#263b39",
+              "important": false
+            },
+            {
+              "name": "--pi-muted",
+              "value": "#596d69",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "var(--pi-muted)",
+              "important": false
+            },
+            {
+              "name": "--background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in srgb, var(--pi-accent) 92%, #000)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--accent",
+              "value": "var(--pi-accent)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "var(--pi-line)",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--pi-ink",
+              "value": "#263b39",
+              "important": false
+            },
+            {
+              "name": "--pi-muted",
+              "value": "#596d69",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "var(--pi-muted)",
+              "important": false
+            },
+            {
+              "name": "--background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in srgb, var(--pi-accent) 92%, #000)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--pi-paper)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "var(--pi-ink)",
+              "important": false
+            },
+            {
+              "name": "--accent",
+              "value": "var(--pi-accent)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "var(--pi-line)",
+              "important": false
+            },
+            {
+              "name": "color",
+              "value": "var(--pi-ink)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".ai-console-v3.xiaozhi-pi-workspace",
+          "specificity": {
+            "a": 0,
+            "b": 2,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 13,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 728,
+          "column": 38,
+          "sourceCandidates": [
+            {
+              "file": "components/office/pi-education-workspace.css",
+              "line": 43
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 4
+            },
+            {
+              "file": "components/office/pi-workspace-glass.css",
+              "line": 114
+            }
+          ],
+          "declarations": [
+            {
+              "name": "background-image",
+              "value": "linear-gradient(135deg, rgb(232, 239, 237) 0%, rgb(237, 243, 240) 52%, rgb(240, 238, 232) 100%)",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "initial",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 12,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 13,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 14,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ".desktop-native-frame",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 12,
+          "column": 65,
+          "sourceCandidates": [
+            {
+              "file": "components/desktop/desktop-frame.css",
+              "line": 1
+            }
+          ],
+          "declarations": [
+            {
+              "name": "background-image",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-clip",
+              "value": "initial",
+              "important": false
+            },
+            {
+              "name": "background-color",
+              "value": "rgb(230, 249, 247)",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 15,
+      "rules": [
+        {
+          "selector": "div",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 3,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 16,
+      "rules": [
+        {
+          "selector": "body",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 60
+            }
+          ],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 1,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "body",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "regular",
+          "order": 5,
+          "layers": [],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-DjeV5X_Q.css",
+          "line": 813,
+          "column": 7,
+          "sourceCandidates": [
+            {
+              "file": "styles.css",
+              "line": 60
+            }
+          ],
+          "declarations": [
+            {
+              "name": "min-height",
+              "value": "100vh",
+              "important": false
+            },
+            {
+              "name": "min-height",
+              "value": "100vh",
+              "important": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "depth": 17,
+      "rules": [
+        {
+          "selector": "html",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "user-agent",
+          "order": 0,
+          "layers": [],
+          "line": 1,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "display",
+              "value": "block",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 2,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 4821,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--background",
+              "value": "oklch(97.02% 0 0)",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--eclipse)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "oklch(55.17% .0138 285.94)",
+              "important": false
+            },
+            {
+              "name": "--background",
+              "value": "oklch(97.02% 0 0)",
+              "important": false
+            },
+            {
+              "name": "--foreground",
+              "value": "var(--eclipse)",
+              "important": false
+            },
+            {
+              "name": "--surface",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--muted",
+              "value": "oklch(55.17% .0138 285.94)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 4,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 5894,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--accent",
+              "value": "oklch(62.04% .195 253.83)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "oklch(21.03% .0059 285.89)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "oklch(90% .004 286.32)",
+              "important": false
+            },
+            {
+              "name": "--accent",
+              "value": "oklch(62.04% .195 253.83)",
+              "important": false
+            },
+            {
+              "name": "--field-background",
+              "value": "var(--white)",
+              "important": false
+            },
+            {
+              "name": "--field-foreground",
+              "value": "oklch(21.03% .0059 285.89)",
+              "important": false
+            },
+            {
+              "name": "--border",
+              "value": "oklch(90% .004 286.32)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 12,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 7929,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--accent-hover",
+              "value": "var(--accent)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "var(--accent)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": ":root, .light, .default, [data-theme=\"light\"], [data-theme=\"default\"]",
+          "specificity": {
+            "a": 0,
+            "b": 1,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 13,
+          "layers": [
+            "theme",
+            "theme",
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 8066,
+          "sourceCandidates": [],
+          "declarations": [
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%)",
+              "important": false
+            },
+            {
+              "name": "--accent-hover",
+              "value": "color-mix(in oklab, var(--accent) 90%, var(--accent-foreground) 10%)",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 65,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26049,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-width",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "border-top-color",
+              "value": "currentcolor",
+              "important": false
+            },
+            {
+              "name": "padding-top",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-right",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-bottom",
+              "value": "0px",
+              "important": false
+            },
+            {
+              "name": "padding-left",
+              "value": "0px",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "*, ::after, ::before, ::backdrop",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 0
+          },
+          "origin": "regular",
+          "order": 66,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 29606,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            },
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "border-top-color",
+              "value": "",
+              "important": false
+            }
+          ]
+        },
+        {
+          "selector": "html, :host",
+          "specificity": {
+            "a": 0,
+            "b": 0,
+            "c": 1
+          },
+          "origin": "regular",
+          "order": 67,
+          "layers": [
+            "base"
+          ],
+          "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/pi-workspace-theme-C2GkugUb.css",
+          "line": 12516,
+          "column": 26195,
+          "sourceCandidates": [
+            {
+              "file": "heroui-pro/heroui-oss.min.css",
+              "line": 2
+            }
+          ],
+          "declarations": [
+            {
+              "name": "line-height",
+              "value": "1.5",
+              "important": false
+            },
+            {
+              "name": "font-family",
+              "value": "var(--default-font-family,ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\")",
+              "important": false
+            },
+            {
+              "name": "line-height",
+              "value": "1.5",
+              "important": false
+            },
+            {
+              "name": "font-family",
+              "value": "var(--default-font-family,ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\")",
+              "important": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "layerTree": {
+    "name": "implicit outer layer",
+    "subLayers": [
+      {
+        "name": "",
+        "order": 0
+      },
+      {
+        "name": "properties",
+        "order": 1
+      },
+      {
+        "name": "theme",
+        "subLayers": [
+          {
+            "name": "theme",
+            "subLayers": [
+              {
+                "name": "base",
+                "order": 2
+              }
+            ],
+            "order": 3
+          },
+          {
+            "name": "components",
+            "order": 4
+          }
+        ],
+        "order": 5
+      },
+      {
+        "name": "base",
+        "order": 6
+      },
+      {
+        "name": "components",
+        "order": 7
+      },
+      {
+        "name": "utilities",
+        "order": 8
+      }
+    ],
+    "order": 9
+  }
+}

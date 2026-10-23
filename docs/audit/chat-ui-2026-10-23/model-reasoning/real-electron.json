@@ -1,0 +1,188 @@
+{
+  "suite": "model-reasoning-real-electron",
+  "success": true,
+  "provider": "real DeepSeek",
+  "model": "deepseek-flash",
+  "temp": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-model-reasoning-CV7qUS",
+  "output": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop\\test-results\\model-reasoning-8VaoYC",
+  "checks": [
+    {
+      "name": "formal current-worktree Electron renderer",
+      "pass": true
+    },
+    {
+      "name": "actual provider reasoning is visible while streaming",
+      "pass": true
+    },
+    {
+      "name": "original Pro shimmer follows actual thinking",
+      "pass": true
+    },
+    {
+      "name": "answer continues streaming independently",
+      "pass": true
+    },
+    {
+      "name": "nonempty provider reasoning with separate duration",
+      "pass": true
+    },
+    {
+      "name": "completion automatically folds reasoning",
+      "pass": true
+    },
+    {
+      "name": "clipboard copies only actual answer",
+      "pass": true
+    },
+    {
+      "name": "teacher-confirmed Markdown export contains only answer",
+      "pass": true
+    },
+    {
+      "name": "official CSS parity and real hover focus active at both light sizes",
+      "pass": true
+    },
+    {
+      "name": "SQLite stores the exact sanitized reasoning projection",
+      "pass": true
+    },
+    {
+      "name": "restart preserves reasoning and timing exactly",
+      "pass": true
+    },
+    {
+      "name": "real reasoning and tool replay completes without protocol errors",
+      "pass": true
+    },
+    {
+      "name": "displayed reasoning matches actual native SDK blocks, without fabricating tool-round thoughts",
+      "pass": true
+    },
+    {
+      "name": "stop during genuine reasoning retains incomplete text",
+      "pass": true
+    },
+    {
+      "name": "restart preserves stopped reasoning",
+      "pass": true
+    },
+    {
+      "name": "controlled transport failure cannot fabricate reasoning",
+      "pass": true
+    },
+    {
+      "name": "renderer console has no uncaught errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "streamObservation": {
+    "chars": 2,
+    "rootClass": "disclosure chain-of-thought chain-of-thought--streaming office-agent-trace"
+  },
+  "ordinary": {
+    "id": "run_f6a0df49-2462-4896-a236-62c08cbe82aa",
+    "status": "completed",
+    "blocks": [
+      {
+        "id": "reasoning:1:0",
+        "status": "completed",
+        "chars": 432,
+        "sha256": "3ecd2e62646edd054dd0b39a46b472c27f502a24060f9fd4df6558b46973b2a6",
+        "durationMs": 1892.4403000000002,
+        "source": "provider"
+      }
+    ],
+    "tools": [],
+    "bodyHash": "0795b40c10e3a44486d7b739ce506d855f702b4bb9a05c9a5945f8106921b408"
+  },
+  "ordinarySession": "aisession_92b31e9f-4d45-40aa-acd7-1f8807833ae2",
+  "matrices": [
+    {
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "geometry": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5
+      },
+      "checks": 4,
+      "samples": 5
+    },
+    {
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "geometry": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5
+      },
+      "checks": 4,
+      "samples": 5
+    }
+  ],
+  "tools": {
+    "id": "run_eb2f0058-affd-478e-ab5b-ae32033db678",
+    "status": "completed",
+    "blocks": [
+      {
+        "id": "reasoning:1:0",
+        "status": "completed",
+        "chars": 80,
+        "sha256": "01059200942721d50180ae7f270c6774469ee82a71bad4119b58d8819f596c16",
+        "durationMs": 211.5026999999991,
+        "source": "provider"
+      },
+      {
+        "id": "reasoning:2:0",
+        "status": "completed",
+        "chars": 12,
+        "sha256": "8c2a79a1d9a68a96e3373e3a90ea14e7100c5065c68724d7ae72a989b92ef9e0",
+        "durationMs": 0.26199999999880674,
+        "source": "provider"
+      }
+    ],
+    "tools": [
+      {
+        "id": "call_00_UtbuSyL2MJ09hIh0keBO4974",
+        "label": "查看已发送附件",
+        "status": "completed"
+      },
+      {
+        "id": "call_00_0SiAQrkTwmN0P17mUJGJ7490",
+        "label": "读取已发送附件",
+        "status": "completed"
+      }
+    ],
+    "bodyHash": "64b2ae5fd94be1c9e68011db69f10100d4cd05d6b98b062cffaecc833ebf6022"
+  },
+  "nativeReasoningBlocks": 3,
+  "stopped": {
+    "id": "run_866cff9b-0ff4-4b29-8749-b631313a9584",
+    "status": "interrupted",
+    "blocks": [
+      {
+        "id": "reasoning:1:0",
+        "status": "interrupted",
+        "chars": 116,
+        "sha256": "7b04d329c729968f5b169cb23ccc7b31d07a28d1669d795db10cf3e101b37440",
+        "durationMs": 217.46940000000177,
+        "source": "provider"
+      }
+    ],
+    "tools": [],
+    "bodyHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "failureCase": {
+    "id": "run_3c7df912-4aa0-45c3-8532-1e2a4ecae427",
+    "status": "failed",
+    "tools": [],
+    "bodyHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

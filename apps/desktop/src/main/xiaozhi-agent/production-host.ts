@@ -54,7 +54,9 @@ import type {QuestionAliases} from '../education/question-aliases';
 import {createLearningReviewCoordinator} from '../education/learning-review-coordinator';
 import {validLearningReview,type LearningReviewDecision,type LearningReviewResult,type LearningReviewSummary} from '../../shared/learning-review';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
+import {readModelReasoning} from '../../shared/model-reasoning';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../shared/xiaozhi-projection';
+import {readPublicStages} from '../../shared/public-trace';
 import {publicMessageText} from '../../shared/xiaozhi-message-presentation';
 import { createPiApprovalCoordinator } from './approval-coordinator';
 import { createTextChangeService } from './text-change-service';
@@ -280,6 +282,12 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         const pi = runs.has(String(message.metadata.agentRunId)) && message.metadata.piVersion === 'xiaozhi.pi.education.v1';
         if (pi && Array.isArray(message.metadata.publicItems)) {
           turn.items.push(...message.metadata.publicItems as OfficeProjectedTurn['items']);
+          const reasoning=readModelReasoning(message.metadata.modelReasoning);
+          if(reasoning.length)turn.modelReasoning=reasoning.map(b=>b.status==='streaming'?{...b,status:'interrupted'}:b);
+          const stages=readPublicStages(message.metadata.publicStages);
+          if(stages.length)turn.publicStages=stages;
+          if(Number.isFinite(message.metadata.traceElapsedMs)&&Number(message.metadata.traceElapsedMs)>=0)turn.traceElapsedMs=Number(message.metadata.traceElapsedMs);
+          if(Number.isSafeInteger(message.metadata.publicStagesOmitted)&&Number(message.metadata.publicStagesOmitted)>0)turn.publicStagesOmitted=Number(message.metadata.publicStagesOmitted);
           turn.status = message.metadata.status === 'interrupted' ? 'interrupted' : message.metadata.ok === true ? 'completed' : 'failed';
           if (message.metadata.errorMessage) turn.error = String(message.metadata.errorMessage);
         } else {
@@ -522,7 +530,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       } } catch { failure ||= 'configuration'; }
       if (deliveryText) text=deliveryText;
       const status: 'interrupted' | 'failed' | 'completed' = failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed';
-      const terminal = { kind: 'status' as const, status, ...(failure ? { error: failure } : {}) };
+      const terminal = { kind: 'status' as const, status, finishedAt:Date.now(),...(failure ? { error: failure } : {}) };
       run.turn = applyXiaozhiEvent(run.turn, { ...terminal, sessionId: id, runId: run.runId, sequence: run.sequence + 1 });
       const lastText = [...run.turn.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
       if (deliveryText) {
@@ -547,7 +555,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         await store.appendAiConversationMessage(id, { role: 'assistant', content: text || (failure ? XIAOZHI_ERRORS[failure] : XIAOZHI_ERRORS.model_error),
           metadata: { piVersion: 'xiaozhi.pi.education.v1', agentRunId: run.runId, provider: 'deepseek', model: settings.model,
             ok: !failure, status, errorMessage: failure ? XIAOZHI_ERRORS[failure] : '',
-            publicItems: run.turn.items.filter(item => item.id !== run.turn.items[0]?.id) } });
+            publicItems: run.turn.items.filter(item => item.id !== run.turn.items[0]?.id),
+            ...(run.turn.modelReasoning?.length?{modelReasoning:{version:1,blocks:run.turn.modelReasoning}}:{}),
+            ...(run.turn.publicStages?.length?{publicStages:run.turn.publicStages,publicStagesOmitted:run.turn.publicStagesOmitted||0}:{}),
+            ...(run.turn.traceElapsedMs===undefined?{}:{traceElapsedMs:run.turn.traceElapsedMs}) } });
         await store.recordAiAgentEvent(run.runId, { phase: 'finalize', status: failure ? 'failed' : 'succeeded',
           label: failure ? '小智未完成本轮' : '小智已完成', detail: failure ? XIAOZHI_ERRORS[failure] : '模型与工具流程已完成，回复已保存。' });
         await store.completeAiAgentRun(run.runId, failure === 'cancelled' ? 'blocked' : failure ? 'failed' : 'succeeded', failure ? XIAOZHI_ERRORS[failure] : '');
@@ -911,8 +922,11 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       browser.cancel(id);
       const run = active.get(id); if (!run) return { ok: true };
       run.stopped = true; run.abort.abort();
+      // Stop the provider immediately; waiting for review cleanup can otherwise finish
+      // a short reasoning block before the user's stop reaches the SDK.
+      const aborting=run.agent?.abort();void aborting?.catch(()=>undefined);
       if(run.goalId){const goal=await store.xiaozhiState.goals.interrupt(id,run.runId,'教师停止了本轮执行，已保存进度。');if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); return { ok: true };
+      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await aborting; return { ok: true };
     },
     async close() {
       closing = true; for (const run of active.values()) { run.stopped = true; run.abort.abort(); }

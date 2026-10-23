@@ -1,5 +1,17 @@
 # 当前验收入口
 
+## 2026-10-23 真实模型推理接入（最新）
+
+最终实例model-reasoning-8VaoYC：真实Electron/DeepSeek17项、0控制台错误，推理来源与SDK原生块哈希一致；完成折叠、正文隔离、工具连续回合、停止/失败、SQLite/重启、亮色1366/1920及原厂交互通过。构建、边界13/renderer217/样式6/轨迹19和完整回归结果，以 [本轮交付](../audit/chat-ui-2026-10-23/MODEL_REASONING_DELIVERY.md) 为准。此前执行阶段日志不代表模型思考验收；整体UX与Master仍DOING。
+
+## 2026-10-23 样式审计与公开阶段补齐（当前）
+
+以最新样式审计交付为当前接受入口：CSSOM与获胜层/来源、原厂样式对照、亮色双尺寸交互与受控失败、真实模型阶段/正文/工具/保存/停止和SQLite冷读。压力结果含1000条切换变慢与输入仍慢，不宣称性能门禁或完整教育闭环通过。 证据：`../audit/chat-ui-2026-10-23/style-audit/DELIVERY.md`。
+
+## 2026-10-23 Agent Trace Streaming
+
+真实Electron/DeepSeek最终chat-experience-f59b3x：28项、renderer error0，含过程/正文/折叠/重开/工具与问题卡；SQLite/文件/冷重启有读回。最终小改对应构建/边界/冷读、217组件/16旧边界及兼容与长历史对照以交付checks.json为准，不用此前实例冒充最新全部字节的provider重跑。 详情：`../audit/chat-ui-2026-10-23/AGENT_TRACE_DELIVERY.md`。
+
 ## 2026-10-23 UX-00基线
 
 当前UI基线和性能复跑入口、四旅程已测/未测、60图与8项检查见 `../audit/chat-ui-2026-10-23/ux00/RESULTS.md`。build/217组件/16边界通过；无产品源码变化，不宣称下一轮改造或完整业务闭环接受。1000条合成历史输入p95约284ms为待优化项；依赖audit仍有告警。

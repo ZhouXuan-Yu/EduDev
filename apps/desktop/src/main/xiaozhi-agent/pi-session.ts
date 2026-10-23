@@ -41,6 +41,7 @@ import {validStudentContextSource} from '../../shared/student-context';
 import {validQuestionContextSource} from '../../shared/question-context';
 import {availableChatTool,sourceAvailabilityText,type ChatSourceAvailability} from '../../shared/chat-source-availability';
 import {publicToolResult} from './public-tool-result';
+import {createModelReasoningTrace} from './model-reasoning';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
 
 const PROVIDER = 'xiaozhi_deepseek';
@@ -428,7 +429,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
         }] : [])] });
   const model = registry.find(PROVIDER, options.model);
   if (!model) throw new Error('configuration');
-  const settings = SettingsManager.inMemory({ defaultProvider: PROVIDER, defaultModel: options.model, defaultThinkingLevel: 'off',
+  const settings = SettingsManager.inMemory({ defaultProvider: PROVIDER, defaultModel: options.model, defaultThinkingLevel: 'low',
     compaction: { enabled: policy.auto, keepRecentTokens: 2048, reserveTokens: 4096 }, retry: { enabled: false, maxRetries: 0, provider: { timeoutMs: 30000, maxRetries: 0 } },
     images: { blockImages: !(options.publicImages&&capabilities?.inputModalities?.includes('image')&&!capabilities.stale),autoResize:true }, packages: [], extensions: [], skills: [], prompts: [], themes: [],
     cacheWarming:'off',enableAnalytics: false, enableInstallTelemetry: false, defaultProjectTrust: 'never', transport: 'sse' });
@@ -544,7 +545,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   }));
   const modelAuthorities={memory:initialAuthority?.fingerprint,skills:skillEpoch?.authority};
   await options.modelHistory?.beforeLoad(manager,modelAuthorities);
-  const { session, modelFallbackMessage } = await createAgentSession({ cwd: workspace, agentDir, model, thinkingLevel: 'off',
+  const { session, modelFallbackMessage } = await createAgentSession({ cwd: workspace, agentDir, model, thinkingLevel: 'low',
     modelRuntime: auth, settingsManager: settings, sessionManager: manager,
     resourceLoader, tools: names, customTools: dispatchers, noTools: 'builtin' });
   if (modelFallbackMessage || session.model?.provider !== PROVIDER || session.model?.id !== options.model
@@ -558,6 +559,8 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   };
   try { await options.modelHistory?.align(session,modelAuthorities); }
   catch(error) { session.dispose(); auth.removeRuntimeApiKey(PROVIDER); throw error; }
+  // Existing native histories may contain an earlier off setting. Record the new policy natively.
+  session.setThinkingLevel('low');
   // Hana's exact source uses the old spelling; adapt the property outside vendor.
   Object.defineProperty(session.agent,'streamFn',{configurable:true,get:()=>session.agent.streamFunction,set:value=>{session.agent.streamFunction=value;}});
   installToolOutcomeAdapter(session); installAssistantStreamGuard(session);
@@ -734,6 +737,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   };
   let streamedLength = 0;
   let segment=0;
+  let reasoningTrace:ReturnType<typeof createModelReasoningTrace>|undefined;
   let delivered = Promise.resolve();
   let deliveryFailed=false;
   const toolStartedAt = new Map<string, number>();
@@ -757,6 +761,11 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
       const usage=event.message.usage;
       const noReportedTokens=usage && usage.input===0 && usage.output===0 && usage.cacheRead===0 && usage.cacheWrite===0;
       if(!(noReportedTokens && (!normalRequestAdmitted || (reason && ['model_calls','tool_calls','tokens'].includes(reason)))))budget?.observe(usage);
+    } else if(event.type==='message_update'&&event.assistantMessageEvent.type==='thinking_delta'){
+      if(!compacting&&!interrupted&&!memoryFailure&&!budget?.snapshot().exhausted)
+        reasoningTrace?.delta(segment,event.assistantMessageEvent.contentIndex,event.assistantMessageEvent.delta);
+    } else if(event.type==='message_update'&&['thinking_end','text_start','toolcall_start'].includes(event.assistantMessageEvent.type)){
+      reasoningTrace?.close(interrupted?'interrupted':memoryFailure||budget?.snapshot().exhausted?'failed':'completed');
     } else if (event.type === 'message_update' && event.assistantMessageEvent.type === 'text_delta') {
       if (interrupted || memoryFailure || budget?.snapshot().exhausted) return;
       const delta = event.assistantMessageEvent.delta.slice(0, MAX_TEXT - streamedLength);
@@ -780,6 +789,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   });
   async function abort() {
     if (!running) return;
+    reasoningTrace?.close('interrupted');
     budget?.finish('interrupted');
     interrupted = true; imageRuntime?.end('interrupted'); stopMemoryWatch(); autoAbort?.abort(); manualAbort?.abort(); session.clearQueue(); instructions.clear(); session.abortCompaction(); executions.abortBySession({ sessionId }, 'User stopped run'); await session.abort();
   }
@@ -807,6 +817,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
       if (typeof text !== 'string' || !text.trim() || text.length > 32768 || text.includes('\0')) return { ok: false, runId: '', error: 'invalid_input' };
       try { if (memoryFailure) throw new Error(memoryFailure); await skills?.validateCommand(text); } catch (error) { return { ok: false, runId: '', error: classifyError(error) }; }
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; toolStartedAt.clear();
+      reasoningTrace=createModelReasoningTrace({sanitize:options.sanitizeFileText|| (async text=>text),secret:options.apiKey,emit:block=>emit({kind:'model_reasoning',block})});
       imageRuntime?.begin();
       budget=createPiRunBudget({budget:limits,runId,limitsEnforced:options.limitsEnforced,emit:usage=>emit({kind:'usage',usage}),abort:()=>{
         executions.abortBySession({sessionId},'Run budget exhausted');session.clearQueue();instructions.clear();autoAbort?.abort();session.abortCompaction();void session.abort();
@@ -837,7 +848,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
         if (last?.role === 'assistant' && last.stopReason === 'error') failure = classifyError(last.errorMessage);
         if (last?.role === 'assistant' && last.stopReason === 'aborted') failure = 'cancelled';
       } catch (error) { failure = classifyError(error); }
-      finally { stopMemoryWatch(); skillEpoch?.endRun(); await Promise.allSettled([...compactionResponses]); await delivered; if(deliveryFailed)failure ||= 'configuration'; running = false; session.clearQueue(); instructions.clear(); }
+      finally { stopMemoryWatch(); skillEpoch?.endRun(); await Promise.allSettled([...compactionResponses]); await delivered; if(deliveryFailed)failure ||= 'configuration'; await reasoningTrace?.finish(interrupted||failure==='cancelled'?'interrupted':failure?'failed':'completed'); running = false; session.clearQueue(); instructions.clear(); }
       if (automaticFailure) failure = automaticFailure;
       if (memoryFailure) failure = memoryFailure;
       if (budget.snapshot().exhausted) failure = 'budget_exhausted'; else if (interrupted) failure = 'cancelled';

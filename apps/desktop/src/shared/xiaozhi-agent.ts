@@ -1,4 +1,5 @@
-// Public education-agent events; SDK messages and private reasoning stay in main.
+// Public education-agent events. Provider-returned reasoning is an explicit bounded channel;
+// raw SDK messages, signatures and the rest of the native transcript stay in main.
 import type { OfficeProjection } from './office-agent';
 import type { XiaozhiMemoryScope } from './xiaozhi-memory';
 import type { XiaozhiSkill } from './xiaozhi-skills';
@@ -37,6 +38,7 @@ export type XiaozhiAgentEventPayload = (
   { kind: 'activity'; stage: 'preparing' | 'waiting_model' | 'responding'; since: number }
   |
   { kind: 'text_delta'; delta: string }
+  | { kind: 'model_reasoning'; block: import('./office-agent').OfficeModelReasoning }
   | { kind:'assistant_start'; segment:number }
   | { kind:'assistant_end'; segment:number; final:boolean }
   | { kind: 'tool_start'; callId: string; tool: string }
@@ -56,7 +58,7 @@ export type XiaozhiAgentEventPayload = (
   | { kind: 'compaction'; state: 'running' | 'completed' | 'failed'; id?: number; automatic?: boolean; error?: XiaozhiAgentError; tokensBefore?: number; estimatedTokensAfter?: number }
   | { kind: 'memory_isolation'; excludedRuns: number; reason?: 'memory_authority' | 'interrupted_tool' }
   | { kind: 'skill_isolation'; excludedRuns: number; reason?: 'skill_authority' | 'interrupted_tool' }
-  | { kind: 'status'; status: 'running' | 'completed' | 'interrupted' | 'failed'; error?: XiaozhiAgentError }
+  | { kind: 'status'; status: 'running' | 'completed' | 'interrupted' | 'failed'; error?: XiaozhiAgentError; finishedAt?:number }
 );
 export type XiaozhiAgentEvent = { sessionId: string; runId: string; sequence: number } & XiaozhiAgentEventPayload;
 export type XiaozhiAgentResult = { ok: true; runId: string; text: string; truncated: boolean }

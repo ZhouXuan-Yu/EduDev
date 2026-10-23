@@ -1,5 +1,17 @@
 # 当前架构
 
+## 2026-10-23 模型推理输出通道（最新）
+
+用户批准供应商API推理文本接入。Pi唯一loop和原生reasoning回传保持；新main脱敏桥只转发thinking_delta，独立model_reasoning事件/modelReasoning投影，既有assistant metadata version1持久化，32段/65536字符。原SDK消息/签名留main，正文items不混入推理；无新DDL/IPC/依赖。停止先中断SDK再清理确认卡；原厂亮色组件样式保持。实证见 [本轮交付](../audit/chat-ui-2026-10-23/MODEL_REASONING_DELIVERY.md)。
+
+## 2026-10-23 样式审计与公开阶段补齐（当前）
+
+新增应用CSS scope保护边界与统一heroui-styles入口；原厂CSS/源码不改。Pi公开阶段经共享投影→原消息metadata→主进程冷读→原ChainOfThought展示，限长/验证/按sequence排序，正文分段不改；可选finishedAt提供完整处理墙钟，预算用量独立。无新loop、表或IPC通道。 证据：`../audit/chat-ui-2026-10-23/style-audit/DELIVERY.md`。
+
+## 2026-10-23 Agent Trace Streaming
+
+Pi入口显式开启agentTrace，抽出OfficeAgentTurn/OfficeAgentTrace/agent-trace纯分组逻辑，沿用通用OfficeConversation兼容路径。shared只增可选startedAt，投影保留首个真实preparing，终态沿用elapsedMs；无存储迁移或新IPC。历史终态无计时器、折叠过程不挂载，稳定回调与单轮memo减少草稿牵动历史。 详情：`../audit/chat-ui-2026-10-23/AGENT_TRACE_DELIVERY.md`。
+
 ## 2026-10-23 对话体验增量（Pi与数据真源不变）
 
 shared可选activity/resultSummary与partial_answer贯通main→preload事件→projection→renderer；按请求过滤宿主已知空范围，关闭记忆不可读；OfficeMarkdown统一公式，仅展示时兼容TeX括号。回复Markdown新窄IPC由main重读持久Pi正文、核hash、系统目录确认后复用现有document_artifacts；无DDL。证据/兼容见 `../audit/chat-ui-2026-10-23/DELIVERY.md`。统一任务展示适配器与成果工作台是下一轮规划，未建立新Harness协议。

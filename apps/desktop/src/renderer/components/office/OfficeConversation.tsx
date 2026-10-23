@@ -14,8 +14,11 @@ import { groupOfficeProcess, formatProcessDuration } from './office-process';
 import {OfficeImageViews} from './OfficeImageViews';
 import type {PublicImageDelivery} from '../../../shared/xiaozhi-public-images';
 import {OfficeReplySources} from './OfficeReplySources';
+import {OfficeAgentTurn} from './OfficeAgentTurn';
+import {useNativeHeroUITheme} from './useNativeHeroUITheme';
 
 export interface OfficeConversationProps {
+  agentTrace?: boolean;
   projection: OfficeProjection;
   onLoadEarlier?: () => void;
   onRetry?: (turnId: string) => void;
@@ -45,14 +48,20 @@ function TurnNotice({ turn, onRetry, retryLabel, onContinue }: { turn: OfficePro
   );
 }
 
-export function OfficeConversation({ projection, onLoadEarlier, onRetry, retryLabel, onContinue, onSuggest, replyActions, renderPlan, renderApprovals, renderAttachments, renderViewedImages, readingRef, onReadingScroll }: OfficeConversationProps) {
+export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier, onRetry, retryLabel, onContinue, onSuggest, replyActions, renderPlan, renderApprovals, renderAttachments, renderViewedImages, readingRef, onReadingScroll }: OfficeConversationProps) {
+  const nativeTheme=useNativeHeroUITheme();
   return (
-    <ChatConversation key={projection.threadId} ref={readingRef} onScroll={onReadingScroll} initial="instant" resize="instant" tabIndex={0} className="office-conversation" aria-label="小智对话" data-testid="office-conversation">
+    <ChatConversation key={projection.threadId} ref={readingRef} onScroll={onReadingScroll} initial="instant" resize="instant" tabIndex={0} className={`office-conversation${agentTrace?' default':''}`} aria-label="小智对话" data-testid="office-conversation" data-heroui-native={agentTrace?'':undefined} data-theme={agentTrace?nativeTheme:undefined}>
       <ChatConversation.Content className="office-conversation-content">
         {projection.needsHydration && <p className="office-history-notice" role="status">正在同步对话记录…</p>}
         {projection.hasMoreHistory && <Button variant="ghost" size="sm" isDisabled={!onLoadEarlier} onPress={onLoadEarlier}>加载较早的消息</Button>}
         {projection.turns.length === 0 && !projection.needsHydration && <div className="office-conversation-empty"><h1>今天的教学，小智和你一起准备</h1><p>说出年级、课题和需要的内容，或添加你的资料。</p>{onSuggest&&<div className="office-task-suggestions">{['备一节课','根据资料组卷','处理学生错题','修改一份讲义'].map((title,index)=><Button key={title} variant="outline" data-testid={`chat-suggestion-${index}`} onPress={()=>onSuggest(['请帮我备一节课，年级和课题是：','请根据我提供的资料组卷，年级、题型和总分要求是：','请帮我整理学生错题。我会先添加本地照片并校正识别结果。','请帮我修改讲义。我会添加原稿，修改要求是：'][index])}>{title}</Button>)}</div>}</div>}
         {projection.turns.map(turn => {
+          if(agentTrace)return <section key={turn.id} className="office-turn" data-turn-id={turn.id} data-state={turn.status}>
+            <OfficeAgentTurn turn={turn} sessionId={projection.threadId} renderPlan={renderPlan} renderAttachments={renderAttachments} renderViewedImages={renderViewedImages} replyActions={replyActions}/>
+            {renderApprovals?.(turn.id)}
+            <TurnNotice turn={turn} onRetry={onRetry} retryLabel={retryLabel} onContinue={onContinue}/>
+          </section>;
           const parts = groupOfficeProcess(turn.items), firstProcess = parts.findIndex(part => part.kind === 'tools' || part.item.role !== 'user');
           const receipts=turn.items.flatMap(item=>item.imageDelivery?[item.imageDelivery]:[]);
           const lastReceipt=[...turn.items].reverse().find(item=>item.imageDelivery?.state==='received');

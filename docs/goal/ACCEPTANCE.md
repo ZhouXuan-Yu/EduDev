@@ -1,5 +1,17 @@
 # Goal 验收台账
 
+## 2026-10-23 最新：真实推理接入限定验收
+
+此前泛用阶段日志的“思考内容”不接受。批准方案后的最终模型专项为model-reasoning-8VaoYC：真实Electron/DeepSeek17项、0控制台错误，原生SDK与显示推理逐段SHA一致；工具回合、停止/失败、SQLite/重启、正文复制导出隔离及原厂亮色双尺寸状态通过。精确命令、构建SHA、回归和历史诊断见 MODEL_REASONING_DELIVERY.md；整体高级感、长历史性能和Master不据此宣称完成。
+
+## 2026-10-23 样式审计与公开阶段补齐（当前）
+
+本片限定验收：原厂CSS对照/真实Hover、Focus、Active/亮色双尺寸/Streaming与完成折叠/受控网络失败；普通无工具公开阶段、工具顺序、SQLite与重启读回。最新命令、构建SHA、通过数、历史诊断和未验边界见本片交付。 证据：`../audit/chat-ui-2026-10-23/style-audit/DELIVERY.md`。
+
+## 2026-10-23 Agent Trace Streaming
+
+Agent Trace Streaming专项真实Electron/DeepSeek 28项通过、renderer error0，包含流式可见正文、完成折叠、手动重开、工具详情与外露追问卡、停止/保存/重启。最终上下文状态/排版小改按构建、定向与冷读单独验，不冒充再次provider全跑；精确命令、压力与限界见交付记录。 详情：`../audit/chat-ui-2026-10-23/AGENT_TRACE_DELIVERY.md`。
+
 ## 2026-10-23 UX-00基线接受（非业务重构验收）
 
 正式Electron最终ux00-Sp3clS：8项检查、60图、renderer error0；100/1000条合成历史各30次；四旅程逐项说明完成与未测，OCR/复杂卷/Office/模型复盘未冒充通过。build与被测main SHA相同，组件217/边界16通过。应用zoom与系统DPI不同；完整命令/告警/阈值见 `../audit/chat-ui-2026-10-23/ux00/RESULTS.md`。没有产品代码修改，不重复旧全套测试。

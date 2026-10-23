@@ -40,7 +40,7 @@ function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: 
     : /写入|编辑|创建|修改/.test(label) ? Pencil : /目录|文件夹/.test(label) ? FolderOpen
     : /读取|文件/.test(label) ? FileText : Workflow;
   return <ChatTool key={`${item.id}:${attention}`} className="office-tool" state={toolState(item)}
-    defaultExpanded={attention} data-item-id={item.id} data-testid="office-tool-step">
+    defaultExpanded={attention} data-item-id={item.id} data-sequence={item.traceSequence} data-testid="office-tool-step">
     <ChatTool.Trigger><ActionIcon size={16} aria-hidden="true" /><span>{item.label || '授权工具'}{item.sources?.length ? ` · ${item.sources.map(source => source.title).join('、')}` : ''}</span>
       <span className="office-step-state">{status}</span>
       {item.resultSummary?.count===0&&<span className="office-result-empty">未找到匹配</span>}

@@ -1,0 +1,191 @@
+{
+  "source": "test-results/chat-experience-M1HXRq/report.json",
+  "success": true,
+  "checks": [
+    {
+      "name": "formal renderer from current checkout",
+      "pass": true
+    },
+    {
+      "name": "teacher tasks and secondary panel default",
+      "pass": true
+    },
+    {
+      "name": "session switch preserves unsent draft",
+      "pass": true
+    },
+    {
+      "name": "restart restores unsent draft",
+      "pass": true
+    },
+    {
+      "name": "trace stays expanded while actual provider prose streams below",
+      "pass": true
+    },
+    {
+      "name": "ordinary question records real public stages without requiring a tool",
+      "pass": true
+    },
+    {
+      "name": "completed run automatically folds trace while preserving reply",
+      "pass": true
+    },
+    {
+      "name": "manual reopen persists across composer edits",
+      "pass": true
+    },
+    {
+      "name": "empty sources do not trigger discovery or disabled memory tools",
+      "pass": true
+    },
+    {
+      "name": "actual provider stages and rendered math",
+      "pass": true
+    },
+    {
+      "name": "reply and composer reachable light 1366x768",
+      "pass": true
+    },
+    {
+      "name": "reply and composer reachable light 1920x1080",
+      "pass": true
+    },
+    {
+      "name": "reply copy is actual clipboard text",
+      "pass": true
+    },
+    {
+      "name": "selected text edit prepares draft without an automatic model call",
+      "pass": true
+    },
+    {
+      "name": "cancel export writes no artifact",
+      "pass": true
+    },
+    {
+      "name": "teacher-confirmed export preserves exact source and lineage",
+      "pass": true
+    },
+    {
+      "name": "changed reply rejected before native chooser/write",
+      "pass": true
+    },
+    {
+      "name": "same export request reads back the same artifact without another write",
+      "pass": true
+    },
+    {
+      "name": "externally edited artifact is preserved rather than overwritten on retry",
+      "pass": true
+    },
+    {
+      "name": "saved content opens with math through actual teaching library and source conversation",
+      "pass": true
+    },
+    {
+      "name": "stop offers safe continuation draft without replay",
+      "pass": true
+    },
+    {
+      "name": "restart restores partial presentation and saved artifact",
+      "pass": true
+    },
+    {
+      "name": "SQLite and cold restart preserve the same real public stages",
+      "pass": true
+    },
+    {
+      "name": "actual attachment discovery has bounded count and read summary",
+      "pass": true
+    },
+    {
+      "name": "completed real tool trace can be reopened without moving final prose into it",
+      "pass": true
+    },
+    {
+      "name": "visible public stages and actual tools follow host event order",
+      "pass": true
+    },
+    {
+      "name": "teacher question remains visible outside manually collapsed trace",
+      "pass": true
+    },
+    {
+      "name": "teacher clarification uses actual clickable choices and answer submission",
+      "pass": true
+    },
+    {
+      "name": "real empty lookup is shown as no match rather than answer success",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "stageReadback": {
+    "runId": "run_41ae7ec8-5e1e-4e08-9b61-d30043a1976d",
+    "stages": [
+      {
+        "stage": "preparing",
+        "since": 1792750520420,
+        "sequence": 2
+      },
+      {
+        "stage": "waiting_model",
+        "since": 1792750532459,
+        "sequence": 5
+      },
+      {
+        "stage": "responding",
+        "since": 1792750533953,
+        "sequence": 7
+      }
+    ],
+    "processingMs": 22677
+  },
+  "traceDuration": {
+    "elapsedMs": 19493,
+    "processingMs": 22677,
+    "label": "22 秒"
+  },
+  "readback": {
+    "runs": [
+      {
+        "id": "run_41ae7ec8-5e1e-4e08-9b61-d30043a1976d",
+        "status": "succeeded"
+      },
+      {
+        "id": "run_f9fe0a45-8a6c-4e7e-9fa5-7be225b3b2b4",
+        "status": "blocked"
+      },
+      {
+        "id": "run_94037dd6-1b38-4211-8040-bb998aef71ef",
+        "status": "succeeded"
+      },
+      {
+        "id": "run_c0f62973-1f66-4a6b-babb-36b49ebe259c",
+        "status": "succeeded"
+      },
+      {
+        "id": "run_6e7f4755-fe3e-4e78-b285-d72f2d326fbe",
+        "status": "succeeded"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": "artifact_d6717a0140d02be4483ab85398a336fb82efc751f0ca537c76d57d473c830a4b",
+        "session_id": "aisession_b1ebbfff-1529-48be-8fca-1551fba85e77",
+        "message_id": "aimsg_a30d4ab8-8be3-470e-b408-df2eead63caa",
+        "status": "exported",
+        "content_hash": "abf9513db0745d66420193fda49bb006c33e57c539e9b2e8314e0c1b9ca7faf4",
+        "file_path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chat-experience-fe5V8U\\teacher-exports\\7d473c830a4b-一元一次方程备课.md"
+      },
+      {
+        "id": "artifact_c30e4838685c06f190b27754b32f846c580ad2ca7e2d9f5f3a4c40936113fae0",
+        "session_id": "aisession_b1ebbfff-1529-48be-8fca-1551fba85e77",
+        "message_id": "aimsg_a30d4ab8-8be3-470e-b408-df2eead63caa",
+        "status": "exported",
+        "content_hash": "abf9513db0745d66420193fda49bb006c33e57c539e9b2e8314e0c1b9ca7faf4",
+        "file_path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chat-experience-fe5V8U\\teacher-exports\\40936113fae0-重复保存边界核对.md"
+      }
+    ]
+  }
+}

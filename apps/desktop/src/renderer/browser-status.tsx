@@ -3,8 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {Button,Spinner} from '@heroui/react';
 import {Globe,TriangleAlert} from 'lucide-react';
 import {EmptyState} from './heroui-pro/components/empty-state';
-import './heroui-pro/heroui-pro.min.css';
-import './heroui-pro/heroui-oss.min.css';
+import './heroui-styles';
 import './components/office/pi-workspace-theme.css';
 import './browser-status.css';
 

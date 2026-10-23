@@ -5,7 +5,9 @@ import {ChatMessage} from '../../heroui-pro/components/chat-message';
 import type {OfficeProjectedItem,OfficeProjectedTurn} from '../../../shared/office-agent';
 import {useOfficeComposerState} from './OfficeComposerState';
 import {OfficeMarkdown} from './OfficeMarkdown';
+import {useNativeHeroUITheme} from './useNativeHeroUITheme';
 export function OfficeReplyActions({item,turn,sessionId}:{item:OfficeProjectedItem;turn:OfficeProjectedTurn;sessionId:string}){
+ const nativeTheme=useNativeHeroUITheme();
  const composer=useOfficeComposerState(),[mode,setMode]=useState<'edit'|'save'>(),[notice,setNotice]=useState(''),[instruction,setInstruction]=useState(''),[title,setTitle]=useState('教学安排'),[busy,setBusy]=useState(false);
  const selection=useRef(''),lock=useRef(false),requestId=useRef('reply_'+crypto.randomUUID());
  useEffect(()=>{const remember=()=>{const chosen=window.getSelection();const host=document.querySelector(`[data-item-id="${CSS.escape(item.id)}"]`);if(chosen?.rangeCount&&host?.contains(chosen.getRangeAt(0).commonAncestorContainer))selection.current=chosen.toString().slice(0,4000);};document.addEventListener('selectionchange',remember);return()=>document.removeEventListener('selectionchange',remember);},[item.id]);
@@ -30,7 +32,7 @@ export function OfficeReplyActions({item,turn,sessionId}:{item:OfficeProjectedIt
   <ChatMessage.Action aria-label="修改回复" tooltip="修改全部或选中部分" data-testid="reply-edit" onPress={()=>{setMode('edit');setNotice('');}}><Pencil size={16}/><span>修改</span></ChatMessage.Action>
   <ChatMessage.Action aria-label="保存教学内容" tooltip="预览并保存教学内容" data-testid="reply-save" onPress={()=>{requestId.current='reply_'+crypto.randomUUID();setMode('save');setNotice('');}}><FileDown size={16}/><span>保存</span></ChatMessage.Action>
  </ChatMessage.Actions>{notice&&<p className="office-action-notice" role="status" data-testid="reply-action-notice">{notice}</p>}
- {mode&&<Modal.Backdrop isOpen isDismissable={!busy} onOpenChange={open=>{if(!open&&!busy)setMode(undefined);}}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-themed-surface office-reply-dialog" data-testid="reply-dialog">
+ {mode&&<Modal.Backdrop className="default" data-heroui-native="" data-theme={nativeTheme} isOpen isDismissable={!busy} onOpenChange={open=>{if(!open&&!busy)setMode(undefined);}}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-themed-surface office-reply-dialog" data-testid="reply-dialog">
   <Modal.Header><Modal.Heading>{mode==='edit'?'修改教学内容':'确认保存教学内容'}</Modal.Heading></Modal.Header>
   <Modal.Body>{mode==='edit'?<>{selection.current&&<blockquote>{selection.current}</blockquote>}<label htmlFor="reply-edit-request">希望怎样修改</label><TextArea id="reply-edit-request" data-testid="reply-edit-request" value={instruction} maxLength={2000} rows={3} onChange={e=>setInstruction(e.target.value)}/><p>修改要求先放入输入框，由你确认后发送。</p></>:<><label htmlFor="reply-save-title">标题</label><Input id="reply-save-title" data-testid="reply-save-title" value={title} maxLength={120} onChange={e=>setTitle(e.target.value)} disabled={busy}/><p>{turn.status==='completed'?'请核对正文与答案后保存。':'这是尚未完成的部分回复，请确认是否保存。'}保存为 Markdown，保留原文与公式；保存后可在教学文件查看。</p><div className="office-save-preview"><OfficeMarkdown>{item.text||''}</OfficeMarkdown></div></>}{notice&&<p role="status">{notice}</p>}</Modal.Body>
   <Modal.Footer><Button variant="secondary" isDisabled={busy} onPress={()=>setMode(undefined)}>取消</Button>{mode==='edit'?<Button data-testid="reply-edit-prepare" isDisabled={!instruction.trim()} onPress={prepare}>放入输入框</Button>:<Button data-testid="reply-save-confirm" isDisabled={busy||!title.trim()} onPress={()=>void save()}>{busy?'正在保存…':'确认并选择保存位置'}</Button>}</Modal.Footer>

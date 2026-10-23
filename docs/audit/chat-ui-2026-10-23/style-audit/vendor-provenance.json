@@ -1,0 +1,31 @@
+{
+  "officialCss": [
+    {
+      "file": "heroui-pro/heroui-oss.min.css",
+      "bytes": 410638,
+      "sha256": "b614566361d0c79a595efa54d8b92bbc3903b32cb514768d6219c9d5627e5e4d"
+    },
+    {
+      "file": "heroui-pro/heroui-pro.min.css",
+      "bytes": 467111,
+      "sha256": "2e299022eda199fd2a1203889037e94ec44d4b0002192a96fc1af289d6d5834b"
+    }
+  ],
+  "chainOfThought": [
+    {
+      "file": "chain-of-thought.tsx",
+      "equal": true,
+      "sha256": "32b8936c5bdcdfdd510de65f5e4790b0e3b3f2e212d612d05f16e925cc23acf2"
+    },
+    {
+      "file": "chain-of-thought.styles.ts",
+      "equal": true,
+      "sha256": "40e140c158a32e0c9a1434cb6842e76674c1ebc2b6bdcb38c55d76aebe3cdd38"
+    },
+    {
+      "file": "index.ts",
+      "equal": true,
+      "sha256": "58b495f1ac151e9f9bc354b87dd9ea17fe3346fa472673b6443daa9187d96982"
+    }
+  ]
+}

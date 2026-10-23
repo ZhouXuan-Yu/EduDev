@@ -1,5 +1,5 @@
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell, nativeTheme } from 'electron';
 import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } from './desktop-chrome';
 import { restoreWindowGeometry, installWindowGeometry } from './desktop-chrome/window-geometry';
 import { existsSync, readFileSync } from 'node:fs';
@@ -20,6 +20,8 @@ import { createPiConsoleFacade } from './xiaozhi-agent/console-facade';
 import { resolveRuntimeAuthority, applyLaunchProfile, isBackgroundAcceptance } from './xiaozhi-agent/runtime-authority';
 
 // Electron app preferences also need the launcher's explicit profile, before ready.
+// User product preference: the desktop uses the original light design in every window.
+nativeTheme.themeSource = 'light';
 applyLaunchProfile({ profile: app.commandLine.getSwitchValue('user-data-dir'), setPath: (name, directory) => app.setPath(name, directory) });
 
 let store: OmniEduStore;

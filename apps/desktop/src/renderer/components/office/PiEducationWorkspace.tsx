@@ -203,7 +203,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         const target=id; const result=await window.omniEdu?.mutateXiaozhiQueue(input); await hydrate(target);
         if (!result?.ok) throw new Error('queue_mutation_failed');
       }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
-      <OfficeComposer visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
+      <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         taskSummary={<><PiWorkspaceActivity snapshot={snapshot} compactBusy={compactBusy}/><PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)}/>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} compact/>}</>}
         skills={snapshot?.skills}
         disabled={!snapshot || !id || modelSelecting || returnHydrating || Boolean(snapshot.studentContext&&snapshot.studentContext.status!=='active')} model={projection?.model || 'DeepSeek'} models={models?.models.map(item => ({ id: item.id, label: item.id })) || [{ id: projection?.model || 'DeepSeek', label: projection?.model || 'DeepSeek' }]}

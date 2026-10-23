@@ -1,0 +1,25 @@
+{
+  "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/index.html",
+  "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chat-experience-fe5V8U",
+  "session": "aisession_b1ebbfff-1529-48be-8fca-1551fba85e77",
+  "run": "run_41ae7ec8-5e1e-4e08-9b61-d30043a1976d",
+  "stages": 3,
+  "duration": {
+    "elapsedMs": 19493,
+    "processingMs": 22677,
+    "label": "22 秒"
+  },
+  "theme": {
+    "source": "light",
+    "dark": false
+  },
+  "geometry": {
+    "width": 1366,
+    "height": 768,
+    "dpr": 1.5
+  },
+  "errors": [],
+  "temporaryFaultRemoved": true,
+  "finalFailureRun": "run_3c925d1d-db1b-425d-8760-653d6037d768",
+  "releaseCleanup": "Removed inactive first-version trace overrides; no other runtime behavior change"
+}

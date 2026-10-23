@@ -1,5 +1,17 @@
 # 当前集成与复用
 
+## 2026-10-23 官方推理组件接入（最新）
+
+HeroUI MCP和官方ChainOfThought文档已核：AgentTraceStreaming为组合示例、isStreaming只控制标题动效。供应商reasoning_content由现有Pi SDK解析为thinking_delta，本轮在应用边界接入真实内容与生命周期；原生SDK继续工具回传，不改vendor、不新建推理loop或翻译调用。样式保护/官方OSS→Pro顺序和亮色保持。见 [本轮证据](../audit/chat-ui-2026-10-23/MODEL_REASONING_DELIVERY.md)。
+
+## 2026-10-23 样式审计与公开阶段补齐（当前）
+
+OSS/Pro统一导入顺序，复用原ChainOfThought组合；原厂CSS/组件与本地来源SHA核对，未改vendor。应用PostCSS防止旧样式进入保护根，不新增包；仅官方亮色主题。公开事件/metadata为可选增量，费用/预算与处理墙钟分开，既有audit告警未强升依赖。 证据：`../audit/chat-ui-2026-10-23/style-audit/DELIVERY.md`。
+
+## 2026-10-23 Agent Trace Streaming
+
+当前HeroUI Pro MCP list_components/get_component_docs(chain-of-thought)/get_css均返回成功，复用仓库既有ChainOfThought受控展开与流式Trigger/Steps；Agent Trace Streaming为组合示例。无新包/许可证或Windows打包依赖变化，既有audit告警如实记录。未改变模型设置、隐藏reasoning、外部上传或Pi唯一loop。 详情：`../audit/chat-ui-2026-10-23/AGENT_TRACE_DELIVERY.md`。
+
 ## 2026-10-23 数学与既有产物复用
 
 锁定@streamdown/math 1.0.3（Apache-2.0），复用KaTeX与现Pro Markdown/Actions/Modal；新增13包安装内容约302,174字节、MIT/ISC/Apache许可，无原生组件。新reply-export复用document_artifacts/既有Markdown导出，不替换Word/PDF审批。包体/Windows安装器未重验；完整边界见 `../audit/chat-ui-2026-10-23/DELIVERY.md`。下一轮优先复用现任务/来源/审核组件，不新增UI框架或Agent loop。

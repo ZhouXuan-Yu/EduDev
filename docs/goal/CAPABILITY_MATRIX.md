@@ -1,5 +1,17 @@
 # 小智能力与复用矩阵
 
+## 2026-10-23 最新：M10模型推理展示
+
+API reasoning_content经SDK thinking_delta进入主进程脱敏桥/独立typed事件/modelReasoning投影，既有assistant metadata版本化保存；原厂ChainOfThought展示实际返回文本与真实推理段状态、独立计时。原生SDK保留工具回传，正文/导出保持。真实Electron17项与原生块哈希对照通过；无新增循环/依赖/DDL/IPC，原厂亮色设计保持。详见MODEL_REASONING_DELIVERY.md。
+
+## 2026-10-23 样式审计与公开阶段补齐（当前）
+
+M10增量：原厂CSS保护边界与固定亮色；可选publicStages/traceSequence记录并持久保存真实公开阶段，traceElapsedMs按宿主完整墙钟计时；正文、教师卡、来源和回复动作保持。无新循环/权限/依赖/DDL。旧记录无阶段不补造。 证据：`../audit/chat-ui-2026-10-23/style-audit/DELIVERY.md`。
+
+## 2026-10-23 Agent Trace Streaming
+
+M10复用现Pi publicItems/activity/usage和Pro ChainOfThought，增加按轮公开过程、终态折叠/重开与持久耗时；M09回复动作与来源保持。无新循环、DDL、新IPC权限或依赖。工具/教师确认卡来自真实运行，旧记录缺耗时不造数。 详情：`../audit/chat-ui-2026-10-23/AGENT_TRACE_DELIVERY.md`。
+
 ## 2026-10-23 UX-00测量入口
 
 M10测试能力增加正式Electron基线脚本test:ux00-baseline；复用现main/preload/SQLite与教师导航，记录M04/M06/M07/M08/M09入口而不新增领域能力。100/1000条合成历史用于压力，无真实模型/用户事实含义。结果及后段未测清单见 `../audit/chat-ui-2026-10-23/ux00/RESULTS.md`。

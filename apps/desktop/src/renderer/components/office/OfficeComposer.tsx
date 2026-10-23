@@ -11,9 +11,11 @@ import './office-conversation.css';
 import './pi-control-surfaces.css';
 import {ATTACHMENT_ONLY_PROMPT} from '../../../shared/xiaozhi-start';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
+import {useNativeHeroUITheme} from './useNativeHeroUITheme';
 
 export interface OfficeModelOption { id: string; label: string; disabled?: boolean }
 export interface OfficeComposerProps {
+  nativeAppearance?: boolean;
   sessionId: string;
   visible?: boolean;
   status?: OfficeRunStatus;
@@ -42,11 +44,13 @@ export function OfficeComposer(props: OfficeComposerProps) {
   return <OfficeComposerDraft key={props.sessionId} {...props} />;
 }
 
-function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel, disabled = false, visible=true,
+function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel, disabled = false, visible=true, nativeAppearance=false,
   onSubmit, onStop, onModelChange, onPermissions, onAttach, onWorkspace, attachments, attachDisabled=false,sendBlocked=false,hasAttachments=false, onVoice, onQueue, skills = [], taskSummary, attachLabel = '添加附件' }: OfficeComposerProps) {
   const { draft, draftRef, storageFailed, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
     failedPresentation,setFailedPresentation,stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
   const skill = skills.find(item => item.name === skillName);
+  const nativeTheme=useNativeHeroUITheme();
+  const nativeProps={'data-heroui-native':nativeAppearance?'':undefined,'data-theme':nativeAppearance?nativeTheme:undefined};
   const [openMenu,setOpenMenu]=useState<'permissions'|'skills'|'models'>();
   const menuChange=(menu:'permissions'|'skills'|'models',open:boolean)=>setOpenMenu(previous=>open?menu:previous===menu?undefined:previous);
   useEffect(()=>{if(!visible)setOpenMenu(undefined);},[visible]);
@@ -79,7 +83,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
 
   const selectedModel = models.find(option => option.id === model);
   return (
-    <div className="office-composer-container" data-session-id={sessionId}>
+    <div className={`office-composer-container${nativeAppearance?' default':''}`} data-session-id={sessionId} {...nativeProps}>
       {taskSummary}
       {storageFailed && <p className="office-send-error" role="status">草稿暂时无法保存到本机，请在离开对话前复制保留。</p>}
       {running && onQueue && <div className="pi-queue-actions pi-composer-queue"><label>补充处理时间 <select aria-label="补充处理时间" data-testid="pi-queue-mode" value={queueMode} onChange={e=>setQueueMode(e.target.value as 'steer'|'followUp')}><option value="steer">小智下一步开始时</option><option value="followUp">本轮结束后</option></select></label><Button size="sm" data-testid="pi-queue-submit" isDisabled={disabled || submitting || !draft.trim()} onPress={()=>void send(draft,true)}>发送补充</Button></div>}
@@ -101,10 +105,10 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
           </PromptInput.Content>
           <PromptInput.Toolbar>
             <PromptInput.ToolbarStart>
-              <Tooltip><Button variant="ghost" isIconOnly aria-label={attachLabel} isDisabled={disabled || attachDisabled || !onAttach} onPress={onAttach}><Plus size={20} /></Button><Tooltip.Content>{attachLabel}</Tooltip.Content></Tooltip>
+              <Tooltip><Button variant="ghost" isIconOnly aria-label={attachLabel} isDisabled={disabled || attachDisabled || !onAttach} onPress={onAttach}><Plus size={20} /></Button><Tooltip.Content {...nativeProps} className={nativeAppearance?'default':undefined}>{attachLabel}</Tooltip.Content></Tooltip>
               <Dropdown isOpen={visible&&openMenu==='permissions'} onOpenChange={open=>menuChange('permissions',open)}>
                 <Button variant="ghost" size="sm" className="office-permission" aria-label={permissionLabel} data-testid="pi-permission-picker" isDisabled={disabled}><ShieldCheck size={15} /><span title={permissionLabel}>{permissionLabel}</span></Button>
-                <Dropdown.Popover className="pi-office-menu" placement="top start">
+                <Dropdown.Popover {...nativeProps} className={`pi-office-menu${nativeAppearance?' default':''}`} placement="top start">
                   <Dropdown.Menu aria-label="资料与操作权限" onAction={key=>{if(key==='choose-directory'&&!running&&!submitting)(onWorkspace||onAttach)?.();if(key==='permissions-settings')onPermissions?.();}}>
                     <Dropdown.Item id="current-scope" className="pi-permission-fact" textValue={permissionLabel} isDisabled><Label>{permissionLabel}</Label></Dropdown.Item>
                     <Dropdown.Item id="write-policy" className="pi-permission-fact" textValue="文件写入逐次由教师确认" isDisabled><Label>文件写入逐次由教师确认</Label></Dropdown.Item>
@@ -115,7 +119,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
               </Dropdown>
               {skills.length > 0 && <><Dropdown isOpen={visible&&openMenu==='skills'} onOpenChange={open=>menuChange('skills',open)}>
                 <Button variant="ghost" size="sm" className="office-skill-picker" aria-label="选择教育技能" data-testid="pi-skill-picker" isDisabled={disabled || running || submitting}><BookOpen size={15} /><span title={skill?.title || '选择教育技能'}>{skill?.title || '技能'}</span><ChevronDown size={13} /></Button>
-                  <Dropdown.Popover className="pi-office-menu" placement="top start"><Dropdown.Menu aria-label="教育技能" selectionMode="single" selectedKeys={[skillName || 'automatic']} onAction={key => {
+                  <Dropdown.Popover {...nativeProps} className={`pi-office-menu${nativeAppearance?' default':''}`} placement="top start"><Dropdown.Menu aria-label="教育技能" selectionMode="single" selectedKeys={[skillName || 'automatic']} onAction={key => {
                   if (!running && !sendLock.current) { setSkillName(key === 'automatic' ? '' : String(key)); setShowSkill(false); }
                 }}>
                   <Dropdown.Item id="automatic" key="automatic" textValue="按任务自动选择"><Label>按任务自动选择</Label><Dropdown.ItemIndicator /></Dropdown.Item>
@@ -128,7 +132,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
                 <Button variant="ghost" size="sm" className="office-model-picker" aria-label="选择模型" isDisabled={running || submitting || disabled || !onModelChange || models.length === 0}>
                   <span title={selectedModel?.label ?? model}>{selectedModel?.label ?? model}</span><ChevronDown size={14} />
                 </Button>
-                <Dropdown.Popover className="pi-office-menu" placement="top end">
+                <Dropdown.Popover {...nativeProps} className={`pi-office-menu${nativeAppearance?' default':''}`} placement="top end">
                   <Dropdown.Menu aria-label="模型" selectionMode="single" selectedKeys={[model]} onAction={key => {
                     const option = models.find(candidate => candidate.id === String(key));
                     if (option && !option.disabled && !running && !sendLock.current) onModelChange?.(option.id);
@@ -137,7 +141,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
                   </Dropdown.Menu>
                 </Dropdown.Popover>
               </Dropdown>
-              {onVoice && <Tooltip><Button variant="ghost" isIconOnly aria-label="语音输入" isDisabled={disabled} onPress={onVoice}><Mic size={17} /></Button><Tooltip.Content>语音输入</Tooltip.Content></Tooltip>}
+              {onVoice && <Tooltip><Button variant="ghost" isIconOnly aria-label="语音输入" isDisabled={disabled} onPress={onVoice}><Mic size={17} /></Button><Tooltip.Content {...nativeProps} className={nativeAppearance?'default':undefined}>语音输入</Tooltip.Content></Tooltip>}
               <PromptInput.Send aria-label={running ? '停止本轮' : '发送消息'} isDisabled={disabled || stopping || (!running && (submitting || sendBlocked || (!draft.trim()&&!hasAttachments)))} />
             </PromptInput.ToolbarEnd>
           </PromptInput.Toolbar>
