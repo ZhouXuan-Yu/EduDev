@@ -1,4 +1,5 @@
 import {isMathPaperOfficeSchema} from '../../shared/paper-export';
+import {CLASSROOM_DOCUMENT_OFFICE_SCHEMA,validClassroomOfficeFormat} from '../../shared/classroom-export';
 import type {OfficeMathImage} from './office-pdf-renderer';
 import {Document,Packer,Paragraph,TextRun,ImageRun,Table,TableRow,TableCell,HeadingLevel,WidthType,AlignmentType} from 'docx';
 import ExcelJS from 'exceljs';import PptxGenJS from 'pptxgenjs';
@@ -17,10 +18,11 @@ function officeLines(text:string,width:number):string[]{
   });
  });
 }
-async function docx(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>,mathImages:ReadonlyMap<string,OfficeMathImage>=new Map()){
+async function docx(draft:OfficeDraft,images:ReadonlyMap<string,Buffer>,mathImages:ReadonlyMap<string,OfficeMathImage>=new Map(),classroomPages:ReadonlyMap<string,OfficeMathImage>=new Map()){
  const children:(Paragraph|Table)[]=[new Paragraph({heading:HeadingLevel.TITLE,alignment:AlignmentType.CENTER,children:[new TextRun(draft.title)]})];
  for(const [sectionIndex,section] of draft.sections.entries()){
   children.push(new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun(section.heading)]}));
+  const page=classroomPages.get(String(sectionIndex));if(page)children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:page.bytes,transformation:{width:page.width,height:page.height},altText:{title:'已确认课堂完整课页（不可编辑）',description:section.heading,name:`classroom-page-${sectionIndex}`}})]}));
   for(let i=0;i<=section.paragraphs.length;i++){
    for(const f of section.figures?.filter(f=>f.afterParagraph===i)||[])children.push(new Paragraph({alignment:AlignmentType.CENTER,children:[new ImageRun({type:'png',data:images.get(f.assetId)!,transformation:officeFigureSize(f),altText:{title:'原题'+f.role,description:'教师确认的本地原图；公式非可编辑对象',name:f.blockId}})]}));
    if(i<section.paragraphs.length){const math=mathImages.get(`${sectionIndex}:${i}`);children.push(math?new Paragraph({children:[new ImageRun({type:'png',data:math.bytes,transformation:{width:math.width,height:math.height},altText:{title:'排版公式（非可编辑）',description:section.paragraphs[i],name:`math-${sectionIndex}-${i}`}})]}):new Paragraph({children:section.paragraphs[i].split('\n').flatMap((text,index)=>index?[new TextRun({break:1}),new TextRun(text)]:[new TextRun(text)])}));}
@@ -82,8 +84,11 @@ export async function generateOfficeDocument(format:OfficeOutputFormat,draft:Off
  const images=officeImageSnapshot(input,options.images);
  if(images.size&&!['docx','pdf'].includes(format))throw new Error('invalid_input');
  try{
-  const mathImages=format==='docx'&&isMathPaperOfficeSchema(input.schemaVersion)?await(await import('./office-pdf-renderer')).renderOfficeMathImages(input,options):new Map<string,OfficeMathImage>();
-  const bytes=format==='pdf'?await (await import('./office-pdf-renderer')).renderOfficePdf(input,{...options,images}):format==='docx'?await docx(input,images,mathImages):format==='xlsx'?await xlsx(input):await pptx(input);
+  if('classroomSource'in input&&!validClassroomOfficeFormat(input.schemaVersion,format))throw Error('invalid_input');
+  const classroomDocument=input.schemaVersion===CLASSROOM_DOCUMENT_OFFICE_SCHEMA;
+  const classroomPages=classroomDocument&&'classroomSource'in input?await(await import('../education/classroom-document-pages')).renderClassroomDocumentPages(input.classroomSource,options):new Map<string,OfficeMathImage>();
+  const mathImages=format==='docx'&&(isMathPaperOfficeSchema(input.schemaVersion)||classroomDocument)?await(await import('./office-pdf-renderer')).renderOfficeMathImages(input,options):new Map<string,OfficeMathImage>();
+  const bytes='classroomSource'in input&&!classroomDocument?await(await import('../education/classroom-pptx')).generateClassroomPptx(input.classroomSource,options):format==='pdf'?await (await import('./office-pdf-renderer')).renderOfficePdf(input,{...options,images,classroomPages}):format==='docx'?await docx(input,images,mathImages,classroomPages):format==='xlsx'?await xlsx(input):await pptx(input);
   check(options.signal);if(!bytes.length||bytes.length>OFFICE_OUTPUT_MAX_BYTES)throw new Error('too_large');return bytes;
  }catch(error){const code=error instanceof Error?error.message:'';throw Object.assign(new Error(['cancelled','timeout','too_large','configuration','cleanup_failed'].includes(code)?code:'generation_failed'),{cause:error});}
 }

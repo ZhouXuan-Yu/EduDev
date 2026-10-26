@@ -6,7 +6,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { createHash, randomUUID } from 'node:crypto';
 import {registerHooks} from 'node:module';
 // These host-admission boundaries never execute the Electron extraction utility.
-registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess={};',shortCircuit:true};return next(specifier,context);}});
+registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export%20const%20utilityProcess%3D%7B%7D%3Bexport%20const%20app%3D%7BisPackaged%3Afalse%7D%3B',shortCircuit:true};return next(specifier,context);},load(url,context,next){if(url.endsWith('/xiaozhi-agent/ocr-runtime-manifest.json'))return {format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8')+';',shortCircuit:true};return next(url,context);}});
 const { createXiaozhiProductionHost } = await import('../../src/main/xiaozhi-agent/production-host.ts');
 const { createXiaozhiSessionState } = await import('../../src/main/xiaozhi-agent/session-state.ts');
 const fixture = path.resolve('test-results/xiaozhi-agent/pi-control-ui-2AWPBO/data/app.db'), output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-model-host-lock-'));
@@ -15,7 +15,7 @@ fs.copyFileSync(fixture, path.join(output, 'app.db')); const db = new DatabaseSy
 const state = createXiaozhiSessionState({ run: async (sql, values = []) => db.prepare(sql).run(...values), change: async (sql, values = []) => Number(db.prepare(sql).run(...values).changes), all: async (sql, values = []) => db.prepare(sql).all(...values) });
 const id = db.prepare('SELECT id FROM ai_conversation_sessions LIMIT 1').get().id;
 let enteredDetail, releaseDetail, detailArchived = false, releaseFetch, enteredFetch;
-const store = { xiaozhiState: state, getDeepSeekRuntimeSettings: async () => ({ provider: 'deepseek', apiKey: 'synthetic-host-key', model: 'deepseek-flash' }),
+const store = { xiaozhiState: state, questionReviews: { collections: { list: async () => [] } }, getDeepSeekRuntimeSettings: async () => ({ provider: 'deepseek', apiKey: 'synthetic-host-key', model: 'deepseek-flash' }),
   getAiConversationSession: async () => { enteredDetail?.(); if (releaseDetail) await new Promise(resolve => releaseDetail.current = resolve); return { session: { archivedAt: detailArchived ? 'owned' : undefined }, messages: [] }; } };
 const schemaVersion = 'xiaozhi.settings.v1', request = version => ({ schemaVersion, version, defaultModel: 'deepseek-flash' });
 const fetchBefore = globalThis.fetch;

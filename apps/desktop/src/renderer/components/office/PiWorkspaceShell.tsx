@@ -22,6 +22,10 @@ export function PiWorkspaceShell({title,sidebar,aside,files,children,onLeave,onS
     const next={...previous,[field]:value};writeWorkspacePreferences(next);return next;
   });}
   useEffect(()=>{if(fileRequest&&visible)update('files',true);},[fileRequest,visible]);
+  const workspaceSidebar=<>
+    <div className="pi-sidebar-primary">{sidebar}</div>
+    <Sidebar.Mobile backdrop="opaque" label="会话侧栏" className="pi-sidebar-mobile-sheet pi-themed-surface">{sidebar}</Sidebar.Mobile>
+  </>;
   useDesktopCommands(command=>{
     if(!visible)return false;
     if(command==='sidebar'){update('sidebar',!preferences.sidebar);return true;}
@@ -35,7 +39,7 @@ export function PiWorkspaceShell({title,sidebar,aside,files,children,onLeave,onS
       else navigation.navigate({view});
     }}/>
     <AppLayout className={`pi-shell${preferences.files?' pi-shell-files':''}`} sidebarCollapsible="offcanvas" scrollMode="content" reduceMotion
-      sidebar={sidebar} aside={preferences.files&&files?files(()=>update('files',false)):aside} asideMobile="hidden" sidebarOpen={preferences.sidebar} asideOpen={preferences.files||preferences.aside}
+      sidebar={workspaceSidebar} aside={preferences.files&&files?files(()=>update('files',false)):aside} asideMobile="hidden" sidebarOpen={preferences.sidebar} asideOpen={preferences.files||preferences.aside}
       asideResizable={preferences.files} asideResizeBehavior="preserve-pixel-size" asideDefaultSize={50} asideMinSize="360px" asideMaxSize={65} resizableAutoSaveId={preferences.files?'xiaozhi.files.layout.v1':undefined}
       onSidebarOpenChange={value=>update('sidebar',value)} onAsideOpenChange={value=>update(preferences.files?'files':'aside',value)}
       navbar={<div className="ai-chat-header" data-testid="pi-workspace-header">

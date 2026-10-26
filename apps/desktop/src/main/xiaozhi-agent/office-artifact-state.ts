@@ -100,6 +100,12 @@ export function createOfficeArtifactState(sql:Sql){
      SELECT NEW.artifact_id,id,json_extract(draft_json,'$.paperSource.paperId'),json_extract(draft_json,'$.paperSource.digest'),json_extract(draft_json,'$.paperSource.audience'),1 FROM xiaozhi_pi_office_drafts WHERE artifact_id=NEW.artifact_id;
     DELETE FROM document_artifact_sources WHERE artifact_id=NEW.artifact_id AND ordinal=NEW.ordinal AND source_type='ai_generated';
    END`);
+   await sql.run(`CREATE TRIGGER IF NOT EXISTS xiaozhi_office_paper_lineage_v6 AFTER INSERT ON document_artifact_sources
+    WHEN NEW.source_type='ai_generated' AND EXISTS(SELECT 1 FROM xiaozhi_pi_office_drafts d WHERE d.artifact_id=NEW.artifact_id AND json_extract(d.draft_json,'$.schemaVersion')='xiaozhi.office-paper-draft.v6') BEGIN
+    INSERT INTO document_artifact_paper_sources(artifact_id,draft_id,paper_id,paper_digest,audience,schema_version)
+     SELECT NEW.artifact_id,id,json_extract(draft_json,'$.paperSource.paperId'),json_extract(draft_json,'$.paperSource.digest'),json_extract(draft_json,'$.paperSource.audience'),1 FROM xiaozhi_pi_office_drafts WHERE artifact_id=NEW.artifact_id;
+    DELETE FROM document_artifact_sources WHERE artifact_id=NEW.artifact_id AND ordinal=NEW.ordinal AND source_type='ai_generated';
+   END`);
    await sql.run(`CREATE TRIGGER IF NOT EXISTS xiaozhi_office_sources_capture_v1 AFTER INSERT ON xiaozhi_pi_office_drafts BEGIN
     INSERT INTO xiaozhi_pi_office_draft_sources(draft_id,ordinal,kind,source_id,relative_path,file_version,sha256)
      SELECT NEW.id,CAST(key AS INTEGER),json_extract(value,'$.kind'),json_extract(value,'$.sourceId'),json_extract(value,'$.path'),json_extract(value,'$.version'),json_extract(value,'$.sha256') FROM json_each(NEW.sources_json);
@@ -127,7 +133,7 @@ export function createOfficeArtifactState(sql:Sql){
   },
   async list(sessionId:string){return Promise.all((await sql.all('SELECT * FROM xiaozhi_pi_office_drafts WHERE conversation_id=? ORDER BY created_at,id',[sessionId])).map(parse));},
   async parent(id:string){return (await sql.all("SELECT * FROM document_artifacts WHERE id=? AND status='exported'",[id]))[0]??null;},
-  async invalidateRun(runId:string){await sql.run("UPDATE xiaozhi_pi_office_drafts SET state='interrupted',revision=revision+1,updated_at=? WHERE run_id=? AND state IN ('pending','approved','generating','prepared')",[now(),runId]);},
+  async invalidateRun(runId:string){await sql.run("UPDATE xiaozhi_pi_office_drafts SET state=CASE WHEN state='committing' THEN 'uncertain' ELSE 'interrupted' END,revision=revision+1,updated_at=? WHERE run_id=? AND state IN ('pending','approved','generating','prepared','committing')",[now(),runId]);},
   async recover(){await sql.run("UPDATE xiaozhi_pi_office_drafts SET state=CASE WHEN state='committing' THEN 'uncertain' ELSE 'interrupted' END,revision=revision+1,updated_at=? WHERE schema_version=1 AND state IN ('pending','approved','generating','prepared','committing')",[now()]);}
  };
 }

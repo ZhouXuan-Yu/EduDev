@@ -1,0 +1,160 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {DatabaseSync} from 'node:sqlite';
+import JSZip from 'jszip';
+
+/** One owned, real teacher journey joins the existing three branch deliveries. */
+export async function classroomJoinJourney(ctx){
+ if(process.argv.some(a=>a.startsWith('--join-cold=')))return classroomJoinColdJourney(ctx);
+ const {data,output,report,launch,navigate,until,check,restart}=ctx;
+ const page=()=>ctx.page(),app=()=>ctx.app();
+ const prior=path.resolve('test-results/education-journey-nYQae6');
+ const proof=JSON.parse(fs.readFileSync(path.join(prior,'report.json')));
+ assert(proof.success&&proof.scenario==='DT-READING'&&proof.restoredScanFrom==='education-journey-fkMAqF');
+ const sourceData=path.resolve('test-results',proof.restoredScanFrom,'data');
+ fs.cpSync(sourceData,data,{recursive:true});
+ // Only migrate paths of copied owned source files; preserve bytes, hashes and notes.
+ const copied=new DatabaseSync(path.join(data,'app.db'));
+ for(const r of copied.prepare('SELECT id,local_path FROM teacher_resources').all()){
+  const rel=path.relative(sourceData,r.local_path);assert(rel&&!rel.startsWith('..')&&!path.isAbsolute(rel));
+  const target=path.join(data,rel);assert(fs.existsSync(target));
+  copied.prepare('UPDATE teacher_resources SET local_path=? WHERE id=?').run(target,r.id);
+ }
+ copied.close();
+ const root=path.join(output,'teacher-workspace');fs.mkdirSync(root);
+ const rows=(query,args=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(query).all(...args);}finally{db.close();}};
+ const resource=rows('SELECT * FROM teacher_resources')[0];
+ const chunks=rows('SELECT * FROM resource_chunks WHERE resource_id=? ORDER BY chunk_index,id',[resource.id]);
+ const notes=rows('SELECT * FROM material_reading_entries ORDER BY sequence');
+ const records=rows('SELECT * FROM learning_records');
+ assert(chunks.length>=2&&chunks[0].content_md.includes('2.8N')&&chunks[0].content_md.includes('图1'));
+ report.provenance={report:prior,sha256:createHash('sha256').update(fs.readFileSync(path.join(prior,'report.json'))).digest('hex'),sourceData,profile:'fresh isolated profile; copied actual accepted local OCR scan and reading history'};
+ report.boundaries=['Actual Pi/DeepSeek: ordinary feedback → bound student → real OCR paragraph/DeepTutor quote check → OpenMAIC classroom → teacher edit → existing Office approval/PPTX → cold restore','Owned copy of authorized real physics scan, not synthetic source; source answers and OCR remain unreviewed; no original figure reconstruction or all-subject correctness claim','No daily data, independent agents, new database or automatic student fact writes; full DeepTutor/OpenMAIC/Hermes remains OPEN'];
+ let session='';
+ const snapshot=()=>page().evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session);
+ const send=async text=>{
+  const input=page().getByTestId('office-prompt-input');await until(async()=>!await input.isDisabled());
+  const old=(await snapshot()).projection.turns.at(-1)?.id;
+  if(text!==undefined)await input.fill(text);await input.press('Enter');assert.equal(await input.inputValue(),'');
+  await until(async()=>{const s=await snapshot();return s.projection.turns.at(-1)?.id!==old&&!s.running;},300000);
+  const s=await snapshot();assert.equal(s.projection.turns.at(-1).status,'completed',JSON.stringify(s.projection.turns.at(-1)));return s;
+ };
+ const native=()=>{const messages=[];const walk=d=>{for(const f of fs.readdirSync(d,{withFileTypes:true})){const full=path.join(d,f.name);if(f.isDirectory())walk(full);else if(f.name.endsWith('.jsonl'))for(const line of fs.readFileSync(full,'utf8').split('\n').filter(Boolean)){const m=JSON.parse(line).message;if(m)messages.push(m);}}};walk(path.join(data,'xiaozhi-pi',session));return messages;};
+ const capture=async(label,locator)=>{for(const[theme,width,height]of[['light',1366,768],['dark',1920,1080]]){
+  await page().emulateMedia({colorScheme:theme});await app().evaluate(({BrowserWindow},v)=>{const w=BrowserWindow.getAllWindows()[0];w.setPosition(0,0);w.setContentSize(v.width,v.height);},{width,height});
+  await page().waitForFunction(v=>innerWidth===v.width&&innerHeight===v.height,{width,height});await locator.scrollIntoViewIfNeeded();
+  assert(await page().evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  const png=`${label}-${theme}-${width}x${height}.png`;await page().screenshot({path:path.join(output,png),animations:'disabled'});report.visuals.push({png,theme,width,height});
+ }};
+ const openReader=async()=>{await navigate('materials');await page().getByTestId('material-'+resource.id).click();await page().getByTestId('materials-study-toggle').click();await until(async()=>await page().getByTestId('material-study-note').isEnabled());assert((await page().getByTestId('material-study-location').innerText()).includes('第 1 /'));};
+ await launch();await navigate('students');
+ await page().getByTestId('student-create').click();await page().getByTestId('student-profile-form').waitFor();
+ await page().getByTestId('student-form-display-name').fill('物理联合教学验收');await page().getByTestId('student-form-grade').fill('九年级');await page().getByTestId('student-form-save').click();
+ await until(()=>rows('SELECT id FROM students WHERE display_name=?',['物理联合教学验收']).length===1);
+ const student=rows('SELECT * FROM students WHERE display_name=?',['物理联合教学验收'])[0];
+ await page().getByTestId('student-lifecycle-feedback-success').waitFor();await page().getByTestId('student-row-'+student.id).click();await page().getByTestId('student-ask-xiaozhi').click();
+ await until(async()=>{session=await page().locator('.office-composer-container').getAttribute('data-session-id');return !!session&&(await snapshot()).studentContext?.id===student.id;});
+ await send('以后讲解详细些，分步骤，先给提示再给答案。');
+ const settings=rows("SELECT * FROM app_settings WHERE key LIKE 'xiaozhi.teacher-preference.v1:%' ORDER BY key");
+ const head=JSON.parse(settings.find(r=>r.key.endsWith(':head')).value_json);assert.equal(head.revision,1);
+ check('Teacher creates a real bound student conversation and ordinary feedback saves the current teaching strategy');
+ await openReader();
+ await page().getByTestId('material-study-question').fill('先实际查找并读取本资料第1段，用引用核验工具核验“已知排球的重力为2.8N”。再给当前九年级学生提示和分步讲解：离手后向上运动的排球，重力2.8N、空气阻力0.5N，合力大小和方向如何判断？未看清原图1必须说明，不能把教学示意当作原图。不要生成课堂、文件或学生成绩。');
+ await page().getByTestId('material-study-ask').click();await until(async()=>await page().getByTestId('office-prompt-input').inputValue().then(v=>v.includes('资料片段开始')));
+ assert.equal(await page().locator('.office-composer-container').getAttribute('data-session-id'),session);
+ const tutoring=await send();const tutorText=tutoring.projection.turns.at(-1).items.filter(i=>i.kind==='message'&&i.role==='assistant').map(i=>i.text).join('\n');
+ assert(/3[.．]3/.test(tutorText)&&/向下/.test(tutorText));
+ assert(native().some(m=>m.role==='toolResult'&&m.toolName==='education_verify_material_quote'&&m.content.some(c=>c.type==='text'&&JSON.parse(c.text).found===true)));
+ assert.equal(tutoring.studentContext.id,student.id);check('The same bound Pi session actually reads the OCR paragraph, runs DeepTutor quote verification and explains the force problem');
+ await openReader();
+ await page().getByTestId('material-study-question').fill('基于第4题制作两页中文互动课：一页图示讲解，画“教学示意（非原图1）”的球、向上运动箭头、重力2.8N与阻力0.5N的向下箭头；分步提示，区分速度与合力方向。再一页两道单选题并写解析：向上运动时合力大小方向；同样阻力大小下向下运动时合力大小方向。后者明确标作教学变式，非教材原题。只用text/shape/line，禁止网络图片、脚本和latex；不猜测原图细节，不写成绩。');
+ await page().getByTestId('material-study-classroom').click();await until(async()=>await page().getByTestId('office-prompt-input').inputValue().then(v=>v.includes('互动课堂')));
+ assert.equal(await page().locator('.office-composer-container').getAttribute('data-session-id'),session);await send();
+ const listed=await page().evaluate(()=>window.omniEdu.listClassrooms());assert(listed.ok);const item=listed.data.find(x=>x.sessionId===session&&x.status==='pending');assert(item,JSON.stringify(listed));
+ assert.equal(item.studentId,student.id);assert.equal(item.context.preferenceRevision,1);assert(item.context.materials.some(m=>m.source.resourceId===resource.id&&m.source.chunkId===chunks[0].id&&m.source.version===resource.content_hash));
+ assert(item.context.materials.every(m=>m.recognition==='local_ocr_unreviewed'));assert.equal(item.document.answerVerified,false);
+ report.classroom={initial:item,studentId:student.id,session};fs.writeFileSync(path.join(output,'join-initial.json'),JSON.stringify({item,tutorText},null,2));
+ check('Actual OpenMAIC generation stores a pending classroom with main-observed source version and frozen preference revision in the same student session');
+ await navigate('teaching');await page().getByTestId('teaching-classrooms-tab').click();await page().getByTestId('classroom-'+item.id).click();
+ await page().frameLocator('[data-testid=classroom-slide-preview]').locator('.classroom-canvas').waitFor({timeout:30000});
+ await page().getByTestId('classroom-sources').getByTestId('pi-material-source-open').first().click();await page().getByTestId('materials-chunk-'+chunks[0].id).waitFor();
+ await navigate('teaching');await page().getByTestId('teaching-classrooms-tab').click();await page().getByTestId('classroom-'+item.id).click();await capture('join-classroom-source',page().getByTestId('classroom-sources'));
+ const quizIndex=item.document.scenes.findIndex(s=>s.type==='quiz'),quiz=item.document.scenes[quizIndex].content.questions;assert.equal(quiz.length,2);
+ await page().getByTestId('classroom-page-'+quizIndex).click();for(const q of quiz)for(const a of q.answer)await page().locator(`input[name="${q.id}"][value="${a}"]`).check();
+ await page().getByTestId('classroom-check-answer').click();assert.equal(await page().getByTestId('classroom-answer-feedback').count(),2);
+ await page().getByTestId('classroom-edit').click();await page().getByTestId('classroom-title-edit').fill('排球受力与运动方向 · 教师修订');
+ const reminder='教师核对：运动方向与合力方向可以相反；补充图是教学示意，原图尚未核对。';
+ await page().getByRole('textbox',{name:'解析1',exact:true}).fill(quiz[0].analysis+' '+reminder);await page().getByTestId('classroom-save').click();await page().getByTestId('classroom-notice').getByText('已保存确认版本',{exact:false}).waitFor();
+ const saved=(await page().evaluate(()=>window.omniEdu.listClassrooms())).data.find(x=>x.id===item.id);assert.equal(saved.revision,1);assert.deepEqual(saved.context,item.context);assert.equal(saved.document.answerVerified,false);
+ check('Teacher opens the real source paragraph, previews the sandbox diagram, tries both questions and saves an edited confirmed revision without replacing provenance');
+ await app().evaluate(({dialog},directory)=>{const old=dialog.showOpenDialog;dialog.showOpenDialog=async()=>{dialog.showOpenDialog=old;return{canceled:false,filePaths:[directory]};};},root);
+ await page().getByTestId('classroom-export-pptx').click();await until(async()=>await page().locator('.office-composer-container').getAttribute('data-session-id')===session);
+ const input=page().getByTestId('office-prompt-input');await until(async()=>!await input.isDisabled()&&(await input.inputValue()).includes(saved.document.title));
+ await app().evaluate(({dialog},directory)=>{const old=dialog.showOpenDialog;dialog.showOpenDialog=async()=>{dialog.showOpenDialog=old;return{canceled:false,filePaths:[directory]};};},root);
+ await until(async()=>!!(await snapshot()).paperOutput);await input.press('Enter');assert.equal(await input.inputValue(),'');let pending;
+ await until(async()=>{const s=await snapshot();pending=s.officeArtifacts?.find(x=>x.state==='pending');if(pending)return true;if(!s.running)throw Error('Expected Office approval: '+JSON.stringify(s.projection.turns.at(-1)));return false;},240000);
+ const reviewed=await page().evaluate(i=>window.omniEdu.reviewXiaozhiOffice(i),{schemaVersion:'xiaozhi.office-artifact.v1',sessionId:session,draftId:pending.id});assert(reviewed.ok);assert.deepEqual(reviewed.value.draft.classroomSource.context,item.context);assert.deepEqual(reviewed.value.draft.classroomSource.document,saved.document);
+ const card=()=>page().locator(`[data-testid=pi-office-artifact][data-office-id="${pending.id}"]`);
+ const previews=card().getByTestId('classroom-slide-preview');for(let i=0;i<await previews.count();i++){await previews.nth(i).scrollIntoViewIfNeeded();await previews.nth(i).contentFrame().locator('.classroom-canvas').waitFor();}
+ await card().getByTestId('pi-office-images-reviewed').locator('[data-slot=checkbox-content]').click();assert(await card().getByTestId('pi-office-images-reviewed').getByRole('checkbox').isChecked());await card().getByTestId('pi-office-approve').click();
+ await until(async()=>!(await snapshot()).running,240000);const artifact=(await snapshot()).officeArtifacts.find(x=>x.id===pending.id);assert.equal(artifact.state,'saved',JSON.stringify(artifact));assert.equal((await snapshot()).projection.turns.at(-1).status,'completed');
+ const fact=rows('SELECT * FROM document_artifacts WHERE id=?',[artifact.artifactId])[0];assert(fact);const bytes=fs.readFileSync(path.join(root,pending.path));assert.equal(fact.content_hash,createHash('sha256').update(bytes).digest('hex'));
+ const zip=await JSZip.loadAsync(bytes),slides=Object.keys(zip.files).filter(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n));assert(slides.length>=2);const xml=(await Promise.all(slides.map(n=>zip.file(n).async('string')))).join('\n');assert(xml.includes('custGeom')&&xml.includes('教师核对')&&xml.includes('参考答案'));
+ report.classroom.saved=saved;report.delivery={artifact,fact,slides,bytes:bytes.length,path:path.join(root,pending.path)};
+ check('Existing Office approval saves a real versioned PPTX from the exact confirmed classroom and retains its source/preference snapshot');
+ assert.deepEqual(rows('SELECT * FROM resource_chunks WHERE resource_id=? ORDER BY chunk_index,id',[resource.id]),chunks);assert.deepEqual(rows('SELECT * FROM material_reading_entries ORDER BY sequence'),notes);assert.deepEqual(rows('SELECT * FROM learning_records'),records);
+ const currentSettings=rows("SELECT * FROM app_settings WHERE key LIKE 'xiaozhi.teacher-preference.v1:%' ORDER BY key");
+ assert.deepEqual(currentSettings.filter(r=>!r.key.includes(':event:')),settings.filter(r=>!r.key.includes(':event:')));
+ assert(currentSettings.filter(r=>r.key.includes(':event:')).every(r=>JSON.parse(r.value_json).appliedRevision===1));
+ const turns=(await snapshot()).projection.turns,nativeBefore=native();await restart();await page().getByTestId('ai-conversation-session-'+session).click();await until(async()=>await page().locator('.office-composer-container').getAttribute('data-session-id')===session);
+ assert.equal((await snapshot()).studentContext.id,student.id);assert.deepEqual((await snapshot()).projection.turns,turns);assert.deepEqual(native(),nativeBefore);assert.equal((await snapshot()).officeArtifacts.find(x=>x.id===pending.id).state,'saved');
+ await navigate('teaching');await page().getByTestId('artifact-'+fact.id).waitFor();await capture('join-delivery-cold',page().getByTestId('artifact-'+fact.id));
+ await page().getByTestId('teaching-classrooms-tab').click();await page().getByTestId('classroom-'+item.id).click();assert.deepEqual((await page().evaluate(()=>window.omniEdu.listClassrooms())).data.find(x=>x.id===item.id),saved);await page().getByTestId('classroom-sources').getByTestId('pi-material-source-open').first().click();await page().getByTestId('materials-chunk-'+chunks[0].id).waitFor();
+ assert.deepEqual(rows('SELECT * FROM material_reading_entries ORDER BY sequence'),notes);assert.deepEqual(rows('SELECT * FROM learning_records'),records);
+ check('Cold Electron restores the same student, classroom revision, provenance, preference and PPTX; no OCR/model replay, note changes or inferred student facts');
+ report.result={studentId:student.id,session,source:item.context,teacherPreferenceRevision:1,teacherEdited:true,answerVerified:false,tutoring:tutorText,modelTurns:4,toolNames:nativeBefore.filter(m=>m.role==='toolResult').map(m=>m.toolName),factsUnchanged:true};
+ fs.writeFileSync(path.join(output,'join-readback.json'),JSON.stringify({result:report.result,classroom:saved,delivery:report.delivery},null,2));
+}
+
+/** Resume only the failed post-delivery assertion; retain the actual four model turns. */
+async function classroomJoinColdJourney(ctx){
+ const {data,output,report,launch,navigate,until,check,restart}=ctx,page=()=>ctx.page();
+ const id=process.argv.find(a=>a.startsWith('--join-cold='))?.split('=')[1];assert(/^education-journey-[a-zA-Z0-9]+$/.test(id));
+ const prior=path.resolve('test-results',id),proof=JSON.parse(fs.readFileSync(path.join(prior,'report.json')));
+ assert(proof.scenario==='JOIN-01'&&proof.checks.length===5&&proof.checks.every(c=>c.pass)&&proof.delivery&&proof.classroom.saved);
+ assert.equal(report.build.sha256,proof.build.sha256);assert.equal(data,path.join(prior,'data'));
+ const item=proof.classroom.saved,session=item.sessionId;
+ const rows=q=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(q).all();}finally{db.close();}};
+ const settings=rows("SELECT * FROM app_settings WHERE key LIKE 'xiaozhi.teacher-preference.v1:%' ORDER BY key");
+ const versions=settings.filter(r=>!r.key.includes(':event:'));assert.equal(versions.length,2);assert.equal(JSON.parse(versions.find(r=>r.key.endsWith(':head')).value_json).revision,1);
+ const events=settings.filter(r=>r.key.includes(':event:')).map(r=>JSON.parse(r.value_json));assert.equal(events.length,4);assert.equal(events.filter(e=>e.action==='learned').length,1);assert(events.every(e=>e.appliedRevision===1));
+ const records=rows('SELECT * FROM learning_records'),notes=rows('SELECT * FROM material_reading_entries ORDER BY sequence'),chunks=rows('SELECT * FROM resource_chunks ORDER BY id');
+ assert.equal(records.length,0);
+ const bytes=fs.readFileSync(proof.delivery.path);assert.equal(createHash('sha256').update(bytes).digest('hex'),proof.delivery.fact.content_hash);
+ const snapshot=()=>page().evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session);
+ const open=async()=>{await page().getByTestId('ai-conversation-session-'+session).click();await until(async()=>await page().locator('.office-composer-container').getAttribute('data-session-id')===session);};
+ report.boundaries=['Cold readback of five successful actual JOIN-01 steps, four real Pi/DeepSeek turns, teacher-approved PPTX; failed assertion incorrectly compared append-only usage events to initial feedback only','No regeneration or provider replay; teacher preference head/version unchanged and four legitimate run application events checked','Owned profile only; OCR/answerVerified=false, all-subject accuracy, full DeepTutor/OpenMAIC/Hermes remain OPEN'];
+ report.provenance={from:prior,reportSha256:createHash('sha256').update(fs.readFileSync(path.join(prior,'report.json'))).digest('hex'),acceptedChecks:proof.checks,build:proof.build,firstFailure:'Preference application events append on each real turn; strategy head/version did not change',modelTurnsReused:4,modelTurnsThisRun:0};
+ await launch();await open();const first=await snapshot();assert.equal(first.studentContext.id,item.studentId);assert.equal(first.officeArtifacts.find(x=>x.id===proof.delivery.artifact.id).state,'saved');
+ assert(first.projection.turns.every(t=>t.status==='completed'));
+ check('Actual four-turn feedback/read/classroom/PPTX history restores; unchanged strategy revision has one learning and three legitimate application events');
+ await navigate('teaching');await page().getByTestId('artifact-'+proof.delivery.fact.id).waitFor();
+ const capture=async(label,locator)=>{for(const[theme,width,height]of[['light',1366,768],['dark',1920,1080]]){
+  await page().emulateMedia({colorScheme:theme});await ctx.app().evaluate(({BrowserWindow},v)=>{const w=BrowserWindow.getAllWindows()[0];w.setPosition(0,0);w.setContentSize(v.width,v.height);},{width,height});
+  await page().waitForFunction(v=>innerWidth===v.width&&innerHeight===v.height,{width,height});await locator.scrollIntoViewIfNeeded();assert(await page().evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  const png=`${label}-${theme}-${width}x${height}.png`;await page().screenshot({path:path.join(output,png),animations:'disabled'});report.visuals.push({png,theme,width,height});
+ }};
+ await capture('join-delivery-cold',page().getByTestId('artifact-'+proof.delivery.fact.id));
+ await page().getByTestId('teaching-classrooms-tab').click();await page().getByTestId('classroom-'+item.id).click();assert.deepEqual((await page().evaluate(()=>window.omniEdu.listClassrooms())).data.find(x=>x.id===item.id),item);
+ await page().frameLocator('[data-testid=classroom-slide-preview]').locator('.classroom-canvas').waitFor();await capture('join-classroom-cold',page().getByTestId('classroom-sources'));
+ await page().getByTestId('classroom-sources').getByTestId('pi-material-source-open').first().click();await page().getByTestId('materials-chunk-'+item.context.materials[0].source.chunkId).waitFor();
+ check('Cold teacher files and exact confirmed classroom render with its preserved source/preference context; source link opens the original OCR paragraph');
+ await restart();await open();assert.deepEqual((await snapshot()).projection.turns,first.projection.turns);assert.equal((await snapshot()).studentContext.id,item.studentId);
+ assert.deepEqual(rows("SELECT * FROM app_settings WHERE key LIKE 'xiaozhi.teacher-preference.v1:%' ORDER BY key"),settings);assert.deepEqual(rows('SELECT * FROM learning_records'),records);assert.deepEqual(rows('SELECT * FROM material_reading_entries ORDER BY sequence'),notes);assert.deepEqual(rows('SELECT * FROM resource_chunks ORDER BY id'),chunks);
+ assert.equal(rows('SELECT * FROM ai_agent_runs').filter(r=>r.session_id===session).length,4);
+ check('Second cold restart reproduces exact conversation, notes, source chunks and preferences without another model turn or student fact write');
+ report.classroom=proof.classroom;report.delivery=proof.delivery;report.result={studentId:item.studentId,session,source:item.context,teacherPreferenceRevision:1,teacherEdited:true,answerVerified:false,modelTurnsReused:4,modelTurnsThisRun:0,factsUnchanged:true};
+ fs.writeFileSync(path.join(output,'join-readback.json'),JSON.stringify({result:report.result,classroom:item,delivery:report.delivery,versions,events},null,2));
+}

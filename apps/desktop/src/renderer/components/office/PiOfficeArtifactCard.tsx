@@ -1,3 +1,5 @@
+import {ClassroomSources} from '../product/ClassroomSources';
+import {SlidePreview} from '../product/ClassroomWorkspace';
 import {QuestionMathText} from '../QuestionMathText';
 import {useEffect,useRef,useState} from 'react';
 import {Button,Checkbox,Input,Label,Tabs,TextArea,TextField} from '@heroui/react';
@@ -19,8 +21,9 @@ const preview=(draft:OfficeDraft)=>['# '+escaped(draft.title),...draft.sections.
 export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpen}:{artifact:OfficeArtifactSummary;sessionId:string;running:boolean;onRefresh:()=>Promise<void>;onOpen:(path:string)=>void}){
  const {draft,update,lock}=useOfficeControlState(`office-artifact:${artifact.id}`);
  const [review,setReview]=useState<OfficeArtifactReview>(),[reading,setReading]=useState(false),[expanded,setExpanded]=useState(artifact.state==='pending'),[tab,setTab]=useState('preview');
+ const [readyClassroomSlides,setReadyClassroomSlides]=useState<Set<string>>(new Set());
  const [imagesReviewed,setImagesReviewed]=useState<number>(),[loadedImages,setLoadedImages]=useState<Set<string>>(new Set());
- useEffect(()=>{setImagesReviewed(undefined);setLoadedImages(new Set());},[artifact.id,artifact.revision]);
+ useEffect(()=>{setImagesReviewed(undefined);setLoadedImages(new Set());setReadyClassroomSlides(new Set());},[artifact.id,artifact.revision]);
  const live=useRef(true);
  useEffect(()=>{live.current=true;return()=>{live.current=false;};},[]);
  useEffect(()=>{
@@ -35,8 +38,10 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
   return()=>{current=false;};
  },[sessionId,artifact.id,artifact.revision,expanded]);
  const pending=artifact.state==='pending',content=draft.officeDraft??review?.draft;
+ const classroomSource=content&&'classroomSource'in content?content.classroomSource:undefined;
+ const classroomDraft=!!classroomSource;
  const paperDraft=!!content&&isPaperOfficeDraft(content),richDraft=!!content&&isRichPaperOfficeSchema(content.schemaVersion),hasImages=richDraft&&content!.sections.some(s=>s.figures?.length);
- const imagesReady=!!review?.images&&!!content&&content.sections.flatMap(s=>s.figures||[]).every(f=>review.images!.some(i=>i.assetId===f.assetId&&i.sha256===f.sha256)&&loadedImages.has(f.assetId));
+ const imagesReady=classroomDraft?classroomSource!.document.scenes.filter(s=>s.type==='slide').every(s=>readyClassroomSlides.has(s.id)):!!review?.images&&!!content&&content.sections.flatMap(s=>s.figures||[]).every(f=>review.images!.some(i=>i.assetId===f.assetId&&i.sha256===f.sha256)&&loadedImages.has(f.assetId));
  const editable=pending&&running&&!draft.busy&&!reading&&!!review;
  function edit(action:(value:OfficeDraft)=>void){if(!editable||!content)return;setImagesReviewed(undefined);const next=structuredClone(content);action(next);update({officeDraft:next,officeRevision:artifact.revision,editing:true,error:''});}
  async function saveDraft(){
@@ -52,10 +57,10 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
   finally{lock.current=false;if(live.current)update({busy:false});}
  }
  async function decide(action:OfficeArtifactDecision['action']){
-  if(lock.current||(action==='approve'&&(!editable||draft.editing||hasImages&&(!imagesReady||imagesReviewed!==artifact.revision))))return;
+  if(lock.current||(action==='approve'&&(!editable||draft.editing||(hasImages||classroomDraft)&&(!imagesReady||imagesReviewed!==artifact.revision))))return;
   lock.current=true;update({busy:true,error:''});
   try{
-   const result=await window.omniEdu?.decideXiaozhiOffice({schemaVersion:OFFICE_ARTIFACT_SCHEMA,sessionId,draftId:artifact.id,revision:artifact.revision,action,...(action==='approve'&&hasImages?{imagesReviewed:true as const}:{})});
+   const result=await window.omniEdu?.decideXiaozhiOffice({schemaVersion:OFFICE_ARTIFACT_SCHEMA,sessionId,draftId:artifact.id,revision:artifact.revision,action,...(action==='approve'&&(hasImages||classroomDraft)?{imagesReviewed:true as const}:{})});
    if(!live.current)return;
    if(!result?.ok)update({error:result?OFFICE_ARTIFACT_ERRORS[result.error]:'本次操作没有提交，请重试。'});
    await onRefresh();
@@ -69,9 +74,9 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
   <ChatTool.Content>
    {reading?<p role="status">正在读取本地拟内容…</p>:review&&<div className="pi-office-review" data-testid="pi-office-review">
     <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
-     <Tabs.ListContainer><Tabs.List aria-label="办公文档审阅">{[['preview','拟内容'],...(pending?[['edit','修改拟内容']]:[]),['sources','来源']].map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
-     <Tabs.Panel id="preview"><div className="pi-office-preview" data-testid="pi-office-preview">{richDraft?<div className="pi-office-rich-preview"><h2>{content!.title}</h2>{content!.sections.map((section,index)=><section key={index}><h3>{section.heading}</h3>{Array.from({length:section.paragraphs.length+1},(_,position)=><div key={position}>{section.figures?.filter(f=>f.afterParagraph===position).map(f=>{const image=review.images?.find(i=>i.assetId===f.assetId&&i.sha256===f.sha256);return <figure key={f.blockId} data-testid="pi-office-source-image">{image?<img src={image.dataUrl} alt={f.role==='question'?'完整题面原图':f.role==='answer'?'参考答案原图':'解析原图'} onLoad={()=>setLoadedImages(old=>new Set([...old,f.assetId]))} onError={()=>update({error:'原图未能显示，请刷新检查，不能跳过图片核对。'})}/>:<p role="alert">原图未能读取，请刷新后检查。</p>}<figcaption>{f.role==='question'?'题面':f.role==='answer'?'答案':'解析'}原图 · 公式非可编辑对象</figcaption></figure>;})}{position<section.paragraphs.length&&<OfficeFormulaParagraph text={section.paragraphs[position]} math={isMathPaperOfficeSchema(content!.schemaVersion)}/>}</div>)}{section.table&&<table data-testid="pi-office-table"><thead><tr>{section.table.columns.map((cell,column)=><th key={column}><OfficeFormulaParagraph text={cell} math={isMathPaperOfficeSchema(content!.schemaVersion)}/></th>)}</tr></thead><tbody>{section.table.rows.map((row,ri)=><tr key={ri}>{row.map((cell,ci)=><td key={ci}><OfficeFormulaParagraph text={String(cell)} math={isMathPaperOfficeSchema(content!.schemaVersion)}/></td>)}</tr>)}</tbody></table>}</section>)}</div>:<Markdown components={{img:({alt})=><span>［图片：{alt||'未加载'}］</span>,a:({children})=><span>{children}</span>}}>{preview(content??review.draft)}</Markdown>}</div></Tabs.Panel>
-     {pending&&<Tabs.Panel id="edit"><div className="pi-office-editor" data-testid="pi-office-editor">
+     <Tabs.ListContainer><Tabs.List aria-label="办公文档审阅">{[['preview','拟内容'],...(pending&&!classroomDraft?[['edit','修改拟内容']]:[]),['sources','来源']].map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
+     <Tabs.Panel id="preview"><div className="pi-office-preview" data-testid="pi-office-preview">{classroomSource?<div className="pi-classroom-export-preview" data-testid="pi-classroom-export-preview"><h2>{content!.title}</h2><p>已确认课堂版本 {classroomSource.revision} · {classroomSource.purpose?`${classroomSource.purpose==='handout'?'学生讲义：不附随堂题答案和解析；课页原有内容仍完整保留':'教师备课稿：附已有参考解析，不是逐字讲稿'}。完整课页为不可编辑图片，随堂题文字可编辑。`:'文字、线条和图形可编辑；公式为本地排版图片，不可编辑。'}参考答案仍需教师核对。</p>{classroomSource.document.scenes.map(scene=><section key={scene.id}><h3>{scene.title}</h3>{scene.type==='slide'?<SlidePreview scene={scene} onChange={()=>false} onError={()=>update({error:'课页未能显示，请刷新检查。'})} onReady={()=>setReadyClassroomSlides(old=>new Set([...old,scene.id]))}/>:scene.type==='quiz'?scene.content.questions.map(q=><div key={q.id}><QuestionMathText text={q.question}/>{q.options?.map(o=><p key={o.value}><QuestionMathText text={`${o.value}. ${o.label}`}/></p>)}{classroomSource.includeAnswers&&<><p>参考答案：{q.answer?.join('、')}</p><QuestionMathText text={q.analysis||''}/></>}</div>):null}</section>)}</div>:richDraft?<div className="pi-office-rich-preview"><h2>{content!.title}</h2>{content!.sections.map((section,index)=><section key={index}><h3>{section.heading}</h3>{Array.from({length:section.paragraphs.length+1},(_,position)=><div key={position}>{section.figures?.filter(f=>f.afterParagraph===position).map(f=>{const image=review.images?.find(i=>i.assetId===f.assetId&&i.sha256===f.sha256);return <figure key={f.blockId} data-testid="pi-office-source-image">{image?<img src={image.dataUrl} alt={f.role==='question'?'完整题面原图':f.role==='answer'?'参考答案原图':'解析原图'} onLoad={()=>setLoadedImages(old=>new Set([...old,f.assetId]))} onError={()=>update({error:'原图未能显示，请刷新检查，不能跳过图片核对。'})}/>:<p role="alert">原图未能读取，请刷新后检查。</p>}<figcaption>{f.role==='question'?'题面':f.role==='answer'?'答案':'解析'}原图 · 公式非可编辑对象</figcaption></figure>;})}{position<section.paragraphs.length&&<OfficeFormulaParagraph text={section.paragraphs[position]} math={isMathPaperOfficeSchema(content!.schemaVersion)}/>}</div>)}{section.table&&<table data-testid="pi-office-table"><thead><tr>{section.table.columns.map((cell,column)=><th key={column}><OfficeFormulaParagraph text={cell} math={isMathPaperOfficeSchema(content!.schemaVersion)}/></th>)}</tr></thead><tbody>{section.table.rows.map((row,ri)=><tr key={ri}>{row.map((cell,ci)=><td key={ci}><OfficeFormulaParagraph text={String(cell)} math={isMathPaperOfficeSchema(content!.schemaVersion)}/></td>)}</tr>)}</tbody></table>}</section>)}</div>:<Markdown components={{img:({alt})=><span>［图片：{alt||'未加载'}］</span>,a:({children})=><span>{children}</span>}}>{preview(content??review.draft)}</Markdown>}</div></Tabs.Panel>
+     {pending&&!classroomDraft&&<Tabs.Panel id="edit"><div className="pi-office-editor" data-testid="pi-office-editor">
       {content&&<>
        <TextField value={content.title} onChange={value=>edit(next=>{next.title=value;})} isDisabled={!editable}><Label>文档标题</Label><Input maxLength={120} data-testid="pi-office-title"/></TextField>
        {paperDraft&&<p>题目、分值和答案来自已确认试卷。这里仅修改文档标题；改题请返回组卷并重新确认。</p>}
@@ -86,12 +91,12 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
        </div>)}
       </>}
      </div><div className="pi-office-actions"><Button size="sm" variant="secondary" isDisabled={!editable||!draft.editing} onPress={()=>void saveDraft()} data-testid="pi-office-save-draft">保存拟内容</Button><Button size="sm" variant="ghost" isDisabled={!editable||!draft.editing} onPress={()=>update({officeDraft:structuredClone(review.draft),officeRevision:artifact.revision,editing:false,error:''})} data-testid="pi-office-discard-edit">放弃修改</Button></div></Tabs.Panel>}
-     <Tabs.Panel id="sources"><div className="pi-office-sources" data-testid="pi-office-sources">{isPaperOfficeDraft(review.draft)?<p>已确认试卷 · {review.draft.paperSource.audience==='student'?'学生卷（不含文本答案与解析）':'教师答案卷（参考答案尚未独立核验）'}。完整题目版本在生成和保存前再次核对；内容并非模型重新抄写。</p>:review.sources.length?review.sources.map(source=><p key={`${source.kind}:${source.path}`}>{source.kind==='parent_artifact'?'上一版产物':'资料来源'} · {source.path}</p>):<p>本次没有文件资料来源；内容为 AI 起草，经教师审阅后保存。</p>}{review.parentArtifactId&&<p>此文档为新版本，原文件保持不变。</p>}</div></Tabs.Panel>
+     <Tabs.Panel id="sources"><div className="pi-office-sources" data-testid="pi-office-sources">{classroomSource?<><ClassroomSources context={classroomSource.context}/><p>来自教师已确认课堂版本 {classroomSource.revision}；生成与保存前再次核对源版本，导出不会覆盖课堂。课堂图义和参考答案并非独立正确性证明。</p></>:isPaperOfficeDraft(review.draft)?<p>已确认试卷 · {review.draft.paperSource.audience==='student'?'学生卷（不含文本答案与解析）':'教师答案卷（参考答案尚未独立核验）'}。完整题目版本在生成和保存前再次核对；内容并非模型重新抄写。</p>:review.sources.length?review.sources.map(source=><p key={`${source.kind}:${source.path}`}>{source.kind==='parent_artifact'?'上一版产物':'资料来源'} · {source.path}</p>):<p>本次没有文件资料来源；内容为 AI 起草，经教师审阅后保存。</p>}{review.parentArtifactId&&<p>此文档为新版本，原文件保持不变。</p>}</div></Tabs.Panel>
     </Tabs>
     <p>{pending?draft.editing?'有未保存的修改，请先保存拟内容，再确认此版本。':'确认仅保存本次拟内容；来源或目标发生变化时不会覆盖。':'这是本次操作的拟内容记录；实际文件请从工作区打开。'}</p>
    </div>}
-   {pending&&hasImages&&<Checkbox data-testid="pi-office-images-reviewed" isSelected={imagesReviewed===artifact.revision} isDisabled={!editable||draft.editing||!imagesReady} onChange={value=>setImagesReviewed(value?artifact.revision:undefined)}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><span>我已检查全部图片的完整题面、清晰度、答案隔离及个人信息。</span></Checkbox.Content></Checkbox>}
-   {pending&&<ChatTool.Approval><ChatTool.ApprovalActions><ChatTool.Approve isDisabled={!editable||draft.editing||hasImages&&(!imagesReady||imagesReviewed!==artifact.revision)} onPress={()=>void decide('approve')} data-testid="pi-office-approve">确认保存</ChatTool.Approve><ChatTool.Reject isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-office-reject">拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
+   {pending&&(hasImages||classroomDraft)&&<Checkbox data-testid="pi-office-images-reviewed" isSelected={imagesReviewed===artifact.revision} isDisabled={!editable||draft.editing||!imagesReady} onChange={value=>setImagesReviewed(value?artifact.revision:undefined)}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><span>{classroomDraft?'我已检查全部课页、图形、公式和随堂题；理解完整课页或公式为不可编辑图片，已检查学生讲义的答案隔离。':'我已检查全部图片的完整题面、清晰度、答案隔离及个人信息。'}</span></Checkbox.Content></Checkbox>}
+   {pending&&<ChatTool.Approval><ChatTool.ApprovalActions><ChatTool.Approve isDisabled={!editable||draft.editing||(hasImages||classroomDraft)&&(!imagesReady||imagesReviewed!==artifact.revision)} onPress={()=>void decide('approve')} data-testid="pi-office-approve">确认保存</ChatTool.Approve><ChatTool.Reject isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-office-reject">拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
   </ChatTool.Content>
   <div className="pi-office-actions">
    {!pending&&<Button size="sm" variant="ghost" onPress={()=>setExpanded(value=>!value)} data-testid="pi-office-review-toggle">{expanded?'收起拟内容':'查看拟内容'}</Button>}

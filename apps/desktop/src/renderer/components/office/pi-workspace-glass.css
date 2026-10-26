@@ -84,6 +84,7 @@
 .xiaozhi-pi-workspace .pi-context-status:is([data-state='failed'], [data-state='send_interrupted']) { color: var(--pi-danger); }
 .xiaozhi-pi-workspace :is(.pi-context-sources h4, .pi-task-details [data-slot='chat-tool-trigger'], .pi-context-header button, .pi-context-sources li, .pi-context-sources a) { color: var(--pi-ink); }
 .xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-shell'] {
+  background: var(--pi-paper);
   border-color: var(--pi-line);
   box-shadow: 0 2px 8px rgb(38 59 57 / 4%), 0 8px 22px rgb(38 59 57 / 3%);
   border-radius: 24px;
@@ -105,7 +106,7 @@
 .xiaozhi-pi-workspace .pi-file-explorer input { background: var(--pi-paper); color: var(--pi-ink); border-color: var(--pi-line); }
 .xiaozhi-pi-workspace .pi-file-explorer input::placeholder { color: var(--pi-muted); opacity: 1; }
 .xiaozhi-pi-workspace .pi-file-explorer [role='alert'] { color: var(--pi-danger); }
-.xiaozhi-pi-workspace :is(button, input, textarea, [role='tab'], [role='treeitem'], a):focus-visible {
+.xiaozhi-pi-workspace :is(button, input, textarea, select, [role='tab'], [role='treeitem'], a, [tabindex]):focus-visible {
   outline: 2px solid var(--pi-focus);
   outline-offset: 2px;
 }

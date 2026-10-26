@@ -2812,7 +2812,7 @@ export function App() {
   }}>
     {piEnabled && <div hidden={activeView !== 'ai'}><PiEducationWorkspace visible={activeView === 'ai'} onLeave={() => setActiveView('knowledge')} onSettings={() => setActiveView('settings')} /></div>}
     {activeView === 'settings' ? <PiSettingsWorkspace onBack={() => setActiveView('ai')} /> : activeView !== 'ai' &&
-      <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace sourceView={materialSourceView}/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}
+      <ProductSpaceShell view={activeView} notice={status}>{activeView === 'knowledge' ? <MaterialsWorkspace sourceView={materialSourceView} onAsk={async prompt=>{try{const list=await window.omniEdu?.listAiConversations();let remembered='';try{remembered=localStorage.getItem('xiaozhi.current-session.v1')||'';}catch{}const existing=list?.sessions.find(item=>item.id===remembered)||list?.sessions[0];const detail=existing?{session:existing}:await window.omniEdu?.createAiConversationSession({title:'阅读辅导'});if(!detail)throw new Error();desktopNavigation.navigate({view:'ai',sessionId:detail.session.id,draft:prompt});}catch{setStatus('阅读辅导对话未打开，请重试。');}}}/> : activeView === 'artifacts' ? <TeachingArtifactsWorkspace/> : renderCurrentView()}</ProductSpaceShell>}
   </MaterialSourceNavigation.Provider></StudentSourceNavigation.Provider>;
   return (
     <main className={`app-shell ${activeView === 'ai' ? 'app-shell-ai' : ''}`}>

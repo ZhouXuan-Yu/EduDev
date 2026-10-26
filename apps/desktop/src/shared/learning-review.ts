@@ -1,12 +1,16 @@
 import {plainStudentInput} from './student-context';
 import type {StudentContextSource} from './student-context';
-import {validTrainingPlan,type TrainingPlan} from './training-plan';
+import {trainingArray,validTrainingPlan,type TrainingPlan} from './training-plan';
 export const LEARNING_REVIEW_SCHEMA='xiaozhi.education.learning-review.v1' as const;
 export type LearningCorrection={result:'correct'|'incorrect'|'partial';errorType:'none'|'metacognitive'|'application';feedback:string};
 export type LearningReviewDraft=({kind:'assessment';correction:LearningCorrection}|{kind:'strategy';desiredRetention:number;plan?:TrainingPlan})&{reason:string};
-export type LearningReviewSummary={id:string;runId:string;state:'pending'|'confirmed'|'rejected';kind:'assessment'|'strategy';version:number};
+export type LearningReviewSummary={id:string;runId:string;callId?:string;state:'pending'|'confirmed'|'rejected';kind:'assessment'|'strategy';version:number};
 export type LearningReviewInput={schemaVersion:typeof LEARNING_REVIEW_SCHEMA;sessionId:string;id:string};
 export type LearningReviewDecision=LearningReviewInput&{action:'confirm'|'reject';draft?:LearningReviewDraft};
+export type LearningReviewBatchItem={id:string;draft?:LearningReviewDraft};
+export type LearningReviewBatchDecision={schemaVersion:typeof LEARNING_REVIEW_SCHEMA;sessionId:string;action:'confirm'|'reject';items:LearningReviewBatchItem[]};
+export type LearningReviewBatchSummary={action:'confirm'|'reject';items:LearningReviewSummary[]};
+export const LEARNING_REVIEW_BATCH_LIMIT=20;
 export type LearningReviewView=LearningReviewSummary&{draft:LearningReviewDraft;planCurrent?:boolean;planSources?:{title:string;reference:StudentContextSource}[];source?:{title:string;content:string;subject:string;occurredAt:string};heuristic?:{isCorrect:boolean;errorType:'metacognitive'|'application'|null};previousRetention:number;previousVersion:number};
 export type LearningReviewError='invalid_input'|'permission_denied'|'source_changed'|'conflict'|'unavailable'|'cancelled'|'no_evidence';
 export type LearningReviewResult<T>={ok:true;value:T}|{ok:false;error:LearningReviewError};
@@ -28,4 +32,14 @@ export function validLearningDraft(v:unknown):v is LearningReviewDraft{
 }
 export function validLearningReview(v:unknown,decision=false):v is LearningReviewDecision{
  return plainStudentInput(v,decision?['schemaVersion','sessionId','id','action','draft']:['schemaVersion','sessionId','id'])&&v.schemaVersion===LEARNING_REVIEW_SCHEMA&&typeof v.sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(v.sessionId)&&typeof v.id==='string'&&/^xilearning_[a-f0-9-]{36}$/i.test(v.id)&&(!decision||v.action==='reject'&&v.draft===undefined||v.action==='confirm'&&validLearningDraft(v.draft));
+}
+/** One explicit teacher batch action; every member stays bound to the same conversation, student and proposal kind. */
+export function validLearningBatchDecision(v:unknown):v is LearningReviewBatchDecision{
+ if(!plainStudentInput(v,['schemaVersion','sessionId','action','items'])||v.schemaVersion!==LEARNING_REVIEW_SCHEMA||typeof v.sessionId!=='string'||!/^aisession_[a-f0-9-]{36}$/i.test(v.sessionId)||v.action!=='confirm'&&v.action!=='reject'||!trainingArray(v.items)||v.items.length<1||v.items.length>LEARNING_REVIEW_BATCH_LIMIT)return false;
+ const ids=new Set<string>();
+ return v.items.every(item=>{
+  if(!plainStudentInput(item,['id','draft'])||typeof item.id!=='string'||!/^xilearning_[a-f0-9-]{36}$/i.test(item.id)||ids.has(item.id))return false;
+  ids.add(item.id);
+  return v.action==='confirm'?item.draft===undefined||validLearningDraft(item.draft):item.draft===undefined;
+ });
 }

@@ -1,5 +1,6 @@
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
-import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain as electronIpcMain, shell } from 'electron';
+import {createDesktopIpcLifetime} from './desktop-ipc-lifetime';
 import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } from './desktop-chrome';
 import { restoreWindowGeometry, installWindowGeometry } from './desktop-chrome/window-geometry';
 import { existsSync, readFileSync } from 'node:fs';
@@ -22,6 +23,8 @@ import { resolveRuntimeAuthority, applyLaunchProfile, isBackgroundAcceptance } f
 applyLaunchProfile({ profile: app.commandLine.getSwitchValue('user-data-dir'), setPath: (name, directory) => app.setPath(name, directory) });
 
 let store: OmniEduStore;
+const ipcLifetime=createDesktopIpcLifetime(electronIpcMain);
+const ipcMain=ipcLifetime.ipcMain;
 let mainWindow: BrowserWindow | undefined;
 let backgroundAcceptance = false;
 let e2eAttachmentDialogQueue: string[][] | undefined;
@@ -152,7 +155,7 @@ function createWindow() {
   const { maximized, ...geometry } = restoreWindowGeometry();
   const window = new BrowserWindow({
     ...geometry,
-    minWidth: 1100,
+    minWidth: 390,
     minHeight: 720,
     title: 'Omni-Edu Agent',
     show: !backgroundAcceptance,
@@ -517,11 +520,21 @@ if (ownsDesktop) app.whenReady().then(async () => {
   const mistakeSimilar=registerMistakeSimilarIpc({ipcMain,find:(input,signal)=>store.findMistakeSimilar(input,signal),allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});
   if (authority.mode === 'pi') registerPiConsoleEndpoints({ipcMain,authority,window:()=>mainWindow,run:input=>piConsole.run(input)});
-  let xiaozhiClosing = false;
+  let shutdown:Promise<void>|undefined,shutdownReady=false;
   app.on('before-quit', event => {
-    if (xiaozhiClosing) return;
-    event.preventDefault(); xiaozhiClosing = true;
-    void Promise.allSettled([xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialQueue.close()]).finally(() => app.quit());
+    if(shutdownReady)return;
+    event.preventDefault();
+    if(shutdown)return;
+    const ipcDrained=ipcLifetime.close();
+    shutdown=Promise.resolve().then(async()=>{
+      // Closing windows stops renderer polling. A repeated quit must still wait.
+      for(const window of BrowserWindow.getAllWindows())window.destroy();
+      await Promise.allSettled([ipcDrained,xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialQueue.close()]);
+      // Native SQLite callbacks must drain before Electron tears down Node.
+      await store.close();
+    })
+      .catch(() => console.error('[shutdown] local_store_close_failed'))
+      .finally(() => {shutdownReady=true;app.quit();});
   });
   registerDesktopChromeIpc(ipcMain, () => mainWindow);
   createWindow();

@@ -7,12 +7,14 @@ export interface OfficeProjectedItem {
   phase?: 'commentary' | 'final_answer';
   text?: string;
   label?: string;
+  plan?:import('./xiaozhi-agent').XiaozhiControl;
   status?: string;
   durationMs?: number;
   truncated?: boolean;
   sources?: import('./xiaozhi-web').XiaozhiPublicSource[];
   webError?: import('./xiaozhi-web').XiaozhiWebError;
   webEmpty?: boolean;
+  toolAttempt?: import('./xiaozhi-tool-attempt').XiaozhiToolAttempt;
   imageDelivery?: import('./xiaozhi-public-images').PublicImageDelivery;
   browserCapture?: import('./xiaozhi-browser-capture').BrowserCapture;
   attachments?: import('./xiaozhi-attachments').XiaozhiAttachment[];
@@ -24,6 +26,10 @@ export interface OfficeProjectedTurn {
   error?: string;
   /** Main-measured actual active + waiting time; absent in older history. */
   elapsedMs?: number;
+  /** Absent in historical records means unknown, not verified. */
+  verification?: import('./xiaozhi-verification').TaskVerification;
+  recovery?: import('./xiaozhi-recovery').XiaozhiRecovery;
+  task?:import('./xiaozhi-task').TaskView;
 }
 export interface OfficeProjection {
   schemaVersion: 'xiaozhi.office.projection.v1';

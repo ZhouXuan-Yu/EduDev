@@ -8,5 +8,6 @@ export function registerAttachmentIpc(options:{ipcMain:IpcMain;allowed:(event:El
   options.ipcMain.handle(`xiaozhi:attachment-${operation}`,(event,input)=>options.allowed(event)?options.attachments[operation](input):denied);
  }
  options.ipcMain.handle('xiaozhi:attachment-choose',(event,input)=>options.allowed(event)?options.attachments.choose(input,options.choose):denied);
+ options.ipcMain.handle('xiaozhi:attachment-import',(event,input)=>options.allowed(event)?options.attachments.importPaths(input):denied);
  options.ipcMain.handle('xiaozhi:attachment-cancel',(event,input)=>options.allowed(event)?options.attachments.cancel(input):{ok:false});
 }

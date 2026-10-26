@@ -1,3 +1,4 @@
+import type {ClassroomMaterial} from '../../shared/classroom-context';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {OmniEduStore} from '../db';
 import {MATERIALS_SCHEMA,validMaterialQuery,validMaterialBodyQuery,materialFailureText,materialIsOcr,materialCitation} from '../../shared/materials';
@@ -6,7 +7,7 @@ import {materialSource} from './material-source';
 import type {XiaozhiPublicSource} from '../../shared/xiaozhi-web';
 
 /** Read saved derivatives by resource ID; never expand workspace file authority. */
-export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,observed?:(resourceId:string,version:string)=>void):ToolDefinition[]{
+export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,observed?:(resourceId:string,version:string,material:ClassroomMaterial)=>void):ToolDefinition[]{
  const current=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!isCurrent())throw new Error('permission_denied');};
  const execute=(body:boolean):ToolDefinition['execute']=>async(_callId,args,signal)=>{
   try{
@@ -25,7 +26,10 @@ export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,obs
     if(!result.chunks.length)throw new Error('invalid_input');
     // Send at most one bounded excerpt; nextOffset never skips undelivered chunks.
     const chunk=result.chunks[0],text=chunk.containsPersonalData?'[含个人信息，正文已隐藏]':(await clean(chunk.contentMd)).slice(0,12000);
-    current(signal);if(!chunk.containsPersonalData)observed?.(input.resourceId,result.resource.contentHash);const next=input.offset+1;
+    current(signal);
+    const source=materialSource({resourceId:input.resourceId,version:result.resource.contentHash,offset:input.offset,title,chunk});
+    if(!chunk.containsPersonalData){await store.materials.source(source);current(signal);if(text.length)observed?.(input.resourceId,result.resource.contentHash,{source,title,characters:text.length,truncated:text.length<chunk.contentMd.length,recognition:materialIsOcr(result.resource.parseEngine)?'local_ocr_unreviewed':'saved_text'});}
+    const next=input.offset+1;
     payload={success:true,title,text,sanitized:true,teacherConfirmed:false,...(materialIsOcr(result.resource.parseEngine)?{recognition:'local_ocr_unreviewed',warning:'OCR可能遗漏图形或误识别公式/手写字；不是确认的题目或答案。'}:{}),source:{kind:'saved_material_body',version:result.resource.contentHash,chunk:chunk.chunkIndex+1,originalPageLocated:!!chunk.pageNumber,...(chunk.pageNumber?{pageNumber:chunk.pageNumber}:{})},totalChunks:result.total,offset:input.offset,nextOffset:next<result.total?next:null,truncated:text.length<chunk.contentMd.length,citation:materialCitation(title,chunk)};
     sources=chunk.containsPersonalData?[]:[{title:String(payload.citation),material:materialSource({resourceId:input.resourceId,version:result.resource.contentHash,offset:input.offset,title,chunk})}];
    }else{

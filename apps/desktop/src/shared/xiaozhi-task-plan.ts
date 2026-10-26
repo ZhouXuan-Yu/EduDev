@@ -1,0 +1,11 @@
+import {taskObject,taskKeys,taskNatural,taskText,validTaskSteps,type TaskCriterionKind} from './xiaozhi-task';
+
+export const TASK_PLAN_SCHEMA='xiaozhi.task-plan.v3' as const;
+export const TASK_PLAN_KINDS=['human','file','attachment','web','image','saved_text','saved_office','saved_questions'] as const;
+export type TaskPlanInput={schemaVersion:typeof TASK_PLAN_SCHEMA;expectedRevision:number;requirementsVersion:number;reason:string;steps:{id:string;text:string;dependsOn:string[];reported:'pending'|'in_progress'|'completed';kind:TaskCriterionKind;target?:string}[]};
+export function validTaskPlanInput(v:unknown):v is TaskPlanInput{
+ if(!taskObject(v)||Object.keys(v).length!==5||!taskKeys(v,['schemaVersion','expectedRevision','requirementsVersion','reason','steps'])||v.schemaVersion!==TASK_PLAN_SCHEMA||!taskNatural(v.expectedRevision)||!taskNatural(v.requirementsVersion)||v.requirementsVersion<1||!taskText(v.reason,500)||!Array.isArray(v.steps))return false;
+ if(v.steps.some(s=>!taskObject(s)||!taskKeys(s,['id','text','dependsOn','reported','kind','target'])||typeof s.id!=='string'||s.id.length>32||!TASK_PLAN_KINDS.includes(s.kind as TaskCriterionKind)||(s.kind==='human'?s.target!==undefined:!taskText(s.target,500))))return false;
+ return validTaskSteps(v.steps.map(s=>({id:s.id,text:s.text,dependsOn:s.dependsOn,reported:s.reported,criterionIds:['host_placeholder']})))&&v.steps.filter(s=>s.kind==='human').length===1;
+}
+export const TASK_PLAN_PARAMETERS={type:'object',additionalProperties:false,required:['schemaVersion','expectedRevision','requirementsVersion','reason','steps'],properties:{schemaVersion:{type:'string',enum:[TASK_PLAN_SCHEMA]},expectedRevision:{type:'integer',minimum:0},requirementsVersion:{type:'integer',minimum:1},reason:{type:'string',minLength:1,maxLength:500},steps:{type:'array',minItems:1,maxItems:8,items:{type:'object',additionalProperties:false,required:['id','text','dependsOn','reported','kind'],properties:{id:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,31}$'},text:{type:'string',minLength:1,maxLength:200},dependsOn:{type:'array',maxItems:7,items:{type:'string',maxLength:32}},reported:{type:'string',enum:['pending','in_progress','completed']},kind:{type:'string',enum:[...TASK_PLAN_KINDS]},target:{type:'string',minLength:1,maxLength:500}}}}}} as const;

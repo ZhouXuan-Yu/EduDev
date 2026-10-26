@@ -1,0 +1,21 @@
+{
+  "source": "Actual Electron export science-export-ui-tbHJKC; PowerPoint 16.0 build 20430 opens and animates it",
+  "build": "e1e08b00dce1a4acbd8687abe991bdae62b1d26301101de5f963c764631f4453",
+  "files": [
+    {
+      "file": "散热片课堂演示.pptx",
+      "bytes": 1262596,
+      "sha256": "b4f4dfe08c0c90708cfc85f446cb868d65efd36927dc55ff71a51c5433d65127"
+    },
+    {
+      "file": "散热片课堂演示.gif",
+      "bytes": 775972,
+      "sha256": "1542788b38501a37cf9270a9f589d2d8a93366773337b61900feb80aacaed65e"
+    },
+    {
+      "file": "课堂课件预览.png",
+      "bytes": 172187,
+      "sha256": "5d5c63275811454be3001b47e8a9f47478332abfcb999a5c299aad737fa3081d"
+    }
+  ]
+}

@@ -31,7 +31,7 @@ export const QUESTION_QUALITY_MESSAGES:Record<QuestionQualityIssue,string>={
  non_choice_must_not_have_options:'本题型不能包含选择题选项',non_choice_correct_answer_looks_like_option_key:'本题型需要完整答案，不能只写选项字母',
  duplicate_batch:'与本组另一道题完全重复，请删除重复内容或重新出题',duplicate_parent:'与实读原题完全重复，不能作为变式题保存',
  answer_conflict:'完全相同的题面出现不同参考答案，请核对并解决冲突',
- math_mismatch:'提交的形式化计算不符合参考结果，候选不可保存',
+ math_mismatch:'提交的计算或线性条件检查未通过，候选不可保存；请核对下方具体结果',
 };
 export function validQuestionQuality(v:unknown,count:number):v is QuestionQualityReview{
  if(!plainStudentInput(v,['schemaVersion','revisionHash','state','duplicateScope','answerVerification','items'])||![QUESTION_QUALITY_SCHEMA,QUESTION_MATH_QUALITY_SCHEMA].includes(v.schemaVersion as typeof QUESTION_QUALITY_SCHEMA)||typeof v.revisionHash!=='string'||!/^[a-f0-9]{64}$/.test(v.revisionHash)||!['blocked','manual_review'].includes(String(v.state))||v.duplicateScope!=='batch_and_read_parents'||v.answerVerification!=='not_run'||!Array.isArray(v.items)||v.items.length!==count)return false;

@@ -3,6 +3,7 @@ import { Button, Modal } from '@heroui/react';
 import { XIAOZHI_SKILL_ERRORS, type XiaozhiSkillCatalog, type XiaozhiSkillMutation, type XiaozhiSkillPreview } from '../../../shared/xiaozhi-skills';
 import { SkillRow } from './hana-skills/SkillRow';
 import './pi-skill-settings.css';
+import {OfficeMutationBoundary,useOfficeSynchronization} from './OfficeSynchronization';
 
 export function PiSkillSettings({ running, onClose, onChanged, embedded = false, onBusyChange }: { running: boolean; onClose: () => void; onChanged: () => Promise<void>; embedded?: boolean; onBusyChange?: (busy: boolean) => void }) {
   const [catalog, setCatalog] = useState<XiaozhiSkillCatalog>();
@@ -11,7 +12,8 @@ export function PiSkillSettings({ running, onClose, onChanged, embedded = false,
   const [editing, setEditing] = useState(false), [showArchived, setShowArchived] = useState(false), [archiveName, setArchiveName] = useState('');
   const [busy, setBusy] = useState(false), [loading, setLoading] = useState(true), [notice, setNotice] = useState('');
   const lock = useRef(false), request = useRef(0), live = useRef(true);
-  const disabled = busy || loading || running || Boolean(catalog?.locked);
+  const sync=useOfficeSynchronization();
+  const disabled = sync.blocked || busy || loading || running || Boolean(catalog?.locked);
   useEffect(() => { onBusyChange?.(busy); return () => onBusyChange?.(false); }, [busy, onBusyChange]);
   async function reload() {
     if (lock.current) return;
@@ -36,7 +38,7 @@ export function PiSkillSettings({ running, onClose, onChanged, embedded = false,
     finally { if (live.current && stamp === request.current) setLoading(false); }
   }
   async function mutate(input: XiaozhiSkillMutation, message: string) {
-    if (disabled || lock.current) return;
+    if (disabled || sync.isBlocked() || lock.current) return;
     lock.current = true; setBusy(true); setNotice(''); request.current++;
     try {
       const result = await window.omniEdu?.manageXiaozhiSkill(input);
@@ -96,7 +98,7 @@ export function PiSkillSettings({ running, onClose, onChanged, embedded = false,
   return <Modal.Backdrop isOpen isDismissable={!busy} onOpenChange={open => { if (!open && !lock.current) onClose(); }}>
     <Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-skills-dialog pi-themed-surface" data-testid="pi-skills-settings">
       <Modal.Header><Modal.Heading>技能</Modal.Heading><p>整理小智处理教育与办公任务的工作方法。</p></Modal.Header>
-      <Modal.Body>{content}</Modal.Body>
+      <Modal.Body>{sync.blocked&&<p role="status">正在同步过程记录，技能变更暂时不可用。</p>}<OfficeMutationBoundary>{content}</OfficeMutationBoundary></Modal.Body>
       <Modal.Footer><Button variant="secondary" data-testid="pi-skills-close" isDisabled={busy} onPress={onClose}>关闭</Button></Modal.Footer>
     </Modal.Dialog></Modal.Container>
   </Modal.Backdrop>;

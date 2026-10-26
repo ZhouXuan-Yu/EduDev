@@ -1,4 +1,4 @@
-import hashlib, io, json, pathlib, sys, zipfile
+import hashlib, io, json, pathlib, re, sys, zipfile
 from PIL import Image
 from docx import Document
 from pypdf import PdfReader
@@ -22,7 +22,7 @@ for item in expected:
     source_images = [(output / name).read_bytes() for name in item.get('imagePaths', [])]
     if file.suffix == '.docx':
         doc = Document(file)
-        text = '\n'.join(p.text for p in doc.paragraphs)
+        text = '\n'.join(p.text for p in doc.paragraphs) + '\n' + '\n'.join(cell.text for table in doc.tables for row in table.rows for cell in row.cells)
         assert all(abs(s.page_width.mm - 210) < 1 and abs(s.page_height.mm - 297) < 1 for s in doc.sections)
         with zipfile.ZipFile(file) as z:
             assert 'word/document.xml' in z.namelist()
@@ -64,7 +64,22 @@ for item in expected:
         # retain PDFium for actual rendered-page and source-image inspection.
         text = '\n'.join(page.extract_text() for page in reader.pages)
     for marker in item['markers']:
-        assert layout_text(marker) in layout_text(text), file.name + ': missing complete question/reference'
+        # Markdown source tables are delivered as real Office tables. Check all
+        # prose segments and every table cell, rather than requiring literal pipes.
+        segments, prose = [], []
+        for line in marker.splitlines():
+            if line.strip().startswith('|') and line.strip().endswith('|'):
+                if prose:
+                    segments.append('\n'.join(prose)); prose = []
+                cells = [cell.strip() for cell in line.strip().strip('|').split('|')]
+                if not all(re.fullmatch(r':?-{3,}:?', cell) for cell in cells):
+                    segments.extend(cell for cell in cells if cell)
+            else:
+                prose.append(line)
+        if prose: segments.append('\n'.join(prose))
+        for segment in segments:
+            assert layout_text(segment) in layout_text(text), file.name + ': missing complete question/reference'
+
     for marker in item.get('forbiddenMarkers', []):
         assert layout_text(marker) not in layout_text(text), file.name + ': student reference leakage'
     if item['audience'] == 'student':

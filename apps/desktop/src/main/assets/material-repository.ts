@@ -1,3 +1,6 @@
+import {MATERIAL_STUDY_SCHEMA,studyRevision,validStudySave,type MaterialStudySave,type MaterialStudyView,type MaterialStudyEntry,type MaterialStudyPage} from '../../shared/material-study';
+import {validMaterialSource} from '../../shared/materials';
+import {materialSource} from './material-source';
 import {createHash,randomUUID} from 'node:crypto';
 import {MATERIALS_SCHEMA,MATERIAL_PAGE_SIZE,materialTerms,type MaterialQuery,type MaterialBodyQuery,type MaterialPage,type MaterialBody} from '../../shared/materials';
 import type {TeacherResource,ResourceChunk} from '../../shared/contracts';
@@ -14,7 +17,7 @@ export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:str
 type Row=Record<string,unknown>;
 type SqlValue=string|number|null;
 export type MaterialRepositoryHost={
- root:string;all:(sql:string,params?:SqlValue[])=>Promise<Row[]>;
+ root:string;change:(sql:string,params?:SqlValue[])=>Promise<number>;all:(sql:string,params?:SqlValue[])=>Promise<Row[]>;
  mapResource:(row:Row)=>TeacherResource;mapChunk:(row:Row)=>ResourceChunk;
  commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal,pages?:MaterialOcrPage[],lease?:MaterialParseLease)=>Promise<void>;
  reuse:(id:string,engine:string,lease?:MaterialParseLease)=>Promise<void>;
@@ -80,6 +83,42 @@ export class MaterialRepository {
   if(after.contentHash!==body.resource.contentHash||after.parseStatus!==body.resource.parseStatus)throw new Error('source_changed');
   return {source:input,body:{...body,chunks:[chunk],hasMore:input.offset+1<body.total}};
  }
+
+ async readingPage(input:MaterialBodyQuery):Promise<MaterialStudyPage>{
+  const body=await this.body(input),chunk=body.chunks[0];
+  if(!chunk)throw new Error('empty');
+  const view=await this.source(materialSource({resourceId:body.resource.id,version:body.resource.contentHash,title:body.resource.title,offset:input.offset,chunk}));
+  const row=(await this.host.all('SELECT note FROM material_reading_entries WHERE resource_id=? AND source_json=? ORDER BY sequence DESC LIMIT 1',[view.source.resourceId,JSON.stringify(view.source)]))[0];
+  if(row&&(typeof row.note!=='string'||row.note.length>8000))throw new Error('unavailable');
+  return {...view,...(row?{savedNote:String(row.note)}:{})};
+ }
+ async study(resourceId:string):Promise<MaterialStudyView>{
+  await this.resource(resourceId);
+  const row=(await this.host.all('SELECT * FROM material_reading_entries WHERE resource_id=? ORDER BY sequence DESC LIMIT 1',[resourceId]))[0];
+  if(!row)return {schemaVersion:MATERIAL_STUDY_SCHEMA,stale:false};
+  const source:unknown=JSON.parse(String(row.source_json));
+  if(!validMaterialSource(source)||!studyRevision(row.id)||typeof row.note!=='string'||row.note.length>8000||![0,1].includes(Number(row.completed)))throw new Error('unavailable');
+  const entry:MaterialStudyEntry={id:String(row.id),source,note:row.note,completed:Number(row.completed)===1,updatedAt:String(row.updated_at)};
+  try{await this.source(source);return {schemaVersion:MATERIAL_STUDY_SCHEMA,entry,stale:false};}
+  catch(error){if((error as Error).message!=='source_changed')throw error;return {schemaVersion:MATERIAL_STUDY_SCHEMA,entry,stale:true};}
+ }
+ async saveStudy(input:MaterialStudySave):Promise<MaterialStudyView>{
+  if(!validStudySave(input))throw new Error('invalid_input');
+  const source=input.source,view=await this.source(source),chunk=view.body.chunks[0];
+  const id=`read_${randomUUID()}`,updatedAt=new Date().toISOString();
+  // One SQLite statement owns source/CAS and revision ordering; no gap between checking and writing.
+  const changed=await this.host.change(`INSERT INTO material_reading_entries (id,resource_id,source_json,note,completed,updated_at)
+   SELECT ?,?,?,?,?,? WHERE EXISTS (
+    SELECT 1 FROM teacher_resources r JOIN resource_chunks c ON c.resource_id=r.id
+    WHERE r.id=? AND r.content_hash=? AND r.parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')
+    AND c.id=? AND c.chunk_index=? AND c.content_md=? AND c.contains_personal_data=? AND coalesce(c.page_number,0)=?
+    AND c.id=(SELECT id FROM resource_chunks WHERE resource_id=r.id ORDER BY chunk_index,id LIMIT 1 OFFSET ?)
+   ) AND coalesce((SELECT id FROM material_reading_entries WHERE resource_id=? ORDER BY sequence DESC LIMIT 1),'')=?`,
+   [id,source.resourceId,JSON.stringify(source),input.note,input.completed?1:0,updatedAt,source.resourceId,source.version,source.chunkId,chunk.chunkIndex,chunk.contentMd,chunk.containsPersonalData?1:0,chunk.pageNumber||0,source.offset,source.resourceId,input.expectedRevision||'']);
+  if(changed!==1){await this.source(source);throw new Error('revision_conflict');}
+  return {schemaVersion:MATERIAL_STUDY_SCHEMA,stale:false,entry:{id,source:{...source},note:input.note,completed:input.completed,updatedAt}};
+ }
+
  async ingest(id:string,signal:AbortSignal,lease?:MaterialParseLease):Promise<TeacherResource>{
   if(this.active.has(id))throw new Error('material_busy');this.active.add(id);
   try{

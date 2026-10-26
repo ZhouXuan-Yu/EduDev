@@ -4,8 +4,8 @@ import type { XiaozhiMemoryScope } from './xiaozhi-memory';
 import type { XiaozhiSkill } from './xiaozhi-skills';
 import type { XiaozhiChangeSummary } from './xiaozhi-changes';
 import type { OfficeArtifactSummary } from './xiaozhi-office-artifacts';
-export type XiaozhiAgentError = 'invalid_input' | 'busy' | 'configuration' | 'authentication'
-  | 'rate_limited' | 'timeout' | 'transport' | 'cancelled' | 'model_error' | 'command_conflict' | 'permission_denied' | 'workspace_locked' | 'budget_exhausted' | 'nothing_to_compact' | 'context_limit' | 'compaction_failed' | 'memory_scope_changed' | 'skill_source_changed' | 'skill_scope_changed' | 'attachment_changed';
+export type XiaozhiAgentError = 'invalid_input' | 'busy' | 'configuration' | 'event_persistence' | 'authentication'
+  | 'rate_limited' | 'timeout' | 'transport' | 'cancelled' | 'model_error' | 'goal_stalled' | 'goal_review_extended' | 'command_conflict' | 'permission_denied' | 'workspace_locked' | 'budget_exhausted' | 'nothing_to_compact' | 'context_limit' | 'compaction_failed' | 'memory_scope_changed' | 'skill_source_changed' | 'skill_scope_changed' | 'attachment_changed';
 export type XiaozhiModelCapabilities = { id: string; name: string; contextWindow: number; maxOutputTokens: number;
   /** Absent in older catalogues means unknown, never an inferred image grant. */
   inputModalities?: ('text' | 'image')[]; observedAt: string; source: 'official' | 'cache'; stale?: boolean };
@@ -25,10 +25,10 @@ export type XiaozhiApprovalState = 'pending' | 'approved' | 'executing' | 'execu
 export type XiaozhiApproval = { id: string; runId: string; callId: string; source: string; target: string; state: XiaozhiApprovalState };
 export type XiaozhiDecisionInput = { sessionId: string; approvalId: string; decision: 'approve' | 'reject' | 'verify' };
 export type XiaozhiActionResult = { ok: true } | { ok: false; error: XiaozhiAgentError };
-export type XiaozhiPlanStep = { text: string; status: 'pending' | 'in_progress' | 'completed' };
+export type XiaozhiPlanStep = { text: string; status: 'pending' | 'in_progress' | 'completed';id?:string;dependsOn?:string[] };
 export type XiaozhiControl = { id: string; runId: string; kind: 'plan' | 'question' | 'instruction';
   state: 'pending' | 'answered' | 'queued' | 'dispatching' | 'withdrawn' | 'applied' | 'interrupted' | 'resuming';
-  text: string; revision?: number; steps?: XiaozhiPlanStep[]; options?: string[]; answer?: string; mode?: 'steer' | 'followUp'; canResume?: boolean; callId?:string };
+  text: string; revision?: number; steps?: XiaozhiPlanStep[];plan?:import('./xiaozhi-plan').PlanMetadata; options?: string[]; answer?: string; mode?: 'steer' | 'followUp'; canResume?: boolean; callId?:string };
 export type XiaozhiControlInput = { sessionId: string; controlId: string; answer: string };
 export type XiaozhiQueueInput = { sessionId: string; commandId: string; text: string; mode: 'steer' | 'followUp' };
 export type XiaozhiQueueMutationInput = { sessionId: string; controlId: string; revision: number }
@@ -38,6 +38,8 @@ export type XiaozhiAgentEventPayload = (
   | { kind:'assistant_start'; segment:number }
   | { kind:'assistant_end'; segment:number; final:boolean }
   | { kind: 'tool_start'; callId: string; tool: string }
+  | { kind:'tool_attempt';attempt:import('./xiaozhi-tool-attempt').XiaozhiToolAttempt }
+  | { kind: 'recovery'; recovery:import('./xiaozhi-recovery').XiaozhiRecovery }
   | { kind: 'tool_end'; callId: string; tool: string; success: boolean; durationMs?: number; source?: string; sources?: import('./xiaozhi-web').XiaozhiPublicSource[]; webError?: import('./xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:import('./xiaozhi-browser-capture').BrowserCapture }
   | { kind: 'approval'; approval: XiaozhiApproval }
   | { kind: 'change'; change: XiaozhiChangeSummary }
@@ -49,16 +51,34 @@ export type XiaozhiAgentEventPayload = (
   | { kind:'practice_review';review:import('./practice-review').PracticeReviewSummary }
   | { kind: 'control'; control: XiaozhiControl }
     | {kind:'goal';goal:import('./xiaozhi-goal').XiaozhiGoal}
+    | {kind:'task';task:import('./xiaozhi-task').TaskView;goal?:import('./xiaozhi-goal').XiaozhiGoal}
   | { kind:'image_delivery'; image:import('./xiaozhi-public-images').PublicImageDelivery }
   | { kind: 'usage'; usage: XiaozhiUsage }
+  | { kind: 'verification'; verification: import('./xiaozhi-verification').TaskVerification }
   | { kind: 'compaction'; state: 'running' | 'completed' | 'failed'; id?: number; automatic?: boolean; error?: XiaozhiAgentError; tokensBefore?: number; estimatedTokensAfter?: number }
   | { kind: 'memory_isolation'; excludedRuns: number; reason?: 'memory_authority' | 'interrupted_tool' }
   | { kind: 'skill_isolation'; excludedRuns: number; reason?: 'skill_authority' | 'interrupted_tool' }
   | { kind: 'status'; status: 'running' | 'completed' | 'interrupted' | 'failed'; error?: XiaozhiAgentError }
 );
-export type XiaozhiAgentEvent = { sessionId: string; runId: string; sequence: number } & XiaozhiAgentEventPayload;
+export type XiaozhiAgentEvent = { sessionId: string; runId: string; sequence: number; schemaVersion?: 1; generation?: number; revision?: number; durability?: 'committed' | 'unavailable' } & XiaozhiAgentEventPayload;
 export type XiaozhiAgentResult = { ok: true; runId: string; text: string; truncated: boolean }
   | { ok: false; runId: string; error: XiaozhiAgentError };
 export type XiaozhiStartInput = { sessionId: string; prompt: string; commandId: string; presentation?: import('./xiaozhi-message-presentation').XiaozhiMessagePresentation; attachments?: import('./xiaozhi-attachments').XiaozhiAttachmentSelection[] };
 export type XiaozhiStartResult = { ok: true; runId: string } | { ok: false; error: XiaozhiAgentError };
-export type XiaozhiWorkspaceSnapshot = { enabled: boolean; projection: OfficeProjection; running: boolean; operation?: 'compact'; modelCapabilities?: XiaozhiModelCapabilities; contextPolicy?: XiaozhiContextPolicy; legacyHistory: boolean; interruptedSend?: boolean; approvals?: XiaozhiApproval[]; changes?: XiaozhiChangeSummary[]; officeArtifacts?: OfficeArtifactSummary[]; controls?: XiaozhiControl[]; goal?: import('./xiaozhi-goal').XiaozhiGoal; workspace?: { label: string }; paperOutput?: {label:string}; budgetSettings?: XiaozhiBudgetSettings; limitsEnforced?: boolean; browser?:XiaozhiBrowserStatus; usage?: XiaozhiUsage[]; memoryScope?: XiaozhiMemoryScope; skills?: XiaozhiSkill[];paperReviews?:import('./paper-blueprint').PaperSummary[];practiceReviews?:import('./practice-review').PracticeReviewSummary[];questionCollections?:import('./question-collection').QuestionCollectionSummary[];questionReviews?:import('./question-review').QuestionReviewSummary[];learningReviews?:import('./learning-review').LearningReviewSummary[];studentContext?:import('./student-context').StudentContextSelection };
+export type XiaozhiWorkspaceSnapshot = { task?:import('./xiaozhi-task').TaskView;taskUnavailable?:boolean; eventCursors?:import('./xiaozhi-events').XiaozhiEventCursor[]; eventPersistence?:'unavailable'; enabled: boolean; projection: OfficeProjection; running: boolean; operation?: 'compact'; modelCapabilities?: XiaozhiModelCapabilities; contextPolicy?: XiaozhiContextPolicy; legacyHistory: boolean; interruptedSend?: boolean; approvals?: XiaozhiApproval[]; changes?: XiaozhiChangeSummary[]; officeArtifacts?: OfficeArtifactSummary[]; controls?: XiaozhiControl[]; goal?: import('./xiaozhi-goal').XiaozhiGoal; workspace?: { label: string }; paperOutput?: {label:string}; budgetSettings?: XiaozhiBudgetSettings; limitsEnforced?: boolean; browser?:XiaozhiBrowserStatus; usage?: XiaozhiUsage[]; memoryScope?: XiaozhiMemoryScope; skills?: XiaozhiSkill[];paperReviews?:import('./paper-blueprint').PaperSummary[];practiceReviews?:import('./practice-review').PracticeReviewSummary[];questionCollections?:import('./question-collection').QuestionCollectionSummary[];questionReviews?:import('./question-review').QuestionReviewSummary[];learningReviews?:import('./learning-review').LearningReviewSummary[];studentContext?:import('./student-context').StudentContextSelection };
+export type XiaozhiHistoryPageInput = { sessionId: string; before: string; limit?: number };
+export type XiaozhiHistoryPage = {
+  schemaVersion: 1;
+  sessionId: string;
+  projection: OfficeProjection;
+  eventCursors: import('./xiaozhi-events').XiaozhiEventCursor[];
+  legacyHistory: boolean;
+};
+export function validXiaozhiHistoryPageInput(value: unknown): value is XiaozhiHistoryPageInput {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+  const row = value as Record<string, unknown>;
+  return Object.keys(row).every(key => ['sessionId', 'before', 'limit'].includes(key))
+    && typeof row.sessionId === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(row.sessionId)
+    && typeof row.before === 'string' && /^[A-Za-z0-9_-]{1,200}$/.test(row.before)
+    && (row.limit === undefined || Number.isSafeInteger(row.limit) && Number(row.limit) >= 1 && Number(row.limit) <= 40);
+}

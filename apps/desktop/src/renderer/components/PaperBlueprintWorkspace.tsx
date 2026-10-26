@@ -3,6 +3,7 @@ import {Button} from '@heroui/react';
 import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,PAPER_ERRORS,defaultPaperBlueprint,validPaperBlueprint,type PaperBlueprint,type PaperSection,type PaperSummary,type PaperView,type PaperCreateInput,type PaperMode,type PaperGenerationContext} from '../../shared/paper-blueprint';
 import {PaperReviewPanel} from './PaperReviewPanel';
 import {PaperExportEntry} from './PaperExportEntry';
+import {PaperComparePanel} from './PaperComparePanel';
 import {useDesktopNavigation} from './desktop/DesktopFrame';
 import './paper-workspace.css';
 export function PaperBlueprintWorkspace(){
@@ -40,5 +41,6 @@ export function PaperBlueprintWorkspace(){
   {view?.state==='confirmed'&&view.exportCurrent===false&&!dirty&&<p role="status" data-testid="paper-export-older">这不是本会话最新确认的试卷。请打开最新确认版本后导出，避免交付错误版本。</p>}
   {view&&!dirty&&<PaperExportEntry view={view} disabled={busy||loading}/>}
   <div className="paper-layout"><section className="work-panel"><h2>已保存的组卷记录</h2>{papers.map(p=><Button variant="secondary" className="paper-saved" data-testid="paper-saved" key={p.id} isDisabled={busy||loading} onPress={()=>void open(p)}>{p.title} · {p.count}题 · {{pending:'待核对',confirmed:'已确认',rejected:'已拒绝'}[p.state]}</Button>)}{!loading&&!papers.length&&<p>暂无组卷记录。先完善蓝图，再生成预览。</p>}</section><section className="work-panel">{view?<PaperReviewPanel view={view} allowConfirm={!dirty&&!busy} onChanged={next=>{setView(next);void refresh().catch(e=>setError(e.message));}}/>:<p>生成或打开一份试卷后，在这里逐题核对。</p>}</section></div>
+  <PaperComparePanel papers={papers} loading={loading}/>
  </div>;
 }

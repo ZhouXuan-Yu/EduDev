@@ -3,12 +3,15 @@ import { tv } from 'tailwind-variants';
 export const chatAttachmentVariants = tv({
   slots: {
     base: 'chat-attachment',
+    icon: 'chat-attachment__icon',
+    info: 'chat-attachment__info',
     name: 'chat-attachment__name',
     preview: 'chat-attachment__preview',
     previewFallback: 'chat-attachment__preview-fallback',
     previewImage: 'chat-attachment__preview-image',
     previewVideo: 'chat-attachment__preview-video',
     remove: 'chat-attachment__remove',
+    size: 'chat-attachment__size',
   },
 });
 

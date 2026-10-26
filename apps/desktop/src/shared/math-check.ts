@@ -1,14 +1,16 @@
 import {plainStudentInput} from './student-context';
+import {validMathLinearSystem,type MathLinearSystem,type MathSystemStatus} from './math-system';
 export const MATH_CHECK_SCHEMA='xiaozhi.education.math-check.v1' as const;
 export type MathExpression={op:'number';numerator:string;denominator:string}|{op:'variable'}|{op:'add'|'subtract'|'multiply'|'divide'|'power'|'sqrt';args:MathExpression[]};
 export type MathAtomicCheck={kind:'expression'|'identity';left:MathExpression;right:MathExpression}|{kind:'polynomial';left:MathExpression;right:MathExpression;domain:'real'|'positive'|'nonnegative';roots:MathExpression[]};
-export type MathCheckInput=MathAtomicCheck|{kind:'steps';checks:MathAtomicCheck[]};
+export type MathCheckInput=MathAtomicCheck|{kind:'steps';checks:MathAtomicCheck[]}|MathLinearSystem;
 export type MathStepState='matched'|'mismatch'|'unsupported';
 export const aggregateMathSteps=(states:MathStepState[]):MathStepState=>states.includes('mismatch')?'mismatch':states.includes('unsupported')?'unsupported':'matched';
 export function validMathStepStates(value:unknown):value is MathStepState[]{return Array.isArray(value)&&value.length>=2&&value.length<=6&&value.every(s=>['matched','mismatch','unsupported'].includes(s));}
-export type MathCheckResult={state:'matched'|'mismatch'|'unsupported';conditionsVerified:false;engine:'sympy-1.14.0';reason:'calculation_match'|'calculation_mismatch'|'outside_supported_scope';stepStates?:MathStepState[]};
+export type MathCheckResult={state:'matched'|'mismatch'|'unsupported';conditionsVerified:false;engine:'sympy-1.14.0';reason:'calculation_match'|'calculation_mismatch'|'outside_supported_scope';stepStates?:MathStepState[];systemStatus?:MathSystemStatus};
 /** Structural limits only. The fixed SymPy worker independently enforces the same bounds. */
 export function validMathCheckInput(value:unknown):value is MathCheckInput{
+ if(plainStudentInput(value,['kind','variables','equations','targets'])&&value.kind==='linear_system')return validMathLinearSystem(value);
  if(plainStudentInput(value,['kind','checks'])&&value.kind==='steps')return Array.isArray(value.checks)&&value.checks.length>=2&&value.checks.length<=6&&value.checks.every(c=>plainStudentInput(c,['kind','left','right','domain','roots'])&&c.kind!=='steps'&&validMathCheckInput(c));
  if(!plainStudentInput(value,value&&typeof value==='object'&&'kind' in value&&value.kind==='polynomial'?['kind','left','right','domain','roots']:['kind','left','right'])||!['expression','identity','polynomial'].includes(String(value.kind)))return false;
  let nodes=0;
@@ -24,7 +26,8 @@ export function validMathCheckInput(value:unknown):value is MathCheckInput{
  return value.kind!=='polynomial'||['real','positive','nonnegative'].includes(String(value.domain))&&Array.isArray(value.roots)&&value.roots.length<=4&&value.roots.every(r=>expression(r,0,false));
 }
 export function validMathCheckResult(v:unknown):v is MathCheckResult{
- if(!plainStudentInput(v,['state','conditionsVerified','engine','reason','stepStates'])||v.conditionsVerified!==false||v.engine!=='sympy-1.14.0')return false;
+ if(!plainStudentInput(v,['state','conditionsVerified','engine','reason','stepStates','systemStatus'])||v.conditionsVerified!==false||v.engine!=='sympy-1.14.0')return false;
+ if(v.systemStatus!==undefined&&(v.stepStates!==undefined||!['unique_targets','inconsistent','underdetermined','answer_mismatch'].includes(String(v.systemStatus))||v.state!==(v.systemStatus==='unique_targets'?'matched':'mismatch')))return false;
  if(v.stepStates!==undefined&&(!validMathStepStates(v.stepStates)||aggregateMathSteps(v.stepStates)!==v.state))return false;
  return(v.state==='matched'&&v.reason==='calculation_match')||(v.state==='mismatch'&&v.reason==='calculation_mismatch')||(v.state==='unsupported'&&v.reason==='outside_supported_scope');
 }

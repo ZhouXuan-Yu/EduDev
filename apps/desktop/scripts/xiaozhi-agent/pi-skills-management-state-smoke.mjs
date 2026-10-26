@@ -31,16 +31,16 @@ try {
   let state = createPiSkillCatalogState(connection(db));
   let manager = createManagedEducationSkills({ root, state, assertIdle: () => { if (busy) throw new Error('busy'); } });
   let catalog = await manager.initialize();
-  await check('Fresh catalog seeds four builtin native Skills and initialization is idempotent', async () => {
-    assert.equal(catalog.revision, 1); assert.equal(catalog.skills.length, 4); assert(catalog.skills.every(item => item.enabled && item.origin === 'builtin'));
-    assert.deepEqual(await manager.initialize(), catalog); assert.equal((await manager.enabledResources()).resources.length, 4);
+  await check('Fresh catalog seeds five builtin native Skills and initialization is idempotent', async () => {
+    assert.equal(catalog.revision, 1); assert.equal(catalog.skills.length, 5); assert(catalog.skills.every(item => item.enabled && item.origin === 'builtin'));
+    assert.deepEqual(await manager.initialize(), catalog); assert.equal((await manager.enabledResources()).resources.length, 5);
   });
   const builtin = catalog.skills[0];
   await check('Builtin source is immutable to edit/archive; turning off is revisioned', async () => {
     await assert.rejects(manager.edit(builtin.name, catalog.revision, document(builtin.name)), /permission_denied/);
     await assert.rejects(manager.archive(builtin.name, catalog.revision), /permission_denied/);
     catalog = await manager.setEnabled(builtin.name, catalog.revision, false);
-    assert.equal((await manager.enabledResources()).resources.length, 3);
+    assert.equal((await manager.enabledResources()).resources.length, 4);
     catalog = await manager.setEnabled(builtin.name, catalog.revision, true);
   });
   const name = 'teacher-office', source = packageAt(name, document(name, `验收代号：${randomUUID()}。只整理教学文稿。`));
@@ -53,7 +53,7 @@ try {
     assert(!custom.enabled); assert.equal(custom.version, 1); assert.equal(custom.files.length, 3);
     assert.equal(hash(fs.readFileSync(path.join(source, 'SKILL.md'))), original);
     assert.equal(hash(fs.readFileSync(path.join(source, 'references/guide.md'))), reference);
-    assert.equal((await manager.enabledResources()).resources.length, 4);
+    assert.equal((await manager.enabledResources()).resources.length, 5);
     const preview = await manager.preview(name); assert.equal(preview.document, fs.readFileSync(path.join(source, 'SKILL.md'), 'utf8'));
   });
   await check('Duplicate active names and builtin collisions reject without overwriting catalog or sources', async () => {
@@ -65,7 +65,7 @@ try {
   catalog = await manager.setEnabled(name, catalog.revision, true);
   await check('Enable produces a verified native descriptor without changing original metadata or source bytes', async () => {
     const resources = (await manager.enabledResources()).resources;
-    assert.equal(resources.length, 5); assert(resources.find(item => item.skill.name === name));
+    assert.equal(resources.length, 6); assert(resources.find(item => item.skill.name === name));
     assert.equal(hash(fs.readFileSync(path.join(source, 'SKILL.md'))), original);
   });
   await check('Stale edits and renaming cannot overwrite the current version', async () => {
@@ -95,7 +95,7 @@ try {
     await assert.rejects(manager.enabledResources(), /skill_source_changed/);
     await assert.rejects(manager.setEnabled(name, catalog.revision, true), /skill_source_changed/);
     catalog = await manager.setEnabled(name, catalog.revision, false);
-    assert.equal((await manager.enabledResources()).resources.length, 4);
+    assert.equal((await manager.enabledResources()).resources.length, 5);
     catalog = await manager.archive(name, catalog.revision); assert(catalog.skills.find(item => item.name === name).archived);
     assert.equal(fs.readFileSync(referencePath, 'utf8'), 'changed');
   });
@@ -107,7 +107,7 @@ try {
   await check('Reopen persists revisions/files/enabled states and native metadata', async () => {
     db.close(); db = new DatabaseSync(database); state = createPiSkillCatalogState(connection(db));
     manager = createManagedEducationSkills({ root, state, assertIdle: () => { if (busy) throw new Error('busy'); } });
-    assert.deepEqual(await manager.initialize(), catalog); assert.equal((await manager.enabledResources()).resources.length, 4);
+    assert.deepEqual(await manager.initialize(), catalog); assert.equal((await manager.enabledResources()).resources.length, 5);
     assert.equal((await manager.preview(name)).version, 3);
   });
   await check('Missing teacher instruction is not recreated, and external source is never a fallback grant', async () => {

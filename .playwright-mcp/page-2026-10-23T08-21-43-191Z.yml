@@ -1,0 +1,359 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - complementary [ref=f2e3]:
+      - generic [ref=f2e6]:
+        - paragraph [ref=f2e7]: Overview
+        - link "React Components" [ref=f2e8] [cursor=pointer]:
+          - /url: /docs/react/components
+        - paragraph [ref=f2e9]: Charts
+        - link "Area Chart" [ref=f2e10] [cursor=pointer]:
+          - /url: /docs/react/components/area-chart
+        - link "Bar Chart" [ref=f2e11] [cursor=pointer]:
+          - /url: /docs/react/components/bar-chart
+        - link "Chart Tooltip" [ref=f2e12] [cursor=pointer]:
+          - /url: /docs/react/components/chart-tooltip
+        - link "Composed Chart" [ref=f2e13] [cursor=pointer]:
+          - /url: /docs/react/components/composed-chart
+        - link "Line Chart" [ref=f2e14] [cursor=pointer]:
+          - /url: /docs/react/components/line-chart
+        - link "Pie Chart" [ref=f2e15] [cursor=pointer]:
+          - /url: /docs/react/components/pie-chart
+        - link "Radar Chart" [ref=f2e16] [cursor=pointer]:
+          - /url: /docs/react/components/radar-chart
+        - link "Radial Chart" [ref=f2e17] [cursor=pointer]:
+          - /url: /docs/react/components/radial-chart
+        - paragraph [ref=f2e18]: Data Display
+        - link "Agenda" [ref=f2e19] [cursor=pointer]:
+          - /url: /docs/react/components/agenda
+        - link "Action Bar" [ref=f2e20] [cursor=pointer]:
+          - /url: /docs/react/components/action-bar
+        - link "Carousel" [ref=f2e21] [cursor=pointer]:
+          - /url: /docs/react/components/carousel
+        - link "Updated Data Grid" [ref=f2e22] [cursor=pointer]:
+          - /url: /docs/react/components/data-grid
+          - generic [ref=f2e23]: Updated
+          - text: Data Grid
+        - link "Empty State" [ref=f2e25] [cursor=pointer]:
+          - /url: /docs/react/components/empty-state
+        - link "File Tree" [ref=f2e26] [cursor=pointer]:
+          - /url: /docs/react/components/file-tree
+        - link "Floating TOC" [ref=f2e27] [cursor=pointer]:
+          - /url: /docs/react/components/floating-toc
+        - link "New Holo Card" [ref=f2e28] [cursor=pointer]:
+          - /url: /docs/react/components/holo-card
+          - generic [ref=f2e29]: New
+          - text: Holo Card
+        - link "Updated Hover Card" [ref=f2e31] [cursor=pointer]:
+          - /url: /docs/react/components/hover-card
+          - generic [ref=f2e32]: Updated
+          - text: Hover Card
+        - link "Kanban" [ref=f2e34] [cursor=pointer]:
+          - /url: /docs/react/components/kanban
+        - link "Item Card" [ref=f2e35] [cursor=pointer]:
+          - /url: /docs/react/components/item-card
+        - link "Item Card Group" [ref=f2e36] [cursor=pointer]:
+          - /url: /docs/react/components/item-card-group
+        - link "KPI" [ref=f2e37] [cursor=pointer]:
+          - /url: /docs/react/components/kpi
+        - link "KPI Group" [ref=f2e38] [cursor=pointer]:
+          - /url: /docs/react/components/kpi-group
+        - link "List View" [ref=f2e39] [cursor=pointer]:
+          - /url: /docs/react/components/list-view
+        - link "New Map" [ref=f2e40] [cursor=pointer]:
+          - /url: /docs/react/components/map
+          - generic [ref=f2e41]: New
+          - text: Map
+        - link "Timeline" [ref=f2e43] [cursor=pointer]:
+          - /url: /docs/react/components/timeline
+        - link "Widget" [ref=f2e44] [cursor=pointer]:
+          - /url: /docs/react/components/widget
+        - paragraph [ref=f2e45]: AI
+        - link "Chain Of Thought" [ref=f2e46] [cursor=pointer]:
+          - /url: /docs/react/components/chain-of-thought
+        - link "Chat Attachment" [ref=f2e47] [cursor=pointer]:
+          - /url: /docs/react/components/chat-attachment
+        - link "Chat Conversation" [ref=f2e48] [cursor=pointer]:
+          - /url: /docs/react/components/chat-conversation
+        - link "Chat List View" [ref=f2e49] [cursor=pointer]:
+          - /url: /docs/react/components/chat-list-view
+        - link "Chat Loader" [ref=f2e50] [cursor=pointer]:
+          - /url: /docs/react/components/chat-loader
+        - link "Chat Message" [ref=f2e51] [cursor=pointer]:
+          - /url: /docs/react/components/chat-message
+        - link "Chat Message Actions" [ref=f2e52] [cursor=pointer]:
+          - /url: /docs/react/components/chat-message-actions
+        - link "Chat Source" [ref=f2e53] [cursor=pointer]:
+          - /url: /docs/react/components/chat-source
+        - link "Chat Tool" [ref=f2e54] [cursor=pointer]:
+          - /url: /docs/react/components/chat-tool
+        - link "Code Block" [ref=f2e55] [cursor=pointer]:
+          - /url: /docs/react/components/code-block
+        - link "Markdown" [ref=f2e56] [cursor=pointer]:
+          - /url: /docs/react/components/markdown
+        - link "New Prompt Input" [ref=f2e57] [cursor=pointer]:
+          - /url: /docs/react/components/prompt-input
+          - generic [ref=f2e58]: New
+          - text: Prompt Input
+        - link "Prompt Suggestion" [ref=f2e60] [cursor=pointer]:
+          - /url: /docs/react/components/prompt-suggestion
+        - link "Text Shimmer" [ref=f2e61] [cursor=pointer]:
+          - /url: /docs/react/components/text-shimmer
+        - paragraph [ref=f2e62]: Feedback
+        - link "Emoji Reaction Button" [ref=f2e63] [cursor=pointer]:
+          - /url: /docs/react/components/emoji-reaction-button
+        - link "Number Value" [ref=f2e64] [cursor=pointer]:
+          - /url: /docs/react/components/number-value
+        - link "Pressable Feedback" [ref=f2e65] [cursor=pointer]:
+          - /url: /docs/react/components/pressable-feedback
+        - link "Rating" [ref=f2e66] [cursor=pointer]:
+          - /url: /docs/react/components/rating
+        - link "Trend Chip" [ref=f2e67] [cursor=pointer]:
+          - /url: /docs/react/components/trend-chip
+        - paragraph [ref=f2e68]: Layout
+        - link "Resizable" [ref=f2e69] [cursor=pointer]:
+          - /url: /docs/react/components/resizable
+        - paragraph [ref=f2e70]: Forms
+        - link "Cell Color Picker" [ref=f2e71] [cursor=pointer]:
+          - /url: /docs/react/components/cell-color-picker
+        - link "Cell Select" [ref=f2e72] [cursor=pointer]:
+          - /url: /docs/react/components/cell-select
+        - link "Cell Slider" [ref=f2e73] [cursor=pointer]:
+          - /url: /docs/react/components/cell-slider
+        - link "Cell Switch" [ref=f2e74] [cursor=pointer]:
+          - /url: /docs/react/components/cell-switch
+        - link "Checkbox Button Group" [ref=f2e75] [cursor=pointer]:
+          - /url: /docs/react/components/checkbox-button-group
+        - link "Drop Zone" [ref=f2e76] [cursor=pointer]:
+          - /url: /docs/react/components/drop-zone
+        - link "Inline Select" [ref=f2e77] [cursor=pointer]:
+          - /url: /docs/react/components/inline-select
+        - link "Native Select" [ref=f2e78] [cursor=pointer]:
+          - /url: /docs/react/components/native-select
+        - link "Number Stepper" [ref=f2e79] [cursor=pointer]:
+          - /url: /docs/react/components/number-stepper
+        - link "Radio Button Group" [ref=f2e80] [cursor=pointer]:
+          - /url: /docs/react/components/radio-button-group
+        - link "Updated Rich Text Editor" [ref=f2e81] [cursor=pointer]:
+          - /url: /docs/react/components/rich-text-editor
+          - generic [ref=f2e82]: Updated
+          - text: Rich Text Editor
+        - paragraph [ref=f2e84]: Navigation
+        - link "AppLayout" [ref=f2e85] [cursor=pointer]:
+          - /url: /docs/react/components/app-layout
+        - link "Command" [ref=f2e86] [cursor=pointer]:
+          - /url: /docs/react/components/command
+        - link "Updated Context Menu" [ref=f2e87] [cursor=pointer]:
+          - /url: /docs/react/components/context-menu
+          - generic [ref=f2e88]: Updated
+          - text: Context Menu
+        - link "Navbar" [ref=f2e90] [cursor=pointer]:
+          - /url: /docs/react/components/navbar
+        - link "Segment" [ref=f2e91] [cursor=pointer]:
+          - /url: /docs/react/components/segment
+        - link "Sidebar" [ref=f2e92] [cursor=pointer]:
+          - /url: /docs/react/components/sidebar
+        - link "Stepper" [ref=f2e93] [cursor=pointer]:
+          - /url: /docs/react/components/stepper
+        - paragraph [ref=f2e94]: Overlays
+        - link "Emoji Picker" [ref=f2e95] [cursor=pointer]:
+          - /url: /docs/react/components/emoji-picker
+        - link "Sheet" [ref=f2e96] [cursor=pointer]:
+          - /url: /docs/react/components/sheet
+    - banner [ref=f2e97]:
+      - generic [ref=f2e98]:
+        - generic [ref=f2e100]:
+          - link "HeroUI Pro" [ref=f2e101] [cursor=pointer]:
+            - /url: /docs
+            - generic [ref=f2e102]:
+              - generic [ref=f2e109]: HeroUI
+              - generic [ref=f2e110]: Pro
+          - generic [ref=f2e111]:
+            - button "HeroUI Pro Switch product, current HeroUI Pro" [ref=f2e112] [cursor=pointer]:
+              - generic [ref=f2e113]: HeroUI Pro
+            - combobox [ref=f2e124]
+        - generic [ref=f2e125]:
+          - generic [ref=f2e126]:
+            - button "Open Search" [ref=f2e128] [cursor=pointer]
+            - button "Ask AI" [ref=f2e130] [cursor=pointer]
+            - button [ref=f2e131] [cursor=pointer]:
+              - button "Design theme" [ref=f2e132]:
+                - generic [ref=f2e133]: Theme
+          - generic [ref=f2e135] [cursor=pointer]:
+            - button "light" [ref=f2e136]
+            - button "dark" [ref=f2e143]
+            - button "system" [ref=f2e146]
+      - generic [ref=f2e151]:
+        - link "Getting Started" [ref=f2e152] [cursor=pointer]:
+          - /url: /docs/react/getting-started
+        - link "Components" [ref=f2e157] [cursor=pointer]:
+          - /url: /docs/react/components
+        - link "Templates" [ref=f2e163] [cursor=pointer]:
+          - /url: /docs/react/templates
+        - link "Releases" [ref=f2e168] [cursor=pointer]:
+          - /url: /docs/react/releases
+        - tablist "HeroUI Pro platform" [ref=f2e178]:
+          - tab "Web" [selected] [ref=f2e179] [cursor=pointer]
+          - tab "Native" [ref=f2e183] [cursor=pointer]
+    - banner [ref=f2e187]:
+      - button "0 Chat Message" [ref=f2e188]:
+        - progressbar [ref=f2e189]
+        - generic [ref=f2e192]: Chat Message
+    - article [ref=f2e196]:
+      - generic [ref=f2e197]:
+        - generic [ref=f2e198]:
+          - heading "Chat Message" [level=1] [ref=f2e199]
+          - group [ref=f2e201]:
+            - button "Copy Markdown" [ref=f2e202] [cursor=pointer]
+            - button [ref=f2e203] [cursor=pointer]
+        - paragraph [ref=f2e204]: Composable user and assistant message layouts for AI chat.
+        - link "Storybook" [ref=f2e206] [cursor=pointer]:
+          - /url: https://storybook.heroui.pro/?path=/docs/pro-components-ai-chatmessage--docs
+      - generic [ref=f2e207]:
+        - heading [level=2] [ref=f2e208]:
+          - link "Usage" [ref=f2e209] [cursor=pointer]:
+            - /url: "#usage"
+        - paragraph [ref=f2e213]:
+          - text: Use
+          - code [ref=f2e214]: ChatMessage
+          - text: to compose assistant and user turns with avatars, bubbles, media, markdown, actions, and attachments.
+        - generic [ref=f2e215]:
+          - generic [ref=f2e217]:
+            - button [ref=f2e218]:
+              - button "Toggle theme" [ref=f2e219] [cursor=pointer]
+            - button [ref=f2e222]:
+              - link "Open in new tab" [ref=f2e223] [cursor=pointer]:
+                - /url: /docs/react/demos/chat-message-default?theme=light
+            - radiogroup [ref=f2e227]:
+              - radio "Mobile" [ref=f2e228] [cursor=pointer]
+              - radio "Tablet" [ref=f2e229] [cursor=pointer]
+              - radio "Desktop" [checked] [ref=f2e230] [cursor=pointer]
+          - region "Preview" [ref=f2e232]
+        - heading [level=2] [ref=f2e239]:
+          - link "With Markdown" [ref=f2e240] [cursor=pointer]:
+            - /url: "#with-markdown"
+        - paragraph [ref=f2e244]: Render assistant responses with rich markdown content.
+        - generic [ref=f2e245]:
+          - generic [ref=f2e247]:
+            - button [ref=f2e248]:
+              - button "Toggle theme" [ref=f2e249] [cursor=pointer]
+            - button [ref=f2e252]:
+              - link "Open in new tab" [ref=f2e253] [cursor=pointer]:
+                - /url: /docs/react/demos/chat-message-with-markdown?theme=light
+            - radiogroup [ref=f2e257]:
+              - radio "Mobile" [ref=f2e258] [cursor=pointer]
+              - radio "Tablet" [ref=f2e259] [cursor=pointer]
+              - radio "Desktop" [checked] [ref=f2e260] [cursor=pointer]
+          - region "Preview" [ref=f2e262]
+        - heading [level=2] [ref=f2e269]:
+          - link "Loading" [ref=f2e270] [cursor=pointer]:
+            - /url: "#loading"
+        - paragraph [ref=f2e274]: Use the loading demo for pending assistant turns.
+        - generic [ref=f2e275]:
+          - generic [ref=f2e277]:
+            - button [ref=f2e278]:
+              - button "Toggle theme" [ref=f2e279] [cursor=pointer]
+            - button [ref=f2e282]:
+              - link "Open in new tab" [ref=f2e283] [cursor=pointer]:
+                - /url: /docs/react/demos/chat-message-loading?theme=light
+            - radiogroup [ref=f2e287]:
+              - radio "Mobile" [ref=f2e288] [cursor=pointer]
+              - radio "Tablet" [ref=f2e289] [cursor=pointer]
+              - radio "Desktop" [checked] [ref=f2e290] [cursor=pointer]
+          - region "Preview" [ref=f2e292]
+        - heading [level=2] [ref=f2e299]:
+          - link "Anatomy" [ref=f2e300] [cursor=pointer]:
+            - /url: "#anatomy"
+        - figure [ref=f2e304]:
+          - button "Copy Text" [ref=f2e306] [cursor=pointer]
+          - region [ref=f2e307]:
+            - code [ref=f2e309]:
+              - generic [ref=f2e310]: "import {ChatMessage} from \"@heroui-pro/react\";"
+              - generic [ref=f2e311]: "import {Markdown} from \"@heroui-pro/react/markdown\";"
+              - generic [ref=f2e313]: <ChatMessage.Assistant>
+              - generic [ref=f2e314]: <ChatMessage.Avatar alt="Assistant" fallback="AI" show />
+              - generic [ref=f2e315]: <ChatMessage.Body>
+              - generic [ref=f2e316]: <ChatMessage.Content>
+              - generic [ref=f2e317]: "<Markdown>{response}</Markdown>"
+              - generic [ref=f2e318]: </ChatMessage.Content>
+              - generic [ref=f2e319]: </ChatMessage.Body>
+              - generic [ref=f2e320]: </ChatMessage.Assistant>
+              - generic [ref=f2e322]: <ChatMessage.User>
+              - generic [ref=f2e323]: <ChatMessage.Bubble>
+              - generic [ref=f2e324]: <ChatMessage.Content>Hello</ChatMessage.Content>
+              - generic [ref=f2e325]: </ChatMessage.Bubble>
+              - generic [ref=f2e326]: </ChatMessage.User>
+        - heading [level=2] [ref=f2e327]:
+          - link "CSS Classes" [ref=f2e328] [cursor=pointer]:
+            - /url: "#css-classes"
+        - list [ref=f2e332]:
+          - listitem [ref=f2e333]:
+            - code [ref=f2e334]: .chat-message--assistant
+            - text: "- Assistant message row"
+          - listitem [ref=f2e335]:
+            - code [ref=f2e336]: .chat-message--user
+            - text: "- User message wrapper"
+          - listitem [ref=f2e337]:
+            - code [ref=f2e338]: .chat-message__avatar
+            - text: "- Avatar slot"
+          - listitem [ref=f2e339]:
+            - code [ref=f2e340]: .chat-message__body
+            - text: "- Assistant body column"
+          - listitem [ref=f2e341]:
+            - code [ref=f2e342]: .chat-message__bubble
+            - text: "- User bubble"
+          - listitem [ref=f2e343]:
+            - code [ref=f2e344]: .chat-message__content
+            - text: "- Message content"
+          - listitem [ref=f2e345]:
+            - code [ref=f2e346]: .chat-message__actions
+            - text: "- Action row"
+        - heading [level=2] [ref=f2e347]:
+          - link "API Reference" [ref=f2e348] [cursor=pointer]:
+            - /url: "#api-reference"
+        - heading [level=3] [ref=f2e352]:
+          - link "ChatMessage.Assistant" [ref=f2e353] [cursor=pointer]:
+            - /url: "#chatmessageassistant"
+        - paragraph [ref=f2e357]:
+          - text: Assistant message root. Supports native
+          - code [ref=f2e358]: div
+          - text: props.
+        - heading [level=3] [ref=f2e359]:
+          - link "ChatMessage.User" [ref=f2e360] [cursor=pointer]:
+            - /url: "#chatmessageuser"
+        - paragraph [ref=f2e364]:
+          - text: User message root. Supports native
+          - code [ref=f2e365]: div
+          - text: props.
+        - heading [level=3] [ref=f2e366]:
+          - link "ChatMessage.Avatar" [ref=f2e367] [cursor=pointer]:
+            - /url: "#chatmessageavatar"
+        - paragraph [ref=f2e371]:
+          - text: Avatar slot for assistant messages. Extends HeroUI
+          - code [ref=f2e372]: Avatar
+          - text: props.
+        - heading [level=3] [ref=f2e373]:
+          - link "ChatMessage.Body" [ref=f2e374] [cursor=pointer]:
+            - /url: "#chatmessagebody"
+        - paragraph [ref=f2e378]: Assistant content column.
+        - heading [level=3] [ref=f2e379]:
+          - link "ChatMessage.Bubble" [ref=f2e380] [cursor=pointer]:
+            - /url: "#chatmessagebubble"
+        - paragraph [ref=f2e384]: User message bubble.
+        - heading [level=3] [ref=f2e385]:
+          - link "ChatMessage.Content" [ref=f2e386] [cursor=pointer]:
+            - /url: "#chatmessagecontent"
+        - paragraph [ref=f2e390]: Message text/content slot.
+        - heading [level=3] [ref=f2e391]:
+          - link "ChatMessage.Actions" [ref=f2e392] [cursor=pointer]:
+            - /url: "#chatmessageactions"
+        - paragraph [ref=f2e396]: Container for message actions.
+      - generic [ref=f2e397]:
+        - link [ref=f2e398] [cursor=pointer]:
+          - /url: /docs/react/components/chat-loader
+          - paragraph [ref=f2e402]: Chat Loader
+          - paragraph [ref=f2e403]: Loading skeletons and typing placeholders for assistant responses.
+        - link [ref=f2e404] [cursor=pointer]:
+          - /url: /docs/react/components/chat-message-actions
+          - paragraph [ref=f2e408]: Chat Message Actions
+          - paragraph [ref=f2e409]: Inline action buttons for assistant and user messages.
+  - alert [ref=f2e410]

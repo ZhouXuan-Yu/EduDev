@@ -1,0 +1,18 @@
+{
+  "project": "THU-MAIC/OpenMAIC",
+  "revision": "636fab0d7edee5e7c2694117c38ece8f623573f9",
+  "license": "MIT",
+  "path": "lib/agent/runtime/tool-timeout.ts",
+  "sourceSha256": "23489c3255f331771ca3b073df50e4e9e285b8a0b803521d0d5d5a77ad2acf8e",
+  "outputSha256": "c7854281026332454d9e10b0239ba212b73dec924d4fc8c58dd1ac27e7731b30",
+  "upstream": "https://github.com/THU-MAIC/OpenMAIC/blob/636fab0d7edee5e7c2694117c38ece8f623573f9/lib/agent/runtime/tool-timeout.ts",
+  "adaptations": [
+    "Pi ToolDefinition five-argument signature",
+    "Export bound and pass main-owned deadline/context",
+    "Pause active clock during existing teacher wait",
+    "Actual settlement callback retains locks on zombie work",
+    "Promise boundary catches synchronous throws and drains late rejection",
+    "No suggestion to automatically retry writes or uploads"
+  ],
+  "dependencies": "Only existing Pi type import and native AbortController/timers; no install, no Windows packaging runtime addition"
+}

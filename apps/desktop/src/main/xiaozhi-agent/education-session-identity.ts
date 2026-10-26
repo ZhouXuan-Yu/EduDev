@@ -1,3 +1,4 @@
+import {ORIGINAL_BATCH_TOOL} from '../../shared/original-question-batch';
 import {ORIGINAL_REVIEW_TOOL} from '../../shared/original-question-review';
 import type {SessionEntry} from '@earendil-works/pi-coding-agent';
 import {STUDENT_LEARNING_REVISION} from '../../shared/student-learning';
@@ -31,7 +32,10 @@ export function validateEducationSessionIdentity(options:Scopes,entries:readonly
   ||savedPractice.length&&!options.practiceReview||savedPractice.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.practice-review.v1'||JSON.stringify(entry.data)!==JSON.stringify(practice)))throw new Error('configuration');
  const original={version:1,tools:[ORIGINAL_REVIEW_TOOL],source:'sqlite-teacher-original-question-v1'};
  const savedOriginal=entries.filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.original-review.'));
- if(options.originalQuestionReviewTools&&options.originalQuestionReviewTools.map(t=>t.name).join(',')!==ORIGINAL_REVIEW_TOOL||savedOriginal.length&&!options.originalQuestionReviewTools||savedOriginal.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.original-review.v1'||JSON.stringify(entry.data)!==JSON.stringify(original)))throw new Error('configuration');
+ if(options.originalQuestionReviewTools&&![ORIGINAL_REVIEW_TOOL,[ORIGINAL_REVIEW_TOOL,ORIGINAL_BATCH_TOOL].join(',')].includes(options.originalQuestionReviewTools.map(t=>t.name).join(','))||savedOriginal.length&&!options.originalQuestionReviewTools||savedOriginal.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.original-review.v1'||JSON.stringify(entry.data)!==JSON.stringify(original)))throw new Error('configuration');
+ const originalBatch={version:1,tools:[ORIGINAL_BATCH_TOOL],source:'sqlite-original-batch-v1'},batchEnabled=!!options.originalQuestionReviewTools?.some(t=>t.name===ORIGINAL_BATCH_TOOL);
+ const savedBatch=entries.filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.original-batch.'));
+ if(savedBatch.length&&!batchEnabled||savedBatch.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.original-batch.v1'||JSON.stringify(entry.data)!==JSON.stringify(originalBatch)))throw new Error('configuration');
  const collection={version:1,tools:[...QUESTION_COLLECTION_TOOLS],source:'sqlite-paper-question-collection-v1'};
  const savedCollections=entries.filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.question-collection.'));
  if(options.questionCollectionTools&&(!options.questionReviewTools||!options.questionContextTools||options.questionCollectionTools.map(t=>t.name).join(',')!==collection.tools.join(','))||savedCollections.length&&!options.questionCollectionTools||savedCollections.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.question-collection.v1'||JSON.stringify(entry.data)!==JSON.stringify(collection)))throw new Error('configuration');
@@ -60,7 +64,7 @@ export function validateEducationSessionIdentity(options:Scopes,entries:readonly
  if(options.studentLearning&&(!options.studentContext||options.studentLearning.studentId!==options.studentContext.studentId)
   ||options.studentSimilar&&(!options.studentLearning||!options.questionContextTools||!options.practiceReview||options.studentSimilar.studentId!==options.studentLearning.studentId||options.studentSimilar.studentId!==options.practiceReview.studentId)
   ||options.studentLearningReview&&(!options.studentLearning||options.studentLearningReview.studentId!==options.studentLearning.studentId))throw new Error('configuration');
- return{collection:{data:collection,present:savedCollections.length>0},paperExport:{data:paperExport,present:savedExport.length>0},paper:{data:paper,present:savedPaper.length>0},original:{data:original,present:savedOriginal.length>0},practice:{data:practice,present:savedPractice.length>0},questionReview:{data:questionReview,present:savedReviews.length>0},question:{data:question,present:questionEntries.length>0},student:validate(options.studentContext,student,'xiaozhi.education.student-context.'),
+ return{originalBatch:{data:originalBatch,present:savedBatch.length>0,enabled:batchEnabled},collection:{data:collection,present:savedCollections.length>0},paperExport:{data:paperExport,present:savedExport.length>0},paper:{data:paper,present:savedPaper.length>0},original:{data:original,present:savedOriginal.length>0},practice:{data:practice,present:savedPractice.length>0},questionReview:{data:questionReview,present:savedReviews.length>0},question:{data:question,present:questionEntries.length>0},student:validate(options.studentContext,student,'xiaozhi.education.student-context.'),
   learning:validate(options.studentLearning,learning,'xiaozhi.education.student-learning.'),
   similar:validate(options.studentSimilar,similar,'xiaozhi.education.mistake-similar.'),
   review:validate(options.studentLearningReview,review,'xiaozhi.education.learning-review.')};

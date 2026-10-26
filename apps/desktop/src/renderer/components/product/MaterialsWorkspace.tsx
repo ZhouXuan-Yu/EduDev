@@ -11,10 +11,11 @@ import './teacher-library.css';
 import {MATERIAL_TASK_SCHEMA,type MaterialQueueView} from '../../../shared/material-parse-task';
 
 /** Local catalogue and committed body pages; never uploads or grants paths. */
-export function MaterialsWorkspace({sourceView}:{sourceView?:MaterialSourceView}) {
+export function MaterialsWorkspace({sourceView,onAsk}:{sourceView?:MaterialSourceView;onAsk?:(prompt:string)=>void}) {
  const [catalog,setCatalog]=useState<MaterialPage>(),[query,setQuery]=useState(''),[offset,setOffset]=useState(0),[selected,setSelected]=useState('');
  const [loadedQuery,setLoadedQuery]=useState('');
  const [loading,setLoading]=useState(true),[localBusy,setBusy]=useState(false),[hostBusy,setHostBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[revision,setRevision]=useState(0);
+ const [studyDirty,setStudyDirty]=useState(false);
  const busy=localBusy||hostBusy;
  const [queue,setQueue]=useState<MaterialQueueView>();
  const [scan,setScan]=useState<MaterialJob['scan']>();
@@ -57,11 +58,11 @@ export function MaterialsWorkspace({sourceView}:{sourceView?:MaterialSourceView}
   {imported?.items.some(item=>!item.ok)&&<ul className="teacher-library-import-failures" data-testid="materials-import-failures">{imported.items.filter(item=>!item.ok).map((item,index)=><li key={index}>{item.fileName}：未能添加，请检查文件是否可读取。</li>)}</ul>}
   <p className="teacher-library-count" data-testid="materials-count">{fetching?'正在读取资料…':`${catalog?.total||0} 份资料 · 保存在本机`}</p>
   <div className="teacher-library-grid"><div className="teacher-library-directory">
-   <ListView aria-label="资料列表" className="teacher-library-list" selectionMode="single" selectionBehavior="replace" disallowEmptySelection selectedKeys={new Set(resource?[resource.id]:[])} onSelectionChange={keys=>{if(keys!=='all'){setSourceActive(false);setSelected(String([...keys][0]||''));}}} renderEmptyState={()=>fetching?<p role="status">正在读取资料…</p>:<LibraryEmpty title={query?'没有匹配的资料':'先添加一份资料'} description={query?'换个名称或格式，或清除查找条件。':'从本机选择教材、教案、图片或其他教学文件。'}/>}>
+   <ListView aria-label="资料列表" className="teacher-library-list" selectionMode="single" selectionBehavior="replace" disallowEmptySelection selectedKeys={new Set(resource?[resource.id]:[])} onSelectionChange={keys=>{if(!studyDirty&&keys!=='all'){setSourceActive(false);setSelected(String([...keys][0]||''));}}} renderEmptyState={()=>fetching?<p role="status">正在读取资料…</p>:<LibraryEmpty title={query?'没有匹配的资料':'先添加一份资料'} description={query?'换个名称或格式，或清除查找条件。':'从本机选择教材、教案、图片或其他教学文件。'}/>}>
     {rows.map(row=>{const readiness=materialReadiness(row);return <ListView.Item id={row.id} key={row.id} textValue={row.title} data-testid={`material-${row.id}`} isDisabled={busy||fetching}>
      <FileText size={19}/><ListView.ItemContent><ListView.Title>{row.title}</ListView.Title><ListView.Description>{row.originalFileName} · {libraryFileSize(row.fileSize)}</ListView.Description></ListView.ItemContent><span className="teacher-library-state" data-tone={readiness.tone}>{readiness.label}</span>
     </ListView.Item>;})}</ListView>
    {!!catalog?.total&&<Pagination aria-label="资料目录翻页" className="teacher-library-pagination"><Pagination.Summary>第 {Math.floor(catalog.offset/MATERIAL_PAGE_SIZE)+1} / {Math.ceil(catalog.total/MATERIAL_PAGE_SIZE)} 页</Pagination.Summary><Pagination.Content><Pagination.Item><Pagination.Previous isDisabled={busy||fetching||offset===0} onPress={()=>setOffset(Math.max(0,offset-MATERIAL_PAGE_SIZE))} data-testid="materials-previous">上一页</Pagination.Previous></Pagination.Item><Pagination.Item><Pagination.Next isDisabled={busy||fetching||!catalog.hasMore} onPress={()=>setOffset(offset+MATERIAL_PAGE_SIZE)} data-testid="materials-next">下一页</Pagination.Next></Pagination.Item></Pagination.Content></Pagination>}
-  </div><MaterialBodyPanel resource={resource} sourceView={sourceActive?sourceView:undefined} busy={busy} revision={revision} taskStatus={task?.status} locate={()=>void locate()} retry={()=>void work(true)}/></div>
+  </div><MaterialBodyPanel resource={resource} onAsk={onAsk} onStudyDirty={setStudyDirty} sourceView={sourceActive?sourceView:undefined} busy={busy} revision={revision} taskStatus={task?.status} locate={()=>void locate()} retry={()=>void work(true)}/></div>
  </section>;
 }

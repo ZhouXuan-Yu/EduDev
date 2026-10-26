@@ -1,3 +1,4 @@
+import {reopenScienceDemo} from './science-demo';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
@@ -11,7 +12,7 @@ export type WorkspaceLease = { path: string; label: string; version: string };
 const hash = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
 export const fileVersion = (stat: fs.Stats) => hash([stat.dev,stat.ino,stat.size,stat.mtimeMs,stat.ctimeMs].join(':'));
 const raise = (code: XiaozhiFileError): never => { throw new Error(code); };
-const formats = (name:string):XiaozhiFileFormat => /\.md$/i.test(name)?'markdown':/\.(txt|csv|json|yaml|yml|log)$/i.test(name)?'text':/\.(png|jpe?g|webp|gif)$/i.test(name)?'image':isOfficeDocument(name)?'office':'unsupported';
+const formats = (name:string):XiaozhiFileFormat => /\.html$/i.test(name)?'science_demo':/\.md$/i.test(name)?'markdown':/\.(txt|csv|json|yaml|yml|log)$/i.test(name)?'text':/\.(png|jpe?g|webp|gif|svg)$/i.test(name)?'image':isOfficeDocument(name)?'office':'unsupported';
 const errors = new Set<XiaozhiFileError>(['invalid_input','permission_denied','no_workspace','not_found','changed','too_large','unsupported','busy','cancelled','timeout','read_failed','needs_ocr','parse_failed','empty','unavailable','text_unreadable']);
 export function validFileRequest(raw:unknown, preview=false): raw is XiaozhiPreviewInput {
   if(!raw || typeof raw!=='object' || Array.isArray(raw))return false;
@@ -83,7 +84,7 @@ export function createWorkspaceFiles(resolve:(sessionId:string)=>Promise<Workspa
         if(fileVersion(current.stat)!==input.version)raise('changed');
         const format=formats(input.path),base={path:input.path,name:path.basename(current.file),version:input.version,size:current.stat.size,format};
         if(format==='unsupported')return base;
-        const max=format==='office'?DOCUMENT_MAX_INPUT:format==='image'?4*1048576:1048576;if(current.stat.size>max)raise('too_large');
+        const max=format==='office'?DOCUMENT_MAX_INPUT:format==='image'?4*1048576:format==='science_demo'?65536:1048576;if(current.stat.size>max)raise('too_large');
         await resolveReadableFileRef({type:'path',path:current.file},{cwd:lease.path,allowedRoots:[lease.path]});signal.throwIfAborted();
         const handle=await fs.promises.open(current.file,fs.constants.O_RDONLY | (fs.constants.O_NOFOLLOW||0));
         try{
@@ -93,7 +94,8 @@ export function createWorkspaceFiles(resolve:(sessionId:string)=>Promise<Workspa
           signal.throwIfAborted();const post=await handle.stat();
           if(count!==current.stat.size || fileVersion(post)!==input.version || fileVersion(safeStat(lease.path,input.path).stat)!==input.version)raise('changed');
           const bytes=buffer.subarray(0,count);
-          if(format==='image')return {...base,image:`data:${imageMime(bytes)};base64,${bytes.toString('base64')}`};
+          if(format==='science_demo')return {...base,html:reopenScienceDemo(new TextDecoder('utf-8',{fatal:true}).decode(bytes))};
+          if(format==='image')return {...base,image:`data:${/\.svg$/i.test(input.path)?'image/svg+xml':imageMime(bytes)};base64,${bytes.toString('base64')}`};
           if(format==='office'){
             const {extractLocalDocument}=await import('./document-host');signal.throwIfAborted();
             const result=await extractLocalDocument({schemaVersion:DOCUMENT_SCHEMA,requestId:input.requestId,filename:base.name,bytes},signal);

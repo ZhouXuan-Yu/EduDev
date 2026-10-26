@@ -22,6 +22,6 @@ export function PiConversationSurface({controls=[],running,visible=true,...props
   }
   return <>{retryHint&&<p className="pi-retry-hint" role="status" data-testid="pi-retry-hint">{retryHint}</p>}
     <OfficeConversation {...props} readingRef={reading.ref} onReadingScroll={reading.onScroll} retryLabel="重新整理任务" onRetry={running?undefined:prepare} renderPlan={item=>{
-      const plan=controls.find(control=>control.id===item.id&&control.kind==='plan');return plan?<PiTaskPlan plan={plan}/>:undefined;
+      const plan=controls.find(control=>control.id===item.id&&control.kind==='plan');return plan?<PiTaskPlan plan={plan} sessionId={props.projection.threadId}/>:undefined;
     }}/></>;
 }

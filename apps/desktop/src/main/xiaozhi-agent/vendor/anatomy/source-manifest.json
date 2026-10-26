@@ -1,0 +1,20 @@
+{
+  "repo": "https://github.com/wheresryan22/anatomy",
+  "commit": "1482e8469b0a9e0d8cc18ea2740a01423d29ae80",
+  "license": "MIT",
+  "files": [
+    {
+      "upstream": "kit/iso-kit.ts",
+      "file": "iso-kit.ts",
+      "bytes": 38631,
+      "sha256": "e9fc988c61a11bfac1f097e62419915ea86b2130ab091f1b50c0e019c907e253"
+    },
+    {
+      "upstream": "LICENSE",
+      "file": "LICENSE",
+      "bytes": 1061,
+      "sha256": "87c078ab9d90a3044f359e6b563d4e6afea7aa060897cf4f21618687b3856796"
+    }
+  ],
+  "purpose": "Reviewed SVG geometry core; no upstream network/CLI or arbitrary generated JS execution"
+}

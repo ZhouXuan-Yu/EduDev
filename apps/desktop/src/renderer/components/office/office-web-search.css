@@ -1,0 +1,23 @@
+.office-web-search-process {
+  --bui-ws-background: var(--office-paper, #fff);
+  --bui-ws-text: var(--office-ink, #303332);
+  --bui-ws-secondary: var(--office-muted, #777d7c);
+  --bui-ws-muted: var(--office-muted, #777d7c);
+  --bui-ws-guide: var(--office-line, #eceeed);
+  --bui-ws-border: var(--office-line, #eceeed);
+  --bui-ws-hover: var(--office-user, #f4f6f5);
+  --bui-ws-font: 'Segoe UI', 'Microsoft YaHei UI', sans-serif;
+  min-width: 0;
+  width: 100%;
+}
+.office-web-search-process .bui-web-search { --ws-bg: var(--bui-ws-background); --ws-text: var(--bui-ws-text); --ws-secondary: var(--bui-ws-secondary); --ws-muted: var(--bui-ws-muted); --ws-guide: var(--bui-ws-guide); }
+.office-web-search-process .bui-ws-step { flex-wrap: wrap; row-gap: 4px; }
+.office-web-search-process .bui-ws-label { overflow-wrap: anywhere; }
+.office-web-search-process .bui-ws-meta { white-space: normal; }
+.office-web-search-process [data-step-state='failed'] > .bui-ws-step,
+.office-web-search-process > [role='alert'] { color: var(--office-danger, #b33f3f); }
+.office-web-search-process .bui-ws-source-copy { min-width: 0; overflow-wrap: anywhere; }
+.office-web-search-details { margin-top: 5px; font-size: 13px; }
+.office-web-search-details > summary { cursor: pointer; color: var(--office-muted); width: fit-content; }
+.office-web-search-details > summary:focus-visible { outline: 2px solid var(--office-accent); outline-offset: 3px; }
+.office-web-search-details > .office-tool { margin-top: 8px; }

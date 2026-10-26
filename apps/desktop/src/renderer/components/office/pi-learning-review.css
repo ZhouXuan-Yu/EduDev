@@ -1,11 +1,13 @@
 .pi-learning-review {margin-block:12px;min-width:0;}
 .pi-question-candidates {max-height:420px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;min-width:0;padding:2px 8px 2px 2px;}
 .pi-question-candidates:focus-visible {outline:2px solid var(--pi-accent,#2670eb);outline-offset:2px;}
+.pi-practice-count {position:sticky;top:0;z-index:2;margin:0 0 4px;padding:7px 10px;border:1px solid var(--pi-line,#eceeed);border-radius:9px;background:var(--pi-paper,#fff);color:var(--pi-muted,#777d7c);font-size:13px;}
 .pi-training-plan {min-width:0;}
 .pi-training-heading,.pi-training-row {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
 .pi-training-calendar {max-height:360px;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:2px 8px 2px 2px;}
 .pi-training-calendar:focus-visible {outline:2px solid var(--pi-accent,#2670eb);outline-offset:2px;}
 .pi-training-day {display:grid;gap:10px;min-width:0;padding:14px;margin-block:10px;border:1px solid var(--pi-line,#eceeed);border-radius:12px;background:var(--pi-paper,#fff);}
+.pi-question-candidates .pi-training-day {scroll-margin-top:46px;}
 .pi-training-day strong {font-size:14px;overflow-wrap:anywhere;}
 .pi-training-day p {margin:0;}
 .pi-training-day textarea {min-height:60px;}

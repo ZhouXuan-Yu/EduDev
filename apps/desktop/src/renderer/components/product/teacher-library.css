@@ -80,3 +80,7 @@
 .material-layout-lines .checkbox { min-width: 0; width: 100%; }
 .material-layout-lines .checkbox__content { display: flex; width: 100%; gap: 10px; align-items: start; font-weight: 400; white-space: normal; overflow-wrap: anywhere; }
 .material-layout .text-area { width: 100%; color: var(--pi-ink); background: var(--pi-paper); }
+
+.material-study {display:flex;flex-direction:column;gap:16px;min-width:0;border-top:1px solid var(--border);padding-top:20px;}
+.material-study label {display:flex;flex-direction:column;gap:8px;}
+.material-study .teacher-library-toolbar {flex-wrap:wrap;}

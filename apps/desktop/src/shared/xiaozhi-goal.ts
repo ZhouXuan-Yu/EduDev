@@ -1,6 +1,16 @@
 import type {XiaozhiAgentError} from './xiaozhi-agent';
 export type GoalState='active'|'waiting_teacher'|'paused'|'interrupted'|'review_required'|'completed'|'ended';
-export type XiaozhiGoal={schemaVersion:1;id:string;sessionId:string;revision:number;state:GoalState;objective:string;criteria:string[];summary:string;nextStep:string;runId:string;resultRunId:string;candidate:string;evidence:{runId:string;callId:string;label:string}[];checkpoints:number;createdAt:string;updatedAt:string};
+type ProgressFields={checkedAt:string;newEvidence:number;idleBoundaries:number;state:'advanced'|'no_new_evidence'|'stalled'|'unavailable'|'coverage_limit'};
+export type GoalProgress=ProgressFields&({schemaVersion:1;scope:'result_integrity'}|{schemaVersion:2;scope:'evidence_and_teacher_input';newTeacherInputs:number});
+export function validGoalProgress(value:unknown):value is GoalProgress{
+ if(!plainGoalObject(value))return false;
+ const v1=value.schemaVersion===1&&value.scope==='result_integrity'&&Object.keys(value).sort().join(',')==='checkedAt,idleBoundaries,newEvidence,schemaVersion,scope,state';
+ const v2=value.schemaVersion===2&&value.scope==='evidence_and_teacher_input'&&Object.keys(value).sort().join(',')==='checkedAt,idleBoundaries,newEvidence,newTeacherInputs,schemaVersion,scope,state'&&Number.isSafeInteger(value.newTeacherInputs)&&Number(value.newTeacherInputs)>=0&&Number(value.newTeacherInputs)<=32;
+ if(!v1&&!v2)return false;
+ const total=Number(value.newEvidence)+(v2?Number(value.newTeacherInputs):0);
+ return typeof value.checkedAt==='string'&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(value.checkedAt)&&Number.isFinite(Date.parse(value.checkedAt))&&Number.isSafeInteger(value.newEvidence)&&Number(value.newEvidence)>=0&&Number(value.newEvidence)<=128&&total<=128&&Number.isSafeInteger(value.idleBoundaries)&&Number(value.idleBoundaries)>=0&&Number(value.idleBoundaries)<=3&&typeof value.state==='string'&&['advanced','no_new_evidence','stalled','unavailable','coverage_limit'].includes(value.state)&&(value.state==='advanced'?total>0&&value.idleBoundaries===0:total===0);
+}
+export type XiaozhiGoal={schemaVersion:1;id:string;sessionId:string;revision:number;state:GoalState;objective:string;criteria:string[];summary:string;nextStep:string;runId:string;resultRunId:string;candidate:string;evidence:{runId:string;callId:string;label:string}[];checkpoints:number;createdAt:string;updatedAt:string;progress?:GoalProgress};
 export type GoalMutation={schemaVersion:1;sessionId:string;id:string;revision:number}&({action:'create';objective:string;criteria:string[]}|{action:'pause'|'resume'|'end'}|{action:'accept';checked:number[]});
 export type GoalResult={ok:true;goal:XiaozhiGoal}|{ok:false;error:XiaozhiAgentError};
 export const GOAL_LABELS:Record<GoalState,string>={active:'进行中的目标',waiting_teacher:'等待教师决定',paused:'目标已暂停',interrupted:'目标已中断',review_required:'等待验收',completed:'目标已完成',ended:'目标已结束'};

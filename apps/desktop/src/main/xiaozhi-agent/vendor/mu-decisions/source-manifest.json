@@ -1,0 +1,9 @@
+{
+  "repository": "https://github.com/qybaihe/mu",
+  "revision": "faed8c364323c477399b1dc2ef1d2fa36ce51267",
+  "source": "packages/kyrn-judge/src/decision.ts",
+  "sourceSha256": "86a908d558bbea00feafd1eb34d397242db349db8dd5039ba324849047ddc112",
+  "adaptedSha256": "e581b270cc3bc3a08d01fb22b0bc0284f6f8cb050c1e5fe9dadf9a550b13b3d1",
+  "extraction": "ABSTAIN, DecisionMode, CacheImpact and LatencyClass declarations; no judge provider or AgentLoop.",
+  "dependenciesAdded": []
+}

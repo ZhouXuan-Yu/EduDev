@@ -1,3 +1,4 @@
+import {scienceFigureParameters} from '../../shared/science-figure';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import type { XiaozhiAgentEventPayload } from '../../shared/xiaozhi-agent';
 import type { XiaozhiChangeDecision, XiaozhiChangeReviewInput, XiaozhiChangeResult,
@@ -62,9 +63,9 @@ export function createTextChangeCoordinator(options: {
       } catch (error) { return { ok: false, error: errorCode(error) }; }
     },
     tools(sessionId: string, runId: string, wait: Wait): ToolDefinition[] {
-      const execute = async (callId: string, raw: unknown, signal: AbortSignal | undefined, operation: 'create' | 'edit') => {
+      const execute = async (callId: string, raw: unknown, signal: AbortSignal | undefined, operation: 'create' | 'edit' | 'science') => {
         if (!object(raw) || 'operation' in raw) throw new Error('invalid_input');
-        const row = await options.service.propose(sessionId, runId, callId, { ...raw, operation }, signal);
+        const row = await options.service.propose(sessionId, runId, callId, operation === 'science' ? raw : { ...raw, operation }, signal, operation === 'science');
         if (row.state !== 'pending') return receipt(changeSummary(row), options.sanitize);
         try {
           const approved = await wait(() => new Promise<boolean>(resolve => {
@@ -87,7 +88,7 @@ export function createTextChangeCoordinator(options: {
           const code = error instanceof Error ? error.message : '';
           if (args[2]?.aborted || code === 'cancelled' || code === 'budget_exhausted') throw new Error(code === 'budget_exhausted' ? code : 'cancelled');
           return { content: [{type:'text' as const,text:JSON.stringify({success:false,message:
-            code==='conflict'?'文件或修改记录已变化，本次没有覆盖。':code==='permission_denied'?'当前操作未获授权或确认已失效。':'未完成本次文件修改。请核对授权范围、实际文本及支持格式；不能宣称已经保存。'})}],
+            code==='conflict'?'文件或修改记录已变化，本次没有覆盖。':code==='permission_denied'?'当前操作未获授权或确认已失效。':args[3]==='science'?'科普图未生成，但尚未提交审阅。请只修正本轮工具参数后重试，不要改为普通文本。必须40至80个实体、恰好一个lit、圆柱w=d；实体包围盒不能相交或形成循环遮挡；SVG/HTML上限64KiB。平板重复肋片可直接使用：底板box x=0,y=0,z=0,w=120,d=60,h=4,tone=lo,label=底板；肋片box x=0,y=5,z=4,w=1.5,d=50,h=24,tone=lit,label=散热肋片,repeat={count:40,dx:3,dy:0,dz:0}。teaching.steps的part必须使用实际类别“底板”“散热肋片”。若部件更多，按同样最小角与面接触关系扩展。不能宣称已保存。':'未完成本次文件修改。请核对授权范围、实际文本及支持格式；不能宣称已经保存。'})}],
             details:{success:false},isError:true };
         }
       };
@@ -100,6 +101,10 @@ export function createTextChangeCoordinator(options: {
         description: '修改授权目录现有UTF8 .md或.txt，最多64KiB。先读取实际文本再提出1至16处唯一oldText/newText替换；原文等于全文时也可按教师明确要求替换。复用Pi编辑算法。展示真实差异，教师确认且原版本仍一致才写。拒绝或冲突后本轮不得自动重试或强写；教师后续重新发起同一修改也属于新任务，应重新实读当前文件并创建新审阅，必须取得新的确认，不能因旧拒绝永久禁止新任务。',
         parameters: { type: 'object', properties: { path, edits: { type: 'array', minItems: 1, maxItems: 16, items: { type: 'object', properties: { oldText: { type: 'string', minLength: 1, maxLength: 65536 }, newText: { type: 'string', maxLength: 65536 } }, required: ['oldText', 'newText'], additionalProperties: false } } }, required: ['path', 'edits'], additionalProperties: false } as ToolDefinition['parameters'],
         execute: (callId, args, signal) => safeExecute(callId, args, signal, 'edit'),
+      }, { name: 'office_create_science_figure', label: '绘制科普图',
+        description: '复用Anatomy绘制40至80个真实部件的等轴测SVG科普图。教学演示优先.html（离线逐部件装配、播放/暂停/拖动/全貌），静态图.svg；不是物理仿真。先用office_list_files核实父目录，相对路径以.html或.svg结束。用box/cylinder描述实体；重复结构优先repeat={count,dx,dy,dz}，宿主精确展开，lit重复组仅首个强调。x/y/z是包围盒最小角起点，绝不是中心；沿+x/+y/+z延伸w/d/h，部件必须落在支撑面上，不改教师指定数量与尺寸；w/d/h为尺寸，圆柱w=d。lo底座、mid结构、hi主体、lit唯一强调。平板重复肋片的安全构造：底板一实体x=0,y=0,z=0,w=120,d=60,h=4,tone=lo,label=底板；肋片一重复实体x=0,y=5,z=4,w=1.5,d=50,h=24,tone=lit,label=散热肋片,repeat={count:40,dx:3,dy:0,dz:0}，展开40片后再加底板共41实体。title/caption/label只填文字，caption说明科学含义与待教师核对处；teaching.steps.part使用实际类别“底板”“散热肋片”。几何失败时只修正参数重试，不改用普通文本工具。禁止脚本、外链、原始SVG或伪造已有资料。提出本机图像预览，教师确认后才保存；拒绝/取消不重试，不覆盖已有文件。',
+        parameters: scienceFigureParameters as unknown as ToolDefinition['parameters'],
+        execute: (callId,args,signal)=>safeExecute(callId,args,signal,'science'),
       }];
     },
   };

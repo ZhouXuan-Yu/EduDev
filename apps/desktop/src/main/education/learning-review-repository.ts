@@ -1,6 +1,6 @@
 import {randomUUID,createHash} from 'node:crypto';
 import type {StudentContextRepository} from '../students/context-repository';
-import {LEARNING_REVIEW_SCHEMA,LEARNING_HISTORY_PAGE_SIZE,validLearningDraft,type LearningHistoryInput,type LearningHistoryPage,type LearningHistoryItem,type LearningReviewDraft,type LearningReviewSummary,type LearningReviewView,type LearningReviewDecision} from '../../shared/learning-review';
+import {LEARNING_REVIEW_SCHEMA,LEARNING_HISTORY_PAGE_SIZE,validLearningDraft,validLearningBatchDecision,type LearningHistoryInput,type LearningHistoryPage,type LearningHistoryItem,type LearningReviewDraft,type LearningReviewSummary,type LearningReviewView,type LearningReviewDecision,type LearningReviewBatchDecision,type LearningReviewBatchSummary} from '../../shared/learning-review';
 import {collectLearningEvidence} from './learning-evidence';
 import {trainingSourcesMatch} from './training-plan';
 import {STUDENT_CONTEXT_SCHEMA} from '../../shared/student-context';
@@ -9,6 +9,8 @@ import type {LearningRecordInput} from '../../shared/contracts';
 import type {PracticeReviewView} from '../../shared/practice-review';
 import {savedPracticeResult} from '../../shared/practice-result';
 import {preparePracticeResult} from './practice-result';
+import {collectTrainingResults} from './training-results';
+import {trainingProgress} from '../../shared/training-progress';
 type Row=Record<string,unknown>;
 export type LearningSql={all:(sql:string,params?:(string|number|null)[])=>Promise<Row[]>;run:(sql:string,params?:(string|number|null)[])=>Promise<void>;snapshot:StudentContextRepository['learningSnapshot'];createRecord?:(input:LearningRecordInput,id:string)=>Promise<unknown>;practiceSource?:(studentId:string,exerciseId:string)=>Promise<PracticeReviewView>};
 type Host=LearningSql&{transaction:<T>(work:(sql:LearningSql)=>Promise<T>)=>Promise<T>};
@@ -16,7 +18,7 @@ export type LearningReviewPayload={schemaVersion:typeof LEARNING_REVIEW_SCHEMA;c
 type Effect={planFingerprint?:string;version:number;draft:LearningReviewDraft;sourceVersion?:string;recordId?:string;digest:string};
 const ACTION='pi_student_learning_change';
 const hash=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
-const summary=(r:Row):LearningReviewSummary=>({id:String(r.id),runId:String(r.run_id),state:r.status as LearningReviewSummary['state'],kind:(JSON.parse(String(r.payload_json)) as LearningReviewPayload).draft.kind,version:r.status==='confirmed'?Number(JSON.parse(String(r.result_json)).version):0});
+const summary=(r:Row):LearningReviewSummary=>{const payload=JSON.parse(String(r.payload_json)) as LearningReviewPayload;return{id:String(r.id),runId:String(r.run_id),...(typeof payload.callId==='string'?{callId:payload.callId}:{}),state:r.status as LearningReviewSummary['state'],kind:payload.draft.kind,version:r.status==='confirmed'?Number(JSON.parse(String(r.result_json)).version):0};};
 /** Existing confirmation table is both immutable annotation history and strategy ledger. No practice event is added. */
 export class LearningReviewRepository{
  private readonly host:Host;
@@ -38,7 +40,8 @@ export class LearningReviewRepository{
  }
  async state(studentId:string,subject:string|null=null,sql:LearningSql=this.host){
   const effects=await this.effects(sql,studentId),strategies=effects.filter(e=>e.draft.kind==='strategy'&&(e.subject===null||e.subject===subject));
-  const last=strategies.at(-1),training=strategies.filter(e=>e.draft.kind==='strategy'&&e.draft.plan).at(-1);return{...(training?{trainingPlan:training}:{}),version:effects.at(-1)?.version||0,desiredRetention:last?.draft.kind==='strategy'?last.draft.desiredRetention:.9,assessments:effects.filter(e=>e.draft.kind==='assessment'),strategies};
+  const trainingPlans=effects.filter(e=>e.draft.kind==='strategy'&&e.draft.plan&&(subject===null||e.subject===null||e.subject===subject));
+  const last=strategies.at(-1),training=trainingPlans.at(-1);return{...(training?{trainingPlan:training}:{}),trainingPlans,version:effects.at(-1)?.version||0,desiredRetention:last?.draft.kind==='strategy'?last.draft.desiredRetention:.9,assessments:effects.filter(e=>e.draft.kind==='assessment'),strategies};
  }
  async list(sessionId:string){await this.authorize(this.host,sessionId);return(await this.host.all(`SELECT * FROM ai_confirmation_items WHERE session_id=? AND action_type=? ORDER BY created_at,id`,[sessionId,ACTION])).map(summary);}
  private async training(sql:LearningSql,studentId:string){
@@ -56,8 +59,8 @@ export class LearningReviewRepository{
  async trainingView(input:StudentTrainingInput):Promise<StudentTrainingView>{return this.host.transaction(async sql=>{
   const state=await this.training(sql,input.studentId),{saved,facts}=state;if(!saved||saved.draft.kind!=='strategy'||!saved.draft.plan)return{results:[],totalResults:0};
   const knownPlans=new Map(state.effects.filter(e=>e.draft.kind==='strategy'&&e.draft.plan).map(e=>[e.confirmationId,e.version]));
-  const results=facts.records.flatMap(e=>{try{const meta=JSON.parse(e.record.content);return meta.schemaVersion==='xiaozhi.education.training-result.v1'&&knownPlans.get(meta.planId)===meta.planVersion&&Number.isInteger(meta.day)&&meta.day>=1&&meta.day<=14&&['correct','incorrect','partial'].includes(meta.result)?[{recordId:e.record.id,planVersion:meta.planVersion,day:meta.day,result:meta.result as StudentTrainingResultInput['result'],occurredAt:e.record.occurredAt,notes:String(meta.notes||''),...(savedPracticeResult(meta.practice)?{practice:savedPracticeResult(meta.practice)}:{})}]:[];}catch{return[];}});
-  return{plan:{id:saved.confirmationId,version:saved.version,confirmedAt:saved.confirmedAt,plan:saved.draft.plan,reason:saved.draft.reason,sourceCurrent:state.sourceCurrent,strategyCurrent:state.strategyCurrent,sources:this.trainingSources(state).map(e=>({title:e.record.title,reference:{schemaVersion:STUDENT_TRAINING_SCHEMA,studentId:input.studentId,planId:saved.confirmationId,recordId:e.record.id,version:e.version}}))},results:results.slice(0,10),totalResults:results.length};
+  const results=collectTrainingResults(facts,knownPlans);
+  return{plan:{id:saved.confirmationId,version:saved.version,confirmedAt:saved.confirmedAt,plan:saved.draft.plan,reason:saved.draft.reason,sourceCurrent:state.sourceCurrent,strategyCurrent:state.strategyCurrent,sources:this.trainingSources(state).map(e=>({title:e.record.title,reference:{schemaVersion:STUDENT_TRAINING_SCHEMA,studentId:input.studentId,planId:saved.confirmationId,recordId:e.record.id,version:e.version}}))},results:results.slice(0,10),totalResults:results.length,progress:trainingProgress(saved.draft.plan,saved.version,results)};
  });}
  async trainingSource(input:StudentTrainingSource):Promise<StudentTrainingEvidence>{return this.host.transaction(async sql=>{
   const state=await this.training(sql,input.studentId);if(state.saved?.confirmationId!==input.planId)throw new Error('source_changed');
@@ -123,7 +126,9 @@ export class LearningReviewRepository{
   return{...summary(row),draft,...(plan?{planCurrent:(saved?.planFingerprint||p.fingerprint)===facts.fingerprint&&(!saved||saved.version===state.version),planSources:entries.map(e=>({title:e.record.title,reference:{schemaVersion:STUDENT_CONTEXT_SCHEMA,sessionId,recordId:e.record.id,version:e.version}}))}:{}),previousRetention:p.previousRetention,previousVersion:p.previousVersion,...(p.heuristic?{heuristic:p.heuristic}:{}),...(source?{source:{title:source.record.title,content:source.record.content,subject:source.record.subject,occurredAt:source.record.occurredAt}}:{})};
  }
  async decide(input:LearningReviewDecision,isCurrent:()=>boolean=()=>true,afterWrite?:(isCurrent:()=>boolean)=>Promise<void>){
-  return this.host.transaction(async sql=>{
+  return this.host.transaction(sql=>this.decideInTransaction(sql,input,isCurrent,afterWrite));
+ }
+ private async decideInTransaction(sql:LearningSql,input:LearningReviewDecision,isCurrent:()=>boolean,afterWrite?:(isCurrent:()=>boolean)=>Promise<void>,expectedVersion?:number){
    if(!isCurrent())throw new Error('cancelled');const row=await this.get(sql,input.sessionId,input.id),p=JSON.parse(String(row.payload_json)) as LearningReviewPayload;
    if(!isCurrent())throw new Error('cancelled');
    if(row.status!=='pending'){if(input.action==='reject'&&row.status==='rejected'||input.action==='confirm'&&row.status==='confirmed'&&JSON.stringify((JSON.parse(String(row.result_json)) as Effect).draft)===JSON.stringify(input.draft))return summary(row);throw new Error('conflict');}
@@ -131,7 +136,7 @@ export class LearningReviewRepository{
    if(input.action==='reject'){await sql.run(`UPDATE ai_confirmation_items SET status='rejected',rejected_at=?,updated_at=? WHERE id=? AND status='pending'`,[timestamp,timestamp,input.id]);const saved=await this.get(sql,input.sessionId,input.id);if(!isCurrent())throw new Error('cancelled');return summary(saved);}
    if(!validLearningDraft(input.draft)||input.draft.kind!==p.draft.kind)throw new Error('invalid_input');
    const facts=await sql.snapshot(p.studentId,p.subject?{subject:p.subject}:{});if(facts.fingerprint!==p.fingerprint)throw new Error('source_changed');
-   const state=await this.state(p.studentId,p.subject,sql);if(state.version!==p.previousVersion)throw new Error('conflict');
+   const state=await this.state(p.studentId,p.subject,sql);if(state.version!==(expectedVersion??p.previousVersion))throw new Error('conflict');
    if(input.draft.kind==='strategy'&&Boolean(input.draft.plan)!==Boolean(p.draft.kind==='strategy'&&p.draft.plan))throw new Error('invalid_input');
    if(input.draft.kind==='strategy'&&input.draft.plan&&!trainingSourcesMatch(input.draft.plan,facts))throw new Error('source_changed');
    const effect={version:state.version+1,draft:input.draft,recordId:p.recordId,sourceVersion:p.sourceVersion,...(input.draft.kind==='strategy'&&input.draft.plan?{planFingerprint:p.fingerprint}:{})};
@@ -140,6 +145,40 @@ export class LearningReviewRepository{
    await afterWrite?.(isCurrent);
    const saved=await this.get(sql,input.sessionId,input.id);
    if(!isCurrent())throw new Error('cancelled');return summary(saved);
+ }
+ /** One transaction for the whole explicit teacher batch; validation precedes every write and any failure rolls back all members. */
+ async decideBatch(input:LearningReviewBatchDecision,isCurrent:()=>boolean=()=>true,afterWrite?:(isCurrent:()=>boolean)=>Promise<void>):Promise<LearningReviewBatchSummary>{
+  if(!validLearningBatchDecision(input))throw new Error('invalid_input');
+  return this.host.transaction(async sql=>{
+   if(!isCurrent())throw new Error('cancelled');
+   const loaded:{item:LearningReviewBatchDecision['items'][number];row:Row;p:LearningReviewPayload}[]=[];
+   for(const item of input.items){const row=await this.get(sql,input.sessionId,item.id);loaded.push({item,row,p:JSON.parse(String(row.payload_json)) as LearningReviewPayload});}
+   if(!isCurrent())throw new Error('cancelled');
+   loaded.sort((a,b)=>{const left=String(a.row.created_at),right=String(b.row.created_at);return left===right?String(a.row.id).localeCompare(String(b.row.id)):left<right?-1:1;});
+   const first=loaded[0],baseVersion=input.action==='confirm'?(await this.state(first.p.studentId,first.p.subject,sql)).version:0;
+   for(const entry of loaded){
+    if(entry.p.studentId!==first.p.studentId||entry.p.draft.kind!==first.p.draft.kind)throw new Error('invalid_input');
+    if(input.action==='reject'){if(entry.row.status!=='pending'&&entry.row.status!=='rejected')throw new Error('conflict');continue;}
+    if(entry.row.status==='confirmed'){if(JSON.stringify((JSON.parse(String(entry.row.result_json)) as Effect).draft)!==JSON.stringify(entry.item.draft??entry.p.draft))throw new Error('conflict');continue;}
+    if(entry.row.status!=='pending')throw new Error('conflict');
+    const draft=entry.item.draft??entry.p.draft;
+    if(!validLearningDraft(draft)||draft.kind!==entry.p.draft.kind)throw new Error('invalid_input');
+    if(entry.p.previousVersion!==baseVersion)throw new Error('conflict');
+    const facts=await sql.snapshot(entry.p.studentId,entry.p.subject?{subject:entry.p.subject}:{});
+    if(facts.fingerprint!==entry.p.fingerprint)throw new Error('source_changed');
+    if(draft.kind==='strategy'&&Boolean(draft.plan)!==Boolean(entry.p.draft.kind==='strategy'&&entry.p.draft.plan))throw new Error('invalid_input');
+    if(draft.kind==='strategy'&&draft.plan&&!trainingSourcesMatch(draft.plan,facts))throw new Error('source_changed');
+   }
+   let version=baseVersion,confirmedWrite=false;const items:LearningReviewSummary[]=[];
+   for(const entry of loaded){
+    if(!isCurrent())throw new Error('cancelled');
+    const decision:LearningReviewDecision={schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId:input.sessionId,id:entry.item.id,action:input.action,...(input.action==='confirm'?{draft:entry.item.draft??entry.p.draft}:{})};
+    items.push(await this.decideInTransaction(sql,decision,isCurrent,undefined,version));
+    if(entry.row.status==='pending'){version+=1;if(input.action==='confirm')confirmedWrite=true;}
+   }
+   if(confirmedWrite)await afterWrite?.(isCurrent);
+   if(!isCurrent())throw new Error('cancelled');
+   return{action:input.action,items};
   });
  }
 }

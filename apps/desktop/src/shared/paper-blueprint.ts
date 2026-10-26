@@ -18,6 +18,20 @@ export type PaperCreateInput={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GEN
 export type PaperReviewInput={schemaVersion:typeof PAPER_SCHEMA;sessionId:string;id:string};
 export type PaperDecision=PaperReviewInput&{revision:number;action:'confirm'|'reject'};
 export type PaperCancelInput={schemaVersion:typeof PAPER_SCHEMA;sessionId:string;requestId:string};
+export const PAPER_COMPARE_SCHEMA='xiaozhi.paper-compare.v1' as const;
+export const PAPER_COMPARE_FIELDS=['number','sectionId','points','difficulty','knowledgePoint','sourceKind','generation.effectDigest'] as const;
+export type PaperCompareField=typeof PAPER_COMPARE_FIELDS[number];
+export type PaperCompareInput={schemaVersion:typeof PAPER_SCHEMA;sessionId:string;leftId:string;rightId:string};
+export type PaperCompareSummary={title:string;count:number;totalPoints:number;durationMinutes:number;mode:PaperMode;state:PaperSummary['state'];digest?:string};
+export type PaperCompareSection={id:string;label:string;questionType:string;count:number;points:number;difficulty?:PaperSection['difficulty'];knowledgePoint?:string;generatedCount?:number};
+export type PaperCompareSectionChange={id:string;left:PaperCompareSection;right:PaperCompareSection;fields:string[]};
+export type PaperCompareSections={added:PaperCompareSection[];removed:PaperCompareSection[];kept:PaperCompareSection[];changed:PaperCompareSectionChange[]};
+export type PaperCompareItem={identity?:string;number:number;sectionId:string;points:number;difficulty?:QuestionBankItem['difficulty'];knowledgePoint?:string;sourceKind?:QuestionBankItem['sourceKind'];generationEffectDigest?:string};
+export type PaperCompareChange={field:PaperCompareField;left:string|number|undefined;right:string|number|undefined};
+export type PaperCompareItemChange={identity:string;left:PaperCompareItem;right:PaperCompareItem;changes:PaperCompareChange[]};
+export type PaperCompareAmbiguity={identity?:string;reason:'duplicate_identity'|'unsupported_identity';left:PaperCompareItem[];right:PaperCompareItem[]};
+export type PaperCompareItems={added:PaperCompareItem[];removed:PaperCompareItem[];kept:PaperCompareItem[];changed:PaperCompareItemChange[];ambiguous:PaperCompareAmbiguity[]};
+export type PaperCompareView={schemaVersion:typeof PAPER_COMPARE_SCHEMA;left:PaperCompareSummary;right:PaperCompareSummary;sections:PaperCompareSections;items:PaperCompareItems;ambiguous:boolean;writes:false;answerVerified:false};
 export type PaperError='invalid_input'|'permission_denied'|'source_changed'|'conflict'|'shortage'|'unavailable'|'cancelled';
 export type PaperResult<T>={ok:true;value:T}|{ok:false;error:PaperError};
 export const PAPER_ERRORS:Record<PaperError,string>={invalid_input:'请检查蓝图：题型、题数、每题分数与总分必须一致。',permission_denied:'当前对话或学生已不可用，请重新打开组卷。',source_changed:'试卷引用的题目或原件已变化，请重新生成并核对。',conflict:'这份草稿已经处理或修改，请刷新后重试。',shortage:'题库不足以满足蓝图，请调整要求或先补齐题库。',unavailable:'试卷读取或保存未完成，请重试。',cancelled:'已停止组卷，未保存新的试卷。'};
@@ -35,6 +49,7 @@ export function validPaperBlueprint(v:unknown):v is PaperBlueprint{
 export function validPaperCreate(v:unknown):v is PaperCreateInput{return plainStudentInput(v,['schemaVersion','sessionId','requestId','blueprint','replace','generationScope'])&&validPaperBlueprint(v.blueprint)&&(v.blueprint.mode==='source_only'?v.schemaVersion===PAPER_SCHEMA&&v.generationScope===undefined:v.schemaVersion===PAPER_GENERATED_SCHEMA&&v.generationScope==='approved_session')&&validPaperSession(v.sessionId)&&request(v.requestId)&&(v.replace===undefined||plainStudentInput(v.replace,['id','revision'])&&id(v.replace.id)&&integer(v.replace.revision,1,1000000));}
 export function validPaperReview(v:unknown,decision=false):v is PaperDecision{return plainStudentInput(v,decision?['schemaVersion','sessionId','id','revision','action']:['schemaVersion','sessionId','id'])&&v.schemaVersion===PAPER_SCHEMA&&validPaperSession(v.sessionId)&&id(v.id)&&(!decision||integer(v.revision,1,1000000)&&['confirm','reject'].includes(String(v.action)));}
 export function validPaperCancel(v:unknown):v is PaperCancelInput{return plainStudentInput(v,['schemaVersion','sessionId','requestId'])&&v.schemaVersion===PAPER_SCHEMA&&validPaperSession(v.sessionId)&&request(v.requestId);}
+export function validPaperCompare(v:unknown):v is PaperCompareInput{return plainStudentInput(v,['schemaVersion','sessionId','leftId','rightId'])&&v.schemaVersion===PAPER_SCHEMA&&validPaperSession(v.sessionId)&&id(v.leftId)&&id(v.rightId);}
 export const defaultPaperBlueprint=():PaperBlueprint=>({title:'数学练习卷',subject:'数学',grade:'初二',durationMinutes:90,totalPoints:100,mode:'source_only',sections:[{id:'choice',label:'选择题',questionType:'选择题',count:10,points:3},{id:'fill',label:'填空题',questionType:'填空题',count:6,points:5},{id:'solve',label:'解答题',questionType:'解答题',count:4,points:10}]});
 
 export const generatedPaperCount=(b:PaperBlueprint,s:PaperSection)=>b.mode==='ai_original'?s.count:b.mode==='hybrid'?s.generatedCount!:0;

@@ -1,0 +1,40 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {fingerprint,sha256} from './evidence.mjs';
+
+const repo=path.resolve('../..'),root=path.resolve('test-results/goal/harness-h04alternative-20261015');
+const record=path.join(root,'closeout.json');assert(!fs.existsSync(record));
+const read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+const build=read('test-results/goal/harness-h04office-20261015-build1/build-isolated.json');
+assert.equal(fingerprint(build.root).sha256,build.sha256);
+assert(build.sourceUnchanged&&build.source.every(s=>sha256(fs.readFileSync(s.file))===s.currentSha256));
+const reports=[['alternative-ui','pi-web-alternative-ui-UcRk8C',8],['result-readback','pi-result-readback-0gPYtc',20],['verification','pi-verification-boundaries-64l6UL',25]];
+const evidence=reports.map(([name,dir,count])=>{const file=path.resolve('test-results/xiaozhi-agent',dir,'report.json'),r=read(file);assert(r.success&&r.checks.length===count&&r.checks.every(c=>c.pass&&!c.skipped),name);return {name,file,count,sha256:sha256(fs.readFileSync(file)),scope:r.scope,exitCode:0,exitObserved:true};});
+const ui=read(evidence[0].file);assert.equal(ui.build.sha256,build.sha256);
+assert.equal(ui.scriptSha256,sha256(fs.readFileSync('scripts/xiaozhi-agent/pi-web-alternative-ui.mjs')));
+assert.equal(ui.turn.verification.state,'partial');assert.equal(ui.denied.verification.state,'blocked');
+assert(ui.transport.some(r=>r.controlled&&r.status===403)&&ui.transport.some(r=>!r.controlled&&r.status===200&&r.url===ui.replacement));
+const firstFile=path.resolve('test-results/xiaozhi-agent/pi-web-alternative-ui-MD4qmc/report.json'),first=read(firstFile);assert(!first.success&&first.checks.length===0&&first.error.includes('Missing actual replacement body read'));
+assert.equal(first.turn.verification.state,'blocked');assert.equal(first.turn.verification.operations.failed,2);
+const db=new DatabaseSync(path.join(path.dirname(evidence[0].file),'data/app.db'),{readOnly:true});let native;
+try{const binding=db.prepare('SELECT session_file FROM xiaozhi_pi_session_bindings LIMIT 1').get();native=fs.readFileSync(path.join(path.dirname(evidence[0].file),'data/xiaozhi-pi',binding.session_file));}finally{db.close();}
+const nativeModels=native.toString().trim().split('\n').map(JSON.parse).filter(e=>e.message?.role==='assistant').map(e=>({provider:e.message.provider,model:e.message.model,api:e.message.api,stopReason:e.message.stopReason}));
+assert(nativeModels.length&&nativeModels.every(m=>m.provider==='xiaozhi_deepseek'&&m.model==='deepseek-flash'));
+const next='H04-D：按生产注册清单逐领域核对 source/effect 原行为 golden，补附件入站原子接收和执行终结SQLite等待的停止/退出反例。完整H04满足DoD后进入H05–H10；日常旧会话/用户原图、无VPN、安装和人工Office仍OPEN。';
+const common=`\n\n## H04-C 授权替代联网来源进度（2026-10-15）\n\nM10/M12；Master/Goal ACTIVE，H04 DOING，本片授权替代来源实例 LIMITED_ACCEPTED。没有修改生产代码、schema、授权、模型循环、依赖或日常配置；复用现Hana Web、Pi、attempt journal、native正文readback、typed snapshot与核验组件。冻结339dc构建 ${build.sha256}/${build.count} 实际加载且前后不变，已有记录的Harness source SHA仍一致。只新增专项验收脚本与说明，不以本轮重新完成构建/组件/legacy门禁；这些生产门禁沿上一轮记录为历史证据。\n\n真实正式Electron UcRk8C 8/8，实际观察exit0：自然请求先读教育部首页，实际undici GET受控403且仅一次；同一run按教师授权读取准确通知 ${ui.replacement}，实际网络HTTP200，成功响应和模型未伪造。原生模型元数据 provider=xiaozhi_deepseek/model=deepseek-flash/api=openai-completions；不是另一次服务器模型名探测。实际正文/最终回答独立核对2022-03-25落款、2022-04-21网页发布日期、2022秋季实施。主进程source readback通过，但整体仍partial、保留1成功/1失败和answer:human；绝不将正文hash核对说成答案全自动正确。\n\n原403 callId/attempt1无重试/失败仍在UI、native单结果、SQLite receipt/journal/assistant metadata；另一来源URL/observedAt/body与核验范围对应。只允许失败首页且明确禁止换源的第二轮只发一次403、blocked无成功证据。刷新及cold保留精确历史、native字节和metadata，不重放工具/模型。1366×768/1920×1080失败与替代核验截图已查看，操作可滚动到达。相关源码反例 result-readback20、verification25 exit0；不是daily/VPN-off或全部领域golden。\n\n首轮MD4qmc（exit1/0项）完整保留：测试初拟备用URL为t20220421_620011，并未成功读到正文，应用正确显示两项失败/blocked。依据上一轮真实NET报告定位准确t20220420_619921地址再测，不填造成功响应。初稿未在失败前存transport，故不声称原响应具体HTTP状态；本轮新增失败分支保存transport，未覆盖原报告。顺便核对测试文案使用正式组件已有“网页正文与本轮保存记录一致”。外部搜索工具一次429是研究工具故障，不作为小智测试结果。\n\n证据/精确命令：apps/desktop/test-results/goal/harness-h04alternative-20261015。用户声明VPN/代理运行，未更改系统网络、日常out/profile/凭证、真实学生资料或其他教育域脏改动；无commit/push。全项目联网/图片/文件日常反馈仍OPEN，不因本片通过清除。\n\n下一继续位置：${next}\n`;
+const files=['1.Agent.md','2.Memory.md','3.Learning.md','4.Wiki.md','docs/goal/CURRENT_STATE.md','docs/goal/CAPABILITY_MATRIX.md','docs/goal/DECISIONS.md','docs/goal/ACCEPTANCE.md','docs/architecture/CURRENT.md','docs/product/CURRENT.md','docs/acceptance/CURRENT.md','docs/integrations/CURRENT.md'];
+const start='<!-- harness-execution-20261012:start -->',end='<!-- harness-execution-20261012:end -->';
+const pending=files.map(file=>{const p=path.join(repo,file),before=fs.readFileSync(p),s=before.toString('utf8'),a=s.indexOf(start),b=s.indexOf(end,a);assert(a>=0&&b>a&&!s.includes('## H04-C 授权替代联网来源进度（2026-10-15）'));return {file,p,before,s,a,b};});
+const documents=[];
+for(const {file,p,before,s,a,b}of pending){const outside=Buffer.from(s.slice(0,a)+s.slice(b));assert(fs.readFileSync(p).equals(before));fs.writeFileSync(p,s.slice(0,b)+common+s.slice(b));const now=fs.readFileSync(p,'utf8'),aa=now.indexOf(start),bb=now.indexOf(end,aa);assert(outside.equals(Buffer.from(now.slice(0,aa)+now.slice(bb))));documents.push({file,outsideSha256:sha256(outside),outsideUnchanged:true});}
+fs.appendFileSync(path.join(repo,'docs/goal/HARNESS_EXECUTION.md'),common);
+const manual=path.join(repo,'测试样例说明书.md'),before=fs.readFileSync(manual,'utf8'),marker='<!-- harness-h04-tests:end -->';assert(before.includes(marker));
+fs.writeFileSync(manual,before.replace(marker,`\n### H04-C 首来源失败与授权替代正文\n\n| 编号 | 操作 | 必须核验 |\n| --- | --- | --- |\n| TOOL-32 | 孤立正式Pi自然请求先读教育部首页，受控adapter返回403；教师明确授权换读准确官方通知 | 第一call失败且attempt1无自动重试；第二call实际HTTP200正文，不得mock成功结果 |\n| TOOL-33 | 查看原生正文、最终日期、来源和核验范围 | 独立2022-03-25落款/04-21网页发布/秋季实施；准确URL；正文记录核对passed，但整体partial保留失败，answer仍需教师核对 |\n| TOOL-34 | 下一轮明确只允许该失败首页，不允许其他地址/搜索/浏览器 | 仅一个实际403、blocked；不得沿用上轮正文证明本轮成功或擅自换源 |\n| TOOL-35 | 展开失败和核验范围，刷新，正常退出后原profile冷启动 | UI/SQLite/native一致，失败不消失，成功来源不变，无GET/模型/工具重放；1366×768与1920×1080可达 |\n\n精确通知地址：${ui.replacement}。测试故障注入只允许脚本新建的test-results/profile/data，不能改日常网络；正常手测可用实际不可达公开首来源替换受控403，但要记录真实失败类型。首轮错误备用URL未读到正文的MD4qmc保留；不可把它算通过。当前8项仅此隔离正式链，源码20+25单列，不等于日常/无VPN/用户原图通过。命令与报告：apps/desktop/test-results/goal/harness-h04alternative-20261015。\n\n${marker}`));
+const screenshots=['alternative-checked-1366.png','primary-failed-1920.png'].map(name=>{const file=path.join(path.dirname(evidence[0].file),name);return {file,sha256:sha256(fs.readFileSync(file)),visuallyViewed:true};});
+const commands=`# 本轮均为test-only；生产构建复用冻结版本，未重跑无关全集。\nSet-Location D:\\WorkProject\\EduProject\\apps\\desktop\n$env:OMNI_EDU_TEST_BUILD_ROOT=(Resolve-Path 'test-results/goal/harness-h04office-20261015-build1/build-isolated').Path\nnode scripts/xiaozhi-agent/pi-web-alternative-ui.mjs # 初次MD4qmc exit1，准确URL后UcRk8C exit0/8\nnode scripts/xiaozhi-agent/pi-result-readback-boundaries.mjs # 0gPYtc exit0/20\nnode scripts/xiaozhi-agent/pi-verification-boundaries.mjs # 64l6UL exit0/25\ngit diff --check\n# h04alternative-record.mjs是已执行收尾脚本，拒绝覆盖原closeout，不作为重复测试命令。\n`;
+fs.writeFileSync(path.join(root,'commands-final.ps1'),commands);
+fs.writeFileSync(path.join(root,'progress.md'),'# 授权替代来源实例验收\n'+common+'\n## 实际报告\n\n'+evidence.map(e=>`- ${e.name}：${e.count}项，exit0；${e.file}`).join('\n')+'\n');
+fs.writeFileSync(record,JSON.stringify({status:'AUTHORIZED_REPLACEMENT_SOURCE_LIMITED_ACCEPTED',H04:'DOING',master:'ACTIVE',build,evidence,nativeModels,nativeSha256:sha256(native),firstFailure:{file:firstFile,sha256:sha256(fs.readFileSync(firstFile)),exitCode:1,exitObserved:true},screenshots,documents,next,productionChanged:false,dailyAccepted:false,vpnOffAccepted:false,userFailuresClosed:false,gitDiffCheck:'PENDING',finished:new Date().toISOString()},null,2));
+console.log(JSON.stringify({root,status:'AUTHORIZED_REPLACEMENT_SOURCE_LIMITED_ACCEPTED',checks:evidence.map(e=>[e.name,e.count]),documents:documents.length,next}));

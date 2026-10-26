@@ -8,6 +8,9 @@ import type { XiaozhiMemoryScopeInput } from '../../../shared/xiaozhi-memory';
 import { DataBackupPanel } from '../DataBackupPanel';
 import { PiModelSettings } from './PiModelSettings';
 import { PiSkillSettings } from './PiSkillSettings';
+import { PiMcpSettings } from './PiMcpSettings';
+import { PiDecisionHistory } from './PiDecisionHistory';
+import {PiCandidateHistory} from './PiCandidateHistory';
 import { PiMemoryScope } from './PiMemoryScope';
 import { OfficeConversation } from './OfficeConversation';
 import { SettingsPage, SettingsStack } from './hana-settings/SettingsPrimitives';
@@ -15,6 +18,7 @@ import { SettingsSection } from './hana-settings/SettingsSection';
 import { SettingsRow } from './hana-settings/SettingsRow';
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
 import navStyles from './hana-settings/workspace-nav.module.css';
+import {teacherWorkspaceLabel} from './workspace-label';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
 import './pi-settings-workspace.css';
 import { ProductRail } from '../product/ProductRail';
@@ -22,6 +26,7 @@ import { ProductRail } from '../product/ProductRail';
 const tabs = [
   { id: 'models', label: '模型与连接', icon: Plug },
   { id: 'skills', label: '技能', icon: BookOpen },
+  { id: 'tools', label: '外部工具（高级）', icon: Plug },
   { id: 'permissions', label: '工作目录与权限', icon: FolderLock },
   { id: 'interface', label: '界面偏好', icon: Monitor },
   { id: 'archives', label: '归档', icon: Archive },
@@ -35,6 +40,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id:'pi-web-settings',tabId:'models',title:'联网资料',path:['模型与连接','联网资料'],aliases:['搜索','网络解析','DNS','网页','来源'] },
   { id: 'pi-settings-default-model', tabId: 'models', title: '新对话默认模型', path: ['模型与连接', '默认模型'], aliases: ['default model', 'flash', 'pro'] },
   { id: 'pi-skill-import', tabId: 'skills', title: '导入本地技能', path: ['技能', '导入'], aliases: ['skills', 'skill import', 'SKILL.md', '启用', '停用', '编辑'] },
+  { id: 'pi-mcp-name', tabId: 'tools', title: '外部工具连接', path: ['外部工具（高级）', 'MCP'], aliases: ['mcp', 'stdio', '外部服务', '工具授权'] },
   { id: 'pi-settings-workspace-choose', tabId: 'permissions', title: '本会话工作目录', path: ['工作目录与权限', '工作目录'], aliases: ['workspace', 'folder', '文件', '写入', '授权', '确认'] },
   { id: 'pi-memory-scope', tabId: 'permissions', title: '本会话记忆', path: ['工作目录与权限', '记忆'], aliases: ['memory', '脱敏', '摘要', '撤权', '隐私'] },
   { id: 'pi-preference-sidebar', tabId: 'interface', title: '会话侧栏', path: ['界面偏好', '会话侧栏'], aliases: ['sidebar', '侧边栏'] },
@@ -145,14 +151,16 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
         {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
         {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
         {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
+        {tab === 'tools' && <SettingsPage tab={tab}><PiMcpSettings running={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsPage>}
         {tab === 'permissions' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>授权属于当前对话，写入资料前仍需你的确认。</p></div>
           {loading ? <p role="status">正在读取本地授权…</p> : !sessionId || !snapshot ? <p data-testid="pi-settings-no-session">还没有可设置的对话，请返回小智新建对话。</p> : <>
             <SettingsSection title="本会话工作目录" description={workspace?.sessions.find(item => item.id === sessionId)?.title}>
-              <SettingsRow label={snapshot.workspace?.label || '尚未选择工作目录'} hint="仅可读取已授权的本地目录；写入、复制和移动需要逐次确认。" control={<Button size="sm" variant="secondary" data-testid="pi-settings-workspace-choose" isDisabled={locked || busy || snapshot.projection.turns.length > 0} onPress={() => void chooseWorkspace()}>选择目录</Button>}/>
+              <SettingsRow label={snapshot.workspace ? teacherWorkspaceLabel(snapshot.workspace.label) : '尚未选择工作目录'} hint="仅可读取已授权的本地目录；写入、复制和移动需要逐次确认。" control={<Button size="sm" variant="secondary" data-testid="pi-settings-workspace-choose" isDisabled={locked || busy || snapshot.projection.turns.length > 0} onPress={() => void chooseWorkspace()}>选择目录</Button>}/>
               {snapshot.projection.turns.length > 0 && <SettingsSection.Note>该对话已绑定目录。需要其他目录时，请新建对话再选择。</SettingsSection.Note>}
             </SettingsSection>
             <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
-            {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}</>}
+            {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
+            <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/></>}
         </SettingsStack></SettingsPage>}
         {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>调整小智工作区的面板显示。</p></div><SettingsSection title="工作区面板">
           {([{ field: 'sidebar', label: '会话侧栏', hint: '显示项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '打开时显示已授权目录中的文件，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}

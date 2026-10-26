@@ -61,12 +61,36 @@ try {
   const unscored=renderToStaticMarkup(React.createElement(PracticeResultDetails,{value:{...actualPractice,score:undefined,answers:[{...actualPractice.answers[0],answer:''}]},studentId:'student_local'}));assert.match(unscored,/未作答/);assert(!unscored.includes('教师记录分数'));
   const practiceResultCases=4;
   const {PiPracticeReview,PracticeQuestionList}=await server.ssrLoadModule('/src/renderer/components/office/PiPracticeReview.tsx');
+  const {teacherWorkspaceLabel}=await server.ssrLoadModule('/src/renderer/components/office/workspace-label.ts');
+  assert.equal(teacherWorkspaceLabel('workspace'),'教学工作目录');assert.equal(teacherWorkspaceLabel('workspace-2'),'教学工作目录');assert.equal(teacherWorkspaceLabel('工作区'),'教学工作目录');assert.equal(teacherWorkspaceLabel('六年级数学教研'),'六年级数学教研');assert.equal(teacherWorkspaceLabel(''),'教学工作目录');
   const practiceBase={sessionId:'aisession_local',onRefresh:async()=>{},review:{id:'xipractice_local',runId:'airun_local',callId:'call_local',state:'pending',count:2}};
   const practicePending=renderToStaticMarkup(React.createElement(PiPracticeReview,practiceBase));assert.match(practicePending,/正在读取练习/);assert.match(practicePending,/practice-review-confirm[^>]*disabled/);
   const practiceRejected=renderToStaticMarkup(React.createElement(PiPracticeReview,{...practiceBase,review:{...practiceBase.review,state:'rejected'}}));assert.match(practiceRejected,/已拒绝，未保存/);assert(!practiceRejected.includes('data-testid="practice-review-confirm"'));
-  const practiceView={questions:[{question:{stem:'<script>教学数据</script>',answer:'13厘米',analysis:'勾股定理',knowledgePoint:'勾股'},source:{},parents:[]}]},practiceDraft={title:'练习',reason:'实际核对',subject:'数学',knowledgePoint:'勾股',items:[{index:0,role:'variant',teacherObservation:'核对单位'}]};
-  const practiceList=renderToStaticMarkup(React.createElement(PracticeQuestionList,{view:practiceView,draft:practiceDraft}));assert(!practiceList.includes('<script>'));assert.match(practiceList,/13厘米/);assert(!practiceList.includes('practice-review-remove'));
+  const practiceView={questions:[{question:{stem:'<script>教学数据</script>',answer:'13厘米',analysis:'勾股定理',knowledgePoint:'勾股'},source:{},parents:[]},{question:{stem:'两条直角边为5厘米和12厘米',answer:'13厘米',analysis:'5²+12²=169',knowledgePoint:'勾股'},source:{},parents:[]}]},practiceDraft={title:'练习',reason:'实际核对',subject:'数学',knowledgePoint:'勾股',items:[{index:0,role:'variant',teacherObservation:'教师观察：教师观察: 核对单位'},{index:1,role:'similar',teacherObservation:'原题说明。教师观察：教师观察到的错因是核对顺序'}]};
+  const practiceList=renderToStaticMarkup(React.createElement(PracticeQuestionList,{view:practiceView,draft:practiceDraft}));assert(!practiceList.includes('<script>'));assert.match(practiceList,/13厘米/);assert(!practiceList.includes('practice-review-remove'));assert.match(practiceList,/practice-review-count/);assert.match(practiceList,/共 2 题，请逐题核对/);assert.match(practiceList,/第 1\/2 题/);assert.match(practiceList,/第 2\/2 题/);assert.match(practiceList,/核对单位/);assert(!practiceList.includes('教师观察：教师观察'));
   const practiceReviewCases=6;
+  const {PiLearningReview,PiLearningReviewSet,LearningReviewBatchBar}=await server.ssrLoadModule('/src/renderer/components/office/PiLearningReview.tsx');
+  const learningReviewId='xilearning_00000000-0000-0000-0000-000000000001';
+  const learningReviewBase={sessionId:'aisession_local',onRefresh:async()=>{},review:{id:learningReviewId,runId:'airun_local',callId:'call_local',state:'pending',kind:'assessment',version:0}};
+  const learningSingle=renderToStaticMarkup(React.createElement(PiLearningReview,learningReviewBase));
+  assert.match(learningSingle,/learning-review-confirm/);assert(!learningSingle.includes('learning-review-select-'));
+  const learningUnselected=renderToStaticMarkup(React.createElement(PiLearningReview,{...learningReviewBase,selection:{selected:false,disabled:false,onToggle:()=>{}}}));
+  assert.match(learningUnselected,/data-testid="learning-review-select-xilearning_/);assert(!/data-testid="learning-review-select-xilearning_[^>]*checked/.test(learningUnselected));
+  const learningSelected=renderToStaticMarkup(React.createElement(PiLearningReview,{...learningReviewBase,selection:{selected:true,disabled:true,onToggle:()=>{}}}));
+  assert(/data-testid="learning-review-select-xilearning_[^>]*checked/.test(learningSelected));assert(/data-testid="learning-review-select-xilearning_[^>]*disabled/.test(learningSelected));
+  const learningItemError=renderToStaticMarkup(React.createElement(PiLearningReview,{...learningReviewBase,selection:{selected:true,disabled:false,onToggle:()=>{},error:'批量确认失败：学习证据已变化，请重新分析并核对。所选 2 项均未保存。'}}));
+  assert.match(learningItemError,/role="alert"/);assert.match(learningItemError,/所选 2 项均未保存/);
+  const emptyBatchBar=renderToStaticMarkup(React.createElement(LearningReviewBatchBar,{selected:0,busy:false,error:'',onConfirm:()=>{},onReject:()=>{}}));
+  assert.match(emptyBatchBar,/已选 0 项/);assert(/learning-review-batch-confirm[^>]*disabled/.test(emptyBatchBar));assert(/learning-review-batch-reject[^>]*disabled/.test(emptyBatchBar));
+  const readyBatchBar=renderToStaticMarkup(React.createElement(LearningReviewBatchBar,{selected:2,busy:false,error:'',onConfirm:()=>{},onReject:()=>{}}));
+  assert.match(readyBatchBar,/已选 2 项/);assert(!/learning-review-batch-confirm[^>]*disabled/.test(readyBatchBar));assert(!/learning-review-batch-reject[^>]*disabled/.test(readyBatchBar));
+  const busyBatchBar=renderToStaticMarkup(React.createElement(LearningReviewBatchBar,{selected:2,busy:true,error:'',onConfirm:()=>{},onReject:()=>{}}));
+  assert(/learning-review-batch-confirm[^>]*disabled/.test(busyBatchBar));assert(/learning-review-batch-reject[^>]*disabled/.test(busyBatchBar));
+  const failedBatchBar=renderToStaticMarkup(React.createElement(LearningReviewBatchBar,{selected:2,busy:false,error:'批量拒绝失败：核对内容不正确，请修改后重试。所选 2 项均未保存。',onConfirm:()=>{},onReject:()=>{}}));
+  assert.match(failedBatchBar,/role="alert"/);assert.match(failedBatchBar,/所选 2 项均未保存/);
+  const learningSet=renderToStaticMarkup(React.createElement(PiLearningReviewSet,{sessionId:'aisession_local',onRefresh:async()=>{},reviews:[learningReviewBase.review,{...learningReviewBase.review,id:'xilearning_00000000-0000-0000-0000-000000000002',kind:'strategy'}]}));
+  assert.match(learningSet,/data-testid="learning-review-batch"/);assert.match(learningSet,/已选 0 项/);assert.equal((learningSet.match(/data-testid="learning-review-select-xilearning_/g)||[]).length,2);
+  const learningBatchCases=8;
   const {PiQuestionReview}=await server.ssrLoadModule('/src/renderer/components/office/PiQuestionReview.tsx');
   const questionReviewBase={sessionId:'aisession_local',onRefresh:async()=>{},review:{id:'xiquestion_local',runId:'airun_local',callId:'call_local',state:'pending',count:2}};
   const pendingQuestionMarkup=renderToStaticMarkup(React.createElement(PiQuestionReview,questionReviewBase));
@@ -81,7 +105,7 @@ try {
   const qualityManual=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,checked:true,quality:{...quality,state:'manual_review',items:[{state:'manual_review',issues:[]}]}}));assert(!/question-quality-reviewed[^>]*disabled/.test(qualityManual));assert(qualityManual.includes('需要人工复核'));
   const qualityPrechecked=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,prechecked:true,quality:{...quality,state:'manual_review',items:[{state:'manual_review',issues:[],math:{state:'matched',conditionsVerified:false,calculation:'5 + 12 = 17',engine:'sympy-1.14.0'}}]}}));assert(qualityPrechecked.includes('本地计算只检查'));assert(qualityPrechecked.includes('这是小智提交时的检查结果'));assert(/question-quality-reviewed[^>]*disabled/.test(qualityPrechecked));
   const qualityLegacy=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,pending:false,legacy:true}));assert(qualityLegacy.includes('历史版本未记录质量检查'));assert(!qualityLegacy.includes('question-quality-check'));
-  for(const [state,label]of [['matched','提交的计算符合'],['mismatch','禁止保存'],['basis_changed','旧计算未使用'],['unsupported','超出当前计算范围']]){const blocked=state==='mismatch',markup=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,checked:true,quality:{...quality,schemaVersion:'xiaozhi.education.question-quality.v2',state:blocked?'blocked':'manual_review',items:[{state:blocked?'blocked':'manual_review',issues:blocked?['math_mismatch']:[],math:{state,conditionsVerified:false,calculation:'(5 + 12) = 13',...(state==='basis_changed'?{}:{engine:'sympy-1.14.0'})}}]}}));assert(markup.includes(label));assert(markup.includes('对应关系'));assert(!markup.includes('整题正确</'));}
+  for(const [state,label]of [['matched','提交的形式模型符合'],['mismatch','禁止保存'],['basis_changed','旧计算未使用'],['unsupported','超出当前计算范围']]){const blocked=state==='mismatch',markup=renderToStaticMarkup(React.createElement(QuestionQualityReview,{...qualityBase,checked:true,quality:{...quality,schemaVersion:'xiaozhi.education.question-quality.v2',state:blocked?'blocked':'manual_review',items:[{state:blocked?'blocked':'manual_review',issues:blocked?['math_mismatch']:[],math:{state,conditionsVerified:false,calculation:'(5 + 12) = 13',...(state==='basis_changed'?{}:{engine:'sympy-1.14.0'})}}]}}));assert(markup.includes(label));assert(markup.includes('对应关系'));assert(!markup.includes('整题正确</'));}
   const questionReviewCases=14;
 
   const {PiTrainingPlan}=await server.ssrLoadModule('/src/renderer/components/office/PiTrainingPlan.tsx');
@@ -151,6 +175,17 @@ try {
   assert.match(materialFailureText('hana-anydoc-0.1.2:cancelled'),/保存在本机/);assert.match(materialFailureText('hana-anydoc-0.1.2:source_changed'),/新的版本/);
   assert.match(materialFailureText('hana-anydoc-0.1.2:needs_ocr'),/文字识别/);assert.doesNotMatch(materialFailureText('unknown-private-path'),/unknown-private-path/);
   const noop = () => undefined;
+  const {OfficeComposer}=await server.ssrLoadModule('/src/renderer/components/office/OfficeComposer.tsx');
+  const composerProps={sessionId:'aisession_quick_start',model:'DeepSeek',models:[{id:'DeepSeek',label:'DeepSeek'}],permissionLabel:'教师资料 · 只读',onSubmit:noop,onStop:noop};
+  const quickStartMarkup=renderToStaticMarkup(React.createElement(OfficeComposer,{...composerProps,showQuickStarts:true}));
+  for(const id of ['materials','mistakes','classroom'])assert.match(quickStartMarkup,new RegExp(`data-testid="teacher-quick-start-${id}"`));
+  assert.match(quickStartMarkup,/根据资料备课/);assert.match(quickStartMarkup,/讲清一道错题/);assert.match(quickStartMarkup,/做一份课堂课件/);
+  assert.match(quickStartMarkup,/先读资料/);assert.match(quickStartMarkup,/本机识别/);assert.match(quickStartMarkup,/确认后保存并导出/);
+  assert.doesNotMatch(quickStartMarkup,/三元题组|坐标|编码|MCP|技能配置/);
+  const attachedQuickStartMarkup=renderToStaticMarkup(React.createElement(OfficeComposer,{...composerProps,showQuickStarts:true,hasAttachments:true}));
+  assert.match(attachedQuickStartMarkup,/teacher-quick-starts/);assert.match(attachedQuickStartMarkup,/teacher-quick-start-materials/);
+  assert.doesNotMatch(renderToStaticMarkup(React.createElement(OfficeComposer,{...composerProps,showQuickStarts:false})),/teacher-quick-starts/);
+  const teacherQuickStartCases=6;
   const { PRODUCT_SPACES, productSpaceFor, isProductView } = await server.ssrLoadModule('/src/renderer/components/product/product-spaces.ts');
   assert.deepEqual(PRODUCT_SPACES.map(item => item.label), ['问小智', '我的资料', '教学内容', '学生', '设置']);
   for (const view of ['memory', 'team', 'checkpoint', 'today', '', '__proto__']) assert.equal(isProductView(view), false);
@@ -374,7 +409,7 @@ try {
     exerciseSets: [{
       id: 'exercise_component', studentId: masteryStudent.id, title: '一次函数三元题组', subject: '数学', knowledgePoint: '一次函数', contentMd: '', sourceQuestionIds: ['question_local'], createdAt: '2026-08-12T00:00:00.000Z', updatedAt: '2026-08-12T00:00:00.000Z',
       items: [
-        { role: 'original', questionId: 'question_local', sourceKind: 'local_bank', stem: '求斜率。', answer: '2', analysis: '读取系数。', knowledgePoint: '一次函数', difficulty: 'easy', teacherObservation: '需注意符号。' },
+        { role: 'original', questionId: 'question_local', sourceKind: 'local_bank', stem: '求斜率。', answer: '2', analysis: '读取系数。', knowledgePoint: '一次函数', difficulty: 'easy', teacherObservation: '教师观察：需注意符号。' },
         { role: 'variant', sourceKind: 'generated', stem: '变式题。', answer: '待复核', analysis: '', knowledgePoint: '一次函数', difficulty: 'medium', teacherObservation: '' },
       ],
     }],
@@ -383,6 +418,8 @@ try {
   assert.match(exerciseSetContent, /exercise-set-card-exercise_component/);
   assert.match(exerciseSetContent, /本地题库/);
   assert.match(exerciseSetContent, /小智生成 · 待教师复核/);
+  assert.match(exerciseSetContent, /教师观察：<\/strong>需注意符号/);
+  assert(!exerciseSetContent.includes('教师观察：教师观察'));
 
   const reviewNoStudent = renderToStaticMarkup(React.createElement(ReviewReminderState, { reminder: null, loading: false, errorMessage: '', onRefresh: noop, onOpenEvidence: noop }));
   assert.match(reviewNoStudent, /data-testid="review-reminder-no-student"/);
@@ -571,9 +608,36 @@ try {
   const relatedTen=relatedMarkup({...related,items:Array.from({length:10},(_,i)=>({...related.items[0],question:{...paperQuestion,id:paperQuestion.id.slice(0,-2)+String(i).padStart(2,'0')},source:{...related.items[0].source,questionId:paperQuestion.id.slice(0,-2)+String(i).padStart(2,'0')}}))});assert(relatedTen.includes('10 / 10'));assert(!relatedTen.includes('未自动补题'));assert(relatedTen.includes('语义与答案正确性需要教师核对'));
   const originalPaper=paperMarkup({...paperView,blueprint:{...paperView.blueprint,mode:'ai_original'},selection:{...paperView.selection,items:paperView.selection.items.map(i=>({...i,question:{...i.question,sourceKind:'generated'},generation:{groupId:'xiquestion_safe',effectDigest:'a'.repeat(64),generationKind:'ai_original'}}))}});assert(originalPaper.includes('AI原创组卷'));assert(originalPaper.includes('无教材原题来源'));assert(originalPaper.includes('AI起草，教师核对保存版本'));assert(!originalPaper.includes('历史记录，来源待确认'));assert(!originalPaper.includes('xiquestion_safe'));
   const hybridPaper=paperMarkup({...paperView,blueprint:{...paperView.blueprint,mode:'hybrid',sections:paperView.blueprint.sections.map(s=>({...s,generatedCount:0}))}});assert(hybridPaper.includes('混合组卷'));assert(hybridPaper.includes('paper-source-counts'));
-  assert(paperInitial.includes('paper-mode'));assert(paperInitial.includes('AI原创题'));assert(paperInitial.includes('原题与生成题混合'));
-  const paperCases=6+3+4;
-  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases, total: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases, materialLayoutCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases }, null, 2));
+  assert(paperInitial.includes('paper-mode'));assert(paperInitial.includes('AI原创题'));assert(paperInitial.includes('原题与生成题混合'));assert(paperInitial.includes('paper-compare'));
+  const {PaperExportEntry}=await server.ssrLoadModule('/src/renderer/components/PaperExportEntry.tsx');
+  const exportView={...paperView,state:'confirmed',digest:'a'.repeat(64),exportCurrent:true};
+  const exportMarkup=renderToStaticMarkup(React.createElement(PaperExportEntry,{view:exportView}));
+  assert.match(exportMarkup,/data-testid="paper-export-entry"/);assert.match(exportMarkup,/paper-export-student-docx/);assert.match(exportMarkup,/paper-export-answer_sheet-docx/);assert.match(exportMarkup,/paper-export-answer_sheet-pdf/);assert.match(exportMarkup,/答题卡 · Word/);assert.match(exportMarkup,/答题卡 · PDF/);assert.match(exportMarkup,/答题卡不含答案或解析/);
+  const exportDisabled=renderToStaticMarkup(React.createElement(PaperExportEntry,{view:exportView,disabled:true}));
+  assert.match(exportDisabled,/paper-export-answer_sheet-docx[^>]*disabled/);assert.match(exportDisabled,/paper-export-student-docx[^>]*disabled/);
+  const exportHidden=renderToStaticMarkup(React.createElement(PaperExportEntry,{view:{...paperView,exportCurrent:false}}));assert.equal(exportHidden,'');
+  const paperExportCases=3;
+  const {PaperCompareState,PaperCompareDiff}=await server.ssrLoadModule('/src/renderer/components/PaperComparePanel.tsx');
+  const comparePaperA={id:'xipaper_00000000-0000-0000-0000-000000000001',sessionId:paperView.sessionId,runId:'',callId:'',requestId:'00000000-0000-0000-0000-000000000001',revision:1,title:'<script>左卷</script>',state:'confirmed',count:1,totalPoints:100,complete:true};
+  const comparePaperB={...comparePaperA,id:'xipaper_00000000-0000-0000-0000-000000000002',title:'右卷',state:'pending'};
+  const compareBaseProps={papers:[comparePaperA,comparePaperB],leftId:'',rightId:'',status:'idle',error:'',loading:false,onLeft:noop,onRight:noop,onCompare:noop};
+  const compareIdle=renderToStaticMarkup(React.createElement(PaperCompareState,compareBaseProps));
+  assert.match(compareIdle,/data-testid="paper-compare"/);assert.match(compareIdle,/paper-compare-left/);assert.match(compareIdle,/paper-compare-right/);assert.match(compareIdle,/只读对比，不会自动合并/);assert.match(compareIdle,/选择两份试卷后开始对比/);assert(!compareIdle.includes('<script>'));
+  const compareLoading=renderToStaticMarkup(React.createElement(PaperCompareState,{...compareBaseProps,papers:[],loading:true}));
+  assert.match(compareLoading,/paper-compare-list-loading/);assert.match(compareLoading,/正在读取已保存试卷/);
+  const compareEmpty=renderToStaticMarkup(React.createElement(PaperCompareState,{...compareBaseProps,papers:[]}));
+  assert.match(compareEmpty,/paper-compare-empty/);assert.match(compareEmpty,/暂无可对比的试卷/);
+  const compareError=renderToStaticMarkup(React.createElement(PaperCompareState,{...compareBaseProps,status:'error',error:'读取未完成，请重试。'}));
+  assert.match(compareError,/data-testid="paper-compare-error"/);assert.match(compareError,/读取未完成/);
+  const compareItem=(identity,number,sectionId,points,extra={})=>({identity,number,sectionId,points,difficulty:'medium',knowledgePoint:'勾股',sourceKind:'local_bank',...extra});
+  const compareViewFixture={schemaVersion:'xiaozhi.paper-compare.v1',left:{title:'左卷',count:2,totalPoints:80,durationMinutes:90,mode:'source_only',state:'confirmed',digest:'a'.repeat(64)},right:{title:'右卷',count:2,totalPoints:90,durationMinutes:60,mode:'hybrid',state:'pending'},sections:{added:[],removed:[],kept:[],changed:[{id:'two',left:{id:'two',label:'解答',questionType:'解答题',count:1,points:30},right:{id:'two',label:'解答',questionType:'解答题',count:1,points:40},fields:['points']}]},items:{added:[],removed:[],kept:[compareItem('k1',1,'one',50)],changed:[{identity:'k2',left:compareItem('k2',1,'two',30,{difficulty:'easy'}),right:compareItem('k2',2,'two',40,{difficulty:'hard',knowledgePoint:'相似',sourceKind:'generated',generationEffectDigest:'b'.repeat(64)}),changes:[{field:'number',left:1,right:2},{field:'points',left:30,right:40},{field:'difficulty',left:'easy',right:'hard'},{field:'knowledgePoint',left:'勾股',right:'相似'},{field:'sourceKind',left:'local_bank',right:'generated'},{field:'generation.effectDigest',left:undefined,right:'b'.repeat(64)}]}],ambiguous:[]},ambiguous:false,writes:false,answerVerified:false};
+  const compareDiff=renderToStaticMarkup(React.createElement(PaperCompareDiff,{view:compareViewFixture}));
+  assert.match(compareDiff,/data-testid="paper-compare-diff"/);assert.match(compareDiff,/新增 0 · 删除 0 · 保留 1 · 变化 1/);assert.match(compareDiff,/分值：30 → 40/);assert.match(compareDiff,/难度：基础 → 困难/);assert.match(compareDiff,/只读对比：writes=false/);assert.match(compareDiff,/answerVerified=false/);assert(!compareDiff.includes('k2'));
+  const compareAmbiguous=renderToStaticMarkup(React.createElement(PaperCompareDiff,{view:{...compareViewFixture,ambiguous:true,items:{...compareViewFixture.items,ambiguous:[{identity:'secret-key',reason:'duplicate_identity',left:[compareItem('secret-key',1,'one',50),compareItem('secret-key',2,'one',50)],right:[compareItem('secret-key',1,'one',50)]},{reason:'unsupported_identity',left:[],right:[]}]}}}));
+  assert.match(compareAmbiguous,/data-testid="paper-compare-ambiguous"/);assert.match(compareAmbiguous,/存在重复题目标识/);assert.match(compareAmbiguous,/左侧 2 道，右侧 1 道/);assert(!compareAmbiguous.includes('secret-key'));
+  const paperCompareCases=6;
+  const paperCases=6+3+4+paperCompareCases+paperExportCases;
+  console.log(JSON.stringify({ suite: 'renderer-component-states', passed: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, total: 86 + paperCases + originalMultiCases + materialLayoutCases + mistakeFactsCases + mistakeOcrCases + practiceResultCases + practiceReviewCases + learningBatchCases + questionReviewCases + questionSourceCases + trainingPlanCases + trainingWorkspaceCases + publicStatusCases.length + publicActivityCases + markdownCases + productNavigationCases + materialDirectoryCases + materialContractCases + teacherNotebookCases + answerEvidenceCases + teacherQuickStartCases, materialLayoutCases, trainingWorkspaceCases, publicStatusCases: publicStatusCases.length, compactionTransitions: 4, publicActivityCases, markdownCases, productNavigationCases, materialDirectoryCases, materialContractCases, teacherQuickStartCases }, null, 2));
 } finally {
   await server.close();
 }

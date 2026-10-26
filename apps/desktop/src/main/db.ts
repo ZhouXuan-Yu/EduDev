@@ -1,3 +1,4 @@
+import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
 import {PaperRepository,type PaperSql} from './education/paper-repository';
 import {findMistakeSimilar} from './education/mistake-similar';
 import type {MistakeSimilarInput} from '../shared/mistake-similar';
@@ -50,6 +51,7 @@ import type {
   AiAgentTraceStep,
   AiConsoleRunResult,
   AiConversationDetail,
+  AiConversationHistoryPage,
   AiConversationFolder,
   AiConversationFolderInput,
   AiConversationFolderUpdateInput,
@@ -1064,6 +1066,14 @@ function parseRegressionGates(value: unknown): AiRegressionGate[] {
   }
 }
 
+const stateTransactionalLockWindowMs=10_000;
+function retryableStateLock(error:unknown){
+  const code=error&&typeof error==='object'&&'code' in error?String((error as {code?:unknown}).code||''):'';
+  const message=error instanceof Error?error.message:String(error||'');
+  return /^SQLITE_(?:BUSY|LOCKED)(?:_|$)/i.test(code)||/SQLITE_BUSY|SQLITE_LOCKED|database is locked/i.test(message);
+}
+function stateLockRetryDelay(attempt:number){return Math.min(250,25*2**Math.min(attempt,3));}
+
 export class OmniEduStore {
   readonly mistakeFacts = new MistakeFactsRepository({dataRoot:()=>this.dataRoot,all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),map:row=>this.mapMistakeImageAnalysis(row),sanitize:(text,id)=>this.sanitizeProblemText(text,id),correct:(id,text)=>this.updateMistakeImageCorrection(id,{extractedText:text},true),createQuestion:input=>this.createQuestionBankItem(input),createRecord:(input,id)=>this.createRecord(input,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
@@ -1128,7 +1138,28 @@ export class OmniEduStore {
   readonly materials: MaterialRepository;
   readonly materialQueue: MaterialParseQueue;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
-  readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values) });
+  readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values), transaction: async action => {
+    const deadline=Date.now()+stateTransactionalLockWindowMs;
+    for(let attempt=0;;attempt++){
+      const work = new OmniEduStore(this.dataRoot);
+      work.db = await this.openDatabase(this.dbPath);
+      try {
+        // Do not occupy a libuv worker for five seconds while another short
+        // writer owns SQLite. Retry the BEGIN outside the worker instead.
+        await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=0; BEGIN IMMEDIATE;');
+      } catch (error) {
+        await work.close().catch(() => undefined);
+        if(!retryableStateLock(error)||Date.now()>=deadline)throw error;
+        await new Promise(resolve=>setTimeout(resolve,stateLockRetryDelay(attempt)));
+        continue;
+      }
+      try {
+        const result = await action({ run: (sql, values) => work.run(sql, values), change: async (sql, values) => Number(await work.runWithChanges(sql, values)), all: (sql, values) => work.all(sql, values) });
+        await work.exec('COMMIT;'); return result;
+      } catch (error) { await work.exec('ROLLBACK;').catch(() => undefined); throw error; }
+      finally { await work.close(); }
+    }
+  } },{nativeRoot:()=>join(this.dataRoot,'xiaozhi-pi')});
   private db!: sqlite3.Database;
   private dbPath: string;
   private questionRetrievalIndexed = false;
@@ -1149,6 +1180,7 @@ export class OmniEduStore {
     this.dbPath = join(dataRoot, 'app.db');
     this.materials = new MaterialRepository({
     root: join(this.dataRoot, 'teacher_resources'),
+    change:async(sql,params)=>Number(await this.runWithChanges(sql,params)),
     all: (sql, params) => this.all(sql, params),
     mapResource: row => this.mapTeacherResource(row),
     mapChunk: row => this.mapResourceChunk(row),
@@ -1181,6 +1213,7 @@ export class OmniEduStore {
       this.db = await this.openDatabase(this.dbPath);
     }
     await this.migrate();
+    await ensureMaterialReadingEntries(sql=>this.exec(sql));
     await this.xiaozhiState.init();
     if (!this.recoveredInterruptedRuns) {
       await this.xiaozhiState.recover();
@@ -3409,9 +3442,9 @@ export class OmniEduStore {
   async listAiConfirmations(status: AiConfirmationStatus | 'all' = 'pending'): Promise<AiConfirmationItem[]> {
     const allowedStatuses = new Set(['pending', 'confirmed', 'rejected', 'failed']);
     const rows = status === 'all'
-      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`)
+      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type NOT IN ('pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`)
       : await this.all(
-        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`,
+        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type NOT IN ('pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`,
         [allowedStatuses.has(status) ? status : 'pending'],
       );
     return rows.map((row) => this.mapAiConfirmationItem(row));
@@ -4369,6 +4402,75 @@ export class OmniEduStore {
       [sessionId],
     )).map(this.mapAiConversationMessage);
     return { session: this.mapAiConversationSession(row), messages };
+  }
+
+  /**
+   * Read one complete turn page without loading the session transcript.
+   * `before` is the oldest public turn identity already displayed; run IDs and
+   * legacy message IDs are both supported because older histories have no
+   * agentRunId metadata.
+   */
+  async getAiConversationHistoryPage(
+    sessionId: string,
+    input: { before?: string; limit?: number } = {},
+  ): Promise<AiConversationHistoryPage> {
+    const session = (await this.all(`SELECT * FROM ai_conversation_sessions WHERE id = ?`, [sessionId]))[0];
+    if (!session) throw new Error('AI 对话不存在');
+    const limit = Math.min(40, Math.max(1, Math.trunc(input.limit ?? 40)));
+    let beforeRowId: number | null = null;
+    if (input.before !== undefined) {
+      if (typeof input.before !== 'string' || !/^[A-Za-z0-9_-]{1,200}$/.test(input.before)) {
+        throw new Error('invalid_input');
+      }
+      const cursor = (await this.all(
+        `SELECT rowid AS message_rowid FROM ai_conversation_messages
+          WHERE session_id = ? AND role = 'user'
+            AND (id = ? OR json_extract(metadata_json, '$.agentRunId') = ?)
+          ORDER BY rowid DESC LIMIT 1`,
+        [sessionId, input.before, input.before],
+      ))[0];
+      if (!cursor) throw new Error('invalid_input');
+      beforeRowId = Number(cursor.message_rowid);
+    }
+    const userWhere = beforeRowId === null
+      ? { sql: "session_id = ? AND role = 'user'", params: [sessionId] }
+      : { sql: "session_id = ? AND role = 'user' AND rowid < ?", params: [sessionId, beforeRowId] };
+    const users = await this.all(
+      `SELECT rowid AS message_rowid FROM ai_conversation_messages
+        WHERE ${userWhere.sql} ORDER BY rowid DESC LIMIT ?`,
+      [...userWhere.params, limit + 1],
+    );
+    const hasMore = users.length > limit;
+    const selected = users.slice(0, limit);
+    let messages: AiConversationMessage[] = [];
+    if (selected.length) {
+      const first = Number(selected.at(-1)?.message_rowid);
+      const end = beforeRowId;
+      messages = (await this.all(
+        `SELECT * FROM ai_conversation_messages
+          WHERE session_id = ? AND rowid >= ?${end === null ? '' : ' AND rowid < ?'}
+          ORDER BY rowid ASC`,
+        end === null ? [sessionId, first] : [sessionId, first, end],
+      )).map(this.mapAiConversationMessage);
+    } else if (beforeRowId === null) {
+      // Legacy/diagnostic sessions may contain only assistant/system rows.
+      const rows = await this.all(
+        `SELECT * FROM ai_conversation_messages
+          WHERE session_id = ? ORDER BY rowid DESC LIMIT ?`,
+        [sessionId, limit * 2 + 1],
+      );
+      messages = rows.slice(0, limit * 2).reverse().map(this.mapAiConversationMessage);
+      return {
+        session: this.mapAiConversationSession(session),
+        messages,
+        hasMore: rows.length > limit * 2,
+      };
+    }
+    return {
+      session: this.mapAiConversationSession(session),
+      messages,
+      hasMore,
+    };
   }
 
   async appendAiConversationMessage(sessionId: string, input: AiConversationMessageInput): Promise<AiConversationDetail> {
@@ -6238,7 +6340,7 @@ export class OmniEduStore {
   }
 
   private async getAiConfirmationOrThrow(id: string): Promise<AiConfirmationItem> {
-    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type NOT IN ('pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate')`, [id]))[0];
+    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type NOT IN ('pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate')`, [id]))[0];
     if (!row) throw new Error('确认项不存在');
     return this.mapAiConfirmationItem(row);
   }

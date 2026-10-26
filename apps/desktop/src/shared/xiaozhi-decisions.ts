@@ -1,0 +1,10 @@
+export const DECISION_SCHEMA = 'xiaozhi.decision.v1' as const;
+export type DecisionOutcome = 'default' | 'preferences' | 'trial' | 'rollback' | 'rejected';
+export const DECISION_OUTCOMES: DecisionOutcome[] = ['default','preferences','trial','rollback','rejected'];
+export type DecisionReason = 'none' | 'existing' | 'learned' | 'trial' | 'observed' | 'rolled_back' | 'rejected' | 'no_previous';
+export type DecisionSummary = { id: string; runId: string; at: string; revision: number; specVersion: 1 | 2; outcome: DecisionOutcome; reason: DecisionReason; preferenceRevision: number; candidate: boolean;
+  mode: 'off' | 'shadow'; shadow?: { result: DecisionOutcome | 'abstain'; state: 'recorded' | 'failed' | 'stale'; elapsedMs: number }; sourceCurrent: boolean;route?:import('./xiaozhi-routes').RouteSummary };
+export type DecisionInput = { sessionId: string; id: string; revision: number };
+export type DecisionReplay = { reproducible: boolean; sourceCurrent: boolean; specVersion: 1 | 2; outcome: DecisionOutcome;route?:import('./xiaozhi-routes').RouteSummary };
+export type DecisionResult<T> = { ok: true; value: T } | { ok: false; error: 'invalid_input' | 'permission_denied' | 'configuration' | 'conflict' | 'busy' | 'authentication' };
+export const DECISION_LABELS: Record<DecisionOutcome, string> = { default: '使用默认呈现', preferences: '参考已有呈现偏好', trial: '试用待验证偏好', rollback: '恢复上一版偏好', rejected: '未采用偏好建议' };

@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
-import {Button,SearchField} from '@heroui/react';
+import {Button,SearchField,Tabs} from '@heroui/react';
+import {ClassroomWorkspace} from './ClassroomWorkspace';
 import {FileText,FolderOpen,MessageSquare,RefreshCw} from 'lucide-react';
 import {ListView} from '../../heroui-pro/components/list-view';
 import type {DocumentArtifactExportResult} from '../../../shared/contracts';
@@ -12,6 +13,9 @@ import './teacher-library.css';
 
 /** Read existing durable artifact facts; preview uses the same authorized host. */
 export function TeachingArtifactsWorkspace() {
+  return <Tabs defaultSelectedKey="files" aria-label="教学内容"><Tabs.List><Tabs.Tab id="files">教学文件<Tabs.Indicator/></Tabs.Tab><Tabs.Tab id="classrooms" data-testid="teaching-classrooms-tab">互动课堂<Tabs.Indicator/></Tabs.Tab></Tabs.List><Tabs.Panel id="files"><TeachingFilesWorkspace/></Tabs.Panel><Tabs.Panel id="classrooms"><ClassroomWorkspace/></Tabs.Panel></Tabs>;
+}
+function TeachingFilesWorkspace() {
   const navigation=useDesktopNavigation();const [rows,setRows]=useState<DocumentArtifactExportResult[]>([]),[query,setQuery]=useState(''),[selected,setSelected]=useState('');
   const [loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
   const [reveal,setReveal]=useState<{id:string;path:string}>();const epoch=useRef(0);

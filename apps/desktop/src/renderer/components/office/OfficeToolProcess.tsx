@@ -9,6 +9,9 @@ import {OfficeBrowserCapture} from './OfficeBrowserCapture';
 import {MaterialSourceLink} from '../product/MaterialSourceNavigation';
 import {QuestionSourceLink} from './PiQuestionSource';
 import {StudentSourceLink} from '../students/StudentSourceNavigation';
+import {validToolAttempt,TOOL_EXECUTION_MESSAGES} from '../../../shared/xiaozhi-tool-attempt';
+import {OfficeWebSearchProcess,isWebSearchItem} from './OfficeWebSearchProcess';
+import {useToolExpansion} from './OfficeToolExpansion';
 
 function toolState(item: OfficeProjectedItem): ToolPartState {
   if (item.status === 'completed') return 'output-available';
@@ -17,10 +20,12 @@ function toolState(item: OfficeProjectedItem): ToolPartState {
   return 'requires-action';
 }
 function statusText(item: OfficeProjectedItem): string {
+  if(item.status==='inProgress'&&validToolAttempt(item.toolAttempt)&&item.toolAttempt.state==='queued')return '等待读取';
   return item.status === 'completed' ? '已完成' : item.status === 'failed' ? '未完成'
     : item.status === 'declined' ? '已拒绝' : item.status === 'inProgress' ? '正在执行'
     : item.status === 'waiting_approval' ? '等待确认' : item.status === 'waiting_input' ? '等待补充' : '等待状态同步';
 }
+
 export function WebSource({ source, sessionId }: { source: XiaozhiPublicSource; sessionId?: string }) {
   const [notice, setNotice] = useState('');
   return <li><ChatSource href={source.url} title={source.title} enablePreview={false}>
@@ -34,20 +39,31 @@ export function WebSource({ source, sessionId }: { source: XiaozhiPublicSource; 
 }
 function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: string }) {
   const attention = processNeedsAttention(item), status = statusText(item);
+  const { expanded, onExpandedChange, triggerProps } = useToolExpansion('step:' + item.id, attention);
   // Only the already-public action label determines the icon, never model prose.
   const label = item.label || '';
   const ActionIcon = /知识库/.test(label) ? BookOpen : /联网|网页|搜索/.test(label) ? Globe
     : /写入|编辑|创建|修改/.test(label) ? Pencil : /目录|文件夹/.test(label) ? FolderOpen
     : /读取|文件/.test(label) ? FileText : Workflow;
-  return <ChatTool key={`${item.id}:${attention}`} className="office-tool" state={toolState(item)}
-    defaultExpanded={attention} data-item-id={item.id} data-testid="office-tool-step">
-    <ChatTool.Trigger><ActionIcon size={16} aria-hidden="true" /><span>{item.label || '授权工具'}{item.sources?.length ? ` · ${item.sources.map(source => source.title).join('、')}` : ''}</span>
+  return <ChatTool key={item.id} className="office-tool" state={toolState(item)}
+    isExpanded={expanded} onExpandedChange={onExpandedChange}
+    data-item-id={item.id} data-testid="office-tool-step">
+    <ChatTool.Trigger {...triggerProps}><ActionIcon size={16} aria-hidden="true" /><span>{item.label || '授权工具'}{item.sources?.length ? ` · ${item.sources.map(source => source.title).join('、')}` : ''}</span>
       <span className="office-step-state">{status}</span>
       {item.durationMs !== undefined && <span className="office-step-duration">{formatProcessDuration(item.durationMs)}</span>}
     </ChatTool.Trigger>
     <ChatTool.Content className="office-tool-evidence" data-testid="office-tool-evidence">
       {item.status==='completed'&&item.browserCapture&&sessionId&&<OfficeBrowserCapture capture={item.browserCapture} sessionId={sessionId}/>}
       <p>{item.label || '授权工具'}：{status}。{item.durationMs !== undefined ? `实际用时 ${formatProcessDuration(item.durationMs)}。` : '未记录实际用时。'}</p>
+      {validToolAttempt(item.toolAttempt)&&(item.toolAttempt.queueWaitMs!==undefined||item.toolAttempt.executionMs!==undefined)&&<p data-testid="pi-tool-timing">
+        {item.toolAttempt.queueWaitMs!==undefined&&`本次排队 ${formatProcessDuration(item.toolAttempt.queueWaitMs)}。`}
+        {item.toolAttempt.executionMs!==undefined&&`本次执行${item.toolAttempt.state==='succeeded'?'用时':'已等待'} ${formatProcessDuration(item.toolAttempt.executionMs)}。`}
+      </p>}
+      {validToolAttempt(item.toolAttempt)&&(item.toolAttempt.attempt>1||item.toolAttempt.state==='retrying'||item.toolAttempt.state==='failed')&&<p data-testid="pi-tool-attempt" data-attempt={item.toolAttempt.attempt} data-attempt-state={item.toolAttempt.state}>
+        {item.toolAttempt.state==='retrying'?`正在准备第 ${item.toolAttempt.attempt+1} 次读取（最多 ${item.toolAttempt.maxAttempts} 次）。`:`本次操作尝试 ${item.toolAttempt.attempt} 次。`}
+        {item.toolAttempt.code&&TOOL_EXECUTION_MESSAGES[item.toolAttempt.code]}
+        {item.toolAttempt.effect==='unknown'&&'操作可能已经产生效果，请先核对，不要重复执行。'}
+      </p>}
       {item.imageDelivery&&<p data-testid="pi-image-delivery" data-image-state={item.imageDelivery.state}>{item.imageDelivery.title}：{
         item.imageDelivery.state==='prepared'?'已准备，尚未确认送达。':item.imageDelivery.state==='submitting'?'正在发送，尚未确认送达。'
         :item.imageDelivery.state==='received'?'供应商已接收并返回有效响应。':item.imageDelivery.state==='interrupted'?'已停止，未确认送达。':'未确认送达，请查看本轮结果。'}</p>}
@@ -61,16 +77,26 @@ function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: 
 
 /** Reuse native Pro disclosure; each call and its actual state remain inspectable. */
 export function OfficeToolProcess({ items, sessionId }: { items: OfficeProjectedItem[]; sessionId?: string }) {
-  if (items.length === 1) return <ToolStep item={items[0]} sessionId={sessionId}/>;
-  const attention = items.some(processNeedsAttention), failed = items.some(item => ['failed', 'declined'].includes(item.status || ''));
+  // H09-A: hook must run above the early returns so its order never changes
+  // between the single/grouped/web-search branches of this component.
+  const attention = items.some(processNeedsAttention);
+  const { expanded, onExpandedChange, triggerProps } = useToolExpansion('group:' + (items[0]?.id || ''), attention, items.map(item => 'step:' + item.id));
+  if (!items.length) return null;
+  if (items.length && items.every(isWebSearchItem)) return <OfficeWebSearchProcess items={items} sessionId={sessionId} renderDetails={item=><ToolStep item={item} sessionId={sessionId}/>}/>;
+  // Key the step by item id so a replaced single-item part cannot reuse the
+  // previous row's latched expansion state (parents also key by first-call id).
+  if (items.length === 1) return <ToolStep key={items[0].id} item={items[0]} sessionId={sessionId}/>;
+  const failed = items.some(item => ['failed', 'declined'].includes(item.status || ''));
   const active = items.some(item => item.status === 'inProgress'), completed = items.filter(item => item.status === 'completed').length;
   const unknown = items.some(item => !['completed', 'failed', 'declined', 'inProgress', 'waiting_approval', 'waiting_input'].includes(item.status || ''));
   const labels = [...new Set(items.map(item => item.label || '授权工具'))];
   const objects = [...new Set(items.flatMap(item => item.sources?.map(source => source.title) || []))];
   const state: ToolPartState = failed ? 'output-error' : attention || unknown ? 'requires-action' : active ? 'input-available' : 'output-available';
-  return <ChatToolGroup key={`${items[0].id}:${attention}`} className="office-tool office-tool-group" active={active && !attention} data-state={state}
-    defaultExpanded={attention} data-testid="office-tool-group" data-process-group-id={items[0].id} data-call-count={items.length}>
-    <ChatToolGroup.Trigger><Workflow size={16} aria-hidden="true" /><span>{labels.slice(0, 3).join('、')}{labels.length > 3 ? '等操作' : ''}{objects.length ? ` · ${objects.slice(0, 3).join('、')}${objects.length > 3 ? '等资料' : ''}` : ''}</span>
+  // Groups can split or grow as public events arrive. Per-call choices live in
+  // the turn scope, so rebuilding a group never discards the teacher's choice.
+  return <ChatToolGroup key={items[0].id} className="office-tool office-tool-group" active={active && !attention} data-state={state}
+    isExpanded={expanded} onExpandedChange={onExpandedChange} data-testid="office-tool-group" data-process-group-id={items[0].id} data-call-count={items.length}>
+    <ChatToolGroup.Trigger {...triggerProps}><Workflow size={16} aria-hidden="true" /><span>{labels.slice(0, 3).join('、')}{labels.length > 3 ? '等操作' : ''}{objects.length ? ` · ${objects.slice(0, 3).join('、')}${objects.length > 3 ? '等资料' : ''}` : ''}</span>
       <span className="office-step-state">{completed}/{items.length} 已完成{failed ? ' · 有未完成操作' : attention ? ' · 等待教师' : active ? ' · 执行中' : unknown ? ' · 等待状态同步' : ''}</span>
     </ChatToolGroup.Trigger>
     <ChatToolGroup.Content className="office-tool-group-content">{items.map(item => <ToolStep key={item.id} item={item} sessionId={sessionId}/>)}</ChatToolGroup.Content>

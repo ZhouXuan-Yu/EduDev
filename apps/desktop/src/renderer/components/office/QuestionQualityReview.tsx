@@ -1,6 +1,6 @@
 import {Button,Checkbox} from '@heroui/react';
 import {QUESTION_QUALITY_MESSAGES,type QuestionQualityReview as Quality} from '../../../shared/question-quality';
-const mathLabels={matched:'提交的计算符合参考结果（整题条件仍需核对）',mismatch:'计算不符合参考结果，禁止保存',unsupported:'超出当前计算范围，须人工复核',basis_changed:'题目或关联解析已修改，旧计算未使用，须人工复核',not_run:'未提交适用计算，须人工复核'};
+const mathLabels={matched:'提交的形式模型符合参考结果（整题条件仍需核对）',mismatch:'计算或线性条件检查未通过，禁止保存',unsupported:'超出当前计算范围，须人工复核',basis_changed:'题目或关联解析已修改，旧计算未使用，须人工复核',not_run:'未提交适用计算，须人工复核'};
 
 /** Host-owned checks are shown separately from the teacher's explicit review. */
 export function QuestionQualityReview({quality,checked,prechecked=false,grouped=false,reviewed,legacy,historyCount,pending,busy,onCheck,onReviewed}:{quality?:Quality;checked:boolean;prechecked?:boolean;grouped?:boolean;reviewed:boolean;legacy?:boolean;historyCount:number;pending:boolean;busy:boolean;onCheck:()=>void;onReviewed:(value:boolean)=>void}){

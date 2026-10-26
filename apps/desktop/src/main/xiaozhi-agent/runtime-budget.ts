@@ -3,7 +3,7 @@ import type { XiaozhiBudget, XiaozhiUsage } from '../../shared/xiaozhi-agent';
 import { validPiBudget } from './budget-state';
 
 /** Admission around the SDK stream/tool hooks, not a model execution loop. */
-export function createPiRunBudget(options:{budget:XiaozhiBudget;runId:string;limitsEnforced?:boolean;emit:(value:XiaozhiUsage)=>void;abort:()=>void}) {
+export function createPiRunBudget(options:{budget:XiaozhiBudget;runId:string;limitsEnforced?:boolean;emit:(value:XiaozhiUsage)=>void;abort:()=>void;onWaiting?:(waiting:boolean)=>void}) {
   if(!validPiBudget(options.budget))throw new Error('configuration');
   const budget={...options.budget};
   const limited=options.limitsEnforced!==false;
@@ -34,9 +34,9 @@ export function createPiRunBudget(options:{budget:XiaozhiBudget;runId:string;lim
       for(const key of keys)tokens[key]+=usage[key];tokens.total=tokens.input+tokens.output+tokens.cacheRead+tokens.cacheWrite;emit();
     },
     async wait<T>(fn:()=>Promise<T>):Promise<T> {
-      assert();account();waiting++;state='waiting';clear();emit();
+      assert();account();waiting++;state='waiting';clear();options.onWaiting?.(true);emit();
       const timer=limited?setTimeout(()=>exhaust('wait_time'),budget.waitMs):undefined;if(timer)waitTimers.add(timer);
-      try{return await fn();}finally{if(timer){clearTimeout(timer);waitTimers.delete(timer);}account();waiting--;if(!finished)state=waiting?'waiting':'running';emit();arm();}
+      try{return await fn();}finally{if(timer){clearTimeout(timer);waitTimers.delete(timer);}account();waiting--;if(!finished)state=waiting?'waiting':'running';options.onWaiting?.(waiting>0);emit();arm();}
     },
     finish(next:XiaozhiUsage['state']){account();finished=true;state=next;clear();for(const timer of waitTimers)clearTimeout(timer);waitTimers.clear();emit();return snapshot();},
   };
