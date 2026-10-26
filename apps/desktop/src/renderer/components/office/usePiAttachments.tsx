@@ -129,7 +129,7 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
  const renderCards=(values:XiaozhiAttachment[],submitted=false)=><ChatAttachmentGroup>{values.map(item=>
    <ChatAttachment key={item.id} mimeType={item.mime} name={item.name} size={item.size} src={thumbnails[`${item.id}:${item.revision}`]} data-testid={`pi-attachment-${item.id}`} data-state={item.state}>
     <Button variant="ghost" isIconOnly className="pi-attachment-open" aria-label={`预览附件 ${item.name}`} onPress={()=>void open(item)}>
-     <ChatAttachment.Preview>{item.format==='image'&&thumbnails[`${item.id}:${item.revision}`]?<img src={thumbnails[`${item.id}:${item.revision}`]} alt={item.name}/>:<ChatAttachment.Icon/>}</ChatAttachment.Preview>
+     <ChatAttachment.Preview/>
     </Button>
     <ChatAttachment.Info/>
     {!submitted&&<OfficeMutationBoundary><ChatAttachment.Remove aria-label={`移除附件 ${item.name}`} isDisabled={busy} onPress={()=>void remove(item)}/></OfficeMutationBoundary>}

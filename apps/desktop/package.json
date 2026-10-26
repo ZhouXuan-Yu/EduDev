@@ -50,6 +50,8 @@
     "test:xiaozhi-pi-live": "node scripts/xiaozhi-agent/pi-education-live-smoke.mjs",
     "test:xiaozhi-pi-electron": "node scripts/xiaozhi-agent/pi-education-electron-smoke.mjs",
     "test:xiaozhi-pi-ui": "npm run build && node scripts/xiaozhi-agent/pi-production-ui-smoke.mjs",
+    "test:xiaozhi-pi-attachment-entry": "npm run build && node scripts/xiaozhi-agent/pi-attachment-entry-ui-smoke.mjs",
+    "test:xiaozhi-pi-composer-send": "npm run build && node scripts/xiaozhi-agent/pi-composer-send-ui-smoke.mjs",
     "test:xiaozhi-teacher-quick-starts": "node scripts/xiaozhi-agent/pi-teacher-quick-starts-ui.mjs",
     "test:xiaozhi-narrow-interface": "node scripts/xiaozhi-agent/pi-narrow-interface-ui-smoke.mjs",
     "test:xiaozhi-dpi-interface": "node scripts/xiaozhi-agent/pi-dpi-interface-ui.mjs",
