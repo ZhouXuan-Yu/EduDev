@@ -4,7 +4,7 @@ import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared
 import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
 import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
-import type {WordQuery,WordPage,WordImageQuery,WordImageView,WordRebuild} from '../shared/material-word';
+import type {WordQuery,WordPage,WordImageQuery,WordImageView,WordRebuild,WordRebuildView} from '../shared/material-word';
 import type {TeacherResource} from '../shared/contracts';
 import type {MaterialTaskAction,MaterialQueueView} from '../shared/material-parse-task';
 import type {MaterialBatchQuery,MaterialBatchPage,MaterialBatchAction,MaterialBatchFilesQuery,MaterialBatchFiles,MaterialBatchCreated} from '../shared/material-import-batch';
@@ -343,6 +343,7 @@ const api = {
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialWord:(input:WordQuery)=>ipcRenderer.invoke('materials:word-source',input) as Promise<WordPage|undefined>,
   getMaterialWordImage:(input:WordImageQuery)=>ipcRenderer.invoke('materials:word-image',input) as Promise<WordImageView>,
+  getMaterialWordJob:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-job',input) as Promise<WordRebuildView>,
   rebuildMaterialWord:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-rebuild',input) as Promise<TeacherResource>,
   cancelMaterialWord:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-cancel',input) as Promise<{cancelled:boolean}>,
   getMaterialSource: (input:MaterialSource) => ipcRenderer.invoke('materials:source',input) as Promise<MaterialSourceView>,

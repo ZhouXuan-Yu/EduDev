@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+<!-- kb-word-20261027:start -->
+## 2026-10-27 Word 图文来源与主线续接
+
+已继续实现 DOCX 图文/公式来源纵向切片，并合入协作者 main 8dec132。此为资料结构与检索/规则归档基础；完整图文 AI 识题、答案册匹配、受管视觉模型、40GB/真实质量与新 EXE 仍未完成，不以本片测试替代完整 Goal。
+<!-- kb-word-20261027:end -->
+
 <!-- kb-main-merge-20261026:start -->
 ## 2026-10-26 先整合 main，继续完整知识库主线
 

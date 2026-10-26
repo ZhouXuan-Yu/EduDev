@@ -17,6 +17,7 @@ export type WordPage={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version
 export type WordImageQuery={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string;assetId:string};
 export type WordImageView={asset:WordAsset;dataUrl:string};
 export type WordRebuild={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string};
+export type WordRebuildView=WordRebuild&{jobId:string;status:'idle'|'running'|'complete'|'cancelled'|'failed';error:string};
 const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const hash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const string=(v:unknown,n:number):v is string=>typeof v==='string'&&v.length<=n;

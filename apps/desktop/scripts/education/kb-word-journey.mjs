@@ -1,7 +1,7 @@
 import fs from 'node:fs';import path from 'node:path';import {tmpdir} from 'node:os';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {setTimeout as delay} from 'node:timers/promises';import {createHash} from 'node:crypto';import {_electron} from 'playwright';import {DatabaseSync} from 'node:sqlite';
-import {wordFixture,wordFixtureImage} from './word-fixtures.mjs';
+import {wordFixture,wordFixtureImage,mutateWord} from './word-fixtures.mjs';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),output=fs.mkdtempSync(path.join(tmpdir(),'omni-edu-word-')),folder=path.join(output,'教师资料'),data=path.join(output,'data'),profile=path.join(output,'profile');fs.mkdirSync(folder);
-fs.writeFileSync(path.join(folder,'分数图文.docx'),await wordFixture());fs.writeFileSync(path.join(folder,'损坏资料.docx'),'not a zip');
+fs.writeFileSync(path.join(folder,'分数图文.docx'),await mutateWord(await wordFixture(),async z=>{const p='word/document.xml';z.file(p,(await z.file(p).async('string')).replace(/<w:tr>.*?<\/w:tr>/s,row=>'<w:sdt><w:sdtContent>'+row.replace(/<w:tc>.*?<\/w:tc>/s,cell=>'<w:sdt><w:sdtContent>'+cell+'</w:sdtContent></w:sdt>')+'</w:sdtContent></w:sdt>'));}));fs.writeFileSync(path.join(folder,'损坏资料.docx'),'not a zip');
 const schemaVersion='xiaozhi.word-source.v1',materialSchema='xiaozhi.materials.v1';let app,page,resource;
 const report={output,checks:[],rendererErrors:[],starts:0,bundle:createHash('sha256').update(fs.readFileSync(path.join(desktop,'out/main/index.js'))).digest('hex'),scope:'Real Electron folder import, Word utility process, typed preload, source UI, SQLite, exact image bytes and restart. Synthetic DOCX; no visual AI, natural teacher corpus or EXE claim'};
 const note=s=>{report.checks.push(s);console.log('PASS '+s);};

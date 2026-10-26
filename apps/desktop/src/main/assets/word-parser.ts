@@ -53,6 +53,7 @@ export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
   }
   async function inlines(n:WordNode):Promise<WordInline[]>{
    if(n.name==='del'||n.name==='moveFrom'){warn('tracked_changes');return [];}
+   if(WORD_NS.has(n.uri)&&['ins','moveTo'].includes(n.name))warn('tracked_changes');
    if(MATH_NS.has(n.uri)&&(n.name==='oMath'||n.name==='oMathPara')){const raw=xml.slice(n.start,n.end);if(raw.length>128000)throw Error('too_large');const math=wordMath(n);if(!math.complete)warn('formula_incomplete');return [{kind:'formula',...math,omml:raw}];}
    if(WORD_NS.has(n.uri)&&['drawing','pict','object'].includes(n.name)){if(n.name==='object')warn('embedded_object');const result:WordInline[]=[];const textboxes=descendants(n,'txbxContent',WORD_NS);if(textboxes.length){warn('text_box');for(const box of textboxes)result.push(...await inlines(box));}const pictures=[...descendants(n,'blip',DRAWING_NS),...descendants(n,'imagedata',new Set(['urn:schemas-microsoft-com:vml']))];for(const picture of pictures)result.push(await image(n,picture));if(!pictures.length&&!textboxes.length){warn('unsupported_drawing');result.push(await image(n));}return result;}
    if(WORD_NS.has(n.uri)&&n.name==='t')return [{kind:'text',text:n.text}];
@@ -63,16 +64,28 @@ export async function parseWord(bytes:Uint8Array):Promise<WordPayload>{
    if(!WORD_NS.has(n.uri)&&!MATH_NS.has(n.uri)&&n.uri!==MC_NS){warn('unsupported_structure');return [];}
    const result:WordInline[]=[];for(const c of n.children)result.push(...await inlines(c));if(WORD_NS.has(n.uri)&&n.name==='p')result.push({kind:'text',text:'\n'});return result;
   }
+  /** Expand legal row/cell containers, never descendants of a nested table. */
+  function tableChildren(n:WordNode,name:'tr'|'tc'):WordNode[]{
+   const result:WordNode[]=[];
+   for(const c of n.children){
+    if(c.uri===MC_NS&&c.name==='AlternateContent'){warn('alternate_content');const selected=child(c,'Fallback')||child(c,'Choice');if(selected)result.push(...tableChildren(selected,name));continue;}
+    if(!WORD_NS.has(c.uri))continue;
+    if(['del','moveFrom'].includes(c.name)){warn('tracked_changes');continue;}
+    if(c.name===name){const properties=child(c,name==='tr'?'trPr':'tcPr');if(properties&&child(properties,name==='tr'?'del':'cellDel')){warn('tracked_changes');continue;}result.push(c);continue;}
+    if(['sdt','sdtContent','customXml','ins','moveTo'].includes(c.name)){if(['ins','moveTo'].includes(c.name))warn('tracked_changes');result.push(...tableChildren(c,name));}
+   }return result;
+  }
   async function blocks(n:WordNode):Promise<WordBlock[]>{
    if(['footnote','endnote'].includes(n.name)&&Number(n.attrs.id)<=0)return [];
    if(n.name==='del'||n.name==='moveFrom'){warn('tracked_changes');return [];}
+   if(WORD_NS.has(n.uri)&&['ins','moveTo'].includes(n.name))warn('tracked_changes');
    const anchor={part,path:n.path},id='wb_'+sha(part+'\0'+n.path).slice(0,32);
    if(WORD_NS.has(n.uri)&&n.name==='p'){
     if(++blockCount>20000)throw Error('too_large');const values=await inlines(n),joined:WordInline[]=[];for(const v of values){const last=joined.at(-1);if(v.kind==='text'&&last?.kind==='text')last.text+=v.text;else joined.push(v);}const numbering=number(n);return [{kind:'paragraph',id,anchor,inlines:joined,...(numbering?{numbering}:{})}];
    }
    if(WORD_NS.has(n.uri)&&n.name==='tbl'){
     if(++blockCount>20000)throw Error('too_large');const rows:Array<{cells:Array<{colSpan:number;merge:''|'restart'|'continue';blocks:WordBlock[]}>}>=[];
-    for(const row of children(n,'tr')){const cells:typeof rows[number]['cells']=[];for(const c of children(row,'tc')){const pr=child(c,'tcPr'),colSpan=Number(pr&&child(pr,'gridSpan')?.attrs.val||1),vm=pr&&child(pr,'vMerge');if(colSpan<1||colSpan>128||!Number.isSafeInteger(colSpan))throw Error('parse_failed');if(vm)warn('merged_table');cells.push({colSpan,merge:vm?vm.attrs.val==='restart'?'restart':'continue':'',blocks:await blocks(c)});}rows.push({cells});}return [{kind:'table',id,anchor,rows}];
+    for(const row of tableChildren(n,'tr')){const cells:typeof rows[number]['cells']=[];for(const c of tableChildren(row,'tc')){const pr=child(c,'tcPr'),colSpan=Number(pr&&child(pr,'gridSpan')?.attrs.val||1),vm=pr&&child(pr,'vMerge');if(colSpan<1||colSpan>128||!Number.isSafeInteger(colSpan))throw Error('parse_failed');if(vm)warn('merged_table');cells.push({colSpan,merge:vm?vm.attrs.val==='restart'?'restart':'continue':'',blocks:await blocks(c)});}rows.push({cells});}return [{kind:'table',id,anchor,rows}];
    }
    if(n.name==='AlternateContent'&&n.uri===MC_NS){warn('alternate_content');const chosen=child(n,'Fallback')||child(n,'Choice');return chosen?blocks(chosen):[];}
    if(n.name==='altChunk'){warn('external_content');return [];}

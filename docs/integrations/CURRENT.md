@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+<!-- kb-word-20261027:start -->
+## 2026-10-27 Word 图文来源与主线续接
+
+DOCX 新增固定纯 JS yauzl3.4.0(MIT)/saxes6.0.0(ISC)，开发类型 @types/yauzl3.4.0；无新 native/Python/常驻服务。其他 Office 保留 anydoc0.1.2。打包入口增加 word-worker.js，typed preload 提供 Word结构、单图、显式重整/取消；IPC 使用主进程 admission/drain owner。新增依赖体积/限额见KB_IMPLEMENTATION_CONTRACT.md，最终EXE尚未重发。
+
+追加 typed materials:word-job 主进程状态查询；任务状态不依赖renderer组件是否挂载，且不改变SQLite业务真源或外部上传规则。
+<!-- kb-word-20261027:end -->
+
 <!-- kb-main-merge-20261026:start -->
 ## 2026-10-26 先整合 main，继续完整知识库主线
 

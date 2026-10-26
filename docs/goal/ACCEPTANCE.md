@@ -1,5 +1,13 @@
 # Goal 验收台账
 
+<!-- kb-word-20261027:start -->
+## 2026-10-27 Word 图文来源与主线续接
+
+DOCX预整合 Electron：5项/3启动/0 rendererErrors、1366/1920；解析14、队列19、归档12、renderer240通过，实际合成DOCX与受管utility，无provider/自然教师/安装包证明。最终整合 build 已通过，最终桌面5项/3启动/0错误通过，综合回归 exit0/207项历史兼容路径通过；详情见 KB_IMPLEMENTATION_EVIDENCE.md。
+
+独立复核发现并修复两项P2：表格内容控件丢行、切换资料丢失取消入口。最终修复构建/240组件、14解析/5任务边界、普通Word5项/3启动、大DOCX切换取消1项均exit0，0前端错误；207项综合历史回归通过于修复前整合构建，不能写成最终修复构建重新全量运行。当前最终bundle SHA256 637d1ea68ec3b6741bf276513d10a386c55b29e0dc97401c467bd2ff533a2278，详情见KB_IMPLEMENTATION_EVIDENCE.md。
+<!-- kb-word-20261027:end -->
+
 <!-- kb-main-merge-20261026:start -->
 ## 2026-10-26 先整合 main，继续完整知识库主线
 

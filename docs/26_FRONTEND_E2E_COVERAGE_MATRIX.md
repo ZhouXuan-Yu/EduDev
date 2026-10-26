@@ -1,5 +1,13 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+<!-- kb-word-20261027:start -->
+## 2026-10-27 Word 图文来源与主线续接
+
+Word资料贯通：添加文件夹→自动DOCX结构→公式/按需原图→表格翻行→旧资料重整→键盘取消→冷恢复→坏图拒绝及幂等修复。预整合5项/3启动/0rendererErrors，1366/1920，脚本 apps/desktop/scripts/education/kb-word-journey.mjs。最终整合构建与回归结果见KB_IMPLEMENTATION_EVIDENCE.md；不是视觉AI或自然题库质量验收。
+
+独立批判后最终两条Word路径均exit0：普通图文5项/3启动、18,000段DOCX切换A/B/A取消1项，均0rendererErrors；14组解析/5组任务边界/240组件通过。记录见KB_IMPLEMENTATION_EVIDENCE.md，207综合历史路径属于修复前整合构建。
+<!-- kb-word-20261027:end -->
+
 <!-- kb-main-merge-20261026:start -->
 ## 2026-10-26 先整合 main，继续完整知识库主线
 

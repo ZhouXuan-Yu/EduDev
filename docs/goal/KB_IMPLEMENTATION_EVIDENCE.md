@@ -1,5 +1,32 @@
 # 知识库实施证据
 
+## 2026-10-27 S6-B1 DOCX 原文结构（限定实现，完整 Goal 继续）
+
+实现检查点 `27f0081`；整合协作者 `main 8dec132` 为 `436ef78`，无新冲突，保留输入框/附件及事件日志改动。仅本地 Git，未 push；最终 main 落点以下方收尾记录与 Git 实况为准。
+
+教师可见：从“添加文件夹”导入 DOCX，查看自动题号、公式、原图、段落与表格，翻看表格所有行；旧 Word 可显式重新整理并停止。正文/FTS/结构在同一版本事务发布；原有题库事实保留，旧来源拒绝复用，隐私标记保留。Word 不生成打印页码，未理解的图文不会自动获得完整题目资格。
+
+| 精确命令（cwd=apps/desktop） | 已完成结果/证据 |
+| --- | --- |
+| `npm run build` | 最终批判修复后 exit0；`kb-word-reviewed-build.log`。最终 main bundle SHA256 `637d1ea68ec3b6741bf276513d10a386c55b29e0dc97401c467bd2ff533a2278`。 |
+| `npm run test:renderer-components` | 最终修复后 exit0、240/240；`kb-word-reviewed-components.log`。 |
+| `node scripts/education/kb-word-boundaries.mjs` | 最终 exit0、14组，独立复验同样通过；真实合成DOCX/ZIP/XML、原式/分数/下横线、原图SHA与重复图、完整表格、外链不抓、DTD/超限拒绝、未知数学显式不完整、文本框、关系命名空间、身份去重、样式继承题号、行/单元格内容控件。`kb-word-boundaries-reviewed.log`。 |
+| `node scripts/education/kb-word-journey.mjs` | 最终修复后 exit0、5项/3次启动/0 rendererErrors；`kb-word-reviewed-journey.log`。证据根 `C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-word-eK69Ti`。本次DOCX包含内容控件包装的行和单元格；真实受管utility、typed preload、1366/1920 UI、SQLite原图字节与来源回读、旧正文升级/原题不变/隐私不减、键盘取消、损坏图片拒绝与幂等修复，均无mock parser。 |
+| `node scripts/education/kb-word-job-boundaries.mjs` | exit0、5组；`kb-word-job-boundaries.log`。实际IPC registrar配受控可取消host，覆盖切换查询、版本取消守卫、终态/新jobId与外来renderer拒绝，不冒充真实parser/UI。 |
+| `node scripts/education/kb-word-job-journey.mjs` | 最终修复后 exit0、1项/0 rendererErrors；18,000段DOCX从文件夹真实导入，再重整→切换A/B/A→恢复进度/取消→保留相同正文ID/内容摘要。`kb-word-job-journey.log`；报告 `C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-word-job-zlNLgR/report.json`。 |
+| `node scripts/education/kb-critical-archive-boundaries.mjs` | exit0、12组；`kb-word-archive.log`。 |
+| `node --import ./scripts/office-agent/register-source.mjs --input-type=module -e 'import {materialQueueBoundaries} from "./scripts/education/material-queue-boundaries.mjs";let passed=0;await materialQueueBoundaries(async(name,run)=>{await run();passed++;console.log("PASS "+name);});console.log(JSON.stringify({passed}));'` | exit0、19组；`kb-word-queue-final.log`。 |
+| `npm run test:smoke` | 批判修复前整合构建 `6ab24ca8...` exit0，ok=true、207项历史兼容路径（含12项备份）通过；`kb-word-integrated-smoke.log`。不能写成最终修复构建重新全量运行；之后仅Word表格/任务状态修改，用最终build、组件、解析/任务边界及两条真实Word桌面路径复验。该历史路径不等于当前Pi/视觉AI/provider验收。 |
+| `npm audit --json` | exit1、21项：8high/5moderate/8low，尚未清零；`kb-word-audit.json`。没有自动升级大版本。 |
+
+初次 Word Electron 3项后失败（`kb-word-journey-first.log`）：小文件重整完成得快于点击稳定性等待，取消按钮已移除，实际键盘及时取消后最终5项通过。源队列脚本直接运行缺少loader，并且它只导出测试函数；改用loader+显式调用19组。样式继承反例首版误生成两个pStyle，修正成合法OOXML后通过；不将测试构造错误宣称生产bug。原失败保留。此前预备通过 bundle `ace6120c...` 与本次最终整合构建严格分开。
+
+静态批判已补：不丢文本框/组内多图，数学语义属性不静默转成正确公式；嵌套表格按需展开并分页，图片走文件描述符限量读取及身份/SHA复验，临时文件原子发布；界面不以原始XML冒充教师可读原式。
+
+独立AI批判实际发现两项P2，均已修复并再次独立限定接受：①合法Word行/单元格内容控件被静默跳过，原探针15→14行且首行丢失，修复后15→15、首行保留；合法容器展开不跨嵌套表格，修订删除仍有明确处理。②重整状态只在组件中，切换资料后丢失停止按钮；改为主进程持有最多64条状态、typed word-job 查询，重进恢复运行和取消、完成按jobId刷新、取消匹配源版本。独立复核已实际重跑14组/原表格探针，并核对18,000段真实UI报告及源代码，未发现这两项修复引入新的P1/P2；不是整个产品无缺陷证明。
+
+未验证/未完成：自然教师资料质量、复杂公式/特殊编号/WMF/EMF完整还原、`.doc`与其他格式矩阵、Word视觉AI输入与完整题文/答案图表示、跨页/答案册配对、受管本地视觉模型、云端真实provider、40GB持续吞吐/召回与延迟、最新EXE/干净Windows。本片没有新打包和无系统依赖安装验证。下一片继续S6-B完整图文AI来源/资格，不把规则 `visual_unchecked` 改成自评通过。
+
 ## 2026-10-26 main 整合（本轮整合门禁已完成，整体Goal继续）
 
 用户最新授权优先先整合本地 main、处理协作冲突，再继续知识库主线，替代此前“完整 Goal 结束后再合并”的时序。本轮检查点 59b4303，整合协作者 main 076edd1（含亮色工作台、会话/推理流和整合修复）；28 个冲突文件按双方有效行为组合。本地 main 已于本轮整合到 8f14752（双方历史及修复），未 push。快进前发现D盘协作者切到 codex/composer-grouped-conformance 并有4个已跟踪脏文件及1个新测试，已保留原现场；改在干净 beca 工作树切 main 快进后切回知识库分支。未把D盘当前分支/运行目录冒充同步到新main。此状态文档收尾提交也将快进本地main。未发布新安装包，后续 Git 状态以实际 HEAD 为准。
