@@ -1,5 +1,55 @@
 # 当前架构
 
+<!-- kb-rerank-20261026:start -->
+## 2026-10-26 有限中文重排与最新实现基线（目标继续）
+
+当前完整基线仍是本地资料→持久解析/OCR→FTS+BGE+Lance混合检索→规则文字题/可选逐批授权云端双阶段AI定稿→同题本/整卷集中确认。此次重排为独立本地文本模型，受管本地视觉识题、完整图文/DOCX公式与图片锚点、跨页/答案册配对仍须继续。
+
+S5-B3已接通有限中文交叉编码器：资料库、同一题本与小智现检索适配器使用BGE-reranker-base q8，对前20对象评分，再与原召回等权RRF融合，未评分尾部保留。新冻结Windows EXE懒启动、15秒总预算、队列/输出/窗口有界、空闲回收；错误/超时保留原排序并显示降级。模型不更改题目、答案或来源，不给教师展示虚构正确率。
+
+末次返回改为对象版本及父来源revision的一条SQL栅栏，保留不受后台新资料影响的结果；父来源变私密/删除只剔除相关项并明确partial。新增retrieval_source_revisions派生时钟，不进入向量事件类型；历史seq0和墓碑的存在/内容/seq来自同一SELECT，防止旧行被错误绑定到新seq。原事实与索引世代不因重排重写。
+
+RerankerClient由现utility拥有、固定manifest逐文件核验后启动独立只读ONNX子进程；向量写者不因重排超时被杀。cache仅保存分数拷贝，query/ID/正文/完整性/模型身份进入key；score不作为业务资格。
+
+用户2026-10-26最新指令：此前均为测试信息，影响新流程的旧版本内容/测试数据可直接清理重建，以最新实现为准，不将开发测试数据永久兼容作为阻碍。此授权不等于覆盖协作者源码；正式交付后的教师数据仍按产品保护规则处理。自动删除旧包及未采用模型曾被审批策略拒绝（仅返回blocked by policy），已改为可恢复隔离，用户已索要路径自行删除；工具未声称已释放磁盘。
+
+整体Goal继续active。下一主线优先完整图文题/Word来源表示与归档、跨页/答案配对、可选视觉AI；随后旧代缓存GC、自然教师质量与长上下文/冷启动优化、40GB持续处理与统一最新EXE。当前合成质量/小型路径不能冒充企业级或全目标通过。当前codex/knowledge-base-delivery、HEAD d3e2dec，未提交/合并/push；全目标完成后读取最新main、保留协作者变更并处理冲突。
+<!-- kb-rerank-20261026:end -->
+
+
+<!-- kb-semantic-20261026:start -->
+## 2026-10-26 本地混合召回与批量索引（整体继续实施）
+
+S5-A与S5-B1已接通本地题意检索和有界批量索引：冻结BGE中文embedding、LanceDB派生向量、FTS关键词RRF融合，资料库/同一题本/小智工具共用来源复验。教师可按改写题意查询、暂停/继续/重建；无系统Python或运行时模型下载。每批最多16事实、200000 UTF16字符及900KiB JSON，双文档编码穿插查询，推理后批量提交、receipt最后、事件批尾ACK。旧seq不能复活墓碑。
+
+retrieval领域隔离SQLite事实事件、单utility Lance写者、冻结embedding子进程、模型/分词器/代元数据、来源复验。Windows writer独占共享锁由实际utility进程持有，OS于进程死亡释放；generation追平后原子切换。
+
+来源依赖随题目事务维护；父正文/资源变化推动关联题目事件。archive按正文hash/隐私/可读状态校验；完整原图题按所有嵌套题面、答案和解析引用页检查隐私，未知/非法页按可能引用处理。OCR失败本身不废弃已核验完整原图和教师转写。来源升级DDL、触发器、source-closure.v2标记及重建安排在同一writer事务提交，中断回滚后重试；旧失败墓碑只能使用旧快照seq，不能误标教师刚修正的新版本。
+
+完整目标继续active/DOING。当前实际向量搜索仍FLAT，尚无交叉编码器重排、自然教师holdout的Recall/Precision或百万级CPU P95证明；16条小样本批量通过不是40GB证据。下一位置：索引维护/ANN/重排与质量门槛，完整图文题/DOCX图公式锚点/跨页与答案册配对、受管本地视觉AI包、自然资料与40GB持续处理，最后统一EXE发行和main集成。旧NSIS不含当前源码。不得把本地embedding包称为本地视觉AI整理已完成。
+<!-- kb-semantic-20261026:end -->
+
+
+<!-- kb-pdf-20261024:start -->
+## 2026-10-24 长PDF持续处理落地（完整目标仍进行中）
+
+S2-B已接通长PDF按页持久处理：受管原件同一Windows只读句柄核验SHA，页结果逐条校验/事务落库后ACK；manifest/世代/任务lease与工作进程存活共同守卫发布。原生文字与OCR分别保存，混合页检查原生正文、数字和数学符号覆盖；needs_review/failed不发布正文。停止保留成功页，继续与显式重试分开。来源预览/layout支持第50页以后、直接页码跳转及已打开预览跟随引用。原件上限16GiB、10000页与单页/暂存预算是设计边界，未宣称已测极限。
+
+新领域MaterialPdfRepository暂存页及chunks、持锁发布，db只提供事务/metadata/lease端口。PDF进程执行signal与用户signal联立，guard异步操作后及紧邻COMMIT均检查。发布按SQL复制，不在JS构造全书；S3从readingWindow消费。原始文件/题目事实及Pi唯一编排保持。
+
+当前真实证据：固定新runtime 646文件/279039929字节，无新模型或Python依赖；61页/56272644字节明确合成混合PDF，1644453字符正文，59页完成、1空白、1超限失败，partial可检索。Electron主路径5项/2启动/0renderer错误；另3项来源跳转/双视口检查，旧S3数据库副本3项兼容读回。build、最终typecheck、renderer217/217、发布守卫4项和原生/OCR覆盖5项通过。精确记录见KB_IMPLEMENTATION_EVIDENCE.md；这不是自然教师资料质量、40GB规模或新安装包验收。
+<!-- kb-pdf-20261024:end -->
+
+<!-- kb-implementation-20261024:start -->
+## 2026-10-24 知识库功能实施进展（整体未完成）
+
+新增assets域MaterialImportBatches确定性消费者：SQLite保存授权根身份、目录游标、相对路径和逐文件状态；主进程独立于页面消费，人工暂停不自动恢复，退出中断的queued批次下次启动恢复。导入复用现原件hash/CAS与解析队列，流式复制可取消，重复提交不重复创建同名同内容事实。
+
+MaterialFullTextSearch维护SQLite FTS和dirty触发器；发布新正文在同事务建索引，旧正文后台独立写事务补建，源变动/删除可重建。教师和Pi共享索引候选，Pi仍用现DeepTutor匹配，最多200候选，不再构造整库正文快照。
+
+当前入口：启动知识库开发版.cmd（npm start -- --knowledge-preview），业务数据位于%LOCALAPPDATA%/Xiaozhi-KnowledgePreview/data，profile独立，避免与日常窗口混用。未修改D:日常运行目录，未重打旧安装包、未提交/push/上云。代码、typed preload、资料UI已同步。必要路径使用151份嵌套资料验证暂停/重启/继续，全文尾部命中并打开第92段来源；151份正文ready、242段已索引，详细日志/限制见docs/goal/KB_IMPLEMENTATION_EVIDENCE.md。
+<!-- kb-implementation-20261024:end -->
+
 <!-- kb-s6-current:start -->
 ## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
 

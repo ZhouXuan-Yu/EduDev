@@ -1,5 +1,51 @@
 # 小智能力与复用矩阵
 
+<!-- kb-rerank-20261026:start -->
+## 2026-10-26 有限中文重排与最新实现基线（目标继续）
+
+当前完整基线仍是本地资料→持久解析/OCR→FTS+BGE+Lance混合检索→规则文字题/可选逐批授权云端双阶段AI定稿→同题本/整卷集中确认。此次重排为独立本地文本模型，受管本地视觉识题、完整图文/DOCX公式与图片锚点、跨页/答案册配对仍须继续。
+
+S5-B3已接通有限中文交叉编码器：资料库、同一题本与小智现检索适配器使用BGE-reranker-base q8，对前20对象评分，再与原召回等权RRF融合，未评分尾部保留。新冻结Windows EXE懒启动、15秒总预算、队列/输出/窗口有界、空闲回收；错误/超时保留原排序并显示降级。模型不更改题目、答案或来源，不给教师展示虚构正确率。
+
+M04有限cross/RRF与父来源最后栅栏；M10模型本地预算/降级/版本/隐私；M12新冻结模型发行闭包。S6完整视觉与S7规模仍OPEN。
+
+本轮build/typecheck exit0、renderer217/217；实际冻结模型5项（含独立16例质量），源类/SQLite重排8项、原检索17项回归通过；Electron4项/2启动/0renderer错误，实际文件夹导入、并行新资料导入时仍返回原题意结果、同题本和硬过滤、模型冷重启/事实hash保持。发行资源预检四套包逐文件通过；重排包157文件399017988字节，当前main SHA256 ec96ae05619e425ab5de30919fd2fd12a3aadb72e7714c08a48c76808f45f80a。详情见KB_IMPLEMENTATION_EVIDENCE.md。
+
+整体Goal继续active。下一主线优先完整图文题/Word来源表示与归档、跨页/答案配对、可选视觉AI；随后旧代缓存GC、自然教师质量与长上下文/冷启动优化、40GB持续处理与统一最新EXE。当前合成质量/小型路径不能冒充企业级或全目标通过。当前codex/knowledge-base-delivery、HEAD d3e2dec，未提交/合并/push；全目标完成后读取最新main、保留协作者变更并处理冲突。
+<!-- kb-rerank-20261026:end -->
+
+
+<!-- kb-semantic-20261026:start -->
+## 2026-10-26 本地混合召回与批量索引（整体继续实施）
+
+S5-A与S5-B1已接通本地题意检索和有界批量索引：冻结BGE中文embedding、LanceDB派生向量、FTS关键词RRF融合，资料库/同一题本/小智工具共用来源复验。教师可按改写题意查询、暂停/继续/重建；无系统Python或运行时模型下载。每批最多16事实、200000 UTF16字符及900KiB JSON，双文档编码穿插查询，推理后批量提交、receipt最后、事件批尾ACK。旧seq不能复活墓碑。
+
+M04现有本地embedding/混合召回与硬过滤下推；M05题本按题意入口；M10来源闭包/隐私/版本和批量预算；M12新增冻结embedding EXE与资源manifest。完整检索质量/规模、视觉AI和最终发行均未因此完成。
+
+本轮最终证据：build/typecheck exit0；renderer217/217（本轮UI修改后的组件门禁）；真实冻结ONNX+Lance原生8项、源类/SQLite受控边界17项、Windows实际多进程写锁3项。独立审查所报隐私、迁移中断和新旧版本竞争已修复并复验。Electron原主路径5项/3启动，派生索引损坏恢复3项；最终新构建另冷读5项，1366/1920界面及来源迁移43个对象追平。最终main SHA256 1e226913cceaf85efab934bc4e2d0c15754bd0f60a321e1c94ade9ae90e8ea66。精确命令、实例和范围见docs/goal/KB_IMPLEMENTATION_EVIDENCE.md。
+
+完整目标继续active/DOING。当前实际向量搜索仍FLAT，尚无交叉编码器重排、自然教师holdout的Recall/Precision或百万级CPU P95证明；16条小样本批量通过不是40GB证据。下一位置：索引维护/ANN/重排与质量门槛，完整图文题/DOCX图公式锚点/跨页与答案册配对、受管本地视觉AI包、自然资料与40GB持续处理，最后统一EXE发行和main集成。旧NSIS不含当前源码。不得把本地embedding包称为本地视觉AI整理已完成。
+<!-- kb-semantic-20261026:end -->
+
+
+<!-- kb-pdf-20261024:start -->
+## 2026-10-24 长PDF持续处理落地（完整目标仍进行中）
+
+S2-B已接通长PDF按页持久处理：受管原件同一Windows只读句柄核验SHA，页结果逐条校验/事务落库后ACK；manifest/世代/任务lease与工作进程存活共同守卫发布。原生文字与OCR分别保存，混合页检查原生正文、数字和数学符号覆盖；needs_review/failed不发布正文。停止保留成功页，继续与显式重试分开。来源预览/layout支持第50页以后、直接页码跳转及已打开预览跟随引用。原件上限16GiB、10000页与单页/暂存预算是设计边界，未宣称已测极限。
+
+M01/M02/M03新增有界分页与恢复、来源预览及显式重试，M04可查询已发布的partial完整页并报告覆盖缺口，M05有界窗口接续。S2所有格式完整性尚未完成；S6 AI自动定稿与S5语义检索仍未交付。
+
+当前真实证据：固定新runtime 646文件/279039929字节，无新模型或Python依赖；61页/56272644字节明确合成混合PDF，1644453字符正文，59页完成、1空白、1超限失败，partial可检索。Electron主路径5项/2启动/0renderer错误；另3项来源跳转/双视口检查，旧S3数据库副本3项兼容读回。build、最终typecheck、renderer217/217、发布守卫4项和原生/OCR覆盖5项通过。精确记录见KB_IMPLEMENTATION_EVIDENCE.md；这不是自然教师资料质量、40GB规模或新安装包验收。
+<!-- kb-pdf-20261024:end -->
+
+<!-- kb-implementation-20261024:start -->
+## 2026-10-24 知识库功能实施进展（整体未完成）
+
+M02：S1批次/目录与文件持久化、异步复制、暂停/重启接续已实现。M04：S4-A SQLite全文候选、中文短词与公式字符规范化、旧正文补建、教师查正文/来源跳转、Pi共用检索已实现。M03/M05复杂切题与独立题答/图配对、S5 embedding、S6 AI定稿仍未完成。
+
+当前入口：启动知识库开发版.cmd（npm start -- --knowledge-preview），业务数据位于%LOCALAPPDATA%/Xiaozhi-KnowledgePreview/data，profile独立，避免与日常窗口混用。未修改D:日常运行目录，未重打旧安装包、未提交/push/上云。代码、typed preload、资料UI已同步。必要路径使用151份嵌套资料验证暂停/重启/继续，全文尾部命中并打开第92段来源；151份正文ready、242段已索引，详细日志/限制见docs/goal/KB_IMPLEMENTATION_EVIDENCE.md。
+<!-- kb-implementation-20261024:end -->
+
 <!-- kb-s6-current:start -->
 ## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
 
@@ -1110,3 +1156,11 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 | Attachments | KEEP + ADAPT | `services/storage/attachment_store.py::AttachmentStore` put/delete/resolve；`session/attachment_parsing.py::parse_chat_pdf_attachments` | 原typed附件、hash/CAS、校正与本地预览优先；不能套上游上传URL/S3或自动上云原图 |
 
 本轮保留教育规则的实际前置验证：原复习调度suite 20项、学情suite 8项（统计、跨学生/脱敏与教师确认回读）通过。它们是本地领域/集成证据，不代表新版DeepTutor adapter或黄金F完成。
+
+## 2026-10-24 知识库设计基线（未实施）
+
+本轮按用户要求完成源码审计、文件夹自动题库/可选AI深度整理方案及独立AI批判复审。完整方案：docs/research/KNOWLEDGE_BASE_DELIVERY_PLAN_2026_10_24.md；审查：KNOWLEDGE_BASE_CRITICAL_REVIEW_2026_10_24.md；隔离截尾探针：KNOWLEDGE_BASE_SOURCE_AUDIT_2026_10_24.json。用户选择AI定稿入库、正式组卷集中确认；本地/云端均支持，云端每批授权必要页/裁剪图。这是待技术探针验证的设计，未实施代码/DDL/清库/上传/安装；不改变历史验收状态。下一拟议切片S0发行组件探针，未声称40GB/质量/延迟通过。
+
+### 2026-10-24 v4设计补充（未实施）
+
+完整方案§7.1–7.4新增小智连续问答、考点/方法找题和自然语言蓝图组卷。独立AI批判3项并修订复核：宿主持久上下文/跨run别名重绑、蓝图新版本与确定性检查、库存快照/语义标注覆盖的缺额证明；保留现Pi及实读/整卷集中确认/Office链路。只更新设计文档，不改变现实现和验收状态。

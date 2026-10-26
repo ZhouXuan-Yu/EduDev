@@ -1,0 +1,16 @@
+.question-archive { margin-block: 12px; }
+.question-archive .question-archive-source-check {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+}
+.question-archive .question-archive-source-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  flex: 0 0 16px;
+  margin: 3px 0 0;
+  padding: 0;
+}

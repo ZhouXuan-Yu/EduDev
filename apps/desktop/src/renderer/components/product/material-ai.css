@@ -1,0 +1,10 @@
+.material-ai {margin:14px 0;padding:12px;border:1px solid var(--border-color,#b8c2ce);border-radius:10px;overflow-wrap:anywhere}
+.material-ai summary {cursor:pointer;font-weight:600}
+.material-ai fieldset {display:grid;gap:10px;margin:12px 0;padding:12px;min-width:0;border:1px solid var(--border-color,#b8c2ce);border-radius:8px}
+.material-ai label {display:grid;gap:5px;min-width:0}
+.material-ai input,.material-ai select {max-width:100%}
+.material-ai .material-ai-check {display:flex;align-items:flex-start;gap:8px}
+.material-ai .material-ai-check input {width:16px;min-width:16px;height:16px;min-height:16px;padding:0;margin-top:4px}
+.material-ai-range {display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px}
+.material-ai article {padding:10px 0;border-top:1px solid var(--border-color,#b8c2ce)}
+.material-ai button {white-space:normal;max-width:100%;padding:7px 10px;border-radius:6px}

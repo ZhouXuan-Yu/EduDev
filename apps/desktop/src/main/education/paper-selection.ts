@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
+import {archiveEligible} from '../../shared/question-archive';
 import {questionContentIdentity} from '../../shared/question-identity';
 import {validPaperBlueprint,generatedPaperCount,type PaperBlueprint,type PaperSelection,type PaperSection,type PaperGeneration} from '../../shared/paper-blueprint';
 import {QUESTION_CONTEXT_SCHEMA} from '../../shared/question-context';
@@ -27,6 +28,7 @@ export async function selectPaper(host:PaperSelectionHost,blueprint:PaperBluepri
    const sections=blueprint.sections.map((s,i)=>paperSectionMatches(q,blueprint,s)?i*2+(generated?1:0):-1).filter(i=>i>=0);if(!sections.length)continue;
    const identity=questionContentIdentity(q);if(identity.status!=='available'){excluded.unsupported++;continue;}
    if(!q.answer.trim()||!q.analysis.trim()||q.document?.answer.origin==='missing'||q.document?.analysis.origin==='missing'){excluded.missing_answer++;continue;}
+   if(!archiveEligible(q)){excluded.unsupported++;continue;}
    try{await host.validate(q);}catch(e){lease();if((e as Error)?.message==='cancelled')throw e;excluded.source_unavailable++;continue;}lease();
    const key=createHash('sha256').update(identity.key).digest('hex');let group=byKey.get(key);
    if(group===undefined){group=groups.length;byKey.set(key,group);groups.push({key,edges:new Map()});}else duplicateRecords++;

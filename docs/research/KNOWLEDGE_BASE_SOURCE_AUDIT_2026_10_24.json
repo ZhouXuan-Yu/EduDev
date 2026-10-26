@@ -1,0 +1,32 @@
+{
+  "auditDate": "2026-10-24",
+  "checkout": "C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject",
+  "head": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+  "scope": "Source audit and isolated pure function probe; no application, provider, OCR runtime, installer or performance acceptance",
+  "probe": {
+    "function": "splitIntoChunks",
+    "source": "apps/desktop/src/main/db.ts",
+    "sourceSha256": "683eb7bc951d695536096cb5db18389d152680861ec1636958c5db5061389bab",
+    "inputChars": 120014,
+    "returnedChunks": 80,
+    "returnedChars": 96000,
+    "tailMarkerPresent": false,
+    "userDataTouched": false,
+    "runtime": "Node.js v24.12.0 node:module.stripTypeScriptTypes + node:vm"
+  },
+  "firstProbeFailure": "typescript package unavailable in this checkout; no install attempted; retry used Node built-in type stripper",
+  "ocrManifest": {
+    "fileCount": 646,
+    "totalBytes": 279026886,
+    "actualRuntimeExistenceVerified": false
+  },
+  "checks": {
+    "diffWhitespace": "passed",
+    "applicationBuild": "not run",
+    "electronE2E": "not run",
+    "providerAI": "not run",
+    "windowsInstaller": "not run",
+    "capacity40GB": "not run",
+    "recallLatency": "not run"
+  }
+}

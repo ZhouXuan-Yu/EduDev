@@ -11,7 +11,7 @@ export async function materialLayoutBoundaries(check,output){
  const cache=()=>new MaterialLayoutCache(()=>root),repository={resource:async()=>({originalFileName:'source.pdf'}),original:async(_id,v,s)=>readMaterialOriginal(root,source,v,s,1024)};
  await check('Layout query/cancel schema denies paths, provider fields, malformed IDs, accessors and unknown versions',async()=>{
   assert(validLayoutQuery(query));assert(validLayoutCancel({schemaVersion:schema,requestId:query.requestId}));
-  for(const q of [{...query,path:source},{...query,provider:'cloud'},{...query,page:51},{...query,version:'old'},{...query,refresh:'yes'},{...query,schemaVersion:'v2'}])assert(!validLayoutQuery(q));
+  for(const q of [{...query,path:source},{...query,provider:'cloud'},{...query,page:10001},{...query,version:'old'},{...query,refresh:'yes'},{...query,schemaVersion:'v2'}])assert(!validLayoutQuery(q));
   let reads=0;const q={...query};Object.defineProperty(q,'page',{enumerable:true,get(){reads++;return 1;}});assert(!validLayoutQuery(q));assert.equal(reads,0);
  });
  await check('Real geometry contract checks convex quads, normalization, dimensions, text caps and unreviewed-only kind',async()=>{

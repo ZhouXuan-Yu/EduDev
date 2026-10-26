@@ -12,12 +12,12 @@ import {MATERIAL_PDF_RESUME_SCHEMA,validMaterialOcrPages,validMaterialOcrComplet
 import {materialOcrCheckpoint} from '../assets/material-ocr-checkpoint';
 import {PDF_LAYOUT_SCHEMA,validPdfLayout,type PdfLayoutReceipt} from '../../shared/material-layout';
 
-function runtimeRoot(){
+export function ocrRuntimeRoot(){
  if(app.isPackaged)return path.join(process.resourcesPath,'ocr-runtime');
  let current=path.dirname(fileURLToPath(import.meta.url));
  for(let level=0;level<10;level++,current=path.dirname(current)){
   const pkg=path.join(current,'package.json');
-  try{if(JSON.parse(fs.readFileSync(pkg,'utf8')).name==='omni-edu-desktop-prototype')return path.join(current,'.local-ocr','resume-v2-dist','omni-edu-ocr');}catch{/* Only fixed ancestor application roots. */}
+  try{if(JSON.parse(fs.readFileSync(pkg,'utf8')).name==='omni-edu-desktop-prototype')return path.join(current,'.local-ocr','file-v3-dist','omni-edu-ocr');}catch{/* Only fixed ancestor application roots. */}
  }
  throw new Error('unavailable');
 }
@@ -43,13 +43,7 @@ export async function recognizeLocalPdfLayout(bytes:Buffer,page:number,signal:Ab
 }
 async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:AbortSignal,options:{schema:string;maxInput:number;maxOutput:number;timeout:number;valid:(value:unknown)=>value is T;onProgress?:(progress:MaterialOcrProgress)=>void;onCompleted?:(item:import('../../shared/material-pdf-ocr').MaterialOcrCompleted)=>void;payload?:{page:number;box?:PageBox}|{resumePages:MaterialOcrPage[]}},ownedRuntimeRoot?:string):Promise<Extract<T,{ok:true}>>{
  signal.throwIfAborted();if(!bytes.length||bytes.length>options.maxInput)throw new Error('too_large');
- const root=ownedRuntimeRoot??runtimeRoot();if(!path.isAbsolute(root)||!fs.existsSync(root)||fs.lstatSync(root).isSymbolicLink())throw new Error('unavailable');
- // Compiled application lock, not an attacker-supplied manifest next to an executable.
- for(const file of manifest.files){
-  signal.throwIfAborted();const target=path.join(root,file.path);let cursor=root;
-  for(const piece of file.path.split('/')){cursor=path.join(cursor,piece);if((await fs.promises.lstat(cursor)).isSymbolicLink())throw new Error('configuration');}
-  const stat=await fs.promises.stat(target);if(!stat.isFile()||stat.size!==file.size||createHash('sha256').update(await fs.promises.readFile(target)).digest('hex')!==file.sha256)throw new Error('configuration');
- }
+ const root=await verifyOcrRuntime(signal,ownedRuntimeRoot);
  signal.throwIfAborted();const release=reserveLocalWorker();if(!release)throw new Error('busy');
  return new Promise((resolve,reject)=>{
   let stdout='',size=0,stderrSize=0,reason='',settled=false;
@@ -81,4 +75,15 @@ async function runOcr<T extends {ok:boolean;error?:string}>(bytes:Buffer,signal:
   child.stdin?.end(JSON.stringify({schemaVersion:options.schema,parentPid:process.pid,data:bytes.toString('base64'),...options.payload})+'\n');
   if(signal.aborted)abort();
  });
+}
+/** Compiled resource lock shared by old protocols and the file reader. No runtime manifest trust. */
+export async function verifyOcrRuntime(signal:AbortSignal,ownedRuntimeRoot?:string){
+ const root=ownedRuntimeRoot??ocrRuntimeRoot();if(!path.isAbsolute(root)||!fs.existsSync(root)||fs.lstatSync(root).isSymbolicLink())throw new Error('unavailable');
+ // Compiled application lock, not an attacker-supplied manifest next to an executable.
+ for(const file of manifest.files){
+  signal.throwIfAborted();const target=path.join(root,file.path);let cursor=root;
+  for(const piece of file.path.split('/')){cursor=path.join(cursor,piece);if((await fs.promises.lstat(cursor)).isSymbolicLink())throw new Error('configuration');}
+  const stat=await fs.promises.stat(target);if(!stat.isFile()||stat.size!==file.size||createHash('sha256').update(await fs.promises.readFile(target)).digest('hex')!==file.sha256)throw new Error('configuration');
+ }
+ signal.throwIfAborted();return root;
 }

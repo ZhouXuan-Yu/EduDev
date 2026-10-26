@@ -1,0 +1,28 @@
+import '../office-agent/register-source.mjs';
+import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+const {extractMaterialQuestions}=await import('../../src/main/assets/material-question-extract.ts');
+const {validQuestionArchive,validArchiveEdit,archiveEligible}=await import('../../src/shared/question-archive.ts');
+const {questionVersion,readQuestionContextSource,createQuestionContextProvider}=await import('../../src/main/education/question-context-provider.ts');
+const {materialSnippet}=await import('../../src/main/assets/material-snippet.ts');
+const header='学科：数学\n年级：初二\n知识点：函数\n题型：解答题\n难度：中等\n\n';
+const unit=content=>({resourceId:'resource_'+randomUUID(),version:'a'.repeat(64),title:'本地习题',offset:0,chunk:{id:'chunk_'+randomUUID(),chunkIndex:0,contentMd:content,containsPersonalData:false}});
+const extract=text=>extractMaterialQuestions([unit(header+text)],'local-text-v1');
+const nested=extract('1. 已知函数f(x)=2x+3，回答以下问题。\n(1) 求f(0)。\n答案：3\n解析：代入x=0。\n(2) 求f(1)。\n答案：5\n解析：代入x=1。');
+assert.equal(nested.length,1);assert(nested[0].archive.issues.includes('ambiguous_number'));assert(nested[0].archive.sourceRisks.includes('ambiguous_number'));assert(validQuestionArchive(nested[0].archive));
+for(const first of ['7','1']){const plain=extract(first+'. 已知函数f(x)=2x+3，回答以下问题。\n1. 求f(0)。\n答案：3\n解析：代入x=0。\n2. 求f(1)。\n答案：5\n解析：代入x=1。');assert(plain.length>0);assert(plain.every(q=>q.archive.issues.includes('ambiguous_number')));}
+assert.equal(extractMaterialQuestions([unit('1. 等式的定义。\n2. 移项的性质。')],'local-text-v1').length,0);
+const answerKey=extract('第1题 计算2+3。\n\n参考答案\n1. 5\n解析：相加。');assert.equal(answerKey.length,1);assert(answerKey[0].archive.issues.includes('missing_answer'));
+const visual=extract('第1题 如图求面积。\n答案：6\n解析：底乘高除以2。');assert(visual[0].archive.issues.includes('visual_unchecked'));
+assert(extractMaterialQuestions([unit(header+'第1题 求x的值。\n答案：x=2\n解析：根据所给方程求解。')],'hana-anydoc-0.1.2')[0].archive.issues.includes('visual_unchecked'));
+assert(materialSnippet('正文开头。'.repeat(100)+'命中尾词，ＡＢＣ。','不存在 abc').includes('ＡＢＣ'));assert(materialSnippet('正文开头。'.repeat(100)+'命中尾词。','不存在 命中尾词').includes('命中尾词'));
+const long=extract('第1题 计算1+1。\n答案：2\n解析：'+ '说明'.repeat(6500)+'\n第2题 计算2+3。\n答案：5\n解析：相加得到5。');assert.equal(long.length,2);assert(long[0].archive.issues.includes('long_question'));assert.equal(long[0].fields.answer,'');assert.equal(long[1].fields.answer,'5');
+const q={...visual[0].fields,id:'question_'+randomUUID(),archive:visual[0].archive,createdAt:'x',updatedAt:'x'};
+const changed={...q,archive:{...q.archive,sourceChecked:true}};assert.notEqual(questionVersion(q),questionVersion(changed));
+assert(!archiveEligible({...changed,archive:{...changed.archive,issues:[]}}));
+const fields={stem:q.stem,answer:q.answer,analysis:q.analysis,subject:q.subject,grade:q.grade,knowledgePoint:q.knowledgePoint,questionType:q.questionType,difficulty:q.difficulty};assert(validArchiveEdit({questionId:q.id,version:questionVersion(q),fields,sourceChecked:false}));assert(!validArchiveEdit({questionId:q.id,version:questionVersion(q),fields:{...fields,archive:{}},sourceChecked:true}));
+let reads=0;await assert.rejects(readQuestionContextSource({getQuestionNotebookEntry:async()=>++reads===1?q:changed,readArchivedQuestionContext:async()=>{}},{schemaVersion:'xiaozhi.question-context.v1',questionId:q.id,version:questionVersion(q)}),/source_changed/);
+const complete=extract('第1题 计算1+2。\n答案：3\n解析：相加得到3。')[0],good={...q,...complete.fields,id:'question_'+randomUUID(),archive:complete.archive},bad={...good,id:'question_'+randomUUID()},candidates=[...Array.from({length:12},()=>({...q,id:'question_'+randomUUID()})),bad,good];let readGranted=0;
+const provider=createQuestionContextProvider({listStudents:async()=>[],sanitizeProblemText:async text=>({sanitizedText:text}),searchQuestionBank:async()=>candidates,getQuestionNotebookEntry:async id=>candidates.find(q=>q.id===id),readArchivedQuestionContext:async q=>{if(q.id===bad.id)throw Error('source_changed');}},()=>true,()=>readGranted++);
+const result=await provider[0].execute(randomUUID(),{query:'计算'},new AbortController().signal),search=JSON.parse(result.content[0].text);assert.equal(search.returned,1);assert.equal(search.excluded.needsAttention,12);assert.equal(search.excluded.unavailableSources,1);assert.equal(readGranted,0);assert(!JSON.stringify(search).includes(good.id));
+const read=await provider[1].execute(randomUUID(),{reference:search.questions[0].reference,version:search.questions[0].version},new AbortController().signal);assert.equal(JSON.parse(read.content[0].text).success,true);assert.equal(readGranted,1);assert(!JSON.stringify(read.content).includes(good.archive.sources[0].resourceId));
+console.log(JSON.stringify({success:true,checks:12,scope:'Nested question loss, textbook false positives, answer-book separation, image qualification, Office lost-figure qualification, long-question isolation, archive fact version, edit validation, async reread CAS, actual FTS snippet, permanent risk qualification, Pi replenishment and private source stripping'}));

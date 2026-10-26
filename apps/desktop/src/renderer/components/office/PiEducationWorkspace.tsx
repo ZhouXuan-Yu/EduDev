@@ -71,7 +71,9 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   async function open(target: string,record=true) {
     if(!active.current)return;
     idRef.current = target; setId(target); setSnapshot(undefined); setModels(undefined); setNotice(''); sequences.current.clear();
-    if(record)navigation.navigate({view:'ai',sessionId:target});
+    // A late startup/history read may finish after the teacher entered materials.
+    // Hydrate the retained chat without stealing the currently selected workspace.
+    if(record&&visibleRef.current&&navigationRef.current.target.view==='ai')navigation.navigate({view:'ai',sessionId:target});
     try{localStorage.setItem('xiaozhi.current-session.v1',target);}catch{/* Navigation remains usable without UI preference storage. */}
     attempt.current = undefined;
     queueAttempt.current=undefined;
@@ -80,7 +82,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   }
   async function fresh(folderId: string | null = null) {
     const detail = await window.omniEdu?.createAiConversationSession({ title: '新对话', folderId });
-    if(!active.current||!visibleRef.current)return;
+    if(!active.current)return;
     if (detail) { await open(detail.session.id); await refreshList(); }
   }
   useDesktopCommands(command=>{if(visible&&command==='new-chat'&&idRef.current){void fresh().catch(()=>setNotice('无法创建本地对话，请重试。'));return true;}return false;},10);

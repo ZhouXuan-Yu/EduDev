@@ -1,0 +1,40 @@
+import type {QuestionBankItemInput} from '../../shared/contracts';
+import {QUESTION_ARCHIVE_SCHEMA,archiveMissing,type QuestionArchive,type ArchiveFields} from '../../shared/question-archive';
+import {materialIsOcr} from '../../shared/materials';
+import {materialSource,type MaterialReadingUnit} from './material-source';
+export type ExtractedQuestion={fields:QuestionBankItemInput;archive:QuestionArchive;key:string};
+/** Conservative source extraction. Never supplies an answer/analysis or an AI confirmation. */
+export function extractMaterialQuestions(units:MaterialReadingUnit[],engine:string):ExtractedQuestion[]{
+ const ranges:{start:number;end:number;unit:MaterialReadingUnit}[]=[];let text='';
+ for(const unit of units){const start=text.length;text+=unit.chunk.contentMd+'\n\n';ranges.push({start,end:text.length,unit});}
+ // A separate answer book needs an explicit matching stage; do not turn its numbered answers into new questions.
+ const answerSection=/^\s*(?:#{1,6}\s*)?(?:参考答案|答案与解析|答案及解析)\s*[:：]?\s*$/m.exec(text);if(answerSection)text=text.slice(0,answerSection.index);
+ const heading=/^\s{0,3}(?:#{1,6}\s*)?(?:第(\d{1,5})题\s*[:：]?|(\d{1,5})[.、．](?!\d))\s*/gm;
+ const allMatches=[...text.matchAll(heading)];
+ const questionCue=/[?？]|求|计算|解方程|选择|填空|判断|已知|多少|证明|下列|回答|写出|如图|简述|说明理由/;
+ const matches=allMatches.filter(m=>!!m[1]||questionCue.test(text.slice(m.index!+m[0].length).split('\n')[0]));if(matches.length>1000)throw new Error('too_many_questions');
+ // Numbering can restart for subquestions/sections. Plain text cannot establish the hierarchy reliably.
+ const hierarchyUncertain=matches.some((m,i)=>i>0&&Number(m[1]||m[2])<=Number(matches[i-1][1]||matches[i-1][2]))||matches.some(m=>/回答以下|回答下列|完成下列|以下问题|下列问题|分别求|各小题/.test(text.slice(m.index!+m[0].length).split('\n')[0]));
+ const metadata=(body:string,label:string)=>body.match(new RegExp('(?:^|\\n)\\s*(?:【'+label+'】|\\['+label+'\\]|'+label+'\\s*[:：])\\s*([^\\n]+)'))?.[1]?.trim()||'';
+ const header=text.slice(0,matches[0]?.index??0),numbers=new Map<string,number>();for(const m of matches){const n=m[1]||m[2]||m[3];numbers.set(n,(numbers.get(n)||0)+1);}
+ const result:ExtractedQuestion[]=[];
+ for(let i=0;i<matches.length;i++){
+  const m=matches[i],start=m.index!,end=matches[i+1]?.index??text.length,body=text.slice(start+m[0].length,end).trim(),number=m[1]||m[2]||m[3];if(!body)continue;
+  const markers=[...body.matchAll(/(?:^|\n)\s*(?:【(答案|参考答案|解析|解答|分析)】|\[(答案|参考答案|解析|解答|分析)\]|(答案|参考答案|解析|解答|分析)\s*[:：])\s*/g)];
+  let answer='',analysis='';for(let j=0;j<markers.length;j++){const marker=markers[j],kind=marker[1]||marker[2]||marker[3],value=body.slice(marker.index!+marker[0].length,markers[j+1]?.index??body.length).trim();if(['答案','参考答案'].includes(kind))answer+=(answer?'\n':'')+value;else analysis+=(analysis?'\n':'')+value;}
+  const stripMetadata=(s:string)=>s.replace(/^\s*(?:【(?:学科|年级|知识点|题型|难度)】|\[(?:学科|年级|知识点|题型|难度)\]|(?:学科|年级|知识点|题型|难度)\s*[:：])[^\n]*\n?/gm,'').trim();
+  const stem=stripMetadata(body.slice(0,markers[0]?.index??body.length));if(stem.length<4)continue;
+  const get=(label:string)=>metadata(body,label)||metadata(header,label),difficulty=get('难度');
+  const fields:ArchiveFields={stem,answer:stripMetadata(answer),analysis:stripMetadata(analysis),subject:get('学科'),grade:get('年级'),knowledgePoint:get('知识点'),questionType:get('题型'),difficulty:/难|hard/.test(difficulty)?'hard':/基础|简单|easy/.test(difficulty)?'easy':'medium'};
+  const touched=ranges.filter(r=>r.start<end&&r.end>start),issues=archiveMissing(fields);
+  if(touched.length>64||Math.max(stem.length,answer.length,analysis.length)>12000){issues.push('long_question');fields.stem='原题内容过长，需打开原资料拆分整理。\n'+stem.slice(0,200);fields.answer='';fields.analysis='';issues.push('missing_answer','missing_analysis');}
+  if(!/^(?:基础|简单|中等|困难|easy|medium|hard)$/.test(difficulty))issues.push('missing_difficulty');
+  if(hierarchyUncertain||numbers.get(number)!==1)issues.push('ambiguous_number');
+  if(/^\s*[（(]\d+[）)]/m.test(body)||markers.filter(v=>['答案','参考答案'].includes(v[1]||v[2]||v[3])).length>1)issues.push('ambiguous_number');
+  if(allMatches.some(other=>other.index!>start&&other.index!<end))issues.push('ambiguous_number');
+  if(touched.length>1)issues.push('cross_chunk');
+  if(engine!=='local-text-v1'||materialIsOcr(engine)||/如图|下图|图中|图示|下表|表中|几何图|\!\[|<img/.test(body))issues.push('visual_unchecked');
+  result.push({key:String(start),fields:{...fields,sourceTitle:units[0].title,sourceKind:'teacher_resource',tags:['自动抽题']},archive:{schemaVersion:QUESTION_ARCHIVE_SCHEMA,extractor:'numbered-text.v1',state:'rule_extracted',number,sources:touched.slice(0,64).map(r=>materialSource(r.unit)),issues:[...new Set(issues)],sourceRisks:[...new Set(issues.filter(code=>!code.startsWith('missing_')))],sourceChecked:false,answerOrigin:fields.answer?'source':'missing',analysisOrigin:fields.analysis?'source':'missing'}});
+ }
+ return result;
+}

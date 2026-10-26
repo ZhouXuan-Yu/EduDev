@@ -1,5 +1,36 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+<!-- kb-rerank-20261026:start -->
+## 2026-10-26 有限中文重排与最新实现基线（目标继续）
+
+新增retrieval-rerank-notice。kb-reranker-journey.mjs真实Electron4项/2启动/0rendererErrors：初次UI题意查询同时导入其他资料不清空有效结果，typed前20比较覆盖，题本3题与硬学科过滤、冷重启事实一致；1366实际操作、1920截图reranker-question-1920.png已读图。
+
+本轮build/typecheck exit0、renderer217/217；实际冻结模型5项（含独立16例质量），源类/SQLite重排8项、原检索17项回归通过；Electron4项/2启动/0renderer错误，实际文件夹导入、并行新资料导入时仍返回原题意结果、同题本和硬过滤、模型冷重启/事实hash保持。发行资源预检四套包逐文件通过；重排包157文件399017988字节，当前main SHA256 ec96ae05619e425ab5de30919fd2fd12a3aadb72e7714c08a48c76808f45f80a。详情见KB_IMPLEMENTATION_EVIDENCE.md。
+
+独立AI先冻结20例开发pilot，再另冻结16例四科分级验证集（非自然教师标注）。真实冻结模型在后者的融合NDCG@3由BGE余弦基线0.8311提升到0.8689，最佳项Top1由10/16到11/16；仍有失败与排序退化，不能称高准确率已达标。大m3在开发集仅小幅提升、约2.6倍耗时，因此未预装。首个冻结模型调用约6.14秒，实际UI首查5.83秒；单次热缓存完整请求40ms含重排缓存命中，不是百万级或P95证据，冷启动尚未达到2秒试验目标。
+
+整体Goal继续active。下一主线优先完整图文题/Word来源表示与归档、跨页/答案配对、可选视觉AI；随后旧代缓存GC、自然教师质量与长上下文/冷启动优化、40GB持续处理与统一最新EXE。当前合成质量/小型路径不能冒充企业级或全目标通过。当前codex/knowledge-base-delivery、HEAD d3e2dec，未提交/合并/push；全目标完成后读取最新main、保留协作者变更并处理冲突。
+<!-- kb-rerank-20261026:end -->
+
+
+<!-- kb-maintenance-20261026:start -->
+## 2026-10-26 索引维护与受校验ANN（目标继续）
+
+维护切片增加retrieval-maintenance稳定入口；kb-index-maintenance-journey.mjs在43对象实例执行4项/2启动/0renderer错误，实际后台维护和BGE题意查询、暂停→关闭→注入派生running→冷启动→提示→继续→实际完成，三张原始表hash一致。1920图index-maintenance-1920.png，1366实际操作。
+
+整体仍active/DOING。当前只证明近邻算法对照及维护闭环；受控512维向量不是自然教师题意质量，1.6万不是百万级或40GB。小库仍使用exact，大库经校验才ANN。旧代目录整体GC、交叉编码器重排与教学质量holdout、完整图文/DOCX锚点/跨页和答案册配对、受管本地视觉AI、40GB耐久和最终新安装包/main合并继续OPEN。
+<!-- kb-maintenance-20261026:end -->
+
+
+<!-- kb-semantic-20261026:start -->
+## 2026-10-26 本地混合召回与批量索引（整体继续实施）
+
+本轮新增材料题意/关键词模式、后台暂停/继续/重建与题本按题意检索，实际Electron原主路径5项/3启动+最后冷读5项；1366×768/1920×1080输入框和select可达，文字题无假原图按钮，过滤改变清掉旧结果。来源升级追平43对象。脚本kb-retrieval-journey.mjs与kb-retrieval-ui-readback.mjs；数据/命令/未验证范围见KB_IMPLEMENTATION_EVIDENCE.md。
+
+完整目标继续active/DOING。当前实际向量搜索仍FLAT，尚无交叉编码器重排、自然教师holdout的Recall/Precision或百万级CPU P95证明；16条小样本批量通过不是40GB证据。下一位置：索引维护/ANN/重排与质量门槛，完整图文题/DOCX图公式锚点/跨页与答案册配对、受管本地视觉AI包、自然资料与40GB持续处理，最后统一EXE发行和main集成。旧NSIS不含当前源码。不得把本地embedding包称为本地视觉AI整理已完成。
+<!-- kb-semantic-20261026:end -->
+
+
 <!-- kb-s6-current:start -->
 ## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
 

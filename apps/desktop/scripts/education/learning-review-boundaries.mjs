@@ -67,6 +67,9 @@ export async function learningReviewBoundaries(check,output){
  let commandGate,listGate;const originalCommand=hostState.command;
  hostState.command=async id=>{if(commandGate){commandGate.entered.resolve();await commandGate.release.promise;}return originalCommand(id);};
  const hostStore={xiaozhiState:hostState,learningReviews:{list:async id=>{if(listGate){const gate=listGate;listGate=undefined;gate.entered.resolve();await gate.release.promise;}return reviews.list(id);},decide:reviews.decide.bind(reviews),review:reviews.review.bind(reviews),history:reviews.history.bind(reviews)},getAiConversationSession:async()=>({session:{archivedAt:'owned-startup-refusal'}})};
+ // The production host also wires the collection coordinator at construction.
+ // This refusal fixture never exercises question operations.
+ hostStore.questionReviews={collections:{}};
  const host=createXiaozhiProductionHost({store:hostStore,dataRoot:path.join(output,'learning-host'),emit:()=>assert.fail('Refused startup must not emit a model event')});
  const start=()=>host.start({sessionId,commandId:'xicmd_'+randomUUID(),prompt:'隔离本地启动门禁'});
  try{

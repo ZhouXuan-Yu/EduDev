@@ -7,6 +7,8 @@ import { createHash } from 'node:crypto';
 import { isAbsolute, join } from 'node:path';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
+import {registerMaterialAiIpc} from './assets/material-ai-ipc';
+import {registerRetrievalIpc} from './retrieval/ipc';
 import {registerMistakeOcrIpc} from './students/mistake-ocr-api';
 import {registerMistakeSimilarIpc} from './students/mistake-similar-api';
 import type { AiExerciseSetTeacherEdits, AiConversationFolderInput, AiConversationFolderUpdateInput, AiConversationMessageInput, AiConversationSessionInput, AiConversationSessionUpdateInput, AiModelGradeInput, AiRegressionReportInput, AiUsabilityHumanReviewInput, AiUsabilityReplayExperimentInput, DeepSeekSettingsInput, DocumentArtifactExportInput, AiMemorySurface, AiMemoryEntryInput, AiMemoryEntryUpdateInput, AiMemoryL3Slot, AiMemoryL3EntryInput, AiMemoryL3EntryUpdateInput, AiMemoryEvidenceGraph, ReviewReminder } from '../shared/contracts';
@@ -277,6 +279,8 @@ if (ownsDesktop) app.whenReady().then(async () => {
   });
   ipcMain.handle('knowledge:getOverview', () => store.getKnowledgeOverview());
   registerMaterialIpc(store, () => mainWindow);
+  registerMaterialAiIpc(store, () => mainWindow);
+  registerRetrievalIpc(store, () => mainWindow);
   ipcMain.handle('knowledge:importPaths', (event, sourcePaths: string[]) => {
     if (!settingsSender(event) || authority.mode !== 'legacy-test') throw new Error('permission_denied');
     if (!Array.isArray(sourcePaths) || sourcePaths.length > 50 || sourcePaths.some(value => typeof value !== 'string' || !isAbsolute(value))) throw new Error('invalid_input');
@@ -521,11 +525,16 @@ if (ownsDesktop) app.whenReady().then(async () => {
   app.on('before-quit', event => {
     if (xiaozhiClosing) return;
     event.preventDefault(); xiaozhiClosing = true;
-    void Promise.allSettled([xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialQueue.close()]).finally(() => app.quit());
+    void Promise.allSettled([xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialAi.close(),store.retrieval.close(),store.materialImports.close().then(()=>store.materialQueue.close()).then(()=>store.materialSearch.close()).then(()=>store.materialQuestions.close())]).finally(() => app.quit());
   });
   registerDesktopChromeIpc(ipcMain, () => mainWindow);
   createWindow();
   void store.materialQueue.start();
+  store.materialImports.start();
+  store.materialSearch.start();
+  store.materialQuestions.start();
+  store.retrieval.start();
+  void store.materialAi.recover().then(()=>store.materialAi.start());
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

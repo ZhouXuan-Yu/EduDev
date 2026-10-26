@@ -1,5 +1,6 @@
 import type {ResourceChunk,TeacherResource,KnowledgeImportResult} from './contracts';
 import type {MaterialOcrProgress} from './material-pdf-ocr';
+import {LOCAL_OCR_ENGINE} from './xiaozhi-ocr';
 
 export const MATERIALS_SCHEMA='xiaozhi.materials.v1' as const;
 export const MATERIAL_PAGE_SIZE=50;
@@ -27,10 +28,10 @@ const offset=(v:unknown)=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=0&&v<
 export function validMaterialQuery(v:unknown):v is MaterialQuery{return object(v)&&Object.keys(v).length===3&&v.schemaVersion===MATERIALS_SCHEMA&&typeof v.query==='string'&&v.query.length<=128&&!/[\x00-\x1f]/.test(v.query)&&offset(v.offset);}
 export function validMaterialBodyQuery(v:unknown):v is MaterialBodyQuery{return object(v)&&Object.keys(v).length===3&&v.schemaVersion===MATERIALS_SCHEMA&&materialId(v.resourceId)&&offset(v.offset);}
 export const materialTerms=(query:string)=>query.normalize('NFKC').toLowerCase().trim().split(/\s+/).filter(Boolean);
-export const materialIsOcr=(engine:string)=>engine==='pdfium-5.14.0-rapidocr-3.9.2.v1';
+export const materialIsOcr=(engine:string)=>engine==='pdfium-5.14.0-rapidocr-3.9.2.v1'||engine.startsWith('pdfium-5.14.0-rapidocr-3.9.2-file.v3')||engine==='image-'+LOCAL_OCR_ENGINE;
 export const materialCitation=(title:string,chunk:Pick<ResourceChunk,'chunkIndex'|'pageNumber'>)=>`${title} · 已收录正文第${chunk.chunkIndex+1}段${chunk.pageNumber?`（原件第${chunk.pageNumber}页）`:'（原页码未定位）'}`;
 export function materialFailureText(engine:string):string {
  const code=engine.split(':').at(-1);
- const messages:Record<string,string>={needs_ocr:'这份文件需要文字识别，目前未收录正文。',unsupported:'暂不支持读取这种格式，请转换为 PDF、DOCX、PPTX、XLSX、TXT 或 Markdown。',too_large:'文件或正文过大，请拆分后添加。',empty:'文件中没有可收录的文字。',text_unreadable:'文字编码无法可靠读取，请检查原文件。',cancelled:'已停止收录，文件仍保存在本机。',timeout:'读取超时，可以重新收录。',unavailable:'本地读取暂不可用，请重试。',busy:'其他文件正在读取，请稍后重试。',source_changed:'本地文件已变化，请重新添加以保存新的版本。',missing:'本地文件不存在或不可读取。',parse_failed:'未能读取正文，请检查文件后重试。',partial_existing:'已有部分内容，未覆盖原有记录。'};
+ const messages:Record<string,string>={partial_pages:'部分页面未完成，请查看页处理进度后重试。',disk_full:'磁盘空间不足，成功页已保留，请释放空间后继续。',needs_ocr:'这份文件需要文字识别，目前未收录正文。',unsupported:'暂不支持读取这种格式，请转换为 PDF、DOCX、PPTX、XLSX、TXT 或 Markdown。',too_large:'文件或正文过大，请拆分后添加。',empty:'文件中没有可收录的文字。',text_unreadable:'文字编码无法可靠读取，请检查原文件。',cancelled:'已停止收录，文件仍保存在本机。',timeout:'读取超时，可以重新收录。',unavailable:'本地读取暂不可用，请重试。',busy:'其他文件正在读取，请稍后重试。',source_changed:'本地文件已变化，请重新添加以保存新的版本。',missing:'本地文件不存在或不可读取。',parse_failed:'未能读取正文，请检查文件后重试。',partial_existing:'已有部分内容，未覆盖原有记录。'};
  return messages[code||'']||'文件保存在本机，正文尚未收录。';
 }

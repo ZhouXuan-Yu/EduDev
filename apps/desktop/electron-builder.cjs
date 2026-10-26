@@ -1,0 +1,20 @@
+module.exports={
+ appId:'com.edudev.xiaozhi',productName:'小智',asar:false,
+ directories:{output:'.release'},
+ afterPack:'scripts/release/verify-packaged-resources.cjs',
+ files:['out/**/*','package.json'],
+ extraResources:[
+  {from:'.local-ocr/file-v3-dist/omni-edu-ocr',to:'ocr-runtime'},
+  {from:'.local-education/dist/omni-edu-education',to:'education-runtime'},
+  {from:'.local-retrieval/dist/omni-edu-retrieval',to:'retrieval-runtime'},
+  {from:'.local-reranker/dist/omni-edu-reranker',to:'reranker-runtime'},
+  {from:'../../python/omni_edu_reranker/SOURCE.md',to:'licenses/reranker/SOURCE.md'},
+  {from:'../../python/omni_edu_retrieval/SOURCE.md',to:'licenses/retrieval/SOURCE.md'},
+  {from:'../../python/omni_edu_education/licenses',to:'licenses/education'},
+  {from:'../../python/omni_edu_education/SOURCE.md',to:'licenses/education/SOURCE.md'},
+ ],
+ win:{target:[{target:'nsis',arch:['x64']}],signAndEditExecutable:false},
+ nsis:{oneClick:false,perMachine:false,allowToChangeInstallationDirectory:true,
+  createDesktopShortcut:true,deleteAppDataOnUninstall:false,
+  artifactName:'Xiaozhi-Setup-${version}-${arch}.${ext}'},
+};

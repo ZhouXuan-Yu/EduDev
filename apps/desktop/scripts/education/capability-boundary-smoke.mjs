@@ -1,5 +1,6 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID,createHash} from 'node:crypto';
+import {tmpdir} from 'node:os';
 import {createAssistantMessageEventStream} from '@earendil-works/pi-ai';
 import {DatabaseSync} from 'node:sqlite';
 import {registerHooks} from 'node:module';
@@ -34,7 +35,11 @@ const {materialPreviewBoundaries}=await import('./material-preview-boundaries.mj
 const {materialLayoutBoundaries}=await import('./material-layout-boundaries.mjs');
 const {originalQuestionBoundaries}=await import('./original-question-boundaries.mjs');
 const {materialQueueBoundaries}=await import('./material-queue-boundaries.mjs');
-const output=fs.mkdtempSync(path.resolve('test-results/education-boundary-')),workspace=path.join(output,'workspace'),stateRoot=path.join(output,'state');fs.mkdirSync(workspace);fs.mkdirSync(stateRoot);
+// Pi correctly refuses persistent state beneath the user's protected .codex root.
+// Worktrees can live there, so keep owned test state in a separate temporary root.
+const output=fs.mkdtempSync(path.join(tmpdir(),'omni-edu-education-boundary-'));
+fs.symlinkSync(path.resolve('node_modules'),path.join(output,'node_modules'),process.platform==='win32'?'junction':'dir');
+const workspace=path.join(output,'workspace'),stateRoot=path.join(output,'state');fs.mkdirSync(workspace);fs.mkdirSync(stateRoot);
 const checks=[],report={success:false,checks,scope:'Real original Python worker and native Pi identity; synthetic owned facts, no model request'};let agent;
 const check=async(name,fn)=>{await fn();checks.push({name,pass:true});console.log(`PASS ${name}`);};
 const signal=()=>new AbortController().signal;

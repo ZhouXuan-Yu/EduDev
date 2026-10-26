@@ -18,3 +18,11 @@ PDF rasterisation: original pypdfium2 5.14.0 / PDFium (BSD-3-Clause, Apache-2.0 
 Layout: source-backed 2400-pixel page raster plus original RapidOCR quadrilaterals, text and scores. These are unreviewed candidates, not complete questions/answers. Previous page-v1 runtime is retained for rollback.
 
 PDF request v2 supports bounded completed-page checkpoints; final receipt/text identity is unchanged. Previous layout-v1 runtime remains for rollback.
+
+File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
+
+File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
+
+File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
+
+File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.

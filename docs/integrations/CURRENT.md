@@ -1,5 +1,45 @@
 # 当前集成与复用
 
+<!-- kb-rerank-20261026:start -->
+## 2026-10-26 有限中文重排与最新实现基线（目标继续）
+
+S5-B3已接通有限中文交叉编码器：资料库、同一题本与小智现检索适配器使用BGE-reranker-base q8，对前20对象评分，再与原召回等权RRF融合，未评分尾部保留。新冻结Windows EXE懒启动、15秒总预算、队列/输出/窗口有界、空闲回收；错误/超时保留原排序并显示降级。模型不更改题目、答案或来源，不给教师展示虚构正确率。
+
+新资产详见src/main/retrieval/reranker-assets.json、reranker-runtime-manifest.json和python/omni_edu_reranker/SOURCE.md；MIT base模型399017988字节未压缩发行增量，Apache-2.0 m3仅评估现已隔离。无新pip/npm运行框架；build/prepare/afterPack已增加新包的校验和许可。
+
+已隔离到apps/desktop/.retired-builds/S0-20261026（旧安装包/程序约1554876094字节）和m3-evaluation-20261026（未采用评估权重约587843930字节），共2142720024字节。当前选定base模型与最新out不在这两处；原.release路径已收起，后续全新安装包另构建。删除情况待用户实际操作，未替用户确认完成。
+
+整体Goal继续active。下一主线优先完整图文题/Word来源表示与归档、跨页/答案配对、可选视觉AI；随后旧代缓存GC、自然教师质量与长上下文/冷启动优化、40GB持续处理与统一最新EXE。当前合成质量/小型路径不能冒充企业级或全目标通过。当前codex/knowledge-base-delivery、HEAD d3e2dec，未提交/合并/push；全目标完成后读取最新main、保留协作者变更并处理冲突。
+<!-- kb-rerank-20261026:end -->
+
+
+<!-- kb-semantic-20261026:start -->
+## 2026-10-26 本地混合召回与批量索引（整体继续实施）
+
+新增独立离线embedding runtime：BGE-small-zh-v1.5 MIT；Xenova固定ONNX镜像commit75c43b069aac4d136ba6bc1122f995fedcfd2781；q8模型24010842字节SHA15b717c382bcb518ba457b93ea6850ede7f4f1cd8937454aa06972366cd19bcc，tokenizer SHA48cea5d44424912a6fd1ea647bf4fe50b55ab8b1e5879c3275f80e339e8fae26。tokenizers0.21.4 Apache-2.0固定win wheel2507568字节，复用经审构建Python/ORT，不改共享环境。
+
+冻结包156文件127076474字节，完整许可证/工具链/buildInputs/每文件SHA在retrieval/runtime-manifest.json与python/omni_edu_retrieval/SOURCE.md；运行时无系统Python、PyTorch、网络下载。发行配置已追加资源，prepare-resources实检三套runtime通过；未重打新NSIS。源码资产准备需要网络并按固定SHA核对，不能宣称源码离线构建。
+
+完整目标继续active/DOING。当前实际向量搜索仍FLAT，尚无交叉编码器重排、自然教师holdout的Recall/Precision或百万级CPU P95证明；16条小样本批量通过不是40GB证据。下一位置：索引维护/ANN/重排与质量门槛，完整图文题/DOCX图公式锚点/跨页与答案册配对、受管本地视觉AI包、自然资料与40GB持续处理，最后统一EXE发行和main集成。旧NSIS不含当前源码。不得把本地embedding包称为本地视觉AI整理已完成。
+<!-- kb-semantic-20261026:end -->
+
+
+<!-- kb-pdf-20261024:start -->
+## 2026-10-24 长PDF持续处理落地（完整目标仍进行中）
+
+S2-B已接通长PDF按页持久处理：受管原件同一Windows只读句柄核验SHA，页结果逐条校验/事务落库后ACK；manifest/世代/任务lease与工作进程存活共同守卫发布。原生文字与OCR分别保存，混合页检查原生正文、数字和数学符号覆盖；needs_review/failed不发布正文。停止保留成功页，继续与显式重试分开。来源预览/layout支持第50页以后、直接页码跳转及已打开预览跟随引用。原件上限16GiB、10000页与单页/暂存预算是设计边界，未宣称已测极限。
+
+私有file.v3事件manifest→progress/page+ACK→finished持锁发布+commit ACK→released。新typed材料IPC pdf-status/pdf-retry，公开预览/layout上限10000，旧bytes协议保持独立50页界限。新OCR固定runtime资源路径file-v3-dist，electron-builder/prepare/打包校验已同步，尚未重新发行NSIS。
+
+当前真实证据：固定新runtime 646文件/279039929字节，无新模型或Python依赖；61页/56272644字节明确合成混合PDF，1644453字符正文，59页完成、1空白、1超限失败，partial可检索。Electron主路径5项/2启动/0renderer错误；另3项来源跳转/双视口检查，旧S3数据库副本3项兼容读回。build、最终typecheck、renderer217/217、发布守卫4项和原生/OCR覆盖5项通过。精确记录见KB_IMPLEMENTATION_EVIDENCE.md；这不是自然教师资料质量、40GB规模或新安装包验收。
+<!-- kb-pdf-20261024:end -->
+
+<!-- kb-implementation-20261024:start -->
+## 2026-10-24 知识库功能实施进展（整体未完成）
+
+S1/S4-A不新增依赖、模型或服务，复用现Node文件流、SQLite FTS5、typed IPC、HeroUI现组件、Pi/DeepTutor固定匹配。追加两张目录事实表、版本化FTS/dirty派生表和触发器，旧原件/题库事实不迁移。主进程归档/补建可关闭并恢复；知识库开发版使用独立profile/dataRoot，旧S0安装包未重建。
+<!-- kb-implementation-20261024:end -->
+
 <!-- kb-s6-current:start -->
 ## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
 

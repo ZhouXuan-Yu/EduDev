@@ -3,6 +3,12 @@ import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
 import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
 import type {MaterialTaskAction,MaterialQueueView} from '../shared/material-parse-task';
+import type {MaterialBatchQuery,MaterialBatchPage,MaterialBatchAction,MaterialBatchFilesQuery,MaterialBatchFiles,MaterialBatchCreated} from '../shared/material-import-batch';
+import type {MaterialTextQuery,MaterialTextPage,MaterialIndexStatus} from '../shared/material-search';
+import type {ArchiveEdit,ArchiveStatus} from '../shared/question-archive';
+import type {MaterialPdfStatus} from '../shared/material-pdf-file';
+import type {AiSettings,AiSettingsInput,AiBatchInput,AiBatchView,AiAction} from '../shared/material-ai';
+import type {RetrievalStatus,RetrievalAction} from '../shared/retrieval';
 import type {MaterialPreviewQuery,MaterialPreviewCancel,MaterialPreviewResult} from '../shared/material-page-preview';
 import type {LayoutQuery,LayoutCancel,MaterialLayoutResult} from '../shared/material-layout';
 import { contextBridge, ipcRenderer } from 'electron';
@@ -236,11 +242,31 @@ const api = {
   getDeepSeekSettings: () => ipcRenderer.invoke('settings:getDeepSeek') as Promise<DeepSeekSettings>,
   saveDeepSeekSettings: (input: DeepSeekSettingsInput) => ipcRenderer.invoke('settings:saveDeepSeek', input) as Promise<DeepSeekSettings>,
   listMaterials: (input:MaterialQuery) => ipcRenderer.invoke('materials:list',input) as Promise<MaterialPage>,
+  searchMaterialText: (input:MaterialTextQuery) => ipcRenderer.invoke('materials:search',input) as Promise<MaterialTextPage>,
+  getMaterialIndexStatus: () => ipcRenderer.invoke('materials:index-status') as Promise<MaterialIndexStatus>,
+  getMaterialPdfStatus: (id:string) => ipcRenderer.invoke('materials:pdf-status',id) as Promise<MaterialPdfStatus|undefined>,
+  getMaterialAiSettings:()=>ipcRenderer.invoke('materials:ai-settings') as Promise<AiSettings>,
+  getRetrievalStatus:()=>ipcRenderer.invoke('retrieval:status') as Promise<RetrievalStatus>,
+  controlRetrieval:(input:RetrievalAction)=>ipcRenderer.invoke('retrieval:action',input) as Promise<void>,
+  searchQuestionsByMeaning:(input:QuestionSearchFilters)=>ipcRenderer.invoke('retrieval:questions',input) as Promise<{questions:SimilarQuestionMatch[];semantic?:import('../shared/retrieval').SemanticCoverage}>,
+  saveMaterialAiSettings:(input:AiSettingsInput)=>ipcRenderer.invoke('materials:ai-save-settings',input) as Promise<AiSettings>,
+  getMaterialAiBatches:(resourceId:string,offset=0)=>ipcRenderer.invoke('materials:ai-list',resourceId,offset) as Promise<AiBatchView[]>,
+  createMaterialAiBatch:(input:AiBatchInput)=>ipcRenderer.invoke('materials:ai-create',input) as Promise<string>,
+  controlMaterialAiBatch:(input:AiAction)=>ipcRenderer.invoke('materials:ai-action',input) as Promise<void>,
+  retryMaterialPdfPages: (input:{schemaVersion:'xiaozhi.local-pdf-file.v3';resourceId:string;version:string}) => ipcRenderer.invoke('materials:pdf-retry',input) as Promise<void>,
+  getMaterialQuestionStatus: () => ipcRenderer.invoke('materials:question-status') as Promise<ArchiveStatus>,
+  retryMaterialQuestions: () => ipcRenderer.invoke('materials:question-retry') as Promise<void>,
+  editArchivedQuestion: (input:ArchiveEdit) => ipcRenderer.invoke('materials:question-edit',input) as Promise<QuestionBankItem>,
+  getArchivedQuestionVersion: (id:string) => ipcRenderer.invoke('materials:question-version',id) as Promise<{question:QuestionBankItem;version:string}>,
   getMaterialJob: () => ipcRenderer.invoke('materials:job') as Promise<MaterialJob>,
   getMaterialQueue: (resourceId?:string) => ipcRenderer.invoke('materials:queue',resourceId) as Promise<MaterialQueueView>,
   controlMaterialTask: (input:MaterialTaskAction) => ipcRenderer.invoke('materials:queue-action',input) as Promise<MaterialQueueView>,
   importMaterialsBackground: () => ipcRenderer.invoke('materials:import-background') as Promise<KnowledgeImportResult>,
   importMaterialsFolder: () => ipcRenderer.invoke('materials:import-folder') as Promise<import('../shared/materials').MaterialFolderResult>,
+  createMaterialBatch: () => ipcRenderer.invoke('materials:batch-create') as Promise<MaterialBatchCreated>,
+  listMaterialBatches: (query:MaterialBatchQuery) => ipcRenderer.invoke('materials:batches',query) as Promise<MaterialBatchPage>,
+  controlMaterialBatch: (input:MaterialBatchAction) => ipcRenderer.invoke('materials:batch-action',input) as Promise<MaterialBatchPage>,
+  getMaterialBatchFiles: (query:MaterialBatchFilesQuery) => ipcRenderer.invoke('materials:batch-files',query) as Promise<MaterialBatchFiles>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialSource: (input:MaterialSource) => ipcRenderer.invoke('materials:source',input) as Promise<MaterialSourceView>,
   getMaterialPagePreview:(input:MaterialPreviewQuery)=>ipcRenderer.invoke('materials:page-preview',input) as Promise<MaterialPreviewResult>,

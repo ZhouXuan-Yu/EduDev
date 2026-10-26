@@ -7,7 +7,7 @@ export async function materialPreviewBoundaries(check,output){
  const signal=()=>new AbortController().signal;
  await check('Original preview rejects forged paths, engines, malformed IDs and nonfinite/sparse/accessor regions',async()=>{
   assert(validMaterialPreviewQuery(query));assert(validMaterialPreviewCancel({schemaVersion:schema,requestId:query.requestId}));
-  for(const q of [{...query,path:file},{...query,resourceId:'resource_------------------------------------'},{...query,page:0},{...query,page:51},{...query,version:'old'},{...query,box:[0,0,Infinity,1]},{...query,box:[0,0,0,1]},{...query,box:[0,-1,1,1]}])assert(!validMaterialPreviewQuery(q));
+  for(const q of [{...query,path:file},{...query,resourceId:'resource_------------------------------------'},{...query,page:0},{...query,page:10001},{...query,version:'old'},{...query,box:[0,0,Infinity,1]},{...query,box:[0,0,0,1]},{...query,box:[0,-1,1,1]}])assert(!validMaterialPreviewQuery(q));
   let reads=0;const q={...query},box=[0,0,1,1];Object.defineProperty(q,'version',{get(){reads++;return version;},enumerable:true});Object.defineProperty(box,'0',{get(){reads++;return 0;},enumerable:true});assert(!validMaterialPreviewQuery(q));assert(!validPageBox(box));assert(!validPageBox([0,,1,1]));assert.equal(reads,0);
  });
  await check('Original capture bounds actual descriptor reads and rejects foreign paths, hardlinks, changed bytes and cancellation',async()=>{

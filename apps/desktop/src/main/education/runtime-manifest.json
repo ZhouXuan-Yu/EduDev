@@ -1,0 +1,581 @@
+{
+  "schemaVersion": 1,
+  "platform": "win32-x64",
+  "toolchain": {
+    "python": "3.12.14",
+    "pyinstaller": "6.22.3",
+    "bits": 64
+  },
+  "engine": "education-adapters.v1",
+  "executable": "omni-edu-education.exe",
+  "buildInputs": [
+    {
+      "path": "python/omni_edu_education/worker.py",
+      "sha256": "3182a3c8775c28327054e28a305eb0916dc74700bbd394fd99adc619239f3baa"
+    },
+    {
+      "path": "apps/desktop/src/main/education/reading-worker.py",
+      "sha256": "80517a9991f49f1932653df9fad34c858230615214cc518e846b264803024388"
+    },
+    {
+      "path": "apps/desktop/src/main/education/learning-worker.py",
+      "sha256": "486bc14efeb8fedaf329dcd1d8d354272f5cc31694e0993e5136d6afdfb0590c"
+    },
+    {
+      "path": "apps/desktop/src/main/education/question-worker.py",
+      "sha256": "2777e6300156cffbfec316248884c9628ffa465f2b9f10a56f2c48e889714e6b"
+    },
+    {
+      "path": "apps/desktop/src/main/education/math-worker.py",
+      "sha256": "b83db16d76e3c79f0af8b0fa7b66c06236f90c4f2da8977b3380608be37fcae4"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/LICENSE",
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/models.py",
+      "sha256": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/search.py",
+      "sha256": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/source-manifest.json",
+      "sha256": "300421fadb26329a45066ac4e8a23880d6108fc41394e1c95bb43d4d986482a7"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/LICENSE",
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/grading.py",
+      "sha256": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/mastery.py",
+      "sha256": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/models.py",
+      "sha256": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/policy.py",
+      "sha256": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/scheduler.py",
+      "sha256": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/source-manifest.json",
+      "sha256": "bea6378de99b37db93a1050a00c56c77ba8e85daa33842c80a4d299de3bc7fbb"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-question/LICENSE",
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-question/pipeline.py",
+      "sha256": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/deeptutor-question/source-manifest.json",
+      "sha256": "0894d76e1c4011c3517e5e60ae2f81f900556f16959d5a220fe05811f25b35d5"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/math/README.md",
+      "sha256": "6d436b440541bbb2190c9f67989911a959e214e5856bc0b53018d363f2d88567"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/math/SymPy.LICENSE",
+      "sha256": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/math/mpmath-1.3.0-py3-none-any.whl",
+      "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/math/mpmath.LICENSE",
+      "sha256": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/math/source-manifest.json",
+      "sha256": "703f495dd06972bfe7f2bfba17f1cc201cd904eb647a1bd4210c37d099e2e780"
+    },
+    {
+      "path": "apps/desktop/src/main/education/vendor/math/sympy-1.14.0-py3-none-any.whl",
+      "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5"
+    },
+    {
+      "path": "apps/desktop/scripts/release/build-education-runtime.mjs",
+      "sha256": "81020fdfaa1142f601f5f899f25c93e8cfd69c0841d1c7a8e5746e60a876bcd3"
+    },
+    {
+      "path": "python/omni_edu_education/SOURCE.md",
+      "sha256": "342d01b880eba01c7841d2c0ea7e3d86e10d1151fbc3d5692996470bf286b2ed"
+    },
+    {
+      "path": "python/omni_edu_education/licenses/PYTHON-LICENSE.txt",
+      "sha256": "886a0ead2d89030ee62dbff52b04e47ab91998341295bb9c56fb952b4e081c7a"
+    },
+    {
+      "path": "python/omni_edu_education/licenses/PyInstaller-COPYING.txt",
+      "sha256": "0598064c7d2718e38d7914a7d08343b2fa008e3bea9ebba2aa7a6ffa5900dd64"
+    }
+  ],
+  "files": [
+    {
+      "path": "_internal/VCRUNTIME140.dll",
+      "size": 124544,
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+    },
+    {
+      "path": "_internal/VCRUNTIME140_1.dll",
+      "size": 49792,
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+    },
+    {
+      "path": "_internal/_asyncio.pyd",
+      "size": 75056,
+      "sha256": "caf82004ed48ae675dfb6c33c671d4063c9c5881967e8d585ecd83d860b07284"
+    },
+    {
+      "path": "_internal/_bz2.pyd",
+      "size": 88880,
+      "sha256": "19c941a8aa0e00bb9d0bbc68a22d648a8cbf0cc3b69e5e6168d65e2cb3e8dabe"
+    },
+    {
+      "path": "_internal/_ctypes.pyd",
+      "size": 131888,
+      "sha256": "822593944564ef4445bba3b472b64161dfa2444c1dc38ff21d576bdf9669bb72"
+    },
+    {
+      "path": "_internal/_decimal.pyd",
+      "size": 263984,
+      "sha256": "2e925b30ab7afc9773142723d0a16c759685095dc2bcce240684c02b486a1238"
+    },
+    {
+      "path": "_internal/_hashlib.pyd",
+      "size": 70448,
+      "sha256": "b608e1c62327920be215e001efffa60391d6d0450f84a600c9bae32554c5ec2d"
+    },
+    {
+      "path": "_internal/_lzma.pyd",
+      "size": 168240,
+      "sha256": "e8ab87fdee43cf54f6af142b8b28ff06163128602a9923d6429409c34a16f406"
+    },
+    {
+      "path": "_internal/_multiprocessing.pyd",
+      "size": 39728,
+      "sha256": "9fe8f45190a6d5d7a82f87ebed91f9a080bef5c4ffb59381bb28cf2b949a5098"
+    },
+    {
+      "path": "_internal/_overlapped.pyd",
+      "size": 59696,
+      "sha256": "b1c2d219c113a4e1dff9606680954d02626d65e2df5e33312cd39435db342de9"
+    },
+    {
+      "path": "_internal/_queue.pyd",
+      "size": 36144,
+      "sha256": "b984206ad508450c3422e3701f71041d411d34ed1b806380fc0ad9c2323a5fb8"
+    },
+    {
+      "path": "_internal/_socket.pyd",
+      "size": 87344,
+      "sha256": "40077141f02345aa0b5e7508571cf003706b585f5a93f49dc43a166d6e5a005e"
+    },
+    {
+      "path": "_internal/_ssl.pyd",
+      "size": 180528,
+      "sha256": "d90ddeb464778f3e6bc6d709929602093caadc17c92f7215cf38d755188097a7"
+    },
+    {
+      "path": "_internal/_wmi.pyd",
+      "size": 41264,
+      "sha256": "d0c1b32a56214297594bbc975910e4f22b28317445a202b8288217c1371c72a4"
+    },
+    {
+      "path": "_internal/api-ms-win-core-console-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "015bd08815c7b934a8952c3a7578e9ce59f21136e8a880d42bbd414bec2c6058"
+    },
+    {
+      "path": "_internal/api-ms-win-core-datetime-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "5534812cdbdae94ba45cb216e5eb9af686b853948df54365103555abbbaf9d9a"
+    },
+    {
+      "path": "_internal/api-ms-win-core-debug-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "837d2b1b2cd03e03fc6ccb050698b6b5763af17c201304872342a5eae9e0a2d2"
+    },
+    {
+      "path": "_internal/api-ms-win-core-errorhandling-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "de43b165f568c276c00e95acd454e3092f352a18e95874595f4f4658c06d2ec7"
+    },
+    {
+      "path": "_internal/api-ms-win-core-fibers-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "3cebc45bf479ad74cfabf2c6bfd4994d7ad639ed1221025981d19cedf9ce0416"
+    },
+    {
+      "path": "_internal/api-ms-win-core-fibers-l1-1-1.dll",
+      "size": 22872,
+      "sha256": "5ef70308bcca628ce6b0e2856b15b1c7ae340c3f9bbbc4c1071d8c191a34a5c3"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l1-1-0.dll",
+      "size": 27008,
+      "sha256": "250ac829f2617bcac1c6e5b8c4f630462e20765863ba573526a3e11bbfb94a9a"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l1-2-0.dll",
+      "size": 22888,
+      "sha256": "ae14079a114733f60ce87b92cba42acd8083c2cd67594e53bc37dc0b97a4b465"
+    },
+    {
+      "path": "_internal/api-ms-win-core-file-l2-1-0.dll",
+      "size": 22912,
+      "sha256": "914bf26a298713119477ea0a8e7bd43171b91344ebe24fb47ad77c49686e3d87"
+    },
+    {
+      "path": "_internal/api-ms-win-core-handle-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "ab5489955e371b15f77906c08ec3c7affe2c7a46a08c514ca628768b4478974b"
+    },
+    {
+      "path": "_internal/api-ms-win-core-heap-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "c70f9644d8377fa39c5b71f2e9734c1400d7598904fdeb772e8502099982dcb7"
+    },
+    {
+      "path": "_internal/api-ms-win-core-interlocked-l1-1-0.dll",
+      "size": 22888,
+      "sha256": "f8129710188e407bb0e6f46d30aeba277d67b947ece5fe09e883fde2323f3ae6"
+    },
+    {
+      "path": "_internal/api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+      "size": 22888,
+      "sha256": "5200b16cb2ddc61cfc07373a9a84aa85a3ab50806ca96c879c883275832944c1"
+    },
+    {
+      "path": "_internal/api-ms-win-core-libraryloader-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "48786fb88b001dcd1f63acea903d3ca9cc0b3060d5a325e3f2f3cbc3bfd53166"
+    },
+    {
+      "path": "_internal/api-ms-win-core-localization-l1-2-0.dll",
+      "size": 22872,
+      "sha256": "9ec3898f7eba91faa28b51616c211a2689e3a13aeef8de6e13cb674e49d689eb"
+    },
+    {
+      "path": "_internal/api-ms-win-core-memory-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "3a6cbc524c99e1cd80d5368f5601402a37ad602528b1ab628093573ef638eb3b"
+    },
+    {
+      "path": "_internal/api-ms-win-core-namedpipe-l1-1-0.dll",
+      "size": 22888,
+      "sha256": "97145ef89c44949fcf0f04ac834a8bc7d687ef49ee73ae9fc32f3c11136b7201"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processenvironment-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "8bc7c10b1851aea644e9c9f381cdb935e091fee6b0be3d3aedc6fffaac96adb7"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processthreads-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "d8030b777617c71f0f94564607699dbf7561487d779db9756aed378c5675213f"
+    },
+    {
+      "path": "_internal/api-ms-win-core-processthreads-l1-1-1.dll",
+      "size": 22872,
+      "sha256": "f5e676713340f73a03a3d41a6ec9883b431da7d16c7f07bd0a920fb80e6c0753"
+    },
+    {
+      "path": "_internal/api-ms-win-core-profile-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "f023d47e44d3eea6b0743580f57e8c6ba81e79d5ebfa7da26250076c647b980e"
+    },
+    {
+      "path": "_internal/api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "size": 22888,
+      "sha256": "9746d8930704153578a628c010638a5f818ffe5a927e25591b108e256dc6afca"
+    },
+    {
+      "path": "_internal/api-ms-win-core-string-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "7c53ae24c982d16ffd1bf7f918d115b11b7f30e57bc7feaa18cb9781e4abb926"
+    },
+    {
+      "path": "_internal/api-ms-win-core-synch-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "56d9d62ca5dba79a6581b8d574a7d8b2a64a5ecb71e47dcf06ed0285708b1859"
+    },
+    {
+      "path": "_internal/api-ms-win-core-synch-l1-2-0.dll",
+      "size": 22888,
+      "sha256": "f6482bbec5612c39ecb4822787a333f2b7570f7a5f922a4059be41ba957bb372"
+    },
+    {
+      "path": "_internal/api-ms-win-core-sysinfo-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "272d02765fdd3582618236c2d309abba069642f9bc1062ede069d0c144e17007"
+    },
+    {
+      "path": "_internal/api-ms-win-core-sysinfo-l1-2-0.dll",
+      "size": 22912,
+      "sha256": "8a0900788859d0eb51c2f48f50cc6ed376a120b518100fa20e11d7702ccde260"
+    },
+    {
+      "path": "_internal/api-ms-win-core-timezone-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "ff35de6c03812b332e140f17dade25c5dd4775156da9eeb1eaae3fddd27236ec"
+    },
+    {
+      "path": "_internal/api-ms-win-core-util-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "191ef3e98641a57296f19d572d8eb62489470ff1ef6030d136af170c2f835173"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-conio-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "54ee5ec719a051496ff60aa00dbeaa94b9a7d2cdac27fe9b7317f1a666b6a2aa"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-convert-l1-1-0.dll",
+      "size": 26992,
+      "sha256": "8b94662429171019fcd63c70bbf2095a075170599704a5e7dcdbe3da13f3a429"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-environment-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "39e5929593709e8af3bc9e0a75ec1155778d6f4a247f4cdfc58928ad6db88434"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-filesystem-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "5a8ecebac32edf4e1f3c5c6c1c8ea1a1add6cda4f9c9cb26f752fb295bea6865"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-heap-l1-1-0.dll",
+      "size": 22872,
+      "sha256": "c71080cbcb43bf1f8f3e391deb12a582eb0abefc80946f340675a2c616e4feb4"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-locale-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "6c68648e524187e03c4ad9aaa4a99113c6ee9f29fb39cc0ed93f951975138e63"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-math-l1-1-0.dll",
+      "size": 31064,
+      "sha256": "d4fbcccbe29371cbce431e43b2eb4f7ba9a6f04a3d740a071f02457a505e9dc8"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-process-l1-1-0.dll",
+      "size": 22896,
+      "sha256": "47c1935942e3ac0812e4dcf18c0e265e565f0194a3349111c299712f5565f7ac"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-runtime-l1-1-0.dll",
+      "size": 26968,
+      "sha256": "72adc1b3677e0814d9c4ebf0964000e84bb2acf67336c8963061665e44f78029"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-stdio-l1-1-0.dll",
+      "size": 26968,
+      "sha256": "900afc3989673c9bb1a687ed38c192f46db9e6ba6d11a668898a539e7fc23798"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-string-l1-1-0.dll",
+      "size": 26968,
+      "sha256": "fcf12466cc12fd3b73611fc0763a5a1f9d44e90349513c34a0c83b0f36421793"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-time-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "886e57c4a6adb299b38f02945369f590a67da4e79a798359fc60aaa067212d7c"
+    },
+    {
+      "path": "_internal/api-ms-win-crt-utility-l1-1-0.dll",
+      "size": 22912,
+      "sha256": "5f8f26b216ade615b67a41f6fbbb910972fc6153315a65bb8f09912be50215b1"
+    },
+    {
+      "path": "_internal/base_library.zip",
+      "size": 1333490,
+      "sha256": "a96db17b251a1aedd032dabbef21cb1345519f5927b6b236cb2bd8b39b2f0497"
+    },
+    {
+      "path": "_internal/education/learning-worker.py",
+      "size": 11218,
+      "sha256": "486bc14efeb8fedaf329dcd1d8d354272f5cc31694e0993e5136d6afdfb0590c"
+    },
+    {
+      "path": "_internal/education/math-worker.py",
+      "size": 10313,
+      "sha256": "b83db16d76e3c79f0af8b0fa7b66c06236f90c4f2da8977b3380608be37fcae4"
+    },
+    {
+      "path": "_internal/education/question-worker.py",
+      "size": 6759,
+      "sha256": "2777e6300156cffbfec316248884c9628ffa465f2b9f10a56f2c48e889714e6b"
+    },
+    {
+      "path": "_internal/education/reading-worker.py",
+      "size": 4370,
+      "sha256": "80517a9991f49f1932653df9fad34c858230615214cc518e846b264803024388"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-learning/LICENSE",
+      "size": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-learning/grading.py",
+      "size": 1982,
+      "sha256": "7f35f9d4dbf6169aa32139a7808eed20be19d41a939d585237b3566d0f8f3c1c"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-learning/mastery.py",
+      "size": 1552,
+      "sha256": "318e1001a9cfeea744742bbb5d232d54bc72b3f915c7ef93f82683f038a66fd6"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-learning/models.py",
+      "size": 21406,
+      "sha256": "4a2d717a84df03808f4829c4e9857747e5b5402578bc42cd11e75adf084c385c"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-learning/policy.py",
+      "size": 20098,
+      "sha256": "893cab0ddf595b36bc717826eb811edd6204e35c6454b69c4652754bc22a19c4"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-learning/scheduler.py",
+      "size": 21752,
+      "sha256": "6d9329056af51079d3629cfdebb6aa3b492eadfcc2f24a8038bb62b249c24fb6"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-learning/source-manifest.json",
+      "size": 2321,
+      "sha256": "bea6378de99b37db93a1050a00c56c77ba8e85daa33842c80a4d299de3bc7fbb"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-question/LICENSE",
+      "size": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-question/pipeline.py",
+      "size": 93545,
+      "sha256": "ed6017fd8a6b6081b66102fbb9a0a408d968893cdbf7ba31930b63e7317b09b1"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-question/source-manifest.json",
+      "size": 1340,
+      "sha256": "0894d76e1c4011c3517e5e60ae2f81f900556f16959d5a220fe05811f25b35d5"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-reading/LICENSE",
+      "size": 11408,
+      "sha256": "cd2f54e1e5066644023203dcbd956776a9f4ef6eb8b6225afe1ffa2d380fede4"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-reading/models.py",
+      "size": 19899,
+      "sha256": "98c89fa76de6c3694ac6181ff846cc1fd4455f14be56d1874bcbc5d0d005bfb1"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-reading/search.py",
+      "size": 8179,
+      "sha256": "9dfb71afa8ae6cea2351c1521cd5fadbe6256f9ba0e2afe4eba6ead9e92ba530"
+    },
+    {
+      "path": "_internal/education/vendor/deeptutor-reading/source-manifest.json",
+      "size": 985,
+      "sha256": "300421fadb26329a45066ac4e8a23880d6108fc41394e1c95bb43d4d986482a7"
+    },
+    {
+      "path": "_internal/education/vendor/math/README.md",
+      "size": 1505,
+      "sha256": "6d436b440541bbb2190c9f67989911a959e214e5856bc0b53018d363f2d88567"
+    },
+    {
+      "path": "_internal/education/vendor/math/SymPy.LICENSE",
+      "size": 7885,
+      "sha256": "07a5e9819f727b4986ad2829c7a29a6320d42575f720eb24d71b7fef573a0286"
+    },
+    {
+      "path": "_internal/education/vendor/math/mpmath-1.3.0-py3-none-any.whl",
+      "size": 536198,
+      "sha256": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c"
+    },
+    {
+      "path": "_internal/education/vendor/math/mpmath.LICENSE",
+      "size": 1537,
+      "sha256": "c26cae81da4508e5e249985777a33821f183223ebb74d7f8cfbf90fe7eef2fb7"
+    },
+    {
+      "path": "_internal/education/vendor/math/source-manifest.json",
+      "size": 1834,
+      "sha256": "703f495dd06972bfe7f2bfba17f1cc201cd904eb647a1bd4210c37d099e2e780"
+    },
+    {
+      "path": "_internal/education/vendor/math/sympy-1.14.0-py3-none-any.whl",
+      "size": 6299353,
+      "sha256": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5"
+    },
+    {
+      "path": "_internal/libcrypto-3-x64.dll",
+      "size": 8003376,
+      "sha256": "6d57354b0baffbc77a32e43e276d716ac5c233812f22c35c5ba0aa73da0b3d81"
+    },
+    {
+      "path": "_internal/libffi-8.dll",
+      "size": 43824,
+      "sha256": "d411e632456012c0e104d29e54576fd3b7403ba77ca45eafb334fd1af5c63e35"
+    },
+    {
+      "path": "_internal/libssl-3-x64.dll",
+      "size": 1599280,
+      "sha256": "289df55481d0ed65cbcedb9c2d1971071613dae868cedc1e1846d2ad1cc38599"
+    },
+    {
+      "path": "_internal/pyexpat.pyd",
+      "size": 226096,
+      "sha256": "47d9b28405e90a51aaf0658dc974d370af5706eb97b15fed82110251212d863a"
+    },
+    {
+      "path": "_internal/python312.dll",
+      "size": 6985520,
+      "sha256": "c250cec687f173b2497d5c96f55ff36cb07a6c0ab9f2d6c7fbc969e9afeaed26"
+    },
+    {
+      "path": "_internal/select.pyd",
+      "size": 34608,
+      "sha256": "bee7d7bb5292303e31121a6c36e3a4594635b6028e6d4701e025bc972886614d"
+    },
+    {
+      "path": "_internal/ucrtbase.dll",
+      "size": 1362264,
+      "sha256": "3239227d27667ba20d10a880751924e5719de0078f9fce232d149d383f7681f6"
+    },
+    {
+      "path": "_internal/unicodedata.pyd",
+      "size": 1143600,
+      "sha256": "3d78310619e7bb43bc6f45d9a2625da2f62795e4c0f1ba3978b2792c481de296"
+    },
+    {
+      "path": "omni-edu-education.exe",
+      "size": 10057546,
+      "sha256": "546cb4f31aa89b98b5cdb86f97d4c8e9a37252e65060f9da4f4e17a312366e7f"
+    }
+  ]
+}

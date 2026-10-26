@@ -1,4 +1,6 @@
 import {createHash,randomUUID} from 'node:crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 import {MATERIALS_SCHEMA,MATERIAL_PAGE_SIZE,materialTerms,type MaterialQuery,type MaterialBodyQuery,type MaterialPage,type MaterialBody} from '../../shared/materials';
 import type {TeacherResource,ResourceChunk} from '../../shared/contracts';
 import {DOCUMENT_SCHEMA,DOCUMENT_MAX_INPUT,DOCUMENT_MAX_OUTPUT,isOfficeDocument} from '../../shared/xiaozhi-documents';
@@ -7,7 +9,7 @@ import type {MaterialSource,MaterialSourceView} from '../../shared/materials';
 import {EDUCATION_SEARCH_MAX_BYTES,EDUCATION_SEARCH_MAX_UNITS} from '../../shared/education-capabilities';
 import {materialBodyVersion,type MaterialReadingUnit} from './material-source';
 import type {MaterialOcrPage,MaterialOcrProgress} from '../../shared/material-pdf-ocr';
-import {readMaterialOriginal} from './material-original';
+import {readMaterialOriginal,verifyMaterialOriginal} from './material-original';
 import type {MaterialParseLease} from './material-parse-queue';
 export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:string};
 
@@ -19,6 +21,7 @@ export type MaterialRepositoryHost={
  commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal,pages?:MaterialOcrPage[],lease?:MaterialParseLease)=>Promise<void>;
  reuse:(id:string,engine:string,lease?:MaterialParseLease)=>Promise<void>;
  failure:(id:string,code:string,lease?:MaterialParseLease)=>Promise<void>;
+ pdf?:(resource:TeacherResource,signal:AbortSignal,lease?:MaterialParseLease)=>Promise<TeacherResource>;
 };
 /** Business adapter only: same SQLite facts and existing Hana worker, no runtime. */
 export class MaterialRepository {
@@ -30,7 +33,7 @@ export class MaterialRepository {
  async duplicate(name:string,hash:string,size:number,signal:AbortSignal):Promise<TeacherResource|undefined>{
   const rows=await this.host.all(`SELECT r.*, (SELECT COUNT(*) FROM resource_chunks c WHERE c.resource_id=r.id) AS chunk_count FROM teacher_resources r WHERE original_file_name=? AND content_hash=? AND file_size=? ORDER BY created_at,r.id LIMIT 8`,[name,hash,size]);
   for(const row of rows){signal.throwIfAborted();const resource=this.host.mapResource(row);
-   try{await this.original(resource.id,hash,signal);signal.throwIfAborted();return resource;}catch(error){if(signal.aborted)throw error;}
+   try{await verifyMaterialOriginal(this.host.root,resource.localPath,hash,signal);signal.throwIfAborted();const after=await this.resource(resource.id);if(after.contentHash===hash&&after.localPath===resource.localPath)return after;}catch(error){if(signal.aborted)throw error;}
   }
  }
  async resource(id:string):Promise<TeacherResource>{
@@ -43,6 +46,8 @@ export class MaterialRepository {
   signal.throwIfAborted();const after=await this.resource(id);
   if(after.contentHash!==version||after.localPath!==resource.localPath)throw new Error('source_changed');return bytes;
  }
+ async verify(id:string,version:string,signal:AbortSignal){const resource=await this.resource(id);if(resource.contentHash!==version)throw new Error('source_changed');await verifyMaterialOriginal(this.host.root,resource.localPath,version,signal);const after=await this.resource(id);if(after.contentHash!==version||after.localPath!==resource.localPath)throw new Error('source_changed');}
+ async originalStamp(id:string,version:string){const resource=await this.resource(id),root=path.resolve(this.host.root),file=path.resolve(resource.localPath);if(resource.contentHash!==version||path.dirname(file)!==root)throw new Error('source_changed');const stat=await fs.lstat(file,{bigint:true});if(!stat.isFile()||stat.isSymbolicLink()||stat.nlink!==1n||(await fs.realpath(file)).toLowerCase()!==file.toLowerCase()||(await fs.realpath(root)).toLowerCase()!==root.toLowerCase())throw new Error('missing');return[stat.dev,stat.ino,stat.size,stat.mtimeNs,stat.ctimeNs].map(String).join(':');}
  async list(input:MaterialQuery):Promise<MaterialPage>{
   // instr treats %, _ and backslashes literally; all user terms are bound parameters.
   const terms=materialTerms(input.query),params:SqlValue[]=[];
@@ -54,7 +59,7 @@ export class MaterialRepository {
  async body(input:MaterialBodyQuery):Promise<MaterialBody>{
   const resource=await this.resource(input.resourceId);
   // Failed/incomplete contents must never masquerade as committed excerpts.
-  const readable=['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus);
+  const readable=['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus);
   const rows=readable?await this.host.all(`SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index ASC,c.id ASC LIMIT ? OFFSET ?`,[resource.id,10,input.offset]):[];
   const total=readable?resource.chunkCount:0;
   return {schemaVersion:MATERIALS_SCHEMA,resource,chunks:rows.map(this.host.mapChunk),total,offset:input.offset,hasMore:input.offset+rows.length<total};
@@ -80,12 +85,20 @@ export class MaterialRepository {
   if(after.contentHash!==body.resource.contentHash||after.parseStatus!==body.resource.parseStatus)throw new Error('source_changed');
   return {source:input,body:{...body,chunks:[chunk],hasMore:input.offset+1<body.total}};
  }
+ /** Bounded per-resource window for durable extraction; offsets refer to the current ordered body. */
+ async readingWindow(resourceId:string,offset:number,limit=16):Promise<MaterialReadingSnapshot&{hasMore:boolean}>{
+  const resource=await this.resource(resourceId);if(!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus))throw new Error('unavailable');
+  const rows=await this.host.all('SELECT c.*,r.title AS resource_title FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE c.resource_id=? ORDER BY c.chunk_index,c.id LIMIT ? OFFSET ?',[resourceId,limit+1,offset]);
+  const units=rows.slice(0,limit).map((row,i)=>({resourceId,version:resource.contentHash,title:resource.originalFileName,offset:offset+i,chunk:this.host.mapChunk(row)}));
+  return{units,hasMore:rows.length>limit,fingerprint:createHash('sha256').update(JSON.stringify(units)).digest('hex')};
+ }
  async ingest(id:string,signal:AbortSignal,lease?:MaterialParseLease):Promise<TeacherResource>{
   if(this.active.has(id))throw new Error('material_busy');this.active.add(id);
   try{
    const resource=await this.resource(id);let failure:string|undefined;
    try{
     signal.throwIfAborted();
+    if(this.host.pdf&&/\.pdf$/i.test(resource.originalFileName))return await this.host.pdf(resource,signal,lease);
     {
      const bytes=await this.original(id,resource.contentHash,signal);signal.throwIfAborted();
      const hash=createHash('sha256').update(bytes).digest('hex');
@@ -100,6 +113,11 @@ export class MaterialRepository {
       if(/\.(txt|md)$/i.test(resource.originalFileName)){
        if(bytes.length>DOCUMENT_MAX_OUTPUT)failure='too_large';
        else {try{content=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{failure='text_unreadable';}}
+      } else if(/\.(jpe?g|png|webp)$/i.test(resource.originalFileName)){
+       const {recognizeLocalImage}=await import('../xiaozhi-agent/ocr-host');
+       const ocr=await recognizeLocalImage(bytes,signal);
+       content=ocr.text;engine='image-'+ocr.engine;
+       pages=[{page:1,text:ocr.text,width:ocr.width,height:ocr.height}];
       } else if(isOfficeDocument(resource.originalFileName)){
        const parsed=await extractLocalDocument({schemaVersion:DOCUMENT_SCHEMA,requestId:`xifile_${randomUUID()}`,filename:resource.originalFileName,bytes},signal);
        if(parsed.ok){content=parsed.markdown;engine=parsed.parser;}
@@ -112,7 +130,7 @@ export class MaterialRepository {
       if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease);}}
      }
     }
-   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
+   }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable','disk_full'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}
    if(failure)await this.host.failure(id,failure,lease);
    return await this.resource(id);
   }finally{this.progress=undefined;this.active.delete(id);}

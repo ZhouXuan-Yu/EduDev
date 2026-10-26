@@ -12,6 +12,7 @@ import socket
 import sys
 import threading
 import time
+from pdf_stream import run as run_pdf_file, SCHEMA as PDF_FILE_SCHEMA
 
 SCHEMA = "xiaozhi.local-ocr.v1"
 MODELS = {
@@ -243,7 +244,10 @@ def main():
         if len(line) > 80000000:
             raise ValueError("too_large")
         request = json.loads(line)
-        if isinstance(request, dict) and request.get("schemaVersion") == LAYOUT_SCHEMA:
+        if isinstance(request, dict) and request.get("schemaVersion") == PDF_FILE_SCHEMA:
+            schema = PDF_FILE_SCHEMA
+            result = run_pdf_file(request, create_engine, watch_parent)
+        elif isinstance(request, dict) and request.get("schemaVersion") == LAYOUT_SCHEMA:
             schema = LAYOUT_SCHEMA
             result = run_pdf_layout(request)
         elif isinstance(request, dict) and request.get("schemaVersion") == PAGE_SCHEMA:
@@ -255,7 +259,7 @@ def main():
         else:
             result = run(request)
     except Exception as cause:
-        code = str(cause) if str(cause) in {"invalid_input", "too_large", "configuration", "empty"} else "parse_failed"
+        code = str(cause) if str(cause) in {"invalid_input", "too_large", "configuration", "empty", "source_changed", "missing"} else "parse_failed"
         result = {"schemaVersion": schema, "ok": False, "error": code}
     print(json.dumps(result, ensure_ascii=True), flush=True)
 

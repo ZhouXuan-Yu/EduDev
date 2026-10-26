@@ -1,6 +1,7 @@
 import {createHash,randomUUID} from 'node:crypto';
 import type {TeacherResource} from '../../shared/contracts';
 import {MATERIAL_TASK_SCHEMA,materialVersion,validMaterialTaskAction,type MaterialTaskAction,type MaterialQueueView,type MaterialTaskStatus} from '../../shared/material-parse-task';
+import {PDF_FILE_ENGINE} from '../../shared/material-pdf-file';
 import {materialId} from '../../shared/materials';
 type Value=string|number|null;
 type Row=Record<string,unknown>;
@@ -9,7 +10,7 @@ export type MaterialParseLease={taskId:string;payload:string};
 type Host={all:(sql:string,values?:Value[])=>Promise<Row[]>;change:(sql:string,values:Value[])=>Promise<number>;resource:(id:string)=>Promise<TeacherResource>;ensureTask?:(resource:TeacherResource)=>Promise<void>;ingest:(id:string,signal:AbortSignal,lease:MaterialParseLease)=>Promise<TeacherResource>};
 const time=()=>new Date().toISOString();
 const hash=(id:string)=>createHash('sha256').update(id).digest('hex');
-const readable=(r:TeacherResource)=>r.chunkCount>0&&['ready','parsed','chunked','indexed','graph_extracted'].includes(r.parseStatus);
+const readable=(r:TeacherResource)=>(r.chunkCount>0||r.parseEngine===PDF_FILE_ENGINE)&&['ready','parsed','chunked','indexed','graph_extracted'].includes(r.parseStatus);
 function parse(row:Row):Payload|undefined{try{const p=JSON.parse(String(row.payload_json));if(Object.keys(p).length!==6||p.schemaVersion!==MATERIAL_TASK_SCHEMA||!materialId(p.resourceId)||row.input_hash!==hash(p.resourceId)||!materialVersion(p.version)||![0,100].includes(p.priority)||!Number.isSafeInteger(p.attempt)||p.attempt<0||p.attempt>=100000||!(p.owner===null||Object.keys(p.owner).length===2&&Number.isSafeInteger(p.owner.pid)&&p.owner.pid>0&&typeof p.owner.nonce==='string'&&/^[a-f0-9-]{36}$/.test(p.owner.nonce)))return;return p;}catch{return;}}
 const alive=(pid:number)=>{try{process.kill(pid,0);return true;}catch(error){return (error as NodeJS.ErrnoException).code!=='ESRCH';}};
 /** Deterministic durable consumer of the existing resource_parse rows, never an Agent. */
@@ -64,7 +65,7 @@ export class MaterialParseQueue {
    }
    return;
   }
-  if(existing&&row.status==='succeeded'&&readable(resource))return;
+  if(existing&&row.status==='succeeded'&&readable(resource)&&!(retry&&/\.pdf$/i.test(resource.originalFileName)&&resource.parseEngine!==PDF_FILE_ENGINE))return;
   if(existing&&['failed','cancelled'].includes(String(row.status))&&!retry)return;
   const payload:Payload=existing?{...existing,priority:Math.max(priority,existing.priority) as 0|100,owner:null}:{schemaVersion:MATERIAL_TASK_SCHEMA,resourceId,version,priority,attempt:0,owner:null};
   if(!await this.cas(row,'pending',payload))throw new Error('material_task_conflict');

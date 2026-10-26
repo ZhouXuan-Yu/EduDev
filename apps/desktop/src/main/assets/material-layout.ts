@@ -4,6 +4,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import {MATERIAL_LAYOUT_SCHEMA,PDF_LAYOUT_ENGINE,validLayoutQuery,validPdfLayout,type LayoutQuery,type PdfLayout,type MaterialLayoutResult} from '../../shared/material-layout';
 import {readMaterialOriginal} from './material-original';
 import type {MaterialRepository} from './material-repository';
+import type {TeacherResource} from '../../shared/contracts';
 const hash=(value:Buffer|string)=>createHash('sha256').update(value).digest('hex');
 const MAX_CACHE=6*1048576;
 /** Rebuildable page derivatives only. No question, approval or business facts are stored here. */
@@ -46,17 +47,19 @@ export class MaterialLayoutCache{
 function validateRaster(receipt:PdfLayout){const bytes=Buffer.from(receipt.png,'base64');
  if(bytes.length<57||bytes.length>4*1048576||bytes.toString('base64')!==receipt.png||hash(bytes)!==receipt.rasterSha256||!bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))||bytes.readUInt32BE(8)!==13||bytes.toString('ascii',12,16)!=='IHDR'||bytes.readUInt32BE(16)!==receipt.width||bytes.readUInt32BE(20)!==receipt.height||!bytes.subarray(-12).equals(Buffer.from([0,0,0,0,73,69,78,68,174,66,96,130])))throw new Error('parse_failed');
 }
-export async function readMaterialLayout(repository:MaterialRepository,cache:MaterialLayoutCache,query:LayoutQuery,signal:AbortSignal,recognize:(bytes:Buffer,page:number,signal:AbortSignal)=>Promise<PdfLayout>):Promise<Extract<MaterialLayoutResult,{ok:true}>>{
+export async function readMaterialLayout(repository:MaterialRepository,cache:MaterialLayoutCache,query:LayoutQuery,signal:AbortSignal,recognize:(bytes:Buffer,page:number,signal:AbortSignal)=>Promise<PdfLayout>,fileRecognize?:(resource:TeacherResource,page:number,signal:AbortSignal)=>Promise<PdfLayout>):Promise<Extract<MaterialLayoutResult,{ok:true}>>{
  if(!validLayoutQuery(query))throw new Error('invalid_input');signal.throwIfAborted();
  const resource=await repository.resource(query.resourceId);if(!/\.pdf$/i.test(resource.originalFileName))throw new Error('unsupported');
- const bytes=await repository.original(query.resourceId,query.version,signal);
+ if(resource.contentHash!==query.version)throw new Error('source_changed');
+ const stamp=fileRecognize?await repository.originalStamp(query.resourceId,query.version):undefined;
+ const bytes=fileRecognize?undefined:await repository.original(query.resourceId,query.version,signal);
  let layout=query.refresh?undefined:await cache.read(query,signal);const cached=!!layout;
- if(!layout)layout=await recognize(bytes,query.page,signal);
+ if(!layout)layout=fileRecognize?await fileRecognize(resource,query.page,signal):await recognize(bytes!,query.page,signal);
  signal.throwIfAborted();
  if(!validPdfLayout(layout)||!layout.ok||layout.inputSha256!==query.version||layout.page!==query.page)throw new Error(cached?'cache_invalid':'parse_failed');
  try{validateRaster(layout);}catch{throw new Error(cached?'cache_invalid':'parse_failed');}
- await repository.original(query.resourceId,query.version,signal);signal.throwIfAborted();
+ if(fileRecognize){if(await repository.originalStamp(query.resourceId,query.version)!==stamp)throw new Error('source_changed');}else await repository.original(query.resourceId,query.version,signal);signal.throwIfAborted();
  if(!cached)await cache.put(query,layout,signal);
- await repository.original(query.resourceId,query.version,signal);signal.throwIfAborted();
+ if(fileRecognize){if(await repository.originalStamp(query.resourceId,query.version)!==stamp)throw new Error('source_changed');}else await repository.original(query.resourceId,query.version,signal);signal.throwIfAborted();
  return {schemaVersion:MATERIAL_LAYOUT_SCHEMA,ok:true,requestId:query.requestId,resourceId:query.resourceId,version:query.version,cached,layout};
 }

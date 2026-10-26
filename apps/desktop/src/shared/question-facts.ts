@@ -1,5 +1,6 @@
 import type {QuestionBankItem} from './contracts';
 import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument} from './question-document';
+import {validQuestionArchive} from './question-archive';
 export type QuestionFactConflict='answer'|'analysis'|'statement';
 /** Compare existing mirrors only. Equality proves neither source fidelity nor answer correctness. Never repairs facts. */
 export function questionFactConflicts(q:Pick<QuestionBankItem,'stem'|'answer'|'analysis'|'document'>):QuestionFactConflict[]{
@@ -14,7 +15,8 @@ export function questionFactConflicts(q:Pick<QuestionBankItem,'stem'|'answer'|'a
 /** Hash facts, not notebook bookmarks/categories or a claimed accuracy score. */
 export function questionFacts(q:QuestionBankItem):QuestionBankItem{
  if(q.document!==undefined&&!validQuestionDocument(q.document))throw new Error('question_document_invalid');
+ if(q.archive!==undefined&&!validQuestionArchive(q.archive))throw new Error('question_archive_invalid');
  return{id:q.id,subject:q.subject,grade:q.grade,knowledgePoint:q.knowledgePoint,questionType:q.questionType,difficulty:q.difficulty,
   stem:q.stem,answer:q.answer,analysis:q.analysis,sourceTitle:q.sourceTitle,sourceKind:q.sourceKind,tags:[...q.tags],createdAt:q.createdAt,updatedAt:q.updatedAt,
-  ...(q.document?{document:JSON.parse(JSON.stringify(q.document))}: {})};
+  ...(q.document?{document:JSON.parse(JSON.stringify(q.document))}: {}),...(q.archive?{archive:JSON.parse(JSON.stringify(q.archive))}:{})};
 }

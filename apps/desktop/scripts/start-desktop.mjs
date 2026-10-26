@@ -2,6 +2,7 @@ import { spawnSync, spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import fs from 'node:fs';
+import {homedir} from 'node:os';
 
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const env = { ...process.env };
@@ -11,6 +12,9 @@ for (const name of ['ELECTRON_RUN_AS_NODE', 'ELECTRON_RENDERER_URL', 'OMNI_EDU_T
 env.OMNI_EDU_REPO_ROOT = path.resolve(desktop, '../..');
 // Compiled local debugging build; never reuse a Vite page or an acceptance build.
 env.NODE_ENV = 'development';
+const preview=process.argv.includes('--knowledge-preview');
+const previewRoot=path.join(env.LOCALAPPDATA||path.join(homedir(),'.local','share'),'Xiaozhi-KnowledgePreview');
+if(preview)env.OMNI_EDU_DATA_ROOT=path.join(previewRoot,'data');
 const npmCli = process.env.npm_execpath;
 if (!npmCli || !fs.existsSync(npmCli)) throw new Error('请通过 npm start 或根目录“启动小智.cmd”启动。');
 console.log('正在构建当前源码：' + desktop);
@@ -23,6 +27,6 @@ const executable = path.join(desktop, 'node_modules/electron/dist', process.plat
 for (const file of [executable, 'out/main/index.js', 'out/preload/index.cjs', 'out/renderer/index.html'].map(file => path.isAbsolute(file) ? file : path.join(desktop, file))) {
   if (!fs.existsSync(file)) { console.error('小智启动文件缺失：' + file); process.exit(1); }
 }
-const child = spawn(executable, [path.join(desktop, 'out/main/index.js')], { cwd: desktop, env, stdio: 'ignore', detached: true, windowsHide: true });
+const child = spawn(executable, [path.join(desktop, 'out/main/index.js'),...(preview?['--user-data-dir='+path.join(previewRoot,'profile')]:[])], { cwd: desktop, env, stdio: 'ignore', detached: true, windowsHide: true });
 child.once('error', error => { console.error('小智启动失败：' + error.message); process.exitCode = 1; });
 child.once('spawn', () => { child.unref(); console.log('已启动当前源码调试版；如已有旧构建窗口，将重新加载新版。'); });

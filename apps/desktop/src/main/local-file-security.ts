@@ -26,10 +26,10 @@ export async function isInsideRoot(root: string, targetPath: string) {
   }
 }
 
-export function hashFileSha256(filePath: string) {
+export function hashFileSha256(filePath: string,signal?:AbortSignal) {
   return new Promise<string>((resolveHash, reject) => {
     const hash = createHash('sha256');
-    const stream = createReadStream(filePath);
+    const stream = createReadStream(filePath,{signal});
     stream.on('error', reject);
     stream.on('data', (chunk) => hash.update(chunk));
     stream.on('end', () => resolveHash(hash.digest('hex')));

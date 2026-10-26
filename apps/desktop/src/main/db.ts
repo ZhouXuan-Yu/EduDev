@@ -5,13 +5,22 @@ import type {PaperBlueprint} from '../shared/paper-blueprint';
 import {questionVersion} from './education/question-context-provider';
 import { createHash, randomUUID } from 'node:crypto';
 import {readQuestionDocument} from '../shared/question-document';
+import {MaterialAiRepository} from './assets/material-ai-repository';
+import {RetrievalRepository} from './retrieval/repository';
 import {ensureQuestionDocumentColumn} from './education/question-document-migration';
 import {ensureQuestionRetrievalIndex,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { basename, extname, join } from 'node:path';
 import sqlite3 from 'sqlite3';
 import {MaterialRepository} from './assets/material-repository';
+import {splitMaterialText as splitIntoChunks} from './assets/material-chunks';
 import {MaterialParseQueue,type MaterialParseLease} from './assets/material-parse-queue';
+import {MaterialImportBatches} from './assets/material-import-batches';
+import {copyMaterialFile} from './assets/material-copy';
+import {MaterialFullTextSearch} from './assets/material-full-text';
+import {MaterialPdfRepository} from './assets/material-pdf-repository';
+import {MaterialQuestionArchive} from './assets/material-question-archive';
+import {readQuestionArchive} from '../shared/question-archive';
 import type {MaterialOcrPage} from '../shared/material-pdf-ocr';
 import {StudentContextRepository} from './students/context-repository';
 import {MistakeOcrRepository,mistakeAnalysisVersion} from './students/mistake-ocr-repository';
@@ -535,23 +544,6 @@ function canParseAsLocalText(fileName: string) {
 
 function titleFromFileName(fileName: string) {
   return basename(fileName, extname(fileName)).replace(/[_-]+/g, ' ').trim() || fileName;
-}
-
-function splitIntoChunks(content: string, maxLength = 1200) {
-  const normalized = content.replace(/\r\n/g, '\n').trim();
-  if (!normalized) return [];
-  const chunks: Array<{ heading: string; content: string }> = [];
-  const sections = normalized.split(/\n(?=#{1,6}\s+)/g);
-  for (const section of sections) {
-    const heading = section.match(/^#{1,6}\s+(.+)$/m)?.[1]?.trim() ?? '';
-    let remaining = section.trim();
-    while (remaining.length > maxLength) {
-      chunks.push({ heading, content: remaining.slice(0, maxLength).trim() });
-      remaining = remaining.slice(maxLength).trim();
-    }
-    if (remaining) chunks.push({ heading, content: remaining });
-  }
-  return chunks.slice(0, 80);
 }
 
 function formatDate(date: string) {
@@ -1087,7 +1079,7 @@ export class OmniEduStore {
   private paperSql():PaperSql{
     return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),
       page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,blueprint.grade,after),
-      validate:async q=>{if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(q.document.schemaVersion!=='xiaozhi.question-document.v2'||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
+      validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(q.document.schemaVersion!=='xiaozhi.question-document.v2'||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
     };
   }
   private async paperTransaction<T>(action:(sql:PaperSql)=>Promise<T>,readOnly=false):Promise<T>{
@@ -1127,6 +1119,12 @@ export class OmniEduStore {
   }});
   readonly materials: MaterialRepository;
   readonly materialQueue: MaterialParseQueue;
+  readonly materialImports: MaterialImportBatches;
+  readonly materialSearch: MaterialFullTextSearch;
+  readonly materialQuestions: MaterialQuestionArchive;
+  readonly materialAi: MaterialAiRepository;
+  readonly retrieval: RetrievalRepository;
+  readonly materialPdf: MaterialPdfRepository;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
   readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values) });
   private db!: sqlite3.Database;
@@ -1155,9 +1153,33 @@ export class OmniEduStore {
     commit: (id, content, engine, hash, signal, pages, lease) => this.commitMaterialText(id, content, engine, hash, signal, pages, lease),
     reuse: (id, engine, lease) => this.updateMaterialState(id,'ready',engine,lease),
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
+    pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
   });
     this.materialQueue=new MaterialParseQueue({all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
+    this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.importKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
+    this.materialSearch=new MaterialFullTextSearch({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
+    this.materialQuestions=new MaterialQuestionArchive({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,validateAi:q=>this.materialAi.validate(q),create:q=>this.createQuestionBankItem(q),read:id=>this.getQuestionBankItem(id),withWriter:async action=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialQuestions);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
+    this.materialAi=new MaterialAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,map:row=>this.mapResourceChunk(row),create:q=>this.createQuestionBankItem(q),writer:async(action,beforeCommit)=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialAi);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
+    this.retrieval=new RetrievalRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),writer:async action=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.retrieval);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
+    this.materialPdf=new MaterialPdfRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id),lease:lease=>this.materialLeaseCurrent(lease),infer:inferResourceChunkMetadata,enqueueQuestions:(id,hash,generation)=>this.materialQuestions.enqueue(id,hash,generation),withWriter:async (action,beforeCommit)=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialPdf);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
   }
+
+  async readArchivedQuestionContext(question:QuestionBankItem){await this.materialQuestions.validate(question);}
 
   async init(): Promise<BootstrapData> {
     await (this.initialization ??= this.initialize().catch(error => {
@@ -1215,7 +1237,12 @@ export class OmniEduStore {
   }
 
   async close() {
+    await this.materialImports.close();
     await this.materialQueue.close();
+    await this.materialSearch.close();
+    await this.materialQuestions.close();
+    await this.materialAi.close();
+    await this.retrieval.close();
     if (!this.db) return;
     const db = this.db;
     await new Promise<void>((resolveClose, reject) => {
@@ -1842,7 +1869,7 @@ export class OmniEduStore {
     };
   }
 
-  async importKnowledgeResources(sourcePaths: string[], signal = new AbortController().signal, background=false): Promise<KnowledgeImportResult> {
+  async importKnowledgeResources(sourcePaths: string[], signal = new AbortController().signal, background=false,guard?:()=>Promise<void>): Promise<KnowledgeImportResult> {
     const resourceRoot = this.resolveInsideDataRoot('teacher_resources');
     mkdirSync(resourceRoot, { recursive: true });
     const items: AttachmentImportItem[] = [];
@@ -1851,14 +1878,17 @@ export class OmniEduStore {
       if (signal.aborted) break;
       const originalName = basename(sourcePath);
       try {
+        await guard?.();
         const stat = statSync(sourcePath);
         if (!stat.isFile()) throw new Error('不是可导入的文件');
-        const sourceHash = await hashFileSha256(sourcePath);
+        const sourceHash = await hashFileSha256(sourcePath,signal);
         signal.throwIfAborted();
         const duplicate = await this.materials.duplicate(originalName,sourceHash,stat.size,signal);
         if(duplicate){
+          await guard?.();
           const after=statSync(sourcePath);
           if(after.size!==stat.size||after.mtimeMs!==stat.mtimeMs||after.ctimeMs!==stat.ctimeMs)throw new Error('source_changed');
+          if(background)await this.materialQueue.enqueue(duplicate.id,sourceHash);
           resources.push(duplicate);
           items.push({sourcePath,fileName:originalName,ok:true,fileSize:stat.size,reused:true});
           continue;
@@ -1867,8 +1897,10 @@ export class OmniEduStore {
         const timestamp = now();
         const targetName = `${Date.now()}-${id.slice(-8)}-${originalName}`;
         const targetPath = resolveInsideRoot(resourceRoot, targetName);
-        copyFileSync(sourcePath, targetPath);
-        const hash = await hashFileSha256(targetPath);
+        await guard?.();
+        await copyMaterialFile(sourcePath,targetPath,stat.size,signal);
+        const hash = await hashFileSha256(targetPath,signal).catch(async error=>{await import('node:fs/promises').then(fs=>fs.rm(targetPath,{force:true}));throw error;});
+        try{await guard?.();}catch(error){await import('node:fs/promises').then(fs=>fs.rm(targetPath,{force:true}));throw error;}
         const afterCopy=statSync(sourcePath);
         if(signal.aborted||hash!==sourceHash||afterCopy.size!==stat.size||afterCopy.mtimeMs!==stat.mtimeMs||afterCopy.ctimeMs!==stat.ctimeMs){
           rmSync(targetPath,{force:true});
@@ -1928,8 +1960,10 @@ export class OmniEduStore {
         if (resource.chunkCount > 0) throw new Error('partial_existing');
         const timestamp = now();
         await work.createResourceChunksAndGraph(id, resource.title, content, timestamp, pages);
+        await work.materialSearch.indexResource(id);
         signal.throwIfAborted();
         await work.run(`UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?`, [engine, timestamp, id]);
+        await work.materialQuestions.enqueue(id,hash);
         if(lease)await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE id=? AND status='running' AND payload_json=?`,[JSON.stringify({resourceId:id,parser:engine}),timestamp,lease.taskId,lease.payload]);
         else await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying') AND NOT (json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')='xiaozhi.material-parse-task.v1')`, [JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
         signal.throwIfAborted();
@@ -1947,7 +1981,7 @@ export class OmniEduStore {
     // Keep the identity of committed derivatives across missing/changed-file recovery.
     const resource = await this.materials.resource(id);
     const engine = resource.chunkCount > 0 ? resource.parseEngine.split(':')[0] : 'hana-anydoc-0.1.2';
-    await this.updateMaterialState(id,code==='unsupported'||code==='needs_ocr'||code==='cancelled'?'needs_parser':code==='partial_existing'?'partial':'failed',`${engine}:${code}`,lease);
+    await this.updateMaterialState(id,resource.chunkCount>0&&!['source_changed','missing'].includes(code)?'partial':code==='unsupported'||code==='needs_ocr'||code==='cancelled'?'needs_parser':code==='partial_existing'?'partial':'failed',`${engine}:${code}`,lease);
     if(!lease)await this.run(`UPDATE ai_tasks SET status='failed',error_message=?,updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying') AND NOT (json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')='xiaozhi.material-parse-task.v1')`, [code,now(),createHash('sha256').update(id).digest('hex')]);
   }
 
@@ -4046,6 +4080,10 @@ export class OmniEduStore {
   }
 
   async searchQuestionBank(filters: QuestionSearchFilters = {}) {
+    return (await this.retrieval.questions(filters)).questions;
+  }
+  async searchQuestionBankWithCoverage(filters:QuestionSearchFilters={}){return this.retrieval.questions(filters);}
+  private async searchQuestionBankKeyword(filters: QuestionSearchFilters = {}) {
     const {rows,method} = await searchQuestionRows({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)},filters,this.questionRetrievalIndexed);
     const tokens=questionSearchTokens(filters.query?.trim()??'');
     return rows.map(row=>{
@@ -5883,7 +5921,14 @@ export class OmniEduStore {
       CREATE INDEX IF NOT EXISTS idx_ai_tool_runs_task ON ai_tool_runs(task_id);
     `);
     await this.ensureFts();
+    await this.materialImports.migrate();
+    await this.materialSearch.migrate();
+    await this.materialQuestions.migrate();
+    await this.materialQuestions.migrateMembers();
+    await this.materialPdf.migrate();
+    await this.materialAi.migrate();
     await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});
+    await this.retrieval.migrate();
     this.questionRetrievalIndexed=await ensureQuestionRetrievalIndex({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)});
     const mistakeColumns=await this.all('PRAGMA table_info(mistake_image_analyses)');
     if(!hasColumn(mistakeColumns,'local_ocr_json'))await this.run("ALTER TABLE mistake_image_analyses ADD COLUMN local_ocr_json TEXT NOT NULL DEFAULT ''");
@@ -6650,10 +6695,12 @@ export class OmniEduStore {
 
   private mapQuestionBankItem(row: Row): QuestionBankItem {
     const document=readQuestionDocument(row.document_json);
+    const archive=readQuestionArchive(row.archive_json);
     const difficulty = String(row.difficulty ?? 'medium');
     const sourceKind = String(row.source_kind ?? 'local_bank');
     return {
       ...(document?{document}:{}),
+      ...(archive?{archive}:{}),
       id: String(row.id),
       subject: String(row.subject ?? ''),
       grade: String(row.grade ?? ''),

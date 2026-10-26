@@ -33,7 +33,7 @@ function evidenceLabel(origin: string | undefined): string {
 
 /** Origin is a recorded attribution, never mathematical verification or authority to change facts. */
 export function QuestionAnswerEvidence({ question, generation }: {
-  question: Pick<QuestionNotebookEntry, 'id' | 'stem' | 'answer' | 'analysis' | 'document'>;
+  question: Pick<QuestionNotebookEntry, 'id' | 'stem' | 'answer' | 'analysis' | 'document' | 'archive'>;
   /** Host-validated paper receipt, never inferred from a display tag or sourceKind. */
   generation?: PaperGeneration;
 }) {
@@ -42,10 +42,10 @@ export function QuestionAnswerEvidence({ question, generation }: {
   </div>;
   return <div className="question-notebook-answer" data-testid={`question-notebook-answer-${question.id}`}>
     <strong>参考答案</strong>
-    <p data-testid="question-answer-origin">标注来源：{!question.document&&generation?'AI起草，教师核对保存版本':evidenceLabel(question.document?.answer.origin)}</p>
+    <p data-testid="question-answer-origin">标注来源：{!question.document&&generation?'AI起草，教师核对保存版本':evidenceLabel(question.document?.answer.origin??question.archive?.answerOrigin)}</p>
     <QuestionMathText testId="question-answer-text" text={question.answer || '暂无答案，请核对原资料或由教师补充。'}/>
     <strong>解析</strong>
-    <p data-testid="question-analysis-origin">标注来源：{!question.document&&generation?'AI起草，教师核对保存版本':evidenceLabel(question.document?.analysis.origin)}</p>
+    <p data-testid="question-analysis-origin">标注来源：{!question.document&&generation?'AI起草，教师核对保存版本':evidenceLabel(question.document?.analysis.origin??question.archive?.analysisOrigin)}</p>
     <QuestionMathText testId="question-analysis-text" text={question.analysis || '暂无解析，需教师补充。'}/>
     <p role="note" data-testid="question-answer-verification">答案与解析尚未独立核对正确性，请在教学使用前核实。题面核对与来源确认不代表答案正确。</p>
   </div>;

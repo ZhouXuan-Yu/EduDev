@@ -237,6 +237,7 @@ export type ReviewDraftInput = {
 export type QuestionBankSourceKind = 'local_bank' | 'teacher_resource' | 'generated';
 
 export type QuestionBankItem = {
+  archive?: import('./question-archive').QuestionArchive;
   document?: QuestionDocument;
   id: string;
   subject: string;

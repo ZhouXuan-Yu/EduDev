@@ -80,3 +80,18 @@
 .material-layout-lines .checkbox { min-width: 0; width: 100%; }
 .material-layout-lines .checkbox__content { display: flex; width: 100%; gap: 10px; align-items: start; font-weight: 400; white-space: normal; overflow-wrap: anywhere; }
 .material-layout .text-area { width: 100%; color: var(--pi-ink); background: var(--pi-paper); }
+.material-batches{border:1px solid var(--separator,#dce5df);border-radius:16px;padding:16px;max-height:360px;overflow:auto;margin:12px 0}
+.material-batches h2{font-size:16px;margin:0 0 8px}
+.material-batch{padding:12px 0;border-bottom:1px solid var(--separator,#dce5df)}
+.material-batch:last-child{border-bottom:0}
+.material-batch-file{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:6px 0;overflow-wrap:anywhere;font-size:13px}
+.material-batch-file>span:first-child{flex:1;min-width:180px}
+.material-text-search{margin:16px 0;padding:14px;border:1px solid var(--separator,#dce5df);border-radius:16px}
+.material-text-search form.teacher-library-toolbar{flex-wrap:wrap}
+.material-text-search form .teacher-library-search{flex:1 1 280px;min-width:min(260px,100%)}
+.material-text-search .material-search-mode{flex:0 0 auto;width:210px;max-width:100%}
+.material-text-hit{padding:8px 0;border-bottom:1px solid var(--separator,#dce5df);overflow-wrap:anywhere}
+.material-text-hit p{font-size:13px;white-space:pre-wrap;padding:0 12px}
+.material-text-search ul{padding:0;list-style:none;max-height:360px;overflow:auto}
+.material-original-page-jump { display: flex; align-items: center; gap: 6px; }
+.material-original-page-jump input { width: 84px; min-width: 0; }
