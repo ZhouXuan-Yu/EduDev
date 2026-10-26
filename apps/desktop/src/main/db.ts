@@ -1,4 +1,7 @@
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
+import {MaterialWordRepository} from './assets/material-word-repository';
+import {WORD_PARSER,wordText,type WordPayload} from '../shared/material-word';
+import {extractWord} from './assets/word-host';
 import {copyDataBackupFiles,collectDataBackupEntries,snapshotDataBackupSqlite,REBUILDABLE_BACKUP_PATHS} from './backup/data-root-files';
 import {PaperRepository,type PaperSql} from './education/paper-repository';
 import {findMistakeSimilar} from './education/mistake-similar';
@@ -1136,6 +1139,7 @@ export class OmniEduStore {
   readonly materialAi: MaterialAiRepository;
   readonly retrieval: RetrievalRepository;
   readonly materialPdf: MaterialPdfRepository;
+  readonly materialWord: MaterialWordRepository;
   readonly studentContext = new StudentContextRepository({all:(sql,params)=>this.all(sql,params),mapStudent:row=>this.mapStudent(row),mapRecord:row=>this.mapRecord(row)});
   readonly xiaozhiState = createXiaozhiSessionState({ run: (sql, values) => this.run(sql, values), change: async (sql, values) => Number(await this.runWithChanges(sql, values)), all: (sql, values) => this.all(sql, values), transaction: async action => {
     const deadline=Date.now()+stateTransactionalLockWindowMs;
@@ -1183,11 +1187,12 @@ export class OmniEduStore {
     all: (sql, params) => this.all(sql, params),
     mapResource: row => this.mapTeacherResource(row),
     mapChunk: row => this.mapResourceChunk(row),
-    commit: (id, content, engine, hash, signal, pages, lease) => this.commitMaterialText(id, content, engine, hash, signal, pages, lease),
+    commit: (id, content, engine, hash, signal, pages, lease, word) => this.commitMaterialText(id, content, engine, hash, signal, pages, lease, word),
     reuse: (id, engine, lease) => this.updateMaterialState(id,'ready',engine,lease),
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
     pdf:(resource,signal,lease)=>this.materialPdf.ingest(resource,signal,lease),
   });
+    this.materialWord=new MaterialWordRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),resource:id=>this.materials.resource(id)});
     this.materialQueue=new MaterialParseQueue({all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
     this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.importKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
     this.materialSearch=new MaterialFullTextSearch({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
@@ -1981,7 +1986,22 @@ export class OmniEduStore {
   }
 
   /** Existing chunk/metadata/graph algorithm, isolated transaction on the same DB. */
-  private async commitMaterialText(id: string, content: string, engine: string, hash: string, signal: AbortSignal, pages?: MaterialOcrPage[],lease?:MaterialParseLease) {
+  private async wordBodySnapshot(id:string){const rows=await this.all('SELECT id,chunk_index,heading,content_md,page_number,bbox_json,contains_personal_data,subject,grade,knowledge_point,question_type,difficulty,source_trust,evidence_strength,quality_score FROM resource_chunks WHERE resource_id=? ORDER BY chunk_index,id',[id]);return {digest:createHash('sha256').update(JSON.stringify(rows)).digest('hex'),private:rows.some(row=>Number(row.contains_personal_data)===1)};}
+  async rebuildMaterialWord(id:string,version:string,signal:AbortSignal){
+    const resource=await this.materials.resource(id);if(resource.contentHash!==version||! /\.docx$/i.test(resource.originalFileName))throw Error('source_changed');
+    if(!['ready','partial','parsed','chunked','indexed','graph_extracted','failed','needs_parser'].includes(resource.parseStatus))throw Error('material_busy');
+    if((await this.all("SELECT id FROM ai_tasks WHERE task_type='resource_parse' AND input_hash=? AND status='running' LIMIT 1",[createHash('sha256').update(id).digest('hex')])).length)throw Error('material_busy');
+    const expected=await this.wordBodySnapshot(id),bytes=await this.materials.original(id,version,signal),result=await extractWord(bytes,signal);if(!result.ok)throw Error(result.error);
+    const text=wordText(result.payload.document.blocks);if(!text.trim())throw Error('empty');await this.materials.verify(id,version,signal);
+    const previous=await this.materialWord.document(id,version).catch(()=>undefined);
+    if(resource.parseEngine===WORD_PARSER&&previous&&JSON.stringify(previous)===JSON.stringify(result.payload.document)){
+      await this.materialWord.prepare(result.payload,signal);await this.materials.verify(id,version,signal);if((await this.wordBodySnapshot(id)).digest!==expected.digest)throw Error('source_changed');return this.materials.resource(id);
+    }
+    await this.commitMaterialText(id,text,WORD_PARSER,version,signal,undefined,undefined,result.payload,{...expected,engine:resource.parseEngine});
+    return this.materials.resource(id);
+  }
+  private async commitMaterialText(id: string, content: string, engine: string, hash: string, signal: AbortSignal, pages?: MaterialOcrPage[],lease?:MaterialParseLease,word?:WordPayload,replace?:{digest:string;private:boolean;engine:string}) {
+    const wordDocument=word?await this.materialWord.prepare(word,signal):undefined;
     const work = new OmniEduStore(this.dataRoot);
     work.db = await this.openDatabase(this.dbPath);
     try {
@@ -1991,13 +2011,22 @@ export class OmniEduStore {
         if(lease&&!await work.materialLeaseCurrent(lease))throw new Error('cancelled');
         const resource = await work.materials.resource(id);
         if (resource.contentHash !== hash) throw new Error('source_changed');
-        if (resource.chunkCount > 0) throw new Error('partial_existing');
+        if(replace){
+          if(!wordDocument||engine!==WORD_PARSER||resource.parseEngine!==replace.engine||(await work.wordBodySnapshot(id)).digest!==replace.digest)throw Error('source_changed');
+          if((await work.all("SELECT id FROM ai_tasks WHERE task_type='resource_parse' AND input_hash=? AND status='running' LIMIT 1",[createHash('sha256').update(id).digest('hex')])).length)throw Error('material_busy');
+          await work.run("DELETE FROM knowledge_edges WHERE evidence_source_id IN (SELECT id FROM resource_chunks WHERE resource_id=?)",[id]);
+          await work.run("DELETE FROM knowledge_nodes WHERE id IN (SELECT 'node_'||id FROM resource_chunks WHERE resource_id=?)",[id]);
+          await work.run('DELETE FROM resource_chunks WHERE resource_id=?',[id]);
+        }else if (resource.chunkCount > 0) throw new Error('partial_existing');
         const timestamp = now();
         await work.createResourceChunksAndGraph(id, resource.title, content, timestamp, pages);
+        if(replace?.private)await work.run("UPDATE resource_chunks SET contains_personal_data=1,source_trust='unverified' WHERE resource_id=?",[id]);
         await work.materialSearch.indexResource(id);
+        if(wordDocument)await work.materialWord.commit(id,hash,wordDocument);
         signal.throwIfAborted();
         await work.run(`UPDATE teacher_resources SET parse_status='ready',parse_engine=?,updated_at=? WHERE id=?`, [engine, timestamp, id]);
-        await work.materialQuestions.enqueue(id,hash);
+        await work.materialQuestions.enqueue(id,hash,wordDocument?WORD_PARSER+':'+createHash('sha256').update(JSON.stringify(wordDocument)).digest('hex'):'');
+        if(replace)await work.run("UPDATE ai_tasks SET status='succeeded',error_message='',result_json=?,updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status<>'running'",[JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
         if(lease)await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE id=? AND status='running' AND payload_json=?`,[JSON.stringify({resourceId:id,parser:engine}),timestamp,lease.taskId,lease.payload]);
         else await work.run(`UPDATE ai_tasks SET status='succeeded',result_json=?,error_message='',updated_at=? WHERE task_type='resource_parse' AND input_hash=? AND status IN ('pending','running','retrying') AND NOT (json_valid(payload_json) AND json_extract(payload_json,'$.schemaVersion')='xiaozhi.material-parse-task.v1')`, [JSON.stringify({resourceId:id,parser:engine}),timestamp,createHash('sha256').update(id).digest('hex')]);
         signal.throwIfAborted();
@@ -6017,6 +6046,7 @@ export class OmniEduStore {
     await this.materialQuestions.migrate();
     await this.materialQuestions.migrateMembers();
     await this.materialPdf.migrate();
+    await this.materialWord.migrate();
     await this.materialAi.migrate();
     await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});
     await this.retrieval.migrate();

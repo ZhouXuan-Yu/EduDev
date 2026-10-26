@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto';
 import { isAbsolute, join } from 'node:path';
 import { OmniEduStore } from './db';
 import {registerMaterialIpc} from './assets/material-ipc';
+import {registerMaterialWordIpc} from './assets/material-word-ipc';
 import {registerMaterialAiIpc} from './assets/material-ai-ipc';
 import {registerRetrievalIpc} from './retrieval/ipc';
 import {registerMistakeOcrIpc} from './students/mistake-ocr-api';
@@ -285,6 +286,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   });
   ipcMain.handle('knowledge:getOverview', () => store.getKnowledgeOverview());
   registerMaterialIpc(store, () => mainWindow,ipcMain);
+  registerMaterialWordIpc(ipcMain,store,()=>mainWindow);
   registerMaterialAiIpc(store, () => mainWindow,ipcMain);
   registerRetrievalIpc(store, () => mainWindow,ipcMain);
   ipcMain.handle('knowledge:importPaths', (event, sourcePaths: string[]) => {

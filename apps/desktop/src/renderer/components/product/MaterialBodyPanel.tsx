@@ -1,4 +1,5 @@
 import {MaterialStudyPanel} from './MaterialStudyPanel';
+import {MaterialWordPanel} from './MaterialWordPanel';
 import {useEffect,useState} from 'react';
 import {Button,Pagination} from '@heroui/react';
 import {FolderOpen,RefreshCw} from 'lucide-react';
@@ -16,7 +17,7 @@ export function MaterialOcrNotice(){return <p role="note" className="teacher-lib
 export function MaterialExcerpt({chunk,sourceId}:{chunk:ResourceChunk;sourceId?:string}){return <article className="teacher-library-excerpt" data-testid={`materials-chunk-${chunk.id}`} data-source={chunk.id===sourceId||undefined}><h3>{chunk.pageNumber?`原件第 ${chunk.pageNumber} 页 · `:''}{chunk.heading||'内容摘录'}</h3><Markdown components={{img:({alt})=><span>［图片：{alt||'未加载'}］</span>,a:({children})=><span>{children}</span>}}>{chunk.contentMd}</Markdown></article>;}
 
 export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retry,taskStatus,onAsk,onStudyDirty}:{resource?:TeacherResource;sourceView?:MaterialSourceView;busy:boolean;revision:number;locate:()=>void;retry:()=>void;taskStatus?:MaterialTaskStatus;onAsk?:(prompt:string)=>void;onStudyDirty?:(dirty:boolean)=>void}){
- const [studying,setStudying]=useState(false),[studyDirty,setStudyDirty]=useState(false);
+ const [studying,setStudying]=useState(false),[studyDirty,setStudyDirty]=useState(false),[wordRevision,setWordRevision]=useState(0);
  const reportDirty=(value:boolean)=>{setStudyDirty(value);onStudyDirty?.(value);};
  useEffect(()=>{setStudying(false);setStudyDirty(false);onStudyDirty?.(false);},[resource?.id,resource?.contentHash,sourceView?.source.chunkId,sourceView?.source.offset,sourceView?.source.bodyVersion]);
  const [body,setBody]=useState<MaterialBody>(),[offset,setOffset]=useState(0),[loading,setLoading]=useState(false),[error,setError]=useState('');
@@ -24,12 +25,13 @@ export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retr
  useEffect(()=>{let current=true;setBody(undefined);setError('');if(!resource){setLoading(false);return;}
   setLoading(true);const reading=sourceView&&offset===sourceView.source.offset?window.omniEdu?.getMaterialSource(sourceView.source).then(result=>result.body):window.omniEdu?.getMaterialBody({schemaVersion:MATERIALS_SCHEMA,resourceId:resource.id,offset});
   void reading?.then(next=>{if(current)setBody(next);}).catch(()=>{if(current)setError(sourceView?'来源内容已变化，请返回小智重新查找后再打开。':'无法读取这份资料，请刷新后重试。');}).finally(()=>{if(current)setLoading(false);});return()=>{current=false;};
- },[resource?.id,offset,revision,sourceView]);
+ },[resource?.id,offset,revision,wordRevision,sourceView]);
  const current=body?.resource||resource;
  return <section className="teacher-library-detail" data-testid="materials-detail" aria-label="资料内容">
   {current?<><header><div><h2>{current.title}</h2><p>{current.originalFileName} · 添加于 {libraryDate(current.createdAt)}</p></div><Button variant="secondary" onPress={locate} isDisabled={busy} data-testid="materials-locate"><FolderOpen size={16}/>定位文件</Button></header>
    {/\.pdf$/i.test(current.originalFileName)&&<MaterialPdfProgress resource={current}/>}
    <MaterialAiPanel key={'ai-'+current.id+current.contentHash} resource={current}/>
+   {/\.docx$/i.test(current.originalFileName)&&<MaterialWordPanel key={'word-'+current.id+current.contentHash} resource={current} disabled={busy||studyDirty||!!sourceView} onRebuilt={()=>{setOffset(0);setWordRevision(v=>v+1);}}/>}
 
    <div className="teacher-library-toolbar"><Button variant="secondary" isDisabled={busy||studyDirty||!body?.chunks.length} onPress={()=>setStudying(v=>!v)} data-testid="materials-study-toggle">{studying?'返回资料概览':'开始／继续阅读'}</Button></div>
    <MaterialOriginalPreview key={current.id+current.contentHash} resource={current} initialPage={body?.chunks[0]?.pageNumber||1} busy={busy}/>

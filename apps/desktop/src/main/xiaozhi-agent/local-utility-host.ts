@@ -10,7 +10,7 @@ export function reserveLocalWorker(){
  return ()=>{if(!released){released=true;workers--;}};
 }
 type UtilityFailure='busy'|'cancelled'|'timeout'|'unavailable'|'parse_failed';
-export function runLocalUtility<T>(options:{entry:'document-worker.js'|'image-worker.js';serviceName:string;
+export function runLocalUtility<T>(options:{entry:'document-worker.js'|'image-worker.js'|'word-worker.js';serviceName:string;
  request:unknown;timeout:number;signal:AbortSignal;valid:(value:unknown)=>value is T;fail:(error:UtilityFailure)=>T}):Promise<T>{
  const {signal,fail}=options;
  if(signal.aborted)return Promise.resolve(fail(signal.reason==='timeout'?'timeout':'cancelled'));

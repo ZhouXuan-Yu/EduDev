@@ -1,6 +1,8 @@
 import {MATERIAL_STUDY_SCHEMA,studyRevision,validStudySave,type MaterialStudySave,type MaterialStudyView,type MaterialStudyEntry,type MaterialStudyPage} from '../../shared/material-study';
 import {validMaterialSource} from '../../shared/materials';
 import {materialSource} from './material-source';
+import {extractWord} from './word-host';
+import {wordText,WORD_PARSER,type WordPayload} from '../../shared/material-word';
 import {createHash,randomUUID} from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -21,7 +23,7 @@ type SqlValue=string|number|null;
 export type MaterialRepositoryHost={
  root:string;change:(sql:string,params?:SqlValue[])=>Promise<number>;all:(sql:string,params?:SqlValue[])=>Promise<Row[]>;
  mapResource:(row:Row)=>TeacherResource;mapChunk:(row:Row)=>ResourceChunk;
- commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal,pages?:MaterialOcrPage[],lease?:MaterialParseLease)=>Promise<void>;
+ commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal,pages?:MaterialOcrPage[],lease?:MaterialParseLease,word?:WordPayload)=>Promise<void>;
  reuse:(id:string,engine:string,lease?:MaterialParseLease)=>Promise<void>;
  failure:(id:string,code:string,lease?:MaterialParseLease)=>Promise<void>;
  pdf?:(resource:TeacherResource,signal:AbortSignal,lease?:MaterialParseLease)=>Promise<TeacherResource>;
@@ -149,7 +151,7 @@ export class MaterialRepository {
      }
      else if(resource.chunkCount>0)failure='partial_existing';
      else {
-      let content='',engine='local-text-v1',pages:MaterialOcrPage[]|undefined;
+      let content='',engine='local-text-v1',pages:MaterialOcrPage[]|undefined,word:WordPayload|undefined;
       if(/\.(txt|md)$/i.test(resource.originalFileName)){
        if(bytes.length>DOCUMENT_MAX_OUTPUT)failure='too_large';
        else {try{content=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{failure='text_unreadable';}}
@@ -158,6 +160,8 @@ export class MaterialRepository {
        const ocr=await recognizeLocalImage(bytes,signal);
        content=ocr.text;engine='image-'+ocr.engine;
        pages=[{page:1,text:ocr.text,width:ocr.width,height:ocr.height}];
+      } else if(/\.docx$/i.test(resource.originalFileName)){
+       const result=await extractWord(bytes,signal);if(!result.ok)failure=result.error;else{word=result.payload;content=wordText(word.document.blocks);engine=WORD_PARSER;}
       } else if(isOfficeDocument(resource.originalFileName)){
        const parsed=await extractLocalDocument({schemaVersion:DOCUMENT_SCHEMA,requestId:`xifile_${randomUUID()}`,filename:resource.originalFileName,bytes},signal);
        if(parsed.ok){content=parsed.markdown;engine=parsed.parser;}
@@ -167,7 +171,7 @@ export class MaterialRepository {
         pages=ocr.pages;content=pages.map(page=>page.text).join('\n\n');engine=ocr.engine;
        }else failure=parsed.error;
       } else failure='unsupported';
-      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease);}}
+      if(!failure){if(!content.trim())failure='empty';else {signal.throwIfAborted();await this.original(id,hash,signal);await this.host.commit(id,content,engine,hash,signal,pages,lease,word);}}
      }
     }
    }catch(error){const code=error instanceof Error?error.message:'';failure=signal.aborted?'cancelled':['source_changed','partial_existing','too_large','empty','configuration','timeout','busy','unavailable','disk_full'].includes(code)?code:code==='missing'||['ENOENT','EACCES','EPERM'].includes(String((error as {code?:unknown})?.code))?'missing':'parse_failed';}

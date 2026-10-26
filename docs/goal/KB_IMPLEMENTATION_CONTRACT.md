@@ -147,6 +147,18 @@ typed preload/正文UI展示逐页覆盖与失败、继续/重试及来源定位
 
 ## main 整合后的 S6-B 续接依据：完整 Word 结构
 
+### S6-B1 实施合同：DOCX 原文结构纵向贯通（2026-10-26）
+
+本轮目标 M02/M03/M04/M05/M10：老师导入 DOCX 后，保留段落、表格、自动编号、OMML 原式与可表示的 LaTeX、内嵌图片及真实 part/段落锚点；资料页可操作查看图片/公式，公式文字进入现有关键词/题意检索。规则/AI 归档不得把尚未纳入完整表示的图题自动放行。本轮不是完整视觉 AI、跨页答案配对、40GB验收或完整Goal完成。
+
+变更：新增私有 xiaozhi.word-source.v1 协议/独立受管 Electron utility、shared/material-word.ts、assets 下 Word 派生存储/查询，material_word_documents 增量幂等表；现有同一正文提交事务原子关联结构与资源版本，typed preload/资料页增加结构分页和单图按需读取入口。来源默认真实 Word 部件/节点，不虚构 PDF 页码；worker 不访问外链/执行嵌入对象，XML 拒绝 DTD/实体。新源格式与 parser 版本固定；失败不覆盖已有来源。
+
+依赖：固定 MIT yauzl 3.4.0（npm未压缩109901字节，纯JS、无新原生编译）用于逐条流式 ZIP 读取，启用大小验证并另设实际解压总量限制；显式固定已随 jsdom 存在的 ISC saxes 6.0.0（163774字节）解析 XML。保留现有 anydoc 0.1.2 处理其他 Office 格式，DOCX 走本轮保结构路径，避免 Markdown 的不可逆丢失。Windows 包只增加纯JS依赖及worker入口，无新增独立运行时；最终安装体积以打包实测为准。
+
+预算：每个 DOCX 输入沿用50MiB上限；条目5000、XML总量24MiB/单件8MiB、实际展开总量128MiB、最多512张内嵌图/单图8MiB/图总量64MiB、100000 XML节点/深度96、20000结构块。每个单元受控结果与超时/取消，单个坏文件不阻塞文件夹后续任务。以上是设计拒绝边界，不是已测极限。
+
+验证：真实合成 DOCX（自动编号、分式/根式/上下标、跨表图片、坏关系/外链、空图、DTD/解压超限）→文件夹导入→SQLite/图像SHA readback→资料页/来源查看→冷重启；独立AI批判后修复。旧测试资料可显式重整，已有题目来源和正式教师事实不静默重写；保留旧 Office 通道供其他格式使用。
+
 本轮对已锁定 MIT anydoc 0.1.2 做了原生结构探针（`node scripts/education/kb-word-structure-probe.cjs`）：合成 DOCX 包含正文、OMML 分数、内嵌 PNG 和答案表。当前 Markdown 通道只剩图片替代文字；直接 toDocument 能保留同 SHA 的 68 字节 PNG、assetId 与 originPart，但 OMML 的 1/3 在 Markdown 和 AST 中均缺失。这是实际库能力边界，不将未进入表示的公式交给 AI 猜。
 
 下一切片沿用现有 anydoc，并补有界 OOXML 结构读取，不新增第二套 Agent 或大型服务。先完成版本化资料结构契约（段落/表格/公式/图像、part 与块位置、来源 hash、处理版本和缺失警告），再贯通 Worker、SQLite/受管图像文件、typed preload、资料查看/定位、OCR/AI 输入与题库。Word 不虚构页码；teacher-confirmed question-document.v2 不冒充 AI 定稿来源。外链图片不自动抓取，嵌入对象不执行；不支持的公式/图像保留原件和明确的不可自动定稿风险。ZIP 展开、对象数量、文本和图片尺寸必须有总预算、超时、取消与恢复边界。

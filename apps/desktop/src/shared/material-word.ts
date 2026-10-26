@@ -1,0 +1,60 @@
+import {materialId} from './materials';
+export const WORD_SCHEMA='xiaozhi.word-source.v1' as const;
+export const WORD_PARSER='word-ooxml.v1' as const;
+export const WORD_INPUT=50*1024*1024;
+export const WORD_TEXT=8*1024*1024;
+export const WORD_IMAGES=64*1024*1024;
+export type WordAnchor={part:string;path:string};
+export type WordInline={kind:'text';text:string}|{kind:'formula';latex:string;omml:string;complete:boolean}|{kind:'image';assetId:string;alt:string;issue:string;relationshipId:string;part:string};
+export type WordBlock={id:string;anchor:WordAnchor;kind:'paragraph';inlines:WordInline[];numbering?:{level:number;label:string}}|{id:string;anchor:WordAnchor;kind:'table';rows:Array<{cells:Array<{colSpan:number;merge:''|'restart'|'continue';blocks:WordBlock[]}>}>};
+export type WordAsset={id:string;sha256:string;mime:'image/png'|'image/jpeg'|'image/webp';bytes:number;width:number;height:number;part:string};
+export type WordDocument={schemaVersion:typeof WORD_SCHEMA;parser:typeof WORD_PARSER;blocks:WordBlock[];assets:WordAsset[];warnings:string[]};
+export type WordPayload={document:WordDocument;images:Array<{id:string;data:Uint8Array}>};
+export type WordRequest={schemaVersion:typeof WORD_SCHEMA;requestId:string;bytes:Uint8Array};
+export type WordResult={schemaVersion:typeof WORD_SCHEMA;requestId:string;ok:true;payload:WordPayload}|{schemaVersion:typeof WORD_SCHEMA;requestId:string;ok:false;error:'invalid_input'|'too_large'|'parse_failed'|'cancelled'|'timeout'|'busy'|'unavailable'};
+export type WordQuery={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string;offset:number};
+export type WordPage={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string;parser:typeof WORD_PARSER;offset:number;total:number;hasMore:boolean;blocks:WordBlock[];assets:WordAsset[];warnings:string[]};
+export type WordImageQuery={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string;assetId:string};
+export type WordImageView={asset:WordAsset;dataUrl:string};
+export type WordRebuild={schemaVersion:typeof WORD_SCHEMA;resourceId:string;version:string};
+const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
+const hash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
+const string=(v:unknown,n:number):v is string=>typeof v==='string'&&v.length<=n;
+const part=(v:unknown):v is string=>string(v,512)&&!!v&&!v.includes('..')&&!v.startsWith('/')&&!/[\\\x00-\x1f]/.test(v);
+export function validWordRequest(v:unknown):v is WordRequest{return obj(v)&&Object.keys(v).length===3&&v.schemaVersion===WORD_SCHEMA&&typeof v.requestId==='string'&&/^word_[a-f0-9-]{36}$/.test(v.requestId)&&v.bytes instanceof Uint8Array&&v.bytes.length>0&&v.bytes.length<=WORD_INPUT;}
+export function validWordDocument(v:unknown):v is WordDocument{
+ if(!obj(v)||v.schemaVersion!==WORD_SCHEMA||v.parser!==WORD_PARSER||!Array.isArray(v.assets)||v.assets.length>512||!Array.isArray(v.blocks)||v.blocks.length>20000||!Array.isArray(v.warnings)||v.warnings.length>64||!v.warnings.every(x=>string(x,120)))return false;
+ const ids=new Set<string>(),blockIds=new Set<string>();let bytes=0,text=0,count=0,inlines=0;
+ for(const a of v.assets){if(!obj(a)||!hash(a.sha256)||a.id!=='wa_'+a.sha256||ids.has(String(a.id))||!part(a.part)||!['image/png','image/jpeg','image/webp'].includes(String(a.mime))||!Number.isSafeInteger(a.bytes)||Number(a.bytes)<=0||Number(a.bytes)>8*1024*1024||!Number.isSafeInteger(a.width)||!Number.isSafeInteger(a.height)||Number(a.width)<1||Number(a.height)<1||Number(a.width)>10000||Number(a.height)>10000||Number(a.width)*Number(a.height)>40000000)return false;ids.add(String(a.id));bytes+=Number(a.bytes);}
+ if(bytes>WORD_IMAGES)return false;
+ function blocks(list:unknown[],depth:number):boolean{
+  if(depth>24)return false;
+  for(const b of list){if(++count>20000||!obj(b)||typeof b.id!=='string'||!/^wb_[a-f0-9]{32}$/.test(b.id)||blockIds.has(b.id)||!obj(b.anchor)||!part(b.anchor.part)||!string(b.anchor.path,1500)||!b.anchor.path.startsWith('/'))return false;blockIds.add(b.id);
+   if(b.kind==='paragraph'){
+    if(!Array.isArray(b.inlines)||(inlines+=b.inlines.length)>50000)return false;
+    if(b.numbering!==undefined&&(!obj(b.numbering)||!Number.isSafeInteger(b.numbering.level)||Number(b.numbering.level)<0||Number(b.numbering.level)>8||!string(b.numbering.label,128)))return false;
+    for(const i of b.inlines){if(!obj(i))return false;if(i.kind==='text'){if(!string(i.text,WORD_TEXT))return false;text+=i.text.length;}
+     else if(i.kind==='formula'){if(!string(i.latex,32000)||!string(i.omml,128000)||typeof i.complete!=='boolean')return false;text+=i.latex.length+i.omml.length;}
+     else if(i.kind==='image'){if(!string(i.assetId,67)||i.assetId&&!ids.has(i.assetId)||!string(i.alt,2000)||!string(i.issue,120)||!string(i.relationshipId,256)||!string(i.part,512)||i.part&&!part(i.part))return false;text+=i.alt.length;}
+     else return false;
+    }
+   }else if(b.kind==='table'){
+    if(!Array.isArray(b.rows)||b.rows.length>10000)return false;
+    for(const row of b.rows){if(!obj(row)||!Array.isArray(row.cells)||row.cells.length>128)return false;for(const c of row.cells)if(!obj(c)||!Number.isSafeInteger(c.colSpan)||Number(c.colSpan)<1||Number(c.colSpan)>128||!['','restart','continue'].includes(String(c.merge))||!Array.isArray(c.blocks)||!blocks(c.blocks,depth+1))return false;}
+   }else return false;
+   if(text>WORD_TEXT)return false;
+  }return true;
+ }
+ return blocks(v.blocks,0);
+}
+export function validWordResult(v:unknown,id:string):v is WordResult{
+ if(!obj(v)||v.schemaVersion!==WORD_SCHEMA||v.requestId!==id)return false;
+ if(v.ok===false)return typeof v.error==='string'&&['invalid_input','too_large','parse_failed','cancelled','timeout','busy','unavailable'].includes(v.error);
+ if(v.ok!==true||!obj(v.payload)||!validWordDocument(v.payload.document)||!Array.isArray(v.payload.images)||v.payload.images.length!==v.payload.document.assets.length)return false;
+ const images=new Map(v.payload.images.map((x:unknown)=>obj(x)&&typeof x.id==='string'&&x.data instanceof Uint8Array?[x.id,x.data]:['',undefined]));
+ return images.size===v.payload.images.length&&v.payload.document.assets.every(a=>images.get(a.id)?.length===a.bytes);
+}
+export function validWordQuery(v:unknown):v is WordQuery{return obj(v)&&Object.keys(v).length===4&&v.schemaVersion===WORD_SCHEMA&&materialId(v.resourceId)&&hash(v.version)&&Number.isSafeInteger(v.offset)&&Number(v.offset)>=0&&Number(v.offset)<=20000;}
+export function validWordImageQuery(v:unknown):v is WordImageQuery{return obj(v)&&Object.keys(v).length===4&&v.schemaVersion===WORD_SCHEMA&&materialId(v.resourceId)&&hash(v.version)&&typeof v.assetId==='string'&&/^wa_[a-f0-9]{64}$/.test(v.assetId);}
+export function validWordRebuild(v:unknown):v is WordRebuild{return obj(v)&&Object.keys(v).length===3&&v.schemaVersion===WORD_SCHEMA&&materialId(v.resourceId)&&hash(v.version);}
+export function wordText(blocks:WordBlock[]):string{return blocks.map(b=>b.kind==='paragraph'?(b.numbering?.label||'')+b.inlines.map(i=>i.kind==='text'?i.text:i.kind==='formula'?i.complete?' $'+i.latex+'$ ':' [原式待核对：'+i.latex+'] ':' [原文插图'+(i.alt?'：'+i.alt:'')+'] ').join(''):b.rows.map(r=>r.cells.map(c=>wordText(c.blocks)).join(' | ')).join('\n')).join('\n\n');}
