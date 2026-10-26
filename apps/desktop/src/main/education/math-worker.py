@@ -6,6 +6,7 @@ import re
 import sys
 
 SCHEMA = "xiaozhi.education.math-check.v1"
+SYSTEM_SCHEMA = "xiaozhi.education.math-check.v2"
 WHEELS = {
     "sympy-1.14.0-py3-none-any.whl": "e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5",
     "mpmath-1.3.0-py3-none-any.whl": "a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c",
@@ -183,23 +184,78 @@ def verify(request, s=None):
     return True
 
 
+def verify_linear_system(request):
+    fields(request, ['schemaVersion', 'requestId', 'kind', 'variables', 'equations', 'targets'])
+    names, equations, targets = request['variables'], request['equations'], request['targets']
+    if request['kind'] != 'linear_system' or not isinstance(names, list) or not 1 <= len(names) <= 4 or any(not isinstance(n, str) or not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]{0,15}', n) for n in names) or len(set(names)) != len(names):
+        raise InvalidInput()
+    if not isinstance(equations, list) or not 1 <= len(equations) <= 8 or not isinstance(targets, list) or not 1 <= len(targets) <= 4:
+        raise InvalidInput()
+    s = load_sympy()
+
+    def rational(v):
+        fields(v, ['numerator', 'denominator'])
+        a, b = v['numerator'], v['denominator']
+        if not isinstance(a, str) or not re.fullmatch(r'(?:0|-?[1-9]\d{0,8})', a) or not isinstance(b, str) or not re.fullmatch(r'[1-9]\d{0,5}', b):
+            raise InvalidInput()
+        return s.Rational(int(a), int(b))
+
+    def quote(v):
+        if not isinstance(v, str) or not v.strip() or len(v) > 400 or re.search(r'[\x00-\x08\x0b\x0c\x0e-\x1f]', v):
+            raise InvalidInput()
+
+    rows, constants = [], []
+    for e in equations:
+        fields(e, ['coefficients', 'constant', 'sourceText'])
+        quote(e['sourceText'])
+        if not isinstance(e['coefficients'], list) or len(e['coefficients']) != len(names):
+            raise InvalidInput()
+        rows.append([rational(v) for v in e['coefficients']])
+        constants.append(rational(e['constant']))
+    expected = {}
+    for t in targets:
+        fields(t, ['variable', 'expected', 'answerText'])
+        quote(t['answerText'])
+        if not isinstance(t['variable'], str) or t['variable'] not in names or t['variable'] in expected:
+            raise InvalidInput()
+        expected[t['variable']] = rational(t['expected'])
+    symbols = [s.Symbol(n, real=True) for n in names]
+    # Reuse the pinned solver. Free unrelated variables do not make a target ambiguous.
+    solutions = s.linsolve((s.Matrix(rows), s.Matrix(constants)), symbols)
+    if solutions is s.EmptySet or solutions == s.EmptySet:
+        return 'inconsistent'
+    values = next(iter(solutions))
+    target_values = [(values[names.index(n)], value) for n, value in expected.items()]
+    if any(actual.free_symbols for actual, _ in target_values):
+        return 'underdetermined'
+    return 'unique_targets' if all(actual == value for actual, value in target_values) else 'answer_mismatch'
+
+
 def main():
     request_id = ""
+    schema = SCHEMA
     step_states = None
+    system_status = None
     try:
         raw = sys.stdin.buffer.read(16385)
         if len(raw) > 16384:
             raise InvalidInput()
         request = json.loads(raw, object_pairs_hook=unique_object,
                              parse_constant=lambda _: (_ for _ in ()).throw(InvalidInput()))
-        if not isinstance(request, dict) or request.get("schemaVersion") != SCHEMA:
+        if not isinstance(request, dict) or request.get("schemaVersion") not in (SCHEMA, SYSTEM_SCHEMA):
+            raise InvalidInput()
+        schema = request['schemaVersion']
+        if (schema == SYSTEM_SCHEMA) != (request.get('kind') == 'linear_system'):
             raise InvalidInput()
         request_id = request.get("requestId", "")
         if not isinstance(request_id, str) or not re.fullmatch(r"[a-f0-9-]{36}", request_id):
             raise InvalidInput()
         try:
             step_states = None
-            if request.get('kind') == 'steps':
+            if request.get('kind') == 'linear_system':
+                system_status = verify_linear_system(request)
+                matched = system_status == 'unique_targets'
+            elif request.get('kind') == 'steps':
                 fields(request, ['schemaVersion', 'requestId', 'kind', 'checks'])
                 checks = request['checks']
                 if not isinstance(checks, list) or not 2 <= len(checks) <= 6:
@@ -232,11 +288,13 @@ def main():
                   "conditionsVerified": False, "engine": "sympy-1.14.0"}
         if step_states is not None:
             result['stepStates'] = step_states
+        if system_status is not None:
+            result['systemStatus'] = system_status
     except InvalidInput:
         result = {"ok": False, "error": "invalid_input"}
     except Exception:
         result = {"ok": False, "error": "unavailable"}
-    print(json.dumps({"schemaVersion": SCHEMA, "requestId": request_id, **result}, separators=(",", ":")))
+    print(json.dumps({"schemaVersion": schema, "requestId": request_id, **result}, separators=(",", ":")))
 
 
 if __name__ == "__main__":

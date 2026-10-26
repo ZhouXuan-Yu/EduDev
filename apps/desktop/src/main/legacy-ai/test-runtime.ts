@@ -80,6 +80,7 @@ type DeepTutorRunBinding = {
   toolState?: CompiledAiContext;
   timeoutHandle?: NodeJS.Timeout;
   terminalRecoveryScheduled?: boolean;
+  inputRegistration?: Promise<void>;
 };
 
 const deepTutorRuns = new Map<string, DeepTutorRunBinding>();
@@ -674,6 +675,11 @@ const handleUserInputRequest = async (request: XiazhiUserInputRequest): Promise<
         text: '',
       };
     }
+    let resolveInput!: (result: XiazhiUserInputResult) => void;
+    const response = new Promise<XiazhiUserInputResult>(resolve => { resolveInput = resolve; });
+    // Publish the registration barrier before the checkpoint becomes observable.
+    // Cancellation must not miss the request between SQLite and the pending map.
+    const registration = (async () => {
     const checkpoint = await store.createAiCapabilityCheckpoint({
       runId: binding.runId,
       capabilityName: binding.capability,
@@ -694,9 +700,11 @@ const handleUserInputRequest = async (request: XiazhiUserInputRequest): Promise<
     });
     await store.completeAiAgentRun(binding.runId, 'waiting_input', '等待老师输入后继续。');
     getWindow()?.webContents.send('ai:deepTutorInputRequest', request);
-    return new Promise<XiazhiUserInputResult>((resolve) => {
-      pendingDeepTutorInputs.set(request.requestId, { runId: binding.runId, checkpointId: checkpoint.id, request, resolve });
-    });
+    pendingDeepTutorInputs.set(request.requestId, { runId: binding.runId, checkpointId: checkpoint.id, request, resolve: resolveInput });
+    })();
+    binding.inputRegistration = registration;
+    await registration;
+    return response;
   };
 
 const listPendingDeepTutorInputs = async (): Promise<XiazhiUserInputRequest[]> => {
@@ -1622,6 +1630,7 @@ registerLegacyRuntime('ai:deepTutorSubmitUserInput', async (_event, input: { req
   });
 
 registerLegacyRuntime('ai:deepTutorCancelTurn', async (_event, turnId: string) => {
+    await deepTutorRuns.get(turnId)?.inputRegistration;
     const pending = [...pendingDeepTutorInputs.entries()].find(([, item]) => item.request.turnId === turnId);
     if (pending) {
       const [requestId, item] = pending;

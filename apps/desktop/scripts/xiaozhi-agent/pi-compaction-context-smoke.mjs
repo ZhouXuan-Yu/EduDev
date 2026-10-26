@@ -10,7 +10,7 @@ const titles = Array.from({ length: 25 }, (_, n) => ({ title: `来源${n}-${'d'.
 let sanitizedInput = '';
 const store = {
   xiaozhiState: { controls: async id => { calls.push(id); return plans; }, approvals: async id => { calls.push(id); return approvals; } },
-  getAiConversationSession: async id => { calls.push(id); return { messages: [{ metadata: { piVersion: 'xiaozhi.pi.education.v1', publicItems: [{ kind: 'tool', sources: titles }] } }] }; },
+  getAiConversationSession: async id => { calls.push(id); return { session: { id, studentId: undefined }, messages: [{ metadata: { piVersion: 'xiaozhi.pi.education.v1', publicItems: [{ kind: 'tool', sources: titles }] } }] }; },
   sanitizeProblemText: async text => { sanitizedInput = text; return { sanitizedText: text.replaceAll('来源24', '脱敏标题') }; },
 };
 const context = await getPiProtectedContext(store, 'own-session');

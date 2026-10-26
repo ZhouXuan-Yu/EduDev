@@ -1,0 +1,220 @@
+{
+  "suite": "dsh-reasoning-real-electron",
+  "success": true,
+  "provider": "real DeepSeek",
+  "model": "deepseek-flash",
+  "temp": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-dsh-reasoning-uFcprX",
+  "output": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop\\test-results\\dsh-reasoning-vCVd2I",
+  "checks": [
+    {
+      "name": "formal current-worktree Electron renderer",
+      "pass": true
+    },
+    {
+      "name": "real provider reasoning starts collapsed without mounting full drafts",
+      "pass": true
+    },
+    {
+      "name": "original Pro shimmer follows actual thinking",
+      "pass": true
+    },
+    {
+      "name": "answer continues streaming independently",
+      "pass": true
+    },
+    {
+      "name": "nonempty provider reasoning with separate duration",
+      "pass": true
+    },
+    {
+      "name": "manual expansion survives response completion",
+      "pass": true
+    },
+    {
+      "name": "reader can collapse reasoning while the answer remains visible",
+      "pass": true
+    },
+    {
+      "name": "generic phases and empty execution section are absent from ordinary replies",
+      "pass": true
+    },
+    {
+      "name": "clipboard copies only actual answer",
+      "pass": true
+    },
+    {
+      "name": "teacher-confirmed Markdown export contains only answer",
+      "pass": true
+    },
+    {
+      "name": "official CSS parity and real hover focus active at both light sizes",
+      "pass": true
+    },
+    {
+      "name": "long reasoning preview is one line and never widens the page",
+      "pass": true
+    },
+    {
+      "name": "SQLite stores the exact sanitized reasoning projection",
+      "pass": true
+    },
+    {
+      "name": "restart preserves reasoning and timing exactly",
+      "pass": true
+    },
+    {
+      "name": "real reasoning and tool replay completes without protocol errors",
+      "pass": true
+    },
+    {
+      "name": "displayed reasoning matches actual native SDK blocks, without fabricating tool-round thoughts",
+      "pass": true
+    },
+    {
+      "name": "actual tools expand independently from reasoning",
+      "pass": true
+    },
+    {
+      "name": "stop during genuine reasoning retains incomplete text",
+      "pass": true
+    },
+    {
+      "name": "restart preserves stopped reasoning",
+      "pass": true
+    },
+    {
+      "name": "controlled transport failure cannot fabricate reasoning",
+      "pass": true
+    },
+    {
+      "name": "renderer console has no uncaught errors",
+      "pass": true
+    }
+  ],
+  "errors": [],
+  "streamObservation": {
+    "previewChars": 0,
+    "expanded": "false",
+    "bodyMounted": false,
+    "rootClass": "disclosure chain-of-thought chain-of-thought--streaming office-agent-trace"
+  },
+  "ordinary": {
+    "id": "run_fe33c51b-3756-44c2-b675-54d1f8caa33a",
+    "status": "completed",
+    "blocks": [
+      {
+        "id": "reasoning:1:0",
+        "status": "completed",
+        "chars": 933,
+        "sha256": "4c473f239c098eddc9072cc06e6feccca74dc33955f5b1a15801835755f363cb",
+        "durationMs": 2357.4704999999994,
+        "source": "provider"
+      }
+    ],
+    "tools": [],
+    "bodyHash": "8db3ad9e2e8c4c452d97c80c33e05af803af9bed993c42772e327733f3df1f26"
+  },
+  "ordinarySession": "aisession_037bc124-edb0-4a20-b887-4ffb12390b3b",
+  "matrices": [
+    {
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "geometry": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5
+      },
+      "checks": 4,
+      "samples": 5
+    },
+    {
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "geometry": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5
+      },
+      "checks": 4,
+      "samples": 5
+    }
+  ],
+  "previewLayout": {
+    "whiteSpace": "nowrap",
+    "overflow": "ellipsis",
+    "height": 20,
+    "pageOverflow": false
+  },
+  "tools": {
+    "id": "run_5ea2c719-4dda-42f3-b31a-dcb5dba899e4",
+    "status": "completed",
+    "blocks": [
+      {
+        "id": "reasoning:1:0",
+        "status": "completed",
+        "chars": 125,
+        "sha256": "394dcc7a1d320e892d2ada9bbf70a02de8913accf54343d9f07dcba1ec968616",
+        "durationMs": 39.61939999999959,
+        "source": "provider"
+      },
+      {
+        "id": "reasoning:2:0",
+        "status": "completed",
+        "chars": 24,
+        "sha256": "eaeb5d2005e333febe65b8b291043ed9096d1ccffecf4ef86ac9ce28ff8d3efd",
+        "durationMs": 94.30460000000312,
+        "source": "provider"
+      },
+      {
+        "id": "reasoning:3:0",
+        "status": "completed",
+        "chars": 267,
+        "sha256": "457c55a867664dfaa6e8ef4dab75f7a8b74b18eae43b9cf38020c85aa56d4ae1",
+        "durationMs": 420.895199999999,
+        "source": "provider"
+      }
+    ],
+    "tools": [
+      {
+        "id": "call_00_JjVPCj7bCRXrw04baCLr8969",
+        "label": "查看已发送附件",
+        "status": "completed"
+      },
+      {
+        "id": "call_00_jvrrnE1xI9xOSTMZt6hA1949",
+        "label": "读取已发送附件",
+        "status": "completed"
+      }
+    ],
+    "bodyHash": "e59e8baf4198d948b1489aac70bd442b6971cae46c4f37a3fb751ea8af065703"
+  },
+  "nativeReasoningBlocks": 4,
+  "stopped": {
+    "id": "run_80db2084-de08-4d91-9a38-c5d68d6b9398",
+    "status": "interrupted",
+    "blocks": [
+      {
+        "id": "reasoning:1:0",
+        "status": "interrupted",
+        "chars": 679,
+        "sha256": "7620d5690974219d5e42f802d9be395e9040d607e528e828a4371a7cb7bc9037",
+        "durationMs": 1195.6128000000026,
+        "source": "provider"
+      }
+    ],
+    "tools": [],
+    "bodyHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "failureCase": {
+    "id": "run_e985c713-e45e-4328-81db-f3b32ce66f3a",
+    "status": "failed",
+    "tools": [],
+    "bodyHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

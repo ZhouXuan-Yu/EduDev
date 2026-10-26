@@ -1,6 +1,5 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button,Modal} from '@heroui/react';
-import {FileText} from 'lucide-react';
 import {XIAOZHI_ATTACHMENTS_SCHEMA,XIAOZHI_ATTACHMENT_ERRORS,type XiaozhiAttachmentInput,type XiaozhiAttachment,type XiaozhiAttachmentPreview} from '../../../shared/xiaozhi-attachments';
 import {ChatAttachment,ChatAttachmentGroup} from '../../heroui-pro/components/chat-attachment';
 import {Markdown} from '../../heroui-pro/components/markdown';
@@ -8,6 +7,7 @@ import './pi-attachments.css';
 import type {OfficeProjectedItem} from '../../../shared/office-agent';
 import {AttachmentOcrPanel} from './AttachmentOcrPanel';
 import type {PublicImageDelivery} from '../../../shared/xiaozhi-public-images';
+import {OfficeMutationBoundary} from './OfficeSynchronization';
 
 /** Local drafts and previews. Actual message delivery is a separate durable operation. */
 export function usePiAttachments(sessionId:string,visible:boolean,history:OfficeProjectedItem[]=[]){
@@ -83,6 +83,22 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   }catch{if(stamp===epoch.current)setNotice('文件选择未完成，请重试。');}
   finally{if(stamp===epoch.current){mutation.current=false;setBusy(false);}}
  }
+ async function importFiles(files:File[]){
+  if(!sessionId||!visible||mutation.current||!files.length)return;
+  mutation.current=true;setBusy(true);setNotice('');const stamp=epoch.current;
+  let paths:string[]=[];
+  try{paths=files.map(file=>window.omniEdu?.getPathForFile?.(file)||'').filter(Boolean);}catch{paths=[];}
+  if(!paths.length){mutation.current=false;setBusy(false);setNotice(XIAOZHI_ATTACHMENT_ERRORS.invalid_input);return;}
+  const request={...input(),paths};
+  try{
+   const result=await tracked(request,()=>window.omniEdu?.importXiaozhiAttachments(request));
+   if(stamp!==epoch.current)return;
+   if(!result?.ok)setNotice(result?XIAOZHI_ATTACHMENT_ERRORS[result.error]:'文件导入未完成，请重试。');
+   else if(result.data.failures.length)setNotice(result.data.failures.map(v=>`${v.name}：${XIAOZHI_ATTACHMENT_ERRORS[v.error]}`).join('；'));
+   await refresh(stamp);
+  }catch{if(stamp===epoch.current)setNotice('文件导入未完成，请重试。');}
+  finally{if(stamp===epoch.current){mutation.current=false;setBusy(false);}}
+ }
  async function remove(item:XiaozhiAttachment){
   if(mutation.current)return;mutation.current=true;setBusy(true);setNotice('');const stamp=epoch.current;
   const request={...input(),selection:{id:item.id,revision:item.revision}};
@@ -110,15 +126,14 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   }catch{if(stamp===epoch.current&&previewRequest.current?.requestId===request.requestId)setPreviewError('无法预览附件，请重试。');}
   finally{if(stamp===epoch.current&&previewRequest.current?.requestId===request.requestId)setReading(false);}
  }
- const renderCards=(values:XiaozhiAttachment[],submitted=false)=><ChatAttachmentGroup>{values.map(item=><div key={item.id} className="pi-attachment-item" data-testid={`pi-attachment-${item.id}`} data-state={item.state}>
-    <ChatAttachment mimeType={item.mime} name={item.name} src={thumbnails[`${item.id}:${item.revision}`]}>
-     <Button variant="ghost" isIconOnly className="pi-attachment-open" aria-label={`预览附件 ${item.name}`} onPress={()=>void open(item)}>
-      <ChatAttachment.Preview>{item.format==='image'&&thumbnails[`${item.id}:${item.revision}`]?<img src={thumbnails[`${item.id}:${item.revision}`]} alt={item.name}/>:<FileText size={22}/>}</ChatAttachment.Preview>
-     </Button>
-     <ChatAttachment.Name/>
-     {!submitted&&<ChatAttachment.Remove aria-label={`移除附件 ${item.name}`} isDisabled={busy} onPress={()=>void remove(item)}/>}
-    </ChatAttachment><span className="pi-attachment-caption" title={item.name}>{item.name}</span>
-   </div>)}</ChatAttachmentGroup>;
+ const renderCards=(values:XiaozhiAttachment[],submitted=false)=><ChatAttachmentGroup>{values.map(item=>
+   <ChatAttachment key={item.id} mimeType={item.mime} name={item.name} size={item.size} src={thumbnails[`${item.id}:${item.revision}`]} data-testid={`pi-attachment-${item.id}`} data-state={item.state}>
+    <Button variant="ghost" isIconOnly className="pi-attachment-open" aria-label={`预览附件 ${item.name}`} onPress={()=>void open(item)}>
+     <ChatAttachment.Preview>{item.format==='image'&&thumbnails[`${item.id}:${item.revision}`]?<img src={thumbnails[`${item.id}:${item.revision}`]} alt={item.name}/>:<ChatAttachment.Icon/>}</ChatAttachment.Preview>
+    </Button>
+    <ChatAttachment.Info/>
+    {!submitted&&<OfficeMutationBoundary><ChatAttachment.Remove aria-label={`移除附件 ${item.name}`} isDisabled={busy} onPress={()=>void remove(item)}/></OfficeMutationBoundary>}
+   </ChatAttachment>)}</ChatAttachmentGroup>;
  const renderHistory=(item:OfficeProjectedItem)=>item.attachments?.length?<section className="pi-attachments pi-attachment-history" data-testid="pi-attachment-history" aria-label="本轮已发送附件">
   {renderCards(item.attachments,true)}<p className="pi-attachment-local-note">本地附件 · {item.attachments.length} 个</p>
  </section>:undefined;
@@ -135,8 +150,7 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   </section>;
  };
  const cards=<section className="pi-attachments" data-testid="pi-attachments" aria-label="本地待发送附件">
-  {items.length>0&&<><p className="pi-attachment-count" data-testid="pi-attachment-count">附件 {items.length}/8 · 待发送</p>
-   {renderCards(items)}<p className="pi-attachment-local-note">已保存在本机，发送后可从本轮消息打开。</p></>}
+  {items.length>0&&renderCards(items)}
   {busy&&<p role="status">正在添加或更新附件… <Button variant="ghost" size="sm" onPress={cancel}>取消</Button></p>}
   {notice&&<p role="alert" data-testid="pi-attachment-error">{notice} <Button variant="ghost" size="sm" onPress={()=>void refresh()}>重新读取</Button></p>}
  </section>;
@@ -153,6 +167,6 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
    <Modal.Footer><Button variant="secondary" data-testid="pi-attachment-preview-close" onPress={closePreview}>关闭</Button></Modal.Footer>
   </Modal.Dialog></Modal.Container>
  </Modal.Backdrop>;
- return {cards,modal,choose,busy,refresh,renderHistory,renderViewed,hasAttachments:items.length>0,
-  selections:items.map(item=>({id:item.id,revision:item.revision})),sendBlocked:loading||busy||ocrBusy};
+ return {cards,modal,choose,importFiles,busy,refresh,renderHistory,renderViewed,hasAttachments:items.length>0,
+  selections:items.map(item=>({id:item.id,revision:item.revision})),sendBlocked:loading||busy||ocrBusy||items.length>0};
 }

@@ -1,0 +1,46 @@
+.edu-desktop-frame {
+  height: 100dvh;
+  overflow: hidden;
+  background: #fff;
+}
+.edu-chrome-bar {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  background: #fff;
+  -webkit-app-region: drag;
+  user-select: none;
+}
+.edu-chrome-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  padding-left: 8px;
+  width: env(titlebar-area-width, calc(100% - 140px));
+  margin-left: env(titlebar-area-x, 0px);
+  -webkit-app-region: no-drag;
+}
+.edu-desktop-content {
+  height: calc(100dvh - var(--edu-chrome-height, 44px));
+  overflow: hidden;
+}
+.edu-desktop-content > div:not([hidden]) {
+  height: 100%;
+  min-height: 0;
+}
+.edu-desktop-content > .app-shell {
+  height: 100%;
+  overflow: auto;
+}
+.edu-desktop-notice {
+  position: absolute;
+  z-index: 100;
+  top: 44px;
+  left: 224px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e7e7df;
+  font-size: 13px;
+  color: #6b6b65;
+}

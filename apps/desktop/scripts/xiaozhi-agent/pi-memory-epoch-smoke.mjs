@@ -124,7 +124,7 @@ try {
   const plans = [{ kind: 'plan', runId: safeId, steps: [{ text: '保留安全计划', status: 'pending' }] }, { kind: 'plan', runId: taintedId, steps: [{ text: '撤销派生计划秘密Q2', status: 'pending' }] }];
   const approvals = [{ runId: safeId, source: '安全源.txt', target: '安全目标.txt', state: 'executed', sourceSha256: A }, { runId: taintedId, source: '撤销派生审批秘密Q2.txt', target: '旧目标.txt', state: 'executed', sourceSha256: B }];
   const messages = [safeId, taintedId].map(runId => ({ metadata: { agentRunId: runId, piVersion: 'xiaozhi.pi.education.v1', publicItems: [{ kind: 'tool', sources: [{ title: runId === safeId ? '保留安全资料' : '撤销派生来源秘密Q2' }] }] } }));
-  const projectionStore = { xiaozhiState: { controls: async () => plans, approvals: async () => approvals }, getAiConversationSession: async () => ({ messages }), sanitizeProblemText: async text => ({ sanitizedText: text }) };
+  const projectionStore = { xiaozhiState: { controls: async () => plans, approvals: async () => approvals }, getAiConversationSession: async () => ({ session: { studentId: undefined }, messages }), sanitizeProblemText: async text => ({ sanitizedText: text }) };
   const beforeFacts = JSON.stringify({ plans, approvals, messages }); const protectedText = await getPiProtectedContext(projectionStore, sessionId, [taintedId]);
   check('Protected SQLite projections cannot reintroduce tainted plans, titles or approval text; original facts persist', () => {
     assert(protectedText.includes('保留安全计划')); assert(protectedText.includes('保留安全资料')); assert(protectedText.includes('安全目标.txt')); assert(!protectedText.includes('秘密Q2'));

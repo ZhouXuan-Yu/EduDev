@@ -95,3 +95,8 @@
 .material-text-search ul{padding:0;list-style:none;max-height:360px;overflow:auto}
 .material-original-page-jump { display: flex; align-items: center; gap: 6px; }
 .material-original-page-jump input { width: 84px; min-width: 0; }
+
+
+.material-study {display:flex;flex-direction:column;gap:16px;min-width:0;border-top:1px solid var(--border);padding-top:20px;}
+.material-study label {display:flex;flex-direction:column;gap:8px;}
+.material-study .teacher-library-toolbar {flex-wrap:wrap;}

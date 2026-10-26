@@ -1,0 +1,93 @@
+{
+  "success": true,
+  "provider": "real DeepSeek",
+  "ordinaryLatency": {
+    "preparationMs": 13317,
+    "providerFirstReasoningMs": 1278
+  },
+  "warmToolLatency": {
+    "preparationMs": 16335,
+    "providerFirstReasoningMs": 3596
+  },
+  "toolGlyphs": [
+    "directory",
+    "file-read",
+    "question"
+  ],
+  "naturalFormatting": {
+    "listLines": 0,
+    "headingLines": 0
+  },
+  "greeting": {
+    "turnId": "run_f01f0457-3e2c-4384-8c0a-d23051b7d026",
+    "status": "completed",
+    "chars": 232,
+    "tools": []
+  },
+  "clipboard": {
+    "native": {
+      "supported": true,
+      "focused": true
+    },
+    "delegatedChars": 873
+  },
+  "errors": [],
+  "realProviderChecks": 31,
+  "ordinaryRenderedFrames": 23,
+  "distinctBodyLengths": 23,
+  "answerPhaseToPaintMs": 59.599999994039536,
+  "formalNavigationChecks": 42,
+  "legacySmokePassed": 207,
+  "finalMatrices": [
+    {
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "geometry": {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1,
+        "native": {
+          "content": {
+            "x": 8,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "zoom": 1
+        }
+      },
+      "checks": 4,
+      "samples": 7
+    },
+    {
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "geometry": {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1,
+        "native": {
+          "content": {
+            "x": 8,
+            "y": 0,
+            "width": 1366,
+            "height": 768
+          },
+          "zoom": 1
+        }
+      },
+      "checks": 4,
+      "samples": 7
+    }
+  ],
+  "discardedEvidence": "Initial provider report matrix for 1920 drifted to 1691x1012; superseded by final cold-runtime and per-sample native dimensions.",
+  "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject",
+  "rendererEntry": "index-3E16bBVp.js",
+  "mainSha256": "98f23b996b3eb89cc7c78b2f43a067dacbd99f851c528b63971be810ed866dcc"
+}

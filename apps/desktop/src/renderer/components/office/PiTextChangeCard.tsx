@@ -6,6 +6,7 @@ import { CodeBlock } from '../../heroui-pro/components/code-block';
 import { useOfficeControlState } from './OfficeComposerState';
 import type { XiaozhiChangeDecision, XiaozhiChangeSummary, XiaozhiChangeReview, XiaozhiChangeError, XiaozhiChangeState } from '../../../shared/xiaozhi-changes';
 import './pi-text-changes.css';
+import {ScienceDemoFrame} from './ScienceDemoFrame';
 
 const labels: Record<XiaozhiChangeState, string> = { pending: '需要你的确认', approved: '已批准，等待保存', executing: '正在保存',
   applied: '已保存并核验', rejected: '已拒绝，未写入', interrupted: '确认已失效，未继续写入', uncertain: '执行中断，需要核验',
@@ -41,6 +42,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
     finally { lock.current = false; update({busy:false}); }
   }
   const pending = change.state === 'pending', uncertain = ['uncertain','undo_uncertain'].includes(change.state);
+  const science = /\.(html|svg)$/i.test(change.path);
   const state = pending || uncertain ? 'requires-action' : ['approved','executing','reverting'].includes(change.state) ? 'input-available'
     : ['applied','reverted'].includes(change.state) ? 'output-available' : 'output-error';
   const text = review ? tab === 'before' ? review.before ?? '（新建文件，原先不存在）' : tab === 'after' ? review.after : review.diff : '';
@@ -49,10 +51,20 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
     <ChatTool.Trigger><FilePenLine size={16}/><strong>{change.operation === 'create' ? '新建文件' : '修改文件'}</strong><span title={change.path}>{change.path}</span><span>{labels[change.state]}</span></ChatTool.Trigger>
     <ChatTool.Content>
       {reading ? <p role="status">正在读取本地修改…</p> : review && <div className="pi-text-review" data-testid="pi-text-review">
-        <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
-          <Tabs.ListContainer><Tabs.List aria-label="文件修改审阅">{[['changes','修改差异'],['before','原内容'],['after','修改后']].map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
-        </Tabs>
-        <CodeBlock><CodeBlock.Code code={text} language={tab==='changes'?'diff':change.path.endsWith('.md')?'markdown':'text'} data-testid="pi-text-diff"/></CodeBlock>
+        {change.path.toLowerCase().endsWith('.svg')&&<img data-testid="pi-science-preview" alt="科普图草稿：请核对科学含义" src={'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(review.after)} style={{display:'block',width:'100%',maxHeight:520,objectFit:'contain',background:'#fff'}}/>}
+        {change.path.toLowerCase().endsWith('.html')&&<ScienceDemoFrame html={review.after}/>}
+        {science ? <details data-testid="pi-science-technical">
+          <summary>技术内容（通常无需查看）</summary>
+          <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
+            <Tabs.ListContainer><Tabs.List aria-label="文件修改审阅">{[['changes','修改差异'],['before','原内容'],['after','修改后']].map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
+          </Tabs>
+          <CodeBlock><CodeBlock.Code code={text} language={tab==='changes'?'diff':change.path.endsWith('.md')?'markdown':'text'} data-testid="pi-text-diff"/></CodeBlock>
+        </details> : <>
+          <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
+            <Tabs.ListContainer><Tabs.List aria-label="文件修改审阅">{[['changes','修改差异'],['before','原内容'],['after','修改后']].map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
+          </Tabs>
+          <CodeBlock><CodeBlock.Code code={text} language={tab==='changes'?'diff':change.path.endsWith('.md')?'markdown':'text'} data-testid="pi-text-diff"/></CodeBlock>
+        </>}
         <p>{pending ? '确认后仅保存此版本；原文件另有修改时不会覆盖。' : '此处是该次操作的版本记录；当前文件请从工作区打开。'}</p>
       </div>}
       {pending && <ChatTool.Approval><ChatTool.ApprovalActions>

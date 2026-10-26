@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "runtime": {
+    "cwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop",
+    "pid": 212368,
+    "title": "小智 · 回复链路修复 · 本轮试用（1c54）",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-official-agent-trace-owQw0C\\data"
+  },
+  "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/index.html",
+  "sessionId": "aisession_79deefcf-6263-4ab4-aba9-c41bd26cab0a",
+  "screenshots": [
+    "final-natural-1920.png",
+    "final-natural-1366.png"
+  ],
+  "reducedMotion": {
+    "matches": true,
+    "theme": "light"
+  },
+  "errors": [],
+  "mainSha256": "81d6dea466417f9d89cb7653fd50bbc8270aa9d7bd49795eb2166cea15e4444f",
+  "coldPresentationReadback": true
+}

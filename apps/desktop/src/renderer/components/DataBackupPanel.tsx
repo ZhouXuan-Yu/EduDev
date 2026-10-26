@@ -139,7 +139,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
   };
 
   if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">
-    <p>为本机的资料、对话和工作成果创建完整备份。</p>
+    <p>备份本机资料、题库、对话和工作成果。题意索引缓存不复制，恢复资料后可重新整理。</p>
     <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
     <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>{state.status === 'exporting' ? '正在备份…' : '创建本地备份'}</Button>
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
@@ -164,7 +164,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
         </button>
       </div>
       <div aria-live="polite"><DataBackupState state={state} /></div>
-      <p className="backup-boundary" data-testid="data-backup-boundary">备份只复制本地数据并生成清单，不会自动恢复、上传云端或修改源数据。</p>
+      <p className="backup-boundary" data-testid="data-backup-boundary">备份保留本地资料、题库和产物，题意索引缓存可重建；生成清单后不会自动恢复、上传云端或修改源数据。</p>
     </div>
   );
 }

@@ -1,0 +1,3699 @@
+{
+  "version": 1,
+  "suite": "ux00-current-formal-baseline",
+  "success": true,
+  "output": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop\\test-results\\ux00-Sp3clS",
+  "temp": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-ux00-ESJoDZ",
+  "checks": [
+    {
+      "name": "formal checkout main and owned profile",
+      "pass": true
+    },
+    {
+      "name": "suggestion draft Shift+Enter and composing Enter never auto-send",
+      "pass": true
+    },
+    {
+      "name": "empty bank shortage prevents confirmation",
+      "pass": true
+    },
+    {
+      "name": "owned question and confirmed paper saved through actual UI",
+      "pass": true
+    },
+    {
+      "name": "mistake entry friction and cancellation captured without fake OCR",
+      "pass": true
+    },
+    {
+      "name": "actual local review save and source records",
+      "pass": true
+    },
+    {
+      "name": "cold SQLite report readback unchanged",
+      "pass": true
+    },
+    {
+      "name": "30-sample local history input IPC and memory measurements recorded",
+      "pass": true
+    }
+  ],
+  "findings": [
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "id": "paper-generate",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "id": "mistake-send-ai",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "id": "mistake-send-ai",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "id": "mistake-send-ai",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "id": "mistake-send-ai",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    },
+    {
+      "kind": "control-outside-initial-viewport",
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "id": "review-report-save",
+      "note": "May be reachable by intentional internal scroll; not automatically a clipped control"
+    }
+  ],
+  "journeys": [
+    {
+      "name": "普通问答与备课启动",
+      "steps": [
+        {
+          "label": "chat-suggestion-0",
+          "type": "click",
+          "ms": 58.096700000001874
+        },
+        {
+          "label": "office-prompt-input",
+          "type": "field",
+          "ms": 20.000400000004447
+        }
+      ],
+      "started": 1792743847714,
+      "scope": "actual visible UI",
+      "result": "入口/草稿/键盘已测；真实模型完成路径沿用同构建chat-experience-qNkoc4的23项证据",
+      "unverified": [
+        "本片不重复发付费模型请求",
+        "原生Windows输入法硬件交互未测"
+      ],
+      "elapsedMs": 3831,
+      "clicks": 1,
+      "fieldEdits": 1
+    },
+    {
+      "name": "题库组卷到审核",
+      "steps": [
+        {
+          "label": "navigate teaching",
+          "type": "click",
+          "ms": 106.97310000000289
+        },
+        {
+          "label": "nav-paper",
+          "type": "click",
+          "ms": 119.90419999999722
+        },
+        {
+          "label": "paper-generate",
+          "type": "click",
+          "ms": 52.95179999999527
+        },
+        {
+          "label": "paper-reject",
+          "type": "click",
+          "ms": 44.743099999999686
+        },
+        {
+          "label": "nav-question_notebook",
+          "type": "click",
+          "ms": 95.06489999999758
+        },
+        {
+          "label": "question-notebook-new-subject",
+          "type": "field",
+          "ms": 16.3778999999995
+        },
+        {
+          "label": "question-notebook-new-grade",
+          "type": "field",
+          "ms": 12.341499999994994
+        },
+        {
+          "label": "question-notebook-new-knowledge-point",
+          "type": "field",
+          "ms": 13.189699999995355
+        },
+        {
+          "label": "question-notebook-new-type",
+          "type": "field",
+          "ms": 11.953599999993457
+        },
+        {
+          "label": "question-notebook-new-stem",
+          "type": "field",
+          "ms": 13.69210000000021
+        },
+        {
+          "label": "question-notebook-new-answer",
+          "type": "field",
+          "ms": 11.201600000000326
+        },
+        {
+          "label": "question-notebook-new-analysis",
+          "type": "field",
+          "ms": 12.537600000003295
+        },
+        {
+          "label": "question-notebook-create-question",
+          "type": "click",
+          "ms": 46.43920000000071
+        },
+        {
+          "label": "nav-paper",
+          "type": "click",
+          "ms": 84.3295999999973
+        },
+        {
+          "label": "移除第三部分",
+          "type": "click",
+          "ms": 42.783400000000256
+        },
+        {
+          "label": "移除第二部分",
+          "type": "click",
+          "ms": 40.32600000000093
+        },
+        {
+          "label": "paper-title",
+          "type": "field",
+          "ms": 12.631499999995867
+        },
+        {
+          "label": "paper-total",
+          "type": "field",
+          "ms": 15.541999999994005
+        },
+        {
+          "label": "paper-section-count",
+          "type": "field",
+          "ms": 11.387799999996787
+        },
+        {
+          "label": "paper-section-points",
+          "type": "field",
+          "ms": 13.548600000001898
+        },
+        {
+          "label": "paper-generate",
+          "type": "click",
+          "ms": 41.855499999997846
+        },
+        {
+          "label": "paper-confirm",
+          "type": "click",
+          "ms": 41.073300000003655
+        }
+      ],
+      "started": 1792743851580,
+      "scope": "actual visible UI",
+      "result": "真实UI创建一题→本地组卷→缺题保护/拒绝→完整一题审核保存",
+      "unverified": [
+        "非100分复杂卷",
+        "Word/PDF正式交付未执行",
+        "参考答案未独立核验"
+      ],
+      "elapsedMs": 5437,
+      "clicks": 11,
+      "fieldEdits": 11
+    },
+    {
+      "name": "学生错题入口",
+      "steps": [
+        {
+          "label": "navigate students",
+          "type": "click",
+          "ms": 88.61129999999685
+        },
+        {
+          "label": "student-create",
+          "type": "click",
+          "ms": 49.824500000002445
+        },
+        {
+          "label": "student-form-display-name",
+          "type": "field",
+          "ms": 22.800999999999476
+        },
+        {
+          "label": "student-form-grade",
+          "type": "field",
+          "ms": 21.183199999999488
+        },
+        {
+          "label": "student-form-save",
+          "type": "click",
+          "ms": 68.49529999999504
+        },
+        {
+          "label": "nav-mistakes",
+          "type": "click",
+          "ms": 74.32540000000154
+        },
+        {
+          "label": "nav-intake",
+          "type": "click",
+          "ms": 53.42629999999917
+        },
+        {
+          "label": "record-form-type=mistake",
+          "type": "field",
+          "ms": 22.943300000006275
+        },
+        {
+          "label": "record-form-subject",
+          "type": "field",
+          "ms": 11.854899999998452
+        },
+        {
+          "label": "record-form-title",
+          "type": "field",
+          "ms": 20.869100000003527
+        },
+        {
+          "label": "record-form-content",
+          "type": "field",
+          "ms": 18.040500000002794
+        },
+        {
+          "label": "record-form-save",
+          "type": "click",
+          "ms": 35.224600000001374
+        },
+        {
+          "label": "nav-mistakes",
+          "type": "click",
+          "ms": 87.75130000000354
+        },
+        {
+          "label": "选择附件后取消",
+          "type": "click",
+          "ms": 64.10919999999896
+        }
+      ],
+      "started": 1792743857028,
+      "scope": "actual visible UI",
+      "result": "实际学生/错题记录创建、跨页入口及取消附件零写入",
+      "unverified": [
+        "原图/OCR识别与校正未执行",
+        "相似/变式题生成审核与练习未执行"
+      ],
+      "elapsedMs": 4344,
+      "clicks": 8,
+      "fieldEdits": 6
+    },
+    {
+      "name": "基于学生记录的本地复盘",
+      "steps": [
+        {
+          "label": "nav-review",
+          "type": "click",
+          "ms": 51.508099999999104
+        },
+        {
+          "label": "review-report-generate",
+          "type": "click",
+          "ms": 73.75400000000081
+        },
+        {
+          "label": "review-report-content",
+          "type": "field",
+          "ms": 36.95549999999639
+        },
+        {
+          "label": "review-report-save",
+          "type": "click",
+          "ms": 41.06999999999971
+        }
+      ],
+      "started": 1792743861382,
+      "scope": "actual visible UI",
+      "result": "实际本地草稿→内容修改→SQLite保存；有真实UI录入的合成记录作为来源",
+      "unverified": [
+        "非模型复盘质量验收",
+        "最终文件导出未执行"
+      ],
+      "elapsedMs": 2791,
+      "clicks": 3,
+      "fieldEdits": 1
+    }
+  ],
+  "visuals": [
+    {
+      "label": "empty-chat",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 391,
+              "y": 672.6666870117188,
+              "width": 890.6666870117188,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-light-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 327.0666809082031,
+              "y": 519.3333740234375,
+              "width": 731.2000122070312,
+              "height": 28.000001907348633
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-light-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 327.77777099609375,
+              "y": 416.22222900390625,
+              "width": 548,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-light-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 668,
+              "y": 984.6666870117188,
+              "width": 890.6666870117188,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-light-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 475.8000183105469,
+              "y": 768.933349609375,
+              "width": 890.933349609375,
+              "height": 28.000001907348633
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-light-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 348.3333435058594,
+              "y": 624.2222290039062,
+              "width": 890.2222290039062,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-light-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 391,
+              "y": 672.6666870117188,
+              "width": 890.6666870117188,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-dark-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 327.0666809082031,
+              "y": 519.3333740234375,
+              "width": 731.2000122070312,
+              "height": 28.000001907348633
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-dark-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 327.77777099609375,
+              "y": 416.22222900390625,
+              "width": 548,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-dark-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 668,
+              "y": 984.6666870117188,
+              "width": 890.6666870117188,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-dark-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 475.8000183105469,
+              "y": 768.933349609375,
+              "width": 890.933349609375,
+              "height": 28.000001907348633
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-dark-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "empty-chat",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "office-prompt-input",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 348.3333435058594,
+              "y": 624.2222290039062,
+              "width": 890.2222290039062,
+              "height": 28
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "empty-chat-dark-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "office-prompt-input",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.66668701171875,
+              "y": 955.7396240234375,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-light-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.5333557128906,
+              "y": 1290.416748046875,
+              "width": 112.00000762939453,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-light-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1290.7708740234375,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-light-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.66668701171875,
+              "y": 955.7396240234375,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "paper-blueprint-light-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.5333557128906,
+              "y": 955.61669921875,
+              "width": 112.00000762939453,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-light-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1265.9722900390625,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-light-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.66668701171875,
+              "y": 955.7396240234375,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-dark-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.5333557128906,
+              "y": 1290.416748046875,
+              "width": 112.00000762939453,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-dark-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1290.7708740234375,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-dark-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.66668701171875,
+              "y": 955.7396240234375,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "paper-blueprint-dark-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.5333557128906,
+              "y": 955.61669921875,
+              "width": 112.00000762939453,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-dark-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-blueprint",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "paper-generate",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1265.9722900390625,
+              "width": 112,
+              "height": 36
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "paper-blueprint-dark-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "paper-generate",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-light-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-light-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-light-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-light-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-light-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-light-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-dark-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-dark-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-dark-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-dark-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-dark-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "paper-confirmed",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": []
+      },
+      "png": "paper-confirmed-dark-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": []
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1188.666748046875,
+              "y": 653.4583740234375,
+              "width": 121.33333587646484,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-light-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 918.9334106445312,
+              "y": 676.8167114257812,
+              "width": 121.0666732788086,
+              "height": 38.000003814697266
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "mistake-empty-light-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 737.7777709960938,
+              "y": 785.6527709960938,
+              "width": 121.77777862548828,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "mistake-empty-light-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1742.666748046875,
+              "y": 653.4583740234375,
+              "width": 121.33333587646484,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-light-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1362.1334228515625,
+              "y": 652.0167236328125,
+              "width": 121.0666732788086,
+              "height": 38.000003814697266
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-light-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1107.111083984375,
+              "y": 657.5833129882812,
+              "width": 121.77777862548828,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-light-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1188.666748046875,
+              "y": 653.4583740234375,
+              "width": 121.33333587646484,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-dark-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 918.9334106445312,
+              "y": 676.8167114257812,
+              "width": 121.0666732788086,
+              "height": 38.000003814697266
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "mistake-empty-dark-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 737.7777709960938,
+              "y": 785.6527709960938,
+              "width": 121.77777862548828,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "mistake-empty-dark-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1742.666748046875,
+              "y": 653.4583740234375,
+              "width": 121.33333587646484,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-dark-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1362.1334228515625,
+              "y": 652.0167236328125,
+              "width": 121.0666732788086,
+              "height": 38.000003814697266
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-dark-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "mistake-empty",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "mistake-send-ai",
+            "visible": true,
+            "disabled": true,
+            "rect": {
+              "x": 1107.111083984375,
+              "y": 657.5833129882812,
+              "width": 121.77777862548828,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "mistake-empty-dark-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "mistake-send-ai",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 646.6666870117188,
+              "y": 793.0208740234375,
+              "width": 329.3333435058594,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-light-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.5333557128906,
+              "y": 1361.166748046875,
+              "width": 707.4666748046875,
+              "height": 38.000003814697266
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-light-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1363.8194580078125,
+              "width": 526.6666870117188,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-light-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 646.6666870117188,
+              "y": 793.0208740234375,
+              "width": 898.6666870117188,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "review-draft-light-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 646.5333862304688,
+              "y": 793.1666870117188,
+              "width": 502.66668701171875,
+              "height": 38.000003814697266
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "review-draft-light-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "light",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1363.8194580078125,
+              "width": 896,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-light-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1366,
+        "cssHeight": 768,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 646.6666870117188,
+              "y": 793.0208740234375,
+              "width": 329.3333435058594,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-dark-1366-zoom1.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1093,
+        "cssHeight": 614,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.5333557128906,
+              "y": 1361.166748046875,
+              "width": 707.4666748046875,
+              "height": 38.000003814697266
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-dark-1366-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1366,
+        "height": 768
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 910,
+        "cssHeight": 512,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1363.8194580078125,
+              "width": 526.6666870117188,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-dark-1366-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2049,
+        "height": 1152
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1,
+      "geometry": {
+        "cssWidth": 1920,
+        "cssHeight": 1080,
+        "dpr": 1.5,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 646.6666870117188,
+              "y": 793.0208740234375,
+              "width": 898.6666870117188,
+              "height": 38
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "review-draft-dark-1920-zoom1.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.25,
+      "geometry": {
+        "cssWidth": 1536,
+        "cssHeight": 864,
+        "dpr": 1.875,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 646.5333862304688,
+              "y": 793.1666870117188,
+              "width": 502.66668701171875,
+              "height": 38.000003814697266
+            },
+            "inViewport": true
+          }
+        ]
+      },
+      "png": "review-draft-dark-1920-zoom1.25.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    },
+    {
+      "label": "review-draft",
+      "theme": "dark",
+      "size": {
+        "width": 1920,
+        "height": 1080
+      },
+      "zoom": 1.5,
+      "geometry": {
+        "cssWidth": 1280,
+        "cssHeight": 720,
+        "dpr": 2.25,
+        "horizontalOverflow": false,
+        "controls": [
+          {
+            "id": "review-report-save",
+            "visible": true,
+            "disabled": false,
+            "rect": {
+              "x": 332.8888854980469,
+              "y": 1363.8194580078125,
+              "width": 896,
+              "height": 38
+            },
+            "inViewport": false
+          }
+        ]
+      },
+      "png": "review-draft-dark-1920-zoom1.5.png",
+      "nativeImageSize": {
+        "width": 2880,
+        "height": 1620
+      },
+      "afterScroll": [
+        {
+          "id": "review-report-save",
+          "inViewport": true,
+          "hit": true
+        }
+      ]
+    }
+  ],
+  "performance": [
+    {
+      "messages": 100,
+      "session": "aisession_42aa6a39-6335-4274-a4fc-9783fdab77de",
+      "fixture": "synthetic persisted Pi public-history; no native model execution",
+      "before": {
+        "Timestamp": 12074.425068,
+        "AudioHandlers": 0,
+        "AudioWorkletProcessors": 0,
+        "Documents": 1,
+        "Frames": 1,
+        "JSEventListeners": 374,
+        "LayoutObjects": 213,
+        "MediaKeySessions": 0,
+        "MediaKeys": 0,
+        "Nodes": 530,
+        "Resources": 64,
+        "ContextLifecycleStateObservers": 2,
+        "V8PerContextDatas": 3,
+        "WorkerGlobalScopes": 0,
+        "UACSSResources": 0,
+        "RTCPeerConnections": 0,
+        "ResourceFetchers": 1,
+        "AdSubframes": 0,
+        "DetachedScriptStates": 3,
+        "ArrayBufferContents": 2,
+        "LayoutCount": 0,
+        "RecalcStyleCount": 0,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0,
+        "DevToolsCommandDuration": 0.000013,
+        "ScriptDuration": 0.000006,
+        "V8CompileDuration": 0,
+        "TaskDuration": 0.000142,
+        "TaskOtherDuration": 0.000123,
+        "ThreadTime": 0,
+        "ProcessTime": 0.78125,
+        "JSHeapUsedSize": 12150784,
+        "JSHeapTotalSize": 23502848,
+        "FirstMeaningfulPaint": 0,
+        "DomContentLoaded": 12074.086797,
+        "NavigationStart": 12073.642508
+      },
+      "openMs": {
+        "samples": 30,
+        "min": 218.52559999999357,
+        "p50": 261.17729999999574,
+        "p95": 372.0668000000005,
+        "max": 529.008799999996
+      },
+      "openSamples": [
+        529.008799999996,
+        301.6371000000072,
+        372.0668000000005,
+        283.5439999999944,
+        272.8607000000047,
+        252.4953999999998,
+        259.67149999999674,
+        298.0145000000048,
+        280.7572999999975,
+        265.37429999999586,
+        302.0668000000005,
+        281.252999999997,
+        246.24989999999525,
+        238.8637999999919,
+        229.73570000000473,
+        219.12870000000112,
+        219.63129999999364,
+        260.89590000000317,
+        245.6316999999981,
+        264.02969999999914,
+        235.89569999999367,
+        261.17729999999574,
+        294.03949999999895,
+        253.29330000000482,
+        231.3255000000063,
+        269.0524999999907,
+        218.52559999999357,
+        240.74139999999898,
+        335.71809999999823,
+        274.1061000000045
+      ],
+      "snapshot": {
+        "samples": [
+          13,
+          9,
+          8.800000000745058,
+          9.599999999627471,
+          10,
+          10.199999999254942,
+          11.400000000372529,
+          8.300000000745058,
+          8.5,
+          9.099999999627471,
+          8.900000000372529,
+          8.400000000372529,
+          9.400000000372529,
+          9.099999999627471,
+          7.800000000745058,
+          9.400000000372529,
+          8.399999998509884,
+          8.599999999627471,
+          6.400000000372529,
+          8.800000000745058,
+          9.400000000372529,
+          8.900000000372529,
+          9.699999999254942,
+          8.300000000745058,
+          8.900000000372529,
+          10.400000000372529,
+          7.800000000745058,
+          7,
+          6.200000001117587,
+          8.099999999627471
+        ],
+        "bytes": [
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431,
+          37431
+        ],
+        "turns": 50,
+        "domNodes": 4425,
+        "ms": {
+          "samples": 30,
+          "min": 6.200000001117587,
+          "p50": 8.900000000372529,
+          "p95": 11.400000000372529,
+          "max": 13
+        }
+      },
+      "inputMs": {
+        "samples": 30,
+        "min": 29.413899999999558,
+        "p50": 36.385499999989406,
+        "p95": 42.56789999999455,
+        "max": 42.95700000000943
+      },
+      "inputSamples": [
+        38.78660000000673,
+        36.07360000000335,
+        42.95700000000943,
+        36.40820000000531,
+        37.67699999999604,
+        40.9716000000044,
+        36.19679999999062,
+        39.07289999999921,
+        39.85889999999199,
+        36.00350000000617,
+        36.385499999989406,
+        36.23209999999381,
+        36.65999999998894,
+        42.56789999999455,
+        36.401499999992666,
+        29.68080000000191,
+        36.67710000000079,
+        30.005899999989197,
+        36.70560000000114,
+        36.643900000010035,
+        29.413899999999558,
+        30.32520000000659,
+        31.905500000008033,
+        35.05760000000009,
+        36.3408999999956,
+        36.88859999999113,
+        35.987799999988056,
+        30.18870000001334,
+        36.46920000000682,
+        36.224600000001374
+      ],
+      "scroll": {
+        "intervals": [
+          0.09999999962747097,
+          6.299999998882413,
+          7.600000001490116,
+          5.599999999627471,
+          6.400000000372529,
+          5.599999999627471,
+          6.599999999627471,
+          5.099999999627471,
+          6.400000000372529,
+          5.199999999254942,
+          6.600000001490116,
+          6,
+          6.399999998509884,
+          6.100000001490116,
+          6.699999999254942,
+          5,
+          7.199999999254942,
+          5.400000000372529,
+          6.800000000745058,
+          5,
+          6.699999999254942,
+          5.700000001117587,
+          6.599999999627471,
+          5.799999998882413,
+          6.400000000372529,
+          5.5,
+          6.400000000372529,
+          5.099999999627471,
+          7.700000001117587,
+          5.399999998509884,
+          7.900000000372529,
+          5.099999999627471,
+          6.700000001117587,
+          6,
+          6.5,
+          5.599999999627471,
+          6.699999999254942,
+          5.300000000745058,
+          7.199999999254942,
+          5.300000000745058,
+          7,
+          5.599999999627471,
+          6.200000001117587,
+          6.099999999627471,
+          7.599999999627471,
+          5.400000000372529,
+          6.699999999254942,
+          5.900000000372529,
+          6.699999999254942,
+          6,
+          6.400000000372529,
+          5.700000001117587,
+          6.599999999627471,
+          5.199999999254942,
+          8,
+          5.300000000745058,
+          6.900000000372529,
+          6.299999998882413,
+          6.400000000372529,
+          5.800000000745058,
+          6.599999999627471,
+          5.400000000372529,
+          6.599999999627471,
+          5.299999998882413,
+          6.100000001490116,
+          6.099999999627471,
+          6.299999998882413,
+          7,
+          6.800000000745058,
+          9.900000000372529,
+          6.900000000372529,
+          5.399999998509884,
+          6.200000001117587,
+          5.400000000372529,
+          6.799999998882413,
+          5.400000000372529,
+          6.599999999627471,
+          5.099999999627471,
+          6.600000001490116,
+          5.399999998509884,
+          7,
+          5.800000000745058,
+          7.400000000372529,
+          6,
+          6.900000000372529,
+          6.5,
+          7.099999999627471,
+          5.400000000372529,
+          7,
+          6,
+          6.299999998882413,
+          6.300000000745058,
+          6.699999999254942,
+          6.400000000372529,
+          7,
+          5.699999999254942,
+          7.400000000372529,
+          5.300000000745058,
+          6.900000000372529,
+          5.299999998882413,
+          6.300000000745058,
+          5.799999998882413,
+          6.400000000372529,
+          5.5,
+          6.599999999627471,
+          5.600000001490116,
+          7,
+          5.5,
+          6.799999998882413,
+          5.700000001117587,
+          7.399999998509884,
+          6,
+          7.400000000372529,
+          5.700000001117587,
+          6.699999999254942,
+          8.199999999254942,
+          9.200000001117587,
+          6.099999999627471,
+          7.099999999627471,
+          6.099999999627471
+        ],
+        "over50ms": 0,
+        "max": 9.900000000372529
+      },
+      "mainMemory": [
+        {
+          "type": "Browser",
+          "pid": 44700,
+          "memory": {
+            "workingSetSize": 256408,
+            "peakWorkingSetSize": 261248,
+            "privateBytes": 195332
+          },
+          "cpu": 0
+        },
+        {
+          "type": "GPU",
+          "pid": 52728,
+          "memory": {
+            "workingSetSize": 340300,
+            "peakWorkingSetSize": 356736,
+            "privateBytes": 274252
+          },
+          "cpu": 0
+        },
+        {
+          "type": "Utility",
+          "pid": 53044,
+          "memory": {
+            "workingSetSize": 92884,
+            "peakWorkingSetSize": 92884,
+            "privateBytes": 11792
+          },
+          "cpu": 0
+        },
+        {
+          "type": "Tab",
+          "pid": 51596,
+          "memory": {
+            "workingSetSize": 395056,
+            "peakWorkingSetSize": 395056,
+            "privateBytes": 321836
+          },
+          "cpu": 0
+        }
+      ],
+      "after": {
+        "Timestamp": 12088.243498,
+        "AudioHandlers": 0,
+        "AudioWorkletProcessors": 0,
+        "Documents": 2,
+        "Frames": 1,
+        "JSEventListeners": 8295,
+        "LayoutObjects": 28282,
+        "MediaKeySessions": 0,
+        "MediaKeys": 0,
+        "Nodes": 47642,
+        "Resources": 64,
+        "ContextLifecycleStateObservers": 13,
+        "V8PerContextDatas": 3,
+        "WorkerGlobalScopes": 0,
+        "UACSSResources": 0,
+        "RTCPeerConnections": 0,
+        "ResourceFetchers": 2,
+        "AdSubframes": 0,
+        "DetachedScriptStates": 0,
+        "ArrayBufferContents": 32,
+        "LayoutCount": 398,
+        "RecalcStyleCount": 1225,
+        "LayoutDuration": 0.671915,
+        "RecalcStyleDuration": 2.576971,
+        "DevToolsCommandDuration": 0.607282,
+        "ScriptDuration": 6.344147,
+        "V8CompileDuration": 0,
+        "TaskDuration": 11.766436,
+        "TaskOtherDuration": 1.566121,
+        "ThreadTime": 12.061176,
+        "ProcessTime": 16.279023,
+        "JSHeapUsedSize": 68909144,
+        "JSHeapTotalSize": 131244032,
+        "FirstMeaningfulPaint": 0,
+        "DomContentLoaded": 12074.086797,
+        "NavigationStart": 12073.642508
+      }
+    },
+    {
+      "messages": 1000,
+      "session": "aisession_68f5d211-63a4-4dea-b224-0f64df6d9bb4",
+      "fixture": "synthetic persisted Pi public-history; no native model execution",
+      "before": {
+        "Timestamp": 12088.258602,
+        "AudioHandlers": 0,
+        "AudioWorkletProcessors": 0,
+        "Documents": 2,
+        "Frames": 1,
+        "JSEventListeners": 8296,
+        "LayoutObjects": 6685,
+        "MediaKeySessions": 0,
+        "MediaKeys": 0,
+        "Nodes": 13334,
+        "Resources": 64,
+        "ContextLifecycleStateObservers": 13,
+        "V8PerContextDatas": 3,
+        "WorkerGlobalScopes": 0,
+        "UACSSResources": 0,
+        "RTCPeerConnections": 0,
+        "ResourceFetchers": 2,
+        "AdSubframes": 0,
+        "DetachedScriptStates": 0,
+        "ArrayBufferContents": 32,
+        "LayoutCount": 0,
+        "RecalcStyleCount": 1,
+        "LayoutDuration": 0,
+        "RecalcStyleDuration": 0.000152,
+        "DevToolsCommandDuration": 0.000012,
+        "ScriptDuration": 0,
+        "V8CompileDuration": 0,
+        "TaskDuration": 0.002121,
+        "TaskOtherDuration": 0.001957,
+        "ThreadTime": 0.002168,
+        "ProcessTime": 16.323932,
+        "JSHeapUsedSize": 30003808,
+        "JSHeapTotalSize": 129146880,
+        "FirstMeaningfulPaint": 0,
+        "DomContentLoaded": 12074.086797,
+        "NavigationStart": 12073.642508
+      },
+      "openMs": {
+        "samples": 30,
+        "min": 1261.9349999999977,
+        "p50": 1335.381699999998,
+        "p95": 1498.4358000000066,
+        "max": 1752.5956000000006
+      },
+      "openSamples": [
+        1362.2636999999959,
+        1348.3849000000046,
+        1304.5911999999953,
+        1359.5010000000038,
+        1383.9912999999942,
+        1355.5292000000045,
+        1410.773000000001,
+        1317.2245000000112,
+        1311.5614999999962,
+        1429.8087999999989,
+        1752.5956000000006,
+        1375.6640999999945,
+        1384.7778000000108,
+        1288.521900000007,
+        1317.6328999999969,
+        1335.381699999998,
+        1441.4766999999993,
+        1277.8969999999972,
+        1273.9392999999982,
+        1323.400999999998,
+        1309.7966000000015,
+        1338.1355999999942,
+        1295.9895000000106,
+        1261.9349999999977,
+        1498.4358000000066,
+        1283.9725999999937,
+        1341.369399999996,
+        1441.9535000000033,
+        1310.6789999999892,
+        1301.0841999999975
+      ],
+      "snapshot": {
+        "samples": [
+          18.700000001117587,
+          22,
+          20.09999999962747,
+          21.699999999254942,
+          24.100000001490116,
+          23.5,
+          19,
+          18.40000000037253,
+          18.699999999254942,
+          22.90000000037253,
+          21.299999998882413,
+          22.800000000745058,
+          20.800000000745058,
+          23.700000001117587,
+          17.399999998509884,
+          18.09999999962747,
+          15.799999998882413,
+          17.90000000037253,
+          15.099999999627471,
+          17.40000000037253,
+          17.799999998882413,
+          18,
+          21.09999999962747,
+          23.40000000037253,
+          22.59999999962747,
+          22.5,
+          18.700000001117587,
+          18.199999999254942,
+          17.800000000745058,
+          18.300000000745058
+        ],
+        "bytes": [
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783,
+          271783
+        ],
+        "turns": 500,
+        "domNodes": 41325,
+        "ms": {
+          "samples": 30,
+          "min": 15.099999999627471,
+          "p50": 18.700000001117587,
+          "p95": 23.700000001117587,
+          "max": 24.100000001490116
+        }
+      },
+      "inputMs": {
+        "samples": 30,
+        "min": 187.62490000002435,
+        "p50": 209.5610999999917,
+        "p95": 284.1374000000069,
+        "max": 296.75640000001295
+      },
+      "inputSamples": [
+        189.91359999999986,
+        284.1374000000069,
+        204.50350000002072,
+        209.5610999999917,
+        208.62200000000303,
+        278.57420000000275,
+        230.28119999999763,
+        212.34070000000065,
+        205.47560000000522,
+        199.9198000000033,
+        187.62490000002435,
+        206.41099999999278,
+        191.78020000000834,
+        202.07420000000275,
+        193.43799999999464,
+        212.8003000000026,
+        208.18480000001728,
+        214.972700000013,
+        268.741800000018,
+        222.9609000000055,
+        202.78109999999288,
+        221.3408000000054,
+        230.0043000000005,
+        266.7283999999927,
+        296.75640000001295,
+        248.60009999998147,
+        196.55549999998766,
+        216.02629999999772,
+        205.19169999999576,
+        217.08069999999134
+      ],
+      "scroll": {
+        "intervals": [
+          0.599999999627471,
+          19.40000000037253,
+          20.5,
+          19.5,
+          22.300000000745058,
+          20,
+          22.799999998882413,
+          20,
+          23,
+          19.200000001117587,
+          21.699999999254942,
+          20.59999999962747,
+          22.5,
+          19.700000001117587,
+          20.59999999962747,
+          18.699999999254942,
+          21.59999999962747,
+          18.200000001117587,
+          20.5,
+          18.40000000037253,
+          21.699999999254942,
+          30.800000000745058,
+          28.09999999962747,
+          26.299999998882413,
+          27.700000001117587,
+          22.699999999254942,
+          25.700000001117587,
+          23.899999998509884,
+          25.800000000745058,
+          26.300000000745058,
+          23.799999998882413,
+          23.09999999962747,
+          26.700000001117587,
+          21.5,
+          25.90000000037253,
+          24.59999999962747,
+          39.09999999962747,
+          21.5,
+          26.09999999962747,
+          27.09999999962747,
+          27.40000000037253,
+          21.40000000037253,
+          29.5,
+          40.59999999962747,
+          22.90000000037253,
+          25.09999999962747,
+          26,
+          24.40000000037253,
+          24.800000000745058,
+          23.299999998882413,
+          25.90000000037253,
+          24.40000000037253,
+          26.699999999254942,
+          21.59999999962747,
+          25.5,
+          23.100000001490116,
+          24.5,
+          28.699999999254942,
+          27.5,
+          22.90000000037253,
+          40.5,
+          25.40000000037253,
+          24,
+          21.59999999962747,
+          22.90000000037253,
+          21.899999998509884,
+          21.100000001490116,
+          20.399999998509884,
+          21.800000000745058,
+          22,
+          24.300000000745058,
+          22,
+          22.399999998509884,
+          20.5,
+          22.200000001117587,
+          20,
+          23.299999998882413,
+          23.800000000745058,
+          27.40000000037253,
+          23.90000000037253,
+          23.59999999962747,
+          47.5,
+          24.59999999962747,
+          30.199999999254942,
+          37.30000000074506,
+          24.800000000745058,
+          24.59999999962747,
+          20,
+          22.59999999962747,
+          21.300000000745058,
+          21.59999999962747,
+          21.199999999254942,
+          22,
+          20.5,
+          22.700000001117587,
+          19,
+          22.5,
+          20.399999998509884,
+          22.5,
+          20.90000000037253,
+          23,
+          19.59999999962747,
+          21.100000001490116,
+          20.699999999254942,
+          23,
+          19.59999999962747,
+          20.700000001117587,
+          21.699999999254942,
+          20.199999999254942,
+          22.600000001490116,
+          20.799999998882413,
+          20.90000000037253,
+          21.40000000037253,
+          20.799999998882413,
+          21.100000001490116,
+          21.199999999254942,
+          21.699999999254942,
+          21.5,
+          21.300000000745058,
+          19.800000000745058
+        ],
+        "over50ms": 0,
+        "max": 47.5
+      },
+      "mainMemory": [
+        {
+          "type": "Browser",
+          "pid": 44700,
+          "memory": {
+            "workingSetSize": 228092,
+            "peakWorkingSetSize": 265000,
+            "privateBytes": 165804
+          },
+          "cpu": 0.2826966391678469
+        },
+        {
+          "type": "GPU",
+          "pid": 52728,
+          "memory": {
+            "workingSetSize": 250372,
+            "peakWorkingSetSize": 356736,
+            "privateBytes": 182464
+          },
+          "cpu": 0.8925919692480386
+        },
+        {
+          "type": "Utility",
+          "pid": 53044,
+          "memory": {
+            "workingSetSize": 92756,
+            "peakWorkingSetSize": 92936,
+            "privateBytes": 11628
+          },
+          "cpu": 0.0008169868970323089
+        },
+        {
+          "type": "Tab",
+          "pid": 51596,
+          "memory": {
+            "workingSetSize": 1494980,
+            "peakWorkingSetSize": 1624344,
+            "privateBytes": 1454700
+          },
+          "cpu": 6.314006910769371
+        }
+      ],
+      "after": {
+        "Timestamp": 12150.82596,
+        "AudioHandlers": 0,
+        "AudioWorkletProcessors": 0,
+        "Documents": 2,
+        "Frames": 1,
+        "JSEventListeners": 22114,
+        "LayoutObjects": 53226,
+        "MediaKeySessions": 0,
+        "MediaKeys": 0,
+        "Nodes": 57085,
+        "Resources": 64,
+        "ContextLifecycleStateObservers": 5,
+        "V8PerContextDatas": 3,
+        "WorkerGlobalScopes": 0,
+        "UACSSResources": 0,
+        "RTCPeerConnections": 0,
+        "ResourceFetchers": 2,
+        "AdSubframes": 0,
+        "DetachedScriptStates": 0,
+        "ArrayBufferContents": 2,
+        "LayoutCount": 394,
+        "RecalcStyleCount": 1298,
+        "LayoutDuration": 3.784765,
+        "RecalcStyleDuration": 15.472701,
+        "DevToolsCommandDuration": 2.173435,
+        "ScriptDuration": 33.873236,
+        "V8CompileDuration": 0,
+        "TaskDuration": 60.429086,
+        "TaskOtherDuration": 5.124949,
+        "ThreadTime": 58.832683,
+        "ProcessTime": 95.30541,
+        "JSHeapUsedSize": 531915804,
+        "JSHeapTotalSize": 583315456,
+        "FirstMeaningfulPaint": 0,
+        "DomContentLoaded": 12074.086797,
+        "NavigationStart": 12073.642508
+      }
+    }
+  ],
+  "rendererErrors": [],
+  "boundaries": [
+    "Formal main/preload/UI/SQLite; native dialogs use explicit owned fixture or cancel",
+    "History stress fixtures are synthetic persisted records, not accepted teacher or model output",
+    "Application zoom is not a change to Windows system DPI; timings exclude provider"
+  ],
+  "build": {
+    "mainSha256": "b8577682f802506f21f8948c4ca95ddf01361f5a1ea4fcb2f5ecc96438b89aeb",
+    "scriptSha256": "b942b1d5568175da381e0457bde84b57c32ddb632a3f7a3b5c3ba4f8a6596a6a"
+  },
+  "environment": {
+    "versions": {
+      "node": "24.18.0",
+      "acorn": "8.16.0",
+      "ada": "3.4.4",
+      "amaro": "1.1.9",
+      "ares": "1.34.6",
+      "brotli": "1.2.0",
+      "cldr": "48.0",
+      "icu": "78.2",
+      "llhttp": "9.4.2",
+      "merve": "1.2.2",
+      "modules": "148",
+      "napi": "10",
+      "nbytes": "0.1.4",
+      "ncrypto": "0.0.1",
+      "nghttp2": "1.69.0",
+      "nghttp3": "",
+      "ngtcp2": "",
+      "openssl": "0.0.0",
+      "simdjson": "4.6.4",
+      "simdutf": "7.7.0",
+      "sqlite": "3.53.1",
+      "tz": "2025c",
+      "undici": "7.28.0",
+      "unicode": "17.0",
+      "uv": "1.52.1",
+      "uvwasi": "0.0.23",
+      "v8": "15.0.1240245-electron.0",
+      "zlib": "1.3.2.1-motley",
+      "zstd": "1.6.0",
+      "electron": "43.2.0",
+      "chrome": "150.0.7871.129"
+    },
+    "displays": [
+      {
+        "scaleFactor": 1,
+        "size": {
+          "width": 2560,
+          "height": 1440
+        },
+        "workArea": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      },
+      {
+        "scaleFactor": 1.5,
+        "size": {
+          "width": 1707,
+          "height": 1067
+        },
+        "workArea": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        }
+      }
+    ],
+    "zoom": 1,
+    "data": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-ux00-ESJoDZ\\profile"
+  },
+  "syntheticHistoryIds": {
+    "100": "aisession_42aa6a39-6335-4274-a4fc-9783fdab77de",
+    "1000": "aisession_68f5d211-63a4-4dea-b224-0f64df6d9bb4"
+  }
+}

@@ -1,0 +1,20 @@
+ 1.Agent.md                                                 |  4 ++++
+ 2.Memory.md                                                |  4 ++++
+ 3.Learning.md                                              |  4 ++++
+ 4.Wiki.md                                                  |  4 ++++
+ apps/desktop/package.json                                  |  1 +
+ .../scripts/xiaozhi-agent/chat-experience-electron.mjs     | 10 +++++++---
+ .../src/renderer/components/office/OfficeConversation.tsx  |  9 ++++++++-
+ .../renderer/components/office/PiConversationSurface.tsx   |  8 ++++----
+ .../src/renderer/components/office/office-conversation.css | 14 ++++++++++++++
+ apps/desktop/src/shared/office-agent.ts                    |  2 ++
+ apps/desktop/src/shared/xiaozhi-projection.ts              |  1 +
+ docs/acceptance/CURRENT.md                                 |  4 ++++
+ docs/architecture/CURRENT.md                               |  4 ++++
+ docs/goal/ACCEPTANCE.md                                    |  4 ++++
+ docs/goal/CAPABILITY_MATRIX.md                             |  4 ++++
+ docs/goal/CURRENT_STATE.md                                 |  4 ++++
+ docs/goal/DECISIONS.md                                     |  4 ++++
+ docs/integrations/CURRENT.md                               |  4 ++++
+ docs/product/CURRENT.md                                    |  4 ++++
+ 19 files changed, 85 insertions(+), 8 deletions(-)

@@ -1,0 +1,13 @@
+{
+  "renderer": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/index.html",
+  "mountedFullReasoning": 0,
+  "genericStages": 0,
+  "emptyExecution": 0,
+  "errors": [],
+  "native": {
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-dsh-reasoning-uFcprX/data",
+    "theme": "light",
+    "faultInterceptorRemoved": true
+  },
+  "expanded": false
+}

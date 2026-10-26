@@ -43,12 +43,14 @@ const check = (name, fn) => { fn(); checks.push({ name, pass: true }); };
 async function id() { return page.locator('.office-composer-container').getAttribute('data-session-id'); }
 async function choose(directory) {
   await application.evaluate(({ dialog }, selected) => { dialog.showOpenDialog = async () => ({ canceled: !selected, filePaths: selected ? [selected] : [] }); }, directory);
-  await page.getByRole('button', { name: '选择教学工作目录', exact: true }).click();
+  await page.getByTestId('pi-permission-picker').click();
+  await page.getByRole('menuitem', { name: '选择教学工作目录', exact: true }).click();
 }
 async function workspaceVisible() {
-  const label = page.getByText(`工作目录：${path.basename(workshop)}。文件复制逐次确认。`, { exact: false });
-  if (!await label.isVisible()) await page.getByTestId('pi-task-details-expand').click();
-  await label.waitFor({ state: 'visible' });
+  const panel = page.getByTestId('pi-file-panel');
+  await panel.waitFor({ state: 'visible' });
+  await panel.locator('.pi-file-explorer strong').filter({ hasText: path.basename(workshop) }).waitFor({ state: 'visible' });
+  await panel.getByTestId(`pi-file-entry-${sourceName}`).waitFor({ state: 'visible' });
 }
 async function fresh() {
   const previous = await id(); await page.getByTestId('ai-conversation-new').click();

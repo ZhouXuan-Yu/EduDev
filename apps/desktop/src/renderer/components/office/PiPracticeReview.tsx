@@ -4,20 +4,20 @@ import {ClipboardCheck} from 'lucide-react';
 import {ChatTool} from '../../heroui-pro/components/chat-tool';
 import {useOfficeControlState} from './OfficeComposerState';
 import {QuestionSourceLink} from './PiQuestionSource';
-import {PRACTICE_REVIEW_SCHEMA,PRACTICE_REVIEW_ERRORS,type PracticeReviewSummary,type PracticeReviewView,type PracticeReviewDraft,type PracticeSourceInput} from '../../../shared/practice-review';
+import {PRACTICE_REVIEW_SCHEMA,PRACTICE_REVIEW_ERRORS,teacherObservationText,type PracticeReviewSummary,type PracticeReviewView,type PracticeReviewDraft,type PracticeSourceInput} from '../../../shared/practice-review';
 import './pi-learning-review.css';
 const labels={pending:'需要你核对',confirmed:'已确认保存',rejected:'已拒绝，未保存'};
 const roles={original:'原题',similar:'相似题',variant:'变式题'};
 export function PracticeQuestionList({view,draft,onChange}:{view:PracticeReviewView;draft:PracticeReviewDraft;onChange?:(draft:PracticeReviewDraft)=>void}){
- const editable=!!onChange,change=(index:number,patch:Partial<PracticeReviewDraft['items'][number]>)=>onChange?.({...draft,items:draft.items.map((q,i)=>i===index?{...q,...patch}:q)});
- return <div className="pi-question-candidates" tabIndex={0} aria-label="练习题目与来源">{draft.items.map((item,n)=>{const entry=view.questions[item.index];return <section className="pi-training-day" data-testid="practice-review-item" key={item.index}>
-  <strong>第 {n+1} 题 · {entry.question.knowledgePoint||'未标注知识点'}</strong>
+ const editable=!!onChange,count=draft.items.length,change=(index:number,patch:Partial<PracticeReviewDraft['items'][number]>)=>onChange?.({...draft,items:draft.items.map((q,i)=>i===index?{...q,...patch}:q)});
+ return <div className="pi-question-candidates" tabIndex={0} aria-label="练习题目与来源">{count>1&&<p className="pi-practice-count" data-testid="practice-review-count" role="status">共 {count} 题，请逐题核对；题目较多时可向下滚动。</p>}{draft.items.map((item,n)=>{const entry=view.questions[item.index];return <section className="pi-training-day" data-testid="practice-review-item" key={item.index}>
+  <strong>第 {n+1}/{count} 题 · {entry.question.knowledgePoint||'未标注知识点'}</strong>
   <div className="pi-training-heading"><label>题目用途<select data-testid="practice-review-role" disabled={!editable} value={item.role} onChange={e=>change(n,{role:e.target.value as typeof item.role})}>{Object.entries(roles).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select></label>
   {editable&&<div><Button variant="secondary" data-testid="practice-review-up" isDisabled={!n} onPress={()=>{const items=[...draft.items];[items[n-1],items[n]]=[items[n],items[n-1]];onChange({...draft,items});}}>上移</Button><Button variant="secondary" data-testid="practice-review-remove" isDisabled={draft.items.length===1} onPress={()=>onChange({...draft,items:draft.items.filter((_,i)=>i!==n)})}>移出练习</Button></div>}</div>
   <h4>题干</h4><div className="pi-practice-text" data-testid="practice-review-stem">{entry.question.stem}</div>
   <h4>参考答案</h4><div className="pi-practice-text" data-testid="practice-review-answer">{entry.question.answer}</div>
   <h4>解析</h4><div className="pi-practice-text">{entry.question.analysis}</div>
-  <label>教师观察<textarea data-testid="practice-review-observation" maxLength={1000} disabled={!editable} value={item.teacherObservation} onChange={e=>change(n,{teacherObservation:e.target.value})}/></label>
+  <label>教师观察<textarea data-testid="practice-review-observation" maxLength={1000} disabled={!editable} value={teacherObservationText(item.teacherObservation)} onChange={e=>change(n,{teacherObservation:teacherObservationText(e.target.value)})}/></label>
   <ul><QuestionSourceLink source={{title:'本题保存版本',question:entry.source}}/>{entry.parents.map((source,i)=><QuestionSourceLink key={`${source.questionId}:${source.version}`} source={{title:`父题来源 ${i+1}`,question:source}}/>)}</ul>
  </section>;})}
  {editable&&view.questions.map((q,index)=>draft.items.some(i=>i.index===index)?null:<Button key={index} variant="secondary" data-testid="practice-review-restore" onPress={()=>onChange({...draft,items:[...draft.items,{index,role:'variant',teacherObservation:''}]})}>恢复题目 {index+1}</Button>)}

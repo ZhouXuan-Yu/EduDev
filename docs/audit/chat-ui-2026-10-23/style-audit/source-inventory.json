@@ -1,0 +1,2207 @@
+{
+  "files": [
+    {
+      "file": "browser-status.css",
+      "bytes": 536,
+      "sha256": "ce79837a2f0a551be943ab51bdc553df40080f0d2b5186370c14d15e6d4012f6"
+    },
+    {
+      "file": "components/desktop/desktop-frame.css",
+      "bytes": 1837,
+      "sha256": "609a23fdfa1868aa11c1f66c4b33c1293002e825adf6d0fc31c529b428cc25a5"
+    },
+    {
+      "file": "components/office/hana-settings/settings-components.module.css",
+      "bytes": 11286,
+      "sha256": "29118f943e68a30fa6111c76571cc481e71cb130bf874790891b0ea11880ea5e"
+    },
+    {
+      "file": "components/office/hana-settings/workspace-nav.module.css",
+      "bytes": 2385,
+      "sha256": "f4923691748e67eb3fe9f56d566c3039691b09251fcbda3adb19b61cc6b18d43"
+    },
+    {
+      "file": "components/office/hana-skills/SkillBadgeView.module.css",
+      "bytes": 936,
+      "sha256": "43a1fed4e6c09322a6a0b651961313b98f849231a052131051d3ef8362d12f31"
+    },
+    {
+      "file": "components/office/hana-skills/SkillRow.module.css",
+      "bytes": 1923,
+      "sha256": "8f2a7b20c24a043fc10068801daf3bf9d8cf0a7e2c98a8f7f909c5313036fb4f"
+    },
+    {
+      "file": "components/office/native-component-boundary.css",
+      "bytes": 2750,
+      "sha256": "317fbd1ef2b9257cd6ab85e6c4af15bef003b9f6ed220c7ece721cf7646b732d"
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "bytes": 10877,
+      "sha256": "329d98ec7fc013300660095308defae0cbb6ebc29ca1439aff89628c68fea7d6"
+    },
+    {
+      "file": "components/office/office-markdown.css",
+      "bytes": 861,
+      "sha256": "5d579dfa982d2bc1a2bd4a733bbfee3e51033a138823057c45b7d9ae660a3d8d"
+    },
+    {
+      "file": "components/office/original-region-picker.css",
+      "bytes": 607,
+      "sha256": "1e1e5cae3bf520c0cc7addb08320c53417c1fadd023140dce247601ced3d5eda"
+    },
+    {
+      "file": "components/office/pi-attachments.css",
+      "bytes": 2411,
+      "sha256": "ebab5046e4357097f1af1baba53437393428d560ad589debec1113d5aa067e1e"
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "bytes": 5490,
+      "sha256": "058ee97cce6946e7f6b278ff84adc3c9047f0a8b41cdeecf3f546f49fc981b00"
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "bytes": 13589,
+      "sha256": "2e91b2ea8d2066d01d95834432e56d6b9bf9a2090e0460ac6ce01bf7e7d2e986"
+    },
+    {
+      "file": "components/office/pi-goal.css",
+      "bytes": 1289,
+      "sha256": "1e9e3d6623f53ee32d6525aa28414cfe387417fcf77b3f1cb9f4b7629d691ed6"
+    },
+    {
+      "file": "components/office/pi-learning-review.css",
+      "bytes": 3017,
+      "sha256": "a414f5b636d47924876c8e7047eab903563668b39ff8299eabaa056be2817334"
+    },
+    {
+      "file": "components/office/pi-model-settings.css",
+      "bytes": 1731,
+      "sha256": "12a05d21c2fbcd39ebc48229294e5a789f229c526a10c8c7147288b0e91b54c7"
+    },
+    {
+      "file": "components/office/pi-office-artifact.css",
+      "bytes": 2766,
+      "sha256": "2ac25bcb7c17ba62f76a8bcca25c0d4de3023cef1ac0e45b399a795f1eae8670"
+    },
+    {
+      "file": "components/office/pi-original-question.css",
+      "bytes": 1643,
+      "sha256": "17b97ce94722102f0d22facd52ff8954cc79a2899fa6b767554a91f917d7c4f8"
+    },
+    {
+      "file": "components/office/pi-plan-failure.css",
+      "bytes": 2630,
+      "sha256": "76247dbc40863c6ef76d3a1e451fc67c32832f1cf6aa680f957a461fb15437ef"
+    },
+    {
+      "file": "components/office/pi-question-source.css",
+      "bytes": 317,
+      "sha256": "272268c08c46953fff24541cf4c1730f3c823b375746f4b479138bf67aa03b6a"
+    },
+    {
+      "file": "components/office/pi-settings-workspace.css",
+      "bytes": 3875,
+      "sha256": "7441fa98e381a42fcfeff3d308977138ed45c7b8a619f890a9a63e031f7ab120"
+    },
+    {
+      "file": "components/office/pi-skill-settings.css",
+      "bytes": 2668,
+      "sha256": "ea5a2d9d70d4fdbf548b41926f909fc5e3f13811dba52c8a8fb7ac62c192a489"
+    },
+    {
+      "file": "components/office/pi-text-changes.css",
+      "bytes": 1006,
+      "sha256": "4094a5478c5e840600ee3d8cf10dfbcfe7713306935cd33f70d50d6efca0d044"
+    },
+    {
+      "file": "components/office/pi-workspace-files.css",
+      "bytes": 4054,
+      "sha256": "c1f4cdae6f4b81fbf34b0e0fe4cc68e125185d00ddf305051224bff3f81521cd"
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "bytes": 8407,
+      "sha256": "6a88d03629474f0924a5b049d550916fef4486946bc93f6df8cae3f86517ba83"
+    },
+    {
+      "file": "components/office/pi-workspace-theme.css",
+      "bytes": 3670,
+      "sha256": "e16ce2fe1f4296b838833ef2b0697daf335f2a44340360065b72f55a5d856303"
+    },
+    {
+      "file": "components/paper-workspace.css",
+      "bytes": 1458,
+      "sha256": "ea0aa48069a6af883e1ba5930e3a29e66fc55ce0c005072ded9f71a0f3842e31"
+    },
+    {
+      "file": "components/product/material-source.css",
+      "bytes": 687,
+      "sha256": "001e432ecd4c561d5f38253838a0013f95d76846862fb0cb154c76b26ab04b6b"
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "bytes": 4309,
+      "sha256": "5df81e4b9bf38661e95b9bc44d99bca6eeea788634be302df3ecfa469e4d3896"
+    },
+    {
+      "file": "components/product/teacher-library.css",
+      "bytes": 9467,
+      "sha256": "702bc2627d537ff321d7a8f84e625c1623225c111e45649f02cae067ff0b0f1c"
+    },
+    {
+      "file": "components/product/teacher-notebook.css",
+      "bytes": 3259,
+      "sha256": "5a1742ba96f30c0bfc9fa2dd4ebf0662efbf4a2a467942ccd421e219584ccbe0"
+    },
+    {
+      "file": "components/question-math-text.css",
+      "bytes": 917,
+      "sha256": "b6f73a172b6f418f7e6fc0e68d470128f7a449b7206cef3f0c1b445f6593592a"
+    },
+    {
+      "file": "components/students/student-training.css",
+      "bytes": 2868,
+      "sha256": "711d893445c95a85e94ef0d1885c66b77787ebac23895a8bd2c5f43ec9b47bd5"
+    },
+    {
+      "file": "styles.css",
+      "bytes": 86505,
+      "sha256": "557bb73ef8644942841b65d8e95be171b3943c3863694a5ed5b33ba29b7c4c99"
+    }
+  ],
+  "official": [
+    {
+      "file": "heroui-pro/heroui-oss.min.css",
+      "bytes": 410638,
+      "sha256": "b614566361d0c79a595efa54d8b92bbc3903b32cb514768d6219c9d5627e5e4d"
+    },
+    {
+      "file": "heroui-pro/heroui-pro.min.css",
+      "bytes": 467111,
+      "sha256": "2e299022eda199fd2a1203889037e94ec44d4b0002192a96fc1af289d6d5834b"
+    }
+  ],
+  "rules": [
+    {
+      "file": "components/desktop/desktop-frame.css",
+      "line": 4,
+      "selector": ".desktop-titlebar-safe .button",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/desktop/desktop-frame.css",
+      "line": 5,
+      "selector": ".desktop-titlebar-safe .button--icon-only",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/desktop/desktop-frame.css",
+      "line": 6,
+      "selector": ".desktop-titlebar-safe .button:hover",
+      "component": true,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-settings/settings-components.module.css",
+      "line": 175,
+      "selector": ".sectionList > .sectionBody > .row:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-settings/settings-components.module.css",
+      "line": 317,
+      "selector": ".expandableHeader:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-settings/settings-components.module.css",
+      "line": 369,
+      "selector": ".numberInputField:focus",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-settings/settings-components.module.css",
+      "line": 441,
+      "selector": ".stepSliderInput:hover::-webkit-slider-thumb,\r\n.stepSliderInput:focus-visible::-webkit-slider-thumb",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-settings/workspace-nav.module.css",
+      "line": 37,
+      "selector": ".settings-search-result:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-settings/workspace-nav.module.css",
+      "line": 96,
+      "selector": ".settings-nav-item:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-skills/SkillBadgeView.module.css",
+      "line": 44,
+      "selector": ".remove:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-skills/SkillRow.module.css",
+      "line": 13,
+      "selector": ".skills-list-item:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-skills/SkillRow.module.css",
+      "line": 76,
+      "selector": ".skills-list-item:hover .skill-card-delete",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-skills/SkillRow.module.css",
+      "line": 80,
+      "selector": ".skill-card-delete:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/hana-skills/SkillRow.module.css",
+      "line": 86,
+      "selector": ".skills-list-item:focus-within .skill-card-delete",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 29,
+      "selector": ".office-turn [data-slot='chat-message-user']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 30,
+      "selector": ".office-turn [data-slot='chat-message-bubble']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 36,
+      "selector": ".office-turn [data-slot='chat-message-assistant'], .office-turn [data-slot='chat-message-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 38,
+      "selector": ".office-turn [data-slot='markdown']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 39,
+      "selector": ".office-turn [data-slot='markdown'] :is(p, li, td)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 40,
+      "selector": ".office-turn [data-slot='markdown'] > :first-child",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 41,
+      "selector": ".office-turn [data-slot='markdown'] > :last-child",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 42,
+      "selector": ".xiaozhi-pi-workspace .office-turn [data-slot='chat-message-assistant'] [data-slot='chat-message-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 43,
+      "selector": ".office-turn [data-slot='markdown'] :is(p, li, td, th)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 44,
+      "selector": ".office-turn [data-slot='markdown'] p:not(:last-child)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 45,
+      "selector": ".office-tool [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 47,
+      "selector": ".office-tool [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 48,
+      "selector": ".office-tool .chat-tool__trigger-label, .office-tool .chat-tool-group__trigger-label",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 49,
+      "selector": ".office-tool :is([data-slot='chat-tool-trigger'], [data-slot='chat-tool-group-trigger'])",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 50,
+      "selector": ".office-tool [data-slot='chat-tool-group-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 51,
+      "selector": ".office-tool [data-slot='chat-tool-status-icon']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 57,
+      "selector": ".office-tool-group-content .chat-tool-group__content-body",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 58,
+      "selector": ".office-tool[data-state='output-error'] [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 59,
+      "selector": ".office-tool[data-state='output-error'] [data-slot='chat-tool-group-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 66,
+      "selector": ".office-compaction [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 67,
+      "selector": ".office-compaction [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 68,
+      "selector": ".office-compaction [data-slot='chat-tool-content'] p",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 81,
+      "selector": ".office-turn [data-slot='chat-message-body']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 84,
+      "selector": ".office-commentary > [data-slot='markdown']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 99,
+      "selector": ".pi-wait-help",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "white-space",
+          "value": "normal"
+        }
+      ]
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 102,
+      "selector": ".office-agent-trace [data-slot='chain-of-thought-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 103,
+      "selector": ".office-agent-trace [data-slot='chain-of-thought-trigger'] > [data-slot='text-shimmer']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 104,
+      "selector": ".office-agent-trace [data-slot='chain-of-thought-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 105,
+      "selector": ".office-agent-trace [data-slot='chain-of-thought-steps']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 106,
+      "selector": ".office-agent-trace [data-slot='chain-of-thought-step']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 107,
+      "selector": ".office-agent-trace [data-slot='markdown']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 112,
+      "selector": ".office-agent-trace[data-state='failed'] [data-slot='chain-of-thought-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 116,
+      "selector": ".office-composer [data-slot='prompt-input-shell']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 122,
+      "selector": ".office-composer [data-slot='prompt-input-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 123,
+      "selector": ".office-composer [data-slot='prompt-input-textarea']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 134,
+      "selector": ".office-composer [data-slot='prompt-input-toolbar']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 135,
+      "selector": ".office-composer [data-slot='prompt-input-send']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 144,
+      "selector": ".office-composer [data-slot='prompt-input-toolbar']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-conversation.css",
+      "line": 147,
+      "selector": ".office-conversation *, .office-composer *",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "animation-duration",
+          "value": "0s"
+        },
+        {
+          "name": "transition-duration",
+          "value": "0s"
+        },
+        {
+          "name": "scroll-behavior",
+          "value": "auto"
+        }
+      ]
+    },
+    {
+      "file": "components/office/office-markdown.css",
+      "line": 3,
+      "selector": ".office-markdown [data-slot='code-block']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-markdown.css",
+      "line": 9,
+      "selector": ".office-markdown [data-slot='code-block-code'] :is(.shiki, .shiki span)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/office-markdown.css",
+      "line": 13,
+      "selector": ".office-markdown [data-slot='code-block-code'] :is(.shiki, .shiki span)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-attachments.css",
+      "line": 5,
+      "selector": ".pi-attachment-item [data-slot=\"chat-attachment\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-attachments.css",
+      "line": 9,
+      "selector": ".pi-attachment-item [data-slot=\"chat-attachment-remove\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-attachments.css",
+      "line": 11,
+      "selector": ".pi-themed-surface :is([data-slot=\"modal-body\"],[data-slot=\"modal-heading\"])",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-attachments.css",
+      "line": 15,
+      "selector": ".pi-conversation-dialog p,.pi-attachment-dialog [data-slot=\"modal-header\"] p",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 7,
+      "selector": ".xiaozhi-pi-workspace :is(.pi-question-card, .pi-copy-approval, .pi-instruction-card) [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 10,
+      "selector": ".xiaozhi-pi-workspace :is(.pi-question-card, .pi-copy-approval, .pi-instruction-card) .chat-tool__trigger-label",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 13,
+      "selector": ".xiaozhi-pi-workspace :is(.pi-question-card, .pi-copy-approval, .pi-instruction-card) [data-slot='chat-tool-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 14,
+      "selector": ".xiaozhi-pi-workspace :is(.pi-question-card, .pi-copy-approval, .pi-instruction-card) .chat-tool__content-body",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 36,
+      "selector": ".xiaozhi-pi-workspace .pi-copy-approval [data-slot='chat-tool-approval-actions']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 37,
+      "selector": ".xiaozhi-pi-workspace .pi-copy-approval [data-slot='chat-tool-approve']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 41,
+      "selector": ".pi-office-menu [data-slot='menu-item']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 42,
+      "selector": ".pi-office-menu [data-slot='label']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-control-surfaces.css",
+      "line": 44,
+      "selector": ".office-composer [data-slot='prompt-input-send'][data-status='streaming'] > span[aria-hidden='true']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 28,
+      "selector": ".pi-memory-scope [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 29,
+      "selector": ".pi-memory-scope [data-slot='chat-tool-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 50,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__body",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 51,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__main",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 65,
+      "selector": ".pi-new-chat:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 72,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace .chat-list-view__item-content",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 73,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace .chat-list-view__item-content.active",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 74,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace .chat-list-view__title",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 75,
+      "selector": ".xiaozhi-pi-workspace .chat-list-view__icon,.xiaozhi-pi-workspace .chat-list-view__preview,.xiaozhi-pi-workspace .chat-list-view__meta",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 76,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace [data-slot='chat-list-view-item']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 77,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace [data-slot='chat-list-view-item-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 78,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace [data-slot='chat-list-view-item-content'].active",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 79,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace [data-slot='chat-list-view-text']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 80,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace [data-slot='chat-list-view-title']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 81,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__aside",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 82,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__aside[data-state='closed']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 95,
+      "selector": ".pi-context-sources li:has([data-slot=\"chat-source\"])",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 96,
+      "selector": ".pi-context-sources [data-slot=\"chat-source\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 99,
+      "selector": ".pi-context-card .pi-task-details > [data-slot='chat-tool-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 100,
+      "selector": ".pi-context-card .pi-task-details > [data-slot='chat-tool-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 102,
+      "selector": ".xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-toolbar']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 103,
+      "selector": ".xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-toolbar-start']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 104,
+      "selector": ".xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-toolbar-end']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 116,
+      "selector": ".xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-toolbar']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 117,
+      "selector": ".xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-toolbar-start']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 119,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__aside",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-education-workspace.css",
+      "line": 120,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__aside",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-goal.css",
+      "line": 8,
+      "selector": ".pi-goal-dialog [data-slot='modal-body']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-goal.css",
+      "line": 11,
+      "selector": ".pi-goal-dialog [data-slot='checkbox-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-goal.css",
+      "line": 12,
+      "selector": ".pi-goal-dialog [data-slot='checkbox-content'] [data-slot='label']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-learning-review.css",
+      "line": 3,
+      "selector": ".pi-question-candidates:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-learning-review.css",
+      "line": 7,
+      "selector": ".pi-training-calendar:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-learning-review.css",
+      "line": 21,
+      "selector": ".pi-learning-fields :is(input,select,textarea):focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-model-settings.css",
+      "line": 13,
+      "selector": ".pi-model-settings [data-slot=list-view-item]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-model-settings.css",
+      "line": 14,
+      "selector": ".pi-model-settings [data-slot=list-view-item-content]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-model-settings.css",
+      "line": 15,
+      "selector": ".pi-model-settings [data-slot=list-view-title], .pi-model-settings [data-slot=list-view-description]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-office-artifact.css",
+      "line": 2,
+      "selector": ".xiaozhi-pi-workspace .pi-office-artifact .chat-tool__trigger-label > span",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-office-artifact.css",
+      "line": 6,
+      "selector": ".xiaozhi-pi-workspace .pi-office-preview [data-slot='markdown-root']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-office-artifact.css",
+      "line": 18,
+      "selector": ".xiaozhi-pi-workspace .pi-office-artifact [data-slot='checkbox-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-office-artifact.css",
+      "line": 19,
+      "selector": ".xiaozhi-pi-workspace .pi-office-artifact [data-slot='checkbox-control']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-original-question.css",
+      "line": 3,
+      "selector": ".pi-original-complete",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "display",
+          "value": "flex"
+        }
+      ]
+    },
+    {
+      "file": "components/office/pi-original-question.css",
+      "line": 4,
+      "selector": ".pi-original-complete input",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "width",
+          "value": "auto"
+        }
+      ]
+    },
+    {
+      "file": "components/office/pi-plan-failure.css",
+      "line": 2,
+      "selector": ".xiaozhi-pi-workspace :is(.office-plan,.pi-live-task-strip) [data-slot='chain-of-thought-trigger']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-plan-failure.css",
+      "line": 3,
+      "selector": ".xiaozhi-pi-workspace :is(.office-plan,.pi-live-task-strip) [data-slot='chain-of-thought-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-plan-failure.css",
+      "line": 4,
+      "selector": ".xiaozhi-pi-workspace :is(.office-plan,.pi-live-task-strip) [data-slot='chain-of-thought-steps']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-plan-failure.css",
+      "line": 11,
+      "selector": ".xiaozhi-pi-workspace .pi-live-task-strip [data-slot='chain-of-thought-content']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-settings-workspace.css",
+      "line": 36,
+      "selector": ".pi-settings-workspace .pi-memory-scope [data-slot=chat-tool-content]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-settings-workspace.css",
+      "line": 37,
+      "selector": ".pi-settings-workspace .pi-settings-search [data-slot=search-field-clear-button]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-skill-settings.css",
+      "line": 2,
+      "selector": ".pi-skills-dialog, .pi-skill-tag",
+      "component": false,
+      "interaction": false,
+      "tokens": [
+        {
+          "name": "--accent",
+          "value": "var(--pi-accent,#3b7ff0)"
+        },
+        {
+          "name": "--accent-light",
+          "value": "var(--pi-soft,#eef4ff)"
+        },
+        {
+          "name": "--accent-rgb",
+          "value": "59,127,240"
+        }
+      ],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-skill-settings.css",
+      "line": 9,
+      "selector": ".pi-skills-dialog [data-slot=\"modal-body\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-text-changes.css",
+      "line": 2,
+      "selector": ".xiaozhi-pi-workspace .pi-text-change .chat-tool__trigger-label > span",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-text-changes.css",
+      "line": 4,
+      "selector": ".xiaozhi-pi-workspace .pi-text-review [data-slot='code-block']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-text-changes.css",
+      "line": 10,
+      "selector": ".xiaozhi-pi-workspace .pi-text-review [data-slot='code-block']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-files.css",
+      "line": 1,
+      "selector": ".pi-shell-files .app-layout__resizable",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-files.css",
+      "line": 4,
+      "selector": ".pi-shell-files .app-layout__aside-panel",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-files.css",
+      "line": 5,
+      "selector": ".pi-shell-files .office-composer [data-slot='prompt-input-toolbar']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 27,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__body",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 42,
+      "selector": ".xiaozhi-pi-workspace :is(.pi-icon-rail button, .ai-chat-header button, .ai-session-header button, .pi-new-chat):hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 44,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace :is(.pi-new-chat, .ai-folder-title, .chat-list-view__title, [data-slot='chat-list-view-title'])",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 45,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace .office-turn [data-slot='chat-message-bubble']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 46,
+      "selector": ".xiaozhi-pi-workspace .office-turn [data-slot='chat-message-bubble'] [data-slot='markdown']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 57,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace :is(.chat-list-view__item-content.active, [data-slot='chat-list-view-item-content'].active)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 60,
+      "selector": ".xiaozhi-pi-workspace .pi-shell .app-layout__aside",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 69,
+      "selector": ".xiaozhi-pi-workspace .pi-shell-files :is(.app-layout__aside, .app-layout__aside-panel)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 85,
+      "selector": ".xiaozhi-pi-workspace :is(.pi-context-sources h4, .pi-task-details [data-slot='chat-tool-trigger'], .pi-context-header button, .pi-context-sources li, .pi-context-sources a)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 86,
+      "selector": ".xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-shell']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 93,
+      "selector": ".xiaozhi-pi-workspace .office-composer [data-slot='prompt-input-send']",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 108,
+      "selector": ".xiaozhi-pi-workspace :is(button, input, textarea, [role='tab'], [role='treeitem'], a):focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 118,
+      "selector": ".xiaozhi-pi-workspace *, .xiaozhi-pi-workspace *::before, .xiaozhi-pi-workspace *::after",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "animation-duration",
+          "value": "0s"
+        },
+        {
+          "name": "transition-duration",
+          "value": "0s"
+        },
+        {
+          "name": "scroll-behavior",
+          "value": "auto"
+        }
+      ]
+    },
+    {
+      "file": "components/office/pi-workspace-glass.css",
+      "line": 126,
+      "selector": ".xiaozhi-pi-workspace :is([aria-pressed='true'], [data-slot='chat-list-view-item-content'].active)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/office/pi-workspace-theme.css",
+      "line": 3,
+      "selector": ".ai-console-v3.xiaozhi-pi-workspace, .pi-office-menu, .pi-themed-surface",
+      "component": false,
+      "interaction": false,
+      "tokens": [
+        {
+          "name": "--foreground",
+          "value": "var(--pi-ink)"
+        },
+        {
+          "name": "--muted",
+          "value": "var(--pi-muted)"
+        },
+        {
+          "name": "--background",
+          "value": "var(--pi-paper)"
+        },
+        {
+          "name": "--surface",
+          "value": "var(--pi-paper)"
+        },
+        {
+          "name": "--surface-secondary",
+          "value": "var(--pi-soft)"
+        },
+        {
+          "name": "--accent-hover",
+          "value": "color-mix(in srgb, var(--pi-accent) 92%, #000)"
+        },
+        {
+          "name": "--field-background",
+          "value": "var(--pi-paper)"
+        },
+        {
+          "name": "--field-foreground",
+          "value": "var(--pi-ink)"
+        },
+        {
+          "name": "--field-placeholder",
+          "value": "var(--pi-muted)"
+        },
+        {
+          "name": "--field-border",
+          "value": "var(--pi-line)"
+        },
+        {
+          "name": "--field-hover",
+          "value": "var(--pi-soft)"
+        },
+        {
+          "name": "--field-focus",
+          "value": "var(--pi-paper)"
+        },
+        {
+          "name": "--field-border-hover",
+          "value": "var(--pi-muted)"
+        },
+        {
+          "name": "--field-border-focus",
+          "value": "var(--pi-focus)"
+        },
+        {
+          "name": "--accent",
+          "value": "var(--pi-accent)"
+        },
+        {
+          "name": "--accent-foreground",
+          "value": "#fff"
+        },
+        {
+          "name": "--accent-soft",
+          "value": "var(--pi-soft)"
+        },
+        {
+          "name": "--accent-soft-foreground",
+          "value": "var(--pi-ink)"
+        },
+        {
+          "name": "--border",
+          "value": "var(--pi-line)"
+        },
+        {
+          "name": "--accent-light",
+          "value": "var(--pi-soft)"
+        },
+        {
+          "name": "--focus",
+          "value": "var(--pi-focus)"
+        }
+      ],
+      "important": []
+    },
+    {
+      "file": "components/paper-workspace.css",
+      "line": 7,
+      "selector": ".paper-section-fields",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "padding",
+          "value": "16px 0"
+        },
+        {
+          "name": "border-top",
+          "value": "1px solid var(--pi-line,var(--line))"
+        },
+        {
+          "name": "margin-top",
+          "value": "16px"
+        }
+      ]
+    },
+    {
+      "file": "components/product/material-source.css",
+      "line": 1,
+      "selector": ".pi-material-source.button",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/material-source.css",
+      "line": 2,
+      "selector": ".pi-material-source.button > svg",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/material-source.css",
+      "line": 3,
+      "selector": ".pi-material-source.button > span",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/material-source.css",
+      "line": 5,
+      "selector": ".xiaozhi-pi-workspace .pi-context-sources .pi-material-source.button",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/material-source.css",
+      "line": 6,
+      "selector": ".xiaozhi-pi-workspace .pi-context-sources .pi-material-source.button > span",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 3,
+      "selector": ".product-rail button:hover",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 9,
+      "selector": ".product-workspace",
+      "component": false,
+      "interaction": false,
+      "tokens": [
+        {
+          "name": "--surface",
+          "value": "var(--pi-paper)"
+        },
+        {
+          "name": "--surface-soft",
+          "value": "var(--pi-soft)"
+        },
+        {
+          "name": "--muted",
+          "value": "var(--pi-muted)"
+        },
+        {
+          "name": "--accent",
+          "value": "var(--pi-accent)"
+        }
+      ],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 12,
+      "selector": ".product-layout .app-layout__body",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 13,
+      "selector": ".product-layout .app-layout__main",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 14,
+      "selector": ".product-layout [data-slot=\"sidebar\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 15,
+      "selector": ".product-layout [data-slot=\"sidebar-header\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 16,
+      "selector": ".product-layout [data-slot=\"sidebar-header\"] strong",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 17,
+      "selector": ".product-layout [data-slot=\"sidebar-content\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 18,
+      "selector": ".product-layout [data-slot=\"sidebar-footer\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/product-spaces.css",
+      "line": 30,
+      "selector": ".product-layout [data-slot=\"sidebar\"],.product-header",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-library.css",
+      "line": 12,
+      "selector": ".teacher-library .button",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-library.css",
+      "line": 13,
+      "selector": ".teacher-library .button:not(.button--primary)",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-library.css",
+      "line": 19,
+      "selector": ".teacher-library-list .list-view__item[data-hovered]",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-library.css",
+      "line": 20,
+      "selector": ".teacher-library-list .list-view__item[data-focus-visible]",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-library.css",
+      "line": 69,
+      "selector": ".material-original-paper:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-library.css",
+      "line": 74,
+      "selector": ".material-layout-overlay polygon:hover, .material-layout-overlay polygon:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-notebook.css",
+      "line": 12,
+      "selector": ".teacher-notebook-fields :is(input,textarea,select):focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/product/teacher-notebook.css",
+      "line": 25,
+      "selector": ".teacher-notebook-workspace .button--danger-soft",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/question-math-text.css",
+      "line": 13,
+      "selector": ".question-math-table [data-slot=\"markdown\"], .question-math-table [data-slot=\"markdown-block\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "components/students/student-training.css",
+      "line": 6,
+      "selector": ".student-training-warning",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "color",
+          "value": "var(--warning)"
+        }
+      ]
+    },
+    {
+      "file": "components/students/student-training.css",
+      "line": 13,
+      "selector": ".student-training-fields :focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1,
+      "selector": ":root",
+      "component": false,
+      "interaction": false,
+      "tokens": [
+        {
+          "name": "--surface",
+          "value": "#ffffff"
+        },
+        {
+          "name": "--surface-soft",
+          "value": "#f7f7f8"
+        },
+        {
+          "name": "--muted",
+          "value": "#6b7280"
+        },
+        {
+          "name": "--accent",
+          "value": "#002fa7"
+        }
+      ],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 668,
+      "selector": ".global-search-list > button:hover, .global-search-list > button:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 701,
+      "selector": ".student-row-name",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "color",
+          "value": "var(--text)"
+        },
+        {
+          "name": "font-size",
+          "value": "14px"
+        }
+      ]
+    },
+    {
+      "file": "styles.css",
+      "line": 1058,
+      "selector": ".ai-artifact-resizer:hover,\r\n.ai-artifact-resizer:focus-visible,\r\n.is-resizing-artifact .ai-artifact-resizer",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1180,
+      "selector": ".ai-folder-dropzone:has(.chat-list-view__item-content.active),\r\n.ai-folder-dropzone:hover",
+      "component": true,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1220,
+      "selector": ".list-view,\r\n.chat-list-view",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1228,
+      "selector": ".list-view__item,\r\n.chat-list-view [data-slot=\"list-view-item\"]",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1233,
+      "selector": ".list-view__item-content,\r\n.chat-list-view__item-content",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1247,
+      "selector": ".chat-list-view__item-content.active,\r\n.chat-list-view__item-content:hover,\r\n.chat-list-view__item-content:focus-visible",
+      "component": true,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1254,
+      "selector": ".chat-list-view__icon",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1265,
+      "selector": ".chat-list-view__text",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1271,
+      "selector": ".chat-list-view__title,\r\n.list-view__title",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1281,
+      "selector": ".chat-list-view__preview,\r\n.list-view__description",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1291,
+      "selector": ".chat-list-view__meta,\r\n.list-view__item-action",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1330,
+      "selector": ".ai-context-menu button:hover,\r\n.ai-context-menu button:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1399,
+      "selector": "input.hidden[type=\"file\"]",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "display",
+          "value": "none"
+        }
+      ]
+    },
+    {
+      "file": "styles.css",
+      "line": 1544,
+      "selector": ".prompt-attachment-trigger:hover,\r\n.prompt-attachment-trigger:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1580,
+      "selector": ".ai-output-link:hover,\r\n.ai-output-link:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 1820,
+      "selector": ".prompt-suggestion__item:hover,\r\n.prompt-suggestion__item:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 2270,
+      "selector": ".review-report-history-item:hover,\r\n.review-report-history-item.active",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3019,
+      "selector": ".ai-sidebar-return:hover, .ai-sidebar-return:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3030,
+      "selector": ".ai-console-v3 .ai-folder-dropzone:hover, .ai-console-v3 .ai-folder-dropzone:has(.chat-list-view__item-content.active)",
+      "component": true,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3033,
+      "selector": ".ai-console-v3 .chat-list-view__item-content",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3034,
+      "selector": ".ai-console-v3 .chat-list-view__item-content.active, .ai-console-v3 .chat-list-view__item-content:hover",
+      "component": true,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3035,
+      "selector": ".ai-console-v3 .chat-list-view__icon",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3036,
+      "selector": ".ai-console-v3 .chat-list-view__title",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3045,
+      "selector": ".ai-console-v3 .chat-message__avatar",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3046,
+      "selector": ".ai-console-v3 .chat-message__body",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3047,
+      "selector": ".ai-console-v3 .chat-message--assistant",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3048,
+      "selector": ".ai-console-v3 .chat-message--assistant .chat-message__content",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3049,
+      "selector": ".ai-console-v3 .chat-message--user .chat-message__bubble",
+      "component": true,
+      "interaction": false,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3058,
+      "selector": ".ai-console-v3 .ai-provider-picker:focus-visible",
+      "component": false,
+      "interaction": true,
+      "tokens": [],
+      "important": []
+    },
+    {
+      "file": "styles.css",
+      "line": 3069,
+      "selector": ".ai-inspector-run-id",
+      "component": false,
+      "interaction": false,
+      "tokens": [],
+      "important": [
+        {
+          "name": "font-size",
+          "value": "10px"
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "applicationFiles": 34,
+    "officialFiles": 2,
+    "rules": 200,
+    "componentOverrides": 153,
+    "tokenBindings": 4,
+    "interactiveRules": 38,
+    "importantRules": 10
+  }
+}

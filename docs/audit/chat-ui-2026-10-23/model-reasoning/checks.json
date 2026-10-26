@@ -1,0 +1,83 @@
+{
+  "baseCommit": "a4100b91850867d1cbc7d02783a2265b66cd42db",
+  "mainSha256": "66c955975916aebc467324c7679312eba2e7583ab9a8412f8c50fea046516e03",
+  "sources": {
+    "src/main/xiaozhi-agent/pi-session.ts": "89cfe885180fd6509e6084cc5fdb18798570907caa90f3240938f1cd5ae8cd16",
+    "src/main/xiaozhi-agent/model-reasoning.ts": "cf1275993416867a772afa03ca1a925f4449dded7da17f62d66679db52c4cf79",
+    "src/main/xiaozhi-agent/production-host.ts": "6df9ebc7d0d797921fff10945c84c953f629c04362bbfe285dce2623435472f1",
+    "src/shared/office-agent.ts": "5203d31053e89f1c60a9e4356abc8326a97c8812a5cd42e2908d486edee81093",
+    "src/shared/model-reasoning.ts": "2fd3ca6d15effc3a605f1c6d460f23e7d4798b8a6877e78efd1b3a725272a3ba",
+    "src/shared/xiaozhi-agent.ts": "393630c89ccdfedc0a047720b61b288dde35d44e5c37bef99695923ab1c69ea7",
+    "src/shared/xiaozhi-projection.ts": "6d97fa413a6afdf0952c5dac8e5b62ec501734033d51c3e0c61b835df3fd75e9",
+    "src/renderer/components/office/OfficeAgentTrace.tsx": "baf566e448aac2a325e8f43dfecc4b1745c55f11177b4b24aef92cacd63bdef6"
+  },
+  "checks": {
+    "modelReasoning": 13,
+    "renderer": 217,
+    "styleIsolation": 6,
+    "trace": 19,
+    "realElectron": 17,
+    "rendererErrors": 0,
+    "smoke": {
+      "passed": 207,
+      "total": 207,
+      "ok": true
+    }
+  },
+  "audit": {
+    "info": 0,
+    "low": 5,
+    "moderate": 2,
+    "high": 7,
+    "critical": 1,
+    "total": 15
+  },
+  "startup": {
+    "cwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-model-reasoning-CV7qUS/data",
+    "theme": "light",
+    "faultInterceptorRemoved": true
+  },
+  "renderer": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/index.html",
+  "commands": [
+    {
+      "command": "npm run build",
+      "exit": 0
+    },
+    {
+      "command": "npm run test:model-reasoning",
+      "exit": 0,
+      "passed": 13
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "renderer": 217,
+      "style": 6
+    },
+    {
+      "command": "npm run test:agent-trace",
+      "exit": 0,
+      "passed": 19
+    },
+    {
+      "command": "npm run test:model-reasoning-electron",
+      "exit": 0,
+      "passed": 17
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "exit": 0,
+      "passed": 207
+    },
+    {
+      "command": "npm audit --json",
+      "exit": 1,
+      "existingWarnings": 15
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ]
+}

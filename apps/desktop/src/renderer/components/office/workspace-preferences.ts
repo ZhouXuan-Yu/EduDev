@@ -7,7 +7,7 @@ export function readWorkspacePreferences(): WorkspacePreferences {
     if (value?.schema === 1 && typeof value.sidebar === 'boolean' && typeof value.aside === 'boolean')
       return { sidebar: value.sidebar, aside: value.aside, files: value.files === true };
   } catch { /* Invalid or inaccessible preferences must not block the workspace. */ }
-  return { sidebar: true, aside: true, files: false };
+  return { sidebar: true, aside: false, files: false };
 }
 export function writeWorkspacePreferences(value: WorkspacePreferences): boolean {
   try {

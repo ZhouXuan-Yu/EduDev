@@ -2,4 +2,40 @@
 apps/desktop/src/main/education/vendor/** text eol=lf
 apps/desktop/src/main/education/vendor/**/*.whl -text
 # Preserve verbatim upstream license files, including original whitespace.
-python/omni_edu_education/licenses/*.txt -whitespace
+python/omni_edu_education/licenses/*.txt text eol=lf -whitespace
+
+python/omni_edu_education/worker.py text eol=lf
+apps/desktop/src/main/education/reading-worker.py text eol=lf
+apps/desktop/src/main/education/learning-worker.py text eol=lf
+apps/desktop/src/main/education/question-worker.py text eol=lf
+apps/desktop/src/main/education/math-worker.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-reading/LICENSE text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-reading/models.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-reading/search.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-reading/source-manifest.json text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-learning/LICENSE text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-learning/grading.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-learning/mastery.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-learning/models.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-learning/policy.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-learning/scheduler.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-learning/source-manifest.json text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-question/LICENSE text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-question/pipeline.py text eol=lf
+apps/desktop/src/main/education/vendor/deeptutor-question/source-manifest.json text eol=lf
+apps/desktop/src/main/education/vendor/math/README.md text eol=lf
+apps/desktop/src/main/education/vendor/math/SymPy.LICENSE text eol=lf
+apps/desktop/src/main/education/vendor/math/mpmath.LICENSE text eol=lf
+apps/desktop/src/main/education/vendor/math/source-manifest.json text eol=lf
+apps/desktop/scripts/release/build-education-runtime.mjs text eol=lf
+python/omni_edu_education/SOURCE.md text eol=lf
+python/omni_edu_education/licenses/PYTHON-LICENSE.txt text eol=lf
+python/omni_edu_education/licenses/PyInstaller-COPYING.txt text eol=lf
+python/omni_edu_reranker/worker.py text eol=lf
+apps/desktop/scripts/release/build-reranker-runtime.mjs text eol=lf
+python/omni_edu_reranker/SOURCE.md text eol=lf
+apps/desktop/scripts/release/prepare-reranker-assets.mjs text eol=lf
+python/omni_edu_retrieval/worker.py text eol=lf
+apps/desktop/scripts/release/build-retrieval-runtime.mjs text eol=lf
+python/omni_edu_retrieval/SOURCE.md text eol=lf
+apps/desktop/scripts/release/prepare-retrieval-assets.mjs text eol=lf

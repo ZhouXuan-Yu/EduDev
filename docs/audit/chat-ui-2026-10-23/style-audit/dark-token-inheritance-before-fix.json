@@ -1,0 +1,72 @@
+{
+  "color": {
+    "actual": "oklch(0.705 0.015 286.067)",
+    "official": "oklch(0.705 0.015 286.067)",
+    "equal": true
+  },
+  "font-family": {
+    "actual": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+    "official": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+    "equal": true
+  },
+  "font-size": {
+    "actual": "14px",
+    "official": "14px",
+    "equal": true
+  },
+  "font-weight": {
+    "actual": "400",
+    "official": "400",
+    "equal": true
+  },
+  "padding-left": {
+    "actual": "0px",
+    "official": "0px",
+    "equal": true
+  },
+  "padding-top": {
+    "actual": "0px",
+    "official": "0px",
+    "equal": true
+  },
+  "background-color": {
+    "actual": "rgba(0, 0, 0, 0)",
+    "official": "rgba(0, 0, 0, 0)",
+    "equal": true
+  },
+  "border-radius": {
+    "actual": "24px",
+    "official": "24px",
+    "equal": true
+  },
+  "outline-style": {
+    "actual": "none",
+    "official": "none",
+    "equal": true
+  },
+  "--muted": {
+    "actual": "oklch(70.5% .015 286.067)",
+    "official": "oklch(70.5% .015 286.067)",
+    "equal": true
+  },
+  "--accent": {
+    "actual": "#2565ce",
+    "official": "oklch(62.04% .195 253.83)",
+    "equal": false
+  },
+  "--accent-hover": {
+    "actual": "color-mix(in oklab, #2565ce 90%, #fff 10%)",
+    "official": "color-mix(in oklab, oklch(62.04% .195 253.83) 90%, oklch(99.11% 0 0) 10%)",
+    "equal": false
+  },
+  "--field-background": {
+    "actual": "oklch(21.03% .0059 285.89)",
+    "official": "oklch(21.03% .0059 285.89)",
+    "equal": true
+  },
+  "--focus": {
+    "actual": "#2565ce",
+    "official": "oklch(62.04% .195 253.83)",
+    "equal": false
+  }
+}

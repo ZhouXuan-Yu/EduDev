@@ -1,0 +1,121 @@
+{
+  "sourceCommit": "636fab0d7edee5e7c2694117c38ece8f623573f9",
+  "remoteObservedHead": "ecb940c136cc5b4ea56dc81b2505e64eff1dea29",
+  "license": "OpenMAIC MIT; html-parser Himalaya-derived ISC",
+  "upstream": "https://github.com/THU-MAIC/OpenMAIC",
+  "files": [
+    {
+      "sourceFile": "lib/export/use-export-pptx.ts",
+      "sourceSha256": "09bba7d7979380a23c44e52a77f6fc4232a06663653676628a4368fb30b7b7a7",
+      "output": "src/main/education/vendor/openmaic/export/pptx-format.ts",
+      "sha256": "d3b4d48ff8dcf48ef4c8c71d4007049f1701ec2f49686c50aae7e490c78d1a37",
+      "extracted": [
+        "formatColor",
+        "formatHTML",
+        "formatPoints",
+        "getShadowOption",
+        "getOutlineOption"
+      ]
+    },
+    {
+      "sourceFile": "lib/export/svg-path-parser.ts",
+      "sourceSha256": "22d2f05a94ae5f12c4cbc9a43bcafe860cfb532dd4d31d41f6454bfb8b91afd0",
+      "output": "src/main/education/vendor/openmaic/export/svg-path-parser.ts",
+      "sha256": "027bd01419354852828b722663a8f3cb30be23b3abe28931a318b3258bd1e85b"
+    },
+    {
+      "sourceFile": "lib/export/html-parser/format.ts",
+      "sourceSha256": "7158f1dccb532722ce7a6b10645f1e8e04da52a474cdbc7945cef26345794307",
+      "output": "src/main/education/vendor/openmaic/export/html-parser/format.ts",
+      "sha256": "7158f1dccb532722ce7a6b10645f1e8e04da52a474cdbc7945cef26345794307"
+    },
+    {
+      "sourceFile": "lib/export/html-parser/index.ts",
+      "sourceSha256": "6d50c2b160a05ff43dc63c39b0685432204c50b74b768c88a97a63eda30ed8f0",
+      "output": "src/main/education/vendor/openmaic/export/html-parser/index.ts",
+      "sha256": "6d50c2b160a05ff43dc63c39b0685432204c50b74b768c88a97a63eda30ed8f0"
+    },
+    {
+      "sourceFile": "lib/export/html-parser/lexer.ts",
+      "sourceSha256": "9b4ec13ad841e79702a29bcc3b8225b551cab493f4d42882009947f491279796",
+      "output": "src/main/education/vendor/openmaic/export/html-parser/lexer.ts",
+      "sha256": "9b4ec13ad841e79702a29bcc3b8225b551cab493f4d42882009947f491279796"
+    },
+    {
+      "sourceFile": "lib/export/html-parser/parser.ts",
+      "sourceSha256": "819a9ce7cfd1e500409e6ca48421b3ce64075c40689cd1a49372895a10c70d0c",
+      "output": "src/main/education/vendor/openmaic/export/html-parser/parser.ts",
+      "sha256": "819a9ce7cfd1e500409e6ca48421b3ce64075c40689cd1a49372895a10c70d0c"
+    },
+    {
+      "sourceFile": "lib/export/html-parser/stringify.ts",
+      "sourceSha256": "0c3e28a8d8b78291c11ddb2230026c3508f21e8fc7681a9fc1dc9f2dd607e4fd",
+      "output": "src/main/education/vendor/openmaic/export/html-parser/stringify.ts",
+      "sha256": "0c3e28a8d8b78291c11ddb2230026c3508f21e8fc7681a9fc1dc9f2dd607e4fd"
+    },
+    {
+      "sourceFile": "lib/export/html-parser/tags.ts",
+      "sourceSha256": "d04dc0a1f4b55206b842f6326d52496a502259472c610f89b82e5fe38e3f1264",
+      "output": "src/main/education/vendor/openmaic/export/html-parser/tags.ts",
+      "sha256": "d04dc0a1f4b55206b842f6326d52496a502259472c610f89b82e5fe38e3f1264"
+    },
+    {
+      "sourceFile": "lib/export/html-parser/types.ts",
+      "sourceSha256": "a88afdd8863a9f610087159f0f6b6dc553db7bd3d0f272c0bbccd32f84454404",
+      "output": "src/main/education/vendor/openmaic/export/html-parser/types.ts",
+      "sha256": "a88afdd8863a9f610087159f0f6b6dc553db7bd3d0f272c0bbccd32f84454404"
+    }
+  ],
+  "adaptations": [
+    "Pure format helpers extracted; no upstream hooks/stores/media/fetch/Agent",
+    "PptxGenJS installed 4.0.1 supports custom geometry points; hex colors omit #",
+    "SVG paths normalized absolute/HV/ST before original parser, no silent omitted elements",
+    "Safe formula raster via existing local math host, explicitly noneditable; no raw model HTML"
+  ],
+  "dependencies": [
+    {
+      "name": "svg-pathdata",
+      "version": "8.0.0",
+      "license": "MIT",
+      "bytes": 686326,
+      "files": 176,
+      "notices": [
+        {
+          "file": "LICENSE",
+          "sha256": "cd05e8e2516f46a2cd79494bbabdea76f874e8d049dbc19a76b367534a4e013e",
+          "text": "The MIT License (MIT)\nCopyright © 2017 Nicolas Froidure\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the “Software”), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "svg-arc-to-cubic-bezier",
+      "version": "3.2.0",
+      "license": "ISC",
+      "bytes": 28427,
+      "files": 8,
+      "notices": [
+        {
+          "file": "LICENSE.md",
+          "sha256": "e494c8a762141fd7b97104bd7350710dcd2ee0462c75e211bc527cd717158b0b",
+          "text": "Internet Systems Consortium license\n===================================\n\nCopyright (c) `2017`, `Colin Meinke`\n\nPermission to use, copy, modify, and/or distribute this software for any purpose\nwith or without fee is hereby granted, provided that the above copyright notice\nand this permission notice appear in all copies.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH\nREGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND\nFITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,\nINDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS\nOF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER\nTORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF\nTHIS SOFTWARE.\n"
+        }
+      ]
+    },
+    {
+      "name": "tinycolor2",
+      "version": "1.6.0",
+      "license": "MIT",
+      "bytes": 284855,
+      "files": 14,
+      "notices": [
+        {
+          "file": "LICENSE",
+          "sha256": "c6cb470a9ba0a50d57611aeec1f31da609c5aefdbee8eac7f289bcb0e30625fa",
+          "text": "Copyright (c), Brian Grinstead, http://briangrinstead.com\n\nPermission is hereby granted, free of charge, to any person obtaining\na copy of this software and associated documentation files (the\n\"Software\"), to deal in the Software without restriction, including\nwithout limitation the rights to use, copy, modify, merge, publish,\ndistribute, sublicense, and/or sell copies of the Software, and to\npermit persons to whom the Software is furnished to do so, subject to\nthe following conditions:\n\nThe above copyright notice and this permission notice shall be\nincluded in all copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,\nEXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\nMERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND\nNONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE\nLIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION\nOF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION\nWITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+        }
+      ]
+    }
+  ],
+  "lockSha256": "cca3a94cb5b93769216e26c6937f73473501a3a52e050ed7d55ca0e00bb64cbb",
+  "windowsImpact": "Three existing JS-only modules; no native build, Python/model download or service. PptxGenJS 4.0.1 reused."
+}

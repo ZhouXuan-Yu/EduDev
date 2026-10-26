@@ -1,0 +1,1278 @@
+- generic [ref=f12e3]:
+  - banner [ref=f12e7]:
+    - heading "Storybook" [level=1] [ref=f12e8]
+    - generic [ref=f12e12]:
+      - generic [ref=f12e14]:
+        - link "Skip to content" [ref=f12e15] [cursor=pointer]:
+          - /url: "#storybook-preview-wrapper"
+        - link "HeroUI Pro" [ref=f12e17] [cursor=pointer]:
+          - /url: ./
+        - switch "Settings" [ref=f12e18] [cursor=pointer]
+      - generic [ref=f12e22]: Search for components
+      - search [ref=f12e23]:
+        - combobox [ref=f12e24]:
+          - searchbox "Search for components" [ref=f12e25]
+          - button "Tag filters" [ref=f12e64] [cursor=pointer]
+      - navigation [ref=f12e27]:
+        - heading "Stories" [level=2] [ref=f12e28]
+        - generic [ref=f12e67]:
+          - button [expanded] [ref=f12e69] [cursor=pointer]
+          - link [ref=f12e477] [cursor=pointer]:
+            - /url: /?path=/docs/oss-components--docs
+          - link [ref=f12e483] [cursor=pointer]:
+            - /url: /?path=/story/oss-components--all-components
+          - button [expanded] [ref=f12e77] [cursor=pointer]
+          - button [ref=f12e109] [cursor=pointer]
+          - button [ref=f12e117] [cursor=pointer]
+          - button [expanded] [ref=f12e125] [cursor=pointer]
+          - button [ref=f12e488] [cursor=pointer]
+          - button [ref=f12e496] [cursor=pointer]
+          - button [ref=f12e504] [cursor=pointer]
+          - button [ref=f12e512] [cursor=pointer]
+          - button [ref=f12e520] [cursor=pointer]
+          - button [expanded] [ref=f12e528] [cursor=pointer]
+          - link [ref=f12e618] [cursor=pointer]:
+            - /url: /?path=/docs/pro-components-ai-chatmessage--docs
+          - link [ref=f12e624] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--default
+          - link [ref=f12e629] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--with-markdown
+          - link [ref=f12e634] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--loading
+          - button [ref=f12e536] [cursor=pointer]
+          - button [ref=f12e544] [cursor=pointer]
+          - button [ref=f12e552] [cursor=pointer]
+          - button [ref=f12e560] [cursor=pointer]
+          - button [ref=f12e568] [cursor=pointer]
+          - button [ref=f12e576] [cursor=pointer]
+          - button [ref=f12e584] [cursor=pointer]
+          - button [ref=f12e592] [cursor=pointer]
+          - button [ref=f12e133] [cursor=pointer]
+          - button [ref=f12e141] [cursor=pointer]
+          - button [ref=f12e149] [cursor=pointer]
+          - button [ref=f12e157] [cursor=pointer]
+          - button [ref=f12e165] [cursor=pointer]
+          - button [ref=f12e173] [cursor=pointer]
+          - button [ref=f12e181] [cursor=pointer]
+          - button [ref=f12e189] [cursor=pointer]
+          - button [ref=f12e197] [cursor=pointer]
+          - button [ref=f12e205] [cursor=pointer]
+          - button [ref=f12e213] [cursor=pointer]
+          - button [ref=f12e221] [cursor=pointer]
+          - button [ref=f12e229] [cursor=pointer]
+          - button [ref=f12e237] [cursor=pointer]
+          - button [ref=f12e245] [cursor=pointer]
+          - button [ref=f12e253] [cursor=pointer]
+          - button [ref=f12e261] [cursor=pointer]
+          - button [ref=f12e269] [cursor=pointer]
+          - button [ref=f12e277] [cursor=pointer]
+          - button [ref=f12e285] [cursor=pointer]
+          - button [ref=f12e293] [cursor=pointer]
+          - button [ref=f12e301] [cursor=pointer]
+          - button [ref=f12e309] [cursor=pointer]
+          - button [ref=f12e317] [cursor=pointer]
+          - button [ref=f12e325] [cursor=pointer]
+          - button [ref=f12e333] [cursor=pointer]
+          - button [ref=f12e341] [cursor=pointer]
+          - button [ref=f12e349] [cursor=pointer]
+          - button [ref=f12e357] [cursor=pointer]
+          - button [ref=f12e365] [cursor=pointer]
+          - button [ref=f12e373] [cursor=pointer]
+          - button [ref=f12e381] [cursor=pointer]
+          - button [ref=f12e389] [cursor=pointer]
+          - button [ref=f12e397] [cursor=pointer]
+          - button [ref=f12e405] [cursor=pointer]
+          - button [ref=f12e413] [cursor=pointer]
+          - button [ref=f12e421] [cursor=pointer]
+          - button [ref=f12e429] [cursor=pointer]
+          - button [ref=f12e437] [cursor=pointer]
+          - button [ref=f12e445] [cursor=pointer]
+          - button [ref=f12e453] [cursor=pointer]
+          - button [ref=f12e461] [cursor=pointer]
+          - button [ref=f12e469] [cursor=pointer]
+          - button [expanded] [ref=f12e85] [cursor=pointer]
+          - button [ref=f12e767] [cursor=pointer]
+          - button [expanded] [active] [ref=f12e775] [cursor=pointer]
+          - generic [ref=f12e784]:
+            - link [ref=f12e785] [cursor=pointer]:
+              - /url: /?path=/docs/template-demos-templates--docs
+            - link "Skip to content" [ref=f12e789] [cursor=pointer]:
+              - /url: "#storybook-preview-wrapper"
+          - link [ref=f12e791] [cursor=pointer]:
+            - /url: /?path=/story/template-demos-templates--dashboard
+          - link [ref=f12e796] [cursor=pointer]:
+            - /url: /?path=/story/template-demos-templates--finances
+          - link [ref=f12e801] [cursor=pointer]:
+            - /url: /?path=/story/template-demos-templates--crm
+          - link [ref=f12e806] [cursor=pointer]:
+            - /url: /?path=/story/template-demos-templates--chat
+          - link [ref=f12e811] [cursor=pointer]:
+            - /url: /?path=/story/template-demos-templates--chat-explore
+          - link [ref=f12e816] [cursor=pointer]:
+            - /url: /?path=/story/template-demos-templates--email
+          - button [expanded] [ref=f12e93] [cursor=pointer]
+          - button [ref=f12e719] [cursor=pointer]
+          - button [ref=f12e727] [cursor=pointer]
+          - button [ref=f12e735] [cursor=pointer]
+          - button [ref=f12e743] [cursor=pointer]
+          - button [ref=f12e751] [cursor=pointer]
+          - button [ref=f12e759] [cursor=pointer]
+          - button [ref=f12e101] [cursor=pointer]
+  - generic [ref=f12e49]:
+    - region [ref=f12e50]:
+      - heading "Toolbar" [level=2] [ref=f12e51]
+      - toolbar [ref=f12e52]:
+        - generic [ref=f12e601]:
+          - switch "Grid visibility" [ref=f12e638] [cursor=pointer]
+          - button "Preview background" [ref=f12e641] [cursor=pointer]
+          - switch "Outline tool" [ref=f12e602] [cursor=pointer]
+          - button "HeroUI theme for components Light" [ref=f12e606] [cursor=pointer]: Light
+          - button "HeroUI design theme for components Base" [ref=f12e609] [cursor=pointer]: Base
+        - button "Enter full screen" [ref=f12e613] [cursor=pointer]
+    - main [ref=f12e53]:
+      - heading "Main preview area" [level=2] [ref=f12e54]
+      - generic [ref=f12e58]:
+        - link "Skip to sidebar" [ref=f12e616] [cursor=pointer]:
+          - /url: "#template-demos-templates--docs"
+        - iframe [ref=f12e62]:
+          - generic [ref=f13e49]:
+            - generic [ref=f13e232]:
+              - heading "Templates" [level=1] [ref=f13e233]
+              - generic [ref=f13e235]:
+                - toolbar [ref=f13e236]:
+                  - generic [ref=f13e237]:
+                    - generic [ref=f13e238]:
+                      - button "Zoom in" [ref=f13e239] [cursor=pointer]
+                      - button "Zoom out" [ref=f13e243] [cursor=pointer]
+                      - button "Reset zoom" [ref=f13e247] [cursor=pointer]
+                    - link "Open canvas in new tab" [ref=f13e251] [cursor=pointer]:
+                      - /url: iframe.html?id=template-demos-templates--dashboard
+                - generic [ref=f13e255]:
+                  - generic [ref=f13e263]:
+                    - banner [ref=f13e264]:
+                      - navigation [ref=f13e265]:
+                        - generic [ref=f13e266]:
+                          - button "Open navigation" [ref=f13e267] [cursor=pointer]
+                          - heading "Good morning, Kate" [level=1] [ref=f13e268]
+                          - generic [ref=f13e269]:
+                            - button "Search" [ref=f13e270] [cursor=pointer]
+                            - button "Notifications" [ref=f13e271] [cursor=pointer]
+                            - button "Invite" [ref=f13e272] [cursor=pointer]
+                    - main [ref=f13e273]:
+                      - generic [ref=f13e274]:
+                        - generic [ref=f13e275]:
+                          - tablist "Dashboard tabs" [ref=f13e279]:
+                            - tab "Overview" [selected] [ref=f13e280] [cursor=pointer]
+                            - tab "Sales" [ref=f13e282] [cursor=pointer]
+                            - tab "Expenses" [ref=f13e283] [cursor=pointer]
+                          - generic [ref=f13e284]:
+                            - button "Refresh" [ref=f13e285] [cursor=pointer]
+                            - group [ref=f13e286]:
+                              - button "Monthly" [ref=f13e287] [cursor=pointer]
+                              - button "Change period" [ref=f13e288] [cursor=pointer]
+                            - button "Download" [ref=f13e289] [cursor=pointer]
+                        - generic [ref=f13e290]:
+                          - generic [ref=f13e291]:
+                            - term [ref=f13e293]: Revenue
+                            - generic [ref=f13e294]:
+                              - definition [ref=f13e295]: US$228,441
+                              - generic [ref=f13e296]: 3.3%
+                          - generic [ref=f13e300]:
+                            - term [ref=f13e302]: Expenses
+                            - generic [ref=f13e303]:
+                              - definition [ref=f13e304]: US$25,108
+                              - generic [ref=f13e305]: 3.3%
+                          - generic [ref=f13e309]:
+                            - term [ref=f13e311]: Sales
+                            - generic [ref=f13e312]:
+                              - definition [ref=f13e313]: "458"
+                              - generic [ref=f13e314]: 3.3%
+                          - generic [ref=f13e318]:
+                            - term [ref=f13e320]: Profit
+                            - generic [ref=f13e321]:
+                              - definition [ref=f13e322]: US$203,133
+                              - generic [ref=f13e323]: 4.1%
+                        - generic [ref=f13e327]:
+                          - generic [ref=f13e328]:
+                            - generic [ref=f13e329]:
+                              - heading "Sales Performance" [level=3] [ref=f13e330]
+                              - generic [ref=f13e331]:
+                                - button "Last 2 weeks" [ref=f13e332] [cursor=pointer]
+                                - combobox [ref=f13e338]
+                            - generic [ref=f13e339]:
+                              - generic [ref=f13e340]:
+                                - generic [ref=f13e341]:
+                                  - generic [ref=f13e342]:
+                                    - generic [ref=f13e343]: US$28,441
+                                    - generic [ref=f13e344]: 3.3%
+                                  - generic [ref=f13e348]: Weekly Sales
+                                - generic [ref=f13e349]:
+                                  - generic [ref=f13e350]:
+                                    - generic [ref=f13e351]: US$4,063
+                                    - generic [ref=f13e352]: 3.3%
+                                  - generic [ref=f13e356]: Daily Sales
+                                - generic [ref=f13e357]:
+                                  - generic [ref=f13e358]:
+                                    - generic [ref=f13e359]: "278"
+                                    - generic [ref=f13e360]: 3.3%
+                                  - generic [ref=f13e364]: Total Sales
+                              - application [ref=f13e368]:
+                                - generic [ref=f13e379]:
+                                  - generic [ref=f13e380]:
+                                    - generic [ref=f13e381]: "01"
+                                    - generic [ref=f13e383]: "02"
+                                    - generic [ref=f13e385]: "03"
+                                    - generic [ref=f13e387]: "04"
+                                    - generic [ref=f13e389]: "05"
+                                    - generic [ref=f13e391]: "06"
+                                    - generic [ref=f13e393]: "07"
+                                    - generic [ref=f13e395]: "08"
+                                    - generic [ref=f13e397]: "09"
+                                    - generic [ref=f13e399]: "10"
+                                    - generic [ref=f13e401]: "11"
+                                    - generic [ref=f13e403]: "12"
+                                  - generic [ref=f13e405]:
+                                    - generic [ref=f13e406]: "0"
+                                    - generic [ref=f13e408]: "20"
+                                    - generic [ref=f13e410]: "40"
+                                    - generic [ref=f13e412]: "60"
+                          - generic [ref=f13e414]:
+                            - generic [ref=f13e415]:
+                              - heading "Traffic Source" [level=3] [ref=f13e416]
+                              - generic [ref=f13e417]:
+                                - generic [ref=f13e418]:
+                                  - generic [ref=f13e419]: Organic
+                                  - generic [ref=f13e422]: Paid Ads
+                                - button "More options" [ref=f13e425] [cursor=pointer]
+                            - generic [ref=f13e426]:
+                              - generic [ref=f13e427]:
+                                - generic [ref=f13e428]: 231,856
+                                - generic [ref=f13e429]: Sessions
+                              - application [ref=f13e433]:
+                                - generic [ref=f13e451]:
+                                  - generic [ref=f13e452]:
+                                    - generic [ref=f13e453]: Jan
+                                    - generic [ref=f13e455]: Feb
+                                    - generic [ref=f13e457]: Mar
+                                    - generic [ref=f13e459]: Apr
+                                    - generic [ref=f13e461]: May
+                                    - generic [ref=f13e463]: Jun
+                                    - generic [ref=f13e465]: Jul
+                                    - generic [ref=f13e467]: Aug
+                                    - generic [ref=f13e469]: Sep
+                                    - generic [ref=f13e471]: Oct
+                                    - generic [ref=f13e473]: Nov
+                                    - generic [ref=f13e475]: Dec
+                                  - generic [ref=f13e477]:
+                                    - generic [ref=f13e478]: "0"
+                                    - generic [ref=f13e480]: 5k
+                                    - generic [ref=f13e482]: 10k
+                                    - generic [ref=f13e484]: 20k
+                        - generic [ref=f13e486]:
+                          - generic [ref=f13e487]:
+                            - generic [ref=f13e488]:
+                              - generic [ref=f13e489]: All Employees
+                              - generic [ref=f13e490]: "32"
+                            - generic [ref=f13e492]:
+                              - generic [ref=f13e493]:
+                                - button "Filter" [ref=f13e494] [cursor=pointer]
+                                - button "Sort" [ref=f13e495] [cursor=pointer]
+                                - button "Columns" [ref=f13e496] [cursor=pointer]
+                              - group [ref=f13e498]:
+                                - searchbox "Search..." [ref=f13e499]
+                                - button "Close"
+                          - grid "All employees" [ref=f13e502]:
+                            - rowgroup [ref=f13e503]:
+                              - row [ref=f13e504]:
+                                - columnheader "Worker ID" [ref=f13e505] [cursor=pointer]
+                                - columnheader "Member" [ref=f13e506] [cursor=pointer]
+                                - columnheader "Role" [ref=f13e510] [cursor=pointer]
+                                - columnheader "Worker Type" [ref=f13e511] [cursor=pointer]
+                                - columnheader "Actions" [ref=f13e512]
+                            - rowgroup [ref=f13e513]:
+                              - row [ref=f13e514]:
+                                - rowheader "#4586936 Copy ID" [ref=f13e515]:
+                                  - generic [ref=f13e516]:
+                                    - generic [ref=f13e517]: "#4586936"
+                                    - button "Copy ID" [ref=f13e518] [cursor=pointer]
+                                - gridcell "AT Alex Turner alex@acme.com" [ref=f13e519]:
+                                  - generic [ref=f13e520]:
+                                    - generic [ref=f13e521]: AT
+                                    - generic [ref=f13e523]:
+                                      - generic [ref=f13e524]: Alex Turner
+                                      - generic [ref=f13e525]: alex@acme.com
+                                - gridcell "Product Manager" [ref=f13e526]
+                                - gridcell "Employee" [ref=f13e527]
+                                - gridcell [ref=f13e528]:
+                                  - generic [ref=f13e529]:
+                                    - button "View" [ref=f13e530] [cursor=pointer]
+                                    - button "Edit" [ref=f13e531] [cursor=pointer]
+                                    - button "Delete" [ref=f13e532] [cursor=pointer]
+                              - row [ref=f13e533]:
+                                - rowheader "#4586937 Copy ID" [ref=f13e534]:
+                                  - generic [ref=f13e535]:
+                                    - generic [ref=f13e536]: "#4586937"
+                                    - button "Copy ID" [ref=f13e537] [cursor=pointer]
+                                - gridcell "ED Emma Davis emma@acme.com" [ref=f13e538]:
+                                  - generic [ref=f13e539]:
+                                    - generic [ref=f13e540]: ED
+                                    - generic [ref=f13e542]:
+                                      - generic [ref=f13e543]: Emma Davis
+                                      - generic [ref=f13e544]: emma@acme.com
+                                - gridcell "Senior Designer" [ref=f13e545]
+                                - gridcell "Employee" [ref=f13e546]
+                                - gridcell [ref=f13e547]:
+                                  - generic [ref=f13e548]:
+                                    - button "View" [ref=f13e549] [cursor=pointer]
+                                    - button "Edit" [ref=f13e550] [cursor=pointer]
+                                    - button "Delete" [ref=f13e551] [cursor=pointer]
+                              - row [ref=f13e552]:
+                                - rowheader "#4586933 Copy ID" [ref=f13e553]:
+                                  - generic [ref=f13e554]:
+                                    - generic [ref=f13e555]: "#4586933"
+                                    - button "Copy ID" [ref=f13e556] [cursor=pointer]
+                                - gridcell "John Smith John Smith john@acme.com" [ref=f13e557]:
+                                  - generic [ref=f13e558]:
+                                    - img "John Smith" [ref=f13e560]
+                                    - generic [ref=f13e561]:
+                                      - generic [ref=f13e562]: John Smith
+                                      - generic [ref=f13e563]: john@acme.com
+                                - gridcell "Chief Technology Officer" [ref=f13e564]
+                                - gridcell "Employee" [ref=f13e565]
+                                - gridcell [ref=f13e566]:
+                                  - generic [ref=f13e567]:
+                                    - button "View" [ref=f13e568] [cursor=pointer]
+                                    - button "Edit" [ref=f13e569] [cursor=pointer]
+                                    - button "Delete" [ref=f13e570] [cursor=pointer]
+                              - row [ref=f13e571]:
+                                - rowheader "#4586932 Copy ID" [ref=f13e572]:
+                                  - generic [ref=f13e573]:
+                                    - generic [ref=f13e574]: "#4586932"
+                                    - button "Copy ID" [ref=f13e575] [cursor=pointer]
+                                - gridcell "KM Kate Moore kate@acme.com" [ref=f13e576]:
+                                  - generic [ref=f13e577]:
+                                    - generic [ref=f13e578]: KM
+                                    - generic [ref=f13e580]:
+                                      - generic [ref=f13e581]: Kate Moore
+                                      - generic [ref=f13e582]: kate@acme.com
+                                - gridcell "Chief Executive Officer" [ref=f13e583]
+                                - gridcell "Employee" [ref=f13e584]
+                                - gridcell [ref=f13e585]:
+                                  - generic [ref=f13e586]:
+                                    - button "View" [ref=f13e587] [cursor=pointer]
+                                    - button "Edit" [ref=f13e588] [cursor=pointer]
+                                    - button "Delete" [ref=f13e589] [cursor=pointer]
+                              - row [ref=f13e590]:
+                                - rowheader "#4586935 Copy ID" [ref=f13e591]:
+                                  - generic [ref=f13e592]:
+                                    - generic [ref=f13e593]: "#4586935"
+                                    - button "Copy ID" [ref=f13e594] [cursor=pointer]
+                                - gridcell "MW Mike Wilson mike@acme.com" [ref=f13e595]:
+                                  - generic [ref=f13e596]:
+                                    - generic [ref=f13e597]: MW
+                                    - generic [ref=f13e599]:
+                                      - generic [ref=f13e600]: Mike Wilson
+                                      - generic [ref=f13e601]: mike@acme.com
+                                - gridcell "VP of Engineering" [ref=f13e602]
+                                - gridcell "Employee" [ref=f13e603]
+                                - gridcell [ref=f13e604]:
+                                  - generic [ref=f13e605]:
+                                    - button "View" [ref=f13e606] [cursor=pointer]
+                                    - button "Edit" [ref=f13e607] [cursor=pointer]
+                                    - button "Delete" [ref=f13e608] [cursor=pointer]
+                              - row [ref=f13e609]:
+                                - rowheader "#4586934 Copy ID" [ref=f13e610]:
+                                  - generic [ref=f13e611]:
+                                    - generic [ref=f13e612]: "#4586934"
+                                    - button "Copy ID" [ref=f13e613] [cursor=pointer]
+                                - gridcell "SJ Sara Johnson sara@acme.com" [ref=f13e614]:
+                                  - generic [ref=f13e615]:
+                                    - generic [ref=f13e616]: SJ
+                                    - generic [ref=f13e618]:
+                                      - generic [ref=f13e619]: Sara Johnson
+                                      - generic [ref=f13e620]: sara@acme.com
+                                - gridcell "Chief Marketing Officer" [ref=f13e621]
+                                - gridcell "Employee" [ref=f13e622]
+                                - gridcell [ref=f13e623]:
+                                  - generic [ref=f13e624]:
+                                    - button "View" [ref=f13e625] [cursor=pointer]
+                                    - button "Edit" [ref=f13e626] [cursor=pointer]
+                                    - button "Delete" [ref=f13e627] [cursor=pointer]
+                  - button "Show code" [ref=f13e629] [cursor=pointer]
+              - heading "Stories" [level=2] [ref=f13e630]:
+                - link [aria-hidden] [ref=f13e631] [cursor=pointer]:
+                  - /url: "#stories-1"
+                - text: Stories
+              - generic [ref=f13e632]:
+                - heading "Dashboard" [level=3] [ref=f13e633]:
+                  - link [aria-hidden] [ref=f13e634] [cursor=pointer]:
+                    - /url: "#dashboard"
+                  - text: Dashboard
+                - paragraph [ref=f13e635]: The Dashboard template — KPIs, charts, and a data table with sidebar navigation.
+                - generic [ref=f13e637]:
+                  - generic [ref=f13e645]:
+                    - banner [ref=f13e646]:
+                      - navigation [ref=f13e647]:
+                        - generic [ref=f13e648]:
+                          - button "Open navigation" [ref=f13e649] [cursor=pointer]
+                          - heading "Good morning, Kate" [level=1] [ref=f13e650]
+                          - generic [ref=f13e651]:
+                            - button "Search" [ref=f13e652] [cursor=pointer]
+                            - button "Notifications" [ref=f13e653] [cursor=pointer]
+                            - button "Invite" [ref=f13e654] [cursor=pointer]
+                    - main [ref=f13e655]:
+                      - generic [ref=f13e656]:
+                        - generic [ref=f13e657]:
+                          - tablist "Dashboard tabs" [ref=f13e661]:
+                            - tab "Overview" [selected] [ref=f13e662] [cursor=pointer]
+                            - tab "Sales" [ref=f13e664] [cursor=pointer]
+                            - tab "Expenses" [ref=f13e665] [cursor=pointer]
+                          - generic [ref=f13e666]:
+                            - button "Refresh" [ref=f13e667] [cursor=pointer]
+                            - group [ref=f13e668]:
+                              - button "Monthly" [ref=f13e669] [cursor=pointer]
+                              - button "Change period" [ref=f13e670] [cursor=pointer]
+                            - button "Download" [ref=f13e671] [cursor=pointer]
+                        - generic [ref=f13e672]:
+                          - generic [ref=f13e673]:
+                            - term [ref=f13e675]: Revenue
+                            - generic [ref=f13e676]:
+                              - definition [ref=f13e677]: US$228,441
+                              - generic [ref=f13e678]: 3.3%
+                          - generic [ref=f13e682]:
+                            - term [ref=f13e684]: Expenses
+                            - generic [ref=f13e685]:
+                              - definition [ref=f13e686]: US$25,108
+                              - generic [ref=f13e687]: 3.3%
+                          - generic [ref=f13e691]:
+                            - term [ref=f13e693]: Sales
+                            - generic [ref=f13e694]:
+                              - definition [ref=f13e695]: "458"
+                              - generic [ref=f13e696]: 3.3%
+                          - generic [ref=f13e700]:
+                            - term [ref=f13e702]: Profit
+                            - generic [ref=f13e703]:
+                              - definition [ref=f13e704]: US$203,133
+                              - generic [ref=f13e705]: 4.1%
+                        - generic [ref=f13e709]:
+                          - generic [ref=f13e710]:
+                            - generic [ref=f13e711]:
+                              - heading "Sales Performance" [level=3] [ref=f13e712]
+                              - generic [ref=f13e713]:
+                                - button "Last 2 weeks" [ref=f13e714] [cursor=pointer]
+                                - combobox [ref=f13e720]
+                            - generic [ref=f13e721]:
+                              - generic [ref=f13e722]:
+                                - generic [ref=f13e723]:
+                                  - generic [ref=f13e724]:
+                                    - generic [ref=f13e725]: US$28,441
+                                    - generic [ref=f13e726]: 3.3%
+                                  - generic [ref=f13e730]: Weekly Sales
+                                - generic [ref=f13e731]:
+                                  - generic [ref=f13e732]:
+                                    - generic [ref=f13e733]: US$4,063
+                                    - generic [ref=f13e734]: 3.3%
+                                  - generic [ref=f13e738]: Daily Sales
+                                - generic [ref=f13e739]:
+                                  - generic [ref=f13e740]:
+                                    - generic [ref=f13e741]: "278"
+                                    - generic [ref=f13e742]: 3.3%
+                                  - generic [ref=f13e746]: Total Sales
+                              - application [ref=f13e750]:
+                                - generic [ref=f13e761]:
+                                  - generic [ref=f13e762]:
+                                    - generic [ref=f13e763]: "01"
+                                    - generic [ref=f13e765]: "02"
+                                    - generic [ref=f13e767]: "03"
+                                    - generic [ref=f13e769]: "04"
+                                    - generic [ref=f13e771]: "05"
+                                    - generic [ref=f13e773]: "06"
+                                    - generic [ref=f13e775]: "07"
+                                    - generic [ref=f13e777]: "08"
+                                    - generic [ref=f13e779]: "09"
+                                    - generic [ref=f13e781]: "10"
+                                    - generic [ref=f13e783]: "11"
+                                    - generic [ref=f13e785]: "12"
+                                  - generic [ref=f13e787]:
+                                    - generic [ref=f13e788]: "0"
+                                    - generic [ref=f13e790]: "20"
+                                    - generic [ref=f13e792]: "40"
+                                    - generic [ref=f13e794]: "60"
+                          - generic [ref=f13e796]:
+                            - generic [ref=f13e797]:
+                              - heading "Traffic Source" [level=3] [ref=f13e798]
+                              - generic [ref=f13e799]:
+                                - generic [ref=f13e800]:
+                                  - generic [ref=f13e801]: Organic
+                                  - generic [ref=f13e804]: Paid Ads
+                                - button "More options" [ref=f13e807] [cursor=pointer]
+                            - generic [ref=f13e808]:
+                              - generic [ref=f13e809]:
+                                - generic [ref=f13e810]: 231,856
+                                - generic [ref=f13e811]: Sessions
+                              - application [ref=f13e815]:
+                                - generic [ref=f13e833]:
+                                  - generic [ref=f13e834]:
+                                    - generic [ref=f13e835]: Jan
+                                    - generic [ref=f13e837]: Feb
+                                    - generic [ref=f13e839]: Mar
+                                    - generic [ref=f13e841]: Apr
+                                    - generic [ref=f13e843]: May
+                                    - generic [ref=f13e845]: Jun
+                                    - generic [ref=f13e847]: Jul
+                                    - generic [ref=f13e849]: Aug
+                                    - generic [ref=f13e851]: Sep
+                                    - generic [ref=f13e853]: Oct
+                                    - generic [ref=f13e855]: Nov
+                                    - generic [ref=f13e857]: Dec
+                                  - generic [ref=f13e859]:
+                                    - generic [ref=f13e860]: "0"
+                                    - generic [ref=f13e862]: 5k
+                                    - generic [ref=f13e864]: 10k
+                                    - generic [ref=f13e866]: 20k
+                        - generic [ref=f13e868]:
+                          - generic [ref=f13e869]:
+                            - generic [ref=f13e870]:
+                              - generic [ref=f13e871]: All Employees
+                              - generic [ref=f13e872]: "32"
+                            - generic [ref=f13e874]:
+                              - generic [ref=f13e875]:
+                                - button "Filter" [ref=f13e876] [cursor=pointer]
+                                - button "Sort" [ref=f13e877] [cursor=pointer]
+                                - button "Columns" [ref=f13e878] [cursor=pointer]
+                              - group [ref=f13e880]:
+                                - searchbox "Search..." [ref=f13e881]
+                                - button "Close"
+                          - grid "All employees" [ref=f13e884]:
+                            - rowgroup [ref=f13e885]:
+                              - row [ref=f13e886]:
+                                - columnheader "Worker ID" [ref=f13e887] [cursor=pointer]
+                                - columnheader "Member" [ref=f13e888] [cursor=pointer]
+                                - columnheader "Role" [ref=f13e892] [cursor=pointer]
+                                - columnheader "Worker Type" [ref=f13e893] [cursor=pointer]
+                                - columnheader "Actions" [ref=f13e894]
+                            - rowgroup [ref=f13e895]:
+                              - row [ref=f13e896]:
+                                - rowheader "#4586936 Copy ID" [ref=f13e897]:
+                                  - generic [ref=f13e898]:
+                                    - generic [ref=f13e899]: "#4586936"
+                                    - button "Copy ID" [ref=f13e900] [cursor=pointer]
+                                - gridcell "AT Alex Turner alex@acme.com" [ref=f13e901]:
+                                  - generic [ref=f13e902]:
+                                    - generic [ref=f13e903]: AT
+                                    - generic [ref=f13e905]:
+                                      - generic [ref=f13e906]: Alex Turner
+                                      - generic [ref=f13e907]: alex@acme.com
+                                - gridcell "Product Manager" [ref=f13e908]
+                                - gridcell "Employee" [ref=f13e909]
+                                - gridcell [ref=f13e910]:
+                                  - generic [ref=f13e911]:
+                                    - button "View" [ref=f13e912] [cursor=pointer]
+                                    - button "Edit" [ref=f13e913] [cursor=pointer]
+                                    - button "Delete" [ref=f13e914] [cursor=pointer]
+                              - row [ref=f13e915]:
+                                - rowheader "#4586937 Copy ID" [ref=f13e916]:
+                                  - generic [ref=f13e917]:
+                                    - generic [ref=f13e918]: "#4586937"
+                                    - button "Copy ID" [ref=f13e919] [cursor=pointer]
+                                - gridcell "ED Emma Davis emma@acme.com" [ref=f13e920]:
+                                  - generic [ref=f13e921]:
+                                    - generic [ref=f13e922]: ED
+                                    - generic [ref=f13e924]:
+                                      - generic [ref=f13e925]: Emma Davis
+                                      - generic [ref=f13e926]: emma@acme.com
+                                - gridcell "Senior Designer" [ref=f13e927]
+                                - gridcell "Employee" [ref=f13e928]
+                                - gridcell [ref=f13e929]:
+                                  - generic [ref=f13e930]:
+                                    - button "View" [ref=f13e931] [cursor=pointer]
+                                    - button "Edit" [ref=f13e932] [cursor=pointer]
+                                    - button "Delete" [ref=f13e933] [cursor=pointer]
+                              - row [ref=f13e934]:
+                                - rowheader "#4586933 Copy ID" [ref=f13e935]:
+                                  - generic [ref=f13e936]:
+                                    - generic [ref=f13e937]: "#4586933"
+                                    - button "Copy ID" [ref=f13e938] [cursor=pointer]
+                                - gridcell "John Smith John Smith john@acme.com" [ref=f13e939]:
+                                  - generic [ref=f13e940]:
+                                    - img "John Smith" [ref=f13e942]
+                                    - generic [ref=f13e943]:
+                                      - generic [ref=f13e944]: John Smith
+                                      - generic [ref=f13e945]: john@acme.com
+                                - gridcell "Chief Technology Officer" [ref=f13e946]
+                                - gridcell "Employee" [ref=f13e947]
+                                - gridcell [ref=f13e948]:
+                                  - generic [ref=f13e949]:
+                                    - button "View" [ref=f13e950] [cursor=pointer]
+                                    - button "Edit" [ref=f13e951] [cursor=pointer]
+                                    - button "Delete" [ref=f13e952] [cursor=pointer]
+                              - row [ref=f13e953]:
+                                - rowheader "#4586932 Copy ID" [ref=f13e954]:
+                                  - generic [ref=f13e955]:
+                                    - generic [ref=f13e956]: "#4586932"
+                                    - button "Copy ID" [ref=f13e957] [cursor=pointer]
+                                - gridcell "KM Kate Moore kate@acme.com" [ref=f13e958]:
+                                  - generic [ref=f13e959]:
+                                    - generic [ref=f13e960]: KM
+                                    - generic [ref=f13e962]:
+                                      - generic [ref=f13e963]: Kate Moore
+                                      - generic [ref=f13e964]: kate@acme.com
+                                - gridcell "Chief Executive Officer" [ref=f13e965]
+                                - gridcell "Employee" [ref=f13e966]
+                                - gridcell [ref=f13e967]:
+                                  - generic [ref=f13e968]:
+                                    - button "View" [ref=f13e969] [cursor=pointer]
+                                    - button "Edit" [ref=f13e970] [cursor=pointer]
+                                    - button "Delete" [ref=f13e971] [cursor=pointer]
+                              - row [ref=f13e972]:
+                                - rowheader "#4586935 Copy ID" [ref=f13e973]:
+                                  - generic [ref=f13e974]:
+                                    - generic [ref=f13e975]: "#4586935"
+                                    - button "Copy ID" [ref=f13e976] [cursor=pointer]
+                                - gridcell "MW Mike Wilson mike@acme.com" [ref=f13e977]:
+                                  - generic [ref=f13e978]:
+                                    - generic [ref=f13e979]: MW
+                                    - generic [ref=f13e981]:
+                                      - generic [ref=f13e982]: Mike Wilson
+                                      - generic [ref=f13e983]: mike@acme.com
+                                - gridcell "VP of Engineering" [ref=f13e984]
+                                - gridcell "Employee" [ref=f13e985]
+                                - gridcell [ref=f13e986]:
+                                  - generic [ref=f13e987]:
+                                    - button "View" [ref=f13e988] [cursor=pointer]
+                                    - button "Edit" [ref=f13e989] [cursor=pointer]
+                                    - button "Delete" [ref=f13e990] [cursor=pointer]
+                              - row [ref=f13e991]:
+                                - rowheader "#4586934 Copy ID" [ref=f13e992]:
+                                  - generic [ref=f13e993]:
+                                    - generic [ref=f13e994]: "#4586934"
+                                    - button "Copy ID" [ref=f13e995] [cursor=pointer]
+                                - gridcell "SJ Sara Johnson sara@acme.com" [ref=f13e996]:
+                                  - generic [ref=f13e997]:
+                                    - generic [ref=f13e998]: SJ
+                                    - generic [ref=f13e1000]:
+                                      - generic [ref=f13e1001]: Sara Johnson
+                                      - generic [ref=f13e1002]: sara@acme.com
+                                - gridcell "Chief Marketing Officer" [ref=f13e1003]
+                                - gridcell "Employee" [ref=f13e1004]
+                                - gridcell [ref=f13e1005]:
+                                  - generic [ref=f13e1006]:
+                                    - button "View" [ref=f13e1007] [cursor=pointer]
+                                    - button "Edit" [ref=f13e1008] [cursor=pointer]
+                                    - button "Delete" [ref=f13e1009] [cursor=pointer]
+                  - button "Show code" [ref=f13e1011] [cursor=pointer]
+              - generic [ref=f13e1012]:
+                - heading "Finances" [level=3] [ref=f13e1013]:
+                  - link [aria-hidden] [ref=f13e1014] [cursor=pointer]:
+                    - /url: "#finances"
+                  - text: Finances
+                - paragraph [ref=f13e1015]: The Finances template — balance overview, portfolio chart, holdings, and recent activity.
+                - generic [ref=f13e1017]:
+                  - generic [ref=f13e1025]:
+                    - banner [ref=f13e1026]:
+                      - navigation [ref=f13e1027]:
+                        - generic [ref=f13e1028]:
+                          - button "Open navigation" [ref=f13e1029] [cursor=pointer]
+                          - heading "Good afternoon, Fred" [level=1] [ref=f13e1030]
+                          - generic [ref=f13e1031]:
+                            - button "Notifications" [ref=f13e1032] [cursor=pointer]
+                            - button "Send" [ref=f13e1033] [cursor=pointer]
+                    - main [ref=f13e1034]:
+                      - generic [ref=f13e1035]:
+                        - generic [ref=f13e1036]:
+                          - generic [ref=f13e1037]:
+                            - term [ref=f13e1039]: Total balance
+                            - generic [ref=f13e1040]:
+                              - definition [ref=f13e1041]: US$5,427.48
+                              - generic [ref=f13e1042]: 5.32%
+                          - generic [ref=f13e1046]:
+                            - term [ref=f13e1048]: 24h change
+                            - generic [ref=f13e1049]:
+                              - definition [ref=f13e1050]: US$120.18
+                              - generic [ref=f13e1051]: 2.24%
+                          - generic [ref=f13e1055]:
+                            - term [ref=f13e1057]: Top performer · SOL
+                            - generic [ref=f13e1058]:
+                              - definition [ref=f13e1059]: 4.72%
+                              - generic [ref=f13e1060]: 4.72%
+                          - generic [ref=f13e1064]:
+                            - term [ref=f13e1066]: Holdings
+                            - generic [ref=f13e1067]:
+                              - definition [ref=f13e1068]: "8"
+                              - generic [ref=f13e1069]: Assets
+                        - generic [ref=f13e1071]:
+                          - generic [ref=f13e1072]:
+                            - generic [ref=f13e1073]:
+                              - generic [ref=f13e1074]:
+                                - heading "Portfolio" [level=3] [ref=f13e1075]
+                                - paragraph [ref=f13e1076]: Sample holdings and historical performance
+                                - generic [ref=f13e1077]:
+                                  - generic [ref=f13e1078]: Total balance
+                                  - generic [ref=f13e1079]: US$5,427.48
+                                  - generic [ref=f13e1080]:
+                                    - generic [ref=f13e1081]: +8.16%
+                                    - generic [ref=f13e1085]: 1M
+                              - group "Time range" [ref=f13e1086]:
+                                - button "1D" [ref=f13e1087] [cursor=pointer]
+                                - button "1W" [ref=f13e1088] [cursor=pointer]
+                                - button "1M" [pressed] [ref=f13e1089] [cursor=pointer]
+                                - button "3M" [ref=f13e1090] [cursor=pointer]
+                                - button "1Y" [ref=f13e1091] [cursor=pointer]
+                                - button "All" [ref=f13e1092] [cursor=pointer]
+                            - application [ref=f13e1097]:
+                              - generic [ref=f13e1112]:
+                                - generic [ref=f13e1113]:
+                                  - generic [ref=f13e1114]: Day 1
+                                  - generic [ref=f13e1116]: Day 3
+                                  - generic [ref=f13e1118]: Day 5
+                                  - generic [ref=f13e1120]: Day 7
+                                  - generic [ref=f13e1122]: Day 9
+                                  - generic [ref=f13e1124]: Day 11
+                                  - generic [ref=f13e1126]: Day 13
+                                  - generic [ref=f13e1128]: Day 15
+                                  - generic [ref=f13e1130]: Day 17
+                                  - generic [ref=f13e1132]: Day 19
+                                  - generic [ref=f13e1134]: Day 21
+                                  - generic [ref=f13e1136]: Day 23
+                                  - generic [ref=f13e1138]: Day 25
+                                  - generic [ref=f13e1140]: Day 28
+                                - generic [ref=f13e1142]:
+                                  - generic [ref=f13e1143]: $4,834
+                                  - generic [ref=f13e1145]: $5,084
+                                  - generic [ref=f13e1147]: $5,334
+                                  - generic [ref=f13e1149]: $5,486
+                          - generic [ref=f13e1151]:
+                            - generic [ref=f13e1153]:
+                              - heading "Holdings" [level=3] [ref=f13e1154]
+                              - generic [ref=f13e1155]: "8"
+                            - generic [ref=f13e1157]:
+                              - generic [ref=f13e1158]:
+                                - generic [ref=f13e1159]:
+                                  - generic [ref=f13e1160]: B
+                                  - generic [ref=f13e1162]:
+                                    - generic [ref=f13e1163]: BTC
+                                    - generic [ref=f13e1164]: Bitcoin
+                                - generic [ref=f13e1165]:
+                                  - application [ref=f13e1169]
+                                  - generic [ref=f13e1174]:
+                                    - generic [ref=f13e1175]: $1,283.84
+                                    - generic [ref=f13e1176]: +2.34%
+                              - generic [ref=f13e1180]:
+                                - generic [ref=f13e1181]:
+                                  - generic [ref=f13e1182]: U
+                                  - generic [ref=f13e1184]:
+                                    - generic [ref=f13e1185]: USDC
+                                    - generic [ref=f13e1186]: USDC
+                                - generic [ref=f13e1187]:
+                                  - application [ref=f13e1191]
+                                  - generic [ref=f13e1196]:
+                                    - generic [ref=f13e1197]: $2,087.25
+                                    - generic [ref=f13e1198]: +0.01%
+                              - generic [ref=f13e1202]:
+                                - generic [ref=f13e1203]:
+                                  - generic [ref=f13e1204]: E
+                                  - generic [ref=f13e1206]:
+                                    - generic [ref=f13e1207]: ETH
+                                    - generic [ref=f13e1208]: Ethereum
+                                - generic [ref=f13e1209]:
+                                  - application [ref=f13e1213]
+                                  - generic [ref=f13e1218]:
+                                    - generic [ref=f13e1219]: $1,087.25
+                                    - generic [ref=f13e1220]: "-1.12%"
+                              - generic [ref=f13e1224]:
+                                - generic [ref=f13e1225]:
+                                  - generic [ref=f13e1226]: B
+                                  - generic [ref=f13e1228]:
+                                    - generic [ref=f13e1229]: BNB
+                                    - generic [ref=f13e1230]: BNB Chain
+                                - generic [ref=f13e1231]:
+                                  - application [ref=f13e1235]
+                                  - generic [ref=f13e1240]:
+                                    - generic [ref=f13e1241]: $165.20
+                                    - generic [ref=f13e1242]: +0.92%
+                              - generic [ref=f13e1246]:
+                                - generic [ref=f13e1247]:
+                                  - generic [ref=f13e1248]: S
+                                  - generic [ref=f13e1250]:
+                                    - generic [ref=f13e1251]: SOL
+                                    - generic [ref=f13e1252]: Solana
+                                - generic [ref=f13e1253]:
+                                  - application [ref=f13e1257]
+                                  - generic [ref=f13e1262]:
+                                    - generic [ref=f13e1263]: $195.54
+                                    - generic [ref=f13e1264]: +4.72%
+                            - button "See all holdings" [ref=f13e1269] [cursor=pointer]
+                        - generic [ref=f13e1270]:
+                          - generic [ref=f13e1272]:
+                            - generic [ref=f13e1273]: Recent activity
+                            - generic [ref=f13e1274]: "8"
+                          - grid "Recent activity" [ref=f13e1278]:
+                            - rowgroup [ref=f13e1279]:
+                              - row [ref=f13e1280]:
+                                - 'columnheader "Txn #" [ref=f13e1281]'
+                                - columnheader "Type" [ref=f13e1282] [cursor=pointer]
+                                - columnheader "Asset" [ref=f13e1283] [cursor=pointer]
+                                - columnheader "Value" [ref=f13e1284] [cursor=pointer]
+                                - columnheader "Date" [ref=f13e1285] [cursor=pointer]
+                            - rowgroup [ref=f13e1289]:
+                              - row [ref=f13e1290]:
+                                - rowheader "0xaa2bf905d3…" [ref=f13e1291]
+                                - gridcell "Contract Interaction" [ref=f13e1295]
+                                - gridcell "E ETH" [ref=f13e1301]:
+                                  - generic [ref=f13e1302]:
+                                    - generic [ref=f13e1303]: E
+                                    - generic [ref=f13e1305]: ETH
+                                - gridcell "0.12312453 ETH $320.65" [ref=f13e1306]:
+                                  - generic [ref=f13e1307]:
+                                    - generic [ref=f13e1308]: 0.12312453 ETH
+                                    - generic [ref=f13e1309]: $320.65
+                                - gridcell "Dec 8, 2025 · 12:32 PM" [ref=f13e1310]
+                              - row [ref=f13e1311]:
+                                - rowheader "0xbb4e0d712f…" [ref=f13e1312]
+                                - gridcell "Received" [ref=f13e1316]
+                                - gridcell "U USDC" [ref=f13e1322]:
+                                  - generic [ref=f13e1323]:
+                                    - generic [ref=f13e1324]: U
+                                    - generic [ref=f13e1326]: USDC
+                                - gridcell "500.00 USDC $500.00" [ref=f13e1327]:
+                                  - generic [ref=f13e1328]:
+                                    - generic [ref=f13e1329]: 500.00 USDC
+                                    - generic [ref=f13e1330]: $500.00
+                                - gridcell "Dec 7, 2025 · 11:43 AM" [ref=f13e1331]
+                              - row [ref=f13e1332]:
+                                - rowheader "0xcc1a2f4e39…" [ref=f13e1333]
+                                - gridcell "Sent" [ref=f13e1337]
+                                - gridcell "E ETH" [ref=f13e1343]:
+                                  - generic [ref=f13e1344]:
+                                    - generic [ref=f13e1345]: E
+                                    - generic [ref=f13e1347]: ETH
+                                - gridcell "1.42 ETH $3,384.10" [ref=f13e1348]:
+                                  - generic [ref=f13e1349]:
+                                    - generic [ref=f13e1350]: 1.42 ETH
+                                    - generic [ref=f13e1351]: $3,384.10
+                                - gridcell "Nov 28, 2025 · 08:14 AM" [ref=f13e1352]
+                              - row [ref=f13e1353]:
+                                - rowheader "0xdd6b5a1635…" [ref=f13e1354]
+                                - gridcell "Swapped" [ref=f13e1358]
+                                - gridcell "B BTC" [ref=f13e1364]:
+                                  - generic [ref=f13e1365]:
+                                    - generic [ref=f13e1366]: B
+                                    - generic [ref=f13e1368]: BTC
+                                - gridcell "0.1543 BTC $9,385.22" [ref=f13e1369]:
+                                  - generic [ref=f13e1370]:
+                                    - generic [ref=f13e1371]: 0.1543 BTC
+                                    - generic [ref=f13e1372]: $9,385.22
+                                - gridcell "Oct 5, 2025 · 06:21 PM" [ref=f13e1373]
+                              - row [ref=f13e1374]:
+                                - rowheader "0xee7c6f5410…" [ref=f13e1375]
+                                - gridcell "Received" [ref=f13e1379]
+                                - gridcell "S SOL" [ref=f13e1385]:
+                                  - generic [ref=f13e1386]:
+                                    - generic [ref=f13e1387]: S
+                                    - generic [ref=f13e1389]: SOL
+                                - gridcell "12.4 SOL $2,692.16" [ref=f13e1390]:
+                                  - generic [ref=f13e1391]:
+                                    - generic [ref=f13e1392]: 12.4 SOL
+                                    - generic [ref=f13e1393]: $2,692.16
+                                - gridcell "Oct 2, 2025 · 02:12 PM" [ref=f13e1394]
+                              - row [ref=f13e1395]:
+                                - rowheader "0xff9d0a7102…" [ref=f13e1396]
+                                - gridcell "Sent" [ref=f13e1400]
+                                - gridcell "U USDC" [ref=f13e1406]:
+                                  - generic [ref=f13e1407]:
+                                    - generic [ref=f13e1408]: U
+                                    - generic [ref=f13e1410]: USDC
+                                - gridcell "850.00 USDC $850.00" [ref=f13e1411]:
+                                  - generic [ref=f13e1412]:
+                                    - generic [ref=f13e1413]: 850.00 USDC
+                                    - generic [ref=f13e1414]: $850.00
+                                - gridcell "Sep 29, 2025 · 09:54 AM" [ref=f13e1415]
+                  - button "Show code" [ref=f13e1417] [cursor=pointer]
+              - generic [ref=f13e1418]:
+                - heading "Crm" [level=3] [ref=f13e1419]:
+                  - link [aria-hidden] [ref=f13e1420] [cursor=pointer]:
+                    - /url: "#crm"
+                  - text: Crm
+                - paragraph [ref=f13e1421]: The CRM template — a Home pipeline overview with Up Next, records, tasks, and a seven-stage opportunity board.
+                - generic [ref=f13e1423]:
+                  - generic [ref=f13e1431]:
+                    - banner [ref=f13e1432]:
+                      - navigation [ref=f13e1433]:
+                        - generic [ref=f13e1434]:
+                          - button "Open navigation" [ref=f13e1435] [cursor=pointer]
+                          - heading "Home" [level=1] [ref=f13e1436]
+                    - main [ref=f13e1437]:
+                      - main [ref=f13e1438]:
+                        - generic [ref=f13e1439]:
+                          - generic [ref=f13e1440]:
+                            - generic [ref=f13e1441]:
+                              - heading "Pipeline" [level=2] [ref=f13e1442]
+                              - paragraph [ref=f13e1443]: Coverage, velocity, and follow-through this quarter.
+                            - generic [ref=f13e1444]:
+                              - generic [ref=f13e1445]: Date range
+                              - group [ref=f13e1446]:
+                                - spinbutton "年, 开始日期, Date range Date range" [ref=f13e1447]: "2026"
+                                - generic [aria-hidden] [ref=f13e1448]: /
+                                - spinbutton "月, 开始日期, Date range Date range" [ref=f13e1449]: "9"
+                                - generic [aria-hidden] [ref=f13e1450]: /
+                                - spinbutton "日, 开始日期, Date range Date range" [ref=f13e1451]: "24"
+                                - generic [aria-hidden] [ref=f13e1452]: "-"
+                                - spinbutton "年, 结束日期, Date range Date range" [ref=f13e1453]: "2026"
+                                - generic [aria-hidden] [ref=f13e1454]: /
+                                - spinbutton "月, 结束日期, Date range Date range" [ref=f13e1455]: "10"
+                                - generic [aria-hidden] [ref=f13e1456]: /
+                                - spinbutton "日, 结束日期, Date range Date range" [ref=f13e1457]: "23"
+                                - button "日历 Date range Date range" [ref=f13e1459] [cursor=pointer]
+                          - generic [ref=f13e1463]:
+                            - generic [ref=f13e1464]:
+                              - generic [ref=f13e1465]:
+                                - term [ref=f13e1469]: Pipeline
+                                - generic [ref=f13e1470]: 8%
+                              - generic [ref=f13e1474]:
+                                - generic [ref=f13e1475]:
+                                  - definition [ref=f13e1476]: $8.4M
+                                  - paragraph [ref=f13e1477]: 20 open · $1M won
+                                - application [ref=f13e1483]
+                            - generic [ref=f13e1491]:
+                              - generic [ref=f13e1492]:
+                                - term [ref=f13e1496]: Meetings Today
+                                - generic [ref=f13e1497]: "5"
+                              - generic [ref=f13e1499]:
+                                - generic [ref=f13e1500]:
+                                  - definition [ref=f13e1501]: "5"
+                                  - paragraph [ref=f13e1502]: Stripe · Adobe
+                                - application [ref=f13e1508]
+                            - generic [ref=f13e1516]:
+                              - term [ref=f13e1521]: Lost This Quarter
+                              - generic [ref=f13e1522]:
+                                - generic [ref=f13e1523]:
+                                  - definition [ref=f13e1524]: "1"
+                                  - paragraph [ref=f13e1525]: $276K · Zoom
+                                - application [ref=f13e1531]
+                            - generic [ref=f13e1539]:
+                              - generic [ref=f13e1540]:
+                                - term [ref=f13e1545]: Win Rate
+                                - generic [ref=f13e1546]: 4%
+                              - generic [ref=f13e1550]:
+                                - definition [ref=f13e1551]: 67%
+                                - progressbar "Progress" [ref=f13e1553]
+                                - paragraph [ref=f13e1556]: 2 won · 1 lost
+                            - generic [ref=f13e1557]:
+                              - term [ref=f13e1562]: At Risk
+                              - generic [ref=f13e1563]:
+                                - definition [ref=f13e1564]: "2"
+                                - progressbar "Progress" [ref=f13e1566]
+                                - paragraph [ref=f13e1569]: $549K slipping · 2 of 20 open
+                            - generic [ref=f13e1570]:
+                              - term [ref=f13e1575]: Overdue Follow-ups
+                              - generic [ref=f13e1576]:
+                                - definition [ref=f13e1577]: "5"
+                                - progressbar "Progress" [ref=f13e1579]
+                                - paragraph [ref=f13e1582]: Figma · Snowflake past due
+                          - generic [ref=f13e1583]:
+                            - generic [ref=f13e1584]:
+                              - generic [ref=f13e1585]:
+                                - heading "Created vs Closed" [level=3] [ref=f13e1586]
+                                - generic [ref=f13e1587]:
+                                  - generic [ref=f13e1588]: Created
+                                  - generic [ref=f13e1591]: Closed
+                              - application [ref=f13e1599]:
+                                - generic [ref=f13e1610]:
+                                  - generic [ref=f13e1611]:
+                                    - generic [ref=f13e1612]: Aug 20
+                                    - generic [ref=f13e1614]: Aug 25
+                                    - generic [ref=f13e1616]: Aug 28
+                                    - generic [ref=f13e1618]: Sep 2
+                                    - generic [ref=f13e1620]: Sep 5
+                                    - generic [ref=f13e1622]: Sep 9
+                                    - generic [ref=f13e1624]: Sep 12
+                                    - generic [ref=f13e1626]: Sep 16
+                                  - generic [ref=f13e1628]:
+                                    - generic [ref=f13e1629]: "0"
+                                    - generic [ref=f13e1631]: "2"
+                                    - generic [ref=f13e1633]: "4"
+                                    - generic [ref=f13e1635]: "6"
+                                    - generic [ref=f13e1637]: "8"
+                            - generic [ref=f13e1639]:
+                              - generic [ref=f13e1640]:
+                                - heading "Days to Close" [level=3] [ref=f13e1641]
+                                - generic [ref=f13e1642]:
+                                  - generic [ref=f13e1643]: Typical
+                                  - generic [ref=f13e1646]: Slow
+                                  - generic [ref=f13e1649]: Stalled
+                              - application [ref=f13e1657]:
+                                - generic [ref=f13e1678]:
+                                  - generic [ref=f13e1679]:
+                                    - generic [ref=f13e1680]: Aug 20
+                                    - generic [ref=f13e1682]: Aug 25
+                                    - generic [ref=f13e1684]: Aug 28
+                                    - generic [ref=f13e1686]: Sep 2
+                                    - generic [ref=f13e1688]: Sep 5
+                                    - generic [ref=f13e1690]: Sep 9
+                                    - generic [ref=f13e1692]: Sep 12
+                                    - generic [ref=f13e1694]: Sep 16
+                                  - generic [ref=f13e1696]:
+                                    - generic [ref=f13e1697]: 0d
+                                    - generic [ref=f13e1699]: 20d
+                                    - generic [ref=f13e1701]: 40d
+                                    - generic [ref=f13e1703]: 60d
+                                    - generic [ref=f13e1705]: 80d
+                          - generic [ref=f13e1707]:
+                            - generic [ref=f13e1708]:
+                              - generic [ref=f13e1709]:
+                                - heading "Weighted Forecast" [level=3] [ref=f13e1710]
+                                - generic [ref=f13e1711]: $6M
+                              - generic [ref=f13e1712]:
+                                - application [ref=f13e1716]
+                                - generic [ref=f13e1717]:
+                                  - generic [ref=f13e1718]:
+                                    - generic [ref=f13e1720]: Open pipeline
+                                    - generic [ref=f13e1721]: $1M
+                                    - generic [ref=f13e1722]: 17%
+                                  - generic [ref=f13e1723]:
+                                    - generic [ref=f13e1725]: Best case
+                                    - generic [ref=f13e1726]: $2.7M
+                                    - generic [ref=f13e1727]: 44%
+                                  - generic [ref=f13e1728]:
+                                    - generic [ref=f13e1730]: Commit
+                                    - generic [ref=f13e1731]: $2.3M
+                                    - generic [ref=f13e1732]: 39%
+                            - generic [ref=f13e1733]:
+                              - heading "Pipeline Funnel" [level=3] [ref=f13e1735]
+                              - generic [ref=f13e1736]:
+                                - generic "Pipeline funnel" [ref=f13e1738]:
+                                  - application [ref=f13e1741]
+                                - generic [ref=f13e1762]:
+                                  - generic [ref=f13e1763]:
+                                    - generic [ref=f13e1765]: Lead
+                                    - generic [ref=f13e1766]: $594K
+                                    - generic [ref=f13e1767]: 6%
+                                  - generic [ref=f13e1768]:
+                                    - generic [ref=f13e1770]: Qualification
+                                    - generic [ref=f13e1771]: $1.4M
+                                    - generic [ref=f13e1772]: 15%
+                                  - generic [ref=f13e1773]:
+                                    - generic [ref=f13e1775]: Demo
+                                    - generic [ref=f13e1776]: $2.3M
+                                    - generic [ref=f13e1777]: 24%
+                                  - generic [ref=f13e1778]:
+                                    - generic [ref=f13e1780]: Trial
+                                    - generic [ref=f13e1781]: $1.8M
+                                    - generic [ref=f13e1782]: 20%
+                                  - generic [ref=f13e1783]:
+                                    - generic [ref=f13e1785]: Proposal
+                                    - generic [ref=f13e1786]: $2.2M
+                                    - generic [ref=f13e1787]: 23%
+                                  - generic [ref=f13e1788]:
+                                    - generic [ref=f13e1790]: Won
+                                    - generic [ref=f13e1791]: $1M
+                                    - generic [ref=f13e1792]: 11%
+                          - generic [ref=f13e1793]:
+                            - generic [ref=f13e1794]:
+                              - heading "Accounts" [level=3] [ref=f13e1796]
+                              - generic [ref=f13e1797]:
+                                - generic [ref=f13e1798]:
+                                  - generic [ref=f13e1799]: "N"
+                                  - generic [ref=f13e1801]:
+                                    - paragraph [ref=f13e1802]: NVIDIA
+                                    - paragraph [ref=f13e1803]: 3 open · Procurement
+                                  - generic [ref=f13e1804]: $890K
+                                - generic [ref=f13e1805]:
+                                  - generic [ref=f13e1806]: S
+                                  - generic [ref=f13e1808]:
+                                    - paragraph [ref=f13e1809]: Snowflake
+                                    - paragraph [ref=f13e1810]: 2 open · Procurement
+                                  - generic [ref=f13e1811]: $780K
+                                - generic [ref=f13e1812]:
+                                  - generic [ref=f13e1813]: S
+                                  - generic [ref=f13e1815]:
+                                    - paragraph [ref=f13e1816]: Stripe
+                                    - paragraph [ref=f13e1817]: 2 open · Negotiation
+                                  - generic [ref=f13e1818]: $720K
+                                - generic [ref=f13e1819]:
+                                  - generic [ref=f13e1820]: A
+                                  - generic [ref=f13e1822]:
+                                    - paragraph [ref=f13e1823]: Adobe
+                                    - paragraph [ref=f13e1824]: 2 open · Evaluation
+                                  - generic [ref=f13e1825]: $640K
+                            - generic [ref=f13e1826]:
+                              - heading "Opportunities" [level=3] [ref=f13e1828]
+                              - generic [ref=f13e1829]:
+                                - generic [ref=f13e1830]:
+                                  - generic [ref=f13e1831]: D
+                                  - generic [ref=f13e1833]:
+                                    - paragraph [ref=f13e1834]: Observability command center
+                                    - paragraph [ref=f13e1835]: Datadog · Leon Brooks
+                                  - generic [ref=f13e1836]: $610K
+                                - generic [ref=f13e1837]:
+                                  - generic [ref=f13e1838]: S
+                                  - generic [ref=f13e1840]:
+                                    - paragraph [ref=f13e1841]: Fleet command platform
+                                    - paragraph [ref=f13e1842]: Slack · Leon Brooks
+                                  - generic [ref=f13e1843]: $540K
+                                - generic [ref=f13e1844]:
+                                  - generic [ref=f13e1845]: F
+                                  - generic [ref=f13e1847]:
+                                    - paragraph [ref=f13e1848]: Design systems workspace
+                                    - paragraph [ref=f13e1849]: Figma · Maya Chen
+                                  - generic [ref=f13e1850]: $495K
+                                - generic [ref=f13e1851]:
+                                  - generic [ref=f13e1852]: T
+                                  - generic [ref=f13e1854]:
+                                    - paragraph [ref=f13e1855]: Grid operations rollout
+                                    - paragraph [ref=f13e1856]: Tesla · Maya Chen
+                                  - generic [ref=f13e1857]: $480K
+                  - button "Show code" [ref=f13e1859] [cursor=pointer]
+              - generic [ref=f13e1860]:
+                - heading "Chat" [level=3] [ref=f13e1861]:
+                  - link [aria-hidden] [ref=f13e1862] [cursor=pointer]:
+                    - /url: "#chat"
+                  - text: Chat
+                - paragraph [ref=f13e1863]: The Chat template — new conversation view with suggested prompts and a composer.
+                - generic [ref=f13e1865]:
+                  - generic [ref=f13e1873]:
+                    - banner [ref=f13e1874]:
+                      - navigation [ref=f13e1875]:
+                        - generic [ref=f13e1876]:
+                          - button "Open navigation" [ref=f13e1877] [cursor=pointer]
+                          - generic [ref=f13e1878]:
+                            - heading "New Chat" [level=1] [ref=f13e1879]
+                            - generic [ref=f13e1880]: Start a brand new conversation
+                          - button "Search chats" [ref=f13e1882] [cursor=pointer]:
+                            - generic [ref=f13e1883]: Search
+                    - main [ref=f13e1884]:
+                      - generic [ref=f13e1885]:
+                        - generic [ref=f13e1888]:
+                          - generic [ref=f13e1889]:
+                            - heading "What do you want to work on?" [level=2] [ref=f13e1890]
+                            - paragraph [ref=f13e1891]: Ask a question or start from one of the suggestions below. This is a mock chat so nothing will actually be sent.
+                          - generic [ref=f13e1892]:
+                            - button "Summarize this week's product and design updates into a team-ready status note." [ref=f13e1893] [cursor=pointer]
+                            - button "Turn a rough product brief into a launch checklist with owners and deadlines." [ref=f13e1897] [cursor=pointer]
+                            - button "Rewrite this paragraph for a skeptical executive who cares about ROI." [ref=f13e1901] [cursor=pointer]
+                            - button "Brainstorm onboarding flow names for a data-heavy analytics product." [ref=f13e1905] [cursor=pointer]
+                            - button "Draft a weekly 1:1 agenda that surfaces blockers and growth goals." [ref=f13e1909] [cursor=pointer]
+                            - button "Compare three pricing models and recommend one for a usage-based SaaS." [ref=f13e1913] [cursor=pointer]
+                        - generic [ref=f13e1919]:
+                          - generic [ref=f13e1920]:
+                            - textbox "Message input" [ref=f13e1922]:
+                              - /placeholder: What do you want to know?
+                            - generic [ref=f13e1923]:
+                              - generic [ref=f13e1924]:
+                                - button [aria-hidden] [ref=f13e1925]
+                                - button [ref=f13e1926]:
+                                  - button "Attach file" [ref=f13e1927] [cursor=pointer]
+                                - generic [ref=f13e1928]:
+                                  - button "GPT-5.4 Model" [ref=f13e1929] [cursor=pointer]:
+                                    - generic [ref=f13e1932]: GPT-5.4
+                                  - combobox [ref=f13e1937]
+                              - generic [ref=f13e1938]:
+                                - button "Send message" [disabled]
+                          - paragraph [ref=f13e1939]: AI can make mistakes. Check important info.
+                  - button "Show code" [ref=f13e1941] [cursor=pointer]
+              - generic [ref=f13e1942]:
+                - heading "Chat Explore" [level=3] [ref=f13e1943]:
+                  - link [aria-hidden] [ref=f13e1944] [cursor=pointer]:
+                    - /url: "#chat-explore"
+                  - text: Chat Explore
+                - paragraph [ref=f13e1945]: The Chat template — explore page with categorized starter prompts.
+                - generic [ref=f13e1947]:
+                  - generic [ref=f13e1955]:
+                    - banner [ref=f13e1956]:
+                      - navigation [ref=f13e1957]:
+                        - generic [ref=f13e1958]:
+                          - button "Open navigation" [ref=f13e1959] [cursor=pointer]
+                          - generic [ref=f13e1960]:
+                            - heading "Explore" [level=1] [ref=f13e1961]
+                            - generic [ref=f13e1962]: Starter prompts to explore what this template can do
+                          - button "Search chats" [ref=f13e1964] [cursor=pointer]:
+                            - generic [ref=f13e1965]: Search
+                    - main [ref=f13e1966]:
+                      - generic [ref=f13e1969]:
+                        - generic [ref=f13e1970]:
+                          - heading "Starter prompts for everyday work" [level=2] [ref=f13e1971]
+                          - paragraph [ref=f13e1972]: Pick one to see what kinds of conversations this template pattern is designed for. Prompts are mock data, nothing is sent to any backend.
+                        - generic [ref=f13e1973]:
+                          - generic [ref=f13e1974]:
+                            - generic [ref=f13e1975]:
+                              - heading "At work" [level=3] [ref=f13e1976]
+                              - paragraph [ref=f13e1977]: Status notes, specs, and planning helpers.
+                            - generic [ref=f13e1978]:
+                              - generic [ref=f13e1980]:
+                                - heading "Write my weekly team update" [level=3] [ref=f13e1981]
+                                - paragraph [ref=f13e1982]: Generate a team-ready weekly status note from scattered updates.
+                              - generic [ref=f13e1984]:
+                                - heading "One-page product brief" [level=3] [ref=f13e1985]
+                                - paragraph [ref=f13e1986]: Produce a one-pager for a product brief with problem, solution, and scope.
+                              - generic [ref=f13e1988]:
+                                - heading "Feature release note" [level=3] [ref=f13e1989]
+                                - paragraph [ref=f13e1990]: Draft a ready-to-send release note for a new feature launch.
+                          - generic [ref=f13e1991]:
+                            - generic [ref=f13e1992]:
+                              - heading "Writing & editing" [level=3] [ref=f13e1993]
+                              - paragraph [ref=f13e1994]: Clearer, faster, and more specific.
+                            - generic [ref=f13e1995]:
+                              - generic [ref=f13e1997]:
+                                - heading "Rewrite for an executive" [level=3] [ref=f13e1998]
+                                - paragraph [ref=f13e1999]: Rewrite a rough paragraph for a skeptical executive reader.
+                              - generic [ref=f13e2001]:
+                                - heading "Meeting notes to narrative" [level=3] [ref=f13e2002]
+                                - paragraph [ref=f13e2003]: Turn meeting notes into a tight narrative summary with decisions and owners.
+                              - generic [ref=f13e2005]:
+                                - heading "Sharper marketing copy" [level=3] [ref=f13e2006]
+                                - paragraph [ref=f13e2007]: Tighten marketing copy with specific, benefit-led phrasing for product teams.
+                          - generic [ref=f13e2008]:
+                            - generic [ref=f13e2009]:
+                              - heading "Planning & ops" [level=3] [ref=f13e2010]
+                              - paragraph [ref=f13e2011]: Structured plans and agendas you can actually use.
+                            - generic [ref=f13e2012]:
+                              - generic [ref=f13e2014]:
+                                - heading "Launch checklist from a brief" [level=3] [ref=f13e2015]
+                                - paragraph [ref=f13e2016]: Turn a product brief into a week-by-week launch checklist with owners.
+                              - generic [ref=f13e2018]:
+                                - heading "30/60/90 for a new hire" [level=3] [ref=f13e2019]
+                                - paragraph [ref=f13e2020]: Plan a 30/60/90 for a new hire on a product team with clear milestones.
+                              - generic [ref=f13e2022]:
+                                - heading "Quarterly planning agenda" [level=3] [ref=f13e2023]
+                                - paragraph [ref=f13e2024]: Draft a quarterly planning agenda that balances roadmap and metrics.
+                  - button "Show code" [ref=f13e2026] [cursor=pointer]
+              - generic [ref=f13e2027]:
+                - heading "Email" [level=3] [ref=f13e2028]:
+                  - link [aria-hidden] [ref=f13e2029] [cursor=pointer]:
+                    - /url: "#email"
+                  - text: Email
+                - paragraph [ref=f13e2030]: The Email template — inbox list with a thread detail view, sidebar folders, and labels.
+                - generic [ref=f13e2032]:
+                  - main [ref=f13e2041]:
+                    - generic [ref=f13e2045]:
+                      - generic [ref=f13e2046]:
+                        - generic [ref=f13e2047]:
+                          - button "Close" [ref=f13e2048] [cursor=pointer]
+                          - generic [ref=f13e2049]:
+                            - button "Move to trash" [ref=f13e2050] [cursor=pointer]
+                            - button "Archive" [ref=f13e2051] [cursor=pointer]
+                            - button "Remove star" [ref=f13e2052] [cursor=pointer]
+                        - generic [ref=f13e2053]:
+                          - generic [ref=f13e2054]: 1 messages
+                          - generic [ref=f13e2055]:
+                            - button "Previous" [ref=f13e2056] [cursor=pointer]
+                            - button "Next" [ref=f13e2057] [cursor=pointer]
+                      - generic [ref=f13e2059]:
+                        - heading "Launch recap + next steps" [level=1] [ref=f13e2060]
+                        - generic [ref=f13e2062]:
+                          - generic [ref=f13e2063]:
+                            - generic [ref=f13e2064]:
+                              - generic [ref=f13e2065]: CI
+                              - generic [ref=f13e2067]:
+                                - generic [ref=f13e2068]: Carlos Iglesias
+                                - generic [ref=f13e2069]: carlos@heroui.dev
+                                - paragraph [ref=f13e2071]: to me
+                            - generic [ref=f13e2074]:
+                              - generic [ref=f13e2075]: 10:21 AM
+                              - generic [ref=f13e2076]:
+                                - button "Reply" [ref=f13e2077] [cursor=pointer]
+                                - button "Remove star" [ref=f13e2078] [cursor=pointer]
+                                - button "More" [ref=f13e2079] [cursor=pointer]
+                          - generic [ref=f13e2080]: "Quick recap from this morning's launch review so we have it in writing. We agreed on the final launch date (Tuesday the 24th) and the three must-ship items: onboarding tour, billing update flow, and the new analytics dashboard. Parker and I will co-own the go/no-go checklist. Can you sync with me and Maya tomorrow at 10:30?"
+                  - button "Show code" [ref=f13e2082] [cursor=pointer]
+            - generic [aria-hidden] [ref=f13e210]: 0d

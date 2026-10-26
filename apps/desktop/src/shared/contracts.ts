@@ -710,6 +710,7 @@ export type ExportDataRootResult = {
   fileCount: number;
   manifestPath: string;
   verified: boolean;
+  excludedRebuildablePaths?:string[];
 };
 
 export type DataBackupVerificationResult = {
@@ -2000,6 +2001,12 @@ export type AiConversationWorkspace = {
 export type AiConversationDetail = {
   session: AiConversationSession;
   messages: AiConversationMessage[];
+};
+
+export type AiConversationHistoryPage = {
+  session: AiConversationSession;
+  messages: AiConversationMessage[];
+  hasMore: boolean;
 };
 
 export type AiConversationSessionInput = {

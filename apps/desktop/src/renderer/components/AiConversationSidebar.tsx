@@ -21,6 +21,7 @@ export type AiConversationFeedbackState = {
 
 type AiConversationSidebarProps = {
   codexStyle?: boolean;
+  inline?: boolean;
   folders: AiConversationFolder[];
   sessions: AiConversationSession[];
   activeSessionId: string;
@@ -58,7 +59,7 @@ export function AiConversationArchiveConfirmation({ target, busy, onConfirm, onC
   );
 }
 
-export function AiConversationSidebar({ codexStyle = false, folders, sessions, activeSessionId, onOpenSession, onNewSession, onCreateFolder, onMoveSession, onRename, onArchive, onLeaveAi }: AiConversationSidebarProps) {
+export function AiConversationSidebar({ codexStyle = false, inline = false, folders, sessions, activeSessionId, onOpenSession, onNewSession, onCreateFolder, onMoveSession, onRename, onArchive, onLeaveAi }: AiConversationSidebarProps) {
   const [searchOpen, setSearchOpen] = useState(false), [search, setSearch] = useState('');
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [folderName, setFolderName] = useState('');
@@ -215,7 +216,7 @@ export function AiConversationSidebar({ codexStyle = false, folders, sessions, a
     </div>
   );
 
-  const Container = codexStyle ? Sidebar : 'aside';
+  const Container = codexStyle && !inline ? Sidebar : 'aside';
   return (
     <Container className={`work-panel ai-session-sidebar${codexStyle ? ' pi-conversation-sidebar' : ''}`} data-testid="ai-conversation-sidebar" onKeyDownCapture={event => {
       const row = (event.target as HTMLElement).closest<HTMLElement>('[role="row"]');

@@ -1,0 +1,27 @@
+{
+  "build": "3e56a2e1456204304d4dc95716bad86b8ba7ec0a4e4d0da7ad672c1093d951f2",
+  "origin": "Authored teaching fixture, saved via real approval ledger in a synthetic session; exported by actual Electron file panel. Native PowerPoint content/render/merge accepted; visible animation NOT accepted in this run due foreground restrictions. Not a real-model or teacher-usability acceptance.",
+  "report": "apps/desktop/test-results/goal/harness-science-teaching-20261021-first/progress.json",
+  "files": [
+    {
+      "file": "散热片教学版.pptx",
+      "bytes": 1200307,
+      "sha256": "af2e42912c8ca3129a2f80a0a988e730160050dbd29ce910fea9907d55fbed9d"
+    },
+    {
+      "file": "散热片教学版.gif",
+      "bytes": 704680,
+      "sha256": "3ccc4cace3fcd3d1017e8edc6f181f7c227f5c20ee20c0d6bfdbd1b4c983c297"
+    },
+    {
+      "file": "散热片教学版.html",
+      "bytes": 58252,
+      "sha256": "f519f945d6024e4e1576e3eab2e83b195f718f3b68f55eb903e20f21c3b2ff12"
+    },
+    {
+      "file": "教学版课件预览.png",
+      "bytes": 173258,
+      "sha256": "61a574f865ace51bb3f87c392596411e7b32ae20e723101ccf279d6c8b574e44"
+    }
+  ]
+}

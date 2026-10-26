@@ -234,6 +234,7 @@ interface StreamMarkdownRootProps extends ComponentPropsWithRef<'div'> {
   children: string;
   components?: StreamdownComponents;
   controls?: StreamdownProps['controls'];
+  plugins?: StreamdownProps['plugins'];
   isStreaming?: boolean;
 }
 
@@ -244,6 +245,7 @@ const StreamMarkdownRoot = memo(function StreamMarkdownRoot({
   className,
   components,
   controls = false,
+  plugins,
   isStreaming = false,
   ...props
 }: StreamMarkdownRootProps) {
@@ -269,6 +271,7 @@ const StreamMarkdownRoot = memo(function StreamMarkdownRoot({
         caret={isStreaming ? caret : undefined}
         components={mergedComponents}
         controls={controls}
+        plugins={plugins}
         isAnimating={isStreaming}
         mode={isStreaming ? 'streaming' : 'static'}
         remarkPlugins={REMARK_PLUGINS}

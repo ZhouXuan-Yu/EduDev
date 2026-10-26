@@ -1,0 +1,21 @@
+/* Generated native template utilities, restricted to this composition. Do not hand-edit.
+   Regenerate: node scripts/xiaozhi-agent/generate-native-utilities.mjs */
+/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */
+@layer utilities {
+    @scope ([data-heroui-native] [data-slot="prompt-input"]) {
+:scope.size-3, .size-3 {
+  width: calc(var(--spacing, 0.25rem) * 3);
+  height: calc(var(--spacing, 0.25rem) * 3);
+}
+:scope.size-4, .size-4 {
+  width: calc(var(--spacing, 0.25rem) * 4);
+  height: calc(var(--spacing, 0.25rem) * 4);
+}
+:scope.rounded-xs, .rounded-xs {
+  border-radius: var(--radius-xs, 0.125rem);
+}
+:scope.bg-current, .bg-current {
+  background-color: currentcolor;
+}
+    }
+}

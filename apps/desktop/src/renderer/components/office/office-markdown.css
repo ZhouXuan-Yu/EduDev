@@ -3,6 +3,9 @@
 .office-markdown [data-slot='code-block'] {
   color: var(--office-ink, var(--foreground));
 }
+.office-markdown .katex { font-size: 1.1em; }
+.office-markdown .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.office-markdown .katex-error { color: var(--office-danger); white-space: normal; overflow-wrap: anywhere; }
 .office-markdown [data-slot='code-block-code'] :is(.shiki, .shiki span) {
   color: var(--shiki-light, var(--office-ink, var(--foreground)));
 }

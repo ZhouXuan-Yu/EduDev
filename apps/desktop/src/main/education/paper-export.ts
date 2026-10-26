@@ -1,17 +1,54 @@
 import {paperTextBlocks} from './paper-table-blocks';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {PaperView} from '../../shared/paper-blueprint';
-import {PAPER_EXPORT_TOOL,PAPER_OFFICE_SCHEMA,isPaperOfficeSchema,validPaperExport,type PaperExportInput} from '../../shared/paper-export';
+import {PAPER_EXPORT_TOOL,PAPER_OFFICE_SCHEMA,PAPER_ANSWER_SHEET_OFFICE_SCHEMA,isPaperOfficeSchema,validPaperExport,type PaperExportInput,type PaperExportTemplate} from '../../shared/paper-export';
 import {containsOfficeMath} from '../../shared/office-math';
 import {compileRichPaperOffice} from './paper-rich-export';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import type {OfficeArtifactProposal} from '../../shared/xiaozhi-office-artifacts';
 import type {PaperRepository} from './paper-repository';
 
+export const ANSWER_SHEET_INSTRUCTIONS='请在答题卡对应题号处作答，保持卷面整洁；选择题将所选选项涂黑或打勾，填空题和解答题在规定横线内书写，超出部分无效。考试结束后只交回答题卡，不要在答题卡上书写与作答无关的内容。';
+export type AnswerSheetSpacing='compact'|'standard'|'roomy';
+/** Deterministic spacing from paper size; the export tool has no extra layout input. */
+export const answerSheetSpacing=(paper:PaperView):AnswerSheetSpacing=>paper.selection.items.length>30?'compact':paper.selection.items.length>12?'standard':'roomy';
+const ANSWER_LINE='____________________________________________';
+const choiceLabels=(question:PaperView['selection']['items'][number]['question'])=>{
+ const block=question.document?.blocks.find(b=>b.kind==='choices');
+ return block?.kind==='choices'?block.options.map(option=>option.label):['A','B','C','D'];
+};
+/** Independent student answer sheet: numbers, points and blank areas only. Never answers or analyses. */
+function compileAnswerSheet(paper:PaperView,audience:PaperExportInput['audience'],digest:string):OfficeDraft{
+ if(audience!=='student')throw new Error('invalid_input');
+ const spacing=answerSheetSpacing(paper),lines=spacing==='compact'?1:spacing==='roomy'?4:2;
+ const sections:OfficeSection[]=[
+  {heading:'考生信息',paragraphs:['姓名：________________　班级：________________　学号：________________　座位号：____________']},
+  {heading:'考试信息',paragraphs:[`学科：${paper.blueprint.subject}　年级：${paper.blueprint.grade}　时长：${paper.blueprint.durationMinutes} 分钟　满分：${paper.totalPoints} 分`]},
+  {heading:'答题说明',paragraphs:[ANSWER_SHEET_INSTRUCTIONS]}
+ ];
+ for(const section of paper.blueprint.sections){
+  const paragraphs:string[]=[];
+  for(const item of paper.selection.items.filter(i=>i.sectionId===section.id)){
+   const type=item.question.questionType;
+   paragraphs.push(`${item.number}.（${item.points} 分）`);
+   if(/选择|单选|多选/.test(type))paragraphs.push('选项：'+choiceLabels(item.question).map(label=>`${label} □`).join('　'));
+   else{
+    const lead=/填空/.test(type)?'答：':'解：';paragraphs.push(lead+ANSWER_LINE);
+    for(let index=1;index<lines;index++)paragraphs.push(ANSWER_LINE);
+   }
+  }
+  if(!paragraphs.length)paragraphs.push(section.label);
+  for(let offset=0;offset<paragraphs.length;offset+=100)sections.push({heading:section.label+(offset?'（续）':''),paragraphs:paragraphs.slice(offset,offset+100)});
+ }
+ const draft:OfficeDraft={schemaVersion:PAPER_ANSWER_SHEET_OFFICE_SCHEMA,title:'答题卡',sections,paperSource:{paperId:paper.id,digest,audience:'student',template:'answer_sheet'}};
+ if(!validOfficeDraft(draft))throw new Error('too_large');return draft;
+}
 /** Deterministic compilation. Rich documents stay fail-closed until image/math delivery is accepted. */
-export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['audience']):OfficeDraft{
+export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['audience'],template:PaperExportTemplate='paper'):OfficeDraft{
+ if(template!=='paper'&&template!=='answer_sheet')throw new Error('invalid_input');
  if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||!paper.digest)throw new Error('conflict');
  if(!['student','teacher'].includes(audience))throw new Error('invalid_input');
+ if(template==='answer_sheet')return compileAnswerSheet(paper,audience,paper.digest);
  if(paper.selection.items.some(i=>!!i.question.document||[i.question.stem,...(audience==='teacher'?[i.question.answer,i.question.analysis]:[])].some(text=>containsOfficeMath(text)||paperTextBlocks(text).some(block=>!!block.table))))return compileRichPaperOffice(paper,audience);
  const sections:OfficeSection[]=[{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,
   audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。']}];
@@ -32,20 +69,22 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
 }
 export function assertPaperOffice(paper:PaperView,draft:OfficeDraft){
  if(!isPaperOfficeSchema(draft.schemaVersion)||!('paperSource'in draft)||paper.id!==draft.paperSource.paperId||paper.digest!==draft.paperSource.digest)throw new Error('conflict');
- const expected=compilePaperOffice(paper,draft.paperSource.audience);
+ const template=draft.paperSource.template??'paper';
+ if((template==='answer_sheet')!==(draft.schemaVersion===PAPER_ANSWER_SHEET_OFFICE_SCHEMA)||template==='answer_sheet'&&draft.paperSource.audience!=='student')throw new Error('conflict');
+ const expected=compilePaperOffice(paper,draft.paperSource.audience,template);
  if(expected.schemaVersion!==draft.schemaVersion||JSON.stringify(expected.sections)!==JSON.stringify(draft.sections))throw new Error('conflict');
 }
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
 type RunOffice=(sessionId:string,runId:string,wait:Wait,callId:string,raw:OfficeArtifactProposal,signal?:AbortSignal)=>ReturnType<ToolDefinition['execute']>;
 export function createPaperExportTool(options:{papers:Pick<PaperRepository,'latest'>;sessionId:string;runId:string;current:()=>boolean;wait:Wait;runOffice:RunOffice}):ToolDefinition[]{
- return [{name:PAPER_EXPORT_TOOL,label:'导出已确认试卷',description:'将本会话最新已确认的完整试卷确定性导出为学生卷或教师答案卷，并等待教师办公文档审批。只提供format(docx/pdf)、audience(student/teacher)、path(授权目录内不存在的相对文件名)。不提供题目、答案、ID或版本；不重新抄题或补题。需要先选择教学工作目录。已确认完整图文题保留本地原图，教师逐版本核对图片后批准；不支持或不完整的题面明确拒绝，不能退回摘要生成。拒绝或停止后不重复写入。',
-  parameters:{type:'object',additionalProperties:false,required:['format','audience','path'],properties:{format:{type:'string',enum:['docx','pdf']},audience:{type:'string',enum:['student','teacher']},path:{type:'string',minLength:1,maxLength:500}}} as ToolDefinition['parameters'],
+ return [{name:PAPER_EXPORT_TOOL,label:'导出已确认试卷',description:'将本会话最新已确认的完整试卷确定性导出为学生卷、教师答案卷或答题卡，并等待教师办公文档审批。只提供format(docx/pdf)、audience(student/teacher)、path(授权目录内不存在的相对文件名)，可选template(paper/answer_sheet，默认paper)；答题卡固定使用学生卷且不含答案或解析。不提供题目、答案、ID或版本；不重新抄题或补题。需要先选择教学工作目录。已确认完整图文题保留本地原图，教师逐版本核对图片后批准；不支持或不完整的题面明确拒绝，不能退回摘要生成。拒绝或停止后不重复写入。',
+  parameters:{type:'object',additionalProperties:false,required:['format','audience','path'],properties:{format:{type:'string',enum:['docx','pdf']},audience:{type:'string',enum:['student','teacher']},path:{type:'string',minLength:1,maxLength:500},template:{type:'string',enum:['paper','answer_sheet']}}} as ToolDefinition['parameters'],
   execute:async(callId,raw,signal)=>{
    const current=()=>{signal?.throwIfAborted();if(!options.current())throw new Error('permission_denied');};
    try{current();if(!validPaperExport(raw))throw new Error('invalid_input');const paper=await options.papers.latest(options.sessionId);current();if(!paper)throw new Error('not_found');
-    const draft=compilePaperOffice(paper,raw.audience);current();return await options.runOffice(options.sessionId,options.runId,options.wait,callId,{path:raw.path,format:raw.format,draft,sources:[]},signal);
+    const draft=compilePaperOffice(paper,raw.audience,raw.template??'paper');current();return await options.runOffice(options.sessionId,options.runId,options.wait,callId,{path:raw.path,format:raw.format,draft,sources:[]},signal);
    }catch(error){if(signal?.aborted||(error as Error).message==='cancelled')throw error;
-    const messages:Record<string,string>={not_found:'本会话没有已确认试卷，请先组卷并核对确认。',conflict:'试卷未完整确认或题目来源已变化，请回到组卷核对后重新确认。',unsupported:'此卷含未确认完整题面或缺少可用公式原图的答案，不能完整导出，未生成文件；请返回题库补全核对。',too_large:'完整试卷超过当前文档容量，未截断或生成文件。请拆分试卷后重试。',invalid_input:'请选择学生卷或教师答案卷、Word或PDF，并提供授权目录内的新文件名。',permission_denied:'当前任务或工作目录授权已失效。'};
+    const messages:Record<string,string>={not_found:'本会话没有已确认试卷，请先组卷并核对确认。',conflict:'试卷未完整确认或题目来源已变化，请回到组卷核对后重新确认。',unsupported:'此卷含未确认完整题面或缺少可用公式原图的答案，不能完整导出，未生成文件；请返回题库补全核对。',too_large:'完整试卷超过当前文档容量，未截断或生成文件。请拆分试卷后重试。',invalid_input:'请选择学生卷、教师答案卷或答题卡、Word或PDF，并提供授权目录内的新文件名。',permission_denied:'当前任务或工作目录授权已失效。'};
     const code=(error as Error).message;return{content:[{type:'text',text:JSON.stringify({success:false,message:messages[code]||'试卷导出未完成，请检查实际状态后重试。'})}],details:{success:false},isError:true};}
   }}];
 }

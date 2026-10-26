@@ -1,0 +1,917 @@
+- generic [ref=f10e2]:
+  - complementary [ref=f10e3]:
+    - generic [ref=f10e6]:
+      - paragraph [ref=f10e7]: Overview
+      - link "React Components" [ref=f10e8] [cursor=pointer]:
+        - /url: /docs/react/components
+      - paragraph [ref=f10e9]: Charts
+      - link "Area Chart" [ref=f10e10] [cursor=pointer]:
+        - /url: /docs/react/components/area-chart
+      - link "Bar Chart" [ref=f10e11] [cursor=pointer]:
+        - /url: /docs/react/components/bar-chart
+      - link "Chart Tooltip" [ref=f10e12] [cursor=pointer]:
+        - /url: /docs/react/components/chart-tooltip
+      - link "Composed Chart" [ref=f10e13] [cursor=pointer]:
+        - /url: /docs/react/components/composed-chart
+      - link "Line Chart" [ref=f10e14] [cursor=pointer]:
+        - /url: /docs/react/components/line-chart
+      - link "Pie Chart" [ref=f10e15] [cursor=pointer]:
+        - /url: /docs/react/components/pie-chart
+      - link "Radar Chart" [ref=f10e16] [cursor=pointer]:
+        - /url: /docs/react/components/radar-chart
+      - link "Radial Chart" [ref=f10e17] [cursor=pointer]:
+        - /url: /docs/react/components/radial-chart
+      - paragraph [ref=f10e18]: Data Display
+      - link "Agenda" [ref=f10e19] [cursor=pointer]:
+        - /url: /docs/react/components/agenda
+      - link "Action Bar" [ref=f10e20] [cursor=pointer]:
+        - /url: /docs/react/components/action-bar
+      - link "Carousel" [ref=f10e21] [cursor=pointer]:
+        - /url: /docs/react/components/carousel
+      - link "Updated Data Grid" [ref=f10e22] [cursor=pointer]:
+        - /url: /docs/react/components/data-grid
+        - generic [ref=f10e23]: Updated
+        - text: Data Grid
+      - link "Empty State" [ref=f10e25] [cursor=pointer]:
+        - /url: /docs/react/components/empty-state
+      - link "File Tree" [ref=f10e26] [cursor=pointer]:
+        - /url: /docs/react/components/file-tree
+      - link "Floating TOC" [ref=f10e27] [cursor=pointer]:
+        - /url: /docs/react/components/floating-toc
+      - link "New Holo Card" [ref=f10e28] [cursor=pointer]:
+        - /url: /docs/react/components/holo-card
+        - generic [ref=f10e29]: New
+        - text: Holo Card
+      - link "Updated Hover Card" [ref=f10e31] [cursor=pointer]:
+        - /url: /docs/react/components/hover-card
+        - generic [ref=f10e32]: Updated
+        - text: Hover Card
+      - link "Kanban" [ref=f10e34] [cursor=pointer]:
+        - /url: /docs/react/components/kanban
+      - link "Item Card" [ref=f10e35] [cursor=pointer]:
+        - /url: /docs/react/components/item-card
+      - link "Item Card Group" [ref=f10e36] [cursor=pointer]:
+        - /url: /docs/react/components/item-card-group
+      - link "KPI" [ref=f10e37] [cursor=pointer]:
+        - /url: /docs/react/components/kpi
+      - link "KPI Group" [ref=f10e38] [cursor=pointer]:
+        - /url: /docs/react/components/kpi-group
+      - link "List View" [ref=f10e39] [cursor=pointer]:
+        - /url: /docs/react/components/list-view
+      - link "New Map" [ref=f10e40] [cursor=pointer]:
+        - /url: /docs/react/components/map
+        - generic [ref=f10e41]: New
+        - text: Map
+      - link "Timeline" [ref=f10e43] [cursor=pointer]:
+        - /url: /docs/react/components/timeline
+      - link "Widget" [ref=f10e44] [cursor=pointer]:
+        - /url: /docs/react/components/widget
+      - paragraph [ref=f10e45]: AI
+      - link "Chain Of Thought" [ref=f10e46] [cursor=pointer]:
+        - /url: /docs/react/components/chain-of-thought
+      - link "Chat Attachment" [ref=f10e47] [cursor=pointer]:
+        - /url: /docs/react/components/chat-attachment
+      - link "Chat Conversation" [ref=f10e48] [cursor=pointer]:
+        - /url: /docs/react/components/chat-conversation
+      - link "Chat List View" [ref=f10e49] [cursor=pointer]:
+        - /url: /docs/react/components/chat-list-view
+      - link "Chat Loader" [ref=f10e50] [cursor=pointer]:
+        - /url: /docs/react/components/chat-loader
+      - link "Chat Message" [ref=f10e51] [cursor=pointer]:
+        - /url: /docs/react/components/chat-message
+      - link "Chat Message Actions" [ref=f10e52] [cursor=pointer]:
+        - /url: /docs/react/components/chat-message-actions
+      - link "Chat Source" [ref=f10e53] [cursor=pointer]:
+        - /url: /docs/react/components/chat-source
+      - link "Chat Tool" [ref=f10e54] [cursor=pointer]:
+        - /url: /docs/react/components/chat-tool
+      - link "Code Block" [ref=f10e55] [cursor=pointer]:
+        - /url: /docs/react/components/code-block
+      - link "Markdown" [ref=f10e56] [cursor=pointer]:
+        - /url: /docs/react/components/markdown
+      - link "New Prompt Input" [ref=f10e57] [cursor=pointer]:
+        - /url: /docs/react/components/prompt-input
+        - generic [ref=f10e58]: New
+        - text: Prompt Input
+      - link "Prompt Suggestion" [ref=f10e60] [cursor=pointer]:
+        - /url: /docs/react/components/prompt-suggestion
+      - link "Text Shimmer" [ref=f10e61] [cursor=pointer]:
+        - /url: /docs/react/components/text-shimmer
+      - paragraph [ref=f10e62]: Feedback
+      - link "Emoji Reaction Button" [ref=f10e63] [cursor=pointer]:
+        - /url: /docs/react/components/emoji-reaction-button
+      - link "Number Value" [ref=f10e64] [cursor=pointer]:
+        - /url: /docs/react/components/number-value
+      - link "Pressable Feedback" [ref=f10e65] [cursor=pointer]:
+        - /url: /docs/react/components/pressable-feedback
+      - link "Rating" [ref=f10e66] [cursor=pointer]:
+        - /url: /docs/react/components/rating
+      - link "Trend Chip" [ref=f10e67] [cursor=pointer]:
+        - /url: /docs/react/components/trend-chip
+      - paragraph [ref=f10e68]: Layout
+      - link "Resizable" [ref=f10e69] [cursor=pointer]:
+        - /url: /docs/react/components/resizable
+      - paragraph [ref=f10e70]: Forms
+      - link "Cell Color Picker" [ref=f10e71] [cursor=pointer]:
+        - /url: /docs/react/components/cell-color-picker
+      - link "Cell Select" [ref=f10e72] [cursor=pointer]:
+        - /url: /docs/react/components/cell-select
+      - link "Cell Slider" [ref=f10e73] [cursor=pointer]:
+        - /url: /docs/react/components/cell-slider
+      - link "Cell Switch" [ref=f10e74] [cursor=pointer]:
+        - /url: /docs/react/components/cell-switch
+      - link "Checkbox Button Group" [ref=f10e75] [cursor=pointer]:
+        - /url: /docs/react/components/checkbox-button-group
+      - link "Drop Zone" [ref=f10e76] [cursor=pointer]:
+        - /url: /docs/react/components/drop-zone
+      - link "Inline Select" [ref=f10e77] [cursor=pointer]:
+        - /url: /docs/react/components/inline-select
+      - link "Native Select" [ref=f10e78] [cursor=pointer]:
+        - /url: /docs/react/components/native-select
+      - link "Number Stepper" [ref=f10e79] [cursor=pointer]:
+        - /url: /docs/react/components/number-stepper
+      - link "Radio Button Group" [ref=f10e80] [cursor=pointer]:
+        - /url: /docs/react/components/radio-button-group
+      - link "Updated Rich Text Editor" [ref=f10e81] [cursor=pointer]:
+        - /url: /docs/react/components/rich-text-editor
+        - generic [ref=f10e82]: Updated
+        - text: Rich Text Editor
+      - paragraph [ref=f10e84]: Navigation
+      - link "AppLayout" [ref=f10e85] [cursor=pointer]:
+        - /url: /docs/react/components/app-layout
+      - link "Command" [ref=f10e86] [cursor=pointer]:
+        - /url: /docs/react/components/command
+      - link "Updated Context Menu" [ref=f10e87] [cursor=pointer]:
+        - /url: /docs/react/components/context-menu
+        - generic [ref=f10e88]: Updated
+        - text: Context Menu
+      - link "Navbar" [ref=f10e90] [cursor=pointer]:
+        - /url: /docs/react/components/navbar
+      - link "Segment" [ref=f10e91] [cursor=pointer]:
+        - /url: /docs/react/components/segment
+      - link "Sidebar" [ref=f10e92] [cursor=pointer]:
+        - /url: /docs/react/components/sidebar
+      - link "Stepper" [ref=f10e93] [cursor=pointer]:
+        - /url: /docs/react/components/stepper
+      - paragraph [ref=f10e94]: Overlays
+      - link "Emoji Picker" [ref=f10e95] [cursor=pointer]:
+        - /url: /docs/react/components/emoji-picker
+      - link "Sheet" [ref=f10e96] [cursor=pointer]:
+        - /url: /docs/react/components/sheet
+  - banner [ref=f10e97]:
+    - generic [ref=f10e98]:
+      - generic [ref=f10e100]:
+        - link "HeroUI Pro" [ref=f10e101] [cursor=pointer]:
+          - /url: /docs
+          - generic [ref=f10e102]:
+            - generic [ref=f10e109]: HeroUI
+            - generic [ref=f10e110]: Pro
+        - generic [ref=f10e111]:
+          - button "HeroUI Pro Switch product, current HeroUI Pro" [ref=f10e112] [cursor=pointer]:
+            - generic [ref=f10e113]: HeroUI Pro
+          - combobox [ref=f10e124]
+      - generic [ref=f10e125]:
+        - generic [ref=f10e126]:
+          - button "Open Search" [ref=f10e128] [cursor=pointer]
+          - button "Ask AI" [ref=f10e130] [cursor=pointer]
+          - button [ref=f10e131] [cursor=pointer]:
+            - button "Design theme" [ref=f10e132]:
+              - generic [ref=f10e133]: Theme
+        - generic [ref=f10e135] [cursor=pointer]:
+          - button "light" [ref=f10e136]
+          - button "dark" [ref=f10e143]
+          - button "system" [ref=f10e146]
+    - generic [ref=f10e151]:
+      - link "Getting Started" [ref=f10e152] [cursor=pointer]:
+        - /url: /docs/react/getting-started
+      - link "Components" [ref=f10e157] [cursor=pointer]:
+        - /url: /docs/react/components
+      - link "Templates" [ref=f10e163] [cursor=pointer]:
+        - /url: /docs/react/templates
+      - link "Releases" [ref=f10e168] [cursor=pointer]:
+        - /url: /docs/react/releases
+      - tablist "HeroUI Pro platform" [ref=f10e178]:
+        - tab "Web" [selected] [ref=f10e179] [cursor=pointer]
+        - tab "Native" [ref=f10e183] [cursor=pointer]
+  - banner [ref=f10e187]:
+    - button "0 React Components" [ref=f10e188]:
+      - progressbar [ref=f10e189]
+      - generic [ref=f10e192]: React Components
+  - article [ref=f10e196]:
+    - generic [ref=f10e197]:
+      - generic [ref=f10e198]:
+        - heading "React Components" [level=1] [ref=f10e199]
+        - group [ref=f10e201]:
+          - button "Copy Markdown" [ref=f10e202] [cursor=pointer]
+          - button [ref=f10e203] [cursor=pointer]
+      - paragraph [ref=f10e204]: Browse HeroUI Pro components for charts, data display, forms, navigation, AI interfaces, and more.
+    - generic [ref=f10e205]:
+      - heading [level=2] [ref=f10e206]:
+        - link "Charts" [ref=f10e207] [cursor=pointer]:
+          - /url: "#charts"
+      - generic [ref=f10e213]:
+        - generic [ref=f10e214]:
+          - link "Area Chart 6 variants" [ref=f10e216] [cursor=pointer]:
+            - /url: /docs/react/components/area-chart
+            - generic [ref=f10e217]:
+              - generic [ref=f10e218]: Area Chart
+              - paragraph [ref=f10e220]: 6 variants
+          - generic [ref=f10e221]:
+            - link "Area Chart":
+              - /url: /docs/react/components/area-chart
+              - img "Area Chart" [ref=f10e222] [cursor=pointer]
+        - generic [ref=f10e223]:
+          - link "Bar Chart 8 variants" [ref=f10e225] [cursor=pointer]:
+            - /url: /docs/react/components/bar-chart
+            - generic [ref=f10e226]:
+              - generic [ref=f10e227]: Bar Chart
+              - paragraph [ref=f10e229]: 8 variants
+          - generic [ref=f10e230]:
+            - link "Bar Chart":
+              - /url: /docs/react/components/bar-chart
+              - img "Bar Chart" [ref=f10e231] [cursor=pointer]
+        - generic [ref=f10e232]:
+          - link "Chart Tooltip 7 variants" [ref=f10e234] [cursor=pointer]:
+            - /url: /docs/react/components/chart-tooltip
+            - generic [ref=f10e235]:
+              - generic [ref=f10e236]: Chart Tooltip
+              - paragraph [ref=f10e238]: 7 variants
+          - generic [ref=f10e239]:
+            - link "Chart Tooltip":
+              - /url: /docs/react/components/chart-tooltip
+              - img "Chart Tooltip" [ref=f10e240] [cursor=pointer]
+        - generic [ref=f10e241]:
+          - link "Composed Chart 5 variants" [ref=f10e243] [cursor=pointer]:
+            - /url: /docs/react/components/composed-chart
+            - generic [ref=f10e244]:
+              - generic [ref=f10e245]: Composed Chart
+              - paragraph [ref=f10e247]: 5 variants
+          - generic [ref=f10e248]:
+            - link "Composed Chart":
+              - /url: /docs/react/components/composed-chart
+              - img "Composed Chart" [ref=f10e249] [cursor=pointer]
+        - generic [ref=f10e250]:
+          - link "Line Chart 10 variants" [ref=f10e252] [cursor=pointer]:
+            - /url: /docs/react/components/line-chart
+            - generic [ref=f10e253]:
+              - generic [ref=f10e254]: Line Chart
+              - paragraph [ref=f10e256]: 10 variants
+          - generic [ref=f10e257]:
+            - link "Line Chart":
+              - /url: /docs/react/components/line-chart
+              - img "Line Chart" [ref=f10e258] [cursor=pointer]
+        - generic [ref=f10e259]:
+          - link "Pie Chart 7 variants" [ref=f10e261] [cursor=pointer]:
+            - /url: /docs/react/components/pie-chart
+            - generic [ref=f10e262]:
+              - generic [ref=f10e263]: Pie Chart
+              - paragraph [ref=f10e265]: 7 variants
+          - generic [ref=f10e266]:
+            - link "Pie Chart":
+              - /url: /docs/react/components/pie-chart
+              - img "Pie Chart" [ref=f10e267] [cursor=pointer]
+        - generic [ref=f10e268]:
+          - link "Radar Chart 5 variants" [ref=f10e270] [cursor=pointer]:
+            - /url: /docs/react/components/radar-chart
+            - generic [ref=f10e271]:
+              - generic [ref=f10e272]: Radar Chart
+              - paragraph [ref=f10e274]: 5 variants
+          - generic [ref=f10e275]:
+            - link "Radar Chart":
+              - /url: /docs/react/components/radar-chart
+              - img "Radar Chart" [ref=f10e276] [cursor=pointer]
+        - generic [ref=f10e277]:
+          - link "Radial Chart 5 variants" [ref=f10e279] [cursor=pointer]:
+            - /url: /docs/react/components/radial-chart
+            - generic [ref=f10e280]:
+              - generic [ref=f10e281]: Radial Chart
+              - paragraph [ref=f10e283]: 5 variants
+          - generic [ref=f10e284]:
+            - link "Radial Chart":
+              - /url: /docs/react/components/radial-chart
+              - img "Radial Chart" [ref=f10e285] [cursor=pointer]
+      - heading [level=2] [ref=f10e286]:
+        - link "Data Display" [ref=f10e287] [cursor=pointer]:
+          - /url: "#data-display"
+      - generic [ref=f10e293]:
+        - generic [ref=f10e294]:
+          - link "Agenda 1 variant" [ref=f10e296] [cursor=pointer]:
+            - /url: /docs/react/components/agenda
+            - generic [ref=f10e297]:
+              - generic [ref=f10e298]: Agenda
+              - paragraph [ref=f10e300]: 1 variant
+          - generic [ref=f10e301]:
+            - link "Agenda":
+              - /url: /docs/react/components/agenda
+              - img "Agenda" [ref=f10e302] [cursor=pointer]
+        - generic [ref=f10e303]:
+          - link "Action Bar 2 variants" [ref=f10e305] [cursor=pointer]:
+            - /url: /docs/react/components/action-bar
+            - generic [ref=f10e306]:
+              - generic [ref=f10e307]: Action Bar
+              - paragraph [ref=f10e309]: 2 variants
+          - generic [ref=f10e310]:
+            - link "Action Bar":
+              - /url: /docs/react/components/action-bar
+              - img "Action Bar" [ref=f10e311] [cursor=pointer]
+        - generic [ref=f10e312]:
+          - link "Carousel 6 variants" [ref=f10e314] [cursor=pointer]:
+            - /url: /docs/react/components/carousel
+            - generic [ref=f10e315]:
+              - generic [ref=f10e316]: Carousel
+              - paragraph [ref=f10e318]: 6 variants
+          - generic [ref=f10e319]:
+            - link "Carousel":
+              - /url: /docs/react/components/carousel
+              - img "Carousel" [ref=f10e320] [cursor=pointer]
+        - generic [ref=f10e321]:
+          - link "Data Grid Updated 13 variants" [ref=f10e323] [cursor=pointer]:
+            - /url: /docs/react/components/data-grid
+            - generic [ref=f10e324]:
+              - generic [ref=f10e325]:
+                - generic [ref=f10e326]: Data Grid
+                - generic [ref=f10e327]: Updated
+              - paragraph [ref=f10e329]: 13 variants
+          - generic [ref=f10e330]:
+            - link "Data Grid":
+              - /url: /docs/react/components/data-grid
+              - img "Data Grid" [ref=f10e331] [cursor=pointer]
+        - generic [ref=f10e332]:
+          - link "Empty State 8 variants" [ref=f10e334] [cursor=pointer]:
+            - /url: /docs/react/components/empty-state
+            - generic [ref=f10e335]:
+              - generic [ref=f10e336]: Empty State
+              - paragraph [ref=f10e338]: 8 variants
+          - generic [ref=f10e339]:
+            - link "Empty State":
+              - /url: /docs/react/components/empty-state
+              - img "Empty State" [ref=f10e340] [cursor=pointer]
+        - generic [ref=f10e341]:
+          - link "File Tree 11 variants" [ref=f10e343] [cursor=pointer]:
+            - /url: /docs/react/components/file-tree
+            - generic [ref=f10e344]:
+              - generic [ref=f10e345]: File Tree
+              - paragraph [ref=f10e347]: 11 variants
+          - generic [ref=f10e348]:
+            - link "File Tree":
+              - /url: /docs/react/components/file-tree
+              - img "File Tree" [ref=f10e349] [cursor=pointer]
+        - generic [ref=f10e350]:
+          - link "Floating TOC 10 variants" [ref=f10e352] [cursor=pointer]:
+            - /url: /docs/react/components/floating-toc
+            - generic [ref=f10e353]:
+              - generic [ref=f10e354]: Floating TOC
+              - paragraph [ref=f10e356]: 10 variants
+          - generic [ref=f10e357]:
+            - link "Floating TOC":
+              - /url: /docs/react/components/floating-toc
+              - img "Floating TOC" [ref=f10e358] [cursor=pointer]
+        - generic [ref=f10e359]:
+          - link "Holo Card New 7 variants" [ref=f10e361] [cursor=pointer]:
+            - /url: /docs/react/components/holo-card
+            - generic [ref=f10e362]:
+              - generic [ref=f10e363]:
+                - generic [ref=f10e364]: Holo Card
+                - generic [ref=f10e365]: New
+              - paragraph [ref=f10e367]: 7 variants
+          - generic [ref=f10e368]:
+            - link "Holo Card":
+              - /url: /docs/react/components/holo-card
+              - img "Holo Card" [ref=f10e369] [cursor=pointer]
+        - generic [ref=f10e370]:
+          - link "Hover Card Updated 6 variants" [ref=f10e372] [cursor=pointer]:
+            - /url: /docs/react/components/hover-card
+            - generic [ref=f10e373]:
+              - generic [ref=f10e374]:
+                - generic [ref=f10e375]: Hover Card
+                - generic [ref=f10e376]: Updated
+              - paragraph [ref=f10e378]: 6 variants
+          - generic [ref=f10e379]:
+            - link "Hover Card":
+              - /url: /docs/react/components/hover-card
+              - img "Hover Card" [ref=f10e380] [cursor=pointer]
+        - generic [ref=f10e381]:
+          - link "Kanban 4 variants" [ref=f10e383] [cursor=pointer]:
+            - /url: /docs/react/components/kanban
+            - generic [ref=f10e384]:
+              - generic [ref=f10e385]: Kanban
+              - paragraph [ref=f10e387]: 4 variants
+          - generic [ref=f10e388]:
+            - link "Kanban":
+              - /url: /docs/react/components/kanban
+              - img "Kanban" [ref=f10e389] [cursor=pointer]
+        - generic [ref=f10e390]:
+          - link "Item Card 12 variants" [ref=f10e392] [cursor=pointer]:
+            - /url: /docs/react/components/item-card
+            - generic [ref=f10e393]:
+              - generic [ref=f10e394]: Item Card
+              - paragraph [ref=f10e396]: 12 variants
+          - generic [ref=f10e397]:
+            - link "Item Card":
+              - /url: /docs/react/components/item-card
+              - img "Item Card" [ref=f10e398] [cursor=pointer]
+        - generic [ref=f10e399]:
+          - link "Item Card Group 12 variants" [ref=f10e401] [cursor=pointer]:
+            - /url: /docs/react/components/item-card-group
+            - generic [ref=f10e402]:
+              - generic [ref=f10e403]: Item Card Group
+              - paragraph [ref=f10e405]: 12 variants
+          - generic [ref=f10e406]:
+            - link "Item Card Group":
+              - /url: /docs/react/components/item-card-group
+              - img "Item Card Group" [ref=f10e407] [cursor=pointer]
+        - generic [ref=f10e408]:
+          - link "KPI 9 variants" [ref=f10e410] [cursor=pointer]:
+            - /url: /docs/react/components/kpi
+            - generic [ref=f10e411]:
+              - generic [ref=f10e412]: KPI
+              - paragraph [ref=f10e414]: 9 variants
+          - generic [ref=f10e415]:
+            - link "KPI":
+              - /url: /docs/react/components/kpi
+              - img "KPI" [ref=f10e416] [cursor=pointer]
+        - generic [ref=f10e417]:
+          - link "KPI Group 3 variants" [ref=f10e419] [cursor=pointer]:
+            - /url: /docs/react/components/kpi-group
+            - generic [ref=f10e420]:
+              - generic [ref=f10e421]: KPI Group
+              - paragraph [ref=f10e423]: 3 variants
+          - generic [ref=f10e424]:
+            - link "KPI Group":
+              - /url: /docs/react/components/kpi-group
+              - img "KPI Group" [ref=f10e425] [cursor=pointer]
+        - generic [ref=f10e426]:
+          - link "List View 5 variants" [ref=f10e428] [cursor=pointer]:
+            - /url: /docs/react/components/list-view
+            - generic [ref=f10e429]:
+              - generic [ref=f10e430]: List View
+              - paragraph [ref=f10e432]: 5 variants
+          - generic [ref=f10e433]:
+            - link "List View":
+              - /url: /docs/react/components/list-view
+              - img "List View" [ref=f10e434] [cursor=pointer]
+        - generic [ref=f10e435]:
+          - link "Map New 10 variants" [ref=f10e437] [cursor=pointer]:
+            - /url: /docs/react/components/map
+            - generic [ref=f10e438]:
+              - generic [ref=f10e439]:
+                - generic [ref=f10e440]: Map
+                - generic [ref=f10e441]: New
+              - paragraph [ref=f10e443]: 10 variants
+          - generic [ref=f10e444]:
+            - link "Map":
+              - /url: /docs/react/components/map
+              - img "Map" [ref=f10e445] [cursor=pointer]
+        - generic [ref=f10e446]:
+          - link "Timeline 8 variants" [ref=f10e448] [cursor=pointer]:
+            - /url: /docs/react/components/timeline
+            - generic [ref=f10e449]:
+              - generic [ref=f10e450]: Timeline
+              - paragraph [ref=f10e452]: 8 variants
+          - generic [ref=f10e453]:
+            - link "Timeline":
+              - /url: /docs/react/components/timeline
+              - img "Timeline" [ref=f10e454] [cursor=pointer]
+        - generic [ref=f10e455]:
+          - link "Widget 8 variants" [ref=f10e457] [cursor=pointer]:
+            - /url: /docs/react/components/widget
+            - generic [ref=f10e458]:
+              - generic [ref=f10e459]: Widget
+              - paragraph [ref=f10e461]: 8 variants
+          - generic [ref=f10e462]:
+            - link "Widget":
+              - /url: /docs/react/components/widget
+              - img "Widget" [ref=f10e463] [cursor=pointer]
+      - heading [level=2] [ref=f10e464]:
+        - link "AI" [ref=f10e465] [cursor=pointer]:
+          - /url: "#ai"
+      - generic [ref=f10e471]:
+        - generic [ref=f10e472]:
+          - link "Chain Of Thought 4 variants" [ref=f10e474] [cursor=pointer]:
+            - /url: /docs/react/components/chain-of-thought
+            - generic [ref=f10e475]:
+              - generic [ref=f10e476]: Chain Of Thought
+              - paragraph [ref=f10e478]: 4 variants
+          - generic [ref=f10e479]:
+            - link "Chain Of Thought":
+              - /url: /docs/react/components/chain-of-thought
+              - img "Chain Of Thought" [ref=f10e480] [cursor=pointer]
+        - generic [ref=f10e481]:
+          - link "Chat Attachment 3 variants" [ref=f10e483] [cursor=pointer]:
+            - /url: /docs/react/components/chat-attachment
+            - generic [ref=f10e484]:
+              - generic [ref=f10e485]: Chat Attachment
+              - paragraph [ref=f10e487]: 3 variants
+          - generic [ref=f10e488]:
+            - link "Chat Attachment":
+              - /url: /docs/react/components/chat-attachment
+              - img "Chat Attachment" [ref=f10e489] [cursor=pointer]
+        - generic [ref=f10e490]:
+          - link "Chat Conversation 3 variants" [ref=f10e492] [cursor=pointer]:
+            - /url: /docs/react/components/chat-conversation
+            - generic [ref=f10e493]:
+              - generic [ref=f10e494]: Chat Conversation
+              - paragraph [ref=f10e496]: 3 variants
+          - generic [ref=f10e497]:
+            - link "Chat Conversation":
+              - /url: /docs/react/components/chat-conversation
+              - img "Chat Conversation" [ref=f10e498] [cursor=pointer]
+        - generic [ref=f10e499]:
+          - link "Chat List View 2 variants" [ref=f10e501] [cursor=pointer]:
+            - /url: /docs/react/components/chat-list-view
+            - generic [ref=f10e502]:
+              - generic [ref=f10e503]: Chat List View
+              - paragraph [ref=f10e505]: 2 variants
+          - generic [ref=f10e506]:
+            - link "Chat List View":
+              - /url: /docs/react/components/chat-list-view
+              - img "Chat List View" [ref=f10e507] [cursor=pointer]
+        - generic [ref=f10e508]:
+          - link "Chat Loader 1 variant" [ref=f10e510] [cursor=pointer]:
+            - /url: /docs/react/components/chat-loader
+            - generic [ref=f10e511]:
+              - generic [ref=f10e512]: Chat Loader
+              - paragraph [ref=f10e514]: 1 variant
+          - generic [ref=f10e515]:
+            - link "Chat Loader":
+              - /url: /docs/react/components/chat-loader
+              - img "Chat Loader" [ref=f10e516] [cursor=pointer]
+        - generic [ref=f10e517]:
+          - link "Chat Message 3 variants" [ref=f10e519] [cursor=pointer]:
+            - /url: /docs/react/components/chat-message
+            - generic [ref=f10e520]:
+              - generic [ref=f10e521]: Chat Message
+              - paragraph [ref=f10e523]: 3 variants
+          - generic [ref=f10e524]:
+            - link "Chat Message":
+              - /url: /docs/react/components/chat-message
+              - img "Chat Message" [ref=f10e525] [cursor=pointer]
+        - generic [ref=f10e526]:
+          - link "Chat Message Actions 3 variants" [ref=f10e528] [cursor=pointer]:
+            - /url: /docs/react/components/chat-message-actions
+            - generic [ref=f10e529]:
+              - generic [ref=f10e530]: Chat Message Actions
+              - paragraph [ref=f10e532]: 3 variants
+          - generic [ref=f10e533]:
+            - link "Chat Message Actions":
+              - /url: /docs/react/components/chat-message-actions
+              - img "Chat Message Actions" [ref=f10e534] [cursor=pointer]
+        - generic [ref=f10e535]:
+          - link "Chat Source 5 variants" [ref=f10e537] [cursor=pointer]:
+            - /url: /docs/react/components/chat-source
+            - generic [ref=f10e538]:
+              - generic [ref=f10e539]: Chat Source
+              - paragraph [ref=f10e541]: 5 variants
+          - generic [ref=f10e542]:
+            - link "Chat Source":
+              - /url: /docs/react/components/chat-source
+              - img "Chat Source" [ref=f10e543] [cursor=pointer]
+        - generic [ref=f10e544]:
+          - link "Chat Tool 6 variants" [ref=f10e546] [cursor=pointer]:
+            - /url: /docs/react/components/chat-tool
+            - generic [ref=f10e547]:
+              - generic [ref=f10e548]: Chat Tool
+              - paragraph [ref=f10e550]: 6 variants
+          - generic [ref=f10e551]:
+            - link "Chat Tool":
+              - /url: /docs/react/components/chat-tool
+              - img "Chat Tool" [ref=f10e552] [cursor=pointer]
+        - generic [ref=f10e553]:
+          - link "Code Block 1 variant" [ref=f10e555] [cursor=pointer]:
+            - /url: /docs/react/components/code-block
+            - generic [ref=f10e556]:
+              - generic [ref=f10e557]: Code Block
+              - paragraph [ref=f10e559]: 1 variant
+          - generic [ref=f10e560]:
+            - link "Code Block":
+              - /url: /docs/react/components/code-block
+              - img "Code Block" [ref=f10e561] [cursor=pointer]
+        - generic [ref=f10e562]:
+          - link "Markdown 3 variants" [ref=f10e564] [cursor=pointer]:
+            - /url: /docs/react/components/markdown
+            - generic [ref=f10e565]:
+              - generic [ref=f10e566]: Markdown
+              - paragraph [ref=f10e568]: 3 variants
+          - generic [ref=f10e569]:
+            - link "Markdown":
+              - /url: /docs/react/components/markdown
+              - img "Markdown" [ref=f10e570] [cursor=pointer]
+        - generic [ref=f10e571]:
+          - link "Prompt Input New 9 variants" [ref=f10e573] [cursor=pointer]:
+            - /url: /docs/react/components/prompt-input
+            - generic [ref=f10e574]:
+              - generic [ref=f10e575]:
+                - generic [ref=f10e576]: Prompt Input
+                - generic [ref=f10e577]: New
+              - paragraph [ref=f10e579]: 9 variants
+          - generic [ref=f10e580]:
+            - link "Prompt Input":
+              - /url: /docs/react/components/prompt-input
+              - img "Prompt Input" [ref=f10e581] [cursor=pointer]
+        - generic [ref=f10e582]:
+          - link "Prompt Suggestion 2 variants" [ref=f10e584] [cursor=pointer]:
+            - /url: /docs/react/components/prompt-suggestion
+            - generic [ref=f10e585]:
+              - generic [ref=f10e586]: Prompt Suggestion
+              - paragraph [ref=f10e588]: 2 variants
+          - generic [ref=f10e589]:
+            - link "Prompt Suggestion":
+              - /url: /docs/react/components/prompt-suggestion
+              - img "Prompt Suggestion" [ref=f10e590] [cursor=pointer]
+        - generic [ref=f10e591]:
+          - link "Text Shimmer 1 variant" [ref=f10e593] [cursor=pointer]:
+            - /url: /docs/react/components/text-shimmer
+            - generic [ref=f10e594]:
+              - generic [ref=f10e595]: Text Shimmer
+              - paragraph [ref=f10e597]: 1 variant
+          - generic [ref=f10e598]:
+            - link "Text Shimmer":
+              - /url: /docs/react/components/text-shimmer
+              - img "Text Shimmer" [ref=f10e599] [cursor=pointer]
+      - heading [level=2] [ref=f10e600]:
+        - link "Feedback" [ref=f10e601] [cursor=pointer]:
+          - /url: "#feedback"
+      - generic [ref=f10e607]:
+        - generic [ref=f10e608]:
+          - link "Emoji Reaction Button 4 variants" [ref=f10e610] [cursor=pointer]:
+            - /url: /docs/react/components/emoji-reaction-button
+            - generic [ref=f10e611]:
+              - generic [ref=f10e612]: Emoji Reaction Button
+              - paragraph [ref=f10e614]: 4 variants
+          - generic [ref=f10e615]:
+            - link "Emoji Reaction Button":
+              - /url: /docs/react/components/emoji-reaction-button
+              - img "Emoji Reaction Button" [ref=f10e616] [cursor=pointer]
+        - generic [ref=f10e617]:
+          - link "Number Value 8 variants" [ref=f10e619] [cursor=pointer]:
+            - /url: /docs/react/components/number-value
+            - generic [ref=f10e620]:
+              - generic [ref=f10e621]: Number Value
+              - paragraph [ref=f10e623]: 8 variants
+          - generic [ref=f10e624]:
+            - link "Number Value":
+              - /url: /docs/react/components/number-value
+              - img "Number Value" [ref=f10e625] [cursor=pointer]
+        - generic [ref=f10e626]:
+          - link "Pressable Feedback 17 variants" [ref=f10e628] [cursor=pointer]:
+            - /url: /docs/react/components/pressable-feedback
+            - generic [ref=f10e629]:
+              - generic [ref=f10e630]: Pressable Feedback
+              - paragraph [ref=f10e632]: 17 variants
+          - generic [ref=f10e633]:
+            - link "Pressable Feedback":
+              - /url: /docs/react/components/pressable-feedback
+              - img "Pressable Feedback" [ref=f10e634] [cursor=pointer]
+        - generic [ref=f10e635]:
+          - link "Rating 12 variants" [ref=f10e637] [cursor=pointer]:
+            - /url: /docs/react/components/rating
+            - generic [ref=f10e638]:
+              - generic [ref=f10e639]: Rating
+              - paragraph [ref=f10e641]: 12 variants
+          - generic [ref=f10e642]:
+            - link "Rating":
+              - /url: /docs/react/components/rating
+              - img "Rating" [ref=f10e643] [cursor=pointer]
+        - generic [ref=f10e644]:
+          - link "Trend Chip 6 variants" [ref=f10e646] [cursor=pointer]:
+            - /url: /docs/react/components/trend-chip
+            - generic [ref=f10e647]:
+              - generic [ref=f10e648]: Trend Chip
+              - paragraph [ref=f10e650]: 6 variants
+          - generic [ref=f10e651]:
+            - link "Trend Chip":
+              - /url: /docs/react/components/trend-chip
+              - img "Trend Chip" [ref=f10e652] [cursor=pointer]
+      - heading [level=2] [ref=f10e653]:
+        - link "Layout" [ref=f10e654] [cursor=pointer]:
+          - /url: "#layout"
+      - generic [ref=f10e661]:
+        - link "Resizable 7 variants" [ref=f10e663] [cursor=pointer]:
+          - /url: /docs/react/components/resizable
+          - generic [ref=f10e664]:
+            - generic [ref=f10e665]: Resizable
+            - paragraph [ref=f10e667]: 7 variants
+        - generic [ref=f10e668]:
+          - link "Resizable":
+            - /url: /docs/react/components/resizable
+            - img "Resizable" [ref=f10e669] [cursor=pointer]
+      - heading [level=2] [ref=f10e670]:
+        - link "Forms" [ref=f10e671] [cursor=pointer]:
+          - /url: "#forms"
+      - generic [ref=f10e677]:
+        - generic [ref=f10e678]:
+          - link "Cell Color Picker 6 variants" [ref=f10e680] [cursor=pointer]:
+            - /url: /docs/react/components/cell-color-picker
+            - generic [ref=f10e681]:
+              - generic [ref=f10e682]: Cell Color Picker
+              - paragraph [ref=f10e684]: 6 variants
+          - generic [ref=f10e685]:
+            - link "Cell Color Picker":
+              - /url: /docs/react/components/cell-color-picker
+              - img "Cell Color Picker" [ref=f10e686] [cursor=pointer]
+        - generic [ref=f10e687]:
+          - link "Cell Select 7 variants" [ref=f10e689] [cursor=pointer]:
+            - /url: /docs/react/components/cell-select
+            - generic [ref=f10e690]:
+              - generic [ref=f10e691]: Cell Select
+              - paragraph [ref=f10e693]: 7 variants
+          - generic [ref=f10e694]:
+            - link "Cell Select":
+              - /url: /docs/react/components/cell-select
+              - img "Cell Select" [ref=f10e695] [cursor=pointer]
+        - generic [ref=f10e696]:
+          - link "Cell Slider 7 variants" [ref=f10e698] [cursor=pointer]:
+            - /url: /docs/react/components/cell-slider
+            - generic [ref=f10e699]:
+              - generic [ref=f10e700]: Cell Slider
+              - paragraph [ref=f10e702]: 7 variants
+          - generic [ref=f10e703]:
+            - link "Cell Slider":
+              - /url: /docs/react/components/cell-slider
+              - img "Cell Slider" [ref=f10e704] [cursor=pointer]
+        - generic [ref=f10e705]:
+          - link "Cell Switch 7 variants" [ref=f10e707] [cursor=pointer]:
+            - /url: /docs/react/components/cell-switch
+            - generic [ref=f10e708]:
+              - generic [ref=f10e709]: Cell Switch
+              - paragraph [ref=f10e711]: 7 variants
+          - generic [ref=f10e712]:
+            - link "Cell Switch":
+              - /url: /docs/react/components/cell-switch
+              - img "Cell Switch" [ref=f10e713] [cursor=pointer]
+        - generic [ref=f10e714]:
+          - link "Checkbox Button Group 11 variants" [ref=f10e716] [cursor=pointer]:
+            - /url: /docs/react/components/checkbox-button-group
+            - generic [ref=f10e717]:
+              - generic [ref=f10e718]: Checkbox Button Group
+              - paragraph [ref=f10e720]: 11 variants
+          - generic [ref=f10e721]:
+            - link "Checkbox Button Group":
+              - /url: /docs/react/components/checkbox-button-group
+              - img "Checkbox Button Group" [ref=f10e722] [cursor=pointer]
+        - generic [ref=f10e723]:
+          - link "Drop Zone 9 variants" [ref=f10e725] [cursor=pointer]:
+            - /url: /docs/react/components/drop-zone
+            - generic [ref=f10e726]:
+              - generic [ref=f10e727]: Drop Zone
+              - paragraph [ref=f10e729]: 9 variants
+          - generic [ref=f10e730]:
+            - link "Drop Zone":
+              - /url: /docs/react/components/drop-zone
+              - img "Drop Zone" [ref=f10e731] [cursor=pointer]
+        - generic [ref=f10e732]:
+          - link "Inline Select 5 variants" [ref=f10e734] [cursor=pointer]:
+            - /url: /docs/react/components/inline-select
+            - generic [ref=f10e735]:
+              - generic [ref=f10e736]: Inline Select
+              - paragraph [ref=f10e738]: 5 variants
+          - generic [ref=f10e739]:
+            - link "Inline Select":
+              - /url: /docs/react/components/inline-select
+              - img "Inline Select" [ref=f10e740] [cursor=pointer]
+        - generic [ref=f10e741]:
+          - link "Native Select 12 variants" [ref=f10e743] [cursor=pointer]:
+            - /url: /docs/react/components/native-select
+            - generic [ref=f10e744]:
+              - generic [ref=f10e745]: Native Select
+              - paragraph [ref=f10e747]: 12 variants
+          - generic [ref=f10e748]:
+            - link "Native Select":
+              - /url: /docs/react/components/native-select
+              - img "Native Select" [ref=f10e749] [cursor=pointer]
+        - generic [ref=f10e750]:
+          - link "Number Stepper 13 variants" [ref=f10e752] [cursor=pointer]:
+            - /url: /docs/react/components/number-stepper
+            - generic [ref=f10e753]:
+              - generic [ref=f10e754]: Number Stepper
+              - paragraph [ref=f10e756]: 13 variants
+          - generic [ref=f10e757]:
+            - link "Number Stepper":
+              - /url: /docs/react/components/number-stepper
+              - img "Number Stepper" [ref=f10e758] [cursor=pointer]
+        - generic [ref=f10e759]:
+          - link "Radio Button Group 12 variants" [ref=f10e761] [cursor=pointer]:
+            - /url: /docs/react/components/radio-button-group
+            - generic [ref=f10e762]:
+              - generic [ref=f10e763]: Radio Button Group
+              - paragraph [ref=f10e765]: 12 variants
+          - generic [ref=f10e766]:
+            - link "Radio Button Group":
+              - /url: /docs/react/components/radio-button-group
+              - img "Radio Button Group" [ref=f10e767] [cursor=pointer]
+        - generic [ref=f10e768]:
+          - link "Rich Text Editor Updated 8 variants" [ref=f10e770] [cursor=pointer]:
+            - /url: /docs/react/components/rich-text-editor
+            - generic [ref=f10e771]:
+              - generic [ref=f10e772]:
+                - generic [ref=f10e773]: Rich Text Editor
+                - generic [ref=f10e774]: Updated
+              - paragraph [ref=f10e776]: 8 variants
+          - generic [ref=f10e777]:
+            - link "Rich Text Editor":
+              - /url: /docs/react/components/rich-text-editor
+              - img "Rich Text Editor" [ref=f10e778] [cursor=pointer]
+      - heading [level=2] [ref=f10e779]:
+        - link "Navigation" [ref=f10e780] [cursor=pointer]:
+          - /url: "#navigation"
+      - generic [ref=f10e786]:
+        - generic [ref=f10e787]:
+          - link "AppLayout 14 variants" [ref=f10e789] [cursor=pointer]:
+            - /url: /docs/react/components/app-layout
+            - generic [ref=f10e790]:
+              - generic [ref=f10e791]: AppLayout
+              - paragraph [ref=f10e793]: 14 variants
+          - generic [ref=f10e794]:
+            - link "AppLayout":
+              - /url: /docs/react/components/app-layout
+              - img "AppLayout" [ref=f10e795] [cursor=pointer]
+        - generic [ref=f10e796]:
+          - link "Command 9 variants" [ref=f10e798] [cursor=pointer]:
+            - /url: /docs/react/components/command
+            - generic [ref=f10e799]:
+              - generic [ref=f10e800]: Command
+              - paragraph [ref=f10e802]: 9 variants
+          - generic [ref=f10e803]:
+            - link "Command":
+              - /url: /docs/react/components/command
+              - img "Command" [ref=f10e804] [cursor=pointer]
+        - generic [ref=f10e805]:
+          - link "Context Menu Updated 7 variants" [ref=f10e807] [cursor=pointer]:
+            - /url: /docs/react/components/context-menu
+            - generic [ref=f10e808]:
+              - generic [ref=f10e809]:
+                - generic [ref=f10e810]: Context Menu
+                - generic [ref=f10e811]: Updated
+              - paragraph [ref=f10e813]: 7 variants
+          - generic [ref=f10e814]:
+            - link "Context Menu":
+              - /url: /docs/react/components/context-menu
+              - img "Context Menu" [ref=f10e815] [cursor=pointer]
+        - generic [ref=f10e816]:
+          - link "Navbar 7 variants" [ref=f10e818] [cursor=pointer]:
+            - /url: /docs/react/components/navbar
+            - generic [ref=f10e819]:
+              - generic [ref=f10e820]: Navbar
+              - paragraph [ref=f10e822]: 7 variants
+          - generic [ref=f10e823]:
+            - link "Navbar":
+              - /url: /docs/react/components/navbar
+              - img "Navbar" [ref=f10e824] [cursor=pointer]
+        - generic [ref=f10e825]:
+          - link "Segment 11 variants" [ref=f10e827] [cursor=pointer]:
+            - /url: /docs/react/components/segment
+            - generic [ref=f10e828]:
+              - generic [ref=f10e829]: Segment
+              - paragraph [ref=f10e831]: 11 variants
+          - generic [ref=f10e832]:
+            - link "Segment":
+              - /url: /docs/react/components/segment
+              - img "Segment" [ref=f10e833] [cursor=pointer]
+        - generic [ref=f10e834]:
+          - link "Sidebar 16 variants" [ref=f10e836] [cursor=pointer]:
+            - /url: /docs/react/components/sidebar
+            - generic [ref=f10e837]:
+              - generic [ref=f10e838]: Sidebar
+              - paragraph [ref=f10e840]: 16 variants
+          - generic [ref=f10e841]:
+            - link "Sidebar":
+              - /url: /docs/react/components/sidebar
+              - img "Sidebar" [ref=f10e842] [cursor=pointer]
+        - generic [ref=f10e843]:
+          - link "Stepper 19 variants" [ref=f10e845] [cursor=pointer]:
+            - /url: /docs/react/components/stepper
+            - generic [ref=f10e846]:
+              - generic [ref=f10e847]: Stepper
+              - paragraph [ref=f10e849]: 19 variants
+          - generic [ref=f10e850]:
+            - link "Stepper":
+              - /url: /docs/react/components/stepper
+              - img "Stepper" [ref=f10e851] [cursor=pointer]
+      - heading [level=2] [ref=f10e852]:
+        - link "Overlays" [ref=f10e853] [cursor=pointer]:
+          - /url: "#overlays"
+      - generic [ref=f10e859]:
+        - generic [ref=f10e860]:
+          - link "Emoji Picker 4 variants" [ref=f10e862] [cursor=pointer]:
+            - /url: /docs/react/components/emoji-picker
+            - generic [ref=f10e863]:
+              - generic [ref=f10e864]: Emoji Picker
+              - paragraph [ref=f10e866]: 4 variants
+          - generic [ref=f10e867]:
+            - link "Emoji Picker":
+              - /url: /docs/react/components/emoji-picker
+              - img "Emoji Picker" [ref=f10e868] [cursor=pointer]
+        - generic [ref=f10e869]:
+          - link "Sheet 16 variants" [ref=f10e871] [cursor=pointer]:
+            - /url: /docs/react/components/sheet
+            - generic [ref=f10e872]:
+              - generic [ref=f10e873]: Sheet
+              - paragraph [ref=f10e875]: 16 variants
+          - generic [ref=f10e876]:
+            - link "Sheet":
+              - /url: /docs/react/components/sheet
+              - img "Sheet" [ref=f10e877] [cursor=pointer]
+    - link [ref=f10e879] [cursor=pointer]:
+      - /url: /docs/react/components/area-chart
+      - paragraph [ref=f10e883]: Area Chart
+      - paragraph [ref=f10e884]: An area chart for visualizing trends with gradient fills, stacked series, and sparkline variants.

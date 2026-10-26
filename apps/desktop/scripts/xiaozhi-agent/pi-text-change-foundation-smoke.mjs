@@ -118,6 +118,27 @@ try {
     assert.equal(fs.lstatSync(path.join(e.workspace, '备课.md')).nlink, 1);
     assert.equal((await decision(e, applied, 'undo')).state, 'reverted'); assert(!fs.existsSync(path.join(e.workspace, '备课.md')));
   });
+  await check('Teacher-facing files exclude a generated trailing review comparison but keep genuine teacher content', async () => {
+    const e = await fixture();
+    const content = '# 备课稿\n\n正文完整保留。\n\n---\n\n## 本次修改预览\n\n| 位置 | 原内容 | 修改后 |\n|---|---|---|\n| 课时 | 37分钟 | 41分钟 |\n';
+    const cleaned = await e.service.propose(session, 'owned-run', 'clean-create', { operation: 'create', path: '干净备课.md', content });
+    assert(!cleaned.diff.includes('本次修改预览')); assert(!(await e.service.review(session, cleaned.id)).after.includes('原内容'));
+    await apply(e, cleaned);
+    assert.equal(fs.readFileSync(path.join(e.workspace, '干净备课.md')).toString(), '# 备课稿\n\n正文完整保留。\n');
+
+    const genuine = '# 教师说明\n\n## 本次修改预览\n\n这里是我准备给学生看的正常章节。\n';
+    await e.service.propose(session, 'owned-run', 'keep-genuine', { operation: 'create', path: '教师说明.md', content: genuine });
+    assert.match((await e.state.list(session)).find(row => row.path === '教师说明.md').diff, /正常章节/);
+
+    const lateGenuine = '# 教师说明\n\n## 修改预览\n\n原内容与修改后的说明是本节正文，不是对比表。\n\n## 后续章节\n\n必须保留。\n';
+    await e.service.propose(session, 'owned-run', 'keep-late-section', { operation: 'create', path: '后续章节.md', content: lateGenuine });
+    assert.match((await e.state.list(session)).find(row => row.path === '后续章节.md').diff, /后续章节/);
+
+    file(e, '第一段\n');
+    const edited = await e.service.propose(session, 'owned-run', 'clean-edit', { operation: 'edit', path: '资料.md',
+      edits: [{ oldText: '第一段', newText: '第一段更新\n\n## 本次修改预览\n\n| 位置 | 原内容 | 修改后 |\n|---|---|---|\n| 段 | 旧 | 新 |' }] });
+    assert.equal((await e.service.review(session, edited.id)).after, '第一段更新\n');
+  });
   await check('A competing new target refuses approval without overwriting it or creating parent directories', async () => {
     const e = await fixture(), row = await e.service.propose(session, 'owned-run', 'create', { operation: 'create', path: '备课.txt', content: '拟内容' });
     fs.writeFileSync(path.join(e.workspace, '备课.txt'), '其他来源'); assert.equal((await decision(e, row, 'approve')).state, 'conflict');

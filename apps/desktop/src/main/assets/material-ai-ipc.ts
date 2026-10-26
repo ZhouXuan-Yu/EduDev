@@ -1,4 +1,4 @@
-import {ipcMain,safeStorage,type BrowserWindow} from 'electron';
+import {ipcMain as electronIpcMain,safeStorage,type BrowserWindow} from 'electron';
 import {randomUUID} from 'node:crypto';
 import type {OmniEduStore} from '../db';
 import {materialId} from '../../shared/materials';
@@ -11,7 +11,7 @@ import {previewPdfFile} from '../xiaozhi-agent/pdf-file-host';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {validAiAction,validAiBatch,validAiSettings} from '../../shared/material-ai';
 
-export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined){
+export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
   store.materialAi.configure({
     codec:{available:()=>safeStorage.isEncryptionAvailable(),seal:key=>safeStorage.encryptString(key).toString('base64'),open:value=>safeStorage.decryptString(Buffer.from(value,'base64'))},
     clean:async text=>(await createStudentContextSanitizer(store))(text),

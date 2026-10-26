@@ -1,0 +1,44 @@
+{
+  "success": true,
+  "reviewOnly": true,
+  "businessIpc": false,
+  "providerRequests": 0,
+  "url": "http://127.0.0.1:5173/src/renderer/design-review/index.html",
+  "checks": [
+    "page contract reachable: ai",
+    "page contract reachable: knowledge",
+    "page contract reachable: artifacts",
+    "page contract reachable: notebook",
+    "page contract reachable: book",
+    "page contract reachable: question_notebook",
+    "page contract reachable: paper",
+    "page contract reachable: students",
+    "page contract reachable: search",
+    "page contract reachable: intake",
+    "page contract reachable: mistakes",
+    "page contract reachable: mastery",
+    "page contract reachable: review",
+    "page contract reachable: analytics",
+    "page contract reachable: settings",
+    "current page constraints visible",
+    "sample process exposes distinct tool glyph rows",
+    "sample handoff folds process before result",
+    "sample process can reopen",
+    "unchanged official streaming reference",
+    "official reference cosmetics match clean vendor CSS",
+    "no renderer exceptions"
+  ],
+  "errors": [],
+  "reference": {
+    "width": 420,
+    "streaming": true,
+    "expanded": "true"
+  },
+  "css": {
+    "color": "oklch(0.2103 0.0059 285.89)",
+    "font": "14px",
+    "background": "rgba(0, 0, 0, 0)",
+    "padding": "0px",
+    "animation": "none"
+  }
+}

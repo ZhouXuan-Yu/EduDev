@@ -9,8 +9,36 @@ import {learningSourcePreview} from '../../../shared/learning-source-preview';
 import {StudentSourceLink} from '../students/StudentSourceNavigation';
 import {PiTrainingPlan} from './PiTrainingPlan';
 const labels={pending:'需要你核对',confirmed:'已确认保存',rejected:'已拒绝，未生效'};
+/** One explicit teacher action over the selected pending suggestions of this run; nothing is auto-confirmed. */
+export function LearningReviewBatchBar({selected,busy,error,onConfirm,onReject}:{selected:number;busy:boolean;error:string;onConfirm:()=>void;onReject:()=>void}){
+  return <div className="pi-learning-batch" data-testid="learning-review-batch-bar" data-selected-count={selected}>
+    <span data-testid="learning-review-selected-count">已选 {selected} 项</span>
+    <Button data-testid="learning-review-batch-confirm" isDisabled={!selected||busy} onPress={onConfirm}>批量确认（按建议保存）</Button>
+    <Button data-testid="learning-review-batch-reject" isDisabled={!selected||busy} onPress={onReject}>批量拒绝</Button>
+    {error&&<p role="alert" data-testid="learning-review-batch-error">{error}</p>}
+  </div>;
+}
+export function PiLearningReviewSet({sessionId,reviews,onRefresh}:{sessionId:string;reviews:LearningReviewSummary[];onRefresh:()=>Promise<void>}){
+  const [selected,setSelected]=useState<string[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState('');
+  const chosen=selected.length?reviews.find(review=>review.id===selected[0]):undefined;
+  const toggle=(review:LearningReviewSummary)=>setSelected(current=>current.includes(review.id)?current.filter(id=>id!==review.id):[...current,review.id]);
+  async function decide(action:'confirm'|'reject'){
+    if(busy||!selected.length)return;const items=selected.map(id=>({id})),label=action==='confirm'?'确认':'拒绝';
+    setBusy(true);setError('');
+    try{const result=await window.omniEdu?.decideXiaozhiLearningBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action,items});
+      if(!result?.ok){setError(`批量${label}失败：${result?LEARNING_REVIEW_ERRORS[result.error]:'请求没有送达。'}所选 ${selected.length} 项均未保存。`);return;}
+      setSelected([]);await onRefresh();
+    }catch{setError(`批量${label}失败，所选 ${selected.length} 项均未保存。`);}finally{setBusy(false);}
+  }
+  return <div data-testid="learning-review-batch" data-selected-count={selected.length}>
+    <LearningReviewBatchBar selected={selected.length} busy={busy} error={error} onConfirm={()=>void decide('confirm')} onReject={()=>void decide('reject')}/>
+    {reviews.map(review=><PiLearningReview key={review.id} sessionId={sessionId} review={review} onRefresh={onRefresh}
+      selection={{selected:selected.includes(review.id),disabled:busy||Boolean(chosen&&chosen.kind!==review.kind),onToggle:()=>toggle(review),error:selected.includes(review.id)?error:''}}/>)}
+  </div>;
+}
+export type LearningReviewSelection={selected:boolean;disabled:boolean;onToggle:()=>void;error?:string};
 /** Reuses the current ChatTool approval and session-keyed editable form state. */
-export function PiLearningReview({sessionId,review,onRefresh}:{sessionId:string;review:LearningReviewSummary;onRefresh:()=>Promise<void>}){
+export function PiLearningReview({sessionId,review,onRefresh,selection}:{sessionId:string;review:LearningReviewSummary;onRefresh:()=>Promise<void>;selection?:LearningReviewSelection}){
  const {draft:updateState,update,lock}=useOfficeControlState(`learning:${review.id}`),[view,setView]=useState<LearningReviewView>();
  const [loading,setLoading]=useState(true);
  useEffect(()=>{let live=true;setLoading(true);void window.omniEdu?.reviewXiaozhiLearning({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,id:review.id}).then(result=>{
@@ -33,6 +61,8 @@ export function PiLearningReview({sessionId,review,onRefresh}:{sessionId:string;
    {view?.planCurrent===false&&<p role="status">学习证据或复习策略已变化，这是当时保存的计划，请重新分析后再安排训练。</p>}
    {view?.heuristic&&<p data-testid="learning-review-heuristic">本地参考评分：{view.heuristic.isCorrect?'答案匹配':'答案未匹配'}。这是启发式建议，请核对学生作答与参考答案后决定。</p>}
    <p>原学习记录保留。请核对建议后保存；校正不会增加练习次数。</p>
+   {pending&&selection&&<label className="pi-learning-select"><input type="checkbox" data-testid={`learning-review-select-${review.id}`} checked={selection.selected} disabled={selection.disabled||updateState.busy} onChange={()=>selection.onToggle()}/>选择此项批量处理</label>}
+   {pending&&selection?.error&&<p role="alert" data-testid="learning-review-batch-item-error">{selection.error}</p>}
    {pending&&draft&&<fieldset disabled={updateState.busy} className="pi-learning-fields">
     {draft.kind==='strategy'&&draft.plan&&<PiTrainingPlan plan={draft.plan} onChange={plan=>setDraft({...draft,plan})}/>}
     {draft.kind==='assessment'?<>

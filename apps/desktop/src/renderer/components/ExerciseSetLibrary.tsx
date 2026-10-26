@@ -2,6 +2,7 @@ import {Button} from '@heroui/react';
 import {useDesktopNavigation} from './desktop/DesktopFrame';
 import { useCallback, useEffect, useState } from 'react';
 import type { ExerciseSet, Student } from '../../shared/contracts';
+import {teacherObservationText} from '../../shared/practice-review';
 import {PracticeSourceButton} from './office/PiPracticeReview';
 
 type ExerciseSetLibraryProps = {
@@ -89,7 +90,7 @@ export function ExerciseSetLibraryState({
                   <h4>{item.stem}</h4>
                   <p><strong>答案：</strong>{item.answer || '未提供'}</p>
                   {item.analysis ? <p><strong>解析：</strong>{item.analysis}</p> : null}
-                  {item.teacherObservation ? <p><strong>教师观察：</strong>{item.teacherObservation}</p> : null}
+                  {item.teacherObservation ? <p><strong>教师观察：</strong>{teacherObservationText(item.teacherObservation)}</p> : null}
                 </section>
               ))}
             </div>

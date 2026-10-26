@@ -6,6 +6,31 @@ import { snapshotToolInvocationInput } from '../ai-harness/vendor/openhanako-too
 
 export const MAX_CHANGE_BYTES = 65536;
 export const MAX_CHANGE_DIFF_BYTES = 524288;
+/**
+ * The review card already renders the before/after diff in the UI. Some models
+ * repeat that metadata as a final Markdown table in the proposed document.
+ * Keep that table out of the teacher-facing artifact while preserving genuine
+ * content that merely uses a similar heading without a comparison table.
+ */
+export function stripGeneratedReviewSuffix(text: string, preserveFinalNewline = false): string {
+  const marker = /^(?:#{1,6})\s*(?:本次修改预览|修改预览|本次修改说明|修改对照)\s*$/gim;
+  let start = -1;
+  for (const match of text.matchAll(marker)) start = match.index ?? start;
+  if (start < 0) return text;
+  const tail = text.slice(start);
+  const lines = tail.split(/\r?\n/);
+  const header = lines.findIndex((line, index) => {
+    if (!line.includes('|') || !/原内容|修改前/.test(line) || !/修改后/.test(line)) return false;
+    return /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[index + 1] || '');
+  });
+  if (header < 0) return text;
+  const kept = text.slice(0, start)
+    .replace(/\r?\n(?:[ \t]*\r?\n)+[ \t]*(?:-{3,}|\*{3,}|_{3,})[ \t]*(?:\r?\n[ \t]*)*$/, '')
+    .replace(/[ \t]*(?:\r?\n)+$/, '');
+  if (!kept) return '';
+  return preserveFinalNewline ? kept + (text.includes('\r\n') ? '\r\n' : '\n') : kept;
+}
+
 export function changeText(bytes: Buffer): string {
   if (bytes.length > MAX_CHANGE_BYTES) throw new Error('too_large');
   try { new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes); }
@@ -24,15 +49,22 @@ export function textProposalInput(raw: unknown): XiaozhiTextProposalInput {
   if (v.operation === 'create') {
     if (typeof v.content !== 'string') throw new Error('invalid_input');
     changeText(Buffer.from(v.content));
+    const content = stripGeneratedReviewSuffix(v.content, true);
+    changeText(Buffer.from(content));
+    return { operation: 'create', path: v.path, content } as XiaozhiTextProposalInput;
   } else {
     if (!Array.isArray(v.edits) || !v.edits.length || v.edits.length > 16) throw new Error('invalid_input');
+    const edits: Array<{ oldText: string; newText: string }> = [];
     for (const edit of v.edits) {
       if (!edit || typeof edit !== 'object' || Array.isArray(edit) || Object.keys(edit).some(key => !['oldText', 'newText'].includes(key))
         || typeof edit.oldText !== 'string' || !edit.oldText || typeof edit.newText !== 'string') throw new Error('invalid_input');
       changeText(Buffer.from(edit.oldText)); changeText(Buffer.from(edit.newText));
+      const newText = stripGeneratedReviewSuffix(edit.newText);
+      changeText(Buffer.from(newText));
+      edits.push({ oldText: edit.oldText, newText });
     }
+    return { operation: 'edit', path: v.path, edits } as XiaozhiTextProposalInput;
   }
-  return v as XiaozhiTextProposalInput;
 }
 
 /** Execute original Pi tools against memory operations. No real filesystem writes. */

@@ -71,6 +71,9 @@ export function createPiPersistentState(sql: Sql) {
     async bindCommand(id: string, run: string) {
       if (!await update("UPDATE xiaozhi_pi_commands SET run_id=?,status='running',updated_at=? WHERE command_id=? AND status='starting' AND run_id=''", [run, time(), id])) throw new Error('configuration');
     },
+    async interruptCommand(id:string,conversation:string,hash:string) {
+      await sql.run("UPDATE xiaozhi_pi_commands SET status='interrupted',updated_at=? WHERE command_id=? AND conversation_id=? AND request_hash=? AND status IN ('starting','running')",[time(),id,conversation,hash]);
+    },
     async finishCommand(id: string) { await sql.run("UPDATE xiaozhi_pi_commands SET status='finished',updated_at=? WHERE command_id=?", [time(), id]); },
     async interruptedSend(session: string) {
       return (await sql.all(`SELECT 1 FROM xiaozhi_pi_commands c WHERE c.conversation_id=? AND c.schema_version=1 AND c.status='interrupted'

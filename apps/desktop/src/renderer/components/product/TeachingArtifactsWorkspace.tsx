@@ -1,17 +1,21 @@
 import {useEffect,useRef,useState} from 'react';
-import {Button,SearchField} from '@heroui/react';
+import {Button,SearchField,Tabs} from '@heroui/react';
+import {ClassroomWorkspace} from './ClassroomWorkspace';
 import {FileText,FolderOpen,MessageSquare,RefreshCw} from 'lucide-react';
-import {ListView} from '../../heroui-pro/components/list-view';
+import {ResourceTable} from '../../ui-system/ResourceTable';
 import type {DocumentArtifactExportResult} from '../../../shared/contracts';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {PiWorkspaceFiles} from '../office/PiWorkspaceFiles';
-import {Markdown} from '../../heroui-pro/components/markdown';
+import {OfficeMarkdown as Markdown} from '../office/OfficeMarkdown';
 import {LibraryEmpty} from './LibraryEmpty';
 import {libraryDate,libraryFileSize,matchesMaterial} from './material-library';
 import './teacher-library.css';
 
 /** Read existing durable artifact facts; preview uses the same authorized host. */
 export function TeachingArtifactsWorkspace() {
+  return <Tabs defaultSelectedKey="files" aria-label="教学内容"><Tabs.List><Tabs.Tab id="files">教学文件<Tabs.Indicator/></Tabs.Tab><Tabs.Tab id="classrooms" data-testid="teaching-classrooms-tab">互动课堂<Tabs.Indicator/></Tabs.Tab></Tabs.List><Tabs.Panel id="files"><TeachingFilesWorkspace/></Tabs.Panel><Tabs.Panel id="classrooms"><ClassroomWorkspace/></Tabs.Panel></Tabs>;
+}
+function TeachingFilesWorkspace() {
   const navigation=useDesktopNavigation();const [rows,setRows]=useState<DocumentArtifactExportResult[]>([]),[query,setQuery]=useState(''),[selected,setSelected]=useState('');
   const [loading,setLoading]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
   const [reveal,setReveal]=useState<{id:string;path:string}>();const epoch=useRef(0);
@@ -27,9 +31,7 @@ export function TeachingArtifactsWorkspace() {
     {error&&<p role="alert" className="teacher-library-error" data-testid="artifacts-error">{error}</p>}{notice&&<p role="status" className="teacher-library-notice">{notice}</p>}
     <p className="teacher-library-count">{loading?'正在读取教学文件…':`${filtered.length} 份教学文件${rows.length===100?' · 显示最近100份':' · 来自所有对话'}`}</p>
     <div className="teacher-library-grid">
-      <ListView aria-label="教学文件列表" className="teacher-library-list" selectionMode="single" selectionBehavior="replace" disallowEmptySelection selectedKeys={new Set(artifact?[artifact.id]:[])} onSelectionChange={keys=>{if(keys!=='all')select(String([...keys][0]||''));}} renderEmptyState={()=>loading?<p role="status">正在读取教学文件…</p>:<LibraryEmpty title={query?'没有匹配的教学文件':'还没有教学文件'} description={query?'换个名称或格式，或清除查找条件。':'请小智制作讲义、试卷或课件。确认保存后会出现在这里。'}/>}>
-        {filtered.map(row=><ListView.Item id={row.id} key={row.id} textValue={row.title} data-testid={`artifact-${row.id}`}><FileText size={19}/><ListView.ItemContent><ListView.Title>{row.title}</ListView.Title><ListView.Description>{row.type.toUpperCase()} · {libraryDate(row.updatedAt)} · {libraryFileSize(row.fileSize)}</ListView.Description></ListView.ItemContent><span className="teacher-library-state" data-tone={row.status==='exported'?'ready':row.status==='failed'?'error':'waiting'}>{row.status==='exported'?'已保存':row.status==='failed'?'保存失败':'未保存'}</span></ListView.Item>)}
-      </ListView>
+      <ResourceTable label="教学文件列表" rows={filtered.map(row=>({id:row.id,title:row.title,description:libraryDate(row.updatedAt)+' · '+libraryFileSize(row.fileSize),type:row.type.toUpperCase(),state:row.status==='exported'?'已保存':row.status==='failed'?'保存失败':'未保存'}))} selected={artifact?.id} onSelect={select} testPrefix="artifact" empty={loading?<p role="status">正在读取教学文件…</p>:<LibraryEmpty title={query?'没有匹配的教学文件':'还没有教学文件'} description={query?'换个名称或格式，或清除查找条件。':'请小智制作讲义、试卷或课件。确认保存后会出现在这里。'}/>}/>
       <section className="teacher-library-detail" data-testid="artifacts-detail" aria-label="教学文件内容">
         {artifact?<><header><div><h2>{artifact.title}</h2><p>{artifact.fileName}</p></div></header><div className="teacher-library-detail-actions">
           <Button variant="secondary" isDisabled={artifact.status!=='exported'||!artifact.sessionId} onPress={()=>setReveal({id:crypto.randomUUID(),path:artifact.fileName})} data-testid="artifacts-preview">预览文件</Button>

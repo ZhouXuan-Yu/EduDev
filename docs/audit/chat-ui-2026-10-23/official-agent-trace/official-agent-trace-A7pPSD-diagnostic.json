@@ -1,0 +1,52 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "formal current-worktree Electron renderer",
+      "pass": true
+    },
+    {
+      "name": "real provider reasoning streams visibly in the official expanded trace",
+      "pass": true
+    },
+    {
+      "name": "original Pro shimmer follows actual thinking",
+      "pass": true
+    },
+    {
+      "name": "answer continues streaming independently",
+      "pass": true
+    },
+    {
+      "name": "nonempty provider reasoning with separate duration",
+      "pass": true
+    },
+    {
+      "name": "whole-turn completion automatically folds the official trace",
+      "pass": true
+    },
+    {
+      "name": "reader can reopen reasoning after completion",
+      "pass": true
+    },
+    {
+      "name": "generic phases and empty execution section are absent from ordinary replies",
+      "pass": true
+    },
+    {
+      "name": "clipboard copies only actual answer",
+      "pass": true
+    },
+    {
+      "name": "teacher-confirmed Markdown export contains only answer",
+      "pass": true
+    },
+    {
+      "name": "official CSS parity and real hover focus active at both light sizes",
+      "pass": true
+    }
+  ],
+  "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n940 !== 420\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/scripts/xiaozhi-agent/model-reasoning-electron.mjs:82:92\n    at check (file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/scripts/xiaozhi-agent/model-reasoning-electron.mjs:26:32)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/scripts/xiaozhi-agent/model-reasoning-electron.mjs:82:2",
+  "output": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop\\test-results\\official-agent-trace-A7pPSD",
+  "temp": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-official-agent-trace-RsBQn8"
+}

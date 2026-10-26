@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { Button } from '@heroui/react';
 import { ArrowLeft, ArrowRight, PanelLeft } from 'lucide-react';
 import type { DesktopChromeState, DesktopCommand, DesktopMenu } from '../../../shared/desktop-chrome';
-import './desktop-frame.css';
+import '../../ui-system/chrome.css';
 
 type Target={view:string;sessionId?:string;draft?:string};
 type Handler=(command:DesktopCommand)=>boolean;
@@ -56,17 +56,17 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   }
   const navigation={target:history.entries[history.index],canBack:history.index>0,canForward:history.index<history.entries.length-1,navigate,consumeDraft,reject,register,flush};
   return <NavigationContext.Provider value={navigation}>
-    {chrome?.enabled?<div className="desktop-native-frame" data-testid="desktop-native-frame">
-      <header className="desktop-titlebar" data-testid="desktop-titlebar" style={{height:chrome.height}}>
-        <div className="desktop-titlebar-safe" data-testid="desktop-titlebar-safe">
+    {chrome?.enabled?<div className="edu-desktop-frame desktop-native-frame" data-testid="desktop-native-frame" style={{'--edu-chrome-height':`${Math.max(44,chrome.height)}px`} as React.CSSProperties}>
+      <header className="edu-chrome-bar" data-heroui-native="" data-theme="light" data-testid="desktop-titlebar" style={{height:Math.max(44,chrome.height)}}>
+        <div className="edu-chrome-controls" data-testid="desktop-titlebar-safe">
           <Button variant="ghost" isIconOnly aria-label="后退" isDisabled={!navigation.canBack} onPress={()=>command('back')} data-testid="desktop-back"><ArrowLeft size={17}/></Button>
           <Button variant="ghost" isIconOnly aria-label="前进" isDisabled={!navigation.canForward} onPress={()=>command('forward')} data-testid="desktop-forward"><ArrowRight size={17}/></Button>
           <Button variant="ghost" isIconOnly aria-label="显示或隐藏会话侧栏" onPress={()=>command('sidebar')} data-testid="desktop-sidebar"><PanelLeft size={17}/></Button>
           {(['file','edit','view','help'] as const).map((group,index)=><Button key={group} variant="ghost" aria-haspopup="menu" data-testid={`desktop-menu-${group}`} onPress={event=>void menu(group,event.target)}>{['文件','编辑','视图','帮助'][index]}</Button>)}
         </div>
       </header>
-      {notice&&<div className="desktop-frame-notice" role="status">{notice}</div>}
-      <div className="desktop-content">{children}</div>
+      {notice&&<div className="edu-desktop-notice" role="status">{notice}</div>}
+      <div className="edu-desktop-content desktop-content">{children}</div>
     </div>:children}
   </NavigationContext.Provider>;
 }

@@ -1,6 +1,7 @@
 type SqlValue = string | number | null | Buffer;
 export type Sql = { run: (sql: string, values?: SqlValue[]) => Promise<unknown>;
   change?: (sql: string, values?: SqlValue[]) => Promise<number>;
+  transaction?: <T>(action: (work: Sql) => Promise<T>) => Promise<T>;
   all: (sql: string, values?: SqlValue[]) => Promise<Record<string, unknown>[]> };
 import { createPiPersistentState } from './persistent-state';
 import { createPiControlState } from './control-state';
@@ -16,8 +17,15 @@ import { createAttachmentImportState } from './attachment-import-state';
 import {createAttachmentSendState} from './attachment-send-state';
 import {createAttachmentOcrState} from './attachment-ocr-state';
 import {createGoalState} from './goal-state';
+import { createEventJournal } from './events/journal';
+import {createClassroomState} from '../education/classroom-state';
+import {createTeacherPreferenceState} from '../education/teacher-preference-state';
+import {readNativeToolEntries} from './events/native-tail';
+import {createRecoveryEffectReader} from './events/recovery-readback';
+import {serializeStateWrites} from './serialized-state-sql';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
-export function createXiaozhiSessionState(sql: Sql) {
+export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string}) {
+  const sql=serializeStateWrites(source);
   const persistent = createPiPersistentState(sql);
   const controls = createPiControlState(sql);
   const budget = createPiBudgetState(sql);
@@ -32,12 +40,16 @@ export function createXiaozhiSessionState(sql: Sql) {
   const attachmentSends=createAttachmentSendState(sql);
   const attachmentOcr=createAttachmentOcrState(sql);
   const goals=createGoalState(sql);
+  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts})});
+  const classrooms=createClassroomState(sql);
   return {
+    sql,
     ...persistent,
     ...controls,
     ...budget,
     ...memory,
     ...skills,
+    teacherPreferences:createTeacherPreferenceState(sql),
     modelSettings,
     modelSwitch,
     changes,
@@ -47,7 +59,9 @@ export function createXiaozhiSessionState(sql: Sql) {
     attachmentSends,
     attachmentOcr,
     goals,
-    async recover() { await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
+    eventJournal,
+    classrooms,
+    async recover() { await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
     async init() {
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_session_bindings (
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1,
@@ -66,6 +80,7 @@ export function createXiaozhiSessionState(sql: Sql) {
       await attachmentSends.migrate();
       await attachmentOcr.migrate();
       await goals.migrate();
+      await eventJournal.migrate();
     },
     async getBinding(id: string) {
       const row = (await sql.all('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id = ?', [id]))[0];
@@ -87,7 +102,17 @@ export function createXiaozhiSessionState(sql: Sql) {
         schema_version=MAX(xiaozhi_pi_session_bindings.schema_version, excluded.schema_version),
         model=excluded.model, updated_at=excluded.updated_at`, [id, schemaVersion, file, model, new Date().toISOString()]);
     },
-    async runs(id: string) {
+    async runs(id: string, runIds?: string[]) {
+      if (runIds) {
+        const ids = [...new Set(runIds.filter(runId => /^[A-Za-z0-9_-]{1,200}$/.test(runId)))].slice(0, 80);
+        if (!ids.length) return [];
+        return sql.all(
+          `SELECT id,status,error_message FROM ai_agent_runs
+            WHERE session_id = ? AND sub_intent = 'pi_education'
+              AND id IN (${ids.map(() => '?').join(',')})`,
+          [id, ...ids],
+        );
+      }
       return sql.all("SELECT id,status,error_message FROM ai_agent_runs WHERE session_id = ? AND sub_intent = 'pi_education' ORDER BY created_at", [id]);
     },
   };

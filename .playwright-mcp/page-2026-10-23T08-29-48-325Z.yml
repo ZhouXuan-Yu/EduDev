@@ -1,0 +1,140 @@
+- generic [ref=f12e3]:
+  - banner [ref=f12e7]:
+    - heading "Storybook" [level=1] [ref=f12e8]
+    - generic [ref=f12e12]:
+      - generic [ref=f12e14]:
+        - link "Skip to content" [ref=f12e15] [cursor=pointer]:
+          - /url: "#storybook-preview-wrapper"
+        - link "HeroUI Pro" [ref=f12e17] [cursor=pointer]:
+          - /url: ./
+        - switch "Settings" [ref=f12e18] [cursor=pointer]
+      - generic [ref=f12e22]: Search for components
+      - search [ref=f12e23]:
+        - combobox [ref=f12e24]:
+          - searchbox "Search for components" [ref=f12e25]
+          - button "Tag filters" [ref=f12e64] [cursor=pointer]
+      - navigation [ref=f12e27]:
+        - heading "Stories" [level=2] [ref=f12e28]
+        - generic [ref=f12e67]:
+          - button [expanded] [ref=f12e69] [cursor=pointer]
+          - generic [ref=f12e476]:
+            - link [ref=f12e477] [cursor=pointer]:
+              - /url: /?path=/docs/oss-components--docs
+            - link "Skip to content" [ref=f12e481] [cursor=pointer]:
+              - /url: "#storybook-preview-wrapper"
+          - link [ref=f12e483] [cursor=pointer]:
+            - /url: /?path=/story/oss-components--all-components
+          - button [expanded] [ref=f12e77] [cursor=pointer]
+          - button [ref=f12e109] [cursor=pointer]
+          - button [ref=f12e117] [cursor=pointer]
+          - button [expanded] [active] [ref=f12e125] [cursor=pointer]
+          - button [ref=f12e488] [cursor=pointer]
+          - button [ref=f12e496] [cursor=pointer]
+          - button [ref=f12e504] [cursor=pointer]
+          - button [ref=f12e512] [cursor=pointer]
+          - button [ref=f12e520] [cursor=pointer]
+          - button [ref=f12e528] [cursor=pointer]
+          - button [ref=f12e536] [cursor=pointer]
+          - button [ref=f12e544] [cursor=pointer]
+          - button [ref=f12e552] [cursor=pointer]
+          - button [ref=f12e560] [cursor=pointer]
+          - button [ref=f12e568] [cursor=pointer]
+          - button [ref=f12e576] [cursor=pointer]
+          - button [ref=f12e584] [cursor=pointer]
+          - button [ref=f12e592] [cursor=pointer]
+          - button [ref=f12e133] [cursor=pointer]
+          - button [ref=f12e141] [cursor=pointer]
+          - button [ref=f12e149] [cursor=pointer]
+          - button [ref=f12e157] [cursor=pointer]
+          - button [ref=f12e165] [cursor=pointer]
+          - button [ref=f12e173] [cursor=pointer]
+          - button [ref=f12e181] [cursor=pointer]
+          - button [ref=f12e189] [cursor=pointer]
+          - button [ref=f12e197] [cursor=pointer]
+          - button [ref=f12e205] [cursor=pointer]
+          - button [ref=f12e213] [cursor=pointer]
+          - button [ref=f12e221] [cursor=pointer]
+          - button [ref=f12e229] [cursor=pointer]
+          - button [ref=f12e237] [cursor=pointer]
+          - button [ref=f12e245] [cursor=pointer]
+          - button [ref=f12e253] [cursor=pointer]
+          - button [ref=f12e261] [cursor=pointer]
+          - button [ref=f12e269] [cursor=pointer]
+          - button [ref=f12e277] [cursor=pointer]
+          - button [ref=f12e285] [cursor=pointer]
+          - button [ref=f12e293] [cursor=pointer]
+          - button [ref=f12e301] [cursor=pointer]
+          - button [ref=f12e309] [cursor=pointer]
+          - button [ref=f12e317] [cursor=pointer]
+          - button [ref=f12e325] [cursor=pointer]
+          - button [ref=f12e333] [cursor=pointer]
+          - button [ref=f12e341] [cursor=pointer]
+          - button [ref=f12e349] [cursor=pointer]
+          - button [ref=f12e357] [cursor=pointer]
+          - button [ref=f12e365] [cursor=pointer]
+          - button [ref=f12e373] [cursor=pointer]
+          - button [ref=f12e381] [cursor=pointer]
+          - button [ref=f12e389] [cursor=pointer]
+          - button [ref=f12e397] [cursor=pointer]
+          - button [ref=f12e405] [cursor=pointer]
+          - button [ref=f12e413] [cursor=pointer]
+          - button [ref=f12e421] [cursor=pointer]
+          - button [ref=f12e429] [cursor=pointer]
+          - button [ref=f12e437] [cursor=pointer]
+          - button [ref=f12e445] [cursor=pointer]
+          - button [ref=f12e453] [cursor=pointer]
+          - button [ref=f12e461] [cursor=pointer]
+          - button [ref=f12e469] [cursor=pointer]
+          - button [ref=f12e85] [cursor=pointer]
+          - button [ref=f12e93] [cursor=pointer]
+          - button [ref=f12e101] [cursor=pointer]
+  - generic [ref=f12e49]:
+    - region [ref=f12e50]:
+      - heading "Toolbar" [level=2] [ref=f12e51]
+      - toolbar [ref=f12e52]:
+        - generic [ref=f12e601]:
+          - switch "Outline tool" [ref=f12e602] [cursor=pointer]
+          - button "HeroUI theme for components Light" [ref=f12e606] [cursor=pointer]: Light
+          - button "HeroUI design theme for components Base" [ref=f12e609] [cursor=pointer]: Base
+        - button "Enter full screen" [ref=f12e613] [cursor=pointer]
+    - main [ref=f12e53]:
+      - heading "Main preview area" [level=2] [ref=f12e54]
+      - generic [ref=f12e58]:
+        - link "Skip to sidebar" [ref=f12e616] [cursor=pointer]:
+          - /url: "#oss-components--docs"
+        - iframe [ref=f12e62]:
+          - table [aria-hidden] [ref=f13e11]:
+            - rowgroup [ref=f13e12]:
+              - row [ref=f13e13]:
+                - columnheader [ref=f13e14]: Name
+                - columnheader [ref=f13e15]: Description
+                - columnheader [ref=f13e16]: Default
+                - columnheader [ref=f13e17]: Control
+            - rowgroup [ref=f13e18]:
+              - row [ref=f13e19]:
+                - cell [ref=f13e20]: propertyName*
+                - cell [ref=f13e21]:
+                  - generic [ref=f13e22]: This is a short description
+                  - generic [ref=f13e23]: summary
+                - cell [ref=f13e25]:
+                  - generic [ref=f13e26]: defaultValue
+                - cell [ref=f13e27]:
+                  - button [ref=f13e28]: Set string
+              - row [ref=f13e29]:
+                - cell [ref=f13e30]: propertyName*
+                - cell [ref=f13e31]:
+                  - generic [ref=f13e32]: This is a short description
+                  - generic [ref=f13e33]: summary
+                - cell [ref=f13e35]:
+                  - generic [ref=f13e36]: defaultValue
+                - cell [ref=f13e37]:
+                  - button [ref=f13e38]: Set string
+              - row [ref=f13e39]:
+                - cell [ref=f13e40]: propertyName*
+                - cell [ref=f13e41]:
+                  - generic [ref=f13e42]: This is a short description
+                  - generic [ref=f13e43]: summary
+                - cell [ref=f13e45]:
+                  - generic [ref=f13e46]: defaultValue
+                - cell [ref=f13e47]:
+                  - button [ref=f13e48]: Set string

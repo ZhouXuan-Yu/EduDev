@@ -11,6 +11,14 @@
 .xiaozhi-pi-workspace .pi-live-task-strip [data-slot='chain-of-thought-content'] { max-height: 200px; overflow: auto; }
 .xiaozhi-pi-workspace .pi-plan-current { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: left; }
 .xiaozhi-pi-workspace .pi-plan-title { flex-shrink: 0; }
+.xiaozhi-pi-workspace .pi-plan-dependencies,.xiaozhi-pi-workspace .pi-plan-history small { display: block; font-size: 12px; color: var(--pi-muted); }
+.xiaozhi-pi-workspace .pi-plan-verification-note,.xiaozhi-pi-workspace .pi-plan-history { font-size: 13px; color: var(--pi-muted); line-height: 1.7; }
+.xiaozhi-pi-workspace .pi-plan-history { margin-top: 12px; overflow-wrap: anywhere; }
+.xiaozhi-pi-workspace .pi-plan-history summary { cursor: pointer; padding-block: 8px; min-height: 40px; }
+.xiaozhi-pi-workspace .pi-plan-revision { border-top: 1px solid var(--pi-line); margin-top: 10px; padding-top: 8px; }
+.xiaozhi-pi-workspace .pi-plan-revision h4 { margin: 4px 0; color: var(--pi-ink); font-size: 14px; }
+.xiaozhi-pi-workspace .pi-plan-revision button { min-height: 40px; }
+.xiaozhi-pi-workspace .pi-plan-record-identity { font-size: 12px; }
 .xiaozhi-pi-workspace .office-turn-notice { color: var(--pi-muted, #777d7c); font-size: 14px; font-weight: 400; padding-top: 12px; gap: 8px; }
 .xiaozhi-pi-workspace .office-turn-notice strong { font-weight: 400; }
 .xiaozhi-pi-workspace .office-turn-notice > div { flex: 1; min-width: 0; }

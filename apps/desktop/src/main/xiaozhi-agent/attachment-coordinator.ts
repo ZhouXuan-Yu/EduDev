@@ -1,5 +1,5 @@
 import path from 'node:path';
-import {XIAOZHI_ATTACHMENTS_SCHEMA,validAttachmentInput,XIAOZHI_ATTACHMENT_ERRORS,type XiaozhiAttachmentInput,type XiaozhiAttachmentSelectedInput,
+import {XIAOZHI_ATTACHMENTS_SCHEMA,validAttachmentInput,validAttachmentImportInput,XIAOZHI_ATTACHMENT_ERRORS,type XiaozhiAttachmentInput,type XiaozhiAttachmentSelectedInput,
  type XiaozhiAttachmentError,type XiaozhiAttachmentResult,type XiaozhiAttachment,type XiaozhiAttachmentChoice,type XiaozhiAttachmentPreview} from '../../shared/xiaozhi-attachments';
 import {createAttachmentImportService} from './attachment-import-service';
 import {publicAttachment} from './attachment-state';
@@ -50,6 +50,16 @@ export function createAttachmentCoordinator(options:{store:OmniEduStore;dataRoot
   if(!row||row.state==='removed')throw new Error('not_found');if(row.revision!==input.selection.revision)throw new Error('changed');
   if(row.format!=='image')throw new Error('unsupported');await importer(input,signal).verify(input.sessionId,input.selection,signal);return row;
  };
+ async function importFiles(input:XiaozhiAttachmentInput,paths:string[],signal:AbortSignal){
+  if(paths.length>32)throw new Error('too_large');
+  const service=importer(input,signal),items:XiaozhiAttachment[]=[],failures:XiaozhiAttachmentChoice['failures']=[];
+  for(const filename of paths){
+   await assertSession(input.sessionId,signal);
+   try{items.push(await service.importFile(input.sessionId,filename,signal));}
+   catch(cause){signal.throwIfAborted();failures.push({name:path.basename(filename).slice(0,255),error:error(cause)});}
+  }
+  return {items,failures};
+ }
  return {
   ocrReview:(raw:unknown)=>execute<AttachmentOcrReview|null>(raw,true,false,35000,async(input,signal)=>{
    const row=await ocrSource(input,signal),review=await options.store.xiaozhiState.attachmentOcr.get(row);return review?publicOcr(review):null;
@@ -74,15 +84,14 @@ export function createAttachmentCoordinator(options:{store:OmniEduStore;dataRoot
   },
   choose:(raw:unknown,choose:()=>Promise<string[]|undefined>)=>execute<XiaozhiAttachmentChoice>(raw,false,true,120_000,async(input,signal)=>{
    const paths=await choose();await assertSession(input.sessionId,signal);
-   if(!paths?.length)throw new Error('cancelled');if(paths.length>32)throw new Error('too_large');
-   const service=importer(input,signal),items:XiaozhiAttachment[]=[],failures:XiaozhiAttachmentChoice['failures']=[];
-   for(const filename of paths){
-    await assertSession(input.sessionId,signal);
-    try{items.push(await service.importFile(input.sessionId,filename,signal));}
-    catch(cause){signal.throwIfAborted();failures.push({name:path.basename(filename).slice(0,255),error:error(cause)});}
-   }
-   return {items,failures};
+   if(!paths?.length)throw new Error('cancelled');
+   return importFiles(input,paths,signal);
   }),
+  importPaths:(raw:unknown):Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>=>{
+   if(!validAttachmentImportInput(raw))return Promise.resolve({ok:false,schemaVersion:XIAOZHI_ATTACHMENTS_SCHEMA,requestId:'',error:'invalid_input'});
+   const {paths,...input}=raw;
+   return execute<XiaozhiAttachmentChoice>(input,false,true,120_000,(base,signal)=>importFiles(base,paths,signal));
+  },
   list:(raw:unknown)=>execute<XiaozhiAttachment[]>(raw,false,false,10_000,async(input)=>
    (await options.store.xiaozhiState.attachments.list(input.sessionId)).filter(v=>v.state==='draft').map(publicAttachment)),
   remove:(raw:unknown)=>execute<XiaozhiAttachment>(raw,true,true,10_000,async(input,signal)=>{

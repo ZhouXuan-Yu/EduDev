@@ -1,5 +1,5 @@
 module.exports={
- appId:'com.edudev.xiaozhi',productName:'小智',asar:false,
+ appId:'com.omniedu.xiaozhi',productName:'小智',copyright:'Copyright © 2026 OmniEdu',asar:false,
  directories:{output:'.release'},
  afterPack:'scripts/release/verify-packaged-resources.cjs',
  files:['out/**/*','package.json'],
@@ -13,8 +13,8 @@ module.exports={
   {from:'../../python/omni_edu_education/licenses',to:'licenses/education'},
   {from:'../../python/omni_edu_education/SOURCE.md',to:'licenses/education/SOURCE.md'},
  ],
- win:{target:[{target:'nsis',arch:['x64']}],signAndEditExecutable:false},
+ win:{target:[{target:'nsis',arch:['x64']}],icon:'build/icon.ico',requestedExecutionLevel:'asInvoker',signAndEditExecutable:false},
  nsis:{oneClick:false,perMachine:false,allowToChangeInstallationDirectory:true,
-  createDesktopShortcut:true,deleteAppDataOnUninstall:false,
+  createDesktopShortcut:true,createStartMenuShortcut:true,shortcutName:'小智',runAfterFinish:false,deleteAppDataOnUninstall:false,
   artifactName:'Xiaozhi-Setup-${version}-${arch}.${ext}'},
 };

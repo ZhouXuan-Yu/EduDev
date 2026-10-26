@@ -5,7 +5,12 @@ import {createAssistantMessageEventStream} from '@earendil-works/pi-ai';
 import {DatabaseSync} from 'node:sqlite';
 import {registerHooks} from 'node:module';
 // Boundary suite never performs extraction; Electron file host is not available in Node.
-registerHooks({resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess={};',shortCircuit:true};return next(specifier,context);}});
+registerHooks({
+ resolve(specifier,context,next){if(specifier==='electron')return {url:'data:text/javascript,export const utilityProcess={};export const app=new Proxy({},{get(){throw Error("Electron app unavailable in source-only boundary lane");}});',shortCircuit:true};return next(specifier,context);},
+ // The production bundler consumes this exact JSON. Node's source-only runner
+ // needs an explicit module wrapper; preserve bytes/data, never fake OCR config.
+ load(url,context,next){if(url.endsWith('/xiaozhi-agent/ocr-runtime-manifest.json'))return {format:'module',source:'export default '+fs.readFileSync(new URL(url),'utf8')+';',shortCircuit:true};return next(url,context);},
+});
 const {matchMaterialQuote,searchMaterialUnits}=await import('../../src/main/education/reading-host.ts');
 const {createEducationSearchTools}=await import('../../src/main/education/search-provider.ts');
 const {MaterialRepository}=await import('../../src/main/assets/material-repository.ts');

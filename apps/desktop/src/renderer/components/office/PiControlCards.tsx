@@ -44,7 +44,7 @@ function Question({item,onAnswer}:{item:XiaozhiControl;onAnswer:(id:string,answe
     lock.current=true;update({busy:true,error:''});
     try {await onAnswer(item.id,value.trim());}catch{update({error:'回答未提交，请重试。'});}finally{lock.current=false;update({busy:false});}
   }
-  return <ChatTool key={`${item.id}:${editable}`} className="pi-question-card" defaultExpanded={editable} state={editable?'requires-action':item.state === 'answered'?'output-available':'output-error'} data-testid="pi-teacher-question" data-control-id={item.id} data-state={item.state}>
+  return <ChatTool key={`${item.id}:${editable}`} className="pi-question-card" defaultExpanded={editable || item.state === 'answered'} state={editable?'requires-action':item.state === 'answered'?'output-available':'output-error'} data-testid="pi-teacher-question" data-control-id={item.id} data-state={item.state}>
     <ChatTool.Trigger><CircleHelp size={16} aria-hidden="true"/><span>{item.state === 'pending' ? '问题' : item.state === 'answered' ? '已回答' : item.canResume ? '上次提问已中断' : '提问已停止'}</span></ChatTool.Trigger>
     <ChatTool.Content><p className="pi-question-text">{item.text}</p>{editable ? <>
       {item.canResume && <p className="pi-history-note">回答后开始新一轮，旧审批不会继续执行。</p>}

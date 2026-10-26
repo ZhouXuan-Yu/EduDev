@@ -1,0 +1,97 @@
+{
+  "auditDate": "2026-10-24",
+  "hanaVersion": "0.450.0",
+  "clone": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-harness-research-20261024-084021",
+  "records": [
+    {
+      "project": "HanaAgent",
+      "commit": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "path": "desktop/src/react/components/chat/ThinkingBlock.tsx",
+      "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/desktop/src/react/components/chat/ThinkingBlock.tsx",
+      "sha256": "e1703c69d18577c6b748f92edbfc8047d4ec852c58e8a02501dc0a138684c9a3",
+      "sameAsExisting449Source": true
+    },
+    {
+      "project": "HanaAgent",
+      "commit": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "path": "desktop/src/react/components/chat/AssistantMessage.tsx",
+      "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/desktop/src/react/components/chat/AssistantMessage.tsx",
+      "sha256": "d89c94b23a6122c300584208a767f1b154fe35efe02879d1bd05c3757cb6954e",
+      "sameAsExisting449Source": true
+    },
+    {
+      "project": "HanaAgent",
+      "commit": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "path": "desktop/src/react/components/chat/ToolGroupBlock.tsx",
+      "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/desktop/src/react/components/chat/ToolGroupBlock.tsx",
+      "sha256": "75799b64afbc8dc6cd6e4668a5bee416db535457afd6cd5fa2586b4df17ad1a9",
+      "sameAsExisting449Source": true
+    },
+    {
+      "project": "HanaAgent",
+      "commit": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "path": "desktop/src/react/components/chat/StreamingMarkdownContent.tsx",
+      "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/desktop/src/react/components/chat/StreamingMarkdownContent.tsx",
+      "sha256": "1638cb6fff112ee5a00231115a5fdcca1311c0bad27cf2f62dc28d48789bef46",
+      "sameAsExisting449Source": true
+    },
+    {
+      "project": "HanaAgent",
+      "commit": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "path": "desktop/src/react/hooks/use-stream-buffer.ts",
+      "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/desktop/src/react/hooks/use-stream-buffer.ts",
+      "sha256": "8773f591dae52aea4e3c16eebeef234ef4a20afc10dc0ed129ebbbd02958e2c2",
+      "sameAsExisting449Source": true
+    },
+    {
+      "project": "HanaAgent",
+      "commit": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "path": "desktop/src/react/hooks/use-adaptive-stream-text.ts",
+      "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/desktop/src/react/hooks/use-adaptive-stream-text.ts",
+      "sha256": "2df342eca1460d83c4a75a890cf38caded33b6ae9c4377e7ae4c800ac113d0d7",
+      "sameAsExisting449Source": true
+    },
+    {
+      "project": "HanaAgent",
+      "commit": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+      "path": "desktop/src/react/__tests__/hooks/use-stream-buffer.test.ts",
+      "url": "https://github.com/liliMozi/openhanako/blob/9a6cabf8c513db5edc6cf8179a538c9075885c6e/desktop/src/react/__tests__/hooks/use-stream-buffer.test.ts",
+      "sha256": "bd58fd6db371ad1d988b5686c5f3c7a14bee22cad946c418304abcb264bc4cb4",
+      "sameAsExisting449Source": true
+    },
+    {
+      "project": "Codex public TUI, not private desktop",
+      "commit": "970111f6cb62cc02fe36a82ea7d71b37a2889c97",
+      "path": "codex-rs/tui/src/chatwidget/streaming.rs",
+      "url": "https://github.com/openai/codex/blob/970111f6cb62cc02fe36a82ea7d71b37a2889c97/codex-rs/tui/src/chatwidget/streaming.rs",
+      "sha256": "b47308f05fe086f5f5cdb75355797138b446a0595c2f7994ffad2027b3b332b9"
+    },
+    {
+      "project": "Codex public TUI, not private desktop",
+      "commit": "970111f6cb62cc02fe36a82ea7d71b37a2889c97",
+      "path": "codex-rs/tui/src/chatwidget.rs",
+      "url": "https://github.com/openai/codex/blob/970111f6cb62cc02fe36a82ea7d71b37a2889c97/codex-rs/tui/src/chatwidget.rs",
+      "sha256": "b1e83988bb7d9513f2b53aacf77b41e522e039cd9582c9f52ea91235c1e484c1"
+    },
+    {
+      "project": "Codex public TUI, not private desktop",
+      "commit": "970111f6cb62cc02fe36a82ea7d71b37a2889c97",
+      "path": "codex-rs/tui/src/history_cell/activity_group.rs",
+      "url": "https://github.com/openai/codex/blob/970111f6cb62cc02fe36a82ea7d71b37a2889c97/codex-rs/tui/src/history_cell/activity_group.rs",
+      "sha256": "bfb455a8b7e87625be0831b62140079f8e220a88a4e3b35e22dabf08499204da"
+    },
+    {
+      "project": "Codex public TUI, not private desktop",
+      "commit": "970111f6cb62cc02fe36a82ea7d71b37a2889c97",
+      "path": "codex-rs/tui/src/streaming/chunking.rs",
+      "url": "https://github.com/openai/codex/blob/970111f6cb62cc02fe36a82ea7d71b37a2889c97/codex-rs/tui/src/streaming/chunking.rs",
+      "sha256": "a77288a9897cf350e29f5edae86cadc9ceafe844bbfa2a7cd13f260b6e7eb06f"
+    }
+  ],
+  "limits": [
+    "No upstream harness execution, benchmarks, or ranking claim",
+    "No provider request in this audit",
+    "Codex private desktop source not accessed",
+    "agent-reach check-update unavailable: command not installed; GitHub CLI and connector used"
+  ]
+}

@@ -1,0 +1,7 @@
+export type XiaozhiRecoveryReceipt={id:string;runId:string;callId:string;tool:string;disposition:'not_delivered'|'recorded'|'needs_check'|'failed';native:'matched'|'recorded'|'missing'|'conflict';effect:'matched'|'uncertain'|'not_checked'};
+export type XiaozhiRecovery={schemaVersion:1;runId:string;receipts:XiaozhiRecoveryReceipt[];automaticReplay:false};
+export function validRecovery(value:unknown):value is XiaozhiRecovery{
+ if(!value||typeof value!=='object'||Array.isArray(value))return false;const row=value as Record<string,any>;
+ if(Object.keys(row).some(key=>!['schemaVersion','runId','receipts','automaticReplay'].includes(key))||row.schemaVersion!==1||typeof row.runId!=='string'||row.runId.length>160||row.automaticReplay!==false||!Array.isArray(row.receipts)||row.receipts.length>1024)return false;
+ const ids=new Set<string>();return row.receipts.every((r:any)=>{if(!r||Object.keys(r).some(key=>!['id','runId','callId','tool','disposition','native','effect'].includes(key))||r.runId!==row.runId||typeof r.id!=='string'||r.id!==`receipt_${row.runId}_${r.callId}`||r.id.length>320||ids.has(r.id)||typeof r.callId!=='string'||!r.callId||r.callId.length>128||typeof r.tool!=='string'||!r.tool||r.tool.length>128||!['not_delivered','recorded','needs_check','failed'].includes(r.disposition)||!['matched','recorded','missing','conflict'].includes(r.native)||!['matched','uncertain','not_checked'].includes(r.effect))return false;ids.add(r.id);return true;});
+}

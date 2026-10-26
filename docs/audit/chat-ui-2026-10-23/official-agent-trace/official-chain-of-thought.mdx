@@ -1,0 +1,583 @@
+# chain-of-thought Documentation (@heroui-pro/react)
+
+---
+
+<page url="https://heroui.pro/docs/react/components/chain-of-thought">
+# Chain Of Thought
+
+**Category**: react
+**URL**: https://heroui.pro/docs/react/components/chain-of-thought
+> A collapsible reasoning timeline for assistant thinking, progress, and agent traces.
+
+
+## Usage
+
+Use `ChainOfThought` to show assistant reasoning, progress, tool discovery, or agent traces without coupling to an AI SDK.
+
+```tsx
+"use client";
+
+import {ChainOfThought} from "@heroui-pro/react";
+
+export function Default() {
+  return (
+    <div className="w-full max-w-[640px]">
+      <ChainOfThought defaultExpanded={false}>
+        <ChainOfThought.Trigger>Thought for 4 seconds</ChainOfThought.Trigger>
+        <ChainOfThought.Content>
+          <ChainOfThought.Steps>
+            <ChainOfThought.Step label="Search">
+              Looked up HeroUI Pro chat template patterns for message layout and composer spacing.
+            </ChainOfThought.Step>
+            <ChainOfThought.Step label="Plan">
+              Mapped the template structure to SDK-agnostic compound components.
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </ChainOfThought.Content>
+      </ChainOfThought>
+    </div>
+  );
+}
+
+export function Streaming() {
+  return (
+    <div className="w-full max-w-[640px]">
+      <ChainOfThought isExpanded isStreaming>
+        <ChainOfThought.Trigger>Thinking...</ChainOfThought.Trigger>
+        <ChainOfThought.Content>
+          <ChainOfThought.Steps>
+            <ChainOfThought.Step label="Analyze">
+              Breaking the request into presentation-only Pro components.
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </ChainOfThought.Content>
+      </ChainOfThought>
+    </div>
+  );
+}
+
+```
+
+## Streaming
+
+Set `isStreaming` to shimmer the trigger while reasoning is still in progress.
+
+```tsx
+"use client";
+
+import {ChainOfThought} from "@heroui-pro/react";
+
+export function Default() {
+  return (
+    <div className="w-full max-w-[640px]">
+      <ChainOfThought defaultExpanded={false}>
+        <ChainOfThought.Trigger>Thought for 4 seconds</ChainOfThought.Trigger>
+        <ChainOfThought.Content>
+          <ChainOfThought.Steps>
+            <ChainOfThought.Step label="Search">
+              Looked up HeroUI Pro chat template patterns for message layout and composer spacing.
+            </ChainOfThought.Step>
+            <ChainOfThought.Step label="Plan">
+              Mapped the template structure to SDK-agnostic compound components.
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </ChainOfThought.Content>
+      </ChainOfThought>
+    </div>
+  );
+}
+
+export function Streaming() {
+  return (
+    <div className="w-full max-w-[640px]">
+      <ChainOfThought isExpanded isStreaming>
+        <ChainOfThought.Trigger>Thinking...</ChainOfThought.Trigger>
+        <ChainOfThought.Content>
+          <ChainOfThought.Steps>
+            <ChainOfThought.Step label="Analyze">
+              Breaking the request into presentation-only Pro components.
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </ChainOfThought.Content>
+      </ChainOfThought>
+    </div>
+  );
+}
+
+```
+
+## Agent Trace
+
+Complex traces can be composed from multiple collapsible reasoning blocks and nested steps.
+
+```tsx
+"use client";
+
+import type {ReactNode} from "react";
+
+import {useState} from "react";
+
+import {ChainOfThought} from "@heroui-pro/react";
+
+import {ChevronDown, FileText} from "../../icons";
+
+function TraceSection({
+  children,
+  defaultOpen = true,
+  icon,
+  title,
+}: {
+  children?: ReactNode;
+  defaultOpen?: boolean;
+  icon?: ReactNode;
+  title: ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <ChainOfThought.Step
+      label={
+        <button
+          aria-expanded={isOpen}
+          className="hover:text-foreground inline-flex cursor-[var(--cursor-interactive)] items-center gap-2 text-left transition-colors"
+          type="button"
+          onClick={() => setIsOpen((value) => !value)}
+        >
+          <ChevronDown className={`size-3 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
+          {icon ? <span>{icon}</span> : null}
+          <span>{title}</span>
+        </button>
+      }
+    >
+      <div
+        style={{transitionTimingFunction: "var(--ease-out-quad)"}}
+        className={`grid transition-[grid-template-rows,opacity] duration-150 ${
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">{children}</div>
+      </div>
+    </ChainOfThought.Step>
+  );
+}
+
+function TraceItem({
+  children,
+  defaultExpanded = true,
+  isStreaming = false,
+  title,
+}: {
+  children: ReactNode;
+  defaultExpanded?: boolean;
+  isStreaming?: boolean;
+  title: ReactNode;
+}) {
+  return (
+    <ChainOfThought defaultExpanded={defaultExpanded} isStreaming={isStreaming}>
+      <ChainOfThought.Trigger>{title}</ChainOfThought.Trigger>
+      <ChainOfThought.Content>
+        <ChainOfThought.Steps className="gap-2">{children}</ChainOfThought.Steps>
+      </ChainOfThought.Content>
+    </ChainOfThought>
+  );
+}
+
+function FileAction({children}: {children: ReactNode}) {
+  return (
+    <div className="text-muted flex items-center gap-2">
+      <FileText className="size-3.5" />
+      <span>{children}</span>
+    </div>
+  );
+}
+
+function AgentTraceContent({isStreaming = false}: {isStreaming?: boolean}) {
+  return (
+    <div className="flex w-[420px] flex-col gap-2">
+      <TraceItem isStreaming={isStreaming} title="Thought for 2s">
+        <ChainOfThought.Step>
+          <p>
+            The user wants a simple login page. This is a straightforward UI task - I should create
+            a clean login form. Let me generate some design inspiration first to ensure it looks
+            good, then build the page.
+          </p>
+        </ChainOfThought.Step>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Generated design">
+        <ChainOfThought.Step>
+          <img
+            alt="Generated area chart design"
+            className="border-default bg-surface w-full max-w-sm rounded-xl border"
+            src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/pro-related-components/light-areaChart.png"
+          />
+        </ChainOfThought.Step>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Explore • 2 Files">
+        <TraceSection title="Read layout">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read app/layout.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read globals">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read app/globals.css</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Found UI components">
+        <ChainOfThought.Step>
+          <p>Now let me check the existing UI components available:</p>
+        </ChainOfThought.Step>
+        <ChainOfThought.Step>
+          <p className="text-muted">Scanning 56 files</p>
+        </ChainOfThought.Step>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Explore • 4 Files">
+        <ChainOfThought.Step>
+          <p>
+            I have all the components I need. Let me read the button, input, card, and label
+            components to understand their APIs:
+          </p>
+        </ChainOfThought.Step>
+        <TraceSection title="Read button">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/button.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read input">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/input.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read card">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/card.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read label">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/label.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Updated layout">
+        <ChainOfThought.Step>
+          <p>
+            Now I have all the information I need. Let me create a clean, simple login page using
+            the existing design system components:
+          </p>
+        </ChainOfThought.Step>
+        <TraceSection title="login-form.tsx">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Updated components/login-form.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="layout.tsx">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Updated app/layout.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+      </TraceItem>
+    </div>
+  );
+}
+
+export function AgentTrace() {
+  return <AgentTraceContent />;
+}
+
+export function AgentTraceStreaming() {
+  return <AgentTraceContent isStreaming />;
+}
+
+```
+
+## Agent Trace Streaming
+
+Use the same trace structure with `isStreaming` when the agent is still working.
+
+```tsx
+"use client";
+
+import type {ReactNode} from "react";
+
+import {useState} from "react";
+
+import {ChainOfThought} from "@heroui-pro/react";
+
+import {ChevronDown, FileText} from "../../icons";
+
+function TraceSection({
+  children,
+  defaultOpen = true,
+  icon,
+  title,
+}: {
+  children?: ReactNode;
+  defaultOpen?: boolean;
+  icon?: ReactNode;
+  title: ReactNode;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <ChainOfThought.Step
+      label={
+        <button
+          aria-expanded={isOpen}
+          className="hover:text-foreground inline-flex cursor-[var(--cursor-interactive)] items-center gap-2 text-left transition-colors"
+          type="button"
+          onClick={() => setIsOpen((value) => !value)}
+        >
+          <ChevronDown className={`size-3 transition-transform ${isOpen ? "" : "-rotate-90"}`} />
+          {icon ? <span>{icon}</span> : null}
+          <span>{title}</span>
+        </button>
+      }
+    >
+      <div
+        style={{transitionTimingFunction: "var(--ease-out-quad)"}}
+        className={`grid transition-[grid-template-rows,opacity] duration-150 ${
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="overflow-hidden">{children}</div>
+      </div>
+    </ChainOfThought.Step>
+  );
+}
+
+function TraceItem({
+  children,
+  defaultExpanded = true,
+  isStreaming = false,
+  title,
+}: {
+  children: ReactNode;
+  defaultExpanded?: boolean;
+  isStreaming?: boolean;
+  title: ReactNode;
+}) {
+  return (
+    <ChainOfThought defaultExpanded={defaultExpanded} isStreaming={isStreaming}>
+      <ChainOfThought.Trigger>{title}</ChainOfThought.Trigger>
+      <ChainOfThought.Content>
+        <ChainOfThought.Steps className="gap-2">{children}</ChainOfThought.Steps>
+      </ChainOfThought.Content>
+    </ChainOfThought>
+  );
+}
+
+function FileAction({children}: {children: ReactNode}) {
+  return (
+    <div className="text-muted flex items-center gap-2">
+      <FileText className="size-3.5" />
+      <span>{children}</span>
+    </div>
+  );
+}
+
+function AgentTraceContent({isStreaming = false}: {isStreaming?: boolean}) {
+  return (
+    <div className="flex w-[420px] flex-col gap-2">
+      <TraceItem isStreaming={isStreaming} title="Thought for 2s">
+        <ChainOfThought.Step>
+          <p>
+            The user wants a simple login page. This is a straightforward UI task - I should create
+            a clean login form. Let me generate some design inspiration first to ensure it looks
+            good, then build the page.
+          </p>
+        </ChainOfThought.Step>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Generated design">
+        <ChainOfThought.Step>
+          <img
+            alt="Generated area chart design"
+            className="border-default bg-surface w-full max-w-sm rounded-xl border"
+            src="https://heroui-assets.nyc3.cdn.digitaloceanspaces.com/docs/pro-related-components/light-areaChart.png"
+          />
+        </ChainOfThought.Step>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Explore • 2 Files">
+        <TraceSection title="Read layout">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read app/layout.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read globals">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read app/globals.css</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Found UI components">
+        <ChainOfThought.Step>
+          <p>Now let me check the existing UI components available:</p>
+        </ChainOfThought.Step>
+        <ChainOfThought.Step>
+          <p className="text-muted">Scanning 56 files</p>
+        </ChainOfThought.Step>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Explore • 4 Files">
+        <ChainOfThought.Step>
+          <p>
+            I have all the components I need. Let me read the button, input, card, and label
+            components to understand their APIs:
+          </p>
+        </ChainOfThought.Step>
+        <TraceSection title="Read button">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/button.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read input">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/input.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read card">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/card.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="Read label">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Read components/ui/label.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+      </TraceItem>
+
+      <TraceItem isStreaming={isStreaming} title="Updated layout">
+        <ChainOfThought.Step>
+          <p>
+            Now I have all the information I need. Let me create a clean, simple login page using
+            the existing design system components:
+          </p>
+        </ChainOfThought.Step>
+        <TraceSection title="login-form.tsx">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Updated components/login-form.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+        <TraceSection title="layout.tsx">
+          <ChainOfThought.Steps className="gap-2">
+            <ChainOfThought.Step>
+              <FileAction>Updated app/layout.tsx</FileAction>
+            </ChainOfThought.Step>
+          </ChainOfThought.Steps>
+        </TraceSection>
+      </TraceItem>
+    </div>
+  );
+}
+
+export function AgentTrace() {
+  return <AgentTraceContent />;
+}
+
+export function AgentTraceStreaming() {
+  return <AgentTraceContent isStreaming />;
+}
+
+```
+
+## Anatomy
+
+```tsx
+import {ChainOfThought} from "@heroui-pro/react";
+
+<ChainOfThought defaultExpanded>
+  <ChainOfThought.Trigger>Thought for 2s</ChainOfThought.Trigger>
+  <ChainOfThought.Content>
+    <ChainOfThought.Steps>
+      <ChainOfThought.Step label="Explore">Read layout and globals.</ChainOfThought.Step>
+    </ChainOfThought.Steps>
+  </ChainOfThought.Content>
+</ChainOfThought>
+
+```
+
+## CSS Classes
+
+* `.chain-of-thought` - Root disclosure wrapper
+* `.chain-of-thought__trigger` - Collapsible trigger
+* `.chain-of-thought__content` - Disclosure content panel
+* `.chain-of-thought__steps` - Vertical step timeline
+* `.chain-of-thought__step` - One step in the timeline
+* `.chain-of-thought__step-label` - Optional step label
+* `.chain-of-thought__step-content` - Step body content
+
+## API Reference
+
+### ChainOfThought
+
+Extends HeroUI `Disclosure` props.
+
+| Prop              | Type        | Default | Description                                      |
+| ----------------- | ----------- | ------- | ------------------------------------------------ |
+| `children`        | `ReactNode` | -       | Trigger and content                              |
+| `isStreaming`     | `boolean`   | `false` | Applies streaming shimmer styling to the trigger |
+| `defaultExpanded` | `boolean`   | -       | Open by default for uncontrolled usage           |
+| `isExpanded`      | `boolean`   | -       | Controlled expanded state                        |
+
+### ChainOfThought.Trigger
+
+Extends HeroUI `Button` props. Renders the disclosure trigger.
+
+### ChainOfThought.Content
+
+Extends `Disclosure.Content` props. Wraps the expanded content body.
+
+### ChainOfThought.Steps
+
+Renders the vertical timeline container. Also supports native `div` props.
+
+### ChainOfThought.Step
+
+Renders one timeline step. Also supports native `div` props.
+
+| Prop       | Type        | Default | Description                                    |
+| ---------- | ----------- | ------- | ---------------------------------------------- |
+| `label`    | `ReactNode` | -       | Optional label rendered above the step content |
+| `children` | `ReactNode` | -       | Step body content                              |
+
+</page>

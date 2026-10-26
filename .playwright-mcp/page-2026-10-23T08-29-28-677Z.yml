@@ -1,0 +1,25 @@
+- generic [ref=f12e3]:
+  - banner [ref=f12e7]:
+    - heading "Storybook" [level=1] [ref=f12e8]
+    - generic [ref=f12e12]:
+      - generic [ref=f12e14]:
+        - link "Skip to content" [ref=f12e15] [cursor=pointer]:
+          - /url: "#storybook-preview-wrapper"
+        - link "HeroUI Pro" [ref=f12e17] [cursor=pointer]:
+          - /url: ./
+        - switch "Settings" [ref=f12e18] [cursor=pointer]
+      - generic [ref=f12e22]: Search for components
+      - search [ref=f12e23]:
+        - combobox [ref=f12e24]:
+          - searchbox "Search for components" [ref=f12e25]
+      - navigation [ref=f12e27]:
+        - heading "Stories" [level=2] [ref=f12e28]
+  - generic [ref=f12e49]:
+    - region [ref=f12e50]:
+      - heading "Toolbar" [level=2] [ref=f12e51]
+      - toolbar [ref=f12e52]
+    - main [ref=f12e53]:
+      - heading "Main preview area" [level=2] [ref=f12e54]
+      - generic [ref=f12e55]:
+        - progressbar "Content is loading..." [ref=f12e57]
+        - iframe [ref=f12e62]

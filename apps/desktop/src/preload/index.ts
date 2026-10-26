@@ -1,3 +1,5 @@
+import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
+import type {MaterialStudyQuery,MaterialStudyView,MaterialStudySave,MaterialStudyQuestion,MaterialStudyPage} from '../shared/material-study';
 import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared/question-context-edit';
 import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
@@ -11,18 +13,20 @@ import type {AiSettings,AiSettingsInput,AiBatchInput,AiBatchView,AiAction} from 
 import type {RetrievalStatus,RetrievalAction} from '../shared/retrieval';
 import type {MaterialPreviewQuery,MaterialPreviewCancel,MaterialPreviewResult} from '../shared/material-page-preview';
 import type {LayoutQuery,LayoutCancel,MaterialLayoutResult} from '../shared/material-layout';
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer, webUtils } from 'electron';
+import type { DecisionInput, DecisionReplay, DecisionSummary, DecisionResult } from '../shared/xiaozhi-decisions';
 import type {MistakeFactsInput,MistakeFactsResult} from '../shared/mistake-facts';
 import type {MistakeSimilarInput,MistakeSimilarResult} from '../shared/mistake-similar';
 import type {XiaozhiProviderBalance} from '../shared/xiaozhi-settings';
-import type {LearningHistoryInput,LearningHistoryPage,LearningReviewInput,LearningReviewDecision,LearningReviewResult,LearningReviewSummary,LearningReviewView} from '../shared/learning-review';
+import type {LearningHistoryInput,LearningHistoryPage,LearningReviewInput,LearningReviewDecision,LearningReviewBatchDecision,LearningReviewBatchSummary,LearningReviewResult,LearningReviewSummary,LearningReviewView} from '../shared/learning-review';
 import type {QuestionCollectionInput,QuestionCollectionDecision,QuestionCollectionResult,QuestionCollectionView} from '../shared/question-collection';
 import type {QuestionReviewInput,QuestionReviewDecision,QuestionReviewResult,QuestionReviewSummary,QuestionReviewView} from '../shared/question-review';
-import type {PaperGenerationQuery,PaperGenerationContext,PaperCreateInput,PaperReviewInput,PaperDecision,PaperCancelInput,PaperResult,PaperSummary,PaperView} from '../shared/paper-blueprint';
+import type {PaperGenerationQuery,PaperGenerationContext,PaperCreateInput,PaperReviewInput,PaperDecision,PaperCancelInput,PaperCompareInput,PaperCompareView,PaperResult,PaperSummary,PaperView} from '../shared/paper-blueprint';
 import type {PracticeReviewInput,PracticeReviewDecision,PracticeReviewResult,PracticeReviewSummary,PracticeReviewView,PracticeSourceInput} from '../shared/practice-review';
 import type {StudentTrainingInput,StudentTrainingSource,StudentTrainingResultInput,StudentTrainingView,StudentTrainingEvidence,StudentTrainingReceipt} from '../shared/student-training';
+import type {ClassroomItem,ClassroomDecision,ClassroomResult} from '../shared/classroom';
 import type {GoalMutation,GoalResult} from '../shared/xiaozhi-goal';
-import type {XiaozhiAttachmentInput,XiaozhiAttachmentSelectedInput,XiaozhiAttachmentResult,XiaozhiAttachment,XiaozhiAttachmentChoice,XiaozhiAttachmentPreview} from '../shared/xiaozhi-attachments';
+import type {XiaozhiAttachmentInput,XiaozhiAttachmentSelectedInput,XiaozhiAttachmentImportInput,XiaozhiAttachmentResult,XiaozhiAttachment,XiaozhiAttachmentChoice,XiaozhiAttachmentPreview} from '../shared/xiaozhi-attachments';
 import type {AttachmentOcrReview,AttachmentOcrDecision} from '../shared/xiaozhi-ocr';
 import type {MistakeOcrInput,MistakeOcrCorrection,MistakeOcrResult} from '../shared/mistake-ocr';
 import type {LocalImagePreview} from '../shared/xiaozhi-images';
@@ -34,6 +38,7 @@ import type { XiaozhiMemoryCatalogInput, XiaozhiMemoryCatalogResult, XiaozhiMemo
 import type { XiaozhiSkillCatalog, XiaozhiSkillPreview, XiaozhiSkillResult, XiaozhiSkillMutation, XiaozhiSkillMutationResult } from '../shared/xiaozhi-skills';
 import type { XiaozhiFileInput, XiaozhiPreviewInput, XiaozhiFileResult, XiaozhiFileList, XiaozhiFilePreview } from '../shared/xiaozhi-files';
 import type { XiaozhiSettingsInput, XiaozhiSettingsResult, XiaozhiSettingsView, XiaozhiSessionModelInput, XiaozhiSessionModel, XiaozhiCredentialInput, XiaozhiCredentialView } from '../shared/xiaozhi-settings';
+import type { XiaozhiMcpAddInput, XiaozhiMcpCatalog, XiaozhiMcpInput, XiaozhiMcpResult, XiaozhiMcpTrustInput } from '../shared/xiaozhi-mcp';
 import type { XiaozhiChangeReviewInput, XiaozhiChangeReview, XiaozhiChangeDecision, XiaozhiChangeSummary, XiaozhiChangeResult } from '../shared/xiaozhi-changes';
 import type {OfficeArtifactReviewInput,OfficeArtifactReviseInput,OfficeArtifactDecision,OfficeArtifactReview,OfficeArtifactSummary,OfficeArtifactResult} from '../shared/xiaozhi-office-artifacts';
 import type {
@@ -148,6 +153,32 @@ import type {
   ReviewReminder,
   SearchResult,
 } from '../shared/contracts';
+import {XIAOZHI_ATTACHMENTS_SCHEMA} from '../shared/xiaozhi-attachments';
+
+const attachmentPathProof = new Set<string>();
+const MAX_ATTACHMENT_PATH_PROOFS = 64;
+
+/** The renderer gets a path only for a real File object selected by the teacher.
+ * Import accepts only those preload-issued paths, once each. */
+function rememberAttachmentPath(file: File): string {
+  try {
+    const resolved = webUtils.getPathForFile(file);
+    if (resolved) {
+      if (attachmentPathProof.size >= MAX_ATTACHMENT_PATH_PROOFS) attachmentPathProof.clear();
+      attachmentPathProof.add(resolved);
+    }
+    return resolved;
+  } catch {
+    return '';
+  }
+}
+
+function takeAuthorizedAttachmentPaths(input: XiaozhiAttachmentImportInput): string[] | null {
+  const paths = (input as {paths?: unknown} | null)?.paths;
+  if (!Array.isArray(paths) || !paths.length || !paths.every(path => typeof path === 'string' && attachmentPathProof.has(path))) return null;
+  for (const path of paths) attachmentPathProof.delete(path);
+  return paths;
+}
 
 const api = {
   getDesktopChrome: () => ipcRenderer.invoke('desktop:state') as Promise<DesktopChromeState>,
@@ -166,9 +197,23 @@ const api = {
   getXiaozhiSettings: (input?: { refresh?: boolean; sessionId?: string }) => ipcRenderer.invoke('xiaozhi:settings-get', input) as Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>,
   saveXiaozhiSettings: (input: XiaozhiSettingsInput) => ipcRenderer.invoke('xiaozhi:settings-save', input) as Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>,
   verifyXiaozhiCredential: (input:XiaozhiCredentialInput)=>ipcRenderer.invoke('xiaozhi:settings-verify',input) as Promise<XiaozhiSettingsResult<XiaozhiCredentialView>>,
+  getXiaozhiMcpCatalog: () => ipcRenderer.invoke('xiaozhi:mcp-catalog') as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
+  addXiaozhiMcp: (input:XiaozhiMcpAddInput) => ipcRenderer.invoke('xiaozhi:mcp-add', input) as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
+  inspectXiaozhiMcp: (input:XiaozhiMcpInput) => ipcRenderer.invoke('xiaozhi:mcp-inspect', input) as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
+  trustXiaozhiMcp: (input:XiaozhiMcpTrustInput) => ipcRenderer.invoke('xiaozhi:mcp-trust', input) as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
+  revokeXiaozhiMcp: (input:XiaozhiMcpInput) => ipcRenderer.invoke('xiaozhi:mcp-revoke', input) as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
+  removeXiaozhiMcp: (input:XiaozhiMcpInput) => ipcRenderer.invoke('xiaozhi:mcp-remove', input) as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
   selectXiaozhiModel: (input: XiaozhiSessionModelInput) => ipcRenderer.invoke('xiaozhi:model-select', input) as Promise<XiaozhiSettingsResult<XiaozhiSessionModel>>,
   getXiaozhiSnapshot: (id: string) => ipcRenderer.invoke('xiaozhi:snapshot', id) as Promise<XiaozhiWorkspaceSnapshot>,
+  exportXiaozhiReply: (input: import('../shared/reply-export').ReplyExportInput) => ipcRenderer.invoke('xiaozhi:reply-export', input) as Promise<import('../shared/reply-export').ReplyExportResult>,
+  getXiaozhiHistoryPage: (input: import('../shared/xiaozhi-agent').XiaozhiHistoryPageInput) => ipcRenderer.invoke('xiaozhi:history-page', input) as Promise<import('../shared/xiaozhi-agent').XiaozhiHistoryPage>,
+  listXiaozhiEvents: (input: import('../shared/xiaozhi-events').XiaozhiEventsInput) => ipcRenderer.invoke('xiaozhi:events', input) as Promise<import('../shared/xiaozhi-events').XiaozhiEventsPage>,
+  getXiaozhiPlanHistory:(input:import('../shared/xiaozhi-plan').PlanHistoryInput)=>ipcRenderer.invoke('xiaozhi:plan-history',input) as Promise<import('../shared/xiaozhi-plan').PlanHistoryResult>,
   mutateXiaozhiGoal:(input:GoalMutation)=>ipcRenderer.invoke('xiaozhi:goal-mutate',input) as Promise<GoalResult>,
+  getXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskQuery)=>ipcRenderer.invoke('xiaozhi:task-snapshot',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
+  reviewXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskReviewInput)=>ipcRenderer.invoke('xiaozhi:task-review',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
+  correctXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskCorrectionInput)=>ipcRenderer.invoke('xiaozhi:task-correct',input) as Promise<import('../shared/xiaozhi-task').TaskApiResult>,
+  resumeXiaozhiTask:(input:import('../shared/xiaozhi-task').TaskResumeInput)=>ipcRenderer.invoke('xiaozhi:task-resume',input) as Promise<import('../shared/xiaozhi-agent').XiaozhiStartResult>,
   showXiaozhiBrowser: (id:string)=>ipcRenderer.invoke('xiaozhi:browser-show',id) as Promise<XiaozhiActionResult>,
   previewXiaozhiBrowserCapture:(input:import('../shared/xiaozhi-browser-capture').BrowserCaptureInput)=>ipcRenderer.invoke('xiaozhi:browser-capture-preview',input) as Promise<import('../shared/xiaozhi-browser-capture').BrowserCaptureResult>,
   startXiaozhi: (input: XiaozhiStartInput) => ipcRenderer.invoke('xiaozhi:start', input) as Promise<XiaozhiStartResult>,
@@ -177,6 +222,12 @@ const api = {
   selectXiaozhiWorkspace: (id: string) => ipcRenderer.invoke('xiaozhi:workspace', id) as Promise<XiaozhiActionResult>,
   selectPaperOutput:(input:import('../shared/paper-export').PaperOutputInput)=>ipcRenderer.invoke('xiaozhi:paper-output',input) as Promise<XiaozhiActionResult>,
   chooseXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-choose',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>,
+  getPathForFile:(file:File)=>rememberAttachmentPath(file),
+  importXiaozhiAttachments:(input:XiaozhiAttachmentImportInput)=>{
+    const paths=takeAuthorizedAttachmentPaths(input);
+    if(!paths)return Promise.resolve({ok:false as const,schemaVersion:XIAOZHI_ATTACHMENTS_SCHEMA,requestId:typeof input?.requestId==='string'?input.requestId:'',error:'invalid_input' as const});
+    return ipcRenderer.invoke('xiaozhi:attachment-import',{...input,paths}) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>;
+  },
   listXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-list',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachment[]>>,
   removeXiaozhiAttachment:(input:XiaozhiAttachmentSelectedInput)=>ipcRenderer.invoke('xiaozhi:attachment-remove',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachment>>,
   previewXiaozhiAttachment:(input:XiaozhiAttachmentSelectedInput)=>ipcRenderer.invoke('xiaozhi:attachment-preview',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentPreview>>,
@@ -185,10 +236,16 @@ const api = {
   reviewXiaozhiAttachmentOcr:(input:XiaozhiAttachmentSelectedInput)=>ipcRenderer.invoke('xiaozhi:attachment-ocrReview',input) as Promise<XiaozhiAttachmentResult<AttachmentOcrReview|null>>,
   startXiaozhiAttachmentOcr:(input:XiaozhiAttachmentSelectedInput)=>ipcRenderer.invoke('xiaozhi:attachment-ocrStart',input) as Promise<XiaozhiAttachmentResult<AttachmentOcrReview>>,
   decideXiaozhiAttachmentOcr:(input:AttachmentOcrDecision)=>ipcRenderer.invoke('xiaozhi:attachment-ocrDecide',input) as Promise<XiaozhiAttachmentResult<AttachmentOcrReview>>,
+  exportScienceClassroom: (input:ScienceExportInput) => ipcRenderer.invoke('xiaozhi:science-export',input) as Promise<ScienceExportResult>,
+  cancelScienceExport: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:science-export-cancel',input) as Promise<{ok:boolean}>,
+  revealScienceExport: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:science-export-reveal',input) as Promise<{ok:boolean}>,
   listXiaozhiFiles: (input:XiaozhiFileInput) => ipcRenderer.invoke('xiaozhi:files-list',input) as Promise<XiaozhiFileResult<XiaozhiFileList>>,
   previewXiaozhiFile: (input:XiaozhiPreviewInput) => ipcRenderer.invoke('xiaozhi:files-preview',input) as Promise<XiaozhiFileResult<XiaozhiFilePreview>>,
   cancelXiaozhiFile: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:files-cancel',input) as Promise<{ok:boolean}>,
   reviewXiaozhiLearning:(input:LearningReviewInput)=>ipcRenderer.invoke('xiaozhi:learning-review',input) as Promise<LearningReviewResult<LearningReviewView>>,
+  listClassrooms:()=>ipcRenderer.invoke('classroom:list') as Promise<ClassroomResult<ClassroomItem[]>>,
+  readClassroom:(id:string)=>ipcRenderer.invoke('classroom:read',id) as Promise<ClassroomResult<ClassroomItem>>,
+  decideClassroom:(input:ClassroomDecision)=>ipcRenderer.invoke('classroom:decide',input) as Promise<ClassroomResult<ClassroomItem>>,
   completeOriginalQuestionContext:(input:QuestionContextEditInput)=>ipcRenderer.invoke('questions:complete-context',input) as Promise<QuestionContextEditResult>,
   reviewOriginalQuestion:(input:OriginalQuestionInput)=>ipcRenderer.invoke('xiaozhi:original-review',input) as Promise<OriginalQuestionResult<OriginalQuestionView>>,
   reviewOriginalMultiQuestion:(input:OriginalMultiInput)=>ipcRenderer.invoke('xiaozhi:original-multi-review',input) as Promise<OriginalMultiResult<OriginalMultiView>>,
@@ -202,6 +259,7 @@ const api = {
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
   listPaperGenerationContexts:(input:PaperGenerationQuery)=>ipcRenderer.invoke('education:paper-generation-contexts',input) as Promise<PaperResult<PaperGenerationContext[]>>,
   listPapers:()=>ipcRenderer.invoke('education:paper-list') as Promise<PaperResult<PaperSummary[]>>,
+  comparePapers:(input:PaperCompareInput)=>ipcRenderer.invoke('education:paper-compare',input) as Promise<PaperResult<PaperCompareView>>,
   createPaper:(input:PaperCreateInput)=>ipcRenderer.invoke('education:paper-create',input) as Promise<PaperResult<PaperView>>,
   reviewPaper:(input:PaperReviewInput)=>ipcRenderer.invoke('education:paper-review',input) as Promise<PaperResult<PaperView>>,
   decidePaper:(input:PaperDecision)=>ipcRenderer.invoke('education:paper-decide',input) as Promise<PaperResult<PaperView>>,
@@ -215,6 +273,7 @@ const api = {
   getStudentTrainingSource:(input:StudentTrainingSource)=>ipcRenderer.invoke('students:training-source',input) as Promise<LearningReviewResult<StudentTrainingEvidence>>,
   recordStudentTrainingResult:(input:StudentTrainingResultInput)=>ipcRenderer.invoke('students:training-result',input) as Promise<LearningReviewResult<StudentTrainingReceipt>>,
   decideXiaozhiLearning:(input:LearningReviewDecision)=>ipcRenderer.invoke('xiaozhi:learning-decide',input) as Promise<LearningReviewResult<LearningReviewSummary>>,
+  decideXiaozhiLearningBatch:(input:LearningReviewBatchDecision)=>ipcRenderer.invoke('education:learning-review-batch-decide',input) as Promise<LearningReviewResult<LearningReviewBatchSummary>>,
   decideXiaozhi: (input: XiaozhiDecisionInput) => ipcRenderer.invoke('xiaozhi:decide', input) as Promise<XiaozhiActionResult>,
   reviewXiaozhiChange: (input: XiaozhiChangeReviewInput) => ipcRenderer.invoke('xiaozhi:change-review', input) as Promise<XiaozhiChangeResult<XiaozhiChangeReview>>,
   decideXiaozhiChange: (input: XiaozhiChangeDecision) => ipcRenderer.invoke('xiaozhi:change-decide', input) as Promise<XiaozhiChangeResult<XiaozhiChangeSummary>>,
@@ -227,6 +286,13 @@ const api = {
   getXiaozhiMemoryCatalog: (input: XiaozhiMemoryCatalogInput) => ipcRenderer.invoke('xiaozhi:memory-catalog', input) as Promise<XiaozhiMemoryCatalogResult>,
   setXiaozhiMemoryScope: (input: XiaozhiMemoryScopeInput) => ipcRenderer.invoke('xiaozhi:memory-scope', input) as Promise<XiaozhiActionResult>,
   getXiaozhiMemoryTrace: (sessionId: string) => ipcRenderer.invoke('xiaozhi:memory-trace', sessionId) as Promise<XiaozhiMemoryTrace | null>,
+  getTeacherCandidates:(sessionId:string)=>ipcRenderer.invoke('xiaozhi:candidate-history',sessionId) as Promise<import('../shared/teacher-candidates').TeacherCandidateResult<import('../shared/teacher-candidates').TeacherCandidateSummary[]>>,
+  evaluateTeacherCandidate:(input:import('../shared/teacher-candidates').TeacherCandidateInput)=>ipcRenderer.invoke('xiaozhi:candidate-evaluate',input) as Promise<import('../shared/teacher-candidates').TeacherCandidateResult<import('../shared/teacher-candidates').TeacherCandidateSummary>>,
+  rejectTeacherCandidate:(input:import('../shared/teacher-candidates').TeacherCandidateInput)=>ipcRenderer.invoke('xiaozhi:candidate-reject',input) as Promise<import('../shared/teacher-candidates').TeacherCandidateResult<import('../shared/teacher-candidates').TeacherCandidateSummary>>,
+  getXiaozhiDecisions: (sessionId: string) => ipcRenderer.invoke('xiaozhi:decision-history',sessionId) as Promise<DecisionResult<DecisionSummary[]>>,
+  replayXiaozhiDecision: (input: DecisionInput) => ipcRenderer.invoke('xiaozhi:decision-replay',input) as Promise<DecisionResult<DecisionReplay>>,
+  reviewXiaozhiDecision: (input: DecisionInput) => ipcRenderer.invoke('xiaozhi:decision-shadow',input) as Promise<DecisionResult<DecisionSummary>>,
+  reviewXiaozhiRoute:(input:DecisionInput)=>ipcRenderer.invoke('xiaozhi:decision-route-shadow',input) as Promise<DecisionResult<DecisionSummary>>,
   getXiaozhiSkills: () => ipcRenderer.invoke('xiaozhi:skill-catalog') as Promise<XiaozhiSkillResult<XiaozhiSkillCatalog>>,
   previewXiaozhiSkill: (input: { name: string }) => ipcRenderer.invoke('xiaozhi:skill-preview', input) as Promise<XiaozhiSkillResult<XiaozhiSkillPreview>>,
   manageXiaozhiSkill: (input: XiaozhiSkillMutation) => ipcRenderer.invoke('xiaozhi:skill-mutate', input) as Promise<XiaozhiSkillMutationResult>,
@@ -267,6 +333,11 @@ const api = {
   listMaterialBatches: (query:MaterialBatchQuery) => ipcRenderer.invoke('materials:batches',query) as Promise<MaterialBatchPage>,
   controlMaterialBatch: (input:MaterialBatchAction) => ipcRenderer.invoke('materials:batch-action',input) as Promise<MaterialBatchPage>,
   getMaterialBatchFiles: (query:MaterialBatchFilesQuery) => ipcRenderer.invoke('materials:batch-files',query) as Promise<MaterialBatchFiles>,
+
+  getMaterialReading:(input:MaterialStudyQuery)=>ipcRenderer.invoke('materials:reading',input) as Promise<MaterialStudyView>,
+  getMaterialReadingPage:(input:MaterialBodyQuery)=>ipcRenderer.invoke('materials:reading-page',input) as Promise<MaterialStudyPage>,
+  saveMaterialReading:(input:MaterialStudySave)=>ipcRenderer.invoke('materials:reading-save',input) as Promise<MaterialStudyView>,
+  prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialSource: (input:MaterialSource) => ipcRenderer.invoke('materials:source',input) as Promise<MaterialSourceView>,
   getMaterialPagePreview:(input:MaterialPreviewQuery)=>ipcRenderer.invoke('materials:page-preview',input) as Promise<MaterialPreviewResult>,

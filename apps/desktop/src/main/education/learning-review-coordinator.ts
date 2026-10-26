@@ -3,7 +3,7 @@ import type {OmniEduStore} from '../db';
 import type {StudentContextRepository} from '../students/context-repository';
 import {resolveTrainingPlan} from './training-plan';
 import {collectLearningEvidence} from './learning-evidence';
-import {LEARNING_REVIEW_ERRORS,validLearningDraft,validLearningReview,type LearningReviewInput,type LearningReviewDecision,type LearningReviewResult,type LearningReviewView,type LearningReviewSummary,type LearningReviewError} from '../../shared/learning-review';
+import {LEARNING_REVIEW_ERRORS,validLearningBatchDecision,validLearningDraft,validLearningReview,type LearningReviewInput,type LearningReviewDecision,type LearningReviewBatchDecision,type LearningReviewBatchSummary,type LearningReviewResult,type LearningReviewView,type LearningReviewSummary,type LearningReviewError} from '../../shared/learning-review';
 import {plainStudentInput} from '../../shared/student-context';
 import {validLearningGradeInput} from '../../shared/student-learning';
 import {gradeLearningAnswer} from './learning-host';
@@ -21,6 +21,17 @@ export function createLearningReviewCoordinator(options:{store:OmniEduStore;isCu
    if(!validLearningReview(raw,true))return{ok:false,error:'invalid_input'};
    try{const row=(await options.store.learningReviews.list(raw.sessionId)).find(e=>e.id===raw.id);if(!row)throw new Error('permission_denied');
     const value=await options.store.learningReviews.decide(raw,()=>lease()&&options.canDecide(raw.sessionId,row.runId),options.afterWrite);options.emit(raw.sessionId,value.runId,value);waits.get(raw.id)?.finish();return{ok:true,value};
+   }catch(error){return{ok:false,error:failure(error)};}
+  },
+  async decideBatch(raw:LearningReviewBatchDecision,lease:()=>boolean=()=>true):Promise<LearningReviewResult<LearningReviewBatchSummary>>{
+   if(!validLearningBatchDecision(raw))return{ok:false,error:'invalid_input'};
+   try{
+    const rows=(await options.store.learningReviews.list(raw.sessionId)).filter(row=>raw.items.some(item=>item.id===row.id));
+    if(rows.length!==raw.items.length)throw new Error('permission_denied');
+    const runs=new Map(rows.map(row=>[row.id,row.runId])),authorized=()=>lease()&&raw.items.every(item=>options.canDecide(raw.sessionId,runs.get(item.id)!));
+    const value=await options.store.learningReviews.decideBatch(raw,authorized,options.afterWrite);
+    for(const item of value.items)options.emit(raw.sessionId,item.runId,item);
+    for(const item of raw.items)waits.get(item.id)?.finish();return{ok:true,value};
    }catch(error){return{ok:false,error:failure(error)};}
   },
   cancel(runId:string){for(const [,waiting]of waits)if(waiting.runId===runId)waiting.finish();},

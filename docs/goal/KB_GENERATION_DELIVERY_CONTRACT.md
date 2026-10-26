@@ -1,5 +1,35 @@
 # KB002：混合/原创组卷与5道变式——实施合同草案
 
+## F2原题解析跨批集中审核冻结（2026-10-13）
+
+复用核查：本项目现question-collection已经具备集中批准、事务回滚和跨run恢复；Pi [官方SDK](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/sdk.md)提供会话/原生customTools接缝，本片沿已安装版本使用，不另建运行循环。DeepTutor [上游question pipeline](https://github.com/HKUDS/DeepTutor/blob/main/deeptutor/agents/question/pipeline.py)包含独立编排，本片继续只复用既有固定1.6.13纯格式helper与许可证资产，不迁入其AgentLoop；新接口/UI沿现适配层和HeroUI集中卡。上游页面在本轮核查可读，本片没有把固定helper称为上游最新或升级依赖。
+
+- 真实缺口：question-collection已有分批暂存、跨批异常、停止恢复、一次事务审核；仅限hybrid/ai_original，原题解析每≤8题仍单独等待教师。复用该aggregate扩展source_only，不新建Agent/数据库/独立审批系统。
+- 比较：A直接把每批上限改100会扩大一次模型输出/审核风险；B沿现整卷aggregate与原题v8保存接缝，内部≤8题逐批整理、最后一次审核；C新建解析批次系统会重复现账本与UI。选B，保留原生Pi唯一编排和现DeepTutor/SymPy检查修复。
+- collection持久化v2支持source_only；旧v1仍只接受旧两模式。source_only每section.count为原题解析配额，禁止生成题混入；各原题必须完整v2、同blueprint科目年级；允许混合已有完整答案的只读复用题与待补缺题，完整题内容/updatedAt/原题版本链保持，宿主忽略其不必要的新增计算计划。原题须匹配其section的原题题型/难度/知识点。组内内部short_answer不改真实原题题型。跨批重复原题ID拒绝，所有来源前后CAS。
+- 新record.v9保存explanation+collection+可信generator；v7/v8继续原有独立审核。不能把旧v8旁挂collection或解除collection所有权。各批检查失败/修复/停止及后续run恢复保持原谱系；首次暂存不保存事实，最后一次集中批准在同事务更新所有原题，任一源变化/取消/异常整批回滚。
+- 共享视图、repository/ledger/coordinator、Pi宿主/提示及现HeroUI集中卡同步；不改DDL或新增IPC/依赖。沿现生成题审批回归作必要定向检查；实际实例使用既有复杂扫描副本，跨批原题→集中卡→源CAS/校正→同ID批准→重启。数量容量由定向域检查覆盖；自然100分/全学科/真人教师质量不以小实例替代，仍OPEN。
+- 旧源文件保存在test-results/goal/kb-explanation-collection-20261013/before。回滚撤delta且保留v2/v9记录，旧版本必须拒绝未支持记录，不能降级批准、删除真实数据或覆盖独立Harness变更。Master ACTIVE；沿F2知识库/组卷主线。
+
+## F2整批原题解析冻结（2026-10-13，接同原题解析子片）
+
+- 已核真实缺口：现explanation可传1–8题，但validExplanationDraft把组级知识点强制等于每道原题，导致混知识点整卷不能集中补解析。源码保存本来逐题使用原题快照，具备同事务CAS/回滚，不需要新题库或Agent。
+- 方案A逐知识点分别提问审核，会增加教师操作；方案B沿现Pi工具/DeepTutor格式/数学检查/审核卡，逐题源元数据独立，集中确认；方案C迁入DeepTutor整条pipeline会形成重复编排。选择B，仅扩源派生合同与当前UI，不引入新依赖。
+- 新记录v8：组级subject/grade/knowledgePoint仅为首题摘要，逐题权威元数据来自不可变sources，题面/题型/难度/已有答案保持。v7按旧同元数据约束读回，新v8接受不同知识点；旧记录/修复/拒绝/取消/源版本CAS/原题版本链仍沿用。
+- UI逐题显示真实科目、年级、知识点和题型；不让组级首题信息冒充其他题。一次核对确认整批1–8题，同事务保存，任一源变化时整批拒绝，不能部分落盘。未支持的大批次仍由唯一Pi拆批，不引入后台AgentLoop。
+- 本片实例：使用明确测试副本中的真实复杂扫描原题，两道不同知识点经教师确认后，同Pi补解析→集中卡校正/确认→同ID/各自元数据/来源链→重启回读；沿已有整卷/文件实例接缝。不重复旧三模式/五变式/无关全集。先build/type，必要混合元数据/v7兼容边界与正式Electron实例；答案正确性未独立证明不标完成。
+- 修改shared审核视图、question-explanation、question-review repository/coordinator、Pi提示及现审核卡，不改DDL/IPC/文件授权。修改前副本test-results/goal/kb-explanation-batch-20261013/before。回滚撤本片delta且保留v8账本，禁止降级批准或删除历史。Master ACTIVE，F2自然整卷/质量仍DOING。
+
+## F2 原题补充解析实施冻结（2026-10-13）
+
+- 教师结果：问小智为已核对但缺答案/解析的完整原题补充讲解，在现审核卡集中核对；确认后更新同一题，不生成原题副本。题面、题型、知识点、来源、图和六字段均保持；AI补充内容不能标教材标准答案。
+- KEEP：唯一Pi、现 `education_propose_questions`、DeepTutor固定格式helper、SymPy检查/修复隔离、原题版本链、题本/Paper/Office宿主及HeroUI现审核卡。上游DeepTutor完整pipeline含独立agent loop，不迁入；Pi customTools已足够。OpenMAIC课堂及Hermes反馈按后续F5/F6实施，本片不增加运行时。
+- EXTEND：同工具增加 `generationKind=explanation`，逐题对齐实读sourceReferences，内部用short_answer承载复杂原题；宿主从源引用填入题干/元数据/已有答案，模型不必重复抄写，UI/仓储仍禁止改源题；源题必须完整v2且原题确认绑定可验证。只补missing证据，已有答案/解析不可覆盖。无需新表/IPC/包，旧两模式合同保持。
+- 合同：新增review-record.v7及原题context链中的explanation-revision.v1。不可变payload保存可信provider/model/run与源快照；教师修改的补充字段标teacher，否则ai_generated；计算匹配仍不证明整题正确。根原题审批不改写；只追加带hash的before/after版本，更新题事实、原题链及审核effect必须同SQLite事务。
+- 主进程强制锁题面/元数据/已有答案；原图来源与当前源CAS在确认前后核验，跨学生、停止、重复确认、失败回滚沿用现机制。解释候选不计生成题配额/父子变式，待审不能进入正式组卷。原题图文无需假装新图已生成。
+- 修改范围：question-review共享类型、现repository/coordinator/quality、context revision、Pi宿主与现审核卡；专项实例使用已有接受的匿名扫描资料副本。副本 `apps/desktop/test-results/goal/kb-explanation-20261013/before`。回滚撤本片delta且保留v7数据，不降级读取或删除历史。
+- 验收以定向实例为主：真实DeepSeek/Pi实读复杂物理原题→补充讲解→现审核确认→同ID/原图/AI来源→冷读→source_only/Paper/Office可用；必要边界只覆盖锁题面/原题链/拒绝与源CAS，build/typecheck及git diff --check。未走完的范围不标完成，不默认重复旧全集。
+
 ## KB002-B 实施冻结（2026-10-11，历史合同；本轮限定接受，精确结果见末尾）
 
 - 教师结果：同一个 Pi 先检查候选；失败返回其原生工具错误，由同一运行修复。旧候选留存隔离，卡片展示修复前后关系；任何修复版仍需教师检查、核对和确认。
@@ -549,3 +579,85 @@ A复用现逐页PDFium+RapidOCR并缓存（采用）；B另起DeepTutor解析Age
 范围：现50页/50MiB/1MiB正文边界不放宽，先实现接续，再评估长教材分页。按既有golden PDF runner加resume-only：实际六页扫描经UI导入→至少一页完成后停止→零正文事实→重启/重试从下一页→六页事务提交/冷读；损坏缓存退回重识别。仅build与该实例，不重跑旧全套。回滚before及旧layout-v1 runtime，保留原资料/配置/历史。
 
 本片限定接受：MzsnED 3项/3启动/0renderer错误；缓存实例5项、build/type通过。完成第一页停止→冷启第2页继续→六页事务正文→冷读。具体SHA/命令/回滚/首次调整见kb-ocr-resume-20261012/progress.json。未重复旧全套。长文档/容量/安装仍OPEN，Goal工具仍历史blocked，本轮无技术阻塞。
+
+## 2026-10-12 C3整卷候选集中审核合同
+教师结果：小智先整理同资料多道候选，再统一等待；老师在同审核区前后切换、修改、分别确认/拒绝，避免每题重新等待模型。KEEP现original multi ledger/图资产/source CAS/六字段transcription/教师确认，EXTEND同Pi工具组增加education_propose_original_questions（1–12题/有界192KiB），所有输入先严格校验再逐题暂存；不引入AgentLoop/DDL/IPC或新事实源。每题保留原独立审批和版本，批次digest绑定整批内容与observed来源版本，稳定item call ID；重放不重复，整批参数变更冲突。部分暂存失败诚实报告已暂存范围，已有候选保持pending而非自动拒绝/批准；停止不晚写。
+数据合同：同payload新增可选batch binding（rootCallId/digest/index/total），旧payload/digest/历史审批不变；QuestionReviewSummary新增可选batch位置，不传原图/题干/教师私有修改给模型。原session identity v1保持，批工具单独original-batch.v1身份增量，防伪造/错配但兼容旧session。UI用现HeroUI ChatToolGroup/Button和原题审核组件，一次只载所选题原图，编辑草稿沿现session control state保留；切题不视为批准。
+Research/Compare：A现repo.multi.propose/decide、Pi原生tool与HeroUI已授权组件薄适配（采用）；B DeepTutor最新question/pipeline.py官方原文及Apache2已读，已有计划/逐题事件但引run_agentic_loop、不具本机教师CAS，现固定f07029c helper保持，不搬整pipeline；C OpenMAIC classroom/Hermes技能feedback不属于题库本地审批能力，不移其runtime。D现生成题collection具集中审核但只接生成题，不把原题伪装为原创、避免第二原题库。无新依赖/模型/许可证，HeroUI MCP list/docs及本地组件已读。上游源码https://github.com/HKUDS/DeepTutor/blob/main/deeptutor/agents/question/pipeline.py；许可证https://github.com/HKUDS/DeepTutor/blob/main/LICENSE。
+验证：定向batch schema/先校验无写/整批digest重放冲突/部分失败和取消/旧身份升级；既有golden original multi runner增加batch-only，实际扫描同Pi一次两题→同区域切换保留草稿→一拒一确认→正式题/版本冷读，浅1366/暗1920视觉。参考文字由明确测试用户提供，非自动全科识别或答案正确；仍不称整本无限题数/24题质量完成。不重跑无关旧全套，旧before八文件与新adapter可回滚。
+
+本片限定接受：A90v2H正式Electron4项/2启动/0renderer错误；定向边界45项，build/type通过，最终构建SHA d4c5a9375ae4f5c591ba7742ca0105de37b38bd402058e6194d9e0424e5749da/348。两图实看；2候选一拒一确认、只一事实、范围锁/文本保留/冷读通过。首失败保留；完整命令、回滚与边界见kb-original-batch-20261012/progress.json。不是无限整卷/自主看图/答案准确率验收。Goal实际active，继续跨批整卷与复杂100分卷。
+
+## 2026-10-12 C3跨批原题持续整理合同
+上一片已验，不重复旧全套。本片将同批工具增量扩展action=stage/review（缺省沿wait），每批1–12题先暂存返回再继续，全部提出后review只等待同session/run/resource的原题候选。KEEP现Pi、OriginalMulti ledger/CAS/六字段/图资产/原逐题审批；无新DDL/IPC/包/运行时。summary新增可选collectionId按session/run/resource/version确定，UI按它聚合多批、序号连续、只载所选原题；不改payload/proposal digest/旧session身份。
+输入严格校验、review不能夹带questions，stage不表示已入库；每次stage回执不携图/私有教师编辑。旧缺省批输入和重放保持。review限定当前run，历史未核候选仍可在原会话教师处理，不伪造跨run续提；取消保留pending不迟写。未知缺项不能由AI补成已确认。
+Recherche/Reuse：现生成题collection已有先append后review的同Pi模式，采用其分阶段交互并复用原题repo；不把生成collection事实当原题。DeepTutor官方question/pipeline.py本轮再读，内嵌agentic loop/逐题事件，无本地source CAS；保留固定helper不迁runtime。OpenMAIC课堂/Hermes反馈不解决原题审批本片，依次后续接。HeroUI前片已读MCP，本片只复用同ChatToolGroup/Button改分组，无新组件/CSS。A现批工具分阶段薄适配（选）；B扩大单次参数/图体积（不能解决模型需分段输入）；C另起Agent（违规）。
+验收：已有batch-only runner扩展staging-only，真实扫描复杂两题分两次实际Pi stage、零确认也能第二次、一次review、同一审核卡连续编号、一拒一确认、冷读；定向schema/action/隔离/取消/旧缺省。双尺寸浅暗实看。参考文字明确用户提供，不宣称自主全卷识别或答案正确；>12题单独真实质量集仍待验。before按目录回滚，无用户数据变更。随后继续复杂100分组卷与答案修复、错题五变式。
+
+本片限定接受：正式2d5O02共5项/2启动/0renderer错误；边界47项（12+1控制实例）。build/type通过，SHA255d019d078fd44b458fe12a7f612ac029bd6a9747fbb2a59c61f1ba7b961c1f/348，双图实看。真实跨批事件乱序在hBh5hc复现后修复，以created_at稳定题号。首次编译/执行/构建时序失败完整保留；命令、源SHA、回滚与边界见kb-original-staging-20261012/progress.json。未声称自动看图、13题provider质量或整模块完成。Next为复杂100分卷/多步骤解析核对与修复隔离。
+
+## 2026-10-12 F1 本地页文字位置接入Pi合同
+目标：教师选资料说整理，Pi从已实读资料取得本地OCR行/真实页码/位置，分批提出完整原题候选并集中审核，不再依赖测试用户预填全文。KEEP现MaterialLayoutCache/readMaterialLayout、固定PDFium/RapidOCR、资料原件CAS、脱敏器、原题stage/review与教师逐题确认。EXTEND同Pi只读工具education_read_material_page，独立material-page.v1身份增量兼容旧material-read.v1；不另起OCR引擎/AgentLoop/数据库/DDL/IPC，不上传原图。共享输入/输出v1：resourceId/page/offset/characterOffset/refresh，宿主签发requestId与观察版本；单次最多60行/12000文字，长行分段next不跳字，位置与未核对标识保留。
+权限：必须本轮office_read_material已观察非私密版本；source版本/正文快照前后CAS；相关页或页码未知的私密段阻止读取；逐行既有脱敏且不返回私密路径/PNG/学生名单/OCR score。取消/失效不返回迟到正文；缓存损坏明确refresh，保留原件/事实。不接收模型版本/路径或结果，不新增事实。
+Research/Compare：A采用已存在本地material-layout服务和Pi customTools（选）；B DeepTutor ParseService入口网络读取失败，本轮不把未读能力当可迁移证据，已有固定Apache2 question helper沿用；C搬OpenMAIC/Hermes运行时不解决此本机OCR接缝，排除。Pi官方SDK customTools/会话恢复已读，本轮无新包/许可证/安装体积。UI沿现工具事件/原题集中审核组件，无新组件。
+实例：扩已有original-multi journey的page-text-only模式，真实扫描→实际Pi页工具→候选（不预填完整转写）→教师对原图校正/逐题确认→冷读；针对参数/隐私/源变化/分页/取消做必要定向检查，不跑无关全集。只按实际完成范围接受，不称图义自动理解、公式或答案正确、24题全科完成。修改前backup在kb-page-text-20261012/before，新增adapter移除即可回滚，正式用户数据/凭据不改。
+
+F1本片结果：kb-page-text-20261012/progress.json。build/type通过；实际Pi及真实本地OCR正式实例HvdZeb 3项/2启动/0renderer错误，构建SHA4d23f1eb…ec92b/348运行前后固定；3项定向边界。两尺寸/源图实看。教师事后修改六字段，不称全自动正确；下一补可见选项/多问归类，无新模型或运行时。首次边界宿主/命令错误保留，正式实例首轮成功。官方Pi SDK来源https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/sdk.md 已读，DeepTutor ParseService网页读取失败不充能力证据；现合法vendor保持。
+
+## 2026-10-12 F2 局部文字补读合同
+缺口来自真实扫描第6页：整页OCR漏读第15题第(2)①的选项，禁止由模型猜补。KEEP已实读来源授权、正文隐私、before/after CAS、脱敏、分页、原题候选和教师确认。EXTEND现education_read_material_page可选归一化box，直接复用previewMaterialPage/renderLocalPdfPage/recognizeLocalImage；只返回本地识别文字，regionBox及positionBasis=selected_region明确不是逐行真实定位。无新依赖/模型/DDL/IPC/AgentLoop，不改旧会话身份，旧不传box行为保持。
+验证仅本片严格参数/取消/CAS及实际扫描局部OCR→真实Pi候选→教师审核/冷读实例，不重复旧全集。裁剪不能保证读全/正确，失败诚实保留待核对；图义/答案/全学科验收仍待完成。before位于kb-region-text-20261012/before，保护正式资料与独立Harness修改。
+
+
+2026-10-13 F2续修：真实Hxi1O9证明相近裁剪范围可能重复漏字；EXTEND宿主对宽高比>10的区域自动补读两块40%重叠窗口（总最多3次OCR），沿同PDF渲染/本地OCR，不让教师调像素。返回实际片段及其选择区域，完全相同文本去重，片段不冒充整行/正确拼接；空白子块跳过、全部无字明确失败，其他错误不吞。总2000行/128000字符、原每次返回60行/12000字符边界保持。需要最新build与同正式实例，不把首轮OCR成功当稳定完整识题。
+
+下一功能F2已定位：OriginalMultiDraft现只允许missing/teacher/source，确认后无答案原题明确不能用于标准答案组卷；QuestionDocument已支持ai_generated provenance，但没有生产Pi原题解析补充入口。KEEP现QuestionQualityService数学计划/自动修复与隔离、QuestionReview ledger、原文档/source CAS/版本；下一合同要把“补答案解析”作为同原题的独立可审候选，不能伪装teacher/source或保存一份generated重复题。该片尚未实施，不能标完成。
+
+本片限定接受：education-journey-5Z2TqU，3项/2启动/0renderer错误；真实局部OCR找回选项，实际Pi投影、教师确认/拒绝与冷读通过。build/type及4项边界通过。首次计数失败、命令、源SHA与回滚见kb-region-text-20261012/progress.json；无新上游源码或依赖，现Pi/本地PDFium/RapidOCR直接复用。Next F2解析与组卷，不重跑无关全集。
+
+## F2同原题解析子片限定接受（2026-10-13）
+
+真实5qOptj核心4项及Ucd9U2交付4项按checkpoint接续；build/type、3组必要边界、文件内容/原图独立读回及PDF3页实看通过。沿现输入范围锁定和PaperExportEntry输出专用目录，不给输入目录重新授权。实际AI物理推导曾错误，教师已校正并保留条件缺失说明，最终teacher来源；不标完整AI答案正确。自然复杂100分卷/四文件与跨科答案仍待下一片。精确SHA、命令、失败、回滚及文件hash见kb-explanation-20261013/progress.json，Master ACTIVE。
+
+## F2混知识点集中解析子片结果（2026-10-13）
+
+LIMITED_ACCEPTED：当前build/type、4组定向边界、7ulJf6真实混知识点集中审核5项/2启动、ea9Fbn实际旧v7冷读2项/1启动、源页与浅暗双尺寸实看通过；无新依赖/Agent/DDL/IPC。一次批准更新两道原题，各自元数据与原图不变，任一源变化无部分写入。模拟教师校正条件推导，没有独立答案正确/真人教师/自然100分整卷验收。完整SHA、命令、边界、回滚与下一项见kb-explanation-batch-20261013/progress.json，Master ACTIVE。
+
+## F2原题解析跨批集中审核子片结果（2026-10-13）
+
+LIMITED_ACCEPTED：最终构建0ab2f4a…/348、17项相关边界、Xx6dZx真实混合已有/待补原题跨run/集中审核/17分组卷8项/3启动、浅暗双尺寸实看通过。已有题行/原题账本版本不变；任一源变化及中途取消不部分落盘。前一构建MyiSgI全缺解析8项为补充证据，非最终构建全集。受控12题100分配额与两道自然17分实例不替代自然100分/独立答案/真人/自然语言验收；WordPDF旧证据保留不重复全集。真实SHA、命令、首次失败、回滚及下一项见kb-explanation-collection-20261013/progress.json，Master ACTIVE。
+
+## F2普通教师混合100分与四文件冻结（2026-10-13）
+
+- 教师结果：在全新对话用普通教学要求制作100分物理混合卷，内部完成检索/原创/检查，集中核对新题和整卷，选择保存目录，获得学生卷/教师卷的Word/PDF四文件。沿现Pi唯一运行时、DeepTutor纯格式helper、question-collection、paper及Office宿主，不增加依赖、数据库或并行编排。
+- 实际原扫描标135分综合卷，现题库五道完整已确认原题，不称其为自然原卷100分。新蓝图给五题5/8/10/8/9分共40分，六道新综合计算题各10分共60分。保留图与原题来源，原创明确标记，数学/图义由模拟教师逐题校正，不能替代独立标准答案或真人验收。
+- 当前复用成熟的五题来源、生成集合、整卷预览、输出目录授权和四次文件批准。先跑真实自然语言路径，发现具体路由/来源标签/导出缺口才修改对应模块；旧版本产物/待审必须保留兼容，不以重新编译破坏历史记录。新生成题必须本次新对话教师批准，不混用旧会话题。
+- 实例延伸现golden-teacher-journeys，复用现Office独立文件检查。只复制既有owned测试资料/配置到新隔离目录，原题事实及原文件hash不变；生成题先暂停独立审阅，再通过真实审核卡修改/确认。不得注入批准hash或seed正式业务事实。
+- 文件交付前必须整卷确认、原图核对、目录授权及每文件批准；确认前无文件，失败保留现场可接续。回滚撤本片delta，保留所有版本/记录，保护独立Harness脏修改。build/typecheck、相关边界和一个正式Electron实例、原图/公式/答案隔离/重启回读即可，不重复无关全集。
+- 完成限定为当前混合100分与四文件自然语言技术闭环；纯题库自然原卷100分、全学科/手写/独立金标、30–40GB/安装、OpenMAIC完整课堂/Hermes反馈仍按Master后续实施。
+
+实际首次普通语言流程暴露：中文“计算题”蓝图与原生written不映射，候选虽合法却反复遭拒；工具只回generic invalid_input/conflict导致模型改蓝图探测。修复沿现paperSectionMatches统一有限别名（不改原题事实/标签），错误回执给合法item题型与恢复既有蓝图指引；Pi提示要求按实读原题题型/知识点选题，section.label不是筛选条件。无新DDL/IPC/运行时，原待审蓝图保持；首次现场保留不重做原题导入。
+
+恢复实例暴露集中卡子卡重复读取：父级已经持有同一受权view，子卡额外IPC读在运行恢复窗口可能失败且只保留重试按钮，导致多个卡重复人工重试。沿现GeneratedQuestionReview新增可选providedView，集中卡直接传同批已加载review；独立卡仍原读取，检查/编辑/批准保持主进程授权/CAS，不缓存跳过新检查。before已留存，正式恢复同六题并核对校正/四文件，不重新起草。
+
+## F2实验表格与后续题问边界修复（2026-10-13）
+实际l9gH4N四文件已批准保存，但学生PDF完整文字/视觉检查拒绝：marked GFM允许无管线的续行，实验表格后的三问题问被当成单元格并跨页重复表头。沿既有marked词法器，仅在它已识别的table原文中将首个不含未转义管线的正文行前补空行，再由同词法器解析；保留所有文字、公式保护、数据顺序，不改题库事实、旧文件、授权或运行时。复用现表格Office宿主，MIT既有依赖；无新依赖/DDL/IPC。相关实际题干与公式管线边界、build、组件门禁、同已确认100分卷新版本四文件/冷读验收；不重新出题/审批、不放宽完整文字校验。before单文件回滚，旧四文件保留且不标合格。
+
+本片限定接受：MkryR4正式续接7项/2启动，当前SHA89e5404b…/348，同确认卷第二版学生/教师WordPDF四文件保存/完整内容/原图/A4/答案隔离/冷读通过；cSiohe集中批准/整卷预览保留为此前构建证据。build、217组件、8相关边界与浅暗UI/PDF实看通过。不重做出题/审批、不把135分原卷称100分；旧失败文件保留，自动条件/数学可靠性和全科/真人金标仍DOING。精确SHA/命令/首次失败/回滚/下一项见kb-natural-language-paper-20261013/progress.json。
+
+## F2 线性条件自动审查切片（2026-10-13）
+Recherche/Reuse：复用已固定SymPy1.14.0/m​pmath轮子、现math-worker超时/取消、Pi题目工具、DeepTutor格式helper、质量账本/修复与集中审核。新增的只是有界线性方程数据适配，不复制第二运行时。现SymPy数学检查仅单式/恒等式/根集，无法发现形式化条件矛盾或所求量未确定。
+Contract：新linear_system检查使用math-check.v2 Worker请求；旧v1不变。最多4变量/8方程/4目标，全有理数系数，方程保留题干原文片段、目标保留答案片段并由主进程核对实际文本绑定。用SymPy线性求解区分矛盾、所求量不确定、答案不符及形式模型匹配；不验证自然语言到方程的翻译，conditionsVerified=false。目标量确定即可，不要求无关变量全部唯一。不支持非线性/图义/单位语义则人工复核，不猜补。
+Implement：共享合同→现Worker→host→不可变mathPlans→Pi schema/提示→现审核UI→现SQLite账本；无新表/依赖/IPC。检查失败沿现math_mismatch隔离和最多三次同Pi修复。修复不能删目标/变量/已有方程角色，教师编辑使旧计划失效。
+Acceptance：复用上一轮真实复杂电路缺电压、浮力矛盾和纠正后的条件做定向实例；增加目标确定而其他量自由的反例。build/组件门禁一次、当前Electron本地Worker执行及同质量账本路径/冷读案例，不重复100分导出。保存首次失败与真实构建SHA。实际Pi自动采用新检查未验时明确OPEN，不把Worker匹配当整题正确。
+Rollback：before保存本片前文件。撤本片delta及新math-system.ts即可；旧v1/现质量记录兼容，保留新增v2记录及正式事实，不删除数据库、资料和并行Harness变更。Master仍ACTIVE，下一F3复杂错题、F4长教材、F5 OpenMAIC、F6 Hermes。
+
+
+F2线性条件子片结果：LIMITED_ACCEPTED。最终build/type、组件217、6组复杂定向例、真实msPBaf3项/2启动/0renderer错误及浅暗双尺寸通过，SHA d5e07d52…/348冻结。首次56bGMX ledger拒新说明修复为状态对应严格receipt校验，旧v1与质量receipt兼容；错误前身不保存，修复仅用教师明确220V。案例含教师形式化计划，不能证明自主题意翻译、物理/单位/图义或全科正确。真实命令/SHA/首次失败/回滚见kb-condition-check-20261013/progress.json。下一F3复杂错题，不重跑已验整卷导出。
+
+## F3 复杂照片与题库优先五题练习合同（2026-10-13）
+Research/Reuse：当前MistakeFacts已原子确认照片根题/实际记录，local similar有Top10和Pi受权实读，QuestionReview已生成/自动修复/集中核对，PracticeReview可混用existing similar与已确认variant并冷读。DeepTutor固定Apache2纯格式helper与学习算法已接入同Pi，无需迁移上游AgentLoop；OpenMAIC课堂不是错题检索替代。选择A现链路薄适配；B复制上游独立循环不符唯一Pi；C另建错题/练习真源重复，排除。
+Teacher result：默认“准备5道针对性练习”先本地查找并比较完整题面，只补不足数量，不默认生成14天计划。原“5道变式”和“2周训练”作为独立入口保持。只让教师核对实际新题和最终安排；原照片/来源/学生成绩不自动改。
+Contract：沿mistake-facts.v1、现主进程授权/CAS/题库/PracticeReview，无新表/IPC/数据真源/依赖；只调默认任务交接及复用UI入口。检索为空或同标签异问题不能当合格，生成题仍quality隔离/教师批准；来源/答案明确未独立验证。高中图题用完整原照片进行本地OCR，教师校正文本把必要图条件写清，不冒称自动图义。
+Instance：一张test目录真实含公式/图/手写的照片→本地OCR→教师确认完整题面和模拟实际作答→当前学生→普通默认五题任务。本机已有相关教学题经正式UI添加，同标签不同目标干扰仅对照；实际Pi实读选择、只补缺额→集中核对→5题练习→冷读。新增候选暂停审阅后用实际UI改，不注入确认hash。只跑该实例及必要build/组件门禁，不重跑旧14项和全回归。
+Failure/Recovery：缺公式/未明图义保持人工校正；模型没走工具/被隔离则定位产品层，不放宽检索过滤和数学质量。before撤本片delta，兼容所有已有事实和待审，正式数据不动。F3接受仅当前复杂来源/既有题混合补额路径，全科/自然学生金标仍OPEN。后续F4长教材、F5 OpenMAIC课堂、F6 Hermes反馈保持。

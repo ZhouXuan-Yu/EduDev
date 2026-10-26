@@ -1,6 +1,7 @@
 import type { Sql } from './session-state';
 
-export const SKILL_LIMITS = { skills: 32, files: 64, nodes: 128, depth: 4, bytes: 8 * 1024 * 1024, fileBytes: 1024 * 1024, instructionBytes: 32768 } as const;
+// One additive reviewed builtin must fit even when an old 32-entry catalog is full.
+export const SKILL_LIMITS = { skills: 33, files: 64, nodes: 128, depth: 4, bytes: 8 * 1024 * 1024, fileBytes: 1024 * 1024, instructionBytes: 32768 } as const;
 export type SkillPackageFile = { relative: string; size: number; sha256: string };
 export type PrivateManagedSkill = { name: string; title: string; description: string; origin: 'builtin' | 'teacher'; version: number;
   directory: string; enabled: boolean; archived: boolean; files: SkillPackageFile[] };

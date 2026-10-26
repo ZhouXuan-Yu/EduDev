@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';import path from 'node:path';import {pathToFileURL} from 'node:url';
+import {build} from 'esbuild';
+import {createEditorHistory,applyEditorTransaction,createEditorTransaction,undoEditorTransaction,redoEditorTransaction} from '@openmaic/editor/core';
+const output='test-results/goal/ma-editor-20261014',entry=path.resolve(output,'classroom-contract.mjs');
+await build({stdin:{contents:"export {validClassroom} from './src/shared/classroom';",resolveDir:process.cwd()},bundle:true,platform:'node',format:'esm',outfile:entry});
+const {validClassroom}=await import(pathToFileURL(entry));
+const prior=JSON.parse(fs.readFileSync('test-results/education-journey-a72a37/report.json')).classroom.saved.document;
+const history=createEditorHistory(prior.scenes[0].content),element=history.present.canvas.elements.find(e=>e.type==='text');
+const revised=applyEditorTransaction(history,createEditorTransaction({origin:'toolbar',history:'record',operations:[{type:'text.updateContent',elementId:element.id,content:'<p>教师修订：直角三角形三边关系</p>'}]}));
+assert.notDeepEqual(revised.present,history.present);assert.deepEqual(redoEditorTransaction(undoEditorTransaction(revised)),revised);
+const document=structuredClone(prior);document.scenes[0].content=revised.present;assert(validClassroom(document));assert.deepEqual(history.present,prior.scenes[0].content);
+const unsafe=applyEditorTransaction(revised,createEditorTransaction({origin:'toolbar',history:'record',operations:[{type:'text.updateContent',elementId:element.id,content:'<p><a href="https://invalid.test">外部链接</a></p>'}]}));document.scenes[0].content=unsafe.present;assert(!validClassroom(document));
+assert.throws(()=>applyEditorTransaction(history,createEditorTransaction({origin:'toolbar',history:'record',operations:[{type:'element.update',elementId:element.id,patch:{id:'replacement'}}]})));assert.deepEqual(history.present,prior.scenes[0].content);
+const checks=['Real pinned core text transaction/undo/redo preserves original classroom','Offline DSL rejects external link after editor transaction','Failed immutable identity patch leaves the source unchanged'];
+fs.writeFileSync(path.join(output,'domain-example.json'),JSON.stringify({success:true,checks:checks.map(name=>({name,pass:true})),source:'actual Pi-generated classroom a72a37; no model requests'},null,2));console.log(JSON.stringify({success:true,checks:checks.length}));

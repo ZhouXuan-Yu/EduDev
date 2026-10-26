@@ -33,6 +33,23 @@ export type OfficeDnsMode = 'auto' | 'system' | 'cloudflare' | 'alidns';
 type Addresses={address:string;family:number}[];
 type ResolverDependencies={system:(host:string)=>Promise<Addresses>;public:(host:string,signal:AbortSignal,mode:'cloudflare'|'alidns')=>Promise<Addresses>};
 const virtualAddress=(raw:string)=>{try{return ipaddr.process(raw).kind()==='ipv4'&&ipaddr.process(raw).match(ipaddr.parse('198.18.0.0'),15);}catch{return false;}};
+// A dual-stack fake-DNS answer observed with desktop TUN proxies. These are
+// never accepted as connection addresses. Require the complete signature so
+// an ordinary ULA/private answer cannot cause disclosure to a public resolver.
+function proxyVirtualAnswers(addresses:Addresses):boolean {
+  if (!addresses.length) return false;
+  if (addresses.every(item=>virtualAddress(item.address))) return true;
+  let ipv4=false,ipv6=false;
+  const onlySignature=addresses.every(item=>{
+    try {
+      const address=ipaddr.process(item.address);
+      if(address.kind()==='ipv4'&&(virtualAddress(item.address)||address.match(ipaddr.parse('28.0.0.0'),8))){ipv4=true;return true;}
+      if(address.kind()==='ipv6'&&address.match(ipaddr.parse('fdfe:dcba:9876::'),48)){ipv6=true;return true;}
+    }catch{/* Invalid DNS answers remain rejected. */}
+    return false;
+  });
+  return onlySignature&&ipv4&&ipv6;
+}
 export async function resolveOfficePublicAddresses(host: string, signal: AbortSignal, dnsMode: OfficeDnsMode = 'system',
   dependencies:ResolverDependencies={system:host=>lookup(host,{all:true}),public:publicResolverAddresses}) {
   signal.throwIfAborted();host=host.toLowerCase().replace(/\.$/,'');
@@ -45,13 +62,13 @@ export async function resolveOfficePublicAddresses(host: string, signal: AbortSi
       if(!['ENOTFOUND','EAI_AGAIN','ETIMEOUT','ETIMEDOUT'].includes(code||''))throw error;
       addresses=await dependencies.public(host,signal,'alidns');
     }
-    // Never send a private answer to a public resolver. Only the proxy's reserved
-    // virtual-only range is retried; connect to the newly checked public IP.
-    if(addresses.length&&addresses.every(item=>virtualAddress(item.address)))addresses=await dependencies.public(host,signal,'alidns');
+    // Only complete virtual signatures are independently re-resolved. Actual
+    // private/mixed answers still fail closed; connect to the checked public IP.
+    if(proxyVirtualAnswers(addresses))addresses=await dependencies.public(host,signal,'alidns');
   }else addresses=dnsMode==='system'?await waitOfficeAbort(dependencies.system(host),signal):await dependencies.public(host,signal,dnsMode);
   signal.throwIfAborted();
   if (!addresses.length || addresses.some(item => !isPublicOfficeAddress(item.address)))
-    throw new Error(addresses.length&&addresses.every(item=>virtualAddress(item.address))?'dns_blocked':'permission_denied');
+    throw new Error(proxyVirtualAnswers(addresses)?'dns_blocked':'permission_denied');
   return addresses;
 }
 
@@ -97,7 +114,9 @@ export async function fetchOfficePublicUrl(raw: string, options: {
       chunks.push(chunk);
     }
     const body = Buffer.concat(chunks).toString('utf8');
-    return { status: response.status, ok: response.ok, headers: new Headers([...response.headers]),
+    const headers = new Headers();
+    response.headers.forEach((value, name) => headers.append(name, value));
+    return { status: response.status, ok: response.ok, headers,
       text: async () => body, json: async () => JSON.parse(body) as unknown };
   } finally { await dispatcher.destroy(); }
 }

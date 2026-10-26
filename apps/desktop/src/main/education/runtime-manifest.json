@@ -15,19 +15,19 @@
     },
     {
       "path": "apps/desktop/src/main/education/reading-worker.py",
-      "sha256": "80517a9991f49f1932653df9fad34c858230615214cc518e846b264803024388"
+      "sha256": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d"
     },
     {
       "path": "apps/desktop/src/main/education/learning-worker.py",
-      "sha256": "486bc14efeb8fedaf329dcd1d8d354272f5cc31694e0993e5136d6afdfb0590c"
+      "sha256": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede"
     },
     {
       "path": "apps/desktop/src/main/education/question-worker.py",
-      "sha256": "2777e6300156cffbfec316248884c9628ffa465f2b9f10a56f2c48e889714e6b"
+      "sha256": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6"
     },
     {
       "path": "apps/desktop/src/main/education/math-worker.py",
-      "sha256": "b83db16d76e3c79f0af8b0fa7b66c06236f90c4f2da8977b3380608be37fcae4"
+      "sha256": "0013eff4925ea71cd2eafbbbe2150754228c2e6a5045a09d84586af85c9ffc75"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/LICENSE",
@@ -43,7 +43,7 @@
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-reading/source-manifest.json",
-      "sha256": "300421fadb26329a45066ac4e8a23880d6108fc41394e1c95bb43d4d986482a7"
+      "sha256": "dbbf317768b9d8652b08af893ea612f87272b0627b752e6ef75ebb99588d9c5d"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/LICENSE",
@@ -71,7 +71,7 @@
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-learning/source-manifest.json",
-      "sha256": "bea6378de99b37db93a1050a00c56c77ba8e85daa33842c80a4d299de3bc7fbb"
+      "sha256": "d8334b1c6827933876d4fb80980ecb866b37c4df2ad4c6d1bdba83d97b04aba7"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-question/LICENSE",
@@ -83,11 +83,11 @@
     },
     {
       "path": "apps/desktop/src/main/education/vendor/deeptutor-question/source-manifest.json",
-      "sha256": "0894d76e1c4011c3517e5e60ae2f81f900556f16959d5a220fe05811f25b35d5"
+      "sha256": "2d8ba556c181aea62da8d50da80b496366fef4a94aeaf1afca6e11a04f4b7cb8"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/math/README.md",
-      "sha256": "6d436b440541bbb2190c9f67989911a959e214e5856bc0b53018d363f2d88567"
+      "sha256": "6e431f289b47b473259dc73e4d7d77e590055a430bdfe4a92524194e1964c60b"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/math/SymPy.LICENSE",
@@ -103,7 +103,7 @@
     },
     {
       "path": "apps/desktop/src/main/education/vendor/math/source-manifest.json",
-      "sha256": "703f495dd06972bfe7f2bfba17f1cc201cd904eb647a1bd4210c37d099e2e780"
+      "sha256": "1f25cf92d5cc5447df798c216590388dae73dafe8e30477057aac7e12e8748bd"
     },
     {
       "path": "apps/desktop/src/main/education/vendor/math/sympy-1.14.0-py3-none-any.whl",
@@ -119,7 +119,7 @@
     },
     {
       "path": "python/omni_edu_education/licenses/PYTHON-LICENSE.txt",
-      "sha256": "886a0ead2d89030ee62dbff52b04e47ab91998341295bb9c56fb952b4e081c7a"
+      "sha256": "160a384f3520ae891b3197f14ff8b1db1d6a1270873424383045dc025a083908"
     },
     {
       "path": "python/omni_edu_education/licenses/PyInstaller-COPYING.txt",
@@ -410,27 +410,27 @@
     {
       "path": "_internal/base_library.zip",
       "size": 1333490,
-      "sha256": "a96db17b251a1aedd032dabbef21cb1345519f5927b6b236cb2bd8b39b2f0497"
+      "sha256": "eaf44ec61630e24a814b4992d3b1e28d68d64857989c7f0c4e2c795dfff1f497"
     },
     {
       "path": "_internal/education/learning-worker.py",
-      "size": 11218,
-      "sha256": "486bc14efeb8fedaf329dcd1d8d354272f5cc31694e0993e5136d6afdfb0590c"
+      "size": 11018,
+      "sha256": "db2d24299a1b691367d6a1a29baf7fdf679adb602843389e75441e35332d4ede"
     },
     {
       "path": "_internal/education/math-worker.py",
-      "size": 10313,
-      "sha256": "b83db16d76e3c79f0af8b0fa7b66c06236f90c4f2da8977b3380608be37fcae4"
+      "size": 13145,
+      "sha256": "0013eff4925ea71cd2eafbbbe2150754228c2e6a5045a09d84586af85c9ffc75"
     },
     {
       "path": "_internal/education/question-worker.py",
-      "size": 6759,
-      "sha256": "2777e6300156cffbfec316248884c9628ffa465f2b9f10a56f2c48e889714e6b"
+      "size": 6633,
+      "sha256": "9b4ca90da811a762e13981b0f5e97035444de2011af92ff1e3b807852e7109a6"
     },
     {
       "path": "_internal/education/reading-worker.py",
-      "size": 4370,
-      "sha256": "80517a9991f49f1932653df9fad34c858230615214cc518e846b264803024388"
+      "size": 4279,
+      "sha256": "b1dcf5ea055da7fb9f2b54a170f87ca22a593c8b41dc08f58033b29dc4bf7a6d"
     },
     {
       "path": "_internal/education/vendor/deeptutor-learning/LICENSE",
@@ -464,8 +464,8 @@
     },
     {
       "path": "_internal/education/vendor/deeptutor-learning/source-manifest.json",
-      "size": 2321,
-      "sha256": "bea6378de99b37db93a1050a00c56c77ba8e85daa33842c80a4d299de3bc7fbb"
+      "size": 2255,
+      "sha256": "d8334b1c6827933876d4fb80980ecb866b37c4df2ad4c6d1bdba83d97b04aba7"
     },
     {
       "path": "_internal/education/vendor/deeptutor-question/LICENSE",
@@ -479,8 +479,8 @@
     },
     {
       "path": "_internal/education/vendor/deeptutor-question/source-manifest.json",
-      "size": 1340,
-      "sha256": "0894d76e1c4011c3517e5e60ae2f81f900556f16959d5a220fe05811f25b35d5"
+      "size": 1304,
+      "sha256": "2d8ba556c181aea62da8d50da80b496366fef4a94aeaf1afca6e11a04f4b7cb8"
     },
     {
       "path": "_internal/education/vendor/deeptutor-reading/LICENSE",
@@ -499,13 +499,13 @@
     },
     {
       "path": "_internal/education/vendor/deeptutor-reading/source-manifest.json",
-      "size": 985,
-      "sha256": "300421fadb26329a45066ac4e8a23880d6108fc41394e1c95bb43d4d986482a7"
+      "size": 956,
+      "sha256": "dbbf317768b9d8652b08af893ea612f87272b0627b752e6ef75ebb99588d9c5d"
     },
     {
       "path": "_internal/education/vendor/math/README.md",
-      "size": 1505,
-      "sha256": "6d436b440541bbb2190c9f67989911a959e214e5856bc0b53018d363f2d88567"
+      "size": 1480,
+      "sha256": "6e431f289b47b473259dc73e4d7d77e590055a430bdfe4a92524194e1964c60b"
     },
     {
       "path": "_internal/education/vendor/math/SymPy.LICENSE",
@@ -524,8 +524,8 @@
     },
     {
       "path": "_internal/education/vendor/math/source-manifest.json",
-      "size": 1834,
-      "sha256": "703f495dd06972bfe7f2bfba17f1cc201cd904eb647a1bd4210c37d099e2e780"
+      "size": 1793,
+      "sha256": "1f25cf92d5cc5447df798c216590388dae73dafe8e30477057aac7e12e8748bd"
     },
     {
       "path": "_internal/education/vendor/math/sympy-1.14.0-py3-none-any.whl",
@@ -575,7 +575,7 @@
     {
       "path": "omni-edu-education.exe",
       "size": 10057546,
-      "sha256": "546cb4f31aa89b98b5cdb86f97d4c8e9a37252e65060f9da4f4e17a312366e7f"
+      "sha256": "b0bf4daf21801a0dc87ef9bd41dcc536af5df70fe131acf6c348adcbb54f9729"
     }
   ]
 }

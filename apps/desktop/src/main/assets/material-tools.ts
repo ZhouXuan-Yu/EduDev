@@ -1,3 +1,4 @@
+import type {ClassroomMaterial} from '../../shared/classroom-context';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {OmniEduStore} from '../db';
 import {MATERIALS_SCHEMA,validMaterialQuery,validMaterialBodyQuery,materialFailureText,materialIsOcr,materialCitation} from '../../shared/materials';
@@ -6,7 +7,7 @@ import {materialSource} from './material-source';
 import type {XiaozhiPublicSource} from '../../shared/xiaozhi-web';
 
 /** Read saved derivatives by resource ID; never expand workspace file authority. */
-export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,observed?:(resourceId:string,version:string)=>void):ToolDefinition[]{
+export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,observed?:(resourceId:string,version:string,material:ClassroomMaterial)=>void):ToolDefinition[]{
  const current=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!isCurrent())throw new Error('permission_denied');};
  const execute=(body:boolean):ToolDefinition['execute']=>async(_callId,args,signal)=>{
   try{
@@ -25,16 +26,19 @@ export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,obs
     if(!result.chunks.length)throw new Error('invalid_input');
     // Send at most one bounded excerpt; nextOffset never skips undelivered chunks.
     const chunk=result.chunks[0],text=chunk.containsPersonalData?'[含个人信息，正文已隐藏]':(await clean(chunk.contentMd)).slice(0,12000);
-    current(signal);if(!chunk.containsPersonalData)observed?.(input.resourceId,result.resource.contentHash);const next=input.offset+1;
+    current(signal);
+    const source=materialSource({resourceId:input.resourceId,version:result.resource.contentHash,offset:input.offset,title,chunk});
+    if(!chunk.containsPersonalData){await store.materials.source(source);current(signal);if(text.length)observed?.(input.resourceId,result.resource.contentHash,{source,title,characters:text.length,truncated:text.length<chunk.contentMd.length,recognition:materialIsOcr(result.resource.parseEngine)?'local_ocr_unreviewed':'saved_text'});}
+    const next=input.offset+1;
     payload={success:true,title,text,sanitized:true,teacherConfirmed:false,...(materialIsOcr(result.resource.parseEngine)?{recognition:'local_ocr_unreviewed',warning:'OCR可能遗漏图形或误识别公式/手写字；不是确认的题目或答案。'}:{}),source:{kind:'saved_material_body',version:result.resource.contentHash,chunk:chunk.chunkIndex+1,originalPageLocated:!!chunk.pageNumber,...(chunk.pageNumber?{pageNumber:chunk.pageNumber}:{})},totalChunks:result.total,offset:input.offset,nextOffset:next<result.total?next:null,truncated:text.length<chunk.contentMd.length,citation:materialCitation(title,chunk)};
     sources=chunk.containsPersonalData?[]:[{title:String(payload.citation),material:materialSource({resourceId:input.resourceId,version:result.resource.contentHash,offset:input.offset,title,chunk})}];
    }else{
     if(!validMaterialQuery(input))throw new Error('invalid_input');
     const result=await store.materials.list(input);current(signal);const rows=[];
-    for(const resource of result.resources){current(signal);rows.push({resourceId:resource.id,title:(await clean(resource.originalFileName)).slice(0,200),status:resource.parseStatus,bodyAvailable:['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus)&&resource.chunkCount>0});}
+    for(const resource of result.resources){current(signal);rows.push({resourceId:resource.id,title:(await clean(resource.originalFileName)).slice(0,200),status:resource.parseStatus,bodyAvailable:['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus)&&resource.chunkCount>0,bodyPartial:resource.parseStatus==='partial'&&resource.chunkCount>0});}
     current(signal);payload={success:true,materials:rows,total:result.total,offset:result.offset,nextOffset:result.hasMore?result.offset+rows.length:null};
    }
-   return {content:[{type:'text',text:JSON.stringify(payload)}],details:{success:true,data:{sources}}};
+   return {content:[{type:'text',text:JSON.stringify(payload)}],details:{success:true,data:{sources,...(!body?{count:(payload.materials as unknown[]).length}:{})}}};
   }catch(error){const code=signal?.aborted?'cancelled':(error as Error).message==='permission_denied'?'permission_denied':(error as Error).message==='invalid_input'?'invalid_input':'read_failed';
    const message=code==='cancelled'?'资料读取已停止。':code==='permission_denied'?'当前任务已失效，未读取资料。':code==='invalid_input'?'资料查询参数不正确。':'资料正文读取失败，请检查收录状态后重试。';
    return {content:[{type:'text',text:message}],isError:true,details:{success:false,error:{code,message}}};

@@ -24,7 +24,7 @@ try {
   const store = { xiaozhiState: state, getAiConversationSession: async () => { detailEntered?.(); if (releaseDetail) await new Promise(resolve => { releaseDetail.current = resolve; }); return { session: { archivedAt: 'controlled-startup-cancel' } }; } };
   host = createXiaozhiProductionHost({ store, dataRoot: output, emit: () => assert.fail('Startup barrier must not emit a model/tool event') });
   let catalog = await host.skillCatalog();
-  await check('Production host seeds one persistent managed catalog and exposes no default external package', async () => { assert.equal(catalog.skills.length, 4); assert(catalog.skills.every(item => item.origin === 'builtin')); });
+  await check('Production host seeds one persistent managed catalog and exposes no default external package', async () => { assert.equal(catalog.skills.length, 5); assert(catalog.skills.every(item => item.origin === 'builtin')); });
   let releaseChooser; const command = () => ({ sessionId: session, commandId: `xicmd_${randomUUID()}`, prompt: '本地锁定边界实例' });
   const pending = host.importSkill(catalog.revision, () => new Promise(resolve => { releaseChooser = resolve; }));
   await new Promise(resolve => setImmediate(resolve));

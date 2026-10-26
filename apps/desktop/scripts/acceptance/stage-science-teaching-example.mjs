@@ -1,0 +1,9 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
+const root=path.resolve('test-results/goal/harness-science-teaching-20261021-first'),read=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+const progress=read(path.join(root,'progress.json'));assert(progress.collectionValid);
+const ui=read(progress.reports.ui.file),teaching=read(progress.reports.teaching.file),destination=path.resolve('../../docs/integrations/examples/anatomy');
+const entries=[[ui.ppt.file,'散热片教学版.pptx'],[ui.gif.file,'散热片教学版.gif'],[teaching.approvedSource,'散热片教学版.html'],[path.join(root,'powerpoint-content-merge/slide-01.png'),'教学版课件预览.png']];
+const files=entries.map(([source,name])=>{const target=path.join(destination,name),bytes=fs.readFileSync(source);if(fs.existsSync(target))assert(fs.readFileSync(target).equals(bytes),'Refuse to overwrite unrelated example');else fs.copyFileSync(source,target,fs.constants.COPYFILE_EXCL);return {file:name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};});
+const provenance={build:progress.build.sha256,origin:'Authored teaching fixture, saved via real approval ledger in a synthetic session; exported by actual Electron file panel. Native PowerPoint content/render/merge accepted; visible animation NOT accepted in this run due foreground restrictions. Not a real-model or teacher-usability acceptance.',report:path.relative(path.resolve('../..'),path.join(root,'progress.json')).replaceAll('\\','/'),files};
+const record=path.join(destination,'teaching-provenance.json');if(fs.existsSync(record))assert.equal(fs.readFileSync(record,'utf8'),JSON.stringify(provenance,null,2));else fs.writeFileSync(record,JSON.stringify(provenance,null,2),{flag:'wx'});
+console.log(JSON.stringify(provenance,null,2));

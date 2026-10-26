@@ -8,7 +8,8 @@ let workers=0;
 function localPython(){
  if(process.env.OMNI_EDU_PYTHON)return {command:process.env.OMNI_EDU_PYTHON,args:[]};
  if(process.platform!=='win32')return {command:'python3',args:[]};
- const command=['C:\\Python314\\python.exe','D:\\Anaconda\\python.exe','C:\\Windows\\py.exe'].find(existsSync)||'py';
+ const bundled=process.resourcesPath?path.join(process.resourcesPath,'python-embed','python.exe'):'';
+ const command=[bundled,'C:\\Python314\\python.exe','D:\\Anaconda\\python.exe','C:\\Windows\\py.exe'].filter(Boolean).find(existsSync)||'py';
  return {command,args:/(?:^|[\\/])py(?:\.exe)?$/i.test(command)?['-3']:[]};
 }
 /** Existing reading host shared by fixed reviewed workers; no arbitrary scripts. */

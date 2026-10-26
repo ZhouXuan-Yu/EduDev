@@ -1,0 +1,51 @@
+{
+  "upstreamNotice": "UPSTREAM-NOTICE.md",
+  "userAuthorization": "2026-10-15 user-provided AI generated source, explicitly requested reuse",
+  "adaptation": "Controlled host status, stable identity, typed source opening, Chinese labels and existing lucide icons; no demo data, font, composer, API or additional dependency",
+  "sourceRoot": "C:/Users/ZhouXuan/Desktop/boardui-web-search",
+  "files": [
+    {
+      "file": "WebSearch.tsx",
+      "sourceBytes": 14980,
+      "sourceSha256": "f130e36f0aa96ae2aa88cda972ba767e9f4871d475cfd7278d3bbfa0cadea299",
+      "adaptedSha256": "24762d58e69f2ee288e18a814c90385c8b402569c56e034306a1c7f8f4ca3ede",
+      "adaptedBytes": 15922
+    },
+    {
+      "file": "types.ts",
+      "sourceBytes": 1090,
+      "sourceSha256": "0ddb435574e6e3424add9c6f956e7af486cc587c5b77bddb6cc50ddba65c8b7b",
+      "adaptedSha256": "ce2c624eda95dda6191f8127c1351689cd623e3a305b47158b0911686384dcda",
+      "adaptedBytes": 1568
+    },
+    {
+      "file": "timeline.ts",
+      "sourceBytes": 2169,
+      "sourceSha256": "b95fffd89300b18369ac32e79a6aae1b9bb96bd320ac8c7c84088fc5fc077746",
+      "adaptedSha256": "b95fffd89300b18369ac32e79a6aae1b9bb96bd320ac8c7c84088fc5fc077746",
+      "adaptedBytes": 2169
+    },
+    {
+      "file": "web-search.css",
+      "sourceBytes": 8257,
+      "sourceSha256": "33a4a39f35aae7389d47c0040d52cbafe200816f5bcac7ffc59e8b349a6fcaec",
+      "adaptedSha256": "33a4a39f35aae7389d47c0040d52cbafe200816f5bcac7ffc59e8b349a6fcaec",
+      "adaptedBytes": 8257
+    },
+    {
+      "file": "brands.ts",
+      "sourceBytes": 17936,
+      "sourceSha256": "b579080178a26be6563ee0486809212e0b6b788f481473a73c98aad906ec20e5",
+      "adaptedSha256": "b579080178a26be6563ee0486809212e0b6b788f481473a73c98aad906ec20e5",
+      "adaptedBytes": 17936
+    },
+    {
+      "file": "index.ts",
+      "sourceBytes": 202,
+      "sourceSha256": "06ab18f3c1a6666cb678ae76ccf0dcb65b6b643a4f696dd431d1fee5794e847a",
+      "adaptedSha256": "06ab18f3c1a6666cb678ae76ccf0dcb65b6b643a4f696dd431d1fee5794e847a",
+      "adaptedBytes": 202
+    }
+  ],
+  "schemaVersion": 1
+}

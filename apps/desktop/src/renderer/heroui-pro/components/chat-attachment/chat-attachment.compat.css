@@ -1,0 +1,210 @@
+/* Official ChatAttachment BEM rules, translated from the HeroUI Pro docs.
+   This is the component's own stylesheet; do not add project-specific overrides. */
+
+.chat-attachment {
+  position: relative;
+  flex-shrink: 0;
+  border: 1px solid var(--border, var(--pi-line, rgb(38 59 57 / 10%)));
+  border-radius: 12px;
+  background: transparent;
+}
+
+.chat-attachment[data-variant="media"] {
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+}
+
+.chat-attachment[data-variant="file"] {
+  display: flex;
+  width: fit-content;
+  min-width: 12rem;
+  height: 64px;
+  max-width: 256px;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 12px;
+}
+
+.chat-attachment__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.chat-attachment[data-variant="media"] .chat-attachment__preview {
+  width: 100%;
+  height: 100%;
+}
+
+.chat-attachment[data-variant="file"] .chat-attachment__preview {
+  flex-shrink: 0;
+  width: auto;
+  height: auto;
+  color: var(--muted, var(--pi-muted, #596d69));
+}
+
+.chat-attachment__preview-image,
+.chat-attachment__preview-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chat-attachment__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-attachment__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.chat-attachment[data-variant="file"] > .chat-attachment__info,
+.chat-attachment[data-variant="file"] > .chat-attachment__name {
+  min-width: 0;
+  flex: 1;
+}
+
+.chat-attachment[data-variant="file"] .chat-attachment__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.chat-attachment[data-variant="media"] > .chat-attachment__info,
+.chat-attachment[data-variant="media"] > .chat-attachment__name {
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 20px 6px 4px;
+  background: linear-gradient(to top, rgb(0 0 0 / 75%), transparent);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.chat-attachment[data-variant="media"]:hover > .chat-attachment__info,
+.chat-attachment[data-variant="media"]:hover > .chat-attachment__name,
+.chat-attachment[data-variant="media"]:focus-within > .chat-attachment__info,
+.chat-attachment[data-variant="media"]:focus-within > .chat-attachment__name {
+  opacity: 1;
+}
+
+.chat-attachment__name {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.chat-attachment[data-variant="file"] .chat-attachment__name {
+  clip-path: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  position: static;
+  overflow: hidden;
+  color: var(--foreground, var(--pi-ink, #263b39));
+  font-weight: 500;
+}
+
+.chat-attachment[data-variant="media"] .chat-attachment__name {
+  clip-path: none;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.chat-attachment__size {
+  display: block;
+  color: var(--muted, var(--pi-muted, #596d69));
+  font-size: 12px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.chat-attachment[data-variant="media"] .chat-attachment__size {
+  display: none;
+}
+
+.chat-attachment__remove {
+  background: var(--default, var(--pi-soft, #eef3ef));
+  color: var(--muted, var(--pi-muted, #596d69));
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.chat-attachment__remove:hover {
+  background: var(--default-hover, var(--pi-hover, rgb(38 59 57 / 6%)));
+  color: var(--foreground, var(--pi-ink, #263b39));
+}
+
+.chat-attachment[data-variant="media"] .chat-attachment__remove {
+  position: absolute;
+  inset-block-start: 6px;
+  inset-inline-end: 6px;
+  opacity: 0.7;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 20%);
+  backdrop-filter: blur(4px);
+  transition: opacity 150ms ease;
+}
+
+.chat-attachment[data-variant="file"] .chat-attachment__remove {
+  position: static;
+  inset: auto;
+  opacity: 1;
+  flex-shrink: 0;
+  background: transparent;
+}
+
+.chat-attachment[data-variant="media"] [data-slot="chat-attachment-remove"] {
+  width: 12px;
+  height: 12px;
+}
+
+.chat-attachment[data-variant="media"] [data-slot="chat-attachment-remove"] svg {
+  width: 8px;
+  height: 8px;
+}
+
+.chat-attachment[data-variant="file"] [data-slot="chat-attachment-remove"] {
+  width: 20px;
+  height: 20px;
+}
+
+.chat-attachment[data-variant="file"] [data-slot="chat-attachment-remove"] svg {
+  width: 12px;
+  height: 12px;
+}
+
+@media (hover: hover) {
+  .chat-attachment[data-variant="media"] .chat-attachment__remove {
+    opacity: 0;
+  }
+
+  .chat-attachment[data-variant="media"]:hover .chat-attachment__remove,
+  .chat-attachment[data-variant="media"]:focus-within .chat-attachment__remove {
+    opacity: 1;
+  }
+}
+
+.chat-attachment-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px;
+}

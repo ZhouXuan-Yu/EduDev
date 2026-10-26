@@ -72,37 +72,78 @@
 .office-turn-notice[data-state='failed'] { color: var(--office-danger); }
 .office-turn-notice button { margin-left: auto; flex-shrink: 0; }
 .office-history-notice { font-size: 13px; color: var(--office-muted); }
+.office-verification-notice { display: flex; align-items: flex-start; gap: 10px; color: var(--office-muted); font-size: 13px; border-top: 1px solid var(--office-line); padding-top: 12px; }
+.office-verification-notice svg { flex-shrink: 0; margin-top: 3px; }
+.office-verification-notice strong { font-weight: 500; }
+.office-verification-notice p { margin: 4px 0 0; line-height: 1.7; overflow-wrap: anywhere; }
+.office-verification-notice[data-state='partial'], .office-verification-notice[data-state='blocked'] { color: var(--office-danger); }
 .office-conversation-empty { min-height: 220px; display: grid; place-items: center; font-size: 26px; font-weight: 500; }
+.office-conversation-empty { min-height: 340px; align-content: center; gap: 14px; text-align: center; }
+.office-conversation-empty h1 { font-size: 26px; line-height: 1.4; font-weight: 600; margin: 0; }
+.office-conversation-empty p { font-size: 15px; font-weight: 400; color: var(--office-muted); margin: 0; }
+.office-task-suggestions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; width: min(100%,480px); margin-top: 12px; }
+.office-task-suggestions button { white-space: normal; min-height: 46px; font-size: 14px; border-color: var(--office-line); }
+.office-turn [data-slot='chat-message-body'] { min-width: 0; width: 100%; }
+.office-commentary { font-size: 14px; color: var(--office-muted); border-left: 2px solid var(--office-line); padding-left: 12px; }
+.office-commentary summary { cursor: pointer; }
+.office-commentary > [data-slot='markdown'] { margin-top: 12px; }
+.office-partial-label { color: var(--office-muted); font-size: 13px; padding: 6px 0; border-bottom: 1px dashed var(--office-line); }
+.office-reply-actions { display: flex; gap: 6px; padding-top: 10px; }
+.office-reply-actions button { width: auto; min-width: 64px; min-height: 34px; gap: 6px; padding: 6px 8px; color: var(--office-muted); font-size: 13px; }
+.office-reply-provenance,.office-reply-sources,.office-action-notice { font-size: 13px; color: var(--office-muted); margin: 12px 0 0; line-height: 1.6; }
+.office-reply-sources ul { padding-left: 20px; }
+.office-reply-sources summary { cursor: pointer; }
+.office-reply-dialog { padding: 20px; }
+.office-reply-dialog label { display: block; margin: 12px 0 6px; }
+.office-save-preview { max-height: 320px; overflow: auto; border: 1px solid var(--pi-line); border-radius: 12px; padding: 14px; margin-top: 12px; }
+.office-reply-dialog blockquote { max-height: 120px; overflow: auto; padding: 12px; border-left: 2px solid var(--pi-line); white-space: pre-wrap; }
+.office-reply-dialog :is(input,textarea) { width: 100%; font: inherit; }
+.pi-composer-queue { align-items: center; justify-content: space-between; font-size: 13px; }
+.pi-composer-queue label { display: flex; gap: 8px; align-items: center; }
+.pi-composer-queue select { max-width: 210px; padding: 5px 8px; border: 1px solid var(--office-line); border-radius: 8px; background: var(--office-paper); color: var(--office-ink); font: inherit; }
+.pi-wait-help { white-space: normal !important; font-size: 13px; }
+.office-result-empty { font-size: 12px; color: var(--office-muted); }
 .office-composer-container { width: min(100%, 940px); margin: 0 auto; padding: 8px 28px 20px; flex-shrink: 0; }
-.office-composer [data-slot='prompt-input-shell'] {
+.teacher-quick-starts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.xiaozhi-pi-workspace .office-composer-container .teacher-quick-start,
+.pi-themed-surface .office-composer-container .teacher-quick-start,
+.office-composer-container .teacher-quick-start {
+  min-width: 0;
+  height: auto;
+  min-height: 72px;
+  padding: 12px 14px;
+  justify-content: flex-start;
+  gap: 10px;
+  text-align: left;
+  white-space: normal;
+  color: var(--office-ink);
   background: var(--office-paper);
   border: 1px solid var(--office-line);
-  border-radius: 26px;
-  box-shadow: 0 2px 12px rgb(30 50 43 / 5%);
+  border-radius: 16px;
 }
-.office-composer [data-slot='prompt-input-content'] { padding: 14px 18px 0; flex: initial; }
-.office-composer [data-slot='prompt-input-textarea'] {
-  font: inherit;
-  min-height: 28px;
-  border: 0;
-  border-radius: 0;
-  padding: 0;
-  background: transparent;
-  color: var(--office-ink);
-  resize: none;
-  box-shadow: none;
+.office-composer-container .teacher-quick-start:hover {
+  border-color: color-mix(in srgb, var(--office-accent) 34%, var(--office-line));
 }
-.office-composer [data-slot='prompt-input-toolbar'] { padding: 6px 10px; gap: 4px; position: static; inset: auto; flex-shrink: 0; }
-.office-composer [data-slot='prompt-input-send'] { background: var(--office-accent); color: #fff; width: 36px; height: 36px; min-width: 36px; border-radius: 50%; }
-.office-composer button { font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 6px; white-space: nowrap; }
-.office-composer button svg { flex-shrink: 0; }
+.teacher-quick-start > svg { flex: 0 0 auto; margin-top: 3px; color: var(--office-accent); }
+.teacher-quick-start > span { display: grid; min-width: 0; gap: 3px; }
+.teacher-quick-start strong,
+.xiaozhi-pi-workspace .teacher-quick-start strong,
+.pi-themed-surface .teacher-quick-start strong { color: var(--office-ink); font-size: 14px; font-weight: 600; line-height: 1.4; }
+.teacher-quick-start small,
+.xiaozhi-pi-workspace .teacher-quick-start small,
+.pi-themed-surface .teacher-quick-start small { color: var(--office-muted); font-size: 12px; line-height: 1.5; }
 .office-composer .office-permission { color: #e17431; }
 .office-send-error { display: flex; align-items: center; gap: 8px; color: var(--office-danger); font-size: 13px; margin: 0 0 8px; }
 @media (max-width: 700px) {
   .office-conversation-content { padding: 20px 16px 12px; }
   .office-composer-container { padding: 8px 12px 12px; }
+  .teacher-quick-starts { grid-template-columns: 1fr; }
   .office-composer .office-permission { max-width: 110px; overflow: hidden; }
-  .office-composer [data-slot='prompt-input-toolbar'] { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   .office-conversation *, .office-composer * { animation-duration: 0s !important; transition-duration: 0s !important; scroll-behavior: auto !important; }

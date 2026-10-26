@@ -1,0 +1,158 @@
+- generic [ref=f12e3]:
+  - banner [ref=f12e7]:
+    - heading "Storybook" [level=1] [ref=f12e8]
+    - generic [ref=f12e12]:
+      - generic [ref=f12e14]:
+        - link "Skip to content" [ref=f12e15] [cursor=pointer]:
+          - /url: "#storybook-preview-wrapper"
+        - link "HeroUI Pro" [ref=f12e17] [cursor=pointer]:
+          - /url: ./
+        - switch "Settings" [ref=f12e18] [cursor=pointer]
+      - generic [ref=f12e22]: Search for components
+      - search [ref=f12e23]:
+        - combobox [ref=f12e24]:
+          - searchbox "Search for components" [ref=f12e25]
+          - button "Tag filters" [ref=f12e64] [cursor=pointer]
+      - navigation [ref=f12e27]:
+        - heading "Stories" [level=2] [ref=f12e28]
+        - generic [ref=f12e67]:
+          - button [expanded] [ref=f12e69] [cursor=pointer]
+          - link [ref=f12e477] [cursor=pointer]:
+            - /url: /?path=/docs/oss-components--docs
+          - link [ref=f12e483] [cursor=pointer]:
+            - /url: /?path=/story/oss-components--all-components
+          - button [expanded] [ref=f12e77] [cursor=pointer]
+          - button [ref=f12e109] [cursor=pointer]
+          - button [ref=f12e117] [cursor=pointer]
+          - button [expanded] [ref=f12e125] [cursor=pointer]
+          - button [ref=f12e488] [cursor=pointer]
+          - button [ref=f12e496] [cursor=pointer]
+          - button [ref=f12e504] [cursor=pointer]
+          - button [ref=f12e512] [cursor=pointer]
+          - button [ref=f12e520] [cursor=pointer]
+          - button [expanded] [ref=f12e528] [cursor=pointer]
+          - link [ref=f12e618] [cursor=pointer]:
+            - /url: /?path=/docs/pro-components-ai-chatmessage--docs
+          - generic [ref=f12e623]:
+            - link [active] [ref=f12e624] [cursor=pointer]:
+              - /url: /?path=/story/pro-components-ai-chatmessage--default
+            - link "Skip to content" [ref=f12e645] [cursor=pointer]:
+              - /url: "#storybook-preview-wrapper"
+          - link [ref=f12e629] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--with-markdown
+          - link [ref=f12e634] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--loading
+          - button [ref=f12e536] [cursor=pointer]
+          - button [ref=f12e544] [cursor=pointer]
+          - button [ref=f12e552] [cursor=pointer]
+          - button [ref=f12e560] [cursor=pointer]
+          - button [ref=f12e568] [cursor=pointer]
+          - button [ref=f12e576] [cursor=pointer]
+          - button [ref=f12e584] [cursor=pointer]
+          - button [ref=f12e592] [cursor=pointer]
+          - button [ref=f12e133] [cursor=pointer]
+          - button [ref=f12e141] [cursor=pointer]
+          - button [ref=f12e149] [cursor=pointer]
+          - button [ref=f12e157] [cursor=pointer]
+          - button [ref=f12e165] [cursor=pointer]
+          - button [ref=f12e173] [cursor=pointer]
+          - button [ref=f12e181] [cursor=pointer]
+          - button [ref=f12e189] [cursor=pointer]
+          - button [ref=f12e197] [cursor=pointer]
+          - button [ref=f12e205] [cursor=pointer]
+          - button [ref=f12e213] [cursor=pointer]
+          - button [ref=f12e221] [cursor=pointer]
+          - button [ref=f12e229] [cursor=pointer]
+          - button [ref=f12e237] [cursor=pointer]
+          - button [ref=f12e245] [cursor=pointer]
+          - button [ref=f12e253] [cursor=pointer]
+          - button [ref=f12e261] [cursor=pointer]
+          - button [ref=f12e269] [cursor=pointer]
+          - button [ref=f12e277] [cursor=pointer]
+          - button [ref=f12e285] [cursor=pointer]
+          - button [ref=f12e293] [cursor=pointer]
+          - button [ref=f12e301] [cursor=pointer]
+          - button [ref=f12e309] [cursor=pointer]
+          - button [ref=f12e317] [cursor=pointer]
+          - button [ref=f12e325] [cursor=pointer]
+          - button [ref=f12e333] [cursor=pointer]
+          - button [ref=f12e341] [cursor=pointer]
+          - button [ref=f12e349] [cursor=pointer]
+          - button [ref=f12e357] [cursor=pointer]
+          - button [ref=f12e365] [cursor=pointer]
+          - button [ref=f12e373] [cursor=pointer]
+          - button [ref=f12e381] [cursor=pointer]
+          - button [ref=f12e389] [cursor=pointer]
+          - button [ref=f12e397] [cursor=pointer]
+          - button [ref=f12e405] [cursor=pointer]
+          - button [ref=f12e413] [cursor=pointer]
+          - button [ref=f12e421] [cursor=pointer]
+          - button [ref=f12e429] [cursor=pointer]
+          - button [ref=f12e437] [cursor=pointer]
+          - button [ref=f12e445] [cursor=pointer]
+          - button [ref=f12e453] [cursor=pointer]
+          - button [ref=f12e461] [cursor=pointer]
+          - button [ref=f12e469] [cursor=pointer]
+          - button [ref=f12e85] [cursor=pointer]
+          - button [ref=f12e93] [cursor=pointer]
+          - button [ref=f12e101] [cursor=pointer]
+  - generic [ref=f12e49]:
+    - region [ref=f12e50]:
+      - heading "Toolbar" [level=2] [ref=f12e51]
+      - toolbar [ref=f12e52]:
+        - generic [ref=f12e601]:
+          - button "Reload story" [ref=f12e646] [cursor=pointer]
+          - switch "Grid visibility" [ref=f12e638] [cursor=pointer]
+          - button "Preview background" [ref=f12e641] [cursor=pointer]
+          - switch "Measure tool" [ref=f12e649] [cursor=pointer]
+          - switch "Outline tool" [ref=f12e602] [cursor=pointer]
+          - button "Viewport size" [ref=f12e653] [cursor=pointer]
+          - button "Vision filter" [ref=f12e658] [cursor=pointer]
+          - button "HeroUI theme for components Light" [ref=f12e606] [cursor=pointer]: Light
+          - button "HeroUI design theme for components Base" [ref=f12e609] [cursor=pointer]: Base
+        - generic [ref=f12e612]:
+          - switch "Change zoom level" [ref=f12e663] [cursor=pointer]: 100%
+          - button "Enter full screen" [ref=f12e613] [cursor=pointer]
+          - button "Share" [ref=f12e664] [cursor=pointer]
+    - main [ref=f12e53]:
+      - heading "Main preview area" [level=2] [ref=f12e54]
+      - generic [ref=f12e58]:
+        - link "Skip to sidebar" [ref=f12e616] [cursor=pointer]:
+          - /url: "#pro-components-ai-chatmessage--default"
+        - iframe [ref=f12e62]:
+          - generic [ref=f13e49]:
+            - generic [ref=f13e212]:
+              - generic [ref=f13e213]: Can you explain how compound components help AI chat UIs stay SDK-agnostic?
+              - generic [ref=f13e216]:
+                - generic [ref=f13e217]: AI
+                - generic [ref=f13e220]:
+                  - generic [ref=f13e221]: Compound components let you compose message layout explicitly while keeping state in your app layer.
+                  - generic [ref=f13e222]:
+                    - button [ref=f13e223]:
+                      - button "Copy" [ref=f13e224] [cursor=pointer]
+                    - button [ref=f13e225]:
+                      - button "Good response" [ref=f13e226] [cursor=pointer]
+                    - button [ref=f13e227]:
+                      - button "Bad response" [ref=f13e228] [cursor=pointer]
+                    - button [ref=f13e229]:
+                      - button "Regenerate" [ref=f13e230] [cursor=pointer]
+            - generic [aria-hidden] [ref=f13e210]: 5k
+  - region [ref=f12e670]:
+    - heading "Addon panel" [level=2] [ref=f12e671]
+    - generic [ref=f12e672]:
+      - generic [ref=f12e673]:
+        - generic [ref=f12e674]:
+          - button "Move addon panel to right" [ref=f12e675] [cursor=pointer]
+          - button "Hide addon panel" [ref=f12e679] [cursor=pointer]
+        - tablist "Available addons" [ref=f12e685]:
+          - tab "Controls" [selected] [ref=f12e686] [cursor=pointer]
+          - tab "Actions" [ref=f12e689] [cursor=pointer]
+          - tab "Interactions" [ref=f12e692] [cursor=pointer]
+          - tab "Accessibility" [ref=f12e695] [cursor=pointer]
+      - tabpanel "Controls" [ref=f12e698]:
+        - generic [ref=f12e705]:
+          - generic [ref=f12e706]:
+            - generic [ref=f12e707]: Interactive story playground
+            - generic [ref=f12e708]: Controls give you an easy to use interface to test your components. Set your story args and you'll see controls appearing here automatically.
+          - link "Read docs" [ref=f12e711] [cursor=pointer]:
+            - /url: https://storybook.js.org/docs/essentials/controls?ref=ui

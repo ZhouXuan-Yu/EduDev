@@ -1,6 +1,8 @@
 node_modules/
 dist/
 out/
+release/
+.local-release/
 *-review.png
 .local-education/
 .local-retrieval/

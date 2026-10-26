@@ -1,0 +1,188 @@
+{
+  "version": 1,
+  "date": "2026-10-23T18:28:01.0595411+08:00",
+  "baseCommit": "a4100b91850867d1cbc7d02783a2265b66cd42db",
+  "scope": "Original HeroUI appearance in protected Pi chat roots, real public stages, light only",
+  "build": {
+    "command": "npm.cmd run build (release-build.log)",
+    "exit": 0,
+    "mainSha256": "2529605c0a05cfdbdfb816a4879a07d61d2abd4413318452294ada1e0d66544d",
+    "renderer": [
+      {
+        "file": "index-vIlxophL.css",
+        "sha256": "71eaa564b1a5cab81b00ddfca13929aed4b1bf9c0f63fcba8d6917483f1803bb"
+      },
+      {
+        "file": "index-Yc6HUbT1.js",
+        "sha256": "b5a57724744e9df72608c549c4b25ce6214c848cc1c7b31893a45f8eebfed3d3"
+      },
+      {
+        "file": "pi-workspace-theme-C2FJSna1.css",
+        "sha256": "aed0d972929effc7f27584c7a8ff973019ab247bd325646b7caa2a6d133b92b2"
+      }
+    ]
+  },
+  "tests": [
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "componentPassed": 217,
+      "styleGuardPassed": 6
+    },
+    {
+      "passed": 19,
+      "command": "npm.cmd run test:agent-trace"
+    },
+    {
+      "passed": 16,
+      "command": "node scripts/xiaozhi-agent/chat-experience-boundary-test.mjs"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/chat-experience-electron.mjs",
+      "passed": 29,
+      "errors": [],
+      "success": true,
+      "instance": "chat-experience-M1HXRq"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "scope": "After CSS isolation; before optional Pi phase and wall-clock additions",
+      "passed": 207
+    },
+    {
+      "command": "XIAOZHI_AUDIT_LIGHT_ONLY=1 npm.cmd run test:ux00-baseline",
+      "scope": "Before final wall-clock-only fields; same synthetic DOM and CSS",
+      "passed": 8,
+      "instance": "ux00-mvD4Az"
+    }
+  ],
+  "realStageReadback": {
+    "runId": "run_41ae7ec8-5e1e-4e08-9b61-d30043a1976d",
+    "stages": [
+      {
+        "stage": "preparing",
+        "since": 1792750520420,
+        "sequence": 2
+      },
+      {
+        "stage": "waiting_model",
+        "since": 1792750532459,
+        "sequence": 5
+      },
+      {
+        "stage": "responding",
+        "since": 1792750533953,
+        "sequence": 7
+      }
+    ],
+    "processingMs": 22677
+  },
+  "traceDuration": {
+    "elapsedMs": 19493,
+    "processingMs": 22677,
+    "label": "22 秒"
+  },
+  "matrix": {
+    "matrices": [
+      {
+        "theme": "light",
+        "size": {
+          "width": 1366,
+          "height": 768
+        },
+        "geometry": {
+          "width": 1366,
+          "height": 768,
+          "dpr": 1.5
+        },
+        "checks": 4,
+        "samples": 5
+      },
+      {
+        "theme": "light",
+        "size": {
+          "width": 1920,
+          "height": 1080
+        },
+        "geometry": {
+          "width": 1920,
+          "height": 1080,
+          "dpr": 1.5
+        },
+        "checks": 4,
+        "samples": 5
+      }
+    ],
+    "errors": [],
+    "appearance": "official light only"
+  },
+  "controlledFailure": {
+    "type": "controlled main-process transport fault, not a provider outage",
+    "session": "aisession_6d3d5a65-15fe-4dfd-bb8d-0fecb251239e",
+    "run": "run_3c925d1d-db1b-425d-8760-653d6037d768",
+    "status": "failed",
+    "intercepted": 1
+  },
+  "startup": {
+    "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/index.html",
+    "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-chat-experience-fe5V8U",
+    "session": "aisession_b1ebbfff-1529-48be-8fca-1551fba85e77",
+    "run": "run_41ae7ec8-5e1e-4e08-9b61-d30043a1976d",
+    "stages": 3,
+    "duration": {
+      "elapsedMs": 19493,
+      "processingMs": 22677,
+      "label": "22 秒"
+    },
+    "theme": {
+      "source": "light",
+      "dark": false
+    },
+    "geometry": {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1.5
+    },
+    "errors": [],
+    "temporaryFaultRemoved": true,
+    "finalFailureRun": "run_3c925d1d-db1b-425d-8760-653d6037d768",
+    "releaseCleanup": "Removed inactive first-version trace overrides; no other runtime behavior change"
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 5,
+      "moderate": 2,
+      "high": 7,
+      "critical": 1,
+      "total": 15
+    },
+    "newDependencies": 0
+  },
+  "logSha256": {
+    "final-build.log": "138b9621909f28c2582331b7f3a59e5a1ff1bf0e0fc416ea958b5ea242769c80",
+    "final-renderer-gate.log": "0634d78b3df66ca8c26b3585d4dc07974a7884d5ccb4c9da847aefdaf6db52b5",
+    "final-trace-boundaries.log": "2f9db3a3cb023842e0005271fcd8075f1489fab107ef8b053eab47463c97d6db",
+    "final-style-isolation.log": "d3c37f524c230550104dce24a1f00c7545fe87de9cf916282089b5b476494cab",
+    "final-chat-boundaries.log": "8c37d44be080cbf9d23cf88b1fb5aa6c7f5c516576823ec572508712257abb29",
+    "final-real-electron.log": "755c8317c5f7f63f6542aa1f0b2cf8a3d6e541f69d2eeb614a4725c70f45b729",
+    "style-smoke.log": "8c8e85720c2d990968e11b878a98ccaabc6bc0b415ce4fa7a79fcd223044330a",
+    "timeline-ux00.log": "aa56e04f346a7b9e3cc8233b7219fa368fa4ef610f5454f9f4611e7665607a36",
+    "final-audit.json": "d84c8e8ff9920aa16aeabda4b849e2a8a462abe7e7c140cc991b04b50c4691f3"
+  },
+  "diffCheck": "passed",
+  "limits": [
+    "Public execution facts only, no private reasoning",
+    "Historical activity was not stored; never fabricate missing stages",
+    "Protection covers chat, composer, associated menus and reply modal; other legacy surfaces remain",
+    "1000-message history open and DOM cost increased; latency remains open",
+    "No full K12 journey, native DPI change, installer or Office acceptance claim"
+  ],
+  "releaseCleanup": {
+    "scope": "Removed 14 inactive original trace CSS overrides; corrected a type comment",
+    "providerBackendShaUnchanged": true,
+    "releaseBuildLogSha256": "07a6243982caecab2866a0ade32a623dc0f5fd49cc1ae785a4cdc98ae09d70f7",
+    "validation": "Final cold read and two-size original CSS parity repeated; provider not rerun for inactive CSS cleanup"
+  }
+}

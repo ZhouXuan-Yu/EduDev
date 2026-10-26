@@ -1,0 +1,32 @@
+ M 1.Agent.md
+ M 2.Memory.md
+ M 3.Learning.md
+ M 4.Wiki.md
+ M apps/desktop/package.json
+ M apps/desktop/scripts/xiaozhi-agent/chat-experience-electron.mjs
+ M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/_narumitw_pi-usage.LICENSE
+ M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-goal-x.LICENSE
+ M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/pi-web-access.LICENSE
+ M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/source-manifest.json
+ M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/usage-query.js
+ M apps/desktop/src/main/xiaozhi-agent/vendor/pi-packages/web-find.js
+ M apps/desktop/src/renderer/components/office/OfficeConversation.tsx
+ M apps/desktop/src/renderer/components/office/PiConversationSurface.tsx
+ M apps/desktop/src/renderer/components/office/office-conversation.css
+ M apps/desktop/src/shared/office-agent.ts
+ M apps/desktop/src/shared/xiaozhi-projection.ts
+ M docs/acceptance/CURRENT.md
+ M docs/architecture/CURRENT.md
+ M docs/goal/ACCEPTANCE.md
+ M docs/goal/CAPABILITY_MATRIX.md
+ M docs/goal/CURRENT_STATE.md
+ M docs/goal/DECISIONS.md
+ M docs/integrations/CURRENT.md
+ M docs/product/CURRENT.md
+?? apps/desktop/scripts/xiaozhi-agent/agent-trace-boundaries.mjs
+?? apps/desktop/src/renderer/components/office/OfficeAgentTrace.tsx
+?? apps/desktop/src/renderer/components/office/OfficeAgentTurn.tsx
+?? apps/desktop/src/renderer/components/office/agent-trace.ts
+?? docs/audit/chat-ui-2026-10-23/AGENT_TRACE_CONTRACT.md
+?? docs/audit/chat-ui-2026-10-23/AGENT_TRACE_DELIVERY.md
+?? docs/audit/chat-ui-2026-10-23/style-audit/

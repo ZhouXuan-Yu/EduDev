@@ -1,10 +1,11 @@
+import '../office-agent/register-source.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import { parseDeepSeekCapabilities, readDeepSeekCapabilities, resolveDeepSeekCapabilities } from '../../src/main/xiaozhi-agent/model-capabilities.ts';
-import { installMidRunCompaction, computeCompactionReserveTokens } from '../../src/main/xiaozhi-agent/vendor/hana/core/session-compaction-runtime.ts';
-import { estimateFullRequest, loadNativeCompaction, prepareSafeNativeCompaction } from '../../src/main/xiaozhi-agent/native-compaction.ts';
-import { applyXiaozhiEvent } from '../../src/shared/xiaozhi-projection.ts';
+const { parseDeepSeekCapabilities, readDeepSeekCapabilities, resolveDeepSeekCapabilities } = await import('../../src/main/xiaozhi-agent/model-capabilities.ts');
+const { installMidRunCompaction, computeCompactionReserveTokens } = await import('../../src/main/xiaozhi-agent/vendor/hana/core/session-compaction-runtime.ts');
+const { estimateFullRequest, loadNativeCompaction, prepareSafeNativeCompaction } = await import('../../src/main/xiaozhi-agent/native-compaction.ts');
+const { applyXiaozhiEvent } = await import('../../src/shared/xiaozhi-projection.ts');
 const root = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-auto-boundary-'));
 const checks = [], check = async (name, fn) => { await fn(); checks.push({ name, pass: true }); };
 const raw = { object: 'list', data: [{ id: 'deepseek-flash', name: 'Flash', context_window: 1048576, max_output_tokens: 393216, privateCredential: 'must-drop' }] };

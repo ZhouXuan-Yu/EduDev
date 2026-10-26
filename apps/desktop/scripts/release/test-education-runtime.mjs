@@ -7,6 +7,7 @@ import {randomUUID} from 'node:crypto';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const exe=path.join(desktop,'.local-education/dist/omni-edu-education/omni-edu-education.exe');
 const cases=[
+ ['math',{schemaVersion:'xiaozhi.education.math-check.v2',kind:'linear_system',variables:['x'],equations:[{coefficients:[{numerator:'1',denominator:'1'}],constant:{numerator:'2',denominator:'1'},sourceText:'x = 2'}],targets:[{variable:'x',expected:{numerator:'2',denominator:'1'},answerText:'x = 2'}]},v=>v.state==='matched'&&v.systemStatus==='unique_targets'],
  ['reading',{schemaVersion:'xiaozhi.education.quote.v1',text:'一元一次方程的解。',quote:'一元一次方程'},v=>v.found===true],
  ['reading',{schemaVersion:'xiaozhi.education.search.v1',units:['一元一次方程。','二次函数最值。'],query:'二次函数'},v=>v.hits.length===1&&v.hits[0].locator===1],
  ['learning',{schemaVersion:'xiaozhi.education.learning.v1',operation:'grade',userAnswer:'A',expectedAnswer:'A',questionType:'choice'},v=>v.isCorrect===true],

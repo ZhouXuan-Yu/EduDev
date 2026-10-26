@@ -1,0 +1,117 @@
+{
+  "suite": "reply-gap-audit",
+  "success": true,
+  "type": "Current renderer SSR and synthetic SDK event fixtures; no provider request or Electron-flow acceptance",
+  "resolvedGaps": [
+    "public action text stays in process",
+    "aggregate folds before final body without waiting for host terminal",
+    "reasoning and tools follow capture order"
+  ],
+  "states": [
+    {
+      "name": "工具前说明稳定留在过程",
+      "projectedOrder": [
+        "reasoning:1:0"
+      ],
+      "status": "running",
+      "phases": [
+        "commentary"
+      ],
+      "expanded": [
+        "true"
+      ],
+      "body": [],
+      "process": [
+        "先核对资料。"
+      ],
+      "order": [
+        "reasoning:1:0"
+      ]
+    },
+    {
+      "name": "工具开始后说明位置保持",
+      "projectedOrder": [
+        "reasoning:1:0",
+        "t1"
+      ],
+      "status": "running",
+      "phases": [
+        "commentary"
+      ],
+      "expanded": [
+        "true"
+      ],
+      "body": [],
+      "process": [
+        "先核对资料。"
+      ],
+      "order": [
+        "reasoning:1:0",
+        "t1"
+      ]
+    },
+    {
+      "name": "正文流式时整轮过程已收起",
+      "projectedOrder": [
+        "reasoning:1:0",
+        "t1",
+        "reasoning:2:0"
+      ],
+      "status": "running",
+      "phases": [
+        "commentary",
+        "final_answer"
+      ],
+      "expanded": [
+        "false"
+      ],
+      "body": [
+        "最终正文正在输出。"
+      ],
+      "process": [],
+      "order": []
+    },
+    {
+      "name": "正文已结束且无需等待宿主终态",
+      "projectedOrder": [
+        "reasoning:1:0",
+        "t1",
+        "reasoning:2:0"
+      ],
+      "status": "running",
+      "phases": [
+        "commentary",
+        "final_answer"
+      ],
+      "expanded": [
+        "false"
+      ],
+      "body": [
+        "最终正文正在输出。"
+      ],
+      "process": [],
+      "order": []
+    },
+    {
+      "name": "宿主终态维持收起",
+      "projectedOrder": [
+        "reasoning:1:0",
+        "t1",
+        "reasoning:2:0"
+      ],
+      "status": "completed",
+      "phases": [
+        "commentary",
+        "final_answer"
+      ],
+      "expanded": [
+        "false"
+      ],
+      "body": [
+        "最终正文正在输出。"
+      ],
+      "process": [],
+      "order": []
+    }
+  ]
+}
