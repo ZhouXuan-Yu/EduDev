@@ -1,0 +1,257 @@
+{
+  "date": "2026-10-26",
+  "auditedMainBefore": "b5a7fc685070e95f4110b1b98a8304a63d71fb7d",
+  "uiCommit": "ce98bd16ab261424a04eb48321a159937c00cc80",
+  "branches": [
+    {
+      "ref": "refs/heads/ZhouXuan-Yu/orca-forge-task_1e5858c24f2f",
+      "sha": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "mainOnly": 4,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": []
+    },
+    {
+      "ref": "refs/heads/ZhouXuan-Yu/orca-forge-task_a491c5e6e95a",
+      "sha": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "mainOnly": 4,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": []
+    },
+    {
+      "ref": "refs/heads/ZhouXuan-Yu/orca-forge-task_b990e3bc7baa",
+      "sha": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "mainOnly": 4,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": []
+    },
+    {
+      "ref": "refs/heads/codex/chat-ui-ux00",
+      "sha": "a54755725bb9fbeb1c7a2e19adfb85aa2a9ee11b",
+      "mainOnly": 3,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "a54755725bb9fbeb1c7a2e19adfb85aa2a9ee11b",
+      "commits": []
+    },
+    {
+      "ref": "refs/heads/codex/knowledge-base-delivery",
+      "sha": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "mainOnly": 4,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": []
+    },
+    {
+      "ref": "refs/heads/gitbutler/workspace",
+      "sha": "e4763a1535e9692f57d0c5bc3cd162ef6fec98f7",
+      "mainOnly": 4,
+      "branchOnly": 1,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": [
+        "e4763a1 GitButler GitButler Workspace Commit"
+      ],
+      "mergeTreeExit": 0
+    },
+    {
+      "ref": "refs/heads/main",
+      "sha": "b5a7fc685070e95f4110b1b98a8304a63d71fb7d",
+      "mainOnly": 0,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "b5a7fc685070e95f4110b1b98a8304a63d71fb7d",
+      "commits": []
+    },
+    {
+      "ref": "refs/heads/master",
+      "sha": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "mainOnly": 4,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": []
+    },
+    {
+      "ref": "refs/remotes/origin/ZhouXuan-Yu/orch-t1-paper",
+      "sha": "85304bccdc21d59f8bb411b4eb4339bcec7c06db",
+      "mainOnly": 9,
+      "branchOnly": 46,
+      "files": 174,
+      "additions": 699217,
+      "deletions": 8565,
+      "base": "fe5aba09ec84c3d01a6ce7af6c1506d272450dca",
+      "commits": [
+        "85304bc Your Name auto-sync: 2026-10-19 17:09",
+        "e8254c1 Your Name auto-sync: 2026-10-19 17:08",
+        "697bae2 Your Name auto-sync: 2026-10-19 17:07",
+        "1b67fd5 Your Name fix(privacy): T0 gate cloud OCR behind explicit teacher consent",
+        "7b0b683 Your Name auto-sync: 2026-10-19 16:56",
+        "1f9eca1 Your Name auto-sync: 2026-10-19 16:55",
+        "ea3d666 Your Name auto-sync: 2026-10-19 16:55",
+        "c62db84 Your Name auto-sync: 2026-10-19 16:47"
+      ],
+      "mergeTreeExit": 1
+    },
+    {
+      "ref": "refs/remotes/origin/ZhouXuan-Yu/小智教育智能体",
+      "sha": "fe5aba09ec84c3d01a6ce7af6c1506d272450dca",
+      "mainOnly": 9,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "fe5aba09ec84c3d01a6ce7af6c1506d272450dca",
+      "commits": []
+    },
+    {
+      "ref": "refs/remotes/origin/codex/chat-ui-ux00",
+      "sha": "a54755725bb9fbeb1c7a2e19adfb85aa2a9ee11b",
+      "mainOnly": 3,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "a54755725bb9fbeb1c7a2e19adfb85aa2a9ee11b",
+      "commits": []
+    },
+    {
+      "ref": "refs/remotes/origin/gitbutler/workspace",
+      "sha": "e4763a1535e9692f57d0c5bc3cd162ef6fec98f7",
+      "mainOnly": 4,
+      "branchOnly": 1,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": [
+        "e4763a1 GitButler GitButler Workspace Commit"
+      ],
+      "mergeTreeExit": 0
+    },
+    {
+      "ref": "refs/remotes/origin/main",
+      "sha": "b5a7fc685070e95f4110b1b98a8304a63d71fb7d",
+      "mainOnly": 0,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "b5a7fc685070e95f4110b1b98a8304a63d71fb7d",
+      "commits": []
+    },
+    {
+      "ref": "refs/remotes/origin/master",
+      "sha": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "mainOnly": 4,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": []
+    },
+    {
+      "ref": "refs/remotes/origin/yn-branch-1",
+      "sha": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "mainOnly": 4,
+      "branchOnly": 0,
+      "files": 0,
+      "additions": 0,
+      "deletions": 0,
+      "base": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "commits": []
+    }
+  ],
+  "worktreesBefore": [
+    {
+      "path": "D:/WorkProject/EduProject",
+      "head": "e4763a1535e9692f57d0c5bc3cd162ef6fec98f7",
+      "branch": "refs/heads/gitbutler/workspace",
+      "dirtyFiles": 619,
+      "trackedChanges": 145
+    },
+    {
+      "path": "C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject",
+      "head": "b5a7fc685070e95f4110b1b98a8304a63d71fb7d",
+      "branch": "refs/heads/main",
+      "dirtyFiles": 297,
+      "trackedChanges": 62
+    },
+    {
+      "path": "C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject",
+      "head": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "branch": "refs/heads/codex/knowledge-base-delivery",
+      "dirtyFiles": 160,
+      "trackedChanges": 58
+    },
+    {
+      "path": "C:/Users/ZhouXuan/.codex/worktrees/e6e7/EduProject",
+      "head": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "branch": "detached",
+      "dirtyFiles": 0,
+      "trackedChanges": 0
+    },
+    {
+      "path": "C:/Users/ZhouXuan/orca/workspaces/EduProject/orca-forge-task_1e5858c24f2f",
+      "head": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "branch": "refs/heads/ZhouXuan-Yu/orca-forge-task_1e5858c24f2f",
+      "dirtyFiles": 1,
+      "trackedChanges": 0
+    },
+    {
+      "path": "C:/Users/ZhouXuan/orca/workspaces/EduProject/orca-forge-task_a491c5e6e95a",
+      "head": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "branch": "refs/heads/ZhouXuan-Yu/orca-forge-task_a491c5e6e95a",
+      "dirtyFiles": 1,
+      "trackedChanges": 0
+    },
+    {
+      "path": "C:/Users/ZhouXuan/orca/workspaces/EduProject/orca-forge-task_b990e3bc7baa",
+      "head": "d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63",
+      "branch": "refs/heads/ZhouXuan-Yu/orca-forge-task_b990e3bc7baa",
+      "dirtyFiles": 0,
+      "trackedChanges": 0
+    }
+  ],
+  "sourceChangedSinceReviewedSnapshot": [],
+  "primaryPreservation": {
+    "primaryHeadUnchanged": true,
+    "primaryDetached": true,
+    "primaryDirtyFilesPreserved": 619,
+    "primaryFileHashesUnchanged": true,
+    "primaryStagedAndUnstagedPatchesUnchanged": true,
+    "localGitButlerBranchDeleted": true
+  },
+  "removedLocal": [
+    "gitbutler/workspace"
+  ],
+  "removedRemote": [
+    "gitbutler/workspace",
+    "ZhouXuan-Yu/orch-t1-paper"
+  ],
+  "knowledgeWorktreePreserved": "C:/Users/ZhouXuan/.codex/worktrees/beca/EduProject",
+  "backupFolder": "D:\\WorkProject\\EduProject\\.git\\codex-backups\\branch-cleanup-20261026-a5eda520"
+}

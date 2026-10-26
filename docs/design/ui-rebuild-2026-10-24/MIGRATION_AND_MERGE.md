@@ -1,5 +1,7 @@
 # 替换与合并合同
 
+> 2026-10-26版本交付补记：旧锁已由用户清理，UI提交ce98bd1已推送origin/main。下文10月24日锁阻塞/未推送是历史现场。用户指定分支清理、知识库及D盘保留证据见[分支整合审计](../../audit/branch-integration-2026-10-26/README.md)。
+
 ## 当前状态
 
 唯一修改工作树：C:\Users\ZhouXuan\.codex\worktrees\1c54\EduProject，分支main，HEAD与origin/main均b5a7fc685070e95f4110b1b98a8304a63d71fb7d。
