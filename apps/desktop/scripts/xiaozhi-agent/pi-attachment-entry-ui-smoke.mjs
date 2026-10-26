@@ -10,7 +10,7 @@ fs.mkdirSync(sources);
 const python='C:/Users/ZhouXuan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe';
 const office=spawnSync(python,['scripts/xiaozhi-agent/make-office-fixtures.py',sources,marker],{encoding:'utf8',windowsHide:true});assert.equal(office.status,0,office.stderr);
 const images=spawnSync(python,['-c',"from PIL import Image; import sys,os; p=sys.argv[1]; im=Image.new('RGB',(600,300),'#315efb'); [(im.save(os.path.join(p,'合成.'+ext),fmt)) for ext,fmt in [('png','PNG'),('jpg','JPEG'),('gif','GIF'),('webp','WEBP')]]",sources],{encoding:'utf8',windowsHide:true});assert.equal(images.status,0,images.stderr);
-fs.writeFileSync(path.join(sources,'正文.txt'),marker);fs.writeFileSync(path.join(sources,'禁止.exe'),'UNSUPPORTED');
+fs.writeFileSync(path.join(sources,'正文.txt'),marker);fs.writeFileSync(path.join(sources,'禁止.exe'),'UNSUPPORTED');fs.writeFileSync(path.join(sources,'未选择.txt'),marker);
 fs.writeFileSync(path.join(sources,'伪造.png'),fs.readFileSync(path.join(sources,'合成.png')).subarray(0,33));
 for(let i=0;i<9;i++)fs.writeFileSync(path.join(sources,`补充${i}.txt`),`${marker}-${i}`);
 const originals=Object.fromEntries(['合成.png','合成.jpg','合成.gif','合成.webp','备课.docx','正文.txt'].map(name=>[name,createHash('sha256').update(fs.readFileSync(path.join(sources,name))).digest('hex')]));
@@ -44,6 +44,7 @@ try{
  const dimensions=await page.locator('.pi-attachment-open img').evaluateAll(images=>images.map(image=>({loaded:image.complete&&image.naturalWidth>0,w:image.naturalWidth,h:image.naturalHeight})));
  assert(dimensions.every(v=>v.loaded&&v.w<=192&&v.h<=192));check('Native selected files register in actual ledger and all four formats display real decoded bounded thumbnails');
  const initial=await list();assert(!JSON.stringify(initial).includes(sources)&&!JSON.stringify(initial).includes('data:image')&&!JSON.stringify(initial).includes('relative_path'));check('Public metadata excludes private paths, image bytes and thumbnail data');
+ const beforeUnproven=await list();const unproven=await page.evaluate(input=>window.omniEdu.importXiaozhiAttachments(input),{...request(),paths:[path.join(sources,'未选择.txt')]});assert(!unproven.ok&&unproven.error==='invalid_input');assert.equal((await list()).length,beforeUnproven.length);check('Import IPC rejects a renderer path not issued by the native file selection bridge');
  await pick(['正文.txt']);assert.equal((await list()).length,5);assert.equal((await list()).find(x=>x.name==='正文.txt').id,initial.find(x=>x.name==='正文.txt').id);check('Selecting the same unchanged file retains its actual draft identity');
  await pick(['备课.docx','禁止.exe','伪造.png']);assert.equal((await list()).length,6);assert((await page.getByTestId('pi-attachment-error').innerText()).includes('禁止.exe'));assert((await page.getByTestId('pi-attachment-error').innerText()).includes('伪造.png'));check('Partial selection preserves the real Office success and rejects unsupported or signature-only corrupt image bytes');
  await open('正文.txt');assert((await page.getByTestId('pi-attachment-preview').innerText()).includes(marker));await close();

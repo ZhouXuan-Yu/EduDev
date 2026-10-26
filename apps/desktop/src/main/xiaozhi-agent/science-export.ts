@@ -119,6 +119,9 @@ export function createScienceExport(options:{resolve:(id:string)=>Promise<Worksp
       return {ok:true,schemaVersion:SCIENCE_EXPORT_SCHEMA,data:{requestId:input.requestId,path:relative,format,bytes:media.bytes.length,sha256:digest,frames:media.frames,slides:media.slides}};
      }
      const selected=await options.chooseMergeTarget?.(input.sessionId);if(!selected)throw Error('cancelled');
+     signal.throwIfAborted();
+     const afterPicker=await files.preview(input,signal);if(!afterPicker.ok)return fail(afterPicker.error);if(!afterPicker.data.html||sha(afterPicker.data.html)!==sourceHash)throw Error('changed');
+     const pickerLease=await options.resolve(input.sessionId);if(pickerLease.path!==lease.path||pickerLease.version!==lease.version)throw Error('changed');
      const targetRelative=path.relative(lease.path,path.resolve(selected));if(!targetRelative||targetRelative.startsWith('..')||path.isAbsolute(targetRelative)||!/\.pptx$/i.test(targetRelative))throw Error('permission_denied');
      const target=approvedFile(lease.path,targetRelative.replace(/\\/g,'/')),targetStat=fs.lstatSync(target);
      if(!targetStat.isFile()||targetStat.isSymbolicLink()||targetStat.nlink!==1||targetStat.size>64*1048576)throw Error('permission_denied');
@@ -128,6 +131,8 @@ export function createScienceExport(options:{resolve:(id:string)=>Promise<Worksp
      temporaryMerged=approvedFile(lease.path,tempBase+'-merged.pptx');
      const merge=options.merge||mergePowerPointCopy;
      const proof=await merge(temporary,temporaryCopy,temporaryMerged,signal);signal.throwIfAborted();
+     const afterMerge=await files.preview(input,signal);if(!afterMerge.ok)return fail(afterMerge.error);if(!afterMerge.data.html||sha(afterMerge.data.html)!==sourceHash)throw Error('changed');
+     const mergedLease=await options.resolve(input.sessionId);if(mergedLease.path!==lease.path||mergedLease.version!==lease.version)throw Error('changed');
      if(sha(fs.readFileSync(target))!==targetHash||sha(fs.readFileSync(temporary))!==digest||!fs.existsSync(temporaryMerged))throw Error('changed');
      const mergedBytes=fs.readFileSync(temporaryMerged),mergedHash=sha(mergedBytes);
      if(!mergedBytes.length||mergedBytes.length>128*1048576||proof.totalSlides!==proof.targetSlides+proof.generatedSlides||proof.generatedSlides!==media.slides)throw Error('read_failed');

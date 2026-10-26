@@ -147,6 +147,32 @@ import type {
   ReviewReminder,
   SearchResult,
 } from '../shared/contracts';
+import {XIAOZHI_ATTACHMENTS_SCHEMA} from '../shared/xiaozhi-attachments';
+
+const attachmentPathProof = new Set<string>();
+const MAX_ATTACHMENT_PATH_PROOFS = 64;
+
+/** The renderer gets a path only for a real File object selected by the teacher.
+ * Import accepts only those preload-issued paths, once each. */
+function rememberAttachmentPath(file: File): string {
+  try {
+    const resolved = webUtils.getPathForFile(file);
+    if (resolved) {
+      if (attachmentPathProof.size >= MAX_ATTACHMENT_PATH_PROOFS) attachmentPathProof.clear();
+      attachmentPathProof.add(resolved);
+    }
+    return resolved;
+  } catch {
+    return '';
+  }
+}
+
+function takeAuthorizedAttachmentPaths(input: XiaozhiAttachmentImportInput): string[] | null {
+  const paths = (input as {paths?: unknown} | null)?.paths;
+  if (!Array.isArray(paths) || !paths.length || !paths.every(path => typeof path === 'string' && attachmentPathProof.has(path))) return null;
+  for (const path of paths) attachmentPathProof.delete(path);
+  return paths;
+}
 
 const api = {
   getDesktopChrome: () => ipcRenderer.invoke('desktop:state') as Promise<DesktopChromeState>,
@@ -190,8 +216,12 @@ const api = {
   selectXiaozhiWorkspace: (id: string) => ipcRenderer.invoke('xiaozhi:workspace', id) as Promise<XiaozhiActionResult>,
   selectPaperOutput:(input:import('../shared/paper-export').PaperOutputInput)=>ipcRenderer.invoke('xiaozhi:paper-output',input) as Promise<XiaozhiActionResult>,
   chooseXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-choose',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>,
-  getPathForFile:(file:File)=>webUtils.getPathForFile(file),
-  importXiaozhiAttachments:(input:XiaozhiAttachmentImportInput)=>ipcRenderer.invoke('xiaozhi:attachment-import',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>,
+  getPathForFile:(file:File)=>rememberAttachmentPath(file),
+  importXiaozhiAttachments:(input:XiaozhiAttachmentImportInput)=>{
+    const paths=takeAuthorizedAttachmentPaths(input);
+    if(!paths)return Promise.resolve({ok:false as const,schemaVersion:XIAOZHI_ATTACHMENTS_SCHEMA,requestId:typeof input?.requestId==='string'?input.requestId:'',error:'invalid_input' as const});
+    return ipcRenderer.invoke('xiaozhi:attachment-import',{...input,paths}) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentChoice>>;
+  },
   listXiaozhiAttachments:(input:XiaozhiAttachmentInput)=>ipcRenderer.invoke('xiaozhi:attachment-list',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachment[]>>,
   removeXiaozhiAttachment:(input:XiaozhiAttachmentSelectedInput)=>ipcRenderer.invoke('xiaozhi:attachment-remove',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachment>>,
   previewXiaozhiAttachment:(input:XiaozhiAttachmentSelectedInput)=>ipcRenderer.invoke('xiaozhi:attachment-preview',input) as Promise<XiaozhiAttachmentResult<XiaozhiAttachmentPreview>>,

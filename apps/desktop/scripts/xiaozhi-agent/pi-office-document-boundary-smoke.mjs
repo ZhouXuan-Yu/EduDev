@@ -44,8 +44,8 @@ try{
  });
 
  const {createMaterialTools}=await import('../../src/main/assets/material-tools.ts');
- const resourceId='resource_12345678-1234-1234-1234-123456789abc';let materialReads=0,materialCurrent=true;
- const materialStore={sanitizeProblemText:async text=>({sanitizedText:text.replace('CONTACT','[既有脱敏]')}),listStudents:async()=>[{realName:'合成张甲同学'}],materials:{list:async input=>{materialReads++;return {resources:[{id:resourceId,originalFileName:'合成张甲同学教案.docx',parseStatus:'ready',chunkCount:2}],total:1,offset:input.offset,hasMore:false};},body:async input=>{materialReads++;return {resource:{originalFileName:'合成张甲同学教案.docx',parseEngine:'local-text-v1',contentHash:'saved-version'},chunks:[{chunkIndex:input.offset,contentMd:'合成张甲同学 CONTACT 真实正文',containsPersonalData:false}],total:2};},source:async()=>undefined}};
+ const resourceId='resource_12345678-1234-1234-1234-123456789abc',partialId='resource_87654321-4321-4321-4321-cba987654321';let materialReads=0,materialCurrent=true;
+ const materialStore={sanitizeProblemText:async text=>({sanitizedText:text.replace('CONTACT','[既有脱敏]')}),listStudents:async()=>[{realName:'合成张甲同学'}],materials:{list:async input=>{materialReads++;return {resources:[{id:resourceId,originalFileName:'合成张甲同学教案.docx',parseStatus:'ready',chunkCount:2},{id:partialId,originalFileName:'合成张甲同学部分教案.docx',parseStatus:'partial',chunkCount:3}],total:2,offset:input.offset,hasMore:false};},body:async input=>{materialReads++;return {resource:{originalFileName:'合成张甲同学教案.docx',parseEngine:'local-text-v1',contentHash:'saved-version'},chunks:[{chunkIndex:input.offset,contentMd:'合成张甲同学 CONTACT 真实正文',containsPersonalData:false}],total:2};},source:async()=>undefined}};
  const materialTools=createMaterialTools(materialStore,()=>materialCurrent);
  await check('Saved-material tools reject path, arbitrary scope, extra fields and invalid offsets before repository access',async()=>{
   for(const [tool,input] of [[0,{query:'资料',offset:-1}],[0,{query:'资料',offset:0,path:'secret'}],[0,{query:'资料',offset:0,schemaVersion:'other'}],[1,{resourceId:'../../secret',offset:0}],[1,{resourceId,offset:0,sessionId:'other'}],[1,{resourceId,offset:0.5}]])assert((await materialTools[tool].execute(randomUUID(),input,new AbortController().signal)).isError);
@@ -56,7 +56,7 @@ try{
   const abort=new AbortController();abort.abort();assert((await materialTools[1].execute('cancelled-material',{resourceId,offset:0},abort.signal)).isError);assert.equal(materialReads,0);
  });
  await check('Saved-material title and body reuse education redaction, expose real continuation and never claim teacher confirmation or pages',async()=>{
-  const list=JSON.parse((await materialTools[0].execute('list-material',{query:'教案',offset:0},new AbortController().signal)).content[0].text);assert.equal(list.materials[0].resourceId,resourceId);assert(!JSON.stringify(list).includes('合成张甲同学'));
+  const list=JSON.parse((await materialTools[0].execute('list-material',{query:'教案',offset:0},new AbortController().signal)).content[0].text);assert.equal(list.materials[0].resourceId,resourceId);assert.equal(list.materials[1].resourceId,partialId);assert.equal(list.materials[1].status,'partial');assert.equal(list.materials[1].bodyAvailable,false);assert.equal(list.materials[1].bodyPartial,true);assert(!JSON.stringify(list).includes('合成张甲同学'));
   const body=JSON.parse((await materialTools[1].execute('read-material',{resourceId,offset:0},new AbortController().signal)).content[0].text);assert.equal(body.nextOffset,1);assert.equal(body.source.version,'saved-version');assert.equal(body.source.originalPageLocated,false);assert.equal(body.teacherConfirmed,false);assert(!JSON.stringify(body).includes('合成张甲同学'));assert(!body.text.includes('CONTACT'));assert(body.text.includes('真实正文'));
  });
  await check('Failed or personal saved-material body never masquerades as readable raw text',async()=>{

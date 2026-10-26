@@ -198,7 +198,7 @@ try {
   assert(matchesMaterial('','没有资料正文'));
   assert.equal(materialReadiness({parseStatus:'needs_parser',chunkCount:0}).label,'已保存，正文待处理');
   assert.equal(materialReadiness({parseStatus:'failed',chunkCount:12}).tone,'error');
-  assert.equal(materialReadiness({parseStatus:'partial',chunkCount:3}).label,'部分内容可用');
+  assert.equal(materialReadiness({parseStatus:'partial',chunkCount:3}).label,'部分内容待处理');
   assert.equal(materialReadiness({parseStatus:'ready',chunkCount:0}).tone,'waiting');
   assert.equal(materialReadiness({parseStatus:'parsed',chunkCount:3}).tone,'ready');
   const {MaterialOcrNotice,MaterialExcerpt,MaterialBodyPanel}=await server.ssrLoadModule('/src/renderer/components/product/MaterialBodyPanel.tsx');

@@ -18,7 +18,12 @@ export function stripGeneratedReviewSuffix(text: string, preserveFinalNewline = 
   for (const match of text.matchAll(marker)) start = match.index ?? start;
   if (start < 0) return text;
   const tail = text.slice(start);
-  if (!tail.includes('原内容') || !tail.includes('修改后')) return text;
+  const lines = tail.split(/\r?\n/);
+  const header = lines.findIndex((line, index) => {
+    if (!line.includes('|') || !/原内容|修改前/.test(line) || !/修改后/.test(line)) return false;
+    return /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[index + 1] || '');
+  });
+  if (header < 0) return text;
   const kept = text.slice(0, start)
     .replace(/\r?\n(?:[ \t]*\r?\n)+[ \t]*(?:-{3,}|\*{3,}|_{3,})[ \t]*(?:\r?\n[ \t]*)*$/, '')
     .replace(/[ \t]*(?:\r?\n)+$/, '');

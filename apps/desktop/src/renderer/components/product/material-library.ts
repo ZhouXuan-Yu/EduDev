@@ -8,7 +8,7 @@ export function matchesMaterial(query:string,...values:string[]):boolean {
 }
 export function materialReadiness(resource:Pick<TeacherResource,'parseStatus'|'chunkCount'>):{label:string;tone:'ready'|'waiting'|'error'} {
   if(resource.parseStatus==='failed')return {label:'读取失败',tone:'error'};
-  if(resource.parseStatus==='partial')return {label:'部分内容可用',tone:'waiting'};
+  if(resource.parseStatus==='partial')return resource.chunkCount>0?{label:'部分内容待处理',tone:'waiting'}:{label:'已保存，正文待处理',tone:'waiting'};
   if(resource.chunkCount>0&&['ready','parsed','chunked','indexed','graph_extracted'].includes(resource.parseStatus))return {label:'可用于查找',tone:'ready'};
   return {label:'已保存，正文待处理',tone:'waiting'};
 }
