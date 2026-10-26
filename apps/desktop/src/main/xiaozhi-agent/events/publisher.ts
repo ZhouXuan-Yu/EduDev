@@ -1,0 +1,77 @@
+import type { OfficeProjectedTurn } from '../../../shared/office-agent';
+import type { XiaozhiAgentEvent, XiaozhiAgentEventPayload } from '../../../shared/xiaozhi-agent';
+import type { createEventJournal, JournalOwner } from './journal';
+import type {ReceiptCapture} from './receipts';
+import type {TerminalCancellation} from './terminal-cancellation';
+import type {Sql} from '../session-state';
+import type {TaskView} from '../../../shared/xiaozhi-task';
+
+/** Batches streaming deltas; a failed commit permanently closes this publisher. */
+export function createEventPublisher(options: { journal: ReturnType<typeof createEventJournal>; owner: JournalOwner;
+  committed: (turn: OfficeProjectedTurn, sequence: number) => void; emit: (event: XiaozhiAgentEvent) => void;
+  failed: (error:unknown) => void; beforeTerminalEmit: () => void; cancellation?:TerminalCancellation }) {
+  let sequence = 0, revision = 0, pending: XiaozhiAgentEvent[] = [],captures:ReceiptCapture[]=[], failure: unknown, sealed = false;
+  let chain = Promise.resolve(), timer: ReturnType<typeof setTimeout> | undefined;
+  function fail(error:unknown){if(failure)return;failure=error||Error('event_persistence');if(timer){clearTimeout(timer);timer=undefined;}options.failed(failure);}
+  function enqueue(payload: XiaozhiAgentEventPayload, finalTurn?: OfficeProjectedTurn,capture?:ReceiptCapture) {
+    if (failure || sealed) return;
+    if (payload.kind === 'status' && payload.status !== 'running') sealed = true;
+    const event: XiaozhiAgentEvent = { ...structuredClone(payload), ...options.owner, schemaVersion: 1, durability: 'committed', sequence: ++sequence };
+    pending.push(event);
+    if(capture)captures.push(structuredClone(capture));
+    if (payload.kind !== 'text_delta' || pending.length >= 128) drain(finalTurn);
+    else timer ??= setTimeout(() => { timer = undefined; drain(); }, 16);
+  }
+  function drain(finalTurn?: OfficeProjectedTurn) {
+    if (timer) { clearTimeout(timer); timer = undefined; }
+    const events = pending.splice(0);
+    const privateCaptures=captures.splice(0);
+    if (!events.length) return;
+    // A terminal checkpoint is frozen before a later caller can change its object.
+    const checkpoint = finalTurn ? structuredClone(finalTurn) : undefined;
+    chain = chain.then(async () => {
+      if (failure) throw failure;
+      for (const event of events) event.revision = revision + 1;
+      let saved = await options.journal.append(options.owner, revision, events, checkpoint,privateCaptures,options.cancellation);
+      // Stop can arrive while COMMIT is awaiting its native callback. Repair the
+      // same owner before exposing completion; never replay model/tool effects.
+      if(checkpoint&&options.cancellation?.requested()&&saved.turn.status!=='interrupted')saved=await options.journal.correctCancellation(options.owner,options.cancellation);
+      if(failure)throw failure; // A late DB callback cannot revive a failed publisher.
+      revision = saved.cursor.revision; options.committed(saved.turn, saved.cursor.sequence);
+      let delivered = true;
+      for (const event of saved.events) {
+        if (event.kind === 'status' && event.status !== 'running') options.beforeTerminalEmit();
+        try { options.emit(event); } catch { delivered = false; }
+      }
+      // Outbox notification status is advisory. Failure cannot undo an event commit.
+      if (delivered) await options.journal.notified(options.owner.runId, saved.cursor.sequence).catch(() => undefined);
+    }).catch(error => { fail(error); throw error; });
+    void chain.catch(() => undefined);
+  }
+  return {
+    enqueue,
+    owner:options.owner,
+    /** Main-only permanent closure; it does not claim an in-flight DB write rolled back. */
+    fail,
+    async checkpointTask(mutate:(work:Sql)=>Promise<TaskView>):Promise<TaskView>{
+      if(failure||sealed)throw failure||Error('event_run_settled');drain();const reserved=++sequence;let value:TaskView;
+      chain=chain.then(async()=>{
+        if(failure)throw failure;
+        const saved=await options.journal.changeTask(options.owner,revision,reserved,mutate);
+        if(saved.cursor.sequence!==reserved)throw Error('event_revision_conflict');
+        revision=saved.cursor.revision;value=saved.task;options.committed(saved.turn,saved.cursor.sequence);
+        let delivered=true;for(const event of saved.events){try{options.emit(event);}catch{delivered=false;}}
+        if(delivered)await options.journal.notified(options.owner.runId,saved.cursor.sequence).catch(()=>undefined);
+      }).catch(error=>{fail(error);throw error;});void chain.catch(()=>undefined);await chain;return value!;
+    },
+    /** All private critical writes share the event queue and permanent failure gate. */
+    async persist<T>(action:(owner:JournalOwner)=>Promise<T>):Promise<T>{
+      if(failure||sealed)throw failure||Error('event_run_settled');
+      drain();let value:T;
+      chain=chain.then(async()=>{if(failure)throw failure;await options.journal.assertOwner(options.owner);if(failure)throw failure;value=await action(options.owner);if(failure)throw failure;}).catch(error=>{fail(error);throw error;});void chain.catch(()=>undefined);await chain;return value!;
+    },
+    async flush() { if(failure)throw failure;do { drain(); await chain; } while (pending.length); if (failure) throw failure; },
+    async barrier() { if(failure)throw failure;do { drain(); await chain; } while (pending.length); if (failure) throw failure; await options.journal.assertOwner(options.owner);if(failure)throw failure; },
+    get failed() { return Boolean(failure); },
+  };
+}

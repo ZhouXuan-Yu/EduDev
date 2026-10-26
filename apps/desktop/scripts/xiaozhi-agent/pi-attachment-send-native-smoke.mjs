@@ -5,9 +5,9 @@ import {createRequire} from 'node:module';
 import {pathToFileURL} from 'node:url';
 import {build} from 'esbuild';
 const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-attachment-send-native-'));
-const oldSource=spawnSync('git',['show','HEAD:apps/desktop/src/main/xiaozhi-agent/attachment-send-state.ts'],{encoding:'utf8',windowsHide:true});
-if(oldSource.status!==0)throw new Error('Prior committed attachment trigger is required for migration acceptance');
-const oldTrigger=oldSource.stdout.match(/CREATE TRIGGER IF NOT EXISTS xiaozhi_pi_attachment_send_publish[\s\S]*?END`/)[0].slice(0,-1);
+// Migration acceptance needs the original trigger, independent of today's HEAD.
+const oldTrigger=fs.readFileSync(new URL('./fixtures/attachment-send-publish-v1.sql',import.meta.url),'utf8');
+if(!oldTrigger.includes('CREATE TRIGGER IF NOT EXISTS xiaozhi_pi_attachment_send_publish'))throw new Error('Frozen original attachment trigger fixture is required');
 fs.writeFileSync(path.join(output,'prior-trigger.sql'),oldTrigger);
 await build({entryPoints:['scripts/xiaozhi-agent/pi-attachment-send-native-worker.ts'],outfile:path.join(output,'worker.mjs'),bundle:true,platform:'node',target:'node24',format:'esm',packages:'external',logLevel:'warning'});
 const bootstrap=path.join(output,'bootstrap.cjs');

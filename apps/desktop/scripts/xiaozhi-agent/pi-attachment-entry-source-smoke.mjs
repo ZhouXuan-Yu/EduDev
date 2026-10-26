@@ -1,8 +1,19 @@
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';
 const hash=b=>createHash('sha256').update(b).digest('hex'),checks=[],sources=[];
 const original='D:/WorkProject/HeroUIPro/herouipro-v3/src/components/chat-attachment',copied='src/renderer/heroui-pro/components/chat-attachment';
+const adapted=new Set(['index.ts','chat-attachment.tsx','chat-attachment.styles.ts']);
 for(const name of ['index.ts','chat-attachment.tsx','chat-attachment-group.tsx','chat-attachment-input.tsx','chat-attachment.styles.ts']){
- const a=fs.readFileSync(path.join(original,name)),b=fs.readFileSync(path.join(copied,name));assert.equal(hash(a),hash(b));sources.push({file:`chat-attachment/${name}`,sha256:hash(b),bytes:b.length});checks.push({name:`Original Pro ${name} byte-identical`,pass:true});
+ const a=fs.readFileSync(path.join(original,name)),b=fs.readFileSync(path.join(copied,name));
+ if(adapted.has(name)){
+  const text=b.toString('utf8');
+  const markers=name==='index.ts'?['ChatAttachmentInfo','ChatAttachmentIcon','ChatAttachmentSize']
+   :name==='chat-attachment.styles.ts'?['chat-attachment__info','chat-attachment__icon','chat-attachment__size']
+   :['ChatAttachmentInfo','ChatAttachmentIcon','ChatAttachmentSize','data-variant'];
+  for(const marker of markers)assert(text.includes(marker),`${name} missing ${marker}`);
+  sources.push({file:`chat-attachment/${name}`,sha256:hash(b),bytes:b.length,adapted:true});checks.push({name:`Adapted Pro ${name} includes official Composer anatomy`,pass:true});
+ }else{
+  assert.equal(hash(a),hash(b));sources.push({file:`chat-attachment/${name}`,sha256:hash(b),bytes:b.length});checks.push({name:`Original Pro ${name} byte-identical`,pass:true});
+ }
 }
 const photon=fs.existsSync('node_modules/@earendil-works/pi-coding-agent/node_modules/@silvia-odwyer/photon-node')?'node_modules/@earendil-works/pi-coding-agent/node_modules/@silvia-odwyer/photon-node':'node_modules/@silvia-odwyer/photon-node';
 const packages=[['image-size','node_modules/image-size','2.0.3','MIT'],['Pi coding agent','node_modules/@earendil-works/pi-coding-agent','1.0.2','MIT'],['Photon',photon,'0.3.4','Apache-2.0']];

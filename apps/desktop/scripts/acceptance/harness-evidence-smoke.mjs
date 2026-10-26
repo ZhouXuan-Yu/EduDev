@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {HARNESS_CASES,validateHarnessReport,appendAttempt} from './harness-evidence.mjs';
+import {gradeAttempt} from './evidence.mjs';
 const hash='a'.repeat(64),checks=[];
 const good=()=>({schema:'xiaozhi.harness-baseline.v1',build:{sha256:hash,unchanged:true},overall:'NOT_ACCEPTED',dailyAccepted:false,vpnOffAccepted:false,userFailuresClosed:false,
  cases:HARNESS_CASES.map(id=>({id,status:'PASS',layer:'C',synthetic:true,modelJudged:false,buildSha256:hash,scriptSha256:hash,assertions:[{name:'deterministic actual result',pass:true}],artifacts:[{file:'owned',sha256:hash,bytes:1}]}))});
@@ -12,6 +13,11 @@ for(const [name,mutate] of [
  ['duplicate case',r=>{r.cases[0]=r.cases[1];return r;}],
  ['API precheck promoted',r=>{r.cases[0].layer='B';return r;}],
  ['model self grading',r=>{r.cases[0].modelJudged=true;return r;}],
+ ['grading provenance missing',r=>{delete r.cases[0].modelJudged;return r;}],
+ ['null case',r=>{r.cases[0]=null;return r;}],
+ ['null assertion',r=>{r.cases[0].assertions=[null];return r;}],
+ ['malformed assertions',r=>{r.cases[0].assertions={pass:true};return r;}],
+ ['malformed artifacts',r=>{r.cases[0].artifacts={file:'owned'};return r;}],
  ['empty checks / exit zero alone',r=>{r.cases[0].assertions=[];return r;}],
  ['skipped checks',r=>{r.cases[0].assertions[0].skipped=true;return r;}],
  ['padded duplicate checks',r=>{r.cases[0].assertions.push(r.cases[0].assertions[0]);return r;}],
@@ -21,8 +27,11 @@ for(const [name,mutate] of [
  ['daily acceptance promoted',r=>{r.dailyAccepted=true;return r;}],
  ['user feedback silently closed',r=>{r.userFailuresClosed=true;return r;}],
  ['whole product accepted',r=>{r.overall='ACCEPTED';return r;}],
+ ['top-level error with positive statuses',r=>{r.error='assertion failed';return r;}],
+ ['case error with PASS status',r=>{r.cases[0].error='assertion failed';return r;}],
 ])test('Reject '+name,()=>assert.equal(validateHarnessReport(mutate(good())).valid,false));
 test('Blocked and unverified are legitimate evidence states, not passes',()=>{const r=good();r.cases.forEach(c=>c.status='BLOCKED');assert.deepEqual(validateHarnessReport(r).counts,{PASS:0,FAIL:0,BLOCKED:4,UNVERIFIED:0});});
+test('Exit zero and success true cannot override an explicit report error',()=>{const graded=gradeAttempt({exitCode:0,report:{success:true,error:'assertion failed',checks:[{name:'earlier passed',pass:true}]},artifactsVerified:true,buildUnchanged:true,scriptUnchanged:true,layer:'isolated_formal_ui'});assert.equal(graded.status,'FAIL');assert(graded.reasons.includes('REPORT_CONTAINS_ERROR'));});
 const parent=path.resolve('test-results/acceptance');fs.mkdirSync(parent,{recursive:true});const output=fs.mkdtempSync(path.join(parent,'harness-evidence-'));
 test('False artifact is rejected on independent readback',()=>assert.equal(validateHarnessReport(good(),{readArtifacts:true,evidenceRoot:output}).valid,false));
 test('Success append preserves original failure byte prefix',()=>{const file=appendAttempt(output,{id:'IMG-04',status:'FAIL'}),before=fs.readFileSync(file);appendAttempt(output,{id:'IMG-04',status:'PASS'});const after=fs.readFileSync(file);assert(after.subarray(0,before.length).equals(before));assert.equal(after.toString().trim().split('\n').length,2);});

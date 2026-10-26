@@ -30,7 +30,7 @@ export function createPublicImageRuntime(options:Options){
   current(signal);await options.importer.verify(options.sessionId,{id:row.id,revision:row.revision},signal);current(signal);
  }
  const tools:ToolDefinition[]=[{name:'office_view_public_image',label:'准备公开图片',
-  description:'按已发送附件ID/revision请求查看公开图片，purpose说明本轮必要分析用途。工具内部会先展示教师用途确认卡并等待答案，得到明确同意后才准备发送；调用工具本身不表示已经获准或已上传。先office_list_attachments查询，然后直接调用本工具以发起确认，不要仅在聊天正文询问确认或另外调用ask_teacher。学生图片用本地OCR校正文字，不发送原图。能力未知/文本模型/拒绝不能试发；工具准备成功不等于供应商已接收，来源和送达由实际回执决定。',
+  description:'按已发送附件ID/revision请求查看公开图片，purpose说明本轮必要分析用途。没有已采用的image任务步骤时省略taskStepId，不要先建计划；先office_list_attachments查询，然后直接调用本工具发起确认。工具内部会先展示教师用途确认卡并等待答案，得到明确同意后才准备发送；调用工具本身不表示已经获准或已上传。不要仅在聊天正文询问确认或另外调用ask_teacher。学生图片用本地OCR校正文字，不发送原图。能力未知/文本模型/拒绝不能试发；工具准备成功不等于供应商已接收，来源和送达由实际回执决定。',
   parameters:{type:'object',additionalProperties:false,properties:{id:{type:'string'},revision:{type:'integer',minimum:0},purpose:{type:'string',minLength:1,maxLength:500}},required:['id','revision','purpose']} as ToolDefinition['parameters'],
   execute:async(callId,args,signal)=>{
    const scoped=signal||new AbortController().signal;let entry:Entry|undefined;

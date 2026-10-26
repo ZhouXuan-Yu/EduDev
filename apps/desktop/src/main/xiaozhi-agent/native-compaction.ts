@@ -5,6 +5,9 @@ import { compact, convertToLlm, estimateTokens, type SessionManager } from '@ear
 
 type Preparation = Parameters<typeof compact>[0];
 type Settings = Preparation['settings'];
+/** Compaction is a separate utility call; a normal 4096-token reply budget can
+ * truncate its structured checkpoint even when the teacher task is still valid. */
+export const NATIVE_COMPACTION_RESERVE_TOKENS = 8192;
 let loaded: Promise<{ prepareCompaction: (entries: ReturnType<SessionManager['getBranch']>, settings: Settings) => Preparation | undefined }> | undefined;
 /** Version-pinned native helper: package root does not export prepareCompaction. */
 export function loadNativeCompaction() {

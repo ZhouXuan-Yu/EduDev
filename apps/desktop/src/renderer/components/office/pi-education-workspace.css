@@ -80,6 +80,7 @@
 .ai-console-v3.xiaozhi-pi-workspace [data-slot='chat-list-view-title'] { font-size: 15px; font-weight: 400; color: #4d5855; }
 .xiaozhi-pi-workspace .pi-shell .app-layout__aside { flex: 0 0 306px; width: 306px; min-width: 0; background: #fff; border: 0; padding: 18px 16px 18px 0; overflow: auto; }
 .xiaozhi-pi-workspace .pi-shell .app-layout__aside[data-state='closed'] { display: none; }
+.xiaozhi-pi-workspace .pi-sidebar-primary { display: contents; }
 .xiaozhi-pi-workspace .pi-context-card { width: 100%; height: fit-content; align-self: flex-start; padding: 16px 18px; min-height: 0; max-height: none; border: 1px solid #e9eceb; border-radius: 20px; background: #fff; color: #777d7c; font-size: 14px; overflow: visible; box-shadow: 0 2px 16px rgba(29,47,42,.06); }
 .pi-context-header { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin-bottom: 12px; color: #8b918f; }
 .pi-context-header > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -118,3 +119,30 @@
 }
 @media (max-width: 1100px) { .xiaozhi-pi-workspace .pi-shell { --pi-sidebar-width: 240px; } .xiaozhi-pi-workspace .pi-conversation-sidebar { width: 240px; min-width: 240px; } .xiaozhi-pi-workspace .pi-shell .app-layout__aside { flex-basis: 270px; width: 270px; } }
 @media (max-width: 850px) { .xiaozhi-pi-workspace .pi-shell .app-layout__aside { display: none; } .xiaozhi-pi-workspace .pi-icon-rail { width: 48px; flex-basis: 48px; padding-inline: 3px; } }
+@media (max-width: 768px) {
+  .xiaozhi-pi-workspace .pi-sidebar-primary { display: none; }
+  .xiaozhi-pi-workspace .pi-shell [data-slot='sidebar-trigger'] { display: inline-flex; }
+  .pi-sidebar-mobile-sheet {
+    --surface-soft: var(--pi-soft);
+    --line: var(--pi-line);
+    --line-strong: var(--pi-line);
+    background: var(--pi-paper);
+    color: var(--pi-ink);
+  }
+  .pi-sidebar-mobile-sheet .sidebar__offcanvas-wrapper {
+    display: block;
+    width: min(88vw, 320px);
+    height: 100%;
+  }
+  .pi-sidebar-mobile-sheet .sidebar__offcanvas-wrapper[data-state='collapsed'] { width: 0; }
+  .pi-sidebar-mobile-sheet .pi-conversation-sidebar {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    height: 100%;
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 0;
+    background: var(--pi-paper, #f6fdfc);
+  }
+}

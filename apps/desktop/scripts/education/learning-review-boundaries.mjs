@@ -23,7 +23,7 @@ export async function learningReviewBoundaries(check,output){
  const reviews=new LearningReviewRepository({...sql,transaction:async work=>{db.exec('BEGIN IMMEDIATE');try{const result=await work(sql);if(cut)throw new Error('injected_cut');db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}});
  const draft={kind:'assessment',reason:'核对原学习证据',correction:{result:'incorrect',errorType:'application',feedback:'需要补充解释'}};
  const facts=async()=>({...await repo.learningSnapshot(studentId),reviewVersion:(await reviews.state(studentId)).version});
- const propose=async(d=draft)=>reviews.propose(sessionId,runId,randomUUID(),await facts(),d,d.kind==='assessment'?recordId:undefined);
+ const propose=async(d=draft)=>{const callId=randomUUID(),value=await reviews.propose(sessionId,runId,callId,await facts(),d,d.kind==='assessment'?recordId:undefined);assert.equal(value.callId,callId);assert.equal((await reviews.list(sessionId)).find(item=>item.id===value.id)?.callId,callId);assert.equal((await reviews.review(sessionId,value.id)).callId,callId);return value;};
  const input=(id,action='confirm',d=draft)=>({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,id,action,...(action==='confirm'?{draft:d}:{})});
  try{
  await check('Saved evidence preview uses teacher language, preserves answer text and hides unverified technical flags',async()=>{const text=learningSourcePreview(JSON.stringify({knowledgePoint:'等价变形',knowledgeType:'concept',isCorrect:false,teacherConfirmed:true,userAnswer:'A',expectedAnswer:'B'}));assert(text.includes('知识点：等价变形'));assert(text.includes('学生作答：A'));assert(text.includes('参考答案：B'));assert(text.includes('原记录结果：错误'));assert(!/teacherConfirmed|isCorrect|knowledgeType/.test(text));assert.equal(learningSourcePreview('原始文字'), '原始文字');});
@@ -34,7 +34,7 @@ export async function learningReviewBoundaries(check,output){
  });
  await check('Pending suggestion is not a fact; teacher review reads actual saved source',async()=>{const p=await propose();assert.equal(p.state,'pending');assert.equal((await reviews.state(studentId)).assessments.length,0);const v=await reviews.review(sessionId,p.id);assert.equal(v.source.content,original);assert.equal(v.previousVersion,0);});
  let saved;
- await check('Teacher edited correction commits annotation and confirmation atomically without changing or duplicating practice',async()=>{saved=await propose();const edited={...draft,correction:{result:'correct',errorType:'none',feedback:'教师核对后解释正确'}};const r=await reviews.decide(input(saved.id,'confirm',edited));assert.equal(r.version,1);const state=await reviews.state(studentId),evidence=collectLearningEvidence(await repo.learningSnapshot(studentId),Date.now()/1000,state.assessments);assert.equal(evidence.points[0].outcomes.length,1);assert.equal(evidence.points[0].outcomes[0].teacherConfirmed,true);assert.equal(evidence.coverage.qualitativeWithoutConfirmation,0);assert.equal(db.prepare('SELECT content FROM learning_records').get().content,original);assert.equal(db.prepare('SELECT COUNT(*) AS n FROM learning_records').get().n,1);assert.equal((await reviews.decide(input(saved.id,'confirm',edited))).version,1);await assert.rejects(reviews.decide(input(saved.id)),/conflict/);});
+ await check('Teacher edited correction commits annotation and confirmation atomically without changing or duplicating practice',async()=>{saved=await propose();const edited={...draft,correction:{result:'correct',errorType:'none',feedback:'教师核对后解释正确'}};let afterWrites=0;const r=await reviews.decide(input(saved.id,'confirm',edited),()=>true,async()=>{afterWrites++;});assert.equal(afterWrites,1);assert.equal(r.version,1);const state=await reviews.state(studentId),evidence=collectLearningEvidence(await repo.learningSnapshot(studentId),Date.now()/1000,state.assessments);assert.equal(evidence.points[0].outcomes.length,1);assert.equal(evidence.points[0].outcomes[0].teacherConfirmed,true);assert.equal(evidence.coverage.qualitativeWithoutConfirmation,0);assert.equal(db.prepare('SELECT content FROM learning_records').get().content,original);assert.equal(db.prepare('SELECT COUNT(*) AS n FROM learning_records').get().n,1);assert.equal((await reviews.decide(input(saved.id,'confirm',edited))).version,1);await assert.rejects(reviews.decide(input(saved.id)),/conflict/);});
  await check('Rejected candidate produces no learning or strategy effect',async()=>{const before=await reviews.state(studentId),p=await propose();await reviews.decide(input(p.id,'reject'));assert.deepEqual(await reviews.state(studentId),before);assert.equal((await reviews.review(sessionId,p.id)).state,'rejected');});
  await check('Source mutation invalidates pending and previously trusted corrections; original flags do not grant provenance',async()=>{const p=await propose();db.prepare('UPDATE learning_records SET updated_at=? WHERE id=?').run('2026-10-01T00:00:00Z',recordId);await assert.rejects(reviews.decide(input(p.id)),/source_changed/);await assert.rejects(reviews.review(sessionId,p.id),/source_changed/);const state=await reviews.state(studentId),e=collectLearningEvidence(await repo.learningSnapshot(studentId),Date.now()/1000,state.assessments);assert.equal(e.points[0].outcomes[0].teacherConfirmed,false);});
  await check('Strategy target versions append and replay; changing retention does not add practice or destroy prior versions',async()=>{const a={kind:'strategy',reason:'安排更密集复习',desiredRetention:.95},b={kind:'strategy',reason:'恢复原复习节奏',desiredRetention:.9};for(const d of[a,b]){const p=await propose(d);await reviews.decide(input(p.id,'confirm',d));}const state=await reviews.state(studentId);assert.equal(state.version,3);assert.equal(state.desiredRetention,.9);assert.deepEqual(state.strategies.map(e=>e.draft.desiredRetention),[.95,.9]);assert.equal(db.prepare('SELECT COUNT(*) AS n FROM learning_records').get().n,1);});
@@ -66,7 +66,10 @@ export async function learningReviewBoundaries(check,output){
  const deferred=()=>{let resolve;const promise=new Promise(r=>{resolve=r;});return{promise,resolve};};
  let commandGate,listGate;const originalCommand=hostState.command;
  hostState.command=async id=>{if(commandGate){commandGate.entered.resolve();await commandGate.release.promise;}return originalCommand(id);};
- const hostStore={xiaozhiState:hostState,learningReviews:{list:async id=>{if(listGate){const gate=listGate;listGate=undefined;gate.entered.resolve();await gate.release.promise;}return reviews.list(id);},decide:reviews.decide.bind(reviews),review:reviews.review.bind(reviews),history:reviews.history.bind(reviews)},getAiConversationSession:async()=>({session:{archivedAt:'owned-startup-refusal'}})};
+ // This lane only exercises refused startup and learning decisions. Expose the
+ // current constructor dependency, but fail loudly if unrelated question work runs.
+ const unusedCollections=new Proxy({},{get(_target,key){throw Error(`Learning host fixture must not use question collections: ${String(key)}`);}});
+ const hostStore={xiaozhiState:hostState,questionReviews:{collections:unusedCollections},learningReviews:{list:async id=>{if(listGate){const gate=listGate;listGate=undefined;gate.entered.resolve();await gate.release.promise;}return reviews.list(id);},decide:reviews.decide.bind(reviews),review:reviews.review.bind(reviews),history:reviews.history.bind(reviews)},getAiConversationSession:async()=>({session:{archivedAt:'owned-startup-refusal'}})};
  const host=createXiaozhiProductionHost({store:hostStore,dataRoot:path.join(output,'learning-host'),emit:()=>assert.fail('Refused startup must not emit a model event')});
  const start=()=>host.start({sessionId,commandId:'xicmd_'+randomUUID(),prompt:'隔离本地启动门禁'});
  try{
@@ -126,7 +129,7 @@ export async function learningReviewBoundaries(check,output){
   const raw=db.prepare('SELECT result_json FROM ai_confirmation_items WHERE id=?').get(saved.id).result_json,effect=JSON.parse(raw);effect.draft.correction.feedback='伪造校正';db.prepare('UPDATE ai_confirmation_items SET result_json=? WHERE id=?').run(JSON.stringify(effect),saved.id);await assert.rejects(reviews.history(historyInput),/unavailable/);db.prepare('UPDATE ai_confirmation_items SET result_json=? WHERE id=?').run(raw,saved.id);
   const coordinator=createLearningReviewCoordinator({store:{learningReviews:reviews},isCurrent:()=>true,canDecide:()=>true,emit:()=>{}});assert.deepEqual(await coordinator.history({...historyInput,studentId}),{ok:false,error:'invalid_input'});assert((await coordinator.history(historyInput)).ok);
  });
- await check('Learning IPC inherits main-frame authorization for review, decision and cross-session history',async()=>{const handlers=new Map(),host={reviewLearning:async()=>({ok:true}),decideLearning:async()=>({ok:true}),learningHistory:async()=>({ok:true})};registerLearningReviewIpc({ipcMain:{handle:(name,fn)=>handlers.set(name,fn)},allowed:e=>e.main===true,host});assert.equal(handlers.size,3);for(const handle of handlers.values()){assert.deepEqual(await handle({main:false},{}),{ok:false,error:'permission_denied'});assert((await handle({main:true},{})).ok);}});
+ await check('Learning IPC inherits main-frame authorization for review, decision, batch decision and cross-session history',async()=>{const handlers=new Map(),host={reviewLearning:async()=>({ok:true}),decideLearning:async()=>({ok:true}),decideLearningBatch:async()=>({ok:true}),learningHistory:async()=>({ok:true})};registerLearningReviewIpc({ipcMain:{handle:(name,fn)=>handlers.set(name,fn)},allowed:e=>e.main===true,host});assert.equal(handlers.size,4);assert(handlers.has('education:learning-review-batch-decide'));for(const handle of handlers.values()){assert.deepEqual(await handle({main:false},{}),{ok:false,error:'permission_denied'});assert((await handle({main:true},{})).ok);}});
 
  const planRaw={title:'两周训练建议',startDate:'2026-10-06',days:Array.from({length:14},(_,i)=>({day:i+1,pointReference:'知识点1',activity:i%3===0?'review':'practice',count:4,difficulty:'warmup',notes:'先核对适用前提，再解释方法'}))};
  let planDraft;
@@ -191,6 +194,71 @@ export async function learningReviewBoundaries(check,output){
  await check('Traditional training IPC rejects subframes and invalid input before touching facts',async()=>{
   const handlers=new Map();let called=0;registerStudentTrainingIpc({ipcMain:{handle:(name,fn)=>handlers.set(name,fn)},allowed:e=>e.main===true,repository:{trainingView:async()=>{called++;return{};},trainingSource:async()=>{called++;return{};},recordTrainingResult:async()=>{called++;return{};}}});assert.equal(handlers.size,3);
   for(const handle of handlers.values()){assert.deepEqual(await handle({main:false},resultRequest),{ok:false,error:'permission_denied'});assert.deepEqual(await handle({main:true},{sql:'fake'}),{ok:false,error:'invalid_input'});}assert.equal(called,0);assert((await handlers.get('students:training')({main:true},{schemaVersion:STUDENT_TRAINING_SCHEMA,studentId})).ok);assert.equal(called,1);
+ });
+ let batchA,batchB,batchBase;
+ await check('Batch confirm commits two pending suggestions in one transaction with deterministic version increments',async()=>{
+  batchBase=(await reviews.state(studentId)).version;batchA=await propose();batchB=await propose();
+  let afterWrites=0;
+  const result=await reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'confirm',items:[{id:batchA.id},{id:batchB.id}]},()=>true,async()=>{afterWrites++;});
+  assert.equal(afterWrites,1);assert.equal(result.action,'confirm');assert.equal(result.items.length,2);assert(result.items.every(item=>item.state==='confirmed'));
+  assert.deepEqual(result.items.map(item=>item.version),[batchBase+1,batchBase+2]);
+  assert.equal((await reviews.state(studentId)).version,batchBase+2);
+  const readback=await reviews.review(sessionId,batchA.id);assert.equal(readback.state,'confirmed');assert.deepEqual(readback.draft,draft);assert.equal((await reviews.review(sessionId,batchB.id)).version,batchBase+2);
+ });
+ await check('Batch retry with identical drafts is idempotent and a changed draft conflicts without new versions',async()=>{
+  const before=await reviews.state(studentId);
+  const again=await reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'confirm',items:[{id:batchA.id},{id:batchB.id}]});
+  assert.deepEqual(again.items.map(item=>item.version),[batchBase+1,batchBase+2]);assert.deepEqual(await reviews.state(studentId),before);
+  const changed={...draft,correction:{...draft.correction,feedback:'批量重试的不同草稿'}};
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'confirm',items:[{id:batchA.id,draft:changed}]}),/conflict/);
+  assert.deepEqual(await reviews.state(studentId),before);
+ });
+ await check('A cut after the first batch write rolls back every member and leaves both pending',async()=>{
+  const before=await reviews.state(studentId),a=await propose(),b=await propose();let writes=0;
+  const cuttingSql={...sql,run:async(q,p)=>{await sql.run(q,p);if(q.startsWith("UPDATE ai_confirmation_items SET status='confirmed'")&&++writes===1)throw new Error('batch_cut');}};
+  const cuttingRepo=new LearningReviewRepository({...sql,transaction:async work=>{db.exec('BEGIN IMMEDIATE');try{const result=await work(cuttingSql);db.exec('COMMIT');return result;}catch(error){db.exec('ROLLBACK');throw error;}}});
+  await assert.rejects(cuttingRepo.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'confirm',items:[{id:a.id},{id:b.id}]}),/batch_cut/);
+  assert.equal((await reviews.review(sessionId,a.id)).state,'pending');assert.equal((await reviews.review(sessionId,b.id)).state,'pending');assert.deepEqual(await reviews.state(studentId),before);
+ });
+ await check('One stale source refuses the whole batch and all members remain pending',async()=>{
+  const before=await reviews.state(studentId),a=await propose(),b=await propose(),raw=db.prepare('SELECT payload_json FROM ai_confirmation_items WHERE id=?').get(a.id).payload_json;
+  const payload=JSON.parse(raw);payload.fingerprint='0'.repeat(64);db.prepare('UPDATE ai_confirmation_items SET payload_json=? WHERE id=?').run(JSON.stringify(payload),a.id);
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'confirm',items:[{id:a.id},{id:b.id}]}),/source_changed/);
+  db.prepare('UPDATE ai_confirmation_items SET payload_json=? WHERE id=?').run(raw,a.id);
+  assert.equal((await reviews.review(sessionId,a.id)).state,'pending');assert.equal((await reviews.review(sessionId,b.id)).state,'pending');assert.deepEqual(await reviews.state(studentId),before);
+ });
+ await check('Batch cancellation before any write rolls back every member',async()=>{
+  const before=await reviews.state(studentId),a=await propose(),b=await propose();
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'confirm',items:[{id:a.id},{id:b.id}]},()=>false),/cancelled/);
+  assert.equal((await reviews.review(sessionId,a.id)).state,'pending');assert.equal((await reviews.review(sessionId,b.id)).state,'pending');assert.deepEqual(await reviews.state(studentId),before);
+ });
+ await check('Batch reject rejects every member without changing confirmed learning state or practice records',async()=>{
+  const before=await reviews.state(studentId),records=db.prepare('SELECT COUNT(*) AS n FROM learning_records').get().n,a=await propose(),b=await propose();
+  const result=await reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'reject',items:[{id:a.id},{id:b.id}]});
+  assert.equal(result.action,'reject');assert(result.items.every(item=>item.state==='rejected'));
+  assert.equal((await reviews.review(sessionId,a.id)).state,'rejected');assert.equal((await reviews.review(sessionId,b.id)).state,'rejected');
+  assert.deepEqual(await reviews.state(studentId),before);assert.equal(db.prepare('SELECT COUNT(*) AS n FROM learning_records').get().n,records);
+  assert.equal((await reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'reject',items:[{id:a.id},{id:b.id}]})).items.length,2);
+ });
+ await check('Mixed-kind batches and cross-conversation or cross-student members are refused before any write',async()=>{
+  const a=await propose(),strategy=await propose({kind:'strategy',reason:'混合类型批量检查',desiredRetention:.9});
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'reject',items:[{id:a.id},{id:strategy.id}]}),/invalid_input/);
+  assert.equal((await reviews.review(sessionId,a.id)).state,'pending');assert.equal((await reviews.review(sessionId,strategy.id)).state,'pending');
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId:otherSession,action:'reject',items:[{id:a.id}]}),/permission_denied/);
+  const otherStudent='student_'+randomUUID(),otherSession2='aisession_'+randomUUID(),otherRun='airun_'+randomUUID();
+  db.prepare('INSERT INTO students VALUES(?,?,?)').run(otherStudent,'active','批量越权学生');db.prepare('INSERT INTO ai_conversation_sessions VALUES(?,?,NULL)').run(otherSession2,otherStudent);db.prepare('INSERT INTO ai_agent_runs VALUES(?,?,?)').run(otherRun,otherSession2,otherStudent);
+  const otherFacts={...await repo.learningSnapshot(otherStudent),reviewVersion:(await reviews.state(otherStudent)).version};
+  const foreign=await reviews.propose(otherSession2,otherRun,randomUUID(),otherFacts,{kind:'strategy',reason:'其他学生策略',desiredRetention:.9});
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'reject',items:[{id:a.id},{id:foreign.id}]}),/permission_denied/);
+  assert.equal((await reviews.review(sessionId,a.id)).state,'pending');
+ });
+ await check('Batch schema refuses more than twenty members, duplicate ids and reject-side drafts',async()=>{
+  const a=await propose(),oversized=Array.from({length:21},()=>'xilearning_'+randomUUID());
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'reject',items:oversized.map(id=>({id}))}),/invalid_input/);
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'reject',items:[{id:a.id},{id:a.id}]}),/invalid_input/);
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'reject',items:[{id:a.id,draft}]}),/invalid_input/);
+  await assert.rejects(reviews.decideBatch({schemaVersion:LEARNING_REVIEW_SCHEMA,sessionId,action:'confirm',items:[{id:a.id,draft:{...draft,reason:''}}]}),/invalid_input/);
+  assert.equal((await reviews.review(sessionId,a.id)).state,'pending');
  });
  }finally{db.close();}
 }

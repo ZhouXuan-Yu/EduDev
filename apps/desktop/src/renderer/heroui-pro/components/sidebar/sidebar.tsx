@@ -950,11 +950,13 @@ const SidebarMain = ({ children, className, ...props }: SidebarMainProps) => {
 
 interface SidebarMobileProps extends ComponentPropsWithRef<'div'> {
   backdrop?: 'blur' | 'opaque' | 'transparent';
+  label?: string;
   children: ReactNode;
 }
 
 const SidebarMobile = ({
   backdrop = 'blur',
+  label = '侧栏',
   children,
   className,
   ...props
@@ -969,7 +971,7 @@ const SidebarMobile = ({
     >
       <Sheet.Backdrop variant={backdrop}>
         <Sheet.Content className="sidebar__mobile-sheet">
-          <Sheet.Dialog className="sidebar__mobile-dialog">
+          <Sheet.Dialog className="sidebar__mobile-dialog" aria-label={label}>
             <div
               className={composeSlotClassName(slots?.mobile, className)}
               data-slot="sidebar-mobile"

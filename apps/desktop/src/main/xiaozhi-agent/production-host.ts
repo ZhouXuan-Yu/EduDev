@@ -1,8 +1,24 @@
 import {readChatPresentation} from '../../shared/chat-presentation';
 import {capturePresentationOrder} from './presentation-event-adapter';
+import {createClassroomExportTools} from '../education/classroom-export-tools';
+import {createClassroomContext} from '../education/classroom-context';
+import {teacherPreferenceContext,teacherPreferenceTrialContext,teacherPreferenceCorrectionContext} from '../education/teacher-preference-policy';
+import {implicitTeacherCorrection} from '../education/teacher-preference-learning';
+import {assertClassroomOffice} from '../education/classroom-office';
 import {createOriginalQuestionCoordinator} from '../education/original-question-coordinator';
+import {createRunVerification} from './verification/run-observer';
+import {createRunResultReadback,bindNativeResultReadback} from './verification/result-readback';
+import {captureNativeTail,toolResultDigest} from './events/native-tail';
+import type {ReceiptCapture} from './events/receipts';
+import {createEducationReadback} from './verification/education-readback';
+import {createPracticeReadback} from './verification/practice-readback';
+import {createEffectReadback} from './verification/effect-readback';
+import {createHanaOfficeTools} from '../office-agent/hana-tool-adapter';
+import {fileVersion} from './workspace-files';
+import {legacyVerification,validTaskVerification,VERIFICATION_LABELS,verificationDescription} from '../../shared/xiaozhi-verification';
 import {validOriginalInput,type OriginalQuestionDecision} from '../../shared/original-question-review';
 import fs from 'node:fs';
+import {validVersionedPlan,validPlanHistoryInput,type PlanHistoryResult} from '../../shared/xiaozhi-plan';
 import {createPaperCoordinator} from '../education/paper-coordinator';
 import {assertPaperOffice,createPaperExportTool} from '../education/paper-export';
 import {isPaperOfficeDraft} from '../../shared/xiaozhi-office-draft';
@@ -13,7 +29,14 @@ import {validPracticeReview,type PracticeReviewDecision,type PracticeReviewResul
 import {validBrowserCaptureInput,validBrowserCapture,type BrowserCaptureResult} from '../../shared/xiaozhi-browser-capture';
 import {readBrowserCapture} from './browser-capture-reader';
 import {createGoalRuntime,createGoalController} from './goal-coordinator';
+import {createDiscoveryReadback} from './verification/discovery-readback';
 import {publicGoal} from './goal-state';
+import {createTaskCoordinator} from './tasks/coordinator';
+import {readTeacherAnswerDigests} from './verification/teacher-input-readback';
+import {createTaskResultRecheck} from './tasks/result-recheck';
+import {validTaskResume,type TaskResumeInput} from '../../shared/xiaozhi-task';
+import {createTaskPlanRuntime} from './tasks/plan-runtime';
+import {createTaskResources} from './tasks/resources';
 import {createAttachmentCoordinator} from './attachment-coordinator';
 import {createAttachmentImportService} from './attachment-import-service';
 import {publicAttachment} from './attachment-state';
@@ -42,19 +65,29 @@ import { createHash } from 'node:crypto';
 import { randomUUID } from 'node:crypto';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
 import { createNativeModelSwitch, type ModelSwitchStage } from './native-model-switch';
+import { createMcpRuntime } from './mcp-runtime';
+import { createDecisionLedger } from './decisions/ledger';
+import { judgeDecision,judgeRoute } from './decisions/deepseek-shadow';
+import {createDecisionAuthority} from './decisions/authority';
+import type { DecisionInput } from '../../shared/xiaozhi-decisions';
+import {createTeacherCandidateCatalog} from '../education/teacher-preference-candidates';
+import type {TeacherCandidateInput} from '../../shared/teacher-candidates';
+import type { XiaozhiMcpAddInput, XiaozhiMcpInput, XiaozhiMcpTrustInput } from '../../shared/xiaozhi-mcp';
 import type { PiXiaozhiOptions } from './pi-session';
-import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
+import {validXiaozhiHistoryPageInput,type XiaozhiHistoryPage,type XiaozhiHistoryPageInput,type XiaozhiModelCapabilities} from '../../shared/xiaozhi-agent';
 import type { OmniEduStore } from '../db';
 import { createEducationTools } from './education-tools';
 import {createMaterialTools} from '../assets/material-tools';
+import {createMaterialPageTools} from '../assets/material-page-tools';
 import {createEducationCapabilityProvider} from '../education/capability-provider';
+import {createClassroomTools} from '../education/classroom-tools';
 import {createEducationSearchTools} from '../education/search-provider';
 import {createStudentContextProvider} from '../education/student-context-provider';
 import {createLearningProvider} from '../education/learning-provider';
 import {createMistakeSimilarProvider,type ObservedMistakeLearning} from '../education/mistake-similar-provider';
 import type {QuestionAliases} from '../education/question-aliases';
 import {createLearningReviewCoordinator} from '../education/learning-review-coordinator';
-import {validLearningReview,type LearningReviewDecision,type LearningReviewResult,type LearningReviewSummary} from '../../shared/learning-review';
+import {validLearningBatchDecision,validLearningReview,type LearningReviewBatchDecision,type LearningReviewBatchSummary,type LearningReviewDecision,type LearningReviewResult,type LearningReviewSummary} from '../../shared/learning-review';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {readModelReasoning} from '../../shared/model-reasoning';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../shared/xiaozhi-projection';
@@ -87,10 +120,15 @@ import { validMemoryScopeInput } from './memory-selection';
 import type { XiaozhiMemoryScopeInput } from '../../shared/xiaozhi-memory';
 import type { XiaozhiActionResult, XiaozhiQueueInput } from '../../shared/xiaozhi-agent';
 import type { OfficeProjectedTurn, OfficeProjection } from '../../shared/office-agent';
+import { createEventPublisher } from './events/publisher';
+import {repairCancelledRun} from './events/terminal-cancellation';
+import {waitForLifecycle} from './lifecycle-wait';
+import { officeBlankFieldError } from './office-blank-fields';
+import { validEventsInput, type XiaozhiEventsInput } from '../../shared/xiaozhi-events';
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
-type Active = { runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation> };
+type Active = { task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
@@ -109,11 +147,19 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   afterOfficeArtifactStage?: (stage:'prepared'|'intent'|'file'|'fact')=>Promise<void>;
   afterAttachmentSendStage?: (stage:'claimed'|'committed')=>Promise<void>;
   autoCompaction?: boolean; testContextWindow?: number; settingsCodec?: SettingsKeyCodec;
+  /** Main-only failure acceptance; never renderer supplied. */
+  lifecycleTimeoutMs?:number; shutdownTimeoutMs?:number;
+  beforeModelDelivery?:()=>Promise<void>;
   afterModelSwitchStage?: (stage:ModelSwitchStage)=>Promise<void> }) {
   const { store } = options;
   const root = path.join(options.dataRoot, 'xiaozhi-pi');
   const active = new Map<string, Active>();
+  const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
+  const tasks=createTaskCoordinator({store,closing:()=>closing,running:id=>active.has(id),busy:id=>active.has(id)||Boolean(admissions.get(id)?.size)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating,
+    emit:options.emit,resultRecheck:idleTaskResults,taskRecheck:async task=>{const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];for(const run of await tasks.admittedRuns(task.sessionId,task.id))try{proofs.push(await idleTaskResults.run(run.runId,task));}catch{/* Unknown historical effects cannot be confirmed or replayed. */}return proofs;}});
+  const journalFailures = new Map<string, string>();
   const starting = new Map<string, { sessionId: string; hash: string; result: Promise<XiaozhiStartResult> }>();
+  const admissions=new Map<string,Set<AbortController>>();
   // A late idle decision must not regain authority after a start/stop cycle.
   const learningDecisionGeneration = new Map<string, number>();
   const invalidateLearningDecisions = (id: string) => {
@@ -164,18 +210,64 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     try { await skillsReady; return await action(); } finally { skillsMutating = false; }
   }
   const publicEvent = (id: string, run: Active, payload: XiaozhiAgentEventPayload) => {
+    if(closing)return;
+    run.verification ??= createRunVerification(run.runId);
+    run.verification.observe(payload);
+    if(payload.kind==='image_delivery')run.results?.image(payload.image);
     run.officePresentation ??= createOfficeDeliveryPresentation(run.runId);
     for (const visible of run.officePresentation.events(payload)) {
       const event = { ...visible, traceOrder:visible.traceOrder??capturePresentationOrder(), sessionId: id, runId: run.runId, sequence: ++run.sequence } as XiaozhiAgentEvent;
-      run.turn = applyXiaozhiEvent(run.turn, event); try { options.emit(event); } catch { /* UI lifetime does not own execution. */ }
+      run.turn = applyXiaozhiEvent(run.turn, event);
+      if (run.publisher) {run.publisher.enqueue(visible,undefined,visible.kind==='tool_end'?run.receiptCaptures?.get(visible.callId):undefined);if(visible.kind==='tool_end')run.receiptCaptures?.delete(visible.callId);}
+      else {(run.pendingEvents ??= []).push(structuredClone(visible)); try { options.emit(event); } catch { /* UI lifetime does not own execution. */ }}
     }
   };
+  async function beginJournal(id: string, run: Active) {
+    const owner = await store.xiaozhiState.eventJournal.begin(id, run.runId, run.turn);
+    journalFailures.delete(id);
+    run.publisher = createEventPublisher({ journal: store.xiaozhiState.eventJournal, owner,
+      cancellation:{requested:()=>run.stopped,repair:(work,turn)=>repairCancelledRun(work,id,run.runId,run.commandId,turn)},
+      committed: (turn, sequence) => { run.turn = turn; run.sequence = sequence; },
+      emit: options.emit,
+      beforeTerminalEmit: () => { if (active.get(id) === run) active.delete(id); },
+      failed: error => {
+        // Only bounded internal identifiers may enter logs. Never expose exception
+        // text from a provider, a tool, a file, or a credential decoder.
+        const code=error instanceof Error&&(/^(?:event|tool_receipt|lifecycle|task)_[a-z_]{1,64}$/.test(error.message)||['invalid_input','configuration'].includes(error.message))?error.message:'event_persistence';
+        const locations=error instanceof Error?[...String(error.stack).matchAll(/[\\/](index|pi-session|execution-bound|publisher|journal)\.(js|ts):(\d+):(\d+)/g)].slice(0,6).map(m=>({module:m[1],line:Number(m[3]),column:Number(m[4])})):[];
+        const nativeCode=error&&typeof error==='object'&&'code'in error&&typeof error.code==='string'&&/^SQLITE_[A-Z_]{1,32}$/.test(error.code)?error.code:undefined;
+        const type=error instanceof Error&&['Error','TypeError','RangeError','AgentToolTimeoutError','AgentToolAbortedError'].includes(error.name)?error.name:'unknown';
+        const tool=error&&typeof error==='object'&&'toolName'in error&&typeof error.toolName==='string'&&/^[a-z_]{1,128}$/.test(error.toolName)?error.toolName:undefined;
+        const timeoutMs=error&&typeof error==='object'&&'timeoutMs'in error&&Number.isSafeInteger(error.timeoutMs)&&Number(error.timeoutMs)>0?Number(error.timeoutMs):undefined;
+        console.error('[xiaozhi-journal]',JSON.stringify({code,type,nativeCode,tool,timeoutMs,locations}));
+        console.error('[xiaozhi-cancel]',JSON.stringify({source:'journal',runId:run.runId,code}));
+        journalFailures.set(id, run.runId); run.stopped = true; run.abort.abort();
+        void run.agent?.abort().catch(() => undefined);
+        // Transient failure notification, never a committed journal event.
+        try { options.emit({ sessionId: id, runId: run.runId, sequence: run.sequence, generation: owner.generation,
+          durability: 'unavailable', kind: 'status', status: 'failed', error: 'event_persistence' }); } catch { /* Snapshot retains the local failure overlay. */ }
+      },
+    });
+    for (const payload of run.pendingEvents || []) run.publisher.enqueue(payload);
+    run.pendingEvents = [];
+  }
   const learningReviews=createLearningReviewCoordinator({store,
     afterWrite:options.afterLearningReviewWrite,
     isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     canDecide:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
     emit:(id,runId,review)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'learning_review',review});}
   });
+  const mcp = createMcpRuntime(store.xiaozhiState.sql, options.settingsCodec, { sanitize: text => sanitizeOfficeDocumentText(store, text) });
+  const decisions = createDecisionLedger({sql:store.xiaozhiState.sql,
+    authority:createDecisionAuthority({sql:store.xiaozhiState.sql,
+      memory:async id=>{const before=await memory.authority(id),scope=await memory.scope(id),after=await memory.authority(id);if(before.fingerprint!==after.fingerprint||scope.version!==after.version)throw Error('memory_scope_changed');return{fingerprint:after.fingerprint,state:!after.enabled?'off':!after.valid?'unavailable':scope.selections.length?'selected':'empty'};},
+      files:async id=>{const grant=await store.xiaozhiState.workspace(id),lease=grant?await host.resolveFileWorkspace(id):undefined,rows=(await store.xiaozhiState.attachments.list(id)).filter(row=>row.state==='submitted');return{available:Boolean(lease)||rows.length>0,fingerprint:createHash('sha256').update(JSON.stringify([lease?.version||'',rows.map(row=>[row.id,row.revision,row.version,row.format])])).digest('hex')};},
+      web:()=>store.xiaozhiState.modelSettings.web()}),
+    preferenceRevision:async()=>(await store.xiaozhiState.teacherPreferences.snapshot()).revision,
+    judge:async(id,state,signal)=>judgeDecision(await modelSettings.runtime(id),state,signal),
+    routeJudge:async(id,state,signal)=>judgeRoute(await modelSettings.runtime(id),state,signal),
+    assertIdle:()=>{if(closing||!configuring.has('provider')||active.size||starting.size)throw Error('busy');}});
+  const candidates=createTeacherCandidateCatalog(store.xiaozhiState.sql);
   const paperReviews=createPaperCoordinator({store,
     isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     canWrite:(id,runId)=>!closing&&!conversationStarting(id)&&(!active.has(id)||active.get(id)?.runId===runId&&!active.get(id)?.stopped),
@@ -220,8 +312,18 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     emit: (id, runId, payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id, run, payload); },
   });
   const officeArtifacts=createOfficeArtifactCoordinator({state:store.xiaozhiState.officeArtifacts,
+    proposalError:async(id,runId,raw)=>{
+      const run=active.get(id);if(run?.runId!==runId||run.stopped)throw Error('cancelled');
+      const instructions=(await store.xiaozhiState.controls(id)).filter(item=>item.runId===runId&&item.kind==='instruction'&&item.state==='applied'&&/负责人/.test(item.text));
+      if(active.get(id)!==run||run.stopped)throw Error('cancelled');
+      // A later applied teacher instruction may replace the original field requirement.
+      const prompt=instructions.at(-1)?.text||run.turn.items.find(item=>item.kind==='message'&&item.role==='user')?.text||'';
+      return officeBlankFieldError(prompt,raw);
+    },
     sanitize:text=>sanitizeOfficeDocumentText(store,text),
     service:createOfficeArtifactService({state:store.xiaozhiState.officeArtifacts,dataRoot:options.dataRoot,
+      validateClassroomDraft:async(id,draft)=>{if(!('classroomSource'in draft))throw Error('invalid_input');assertClassroomOffice(await store.xiaozhiState.classrooms.readConfirmed(id,draft.classroomSource.classroomId,draft.classroomSource.version),draft);},
+      commitClassroomDraft:async(id,draft,install)=>{if(!('classroomSource'in draft))throw Error('invalid_input');await store.xiaozhiState.classrooms.withConfirmedSource(id,draft.classroomSource.classroomId,draft.classroomSource.version,item=>{assertClassroomOffice(item,draft);install();});},
       validatePaperDraft:async(id,draft)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);},
       resolvePaperImages:async(id,draft,signal)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);return resolvePaperOfficeImages(draft,store.originalQuestions,signal);},
       commitPaperDraft:async(id,draft,install)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');await store.papers.withConfirmedSource(id,draft.paperSource.paperId,draft.paperSource.digest,paper=>{assertPaperOffice(paper,draft);install();});},
@@ -238,6 +340,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     sanitize:async text=>(await createStudentContextSanitizer(store))(text),
     isCurrent:(id,runId) => !closing && active.get(id)?.runId === runId && !active.get(id)?.stopped,
     emit:(id,runId,payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id,run,payload); },
+    flush:async(id,runId)=>{const run=active.get(id);if(!run||run.runId!==runId||run.stopped||!run.publisher)throw Error('cancelled');await run.publisher.flush();},
     resume:async (item,answer):Promise<XiaozhiActionResult> => {
       const outcome = await host.start({ sessionId:item.sessionId,commandId:item.id.replace('pictrl_','xicmd_'),
         prompt:`继续上次中断的教师澄清。上次问题：${item.text}\n教师回答：${answer}\n只按本次回答继续任务；旧复制、旧审批及未完成效果不要自动重放，所有文件效果需要新确认。` });
@@ -256,18 +359,21 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     if(hash!==undefined&&workspaceHash(directory)!==hash)throw new Error('permission_denied');
     if(closing||choosing.has(id))throw new Error('busy');await authorizePaperConversation(id);return directory;
   }
-  async function snapshot(id = '',settlementRead=0): Promise<XiaozhiWorkspaceSnapshot> {
+  async function snapshot(id = '',settlementRead=0,beforeRunId?:string): Promise<XiaozhiWorkspaceSnapshot> {
     if (id && !validId(id)) throw new Error('invalid_input');
     if (id) await recoverModel(id);
     const model = await modelSettings.model(id || undefined);
     const projection: OfficeProjection = { schemaVersion: 'xiaozhi.office.projection.v1', threadId: id, provider: 'deepseek',
       model, epoch: 1, sourceSequence: 0, needsHydration: false, hasMoreHistory: false, turns: [] };
     if (!id) return { enabled, projection, running: false, legacyHistory: false };
-    const detail = await store.getAiConversationSession(id);
+    const detail = await store.getAiConversationHistoryPage(id,beforeRunId?{before:beforeRunId}:{});
     const selectedStudent=detail.session.studentId?(await store.listStudents('')).find(student=>student.id===detail.session.studentId):undefined;
+    let task:import('../../shared/xiaozhi-task').TaskView|null=null,taskUnavailable=false;
+    try{await tasks.recover(id);task=await tasks.committed(id);}catch{taskUnavailable=true;}
     const binding = await store.xiaozhiState.getBinding(id); if (binding) projection.model = binding.model;
     const modelCapabilities = await readDeepSeekCapabilities(root, projection.model);
-    const runs = new Map((await store.xiaozhiState.runs(id)).map(row => [String(row.id), row]));
+    const pageRunIds=detail.messages.filter(message=>message.role==='user').map(message=>String(message.metadata.agentRunId||message.id));
+    const runs = new Map((await store.xiaozhiState.runs(id,pageRunIds)).map(row => [String(row.id), row]));
     const messageAttachments=(await store.xiaozhiState.attachments.list(id)).filter(row=>row.state==='submitted').map(publicAttachment);
     let legacyHistory = false;
     for (const message of detail.messages) {
@@ -281,7 +387,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       } else if (message.role === 'assistant') {
         const turn = projection.turns.at(-1); if (!turn) continue;
         // Only host-owned Pi runs can supply a public segmented projection.
-        const pi = runs.has(String(message.metadata.agentRunId)) && message.metadata.piVersion === 'xiaozhi.pi.education.v1';
+        const pi = message.metadata.agentRunId === turn.id && runs.has(turn.id) && message.metadata.piVersion === 'xiaozhi.pi.education.v1';
         if (pi && Array.isArray(message.metadata.publicItems)) {
           turn.items.push(...message.metadata.publicItems as OfficeProjectedTurn['items']);
           const reasoning=readModelReasoning(message.metadata.modelReasoning);
@@ -293,12 +399,15 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
           if(Number.isSafeInteger(message.metadata.publicStagesOmitted)&&Number(message.metadata.publicStagesOmitted)>0)turn.publicStagesOmitted=Number(message.metadata.publicStagesOmitted);
           turn.status = message.metadata.status === 'interrupted' ? 'interrupted' : message.metadata.ok === true ? 'completed' : 'failed';
           if (message.metadata.errorMessage) turn.error = String(message.metadata.errorMessage);
+          turn.verification = validTaskVerification(message.metadata.verification,turn.id) ? message.metadata.verification : legacyVerification(turn.id);
         } else {
           legacyHistory = true; turn.items.push({ id: message.id, kind: 'message', role: 'assistant', phase: 'final_answer', text: message.content });
           if (message.metadata.ok === false) { turn.status = 'failed'; turn.error = message.content; }
+          turn.verification = legacyVerification(turn.id);
         }
       }
     }
+    projection.hasMoreHistory=detail.hasMore;
     const workspace = await store.xiaozhiState.workspace(id);
     const paperOutput=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.xiaozhiState.paperOutput(id):null;
     const storedLearningReviews=detail.session.studentId&&selectedStudent?.status==='active'&&!detail.session.archivedAt?await store.learningReviews.list(id):[];
@@ -310,7 +419,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const changes = (await store.xiaozhiState.changes.list(id)).map(changeSummary);
     const artifacts=(await store.xiaozhiState.officeArtifacts.list(id)).map(officeSummary);
     const interruptedSend = await store.xiaozhiState.interruptedSend(id);
-    const storedControls = (await store.xiaozhiState.controls(id)).map(publicControl);
+    let storedControls = (await store.xiaozhiState.controls(id)).map(publicControl);
     const storedGoal=await store.xiaozhiState.goals.latest(id);
     const budgetSettings=await store.xiaozhiState.budgetSettings(id);
     const browserStatus=await browser.status(id);
@@ -321,11 +430,21 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const index=projection.turns.findIndex(turn=>turn.id === control.runId);
       if(index >= 0)projection.turns[index]=applyXiaozhiEvent(projection.turns[index],{kind:'control',control,sessionId:id,runId:control.runId,sequence:0});
     }
+    // Domain reads above can reveal a pending teacher question before its queued
+    // public event commits. Flush that already-published queue before returning
+    // a snapshot; keep DB failure visible without advancing an uncommitted cursor.
+    await active.get(id)?.publisher?.flush().catch(() => undefined);
+    // Journal truth for new runs, compatibility publicItems for historical runs.
+    const durable = await store.xiaozhiState.eventJournal.snapshotsForRuns(id,projection.turns.map(turn=>turn.id));
+    for (const saved of durable) {
+      const index = projection.turns.findIndex(turn => turn.id === saved.turn.id);
+      if (index >= 0) projection.turns[index] = saved.turn; else projection.turns.push(saved.turn);
+    }
     // Merge active state after persisted reads; no await after this live snapshot.
     const current = active.get(id);
     // A run can finish while the asynchronous historical reads are in flight.
     // Refresh its durable result once instead of returning running=false with stale running history.
-    if(!current&&settlementRead===0&&projection.turns.some(turn=>turn.status==='running'))return snapshot(id,1);
+    if(!current&&settlementRead===0&&projection.turns.some(turn=>turn.status==='running'))return snapshot(id,1,beforeRunId);
     if (current) {
       const index = projection.turns.findIndex(turn => turn.id === current.runId);
       if (index >= 0) projection.turns[index] = structuredClone(current.turn); else projection.turns.push(structuredClone(current.turn));
@@ -335,16 +454,24 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const indexUsage=usage.findIndex(item=>item.runId===current.runId);
       if(indexUsage>=0)usage[indexUsage]=value;else usage.push(value);
     }
+    // V2 adoption is a committed journal fact, not a newer private CAS draft.
+    // The same committed turn is used for both inline plans and snapshot controls.
+    storedControls=storedControls.filter(control=>!control.plan);
+    for(const turn of projection.turns)for(const item of turn.items)if(validVersionedPlan(item.plan))storedControls.push(structuredClone(item.plan));
+    if (journalFailures.has(id)) {
+      const index = projection.turns.findIndex(turn => turn.id === journalFailures.get(id));
+      if (index >= 0) projection.turns[index] = applyXiaozhiEvent(projection.turns[index], { sessionId: id, runId: projection.turns[index].id, sequence: 0, kind: 'status', status: 'failed', error: 'event_persistence' });
+    }
     for (const metrics of usage) {
       const index = projection.turns.findIndex(turn => turn.id === metrics.runId);
       if (index >= 0) projection.turns[index] = applyXiaozhiEvent(projection.turns[index],
         { kind: 'usage', usage: metrics, sessionId: id, runId: metrics.runId, sequence: 0 });
     }
-    return { enabled, projection, running: Boolean(current), ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
+    return { enabled, projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailures.has(id)?{eventPersistence:'unavailable' as const}:{}), running: Boolean(current)&&!journalFailures.has(id), ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
-      paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
+      ...(task?{task}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
   }
   function modelCoordinator(id:string,owner?:Active) {
     return createNativeModelSwitch({state:store.xiaozhiState.modelSwitch,root,
@@ -386,15 +513,31 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const studentId=(await store.getAiConversationSession(id)).session.studentId||'';
     let observedLearning:(Awaited<ReturnType<typeof store.studentContext.learningSnapshot>>&{reviewVersion:number})|undefined;
     const observedMaterials=new Map<string,string>();
+    const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0);
+    const mcpTools = await mcp.tools();
     const observedQuestions=new Map<string,QuestionContextSource>();
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
-    return {stateRoot,workspace,apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,
+    try { return {stateRoot,workspace,...(grant||paperOutput?{fileOutputWorkspace:await resolvePaperOutput(id)||workspace}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:mcpTools.definitions,mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
         const [knowledge,materials,questions,attachments]=await Promise.all([store.getKnowledgeOverview(),store.materials.list({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}),store.searchQuestionBank({limit:1}),store.xiaozhiState.attachments.list(id)]);
         return {knowledge:knowledge.counts.chunks>0,materials:materials.total>0,questions:questions.length>0,attachments:attachments.some(row=>row.state==='submitted'),workspace:Boolean(await store.xiaozhiState.workspace(id))};
       },
       ...(owner?.goalId?{goal:createGoalRuntime({store,sessionId:id,goalId:owner.goalId,runId,
         current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
+        teacherInputs:async()=>{
+          if(!owner.publisher)throw Error('evidence_missing');
+          await owner.usageWrites;await owner.publisher.barrier();
+          return readTeacherAnswerDigests({sql:store.xiaozhiState.sql,owner:owner.publisher.owner,nativeRoot:root,current:()=>!closing&&active.get(id)===owner&&!owner.stopped});
+        },
+        verify:async()=>{
+          if(!owner.results||!owner.readResults||!owner.publisher)throw Error('evidence_missing');
+          const signal=AbortSignal.any([owner.abort.signal,AbortSignal.timeout(15000)]);
+          await owner.usageWrites;signal.throwIfAborted();
+          await owner.publisher.barrier();signal.throwIfAborted();
+          const verification=await owner.results.check(owner.verification!.finish({failed:false,stopped:false}),owner.readResults,signal);
+          signal.throwIfAborted();if(closing||active.get(id)!==owner||owner.stopped)throw Error('cancelled');
+          publicEvent(id,owner,{kind:'verification',verification});await owner.publisher.flush();signal.throwIfAborted();return verification;
+        },
         evidence:()=>owner.turn.items.filter(item=>item.kind==='tool'&&item.status==='completed'&&!['记录目标进度','更新任务计划','请教师补充'].includes(item.label||'')).map(item=>({runId,callId:item.id,label:(item.label||'已完成授权工具').slice(0,200)})),
         emit:goal=>{if(active.get(id)===owner)publicEvent(id,owner,{kind:'goal',goal});}})}:{}),
       ...(web.enabled?{webTools:createPiWebTools({workspace,sessionId:id,runId,dnsMode:web.dnsMode,limitsEnforced:false,
@@ -432,19 +575,21 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       ...(grant ? { officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         sanitize:text=>sanitizeOfficeDocumentText(store,text)}) } : {}),
-      ...(grant||paperOutput?{paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})}}:{}),
+      ...(grant||paperOutput?{classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})}}:{}),
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:excluded=>getPiProtectedContext(store,id,excluded),
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
       questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases),
-      questionReviewTools:questionReviews.tools(id,runId,observedQuestions),
-      questionCollectionTools:questionCollections.tools(id,runId,observedQuestions),
+      questionReviewTools:questionReviews.tools(id,runId,observedQuestions,undefined,{provider:'deepseek',model:settings.model,runId}),
+      questionCollectionTools:questionCollections.tools(id,runId,observedQuestions,{provider:'deepseek',model:settings.model,runId}),
       practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions)},
       paperReview:{studentId,tools:paperReviews.tools(id,runId)},
       originalQuestionReviewTools:originalReviews.tools(id,runId,observedMaterials),
-      materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version)=>observedMaterials.set(resourceId,version)),
+      materialTools:createMaterialTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(resourceId,version,material)=>{classroomContext.observe(material);observedMaterials.set(resourceId,version);}),
+      materialPageTools:createMaterialPageTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,observedMaterials),
       educationCapabilityTools:createEducationCapabilityProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped).tools,
+      classroomTools:createClassroomTools({context:()=>classroomContext.snapshot(),sessionId:id,runId,state:store.xiaozhiState.classrooms,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text)}),
       educationSearchTools:createEducationSearchTools(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped),
       studentContext:{studentId,tools:createStudentContextProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped)},
       studentLearning:{studentId,tools:createLearningProvider(store,id,studentId,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(facts,delivered)=>{observedLearning=facts;observedMistakeLearning={facts,delivered};})},
@@ -453,6 +598,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       ...(ledger?{modelHistory:{authorize:manager=>coordinator.authorize(manager,id),
         beforeLoad:(manager,authority)=>coordinator.beforeAuthorityLoad(manager,ledger,authority),
         align:(session,authority)=>coordinator.alignAuthorityBranch(session,ledger,authority)}}:{})};
+    } catch (error) { await mcpTools.dispose(); throw error; }
   }
   async function switchBound(input:XiaozhiSessionModelInput,target:XiaozhiModelCapabilities) {
     return trackModelWrite(async()=>{
@@ -471,7 +617,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       agent.assertSwitchCapacity(target);
       const model=agent.registeredModel(target.id); if(!model)throw new Error('model_unavailable');
       await coordinator.switch(agent.session,current,model);
-    } finally {agent.dispose();}
+    } finally {await agent.dispose();}
     });
   }
   async function execute(id: string, prompt: string, run: Active, settings: Pick<Awaited<ReturnType<OmniEduStore['getDeepSeekRuntimeSettings']>>, 'provider' | 'apiKey' | 'model'>) {
@@ -479,15 +625,79 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     try {
       publicEvent(id,run,{kind:'activity',stage:'preparing',since:Date.now()});
       if (!settings.apiKey) throw new Error('authentication');
+      const apiKey=settings.apiKey;
       if (run.stopped) throw new Error('cancelled');
-      const cleanPrompt = await (await createStudentContextSanitizer(store))(prompt);
-      const selected=(await store.getAiConversationSession(id)).session.studentId;
-      if(selected){try{await store.studentContext.snapshot(selected);}catch{throw new Error('permission_denied');}}
-      const capabilities = await resolveDeepSeekCapabilities(root, settings.model, settings.apiKey, run.abort.signal);
+      const preparing=<T>(action:(signal:AbortSignal)=>Promise<T>)=>waitForLifecycle('host_preparation',action,{signal:run.abort.signal,timeoutMs:options.lifecycleTimeoutMs??15000});
+      const cleanPrompt = await preparing(async signal=>{const sanitize=await createStudentContextSanitizer(store);signal.throwIfAborted();return sanitize(prompt);});
+      const selected=(await preparing(()=>store.getAiConversationSession(id))).session.studentId;
+      if(selected){try{await preparing(()=>store.studentContext.snapshot(selected));}catch(error){if(run.stopped)throw Error('cancelled');throw new Error('permission_denied');}}
+      const preference=run.operation==='prompt'?await preparing(()=>store.xiaozhiState.teacherPreferences.observe(id,run.runId,()=>!closing&&!run.stopped&&active.get(id)===run)):{snapshot:await preparing(()=>store.xiaozhiState.teacherPreferences.snapshot()),action:'none'};
+      run.teacherPreferenceRevision=preference.snapshot.revision;
+      if(run.operation==='prompt'){
+        try{await preparing(()=>decisions.capture({sessionId:id,runId:run.runId,goalId:run.goalId,preferenceRevision:preference.snapshot.revision,hasPreferences:Object.keys(preference.snapshot.values).length>0,action:preference.action,trial:Boolean('trial'in preference&&preference.trial)}));}
+        catch{decisions.unavailable(id);}
+      }
+      const capabilities = await preparing(signal=>resolveDeepSeekCapabilities(root, settings.model, apiKey, signal));
       const { createPiXiaozhiSession } = await import('./pi-session');
       if (run.stopped) throw new Error('cancelled');
-      const base=await sessionConfiguration(id,{apiKey:settings.apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run);
-      run.agent = await createPiXiaozhiSession({ ...base, onEvent: event => {
+      const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run));
+      const priorProtectedContext=base.protectedContext,preferenceText=teacherPreferenceContext(preference.snapshot,preference.action)+('trial'in preference&&preference.trial?teacherPreferenceTrialContext(preference.trial):'')+(preference.action==='observed'?teacherPreferenceCorrectionContext(implicitTeacherCorrection(cleanPrompt)):'');
+      // Freeze one evaluated version for this run; stable system/tool prefix is unchanged.
+      base.protectedContext=async excluded=>(await priorProtectedContext?.(excluded)||'')+preferenceText;
+      const readbackImporter=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,
+        isCurrent:()=>!closing&&active.get(id)===run&&!run.stopped});
+      const readSavedFile=createEffectReadback({sessionId:id,runId:run.runId,
+          current:()=>!closing&&active.get(id)===run&&!run.stopped,
+          workspace:async()=>(await host.resolveFileWorkspace(id)).path,
+          fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,
+          fileText:text=>base.sanitizeFileText!(text),
+          changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
+      const readSavedQuestions=createEducationReadback({sessionId:id,runId:run.runId,
+        current:()=>!closing&&active.get(id)===run&&!run.stopped,questions:store.questionReviews});
+      const readSavedPractice=createPracticeReadback({sessionId:id,runId:run.runId,
+        current:()=>!closing&&active.get(id)===run&&!run.stopped,practice:store.practiceReviews});
+      run.results=createRunResultReadback({runId:run.runId,
+        ...(run.goalId?{bindDiscovery:createDiscoveryReadback({sessionId:id,runId:run.runId,current:()=>!closing&&active.get(id)===run&&!run.stopped,workspace:()=>host.resolveFileWorkspace(id)})}:{}),
+        bindEffect:(callId,tool,payload)=>tool==='education_propose_questions'?readSavedQuestions(callId,tool,payload)
+          :tool==='education_propose_practice'?readSavedPractice(callId,tool,payload):readSavedFile(callId,tool,payload),
+        readLocal:async(tool,payload)=>{
+          const signal=AbortSignal.any([run.abort.signal,AbortSignal.timeout(10000)]);
+          if(closing||active.get(id)!==run||run.stopped)throw Error('cancelled');
+          if(tool==='office_read_attachment'){
+            const row=await store.xiaozhiState.attachments.get(id,payload.source.attachmentId);
+            if(!row||row.version!==payload.source.version)throw Error('attachment_changed');
+            const reader=base.attachmentTools!.find(t=>t.name===tool)!;
+            const result=await reader.execute('verification_readback',{id:row.id,revision:row.revision,
+              startLine:payload.source.locator.start,lineCount:payload.source.locator.end-payload.source.locator.start+1},signal,undefined,undefined as never);
+            if(result.isError)throw Error('evidence_missing');return result.content;
+          }
+          const lease=await host.resolveFileWorkspace(id);
+          const reader=createHanaOfficeTools({workspace:lease.path,sessionId:id,runId:run.runId,networkAllowed:false,fileVersion});
+          const result=await reader.execute('office_read_text','verification_readback',{path:payload.data.source},signal);
+          if(!result.success||result.data?.version!==payload.data.version)throw Error('evidence_missing');
+          result.data!.text=await base.sanitizeFileText!(result.data!.text as string);signal.throwIfAborted();
+          return[{type:'text',text:JSON.stringify(result)}];
+        },
+        verifyImage:async receipt=>{
+          const signal=AbortSignal.any([run.abort.signal,AbortSignal.timeout(10000)]),ref=receipt.attachment!;
+          const row=await store.xiaozhiState.attachments.get(id,ref.id),detail=await store.getAiConversationSession(id);
+          if(!row||row.state!=='submitted'||row.format!=='image'||row.revision!==ref.revision||row.version!==ref.version||detail.session.archivedAt
+            ||!detail.messages.some(m=>m.id===row.messageId&&m.role==='user'&&m.metadata.agentRunId===row.runId))return false;
+          await readbackImporter.verify(id,{id:ref.id,revision:ref.revision},signal);return true;
+        }});
+      const resumedResults=run.task?createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:sessionId=>sessionId===id&&!closing&&active.get(id)===run&&!run.stopped,workspace:sessionId=>host.resolveFileWorkspace(sessionId)}):undefined;
+      const taskRuntime=run.task&&run.publisher?createTaskPlanRuntime({sql:store.xiaozhiState.sql,taskId:run.task.id,publisher:run.publisher,
+        current:()=>!closing&&active.get(id)===run&&!run.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),trustedMcpNames:new Set(base.mcpTools?.map(t=>t.name)),
+        resources:createTaskResources({sessionId:id,workspace:()=>host.resolveFileWorkspace(id),studentId:async()=>(await store.getAiConversationSession(id)).session.studentId||'',attachment:async attachmentId=>(await store.xiaozhiState.attachments.get(id,attachmentId))?.state==='submitted'}),
+        proofs:async()=>{if(!run.results||!run.readResults)return[];await run.publisher!.barrier();const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];
+          const task=await tasks.committed(id);if(!task||task.id!==run.task!.id)throw Error('task_owner_stale');
+          for(const previous of await tasks.admittedRuns(id,task.id)){if(previous.runId===run.runId)continue;try{proofs.push(await resumedResults!.run(previous.runId,task));}catch{run.abort.signal.throwIfAborted();if(closing||run.stopped||active.get(id)!==run)throw Error('cancelled');/* Missing old authority stays unverified; no tool or approval is replayed. */}}
+          const v=await run.results.check({...legacyVerification(run.runId),state:'needs_human',reason:'human_review',checkedAt:new Date().toISOString()},run.readResults,run.abort.signal);return[...proofs,v];}}):undefined;
+      if(taskRuntime&&run.task?.lastRunId===run.runId)await taskRuntime.refresh();
+      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,beforeModelDelivery:options.beforeModelDelivery,lifecycleSignal:run.abort.signal,lifecycleTimeoutMs:options.lifecycleTimeoutMs,onCriticalToolFailure:error=>run.publisher?.fail(error||Error('event_persistence')),onToolAttempt:async(attempt,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');publicEvent(id,run,{kind:'tool_attempt',attempt});await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},beforeDelivery:async(delivery,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');if(delivery.kind==='tool'){await taskRuntime?.admit(delivery.callId,delivery.tool,delivery.input);await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});}signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},onToolResult:(callId,tool,result,failed)=>{
+          run.results?.capture(callId,tool,result,failed);
+          try{(run.receiptCaptures??=new Map()).set(callId,{callId,tool,failed,digest:toolResultDigest(tool,(result as {content?:unknown})?.content,failed)});}catch{/* Unsupported or oversized bodies remain unknown; no raw body is retained here. */}
+        }, onEvent: event => {
           // Completion belongs to committed SQLite projection, not just model stop.
           if(event.kind === 'usage') {
             // SDK completion precedes the host's durable result/command commit.
@@ -504,12 +714,18 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
           const claimed=await controls.dispatching(controlId); if(claimed)await options.afterInstructionDispatch?.(run.abort.signal); return claimed;
         },onInstructionApplied:async controlId => { await controls.applied(controlId); run.instructions.delete(controlId); } });
       if (!run.agent.sessionFile) throw new Error('configuration');
+      if(!run.publisher)throw Error('event_journal_unavailable');
+      const tail=captureNativeTail(run.agent.sessionFile,root),owner=run.publisher.owner;
+      const markerId=run.agent.session.sessionManager.appendCustomEntry('xiaozhi.event-owner.v1',{schemaVersion:1,...owner});
+      await run.publisher.persist(current=>store.xiaozhiState.eventJournal.bindNative(current,{...tail,...owner,markerId}));
+      run.readResults=bindNativeResultReadback(run.agent.sessionFile,root);
       // Fence legacy version-1 readers before any model/tool memory delivery.
       await store.xiaozhiState.setBinding(id, path.relative(root, run.agent.sessionFile), settings.model, 4);
       if (run.stopped) throw new Error('cancelled');
       const count=run.turn.items[0]?.attachments?.length||0;
       const deliveredPrompt=count?`${cleanPrompt}\n\n本轮有 ${count} 个已登记的本地附件。文件正文和图片尚未提供给你，请勿声称已阅读、查看或分析这些附件；需要读取时说明所需操作。`:cleanPrompt;
       const result = await (run.operation === 'compact' ? run.agent.compact() : run.agent.prompt(deliveredPrompt));
+      if(result.ok&&taskRuntime&&!run.stopped)await taskRuntime.refresh();
       if (run.operation === 'compact' && result.ok) await options.afterCompactCommit?.();
       if (result.ok) text = result.text; else failure = result.error;
     } catch (error) {
@@ -532,25 +748,33 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         deliveryText=officeDeliveryText(run.runId,rows,failure==='cancelled'?'stopped':failure?'failed':undefined);
       } } catch { failure ||= 'configuration'; }
       if (deliveryText) text=deliveryText;
+      await run.publisher?.flush().catch(()=>{failure='event_persistence';});
+      if(run.publisher&&!run.publisher.failed){try{const recovery=await run.publisher.persist(owner=>store.xiaozhiState.eventJournal.reconcile(owner));if(recovery.receipts.length){publicEvent(id,run,{kind:'recovery',recovery});await run.publisher.flush();}}catch{failure='event_persistence';}}
+      if(run.publisher?.failed)failure='event_persistence';
       const status: 'interrupted' | 'failed' | 'completed' = failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed';
       const terminal = { kind: 'status' as const, status, finishedAt:Date.now(),...(failure ? { error: failure } : {}) };
-      run.turn = applyXiaozhiEvent(run.turn, { ...terminal, sessionId: id, runId: run.runId, sequence: run.sequence + 1 });
-      const lastText = [...run.turn.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
+      const finalTurn = applyXiaozhiEvent(run.turn, { ...terminal, sessionId: id, runId: run.runId, sequence: run.sequence + 1 });
+      const lastText = [...finalTurn.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
       if (deliveryText) {
         // The model's original final text remains in the native transcript.
         // Persist the same local delivery presentation for live and cold views.
         if(lastText?.phase==='final_answer')lastText.phase='commentary';
-        run.turn.items.push({id:`${run.runId}:office-delivery`,kind:'message',role:'assistant',phase:'final_answer',text:deliveryText});
+        finalTurn.items.push({id:`${run.runId}:office-delivery`,kind:'message',role:'assistant',phase:'final_answer',text:deliveryText});
       } else if (!failure && text) {
         if (lastText) lastText.text = text;
-        else run.turn.items.push({ id: `${run.runId}:final`, kind: 'message', role: 'assistant', phase: 'final_answer', text });
+        else finalTurn.items.push({ id: `${run.runId}:final`, kind: 'message', role: 'assistant', phase: 'final_answer', text });
       }
       // Persist the same partial/final presentation before publishing the committed terminal state.
       run.turn.items=applyXiaozhiEvent(run.turn,{...terminal,sessionId:id,runId:run.runId,sequence:run.sequence}).items;
       try {
         run.usage={...run.usage,state:status};
         await store.xiaozhiState.saveUsage(id,run.usage);
-        for (const item of run.turn.items.filter(item => item.kind === 'tool')) {
+        const taskGoal=run.goalId ? await store.xiaozhiState.goals.get(run.goalId) : undefined;
+        run.verification ??= createRunVerification(run.runId);
+        finalTurn.verification=run.verification.finish({failed:Boolean(failure),stopped:run.stopped,
+          teacherCriteria:taskGoal?.sessionId===id&&taskGoal.runId===run.runId?taskGoal.criteria:undefined});
+        if(run.results&&run.readResults)finalTurn.verification=await run.results.finish(finalTurn.verification,run.readResults);
+        for (const item of finalTurn.items.filter(item => item.kind === 'tool')) {
           await store.recordAiAgentEvent(run.runId, { phase: 'observe', status: item.status === 'completed' ? 'succeeded' : 'failed',
             label: item.label || '授权工具', detail: item.status === 'completed' ? '工具实际执行完成。' : '工具没有完成。',
             outputSummary: { callId: item.id, status: item.status } });
@@ -558,25 +782,33 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         await store.appendAiConversationMessage(id, { role: 'assistant', content: text || (failure ? XIAOZHI_ERRORS[failure] : XIAOZHI_ERRORS.model_error),
           metadata: { piVersion: 'xiaozhi.pi.education.v1', agentRunId: run.runId, provider: 'deepseek', model: settings.model,
             ok: !failure, status, errorMessage: failure ? XIAOZHI_ERRORS[failure] : '',
-            publicItems: run.turn.items.filter(item => item.id !== run.turn.items[0]?.id),
-            ...(run.turn.presentation?{chatPresentation:run.turn.presentation}:{}),
-            ...(run.turn.modelReasoning?.length?{modelReasoning:{version:1,blocks:run.turn.modelReasoning}}:{}),
-            ...(run.turn.publicStages?.length?{publicStages:run.turn.publicStages,publicStagesOmitted:run.turn.publicStagesOmitted||0}:{}),
-            ...(run.turn.traceElapsedMs===undefined?{}:{traceElapsedMs:run.turn.traceElapsedMs}) } });
+            publicItems: finalTurn.items.filter(item => item.id !== finalTurn.items[0]?.id),
+            ...(finalTurn.presentation?{chatPresentation:finalTurn.presentation}:{}),
+            ...(finalTurn.modelReasoning?.length?{modelReasoning:{version:1,blocks:finalTurn.modelReasoning}}:{}),
+            ...(finalTurn.publicStages?.length?{publicStages:finalTurn.publicStages,publicStagesOmitted:finalTurn.publicStagesOmitted||0}:{}),
+            ...(finalTurn.traceElapsedMs===undefined?{}:{traceElapsedMs:finalTurn.traceElapsedMs}),
+            verification:finalTurn.verification } });
         await store.recordAiAgentEvent(run.runId, { phase: 'finalize', status: failure ? 'failed' : 'succeeded',
-          label: failure ? '小智未完成本轮' : '小智已完成', detail: failure ? XIAOZHI_ERRORS[failure] : '模型与工具流程已完成，回复已保存。' });
+          label: failure ? '小智未完成本轮' : `本轮执行已结束 · ${VERIFICATION_LABELS[finalTurn.verification.state]}`,
+          detail: failure ? XIAOZHI_ERRORS[failure] : verificationDescription(finalTurn.verification),
+          outputSummary:{executionStatus:status,verification:finalTurn.verification} });
         await store.completeAiAgentRun(run.runId, failure === 'cancelled' ? 'blocked' : failure ? 'failed' : 'succeeded', failure ? XIAOZHI_ERRORS[failure] : '');
         await store.xiaozhiState.finishCommand(run.commandId);
+        if(run.operation==='prompt'&&run.task&&run.publisher&&!run.publisher.failed){const task=await tasks.finish(run.task,run.publisher,Boolean(failure));finalTurn.task=task;}
         if(run.goalId){const goal=await store.xiaozhiState.goals.finish(id,run.runId,text,Boolean(failure));if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-        active.delete(id); publicEvent(id, run, terminal);
+        publicEvent(id, run, {kind:'verification',verification:finalTurn.verification});
+        run.publisher?.enqueue(terminal, finalTurn); await run.publisher?.flush();
+        try{await decisions.sealRoute(id,run.runId);}catch{decisions.unavailable(id);}
       } catch {
         // A failed commit must never be reported as completion; startup recovery owns unresolved rows.
-        active.delete(id); publicEvent(id, run, { kind: 'status', status: 'failed', error: 'configuration' });
+        publicEvent(id, run, { kind: 'status', status: 'failed', error: 'configuration' });
+        await run.publisher?.flush().catch(()=>undefined); if(active.get(id)===run)active.delete(id);
       }
     }
   }
   const host = {
     listPapers:paperReviews.list,
+    comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),
     listPaperGenerationContexts:paperReviews.generationContexts,
     reviewPaper:paperReviews.review,
     cancelPaper:paperReviews.cancelInput,
@@ -642,6 +874,11 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
       return learningReviews.decide(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
     },
+    async decideLearningBatch(input:LearningReviewBatchDecision):Promise<LearningReviewResult<LearningReviewBatchSummary>>{
+      if(!validLearningBatchDecision(input))return{ok:false,error:'invalid_input'};
+      const owner=active.get(input.sessionId),generation=learningDecisionGeneration.get(input.sessionId)||0;
+      return learningReviews.decideBatch(input,()=>!closing&&!conversationStarting(input.sessionId)&&generation===(learningDecisionGeneration.get(input.sessionId)||0)&&(owner?active.get(input.sessionId)===owner&&!owner.stopped:!active.has(input.sessionId)));
+    },
     /** Main-only completion join. Never starts/replays a run or owns another model loop. */
     async waitForRun(id: string, runId: string): Promise<XiaozhiWorkspaceSnapshot> {
       if (!validId(id) || typeof runId !== 'string' || runId.length > 180) throw new Error('invalid_input');
@@ -663,7 +900,14 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       return {...state,projection:{...state.projection,model:committed?.model||state.projection.model}};
     },
     mutateGoal:createGoalController({store,closing:()=>closing,busy:id=>active.has(id)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating||starting.size>0,
-      stop:async(id,runId,goalId):Promise<unknown>=>{const owner=active.get(id);return owner?.runId===runId&&owner.goalId===goalId?await host.stop(id):undefined;},start:async(id,prompt,commandId,goalId):Promise<XiaozhiStartResult>=>await host.start({sessionId:id,prompt,commandId},'prompt',goalId)}),
+      accept:tasks.acceptGoal,stop:async(id,runId,goalId):Promise<unknown>=>{const owner=active.get(id);return owner?.runId===runId&&owner.goalId===goalId?await host.stop(id):undefined;},start:async(id,prompt,commandId,goalId):Promise<XiaozhiStartResult>=>await host.start({sessionId:id,prompt,commandId},'prompt',goalId)}),
+    taskSnapshot:tasks.snapshot,
+    reviewTask:tasks.review,
+    correctTask:tasks.correct,
+    async resumeTask(raw:unknown):Promise<XiaozhiStartResult>{
+      if(!validTaskResume(raw))return{ok:false,error:'invalid_input'};
+      return host.start({sessionId:raw.sessionId,commandId:raw.commandId,prompt:'继续先前任务中尚未完成的步骤；先核对已有来源与保存结果，不重复已有的写入。'},'prompt',undefined,raw);
+    },
     async resolveFileWorkspace(id:string) {
       if(!validId(id))throw new Error('invalid_input');
       if(closing || choosing.has(id))throw new Error('busy');
@@ -675,6 +919,21 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if(closing||choosing.has(id))throw new Error('busy');
       const directory=authorizedWorkspace(grant.path,options.dataRoot),stat=fs.statSync(directory);
       return {path:directory,label:grant.label,version:createHash('sha256').update(JSON.stringify([id,directory,stat.dev,stat.ino])).digest('hex')};
+    },
+    async listEvents(input:XiaozhiEventsInput){
+      if(!validEventsInput(input))throw Error('invalid_input');
+      if((await store.getAiConversationSession(input.sessionId)).session.archivedAt)throw Error('permission_denied');
+      return store.xiaozhiState.eventJournal.list(input);
+    },
+    async historyPage(input:XiaozhiHistoryPageInput):Promise<XiaozhiHistoryPage>{
+      if(!validXiaozhiHistoryPageInput(input))throw Error('invalid_input');
+      const view=await snapshot(input.sessionId,0,input.before);
+      return {schemaVersion:1,sessionId:input.sessionId,projection:view.projection,
+        eventCursors:view.eventCursors||[],legacyHistory:view.legacyHistory};
+    },
+    async planHistory(input:unknown):Promise<PlanHistoryResult>{
+      if(!validPlanHistoryInput(input))return {ok:false,error:'invalid_input'};
+      try{if((await store.getAiConversationSession(input.sessionId)).session.archivedAt)return {ok:false,error:'permission_denied'};return controls.planHistory(input);}catch{return {ok:false,error:'configuration'};}
     },
     enabled, snapshot, decide: approvals.decide, answer:controls.answer,
     reviewTextChange: textChanges.review,
@@ -700,6 +959,19 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       return work;
     },
     modelSettingsView: async(query?:{refresh?:boolean;sessionId?:string})=>{if(query?.sessionId)await recoverModel(query.sessionId);return modelSettings.view(query);},
+    mcpCatalog: () => mcp.catalog(),
+    decisionHistory: (id: string) => decisions.list(id),
+    decisionReplay: (input: DecisionInput) => decisions.replay(input),
+    decisionShadow: (input: DecisionInput) => mutateSettings(()=>decisions.shadow(input)),
+    decisionRouteShadow:(input:DecisionInput)=>mutateSettings(()=>decisions.shadowRoute(input)),
+    candidateHistory:(id:string)=>candidates.list(id),
+    candidateEvaluate:(input:TeacherCandidateInput)=>mutateSettings(()=>candidates.evaluate(input)),
+    candidateReject:(input:TeacherCandidateInput)=>mutateSettings(()=>candidates.reject(input)),
+    mcpAdd: (input: XiaozhiMcpAddInput) => mutateSettings(() => mcp.add(input)),
+    mcpInspect: (input: XiaozhiMcpInput) => mutateSettings(() => mcp.inspect(input)),
+    mcpTrust: (input: XiaozhiMcpTrustInput) => mutateSettings(() => mcp.trust(input)),
+    mcpRevoke: (input: XiaozhiMcpInput) => mutateSettings(() => mcp.revoke(input)),
+    mcpRemove: (input: XiaozhiMcpInput) => mutateSettings(() => mcp.remove(input)),
     async queryProviderBalance(){
       if(closing)throw new Error('busy');const controller=new AbortController();balanceQueries.add(controller);
       try{return await modelSettings.balance(controller.signal);}finally{balanceQueries.delete(controller);}
@@ -816,46 +1088,57 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if (!input || typeof input !== 'object' || Array.isArray(input) || Object.keys(input).some(key => !['sessionId','commandId'].includes(key))) return { ok: false, error: 'invalid_input' };
       return host.start({ sessionId: input.sessionId, commandId: input.commandId, prompt: '压缩当前会话的较早上下文，保留原对话与本地事实。' }, 'compact');
     },
-    async start(input: XiaozhiStartInput, operation: 'prompt' | 'compact' = 'prompt',goalId?:string): Promise<XiaozhiStartResult> {
+    async start(input: XiaozhiStartInput, operation: 'prompt' | 'compact' = 'prompt',goalId?:string,taskResume?:TaskResumeInput): Promise<XiaozhiStartResult> {
       if (!enabled || closing) return { ok: false, error: 'configuration' };
       if (skillsMutating || configuring.has('provider')) return { ok: false, error: 'busy' };
       if(!validXiaozhiStart(input)||(operation==='compact'&&input.attachments))return {ok:false,error:'invalid_input'};
+      if(taskResume&&(!validTaskResume(taskResume)||taskResume.sessionId!==input.sessionId||taskResume.commandId!==input.commandId||operation!=='prompt'||goalId||input.attachments))return{ok:false,error:'invalid_input'};
       input = { ...input, prompt: input.prompt.trim()||ATTACHMENT_ONLY_PROMPT,
         ...(input.presentation?{presentation:{version:1,skill:input.presentation.skill,text:input.presentation.text}}:{}),
         ...(input.attachments?{attachments:input.attachments.map(s=>({id:s.id,revision:s.revision}))}:{}) };
       const id = input.sessionId;
-      try {await recoverModel(id);
-        if((await store.xiaozhiState.modelSwitch?.transitions(id))?.some(row=>row.status==='prepared')) return {ok:false,error:'busy'};
-      } catch {return {ok:false,error:'configuration'};}
+      const controller=new AbortController();
+      const pending=admissions.get(id)||new Set<AbortController>();pending.add(controller);admissions.set(id,pending);
+      const phase=<T>(action:()=>Promise<T>,late?:(value:T)=>void|Promise<void>)=>waitForLifecycle('host_admission',action,{signal:controller.signal,timeoutMs:options.lifecycleTimeoutMs,late});
+      try {
+      if(journalFailures.has(id))return {ok:false,error:'event_persistence'};
+      try {await phase(()=>recoverModel(id));
+        if((await phase(async()=>store.xiaozhiState.modelSwitch?.transitions(id)))?.some(row=>row.status==='prepared')) return {ok:false,error:'busy'};
+      } catch {return {ok:false,error:controller.signal.aborted?'cancelled':'configuration'};}
       // Retain the exact historical prompt hash; compact has a distinct command identity.
       let selectedRows:Awaited<ReturnType<typeof store.xiaozhiState.attachments.list>>=[];
-      if(input.attachments){try{selectedRows=await store.xiaozhiState.attachments.list(id);if(input.attachments.some(s=>!selectedRows.some(row=>row.id===s.id)))return {ok:false,error:'attachment_changed'};}catch{return {ok:false,error:'configuration'};}}
-      const hash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt, ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
+      if(input.attachments){try{selectedRows=await phase(()=>store.xiaozhiState.attachments.list(id));if(input.attachments.some(s=>!selectedRows.some(row=>row.id===s.id)))return {ok:false,error:'attachment_changed'};}catch{return {ok:false,error:'configuration'};}}
+      const hash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt, ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
       const admission = invalidateLearningDecisions(id);
       const result = (async (): Promise<XiaozhiStartResult> => {
-      await skillsReady;
-      const previous = await store.xiaozhiState.command(input.commandId);
+      await phase(()=>skillsReady);
+      const previous = await phase(()=>store.xiaozhiState.command(input.commandId));
       if (previous) {
         if (previous.request_hash !== hash || previous.conversation_id !== id) return { ok: false, error: 'command_conflict' };
-        if(input.attachments&&previous.run_id){const admitted=await store.xiaozhiState.attachmentSends.get(input.commandId);if(!admitted||admitted.run_id!==previous.run_id||admitted.request_hash!==hash)return {ok:false,error:'configuration'};}
+        if(input.attachments&&previous.run_id){const admitted=await phase(()=>store.xiaozhiState.attachmentSends.get(input.commandId));if(!admitted||admitted.run_id!==previous.run_id||admitted.request_hash!==hash)return {ok:false,error:'configuration'};}
         return previous.run_id ? { ok: true, runId: String(previous.run_id) } : { ok: false, error: 'configuration' };
       }
-      if (await store.xiaozhiState.control(input.commandId)) return {ok:false,error:'command_conflict'};
+      if (await phase(()=>store.xiaozhiState.control(input.commandId))) return {ok:false,error:'command_conflict'};
       if(admission!==learningDecisionGeneration.get(id))return{ok:false,error:'cancelled'};
       if (closing || skillsMutating || active.has(id) || choosing.has(id) || configuring.has(id) || configuring.has('provider')) return { ok: false, error: 'busy' };
-      const run: Active = { runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: new AbortController(), instructions:new Set(), turn: { id: '', status: 'running', items: [] },
+      await phase(()=>tasks.recover(id));
+      const run: Active = { runId: '', commandId: input.commandId,...(goalId?{goalId}:{}), operation, sequence: 0, stopped: false, abort: controller, instructions:new Set(), turn: { id: '', status: 'running', items: [] },
         usage:{runId:'',budget:{...DEFAULT_PI_BUDGET},limitsEnforced:false,modelCalls:0,toolCalls:0,tokens:null,completeness:'unknown',cost:null,activeMs:0,waitingMs:0,state:'running'},usageWrites:Promise.resolve() };
       active.set(id, run); // Reserve before awaits; UI locks are not the ownership gate.
+      // Shutdown recovery owns any submitted SQL: do not queue another locked write after quit starts.
+      const interruptClaim=()=>closing?Promise.resolve():trackModelWrite(()=>store.xiaozhiState.interruptCommand(input.commandId,id,hash));
       try {
-        const detail = await store.getAiConversationSession(id); if (detail.session.archivedAt) throw new Error('invalid_input');
-        if(detail.session.studentId){try{await store.studentContext.snapshot(detail.session.studentId);}catch{throw new Error('permission_denied');}}
-        const drafts=operation==='prompt'?(await store.xiaozhiState.attachments.list(id)).filter(row=>row.state==='draft'):[];
+        const detail = await phase(()=>store.getAiConversationSession(id)); if (detail.session.archivedAt) throw new Error('invalid_input');
+        if(taskResume)await phase(()=>tasks.prepareResume(taskResume));
+        if(goalId)await phase(()=>tasks.prepareGoal(id,goalId));
+        if(detail.session.studentId){try{await phase(()=>store.studentContext.snapshot(detail.session.studentId!));}catch{throw new Error('permission_denied');}}
+        const drafts=operation==='prompt'?(await phase(()=>store.xiaozhiState.attachments.list(id))).filter(row=>row.state==='draft'):[];
         if(drafts.length&&!input.attachments){active.delete(id);return {ok:false,error:'attachment_changed'};}
         if(input.attachments&&(drafts.length!==input.attachments.length||input.attachments.some(s=>!drafts.some(row=>row.id===s.id&&row.revision===s.revision))))throw new Error('attachment_changed');
-        run.usage.budget=(await store.xiaozhiState.budgetSettings(id)).budget;
-        if (!await store.xiaozhiState.claimCommand(input.commandId, id, hash)) throw new Error('command_conflict');
+        run.usage.budget=(await phase(()=>store.xiaozhiState.budgetSettings(id))).budget;
+        if (!await phase(()=>store.xiaozhiState.claimCommand(input.commandId,id,hash),()=>interruptClaim())) throw new Error('command_conflict');
         if(input.attachments){
           await options.afterAttachmentSendStage?.('claimed');run.abort.signal.throwIfAborted();
           const importer=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,
@@ -867,7 +1150,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
           fs.writeFileSync(path.join(options.dataRoot, '.e2e-pi-command-claimed'), input.commandId);
           await new Promise(resolve => setTimeout(resolve, Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_COMMAND_DELAY_MS) || 0))));
         }
-        const settings = await modelSettings.runtime(id);
+        const settings = await phase(()=>modelSettings.runtime(id));
         if(input.attachments){
           if(closing||run.stopped)throw new Error('cancelled');
           const admitted=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId:input.commandId,prompt:input.prompt,...(input.presentation?{presentation:input.presentation}:{}),hash,model:settings.model,attachments:drafts,selections:input.attachments});
@@ -876,31 +1159,38 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
           run.turn.items.push({id:admitted.messageId,kind:'message',role:'user',text:publicMessageText(input.prompt,input.presentation),attachments:admitted.attachments});
           await options.afterAttachmentSendStage?.('committed');
         }else{
-          run.runId = await store.startAiAgentRun({ sessionId: id, prompt: input.prompt.trim(), route: 'knowledge_retrieval', subIntent: 'pi_education', model: settings.model });
-          await store.xiaozhiState.bindCommand(input.commandId, run.runId);
+          run.runId = await phase(()=>store.startAiAgentRun({ sessionId:id,prompt:input.prompt.trim(),route:'knowledge_retrieval',subIntent:'pi_education',model:settings.model,studentId:detail.session.studentId||'' }),lateRun=>closing?Promise.resolve():trackModelWrite(()=>store.completeAiAgentRun(lateRun,'failed',XIAOZHI_ERRORS.cancelled)));
+          await phase(()=>store.xiaozhiState.bindCommand(input.commandId, run.runId));
         }
-        run.usage.runId=run.runId;await store.xiaozhiState.saveUsage(id,run.usage);
+        run.usage.runId=run.runId;await phase(()=>store.xiaozhiState.saveUsage(id,run.usage));
         if(goalId){const goal=await store.xiaozhiState.goals.get(goalId);if(!goal||goal.sessionId!==id||goal.state!=='active')throw new Error('command_conflict');const bound=await store.xiaozhiState.goals.bind(goal,run.runId);publicEvent(id,run,{kind:'goal',goal:publicGoal(bound)});}
         run.turn.id = run.runId;
         if(!input.attachments){
-          const saved = await store.appendAiConversationMessage(id, { role: 'user', content: input.prompt.trim(), metadata: { agentRunId: run.runId, piVersion: 'xiaozhi.pi.education.v1',...(input.presentation?{presentation:input.presentation}:{}) } });
+          const saved = await phase(()=>store.appendAiConversationMessage(id,{role:'user',content:input.prompt.trim(),metadata:{agentRunId:run.runId,piVersion:'xiaozhi.pi.education.v1',preferenceSourceVersion:1,...(goalId?{goalId}:{}),...(input.presentation?{presentation:input.presentation}:{})}}));
           const user = saved.messages.at(-1)!;
           run.turn.items.push({ id: user.id, kind: 'message', role: 'user', text: publicMessageText(user.content,user.metadata.presentation) });
         }
+        await phase(()=>beginJournal(id, run));
         publicEvent(id, run, { kind: 'status', status: 'running' });
+        await phase(()=>run.publisher!.flush());
+        if(operation==='prompt')run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!));else await phase(()=>tasks.compact(id,run.publisher!));
+        if(closing||run.stopped)throw Error('cancelled');
         run.done = execute(id, input.prompt.trim(), run, settings);
         return { ok: true, runId: run.runId };
       } catch(error) {
-        active.delete(id); if (run.runId) await store.completeAiAgentRun(run.runId, 'failed', XIAOZHI_ERRORS.configuration).catch(() => undefined);
+        if(active.get(id)===run)active.delete(id);
+        const cleanup=trackModelWrite(async()=>{if(closing)return;await interruptClaim();if(!closing&&run.runId)await store.completeAiAgentRun(run.runId,'failed',run.stopped||controller.signal.aborted?XIAOZHI_ERRORS.cancelled:XIAOZHI_ERRORS.configuration);});
+        void cleanup.catch(()=>{journalFailures.set(id,run.runId);});
         // Once the atomic teacher/run/files fact exists, the receipt must not claim it was unsent.
         // Later host failures are shown on that admitted turn; a retry confirms its original run.
         if(input.attachments&&run.runId&&run.turn.items[0]?.attachments?.length){publicEvent(id,run,{kind:'status',status:'failed',error:'configuration'});return {ok:true,runId:run.runId};}
         const code=error instanceof Error?error.message:'';
-        return { ok: false, error:run.stopped||closing?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'?'permission_denied':code==='command_conflict'?'command_conflict':'configuration' };
+        return { ok: false, error:run.stopped||closing||controller.signal.aborted?'cancelled':error instanceof Error&&error.name==='TimeoutError'?'timeout':code==='lifecycle_timeout'?'timeout':code==='attachment_changed'||code==='changed'?'attachment_changed':code==='permission_denied'?'permission_denied':code==='command_conflict'||/^task_(revision_conflict|resume_invalid|source_changed|requirements_changed)$/.test(code)?'command_conflict':'configuration' };
       }
-      })().catch((): XiaozhiStartResult => ({ ok: false, error: 'configuration' }));
+      })().catch((): XiaozhiStartResult => ({ ok: false, error: controller.signal.aborted?'cancelled':'configuration' }));
       starting.set(input.commandId, { sessionId:id, hash, result });
       try { return await result; } finally { starting.delete(input.commandId); }
+      } finally {pending.delete(controller);if(!pending.size)admissions.delete(id);}
     },
     attachments,
     async showBrowser(raw:unknown):Promise<XiaozhiActionResult>{
@@ -922,6 +1212,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     async stop(id: string) {
       if (!validId(id)) return { ok: false };
       invalidateLearningDecisions(id);
+      for(const controller of admissions.get(id)||[])controller.abort();
       attachments.cancelSession(id);
       browser.cancel(id);
       const run = active.get(id); if (!run) return { ok: true };
@@ -929,20 +1220,31 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       // Stop the provider immediately; waiting for review cleanup can otherwise finish
       // a short reasoning block before the user's stop reaches the SDK.
       const aborting=run.agent?.abort();void aborting?.catch(()=>undefined);
+      if(!run.runId)return {ok:true}; // Admission has no effect authority to cancel; late SQL is identity-fenced.
+      try {await waitForLifecycle('host_stop_cleanup',async()=>{
       if(run.goalId){const goal=await store.xiaozhiState.goals.interrupt(id,run.runId,'教师停止了本轮执行，已保存进度。');if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await aborting; return { ok: true };
+      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await aborting;
+      },{timeoutMs:options.shutdownTimeoutMs??5000});return {ok:true};}
+      catch{run.publisher?.fail(Error('event_persistence'));return {ok:false};}
     },
     async close() {
-      closing = true; for (const run of active.values()) { run.stopped = true; run.abort.abort(); }
+      closing = true;for(const pending of admissions.values())for(const controller of pending)controller.abort();
+      for (const run of active.values()) { run.stopped = true; run.abort.abort(); }
+      for(const run of active.values())void run.agent?.abort().catch(()=>undefined);
       for(const controller of balanceQueries)controller.abort();
+      try {await waitForLifecycle('host_shutdown',async()=>{
       await attachments.close();
       await browser.dispose();
+      await mcp.dispose();
       await Promise.allSettled([...modelWrites]);
       await Promise.allSettled([...localSettingsJobs]);
       await Promise.allSettled([...starting.values()].map(item => item.result));
       for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); }
       await Promise.allSettled([...active.values()].map(run => run.done));
+      },{timeoutMs:options.shutdownTimeoutMs??5000});}
+      catch{for(const run of active.values())run.publisher?.fail(Error('event_persistence'));}
     },
+
   };
   return host;
 }

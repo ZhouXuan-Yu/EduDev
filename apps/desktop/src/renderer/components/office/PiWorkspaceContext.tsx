@@ -14,6 +14,8 @@ import {MaterialSourceLink} from '../product/MaterialSourceNavigation';
 import {StudentSourceLink} from '../students/StudentSourceNavigation';
 import {PiLearningHistory} from './PiLearningHistory';
 import {replySources} from './OfficeReplySources';
+import {OfficeMutationBoundary} from './OfficeSynchronization';
+import {teacherWorkspaceLabel} from './workspace-label';
 
 export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,onCompact,onRefresh,goalControl}: {
   sessionId:string;snapshot?:XiaozhiWorkspaceSnapshot;compactBusy:boolean;compacting:boolean;
@@ -42,15 +44,15 @@ export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,on
           {snapshot?.modelCapabilities ? <><p>{snapshot.modelCapabilities.name}</p><p>模型上下文：{snapshot.modelCapabilities.contextWindow.toLocaleString()} Token</p><p>模型输出上限：{snapshot.modelCapabilities.maxOutputTokens.toLocaleString()} Token</p><p>{snapshot.modelCapabilities.source==='official'?'官方信息':snapshot.modelCapabilities.stale?'上次官方信息，待刷新':'官方信息 · 本地缓存'}</p></> : <p>模型能力待核实；首次调用时读取官方信息。</p>}
           {snapshot?.contextPolicy && <p>当前回复上限：{snapshot.contextPolicy.maxOutputTokens.toLocaleString()} Token；{snapshot.contextPolicy.auto?'自动整理已开启':'自动整理未开启'}{snapshot.contextPolicy.testPolicy?'（隔离验收策略）':''}</p>}
         </section>
-        <section><h4>上下文</h4><Button variant="ghost" size="sm" data-testid="pi-compact" isDisabled={!snapshot||snapshot.running||compactBusy} onPress={onCompact}>{compacting?'正在压缩…':'压缩上下文'}</Button><p>整理较早上下文，原对话与本地记录保留。</p></section>
+        <OfficeMutationBoundary><section><h4>上下文</h4><Button variant="ghost" size="sm" data-testid="pi-compact" isDisabled={!snapshot||snapshot.running||compactBusy} onPress={onCompact}>{compacting?'正在压缩…':'压缩上下文'}</Button><p>整理较早上下文，原对话与本地记录保留。</p></section></OfficeMutationBoundary>
         {snapshot?.limitsEnforced===false && <section data-testid="pi-run-observation"><h4>本轮用量</h4><p>按任务继续运行；{snapshot.contextPolicy?.auto?'上下文自动整理已开启':'上下文能力待核实'}。</p>{(()=>{const usage=snapshot.usage?.find(item=>item.runId===current?.id);const input=usage?.tokens?usage.tokens.input+usage.tokens.cacheRead+usage.tokens.cacheWrite:0;return usage&&<><p>模型请求：{usage.modelCalls}；工具调用：{usage.toolCalls}</p>{usage.tokens&&<><p>缓存读取：{usage.tokens.cacheRead.toLocaleString()} Token{usage.completeness==='partial'?'（部分记录）':''}</p>{usage.completeness==='reported'&&input>0&&<p data-testid="pi-cache-hit-rate">本轮输入缓存命中率：{(usage.tokens.cacheRead/input*100).toFixed(1)}%</p>}</>}</>;})()}</section>}
-        {snapshot?.limitsEnforced!==false && snapshot?.budgetSettings && <PiBudgetCard key={`budget:${sessionId}`} sessionId={sessionId} settings={snapshot.budgetSettings} running={snapshot.running}
+        <OfficeMutationBoundary>{snapshot?.limitsEnforced!==false && snapshot?.budgetSettings && <PiBudgetCard key={`budget:${sessionId}`} sessionId={sessionId} settings={snapshot.budgetSettings} running={snapshot.running}
           usage={snapshot.usage?.find(item=>item.runId===current?.id)} onSave={async(version,budget)=>{
             const result=await window.omniEdu?.setXiaozhiBudget({sessionId,version,budget});if(!result?.ok)throw new Error('预算未保存，请重试。');await onRefresh();
           }}/>}
         {snapshot?.memoryScope && <PiMemoryScope key={`memory:${sessionId}`} sessionId={sessionId} scope={snapshot.memoryScope} running={snapshot.running}
-          onRefresh={onRefresh} onSave={async input=>{const result=await window.omniEdu?.setXiaozhiMemoryScope(input);await onRefresh();if(!result?.ok)throw new Error('memory_scope_failed');}}/>}
-        <section><h4>资料范围</h4><p>{snapshot?.workspace?`工作目录：${snapshot.workspace.label}。文件复制逐次确认。`:'教师知识库中的可用片段。用“+”选择教学工作目录。'}学生原图与个人信息正文保持本地。</p></section>
+          onRefresh={onRefresh} onSave={async input=>{const result=await window.omniEdu?.setXiaozhiMemoryScope(input);await onRefresh();if(!result?.ok)throw new Error('memory_scope_failed');}}/>}</OfficeMutationBoundary>
+        <section><h4>资料范围</h4><p>{snapshot?.workspace?`工作目录：${teacherWorkspaceLabel(snapshot.workspace.label)}。文件复制逐次确认。`:'教师知识库中的可用片段。用“+”选择教学工作目录。'}学生原图与个人信息正文保持本地。</p></section>
       </ChatTool.Content>
     </ChatTool>
   </div>;

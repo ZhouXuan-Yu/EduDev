@@ -4,7 +4,7 @@ import {ClipboardCheck} from 'lucide-react';
 import {ChatTool} from '../../heroui-pro/components/chat-tool';
 import {useOfficeComposerState} from './OfficeComposerState';
 import {GeneratedQuestionReview} from './PiQuestionReview';
-import {QUESTION_COLLECTION_SCHEMA,type QuestionCollectionSummary,type QuestionCollectionView} from '../../../shared/question-collection';
+import {QUESTION_COLLECTION_SCHEMA,collectionSectionCount,type QuestionCollectionSummary,type QuestionCollectionView} from '../../../shared/question-collection';
 import {QUESTION_REVIEW_SCHEMA,QUESTION_REVIEW_ERRORS} from '../../../shared/question-review';
 
 const issueLabels={shortage:'题目尚未齐全',quality_required:'当前题目需要检查',quality_blocked:'题目检查未通过',source_changed:'原题或保存版本已变化',duplicate_collection:'整卷出现重复题',answer_conflict:'同题答案存在冲突',quota_mismatch:'题数或题型与要求不符'};
@@ -48,11 +48,11 @@ export function PiQuestionCollection({sessionId,review,onRefresh}:{sessionId:str
  return <ChatTool className="pi-learning-review" data-testid="pi-question-collection" data-review-id={review.id} data-state={review.state} defaultExpanded state={pending?'requires-action':review.state==='confirmed'?'output-available':'output-error'}>
   <ChatTool.Trigger><ClipboardCheck size={16}/><span>{view?.title||review.title}</span><span>{review.count}/{review.required} 道 · {review.state==='confirmed'?'已集中保存':review.state==='rejected'?'已拒绝':review.phase==='drafting'?'正在起草':'集中核对'}</span></ChatTool.Trigger>
   <ChatTool.Content>
-   <p>小智在内部完成分批起草和检查。请展开核对题干、条件、答案与解析；最后集中确认当前全部题目。</p>
+   <p>{(view?.purpose||review.purpose)==='explanation'?'小智分批补齐原题的答案与讲解，原题题面和图片保持。请逐题核对后一次确认全部解析。':'小智在内部完成分批起草和检查。请展开核对题干、条件、答案与解析；最后集中确认当前全部题目。'}</p>
    {loading&&<p role="status">正在读取整卷当前版本…</p>}
    {view?.phase==='drafting'&&pending&&<p role="status">题目尚在准备中，草稿已保留。停止后可以继续当前任务，未确认不会保存到题本。</p>}
    {!!view?.issues.length&&<ul data-testid="question-collection-issues" role="status">{view.issues.map((issue,i)=><li key={i}>{view.blueprint.sections.find(s=>s.id===issue.sectionId)?.label||'整卷'}{issue.index!==undefined?` · 第${issue.index+1}题`:''}：{issueLabels[issue.code]}</li>)}</ul>}
-   <fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="整卷题目编辑">{view?.blueprint.sections.map(section=><section className="pi-training-day" key={section.id} data-testid="question-collection-section"><strong>{section.label}</strong><p>{view.groups.filter(g=>g.sectionId===section.id).reduce((n,g)=>n+g.review.count,0)} / {view.blueprint.mode==='ai_original'?section.count:section.generatedCount||0} 道起草题</p>{view.groups.filter(g=>g.sectionId===section.id).map(g=><GeneratedQuestionReview key={g.review.id} sessionId={sessionId} review={g.review} grouped exception={view.issues.some(i=>i.groupId===g.review.id)} onRefresh={refresh}/>)}</section>)}</fieldset>
+   <fieldset disabled={busy} style={{border:0,padding:0,margin:0,minWidth:0}} aria-label="整卷题目编辑">{view?.blueprint.sections.map(section=><section className="pi-training-day" key={section.id} data-testid="question-collection-section"><strong>{section.label}</strong><p>{view.groups.filter(g=>g.sectionId===section.id).reduce((n,g)=>n+g.review.count,0)} / {collectionSectionCount(view.blueprint,section)} 道{view.purpose==='explanation'?'原题解析':'起草题'}</p>{view.groups.filter(g=>g.sectionId===section.id).map(g=><GeneratedQuestionReview key={g.review.id} sessionId={sessionId} review={g.review} providedView={g.review} grouped exception={view.issues.some(i=>i.groupId===g.review.id)} onRefresh={refresh}/>)}</section>)}</fieldset>
    {dirty&&<p role="status" data-testid="question-collection-dirty">题目有未检查的修改。检查全部修改后，再集中核对整卷。</p>}
    {pending&&dirty&&<Button variant="secondary" data-testid="question-collection-check-changes" isDisabled={busy||loading} onPress={()=>void checkChanges()}>检查全部修改</Button>}
    {pending&&view?.phase==='review'&&<ChatTool.Approval>

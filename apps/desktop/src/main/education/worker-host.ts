@@ -7,7 +7,8 @@ let workers=0;
 function localPython(){
  if(process.env.OMNI_EDU_PYTHON)return {command:process.env.OMNI_EDU_PYTHON,args:[]};
  if(process.platform!=='win32')return {command:'python3',args:[]};
- const command=['C:\\Python314\\python.exe','D:\\Anaconda\\python.exe','C:\\Windows\\py.exe'].find(existsSync)||'py';
+ const bundled=process.resourcesPath?path.join(process.resourcesPath,'python-embed','python.exe'):'';
+ const command=[bundled,'C:\\Python314\\python.exe','D:\\Anaconda\\python.exe','C:\\Windows\\py.exe'].filter(Boolean).find(existsSync)||'py';
  return {command,args:/(?:^|[\\/])py(?:\.exe)?$/i.test(command)?['-3']:[]};
 }
 /** Existing reading host shared by fixed reviewed workers; no arbitrary scripts. */
@@ -24,7 +25,8 @@ export async function runEducationWorker<T>(worker:'reading'|'learning'|'questio
   const release=()=>{if(!released){released=true;workers--;}};
   const finish=(error?:string,result?:T)=>{if(settled)return;settled=true;clearTimeout(timer);signal.removeEventListener('abort',abort);child?.kill();error?reject(new Error(error)):resolve(result!);};
   const abort=()=>finish('cancelled');const timer=setTimeout(()=>finish('timeout'),worker==='math'?15000:5000);
-  try{child=spawn(python.command,[...python.args,'-I','-S','-B','-X','utf8',path.join(path.dirname(fileURLToPath(import.meta.url)),worker+'-worker.py')],{env,windowsHide:true,stdio:['pipe','pipe','pipe']});}
+  const moduleRoot=path.dirname(fileURLToPath(import.meta.url)),workerRoot=moduleRoot.includes('app.asar')?moduleRoot.replace('app.asar','app.asar.unpacked'):moduleRoot;
+  try{child=spawn(python.command,[...python.args,'-I','-S','-B','-X','utf8',path.join(workerRoot,worker+'-worker.py')],{env,windowsHide:true,stdio:['pipe','pipe','pipe']});}
   catch{clearTimeout(timer);release();reject(new Error('unavailable'));return;}
   child.once('error',()=>{release();finish('unavailable');});child.stderr!.on('data',()=>{});
   child.stdout!.on('data',(data:Buffer)=>{if(out.length+data.length>outputLimit)finish('unavailable');else out=Buffer.concat([out,data]);});

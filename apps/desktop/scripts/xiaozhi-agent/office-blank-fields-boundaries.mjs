@@ -1,0 +1,16 @@
+import '../office-agent/register-source.mjs';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
+const {officeBlankFieldError}=await import('../../src/main/xiaozhi-agent/office-blank-fields.ts');
+const {createOfficeArtifactCoordinator}=await import('../../src/main/xiaozhi-agent/office-artifact-coordinator.ts');
+const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/office-blank-fields-')),checks=[],report={success:false,checks,scope:'Pure explicit-request/office-proposal boundary; actual teacher/Word acceptance is separate'};
+const prompt='帮我拟一个四周计划，负责人一栏空着。',draft=()=>({draft:{schemaVersion:'xiaozhi.office-draft.v1',sections:[{paragraphs:['负责人：'],table:{columns:['任务','负责人'],rows:[['研究目标','']]}}]}});
+async function check(name,fn){await fn();checks.push({name,pass:true});}
+try{
+ await check('Exact empty field and label preserve original proposal bytes',()=>{const value=draft(),before=JSON.stringify(value);assert.equal(officeBlankFieldError(prompt,value),undefined);assert.equal(JSON.stringify(value),before);});
+ for(const value of ['________','____。','待定','张老师',' '])await check('Explicit blank refuses '+JSON.stringify(value),()=>{const proposal=draft();proposal.draft.sections[0].table.rows[0][1]=value;assert.match(officeBlankFieldError(prompt,proposal),/尚未提出审阅/);});
+ await check('Owner paragraph with underscore punctuation also refused',()=>{const p=draft();p.draft.sections[0].paragraphs=['负责人：____。'];assert(officeBlankFieldError(prompt,p));});
+ await check('Narrative blank instruction is not mistaken for an assigned owner',()=>{const p=draft();p.draft.sections[0].paragraphs=['负责人一栏留空，由教师确认后填写。'];assert.equal(officeBlankFieldError(prompt,p),undefined);});
+ await check('Negative requirement and no explicit requirement do not restrict teacher field',()=>{const p=draft();p.draft.sections[0].table.rows[0][1]='张老师';for(const text of ['负责人一栏不要留空。','负责人填写张老师。','帮我拟一个计划。'])assert.equal(officeBlankFieldError(text,p),undefined);});
+ await check('Other table columns and malformed drafts remain original service responsibility',()=>{const p=draft();p.draft.sections[0].table.columns=['任务','说明'];p.draft.sections[0].table.rows[0][1]='张老师';assert.equal(officeBlankFieldError(prompt,p),undefined);for(const value of [null,{}, {draft:{sections:null}}])assert.equal(officeBlankFieldError(prompt,value),undefined);});
+ await check('Violation reaches real coordinator before service propose, wait or publication',async()=>{let proposals=0,waits=0,emits=0;const c=createOfficeArtifactCoordinator({state:{},service:{propose:async()=>{proposals++;throw Error('unexpected');}},isCurrent:()=>true,sanitize:async v=>v,emit:()=>emits++,proposalError:(_s,_r,p)=>officeBlankFieldError(prompt,p)});const p=draft();p.draft.sections[0].table.rows[0][1]='____';const result=await c.tools('session','run',async()=>{waits++;})[0].execute('call',p);assert(result.isError);assert.match(result.content[0].text,/没有写入文件/);assert.equal(proposals,0);assert.equal(waits,0);assert.equal(emits,0);});
+ report.success=true;
+}catch(e){report.error=String(e.stack);process.exitCode=1;}finally{fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output,error:report.error}));}

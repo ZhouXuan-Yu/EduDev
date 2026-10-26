@@ -1,3 +1,8 @@
+import {registerScienceExportIpc} from './science-export-api';
+import {registerTaskIpc} from './tasks/api';
+import { registerMcpIpc } from './mcp-api';
+import { registerDecisionIpc } from './decisions/api';
+import {registerTeacherCandidateIpc} from '../education/teacher-candidate-api';
 import {registerOriginalQuestionIpc} from '../education/original-question-api';
 import {registerPaperIpc} from '../education/paper-api';
 import {validPaperOutput} from '../../shared/paper-export';
@@ -16,6 +21,7 @@ import { registerModelSettingsIpc } from './model-settings-api';
 import { registerTextChangeIpc } from './text-change-api';
 import {registerOfficeArtifactIpc} from './office-artifact-api';
 import {registerLearningReviewIpc} from '../education/learning-review-api';
+import {registerClassroomIpc} from '../education/classroom-api';
 import {registerQuestionReviewIpc} from '../education/question-review-api';
 import {registerQuestionContextIpc} from '../education/question-context-api';
 import {registerStudentTrainingIpc} from '../education/student-training-api';
@@ -28,18 +34,30 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   const testing = !app.isPackaged && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1';
   const learningStop=process.env.OMNI_EDU_E2E_PI_LEARNING_CUT==='stop'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''});let learningStopHeld=false;
   const textCut = testing ? process.env.OMNI_EDU_E2E_PI_TEXT_CUT_STAGE : undefined;
-  const officeCut=testing?process.env.OMNI_EDU_E2E_PI_OFFICE_CUT_STAGE:undefined;
+  const officeCut=testing&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?process.env.OMNI_EDU_E2E_PI_OFFICE_CUT_STAGE:undefined;
   const testWindow = testing ? Number(process.env.OMNI_EDU_E2E_PI_CONTEXT_WINDOW) : 0;
   const autoDelay = testing ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_AUTO_COMMIT_DELAY_MS) || 0)) : 0;
   const queueDelay = testing ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_QUEUE_DISPATCH_DELAY_MS) || 0)) : 0;
   const autoCompaction = testing && process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION !== undefined
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
   const host = createXiaozhiProductionHost({ ...options, enabled: options.authority.mode === 'pi', autoCompaction,
+    ...(testing&&process.env.OMNI_EDU_E2E_PI_MODEL_WAIT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{beforeModelDelivery:async()=>{
+      const held=path.join(options.dataRoot,'.e2e-model-wait');
+      if(fs.existsSync(held))return;
+      fs.writeFileSync(held,'await-before-delivery');
+      while(!fs.existsSync(path.join(options.dataRoot,'.e2e-model-release')))await new Promise(resolve=>setTimeout(resolve,50));
+      fs.writeFileSync(path.join(options.dataRoot,'.e2e-model-returned'),'late-await-returned');
+    }}:{}),
     ...(testing&&process.env.OMNI_EDU_E2E_PI_ORIGINAL_CUT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{afterOriginalReviewWrite:async()=>{fs.writeFileSync(path.join(options.dataRoot,'.e2e-original-uncommitted'),'uncommitted');await new Promise(resolve=>setTimeout(resolve,30000));}}:{}),
     ...(testing&&process.env.OMNI_EDU_E2E_PI_LEARNING_CUT==='1'?{afterLearningReviewWrite:async()=>{fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-learning-uncommitted'),'uncommitted');await new Promise(resolve=>setTimeout(resolve,30000));}}:{}),
     ...(learningStop?{afterLearningReviewWrite:async(isCurrent:()=>boolean)=>{if(learningStopHeld)return;learningStopHeld=true;fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-learning-uncommitted'),'uncommitted');const end=Date.now()+30000;while(isCurrent()&&Date.now()<end)await new Promise(resolve=>setTimeout(resolve,40));if(isCurrent())throw new Error('cancelled');}}:{}),
     ...(['prepared','intent','file','fact'].includes(officeCut||'')?{afterOfficeArtifactStage:async(stage:'prepared'|'intent'|'file'|'fact')=>{
-      if(stage!==officeCut)return;fs.writeFileSync(path.join(options.dataRoot,`.e2e-pi-office-${stage}`),'durable-stage-reached');await new Promise(resolve=>setTimeout(resolve,30000));
+      if(stage!==officeCut)return;fs.writeFileSync(path.join(options.dataRoot,`.e2e-pi-office-${stage}`),'durable-stage-reached');
+      if(process.env.OMNI_EDU_E2E_PI_OFFICE_RELEASE==='1'){
+        const deadline=Date.now()+30000;
+        while(!fs.existsSync(path.join(options.dataRoot,'.e2e-pi-office-release'))&&Date.now()<deadline)await new Promise(resolve=>setTimeout(resolve,25));
+        fs.writeFileSync(path.join(options.dataRoot,'.e2e-pi-office-returned'),'owned-cut-returned');
+      }else await new Promise(resolve=>setTimeout(resolve,30000));
     }}:{}),
     ...(['intent','file','undo-intent','undo-file'].includes(textCut || '') ? { afterTextChangeStage: async (stage: 'intent' | 'file' | 'undo-intent' | 'undo-file') => {
       if (stage !== textCut) return;
@@ -69,10 +87,15 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     return result.canceled?undefined:result.filePaths;
   }});
   registerWebIpc({ipcMain:options.ipcMain,allowed:fromMain,host,preferences:()=>options.store.xiaozhiState.modelSettings.web(),open:url=>shell.openExternal(url)});
+  registerMcpIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
+  registerTaskIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerDecisionIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
+  registerTeacherCandidateIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerModelSettingsIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerLearningReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
+  registerClassroomIpc({ipcMain:options.ipcMain,allowed:fromMain,state:options.store.xiaozhiState.classrooms});
   registerQuestionReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerOriginalQuestionIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerPracticeReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
@@ -80,6 +103,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerStudentTrainingIpc({ipcMain:options.ipcMain,allowed:fromMain,repository:options.store.learningReviews});
   registerQuestionContextIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerWorkspaceFileIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});
+  registerScienceExportIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});
   registerSkillManagementIpc({ ipcMain: options.ipcMain, allowed: fromMain, host, choose: async () => {
     const current = options.window(); if (!current || current.isDestroyed()) return;
     const result = await dialog.showOpenDialog(current, { title: '导入本地教育技能（选择包含 SKILL.md 的目录）', properties: ['openDirectory'] });
@@ -87,6 +111,9 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   } });
   options.ipcMain.handle('xiaozhi:enabled', event => { if (!fromMain(event)) throw new Error('permission_denied'); return host.enabled; });
   options.ipcMain.handle('xiaozhi:snapshot', (event, id) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.snapshot(id); });
+  options.ipcMain.handle('xiaozhi:history-page', (event, input) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.historyPage(input); });
+  options.ipcMain.handle('xiaozhi:events', (event, input) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.listEvents(input); });
+  options.ipcMain.handle('xiaozhi:plan-history',(event,input)=>fromMain(event)?host.planHistory(input):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:goal-mutate',(event,input)=>fromMain(event)?host.mutateGoal(input):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:browser-show',(event,id)=>fromMain(event)?host.showBrowser(id):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:browser-capture-preview',(event,input)=>fromMain(event)?host.previewBrowserCapture(input):{ok:false,error:'permission_denied'});

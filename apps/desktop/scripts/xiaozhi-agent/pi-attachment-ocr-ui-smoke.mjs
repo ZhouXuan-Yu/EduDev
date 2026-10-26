@@ -45,7 +45,7 @@ await page.getByTestId('pi-ocr-approve').scrollIntoViewIfNeeded();await page.scr
 await page.keyboard.press('Escape');await page.getByTestId('pi-attachment-preview').waitFor({state:'hidden'});report.layout.push({surface:'workspace-after-escape',chrome:await assertWorkspaceChrome(page)});await preview();
 await page.emulateMedia({colorScheme:'light'});
 await page.getByTestId('pi-attachment-preview-close').click();const before=reads().length;const turn=await send('请先简短说明核对步骤，再实际读取刚发的教师合成文字.png中教师已确认的校正文字。报告核验码、课堂时长和练习数量，引用资料来源。不要猜原图文字，不读取或复述姓名、电话、邮箱，不修改文件。');
-const result=reads().slice(before).find(row=>!row.message.isError);assert(result);const payload=JSON.parse(result.message.content.filter(x=>x.type==='text').map(x=>x.text).join(''));
+const result=reads().slice(before).find(row=>!row.message.isError);assert(result);const payloadText=result.message.content.find(x=>x.type==='text')?.text;assert(payloadText);const payload=JSON.parse(payloadText);
 assert(payload.teacherCorrected&&payload.text.includes(marker)&&payload.text.includes('课堂41分钟')&&payload.text.includes('练习9道')&&!payload.text.includes('OFFICE')&&payload.text.includes('[学生姓名]'));
 assert(!JSON.stringify(payload).includes(student)&&!JSON.stringify(payload).includes('18012345678')&&!JSON.stringify(payload).includes('edu-fixture@example.invalid'));
 const now=native();assert(now.bytes.subarray(0,old.bytes.length).equals(old.bytes));assert.equal(now.binding.session_file,old.binding.session_file);

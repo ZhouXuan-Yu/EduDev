@@ -6,7 +6,9 @@ import {createHash} from 'node:crypto';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const target=path.join(desktop,'src/main/education/vendor/deeptutor-question');
 const revision='f07029cfcf2c8dfccdb671cdfc343db8334f5741';
-const upstream=process.env.DEEPTUTOR_SOURCE_ROOT||'D:/WorkProject/DeepTutor';
+const configured=process.env.DEEPTUTOR_SOURCE_ROOT?.trim();
+const candidates=[configured,'D:/WorkProject/DeepTutor','D:/WorkProject/小智智能体借鉴项目/DeepTutor'].filter(Boolean);
+const upstream=candidates.find(candidate=>fs.existsSync(path.join(candidate,'.git')))||candidates[0];
 const verify=process.argv.includes('--verify');
 if(!verify)fs.mkdirSync(target,{recursive:true});
 const entries=[['deeptutor/agents/question/pipeline.py','pipeline.py'],['LICENSE','LICENSE']].map(([source,destination])=>{

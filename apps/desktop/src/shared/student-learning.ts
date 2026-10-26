@@ -16,6 +16,10 @@ export type LearningQuery={subject?:string};
 export function validLearningQuery(v:unknown):v is LearningQuery{
  return plainStudentInput(v,['subject'])&&(v.subject===undefined||typeof v.subject==='string'&&v.subject.trim().length>0&&v.subject.length<=128&&!/[\x00-\x1f]/.test(v.subject));
 }
+export type LearningToolQuery=LearningQuery&{trainingResultReference?:string};
+export function validLearningToolQuery(v:unknown):v is LearningToolQuery{
+ return plainStudentInput(v,['subject','trainingResultReference'])&&validLearningQuery(v.subject===undefined?{}:{subject:v.subject})&&(v.trainingResultReference===undefined||typeof v.trainingResultReference==='string'&&/^[a-f0-9]{16}$/.test(v.trainingResultReference));
+}
 const finite=(v:unknown,min:number,max:number)=>typeof v==='number'&&Number.isFinite(v)&&v>=min&&v<=max;
 export function validLearningCalculationInput(v:unknown):v is LearningCalculationInput{
  if(!plainStudentInput(v,['now','desiredRetention','points'])||!finite(v.now,0,4102444800)||!finite(v.desiredRetention,.7,.99)||!Array.isArray(v.points)||v.points.length>LEARNING_MAX_POINTS)return false;

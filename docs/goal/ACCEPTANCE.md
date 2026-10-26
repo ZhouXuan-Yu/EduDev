@@ -41,20 +41,1018 @@ Agent Trace Streaming专项真实Electron/DeepSeek 28项通过、renderer error0
 
 本工作树标准build通过、217组件/16边界/207兼容/23正式Electron检查通过；最终实例chat-experience-qNkoc4、SQLite/文件与冷重启证据见 `../audit/chat-ui-2026-10-23/DELIVERY.md`。专项覆盖数学/草稿/真实阶段和结果摘要/复制修改Markdown保存/安全继续及回复来源；不等于整体教育四链路、Office版式、系统缩放或Master验收。下一轮 `NEXT_IMPLEMENTATION_PLAN.md` 为规划，未实施。
 
+<!-- 以下保留 D 盘停写前的历史记录，供业务追溯；当前状态以上方 main 记录为准。 -->
+
+## 2026-10-23 Windows安装包
+
+状态`SOFTWARE_ACCEPTED_WITH_LIMITS`。产品构建`4885c66d8ac165ada850e6b0f4d2d39e6adc67d0786fca9c23b1418d00d951d8`/373。
+
+- NSIS x64安装器`小智-Setup-0.1.0.exe`323,870,934 bytes，SHA-256`69A743344293C0260FB95F8209DC0DD896E842CFA77F770B5D719250D9974768`；blockmap 337,521 bytes，SHA-256`C641A847A35737B831FB079D4021BA8873310E18A3EE7FCDBF817DBAAE01693E`。
+- `app.asar`中main/preload/renderer/reading/math五个关键文件与当前`out`逐文件hash一致。安装版bundled Python reading返回`found=true`，math返回`matched`且`conditionsVerified=false`；bundled OCR对固定合成图返回3行预期文字。
+- NSIS静默安装exit code 0，实际安装1000文件/1,340,856,671 bytes。安装版由Playwright启动，`app.isPackaged=true`、安装exe路径、owned userData/sessionData/dataRoot、0 demo students均断言。
+- 安装版仅显示“根据资料备课、讲清一道错题、做一份课堂课件”；点击备课卡只填可编辑草稿并聚焦，0消息/0 turn。1366×768浅色与1920×1080暗色截图已查看，0横向溢出、0 renderer error。
+- 卸载后程序目录、应用exe和卸载器均不存在；安装目录外owned profile保留50文件、data保留7文件，安装版进程0。最终NSIS删除子进程退出码没有稳定保留，直接readback补足程序移除与数据保留。
+- 首次长时间等待和NSIS工具下载服务器中止均保留；`--prepackaged`只复用已完成的同一`win-unpacked`树。安装器与exe未签名，SmartScreen/签名发布、日常保存配置、VPN-off、真人教师、真实学生图、课程质量、WPS和投影仍OPEN。
+
+证据：`apps/desktop/test-results/goal/windows-installer-20261023/progress.json`；UI：`apps/desktop/test-results/xiaozhi-agent/pi-windows-installer-ui-ahxYVO/report.json`。
+
+## 2026-10-23 WPS动态放映探测
+
+状态`IMPLEMENTED_UNVERIFIED`，WPS动态放映仍OPEN。WPS`12.0`/`12.1.0.29161`独立实例真实打开6页PPTX，`pi-science-wps-playback3-20261023`前3项通过原生文字、教学提示与备注/答案边界。
+
+- 依据WPS官方对象模型使用speaker类型和`Application.SlideShowWindows.Item(1)`后，真实`Qt5QWindowIcon`放映窗会出现；最初的`Run()`空返回和错误presentation Windows入口失败仍保留。
+- 桌面截图被用户WPS窗口遮挡；Pillow window capture为白屏，PrintWindow和BitBlt也为均匀空白，动画变化未证明。
+- `wpp.exe /s <file>`和`<file> /s`仅路由到后台prometheus进程，不构成播放。
+- `playback`至`playback7`失败报告保留；owned后台PID15836/32496已精确清理，用户原WPS进程6072/46932未动。
+- 不确认WPS GIF、静态翻页、投影或真人课堂；PowerPoint独立证据不能替代WPS。
+
+证据：`apps/desktop/test-results/goal/teacher-mainline-wps-playback-probe-20261023/progress.json`。
+
+## 2026-10-23 Microsoft PowerPoint动态放映
+
+状态`SOFTWARE_ACCEPTED`，仅限Microsoft PowerPoint单屏自动化。产品构建`ec43f1a7...`/373，PowerPoint`16.0.20430`。
+
+- `pi-science-powerpoint-playback-topmost4-20261023`8/8：真实6页放映、教学文字/备注、动画两帧、静态讲解页、原PPT保护和合并副本播放。
+- 动画区域平均变化2.469；合并副本2.295，均高于0.2；六张真实放映截图已查看。
+- owned放映窗每次抓帧前临时置顶，退出前恢复；临时置顶和恢复均真实执行，0相关PowerPoint/Python进程。
+- 旧`LXxDhC`、`topmost-20261023`、`topmost3-20261023`失败保留。
+- WPS放映、投影/扩展屏、真人课堂操作、VPN-off、安装、真人读屏和课程质量仍OPEN。
+
+证据：`apps/desktop/test-results/goal/teacher-mainline-powerpoint-playback-20261023/progress.json`，合同`docs/goal/TEACHER_POWERPOINT_PLAYBACK_CAPTURE_CONTRACT_20261023.md`。
+
+## 2026-10-23 教师错题练习观察去重
+
+状态`SOFTWARE_ACCEPTED`。最终构建`ec43f1a7...`/373。
+
+- `pi-practice-observation-boundaries-wCIKbD`19/19：共享去重、旧渲染兼容、事务、确认、拒绝、来源变化、插断回滚、学生/会话/IPC/native scope。
+- `education-journey-kL9aYy`12/12：真实Electron/DeepSeek、本地OCR确认、两题练习、教师改观察、审批、学生隔离、拒绝、停止、两次冷启。
+- 2题恰好2个`教师观察：`标签；保存正文无`教师观察：教师观察`，观察正文不以`教师观察到的`开头；8图双尺寸浅暗已查看、0 renderer错误。
+- renderer240/240、build及`git diff --check`通过。同构建资料备课`pi-teacher-materials-current-25qvTy`5/5，7次HTTP200、附件实读、完整稿审阅保存、冷启重开和源DB不变；`pi-science-merge-ui-Yzcar3`5/5，生成并重开6页副本，源HTML与原课件字节不变。
+- `HTSEAv`、`TB90ak`、`nrLUpN`、`IilJql`、`R9eoPk`、`PUX7Al`均保留；最后一项是既有math worker timeout，发生在后续练习专项之前。
+
+证据：`apps/desktop/test-results/goal/teacher-mainline-practice-observation-20261023/progress.json`。真人教师、真实学生图片、课程/题目质量、动态PowerPoint/WPS放映、投影、VPN-off、安装和真人读屏仍OPEN。
+
+## 2026-10-22 H09 125%/150% DPI
+
+状态`LIMITED_ACCEPTED`。构建`c7e088ca...`/373。
+
+- `pi-dpi-interface-ui-OACw5j/HEqdwU`连续各2项、8视图。
+- DPR 1.25/1.5，CSS 1366×768/1920×1080，浅暗媒体仿真，物理截图尺寸匹配，横向溢出0。
+- 快捷入口与主要Composer控件可达；0消息、0 provider、0 renderer错误。
+- 探针/原生主题刷新失败`WDyclk/gzBVYy/BGoOWc/sFiyCB/1ghZOH`保留。
+- 真人读屏、系统主题菜单、全部动态状态和长任务性能OPEN。
+
+证据：`apps/desktop/test-results/goal/h09-dpi-interface-20261022/progress.json`。
+
+## 2026-10-22 H09 Journal缺口与重连
+
+状态`LIMITED_ACCEPTED`，H09整体继续IMPLEMENTING。构建`c7e088ca...`/373。
+
+- `pi-event-journal-XMx2OZ`19/19：原子outbox、gap、重复/乱序、跨会话、cold recovery、late owner、bad page、tail polling。
+- `pi-event-sync-ui-CvMrmV`10/10：真实通知gap阻断审批和写入，补拉失败保持阻断，恢复后一次保存；Stop零文件；210行journal hash一致；冷启不重放。
+- `pi-event-journal-ui-QOMPZa`12/12：真实tool-start丢失/terminal withheld由SQLite补齐；typed页与journal/outbox一致；journal写失败后停止、拒绝warm retry、冷启unknown。
+- 真人读屏、动态状态完整点击/焦点/对比度、125/150% DPI、长任务性能仍OPEN。
+
+证据：`apps/desktop/test-results/goal/h09-journal-gap-recovery-20261022/progress.json`。
+
+## 2026-10-22 H10当前构建软件链
+
+状态`LIMITED_ACCEPTED`，H10整体`NOT_ACCEPTED`。构建`c7e088ca...`/373。
+
+- 网络`pi-daily-network-copy-mzNHp4/jKfIYi`连续两次5/5：真实搜索、双正文、内置浏览器、截图与重载不重放；旧`kLjoTg`保留。
+- 公开图片`pi-public-image-ui-pDFn8E`13/13；自然文件`pi-natural-file-w5DsIS`14/14。
+- 同构建教师资料5/5、错题少练两轮12/12、自然课件6/6、已有课件合并5/5、长历史7/7、快捷9/9、边界17/17、renderer240/240。
+- PowerPoint打开/原生渲染/教学文字备注通过；动态放映因Windows拒绝前台激活继续OPEN。WPS/投影、VPN-off、安装包、真人教师/课程和真实学生图片OPEN。
+- 项目无electron-builder/forge，本片不新增打包工具链。
+
+证据：`apps/desktop/test-results/goal/h10-current-build-software-20261022/progress.json`。
+
+## 2026-10-22 H05 唯一计划步骤确定性绑定
+
+状态`LIMITED_ACCEPTED`。构建`c7e088ca...`/373。
+
+- 真实失败`R5JJQX`保留：计划adopted、唯一executing步骤存在，但模型漏填`taskStepId`，题目候选卡被`task_plan_required`拒绝。
+- 修复后无计划/等待依赖/伪造步骤/错误资源/跨轮重放/human越权仍失败；唯一executing步骤可确定性绑定并记录完整admission。
+- `pi-task-plan-boundaries-JyTOx4`17/17。
+- 错题少练`education-journey-N9nyqY`、`VcojgR`连续两次12/12；资料备课5/5、自然课件6/6、已有课件合并5/5、长历史7/7、快捷入口9/9、renderer240/240。
+- 测试夹具失败`Y5h1Zv`、`HHqOua`、`fDeP6q`保留；分别对应过短超时、错误DPI/尺寸报告和过短模型等待。
+- `pi-science-powerpoint-playback-LXxDhC`前3项通过；Windows拒绝`SetForegroundWindow`，动态PowerPoint/WPS/投影OPEN。
+
+证据：`apps/desktop/test-results/goal/h05-task-envelope-deterministic-binding-20261022/progress.json`。H05/H09/H10整体继续OPEN。
+
+## 2026-10-22 H09长历史与增量加载
+
+状态：`LIMITED_ACCEPTED`，H09继续`IMPLEMENTING`，H10`NOT_ACCEPTED`，Goal ACTIVE。构建`03e62d96c47353d512d7bc979a865fbdaf5058d1df03ea09c7991a3f69aed94f`/373。
+
+- 首失败`pi-long-history-ui-gf8seZ`保留：旧构建1000轮全量返回，`hasMoreHistory=false`，入口无生产处理器。
+- `so3ADg`、`fDnlQX`连续两次7/7通过：owned 1000 run/2000消息，首屏40、第一页80、25页后1000且入口消失；最早/最新turn可见，无重复。
+- 点击前阅读turn top与展开后相差0.25px；切换会话回最近40轮，二次冷启仍40轮，0工具事件。
+- 伪造或不存在游标返回`invalid_input`；390×844、1366×768、1920×1080入口可达；2000消息和1000 run readback不变；renderer错误0。
+- 同构建renderer240/240、教师快捷入口9/9、窄屏5视图/8键盘步骤、自然文件+Word14/14通过。
+- daily配置副本`kLjoTg`真实搜索和两个正文通过，但follow-up `office_browser`因verified task-step准入未派发、无browserCapture；该H10失败保留。
+
+证据：`apps/desktop/test-results/goal/h09-long-history-20261022/progress.json`。journal gap/reorder/reconnect、真人读屏、全部动态状态和H10仍未完成。
+
+## 2026-10-22 H09窄屏与键盘可达
+
+状态：`LIMITED_ACCEPTED`，H09/H10整体继续OPEN，Goal ACTIVE。构建`8375c55c1fb3f66a36c2b8c550fb226e85bae8e0fe80c9b0a7ca8e24d6e8dda9`/373。
+
+- `pi-narrow-interface-ui-MhwwDT`、`bmoNMB`连续两次成功。
+- 1366×768浅色、768×1024浅色、390×844暗色、390 forced-colors及390冷启实际`innerWidth/innerHeight`正确，横向溢出0。
+- 对话、快捷卡、textarea、附件、权限、技能、模型和发送控件在视口内；Tab与快捷卡Enter通过。
+- 390移动侧栏Enter打开，accessibility tree中的Dialog名称为“会话侧栏”；焦点进入Dialog，Escape关闭并返回`pi-sidebar-toggle`。
+- 只填草稿时消息表0行，renderer错误0，当前构建和冻结副本不变。
+- 同构建快捷入口9/9、renderer240/240、网络5/5、图片13/13、文件15/15。
+- 原`qV9eeq`、`Ycq0Jf/N7OZZq`、`n36ODA/NbUQge`、`3toTED/YFxG8D/TtiGEe/gOGFbB`、`sJkVZJ`失败均保留，分别对应测试时序、错误期望、缺Mobile内容、Portal样式不命中与模态无障碍树预期错误。
+
+证据：`apps/desktop/test-results/goal/h09-narrow-interface-20261022/progress.json`。真人读屏软件操作、完整动态状态/点击区/对比度、长历史性能和journal gap/reorder/reconnect仍OPEN。
+
+## 2026-10-22 最终构建资料备课主线
+
+状态：`SOFTWARE_ACCEPTED`，真人教师/课程审阅OPEN，Goal ACTIVE。构建`4dfb959f3ed9e60d38f6f0313c64293bcf47441cd1fb8c1cf9f3dee2ff75ee40`/373。
+
+- `pi-teacher-materials-current-czmU6b`5/5：owned日常配置副本、资料附件实读、完整五年级稿、41分钟、8题与来源、全文审阅、审批前零文件、确认保存、冷启重开。
+- 8次DeepSeek HTTP200、0 renderer错误；冷启0模型请求。
+- 审阅稿和保存文件SHA256均`bb8a46c038fa800241d8005166ef64f939a6f062fa800ce90a662b7f1bb8918c`；native`fe5d6437...`。
+- 源日常DB SHA`7f135cd2...`不变；owned profile在证据写入后删除。
+- 首次`daily-B03Dhp`因旧脚本只设置父进程环境而未让Electron实际使用owned profile，在userData断言处安全停止；失败保留。
+
+证据：`apps/desktop/test-results/goal/teacher-mainline-current-build-20261022/progress.json`。剩余为真人/课程审阅、长稿操作体验和求助记录；错题少练与Office/WPS放映排在其后。
+
+## 2026-10-22 H10同构建矩阵（前一构建）
+
+状态：H10软件小项`LIMITED_ACCEPTED`，H10整体`NOT_ACCEPTED`，Goal ACTIVE。构建`4dfb959f3ed9e60d38f6f0313c64293bcf47441cd1fb8c1cf9f3dee2ff75ee40`/373；owned副本与当前`out`完全一致。
+
+- 网络：`pi-daily-network-copy-D4UQf0`、`fG3tZB`各5/5。
+- 图片：`pi-public-image-ui-z19EBM`、`DnmrJ6`各13/13。
+- 文件：`pi-natural-file-6rw96n`14/14。
+- 门禁：任务状态28/28、浏览器准入4/4、任务计划17/17、renderer240/240；diff exit0，仅既有LF/CRLF提示。
+- 文件首次`9tdx5O`仅因验收器不识别合法键值表；改为同时接受宽表/键值表后完整重跑通过，仍强制4周、目标/任务非空、负责人空白。
+- `wGFxRF`、`C0qnOS`、`R1PbZP`、`oprbps`、`9tdx5O`失败证据保留。
+- Electron/PowerPoint进程0；两个WPS为早先启动的现有实例，本轮未关闭。
+
+汇总：`apps/desktop/test-results/goal/h10-current-build-closeout-20261022/progress.json`。VPN-off、安装、真人教师、真实学生图片、课程质量、Office/WPS动态放映与投影仍OPEN。下一唯一教师主线是真实资料“读→改一处→审批保存→冷启重开”。
+
+## 2026-10-22 H10日常配置副本联网
+
+状态LIMITED_ACCEPTED，H10整体NOT_ACCEPTED。构建`d8ec197c3952b4707519863996ed996cd6b6e2cf41e0a7699165f88a136952e8`/373。
+
+- `pi-daily-network-copy-RxMvJv`、`Qdx3qZ`连续两次5/5。
+- 真实日常配置副本恢复DeepSeek/deepseek-flash/auto DNS，无环境覆盖。
+- 实际搜索、两个不同正文、官方正文独立回读通过；正文SHA`8434b645...`。
+- 内置浏览器打开官方页并完成1629×1086截图，SHA`78424813...`。
+- 重载保持事件与native字节，不重放搜索、正文或浏览器动作。
+- 源DB SHA`7f135cd2...`不变，owned profile删除，0 renderer错误。
+- `R1PbZP`与`oprbps`失败保留；verified web step同资源只读动作修复。
+- 任务状态28/28、浏览器准入4/4、任务计划17/17、renderer240/240。
+
+合同`H10_DAILY_NETWORK_COPY_CONTRACT_20261022.md`、`H10_BROWSER_VERIFIED_STEP_CONTRACT_20261022.md`；进度`apps/desktop/test-results/goal/h10-daily-network-copy-20261022/progress.json`。VPN-off、安装包、真人和Office/WPS放映仍OPEN。
+
+## 2026-10-22 H10日常保存配置与旧会话
+
+状态LIMITED_ACCEPTED，H10整体NOT_ACCEPTED。构建`a66595d2c3a7cbaeda35333cc3ebfed10f02e5a5764a4167c14b1007ea3db46c`/373。
+
+- `pi-daily-profile-copy-43LyZQ`、`iO1eVO`连续两次4/4。
+- 从真实日常profile只读复制`Local State/Preferences/app.db/WAL/SHM/xiaozhi-pi`，未复制教师原件/学生图片，未启动源profile。
+- 副本恢复DeepSeek/deepseek-flash、联网开启和auto DNS，无环境凭证/模型覆盖。
+- 旧会话4消息/2turn经可见侧栏打开；旧native SHA`277e225b...`与SQLite字节不变。
+- 副本新聊天两次用保存配置完成随机核码回复。
+- 源DB SHA`7f135cd2...`前后不变；报告只保存旧会话标题哈希，并在报告写入前删除owned profile；截图前收起会话侧栏，0 renderer错误、0进程。
+
+合同`docs/goal/H10_DAILY_PROFILE_COPY_CONTRACT_20261022.md`，进度`apps/desktop/test-results/goal/h10-daily-profile-copy-20261022/progress.json`。VPN-off、安装包、真人教师及Office/WPS放映仍OPEN。
+
+## 2026-10-22 小智状态写锁恢复
+
+状态LIMITED_ACCEPTED，Goal ACTIVE。构建`a66595d2c3a7cbaeda35333cc3ebfed10f02e5a5764a4167c14b1007ea3db46c`/373。
+
+- `pi-state-write-concurrency-eyGTdd`5/5：独立SQLite连接真实持锁6秒，两个排队生产状态事务6156ms恢复，无丢行且冷读两行均在。
+- `pi-event-journal-ui-V6br5b`12/12：正式Electron+真实DeepSeek，附件工具、事件补偿、教师应答续跑、SQLite写入拒绝和冷启零重放通过，0 renderer错误。
+- 事件journal19/19、工具回执15/15、attempt journal9/9、tool preflight9/9、读调度10/10、lifecycle5/5。
+- build、renderer240/240、diff通过，相关进程0。
+- 历史`daily-0AxcRF`、`daily-bkWE1w`、`daily-KnPcZ6`、`daily-JA52Nb`保持失败。
+
+证据：`apps/desktop/test-results/goal/teacher-mainline-state-lock-recovery-20261022/progress.json`与`docs/goal/XIAOZHI_STATE_LOCK_RECOVERY_CONTRACT_20261022.md`。未重放历史精确中断，真人、课程质量、VPN-off、安装及Office/WPS放映仍OPEN。
+
+## 2026-10-22 教师文件栏拖拽命中区
+
+状态SOFTWARE_ACCEPTED，Goal ACTIVE。构建`ee2639938681efc3fd5b1abe31b6749d9905ad92652cfcb8709238690b402c55`/373。
+
+- `pi-files-ui-epp8uJ`与`pi-files-ui-0lU3GY`连续两次32/32。
+- 1366×768、1920×1080及浅暗四组均以真实鼠标拖到约360px；隐藏文件树后正文约359.33px。
+- 文件列表、刷新、关闭和发送按钮均可达；0 renderer错误、0远程请求。
+- renderer240/240、build、`git diff --check`通过，测试后相关进程0。
+- `TTu3HI`早取样、`Dq65HM`布局未稳定、`RqLsSX`命中区被面板拦截、`xeghZa`等待后仍失败均保留。
+
+证据：`apps/desktop/test-results/goal/teacher-mainline-file-resize-20261022/progress.json`与`docs/goal/TEACHER_FILE_RESIZE_HIT_TARGET_CONTRACT_20261022.md`。真人教师、课程质量、VPN-off、安装及Office/WPS放映仍OPEN。
+
+## 2026-10-22 课件合并取消文案
+
+状态LIMITED_ACCEPTED，Goal ACTIVE。构建`da005f9311a36b95a0c57f2411a7c6484bd9a393886a8df1bc7804e0ef7ebc85`/373。
+
+- `pi-science-merge-ui-nB4HEw`5/5：真实PowerPoint合并6页，source/target hash保持不变。
+- 取消已有课件选择显示“已取消合并，原课件未修改。”，工作目录零新副本。
+- 1366/1920控件可达，冷启保留合法副本且不重放合并。
+- merged SHA`e8ab48e8...`、target`c7dc2bca...`、source`f519f945...`。
+- 前批`1JLycX`保留旧“已取消读取”文案证据。
+
+动态PowerPoint/WPS放映、投影、真人、VPN-off和安装仍OPEN。
+
+## 2026-10-22 教师工作目录显示名称
+
+状态LIMITED_ACCEPTED，Goal ACTIVE。构建`dde1e30018a6a8edd0a4954faa8ff941a026d79d448ed627a0bf745fb6a3ed0f`/373。
+
+- `teacher-mainline-workspace-label-20261022/report.json`：复制DB与当前Electron，授权raw label为`workspace`的目录。
+- DB raw label保持`workspace`；文件树与上下文显示“教学工作目录”；真实文件仍显示。
+- 同构建完整文件面板`pi-files-ui-UbEhQt`32/32：13布局、41对比度、0错误/远程请求，目录/标签/权限/冷启无回归。
+- `workspace/workdir/工作区`映射，`六年级数学教研`等自定义名保留。
+- renderer240/240、build、diff通过；无provider或源DB业务写入。
+
+失败图`failed-workspace-header-raw.png`保留。真人教师、VPN-off、安装与Office/WPS仍OPEN。
+
+空间恢复：历史`layout-formula-20261009`原样迁至C盘，并在原路径建立Junction；25837文件、closeout、manual-review均可读。清单`test-results/goal/EVIDENCE_RELOCATED_WITH_JUNCTIONS_20261022.json`。
+
+## 2026-10-22 练习来源总题数与第二题可达
+
+状态LIMITED_ACCEPTED，Goal ACTIVE。构建`5dea640810ed6542d74f7fc53890cc4e037ff3f6f30f9f3e5831031c18f4df77`/373。
+
+- `teacher-mainline-practice-count-20261022/report.json`：复制已确认练习DB，当前构建在1366×768暗色打开“练习来源与核对”。
+- 显示“共2题，请逐题核对”；标题分别为`第1/2题`、`第2/2题`。
+- 滚到第二题后标题位于吸顶提示下方并可见，关闭按钮保持可达。
+- 无provider请求、源数据库写入或练习写入。
+- renderer240/240、build、`git diff --check`通过。
+
+首次吸顶条覆盖第二题标题的截图`failed-second-heading-under-sticky.png`保留，修复`scroll-margin-top`后重跑通过。完整真实DeepSeek错题生成和真人教师布置仍OPEN。
+
+## 2026-10-22 教师长稿章节目录
+
+状态SOFTWARE_ACCEPTED，Goal ACTIVE。构建`1d4226a7985d66790878fda7e96b183f76dadf5f0bc35b04e88ef479dea949fb`/373。
+
+- `pi-files-ui-EFfXJN`32/32：45段长Markdown生成3节目录；1366/1920浅暗四组均在尺寸切换后重新点击“课堂流程”，目标标题实际可见并获得焦点。
+- 13组实际布局、41个通用对比度样本最低5.3017；四组目录项最低4.90069；键盘、文件变化、超限、损坏、权限、归档和冷启继续通过。
+- renderer错误0、远程图片/脚本请求0、相关进程0。
+- 目录仅本地从Markdown标题提取，不写文件、不调用模型、不持久化。
+
+保留失败：`MqMhXx`后台截图ENOSPC，`YpCPOe`前16项通过后1920 CSS视口等待超时，`zzrZ2f`32项通过但尺寸切换后未重新定位导致截图误导；修复测试后`EFfXJN`全绿。大证据目录已迁至C临时归档并记录`EVIDENCE_RELOCATED_20261022_FILES_UI.json`，未删除。真人教师、纯文本/Office目录、VPN-off、安装与Office/WPS仍OPEN。
+
+## 2026-10-22 教师文件预览空间
+
+状态SOFTWARE_ACCEPTED，Goal ACTIVE。构建`d50a408b72d45a13019bff0c19db181300237b27c00dba00e2524f545436c9f3`/373。
+
+- `pi-files-ui-PGhnt8`32/32：窄面板打开文件自动让正文获得整栏，可见“文件列表”控件可恢复文件树。
+- 1366×768、1920×1080浅暗共13组实际布局；39个对比度样本≥4.5，最低5.3017。
+- 360px最小面板正文占满，键盘/标签/变更/移除/超限/损坏/目录授权/会话切换/归档/冷启通过。
+- renderer错误0、远程图片或脚本请求0、相关进程0。
+- build与`git diff --check`通过。
+
+保留失败：`pi-files-ui-eJnMQh`前9项通过后在隐藏窗口主题动画等待处超时；测试按真实`BrowserWindow.isVisible`处理隐藏静态截图，可见窗口仍等待真实过渡。真人教师、课程质量、VPN-off、安装及Office/WPS仍OPEN。合同`docs/goal/TEACHER_FILE_READING_SPACE_CONTRACT_20261022.md`。
+
+## 2026-10-22 资料备课成品清理
+
+状态SOFTWARE_ACCEPTED，Goal ACTIVE。构建`d52d8e47cef236030b87d3e36ed9458f0d5c795a1bde89a159dbe7f00d65f07b`/373。
+
+- `pi-text-change-foundation-aoMIaL`21/21：创建/编辑清理文末内部对照表，保留普通同名教师章节、BOM/CRLF、审批、冲突、撤销、异常退出与旧库迁移。
+- `daily-HwDEDx`5/5：真实附件→完整五年级备课稿→改41分钟→审阅→保存→冷启；10次HTTP200、0 renderer错误。
+- 审阅与保存均4117字节、SHA256`e9ea4633e71c36e4f52bcfdf278546f03c78ba5afe5b1fc09a31d815ca9d86c1`；41分钟、8道题、来源保留；“本次修改预览/原内容/修改后”不存在。
+- 历史`daily-UDFiwU`问题稿清理前后2131→1757字节，仅移除文末内部表。
+- build exit0、renderer240/240、`git diff --check` exit0。
+
+保留失败：`pi-text-change-foundation-UK7bJ9`遗留前置分割线、`WyGbSK`编辑替换重复换行。真人教师、课程正确性、真实学生错题、VPN-off、安装、PPT/WPS动态放映与投影仍OPEN。合同`docs/goal/TEACHER_DOCUMENT_ARTIFACT_CLEANUP_CONTRACT_20261022.md`。
+
+## 2026-10-22 H09跨轮任务与单轮核验范围
+
+状态LIMITED_ACCEPTED，Goal ACTIVE。构建`b7535f74ad7239981213ae516626ee77bb7efd28dc33d8e6c282cf44054b4643`/373。
+
+- `pi-task-criteria-ui-2ALLZL`8/8：正式Electron跨run任务、要求修改、显式恢复、scope、当前run确认和冷启。
+- `pi-task-review-browser-CltGDF`23/23：单/跨run组件状态、键盘、交互、浅暗双尺寸及对比度。
+- `pi-verification-renderer-ihhYSs`11/11：每个回复核验明确仅覆盖该run。
+- renderer240/240、build通过。
+- 截图最低对比度浅色5.39336、暗色7.79543。
+- `pi-task-criteria-views-8H1Q5O`125% DPI 4/4、`pi-task-criteria-views-Wj6QLG`150% DPI 4/4；实际DPR分别为1.25/1.5，PNG像素严格等于CSS尺寸×DPR，0错误、0模型请求。
+
+保留失败：`s42KVb`fixture未reset、`UPTOnT`绝对刷新次数、`6Ez3BI`嵌套locator，`i42RDC`/`a6VLQW`/`jTWKOV`为DPI捕获换算失败。390窄屏、读屏、长历史性能和完整journal状态仍OPEN。
+
+## 2026-10-22 H05浏览器任务准入/H10当前软件基线
+
+状态LIMITED_ACCEPTED，Goal ACTIVE。构建`726eb85be68a91d98c767da5070b7f79a4d011e1a0daf7cae298bb38cb1c752b`/373。
+
+- `pi-browser-delivery-w54wli`20/20：真实NET-01/NET-02、浏览器DOM、截图哈希/尺寸、双尺寸预览、伪造、失败与冷启。
+- `pi-result-readback-vtN8yp`28/28：browser snapshot/capture作为web证据，改动内容/哈希拒绝。
+- `pi-task-plan-boundaries-Sn08sy`17/17、`pi-task-state-OXwcY8`27/27、browser-admission4/4、renderer240/240。
+- `pi-public-image-ui-UP1W8Y`13/13与`pi-natural-file-fzKkut`14/14使用同构建。
+- `harness-baseline-composed-CO6GIT` validator valid，NET-01/NET-02/IMG-04/FILE-01全PASS；整体仍NOT_ACCEPTED。
+
+保留失败：`B9EXFP`漏映射+ENOSPC、`6R2tIb`浏览器全阻断、`lPw1Iy`截图依赖阻断、`pGRANJ`string content测试误判、`CwvbKZ`截断report。日常配置、VPN-off、安装、真人教师和Office/WPS仍OPEN。
+
+## 2026-10-22 同构建四条教师软件链收口
+
+|链路|证据|结果|边界|
+|---|---|---|---|
+|资料备课|`goal/teacher-materials-20261021/daily-UDFiwU/daily-report.json`|5/5；附件优先、8次HTTP200、41分钟、4419字节审阅/文件哈希一致、冷启0重放|未做真人教师与课程正确性|
+|错题少练|`education-journey-brFkEo/report.json`|12/12；本地OCR、校正、明确错因、变式、两题练习和隔离|未做真实学生与真人难度评价|
+|课堂课件|`xiaozhi-agent/pi-science-natural-ui-3Osskv/report.json`|6/6；真实模型选工具、教学预览、审批、6页PPTX|未做动态放映|
+|已有课件复用|`xiaozhi-agent/pi-science-merge-ui-8Z8CG5/report.json`|5/5；原课件+5页=6页，源/目标哈希不变，取消与冷启通过|未做WPS放映和投影|
+
+以上均来自构建`236109bdd6617af424ffd04a7c3b04dfd853c8b32723a3a634ab02c4cd3937e6`/373文件。`daily-0AxcRF`保留为工具回执15秒超时的稳定性失败，随后`daily-UDFiwU`、`daily-kbYd0q`、`daily-BTY4w7`在同一构建连续三次5/5通过；正常路径达到三连稳定，但首次失败所指的硬终止恢复竞争根因仍未证明修复。
+
+主线现回到目标辅导教师真实使用：先资料备课，再真实错题，再课件复用/放映；一次只处理一个实际卡点。
+
+## 2026-10-22 错题图片到练习：SOFTWARE_ACCEPTED
+
+`education-journey-brFkEo` 12/12，构建`236109bdd6617af424ffd04a7c3b04dfd853c8b32723a3a634ab02c4cd3937e6`。附件优先点击错题卡、真实本地OCR、教师校正、真实DeepSeek错因讲解、变式确认、两题练习、来源谱系、跨学生隔离、拒绝、停止与两次冷启通过；2题、2练习版本、3 usage、0学习记录，0 renderer错误。原图未上传，模型只接收教师确认文字。
+
+`QjOWPN`/`TFbwAq`旧session及`wX1oMK`模型误报不可用均为保留失败。真人教师、PPT/WPS放映、投影、无VPN、安装与H01–H10剩余仍未完成。
+
+## 2026-10-22 附件优先入口与真实资料链：SOFTWARE_ACCEPTED
+
+最新构建`1b54dc94e1fe3c1d7e333eba27a4b6db89f859603f4103bdff2fbbe950abf76c`/373文件。`pi-teacher-quick-starts-Lfs90P` 9/9：先添加附件，起步卡仍显示；点击“根据资料备课”保留附件并填入草稿；不创建消息，双尺寸视觉和冷启通过；renderer240/240。
+
+`daily-7PzPOc` 5/5在同一构建完成附件优先真实链：8次HTTP200、完整五年级数学稿、41分钟、审阅/保存4144字节且SHA256`d196b0c8...`、冷启0重放。真人教师/课程正确性、PPT/WPS放映、投影、无VPN、安装和H01–H10仍OPEN。
+
+## 2026-10-22 资料起步卡到完整保存：SOFTWARE_ACCEPTED
+
+`daily-n0OagA` 5/5，构建`6728e1810b05756299c626b69678023235d5bc3d3efe519052795d923a14e344`。验证顺序为点击“根据资料备课”→草稿保留→添加完整合成资料→真实读取附件→真实DeepSeek生成五年级数学《分数大小比较》完整备课稿（37分钟、恰好8道）→教师改为41分钟→全文审阅→软件确认→文件保存→冷启重开。8次provider HTTP200、renderer错误0、冷启模型请求0；审阅稿/保存文件均4623字节、SHA256`479fdc...`，native字节一致。
+
+`daily-sv4v4b`元信息骨架、`daily-4aJ6NZ`的16题自相矛盾、`daily-yXynUt`旧盲核验码断言均保留，不改成通过。该结果只证明软件链和当前合成内容，不证明真实教师/课程正确性。完整Goal仍ACTIVE，真实PPT/WPS放映、投影、无VPN、安装和H01–H10剩余OPEN。
+
+## 2026-10-22 教师高频入口：SOFTWARE_ACCEPTED
+
+`pi-teacher-quick-starts-DsjdD7` 8/8。空对话显示且只显示“根据资料备课、讲清一道错题、做一份课堂课件”；每个卡片的点击都写入现有草稿并聚焦，不发送、不创建用户/助手消息或工具事实；已有教师草稿不被覆盖。1366×768浅色与1920×1080暗色实际截图已查看，最低文字对比度5.39336；冷启恢复空入口，零模型/任务重放。构建`6728e1810b05756299c626b69678023235d5bc3d3efe519052795d923a14e344`/373文件，renderer239/239、build、diff通过。证据`goal/teacher-mainline-20261022/progress.json`。
+
+原`3lXiNr`功能7/7但暗色文字不可读，保留为视觉失败；`abkmz6`/`aQLv5A`为文案夹具失败，`wiEjkZ`为加入数据库断言前的中间通过。真实教师独立使用、学科质量、无VPN与安装包未验。
+
+PowerPoint动态放映`pi-science-powerpoint-c223a03b`仍在Windows前台激活/捕获边界失败，纯白图不通过；WPS放映此前后续`Run`失败。二者继续OPEN。本片不改变完整Goal状态。
+
+## 2026-10-21 已有课件副本合并：LIMITED_ACCEPTED
+
+`pi-science-merge-ui-cCbzpV` 5/5。教师点击合并、选择1页原生PPTX；真实PowerPoint追加5页并保存/重开6页副本，备注和GIF保留，学生页无答案，源HTML与目标课件哈希不变。取消、两尺寸、冷启和定位通过；构建`534cb19010db8a53392cf207aff50a0a967f232a600aa018d02ea38eaa442069`，边界13/13。
+
+PowerPoint放映尝试`pi-science-merge-ui-qEW49j/playback`确认可打开/渲染/读取文字备注，但`SetForegroundWindow`失败。WPS12.1在`wps-merge-render-7fp_sykf`实际打开并渲染全部6页；`wps-merge-smoke-zbb06bd9`的放映`Run`报COM异常。结论为WPS打开/静态渲染通过，PowerPoint/WPS动态放映仍OPEN。证据`goal/teacher-classroom-20261021/merge-progress.json`。
+
+## 2026-10-21 自然语言课堂课件：SOFTWARE_ACCEPTED
+
+`pi-science-natural-ui-rw1AiM` 6/6通过。教师未选技能；真实DeepSeek自动调用现有科学绘图，产出41实体HTML，含八年级目标、观察、3步讲解、理解检查与教师侧答案。浅暗等效双尺寸截图已生成；教师确认后保存，文件面板导出6页PPTX，冷启零重放。构建`44436c97ecdee0972e35bf1264f1b65dfbf427d736b3b8be1410e955553803fd`，5次HTTP200，0 renderer错误。
+
+失败`LWBhUb`、`K8kQKl`、`VSw0yp`均保留。回归：education capabilities 378/378、task-plan 17/17、Anatomy 13/13、renderer 234/234、typecheck0。真实PowerPoint/WPS放映、教师独立操作、投影可读性、已有课件副本插入和全学科科学正确性仍OPEN。
+
+## 2026-10-21 题目图片到少练联合链：SOFTWARE_ACCEPTED
+
+同一正式 Electron/Pi/DeepSeek 实例`education-journey-pA6A6M` 12/12：真实本地OCR、教师校正、脱敏只读、勾股讲解与明确错因、教师确认变式、两题练习编辑保存、来源谱系、学生页、拒绝、跨学生隔离、停止、两次冷恢复、幂等确认及零伪造学习结果。构建`288e60008b181ffe2e79d839c55d1450b68c5a249e642327e7fdd777be6f408c`，373文件，3启动，0 renderer错误；8张浅暗/双尺寸图已实际生成并检查页面几何。
+
+原失败`education-journey-yhm964`只执行2项后等待练习卡超时，保留报告。题库回读现兼容“运行学生为空、活动会话与候选学生一致”，冲突学生仍拒绝。专项边界随后新增并通过；完整套件中发现的既有原生候选测试等待问题已修正为使用新run，不改变产品校验。
+
+接受边界仅软件闭环。真人教师、手写/公式、无VPN、安装包、批准后删除原件和更多学科样例仍OPEN；Goal ACTIVE。
+
+## 2026-10-21 题目图片 OCR 与两题练习：分段通过
+
+通过：真实Windows OCR 11/11，正式Electron OCR 12/12；真实Pi从本地父题读取、教师编辑变式、两题练习审批保存到冷恢复/拒绝/幂等/跨学生隔离9/9。证据`teacher-materials-20261021/ocr-practice-progress.json`与`education-journey-cy1VnR`。
+
+联合路径已由本页顶部`education-journey-pA6A6M`接续；此段保留分段验收历史。真人、手写/公式、安装/无VPN等仍未验。
+
+## 2026-10-21 教师资料备课保存：SOFTWARE_ACCEPTED
+
+通过项：`daily-KNUJxO`不中断5/5。日常UI附件实读包含随机码/37分钟/8道/来源；真实模型形成五年级37分钟备课稿；修订为41分钟全文进入审阅，保存前无文件；教师批准后7085字节文件与review hash `71a25f...12b6b94`一致；12次DeepSeek HTTP200、renderer错误0；冷启同会话与文件，零模型重放。证据`apps/desktop/test-results/goal/teacher-materials-20261021/progress.json`。
+
+反例/失败：原event_persistence、正式Store并发8次SQLITE_BUSY、AgentToolTimeoutError、模型额外请求确认、save kind错用file导致task_tool_scope。均保留并在`2.Memory.md`列明。安全读取绕过任务锁专项17/17，事务8/8，并发写4/4，renderer234/234。
+
+未验：真人教师、真实图片/OCR/NET、无VPN、安装包、H01–H10剩余。下一验收进入题目图片校正与少练。
+
+## 2026-10-21 教师答复误停修复与主线收紧
+
+当前修复H05-C2a LIMITED_ACCEPTED，完整C2/H05/Goal仍未完成。原b167构建YBsXtw在两个idle后收到真实界面提交的“五年级”仍idle3中断；原失败保留。首次MytYDh runner/进程已消失，只留下pending且无答复，不作答复后故障证据。YBsXtw选项后首脚本遗漏单独发送，已在同一自有窗口通过实际按钮提交，未重启或注入答案；后续脚本按完整选择→发送操作。
+
+main teacher-input-readback复用原native owner/parent/anchor边界，核同session/run/generation的answered控制行、已提交control事件hash、实际admitted/settled回执与ask_teacher原生答复。重复答案按正文摘要去重，不因模型问题/调用ID/时间变化增加信用。Goal进展v2单列newTeacherInputs和newEvidence；旧v1严格兼容，128容量/旧owner/暂停/改要求边界保留。教师输入只代表已送达，不作成果或教学正确性证据；纯聊天备课复用原候选/教师确认，不强迫写文件。无新IPC/DDL/依赖/模型循环。
+
+最终e578e35247c3eec016030be5389bd19d50411174c4ddcdb1569f257b82bb2618，373文件/148列明源码，原npm隔离build全hash一致、源码收尾无漂移。正式Pi Electron a7RhUU5/5（明确SSE夹具）：两个idle→真实问答→草稿→界面教师确认→冷启零重放，无文件提案；独立68条journal/4原生回执、唯一教师输入信用/0资料证据信用、Task/Goal/标准/候选/教师action版本一致。浅暗1366/1920四图逐张看，对比度通过；Fi7dqF因测试固定浅色导致dark等待超时保留，恢复自然媒体设置后复测，未改产品绕过。23项输入/Goal反例、原进展16、同构建退出回归10、renderer234/234、legacy207/207、type/build和worktree diff通过。p6UizS缺测试session表与首编译sourceUnchanged=false保留，不作最终证据。
+
+已按用户最新指示收紧执行顺序，见docs/goal/FEATURE_FIRST_EXECUTION.md顶部：资料备课/讲解讲义→题目解析与针对性练习→已审课件导出复用。下一项从原FILE素材/当前保存配置/旧会话的“实际读资料→按年级形成稿→改一处→确认保存重开”开始，NET/IMG作为这些主线的必要能力，不继续扩展演示题材或外围功能。完整已批准H01–H10、原失败与完成定义保留；排队补充handoff/编辑撤回、歧义旧task迁移未因本片通过，仅按主线实际缺口推进。真实provider/原NETIMGFILE/无VPN/安装/公网MCP/H06–H10、PPT动画-WPS/真人教师仍OPEN。日常out/profile、凭证/网络未改，无提交/push。精确命令/失败与独立审计见apps/desktop/test-results/goal/harness-teacher-input-20261021-answer-delivery/{commands.ps1,progress.json,collect.mjs}。
+
+## 2026-10-21 等待审批退出崩溃：限定修复验收
+
+状态LIMITED_ACCEPTED，仅HARNESS-SHUTDOWN-PENDING-01三种优雅退出。原85e构建zfqH5F框架关闭、AyGfrb直接quit均退出134并复现napi_throw；首修FclsPW暴露store关闭后的snapshot/list读已释放db。原失败报告/数据库/日志保留。main通过desktop-ipc-lifetime停止新请求并等待已准入IPC，关闭本进程窗口、取消/结束生产者，再await SQLite close；重复before-quit等待同一清理，不提前放行。typed IPC参数/Pi唯一循环不变，无新依赖或DDL。
+
+最终冻结b167b93bfb2e2953dd55c435e68b5ec1044b0eb1cba9f26f0b5f3b6041a0a8d1，373文件/147唯一源码，原npm隔离build全hash相同。正式Pi/Hana Electron aXRlOC10/10：正常关窗、框架关闭、直接quit均真实pending起步/不批准/退出0/冷启零重放；本轮pending退出274–643ms。独立每案46条连续hash事件、3回执/2任务准入、0教师批准动作、待审稿interrupted revision1、Task/Goal中断、native/源文件不变且无输出。保存回执保留admitted/uncertain，不伪造settled成功。
+
+正常读取→新教师审批保存→成果确认→冷启及同源停滞回归l8hZXM7/7；IPC5、lifecycle5、tool-bound17、renderer234/234、同构建legacy207/207、type/npm build通过。legacy只证历史兼容，模型明确SSE夹具，0新增真实provider请求。待审界面及代表性浅暗/双尺寸图已看，不宣称新增UI设计验收。证据见apps/desktop/test-results/goal/harness-shutdown-20261021-ipc-drain/{commands.ps1,progress.json,collect.mjs}。worktree diff0，cached diff2仍为三个原有无关staged EOF空行；日常out/profile、凭证/网络未改，无提交/push。
+
+下一步回H05纯教学草稿/教师补充输入的合法进展策略，先冻结来源/验证合同与实际Pi实例，不把新措辞或plan版本当进展；歧义旧task迁移仍OPEN。完整H05、原NET/IMG/FILE/真实provider、H06–H10/公网MCP/无VPN/安装、教学PPT动画-WPS/真人教师均未完成；任意挂起IPC/强杀不由本片证明。Goal ACTIVE。
+
+## 2026-10-21 H05-C1资料定位进展：限定切片收尾
+
+已修复Vw9fcT原30745构建中三个不同授权目录成功却idle3误停。Hana实际IO附opaque sourceIdentity，discovery-readback核同一workspace lease/root及源dev/ino、native结果与当前快照；同源list/stat共享一个信用，排序/时间/大小/目录条目变化不续命。同名同条目目录被替换也unknown，身份在IO时冻结，不能等异步绑定才认路径。
+
+定位证据只供原Pi turn boundary的中间checkpoint/journal判断继续，最终成果标准不含directory/file_metadata；不能冒充正文、Task步骤或教学结论通过，也不因已批准写入新增目录项而误挡成果确认。typed verification/goal事件与现UI范围标签/进展说明已接，无新IPC/DDL/依赖/Loop；旧无sourceIdentity结果不给新定位信用，原最终正文核验保留。
+
+冻结85e235eec9726690cda074e8691ad612e299be2b4a2037bbbd003bfe3671ed08，373文件/145列明源码hash一致，原npm隔离build完整hash相同。正式Pi Electron cODRLy7/7（模型明确SSE）、真实Hana/FS专项i7ZpCw19/19（native数组夹具）、同构建原稿改稿2L2LDg14/14、progress16/readback26/effects34/input17/task-recheck10/criteria12/teacher26、真实store8、renderer234/234、legacy207/207及type/build通过；原91601权威exit0。最终原生浅暗双尺寸4图逐张已看。独立166事件/2run/11原生回执/2任务准入、来源身份与lease、5个进展key及同源只1个key、审批文件字节/候选/Task历史/公共投影/native前缀一致。精确命令与证据：apps/desktop/test-results/goal/harness-h05c1-20261021-discovery-delivery/progress.json。
+
+原Vw9fcT误停、RdhBQT/nPpPRd来源替换误pass、sZkM7V观察超时均保留。sZkM7V栈停在等待审批卡，未执行到click，不能推断“点了保存没生效”；其收尾main.log的NAPI fatal仍未归因，已增HARNESS-SHUTDOWN-PENDING-01，最终正常冷启无fatal不替代该退出路径验收。
+
+下一优先在自有profile复现正常窗口关闭与自动化收尾的pending-approval差异；若产品路径复现回流H03/H04，保留receipt/未知效果恢复。随后H05纯教学草稿/教师补充来源进展与歧义旧task迁移仍需冻结合同/真实实例，不将模型换措辞或plan版本当进展。完整H05仍IMPLEMENTING、Goal ACTIVE；原NETIMGFILE/真实provider/H06–H10/公网MCP/日常无VPN/安装/Office动画-WPS/真人仍OPEN。日常out/profile、凭证/网络未改，无提交/push。
+
+## 2026-10-21 教师验收要求增删与重排：限定切片收尾
+
+已贯通现有typed task-correct→宿主新ID/脱敏来源→原SQLite事务Goal/Task/action/history/复合事件→PiTaskReview添加/移除/上移→显式原Pi恢复与新版确认。保留项ID不随位置重编号，新增行不提交renderer持久ID，已撤回ID/机器ID不可冒充human；机器标准/资源/步骤与依赖保留。修改后要求版本增加、旧checks清空/暂停；正式Goal旧candidate失效，旧Goal确认接口按当前human ID工作。无新表/包/通道/Loop，不改native指纹。
+
+冻结30745e685c4ae68de0e0384ff73161fe860cdad2a1807afda243e47665b6cb41，373构建文件/144列明源码收尾hash一致，原npm隔离构建完整hash相同。正式Electron C3BJVJ7/7、新边界cJ8CIt12/12、组件浏览器3wCMFn22/22、同构建原稿改稿hDymwQ14/14、真实store8/8，teacher26/goal15/state27/coordinator16/input17/recheck10、renderer234/234、legacy207/207与type/build通过；44271权威exit0。原生qSrKBN浅暗/双尺寸4图已逐张查看；1366编辑区需滚动并压缩聊天，列H09，不称完整视觉验收。
+
+独立回读68条journal/2run/3个实际原生工具回执、旧/新确认候选、要求来源action digest、main生成ID、保留/撤回/顺序、不可变Task历史、Goal/公共复合投影与原native前缀一致；此原生场景无文件效果，文件链另由同构建14项回归证明。progress collectionValid=true与精确命令：apps/desktop/test-results/goal/harness-h05b2-20261021-criteria-final/progress.json。模型均明确SSE，不是新真实provider/真人验收；原6IapRh新增被拒绝及yNlxmZ等旧失败保留。
+
+下一先冻结H05合法探索/草稿/教师补充进展策略：当前goalEvidenceProgress仍只接7类结果readback，先以实例核授权目录探索是否误停，不能把标准修改、模型换措辞或plan换版本当新进展；沿原Pi边界，不新造loop。旧多task歧义产品迁移、H06未知冷配置与原NETIMGFILE、真实provider/公网MCP/完整H08H09H10、日常无VPN/安装/Office动画-WPS/真人仍OPEN。完整H05-B2 IMPLEMENTING、Goal ACTIVE；日常out/profile、凭证/网络未改，无提交/push。
+
+## 2026-10-21 新要求恢复与改稿：限定验收已收尾
+
+最终a75576f33c8c662a2bc362c4e3687945c56fdc74e7b495e1bbfd34e1b407df9e，373构建文件/144列明源码hash一致，原npm隔离build完整hash一致。正式Electron qOgkYG14/14、真实store8/8、input链17/readback26/effect34/recheck10/teacher26/goal15、renderer234/234与同构建legacy207/207通过；85408权威exit0。独立257条journal/4run/6admission、Goal/Task/source/action/native/原稿before→当前after链一致，progress collectionValid=true。受控SSE不是真实provider；yNlxmZ原失败保留。最终浅暗双尺寸4图与历史输入详情1图已逐张查看，历史输入不冒充当前文件；1366展开卡压缩聊天列H09。
+
+实际修复：完整原稿读取可由同run后续新批准编辑的before原始SHA/脱敏全文与当前after账本共同核验，公开标“历史输入”；不能满足当前file标准。两个新文件编辑都需新审批，旧批准/旧candidate不复活。完整B2仍IMPLEMENTING、Goal ACTIVE；新标准增删是下一切片，泛化进展/旧多task迁移与H06/原NETIMGFILE/其余Goal/真实provider仍OPEN。精确命令和证据：apps/desktop/test-results/goal/harness-h05b2-20261021-goal-revision-delivery/progress.json。
+
+## 2026-10-21 正式Goal多标准纵向链（完整B2仍IMPLEMENTING）
+
+|层级|当前结果|范围|
+|---|---|---|
+|正式Electron持续目标|7RBmEj 9/9，冻结52cc35ab|真实读取/审批/停机重启/改文件阻断/旧接口拒绝/剩余保存/逐项确认/修正/冷启；模型SSE夹具|
+|普通任务恢复兼容|fFtJHm 8/8，同构建|原任务/标准/步骤、精确command重试、当前文件及旧native前缀保持|
+|真实Goal+Task OmniEduStore|MyzvwG 8/8|实际生产事务回调、两套状态与action/journal同回滚、复合事件、冷启；内容/模型结果合成|
+|来源/权威反例|OZNnp2 15/15，教师BgKTQT26/26，原Goal836mQd27/27|包含缺当前proof不得部分确认、8项、旧revision、无adapter拒绝；原Goal native模型协议仍声明夹具|
+|其他兼容|journal19、coordinator16、state27、准入16、重查10、浏览器17、v2plan21|分层范围见各report，不能替代provider|
+|UI采图|ZsoXSB 4视图，逐张已看|自然浅暗、实际1366/1920、PNG×DPR、对比度；1366展开高度压力仍OPEN|
+
+最终收尾：type/原npm隔离build exit0，完整373文件SHA与已测52cc35ab相同，144列明源码收尾一致；renderer234/234、同构建legacy207/207、worktree diff0。cached2仅原三处无关staged EOF空行。独立152条journal hash/连续sequence、3run/3admission、goal/task复合投影/确认历史/当前修正、source/action/candidate、native参数/settled digest/旧前缀与两个文件一致。progress.json collectionValid=true，完整报告/精确命令/hash见harness-h05b2-20261021-goal-task-delivery。上述专项失败0，未以skipped充数。日常out/profile未替换，无新真实provider、依赖/DDL/凭证/网络改动。mxoWq1产品失败、S8cLgk旧部分通过预期、jOkNhg漏刷新夹具、2ubWSD旧无adapter通过预期均保留，不改历史绿。
+
+修改要求后的新版本恢复/必要改稿/新审批完整实例尚未验；标准增删、歧义旧多task迁移、泛化进展、H06未知冷配置、原NET/IMG/FILE、日常无VPN/安装、完整H07H08H09H10、Office动画/WPS/真人仍OPEN。新旧proof不能因文档切片而自动通过；Goal ACTIVE，不标完整B2为LIMITED_ACCEPTED。
+
+## 2026-10-21 H05-B2 v3派发与显式恢复收尾（IMPLEMENTING）
+
+最终二进制44d3dfc49fe0acd0516b9ecc41df7a775571ccf5f50e0926dec9fb9d17dbbc6e，373文件；标准npm隔离build exit0且hash相同，143列明源码收尾一致。日常out/profile未替换。正式Electron受控传输恢复gAXC7k8/8：实际保存讲义/停止/重启/改文件阻断/恢复原字节/只新存练习/精确重试/教师跨run确认/冷启；旧v2二进制兼容XIm1Bf7/7。冷UI0kWuOM4视图，合计8张最终原生浅暗1366/1920图已逐张看，实际viewport及PNG×DPR一致、自然过渡和正文对比度通过。
+
+专项通过：准入16、state27、teacher26、coordinator16、生产重查10、浏览器17、v2计划21、verification27、执行边界17、真实OmniEduStore8；renderer234/234、同构建legacy207/207、type/build/worktree diff0。上述专项失败0，未用skipped补通过数。cached diff2为原有三个无关staged EOF空行，未改。独立DB核113条journal hash与连续sequence、task/历史/公共checkpoint/turn、来源digest、3run/3准入的真实native实参/settled digest、两个保存文件及教师action/candidate一致，旧native前缀未变。精确报告/命令/hash在harness-h05b2-20261021-resume-delivery。
+
+SSE模型流/缓存明确受控，领域审批、SQLite/原native和文件操作实际运行；不能算真实provider或教师使用通过。HEmPyw/SXjFoQ/3D5xRW/R8eGpo原失败保留，修测试观察/预期后复测，unknown未改成passed。旧VuKDF2 TASK-03/04/07报告仍红，新增v3反例只证明当前受控范围修复，不重写历史。真实正面provider/正式goal多标准/泛化进展未完成，整个B2不LIMITED_ACCEPTED；原NET/IMG/FILE、H06未知冷配置、H07公网、H08/H09/H10、无VPN/安装/Office动画-WPS/真人等继续OPEN。Goal ACTIVE。
+
+## 2026-10-21 教学版科普课件：分层验收
+
+教学契约/重建/审批API/浏览器6/6；正式Electron从文件面板导出8/8，含确认文字一致、学生页不含答案、取消/源变化、双尺寸与冷启。素材是编写的教学夹具，不冒称新增真实provider。原Anatomy13、HTML6、导出边界10、renderer234、type/原配置隔离build通过。Office/同构建兼容/最终hash读回由harness-science-teaching-20261021-first/progress.json记载。真实教师、模型自主备课、WPS、断网系统/安装仍OPEN；完整Goal ACTIVE。
+
+## 2026-10-21 H05-B2生产接入未完成验收
+
+真实事务8/8、真实失败恢复UI p3cC2N6/6、受控浏览器11/11、coordinator13/13、teacher26/26、task27/27、journal19/19、readback26/26、重查adapter10/10、renderer234/234及type/隔离build通过。原生浅暗双尺寸4图逐张看，要求正文对比度5.39336/7.79543；浏览器只读确认图是受控呈现旁证。收尾legacy/脚本与源码hash/独立SQLite/journal读回以apps/desktop/test-results/goal/harness-h05b2-20261021-product-review/progress.json为准。
+
+2Kni2T事务首失败保留并修；eQdimA真实模型HTTP402/Insufficient Balance保留，正面成功答复→新文件proof→教师确认尚未通过。原v2生产VuKDF2的TASK-03/04/07仍三项失败。不要将本轮失败恢复、声明native夹具或legacy作为这些路径通过依据；B2仍IMPLEMENTING，完整Goal ACTIVE，原NET/IMG/FILE及其他OPEN门禁不变。
+
+## 2026-10-21 H05-B2 教师动作与要求版本（IMPLEMENTING，未生产激活）
+
+在任务存储基础上新增tasks/teacher-actions.ts、tasks/task-evidence.ts及shared教师动作输入验证。主进程方法将确认绑定实际已保存assistant成果、成功run、公开内容digest和criterion版本，独立action回执与task/history在同一SQLite事务保存；同request精确重试不再读文件或写第二份确认。教师全选不能覆盖failed/unknown/缺失的系统核验，拒绝可直接记录。修正现有要求文本形成新来源/版本，保持task/step身份、清空旧checks并暂停；不是模型改标准。恢复把旧教师确认标unknown，需重新确认当前成果。
+
+源/效果检查复用现生产result-readback，由main-only recheck回调取得当前证明；缺回调不因缓存passed而验收完成。已补跨run相同资源的旧效果防重放；dDyWJz反例证明换/退役stepId可绕过旧保护，现准入固定criterionIds，独立读回不依赖当前步骤名称。旧无此字段记录只按仍存在的原映射核对，不补造历史关联。没有模型循环、DDL、新包、vendor或凭证变化。
+
+本轮教师动作1cQfRN 26/26、任务存储9ITW2s 27/27、结果读回bxBVvf 26/26、v2计划IQrmDh 21/21、renderer234/234、type/隔离build/diff通过。独立核对action回执hash、实际成果内容digest、修正来源和文件字节；数据库重开一致。注意这些是main-only方法、实际SQLite/本地字节＋声明native/effect夹具，不是真实教师点击、provider或Electron恢复证明。当前生产v2反例tlTVT2仍TASK-03/04/07三项失败。
+
+当前构建仍69edc5296350a39aadf38d030918ea1d5a51b617690883194101abded7e4a5f2（373文件，127项源码hash一致），因为任务模块仍未导入生产。整个B2不能标LIMITED_ACCEPTED。精确命令/脚本和源码hash、独立读回、原失败及边界：apps/desktop/test-results/goal/harness-h05b2-20261021-teacher-authority/{progress.json,commands.ps1,collect.mjs}。日常out/profile未替换，无新真实API/UI请求，无提交/push。
+
+下一动作必须接真实纵向链：普通请求及显式goal的来源/标准→task coordinator→committed task事件→typed IPC/preload→可见核对/修正UI；原Pi beforeDelivery/跨run恢复接当前权限的native/effect reader。当前只支持已有human criterion文本修正，增删标准与正式goal来源同步仍需adapter；探索/草稿/教师补充进展政策及完整TASK-01–11仍未完成。原NET/IMG/FILE/日常无VPN/安装/Office-WPS/人工、完整H05/H08/H09/H10/H07国产认证继续OPEN，Goal ACTIVE。
+
+
+
+## 2026-10-21 H05-B2 任务存储与准入基础（IMPLEMENTING，未完成）
+
+新增shared/xiaozhi-task.ts、main/xiaozhi-agent/tasks/task-state.ts；复用现app_settings独立xiaozhi.task.v1:命名空间，当前文档/会话索引/不可变版本在现SQLite事务中CAS，零DDL。实际用户消息、command和journal owner绑定稳定taskId、来源版本、criterion与step；模型completed只作报告。准入冻结call/step/标准/计划版本，检查实际前置核验、工具/资源范围；已准入调用不能因重建边界再次派发。暂停/归档/旧generation拒绝迟到；显式新run保留身份并把旧效果标unknown等待重新核对，不执行历史效果。
+
+本片仍未接入production-host/Pi start与resume/public task journal/typed IPC/UI，教师逐条确认来源与标准修改也未交付。现生产v2基线GnQAZi的TASK-03/04/07仍3项失败，必须继续修，不能用新模块专项绿测关闭。TASK-07当前仅真实nativePlanId函数身份层反例，不是Electron冷启。全合同docs/goal/H05_TASK_STEP_ACCEPTANCE_CONTRACT.md保持完整，状态IMPLEMENTING而非LIMITED_ACCEPTED。
+
+本轮新模块真实SQLite/原执行边界＋自有合成工具专项APD5j2 27/27，v2计划兼容21/21、renderer234/234、type/build/diff通过；数据库重开与不相关配置原字节保持。首反例lNvg8r（重复准入）、Uy89QG（读步骤挂写工具）、cRdlvZ（同run改绑task）保留并修后重测。原配置隔离构建69edc5296350a39aadf38d030918ea1d5a51b617690883194101abded7e4a5f2，373文件、125项源码hash一致；SHA与B1相同，因为新模块尚未被生产入口导入。这不是功能已交付的构建。无真实provider/Electron任务路径新验收、无日常out/profile替换、无新包/vendor/凭证/DDL/提交/push。
+
+精确命令、当前脚本hash、源码回读、独立SQLite审计、当前生产仍失败的基线和全部边界：apps/desktop/test-results/goal/harness-h05b2-20261021-storage/{progress.json,commands.ps1,collect.mjs}。下一步先补真实教师确认/修正与旧效果重新核对，再接普通任务/显式goal/恢复、原Pi beforeDelivery、committed task事件、typed UI与完整TASK-01–11验收。原NET/IMG/FILE/日常无VPN/安装/Office-WPS/人工和完整H05/H08/H09/H10/H07国产认证继续OPEN，Goal ACTIVE。
+
+
+
+H05-B2合同：docs/goal/H05_TASK_STEP_ACCEPTANCE_CONTRACT.md，最新实施/未完成边界以上方IMPLEMENTING为准。
+
+## 2026-10-21 H05-B1 独立证据与有限续跑（LIMITED_ACCEPTED）
+
+本片按冻结合同完成，完整Goal保持ACTIVE。修复C3宿主引用后缀导致真实文件核验项丢失的回归；仅剥离与实际call/tool匹配的固定宿主后缀，其他异常输出显式partial。生产边界通过主进程独立readback并提交verification后计算进展；重复正文、计划/摘要改写、重复来源、web抓取时刻与image用途改写不算新证据。私有去重集合有界，公共提示只说明资料/产物完整性范围。连续3个无新证据边界沿原Pi finishTurn停止；暂停/归档/旧owner/权限版本变化拦迟到回调。等待验收后允许正常最终文字，再继续出工具则明确结束，未增加模型循环。
+
+最终原配置隔离构建69edc5296350a39aadf38d030918ea1d5a51b617690883194101abded7e4a5f2（373文件，123项源码hash本轮收尾复核一致）。正式旧C3构建→当前构建恢复→真实重复读取停滞→冷启→显式恢复去重：iga552 7/7；同一自有profile正常教师备课→读取盲资料→预览→教师点击确认保存→两项教师标准确认→冷启：51guh5 5/5。合计14次DeepSeek HTTP200、5启动、无renderer错误（旧二进制2次请求，当前12次）。独立只读核589条journal hash一致、2次goal_stalled、保存文件hash和旧native前缀一致。四张实际1366×768/1920×1080浅暗截图已逐张查看；提示最小对比度5.39336/7.79543，自然过渡，无强制finish。
+
+native调度27/27、进展16/16、结果回读26/26、保存效果34/34、计划21/21、journal19/19、queue9/9、renderer234/234、同构建legacy207/207及type/build/diff通过。native含受控provider stream，legacy只作历史兼容，二者不能冒充真实provider或日常使用验收。精确命令、报告、源码/脚本hash、独立读回与原失败见apps/desktop/test-results/goal/harness-h05b1-20261021-delivery/{progress.json,commands.ps1,collect.mjs}。本轮复核既有测试产物，未重新请求provider；日常out/真实profile未替换，无DDL/新依赖/vendor/凭证变更，无提交/push。
+
+下一片H05-B2：先冻结任务范围step/criterion/教师来源版本，逐步独立核验、真实工具依赖admission、跨run剩余步骤恢复；模型completed仍只是报告。当前教师goal确认不等于每个step已核验，普通聊天/目录探索/纯教学草稿/教师补充的进展类型未全验。完整H05/H08/H09/H10、H07国产公网认证、原NET/IMG/FILE/日常无VPN/安装/Office-WPS/人工继续OPEN；科普教师课件方向保留。
+
+
+
+## 2026-10-21 H09-C3 计划版本与实际依据（LIMITED_ACCEPTED）
+
+本片完成，Goal ACTIVE；不关闭完整H05/H09/H10。新增严格plan.v2稳定stepId/依赖/退役ID、公开原因/版本CAS和同call幂等；同run/generation已提交工具回执作调整依据，typed只读历史支持前后比较/分页/重试/定位。采用仅指结构，模型completed仍标“已报告完成”，不能冒充逐步结果核验。snapshot仅显示已提交plan；旧v1字节/native历史身份保持，plan.v2能力另记。Pi唯一Loop，无DDL/新依赖/凭证变更，教师权限/业务事实不改。
+
+最终原配置隔离构建1d529c746dfc90a5e8070e0bda4650468ed60f981932772c3308350730c2270e：373文件、118项合同源码hash收尾一致。实际旧14f414b7构建创建→新构建恢复/继续→教师回答→实际journal写失败→冷启，正式Pi/DeepSeek bWQsU8 10/10、9次deepseek-flash HTTP200、3启动、0renderer错误。独立回读383条journal全部hash一致、3版成功计划、失败CAS无control公开记录、旧native前缀完整。冷启精确视图3gHttU 3/3，实际1366×768/1920×1080与PNG像素×DPR一致；浅暗4图逐张查看、自然过渡，输入/计划原因最小对比度10.02385/5.39336，无新run/provider。
+
+计划21/21、生产组件浏览器8/8、工具边界17/17、journal19/19、receiver10/10、queue9/9、renderer234/234、同构建legacy207/207，type/build/diff通过。legacy与受控组件不作真实provider或日常证明。命令、脚本/源码hash、独立读回及完整边界：apps/desktop/test-results/goal/harness-h09c3-20261021-receipt/{progress.json,commands.ps1,collect.mjs}。
+
+原MYQ2oN/tOAaWH产品反例保留；tOAaWH实际模型引用错误ID后停止推进，修为在既有工具结果边界返回宿主planBasisCallId，仍严格核已提交回执。4q9TTO/3RHtji/pSGEWV/J0vvVU为已解释的测试夹具错误，原报告保留；早期展开/首张尺寸时机不足的图不作最终视觉证据。日常out未替换，正常启动重建源码，无提交/push。
+
+下一片回到H05/H09关键缺口：冻结step→criterion稳定映射、宿主独立回读核验、基于证据的停滞判定及剩余步骤暂停/恢复，沿现Pi turnBoundary，不新增模型循环。源码对账在H09_EVENT_UI_CONTRACT顶部。完整H09其余状态/证据深链/390与768窄屏/DPI/读屏/性能、H08整体FACT/跨域/质量、H07国产认证及H10原NET/IMG/FILE/日常无VPN/安装/Office-WPS/人工仍OPEN。教师科普PPT/HTML方向保留，不以本片计划功能代替教学设计验收。
+
+
+## 2026-10-20 H09-C2 同步与过期操作（LIMITED_ACCEPTED）
+
+本片完成，Goal ACTIVE，不关闭H09整体。已知事件缺口开始即通知并禁用当前会话变更；补齐失败/旧snapshot不能解除，连续journal或权威snapshot恢复。内联审批及试卷/目标/技能portal、queue/send、范围/压缩、附件移除/OCR确认和新科普导出受控，草稿/关闭/Stop/既有请求取消保留；原main权限/revision/CAS不变，Pi唯一Loop，无DDL/新依赖。
+
+最终隔离构建14f414b7cf1c13302a7415078b7da0156faa385f497f5e27d2a77bc67e93809c（373文件、113合同源码hash一致）。正式Pi/DeepSeek kV6nKt 10/10、3次HTTP200、2启动、0renderer错误；实际通知缺口/读取失败阻断、恢复后唯一精确写入、真正旧revision撤销拒绝、同步中Stop与冷启通过。122条journal hash一致且冷启无新增行，实际丢失通知从typed页恢复。浏览器cqlqKr13/13、receiver10/10、journal19/19、coordinator8/8、renderer234/234、同构建legacy207/207及type/build/diff通过；受控领域UI和legacy不冒充真实业务或Pi/provider。浅暗双尺寸4图自然过渡，输入最小对比度10.02385、提示5.39336，无强制finish。
+
+原dMLxCw/RsSs2B产品反例、XnW5VU/X3glDz夹具失败保留。kliWrW虽功能9项绿但暗1366图未稳定，保留原图、不计视觉通过；同构建自然settle复测后接受本片。精确命令/脚本hash/独立核验：apps/desktop/test-results/goal/harness-h09c2-20261020-accepted/{progress.json,commands.ps1,source-readback.json,collect.mjs}。日常out未替换，正常启动重建源码，无提交/push。
+
+下一片H09-C3先冻结稳定步骤/依赖/变更原因/版本及旧v1/native兼容；当前计划只有text/status，control prompt身份级联到memory，禁止前端猜依赖或直接改旧prompt。调查见H09_EVENT_UI_CONTRACT末节。完整H09其余状态/证据cursor深链、390/768/DPI/读屏/性能，H08整体FACT/跨域/质量、H07国产认证及H10原NET/IMG/FILE/日常无VPN/安装/Office-WPS/人工仍OPEN。
+
+
+## 2026-10-20 H09-C1 计划与核对记录（LIMITED_ACCEPTED）
+
+本片完成，Goal ACTIVE，不关闭H09整体。合同与E状态逐条对账：docs/goal/H09_EVENT_UI_CONTRACT.md。PiTaskPlan不再按done重挂：保留无手动选择时自动收合，教师同plan/模式手动选择优先，完成不丢触发焦点；补步骤list/current语义。OfficeVerificationNotice复用主进程已校验的同run evidence引用，给只读操作标签、记录类型与时间，校验标识二级折叠；不新增重跑/批准/文件打开动作、不更改验证事实。无新main/IPC/schema/依赖，原Pi唯一Loop与教师确认保持。
+
+最终原配置隔离构建2c518304284437aa619d18fb99c9900702db875470c6391690f4a5c7c18d68e1（373文件、98项合同源码当前hash一致）。浏览器DviVnk 9/9；正式Electron/Pi/DeepSeek 1r4MLh 5/5、4次HTTP200、2启动、0renderer错误，真实文件读取/计划完成/手动展开与焦点/核对记录/冷启贯通。独立只读journal审计183条hash一致，2次计划同id，verification与metadata/final projection相同且先于终态。原生可见主题zjVOUO 3/3、6视图，输入文字最小对比度11.6475，无强制finish动画；type/build exit0，renderer234/234、verifier SSR10/10、同构建legacy207/207、diff通过。legacy不是Pi/provider证明。精确命令与校验报告：apps/desktop/test-results/goal/harness-h09c-20261020/{progress.json,commands.ps1}。
+
+首反例asxOZ7手动展开在完成后变false保留；kwCXuE原生主题观察被Playwright默认颜色覆盖挡住，清除模拟后通过，未据此改产品CSS或断言旧白色截图唯一原因。实际Pi仅在真实读取后短暂等待下一次模型请求便于键盘观察，没有注入模型/工具/event结果，不作速度证明。正式四张浅暗/双尺寸证据图已逐张看。
+
+仍OPEN：H09计划稳定stepId/依赖/变更原因、gap期间所有变更控件一致禁用、event/cursor及文件证据深链、恢复/unknown/审批/队列/压缩全状态同版UI、390/768窄屏与125/150%DPI、读屏/所有点击区/对比度/焦点及长历史性能。H08整体FACT/跨域/质量、H07国产认证和H10原NET/IMG/FILE/日常无VPN/安装/Office-WPS/人工仍保留。日常out未替换；正常启动会重建当前源码，无提交/push。下一片H09-C2先实测journal gap/reconnect时已显示审批控件是否禁用，核原main revision拒绝与教师反馈；并冻结计划依赖/变更与公开事件关联所需后端契约，不能从前端虚构。H08原对账项必须继续完成，不由H09界面通过关闭。
+
+## 2026-10-20 教师备课PPT导出（LIMITED_ACCEPTED）
+
+用户追加方向是教育辅导教师实际备课/上课、降低门槛。已交付文件面板“导出课件PPT”“导出动图”“在文件夹中显示”，HTML交互保留；PPT内嵌GIF并附同类部件讲解页、可编辑标题/提问/备注。实例5页，不运行HTML交互控件，无插件/系统FFmpeg/转换模型调用；保存到同一授权教学目录，独占写、源版本/工作目录/hash复核，不覆盖已有产物。Pi唯一Loop、原生成审批不改，本按钮为教师显式导出，无DDL。新增gifenc1.0.3 MIT，实际172516字节、无依赖/原生模块，复用pptxgenjs4.0.1。
+
+最终隔离构建e1e08b00dce1a4acbd8687abe991bdae62b1d26301101de5f963c764631f4453（373文件、90合同源码收尾hash一致）。真实Electron tbHJKC 7/7、2启动、0renderer错误；本机PowerPoint16.0 build20430 5/5，真实窗口GIF变化像素均值6.3497并看图，静态讲解页可翻页，原PPT字节不改。独立Pillow25帧/24种画面/8140ms/loop0。领域M0uFHL 10/10（受控生成器，不冒称PPT）、Anatomy NR7vi4 13/13、renderer234/234、同构建legacy207/207、type/build/diff通过。legacy仅兼容旁证；UI重用上一轮真实DeepSeek审批的45实体HTML，未新增provider对话。精确命令/报告见apps/desktop/test-results/goal/harness-anatomy-ppt-20261020-teacher/{progress.json,commands.ps1}。
+
+失败保留：bBD6ss CJS命名导入，KD8c4O宿主脚本字符串语法，8GHkKM真实取消悬挂。已用default导入、编译受检的固定renderFrame函数与WebContents显式abort race修复。同类编号部件合并、淡化非重点表面解决后方部件不清楚；最多6个类别，完整结构仍见总览/GIF。Office早期脚本误用HWND成员的夹具失败保留，最终定位该样本新建的放映窗口，不操作其他用户文稿。
+
+教师说明与可直接打开的真实PPT/GIF实例：docs/integrations/ANATOMY_TEACHER_PPT.md、docs/integrations/examples/anatomy/散热片课堂演示.pptx。WPS发现已安装但KWPP/WPP COM未注册，未改注册或算通过；WPS/网页版、既有课件复制合并人工、其他DPI/安装、MP4、广泛科学正确性仍未验。未改变日常out/真实数据，正常npm.cmd start重新构建后可用，测试目录不作为日常入口。未提交/推送。整体Harness Goal ACTIVE；H08整体/完整H09/H10/H07国产公网及原NET/IMG/FILE/日常无VPN等继续OPEN。下一步回H09-C主题/事件状态/证据入口/键盘核验。
+
+## 2026-10-20 Anatomy 科普绘图与HTML演示（LIMITED_ACCEPTED）
+
+已安装固定MIT上游1482e8469b0a9e0d8cc18ea2740a01423d29ae80，新增“科普绘图（Anatomy）”技能与office_create_science_figure。Pi唯一Loop，box/cylinder/repeat→宿主SVG/HTML→现typed审阅→教师确认→原子保存/回读/撤销；无DDL/新npm依赖。用户追加选型为离线HTML内嵌演示优先，支持播放暂停、进度/键盘、前后步、全貌；SVG静态备用，GIF/MP4未做。结构演示非物理仿真；教师仍核查科学含义。HTML固定脚本、SVG作img、opaque sandbox/CSP隔离，保存文件重建模板而不执行任意HTML。
+
+最终隔离构建f43820f2e46d0e7f4c5bc4db27bde288e3c1180b1f2a9d7aee6864bf655c2bf2，372文件，83合同源码收尾hash一致，许可/manifest打包字节一致。真实Electron/Pi/DeepSeek G5k6xX 8/8、6次deepseek-flash HTTP200、2启动、0renderer错误；实际预览交互/双尺寸可达/确认精确写入/文件面板重开交互/拒绝零写入/冷启无重放。HTML浏览器6/6、SVG浏览器3/3、绘图13/13、技能目录25/25、旧v1迁移10/10、协调器8/8、文本基础20/20；renderer234/234、同构建legacy207/207、type/build通过。legacy仅兼容旁证。截图已逐张看；精确命令、报告和失败边界见apps/desktop/test-results/goal/harness-anatomy-html-20261020-reviewed/{progress.json,commands.ps1}。真实保存的独立示例见docs/integrations/examples/anatomy/散热片.html。
+
+e45NqM/qUUVYo机械绿但视觉/几何错误，orQJXZ严格44≠45，均保留；修正最小角坐标、遮挡排序、repeat精确展开。BXNRYz首次HTML播放观察超时，独立浏览器通过但同场另有Electron兼容验收；G5k6xX显式检查文档visible并使测试窗口前台后通过，未将原失败算成功，也不将并发遮挡推断为已证实唯一根因。两个旧host/API源码脚本因Node24 JSON import attribute加载失败不计通过。
+
+仅本切片LIMITED_ACCEPTED；Harness Goal ACTIVE。H08整体/完整H09/H10/H07国产公网认证及原NET/IMG/FILE/日常无VPN/安装/OfficeWPS/人工仍OPEN。日常out未替换，统一启动器npm.cmd start会重新构建源码；测试目录不作日常启动入口。无提交/推送。下一步回到H09-C主题差异与E_EVENT_UI状态、证据入口和键盘核验。
+
+## 2026-10-20 H09-B 流式选区与阅读（LIMITED_ACCEPTED）
+
+H09-B仅本片LIMITED_ACCEPTED，Goal ACTIVE。最终隔离构建7d275058fb1addb245d0b19832e911aae1490cd53ff14783cc4687021044af47（370文件、63项合同源码当前一致）。实际PiConversationSurface浏览器10/10；H09-A展开jsdom7/7与焦点浏览器7/7；正式Electron/Pi/DeepSeek6/6（VltzC1，1次deepseek-flash HTTP200、2启动、0renderer错误）；renderer234/234、同构建legacy207/207、type/build通过。精确证据：apps/desktop/test-results/goal/harness-h09b-20261020-final/{progress.json,commands.ps1}。
+
+browser-4DTDlq实际鼠标选区在同段增量后变空；父级React快照修复仍m2LPJS失败，因Markdown可异步提交。现OfficeTextSelection在原阅读host保存当前公开正文的两个端点，只在同thread/item且前缀不变时恢复方向；用户新的指针/按键及源变化撤销旧书签，不读剪贴板、不持久化、不加DOM盒或焦点操作。无新依赖/DDL/IPC/main/权限/第二Loop；滚动仍现有Pro+OfficeReadingPosition，未另写滚动控制。
+
+正式实例用真实DeepSeek响应字节（50ms/chunk及marker暂停只改变时序，不造内容），鼠标选前缀→实际增量后保留→真实wheel向上至历史→增量完结不回底→原返回最新→冷启公共turn/run数一致、临时选区为空。冷启网络仅观察ready以后，不扩大为最早启动零网络。组件前插历史原段落偏移仅0.0625px；最初程序化定位与挂载RAF竞争的3MHepg保留，真实滚轮重测通过，未凭该测试假设改生产滚动。
+
+正式浅暗4图、组件浅色2图已逐张看；1366暗色切换截图输入框仍呈浅色，保留为H09-C视觉差异，不能宣称主题完全一致。日常out未替换、未提交/推送。下一步H09-C按E_EVENT_UI核journal→projection→可见计划/attempt/verification/recovery/证据入口逐状态缺口，先复现主题差异并完成状态/键盘可达性；随后窄屏/125%等DPI/读屏/长历史性能。H08整体与跨域FACT/质量、完整H09/H10、H07国产公网认证、原NET/IMG/FILE/日常无VPN/安装/Office/WPS/人工仍OPEN；不重复已验切片冒充整Goal进展。
+
+
+## 2026-10-20 H09-A 展开与触发焦点（LIMITED_ACCEPTED）
+
+H09-A仅本片LIMITED_ACCEPTED，Goal ACTIVE。最终隔离构建faf3568680f89798452686ded6019b16f17dc8c49fac2326394e016d968cc420（370 files、60项合同源码指纹当前一致）；实际OfficeConversation的jsdom7/7、Chromium组件7/7、正式Electron/Pi/DeepSeek5/5、renderer234/234、同构建legacy207/207，type/build通过。工具单项变组、拆分合并时保留教师展开选择与触发焦点；主动移到其他控件不抢焦点，run/thread隔离。Pi唯一Loop、main/preload/事实/权限不因本片改变。
+
+真实Pi实例iieHTy含三次DeepSeek HTTP200、两次依赖文件读取、持久回执、答案和冷启公共事件读回，2次启动、0renderer错误；自然模型在工具间插入公开说明，所以实际是两个独立段，精确重分组由独立组件层证明。正式四张双尺寸浅暗图已查看（Windows150%DPI）；独立组件fixture四图都为浅色，不能用系统偏好标签冒称暗色。展开是临时UI状态，冷启回默认。构建未替换日常out，未提交/推送。
+
+G2AmYj展开丢失、browser-aFJ2mv焦点落BODY原失败保留；测试观察器/自然分段假设/夹具启动失败单独记，不归咎供应商。精确证据与命令：apps/desktop/test-results/goal/harness-h09a-20261020-focus/{progress.json,commands.ps1}及docs/goal/HARNESS_EXECUTION.md。H08整体、完整H09/H10、H07国产公网认证、原NET/IMG/FILE/日常无VPN/安装/Office/WPS/人工均OPEN。
+
+下一片H09-B先冻结公共事件流阅读锚点与正文选区合同，真实浏览器复现用户向上阅读时新增事件是否拉回底部，再最小修复并从正式Pi流验收；保持本片7/7门禁，不重新重复H08已验切片。之后补事件/核验提示、键盘读屏及窄屏/DPI；H08广泛质量/跨域/FACT攻击和H10日常原失败仍必须补验，不能由UI绿测关闭。服务统一事项沿docs/integrations/SERVICE_REQUESTS.md，当前只需百度AppBuilder国内搜索只读MCP凭证，未代开付费账户。
+
+
+## 2026-10-19 H08-C 当前结果（覆盖中间构建与收尾状态）
+
+H08-C LIMITED_ACCEPTED，Goal ACTIVE，H08整体/H09/H10及原NET/IMG/FILE仍OPEN。最终隔离构建16ab8e4a78fde74e330851a45ef7967267e446430367457fa5e3e337876ab7ad/370文件，56项合同源码指纹仍一致；领域FnrQKy 24/24、正式Pi/DeepSeek yMz4NE 9/9、2次启动、0renderer错误，组件217、呈现17、候选25、隐式18、明确8、type/build/diff通过。实际文件/已选记忆→工具回执与已提交事件身份核对→设置显示/原版本回放/显式复核→来源修订与撤权失效→SQLite与冷启动贯通。当前8张双尺寸浅暗截图已逐张查看。
+
+保留VqB3Km首次shadow 8015ms无HTTP响应，原脚本/配置/8秒限制复测才9/9，不能称网络稳定；mq1zgU/d1WTwI/VS9eDt首失败也保留。32ec85构建legacy207是最后journal核对补丁前的兼容旁证，非当前同构建Pi证明；已核唯一main源码差异为route-observation.ts、renderer/preload字节相同。日常out未替换，未提交/推送。
+
+下一步：逐条对账H08剩余跨域/FACT/更广质量要求，补缺后进入H09真实事件UI；首个界面反例为ToolStep/组随attention更换key可能丢展开状态，须冻结合同与组件交互反例后修复。H07认证服务待统一账号配置，原日常/无VPN/安装/Office/WPS/人工及教育DT-05独立。精确证据：[Harness执行记录](HARNESS_EXECUTION.md)与apps/desktop/test-results/goal/harness-h08c-20261019-journal/{progress.json,commands.ps1}。
+
+## 2026-10-17 H08-B 本线程 Harness 续接
+
+H08-B LIMITED_ACCEPTED：候选来源/学生与goal绑定→原评估/留出/采用/撤销→typed设置查看/本机复核/拒绝已贯通；整个Goal ACTIVE，H08整体仍OPEN。当前构建414cc39a.../370 files，领域25、正式采用12/拒绝及学生绑定5、组件217及type/build通过；隐式18、明确8、决策17及同构建legacy207回归通过；51源码指纹仍一致，diff exit0。原98ttpM真实失败揭示末尾摘要与页面不同，现从同一durable公共turn评估，原失败库只读比对相同；其余首失败保留。已查看采用/拒绝8张双尺寸浅暗截图。精确SHA、通用回归最终结果、命令、失败/边界和下一片H08-C统一见[Harness执行记录](HARNESS_EXECUTION.md)。本次不改教育DT-05顺序；H07公网、H09/H10、原NET/IMG/FILE/日常无VPN安装仍OPEN，日常out未替换。
+
+## 2026-10-17 H08-A 本线程 Harness 更新
+
+当前1aeb566c.../370文件构建：pi-decisions-n1abEg 17/17；pi-decision-ui-LyKPfC 11/11，deepseek-flash真实shadow200，另有明确受控401、SQLite损坏/写失败/恢复；renderer217、type/build通过。四张1366/1920浅暗截图已查看，冷启记录与偏好一致，无renderer错误。100回放10.2924ms仅枚举基线。TvYsX6首次失败保留；早期构建报告不替代当前证据。通用回归最终状态、精确SHA/命令和未验边界统一见HARNESS_EXECUTION及本片progress.json；整体验收仍OPEN。
+
+完整记录：[Harness 执行合同与验收](HARNESS_EXECUTION.md)。服务申请：[服务配置清单](../integrations/SERVICE_REQUESTS.md)。
+
+## 2026-10-17 本线程 Harness 续接
+
+H07 首片 LIMITED_ACCEPTED，整体 Goal ACTIVE；不覆盖独立教育 DT-05 队列。当前构建 23574a1364dc4d12b96fd7f50f6c00f912d1e89635c4eb0441fc63cd84cf5bad（368 files）：MCP专项28/28、正式Electron/DeepSeek/Pi8/8、renderer217/217、type/build exit0。真实公开课程 HTTP 测试服务已贯通设置/授权/调用/attempt/native/SQLite/冷启，失效服务不阻断内建工具；stdio在实际子进程边界测试通过。
+
+修复了Pi active-name白名单遗漏、动态工具污染固定memory fingerprint、初始化失败连接释放和多慢服务耗尽初始化期限。207项legacy回归属于期限补丁前1e5e00ac构建，仅作兼容旁证。BoardUI6文件原/适配hash一致。日常out未替换，国产公网认证（预检401）、原NET/IMG/FILE、无VPN/安装/人工及H08–H10仍OPEN；原ypzvPF、4ygUTX失败保留。
+
+完整证据与精确命令：apps/desktop/test-results/goal/harness-h07-20261017/{progress.json,commands.ps1}；详见 docs/goal/HARNESS_EXECUTION.md。服务统一申请清单：docs/integrations/SERVICE_REQUESTS.md。下一步H08：核固定mu DecisionSpec/ledger与现偏好候选/CAS、memory scope，冻结合同后接可回放shadow决策及评估/晋升/回滚；H07公网配置单独补验。未提交/推送。
+
+
+## 最新交接（2026-10-17｜上下文压缩）
+
+本节覆盖下方旧快照的“当前/下一步”描述；历史证据保留。Master ACTIVE，Phase 4/5/6 DOING。智能组卷按用户要求移出当前队列；三主线为 DeepTutor、OpenMAIC、Hermes，当前教育唯一执行项为 DT-05。
+
+- 已完成的限定切片：EV-MAIN-02 9/9；DT-03 read/review/history/concurrency 与 DT-04 plan 共43项；DT-05-questions 6/6。均仅按各自报告范围接受。
+- 最新已核对报告：`apps/desktop/test-results/education-journey-WsXH6Q/report.json`，`DT-05-review` success=true，17/17，3次启动，0 renderer errors；buildAfter SHA256 `fed5e0bd3f9b3ea8c562c4e1cb185b16a296c1da379d112aa336697a515bc51c`，368 files。命令：在 `apps/desktop` 执行 `npm run test:education-journeys -- --scenario=DT-05-review`。这是2026-10-16已有运行，本整理轮只读取报告，未重跑。
+- review 限定覆盖：真实题目来源→Pi/DeepSeek待审核候选→质量阻断/SymPy检查→教师编辑/确认/拒绝→原子保存与父子谱系→题库回读；错误答案隔离、编辑后重新审核、停止恢复、冷启动不重放、确认幂等。不能据此宣称全科教学正确或 DT-05 全部完成。
+- 视觉状态：上一轮已查看 edited-dark 与 blocked-light 的1366×768截图；16张截图已生成但其余状态及1920×1080尚未全部人工查看。生成截图不等于视觉验收通过。
+- 下一步顺序：补齐 review 关键状态双尺寸视觉检查→`DT-05-practice`→`DT-05-photo`→`DT-05-photo-facts`→`DT-05-photo-cycle`。每片先看首次失败，再修具体缺口；记录当前构建SHA、renderer错误、真实图/公式/答案、SQLite/文件回读和冷恢复，不扩大无关测试。
+- DT-05达到上述范围后，继续 OpenMAIC 逐字讲稿/导入，再做三主线联动；Hermes既有明确/隐式呈现偏好仅 LIMITED_ACCEPTED。Harness按 `docs/goal/HARNESS_EXECUTION.md` 独立续接，Feishu S3/NET/IMG/FILE仍OPEN。
+- 边界：Pi唯一编排；DeepTutor仅经现有Adapter/Provider；SQLite/文件唯一事实真源；保留教师确认、来源/CAS、student/session隔离、取消/幂等/冷恢复；confidence不等于答案验证。不得恢复第二运行时。
+- 工作区：`gitbutler/workspace`，HEAD `e4763a1535e9692f57d0c5bc3cd162ef6fec98f7`，大量并行脏改动；本轮未重新联网核远端，未提交/推送，未改生产代码、数据库、凭证或用户资料。
+
+## 2026-10-16 H04/H05 限定接受
+
+当前源码冻结构建 `fed5e0bd3f9b3ea8c562c4e1cb185b16a296c1da379d112aa336697a515bc51c`（368 files）上，H04 专项注册13/13、教育365、执行17、预检9、回执15、journal9；H05 状态24、真实 Electron/DeepSeek UI18。H05 截图已查看。H04/H05 均为 LIMITED_ACCEPTED，不代表 H01–H10 或 Master 完成；日常 profile、无 VPN、安装、图片/文件完整路径和 H10 仍 OPEN。证据索引见 `apps/desktop/test-results/goal/harness-h05-20261016/progress.json`。
+
+## 2026-10-16 H06 限定接受
+
+当前源码 H06 边界：压缩上下文6/6、记忆 epoch17/17、scope15/15、模型设置19/19、host lock6/6、模型切换10/10；DeepSeek `/v1/models` HTTP200，记录 text/image 与 text-only 模态。existing-session compaction 因隔离数据缺 native compaction 记录而未验证；日常长历史、1000轮性能、真实图片/无VPN/安装和 H10 仍 OPEN。证据索引见 `apps/desktop/test-results/goal/harness-h06-20261016/progress.json`。
+## 2026-10-16 S2/F02 安全只读调度 LIMITED_ACCEPTED
+
+正式 Electron/DeepSeek 实例 4/4，固定构建 SHA `acf357002c23adccd23d5914c9abcc5a0fd26e7a87130f9845e7f23c9e6efef3`（368 files），脚本 SHA `975fb57dc503ef2fc82dc7121d9f83689d88c0f0b56098fc17409514ea6fc6a1`。13 个 Pi `office_web_fetch` 调用在 UI/真实调度器内产生；12 个受控传输 active，第13个 queued/unadmitted；释放一项后才 admission；最终调用状态、计时、SQLite journal/receipt 与 projection 一致。已查看截图。报告 `apps/desktop/test-results/xiaozhi-agent/pi-read-scheduler-web-ui-jQ6sf7/report.json`。页面响应为合成夹具，不验真实网站可达、自然任务吞吐、无VPN、图片/文件或整个 Harness。旧失败报告均保留。下一步 S3 输入框/少追问，并继续 NET/IMG/FILE 实际验收。
+
+<!-- dt03-dt04-accepted-20261016:start -->
+## 2026-10-16 DT-03 / DT-04 当前构建限定接受
+
+当前冻结构建 fed5e0bd...（368 files）上的正式切片：DT-03-read 7/7（education-journey-uoFHqO）、DT-03-review 11/11（JqFKdk）、DT-03-history 10/10（crF5um）、DT-03-concurrency 6/6（fCqxMu）、DT-04-plan 9/9（ChIaul）。所有报告 build SHA 与冻结构建一致、renderer errors=0；DT-04 有12张双尺寸轻/暗截图，DT-03 review/history/concurrency/read 各有当前报告视觉证据。
+
+范围包括真实学生事实与 Pi/DeepSeek 只读学习分析、教师编辑/确认/拒绝、策略版本与跨会话历史、事务终止回滚、停止/冲突幂等、冷恢复、14天计划编辑/确认/拒绝、无效计数阻断和空档案诚实反馈。DT-03-read 的正式来源断言已修为验证教师可读投影和隐藏内部 JSON 标记，未放宽产品隐私边界。
+
+状态为 LIMITED_ACCEPTED 子片，不代表完整 DT-03/DT-04、题目/练习、视觉学习、Golden F、日常人工、安装或无 VPN。下一项为 DT-05 题目与学习路径。
+<!-- dt03-dt04-accepted-20261016:end -->
+
+<!-- ev-main-02-accepted-20261016:start -->
+## 2026-10-16 EV-MAIN-02：隐式偏好学习闭环 LIMITED_ACCEPTED
+
+正式 Electron/DeepSeek EV-FEEDBACK --implicit 已在修复后隔离冻结构建上通过 9/9。构建 SHA fed5e0bd3f9b3ea8c562c4e1cb185b16a296c1da379d112aa336697a515bc51c，368 files；构建证据 apps/desktop/test-results/goal/harness-ev-main-02-20261016-1915/build-isolated.json，正式报告 apps/desktop/test-results/education-journey-l9Ym5e/report.json，脚本 SHA 26d1669d4d3d3b6f24f96674056560f6b3e4c1aaefcb2b110f51b112eb17d0c8。
+
+覆盖范围：两次真实教学训练作为候选、独立真实 Pi 留出、绑定自然正反馈后版本化采用、确认/致谢不触发回滚、后续无风格提醒任务应用、冷恢复保留候选/留出/采用版本和答案、设置页真实工作区状态、聊天撤销恢复旧策略。2 次启动均使用专用 Electron profile，0 renderer errors，4 张 1366/1920 轻/暗截图已查看。评价指标 teacher_presentation_observed.v2 只衡量讲解呈现结构，不替代数学/教学正确性验证；该片不代表完整 Hermes 式自进化或全科教育正确性。
+
+旧失败 n1lZ85、a7OjDX、3FUjex 保留为历史证据，不能被本次成功覆盖。当前构建前后的正式源码清单未漂移；工作区仍 dirty、未 commit/push。
+<!-- ev-main-02-accepted-20261016:end -->
+
+## 2026-10-16 当前恢复指针（20:45）
+
+当前教育主线以 `CURRENT_STATE.md` 为准：DT-05 题目/练习/答案验证/来源/错题相似题/视觉证据。EV-MAIN-02 与 DT-03/DT-04 已在上方更新为对应 LIMITED_ACCEPTED 范围；H04/H05/H06、S2/F02 属于独立 Harness/联网队列。下面 `context-handoff-20261016-20261016-182557` 是 18:25 的历史快照，保留当时失败分析，不再作为当前状态或下一步。
+
+<!-- context-handoff-20261016-20261016-182557 -->
+## 历史快照（2026-10-16 18:25）：EV-MAIN-02 仍 NEEDS_FIX
+
+本节是保留的历史快照；当前状态以本文顶部的恢复指针和 `docs/goal/CURRENT_STATE.md` 为准。该快照记录当时仅整理上下文、未新增生产修改或重跑业务测试的状态。Master ACTIVE，Phase 4/5/6 DOING；智能组卷已按用户要求移出当前队列。
+
+- 已实施但未整体验收：确认/致谢不消耗留出或触发退化；简洁偏好同时注入当前修订、试用和已采用上下文；移除回显型 hint/visual 工具的生产注册，保留真实 OCR/教师校正；撤去不持久化的设置重置/伪历史入口，已有聊天撤销保留。
+- 真实 Pi 组装另有严格约束：`pi-session.ts` 当前只接受至多一个 `search_teacher_knowledge` educationTool。先前添加 hint/visual 会触发 configuration，不能只检查工具名称。现注册测试 3/3 只传 webTools，没有传真实 createEducationTools；补这条组装回归是下一步，不把现测试写成完整教育工具证明。
+- 已取证：build/type exit0（build-current-correction.log）、组件 217/217、领域 15/15（构造回答）、注册 3/3（有限范围）。通用 smoke session 30660 已 exit0，smoke.log 中 ok=true；其构建早于最后上下文修复，且通用报告目录可能被另一任务共用，不能证明最终 Pi 隐式学习。
+- 正式 DeepSeek/Electron 最新 n1lZ85：success=false，仅 1 个检查通过，4 轮真实回答、1 次启动、0 renderer error、0 视觉截图。首次修订 489 字符/table=true，但 metrics.steps=0、passed=false，下一任务候选失败并重新收集；未采用偏好，未到留出/冷恢复/设置视觉/撤销。实际回答把计算分在表格行及关系式/结论/检查区，而现评价器只数行首编号步骤。需审查教学顺序与评价器表达覆盖，不能直接放宽门槛或手动采用。
+- 两次更早失败保留：a7OjDX 留出 875>800；3FUjex 修订 807>800。每次有具体上下文修复，固定 800、两独立训练、留出、真实正反馈和版本/CAS 门槛未降。
+- 冻结构建 build-current SHA `d5051c4747e79c4b89b74c5f4b20aa0310c3a66f49fc862aebed3599953d408f`，368 文件。证据根 `apps/desktop/test-results/goal/ev-repair-20261016/`，原 before/合同/三个失败报告均保留。旧 35750 已 exit1；30660 已 exit0，勿再次轮询或只因失去句柄重复启动。26268 是更早的 UNKNOWN，不计通过。
+
+下一步依次：EV 评价器真实表达覆盖与教育工具组装回归→既有正式 --implicit 路径成功与双尺寸视觉/答案审查→DT 真正的提示协助/独立作答/视觉来源证据→MA 逐字讲稿/导入→三主线联动及 Master 剩余门禁。DT/MA/EV 均非整体完成；上游许可/来源、唯一 Pi、主进程授权/隐私、教师确认、student/session 与版本/CAS 规则不变。
+
+
+<!-- context-reconcile-20261016:start -->
+## 2026-10-16 上下文恢复与状态纠偏
+
+当前阶段与唯一继续队列见 docs/goal/CURRENT_STATE.md（从本文件按仓库根解析）；智能组卷移出当前队列，三主线继续。EV-MAIN-01 是明确偏好子片限定接受；EV-MAIN-02 隐式反馈仅有领域例 13/13，缺正式留出实例。DT 新 hint/visual 工具与偏好设置 IPC/UI 标 NEEDS_FIX：回显模型 OCR/置信度不是验证，清 React 状态不是持久化重置，重复读 head 不是真实历史。MA 讲义/备课稿四导出限定接受，逐字讲稿/导入仍 OPEN。
+
+本轮只审查和整理文档，未修这些生产代码、未重跑业务验收。先冻结修复合同解决上述缺口，再 EV 正式 --implicit→DT 协助/独立/视觉闭环→MA 讲稿/导入→联合与 Master 其余门禁。未宣称完整 DeepTutor/OpenMAIC/Hermes 或 Phase 0–3 全部完成；历史记录按其当时范围保留。
+
+已脱敏现场与校验：apps/desktop/test-results/goal/context-save-20261016/。可恢复的已提交历史归档 docs/archive/context-20261016/，不是覆盖前未提交长文的完整恢复。已有详细验收/决策正文保留，本节不改上游/权限/事实真源/安全边界。HEAD/远端读回 d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63，master dirty，未提交。
+<!-- context-reconcile-20261016:end -->
+
+
+<!-- ma-documents-status-20261015:start -->
+## 2026-10-15 MA-MAIN-02-B2：讲义/备课稿 Word/PDF 限定接受，下一 Hermes 隐式反馈
+
+Current Phase：4/5/6 DOING；Master ACTIVE。上轮 DT-FOLLOWUP-01 为 progress；本轮 MA 文档交付为 progress。智能组卷仍移出当前队列。Current Task/Next：EV-MAIN-02 隐式修订反馈→候选偏好→留出评价→版本化采用/回滚；其后 DT 独立作答/提示协助/视觉证据与其他模式，MA 逐字讲稿/导入继续 OPEN。
+
+Done：教学内容→互动课堂新增 Word/PDF 学生讲义与教师备课稿入口，沿唯一 Pi 的 education_read_classroom/export_classroom、同一 Office 预览/明确审批/版本化保存。新增 classroom-document-office.v1，旧课堂PPTX v1不变；main确定性读取完整已确认版本/context，原生成/保存CAS保留，拒绝把课堂导出稿降级为无来源普通文档。学生讲义不附随堂题参考答案/解析；教师备课稿复用已有解析。完整课页由同一固定 OpenMAIC SlideCanvas 离线渲染为不可编辑图片，文字题目可编辑，不伪造教学讲述。无新 Agent/DDL/IPC/依赖/事实真源。
+
+Evidence：apps/desktop/test-results/goal/ma-documents-20261015/{contract.md,before,research,domain-final.log,build-release.log,components.log,first-visual-failure.md,artifact-check.json,wps-handout,wps-teacher,progress.json,commands.ps1}；正式 Electron education-journey-9MIe8g 5/5、2次启动、4次真实Pi/DeepSeek导出请求、0renderer错误；四份真实文件及账本hash/源课堂/学习记录/冷回读核对。冻结build-release SHA c95a175107f78669b0a0f08d8c1288df58ea917c61d8135c19dec403e9ec86d5 /368，运行前后相同。build/type exit0，组件217/217、领域4/4。产品PDF教师3页/学生2页，各2张完整课页；两份Word在独立受控WPS12打开各2页，原文件hash不变。9页实际文件渲染及浅1366/暗1920 UI已查看，公式/完整长题/答案隔离可见。
+
+Failed/Recovery：首次 ebHq89 操作成功但第一课页公式缺失，视觉拒收；显式加载本地KaTeX FontFace、等待fonts.ready及两帧后 NT8bBk 和最终实例恢复公式。首次脚本相对路径cwd错误未改源码，后续使用绝对根修正；保留初次日志，不以初次build作为最终证据。graph查询300秒超时；转定向已知源码。官方网页429，git ls-remote核HEAD ecb940c；官方raw讲稿导出与固定636fab0内容一致，MIT原文已读，无上游新代码复制或安装。
+
+Boundary：教师备课稿不是逐字讲稿（现课堂没有speech actions），学生讲义只隔离quiz答案，课页原有文字完整保留，教师须检查是否适合发学生。图义/答案仍answerVerified=false；第二课页原有英文公式措辞和版面不因导出自动修改。PDF跨页题目会续页，不承诺像素一致或可编辑图形；教学文件列表同名文档需打开预览区分受众，后续可优化。未扩全量回归/容量/组卷；完整Golden E/全科复杂图/导入/逐字讲稿/无VPN/安装/全部DeepTutor/EV留出仍OPEN。
+
+Last verified commit：d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63 dirty；未commit/push。回滚before及本片新增classroom-document-pages.ts；保留独立Harness脏改、原资料/配置/凭据/课堂/正式产物。后续按唯一队列推进，不重回组卷。
+<!-- ma-documents-status-20261015:end -->
+
+
+<!-- dt-followup-status-20261015:start -->
+## 2026-10-15 DT-FOLLOWUP-01：单次作答续接限定接受，下一 MA 教学文档交付
+
+Current Phase：4/5/6 DOING；Master ACTIVE。智能组卷已按用户要求退出当前队列。DT-FOLLOWUP-01 仅“选中实际作答→同学生Pi复盘/讲解→冷恢复”LIMITED_ACCEPTED，不称DeepTutor整体/教育正确性完成。Current Task/Next：MA-MAIN-02-B2 已确认互动课堂→讲义/讲稿 Word/PDF；随后 EV 隐式改稿反馈/留出评价，再回 DT 独立作答/提示协助/视觉证据与剩余模式。保留JOIN-01已验接缝，不重跑组卷。
+
+Evidence：apps/desktop/test-results/goal/dt-followup-20261015/{contract.md,before,slice.patch,research,domain-current.log,build-current.log,components.log,progress.json,commands.ps1}。正式 Electron H7RATs：3/3操作检查、2次启动、2轮实际Pi/DeepSeek、0renderer错误；原IaAkgM已保存概念学习结果克隆至隔离profile，实际工具逐轮返回选中来源与完整观察，学习事实/确认计划未改。冻结build-final SHA dd2a8a8412948bb93601b35f2d25718700ee6168ff78dfe236ed8a593ea1bfc5 /366，运行前后相同；build/type exit0，领域13/13，组件217/217，diff exit0；浅1366/暗1920截图实际查看，两按钮可达，长计划需滚动。
+
+Failed/Recovery：GCKjw6三个操作检查通过但真实回复把新增证据误当计划更换、把缺独立掌握评估误当观察不可信；保留其原报告和first-semantic-review.md，补latestConfirmedPlanVersion/currentPlan/usedForCurrentDayProgress/observationStatus及明确语义后H7RATs实际修复。一次测试脚本路径用了错误cwd，只跑到8条旧例，不算本片；一次历史计划例忘记同步新增知识点目录，被原source_changed正确拒绝，更新测试草稿而未放松产品门禁，最终13条通过。
+
+Boundary：本例缺少完整题面/逐字作答/图形，不作为数学正确性验收。最终解释仍出现“同乘可能丢失解”等不严谨泛化，答案/讲解未经确定性或教师验证，不得标已验证、不得写学习事实；后续DT教育质量门禁需结合真实原题/答案与协助证据解决。本片只接受证据续接、事实语义及操作功能。全部DeepTutor模式、transfer真实调用、全科/复杂图、MA Word/PDF/导入、EV隐式优化/留出、安装/容量/无VPN仍OPEN。
+
+<!-- dt-followup-status-20261015:end -->
+
+<!-- join-status-20261015:start -->
+## 2026-10-15 JOIN-01：三主线接缝限定接受，继续 DeepTutor 长期辅导
+
+Current Phase：4/5/6 DOING；Master ACTIVE。智能组卷已按用户要求移出本轮队列。JOIN-01 的“同一学生/资料/偏好→辅导→互动课堂→教师修订→PPTX→冷恢复”接缝 LIMITED_ACCEPTED；不称三个上游完整融合或 Master DONE。Current Task/Next：DT 长期辅导续接，随后 MA 讲义/讲稿与导入、EV 隐式反馈评价，按下方唯一队列执行。
+
+Done：阅读页新增“用这一段制作互动课堂”，复用唯一 Pi、原 DeepTutor 引文核验、固定 OpenMAIC 生成/归一/沙盒/编辑器/PPTX及既有 Office 审批。main 只收集本轮真正送达模型的段落，classroom-context.v1 保存原 MaterialSource/正文版本、脱敏标题、送达字数/截断、OCR未校对标记和冻结偏好 revision；不保存私有笔记/原件路径/学生事实。课堂 stage、教师确认、Office最终提交在原事务内复核资料账本hash/正文/隐私；教师改内容不替换来源，Office精确快照保留相同context，旧无context课堂兼容。无新增 AgentLoop/DDL/IPC/依赖或事实真源。
+
+Evidence：apps/desktop/test-results/goal/join-20261015/{contract.md,progress.json,commands.ps1,before,domain.log,build-current.log,components.log}。实际物理扫描卷沿已接受 nYQae6→fkMAqF 的真实本地OCR记录复用到隔离副本；正式2OltyJ完成5个实际操作检查、4轮真实Pi/DeepSeek、1次启动、0renderer错误；Vst2vG冷恢复3/3、2次启动、0模型重跑、0renderer错误。冻结build SHA 9e0ea7864648523eaa821dc84bb66c43b97f611f86e55efa9ba67906f5b22b62 /366，冷验前后相同；build/type exit0，领域11/11，组件217/217。PPTX 103568字节、5页，经现WPS12独立受控COM打开、转PDF且原件hash未变，5页PNG与浅1366/暗1920 UI已逐页实际查看。资料段落、6条既有阅读记录及学生学习事实不改，偏好head/revision始终1。
+
+Failed/Recovery：h6bocz在学生会话切换未完成时取旧snapshot，已改等待真实student绑定；2OltyJ所有5个业务步骤成功，但收尾错误断言将每轮应追加的偏好应用event与初始反馈数组全等，故其report.success=false（保留原报告）。修为head/version不变、4个run应用证据合法，再原位冷读Vst2vG通过，不重生成四轮。一次并行prepare被原宿主resource_busy拒绝，模型实际按工具错误重新准备后成功；未放宽并发/授权。首次部分源码写入时build TS失败保留build-first.log，完整修复后当前build成功。
+
+Boundary：原图1没有上传/读取，生成图明确“教学示意（非原图1）”；两题经本轮物理条件复核为向上3.3N向下、教学变式下落2.3N向下，仍answerVerified=false，无独立标准答案gold。视觉检查发现生成页标题“三步”对应4个提示、图底来源说明与箭头轻微交叠；来源按钮/确认/导出可达，JOIN只接受接缝，不称内容排版或教育正确性全量通过。PDF为WPS验收转换，不是已实现产品PDF导出。全部DeepTutor模式、复杂图/全科正确性、OpenMAIC全部DSL/Word/PDF/导入、隐式优化与留出评价、安装/容量/无VPN仍OPEN。
+
+Blocked：无。Last verified commit：d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63（dirty；本轮远端未重新核验）。无commit/push；用户资料、配置、凭据及独立Harness修改保留。回滚仅按before撤本片接缝delta和新增classroom-context/ClassroomSources，不回滚其他未提交变更，不删除已确认课堂/偏好/正式产物。
+<!-- join-status-20261015:end -->
+
+<!-- ev-feedback-status-20261015:start -->
+## 2026-10-15 当前：三主线已交付首批功能，下一 JOIN-01
+
+Master ACTIVE；Phase4/5/6 DOING。智能组卷已移出当前队列。DeepTutor 阅读/笔记续接与学习计划辅导、OpenMAIC 课堂生成/直接编辑/教师确认/PPTX交付已分别限定接受；本轮 EV-MAIN-01 普通反馈偏好子片 LIMITED_ACCEPTED，不称三项目或自进化全部完成。当前任务转 JOIN-01 三主线共同使用。
+
+教师现在可直接说“以后讲解详细些，分步骤，先给提示再给答案”，后台生成固定枚举偏好，经本地合同评价/版本/CAS保存；新会话自动采用，重启保持，普通聊天“撤销上次记住的教学偏好”追加回滚版本。只复用同一Pi的protectedContext、原app_settings/私有事务与普通聊天；无新Agent、DDL、IPC、模型调用或依赖。当前请求优先，不把学生事实/答案/授权当偏好，原始反馈不复制到模型动态上下文。
+
+Evidence：apps/desktop/test-results/goal/hermes-20261015/{progress.json,commands.ps1,before,research}。最终正式Electron hbi02B：4/4、2次启动、4次真实Pi/DeepSeek回合、0renderer错误；普通反馈→新聊天顺逆流多步讲解→冷恢复→撤销→新聊天已撤销上下文，SQLite/native记录均核对。build cd493923b0ba0ea4a4f4e7157671aeedee4acd6f323d9912bfc627b4bf3175bc /366，前后相同。build/type exit0、组件217/217、领域contract-h9aufY 8/8、diff exit0。浅1366/暗1920截图已实际查看，消息区可滚动。
+
+首次h15FB0实际已保存偏好，但模型又询问详细档位形成waiting_input；已修动态上下文明确保存成功、不重复问档位/技术配置，最终实例通过。否定表达反向匹配、旧TS库Object.hasOwn及生产SQL私有接口差异已处理，失败现场保留。Hermes HEAD0a929e3aa20e15cf04dc7c28492a7d41a5139125源码已读；README/pyproject声称MIT，许可原文仍未取到，因此仅参考候选/评价/版本/回退思想，未复制其代码或安装GEPA/DSPy。
+
+边界：本片只验明确中文表达偏好；评价是枚举合同一致性，不是教育正确率。隐式修订信号、留出效果评价、routing/retrieval优化、效果下降自动回退仍OPEN；表格/导出偏好未逐项真实交付验收。完整DeepTutor各模式、OpenMAIC PDF/DOCX/导入、全科图义正确性、安装/容量/无VPN仍OPEN。HEAD d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63 dirty；远端TLS失败未核，无commit/push，独立Harness及真实数据/配置/凭据保留。
+
+Next：JOIN-01先复用资料阅读/学习计划的上下文、现课堂工具与Office宿主，补“同一资料/学生→辅导→互动课→教师修订→教学文件”缺口；保存当前偏好版本与真实来源，不追加第二运行时或自动学习事实。完成接缝实现后仅一组联合实例；随后DT剩余模式→MA交付/导入→EV隐式反馈与留出评价。回滚仅撤本片观察/注入与新增领域文件，保留偏好历史与原教育事实。
+<!-- ev-feedback-status-20261015:end -->
+
+<!-- ma-delivery-status-20261015:start -->
+## 2026-10-15 MA-MAIN-02-B1：课堂 PPTX 教学交付限定接受，转 Hermes
+
+Current Phase：4/5 DOING，6 开始实施；Master ACTIVE。Current Task：EV-MAIN-01 教师偏好闭环。智能组卷不在当前队列。
+
+Done：已确认课堂→选择教学文件目录→自然语言导出→同 Pi 读取当前课堂标题/版本→确定性 Office 草稿→原 HeroUI 审批预览/教师核对→真实 PPTX→教学文件目录→冷启动回读。复制固定 OpenMAIC636fab0 的 HTML/颜色/图形路径格式函数，MIT 与 Himalaya ISC 原文、9文件来源hash/依赖锁记录齐全；既有 PptxGenJS4.0.1/Office 宿主复用。文字/线条/图形保留可编辑对象，2个公式用现本地排版图片且明确不可编辑；2题完整题面/答案/长解析自动分页为6页。原课堂/学习事实不改，源版本CAS和写文件审批保留，无新增Agent、DDL、IPC或原图上云。
+
+Evidence：apps/desktop/test-results/goal/ma-delivery-20261014/progress.json、commands.ps1、before。正式 Electron q6wisy，3/3、2启动、0 renderer errors；真实 Pi/DeepSeek 使用9U0u4m已修订课堂，不重新生成课。build SHA 4e95128abeca9cecc5afcad78303a9a21105cc755d189a7190c77d766b9d74e9 /366，运行前后相同。build/type exit0；组件217/217；合同3组覆盖标题/会话/版本、精确快照、最终源CAS；diff --check exit0。WPS12实际打开最终PPTX6页并导出PDF；6页PNG与已逐页查看的首份WPS渲染字节相同。浅1366与暗1920实际查看，内容区需滚动；1366首屏不能看到完整课页，未称全部同屏。
+
+Failed/Recovery：先后修复输出目录与冻结工作区冲突、草稿注入竞态、课堂工具名遗漏、旧文件dispatcher重复注册web、模型引用历史候选而非当前确认、屏幕外iframe rAF使核对选项锁住。最后改React提交后当前frame/token/scene回执，保留不可信沙盒。第一次ZIP测试把自动分页6误当4，修正断言并保留失败r0pnmH；脚本sourceFile重复刷新问题修为幂等，重新成功。完整失败日志见evidence，不抹除。
+
+Boundary：LIMITED_ACCEPTED仅B1有界课堂PPTX。PDF/DOCX/讲稿/导入、全部DSL/复杂媒体、全科图义与答案正确性、完整OpenMAIC/三主线/安装/无VPN仍OPEN。answerVerified=false。新增3个纯JS锁版直接依赖共999608字节（非安装包增量），无服务/模型；npm已有漏洞不宣称清零。Blocked无。Last verified commit d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63（dirty），本轮远端TLS读取失败未核；无commit/push，独立Harness/正式数据/凭据保留。
+
+Next：EV-MAIN-01 按下方合同实现普通教师反馈→本地证据→评价→版本化偏好→下一任务应用/撤销。随后三主线JOIN与各模式剩余能力；不回退组卷全集。回滚仅撤本片入口/adapter/依赖delta，历史课堂和正式产物保留。
+<!-- ma-delivery-status-20261015:end -->
+
+<!-- ma-editor-status-20261014:start -->
+## 2026-10-14 当前 MA-MAIN-02-A：课页直接编辑限定接受
+
+Master ACTIVE；Phase4/5 DOING。用户指定三主线 DeepTutor → OpenMAIC → Hermes，智能组卷已移出当前队列。Done：复用固定 OpenMAIC editor0.0.9 MIT 的 controlled UI/ProseMirror/core transaction-history，教师可直接改课页文字、撤销重做、选中被遮挡线条并拖动端点修正、取消不保存、追加确认版本并冷恢复。沿用原 opaque sandbox/主进程课堂CAS/SQLite确认账本，无第二Agent、DDL、事实真源或新增IPC。公式/图形编辑入口可用，但未逐项实例验收，不能标为完整编辑器或完整OpenMAIC完成。
+
+Evidence：apps/desktop/test-results/goal/ma-editor-20261014/progress.json、commands.ps1、before/。最终正式Electron 9U0u4m，5/5、2次启动、0renderer错误；沿先前真实Pi/DeepSeek课堂a72a37的隔离SQLite/文件副本，本轮0模型调用。冻结build 37ee9cbeb1e9e356e889cd48a57b2118993624ee396ff6986ff8cb8a5af7e9bd /351前后相同。build含typecheck exit0、组件217/217、真实editor core例3/3；仓库diff --check exit0。浅1366×768编辑和暗1920×1080冷读截图实际查看；控件可滚动到达，不称1366全部同屏。最后图中橙色斜边已由教师实际编辑对齐填充三角形。
+
+Failed/Recovery：types子路径由局部声明桥接；首次iframe自动点击不命中改为真实窗口/DOM坐标；独立Harness nativeRoot启动问题由其任务修复，保留其改动。包审计输出误命名package.json导致冻结build启动失败，现改npm-pack.json并留现场。实际遮挡线条难选，补教师“选择元素”并复用上游端点工具，未开放same-origin/Node/网络。最初模型图中斜边方向错误，teacher修订例不等于自动数学验证，answerVerified=false。
+
+Boundary：LIMITED_ACCEPTED仅本片文字/history/取消/线条修正/版本CAS/冷恢复；课堂导入/PPTX-PDF-讲稿交付、自动图义/全科可靠性、完整三主线/安装/无VPN仍OPEN。19新增包锁版、实际树约77.6MB，包许可证notice已保存；不冒称安装包增量体积。before支持撤本片delta，保留原版本及独立Harness/正式数据配置凭据。HEAD/remote已核同d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63，dirty，无commit/push。Blocked无。
+
+Next：MA-MAIN-02-B先复用上游纯导出函数和现Office文件宿主贯通教师教学交付；完成该片再EV-MAIN-01 Hermes普通反馈→可评估偏好→版本化应用与回滚，最后JOIN三主线联动。DeepTutor阅读续接/学习计划子片已接受，不等于所有DeepTutor模式完成；不再重跑组卷或无关测试。
+<!-- ma-editor-status-20261014:end -->
+
+<!-- ma-classroom-status-20261014:start -->
+## 2026-10-14 MA-MAIN-01：互动课堂子片限定接受，下一课堂编辑与交付
+
+Master ACTIVE，Phase4/5 DOING。固定 OpenMAIC DSL0.11.2/generation0.3.15/renderer0.1.11 已实际接 Pi：上游原生提示→同一 Pi 生成回调→结构归一化→现 ai_confirmation_items 待核对/教师确认/追加修订→教学内容互动课堂→离线隔离 SlideCanvas 与随堂题。无第二 Agent、新事实表或自动成绩。3个 typed IPC；main 执行会话/学生隔离、取消、幂等、版本CAS与内容边界。教师可修改课堂名称、题干、答案和解析；完整图形/文字编辑与教学导出仍属于 MA-MAIN-02。
+
+Evidence：apps/desktop/test-results/goal/ma-classroom-20261014/progress.json 与 commands.ps1。最终正式 Electron/真实 DeepSeek a72a37：6项/2启动/0renderer错误，生成三页/图形/公式/两题→实际答题和解析→教师修订确认→旧版本/不安全内容拒绝→冷恢复，同版 build SHA d592531c4fb33bfdbab1c5d2c344cd858edd86c950c294c6c70013a0449b5b01 /351文件运行前后相同。build/type exit0；组件217/217；领域7项含三个并行真实适配器准备/提交。最终浅1366×768与暗1920×1080截图实际查看，课页/控件可滚动到达，不称1366全部同屏。只做本片实例和必要门禁，未重跑组卷或容量专项。
+
+Failed/Recovery：安装 ECONNRESET/缓存缺项，固定 audited html2canvas-pro2.5.1 后恢复；初始导航和草稿会话绑定已修；opaque origin 本地module iframe加载失败，改可信IIFE+本地字体+nonce srcdoc，未开放same-origin/preload/Node/网络。aJXBsK标题误作引用、O3a1n6并行编号覆盖/超时现场保留；页号现在在第一个await前分配，错误返回可用课页引用。空继承字体误拒、全局选项样式放大与初始发送竞态已修。ZAou4Z旧生成、qdu4pB仅克隆UI证据仍保留，最终接受基于a72a37完整新链路。before目录可撤回本片；原事实/正式库/配置/凭据未改。
+
+Boundary：LIMITED_ACCEPTED仅AI生成的有界slide/quiz课堂、交互/教师确认/版本化保存/冷恢复；answerVerified=false，不称教学或答案独立正确、完整OpenMAIC/GoldenE、全学科、导出、安装或无VPN接受。源/依赖/license manifest与notices在vendor/openmaic；实际新增14包均保存license，未称全上游可复现。HEAD d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63 dirty，未核远端，无提交/push，独立Harness改动保留。scoped diff --check通过；仓库级只报独立docs/goal/HARNESS_EXECUTION.md末尾空行，未替他修改。Blocked无。
+
+Next：MA-MAIN-02复用上游editor/import/export补课页修订与教学交付→EV-MAIN-01 Hermes无感教师偏好反馈/证据/版本/回滚→三主线联动。智能组卷已移出当前队列。
+<!-- ma-classroom-status-20261014:end -->
+
+
+<!-- dt-path-status-20261014:start -->
+## 2026-10-14 当前：计划续接限定接受，下一 MA-MAIN-01
+
+DT-MAIN-02已确认计划续接子片 LIMITED_ACCEPTED；Master ACTIVE/Phase4/5 DOING。全历史当前计划进度、四模式草稿、当天结果、同学生Pi上下文和冷恢复已接原主进程/typed IPC；不将已记录判为掌握。最终build/type0、组件217/217、定向8项、正式Pi/DeepSeek4项/2启动/0renderer错误；最终只读浅1366/暗1920图已查看（原缩放残影图不接受）。完整边界、首次现场、SHA与命令见 CURRENT_STATE 及 apps/desktop/test-results/goal/dt-path-20261014/progress.json。下一直接OpenMAIC互动课，再Hermes；组卷移出当前队列。
+
+本片定向例与正式Electron主路径是当前门禁；不重复旧组卷/207全集。真实provider运行逐步提示，另外三方式只验证草稿合同；最终图审来自同build只读冷克隆，未执行provider。
+<!-- dt-path-status-20261014:end -->
+
+
+<!-- dt-reading-20261014:start -->
+## 2026-10-14 阅读续接交付，下一 DT-MAIN-02
+
+DT-MAIN-01 版本化逐段阅读/笔记/重启恢复/当前段落辅导入口 LIMITED_ACCEPTED。Master ACTIVE，Phase4/5 DOING；智能组卷已移出队列。下一 DT-MAIN-02 个性化辅导与学习路径→OpenMAIC 互动课→Hermes 无感反馈。
+
+Evidence：apps/desktop/test-results/goal/dt-reading-20261014/progress.json（最终同build正式4项/2启动/0 renderer错误；组件217/217、6项定向实例；实际浅1366/暗1920图审）。复用此前通过实际UI导入/OCR的真实物理扫描事实；本次不重复OCR。原图/笔记不上云、旧版本/笔记不覆盖；LLM讲解未独立判正确，完整沉浸阅读/全DeepTutor仍未完成。详细结果与首次失败见 CURRENT_STATE 和上述 progress.json；无提交/push、正式数据或凭证修改。
+
+门禁记录：build-delivery.log exit0；components-delivery.log 217/217；domain-result.json 6项；electron-delivery-2.log/education-journey-nYQae6 4项、2启动；两尺寸主题截图已查看，git diff --check exit0。首fail日志保留；范围和未验部分见progress.json。
+<!-- dt-reading-20261014:end -->
+
+<!-- mainlines-20261014:start -->
+## 2026-10-14 主线纠偏（当前有效，覆盖历史 Next）
+
+用户明确：智能组卷已完成，回归 DeepTutor 教育能力、OpenMAIC 互动课堂、Hermes 无感数据飞轮三条主线。组卷从当前执行队列移出；此前 F3/F4 及组卷扩展清单转为后续专项，不再作为三主线的前置门禁。原有实现与验收边界保留，不据此宣称全科自动正确或 40GB/安装已验。
+
+当前 Phase 4/5 DOING，Phase 6 待实施；Master Goal ACTIVE。唯一执行清单：docs/goal/EDUCATION_BRANCH_TODOLIST.md 顶部“三主线”。当前任务 DT-MAIN-01：复用已有资料读取/DeepTutor reading、学习证据与训练计划，补阅读学习入口、可继续进度及同 Pi 辅导；随后 MA-MAIN-01 真实互动课，再 EV-MAIN-01 教师反馈版本化应用与回滚。只做相关实例与必要构建检查，不重跑组卷或无关回归。
+
+本轮完成的是执行方向/合同对齐和当前源码接缝核查，尚未新增三主线生产功能、运行实例或视觉验收。HEAD d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63，既有 dirty 修改保留；本轮没有验证远端 HEAD。详见上述执行清单。
+<!-- mainlines-20261014:end -->
+
+<!-- feature-priority-20261012:start -->
+## 2026-10-12 功能优先执行中
+
+功能优先规则保持；F1页面文字位置→真实Pi候选本片限定接受，完整识题质量仍DOING。已不再是上一轮仅文档规划状态。当前真实结果、首次失败、边界与下一项见下方kb-s6-current和FEATURE_FIRST_EXECUTION.md；历史Next不覆盖当前队列。
+<!-- feature-priority-20261012:end -->
+
+<!-- harness-execution-20261012:start -->
+
+## 2026-10-15：S1/F07 原位置交互与 BoardUI 复核
+
+M10/M12；Master/Goal ACTIVE，H04 DOING，本片限定接受。问题、回答、复制/文本/产物/教育核对沿原组件及回调，按原runId/callId回到对应工具后、下一段正文前；工具组在卡处切开，未知旧锚明确保留在“其他交互记录”。Learning/Collection只读补已有callId；原题批组补已有rootCallId并仍聚合一组。无新DDL/IPC/依赖/循环或上传授权。
+
+固定2df5ce828d1787ccf6eb3e06944d151b505024ac3675fb285492abb5d9d298e5/368：正式Pi/DeepSeek提问、回答、复制批准/拒绝、刷新/切会话、正常退出/真实自有进程崩溃分开验证，9jyRZp 8/8。原公开合成图Dg1XGd 13/13，独立先查看PNG冻结gold，真实图hash/HTTP200/验证码及形状位置一致；冷恢复原位置YZ2lO3 3/3，包括相同回答幂等、冲突回答拒绝且无新run/native。浅1366/暗1920图已查看。
+
+renderer11、领域98、BoardUI复核8、独立SQLite/native/文件/图/源码manifest读回5、组件217、隔离legacy教育smoke207均通过且exit0已收取；type/原vite配置隔离build exit0。BoardUI6文件原/适配hash均一致，仍由host真实状态和来源驱动。不是模型自评；未把图片送达当成所有识别正确。
+
+首失败cAPgAK与j2yCK0保留：前者复现旧尾部定位，后者是测试误把正常退出当崩溃恢复；生产正常停止规则未放宽。旧学习夹具缺collections只补fail-closed测试依赖；SSR复用实际classroom-preview构建器。收尾production-host出现并行源码漂移，未覆盖；本片证据只对应固定构建，不归到最新main/共享out/安装包。
+
+证据与精确命令：apps/desktop/test-results/goal/feishu-inline-20261015/{progress.json,progress.md,commands.ps1}。原日常IMG/FILE反馈、用户原图、无VPN、全业务卡真实UI/全部H04 golden、完整12路及H05–H10仍OPEN。下一步S2：先核“2”的实际来源，再冻结安全只读12路；F05/A13无callId队列保留原入口，不能猜定位。无commit/push。
+
+本文件口径：本片验收限定固定2df5ce，首失败不覆盖，图识别独立gold及SQLite/native/物理文件读回。
+
+
+## 2026-10-15 当前：S1双栈虚拟DNS修复，真实联网与日常配置验收
+
+本线程当前按已读飞书F01/F03推进；Master/Goal ACTIVE、H04 DOING。先冻结FEISHU_NETWORK_STREAM_CONTRACT.md，再保留8a7854/uNiBhh首失败：auto/enabled下搜索/正文/浏览器均权限拒绝，工具网络尚未发出；流式/停止/冷恢复原已通过。系统实际返回28.0.0.x与fdfe:dcba:9876::配对，本机clash-verge/mihomo进程存活；不凭此修改系统代理。
+
+只改原office-network的完整配对识别，继续用原固定国内DoH取得真实公网IP并校验/固定连接。真实私网/混合/单独ULA继续拒绝，显式system仍拒绝，28/8单独公网结果不猜成代理。Pi/Hana/typed IPC/SQLite/教师与来源边界保持，无新依赖/DDL/第二循环；主进程其他并行教育代码未编辑。
+
+冻结b7fabbd461828bd356a90db1b3d654c19c33e5316d5b35ecf777e329764c9a9c/368：正式Pi/DeepSeek iueWOd 5/5 exit0（真实搜索→教育部/西藏政府两正文→实际内置浏览器/PNG→停止→冷启）；真实回复481增量、71次运行中DOM增长，首DOM早于终态。17 DNS边界、15 web边界、组件217、隔离legacy smoke207均exit0。标准npm run build及type也exit0。
+
+实际默认日常profile、原加密DeepSeek配置/auto DNS，在相同固定b7候选上的pi-daily-network-ui-EXQIYv 4/4 exit0，搜索两正文、实际内置页与截图、刷新readback通过；只通过UI创建公开政策对话，不种业务夹具、不改凭证/资料。隔离及日常各3项独立读回核验通知落款3月25、网页发布4月21、秋季实施/两URL及原PNG大小/hash。不是模型自评，答案语义仍保留人工范围。
+
+日常共享out的5e9754测试先过3项后因测试错误假定纯web树失败；实际是update_plan+web混合组沿原视图。随后另一构建把out换为c95a17，恢复脚本SHA门禁正确拒绝，未覆盖或放宽。最终用不可变b7候选+真实日常profile重验，**不声称当前共享out/安装包已验**。首失败、测试路径/loader/定位错误均保留。固定build测试期间不变；收尾并行source漂移apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts，原样保留，不把本片结果归到它们的新代码。
+
+证据/命令：apps/desktop/test-results/goal/feishu-net-stream-20261015/{progress.json,progress.md,commands.ps1}；实际浅1366/暗1920与原浏览器截图已查看。用户原图/文件、无VPN、当前共享out/安装/Office、完整12路、旧领域golden失败与H05–10仍未完成。下一步优先飞书F07：提问/审批/教师回答按callId回原位置并真实恢复验收，再S2安全12路；不可退回“等登录”或因本片通过关Goal。无commit/push。
+
+### 此前Harness记录（保留历史证据）
+
+## 2026-10-15 最新：飞书需求已读，BoardUI复用限定交付
+
+本节覆盖本线程旧飞书登录BLOCKED记录，原记录保留为历史。用户登录后实际读到《任务清单》三组10条，已先写docs/goal/FEISHU_REQUIREMENTS_SOURCE.md、FEISHU_REQUIREMENTS_PLAN.md（F01–10、S0–5、A01–31），再按用户“源码可以直接复用”指令冻结BOARDUI_REUSE_CONTRACT.md并实现M10/F06小片。原Master/线程Goal ACTIVE、H04 DOING；未完成全部飞书或H01–H10。
+
+直接复制用户桌面boardui-web-search的WebSearch/types/CSS/timeline/brands/index到renderer/vendor，保留NOTICE及原/适配hash；箭头复用已有lucide，无新依赖/字体。OfficeToolProcess仅新增只读WebSearch分支，OfficeWebSearchProcess读原projection/真实状态/来源/已记录耗时；原ToolStep错误/重试/未知效果及混合教育/浏览器组回退保留。未引入App/demo-data/输入框回填，不以动画onComplete结束业务。没有本片main/preload/DDL/权限/第二模型循环变更。公共事件缺实际查询词时不从模型话术猜出查询。
+
+正式隔离构建SHA 6c810e5802964b7262b4b6d36314ade02d60256608c3f376e9fae2b0a5d26ec9/366：真实Pi/DeepSeek桌面84bf4G 9项、键盘/减少动效5olBSy 2项、状态边界8项、原attempt边界5项、组件217/217、隔离legacy教育smoke207/207；这些最终进程退出码均已实际收取0，type及原配置隔离编译exit0。浅1366/暗1920与键盘焦点截图实际查看；未把整个npm run build/test:smoke串联说成运行过，精确等效命令在apps/desktop/test-results/goal/boardui-20261015/commands.ps1。
+
+真实例仍区分受控首页403（保留一次失败）与实际教育部备用通知HTTP200正文；正文/答复独立核对2022-03-25落款、2022-04-21网页发布、秋季实施。整体partial/answer:human保留，SQLite/native/journal/刷新冷启一致。来源沿原typed IPC校验后实际shell.openExternal交接系统浏览器，未验内置浏览器页面；不是两来源搜索或联网整体修好。冷启最早阶段零请求仍无独立观察。
+
+首失败均保留：构建路径漏build-isolated属于启动设置错误；SSR错误期望单工具仍有group；TJ2Czx三项后错误假设同turn一个树；m1o3pA三项后错误等待Electron新窗口。按真实callId、原单工具回退及shell交接修正测试后重测通过，没有伪造产品成功或修改网络策略。
+
+证据范围固定为该不可变构建。本片renderer编译后未改；收尾清单检测到并行源码漂移：apps/desktop/src/main/xiaozhi-agent/pi-session.ts、apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts。未覆盖它们，也不把本片结果冒称这些更新实现的验收。仅新增本线程状态，不改其他教育分支段落。日常NET/IMG/FILE、用户原图、无VPN、实际12路调度、输入框/内联问题全量、安装/人工Office及旧领域golden54后FAIL仍OPEN。
+
+下一步按已读飞书S1：从日常同构建/配置复现真实搜索/浏览器和流式首增量，修证实根因；补callId内联补充/确认，之后S2安全只读12路、S3输入框与少追问，再按S4/S5题库/模板。旧“等登录”不再是下一步，不回退优先级。不修改真实学生资料/系统VPN/日常配置凭证，不提交/push。
+
+### 以下为此前Harness历史记录
+
+## Harness H04-A 工具边界与正式页面限定接受（2026-10-14）
+
+方案B/Master/工具Goal仍ACTIVE。H02/H03保持此前限定接受；H04-A LIMITED_ACCEPTED，完整H04及H05–H10未完成；日常NET/IMG反馈保持OPEN。
+
+本片交付：现Pi dispatcher统一manifest/input/output/错误/工具等待边界，复用Hana执行一次与取消registry、OpenMAIC 636fab0 MIT timeout；Pi仍唯一循环。仅公开网页读取/搜索safe_read最多两次，401/403/权限不自动retry，写入/上传/浏览器/缓存读取不自动retry。资源锁在实际底层结束前保留，超时/取消只结束等待，不能证明外部效果已停止。teacher budget.wait暂停active deadline。typed tool_attempt→journal/barrier→projection→现Pro工具卡→SQLite/重启；未知效果写existing effect_state=uncertain，native失败不能抹掉unknown，不增加事实表。
+
+修复真实注册缺陷：旧Hana文件dispatcher误包含已启用联网名称，导致重复工具注册。现仅legacyNames进入旧dispatcher，授权webTools单独注册一次；SDK实际组装2项通过。首个正式冻结ef01fc0/366的网络/图片/文件四FAIL均保留，不称无效API Key。并行课堂增加education_read_classroom及manifest已保留，不覆盖其源。
+
+证据：当前冻结0ecb4653557542c3c4c4d110812e4c18a00900772c1b653c99f7aa32e38127c4/366，current UI KLOtFp 8/8，含真实DeepSeek、第一次受控HTTP503→实际官网200、403零自动retry、同call原生单结果/SQLite/页面刷新/正常冷启、真实停止按钮与迟到响应丢弃；浅1366×768/暗1920×1080真实颜色及PNG已查看。稍早registration冻结0a044776fe7dd09849e15d220e9d33fbfa5faebd9dba718fe5cd90d33d70f873/366：dYig9f UI8/8、实际main强退/确认文件/终态拒写VnmYpl7/7、自然baseline qzj69k四PASS（network20/image13/file15；总NOT_ACCEPTED）。两build分开，不声称所有证据同版。
+
+source定向反例17/17、真实SQLite attempt6/6、SDK注册/许可证2/2、attempt SSR5/5、receipt15/15、event19/19、native10/10；当前type与孤立vite构建exit0、renderer217/217。registration build legacy最低smoke207/207，仅历史test-runtime，不冒充Pi实例。原始报告/日志/构建和复现命令在apps/desktop/test-results/goal/harness-h04-20261014；测试样例说明书新增TOOL-01–09。未改凭证/系统DNS/VPN、未上传真实学生资料、无新增Harness依赖、无commit/push。
+
+网络状态来自用户答复VPN/代理运行中；四例恢复不证明长期稳定或无VPN可用。UI故障注入明确只在自有测试main，不是供应商自然503/403。当前源码与列出的当前冻结Harness文件一致，未对未列并行教育源码或日常out/profile作可复现承诺。
+
+H04-B既定缺口（历史计划）：补交付前memory/permission/admission/attempt等待的取消和截止、shutdown；先审教育导出等写文件工具的跨会话workspace锁与领域源版本/效果读回；贯通实际替代来源与领域golden。现硬等待race只包def.execute，交付前关键await未全部有界，不得称完整H04完成。写后unknown只读核对；保留全部首次失败。完成H04后才H05，日常D/无VPN/E安装/Office人工继续OPEN。
+
+接受范围仅H04-A已列专项，完整H04保持DOING。当前UI与更早baseline/build分开，不合并成同版本全通过；原失败保留，dailyAccepted=false，vpnOffAccepted=false，humanAccepted=false。
+
+
+## H04-B1 当前继续位置（2026-10-15）
+
+H04-B1 LIMITED_ACCEPTED；H04 DOING、方案B/Master/Goal ACTIVE，H05–H10未完成。此前 H04-A 记录为历史证据，不表示日常原故障已关闭。
+
+已交付：工具 pre-delivery/checkMemory/started-attempt 纳入原 OpenMAIC race；终态 attempt 有最多15秒的关键等待，关键失败封闭 publisher 并停止交付。caller cancel 不冒充持久化失败；迟到准备不能调用工具。工具执行前等待共享该工具 manifest 的 active deadline，teacher wait 仍暂停时钟；取消仍可立即结束等待。真实底层未结束时保留锁。education_export_paper/classroom 使用宿主授权的实际输出目录锁，与同目录普通文件写入互斥。取消后无最终 attempt 的 admitted 非只读失败保持 uncertain/needs_check；独立效果 matched 可解决，纯读失败不虚构效果。Pi仍唯一循环，无新schema/依赖，不改变教师确认或来源事务。
+
+冻结 68de755f663f3d61c81c996c49430d0b1ac44946fdc75f477b4279939d7f95cb/366，正式 UI pi-tool-execution-ui-aax7Qo 10/10：真实 DeepSeek、受控503后实际官网200、403不自动retry、停止/迟到丢弃、补拉/冷启、浅1366/暗1920截图已查看；正常关闭受控卡住GET耗时1839ms，未回答问题退出及冷启无重放。仅这两条正常shutdown，不当作批准后写入、DB挂起、全部退出或实际崩溃。
+
+首次完整baseline my0oOg（旧本片bcc94b08/366）NET-01/02与FILE-01三PASS，IMG-04 FAIL/native exit1且整报告保留：准备取消的泛化unknown文案使模型误认新任务仍停止。修复把公开图片工具归本地准备、保留有阶段含义的取消回执；真实上传仍独立回执，绝不复用批准或自动retry。当前冻结pi-public-image-ui-4KgjsA15/15使用原盲图片/原自然输入重新走确认、送达、核验码/图形、拒绝、停止、冷启、utility终止和供应商故障反例，另实证停止用途卡后同会话新确认、实际200/received、盲码及独立回执核对，不拿冷启代替它。旧三PASS和当前图片复测分构建，不拼成同版四PASS；日常反馈/完整最终基线尚未签认。VPN/代理状态来自用户答复运行中，未证明无VPN。
+
+source受控等待/图片取消9、工具17、SQLite attempt8、receipt15、journal19、SDK2；type及原vite配置孤立构建exit0，组件217。legacy最低smoke207仅旧test-runtime，跑于本片bcc94b08，不冒充当前Pi或图片实例。正式UI的Playwright观察GC错误原样保留，原同进程重读而不吞产品异常；首次tsc缺details错误保留，修正后type0。列出的Harness源码与冻结摘要一致，不承诺未列教育源码或日常out/profile同版。
+
+证据与精确命令：apps/desktop/test-results/goal/harness-h04b1-20261014；测试样例说明书TOOL-10–15。上一片及第一次构建/类型错误不删除；未改密钥/系统网络/真实学生数据，无commit/push。
+
+下一唯一Harness切片：H04-B2：处理启动/模型准备与关键 DB 等待中的停止及退出；审计全部领域工具的源版本和副作用读回；正式 Pi 在第一来源失败后使用授权替代来源并独立核对。完整 H04 逐项有证据后才进入 H05；日常旧会话/原图片、无 VPN、安装与 Office 人工继续 OPEN。
+
+
+## H04-B2 当前继续位置（2026-10-15）
+
+本轮推进准备/模型交付/正常退出等待；H04-B2、H04 DOING，Master/方案B/Goal ACTIVE；不缩小 F_NEXT_GOALS 的 H01–H10 或完整 H04 定义。先前片次为历史证据。
+
+直接复用已审 OpenMAIC race，通过 lifecycle-wait adapter 保护 Pi 创建的异步权限/资源/SDK等待、当前事实/记忆/上下文及模型 journal gate；一般关键等待15秒，宿主停止/关闭清理整体5秒。Pi仍唯一循环，typed stop/失败投影/冷恢复沿原入口，无新schema/依赖或权限。模型请求未交付时停止可结束等待；迟到返回不得获得新轮权限。race不保证同步主线程死锁可中断，也不撤销已经开始的SQLite原子写或外部效果，未知写入由冷恢复核对。
+
+源码专项 lifecycle 5、原工具 preflight 9；正式生命周期UI 6、正式联网/工具UI 10 均通过。主进程受控 signal-ignoring 准备等待只安装在非打包、明确E2E、owned test-results/temp profile/data；可见停止零chat请求、迟到返回零补发/事件、新轮真实DeepSeek200及独立随机码、准备时正常关闭350ms后冷启零重放、15秒失败门禁。该等待接缝不是实际SQLite死锁或全部退出证明。1366/1920失败、浅暗工具截图已查看。
+
+冻结build b64f0fa67d4db1894a80918238c68e52563236fba76f8c04021f900d906ec60a/366；当前baseline u0oqDG的NET-01、NET-02、IMG-04、FILE-01四个隔离正式实例PASS，各套全部通过，runner应exit2且整体NOT_ACCEPTED，日常/无VPN/原用户故障未关闭。原my0oOg三PASS一IMG失败与本轮khZYvD四项后失败均保留；首次type因闭包未保留key的非空类型返回2，已修为验证后的局部变量；准备超时曾错误降成model_error，修明确分类后同专项5通过。非模型自评，未覆盖失败。组件217、旧legacy smoke207、type与原vite配置孤立构建通过；legacy不是Pi验收。命令/报告位于apps/desktop/test-results/goal/harness-h04b2-20261015。源码列出的Harness文件与冻结一致；不证明日常out/profile同版。
+
+图检索无当前wait节点、已有db snippet行号偏移；按已定位源码回读补证，不声称穷尽调用图。用户声明VPN/代理运行中；未修改系统网络、日常凭证/out、真实学生数据或其他教育块，无commit/push。
+
+下一唯一Harness继续位置：继续 H04-B2：真实 DB 队列/命令创建及已确认写入中的停止退出；逐领域源版本/副作用读回与 golden；首次来源失败后的授权替代来源实例。逐条完成完整 H04 后再进入 H05–H10；日常旧会话/原图片、无VPN、安装和人工Office仍OPEN。
+
+
+## H04-B2 真实数据库等待进度（2026-10-15）
+
+M10/M12，H04-B2/H04 DOING、Master/Goal ACTIVE。生产 start 的异步恢复/读取和普通命令创建复用生命周期 adapter；停止从入站起持有 controller，迟到 claim 按 command/conversation/hash 条件置 interrupted，不得重新绑定任务，终态事实保留。普通任务/消息写入后不再获得新模型交付权限；排队 SQL 本身没有被 Promise race 撤销。退出开始后不补排取消写入，已提交事实由现有冷恢复核对；无新 schema/依赖/权限/第二循环。
+
+真实第二 SQLite 连接 BEGIN IMMEDIATE 持锁，主进程实际 claim SQL 发出被观察，教师使用发送/停止按钮；同冻结构建数据库UI4、准备UI6通过。数据库 stop 的按钮/IPC观察 2756ms，正常退出 5812ms；解锁后零新增任务/消息/provider，独立新请求真实200及随机码，冷启零重放。1366/1920恢复截图已查看。命令条件中断3、SDK生命周期5、工具preflight9；type/原vite配置孤立构建通过，组件217、legacy207（旧test-runtime，不是Pi验收）。
+
+当前冻结 dd2adb918751d2ba23052b853205c065384b4418a7ee528f0f78f0292fde4f68/366，baseline LAJ6Uo 的 NET-01/02、IMG-04、FILE-01 隔离正式实例四PASS，整体仍NOT_ACCEPTED/应exit2；日常用户反馈、无VPN均未签认。原 jfaEoz 在实际 claim 写锁下停止失败保留；pZUJs6 是测试脚本把空输入的发送禁用误作未恢复；K14WXF 正常退出10795ms超原上限保留；observer动态import失败和错误tsconfig路径也保留并明确属于测试设置。没有用模型“通过”评价判定。证据/命令：apps/desktop/test-results/goal/harness-h04db-20261015。
+
+未修改日常out/profile/凭证、系统VPN、真实学生数据或其他教育块，无commit/push。图中旧DB snippet偏移和新工具缺节点已用已定位源码核对。没有证明同步主线程死锁可打断、全部 DB/附件/领域等待已覆盖，也没有以此结束完整目标。
+
+下一继续位置：继续 H04-B2：教师确认后 file→fact 切断恢复；逐领域源版本/副作用读回与 golden；首次来源失败后的授权替代来源实例。附件原子接收和执行终结 DB 等待仍需逐阶段反例。完整 H04 有证据后才进入 H05–H10；日常旧会话/原图片、无VPN、安装和人工Office仍OPEN。
+
+
+## H04-B2 文件到事实中断恢复进度（2026-10-15）
+
+M10/M12，H04-B2/H04 DOING、Master/Goal ACTIVE。正式页面首失败 lJ2N0v 与真实 SQLite/文件反例 lUBeTx 均证明：文件已安装后停止仍 committing。生产复用 OfficeArtifactService/State、Pi 文件 mutation queue 和原 saved SQLite trigger；invalidateRun 将 committing 条件置 uncertain，file 等待返回后复查取消/执行权，阻止迟到 saved。已落盘文件保留；教师只读核验原 hash/size 后登记一次，教师改动显示 conflict 并保留改动。没有新增 schema/依赖/授权/第二 executor。
+
+冻结构建 339dccef1c82ffad185d0ce3d7b4bd8e6a41104a049e3ec5774a189ffd5d6ea4/366（原 electron-vite 配置孤立目录），Office service/state/IPC 均纳入 source SHA；type/构建 exit0，组件217、旧legacy207 exit0（legacy test-runtime不是Pi验收）。真实正式 Pi/DeepSeek 页面8项 exit0：实际自然请求与教师确认、file切断停止、信号忽略的迟到返回无事实/模型/原生/公开事件、教师核验、正常退出565ms、实际 owned taskkill/cold、教师改动反例、二次cold无重放。真实文件页面本轮实际14项 exit0（基础模式，按报告计数），独立 python-docx读回与实际Word预览/重启；领域原Office golden17、file-stop5、effect-readback34 exit0。1366/1920恢复截图已查看，停止/冲突提示明确，未把任务回复当通过。
+
+原失败报告全部保留。cfcnmZ是测试菜单角色定位错误；NOGiTx前4项通过，强制结束后测试观察器在正式应用恢复前只读数据库报disk I/O；改为结束前捕获native prefix、cold应用初始化后读回，完整8项复测通过。loader静态import早于注册的设置失败也有记录。没有删除数据库/journal或跳过强制结束断言。精确命令、报告、首次失败与截图：apps/desktop/test-results/goal/harness-h04office-20261015。
+
+本轮VPN按用户所述运行，未改系统网络/日常out/profile/凭证/学生资料；日常真实反馈与无VPN尚未签认。上一轮 dd2adb 构建的联网/图片基线是历史证据，本轮339dc构建只完成这里列出的专项复测，不合并成当前全基线通过。人工WPS/Office打开未执行。其他教育域脏改动保留，无commit/push。
+
+下一继续位置：继续 H04：逐领域源版本/副作用读回和原行为 golden；首次来源失败后的授权替代来源真实实例。附件原子接收、执行终结数据库等待仍需逐阶段反例。完整 H04 有证据后进入 H05–H10；日常旧会话/原图、无VPN、安装和人工Office仍OPEN。
+
+
+## H04-C 授权替代联网来源进度（2026-10-15）
+
+M10/M12；Master/Goal ACTIVE，H04 DOING，本片授权替代来源实例 LIMITED_ACCEPTED。没有修改生产代码、schema、授权、模型循环、依赖或日常配置；复用现Hana Web、Pi、attempt journal、native正文readback、typed snapshot与核验组件。冻结339dc构建 339dccef1c82ffad185d0ce3d7b4bd8e6a41104a049e3ec5774a189ffd5d6ea4/366 实际加载且前后不变，已有记录的Harness source SHA仍一致。只新增专项验收脚本与说明，不以本轮重新完成构建/组件/legacy门禁；这些生产门禁沿上一轮记录为历史证据。
+
+真实正式Electron UcRk8C 8/8，实际观察exit0：自然请求先读教育部首页，实际undici GET受控403且仅一次；同一run按教师授权读取准确通知 http://www.moe.gov.cn/srcsite/A26/s8001/202204/t20220420_619921.html，实际网络HTTP200，成功响应和模型未伪造。原生模型元数据 provider=xiaozhi_deepseek/model=deepseek-flash/api=openai-completions；不是另一次服务器模型名探测。实际正文/最终回答独立核对2022-03-25落款、2022-04-21网页发布日期、2022秋季实施。主进程source readback通过，但整体仍partial、保留1成功/1失败和answer:human；绝不将正文hash核对说成答案全自动正确。
+
+原403 callId/attempt1无重试/失败仍在UI、native单结果、SQLite receipt/journal/assistant metadata；另一来源URL/observedAt/body与核验范围对应。只允许失败首页且明确禁止换源的第二轮只发一次403、blocked无成功证据。刷新及cold保留精确历史、native字节和metadata，不重放工具/模型。1366×768/1920×1080失败与替代核验截图已查看，操作可滚动到达。相关源码反例 result-readback20、verification25 exit0；不是daily/VPN-off或全部领域golden。
+
+首轮MD4qmc（exit1/0项）完整保留：测试初拟备用URL为t20220421_620011，并未成功读到正文，应用正确显示两项失败/blocked。依据上一轮真实NET报告定位准确t20220420_619921地址再测，不填造成功响应。初稿未在失败前存transport，故不声称原响应具体HTTP状态；本轮新增失败分支保存transport，未覆盖原报告。顺便核对测试文案使用正式组件已有“网页正文与本轮保存记录一致”。外部搜索工具一次429是研究工具故障，不作为小智测试结果。
+
+证据/精确命令：apps/desktop/test-results/goal/harness-h04alternative-20261015。用户声明VPN/代理运行，未更改系统网络、日常out/profile/凭证、真实学生资料或其他教育域脏改动；无commit/push。全项目联网/图片/文件日常反馈仍OPEN，不因本片通过清除。
+
+冷启的网络观察器在页面就绪后安装；本片直接证明native/SQLite无重放、就绪后观察窗口无新模型/工具事件，启动最早阶段零网络请求仍需更早的独立观察证据，不能据此宣称全启动窗口零GET。
+
+下一继续位置：H04-D：按生产注册清单逐领域核对 source/effect 原行为 golden，补附件入站原子接收和执行终结SQLite等待的停止/退出反例。完整H04满足DoD后进入H05–H10；日常旧会话/用户原图、无VPN、安装和人工Office仍OPEN。
+
+
+## H04-D 终结等待与附件原子接收进度（2026-10-15）
+
+M10/M12；Master/Goal ACTIVE、H04 DOING，本片 LIMITED_ACCEPTED。正式旧339dc构建 zpolSU 首失败已保留：真实 sqlite3 assistant INSERT 在第二 SQLite BEGIN IMMEDIATE 下等待时点击停止，放锁后仍 completed/run=succeeded/command=finished。不是模型自评，也不是 HTTP200 代替用户操作。
+
+修复仅新增现 journal/publisher 的终结取消校正与内部 terminal-cancellation adapter；production-host 注入同 run 停止信号。当前 owner/generation 的同一 SQLite 事务更新中断核验、run、消息metadata、command、usage、finalize记录及目标未完成状态，保留实际回复/工具结果/原事件审计；COMMIT回调期间收到停止则先校正后发布。校正失败回滚、旧owner不能触碰新run。无新schema/IPC/依赖/模型循环/上传授权。未发送到前端的早期终结事件仍可在审计中看到，最新持久投影以中断校正为准，不删除历史或重做效果。
+
+实际新构建 03d7e401cdff4226fbfe2504683aa8d6b4f3ea3416e98774004196b909e4fad0/366；原vite配置只重定向 owned test-results，已检查真正加载路径，清单内 Harness source SHA 与构建前后相同。正式真实 DeepSeek/Pi O18kpG 8/8 exit0：终结SQL等待停止、metadata/任务/command/journal一致、刷新冷启保留native字节、下一条自然指令成功、已提交附件原子事实保留一次且不交模型、冷启不重发、终结与附件接收锁等待正常退出恢复。退出分别 5539ms/5650ms；附件退出分支实际是零提交，不虚称同轮同时测过提交分支，已提交分支由停止案例覆盖。额外独立SQLite读回usage=interrupted、finalize=failed。1366/1920中断与核验提示截图均已查看。观察器对3次promise GC仅在原进程重读，没有按新建实例掩盖失败。
+
+同构建真实联网替代 SLqINq 8/8 exit0，保留受控403一次失败与另一实际HTTP200正文、独立日期核对，整体partial/answer:human；不是所有联网、用户原图或无VPN通过。终结SQLite边界5、原journal19、原附件native21、verification25均exit0。npx tsc --noEmit exit0；原配置隔离build exit0；组件217/217、隔离legacy教育smoke207/207 exit0。默认SDK装配uhDVOS2项是本轮修复前清单检查，不当成所有生产领域工具验收。
+
+失败原件保留：jqg8FS观察器GC导致未到有效SQL断言；zpolSU是真实产品失败；z5LPc0前4项通过后测试误用不存在列submitted_run_id，随后按当前原子SQL字段/run_id及参数索引修正；迁移测试FU9B27依赖HEAD提取旧触发器而启动失败，改为从20aa86656cdb5a0f85e0e11fa21863b50233fcb1直接复制固定v1 SQL样例，zsZAkh重跑21通过。第一次误用不存在tsconfig.node.json的TS5058属于命令设置失败，随后使用仓库tsconfig.json重跑type通过；不能合并成零失败。
+
+冻结742d之后production-host出现并行教师偏好上下文接入，首次收尾SHA检查直接拒绝；未触碰偏好实现，重新冻结03d7并实际重跑8+8/217/207与native21。前次结果仅对应旧构建；sourceScope只覆盖清单内Harness，不将未捕获的并行教育源声称全部可复现。
+
+冷启网络观察器仍在页面就绪后安装：证明native/SQLite无重放与就绪后无模型调用，启动最早阶段零网络尚未证明。用户代理运行，未改系统网络、日常profile/凭证/真实学生资料，未向日常out构建；教育分支并行脏改动保留，无commit/push。报告/精确命令：apps/desktop/test-results/goal/harness-h04settlement-20261015。联网/图片/文件日常反馈依然OPEN。
+
+下一继续位置：H04-E：按全部生产工具的实际注册组合审计 manifest/effect/cancel/time/retry 与各领域原行为 golden；保留本片已验的附件/终结等待证据。完整 H04 DoD 后按序进入 H05–H10。日常旧会话/用户原图、关闭代理、安装/人工 Office 和启动最早阶段网络观察仍 OPEN。
+
+
+## H04-E 注册证据与新需求优先级（2026-10-15）
+
+实际正式隔离构建 9e0ea7864648523eaa821dc84bb66c43b97f611f86e55efa9ba67906f5b22b62/366，四组合13项报告success：私有无网35工具、授权目录有网46、仅输出无网38、合成学生/授权目录/有网/持续目标47。真实Pi AgentSession和原样发给DeepSeek的schema逐项一致，5次真实HTTP200；随机码/native/SQLite及冷启保存均核对，目标保留review_required等待教师。47个工具都有唯一manifest，取消/时限/效果/重试明确；注册并不代表47项领域功能通过。没有改生产代码或用户VPN/日常配置。
+
+实际执行边界17、preflight9，exit0已观察。领域golden UpdXfG前54项后FAIL：旧host夹具缺questionReviews.collections，尚未修复/重测通过。先前jQx2dz为源runner缺OCR JSON import attribute，vZW7Tc为Electron app导出缺失；仅补测试loader读取原JSON及fail-closed app proxy，不冒充生产Electron/OCR。注册autGPn/AwxqxK为SDK观察器加载设置错误；G7U9P9前三组合9项后学生夹具误取列表为单对象，已修正。新构建前发现并行classroomContext/偏好版本接入，拒绝旧03d7结果归到新源码，保留并行实现后重冻9e0ea7。
+
+构建exit0已观察；组件输出217/217、type日志空，但这两项和最终注册/领域任务原进程handle在本次续转时已不存在，最终shell exit未收取，因此明确exit未观察，不补写exit0。注册report成功和日志不替代该退出证据。当前清单source drift数量0，仅清单内Harness有此检查，不覆盖全部并行教育源码。未做日常用户图/无VPN/安装/人工Office或所有工具功能验收。
+
+下一步：用户最新优先级：先读取飞书 VJazw0B8EixwBFk1X6KcdY8snbd 原文，交付需求清单、实施方案与逐条审核验收标准，再开始改造。目前链接跳转扫码登录，已请求登录或文档副本；不得猜正文。原 Harness Goal ACTIVE/H04 DOING，待新需求映射后安排剩余领域验收与H05–H10。
+
+
+2026-10-15 14:11 飞书访问复核：仍为 accounts.feishu.cn 扫码登录页，正文未读取。上一轮已有注册证据/优先级记录属于进展；本次只读复核确认相同访问阻塞仍在，不当作需求或实现进展。用户已要求先方案及验收后改造，当前仅等待登录或文档副本，不继续扩大旧产品改动；原Goal ACTIVE，未关闭或擅自暂停。下一步仍为读取原文并逐条映射方案/验收。访问证据在 apps/desktop/test-results/goal/harness-h04inventory-20261015/feishu-access.jsonl。
+
+
+2026-10-15 14:14 飞书阻塞审计：含原用户触发轮与后续连续轮共3轮，均未取得 VJazw0B8EixwBFk1X6KcdY8snbd 正文；本轮实际浏览器仍为飞书扫码登录页。前轮仅访问状态重述，无需求/实现进展。现无不依赖原文的必要改造可继续：用户已指定先该文档方案/审核验收，再改造。已尝试可用浏览器/读取途径并请求登录或导出副本；不能猜正文或转回旧优先级。本轮阻塞审计成立，将线程Goal设为BLOCKED（以工具返回为准），不是完成或用户暂停；全部目标范围、H04领域失败和既有证据保留。恢复条件：用户登录后可读，或提供文档正文/导出。随后先逐条需求→现状差距→实施方案→验收标准。证据：apps/desktop/test-results/goal/harness-h04inventory-20261015/feishu-blocked-audit.json。
+<!-- harness-execution-20261012:end -->
+
 <!-- kb-s6-current:start -->
-## 2026-10-12 当前：KB003扫描资料按页接续限定接受；功能优先
+## 2026-10-13 当前：F2线性条件检查与同Pi修复限定接受，下一F3复杂错题
 
-Current Phase：4/5 DOING；Master未完成。Goal工具本轮读取为历史blocked，不能用文档伪称已恢复；本轮无技术阻塞，按用户继续指示推进。Current Task：扫描资料中断不再重复已完成页。Last verified commit：488f8109d68027a6eb488e9d04c4eb5073d153cd（保护dirty，未提交）。Previous turn：C3候选结构化转写。Next：复杂整卷候选自动整理与集中审核。
+Current Phase：4/5 DOING；Master ACTIVE；Current Task：F3复杂错题照片→本地同类候选/不足时五变式→集中核对→针对性练习。F2形式化线性条件子片LIMITED_ACCEPTED，完整自动题意/全科可靠性仍DOING。Last verified HEAD/remote d3e2decd01fd9898026b0a8c1bfc9b029d1d9b63，dirty未提交，独立Harness修改保留。
 
-Done（本片限定）：复用现PDFium/RapidOCR逐页处理与MaterialRepository/确定性队列，私有v2请求支持已完成页接续；进度缓存按资料SHA/worker SHA/引擎绑定、严格页序/大小/完整性/路径校验、临时文件原子替换。停止或重启保留页进度；全部完成仍走现source CAS/lease/SQLite事务才提交正文，未完成页不是可检索事实。旧v1图片/预览/layout与正文引擎身份保留。损坏缓存重识别，旧runtime完整保留回滚。无新包、模型下载、额外模型调用、AgentLoop、DDL或IPC。
+Done：复用已固定SymPy1.14.0/mpmath、原DeepTutor纯格式helper、Pi题目工具与现质量/修复/集中审核账本。新增有界linear_system适配（4变量/8有理系数方程/4目标），v2 Worker请求，原v1计算/恒等式/步骤不改；题干/答案原文片段绑定不可变mathPlans。判断形式条件矛盾、目标未确定、目标答案不符，失败沿math_mismatch隔离及同Pi最多三次修复。无关自由变量不误判目标不确定；教师编辑使旧计划失效。无新依赖/Agent/DDL/IPC；SQLite和原题事实真源不变。
 
-Evidence：apps/desktop/test-results/goal/kb-ocr-resume-20261012/progress.json；build/type exit0 SHA77a4ba6b3181df787756c9ff1f7064ba37fde3fa02d4f01dc740b321b0e0a3f6/348。正式Electron education-journey-MzsnED：3项/3启动/0renderer错误，真实六页物理扫描→完成1页后UI停止→零部分正文→重启/教师重试从第2页→六页事务提交→再次重启精确冷读，模型0次。缓存实例5项包含损坏/源版本隔离/恢复。没有修改前端，不新增视觉验收声明；没有反复运行旧全套。
+真实实例：受控缺电压电路→实际DeepSeek/Pi提交→本地检查缺条件→同run返回修复引用→使用教师已授权220V修复→原审核卡明确核对→只保存一题→冷启动回读，无请求重放。旧错误候选仍隔离。6组定向例覆盖上一轮电路/浮力矛盾、修正、错误答案、无关自由量、绑定/旧v1；不是简单算术题或自评正确率。
 
-Failed/Learning：首次patch上下文不匹配未写入；一次测试文件编辑工作目录错导致FileNotFoundError，纠正后完成。首E8mP4j实例已过，检查到接续流增加wire体积后，有限扩大传输边界而不放宽文档上限，重建并用最终MzsnED闭环核对。原始日志、两个实例与回滚before保留。
+Evidence：apps/desktop/test-results/goal/kb-condition-check-20261013/progress.json及commands.ps1。最终build/type exit0、SHA d5e07d5208754dff3952a3fff09eadcb5c4e7332a589ae36c6098794b1a528bd /348运行前后相同，组件217/217；正式msPBaf3项/2启动/0renderer错误，浅1366/暗1920实际查看。仅本片实例和必要门禁，未重复无关全集。前片11题100分混合卷及学生/教师WordPDF四文件仍见kb-natural-language-paper-20261013/progress.json，135分源卷不是原卷100分重建。
 
-Doing/Next：执行表docs/goal/FEATURE_FIRST_EXECUTION.md。知识库/智能组卷整体DOING；下一整卷候选集中整理/审核→复杂100分卷与答案修复隔离→错题同类/变式→长教材/目录/30–40GB/安装→OpenMAIC互动课堂→Hermes教师反馈技能晋升/回滚。Pi唯一编排。每片功能可用后做对应必要实例，旧无关全套不作为独立功能前置；具体风险才加定向验证。
+Failed/Recovery：56bGMX首次真实Worker已给缺条件，但旧ledger要求calculation完全等于表达式，新增说明令history unavailable，工具拿不到repairReference。改成严格状态对应的有限说明+完整不可变方程校验，未放宽来源/hash/审批。组件旧文案断言及诊断静态加载/cwd错误已修，首现场保留。before支持撤本片delta；保护正式资料和独立Harness区域。
 
-限界：仍为50页/50MiB/1MiB正文边界，不等于长教材或40GB验收。复杂图/公式自动识别及可靠答案、跨学科24题质量、安装、完整OpenMAIC/Hermes仍OPEN。上轮候选由明确用户参考转写产生，不证明自主看图。三项目复用清单是实施计划，本轮未复制OpenMAIC/Hermes代码或复核其HEAD。独立harness审计块保持。
+Boundary：conditionsVerified=false、answerVerification=not_run仍保留。题干片段证明出处，不证明自然语言翻译、单位、物理规律或图义正确。实际Pi案例由教师提供明确形式计划，仅证明真实工具/隔离/同轮修复/审核/冷读，不称自主审全题、独立金标或全学科正确。复杂手写/图义与真人金标仍OPEN。
+
+Next：直接F3复杂自然错题与练习，复用已通MistakeFacts/本地相似/五变式/PracticeReview，只修真实暴露缺口；随后F4长教材/30–40GB/安装→F5固定OpenMAIC课堂DSL/renderer/组件实际复用→F6 Hermes反馈候选/批准/下次使用/回滚。DeepTutor部分已生产复用，后两项尚未完成，不能用包探测代替。Blocked：无。
 <!-- kb-s6-current:end -->
 
 <!-- harness-audit-20261012:start -->
@@ -1031,3 +2029,30 @@ security-audit-DBWIc2库存3项/exit0；fresh npm audit exit1仍0critical/3high/
 ## Next
 
 下一唯一：Phase1专项定位问答/长过程中的Shell顶部裁切，冻结布局/滚动与完整暗色菜单合同，复用既有HeroUI/语义主题和原控制卡，以真实native双尺寸、可达性与PNG验收。完整Shell后再Phase2退役重复runtime、Phase3五空间、教育适配/飞轮/黄金A–G；日常人工D、无VPN安装E、安全修补与Pro许可仍开放。
+
+## 2026-10-16 BoardUI 复用当前复核
+
+当前工作区的 BoardUI 复用专项 SSR 8/8，TypeScript exit0，renderer 组件 217/217。证据 `apps/desktop/test-results/xiaozhi-agent/boardui-search-renderer-qP9Uyz/report.json` 只覆盖联网过程展示、失败/停止/等待/未知状态、来源协议过滤和混合工具回退；不覆盖真实站点、VPN 关闭、自然并发、图片/文件或完整聊天输入框。复用合同和原始来源 hash 见 `docs/goal/BOARDUI_REUSE_CONTRACT.md`。
+# 2026-10-16 DT-05 上下文整理与当前证据
+
+本节是当前续接摘要；历史验收条目保持不变。智能组卷已按用户要求移出当前队列，不因本次整理重开。
+
+|范围|当前结果|证据|边界|
+|---|---|---|---|
+|DeepTutor question source reuse|已验证固定源码来源和投影内容|`npm run verify:deeptutor-question`；revision `f07029cfcf2c8dfccdb671cdfc343db8334f5741`；2 files/104953 bytes|只证明纯格式 helper 来源，不证明完整 DeepTutor runtime|
+|Desktop build|通过|`cd apps/desktop; npm run build`|Vite 既有 warning 未作为失败；不等同 Electron 用户验收|
+|Education capability baseline|365/365|`npm run test:education-capabilities`|领域/契约基线，不等同完整 DT-05|
+|DT-05 questions source/read|6/6，通过|`apps/desktop/test-results/education-journey-TRUAZ2/report.json`|只覆盖创建、答案 read、脱敏、来源打开、冷恢复、收藏不改题；不覆盖 review/practice/photo|
+|Question notebook smoke|未通过，未计入生产失败|首个错误 `Dynamic require of "child_process" is not supported`；发生于 Electron 依赖被打入 Node ESM smoke bundle|测试 harness/打包兼容性问题；临时外部化尝试已撤回|
+
+本轮不宣称 DT-05 完成。当前验收门槛仍要求：教师编辑/确认、练习引用与结果、错题/相似题、真实照片 OCR/校正、视觉来源、双尺寸、重启回读和失败恢复均需绑定当前构建的正式证据。
+
+下一次验收命令顺序：
+
+1. `npm run test:education-journeys -- --scenario=DT-05-review`
+2. `npm run test:education-journeys -- --scenario=DT-05-practice`
+3. `npm run test:education-journeys -- --scenario=DT-05-photo`
+4. `npm run test:education-journeys -- --scenario=DT-05-photo-facts`
+5. `npm run test:education-journeys -- --scenario=DT-05-photo-cycle`
+
+每次只接受报告中当前 build SHA、renderer errors、截图、SQLite/file readback 和首次失败均可核对的结果；历史报告不替代当前证据。

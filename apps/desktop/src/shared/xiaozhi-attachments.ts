@@ -20,6 +20,7 @@ export function validAttachmentSelection(value:unknown):value is XiaozhiAttachme
 }
 export type XiaozhiAttachmentInput={schemaVersion:typeof XIAOZHI_ATTACHMENTS_SCHEMA;sessionId:string;requestId:string};
 export type XiaozhiAttachmentSelectedInput=XiaozhiAttachmentInput&{selection:XiaozhiAttachmentSelection};
+export type XiaozhiAttachmentImportInput=XiaozhiAttachmentInput&{paths:string[]};
 export type XiaozhiAttachmentPreview=Omit<import('./xiaozhi-files').XiaozhiFilePreview,'path'>;
 export type XiaozhiAttachmentChoice={items:XiaozhiAttachment[];failures:{name:string;error:XiaozhiAttachmentError}[]};
 export type XiaozhiAttachmentResult<T>={ok:true;schemaVersion:typeof XIAOZHI_ATTACHMENTS_SCHEMA;requestId:string;data:T}
@@ -33,6 +34,18 @@ export function validAttachmentInput(value:unknown,selected=false):value is Xiao
  return descriptors.schemaVersion.value===XIAOZHI_ATTACHMENTS_SCHEMA&&validAttachmentSession(descriptors.sessionId.value)
   &&typeof descriptors.requestId.value==='string'&&/^xiattach_[a-f0-9-]{36}$/i.test(descriptors.requestId.value)
   &&(!selected||validAttachmentSelection(descriptors.selection.value));
+}
+export function validAttachmentImportInput(value:unknown):value is XiaozhiAttachmentImportInput{
+ if(!value||typeof value!=='object'||Array.isArray(value))return false;
+ const keys=['schemaVersion','sessionId','requestId','paths'];
+ if(Reflect.ownKeys(value).length!==keys.length||Reflect.ownKeys(value).some(k=>typeof k!=='string'||!keys.includes(k)))return false;
+ const descriptors=Object.getOwnPropertyDescriptors(value);
+ if(Object.values(descriptors).some(d=>!('value'in d)))return false;
+ if(descriptors.schemaVersion.value!==XIAOZHI_ATTACHMENTS_SCHEMA||!validAttachmentSession(descriptors.sessionId.value)
+  ||typeof descriptors.requestId.value!=='string'||!/^xiattach_[a-f0-9-]{36}$/i.test(descriptors.requestId.value))return false;
+ const paths=descriptors.paths.value;
+ return Array.isArray(paths)&&paths.length>0&&paths.length<=32&&paths.every(p=>typeof p==='string'&&p.length>0&&p.length<=4096
+  &&!p.includes('\0')&&/^(?:[A-Za-z]:[\\/]|\\\\|\/)/.test(p));
 }
 export const XIAOZHI_ATTACHMENT_ERRORS:Record<XiaozhiAttachmentError,string>={
  invalid_input:'附件请求无效，请重新选择。',permission_denied:'此附件未获授权或对话已归档。',not_found:'本地附件已不存在。',

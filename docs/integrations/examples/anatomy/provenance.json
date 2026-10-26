@@ -1,0 +1,26 @@
+{
+  "source": "Actual accepted Electron/Pi/DeepSeek output pi-anatomy-ui-G5k6xX; not a substitute fixture",
+  "build": {
+    "sha256": "f43820f2e46d0e7f4c5bc4db27bde288e3c1180b1f2a9d7aee6864bf655c2bf2",
+    "files": 372,
+    "sources": 83,
+    "sourceUnchanged": true
+  },
+  "files": [
+    {
+      "file": "xiaozhi-saved-open.png",
+      "bytes": 481454,
+      "sha256": "a7de1ba0f51074059a265560bfaf44b1e5e94fbe8ffa940a568194ef66965783"
+    },
+    {
+      "file": "散热片.html",
+      "bytes": 57538,
+      "sha256": "cc5f5bf90fff441da40f1fc3cc3c5cc2b330d55faed40013bca17d270b331ea6"
+    },
+    {
+      "file": "散热片.svg",
+      "bytes": 39973,
+      "sha256": "007cfd4ea159675b77fb902aa0d5a92b92d588c7ab515207b8ed07b666b339fb"
+    }
+  ]
+}

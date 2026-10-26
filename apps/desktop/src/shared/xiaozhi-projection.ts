@@ -3,13 +3,21 @@ import {MAX_PUBLIC_STAGES} from './public-trace';
 import {readModelReasoning} from './model-reasoning';
 import {applyChatPresentation} from './chat-presentation-reducer';
 import type { XiaozhiAgentError, XiaozhiAgentEvent } from './xiaozhi-agent';
+import {validTaskVerification} from './xiaozhi-verification';
+import {validRecovery} from './xiaozhi-recovery';
+import {validToolAttempt} from './xiaozhi-tool-attempt';
+import {validVersionedPlan} from './xiaozhi-plan';
+import {validTaskView} from './xiaozhi-task';
 export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   attachment_changed:'待发送附件已变化或未全部接收，请重新检查附件后发送。',
   invalid_input: '消息格式不正确，请重新输入。', busy: '本会话正在运行，请先停止或等待完成。',
   configuration: '当前模型或会话配置不可用，请检查 DeepSeek 设置或新建会话。',
+  event_persistence: '本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。',
   authentication: 'DeepSeek 凭证不可用，请检查 API Key。', rate_limited: 'DeepSeek 额度不足或请求过于频繁，请稍后重试。',
   timeout: '本轮等待超时，请重试。', transport: '无法连接 DeepSeek，请检查网络后重试。',
   cancelled: '已停止本轮。', model_error: '模型没有完成有效回复，请重试。',
+  goal_stalled:'未取得新的可核验证据，已停止自动继续。请核对目标进度后恢复；已完成操作会保留。',
+  goal_review_extended:'提交验收后仍继续调用工具，后续自动调用已停止。请核对已有成果与操作记录后再决定是否恢复。',
   command_conflict: '这条发送记录与消息内容不一致，请重新发送。', permission_denied: '当前操作未获授权或确认已失效，请刷新后重试。',
   workspace_locked: '本会话的资料范围已经固定，请新建会话后选择工作目录。',
   budget_exhausted: '本轮已达到运行预算，后续调用已停止。可调整预算后发起新一轮；已完成的操作仍保留。',
@@ -31,6 +39,7 @@ const labels: Record<string, string> = { read: '读取教育技能', search_teac
   report_goal_progress:'记录目标进度',office_list_attachments:'查看已发送附件',office_read_attachment:'读取已发送附件',office_view_public_image:'确认公开图片分析',
   office_browser:'浏览网页',office_web_search:'联网搜索',office_web_fetch:'读取公开网页',office_file_stat: '检查资料信息', office_list_files: '查看授权文件目录', office_copy_file: '复制教学资料', office_create_text: '创建教学文档', office_edit_text: '修改教学文档', office_create_document:'生成办公文档', office_read_document:'读取办公文档',update_plan:'更新任务计划',ask_teacher:'请教师补充', read_education_memory:'读取本会话教育记忆', read_session_process:'查看本会话过程' };
 /** Provider reasoning is separate from answer segments and public execution telemetry. */
+export const xiaozhiToolLabel=(tool:string)=>labels[tool]||'执行授权工具';
 export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgentEvent): OfficeProjectedTurn {
   const next = { ...turn, items: turn.items.map(item => ({ ...item })) };
   if(event.kind==='model_reasoning'){
@@ -48,6 +57,8 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
         if(stages.length>=MAX_PUBLIC_STAGES)next.publicStagesOmitted=(next.publicStagesOmitted||0)+1;
       }
     }
+  } else if(event.kind==='task'){
+    if(validTaskView(event.task)&&event.task.sessionId===event.sessionId&&(!next.task||next.task.id!==event.task.id||event.task.revision>=next.task.revision))next.task=structuredClone(event.task);
   } else if(event.kind === 'assistant_start') {
     next.items.push({id:`${turn.id}:segment:${event.segment}`,kind:'message',role:'assistant',phase:'commentary',text:'',status:'inProgress'});
   } else if(event.kind === 'assistant_end') {
@@ -64,6 +75,11 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     item.text = (item.text || '') + event.delta;
   } else if (event.kind === 'tool_start') {
     if (!next.items.some(item => item.id === event.callId)) next.items.push({ id: event.callId, kind: 'tool', toolName:event.tool, label: labels[event.tool] || '执行授权工具', status: 'inProgress',traceSequence:event.sequence });
+  } else if (event.kind === 'tool_attempt') {
+    if(event.runId===turn.id&&validToolAttempt(event.attempt)){
+      const item=next.items.find(item=>item.kind==='tool'&&item.id===event.attempt.callId);
+      if(item)item.toolAttempt=structuredClone(event.attempt);
+    }
   } else if (event.kind === 'tool_end') {
     const item = next.items.find(item => item.id === event.callId && item.kind === 'tool');
     if (item) { item.status = event.success ? 'completed' : item.status === 'declined' ? 'declined' : 'failed'; if (event.sources) item.sources = event.sources; if(event.webError)item.webError=event.webError; if(event.webEmpty !== undefined)item.webEmpty=event.webEmpty;
@@ -81,6 +97,8 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     item.status=image.state==='received'?'completed':['prepared','submitting'].includes(image.state)?'inProgress':'failed';
     item.text=image.title;
     if(image.state==='received')item.sources=[{title:image.title}];
+  } else if (event.kind === 'verification') {
+    if (event.runId === turn.id && validTaskVerification(event.verification,turn.id)) next.verification = structuredClone(event.verification);
   } else if (event.kind === 'usage') {
     const { activeMs, waitingMs } = event.usage;
     if (Number.isFinite(activeMs) && activeMs >= 0 && Number.isFinite(waitingMs) && waitingMs >= 0 && Number.isFinite(activeMs + waitingMs)) next.elapsedMs = activeMs + waitingMs;
@@ -116,6 +134,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     if (control.kind === 'plan') {
       let item = next.items.find(item => item.id === control.id);
       if (!item) { item = {id:control.id,kind:'plan',traceSequence:event.sequence}; next.items.push(item); }
+      if(validVersionedPlan(control))item.plan=structuredClone(control);
       item.text = control.steps?.map(step => `${step.status === 'completed' ? '✓' : step.status === 'in_progress' ? '→' : '○'} ${step.text}`).join('\n\n');
     }
     if (control.kind === 'question') {
@@ -139,6 +158,8 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     if (event.automatic) item.label = event.state === 'running' ? '正在自动整理上下文' : event.state === 'failed' ? '上下文整理未完成' : '上下文已自动整理';
     item.status = event.state === 'completed' ? 'completed' : event.state === 'failed' ? 'failed' : 'inProgress';
     item.text = event.state === 'completed' ? `上下文估计 Token：${event.tokensBefore ?? '未知'} → ${event.estimatedTokensAfter ?? '未知'}。原对话记录保留；来源、计划与审批仍以本地记录为准。` : event.state === 'failed' ? XIAOZHI_ERRORS[event.error || 'compaction_failed'] : '正在整理较早上下文，原对话记录保留。';
+  } else if(event.kind === 'recovery') {
+    if(validRecovery(event.recovery)&&event.recovery.runId===turn.id)next.recovery=structuredClone(event.recovery);
   } else if(event.kind === 'status') {
     next.status = event.status;
     if(event.status!=='running'&&event.finishedAt!==undefined&&next.startedAt!==undefined&&Number.isFinite(event.finishedAt)&&event.finishedAt>=next.startedAt)next.traceElapsedMs=event.finishedAt-next.startedAt;

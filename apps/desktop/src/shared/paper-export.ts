@@ -6,27 +6,32 @@ export const PAPER_OFFICE_SCHEMA='xiaozhi.office-paper-draft.v2' as const;
 export const PAPER_RICH_OFFICE_SCHEMA='xiaozhi.office-paper-draft.v3' as const;
 export const PAPER_MATH_OFFICE_SCHEMA='xiaozhi.office-paper-draft.v4' as const;
 export const PAPER_TABLE_OFFICE_SCHEMA='xiaozhi.office-paper-draft.v5' as const;
+export const PAPER_ANSWER_SHEET_OFFICE_SCHEMA='xiaozhi.office-paper-draft.v6' as const;
 export const isMathPaperOfficeSchema=(v:unknown)=>v===PAPER_MATH_OFFICE_SCHEMA||v===PAPER_TABLE_OFFICE_SCHEMA;
-export const isRichPaperOfficeSchema=(v:unknown)=>v===PAPER_RICH_OFFICE_SCHEMA||isMathPaperOfficeSchema(v);
+export const isRichPaperOfficeSchema=(v:unknown)=>v===PAPER_RICH_OFFICE_SCHEMA||v===PAPER_ANSWER_SHEET_OFFICE_SCHEMA||isMathPaperOfficeSchema(v);
 export type PaperOfficeFigure={questionId:string;version:string;blockId:string;role:'question'|'answer'|'analysis';assetId:string;sha256:string;width:number;height:number;afterParagraph:number};
 export const isPaperOfficeSchema=(v:unknown)=>v===PAPER_OFFICE_SCHEMA||isRichPaperOfficeSchema(v);
-export type PaperExportInput={format:'docx'|'pdf';audience:'student'|'teacher';path:string};
-export type PaperOfficeSource={paperId:string;digest:string;audience:PaperExportInput['audience']};
+export type PaperExportTemplate='paper'|'answer_sheet';
+export type PaperExportInput={format:'docx'|'pdf';audience:'student'|'teacher';path:string;template?:PaperExportTemplate};
+export type PaperOfficeSource={paperId:string;digest:string;audience:PaperExportInput['audience'];template?:PaperExportTemplate};
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>{
  if(!v||typeof v!=='object'||Array.isArray(v)||![Object.prototype,null].includes(Object.getPrototypeOf(v)))return false;
  const descriptors=Object.getOwnPropertyDescriptors(v),names=Reflect.ownKeys(descriptors);
  return names.length===keys.length&&names.every(k=>typeof k==='string'&&keys.includes(k)&&'value' in descriptors[k]&&descriptors[k].enumerable);
 };
+const template=(v:unknown)=>v===undefined||v==='paper'||v==='answer_sheet';
 export function validPaperExport(v:unknown):v is PaperExportInput{
- return exact(v,['format','audience','path'])&&['docx','pdf'].includes(String(v.format))&&['student','teacher'].includes(String(v.audience))
-  &&officeRelativePath(v.path)&&v.path.toLowerCase().endsWith('.'+v.format);
+ return (exact(v,['format','audience','path'])||exact(v,['format','audience','path','template']))&&['docx','pdf'].includes(String(v.format))&&['student','teacher'].includes(String(v.audience))
+  &&template(v.template)&&officeRelativePath(v.path)&&v.path.toLowerCase().endsWith('.'+v.format)
+  &&(v.template!=='answer_sheet'||v.audience==='student');
 }
 export function validPaperOutput(v:unknown):v is PaperOutputInput{
  return exact(v,['schemaVersion','sessionId'])&&v.schemaVersion===PAPER_OUTPUT_SCHEMA&&typeof v.sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(v.sessionId);
 }
 export function validPaperOfficeSource(v:unknown):v is PaperOfficeSource{
- return exact(v,['paperId','digest','audience'])&&typeof v.paperId==='string'&&/^xipaper_[a-f0-9-]{36}$/i.test(v.paperId)
-  &&typeof v.digest==='string'&&/^[a-f0-9]{64}$/.test(v.digest)&&['student','teacher'].includes(String(v.audience));
+ return (exact(v,['paperId','digest','audience'])||exact(v,['paperId','digest','audience','template']))&&typeof v.paperId==='string'&&/^xipaper_[a-f0-9-]{36}$/i.test(v.paperId)
+  &&typeof v.digest==='string'&&/^[a-f0-9]{64}$/.test(v.digest)&&['student','teacher'].includes(String(v.audience))
+  &&template(v.template)&&(v.template!=='answer_sheet'||v.audience==='student');
 }
 export function validPaperOfficeFigure(v:unknown,paragraphs:number):v is PaperOfficeFigure{
  return exact(v,['questionId','version','blockId','role','assetId','sha256','width','height','afterParagraph'])

@@ -1,3 +1,4 @@
+import {renderScienceFigure} from './science-figure';
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -14,7 +15,7 @@ function changeFile(root: string, raw: string): string {
   if (!raw || raw.length > 500 || path.isAbsolute(raw) || /[:\x00-\x1f]/.test(raw)
     || segments.some(v => !v || v === '.' || v === '..' || /[. ]$/.test(v)
       || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/i.test(v)
-      || /^(\.pi|\.ssh)$/i.test(v)) || !/\.(md|txt)$/i.test(raw)) throw new Error('permission_denied');
+      || /^(\.pi|\.ssh)$/i.test(v)) || !/\.(md|txt|svg|html)$/i.test(raw)) throw new Error('permission_denied');
   const file = approvedFile(root, raw);
   if (!fs.existsSync(path.dirname(file)) || !fs.lstatSync(path.dirname(file)).isDirectory()) throw new Error('not_found');
   return file;
@@ -84,10 +85,12 @@ export function createTextChangeService(options: {
     if (latest?.state === (undo ? 'reverting' : 'executing')) await state.transition(latest, [latest.state], undo ? 'undo_uncertain' : 'uncertain');
   }
   return {
-    async propose(sessionId: string, runId: string, callId: string, raw: unknown, signal?: AbortSignal) {
+    async propose(sessionId: string, runId: string, callId: string, raw: unknown, signal?: AbortSignal, anatomy = false) {
       signalCheck(signal);
       if (!options.isCurrent(sessionId, runId) || !callId || callId.length > 128) throw new Error('permission_denied');
-      const input = textProposalInput(raw), root = await authority(sessionId), inputHash = changeHash(JSON.stringify(input));
+      const input = textProposalInput(anatomy ? {operation:'create',...renderScienceFigure(raw)} : raw);
+      if (/\.(svg|html)$/i.test(input.path) && !anatomy) throw new Error('permission_denied');
+      const root = await authority(sessionId), inputHash = changeHash(JSON.stringify(input));
       const existing = await state.call(sessionId, runId, callId);
       if (existing) {
         if (existing.inputHash !== inputHash || existing.workspaceHash !== workspaceHash(root)) throw new Error('conflict');

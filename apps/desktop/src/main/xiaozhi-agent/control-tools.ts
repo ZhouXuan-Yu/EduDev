@@ -1,8 +1,10 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import type { ToolDefinition } from '@earendil-works/pi-coding-agent';
 import type { OmniEduStore } from '../db';
-import type { XiaozhiAgentEventPayload, XiaozhiControlInput, XiaozhiActionResult, XiaozhiPlanStep } from '../../shared/xiaozhi-agent';
+import type { XiaozhiAgentEventPayload, XiaozhiControlInput, XiaozhiActionResult } from '../../shared/xiaozhi-agent';
 import { publicControl, type PrivateControl } from './control-state';
+import {createPlanService} from './plan-service';
+import {PLAN_UPDATE_SCHEMA} from '../../shared/xiaozhi-plan';
 
 const short = (v: unknown, max: number): v is string => typeof v === 'string' && !!v.trim() && v.length <= max && !v.includes('\0');
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -10,11 +12,13 @@ const result = (data: unknown) => ({ content: [{ type: 'text' as const, text: JS
 export function createPiControlCoordinator(options: { store: OmniEduStore; isCurrent: (id: string, run: string) => boolean;
   sanitize?:(text:string)=>Promise<string>;
   emit: (id: string, run: string, payload: XiaozhiAgentEventPayload) => void;
+  flush:(sessionId:string,runId:string)=>Promise<void>;
   resume: (item: PrivateControl, answer: string) => Promise<XiaozhiActionResult> }) {
   const { store } = options;
   const waits = new Map<string, { item: PrivateControl; resolve: (answer: string | undefined) => void }>();
   const notify = (item: PrivateControl) => options.emit(item.sessionId, item.runId, { kind: 'control', control: publicControl(item) });
   const clean = async (text: string) => options.sanitize?options.sanitize(text):(await store.sanitizeProblemText(text)).sanitizedText;
+  const plans=createPlanService({sql:store.xiaozhiState.sql,state:store.xiaozhiState,current:options.isCurrent,sanitize:clean,publish:async(id,run,item)=>{notify(item);await options.flush(id,run);}});
   async function cancel(run: string) {
     for (const [id, entry] of waits) if (entry.item.runId === run) { waits.delete(id); entry.resolve(undefined); }
   }
@@ -25,20 +29,14 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
     }
   }
   return {
-    cancel, finish,
+    cancel, finish,planHistory:plans.history,
     tools(sessionId: string, runId: string): ToolDefinition[] {
       return [
-        { name: 'update_plan', label: '更新任务计划', description: '公开更新教师任务的简短步骤及真实进度。复杂任务先计划；计划不等于文件或业务已提交。最多8步，至多1步执行中。',
-          parameters: { type: 'object', properties: { steps: { type: 'array', minItems: 1, maxItems: 8, items: { type: 'object', properties: { text: { type: 'string', maxLength: 200 }, status: { type: 'string', enum: ['pending','in_progress','completed'] } }, required: ['text','status'], additionalProperties: false } } }, required: ['steps'], additionalProperties: false } as ToolDefinition['parameters'],
-          execute: async (_callId, args, signal) => {
-            signal?.throwIfAborted();
-            if (!options.isCurrent(sessionId,runId) || !object(args) || Object.keys(args).some(key => key !== 'steps') || !Array.isArray(args.steps)
-              || args.steps.length < 1 || args.steps.length > 8 || args.steps.some(step => !object(step) || Object.keys(step).some(key => !['text','status'].includes(key)) || !short(step.text,200) || !['pending','in_progress','completed'].includes(String(step.status)))
-              || args.steps.filter(step => step.status === 'in_progress').length > 1) throw new Error('invalid_input');
-            const steps: XiaozhiPlanStep[] = await Promise.all(args.steps.map(async step => ({ text: await clean(step.text), status: step.status })));
-            signal?.throwIfAborted(); if (!options.isCurrent(sessionId,runId)) throw new Error('cancelled');
-            const item: PrivateControl = { id: `pictrl_${createHash('sha256').update(runId).digest('hex')}`, sessionId,runId,kind:'plan',state:'applied',text:'任务计划',steps };
-            await store.xiaozhiState.replacePlan(item); notify(item); return result({ success:true,steps });
+        { name: 'update_plan', label: '更新任务计划', description: '公开提出/调整任务计划。使用xiaozhi.plan.v2；首次expectedRevision=0，后续用上次回执revision。每步稳定id，前置dependsOn必须先报告完成；删除的id不能复用。reason写公开调整原因，basisCallIds只引用本轮已返回的真实工具callId，没有则空数组。宿主仅采用计划结构/版本；completed仅报告进度，不等于教学或交付核验通过。最多8步、1步进行中。',
+          parameters: PLAN_UPDATE_SCHEMA as unknown as ToolDefinition['parameters'],
+          execute: async (callId, args, signal) => {
+            const saved=await plans.propose(sessionId,runId,callId,args,signal);
+            return result({success:true,adopted:true,scope:'plan_structure',revision:saved.control.plan.revision,planId:saved.control.id,steps:saved.control.steps,duplicate:saved.duplicate,stepVerification:'not_checked'});
           } },
         { name: 'ask_teacher', label: '请教师补充', description: '教师任务有必要歧义时提一个问题，给2–3个建议选项，等待教师选择或自由回答后继续。不要反复询问已明确事项。',
           parameters: { type:'object', properties:{ question:{type:'string',maxLength:1000}, options:{type:'array',minItems:2,maxItems:3,items:{type:'string',maxLength:200}} },required:['question','options'],additionalProperties:false } as ToolDefinition['parameters'],

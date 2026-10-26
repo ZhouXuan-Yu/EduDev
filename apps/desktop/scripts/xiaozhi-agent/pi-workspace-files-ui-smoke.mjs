@@ -9,7 +9,9 @@ import { fileURLToPath } from 'node:url';
 import { _electron as electron } from 'playwright';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),output=fs.mkdtempSync(path.join(desktop,'test-results/xiaozhi-agent/pi-files-ui-'));
 const data=path.join(output,'data'),workspace=path.join(output,'教研目录');fs.mkdirSync(workspace);fs.mkdirSync(path.join(workspace,'数学'));
-const marker=`课堂代号${randomUUID()}`,text=`备课资料\n${marker}\n课时37分钟`,markdown=`# 分数教研\n\n**${marker}**\n\n![外部图片](https://example.invalid/do-not-fetch.png)\n\n<script>window.NOT_EXECUTED=true</script>`;
+const marker=`课堂代号${randomUUID()}`,text=`备课资料\n${marker}\n课时37分钟`;
+const outlineFiller=Array.from({length:45},(_,index)=>`第${index+1}段课堂说明：这部分用于验证长备课稿的目录定位，不发送模型，也不访问网络。`).join('\n\n');
+const markdown=`# 分数教研\n\n**${marker}**\n\n## 备课目标\n\n${outlineFiller}\n\n## 课堂流程\n\n1. 先确认整体相同。\n2. 再比较分数大小。\n\n![外部图片](https://example.invalid/do-not-fetch.png)\n\n<script>window.NOT_EXECUTED=true</script>`;
 fs.writeFileSync(path.join(workspace,'讲义.txt'),text);fs.writeFileSync(path.join(workspace,'数学','计划.md'),markdown);fs.writeFileSync(path.join(workspace,'课堂.bin'),'%PDF-synthetic');
 fs.writeFileSync(path.join(workspace,'图.png'),Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a3ioAAAAASUVORK5CYII=','base64'));
 fs.writeFileSync(path.join(workspace,'.env.local'),'SYNTHETIC_CREDENTIAL');fs.writeFileSync(path.join(workspace,'大文件.txt'),Buffer.alloc(1048577,65));
@@ -20,9 +22,22 @@ let app,page,session;const errors=[],remoteRequests=[];
 const check=(name,fn=()=>{})=>{fn();report.checks.push({name,pass:true});console.log(`PASS ${name}`);};
 async function until(fn,timeout=25000){const end=Date.now()+timeout;while(Date.now()<end){if(await fn())return;await new Promise(resolve=>setTimeout(resolve,80));}throw new Error('File panel UI condition timed out');}
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex'),initial=hash(fs.readFileSync(path.join(workspace,'讲义.txt')));
-async function resize(width,height){await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});}
+async function resize(width,height){
+  await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});
+  await page.waitForTimeout(250);
+  let metrics=await page.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio}));
+  if(metrics.width!==width||metrics.height!==height){
+    await app.evaluate(({BrowserWindow},input)=>BrowserWindow.getAllWindows()[0].setContentSize(Math.round(input.width*input.scale),Math.round(input.height*input.scale)),{width,height,scale:metrics.dpr});
+    await page.waitForTimeout(250);
+  }
+  metrics=await page.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio}));
+  if(metrics.width!==width||metrics.height!==height){await page.setViewportSize({width,height});await page.waitForTimeout(250);}
+  await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});
+}
 async function capture(theme,width,height,part){
-  await page.emulateMedia({colorScheme:theme});await resize(width,height);await settleWorkspaceTransitions(page);
+  await page.emulateMedia({colorScheme:theme});await resize(width,height);
+  const hiddenSnapshot=await app.evaluate(({BrowserWindow})=>!BrowserWindow.getAllWindows()[0].isVisible());
+  await settleWorkspaceTransitions(page,{hiddenSnapshot});
   await page.waitForFunction(()=>{const tab=document.querySelector('[data-testid="pi-file-tabs"] [role="tab"][aria-selected="true"]'),scroller=tab?.closest('[data-slot="scroll-shadow"]');if(!tab||!scroller)return false;const t=tab.getBoundingClientRect(),s=scroller.getBoundingClientRect();return t.left>=s.left-1&&t.right<=s.right+1;},{},{timeout:5000});
   report.layout.push({theme,width,height,part,...await assertWorkspaceChrome(page)});
   const preview=page.getByTestId('pi-file-preview'),text=page.getByTestId('pi-file-text');
@@ -41,7 +56,9 @@ async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_E
   await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'visible',timeout:60000});await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());session=await page.locator('.office-composer-container').getAttribute('data-session-id');
 }
 const item=name=>page.getByTestId(`pi-file-entry-${name==='计划.md'?'数学/计划.md':name}`);
-async function clickFile(name){await item(name).click();await until(async()=>await page.getByTestId('pi-file-preview').getAttribute('aria-busy')==='false');}
+async function showExplorer(){if(!await page.getByTestId('pi-file-filter').isVisible()){await page.getByTestId('pi-files-explorer-toggle').click();await page.getByTestId('pi-file-filter').waitFor();}}
+async function clickFile(name){await showExplorer();await item(name).click();await until(async()=>await page.getByTestId('pi-file-preview').getAttribute('aria-busy')==='false');}
+async function hoverResizeHandle(handle){const box=await handle.boundingBox();assert(box);await handle.hover({position:{x:box.width/2,y:Math.min(100,box.height/2)}});return box;}
 const snapshot=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session);
 try{
   await launch();await page.getByTestId('pi-files-toggle').click();await page.getByTestId('pi-file-error').waitFor({state:'visible'});assert((await page.getByTestId('pi-file-error').innerText()).includes('选择教学工作目录'));
@@ -49,10 +66,28 @@ try{
   await app.evaluate(async({dialog},directory)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[directory]});},workspace);
   await page.getByTestId('pi-files-choose').click();await item('讲义.txt').waitFor({state:'visible'});assert.equal((await snapshot()).workspace.label,'教研目录');assert(!await item('.env.local').count());
   check('Teacher chooses directory through actual UI/native chooser/SQLite grant; original Pro FileTree receives real files');
-  await clickFile('讲义.txt');assert.equal(await page.getByTestId('pi-file-text').innerText(),text);check('Real bounded text preview exactly matches random disk facts');
-  await item('数学').click();await item('计划.md').waitFor({state:'visible'});await clickFile('计划.md');assert((await page.getByTestId('pi-file-preview').innerText()).includes(marker));assert.equal(await page.getByTestId('pi-file-preview').locator('h1').innerText(),'分数教研');assert.equal(await page.getByTestId('pi-file-preview').locator('img,script').count(),0);assert.equal(await page.evaluate(()=>window.NOT_EXECUTED),undefined);assert.deepEqual(remoteRequests,[]);
-  check('Lazy real directory expansion and safe Markdown render no remote image, script or model request');
-  await item('计划.md').focus();await page.keyboard.press('Enter');await until(async()=>await page.getByTestId('pi-file-preview').getAttribute('aria-busy')==='false');assert((await page.getByTestId('pi-file-preview').innerText()).includes(marker));
+  await clickFile('讲义.txt');assert.equal(await page.getByTestId('pi-file-text').innerText(),text);assert(!await page.getByTestId('pi-file-filter').isVisible());assert((await page.getByTestId('pi-files-explorer-toggle').innerText()).includes('文件列表'));const collapsedPanel=await page.getByTestId('pi-file-panel').boundingBox(),collapsedReading=await page.getByTestId('pi-file-preview').boundingBox();assert(collapsedReading.width>=collapsedPanel.width-2);check('Opening a real file automatically gives the reading area the full narrow panel and exposes a labeled file-list control');
+  await showExplorer();await item('数学').click();await item('计划.md').waitFor({state:'visible'});await clickFile('计划.md');assert((await page.getByTestId('pi-file-preview').innerText()).includes(marker));assert.equal(await page.getByTestId('pi-file-preview').locator('h1').innerText(),'分数教研');assert.equal(await page.getByTestId('pi-file-preview').locator('img,script').count(),0);assert.equal(await page.evaluate(()=>window.NOT_EXECUTED),undefined);assert.deepEqual(remoteRequests,[]);
+  const outline=page.getByTestId('pi-file-outline');await outline.waitFor();assert((await outline.locator('summary').innerText()).includes('3 节'));await outline.locator('summary').click();assert.equal(await outline.locator('[data-testid^="pi-file-outline-item-"]').count(),3);
+  for(const [label,locator]of[['outline summary',outline.locator('summary')],['outline item',outline.getByTestId('pi-file-outline-item-2')]]){const sample=await measureTextContrast(locator);report.contrast.push({theme:'current',width:null,height:null,part:'outline',label,...sample});assert(sample.ratio>=4.5,`${label} contrast ${sample.ratio}`);}
+  await outline.getByTestId('pi-file-outline-item-2').click();await page.getByTestId('pi-file-outline-status').waitFor();assert((await page.getByTestId('pi-file-outline-status').innerText()).includes('课堂流程'));const previewBox=await page.getByTestId('pi-file-preview').boundingBox(),headingBox=await page.getByRole('heading',{name:'课堂流程',exact:true}).boundingBox();assert(headingBox.y>=previewBox.y&&headingBox.y<=previewBox.y+previewBox.height);assert(await page.getByTestId('pi-file-preview').evaluate(element=>element.scrollTop)>0);
+  report.outlineViews=[];
+  for(const theme of ['light','dark'])for(const [width,height]of[[1366,768],[1920,1080]]){
+    await page.emulateMedia({colorScheme:theme});await resize(width,height);
+    const hiddenSnapshot=await app.evaluate(({BrowserWindow})=>!BrowserWindow.getAllWindows()[0].isVisible());
+    await settleWorkspaceTransitions(page,{hiddenSnapshot});
+    if(!await outline.evaluate(element=>element.open))await outline.locator('summary').click();
+    await outline.getByTestId('pi-file-outline-item-2').click();
+    const currentPreview=await page.getByTestId('pi-file-preview').boundingBox(),currentHeading=await page.getByRole('heading',{name:'课堂流程',exact:true}).boundingBox();
+    assert(currentHeading.y>=currentPreview.y&&currentHeading.y<=currentPreview.y+currentPreview.height);
+    const summary=await measureTextContrast(outline.locator('summary')),item=await measureTextContrast(outline.getByTestId('pi-file-outline-item-2'));
+    assert(summary.ratio>=4.5);assert(item.ratio>=4.5);
+    const screenshot=path.join(output,`outline-${theme}-${width}x${height}.png`);await page.screenshot({path:screenshot,animations:'disabled'});
+    report.outlineViews.push({theme,width,height,summary:summary.ratio,item:item.ratio,sha256:sha256(fs.readFileSync(screenshot))});
+  }
+  await page.emulateMedia({colorScheme:null});
+  check('Lazy real directory expansion renders safe Markdown and an accessible outline jumps to a later real heading without remote requests');
+  await showExplorer();await item('计划.md').focus();await page.keyboard.press('Enter');await until(async()=>await page.getByTestId('pi-file-preview').getAttribute('aria-busy')==='false');assert((await page.getByTestId('pi-file-preview').innerText()).includes(marker));
   await page.getByRole('tab',{name:'计划.md',exact:true}).focus();await page.keyboard.press('ArrowLeft');await page.keyboard.press('Enter');await until(async()=>await page.getByTestId('pi-file-text').count());assert.equal(await page.getByTestId('pi-file-text').innerText(),text);
   check('Existing accessible tree and Tabs open exact local files using keyboard only');
   await page.getByRole('tab',{name:'讲义.txt',exact:true}).click();await until(async()=>await page.getByTestId('pi-file-text').count());assert.equal(await page.getByTestId('pi-file-text').innerText(),text);
@@ -63,24 +98,28 @@ try{
   await clickFile('大文件.txt');assert((await page.getByTestId('pi-file-preview').innerText()).includes('超过本地预览大小限制'));check('Oversize real file shows actionable error and retains directory');
   await clickFile('损坏文档.docx');assert((await page.getByTestId('pi-file-preview').innerText()).includes('文档无法解析'));assert.equal(await page.getByTestId('pi-file-text').count(),0);
   for(const theme of ['light','dark'])await capture(theme,1920,1080,'corrupt-document');
-  await page.getByTestId('pi-file-preview-refresh').click();await item('损坏文档.docx').waitFor({state:'visible'});await clickFile('损坏文档.docx');assert((await page.getByTestId('pi-file-preview').innerText()).includes('文档无法解析'));await clickFile('讲义.txt');assert.equal(await page.getByTestId('pi-file-text').innerText(),text);
+  await page.getByTestId('pi-file-preview-refresh').click();await showExplorer();await item('损坏文档.docx').waitFor({state:'visible'});await clickFile('损坏文档.docx');assert((await page.getByTestId('pi-file-preview').innerText()).includes('文档无法解析'));await clickFile('讲义.txt');assert.equal(await page.getByTestId('pi-file-text').innerText(),text);
   check('Actual malformed Office bytes fail explicitly, retry still fails honestly and another file remains readable');
   await clickFile('讲义.txt');fs.appendFileSync(path.join(workspace,'讲义.txt'),'\n修改后课时38分钟');await clickFile('图.png');await page.getByRole('tab',{name:'讲义.txt',exact:true}).click();await until(async()=>(await page.getByTestId('pi-file-preview').innerText()).includes('已变化'));check('Actual file mutation cannot silently substitute old expected version');
   assert.equal(await page.getByTestId('pi-file-text').count(),0);for(const theme of ['light','dark'])await capture(theme,1920,1080,'changed-file');
-  await page.getByTestId('pi-file-preview-refresh').click();await item('讲义.txt').waitFor({state:'visible'});await clickFile('讲义.txt');assert((await page.getByTestId('pi-file-text').innerText()).includes('修改后课时38分钟'));check('Actual preview failure refresh obtains new file version and reads changed facts');
+  await page.getByTestId('pi-file-preview-refresh').click();await showExplorer();await item('讲义.txt').waitFor({state:'visible'});await clickFile('讲义.txt');assert((await page.getByTestId('pi-file-text').innerText()).includes('修改后课时38分钟'));check('Actual preview failure refresh obtains new file version and reads changed facts');
   fs.unlinkSync(path.join(workspace,'课堂.bin'));await page.getByRole('tab',{name:'课堂.bin',exact:true}).click();await until(async()=>(await page.getByTestId('pi-file-preview').innerText()).includes('已不存在'));check('Real removed file is not presented from a stale cached tab');
   for(const theme of ['light','dark'])for(const [width,height]of [[1366,768],[1920,1080]]){
     await resize(width,height);await clickFile('讲义.txt');const input=await page.getByTestId('office-prompt-input').boundingBox(),panel=await page.getByTestId('pi-file-panel').boundingBox(),send=await page.locator('.office-composer [data-slot="prompt-input-send"]').boundingBox();assert(input.x>=0&&input.y+input.height<=height);assert(panel.width>=359&&panel.x+panel.width<=width+1);assert(send.x+send.width<=panel.x+1&&send.y+send.height<=height);
     await capture(theme,width,height,'files');check(`Chat input, original tree/tab and real preview remain reachable in ${theme} at ${width}x${height}`);
   }
-  const handle=page.locator('.pi-shell-files [data-slot="resizable-handle"]');const box=await handle.boundingBox(),before=(await page.getByTestId('pi-file-panel').boundingBox()).width;await page.mouse.move(box.x+box.width/2,box.y+100);await page.mouse.down();await page.mouse.move(box.x-110,box.y+100,{steps:12});await page.mouse.up();await until(async()=>Math.abs((await page.getByTestId('pi-file-panel').boundingBox()).width-before)>60);report.panelWidthAfterDrag=(await page.getByTestId('pi-file-panel').boundingBox()).width;
+  const handle=page.locator('.pi-shell-files [data-slot="resizable-handle"]');const before=(await page.getByTestId('pi-file-panel').boundingBox()).width,box=await hoverResizeHandle(handle);await page.mouse.down();await page.mouse.move(box.x-110,box.y+Math.min(100,box.height/2),{steps:12});await page.mouse.up();await until(async()=>Math.abs((await page.getByTestId('pi-file-panel').boundingBox()).width-before)>60);report.panelWidthAfterDrag=(await page.getByTestId('pi-file-panel').boundingBox()).width;
   check('Original Pro Resizable performs actual pointer drag and saves layout');
-  await page.getByTestId('pi-files-explorer-toggle').click();assert(!await item('讲义.txt').isVisible());assert((await page.getByTestId('pi-file-text').innerText()).includes('修改后课时38分钟'));await page.getByTestId('pi-files-explorer-toggle').click();assert(await item('讲义.txt').isVisible());check('Original file tree can actually close and reopen without discarding the local preview');
+  assert(!await page.getByTestId('pi-file-filter').isVisible());await page.getByTestId('pi-files-explorer-toggle').click();assert(await item('讲义.txt').isVisible());await page.getByTestId('pi-files-explorer-toggle').click();assert(!await item('讲义.txt').isVisible());assert((await page.getByTestId('pi-file-text').innerText()).includes('修改后课时38分钟'));await page.getByTestId('pi-files-explorer-toggle').click();assert(await item('讲义.txt').isVisible());check('Original file tree can actually close and reopen without discarding the local preview');
+  report.narrowViews=[];
   for(const theme of ['light','dark'])for(const [width,height]of[[1366,768],[1920,1080]]){
-    await resize(width,height);const narrow=await handle.boundingBox();await page.mouse.move(narrow.x+narrow.width/2,narrow.y+100);await page.mouse.down();await page.mouse.move(width-350,narrow.y+100,{steps:12});await page.mouse.up();
-    await page.getByTestId('pi-files-explorer-toggle').click();const panel=await page.getByTestId('pi-file-panel').boundingBox(),reading=await page.getByTestId('pi-file-preview').boundingBox();assert(panel.width<=380&&panel.width>=359);assert(reading.width>=330);
+    await resize(width,height);const narrow=await hoverResizeHandle(handle);await page.mouse.down();await page.mouse.move(width-350,narrow.y+Math.min(100,narrow.height/2),{steps:12});await page.mouse.up();
+    await until(async()=>{const panel=await page.getByTestId('pi-file-panel').boundingBox();return panel&&panel.width>=359&&panel.width<=380;});
+    await page.getByTestId('pi-files-explorer-toggle').click();
+    await until(async()=>{const panel=await page.getByTestId('pi-file-panel').boundingBox(),reading=await page.getByTestId('pi-file-preview').boundingBox();return panel&&reading&&panel.width>=359&&panel.width<=380&&reading.width>=330;});
+    const panel=await page.getByTestId('pi-file-panel').boundingBox(),reading=await page.getByTestId('pi-file-preview').boundingBox();assert(panel.width<=380&&panel.width>=359);assert(reading.width>=330);
     for(const action of [page.getByTestId('pi-files-explorer-toggle'),page.getByTestId('pi-files-refresh'),page.getByTestId('pi-files-close'),page.locator('.office-composer [data-slot="prompt-input-send"]')]){const rect=await action.boundingBox();assert(rect&&rect.x>=0&&rect.x+rect.width<=width+1&&rect.y>=0&&rect.y+rect.height<=height);}
-    await capture(theme,width,height,'files-narrow');await page.getByTestId('pi-files-explorer-toggle').click();check(`Actual minimum file pane expands reading by hiding tree with all controls reachable in ${theme} at ${width}x${height}`);
+    report.narrowViews.push({theme,width,height,panelWidth:panel.width,readingWidth:reading.width});await capture(theme,width,height,'files-narrow');await page.getByTestId('pi-files-explorer-toggle').click();check(`Actual minimum file pane expands reading by hiding tree with all controls reachable in ${theme} at ${width}x${height}`);
   }
   report.panelWidthAfterDrag=(await page.getByTestId('pi-file-panel').boundingBox()).width;
   await page.getByTestId('pi-file-filter').fill('讲义');assert(!await item('图.png').count());assert(await item('讲义.txt').isVisible());await page.getByTestId('pi-file-filter').fill('');check('Filtering real loaded entries does not fabricate or query unauthorized paths');

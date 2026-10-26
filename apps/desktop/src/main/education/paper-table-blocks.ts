@@ -9,7 +9,18 @@ export function paperTextBlocks(text:string):PaperTextBlock[]{
  const formulas:string[]=[];
  const prepared=officeMathParts(text).map(p=>p.kind==='text'?p.raw:prefix+(formulas.push(p.raw)-1)+'End').join('');
  const restore=(value:string)=>value.replace(new RegExp(prefix+'([0-9]+)End','g'),(_m,i)=>formulas[Number(i)]);
- const tokens=marked.lexer(prepared,{gfm:true});
+ // GFM accepts prose without pipes as another table row. In teaching material,
+ // a following numbered question must retain its full-width paragraph layout.
+ // Bound only tables the existing lexer identified, leaving code and prose alone.
+ const initial=marked.lexer(prepared,{gfm:true});
+ const bounded=initial.map(token=>{
+  if(token.type!=='table')return token.raw;
+  const lines=token.raw.split('\n');
+  const end=lines.findIndex((line,index)=>index>=2&&!!line.trim()&&!/(?<!\\)\|/.test(line));
+  if(end>=0)lines.splice(end,0,'');
+  return lines.join('\n');
+ }).join('');
+ const tokens=marked.lexer(bounded,{gfm:true});
  if(!tokens.some(t=>t.type==='table'))return [{text}];
  const blocks:PaperTextBlock[]=[];let pending='';
  for(const token of tokens){

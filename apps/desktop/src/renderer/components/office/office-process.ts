@@ -4,12 +4,12 @@ export type OfficeProcessPart = { kind: 'item'; item: OfficeProjectedItem }
   | { kind: 'tools'; items: OfficeProjectedItem[] };
 
 /** Group adjacent real calls only; messages/control/compaction remain barriers. */
-export function groupOfficeProcess(items: OfficeProjectedItem[]): OfficeProcessPart[] {
+export function groupOfficeProcess(items: OfficeProjectedItem[], boundaries?: ReadonlySet<string>): OfficeProcessPart[] {
   const parts: OfficeProcessPart[] = [];
   for (const item of items) {
     if (item.kind !== 'tool') { parts.push({ kind: 'item', item }); continue; }
     const last = parts.at(-1);
-    if (last?.kind === 'tools') last.items.push(item);
+    if (last?.kind === 'tools' && !boundaries?.has(last.items[last.items.length - 1].id)) last.items.push(item);
     else parts.push({ kind: 'tools', items: [item] });
   }
   return parts;

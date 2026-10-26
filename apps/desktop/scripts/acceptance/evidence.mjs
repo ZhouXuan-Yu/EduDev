@@ -22,6 +22,7 @@ export function gradeAttempt(e) {
   const reasons=[];
   if (e.exitCode !== 0 || e.timedOut) reasons.push('PROCESS_FAILED');
   if (!e.report || e.report.success !== true) reasons.push('REPORT_NOT_SUCCESS');
+  if (e.report?.error) reasons.push('REPORT_CONTAINS_ERROR');
   if (!Array.isArray(e.report?.checks) || !e.report.checks.length || e.report.checks.some(c=>!c || c.pass!==true || typeof c.name!=='string' || !c.name.trim() || c.skipped)) reasons.push('ASSERTIONS_INCOMPLETE');
   if (Array.isArray(e.report?.checks) && (e.report.checks.length < (e.requiredAssertions || 1) || new Set(e.report.checks.map(c=>c?.name)).size!==e.report.checks.length)) reasons.push('CASE_COVERAGE_INCOMPLETE');
   if (!e.artifactsVerified) reasons.push('ARTIFACTS_UNVERIFIED');

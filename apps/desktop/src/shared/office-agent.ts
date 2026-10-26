@@ -9,6 +9,7 @@ export interface OfficeProjectedItem {
   label?: string;
   /** Actual public tool identity, not inferred from its translated label. Optional in old history. */
   toolName?: string;
+  plan?:import('./xiaozhi-agent').XiaozhiControl;
   status?: string;
   durationMs?: number;
   /** Public event order only, never SDK-private transcript order. */
@@ -19,6 +20,7 @@ export interface OfficeProjectedItem {
   sources?: import('./xiaozhi-web').XiaozhiPublicSource[];
   webError?: import('./xiaozhi-web').XiaozhiWebError;
   webEmpty?: boolean;
+  toolAttempt?: import('./xiaozhi-tool-attempt').XiaozhiToolAttempt;
   imageDelivery?: import('./xiaozhi-public-images').PublicImageDelivery;
   browserCapture?: import('./xiaozhi-browser-capture').BrowserCapture;
   attachments?: import('./xiaozhi-attachments').XiaozhiAttachment[];
@@ -40,6 +42,10 @@ export interface OfficeProjectedTurn {
   /** Only text actually returned by the provider reasoning channel; independent of answer/export. */
   modelReasoning?: OfficeModelReasoning[];
   presentation?: import('./chat-presentation').ChatPresentation;
+  /** Absent in historical records means unknown, not verified. */
+  verification?: import('./xiaozhi-verification').TaskVerification;
+  recovery?: import('./xiaozhi-recovery').XiaozhiRecovery;
+  task?:import('./xiaozhi-task').TaskView;
 }
 export interface OfficeModelReasoning {
   id: string;

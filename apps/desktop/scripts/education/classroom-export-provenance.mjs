@@ -1,0 +1,14 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
+const upstream='D:/WorkProject/小智智能体借鉴项目/OpenMAIC',root='src/main/education/vendor/openmaic/export';
+const hash=f=>createHash('sha256').update(fs.readFileSync(f)).digest('hex');
+const head=execFileSync('git',['rev-parse','HEAD'],{cwd:upstream,encoding:'utf8',windowsHide:true}).trim();
+if(head!=='636fab0d7edee5e7c2694117c38ece8f623573f9')throw Error('Pinned local source changed; audit before refreshing provenance');
+const old=JSON.parse(fs.readFileSync(path.join(root,'source-manifest.json')));
+old.files=old.files.map(item=>{const file=item.output.replaceAll('\\','/'),sourceFile=file.endsWith('/pptx-format.ts')?'lib/export/use-export-pptx.ts':item.sourceFile??item.file;return{sourceFile,sourceSha256:hash(path.join(upstream,sourceFile)),output:file,sha256:hash(file),...(file.endsWith('/pptx-format.ts')?{extracted:['formatColor','formatHTML','formatPoints','getShadowOption','getOutlineOption']}: {})};});
+old.dependencies=['svg-pathdata','svg-arc-to-cubic-bezier','tinycolor2'].map(name=>{const dir=path.join('node_modules',name),meta=JSON.parse(fs.readFileSync(path.join(dir,'package.json')));let bytes=0,files=0;const walk=d=>{for(const item of fs.readdirSync(d,{withFileTypes:true})){const f=path.join(d,item.name);if(item.isDirectory())walk(f);else{bytes+=fs.statSync(f).size;files++;}}};walk(dir);return{name,version:meta.version,license:meta.license,bytes,files,notices:fs.readdirSync(dir).filter(f=>/^(LICENSE|COPYING|NOTICE)/i.test(f)).map(f=>({file:f,sha256:hash(path.join(dir,f)),text:fs.readFileSync(path.join(dir,f),'utf8')}))};});
+old.lockSha256=hash('package-lock.json');old.windowsImpact='Three existing JS-only modules; no native build, Python/model download or service. PptxGenJS 4.0.1 reused.';
+fs.writeFileSync(path.join(root,'source-manifest.json'),JSON.stringify(old,null,2));
+console.log(JSON.stringify({sourceCommit:head,dependencies:old.dependencies.map(({name,version,license,bytes})=>({name,version,license,bytes})),files:old.files.length}));

@@ -7,6 +7,7 @@ import type {QuestionReviewDraft} from '../../shared/question-review';
 import {questionContentIdentity} from '../../shared/question-identity';
 import {QUESTION_QUALITY_SCHEMA,QUESTION_MATH_QUALITY_SCHEMA,type QuestionMathReceipt,type QuestionQualityReview,type QuestionQualityIssue} from '../../shared/question-quality';
 import {questionVersion} from './question-context-provider';
+import {explanationCoverage} from './question-explanation';
 
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 type Scope={id:string;sessionId:string;studentId:string};
@@ -19,14 +20,15 @@ export function questionQualityHash(scope:Scope,proposalHash:string,draft:Questi
  return hash({scope,proposalHash,draft,sources:sources.map(q=>({id:q.id,version:questionVersion(q)})),quality});
 }
 /** Reuses conservative content identity. Format and exact-text conflicts never prove an answer correct. */
-export function assessQuestionQuality(scope:Scope,proposalHash:string,draft:QuestionReviewDraft,sources:QuestionBankItem[],formatted:QuestionDraftResult[],math?:QuestionMathReceipt[]):QuestionQualityReview{
+export function assessQuestionQuality(scope:Scope,proposalHash:string,draft:QuestionReviewDraft,sources:QuestionBankItem[],formatted:QuestionDraftResult[],math?:QuestionMathReceipt[],explanation=false):QuestionQualityReview{
  const questions=draft.items.map((q,i)=>questionQualityCandidate(q,draft,i)),identities=questions.map(questionContentIdentity),parents=sources.map(questionContentIdentity);
  const items=draft.items.map((q,index)=>{
-  const issues:QuestionQualityIssue[]=[...formatted[index].issues,...generatedQuestionCompleteness(q)],identity=identities[index];
+  const issues:QuestionQualityIssue[]=[...formatted[index].issues,...(explanation?[]:generatedQuestionCompleteness(q))],identity=identities[index];
+  if(explanation){const coverage=explanationCoverage(q,sources[index]);if(coverage.answerMissing.length)issues.push('generated_part_answer_missing');if(coverage.analysisMissing.length)issues.push('generated_part_analysis_missing');}
   if(questionChoiceText(q).conflict)issues.push('choice_embedded_options_conflict');
   if(identity.status==='available'){
    const peers=identities.flatMap((v,i)=>i!==index&&v.status==='available'&&v.key===identity.key?[i]:[]);
-   const originals=parents.flatMap((v,i)=>v.status==='available'&&v.key===identity.key?[i]:[]);
+   const originals=explanation?[]:parents.flatMap((v,i)=>v.status==='available'&&v.key===identity.key?[i]:[]);
    if(peers.length)issues.push('duplicate_batch');if(originals.length)issues.push('duplicate_parent');
    if(peers.some(i=>questions[i].answer!==q.answer)||originals.some(i=>sources[i].answer!==q.answer))issues.push('answer_conflict');
   }

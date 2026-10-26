@@ -1,8 +1,9 @@
 import {randomUUID,createHash} from 'node:crypto';
 import type {QuestionBankItem} from '../../shared/contracts';
-import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,generatedPaperCount,validPaperBlueprint,validPaperGenerationQuery,validPaperCreate,validPaperReview,validPaperSession,type PaperCreateInput,type PaperDecision,type PaperSelection,type PaperSummary,type PaperView,type PaperGeneration,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
+import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,generatedPaperCount,validPaperBlueprint,validPaperGenerationQuery,validPaperCreate,validPaperReview,validPaperCompare,validPaperSession,type PaperCreateInput,type PaperCompareInput,type PaperCompareView,type PaperDecision,type PaperSelection,type PaperSummary,type PaperView,type PaperGeneration,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
 import {questionContentIdentity} from '../../shared/question-identity';
 import {questionVersion} from './question-context-provider';
+import {comparePaperViews} from './paper-compare';
 import {selectPaper,paperSectionMatches,paperShortages,type PaperSelectionHost} from './paper-selection';
 export const PAPER_ACTION='pi_paper_candidate';
 type Row=Record<string,unknown>;
@@ -81,6 +82,10 @@ export class PaperRepository{
   });
  }
  async review(sessionId:string,id:string):Promise<PaperView>{const read=this.host.readTransaction??this.host.transaction;return read.call(this.host,async sql=>{const {r,p}=await this.get(sql,sessionId,id);return this.view(sql,r,p);}) as Promise<PaperView>;}
+ async compare(input:PaperCompareInput):Promise<PaperCompareView>{
+  if(!validPaperCompare(input))throw new Error('invalid_input');const read=this.host.readTransaction??this.host.transaction;
+  return read.call(this.host,async(sql:PaperSql)=>{const left=await this.get(sql,input.sessionId,input.leftId),right=await this.get(sql,input.sessionId,input.rightId);return comparePaperViews(await this.view(sql,left.r,left.p),await this.view(sql,right.r,right.p));}) as Promise<PaperCompareView>;
+ }
  /** Holds the existing BEGIN IMMEDIATE source lease across a synchronous file installation.
   * The action must not call the separate Office SQLite connection while this lease is held. */
  async withConfirmedSource<T>(sessionId:string,id:string,digest:string,action:(paper:PaperView)=>T):Promise<T>{

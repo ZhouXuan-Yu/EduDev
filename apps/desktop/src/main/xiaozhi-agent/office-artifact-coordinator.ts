@@ -13,7 +13,8 @@ function input(value:unknown,keys:string[]):value is OfficeArtifactReviewInput{
 }
 /** The existing one-Pi-call teacher wait pattern; content never enters public events/results. */
 export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof createOfficeArtifactState>;service:ReturnType<typeof createOfficeArtifactService>;
- isCurrent:(sessionId:string,runId:string)=>boolean;sanitize:(text:string)=>Promise<string>;emit:(sessionId:string,runId:string,event:XiaozhiAgentEventPayload)=>void}){
+ isCurrent:(sessionId:string,runId:string)=>boolean;sanitize:(text:string)=>Promise<string>;emit:(sessionId:string,runId:string,event:XiaozhiAgentEventPayload)=>void;
+ proposalError?:(sessionId:string,runId:string,raw:unknown)=>string|undefined|Promise<string|undefined>}){
  const waits=new Map<string,{sessionId:string;runId:string;finish:(approved:boolean)=>void}>();
  const publish=async(sessionId:string,draftId:string)=>{
   const row=await options.state.get(draftId);if(!row||row.sessionId!==sessionId)throw new Error('permission_denied');
@@ -32,6 +33,8 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
  async function runOffice(sessionId:string,runId:string,wait:Wait,callId:string,raw:unknown,signal?:AbortSignal){
      let proposal:OfficeArtifactSummary|undefined;
      try{
+      const violation=await options.proposalError?.(sessionId,runId,raw);
+      if(violation)return {content:[{type:'text' as const,text:violation}],details:{success:false},isError:true};
       proposal=await options.service.propose(sessionId,runId,callId,raw,signal);
       if(proposal.state!=='pending')return receipt(proposal);
       const pending=proposal;

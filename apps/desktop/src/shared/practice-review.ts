@@ -12,6 +12,9 @@ export type PracticeSourceInput={schemaVersion:typeof PRACTICE_REVIEW_SCHEMA;stu
 export type PracticeReviewError='invalid_input'|'permission_denied'|'source_changed'|'conflict'|'unavailable'|'cancelled';
 export type PracticeReviewResult<T>={ok:true;value:T}|{ok:false;error:PracticeReviewError};
 export const PRACTICE_REVIEW_ERRORS:Record<PracticeReviewError,string>={invalid_input:'请填写练习名称、核对说明和题目安排后重试。',permission_denied:'请先选择当前学生；对话或学生已不可用时不能保存练习。',source_changed:'练习引用的题目已变化，请重新读取后安排。',conflict:'这份练习已处理，请刷新后重试。',unavailable:'练习读取或保存未完成，请重试。',cancelled:'任务已停止，练习未保存。'};
+/** The surrounding field already supplies this label; keep only the teacher-authored body. */
+export function teacherObservationText(value:string):string{return value.replace(/教师观察\s*[:：]\s*/g,'').replace(/(^|[。！？；\n]\s*)教师观察到的\s*/g,'$1').trimStart();}
+export function normalizePracticeDraft(draft:PracticeReviewDraft):PracticeReviewDraft{return{...draft,items:draft.items.map(item=>({...item,teacherObservation:teacherObservationText(item.teacherObservation)}))};}
 const text=(v:unknown,max:number,empty=false)=>typeof v==='string'&&(empty||v.trim().length>0)&&v.length<=max&&!/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(v);
 export function validPracticeDraft(v:unknown):v is PracticeReviewDraft{
  if(!plainStudentInput(v,['title','reason','subject','knowledgePoint','items'])||!text(v.title,160)||!text(v.reason,1000)||!text(v.subject,128,true)||!text(v.knowledgePoint,128,true)||!Array.isArray(v.items)||v.items.length<1||v.items.length>8)return false;

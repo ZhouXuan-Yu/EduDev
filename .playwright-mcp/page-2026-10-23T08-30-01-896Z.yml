@@ -1,0 +1,210 @@
+- generic [ref=f12e3]:
+  - banner [ref=f12e7]:
+    - heading "Storybook" [level=1] [ref=f12e8]
+    - generic [ref=f12e12]:
+      - generic [ref=f12e14]:
+        - link "Skip to content" [ref=f12e15] [cursor=pointer]:
+          - /url: "#storybook-preview-wrapper"
+        - link "HeroUI Pro" [ref=f12e17] [cursor=pointer]:
+          - /url: ./
+        - switch "Settings" [ref=f12e18] [cursor=pointer]
+      - generic [ref=f12e22]: Search for components
+      - search [ref=f12e23]:
+        - combobox [ref=f12e24]:
+          - searchbox "Search for components" [ref=f12e25]
+          - button "Tag filters" [ref=f12e64] [cursor=pointer]
+      - navigation [ref=f12e27]:
+        - heading "Stories" [level=2] [ref=f12e28]
+        - generic [ref=f12e67]:
+          - button [expanded] [ref=f12e69] [cursor=pointer]
+          - link [ref=f12e477] [cursor=pointer]:
+            - /url: /?path=/docs/oss-components--docs
+          - link [ref=f12e483] [cursor=pointer]:
+            - /url: /?path=/story/oss-components--all-components
+          - button [expanded] [ref=f12e77] [cursor=pointer]
+          - button [ref=f12e109] [cursor=pointer]
+          - button [ref=f12e117] [cursor=pointer]
+          - button [expanded] [ref=f12e125] [cursor=pointer]
+          - button [ref=f12e488] [cursor=pointer]
+          - button [ref=f12e496] [cursor=pointer]
+          - button [ref=f12e504] [cursor=pointer]
+          - button [ref=f12e512] [cursor=pointer]
+          - button [ref=f12e520] [cursor=pointer]
+          - button [expanded] [active] [ref=f12e528] [cursor=pointer]
+          - generic [ref=f12e617]:
+            - link [ref=f12e618] [cursor=pointer]:
+              - /url: /?path=/docs/pro-components-ai-chatmessage--docs
+            - link "Skip to content" [ref=f12e622] [cursor=pointer]:
+              - /url: "#storybook-preview-wrapper"
+          - link [ref=f12e624] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--default
+          - link [ref=f12e629] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--with-markdown
+          - link [ref=f12e634] [cursor=pointer]:
+            - /url: /?path=/story/pro-components-ai-chatmessage--loading
+          - button [ref=f12e536] [cursor=pointer]
+          - button [ref=f12e544] [cursor=pointer]
+          - button [ref=f12e552] [cursor=pointer]
+          - button [ref=f12e560] [cursor=pointer]
+          - button [ref=f12e568] [cursor=pointer]
+          - button [ref=f12e576] [cursor=pointer]
+          - button [ref=f12e584] [cursor=pointer]
+          - button [ref=f12e592] [cursor=pointer]
+          - button [ref=f12e133] [cursor=pointer]
+          - button [ref=f12e141] [cursor=pointer]
+          - button [ref=f12e149] [cursor=pointer]
+          - button [ref=f12e157] [cursor=pointer]
+          - button [ref=f12e165] [cursor=pointer]
+          - button [ref=f12e173] [cursor=pointer]
+          - button [ref=f12e181] [cursor=pointer]
+          - button [ref=f12e189] [cursor=pointer]
+          - button [ref=f12e197] [cursor=pointer]
+          - button [ref=f12e205] [cursor=pointer]
+          - button [ref=f12e213] [cursor=pointer]
+          - button [ref=f12e221] [cursor=pointer]
+          - button [ref=f12e229] [cursor=pointer]
+          - button [ref=f12e237] [cursor=pointer]
+          - button [ref=f12e245] [cursor=pointer]
+          - button [ref=f12e253] [cursor=pointer]
+          - button [ref=f12e261] [cursor=pointer]
+          - button [ref=f12e269] [cursor=pointer]
+          - button [ref=f12e277] [cursor=pointer]
+          - button [ref=f12e285] [cursor=pointer]
+          - button [ref=f12e293] [cursor=pointer]
+          - button [ref=f12e301] [cursor=pointer]
+          - button [ref=f12e309] [cursor=pointer]
+          - button [ref=f12e317] [cursor=pointer]
+          - button [ref=f12e325] [cursor=pointer]
+          - button [ref=f12e333] [cursor=pointer]
+          - button [ref=f12e341] [cursor=pointer]
+          - button [ref=f12e349] [cursor=pointer]
+          - button [ref=f12e357] [cursor=pointer]
+          - button [ref=f12e365] [cursor=pointer]
+          - button [ref=f12e373] [cursor=pointer]
+          - button [ref=f12e381] [cursor=pointer]
+          - button [ref=f12e389] [cursor=pointer]
+          - button [ref=f12e397] [cursor=pointer]
+          - button [ref=f12e405] [cursor=pointer]
+          - button [ref=f12e413] [cursor=pointer]
+          - button [ref=f12e421] [cursor=pointer]
+          - button [ref=f12e429] [cursor=pointer]
+          - button [ref=f12e437] [cursor=pointer]
+          - button [ref=f12e445] [cursor=pointer]
+          - button [ref=f12e453] [cursor=pointer]
+          - button [ref=f12e461] [cursor=pointer]
+          - button [ref=f12e469] [cursor=pointer]
+          - button [ref=f12e85] [cursor=pointer]
+          - button [ref=f12e93] [cursor=pointer]
+          - button [ref=f12e101] [cursor=pointer]
+  - generic [ref=f12e49]:
+    - region [ref=f12e50]:
+      - heading "Toolbar" [level=2] [ref=f12e51]
+      - toolbar [ref=f12e52]:
+        - generic [ref=f12e601]:
+          - switch "Grid visibility" [ref=f12e638] [cursor=pointer]
+          - button "Preview background" [ref=f12e641] [cursor=pointer]
+          - switch "Outline tool" [ref=f12e602] [cursor=pointer]
+          - button "HeroUI theme for components Light" [ref=f12e606] [cursor=pointer]: Light
+          - button "HeroUI design theme for components Base" [ref=f12e609] [cursor=pointer]: Base
+        - button "Enter full screen" [ref=f12e613] [cursor=pointer]
+    - main [ref=f12e53]:
+      - heading "Main preview area" [level=2] [ref=f12e54]
+      - generic [ref=f12e58]:
+        - link "Skip to sidebar" [ref=f12e616] [cursor=pointer]:
+          - /url: "#pro-components-ai-chatmessage--docs"
+        - iframe [ref=f12e62]:
+          - generic [ref=f13e49]:
+            - generic [ref=f13e52]:
+              - heading "ChatMessage" [level=1] [ref=f13e53]
+              - generic [ref=f13e55]:
+                - toolbar [ref=f13e56]:
+                  - generic [ref=f13e57]:
+                    - generic [ref=f13e58]:
+                      - button "Zoom in" [ref=f13e59] [cursor=pointer]
+                      - button "Zoom out" [ref=f13e63] [cursor=pointer]
+                      - button "Reset zoom" [ref=f13e67] [cursor=pointer]
+                    - link "Open canvas in new tab" [ref=f13e71] [cursor=pointer]:
+                      - /url: iframe.html?id=pro-components-ai-chatmessage--default
+                - generic [ref=f13e75]:
+                  - generic [ref=f13e82]:
+                    - generic [ref=f13e83]: Can you explain how compound components help AI chat UIs stay SDK-agnostic?
+                    - generic [ref=f13e86]:
+                      - generic [ref=f13e87]: AI
+                      - generic [ref=f13e90]:
+                        - generic [ref=f13e91]: Compound components let you compose message layout explicitly while keeping state in your app layer.
+                        - generic [ref=f13e92]:
+                          - button [ref=f13e93]:
+                            - button "Copy" [ref=f13e94] [cursor=pointer]
+                          - button [ref=f13e95]:
+                            - button "Good response" [ref=f13e96] [cursor=pointer]
+                          - button [ref=f13e97]:
+                            - button "Bad response" [ref=f13e98] [cursor=pointer]
+                          - button [ref=f13e99]:
+                            - button "Regenerate" [ref=f13e100] [cursor=pointer]
+                  - button "Show code" [ref=f13e102] [cursor=pointer]
+              - heading "Stories" [level=2] [ref=f13e103]:
+                - link [aria-hidden] [ref=f13e104] [cursor=pointer]:
+                  - /url: "#stories"
+                - text: Stories
+              - generic [ref=f13e105]:
+                - heading "Default" [level=3] [ref=f13e106]:
+                  - link [aria-hidden] [ref=f13e107] [cursor=pointer]:
+                    - /url: "#default"
+                  - text: Default
+                - generic [ref=f13e109]:
+                  - generic [ref=f13e116]:
+                    - generic [ref=f13e117]: Can you explain how compound components help AI chat UIs stay SDK-agnostic?
+                    - generic [ref=f13e120]:
+                      - generic [ref=f13e121]: AI
+                      - generic [ref=f13e124]:
+                        - generic [ref=f13e125]: Compound components let you compose message layout explicitly while keeping state in your app layer.
+                        - generic [ref=f13e126]:
+                          - button [ref=f13e127]:
+                            - button "Copy" [ref=f13e128] [cursor=pointer]
+                          - button [ref=f13e129]:
+                            - button "Good response" [ref=f13e130] [cursor=pointer]
+                          - button [ref=f13e131]:
+                            - button "Bad response" [ref=f13e132] [cursor=pointer]
+                          - button [ref=f13e133]:
+                            - button "Regenerate" [ref=f13e134] [cursor=pointer]
+                  - button "Show code" [ref=f13e136] [cursor=pointer]
+              - generic [ref=f13e137]:
+                - heading "With Markdown" [level=3] [ref=f13e138]:
+                  - link [aria-hidden] [ref=f13e139] [cursor=pointer]:
+                    - /url: "#with-markdown"
+                  - text: With Markdown
+                - generic [ref=f13e141]:
+                  - generic [ref=f13e148]:
+                    - generic [ref=f13e149]: Show me markdown inside assistant messages.
+                    - generic [ref=f13e152]:
+                      - generic [ref=f13e153]: AI
+                      - generic [ref=f13e158]:
+                        - paragraph [ref=f13e160]:
+                          - text: Here is a concise answer with
+                          - strong [ref=f13e161]: markdown
+                          - text: "support:"
+                        - generic [ref=f13e163]:
+                          - generic [ref=f13e164]:
+                            - generic [ref=f13e165]: ts
+                            - button "Copy code" [ref=f13e166] [cursor=pointer]
+                          - code [ref=f13e170]: export type ChatStatus = "ready" | "streaming";
+                        - paragraph [ref=f13e172]: The UI stays presentation-only — your SDK owns the message array.
+                  - button "Show code" [ref=f13e174] [cursor=pointer]
+              - generic [ref=f13e175]:
+                - heading "Loading" [level=3] [ref=f13e176]:
+                  - link [aria-hidden] [ref=f13e177] [cursor=pointer]:
+                    - /url: "#loading"
+                  - text: Loading
+                - generic [ref=f13e179]:
+                  - generic [ref=f13e186]:
+                    - generic [ref=f13e187]: What is the weather in San Francisco?
+                    - generic [ref=f13e190]:
+                      - generic [ref=f13e191]: AI
+                      - generic [ref=f13e194]:
+                        - generic [ref=f13e195]:
+                          - generic [ref=f13e196]: Thinking...
+                          - generic [aria-hidden]: Thinking...
+                        - status "Thinking..." [ref=f13e197]
+                    - status "Loading response" [ref=f13e202]
+                  - button "Show code" [ref=f13e209] [cursor=pointer]
+            - generic [aria-hidden] [ref=f13e210]: 5k

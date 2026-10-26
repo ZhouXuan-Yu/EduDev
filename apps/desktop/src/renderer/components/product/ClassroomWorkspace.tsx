@@ -1,0 +1,74 @@
+import type {ClassroomDocumentPurpose} from '../../../shared/classroom-export';
+import {ClassroomSources} from './ClassroomSources';
+import {useEffect,useRef,useState,useMemo} from 'react';
+import {classroomPreviewScript,classroomPreviewCss} from 'virtual:classroom-preview';
+import {Button,TextArea} from '@heroui/react';
+import type {Scene} from '@openmaic/dsl';
+import {classroomErrors,validClassroom,type ClassroomItem,type ClassroomDocument} from '../../../shared/classroom';
+import {useDesktopNavigation,useDesktopCommands} from '../desktop/DesktopFrame';
+import {Markdown} from '../../heroui-pro/components/markdown';
+import './classroom-workspace.css';
+
+export function SlidePreview({scene,editing=false,onChange,onError,onReady}:{scene:Scene;editing?:boolean;onChange:(scene:Scene)=>boolean;onError:()=>void;onReady?:()=>void}){
+ const srcDoc=useMemo(()=>{const nonce=crypto.randomUUID();return `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline'; font-src data:; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'"><style>${classroomPreviewCss.replace(/<\/style/gi,'<\\/style')}</style></head><body><div id="root"></div><script nonce="${nonce}">${classroomPreviewScript.replace(/<\/script/gi,'<\\/script')}</script></body></html>`;},[]);
+ const frame=useRef<HTMLIFrameElement>(null),token=useRef(crypto.randomUUID()),current=useRef({scene,editing,onChange,onError,onReady});current.current={scene,editing,onChange,onError,onReady};
+ const send=()=>frame.current?.contentWindow?.postMessage({type:'xiaozhi-classroom-slide',scene:current.current.scene,editing:current.current.editing,token:token.current},'*');
+ useEffect(()=>{const receive=(e:MessageEvent)=>{if(e.source!==frame.current?.contentWindow)return;if(e.data?.type==='xiaozhi-classroom-ready'){send();return;}if(e.data?.type==='xiaozhi-classroom-rendered'&&e.data.token===token.current&&e.data.sceneId===current.current.scene.id)current.current.onReady?.();if(e.data?.type==='xiaozhi-classroom-edited'&&current.current.editing&&e.data.token===token.current&&e.data.scene?.id===current.current.scene.id){if(!current.current.onChange(e.data.scene)){current.current.onError();send();}}};window.addEventListener('message',receive);return()=>window.removeEventListener('message',receive);},[]);
+ useEffect(send,[scene,editing]);
+ return <iframe ref={frame} sandbox="allow-scripts" title={editing?'编辑课堂幻灯片':'课堂幻灯片'} srcDoc={srcDoc} onLoad={send} className={`classroom-preview${editing?' classroom-preview-editing':''}`} data-testid="classroom-slide-preview"/>;
+}
+function Quiz({scene}:{scene:Scene}){
+ const [answers,setAnswers]=useState<Record<string,string[]>>({}),[checked,setChecked]=useState(false);
+ useEffect(()=>{setAnswers({});setChecked(false);},[scene]);
+ if(scene.type!=='quiz')return null;
+ return <section className="classroom-quiz" data-testid="classroom-quiz"><p>仅对照当前课堂答案，仍需教师核对；本次作答不会写入学生成绩。</p>
+  {scene.content.questions.map((q,i)=><fieldset key={q.id}><legend>{i+1}. {q.question}</legend>{q.options?.map(o=><label key={o.value}><input type={q.type==='single'?'radio':'checkbox'} name={q.id} value={o.value} checked={(answers[q.id]||[]).includes(o.value)} onChange={()=>{setChecked(false);setAnswers(old=>({...old,[q.id]:q.type==='single'?[o.value]:(old[q.id]||[]).includes(o.value)?old[q.id].filter(a=>a!==o.value):[...(old[q.id]||[]),o.value]}));}}/>{o.value}. {o.label}</label>)}
+   {checked&&<div role="status" data-testid="classroom-answer-feedback"><strong>{JSON.stringify([...(answers[q.id]||[])].sort())===JSON.stringify([...(q.answer||[])].sort())?'与课堂答案一致':'与课堂答案不同'}</strong><Markdown>{q.analysis||''}</Markdown></div>}</fieldset>)}
+  <Button data-testid="classroom-check-answer" isDisabled={scene.content.questions.some(q=>!answers[q.id]?.length)} onPress={()=>setChecked(true)}>查看解析</Button>
+ </section>;
+}
+/** Traditional teaching studio reads the same Pi candidate/confirmation ledger. */
+export function ClassroomWorkspace(){
+ const [showCreate,setShowCreate]=useState(true);
+ const nav=useDesktopNavigation(),[rows,setRows]=useState<ClassroomItem[]>([]),[selected,setSelected]=useState<ClassroomItem>(),[draft,setDraft]=useState<ClassroomDocument>(),[page,setPage]=useState(0),[error,setError]=useState(''),[notice,setNotice]=useState(''),[loading,setLoading]=useState(false),[busy,setBusy]=useState(false),[editing,setEditing]=useState(false),[requirement,setRequirement]=useState('');const epoch=useRef(0);
+ const dirty=Boolean(selected&&draft&&JSON.stringify(draft)!==JSON.stringify(selected.document));
+ function choose(row:ClassroomItem){if(dirty){setError('请先保存修改或取消编辑，再切换课堂。');return;}setSelected(row);setDraft(structuredClone(row.document));setPage(0);setEditing(false);setShowCreate(false);setError('');setNotice('');}
+ async function load(){if(dirty){setError('请先保存修改或取消编辑，再刷新。');return;}const stamp=++epoch.current;setLoading(true);setError('');try{const r=await window.omniEdu?.listClassrooms();if(!r?.ok)throw new Error(r?.error||'unavailable');if(stamp===epoch.current){setRows(r.data);if(selected){const row=r.data.find(x=>x.id===selected.id);if(row){setSelected(row);setDraft(structuredClone(row.document));}else{setSelected(undefined);setDraft(undefined);}}}}catch(e){if(stamp===epoch.current)setError(classroomErrors[(e as Error).message]||classroomErrors.unavailable);}finally{if(stamp===epoch.current)setLoading(false);}}
+ useEffect(()=>{void load();return()=>{++epoch.current;};},[]);
+ useDesktopCommands(command=>{if(dirty&&['back','forward'].includes(command)){setError('请先保存课堂修改或取消编辑，再离开。');return true;}return false;},35);
+ useEffect(()=>{if(!dirty)return;const guard=(e:Event)=>{if(e.target instanceof Element&&!e.target.closest('[data-testid="classroom-workspace"]')&&(!(e instanceof KeyboardEvent)||['Enter',' '].includes(e.key))){e.preventDefault();e.stopPropagation();setError('请先保存课堂修改或取消编辑，再离开。');}};document.addEventListener('pointerdown',guard,true);document.addEventListener('keydown',guard,true);return()=>{document.removeEventListener('pointerdown',guard,true);document.removeEventListener('keydown',guard,true);};},[dirty]);
+ async function save(decision:'confirm'|'reject'){
+  if(!selected||!draft||busy)return;setBusy(true);setError('');setNotice('');
+  try{if(!validClassroom(draft))throw new Error('invalid_input');const r=await window.omniEdu?.decideClassroom({id:selected.id,version:selected.version,decision,...(decision==='confirm'?{document:draft}:{})});if(!r?.ok)throw new Error(r?.error||'unavailable');setRows(old=>[r.data,...old.filter(x=>x.id!==selected.id)]);setSelected(r.data);setDraft(structuredClone(r.data.document));setEditing(false);setNotice(decision==='confirm'?'已保存确认版本，可以重新打开课堂。':'已拒绝此草稿。');}catch(e){setError(classroomErrors[(e as Error).message]||classroomErrors.unavailable);}finally{setBusy(false);}
+ }
+ const scene=draft?.scenes[page];
+ async function create(){
+  if(busy||dirty||!requirement.trim())return;setBusy(true);setError('');
+  try{const api=window.omniEdu;if(!api)throw new Error();const list=await api.listAiConversations();let remembered='';try{remembered=localStorage.getItem('xiaozhi.current-session.v1')||'';}catch{}const existing=list.sessions.find(row=>row.id===remembered)||list.sessions[0];const detail=existing?{session:existing}:await api.createAiConversationSession({title:'互动课堂'});nav.navigate({view:'ai',sessionId:detail.session.id,draft:`请制作并保存待核对的互动课堂：${requirement.trim()}。使用互动课堂工具，包含讲解页、图示和选择题；完成后我到教学内容预览确认。`});}catch{setError('课堂对话未打开，请重试。');}finally{setBusy(false);}
+ }
+ async function exportClassroom(format:'pptx'|'docx'|'pdf'='pptx',purpose?:ClassroomDocumentPurpose){
+  if(!selected||selected.status!=='confirmed'||dirty||editing||busy)return;setBusy(true);setError('');setNotice('');
+  try{
+   const api=window.omniEdu;if(!api)throw Error('unavailable');
+   let snapshot=await api.getXiaozhiSnapshot(selected.sessionId);
+   if(!snapshot.workspace&&!snapshot.paperOutput){const result=await api.selectPaperOutput({schemaVersion:'xiaozhi.paper-output.v1',sessionId:selected.sessionId});if(!result.ok)throw Error(result.error);snapshot=await api.getXiaozhiSnapshot(selected.sessionId);if(!snapshot.workspace&&!snapshot.paperOutput){setNotice('未选择保存目录，课堂未导出。');return;}}
+   const input={classroomId:selected.id,version:selected.version,path:`课堂-${purpose==='handout'?'学生讲义':purpose==='teacher_notes'?'教师备课稿':'演示'}-版本${selected.revision}-${Date.now()}.${format}`,includeAnswers:purpose!=='handout'};
+   nav.navigate({view:'ai',sessionId:selected.sessionId,draft:`请将互动课堂“${selected.document.title}”已确认第${selected.revision}版导出为${format==='pptx'?'PPTX 教学演示文稿':`${format==='docx'?'Word':'PDF'} ${purpose==='handout'?'学生讲义（不附随堂题答案和解析）':'教师备课稿（附已有随堂题参考答案和解析，不是逐字讲稿）'}`}，文件名“${input.path}”。完整保留所有课页图形、公式和随堂题，${purpose==='handout'?'不要附随堂题答案和解析':'保留已有参考解析'}；先给我预览，等我确认后再保存到已选教学文件目录，不改写课堂。`});
+  }catch(e){setError(classroomErrors[(e as Error).message]||'保存目录未能授权，请重试。');}finally{setBusy(false);}
+ }
+ function title(value:string){setDraft(old=>old?{...old,title:value}:old);}
+ function editSlide(next:Scene){if(!draft||!editing||next.id!==scene?.id||next.type!=='slide')return false;const copy=structuredClone(draft);copy.scenes[page]={...copy.scenes[page],content:next.content} as Scene;if(!validClassroom(copy))return false;setDraft(copy);setError('');return true;}
+ function editQuiz(index:number,key:'question'|'analysis'|'answer',value:string){setDraft(old=>{if(!old)return old;const copy=structuredClone(old),s=copy.scenes[page];if(s.type==='quiz'){const q=s.content.questions[index];if(key==='answer')q.answer=value.split(/[,，\s]+/).filter(Boolean);else q[key]=value;}return copy;});}
+ return <section className="teacher-library classroom-workspace" data-testid="classroom-workspace"><header className="teacher-library-heading"><div><h1>互动课堂</h1><p>小智制作讲解、图示和随堂题，你可以预览、修改并保存。</p></div><div className="classroom-actions"><Button variant="secondary" isDisabled={dirty||busy} onPress={()=>setShowCreate(v=>!v)}>制作新课堂</Button><Button variant="ghost" data-testid="classroom-refresh" isDisabled={loading||busy} onPress={()=>void load()}>刷新</Button></div></header>
+  {(showCreate||!rows.length)&&<div className="classroom-create"><TextArea aria-label="课堂要求" data-testid="classroom-requirement" placeholder="例如：制作初二勾股定理互动课，包含证明图示和两道易混淆的随堂题" value={requirement} maxLength={3000} onChange={e=>setRequirement(e.target.value)}/><Button data-testid="classroom-create" isDisabled={!requirement.trim()||dirty||busy} onPress={()=>void create()}>请小智制作</Button></div>}
+  {error&&<p role="alert" className="teacher-library-error" data-testid="classroom-error">{error}</p>}{notice&&<p role="status" data-testid="classroom-notice">{notice}</p>}
+  <div className="classroom-grid"><aside aria-label="课堂列表">{loading?<p>正在读取课堂…</p>:!rows.length?<p>还没有课堂。在上方描述教学要求即可开始。</p>:rows.map(row=><Button key={row.id} variant={selected?.id===row.id?'secondary':'ghost'} onPress={()=>choose(row)} data-testid={`classroom-${row.id}`}><span>{row.document.title}<small>{row.status==='confirmed'?`已确认 · 版本${row.revision}`:row.status==='rejected'?'已拒绝':'待核对'} · {row.document.scenes.length}页</small></span></Button>)}</aside>
+   <section className="classroom-detail">{selected&&draft&&scene?<><header><div>{editing?<input aria-label="课堂名称" data-testid="classroom-title-edit" value={draft.title} maxLength={160} onChange={e=>title(e.target.value)}/>:<h2>{draft.title}</h2>}<p>AI 教学草稿 · 题意、图形与答案请教师核对</p></div><div className="classroom-actions"><Button variant="secondary" data-testid="classroom-export-pptx" isDisabled={busy||dirty||editing||selected.status!=='confirmed'} onPress={()=>void exportClassroom()}>导出 PPTX</Button><Button variant="secondary" data-testid="classroom-export-handout-docx" isDisabled={busy||dirty||editing||selected.status!=='confirmed'} onPress={()=>void exportClassroom('docx','handout')}>Word 讲义</Button><Button variant="secondary" data-testid="classroom-export-handout-pdf" isDisabled={busy||dirty||editing||selected.status!=='confirmed'} onPress={()=>void exportClassroom('pdf','handout')}>PDF 讲义</Button><Button variant="secondary" data-testid="classroom-export-teacher_notes-docx" isDisabled={busy||dirty||editing||selected.status!=='confirmed'} onPress={()=>void exportClassroom('docx','teacher_notes')}>Word 备课稿</Button><Button variant="secondary" data-testid="classroom-export-teacher_notes-pdf" isDisabled={busy||dirty||editing||selected.status!=='confirmed'} onPress={()=>void exportClassroom('pdf','teacher_notes')}>PDF 备课稿</Button><Button variant="secondary" data-testid="classroom-edit" isDisabled={busy||selected.status==='rejected'} onPress={()=>setEditing(true)}>编辑</Button>{editing&&<Button variant="ghost" onPress={()=>{setDraft(structuredClone(selected.document));setEditing(false);setError('');}}>取消编辑</Button>}<Button data-testid="classroom-save" isDisabled={busy||selected.status==='rejected'||selected.status==='confirmed'&&!dirty} onPress={()=>void save('confirm')}>{busy?'正在保存…':selected.status==='pending'?'确认保存':'保存修订'}</Button>{selected.status==='pending'&&<Button variant="ghost" isDisabled={busy} onPress={()=>void save('reject')}>拒绝草稿</Button>}</div></header>
+    <ClassroomSources context={selected.context}/>
+    <nav className="classroom-scenes" aria-label="课堂页">{draft.scenes.map((s,i)=><Button key={s.id} variant={page===i?'secondary':'ghost'} data-testid={`classroom-page-${i}`} onPress={()=>setPage(i)}>{i+1}. {s.title}</Button>)}</nav>
+    {scene.type==='slide'?<SlidePreview key={`${selected.id}/${page}/${editing}`} scene={scene} editing={editing} onChange={editSlide} onError={()=>setError('本次课页修改超出支持范围，未应用。请使用文字、线条、图形或公式。')}/>:<Quiz scene={scene}/>}
+    {editing&&scene.type==='quiz'&&<section className="classroom-edit-quiz"><h3>核对随堂题</h3>{scene.content.questions.map((q,i)=><fieldset key={q.id}><TextArea aria-label={`题目${i+1}`} value={q.question} onChange={e=>editQuiz(i,'question',e.target.value)}/><label>答案字母<input aria-label={`答案${i+1}`} value={q.answer?.join(',')||''} onChange={e=>editQuiz(i,'answer',e.target.value)}/></label><TextArea aria-label={`解析${i+1}`} value={q.analysis} onChange={e=>editQuiz(i,'analysis',e.target.value)}/></fieldset>)}</section>}
+    <Button variant="ghost" onPress={()=>nav.navigate({view:'ai',sessionId:selected.sessionId})}>查看来源对话</Button>
+   </>:<p>选择课堂进行预览。待核对草稿也可以试做随堂题，确认保存后再用于教学。</p>}</section></div>
+ </section>;
+}

@@ -2001,6 +2001,12 @@ export type AiConversationDetail = {
   messages: AiConversationMessage[];
 };
 
+export type AiConversationHistoryPage = {
+  session: AiConversationSession;
+  messages: AiConversationMessage[];
+  hasMore: boolean;
+};
+
 export type AiConversationSessionInput = {
   title?: string;
   folderId?: string | null;

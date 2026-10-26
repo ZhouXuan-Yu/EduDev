@@ -1,10 +1,17 @@
 import {
+  ChatAttachmentIcon,
+  ChatAttachmentInfo,
   ChatAttachmentName,
   ChatAttachmentPreview,
   ChatAttachmentRemove,
   ChatAttachmentRoot,
+  ChatAttachmentSize,
 } from './chat-attachment';
-export { inferChatAttachmentMediaType } from './chat-attachment';
+export {
+  formatChatAttachmentSize,
+  inferChatAttachmentFileKind,
+  inferChatAttachmentMediaType,
+} from './chat-attachment';
 import { ChatAttachmentGroupRoot } from './chat-attachment-group';
 import {
   ChatAttachmentInputDropzone,
@@ -21,10 +28,13 @@ export {
 } from './chat-attachment.styles';
 
 const ChatAttachment = Object.assign(ChatAttachmentRoot, {
+  Icon: ChatAttachmentIcon,
+  Info: ChatAttachmentInfo,
   Name: ChatAttachmentName,
   Preview: ChatAttachmentPreview,
   Remove: ChatAttachmentRemove,
   Root: ChatAttachmentRoot,
+  Size: ChatAttachmentSize,
 });
 
 const ChatAttachmentGroup = Object.assign(ChatAttachmentGroupRoot, {
@@ -41,6 +51,8 @@ export {
   ChatAttachment,
   ChatAttachmentGroup,
   ChatAttachmentGroupRoot,
+  ChatAttachmentIcon,
+  ChatAttachmentInfo,
   ChatAttachmentInput,
   ChatAttachmentInputDropzone,
   ChatAttachmentInputRoot,
@@ -49,14 +61,19 @@ export {
   ChatAttachmentPreview,
   ChatAttachmentRemove,
   ChatAttachmentRoot,
+  ChatAttachmentSize,
 };
 
 export type {
+  ChatAttachmentFileKind,
+  ChatAttachmentInfoProps,
+  ChatAttachmentMediaType,
   ChatAttachmentNameProps,
   ChatAttachmentPreviewProps,
   ChatAttachmentRootProps as ChatAttachmentProps,
   ChatAttachmentRemoveProps,
   ChatAttachmentRootProps,
+  ChatAttachmentSizeProps,
 } from './chat-attachment';
 export type {
   ChatAttachmentGroupRootProps as ChatAttachmentGroupProps,

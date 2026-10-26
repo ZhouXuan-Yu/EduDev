@@ -22,6 +22,9 @@ export const hanaOfficeToolDefinitions = Object.entries(tools).map(([name, tool]
   inputSchema: { type: 'object', properties: tool.properties, required: tool.required, additionalProperties: false },
 }));
 const sha = (data: Buffer | string) => createHash('sha256').update(data).digest('hex');
+/** Opaque source identity minted at actual IO, before any asynchronous consumer
+ * can bind a replaced path. No absolute path or filesystem IDs leave main. */
+export const officeSourceIdentity=(root:string,stat:fs.Stats)=>sha(JSON.stringify([process.platform==='win32'?root.toLowerCase():root,stat.dev,stat.ino]));
 const inside = (root: string, target: string) => {
   const relative = path.relative(root, target);
   return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
@@ -117,7 +120,7 @@ export function createHanaOfficeTools(options: {
                 if (!location || hop >= 5) return errorResult('service_error');
                 url = officeWebUrl(new URL(location, url).href).href; continue;
               }
-              if (!response.ok) return errorResult(response.status === 429 ? 'rate_limited' : 'service_error');
+              if (!response.ok) return errorResult(response.status===401||response.status===403?'permission_denied':response.status === 429 ? 'rate_limited' : 'service_error');
               const type = response.headers.get('content-type') || '';
               if (!/text\/|application\/(json|xhtml\+xml)/i.test(type)) return errorResult('unsupported');
               const raw = await response.text();
@@ -161,12 +164,12 @@ export function createHanaOfficeTools(options: {
             const version = options.fileVersion?.(resolved.stat);
             if (version && options.fileVersion!(fs.statSync(checkedPath(args.path))) !== version) return errorResult('conflict');
             data = { source: path.relative(root, file), size: stat.size, mime: stat.mime, kind: stat.kind,
-              isDirectory: stat.isDirectory, modifiedAt: stat.mtimeMs, ...(version ? { version } : {}) };
+              isDirectory: stat.isDirectory, modifiedAt: stat.mtimeMs, ...(version ? { version,sourceIdentity:officeSourceIdentity(root,resolved.stat) } : {}) };
           } else if (name === 'office_list_files') {
             if (!resolved.stat.isDirectory()) return errorResult('unsupported');
             const entries = fs.readdirSync(file, { withFileTypes: true });
             data = { source: path.relative(root, file) || '.', truncated: entries.length > 256,
-              entries: entries.slice(0, 256).map(item => ({ name: item.name, kind: item.isSymbolicLink() ? 'blocked_link' : item.isDirectory() ? 'directory' : 'file' })) };
+              entries: entries.slice(0, 256).map(item => ({ name: item.name, kind: item.isSymbolicLink() ? 'blocked_link' : item.isDirectory() ? 'directory' : 'file' })),...(options.fileVersion?{sourceIdentity:officeSourceIdentity(root,resolved.stat)}:{}) };
           } else {
             if (!resolved.stat.isFile() || !/\.(txt|md|csv|json|yaml|yml)$/i.test(file)) return errorResult('unsupported');
             if (resolved.stat.size > 65536) return errorResult('too_large');
