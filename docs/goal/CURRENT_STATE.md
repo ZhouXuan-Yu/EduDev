@@ -6,6 +6,8 @@
 实现检查点27f0081；整合最新main 8dec132到436ef78。Word资料已贯通 utility→SQLite/图片→typed preload→资料UI→FTS/规则题本；已有题目保持 visual_unchecked。预整合5项/3启动、解析14、队列19、归档12通过；最终整合构建已通过，最终桌面5项/3启动/0错误通过，综合回归 exit0/207项历史兼容路径通过。整体 ACTIVE，继续完整图文AI/答案配对及规模交付。
 
 独立复核发现并修复两项P2：表格内容控件丢行、切换资料丢失取消入口。最终修复构建/240组件、14解析/5任务边界、普通Word5项/3启动、大DOCX切换取消1项均exit0，0前端错误；207项综合历史回归通过于修复前整合构建，不能写成最终修复构建重新全量运行。当前最终bundle SHA256 637d1ea68ec3b6741bf276513d10a386c55b29e0dc97401c467bd2ff533a2278，详情见KB_IMPLEMENTATION_EVIDENCE.md。
+
+2026-10-27 Git源码收尾：独立审查修复提交 0652500325ad1413c9cc4dc0debf8f7aafb4894b；本地main已从协作者8dec132快进到该提交，包含27f0081/436ef78及两项P2修复。D盘main与beca知识库工作树均已核实干净，未push、未发布EXE；本条文档收尾提交也将快进本地main。整体Goal保持ACTIVE。
 <!-- kb-word-20261027:end -->
 
 <!-- kb-main-merge-20261026:start -->
