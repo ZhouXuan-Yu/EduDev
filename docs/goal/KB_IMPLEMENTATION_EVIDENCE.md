@@ -6,9 +6,9 @@
 
 已修正 partial 资料阅读笔记 CAS、新材料/检索/AI IPC 退出 drain、启动恢复晚到、未保存笔记的新入口与同资料搜索定位。综合 smoke 实际暴露语义索引独占锁使备份 EBUSY，已在 backup 领域改为有界异步复制/哈希、原生 SQLite 在线快照，精确排除 cache/semantic-v1；快照改 DELETE journal 模式，并只在备份副本清除省略索引的完成资格，恢复后自动全量回填。原件、题目、来源时钟、暂停选择和产物保留。
 
-已完成 build/typecheck、renderer 240/240，重排8、检索17、AI16组回归；独立合并5、原生备份3、独立恢复5项定向探针通过，冻结教育包7项含主线新增线性方程组 v2，四套发行资源预检通过。重排/阅读 Electron 预备构建5项/2启动/0 rendererErrors通过；最终构建并发综合回归期间另一次冷重排超时而降级，该失败保留 kb-main-journey-current.log，不能以预备通过掩盖。最后整合 bundle SHA256 b8012530a716fbcc3232bb4d86786844762f1d0348e97107b37b03d6f014961c。
+已完成 build/typecheck、renderer 240/240，重排8、检索17、AI16组回归；独立合并5、原生备份3、独立恢复5项定向探针通过，冻结教育包7项含主线新增线性方程组 v2，四套发行资源预检通过。重排/阅读 Electron 预备构建5项/2启动/0 rendererErrors通过；最终构建并发综合回归期间另一次冷查未出现成功重排提示而等待断言超时（未单独实证模型失败原因），该失败保留 kb-main-journey-current.log，不能以预备通过掩盖。最后整合 bundle SHA256 b8012530a716fbcc3232bb4d86786844762f1d0348e97107b37b03d6f014961c。
 
-综合 smoke 修复后 exit0：kb-main-smoke-final.log，ok=true/30名隔离学生/207项历史教育兼容路径，包含12项备份导出/校验/取消/篡改/重启/双视口。该legacy兼容路径不代表当前全部Pi UI或真实provider已验收；当前Pi知识库/阅读另在最终bundle上串行复验5项/2启动/0 rendererErrors（kb-main-journey-serial.log），首查9851ms、热请求134ms，仍未达到2秒冷查目标，非P95/40GB证据。首次备份EBUSY与并行重排超时的失败日志保留。npm audit 最终21项（8 high/5 moderate/8 low），尚未清零；无自动大版本升级。原 main 带来的4处历史 EOF 空行由 staged diff --check 报告，本轮相对 main 的 diff --check 通过，未重写协作者/上游源码消除风格告警。
+综合 smoke 修复后 exit0：kb-main-smoke-final.log，ok=true/30名隔离学生/207项历史教育兼容路径，包含12项备份导出/校验/取消/篡改/重启/双视口。该legacy兼容路径不代表当前全部Pi UI或真实provider已验收；当前Pi知识库/阅读另在最终bundle上串行复验5项/2启动/0 rendererErrors（kb-main-journey-serial.log），首查9851ms、热请求134ms，仍未达到2秒冷查目标，非P95/40GB证据。首次备份EBUSY与并行冷查成功提示断言超时的失败日志保留。npm audit 最终21项（8 high/5 moderate/8 low），尚未清零；无自动大版本升级。原 main 带来的4处历史 EOF 空行由 staged diff --check 报告，本轮相对 main 的 diff --check 通过，未重写协作者/上游源码消除风格告警。
 
 完整 Goal 仍 active。继续 S6-B Word 结构与完整图文题：已用真实 anydoc 0.1.2 证明 toDocument 保留图片 SHA/part，OMML 分数在 AST 和 Markdown 均缺失。随后是跨页/答案册匹配、受管本地视觉AI、自然教师召回质量/冷查询优化、40GB持续导入与最终EXE；以上未验证边界继续 OPEN。
 
@@ -22,7 +22,7 @@
 - node --experimental-transform-types scripts/education/kb-backup-boundaries.mjs：kb-main-backup-boundaries-final.log，3/3，真实 sqlite3/WAL/冷SQLite/Windows独占锁。
 - node --experimental-transform-types test-results/goal/kb-backup-critic-review.mjs：kb-main-backup-critic.log，5/5，真实仓库类与受控native适配；恢复回填原2对象。
 - node --experimental-transform-types scripts/education/kb-reranker-boundaries.mjs：kb-main-reranker.log，8/8；同前缀 kb-retrieval-boundaries.mjs：kb-main-retrieval.log，17/17；kb-ai-batch-boundaries.mjs：kb-main-ai.log，16/16。
-- node scripts/education/kb-reranker-journey.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-retrieval-znWRj6：kb-main-journey-final.log，预备构建5项/2启动；随后当前构建在并发综合smoke期间运行 kb-main-journey-current.log，冷模型降级，未通过实际模型标签断言，不计验收。
+- node scripts/education/kb-reranker-journey.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-retrieval-znWRj6：kb-main-journey-final.log，预备构建5项/2启动；随后当前构建在并发综合smoke期间运行 kb-main-journey-current.log，未通过成功重排提示的等待断言，不能据此确认模型内部错误原因，不计验收。
 - node scripts/release/test-education-runtime.mjs：kb-main-frozen-education-final.log，7/7；node scripts/release/prepare-resources.mjs：kb-main-resources-final.log，四包90/646/156/157文件逐一完整性与源码检查。
 - npm run test:smoke：首次 kb-main-smoke.log exit1，backup EBUSY；修复后 npm run build 然后 node scripts/electron-smoke.mjs：kb-main-smoke-final.log，exit0，ok=true/207历史兼容路径，非全部当前Pi UI/真实provider验收。
 - npm audit --json：kb-main-audit.json，21项/exit1；git diff main --check：exit0。
