@@ -10,7 +10,7 @@ fs.mkdirSync(sources);
 const python='C:/Users/ZhouXuan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe';
 const office=spawnSync(python,['scripts/xiaozhi-agent/make-office-fixtures.py',sources,marker],{encoding:'utf8',windowsHide:true});assert.equal(office.status,0,office.stderr);
 const images=spawnSync(python,['-c',"from PIL import Image; import sys,os; p=sys.argv[1]; im=Image.new('RGB',(600,300),'#315efb'); [(im.save(os.path.join(p,'合成.'+ext),fmt)) for ext,fmt in [('png','PNG'),('jpg','JPEG'),('gif','GIF'),('webp','WEBP')]]",sources],{encoding:'utf8',windowsHide:true});assert.equal(images.status,0,images.stderr);
-fs.writeFileSync(path.join(sources,'正文.txt'),marker);fs.writeFileSync(path.join(sources,'禁止.exe'),'UNSUPPORTED');fs.writeFileSync(path.join(sources,'未选择.txt'),marker);
+fs.writeFileSync(path.join(sources,'正文.txt'),marker);fs.writeFileSync(path.join(sources,'禁止.exe'),'UNSUPPORTED');fs.writeFileSync(path.join(sources,'未选择.txt'),marker);fs.writeFileSync(path.join(sources,'超大.txt'),Buffer.alloc(2*1024*1024,'a'));
 fs.writeFileSync(path.join(sources,'伪造.png'),fs.readFileSync(path.join(sources,'合成.png')).subarray(0,33));
 for(let i=0;i<9;i++)fs.writeFileSync(path.join(sources,`补充${i}.txt`),`${marker}-${i}`);
 const originals=Object.fromEntries(['合成.png','合成.jpg','合成.gif','合成.webp','备课.docx','正文.txt'].map(name=>[name,createHash('sha256').update(fs.readFileSync(path.join(sources,name))).digest('hex')]));
@@ -39,8 +39,24 @@ async function pick(names){const files=names.map(name=>path.join(sources,name));
 async function open(name){await page.getByRole('button',{name:`预览附件 ${name}`,exact:true}).click();await until(async()=>await page.getByTestId('pi-attachment-preview').locator('[data-slot="modal-body"]').getAttribute('aria-busy')==='false');}
 const close=()=>page.getByTestId('pi-attachment-preview-close').click();
 try{
- await launch();await pick(['正文.txt','合成.png','合成.jpg','合成.gif','合成.webp']);
+ await launch();
+ const fileInput=page.locator('[data-testid="office-composer"] input[type=file]');
+ const accept=await fileInput.getAttribute('accept');assert(accept?.includes('.docx')&&accept?.includes('.png')&&!accept?.includes('.exe'));
+ const send=page.getByRole('button',{name:'发送消息',exact:true});
+ const prompt=page.getByTestId('office-prompt-input');
+ assert(await send.isDisabled());
+ await prompt.fill('文本发送状态检查');await until(async()=>!await send.isDisabled());
+ assert.equal(await prompt.inputValue(),'文本发送状态检查');
+ await prompt.fill('');assert(await send.isDisabled());
+ check('Official file input filters supported types; empty input disables send and a text draft enables it');
+ await pick(['正文.txt','合成.png','合成.jpg','合成.gif','合成.webp']);
  assert.equal((await list()).length,5);await until(async()=>await page.locator('.pi-attachment-open img').count()===4);
+ const anatomy={groups:await page.locator('[data-slot="prompt-input-attachments"] [data-slot="chat-attachment-group"]').count(),
+  media:await page.locator('[data-slot="chat-attachment"][data-variant="media"]').count(),
+  file:await page.locator('[data-slot="chat-attachment"][data-variant="file"]').count()};
+ assert.equal(anatomy.groups,1);assert.equal(anatomy.media,4);assert.equal(anatomy.file,1);
+ const fileInfo=await page.locator('[data-slot="chat-attachment"][data-variant="file"] [data-slot="chat-attachment-info"]').first().innerText();
+ assert(fileInfo.includes('正文.txt')&&/\d/.test(fileInfo));check('Grouped anatomy renders PromptInput.Attachments > ChatAttachmentGroup with media/file variants and Info name+size');
  const dimensions=await page.locator('.pi-attachment-open img').evaluateAll(images=>images.map(image=>({loaded:image.complete&&image.naturalWidth>0,w:image.naturalWidth,h:image.naturalHeight})));
  assert(dimensions.every(v=>v.loaded&&v.w<=192&&v.h<=192));check('Native selected files register in actual ledger and all four formats display real decoded bounded thumbnails');
  const initial=await list();assert(!JSON.stringify(initial).includes(sources)&&!JSON.stringify(initial).includes('data:image')&&!JSON.stringify(initial).includes('relative_path'));check('Public metadata excludes private paths, image bytes and thumbnail data');
@@ -62,6 +78,7 @@ try{
  }
  const stale=initial.find(x=>x.name==='正文.txt');await page.getByRole('button',{name:'移除附件 正文.txt',exact:true}).click();await until(async()=>(await list()).length===5);
  const old=await page.evaluate(input=>window.omniEdu.previewXiaozhiAttachment(input),request(stale));assert(!old.ok&&old.error==='changed');check('Formal remove advances ledger revision; old preview selection is rejected');
+ await pick(['超大.txt']);await until(async()=>(await page.getByTestId('pi-attachment-error').innerText()).includes('超大.txt'));const largeNotice=await page.getByTestId('pi-attachment-error').innerText();assert.equal((await list()).length,5);assert(largeNotice.includes('超大.txt')&&largeNotice.includes('大小'));check('Oversized text is rejected by the real importer with a visible error and no ledger row');
  await pick(['补充0.txt','补充1.txt','补充2.txt','补充3.txt']);const afterPick=await list();const pickNotice=await page.getByTestId('pi-attachment-error').innerText().catch(()=> '');assert.equal(afterPick.length,8,`got ${afterPick.length}: ${pickNotice}`);assert(pickNotice.includes('8个'));check('Eight-draft maximum is enforced in SQLite and shown for partial native selection');
  const saved=await list();await page.getByTestId('pi-new-session').click();await until(async()=>await page.locator('.office-composer-container').getAttribute('data-session-id')!==id);
  const previous=id;id=await page.locator('.office-composer-container').getAttribute('data-session-id');assert.equal((await list()).length,0);check('New session clears local cards without removing the previous session ledger');

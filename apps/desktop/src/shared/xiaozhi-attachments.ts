@@ -1,6 +1,8 @@
 /** Public local attachment metadata. No original file bytes/path or cloud consent. */
 export const XIAOZHI_ATTACHMENTS_SCHEMA='xiaozhi.attachments.v1' as const;
 export const MAX_XIAOZHI_ATTACHMENTS=8;
+/** Keep in sync with the formats accepted by attachment-service/format(). */
+export const XIAOZHI_ATTACHMENT_ACCEPT='.md,.txt,.csv,.json,.yaml,.yml,.log,.docx,.pdf,.xlsx,.pptx,.png,.jpg,.jpeg,.gif,.webp';
 export type XiaozhiAttachmentState='draft'|'submitted'|'removed';
 export type XiaozhiAttachmentFormat='text'|'markdown'|'office'|'image';
 export type XiaozhiAttachment={schemaVersion:typeof XIAOZHI_ATTACHMENTS_SCHEMA;id:string;name:string;mime:string;size:number;
