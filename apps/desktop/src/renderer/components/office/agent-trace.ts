@@ -3,11 +3,9 @@ import type {OfficeProcessPart} from './office-process';
 
 /** Only committed phase/tool boundaries classify prose. Never guess from model wording. */
 export function splitAgentTrace(turn:OfficeProjectedTurn){
-  const current=turn.items.at(-1);
   const lastText=turn.items.filter(item=>item.kind==='message'&&item.role==='assistant').at(-1);
-  const partial=['failed','interrupted'].includes(turn.status);
-  const isBody=(item:typeof current)=>!!item&&item.kind==='message'&&item.role==='assistant'&&(
-    item.phase==='final_answer'||item.phase==='partial_answer'||partial&&item===lastText||turn.status==='running'&&item===current
+  const isBody=(item:typeof lastText)=>!!item&&item.kind==='message'&&item.role==='assistant'&&(
+    item.phase==='final_answer'||item.phase==='partial_answer'
   );
   return {
     users:turn.items.filter(item=>item.kind==='message'&&item.role==='user'),

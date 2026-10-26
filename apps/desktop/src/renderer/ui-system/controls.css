@@ -1,0 +1,26 @@
+/* Business wrappers only. Native controls retain their own design and states. */
+[data-edu-ui] :is(.pi-question-options, .pi-approval-actions, .pi-queue-actions) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+[data-edu-ui] .pi-question-answer {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+[data-edu-ui] .pi-question-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+[data-edu-ui] .pi-question-footer > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}

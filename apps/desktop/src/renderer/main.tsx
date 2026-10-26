@@ -3,8 +3,11 @@ import ReactDOM from 'react-dom/client';
 import { App } from './App';
 import { DesktopFrame } from './components/desktop/DesktopFrame';
 import './heroui-styles';
+import './ui-system/base.css';
 import './styles.css';
-import './components/office/native-component-boundary.css';
+
+document.documentElement.setAttribute('data-edu-modern','');
+document.documentElement.dataset.theme='light';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

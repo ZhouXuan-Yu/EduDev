@@ -1,0 +1,112 @@
+{
+  "suite": "pi-skills-management-state",
+  "success": true,
+  "checks": [
+    {
+      "name": "Fresh catalog seeds four builtin native Skills and initialization is idempotent",
+      "pass": true
+    },
+    {
+      "name": "Builtin source is immutable to edit/archive; turning off is revisioned",
+      "pass": true
+    },
+    {
+      "name": "Explicit folder import preserves source and scripts as local bytes; it is disabled regardless of frontmatter",
+      "pass": true
+    },
+    {
+      "name": "Duplicate active names and builtin collisions reject without overwriting catalog or sources",
+      "pass": true
+    },
+    {
+      "name": "Enable produces a verified native descriptor without changing original metadata or source bytes",
+      "pass": true
+    },
+    {
+      "name": "Stale edits and renaming cannot overwrite the current version",
+      "pass": true
+    },
+    {
+      "name": "Editing writes a new immutable version, copies references, resets enabled, and preserves prior/original bytes",
+      "pass": true
+    },
+    {
+      "name": "Local manager and main idle guard reject concurrent/active mutations",
+      "pass": true
+    },
+    {
+      "name": "Changed registered reference fails preview/enable; disable and archive still succeed without rewriting source",
+      "pass": true
+    },
+    {
+      "name": "Explicit reimport of archived custom package increments version and remains disabled",
+      "pass": true
+    },
+    {
+      "name": "Reopen persists revisions/files/enabled states and native metadata",
+      "pass": true
+    },
+    {
+      "name": "Missing teacher instruction is not recreated, and external source is never a fallback grant",
+      "pass": true
+    },
+    {
+      "name": "No implicit subfolder/neighbor discovery and invalid native metadata/name/UTF-8 reject",
+      "pass": true
+    },
+    {
+      "name": "SKILL/file/count/total/depth/empty-directory bounds reject before metadata publication",
+      "pass": true
+    },
+    {
+      "name": "Directory junction inside package and symlink ancestor refuse; outside bytes are untouched",
+      "pass": true
+    },
+    {
+      "name": "Windows-invalid and case-colliding stored paths, duplicate names and extra grants reject",
+      "pass": true
+    },
+    {
+      "name": "Two independent state writers with same CAS revision have exactly one winner",
+      "pass": true
+    },
+    {
+      "name": "Future schema and malformed persisted metadata cannot be read or overwritten",
+      "pass": true
+    },
+    {
+      "name": "Persisted metadata cannot replace builtin reviewed bytes or relabel teacher package as builtin",
+      "pass": true
+    },
+    {
+      "name": "CAS-lost copied version is inert and never auto-discovered",
+      "pass": true
+    },
+    {
+      "name": "Source modified during version copy rejects publication and preserves both source and existing catalog",
+      "pass": true
+    },
+    {
+      "name": "Failed fresh-version write remains unpublished; retry creates its own valid version without deleting source",
+      "pass": true
+    },
+    {
+      "name": "Catalog capacity and runtime payload do not grant executable or file-write tools",
+      "pass": true
+    },
+    {
+      "name": "Old DB copy gains only idempotent metadata table and preserves business/memory/public history",
+      "pass": true
+    },
+    {
+      "name": "Current session state reads legacy bindings and exposes the integrated metadata adapter",
+      "pass": true
+    }
+  ],
+  "boundaries": [
+    "Catalog tests only; management IPC/UI/provider acceptance not covered by this suite",
+    "Actual SQLite/files and Pi parser, synthetic teacher packages; no provider calls",
+    "Explicit disposable old DB copy; source/business facts are read-only"
+  ],
+  "output": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-skills-management-state-vgB8lR"
+}

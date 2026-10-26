@@ -1,6 +1,7 @@
 import type { OfficeProjectedTurn } from './office-agent';
 import {MAX_PUBLIC_STAGES} from './public-trace';
 import {readModelReasoning} from './model-reasoning';
+import {applyChatPresentation} from './chat-presentation-reducer';
 import type { XiaozhiAgentError, XiaozhiAgentEvent } from './xiaozhi-agent';
 export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   attachment_changed:'待发送附件已变化或未全部接收，请重新检查附件后发送。',
@@ -48,7 +49,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
       }
     }
   } else if(event.kind === 'assistant_start') {
-    next.items.push({id:`${turn.id}:segment:${event.segment}`,kind:'message',role:'assistant',phase:'commentary',text:''});
+    next.items.push({id:`${turn.id}:segment:${event.segment}`,kind:'message',role:'assistant',phase:'commentary',text:'',status:'inProgress'});
   } else if(event.kind === 'assistant_end') {
     const item=next.items.find(item=>item.id === `${turn.id}:segment:${event.segment}` && item.kind === 'message');
     if(item && !item.text?.trim())next.items=next.items.filter(value=>value !== item);
@@ -62,7 +63,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     if(item.traceSequence===undefined&&event.sequence>0)item.traceSequence=event.sequence;
     item.text = (item.text || '') + event.delta;
   } else if (event.kind === 'tool_start') {
-    if (!next.items.some(item => item.id === event.callId)) next.items.push({ id: event.callId, kind: 'tool', label: labels[event.tool] || '执行授权工具', status: 'inProgress',traceSequence:event.sequence });
+    if (!next.items.some(item => item.id === event.callId)) next.items.push({ id: event.callId, kind: 'tool', toolName:event.tool, label: labels[event.tool] || '执行授权工具', status: 'inProgress',traceSequence:event.sequence });
   } else if (event.kind === 'tool_end') {
     const item = next.items.find(item => item.id === event.callId && item.kind === 'tool');
     if (item) { item.status = event.success ? 'completed' : item.status === 'declined' ? 'declined' : 'failed'; if (event.sources) item.sources = event.sources; if(event.webError)item.webError=event.webError; if(event.webEmpty !== undefined)item.webEmpty=event.webEmpty;
@@ -145,10 +146,10 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     if (event.status !== 'running') {
       if(next.modelReasoning)next.modelReasoning=next.modelReasoning.map(b=>b.status==='streaming'?{...b,status:event.status==='completed'?'completed':event.status==='interrupted'?'interrupted':'failed'}:b);
       const lastText = [...next.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
-      if (lastText) lastText.phase = event.status === 'completed' ? 'final_answer' : 'partial_answer';
+      if (lastText&&(event.status==='completed'||lastText.phase==='final_answer'||lastText.phase==='partial_answer')) lastText.phase = event.status === 'completed' ? 'final_answer' : 'partial_answer';
       for (const item of next.items) if (item.kind === 'tool' && ['inProgress','waiting_input'].includes(item.status || '')) item.status = 'failed';
       for (const item of next.items) if (item.kind === 'compaction' && item.status === 'inProgress') { item.status = 'failed'; item.text = event.error ? XIAOZHI_ERRORS[event.error] : '压缩没有完成，原对话记录保留。'; }
     }
   }
-  return next;
+  return applyChatPresentation(next,event);
 }

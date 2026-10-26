@@ -1,0 +1,113 @@
+{
+  "suite": "reply-gap-audit",
+  "success": true,
+  "type": "Current renderer SSR and synthetic SDK event fixtures; no provider request or Electron-flow acceptance",
+  "confirmedGaps": [
+    "commentary moves between answer and process",
+    "reasoning remains expanded during and after final body until host terminal",
+    "all reasoning grouped before tools instead of event chronology"
+  ],
+  "states": [
+    {
+      "name": "工具前说明先进入正文",
+      "status": "running",
+      "phases": [
+        "commentary"
+      ],
+      "expanded": [
+        "true"
+      ],
+      "body": [
+        "先核对资料。"
+      ],
+      "process": [],
+      "order": [
+        "reasoning:1:0"
+      ]
+    },
+    {
+      "name": "工具开始后同一文字移入过程",
+      "status": "running",
+      "phases": [
+        "commentary"
+      ],
+      "expanded": [
+        "true"
+      ],
+      "body": [],
+      "process": [
+        "先核对资料。"
+      ],
+      "order": [
+        "reasoning:1:0",
+        "t1"
+      ]
+    },
+    {
+      "name": "正文流式时思考仍展开",
+      "status": "running",
+      "phases": [
+        "commentary",
+        "commentary"
+      ],
+      "expanded": [
+        "true",
+        "true"
+      ],
+      "body": [
+        "最终正文正在输出。"
+      ],
+      "process": [
+        "先核对资料。"
+      ],
+      "order": [
+        "reasoning:1:0",
+        "reasoning:2:0",
+        "t1"
+      ]
+    },
+    {
+      "name": "正文已结束但宿主尚未终态",
+      "status": "running",
+      "phases": [
+        "commentary",
+        "final_answer"
+      ],
+      "expanded": [
+        "true",
+        "true"
+      ],
+      "body": [
+        "最终正文正在输出。"
+      ],
+      "process": [
+        "先核对资料。"
+      ],
+      "order": [
+        "reasoning:1:0",
+        "reasoning:2:0",
+        "t1"
+      ]
+    },
+    {
+      "name": "宿主终态后才收起",
+      "status": "completed",
+      "phases": [
+        "commentary",
+        "final_answer"
+      ],
+      "expanded": [
+        "false",
+        "false"
+      ],
+      "body": [
+        "最终正文正在输出。"
+      ],
+      "process": [],
+      "order": [
+        "reasoning:1:0",
+        "reasoning:2:0"
+      ]
+    }
+  ]
+}

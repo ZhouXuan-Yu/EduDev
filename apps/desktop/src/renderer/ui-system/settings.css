@@ -1,0 +1,72 @@
+.edu-settings {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  padding: 30px 34px;
+  gap: 38px;
+  box-sizing: border-box;
+}
+.edu-settings-nav {
+  width: 190px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: auto;
+}
+.edu-settings-main {
+  min-width: 0;
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+}
+.edu-settings-search {
+  padding: 0 0 16px;
+}
+.edu-settings-nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  border-radius: 7px;
+  padding: 11px 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: #73736a;
+  cursor: pointer;
+}
+.edu-settings-nav-item[aria-current='page'] {
+  background: #f2f3ef;
+  color: #30302b;
+}
+.edu-settings-nav-item:hover {
+  background: #f6f6f2;
+}
+.edu-settings .edu-setting-row {
+  padding-block: 22px;
+  border-bottom: 1px solid #ecece6;
+}
+.edu-settings .edu-setting-label {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+.edu-settings .edu-setting-hint {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-top: 7px;
+}
+@media (max-width: 1050px) {
+  .edu-settings {
+    padding: 24px;
+    gap: 24px;
+  }
+  .edu-settings-nav {
+    width: 160px;
+  }
+}

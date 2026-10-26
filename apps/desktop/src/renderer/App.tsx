@@ -381,6 +381,7 @@ function formatDate(value: string) {
 
 export function App() {
   const [runtime, setRuntime] = useState<'preparing' | 'pi' | 'legacy-test' | 'failed'>('preparing');
+  useEffect(()=>{document.documentElement.toggleAttribute('data-edu-modern',runtime!=='legacy-test');},[runtime]);
   const [runtimeAttempt, setRuntimeAttempt] = useState(0);
   const piEnabled = runtime === 'pi';
   useEffect(() => {

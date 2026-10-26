@@ -1,0 +1,287 @@
+/* Application-owned domain content. Native components form scope boundaries. */
+@scope (.edu-domain) to ([data-heroui-native],[data-slot],[class*="__"],[class*="--"],.button,.input,.textarea,.text-field,.select,.search-field,.switch,.checkbox,.tabs,.modal,.popover) {
+  :scope {
+    --text: var(--foreground);
+    --text-secondary: var(--muted);
+    --text-muted: var(--muted);
+    --text-light: var(--muted);
+    --line: var(--border);
+    --line-strong: var(--border);
+    --bg-card: #fff;
+    --bg-hover: #f7f7f6;
+    color: var(--foreground);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  h1 {
+    font-size: 28px;
+    line-height: 1.25;
+    letter-spacing: -0.5px;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+  h2 {
+    font-size: 21px;
+    line-height: 1.4;
+    font-weight: 550;
+    margin: 0 0 12px;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 550;
+    margin: 0 0 10px;
+  }
+  h4 {
+    font-size: 14px;
+    font-weight: 550;
+    margin: 0 0 8px;
+  }
+  p {
+    margin: 8px 0;
+    line-height: 1.75;
+  }
+  small {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  label {
+    font-size: 13px;
+    color: var(--foreground);
+  }
+  input,
+  select,
+  textarea {
+    font: inherit;
+    color: var(--foreground);
+    background: #fff;
+    border: 1px solid #deded8;
+    border-radius: 8px;
+    padding: 9px 11px;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    accent-color: var(--accent);
+  }
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  button {
+    font: inherit;
+    cursor: pointer;
+    color: var(--foreground);
+    border: 1px solid #e3e3dc;
+    border-radius: 7px;
+    padding: 8px 12px;
+    background: #fff;
+    box-sizing: border-box;
+  }
+  button:hover {
+    background: #f6f6f3;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+  a {
+    color: var(--accent);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    text-align: left;
+    padding: 12px;
+    border-bottom: 1px solid #ecece7;
+  }
+  td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #eeeeea;
+  }
+  .work-panel {
+    min-width: 0;
+    padding: 24px 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .workspace-label {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .workspace-label p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .workspace-label > span {
+    display: none;
+  }
+  .primary-action {
+    background: var(--accent);
+    color: var(--accent-foreground);
+    border-color: var(--accent);
+  }
+  .primary-action:hover {
+    background: var(--accent-hover);
+  }
+  .secondary-action {
+    background: #fff;
+    color: var(--foreground);
+  }
+  .ghost-action {
+    background: transparent;
+    border-color: transparent;
+  }
+  .danger-action {
+    color: var(--danger);
+  }
+  .empty-state {
+    padding: 36px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+  }
+  .badge {
+    font-size: 12px;
+    padding: 3px 7px;
+    border-radius: 5px;
+    background: #f2f3ef;
+    color: var(--muted);
+  }
+  .warning-box {
+    padding: 12px;
+    border: 1px solid #e8ddc1;
+    border-radius: 8px;
+    background: #fcfaf4;
+    color: #7c642b;
+  }
+  .teacher-library-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 38%);
+    gap: 28px;
+    min-height: 360px;
+  }
+  .teacher-library-detail {
+    padding-left: 28px;
+    border-left: 1px solid #ecece6;
+  }
+  .teacher-library-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+  }
+  .teacher-library-heading p,
+  .teacher-library-count,
+  .teacher-library-caption,
+  .teacher-library-notice {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .teacher-library-state {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .teacher-library-error {
+    color: var(--danger);
+  }
+  .teacher-library-detail-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .teacher-library-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .edu-page-grid {
+    display: grid;
+    gap: 24px;
+  }
+}
+.edu-resource-table table {
+  table-layout: fixed;
+}
+.edu-resource-table th:first-child {
+  width: 58%;
+}
+.edu-resource-table th:nth-child(2) {
+  width: 14%;
+}
+.edu-resource-table th:nth-child(3) {
+  width: 28%;
+}
+.edu-resource-table tr[aria-selected='true'] {
+  background: #f7f9fc;
+}
+.edu-resource-table .edu-resource-button {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  color: var(--foreground);
+  font: inherit;
+  cursor: pointer;
+}
+.edu-resource-button > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.edu-resource-button > span {
+  min-width: 0;
+}
+.edu-resource-button strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.edu-resource-button small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+.edu-resource-state {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+@media (max-width: 1050px) {
+  .edu-domain .teacher-library-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .edu-domain .teacher-library-detail {
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid #ecece6;
+    padding-top: 24px;
+  }
+}

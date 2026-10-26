@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button,Pagination,SearchField} from '@heroui/react';
 import {FileText,FolderPlus,Plus,RefreshCw,Square} from 'lucide-react';
-import {ListView} from '../../heroui-pro/components/list-view';
+import {ResourceTable} from '../../ui-system/ResourceTable';
 import type {KnowledgeImportResult} from '../../../shared/contracts';
 import {MATERIALS_SCHEMA,MATERIAL_PAGE_SIZE,materialFailureText,type MaterialJob,type MaterialPage,type MaterialSourceView,type MaterialFolderResult} from '../../../shared/materials';
 import {LibraryEmpty} from './LibraryEmpty';
@@ -57,10 +57,7 @@ export function MaterialsWorkspace({sourceView}:{sourceView?:MaterialSourceView}
   {imported?.items.some(item=>!item.ok)&&<ul className="teacher-library-import-failures" data-testid="materials-import-failures">{imported.items.filter(item=>!item.ok).map((item,index)=><li key={index}>{item.fileName}：未能添加，请检查文件是否可读取。</li>)}</ul>}
   <p className="teacher-library-count" data-testid="materials-count">{fetching?'正在读取资料…':`${catalog?.total||0} 份资料 · 保存在本机`}</p>
   <div className="teacher-library-grid"><div className="teacher-library-directory">
-   <ListView aria-label="资料列表" className="teacher-library-list" selectionMode="single" selectionBehavior="replace" disallowEmptySelection selectedKeys={new Set(resource?[resource.id]:[])} onSelectionChange={keys=>{if(keys!=='all'){setSourceActive(false);setSelected(String([...keys][0]||''));}}} renderEmptyState={()=>fetching?<p role="status">正在读取资料…</p>:<LibraryEmpty title={query?'没有匹配的资料':'先添加一份资料'} description={query?'换个名称或格式，或清除查找条件。':'从本机选择教材、教案、图片或其他教学文件。'}/>}>
-    {rows.map(row=>{const readiness=materialReadiness(row);return <ListView.Item id={row.id} key={row.id} textValue={row.title} data-testid={`material-${row.id}`} isDisabled={busy||fetching}>
-     <FileText size={19}/><ListView.ItemContent><ListView.Title>{row.title}</ListView.Title><ListView.Description>{row.originalFileName} · {libraryFileSize(row.fileSize)}</ListView.Description></ListView.ItemContent><span className="teacher-library-state" data-tone={readiness.tone}>{readiness.label}</span>
-    </ListView.Item>;})}</ListView>
+   <ResourceTable label="资料列表" rows={rows.map(row=>({id:row.id,title:row.title,description:row.originalFileName+' · '+libraryFileSize(row.fileSize),type:row.originalFileName.split('.').at(-1)?.toUpperCase()||'资料',state:materialReadiness(row).label}))} selected={resource?.id} onSelect={id=>{setSourceActive(false);setSelected(id);}} disabled={busy||fetching} testPrefix="material" empty={fetching?<p role="status">正在读取资料…</p>:<LibraryEmpty title={query?'没有匹配的资料':'先添加一份资料'} description={query?'换个名称或格式，或清除查找条件。':'从本机选择教材、教案、图片或其他教学文件。'}/>}/>
    {!!catalog?.total&&<Pagination aria-label="资料目录翻页" className="teacher-library-pagination"><Pagination.Summary>第 {Math.floor(catalog.offset/MATERIAL_PAGE_SIZE)+1} / {Math.ceil(catalog.total/MATERIAL_PAGE_SIZE)} 页</Pagination.Summary><Pagination.Content><Pagination.Item><Pagination.Previous isDisabled={busy||fetching||offset===0} onPress={()=>setOffset(Math.max(0,offset-MATERIAL_PAGE_SIZE))} data-testid="materials-previous">上一页</Pagination.Previous></Pagination.Item><Pagination.Item><Pagination.Next isDisabled={busy||fetching||!catalog.hasMore} onPress={()=>setOffset(offset+MATERIAL_PAGE_SIZE)} data-testid="materials-next">下一页</Pagination.Next></Pagination.Item></Pagination.Content></Pagination>}
   </div><MaterialBodyPanel resource={resource} sourceView={sourceActive?sourceView:undefined} busy={busy} revision={revision} taskStatus={task?.status} locate={()=>void locate()} retry={()=>void work(true)}/></div>
  </section>;

@@ -34,10 +34,10 @@ export function SettingsRow({
   ].filter(Boolean).join(' ');
 
   return (
-    <div {...rootProps} className={rootClass}>
+    <div {...rootProps} className={rootClass+' edu-setting-row'}>
       <div className={styles.rowText}>
-        <div className={styles.rowLabel}>{label}</div>
-        {hint && <div className={hintClass}>{hint}</div>}
+        <div className={styles.rowLabel+' edu-setting-label'}>{label}</div>
+        {hint && <div className={hintClass+' edu-setting-hint'}>{hint}</div>}
       </div>
       <div className={styles.rowControl}>{control}</div>
     </div>

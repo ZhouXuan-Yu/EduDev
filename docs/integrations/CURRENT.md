@@ -1,5 +1,18 @@
 # 当前集成与复用
 
+## 2026-10-24 已批准的UI正式替换
+
+统一亮色EduShell/15页合同及AgentProcess已接入真实typed业务入口；原厂样式独立、旧领域几何暂兼容，不引入第二套模型循环、DDL或IPC。公开过程在answer交接时整体收起；原始reasoning仅详情。范围、真实验证、未验领域及协作main交付以 `../design/ui-rebuild-2026-10-24/DELIVERY.md` 为准。
+
+## 2026-10-24 当前：撤回UI对齐结论，建立重建审阅基线
+
+用户明确否决前轮UI；旧测试结果不能继续作为视觉接受。已只读复现旧真实构建并记录11处CSSOM，证实旧玻璃主题/无layer外壳规则继续覆盖原厂；旧应用AgentTrace组合也不等同官方示例。已在同一1c54工作树保存177文件回退快照，建立15页合同、原厂示例对照/组件指纹、可点击Electron审阅稿。合同检查21项，样张22项/0pageerror，renderer217＋隔离8通过；本轮未替换正式业务页、未发新provider请求。已询问整体视觉与过程组合，等待用户确认，不擅改组件配置。main/远端仍b5a7fc6；旧空锁仍在，先前清理被自动审批拒绝，未提交推送。详见 `../design/ui-rebuild-2026-10-24/README.md`。 本轮不变更Master的本地优先、教师确认、来源与Pi唯一编排规则；总体DOING。
+
+## 2026-10-23 当前：官方Agent Trace Streaming与正文体验
+
+本轮用户明确取代DSH预览：采用官方多块/嵌套组合，运行展开、整轮终态收起、正文独立流式；删除输入上方额外遥测，目标控件迁至侧栏。普通解释自然段落，必要任务结构保留。最终真实Electron25项、原厂亮色双尺寸与控制台通过；边界16/轨迹19/renderer217＋样式7、技能25/22/14、兼容旧路径207通过。没有新SDK循环/依赖/DDL/IPC，权限与教师确认保持；Windows原生路径解析只替换等价调用、不缓存授权。首段仍有约6–7秒本地准备延迟，整体视觉/性能和Master仍DOING。Git main交付尚受遗留index.lock阻塞，清理被自动审批拒绝。证据与精确命令：`../../docs/audit/chat-ui-2026-10-23/AGENT_TRACE_STREAMING_DELIVERY.md`。
+
+
 ## 2026-10-23 官方DSH交互对照（最新）
 
 参考deepseek-ai/deepseek-harness固定687f282e的ReasoningRow/use-disclosure及测试；学习每段默认收起、真实段落首行预览和独立工具，不复制其CSS、安装依赖或替换runtime。HeroUI原厂样式与亮色保持，未启用DSH可选外部翻译。见 [证据](../audit/chat-ui-2026-10-23/DSH_REASONING_DELIVERY.md)。

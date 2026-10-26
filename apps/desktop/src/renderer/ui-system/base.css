@@ -1,0 +1,12 @@
+html[data-edu-modern],
+html[data-edu-modern] body,
+html[data-edu-modern] #root {
+  margin: 0;
+  height: 100%;
+  min-height: 100%;
+  font-family: var(--default-font-family, system-ui);
+}
+html[data-edu-modern] body {
+  color: var(--foreground);
+  background: var(--background);
+}

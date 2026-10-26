@@ -13,21 +13,21 @@ export async function createStyleAuditor(page,rendererRoot){
   const sources=[];
   function visit(dir){for(const entry of fs.readdirSync(dir,{withFileTypes:true})){const file=path.join(dir,entry.name);if(entry.isDirectory())visit(file);else if(file.endsWith('.css')){try{postcss.parse(fs.readFileSync(file,'utf8'),{from:file}).walkRules(rule=>sources.push({selector:normalize(rule.selector),file:path.relative(rendererRoot,file).replaceAll('\\','/'),line:rule.source.start.line,css:rule.toString().slice(0,1400)}));}catch{}}}}
   visit(rendererRoot);
+  const sourceMap=new Map();for(const source of sources){const matches=sourceMap.get(source.selector)||[];matches.push({file:source.file,line:source.line});sourceMap.set(source.selector,matches);}
   const cdp=await page.context().newCDPSession(page),sheets={};
   cdp.on('CSS.styleSheetAdded',({header})=>sheets[header.styleSheetId]=header);
   await cdp.send('DOM.enable');await cdp.send('CSS.enable');
   async function node(selector){const doc=await cdp.send('DOM.getDocument');return(await cdp.send('DOM.querySelector',{nodeId:doc.root.nodeId,selector})).nodeId;}
   async function sample(selector,label){
     const nodeId=await node(selector);if(!nodeId)return{selector,label,missing:true};
-    const matched=await cdp.send('CSS.getMatchedStylesForNode',{nodeId});
-    const layers=await cdp.send('CSS.getLayersForNode',{nodeId});
-    const computed=await cdp.send('CSS.getComputedStyleForNode',{nodeId});
+    const domPending= page.locator(selector).first().evaluate((e,names)=>{const s=getComputedStyle(e),rect=e.getBoundingClientRect();return{tag:e.tagName,classes:e.className,attributes:Object.fromEntries([...e.attributes].filter(a=>a.name.startsWith('data-')||a.name.startsWith('aria-')).map(a=>[a.name,a.value])),rect:{x:rect.x,y:rect.y,width:rect.width,height:rect.height},tokens:Object.fromEntries(names.map(n=>[n,s.getPropertyValue(n).trim()])),animations:e.getAnimations().map(a=>({name:a.animationName,playState:a.playState,currentTime:a.currentTime})),text:e.textContent?.slice(0,180)};},tokenNames);
+    const [matched,layers,computed,dom]=await Promise.all([cdp.send('CSS.getMatchedStylesForNode',{nodeId}),cdp.send('CSS.getLayersForNode',{nodeId}),cdp.send('CSS.getComputedStyleForNode',{nodeId}),domPending]);
     const layerOrder=new Map();function indexLayer(layer,prefix=''){const name=prefix?prefix+'.'+layer.name:layer.name;layerOrder.set(name,layer.order);layerOrder.set(layer.name,layer.order);for(const child of layer.subLayers||[])indexLayer(child,name==='implicit outer layer'?'':name);}indexLayer(layers.rootLayer);
     function summarize(matches){return matches.map((entry,order)=>{
       const r=entry.rule,selectors=entry.matchingSelectors.map(i=>r.selectorList.selectors[i]);
       const specificity=selectors.map(s=>s.specificity||{a:0,b:0,c:0}).sort((a,b)=>b.a-a.a||b.b-a.b||b.c-a.c)[0];
       const source=sheets[r.style.styleSheetId];
-      const sourceCandidates=sources.filter(s=>s.selector===normalize(r.selectorList.text)).map(({file,line})=>({file,line}));
+      const sourceCandidates=sourceMap.get(normalize(r.selectorList.text))||[];
       return{selector:r.selectorList.text,specificity,origin:r.origin,order,layers:(r.layers||[]).map(l=>l.text),scopes:r.scopes?.map(s=>s.text),url:source?.sourceURL,line:(r.style.range?.startLine??0)+1,column:r.style.range?.startColumn,sourceCandidates,declarations:r.style.cssProperties.filter(p=>p.disabled!==true&&p.parsedOk!==false&&(properties.includes(p.name)||tokenNames.includes(p.name))).map(p=>({name:p.name,value:p.value,important:!!p.important}))};
     }).filter(r=>r.declarations.length);}
     const rules=summarize(matched.matchedCSSRules||[]);
@@ -44,7 +44,6 @@ export async function createStyleAuditor(page,rendererRoot){
     // Nearest ancestor with a declaration owns inheritance. Direct declarations always win over inheritance.
     const inheritedProperties=new Set(['color','font-family','font-size','font-weight','line-height',...tokenNames]);
     for(const ancestor of inherited){for(const [name,win]of Object.entries(winnersOf(ancestor.rules)))if(inheritedProperties.has(name)&&!winners[name])winners[name]={...win,inheritedDepth:ancestor.depth};}
-    const dom=await page.locator(selector).first().evaluate((e,names)=>{const s=getComputedStyle(e),rect=e.getBoundingClientRect();return{tag:e.tagName,classes:e.className,attributes:Object.fromEntries([...e.attributes].filter(a=>a.name.startsWith('data-')||a.name.startsWith('aria-')).map(a=>[a.name,a.value])),rect:{x:rect.x,y:rect.y,width:rect.width,height:rect.height},tokens:Object.fromEntries(names.map(n=>[n,s.getPropertyValue(n).trim()])),animations:e.getAnimations().map(a=>({name:a.animationName,playState:a.playState,currentTime:a.currentTime})),text:e.textContent?.slice(0,180)};},tokenNames);
     return{selector,label,dom,computed:Object.fromEntries(computed.computedStyle.filter(p=>properties.includes(p.name)).map(p=>[p.name,p.value])),winners,rules,inherited,layerTree:layers.rootLayer};
   }
   return{sample,cdp,node,sheets};

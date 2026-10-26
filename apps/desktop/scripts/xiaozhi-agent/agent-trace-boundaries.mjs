@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {createServer} from 'vite';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true}});
+const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
 let passed=0;const check=(name,fn)=>{fn();passed++;console.log('PASS '+name);};
 try{
  const {splitAgentTrace,traceStage,agentTraceParts}=await server.ssrLoadModule('/src/renderer/components/office/agent-trace.ts');
@@ -11,10 +11,10 @@ try{
  const {OfficeAgentTrace}=await server.ssrLoadModule('/src/renderer/components/office/OfficeAgentTrace.tsx');
  const {OfficeAgentTurn}=await server.ssrLoadModule('/src/renderer/components/office/OfficeAgentTurn.tsx');
  const user={id:'u',kind:'message',role:'user',text:'请讲解'},text={id:'a',kind:'message',role:'assistant',phase:'commentary',text:'我先检查资料'},tool={id:'t',kind:'tool',status:'completed',label:'读取资料',resultSummary:{version:1,scope:'read',text:'已读取'}};
- check('current assistant segment stays streaming outside trace',()=>{const s=splitAgentTrace({id:'r',status:'running',items:[user,text]});assert.deepEqual(s.body,[text]);assert.equal(s.process.length,0);});
- check('actual tool boundary moves preceding public text into trace',()=>{const s=splitAgentTrace({id:'r',status:'running',items:[user,text,tool]});assert.equal(s.body.length,0);assert.deepEqual(s.process,[text,tool]);});
+ check('unclassified assistant text stays in process without guessing final',()=>{const s=splitAgentTrace({id:'r',status:'running',items:[user,text]});assert.deepEqual(s.body,[]);assert.deepEqual(s.process,[text]);});
+ check('tool boundary never moves preceding public text from answer',()=>{const s=splitAgentTrace({id:'r',status:'running',items:[user,text,tool]});assert.equal(s.body.length,0);assert.deepEqual(s.process,[text,tool]);});
  check('final body and previous commentary never duplicate',()=>{const final={...text,id:'f',phase:'final_answer',text:'答案正文'};const s=splitAgentTrace({id:'r',status:'completed',items:[user,text,tool,final]});assert.deepEqual(s.body,[final]);assert.deepEqual(s.process,[text,tool]);});
- check('stopped text remains readable partial body',()=>{const s=splitAgentTrace({id:'r',status:'interrupted',items:[user,text,tool,{...text,id:'p',text:'部分正文'}]});assert.equal(s.body[0].text,'部分正文');assert.equal(s.process.length,2);});
+ check('stopped text remains readable partial body',()=>{const s=splitAgentTrace({id:'r',status:'interrupted',items:[user,text,tool,{...text,id:'p',phase:'partial_answer',text:'部分正文'}]});assert.equal(s.body[0].text,'部分正文');assert.equal(s.process.length,2);});
  check('phase annotations are never guessed from prose',()=>{const s=splitAgentTrace({id:'r',status:'completed',items:[user,{...text,text:'最终答案：思考结束'}]});assert.equal(s.body.length,0);assert.equal(s.process.length,1);});
  check('waiting teacher state overrides tool spinner',()=>{assert.equal(traceStage({id:'r',status:'waiting_approval',items:[{...tool,status:'inProgress'}]}),'等待你确认');});
  check('first real prepare timestamp retained through later stages',()=>{let t={id:'r',status:'running',items:[]};for(const [stage,since]of [['preparing',1000],['responding',2000],['preparing',3000]])t=applyXiaozhiEvent(t,{kind:'activity',stage,since});assert.equal(t.startedAt,1000);});
@@ -27,9 +27,9 @@ try{
  check('stage does not split an assistant segment when text arrives',()=>{let t={id:'r',status:'running',items:[user]};t=applyXiaozhiEvent(t,{kind:'assistant_start',segment:1,sequence:3});t=applyXiaozhiEvent(t,{kind:'activity',stage:'responding',since:1000,sequence:4});t=applyXiaozhiEvent(t,{kind:'text_delta',delta:'正文',sequence:5});t=applyXiaozhiEvent(t,{kind:'assistant_end',segment:1,final:true,sequence:6});assert.equal(t.items.length,2);assert.equal(t.items[1].phase,'final_answer');assert.equal(t.items[1].traceSequence,5);});
  check('generic telemetry is not presented as reasoning or fake execution',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTurn,{sessionId:'s',turn:{id:'r',status:'failed',items:[user],publicStages:[{stage:'preparing',since:1000,sequence:2}]}}));assert(!html.includes('agent-public-stage'));assert(!html.includes('准备请求与核对资料范围'));assert(!html.includes('execution-trace'));});
  const reasoning={id:'reasoning:1:0',source:'provider',text:'First\nPrivate full body',startedAt:1000,durationMs:2000,status:'completed'};
- check('completed history reasoning is collapsed with its actual duration',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{id:'r',status:'completed',items:[],elapsedMs:12000,modelReasoning:[reasoning]}}));assert.match(html,/aria-expanded="false"/);assert.match(html,/2 秒/);assert(!html.includes('Private full body'));assert(!html.includes('12 秒'));});
+ check('completed history displays process wall time at its single header',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{id:'r',status:'completed',items:[],elapsedMs:12000,modelReasoning:[reasoning]}}));assert.match(html,/aria-expanded="false"/);assert.match(html,/12 秒/);assert(!html.includes('Private full body'));});
  check('missing historical reasoning is never invented',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{id:'r',status:'completed',items:[]}}));assert.equal(html,'');});
- check('failed reasoning remains collapsed and truthfully labelled',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{id:'r',status:'failed',items:[],modelReasoning:[{...reasoning,status:'failed'}]}}));assert.match(html,/aria-expanded="false"/);assert.match(html,/思考未完成/);});
- check('real compaction uses a separate execution disclosure',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTurn,{sessionId:'s',turn:{id:'r',status:'running',items:[{id:'c',kind:'compaction',status:'inProgress',text:'正在整理'}]}}));assert.match(html,/data-testid="execution-trace"/);assert.match(html,/正在整理上下文/);assert(!html.includes('data-testid="agent-trace"'));});
+ check('failed reasoning remains collapsed and truthfully labelled',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{id:'r',status:'failed',items:[],modelReasoning:[{...reasoning,status:'failed'}]}}));assert.match(html,/aria-expanded="false"/);assert.match(html,/处理未完成/);});
+ check('real compaction belongs inside the aggregate process disclosure',()=>{const html=renderToStaticMarkup(React.createElement(OfficeAgentTurn,{sessionId:'s',turn:{id:'r',status:'running',items:[{id:'c',kind:'compaction',status:'inProgress',text:'正在整理'}]}}));assert.match(html,/data-testid="agent-trace"/);assert.match(html,/正在整理上下文/);assert(!html.includes('data-testid="execution-trace"'));});
  console.log(JSON.stringify({suite:'agent-trace-boundaries',passed}));
 }finally{await server.close();}

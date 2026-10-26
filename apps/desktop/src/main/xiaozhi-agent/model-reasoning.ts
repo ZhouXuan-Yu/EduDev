@@ -32,13 +32,13 @@ export function createModelReasoningTrace(options:{sanitize:(text:string)=>Promi
     active.block.status=status;active.block.durationMs=Math.max(0,now()-active.clock);active.revision++;active=undefined;schedule();
   }
   return {
-    delta(segment:number,index:number,delta:string){
+    delta(segment:number,index:number,delta:string,traceOrder?:number){
       if(!delta)return;
       const id=`reasoning:${segment}:${index}`;
       if(active?.block.id!==id){
         close();let entry=entries.get(id);
         if(!entry){if(entries.size>=MAX_REASONING_BLOCKS){const last=[...entries.values()].at(-1);if(last){last.block.truncated=true;last.revision++;schedule();}return;}
-          entry={block:{id,source:'provider',text:'',status:'streaming',startedAt:Date.now(),durationMs:0},raw:'',clock:now(),revision:0,published:0};entries.set(id,entry);}
+          entry={block:{id,source:'provider',text:'',status:'streaming',startedAt:Date.now(),durationMs:0,...(traceOrder===undefined?{}:{traceOrder})},raw:'',clock:now(),revision:0,published:0};entries.set(id,entry);}
         active=entry;
       }
       const accepted=delta.slice(0,Math.max(0,MAX_REASONING_TEXT-total));total+=accepted.length;active.raw+=accepted;

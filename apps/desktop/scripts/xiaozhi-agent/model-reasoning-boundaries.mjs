@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {createServer} from 'vite';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
-const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true}});
+import {JSDOM} from 'jsdom';
+const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
 let passed=0;
 const check=async(name,fn)=>{await fn();passed++;console.log('PASS '+name);};
 try{
@@ -10,13 +11,14 @@ try{
  const {readModelReasoning,MAX_REASONING_TEXT}=await server.ssrLoadModule('/src/shared/model-reasoning.ts');
  const {applyXiaozhiEvent}=await server.ssrLoadModule('/src/shared/xiaozhi-projection.ts');
  const {OfficeAgentTrace}=await server.ssrLoadModule('/src/renderer/components/office/OfficeAgentTrace.tsx');
+ const {AgentProcess}=await server.ssrLoadModule('/src/renderer/components/office/AgentProcess.tsx');
  const {splitAgentTrace}=await server.ssrLoadModule('/src/renderer/components/office/agent-trace.ts');
- const {reasoningPreview}=await server.ssrLoadModule('/src/renderer/components/office/reasoning-preview.ts');
  const base={id:'r',status:'running',items:[]};
  const block={id:'reasoning:1:0',source:'provider',text:'先核对条件，再使用等式性质。',startedAt:Date.now(),durationMs:100,status:'streaming'};
  await check('provider reasoning never becomes a body or export item',()=>{
   let t=applyXiaozhiEvent(base,{kind:'assistant_start',segment:1,sequence:1});
   t=applyXiaozhiEvent(t,{kind:'model_reasoning',block,sequence:2});t=applyXiaozhiEvent(t,{kind:'text_delta',delta:'答案：x=3',sequence:3});
+  t=applyXiaozhiEvent(t,{kind:'assistant_phase',segment:1,phase:'final_answer',since:Date.now(),sequence:4});
   assert.equal(t.modelReasoning[0].text,block.text);assert.equal(t.items.length,1);assert.equal(splitAgentTrace(t).body[0].text,'答案：x=3');
  });
  await check('validated snapshots replace instead of duplicate streamed text',()=>{
@@ -69,24 +71,22 @@ try{
  await check('only actual reasoning activates the original streaming component',()=>{
   const render=t=>renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:t,children:null}));
   assert(!render(base).includes('chain-of-thought--streaming'));const html=render({...base,modelReasoning:[block]});
-  assert.match(html,/data-testid="agent-trace"/);assert(!html.includes('data-testid="model-reasoning"'));assert.match(html,/chain-of-thought--streaming/);assert.match(html,/aria-expanded="false"/);
-  assert(!render({...base,modelReasoning:[{...block,status:'completed'}]}).includes('chain-of-thought--streaming'));
+  assert.match(html,/data-testid="agent-trace"/);assert(html.includes('data-testid="agent-raw-reasoning"'));assert(!html.includes('data-testid="model-reasoning"'));assert.match(html,/data-mode="live-prose"/);assert(!html.includes('data-testid="agent-trace-toggle"'));
+  assert(!render({...base,status:'completed',modelReasoning:[{...block,status:'completed'}]}).includes('chain-of-thought--streaming'));
  });
  await check('missing reasoning is honest and separate from execution states',()=>{
   const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,status:'failed'},children:React.createElement('p',null,'等待模型回复')}));
   assert.equal(html,'');
  });
- await check('DSH preview advances only on completed paragraph first lines',()=>{
-  for(const [text,expected]of [['',''],['unfinished',''],['First\nDetails','First'],['First\n\nNext unfinished','First'],['First\n\nNext completed\nDetails','Next completed'],['First\r\n \r\nNext\r\n','Next'],['First\n\n**Next**\n','Next']])assert.equal(reasoningPreview(text,true),expected);
- });
- await check('settled preview restores first line without modifying the original',()=>{
-  const text='**First**\n\nLatest\n';assert.equal(reasoningPreview(text,false),'First');assert.equal(text,'**First**\n\nLatest\n');
- });
  await check('blank reasoning does not create empty disclosure rows',()=>{
   const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:['',' \t\r\n'].map((text,i)=>({...block,id:`reasoning:${i}:0`,text}))}}));assert.equal(html,'');
  });
- await check('multiple real blocks get independent initially collapsed controls',()=>{
-  const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:[block,{...block,id:'reasoning:2:0',text:'Second unfinished'}]}}));assert.equal((html.match(/aria-expanded="false"/g)||[]).length,2);assert(!html.includes('Second unfinished'));
+ await check('multiple real blocks share one expanded official trace',()=>{
+  const html=renderToStaticMarkup(React.createElement(OfficeAgentTrace,{turn:{...base,modelReasoning:[block,{...block,id:'reasoning:2:0',text:'Second unfinished'}]}}));assert.equal((html.match(/data-testid="agent-trace-toggle"/g)||[]).length,0);assert(!new JSDOM(html).window.document.body.textContent.includes('Second unfinished'));assert.equal(new JSDOM(html).window.document.querySelectorAll('[data-testid="agent-raw-reasoning"]').length,1);
+ });
+ await check('accepted compact public process uses real evidence only',()=>{
+  const html=renderToStaticMarkup(React.createElement(AgentProcess,{sessionId:'s',turn:{...base,modelReasoning:[block],items:[{id:'t',kind:'tool',label:'实读附件',status:'completed',resultSummary:{version:1,scope:'read',text:'真实工具回执'}}]}}));
+  assert(!html.includes('420px'));assert(html.includes('aria-expanded="false"'));assert(html.includes('agent-tool-glyph'));assert(html.includes('data-testid="agent-trace"'));assert(!html.includes('data-testid="execution-trace"'));assert(!html.includes('Generated design'));assert(!html.includes('reasoning-preview'));
  });
  console.log(JSON.stringify({suite:'model-reasoning-boundaries',passed}));
 }finally{await server.close();}

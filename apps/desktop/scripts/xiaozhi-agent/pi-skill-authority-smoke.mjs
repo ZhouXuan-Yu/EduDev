@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
+import {tmpdir} from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import { SessionManager } from '@earendil-works/pi-coding-agent';
@@ -13,7 +14,7 @@ const { createManagedEducationSkills } = await import('../../src/main/xiaozhi-ag
 const { createPiSkillCatalogState } = await import('../../src/main/xiaozhi-agent/skill-catalog-state.ts');
 const { createManagedSkillRuntime } = await import('../../src/main/xiaozhi-agent/managed-skill-runtime.ts');
 const { createPiXiaozhiSession } = await import('../../src/main/xiaozhi-agent/pi-session.ts');
-const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), output = fs.mkdtempSync(path.join(desktop, 'test-results/xiaozhi-agent/pi-skill-authority-'));
+const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), output = fs.mkdtempSync(path.join(tmpdir(), 'xiaozhi-pi-skill-authority-'));
 const checks = [], report = { suite: 'pi-skill-authority-native', success: false, checks, boundaries: [
   'Real Pi native manager/SDK and local managed packages with deterministic model streams',
   'No production managed Skills host/UI/binding v4 or provider acceptance claimed',

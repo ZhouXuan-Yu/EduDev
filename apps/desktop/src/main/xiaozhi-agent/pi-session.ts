@@ -42,6 +42,7 @@ import {validQuestionContextSource} from '../../shared/question-context';
 import {availableChatTool,sourceAvailabilityText,type ChatSourceAvailability} from '../../shared/chat-source-availability';
 import {publicToolResult} from './public-tool-result';
 import {createModelReasoningTrace} from './model-reasoning';
+import {capturePresentationOrder,createPresentationEventAdapter,REPLY_PRESENTATION_PROMPT,visibleAssistantText} from './presentation-event-adapter';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
 
 const PROVIDER = 'xiaozhi_deepseek';
@@ -309,7 +310,9 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   prompt = creation.effectivePrompt + prompt.slice(legacyPrompt.length);
   // Current presentation policy is independent of immutable creation identity.
   prompt += '\n公开工作过程的每段说明默认使用简体中文，先简短说明实际下一步，再调用工具，按真实结果继续。最终结果也默认简体中文；文件名、代码和必要原文引用保持。教师明确指定其他输出语言时遵循。生成办公文档后的正文由教师本地确认，模型未收到确认版时不要复述原草稿数值或标题；交付以实际保存回执为准。';
+  prompt += '\n回复表达：先直接回答本轮问题。普通问答、解释原因和讨论想法，默认用自然连贯的段落，不主动加小标题、编号或项目符号；即使有多个原因，也先用段落和具体例子串联，避免大段清单。只有教师明确要求分点，或成果本身需要操作步骤、对比表、教案和练习等结构时，才采用相应列表、标题或表格；遵循教师指定文体，不套固定的“结论—分析—建议”模板。资料足以回答时直接展开，不无故先写免责声明或在末尾反问、索要额外信息。最终正文交付答案或成果，不重复准备状态、检索日志、工具前说明或推理草稿；实际来源放在相关结论旁。工具前公开说明保持简短，技能文档中的编号是操作规则，不是最终回答的强制格式。';
   const materialIdentity={version:1,tools:['office_list_materials','office_read_material'],source:'sqlite-committed-materials-v1'};
+  prompt += REPLY_PRESENTATION_PROMPT;
   const materialEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.material-read.'));
   if(materialEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.material-read.v1'||JSON.stringify(entry.data)!==JSON.stringify(materialIdentity))
     ||materialEntries.length&&!options.materialTools)throw new Error('configuration');
@@ -663,7 +666,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   };
   const emit = (value: XiaozhiAgentEventPayload) => {
     if (!runId || disposed) return;
-    try { options.onEvent?.({ ...value, sessionId, runId, sequence: ++sequence }); }
+    try { options.onEvent?.({ ...value, traceOrder:value.traceOrder??capturePresentationOrder(), sessionId, runId, sequence: ++sequence }); }
     catch { /* Public UI consumer does not own the model/tool outcome. */ }
   };
   async function maybeCompactContext(turn: { context: unknown; message?: { role: string } }, signal?: AbortSignal) {
@@ -737,6 +740,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
   };
   let streamedLength = 0;
   let segment=0;
+  const presentation=createPresentationEventAdapter(emit);
   let reasoningTrace:ReturnType<typeof createModelReasoningTrace>|undefined;
   let delivered = Promise.resolve();
   let deliveryFailed=false;
@@ -754,8 +758,10 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
       if (id) delivered = delivered.then(() => options.onInstructionApplied?.(id)).catch(()=>{deliveryFailed=true;});
     } else if(event.type === 'message_start' && event.message.role === 'assistant') {
       emit({kind:'assistant_start',segment:++segment});
+      presentation.start(segment);
     } else if(event.type === 'message_end' && event.message.role === 'assistant') {
-      emit({kind:'assistant_end',segment,final:event.message.stopReason === 'stop'});
+      presentation.end();
+      emit({kind:'assistant_end',segment,final:event.message.stopReason === 'stop',since:Date.now()});
       const reason=budget?.snapshot().exhausted;
       // An admission rejection creates an SDK error message but made no provider request.
       const usage=event.message.usage;
@@ -763,14 +769,14 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
       if(!(noReportedTokens && (!normalRequestAdmitted || (reason && ['model_calls','tool_calls','tokens'].includes(reason)))))budget?.observe(usage);
     } else if(event.type==='message_update'&&event.assistantMessageEvent.type==='thinking_delta'){
       if(!compacting&&!interrupted&&!memoryFailure&&!budget?.snapshot().exhausted)
-        reasoningTrace?.delta(segment,event.assistantMessageEvent.contentIndex,event.assistantMessageEvent.delta);
+        reasoningTrace?.delta(segment,event.assistantMessageEvent.contentIndex,event.assistantMessageEvent.delta,capturePresentationOrder());
     } else if(event.type==='message_update'&&['thinking_end','text_start','toolcall_start'].includes(event.assistantMessageEvent.type)){
       reasoningTrace?.close(interrupted?'interrupted':memoryFailure||budget?.snapshot().exhausted?'failed':'completed');
     } else if (event.type === 'message_update' && event.assistantMessageEvent.type === 'text_delta') {
       if (interrupted || memoryFailure || budget?.snapshot().exhausted) return;
       const delta = event.assistantMessageEvent.delta.slice(0, MAX_TEXT - streamedLength);
       if(delta&&publicStage!=='responding'){publicStage='responding';emit({kind:'activity',stage:'responding',since:Date.now()});}
-      streamedLength += delta.length; if (delta) emit({ kind: 'text_delta', delta });
+      streamedLength += delta.length; if (delta) presentation.delta(delta);
     } else if (event.type === 'tool_execution_start' && names.includes(event.toolName)) {
       publicStage='tool';
       if (!toolStartedAt.has(event.toolCallId)) toolStartedAt.set(event.toolCallId, performance.now());
@@ -852,7 +858,7 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
       if (automaticFailure) failure = automaticFailure;
       if (memoryFailure) failure = memoryFailure;
       if (budget.snapshot().exhausted) failure = 'budget_exhausted'; else if (interrupted) failure = 'cancelled';
-      const textResult = session.getLastAssistantText() || '';
+      const textResult = visibleAssistantText(session.getLastAssistantText() || '');
       if (!failure && !textResult.trim()) failure = 'model_error';
       imageRuntime?.end(failure==='cancelled'?'interrupted':'failed');
       budget.finish(failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed');

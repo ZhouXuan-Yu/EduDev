@@ -8,6 +8,7 @@ import { SkillBadgeView } from './hana-skills/SkillBadgeView';
 import { useOfficeComposerState } from './OfficeComposerState';
 import './pi-skill-settings.css';
 import './office-conversation.css';
+import './prompt-input.utilities.css';
 import './pi-control-surfaces.css';
 import {ATTACHMENT_ONLY_PROMPT} from '../../../shared/xiaozhi-start';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';

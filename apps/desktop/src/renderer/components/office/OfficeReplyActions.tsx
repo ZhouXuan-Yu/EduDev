@@ -28,9 +28,9 @@ export function OfficeReplyActions({item,turn,sessionId}:{item:OfficeProjectedIt
   }catch{setNotice('保存结果未确认，请到教学文件核对后重试。');}finally{lock.current=false;setBusy(false);}
  }
  return <><ChatMessage.Actions className="office-reply-actions" data-testid="reply-actions">
-  <ChatMessage.Action aria-label="复制回复" tooltip="复制正文" data-testid="reply-copy" onPress={()=>void navigator.clipboard.writeText(item.text||'').then(()=>setNotice('已复制正文。')).catch(()=>setNotice('复制失败，请选中正文复制。'))}><Copy size={16}/><span>复制</span></ChatMessage.Action>
-  <ChatMessage.Action aria-label="修改回复" tooltip="修改全部或选中部分" data-testid="reply-edit" onPress={()=>{setMode('edit');setNotice('');}}><Pencil size={16}/><span>修改</span></ChatMessage.Action>
-  <ChatMessage.Action aria-label="保存教学内容" tooltip="预览并保存教学内容" data-testid="reply-save" onPress={()=>{requestId.current='reply_'+crypto.randomUUID();setMode('save');setNotice('');}}><FileDown size={16}/><span>保存</span></ChatMessage.Action>
+  <ChatMessage.Action aria-label="复制回复" tooltip="复制正文" data-testid="reply-copy" onPress={()=>void navigator.clipboard.writeText(item.text||'').then(()=>setNotice('已复制正文。')).catch(()=>setNotice('复制失败，请选中正文复制。'))}><Copy size={16}/></ChatMessage.Action>
+  <ChatMessage.Action aria-label="修改回复" tooltip="修改全部或选中部分" data-testid="reply-edit" onPress={()=>{setMode('edit');setNotice('');}}><Pencil size={16}/></ChatMessage.Action>
+  <ChatMessage.Action aria-label="保存教学内容" tooltip="预览并保存教学内容" data-testid="reply-save" onPress={()=>{requestId.current='reply_'+crypto.randomUUID();setMode('save');setNotice('');}}><FileDown size={16}/></ChatMessage.Action>
  </ChatMessage.Actions>{notice&&<p className="office-action-notice" role="status" data-testid="reply-action-notice">{notice}</p>}
  {mode&&<Modal.Backdrop className="default" data-heroui-native="" data-theme={nativeTheme} isOpen isDismissable={!busy} onOpenChange={open=>{if(!open&&!busy)setMode(undefined);}}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-themed-surface office-reply-dialog" data-testid="reply-dialog">
   <Modal.Header><Modal.Heading>{mode==='edit'?'修改教学内容':'确认保存教学内容'}</Modal.Heading></Modal.Header>

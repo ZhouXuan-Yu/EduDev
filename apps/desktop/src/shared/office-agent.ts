@@ -7,10 +7,13 @@ export interface OfficeProjectedItem {
   phase?: 'commentary' | 'final_answer' | 'partial_answer';
   text?: string;
   label?: string;
+  /** Actual public tool identity, not inferred from its translated label. Optional in old history. */
+  toolName?: string;
   status?: string;
   durationMs?: number;
   /** Public event order only, never SDK-private transcript order. */
   traceSequence?: number;
+  traceOrder?: number;
   resultSummary?: { version: 1; text: string; count?: number; query?: string; scope: 'discovery' | 'read' | 'operation' };
   truncated?: boolean;
   sources?: import('./xiaozhi-web').XiaozhiPublicSource[];
@@ -36,6 +39,7 @@ export interface OfficeProjectedTurn {
   publicStagesOmitted?: number;
   /** Only text actually returned by the provider reasoning channel; independent of answer/export. */
   modelReasoning?: OfficeModelReasoning[];
+  presentation?: import('./chat-presentation').ChatPresentation;
 }
 export interface OfficeModelReasoning {
   id: string;
@@ -46,6 +50,8 @@ export interface OfficeModelReasoning {
   startedAt: number;
   durationMs: number;
   truncated?: boolean;
+  traceOrder?: number;
+  traceSequence?: number;
 }
 export interface OfficePublicStage {
   stage: 'preparing' | 'waiting_model' | 'responding';

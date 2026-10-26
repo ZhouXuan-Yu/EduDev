@@ -1,0 +1,134 @@
+{
+  "source": "https://heroui.pro/docs/react/components/chain-of-thought",
+  "section": "Agent Trace Streaming",
+  "policy": "Original reference configuration remains unchanged; product proposal is not an approved replacement.",
+  "files": [
+    {
+      "path": "src/renderer/heroui-pro/heroui-oss.min.css",
+      "sha256": "b614566361d0c79a595efa54d8b92bbc3903b32cb514768d6219c9d5627e5e4d"
+    },
+    {
+      "path": "src/renderer/heroui-pro/heroui-pro.min.css",
+      "sha256": "2e299022eda199fd2a1203889037e94ec44d4b0002192a96fc1af289d6d5834b"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/chain-of-thought/chain-of-thought.styles.ts",
+      "sha256": "40e140c158a32e0c9a1434cb6842e76674c1ebc2b6bdcb38c55d76aebe3cdd38"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/chain-of-thought/chain-of-thought.tsx",
+      "sha256": "32b8936c5bdcdfdd510de65f5e4790b0e3b3f2e212d612d05f16e925cc23acf2"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/chain-of-thought/index.ts",
+      "sha256": "58b495f1ac151e9f9bc354b87dd9ea17fe3346fa472673b6443daa9187d96982"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/chat-message/chat-message.styles.ts",
+      "sha256": "af77827f53232d8fab7cb760baa43c703ab7721f1e554b1a14a5f270569537f5"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/chat-message/chat-message.tsx",
+      "sha256": "2b7b670bba9989b46bc72e09b8e4fd9c05d0fd5a58a5c3c70ba52780e44cdbed"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/chat-message/index.ts",
+      "sha256": "e9c74c1c1814886731c22ff230df1a516b0063308ae05f93b952d7b345e39062"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/index.ts",
+      "sha256": "671d52c67ed93575992fca4e63ea2a4241e6f5bb0822a31e36cdafdd4c0fac26"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.context.tsx",
+      "sha256": "72eb4473879b735370632a12693a90e5709ca7946b99d59c7dc940b4779eddb4"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.queue.context.tsx",
+      "sha256": "650cb63f2979d8ee780e2baf3410bd3881b84cca22f5eabafe2e11f1c3a12bc8"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.queue.tsx",
+      "sha256": "52fde62c0eb1a1c89551a0775e5682dd773c965330afacfa1198638f0076b357"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.styles.ts",
+      "sha256": "0de89cef3510e05b4877826303f7ca5c87c818056b2ac1dab2d1b07f5ef74f7c"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.tsx",
+      "sha256": "239a579a14c816689d94245a7aea9732fc8dc90cb0615411ee9de3a0567dd158"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.types.ts",
+      "sha256": "633a736fb500da73980bdae0a899ad3111ffd8970c14edb66cca9cfb54f9bfc7"
+    },
+    {
+      "path": "src/renderer/heroui-pro/components/prompt-input/prompt-input.utils.ts",
+      "sha256": "5cd8396dabbc736965c5bd2a966e9e7331788747f8fa388616e00724a86dd85f"
+    }
+  ],
+  "officialReferenceSha256": "b40a60eafd9e42351c32597f4d60b7aa2aeba6877d1cb9a38596663fc152884a",
+  "localFallbackComparison": [
+    {
+      "file": "heroui-pro.min.css",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/chain-of-thought/chain-of-thought.styles.ts",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/chain-of-thought/chain-of-thought.tsx",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/chain-of-thought/index.ts",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/chat-message/chat-message.styles.ts",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/chat-message/chat-message.tsx",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/chat-message/index.ts",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/prompt-input/index.ts",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/prompt-input/prompt-input.context.tsx",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/prompt-input/prompt-input.queue.context.tsx",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/prompt-input/prompt-input.queue.tsx",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/prompt-input/prompt-input.styles.ts",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/prompt-input/prompt-input.tsx",
+      "sameAfterNewlineNormalization": false
+    },
+    {
+      "file": "components/prompt-input/prompt-input.types.ts",
+      "sameAfterNewlineNormalization": true
+    },
+    {
+      "file": "components/prompt-input/prompt-input.utils.ts",
+      "sameAfterNewlineNormalization": true
+    }
+  ]
+}

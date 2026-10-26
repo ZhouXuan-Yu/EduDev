@@ -2,6 +2,7 @@
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import { createAssistantMessageEventStream } from '@earendil-works/pi-ai';
@@ -11,7 +12,7 @@ const { guardAssistantMessageStream } = await import('../../src/main/xiaozhi-age
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 fs.mkdirSync(path.join(appRoot, 'test-results/xiaozhi-agent'), { recursive: true });
 const output = fs.mkdtempSync(path.join(appRoot, 'test-results/xiaozhi-agent/pi-boundary-'));
-const workspace = path.join(output, 'workspace'), stateRoot = path.join(output, 'state');
+const workspace = path.join(output, 'workspace'), stateRoot = path.join(fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-sdk-boundary-')), 'state');
 fs.mkdirSync(workspace); fs.mkdirSync(stateRoot);
 fs.writeFileSync(path.join(workspace, 'a.md'), 'FACT_A'); fs.writeFileSync(path.join(workspace, 'b.md'), 'FACT_B');
 const checks = [], events = [];

@@ -1,0 +1,41 @@
+{
+  "scope": "Current Electron cold rendering of a copy of prior teaching test data; no streaming/provider acceptance",
+  "source": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-dsh-reasoning-uFcprX/data",
+  "temp": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-gap-cold-cQW1m6",
+  "session": "aisession_8c1e84e7-9195-443e-bb40-f5e00818ee65",
+  "errors": [],
+  "runtime": {
+    "cwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\1c54\\EduProject\\apps\\desktop",
+    "data": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-gap-cold-cQW1m6\\data",
+    "title": "Omni-Edu Agent"
+  },
+  "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/index.html",
+  "dom": {
+    "reasoningBlocks": 4,
+    "executionBlocks": 6,
+    "expanded": [
+      "false",
+      "false",
+      "false",
+      "false"
+    ],
+    "executionExpanded": [
+      "false",
+      "false",
+      "false",
+      "false",
+      "false",
+      "false"
+    ],
+    "layoutHeaderCount": 10,
+    "extraComposerActivity": 0,
+    "scripts": [
+      "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-BNMQfex4.js"
+    ]
+  },
+  "screenshots": [
+    "cold-1366.png",
+    "cold-1920.png"
+  ],
+  "success": true
+}

@@ -1,12 +1,13 @@
+import {createChatStreamBuffer} from './chat-stream-buffer';
+import {applyChatSnapshotEvent} from './chat-snapshot-reducer';
 import { useEffect, useRef, useState } from 'react';
 import type { AiConversationWorkspace } from '../../../shared/contracts';
 import type { XiaozhiWorkspaceSnapshot,XiaozhiStartInput } from '../../../shared/xiaozhi-agent';
 import { XIAOZHI_SETTINGS_SCHEMA, XIAOZHI_SETTINGS_ERRORS, type XiaozhiSettingsView } from '../../../shared/xiaozhi-settings';
-import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../../shared/xiaozhi-projection';
+import { XIAOZHI_ERRORS } from '../../../shared/xiaozhi-projection';
 import {publicMessageText,type XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 import { AiConversationSidebar } from '../AiConversationSidebar';
 import { PiConversationSurface } from './PiConversationSurface';
-import { PiTaskPlan } from './PiTaskPlan';
 import {PiGoalControl} from './PiGoalControl';
 import { OfficeComposer } from './OfficeComposer';
 import { OfficeComposerState,OfficeComposerSeed } from './OfficeComposerState';
@@ -22,12 +23,11 @@ import { PiControlCards } from './PiControlCards';
 import { PiSkillSettings } from './PiSkillSettings';
 import { PiWorkspaceShell } from './PiWorkspaceShell';
 import { PiWorkspaceContext } from './PiWorkspaceContext';
-import { PiWorkspaceActivity } from './PiWorkspaceActivity';
 import { PiWorkspaceFiles } from './PiWorkspaceFiles';
 import {usePiAttachments} from './usePiAttachments';
 import { useDesktopCommands, useDesktopNavigation } from '../desktop/DesktopFrame';
 import './pi-education-workspace.css';
-import './pi-workspace-glass.css';
+
 
 export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { onLeave: () => void; onSettings: () => void; visible?: boolean }) {
   const navigation=useDesktopNavigation(),navigationRef=useRef(navigation);navigationRef.current=navigation;
@@ -114,38 +114,25 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       if(requested&&!list?.sessions.some(session=>session.id===requested))navigationRef.current.reject(requested);
       const first = list?.sessions.find(session=>session.id===(requested||remembered)) || list?.sessions[0]; if (first) await open(first.id); else await fresh();
     })().catch(() => { if (live) setNotice('无法加载本地对话。'); });
+    const stream=createChatStreamBuffer(events=>{
+      const current=events.filter(event=>live&&event.sessionId===idRef.current);
+      if(!current.length)return;
+      setSnapshot(previous=>{
+        if(!previous){void hydrate(current[0].sessionId);return previous;}
+        return current.reduce(applyChatSnapshotEvent,previous);
+      });
+    });
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => {
       if (!live || event.sessionId !== idRef.current || event.sequence <= (sequences.current.get(event.runId) || 0)) return;
       version.current++; // In-flight older hydration may not overwrite new events.
       sequences.current.set(event.runId, event.sequence);
-      setSnapshot(previous => {
-        if (!previous) { void hydrate(event.sessionId); return previous; }
-        const turns = previous.projection.turns.slice();
-        let index = turns.findIndex(turn => turn.id === event.runId);
-        if (index < 0) {
-          const pending = turns.at(-1)?.id === 'pending-send' ? turns.pop() : undefined;
-          turns.push({ id: event.runId, status: 'running', items: pending?.items || [] }); index = turns.length - 1;
-        }
-        turns[index] = applyXiaozhiEvent(turns[index], event);
-        const approvals = event.kind === 'approval' ? [...(previous.approvals || []).filter(item => item.id !== event.approval.id), event.approval] : previous.approvals;
-        const changes = event.kind === 'change' ? [...(previous.changes || []).filter(item => item.id !== event.change.id), event.change] : previous.changes;
-        const officeArtifacts=event.kind==='office_artifact'?[...(previous.officeArtifacts||[]).filter(item=>item.id!==event.artifact.id),event.artifact]:previous.officeArtifacts;
-        const learningReviews=event.kind==='learning_review'?[...(previous.learningReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.learningReviews;
-        const paperReviews=event.kind==='paper_review'?[...(previous.paperReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.paperReviews;
-        const practiceReviews=event.kind==='practice_review'?[...(previous.practiceReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.practiceReviews;
-        const questionCollections=event.kind==='question_collection'?[...(previous.questionCollections||[]).filter(item=>item.id!==event.review.id),event.review]:previous.questionCollections;
-        const questionReviews=event.kind==='question_review'?[...(previous.questionReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.questionReviews;
-        const controls=event.kind === 'control' ? [...(previous.controls || []).filter(item=>item.id !== event.control.id),event.control] : previous.controls;
-        const usage=event.kind==='usage'?[...(previous.usage || []).filter(item=>item.runId!==event.usage.runId),event.usage]:previous.usage;
-        return { ...previous, approvals, changes, officeArtifacts, learningReviews, questionCollections, questionReviews, practiceReviews, paperReviews, controls, usage, ...(event.kind==='goal'?{goal:event.goal}:{}), ...(event.kind === 'compaction' && !event.automatic ? { operation: 'compact' as const } : {}), running: event.kind === 'status' ? event.status === 'running' : previous.running,
-          projection: { ...previous.projection, sourceSequence: event.sequence, turns } };
-      });
+      stream.push(event);
       if (event.kind === 'status') {
         void refreshList();
         if (event.status !== 'running') void hydrate(event.sessionId);
       }
     });
-    return () => { live = false; active.current=false; version.current++; unsubscribe?.(); };
+    return () => { live = false; active.current=false; version.current++; stream.dispose(); unsubscribe?.(); };
   }, [hasEntered]);
   async function send(prompt: string,presentation?:XiaozhiMessagePresentation) {
     if (!id || !window.omniEdu) throw new Error('configuration');
@@ -162,7 +149,6 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   }
   const projection = snapshot?.projection;
   const current = projection?.turns.at(-1);
-  const activePlan = snapshot?.running ? snapshot.controls?.filter(control=>control.kind==='plan'&&control.runId===current?.id).at(-1) : undefined;
   const compacting = snapshot?.running && snapshot.operation === 'compact';
   async function compact() {
     if (!id || !snapshot || snapshot.running || compactLock.current) return;
@@ -176,14 +162,15 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     } catch { if (idRef.current === target) setNotice('压缩请求未确认，请重试。'); }
     finally { compactLock.current = false; setCompactBusy(false); }
   }
-  return <OfficeComposerState key={id || 'loading'} sessionId={id}><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
+  return <OfficeComposerState key={id || 'loading'} sessionId={id}><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>setSkillsOpen(true)}
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
       const target=id;const result=await window.omniEdu?.selectXiaozhiWorkspace(target);if(result&&!result.ok)setNotice(XIAOZHI_ERRORS[result.error]);else await hydrate(target);
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
-    aside={<PiWorkspaceContext sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}/>}
-    sidebar={<AiConversationSidebar codexStyle folders={workspace.folders} sessions={workspace.sessions} activeSessionId={id}
+    aside={<PiWorkspaceContext sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}
+      goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)}/>}/>}
+    sidebar={<AiConversationSidebar codexStyle inline folders={workspace.folders} sessions={workspace.sessions} activeSessionId={id}
       onOpenSession={target=>open(target)} onNewSession={fresh} onLeaveAi={onLeave}
       onCreateFolder={async name => { const list = await window.omniEdu?.createAiConversationFolder({ name }); if (list) setWorkspace(list); }}
       onMoveSession={async (session, folder) => { const list = await window.omniEdu?.moveAiConversationSession(session, folder); if (list) setWorkspace(list); }}
@@ -204,7 +191,6 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         if (!result?.ok) throw new Error('queue_mutation_failed');
       }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
       <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
-        taskSummary={<><PiWorkspaceActivity snapshot={snapshot} compactBusy={compactBusy}/><PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)}/>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} compact/>}</>}
         skills={snapshot?.skills}
         disabled={!snapshot || !id || modelSelecting || returnHydrating || Boolean(snapshot.studentContext&&snapshot.studentContext.status!=='active')} model={projection?.model || 'DeepSeek'} models={models?.models.map(item => ({ id: item.id, label: item.id })) || [{ id: projection?.model || 'DeepSeek', label: projection?.model || 'DeepSeek' }]}
         onModelChange={!models?.sessionModel || models.sessionModel.locked || models.locked ? undefined : model => {

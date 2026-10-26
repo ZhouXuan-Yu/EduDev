@@ -4,11 +4,13 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import {tmpdir} from 'node:os';
 import { createAssistantMessageEventStream } from '@earendil-works/pi-ai';
 const { createPiXiaozhiSession } = await import('../../src/main/xiaozhi-agent/pi-session.ts');
 const { createEducationSkillRuntime } = await import('../../src/main/xiaozhi-agent/skill-runtime.ts');
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const output = fs.mkdtempSync(path.join(root, 'test-results/xiaozhi-agent/pi-skills-boundary-'));
+// Native state intentionally refuses .codex roots, including linked worktree test-results.
+const output = fs.mkdtempSync(path.join(tmpdir(), 'xiaozhi-pi-skills-boundary-'));
 const stateRoot = path.join(output, 'state'), workspace = path.join(output, 'workspace');
 fs.mkdirSync(stateRoot); fs.mkdirSync(workspace);
 const checks = [], report = { success: false, checks, suite: 'pi-education-skills-boundary', boundaries: ['Synthetic stream for SDK command and permission checks; not provider/UI proof'] };

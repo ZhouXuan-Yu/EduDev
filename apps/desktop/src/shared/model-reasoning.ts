@@ -15,6 +15,8 @@ export function readModelReasoning(value:unknown):OfficeModelReasoning[]{
     seen.add(block.id);
     const text=block.text.slice(0,remaining);remaining-=text.length;
     return[{id:block.id,source:'provider' as const,text,status:block.status,startedAt:block.startedAt,durationMs:block.durationMs,
-      ...(block.truncated||text.length<block.text.length?{truncated:true}:{})}];
+      ...(block.truncated||text.length<block.text.length?{truncated:true}:{}),
+      ...(typeof block.traceOrder==='number'&&Number.isSafeInteger(block.traceOrder)&&block.traceOrder>0?{traceOrder:block.traceOrder}:{}),
+      ...(typeof block.traceSequence==='number'&&Number.isSafeInteger(block.traceSequence)&&block.traceSequence>0?{traceSequence:block.traceSequence}:{})}];
   });
 }

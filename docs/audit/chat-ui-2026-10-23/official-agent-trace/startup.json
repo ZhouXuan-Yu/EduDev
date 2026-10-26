@@ -1,0 +1,20 @@
+{
+  "title": "小智 · Agent Trace Streaming · 本轮交付",
+  "url": "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/index.html",
+  "dataRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-dsh-reasoning-uFcprX/data",
+  "profile": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-dsh-reasoning-uFcprX/profile",
+  "sessionId": "aisession_8c1e84e7-9195-443e-bb40-f5e00818ee65",
+  "renderer": [
+    "file:///C:/Users/ZhouXuan/.codex/worktrees/1c54/EduProject/apps/desktop/out/renderer/assets/index-BNMQfex4.js"
+  ],
+  "activityCount": 0,
+  "goalInComposer": 0,
+  "goalInAside": 1,
+  "reasoningStates": [
+    "false",
+    "false",
+    "false",
+    "false"
+  ],
+  "errors": []
+}

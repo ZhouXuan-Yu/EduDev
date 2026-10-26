@@ -30,7 +30,10 @@ export function noLinks(target: string, allowMissing = false) {
       if (!allowMissing) throw new Error('skill_source_changed');
       continue;
     }
-    if (fs.lstatSync(current).isSymbolicLink() || !samePath(fs.realpathSync(current), current)) throw new Error('skill_source_changed');
+    // Windows' JS realpath walks every ancestor again for every component/file.
+    // Use the equivalent OS resolver; keep all link, canonical-path and before/after checks.
+    const resolveRealPath = process.platform === 'win32' ? fs.realpathSync.native : fs.realpathSync;
+    if (fs.lstatSync(current).isSymbolicLink() || !samePath(resolveRealPath(current), current)) throw new Error('skill_source_changed');
   }
 }
 export function boundedRead(file: string, limit: number) {

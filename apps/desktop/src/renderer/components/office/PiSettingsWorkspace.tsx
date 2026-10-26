@@ -17,7 +17,7 @@ import { searchSettings, type SettingsSearchEntry } from './hana-settings/settin
 import navStyles from './hana-settings/workspace-nav.module.css';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
 import './pi-settings-workspace.css';
-import { ProductRail } from '../product/ProductRail';
+import {EduShell} from '../../ui-system/EduShell';
 
 const tabs = [
   { id: 'models', label: '模型与连接', icon: Plug },
@@ -126,10 +126,9 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
     finally { if (live.current && archiveRequest.current === own) setArchiveLoading(false); }
   }
   const title = tabs.find(item => item.id === tab)!.label;
-  return <div className="product-settings-frame pi-themed-surface"><ProductRail active="settings" disabled={busy}/><div className="pi-settings-workspace pi-themed-surface" data-testid="pi-settings-workspace" data-tab={tab}>
-    <header><Button variant="ghost" size="sm" data-testid="nav-ai" isDisabled={busy} onPress={onBack}><ArrowLeft size={17}/>返回小智</Button><span>设置</span>{busy && <span role="status">正在保存或处理本地资料…</span>}</header>
-    <div className="pi-settings-body">
-      <nav className="pi-settings-nav" aria-label="小智设置分类">
+  return <EduShell view="settings" disabled={busy} actions={<Button variant="ghost" data-testid="nav-ai" isDisabled={busy} onPress={onBack}><ArrowLeft size={17}/>返回对话</Button>}>
+    <div className="edu-settings edu-domain" data-edu-domain="" data-testid="pi-settings-workspace" data-tab={tab}>
+      <nav className="edu-settings-nav" aria-label="小智设置分类">
         <SearchField value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy} className="pi-settings-search">
           <SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
         </SearchField>
@@ -139,9 +138,9 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             <span className={navStyles['settings-search-result-title']}>{result.title}</span><span className={navStyles['settings-search-result-path']}>{result.path}</span>
           </Button>)}
           {!results.length && <p className={navStyles['settings-search-empty']} data-testid="pi-settings-search-empty">没有找到设置，试试“技能”“目录”或“备份”。</p>}
-        </div> : tabs.map(item => <Button key={item.id} variant="ghost" className={`${navStyles['settings-nav-item']} ${tab === item.id ? navStyles.active : ''}`} aria-current={tab === item.id ? 'page' : undefined} data-testid={`pi-settings-tab-${item.id}`} isDisabled={busy} onPress={() => open(item.id)}><item.icon size={18}/>{item.label}</Button>)}
+        </div> : tabs.map(item => <button key={item.id} className="edu-settings-nav-item" aria-current={tab === item.id ? 'page' : undefined} data-testid={`pi-settings-tab-${item.id}`} disabled={busy} onClick={() => open(item.id)}><item.icon size={18}/>{item.label}</button>)}
       </nav>
-      <main className="pi-settings-main" aria-label={title} data-testid="pi-settings-main">
+      <main className="edu-settings-main" aria-label={title} data-testid="pi-settings-main">
         {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
         {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
         {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
@@ -166,6 +165,5 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
         </SettingsStack></SettingsPage>}
         {tab === 'backup' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>在本机保存和检查资料副本。</p></div><SettingsSection title="本地备份"><DataBackupPanel modern dataRoot={dataRoot} disabled={locked || actionBusy} onBusyChange={setChildBusy}/></SettingsSection></SettingsStack></SettingsPage>}
       </main>
-    </div>
-  </div></div>;
+  </div></EduShell>;
 }

@@ -8,16 +8,17 @@ import { AppLayout } from '../../heroui-pro/components/app-layout';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import { PiMemoryScope } from './PiMemoryScope';
 import { PiBudgetCard } from './PiBudgetCard';
-import {useState} from 'react';
+import {useState,type ReactNode} from 'react';
 import { workspaceStatus } from './workspace-status';
 import {MaterialSourceLink} from '../product/MaterialSourceNavigation';
 import {StudentSourceLink} from '../students/StudentSourceNavigation';
 import {PiLearningHistory} from './PiLearningHistory';
 import {replySources} from './OfficeReplySources';
 
-export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,onCompact,onRefresh}: {
+export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,onCompact,onRefresh,goalControl}: {
   sessionId:string;snapshot?:XiaozhiWorkspaceSnapshot;compactBusy:boolean;compacting:boolean;
   onCompact:()=>void;onRefresh:()=>Promise<void>;
+  goalControl?:ReactNode;
 }) {
   const [browserMessage,setBrowserMessage]=useState('');
   const current=snapshot?.projection.turns.at(-1);
@@ -25,9 +26,10 @@ export function PiWorkspaceContext({sessionId,snapshot,compactBusy,compacting,on
   const sources=replySources(current);
   const sourceRow=(source:typeof sources[number])=>source.question?<QuestionSourceLink key={`${source.question.questionId}:${source.question.version}`} source={source}/>:source.student?<StudentSourceLink key={source.title} source={source}/>:source.material ? <MaterialSourceLink key={source.title} source={source}/> : source.url ? <WebSource key={source.url} source={source} sessionId={sessionId}/> : <li key={source.title} title={source.title}><BookOpen size={16}/><span>{source.title}</span></li>;
   return <div className="pi-context-card" data-testid="xiaozhi-pi-inspector" aria-label="小智任务与来源">
-    <div className="pi-context-header"><span>{snapshot?.workspace?.label||'教师工作区'}</span><Tooltip><AppLayout.AsideTrigger aria-label="收起任务资料"><PanelRightClose size={17}/></AppLayout.AsideTrigger><Tooltip.Content>收起任务资料</Tooltip.Content></Tooltip></div>
+    <div className="pi-context-header"><span>{snapshot?.workspace?.label||'教师工作区'}</span></div>
     <div className="pi-context-status" data-testid="xiaozhi-pi-status" data-state={status.state} role="status" aria-live="polite"><BookOpen size={17} aria-hidden="true"/><span>{status.label}</span></div>
     <div className="pi-context-location"><Folder size={17}/><span>{snapshot?.workspace?'教学工作目录':'教师知识库'}</span><span className="pi-context-local">本地</span></div>
+    {goalControl&&<section data-heroui-native="" className="default" data-theme="light" data-testid="pi-goal-aside">{goalControl}</section>}
     {snapshot?.browser?.open&&<section data-testid="pi-browser-panel"><Button size="sm" variant="ghost" data-testid="pi-browser-show" onPress={async()=>{const result=await window.omniEdu?.showXiaozhiBrowser(sessionId);setBrowserMessage(result?.ok?'':'浏览器已关闭，请让小智重新打开页面。');await onRefresh();}}>打开浏览器</Button>{snapshot.browser.tabs?.filter(tab=>tab.active).map(tab=><p key={tab.tabId}>{tab.title||new URL(tab.url).hostname}</p>)}{browserMessage&&<p role="status">{browserMessage}</p>}</section>}
     <section className="pi-context-sources" data-testid="pi-web-aside"><h4><LinkIcon size={16}/>最新一轮读取的资料</h4>
       {sources.length ? <><ul>{sources.slice(0,3).map(sourceRow)}</ul>{sources.length>3&&<ChatSources defaultExpanded={false}><ChatSources.Trigger>查看全部（{sources.length}）</ChatSources.Trigger><ChatSources.Content><ul>{sources.slice(3).map(sourceRow)}</ul></ChatSources.Content></ChatSources>}</> : <p>本轮暂无已读资料依据。较早回复的依据随正文保留。</p>}

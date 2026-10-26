@@ -1,0 +1,67 @@
+{
+  "baseline": "b5a7fc685070e95f4110b1b98a8304a63d71fb7d",
+  "provider": "real DeepSeek",
+  "model": "deepseek-flash",
+  "realElectron": {
+    "report": "official-agent-trace/report.json",
+    "success": true,
+    "checks": 25,
+    "errors": []
+  },
+  "renderer": {
+    "passed": 217,
+    "styleIsolationPassed": 7
+  },
+  "boundaries": {
+    "reasoning": 16,
+    "agentTrace": 19
+  },
+  "skills": {
+    "management": 25,
+    "authority": 22,
+    "boundary": 14
+  },
+  "legacySmoke": {
+    "passed": 207,
+    "total": 207,
+    "note": "Same renderer; started before final Pi prose suffix refinement. Legacy runtime explicitly disables Pi."
+  },
+  "latency": {
+    "beforeNews": {
+      "preparationMs": 9486,
+      "providerFirstReasoningMs": 1192
+    },
+    "afterCold": {
+      "preparationMs": 6699,
+      "providerFirstReasoningMs": 1049
+    },
+    "afterWarmTools": {
+      "preparationMs": 6306,
+      "providerFirstReasoningMs": 692
+    },
+    "note": "Different requests/single samples; not a benchmark or immediate-first-token guarantee. Profiling overhead excluded."
+  },
+  "naturalFormatting": {
+    "listLines": 0,
+    "headingLines": 0
+  },
+  "audit": {
+    "critical": 1,
+    "high": 7,
+    "moderate": 2,
+    "low": 5,
+    "total": 15,
+    "unchanged": true
+  },
+  "build": {
+    "command": "npm run build",
+    "log": "apps/desktop/test-results/agent-trace-official-build-delivery.log",
+    "mainSha256": "8e0d730d858c18d4e86530b00d9fdc17a08ceeba71055917255c37cfe14f6a43",
+    "renderer": "index-BNMQfex4.js"
+  },
+  "git": {
+    "commitPending": true,
+    "pushPending": true,
+    "reason": "Existing zero-byte index.lock; automatic approval rejected clearing it with blocked by policy. No bypass attempted."
+  }
+}

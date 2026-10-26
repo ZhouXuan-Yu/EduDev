@@ -40,7 +40,8 @@ export type XiaozhiAgentEventPayload = (
   { kind: 'text_delta'; delta: string }
   | { kind: 'model_reasoning'; block: import('./office-agent').OfficeModelReasoning }
   | { kind:'assistant_start'; segment:number }
-  | { kind:'assistant_end'; segment:number; final:boolean }
+  | { kind:'assistant_phase'; segment:number; phase:'commentary'|'final_answer'; since:number }
+  | { kind:'assistant_end'; segment:number; final:boolean; since?:number }
   | { kind: 'tool_start'; callId: string; tool: string }
   | { kind: 'tool_end'; callId: string; tool: string; success: boolean; durationMs?: number; resultSummary?: import('./office-agent').OfficeProjectedItem['resultSummary']; source?: string; sources?: import('./xiaozhi-web').XiaozhiPublicSource[]; webError?: import('./xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:import('./xiaozhi-browser-capture').BrowserCapture }
   | { kind: 'approval'; approval: XiaozhiApproval }
@@ -59,7 +60,7 @@ export type XiaozhiAgentEventPayload = (
   | { kind: 'memory_isolation'; excludedRuns: number; reason?: 'memory_authority' | 'interrupted_tool' }
   | { kind: 'skill_isolation'; excludedRuns: number; reason?: 'skill_authority' | 'interrupted_tool' }
   | { kind: 'status'; status: 'running' | 'completed' | 'interrupted' | 'failed'; error?: XiaozhiAgentError; finishedAt?:number }
-);
+) & { /** SDK capture order, independent of asynchronous reasoning sanitization. */ traceOrder?:number };
 export type XiaozhiAgentEvent = { sessionId: string; runId: string; sequence: number } & XiaozhiAgentEventPayload;
 export type XiaozhiAgentResult = { ok: true; runId: string; text: string; truncated: boolean }
   | { ok: false; runId: string; error: XiaozhiAgentError };

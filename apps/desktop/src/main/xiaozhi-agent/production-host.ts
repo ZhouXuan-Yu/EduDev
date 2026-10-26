@@ -1,3 +1,5 @@
+import {readChatPresentation} from '../../shared/chat-presentation';
+import {capturePresentationOrder} from './presentation-event-adapter';
 import {createOriginalQuestionCoordinator} from '../education/original-question-coordinator';
 import {validOriginalInput,type OriginalQuestionDecision} from '../../shared/original-question-review';
 import fs from 'node:fs';
@@ -164,7 +166,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   const publicEvent = (id: string, run: Active, payload: XiaozhiAgentEventPayload) => {
     run.officePresentation ??= createOfficeDeliveryPresentation(run.runId);
     for (const visible of run.officePresentation.events(payload)) {
-      const event = { ...visible, sessionId: id, runId: run.runId, sequence: ++run.sequence } as XiaozhiAgentEvent;
+      const event = { ...visible, traceOrder:visible.traceOrder??capturePresentationOrder(), sessionId: id, runId: run.runId, sequence: ++run.sequence } as XiaozhiAgentEvent;
       run.turn = applyXiaozhiEvent(run.turn, event); try { options.emit(event); } catch { /* UI lifetime does not own execution. */ }
     }
   };
@@ -283,6 +285,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         if (pi && Array.isArray(message.metadata.publicItems)) {
           turn.items.push(...message.metadata.publicItems as OfficeProjectedTurn['items']);
           const reasoning=readModelReasoning(message.metadata.modelReasoning);
+          turn.presentation=readChatPresentation(message.metadata.chatPresentation);
           if(reasoning.length)turn.modelReasoning=reasoning.map(b=>b.status==='streaming'?{...b,status:'interrupted'}:b);
           const stages=readPublicStages(message.metadata.publicStages);
           if(stages.length)turn.publicStages=stages;
@@ -556,6 +559,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
           metadata: { piVersion: 'xiaozhi.pi.education.v1', agentRunId: run.runId, provider: 'deepseek', model: settings.model,
             ok: !failure, status, errorMessage: failure ? XIAOZHI_ERRORS[failure] : '',
             publicItems: run.turn.items.filter(item => item.id !== run.turn.items[0]?.id),
+            ...(run.turn.presentation?{chatPresentation:run.turn.presentation}:{}),
             ...(run.turn.modelReasoning?.length?{modelReasoning:{version:1,blocks:run.turn.modelReasoning}}:{}),
             ...(run.turn.publicStages?.length?{publicStages:run.turn.publicStages,publicStagesOmitted:run.turn.publicStagesOmitted||0}:{}),
             ...(run.turn.traceElapsedMs===undefined?{}:{traceElapsedMs:run.turn.traceElapsedMs}) } });

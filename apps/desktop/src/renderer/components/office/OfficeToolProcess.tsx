@@ -46,7 +46,14 @@ function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: 
       {item.resultSummary?.count===0&&<span className="office-result-empty">未找到匹配</span>}
       {item.durationMs !== undefined && <span className="office-step-duration">{formatProcessDuration(item.durationMs)}</span>}
     </ChatTool.Trigger>
-    <ChatTool.Content className="office-tool-evidence" data-testid="office-tool-evidence">
+    <ChatTool.Content className="office-tool-evidence" data-testid="office-tool-evidence"><OfficeToolEvidence item={item} sessionId={sessionId}/></ChatTool.Content>
+  </ChatTool>;
+}
+
+/** The same typed evidence is reused by the official trace composition and legacy tool cards. */
+export function OfficeToolEvidence({item,sessionId}:{item:OfficeProjectedItem;sessionId?:string}){
+  const status=statusText(item);
+  return <>
       {item.status==='completed'&&item.browserCapture&&sessionId&&<OfficeBrowserCapture capture={item.browserCapture} sessionId={sessionId}/>}
       <p>{item.resultSummary?.text || `${item.label || '授权工具'}：${status}。这条旧记录未保存结果摘要。`}</p>
       {item.resultSummary?.query&&<p>查找条件：{item.resultSummary.query}</p>}
@@ -58,8 +65,7 @@ function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: 
       {item.webEmpty && <p data-testid="pi-web-empty">本次搜索没有返回可用来源，请调整关键词。</p>}
       {item.status === 'failed' && <p data-testid="pi-web-error">{item.webError ? XIAOZHI_WEB_ERRORS[item.webError] : '该操作没有完成。请查看本轮提示；已完成的操作仍保留。'}</p>}
       {item.status === 'declined' && <p>教师已拒绝该操作。</p>}
-    </ChatTool.Content>
-  </ChatTool>;
+  </>;
 }
 
 /** Reuse native Pro disclosure; each call and its actual state remain inspectable. */

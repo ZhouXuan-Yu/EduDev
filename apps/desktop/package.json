@@ -5,8 +5,13 @@
   "type": "module",
   "main": "out/main/index.js",
   "scripts": {
+    "ui:review": "node scripts/ui-review-utilities.mjs && node scripts/ui-review-electron.mjs --stay",
+    "test:ui-contracts": "node scripts/ui-contracts.mjs",
+    "test:ui-review": "node scripts/ui-review-electron.mjs",
     "test:ux00-baseline": "node scripts/xiaozhi-agent/ux00-baseline.mjs",
     "test:agent-trace": "node scripts/xiaozhi-agent/agent-trace-boundaries.mjs",
+    "test:reply-presentation": "node scripts/xiaozhi-agent/reply-presentation-boundaries.mjs",
+    "test:desktop-process": "node scripts/xiaozhi-agent/desktop-process-boundaries.mjs",
     "test:model-reasoning": "node scripts/xiaozhi-agent/model-reasoning-boundaries.mjs",
     "test:model-reasoning-electron": "node scripts/xiaozhi-agent/model-reasoning-electron.mjs",
     "test:ui-style-isolation": "node scripts/xiaozhi-agent/ui-style-isolation-test.mjs",
