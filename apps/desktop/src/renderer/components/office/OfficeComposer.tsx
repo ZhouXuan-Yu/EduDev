@@ -13,6 +13,7 @@ import './office-conversation.css';
 import './prompt-input.utilities.css';
 import './pi-control-surfaces.css';
 import {ATTACHMENT_ONLY_PROMPT} from '../../../shared/xiaozhi-start';
+import {XIAOZHI_ATTACHMENT_ACCEPT} from '../../../shared/xiaozhi-attachments';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 import {useNativeHeroUITheme} from './useNativeHeroUITheme';
 
@@ -142,7 +143,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
       <PromptInput value={draft} onValueChange={setDraft} onSubmit={() => void send(draft, true)}
         onStop={() => void stop()} status={running ? 'streaming' : submitting ? 'submitted' : 'ready'}
         lockInputOnRun={false} isDisabled={disabled} maxHeight={220} className="office-composer" data-testid="office-composer">
-        <ChatAttachmentInput onFilesSelected={files => void onFilesSelected?.(files)} disabled={disabled || sync.blocked || attachDisabled} multiple>
+        <ChatAttachmentInput accept={XIAOZHI_ATTACHMENT_ACCEPT} onFilesSelected={files => void onFilesSelected?.(files)} disabled={disabled || sync.blocked || attachDisabled} multiple>
           <ChatAttachmentInput.Dropzone render={dropzoneProps => (
             <PromptInput.Shell {...dropzoneProps}>
               <PromptInput.Content>
