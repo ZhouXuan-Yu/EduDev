@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { Button } from '@heroui/react';
 import { X } from 'lucide-react';
 export function EduPanel({
@@ -12,10 +12,18 @@ export function EduPanel({
   onClose: () => void;
   history?: boolean;
 }) {
+  const panelRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    if (history) panelRef.current?.focus();
+  }, [history]);
   return (
     <aside
+      ref={panelRef}
       className={history ? 'edu-history-panel' : 'edu-context-panel'}
       aria-label={title}
+      aria-modal={history ? true : undefined}
+      role={history ? 'dialog' : undefined}
+      tabIndex={history ? -1 : undefined}
       data-theme="light"
       data-heroui-native=""
       data-testid={history ? 'edu-history-panel' : 'edu-context-panel'}

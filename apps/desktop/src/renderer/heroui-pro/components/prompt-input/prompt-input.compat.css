@@ -82,3 +82,21 @@
   width: 100%;
   min-height: 88px;
 }
+
+/* The app stylesheet is scoped away from [data-slot] roots. Keep the narrow
+   composer toolbar rules beside the prompt input so they actually apply. */
+[data-testid='xiaozhi-pi-workspace'] .office-composer-container { container-type: inline-size; }
+[data-testid='xiaozhi-pi-workspace'] .office-command-picker { min-width: 36px; }
+@container (max-width: 680px) {
+  [data-testid='xiaozhi-pi-workspace'] .office-command-picker span,
+  [data-testid='xiaozhi-pi-workspace'] .office-command-picker > svg:last-child { display: none; }
+  [data-testid='xiaozhi-pi-workspace'] .office-command-picker { min-width: 36px; padding-inline: 0; }
+}
+@container (max-width: 620px) {
+  [data-testid='xiaozhi-pi-workspace'] .office-composer [data-slot='prompt-input-toolbar'] { flex-wrap: wrap; height: auto; }
+  [data-testid='xiaozhi-pi-workspace'] .office-composer [data-slot='prompt-input-toolbar-start'] { flex-basis: 100%; flex-wrap: wrap; }
+}
+@container (max-width: 240px) {
+  [data-testid='xiaozhi-pi-workspace'] .office-model-picker { min-width: 0; max-width: 104px; padding-inline: 6px; }
+  [data-testid='xiaozhi-pi-workspace'] .office-model-picker span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}

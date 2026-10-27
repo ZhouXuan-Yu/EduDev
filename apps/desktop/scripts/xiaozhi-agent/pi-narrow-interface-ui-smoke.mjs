@@ -113,7 +113,7 @@ async function keyboardProbe(){
   const pageAx=await pageCdp.send('Accessibility.getFullAXTree');
   report.accessibilityPage=pageAx.nodes.filter(node=>!node.ignored&&['main','textbox','button'].includes(node.role?.value)).map(node=>({role:node.role?.value,name:node.name?.value||'',disabled:node.properties?.find(property=>property.name==='disabled')?.value?.value??false}));
   const named=(role,name)=>report.accessibilityPage.some(node=>node.role===role&&node.name.includes(name));
-  for(const name of ['给小智发送消息','添加本地附件','教师资料 · 只读','选择教育技能','发送消息'])if(!named('textbox',name)&&!named('button',name))throw Error(`accessibility tree missing ${name}`);
+  for(const name of ['给小智发送消息','添加本地附件','请求批准','选择教育技能','发送消息'])if(!named('textbox',name)&&!named('button',name))throw Error(`accessibility tree missing ${name}`);
   if(!report.accessibilityPage.some(node=>node.role==='main'))throw Error('accessibility tree missing main landmark');
   const input=page.getByTestId('office-prompt-input');
   await input.fill('窄屏键盘可达性探针');
