@@ -30,10 +30,17 @@ try{
  pass('Closing and reopening the actual Store preserves source-backed missing-answer identity and read eligibility without rebuilding business facts');
  const resource=await store.materials.resource(q.archive!.sources[0].resourceId);
  // Resolve only this test's managed original. No live teacher directory is accessed.
- const sql=store as unknown as {all:(query:string,params:string[])=>Promise<Record<string,unknown>[]>};
+ const sql=store as unknown as {all:(query:string,params:string[])=>Promise<Record<string,unknown>[]>;run:(query:string,params:string[])=>Promise<void>};
  const row=(await sql.all('SELECT local_path FROM teacher_resources WHERE id=?',[resource.id]))[0];
  const saved=String(row.local_path),original=fs.readFileSync(saved);fs.writeFileSync(saved,Buffer.concat([original,Buffer.from('\n原件已变化')]));
  result=payload(await call(1,{reference,version,purpose:'answer_enrichment'}));assert(!result.success);assert.equal(result.code,'source_changed');fs.writeFileSync(saved,original);
  pass('Changed managed original prevents stale missing-answer disclosure after restart; old facts remain untouched');
+ await sql.run('UPDATE resource_chunks SET contains_personal_data=1 WHERE resource_id=?',[resource.id]);
+ const {materialSource}=await import('../../src/main/assets/material-source');
+ const unit=(await store.materials.readingWindow(resource.id,0)).units[0];
+ const current=(await store.getQuestionNotebookEntry(q.id))!,privateArchive={...current.archive!,sources:[materialSource(unit)]};
+ await sql.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(privateArchive),q.id]);
+ search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment'}));assert.equal(search.returned,0,JSON.stringify(search));
+ pass('A valid original hash and matching private chunk bodyVersion cannot bypass source privacy when missing answers use keyword discovery');
  fs.writeFileSync(path.join(output,'report.json'),JSON.stringify({success:true,passed:checks.length,checks,data,scope:'Actual Electron Store, real copied Markdown, SQLite notebook/source/FTS, actual Pi tool definitions and Store restart; no live AI/search website, no answer writeback or final EXE claim'},null,2));
 }finally{await store.close();}
