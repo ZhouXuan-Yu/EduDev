@@ -1,5 +1,12 @@
 # 当前验收入口
 
+<!-- kb-word-proof-20261027:start -->
+## 2026-10-27 Word图稿与崩溃限定证据
+
+整合前f4996628最终build/typecheck、240组件、39专项与4备份通过；真实教师6项/2启动/0错误，图/式/表尾、角色、坏缓存/停止/冷启、1366/1920。隔离Electron42行表尾由真实冻结OCR读出。独立真实exit(79)反例已修复并复验，无新确定P1/P2。整合后证据另记KB_IMPLEMENTATION_EVIDENCE，不把本片当AI自然质量/40GB/安装包验收。
+整合后补验完成：build/typecheck及240组件通过，生产启动9项、Word图稿6项/2启动均0rendererErrors；两套报告共享完整out指纹c58e043b7a3a8b4c7126e5ec419c51b70b0bdc0d578481cba7353d2cc8469a03。预整合冻结out的207项历史兼容回归exit0；不冒充整合后全套Pi或正式模型验收。文档/专项收尾提交将真实快进main，未push。
+<!-- kb-word-proof-20261027:end -->
+
 <!-- kb-word-question-20261027:start -->
 ## 2026-10-27 Word按题基础限定验证
 

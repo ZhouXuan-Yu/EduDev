@@ -1,5 +1,11 @@
 # 当前架构
 
+<!-- kb-word-proof-20261027:start -->
+## 2026-10-27 Word角色PNG派生层
+
+安全静态原生HTML/MathML与精确图片白名单，经私有Electron离屏1x生成最多8片；每段/行/纵向合并单元为原子分页，过高/过宽明确拒绝，不裁尾。material_word_proofs/proof_files保存源与环境摘要/引用，PNG存cache/word-question-pages/v1，32份/128MiB有界LRU。每根JS门+Windows独占锁保护发布/读取/崩溃恢复，长渲染不持锁；原件/结构再次复验后manifest事务最后发布。AI正式图片账本仍未接通。
+<!-- kb-word-proof-20261027:end -->
+
 <!-- kb-word-question-20261027:start -->
 ## Word原生题目来源（2026-10-27）
 

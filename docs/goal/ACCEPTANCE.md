@@ -1,5 +1,12 @@
 # Goal 验收台账
 
+<!-- kb-word-proof-20261027:start -->
+## 2026-10-27 Word图稿限定验证
+
+整合前f4996628：build/typecheck、240组件、39组新领域、4备份通过；4新领域覆盖100%行/80.99%分支/95.74%函数。教师图稿6项/2启动/0rendererErrors、1366/1920、真实SQLite/PNG/坏缓存/取消/冷启；独立实际exit(79)及第二进程独占锁验证，P2复查闭合。整合e2b91a4后门禁另记EVIDENCE，不将预整合结果冒充整合后。完整Goal保持ACTIVE。完整图文AI定稿同库、独立AI图片账本、图义检索/Pi及正式出卷、跨页/答案册、本地视觉包、自然质量/40GB与最终EXE仍须继续；本片原文图稿不授予AI/教师确认或学生卷资格。
+整合后补验完成：build/typecheck及240组件通过，生产启动9项、Word图稿6项/2启动均0rendererErrors；两套报告共享完整out指纹c58e043b7a3a8b4c7126e5ec419c51b70b0bdc0d578481cba7353d2cc8469a03。预整合冻结out的207项历史兼容回归exit0；不冒充整合后全套Pi或正式模型验收。文档/专项收尾提交将真实快进main，未push。
+<!-- kb-word-proof-20261027:end -->
+
 <!-- kb-word-question-20261027:start -->
 ## 2026-10-27 S6-B2 来源基础限定证据
 

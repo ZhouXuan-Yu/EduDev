@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+<!-- kb-word-proof-20261027:start -->
+## 2026-10-27 Word图稿typed接线
+
+新增materials:word-proof-create/cancel/image与typed preload，单宿主requestId所有权/取消/退出drain；MaterialWordProof复用现按题页面，不改变AI批次上传授权。复用image-size、现MathML/Office隔离和Windows字体，不新增依赖；最终EXE体积与干净机器验证仍待实测。backup精确省略cache/word-question-pages并只清副本两表，正式AI图片仍须独立账本。
+<!-- kb-word-proof-20261027:end -->
+
 <!-- kb-word-question-20261027:start -->
 ## 2026-10-27 Word按题来源入口
 

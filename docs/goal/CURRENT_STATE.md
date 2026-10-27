@@ -1,5 +1,12 @@
 # 小智 Goal 当前状态
 
+<!-- kb-word-proof-20261027:start -->
+## 2026-10-27 S6-B2 Word图稿和main整合
+
+原生题面/答案/解析PNG已贯通安全本机渲染、SQLite引用缓存、typed IPC与教师可操作入口。实际图片/公式/表尾、取消、缓存损坏、重启读回均有独立证据；崩溃孤片P2已由独立AI复查闭合。main已整合到e2b91a4，包含85011d6生产启动优化及知识库新增，未push；合并后门禁已收敛，准确范围见EVIDENCE。完整Goal保持ACTIVE。完整图文AI定稿同库、独立AI图片账本、图义检索/Pi及正式出卷、跨页/答案册、本地视觉包、自然质量/40GB与最终EXE仍须继续；本片原文图稿不授予AI/教师确认或学生卷资格。
+整合后补验完成：build/typecheck及240组件通过，生产启动9项、Word图稿6项/2启动均0rendererErrors；两套报告共享完整out指纹c58e043b7a3a8b4c7126e5ec419c51b70b0bdc0d578481cba7353d2cc8469a03。预整合冻结out的207项历史兼容回归exit0；不冒充整合后全套Pi或正式模型验收。文档/专项收尾提交将真实快进main，未push。
+<!-- kb-word-proof-20261027:end -->
+
 <!-- kb-word-question-20261027:start -->
 ## 2026-10-27 原生Word按题来源基础
 

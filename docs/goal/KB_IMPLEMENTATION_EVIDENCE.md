@@ -1,5 +1,51 @@
 # 知识库实施证据
 
+<!-- kb-word-proof-20261027:start -->
+## 2026-10-27 S6-B2 原生角色图稿、崩溃修复与main整合
+
+实际交付：教师按题视图生成/取消本机题面、答案、解析PNG，独立角色/来源/环境与字节校验；完整原生公式、原图和表格分页，超高/超宽明确拒绝。仅派生缓存，不授予AI自动定稿或教师确认/正式试卷权限。完整S6-B2 archive v3/AI图片账本及同库/检索/Pi/正式出卷仍OPEN。无新增依赖、外部服务、上传或付费模型请求。
+
+代码检查点ff1760a，独立批判后修复bf6b3e4/df2028e/49532c9，合并e2b91a4。用户明确授权接管D盘未提交启动修改后，先保存85011d6；13份状态文档冲突均是双方独立新增，保留两方全文，业务源码无冲突；D盘main真实快进e2b91a4。其他未跟踪截图/浏览器记录/.claude/skills保留，未push。该合并前的构建不得冒充合并后renderer验收。
+
+工作目录为本checkout/apps/desktop，专项均不使用正式教师数据。
+
+| 精确命令 | 实际结果与日志 |
+| --- | --- |
+| `npm run build` | 整合前exit0含typecheck；kb-word-proof-recovery-build.log；main bundle f49966282b259e834c0fa5079133998b09daeb645bd5bbb19dbaf70c22cef860 |
+| `npm run test:renderer-components` | 整合前240/240，kb-word-proof-components-recovery.log |
+| `node --experimental-transform-types scripts/education/kb-word-proof-boundaries.mjs` | 12组实际DOCX/静态HTML/分页/合并表，kb-word-proof-layout-merge.log；完整尾行、rowspan、不隐藏continue内容 |
+| `node --experimental-transform-types scripts/education/kb-word-font-boundaries.mjs` | 5组已装Windows字体cmap；包含在覆盖日志；不保证任意复杂数学符号布局正确 |
+| `node --experimental-transform-types scripts/education/kb-word-proof-repository.mjs` | 11组实际SQLite/文件/CAS/提交取消/32份LRU；受控PNG生产者；kb-word-proof-cache-reason-green.log |
+| `node --experimental-transform-types scripts/education/kb-word-proof-ipc.mjs` | 8组实际registrar/受控host：来源、frame、任务slot、取消、退出与cache_unavailable；kb-word-proof-ipc-cache.log |
+| `node --experimental-transform-types scripts/education/kb-word-proof-recovery.mjs` | 3项实际子进程exit(79)→新进程恢复、第二进程真实Windows锁、释放后恢复；root omni-word-proof-recovery-aMMRbo，后续覆盖运行另建实例 |
+| `node --experimental-transform-types scripts/education/kb-backup-boundaries.mjs` | 4项实际sqlite3在线备份/冷读、两类在用独占锁、保留原件/word-assets/活库；kb-word-proof-backup-green.log；root omni-edu-backup-merge-S72H7M |
+| `node scripts/education/kb-word-proof-render.mjs` | 修复前片最终6项，真实独立Electron/图像解码/42行末片由冻结本地OCR读出TABLE TAIL 042、实际取消销毁；kb-word-proof-render-tenth.log；test-results/word-proof-render-BmFcnE/report.json |
+| `node scripts/education/kb-word-proof-journey.mjs` | 整合前最终6项/2启动/0rendererErrors、1366/1920，真实文件夹→Word源→SQLite/PNG/角色/表尾、释放缓存提示重建、实际停止、坏缓存冷恢复；kb-word-proof-journey-recovery.log；C:/Users/ZhouXuan/AppData/Local/Temp/omni-word-proof-ui-3nzbRc/report.json |
+
+覆盖精确命令：`node --experimental-transform-types --test --experimental-test-coverage --test-coverage-include=src/main/assets/word-question-layout.ts --test-coverage-include=src/main/assets/word-font-coverage.ts --test-coverage-include=src/main/assets/word-question-proof-repository.ts --test-coverage-include=src/shared/material-word-proof.ts scripts/education/kb-word-proof-boundaries.mjs scripts/education/kb-word-font-boundaries.mjs scripts/education/kb-word-proof-repository.mjs scripts/education/kb-word-proof-ipc.mjs scripts/education/kb-word-proof-recovery.mjs`。kb-word-proof-coverage-final.log exit0，5个脚本/39组断言，0失败/0skipped；四个指定新领域总100%行/80.99%分支/95.74%函数。字体100/80.49/100，layout100/84.62/100，仓储100/83.44/93.33，共享协议100/66.67/93.75。不是全项目、真实renderer/UI或自然题目覆盖率。
+
+独立批判真实反例：进程在写入三张PNG、尚未SQLite发布时exit(79)，旧版新进程仍保留3孤片；kb-word-proof-recovery-red.log为真实RED。修复加入每根串行门+Windows独占锁，仅删除私有v1内精确普通无引用SHA.png/.pending-UUID，最多4096条/超时取消；渲染不持锁。独立复查报告C:/Users/ZhouXuan/AppData/Local/Temp/word-proof-recritic-748fd9b9be9e4cecb44b6b971c4febd6/recovery-verdict.json，原P2闭合，无新确定P1/P2，未将其只读审查称构建/Electron证据。
+
+备份引入锁后实际copyfile EBUSY的RED保留kb-word-proof-backup-red.log；修复精确省略cache/word-question-pages，仅在导出DB副本清除两张派生表，原件/其他缓存/活库保留。LRU/坏PNG误报source_changed的RED保留kb-word-proof-cache-reason-red.log；现提示cache_unavailable且UI从真实操作恢复，不要求教师重解析未变的原文件。
+
+截图失败与修复：设备模拟先置导致Chromium崩溃，普通隐藏窗口/150%缩放导致逻辑1709px与实际1019px截尾；曾错误尝试尺寸修正，真实尾行OCR揭露不完整，最终禁止拉伸。现在私有离屏deviceScaleFactor=1、load后setContentSize(1320,1900)、逻辑平移切片、精确PNG尺寸及实际尾标OCR。原first至ninth失败日志保留，最终tenth通过；动态import在app.evaluate不支持属探针配置，已用bootstrap加载冻结OCR并明确字段text，非模型失效。超1760px单段/合并行目前明确拒绝，长阅读材料需要后续安全细分，不称无限制排版。
+
+### 合并后的必要门禁（本轮实际收敛）
+
+- `npm run build` exit0，kb-word-proof-merge-build.log；包含typecheck。整合后完整out指纹为c58e043b7a3a8b4c7126e5ec419c51b70b0bdc0d578481cba7353d2cc8469a03，renderer index-y8KJjPTg.js。main仍f4996628，因协作者只改renderer，不能用单一main SHA冒充整合证据。
+- `npm run test:renderer-components` exit0，240/240，kb-word-proof-merge-components.log。
+- `node scripts/production-bootstrap-ui.mjs` 最终exit0，9/9、0rendererErrors、0skipped，kb-word-proof-merge-bootstrap-final.log；test-results/production-bootstrap-1LdWcU/report.json，build指纹同c58e043b。
+- `node scripts/education/kb-word-proof-journey.mjs` exit0，6项/2启动/0rendererErrors、两尺寸；kb-word-proof-merge-journey.log；C:/Users/ZhouXuan/AppData/Local/Temp/omni-word-proof-ui-WIYpqr/report.json。完整out指纹同c58e043b且结束复核未变；只有测试脚本增加指纹守卫，没有修改产品源码。
+- `npm run test:smoke` exit0，ok=true、207/207历史兼容路径、30名隔离学生，kb-word-proof-smoke-final.log。针对预整合固定out/index-R872Bpm1.js，执行期间未重建；正常退出后才重新build整合renderer。不是整合后全套Pi、真实provider或自然教师验收。
+- 独立AI仅源码复查整合：App与85011d6一致；Word入口/typed取消/drain无交叉变更；13份冲突相对双方父提交均新增保留、无删除/冲突标记，无新增确定P1/P2。其未构建/启动Electron，与上述运行证据区分。
+- `npm audit --json` 本轮重查exit1：npm bulk advisories请求TLS握手前断开，kb-word-proof-merge-audit.json同时含npm告警而非纯JSON，后续ConvertFrom-Json失败；不能称新审计通过。此前同依赖基线kb-word-proof-audit.json为21（8high/5moderate/8low），无自动升级/清零。
+- `git diff --check` exit0，无未解决冲突。用户授权接管的协作修改已提交，截图/浏览记录/.claude/skills仍留在D盘未跟踪，未push。main源码已真实整合；D盘日常out与旧EXE未作为本轮最终构建验证，不声称现有已开窗口或安装包更新。
+
+保留整合首次启动专项7项后2!==1失败：production-bootstrap-MRio4g/report.json、kb-word-proof-merge-bootstrap.log。legacy初始app-shell显示时bootstrap未完成，清计数后混入刷新前knowledge请求；现先完成一轮受控刷新直到末次pending-input响应/dialog，再清计数正式刷新，原各IPC严格1次断言不变。最终9项通过，不将测试时序失配误写成新生产缺陷或放宽门禁。
+
+完整Goal继续ACTIVE。新安装包、真实provider/40GB/自然召回及冷启动P95仍未验收，下一实现位置为archive v3 AI原生文档、独立正式图片账本与同库/Pi/正式出卷消费者。
+<!-- kb-word-proof-20261027:end -->
+
 ## 2026-10-27 S6-B2 原生Word按题来源基础（完整AI图文链路仍进行中）
 
 最终实现检查点95394d7（含c4656cb列表边界、1e8fcd7分页图片、兄弟key修复），最终bundle SHA256 **ad1ac1e6e85ed9f983a5572c0c2423695dc161bfa558cf523d429d108f397843**。教师从资料Word原文进入“按题查看 Word”，查看按真实节点/范围分出的题面、答案、解析，保留原图/公式/完整表格，超限和歧义明确可见。没有新依赖、DDL、付费调用或上传；原题事实/正式卷教师确认不变。

@@ -123,7 +123,13 @@ try {
   await page.getByTestId('student-lifecycle-no-student').waitFor(); noLegacy(await calls());
   check('Reload recovers shared student bootstrap without legacy reads');
   await app.close(); app=undefined;
-  await launch(true); await configure({}); await page.reload();
+  await launch(true);
+  // The shell is visible before its initial async bootstrap finishes. Finish a
+  // controlled document load through its final IPC/UI response before resetting
+  // counters; otherwise the previous document's late reads pollute this reload.
+  await page.reload();
+  await page.getByRole('dialog',{name:'小智补充信息'}).getByText('旧入口恢复的补充信息',{exact:true}).waitFor();
+  await configure({}); await page.reload();
   await page.getByRole('dialog',{name:'小智补充信息'}).getByText('旧入口恢复的补充信息',{exact:true}).waitFor();
   const legacy = await calls();
   for (const channel of ['app:bootstrap',...sharedChannels,...legacyChannels,'aiConversations:list']) assert.equal(legacy.filter(x => x === channel).length,1,channel);

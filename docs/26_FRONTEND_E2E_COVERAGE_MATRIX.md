@@ -1,5 +1,15 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+<!-- kb-word-proof-20261027:start -->
+## 2026-10-27 原生Word图稿真实路径
+
+| 用户操作 | 限定证据 |
+| --- | --- |
+| 文件夹→Word按题→生成图稿→独立题/答/解→表尾→停止→坏缓存重建→冷启动 | 整合前f4996628；kb-word-proof-journey-recovery.log，6项/2启动/0错误，1366/1920，omni-word-proof-ui-3nzbRc；不是AI入库/正式试卷 |
+| 图稿进程exit(79)→新进程恢复；另进程持锁→拒绝清理；备份→冷读 | 3真实崩溃/锁+4实际SQLite备份专项；只回收无引用精确派生文件，原件与活库记录保留 |
+整合后补验完成：build/typecheck及240组件通过，生产启动9项、Word图稿6项/2启动均0rendererErrors；两套报告共享完整out指纹c58e043b7a3a8b4c7126e5ec419c51b70b0bdc0d578481cba7353d2cc8469a03。预整合冻结out的207项历史兼容回归exit0；不冒充整合后全套Pi或正式模型验收。文档/专项收尾提交将真实快进main，未push。
+<!-- kb-word-proof-20261027:end -->
+
 <!-- kb-word-question-20261027:start -->
 ## 2026-10-27 Word原生按题视图
 
