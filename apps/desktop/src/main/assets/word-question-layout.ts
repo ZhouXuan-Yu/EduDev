@@ -73,10 +73,11 @@ export function buildWordQuestionLayout(source:WordQuestionSource,images:Readonl
   if(originalBytes>64*1048576||pixels>64000000||imageResources.length>=8)throw Error('too_large');
   imageResources.push({mime:asset.mime,data:Buffer.from(data)});url='data:'+asset.mime+';base64,'+data.toString('base64');urls.set(asset.id,url);return url;
  }
- function blocks(values:WordBlock[]):string{
-  return values.map(b=>{
-   if(b.kind==='table')return '<table data-native-block="'+b.id+'"><tbody>'+tableGrid(b).map(row=>'<tr>'+row.filter(c=>!c.hidden).map(c=>'<td colspan="'+c.cell.colSpan+'" rowspan="'+c.rowSpan+'">'+blocks(c.cell.blocks)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
-   return '<p data-native-block="'+b.id+'">'+officeEscape(b.numbering?.label||'')+b.inlines.map(i=>{
+ function blocks(values:WordBlock[],root=false):string{
+  return values.map((b,index)=>{
+   const anchor=' data-native-block="'+b.id+'"'+(root?' data-native-span="'+index+'"':'');
+   if(b.kind==='table')return '<table'+anchor+'><tbody>'+tableGrid(b).map(row=>'<tr>'+row.filter(c=>!c.hidden).map(c=>'<td colspan="'+c.cell.colSpan+'" rowspan="'+c.rowSpan+'">'+blocks(c.cell.blocks)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+   return '<p'+anchor+'>'+officeEscape(b.numbering?.label||'')+b.inlines.map(i=>{
     if(i.kind==='text')return officeEscape(i.text);
     if(i.kind==='formula'){
      if(!i.complete)throw Error('source_incomplete');
@@ -84,11 +85,11 @@ export function buildWordQuestionLayout(source:WordQuestionSource,images:Readonl
      try{return '<span class="native-formula">'+officeMathHtml('$'+i.latex+'$')+'</span>';}catch{throw Error('source_incomplete');}
     }
     const asset=assets.get(i.assetId);if(!asset||i.issue)throw Error('source_incomplete');
-    return '<img alt="'+officeEscape(i.alt||'原文插图')+'" width="'+Math.min(asset.width,1200)+'" src="'+image(asset)+'">';
+    return '<img data-native-width="'+asset.width+'" data-native-height="'+asset.height+'" alt="'+officeEscape(i.alt||'原文插图')+'" width="'+Math.min(asset.width,1200)+'" src="'+image(asset)+'">';
    }).join('')+'</p>';
   }).join('');
  }
- const templates=WORD_QUESTION_ROLES.map(role=>'<template id="'+role+'">'+blocks(wordQuestionBlocks(source,role))+'</template>').join('');
+ const templates=WORD_QUESTION_ROLES.map(role=>'<template id="'+role+'">'+blocks(wordQuestionBlocks(source,role),true)+'</template>').join('');
  const html='<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src \'none\';style-src \'unsafe-inline\';img-src data:;script-src \'none\';font-src \'none\';base-uri \'none\';form-action \'none\'"><style>'+
   'html,body{margin:0;padding:0;background:white;color:#111;font:32px/1.5 SimSun,"Cambria Math",serif}#content{width:1240px;box-sizing:border-box;padding:16px;overflow-wrap:anywhere}p{white-space:pre-wrap;margin:0 0 16px}p:empty{min-height:1px}img{display:block;max-width:100%;max-height:1660px;object-fit:contain;margin:8px 0}math{font-family:"Cambria Math",SimSun,math}.native-formula{display:inline-block;vertical-align:middle;max-width:100%}table{width:100%;border-collapse:collapse;margin:0 0 16px}td{border:2px solid #666;padding:8px;vertical-align:top;min-width:64px}td p{margin-bottom:8px}</style></head><body>'+templates+'<main id="content"></main></body></html>';
  if(Buffer.byteLength(html)>4*1048576+originalBytes*1.4)throw Error('too_large');
