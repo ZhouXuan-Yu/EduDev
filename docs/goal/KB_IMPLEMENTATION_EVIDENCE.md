@@ -1,5 +1,30 @@
 # 知识库实施证据
 
+## 2026-10-27 S6-B2 原生Word按题来源基础（完整AI图文链路仍进行中）
+
+最终实现检查点95394d7（含c4656cb列表边界、1e8fcd7分页图片、兄弟key修复），最终bundle SHA256 **ad1ac1e6e85ed9f983a5572c0c2423695dc161bfa558cf523d429d108f397843**。教师从资料Word原文进入“按题查看 Word”，查看按真实节点/范围分出的题面、答案、解析，保留原图/公式/完整表格，超限和歧义明确可见。没有新依赖、DDL、付费调用或上传；原题事实/正式卷教师确认不变。
+
+| 精确命令（cwd=apps/desktop） | 结果及边界 |
+| --- | --- |
+| `npm run build` | 最终exit0，含typecheck；`kb-word-native-reviewed-build.log`，上述ad1ac1e6 bundle。 |
+| `npm run test:renderer-components` | 最终exit0、240/240；`kb-word-native-reviewed-components.log`。 |
+| `node scripts/education/kb-word-question-boundaries.mjs` | 最终24组通过；真实合成DOCX到公式/表/图范围，角色隔离、同段多题/答案图、选项/步骤/页眉、共用图、独立答案章节、版本/范围/投影篡改、UTF16、千题尾部与超限。覆盖运行另含此全部断言。 |
+| `node --experimental-transform-types scripts/education/kb-word-question-repository.mjs` | 实际SQLite和真实IPC registrar的6组通过；不是仅mock SQL。所选题/摘要有界、source/version/digest双读栅栏、非法输入及frame拒绝。原报告Fm46Vo/VaI551/Q0wS23及最终coverage输出保留。 |
+| `node --experimental-transform-types --test --experimental-test-coverage --test-coverage-include=src/main/assets/word-question-source.ts --test-coverage-include=src/shared/material-word-question.ts scripts/education/kb-word-question-boundaries.mjs scripts/education/kb-word-question-repository.mjs` | 最终exit0，2个顶层脚本/30组业务断言；无fail/cancel/skipped。两新领域模块100%行、89.07%分支、98.61%函数，`kb-word-native-reviewed-coverage.log`。不称全项目或renderer覆盖。 |
+| `node --expose-gc scripts/education/kb-word-question-load.mjs` | 最终exit0，2000个共用段/4000题，GC后index retained 3371536字节、建立27.97ms；尾题超限可见。修复前162178312字节/603.42ms且80MiB门槛失败，`kb-word-native-load-red.log`；最终`kb-word-native-reviewed-load.log`。仅单文档原生结构探针，无OCR/AI/整库吞吐结论。 |
+| `node scripts/education/kb-word-question-journey.mjs` | 最终exit0，5项/2启动/0 rendererErrors，两尺寸；`kb-word-native-reviewed-journey.log`，报告`C:/Users/ZhouXuan/AppData/Local/Temp/omni-word-native-ui-kPOGrR/report.json`。实际目录导入/utility/SQLite/typed preload，题面公式、答案PNG准确解码、角色隔离、完整表格与尾题、同段六图分页逐图SHA字节一致、冷读相同digest。 |
+| `node scripts/education/kb-word-journey.mjs` | 最终exit0，5项/3启动/0 rendererErrors；`kb-word-native-existing-word-reviewed.log`，报告`C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-word-zANa0b/report.json`。原文当前5块恰好一次，保留原Word升级/隐私/旧题不改/取消/坏图拒绝和幂等修复。 |
+| `npm run test:smoke` | exit0、ok=true、207项历史教育兼容；`kb-word-native-smoke.log`。本次运行启动时为a14be2e4构建，执行期间Word专项修复并重建out，可能跨进程装载不同构建，故仅记录兼容辅助，不作为单一冻结最终ad1构建验收；最终Word闭环另以上两条独立脚本证明。 |
+| `npm audit --json` | exit1、21项（8high/5moderate/8low）；`kb-word-native-audit.json`。本轮无新增依赖，未擅自升级或将风险写成清零。 |
+
+独立审查实际找到并促成修复：题前共用图丢失、解析步骤误造题、手工括号漏题、冒号答案册误识别、合并答案标签把图放进题面、整原段图片预算误拒、空正文页眉造题、数字选项未延续列表、片段分页显示旧图。最终来源强校验/预算反例独立收敛，报告根`word-question-final-review-CXLNIw`及`word-question-recritic-w90oJA`；图片React/JSDOM限定复核`word-ui-final-review-92x6ul`另通过，不能替代Electron。最终第1题选项复核与模块限定接受见代理消息，不将未发现新的P1/P2表述为全产品无缺陷。
+
+旧入口E2E额外复现同级key=0冲突，原文5块被挂载成10块（`kb-word-native-duplicate-red.log`/BBCGwZ）；改为独立key namespace后最终旧入口5项通过。首次仓储普通node只因已有TS参数属性报错，修正`--experimental-transform-types`后才确认业务RED；首次图片反例因不明确题号提前计数失败，使用明确第8题后实际复现旧图，Ag4z3g。原失败保留，不改写成全部首次成功。完整TDD检查点在本分支可追溯。
+
+**没有完成的必做部分**：S6-B2 archive v3 AI原生文档、独立AI图片账本、按角色本地PNG布局、两阶段完整AI投影、同题库编辑、identity/facts/语义索引/Pi完整上下文和正式图文Office导出。现有AI仍主要为文本资格，来源预览不会自动改变旧题资格。独立答案册/跨页配答、本地视觉包、自然教师召回/准确率、百万级冷延迟/40GB长时与最终Windows EXE仍OPEN，完整Goal ACTIVE。
+
+Git范围：上一轮本地main=fb6f37d，本轮位于codex/knowledge-base-delivery。收尾时D盘main有协作者production-bootstrap的App.tsx/脚本及状态文档未提交改动；未stash、覆盖、代提交或强行移动在用main，尚未将本轮快进main，未push。后续待协作者提交再做正常合并及冲突处理。
+
 ## 2026-10-27 S6-B1 DOCX 原文结构（限定实现，完整 Goal 继续）
 
 2026-10-27 Git源码收尾：独立审查修复提交 0652500325ad1413c9cc4dc0debf8f7aafb4894b；本地main已从协作者8dec132快进到该提交，包含27f0081/436ef78及两项P2修复。D盘main与beca知识库工作树均已核实干净，未push、未发布EXE；本条文档收尾提交也将快进本地main。整体Goal保持ACTIVE。

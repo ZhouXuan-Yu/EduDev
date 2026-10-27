@@ -1,5 +1,13 @@
 # Goal 验收台账
 
+<!-- kb-word-question-20261027:start -->
+## 2026-10-27 S6-B2 来源基础限定证据
+
+最终构建SHA256 ad1ac1e6e85ed9f983a5572c0c2423695dc161bfa558cf523d429d108f397843。build/typecheck、240组件、24来源+6实际SQLite-IPC通过；覆盖100%行/89.07%分支/98.61%函数，仅限两个新领域模块。实际按题5项/2启动、旧Word5项/3启动，两尺寸及原图字节/重启验证均0 renderer错误。4000题共用前缀探针常驻约3.37MB，属于合成单文档索引。
+
+独立来源审查已限定接受；分页旧图另有React与实际Electron复验。兄弟key重复正文由旧Word E2E复现并在最终构建闭合。207历史兼容smoke exit0，但执行中out被Word专项重建，不作为单一冻结最终构建证明。全目标仍ACTIVE；AI完整图题/40GB/自然教学质量/最终EXE未验收，完整命令及失败保留于KB_IMPLEMENTATION_EVIDENCE.md。
+<!-- kb-word-question-20261027:end -->
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

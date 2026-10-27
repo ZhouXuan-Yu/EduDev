@@ -1,5 +1,13 @@
 # 小智 Goal 当前状态
 
+<!-- kb-word-question-20261027:start -->
+## 2026-10-27 原生Word按题来源基础
+
+S6-B2仍进行中，完整Goal ACTIVE。Word原生范围已从主进程贯通SQLite、typed IPC和可操作按题视图；题面/答案/解析分开保留公式、表格、原图。独立审查及旧入口复验发现的分段/图片状态/兄弟key问题均已修复。最终ad1ac1e6构建、24来源/6仓储-IPC、240组件、新按题5项/2启动及旧Word5项/3启动通过；40GB/AI图题闭环/真实召回质量与最终EXE仍未证明。
+
+本轮新源码在知识库分支，上一轮main=fb6f37d；D盘main现有协作者production-bootstrap未提交源码/文档，已保留，尚未将本轮强行合入或push。下一步为S6-B2的AI原生文档/图片账本/正式出卷贯通，证据与准确边界见KB_IMPLEMENTATION_EVIDENCE.md和2.Memory.md。
+<!-- kb-word-question-20261027:end -->
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

@@ -1,5 +1,13 @@
 # 当前验收入口
 
+<!-- kb-word-question-20261027:start -->
+## 2026-10-27 Word按题基础限定验证
+
+最终ad1ac1e6构建：build/typecheck、240组件、24原生范围、6真实SQLite/IPC均通过；新按题Electron5项/2启动、旧WordElectron5项/3启动在1366/1920及冷启动均0 renderer错误。两新领域模块覆盖100%行/89.07%分支/98.61%函数，不能表述为全项目覆盖。4000题合成索引常驻约3.37MB，非40GB导入吞吐。
+
+独立批判的来源/角色/预算/图片状态问题和旧入口查出的兄弟key重复渲染均已修正。207历史兼容smoke虽然exit0，执行中out重建，故仅作辅助；最终Word专项另独立完成。AI图题入库、真实模型质量、自然召回/延迟、长时规模、最终EXE仍OPEN。命令、报告与失败记录见docs/goal/KB_IMPLEMENTATION_EVIDENCE.md。
+<!-- kb-word-question-20261027:end -->
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

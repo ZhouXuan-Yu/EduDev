@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+<!-- kb-word-question-20261027:start -->
+## 2026-10-27 Word按题来源入口
+
+新增xiaozhi.word-question-source.v1、materials:word-questions与typed getMaterialWordQuestions，复用material_word_documents和word-assets，不新增依赖/服务/DDL。每次最多5摘要+按需1题详情，所有查询包含resource/version，源码仓储复验digest后返回。MaterialWordBlocks供原文与按题视图复用，片段/图片key绑定全局位置、资源及图片版本。
+
+后续AI必须仅发送resolved范围的必要图文，不能直接发送含邻题proof manifest的完整JSON。新的预览没有上云动作，也没有授予已有云端会话原图访问权限。
+<!-- kb-word-question-20261027:end -->
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

@@ -1,5 +1,13 @@
 # 当前架构
 
+<!-- kb-word-question-20261027:start -->
+## Word原生题目来源（2026-10-27）
+
+新增word-question-source索引与shared原生范围协议，主部件由document/body根锚点确定；精确UTF16文字范围及原子公式/图片按题面、答案、解析解析。共用材料只保留一份，按需合成单题proof；未归属/层级歧义显式标记。单题详情96KiB/64范围/8张所选独立图片；proof里的邻题图片仅元数据，不获得发送/出卷权限。
+
+MaterialWordRepository.questions复用既有派生结构，缓存最多一份资料索引，按源摘要失效，返回前再读结构/版本；无新DDL或模型依赖。typed IPC→MaterialWordQuestions可操作预览，严格源验证函数保留后续AI入账使用。archive v3、独立AI图片来源账本和正式输出接线仍继续，未把候选来源升级为已确认事实。
+<!-- kb-word-question-20261027:end -->
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 
