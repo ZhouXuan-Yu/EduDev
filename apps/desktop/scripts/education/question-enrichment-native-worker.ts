@@ -1,0 +1,39 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {OmniEduStore} from '../../src/main/db';
+import {createQuestionContextProvider,questionVersion} from '../../src/main/education/question-context-provider';
+const output=process.env.OMNI_EDU_ENRICHMENT_TEST_OUTPUT!;
+const data=path.join(output,'data'),file=path.join(output,'原教辅.md');
+const body='学科：数学\n年级：七年级\n知识点：方程\n题型：解答题\n难度：基础\n\n第1题 已知 x+2=5，求 x。';
+const checks:string[]=[];const pass=(s:string)=>{checks.push(s);console.log('PASS '+s);};
+let store=new OmniEduStore(data);
+const invoke=async(index:number,args:unknown)=>{const tools=createQuestionContextProvider(store,()=>true);return tools[index].execute('native-enrichment',args,new AbortController().signal);};
+const payload=(r:Awaited<ReturnType<typeof invoke>>)=>JSON.parse(r.content.filter(c=>c.type==='text').map(c=>c.text).join(''));
+try{
+ fs.writeFileSync(file,body);await store.init();const imported=await store.importKnowledgeResources([file]);assert.equal(imported.items[0]?.ok,true,JSON.stringify(imported));
+ for(let n=0;n<20&&await store.materialQuestions.drain();n++);
+ const notebook=await store.listQuestionNotebook({query:'x+2=5',limit:20});assert.equal(notebook.items.length,1);const q=notebook.items[0];assert.equal(q.archive?.answerOrigin,'missing');assert.equal(q.answer,'');assert.equal(q.analysis,'');
+ assert.equal((await store.searchQuestionBankWithCoverage({query:'x+2=5'})).questions.length,0);
+ assert.equal((await store.searchQuestionsForAnswerEnrichment({query:'x+2=5'})).length,1);
+ pass('Actual Electron Store imports a teacher Markdown source into SQLite; formal retrieval excludes it while dedicated missing-answer discovery finds the same notebook item');
+ for(let n=0;n<51;n++)await store.createQuestionBankItem({subject:'数学',grade:'七年级',knowledgePoint:'方程',questionType:'解答题',difficulty:'easy',stem:q.stem,answer:'3',analysis:'两边减2，x=3。',sourceTitle:'完整题'+n,sourceKind:'local_bank'});
+ let observed=0,tools=createQuestionContextProvider(store,()=>true,()=>observed++);
+ const call=(index:number,args:unknown)=>tools[index].execute('native-enrichment',args,new AbortController().signal);
+ let search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment'}));assert.equal(search.returned,1,JSON.stringify(search));let reference=search.questions[0].reference,version=search.questions[0].version;
+ pass('Fifty-one newer complete matches cannot crowd the older missing-answer question out of the bounded enrichment query');
+ let result=payload(await call(1,{reference,version,purpose:'answer_enrichment'}));assert(result.success,JSON.stringify(result));assert.equal(result.question.stem,q.stem);assert.equal(result.question.sourceTitle,q.sourceTitle);assert.deepEqual(result.missingRoles,['answer','analysis']);assert.equal(result.writebackAuthorized,false);assert.equal(observed,0);
+ assert.equal((await store.getQuestionNotebookEntry(q.id))!.answer,'');assert.equal(payload(await call(1,{reference,version})).code,'document_context_unavailable');
+ pass('Actual Pi question tools strongly validate the copied original and source chunks, return complete saved text/missing roles, and grant no answer mutation or formal-read authority');
+ await store.close();store=new OmniEduStore(data);await store.init();tools=createQuestionContextProvider(store,()=>true);search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment'}));assert.equal(search.returned,1);assert.equal(search.questions[0].version,version);reference=search.questions[0].reference;
+ assert.equal(questionVersion((await store.getQuestionNotebookEntry(q.id))!),version);assert(payload(await call(1,{reference,version,purpose:'answer_enrichment'})).success);
+ pass('Closing and reopening the actual Store preserves source-backed missing-answer identity and read eligibility without rebuilding business facts');
+ const resource=await store.materials.resource(q.archive!.sources[0].resourceId);
+ // Resolve only this test's managed original. No live teacher directory is accessed.
+ const sql=store as unknown as {all:(query:string,params:string[])=>Promise<Record<string,unknown>[]>};
+ const row=(await sql.all('SELECT local_path FROM teacher_resources WHERE id=?',[resource.id]))[0];
+ const saved=String(row.local_path),original=fs.readFileSync(saved);fs.writeFileSync(saved,Buffer.concat([original,Buffer.from('\n原件已变化')]));
+ result=payload(await call(1,{reference,version,purpose:'answer_enrichment'}));assert(!result.success);assert.equal(result.code,'source_changed');fs.writeFileSync(saved,original);
+ pass('Changed managed original prevents stale missing-answer disclosure after restart; old facts remain untouched');
+ fs.writeFileSync(path.join(output,'report.json'),JSON.stringify({success:true,passed:checks.length,checks,data,scope:'Actual Electron Store, real copied Markdown, SQLite notebook/source/FTS, actual Pi tool definitions and Store restart; no live AI/search website, no answer writeback or final EXE claim'},null,2));
+}finally{await store.close();}
