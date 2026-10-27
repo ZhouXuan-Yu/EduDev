@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-27 App bootstrap 生命周期
+
+runtime探测未决时App不bootstrap；判定Pi或failed后执行共享init/student、知识概览和确认队列数据路径，明确legacy-test才继续旧DeepSeek表单/外层会话/待输入读取。knowledgeOverview/aiConfirmations仍服务学习概览/录入；Pi/资料/设置组件仍自行加载。共享IPC、学生records/reports、main authority与订阅不变。未拆App、未改DDL/协议/依赖。限定证据：`../goal/PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

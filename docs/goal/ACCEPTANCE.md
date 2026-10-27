@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-10-27 生产 bootstrap 限定证据
+
+最终build exit0（先补齐本机缺失的既有锁定依赖）；renderer 240/240；真实Electron启动专项9/9（含共享知识/确认非零消费者）、日常入口8/8、均0 rendererErrors。日常路径含学生/学习记录SQLite读回、1366/1920、单实例与冷启。两报告out指纹7afdb7986f1596e7ced370ce7312c662d5f63394e77614a011142ae609a76b90。精确命令、综合smoke、首次失败与未验边界见 `PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`；UI合同17项后因既存CSS指纹不符exit1，未掩盖。
+
+最终完整npm.cmd run test:smoke exit0：ok=true，30名隔离学生，207/207、0失败、脚本无skipped字段。退出后out指纹仍7afdb798；仅作legacy历史兼容证明。仓库diff及两个新文件空白检查均exit0。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

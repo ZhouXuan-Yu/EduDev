@@ -17,7 +17,7 @@ const env = { ...process.env, NODE_ENV: 'development', ELECTRON_RENDERER_URL: 'h
   OMNI_EDU_E2E_DIALOG_MODE: '1', OMNI_EDU_XIAOZHI_PI: '0', OMNI_EDU_E2E_LEGACY_RUNTIME: '1',
   OMNI_EDU_DATA_ROOT: path.join(output, 'data'), OMNI_EDU_REPO_ROOT: path.resolve(desktop, '../..') };
 delete env.ELECTRON_RUN_AS_NODE; delete env.NODE_OPTIONS;
-const report = { success: false, checks: [], rendererErrors: [], build: fingerprint(path.join(desktop, 'out')).sha256, launches: [], screenshots: [], dailyDataTouched: false, uiGeneration: 'product-five-spaces-v1', reference: 'codex-clipboard-1cd19f53-5c46-40ef-99d6-7391de621202.png', modelRequests: 0 };
+const report = { success: false, checks: [], rendererErrors: [], build: fingerprint(path.join(desktop, 'out')).sha256, launches: [], screenshots: [], dailyDataTouched: false, uiGeneration: 'edu-navigation-page-contracts', modelRequests: 0 };
 let app, page;
 const check = name => { report.checks.push({ name, pass: true }); console.log('PASS ' + name); };
 function studentFacts() {
@@ -56,8 +56,8 @@ try {
   assert(!fs.existsSync(path.join(desktop, 'dist')));
   check('Daily out loads its own current file renderer despite inherited development URL and legacy flags');
   const rail = () => page.locator('[data-testid=product-rail]:visible');
-  const labels = ['问小智', '我的资料', '教学内容', '学生', '设置'];
-  assert.deepEqual(await rail().locator('button').evaluateAll(items => items.map(x => x.getAttribute('aria-label'))), labels);
+  assert.deepEqual(await rail().locator('[data-testid^="product-nav-"]').evaluateAll(items => items.map(x => x.getAttribute('data-testid'))),
+    ['ask','materials','teaching','students','settings'].map(space => 'product-nav-'+space));
   for (const [space, target] of [['materials','materials-workspace'], ['teaching','teaching-artifacts-workspace'], ['students','student-workspace'], ['settings','pi-settings-workspace']]) {
     await rail().getByTestId('product-nav-' + space).click();
     if (space === 'students') await page.getByTestId('product-space-workspace').waitFor();
@@ -79,13 +79,13 @@ try {
   await form.getByLabel('家长关注点', { exact: true }).fill('每周提供已确认进步反馈。');
   await page.getByTestId('student-form-save').click();
   await page.getByTestId('student-lifecycle-feedback-success').waitFor();
-  await page.getByRole('button', { name: '添加学习记录', exact: true }).click();
+  await rail().getByTestId('nav-intake').click();
   await page.getByTestId('record-form-subject').fill('数学');
   await page.getByTestId('record-form-title').fill('新版时间线真实记录');
   await page.getByTestId('record-form-content').fill('教师通过界面保存的课堂事实；不自动作为掌握度结论。');
   await page.getByTestId('record-form-save').click();
   await page.waitForFunction(() => !document.querySelector('[data-testid=record-form-title]')?.value);
-  await page.getByRole('button', { name: '学生档案', exact: true }).click();
+  await rail().getByTestId('nav-students').click();
   await studentLayout();
   const before = studentFacts();
   assert.equal(before.students.length, 1); assert.equal(before.records.length, 1);

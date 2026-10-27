@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-27 启动读取兼容
+
+不新增/移除typed IPC、preload、schema或第三方依赖：仅App启动按runtime隔离旧消费者；共享会话接口继续供Pi和资料阅读辅导显式使用。D:node_modules补齐已锁定yauzl3.4.0/@types/yauzl3.4.0/pend1.2.0属于本机环境恢复，package/lock不变。证据与未验边界：`../goal/PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 
