@@ -32,7 +32,7 @@ export function questionContentIdentity(question:QuestionBankItem):QuestionConte
   if(questionFactConflicts(question).length)return{schemaVersion,status:'unsupported',reason:'fact_conflict'};
   if(!nativeQuestionComplete(native))return{schemaVersion,status:'unsupported',reason:'incomplete_document'};
   const projection=QUESTION_PROJECTION_FIELDS.map(field=>[field,native.projection[field].state,text(native.projection[field].text)]);
-  return{schemaVersion,status:'available',scope:'ai_native_document',key:JSON.stringify([schemaVersion,'ai_native_document',text(question.subject),projection,native.roles.question.figures.map(f=>[f.sha256,f.width,f.height])])};
+  return{schemaVersion,status:'available',scope:'ai_native_document',key:JSON.stringify([schemaVersion,'ai_native_document',text(question.subject),projection,native.roles.question.contentSha])};
  }
  if(document!==undefined){
   if(!validQuestionDocument(document))return{schemaVersion,status:'unsupported',reason:'invalid_document'};

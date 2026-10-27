@@ -7,7 +7,7 @@ export const NATIVE_QUESTION_MAX_BYTES=96*1024;
 export const NATIVE_QUESTION_ROLES=['question','answer','analysis'] as const;
 export type NativeQuestionRole=typeof NATIVE_QUESTION_ROLES[number];
 export type NativeQuestionFigure={blockId:string;assetId:string;sha256:string;width:1240;height:number;bytes:number};
-export type NativeQuestionBody={text:string;origin:'source'|'ai_generated'|'teacher'|'missing';figures:NativeQuestionFigure[]};
+export type NativeQuestionBody={text:string;origin:'source'|'ai_generated'|'teacher'|'missing';contentSha:string;figures:NativeQuestionFigure[]};
 /** AI transcription and current publishable role images. Original source evidence lives in its own ledger. */
 export type NativeQuestionDocument={schemaVersion:typeof NATIVE_QUESTION_SCHEMA;
  source:{kind:'word-native.v1';resourceId:string;resourceVersion:string;documentSha:string;ordinal:number;sourceDigest:string};
@@ -34,7 +34,7 @@ export function validNativeQuestionDocument(value:unknown):value is NativeQuesti
   const s=value.source;if(!exact(s,['kind','resourceId','resourceVersion','documentSha','ordinal','sourceDigest'])||s.kind!=='word-native.v1'||!identifier(s.resourceId,'resource')||!sha(s.resourceVersion)||!sha(s.documentSha)||!sha(s.sourceDigest)||!integer(s.ordinal,1,10000)||!exact(value.roles,[...NATIVE_QUESTION_ROLES]))return false;
   let count=0,bytes=0,pixels=0;const ids=new Set<string>();
   for(const role of NATIVE_QUESTION_ROLES){
-   const body=value.roles[role];if(!exact(body,['text','origin','figures'])||typeof body.text!=='string'||body.text.length>12000||!Array.isArray(body.figures)||body.figures.length>8||!['source','ai_generated','teacher','missing'].includes(String(body.origin)))return false;
+   const body=value.roles[role];if(!exact(body,['text','origin','contentSha','figures'])||typeof body.text!=='string'||body.text.length>12000||!sha(body.contentSha)||!Array.isArray(body.figures)||body.figures.length>8||!['source','ai_generated','teacher','missing'].includes(String(body.origin)))return false;
    if(role==='question'&&(body.origin!=='source'&&body.origin!=='teacher'||body.text!==value.projection.statement.text))return false;
    if(body.origin==='missing'?(body.text!==''||body.figures.length>0):!body.text.trim())return false;
    // A rewritten answer cannot silently retain an original answer screenshot.
