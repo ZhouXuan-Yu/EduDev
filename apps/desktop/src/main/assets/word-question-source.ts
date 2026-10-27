@@ -17,8 +17,8 @@ export function indexWordQuestions(document:WordDocument){
  const mainParts=new Set(document.blocks.filter(b=>/^\/document(?:\[\d+\])?\/body(?:\[\d+\])?\//u.test(b.anchor.path)).map(b=>b.anchor.part));
  if(mainParts.size>1)throw Error('source_changed');
  const documentSha=digest(document),mainPart=[...mainParts][0],builders:Builder[]=[],preamble:Array<{block:WordBlock;span:WordSourceSpan}>=[];
- let active:Builder|undefined,role:WordQuestionRole='question',answerSection=false,unassigned=false,numberedExplanation=false;
- function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,blocks:[],blockIds:new Set(),parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';numberedExplanation=false;}
+ let active:Builder|undefined,role:WordQuestionRole='question',answerSection=false,unassigned=false,numberedExplanation=false,numberedOptions=false;
+ function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,blocks:[],blockIds:new Set(),parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';numberedExplanation=false;numberedOptions=false;}
  function append(block:WordBlock,from?:number,to?:number){
   if(block.kind==='paragraph'&&(to??0)<=(from??0))return;
   if(!active){preamble.push({block,span:{blockId:block.id,...(block.kind==='paragraph'?{from,to}:{})}});return;}
@@ -41,8 +41,8 @@ export function indexWordQuestions(document:WordDocument){
   let cursor=0;
   for(const event of events){
    if(event.at<cursor)continue;
-   if(event.number&&!event.explicit&&active&&role==='question'&&event.parenthesized&&Number(event.number)<=Number(active.number)){
-    active.issues.add('ambiguous_number');continue;
+   if(event.number&&!event.explicit&&active&&role==='question'&&event.parenthesized&&(numberedOptions||Number(event.number)<=Number(active.number))){
+    numberedOptions=true;active.issues.add('ambiguous_number');continue;
    }
    if(event.number&&!event.explicit&&active&&role!=='question'){
     const body=text.slice(event.content).split('\n')[0].trim();
@@ -58,7 +58,7 @@ export function indexWordQuestions(document:WordDocument){
    }
    if(event.at>cursor)append(block,cursor,event.at);
    if(event.number){const uncertain=active&&!event.explicit&&(Number(event.number)!==Number(active.number)+1||event.at>0&&role!=='question');if(uncertain)active!.issues.add('ambiguous_number');begin(event.number);if(uncertain)active!.issues.add('ambiguous_number');cursor=event.at;}
-   else if(event.role){if(active){role=event.role;numberedExplanation=false;if(event.combined)active.issues.add('combined_roles');}cursor=event.after;}
+   else if(event.role){if(active){role=event.role;numberedExplanation=false;numberedOptions=false;if(event.combined)active.issues.add('combined_roles');}cursor=event.after;}
   }
   if(cursor<text.length)append(block,cursor,text.length);
  }
