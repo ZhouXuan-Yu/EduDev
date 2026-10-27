@@ -198,3 +198,15 @@ AI输入带必要native文本/公式/表格、所选原生题图和本地OCR对�
 下一切片沿用现有 anydoc，并补有界 OOXML 结构读取，不新增第二套 Agent 或大型服务。先完成版本化资料结构契约（段落/表格/公式/图像、part 与块位置、来源 hash、处理版本和缺失警告），再贯通 Worker、SQLite/受管图像文件、typed preload、资料查看/定位、OCR/AI 输入与题库。Word 不虚构页码；teacher-confirmed question-document.v2 不冒充 AI 定稿来源。外链图片不自动抓取，嵌入对象不执行；不支持的公式/图像保留原件和明确的不可自动定稿风险。ZIP 展开、对象数量、文本和图片尺寸必须有总预算、超时、取消与恢复边界。
 
 同时核对 .doc、BMP 等“界面可选而处理不通”的格式矩阵；按实际解析器能力接通，不能只扩展文件选择器。原先已导入的测试资料可按用户授权显式重新整理，正式教师事实仍受版本和来源守卫。完成定义仍包括真实文件夹→完整来源图文→题库→小智实读/相似题→整卷确认，而非只有结构解析脚本通过。
+
+## S6-C 用户新增：内置浏览器联网补答（2026-10-27）
+
+教师导入无答案/解析题与临时提问可显式联网查题/解题，复用成熟DOM自动化及现唯一Pi编排，结果核对后自动补齐现有题库，正式整卷仍集中确认。此为已有知识库闭环增量，不替换S6-B2图文入库。原题资料/教师已填答案保留，自动补答不得调用会把更改标为teacher的ArchiveEdit。网站来源单独记账，不冒充MaterialSource或原题sourceTitle。
+
+实施合同：M04/M05/M10，扩展现Hana隔离浏览器的DOM/readability正文提取、版本化带截断与图式缺口的观察回执；后续按purpose=answer_enrichment开放完整题面且缺答的专用读取，而不放松组卷archiveEligible。来源匹配/答案候选分别保留网页URL、观察时间、原文摘录和SHA、匹配题面/图义digest与期望questionVersion，区分web_extracted和ai_derived；CAS只补明确missing且无当前文字/图像内容的角色，等待期间教师已补内容则保留候选并拒绝覆盖。原文、两阶段AI、图片账本与网页回执可追溯，完成定义仍需实际浏览器→匹配→答案/解析自动回写→同题本/小智实读→重启一致；仅提取器或脚本通过不算联网补答完成。
+
+直接复用：保留现Hana v0.450.0 Apache-2.0 DOM/ref快照和固定Electron/代理防护；引入已锁定并在本机依赖中的Mozilla Readability 0.6.0 Apache-2.0原始源码（Firefox Reader View同源），用于活DOM克隆提取，不新建Chrome/Python/外部部署。原始JS逐字保留为可重现字符串模块，LICENSE与SHA清单随代码和发行归属保留；总源码字节以manifest实测，不新增运行时包。Stagehand/browser-use/Playwright MCP对比见研究记录，任何替换须先证明内嵌Electron及现权限/取消兼容。
+
+本次正文提取具体范围：office_browser新增extract；保留DOM操作工具和确认，extract仅只读，在隔离JS world对已加载DOM克隆运行Readability，可选当前snapshotId/ref的区域读取；不执行页面脚本，不外取链接。全DOM最多20000节点、克隆文本2MiB、返回24000UTF16/48KiB，15秒/取消/导航revision复验。Readability不能解析或短题时回退可见DOM文本并标明方法；源或返回截断、Canvas/图片/MathML/LaTeX、登录/验证码/付费提示分列，不声称自动判断完整答案。隐藏/表单值/脚本不进入正文；网页内容始终untrusted，不是动作或写库指令。原件或图片不得因联网任务自动整库上传，搜索/提交绑定本题或本批必要内容授权；不修改通用逐次确认。人工登录/验证码接管需限origin/时效的可见human-control状态并暂停自动任务，不用全局POST放行；未实现前明确不可用。
+
+先写真实动态DOM长答案、隐藏凭据、源/输出截断、公式图片缺口、ref失效/导航取消的RED，再接宿主/Pi工具与可见读取，独立批判后修复。完整网页搜题/核对/写回及正式图题同库等尚待接通，不能把本段前置完成缩成最终目标。
