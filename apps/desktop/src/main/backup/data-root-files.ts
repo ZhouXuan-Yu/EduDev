@@ -3,8 +3,8 @@ import path from 'node:path';
 import sqlite3 from 'sqlite3';
 import {hashFileSha256} from '../local-file-security';
 
-/** Derived vectors own exclusive Windows handles and are rebuilt from SQLite facts. */
-export const REBUILDABLE_BACKUP_PATHS=['cache/semantic-v1'] as const;
+/** Disposable vectors and Word layout PNGs are rebuilt from retained source facts. */
+export const REBUILDABLE_BACKUP_PATHS=['cache/semantic-v1','cache/word-question-pages'] as const;
 const liveSqlite=new Set(['app.db','app.db-wal','app.db-shm','app.db-journal']);
 export async function copyDataBackupFiles(root:string,destination:string):Promise<number>{
  let count=0;
@@ -68,7 +68,7 @@ export async function snapshotDataBackupSqlite(database:unknown,destination:stri
   const present=new Set(tables.map(row=>row.name));
   // Cache files are deliberately absent. Clear only their derived completion claims
   // in this exported copy, so a restored app builds a new full snapshot automatically.
-  const reset=[...(present.has('retrieval_control')?["UPDATE retrieval_control SET active='',building='',error='' WHERE id=1"]:[]),...['retrieval_generations','retrieval_failures','retrieval_maintenance'].filter(name=>present.has(name)).map(name=>'DELETE FROM '+name)];
+  const reset=[...(present.has('retrieval_control')?["UPDATE retrieval_control SET active='',building='',error='' WHERE id=1"]:[]),...['retrieval_generations','retrieval_failures','retrieval_maintenance','material_word_proof_files','material_word_proofs'].filter(name=>present.has(name)).map(name=>'DELETE FROM '+name)];
   if(reset.length)try{await exec('BEGIN IMMEDIATE;'+reset.join(';')+';COMMIT;');}catch(error){await exec('ROLLBACK;').catch(()=>undefined);throw error;}
  }
  finally{await new Promise<void>((resolve,reject)=>snapshot.close(error=>error?reject(error):resolve()));}
