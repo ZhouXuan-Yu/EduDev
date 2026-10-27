@@ -149,6 +149,10 @@ typed preload/正文UI展示逐页覆盖与失败、继续/重试及来源定位
 
 ### S6-B2 实施合同：AI 原生图文题进入同一题本、小智与组卷（2026-10-27）
 
+本轮原生AI接线细化（2026-10-27，源码基线2c14189）：archive v3保存独立xiaozhi.ai-native-question.v1文档；source仅保存真实Word资源/版本/document SHA/ordinal/sourceDigest，完整Word范围及原始两次AI/OCR/proof存独立账本，不把96KiB原段JSON直接发给小智或上云。文档保留完整六类图义投影和三角色当前文字、宿主生成的有界PNG引用；只接受宿主已验证来源图片，模型不能提供路径/图片字节/资产权限。正式AI图片保存于独立业务目录并由questionVersion/nativeDigest/role复验，缓存淘汰或备份恢复不能使正式题目丢图。三角色共最多8PNG/16MiB/32MP，单文档96KiB，投影24KiB；源问题或两阶段差异单列，不借用教师v2确认资格。
+
+实现次序贯通共享契约→独立图片/来源账本→现批次Word按题原生输入、OCR及两阶段结果→同题本查看/编辑→identity/facts/FTS及旧触发器版本迁移/语义与重排/Pi必要投影→整卷与Office精确角色解析。图稿是完整原文排版证据，不是AI数学正确性证明。教师更改角色文字时同步当前投影、撤销冲突旧角色图并记录历史，缺失必要图义继续显式待整理；不能让旧答案图覆盖新答案。小智只能获得脱敏必要文本投影，teacherConfirmationKnown仍false，当前AI图片批次授权不扩张为聊天图像授权。对照同stem不同图、图片字节/角色篡改、旧FTS触发器、教师编辑后旧答案图、同题本/正式学生卷漏图/泄答和Pi误报教师确认写先行反例；不把这轮的任何前置完成改写为完整Goal已达到。
+
 目标 M02/M03/M04/M05/M06/M09/M10：教师选择 Word 题目范围，宿主保留题干/答案/解析的原生文字、OMML、表格、内嵌图和真实块锚点；可选逐批授权图文AI，对照本地OCR两阶段整理，完整结果自动进入现有题本，正式试卷集中确认。不能以仅存后台JSON、仅能预览或继续永久停在visual_unchecked替代本片最终结果；复杂/混合角色或未完成来源保留明确待整理状态，不伪造完整资格。
 
 现状缺口已由代码与独立AI设计批判确认：AI response v1只有标量文本；Word images拒绝；question-document.v2/OriginalQuestionRepository依赖教师confirmed ledger；只在archive增加图文会使小智剥离内容、按stem误去重和导出静默丢图。因此保留既有教师v2，新增archive v3中的独立AI原生document/来源账本，统一questionPresentation与事实镜像/身份/检索入口。AI不能提供路径/字节、冒认教师确认或任意图片权限。
