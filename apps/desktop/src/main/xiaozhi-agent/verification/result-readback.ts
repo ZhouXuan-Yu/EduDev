@@ -40,6 +40,11 @@ function normalize(tool:string,content:unknown,callId:string):Omit<Captured,'too
    if(capture.schemaVersion!=='xiaozhi.browser-capture.v1'||!hex(capture.sha256)||!Number.isSafeInteger(capture.size)||capture.size<1||!Number.isSafeInteger(capture.width)||capture.width<1||!Number.isSafeInteger(capture.height)||capture.height<1||capture.url!==payload.url)return;
    return{digest:hash(['browser-capture',capture.sha256,capture.size,capture.width,capture.height,payload.url,payload.title]),version:capture.sha256,payload};
   }
+  if(payload.extraction){
+   const e=payload.extraction;
+   if(e.engine!=='mozilla-readability-0.6.0'||!['readability','dom_region'].includes(e.method)||typeof payload.text!=='string'||!payload.text.trim()||payload.text.length>24000||Buffer.byteLength(payload.text)>48000||!Number.isSafeInteger(e.sourceChars)||e.sourceChars<0||e.sourceChars>2097152||typeof e.truncated!=='boolean'||!['none','login_or_challenge'].includes(e.accessHint)||!['figures','canvas','formulas'].every(k=>Number.isSafeInteger(e[k])&&e[k]>=0&&e[k]<=20000)||e.contentSha!==createHash('sha256').update(payload.text).digest('hex'))return;
+   const digest=hash(['browser-extraction',payload.url,payload.title,payload.text,e]);return{digest,version:digest,payload};
+  }
   if(typeof payload.snapshotId!=='string'||!payload.snapshotId||typeof payload.text!=='string'||!payload.text.trim())return;
   const digest=hash(['browser-snapshot',payload.url,payload.title,payload.snapshotId,payload.text]);
   return{digest,version:digest,payload};
