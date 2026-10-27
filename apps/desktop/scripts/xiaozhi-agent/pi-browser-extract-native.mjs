@@ -1,0 +1,7 @@
+import fs from 'node:fs';import path from 'node:path';import {pathToFileURL} from 'node:url';import {build} from 'esbuild';import {_electron} from 'playwright';
+fs.mkdirSync(path.resolve('test-results/xiaozhi-agent'),{recursive:true});
+const output=fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-browser-extract-'));
+await build({entryPoints:['scripts/xiaozhi-agent/pi-browser-extract-native-worker.ts'],outfile:path.join(output,'worker.mjs'),bundle:true,platform:'node',target:'node24',format:'esm',packages:'external',logLevel:'warning'});
+const bootstrap=path.join(output,'bootstrap.cjs');fs.writeFileSync(bootstrap,`const {app}=require('electron');globalThis.runBrowserExtract=()=>import(${JSON.stringify(pathToFileURL(path.join(output,'worker.mjs')).href)});app.whenReady().then(()=>{});`);
+const env={...process.env,OMNI_EDU_BROWSER_TEST_OUTPUT:output};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;let app,code=0;const logs=[];
+try{app=await _electron.launch({args:[bootstrap,'--user-data-dir='+path.join(output,'profile')],env,timeout:60000});app.process().stdout.on('data',v=>logs.push(String(v)));app.process().stderr.on('data',v=>logs.push(String(v)));await app.evaluate(async()=>await globalThis.runBrowserExtract());}catch(error){code=1;logs.push(String(error.stack||error));}finally{await app?.close();fs.writeFileSync(path.join(output,'worker.log'),logs.join(''));console.log(logs.join(''));console.log(JSON.stringify({exitCode:code,output}));if(code)process.exitCode=code;}
