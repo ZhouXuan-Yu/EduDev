@@ -3,10 +3,11 @@ import {imageSize} from 'image-size';
 import {officeEscape,officeMathHtml} from '../../shared/office-math';
 import type {WordBlock,WordAsset} from '../../shared/material-word';
 import {WORD_QUESTION_ROLES,validWordQuestionSource,wordQuestionBlocks,type WordQuestionSource} from '../../shared/material-word-question';
+import {WORD_PROOF_RENDERER,WORD_PROOF_WIDTH,WORD_PROOF_HEIGHT} from '../../shared/material-word-proof';
 
-export const WORD_LAYOUT_VERSION='word-layout.v1' as const;
-export const WORD_LAYOUT_WIDTH=1240;
-export const WORD_LAYOUT_HEIGHT=1760;
+export const WORD_LAYOUT_VERSION=WORD_PROOF_RENDERER;
+export const WORD_LAYOUT_WIDTH=WORD_PROOF_WIDTH;
+export const WORD_LAYOUT_HEIGHT=WORD_PROOF_HEIGHT;
 export type WordImageResource={mime:'image/png'|'image/jpeg'|'image/webp';data:Buffer};
 export type WordAtomicRect={top:number;bottom:number};
 export type WordPageSlice={top:number;height:number};

@@ -6,14 +6,20 @@ import type {TeacherResource} from '../../shared/contracts';
 import {WORD_SCHEMA,WORD_PARSER,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
 import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type WordQuestionPage} from '../../shared/material-word-question';
 import {indexWordQuestions} from './word-question-source';
+import {WordQuestionProofRepository} from './word-question-proof-repository';
 type Value=string|number|null;type Row=Record<string,unknown>;
-type Host={root:()=>string;all:(sql:string,values?:Value[])=>Promise<Row[]>;run:(sql:string,values?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>};
+type Host={root:()=>string;all:(sql:string,values?:Value[])=>Promise<Row[]>;run:(sql:string,values?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>;
+ verify:(id:string,version:string,signal:AbortSignal)=>Promise<void>;stamp:(id:string,version:string)=>Promise<string>;writer:<T>(action:(target:MaterialWordRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 const sha=(v:Uint8Array|string)=>createHash('sha256').update(v).digest('hex');
 /** Rebuildable Word representation; resource/chunk facts use the existing writer. */
 export class MaterialWordRepository{
  private questionCache?:{resourceId:string;version:string;index:ReturnType<typeof indexWordQuestions>};
- constructor(private host:Host){}
- async migrate(){await this.host.run('CREATE TABLE IF NOT EXISTS material_word_documents(resource_id TEXT PRIMARY KEY,version TEXT NOT NULL,parser TEXT NOT NULL,digest TEXT NOT NULL,document_json TEXT NOT NULL)');}
+ readonly proofs:WordQuestionProofRepository;
+ constructor(private host:Host){this.proofs=new WordQuestionProofRepository({root:host.root,all:host.all,run:host.run,
+  source:async base=>{const page=await this.questions({schemaVersion:WORD_QUESTION_SCHEMA,resourceId:base.resourceId,version:base.version,ordinal:base.ordinal,offset:base.ordinal-1});if(!page?.source)throw Error('source_incomplete');return page.source;},
+  verify:(base,signal)=>host.verify(base.resourceId,base.version,signal),stamp:base=>host.stamp(base.resourceId,base.version),image:(base,assetId)=>this.image({schemaVersion:WORD_SCHEMA,resourceId:base.resourceId,version:base.version,assetId}),writer:(action,beforeCommit)=>host.writer(target=>action(target.proofs),beforeCommit)
+ });}
+ async migrate(){await this.host.run('CREATE TABLE IF NOT EXISTS material_word_documents(resource_id TEXT PRIMARY KEY,version TEXT NOT NULL,parser TEXT NOT NULL,digest TEXT NOT NULL,document_json TEXT NOT NULL)');await this.proofs.migrate();}
  private async folder(){const folder=path.resolve(this.host.root(),'word-assets');await fs.mkdir(folder,{recursive:true});if((await fs.realpath(folder)).toLowerCase()!==folder.toLowerCase())throw Error('source_changed');return folder;}
  async prepare(payload:WordPayload,signal:AbortSignal){
   if(!validWordDocument(payload.document)||payload.images.length!==payload.document.assets.length)throw Error('parse_failed');const root=await this.folder();

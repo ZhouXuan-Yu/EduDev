@@ -169,6 +169,8 @@ AI输入带必要native文本/公式/表格、所选原生题图和本地OCR对�
 
 本轮继续的具体交付（2026-10-27）：将原生三角色安全排为版本化PNG，供后续AI/OCR和同一Office图像通道复用；从现按题界面发起本机生成、按角色逐片读取与取消，关闭/切换该预览即撤销对应requestId，不留失控后台排版。新增shared word-question-proof协议、assets下安全HTML/截图与proof仓储、既有Word仓储/typed IPC/preload/可操作UI及专项。派生表material_word_proofs保存sourceDigest/renderer/digest，图片仅存cache/word-question-pages/v1；没有AI图片正式账本授予的资格，缓存不得直接用于学生卷或宣称AI定稿。原资料、题目、正式卷和原始AI回执不变。
 
+缓存补充：派生文件引用表material_word_proof_files提供完整PNG引用与字节账，最多保留32份图稿/128MiB独立PNG，通过LRU只回收无引用派生片；每个数据根的有界文件/元数据操作共用串行门，渲染期间不持门，读取不会撞上Windows删除。manifest最后在现SQLite writer事务发布，提交前取消回滚；失败仅清理本次新建且无引用的PNG。字体字节摘要、Electron/Chromium版本和固定1x离屏尺寸纳入缓存键；字形不存在明确失败。依据当前安装Electron43.8.3类型与官方[离屏配置](https://www.electronjs.org/docs/latest/api/structures/web-preferences)、[43.7.1截图缩放修复](https://releases.electronjs.org/pr/53818)；实际Windows尾页OCR单独验证，不以API选项存在证明截图完整。
+
 排版预算：固定本机隔离页面/精确已核对data图片白名单、禁页面脚本/外链/任意路径；MathML只由受支持原式生成。每源单任务/全宿主一并发、60秒、可取消/IPC退出drain；最多8张PNG、每张4MiB、总16MiB、输出总32MP，所选原图合计最多64MiB/64MP。正文按完整段/表格行的真实布局边界分页，保留合并表格，过高/过宽或不支持的段/行明确拒绝，不能裁尾或把缺图降为文字占位。返回前复验原件/源版本/原生范围，读每片复验SHA/尺寸/角色和来源；派生缓存失败可重建，不改业务事实。必要验证含真实DOCX图/式/表、安全HTML、分页尾行/原图解码、角色隔离、缓存篡改/来源变化、取消和两尺寸/重启，以及build/组件与独立批判修复；不以这一步代替S6-B2仍必做的AI同库及正式出卷。
 
 ### S6-B1 实施合同：DOCX 原文结构纵向贯通（2026-10-26）

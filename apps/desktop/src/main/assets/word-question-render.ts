@@ -8,9 +8,9 @@ import {reserveLocalWorker} from '../xiaozhi-agent/local-utility-host';
 import {WORD_QUESTION_ROLES,type WordQuestionSource,type WordQuestionRole} from '../../shared/material-word-question';
 import {WORD_LAYOUT_VERSION,WORD_LAYOUT_WIDTH,WORD_LAYOUT_HEIGHT,buildWordQuestionLayout,wordPageSlices,type WordAtomicRect} from './word-question-layout';
 import {fontGlyphCoverage,assertWordGlyphs} from './word-font-coverage';
+import type {WordProofEnvironment,WordProofCoverage} from '../../shared/material-word-proof';
 
-export type WordProofEnvironment={renderer:typeof WORD_LAYOUT_VERSION;fontDigest:string;engine:string;scale:number;width:typeof WORD_LAYOUT_WIDTH;pageHeight:typeof WORD_LAYOUT_HEIGHT};
-export type WordProofCoverage={span:number;blockId:string;kind:'paragraph'|'row';row?:number;top:number;bottom:number;text:string};
+export type {WordProofEnvironment,WordProofCoverage} from '../../shared/material-word-proof';
 export type WordRenderedPage={role:WordQuestionRole;index:number;top:number;width:number;height:number;bytes:Buffer;coverage:WordProofCoverage[]};
 export type WordRenderedProof={environment:WordProofEnvironment;sourceDigest:string;pages:WordRenderedPage[]};
 const sha=(v:Buffer|string)=>createHash('sha256').update(v).digest('hex');
