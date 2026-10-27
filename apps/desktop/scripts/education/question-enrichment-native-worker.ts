@@ -23,9 +23,13 @@ try{
  let search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment'}));assert.equal(search.returned,1,JSON.stringify(search));let reference=search.questions[0].reference,version=search.questions[0].version;
  pass('Fifty-one newer complete matches cannot crowd the older missing-answer question out of the bounded enrichment query');
  let result=payload(await call(1,{reference,version,purpose:'answer_enrichment'}));assert(result.success,JSON.stringify(result));assert.equal(result.question.stem,q.stem);assert.equal(result.question.sourceTitle,q.sourceTitle);assert.deepEqual(result.missingRoles,['answer','analysis']);assert.equal(result.writebackAuthorized,false);assert.equal(observed,0);
- assert.equal((await store.getQuestionNotebookEntry(q.id))!.answer,'');assert.equal(payload(await call(1,{reference,version})).code,'document_context_unavailable');
+ assert.equal((await store.getQuestionNotebookEntry(q.id))!.answer,'');assert.equal(payload(await call(1,{reference,version})).code,'permission_denied');
  pass('Actual Pi question tools strongly validate the copied original and source chunks, return complete saved text/missing roles, and grant no answer mutation or formal-read authority');
- await store.close();store=new OmniEduStore(data);await store.init();tools=createQuestionContextProvider(store,()=>true);search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment'}));assert.equal(search.returned,1);assert.equal(search.questions[0].version,version);reference=search.questions[0].reference;
+ for(let n=0;n<51;n++)await store.createQuestionBankItem({stem:q.stem+' 如图求面积。',sourceTitle:'缺必要图'+n,sourceKind:'local_bank'});
+ search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment'}));assert.equal(search.returned,0);assert.equal(search.nextOffset,50);
+ const nextOffset=search.nextOffset;search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment',offset:nextOffset}));assert.equal(search.returned,1,JSON.stringify(search));reference=search.questions[0].reference;
+ pass('A bounded continuation finds a later readable question after fifty incomplete image candidates instead of returning the same empty first page forever');
+ await store.close();store=new OmniEduStore(data);await store.init();tools=createQuestionContextProvider(store,()=>true);search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment',offset:nextOffset}));assert.equal(search.returned,1);assert.equal(search.questions[0].version,version);reference=search.questions[0].reference;
  assert.equal(questionVersion((await store.getQuestionNotebookEntry(q.id))!),version);assert(payload(await call(1,{reference,version,purpose:'answer_enrichment'})).success);
  pass('Closing and reopening the actual Store preserves source-backed missing-answer identity and read eligibility without rebuilding business facts');
  const resource=await store.materials.resource(q.archive!.sources[0].resourceId);
@@ -40,7 +44,7 @@ try{
  const unit=(await store.materials.readingWindow(resource.id,0)).units[0];
  const current=(await store.getQuestionNotebookEntry(q.id))!,privateArchive={...current.archive!,sources:[materialSource(unit)]};
  await sql.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(privateArchive),q.id]);
- search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment'}));assert.equal(search.returned,0,JSON.stringify(search));
+ search=payload(await call(0,{query:'x+2=5',purpose:'answer_enrichment',offset:nextOffset}));assert.equal(search.returned,0,JSON.stringify(search));
  pass('A valid original hash and matching private chunk bodyVersion cannot bypass source privacy when missing answers use keyword discovery');
  fs.writeFileSync(path.join(output,'report.json'),JSON.stringify({success:true,passed:checks.length,checks,data,scope:'Actual Electron Store, real copied Markdown, SQLite notebook/source/FTS, actual Pi tool definitions and Store restart; no live AI/search website, no answer writeback or final EXE claim'},null,2));
 }finally{await store.close();}
