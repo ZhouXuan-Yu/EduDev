@@ -1,5 +1,13 @@
 # 当前验收入口
 
+<!-- kb-web-writeback-20261027:start -->
+## 2026-10-27 S6-C 持久联网补答与批判修复
+
+S6-C新增真实Electron DOM→Store写回→同题本typed原文/失败重试→教师改写→双尺寸冷重启10项，实际Pi SDK3项。最后答案/解析对称冲突先RED后修，最终复验/命令/指纹/批判报告统一见KB_IMPLEMENTATION_EVIDENCE.md。没有真实站点/自然教师正确率、40GB/P95或最终EXE验收。
+
+最终补验：build/typecheck及240组件exit0；真实Electron12项/0 rendererErrors/双尺寸冷重启，ODZIoG/out18715c90；实际Pi+生产taskRuntime准入6项、旧任务19项及独立SQLite账本/任务回放通过。live/recheck保存证据绑定真实首个application callId，不冒充教师确认。207历史smoke属最后task修复前冻结构建，最终精确边界见EVIDENCE。
+<!-- kb-web-writeback-20261027:end -->
+
 <!-- kb-enrichment-read-20261027:start -->
 ## 2026-10-27 S6-C 缺答题实读与独立批判修复
 

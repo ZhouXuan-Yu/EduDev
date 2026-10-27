@@ -4,6 +4,7 @@ import type {PaperView} from '../../shared/paper-blueprint';
 import {PAPER_EXPORT_TOOL,PAPER_OFFICE_SCHEMA,PAPER_ANSWER_SHEET_OFFICE_SCHEMA,isPaperOfficeSchema,validPaperExport,type PaperExportInput,type PaperExportTemplate} from '../../shared/paper-export';
 import {containsOfficeMath} from '../../shared/office-math';
 import {compileRichPaperOffice} from './paper-rich-export';
+import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import type {OfficeArtifactProposal} from '../../shared/xiaozhi-office-artifacts';
 import type {PaperRepository} from './paper-repository';
@@ -60,7 +61,7 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
    // Never export a scanned/structured question as its abbreviated scalar stem.
    if(q.document||/\\(?:frac|sqrt|begin|sum|int|left|right)|\$[^$]+\$/.test([q.stem,...(audience==='teacher'?[q.answer,q.analysis]:[])].join('\n')))throw new Error('unsupported');
    paragraphs.push(...chunks(`${item.number}.（${item.points} 分）${q.stem}`));
-   if(audience==='teacher')paragraphs.push(...chunks('参考答案：'+q.answer),...chunks('解析：'+q.analysis),...chunks('题目来源：'+(q.sourceTitle||'教师本地题库')+'；答案、解析尚未独立核验。'));
+   if(audience==='teacher')paragraphs.push(...chunks('参考答案：'+q.answer),...chunks('解析：'+q.analysis),...questionWebSourceParagraphs(q).flatMap(chunks),...chunks('题目来源：'+(q.sourceTitle||'教师本地题库')+'；答案、解析尚未独立核验。'));
   }
   for(let offset=0;offset<paragraphs.length;offset+=20)sections.push({heading:section.label+(offset?'（续）':''),paragraphs:paragraphs.slice(offset,offset+20)});
  }

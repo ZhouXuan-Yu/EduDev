@@ -36,6 +36,8 @@ const keys = new Set<OfficeToolErrorCode>(['invalid_input', 'permission_denied',
 export function createHanaOfficeTools(options: {
   workspace: string; sessionId: string; runId: string;
   networkAllowed?: boolean; searchAllowed?: boolean; excludedRoots?: string[];
+  /** Recheck main-owned network consent at each actual transport and redirect. */
+  beforeNetworkRequest?:()=>void;
   dnsMode?: 'auto' | 'system' | 'cloudflare' | 'alidns';
   approveCopy?: (approval: OfficeCopyApproval, signal: AbortSignal) => Promise<boolean>;
   /** Main-owned teacher wait budget; other tool execution keeps the existing 30s cap. */
@@ -105,7 +107,7 @@ export function createHanaOfficeTools(options: {
           if (name === 'office_web_search') {
             if (!options.searchAllowed) return errorResult('permission_denied');
             const payload = await searchAnySearch(args.query, args.maxResults || 5, '', 'anysearch_free', {
-              fetchImpl: (url: string, init: Parameters<typeof fetchOfficePublicUrl>[1]) => fetchOfficePublicUrl(url, { ...init, dnsMode: options.dnsMode }), signal });
+              fetchImpl: (url: string, init: Parameters<typeof fetchOfficePublicUrl>[1]) => {options.beforeNetworkRequest?.();return fetchOfficePublicUrl(url, { ...init, dnsMode: options.dnsMode, beforeRequest:options.beforeNetworkRequest });}, signal });
             const results = payload.results.map((item: { title: string; url: string; content: string }) => ({
               title: String(item.title).slice(0, 300), url: officeWebUrl(item.url).href,
               snippet: String(item.content).slice(0, 1200),
@@ -114,7 +116,8 @@ export function createHanaOfficeTools(options: {
           } else {
             let url = officeWebUrl(String(args.url)).href;
             for (let hop = 0; ; hop++) {
-              const response = await fetchOfficePublicUrl(url, { signal, dnsMode: options.dnsMode });
+              options.beforeNetworkRequest?.();
+              const response = await fetchOfficePublicUrl(url, { signal, dnsMode: options.dnsMode, beforeRequest:options.beforeNetworkRequest });
               if ([301, 302, 303, 307, 308].includes(response.status)) {
                 const location = response.headers.get('location');
                 if (!location || hop >= 5) return errorResult('service_error');

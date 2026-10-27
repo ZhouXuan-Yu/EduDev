@@ -359,6 +359,7 @@ const api = {
   cancelMaterialPagePreview:(input:MaterialPreviewCancel)=>ipcRenderer.invoke('materials:page-cancel',input) as Promise<{schemaVersion:'xiaozhi.material-page-preview.v1';stopped:boolean}>,
   createStudentConversation: (input:import('../shared/student-context').StudentConversationInput) => ipcRenderer.invoke('students:createConversation',input) as Promise<import('../shared/contracts').AiConversationDetail>,
   getQuestionContextSource:(input:import('../shared/question-context').QuestionContextSource)=>ipcRenderer.invoke('questions:context-source',input) as Promise<import('../shared/question-context').QuestionContextResult>,
+  getQuestionWebAnswerEvidence:(questionId:string)=>ipcRenderer.invoke('questions:web-answer-evidence',questionId) as Promise<{ok:true;items:import('../shared/question-web-answer').WebAnswerCandidate[]}|{ok:false;error:string}>,
   getStudentContextSource: (input:import('../shared/student-context').StudentContextSource) => ipcRenderer.invoke('students:contextSource',input) as Promise<import('../shared/student-context').StudentContextSourceView>,
   retryMaterial: (resourceId:string) => ipcRenderer.invoke('materials:retry',{schemaVersion:'xiaozhi.materials.v1',resourceId}) as Promise<MaterialRetry>,
   cancelMaterialImport: () => ipcRenderer.invoke('materials:cancel') as Promise<{schemaVersion:'xiaozhi.materials.v1';stopped:boolean}>,

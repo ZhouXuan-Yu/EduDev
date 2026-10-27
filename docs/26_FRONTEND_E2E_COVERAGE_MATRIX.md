@@ -1,5 +1,13 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+<!-- kb-web-writeback-20261027:start -->
+## 2026-10-27 S6-C 持久联网补答与批判修复
+
+S6-C原题本网页出处与补答记录：实际Electron双尺寸可见操作、typed IPC错误/重试、展开持久原文、教师改写撤销对应当前web引用/保留历史、冷进程重启读回已通过。准确最终实例/构建指纹见KB_IMPLEMENTATION_EVIDENCE.md；不是通用网站登录或模型答案正确率验收。
+
+最终补验：build/typecheck及240组件exit0；真实Electron12项/0 rendererErrors/双尺寸冷重启，ODZIoG/out18715c90；实际Pi+生产taskRuntime准入6项、旧任务19项及独立SQLite账本/任务回放通过。live/recheck保存证据绑定真实首个application callId，不冒充教师确认。207历史smoke属最后task修复前冻结构建，最终精确边界见EVIDENCE。
+<!-- kb-web-writeback-20261027:end -->
+
 <!-- kb-enrichment-read-20261027:start -->
 ## 2026-10-27 S6-C 缺答题实读与独立批判修复
 

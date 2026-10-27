@@ -1,5 +1,13 @@
 # Goal 验收台账
 
+<!-- kb-web-writeback-20261027:start -->
+## 2026-10-27 S6-C 持久联网补答与批判修复
+
+本片真实Electron10项/0 rendererErrors，omni-web-answer-nsvBYC报告含动态DOM、真实Store、待批宿主拒绝、背景/跨站阻断、MathML候选、原题本typed出处、失败重试、教师改写和双尺寸冷重启，out指纹283ac8e。该实例早于最后答案/解析对称冲突修复，最终复验另记EVIDENCE。实际Pi SDK3项验证manifest/注册/status与同message先实读再MCP0发送。仓储12组、DOM12组等准确范围见EVIDENCE，不代表真实搜题站/模型正确率。
+
+最终补验：build/typecheck及240组件exit0；真实Electron12项/0 rendererErrors/双尺寸冷重启，ODZIoG/out18715c90；实际Pi+生产taskRuntime准入6项、旧任务19项及独立SQLite账本/任务回放通过。live/recheck保存证据绑定真实首个application callId，不冒充教师确认。207历史smoke属最后task修复前冻结构建，最终精确边界见EVIDENCE。
+<!-- kb-web-writeback-20261027:end -->
+
 <!-- kb-enrichment-read-20261027:start -->
 ## 2026-10-27 S6-C 缺答题实读与独立批判修复
 

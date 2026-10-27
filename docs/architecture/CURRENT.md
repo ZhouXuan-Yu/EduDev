@@ -1,5 +1,11 @@
 # 当前架构
 
+<!-- kb-web-writeback-20261027:start -->
+## 2026-10-27 S6-C 持久联网补答与批判修复
+
+S6-C由education域QuestionWebAnswerRepository/Tools及archive v4贯通，SQLite授权/观察/候选是持久事实，writer原子发布缺角色CAS与来源。Retrieval内部web_source_check复用隐私/源修订闭包，不授予完整题或向量资格。现Pi新增唯一education_web_answer local_write manifest，补答会话顺序执行；浏览器/通用网页/MCP分别守批次。不新增依赖或部署服务。
+<!-- kb-web-writeback-20261027:end -->
+
 <!-- kb-enrichment-read-20261027:start -->
 ## 2026-10-27 S6-C 缺答题实读与独立批判修复
 

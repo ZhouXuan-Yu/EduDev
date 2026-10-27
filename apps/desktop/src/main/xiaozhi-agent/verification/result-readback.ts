@@ -13,8 +13,8 @@ type NativeResult={toolCallId:string;toolName:string;content:unknown;isError?:bo
 type Captured={tool:string;callId:string;version:string;digest:string;payload:Record<string,any>;observedAt:string;effectWork?:Promise<BoundEffect|undefined>;effect?:BoundEffect};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const hex=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
-const effects=new Set(['office_create_text','office_create_science_figure','office_edit_text','office_create_document','education_propose_questions','education_propose_practice']);
-const kinds:Record<string,string>={office_list_files:'directory',office_file_stat:'file_metadata',office_web_fetch:'web',office_browser:'web',office_read_attachment:'attachment',office_read_text:'file',office_view_public_image:'image',office_create_text:'saved_text',office_create_science_figure:'saved_text',office_edit_text:'saved_text',office_create_document:'saved_office',education_propose_questions:'saved_questions',education_propose_practice:'saved_questions'};
+const effects=new Set(['education_web_answer','office_create_text','office_create_science_figure','office_edit_text','office_create_document','education_propose_questions','education_propose_practice']);
+const kinds:Record<string,string>={education_web_answer:'saved_questions',office_list_files:'directory',office_file_stat:'file_metadata',office_web_fetch:'web',office_browser:'web',office_read_attachment:'attachment',office_read_text:'file',office_view_public_image:'image',office_create_text:'saved_text',office_create_science_figure:'saved_text',office_edit_text:'saved_text',office_create_document:'saved_office',education_propose_questions:'saved_questions',education_propose_practice:'saved_questions'};
 async function bounded<T>(work:()=>Promise<T>):Promise<T|undefined>{
  let timer:ReturnType<typeof setTimeout>|undefined;
  try{return await Promise.race([Promise.resolve().then(work),new Promise<undefined>(resolve=>{timer=setTimeout(()=>resolve(undefined),10000);})]);}
@@ -51,6 +51,10 @@ function normalize(tool:string,content:unknown,callId:string):Omit<Captured,'too
  }
  if(!payload||payload.success!==true)return;
  if(discoveryTools.has(tool))return discoverySnapshot(tool,payload);
+ if(tool==='education_web_answer'){
+  if(payload.state!=='applied'||payload.currentVersionMatches!==true||!hex(payload.afterVersion)||payload.currentVersion!==payload.afterVersion||typeof payload.id!=='string'||!/^webanswer_[a-f0-9-]{36}$/.test(payload.id))return;
+  const digest=hash(payload);return{digest,version:digest,payload};
+ }
  if(tool==='education_propose_questions'){
   if(payload.state!=='confirmed'||!Number.isInteger(payload.count)||payload.count<1||payload.count>8||!['variation','ai_original','explanation'].includes(payload.generationKind))return;
   const digest=hash(payload);return{digest,version:digest,payload};
@@ -99,7 +103,11 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
    const value:Captured={...c,tool,callId,observedAt:new Date().toISOString()};captured.set(callId,value);
    if(effects.has(tool)&&options.bindEffect)value.effectWork=bounded(()=>options.bindEffect!(callId,tool,structuredClone(c.payload)));
    if(discoveryTools.has(tool)&&options.bindDiscovery)value.effectWork=bounded(()=>options.bindDiscovery!(callId,tool,structuredClone(c.payload)));
-  }else if(discoveryTools.has(tool))discoveryIncomplete=true;else overflow=true;
+  }else if(discoveryTools.has(tool))discoveryIncomplete=true;
+  else if(tool==='education_web_answer'){
+   let payload:Record<string,unknown>|undefined;try{const content=(result as {content?:{type:string;text?:string}[]})?.content;payload=JSON.parse(content?.filter(p=>p.type==='text').map(p=>p.text).join('\n')||'');}catch{/* Invalid saved receipts remain incomplete. */}
+   if(!payload||payload.success!==true||!(['candidate','conflict'].includes(String(payload.state))||payload.state===undefined&&(typeof payload.grantId==='string'||Array.isArray(payload.items))))overflow=true;
+  }else overflow=true;
  }
  function image(receipt:PublicImageDelivery){if(receipt.state==='received')images.set(receipt.callId,structuredClone(receipt));}
  async function check(base:TaskVerification,readNative:()=>Promise<NativeResult[]>,signal?:AbortSignal,includeDiscovery=true):Promise<TaskVerification>{

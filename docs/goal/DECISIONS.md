@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+<!-- kb-web-writeback-20261027:start -->
+## 2026-10-27 S6-C 持久联网补答与批判修复
+
+复用Hana+原样Mozilla DOM，不引另一Agent/浏览器/服务/依赖。web独立来源账本不伪造teacher或Qwen。批次许可不继承给generic web/MCP；成功缺答实读即待批，补答Pi顺序执行且DNS/发送前重查。完整同题/角色原文仅证明关联与来源，不证明数学正确；与已有答案/解析未能一致时候选。正式整卷仍集中确认。
+<!-- kb-web-writeback-20261027:end -->
+
 <!-- kb-enrichment-read-20261027:start -->
 ## 2026-10-27 S6-C 缺答题实读与独立批判修复
 

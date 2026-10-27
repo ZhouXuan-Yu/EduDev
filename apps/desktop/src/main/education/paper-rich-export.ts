@@ -1,4 +1,5 @@
 import {paperTextBlocks} from './paper-table-blocks';
+import {questionWebSourceParagraphs} from '../../shared/question-answer-attribution';
 import type {PaperView} from '../../shared/paper-blueprint';
 import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument} from '../../shared/question-document';
 import {PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,type PaperOfficeFigure,type PaperExportInput} from '../../shared/paper-export';
@@ -33,7 +34,7 @@ export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput
      for(const b of roleImages)addImage(b.id,role);
      if(evidence)paragraphs.push(title+'来源：'+({source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',missing:'缺失'}[evidence.origin]));
     }
-    paragraphs.push(...chunks('题目来源：'+(q.sourceTitle||'教师本地题库')+'；答案、解析尚未独立核验。'));
+    paragraphs.push(...questionWebSourceParagraphs(q).flatMap(chunks),...chunks('题目来源：'+(q.sourceTitle||'教师本地题库')+'；答案、解析尚未独立核验。'));
    }
    sections.push({heading:`${item.number}.（${item.points} 分）`,paragraphs,...(figures.length?{figures}:{})});
   }

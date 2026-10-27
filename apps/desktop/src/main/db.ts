@@ -8,6 +8,7 @@ import {findMistakeSimilar} from './education/mistake-similar';
 import type {MistakeSimilarInput} from '../shared/mistake-similar';
 import type {PaperBlueprint} from '../shared/paper-blueprint';
 import {questionVersion} from './education/question-context-provider';
+import {QuestionWebAnswerRepository} from './education/question-web-answer-repository';
 import { createHash, randomUUID } from 'node:crypto';
 import {readQuestionDocument} from '../shared/question-document';
 import {MaterialAiRepository} from './assets/material-ai-repository';
@@ -1137,6 +1138,7 @@ export class OmniEduStore {
   readonly materialSearch: MaterialFullTextSearch;
   readonly materialQuestions: MaterialQuestionArchive;
   readonly materialAi: MaterialAiRepository;
+  readonly questionWeb: QuestionWebAnswerRepository;
   readonly retrieval: RetrievalRepository;
   readonly materialPdf: MaterialPdfRepository;
   readonly materialWord: MaterialWordRepository;
@@ -1202,13 +1204,17 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialQuestions=new MaterialQuestionArchive({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,validateAi:q=>this.materialAi.validate(q),create:q=>this.createQuestionBankItem(q),read:id=>this.getQuestionBankItem(id),withWriter:async action=>{
+    this.materialQuestions=new MaterialQuestionArchive({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,validateAi:q=>this.materialAi.validate(q),validateWeb:q=>this.questionWeb.validate(q),create:q=>this.createQuestionBankItem(q),read:id=>this.getQuestionBankItem(id),withWriter:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialQuestions);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
     this.materialAi=new MaterialAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,map:row=>this.mapResourceChunk(row),create:q=>this.createQuestionBankItem(q),writer:async(action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialAi);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
+    this.questionWeb=new QuestionWebAnswerRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),read:id=>this.getQuestionBankItem(id),validate:async(q,signal)=>{signal.throwIfAborted();if(q.archive)await this.materialQuestions.validate(q);await this.retrieval.validateAnswerEnrichment(q,signal,'web_source_check');},writer:async(action,beforeCommit)=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.questionWeb);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
     this.retrieval=new RetrievalRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),writer:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
@@ -6056,6 +6062,7 @@ export class OmniEduStore {
     await this.materialPdf.migrate();
     await this.materialWord.migrate();
     await this.materialAi.migrate();
+    await this.questionWeb.migrate();
     await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});
     await this.retrieval.migrate();
     this.questionRetrievalIndexed=await ensureQuestionRetrievalIndex({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)});

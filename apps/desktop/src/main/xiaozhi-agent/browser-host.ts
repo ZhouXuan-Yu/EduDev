@@ -25,6 +25,8 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
   /** Main-only isolated native acceptance fixture, never installed by production. */
   afterTabCreated?:(contents:WebContentsView['webContents'],partition:Session)=>Promise<void>}) {
   const groups=new Map<string,Group>(),pending=new Map<string,Promise<Group>>();let disposed=false;
+  const networkScopes=new Map<string,(url:string)=>boolean>();
+  const checkScope=(id:string,url:string)=>{if(networkScopes.has(id)&&!networkScopes.get(id)!(url))throw new Error('permission_denied');};
   const safeUrl=async(raw:string)=>{const url=officeWebUrl(raw).href;let decoded:string;try{decoded=decodeURIComponent(url);}catch{throw new Error('permission_denied');}if(sensitive.test(decoded)||(await options.sanitize(decoded))!==decoded)throw new Error('permission_denied');return url;};
   function showStatus(g:Group,state:string){if(g.closing||g.status.webContents.isDestroyed())return;g.status.setVisible(true);g.window.contentView.removeChildView(g.status);g.window.contentView.addChildView(g.status);void g.status.webContents.executeJavaScript(`location.hash=${JSON.stringify(state)}`).catch(()=>{});g.window.setTitle('小智 · 浏览器');}
   function showTab(g:Group,tab:Tab){for(const t of g.tabs.values())t.view.setVisible(t===tab);g.active=tab.id;if(tab.state==='ready')g.status.setVisible(false);else showStatus(g,tab.error||'loading');}
@@ -32,7 +34,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
   async function group(id:string,dnsMode:OfficeDnsMode){
     if(disposed||!/^aisession_[a-f0-9-]{36}$/i.test(id))throw new Error('permission_denied');
     const existing=groups.get(id);if(existing){if(!existing.busy&&existing.proxy.setDnsMode(dnsMode))await Promise.all([...existing.tabs.values()].map(t=>t.session.closeAllConnections()));return existing;}const started=pending.get(id);if(started)return started;
-    const job=(async()=>{const proxy=await createPublicBrowserProxy(dnsMode);if(disposed){await proxy.close();throw new Error('cancelled');}
+    const job=(async()=>{const proxy=await createPublicBrowserProxy(dnsMode,url=>{checkScope(id,url);return true;});if(disposed){await proxy.close();throw new Error('cancelled');}
       const electron=await electronRuntime();const window=new electron.BaseWindow({width:1100,height:760,title:'小智 · 浏览器',show:false,backgroundColor:'#ffffff'});window.setMenu(null);
       const status=new electron.WebContentsView({webPreferences:{nodeIntegration:false,contextIsolation:true,sandbox:true,devTools:false}});
       status.webContents.setWindowOpenHandler(()=>({action:'deny'}));
@@ -64,7 +66,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
     wc.on('did-fail-load',(_event,code,_description,url,isMainFrame)=>{if(!isMainFrame||code===-3&&tab.error)return;tab.state='failed';tab.error=g.proxy.failureFor(url)||(code===-3?'cancelled':code===-7?'timeout':'network');if(g.active===tab.id)showStatus(g,tab.error);});
     wc.on('page-title-updated',()=>{if(!g.window.isDestroyed()&&g.active===tab.id)g.window.setTitle('小智 · 浏览器 · '+wc.getTitle().slice(0,150));});
     partition.webRequest.onBeforeRequest((request,done)=>{void(async()=>{try{
-      if(disposed||g.closing||wc.isDestroyed())throw new Error('cancelled');await safeUrl(request.url);
+      if(disposed||g.closing||wc.isDestroyed())throw new Error('cancelled');checkScope(id,request.url);await safeUrl(request.url);checkScope(id,request.url);
       if(!['GET','HEAD'].includes(request.method)){
         const permission=tab.write;if(!permission||permission.until<Date.now()||new URL(request.url).origin!==permission.origin||request.webContentsId!==wc.id)throw new Error('permission_denied');
       }done({cancel:false});
@@ -83,6 +85,7 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
   return {
     async status(id:string){const g=groups.get(id);if(!g||g.closing)return {open:false};const tabs=[];for(const tab of g.tabs.values()){if(tab.state!=='ready'||tab.view.webContents.isDestroyed())continue;try{tabs.push({tabId:tab.id,title:(await options.sanitize(tab.view.webContents.getTitle())).slice(0,200),url:await safeUrl(tab.view.webContents.getURL()),active:tab.id===g.active});}catch{/* Blank/blocked pages are not a source. */}}return {open:true,tabs};},
     show(id:string){const g=groups.get(id);if(!g||g.closing||g.window.isDestroyed())throw new Error('permission_denied');g.window.show();g.window.focus();},
+    setNetworkScope(id:string,scope:(url:string)=>boolean,resetConnections=false){if(networkScopes.get(id)===scope&&!resetConnections)return;networkScopes.set(id,scope);groups.get(id)?.proxy.stopConnections();},
     async execute(id:string,input:XiaozhiBrowserInput,context:{signal:AbortSignal;dnsMode:OfficeDnsMode;current:()=>boolean;confirm:(question:string,signal:AbortSignal)=>Promise<boolean>}):Promise<XiaozhiBrowserReceipt|{tabs:{tabId:string;title:string;url:string;active:boolean}[]}|{closed:true}> {
       if(!validBrowserInput(input)||disposed)throw new Error('invalid_input');const check=()=>{context.signal.throwIfAborted();if(!context.current())throw new Error('cancelled');};check();
       if(input.action==='close'&&!input.tabId){await closeGroup(id);return {closed:true};}
@@ -95,11 +98,12 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         if(input.action==='navigate'&&(input.newTab||!tab))tab=await createTab(id,g);if(!tab||tab.view.webContents.isDestroyed())throw new Error('permission_denied');check();
         const wc=tab.view.webContents;
         const activate=()=>{showTab(g,tab!);g.window.show();g.window.focus();};
-        const navigate=async(raw:string)=>{const signal=AbortSignal.any([context.signal,AbortSignal.timeout(30000)]);let url:string|undefined;try{url=await safeUrl(raw);check();tab!.state='loading';tab!.error=undefined;showStatus(g,'loading');await waitOfficeAbort(wc.loadURL(url),signal);check();const failure=g.proxy.failureFor(wc.getURL());if(failure)throw new Error(failure);tab!.state='ready';showTab(g,tab!);}catch(error){wc.stop();g.proxy.stopConnections();const code=(error as Error).message;const reason=context.signal.aborted?'cancelled':signal.aborted?'timeout':url&&g.proxy.failureFor(url)||(['permission_denied','dns_blocked','cancelled','timeout'].includes(code)?code:'network');tab!.state='failed';tab!.error=reason;tab!.snapshotId=undefined;tab!.refs.clear();showStatus(g,reason);throw new Error(reason);}};
+        const navigate=async(raw:string)=>{const signal=AbortSignal.any([context.signal,AbortSignal.timeout(30000)]);let url:string|undefined;try{url=await safeUrl(raw);checkScope(id,url);check();tab!.state='loading';tab!.error=undefined;showStatus(g,'loading');await waitOfficeAbort(wc.loadURL(url),signal);check();const failure=g.proxy.failureFor(wc.getURL());if(failure)throw new Error(failure);tab!.state='ready';showTab(g,tab!);}catch(error){wc.stop();g.proxy.stopConnections();const code=(error as Error).message;const reason=context.signal.aborted?'cancelled':signal.aborted?'timeout':url&&g.proxy.failureFor(url)||(['permission_denied','dns_blocked','cancelled','timeout'].includes(code)?code:'network');tab!.state='failed';tab!.error=reason;tab!.snapshotId=undefined;tab!.refs.clear();showStatus(g,reason);throw new Error(reason);}};
         const refScript=(body:string)=>{if(input.snapshotId!==tab!.snapshotId)throw new Error('attachment_changed');const expected=tab!.refs.get(input.ref!);if(!expected)throw new Error('attachment_changed');return `(function(){const el=document.querySelector('[data-hana-ref="${input.ref}"]');if(!el||el.outerHTML!==${JSON.stringify(expected)})throw new Error('Browser reference changed');${body}})()`;};
         const approve=async()=>{const url=await safeUrl(wc.getURL()),revision=tab!.revision;
+          checkScope(id,url);
           const question=await options.sanitize(`允许小智在 ${new URL(url).hostname} 的“${wc.getTitle().slice(0,100)}”页面执行这次“${input.action}”操作${input.ref?`（控件 ${input.ref}）`:''}${input.text!==undefined?`，输入“${input.text.slice(0,200)}”`:input.value!==undefined?`，选择“${input.value.slice(0,200)}”`:input.key?`，按 ${input.key}`:''}吗？页面可能提交内容。`);
-          if(!await context.confirm(question,context.signal))throw new Error('permission_denied');check();if(tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');tab!.write={origin:new URL(url).origin,until:Date.now()+10000};};
+          if(!await context.confirm(question,context.signal))throw new Error('permission_denied');check();checkScope(id,url);if(tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');tab!.write={origin:new URL(url).origin,until:Date.now()+10000};};
         if(input.action==='extract'){
           if(tab.state!=='ready')throw new Error(tab.error||'network');
           const url=await safeUrl(wc.getURL()),revision=tab.revision,signal=AbortSignal.any([context.signal,AbortSignal.timeout(15000)]);

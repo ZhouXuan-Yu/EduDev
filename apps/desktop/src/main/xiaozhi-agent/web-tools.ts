@@ -7,9 +7,9 @@ import { XIAOZHI_WEB_ERRORS, type XiaozhiWebError, type XiaozhiPublicSource } fr
 
 /** Hana search/reader run inside the sole Pi loop; only safe public receipts leave main. */
 export function createPiWebTools(options: { workspace: string; sessionId: string; runId: string; dnsMode: 'auto' | 'system' | 'alidns';
-  sanitize: (text: string) => Promise<string>; isCurrent: () => boolean; limitsEnforced?:boolean }): ToolDefinition[] {
-  const host = createHanaOfficeTools({ ...options, networkAllowed: true, searchAllowed: true });
-  const current = (signal?: AbortSignal) => { signal?.throwIfAborted(); if (!options.isCurrent()) throw new Error('permission_denied'); };
+  sanitize: (text: string) => Promise<string>; isCurrent: () => boolean; limitsEnforced?:boolean;beforeExecute?:()=>void }): ToolDefinition[] {
+  const current = (signal?: AbortSignal) => { signal?.throwIfAborted(); if (!options.isCurrent()) throw new Error('permission_denied'); options.beforeExecute?.(); };
+  const host = createHanaOfficeTools({ ...options, networkAllowed: true, searchAllowed: true, beforeNetworkRequest:()=>current() });
   const safeUrl = async (raw: string) => {
     const url = officeWebUrl(raw).href;
     let decoded: string; try { decoded = decodeURIComponent(url); } catch { throw new Error('permission_denied'); }
@@ -23,6 +23,7 @@ export function createPiWebTools(options: { workspace: string; sessionId: string
         isError: true, details: { success: false, error: { code }, data: { webError: code } } });
       try {
         current(signal);
+        options.beforeExecute?.();
         const snapshot = snapshotToolInvocationInput(args);
         if (!snapshot.ok || !snapshot.value || typeof snapshot.value !== 'object' || Array.isArray(snapshot.value)) return failure('invalid_input');
         const input = { ...snapshot.value } as Record<string, unknown>;

@@ -1,3 +1,4 @@
+import {createQuestionWebAnswerReadback} from '../education/question-web-answer-readback';
 import {readChatPresentation} from '../../shared/chat-presentation';
 import {capturePresentationOrder} from './presentation-event-adapter';
 import {createClassroomExportTools} from '../education/classroom-export-tools';
@@ -49,6 +50,7 @@ import {createPiWebTools} from './web-tools';
 import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
 import {createQuestionContextProvider} from '../education/question-context-provider';
+import {createQuestionWebAnswerTools,scopeQuestionWebExternalTools} from '../education/question-web-answer-tools';
 import type {QuestionContextSource} from '../../shared/question-context';
 import {createQuestionCollectionCoordinator} from '../education/question-collection-coordinator';
 import {validQuestionCollection,type QuestionCollectionInput,type QuestionCollectionDecision} from '../../shared/question-collection';
@@ -516,8 +518,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const classroomContext=createClassroomContext(owner?.teacherPreferenceRevision||0);
     const mcpTools = await mcp.tools();
     const observedQuestions=new Map<string,QuestionContextSource>();
+    const observedEnrichmentQuestions=new Map<string,QuestionContextSource>();
+    let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
-    try { return {stateRoot,workspace,...(grant||paperOutput?{fileOutputWorkspace:await resolvePaperOutput(id)||workspace}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:mcpTools.definitions,mcpDispose:mcpTools.dispose,
+    try { return {stateRoot,workspace,...(grant||paperOutput?{fileOutputWorkspace:await resolvePaperOutput(id)||workspace}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
         const [knowledge,materials,questions,attachments]=await Promise.all([store.getKnowledgeOverview(),store.materials.list({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}),store.searchQuestionBank({limit:1}),store.xiaozhiState.attachments.list(id)]);
         return {knowledge:knowledge.counts.chunks>0,materials:materials.total>0,questions:questions.length>0,attachments:attachments.some(row=>row.state==='submitted'),workspace:Boolean(await store.xiaozhiState.workspace(id))};
@@ -540,14 +544,20 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         },
         evidence:()=>owner.turn.items.filter(item=>item.kind==='tool'&&item.status==='completed'&&!['记录目标进度','更新任务计划','请教师补充'].includes(item.label||'')).map(item=>({runId,callId:item.id,label:(item.label||'已完成授权工具').slice(0,200)})),
         emit:goal=>{if(active.get(id)===owner)publicEvent(id,owner,{kind:'goal',goal});}})}:{}),
-      ...(web.enabled?{webTools:createPiWebTools({workspace,sessionId:id,runId,dnsMode:web.dnsMode,limitsEnforced:false,
+      ...(web.enabled?{webTools:createPiWebTools({workspace,sessionId:id,runId,dnsMode:web.dnsMode,limitsEnforced:false,beforeExecute:()=>{if(observedEnrichmentQuestions.size)throw Error('permission_denied');},
         sanitize:text=>sanitizeOfficeDocumentText(store,text),isCurrent:()=>!closing&&(!owner||active.get(id)===owner&&!owner.stopped)})}:{}),
       ...(web.enabled?{browserTools:wait=>createPiBrowserTools({host:browser,sessionId:id,dnsMode:web.dnsMode,
+        beforeExecute:input=>webAnswerRuntime?.guard(input),onExtract:(callId,data,signal)=>webAnswerRuntime?.observe(callId,data,signal)||Promise.resolve(undefined),
         current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         confirm:(question,signal,callId)=>wait(async()=>{const tool=controls.tools(id,runId).find(item=>item.name==='ask_teacher')!;
           const result=await tool.execute(callId,{question,options:['同意这次操作','拒绝这次操作']},signal,undefined,undefined as never);
           const content=result.content.find(item=>item.type==='text');if(!content||content.type!=='text')return false;
           return JSON.parse(content.text).answer==='同意这次操作';})})}:{}),
+      ...(web.enabled?{questionWebAnswerTools:(wait:(action:()=>Promise<boolean>)=>Promise<boolean>)=>{
+        webAnswerRuntime=createQuestionWebAnswerTools({repo:store.questionWeb,onNetworkScope:(scope,reset)=>browser.setNetworkScope(id,scope,reset),owner:{sessionId:id,runId},observed:observedEnrichmentQuestions,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:text=>sanitizeOfficeDocumentText(store,text),confirm:(question,signal,callId)=>wait(async()=>{
+          const tool=controls.tools(id,runId).find(item=>item.name==='ask_teacher')!,result=await tool.execute(callId,{question,options:['同意这次操作','拒绝这次操作']},signal,undefined,undefined as never);const content=result.content.find(item=>item.type==='text');return content?.type==='text'&&JSON.parse(content.text).answer==='同意这次操作';
+        })});return webAnswerRuntime.tools;
+      }}:{}),
       attachmentTools:createAttachmentReadTools({sessionId:id,state:store.xiaozhiState.attachments,
         ocr:store.xiaozhiState.attachmentOcr,
         importer:createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,
@@ -580,7 +590,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:excluded=>getPiProtectedContext(store,id,excluded),
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
-      questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases),
+      questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();}),
       questionReviewTools:questionReviews.tools(id,runId,observedQuestions,undefined,{provider:'deepseek',model:settings.model,runId}),
       questionCollectionTools:questionCollections.tools(id,runId,observedQuestions,{provider:'deepseek',model:settings.model,runId}),
       practiceReview:{studentId,tools:practiceReviews.tools(id,runId,studentId,observedQuestions)},
@@ -652,13 +662,14 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
           fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,
           fileText:text=>base.sanitizeFileText!(text),
           changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
+      const readWebAnswers=createQuestionWebAnswerReadback({sessionId:id,runId:run.runId,current:()=>!closing&&active.get(id)===run&&!run.stopped,repo:store.questionWeb});
       const readSavedQuestions=createEducationReadback({sessionId:id,runId:run.runId,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,questions:store.questionReviews});
       const readSavedPractice=createPracticeReadback({sessionId:id,runId:run.runId,
         current:()=>!closing&&active.get(id)===run&&!run.stopped,practice:store.practiceReviews});
       run.results=createRunResultReadback({runId:run.runId,
         ...(run.goalId?{bindDiscovery:createDiscoveryReadback({sessionId:id,runId:run.runId,current:()=>!closing&&active.get(id)===run&&!run.stopped,workspace:()=>host.resolveFileWorkspace(id)})}:{}),
-        bindEffect:(callId,tool,payload)=>tool==='education_propose_questions'?readSavedQuestions(callId,tool,payload)
+        bindEffect:(callId,tool,payload)=>tool==='education_web_answer'?readWebAnswers(callId,tool,payload):tool==='education_propose_questions'?readSavedQuestions(callId,tool,payload)
           :tool==='education_propose_practice'?readSavedPractice(callId,tool,payload):readSavedFile(callId,tool,payload),
         readLocal:async(tool,payload)=>{
           const signal=AbortSignal.any([run.abort.signal,AbortSignal.timeout(10000)]);

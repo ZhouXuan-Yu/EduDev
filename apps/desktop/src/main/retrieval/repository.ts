@@ -144,7 +144,7 @@ export class RetrievalRepository{
     if(events.length){if(this.closing||(await this.control()).paused)return 0;await this.applyObjects(spec,[...new Map(events.map(event=>[String(event.kind)+':'+String(event.object_id),{kind:String(event.kind) as RetrievalKind,id:String(event.object_id)}])).values()]);const seq=Number(events.at(-1)!.seq);await this.host.run('UPDATE retrieval_generations SET applied_seq=? WHERE id=? AND applied_seq<?',[seq,id,seq]);await new Promise<void>(resolve=>setImmediate(resolve));}
     return events.length;
   }
-  async fact(kind:RetrievalKind,id:string,purpose?:QuestionContextPurpose):Promise<{fact:RetrievalFact;unit?:MaterialReadingUnit;question?:QuestionBankItem;sources?:{id:string;revision:number}[]}>{
+  async fact(kind:RetrievalKind,id:string,purpose?:QuestionContextPurpose|'web_source_check'):Promise<{fact:RetrievalFact;unit?:MaterialReadingUnit;question?:QuestionBankItem;sources?:{id:string;revision:number}[]}>{
     let seq=0;
     const deleted:RetrievalFact={kind,id,seq,digest:'',resourceId:'',subject:'',grade:'',knowledgePoint:'',questionType:'',difficulty:'',sourceKind:'',text:'',deleted:true};
     if(kind==='material'){
@@ -157,7 +157,7 @@ export class RetrievalRepository{
       return{fact:{...deleted,deleted:false,digest,resourceId:unit.resourceId,subject:String(row.subject||''),grade:String(row.grade||''),knowledgePoint:String(row.knowledge_point||''),questionType:String(row.question_type||''),difficulty:String(row.difficulty||''),sourceKind:'teacher_resource',text:chunk.contentMd},unit};
     }
     const row=(await this.host.all("SELECT q.*,k.seq fact_seq FROM (SELECT ? requested_id) s LEFT JOIN question_bank_items q ON q.id=s.requested_id LEFT JOIN retrieval_current k ON k.kind='question' AND k.object_id=s.requested_id",[id]))[0];seq=Number(row?.fact_seq||0);deleted.seq=seq;if(!row?.id)return{fact:deleted};
-    let q:QuestionBankItem;try{q=this.host.question(row);if((purpose==='answer_enrichment'?!answerEnrichmentRoles(q).length:!archiveEligible(q))||questionFactConflicts(q).length||q.document&&q.document.schemaVersion!=='xiaozhi.question-document.v2')return{fact:deleted};}catch{return{fact:deleted};}
+    let q:QuestionBankItem;try{q=this.host.question(row);if((purpose==='web_source_check'?false:purpose==='answer_enrichment'?!answerEnrichmentRoles(q).length:!archiveEligible(q))||questionFactConflicts(q).length||q.document&&q.document.schemaVersion!=='xiaozhi.question-document.v2')return{fact:deleted};}catch{return{fact:deleted};}
     const sourceRevisions=new Map<string,number>();const remember=(id:string,revision:number)=>{const previous=sourceRevisions.get(id);sourceRevisions.set(id,revision);return previous===undefined||previous===revision;};
     for(const source of q.archive?.sources||[]){const parent=(await this.host.all('SELECT c.*,r.content_hash parent_version,r.parse_status parent_status,COALESCE(v.revision,0) source_revision FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id LEFT JOIN retrieval_source_revisions v ON v.resource_id=r.id WHERE c.id=? AND c.resource_id=?',[source.chunkId,source.resourceId]))[0];if(!parent||!remember(source.resourceId,Number(parent.source_revision))||parent.parent_version!==source.version||parent.contains_personal_data||!readable.includes(String(parent.parent_status))||materialBodyVersion(this.host.chunk(parent))!==source.bodyVersion)return{fact:deleted};}
     if(q.document){const document=q.document,parent=(await this.host.all('SELECT content_hash,COALESCE(v.revision,0) source_revision FROM teacher_resources r LEFT JOIN retrieval_source_revisions v ON v.resource_id=r.id WHERE r.id=?',[document.source.resourceId]))[0];if(!parent||!remember(document.source.resourceId,Number(parent.source_revision))||parent.content_hash!==document.source.resourceVersion)return{fact:deleted};
@@ -169,8 +169,8 @@ export class RetrievalRepository{
     return{fact:{...deleted,deleted:false,digest:hash(questionFacts(q)),subject:q.subject,grade:q.grade,knowledgePoint:q.knowledgePoint,questionType:q.questionType,difficulty:q.difficulty,sourceKind:q.sourceKind,text},question:q,sources:[...sourceRevisions].map(([id,revision])=>({id,revision}))};
   }
   /** Same privacy/source revision closure as ordinary retrieval, without granting index or paper eligibility. */
-  async validateAnswerEnrichment(question:QuestionBankItem,signal?:AbortSignal){
-    signal?.throwIfAborted();const current=await this.fact('question',question.id,'answer_enrichment');
+  async validateAnswerEnrichment(question:QuestionBankItem,signal?:AbortSignal,purpose:QuestionContextPurpose|'web_source_check'='answer_enrichment'){
+    signal?.throwIfAborted();const current=await this.fact('question',question.id,purpose);
     if(!current.question||current.fact.deleted||current.fact.digest!==hash(questionFacts(question)))throw Error('source_changed');
     const valid=await this.filterCurrent('question',[{id:question.id,seq:current.fact.seq,sources:current.sources}]);
     signal?.throwIfAborted();if(!valid.has(question.id))throw Error('source_changed');

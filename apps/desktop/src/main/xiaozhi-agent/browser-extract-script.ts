@@ -22,8 +22,10 @@ export function browserExtractScript(scope?:{ref:number;expectedHtml:string}){
   }
   for(const details of holder.querySelectorAll('details:not([open])')){const summary=[...details.children].find(el=>el.tagName==='SUMMARY');for(const node of [...details.childNodes])if(node!==summary)node.remove();}
   const figures=holder.querySelectorAll('img,svg').length,canvas=holder.querySelectorAll('canvas').length;
+  let structuralLoss=!!holder.querySelector('table table,td[rowspan]:not([rowspan="1"]),th[rowspan]:not([rowspan="1"]),td[colspan]:not([colspan="1"]),th[colspan]:not([colspan="1"])');
+  for(const el of [...holder.querySelectorAll('sup,sub')].reverse())el.replaceWith(clone.ownerDocument.createTextNode((el.tagName==='SUP'?'^':'_')+'('+el.textContent+')'));
   const formulaNodes=[...holder.querySelectorAll('math,.katex,.MathJax,[data-latex]')].filter(el=>!el.parentElement?.closest('math,.katex,.MathJax,[data-latex]'));
-  for(const el of formulaNodes){const annotation=el.querySelector('annotation[encoding="application/x-tex"]'),tex=annotation?.textContent||el.getAttribute('data-latex')||el.getAttribute('alttext');const text=clone.ownerDocument.createTextNode(tex?' $'+tex+'$ ':' [公式文本] '+el.textContent+' ');el.replaceWith(text);}
+  for(const el of formulaNodes){const annotation=el.querySelector('annotation[encoding="application/x-tex"]'),tex=annotation?.textContent||el.getAttribute('data-latex')||el.getAttribute('alttext');if(!tex)structuralLoss=true;const text=clone.ownerDocument.createTextNode(tex?' $'+tex+'$ ':' [公式文本] '+el.textContent+' ');el.replaceWith(text);}
   for(const table of [...holder.querySelectorAll('table')].reverse()){const text=[...table.rows].map(row=>[...row.cells].map(c=>c.textContent.trim()).join(' | ')).join('\\n');table.replaceWith(clone.ownerDocument.createTextNode('\\n[表格]\\n'+text+'\\n[/表格]\\n'));}
   for(const el of holder.querySelectorAll('p,div,section,article,h1,h2,h3,h4,li,br'))el.append('\\n');
   const fallback=holder.textContent.trim();
@@ -31,7 +33,7 @@ export function browserExtractScript(scope?:{ref:number;expectedHtml:string}){
   const doc=document.implementation.createHTMLDocument(document.title);doc.body.append(doc.importNode(holder,true));
   let parsed;try{parsed=new Reader(doc,{charThreshold:0,maxElemsToParse:20000}).parse();}catch{parsed=null;}
   const extracted=scope?null:parsed?.textContent?.trim(),method=extracted?'readability':'dom_region';let text=extracted||fallback;
-  const normalized=s=>s.replace(/\\s+/g,'');const lossy=!!extracted&&normalized(fallback)!==normalized(extracted);
+  const normalized=s=>s.replace(/\\s+/g,'');const lossy=structuralLoss||!!extracted&&normalized(fallback)!==normalized(extracted);
   const sourceChars=fallback.length,truncated=text.length>24000||new TextEncoder().encode(text).byteLength>48000;
   text=text.slice(0,24000);if(text.length&&/[\\uD800-\\uDBFF]/.test(text.at(-1)))text=text.slice(0,-1);
   while(new TextEncoder().encode(text).byteLength>48000){text=text.slice(0,-256);if(text.length&&/[\\uD800-\\uDBFF]/.test(text.at(-1)))text=text.slice(0,-1);}

@@ -36,7 +36,7 @@ export async function readQuestionContextSource(store:Pick<Store,'getQuestionNot
 }
 const errors:Record<string,string>={invalid_input:'题目查询参数不正确，请按工具要求调整。',source_changed:'题目或原件已变化，请重新检索后读取。',question_fact_conflict:'本地题目与原图核对记录不一致，暂未提供内容。请检查题本或恢复资料后重试。',document_context_unavailable:'此题尚无完整题面核对记录，请先对照原图补齐条件、公式、表格、图义、选项与小问。',permission_denied:'当前任务已失效，未提供题目内容。',cancelled:'已停止读取题库。',too_large:'本次题目内容过长，请缩小检索范围或在本地查看原题。',unavailable:'本地题库暂时无法读取，请重试。'};
 /** Adapt the existing local question bank. No generated questions, writes, or second runtime. */
-export function createQuestionContextProvider(store:Store,isCurrent:()=>boolean,onRead?:(reference:string,source:QuestionContextSource)=>void,discovered:QuestionAliases=new Map()):ToolDefinition[]{
+export function createQuestionContextProvider(store:Store,isCurrent:()=>boolean,onRead?:(reference:string,source:QuestionContextSource)=>void,discovered:QuestionAliases=new Map(),onEnrichmentRead?:(reference:string,source:QuestionContextSource)=>void):ToolDefinition[]{
  const current=(signal:AbortSignal)=>{signal.throwIfAborted();if(!isCurrent())throw new Error('permission_denied');};
  const source=(q:QuestionBankItem):QuestionContextSource=>({schemaVersion:QUESTION_CONTEXT_SCHEMA,questionId:q.id,version:questionVersion(q)});
  const execute=(read:boolean):ToolDefinition['execute']=>async(_callId,args,signal)=>{
@@ -60,12 +60,13 @@ export function createQuestionContextProvider(store:Store,isCurrent:()=>boolean,
     if(document?.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA){context={} as QuestionProjection;for(const key of QUESTION_PROJECTION_FIELDS)context[key]={state:document.context.projection[key].state,text:await clean(document.context.projection[key].text)};}
     const question={...fields,subject:await clean(fields.subject),grade:await clean(fields.grade),knowledgePoint:await clean(fields.knowledgePoint),questionType:await clean(fields.questionType),
      stem:context?.statement.text??await clean(fields.stem),answer:await clean(fields.answer),analysis:await clean(fields.analysis),sourceTitle:await clean(fields.sourceTitle),tags:await Promise.all(fields.tags.map(t=>clean(t))),...(archive?{archiveState:archive.state,answerOrigin:archive.answerOrigin,analysisOrigin:archive.analysisOrigin}:{}),...(context?{context,answerOrigin:document!.answer.origin,analysisOrigin:document!.analysis.origin}: {})};
-    const publicResult={schemaVersion:QUESTION_CONTEXT_SCHEMA,success:true,reference:args.reference,version:found.version,question,answerVerified:false,teacherConfirmationKnown:!!context,scope:context?'teacher_confirmed_transcription':'saved_sanitized_question',...(context?{contextComplete:true,originalImagesIncluded:false}: {}),...(enriching?{purpose:'answer_enrichment',missingRoles,usableForPaper:false,originalImagesIncluded:false,writebackAuthorized:false}: {})};
+    const webSources=archive?.web?Object.fromEntries(await Promise.all(Object.entries(archive.web.roles).map(async([role,proof])=>[role,{kind:proof!.kind,url:proof!.url,title:await clean(proof!.title),observedAt:proof!.observedAt}]))):undefined;
+    const publicResult={schemaVersion:QUESTION_CONTEXT_SCHEMA,success:true,reference:args.reference,version:found.version,question:{...question,...(webSources?{webSources}: {})},answerVerified:false,teacherConfirmationKnown:!!context,scope:context?'teacher_confirmed_transcription':'saved_sanitized_question',...(context?{contextComplete:true,originalImagesIncluded:false}: {}),...(enriching?{purpose:'answer_enrichment',missingRoles,usableForPaper:false,originalImagesIncluded:false,writebackAuthorized:false}: {})};
     const text=JSON.stringify(publicResult);if(Buffer.byteLength(text,'utf8')>32000)throw new Error('too_large');
     await readQuestionContextSource(store,source(original),abort,args.purpose);current(abort);
     const title=`${question.knowledgePoint||'本地题目'} · ${question.sourceTitle||'题库'}`;
     // Incomplete-answer reads must not authorize downstream collection/review/paper tools.
-    if(!enriching)onRead?.(args.reference,source(original));
+    if(!enriching)onRead?.(args.reference,source(original));else onEnrichmentRead?.(args.reference,source(original));
     return{content:[{type:'text',text}],details:{success:true,data:{sources:[{title,question:source(original)}]}}};
    }
    if(!validQuestionContextQuery(args))throw new Error('invalid_input');

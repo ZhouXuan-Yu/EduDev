@@ -84,7 +84,8 @@ export function createTaskPlanRuntime(options:Options){
    // Safe reads without a declared step do not depend on task state. They must not
    // wait behind a concurrent plan checkpoint, which can legitimately take longer
    // than the tool gate while the model issued both calls in one response.
-   const unwrapped=unwrapTaskArguments(raw),manifest=toolManifest(tool,options.trustedMcpNames);
+   const unwrapped=unwrapTaskArguments(raw),declared=toolManifest(tool,options.trustedMcpNames);
+   const manifest=tool==='education_web_answer'&&['authorize','status'].includes(String(unwrapped.input.action))?{...declared,effect:'local_cache' as const}:declared;
     if(manifest.effect==='safe_read'||manifest.effect==='local_cache'){
      if(!unwrapped.stepId)return;
      let observed:TaskView|null=null;try{observed=await state().latest(owner.sessionId);}catch{/* The execution boundary still fences stale runs. */}

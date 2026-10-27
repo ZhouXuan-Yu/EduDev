@@ -2,6 +2,8 @@ import {QuestionMathText} from './QuestionMathText';
 import type { QuestionNotebookEntry } from '../../shared/contracts';
 import { questionFactConflicts } from '../../shared/question-facts';
 import type { PaperGeneration } from '../../shared/paper-blueprint';
+import {QuestionWebAnswerEvidence} from './QuestionWebAnswerEvidence';
+import {questionAnswerAttribution} from '../../shared/question-answer-attribution';
 
 export function questionSourceLabel(kind: string): string {
   switch (kind) {
@@ -21,16 +23,6 @@ export function questionUsageLabel(kind: string): string {
   }
 }
 
-function evidenceLabel(origin: string | undefined): string {
-  switch (origin) {
-    case 'source': return '原资料提供';
-    case 'teacher': return '教师补充';
-    case 'ai_generated': return '小智生成';
-    case 'missing': return '尚未提供';
-    default: return '历史记录，来源待确认';
-  }
-}
-
 /** Origin is a recorded attribution, never mathematical verification or authority to change facts. */
 export function QuestionAnswerEvidence({ question, generation }: {
   question: Pick<QuestionNotebookEntry, 'id' | 'stem' | 'answer' | 'analysis' | 'document' | 'archive'>;
@@ -42,11 +34,12 @@ export function QuestionAnswerEvidence({ question, generation }: {
   </div>;
   return <div className="question-notebook-answer" data-testid={`question-notebook-answer-${question.id}`}>
     <strong>参考答案</strong>
-    <p data-testid="question-answer-origin">标注来源：{!question.document&&generation?'AI起草，教师核对保存版本':evidenceLabel(question.document?.answer.origin??question.archive?.answerOrigin)}</p>
+    <p data-testid="question-answer-origin">标注来源：{!question.archive?.web?.roles.answer&&!question.document&&generation?'AI起草，教师核对保存版本':questionAnswerAttribution(question,'answer').label}</p>
     <QuestionMathText testId="question-answer-text" text={question.answer || '暂无答案，请核对原资料或由教师补充。'}/>
     <strong>解析</strong>
-    <p data-testid="question-analysis-origin">标注来源：{!question.document&&generation?'AI起草，教师核对保存版本':evidenceLabel(question.document?.analysis.origin??question.archive?.analysisOrigin)}</p>
+    <p data-testid="question-analysis-origin">标注来源：{!question.archive?.web?.roles.analysis&&!question.document&&generation?'AI起草，教师核对保存版本':questionAnswerAttribution(question,'analysis').label}</p>
     <QuestionMathText testId="question-analysis-text" text={question.analysis || '暂无解析，需教师补充。'}/>
     <p role="note" data-testid="question-answer-verification">答案与解析尚未独立核对正确性，请在教学使用前核实。题面核对与来源确认不代表答案正确。</p>
+    {(question.archive?.web||/^question_[a-f0-9-]{36}$/i.test(question.id))&&<QuestionWebAnswerEvidence question={question}/>}
   </div>;
 }

@@ -1,5 +1,51 @@
 # 知识库实施证据
 
+## 2026-10-27 S6-C 持久网页补答、同题本与生产任务接线
+
+完整Goal保持ACTIVE；本次是已保存完整文字题的限定联网补答，不是任意网站、图题、临时提问或40GB最终交付。复用现Hana浏览器+Mozilla Readability，无新增依赖/服务/Agent。
+
+已落地：question_web_grants/observations/candidates三张增量幂等表，真实宿主观察/owner/run/URL/时间/正文摘要；archive v4逐角色web证据；同题唯一完整题面/明确角色精确匹配；writer事务缺角色CAS，只补空；已有答案/解析不同或网页缺相应对照区域时保留候选。原资料来源、原AI回执、现有非空内容保留。取消/过期/隐私/源变化/教师改题拒绝提交；教师改写撤销当前对应web引用，历史保留。
+
+Pi的education_web_answer authorize/propose/status接现会话、原题本和typed证据IPC；成功purpose实读即待授权，本批20题/5origin/20分钟、最多32观察/100候选/16授权。generic web/MCP不继承批次，DNS/发送/重定向均重验，具备补答能力时Pi顺序执行。任务计划已接：authorize/status独立本地许可/读取；propose仍需saved_questions/current写入准入。每个applied记录真实首个application callId，独立保存读回绑定owner/call/candidate/afterVersion/当前原件闭包，live及历史recheck一致；重复新call不能继承别的call保存资格。只批准/候选/冲突不产生保存通过证据，畸形applied显式unknown。教师确认由独立human表达。
+
+最终执行目录：本checkout/apps/desktop。日志归档test-results/goal；绝对工作树/报告及命令如下。
+
+| 命令 | 真实结果与范围 |
+| --- | --- |
+| npm run build | 最终exit0，含tsc --noEmit；kb-web-build-final.log |
+| npm run test:renderer-components | 最终exit0，240/240；kb-web-components-final.log |
+| node scripts/education/question-web-native.mjs | 最终exit0，12项/0 rendererErrors，实际Electron DOM/真实资料复制/Store/SQLite/宿主scope/typed IPC/原题本失败重试/候选原因/教师改写/1366×768与1920×1080冷重启；kb-web-ui-final.log |
+| node --experimental-transform-types scripts/education/question-web-answer-boundaries.mjs | 12组；真实仓储+SQLite，proof exactcall/owner、CAS/重放、串题/角色冲突、取消/到期与来源；Host来源校验有fixture，真实Store另见原生路径 |
+| node scripts/education/question-web-send-boundaries.mjs | 8组，批次/内容/路径外发、host观察来源、状态与旧版本回执；recording adapter |
+| node scripts/education/question-web-generic-send.mjs | 6组，pending search/fetch/MCP拒绝、普通联网对照、异步脱敏撤权；actual generic/Hana+本地替换transport，0真实联网 |
+| node scripts/education/question-web-transport-revocation.mjs | 3组，实际office-network DNS前后与公有解析fallback撤权，替换DNS/fetch，0真实请求 |
+| node scripts/education/question-web-pi-sdk.mjs | 3组，唯一实际Pi SDK+受控model协议，purpose实读先于MCP拒绝、真实补答tool manifest/注册/status；Store/外部adapter为fixture |
+| node --experimental-transform-types scripts/education/question-web-task-plan.mjs | 最终6组，真实SQLite任务coordinator/journal/publisher/准入+实际Pi SDK/taskRuntime/envelope；domain写入/snapshot显式fixture。hcVqRS，kb-web-task-final.log |
+| node --experimental-transform-types scripts/xiaozhi-agent/pi-task-plan-boundaries.mjs | 旧任务19组通过，u7qQWN；kb-web-task-compat.log |
+| node scripts/xiaozhi-agent/pi-browser-extract-boundaries.mjs | 12组，实际Readability/jsdom的结构/隐私/省略边界，非原生浏览器覆盖 |
+| node scripts/xiaozhi-agent/pi-browser-proxy-scope.mjs | 2组，真实本机HTTP/CONNECT代理，scope拒绝先于替换DNS，不访问公网 |
+| node scripts/xiaozhi-agent/pi-browser-proxy-cancel-smoke.mjs | 旧4组通过，pi-browser-proxy-cancel-JKuTqf |
+| node scripts/education/question-enrichment-read-boundaries.mjs | 旧缺答实读15组通过 |
+| node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs | 旧双阶段AI16组通过，受控provider；kb-web-ai-compat.log |
+| node scripts/xiaozhi-agent/pi-education-boundary-smoke.mjs | 旧实际Pi SDK8组通过，pi-boundary-Ja0j6K；不调用真实模型 |
+| npm run test:smoke | exit0，207/207历史兼容路径；kb-web-answer-smoke-final.log。本实例早于最后对称角色冲突及task读回修复，不冒充最终源码全量回归；后续最终build/240组件/本片12原生/任务19及SDK6补验见上 |
+| node scripts/education/question-web-coverage.mjs | exit0；四新领域的实际V8编译JS非空行/函数覆盖，web-coverage-fdemrl/report.json。tools 99.53%/92.31%，repository 97.04%/100%，readback100%/100%，shared92.45%/100%。通过80%限定门；不是TS分支、整个项目、Electron或自然质量覆盖 |
+| npm audit --json | exit1：21（8 high/5 moderate/8 low），无新依赖；kb-web-answer-audit.json。未自动大版本升级 |
+| git diff --check | 收尾exit0；Git真实合并结果另见本节收尾记 |
+
+最终原生实例：C:/Users/ZhouXuan/AppData/Local/Temp/omni-web-answer-ODZIoG/report.json，完整out指纹18715c90527493df21c83420059587561920ffc86140a4af8724daf31aa88e9c。包含真实copied Markdown/SQLite/原件强验、实际隔离world/native DOM、真实Pi工具定义、exactcall独立保存读回、两进程UI冷启动；网页是合成HTTPS protocol fixture，批次许可是test stand-in，无真实搜题网站或付费provider质量声明。重定向protocol handler可收到回调但Chromium取消ERR_BLOCKED_BY_CLIENT，外发前DNS阻断由独立代理/transport项证明。
+
+独立批判与修复：串题、MathML分式/HTML上下标/合并表格静默降级、批次外URL/内容、成功实读但未批准即外发、generic web/MCP旁路、异步sanitize撤权窗口、已有答案或解析的对称拼接冲突已反例修复。实际Pi又查出tool_manifest_missing，生产任务准入/独立读回遗漏也已补齐。关键RED提交e970171/b9a6901/d8c92bb/d61728a/0f658d7/20675b2/6625727/2476fc3/d8462e8/2fbc99f/e9c2da3/093ada2/f80b1af/bd05a2a；其中f80b1af首跑cwd错误，仅正确cwd复跑的task_plan_required才是产品RED。测试配置错误不算生产证据。
+
+独立最新报告位于OS Temp：web-answer-race-final-6177e4aa6fd44bd88b6aeacee2330224（异步撤权0传输）；web-answer-role-final-d2e164c1bb1c49f09b819605bfb088e4及web-answer-analysis-edge-final-492052bfb4424bc68714215a24649c3c（双向冲突/缺解析/空白差异）；web-answer-chain-final-be3d0541c14a4ad3ab73160e94d1cfc5（教师改写/旧解/旧版本）；web-answer-ledger-proof-critic-8f4731c5ec1849e09aaacadf4ca8fc01（实际SQLite+独立读回7组，非snapshot stub）；web-answer-task-admission-critic-ca6784422b4045978ee1a2f500b45a47（任务准入/SQLite保存步通过而human仍pending6组）。本切片限定复审未发现剩余确定P1/P2，不代表整个Goal无问题。
+
+仍须继续：真实搜题站可用性/选择器与多站点适配、origin所需静态资源/登录和验证码人工接管、临时问题持久入库、AI推导独立核对、教师v2及native v3原版本链/独立AI图片账本。公式结构丢失、图解和不唯一匹配只保候选。正式整卷仍集中确认。40GB长稳/故障矩阵、自然教师召回/答案质量、P95延迟与最终EXE全新机交付仍OPEN。旧更广source门禁的资料预览夹具缺contentHash、现有audit项与CSS指纹门禁不因本片通过宣称已清零。
+
+最后回执P2（applied混入items/grantId掩盖缺证据）已真实RED899cda3后修，独立2项重放闭合：web-answer-mixed-state-final-4ecb597661b44909ad248f38928b76fe/report.json。同候选换call不能继承保存证明的独立回放：web-answer-final-state-critic-979c4646436946eeae443d0560a2ec6e/report.json；该报告的混字段旧失败已由前者替代。最终构建及12项原生/UI已在此修复后重新执行。
+
+Git：D:/WorkProject/EduProject当前codex/xiaozhi-composer-template/38c1f06，新未提交启动/样式与状态文档保持原样，不接管、不push；本片只在beca工作树将功能分支收尾快进本地main，实际SHA见下方收尾记。
+
+
 <!-- kb-enrichment-read-20261027:start -->
 ## 2026-10-27 S6-C：缺答题专用实读，完整Goal仍ACTIVE
 

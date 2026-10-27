@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+<!-- kb-web-writeback-20261027:start -->
+## 2026-10-27 S6-C 持久联网补答与批判修复
+
+沿用Hana0.450.0 Electron+Mozilla Readability0.6.0 Apache-2.0原始源码，无新npm/Python依赖。本次新增education_web_answer authorize/propose/status、questions:web-answer-evidence typed IPC、archive v4逐角色证据及同题本。Hana通用网络可选main-only beforeNetworkRequest/beforeRequest，在每次跳转和DNS前后重查，旧无guard消费者保持。真实搜题站适配/登录接管仍须实证。
+<!-- kb-web-writeback-20261027:end -->
+
 <!-- kb-enrichment-read-20261027:start -->
 ## 2026-10-27 S6-C 缺答题实读与独立批判修复
 

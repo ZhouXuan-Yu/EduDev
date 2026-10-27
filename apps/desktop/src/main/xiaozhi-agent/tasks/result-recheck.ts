@@ -1,3 +1,4 @@
+import {createQuestionWebAnswerReadback} from '../../education/question-web-answer-readback';
 import {createHash} from 'node:crypto';
 import type {OmniEduStore} from '../../db';
 import type {TaskView,TaskCandidate} from '../../../shared/xiaozhi-task';
@@ -40,9 +41,10 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const sanitize=await createStudentContextSanitizer(store),importer=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,isCurrent:current});
   const attachments=createAttachmentReadTools({sessionId:id,state:store.xiaozhiState.attachments,ocr:store.xiaozhiState.attachmentOcr,importer,isCurrent:current,authorize:async row=>{const value=await store.getAiConversationSession(id);return !value.session.archivedAt&&value.messages.some(m=>m.id===row.messageId&&m.role==='user'&&m.metadata.agentRunId===row.runId);},sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const files=createEffectReadback({sessionId:id,runId:candidate.runId,current,workspace:async()=>(await options.workspace(id)).path,fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,fileText:sanitize,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
+  const webAnswers=createQuestionWebAnswerReadback({sessionId:id,runId:candidate.runId,current,repo:store.questionWeb});
   const questions=createEducationReadback({sessionId:id,runId:candidate.runId,current,questions:store.questionReviews});
   const practice=createPracticeReadback({sessionId:id,runId:candidate.runId,current,practice:store.practiceReviews});
-  const results=createRunResultReadback({runId:candidate.runId,bindEffect:(call,tool,payload)=>tool==='education_propose_questions'?questions(call,tool,payload)
+  const results=createRunResultReadback({runId:candidate.runId,bindEffect:(call,tool,payload)=>tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
     :tool==='education_propose_practice'?practice(call,tool,payload):files(call,tool,payload),readLocal:async(tool,payload)=>{
    fence();if(tool==='office_read_attachment'){
     const row=await store.xiaozhiState.attachments.get(id,payload.source.attachmentId);if(!row||row.version!==payload.source.version)throw Error('attachment_changed');
