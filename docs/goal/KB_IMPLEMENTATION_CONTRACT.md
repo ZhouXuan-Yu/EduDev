@@ -201,6 +201,8 @@ AI输入带必要native文本/公式/表格、所选原生题图和本地OCR对�
 
 ## S6-C 用户新增：内置浏览器联网补答（2026-10-27）
 
+生产任务准入补充（2026-10-27）：education_web_answer的authorize/status仅登记本批许可/读取，不要求保存步骤；propose必须沿原任务计划saved_questions/current写入准入，仍属local_write。新增独立web保存读回适配，绑定本轮owner/真实候选ID/afterVersion/当前原题与来源闭包，在生产live及历史recheck两条路径供saved_questions证据使用；候选、冲突、过期版本和仅批准不授予保存完成。此读回只证明持久事实，不能标为教师已确认或答案正确。修改限原任务计划、结果读回、web领域、现Pi提示和专项；不改任务协议、数据真源或外发许可。先真实任务runtime/SQLite准入及repo读回RED，再实现并做实际Pi生产计划适配验证；之前无taskRuntime的SDK通过不能替代此证据。
+
 2026-10-27 联网补答持久化纵向交付：M04/M05/M10，贯通真实office_browser.extract宿主观察→本批必要题干/站点授权→持久候选→同题/无损题解核对→缺角色CAS补写→同题本出处与小智复读。新增question-web-answer共享协议、education下独立仓储/工具；观测、授权、候选三张增量幂等SQLite表，保存owner、URL/读取时间/正文SHA、原问题版本、原始候选与before/after，不接收模型自报来源回执。新增archive v4明确web_enriched和每角色web_extracted/ai_derived回执，原题sourceTitle/MaterialSource、原AI first/final与非空答案保持；不伪造Qwen/teacher记录。当前独立native账本未完成的v3和教师v2版本链不直接UPDATE，保留候选并明示不支持的原因；后续必须接通原版本链而非删掉该目标。
 
 本轮自动补写只接受宿主观察中无截断/省略/登录/图像或Canvas缺口，唯一精确完整题面及明确答案/解析区域的原文摘取；推导/改写归类ai_derived保存候选，独立核对未接通前不自动写。文字题先形成真实闭环，不把这种限定资格称所有网站/图题解答已完成。网页正文不具有指令权限。每批最多20题/5个站点origin、20分钟授权，通用浏览器逐次确认不扩大；同会话/本轮宿主真实实读且版本未变才可获批。每轮最多32条观察、正文48000字节、候选角色各12000字符，引用和记录有上限；取消/过期/源隐私变化或题目被教师修改时拒绝提交，候选保留为conflict，重启不自动恢复外发授权，不留running任务。只在SQLite writer事务发布，提交前取消回滚，重复提交幂等；支持新旧数据库、旧题和教师编辑撤销当前网页出处，不删除历史证据。
