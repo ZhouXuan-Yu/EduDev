@@ -1,0 +1,13 @@
+import '../office-agent/register-source.mjs';
+import assert from 'node:assert/strict';
+import {nativeQuestionFixture} from './native-question-fixtures.mjs';
+const {questionContentIdentity}=await import('../../src/shared/question-identity.ts');
+const q=nativeQuestionFixture(),rerender=structuredClone(q);rerender.archive.native.roles.question.figures[0].sha256='e'.repeat(64);rerender.archive.native.roles.question.figures[0].assetId='asset_eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee';
+assert.equal(questionContentIdentity(q).key,questionContentIdentity(rerender).key,'Font/renderer-only PNG changes must not turn the same original content into another paper question');
+const {wordRoleContentDigest,nativeTextContentDigest}=await import('../../src/main/assets/native-question-content.ts');
+const {nativeWordFixture}=await import('./word-question-fixtures.mjs'),{parseWord}=await import('../../src/main/assets/word-parser.ts'),{indexWordQuestions}=await import('../../src/main/assets/word-question-source.ts');
+const parsed=await parseWord(await nativeWordFixture()),source=indexWordQuestions(parsed.document).read(1),same=structuredClone(source);same.documentSha='f'.repeat(64);same.blocks.forEach(b=>{b.anchor.path='/other/source/path';});
+assert.equal(wordRoleContentDigest(source,'question'),wordRoleContentDigest(same,'question'));
+const imageSource=indexWordQuestions(parsed.document).read(2),changed=structuredClone(imageSource);changed.assets[0].sha256='d'.repeat(64);assert.notEqual(wordRoleContentDigest(imageSource,'question'),wordRoleContentDigest(changed,'question'));
+assert.notEqual(wordRoleContentDigest(source,'question'),wordRoleContentDigest(source,'answer'));assert.notEqual(nativeTextContentDigest('12'),nativeTextContentDigest('21'));
+console.log(JSON.stringify({passed:4,scope:'Stable source-content digest excludes source paths/font captures, retains raw diagram SHA and role text; ledger must still verify actual source and PNG bytes'}));
