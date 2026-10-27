@@ -18,7 +18,7 @@ const exact=(v:unknown,keys:string[],optional:string[]=[]):v is Record<string,un
 const hash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 const integer=(v:unknown,lo:number,hi:number):v is number=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=lo&&v<=hi;
 const baseKeys=['schemaVersion','resourceId','version','ordinal','documentSha'];
-const base=(v:unknown):v is WordProofBase=>obj(v)&&v.schemaVersion===WORD_PROOF_SCHEMA&&materialId(v.resourceId)&&hash(v.version)&&hash(v.documentSha)&&integer(v.ordinal,1,10000);
+const base=(v:unknown):boolean=>obj(v)&&v.schemaVersion===WORD_PROOF_SCHEMA&&materialId(v.resourceId)&&hash(v.version)&&hash(v.documentSha)&&integer(v.ordinal,1,10000);
 export const wordProofRequestId=(v:unknown):v is string=>typeof v==='string'&&/^wqproof_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(v);
 export function validWordProofInput(v:unknown):v is WordProofInput{return exact(v,[...baseKeys,'requestId'])&&base(v)&&wordProofRequestId(v.requestId);}
 export function validWordProofCancel(v:unknown):v is WordProofCancel{return exact(v,['schemaVersion','requestId'])&&v.schemaVersion===WORD_PROOF_SCHEMA&&wordProofRequestId(v.requestId);}

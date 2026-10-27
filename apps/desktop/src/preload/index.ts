@@ -6,6 +6,7 @@ import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,Origin
 import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
 import type {WordQuery,WordPage,WordImageQuery,WordImageView,WordRebuild,WordRebuildView} from '../shared/material-word';
 import type {WordQuestionQuery,WordQuestionPage} from '../shared/material-word-question';
+import type {WordProofInput,WordProof,WordProofCancel,WordProofImageQuery,WordProofImage} from '../shared/material-word-proof';
 import type {TeacherResource} from '../shared/contracts';
 import type {MaterialTaskAction,MaterialQueueView} from '../shared/material-parse-task';
 import type {MaterialBatchQuery,MaterialBatchPage,MaterialBatchAction,MaterialBatchFilesQuery,MaterialBatchFiles,MaterialBatchCreated} from '../shared/material-import-batch';
@@ -344,6 +345,9 @@ const api = {
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialWord:(input:WordQuery)=>ipcRenderer.invoke('materials:word-source',input) as Promise<WordPage|undefined>,
   getMaterialWordQuestions:(input:WordQuestionQuery)=>ipcRenderer.invoke('materials:word-questions',input) as Promise<WordQuestionPage|undefined>,
+  createMaterialWordProof:(input:WordProofInput)=>ipcRenderer.invoke('materials:word-proof-create',input) as Promise<WordProof>,
+  cancelMaterialWordProof:(input:WordProofCancel)=>ipcRenderer.invoke('materials:word-proof-cancel',input) as Promise<{cancelled:boolean}>,
+  getMaterialWordProofImage:(input:WordProofImageQuery)=>ipcRenderer.invoke('materials:word-proof-image',input) as Promise<WordProofImage>,
   getMaterialWordImage:(input:WordImageQuery)=>ipcRenderer.invoke('materials:word-image',input) as Promise<WordImageView>,
   getMaterialWordJob:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-job',input) as Promise<WordRebuildView>,
   rebuildMaterialWord:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-rebuild',input) as Promise<TeacherResource>,
