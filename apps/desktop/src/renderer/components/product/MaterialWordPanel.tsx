@@ -20,7 +20,7 @@ export function MaterialWordPanel({resource,disabled=false,onRebuilt}:{resource:
   {busy?<p role="status">正在读取 Word 图文…</p>:error?<p role="alert">{error}<Button variant="secondary" onPress={()=>setRevision(v=>v+1)}>重试读取</Button></p>:view?<>
    {view.warnings.length>0&&<p role="note" data-testid="word-source-warnings">需对照原件：{view.warnings.map(w=>warningText[w]||'部分结构需核对').join('；')}。</p>}
    <p data-testid="word-source-location">原文结构 {view.offset+1}–{Math.min(view.offset+view.blocks.length,view.total)} / {view.total}</p>
-   <Blocks key={offset} blocks={view.blocks} assets={view.assets} resource={resource}/><MaterialWordQuestions key={revision} resource={resource} disabled={disabled||rebuilding}/>
+   <Blocks key={'word-structure-'+offset} blocks={view.blocks} assets={view.assets} resource={resource}/><MaterialWordQuestions key={'word-questions-'+revision} resource={resource} disabled={disabled||rebuilding}/>
    <div className="teacher-library-toolbar"><Button variant="secondary" isDisabled={!offset} onPress={()=>setOffset(Math.max(0,offset-5))} data-testid="word-source-previous">前面结构</Button><Button variant="secondary" isDisabled={!view.hasMore} onPress={()=>setOffset(offset+5)} data-testid="word-source-next">后面结构</Button></div>
   </>:<p>这份资料尚未建立完整 Word 结构。点击“重新整理 Word 图文”可从本机原文件补齐；此前的文字内容仍保留。</p>}
  </section>;
