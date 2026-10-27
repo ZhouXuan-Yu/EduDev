@@ -1,3 +1,5 @@
+// Run: node --experimental-transform-types scripts/education/kb-word-question-repository.mjs
+// Plain Node strip-only mode cannot load existing repository parameter properties.
 import '../office-agent/register-source.mjs';
 import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {randomUUID,createHash} from 'node:crypto';import fs from 'node:fs/promises';import path from 'node:path';import {tmpdir} from 'node:os';
 import {wordFixture} from './word-fixtures.mjs';
