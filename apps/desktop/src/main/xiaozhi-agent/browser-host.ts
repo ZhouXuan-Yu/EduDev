@@ -10,6 +10,7 @@ import {BROWSER_CAPTURE_SCHEMA,validBrowserCapture} from '../../shared/xiaozhi-b
 import {browserScreenshotFilename} from './vendor/hana/browser/screenshot-filename';
 import {approvedFile} from './workspace-authority';
 import {readBrowserCapture} from './browser-capture-reader';
+import {browserExtractScript} from './browser-extract-script';
 
 type Tab={id:string;view:WebContentsView;session:Session;state:'loading'|'ready'|'failed';error?:string;snapshotId?:string;refs:Map<number,string>;write?:{origin:string;until:number};revision:number};
 type Group={window:BaseWindow;status:WebContentsView;tabs:Map<string,Tab>;active:string;proxy:Awaited<ReturnType<typeof createPublicBrowserProxy>>;busy:boolean;closing:boolean};
@@ -99,6 +100,18 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
         const approve=async()=>{const url=await safeUrl(wc.getURL()),revision=tab!.revision;
           const question=await options.sanitize(`允许小智在 ${new URL(url).hostname} 的“${wc.getTitle().slice(0,100)}”页面执行这次“${input.action}”操作${input.ref?`（控件 ${input.ref}）`:''}${input.text!==undefined?`，输入“${input.text.slice(0,200)}”`:input.value!==undefined?`，选择“${input.value.slice(0,200)}”`:input.key?`，按 ${input.key}`:''}吗？页面可能提交内容。`);
           if(!await context.confirm(question,context.signal))throw new Error('permission_denied');check();if(tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');tab!.write={origin:new URL(url).origin,until:Date.now()+10000};};
+        if(input.action==='extract'){
+          if(tab.state!=='ready')throw new Error(tab.error||'network');
+          const url=await safeUrl(wc.getURL()),revision=tab.revision,signal=AbortSignal.any([context.signal,AbortSignal.timeout(15000)]);
+          const samePage=()=>{check();signal.throwIfAborted();if(wc.isDestroyed()||tab!.state!=='ready'||tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');};
+          let scope:Parameters<typeof browserExtractScript>[0];if(input.ref!==undefined){if(input.snapshotId!==tab.snapshotId)throw new Error('attachment_changed');const expectedHtml=tab.refs.get(input.ref);if(!expectedHtml)throw new Error('attachment_changed');scope={ref:input.ref,expectedHtml};}
+          samePage();
+          const result=await waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005,[{code:browserExtractScript(scope)}]),signal) as {method:'readability'|'dom_region';text:string;sourceChars:number;truncated:boolean;figures:number;canvas:number;formulas:number;accessHint:'none'|'login_or_challenge'};
+          samePage();let text=await options.sanitize(result.text),truncated=result.truncated;
+          if(text.length>24000||Buffer.byteLength(text)>48000){truncated=true;text=text.slice(0,24000);while(Buffer.byteLength(text)>48000)text=text.slice(0,-256);if(/[\uD800-\uDBFF]/.test(text.at(-1)||''))text=text.slice(0,-1);}
+          const title=(await options.sanitize(wc.getTitle())).slice(0,200);samePage();
+          return {tabId:tab.id,title,url,observedAt:new Date().toISOString(),untrusted:true,text,extraction:{engine:'mozilla-readability-0.6.0',method:result.method,sourceChars:result.sourceChars,truncated,figures:result.figures,canvas:result.canvas,formulas:result.formulas,accessHint:result.accessHint,contentSha:createHash('sha256').update(text).digest('hex')}};
+        }
         if(input.action==='navigate'){activate();await navigate(input.url!);}
         else if(input.action==='show'){activate();}
         else if(input.action==='close'){g.tabs.delete(tab.id);wc.close({waitForBeforeUnload:false});if(!g.tabs.size){await closeGroup(id);}else{showTab(g,g.tabs.values().next().value!);}return {closed:true};}
