@@ -43,6 +43,8 @@ Pi的education_web_answer authorize/propose/status接现会话、原题本和typ
 
 最后回执P2（applied混入items/grantId掩盖缺证据）已真实RED899cda3后修，独立2项重放闭合：web-answer-mixed-state-final-4ecb597661b44909ad248f38928b76fe/report.json。同候选换call不能继承保存证明的独立回放：web-answer-final-state-critic-979c4646436946eeae443d0560a2ec6e/report.json；该报告的混字段旧失败已由前者替代。最终构建及12项原生/UI已在此修复后重新执行。
 
+收尾Git实况：源码GREEN f07c7db已从beca无冲突快进本地main；D盘仍为codex/xiaozhi-composer-template/38c1f06及其新未提交现场，未切分支、未接管、未push。最终build/typecheck、240组件与同冻结out的12项原生/UI通过，指纹18715c90；实际Pi任务6、旧任务19及独立最后P2两反例闭合。本段仅状态文档更新并随本地主线收尾，不新增运行产物或缩小完整Goal。
+
 Git：D:/WorkProject/EduProject当前codex/xiaozhi-composer-template/38c1f06，新未提交启动/样式与状态文档保持原样，不接管、不push；本片只在beca工作树将功能分支收尾快进本地main，实际SHA见下方收尾记。
 
 
