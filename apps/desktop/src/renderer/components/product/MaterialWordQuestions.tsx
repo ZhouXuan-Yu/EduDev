@@ -3,6 +3,7 @@ import {Button} from '@heroui/react';
 import type {TeacherResource} from '../../../shared/contracts';
 import {WORD_QUESTION_SCHEMA,wordQuestionBlocks,wordQuestionIssueLabels,type WordQuestionPage,type WordQuestionRole} from '../../../shared/material-word-question';
 import {MaterialWordBlocks} from './MaterialWordBlocks';
+import {MaterialWordProof} from './MaterialWordProof';
 
 const roles:Record<WordQuestionRole,string>={question:'题面',answer:'原文答案',analysis:'原文解析'};
 /** Local source preview: role membership is not an AI or teacher confirmation receipt. */
@@ -30,6 +31,7 @@ export function MaterialWordQuestions({resource,disabled=false}:{resource:Teache
     {view.source&&<section aria-label={'第'+view.source.number+'题原文'} data-testid="word-question-detail">
      <div className="teacher-library-toolbar" aria-label="原文内容类型">{(Object.keys(roles) as WordQuestionRole[]).map(value=><Button key={value} variant={role===value?'primary':'secondary'} isDisabled={disabled} aria-pressed={role===value} onPress={()=>setRole(value)} data-testid={'word-question-role-'+value}>{roles[value]}</Button>)}</div>
      <div data-testid="word-question-role-content">{view.source.parts[role].length?<MaterialWordBlocks key={view.source.documentSha+view.source.ordinal+role} blocks={wordQuestionBlocks(view.source,role)} assets={view.source.assets} resource={resource}/>:<p>原文未找到明确的{roles[role]}内容，后续整理时需要补齐。</p>}</div>
+     <MaterialWordProof key={'proof-'+view.source.documentSha+'-'+view.source.ordinal} resource={resource} source={view.source} role={role} disabled={disabled}/>
     </section>}
    </>:<p>尚无 Word 按题图文，请先重新整理上方 Word 原文。</p>}
   </>}

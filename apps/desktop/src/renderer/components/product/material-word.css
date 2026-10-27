@@ -13,3 +13,5 @@
 .material-word-question-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:10px;margin:12px 0}
 .material-word-question-list>div{border:1px solid var(--border,#dce1e7);border-radius:10px;padding:10px;min-width:0}
 .material-word-question-list p{margin:6px 0}.material-word-questions [data-testid="word-question-detail"]{margin-top:12px;min-width:0}
+.material-word-proof{border-top:1px solid var(--border,#dce1e7);margin-top:12px;padding-top:12px;min-width:0}
+.material-word-proof>p{font-size:13px;line-height:1.7;overflow-wrap:anywhere}.material-word-proof>img{display:block;width:100%;height:auto;max-width:760px;border:1px solid var(--border,#dce1e7);margin:12px 0}
