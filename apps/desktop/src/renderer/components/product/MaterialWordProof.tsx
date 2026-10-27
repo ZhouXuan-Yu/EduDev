@@ -5,7 +5,7 @@ import type {WordQuestionSource,WordQuestionRole} from '../../../shared/material
 import {WORD_PROOF_SCHEMA,type WordProof,type WordProofImage,type WordProofBase} from '../../../shared/material-word-proof';
 
 const roles:Record<WordQuestionRole,string>={question:'题面',answer:'答案',analysis:'解析'};
-const errors:Record<string,string>={busy:'本机正在生成其他图稿，请稍后重试。',source_changed:'原文来源已变化，请刷新或重新整理 Word 后再生成。',source_incomplete:'原文有缺失图片、公式或合并表格内容，请对照原文件核对。',too_large:'这道题的图文过长或过宽，需要拆分后再处理。',font_unavailable:'本机中文或数学字体暂不可用，无法完整生成图稿。',font_missing_glyph:'原文有本机字体无法显示的字符，请先核对原文件。',disk_full:'保存图稿的磁盘空间不足，请清理空间后重试。',timeout:'本机生成图稿超时，可重试或拆分较长题目。'};
+const errors:Record<string,string>={cache_unavailable:'图稿缓存已释放或损坏，请重新生成图文稿。',busy:'本机正在生成其他图稿，请稍后重试。',source_changed:'原文来源已变化，请刷新或重新整理 Word 后再生成。',source_incomplete:'原文有缺失图片、公式或合并表格内容，请对照原文件核对。',too_large:'这道题的图文过长或过宽，需要拆分后再处理。',font_unavailable:'本机中文或数学字体暂不可用，无法完整生成图稿。',font_missing_glyph:'原文有本机字体无法显示的字符，请先核对原文件。',disk_full:'保存图稿的磁盘空间不足，请清理空间后重试。',timeout:'本机生成图稿超时，可重试或拆分较长题目。'};
 function errorText(error:unknown){const text=error instanceof Error?error.message:'';return Object.entries(errors).find(([code])=>text.includes(code))?.[1]||'图稿暂不可读取，请重试。';}
 
 /** Local source proof only. A rendered preview never changes AI/teacher confirmation or paper eligibility. */
@@ -22,6 +22,7 @@ export function MaterialWordProof({resource,source,role,disabled=false}:{resourc
   return()=>{active=false;};
  },[proof?.proofId,role,page,retry,resource.id,resource.contentHash,source.documentSha,source.ordinal]);
  async function start(){
+  if(request.current||disabled)return;
   const id='wqproof_'+crypto.randomUUID();request.current=id;setBusy(true);setStopping(false);setProof(undefined);setPicture(undefined);setError('');setMessage('正在本机生成完整图文稿…');
   try{const result=await window.omniEdu?.createMaterialWordProof({...base,requestId:id});if(!result)throw Error('unavailable');if(mounted.current&&request.current===id){setProof(result);setPage(0);setMessage('本机图文稿已生成。');}}
   catch(e){if(mounted.current&&request.current===id){if(e instanceof Error&&e.message.includes('cancelled'))setMessage('已停止生成图文稿。');else{setError(errorText(e));setMessage('图文稿生成失败。');}}}

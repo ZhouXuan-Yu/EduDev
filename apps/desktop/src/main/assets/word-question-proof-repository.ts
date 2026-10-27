@@ -143,8 +143,10 @@ export class WordQuestionProofRepository{
  async image(input:WordProofImageQuery,signal:AbortSignal):Promise<WordProofImage>{
   if(!validWordProofImageQuery(input))throw Error('invalid_input');const base=baseOf(input),source=await this.source(base),digest=hash(JSON.stringify(source));await this.host.verify(base,signal);const stamp=await this.host.stamp(base);
   const result=await this.gate(async folder=>{
-   const proof=await this.load(input.proofId,source,base),page=proof?.pages.find(p=>p.role===input.role&&p.index===input.index);if(!proof||!page)throw Error('source_changed');
-   const bytes=await this.readPng(folder,page,signal);return {page,dataUrl:'data:image/png;base64,'+bytes.toString('base64')};
+   const proof=await this.load(input.proofId,source,base),page=proof?.pages.find(p=>p.role===input.role&&p.index===input.index);
+   if(!proof||!page){await this.guard(base,digest,stamp,signal);throw Error('cache_unavailable');}
+   let bytes:Buffer;try{bytes=await this.readPng(folder,page,signal);}catch{await this.guard(base,digest,stamp,signal);throw Error('cache_unavailable');}
+   return {page,dataUrl:'data:image/png;base64,'+bytes.toString('base64')};
   });await this.guard(base,digest,stamp,signal);return result;
  }
 }
