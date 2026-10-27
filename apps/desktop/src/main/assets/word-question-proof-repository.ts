@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
 import {imageSize} from 'image-size';
 import {readMaterialOriginal} from './material-original';
+import {acquireWriterLock} from '../retrieval/writer-lock';
 import {WORD_QUESTION_ROLES,wordQuestionBlocks,type WordQuestionSource,type WordQuestionRole} from '../../shared/material-word-question';
 import {WORD_PROOF_SCHEMA,validWordProof,validWordProofInput,validWordProofImageQuery,validWordProofEnvironment,type WordProof,type WordProofBase,type WordProofInput,type WordProofImageQuery,type WordProofImage,type WordProofEnvironment,type WordProofPage} from '../../shared/material-word-proof';
 import type {WordImageView,WordBlock} from '../../shared/material-word';
@@ -31,6 +32,29 @@ export class WordQuestionProofRepository{
   await this.host.run('CREATE TABLE IF NOT EXISTS material_word_proofs(cache_key TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,ordinal INTEGER NOT NULL,source_digest TEXT NOT NULL,renderer TEXT NOT NULL,proof_json TEXT NOT NULL,digest TEXT NOT NULL,last_access INTEGER NOT NULL)');
   await this.host.run('CREATE TABLE IF NOT EXISTS material_word_proof_files(proof_id TEXT NOT NULL,sha256 TEXT NOT NULL,bytes INTEGER NOT NULL,PRIMARY KEY(proof_id,sha256))');
   await this.host.run('CREATE INDEX IF NOT EXISTS material_word_proof_files_sha ON material_word_proof_files(sha256)');
+  // A disposable cache must never prevent the business database from opening.
+  await this.gate(folder=>this.recover(folder,AbortSignal.timeout(5000))).catch(()=>undefined);
+ }
+ private async gate<T>(action:(folder:string)=>Promise<T>):Promise<T>{
+  return cacheGate(this.host.root(),async()=>{
+   const folder=await this.folder();let owner;
+   try{owner=await acquireWriterLock(folder);}catch(error){throw Error((error as Error).message==='index_busy'?'busy':'unavailable');}
+   try{return await action(folder);}finally{await owner.close();}
+  });
+ }
+ private async recover(folder:string,signal:AbortSignal){
+  // Exact private filenames only. A live publisher holds the same OS lock, so
+  // an uncommitted PNG is reclaimable here only after that owner has exited.
+  const entries=await fs.opendir(folder);let scanned=0;
+  for await(const entry of entries){
+   signal.throwIfAborted();if(++scanned>4096)throw Error('too_large');
+   if(!entry.isFile()||entry.isSymbolicLink())continue;
+   const png=/^([a-f0-9]{64})\.png$/.exec(entry.name);
+   const pending=/^\.pending-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(entry.name);
+   if(!png&&!pending)continue;
+   if(png&&(await this.host.all('SELECT 1 FROM material_word_proof_files WHERE sha256=? LIMIT 1',[png[1]])).length)continue;
+   await fs.unlink(path.join(folder,entry.name)).catch(e=>{if(e.code!=='ENOENT')throw e;});
+  }
  }
  private async folder(){
   let folder=path.resolve(this.host.root());
@@ -83,8 +107,9 @@ export class WordQuestionProofRepository{
    const base=baseOf(input),source=await this.source(base),sourceDigest=hash(JSON.stringify(source)),environment=await runtime.environment();
    if(!validWordProofEnvironment(environment))throw Error('configuration');
    await this.host.verify(base,signal);const stamp=await this.host.stamp(base),id=hash(JSON.stringify([base,sourceDigest,environment]));
-   const cached=await cacheGate(this.host.root(),async()=>{
-    const candidate=await this.load(id,source,base);if(!candidate)return undefined;const folder=await this.folder();
+   const cached=await this.gate(async folder=>{
+    await this.recover(folder,signal);
+    const candidate=await this.load(id,source,base);if(!candidate)return undefined;
     try{for(const p of candidate.pages)await this.readPng(folder,p,signal);}catch{signal.throwIfAborted();return undefined;}
     await this.guard(base,sourceDigest,stamp,signal);await this.host.run('UPDATE material_word_proofs SET last_access=? WHERE cache_key=?',[Date.now(),id]);return candidate;
    });
@@ -96,8 +121,9 @@ export class WordQuestionProofRepository{
    const candidate={...base,proofId:id,sourceDigest,environment,issues:[...source.issues],pages:rendered.pages.map(({bytes,...p})=>({...p,bytes:bytes.length,sha256:hash(bytes),assetId:assetId(hash(bytes))}))};
    if(!validWordProof(candidate,source))throw Error('source_incomplete');
    await this.host.verify(base,signal);await this.guard(base,sourceDigest,stamp,signal);
-   return await cacheGate(this.host.root(),async()=>{
-    const folder=await this.folder(),created:string[]=[];let published=false;
+   return await this.gate(async folder=>{
+    await this.recover(folder,signal);
+    const created:string[]=[];let published=false;
     try{
      const stat=await fs.statfs(folder),needed=candidate.pages.reduce((n,p)=>n+p.bytes,0);if(stat.bavail*stat.bsize<needed+16*1048576)throw Error('disk_full');
      for(const [i,p] of candidate.pages.entries())await this.put(folder,p,rendered.pages[i].bytes,signal,created);
@@ -116,9 +142,9 @@ export class WordQuestionProofRepository{
  }
  async image(input:WordProofImageQuery,signal:AbortSignal):Promise<WordProofImage>{
   if(!validWordProofImageQuery(input))throw Error('invalid_input');const base=baseOf(input),source=await this.source(base),digest=hash(JSON.stringify(source));await this.host.verify(base,signal);const stamp=await this.host.stamp(base);
-  const result=await cacheGate(this.host.root(),async()=>{
+  const result=await this.gate(async folder=>{
    const proof=await this.load(input.proofId,source,base),page=proof?.pages.find(p=>p.role===input.role&&p.index===input.index);if(!proof||!page)throw Error('source_changed');
-   const bytes=await this.readPng(await this.folder(),page,signal);return {page,dataUrl:'data:image/png;base64,'+bytes.toString('base64')};
+   const bytes=await this.readPng(folder,page,signal);return {page,dataUrl:'data:image/png;base64,'+bytes.toString('base64')};
   });await this.guard(base,digest,stamp,signal);return result;
  }
 }
