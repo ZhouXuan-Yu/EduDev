@@ -8,6 +8,12 @@ S6-B2仍进行中，完整Goal ACTIVE。Word原生范围已从主进程贯通SQL
 本轮新源码在知识库分支，上一轮main=fb6f37d；D盘main现有协作者production-bootstrap未提交源码/文档，已保留，尚未将本轮强行合入或push。下一步为S6-B2的AI原生文档/图片账本/正式出卷贯通，证据与准确边界见KB_IMPLEMENTATION_EVIDENCE.md和2.Memory.md。
 <!-- kb-word-question-20261027:end -->
 
+## 2026-10-27 生产启动读取收窄（限定验收）
+
+D:当前源码已隔离App的旧设置/外层会话/待输入读取，保留共享学生/记录/报告、知识概览与确认队列（学习概览/录入消费者）、typed IPC、Pi自身会话及legacy入口。最终精确命令/结果见 `PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`；早期8项专项属于消费者复核前中间证据。`test:ui-contracts`遇既存CSS登记指纹失败，未改基线；偶发版本页面未复现，不宣称因果修复或全R2验收。完整Goal保持ACTIVE，知识库剩余目标继续OPEN；无提交/push/新EXE。
+
+最终同产物7afdb798：build/240组件/生产专项9项/日常入口8项通过；完整smoke exit0、30隔离学生、207/207历史兼容项，git diff --check通过。smoke无skipped字段，不扩大为真实provider或全部Pi UI验收。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

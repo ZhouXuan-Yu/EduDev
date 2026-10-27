@@ -644,7 +644,14 @@ export function App() {
     setDataRoot(data.dataRoot);
     setStudents(data.students);
     setOverview(data.overview ?? emptyOverview);
+    // Student pages, intake and analytics still consume these shared facts.
     await refreshKnowledgeOverview();
+    if (runtime !== 'legacy-test') {
+      await refreshAiConfirmations();
+      setActiveStudentId((current) => current || data.students[0]?.id || '');
+      setStatus('本地数据已连接。');
+      return;
+    }
     const settings = await window.omniEdu?.getDeepSeekSettings();
     if (settings) {
       setDeepSeekSettings(settings);
@@ -686,8 +693,9 @@ export function App() {
   }
 
   useEffect(() => {
+    if (runtime === 'preparing') return;
     bootstrap().catch((error) => setStatus(error instanceof Error ? error.message : '启动失败'));
-  }, []);
+  }, [runtime]);
 
   useEffect(() => {
     const unsubscribe = window.omniEdu?.onDeepTutorEvent?.((event) => {

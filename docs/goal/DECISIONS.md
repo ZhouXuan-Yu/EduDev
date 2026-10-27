@@ -8,6 +8,10 @@
 完整AI文档使用archive v3/独立AI来源账本的既定方向继续；本轮仅实现可操作来源基础，不修改当前AI归档资格、上云授权或正式整卷教师确认。D盘协作者未提交的主线内容保留，后续在其提交后整合，不挪动在用主线指针。
 <!-- kb-word-question-20261027:end -->
 
+## 2026-10-27 只隔离无生产消费者的启动读取
+
+选择在现有App bootstrap中按已确定runtime分支，effect等待判定；保留app:bootstrap及共享学生刷新，不拆整棵ProductApp/LegacyTestApp、不删IPC/旧入口、不改宿主权限与启动器。Pi与资料阅读辅导仍使用现有会话接口。旧bootstrap被执行已复现，但其与用户偶发版本页面的因果未证明。合同/回滚/门禁：`PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

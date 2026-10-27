@@ -8,6 +8,10 @@
 仍缺：AI archive v3、图文语义投影、AI图片独立账本、同题库完整展示/编辑、图义索引/identity/Pi、按角色正式Word/PDF导出。来源预览与4000题内存探针不等于AI完成或40GB吞吐、自然高召回/准确率、干净Windows交付。
 <!-- kb-word-question-20261027:end -->
 
+## 2026-10-27 M01/M10/M12 启动读取边界
+
+App生产启动保留共享bootstrap、知识概览和确认队列（学习概览/录入消费者）；runtime未决不读，旧设置/待输入IPC仅legacy-test调用，Pi仍自己加载会话，不再由外层旧App重复加载。学生事实与旧入口兼容通过专项/日常路径；这不是新功能、完整R2性能验收或不同版本页面根因证明。最终能力/消费者/门禁：`PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`，UI登记指纹失败仍OPEN。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

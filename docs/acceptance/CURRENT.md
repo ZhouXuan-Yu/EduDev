@@ -8,6 +8,12 @@
 独立批判的来源/角色/预算/图片状态问题和旧入口查出的兄弟key重复渲染均已修正。207历史兼容smoke虽然exit0，执行中out重建，故仅作辅助；最终Word专项另独立完成。AI图题入库、真实模型质量、自然召回/延迟、长时规模、最终EXE仍OPEN。命令、报告与失败记录见docs/goal/KB_IMPLEMENTATION_EVIDENCE.md。
 <!-- kb-word-question-20261027:end -->
 
+## 2026-10-27 启动隔离回归
+
+最终production-bootstrap-ui真实Electron9项（含共享知识/确认非零消费者），日常入口8项/2启动/6截图/SQLite学生记录冷启读回，均0rendererErrors；最终build及240组件通过。精确命令/综合smoke/构建指纹/失败记录集中见 `../goal/PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`。额外UI合同门禁在17项后因既存CSS登记指纹失败，未修无关样式或重录基线。真实profile/旧进程遇新构建/new EXE/provider/性能基线未验。
+
+最终同产物完整smoke exit0：30隔离学生、207/207历史兼容项、0失败，脚本无skipped字段；git diff --check通过。不据此扩大Pi/provider或完整Goal验收。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 

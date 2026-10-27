@@ -10,6 +10,12 @@
 | 错误来源/版本、范围、角色、预算/大共用索引 | 24范围+6真实SQLite/IPC；新领域覆盖100%行/89.07%分支；2000前缀/4000题约3.37MB常驻 | 不是40GB长时吞吐/召回/真实云模型或EXE验收 |
 <!-- kb-word-question-20261027:end -->
 
+## 2026-10-27 生产启动隔离
+
+`scripts/production-bootstrap-ui.mjs`：最终真实Electron/typed preload9项，覆盖runtime未决不bootstrap、旧设置/待输入失败不影响Pi、生产学习概览保留非零知识与确认数据、探测失败/重试不回旧壳、共享失败显示/重载恢复、显式legacy全读取/待输入恢复/失败止步。`scripts/daily-entry-smoke.mjs`按现侧栏稳定testid核五组入口，8项含学生/记录SQLite读回、双视口、单实例和冷启；均0rendererErrors。精确证据与综合smoke见 `goal/PRODUCTION_BOOTSTRAP_CONTRACT_20261027.md`。不代表偶发旧版本页面已复现、视觉接受、真实provider或新EXE通过；UI合同既存CSS指纹门禁仍失败。
+
+同最终out7afdb798完整smoke已exit0，30隔离学生/207历史兼容项通过（0失败，未输出skipped字段）；非全部Pi UI或真实provider结论。
+
 <!-- kb-word-20261027:start -->
 ## 2026-10-27 Word 图文来源与主线续接
 
