@@ -1,5 +1,6 @@
 # Pinned upstream adapters are verified by byte hashes, including their LF endings.
 apps/desktop/src/main/education/vendor/** text eol=lf
+apps/desktop/src/main/xiaozhi-agent/vendor/mozilla-readability/** text eol=lf
 apps/desktop/src/main/education/vendor/**/*.whl -text
 # Preserve verbatim upstream license files, including original whitespace.
 python/omni_edu_education/licenses/*.txt text eol=lf -whitespace
