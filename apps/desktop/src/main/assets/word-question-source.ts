@@ -3,20 +3,22 @@ import {validWordDocument,type WordDocument,type WordBlock} from '../../shared/m
 import {WORD_QUESTION_SCHEMA,WORD_QUESTION_BYTES,WORD_QUESTION_ROLES,wordParagraphMap,wordSourceBlocks,wordQuestionBlocks,wordQuestionText,validWordQuestionSource,type WordQuestionSource,type WordQuestionRole,type WordSourceSpan,type WordQuestionIssue,type WordQuestionSummary} from '../../shared/material-word-question';
 
 type Builder={number:string;blocks:WordBlock[];blockIds:Set<string>;parts:Record<WordQuestionRole,WordSourceSpan[]>;issues:Set<WordQuestionIssue>};
-type Event={at:number;after:number;number?:string;role?:WordQuestionRole;content?:number;explicit?:boolean;combined?:boolean};
+type Event={at:number;after:number;number?:string;role?:WordQuestionRole;content?:number;explicit?:boolean;parenthesized?:boolean;combined?:boolean};
 const digest=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const numberOf=(text:string)=>text.match(/^\s*(?:第\s*(\d{1,5})\s*题|([0-9]{1,5})[.．、)）])/u)?.slice(1).find(Boolean);
 const roleOf=(text:string):WordQuestionRole=>/解析|分析|解答/u.test(text)?'analysis':'answer';
-const questionEvents=(text:string):Event[]=>[...text.matchAll(/(?:^|\n)[ \t]*(?:第\s*(\d{1,5})\s*题[.．、:：]?|([0-9]{1,5})(?:[.．](?=\s|[^0-9])|[、)）]))[ \t]*/gu)].map(m=>({at:m.index!+(m[0].startsWith('\n')?1:0),after:m.index!+(m[0].startsWith('\n')?1:0),content:m.index!+m[0].length,number:m[1]||m[2],explicit:!!m[1]}));
+const questionEvents=(text:string):Event[]=>[...text.matchAll(/(?:^|\n)[ \t]*(?:第\s*(\d{1,5})\s*题[.．、:：]?|([0-9]{1,5})(?:[.．](?=\s|[^0-9])|[、)）]))[ \t]*/gu)].map(m=>({at:m.index!+(m[0].startsWith('\n')?1:0),after:m.index!+(m[0].startsWith('\n')?1:0),content:m.index!+m[0].length,number:m[1]||m[2],explicit:!!m[1],parenthesized:/[)）]/u.test(m[0])}));
 const roleEvents=(text:string):Event[]=>[...text.matchAll(/【(?:参考)?(?:答案(?:与|及)?解析|答案|解析|分析|解答)】|\[(?:参考)?(?:答案(?:与|及)?解析|答案|解析|分析|解答)\]|(?:^|\n)[ \t]*(?:参考)?(?:答案(?:与|及)?解析|答案|解析|分析|解答)[：:]/gu)].map(m=>({at:m.index!,after:m.index!+m[0].length,combined:/答案(?:与|及)?解析/u.test(m[0]),role:/答案(?:与|及)?解析/u.test(m[0])?'answer':roleOf(m[0])}));
 const walk=(blocks:WordBlock[]):WordBlock[]=>blocks.flatMap(b=>b.kind==='table'?[b,...b.rows.flatMap(r=>r.cells.flatMap(c=>walk(c.blocks)))]:[b]);
 
 /** One linear pass over the parsed native document; each question is materialized on demand. */
 export function indexWordQuestions(document:WordDocument){
  if(!validWordDocument(document))throw Error('source_changed');
- const documentSha=digest(document),mainPart=document.blocks[0]?.anchor.part,builders:Builder[]=[],preamble:Array<{block:WordBlock;span:WordSourceSpan}>=[];
- let active:Builder|undefined,role:WordQuestionRole='question',answerSection=false,unassigned=false;
- function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,blocks:[],blockIds:new Set(),parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';}
+ const mainParts=new Set(document.blocks.filter(b=>/^\/document(?:\[\d+\])?\/body(?:\[\d+\])?\//u.test(b.anchor.path)).map(b=>b.anchor.part));
+ if(mainParts.size>1)throw Error('source_changed');
+ const documentSha=digest(document),mainPart=[...mainParts][0],builders:Builder[]=[],preamble:Array<{block:WordBlock;span:WordSourceSpan}>=[];
+ let active:Builder|undefined,role:WordQuestionRole='question',answerSection=false,unassigned=false,numberedExplanation=false;
+ function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,blocks:[],blockIds:new Set(),parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';numberedExplanation=false;}
  function append(block:WordBlock,from?:number,to?:number){
   if(block.kind==='paragraph'&&(to??0)<=(from??0))return;
   if(!active){preamble.push({block,span:{blockId:block.id,...(block.kind==='paragraph'?{from,to}:{})}});return;}
@@ -39,18 +41,24 @@ export function indexWordQuestions(document:WordDocument){
   let cursor=0;
   for(const event of events){
    if(event.at<cursor)continue;
+   if(event.number&&!event.explicit&&active&&role==='question'&&event.parenthesized&&Number(event.number)<=Number(active.number)){
+    active.issues.add('ambiguous_number');continue;
+   }
    if(event.number&&!event.explicit&&active&&role!=='question'){
     const body=text.slice(event.content).split('\n')[0].trim();
     const query=/^(?:计算|求|化简|已知|如图|读|阅读|根据|回答|选择|判断|比较|证明|解方程|填写|填空)|[?？]$/u.test(body);
     const step=/^(?:先|再|然后|最后|由|因为|所以|解[：:]|设|代入|整理|得到)/u.test(body),reset=event.at===0&&Number(event.number)===Number(active.number)&&!step;
-    if(step||!reset&&(!query||Number(event.number)===Number(active.number))){
+    if(step||numberedExplanation||query&&Number(event.number)<=Number(active.number)){
+     numberedExplanation=true;if(!step)active.issues.add('ambiguous_number');continue;
+    }
+    if(!reset&&(!query||Number(event.number)===Number(active.number))){
      if(!step)active.issues.add('ambiguous_number');
      continue;
     }
    }
    if(event.at>cursor)append(block,cursor,event.at);
-   if(event.number){begin(event.number);cursor=event.at;}
-   else if(event.role){if(active){role=event.role;if(event.combined)active.issues.add('combined_roles');}cursor=event.after;}
+   if(event.number){const uncertain=active&&!event.explicit&&(Number(event.number)!==Number(active.number)+1||event.at>0&&role!=='question');if(uncertain)active!.issues.add('ambiguous_number');begin(event.number);if(uncertain)active!.issues.add('ambiguous_number');cursor=event.at;}
+   else if(event.role){if(active){role=event.role;numberedExplanation=false;if(event.combined)active.issues.add('combined_roles');}cursor=event.after;}
   }
   if(cursor<text.length)append(block,cursor,text.length);
  }
