@@ -1,0 +1,32 @@
+import '../office-agent/register-source.mjs';
+import assert from 'node:assert/strict';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import {tmpdir} from 'node:os';
+import {spawnSync} from 'node:child_process';
+import {fileURLToPath} from 'node:url';
+import {randomUUID} from 'node:crypto';
+const {acquireWriterLock}=await import('../../src/main/retrieval/writer-lock.ts');
+const root=await fs.mkdtemp(path.join(tmpdir(),'omni-word-proof-recovery-'));
+const worker=fileURLToPath(new URL('./word-proof-crash-worker.mjs',import.meta.url));
+const run=mode=>spawnSync(process.execPath,['--experimental-transform-types',worker,root,mode],{encoding:'utf8',timeout:30000});
+const cache=path.join(root,'cache/word-question-pages/v1');
+const crash=run('crash');assert.equal(crash.status,79,crash.stderr);
+const abandoned=(await fs.readdir(cache)).filter(f=>f.endsWith('.png'));assert.equal(abandoned.length,3);
+const pending='.pending-'+randomUUID();await fs.writeFile(path.join(cache,pending),'interrupted write');
+await fs.writeFile(path.join(cache,'keep-user-note.txt'),'preserve unknown files');
+const recovered=run('recover');assert.equal(recovered.status,0,recovered.stderr);
+const report=JSON.parse(await fs.readFile(path.join(root,'report.json'),'utf8'));
+assert.deepEqual(report.unreferenced,[],'A process crash before SQLite publication must not leave PNGs outside the cache quota');
+assert(!(await fs.readdir(cache)).includes(pending),'Abandoned owned staging files must be reclaimed');
+assert.equal(await fs.readFile(path.join(cache,'keep-user-note.txt'),'utf8'),'preserve unknown files');
+console.log('PASS Fresh process recovers actual exit(79) PNGs and pending files while preserving unknown files');
+const orphan='f'.repeat(64)+'.png';await fs.writeFile(path.join(cache,orphan),'unreferenced');
+const owner=await acquireWriterLock(cache);
+try{const busy=run('recover');assert.notEqual(busy.status,0);assert.match(busy.stderr,/busy/);assert.equal(await fs.readFile(path.join(cache,orphan),'utf8'),'unreferenced');}
+finally{await owner.close();}
+console.log('PASS Another actual process cannot delete cache files while a live owner holds the Windows lock');
+const resumed=run('recover');assert.equal(resumed.status,0,resumed.stderr);
+assert(!(await fs.readdir(cache)).includes(orphan));
+const final=JSON.parse(await fs.readFile(path.join(root,'report.json'),'utf8'));assert.deepEqual(final.unreferenced,[]);assert.equal(final.after.references,3);
+console.log(JSON.stringify({passed:3,root,scope:'Actual abrupt Node process exit, fresh SQLite process and real Windows exclusive handle; controlled PNG producer, not Electron rendering'}));
