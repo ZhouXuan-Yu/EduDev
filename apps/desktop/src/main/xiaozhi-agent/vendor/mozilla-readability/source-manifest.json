@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "upstream": "Mozilla Readability",
+  "version": "0.6.0",
+  "license": "Apache-2.0",
+  "sourceUrl": "https://github.com/mozilla/readability/blob/0.6.0/Readability.js",
+  "sourceBytes": 89980,
+  "sourceSha256": "34dcab3d0832d0019f02990eed6b6124e029e8c32b9f0c6f2550544ff8dff174",
+  "moduleSha256": "790c46491c7fbae7484c28a9532eb1fbaf24bd067893f467feb7616995ea8526",
+  "licenseSha256": "a5b1e8181751ce05b85b7bfaa832b785e87086250a5148e679d17ca9bdcfa958",
+  "adaptation": "None. Original source is encoded verbatim as a static string for execution against a DOM clone in an isolated world."
+}
