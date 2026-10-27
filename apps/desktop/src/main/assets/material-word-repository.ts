@@ -4,11 +4,14 @@ import {createHash,randomUUID} from 'node:crypto';
 import {readMaterialOriginal} from './material-original';
 import type {TeacherResource} from '../../shared/contracts';
 import {WORD_SCHEMA,WORD_PARSER,validWordDocument,type WordDocument,type WordPayload,type WordQuery,type WordPage,type WordImageQuery,type WordImageView} from '../../shared/material-word';
+import {WORD_QUESTION_SCHEMA,validWordQuestionQuery,type WordQuestionQuery,type WordQuestionPage} from '../../shared/material-word-question';
+import {indexWordQuestions} from './word-question-source';
 type Value=string|number|null;type Row=Record<string,unknown>;
 type Host={root:()=>string;all:(sql:string,values?:Value[])=>Promise<Row[]>;run:(sql:string,values?:Value[])=>Promise<void>;resource:(id:string)=>Promise<TeacherResource>};
 const sha=(v:Uint8Array|string)=>createHash('sha256').update(v).digest('hex');
 /** Rebuildable Word representation; resource/chunk facts use the existing writer. */
 export class MaterialWordRepository{
+ private questionCache?:{resourceId:string;version:string;index:ReturnType<typeof indexWordQuestions>};
  constructor(private host:Host){}
  async migrate(){await this.host.run('CREATE TABLE IF NOT EXISTS material_word_documents(resource_id TEXT PRIMARY KEY,version TEXT NOT NULL,parser TEXT NOT NULL,digest TEXT NOT NULL,document_json TEXT NOT NULL)');}
  private async folder(){const folder=path.resolve(this.host.root(),'word-assets');await fs.mkdir(folder,{recursive:true});if((await fs.realpath(folder)).toLowerCase()!==folder.toLowerCase())throw Error('source_changed');return folder;}
@@ -34,6 +37,16 @@ export class MaterialWordRepository{
  async page(query:WordQuery):Promise<WordPage|undefined>{
   const document=await this.document(query.resourceId,query.version);if(!document)return undefined;const after=await this.host.resource(query.resourceId);if(after.contentHash!==query.version)throw Error('source_changed');
   return {schemaVersion:WORD_SCHEMA,resourceId:query.resourceId,version:query.version,parser:document.parser,offset:query.offset,total:document.blocks.length,hasMore:query.offset+5<document.blocks.length,blocks:document.blocks.slice(query.offset,query.offset+5),assets:document.assets,warnings:document.warnings};
+ }
+ async questions(query:WordQuestionQuery):Promise<WordQuestionPage|undefined>{
+  if(!validWordQuestionQuery(query))throw Error('invalid_input');
+  const document=await this.document(query.resourceId,query.version);if(!document)return undefined;
+  const digest=sha(JSON.stringify(document)),cached=this.questionCache;
+  const index=cached&&cached.resourceId===query.resourceId&&cached.version===query.version&&cached.index.documentSha===digest?cached.index:indexWordQuestions(document);
+  this.questionCache={resourceId:query.resourceId,version:query.version,index};
+  const entries=index.summaries(query.offset),source=query.ordinal===undefined?undefined:index.read(query.ordinal);
+  const after=await this.document(query.resourceId,query.version);if(!after||sha(JSON.stringify(after))!==digest)throw Error('source_changed');
+  return {schemaVersion:WORD_QUESTION_SCHEMA,resourceId:query.resourceId,version:query.version,documentSha:digest,offset:query.offset,total:index.total,hasMore:query.offset+entries.length<index.total,entries,...(source?{source}:{})};
  }
  async image(query:WordImageQuery):Promise<WordImageView>{
   const document=await this.document(query.resourceId,query.version),asset=document?.assets.find(a=>a.id===query.assetId);if(!asset)throw Error('source_changed');

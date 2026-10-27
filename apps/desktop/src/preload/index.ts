@@ -5,6 +5,7 @@ import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
 import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
 import type {WordQuery,WordPage,WordImageQuery,WordImageView,WordRebuild,WordRebuildView} from '../shared/material-word';
+import type {WordQuestionQuery,WordQuestionPage} from '../shared/material-word-question';
 import type {TeacherResource} from '../shared/contracts';
 import type {MaterialTaskAction,MaterialQueueView} from '../shared/material-parse-task';
 import type {MaterialBatchQuery,MaterialBatchPage,MaterialBatchAction,MaterialBatchFilesQuery,MaterialBatchFiles,MaterialBatchCreated} from '../shared/material-import-batch';
@@ -342,6 +343,7 @@ const api = {
   prepareMaterialReadingQuestion:(input:MaterialStudyQuestion)=>ipcRenderer.invoke('materials:reading-question',input) as Promise<string>,
   getMaterialBody: (input:MaterialBodyQuery) => ipcRenderer.invoke('materials:body',input) as Promise<MaterialBody>,
   getMaterialWord:(input:WordQuery)=>ipcRenderer.invoke('materials:word-source',input) as Promise<WordPage|undefined>,
+  getMaterialWordQuestions:(input:WordQuestionQuery)=>ipcRenderer.invoke('materials:word-questions',input) as Promise<WordQuestionPage|undefined>,
   getMaterialWordImage:(input:WordImageQuery)=>ipcRenderer.invoke('materials:word-image',input) as Promise<WordImageView>,
   getMaterialWordJob:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-job',input) as Promise<WordRebuildView>,
   rebuildMaterialWord:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-rebuild',input) as Promise<TeacherResource>,

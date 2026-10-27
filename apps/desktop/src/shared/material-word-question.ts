@@ -1,4 +1,5 @@
 import {WORD_PARSER,WORD_SCHEMA,validWordDocument,type WordAsset,type WordBlock,type WordDocument} from './material-word';
+import {materialId} from './materials';
 
 export const WORD_QUESTION_SCHEMA='xiaozhi.word-question-source.v1' as const;
 export const WORD_QUESTION_BYTES=96*1024;
@@ -19,6 +20,9 @@ const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Ar
 const exact=(v:unknown,keys:string[])=>obj(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 export const wordInlineLength=(b:Extract<WordBlock,{kind:'paragraph'}>)=>b.inlines.reduce((n,i)=>n+(i.kind==='text'?i.text.length:1),0);
 export const wordParagraphMap=(b:Extract<WordBlock,{kind:'paragraph'}>)=>b.inlines.map(i=>i.kind==='text'?i.text:'\ufffc').join('');
+export function validWordQuestionQuery(v:unknown):v is WordQuestionQuery{
+ return obj(v)&&Object.keys(v).every(k=>['schemaVersion','resourceId','version','offset','ordinal'].includes(k))&&v.schemaVersion===WORD_QUESTION_SCHEMA&&materialId(v.resourceId)&&typeof v.version==='string'&&/^[a-f0-9]{64}$/.test(v.version)&&Number.isSafeInteger(v.offset)&&Number(v.offset)>=0&&Number(v.offset)<=10000&&(v.ordinal===undefined||Number.isSafeInteger(v.ordinal)&&Number(v.ordinal)>=1&&Number(v.ordinal)<=10000);
+}
 function boundary(text:string,offset:number){return offset===0||offset===text.length||!(text.charCodeAt(offset-1)>=0xd800&&text.charCodeAt(offset-1)<=0xdbff&&text.charCodeAt(offset)>=0xdc00&&text.charCodeAt(offset)<=0xdfff);}
 
 /** Resolves real source ranges, without modifying source blocks or inventing Word pages. */
