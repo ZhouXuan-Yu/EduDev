@@ -27,7 +27,10 @@ export const promptInputVariants = tv({
     send: 'prompt-input__send',
     shell: 'prompt-input__shell',
     textarea:
-      'prompt-input__textarea border-0 bg-transparent shadow-none outline-none ring-0 hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none focus:ring-0 focus-visible:ring-0 data-[focused=true]:border-transparent data-[hovered=true]:border-transparent data-[focused=true]:bg-transparent data-[hovered=true]:bg-transparent data-[focused=true]:shadow-none data-[focused=true]:ring-0',
+      'prompt-input__textarea border-0 bg-transparent shadow-none ring-0 outline-none hover:border-transparent hover:bg-transparent focus:border-transparent focus:bg-transparent focus:shadow-none focus:ring-0 focus-visible:ring-0 data-[focused=true]:border-transparent data-[focused=true]:bg-transparent data-[focused=true]:shadow-none data-[focused=true]:ring-0 data-[hovered=true]:border-transparent data-[hovered=true]:bg-transparent',
+    token: 'prompt-input__token',
+    tokenInput: 'prompt-input__token-input',
+    tokenSuggestions: 'prompt-input__token-suggestions',
     toolbar: 'prompt-input__toolbar',
     toolbarEnd: 'prompt-input__toolbar-end',
     toolbarStart: 'prompt-input__toolbar-start',

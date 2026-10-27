@@ -1,4 +1,4 @@
-import {useRef,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {Button,Checkbox,Label,Modal,TextArea} from '@heroui/react';
 import {Target,Pause,Play,Square,Check} from 'lucide-react';
 import {ChainOfThought} from '../../heroui-pro/components/chain-of-thought';
@@ -9,12 +9,13 @@ import {PiTaskReview} from './PiTaskReview';
 import type {TaskView} from '../../../shared/xiaozhi-task';
 
 /** Public persisted goal facts. Only the teacher can accept a result. */
-export function PiGoalControl({sessionId,goal,task,running,disabled,onRefresh}:{sessionId:string;goal?:XiaozhiGoal;task?:TaskView;running:boolean;disabled:boolean;onRefresh:()=>Promise<void>}){
+export function PiGoalControl({sessionId,goal,task,running,disabled,onRefresh,openSignal,headless=false}:{sessionId:string;goal?:XiaozhiGoal;task?:TaskView;running:boolean;disabled:boolean;onRefresh:()=>Promise<void>;openSignal?:{token:number;sessionId:string};headless?:boolean}){
  const [open,setOpen]=useState(false),[objective,setObjective]=useState(''),[criteria,setCriteria]=useState(''),[busy,setBusy]=useState(false),[notice,setNotice]=useState(''),[checked,setChecked]=useState<number[]>([]);
  const lock=useRef(false),createId=useRef(`xigoal_${crypto.randomUUID()}`);
  const sync=useOfficeSynchronization();
  const terminal=!goal||['completed','ended'].includes(goal.state);
  const linked=task?.goal?.id===goal?.id&&Boolean(goal&&task?.goal)?task:undefined;
+ useEffect(()=>{if(openSignal?.sessionId===sessionId){setOpen(true);setNotice('');createId.current=`xigoal_${crypto.randomUUID()}`;}},[openSignal,sessionId]);
  async function mutate(input:GoalMutation){
   if(sync.isBlocked()||lock.current)return;lock.current=true;setBusy(true);setNotice('');
   try{const result=await window.omniEdu?.mutateXiaozhiGoal(input);
@@ -25,7 +26,7 @@ export function PiGoalControl({sessionId,goal,task,running,disabled,onRefresh}:{
  }
  const action=(action:'pause'|'resume'|'end'|'accept')=>goal&&void mutate({schemaVersion:1,sessionId,id:goal.id,revision:goal.revision,action,...(action==='accept'?{checked}:{})} as GoalMutation);
  return <>
-  {terminal?<div className="pi-goal-new"><Button size="sm" variant="ghost" data-testid="pi-goal-open" isDisabled={disabled||running||busy} onPress={()=>{setOpen(true);setNotice('');createId.current=`xigoal_${crypto.randomUUID()}`;}}><Target size={15}/>持续目标</Button>{goal&&<span>{GOAL_LABELS[goal.state]} · {goal.objective}</span>}</div>:<div className="pi-live-task-strip pi-goal-strip" data-testid="pi-goal-strip" data-state={goal.state} data-revision={goal.revision}>
+  {!headless&&(terminal?<div className="pi-goal-new"><Button size="sm" variant="ghost" data-testid="pi-goal-open" isDisabled={disabled||running||busy} onPress={()=>{setOpen(true);setNotice('');createId.current=`xigoal_${crypto.randomUUID()}`;}}><Target size={15}/>持续目标</Button>{goal&&<span>{GOAL_LABELS[goal.state]} · {goal.objective}</span>}</div>:<div className="pi-live-task-strip pi-goal-strip" data-testid="pi-goal-strip" data-state={goal.state} data-revision={goal.revision}>
    <div className="pi-goal-heading"><ChainOfThought defaultExpanded={false} className="pi-goal-facts">
     <ChainOfThought.Trigger><Target size={16}/><span className="pi-plan-title">{GOAL_LABELS[goal.state]}</span><span className="pi-plan-current" title={goal.objective}>{goal.objective}</span></ChainOfThought.Trigger>
     <ChainOfThought.Content><p>{goal.summary||'正在核对需求与资料。'}</p><p>下一步：{goal.nextStep}</p><ol>{goal.criteria.map((text,i)=><li key={i}>{text}</li>)}</ol>{goal.evidence.length>0&&<p>已执行：{[...new Set(goal.evidence.map(v=>v.label))].join('、')}</p>}</ChainOfThought.Content>
@@ -36,9 +37,9 @@ export function PiGoalControl({sessionId,goal,task,running,disabled,onRefresh}:{
     <Button size="sm" variant="ghost" isIconOnly aria-label="结束目标" data-testid="pi-goal-end" isDisabled={busy} onPress={()=>action('end')}><Square size={14}/></Button>
    </div></div>
    {validGoalProgress(goal.progress)&&<p className="pi-goal-progress-note" data-testid="pi-goal-progress-status" data-state={goal.progress.state}>{goal.progress.schemaVersion===2?'上次进展核对：':'上次资料/产物完整性核对：'}{goal.progress.state==='advanced'?`取得 ${goal.progress.newEvidence} 项新证据${goal.progress.schemaVersion===2?`，收到 ${goal.progress.newTeacherInputs} 项新教师输入`:''}`:goal.progress.state==='unavailable'?'核验暂不可用，未算作进展':goal.progress.state==='coverage_limit'?'核验记录达到容量边界，已停止自动继续':goal.progress.state==='stalled'?'连续三轮没有新证据，已停止自动继续':`没有新证据（连续 ${goal.progress.idleBoundaries} 轮）`}。{goal.progress.schemaVersion===2&&'教师输入只说明信息已送达，不代表教学成果已通过。'}目录和元信息只用于定位资料，不代表已读取正文。教学答案与步骤是否满足要求仍需独立验收。<time dateTime={goal.progress.checkedAt}>{new Date(goal.progress.checkedAt).toLocaleString()}</time></p>}
-  </div>}
+  </div>)}
   {notice&&<p className="pi-goal-notice" role="status" data-testid="pi-goal-notice">{notice}</p>}
-  {linked&&<div className="pi-goal-task-review"><PiTaskReview sessionId={sessionId} task={linked} running={running} onRefresh={onRefresh}/></div>}
+  {!headless&&linked&&<div className="pi-goal-task-review"><PiTaskReview sessionId={sessionId} task={linked} running={running} onRefresh={onRefresh}/></div>}
   {open&&<Modal.Backdrop isOpen isDismissable={!busy} onOpenChange={value=>{if(!value&&!lock.current)setOpen(false);}}><Modal.Container size="lg" scroll="inside"><Modal.Dialog className="pi-goal-dialog" data-testid="pi-goal-dialog">
    <Modal.Header><Modal.Heading>{terminal?'设置持续目标':'验收目标成果'}</Modal.Heading></Modal.Header>
    <Modal.Body>{sync.blocked&&<p role="status">正在同步过程记录，目标变更暂时不可用。</p>}<OfficeMutationBoundary>{terminal?<><label htmlFor="pi-goal-objective">希望完成什么</label><TextArea id="pi-goal-objective" data-testid="pi-goal-objective" value={objective} onChange={e=>setObjective(e.target.value)} rows={3} maxLength={4000} aria-label="持续目标"/>

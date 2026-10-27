@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { AiConversationWorkspace } from '../../../shared/contracts';
 import type { XiaozhiWorkspaceSnapshot,XiaozhiStartInput, XiaozhiAgentEvent } from '../../../shared/xiaozhi-agent';
 import { createEventReceiver,type XiaozhiEventSynchronization } from '../../../shared/xiaozhi-event-receiver';
-import {OfficeSynchronization,OfficeSynchronizationNotice,OfficeMutationBoundary} from './OfficeSynchronization';
+import {OfficeSynchronization,OfficeSynchronizationNotice} from './OfficeSynchronization';
 import { XIAOZHI_SETTINGS_SCHEMA, XIAOZHI_SETTINGS_ERRORS, type XiaozhiSettingsView } from '../../../shared/xiaozhi-settings';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../../shared/xiaozhi-projection';
 import {publicMessageText,type XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
@@ -27,6 +27,7 @@ import { PiWorkspaceShell } from './PiWorkspaceShell';
 import { PiWorkspaceContext } from './PiWorkspaceContext';
 import { PiWorkspaceFiles } from './PiWorkspaceFiles';
 import {usePiAttachments} from './usePiAttachments';
+import {readPiPermissionMode,writePiPermissionMode,type PiPermissionMode} from './permissionModes';
 import { useDesktopCommands, useDesktopNavigation } from '../desktop/DesktopFrame';
 import './pi-education-workspace.css';
 
@@ -39,6 +40,21 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const [id, setId] = useState('');
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>();
   const attachments=usePiAttachments(id,visible,snapshot?.projection.turns.flatMap(turn=>turn.items)||[]);
+  const [permissionMode,setPermissionMode]=useState<PiPermissionMode>(()=>readPiPermissionMode());
+  const [goalOpenSignal,setGoalOpenSignal]=useState<{token:number;sessionId:string}>();
+  const autoApproved=useRef(new Set<string>());
+  useEffect(()=>{writePiPermissionMode(permissionMode);},[permissionMode]);
+  useEffect(()=>{autoApproved.current.clear();},[id]);
+  useEffect(()=>{
+    if(permissionMode==='request'||!id||!snapshot?.approvals?.length)return;
+    for(const approval of snapshot.approvals){
+      if(approval.state!=='pending'||autoApproved.current.has(approval.id))continue;
+      autoApproved.current.add(approval.id);
+      void window.omniEdu?.decideXiaozhi({sessionId:id,approvalId:approval.id,decision:'approve'}).then(result=>{
+        if(!result?.ok)setNotice('自动批准未完成，请手动处理批准请求。');
+      }).catch(()=>setNotice('自动批准未完成，请手动处理批准请求。')).finally(()=>void hydrate(id));
+    }
+  },[permissionMode,id,snapshot?.approvals]);
   const [fileReveal,setFileReveal]=useState<{sessionId:string;id:string;path:string}>();
   const [models, setModels] = useState<XiaozhiSettingsView>(), [modelSelecting, setModelSelecting] = useState(false);
   const [returnHydrating,setReturnHydrating]=useState(false);
@@ -252,7 +268,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       requireSynchronized();const target=id;const result=await window.omniEdu?.selectXiaozhiWorkspace(target);if(result&&!result.ok)setNotice(XIAOZHI_ERRORS[result.error]);else await hydrate(target);
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
     aside={<PiWorkspaceContext sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}
-      goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)}/>}/>}
+      goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>}/>}
     sidebar={<AiConversationSidebar codexStyle inline folders={workspace.folders} sessions={workspace.sessions} activeSessionId={id}
       onOpenSession={target=>open(target)} onNewSession={fresh} onLeaveAi={onLeave}
       onCreateFolder={async name => { const list = await window.omniEdu?.createAiConversationFolder({ name }); if (list) setWorkspace(list); }}
@@ -277,7 +293,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
       <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         showQuickStarts={!projection?.turns.length&&!snapshot?.running}
-        taskSummary={<><PiWorkspaceActivity snapshot={snapshot} compactBusy={compactBusy}/><OfficeMutationBoundary><PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments||syncBlocked} onRefresh={()=>hydrate(id)}/></OfficeMutationBoundary>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} sessionId={id} compact/>}</>}
+        taskSummary={<><PiWorkspaceActivity snapshot={snapshot} compactBusy={compactBusy}/><PiGoalControl headless sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments||syncBlocked} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} sessionId={id} compact/>}</>}
         skills={snapshot?.skills}
         disabled={!snapshot || !id || modelSelecting || Boolean(snapshot.studentContext&&snapshot.studentContext.status!=='active')} model={projection?.model || 'DeepSeek'} models={models?.models.map(item => ({ id: item.id, label: item.id })) || [{ id: projection?.model || 'DeepSeek', label: projection?.model || 'DeepSeek' }]}
         onModelChange={!models?.sessionModel || models.sessionModel.locked || models.locked ? undefined : model => {
@@ -297,7 +313,9 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           const result=await window.omniEdu?.queueXiaozhi(queueAttempt.current); if(!result?.ok){setNotice(result?XIAOZHI_ERRORS[result.error]:'补充未发送。');throw new Error('queue_failed');}queueAttempt.current=undefined;await hydrate(target);
         }}
         attachments={attachments.cards} hasAttachments={attachments.hasAttachments} sendBlocked={attachments.sendBlocked} attachDisabled={attachments.busy||Boolean(snapshot?.running)||syncBlocked} onAttach={()=>{if(!mutationsBlocked())void attachments.choose();}} onFilesSelected={files=>{if(!mutationsBlocked())void attachments.importFiles(files);}}
-        onPermissions={onSettings} attachLabel="添加本地附件" permissionLabel={snapshot?.workspace ? '工作目录 · 写入需确认' : '教师资料 · 只读'} onWorkspace={() => { void (async () => {
+        onPermissions={onSettings} permissionMode={permissionMode} onPermissionModeChange={setPermissionMode}
+        onNewChat={()=>void fresh(null)} onOpenGoal={()=>setGoalOpenSignal({token:Date.now(),sessionId:id})} onCompact={()=>void compact()} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
+        attachLabel="添加本地附件" permissionLabel={snapshot?.workspace ? '工作目录 · 写入需确认' : '教师资料 · 只读'} onWorkspace={() => { void (async () => {
           requireSynchronized();setNotice(''); const target = id; const result = await window.omniEdu?.selectXiaozhiWorkspace(target);
           if (result && !result.ok) setNotice(XIAOZHI_ERRORS[result.error]); else await hydrate(target);
         })().catch(() => setNotice('无法选择教学工作目录，请重试。')); }} onSubmit={send} onStop={async () => { const result = await window.omniEdu?.stopXiaozhi(id); if (!result?.ok) throw new Error('stop_failed'); }} />
