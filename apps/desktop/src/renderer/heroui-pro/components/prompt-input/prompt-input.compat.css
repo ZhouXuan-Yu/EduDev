@@ -64,3 +64,21 @@
   min-width: 300px;
   max-width: min(380px, calc(100vw - 24px));
 }
+
+/* The goal dialog is portaled outside the composer scope. Keep its body
+   vertical so labels and text areas do not overlap. */
+.pi-goal-dialog [data-slot="modal-body"] {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pi-goal-dialog [data-slot="modal-body"] label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.pi-goal-dialog [data-slot="modal-body"] textarea {
+  width: 100%;
+  min-height: 88px;
+}
