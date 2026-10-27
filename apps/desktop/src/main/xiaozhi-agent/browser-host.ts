@@ -106,11 +106,11 @@ export function createXiaozhiBrowserHost(options:{root:string;sanitize:(text:str
           const samePage=()=>{check();signal.throwIfAborted();if(wc.isDestroyed()||tab!.state!=='ready'||tab!.revision!==revision||wc.getURL()!==url)throw new Error('attachment_changed');};
           let scope:Parameters<typeof browserExtractScript>[0];if(input.ref!==undefined){if(input.snapshotId!==tab.snapshotId)throw new Error('attachment_changed');const expectedHtml=tab.refs.get(input.ref);if(!expectedHtml)throw new Error('attachment_changed');scope={ref:input.ref,expectedHtml};}
           samePage();
-          const result=await waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005,[{code:browserExtractScript(scope)}]),signal) as {method:'readability'|'dom_region';text:string;sourceChars:number;truncated:boolean;figures:number;canvas:number;formulas:number;accessHint:'none'|'login_or_challenge'};
+          const result=await waitOfficeAbort(wc.executeJavaScriptInIsolatedWorld(1005,[{code:browserExtractScript(scope)}]),signal) as {method:'readability'|'dom_region';text:string;sourceChars:number;truncated:boolean;lossy:boolean;figures:number;canvas:number;formulas:number;accessHint:'none'|'login_or_challenge'};
           samePage();let text=await options.sanitize(result.text),truncated=result.truncated;
           if(text.length>24000||Buffer.byteLength(text)>48000){truncated=true;text=text.slice(0,24000);while(Buffer.byteLength(text)>48000)text=text.slice(0,-256);if(/[\uD800-\uDBFF]/.test(text.at(-1)||''))text=text.slice(0,-1);}
           const title=(await options.sanitize(wc.getTitle())).slice(0,200);samePage();
-          return {tabId:tab.id,title,url,observedAt:new Date().toISOString(),untrusted:true,text,extraction:{engine:'mozilla-readability-0.6.0',method:result.method,sourceChars:result.sourceChars,truncated,figures:result.figures,canvas:result.canvas,formulas:result.formulas,accessHint:result.accessHint,contentSha:createHash('sha256').update(text).digest('hex')}};
+          return {tabId:tab.id,title,url,observedAt:new Date().toISOString(),untrusted:true,text,extraction:{engine:'mozilla-readability-0.6.0',method:result.method,sourceChars:result.sourceChars,truncated,lossy:result.lossy,figures:result.figures,canvas:result.canvas,formulas:result.formulas,accessHint:result.accessHint,contentSha:createHash('sha256').update(text).digest('hex')}};
         }
         if(input.action==='navigate'){activate();await navigate(input.url!);}
         else if(input.action==='show'){activate();}

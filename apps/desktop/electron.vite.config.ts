@@ -31,6 +31,8 @@ export default defineConfig(({ command }) => ({
         fs.mkdirSync(resolve(options.dir,'vendor/harness-openmaic'),{recursive:true});
         fs.mkdirSync(resolve(options.dir,'vendor/harness-mu'),{recursive:true});
         fs.mkdirSync(resolve(options.dir,'vendor/anatomy'),{recursive:true});
+        fs.mkdirSync(resolve(options.dir,'vendor/mozilla-readability'),{recursive:true});
+        for(const file of ['LICENSE.md','source-manifest.json'])fs.copyFileSync(resolve('src/main/xiaozhi-agent/vendor/mozilla-readability',file),resolve(options.dir,'vendor/mozilla-readability',file));
         for(const file of ['LICENSE','source-manifest.json'])fs.copyFileSync(resolve('src/main/xiaozhi-agent/vendor/anatomy',file),resolve(options.dir,'vendor/anatomy',file));
         for(const file of ['LICENSE','source-manifest.json'])fs.copyFileSync(resolve('src/main/xiaozhi-agent/vendor/mu-decisions',file),resolve(options.dir,'vendor/harness-mu',file));
         for(const file of ['LICENSE','source-manifest.json'])

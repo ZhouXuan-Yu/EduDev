@@ -1,7 +1,7 @@
 export const XIAOZHI_BROWSER_ACTIONS=['navigate','snapshot','extract','click','type','select','key','scroll','wait','tabs','show','close','screenshot'] as const;
 export type XiaozhiBrowserAction=typeof XIAOZHI_BROWSER_ACTIONS[number];
 export type XiaozhiBrowserInput={action:XiaozhiBrowserAction;tabId?:string;url?:string;ref?:number;snapshotId?:string;text?:string;value?:string;key?:string;direction?:'up'|'down';amount?:number;newTab?:boolean};
-export type BrowserExtraction={engine:'mozilla-readability-0.6.0';method:'readability'|'dom_region';sourceChars:number;truncated:boolean;figures:number;canvas:number;formulas:number;accessHint:'none'|'login_or_challenge';contentSha:string};
+export type BrowserExtraction={engine:'mozilla-readability-0.6.0';method:'readability'|'dom_region';sourceChars:number;truncated:boolean;lossy:boolean;figures:number;canvas:number;formulas:number;accessHint:'none'|'login_or_challenge';contentSha:string};
 export type XiaozhiBrowserReceipt={tabId:string;title:string;url:string;observedAt:string;snapshotId?:string;text?:string;untrusted:true;extraction?:BrowserExtraction;captured?:boolean;capture?:import('./xiaozhi-browser-capture').BrowserCapture};
 /** Values are already snapshotted by the main tool boundary, never arbitrary renderer code. */
 export function validBrowserInput(value:unknown):value is XiaozhiBrowserInput {
