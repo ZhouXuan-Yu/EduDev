@@ -2,9 +2,10 @@ import type {QuestionBankItem} from './contracts';
 import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument,type QuestionBlock} from './question-document';
 import {QUESTION_PROJECTION_FIELDS} from './question-projection';
 import {questionFactConflicts} from './question-facts';
+import {validNativeQuestionDocument,nativeQuestionComplete} from './native-question';
 
 export const QUESTION_CONTENT_IDENTITY_SCHEMA='xiaozhi.question-content-identity.v1' as const;
-export type QuestionIdentityScope='saved_text'|'reviewed_document';
+export type QuestionIdentityScope='saved_text'|'reviewed_document'|'ai_native_document';
 export type QuestionContentIdentity=
  |{schemaVersion:typeof QUESTION_CONTENT_IDENTITY_SCHEMA;status:'available';scope:QuestionIdentityScope;key:string}
  |{schemaVersion:typeof QUESTION_CONTENT_IDENTITY_SCHEMA;status:'unsupported';reason:'invalid_document'|'incomplete_document'|'fact_conflict'|'empty_text'};
@@ -25,6 +26,14 @@ function blockContent(block:QuestionBlock):unknown{
  */
 export function questionContentIdentity(question:QuestionBankItem):QuestionContentIdentity{
  const schemaVersion=QUESTION_CONTENT_IDENTITY_SCHEMA,document=question.document;
+ if(question.archive?.native){
+  const native=question.archive.native;
+  if(document||!validNativeQuestionDocument(native))return{schemaVersion,status:'unsupported',reason:'invalid_document'};
+  if(questionFactConflicts(question).length)return{schemaVersion,status:'unsupported',reason:'fact_conflict'};
+  if(!nativeQuestionComplete(native))return{schemaVersion,status:'unsupported',reason:'incomplete_document'};
+  const projection=QUESTION_PROJECTION_FIELDS.map(field=>[field,native.projection[field].state,text(native.projection[field].text)]);
+  return{schemaVersion,status:'available',scope:'ai_native_document',key:JSON.stringify([schemaVersion,'ai_native_document',text(question.subject),projection,native.roles.question.figures.map(f=>[f.sha256,f.width,f.height])])};
+ }
  if(document!==undefined){
   if(!validQuestionDocument(document))return{schemaVersion,status:'unsupported',reason:'invalid_document'};
   if(questionFactConflicts(question).length)return{schemaVersion,status:'unsupported',reason:'fact_conflict'};
