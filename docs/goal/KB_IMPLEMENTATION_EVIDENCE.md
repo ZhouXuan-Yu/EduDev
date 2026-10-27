@@ -1,5 +1,30 @@
 # 知识库实施证据
 
+<!-- kb-enrichment-read-20261027:start -->
+## 2026-10-27 S6-C：缺答题专用实读，完整Goal仍ACTIVE
+
+代码：现education_search_questions/read_question新增可选purpose=answer_enrichment；本地候选SQL先过滤空答案/解析，逐题检查明确missing和题面完整性，沿用原件强验及原检索的chunk/页隐私、bodyVersion、source revisions、facts digest和filterCurrent。补答别名绑定用途，不登记下游observedQuestions；裸文本缺图/表拒绝。offset只在此用途允许0..1000000，按实际scanned续页；超界明确continuationLimitReached。没有新表、依赖、IPC或写库权限，默认archiveEligible/向量资格保持原样。
+
+先行RED检查点：0df468f（目的参数拒绝）、ed770bb（真实混合查询预先排除缺答）、ea4df9d（镜像冲突伪装空库）、8d4fc3f（真实Electron中51完整题遮蔽）、9ac8f0f（独立隐私/用途/缺图反例）、ec6fdb1（缺图候选之后不可继续）、25dfa25（小批分页跳题）。RED均实际运行后提交；新探针最初静态import早于Node hook与错误file_path列属设置错误，修成动态import及真实local_path后才计证据。不得把测试设置失败当产品RED或修改生产校验来放行。
+
+专项终态（源码）：
+
+- `node scripts/education/question-enrichment-read-boundaries.mjs` exit0，15项，`apps/desktop/test-results/goal/kb-enrichment-read-final.log`。实际SQLite事实+现Pi工具定义，严格参数/原件/隐私能力缺省拒绝、明示missing、用途别名、缺图、脱敏中改题、取消/失效、镜像冲突、12/52可读候选limit2不漏不重。
+- `node scripts/education/question-enrichment-native.mjs` exit0，7项，`kb-enrichment-native-final.log`，报告 `C:/Users/ZhouXuan/AppData/Local/Temp/omni-enrichment-native-fUgbHK/report.json`。真实Electron内OmniEduStore导入Markdown→原件复制→SQLite题本/FTS→实际Pi工具实读→Store关闭重开→原件变更拒绝→正确bodyVersion的私密chunk仍拒绝；51完整题和51缺图候选均参与。此处是Store重开，非冷进程教师UI或真实模型验收。
+- 独立AI先确认1P1/3P2：私密来源漏检、用途别名降级、缺图题放行、50候选遮蔽，报告 `C:/Users/ZhouXuan/AppData/Local/Temp/question-enrichment-critic-19ed6d3a1b6c44daa14db4f27a725681/report.json`；修复后8组回放闭合，又发现分页跳题P2，报告 `.../question-enrichment-paging-cace74590dcc4d5faa4c475aee7ffee3/paging-report.json`。末次修复独立12/12通过，报告 `.../question-enrichment-final-replay-71ffb10aa94f4766985b9a49ce09be63/report.json`；限定范围未发现新增确定P1/P2。独立回放使用真实SQLite/检索/来源与工具，未build/启动Electron。
+- 新准入模块 `shared/question-answer-enrichment.ts` V8有效区间行覆盖100%、执行区间26/26。`kb-enrichment-coverage.json`仅覆盖该新模块，区间比例不是Istanbul分支覆盖，不能外推全部消费者。
+
+兼容门禁：`npm run test:smoke`已正常exit0，ok=true，207项历史兼容/30学生夹具，日志 `kb-enrichment-smoke.log`；该中间冻结构建含用途/隐私修复，但分页末次scanned修正随后才进入最终build，不能称最终构建207项全部复跑。`node scripts/education/capability-boundary-smoke.mjs`已修复本片相关的镜像冲突、脱敏期间源变和未知host异常被吞成空库问题；最终运行完成304项后在未改动的material-preview-boundaries.mjs:24因source_changed失败，`kb-enrichment-existing-boundaries-final.log`，不是全套通过。独立执行相同未改动预览夹具也失败：其resource stub缺少已要求的contentHash，`kb-enrichment-preview-baseline.log`；四个对应生产/测试文件相对3d3c630无差异，不削弱原件版本校验来过旧夹具。
+
+`npm audit --json --fetch-retries=0 --fetch-timeout=15000`成功返回审计数据：仍21项（8high/5moderate/8low/0critical），`kb-enrichment-audit.json`；未新增依赖，不宣称漏洞已清零。最终build/typecheck/组件及Git结果在本节末追加。
+
+真实边界：完整浏览器题解→同题匹配→持久web来源/候选→CAS只补缺角色→同题本/小智复读尚未实现，不可声称“联网补答已入库”。不调用ArchiveEdit伪装teacher，不上传真实题图/整库，不运行真实付费provider。S6-B2业务AI图片账本及全Goal中的40GB、自然召回/答案正确率、最终EXE仍待继续。
+
+最终源码门禁：`npm run build` exit0（含tsc），`kb-enrichment-final-build.log`；`npm run test:renderer-components` exit0、240/240，`kb-enrichment-final-components.log`。最终out完整指纹 `02968f976a5e6e7cfc07c29954f2c48f725f2193dc1bcfdc216fca180978431d`，main SHA `66356c3ae9e418161f7d5f93eba35d1fed9f0e70cdd9aa4114bdece8dbf1668c`；已确认实际bundle包含scanned续页末次修复。无后续源码改动，`git diff --check` exit0。207中间兼容回归未冒称此最终指纹的再次验收；没有终止其它AI/用户进程，本轮旧测试进程在终态读取前已自行正常exit0。
+
+Git：D盘当前为codex/xiaozhi-composer-template且有新未提交附件区源码/状态文档；保存现场，不复用旧批次接管授权。本轮本地main整合只能在不触动该分支/工作树的前提下完成；真实结果后补。未push/发布新EXE。
+<!-- kb-enrichment-read-20261027:end -->
+
 <!-- kb-dom-enrichment-20261027:start -->
 ## 2026-10-27 S6-B2原生协议前置及S6-C成熟DOM复用
 

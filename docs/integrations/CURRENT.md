@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+<!-- kb-enrichment-read-20261027:start -->
+## 2026-10-27 S6-C 缺答题实读与独立批判修复
+
+S6-C继续复用现Hana/Readability和唯一Pi。education_search_questions/read_question的可选purpose是兼容扩展；缺答实读使用独立本地候选查询与已有来源/隐私校验，不增IPC、部署服务、npm包或上云权限。已有web DOM观察仍不是持久答案回执；后续需独立web来源账本和版本栅栏补写，不伪装teacher或MaterialSource。
+<!-- kb-enrichment-read-20261027:end -->
+
 <!-- kb-dom-enrichment-20261027:start -->
 ## 2026-10-27 Mozilla原始源码直接复用
 

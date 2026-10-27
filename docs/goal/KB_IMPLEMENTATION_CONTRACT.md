@@ -203,6 +203,8 @@ AI输入带必要native文本/公式/表格、所选原生题图和本地OCR对�
 
 2026-10-27 缺答实读切片：在现有 education_search_questions / education_read_question 增加显式 purpose=answer_enrichment。教师通过现小智会话要求查找缺答案题，仍由同一Pi检索、脱敏实读与内置浏览器处理；不得让未完成答案的归档题永远被组卷资格挡住。只放行完整题面且确有明确missing答案/解析的来源；未核图、跨块歧义、旧摘要、原生v3尚未接通账本及镜像冲突继续拒绝。默认检索/读取和archiveEligible不改变，不把补答读取登记为下游组卷/改编工具的已完成题授权。复用现typed Pi工具返回及可见工具来源，无新表/目录/依赖/IPC，不作迁移。完成证据为契约反例、同一真实SQLite题本版本读回、脱敏期间版本变化与实际Pi工具调用；这一步不冒充后续网页匹配、持久回执和CAS写回答案已经完成。失败可重查；删除purpose即可恢复原行为。
 
+本片独立批判后的收敛：专用SQL先过滤空角色再限制候选，按实际scanned提供受限续页，offset不超过1000000；不能以固定50跳过未扫描项。别名能力绑定purpose，不向普通read降级复用；默认组卷与向量fact调用不传新目的。补答强实读复用原RetrievalRepository的chunk/页隐私、资源修订闭包，再核facts digest/filterCurrent，发布前重验；原件SHA/正文bodyVersion正确不代表隐私放行。裸文本沿用现图表缺条件检查，完整v2仍依赖真实来源账本，原生v3待接账本不放行。
+
 教师导入无答案/解析题与临时提问可显式联网查题/解题，复用成熟DOM自动化及现唯一Pi编排，结果核对后自动补齐现有题库，正式整卷仍集中确认。此为已有知识库闭环增量，不替换S6-B2图文入库。原题资料/教师已填答案保留，自动补答不得调用会把更改标为teacher的ArchiveEdit。网站来源单独记账，不冒充MaterialSource或原题sourceTitle。
 
 实施合同：M04/M05/M10，扩展现Hana隔离浏览器的DOM/readability正文提取、版本化带截断与图式缺口的观察回执；后续按purpose=answer_enrichment开放完整题面且缺答的专用读取，而不放松组卷archiveEligible。来源匹配/答案候选分别保留网页URL、观察时间、原文摘录和SHA、匹配题面/图义digest与期望questionVersion，区分web_extracted和ai_derived；CAS只补明确missing且无当前文字/图像内容的角色，等待期间教师已补内容则保留候选并拒绝覆盖。原文、两阶段AI、图片账本与网页回执可追溯，完成定义仍需实际浏览器→匹配→答案/解析自动回写→同题本/小智实读→重启一致；仅提取器或脚本通过不算联网补答完成。

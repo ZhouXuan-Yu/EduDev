@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+<!-- kb-enrichment-read-20261027:start -->
+## 2026-10-27 S6-C 缺答题实读与独立批判修复
+
+限定证据：question-enrichment-read-boundaries.mjs 15项；question-enrichment-native.mjs 7项（Electron内真实Store/导入Markdown/SQLite/现Pi工具/Store关闭重开，非冷进程UI或真实模型）；独立最终回放12项。新增准入helper的V8有效区间行覆盖100%、执行区间26/26，仅限该模块，不是全部改动分支覆盖。最终门禁与已知依赖问题见本轮EVIDENCE；整条联网补答和全Goal未验收。
+<!-- kb-enrichment-read-20261027:end -->
+
 <!-- kb-dom-enrichment-20261027:start -->
 ## 2026-10-27 DOM提取限定证据
 

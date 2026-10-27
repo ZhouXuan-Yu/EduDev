@@ -1,5 +1,11 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+<!-- kb-enrichment-read-20261027:start -->
+## 2026-10-27 S6-C 缺答题实读与独立批判修复
+
+S6-C本片使用现小智工具入口及来源卡，新增15源边界与7Electron Store读回项；未增加独立教师UI。本片没有真实provider驱动的聊天E2E、真人网站题解、写回答案或冷进程UI验收，不以底层工具/Store通过冒充这些用户闭环。现renderer组件门禁与最终兼容smoke结果见EVIDENCE。
+<!-- kb-enrichment-read-20261027:end -->
+
 <!-- kb-dom-enrichment-20261027:start -->
 ## 2026-10-27 浏览器DOM取数限定路径
 

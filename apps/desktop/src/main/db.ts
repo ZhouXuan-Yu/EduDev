@@ -1221,6 +1221,7 @@ export class OmniEduStore {
   }
 
   async readArchivedQuestionContext(question:QuestionBankItem){await this.materialQuestions.validate(question);}
+  async readAnswerEnrichmentContext(question:QuestionBankItem,signal?:AbortSignal){await this.retrieval.validateAnswerEnrichment(question,signal);}
 
   async init(): Promise<BootstrapData> {
     await (this.initialization ??= this.initialize().catch(error => {
@@ -4149,8 +4150,12 @@ export class OmniEduStore {
     return (await this.retrieval.questions(filters)).questions;
   }
   async searchQuestionBankWithCoverage(filters:QuestionSearchFilters={}){return this.retrieval.questions(filters);}
-  private async searchQuestionBankKeyword(filters: QuestionSearchFilters = {}) {
-    const {rows,method} = await searchQuestionRows({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)},filters,this.questionRetrievalIndexed);
+  /** Local discovery for missing-answer reads; eligibility/source checks still happen in the provider. */
+  async searchQuestionsForAnswerEnrichment(filters:QuestionSearchFilters&{offset?:number}={}){
+    return this.searchQuestionBankKeyword({...filters,limit:Math.min(50,filters.limit??50)},true);
+  }
+  private async searchQuestionBankKeyword(filters: QuestionSearchFilters&{offset?:number} = {},missingAnswersOnly=false) {
+    const {rows,method} = await searchQuestionRows({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)},filters,this.questionRetrievalIndexed,missingAnswersOnly);
     const tokens=questionSearchTokens(filters.query?.trim()??'');
     return rows.map(row=>{
       const item=this.mapQuestionBankItem(row);

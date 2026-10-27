@@ -1,5 +1,11 @@
 # 当前架构
 
+<!-- kb-enrichment-read-20261027:start -->
+## 2026-10-27 S6-C 缺答题实读与独立批判修复
+
+缺答实读新增独立目的，不改变SQLite业务真源或索引资格。archiveEligible仍控制通常读取/向量；answerEnrichmentRoles只控制缺角色完整题面。RetrievalRepository.fact的内部补答目的复用已有chunk/page隐私和来源修订，validateAnswerEnrichment再检查digest与filterCurrent。既有Word原件验证仍执行；末次读取变化明确失败。无schema迁移、新依赖或第二Agent。
+<!-- kb-enrichment-read-20261027:end -->
+
 <!-- kb-dom-enrichment-20261027:start -->
 ## 2026-10-27 浏览器DOM提取层
 
