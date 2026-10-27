@@ -147,6 +147,24 @@ typed preload/正文UI展示逐页覆盖与失败、继续/重试及来源定位
 
 ## main 整合后的 S6-B 续接依据：完整 Word 结构
 
+### S6-B2 实施合同：AI 原生图文题进入同一题本、小智与组卷（2026-10-27）
+
+目标 M02/M03/M04/M05/M06/M09/M10：教师选择 Word 题目范围，宿主保留题干/答案/解析的原生文字、OMML、表格、内嵌图和真实块锚点；可选逐批授权图文AI，对照本地OCR两阶段整理，完整结果自动进入现有题本，正式试卷集中确认。不能以仅存后台JSON、仅能预览或继续永久停在visual_unchecked替代本片最终结果；复杂/混合角色或未完成来源保留明确待整理状态，不伪造完整资格。
+
+现状缺口已由代码与独立AI设计批判确认：AI response v1只有标量文本；Word images拒绝；question-document.v2/OriginalQuestionRepository依赖教师confirmed ledger；只在archive增加图文会使小智剥离内容、按stem误去重和导出静默丢图。因此保留既有教师v2，新增archive v3中的独立AI原生document/来源账本，统一questionPresentation与事实镜像/身份/检索入口。AI不能提供路径/字节、冒认教师确认或任意图片权限。
+
+变更范围：shared material-ai、question-archive、新native-question/shared presentation契约；assets下Word原生习题范围/来源闭包、AI图文账本与角色图片存储；现有AI repository/provider/typed IPC及可操作UI；questionFacts/identity、语义索引文本、小智实读、题本/整卷预览、paper compiler与Office图像解析。增量幂等AI原生账本表，保留旧题/已确认卷和原始first/final响应；独立业务图片目录保存版本化PNG，不依赖可删除Word缓存赋权。
+
+原生题单元按编号/范围保存宿主生成的块ID与document digest，Word不虚构页码；已有正文receipt提供原件/隐私/变更栅栏，原生块闭包才是图文定位依据。题面、答案、解析分别保存，不把整张含答案图片授予question角色；混合角色未拆开不得交付学生卷。安全本机布局渲染保留原生结构与来源映射，输出有界PNG以接既有Word/PDF宿主；不能退回纯文本摘要。不支持的公式/结构和跨度必须显式保留风险。
+
+AI输入带必要native文本/公式/表格、所选原生题图和本地OCR对照；云端仅用本批次明确许可，文字脱敏会影响图片时先阻止发送。对后续小智读取只提供必要脱敏投影，teacherConfirmationKnown=false；本批图像授权不扩张到聊天自动发送原图。模型图义与题答是AI结果，不能声称数学正确或教师已确认。完整性资格、宿主来源覆盖/图片SHA、OCR/两阶段差异和具体未完成项分开记录。
+
+教师编辑按同一CAS事务同步标量、当前投影/角色与版本；AI原稿回执不覆盖，修订另记历史。更改答案/解析必须撤销冲突旧角色图，不能一边显示新文字一边导出旧答案图。学生卷只解析当前question角色；教师卷可解析答案/解析；图像访问由新AI账本按questionVersion/nativeDigest/role复验，不伪造OriginalQuestionRepository的教师审批记录。
+
+预算沿用有界Word输入和既有Office图像交付限制，native单题JSON最多96KiB、最多64源块/8图片、投影24KiB；同一批次最多100题/400次调用，单源页/单角色渲染、总像素/PNG字节/任务并发均需明确上限、超时、取消和失败读回。新功能不增加外部部署服务或新依赖；新增JS与受管Electron布局复用现有运行时，最终EXE影响留待实际打包测量。
+
+按tdd-workflow先冻结真实Word原生图/公式/表格、答案图隔离、不同图同stem身份、来源/图片篡改、隐私与编辑镜像的失败反例并提交RED检查点，随后实现并验证新领域80%覆盖、主进程/SQLite/typed preload/UI/重启/组卷Word-PDF实际媒体读回。构建/组件和相关专项通过后独立AI批判并修复，所有证据写现有EVIDENCE与CURRENT；测试provider与真实云端质量/计费严格区分。完整Goal中的跨页/答案册、本地视觉模型、40GB自然质量/延迟和最终EXE仍须继续，不以本片缩小目标。
+
 ### S6-B1 实施合同：DOCX 原文结构纵向贯通（2026-10-26）
 
 2026-10-27 独立批判修复补充：合法内容控件/自定义XML/插入移动容器中的表格行与单元格仍属本片来源，必须展开保存且不得跨嵌套表格误收行。手动Word重整的宿主任务通过typed materials:word-job恢复，64条有界状态/一个active任务；页面切换后恢复取消入口，取消校验源版本，完成按jobId刷新正文。增加14组解析/5组任务边界及18,000段真实DOCX切换A/B/A取消验证，保留原5项图文资料闭环。该修复不增加数据真源、外传权限或新依赖。
