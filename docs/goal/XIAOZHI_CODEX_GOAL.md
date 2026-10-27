@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 联网补答增量与DOM成熟复用
+
+用户新增内置浏览器自动搜题/解题并写回知识库，明确优先成熟DOM方案。已直接复用现Hana定位/操作与Mozilla Readability0.6.0正文提取，原生与独立批判反例修复通过；完整缺答入口、网站适配/接管、题面匹配、网页持久来源与CAS自动回填仍须继续。该增量与S6-B2 AI原生图题账本/同库/Pi/正式出卷并行纳入完整Goal，不将提取器通过或局部脚本缩成最终完成。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 主线合并与Word图稿续接
 

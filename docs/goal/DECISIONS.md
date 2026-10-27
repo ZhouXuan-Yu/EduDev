@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 选择Hana DOM加Mozilla Readability
+
+用户问DOM元素取数是否有成熟方案，已核Playwright MCP Apache-2.0、Stagehand MIT、browser-use MIT与Mozilla Apache-2.0官方来源。选择直接复用已集成Hana和Mozilla Readability原始源码，保留唯一Pi及Electron权限/生命周期；不为相同能力再引Chrome/Python服务。指定ref保可见内容，整页Readability筛选另标lossy。提取结果不是可直接写库的答案，下一须题面匹配/持久网页来源及专用CAS补空。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 原生图稿缓存不冒充AI事实
 

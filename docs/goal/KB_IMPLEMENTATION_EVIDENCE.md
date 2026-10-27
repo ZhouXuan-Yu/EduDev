@@ -1,5 +1,47 @@
 # 知识库实施证据
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 S6-B2原生协议前置及S6-C成熟DOM复用
+
+完整Goal仍ACTIVE。用户新增内置浏览器搜题/解题/答案解析回写，并明确询问DOM成熟方案。已核Playwright MCP/Stagehand/browser-use/Mozilla官方仓库，选择直接复用现Hana v0.450.0 DOM/ref执行层＋Mozilla Readability0.6.0正文提取；不新起独立浏览器/Agent/部署服务。研究对比与完整后续流程见现有research/KNOWLEDGE_BASE_DELIVERY_PLAN_2026_10_24.md增量，详细合同见KB_IMPLEMENTATION_CONTRACT.md S6-C。
+
+### 已写源码与准确边界
+
+S6-B2提交6d2cc9b/a10f1d5、7e18c50/becdbc0/b5fc95d：新增archive v3/独立NativeQuestionDocument、当前角色镜像、源contentSha身份及shared presentation。模型不能借教师v2授权；不同原始图文不按同stem误合组，字体截图重排不制造新题。业务图片账本仍未实现，e3c8aaf提交的kb-native-ledger-boundaries.mjs是已实际执行的缺类RED；后续producer/OCR/两阶段/同库/Pi/导出接线不能据共享协议通过称已完成。
+
+S6-C：直接复用Mozilla原始89980B（SHA34dcab3d0832d0019f02990eed6b6124e029e8c32b9f0c6f2550544ff8dff174），静态编码字符串未修改上游算法，Apache LICENSE/source-manifest随构建复制；.gitattributes固定LF。browser-extract-script.ts清理活DOM克隆，在isolatedWorld1005执行；现office_browser.extract与shared枚举、Pi工具定义及运行来源readback已贯通。指定最新ref/snapshotId的区域保留可见文字；整页Readability筛选有lossy标记，与truncated分别记录。源/输出预算、URL/revision/取消/脱敏守卫保留；文字SHA和图(含SVG)/式/Canvas/登录提示进入回读摘要。纯文本返回，不渲染Readability HTML；没有新npm依赖或额外Chrome/Python。
+
+这仅完成成熟DOM取数前置。长期网页来源账、缺答专用读取/可操作补全入口、逐站适配/限域人工接管、题面匹配、两阶段答案核对和CAS自动补空尚未完成。没有向真实搜题站发送教师题目，没有provider计费/登录/付费绕过；临时问题入库需独立幂等身份，原有教师答案/答案图不可覆盖。
+
+### 实际门禁（cwd均为本checkout/apps/desktop）
+
+| 精确命令 | 结果 / 日志 |
+| --- | --- |
+| `node --experimental-transform-types scripts/education/kb-native-question-boundaries.mjs` | 6契约/镜像/资格/身份通过，kb-native-contract-reviewed.log |
+| `node --experimental-transform-types scripts/education/kb-native-content-identity.mjs` | 4源内容/字体截图身份通过，kb-native-content-identity-final.log |
+| `node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs` | 旧AI批次16组通过，kb-native-question-legacy-ai.log；受控provider |
+| `node --experimental-transform-types scripts/xiaozhi-agent/pi-browser-extract-boundaries.mjs` | 最终10组真实锁定Readability/jsdom，kb-browser-extract-visibility-green.log；不是原生CSS/网站自然正确率 |
+| `node scripts/xiaozhi-agent/pi-browser-extract-native.mjs` | 最终8项真实Electron/WebContentsView/isolatedWorld、当前Pi工具definition.execute、动态DOM、SHA/脱敏/图式/隐藏CSS、1366/1920、导航变化与取消；kb-browser-extract-native-final.log；test-results/xiaozhi-agent/pi-browser-extract-5ff7QZ/report.json。HTTPS为主进程安装的合成协议夹具，非真实网站/provider或自动写回 |
+| `node --experimental-transform-types scripts/xiaozhi-agent/pi-browser-extract-readback.mjs` | 3项新原生tail正文/元数据回读，kb-browser-extract-readback-reviewed.log；完整性匹配仍needs_human，不证明数学正确 |
+| `node --experimental-transform-types scripts/xiaozhi-agent/pi-result-readback-boundaries.mjs` | 原回读28通过，kb-browser-extract-existing-readback.log |
+| `npm run test:renderer-components` | 240/240，kb-browser-extract-components.log |
+| `npm run build` | exit0含tsc，kb-browser-extract-build.log与kb-browser-extract-build-reviewed.log；后者之后的root/style/svg修复由下述最终test:smoke再次完整build |
+| `npm run test:smoke` | 最终exit0，ok=true/207历史兼容项/30名隔离学生，kb-browser-extract-smoke.log；从最终build到正常退出out未重建。历史legacy路径不是全部当前Pi或真实网站验收 |
+| `node scripts/xiaozhi-agent/reuse-mozilla-readability.mjs --verify --release` | 源码/许可/发行清单逐字摘要通过，kb-browser-extract-license-final.log；仍未发布NSIS |
+| `npm audit --json --fetch-retries=0 --fetch-timeout=15000` | exit1，npm bulk advisories TLS握手前断开，kb-browser-extract-audit.json；未声称审计通过或告警清零，无新依赖 |
+| `git diff --check` | exit0；收尾提交/Git实况另核 |
+
+最终out完整指纹f836cebfdd23f2dc26c59d07e44da4205cd385a7edae96eb7ba87b4c6de7aae8，main SHA256 fd923182dbdd161dae6486ca06834258be34d2187bf5ef5672e2b07d681f8fc0，renderer index-EV0rczuu.js。最终smoke正常退出后复核同指纹，不把源码native独立探针冒充整个编译产物中的真实Pi模型调用。
+
+### 独立批判及保留失败
+
+独立探针原目录C:/Users/ZhouXuan/AppData/Local/Temp/browser-extract-critic-a2b872a0371d418e8f88f0efa8d84815：P1隐藏根/祖先泄露（脱离父节点clone.remove无效）；P2Readability静默删comment-answer；根公式/表格处理遗漏；content-visibility/closed-details隐藏正文；SVG图义无缺口。3708af0、0625283、9b55046分别先执行RED后修，bbe9e91/c718d83修复；独立复放15/15闭合，报告browser-extract-replay-cec95f3657b74b87b90f1d1dcd53d20d/report.json，限jsdom，不冒充原生浏览器。最终native8项补了真实CSS与工具定义；隐藏数据不进入返回，选中区域表/式/图自身正确处理，Readability省略明确lossy。
+
+初次extract-native父目录不存在、敌对getComputedStyle在navigate的旧snapshot阶段提前抛错、executeJavaScript返回函数不能structured clone、Readability整页合理省略可见summary导致过强断言，均为探针设置/预期问题；保留对应red/first/second/final旧实例，最终用lossy判断省略而不放宽隐藏数据拒绝。脚本模板Readability同名变量、换行字符串转义，以及jsdom对MathML computed style的实现差异，分别修复后再验证。来源字节校验生成wrapper保留上游原始内容，没有手改上游函数。
+
+`--experimental-test-coverage`对browser-extract-script.ts报100%，但只覆盖脚本构造函数；脚本字符串在DOM中eval的分支不在Node插桩范围，因此不将该数值报作提取算法或全产品覆盖率。原生契约先typecheck两处unknown收窄错误已修，后续build含typecheck通过。原生身份fixture改SHA须同时改wa_id与canonical闭包，becdbc0时仍失败，b5fc95d修合法fixture后4项通过，未重写历史冒称更早GREEN。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 S6-B2 原生角色图稿、崩溃修复与main整合
 

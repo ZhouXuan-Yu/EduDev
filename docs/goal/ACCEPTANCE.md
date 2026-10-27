@@ -1,5 +1,12 @@
 # Goal 验收台账
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 DOM提取限定证据
+
+新DOM10组、实际Electron8项（本地合成HTTPS协议夹具、真实隔离world/工具调用/双尺寸）、新回读3与旧回读28通过；独立jsdom原反例15/15闭合。build/typecheck、240组件与许可发行复制校验已通过，最终构建/历史smoke见EVIDENCE。尚未真实搜题站/AI答案/自动回写/新EXE验收；脚本构造覆盖不冒充浏览器执行覆盖。
+最终同构建完整指纹f836cebf，test:smoke含最终build/typecheck已正常exit0/207历史兼容项；无模型或真实网站质量声明。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 Word图稿限定验证
 

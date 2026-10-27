@@ -249,3 +249,30 @@ S0只是最小发行验证，不要求先做全部产品发布流程；S3可在�
 任何新增依赖入库前记录：精确版本/commit、代码及模型许可/NOTICE、下载与安装字节、CPU/RAM、Windows DLL/架构、离线资源路径、镜像/hash与升级/回滚。S0结论决定绑定与冻结包，不为了设计文档填一个未经验证的“兼容版本”。
 
 两项产品选择均已确定：AI自动定稿入库、正式组卷集中确认；本地与云端分析并存，云端每批授权必要页/裁剪图。当前无需为设计继续等待用户决定。旧DOC首发支持取决于随包转换门禁；技术实测决定Lance SDK、embedding/reranker、是否需要Docling、基线硬件和最终SLO。目录自动化、内置EXE、数据职责与实施顺序已给出默认建议。
+
+
+## 2026-10-27 增量：DOM浏览器搜题/解题与缺答案回填
+
+用户明确新增：导入题缺答案解析或用户临时问题，可由内置浏览器打开搜题/解题网站，获取与核对答案解析并写回知识库；优先复用成熟方案。用户后续确认重点是DOM元素取数。该能力纳入知识库完整闭环，不能把检索引擎或正文提取器当作自动补答已完成。
+
+### 实际核查与选择
+
+| 成熟来源 | 核实能力 | 本项目决定 |
+| --- | --- | --- |
+| [Microsoft Playwright MCP](https://github.com/microsoft/playwright-mcp)、[官方介绍](https://github.com/microsoft/playwright.dev/blob/main/mcp/introduction.mdx)、[CDP与扩展连接](https://github.com/microsoft/playwright.dev/blob/main/mcp/configuration/browser-extension.mdx) | DOM/无障碍树ref操作，可附加既有Chromium/Electron CDP；Apache-2.0许可已查原LICENSE。CDP是控制面，仍需应用自己的题目来源与写库规则 | 作为成熟方案对照，不另起MCP常驻服务或全局暴露小智CDP；已有Hana宿主具备对应ref能力，继续直接使用其固定源码 |
+| [Stagehand](https://github.com/browserbase/stagehand)、[官方原子操作/抽取](https://github.com/browserbase/stagehand/blob/main/packages/docs/v4/first-steps/introduction.mdx)、[本机/已有CDP](https://github.com/browserbase/stagehand/blob/main/packages/docs/v4/configuration/browser.mdx) | act/extract/observe与受限确定性操作；本机/连接浏览器可选，MIT原LICENSE已核。官方v3/v4接口并存，不能混用示例 | 保留可替换引擎候选；本项目现Pi已做规划，直接再引完整Agent会重复状态/模型与浏览器权限；本轮不安装或承诺其在受管Electron中即插即用 |
+| [browser-use](https://github.com/browser-use/browser-use)、[官方README](https://github.com/browser-use/browser-use/blob/main/README.md) | Python浏览器代理，可本地与云端浏览器；MIT原LICENSE已查，模型和云服务计费独立 | 不为已集成Electron+Pi的EXE再增加Python浏览器Agent运行时；它不提供本项目所需的题目版本/自动回填账本 |
+| [Mozilla Readability](https://github.com/mozilla/readability) | Firefox Reader View同源的DOM正文提取器；Apache-2.0；Readability明确不是HTML净化器，不能直接信任/渲染其HTML输出 | **直接复用0.6.0原始89980字节源码**，现依赖锁中已存在；本机静态编码字符串、LICENSE和SHA清单，不新增运行时依赖；仅对活DOM克隆执行，输出纯文本，不渲染其HTML |
+| 本项目固定Hana v0.450.0浏览器 | 已有vendor/hana/browser/source-manifest.json、Apache-2.0、WebContentsView、DOM/ref快照、公开IP代理、逐次操作确认、取消与真实native验收脚本 | **继续直接复用**，新增office_browser.extract，Readability负责整页正文，指定ref保留必要区的DOM文字；无第二套浏览器/Agent或外部部署服务 |
+
+调研访问采用agent-reach GitHub/网页路由；gh repo view成功返回三个仓库更新时间，但licenseInfo为空，随后直接查官方LICENSE而非据null猜许可。gh search/API取LICENSE曾TLS/EOF/超时；记录为未知/失败，官方网页主源读取替代。不安装agent-reach或更改全局工具配置。少量搜题脚本多针对网课且许可口径不一，未作为可交付K12商业题库自动化组件引入；本次没有找到并验证“任意搜题网站→自动正确答案→本产品安全写回”的通用现成成品。
+
+### 确定交付路径
+
+1. 现有题本/临时问题发起“联网补全”，宿主绑定题面/图义digest、目的站与必要内容授权。缺答题走专用answer_enrichment读取，不放松组卷资格，也不因缺答永远无法被小智发现。
+2. 同Pi使用现DOM/ref浏览器访问公开题库/解题页面；整页提取可有Readability筛选省略，指定答案区域保留文字。sourceChars、truncated、lossy、公式/图片/SVG/Canvas、登录/验证码提示与URL/时间/纯文本SHA分开记录。DOM读不到的图义需要必要范围的OCR/视觉授权，不能把搜索摘要或截断文本当完整题解。
+3. 搜索/解题网站逐站适配并用真实网站验收。登录/验证码/付费需明确接管；当前浏览器非GET默认拦截，因此不能声称显示窗口就已支持人工登录。需可见、限源限时human-control且自动任务暂停，不把通用confirm改成无条件通过。
+4. 宿主持久化网页来源与候选，匹配数值/单位/选项/小问/图义，区分web_extracted与ai_derived。两阶段AI核对及现形式化可验证部分不能替代独立数学正确性；相似题或来源不完整只留候选。
+5. 按questionVersion与角色missing资格CAS自动补空，事务同步答案/解析、原生当前角色、来源账本和索引；已有人填答或已有答案图则拒绝覆盖，保留候选。不要调用会把改动标为teacher的普通ArchiveEdit，保留导入原始sourceTitle/MaterialSource。临时题显式选择入库后幂等创建一次。
+
+精确实现/迁移/回滚/门禁继续记KB_IMPLEMENTATION_CONTRACT.md与EVIDENCE。当前DOM提取前置已接线，但长期网页来源账、专用缺答入口、搜题核对与自动回写尚未完成；原S6-B2 AI图题账本也仍须继续。没有向真实网站发送教师资料、没有付费provider或登录操作。

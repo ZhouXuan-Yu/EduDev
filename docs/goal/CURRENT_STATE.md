@@ -1,5 +1,12 @@
 # 小智 Goal 当前状态
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 S6-B2原生协议/S6-C DOM前置
+
+原生archive v3及source contentSha身份已写，6+4契约通过；独立AI业务图片账本尚为已提交预期RED，未接生产。DOM方向已直接复用Mozilla0.6.0，现浏览器/Pi工具extract与原生来源回读接通，10DOM/8Electron/3回读与旧28通过；build/typecheck/240组件通过于本轮，最终smoke正常exit0/207历史兼容项，范围见EVIDENCE。完整原生图题AI入库与完整联网解题写回均未完成，仍ACTIVE。
+最终同构建完整指纹f836cebf，test:smoke含最终build/typecheck已正常exit0/207历史兼容项；无模型或真实网站质量声明。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 S6-B2 Word图稿和main整合
 

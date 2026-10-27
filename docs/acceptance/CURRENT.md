@@ -1,5 +1,12 @@
 # 当前验收入口
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 DOM前置验收边界
+
+10DOM+8实际Electron+3新回读+28旧回读通过；原始Mozilla字节/许可与发行清单实证，独立审查隐藏/根节点/静默省略/SVG反例15项复放闭合。240组件与build/typecheck通过，最终smoke结果另记现EVIDENCE，不把合成网页夹具当真实网站解题或自然答案质量。
+最终同构建完整指纹f836cebf，test:smoke含最终build/typecheck已正常exit0/207历史兼容项；无模型或真实网站质量声明。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 Word图稿与崩溃限定证据
 

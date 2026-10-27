@@ -1,5 +1,15 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 浏览器DOM取数限定路径
+
+| 实际路径 | 证据与边界 |
+| --- | --- |
+| 原生内置浏览器→动态题解DOM→实际Pi工具extract→来源SHA/图式缺口→两尺寸→导航/取消 | pi-browser-extract-native-final.log，8项，5ff7QZ/report.json；真实Electron/本地HTTPS协议夹具，无真实provider/搜索站/写回声明 |
+| 隐藏/折叠/选区/表/式/图及Readability省略 | 10组jsdom，独立15组复放；纯文本保全与lossy，非数学正确性 |
+| 持久缺答任务→网页核对→写回→冷启 | 仍未实现，本轮提取器不得作为通过证据 |
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 原生Word图稿真实路径
 

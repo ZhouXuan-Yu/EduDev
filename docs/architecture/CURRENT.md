@@ -1,5 +1,11 @@
 # 当前架构
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 浏览器DOM提取层
+
+现Hana DOM/ref宿主新增extract，isolatedWorld1005对当前DOM清理克隆执行原样Mozilla Readability0.6.0；指定ref走保全区域文本，整页可能lossy。20k节点/2Mi字符输入、24k字符且48KiB输出、15秒/取消与revision复验，纯文本和公式表格边界，图/SVG/Canvas另外标缺口；不加载外链或呈现Readability HTML。权限确认、公开IP代理、同Pi均保留。下一web答案来源账本独立于原MaterialSource与临时30条工具观察。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 Word角色PNG派生层
 

@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+<!-- kb-dom-enrichment-20261027:start -->
+## 2026-10-27 Mozilla原始源码直接复用
+
+现Hana v0.450.0 Apache-2.0操作层保持，新增Mozilla Readability0.6.0原始89980B源码字符串与LICENSE/SHA清单。源SHA34dcab3d0832d0019f02990eed6b6124e029e8c32b9f0c6f2550544ff8dff174；无新npm依赖/Chrome/Python/browser-use服务。office_browser.extract及版本化元数据进入现来源回读；构建复制许可清单，LF规则保持hash。未集成Stagehand/browser-use完整Agent，也未向网站上传教师数据。
+<!-- kb-dom-enrichment-20261027:end -->
+
 <!-- kb-word-proof-20261027:start -->
 ## 2026-10-27 Word图稿typed接线
 
