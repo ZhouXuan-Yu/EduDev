@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {validWordDocument,type WordDocument,type WordBlock} from '../../shared/material-word';
 import {WORD_QUESTION_SCHEMA,WORD_QUESTION_BYTES,WORD_QUESTION_ROLES,wordParagraphMap,wordSourceBlocks,wordQuestionBlocks,wordQuestionText,validWordQuestionSource,type WordQuestionSource,type WordQuestionRole,type WordSourceSpan,type WordQuestionIssue,type WordQuestionSummary} from '../../shared/material-word-question';
 
-type Builder={number:string;blocks:WordBlock[];parts:Record<WordQuestionRole,WordSourceSpan[]>;issues:Set<WordQuestionIssue>};
+type Builder={number:string;blocks:WordBlock[];blockIds:Set<string>;parts:Record<WordQuestionRole,WordSourceSpan[]>;issues:Set<WordQuestionIssue>};
 type Event={at:number;after:number;number?:string;role?:WordQuestionRole;content?:number;explicit?:boolean;combined?:boolean};
 const digest=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const numberOf=(text:string)=>text.match(/^\s*(?:第\s*(\d{1,5})\s*题|([0-9]{1,5})[.．、)）])/u)?.slice(1).find(Boolean);
@@ -16,11 +16,11 @@ export function indexWordQuestions(document:WordDocument){
  if(!validWordDocument(document))throw Error('source_changed');
  const documentSha=digest(document),mainPart=document.blocks[0]?.anchor.part,builders:Builder[]=[],preamble:Array<{block:WordBlock;span:WordSourceSpan}>=[];
  let active:Builder|undefined,role:WordQuestionRole='question',answerSection=false,unassigned=false;
- function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,blocks:[],parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';}
+ function begin(number:string){if(builders.length>=10000)throw Error('too_large');active={number,blocks:[],blockIds:new Set(),parts:{question:[],answer:[],analysis:[]},issues:new Set()};builders.push(active);role='question';}
  function append(block:WordBlock,from?:number,to?:number){
   if(block.kind==='paragraph'&&(to??0)<=(from??0))return;
   if(!active){preamble.push({block,span:{blockId:block.id,...(block.kind==='paragraph'?{from,to}:{})}});return;}
-  if(!active.blocks.includes(block))active.blocks.push(block);
+  if(!active.blockIds.has(block.id)){active.blocks.push(block);active.blockIds.add(block.id);}
   active.parts[role].push({blockId:block.id,...(block.kind==='paragraph'?{from,to}:{})});
  }
  for(const block of document.blocks){
@@ -60,14 +60,15 @@ export function indexWordQuestions(document:WordDocument){
  const numbers=new Map<string,number>();for(const b of builders)numbers.set(b.number,(numbers.get(b.number)||0)+1);
  const globalWarnings=document.warnings.some(w=>!['supplemental_part','formula_incomplete','image_missing','external_image','unsupported_image'].includes(w));
  for(const b of builders){
-  if(common.length){b.blocks=[...new Map([...common.map(p=>p.block),...b.blocks].map(p=>[p.id,p])).values()];b.parts.question=[...common.map(p=>p.span),...b.parts.question];b.issues.add('shared_context');}
+  if(common.length)b.issues.add('shared_context');
   if(numbers.get(b.number)!>1)b.issues.add('ambiguous_number');if(answerSection)b.issues.add('separate_answers');if(globalWarnings)b.issues.add('source_warning');if(unassigned)b.issues.add('unassigned_content');if(context.length>2048)b.issues.add('context_too_large');
  }
  function materialize(ordinal:number){
   if(!Number.isSafeInteger(ordinal)||ordinal<1||ordinal>builders.length)throw Error('invalid_input');
-  const b=builders[ordinal-1],all=walk(b.blocks),assetIds=new Set<string>();
+  const b=builders[ordinal-1],blocks=common.length?[...new Map([...common.map(p=>p.block),...b.blocks].map(p=>[p.id,p])).values()]:b.blocks;
+  const parts=common.length?{...b.parts,question:[...common.map(p=>p.span),...b.parts.question]}:b.parts,all=walk(blocks),assetIds=new Set<string>();
   for(const block of all)if(block.kind==='paragraph')for(const inline of block.inlines)if(inline.kind==='image'&&inline.assetId)assetIds.add(inline.assetId);
-  const source:WordQuestionSource={schemaVersion:WORD_QUESTION_SCHEMA,ordinal,number:b.number,documentSha,context:context.length<=2048?context:'',blocks:b.blocks,assets:document.assets.filter(a=>assetIds.has(a.id)),parts:b.parts,canonical:{question:'',answer:'',analysis:''},issues:[...b.issues]};
+  const source:WordQuestionSource={schemaVersion:WORD_QUESTION_SCHEMA,ordinal,number:b.number,documentSha,context:context.length<=2048?context:'',blocks,assets:document.assets.filter(a=>assetIds.has(a.id)),parts,canonical:{question:'',answer:'',analysis:''},issues:[...b.issues]};
   // Inspect selected ranges rather than unrelated text elsewhere in the same source paragraph.
   const selected=walk(WORD_QUESTION_ROLES.flatMap(r=>wordQuestionBlocks(source,r)));
   const issues=new Set(source.issues);
@@ -77,7 +78,7 @@ export function indexWordQuestions(document:WordDocument){
    if(inline.kind==='text'&&/\[(?:脚注|尾注)\d+\]/u.test(inline.text))issues.add('footnote_unresolved');
   }
   for(const r of WORD_QUESTION_ROLES)source.canonical[r]=wordQuestionText(wordQuestionBlocks(source,r));
-  if(WORD_QUESTION_ROLES.reduce((n,r)=>n+b.parts[r].length,0)>64)issues.add('too_many_spans');
+  if(WORD_QUESTION_ROLES.reduce((n,r)=>n+parts[r].length,0)>64)issues.add('too_many_spans');
   if(new Set(selected.flatMap(b=>b.kind==='paragraph'?b.inlines.filter(i=>i.kind==='image'&&i.assetId).map(i=>i.kind==='image'?i.assetId:''):[])).size>8)issues.add('too_many_images');source.issues=[...issues];
   if(Buffer.byteLength(JSON.stringify(source))>WORD_QUESTION_BYTES||Object.values(source.canonical).some(t=>t.length>24000))source.issues.push('too_large');
   return source;
