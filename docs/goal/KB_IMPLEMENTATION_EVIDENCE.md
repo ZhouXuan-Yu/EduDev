@@ -22,7 +22,7 @@
 
 最终源码门禁：`npm run build` exit0（含tsc），`kb-enrichment-final-build.log`；`npm run test:renderer-components` exit0、240/240，`kb-enrichment-final-components.log`。最终out完整指纹 `02968f976a5e6e7cfc07c29954f2c48f725f2193dc1bcfdc216fca180978431d`，main SHA `66356c3ae9e418161f7d5f93eba35d1fed9f0e70cdd9aa4114bdece8dbf1668c`；已确认实际bundle包含scanned续页末次修复。无后续源码改动，`git diff --check` exit0。207中间兼容回归未冒称此最终指纹的再次验收；没有终止其它AI/用户进程，本轮旧测试进程在终态读取前已自行正常exit0。
 
-Git：D盘当前为codex/xiaozhi-composer-template且有新未提交附件区源码/状态文档；保存现场，不复用旧批次接管授权。本轮本地main整合只能在不触动该分支/工作树的前提下完成；真实结果后补。未push/发布新EXE。
+Git：已在beca工作树切换未被占用的本地main并快进整合到源码GREEN `15b410285ee51c0647d2c870be0f7fcedf826470`，无冲突，随后返回codex/knowledge-base-delivery。D盘仍是codex/xiaozhi-composer-template（其HEAD为3d3c630）且保留新未提交附件区源码/状态文档，未在D盘执行任何修改/暂存/切分支/合并。D盘运行分支尚不包含本轮新增实读功能，不能把本地main已合入说成其运行页面已升级。文档收尾与源码保持同一本地main；未push/发布新EXE。
 <!-- kb-enrichment-read-20261027:end -->
 
 <!-- kb-dom-enrichment-20261027:start -->
