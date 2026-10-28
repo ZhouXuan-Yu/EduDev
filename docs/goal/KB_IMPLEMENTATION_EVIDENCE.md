@@ -1,5 +1,9 @@
 # 知识库实施证据
 
+## 2026-10-28 交付反思与成熟方案复用重审
+
+基于08e26bc核实本文件的真实9文件/2条ai_final及configuration/0文件失败仍未闭合。本轮公开GitHub源与LICENSE/OpenAPI核验、独立Terra只读复审完成；四候选固定SHA见docs/research/KB_REUSE_SOURCE_EVIDENCE_20261028.json。未安装/运行候选、未测同资料胜负、未跑40GB、未上传资料或发新模型调用，生产代码/数据不变。当前用户任务与规模门槛/后续合同见KNOWLEDGE_BASE_RECOVERY_20261028.md和WORK_PROGRESS.md。
+
 ## 2026-10-28 最新主线重审：两题可组卷，真实导出仍阻塞
 
 用户最新要求先拉取再重新确定问题；已fetch并整合origin/main `cc2e68ae1d17b0cec03a59a72183881fd4dceba8`（merge `ee6e8de`），本地修改先stash再完整恢复，0冲突。相对前次主线297b0d3，新增仅F15恢复测试及审计文档，`git diff 297b0d3..origin/main -- apps/desktop/src python`为空，不能将主线审计通过推及知识库导出。D:协作树/32aa的分支均未被本轮移动。

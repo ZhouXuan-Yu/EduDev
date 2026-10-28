@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-28 复用方向纠偏（尚未实施）
+
+已重开完整成熟知识库后端作为通用层候选，优先标准摄入/索引/检索/阅读API或成熟parser统一结构的薄适配；Pi和SQLite/本地原件领域事实保持。AnythingLLM vector-search不等于完整中文混合检索，WeKnora Lite Simple不等于标准版复杂解析。几十GB规模资格与来源/质量同在定案前验证。当前只有研究合同，无运行时、Schema、依赖、默认后端或数据迁移。
+
 ## 2026-10-28 新UI与事件投影整合
 
 保留fdc模板输入/附件/四权限/命令/三栏；F01 renderer-only文本缓冲有界32ms/128条/65536字符，同scope相邻文本合并、非文本/Stop/隐显flush。权威snapshot替换才同步commit，校验当前cursor/连续后缀与scope/revision后ack；重入期间ref+可见同步屏障阻止手动及自动审批。无新IPC/表/生产Runtime；完全无重叠历史页失败关闭，F10继续处理该范围。F01性能尚未验收。

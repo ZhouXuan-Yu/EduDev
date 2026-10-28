@@ -1,5 +1,9 @@
 # 知识库方案实施合同
 
+## 2026-10-28 纠偏合同为当前入口
+
+用户要求反思并直接复用成熟个人知识库，几十GB与高效检索是前置硬条件。当前执行以docs/research/KNOWLEDGE_BASE_RECOVERY_20261028.md为准，重开旧路线B偏好，不变更用户AI自动定稿/正式整卷集中确认。此轮仅审查/源码证据与计划，未改生产/表/模型或正式资料；KR02真实对照与规模资格后再冻结实施的具体文件/接口/迁移，不能把API可用文档当已集成。
+
 ## 2026-10-28 真实导出续片：输出目录与任务规划（M06/M09/M10）
 
 真实Pi首跑暴露paperOutput已有授权但saved_office任务目标只读workspace，模型多次task_target_invalid后要求补选目录，而已启动的只读会话又禁止换范围。修复仅让缺少workspace时，saved_office规划与education_export_paper/classroom调用标识可使用现resolvePaperOutput再次验证的输出目录；不新增权限/表/IPC，不允许普通读文件、保存文本或office_create_document借输出授权读取/写入。越界路径/撤权/学生失效/archived仍拒绝；已有workspace行为保持。实际写入继续走已确认试卷与Office审批链，不因任务标识通过而提前写文件。完成定义为严格边界、真实Pi到审批、四种真实文件与持久SHA/来源读回；不把自动化教师测试决策当真实教师签署。

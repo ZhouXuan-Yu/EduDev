@@ -1,0 +1,188 @@
+{
+  "checkedOn": "2026-10-28",
+  "edudevBaseline": "08e26bcc64823ec67675a1a72c17e455cf4999a0",
+  "method": "Official GitHub read-only gh API, raw LICENSE/source/OpenAPI and official documentation; independent read-only project audit",
+  "productionIntegrationChanged": false,
+  "runtimeComparisonExecuted": false,
+  "newPackagesInstalled": false,
+  "privateMaterialsUploaded": false,
+  "upstreams": {
+    "anythingllm": {
+      "repository": "Mintplex-Labs/anything-llm",
+      "commit": "0941fb03596862899f7df2bdeb022eb68d4216a7",
+      "files": [
+        {
+          "path": "LICENSE",
+          "available": true,
+          "bytes": 1073,
+          "sha256": "782d2dc18a1ed9028ca992520f42b2e0b6187807da0d14455b8ae608e2e5692e",
+          "url": "https://github.com/Mintplex-Labs/anything-llm/blob/0941fb03596862899f7df2bdeb022eb68d4216a7/LICENSE"
+        },
+        {
+          "path": "server/swagger/openapi.json",
+          "available": true,
+          "bytes": 131526,
+          "sha256": "ca3134c60e6fbd4d183dd3ed360addbc419d213e95525a0250c8467a50a0f1e2",
+          "url": "https://github.com/Mintplex-Labs/anything-llm/blob/0941fb03596862899f7df2bdeb022eb68d4216a7/server/swagger/openapi.json"
+        },
+        {
+          "path": "server/endpoints/api/workspace/index.js",
+          "available": true,
+          "bytes": 32948,
+          "sha256": "0bcbe93e1970ccec0b1b8c44c51d8228b0fa07dc8b5fe1dc359e03d7ab19f289",
+          "url": "https://github.com/Mintplex-Labs/anything-llm/blob/0941fb03596862899f7df2bdeb022eb68d4216a7/server/endpoints/api/workspace/index.js"
+        },
+        {
+          "path": "collector/processSingleFile/index.js",
+          "available": true,
+          "bytes": 3531,
+          "sha256": "524cbbc103670103eb5f906417baa97058217c69244bbf327b40bab20f8bdd85",
+          "url": "https://github.com/Mintplex-Labs/anything-llm/blob/0941fb03596862899f7df2bdeb022eb68d4216a7/collector/processSingleFile/index.js"
+        },
+        {
+          "path": "README.md",
+          "available": true,
+          "bytes": 27176,
+          "sha256": "54fa19d813e8bb7bbed9346771e17ad29a9d5753effa19427bea4c38de6c7a2c",
+          "url": "https://github.com/Mintplex-Labs/anything-llm/blob/0941fb03596862899f7df2bdeb022eb68d4216a7/README.md"
+        }
+      ],
+      "release": {
+        "tag": "v1.19.0",
+        "commit": "9b1fcab141000eaba9f78ed131151de04904454b",
+        "publishedAt": "2026-10-26T16:14:51Z",
+        "windowsAssets": [
+          {
+            "name": "AnythingLLMDesktop-Arm64.exe",
+            "size": 501534408,
+            "digest": "sha256:77130550a5dc647e54b05ee756c8e8dc94b6b13b01c698ac0979e97b32da0c0a"
+          },
+          {
+            "name": "AnythingLLMDesktop.exe",
+            "size": 403299096,
+            "digest": "sha256:743d10ddf920087b46cd614cafd2e0e31550089405436f00cbd827c43ca4c90a"
+          }
+        ],
+        "openapiSha256": "ca3134c60e6fbd4d183dd3ed360addbc419d213e95525a0250c8467a50a0f1e2",
+        "requiredEndpoints": {
+          "/v1/document/upload": true,
+          "/v1/document/raw-text": true,
+          "/v1/workspace/{slug}/update-embeddings": true,
+          "/v1/workspace/{slug}/vector-search": true
+        }
+      },
+      "sourceLicense": "MIT"
+    },
+    "weknora": {
+      "repository": "Tencent/WeKnora",
+      "commit": "dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2",
+      "files": [
+        {
+          "path": "LICENSE",
+          "available": true,
+          "bytes": 15291,
+          "sha256": "5935f49975d7daf97857d7053b6fe45500a3b2ec31cc92a42a89a5fd98a86cea",
+          "url": "https://github.com/Tencent/WeKnora/blob/dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2/LICENSE"
+        },
+        {
+          "path": "docs/LITE.md",
+          "available": true,
+          "bytes": 2661,
+          "sha256": "df33097400d8eea31aed5328d5627447dff8732cdcd23c595953bbc25f50cb27",
+          "url": "https://github.com/Tencent/WeKnora/blob/dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2/docs/LITE.md"
+        },
+        {
+          "path": "cmd/server/main.go",
+          "available": true,
+          "bytes": 5876,
+          "sha256": "190d4ce2c517a884f16b06847b8b016f70312760aaaa19cacc2df521b0f8e125",
+          "url": "https://github.com/Tencent/WeKnora/blob/dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2/cmd/server/main.go"
+        },
+        {
+          "path": "Makefile",
+          "available": true,
+          "bytes": 13536,
+          "sha256": "2de2d63316c669dd56e135b4085e1df1a845a928dd891a68d53f6525bca4b4d0",
+          "url": "https://github.com/Tencent/WeKnora/blob/dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2/Makefile"
+        },
+        {
+          "path": "mcp-server/README.md",
+          "available": true,
+          "bytes": 5194,
+          "sha256": "7241f4fc54255570eb4f3fde92dadab2c736ed2b0567c74fa1832fbca53a664f",
+          "url": "https://github.com/Tencent/WeKnora/blob/dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2/mcp-server/README.md"
+        },
+        {
+          "path": "packages/dsh-weknora/README.md",
+          "available": true,
+          "bytes": 9689,
+          "sha256": "ca93fd651194763e888a6df7d0e383b6ac0d3eb7ca8a67a7ba20b3ba68356b36",
+          "url": "https://github.com/Tencent/WeKnora/blob/dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2/packages/dsh-weknora/README.md"
+        },
+        {
+          "path": ".github/workflows/release-lite.yml",
+          "available": true,
+          "bytes": 14552,
+          "sha256": "35261ab5cb1e5cb2c94dcb69fc4247a27309d444c6f419a3aa8327b608806ed5",
+          "url": "https://github.com/Tencent/WeKnora/blob/dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2/.github/workflows/release-lite.yml"
+        }
+      ],
+      "sourceLicense": "MIT (plus third-party notices)"
+    },
+    "docling": {
+      "repository": "docling-project/docling",
+      "commit": "7814a4e4326c4f3a1770389c75e33f75aecb5107",
+      "files": [
+        {
+          "path": "LICENSE",
+          "available": true,
+          "bytes": 1072,
+          "sha256": "edb765d1e3e60d0c7a7d5fba5f2bb2c3c29f7465cecb5c22cf1185c884954e4c",
+          "url": "https://github.com/docling-project/docling/blob/7814a4e4326c4f3a1770389c75e33f75aecb5107/LICENSE"
+        },
+        {
+          "path": "pyproject.toml",
+          "available": true,
+          "bytes": 16345,
+          "sha256": "2226d9544af1a99941d7c2cc8e8d5ecf2370a9114a33b5d1572319603c1a8d81",
+          "url": "https://github.com/docling-project/docling/blob/7814a4e4326c4f3a1770389c75e33f75aecb5107/pyproject.toml"
+        },
+        {
+          "path": "docling/document_converter.py",
+          "available": true,
+          "bytes": 41299,
+          "sha256": "ce8407bb8ddd8d8b8b518b413ced86cded5aa153606cd7ee2cf092232fa9ea65",
+          "url": "https://github.com/docling-project/docling/blob/7814a4e4326c4f3a1770389c75e33f75aecb5107/docling/document_converter.py"
+        }
+      ],
+      "sourceLicense": "MIT"
+    },
+    "kotaemon": {
+      "repository": "Cinnamon/kotaemon",
+      "commit": "9ad3e4e49aa35b8acddd235918a5d9753c1cfdf9",
+      "files": [
+        {
+          "path": "LICENSE",
+          "available": false,
+          "url": "https://github.com/Cinnamon/kotaemon/blob/9ad3e4e49aa35b8acddd235918a5d9753c1cfdf9/LICENSE"
+        },
+        {
+          "path": "README.md",
+          "available": true,
+          "bytes": 18355,
+          "sha256": "2809854945c054792099f9db34c8af8f4360e296ac8f091d120c37351b3c399e",
+          "url": "https://github.com/Cinnamon/kotaemon/blob/9ad3e4e49aa35b8acddd235918a5d9753c1cfdf9/README.md"
+        },
+        {
+          "path": "LICENSE.txt",
+          "available": true,
+          "bytes": 11357,
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "url": "https://github.com/Cinnamon/kotaemon/blob/9ad3e4e49aa35b8acddd235918a5d9753c1cfdf9/LICENSE.txt"
+        }
+      ],
+      "sourceLicense": "Apache-2.0"
+    }
+  },
+  "unavailableTool": "agent-reach command unavailable; its documented GitHub gh backend used; check-update not completed"
+}
