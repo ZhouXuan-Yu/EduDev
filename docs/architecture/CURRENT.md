@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-10-27 日常spawn显示边界
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+start-desktop先build后spawn同out；交互Electron windowsHide=false避免Windows首次ShowWindow被隐藏启动标志压制，后台构建继续隐藏。不改变BrowserWindow/runtime/IPC/renderer/数据库。证据见../goal/DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

@@ -1,5 +1,11 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-27 首次窗口可见性
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+新增scripts/daily-launch-visibility.mjs：读取当前launcher交互spawn配置，同out实际Node spawn→独立profile/data→CDP确认真实Pi会话→Win32 IsWindowVisible→WM_CLOSE优雅退出。修前true隐藏RED，修后false可见通过；原有Playwright _electron直启不覆盖此Windows启动标志。精确记录/边界见goal/DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

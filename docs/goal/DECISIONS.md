@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-10-27 交互Electron不得隐藏启动
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+受控同构建对比确认首次窗口被windowsHide:true压制，仅将日常Electron spawn设false。用户已要求显示并启动最新项目；后台build辅助进程继续隐藏。保留协作者全部脏工作、既有profile/数据、环境过滤、构建失败边界与单实例。不同版本页面未复现，不能把隐藏现象直接等同旧bundle。合同：DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

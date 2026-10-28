@@ -1,5 +1,11 @@
 # 小智 Goal 当前状态
 
+## 2026-10-27 日常启动窗口隐藏修正
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+仅start-desktop交互Electron windowsHide改false；同out真实Windows对比确认旧true首次隐藏、新false可见，业务/IPC/页面不改。保留D:当前协作者脏内容，按最新源码构建启动。专项/最终启动/未验边界见DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md；完整Goal仍ACTIVE，未证实旧bundle页面因果。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

@@ -1,5 +1,11 @@
 # 当前验收入口
 
+## 2026-10-27 启动器原生可见性
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+node scripts/daily-launch-visibility.mjs用当前out真实spawn，完成同构建隐藏true/交互false两案例对比、已加载Pi及优雅退出；修前RED、修后通过，240组件通过。最终build/日常窗口证据见../goal/DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。该专项不代表旧bundle问题、安装包或完整provider验收。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

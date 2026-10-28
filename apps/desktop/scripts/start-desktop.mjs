@@ -27,6 +27,8 @@ const executable = path.join(desktop, 'node_modules/electron/dist', process.plat
 for (const file of [executable, 'out/main/index.js', 'out/preload/index.cjs', 'out/renderer/index.html'].map(file => path.isAbsolute(file) ? file : path.join(desktop, file))) {
   if (!fs.existsSync(file)) { console.error('小智启动文件缺失：' + file); process.exit(1); }
 }
-const child = spawn(executable, [path.join(desktop, 'out/main/index.js'),...(preview?['--user-data-dir='+path.join(previewRoot,'profile')]:[])], { cwd: desktop, env, stdio: 'ignore', detached: true, windowsHide: true });
+// This is the teacher's interactive app. STARTUPINFO SW_HIDE suppresses its first
+// native window on Windows even when BrowserWindow requests show: true.
+const child = spawn(executable, [path.join(desktop, 'out/main/index.js'),...(preview?['--user-data-dir='+path.join(previewRoot,'profile')]:[])], { cwd: desktop, env, stdio: 'ignore', detached: true, windowsHide: false });
 child.once('error', error => { console.error('小智启动失败：' + error.message); process.exitCode = 1; });
 child.once('spawn', () => { child.unref(); console.log('已启动当前源码调试版；如已有旧构建窗口，将重新加载新版。'); });
