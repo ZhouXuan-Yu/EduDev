@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-28 真实素材验收增量
+
+9真实文件/18 PDF页OCR/25 chunks/源SHA与冷启通过；真实DeepSeek累计7次（用户另行追加），修后两遍6题落库但全部待整理。正确物理蓝图0题，未确认/导出，题意搜索探针0候选。Provider已修精确JSON模式字段兼容，9边界/17批次/build/240组件通过；私有原件与模型响应仅本机。完整闭环与最终EXE不因局部验证通过而视为完成，详KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-28 原生AI生产链验收范围
 
 以goal/KB_IMPLEMENTATION_EVIDENCE.md最新节为准。真实Store10含实际OCR/两连接、AI收据、改答/恢复/cache删除、现Pi检索实读和生成Word/PDF角色媒体SHA；真实UI7含必要图授权、typed角色PNG/失败重试、教师编辑与真题干恢复、1366/1920冷重启。DeepSeek响应受控，未产生付费请求；不是自然质量/WPS布局/40GB/安装包验收。最终build/组件/smoke与独立复审边界按实记录。
