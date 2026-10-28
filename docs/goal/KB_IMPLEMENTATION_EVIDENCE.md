@@ -20,6 +20,8 @@
 
 最终收敛：`npm run build`（含`tsc --noEmit`）已正常exit0，`kb-native-build-final.log`，最后源码后执行；renderer组件240/240及上述专项/真实Electron验证均已收集终态。`git diff --check`通过。未运行本轮全套smoke/生产native UI，因为该链尚未接入现Store；不得把旧207项作为本轮完整图题证据。
 
+最终独立限定复核：critic确认sameBase严格比较五身份字段，未发现新增确定P1/P2；对真实7ASBMA报告、SQLite与PNG只读核对一致。根代理另复读该实际DB：cache manifest=0、native input=1、revision=1、角色images=3、pending=0。上述结果仍不证明生产Store/真实AI/typed UI/Office完成。
+
 整合收尾：源码GREEN `9c94357`已保存；当前知识库分支合入协作者main `3734df3`，12份状态文档冲突均是双方独立新增段，已逐项保留；业务源码无冲突，启动修复原样保留。该merge不改变此前已构建/验证的src及package文件，新增启动脚本仅做语法复验。main仍由32aa工作树占用，未更新其ref/文件、未push，不将本分支merge称已合入main。
 
 本地主线已由协作者推进到3734df3并在32aa工作树占用；本轮不写该协作工作树，不push。下一实际接线：专用preparation连接生命周期、writer真实first/final/member/input receipt→AI原生response/必要OCR与角色图片→现Word批次/题本→检索/Pi→Office/备份。40GB长稳/自然教师Recall与P95/受管本地视觉/最终EXE仍必须完成。
