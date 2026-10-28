@@ -50,3 +50,7 @@
 本片仅测试/文档，无schema、运行时协议、业务真源或生产渲染更改；回滚限本片提交的这些文件，不删除测试失败证据或教师资料。主线集成前刷新origin/main，保留他人提交；若main在其他工作树占用，只在本分支整合并正常push HEAD:main，不偷偷移动其本地指针。集成/远端SHA/合并后主线启动记录收尾追加。
 
 后续保持F24 MEASURING，完整Profiler/流式/Skill/CPU/GPU/SQL/CI矩阵未验；继续F14等逐项修复，每项重新冻结验收和回滚。完整Goal保持active，不能以此检查点标完成。
+
+### 主线检查点集成与启动
+
+2026-10-28提交fc78137c32e6aae8ae7eca547bea5ee59e4047e2，刷新origin/main后正常push HEAD:main，ls-remote回读相同SHA。Terra只读收尾复审通过限定口径。主线生产源码与d710构建相同，本片只有测试/文档；`node scripts/daily-launch-visibility.mjs` exit0，report=daily-launch-visibility-j4c89s/report.json：2个实际Electron/Pi窗口，hidden对照PID34892 visible=false，interactive PID46532 visible=true，0 rendererErrors，同out指纹934f2e93。此探针按启动器配置重建spawn，未执行真实npm start/桌面快捷方式，也未更新D:协作者工作树；不能称间歇旧页面已复现或治愈。启动检查已完成，可新分支继续F14。此后的文档收尾提交不改变生产产物。
