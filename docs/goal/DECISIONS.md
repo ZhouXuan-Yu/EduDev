@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+<!-- kb-native-ledger-20261028:start -->
+## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
+
+选择独立业务PNG及不可变AI输入，不依赖预览LRU或重启重截图。私有Word producer attestation与实际AI transcriptor分开证明原始像素/AI角色文字，不能靠模型自报SHA。准备连接专用autocommit，caller writer事务发布，禁止共享连接BEGIN/ROLLBACK探针；来源base逐字段比较，不把JSON属性顺序当身份变化。重启恢复的本地证据不继承为新外发许可。
+<!-- kb-native-ledger-20261028:end -->
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

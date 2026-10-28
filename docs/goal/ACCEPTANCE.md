@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+<!-- kb-native-ledger-20261028:start -->
+## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
+
+原生账本20、共享契约7、源身份4项；独立critic最终9反例通过（含Word ordinal5/批内ordinal1及取消）；真实Electron原生排版→Word.proofs.evidence→双异步sqlite3→输入持久化→删除实际cache→连接关闭重开→同bank发布/角色读回4项通过，报告omni-native-promotion-7ASBMA。该路径的AI transcription为私有测试替身，未经过生产Store/typed UI或真实provider；不是教师图文AI入库/正式Office/40GB/安装验收。最终构建/组件与日志见EVIDENCE。
+<!-- kb-native-ledger-20261028:end -->
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

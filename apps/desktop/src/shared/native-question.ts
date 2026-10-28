@@ -48,7 +48,10 @@ export function validNativeQuestionDocument(value:unknown):value is NativeQuesti
  }catch{return false;}
 }
 export function nativeQuestionComplete(value:NativeQuestionDocument):boolean{
- return validNativeQuestionDocument(value)&&validQuestionProjection(value.projection,true)&&NATIVE_QUESTION_ROLES.every(role=>value.roles[role].origin!=='missing'&&(value.roles[role].origin!=='source'||value.roles[role].figures.length>0));
+ return validNativeQuestionDocument(value)&&validQuestionProjection(value.projection,true)
+  &&(value.projection.figures.state!=='provided'||value.roles.question.figures.length>0)
+  &&NATIVE_QUESTION_ROLES.every(role=>{const body=value.roles[role];return body.origin!=='missing'&&(body.origin!=='source'||body.figures.length>0)
+   &&(body.figures.length>0||!/(?:见|如下|参照下|所作[的为]?|作图[^。\n]{0,24})下?图|(?:图形|示意图|图示)[如在]下|!\[[^\]\n]*\]\s*\(|<\s*(?:img|svg)\b|\[原图(?:\s|\])/i.test(body.text));});
 }
 export function nativeQuestionConflicts(q:Pick<QuestionBankItem,'stem'|'answer'|'analysis'>,document:NativeQuestionDocument):Array<'statement'|'answer'|'analysis'>{
  const conflicts:Array<'statement'|'answer'|'analysis'>=[];

@@ -1,5 +1,27 @@
 # 知识库实施证据
 
+## 2026-10-28 S6-B2 原生业务图片与持久输入基础
+
+完整Goal ACTIVE。本轮NativeQuestionRepository由原先缺失RED推进到实现，尚未接生产OmniEduStore、Word AI批次/真实OCR/first-final transcriptor、同题本typed图片/编辑、Pi/Office与备份闭包，不能宣称教师可使用完整图文AI流程。没有新增依赖/部署服务/外发权限。
+
+已实现：五类增量幂等表material_ai_native_revisions/images/pending/inputs/input_images，question-ai-assets/v1业务PNG，无预览LRU；主进程真实Word.proofs.evidence复读来源manifest/PNG/stamp；私有短命permit，同根caller writer事务发布修订/角色；pending先记账、OS锁与崩溃/取消回收，输入refs及正式历史均保护图片。持久输入绑定真实AI-unit raw JSON SHA/版本化Word selector/batch ordinal→Word ordinal/原排版及有序PNG身份，first_saved连接重开不重新截图。readInput只属本地证据，dispatch须继续实时复验running/settings/隐私/授权。
+
+独立审查先复现末次来源撤销、外层事务孤片与并发教师保存被BEGIN/ROLLBACK探针静默回滚P1；对应bcaa113/3b59f0e/982d98c RED先提交后修。现移除SQL探针，Host.inTransaction同步私有状态，生产preparation必须专用连接；stage/publish须由caller事务中的writer实例执行。真实Electron新探针又复现相同base仅JSON属性顺序不同而source_changed（0914be0 RED）；已改逐字段比较。源角色不能移用其它角色图；教师改答撤销当前旧答案图、保留历史；真实源式/表/图不能被model not_applicable绕过。
+
+执行目录为本工作树apps/desktop：
+
+- `node --experimental-transform-types scripts/education/kb-native-ledger-boundaries.mjs`：20项exit0，kb-native-input-final.log，实际node:sqlite/文件与caller事务、受控像素/转录producer，root为Temp/omni-native-ledger-Jpyr7T。
+- `node --experimental-transform-types scripts/education/kb-native-question-boundaries.mjs`：7项exit0；`kb-native-content-identity.mjs`：4项exit0。覆盖缺图角色/教师移图、镜像/不同图身份，不是完整AI。
+- `node scripts/education/kb-native-promotion.mjs`：4项exit0，kb-native-promotion-fixed.log；报告`C:/Users/ZhouXuan/AppData/Local/Temp/omni-native-promotion-7ASBMA/report.json`。真实Electron隔离渲染→实际Word cache manifest attestation→独立准备/写入sqlite3连接→持久AI输入→删除真实cache PNG/表→关闭并重开双连接→同bank/角色读回，源文件修改拒绝。AI transcription仍为受控私有fixture，未通过现Store/typed UI/provider/Office；不是完整用户验收。初始fixture误把整个proof作为base导致invalid_input，改正确base后又得到属性顺序RED，失败日志保留。
+- 独立critic真实9反例：`C:/Users/ZhouXuan/AppData/Local/Temp/native-input-review-critic-NzvwY0/report.json`。覆盖批内ordinal1/Word ordinal5、首稿恢复/篡改/隐私、过期permit、取消事务与角色隔离；受控PNG，不是自然质量。P1原复现另见native-idle-probe-critic-aOmKRa/report.json。
+- `node scripts/education/kb-native-coverage.mjs`：exit0，`test-results/education/native-coverage-xwKQ3C/report.json`。V8实际编译JS非空行/函数：shared native 87.12%/100%，content 97.01%/100%，selector 100%/100%，repository 97.50%/100%。仅四领域；不是TS分支、全项目、Electron UI或provider覆盖。
+- 旧`kb-ai-batch-boundaries.mjs`16项、`kb-word-proof-repository.mjs`11项exit0；`npm run test:renderer-components`240/240 exit0，kb-native-components-final.log。初次build/components工具进程各返回-1，后续已重新验证；最终build门禁在下方续记，不以初次无输出当成功。
+- `npm audit --json`当前22项（8 high/6 moderate/8 low），`test-results/kb-native-audit-20261028.json`。历史21已漂移，未擅自upgrade或声称清零。
+
+最终收敛：`npm run build`（含`tsc --noEmit`）已正常exit0，`kb-native-build-final.log`，最后源码后执行；renderer组件240/240及上述专项/真实Electron验证均已收集终态。`git diff --check`通过。未运行本轮全套smoke/生产native UI，因为该链尚未接入现Store；不得把旧207项作为本轮完整图题证据。
+
+本地主线已由协作者推进到3734df3并在32aa工作树占用；本轮不写该协作工作树，不push。下一实际接线：专用preparation连接生命周期、writer真实first/final/member/input receipt→AI原生response/必要OCR与角色图片→现Word批次/题本→检索/Pi→Office/备份。40GB长稳/自然教师Recall与P95/受管本地视觉/最终EXE仍必须完成。
+
 ## 2026-10-27 S6-C 持久网页补答、同题本与生产任务接线
 
 完整Goal保持ACTIVE；本次是已保存完整文字题的限定联网补答，不是任意网站、图题、临时提问或40GB最终交付。复用现Hana浏览器+Mozilla Readability，无新增依赖/服务/Agent。

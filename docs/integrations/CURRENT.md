@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+<!-- kb-native-ledger-20261028:start -->
+## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
+
+复用现Electron渲染、image-size、SQLite/sqlite3和Windows OS锁，无新增依赖/服务或外发权限。WordQuestionProofRepository.evidence为main-private真实来源提升接口；native unit可携带版本化Word selector（不是上传payload）。NativeQuestionRepository提供stageInput/readInput/withInput与questionVersion角色读回，供现AI pipeline后续接线。installer体积与完整生产集成仍未验收。
+<!-- kb-native-ledger-20261028:end -->
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

@@ -1,5 +1,11 @@
 # 小智 Goal 当前状态
 
+<!-- kb-native-ledger-20261028:start -->
+## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
+
+完整Goal ACTIVE。S6-B2独立NativeQuestionRepository已从缺失RED推进到受测实现，含正式角色PNG/修订、pending恢复、不可变AI输入与跨缓存恢复；20+7+4专项、独立9、真实Electron双异步sqlite3/实际缓存删除4项通过。生产Store、真实first/final/OCR transcriptor和现Word AI批次/题本/Pi/Office仍未接通，不能提示教师已支持图文AI自动入库。最终门禁/准确边界统一见KB_IMPLEMENTATION_EVIDENCE.md。本地main3734df3现由32aa占用，保留协作现场。
+<!-- kb-native-ledger-20261028:end -->
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

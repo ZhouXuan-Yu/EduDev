@@ -140,6 +140,16 @@ export class WordQuestionProofRepository{
   }catch(error){if(requestSignal.aborted)throw Error('cancelled');if(timeout.aborted)throw Error('timeout');if((error as NodeJS.ErrnoException).code==='ENOSPC')throw Error('disk_full');throw error;}
   finally{this.active=false;}
  }
+ /** Main-private promotion input. Re-read the actual published manifest and every PNG. */
+ async evidence(base:WordProofBase,proofId:string,signal:AbortSignal){
+  if(!validWordProofImageQuery({...base,proofId,role:'question',index:0}))throw Error('invalid_input');
+  const source=await this.source(base),digest=hash(JSON.stringify(source));await this.host.verify(base,signal);const stamp=await this.host.stamp(base);
+  const result=await this.gate(async folder=>{
+   const proof=await this.load(proofId,source,base);if(!proof)throw Error('cache_unavailable');
+   const images=new Map<string,Buffer>();for(const p of proof.pages){signal.throwIfAborted();images.set(p.sha256,await this.readPng(folder,p,signal));}
+   return{source:structuredClone(source),proof:structuredClone(proof),images};
+  });await this.guard(base,digest,stamp,signal);return result;
+ }
  async image(input:WordProofImageQuery,signal:AbortSignal):Promise<WordProofImage>{
   if(!validWordProofImageQuery(input))throw Error('invalid_input');const base=baseOf(input),source=await this.source(base),digest=hash(JSON.stringify(source));await this.host.verify(base,signal);const stamp=await this.host.stamp(base);
   const result=await this.gate(async folder=>{

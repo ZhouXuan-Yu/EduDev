@@ -1,5 +1,11 @@
 # 当前验收入口
 
+<!-- kb-native-ledger-20261028:start -->
+## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
+
+当前原生持久层通过20存储/7契约/4身份与独立9反例；真实Electron排版/双sqlite3/实际cache删除/连接重开4项通过。AI transcriptor为受控替身、未接生产Store/typed UI/Pi/Office；无真实云端质量、40GB或EXE证据。只按这些范围确认实现基础，不用局部绿色替代完整Goal。准确命令和最终门禁见KB_IMPLEMENTATION_EVIDENCE.md。
+<!-- kb-native-ledger-20261028:end -->
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

@@ -1,5 +1,11 @@
 # 当前架构
 
+<!-- kb-native-ledger-20261028:start -->
+## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
+
+原生AI持久层新增NativeQuestionRepository及五类表：revisions、images、pending、inputs、input_images。私有Word proof evidence复读生产者manifest与实际PNG；业务输入保留源/排版环境/角色字节，永久事实与inflight输入共同保护pending回收。准备连接专用autocommit，writer实例在caller事务内发布/读刚写凭据，同根短命permit跨实例；禁止SQL探针影响共享保存。尚未在OmniEduStore实例化/迁移这些表，生产接线继续。
+<!-- kb-native-ledger-20261028:end -->
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 
