@@ -2,12 +2,15 @@ import type {OfficeModelReasoning} from '../../shared/office-agent';
 import {MAX_REASONING_TEXT,MAX_REASONING_BLOCKS} from '../../shared/model-reasoning';
 
 /** Bridges only SDK thinking deltas. Native SDK retains its own original blocks for tool replay. */
-export function createModelReasoningTrace(options:{sanitize:(text:string)=>Promise<string>;emit:(block:OfficeModelReasoning)=>void;secret:string}){
+export function createModelReasoningTrace(options:{sanitize:(text:string)=>Promise<string>;emit:(block:OfficeModelReasoning)=>void;secret:string;frameMs?:number}){
   type Entry={block:OfficeModelReasoning;raw:string;clock:number;revision:number;published:number};
   const entries=new Map<string,Entry>();let total=0,active:Entry|undefined,pending:Promise<void>|undefined;
-  const now=()=>performance.now();
-  function schedule(){
+  const now=()=>performance.now();let lastPublish=-Infinity,timer:ReturnType<typeof setTimeout>|undefined,flushing=false;
+  function schedule(immediate=false){
+    if(immediate&&timer){clearTimeout(timer);timer=undefined;}
     if(pending)return;
+    const delay=(options.frameMs??0)-(now()-lastPublish);
+    if(!immediate&&!flushing&&delay>0){timer??=setTimeout(()=>{timer=undefined;schedule(true);},delay);return;}
     pending=(async()=>{
       for(;;){
         const entry=[...entries.values()].find(e=>e.revision!==e.published);if(!entry)break;
@@ -23,13 +26,14 @@ export function createModelReasoningTrace(options:{sanitize:(text:string)=>Promi
           block.status=entry.block.status;block.durationMs=entry.block.durationMs;
           if(entry.block.truncated)block.truncated=true;
         }
-        options.emit(block);
+        options.emit(block);lastPublish=now();
+        if(!flushing&&(options.frameMs??0)>0)break;
       }
-    })().finally(()=>{pending=undefined;});
+    })().finally(()=>{pending=undefined;if([...entries.values()].some(e=>e.revision!==e.published))schedule(flushing);});
   }
   function close(status:OfficeModelReasoning['status']='completed'){
     if(!active)return;
-    active.block.status=status;active.block.durationMs=Math.max(0,now()-active.clock);active.revision++;active=undefined;schedule();
+    active.block.status=status;active.block.durationMs=Math.max(0,now()-active.clock);active.revision++;active=undefined;schedule(true);
   }
   return {
     delta(segment:number,index:number,delta:string,traceOrder?:number){
@@ -46,6 +50,6 @@ export function createModelReasoningTrace(options:{sanitize:(text:string)=>Promi
       active.revision++;schedule();
     },
     close,
-    async finish(status:OfficeModelReasoning['status']){close(status);while(pending)await pending;},
+    async finish(status:OfficeModelReasoning['status']){flushing=true;close(status);schedule(true);while(pending)await pending;flushing=false;},
   };
 }

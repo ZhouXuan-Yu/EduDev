@@ -1,7 +1,7 @@
 import type { OfficeProjectedItem, OfficeProjectedTurn } from '../../../shared/office-agent';
 import type { OfficeConversationProps } from './OfficeConversation';
 import { ChatMessage } from '../../heroui-pro/components/chat-message';
-import { OfficeMarkdown } from './OfficeMarkdown';
+import { OfficeAnswerMarkdown } from './OfficeAnswerMarkdown';
 import { OfficeReplySources } from './OfficeReplySources';
 
 export function OfficeAgentAnswer({
@@ -26,7 +26,7 @@ export function OfficeAgentAnswer({
       <ChatMessage.Body>
         {partial && <p className="office-partial-label">部分回复 · 尚未完成</p>}
         <ChatMessage.Content>
-          <OfficeMarkdown isStreaming={streaming}>{item.text || ''}</OfficeMarkdown>
+          <OfficeAnswerMarkdown streaming={streaming} text={item.text || ''} turn={turn}/>
           {item.truncated && (
             <p className="office-history-notice">这段内容较长，当前显示部分内容。</p>
           )}

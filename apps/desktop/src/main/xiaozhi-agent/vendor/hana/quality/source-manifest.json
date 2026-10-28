@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/liliMozi/openhanako",
+  "revision": "9a6cabf8c513db5edc6cf8179a538c9075885c6e",
+  "license": "Apache-2.0",
+  "adaptation": "Only remove .ts extension from local import. Catalog estimates are ranking/display budgets, never provider capacity gates.",
+  "files": [
+    {
+      "file": "core/tool-catalog.ts",
+      "sourceSha256": "a15ee9e198d4fcd725667b4303e3986ad02905c2d69c4855f0d0d8192794b231",
+      "outputSha256": "522a680f1efadfe58cd7151200d5cc76d82ef18794d1fab857570b32718b6de4"
+    },
+    {
+      "file": "lib/llm/estimate-text-tokens.ts",
+      "sourceSha256": "91930cc63dc1c7cd7992f0e4192ed57d25d1e1e000d3fbc9b7d096773750b827",
+      "outputSha256": "91930cc63dc1c7cd7992f0e4192ed57d25d1e1e000d3fbc9b7d096773750b827"
+    },
+    {
+      "file": "LICENSE",
+      "sourceSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55",
+      "outputSha256": "6351e35d94278861a1f85498a68664a3df44c57231245fa76c851652a050ce55"
+    }
+  ]
+}

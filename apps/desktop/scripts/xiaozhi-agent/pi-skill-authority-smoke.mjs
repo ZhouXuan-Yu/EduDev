@@ -14,6 +14,7 @@ const { createManagedEducationSkills } = await import('../../src/main/xiaozhi-ag
 const { createPiSkillCatalogState } = await import('../../src/main/xiaozhi-agent/skill-catalog-state.ts');
 const { createManagedSkillRuntime } = await import('../../src/main/xiaozhi-agent/managed-skill-runtime.ts');
 const { createPiXiaozhiSession } = await import('../../src/main/xiaozhi-agent/pi-session.ts');
+const { EDUCATION_SKILLS } = await import('../../src/main/xiaozhi-agent/education-skills.ts');
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), output = fs.mkdtempSync(path.join(tmpdir(), 'xiaozhi-pi-skill-authority-'));
 const checks = [], report = { suite: 'pi-skill-authority-native', success: false, checks, boundaries: [
   'Real Pi native manager/SDK and local managed packages with deterministic model streams',
@@ -106,7 +107,7 @@ try {
   const native = SessionManager.create(workspace, sessionDir), agentDir = path.join(stateRoot, 'agent');
   const runtime = await createManagedSkillRuntime(agentDir, native.getSessionFile(), source), descriptor = runtime.result.skills.find(item => item.name === 'teacher-meeting');
   await check('Managed native resources contain only necessary sanitized text, preserve original package, and reuse Hana pointers', async () => {
-    assert.equal(runtime.result.skills.length, 5); assert(runtime.result.skills.every(item => item.runtimeIdentity.kind === 'skill_pointer'));
+    assert.deepEqual(runtime.result.skills.map(item=>item.name).sort(),[...EDUCATION_SKILLS.map(item=>item.name),'teacher-meeting'].sort()); assert(runtime.result.skills.every(item => item.runtimeIdentity.kind === 'skill_pointer'));
     assert(!fs.readFileSync(descriptor.filePath, 'utf8').includes('13800138000')); assert(fs.readFileSync(path.join(sourceDir, 'SKILL.md'), 'utf8').includes('13800138000'));
     assert(!fs.existsSync(path.join(descriptor.baseDir, 'helper.py'))); assert(!fs.existsSync(path.join(descriptor.baseDir, 'photo.bin')));
   });
@@ -136,12 +137,17 @@ try {
   await assert.rejects(createPiXiaozhiSession({ ...base, managedSkills: undefined, sessionFile }), /configuration/);
   await check('Old fixed-Skills adapter cannot reopen v2 history without managed authority handling', async () => {});
   catalog = await managed.setEnabled('teacher-meeting', catalog.revision, true); agent = await createPiXiaozhiSession({ ...base, sessionFile });
-  let forceEnd, starts = 0, change;
+  let forceEnd, starts = 0, change,modelStarted;
+  const firstModel=new Promise(resolve=>{modelStarted=resolve;});
   agent.session.agent.streamFn = (_model, _ctx, options) => {
-    starts++; const stream = createAssistantMessageEventStream(); const finish = () => { stream.push({ type: 'done', reason: 'aborted', message: { ...message(''), content: [], stopReason: 'aborted' } }); stream.end(); };
+    starts++;modelStarted(); const stream = createAssistantMessageEventStream(); const finish = () => { stream.push({ type: 'done', reason: 'aborted', message: { ...message(''), content: [], stopReason: 'aborted' } }); stream.end(); };
     forceEnd = finish; options.signal.addEventListener('abort', finish, { once: true }); change = setTimeout(() => { void managed.setEnabled('teacher-meeting', catalog.revision, false).then(next => { catalog = next; }); }, 30); return stream;
   };
-  let timeout; result = await Promise.race([agent.prompt('等待期间观察技能授权变化'), new Promise((_, reject) => { timeout = setTimeout(() => { forceEnd?.(); reject(new Error('Skill authority watch failed')); }, 6000); })]).finally(() => { clearTimeout(timeout); clearTimeout(change); });
+  const watching=agent.prompt('等待期间观察技能授权变化');let preparationTimeout;
+  await Promise.race([firstModel,watching.then(value=>{throw Error('Model never started: '+JSON.stringify(value));}),new Promise((_,reject)=>{preparationTimeout=setTimeout(()=>reject(Error('Skill test preparation timeout')),30000);})]).finally(()=>clearTimeout(preparationTimeout));
+  // Measure authority-watch latency after the stream and mutation actually start;
+  // keep the original 6s observer bound independent from Windows package preparation.
+  let timeout; result = await Promise.race([watching, new Promise((_, reject) => { timeout = setTimeout(() => { forceEnd?.(); reject(new Error('Skill authority watch failed')); }, 6000); })]).finally(() => { clearTimeout(timeout); clearTimeout(change); });
   await check('500ms authority observer aborts active SDK stream and fences the failed runtime', async () => {
     assert.equal(result.error, 'skill_scope_changed'); catalog = await managed.setEnabled('teacher-meeting', catalog.revision, true);
     assert.equal((await agent.prompt('恢复后不能复活旧对象')).error, 'skill_scope_changed'); assert.equal(starts, 1);

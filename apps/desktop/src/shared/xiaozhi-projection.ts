@@ -28,7 +28,7 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   skill_source_changed: '当前启用的技能文件已变更或不可用，后续调用已停止。请检查本地技能文件，或在技能管理中关闭该项后继续；原对话和已完成操作保留。',
   skill_scope_changed: '可用技能或授权版本已变更，后续调用已停止。请刷新技能设置后继续；原对话和已完成操作保留。',
 };
-const labels: Record<string, string> = { read: '读取教育技能', search_teacher_knowledge: '检索老师知识库', office_read_text: '读取授权资料',
+const labels: Record<string, string> = { find_education_tools:'查找可用能力', read: '读取教育技能', search_teacher_knowledge: '检索老师知识库', office_read_text: '读取授权资料',
   office_list_materials:'查找资料库文件',office_read_material:'读取资料库正文',
   education_verify_material_quote:'核验资料引用',
   education_search_materials:'查找资料正文',

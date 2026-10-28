@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement } from 'react';
+import { cloneElement, isValidElement, memo } from 'react';
 import { StreamMarkdown, type StreamMarkdownProps } from '../../heroui-pro/components/markdown';
 import './office-markdown.css';
 import { createMathPlugin } from '@streamdown/math';
@@ -15,6 +15,6 @@ const components: NonNullable<StreamMarkdownProps['components']> = {
     : <>{children}</>,
 };
 
-export function OfficeMarkdown({ className, components: overrides, children, ...props }: StreamMarkdownProps) {
+export const OfficeMarkdown=memo(function OfficeMarkdown({ className, components: overrides, children, ...props }: StreamMarkdownProps) {
   return <StreamMarkdown {...props} children={normalizeMathDelimiters(children)} plugins={plugins} className={['office-markdown', className].filter(Boolean).join(' ')} components={overrides?{...components,...overrides}:components} />;
-}
+});

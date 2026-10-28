@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-28 Hana回答优化增量
+
+answer-quality-electron.mjs --paths-only：真实生产Pi入口、合成资料UI导入→实际工具读取→正文引用展开来源并打开原资料、伪造引用标记、503恢复、等待重试时停止、冷重启恢复且0重放，4/4、0 renderer错误；双尺寸截图1366×768/1920×1080。证据test-results/answer-quality-electron-2qjN35，构建指纹与局限详goal/HANA_ANSWER_QUALITY.md。传输使用受控SSE；真实API答案质量独立验收。
+
 ## 2026-10-28 主线统一增量
 
 fdc模板UI整合后：独立三栏8(Tq5O97)/菜单8(Wr5pxH)、真实React恢复/权限36(LnypGl)、真实Pi恢复6(3x9tsm)/gap6(QQQEZE)通过。菜单旧.codex夹具超时、根cwd导致classroom-preview入口错误均保留；合成runtime移OS temp后复验，不放宽生产权限。最终D:启动与真实Stop/审批文件读回仍待本轮继续。

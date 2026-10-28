@@ -1,5 +1,11 @@
 # 小智 Goal 当前状态
 
+## 2026-10-28 Hana回答优化独立切片
+
+真实20次初步A/B已完成且额度用尽：核心速度/请求体出现限定改善，逐题复核仍有不严谨类比和额外建议；精修提示尚无真实复测。工程功能与质量验收分开，AQ08质量保持OPEN；完整证据含只读run级纠正后的reconciled-report。
+
+Hana回答优化已新增独立分支与实现，任务和证据入口 HANA_ANSWER_QUALITY.md；实际SDK wire、构建与组件/既有smoke已通过，新增原生来源/恢复验收单列。真实模型盲评、自然留出质量/规模P95、安装应用验收未完成，不提高知识库KR或历史26项完成数。
+
 ## 2026-10-28 交付前提修正
 
 用户允许本体与自动下载配置的受管组件分离，解除全内嵌EXE假设。专用分支knowledge-base-reuse-implementation已整合d229b1a；官方AnythingLLM v1.19.0已下载/散列核验并隔离解包，未完成运行/摄入/规模或自动安装。当前继续KR02，真实导出0文件仍OPEN；详WORK_PROGRESS和KB_MANAGED_COMPONENTS_CONTRACT。

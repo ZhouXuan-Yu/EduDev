@@ -54,6 +54,13 @@ import {publicToolResult} from './public-tool-result';
 import {createModelReasoningTrace} from './model-reasoning';
 import {capturePresentationOrder,createPresentationEventAdapter,REPLY_PRESENTATION_PROMPT,visibleAssistantText} from './presentation-event-adapter';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
+import {answerQualityEnabled,resolveAnswerPolicy,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
+import {createEducationToolCatalog,TOOL_DISCOVERY_NAME} from './education-tool-catalog';
+import {createRepeatToolReminder} from './repeat-tool-reminder';
+import {withModelRequestRecovery} from './model-request-recovery';
+import {createQualityMetrics} from './quality-metrics';
+import {createAnswerEvidence} from './answer-evidence';
+import {validCitationId} from '../../shared/answer-citations';
 
 const PROVIDER = 'xiaozhi_deepseek';
 const MAX_TEXT = 65536;
@@ -184,6 +191,9 @@ export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
 }
 
 async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
+  const quality=answerQualityEnabled(),preparedAt=performance.now();
+  let metrics:ReturnType<typeof createQualityMetrics>|undefined,evidence:ReturnType<typeof createAnswerEvidence>|undefined;
+  const repetition=createRepeatToolReminder();
   let phaseController=new AbortController();
   const phase=async<T>(action:(signal:AbortSignal)=>Promise<T>,signal?:AbortSignal,late?:(value:T)=>void|Promise<void>):Promise<T>=>{
     const signals=[phaseController.signal,...(options.lifecycleSignal?[options.lifecycleSignal]:[]),...(signal?[signal]:[])];
@@ -517,7 +527,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
   const providerWindow = capabilities?.contextWindow || 32768;
   const policy: XiaozhiContextPolicy = { auto: options.autoCompaction === true && Boolean(capabilities),
     window: options.testContextWindow ? Math.min(providerWindow, options.testContextWindow) : providerWindow,
-    maxOutputTokens: Math.min(4096, capabilities?.maxOutputTokens || 4096), verified: Boolean(capabilities),
+    maxOutputTokens: quality?resolveAnswerPolicy('',capabilities).maxOutputTokens:Math.min(4096, capabilities?.maxOutputTokens || 4096), verified: Boolean(capabilities),
     ...(options.testContextWindow ? { testPolicy: true } : {}) };
   registry.registerProvider(PROVIDER, { name: 'DeepSeek', apiKey: options.apiKey, baseUrl: 'https://api.deepseek.com/v1', api: 'openai-completions',
     models: [{ id: options.model, name: capabilities?.name || options.model, reasoning: true, input: options.publicImages&&capabilities?.inputModalities?.includes('image')&&!capabilities.stale?['text','image']:['text'], contextWindow: providerWindow, maxTokens: policy.maxOutputTokens,
@@ -527,7 +537,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
         supportsReasoningEffort: true, supportsUsageInStreaming: true, maxTokensField: 'max_tokens',
         requiresReasoningContentOnAssistantMessages: true, requiresThinkingAsText: false } }, ...(options.switchTarget && options.switchTarget.id!==options.model ? [{
           id:options.switchTarget.id,name:options.switchTarget.name,reasoning:true as const,input:(options.publicImages&&options.switchTarget.inputModalities?.includes('image')&&!options.switchTarget.stale?['text','image']:['text']) as ('text'|'image')[],contextWindow:options.switchTarget.contextWindow,
-          maxTokens:Math.min(4096,options.switchTarget.maxOutputTokens),cost:{input:0,output:0,cacheRead:0,cacheWrite:0},
+          maxTokens:quality?resolveAnswerPolicy('',options.switchTarget).maxOutputTokens:Math.min(4096,options.switchTarget.maxOutputTokens),cost:{input:0,output:0,cacheRead:0,cacheWrite:0},
           compat:{thinkingFormat:'deepseek' as const,supportsStore:false,supportsDeveloperRole:false,supportsReasoningEffort:true,
             supportsUsageInStreaming:true,maxTokensField:'max_tokens' as const,requiresReasoningContentOnAssistantMessages:true,requiresThinkingAsText:false}
         }] : [])] });
@@ -558,7 +568,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
         const preparation={...event.preparation,settings:{...event.preparation.settings,reserveTokens:NATIVE_COMPACTION_RESERVE_TOKENS}};
         const summaryModel={...model,maxTokens:Math.max(model.maxTokens,NATIVE_COMPACTION_RESERVE_TOKENS)};
         const result=await nativeCompact(preparation,summaryModel,options.apiKey,undefined,
-          '仅用简体中文输出给定的摘要结构，总长度不超过2500字；保留教师任务、真实来源版本、审批状态、计划步骤和未完成事项。不要展示分析过程，不把计划当交付，不把记忆当授权，不重放已完成操作。',event.signal,'off',session.agent.streamFunction);
+          quality?TASK_SUMMARY_INSTRUCTIONS:'仅用简体中文输出给定的摘要结构，总长度不超过2500字；保留教师任务、真实来源版本、审批状态、计划步骤和未完成事项。不要展示分析过程，不把计划当交付，不把记忆当授权，不重放已完成操作。',event.signal,'off',session.agent.streamFunction);
         await Promise.allSettled([...compactionResponses]);await options.beforeAutoCompactCommit?.();await checkMemory();
         event.signal.throwIfAborted();if(interrupted)throw new Error('cancelled');
         return {compaction:result};
@@ -567,11 +577,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
     });pi.on('session_compact',async event=>{await checkMemory();if(event.reason!=='manual')await options.afterAutoCompactCommit?.();});
     if(options.goal)pi.on('turn_end',async event=>{await checkMemory();if(interrupted)return;return options.goal!.boundary(event);});} ]});
   await phase(()=>nativeResources.reload());
+  let providerPrompt=prompt;
   const resourceLoader: ResourceLoader = {
     getExtensions: () => nativeResources.getExtensions(),
     getSkills: () => skills?.result || { skills: [], diagnostics: [] }, getPrompts: () => ({ prompts: [], diagnostics: [] }),
     getThemes: () => ({ themes: [], diagnostics: [] }), getAgentsFiles: () => ({ agentsFiles: [] }),
-    getSystemPrompt: () => prompt + (options.memory ? `\n本轮长期记忆选择：${initialAuthority?.enabled ? '教师已启用明确选择；实际内容须通过工具核验读取。' : '未开启；不得声称知道教师未提供的历史偏好。'}` : ''), getAppendSystemPrompt: () => [],
+    getSystemPrompt: () => providerPrompt + (options.memory ? `\n本轮长期记忆选择：${initialAuthority?.enabled ? '教师已启用明确选择；实际内容须通过工具核验读取。' : '未开启；不得声称知道教师未提供的历史偏好。'}` : ''), getAppendSystemPrompt: () => [],
     getSystemPromptSource:()=>undefined,getAppendSystemPromptSources:()=>[],extendResources: () => {}, reload: async () => {},
   };
   const executions = new SessionExecutionRegistry();
@@ -588,6 +599,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
   let memoryFailure: XiaozhiAgentError | undefined;
   let memoryTimer: ReturnType<typeof setInterval> | undefined;
   let memoryChecking = false;
+  let authorityChecks = 0;
   let normalRequestAdmitted = false;
   const compactionResponses = new Set<Promise<unknown>>();
   const approveCopy:PiXiaozhiOptions['approveCopy']=options.approveCopy ? (copy,signal)=>budget!.wait(()=>options.approveCopy!(copy,signal)) : undefined;
@@ -639,7 +651,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
       ?{...def,execute:async(...args:Parameters<ToolDefinition['execute']>)=>budget!.wait(()=>def.execute(...args))}:def);
-  const taskDefinitions=taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
+  const domainDefinitions=taskRuntime?[...definitions,...taskRuntime.tools].map(taskEnvelope):definitions;
+  const toolCatalog=quality?createEducationToolCatalog(prompt,domainDefinitions):undefined;
+  if(toolCatalog){providerPrompt=toolCatalog.prompt;names.push(TOOL_DISCOVERY_NAME);}
+  const taskDefinitions=toolCatalog?[...domainDefinitions,toolCatalog.tool]:domainDefinitions;
   let runTools = new Map(createHanaRunToolScope(taskDefinitions,options.limitsEnforced!==false).map(def => [def.name, def]));
   const trustedMcpNames=new Set((options.mcpTools||[]).map(t=>t.name));
   const manifests=manifestForTools(taskDefinitions,trustedMcpNames);
@@ -655,12 +670,17 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
   const versionedPlanReferences=manager.getEntries().some(e=>e.type==='custom'&&e.customType==='xiaozhi.education.plan.v2');
   const publicResults = new Map<string,NonNullable<OfficeProjectedItem['resultSummary']>>();
   let publicStage='';
-  const dispatchers: ToolDefinition[] = taskDefinitions.map(def => ({ ...def,
+  const dispatchers: ToolDefinition[] = taskDefinitions.map(def => ({ ...def,description:toolCatalog&&def.name!==TOOL_DISCOVERY_NAME?toolCatalog.description(def):def.description,
     execute: async (callId, args, signal, onUpdate, context) => {
-      const result = await toolBoundary.execute({...def,execute:async(...values)=>{
+      let result = await toolBoundary.execute({...def,execute:async(...values)=>{
         const value=await runTools.get(def.name)!.execute(...values);
         return versionedPlanReferences?withPlanBasisReference(value,callId,def.name):value;
       }},callId,args,signal,onUpdate,context);
+      if(quality){
+        const reminder=repetition.observe(def.name,args,{content:result.content,isError:result.isError});
+        result=evidence?.attach(def.name,result)||result;
+        if(reminder)result={...result,content:[...result.content,{type:'text' as const,text:reminder}]};
+      }
       const data=(result.details as {data?:{count?:unknown;sources?:unknown[]}}|undefined)?.data;
       const rawQuery=(args as Record<string,unknown>)?.query ?? (args as Record<string,unknown>)?.keyword;
       const query=typeof rawQuery==='string'&&options.sanitizeFileText ? await options.sanitizeFileText(rawQuery.slice(0,140)) : undefined;
@@ -704,6 +724,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
   Object.defineProperty(session.agent,'streamFn',{configurable:true,get:()=>session.agent.streamFunction,set:value=>{session.agent.streamFunction=value;}});
   installToolOutcomeAdapter(session); installAssistantStreamGuard(session);
   async function checkMemory() {
+    authorityChecks++;
+    try {
     if (memoryFailure) throw new Error(memoryFailure);
     try { await phase(async()=>skills?.check()); }
     catch (error) {
@@ -725,18 +747,22 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       executions.abortBySession({ sessionId }, 'Memory authority changed'); session.clearQueue(); instructions.clear(); void session.abort();
       throw new Error(memoryFailure);
     }
+    } finally { authorityChecks--; }
   }
   function watchMemory() {
     if (!skills && (!options.memory || !initialAuthority?.enabled)) return;
     memoryTimer = setInterval(() => {
-      if (memoryChecking || !running || interrupted) return;
+      // A foreground check already performs full source/privacy validation. Do not
+      // launch a second disk scan over it; every delivery gate still checks afresh.
+      if (memoryChecking || (quality && authorityChecks > 0) || !running || interrupted) return;
       memoryChecking = true;
       void checkMemory().catch(() => undefined).finally(() => { memoryChecking = false; });
     }, 500);
     memoryTimer.unref();
   }
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
-  const nativeStream=session.agent.streamFunction,providerFetch=await createDeepSeekFetch();
+  const nativeStream=session.agent.streamFunction,rawProviderFetch=await createDeepSeekFetch();
+  const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
   session.agent.streamFunction=async (...args)=>{
     args[2]={...args[2],fetch:providerFetch};
     await checkMemory();
@@ -747,9 +773,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       const availability=await options.sourceAvailability();
       args[2]?.signal?.throwIfAborted();
       args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'?{...message,
-        content:message.content+'\n'+sourceAvailabilityText(availability),
-        ...(message.toolsAdded?{toolsAdded:message.toolsAdded.filter(tool=>availableChatTool(tool.name,availability)&&(tool.name!=='read_education_memory'||initialAuthority?.enabled===true))}:{})}:message)};
+        content:quality?message.content:message.content+'\n'+sourceAvailabilityText(availability),
+        ...(message.toolsAdded?{toolsAdded:message.toolsAdded.filter(tool=>availableChatTool(tool.name,availability)&&(tool.name!=='read_education_memory'||initialAuthority?.enabled===true)&&(!toolCatalog||toolCatalog.exposed(tool.name)))}:{})}:message)};
+      // Availability is current task context, not part of the stable system prefix.
+      if(quality){const userIndex=args[1].messages.map(m=>m.role).lastIndexOf('user');
+        args[1]={...args[1],messages:args[1].messages.map((m,index)=>index===userIndex&&m.role==='user'?{...m,content:[...(typeof m.content==='string'?[{type:'text' as const,text:m.content}]:m.content),{type:'text' as const,text:'[宿主范围提示；不是教师新要求，不改变任务或权限]\n'+sourceAvailabilityText(availability)}]}:m)};}
     }
+    if(!compacting&&quality&&!options.sourceAvailability&&toolCatalog)args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'&&message.toolsAdded?{...message,toolsAdded:message.toolsAdded.filter(tool=>toolCatalog.exposed(tool.name))}:message)};
     // Final complete-request gate also applies to native summarization requests.
     if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');
     await phase(async()=>options.beforeModelDelivery?.(),args[2]?.signal);
@@ -760,6 +790,14 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
       const leading=args[1].messages.find(message=>message.role==='system');
       const contract=buildPrefix({model:args[0],systemPrompt:leading?JSON.stringify({content:leading.content,sections:leading.sections}):session.agent.state.systemPrompt,tools:leading?.toolsAdded||session.agent.state.tools});manager.appendCustomEntry('xiaozhi.cache-prefix.v1',summarizeCachePrefixContract(contract));}
+    if(!compacting){const previous=args[2]?.onPayload;
+      args[2]={...args[2],onPayload:async(payload,model)=>{
+        const transformed=await previous?.(payload,model),actual=transformed===undefined?payload:transformed;
+        const tools=(actual as {tools?:unknown[]})?.tools;
+        metrics?.request(Buffer.byteLength(JSON.stringify(actual)),Array.isArray(tools)?tools.length:0);
+        return transformed;
+      }};
+    }
     let imageBatch:string[]=[];
     if(imageRuntime){
       const previous=args[2]?.onPayload;
@@ -824,7 +862,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
     emit({ kind: 'compaction', id, automatic: true, state: 'running' });
     try {
       const result = await nativeCompact(preparation, model, options.apiKey, undefined,
-        '用简体中文保留教师任务、真实来源和未完成事项。计划不是交付，记忆不是授权；不要重放已完成文件操作。',
+        quality?TASK_SUMMARY_INSTRUCTIONS:'用简体中文保留教师任务、真实来源和未完成事项。计划不是交付，记忆不是授权；不要重放已完成文件操作。',
         autoAbort.signal, 'off', session.agent.streamFunction);
       await Promise.allSettled([...compactionResponses]);
       await options.beforeAutoCompactCommit?.();
@@ -891,6 +929,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       else emit({kind:'compaction',id:automaticId,automatic:true,state:'completed',tokensBefore:event.result.tokensBefore,estimatedTokensAfter:event.result.estimatedTokensAfter});return;
     }
     if (event.type === 'message_start' && event.message.role === 'user') {
+      repetition.reset();
       const text = typeof event.message.content === 'string' ? event.message.content : event.message.content.filter(part => part.type === 'text').map(part => part.text).join('');
       const id = instructions.consume(text);
       if (id) delivered = delivered.then(() => options.onInstructionApplied?.(id)).catch(()=>{deliveryFailed=true;});
@@ -906,11 +945,14 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       const noReportedTokens=usage && usage.input===0 && usage.output===0 && usage.cacheRead===0 && usage.cacheWrite===0;
       if(!(noReportedTokens && (!normalRequestAdmitted || (reason && ['model_calls','tool_calls','tokens'].includes(reason)))))budget?.observe(usage);
     } else if(event.type==='message_update'&&event.assistantMessageEvent.type==='thinking_delta'){
+      metrics?.event();
       if(!compacting&&!interrupted&&!memoryFailure&&!budget?.snapshot().exhausted)
         reasoningTrace?.delta(segment,event.assistantMessageEvent.contentIndex,event.assistantMessageEvent.delta,capturePresentationOrder());
     } else if(event.type==='message_update'&&['thinking_end','text_start','toolcall_start'].includes(event.assistantMessageEvent.type)){
+      if(event.assistantMessageEvent.type==='toolcall_start')metrics?.event();
       reasoningTrace?.close(interrupted?'interrupted':memoryFailure||budget?.snapshot().exhausted?'failed':'completed');
     } else if (event.type === 'message_update' && event.assistantMessageEvent.type === 'text_delta') {
+      metrics?.event();metrics?.text();
       if (interrupted || memoryFailure || budget?.snapshot().exhausted) return;
       const delta = event.assistantMessageEvent.delta.slice(0, MAX_TEXT - streamedLength);
       if(delta&&publicStage!=='responding'){publicStage='responding';emit({kind:'activity',stage:'responding',since:Date.now()});}
@@ -927,7 +969,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       const result = event.result as { details?: { data?: { source?: unknown; sources?: import('../../shared/xiaozhi-web').XiaozhiPublicSource[]; webError?: import('../../shared/xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:unknown } } };
       const source = typeof result?.details?.data?.source === 'string' ? result.details.data.source.slice(0, 512) : undefined;
       const rawSources = result?.details?.data?.sources;
-      const sources = Array.isArray(rawSources) ? rawSources.slice(0, 12).flatMap(value => value && typeof value.title === 'string' ? [{ title: value.title.slice(0, 200), ...(typeof value.url==='string' && /^https?:\/\//.test(value.url) && value.url.length<=2048 ? {url:value.url}:{}), ...(typeof value.observedAt==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value.observedAt)?{observedAt:value.observedAt}:{}), ...(['read','search'].includes(value.kind||'')?{kind:value.kind}:{}), ...(!event.isError&&['education_search_materials','education_verify_material_quote','office_read_material'].includes(event.toolName)&&validMaterialSource(value.material)?{material:value.material}:{}), ...(!event.isError&&['education_read_student_context','education_analyse_learning'].includes(event.toolName)&&validStudentContextSource(value.student)?{student:value.student}:{}), ...(!event.isError&&['education_search_questions','education_read_question','education_web_answer',MISTAKE_SIMILAR_TOOL].includes(event.toolName)&&validQuestionContextSource(value.question)?{question:value.question}:{}) }] : []) : [];
+      const sources = Array.isArray(rawSources) ? rawSources.slice(0, 12).flatMap(value => value && typeof value.title === 'string' ? [{ title: value.title.slice(0, 200), ...(validCitationId(value.citationId)?{citationId:value.citationId}:{}), ...(typeof value.url==='string' && /^https?:\/\//.test(value.url) && value.url.length<=2048 ? {url:value.url}:{}), ...(typeof value.observedAt==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value.observedAt)?{observedAt:value.observedAt}:{}), ...(['read','search'].includes(value.kind||'')?{kind:value.kind}:{}), ...(!event.isError&&['education_search_materials','education_verify_material_quote','office_read_material'].includes(event.toolName)&&validMaterialSource(value.material)?{material:value.material}:{}), ...(!event.isError&&['education_read_student_context','education_analyse_learning'].includes(event.toolName)&&validStudentContextSource(value.student)?{student:value.student}:{}), ...(!event.isError&&['education_search_questions','education_read_question','education_web_answer',MISTAKE_SIMILAR_TOOL].includes(event.toolName)&&validQuestionContextSource(value.question)?{question:value.question}:{}) }] : []) : [];
       const capture=result?.details?.data?.browserCapture;
       emit({ kind: 'tool_end', tool: event.toolName, callId: event.toolCallId.slice(0, 128), success: !event.isError, resultSummary:event.isError?publicToolResult(event.toolName,false):publicResults.get(event.toolCallId), ...(durationMs === undefined ? {} : { durationMs }), ...(source ? { source } : {}), ...(sources.length ? { sources } : {}), ...(result?.details?.data?.webError?{webError:result.details.data.webError}:{}), ...(typeof result?.details?.data?.webEmpty==='boolean'?{webEmpty:result.details.data.webEmpty}:{}), ...(!event.isError&&event.toolName==='office_browser'&&validBrowserCapture(capture)?{browserCapture:capture}:{}) });
     }
@@ -939,6 +981,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
     budget?.finish('interrupted');
     interrupted = true; imageRuntime?.end('interrupted'); stopMemoryWatch(); autoAbort?.abort(); manualAbort?.abort(); session.clearQueue(); instructions.clear(); session.abortCompaction(); executions.abortBySession({ sessionId }, 'User stopped run'); await session.abort();
   }
+  const sessionPreparationMs=performance.now()-preparedAt;
   return {
     // Main-private SDK access for lifecycle adapters/tests; never expose via preload.
     session, sessionId, sessionFile: manager.getSessionFile(),
@@ -948,6 +991,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       if (estimateFullRequest(context,Math.min(4096,target.maxOutputTokens)) > Math.min(target.contextWindow,options.testContextWindow || Infinity)) throw new Error('context_limit');
     },
     usage:()=>budget?.snapshot(),
+    qualityMetrics:()=>metrics?.snapshot(),
     contextPolicy: () => structuredClone(policy),
     diagnostics: () => ({ running, activeTools: session.getActiveToolNames(), executing: executions.activeCount(sessionId),
       toolManifests:manifests,
@@ -966,7 +1010,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       phaseController=new AbortController();
       try { if (memoryFailure) throw new Error(memoryFailure); await skills?.validateCommand(text); } catch (error) { return { ok: false, runId: '', error: classifyError(error) }; }
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
-      reasoningTrace=createModelReasoningTrace({sanitize:options.sanitizeFileText|| (async text=>text),secret:options.apiKey,emit:block=>emit({kind:'model_reasoning',block})});
+      metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text);
+      if(quality){const answer=resolveAnswerPolicy(text,capabilities);policy.maxOutputTokens=answer.maxOutputTokens;model.maxTokens=answer.maxOutputTokens;session.setThinkingLevel(answer.thinking);manager.appendCustomEntry('xiaozhi.answer-policy.v1',{runId,...answer});}
+      reasoningTrace=createModelReasoningTrace({sanitize:options.sanitizeFileText|| (async text=>text),secret:options.apiKey,frameMs:quality?33:0,emit:block=>emit({kind:'model_reasoning',block})});
       imageRuntime?.begin();
       budget=createPiRunBudget({budget:limits,runId,limitsEnforced:options.limitsEnforced,onWaiting:waitingChanged,emit:usage=>emit({kind:'usage',usage}),abort:()=>{
         phaseController.abort();executions.abortBySession({sessionId},'Run budget exhausted');session.clearQueue();instructions.clear();autoAbort?.abort();session.abortCompaction();void session.abort();
@@ -975,7 +1021,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       runTools = new Map(createHanaRunToolScope(taskDefinitions,options.limitsEnforced!==false).map(def => [def.name, def]));
       emit({ kind: 'status', status: 'running' });
       budget.start(); watchMemory();
-      let failure: XiaozhiAgentError | undefined;
+      let failure: XiaozhiAgentError | undefined,outputLimited=false;
       try {
         if(memoryFailure)throw Error(memoryFailure);
         await phase(async()=>skills?.validateCommand(text));
@@ -998,19 +1044,22 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
         const last = [...session.messages].reverse().find(message => message.role === 'assistant');
         if (last?.role === 'assistant' && last.stopReason === 'error') failure = classifyError(last.errorMessage);
         if (last?.role === 'assistant' && last.stopReason === 'aborted') failure = 'cancelled';
+        if (last?.role === 'assistant' && last.stopReason === 'length') outputLimited=true;
       } catch (error) { failure = classifyError(error); }
       finally { stopMemoryWatch(); skillEpoch?.endRun(); await Promise.allSettled([...compactionResponses]); await delivered; if(deliveryFailed)failure ||= 'configuration'; await reasoningTrace?.finish(interrupted||failure==='cancelled'?'interrupted':failure?'failed':'completed'); running = false; session.clearQueue(); instructions.clear(); }
       if (automaticFailure) failure = automaticFailure;
       if (memoryFailure) failure = memoryFailure;
       if (budget.snapshot().exhausted) failure = 'budget_exhausted'; else if (interrupted) failure = 'cancelled';
       if(!failure&&goalEndError)failure=goalEndError;
-      const textResult = visibleAssistantText(session.getLastAssistantText() || '');
+      const rawTextResult = visibleAssistantText(session.getLastAssistantText() || '');
+      const textResult=evidence?evidence.normalize(rawTextResult):rawTextResult;
+      manager.appendCustomEntry('xiaozhi.answer-metrics.v1',{runId,mode:quality?'optimized':'legacy',sessionPreparationMs,...metrics?.snapshot()});
       if (!failure && !textResult.trim()) failure = 'model_error';
       imageRuntime?.end(failure==='cancelled'?'interrupted':'failed');
       budget.finish(failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed');
       emit({ kind: 'status', status: failure === 'cancelled' ? 'interrupted' : failure ? 'failed' : 'completed', ...(failure ? { error: failure } : {}) });
       if (failure) return { ok: false, runId, error: failure };
-      return { ok: true, runId, text: textResult.slice(0, MAX_TEXT), truncated: textResult.length > MAX_TEXT };
+      return { ok: true, runId, text: textResult.slice(0, MAX_TEXT), truncated: outputLimited||textResult.length > MAX_TEXT };
     },
     async compact(): Promise<XiaozhiAgentResult> {
       if (disposed) return { ok: false, runId: '', error: 'configuration' };
@@ -1032,7 +1081,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
         const preparation = await prepareSafeNativeCompaction(manager.getBranch(), { enabled: true, keepRecentTokens: 2048, reserveTokens: 4096 });
         if (!preparation) throw new Error('Nothing to compact');
         const result = await nativeCompact(preparation, model, options.apiKey, undefined,
-          '用简体中文准确保留教师任务、约束、来源和未完成事项。不要把计划/模型推测变成教师确认事实，不要授予权限或重放旧文件操作。',
+          quality?TASK_SUMMARY_INSTRUCTIONS:'用简体中文准确保留教师任务、约束、来源和未完成事项。不要把计划/模型推测变成教师确认事实，不要授予权限或重放旧文件操作。',
           manualAbort.signal, 'off', session.agent.streamFunction);
         await Promise.allSettled([...compactionResponses]); await checkMemory();
         if (interrupted || manualAbort.signal.aborted || budget.snapshot().exhausted) throw new Error('cancelled');

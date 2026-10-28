@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-28 Hana回答优化独立切片
+
+新增Hana质量ToolCatalog固定SHA/许可证追踪，复用脚本与源清单见 vendor/hana/quality。没有新增npm/Python依赖，也未接入DSH或SourceWeft服务；其机制由当前Pi适配。默认优化可用主进程环境XIAOZHI_ANSWER_QUALITY=legacy回退，既有来源/权限/审阅IPC兼容。详../goal/HANA_ANSWER_QUALITY.md。
+
 ## 2026-10-28 允许独立受管组件
 
 按最新用户要求，成熟后端/解析器与模型可由安装层自动下载、配置、启动和更新，老师不手动搭环境；不再以单EXE体积排除候选。官方AnythingLLM v1.19.0发行件已获取并通过SHA256核验，仅在隔离目录解包，未接生产或取得桌面白标权。下一继续KR02；自动安装未实现，详../goal/KB_MANAGED_COMPONENTS_CONTRACT.md。

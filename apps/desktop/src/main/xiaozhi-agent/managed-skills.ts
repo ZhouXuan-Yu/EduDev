@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
+import {answerQualityEnabled} from './answer-quality';
 import { loadSkillsFromDir, parseFrontmatter } from '@earendil-works/pi-coding-agent';
 import { EDUCATION_SKILLS, EDUCATION_SKILL_VERSION, skillDocument } from './education-skills';
 import { LEGACY_EDUCATION_SKILLS, legacySkillDocument } from './education-skills-legacy-v1';
@@ -130,15 +131,21 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     noLinks(directory);
     return directory;
   }
+  // Cache only immutable parser output, after full content/link verification on every
+  // access. No authority, source bytes, sanitizer or run-specific closures are cached.
+  const parsedSkills=new Map<string,ReturnType<typeof loadSkillsFromDir>>();
   function verify(item: PrivateManagedSkill) {
     const directory = resolveDirectory(item), bytes = readPackage(directory);
     if (JSON.stringify(filesOf(bytes)) !== JSON.stringify(item.files)) throw new Error('skill_source_changed');
     const meta = metadata(bytes);
     if (meta.name !== item.name || meta.description !== item.description || meta.title !== item.title) throw new Error('skill_source_changed');
-    const loaded = loadSkillsFromDir({ dir: directory, source: item.origin === 'builtin' ? 'builtin' : 'path' });
+    const cacheKey=JSON.stringify([directory,item.origin,item.files]);
+    const cached=answerQualityEnabled()?parsedSkills.get(cacheKey):undefined;
+    const loaded = cached?structuredClone(cached):loadSkillsFromDir({ dir: directory, source: item.origin === 'builtin' ? 'builtin' : 'path' });
     if (loaded.diagnostics.length || loaded.skills.length !== 1 || loaded.skills[0].name !== item.name) throw new Error('invalid_input');
     // Native loader reads the same files only after the bounded package check.
     if (JSON.stringify(filesOf(readPackage(directory))) !== JSON.stringify(item.files)) throw new Error('skill_source_changed');
+    if(!cached&&answerQualityEnabled()){if(parsedSkills.size>=32)parsedSkills.delete(parsedSkills.keys().next().value!);parsedSkills.set(cacheKey,structuredClone(loaded));}
     return { bytes, loaded, document: meta.document };
   }
   function writeVersion(bytes: PackageBytes, origin: PrivateManagedSkill['origin'], version: number): PrivateManagedSkill {

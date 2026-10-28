@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 并行回答优化（e147，不替换知识库KR队列）
+
+用户授权在 codex/hana-answer-quality 实现以Hana为核心的回答优化。AQ00–AQ07已接入，AQ08本地验证与真实模型质量分层记录；清单、逐项对比、测试命令与未验边界见 [HANA_ANSWER_QUALITY.md](HANA_ANSWER_QUALITY.md)。真实教师盲评尚未通过，不能据工程测试声称“1+1=3已实现”；KR02与0文件导出旧事实保持。
+
 更新时间：2026-10-28。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main d229b1a`。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
 
 当前主线：**知识库交付纠偏与成熟方案复用，几十GB存储与高效检索是选型硬条件**。不再按通用性能审计顺序优先扩建知识库底层。原26项审计继续保留，其2/26不是知识库完成度。
