@@ -2,7 +2,7 @@
 
 ## 2026-10-28 F14页面恢复窄修复
 
-实现及本轮证据见DEEP_AUDIT_20261028_EVIDENCE.md。组件事件updater已纯化，恢复按scope token合并并保留fresh语义，事件使旧读取失效后有界重读。helper11/StrictMode12、receiver10/journal19、build/typecheck、240组件、207历史smoke与当前真实Pi受控传输6项通过；独立最终操作和主线启动仍待记录，不提前标VERIFIED。F24与其余审计事项继续，完整Goal active。
+实现及本轮证据见DEEP_AUDIT_20261028_EVIDENCE.md。组件事件updater已纯化，恢复按scope token合并并保留fresh语义，事件使旧读取失效后有界重读。helper11/StrictMode12、receiver10/journal19、build/typecheck、240组件、207历史smoke通过；Terra独立11/12/6接受，main34aae9f推送回读一致、集成后真实Pi6项/2启动通过，F14 VERIFIED。F24与其余审计事项继续，完整Goal active。
 
 ## 2026-10-28 深度审计WP0有限检查点
 

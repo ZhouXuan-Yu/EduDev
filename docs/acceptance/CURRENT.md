@@ -2,7 +2,7 @@
 
 ## 2026-10-28 F14恢复专项
 
-本轮EVIDENCE记录helper11/StrictMode12/receiver10/journal19、build/typecheck、renderer240、207历史smoke及真实Electron/Pi受控SSE6项。当前产物d457f435…；SQLite与原生文件冷重启复验，无真实模型质量或安装包声明。独立收尾/主线启动完成前F14不标VERIFIED；完整26项及F24校准继续。
+本轮EVIDENCE记录helper11/StrictMode12/receiver10/journal19、build/typecheck、renderer240、207历史smoke及真实Electron/Pi受控SSE6项。产物d457f435…，Terra独立11/12/6接受；main34aae9f实际启动/冷启6项通过，F14 VERIFIED。SQLite与原生文件字节复验，无真实模型质量或安装包声明；完整26项及F24校准继续。
 
 ## 2026-10-28 深度审计量化检查点
 

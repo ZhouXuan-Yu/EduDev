@@ -98,3 +98,7 @@ Electron失败：UowF8Q过早挂接IPC；SBOJNX/1PgEGw测试catalogue缺字段�
 ### 回滚、未验与集成待记录
 
 可通过回滚本片提交恢复旧renderer读取实现；无数据库迁移/用户数据操作，不需删库或改协议。未验证真实provider/真人教师、完整Stop/审批业务E2E全部组合、任意持续事件率/长期压力、40GB、稳定P95或安装包。Stop和禁写的本片边界有真实组件反例，实际Electron限上述6项。26项目标保持active；F14须在下节记录正常主线push、远端SHA和该源码主线启动后才标VERIFIED。
+
+### F14最终主线交付
+
+提交34aae9f72543393e187aa12488c751c687b3fe4f；fetch origin/main后无新增上游冲突，正常push HEAD:main，ls-remote回读相同SHA。Terra最终独立6/12/11接受。随后在该主线SHA重跑`node scripts/audit/snapshot-hydration-electron.mjs`：exit0/6项、2实际启动/0 rendererErrors、相同d457f435完整out；报告audit-hydration-electron-oHsOhj/report.json、日志audit-f14-main-startup.log。F14按冻结范围标VERIFIED，F24及其他项继续OPEN/MEASURING；下一项F15从该集成主线的新分支验证既有序列恢复及实际丢第10通知/尾通知。此后仅文档状态收尾提交不改变产物。32aa本地main及D:协作树未移动；远端main更新不等于D:日常源码或快捷方式已换到该分支。
