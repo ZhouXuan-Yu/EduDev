@@ -1,0 +1,9 @@
+import fs from 'node:fs';import path from 'node:path';import {tmpdir} from 'node:os';import {pathToFileURL} from 'node:url';import {build} from 'esbuild';import {_electron} from 'playwright';
+import {nativeWordFixture} from './word-question-fixtures.mjs';import {nativeQuestionFixture} from './native-question-fixtures.mjs';
+const desktop=process.cwd(),output=fs.mkdtempSync(path.join(tmpdir(),'omni-native-promotion-')),entry=path.join(desktop,'test-results','native-promotion-'+path.basename(output)+'.mjs');
+await build({entryPoints:[path.join(desktop,'scripts/education/kb-native-promotion-worker.ts')],outfile:entry,bundle:true,platform:'node',format:'esm',packages:'external',logLevel:'silent'});
+const bootstrap=path.join(output,'bootstrap.cjs');fs.writeFileSync(bootstrap,`const {app,BrowserWindow}=require('electron');app.whenReady().then(async()=>{globalThis.nativePromotion=await import(${JSON.stringify(pathToFileURL(entry).href)});const window=new BrowserWindow({show:false});await window.loadURL('data:text/html,native-promotion');});`);
+const env={...process.env};delete env.ELECTRON_RUN_AS_NODE;delete env.NODE_OPTIONS;delete env.ELECTRON_RENDERER_URL;let app,report;
+try{app=await _electron.launch({args:[bootstrap,'--user-data-dir='+path.join(output,'profile')],cwd:desktop,env,timeout:60000});await app.firstWindow();report=await app.evaluate(async(_e,{output,docx,q})=>globalThis.nativePromotion.promotion(output,docx,q),{output,docx:Buffer.from(await nativeWordFixture()).toString('base64'),q:nativeQuestionFixture()});report.success=true;}
+catch(error){report={success:false,output,error:String(error.stack||error)};process.exitCode=1;}
+finally{if(app)await app.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}
