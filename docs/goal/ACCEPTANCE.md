@@ -1,8 +1,13 @@
 # Goal 验收台账
 
+## 2026-10-28 F15预集成故障实证
+
+`node scripts/audit/snapshot-hydration-electron.mjs --event-gap` root6/独立6通过；三真实Pi轮次/2启动/0错误。drop10、duplicate9/11、拒真实补页后显式恢复；第三轮seq65无后继丢失，order218之后order219/after64真实页补回。每run峰值1，UI/SQLite精确、草稿/零变更/native冷启一致。新整合d8b9f866重建/240/provider9、root默认6/独立F15六项均通过；main2c25e36后EAOBUk六项通过，F15 VERIFIED。受控模型非真实provider，207是合并前证据。
+
 ## 2026-10-28 真实文件夹验收：部分通过
 
 已验9文件收录/18页本地OCR/25内容索引/源SHA保全/冷重启/真实云端7次与修后两遍6题落库。9 provider边界+17批次+build/type+240组件通过。失败业务结果：6 AI题全部待整理，题意检索探针0候选，正确物理蓝图0题，未正式确认或导出；完整知识库仍未验收。先失败的JSON模式字段问题已修，脚本自身故障保留，不计为产品问题。详见KB_IMPLEMENTATION_EVIDENCE.md。
+
 
 ## 2026-10-28 F14预集成限定证据
 
