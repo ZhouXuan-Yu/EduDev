@@ -149,6 +149,8 @@ typed preload/正文UI展示逐页覆盖与失败、继续/重试及来源定位
 
 ### S6-B2 实施合同：AI 原生图文题进入同一题本、小智与组卷（2026-10-27）
 
+2026-10-28 输入恢复细化：新增原生AI输入manifest与逐角色PNG引用，绑定真实material_ai_units.input_json SHA、版本化native选择器、batch逐批images授权与Word题目ordinal；第一遍前发布，first_saved重启从业务输入读取同一份PNG/排版环境，不重新截图。输入引用与正式历史共同保护pending恢复，未完成AI输入不得被缓存LRU删除；第二遍与入库沿作用域permit消费原输入。不扩张云端发送权限，不上传source/proof中邻题元数据。此为现AI批次后续接线必须复用的私有持久层，只有实现真实批次/UI才宣称功能交付。
+
 本轮续接（基线93c6ac6）：落实NativeQuestionRepository，增量material_ai_native_revisions/画像引用/material_ai_native_pending三类台账，正式PNG在question-ai-assets/v1；不是Word缓存。withEvidence必须由main-only Host.attest复读真实Word proof manifest、PNG与source stamp，不凭调用者自填proof/SHA升权。私有证据token只在有界作用域内有效，caller SQLite事务原子绑定题目/版本/角色/源快照；暂存先记账、OS锁下发布/恢复，未知文件不删，正式历史不自动回收。source角色文字/内容摘要/图片必须与同角色原文一致；改写角色不能保留原答案图，缺图引用或改题沿用旧图义须失去完整资格。接续现Word按题AI批次/两阶段/OCR、同题本编辑/typed图片、Pi投影和Office角色解析；每项使用新旧DB、原生布局、缓存删除、编辑后输出与源篡改反例验证，不能把ledger单测作为整链已完成。无新依赖/外部服务/上传权限扩张，后续阶段继续按同一完整合同推进。
 
 本轮原生AI接线细化（2026-10-27，源码基线2c14189）：archive v3保存独立xiaozhi.ai-native-question.v1文档；source仅保存真实Word资源/版本/document SHA/ordinal/sourceDigest，完整Word范围及原始两次AI/OCR/proof存独立账本，不把96KiB原段JSON直接发给小智或上云。文档保留完整六类图义投影和三角色当前文字、宿主生成的有界PNG引用；只接受宿主已验证来源图片，模型不能提供路径/图片字节/资产权限。正式AI图片保存于独立业务目录并由questionVersion/nativeDigest/role复验，缓存淘汰或备份恢复不能使正式题目丢图。三角色共最多8PNG/16MiB/32MP，单文档96KiB，投影24KiB；源问题或两阶段差异单列，不借用教师v2确认资格。
