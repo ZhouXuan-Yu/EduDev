@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-28 S6-B2生产贯通限定验收
+
+最新证据集中于KB_IMPLEMENTATION_EVIDENCE.md：真实Store10涵盖生产排版/OCR、实际AI收据/同题本、first_saved复用、现Pi和Word/PDF媒体SHA；UI7覆盖授权/typed看图/缺图重试/编辑/恢复/双尺寸冷重启，模型HTTP受控。最终build/240组件/207历史smoke结果按实记录，不能等同真实provider质量、WPS视觉或40GB/新安装包。独立批判已修四项，最新全面复审因配额未完成。
+
 <!-- kb-native-ledger-20261028:start -->
 ## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
 

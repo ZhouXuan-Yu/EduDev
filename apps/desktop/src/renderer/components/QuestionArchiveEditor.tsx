@@ -3,6 +3,7 @@ import type {QuestionBankItem} from '../../shared/contracts';
 import {archiveIssueLabels,type ArchiveFields} from '../../shared/question-archive';
 import {MaterialSourceLink} from './product/MaterialSourceNavigation';
 import './question-archive.css';
+import {NATIVE_IMAGE_SCHEMA} from '../../shared/native-question-image';
 export function QuestionArchiveEditor({question,onSaved}:{question:QuestionBankItem;onSaved:()=>Promise<void>}){
  const [fields,setFields]=useState<ArchiveFields>(),[version,setVersion]=useState(''),[difficultyChosen,setDifficultyChosen]=useState(false),[checked,setChecked]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
  if(!question.archive)return null;const archive=question.archive;
@@ -18,6 +19,7 @@ export function QuestionArchiveEditor({question,onSaved}:{question:QuestionBankI
    {([['subject','学科'],['grade','年级'],['knowledgePoint','知识点'],['questionType','题型']] as const).map(([key,label])=><label key={key}>{label}<input value={fields[key]} maxLength={128} onChange={e=>setFields({...fields,[key]:e.target.value})} data-testid={'question-archive-'+key}/></label>)}
    <label>难度<select value={difficultyChosen?fields.difficulty:''} onChange={e=>{setFields({...fields,difficulty:e.target.value as ArchiveFields['difficulty']});setDifficultyChosen(true);}}><option value='' disabled>请选择难度</option><option value="easy">基础</option><option value="medium">中等</option><option value="hard">困难</option></select></label>
    {([['stem','题干'],['answer','答案'],['analysis','解析']] as const).map(([key,label])=><label key={key}>{label}<textarea value={fields[key]} maxLength={12000} onChange={e=>{setFields({...fields,[key]:e.target.value});if(key==='stem')setChecked(false);}} data-testid={'question-archive-'+key}/></label>)}
+   {archive.native&&<><p>修改题干会撤销旧题面图与图义资格。纯文字题可在核对后保存；图文题可恢复原AI题干，或回资料页重新按题整理。</p><button className="secondary-action" disabled={busy} data-testid="question-native-restore-stem" onClick={()=>{setBusy(true);setError('');void window.omniEdu!.getNativeQuestionOriginal({schemaVersion:NATIVE_IMAGE_SCHEMA,questionId:question.id,version}).then(result=>{setFields({...fields,stem:result.stem});setChecked(false);}).catch(()=>setError('原始AI题干暂不可读取，请刷新题本后重试。')).finally(()=>setBusy(false));}}>恢复原AI题干（保存后生效）</button></>}
    <label className="question-archive-source-check"><input type="checkbox" checked={checked} onChange={e=>setChecked(e.target.checked)} data-testid="question-archive-source-checked"/><span>已对照原资料核对题面完整性（含图表、题号及跨段衔接）</span></label>
    <p>缺失字段仍会保留待整理提示。跨段或题号不明需补齐题干后核对；图像与超长题需完整切题整理，勾选不能解除限制。保存不代表答案正确或正式试卷已确认。</p>
    <div className="toolbar-row"><button className="primary-action" disabled={busy||!difficultyChosen||!fields.stem.trim()} onClick={()=>void save()} data-testid="question-archive-save">{busy?'保存中…':'保存补正'}</button><button className="secondary-action" disabled={busy} onClick={()=>{setFields(undefined);setError('');}}>取消编辑</button></div>

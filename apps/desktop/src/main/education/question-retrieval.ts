@@ -3,26 +3,30 @@ import type {QuestionSearchFilters} from '../../shared/contracts';
 type Value=string|number|null;
 type Sql={all:(query:string,values?:Value[])=>Promise<Record<string,unknown>[]>;run:(query:string,values?:Value[])=>Promise<unknown>};
 export const QUESTION_RETRIEVAL_INDEX='question_retrieval_fts_v1';
-export const QUESTION_RETRIEVAL_VERSION='sqlite-trigram-projection.v1';
+export const QUESTION_RETRIEVAL_VERSION='sqlite-trigram-projection.v2-native';
 const fields=['stem','analysis','tags','knowledge_point','source_title','context_text'];
 const projectionFields=['statement','formulas','tables','figures','choices','subquestions'];
 // Only the six reviewed text sections; never treat unparsed file bytes as retrieved text.
-const contextText=(prefix:string)=>`CASE WHEN json_valid(${prefix}document_json) THEN CASE WHEN json_extract(${prefix}document_json,'$.schemaVersion')='xiaozhi.question-document.v2' THEN ${projectionFields.map(f=>`COALESCE(json_extract(${prefix}document_json,'$.context.projection.${f}.text'),'')`).join(" || char(10) || ")} ELSE '' END ELSE '' END`;
+const teacherContextText=(prefix:string)=>`CASE WHEN json_valid(${prefix}document_json) THEN CASE WHEN json_extract(${prefix}document_json,'$.schemaVersion')='xiaozhi.question-document.v2' THEN ${projectionFields.map(f=>`COALESCE(json_extract(${prefix}document_json,'$.context.projection.${f}.text'),'')`).join(" || char(10) || ")} ELSE '' END ELSE '' END`;
+const contextText=(prefix:string)=>`CASE WHEN json_valid(${prefix}archive_json) THEN CASE WHEN json_extract(${prefix}archive_json,'$.schemaVersion')='xiaozhi.question-archive.v3' THEN ${projectionFields.map(f=>`COALESCE(json_extract(${prefix}archive_json,'$.native.projection.${f}.text'),'')`).join(" || char(10) || ")} ELSE ${teacherContextText(prefix)} END ELSE ${teacherContextText(prefix)} END`;
 const values=(prefix:string)=>['stem','analysis','tags','knowledge_point','source_title'].map(f=>`${prefix}${f}`).concat(contextText(prefix)).join(',');
 
 /** Derived index only. Startup owns sequencing; SAVEPOINT rolls back incomplete creation/rebuild. */
 export async function ensureQuestionRetrievalIndex(sql:Sql):Promise<boolean>{
  await sql.run('SAVEPOINT question_retrieval_init');
  try{
-  const existing=await sql.all("SELECT name FROM sqlite_master WHERE name IN ('question_retrieval_fts_v1','question_retrieval_ai_v1','question_retrieval_au_v1','question_retrieval_ad_v1')");
+  const existing=await sql.all("SELECT name,sql FROM sqlite_master WHERE name IN ('question_retrieval_fts_v1','question_retrieval_ai_v1','question_retrieval_au_v1','question_retrieval_ad_v1')");
+  const upgrade=existing.length===4&&!existing.filter(r=>r.name==='question_retrieval_ai_v1'||r.name==='question_retrieval_au_v1').every(r=>String(r.sql).includes(QUESTION_RETRIEVAL_VERSION));
+  if(upgrade){await sql.run('DROP TRIGGER IF EXISTS question_retrieval_ai_v1');await sql.run('DROP TRIGGER IF EXISTS question_retrieval_au_v1');}
   await sql.run(`CREATE VIRTUAL TABLE IF NOT EXISTS ${QUESTION_RETRIEVAL_INDEX} USING fts5(${fields.join(',')},tokenize='trigram',detail='none')`);
-  await sql.run(`CREATE TRIGGER IF NOT EXISTS question_retrieval_ai_v1 AFTER INSERT ON question_bank_items BEGIN INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) VALUES(new.rowid,${values('new.')}); END`);
-  await sql.run(`CREATE TRIGGER IF NOT EXISTS question_retrieval_au_v1 AFTER UPDATE ON question_bank_items BEGIN DELETE FROM ${QUESTION_RETRIEVAL_INDEX} WHERE rowid=old.rowid; INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) VALUES(new.rowid,${values('new.')}); END`);
+  await sql.run(`CREATE TRIGGER IF NOT EXISTS question_retrieval_ai_v1 AFTER INSERT ON question_bank_items BEGIN /* ${QUESTION_RETRIEVAL_VERSION} */ INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) VALUES(new.rowid,${values('new.')}); END`);
+  await sql.run(`CREATE TRIGGER IF NOT EXISTS question_retrieval_au_v1 AFTER UPDATE ON question_bank_items BEGIN /* ${QUESTION_RETRIEVAL_VERSION} */ DELETE FROM ${QUESTION_RETRIEVAL_INDEX} WHERE rowid=old.rowid; INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) VALUES(new.rowid,${values('new.')}); END`);
   await sql.run(`CREATE TRIGGER IF NOT EXISTS question_retrieval_ad_v1 AFTER DELETE ON question_bank_items BEGIN DELETE FROM ${QUESTION_RETRIEVAL_INDEX} WHERE rowid=old.rowid; END`);
   if(existing.length!==4){
    await sql.run(`DELETE FROM ${QUESTION_RETRIEVAL_INDEX}`);
    await sql.run(`INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) SELECT rowid,${values('')} FROM question_bank_items`);
   }
+  if(upgrade){const native="CASE WHEN json_valid(archive_json) THEN json_extract(archive_json,'$.schemaVersion')='xiaozhi.question-archive.v3' ELSE 0 END";await sql.run(`DELETE FROM ${QUESTION_RETRIEVAL_INDEX} WHERE rowid IN (SELECT rowid FROM question_bank_items WHERE ${native})`);await sql.run(`INSERT INTO ${QUESTION_RETRIEVAL_INDEX}(rowid,${fields.join(',')}) SELECT rowid,${values('')} FROM question_bank_items WHERE ${native}`);}
   await sql.run('RELEASE question_retrieval_init');return true;
  }catch(error){
   await sql.run('ROLLBACK TO question_retrieval_init');await sql.run('RELEASE question_retrieval_init');

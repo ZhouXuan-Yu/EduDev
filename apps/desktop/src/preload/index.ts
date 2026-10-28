@@ -1,4 +1,5 @@
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
+import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
 import type {MaterialStudyQuery,MaterialStudyView,MaterialStudySave,MaterialStudyQuestion,MaterialStudyPage} from '../shared/material-study';
 import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared/question-context-edit';
 import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
@@ -258,6 +259,8 @@ const api = {
   getOriginalQuestionGallery:(input:OriginalGalleryInput)=>ipcRenderer.invoke('questions:original-gallery',input) as Promise<OriginalMultiResult<OriginalGalleryImage[]>>,
   decideOriginalQuestion:(input:OriginalQuestionDecision)=>ipcRenderer.invoke('xiaozhi:original-decide',input) as Promise<OriginalQuestionResult<QuestionReviewSummary>>,
   getOriginalQuestionImage:(input:QuestionImageInput)=>ipcRenderer.invoke('questions:original-image',input) as Promise<OriginalQuestionResult<string>>,
+  getNativeQuestionImage:(input:NativeQuestionImageQuery)=>ipcRenderer.invoke('questions:native-image',input) as Promise<NativeQuestionImage>,
+  getNativeQuestionOriginal:(input:NativeQuestionOriginQuery)=>ipcRenderer.invoke('questions:native-original',input) as Promise<{stem:string}>,
   reviewQuestionCollection:(input:QuestionCollectionInput)=>ipcRenderer.invoke('xiaozhi:question-collection-review',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   decideQuestionCollection:(input:QuestionCollectionDecision)=>ipcRenderer.invoke('xiaozhi:question-collection-decide',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,

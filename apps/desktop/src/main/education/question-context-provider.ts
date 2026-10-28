@@ -10,6 +10,7 @@ import {QUESTION_PROJECTION_FIELDS,type QuestionProjection} from '../../shared/q
 type ProjectionStore=Partial<Pick<OmniEduStore,'readQuestionDocumentContext'|'readArchivedQuestionContext'|'readAnswerEnrichmentContext'>>;
 type Store=Pick<OmniEduStore,'searchQuestionBank'|'getQuestionNotebookEntry'|'listStudents'|'sanitizeProblemText'>&ProjectionStore&Partial<Pick<OmniEduStore,'searchQuestionBankWithCoverage'|'searchQuestionsForAnswerEnrichment'>>;
 import {questionFacts,questionFactConflicts} from '../../shared/question-facts';
+import {questionPresentation} from '../../shared/native-question';
 import {archiveEligible} from '../../shared/question-archive';
 import {answerEnrichmentRoles} from '../../shared/question-answer-enrichment';
 import {questionDuplicateCandidates} from '../../shared/question-identity';
@@ -54,15 +55,16 @@ export function createQuestionContextProvider(store:Store,isCurrent:()=>boolean,
     if(original.document&&original.document.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)return{content:[{type:'text',text:JSON.stringify({success:false,code:'document_context_unavailable',message:errors.document_context_unavailable,contextComplete:false})}],details:{success:false,error:{code:'document_context_unavailable'}},isError:true};
     const enriching=args.purpose==='answer_enrichment',missingRoles=enriching?answerEnrichmentRoles(original):[];
     if(enriching?!missingRoles.length:!archiveEligible(original))throw new Error('document_context_unavailable');
-    if(!original.document&&Buffer.byteLength(JSON.stringify(original),'utf8')>32000)throw new Error('too_large');
+    if(!original.document&&!original.archive?.native&&Buffer.byteLength(JSON.stringify(original),'utf8')>32000)throw new Error('too_large');
     const {id:_id,createdAt:_created,updatedAt:_updated,document,archive,...fields}=original;
     let context:QuestionProjection|undefined;
-    if(document?.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA){context={} as QuestionProjection;for(const key of QUESTION_PROJECTION_FIELDS)context[key]={state:document.context.projection[key].state,text:await clean(document.context.projection[key].text)};}
+    const presentation=questionPresentation(original);
+    if(presentation.projection){context={} as QuestionProjection;for(const key of QUESTION_PROJECTION_FIELDS)context[key]={state:presentation.projection[key].state,text:await clean(presentation.projection[key].text)};}
     const question={...fields,subject:await clean(fields.subject),grade:await clean(fields.grade),knowledgePoint:await clean(fields.knowledgePoint),questionType:await clean(fields.questionType),
-     stem:context?.statement.text??await clean(fields.stem),answer:await clean(fields.answer),analysis:await clean(fields.analysis),sourceTitle:await clean(fields.sourceTitle),tags:await Promise.all(fields.tags.map(t=>clean(t))),...(archive?{archiveState:archive.state,answerOrigin:archive.answerOrigin,analysisOrigin:archive.analysisOrigin}:{}),...(context?{context,answerOrigin:document!.answer.origin,analysisOrigin:document!.analysis.origin}: {})};
+     stem:context?.statement.text??await clean(fields.stem),answer:await clean(fields.answer),analysis:await clean(fields.analysis),sourceTitle:await clean(fields.sourceTitle),tags:await Promise.all(fields.tags.map(t=>clean(t))),...(archive?{archiveState:archive.state,answerOrigin:archive.answerOrigin,analysisOrigin:archive.analysisOrigin}:{}),...(context?{context,answerOrigin:archive?.native?.roles.answer.origin??document!.answer.origin,analysisOrigin:archive?.native?.roles.analysis.origin??document!.analysis.origin}: {})};
     const webSources=archive?.web?Object.fromEntries(await Promise.all(Object.entries(archive.web.roles).map(async([role,proof])=>[role,{kind:proof!.kind,url:proof!.url,title:await clean(proof!.title),observedAt:proof!.observedAt}]))):undefined;
-    const publicResult={schemaVersion:QUESTION_CONTEXT_SCHEMA,success:true,reference:args.reference,version:found.version,question:{...question,...(webSources?{webSources}: {})},answerVerified:false,teacherConfirmationKnown:!!context,scope:context?'teacher_confirmed_transcription':'saved_sanitized_question',...(context?{contextComplete:true,originalImagesIncluded:false}: {}),...(enriching?{purpose:'answer_enrichment',missingRoles,usableForPaper:false,originalImagesIncluded:false,writebackAuthorized:false}: {})};
-    const text=JSON.stringify(publicResult);if(Buffer.byteLength(text,'utf8')>32000)throw new Error('too_large');
+    const publicResult={schemaVersion:QUESTION_CONTEXT_SCHEMA,success:true,reference:args.reference,version:found.version,question:{...question,...(webSources?{webSources}: {})},answerVerified:false,teacherConfirmationKnown:!!context&&presentation.authority==='teacher',scope:context?(presentation.kind==='ai_native'?'ai_transcribed_source':'teacher_confirmed_transcription'):'saved_sanitized_question',...(context?{contextComplete:true,originalImagesIncluded:false}: {}),...(enriching?{purpose:'answer_enrichment',missingRoles,usableForPaper:false,originalImagesIncluded:false,writebackAuthorized:false}: {})};
+    const text=JSON.stringify(publicResult);if(Buffer.byteLength(text,'utf8')>(archive?.native?128*1024:32000))throw new Error('too_large');
     await readQuestionContextSource(store,source(original),abort,args.purpose);current(abort);
     const title=`${question.knowledgePoint||'本地题目'} · ${question.sourceTitle||'题库'}`;
     // Incomplete-answer reads must not authorize downstream collection/review/paper tools.

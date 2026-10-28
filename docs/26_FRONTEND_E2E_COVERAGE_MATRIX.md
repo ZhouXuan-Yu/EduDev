@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-28 原生Word AI题本UI
+
+scripts/education/kb-native-batch-journey.mjs：真实文件夹Word导入→统一DeepSeek设置→逐批三角色图片授权→现两阶段HTTP/OCR→同题本→typed看图/缺图重试→教师改答撤旧图→改公式题干撤题图→恢复真实AI题干→删预览图/冷重启。已通过7项/2次启动/0 rendererErrors，1366×768与1920×1080；最终指纹与日志见goal/KB_IMPLEMENTATION_EVIDENCE.md。HTTP由受控fixture回应，不是真实模型质量；Store10另证Pi和真实Word/PDF字节，未代替Office/WPS人工视觉验收。
+
 ## 2026-10-27 首次窗口可见性
 
 > 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。

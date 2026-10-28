@@ -553,7 +553,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   store.materialSearch.start();
   store.materialQuestions.start();
   store.retrieval.start();
-  materialAiStartup=store.materialAi.recover().then(()=>{if(!shutdown)store.materialAi.start();}).catch(()=>console.error('[material-ai] startup_recovery_failed'));
+  materialAiStartup=store.materialAi.recoverStartup().then(()=>{if(!shutdown)store.materialAi.start();}).catch(()=>console.error('[material-ai] startup_recovery_failed'));
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

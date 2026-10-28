@@ -4,7 +4,7 @@ import type {AiNativeSelector} from './material-ai-native-input';
 
 export const MATERIAL_AI_SCHEMA='xiaozhi.material-ai.v1' as const;
 export const MATERIAL_AI_RESPONSE='xiaozhi.material-ai-response.v1' as const;
-export const AI_MODELS=['qwen3-vl-plus','qwen3-vl-flash'] as const;
+export const AI_MODELS=['deepseek-flash','qwen3-vl-plus','qwen3-vl-flash'] as const;
 export type AiModel=typeof AI_MODELS[number];
 export type AiSettings={revision:number;model:AiModel;configured:boolean;secureStorage:boolean};
 export type AiSettingsInput={schemaVersion:typeof MATERIAL_AI_SCHEMA;revision:number;model:AiModel;apiKey?:string};

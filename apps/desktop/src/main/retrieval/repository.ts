@@ -5,6 +5,7 @@ import {archiveEligible} from '../../shared/question-archive';
 import {answerEnrichmentRoles} from '../../shared/question-answer-enrichment';
 import type {QuestionContextPurpose} from '../../shared/question-context';
 import {questionFacts,questionFactConflicts} from '../../shared/question-facts';
+import {questionPresentation} from '../../shared/native-question';
 import {materialBodyVersion,type MaterialReadingUnit} from '../assets/material-source';
 import type {MaterialFullTextSearch} from '../assets/material-full-text';
 import {validatedQuestionFilters} from '../education/question-retrieval';
@@ -164,7 +165,8 @@ export class RetrievalRepository{
       // A verified full original can remain usable after OCR failure. Privacy on any cited page cannot.
       const pages=new Set<number>([...document.answer.anchors,...document.analysis.anchors].map(a=>a.page));const visit=(blocks:QuestionBlock[])=>{for(const b of blocks){b.anchors.forEach(a=>pages.add(a.page));if(b.kind==='subquestion')visit(b.blocks);if(b.kind==='choices')b.options.forEach(o=>visit(o.blocks));}};visit(document.blocks);
       const privateRows=await this.host.all(`SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 AND (page_number IS NULL OR typeof(page_number)<>'integer' OR page_number NOT BETWEEN 1 AND 100000 OR page_number IN (${[...pages].map(()=>'?').join(',')})) LIMIT 1`,[document.source.resourceId,...pages]);if(privateRows.length)return{fact:deleted};}
-    const text=[q.subject,q.grade,q.knowledgePoint,q.questionType,...q.tags,...(q.document?.schemaVersion==='xiaozhi.question-document.v2'?Object.values(q.document.context.projection).map(p=>p.text):[q.stem])].join('\n');
+    if(q.archive?.native){const native=q.archive.native,bound=(await this.host.all('SELECT native_json FROM material_ai_native_revisions WHERE question_id=? AND question_version=?',[q.id,hash(questionFacts(q))]))[0];if(!bound||bound.native_json!==JSON.stringify(native)||(await this.host.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data<>0 LIMIT 1',[native.source.resourceId])).length)return{fact:deleted};}
+    const text=[q.subject,q.grade,q.knowledgePoint,q.questionType,...q.tags,...(questionPresentation(q).projection?Object.values(questionPresentation(q).projection!).map(p=>p.text):[q.stem])].join('\n');
     if(text.length>128000)throw Error('too_large');
     return{fact:{...deleted,deleted:false,digest:hash(questionFacts(q)),subject:q.subject,grade:q.grade,knowledgePoint:q.knowledgePoint,questionType:q.questionType,difficulty:q.difficulty,sourceKind:q.sourceKind,text},question:q,sources:[...sourceRevisions].map(([id,revision])=>({id,revision}))};
   }
@@ -264,7 +266,7 @@ export class RetrievalRepository{
       if(filters.knowledgePoint&&!q.knowledgePoint.includes(filters.knowledgePoint))continue;
       found.set(q.id,q);ids.push(q.id);revisions.set(q.id,{id:q.id,seq:current.fact.seq,sources:current.sources});
     }
-    const ranked=await this.rerank(fuseRanks(lexical.map(q=>q.id),ids),query,id=>{const q=found.get(id)!,hit=semantic.hits.find(h=>h.id===id),projection=q.document?.schemaVersion==='xiaozhi.question-document.v2'?Object.entries(q.document.context.projection).filter(([key])=>key!=='statement').map(([,v])=>v.text):[];return{text:[q.stem,...projection].join('\n'),...(hit?{focus:Math.max(0,hit.start-[q.subject,q.grade,q.knowledgePoint,q.questionType,...q.tags].join('\n').length-1)}:{})};});semantic.coverage.rerank=ranked.coverage;
+    const ranked=await this.rerank(fuseRanks(lexical.map(q=>q.id),ids),query,id=>{const q=found.get(id)!,hit=semantic.hits.find(h=>h.id===id),projection=questionPresentation(q).projection?Object.entries(questionPresentation(q).projection!).filter(([key])=>key!=='statement').map(([,v])=>v.text):[];return{text:[q.stem,...projection].join('\n'),...(hit?{focus:Math.max(0,hit.start-[q.subject,q.grade,q.knowledgePoint,q.questionType,...q.tags].join('\n').length-1)}:{})};});semantic.coverage.rerank=ranked.coverage;
     await this.refresh(semantic.coverage);
     semantic.coverage.exhausted||=lexicalBefore.length===50;
     const selected=ranked.ids.slice(0,raw.limit??8),valid=await this.filterCurrent('question',selected.map(id=>revisions.get(id)!),semantic.coverage);if(valid.size!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}

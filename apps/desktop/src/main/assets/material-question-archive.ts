@@ -4,8 +4,9 @@ import {archiveMissing,archiveIssuesAfterEdit,archiveEligible,type ArchiveEdit,t
 import {questionVersion} from '../education/question-context-provider';
 import type {MaterialRepository} from './material-repository';
 import {extractMaterialQuestions} from './material-question-extract';
+import {nativeQuestionComplete} from '../../shared/native-question';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
+type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
 export class MaterialQuestionArchive{
  private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private host:Host;
@@ -48,6 +49,7 @@ export class MaterialQuestionArchive{
  async migrateMembers(){await this.host.run('CREATE TABLE IF NOT EXISTS material_question_members(extraction_key TEXT PRIMARY KEY,resource_id TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,needs_attention INTEGER NOT NULL DEFAULT 0)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_resource ON material_question_members(resource_id)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_attention ON material_question_members(needs_attention)');}
  async validate(q:QuestionBankItem,requireComplete=false){
   if(!q.archive)return;if(requireComplete&&!archiveEligible(q))throw new Error('question_archive_incomplete');
+  if(q.archive.native){if(!this.host.validateNative)throw Error('source_changed');await this.host.validateNative(q);}
   if(q.archive.web){if(!this.host.validateWeb)throw new Error('source_changed');await this.host.validateWeb(q);}
   if(q.archive.ai){if(!this.host.validateAi)throw new Error('source_changed');await this.host.validateAi(q);}
   if(!q.archive.sources.length){if(q.archive.web?.base==='manual')return;throw new Error('source_changed');}
@@ -55,15 +57,25 @@ export class MaterialQuestionArchive{
   await this.host.materials().verify(resource.id,resource.contentHash,new AbortController().signal);
   for(const source of q.archive.sources)await this.host.materials().source(source);
  }
- async edit(input:ArchiveEdit){return this.host.withWriter(async target=>{
+ async edit(input:ArchiveEdit){
+  const current=await this.host.read(input.questionId);
+  if(current?.archive?.native){if(!this.host.withNative)throw Error('source_changed');return this.host.withNative(current,permit=>this.editWriter(input,permit));}
+  return this.editWriter(input);
+ }
+ private async editWriter(input:ArchiveEdit,permit?:object){return this.host.withWriter(async target=>{
   const q=await target.host.read(input.questionId);if(!q?.archive||questionVersion(q)!==input.version)throw new Error('source_changed');await target.validate(q);
   const fields=Object.fromEntries(Object.entries(input.fields).map(([k,v])=>[k,v.trim()])) as typeof input.fields;
   if(q.archive.web&&fields.stem!==q.stem&&(['answer','analysis'] as const).some(role=>q.archive!.web!.roles[role]&&fields[role]===q[role]))throw new Error('web_answer_question_changed');
   // A checkbox cannot restore a missing figure or expand an intentionally incomplete long-question placeholder.
   const issues=archiveIssuesAfterEdit(q.archive,q,fields,input.sourceChecked);
   const archive={...q.archive,state:'teacher_edited' as const,issues,sourceChecked:input.sourceChecked,answerOrigin:fields.answer===q.answer?q.archive.answerOrigin:fields.answer?'teacher':'missing',analysisOrigin:fields.analysis===q.analysis?q.archive.analysisOrigin:fields.analysis?'teacher':'missing'};
+  if(archive.native){
+   if(!permit||!target.host.reviseNative)throw Error('source_changed');archive.native=await target.host.reviseNative(q,fields,input.sourceChecked,permit);
+   if(archive.native&&!nativeQuestionComplete(archive.native)&&!archive.issues.includes('incomplete_question'))archive.issues.push('incomplete_question');
+   else if(archive.native&&nativeQuestionComplete(archive.native)&&input.sourceChecked)archive.issues=archive.issues.filter(code=>code!=='incomplete_question');
+  }
   if(archive.web){archive.web=structuredClone(archive.web);for(const role of ['answer','analysis'] as const)if(fields[role]!==q[role]||fields.stem!==q.stem)delete archive.web.roles[role];}
   await target.host.run('UPDATE question_bank_items SET subject=?,grade=?,knowledge_point=?,question_type=?,difficulty=?,stem=?,answer=?,analysis=?,archive_json=?,updated_at=? WHERE id=?',[fields.subject,fields.grade,fields.knowledgePoint,fields.questionType,fields.difficulty,fields.stem,fields.answer,fields.analysis,JSON.stringify(archive),new Date().toISOString(),q.id]);
-  await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archive.issues.length?1:0,q.id]);return target.host.read(q.id);
+  await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archive.issues.length?1:0,q.id]);const saved=await target.host.read(q.id);if(archive.native){if(!saved||!permit||!target.host.publishNative)throw Error('source_changed');await target.host.publishNative(saved,permit);}return saved;
  });}
 }

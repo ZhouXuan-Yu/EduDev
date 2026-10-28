@@ -3,7 +3,7 @@ import {isRichPaperOfficeSchema,type PaperOfficeFigure} from '../../shared/paper
 import type {OfficeDraft} from '../../shared/xiaozhi-office-draft';
 export function officeFigureSize(figure:PaperOfficeFigure){
  const width=Math.min(640,figure.width),height=width*figure.height/figure.width;
- if(height>880)throw new Error('too_large');return{width,height};
+ if(height>880){if(figure.blockId.startsWith('native_')&&figure.width===1240&&figure.height<=1760)return{width:880*figure.width/figure.height,height:880};throw new Error('too_large');}return{width,height};
 }
 /** Only verified, copied PNG bytes enter a generator. No filesystem or resource URL resolution here. */
 export function officeImageSnapshot(draft:OfficeDraft,input?:ReadonlyMap<string,Buffer>):Map<string,Buffer>{

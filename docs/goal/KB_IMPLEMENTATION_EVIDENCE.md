@@ -1,5 +1,39 @@
 # 知识库实施证据
 
+## 2026-10-28 S6-B2统一DeepSeek生产图文贯通（最新）
+
+本节覆盖下方“仅独立账本/尚未生产接线”历史状态。完整Goal仍未完成，无新增依赖、部署服务、真实云端请求或新EXE发布。
+
+实现现Word按题图文批次→实际Word排版/本地OCR→不可变必要上下文/PNG→现账户两阶段→真实first/final/member/native同writer→同一题本typed看图/失败重试/教师编辑与原AI题干恢复→现Pi图义检索/实读→正式整卷确认后当前角色Word/PDF。新增幂等material_ai_native_context；v2输入digest绑定原始必要context/OCR，保存到本机不等于重启外发许可。新批次一题一unit，不预积累100题图片。生产固定deepseek-flash与官方endpoint，复用现小智加密账户，不保留第二份Key配置；历史Qwen回执不重标，真实Qwen调用拒绝。
+
+真实证据（执行目录本工作树apps/desktop；脚本均已纳入仓库）：
+
+|命令|结果/范围|
+|---|---|
+|`node scripts/education/kb-native-batch-store.mjs`|10项exit0；kb-native-brain-office-store-final.log，Temp/omni-native-batch-store-ExqiAX。实际Store/真实Word排版/OCR/双sqlite3、真实first/final来源闭包、教师编辑、cache删除/重开、Word ordinal5/batch ordinal1首稿恢复；现关键词与Pi工具实读native-only公式语义；实际PaperRepository创建/受控教师confirm，Word/PDF生成、DOCX媒体SHA精确等于当前角色图、学生无答案图、教师旧答案图撤销、PDF含图像对象。模型/教师决定受控，不是自然答案正确性或Office/WPS人工布局验收。|
+|`node scripts/education/kb-native-batch-journey.mjs`|7项exit0，kb-native-pipeline-ui-checked-final.log；Temp/omni-native-batch-ui-hCnHGa/report.json。生产Electron2启动/0 rendererErrors，1366×768与1920×1080，实际资料文件夹导入/统一设置/必要角色授权/实际OCR与被截获DeepSeek两遍HTTP/typed题本图片/缺图重试/编辑撤旧图/明确核对后恢复真题干与无待整理资格/删预览图冷重启。完整out指纹9c8f900f00101949f9aa718c162f53be35fd74b36e8aade57cade7b32c7f9e3f，前后冻结一致。|
+|`npm run test:smoke`|最终build（含tsc）及真实历史兼容smoke exit0，ok=true/30名隔离学生，kb-native-pipeline-smoke-final.log，Temp/omni-edu-smoke-j7zd7L；同一冻结out9c8f900f。这是隔离legacy兼容，不冒充当前Pi全功能/真实provider或40GB验收。|
+|`npm run test:renderer-components`|240/240 exit0，kb-native-components-final.log。|
+|`node --experimental-transform-types scripts/education/kb-native-deepseek-boundaries.mjs`|4项exit0，test-results/kb-native-deepseek-boundaries-final.log；官方固定端点/模型/统一账户，受控fetch。|
+|`node --experimental-transform-types scripts/education/kb-native-batch-boundaries.mjs`|6 schema+4源骨架项exit0，test-results/kb-native-batch-boundaries-final.log；两遍不能同时漏选项/小问。|
+|`node --experimental-transform-types scripts/education/kb-native-brain-boundaries.mjs`|5项exit0，test-results/kb-native-brain-boundaries-final.log；现Pi六段语义且AI不冒充教师/不发PNG。|
+|`node --experimental-transform-types scripts/education/kb-native-office-boundaries.mjs`|3项exit0，test-results/kb-native-office-boundaries-final.log；学生角色、完整高度PNG纵横比。|
+|`node --experimental-transform-types scripts/education/kb-native-dispatch-boundaries.mjs`|3独立批判反例转为固定回归，exit0，kb-native-dispatch-regression-final.log。末次异步隐私撤销0发送/0calls；第二阶段明确未发送暂停保first_saved/calls1/可重试；requiresImage保review且不具组卷资格。|
+|`node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs`|17项exit0，kb-native-unified-regression-final.log；原16兼容+新writer不回退旧Key。|
+|`node --experimental-transform-types scripts/education/kb-retrieval-boundaries.mjs`|17项exit0，kb-native-retrieval-regression.log；实际仓储/SQLite trigger/世代，向量口受控。|
+|`node --experimental-transform-types scripts/education/paper-export-boundaries.mjs`|21项exit0，kb-native-paper-regression-complete.log，Temp/omni-paper-export-SbuNg8/report.json。旧实际Word保存/审批/幂等/答案卡/富图/SQLite初始化兼容；不是WPS视觉。|
+|`node --experimental-transform-types scripts/education/kb-native-coverage.mjs`|exit0，test-results/education/native-coverage-4q0nnO/report.json，包含20存储/7契约/4身份及6+4批次源骨架；四域compiled非空行最低83.42%、函数最低94.74%。原仅三套统计漏新骨架函数导致73.68%失败保留aeCXlu；添加真实新增边界套件，不降低80%门槛。|
+|`node scripts/education/kb-native-pipeline-coverage.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-native-batch-store-ExqiAX`|exit0，同目录coverage-report.json；真实Electron精确V8/esbuild模块范围：执行器99.29%行/100%函数，必要上下文90.48%/100%，响应88.24%/100%。不是TS分支/全项目/模型质量覆盖。|
+|`npm audit --json`|审计未清零，22项（8high/6moderate/8low/0critical），test-results/kb-native-pipeline-audit.json；本片未改依赖，未自动升级。|
+
+独立批判：word_source_critic此前真实复现late_private、确定未发预算消耗、requiresImage放行及新writer缺共享账户；原报告Temp/native-dispatch-critic-vfm11Q/report.json、native-unified-writer-critic-P22Xji/report.json。前3项独立重放修复通过（repaired-independent.json），账户修复root重放和真实Store通过，现固定回归包含它。最新全面独立复审因账户配额报错（提示17:41可再试），没有切换模型/代理绕过，也不宣称最新代码独立无问题。
+
+失败保留：a211205脱敏fixture形状不符不算业务RED；f7b95e3修正后真实Pi缺图义RED。初始UI隐藏导航重复定位/编辑后未展开图片属于测试流程问题，保持生产断言后最终7项通过。Store首次Paper requestId错误前缀、ZIP把媒体目录当空媒体导致失败，修正夹具/目录过滤后精确SHA通过。旧导出回归先因.codex authority、已删历史图片与临时bundle依赖解析失败；改OS临时业务根、自包含PNG和仓库内编译输出后21项通过，未修改生产权限。相关kb-native-*current/fixed日志保留。
+
+仍OPEN：原生v3联网补答/临时提问、真实站点适配和登录接管、AI推导独立核对、Word精确span→chunk隐私（现整资料保守阻断）、备份业务PNG引用缺失完整性、跨页/答案册、受管本地视觉、自然教师标注召回/准确率/冷P95、40GB持续处理、Office/WPS人工视觉与最终安装EXE。实际PDF含媒体/不串角色不能替代版式或答案正确验收。
+
+每轮固定动作已写AGENTS.md与1.Agent.md：提交检查通过的本轮代码及状态，刷新整合origin/main、正常push后核远端；禁止强推/覆盖协作者或上传用户资料。主线在32aa已检出，不擅自移动该本地ref；允许当前已整合分支push HEAD:main。本轮刷新origin/main=3734df3，当前分支已包含该主线（远端无新增分叉）；最终提交自身SHA和push后远端一致性由本轮收尾命令回读报告，不预填自引用SHA。
+
 ## 2026-10-28 S6-B2 原生业务图片与持久输入基础
 
 完整Goal ACTIVE。本轮NativeQuestionRepository由原先缺失RED推进到实现，尚未接生产OmniEduStore、Word AI批次/真实OCR/first-final transcriptor、同题本typed图片/编辑、Pi/Office与备份闭包，不能宣称教师可使用完整图文AI流程。没有新增依赖/部署服务/外发权限。

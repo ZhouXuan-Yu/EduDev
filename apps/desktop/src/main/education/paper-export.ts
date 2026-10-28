@@ -50,7 +50,7 @@ export function compilePaperOffice(paper:PaperView,audience:PaperExportInput['au
  if(paper.state!=='confirmed'||!paper.complete||!paper.sourceCurrent||!paper.digest)throw new Error('conflict');
  if(!['student','teacher'].includes(audience))throw new Error('invalid_input');
  if(template==='answer_sheet')return compileAnswerSheet(paper,audience,paper.digest);
- if(paper.selection.items.some(i=>!!i.question.document||[i.question.stem,...(audience==='teacher'?[i.question.answer,i.question.analysis]:[])].some(text=>containsOfficeMath(text)||paperTextBlocks(text).some(block=>!!block.table))))return compileRichPaperOffice(paper,audience);
+ if(paper.selection.items.some(i=>!!i.question.document||!!i.question.archive?.native||[i.question.stem,...(audience==='teacher'?[i.question.answer,i.question.analysis]:[])].some(text=>containsOfficeMath(text)||paperTextBlocks(text).some(block=>!!block.table))))return compileRichPaperOffice(paper,audience);
  const sections:OfficeSection[]=[{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,
   audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。']}];
  const chunks=(text:string)=>{const result:string[]=[];let value='';for(const c of text){if(value.length+c.length>1000){result.push(value);value='';}value+=c;}if(value)result.push(value);return result;};

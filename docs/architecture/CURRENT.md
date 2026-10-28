@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-10-28 原生AI生产链与单账户
+
+最新状态替代下方历史未接线说明：OmniEduStore已拥有NativeQuestionRepository及六类幂等表（新增context）。专用autocommit准备连接承担Word排版/OCR/输入提升，同caller writer读取真实first/final/member并原子发布native修订与题本；私有account能力传给writer。每次实际HTTP前复验隐私/配置/授权，确定未发返预算，真实已发未知不自动重试。
+
+题本typed native-image/native-original、编辑修订/撤旧图、Pi投影、FTS trigger升级、语义fact/重排与Office native resolver均接线。正式文件使用当前角色字节，业务PNG不受预览LRU影响。原生v3联网写回/完整备份引用校验仍OPEN；无新依赖/服务。
+
 <!-- kb-native-ledger-20261028:start -->
 ## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
 

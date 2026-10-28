@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-10-28 DeepSeek统一接入与原生图题消费者
+
+生产图文整理复用createModelSettings/runtime与现加密Key，固定deepseek-flash及https://api.deepseek.com/chat/completions，reasoning_effort=none，JSON schema本地校验；createDeepSeekFetch沿既有Electron网络边界。官方能力说明：https://api-docs.deepseek.com/guides/vision/ 与 https://api-docs.deepseek.com/api/create-chat-completion/ 。历史Qwen模型ID/receipt仍可读，生产调用不回退其他厂商。
+
+沿用Word排版、本地OCR、SQLite、Pi/typed preload、原Office Word/PDF生成器，无新依赖/部署服务。NativeAiContext+v2输入digest保存必要角色/OCR/图片；现Pi仅传脱敏图义，正式Office resolver核当前角色与SHA。EXE安装体积及真实provider质量尚未验收。
+
 <!-- kb-native-ledger-20261028:start -->
 ## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
 

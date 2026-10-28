@@ -5,11 +5,12 @@ import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument} from '../../sha
 import {PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,type PaperOfficeFigure,type PaperExportInput} from '../../shared/paper-export';
 import {validOfficeDraft,type OfficeDraft,type OfficeSection} from '../../shared/xiaozhi-office-draft';
 import {containsOfficeMath,officeMathChunks,officeMathHtml,officeMathParts} from '../../shared/office-math';
+import {validNativeQuestionDocument,nativeQuestionComplete,type NativeQuestionRole} from '../../shared/native-question';
 export const containsLatex=(text:string)=>/\\(?:frac|sqrt|begin|sum|int|left|right)|\$[^$]+\$/.test(text);
 const chunks=(text:string)=>{const values:string[]=[];let value='';for(const c of text){if(value.length+c.length>1000){values.push(value);value='';}value+=c;}if(value)values.push(value);return values;};
 /** Exact confirmed source crops, never the scalar/OCR summary of a rich question. */
 export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput['audience']):OfficeDraft{
- const math=paper.selection.items.some(i=>[...(i.question.document?[]:[i.question.stem]),...(audience==='teacher'?(['answer','analysis'] as const).filter(role=>!(i.question.document?.[role].origin==='source'&&i.question.document.blocks.some(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_')))).map(role=>i.question[role]):[])].some(containsOfficeMath));
+ const math=paper.selection.items.some(i=>[...(i.question.document||i.question.archive?.native?.roles.question.figures.length?[]:[i.question.stem]),...(audience==='teacher'?(['answer','analysis'] as const).filter(role=>!(i.question.document?.[role].origin==='source'&&i.question.document.blocks.some(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_')))&&!i.question.archive?.native?.roles[role].figures.length).map(role=>i.question[role]):[])].some(containsOfficeMath));
  const plainSplit=math?officeMathChunks:chunks;const split=(text:string)=>paperTextBlocks(text).some(b=>!!b.table)?[text]:plainSplit(text);
  const sections:OfficeSection[]=[{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,
   audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。',
@@ -17,15 +18,19 @@ export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput
  for(const group of paper.blueprint.sections){
   sections.push({heading:group.label,paragraphs:[]});
   for(const item of paper.selection.items.filter(i=>i.sectionId===group.id)){
-   const q=item.question,doc=q.document,paragraphs:string[]=[],figures:PaperOfficeFigure[]=[];
+   const q=item.question,doc=q.document,native=q.archive?.native,paragraphs:string[]=[],figures:PaperOfficeFigure[]=[];
+   if(native&&(!validNativeQuestionDocument(native)||!nativeQuestionComplete(native)))throw Error('unsupported');
+   const addNative=(role:NativeQuestionRole)=>{if(!native)throw Error('unsupported');for(const f of native.roles[role].figures)figures.push({questionId:q.id,version:item.source.version,blockId:f.blockId,role,assetId:f.assetId,sha256:f.sha256,width:f.width,height:f.height,afterParagraph:paragraphs.length});};
    const addImage=(id:string,role:PaperOfficeFigure['role'])=>{if(!doc)throw new Error('unsupported');const b=doc.blocks.find(b=>b.id===id);if(!b||b.kind!=='image'||b.mime!=='image/png')throw new Error('unsupported');figures.push({questionId:q.id,version:item.source.version,blockId:b.id,role,assetId:b.assetId,sha256:b.sha256,width:b.width,height:b.height,afterParagraph:paragraphs.length});};
    if(doc){
     if(!validQuestionDocument(doc)||doc.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)throw new Error('unsupported');
     paragraphs.push('完整题面（原图，按顺序阅读）：');
     for(const id of doc.context.sourceBlockIds)addImage(id,'question');
-   }else{if(!math&&containsLatex(q.stem))throw new Error('unsupported');paragraphs.push(...split(q.stem));}
+   }else if(native?.roles.question.figures.length){paragraphs.push('完整题面（原文图稿，按顺序阅读）：');addNative('question');}
+   else{if(!math&&containsLatex(q.stem))throw new Error('unsupported');paragraphs.push(...split(q.stem));}
    if(audience==='teacher'){
     for(const role of ['answer','analysis'] as const){
+     if(native){const body=native.roles[role],title=role==='answer'?'参考答案':'解析';if(body.figures.length){paragraphs.push(title+'（原文图稿，尚未独立核验）：');addNative(role);}else paragraphs.push(...split(title+'：'+body.text));paragraphs.push(title+'来源：'+({source:'原资料',teacher:'教师补充',ai_generated:'AI补充（待核验）',missing:'缺失'}[body.origin]));continue;}
      const title=role==='answer'?'参考答案':'解析',text=q[role],evidence=doc?.[role],roleImages=doc?.blocks.filter(b=>b.kind==='image'&&b.id.startsWith('source_'+role+'_'))||[];
      if(containsLatex(text)&&evidence?.origin==='source'&&roleImages.length){
       if(evidence?.origin!=='source'||!roleImages.length)throw new Error('unsupported');

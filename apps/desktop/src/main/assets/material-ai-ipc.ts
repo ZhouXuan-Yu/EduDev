@@ -1,20 +1,28 @@
 import {ipcMain as electronIpcMain,safeStorage,type BrowserWindow} from 'electron';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,createHash} from 'node:crypto';
+import {createModelSettings} from '../xiaozhi-agent/model-settings';
 import type {OmniEduStore} from '../db';
 import {materialId} from '../../shared/materials';
 import {MATERIAL_PREVIEW_SCHEMA} from '../../shared/material-page-preview';
 import {MODEL_IMAGE_SCHEMA} from '../../shared/xiaozhi-public-images';
 import {preparePublicModelImage} from '../xiaozhi-agent/image-host';
 import {previewMaterialPage} from './material-page-preview';
-import {renderLocalPdfPage} from '../xiaozhi-agent/ocr-host';
+import {renderLocalPdfPage,recognizeLocalImage} from '../xiaozhi-agent/ocr-host';
+import {LOCAL_OCR_ENGINE} from '../../shared/xiaozhi-ocr';
 import {previewPdfFile} from '../xiaozhi-agent/pdf-file-host';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {validAiAction,validAiBatch,validAiSettings} from '../../shared/material-ai';
+import {validNativeQuestionImageQuery,validNativeQuestionOriginQuery} from '../../shared/native-question-image';
 
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
+  const codec={available:()=>safeStorage.isEncryptionAvailable(),seal:(key:string)=>safeStorage.encryptString(key).toString('base64'),open:(value:string)=>safeStorage.decryptString(Buffer.from(value,'base64')).toString()};
+  const shared=createModelSettings({store,root:store.getDataRoot(),codec,busy:()=>false});
   store.materialAi.configure({
+    account:async()=>{const saved=await store.xiaozhiState.modelSettings.configuration(),current=await shared.runtime();return{revision:parseInt(createHash('sha256').update(JSON.stringify([saved.revision,current.apiKey||'',current.model])).digest('hex').slice(0,12),16)+1,model:'deepseek-flash' as const,apiKey:current.apiKey||''};},
     codec:{available:()=>safeStorage.isEncryptionAvailable(),seal:key=>safeStorage.encryptString(key).toString('base64'),open:value=>safeStorage.decryptString(Buffer.from(value,'base64'))},
     clean:async text=>(await createStudentContextSanitizer(store))(text),
+    word:{environment:async()=>{const m=await import('./word-question-render');return m.wordProofEnvironment();},render:async(source,images,signal,dataRoot)=>{const m=await import('./word-question-render');return m.renderWordQuestionProof(source,images,{dataRoot,signal});}},
+    ocr:async(bytes,signal)=>{try{const result=await recognizeLocalImage(bytes,signal);return {text:result.text,engine:result.engine};}catch(error){if(error instanceof Error&&error.message==='empty')return{text:'',engine:LOCAL_OCR_ENGINE};if(signal.aborted)throw Error('cancelled');throw Error(error instanceof Error&&error.message==='configuration'?'ocr_unavailable':'ocr_failed');}},
     image:async(id,version,page,signal)=>{
       const resource=await store.materials.resource(id);
       if(resource.contentHash!==version)throw new Error('source_changed');
@@ -32,10 +40,12 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
     }
   });
   const check=(event:Electron.IpcMainInvokeEvent)=>{const w=window();if(!w||w.isDestroyed()||event.sender!==w.webContents||event.senderFrame!==w.webContents.mainFrame)throw new Error('permission_denied');};
-  const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error(['invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','budget_exhausted'].includes(code)?code:'unavailable');});
+  const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error(['unified_settings','invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','budget_exhausted'].includes(code)?code:'unavailable');});
   ipcMain.handle('materials:ai-settings',event=>{check(event);return safe(()=>store.materialAi.settings());});
   ipcMain.handle('materials:ai-save-settings',(event,input)=>{check(event);if(!validAiSettings(input))throw new Error('invalid_input');return safe(()=>store.materialAi.saveSettings(structuredClone(input)));});
   ipcMain.handle('materials:ai-list',(event,id,offset=0)=>{check(event);if(!materialId(id)||!Number.isSafeInteger(offset)||offset<0||offset>1000000)throw new Error('invalid_input');return safe(()=>store.materialAi.list(id,offset));});
   ipcMain.handle('materials:ai-create',(event,input)=>{check(event);if(!validAiBatch(input))throw new Error('invalid_input');return safe(()=>store.materialAi.create(structuredClone(input)));});
   ipcMain.handle('materials:ai-action',(event,input)=>{check(event);if(!validAiAction(input))throw new Error('invalid_input');return safe(()=>store.materialAi.action(structuredClone(input)));});
+  ipcMain.handle('questions:native-image',async(event,input)=>{check(event);if(!validNativeQuestionImageQuery(input))throw Error('invalid_input');const controller=new AbortController(),closed=()=>controller.abort();event.sender.once('destroyed',closed);try{return await safe(async()=>{const images=await store.nativeQuestions.officeImages(input.questionId,input.version,'teacher',controller.signal),image=images.filter(p=>p.role===input.role)[input.index];if(!image)throw Error('source_changed');check(event);return{figure:image.figure,dataUrl:'data:image/png;base64,'+image.bytes.toString('base64')};});}finally{event.sender.removeListener('destroyed',closed);}});
+  ipcMain.handle('questions:native-original',async(event,input)=>{check(event);if(!validNativeQuestionOriginQuery(input))throw Error('invalid_input');return safe(async()=>{const stem=await store.nativeQuestions.originalStem(input.questionId,input.version,new AbortController().signal);check(event);return{stem};});});
 }

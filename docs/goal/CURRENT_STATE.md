@@ -1,5 +1,11 @@
 # 小智 Goal 当前状态
 
+## 2026-10-28 S6-B2生产图文链已贯通
+
+本节为最新状态，覆盖下方历史“生产未接通/不能使用新入口”的描述；完整知识库目标继续，未完成项目不因本片通过而关闭。
+
+真实Store已实例化/迁移原生账本与context表，现Word AI批次真实排版/OCR、同库两阶段/nativeTranscription、typed同题本编辑看图、小智投影检索与正式Word/PDF消费者已接线。生产只复用小智DeepSeek账户，固定Flash图像请求，旧provider回执只读保留。Store10/原生UI7及最终门禁限定见KB_IMPLEMENTATION_EVIDENCE.md，真实模型质量/40GB/EXE仍OPEN；每轮固定提交整合推送origin/main。
+
 <!-- kb-native-ledger-20261028:start -->
 ## 2026-10-28 原生AI业务图片与持久输入（完整目标继续）
 

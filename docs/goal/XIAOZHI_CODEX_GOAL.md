@@ -1,5 +1,11 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-28 最新增量与交付规则
+
+Word图文AI生产链已从独立账本接通资料授权/OCR/两阶段、同题本原生修订与typed编辑看图、小智图义投影和正式Word/PDF输出；精确范围与未验证边界见KB_IMPLEMENTATION_EVIDENCE.md。模型统一现小智DeepSeek API，生产固定Flash，AI入库不冒充教师或答案正确。
+
+用户最新固定要求：每轮结束完成相关检查、提交、刷新整合远端main并正常推送GitHub，报告提交与远端SHA；不覆盖其他协作者工作树。完整Goal仍未完成：真实站点与原生v3补答、跨页答案册、本地视觉、自然检索/答案质量、40GB/P95和最终安装包继续。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

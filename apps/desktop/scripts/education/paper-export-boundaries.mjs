@@ -1,5 +1,7 @@
 import '../office-agent/register-source.mjs';
 import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import {randomUUID} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';
+import {tmpdir} from 'node:os';
+import {nativeTestPng} from './native-test-png.mjs';
 const {compilePaperOffice,assertPaperOffice,createPaperExportTool,answerSheetSpacing,ANSWER_SHEET_INSTRUCTIONS}=await import('../../src/main/education/paper-export.ts');
 const {validPaperExport,PAPER_OFFICE_SCHEMA,PAPER_ANSWER_SHEET_OFFICE_SCHEMA,isPaperOfficeSchema}=await import('../../src/shared/paper-export.ts');
 const {validOfficeDraft}=await import('../../src/shared/xiaozhi-office-draft.ts');
@@ -9,7 +11,7 @@ const {createOfficeArtifactCoordinator}=await import('../../src/main/xiaozhi-age
 const {generateOfficeDocument}=await import('../../src/main/xiaozhi-agent/office-generator.ts');
 const {resolvePaperOfficeImages}=await import('../../src/main/education/paper-office-images.ts');
 const {officeFigureSize,officeImageSnapshot}=await import('../../src/main/xiaozhi-agent/office-images.ts');
-const output=fs.mkdtempSync(path.resolve('test-results/education-paper-export-')),sid='aisession_'+randomUUID();
+const output=fs.mkdtempSync(path.join(tmpdir(),'omni-paper-export-')),sid='aisession_'+randomUUID();
 const paper={id:'xipaper_'+randomUUID(),sessionId:sid,title:'本地组卷',state:'confirmed',complete:true,sourceCurrent:true,digest:'a'.repeat(64),totalPoints:100,answerVerified:false,blueprint:{grade:'初二',subject:'数学',durationMinutes:90,sections:[{id:'a',label:'解答题'}]},selection:{items:Array.from({length:20},(_,i)=>({number:i+1,points:5,sectionId:'a',question:{stem:`条件${i}：求 ${i}+5。`,answer:'答案哨兵'+(i+5),analysis:'解析哨兵'+i,sourceTitle:'教师自建题库'}}))}};
 const report={success:false,checks:[],boundary:'Owned SQLite and real DOCX libraries; formal Pi/Electron/PDF/natural images separately required'},opened=[];
 const check=async(name,fn)=>{await fn();report.checks.push({name,pass:true});console.log('PASS '+name);};
@@ -100,7 +102,7 @@ try{
   assert((await coord.decide(decision(row))).ok);assert(JSON.parse((await promise).content[0].text).success);
   assert.equal(e.db.prepare('SELECT count(*) n FROM document_artifact_paper_sources').get().n,1);assert.equal(e.db.prepare('SELECT audience FROM document_artifact_paper_sources').get().audience,'student');assert(fs.readFileSync(path.join(e.workspace,'工具答题卡.docx')).length>1000);
  });
- const png=fs.readFileSync(path.resolve('test-results/education-journey-GrzGER/教师合成错题.png')),sha=await import('node:crypto').then(m=>m.createHash('sha256').update(png).digest('hex'));
+ const png=nativeTestPng(72),sha=await import('node:crypto').then(m=>m.createHash('sha256').update(png).digest('hex'));
  const rich=structuredClone(paper);rich.selection.items=[rich.selection.items[0]];const rq=rich.selection.items[0].question;rq.id='question_'+randomUUID();rich.selection.items[0].source={questionId:rq.id,version:'b'.repeat(64)};
  const image={id:'source_question_0',kind:'image',anchors:[{page:1,box:[0,0,1,1]}],assetId:'asset_'+randomUUID(),sha256:sha,mime:'image/png',width:png.readUInt32BE(16),height:png.readUInt32BE(20)};
  rq.document={schemaVersion:'xiaozhi.question-document.v2',source:{resourceId:'resource_'+randomUUID(),resourceVersion:'c'.repeat(64),parserVersion:'teacher-transcription.v2+fixture',ocrVersion:''},blocks:[image,{id:'transcription',kind:'text',anchors:image.anchors,text:rq.stem}],answer:{origin:'teacher',text:rq.answer,anchors:[]},analysis:{origin:'teacher',text:rq.analysis,anchors:[]},context:{schemaVersion:'xiaozhi.question-projection.v1',projection:Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(k=>[k,k==='statement'?{state:'provided',text:rq.stem}:{state:'not_applicable',text:''}])),sourceBlockIds:[image.id]}};
@@ -111,7 +113,7 @@ try{
  await check('Actual production SQLite connections queue run statements without starving source-file verification under a held write lease',async()=>{
   const {build}=await import('esbuild'),{registerHooks}=await import('node:module');
   registerHooks({resolve(s,c,next){if(s==='electron')return{url:'data:text/javascript,export const app={};export const net={};export const utilityProcess={};',shortCircuit:true};return next(s,c);}});
-  const bundle=path.join(output,'db.mjs');await build({entryPoints:['src/main/db.ts'],outfile:bundle,bundle:true,platform:'node',format:'esm',packages:'external'});
+  const bundle=path.join(fs.mkdtempSync(path.resolve('test-results/paper-export-build-')),'db.mjs');await build({entryPoints:['src/main/db.ts'],outfile:bundle,bundle:true,platform:'node',format:'esm',packages:'external'});
   const {OmniEduStore}=await import('file:///'+bundle.replaceAll('\\','/')),owner=new OmniEduStore(output),file=path.join(output,'contention.db'),main=await owner.openDatabase(file),lease=await owner.openDatabase(file);
   const exec=(db,s)=>new Promise((resolve,reject)=>db.exec(s,e=>e?reject(e):resolve())),run=(db,s)=>new Promise((resolve,reject)=>db.run(s,e=>e?reject(e):resolve())),close=db=>new Promise((resolve,reject)=>db.close(e=>e?reject(e):resolve()));
   let held=false;try{await exec(main,'PRAGMA journal_mode=WAL;PRAGMA busy_timeout=500;CREATE TABLE facts(id INTEGER PRIMARY KEY,value INTEGER);INSERT INTO facts VALUES(1,0)');await exec(lease,'PRAGMA busy_timeout=500;BEGIN IMMEDIATE');held=true;

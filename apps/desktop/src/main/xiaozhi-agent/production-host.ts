@@ -327,7 +327,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       validateClassroomDraft:async(id,draft)=>{if(!('classroomSource'in draft))throw Error('invalid_input');assertClassroomOffice(await store.xiaozhiState.classrooms.readConfirmed(id,draft.classroomSource.classroomId,draft.classroomSource.version),draft);},
       commitClassroomDraft:async(id,draft,install)=>{if(!('classroomSource'in draft))throw Error('invalid_input');await store.xiaozhiState.classrooms.withConfirmedSource(id,draft.classroomSource.classroomId,draft.classroomSource.version,item=>{assertClassroomOffice(item,draft);install();});},
       validatePaperDraft:async(id,draft)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);},
-      resolvePaperImages:async(id,draft,signal)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);return resolvePaperOfficeImages(draft,store.originalQuestions,signal);},
+      resolvePaperImages:async(id,draft,signal)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');assertPaperOffice(await store.papers.review(id,draft.paperSource.paperId),draft);return resolvePaperOfficeImages(draft,store.originalQuestions,signal,store.nativeQuestions);},
       commitPaperDraft:async(id,draft,install)=>{if(!isPaperOfficeDraft(draft))throw new Error('invalid_input');await store.papers.withConfirmedSource(id,draft.paperSource.paperId,draft.paperSource.digest,paper=>{assertPaperOffice(paper,draft);install();});},
       workspace:async id=>(await host.resolveFileWorkspace(id)).path,
       paperWorkspace:resolvePaperOutput,
