@@ -166,3 +166,15 @@ F01检查点398e5e7，三方merge615a6d2仅import冲突保留双方；未用旧�
 后续精确结果、正常push SHA和D:原生启动追加本节；实时入口WORK_PROGRESS.md。
 
 追加：node scripts/electron-smoke.mjs 最终exit0，ok=true/30隔离学生/207项通过；main-unification-legacy-smoke.log。controls第二次fCy2pz在CDP轮询暂停状态时Promise GC而0项，保留诊断；已改为本机暂停marker同步，第三次正重跑。功能与性能边界不变。
+
+### 主线推送与D盘实际启动收尾
+
+1489db06c4a966a5b9bac325d001fafe7806c19e正常push HEAD:main，ls-remote读回相同。D:和32aa/main均ff该提交；未删除/强推任何分支，其他旧分支的代码已包含。D:最终npm start从apps/desktop执行exit0，当前源码完成build/type，实际PID32232/原生窗口2884208，进程参数明确D:\WorkProject\EduProject\apps\desktop\out\main\index.js。之前从根cwd执行npm start因无package.json exit1，立即从正确desktop重试；未启动旧包。
+
+D:实际out SHA256 ed47fcb104f1fa74f1bde8954767a5df40ab2e42feb6f5d7977cd39be9cd6816，renderer index-C1izGykz.js 7094.13kB。此为D:独立重建，不能冒称与隔离树178fb8f6为同一bundle。PiEducationWorkspace/OfficeComposer/PiWorkspaceShell/ColumnResizeHandle四源码SHA与集成树逐字相同；fresh HTML引用新构建。Computer Use直接检查日常原生窗口，看到模板输入/附件/权限/技能/命令，打开四模式权限菜单再关闭；没有发送模型请求或改权限。直接renderer URL未读取，仅由真实进程路径/启动器清除dev URL/新HTML推导；不扩大成所有历史启动入口或间歇旧页根因的验收。
+
+207 legacy最终exit0（30隔离学生）；controls的fCy2pz因CDP promise GC 0项，改marker后的zuyP4z第二次模型请求未进入而超时，前1项过，仍不算全组通过。HBvBst的4项限定真实Stop/hidden证据保留，完整复制审批/冷恢复组合未验。F01/F24继续MEASURING；新R03先定位probe/Stop settlement，不修改生产预算。此次180s只为新probe准备多工具阶段的功能等待预算，非流式时延门禁；原60s失败原样保留。
+
+最终回滚：本机恢复包可恢复原各分支及未提交文件；对F01生产差异定向回退时保留fdc新版UI和权限边界，先在隔离分支验证后正常push，不整体reset到旧页面，也不回滚真实数据库/教师资料。性能前后最终对照未完成，不能声明性能提升或无退化。R01来源指纹、R02依赖22、R03扩展流控及真实Officeconfiguration/40GB/安装包均继续公开待办。
+
+修改文件范围：运行时为PiEducationWorkspace.tsx、pi-text-view-buffer.ts、pi-snapshot-hydrator.ts（已有新版OfficeComposer/附件/权限/三栏原样保留）；回归为scripts/audit下hydration component/electron/helper与text buffer，以及pi-composer-menus-ui-smoke的临时目录夹具；协作四文档、Goal四状态、CURRENT入口、覆盖矩阵与审计清单/WORK_PROGRESS同步。原根cwd启动失败npm日志已本机保存main-unification-root-cwd-start-failure.log。

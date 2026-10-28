@@ -19,7 +19,7 @@
 | ID | 级别 | 报告问题 / 当前初查 | 下一实施/验证边界 | 完成所需证据 | 状态 |
 |---|---|---|---|---|---|
 | F24 | P1 | 缺量化性能门禁；已有ux00与长历史脚本，但不完整 | WP0先建固定10/100/1000轮、delta/code/scroll/hidden/Skill/SQL/冷启矩阵；明确采不到的指标 | 同硬件/构建口径每场景≥5次，原始samples+p50/p95、Chromium/React/main/资源四类证据；回退负例能使门禁失败 | MEASURING |
-| F01 | P0 | 逐事件setSnapshot仍存在，main已有16ms批次 | UI有界按session/run/segment相邻文本合并，非文本立即flush | 10/50/200 delta/s，完整字节/顺序/末帧；commit下降、Stop/审批/隐藏/切会话 | MEASURING |
+| F01 | P0 | 原逐事件setSnapshot；1489检查点已加有界视图缓冲，性能与扩展流控未验收 | UI有界按session/run/segment相邻文本合并，非文本立即flush | 10/50/200 delta/s，完整字节/顺序/末帧；commit下降、Stop/审批/隐藏/切会话 | MEASURING |
 | F02 | P0 | 主/渲染共享投影多层复制 | 保留权威投影与序列，只减少实际被profile证明的复制 | 1/20/100消息段同delta，计算/分配曲线，来源/恢复不倒退 | OPEN |
 | F03 | P0 | 500ms严格校验已有在途去重，仍同步重IO | 分开展示/权限/完整性；实测后Worker/去重，不仅改轮询间隔 | 5/20 Skill，check p50/p95/main eventloop，磁盘篡改/撤销及时拒绝、交付TOCTOU | OPEN |
 | F04 | P0 | Shiki effect存在；实际流围栏触发次数待证 | 流式原文/完成后高亮与有界缓存，保留原厂设计 | 1000/5000/20000字代码，真实高亮次数/LongTask/可复制/终态 | OPEN |
@@ -99,3 +99,5 @@ WP0/F24基线→F14/15正确性→F01/02/04/05流热路径→F03主进程→F06/
 6. F24贯穿每批：固定硬件/构建/探针/5样本、保留raw/p50/p95与失败；门禁稳定和全部26项完成后才关闭总体审计。
 
 集成附带未解决项：R01 `test:ui-contracts`旧来源指纹与新版prompt-input不匹配，需来源/版本审阅后修复，不能盲改hash；R02 npm audit22项(8high/6moderate/8low)，需独立依赖升级评估；真实Office导出configuration保持原知识库台账。它们不因main统一而隐藏。
+
+R03（F01验收前置）：扩展真实流控HBvBst前4项通过但复制审批60s未就绪；fCy2pz为CDP promise GC；marker复测zuyP4z在第二次发送未进入模型请求而超时，仅前1项通过。保留全部失败，先分辨probe/主进程退出settlement与发送准入，不能删审批断言或宣称F01完成。本轮主线/UI统一不承担修复此额外故障。

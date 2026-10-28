@@ -2,7 +2,7 @@
 
 ## 2026-10-28 新UI整合检查点
 
-整合版build/type、renderer240、恢复/权限组件36、独立三栏8及菜单8、真实Pi默认6与gap6通过。test:ui-contracts旧来源指纹门禁失败（prompt-input/index.ts），npm audit22风险保留；没有更新baseline来隐藏失败。最终远端对齐与D盘日常原生启动待完成，进度及完整证据见goal/WORK_PROGRESS.md和DEEP_AUDIT_20261028_EVIDENCE.md。
+整合版build/type、renderer240、恢复/权限组件36、独立三栏8及菜单8、真实Pi默认6与gap6通过。test:ui-contracts旧来源指纹门禁失败（prompt-input/index.ts），npm audit22风险保留；没有更新baseline来隐藏失败。1489db0正常push/回读，D:desktop npm start exit0，实际D:out窗口新版四模式菜单已操作，4源码SHA一致；legacy207通过，扩展controls仍未完整通过，进度及完整证据见goal/WORK_PROGRESS.md和DEEP_AUDIT_20261028_EVIDENCE.md。
 
 ## 2026-10-28 最新主线与真实试卷复核
 

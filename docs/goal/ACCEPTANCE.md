@@ -2,7 +2,7 @@
 
 ## 2026-10-28 主线统一验收进行中
 
-合并fdc8e9c新版UI后build/type exit0、renderer240/240、StrictMode36/36；Terra独立三栏8/8(Tq5O97)、菜单8/8(Wr5pxH)；受控真实Pi默认6(3x9tsm)、gap6(QQQEZE)通过。npm audit exit1/22(8high/6moderate/8low)，test:ui-contracts exit1：prompt-input/index.ts与旧设计评审指纹不匹配；不改指纹掩盖失败。待最终D:最新源码原生启动与remote SHA回读，不能先称全部验收。
+合并fdc8e9c新版UI后build/type exit0、renderer240/240、StrictMode36/36；Terra独立三栏8/8(Tq5O97)、菜单8/8(Wr5pxH)；受控真实Pi默认6(3x9tsm)、gap6(QQQEZE)通过。npm audit exit1/22(8high/6moderate/8low)，test:ui-contracts exit1：prompt-input/index.ts与旧设计评审指纹不匹配；不改指纹掩盖失败。1489db0正常push回读一致；D最新源码npm start exit0，PID32232实际D:out，新版权限菜单已操作，4关键源码SHA一致。legacy207通过，扩展controls未整组通过；F01/F24/全部优化仍未验收。
 
 ## 2026-10-28 拉取后复核与真实两题结果
 
