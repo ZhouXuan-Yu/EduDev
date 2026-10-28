@@ -1,5 +1,9 @@
 # 小智 Goal 当前状态
 
+## 2026-10-28 交付前提修正
+
+用户允许本体与自动下载配置的受管组件分离，解除全内嵌EXE假设。专用分支knowledge-base-reuse-implementation已整合d229b1a；官方AnythingLLM v1.19.0已下载/散列核验并隔离解包，未完成运行/摄入/规模或自动安装。当前继续KR02，真实导出0文件仍OPEN；详WORK_PROGRESS和KB_MANAGED_COMPONENTS_CONTRACT。
+
 ## 2026-10-28 当前主线知识库纠偏
 
 08e26bc基线、codex/kb-reuse-recovery。复盘与官方固定源/API核验完成，候选实机对照/生产接入未开始；不增加功能或性能完成数。下一KR02前置10GB/40GB量级检索资格和自然资料正确性；2/26仅性能审计，不是知识库完成度。当前真实导出configuration/0文件仍OPEN；细目看WORK_PROGRESS及纠偏合同。
