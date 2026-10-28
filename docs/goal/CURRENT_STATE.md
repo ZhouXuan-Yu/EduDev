@@ -2,7 +2,7 @@
 
 ## 2026-10-28 F15现实现补齐真实故障覆盖
 
-仅测试/文档，生产receiver保持现实现；--event-gap真实Pi三轮6项通过，补读失败/重复/drop10/无后继丢terminal及冷启的证据见审计EVIDENCE。复用F14冻结d457f435构建、240/207门禁，独立默认F14回归/F15操作与主线收尾待记录。不把旧报告错误描述改写为新功能交付；完整Goal active，F24仍MEASURING。
+生产receiver保持现实现；--event-gap真实Pi三轮6项、独立6/6/10/19通过。整合297b0d3后重建d8b9f866：build/type、240、provider9及Pi默认/F15各6通过；main2c25e36正常推送回读一致，主线后F15实际6项再过，F15 VERIFIED。合并前207历史smoke不冒充新构建证据，D:协作树未同步。完整Goal active，F24仍MEASURING，下一F01；详审计EVIDENCE。
 
 ## 2026-10-28 真实资料流程发现生产差距
 

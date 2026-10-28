@@ -2,7 +2,7 @@
 
 ## 2026-10-28 F15预集成故障实证
 
-`node scripts/audit/snapshot-hydration-electron.mjs --event-gap` root6项exit0（kzbuH1）、三真实Pi轮次/2启动/0错误，同d457f435产物。drop10、duplicate9/11、拒真实补页后显式恢复；第三轮seq65仅末通知丢失，后无通知，order218之后order219/after64真实页补回。每run峰值1，UI每token唯一有序/SQLite文本和hash/native冷启一致。独立与主线收尾待记录；受控模型非真实provider。
+`node scripts/audit/snapshot-hydration-electron.mjs --event-gap` root6/独立6通过；三真实Pi轮次/2启动/0错误。drop10、duplicate9/11、拒真实补页后显式恢复；第三轮seq65无后继丢失，order218之后order219/after64真实页补回。每run峰值1，UI/SQLite精确、草稿/零变更/native冷启一致。新整合d8b9f866重建/240/provider9、root默认6/独立F15六项均通过；main2c25e36后EAOBUk六项通过，F15 VERIFIED。受控模型非真实provider，207是合并前证据。
 
 ## 2026-10-28 真实文件夹验收：部分通过
 

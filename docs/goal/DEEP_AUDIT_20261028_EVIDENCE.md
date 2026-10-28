@@ -135,3 +135,9 @@ F15提交e79646c后fetch发现origin/main已到297b0d3（包含1f9eae7/837f337�
 源代码仅上游material-ai-provider新增精确根type=json_object兼容并继续原严格schema；renderer/receiver未变。整合后重新`npm.cmd run build` exit0含typecheck（audit-f15-merge-build.log）、`npm.cmd run test:renderer-components` exit0/240（audit-f15-merge-renderer.log）、`node --experimental-transform-types scripts/education/kb-native-deepseek-boundaries.mjs` exit0/9（audit-f15-merge-provider-final.log）；首次未带类型转换flag触发Node strip-only参数属性语法失败，audit-f15-merge-provider.log保留，未改源码绕过。
 
 新整合out SHA256 `d8b9f866272359f0c61a786ed55f81a090822f5742dc9e7861e4871f3bc8fd00`。根在该产物默认F14回归exit0/6、2启动/0错误，audit-f15-merge-f14-regression.log、audit-hydration-electron-ylV1Xr/report.json，owned7172/27304 exit0。此前d457f435的207历史smoke是合并前证据，未冒充新整合产物全套结果；当前新增provider9和Pi恢复专项另作对应验证。构建产生的六个vendor绝对依赖路径差异再次精确恢复，未将其作为业务修改提交。后续独立新构建F15与正常push/main启动结果收尾追加。
+
+### F15最终主线交付
+
+Terra复审确认9份冲突文档双方内容均保留，并在新d8b9f866构建上独立重跑--event-gap exit0/6项（audit-event-recovery-electron-6GvQzs/report.json、owned35244/7648 exit0、0 rendererErrors）。合并提交2c25e36b1d6f07fd94af6ea2a3c15fdcc291133c正常push HEAD:main、ls-remote回读一致。随后该主线SHA再次执行`node scripts/audit/snapshot-hydration-electron.mjs --event-gap` exit0/6项、三轮/2启动/0错误，新相同完整out指纹；日志audit-f15-main-startup.log、报告audit-event-recovery-electron-EAOBUk/report.json。F15按冻结范围标VERIFIED，其后仅状态文档收尾，不改变产物。
+
+最终D:只读核对仍HEAD38c1f06、含未提交协作文件，未改其分支/运行文件；32aa已检出main亦未背后移动。以上是远端主线及隔离真实Electron交付，不能称日常D:已同步或偶发旧页面原因已彻底消除。完整26项只有F14/F15本轮闭合，F24仍MEASURING，其他OPEN；下一切片F01，整Goal继续active。

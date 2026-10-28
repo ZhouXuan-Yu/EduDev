@@ -33,7 +33,7 @@
 | F12 | P1 | snapshot恢复/flush/多仓库读取耦合 | 轻聊天/历史/capture/侧栏最小查询；不盲并行 | 分仓时长/SQL数/整包大小；权限/hash/来源、settlement/owner/generation一致 | OPEN |
 | F13 | P1 | send/status/terminal多次hydrate/list | per-session single-flight/版本及取消，按域刷新 | 每次正常发送、停止、失败的IPC计数和最终状态；切会话晚响应 | OPEN |
 | F14 | P1 | updater恢复副作用及缺快照竞态已修 | 同scope单在途、fresh/version/token、有界失败重试 | helper11/StrictMode12/真实Pi6及冷启；独立通过；main34aae9f及合并后6项 | VERIFIED |
-| F15 | P1 | 报告缺号判断陈旧：已有createEventReceiver恢复 | 审既有receiver reset/generation/gap失败，不加第二套序列 | 实际UI丢第10条、补页失败/重连、重复/乱序不重复Token | FIXING |
+| F15 | P1 | 当前receiver已具备恢复，补齐真实故障实证 | 复用现receiver；无生产重写 | 实际drop10/duplicate9&11/补读拒绝/无后继丢终态/cold；独立及main2c25e36后6项通过 | VERIFIED |
 | F16 | P1 | 65536同时影响流和最终返回，已有truncated | 先核最终事实/文件上限再修可见提示与长产物路径 | >65536运行/终态/持久化/重启，明确完整与截断；不承诺不存在的全文 | OPEN |
 | F17 | P1 | /models10s预算/缓存条件仍需测 | 正确缓存/取消/准备阶段可观察，不编能力 | 冷/热/过期/超时TTFT分阶段、错误/Stop、无伪模态 | OPEN |
 | F18 | P1 | 已限legacy设置/外层会话/待输入；共享知识/确认有生产消费者 | 全消费者+按路由初始化测量，保留共享事实 | 冷启瀑布/TTI、IPC计数、学习概览非零/学生/录入/旧入口/重启 | OPEN |
