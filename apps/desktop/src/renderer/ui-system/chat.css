@@ -47,6 +47,19 @@
   margin-inline: auto;
   flex-shrink: 0;
 }
+.edu-chat .teacher-quick-starts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.edu-chat .teacher-quick-start {
+  min-width: 0;
+  height: auto;
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+}
 .edu-process-list {
   display: flex;
   flex-direction: column;
@@ -254,5 +267,10 @@
   }
   .edu-chat .office-composer-container {
     padding-inline: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .edu-chat .teacher-quick-starts {
+    grid-template-columns: 1fr;
   }
 }

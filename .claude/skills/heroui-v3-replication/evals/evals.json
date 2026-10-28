@@ -1,0 +1,29 @@
+{
+  "skill_name": "heroui-v3-replication",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "把 herouipro-v3 里的 ChatSource 复刻到 EduProject 的小智回答区域，覆盖 Default、Document、Grouped 三种用法。以 https://herouipro-v3.shunqwang.workers.dev/#ChatSource 为视觉和交互基准，要求外部链接仍走 EduProject 的 host API，不允许远程 favicon。完成后给出源码对照、截图、DOM/计算样式证据和真实 Electron 测试结果。",
+      "expected_output": "ChatSource 的 URL、文档、分组三种形态与演示站一致；本地组件未被无依据重写；Electron 链接通过 host API 打开；有可复现的 UI 测试和对比证据。",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "复刻 herouipro-v3 的 ChatAttachment Composer 和 Grouped 用法到小智输入框，要求媒体缩略图、文件卡片、Info 名称/大小、Remove、拖放与多选行为与演示站一致，同时保留现有 SQLite 附件账本、路径证明和最大 8 个限制。输出修改文件、差异说明和真实 Electron 测试结果。",
+      "expected_output": "ChatAttachment/ChatAttachmentInput/Group 的 anatomy 和状态与演示站一致；现有附件业务边界不退化；有真实附件选择和分组测试；未验证项明确标注。",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "复刻 herouipro-v3 的 PromptInput Composer 结构到 EduProject 的小智输入框，要求 Shell/Content/Attachments/TextArea/Toolbar/Action/Send 的组合、发送/停止状态、键盘提交和响应式位置与演示站一致。不要改动已有业务发送逻辑和样式来源，完成后给出对照证据和回归测试。",
+      "expected_output": "PromptInput 组合结构与演示站一致；发送/停止/Enter/Shift+Enter 行为正确；1366×768 与 1920×1080 可达；现有发送回归测试通过。",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "把 herouipro-v3 的 template-chat 完整复刻成一个独立 agent 网页项目，包含侧边栏、顶栏、会话、来源/工具/思考过程、输入框、搜索框以及 New Chat/Library/Explore 路由。要求与 template-chat 在 1366x768、1440x1000、1920x1080 下 DOM、文本、计算样式和截图一致，并给出 pixel-diff 证据。",
+      "expected_output": "独立 Next 应用可运行、可构建；与 template-chat 的 DOM/文本/样式/截图在三个视口一致；关键交互结果一致；远程资源已本地化；报告列出未验证项。",
+      "files": []
+    }
+  ]
+}

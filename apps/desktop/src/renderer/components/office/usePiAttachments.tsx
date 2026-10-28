@@ -1,13 +1,12 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button,Modal} from '@heroui/react';
 import {XIAOZHI_ATTACHMENTS_SCHEMA,XIAOZHI_ATTACHMENT_ERRORS,type XiaozhiAttachmentInput,type XiaozhiAttachment,type XiaozhiAttachmentPreview} from '../../../shared/xiaozhi-attachments';
-import {ChatAttachment,ChatAttachmentGroup} from '../../heroui-pro/components/chat-attachment';
 import {Markdown} from '../../heroui-pro/components/markdown';
 import './pi-attachments.css';
 import type {OfficeProjectedItem} from '../../../shared/office-agent';
 import {AttachmentOcrPanel} from './AttachmentOcrPanel';
 import type {PublicImageDelivery} from '../../../shared/xiaozhi-public-images';
-import {OfficeMutationBoundary} from './OfficeSynchronization';
+import {PiAttachmentList} from './PiAttachmentList';
 
 /** Local drafts and previews. Actual message delivery is a separate durable operation. */
 export function usePiAttachments(sessionId:string,visible:boolean,history:OfficeProjectedItem[]=[]){
@@ -126,23 +125,22 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   }catch{if(stamp===epoch.current&&previewRequest.current?.requestId===request.requestId)setPreviewError('无法预览附件，请重试。');}
   finally{if(stamp===epoch.current&&previewRequest.current?.requestId===request.requestId)setReading(false);}
  }
- const renderCards=(values:XiaozhiAttachment[],submitted=false)=><ChatAttachmentGroup>{values.map(item=>
-   <ChatAttachment key={item.id} mimeType={item.mime} name={item.name} size={item.size} src={thumbnails[`${item.id}:${item.revision}`]} data-testid={`pi-attachment-${item.id}`} data-state={item.state}>
-    <Button variant="ghost" isIconOnly className="pi-attachment-open" aria-label={`预览附件 ${item.name}`} onPress={()=>void open(item)}>
-     <ChatAttachment.Preview/>
-    </Button>
-    <ChatAttachment.Info/>
-    {!submitted&&<OfficeMutationBoundary><ChatAttachment.Remove aria-label={`移除附件 ${item.name}`} isDisabled={busy} onPress={()=>void remove(item)}/></OfficeMutationBoundary>}
-   </ChatAttachment>)}</ChatAttachmentGroup>;
+ const renderList=(values:XiaozhiAttachment[],submitted=false)=><PiAttachmentList
+  items={values.map(item=>({...item,src:thumbnails[`${item.id}:${item.revision}`]}))}
+  busy={busy}
+  removeLabel="移除附件"
+  onOpen={item=>void open(item)}
+  onRemove={submitted?undefined:item=>void remove(item)}
+ />;
  const renderHistory=(item:OfficeProjectedItem)=>item.attachments?.length?<section className="pi-attachments pi-attachment-history" data-testid="pi-attachment-history" aria-label="本轮已发送附件">
-  {renderCards(item.attachments,true)}<p className="pi-attachment-local-note">本地附件 · {item.attachments.length} 个</p>
+  {renderList(item.attachments,true)}<p className="pi-attachment-local-note">本地附件 · {item.attachments.length} 个</p>
  </section>:undefined;
  const renderViewed=(receipts:PublicImageDelivery[])=>{
   const metadata=history.flatMap(item=>item.attachments||[]);
   const matched=receipts.map(receipt=>({receipt,item:metadata.find(item=>item.state==='submitted'&&item.format==='image'
    &&item.id===receipt.attachment?.id&&item.revision===receipt.attachment.revision&&item.version===receipt.attachment.version)}));
   return <section className="pi-attachments pi-viewed-images" data-testid="pi-viewed-image-attachments" aria-label="模型已接收的图片版本">
-   {renderCards(matched.flatMap(v=>v.item?[v.item]:[]),true)}
+   {renderList(matched.flatMap(v=>v.item?[v.item]:[]),true)}
    {matched.flatMap(v=>v.item&&thumbnailErrors[`${v.item.id}:${v.item.revision}`]?[v.item]:[]).map(item=><p role="status" key={item.id} data-testid="pi-viewed-thumbnail-error">
     {item.name}：{thumbnailErrors[`${item.id}:${item.revision}`]} <Button variant="ghost" size="sm" onPress={()=>void retryThumbnail(item)}>重试缩略图</Button></p>)}
    {matched.filter(v=>!v.item).map(({receipt})=><p key={receipt.callId} role="status">{receipt.title}：本地版本无法关联，不能打开预览。</p>)}
@@ -150,7 +148,7 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   </section>;
  };
  const cards=<section className="pi-attachments" data-testid="pi-attachments" aria-label="本地待发送附件">
-  {items.length>0&&renderCards(items)}
+  {items.length>0&&renderList(items)}
   {busy&&<p role="status">正在添加或更新附件… <Button variant="ghost" size="sm" onPress={cancel}>取消</Button></p>}
   {notice&&<p role="alert" data-testid="pi-attachment-error">{notice} <Button variant="ghost" size="sm" onPress={()=>void refresh()}>重新读取</Button></p>}
  </section>;

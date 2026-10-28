@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import {
   PromptInputAction,
   PromptInputAttachments,
@@ -11,6 +12,22 @@ import {
   PromptInputToolbarEnd,
   PromptInputToolbarStart,
 } from './prompt-input';
+import type {
+  PromptInputQueueItem,
+  PromptInputQueueItemAction,
+  PromptInputQueueItemActions,
+  PromptInputQueueItemAttachments,
+  PromptInputQueueItemAttachmentsOverflow,
+  PromptInputQueueItemBody,
+  PromptInputQueueItemContent,
+  PromptInputQueueItemDescription,
+  PromptInputQueueItemHandle,
+  PromptInputQueueItemIcon,
+  PromptInputQueueItemMore,
+  PromptInputQueueItemRemove,
+  PromptInputQueueItemSteer,
+  PromptInputQueueList,
+} from './prompt-input.queue';
 import { PromptInputQueue } from './prompt-input.queue';
 
 export {
@@ -35,6 +52,7 @@ export {
   getPromptInputSingleLineHeight,
   isPromptInputGenerating,
   isPromptInputTextAreaExpanded,
+  isPromptInputTokenInputExpanded,
   PROMPT_INPUT_INLINE_COMPACT_HEIGHT,
   resolvePromptInputStatus,
   resolvePromptInputTextAreaElement,
@@ -105,3 +123,39 @@ export type {
 } from './prompt-input.queue';
 export type { PromptInputVariants } from './prompt-input.styles';
 export type { ChatStatus } from './prompt-input.types';
+
+export type PromptInput = {
+  ActionProps: ComponentProps<typeof PromptInputAction>;
+  AttachmentsProps: ComponentProps<typeof PromptInputAttachments>;
+  ContentProps: ComponentProps<typeof PromptInputContent>;
+  FooterProps: ComponentProps<typeof PromptInputFooter>;
+  Props: ComponentProps<typeof PromptInputRoot>;
+  QueueItemActionProps: ComponentProps<typeof PromptInputQueueItemAction>;
+  QueueItemActionsProps: ComponentProps<typeof PromptInputQueueItemActions>;
+  QueueItemAttachmentsOverflowProps: ComponentProps<
+    typeof PromptInputQueueItemAttachmentsOverflow
+  >;
+  QueueItemAttachmentsProps: ComponentProps<
+    typeof PromptInputQueueItemAttachments
+  >;
+  QueueItemBodyProps: ComponentProps<typeof PromptInputQueueItemBody>;
+  QueueItemContentProps: ComponentProps<typeof PromptInputQueueItemContent>;
+  QueueItemDescriptionProps: ComponentProps<
+    typeof PromptInputQueueItemDescription
+  >;
+  QueueItemHandleProps: ComponentProps<typeof PromptInputQueueItemHandle>;
+  QueueItemIconProps: ComponentProps<typeof PromptInputQueueItemIcon>;
+  QueueItemMoreProps: ComponentProps<typeof PromptInputQueueItemMore>;
+  QueueItemProps: ComponentProps<typeof PromptInputQueueItem>;
+  QueueItemRemoveProps: ComponentProps<typeof PromptInputQueueItemRemove>;
+  QueueItemSteerProps: ComponentProps<typeof PromptInputQueueItemSteer>;
+  QueueListProps: ComponentProps<typeof PromptInputQueueList>;
+  QueueProps: ComponentProps<typeof PromptInputQueue>;
+  RootProps: ComponentProps<typeof PromptInputRoot>;
+  SendProps: ComponentProps<typeof PromptInputSend>;
+  ShellProps: ComponentProps<typeof PromptInputShell>;
+  TextAreaProps: ComponentProps<typeof PromptInputTextArea>;
+  ToolbarEndProps: ComponentProps<typeof PromptInputToolbarEnd>;
+  ToolbarProps: ComponentProps<typeof PromptInputToolbar>;
+  ToolbarStartProps: ComponentProps<typeof PromptInputToolbarStart>;
+};

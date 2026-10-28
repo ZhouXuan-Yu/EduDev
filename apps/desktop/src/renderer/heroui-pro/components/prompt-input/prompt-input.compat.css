@@ -1,0 +1,102 @@
+/* Xiaozhi composer visibility: the light theme sets field-border to transparent
+   and border-width-field to 0, which makes the prompt shell look borderless. */
+.office-composer .prompt-input__shell {
+  border: 1px solid var(--border, var(--pi-line, #d9dde3));
+  background: var(--background, var(--pi-paper, #fff));
+}
+
+.office-composer .prompt-input__shell:focus-within {
+  border-color: var(--accent, #002fa7);
+}
+
+/* Menus are portaled outside the composer's data-slot scope. Keep their
+   layout here, alongside the prompt-input surface. */
+.pi-permission-option,
+.pi-command-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+  padding: 3px 2px;
+}
+.pi-permission-option > svg,
+.pi-command-option > svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--pi-muted, #777d7c);
+}
+.pi-permission-option > span,
+.pi-command-option > span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.pi-permission-option strong,
+.pi-command-option strong {
+  display: block;
+  color: var(--pi-ink, #303332);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.pi-permission-option small,
+.pi-command-option small {
+  display: block;
+  margin-top: 2px;
+  color: var(--pi-muted, #777d7c);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+}
+.pi-command-option code {
+  color: var(--pi-ink, #303332);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+}
+.pi-permission-menu [data-slot="menu-item"],
+.pi-command-menu [data-slot="menu-item"] {
+  padding-block: 8px;
+  padding-inline: 10px;
+}
+.pi-permission-menu,
+.pi-command-menu {
+  min-width: 300px;
+  max-width: min(380px, calc(100vw - 24px));
+}
+
+/* The goal dialog is portaled outside the composer scope. Keep its body
+   vertical so labels and text areas do not overlap. */
+.pi-goal-dialog [data-slot="modal-body"] {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pi-goal-dialog [data-slot="modal-body"] label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.pi-goal-dialog [data-slot="modal-body"] textarea {
+  width: 100%;
+  min-height: 88px;
+}
+
+/* The app stylesheet is scoped away from [data-slot] roots. Keep the narrow
+   composer toolbar rules beside the prompt input so they actually apply. */
+[data-testid='xiaozhi-pi-workspace'] .office-composer-container { container-type: inline-size; }
+[data-testid='xiaozhi-pi-workspace'] .office-command-picker { min-width: 36px; }
+@container (max-width: 680px) {
+  [data-testid='xiaozhi-pi-workspace'] .office-command-picker span,
+  [data-testid='xiaozhi-pi-workspace'] .office-command-picker > svg:last-child { display: none; }
+  [data-testid='xiaozhi-pi-workspace'] .office-command-picker { min-width: 36px; padding-inline: 0; }
+}
+@container (max-width: 620px) {
+  [data-testid='xiaozhi-pi-workspace'] .office-composer [data-slot='prompt-input-toolbar'] { flex-wrap: wrap; height: auto; }
+  [data-testid='xiaozhi-pi-workspace'] .office-composer [data-slot='prompt-input-toolbar-start'] { flex-basis: 100%; flex-wrap: wrap; }
+}
+@container (max-width: 240px) {
+  [data-testid='xiaozhi-pi-workspace'] .office-model-picker { min-width: 0; max-width: 104px; padding-inline: 6px; }
+  [data-testid='xiaozhi-pi-workspace'] .office-model-picker span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}

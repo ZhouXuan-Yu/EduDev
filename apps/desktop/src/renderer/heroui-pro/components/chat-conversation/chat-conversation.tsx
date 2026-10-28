@@ -4,7 +4,6 @@ import {
   type ComponentPropsWithRef,
   createContext,
   type ReactNode,
-  type RefObject,
   use,
   useCallback,
   useEffect,
@@ -56,7 +55,7 @@ interface ChatConversationContextValue {
   isAtBottom: boolean;
   measureScrollState: (options?: { preserveAtBottom?: boolean }) => void;
   resize: 'instant' | 'smooth';
-  scrollToBottom: (behavior?: 'instant' | 'smooth') => void;
+  scrollToBottom: (behavior?: 'instant' | 'smooth', force?: boolean) => void;
   slots: ReturnType<typeof chatConversationVariants>;
 }
 
@@ -100,6 +99,9 @@ const ChatConversationRoot = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
   const stateRef = useRef<ScrollState>(INITIAL_SCROLL_STATE);
+  const stickyFollowRef = useRef(true);
+  const isProgrammaticScrollRef = useRef(false);
+  const lastScrollTopRef = useRef(0);
   const mergedRef = useMemo(() => mergeRefs(ref ?? null, scrollRef), [ref]);
 
   const [scrollState, setScrollState] =
@@ -123,12 +125,8 @@ const ChatConversationRoot = ({
       updateState({
         hasOverflow: measured.hasOverflow,
         isAtBottom:
-          (!preserveAtBottom || !stateRef.current.isAtBottom) &&
-          measured.isAtBottom
-            ? measured.isAtBottom
-            : preserveAtBottom && stateRef.current.isAtBottom
-              ? true
-              : measured.isAtBottom,
+          !!(preserveAtBottom && stateRef.current.isAtBottom) ||
+          measured.isAtBottom,
       });
     },
     [updateState]
@@ -142,13 +140,18 @@ const ChatConversationRoot = ({
   }, []);
 
   const scrollToBottom = useCallback(
-    (behavior: 'instant' | 'smooth' = resize) => {
+    (behavior: 'instant' | 'smooth' = resize, force = false) => {
       const el = scrollRef.current;
       if (!el) return;
+      if (!force && !stickyFollowRef.current) return;
       cancelRaf();
+      stickyFollowRef.current = true;
+      isProgrammaticScrollRef.current = true;
+      lastScrollTopRef.current = el.scrollTop;
       rafRef.current = window.requestAnimationFrame(() => {
         rafRef.current = null;
         el.scrollTo({ behavior: toBehavior(behavior), top: el.scrollHeight });
+        lastScrollTopRef.current = el.scrollTop;
       });
     },
     [cancelRaf, resize]
@@ -157,9 +160,10 @@ const ChatConversationRoot = ({
   useEffect(() => cancelRaf, [cancelRaf]);
 
   useLayoutEffect(() => {
+    lastScrollTopRef.current = scrollRef.current?.scrollTop ?? 0;
     measureScrollState({ preserveAtBottom: true });
-    scrollToBottom(initial);
-  }, [initial]);
+    scrollToBottom(initial, true);
+  }, [initial, measureScrollState, scrollToBottom]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -167,21 +171,90 @@ const ChatConversationRoot = ({
     const observer = new ResizeObserver(() => {
       const wasAtBottom = stateRef.current.isAtBottom;
       measureScrollState({ preserveAtBottom: true });
-      if (wasAtBottom) scrollToBottom(resize);
+      if (wasAtBottom && stickyFollowRef.current) scrollToBottom(resize);
     });
     observer.observe(el);
     return () => observer.disconnect();
   }, [measureScrollState, resize, scrollToBottom]);
 
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const cancelStickyFollow = () => {
+      const scrollTop = Math.max(0, el.scrollTop);
+      cancelRaf();
+      if (
+        isProgrammaticScrollRef.current &&
+        typeof el.scrollTo === 'function'
+      ) {
+        el.scrollTo({ behavior: 'auto', top: scrollTop });
+      }
+      stickyFollowRef.current = false;
+      isProgrammaticScrollRef.current = false;
+      lastScrollTopRef.current = scrollTop;
+      const measured = measureScrollElement(el);
+      updateState({
+        hasOverflow: measured.hasOverflow,
+        isAtBottom: !measured.hasOverflow,
+      });
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (event.deltaY < 0) cancelStickyFollow();
+    };
+
+    let touchStartY: number | null = null;
+    const onTouchStart = (event: TouchEvent) => {
+      touchStartY = event.touches[0]?.clientY ?? null;
+    };
+    const onTouchMove = (event: TouchEvent) => {
+      const clientY = event.touches[0]?.clientY ?? null;
+      if (touchStartY !== null && clientY !== null && clientY > touchStartY) {
+        cancelStickyFollow();
+      }
+      touchStartY = clientY;
+    };
+
+    el.addEventListener('touchmove', onTouchMove, { passive: true });
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('wheel', onWheel, { passive: true });
+    return () => {
+      el.removeEventListener('touchmove', onTouchMove);
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('wheel', onWheel);
+    };
+  }, [cancelRaf, updateState]);
+
   const handleScroll = useCallback(
     (event: React.UIEvent<HTMLDivElement>) => {
-      // A user scroll can arrive after an auto-scroll was scheduled but before
-      // its animation frame. Do not let that stale frame reclaim the viewport.
-      cancelRaf();
       onScroll?.(event);
-      updateState(measureScrollElement(event.currentTarget));
+      const el = event.currentTarget;
+      const scrolledUp = el.scrollTop < lastScrollTopRef.current - 1;
+      const measured = measureScrollElement(el);
+      lastScrollTopRef.current = el.scrollTop;
+
+      if (!stickyFollowRef.current) {
+        stickyFollowRef.current = measured.isAtBottom;
+        updateState(measured);
+        return;
+      }
+
+      if (isProgrammaticScrollRef.current && !scrolledUp) {
+        const atBottom = isScrolledToBottom(el);
+        if (atBottom) isProgrammaticScrollRef.current = false;
+        updateState({
+          hasOverflow: hasScrollOverflow(el),
+          isAtBottom: atBottom || stateRef.current.isAtBottom,
+        });
+        return;
+      }
+
+      isProgrammaticScrollRef.current = false;
+      stickyFollowRef.current = measured.isAtBottom;
+      updateState(measured);
     },
-    [cancelRaf, onScroll, updateState]
+    [onScroll, updateState]
   );
 
   const contextValue = useMemo<ChatConversationContextValue>(
@@ -243,11 +316,12 @@ const ChatConversationContent = ({
   }, [isAtBottom, measureScrollState, resize, scrollToBottom]);
 
   useEffect(() => {
+    if (!isAtBottom) return;
     const el = innerRef.current;
     if (!el || typeof ResizeObserver === 'undefined') return;
     const observer = new ResizeObserver(() => {
-      measureScrollState?.({ preserveAtBottom: isAtBottom });
-      if (isAtBottom) scrollToBottom?.(resize);
+      measureScrollState?.({ preserveAtBottom: true });
+      scrollToBottom?.(resize);
     });
     observer.observe(el);
     return () => observer.disconnect();
@@ -312,7 +386,7 @@ const ChatConversationScrollButton = ({
       isDisabled={!isVisible || isDisabled}
       size="sm"
       variant="secondary"
-      onPress={() => scrollToBottom('smooth')}
+      onPress={() => scrollToBottom('smooth', true)}
       {...props}
       aria-hidden={!isVisible || undefined}
     >

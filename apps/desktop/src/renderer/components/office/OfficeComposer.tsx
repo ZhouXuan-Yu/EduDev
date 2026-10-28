@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Button, Dropdown, Label, Tooltip } from '@heroui/react';
-import { BookOpen, ChevronDown, FileText, Mic, Paperclip, Presentation, ScanText, ShieldCheck } from 'lucide-react';
+import { Archive, BookOpen, Check, ChevronDown, Command, FileText, Hand, Layers, Mic, Paperclip, Pencil, Presentation, ScanText, Settings, ShieldAlert, ShieldCheck, Target } from 'lucide-react';
 import type { XiaozhiSkill } from '../../../shared/xiaozhi-skills';
 import type { OfficeRunStatus } from '../../../shared/office-agent';
 import { PromptInput } from '../../heroui-pro/components/prompt-input';
@@ -16,6 +16,7 @@ import {ATTACHMENT_ONLY_PROMPT} from '../../../shared/xiaozhi-start';
 import {XIAOZHI_ATTACHMENT_ACCEPT} from '../../../shared/xiaozhi-attachments';
 import type {XiaozhiMessagePresentation} from '../../../shared/xiaozhi-message-presentation';
 import {useNativeHeroUITheme} from './useNativeHeroUITheme';
+import {PI_PERMISSION_MODES, type PiPermissionMode} from './permissionModes';
 
 export interface OfficeModelOption { id: string; label: string; disabled?: boolean }
 export interface OfficeComposerProps {
@@ -26,11 +27,13 @@ export interface OfficeComposerProps {
   model: string;
   models: OfficeModelOption[];
   permissionLabel: string;
+  permissionMode?: PiPermissionMode;
   disabled?: boolean;
   onSubmit: (prompt: string, presentation?: XiaozhiMessagePresentation) => void | Promise<void>;
   onStop: () => void | Promise<void>;
   onModelChange?: (model: string) => void;
   onPermissions?: () => void;
+  onPermissionModeChange?: (mode: PiPermissionMode) => void;
   onAttach?: () => void;
   onFilesSelected?: (files: File[]) => void | Promise<void>;
   onWorkspace?: () => void;
@@ -41,10 +44,29 @@ export interface OfficeComposerProps {
   attachLabel?: string;
   onVoice?: () => void;
   onQueue?: (prompt:string,mode:'steer'|'followUp')=>Promise<void>;
+  onNewChat?: () => void;
+  onOpenGoal?: () => void;
+  onCompact?: () => void;
+  onSkills?: () => void;
   skills?: XiaozhiSkill[];
   taskSummary?: ReactNode;
   showQuickStarts?: boolean;
 }
+
+const COMMON_COMMANDS = [
+  { id: 'clear', command: '/clear', label: '清除对话上下文', description: '开始一段新的对话，历史记录仍保留', icon: Archive },
+  { id: 'goal', command: '/goal', label: '持续目标', description: '设置并跟踪一个教学目标', icon: Target },
+  { id: 'compact', command: '/compact', label: '整理上下文', description: '整理较早上下文，保留关键记录', icon: Layers },
+  { id: 'permissions', command: '/permissions', label: '工作目录与权限', description: '管理工作目录与操作权限', icon: Settings },
+  { id: 'skills', command: '/skills', label: '教育技能', description: '选择本次任务使用的教育技能', icon: BookOpen },
+] as const;
+
+const PERMISSION_ICONS = {
+  request: Hand,
+  acceptEdits: Pencil,
+  approveForMe: ShieldCheck,
+  fullAccess: ShieldAlert,
+} as const;
 
 const TEACHER_QUICK_STARTS = [
   {
@@ -74,21 +96,23 @@ export function OfficeComposer(props: OfficeComposerProps) {
   return <OfficeComposerDraft key={props.sessionId} {...props} />;
 }
 
-function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel, disabled = false, visible=true, nativeAppearance=false,
-  onSubmit, onStop, onModelChange, onPermissions, onAttach, onFilesSelected, onWorkspace, attachments, attachDisabled=false,sendBlocked=false,hasAttachments=false, onVoice, onQueue, skills = [], taskSummary, showQuickStarts=false, attachLabel = '添加附件' }: OfficeComposerProps) {
+function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel, permissionMode='request', disabled = false, visible=true, nativeAppearance=false,
+  onSubmit, onStop, onModelChange, onPermissions, onPermissionModeChange, onAttach, onFilesSelected, onWorkspace, attachments, attachDisabled=false,sendBlocked=false,hasAttachments=false, onVoice, onQueue, onNewChat, onOpenGoal, onCompact, onSkills, skills = [], taskSummary, showQuickStarts=false, attachLabel = '添加附件' }: OfficeComposerProps) {
   const { draft, draftRef, storageFailed, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
     failedPresentation,setFailedPresentation,stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
   const skill = skills.find(item => item.name === skillName);
   const nativeTheme=useNativeHeroUITheme();
   const nativeProps={'data-heroui-native':nativeAppearance?'':undefined,'data-theme':nativeAppearance?nativeTheme:undefined};
   const sync=useOfficeSynchronization();
-  const [openMenu,setOpenMenu]=useState<'permissions'|'skills'|'models'>();
+  const [openMenu,setOpenMenu]=useState<'permissions'|'skills'|'models'|'commands'>();
   const containerRef=useRef<HTMLDivElement|null>(null);
-  const menuChange=(menu:'permissions'|'skills'|'models',open:boolean)=>setOpenMenu(previous=>open?menu:previous===menu?undefined:previous);
+  const menuChange=(menu:'permissions'|'skills'|'models'|'commands',open:boolean)=>setOpenMenu(previous=>open?menu:previous===menu?undefined:previous);
   useEffect(()=>{if(!visible)setOpenMenu(undefined);},[visible]);
   useEffect(()=>{if(sync.blocked)setOpenMenu(undefined);},[sync.blocked]);
   useEffect(() => { if (!disabled && skillName && !skills.some(item => item.name === skillName)) { setSkillName(''); setShowSkill(false); } }, [skills, skillName,disabled]);
   const running = status === 'running' || status === 'waiting_approval' || status === 'waiting_input';
+  const selectedPermission = PI_PERMISSION_MODES.find(item => item.id === permissionMode);
+  const permissionText = selectedPermission?.label ?? permissionLabel;
   const quickStartsVisible=showQuickStarts&&!draft.trim()&&!running&&!submitting&&!disabled&&!sync.blocked;
 
   function chooseQuickStart(prompt:string){
@@ -96,6 +120,14 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
     window.requestAnimationFrame(()=>window.requestAnimationFrame(()=>{
       containerRef.current?.querySelector<HTMLTextAreaElement>('[data-testid="office-prompt-input"]')?.focus();
     }));
+  }
+
+  function runCommand(id:string){
+    if(id==='clear')onNewChat?.();
+    else if(id==='goal')onOpenGoal?.();
+    else if(id==='compact')onCompact?.();
+    else if(id==='permissions')onPermissions?.();
+    else if(id==='skills')onSkills?.();
   }
 
   async function send(prompt: string, clearDraft: boolean, retryPresentation?: XiaozhiMessagePresentation) {
@@ -159,13 +191,20 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
                     </PromptInput.Action>
                   )}/>
               <Dropdown isOpen={visible&&openMenu==='permissions'} onOpenChange={open=>menuChange('permissions',open)}>
-                <Button variant="ghost" size="sm" className="office-permission" aria-label={permissionLabel} data-testid="pi-permission-picker" isDisabled={disabled || sync.blocked}><ShieldCheck size={15} /><span title={permissionLabel}>{permissionLabel}</span></Button>
-                <Dropdown.Popover {...nativeProps} className={`pi-office-menu${nativeAppearance?' default':''}`} placement="top start">
-                  <Dropdown.Menu aria-label="资料与操作权限" onAction={key=>{if(key==='choose-directory'&&!sync.blocked&&!running&&!submitting)(onWorkspace||onAttach)?.();if(key==='permissions-settings')onPermissions?.();}}>
-                    <Dropdown.Item id="current-scope" className="pi-permission-fact" textValue={permissionLabel} isDisabled><Label>{permissionLabel}</Label></Dropdown.Item>
+                <Button variant="ghost" size="sm" className="office-permission" aria-label={permissionText} data-testid="pi-permission-picker" isDisabled={disabled || sync.blocked}><ShieldCheck size={15} /><span title={permissionText}>{permissionText}</span></Button>
+                <Dropdown.Popover {...nativeProps} className={`pi-office-menu pi-permission-menu${nativeAppearance?' default':''}`} placement="top start">
+                  <Dropdown.Menu aria-label="资料与操作权限" onAction={key=>{
+                    if(key==='choose-directory'&&!sync.blocked&&!running&&!submitting)(onWorkspace||onAttach)?.();
+                    if(key==='permissions-settings'){onPermissions?.();return;}
+                    const mode=PI_PERMISSION_MODES.find(item=>item.id===key);
+                    if(mode)onPermissionModeChange?.(mode.id);
+                  }}>
+                    {PI_PERMISSION_MODES.map(mode=>{const Icon=PERMISSION_ICONS[mode.id];return <Dropdown.Item key={mode.id} id={mode.id} data-testid={`pi-permission-${mode.id}`} textValue={`${mode.label}：${mode.description}`} isDisabled={!onPermissionModeChange}>
+                      <span className="pi-permission-option"><Icon size={17} aria-hidden="true"/><span data-slot="label"><strong>{mode.label}</strong><small>{mode.description}</small></span>{mode.id===permissionMode&&<Check size={15} aria-hidden="true"/>}</span>
+                    </Dropdown.Item>;})}
                     <Dropdown.Item id="write-policy" className="pi-permission-fact" textValue="文件写入逐次由教师确认" isDisabled><Label>文件写入逐次由教师确认</Label></Dropdown.Item>
-                    <Dropdown.Item id="choose-directory" textValue="选择教学工作目录" isDisabled={!(onWorkspace||onAttach)||running||submitting}><Label>选择教学工作目录</Label></Dropdown.Item>
-                    <Dropdown.Item id="permissions-settings" textValue="管理工作目录与权限" isDisabled={!onPermissions}><Label>管理工作目录与权限</Label></Dropdown.Item>
+                    <Dropdown.Item id="choose-directory" aria-label="选择教学工作目录" textValue="选择教学工作目录" isDisabled={!(onWorkspace||onAttach)||running||submitting}><Label>选择教学工作目录</Label></Dropdown.Item>
+                    <Dropdown.Item id="permissions-settings" aria-label="管理工作目录与权限" textValue="管理工作目录与权限" isDisabled={!onPermissions}><Label>管理工作目录与权限</Label></Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown.Popover>
               </Dropdown>
@@ -178,6 +217,16 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
                   {skills.map(item => <Dropdown.Item id={item.name} key={item.name} textValue={item.title}><Label>{item.title}</Label><Dropdown.ItemIndicator /></Dropdown.Item>)}
                 </Dropdown.Menu></Dropdown.Popover>
               </Dropdown>{skill && <Button variant="ghost" size="sm" data-testid="pi-skill-view" aria-expanded={showSkill} onPress={() => setShowSkill(value => !value)}>查看说明</Button>}</>}
+              <Dropdown isOpen={visible&&openMenu==='commands'} onOpenChange={open=>menuChange('commands',open)}>
+                <Button variant="ghost" size="sm" className="office-command-picker" aria-label="常用命令" data-testid="pi-command-picker" isDisabled={disabled || sync.blocked}><Command size={15} /><span>命令</span><ChevronDown size={13} /></Button>
+                <Dropdown.Popover {...nativeProps} className={`pi-office-menu pi-command-menu${nativeAppearance?' default':''}`} placement="top start">
+                  <Dropdown.Menu aria-label="常用命令" onAction={key=>runCommand(String(key))}>
+                    {COMMON_COMMANDS.map(item=>{const Icon=item.icon;const available=item.id==='clear'?Boolean(onNewChat):item.id==='goal'?Boolean(onOpenGoal):item.id==='compact'?Boolean(onCompact):item.id==='permissions'?Boolean(onPermissions):Boolean(onSkills);return <Dropdown.Item key={item.id} id={item.id} data-testid={`pi-command-${item.id}`} textValue={`${item.command} ${item.label}`} isDisabled={running||submitting||sync.blocked||!available}>
+                      <span className="pi-command-option"><Icon size={17} aria-hidden="true"/><span><strong><code>{item.command}</code> {item.label}</strong><small>{item.description}</small></span></span>
+                    </Dropdown.Item>;})}
+                  </Dropdown.Menu>
+                </Dropdown.Popover>
+              </Dropdown>
             </PromptInput.ToolbarStart>
             <PromptInput.ToolbarEnd>
               <Dropdown isOpen={visible&&openMenu==='models'} onOpenChange={open=>menuChange('models',open)}>
@@ -200,6 +249,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
             </PromptInput.Shell>
           )}/>
         </ChatAttachmentInput>
+        <PromptInput.Footer data-testid="pi-composer-disclaimer">AI 可能会出错，请核对重要信息。</PromptInput.Footer>
       </PromptInput>
     </div>
   );

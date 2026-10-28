@@ -172,7 +172,8 @@
     "pack:win": "npm run build && npm run release:prepare && electron-builder --win --x64 --dir --config electron-builder.cjs",
     "dist:win": "npm run build && npm run release:prepare && electron-builder --win nsis --x64 --config electron-builder.cjs",
     "test:release-workers": "node scripts/release/test-education-runtime.mjs",
-    "test:release-packaged": "node scripts/release/packaged-smoke.mjs"
+    "test:release-packaged": "node scripts/release/packaged-smoke.mjs",
+    "test:xiaozhi-pi-composer-menus": "npm run build && node scripts/xiaozhi-agent/pi-composer-menus-ui-smoke.mjs"
   },
   "dependencies": {
     "@earendil-works/pi-agent-core": "1.0.2",

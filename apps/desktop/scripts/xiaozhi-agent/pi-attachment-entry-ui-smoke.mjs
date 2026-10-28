@@ -42,22 +42,25 @@ try{
  await launch();
  const fileInput=page.locator('[data-testid="office-composer"] input[type=file]');
  const accept=await fileInput.getAttribute('accept');assert(accept?.includes('.docx')&&accept?.includes('.png')&&!accept?.includes('.exe'));
+ assert.equal(await fileInput.evaluate(el=>getComputedStyle(el).display),'none');
  const send=page.getByRole('button',{name:'发送消息',exact:true});
  const prompt=page.getByTestId('office-prompt-input');
+ assert(await page.getByTestId('pi-composer-disclaimer').isVisible());
  assert(await send.isDisabled());
  await prompt.fill('文本发送状态检查');await until(async()=>!await send.isDisabled());
  assert.equal(await prompt.inputValue(),'文本发送状态检查');
  await prompt.fill('');assert(await send.isDisabled());
- check('Official file input filters supported types; empty input disables send and a text draft enables it');
+ check('File input filters supported types and stays hidden; empty input disables send and a text draft enables it');
  await pick(['正文.txt','合成.png','合成.jpg','合成.gif','合成.webp']);
- assert.equal((await list()).length,5);await until(async()=>await page.locator('.pi-attachment-open img').count()===4);
- const anatomy={groups:await page.locator('[data-slot="prompt-input-attachments"] [data-slot="chat-attachment-group"]').count(),
-  media:await page.locator('[data-slot="chat-attachment"][data-variant="media"]').count(),
-  file:await page.locator('[data-slot="chat-attachment"][data-variant="file"]').count()};
- assert.equal(anatomy.groups,1);assert.equal(anatomy.media,4);assert.equal(anatomy.file,1);
- const fileInfo=await page.locator('[data-slot="chat-attachment"][data-variant="file"] [data-slot="chat-attachment-info"]').first().innerText();
- assert(fileInfo.includes('正文.txt')&&/\d/.test(fileInfo));check('Grouped anatomy renders PromptInput.Attachments > ChatAttachmentGroup with media/file variants and Info name+size');
- const dimensions=await page.locator('.pi-attachment-open img').evaluateAll(images=>images.map(image=>({loaded:image.complete&&image.naturalWidth>0,w:image.naturalWidth,h:image.naturalHeight})));
+ assert.equal((await list()).length,5);await until(async()=>await page.locator('.pi-agent-attachment-thumb').count()===4);
+ const anatomy={lists:await page.locator('[data-slot="prompt-input-attachments"] [data-testid="pi-agent-attachment-list"]').count(),
+  items:await page.locator('.pi-agent-attachment-item').count(),
+  thumbs:await page.locator('.pi-agent-attachment-thumb').count()};
+ assert.equal(anatomy.lists,1);assert.equal(anatomy.items,5);assert.equal(anatomy.thumbs,4);
+ const names=await page.locator('.pi-agent-attachment-name').allInnerTexts();
+ assert(names.includes('正文.txt')&&names.includes('合成.png'));
+ check('Template-style attachment chips render inside PromptInput.Attachments with thumbnails and names');
+ const dimensions=await page.locator('.pi-agent-attachment-thumb').evaluateAll(images=>images.map(image=>({loaded:image.complete&&image.naturalWidth>0,w:image.naturalWidth,h:image.naturalHeight})));
  assert(dimensions.every(v=>v.loaded&&v.w<=192&&v.h<=192));check('Native selected files register in actual ledger and all four formats display real decoded bounded thumbnails');
  const initial=await list();assert(!JSON.stringify(initial).includes(sources)&&!JSON.stringify(initial).includes('data:image')&&!JSON.stringify(initial).includes('relative_path'));check('Public metadata excludes private paths, image bytes and thumbnail data');
  const beforeUnproven=await list();const unproven=await page.evaluate(input=>window.omniEdu.importXiaozhiAttachments(input),{...request(),paths:[path.join(sources,'未选择.txt')]});assert(!unproven.ok&&unproven.error==='invalid_input');assert.equal((await list()).length,beforeUnproven.length);check('Import IPC rejects a renderer path not issued by the native file selection bridge');
@@ -109,7 +112,7 @@ try{
  await until(async()=>{const v=await app.evaluate(()=>globalThis.imageProcesses);return v.starts===v.exits;});await app.evaluate(()=>{globalThis.holdImageDispatch=false;});
  const resumed=await page.evaluate(input=>window.omniEdu.previewXiaozhiAttachment(input),request(one));assert(resumed.ok);check('Actual 15-second image deadline terminates its held child; ordinary preview succeeds afterwards');
  await until(async()=>{const v=await app.evaluate(()=>globalThis.imageProcesses);return v.starts===v.exits;});report.imageProcesses=await app.evaluate(()=>globalThis.imageProcesses);
- await app.close();app=undefined;await launch();id=await page.locator('.office-composer-container').getAttribute('data-session-id');await until(async()=>(await list()).some(v=>v.id===one.id));await until(async()=>await page.locator('.pi-attachment-open img').count()===1);check('Normal app restart restores persisted local draft identity and actual image thumbnail');
+ await app.close();app=undefined;await launch();id=await page.locator('.office-composer-container').getAttribute('data-session-id');await until(async()=>(await list()).some(v=>v.id===one.id));await until(async()=>await page.locator('.pi-agent-attachment-thumb').count()===1);check('Normal app restart restores persisted local draft identity and actual image thumbnail');
  for(const [name,hash]of Object.entries(originals))assert.equal(createHash('sha256').update(fs.readFileSync(path.join(sources,name))).digest('hex'),hash);
  assert.deepEqual(errors,[]);check('All original selected bytes remain unchanged and renderer has no page errors');
  report.success=true;

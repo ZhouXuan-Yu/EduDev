@@ -320,6 +320,19 @@ export const Wrench = (props: IconProps) =>
     }),
   });
 
+export const StopFill = (props: IconProps) =>
+  jsx('svg', {
+    ...base(props),
+    height: props.height ?? '1em',
+    width: props.width ?? '1em',
+    children: jsx('path', {
+      fill: 'currentColor',
+      fillRule: 'evenodd',
+      d: 'M4.5 1.5a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h7a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3z',
+      clipRule: 'evenodd',
+    }),
+  });
+
 export const Xmark = (props: IconProps) =>
   jsx('svg', {
     ...base(props),

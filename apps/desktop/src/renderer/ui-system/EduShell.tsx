@@ -1,5 +1,6 @@
-import type { ReactNode } from 'react';
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { ChevronRight } from 'lucide-react';
+import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from './ColumnResizeHandle';
 import { EduNavigation } from './EduNavigation';
 import { PAGE_CONTRACTS } from './page-contracts';
 import './layout.css';
@@ -16,6 +17,7 @@ export function EduShell({
   navigationOpen = true,
   testId,
   headerTestId,
+  navigationResizable = false,
 }: {
   view: string;
   title?: string;
@@ -25,7 +27,10 @@ export function EduShell({
   navigationOpen?: boolean;
   testId?: string;
   headerTestId?: string;
+  navigationResizable?: boolean;
 }) {
+  const [navWidth, setNavWidth] = useState(() => readColumnWidth('xiaozhi.ui.navWidth.v1', 224, 170, 360));
+  useEffect(() => { writeColumnWidth('xiaozhi.ui.navWidth.v1', navWidth); }, [navWidth]);
   const contract = PAGE_CONTRACTS.find((p) => p.id === view)!;
   return (
     <div
@@ -36,9 +41,11 @@ export function EduShell({
       data-view={view}
       data-navigation={navigationOpen ? 'open' : 'closed'}
       data-testid={testId || 'edu-shell'}
+      style={{'--edu-nav-width': `${navWidth}px`} as CSSProperties}
     >
       {navigationOpen && <EduNavigation view={view} disabled={disabled} />}
-      <section className="edu-workspace">
+      {navigationOpen && navigationResizable && <ColumnResizeHandle side="left" width={navWidth} min={170} max={360} label="调整左侧导航宽度" onResize={setNavWidth} onReset={() => setNavWidth(224)} />}
+      <main className="edu-workspace">
         <header className="edu-header" data-testid={headerTestId || 'edu-header'}>
           <div className="edu-breadcrumb">
             <span>{contract.group}</span>
@@ -53,7 +60,7 @@ export function EduShell({
           <div className="edu-header-actions">{actions}</div>
         </header>
         {children}
-      </section>
+      </main>
     </div>
   );
 }

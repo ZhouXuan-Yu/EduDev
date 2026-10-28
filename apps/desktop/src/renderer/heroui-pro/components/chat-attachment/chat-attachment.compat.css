@@ -208,3 +208,117 @@
   align-items: flex-start;
   gap: 8px;
 }
+
+/* ChatAttachmentInput renders the native picker behind its Trigger. The copied
+   Pro source relies on Tailwind's `hidden` utility; this app scopes global CSS
+   away from [data-slot] roots, so keep the rule in the component stylesheet. */
+input[type="file"][aria-hidden="true"] {
+  display: none !important;
+}
+
+/* Compact attachment chip used by the Xiaozhi composer. Kept in the component
+   stylesheet because app-level CSS is scoped away from [data-slot] roots. */
+.pi-agent-attachment-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 100%;
+}
+
+.pi-agent-attachment-item {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  height: 40px;
+  min-width: 0;
+  max-width: 256px;
+  padding: 0 8px 0 6px;
+  border: 1px solid var(--border, var(--pi-line, rgb(38 59 57 / 10%)));
+  border-radius: 8px;
+  background: color-mix(in oklab, var(--default, var(--pi-soft, #eef3ef)) 60%, transparent);
+  color: var(--foreground, var(--pi-ink, #263b39));
+}
+
+.pi-agent-attachment-open {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pi-agent-attachment-open:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid var(--focus-ring, var(--pi-accent, #315efb));
+  outline-offset: 2px;
+}
+
+.pi-agent-attachment-thumb {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.pi-agent-attachment-icon {
+  display: flex;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--background, var(--pi-paper, #fff));
+  color: var(--muted, var(--pi-muted, #596d69));
+}
+
+.pi-agent-attachment-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pi-agent-attachment-name {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pi-agent-attachment-item fieldset {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.pi-agent-attachment-remove {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  margin-right: -4px;
+  color: var(--muted, var(--pi-muted, #596d69));
+}
+
+.pi-agent-attachment-remove svg {
+  width: 14px;
+  height: 14px;
+}
+
+.pi-viewed-images .pi-agent-attachment-thumb {
+  object-fit: contain;
+}
