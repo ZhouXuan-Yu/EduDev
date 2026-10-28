@@ -4,6 +4,14 @@
 
 已验9文件收录/18页本地OCR/25内容索引/源SHA保全/冷重启/真实云端7次与修后两遍6题落库。9 provider边界+17批次+build/type+240组件通过。失败业务结果：6 AI题全部待整理，题意检索探针0候选，正确物理蓝图0题，未正式确认或导出；完整知识库仍未验收。先失败的JSON模式字段问题已修，脚本自身故障保留，不计为产品问题。详见KB_IMPLEMENTATION_EVIDENCE.md。
 
+## 2026-10-28 F14预集成限定证据
+
+命令和原始路径见DEEP_AUDIT_20261028_EVIDENCE.md：恢复helper11、真实dev StrictMode组件12、receiver10/journal19、renderer240、207历史兼容smoke通过；真实Electron/Pi受控catalogue/SSE6项/2启动/0 rendererErrors，SQLite日志及native字节冷重启一致，out SHA d457f43598c145d9f935a1928b9feb5d2c48745ce7bd04359c3be60e188ccb5d。Terra最终独立11/12/6接受，main34aae9f及集成后oHsOhj真实6项通过；F14按范围验收。不作真实provider、自然答案、安装包或旧页面根因验收。
+
+## 2026-10-28 WP0有限历史计量（非F24完成）
+
+d710541构建/typecheck exit0、renderer-components 240/240、计量合同15/15。真实可见Electron6×5样本/6 trace exit0；Terra同构建重复exit1、7/18候选预算失败，无探针对照exit0；三次同out SHA256 934f2e9339a3eb124be958c124db24f90621e5797a5eb6d067c4d5f5e4d21a8c。npm audit exit1/22项风险保留。详见DEEP_AUDIT_20261028_EVIDENCE.md。无产品优化收益、稳定预算/完整Profiler/Skill/流式矩阵或安装包验收；F24 MEASURING，全Goal active。
+
 ## 2026-10-28 S6-B2生产贯通限定验收
 
 最新证据集中于KB_IMPLEMENTATION_EVIDENCE.md：真实Store10涵盖生产排版/OCR、实际AI收据/同题本、first_saved复用、现Pi和Word/PDF媒体SHA；UI7覆盖授权/typed看图/缺图重试/编辑/恢复/双尺寸冷重启，模型HTTP受控。最终build/240组件/207历史smoke结果按实记录，不能等同真实provider质量、WPS视觉或40GB/新安装包。独立批判已修四项，最新全面复审因配额未完成。

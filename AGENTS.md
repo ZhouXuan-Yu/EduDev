@@ -4,6 +4,7 @@
 
 ## 当前最高优先级基线
 
+- 2026-10-28 用户指定产品级 AI 开发约定完整保存在根目录 `CLAUDE.md`，每次开发须一并读取并遵循；最终交付包含功能结果、修改文件、测试证据、性能前后对比、未解决问题与回滚方案。
 - 2026-10-28 用户固定要求：每轮完成后，检查并提交本轮修改，刷新并整合 GitHub `origin/main`，处理冲突后正常推送到 `main`，报告提交号及远端一致性。该指令是持续的 commit/merge/push 授权；不包含强推、删除分支、发布安装包或上传用户资料。保留协作者工作树与未提交修改，不在其他工作树背后移动其已检出分支；必要时从当前分支整合后推送 `HEAD:main`。未完成验证或推送失败须如实报告，不得宣称已同步。
 - 2026-10-05 用户指定最高工程合同为 `docs/goal/XIAOZHI_CODEX_GOAL.md`；每轮先读取该合同及同目录四份状态文件。产品、阶段、架构和完成定义在冲突处以 Master 为准。
 - 稳定架构、产品、验收、集成入口分别为 `docs/architecture/CURRENT.md`、`docs/product/CURRENT.md`、`docs/acceptance/CURRENT.md`、`docs/integrations/CURRENT.md`。`docs/28_FINAL_PRODUCT_MODULE_ARCHITECTURE.md` 保留历史业务口径，不覆盖新 Master。

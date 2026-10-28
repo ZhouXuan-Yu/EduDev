@@ -4,6 +4,14 @@
 
 9真实文件/18 PDF页OCR/25 chunks/源SHA与冷启通过；真实DeepSeek累计7次（用户另行追加），修后两遍6题落库但全部待整理。正确物理蓝图0题，未确认/导出，题意搜索探针0候选。Provider已修精确JSON模式字段兼容，9边界/17批次/build/240组件通过；私有原件与模型响应仅本机。完整闭环与最终EXE不因局部验证通过而视为完成，详KB_IMPLEMENTATION_EVIDENCE.md。
 
+## 2026-10-28 F14恢复专项
+
+本轮EVIDENCE记录helper11/StrictMode12/receiver10/journal19、build/typecheck、renderer240、207历史smoke及真实Electron/Pi受控SSE6项。产物d457f435…，Terra独立11/12/6接受；main34aae9f实际启动/冷启6项通过，F14 VERIFIED。SQLite与原生文件字节复验，无真实模型质量或安装包声明；完整26项及F24校准继续。
+
+## 2026-10-28 深度审计量化检查点
+
+完整26项整改与WP0限定证据见goal/DEEP_AUDIT_20261028_TODOLIST.md和DEEP_AUDIT_20261028_EVIDENCE.md。build/typecheck、240组件、15计量合同及真实Electron历史采样通过；同构建独立重复7/18候选预算失败，F24仍MEASURING，非稳定性能门禁或全审计完成。用户产品级约定保存在根CLAUDE.md。
+
 ## 2026-10-28 原生AI生产链验收范围
 
 以goal/KB_IMPLEMENTATION_EVIDENCE.md最新节为准。真实Store10含实际OCR/两连接、AI收据、改答/恢复/cache删除、现Pi检索实读和生成Word/PDF角色媒体SHA；真实UI7含必要图授权、typed角色PNG/失败重试、教师编辑与真题干恢复、1366/1920冷重启。DeepSeek响应受控，未产生付费请求；不是自然质量/WPS布局/40GB/安装包验收。最终build/组件/smoke与独立复审边界按实记录。

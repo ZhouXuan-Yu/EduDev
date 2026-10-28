@@ -4,6 +4,14 @@
 
 真实9份（3 PDF/6图）全部本地处理、18页OCR、25 chunks与冷启复读通过；经追加授权实际DeepSeek7次，修复根JSON模式标记后4次两遍调用入库6题。6题全部待整理，实际题意搜索0候选、物理蓝图0题，完整闭环未完成。当前后续优先PDF/图片原图/图义及OCR修正证据，而非放松题源资格；精确命令、边界与本地私有报告见KB_IMPLEMENTATION_EVIDENCE.md。并行审计状态独立保留。
 
+## 2026-10-28 F14页面恢复窄修复
+
+实现及本轮证据见DEEP_AUDIT_20261028_EVIDENCE.md。组件事件updater已纯化，恢复按scope token合并并保留fresh语义，事件使旧读取失效后有界重读。helper11/StrictMode12、receiver10/journal19、build/typecheck、240组件、207历史smoke通过；Terra独立11/12/6接受，main34aae9f推送回读一致、集成后真实Pi6项/2启动通过，F14 VERIFIED。F24与其余审计事项继续，完整Goal active。
+
+## 2026-10-28 深度审计WP0有限检查点
+
+指定DOCX的F01–F26全量队列见DEEP_AUDIT_20261028_TODOLIST.md；当前隔离分支从3734df3快进到origin/main/d710541。新增可见Electron历史10/100/1000轮×双尺寸×5样本及6 trace采集工具、15项计量合同回归，build/typecheck与240组件通过。Terra/high独立重复同构建仍有7/18候选预算失败，保留证据；F24保持MEASURING，完整Goal active。完整十条产品约定已写CLAUDE.md；本片无生产运行时修改。先正常集成/主线启动，再从新分支修F14。
+
 ## 2026-10-28 S6-B2生产图文链已贯通
 
 本节为最新状态，覆盖下方历史“生产未接通/不能使用新入口”的描述；完整知识库目标继续，未完成项目不因本片通过而关闭。
