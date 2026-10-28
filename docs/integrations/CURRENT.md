@@ -6,6 +6,12 @@
 复用现Electron渲染、image-size、SQLite/sqlite3和Windows OS锁，无新增依赖/服务或外发权限。WordQuestionProofRepository.evidence为main-private真实来源提升接口；native unit可携带版本化Word selector（不是上传payload）。NativeQuestionRepository提供stageInput/readInput/withInput与questionVersion角色读回，供现AI pipeline后续接线。installer体积与完整生产集成仍未验收。
 <!-- kb-native-ledger-20261028:end -->
 
+## 2026-10-27 Windows日常启动
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+Node子进程交互Electron配置windowsHide=false；仅后台build/probe辅助进程隐藏，无新依赖或外部服务。专项复用现Playwright CDP读取Pi页面、Win32 EnumWindows验证原生可见、WM_CLOSE优雅退出，独立profile/data。证据见../goal/DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

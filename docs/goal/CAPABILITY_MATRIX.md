@@ -6,6 +6,12 @@
 M03/M05/M10：新增原生角色图片私有提升、业务历史/输入持久层及有界恢复，未接生产Store/IPC/UI。已受测的能力仅是存储/私有来源证据，不等于Word图文AI整理、同题本教师编辑、Pi图义或正式Office导出完成。后续必须复用原唯一Pi/现题本/现批次，不能另建第二题库或Agent。
 <!-- kb-native-ledger-20261028:end -->
 
+## 2026-10-27 M12日常窗口可见
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+修复当前启动器首次原生窗口被windowsHide:true压制的问题，保留现build与单实例。新增同构建两进程Win32可见/Pi页面加载回归；非新教育能力、非旧版本页面根因证明。精确证据：DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

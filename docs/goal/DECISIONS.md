@@ -6,6 +6,12 @@
 选择独立业务PNG及不可变AI输入，不依赖预览LRU或重启重截图。私有Word producer attestation与实际AI transcriptor分开证明原始像素/AI角色文字，不能靠模型自报SHA。准备连接专用autocommit，caller writer事务发布，禁止共享连接BEGIN/ROLLBACK探针；来源base逐字段比较，不把JSON属性顺序当身份变化。重启恢复的本地证据不继承为新外发许可。
 <!-- kb-native-ledger-20261028:end -->
 
+## 2026-10-27 交互Electron不得隐藏启动
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+受控同构建对比确认首次窗口被windowsHide:true压制，仅将日常Electron spawn设false。用户已要求显示并启动最新项目；后台build辅助进程继续隐藏。保留协作者全部脏工作、既有profile/数据、环境过滤、构建失败边界与单实例。不同版本页面未复现，不能把隐藏现象直接等同旧bundle。合同：DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

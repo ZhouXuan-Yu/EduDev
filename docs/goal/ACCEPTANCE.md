@@ -6,6 +6,12 @@
 原生账本20、共享契约7、源身份4项；独立critic最终9反例通过（含Word ordinal5/批内ordinal1及取消）；真实Electron原生排版→Word.proofs.evidence→双异步sqlite3→输入持久化→删除实际cache→连接关闭重开→同bank发布/角色读回4项通过，报告omni-native-promotion-7ASBMA。该路径的AI transcription为私有测试替身，未经过生产Store/typed UI或真实provider；不是教师图文AI入库/正式Office/40GB/安装验收。最终构建/组件与日志见EVIDENCE。
 <!-- kb-native-ledger-20261028:end -->
 
+## 2026-10-27 启动可见性
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+同构建真实spawn对比：windowsHide:true→原生窗口visible=false，false→visible=true，两者均加载当前file renderer/Pi会话。旧配置断言RED（J4rqJW），修后tqBYKI通过；已观察rendererErrors=0，非全流程错误审计。240组件通过。最终npm start/build/日常窗口证据与未验边界见DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 

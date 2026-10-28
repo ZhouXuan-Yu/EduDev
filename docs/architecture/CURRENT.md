@@ -6,6 +6,12 @@
 原生AI持久层新增NativeQuestionRepository及五类表：revisions、images、pending、inputs、input_images。私有Word proof evidence复读生产者manifest与实际PNG；业务输入保留源/排版环境/角色字节，永久事实与inflight输入共同保护pending回收。准备连接专用autocommit，writer实例在caller事务内发布/读刚写凭据，同根短命permit跨实例；禁止SQL探针影响共享保存。尚未在OmniEduStore实例化/迁移这些表，生产接线继续。
 <!-- kb-native-ledger-20261028:end -->
 
+## 2026-10-27 日常spawn显示边界
+
+> 2026-10-28 主线交付：用户已授权提交及推送；本节通过结果为10月27日D:历史证据。本轮依赖安装未完成，build（缺tsc）/组件（缺react-aria文件）exit1；原生专项未重跑。专项已补全新工作区目录初始化。详见 DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md 的发布与核验记录。
+
+start-desktop先build后spawn同out；交互Electron windowsHide=false避免Windows首次ShowWindow被隐藏启动标志压制，后台构建继续隐藏。不改变BrowserWindow/runtime/IPC/renderer/数据库。证据见../goal/DAILY_LAUNCH_VISIBILITY_CONTRACT_20261027.md。
+
 <!-- kb-web-writeback-20261027:start -->
 ## 2026-10-27 S6-C 持久联网补答与批判修复
 
