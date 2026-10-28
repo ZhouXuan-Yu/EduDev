@@ -1,16 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import assert from 'node:assert/strict';
 import { _electron as electron } from 'playwright';
 
 const desktop = process.cwd();
 const output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-composer-menus-ui-'));
-const data = path.join(output, 'data');
-const profile = path.join(output, 'profile');
-const workspace = path.join(output, 'workspace');
+// Production rejects private developer roots; the declared synthetic teacher
+// workspace and Pi state must live outside the global .codex directory.
+const runtimeRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'edu-composer-menus-'));
+const data = path.join(runtimeRoot, 'data');
+const profile = path.join(runtimeRoot, 'profile');
+const workspace = path.join(runtimeRoot, 'workspace');
 fs.mkdirSync(workspace, { recursive: true });
 fs.writeFileSync(path.join(workspace, '备课.md'), '# 备课');
-const report = { success: false, checks: [], output };
+const report = { success: false, checks: [], output, runtimeRoot };
 const errors = [];
 let app, page;
 
@@ -110,6 +114,8 @@ try {
   report.success = true;
 } catch (error) {
   report.error = String(error.stack || error);
+  report.lastAlerts = await page?.getByRole('alert').allTextContents().catch(()=>[]);
+  report.lastSession = await page?.locator('.office-composer-container').getAttribute('data-session-id').catch(()=>undefined);
   process.exitCode = 1;
   await page?.screenshot({ path: path.join(output, 'failure.png') }).catch(() => {});
 } finally {

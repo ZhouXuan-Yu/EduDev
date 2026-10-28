@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-28 Git与日常入口整合
+
+当前仅在独占审计工作树三方整合main；全分支已提交内容均包含于fdc8e9c。D:备份冗余后ff并跟踪origin/main，Desktop启动器经D:启动器到npm start；不使用工作树测试窗口替代日常源码。用户私有资料和截图通过本机exclude保留，未上传；最终提交/远端SHA与D启动结果补WORK_PROGRESS。
+
 ## 2026-10-28 真实资料重审与输出授权接线
 
 production-host将现resolvePaperOutput接入createTaskResources的可选officeOutput，不增加IPC/权限或新写入器；仅解决无workspace的试卷/课堂输出任务身份，正式写入仍走现Office审批与来源校验。真实扫描页2题已从AI两遍进入题意检索/蓝图，Office实际仍configuration且0文件。新增真实材料/实际Pi脚本均隔离本机原件与账户、记录请求，不用受控模型冒充真实provider；最新主线cc2e68a只增加F15测试/文档。详KB_IMPLEMENTATION_EVIDENCE.md。

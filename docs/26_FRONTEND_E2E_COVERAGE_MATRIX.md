@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-28 主线统一增量
+
+fdc模板UI整合后：独立三栏8(Tq5O97)/菜单8(Wr5pxH)、真实React恢复/权限36(LnypGl)、真实Pi恢复6(3x9tsm)/gap6(QQQEZE)通过。菜单旧.codex夹具超时、根cwd导致classroom-preview入口错误均保留；合成runtime移OS temp后复验，不放宽生产权限。最终D:启动与真实Stop/审批文件读回仍待本轮继续。
+
 ## 2026-10-28 原生Word AI题本UI
 
 scripts/education/kb-native-batch-journey.mjs：真实文件夹Word导入→统一DeepSeek设置→逐批三角色图片授权→现两阶段HTTP/OCR→同题本→typed看图/缺图重试→教师改答撤旧图→改公式题干撤题图→恢复真实AI题干→删预览图/冷重启。已通过7项/2次启动/0 rendererErrors，1366×768与1920×1080；最终指纹与日志见goal/KB_IMPLEMENTATION_EVIDENCE.md。HTTP由受控fixture回应，不是真实模型质量；Store10另证Pi和真实Word/PDF字节，未代替Office/WPS人工视觉验收。

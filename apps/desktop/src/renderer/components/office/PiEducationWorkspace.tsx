@@ -54,16 +54,6 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const autoApproved=useRef(new Set<string>());
   useEffect(()=>{writePiPermissionMode(permissionMode);},[permissionMode]);
   useEffect(()=>{autoApproved.current.clear();},[id]);
-  useEffect(()=>{
-    if(permissionMode==='request'||!id||!snapshot?.approvals?.length)return;
-    for(const approval of snapshot.approvals){
-      if(approval.state!=='pending'||autoApproved.current.has(approval.id))continue;
-      autoApproved.current.add(approval.id);
-      void window.omniEdu?.decideXiaozhi({sessionId:id,approvalId:approval.id,decision:'approve'}).then(result=>{
-        if(!result?.ok)setNotice('自动批准未完成，请手动处理批准请求。');
-      }).catch(()=>setNotice('自动批准未完成，请手动处理批准请求。')).finally(()=>void hydrate(id));
-    }
-  },[permissionMode,id,snapshot?.approvals]);
   const [fileReveal,setFileReveal]=useState<{sessionId:string;id:string;path:string}>();
   const [models, setModels] = useState<XiaozhiSettingsView>(), [modelSelecting, setModelSelecting] = useState(false);
   const [returnHydrating,setReturnHydrating]=useState(false);
@@ -137,6 +127,22 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const syncBlocked=!snapshot||snapshotPublishing||returnHydrating||refreshFailed||eventSync!=='ready'||Boolean(snapshot.projection.needsHydration||snapshot.eventPersistence);
   function mutationsBlocked(){const view=snapshotRef.current;return !view||view.projection.threadId!==idRef.current||snapshotBarrier.current!==undefined||refreshing.current||refreshFailure.current||eventReceiver.current?.synchronization()!=='ready'||Boolean(view.projection.needsHydration||view.eventPersistence);}
   function requireSynchronized(){if(mutationsBlocked())throw Error('过程记录正在同步，请稍后再试。');}
+  useEffect(()=>{
+    if(permissionMode==='request'||syncBlocked||mutationsBlocked())return;
+    const target=id,token=hydration.current!.token(),view=snapshotRef.current;
+    if(!target||view?.projection.threadId!==target)return;
+    for(const approval of view.approvals||[]){
+      if(mutationsBlocked()||hydration.current!.token()!==token)return;
+      if(approval.state!=='pending'||autoApproved.current.has(approval.id))continue;
+      autoApproved.current.add(approval.id);
+      const owns=()=>active.current&&idRef.current===target&&hydration.current!.token()===token;
+      void (async()=>{
+        try{const result=await window.omniEdu?.decideXiaozhi({sessionId:target,approvalId:approval.id,decision:'approve'});if(owns()&&!result?.ok)setNotice('自动批准未完成，请手动处理批准请求。');}
+        catch{if(owns())setNotice('自动批准未完成，请手动处理批准请求。');}
+        finally{if(owns())await hydrate(target).catch(()=>undefined);}
+      })();
+    }
+  },[permissionMode,id,snapshot?.approvals,syncBlocked]);
   async function refreshCurrent(){
     if(refreshing.current)return;const target=idRef.current,token=hydration.current!.token();setHydrating(true);
     try{await hydrate(target);}catch{if(active.current&&hydration.current!.token()===token)setRefreshFailed(true);}

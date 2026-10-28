@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-28 新UI与事件投影整合
+
+保留fdc模板输入/附件/四权限/命令/三栏；F01 renderer-only文本缓冲有界32ms/128条/65536字符，同scope相邻文本合并、非文本/Stop/隐显flush。权威snapshot替换才同步commit，校验当前cursor/连续后缀与scope/revision后ack；重入期间ref+可见同步屏障阻止手动及自动审批。无新IPC/表/生产Runtime；完全无重叠历史页失败关闭，F10继续处理该范围。F01性能尚未验收。
+
 ## 2026-10-28 输出目录任务标识与扫描题结构
 
 复用现extractMaterialQuestions处理明确卷首说明/完整编号块/连续小问，AI题干只兼容明确填空与选项句号版式；没有新题库真源或迁移。任务资源可选officeOutput resolver仅在saved_office且workspace不存在时标识现授权输出目标，普通读文件/保存文本/office_create_document保持workspace要求。真实Pi计划可采用，实际Officeconfiguration仍未定位，完整交付不宣称通过，详KB_IMPLEMENTATION_EVIDENCE.md。

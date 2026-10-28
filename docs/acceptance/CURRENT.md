@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-28 新UI整合检查点
+
+整合版build/type、renderer240、恢复/权限组件36、独立三栏8及菜单8、真实Pi默认6与gap6通过。test:ui-contracts旧来源指纹门禁失败（prompt-input/index.ts），npm audit22风险保留；没有更新baseline来隐藏失败。最终远端对齐与D盘日常原生启动待完成，进度及完整证据见goal/WORK_PROGRESS.md和DEEP_AUDIT_20261028_EVIDENCE.md。
+
 ## 2026-10-28 最新主线与真实试卷复核
 
 拉取整合cc2e68a后确认知识库runtime未变；真实结构修复现2题AI定稿、题意召回2、物理2题10分预览与隔离自动化确认成功。仅输出授权任务计划已通过，但实际Office导出仍configuration、0草稿0文件，不能称完整闭环通过。最终build/type/240组件/legacy30学生smoke与结构17/批次17/档案12/输出授权11/计划19通过；先缺表的离线复现已撤销，生产根因未知。精确证据见KB_IMPLEMENTATION_EVIDENCE.md。

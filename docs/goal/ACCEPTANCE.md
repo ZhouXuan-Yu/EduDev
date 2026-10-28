@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-28 主线统一验收进行中
+
+合并fdc8e9c新版UI后build/type exit0、renderer240/240、StrictMode36/36；Terra独立三栏8/8(Tq5O97)、菜单8/8(Wr5pxH)；受控真实Pi默认6(3x9tsm)、gap6(QQQEZE)通过。npm audit exit1/22(8high/6moderate/8low)，test:ui-contracts exit1：prompt-input/index.ts与旧设计评审指纹不匹配；不改指纹掩盖失败。待最终D:最新源码原生启动与remote SHA回读，不能先称全部验收。
+
 ## 2026-10-28 拉取后复核与真实两题结果
 
 已整合cc2e68a，业务runtime无新增diff。真实9文件基础结果保持；结构修复17/批次17/档案12/输出授权11/任务计划19、最终build/type/240组件与30学生legacy smoke均exit0。真实AI两遍后2题自动定稿、2题待整理，题意召回2、2题10分预览与隔离自动化确认通过。真实Pi导出失败configuration，0草稿/0文件，未通过文件交付。单层service补全测试关联表后正常，未确定生产根因。完整Goal/PDF图题/自然答案/40GB/P95/EXE保持OPEN。

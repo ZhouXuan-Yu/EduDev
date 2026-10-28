@@ -141,3 +141,28 @@ F15提交e79646c后fetch发现origin/main已到297b0d3（包含1f9eae7/837f337�
 Terra复审确认9份冲突文档双方内容均保留，并在新d8b9f866构建上独立重跑--event-gap exit0/6项（audit-event-recovery-electron-6GvQzs/report.json、owned35244/7648 exit0、0 rendererErrors）。合并提交2c25e36b1d6f07fd94af6ea2a3c15fdcc291133c正常push HEAD:main、ls-remote回读一致。随后该主线SHA再次执行`node scripts/audit/snapshot-hydration-electron.mjs --event-gap` exit0/6项、三轮/2启动/0错误，新相同完整out指纹；日志audit-f15-main-startup.log、报告audit-event-recovery-electron-EAOBUk/report.json。F15按冻结范围标VERIFIED，其后仅状态文档收尾，不改变产物。
 
 最终D:只读核对仍HEAD38c1f06、含未提交协作文件，未改其分支/运行文件；32aa已检出main亦未背后移动。以上是远端主线及隔离真实Electron交付，不能称日常D:已同步或偶发旧页面原因已彻底消除。完整26项只有F14/F15本轮闭合，F24仍MEASURING，其他OPEN；下一切片F01，整Goal继续active。
+
+## 2026-10-28 全分支/工作树与新版UI统一（当前检查点）
+
+用户将首要工作改为所有分支整合、干净工作区、D盘最新页面启动，再交付实时优化清单。初查10个本地有名分支和40ec detached提交均为origin/main fdc8e9c祖先；新版模板/三栏此前只在本地main，fetch后fdc才包含。D:38c残留14文件的所有新增非空行均已在main，启动器字节规范化相同；daily-launch测试的主线额外创建test-results目录。CSS真实blob与index都是5a6200c3，只刷新缓存后消除伪脏。
+
+保全：D:\WorkProject\EduProject-local-archive\20261028-main-unification；all-refs.bundle 130370316字节，git bundle verify exit0；50文件14149447字节逐SHA回读相同，binary工作区/index补丁和原文件都在本机。D:重复未跟踪源码/合同移本机恢复包，private素材/截图原位git/info/exclude，不上传；历史stash保留。D:已ff fdc并跟踪origin/main，最终集成/D启动待完成。
+
+F01检查点398e5e7，三方merge615a6d2仅import冲突保留双方；未用旧文件覆盖最新权限/命令/附件/三栏。新增自动审批同步门禁：先检查同步和scope再标处理，迟到notice/hydrate按token隔离。F01保持MEASURING，未校准性能预算；无新表、IPC、依赖、迁移或真实教师数据写入。
+
+当前冻结out SHA256：178fb8f6c32f42b0ca90200c4ee88d92bc8f820d3d116376be8bec5a94df4d5f；renderer index-CFEhoweD.js 7094.15kB。原8dd+F01中间包7075.61kB与此并非同UI基线，不作性能收益结论。最终同探针前后性能留F01/F24。
+
+- npm.cmd run build：exit0（tsc+vite）；main-unification-build.log。
+- npm.cmd run test:renderer-components：exit0，240/240；main-unification-renderer.log。
+- node scripts/audit/snapshot-hydration-component.mjs --stream-boundaries：exit0，36项，LnypGl；包含StrictMode、乱序快照/中间缺项/ack后退回、queued history、commit内同scope/退休prefix事件、卸载、四权限模式与被阻断自动审批恢复一次。
+- node scripts/audit/snapshot-hydration-electron.mjs：exit0，6项/2启动/0错误，3x9tsm；SQLite journal与native冷启一致。
+- 同脚本 --event-gap：exit0，6项/2启动/0错误，QQQEZE；实际通知drop/duplicate/补页拒绝/无后继终态。
+- Terra独立 node scripts/xiaozhi-agent/pi-column-resize-ui-smoke.mjs：exit0，8/8，Tq5O97；真实拖拽、键盘、双视口和重启持久。
+- Terra独立 node scripts/xiaozhi-agent/pi-composer-menus-ui-smoke.mjs：exit0，8/8，Wr5pxH；四模式、真实授权读回、命令/goal/skills/clear/permissions。初次6aQX7U在.codex夹具下超时且仅前2过；改合成runtime到OS temp后通过，没有放宽产品权限，原错误码未知。
+- npm audit --json：exit1，22项（8high/6moderate/8low/0critical），未升级依赖。
+- npm run test:ui-contracts：exit1，prompt-input/index.ts实际1459eb1a...与旧baseline671d52c6...不匹配；没改baseline掩盖故障，R01列入下一计划。
+- 保留失败：从根cwd运行组件夹具JB1e7l找不到classroom-preview相对入口，desktop cwd重跑通过；Tk3NdG在blocked状态尝试切正确禁用的权限菜单，改为预先选择模式再持有快照后通过；真实controls HBvBst前4项过，60s时复制审批未就绪，日志/SQLite/native保留，仍非全组通过。新版UI/恢复证据不能代替真实provider、所有审批组合、F01延迟/稳定性、40轮无重叠恢复或安装包。
+
+后续精确结果、正常push SHA和D:原生启动追加本节；实时入口WORK_PROGRESS.md。
+
+追加：node scripts/electron-smoke.mjs 最终exit0，ok=true/30隔离学生/207项通过；main-unification-legacy-smoke.log。controls第二次fCy2pz在CDP轮询暂停状态时Promise GC而0项，保留诊断；已改为本机暂停marker同步，第三次正重跑。功能与性能边界不变。
