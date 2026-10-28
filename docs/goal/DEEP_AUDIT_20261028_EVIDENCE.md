@@ -54,3 +54,47 @@
 ### 主线检查点集成与启动
 
 2026-10-28提交fc78137c32e6aae8ae7eca547bea5ee59e4047e2，刷新origin/main后正常push HEAD:main，ls-remote回读相同SHA。Terra只读收尾复审通过限定口径。主线生产源码与d710构建相同，本片只有测试/文档；`node scripts/daily-launch-visibility.mjs` exit0，report=daily-launch-visibility-j4c89s/report.json：2个实际Electron/Pi窗口，hidden对照PID34892 visible=false，interactive PID46532 visible=true，0 rendererErrors，同out指纹934f2e93。此探针按启动器配置重建spawn，未执行真实npm start/桌面快捷方式，也未更新D:协作者工作树；不能称间歇旧页面已复现或治愈。启动检查已完成，可新分支继续F14。此后的文档收尾提交不改变生产产物。
+
+## F14：事件先于快照的恢复竞态
+
+分支codex/audit-20261028-f14-pure-recovery；base e7ee92e51c88b8b89de1fb2c54fe3b0f3cbbaa82。冻结合同在TODO的F14节。教师结果：首次读取前收到突发事件仍恢复完整当前会话；失败保持禁写可重试；快速切换/卸载的晚响应不污染新页面。并未证明间歇旧页面的根因就是本问题。
+
+仅生产文件：PiEducationWorkspace.tsx及新pi-snapshot-hydrator.ts。状态updater纯化，缺快照恢复在事件回调发起；同scope单在途、事件revision栅栏、最多8次冲突重读。fresh调用要求调用后新读（覆盖无公共事件的业务写）；只join缺快照恢复。open/cleanup换独立token，保护旧A finally不释放新A；失败后status/gap/unavailable不形成重试风暴。typed IPC、receiver序列/seed、Pi循环、表/迁移、文件权限与旧入口不变。无新依赖。
+
+### 精确验证
+
+以下工作目录为本工作树apps/desktop；脚本/报告位于其test-results，未提交runtime数据或trace。
+
+|命令|最终结果|证据|
+|---|---|---|
+|`npm.cmd run build`|exit0，含TypeScript；随后smoke再次最终构建|audit-f14-build.log；最终产物以smoke为准|
+|`npm.cmd run test:renderer-components`|exit0，240/240|audit-f14-renderer.log|
+|`npm.cmd run test:smoke`|exit0，含最终build/typecheck，30名隔离学生、207/207历史教育兼容项|audit-f14-smoke.log；不是当前全部Pi UI/真实provider验收|
+|`node scripts/audit/snapshot-hydration-test.mjs`|exit0，11/11、0 skipped；Terra独立同结果|终端和独立审核；原生Node24直接载入纯TS helper|
+|`node scripts/audit/snapshot-hydration-component.mjs --baseline`|预期exit1，旧组件同52条事件峰值106，准确失败于单在途断言|audit-f14-component-before-frozen.log；audit-hydration-component-TudpbJ/report.json|
+|`node scripts/audit/snapshot-hydration-component.mjs`|exit0，最终12/12，0 pageErrors；Terra独立最终同结果|根hUxFCG/report.json、audit-f14-component-final.log；独立vmNZ6k/report.json|
+|`node scripts/xiaozhi-agent/pi-event-sync-boundaries.mjs`|exit0，10/10|audit-f14-sync.log；pi-event-sync-tZCImg/report.json|
+|`node scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs`|exit0，19/19|audit-f14-journal.log；pi-event-journal-yQ7rNd/report.json|
+|`node scripts/audit/snapshot-hydration-electron.mjs`|exit0，6/6、2实际启动/0 rendererErrors；Terra最终独立同结果|根u7ZZXb/report.json；独立m4g1iG/report.json（最终含transport断言）|
+|`npm.cmd audit --json`|exit1，22项：8 high/6 moderate/8 low/0 critical；未自动升级|audit-f14-npm-audit.json|
+|`git diff --check`|exit0，集成前再检查|终端|
+
+最终out SHA256 `d457f43598c145d9f935a1928b9feb5d2c48745ce7bd04359c3be60e188ccb5d`；独立Electron相同指纹。受控catalogue/SSE完全声明为夹具，Pi真实执行并写实际SQLite/native，未直接插journal。held首快照的该run cursor为generation1/sequence6；之后同session/run/gen的7–65包括文本和终态，均在释放前逐项等于SQLite committed JSON/hash。两读恢复完整50片文本、仅一次f14-000，无重复；双尺寸、A晚响应不替换B、真实typed拒绝与教师重试、页面reload及冷进程后journal/native字节一致、无新增run/模型请求。根owned PIDs20972/35676、独立39524/37140均exit0；独立modelRequests=1、blockedExternal=[]。
+
+StrictMode12项另覆盖：两次读取中继续突发、无公共事件的业务写后fresh刷新、setSnapshot后commit前事件、snapshot/settings分别延迟拒绝、失败后重复gap/unavailable、A→B→A、旧visibility finally对新refresh锁、连续8次冲突后的显式恢复、卸载重挂、Stop。发布到commit前反例通过测试专用load插件在setSnapshot后插入同步callback，生产源码无hook；该层API/events受控，不冒充真实Pi。实际Electron使用未插桩的生产renderer和typed preload，持有/拒绝只在main原handler实读后影响其传输。
+
+### 性能前后与范围
+
+同development React StrictMode、52条已接受事件、首快照held的受控工作负载，旧组件读取并发峰值106，新组件1；新组件跨两次受控延迟后3个顺序snapshot成功收敛（两波事件），真实Pi单波为2次读取/峰值1。本片没有稳定延迟/CPU/内存/流式TTFT的前后收益证明，不能把此并发数换算成整体提速百分比。每scope只持有一个请求和常数状态，不缓存/复制事件，不引入每帧/轮询任务；持续冲突8次后显式失败，保留老师重试。F24仍MEASURING。
+
+### 独立审核与失败保留
+
+Terra/high初审退回两项：fresh刷新加入旧事实、旧A finally清新A锁；分别加revision和token及真实组件反例。复审要求gap/unavailable失败后同样守卫、真实Electron事件时间屏障和有界自有进程清理；均补齐。最终独立实际6/12/11通过后接受此片，非完整26项完成。
+
+失败未删：组件首版3enBYS缺virtual classroom插件而未加载，已复用现buildClassroomPreview并使用本树cacheDir；gmogHr/最终TudpbJ旧代码106峰值为有效反例；y9agKZ失败后终态多发一次读，已补守卫。fresh语义新增后旧helper“仅取Promise身份”的测试误发fresh而挂起，Node报未settle await，已明确join=false并另测fresh重读。两旧receiver脚本首次缺自有父目录ENOENT（其中Node关闭还报UV_HANDLE_CLOSING），创建本树目录后原断言10/19通过。
+
+Electron失败：UowF8Q过早挂接IPC；SBOJNX/1PgEGw测试catalogue缺字段或Pi数据放全局.codex触发configuration；QiTMpM主进程CDP求值Promise被回收，后续读取状态仍可用，不据此断言产品失败；4dULRR受控131k容量不足真实上下文而context_limit，改为明确1M夹具而未改产品限制；k74mqx等待ai_agent_runs.completed的测试契约错误，实际succeeded/journal.completed，已修正；这些均保留失败报告及0通过边界。请求到达改读本次专用marker，后续真实事件/数据库屏障仍必须通过。正式Pi禁止全局.pi/.codex内stateRoot，runtime放私有OS temp并在报告记录路径，不关闭安全校验。无真实Key/教师资料或付费网络调用。
+
+### 回滚、未验与集成待记录
+
+可通过回滚本片提交恢复旧renderer读取实现；无数据库迁移/用户数据操作，不需删库或改协议。未验证真实provider/真人教师、完整Stop/审批业务E2E全部组合、任意持续事件率/长期压力、40GB、稳定P95或安装包。Stop和禁写的本片边界有真实组件反例，实际Electron限上述6项。26项目标保持active；F14须在下节记录正常主线push、远端SHA和该源码主线启动后才标VERIFIED。

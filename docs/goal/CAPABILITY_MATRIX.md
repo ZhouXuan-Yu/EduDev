@@ -1,5 +1,9 @@
 # 小智能力与复用矩阵
 
+## 2026-10-28 F14 renderer恢复
+
+M10/M12缺快照事件恢复、StrictMode及快速切会话代际已有窄修复和组件/真实Pi受控传输证据。未更改Pi循环、journal、typed IPC、数据库、权限或教师业务确认。当前仅恢复并发受控峰值106→1，不是全局性能或真实provider质量证明；独立最终/主线启动以本轮EVIDENCE收尾为准。
+
 ## 2026-10-28 审计量化基础
 
 M12新增独立profile的真实Electron历史采集/可比条件校验/失败比较器及15项回归；复用现typed IPC、SQLite与40轮初页，不新增生产业务能力。仅暖切换/额外snapshot/fill与诊断trace；组件Profiler、真实流/Skill、自然质量/40GB与CI校准仍OPEN。F01–F26队列见本轮TODO，F24不因采集工具可运行而关闭。

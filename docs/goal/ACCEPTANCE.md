@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-28 F14预集成限定证据
+
+命令和原始路径见DEEP_AUDIT_20261028_EVIDENCE.md：恢复helper11、真实dev StrictMode组件12、receiver10/journal19、renderer240、207历史兼容smoke通过；当前真实Electron/Pi受控catalogue/SSE6项/2启动/0 rendererErrors，SQLite日志及native字节冷重启一致，out SHA d457f43598c145d9f935a1928b9feb5d2c48745ce7bd04359c3be60e188ccb5d。独立最终和主线启动待收尾，不作真实provider、自然答案、安装包或旧页面根因验收。
+
 ## 2026-10-28 WP0有限历史计量（非F24完成）
 
 d710541构建/typecheck exit0、renderer-components 240/240、计量合同15/15。真实可见Electron6×5样本/6 trace exit0；Terra同构建重复exit1、7/18候选预算失败，无探针对照exit0；三次同out SHA256 934f2e9339a3eb124be958c124db24f90621e5797a5eb6d067c4d5f5e4d21a8c。npm audit exit1/22项风险保留。详见DEEP_AUDIT_20261028_EVIDENCE.md。无产品优化收益、稳定预算/完整Profiler/Skill/流式矩阵或安装包验收；F24 MEASURING，全Goal active。

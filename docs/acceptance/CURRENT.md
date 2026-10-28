@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-28 F14恢复专项
+
+本轮EVIDENCE记录helper11/StrictMode12/receiver10/journal19、build/typecheck、renderer240、207历史smoke及真实Electron/Pi受控SSE6项。当前产物d457f435…；SQLite与原生文件冷重启复验，无真实模型质量或安装包声明。独立收尾/主线启动完成前F14不标VERIFIED；完整26项及F24校准继续。
+
 ## 2026-10-28 深度审计量化检查点
 
 完整26项整改与WP0限定证据见goal/DEEP_AUDIT_20261028_TODOLIST.md和DEEP_AUDIT_20261028_EVIDENCE.md。build/typecheck、240组件、15计量合同及真实Electron历史采样通过；同构建独立重复7/18候选预算失败，F24仍MEASURING，非稳定性能门禁或全审计完成。用户产品级约定保存在根CLAUDE.md。

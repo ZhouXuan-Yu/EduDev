@@ -32,7 +32,7 @@
 | F11 | P1 | append后全量detail仍存在 | 按消费者拆write receipt，旧IPC兼容 | 1000轮写入读行/耗时、计数持久性、并发/旧调用回归 | OPEN |
 | F12 | P1 | snapshot恢复/flush/多仓库读取耦合 | 轻聊天/历史/capture/侧栏最小查询；不盲并行 | 分仓时长/SQL数/整包大小；权限/hash/来源、settlement/owner/generation一致 | OPEN |
 | F13 | P1 | send/status/terminal多次hydrate/list | per-session single-flight/版本及取消，按域刷新 | 每次正常发送、停止、失败的IPC计数和最终状态；切会话晚响应 | OPEN |
-| F14 | P1 | updater内void hydrate仍存在 | 移出纯updater，单次有效缺快照恢复 | 事件先于快照、StrictMode、重挂/快速切会话；无重复/过期覆盖 | OPEN |
+| F14 | P1 | updater内void hydrate仍存在 | 移出纯updater，单次有效缺快照恢复 | 事件先于快照、StrictMode、重挂/快速切会话；无重复/过期覆盖 | FIXING |
 | F15 | P1 | 报告缺号判断陈旧：已有createEventReceiver恢复 | 审既有receiver reset/generation/gap失败，不加第二套序列 | 实际UI丢第10条、补页失败/重连、重复/乱序不重复Token | OPEN |
 | F16 | P1 | 65536同时影响流和最终返回，已有truncated | 先核最终事实/文件上限再修可见提示与长产物路径 | >65536运行/终态/持久化/重启，明确完整与截断；不承诺不存在的全文 | OPEN |
 | F17 | P1 | /models10s预算/缓存条件仍需测 | 正确缓存/取消/准备阶段可观察，不编能力 | 冷/热/过期/超时TTFT分阶段、错误/Stop、无伪模态 | OPEN |
@@ -60,3 +60,11 @@ WP0/F24基线→F14/15正确性→F01/02/04/05流热路径→F03主进程→F06/
 进行中：全文转录和独立26项初查已完成；新树已索引；依赖清单一致后复用只读Junction；当前build启动待最终exit。一次相对工作目录误写了嵌套空test-results目录、日志路径不存在，命令未执行build；已按正确desktop/test-results重试，不冒充源码失败。
 
 2026-10-28当前：fetch发现远端新增16个提交，修复分支从3734df3无冲突快进origin/main/d710541；新基线build/typecheck与240组件已通过。WP0形成有限历史采集检查点，6组×5样本/6 trace；独立同构建比较7/18候选阈值失败，故F24保持MEASURING，不设CI硬门禁。详见DEEP_AUDIT_20261028_EVIDENCE.md。先集成此检查点并检查主线启动，再新分支针对F14做缺快照/StrictMode/切换恢复修复；其前后样本不可混用不同product build或调整探针版本。
+
+## F14 冻结窄合同
+
+分支codex/audit-20261028-f14-pure-recovery，base e7ee92e（WP0已推main并通过配置原生窗口探针）。M10/M12教师结果：事件先于首快照或快速切会话时，最终能看到完整当前会话，失败保持禁写并可重试，旧请求不得覆盖或解锁新会话。
+
+现码PiEducationWorkspace.applyEvent在React updater内调用hydrate，StrictMode可重复副作用；每事件version++让并发快照失效，最后事件可能只推进游标却没有快照。复用现typed snapshot/settings和createEventReceiver，不更改SQLite/IPC/schema/生产Pi/序列/权限/旧入口。只在该组件的恢复生命周期加同scope单在途、事件版本栅栏和失效后的有界重读，updater保持纯函数；scope在open与卸载失效，旧finally不得清新锁。失败catch显示重试并fail-closed；不无限自动重试，持续冲突允许显式刷新。
+
+验收先行：真实React StrictMode组件受控snapshot/settings分别延迟、突发和跨一次读取的事件、拒绝与教师重试、A→B→A、卸载重挂；请求并发同scope峰值1、最后文本/终态完整、mutation不可提前放行、0 unhandled。真实Electron通过当前生产页/typed IPC/隔离SQLite与本地受控响应验证事件提前、切换/冷启，双尺寸。前后比较恢复读取次数/峰值/完整性，原始计时只作观察，F24预算仍未校准。build/typecheck、240组件、receiver专项、关键smoke、Terra独立实际操作、diffcheck/audit与主线启动后才标VERIFIED。回滚仅本片组件/恢复helper与测试，数据库无需迁移；F01批流/其他页面/全局hydration性能重构不属本片。

@@ -1,5 +1,9 @@
 # 小智 Goal 当前状态
 
+## 2026-10-28 F14页面恢复窄修复
+
+实现及本轮证据见DEEP_AUDIT_20261028_EVIDENCE.md。组件事件updater已纯化，恢复按scope token合并并保留fresh语义，事件使旧读取失效后有界重读。helper11/StrictMode12、receiver10/journal19、build/typecheck、240组件、207历史smoke与当前真实Pi受控传输6项通过；独立最终操作和主线启动仍待记录，不提前标VERIFIED。F24与其余审计事项继续，完整Goal active。
+
 ## 2026-10-28 深度审计WP0有限检查点
 
 指定DOCX的F01–F26全量队列见DEEP_AUDIT_20261028_TODOLIST.md；当前隔离分支从3734df3快进到origin/main/d710541。新增可见Electron历史10/100/1000轮×双尺寸×5样本及6 trace采集工具、15项计量合同回归，build/typecheck与240组件通过。Terra/high独立重复同构建仍有7/18候选预算失败，保留证据；F24保持MEASURING，完整Goal active。完整十条产品约定已写CLAUDE.md；本片无生产运行时修改。先正常集成/主线启动，再从新分支修F14。

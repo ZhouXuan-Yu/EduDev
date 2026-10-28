@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-28 页面恢复协调边界
+
+PiEducationWorkspace使用pi-snapshot-hydrator管理同导航scope的在途快照和事件版本栅栏，updater无IPC。只协调renderer读取：公共事件顺序仍由createEventReceiver/main journal负责，fresh操作后刷新不得加入旧事实后直接完成；scope token隔离A→B→A及卸载。8次冲突上限后fail-closed/教师重试，不增加数据库或协议真源。验收与未验边界见goal/DEEP_AUDIT_20261028_EVIDENCE.md。
+
 ## 2026-10-28 原生AI生产链与单账户
 
 最新状态替代下方历史未接线说明：OmniEduStore已拥有NativeQuestionRepository及六类幂等表（新增context）。专用autocommit准备连接承担Word排版/OCR/输入提升，同caller writer读取真实first/final/member并原子发布native修订与题本；私有account能力传给writer。每次实际HTTP前复验隐私/配置/授权，确定未发返预算，真实已发未知不自动重试。
