@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-28 WP0有限历史计量（非F24完成）
+
+d710541构建/typecheck exit0、renderer-components 240/240、计量合同15/15。真实可见Electron6×5样本/6 trace exit0；Terra同构建重复exit1、7/18候选预算失败，无探针对照exit0；三次同out SHA256 934f2e9339a3eb124be958c124db24f90621e5797a5eb6d067c4d5f5e4d21a8c。npm audit exit1/22项风险保留。详见DEEP_AUDIT_20261028_EVIDENCE.md。无产品优化收益、稳定预算/完整Profiler/Skill/流式矩阵或安装包验收；F24 MEASURING，全Goal active。
+
 ## 2026-10-28 S6-B2生产贯通限定验收
 
 最新证据集中于KB_IMPLEMENTATION_EVIDENCE.md：真实Store10涵盖生产排版/OCR、实际AI收据/同题本、first_saved复用、现Pi和Word/PDF媒体SHA；UI7覆盖授权/typed看图/缺图重试/编辑/恢复/双尺寸冷重启，模型HTTP受控。最终build/240组件/207历史smoke结果按实记录，不能等同真实provider质量、WPS视觉或40GB/新安装包。独立批判已修四项，最新全面复审因配额未完成。

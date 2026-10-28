@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-28 深度审计量化检查点
+
+完整26项整改与WP0限定证据见goal/DEEP_AUDIT_20261028_TODOLIST.md和DEEP_AUDIT_20261028_EVIDENCE.md。build/typecheck、240组件、15计量合同及真实Electron历史采样通过；同构建独立重复7/18候选预算失败，F24仍MEASURING，非稳定性能门禁或全审计完成。用户产品级约定保存在根CLAUDE.md。
+
 ## 2026-10-28 原生AI生产链验收范围
 
 以goal/KB_IMPLEMENTATION_EVIDENCE.md最新节为准。真实Store10含实际OCR/两连接、AI收据、改答/恢复/cache删除、现Pi检索实读和生成Word/PDF角色媒体SHA；真实UI7含必要图授权、typed角色PNG/失败重试、教师编辑与真题干恢复、1366/1920冷重启。DeepSeek响应受控，未产生付费请求；不是自然质量/WPS布局/40GB/安装包验收。最终build/组件/smoke与独立复审边界按实记录。
