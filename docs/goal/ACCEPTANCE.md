@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-28 F15预集成故障实证
+
+`node scripts/audit/snapshot-hydration-electron.mjs --event-gap` root6项exit0（kzbuH1）、三真实Pi轮次/2启动/0错误，同d457f435产物。drop10、duplicate9/11、拒真实补页后显式恢复；第三轮seq65仅末通知丢失，后无通知，order218之后order219/after64真实页补回。每run峰值1，UI每token唯一有序/SQLite文本和hash/native冷启一致。独立与主线收尾待记录；受控模型非真实provider。
+
 ## 2026-10-28 F14预集成限定证据
 
 命令和原始路径见DEEP_AUDIT_20261028_EVIDENCE.md：恢复helper11、真实dev StrictMode组件12、receiver10/journal19、renderer240、207历史兼容smoke通过；真实Electron/Pi受控catalogue/SSE6项/2启动/0 rendererErrors，SQLite日志及native字节冷重启一致，out SHA d457f43598c145d9f935a1928b9feb5d2c48745ce7bd04359c3be60e188ccb5d。Terra最终独立11/12/6接受，main34aae9f及集成后oHsOhj真实6项通过；F14按范围验收。不作真实provider、自然答案、安装包或旧页面根因验收。

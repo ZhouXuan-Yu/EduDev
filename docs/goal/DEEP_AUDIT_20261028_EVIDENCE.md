@@ -102,3 +102,28 @@ Electron失败：UowF8Q过早挂接IPC；SBOJNX/1PgEGw测试catalogue缺字段�
 ### F14最终主线交付
 
 提交34aae9f72543393e187aa12488c751c687b3fe4f；fetch origin/main后无新增上游冲突，正常push HEAD:main，ls-remote回读相同SHA。Terra最终独立6/12/11接受。随后在该主线SHA重跑`node scripts/audit/snapshot-hydration-electron.mjs`：exit0/6项、2实际启动/0 rendererErrors、相同d457f435完整out；报告audit-hydration-electron-oHsOhj/report.json、日志audit-f14-main-startup.log。F14按冻结范围标VERIFIED，F24及其他项继续OPEN/MEASURING；下一项F15从该集成主线的新分支验证既有序列恢复及实际丢第10通知/尾通知。此后仅文档状态收尾提交不改变产物。32aa本地main及D:协作树未移动；远端main更新不等于D:日常源码或快捷方式已换到该分支。
+
+## F15：既有缺口与尾通知恢复的真实故障覆盖
+
+分支codex/audit-20261028-f15-event-recovery，base3ecc2afc9ace5c262e95cc4478e900b3015b54eb。原DOCX声称缺号无恢复已被当前createEventReceiver的连续游标、generation、分页pull、reset、失败态与可见运行轮次tail poll取代；本片不是重新实现一套receiver。仅修改现snapshot-hydration-electron.mjs测试设施增加--event-gap及审计/状态文档；无生产文件/协议/表/依赖变更。
+
+同一真实生产main/preload/Pi、显式受控catalogue/SSE、私有OS temp数据：第一轮丢实际第10通知、重复实际9/11；原journal IPC实读后hold，草稿Enter不产生新start/queue IPC、Stop按钮未禁用、队列禁用；释放后原receiver补第10并显示50片唯一有序文本。第二轮同样实际drop10，已读真实page在交付时拒绝，fallback snapshot持有，unavailable期间仍零新写入且草稿保留；教师显式refresh和权威snapshot释放后恢复，完成后再次验证草稿/计数。第三轮仅丢实际末status.completed，之前1..64通知连续、之后无同run通知；丢失order218后order219/after64调用的真实页含seq65，证明后续健康尾poll补回，不拿更早读取含terminal冒充。
+
+每run真实补读并发峰值1。全部实际replay page逐项等于SQLite连续journal JSON/hash，UI每个token唯一且有序，持久assistant文本逐字等于受控expected。双尺寸三轮可读；renderer reload与冷进程后3个run、journal hashes、唯一native会话文件SHA一致，冷启0模型请求。未直接插journal或伪造业务文件/模型质量。主进程拦截只影响此自有测试进程，不触碰D:日常窗口。
+
+|命令（本树apps/desktop）|结果|证据|
+|---|---|---|
+|`node scripts/audit/snapshot-hydration-electron.mjs --event-gap`|root exit0 6/6；Terra独立exit0 6/6，各2启动/0 rendererErrors|root audit-f15-electron-final.log、audit-event-recovery-electron-kzbuH1/report.json；独立Gzzib3/report.json|
+|`node scripts/audit/snapshot-hydration-electron.mjs`|Terra在共用harness改动后串行默认F14回归exit0 6/6、2启动/0错误|audit-hydration-electron-RfvWZq/report.json|
+|`node scripts/xiaozhi-agent/pi-event-sync-boundaries.mjs`|Terra exit0 10/10|pi-event-sync-Mu7nwy/report.json|
+|`node scripts/xiaozhi-agent/pi-event-journal-boundaries.mjs`|Terra exit0 19/19|pi-event-journal-zk9F2E/report.json|
+|`npm.cmd audit --json`|exit1；22（8 high/6 moderate/8 low/0 critical），未自动升级|audit-f15-npm-audit.json|
+|`node --check scripts/audit/snapshot-hydration-electron.mjs`、`git diff --check`|exit0|终端|
+
+生产源码/out未变，因此沿用F14最终build/typecheck、240组件与207历史smoke，未为只改测试重复重建。上述所有Electron报告同完整out SHA256 d457f43598c145d9f935a1928b9feb5d2c48745ce7bd04359c3be60e188ccb5d。root owned36828/50364、独立gap48652/50300与默认5180/48608均exit0；gap仅3次受控SSE、其他外网0。脚本没有统一skipped计数，未执行项不计通过。
+
+Terra初审要求补充重试完成后草稿/失败页断言、terminal之后无后继及poll时序、逐token和SQLite精确比较，均已补齐，独立最终接受6/6/10/19。早期root oY64KI 6项通过是较弱中间版本，不当最终证明；本片未观察生产源码缺陷，未把“已有实现补齐实证”冒充新功能。
+
+性能前后：本片生产代码与out字节相同，没有产品优化前后差值；仅确认当前受控三run补读峰值1、无重复文本/无限补读。F24仍MEASURING，未声称稳定P95、长期负载、真实provider/教师或安装包验收。Stop只确认控件未禁用，未实际执行该业务；确认/写入安全实际覆盖草稿Enter不发start/queue，未涵盖全部审批卡组合。非法generation/乱序/失败reset由原receiver10/journal19受控边界补证，不冒充所有情况的真实Pi操作。
+
+回滚限本片harness和状态文档提交，生产数据与实现无需迁移或回滚。F15须正常主线集成、远端SHA回读及主线启动后标VERIFIED；完整26项目标active，下一项F01事件热路径按新合同继续。

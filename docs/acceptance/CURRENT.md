@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-28 F15事件传输故障
+
+当前receiver已有实现，新增--event-gap模式验证实际第10通知丢失、第9/11重复、真实补读拒绝后的教师恢复及无后继丢终态。root真实Pi6项/3轮/2启动通过（kzbuH1），生产产物仍d457f435；独立复核/main集成启动待收尾。本片Stop只断言控件未禁用，不声称完整停止或审批业务全部组合。
+
 ## 2026-10-28 F14恢复专项
 
 本轮EVIDENCE记录helper11/StrictMode12/receiver10/journal19、build/typecheck、renderer240、207历史smoke及真实Electron/Pi受控SSE6项。产物d457f435…，Terra独立11/12/6接受；main34aae9f实际启动/冷启6项通过，F14 VERIFIED。SQLite与原生文件字节复验，无真实模型质量或安装包声明；完整26项及F24校准继续。

@@ -1,5 +1,9 @@
 # 小智 Goal 当前状态
 
+## 2026-10-28 F15现实现补齐真实故障覆盖
+
+仅测试/文档，生产receiver保持现实现；--event-gap真实Pi三轮6项通过，补读失败/重复/drop10/无后继丢terminal及冷启的证据见审计EVIDENCE。复用F14冻结d457f435构建、240/207门禁，独立默认F14回归/F15操作与主线收尾待记录。不把旧报告错误描述改写为新功能交付；完整Goal active，F24仍MEASURING。
+
 ## 2026-10-28 F14页面恢复窄修复
 
 实现及本轮证据见DEEP_AUDIT_20261028_EVIDENCE.md。组件事件updater已纯化，恢复按scope token合并并保留fresh语义，事件使旧读取失效后有界重读。helper11/StrictMode12、receiver10/journal19、build/typecheck、240组件、207历史smoke通过；Terra独立11/12/6接受，main34aae9f推送回读一致、集成后真实Pi6项/2启动通过，F14 VERIFIED。F24与其余审计事项继续，完整Goal active。

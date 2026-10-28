@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-10-28 F15复用既有receiver
+
+当前已具备gap/tail恢复，不新建序列或因旧静态报告改写生产路径。只扩展现真实Electron受控传输harness，所有补页取实际main IPC/SQLite数据。时序/逐token/草稿/零写入/每run单在途和冷启均验证后，按限定范围闭合报告风险；真实provider、任意规模延迟及全部Stop/审批组合不由该测试证明。
+
 ## 2026-10-28 F14只修恢复生命周期
 
 复用现typed snapshot/settings、receiver及SQLite，不新增协议/表或第二事件序列。缺快照事件恢复可join；操作后fresh请求要求调用后的读；所有附带状态按scope token守卫。自动恢复最多8次冲突，失败后terminal/gap/unavailable不得通知风暴，教师显式刷新仍可重试。本片未做流批次或全局快照性能重构，F24预算不校准即不称性能验收。
