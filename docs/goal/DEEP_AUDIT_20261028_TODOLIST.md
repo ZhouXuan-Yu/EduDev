@@ -19,7 +19,7 @@
 | ID | 级别 | 报告问题 / 当前初查 | 下一实施/验证边界 | 完成所需证据 | 状态 |
 |---|---|---|---|---|---|
 | F24 | P1 | 缺量化性能门禁；已有ux00与长历史脚本，但不完整 | WP0先建固定10/100/1000轮、delta/code/scroll/hidden/Skill/SQL/冷启矩阵；明确采不到的指标 | 同硬件/构建口径每场景≥5次，原始samples+p50/p95、Chromium/React/main/资源四类证据；回退负例能使门禁失败 | MEASURING |
-| F01 | P0 | 逐事件setSnapshot仍存在，main已有16ms批次 | UI有界按session/run/segment相邻文本合并，非文本立即flush | 10/50/200 delta/s，完整字节/顺序/末帧；commit下降、Stop/审批/隐藏/切会话 | OPEN |
+| F01 | P0 | 逐事件setSnapshot仍存在，main已有16ms批次 | UI有界按session/run/segment相邻文本合并，非文本立即flush | 10/50/200 delta/s，完整字节/顺序/末帧；commit下降、Stop/审批/隐藏/切会话 | MEASURING |
 | F02 | P0 | 主/渲染共享投影多层复制 | 保留权威投影与序列，只减少实际被profile证明的复制 | 1/20/100消息段同delta，计算/分配曲线，来源/恢复不倒退 | OPEN |
 | F03 | P0 | 500ms严格校验已有在途去重，仍同步重IO | 分开展示/权限/完整性；实测后Worker/去重，不仅改轮询间隔 | 5/20 Skill，check p50/p95/main eventloop，磁盘篡改/撤销及时拒绝、交付TOCTOU | OPEN |
 | F04 | P0 | Shiki effect存在；实际流围栏触发次数待证 | 流式原文/完成后高亮与有界缓存，保留原厂设计 | 1000/5000/20000字代码，真实高亮次数/LongTask/可复制/终态 | OPEN |
@@ -74,3 +74,15 @@ WP0/F24基线→F14/15正确性→F01/02/04/05流热路径→F03主进程→F06/
 分支codex/audit-20261028-f15-event-recovery；base3ecc2af。M10/M12老师结果：真实本轮过程通知丢失/重复后仍看到完整回复与正确终态；已知缺口期间草稿保留，确认/新写入阻断，补读失败后可显式恢复，冷重启无重放。现createEventReceiver已经实现generation、连续cursor、分页pull、失败态、reset和尾poll；旧DOCX的无恢复描述不能直接作为源码缺陷。先复用并测试，若事实证明有缺口只修该边界。
 
 只扩展现audit真实Pi受控catalogue/SSE测试设施以复用同一生产main/preload/journal：实际第10通知丢弃、第9/11重复，修复页由原IPC实读后持有/拒绝，不直接写入/伪造journal或模型业务成果。实际SQLite/完整字节/顺序/丢终态无后继/冷重启；已有receiver10/journal19及F14 StrictMode12覆盖非法/外代/旧请求。每项区分真实传输故障与受控负例，记录补读次数/每run单在途，F24稳定时延仍未校准。无新表/协议/循环/包/页面，保留权限与旧入口。生产无改动时不为形式重复重建out或改源码；复用同冻结d457f435构建/240/207门禁，重跑受影响测试、Terra独立实际操作、主线集成与启动后才关闭F15。回滚限本片测试/文档，完整Goal继续active。
+
+## F01 冻结窄合同（先测后改）
+
+分支codex/audit-20261028-f01-stream-batching，base cc2e68ae1d17b0cec03a59a72183881fd4dceba8。M10/M12教师结果：高频输出完整且更平稳，首段/审批/停止/终态立即可见，切换/恢复不重复或丢尾。现main已有16ms落库/通知批次，renderer仍逐条setSnapshot；只测并优化renderer公开投影，不改commit-before-emit/journal/receiver序列或共享IPC。
+
+编码前先用同一真实React Profiler组件场景采10/50/200 delta/s、双尺寸各≥5个原始样本，保存commit/actualDuration/首字/终态及文本/游标；实际Pi用既有受控SSE/SQLite及F14/F15重验。只有Profile支持收益再写有界视图缓冲helper，局限PiEducationWorkspace与测试。候选32ms节奏、每段首delta立即、最多128条或65536字符；只同session/run/generation、同segment内相邻text_delta可合并（assistant_start/end等非文本是边界）。保留首条traceSequence锚点与最终sourceSequence，不更改公共事件结构。非文本先flush再立即应用；snapshot publish先清空/flush待合并前缀，禁止快照包含后再次apply导致重复。切会话清旧scope，hide/Stop/终态和卸载有明确flush/cancel，不留定时器/跨代写。
+
+验收：中文/Unicode精确字节、非文本交错、run/segment/代切换、超限、计时末帧、快照恢复覆盖、隐显/重挂、Stop/审批即刻、gap/tail恢复均测。200/s场景commit显著下降，10/s不应人为延迟首字；保留采样原值，不放宽F24候选门禁消除波动。这里只证明限定视图性能和正确性，不同时做F02深复制/F04高亮/F05memo/F07隐藏优化。无表/迁移/依赖/模型或文件权限变更，旧入口保留。build/typecheck、renderer组件、对应helper/实际组件/真实Pi、相关smoke、Terra独立、正常集成及主线启动后才标VERIFIED。回滚本片renderer/helper及测试即可，持久事实不变。
+
+## 2026-10-28 主线统一优先级
+
+用户要求先整合全部分支、清理工作区并从最新页面源码启动，再继续优化。origin/main 已推进fdc8e9c，包含模板输入栏/附件/权限和三栏。F01暂存为未验收检查点：原8dd基线helper37/恢复15/StrictMode31、build及240通过，17/11/9上游边界通过；原生Stop前缀通过，后续因旧导航定位失败而整组不通过；同hash最终性能与最新版UI尚未验收。F01保持MEASURING，不把本次集成当性能交付。完全无重叠历史页失败关闭保留已加载事实，跨40轮跳跃恢复留F10。

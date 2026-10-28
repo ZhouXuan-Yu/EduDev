@@ -2,7 +2,8 @@
  * lives here; the existing receiver still owns sequence/generation admission. */
 export function createPiSnapshotHydrator<T>(options: {
   read: (target: string) => Promise<T>;
-  publish: (value: T) => void;
+  publish: (value: T) => void | boolean;
+  canPublish?: (value: T) => boolean;
   failed: () => void;
 }) {
   type Scope = { target: string; token: symbol; revision: number; published: boolean; failed: boolean; request?: Promise<void> };
@@ -27,8 +28,9 @@ export function createPiSnapshotHydrator<T>(options: {
         if (scope !== owner) return;
         // A snapshot captured before an accepted event cannot acknowledge it.
         // Re-read after that burst rather than swallowing the last event.
-        if (revision !== owner.revision) continue;
-        options.publish(value);
+        if (revision !== owner.revision || options.canPublish && !options.canPublish(value)) continue;
+        if (options.publish(value) === false || revision !== owner.revision) continue;
+        if (scope !== owner) return;
         owner.published = true;
         return;
       }
@@ -45,6 +47,7 @@ export function createPiSnapshotHydrator<T>(options: {
   return {
     open(target: string) { scope = { target, token: Symbol(target), revision: 0, published: false, failed: false }; },
     token() { return scope?.token; },
+    revision() { return scope?.revision; },
     reset() { scope = undefined; },
     /** Called once after the existing receiver admits an event, outside React. */
     changed() { if (scope) scope.revision++; },

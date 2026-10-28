@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import type { AiConversationWorkspace } from '../../../shared/contracts';
 import type { XiaozhiWorkspaceSnapshot,XiaozhiStartInput, XiaozhiAgentEvent } from '../../../shared/xiaozhi-agent';
 import { createEventReceiver,type XiaozhiEventSynchronization } from '../../../shared/xiaozhi-event-receiver';
@@ -28,6 +29,7 @@ import { PiWorkspaceContext } from './PiWorkspaceContext';
 import { PiWorkspaceFiles } from './PiWorkspaceFiles';
 import {usePiAttachments} from './usePiAttachments';
 import { createPiSnapshotHydrator } from './pi-snapshot-hydrator';
+import { createPiTextViewBuffer, mergePiViewSnapshot } from './pi-text-view-buffer';
 import { useDesktopCommands, useDesktopNavigation } from '../desktop/DesktopFrame';
 import './pi-education-workspace.css';
 
@@ -51,7 +53,11 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const [returnHydrating,setReturnHydrating]=useState(false);
   const [loadingEarlier,setLoadingEarlier]=useState(false);
   const [eventSync,setEventSync]=useState<XiaozhiEventSynchronization>('ready'),[refreshFailed,markRefreshFailed]=useState(false);
-  const refreshing=useRef(false),refreshFailure=useRef(false),snapshotRef=useRef(snapshot);snapshotRef.current=snapshot;
+  const refreshing=useRef(false),refreshFailure=useRef(false),snapshotRef=useRef(snapshot);
+  useLayoutEffect(()=>{snapshotRef.current=snapshot;},[snapshot]);
+  const snapshotBarrier=useRef<symbol | undefined>(undefined);
+  const [snapshotPublishing,setSnapshotPublishing]=useState(false);
+  function clearSnapshotBarrier(token?:symbol){if(snapshotBarrier.current===token){snapshotBarrier.current=undefined;setSnapshotPublishing(false);}}
   function setHydrating(value:boolean){refreshing.current=value;setReturnHydrating(value);}
   function setRefreshFailed(value:boolean){refreshFailure.current=value;markRefreshFailed(value);}
   const [hasEntered,setHasEntered]=useState(visible);
@@ -68,29 +74,81 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const sequences = useRef(new Map<string, number>());
   const loadingEarlierRef=useRef(false);
   const eventReceiver = useRef<ReturnType<typeof createEventReceiver> | undefined>(undefined);
+  const viewBuffer = useRef<ReturnType<typeof createPiTextViewBuffer> | undefined>(undefined);
+  if (!viewBuffer.current) viewBuffer.current = createPiTextViewBuffer({
+    text: view => applyProjectedEvent({ kind: 'text_delta', sessionId: view.sessionId, runId: view.runId, sequence: view.firstSequence, delta: view.delta }, view.throughSequence),
+    immediate: event => applyProjectedEvent(event),
+  });
   const hydration = useRef<ReturnType<typeof createPiSnapshotHydrator<Awaited<ReturnType<typeof readPiSnapshot>>>> | undefined>(undefined);
   if (!hydration.current) hydration.current = createPiSnapshotHydrator({
     read: readPiSnapshot,
     publish: ({ current, settings }) => {
+      const token = hydration.current!.token();
+      const revision = hydration.current!.revision();
+      snapshotBarrier.current=token;setSnapshotPublishing(true);
+      // Only authoritative replacement uses a synchronous commit boundary.
+      // Consume queued text/history updates before proving page coverage, so
+      // the proof and replacement use the same committed React state.
+      flushSync(() => { viewBuffer.current!.flush(); setSnapshot(previous => previous); });
+      if (!active.current || token !== hydration.current!.token() || current.projection.threadId !== idRef.current) return false;
+      const previous = snapshotRef.current;
+      const known = new Map((eventReceiver.current?.cursors() || []).map(cursor => [cursor.runId, cursor]));
+      for (const turn of current.projection.turns) {
+        const accepted = known.get(turn.id);
+        if (!accepted) continue;
+        const cursor = current.eventCursors?.find(value => value.runId === turn.id);
+        if (!cursor || cursor.generation !== accepted.generation || cursor.sequence < accepted.sequence) return false;
+      }
+      if (!viewBuffer.current!.canReplace(current, previous?.projection)) return false;
+      const retainedCursors = eventReceiver.current?.cursors() || [];
+      const merged = mergePiViewSnapshot(previous, current, retainedCursors);
+      flushSync(() => setSnapshot(merged));
+      if (!active.current || token !== hydration.current!.token() || revision !== hydration.current!.revision() || snapshotRef.current !== merged) return false;
+      viewBuffer.current!.acknowledge(current, previous?.projection);
       if (settings?.ok) setModels(settings.value);
       if (!current.eventPersistence && !current.projection.needsHydration) eventReceiver.current?.seed(current.eventCursors || []);
-      for (const cursor of current.eventCursors || []) sequences.current.set(cursor.runId, cursor.sequence);
+      for (const cursor of current.eventCursors || []) sequences.current.set(cursor.runId, Math.max(sequences.current.get(cursor.runId) || 0, cursor.sequence));
       if (current.eventPersistence === 'unavailable') setNotice('本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。');
       const turn = current.projection.turns.at(-1);
       if (turn && current.running) sequences.current.set(turn.id, Math.max(sequences.current.get(turn.id) || 0, current.projection.sourceSequence));
-      setSnapshot(current);
       setRefreshFailed(false);
       setNotice(value => value === '无法刷新本地会话，请重试。' ? '' : value);
+      if (revision !== hydration.current!.revision() || token !== hydration.current!.token()) return false;
+      clearSnapshotBarrier(token);
     },
-    failed: () => { setRefreshFailed(true); setNotice('无法刷新本地会话，请重试。'); },
+    failed: () => { setRefreshFailed(true); clearSnapshotBarrier(hydration.current!.token()); setNotice('无法刷新本地会话，请重试。'); },
   });
-  const syncBlocked=!snapshot||returnHydrating||refreshFailed||eventSync!=='ready'||Boolean(snapshot.projection.needsHydration||snapshot.eventPersistence);
-  function mutationsBlocked(){const view=snapshotRef.current;return !view||view.projection.threadId!==idRef.current||refreshing.current||refreshFailure.current||eventReceiver.current?.synchronization()!=='ready'||Boolean(view.projection.needsHydration||view.eventPersistence);}
+  const syncBlocked=!snapshot||snapshotPublishing||returnHydrating||refreshFailed||eventSync!=='ready'||Boolean(snapshot.projection.needsHydration||snapshot.eventPersistence);
+  function mutationsBlocked(){const view=snapshotRef.current;return !view||view.projection.threadId!==idRef.current||snapshotBarrier.current!==undefined||refreshing.current||refreshFailure.current||eventReceiver.current?.synchronization()!=='ready'||Boolean(view.projection.needsHydration||view.eventPersistence);}
   function requireSynchronized(){if(mutationsBlocked())throw Error('过程记录正在同步，请稍后再试。');}
   async function refreshCurrent(){
     if(refreshing.current)return;const target=idRef.current,token=hydration.current!.token();setHydrating(true);
     try{await hydrate(target);}catch{if(active.current&&hydration.current!.token()===token)setRefreshFailed(true);}
     finally{if(active.current&&hydration.current!.token()===token)setHydrating(false);}
+  }
+  function applyProjectedEvent(event: XiaozhiAgentEvent, throughSequence = event.sequence) {
+      setSnapshot(previous => {
+        if (!previous || previous.projection.threadId !== event.sessionId) return previous;
+        const turns = previous.projection.turns.slice();
+        let index = turns.findIndex(turn => turn.id === event.runId);
+        if (index < 0) {
+          const pending = turns.at(-1)?.id === 'pending-send' ? turns.pop() : undefined;
+          turns.push({ id: event.runId, status: 'running', items: pending?.items || [] }); index = turns.length - 1;
+        }
+        turns[index] = applyXiaozhiEvent(turns[index], event);
+        const approvals = event.kind === 'approval' ? [...(previous.approvals || []).filter(item => item.id !== event.approval.id), event.approval] : previous.approvals;
+        const changes = event.kind === 'change' ? [...(previous.changes || []).filter(item => item.id !== event.change.id), event.change] : previous.changes;
+        const officeArtifacts=event.kind==='office_artifact'?[...(previous.officeArtifacts||[]).filter(item=>item.id!==event.artifact.id),event.artifact]:previous.officeArtifacts;
+        const learningReviews=event.kind==='learning_review'?[...(previous.learningReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.learningReviews;
+        const paperReviews=event.kind==='paper_review'?[...(previous.paperReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.paperReviews;
+        const practiceReviews=event.kind==='practice_review'?[...(previous.practiceReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.practiceReviews;
+        const questionCollections=event.kind==='question_collection'?[...(previous.questionCollections||[]).filter(item=>item.id!==event.review.id),event.review]:previous.questionCollections;
+        const questionReviews=event.kind==='question_review'?[...(previous.questionReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.questionReviews;
+        const controls=event.kind === 'control' ? [...(previous.controls || []).filter(item=>item.id !== event.control.id),event.control] : previous.controls;
+        const usage=event.kind==='usage'?[...(previous.usage || []).filter(item=>item.runId!==event.usage.runId),event.usage]:previous.usage;
+        return { ...previous, approvals, changes, officeArtifacts, learningReviews, questionCollections, questionReviews, practiceReviews, paperReviews, controls, usage, ...(event.kind==='goal'?{goal:event.goal}:{}),...(event.kind==='task'?{task:event.task,taskUnavailable:false,...(event.goal?{goal:event.goal}:{})}:{}), ...(event.kind === 'compaction' && !event.automatic ? { operation: 'compact' as const } : {}), running: event.kind === 'status' ? event.status === 'running' : previous.running,
+          projection: { ...previous.projection, sourceSequence: throughSequence, turns } };
+      });
   }
   const journalRunId = snapshot?.projection.turns.at(-1)?.id;
   useEffect(() => {
@@ -105,6 +163,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   }
   async function open(target: string,record=true) {
     if(!active.current)return;
+    viewBuffer.current!.clear();
+    clearSnapshotBarrier(snapshotBarrier.current);
     hydration.current!.open(target);
     const token=hydration.current!.token();
     loadingEarlierRef.current=false;setLoadingEarlier(false);
@@ -152,6 +212,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   }
   useDesktopCommands(command=>{if(visible&&command==='new-chat'&&idRef.current){void fresh().catch(()=>setNotice('无法创建本地对话，请重试。'));return true;}return false;},10);
   useEffect(()=>{
+    viewBuffer.current!.flush();
     if(!visible){setSkillsOpen(false);return;}
     const target=idRef.current;if(!target)return;
     const token=hydration.current!.token();
@@ -187,28 +248,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       hydration.current!.changed(); // In-flight older snapshots must re-read after the burst.
       sequences.current.set(event.runId, event.sequence);
       if (hydration.current!.needsRecovery()) void hydrate(event.sessionId, false).catch(() => undefined);
-      setSnapshot(previous => {
-        if (!previous || previous.projection.threadId !== event.sessionId) return previous;
-        const turns = previous.projection.turns.slice();
-        let index = turns.findIndex(turn => turn.id === event.runId);
-        if (index < 0) {
-          const pending = turns.at(-1)?.id === 'pending-send' ? turns.pop() : undefined;
-          turns.push({ id: event.runId, status: 'running', items: pending?.items || [] }); index = turns.length - 1;
-        }
-        turns[index] = applyXiaozhiEvent(turns[index], event);
-        const approvals = event.kind === 'approval' ? [...(previous.approvals || []).filter(item => item.id !== event.approval.id), event.approval] : previous.approvals;
-        const changes = event.kind === 'change' ? [...(previous.changes || []).filter(item => item.id !== event.change.id), event.change] : previous.changes;
-        const officeArtifacts=event.kind==='office_artifact'?[...(previous.officeArtifacts||[]).filter(item=>item.id!==event.artifact.id),event.artifact]:previous.officeArtifacts;
-        const learningReviews=event.kind==='learning_review'?[...(previous.learningReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.learningReviews;
-        const paperReviews=event.kind==='paper_review'?[...(previous.paperReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.paperReviews;
-        const practiceReviews=event.kind==='practice_review'?[...(previous.practiceReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.practiceReviews;
-        const questionCollections=event.kind==='question_collection'?[...(previous.questionCollections||[]).filter(item=>item.id!==event.review.id),event.review]:previous.questionCollections;
-        const questionReviews=event.kind==='question_review'?[...(previous.questionReviews||[]).filter(item=>item.id!==event.review.id),event.review]:previous.questionReviews;
-        const controls=event.kind === 'control' ? [...(previous.controls || []).filter(item=>item.id !== event.control.id),event.control] : previous.controls;
-        const usage=event.kind==='usage'?[...(previous.usage || []).filter(item=>item.runId!==event.usage.runId),event.usage]:previous.usage;
-        return { ...previous, approvals, changes, officeArtifacts, learningReviews, questionCollections, questionReviews, practiceReviews, paperReviews, controls, usage, ...(event.kind==='goal'?{goal:event.goal}:{}),...(event.kind==='task'?{task:event.task,taskUnavailable:false,...(event.goal?{goal:event.goal}:{})}:{}), ...(event.kind === 'compaction' && !event.automatic ? { operation: 'compact' as const } : {}), running: event.kind === 'status' ? event.status === 'running' : previous.running,
-          projection: { ...previous.projection, sourceSequence: event.sequence, turns } };
-      });
+      viewBuffer.current!.accept(event);
       if (event.kind === 'status') {
         void refreshList();
         if (event.status !== 'running' && !hydration.current!.hasFailed()) void hydrate(event.sessionId).catch(() => undefined);
@@ -218,12 +258,12 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       list: input => { if (!window.omniEdu) return Promise.reject(Error('configuration')); return window.omniEdu.listXiaozhiEvents(input); },
       apply: applyEvent,
       syncChanged: state=>{if(live)setEventSync(state);},
-      unavailable: () => { if (live) { setNotice('本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。'); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
-      gapFailure: () => { if (live && !hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); },
+      unavailable: () => { if (live) { viewBuffer.current!.flush(); setNotice('本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。'); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
+      gapFailure: () => { if (live) { viewBuffer.current!.flush(); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
     });
     eventReceiver.current = receiver;
     const unsubscribe = window.omniEdu?.onXiaozhiEvent(event => { if (live && event.sessionId === idRef.current) receiver.accept(event); });
-    return () => { live = false; active.current=false; hydration.current!.reset(); receiver.reset(); unsubscribe?.(); };
+    return () => { viewBuffer.current!.flush(); viewBuffer.current!.clear(); live = false; active.current=false; hydration.current!.reset(); receiver.reset(); unsubscribe?.(); };
   }, [hasEntered]);
   async function send(prompt: string,presentation?:XiaozhiMessagePresentation) {
     requireSynchronized();
@@ -310,7 +350,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         onPermissions={onSettings} attachLabel="添加本地附件" permissionLabel={snapshot?.workspace ? '工作目录 · 写入需确认' : '教师资料 · 只读'} onWorkspace={() => { void (async () => {
           requireSynchronized();setNotice(''); const target = id; const result = await window.omniEdu?.selectXiaozhiWorkspace(target);
           if (result && !result.ok) setNotice(XIAOZHI_ERRORS[result.error]); else await hydrate(target);
-        })().catch(() => setNotice('无法选择教学工作目录，请重试。')); }} onSubmit={send} onStop={async () => { const result = await window.omniEdu?.stopXiaozhi(id); if (!result?.ok) throw new Error('stop_failed'); }} />
+        })().catch(() => setNotice('无法选择教学工作目录，请重试。')); }} onSubmit={send} onStop={async () => { viewBuffer.current!.flush(); const result = await window.omniEdu?.stopXiaozhi(id); if (!result?.ok) throw new Error('stop_failed'); }} />
     </section>
     {attachments.modal}
     {skillsOpen && <PiSkillSettings running={Boolean(snapshot?.running)} onClose={() => setSkillsOpen(false)} onChanged={() => hydrate(id)} />}
