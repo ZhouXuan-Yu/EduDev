@@ -2,6 +2,7 @@
 
 import {
   type ComponentPropsWithRef,
+  type CSSProperties,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
   useCallback,
@@ -17,7 +18,7 @@ import {
   composeSlotClassName,
   composeTwRenderProps,
 } from '../../utils/compose';
-import { ArrowUp, Xmark } from '../icons';
+import { ArrowUp, StopFill, Xmark } from '../icons';
 import type { PromptInputContextValue } from './prompt-input.context';
 import {
   PromptInputContext,
@@ -25,9 +26,11 @@ import {
 } from './prompt-input.context';
 import type { PromptInputVariants } from './prompt-input.styles';
 import { promptInputVariants } from './prompt-input.styles';
+import './prompt-input.compat.css';
 import type { ChatStatus } from './prompt-input.types';
 import {
   getPromptInputSingleLineHeight,
+  hasPromptInputAttachments,
   isPromptInputGenerating,
   isPromptInputTextAreaExpanded,
   PROMPT_INPUT_INLINE_COMPACT_HEIGHT,
@@ -72,6 +75,7 @@ export const PromptInputRoot = ({
   onValueChange,
   size = 'md',
   status: statusProp,
+  style,
   value: valueProp,
   variant = 'primary',
   ...props
@@ -79,6 +83,7 @@ export const PromptInputRoot = ({
   const [internalValue, setInternalValue] = useState<string>(valueProp ?? '');
   const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const tokenInputRef = useRef<HTMLDivElement | null>(null);
 
   const slots = useMemo(
     () => promptInputVariants({ layout, size, variant }),
@@ -90,7 +95,7 @@ export const PromptInputRoot = ({
   }, []);
 
   useLayoutEffect(() => {
-    if (layout !== 'inline') setIsExpanded(false);
+    if (layout === 'stacked') setIsExpanded(false);
   }, [layout]);
 
   const value = valueProp ?? internalValue;
@@ -121,6 +126,7 @@ export const PromptInputRoot = ({
       slots,
       status,
       textareaRef,
+      tokenInputRef,
       variant,
       value,
     }),
@@ -148,12 +154,17 @@ export const PromptInputRoot = ({
     children: jsx('div', {
       className: composeSlotClassName(slots?.base, className),
       'data-disabled': disabled || undefined,
-      'data-expanded': layout === 'inline' && isExpanded ? true : undefined,
+      'data-expanded': layout !== 'stacked' && isExpanded ? true : undefined,
       'data-layout': layout,
       'data-pending': isPendingOrStreaming || undefined,
       'data-slot': 'prompt-input',
       'data-status': status,
       'data-variant': variant,
+      style: {
+        '--prompt-input-max-height':
+          typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
+        ...style,
+      } as CSSProperties,
       ...props,
       children,
     }),
@@ -169,7 +180,8 @@ export const PromptInputShell = ({
   className,
   ...props
 }: PromptInputShellProps) => {
-  const { disabled, slots, textareaRef } = usePromptInputContext();
+  const { disabled, slots, textareaRef, tokenInputRef } =
+    usePromptInputContext();
   return jsx('div', {
     className: composeSlotClassName(slots?.shell, className),
     'data-slot': 'prompt-input-shell',
@@ -178,11 +190,11 @@ export const PromptInputShell = ({
       const target = e.target as Element;
       if (
         target.closest(
-          'button, a, input, select, textarea, [role="button"], [data-slot="prompt-input-toolbar"], [data-slot="prompt-input-queue"], [data-slot="chat-attachment-remove"]'
+          'button, a, input, select, textarea, [contenteditable], [role="button"], [data-slot="prompt-input-toolbar"], [data-slot="prompt-input-queue"], [data-slot="chat-attachment-remove"]'
         )
       )
         return;
-      textareaRef.current?.focus();
+      (textareaRef.current ?? tokenInputRef.current)?.focus();
     },
     ...props,
     children,
@@ -264,12 +276,8 @@ export const PromptInputTextArea = ({
 
       const text = area.value;
 
-      if (layout === 'inline') {
-        const hasAttachments = Boolean(
-          area
-            .closest('[data-slot="prompt-input-shell"]')
-            ?.querySelector('[data-slot="prompt-input-attachments"] > *')
-        );
+      if (layout !== 'stacked') {
+        const hasAttachments = hasPromptInputAttachments(area);
         const wantsExpand =
           hasAttachments ||
           (text.trim().length > 0 && isPromptInputTextAreaExpanded(area));
@@ -411,12 +419,12 @@ export const PromptInputFooter = ({
 function SendIcon({ status }: { status: ChatStatus }) {
   if (status === 'submitted')
     return jsx(Spinner, { color: 'current', size: 'sm' });
-  if (status === 'streaming')
-    return jsx('span', {
-      'aria-hidden': true,
-      className: 'rounded-xs size-3 bg-current',
-    });
-  return jsx(status === 'error' ? Xmark : ArrowUp, { className: 'size-4' });
+  return jsx(
+    status === 'streaming' ? StopFill : status === 'error' ? Xmark : ArrowUp,
+    {
+      className: 'size-4',
+    }
+  );
 }
 
 export interface PromptInputSendProps extends ComponentPropsWithRef<
@@ -479,7 +487,7 @@ export const PromptInputSend = ({
     'data-slot': 'prompt-input-send',
     'data-status': status,
     isDisabled,
-    size: layout === 'inline' ? 'sm' : 'md',
+    size: layout !== 'stacked' ? 'sm' : 'md',
     onPress: (e: PressEvent) => {
       if (canStop) {
         onStop?.();
@@ -520,7 +528,7 @@ export const PromptInputAction = ({
       disabled ||
       (props.isDisabled as boolean | undefined) ||
       (lockInputOnRun && isGenerating),
-    size: layout === 'inline' ? 'sm' : 'md',
+    size: layout !== 'stacked' ? 'sm' : 'md',
     variant: resolvedVariant,
     children,
   });

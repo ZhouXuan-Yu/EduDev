@@ -22,6 +22,7 @@ export type PromptInputContextValue = {
   slots?: ReturnType<typeof promptInputVariants>;
   status: ChatStatus;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
+  tokenInputRef: RefObject<HTMLDivElement | null>;
   variant: PromptInputVariants['variant'];
   value: string;
 };

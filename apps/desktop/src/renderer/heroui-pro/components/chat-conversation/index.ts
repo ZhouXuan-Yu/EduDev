@@ -1,3 +1,4 @@
+import type { ComponentProps } from 'react';
 import {
   ChatConversationContent,
   ChatConversationRoot,
@@ -28,4 +29,12 @@ export {
   ChatConversationRoot,
   ChatConversationScrollAnchor,
   ChatConversationScrollButton,
+};
+
+export type ChatConversation = {
+  ContentProps: ComponentProps<typeof ChatConversationContent>;
+  Props: ComponentProps<typeof ChatConversationRoot>;
+  RootProps: ComponentProps<typeof ChatConversationRoot>;
+  ScrollAnchorProps: ComponentProps<typeof ChatConversationScrollAnchor>;
+  ScrollButtonProps: ComponentProps<typeof ChatConversationScrollButton>;
 };

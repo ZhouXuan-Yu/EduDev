@@ -4,8 +4,9 @@
   min-height: 0;
   min-width: 0;
   display: grid;
-  grid-template-columns: 224px minmax(0, 1fr);
+  grid-template-columns: var(--edu-nav-width, 224px) minmax(0, 1fr);
   overflow: hidden;
+  position: relative;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--default-font-family, system-ui);
@@ -179,9 +180,10 @@
   box-shadow: 12px 0 28px rgb(20 20 20 / 7%);
 }
 .edu-context-panel {
-  width: 40%;
-  min-width: 340px;
-  max-width: 640px;
+  width: var(--edu-panel-width, 460px);
+  min-width: 300px;
+  max-width: 680px;
+  flex-shrink: 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -221,7 +223,7 @@
 }
 @media (max-width: 1100px) {
   .edu-shell {
-    grid-template-columns: 200px minmax(0, 1fr);
+    grid-template-columns: min(var(--edu-nav-width, 224px), 200px) minmax(0, 1fr);
   }
   .edu-page {
     padding: 24px;
@@ -231,12 +233,11 @@
   }
   .edu-context-panel {
     min-width: 300px;
-    width: 42%;
   }
 }
 @media (max-width: 760px) {
   .edu-shell {
-    grid-template-columns: 170px minmax(0, 1fr);
+    grid-template-columns: min(var(--edu-nav-width, 224px), 170px) minmax(0, 1fr);
   }
   .edu-header {
     padding-inline: 16px;
@@ -248,4 +249,53 @@
     width: min(100%, 520px);
     min-width: 0;
   }
+  .edu-resizer {
+    display: none;
+  }
+}
+
+/* Draggable boundaries for the three-column AI workspace. */
+.edu-resizer {
+  position: absolute;
+  z-index: 40;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  margin-left: -4px;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+}
+.edu-resizer::after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3px;
+  width: 2px;
+  background: #e7eaee;
+  content: "";
+  opacity: .8;
+  transition: background-color 120ms ease;
+}
+.edu-resizer:hover::after,
+.edu-resizer:focus-visible::after,
+.edu-resizer.is-dragging::after {
+  background: #c7d0da;
+  opacity: 1;
+}
+.edu-resizer:focus-visible {
+  outline: none;
+}
+.edu-resizer--left {
+  left: var(--edu-nav-width, 224px);
+}
+.edu-resizer--right {
+  position: relative;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  flex: 0 0 8px;
+  align-self: stretch;
+  height: auto;
+  margin: 0 -4px;
 }

@@ -14,15 +14,13 @@ export function isPromptInputGenerating(status: ChatStatus): boolean {
 /** Compact inline row height — fixed so expand detection does not depend on current layout. */
 export const PROMPT_INPUT_INLINE_COMPACT_HEIGHT = 50;
 
-export function getPromptInputSingleLineHeight(
-  element: HTMLTextAreaElement
-): number {
+export function getPromptInputSingleLineHeight(element: HTMLElement): number {
   return (
     getPromptInputLineHeight(element) + getPromptInputPaddingHeight(element)
   );
 }
 
-export function getPromptInputLineHeight(element: HTMLTextAreaElement): number {
+export function getPromptInputLineHeight(element: HTMLElement): number {
   const style = getComputedStyle(element);
   const lineHeight = Number.parseFloat(style.lineHeight);
   if (Number.isFinite(lineHeight) && lineHeight > 0) return lineHeight;
@@ -60,16 +58,49 @@ export function resolvePromptInputTextAreaElement(
     : element.querySelector('textarea');
 }
 
+/** True when the shell around the input renders at least one attachment preview. */
+export function hasPromptInputAttachments(element: HTMLElement): boolean {
+  return Boolean(
+    element
+      .closest('[data-slot="prompt-input-shell"]')
+      ?.querySelector('[data-slot="prompt-input-attachments"] > *')
+  );
+}
+
 /** True when the textarea content needs at least two lines (wrap or newline). */
 export function isPromptInputTextAreaExpanded(
   element: HTMLTextAreaElement
 ): boolean {
   if (element.value.includes('\n')) return true;
   if (element.clientWidth === 0) return false;
-  const scrollHeight = measurePromptInputScrollHeight(element);
-  const paddingHeight = getPromptInputPaddingHeight(element);
-  const lineHeight = getPromptInputLineHeight(element);
-  return Math.max(0, scrollHeight - paddingHeight) > 1.5 * lineHeight;
+  return exceedsSingleLineHeight(
+    element,
+    measurePromptInputScrollHeight(element)
+  );
+}
+
+/**
+ * True when the token input content needs at least two lines (wrap or newline). The element is a
+ * contenteditable div, so its own text is unreliable while composing — the field value is passed in.
+ * Its scroll height needs no measuring pass because nothing sets an inline height on it.
+ */
+export function isPromptInputTokenInputExpanded(
+  element: HTMLElement,
+  value: string
+): boolean {
+  if (value.includes('\n')) return true;
+  if (element.clientWidth === 0) return false;
+  return exceedsSingleLineHeight(element, element.scrollHeight);
+}
+
+function exceedsSingleLineHeight(
+  element: HTMLElement,
+  scrollHeight: number
+): boolean {
+  return (
+    Math.max(0, scrollHeight - getPromptInputPaddingHeight(element)) >
+    1.5 * getPromptInputLineHeight(element)
+  );
 }
 
 function parsePixels(value: string): number {
@@ -77,7 +108,7 @@ function parsePixels(value: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-function getPromptInputPaddingHeight(element: HTMLTextAreaElement): number {
+function getPromptInputPaddingHeight(element: HTMLElement): number {
   const style = getComputedStyle(element);
   return parsePixels(style.paddingTop) + parsePixels(style.paddingBottom);
 }
