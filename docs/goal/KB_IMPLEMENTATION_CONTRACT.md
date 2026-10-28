@@ -149,6 +149,9 @@ typed preload/正文UI展示逐页覆盖与失败、继续/重试及来源定位
 
 ### S6-B2 实施合同：AI 原生图文题进入同一题本、小智与组卷（2026-10-27）
 
+2026-10-28 生产批次接线（73bbc2a基线）：M03/M05/M10贯通现AI批次→Word按题单元→本地OCR/必要角色PNG与文本→双阶段native响应→真实unit/member/原生账本同writer发布→现题本typed角色图及CAS编辑。新增版本化单题projection响应及native输入上下文（必要role文本、逐页OCR引擎/有序SHA、clean版本），上下文与原始PNG在first dispatch前持久绑定，第二遍/重启不重新OCR或截图；只允许当前clean完全一致的图文外发，缺/失败OCR不得自动当安全图片发送。全部source/proof/邻题资产元数据仅留本机，不传模型。Store持有独立preparation连接，每个caller writer实例验证自身刚写final/member/input凭据；禁止共享连接事务探测或root连接读未提交记录。增量幂等context表，保留已有v1输入；现AI响应v1及PDF/图片通道保持。Word按start/count题位置（而非正文段）选择，映射不足时保守按整资源隐私标记拒云，实际来源仍为Word精确范围及正文版本receipt，不能使用sources=[]。初次应用启动暂停未完成云端batch一次，不在每秒recover重复暂停；每次发送仍重验当前settings/隐私/授权/取消。unknown请求仅显式重复计费重试，first_saved保留原稿。题本原生PNGtyped查询按questionVersion/role/index及当前来源复验；编辑同步镜像并撤销改写角色旧图，题面改写失去旧coverage。真实Store/SQLite、实际Electron图稿及可见同题本/失败恢复用例作为交付证据，受控provider不冒称自然质量/云端数学正确。检索/Pi必要投影、正式Office/备份闭包/40GB/本地视觉/最终EXE仍属原完整Goal必须接续，不删除目标。
+
+
 2026-10-28 输入恢复细化：新增原生AI输入manifest与逐角色PNG引用，绑定真实material_ai_units.input_json SHA、版本化native选择器、batch逐批images授权与Word题目ordinal；第一遍前发布，first_saved重启从业务输入读取同一份PNG/排版环境，不重新截图。输入引用与正式历史共同保护pending恢复，未完成AI输入不得被缓存LRU删除；第二遍与入库沿作用域permit消费原输入。不扩张云端发送权限，不上传source/proof中邻题元数据。此为现AI批次后续接线必须复用的私有持久层，只有实现真实批次/UI才宣称功能交付。
 
 本轮续接（基线93c6ac6）：落实NativeQuestionRepository，增量material_ai_native_revisions/画像引用/material_ai_native_pending三类台账，正式PNG在question-ai-assets/v1；不是Word缓存。withEvidence必须由main-only Host.attest复读真实Word proof manifest、PNG与source stamp，不凭调用者自填proof/SHA升权。私有证据token只在有界作用域内有效，caller SQLite事务原子绑定题目/版本/角色/源快照；暂存先记账、OS锁下发布/恢复，未知文件不删，正式历史不自动回收。source角色文字/内容摘要/图片必须与同角色原文一致；改写角色不能保留原答案图，缺图引用或改题沿用旧图义须失去完整资格。接续现Word按题AI批次/两阶段/OCR、同题本编辑/typed图片、Pi投影和Office角色解析；每项使用新旧DB、原生布局、缓存删除、编辑后输出与源篡改反例验证，不能把ledger单测作为整链已完成。无新依赖/外部服务/上传权限扩张，后续阶段继续按同一完整合同推进。
