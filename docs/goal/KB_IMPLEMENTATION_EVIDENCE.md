@@ -1,5 +1,31 @@
 # 知识库实施证据
 
+## 2026-10-28 真实9份资料与真实DeepSeek（最新限定证据）
+
+结论：本地收录/解析/全文检索通过；真实AI两遍能落库，但这批PDF/图片到自动可用题、题意召回和正式组卷的完整闭环**未通过**。本节更新先前“未调用真实云端”的时序，不扩大Word原生限定验收。执行源码为beca工作树，未修改D:协作者源码、日常数据或发布EXE。
+
+- 用户指定真实目录含9文件：3 PDF、6图，10321505字节，没有Word。隔离输出为`C:\Users\ZhouXuan\AppData\Local\Temp\omni-real-material-NGRlNr`，原件/截图/OCR/完整模型响应/SQLite只留本机，未纳入Git。
+- 实际从资料页“添加文件夹”进入，9/9收录；3 PDF各6页，共18页均OCR complete、0失败，6图片正文ready；25 resource_chunks，索引pending0。全文洛埃镜1/干涉1/物理10条命中；原始文件SHA全部不变，冷重启资源仍9份、0 rendererErrors。规则抽题20条全部待整理。
+- 原授权4次；用户看到格式故障与修复证据后明确追加为总7次。实际ledger7次、7个HTTP200；图像样本和PDF第1页已本地查看无可见身份信息。两样本各自两遍图片SHA一致；不向云端发送整PDF或文件夹。前3次因严格根字段拒绝，失败批次保留；修后4次（每样本2次）新增2+4题，无新failed/unknown。不是替代模型响应。
+- 真实Flash响应多出根`type:json_object`，导致原provider整批invalid_response。RED提交`1f9eae7`保存失败回归；修复仅删除这个精确格式标记、强化根字段提示，继续严格业务schema。未知type/额外未知字段/空题干/伪teacher_confirmed来源仍拒绝；不自动付费重试。不新增依赖/表/IPC/迁移。
+- 同一真实响应离线复读修前invalid_response、修后4题；零额外请求。修后真实6题全部`ai_needs_review`：均有incomplete_question/uncertain_ocr，2题另requires_image。题本界面搜索洛埃镜找到2题；题意查询“洛埃镜 光的干涉”返回0候选（semantic available/complete，candidate0）。正确物理/九年级/填空选择、1题5分蓝图实际0题，提示题库不足；未确认或导出。题库现26条不等于26条可组卷。
+
+具体命令/结果（目录`apps/desktop`；参数`<授权目录>`及密封账户源路径只在本机传入）：
+
+|命令|实际证据|
+|---|---|
+|`node scripts/education/kb-real-material-journey.mjs <授权目录>`；再传原output续读|最终exit0，report.json与progress.json；9文件/18页/25块、SHA、冷启与双尺寸截图。首次脚本limit100不合法，修正30后原库续读，不重复导入；原失败日志保留。|
+|`node scripts/education/kb-real-ai-journey.mjs prepare/run/diagnose/verify-fix/inspect ...`|各阶段最终exit0；ai-verify-fix-report.json、ai-inspect-report.json、real-cloud-ledger.json。prepare复制源账户密封配置及profile加密元数据到隔离实例，不复制整个业务库/cookie，源账户只读。main evaluate不能require/dynamic import等脚本失败、旧批次/paused误读、隐藏重复导航和初次默认数学蓝图均保留日志；最终精确新批次、terminal状态、可见导航及物理蓝图核对，不将脚本失败归因产品。|
+|`node --experimental-transform-types scripts/education/kb-native-deepseek-boundaries.mjs`|RED exit1 invalid_response；GREEN9项exit0，kb-real-envelope-red/green.log。|
+|`node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs`|17项exit0，kb-real-ai-regression.log。|
+|`npm run build`|exit0，含tsc，kb-real-build.log。新main/index.js SHA256 `d3827659411ecbd008fce528e996da690143832e291d5fc53567821fec5ce741`，真实修后调用/inspect均使用该构建。|
+|`npm run test:renderer-components`|240/240 exit0，kb-real-components.log。|
+|`node scripts/electron-smoke.mjs`|同一已构建out执行，exit0/ok=true/30隔离学生，kb-real-smoke.log，Temp/omni-edu-smoke-GLw3eP。与npm run test:smoke的build+script等价执行，不重复构建。|
+|`node --experimental-transform-types scripts/education/kb-real-format-performance.mjs d710541 <本地响应> <本地输出>`|离线canonical JSON、受控HTTP、30批×50次交替采样。修前median0.07851ms/p950.10732ms，修后median0.09232ms/p950.23110ms；额外解析有约0.014ms median开销，非联网/UI/40GB性能。新增处理有128KiB边界，未修改流式路径、DB或后台并发。|
+|`npm audit --json`|exit1，现有22项（8高/6中/8低），无新增依赖；未自动升级。|
+
+下一修复应围绕真实差距：PDF/图片题持久原图/图义→OCR改正的可核验证据→同一题本/Pi题意召回→可组卷资格。不能删除完整性门禁或用一次教师确认掩盖缺图；当前两遍一致不等于自然答案正确。40GB/P95、跨页答案册、真实搜题站与最终安装包仍未验收。源码可以revert本轮fix回滚；无数据库迁移、无需回滚用户数据。协作者并行审计结果独立保留。
+
 ## 2026-10-28 S6-B2统一DeepSeek生产图文贯通（最新）
 
 本节覆盖下方“仅独立账本/尚未生产接线”历史状态。完整Goal仍未完成，无新增依赖、部署服务、真实云端请求或新EXE发布。

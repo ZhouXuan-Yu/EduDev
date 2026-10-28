@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-28 真实素材验收增量
+
+9真实文件/18 PDF页OCR/25 chunks/源SHA与冷启通过；真实DeepSeek累计7次（用户另行追加），修后两遍6题落库但全部待整理。正确物理蓝图0题，未确认/导出，题意搜索探针0候选。Provider已修精确JSON模式字段兼容，9边界/17批次/build/240组件通过；私有原件与模型响应仅本机。完整闭环与最终EXE不因局部验证通过而视为完成，详KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-28 F14恢复专项
 
 本轮EVIDENCE记录helper11/StrictMode12/receiver10/journal19、build/typecheck、renderer240、207历史smoke及真实Electron/Pi受控SSE6项。产物d457f435…，Terra独立11/12/6接受；main34aae9f实际启动/冷启6项通过，F14 VERIFIED。SQLite与原生文件字节复验，无真实模型质量或安装包声明；完整26项及F24校准继续。
