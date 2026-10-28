@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-28 输出目录任务标识与扫描题结构
+
+复用现extractMaterialQuestions处理明确卷首说明/完整编号块/连续小问，AI题干只兼容明确填空与选项句号版式；没有新题库真源或迁移。任务资源可选officeOutput resolver仅在saved_office且workspace不存在时标识现授权输出目标，普通读文件/保存文本/office_create_document保持workspace要求。真实Pi计划可采用，实际Officeconfiguration仍未定位，完整交付不宣称通过，详KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-28 页面恢复协调边界
 
 PiEducationWorkspace使用pi-snapshot-hydrator管理同导航scope的在途快照和事件版本栅栏，updater无IPC。只协调renderer读取：公共事件顺序仍由createEventReceiver/main journal负责，fresh操作后刷新不得加入旧事实后直接完成；scope token隔离A→B→A及卸载。8次冲突上限后fail-closed/教师重试，不增加数据库或协议真源。验收与未验边界见goal/DEEP_AUDIT_20261028_EVIDENCE.md。

@@ -5,7 +5,7 @@ import {QUESTION_AI_ARCHIVE_SCHEMA,archiveMissing,type QuestionArchive} from '..
 import type {SettingsKeyCodec} from '../xiaozhi-agent/model-settings';
 import type {MaterialRepository} from './material-repository';
 import {materialSource} from './material-source';
-import {extractMaterialQuestions} from './material-question-extract';
+import {extractMaterialQuestions,normalizeMaterialStem} from './material-question-extract';
 import {completeMaterialAi,type AiCompletion} from './material-ai-provider';
 import type {MaterialWordRepository} from './material-word-repository';
 import type {WordProofRuntime} from './word-question-proof-repository';
@@ -263,8 +263,8 @@ export class MaterialAiRepository{
           const prior=first!.questions.find(p=>p.number===q.number);
           const normalized=(text:string)=>text.normalize('NFKC').replace(/\s/g,'');
           const independent=numbered.find(candidate=>candidate.archive.number===q.number);
-          if(!independent||normalized(independent.fields.stem)!==normalized(q.stem)||independent.archive.sourceRisks.some(risk=>risk!=='visual_unchecked'))issues.push('incomplete_question');
-          if(!normalized(unit.text).includes(normalized(q.stem)))issues.push('uncertain_ocr');
+          if(!independent||normalizeMaterialStem(independent.fields.stem)!==normalizeMaterialStem(q.stem)||independent.archive.sourceRisks.some(risk=>risk!=='visual_unchecked'))issues.push('incomplete_question');
+          if(!normalizeMaterialStem(unit.text).includes(normalizeMaterialStem(q.stem)))issues.push('uncertain_ocr');
           if(q.answerOrigin==='source'&&!normalized(unit.text).includes(normalized(q.answer)))issues.push('answer_conflict');
           if(q.analysisOrigin==='source'&&!normalized(unit.text).includes(normalized(q.analysis)))issues.push('answer_conflict');
           // Two passes are a consistency check, never independent mathematical verification.

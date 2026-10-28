@@ -8,10 +8,11 @@ import {_electron} from 'playwright';
 
 // Prepare writes a local PDF preview and copies only the sealed shared credential.
 // Run requires explicit inspected sample names and a durable four-call ceiling.
-const [mode,output,credentialDb,imageName,pdfName]=process.argv.slice(2);
-if(!['prepare','run','diagnose','verify-fix','inspect'].includes(mode)||!path.isAbsolute(output)||!imageName||!pdfName)throw Error('prepare|run|diagnose|verify-fix|inspect ABS_OUTPUT ABS_CREDENTIAL_DB IMAGE_NAME PDF_NAME');
+const [mode,output,credentialDb,imageName,pdfName,requestedLimit]=process.argv.slice(2);
+if(!['prepare','run','diagnose','verify-fix','recheck','inspect'].includes(mode)||!path.isAbsolute(output)||!imageName||!pdfName)throw Error('prepare|run|diagnose|verify-fix|recheck|inspect ABS_OUTPUT ABS_CREDENTIAL_DB IMAGE_NAME PDF_NAME [AUTHORIZED_TOTAL]');
 // verify-fix is a separately authorized continuation: three spent + four new calls.
-const callLimit=mode==='verify-fix'?7:4;
+const callLimit=mode==='recheck'?Number(requestedLimit):mode==='verify-fix'?7:4;
+if(!Number.isSafeInteger(callLimit)||callLimit<2)throw Error('An explicit bounded authorized total is required');
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),data=path.join(output,'data'),profile=path.join(output,'profile');
 if(!fs.existsSync(path.join(output,'report.json')))throw Error('Run the local folder journey first');
 const ledger=path.join(output,'real-cloud-ledger.json');
@@ -37,7 +38,7 @@ try{
   const fs=process.getBuiltinModule('fs'),crypto=process.getBuiltinModule('crypto');globalThis.__realAuthorizedSample=null;
   for(const owner of [globalThis,net]){const ordinary=owner.fetch.bind(owner);owner.fetch=async(url,options)=>{
    if(!/chat\/completions/.test(String(url)))return ordinary(url,options);
-   if(!['run','diagnose','verify-fix'].includes(mode)||String(url)!=='https://api.deepseek.com/chat/completions'||!globalThis.__realAuthorizedSample)throw Error('Unauthorized request');
+   if(!['run','diagnose','verify-fix','recheck'].includes(mode)||String(url)!=='https://api.deepseek.com/chat/completions'||!globalThis.__realAuthorizedSample)throw Error('Unauthorized request');
    const body=JSON.parse(options.body);if(body.model!=='deepseek-flash')throw Error('Unauthorized model');
    const current=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):[];
    if(current.length>=callLimit)throw Error('Total call authorization exhausted');
@@ -60,9 +61,10 @@ try{
  }else{
   if(mode==='diagnose'&&(!fs.existsSync(ledger)||JSON.parse(fs.readFileSync(ledger,'utf8')).length!==2))throw Error('Diagnostic phase requires exactly two remaining authorized calls');
   if(mode==='verify-fix'&&(!fs.existsSync(ledger)||JSON.parse(fs.readFileSync(ledger,'utf8')).length!==3))throw Error('Fix verification requires the separate total-seven authorization and exactly three previous calls');
-  for(const resource of mode==='inspect'?[]:mode==='diagnose'?[pdf]:[image,pdf]){
+  if(mode==='recheck'&&(!fs.existsSync(ledger)||JSON.parse(fs.readFileSync(ledger,'utf8')).length+2>callLimit))throw Error('Recheck needs room for exactly two fresh calls');
+  for(const resource of mode==='inspect'?[]:['diagnose','recheck'].includes(mode)?[pdf]:[image,pdf]){
    const old=await page.evaluate(id=>window.omniEdu.getMaterialAiBatches(id),resource.id),unstarted=mode==='diagnose'?old.find(b=>b.calls===0&&b.pending===1):undefined;
-   if(old.length&&(!['diagnose','verify-fix'].includes(mode)||old.some(b=>b.id!==unstarted?.id&&(b.questions||b.units.some(u=>u.error!=='invalid_response')))))throw Error('Sample already has a batch; inspect persisted results instead of silently repeating');
+   if(mode!=='recheck'&&old.length&&(!['diagnose','verify-fix'].includes(mode)||old.some(b=>b.id!==unstarted?.id&&(b.questions||b.units.some(u=>u.error!=='invalid_response')))))throw Error('Sample already has a batch; inspect persisted results instead of silently repeating');
    await page.getByTestId('material-'+resource.id).click();const ai=page.locator('[data-testid="material-ai-panel"]:visible');await ai.locator('summary').click();
    await ai.getByTestId('material-ai-count').fill('1');await ai.getByTestId('material-ai-start').fill('1');await ai.getByTestId('material-ai-budget').fill('2');await ai.getByTestId('material-ai-images').check();
    await ai.getByTestId('material-ai-public').check();await ai.getByTestId('material-ai-consent').check();
@@ -84,9 +86,13 @@ try{
    await page.locator('[data-testid="product-nav-teaching"]:visible').click();await page.locator('[data-testid="nav-question_notebook"]:visible').click();
    await page.getByTestId('question-notebook-search').fill('洛埃镜');await delay(1500);
    report.notebookSearchCount=await page.locator('[data-testid^="question-notebook-card-"]').count();await page.screenshot({path:path.join(output,'real-question-search.png'),fullPage:true});
-   await page.locator('[data-testid="nav-paper"]:visible').click();await page.getByTestId('paper-subject').fill('物理');await page.getByTestId('paper-grade').fill('九年级');await page.getByTestId('paper-title').fill('真实资料物理流程核对');
+   await page.getByTestId('question-semantic-query').fill('光的折射');await page.getByTestId('question-semantic-submit').click();await page.getByTestId('question-semantic-coverage').waitFor({timeout:90000});
+   report.physicsSemanticHits=await page.getByTestId('question-semantic-hit').count();report.physicsSemanticCoverage=await page.getByTestId('question-semantic-coverage').innerText();await page.screenshot({path:path.join(output,'real-physics-semantic.png'),fullPage:true});
+   const ready=report.questions.items.find(q=>q.archive?.state==='ai_final'&&q.subject==='物理');
+   const count=ready?Math.min(2,report.questions.items.filter(q=>q.archive?.state==='ai_final'&&q.subject==='物理'&&q.grade===ready.grade&&q.questionType===ready.questionType).length):1;
+   await page.locator('[data-testid="nav-paper"]:visible').click();await page.getByTestId('paper-subject').fill('物理');await page.getByTestId('paper-grade').fill(ready?.grade||'九年级');await page.getByTestId('paper-title').fill('真实资料物理流程核对');
    await page.getByRole('button',{name:'移除此部分',exact:true}).nth(2).click();await page.getByRole('button',{name:'移除此部分',exact:true}).nth(1).click();
-   await page.getByTestId('paper-section-type').fill('填空/选择');await page.getByTestId('paper-section-kp').fill('');await page.getByTestId('paper-section-count').fill('1');await page.getByTestId('paper-section-points').fill('5');await page.getByTestId('paper-total').fill('5');
+   await page.getByTestId('paper-section-type').fill(ready?.questionType||'填空/选择');await page.getByTestId('paper-section-kp').fill('');await page.getByTestId('paper-section-count').fill(String(count));await page.getByTestId('paper-section-points').fill('5');await page.getByTestId('paper-total').fill(String(count*5));
    report.paperBlueprint={subject:await page.getByTestId('paper-subject').inputValue(),grade:await page.getByTestId('paper-grade').inputValue(),type:await page.getByTestId('paper-section-type').inputValue()};
    await page.getByTestId('paper-generate').click();await delay(2500);report.paperText=await page.getByTestId('paper-workspace').innerText().catch(()=>page.locator('main').innerText());
    report.paperQuestionCount=await page.getByTestId('paper-question').count();await page.screenshot({path:path.join(output,'real-paper-readiness.png'),fullPage:true});

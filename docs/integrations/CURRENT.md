@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-28 真实资料重审与输出授权接线
+
+production-host将现resolvePaperOutput接入createTaskResources的可选officeOutput，不增加IPC/权限或新写入器；仅解决无workspace的试卷/课堂输出任务身份，正式写入仍走现Office审批与来源校验。真实扫描页2题已从AI两遍进入题意检索/蓝图，Office实际仍configuration且0文件。新增真实材料/实际Pi脚本均隔离本机原件与账户、记录请求，不用受控模型冒充真实provider；最新主线cc2e68a只增加F15测试/文档。详KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-28 DeepSeek统一接入与原生图题消费者
 
 生产图文整理复用createModelSettings/runtime与现加密Key，固定deepseek-flash及https://api.deepseek.com/chat/completions，reasoning_effort=none，JSON schema本地校验；createDeepSeekFetch沿既有Electron网络边界。官方能力说明：https://api-docs.deepseek.com/guides/vision/ 与 https://api-docs.deepseek.com/api/create-chat-completion/ 。历史Qwen模型ID/receipt仍可读，生产调用不回退其他厂商。

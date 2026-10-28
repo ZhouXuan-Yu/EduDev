@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-28 拉取后复核与真实两题结果
+
+已整合cc2e68a，业务runtime无新增diff。真实9文件基础结果保持；结构修复17/批次17/档案12/输出授权11/任务计划19、最终build/type/240组件与30学生legacy smoke均exit0。真实AI两遍后2题自动定稿、2题待整理，题意召回2、2题10分预览与隔离自动化确认通过。真实Pi导出失败configuration，0草稿/0文件，未通过文件交付。单层service补全测试关联表后正常，未确定生产根因。完整Goal/PDF图题/自然答案/40GB/P95/EXE保持OPEN。
+
 ## 2026-10-28 F15预集成故障实证
 
 `node scripts/audit/snapshot-hydration-electron.mjs --event-gap` root6/独立6通过；三真实Pi轮次/2启动/0错误。drop10、duplicate9/11、拒真实补页后显式恢复；第三轮seq65无后继丢失，order218之后order219/after64真实页补回。每run峰值1，UI/SQLite精确、草稿/零变更/native冷启一致。新整合d8b9f866重建/240/provider9、root默认6/独立F15六项均通过；main2c25e36后EAOBUk六项通过，F15 VERIFIED。受控模型非真实provider，207是合并前证据。

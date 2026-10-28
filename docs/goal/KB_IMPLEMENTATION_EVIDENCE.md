@@ -1,5 +1,31 @@
 # 知识库实施证据
 
+## 2026-10-28 最新主线重审：两题可组卷，真实导出仍阻塞
+
+用户最新要求先拉取再重新确定问题；已fetch并整合origin/main `cc2e68ae1d17b0cec03a59a72183881fd4dceba8`（merge `ee6e8de`），本地修改先stash再完整恢复，0冲突。相对前次主线297b0d3，新增仅F15恢复测试及审计文档，`git diff 297b0d3..origin/main -- apps/desktop/src python`为空，不能将主线审计通过推及知识库导出。D:协作树/32aa的分支均未被本轮移动。
+
+修复及实际重跑：卷首答题说明编号不再当题；题目线索从有界完整编号块检查；连续1起小问保持完整，乱序/缺号/重号仍歧义；独立填空线与A选项前中文句号只作版式比较，数字、公式括号、否定、选项顺序不变。新真实同页两遍再4题，**2题ai_final、2题仍review**（OCR实际漏了条件、另一题缺图）。真实题意搜索“光的折射”2条，正确物理九年级/填空选择蓝图2题10分；隔离自动化教师确认成功，不冒充真实教师签署。真实题本现30条。最新知识库调用9次；用户后续明确授权本任务不限次数测试，覆盖先前4/7限额，但每个脚本仍使用有界批次/持久计数。
+
+导出真实暴露的问题：仅选择paperOutput时，saved_office任务只读workspace导致task_target_invalid，首次启动又锁定只读会话，用户不能按模型提示补选工作目录。已新增仅无workspace时的输出目标身份fallback，普通file/saved_text/office_create_document仍拒绝输出授权，源授权/越界继续校验；真实Pi已adopted计划。**之后实际education_export_paper仍返回configuration，SQLite无持久Office草稿、目录0文件**，根因尚未定位，不宣称Word/PDF通过。工具描述仍含“需要先选择教学工作目录”，与输出授权入口不一致，也需继续对齐。
+
+重审撤销的证据：首次离线复制SQLite只复制主草稿表、缺关联sources表，导致parse configuration；补齐表后，同一真实纸卷编译与独立Office service.propose进入pending成功。因此该离线configuration属于诊断脚本问题，不能当生产根因。真实失败保留在本机real-paper-delivery-report.json/native session；下一优先定位真实host回调/服务prepare的异常，避免反复付费猜测。导出调用ledger10次，累计已发请求19；按用户先拉取重审要求，此后未新增模型调用。
+
+最终限定验证（apps/desktop，所有原资料/响应/截图仅本机Temp/omni-real-material-NGRlNr）：
+
+|命令/证据|实际结果|
+|---|---|
+|`kb-question-structure-boundaries.mjs`|RED提交c4993bf；GREEN17项exit0，kb-real-structure-green.log；包含后置标题不得擦掉已开始题目。|
+|`kb-ai-batch-boundaries.mjs` / `kb-critical-archive-boundaries.mjs`|17/12项exit0，kb-real-structure-batch-final.log、kb-real-archive-final.log；保留缺图/截断等旧反例。|
+|`kb-paper-output-task-boundaries.mjs`|RED提交f14861b；GREEN11项exit0，kb-real-paper-output-red/green.log；输出撤销、路径逃逸、无普通读写权限、原workspace行为。|
+|`scripts/xiaozhi-agent/pi-task-plan-boundaries.mjs`|19项exit0，test-results/xiaozhi-agent/pi-task-plan-boundaries-hoe226。|
+|`kb-real-ai-journey.mjs recheck ... 9` / `inspect ...`|真实两遍4题，其中2题完整自动定稿；2条题意命中、2题10分预览，0 rendererErrors，ai-recheck-report.json、ai-inspect-report.json。|
+|`kb-real-paper-delivery.mjs <隔离目录>`|真实Pi失败，非替身，19总请求内包含导出10次；0文件。旧harness拦截/v1路径、隐藏legacy导航或等待补选目录的日志分别保留，不混算生产故障。自动化教师确认已写隔离库，原题/正式用户库未修改。|
+|`npm run build`|最终exit0含tsc，kb-real-paper-output-build.log；main/index.js SHA256 `d0c7ef20bd15862b9e5c94e7eea11969a376077883b0634c07989d7ed140d922`。|
+|`npm run test:renderer-components`|最终240/240 exit0，kb-real-output-final-components.log。|
+|`node scripts/electron-smoke.mjs`|最终同一已构建out exit0/ok=true/30学生，kb-real-output-final-smoke.log，Temp/omni-edu-smoke-mclReF。|
+
+性能：前一格式兼容微测median增加约0.014ms，范围见下节；本片extractor按编号块总长检查、说明仅单次扫描，未新增后台服务/主线程逐Token路径。未测本片整机性能前后对比、40GB/P95或自然答案正确率，不宣称性能无退化。回滚：revert本轮窄fix提交；无表/目录迁移，旧档案不自动重写。当前问题优先级为真实导出configuration→PDF/图片原图与图义v3→有证据的OCR补漏→大规模/自然质量与EXE验收；完整Goal仍OPEN。
+
 ## 2026-10-28 真实9份资料与真实DeepSeek（最新限定证据）
 
 结论：本地收录/解析/全文检索通过；真实AI两遍能落库，但这批PDF/图片到自动可用题、题意召回和正式组卷的完整闭环**未通过**。本节更新先前“未调用真实云端”的时序，不扩大Word原生限定验收。执行源码为beca工作树，未修改D:协作者源码、日常数据或发布EXE。
