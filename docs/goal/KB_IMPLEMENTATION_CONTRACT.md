@@ -149,6 +149,8 @@ typed preload/正文UI展示逐页覆盖与失败、继续/重试及来源定位
 
 ### S6-B2 实施合同：AI 原生图文题进入同一题本、小智与组卷（2026-10-27）
 
+2026-10-28 用户最新指定：本产品知识库AI统一复用DeepSeek API与现小智本机加密配置，图文整理使用官方支持图片的deepseek-flash（https://api-docs.deepseek.com/guides/vision/）。此指令取代以下旧Qwen配置/UI方向；禁止新批次向百炼发请求或要求第二把Key。历史Qwen原始receipt只保留真实来源，不改写成DeepSeek事实；旧批次配置不匹配时停止，重新按DeepSeek授权。materialAi配置读取统一账户的非秘密版本指纹，发送前核对当前凭据；修改/撤销主配置使原授权失效。正式endpoint固定https://api.deepseek.com/chat/completions，图片用必要role的base64 data URL，不启用远端Files持久上传。
+
 2026-10-28 生产批次接线（73bbc2a基线）：M03/M05/M10贯通现AI批次→Word按题单元→本地OCR/必要角色PNG与文本→双阶段native响应→真实unit/member/原生账本同writer发布→现题本typed角色图及CAS编辑。新增版本化单题projection响应及native输入上下文（必要role文本、逐页OCR引擎/有序SHA、clean版本），上下文与原始PNG在first dispatch前持久绑定，第二遍/重启不重新OCR或截图；只允许当前clean完全一致的图文外发，缺/失败OCR不得自动当安全图片发送。全部source/proof/邻题资产元数据仅留本机，不传模型。Store持有独立preparation连接，每个caller writer实例验证自身刚写final/member/input凭据；禁止共享连接事务探测或root连接读未提交记录。增量幂等context表，保留已有v1输入；现AI响应v1及PDF/图片通道保持。Word按start/count题位置（而非正文段）选择，映射不足时保守按整资源隐私标记拒云，实际来源仍为Word精确范围及正文版本receipt，不能使用sources=[]。初次应用启动暂停未完成云端batch一次，不在每秒recover重复暂停；每次发送仍重验当前settings/隐私/授权/取消。unknown请求仅显式重复计费重试，first_saved保留原稿。题本原生PNGtyped查询按questionVersion/role/index及当前来源复验；编辑同步镜像并撤销改写角色旧图，题面改写失去旧coverage。真实Store/SQLite、实际Electron图稿及可见同题本/失败恢复用例作为交付证据，受控provider不冒称自然质量/云端数学正确。检索/Pi必要投影、正式Office/备份闭包/40GB/本地视觉/最终EXE仍属原完整Goal必须接续，不删除目标。
 
 
