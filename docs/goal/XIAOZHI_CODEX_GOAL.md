@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-28 真实素材最新复核边界
+
+已整合主线cc2e68a，结构修复后真实原页2题可AI定稿、题意召回并进2题10分蓝图；缺条件/缺图题保持隔离。仅输出目录任务身份已修，但真实Pi Office导出仍configuration、0草稿0文件，完整交付未通过；不能以旧受控Store输出证据覆盖此故障。用户授权本知识库任务可持续使用现DeepSeek真实测试，先拉取重审时暂停调用。当前问题/失败与下一项以KB_IMPLEMENTATION_EVIDENCE.md最新节为准，完整Goal继续。
+
 ## 2026-10-28 最新增量与交付规则
 
 Word图文AI生产链已从独立账本接通资料授权/OCR/两阶段、同题本原生修订与typed编辑看图、小智图义投影和正式Word/PDF输出；精确范围与未验证边界见KB_IMPLEMENTATION_EVIDENCE.md。模型统一现小智DeepSeek API，生产固定Flash，AI入库不冒充教师或答案正确。

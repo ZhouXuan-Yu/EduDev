@@ -1,8 +1,17 @@
 # 小智 Goal 当前状态
 
+## 2026-10-28 最新主线重审（完整Goal未完成）
+
+整合cc2e68a，无知识库运行时更新冲销本轮问题。真实结构修复后2题ai_final、题意召回2、正确物理蓝图2题10分与隔离确认成功；2题OCR/缺图仍review。仅输出目录任务标识已修并真实plan adopted；Office仍configuration、0草稿0文件，根因未定位。不限次测试已授权，但重审阶段暂停新调用，当前共19次。下一以实际host导出异常为优先，后续图题完整链与40GB/EXE继续，详KB_IMPLEMENTATION_EVIDENCE.md。
+
+## 2026-10-28 F15现实现补齐真实故障覆盖
+
+生产receiver保持现实现；--event-gap真实Pi三轮6项、独立6/6/10/19通过。整合297b0d3后重建d8b9f866：build/type、240、provider9及Pi默认/F15各6通过；main2c25e36正常推送回读一致，主线后F15实际6项再过，F15 VERIFIED。合并前207历史smoke不冒充新构建证据，D:协作树未同步。完整Goal active，F24仍MEASURING，下一F01；详审计EVIDENCE。
+
 ## 2026-10-28 真实资料流程发现生产差距
 
 真实9份（3 PDF/6图）全部本地处理、18页OCR、25 chunks与冷启复读通过；经追加授权实际DeepSeek7次，修复根JSON模式标记后4次两遍调用入库6题。6题全部待整理，实际题意搜索0候选、物理蓝图0题，完整闭环未完成。当前后续优先PDF/图片原图/图义及OCR修正证据，而非放松题源资格；精确命令、边界与本地私有报告见KB_IMPLEMENTATION_EVIDENCE.md。并行审计状态独立保留。
+
 
 ## 2026-10-28 F14页面恢复窄修复
 

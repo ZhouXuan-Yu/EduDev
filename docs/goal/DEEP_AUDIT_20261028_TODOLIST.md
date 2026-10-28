@@ -33,7 +33,7 @@
 | F12 | P1 | snapshot恢复/flush/多仓库读取耦合 | 轻聊天/历史/capture/侧栏最小查询；不盲并行 | 分仓时长/SQL数/整包大小；权限/hash/来源、settlement/owner/generation一致 | OPEN |
 | F13 | P1 | send/status/terminal多次hydrate/list | per-session single-flight/版本及取消，按域刷新 | 每次正常发送、停止、失败的IPC计数和最终状态；切会话晚响应 | OPEN |
 | F14 | P1 | updater恢复副作用及缺快照竞态已修 | 同scope单在途、fresh/version/token、有界失败重试 | helper11/StrictMode12/真实Pi6及冷启；独立通过；main34aae9f及合并后6项 | VERIFIED |
-| F15 | P1 | 报告缺号判断陈旧：已有createEventReceiver恢复 | 审既有receiver reset/generation/gap失败，不加第二套序列 | 实际UI丢第10条、补页失败/重连、重复/乱序不重复Token | OPEN |
+| F15 | P1 | 当前receiver已具备恢复，补齐真实故障实证 | 复用现receiver；无生产重写 | 实际drop10/duplicate9&11/补读拒绝/无后继丢终态/cold；独立及main2c25e36后6项通过 | VERIFIED |
 | F16 | P1 | 65536同时影响流和最终返回，已有truncated | 先核最终事实/文件上限再修可见提示与长产物路径 | >65536运行/终态/持久化/重启，明确完整与截断；不承诺不存在的全文 | OPEN |
 | F17 | P1 | /models10s预算/缓存条件仍需测 | 正确缓存/取消/准备阶段可观察，不编能力 | 冷/热/过期/超时TTFT分阶段、错误/Stop、无伪模态 | OPEN |
 | F18 | P1 | 已限legacy设置/外层会话/待输入；共享知识/确认有生产消费者 | 全消费者+按路由初始化测量，保留共享事实 | 冷启瀑布/TTI、IPC计数、学习概览非零/学生/录入/旧入口/重启 | OPEN |
@@ -68,3 +68,9 @@ WP0/F24基线→F14/15正确性→F01/02/04/05流热路径→F03主进程→F06/
 现码PiEducationWorkspace.applyEvent在React updater内调用hydrate，StrictMode可重复副作用；每事件version++让并发快照失效，最后事件可能只推进游标却没有快照。复用现typed snapshot/settings和createEventReceiver，不更改SQLite/IPC/schema/生产Pi/序列/权限/旧入口。只在该组件的恢复生命周期加同scope单在途、事件版本栅栏和失效后的有界重读，updater保持纯函数；scope在open与卸载失效，旧finally不得清新锁。失败catch显示重试并fail-closed；不无限自动重试，持续冲突允许显式刷新。
 
 验收先行：真实React StrictMode组件受控snapshot/settings分别延迟、突发和跨一次读取的事件、拒绝与教师重试、A→B→A、卸载重挂；请求并发同scope峰值1、最后文本/终态完整、mutation不可提前放行、0 unhandled。真实Electron通过当前生产页/typed IPC/隔离SQLite与本地受控响应验证事件提前、切换/冷启，双尺寸。前后比较恢复读取次数/峰值/完整性，原始计时只作观察，F24预算仍未校准。build/typecheck、240组件、receiver专项、关键smoke、Terra独立实际操作、diffcheck/audit与主线启动后才标VERIFIED。回滚仅本片组件/恢复helper与测试，数据库无需迁移；F01批流/其他页面/全局hydration性能重构不属本片。
+
+## F15 冻结窄合同
+
+分支codex/audit-20261028-f15-event-recovery；base3ecc2af。M10/M12老师结果：真实本轮过程通知丢失/重复后仍看到完整回复与正确终态；已知缺口期间草稿保留，确认/新写入阻断，补读失败后可显式恢复，冷重启无重放。现createEventReceiver已经实现generation、连续cursor、分页pull、失败态、reset和尾poll；旧DOCX的无恢复描述不能直接作为源码缺陷。先复用并测试，若事实证明有缺口只修该边界。
+
+只扩展现audit真实Pi受控catalogue/SSE测试设施以复用同一生产main/preload/journal：实际第10通知丢弃、第9/11重复，修复页由原IPC实读后持有/拒绝，不直接写入/伪造journal或模型业务成果。实际SQLite/完整字节/顺序/丢终态无后继/冷重启；已有receiver10/journal19及F14 StrictMode12覆盖非法/外代/旧请求。每项区分真实传输故障与受控负例，记录补读次数/每run单在途，F24稳定时延仍未校准。无新表/协议/循环/包/页面，保留权限与旧入口。生产无改动时不为形式重复重建out或改源码；复用同冻结d457f435构建/240/207门禁，重跑受影响测试、Terra独立实际操作、主线集成与启动后才关闭F15。回滚限本片测试/文档，完整Goal继续active。
