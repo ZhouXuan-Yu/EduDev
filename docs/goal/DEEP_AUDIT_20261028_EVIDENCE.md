@@ -127,3 +127,11 @@ Terra初审要求补充重试完成后草稿/失败页断言、terminal之后无
 性能前后：本片生产代码与out字节相同，没有产品优化前后差值；仅确认当前受控三run补读峰值1、无重复文本/无限补读。F24仍MEASURING，未声称稳定P95、长期负载、真实provider/教师或安装包验收。Stop只确认控件未禁用，未实际执行该业务；确认/写入安全实际覆盖草稿Enter不发start/queue，未涵盖全部审批卡组合。非法generation/乱序/失败reset由原receiver10/journal19受控边界补证，不冒充所有情况的真实Pi操作。
 
 回滚限本片harness和状态文档提交，生产数据与实现无需迁移或回滚。F15须正常主线集成、远端SHA回读及主线启动后标VERIFIED；完整26项目标active，下一项F01事件热路径按新合同继续。
+
+### F15集成并发与合并后验证
+
+F15提交e79646c后fetch发现origin/main已到297b0d3（包含1f9eae7/837f337的真实DeepSeek JSON-mode兼容与验收）；ff-only合并不能快进，普通push被non-fast-forward拒绝，未强推。改为在当前分支merge origin/main，9份状态/协作文档冲突全部是独立顶端新增节，逐块读后保留双方。Terra另用有序子序列核查双方所有行均保留，无未合并标记；未把上游私有PDF/图片/SQLite/原响应纳入Git。上游新增真实资料脚本未执行或再次外发，7次付费授权不转授本线程。
+
+源代码仅上游material-ai-provider新增精确根type=json_object兼容并继续原严格schema；renderer/receiver未变。整合后重新`npm.cmd run build` exit0含typecheck（audit-f15-merge-build.log）、`npm.cmd run test:renderer-components` exit0/240（audit-f15-merge-renderer.log）、`node --experimental-transform-types scripts/education/kb-native-deepseek-boundaries.mjs` exit0/9（audit-f15-merge-provider-final.log）；首次未带类型转换flag触发Node strip-only参数属性语法失败，audit-f15-merge-provider.log保留，未改源码绕过。
+
+新整合out SHA256 `d8b9f866272359f0c61a786ed55f81a090822f5742dc9e7861e4871f3bc8fd00`。根在该产物默认F14回归exit0/6、2启动/0错误，audit-f15-merge-f14-regression.log、audit-hydration-electron-ylV1Xr/report.json，owned7172/27304 exit0。此前d457f435的207历史smoke是合并前证据，未冒充新整合产物全套结果；当前新增provider9和Pi恢复专项另作对应验证。构建产生的六个vendor绝对依赖路径差异再次精确恢复，未将其作为业务修改提交。后续独立新构建F15与正常push/main启动结果收尾追加。
