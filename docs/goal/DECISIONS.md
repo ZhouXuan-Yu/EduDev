@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-10-29 以真实交付确定能力排序
+
+用户明确选择先通用执行，再理科，最后全科。Hana/Pi继续作为唯一Runtime；参照Cowork完整执行、NotebookLM来源工作、Khanmigo/MagicSchool/Brisk/Diffit/希沃教学工作流。具体新增功能列为候选，共同判断后纳入，不把商业产品描述当源码可复制或已优于竞品的证据。
+
 ## 2026-10-29 流式响应与窗口拖动
 
 在OfficeMarkdown应用适配层稳定components并默认关闭blurIn，不修改成熟vendor组件；推理100ms合并保留终态flush。原生窗口标题栏只将实际按钮设no-drag，保留Windows caption按钮和既有位置持久化，无新IPC/迁移。
