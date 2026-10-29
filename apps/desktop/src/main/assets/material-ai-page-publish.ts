@@ -9,7 +9,7 @@ import type {ExtractedQuestion} from './material-question-extract';
 import type {RuleOrigin} from './material-question-origins';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>;run:(sql:string,p?:(string|number|null)[])=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>};
 const hash=(v:string)=>createHash('sha256').update(v).digest('hex');
-const normalized=(v:string)=>v.normalize('NFKC').replace(/\s/g,'');
+const normalized=(v:string)=>v.normalize('NFC').replace(/\s/g,'');
 export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource){
  const numbered=restoredPageQuestions(final.pageText,source),omitted=numbered.some(c=>!final.questions.some(q=>q.number===c.number));
  const unstructured=final.outcome==='no_questions'&&!numbered.length&&/[?？]|求|计算|解方程/.test(final.pageText);

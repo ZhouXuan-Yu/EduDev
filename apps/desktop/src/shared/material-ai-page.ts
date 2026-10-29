@@ -21,7 +21,8 @@ export function parseAiPageResponse(raw:string):AiPageResponse{
   if(v.outcome==='questions'&&!v.pageText)throw Error();return v as AiPageResponse;
  }catch{throw Error('invalid_response');}
 }
-const normalized=(v:string)=>v.normalize('NFKC').replace(/\s/g,'');
+// Compatibility normalization erases mathematical superscripts/subscripts (x² -> x2).
+const normalized=(v:string)=>v.normalize('NFC').replace(/\s/g,'');
 export function pageTranscriptionAgrees(first:AiPageResponse,final:AiPageResponse){return !first.pageIssues.length&&!final.pageIssues.length&&first.outcome===final.outcome&&normalized(first.pageText)===normalized(final.pageText);}
 export function pageQuestionEvidence(first:AiPageResponse,final:AiPageResponse,number:string,imageSha:string,sourceStem:string){
  if(!pageTranscriptionAgrees(first,final))return;
