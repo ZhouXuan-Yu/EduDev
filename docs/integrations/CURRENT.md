@@ -4,6 +4,10 @@
 
 复用原PDF file.v3流式Worker/页ACK/发布事务、MaterialFolderAiRepository及AI首终稿与同题本；只修发布就绪判断、持久轮转、未计费旧误判恢复和确定性页前言边界。不新增库/服务/模型/IPC；52MiB测试嵌入载荷通过现PIL/pypdf生成，属于测试夹具而非产品依赖或真实教师语料。无新增付费调用。
 
+## 2026-10-29 DeepSeek思考元数据
+
+官方/models现在声明effort.supported_levels/default_level，缓存保留同字段语义；Chat Completions关闭使用thinking.type=disabled与reasoning_effort=none，low/high/max使用enabled及对应effort。参考https://api-docs.deepseek.com/api/list-models/ 和 https://api-docs.deepseek.com/api/create-chat-completion/ 。SDK内部level与供应商参数通过宿主最终payload桥接，拒绝伪Ultra，不自动切换供应商。
+
 ## 2026-10-29 规则与AI来源关联复用
 
 沿现确定性抽题器、Word无歧义角色来源、AI回执和SQLite同题库增加派生关系；不另做相似度引擎/Agent。原题/OCR/首终稿不变，现notebook typed通道新增showSourceCandidates并贯通严格布尔校验。无依赖/模型/安装资源增加；整合main整包交付后构建与专项兼容范围分别记录。

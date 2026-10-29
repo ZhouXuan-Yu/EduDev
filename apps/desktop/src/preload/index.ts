@@ -210,6 +210,7 @@ const api = {
   revokeXiaozhiMcp: (input:XiaozhiMcpInput) => ipcRenderer.invoke('xiaozhi:mcp-revoke', input) as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
   removeXiaozhiMcp: (input:XiaozhiMcpInput) => ipcRenderer.invoke('xiaozhi:mcp-remove', input) as Promise<XiaozhiMcpResult<XiaozhiMcpCatalog>>,
   selectXiaozhiModel: (input: XiaozhiSessionModelInput) => ipcRenderer.invoke('xiaozhi:model-select', input) as Promise<XiaozhiSettingsResult<XiaozhiSessionModel>>,
+  saveXiaozhiThinking: (input: import('../shared/xiaozhi-thinking').ThinkingInput) => ipcRenderer.invoke('xiaozhi:thinking-save', input) as Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>,
   getXiaozhiSnapshot: (id: string) => ipcRenderer.invoke('xiaozhi:snapshot', id) as Promise<XiaozhiWorkspaceSnapshot>,
   exportXiaozhiReply: (input: import('../shared/reply-export').ReplyExportInput) => ipcRenderer.invoke('xiaozhi:reply-export', input) as Promise<import('../shared/reply-export').ReplyExportResult>,
   getXiaozhiHistoryPage: (input: import('../shared/xiaozhi-agent').XiaozhiHistoryPageInput) => ipcRenderer.invoke('xiaozhi:history-page', input) as Promise<import('../shared/xiaozhi-agent').XiaozhiHistoryPage>,

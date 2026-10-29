@@ -11,6 +11,7 @@ import { AiConversationSidebar } from '../AiConversationSidebar';
 import { PiConversationSurface } from './PiConversationSurface';
 import {PiGoalControl} from './PiGoalControl';
 import { OfficeComposer } from './OfficeComposer';
+import {PiThinkingPicker} from './PiThinkingPicker';
 import { OfficeComposerState,OfficeComposerSeed } from './OfficeComposerState';
 import { PiCopyApproval } from './PiCopyApproval';
 import {PiLearningReview} from './PiLearningReview';
@@ -351,6 +352,17 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         if (!result?.ok) throw new Error('queue_mutation_failed');
       }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
       <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
+        thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" visible={visible} disabled={!snapshot||!id||snapshot.running||modelSelecting||syncBlocked} onChange={choice=>{
+          if(mutationsBlocked()||modelLock.current||snapshot?.running||!models?.thinking?.session)return;
+          modelLock.current=true;setModelSelecting(true);const target=id;
+          void (async()=>{
+            const result=await window.omniEdu?.saveXiaozhiThinking({schemaVersion:XIAOZHI_SETTINGS_SCHEMA,sessionId:target,version:models.thinking!.session!.version,choice});
+            if(!active.current||idRef.current!==target)return;
+            setNotice(result?.ok?'已保存思考配置，下一轮生效。':result?XIAOZHI_SETTINGS_ERRORS[result.error]:'思考配置没有保存，请重试。');
+            await hydrate(target);
+          })().catch(()=>{if(active.current&&idRef.current===target)setNotice('思考配置没有保存，请重试。');})
+            .finally(()=>{modelLock.current=false;if(active.current)setModelSelecting(false);});
+        }}/ >}
         showQuickStarts={!projection?.turns.length&&!snapshot?.running}
         taskSummary={<><PiWorkspaceActivity snapshot={snapshot} compactBusy={compactBusy}/><PiGoalControl headless sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments||syncBlocked} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} sessionId={id} compact/>}</>}
         skills={snapshot?.skills}

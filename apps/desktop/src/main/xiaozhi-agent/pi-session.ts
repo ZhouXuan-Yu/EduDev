@@ -55,7 +55,7 @@ import {publicToolResult} from './public-tool-result';
 import {createModelReasoningTrace} from './model-reasoning';
 import {capturePresentationOrder,createPresentationEventAdapter,REPLY_PRESENTATION_PROMPT,visibleAssistantText} from './presentation-event-adapter';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
-import {answerQualityEnabled,resolveAnswerPolicy,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
+import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,applyThinkingPayload,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
 import {createEducationToolCatalog,TOOL_DISCOVERY_NAME} from './education-tool-catalog';
 import {createRepeatToolReminder} from './repeat-tool-reminder';
 import {withModelRequestRecovery} from './model-request-recovery';
@@ -155,6 +155,7 @@ export interface PiXiaozhiOptions {
   /** Main-only callbacks and run identity, never accepted from IPC. */
   memory?: PiMemoryRuntime;
   capabilities?: XiaozhiModelCapabilities;
+  thinkingPolicy?:import('../../shared/xiaozhi-thinking').ThinkingDecision;
   /** Main-owned policy; IPC cannot set arbitrary provider capacity. */
   autoCompaction?: boolean;
   testContextWindow?: number;
@@ -549,9 +550,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const capabilities = options.capabilities;
   if (capabilities && capabilities.id !== options.model) throw new Error('configuration');
   const providerWindow = capabilities?.contextWindow || 32768;
+  let thinkingPolicy=options.thinkingPolicy||resolveThinkingPolicy('',capabilities);
   const policy: XiaozhiContextPolicy = { auto: options.autoCompaction === true && Boolean(capabilities),
     window: options.testContextWindow ? Math.min(providerWindow, options.testContextWindow) : providerWindow,
-    maxOutputTokens: quality?resolveAnswerPolicy('',capabilities).maxOutputTokens:Math.min(4096, capabilities?.maxOutputTokens || 4096), verified: Boolean(capabilities),
+    maxOutputTokens: thinkingPolicy.maxOutputTokens, verified: Boolean(capabilities),
     ...(options.testContextWindow ? { testPolicy: true } : {}) };
   registry.registerProvider(PROVIDER, { name: 'DeepSeek', apiKey: options.apiKey, baseUrl: 'https://api.deepseek.com/v1', api: 'openai-completions',
     models: [{ id: options.model, name: capabilities?.name || options.model, reasoning: true, input: options.publicImages&&capabilities?.inputModalities?.includes('image')&&!capabilities.stale?['text','image']:['text'], contextWindow: providerWindow, maxTokens: policy.maxOutputTokens,
@@ -819,6 +821,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     }
     if(!compacting&&quality&&!options.sourceAvailability&&toolCatalog)args[1]={...args[1],messages:args[1].messages.map(message=>message.role==='system'&&message.toolsAdded?{...message,toolsAdded:message.toolsAdded.filter(tool=>toolCatalog.exposed(tool.name))}:message)};
     // Final complete-request gate also applies to native summarization requests.
+    args[2]={...args[2],maxTokens:thinkingPolicy.maxOutputTokens};
     if (estimateFullRequest(args[1], args[2]?.maxTokens || policy.maxOutputTokens) > providerWindow) throw new Error('context_limit');
     await phase(async()=>options.beforeModelDelivery?.(),args[2]?.signal);
     await phase(async signal=>options.beforeDelivery?.({kind:'model'},signal),args[2]?.signal); await checkMemory(); args[2]?.signal?.throwIfAborted(); budget!.model();
@@ -828,12 +831,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!compacting){const buildPrefix=buildLlmContextCachePrefixContract as (options:{model:unknown;systemPrompt?:string;tools?:unknown[]})=>ReturnType<typeof buildLlmContextCachePrefixContract>;
       const leading=args[1].messages.find(message=>message.role==='system');
       const contract=buildPrefix({model:args[0],systemPrompt:leading?JSON.stringify({content:leading.content,sections:leading.sections}):session.agent.state.systemPrompt,tools:leading?.toolsAdded||session.agent.state.tools});manager.appendCustomEntry('xiaozhi.cache-prefix.v1',summarizeCachePrefixContract(contract));}
-    if(!compacting){const previous=args[2]?.onPayload;
+    {const previous=args[2]?.onPayload;
       args[2]={...args[2],onPayload:async(payload,model)=>{
         const transformed=await previous?.(payload,model),actual=transformed===undefined?payload:transformed;
-        const tools=(actual as {tools?:unknown[]})?.tools;
-        metrics?.request(Buffer.byteLength(JSON.stringify(actual)),Array.isArray(tools)?tools.length:0);
-        return transformed;
+        const resolved=applyThinkingPayload(actual,thinkingPolicy);
+        const tools=(resolved as {tools?:unknown[]})?.tools;
+        if(!compacting)metrics?.request(Buffer.byteLength(JSON.stringify(resolved)),Array.isArray(tools)?tools.length:0);
+        return resolved;
       }};
     }
     let imageBatch:string[]=[];
@@ -1049,7 +1053,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       try { if (memoryFailure) throw new Error(memoryFailure); await skills?.validateCommand(text); } catch (error) { return { ok: false, runId: '', error: classifyError(error) }; }
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
       metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text);
-      if(quality){const answer=resolveAnswerPolicy(text,capabilities);policy.maxOutputTokens=answer.maxOutputTokens;model.maxTokens=answer.maxOutputTokens;session.setThinkingLevel(answer.thinking);manager.appendCustomEntry('xiaozhi.answer-policy.v1',{runId,...answer});}
+      thinkingPolicy=options.thinkingPolicy||resolveThinkingPolicy(text,capabilities);
+      policy.maxOutputTokens=thinkingPolicy.maxOutputTokens;model.maxTokens=thinkingPolicy.maxOutputTokens;
+      session.setThinkingLevel(thinkingPolicy.thinkingType==='disabled'?'off':thinkingPolicy.effort==='low'?'low':'high');
+      manager.appendCustomEntry('xiaozhi.answer-policy.v1',{runId,...thinkingPolicy});
       reasoningTrace=createModelReasoningTrace({sanitize:options.sanitizeFileText|| (async text=>text),secret:options.apiKey,frameMs:quality?100:0,emit:block=>emit({kind:'model_reasoning',block})});
       imageRuntime?.begin();
       budget=createPiRunBudget({budget:limits,runId,limitsEnforced:options.limitsEnforced,onWaiting:waitingChanged,emit:usage=>emit({kind:'usage',usage}),abort:()=>{

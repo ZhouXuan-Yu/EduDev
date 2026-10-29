@@ -26,6 +26,7 @@ export interface OfficeComposerProps {
   status?: OfficeRunStatus;
   model: string;
   models: OfficeModelOption[];
+  thinkingControl?:ReactNode;
   permissionLabel: string;
   permissionMode?: PiPermissionMode;
   disabled?: boolean;
@@ -96,7 +97,7 @@ export function OfficeComposer(props: OfficeComposerProps) {
   return <OfficeComposerDraft key={props.sessionId} {...props} />;
 }
 
-function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel, permissionMode='request', disabled = false, visible=true, nativeAppearance=false,
+function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl, permissionLabel, permissionMode='request', disabled = false, visible=true, nativeAppearance=false,
   onSubmit, onStop, onModelChange, onPermissions, onPermissionModeChange, onAttach, onFilesSelected, onWorkspace, attachments, attachDisabled=false,sendBlocked=false,hasAttachments=false, onVoice, onQueue, onNewChat, onOpenGoal, onCompact, onSkills, skills = [], taskSummary, showQuickStarts=false, attachLabel = '添加附件' }: OfficeComposerProps) {
   const { draft, draftRef, storageFailed, setDraft, submitting, setSubmitting, stopping, setStopping, failedPrompt, setFailedPrompt,
     failedPresentation,setFailedPresentation,stopFailed, setStopFailed, sendLock, stopLock, queueMode, setQueueMode, skillName, setSkillName, showSkill, setShowSkill } = useOfficeComposerState();
@@ -229,6 +230,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, permissionLabel
               </Dropdown>
             </PromptInput.ToolbarStart>
             <PromptInput.ToolbarEnd>
+              {thinkingControl}
               <Dropdown isOpen={visible&&openMenu==='models'} onOpenChange={open=>menuChange('models',open)}>
                 <Button variant="ghost" size="sm" className="office-model-picker" aria-label="选择模型" isDisabled={running || submitting || disabled || sync.blocked || !onModelChange || models.length === 0}>
                   <span title={selectedModel?.label ?? model}>{selectedModel?.label ?? model}</span><ChevronDown size={14} />

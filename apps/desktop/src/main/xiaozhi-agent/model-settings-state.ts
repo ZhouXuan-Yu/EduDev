@@ -1,5 +1,6 @@
 import type { Sql } from './session-state';
 import type { XiaozhiWebPreferences } from '../../shared/xiaozhi-web';
+import {validThinkingChoice,type ThinkingSetting,type ThinkingView} from '../../shared/xiaozhi-thinking';
 const globalKey='xiaozhi.provider.v1';
 const modelId=(value:unknown)=>typeof value==='string'&&/^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$/.test(value);
 export type ProviderConfiguration={schema:1;revision:number;defaultModel:string|null;sealedKey?:string};
@@ -11,6 +12,35 @@ export function createModelSettingsState(sql:Sql){
     if(await sql.change("UPDATE app_settings SET value_json=?,updated_at=? WHERE key=? AND json_extract(value_json,'$.schema')=1 AND json_extract(value_json,'$.revision')=?",[encoded,time,key,previous])!==1)throw new Error('conflict');
   }
   return {
+    async thinking(id?:string):Promise<ThinkingSetting>{
+      const raw=await read(`xiaozhi.thinking.${id||'default'}`);
+      if(!raw)return {version:0,choice:id?null:'auto'};
+      let value;try{value=JSON.parse(raw);}catch{throw Error('configuration');}
+      if(!value||value.schema!==1||!Number.isSafeInteger(value.revision)||value.revision<1
+        ||!(validThinkingChoice(value.choice)||id&&value.choice===null)||Object.keys(value).sort().join(',')!=='choice,revision,schema')throw Error('configuration');
+      return {version:value.revision,choice:value.choice};
+    },
+    async saveThinking(id:string|undefined,expected:number,choice:ThinkingSetting['choice']){
+      if((await this.thinking(id)).version!==expected)throw Error('conflict');
+      await commit(`xiaozhi.thinking.${id||'default'}`,expected,{schema:1,revision:expected+1,choice});
+    },
+    async thinkingRun(id:string):Promise<ThinkingView['lastRun']>{
+      const raw=await read(`xiaozhi.thinking-run.${id}`);if(!raw)return;
+      let value;try{value=JSON.parse(raw);}catch{return;}
+      if(!value||value.schema!==1||!validThinkingChoice(value.requested)||!validThinkingChoice(value.effective)
+        ||!['session','global'].includes(value.scope)||!['enabled','disabled'].includes(value.thinkingType)
+        ||!['low','high','max','none',undefined].includes(value.effort)||!['fast','standard','deep'].includes(value.mode)
+        ||!Number.isSafeInteger(value.maxOutputTokens)||value.maxOutputTokens<1||!modelId(value.model)
+        ||typeof value.runId!=='string'||value.runId.length>160
+        ||![undefined,'capability_unknown','unsupported_choice'].includes(value.reason))return;
+      return {requested:value.requested,effective:value.effective,scope:value.scope,thinkingType:value.thinkingType,
+        ...(value.effort?{effort:value.effort}:{}),maxOutputTokens:value.maxOutputTokens,mode:value.mode,runId:value.runId,model:value.model,...(value.reason?{reason:value.reason}:{})};
+    },
+    async saveThinkingRun(id:string,value:NonNullable<ThinkingView['lastRun']>){
+      if(!sql.change)throw Error('configuration');
+      await sql.change('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at',
+        [`xiaozhi.thinking-run.${id}`,JSON.stringify({schema:1,...value}),new Date().toISOString()]);
+    },
     async web(): Promise<XiaozhiWebPreferences> {
       const raw = await read('xiaozhi.web.v1');
       if (!raw) return { version: 0, enabled: true, dnsMode: 'auto' };

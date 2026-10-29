@@ -7,6 +7,7 @@ import { XIAOZHI_SETTINGS_SCHEMA, XIAOZHI_SETTINGS_ERRORS, type XiaozhiSettingsV
 import './pi-model-settings.css';
 import {PiWebSettings} from './PiWebSettings';
 import {PiProviderBalance} from './PiProviderBalance';
+import {PiThinkingPicker} from './PiThinkingPicker';
 
 export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { onBack: () => void; embedded?: boolean; onBusyChange?: (busy: boolean) => void }) {
   const [view, setView] = useState<XiaozhiSettingsView>(), [model, setModel] = useState(''), [key, setKey] = useState('');
@@ -88,8 +89,18 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
           <ListView aria-label="DeepSeek 官方模型" variant="secondary" selectionMode="none" data-testid="pi-settings-model-list" renderEmptyState={() => <p>{loading ? '正在读取模型…' : '模型目录尚未读取，检查连接后重试。'}</p>}>
             {view?.models.map(item => <ListView.Item id={item.id} key={item.id} textValue={item.name}><ListView.ItemContent><ListView.Title>{item.name}</ListView.Title><ListView.Description>{item.id} · 上下文 {item.contextWindow.toLocaleString()} · 模型输出上限 {item.maxOutputTokens.toLocaleString()}</ListView.Description></ListView.ItemContent></ListView.Item>)}
           </ListView>
-          <p>以上为模型官方能力。每轮实际回复上限由当前任务设置控制。</p>
+          <p>刷新只请求官方模型目录，用于核对模型名称、容量和思考档位，不发送教学问题或继续旧任务。以上为模型官方能力，每轮实际回复上限受当前任务与模型容量约束。</p>
         </SettingsStack>
+        <SettingsSurface><h2>默认思考强度</h2><PiThinkingPicker view={view} scope="global" disabled={disabled} onChange={choice=>{
+          if(disabled||lock.current||!view?.thinking||!choice)return;
+          lock.current=true;setBusy(true);setNotice('');
+          void (async()=>{
+            const result=await window.omniEdu?.saveXiaozhiThinking({schemaVersion:XIAOZHI_SETTINGS_SCHEMA,version:view.thinking!.global.version,choice});
+            if(!live.current)return;
+            if(result?.ok){setView(result.value);setNotice('默认思考已保存。没有会话覆盖的对话从下一轮生效。');}
+            else{setNotice(result?XIAOZHI_SETTINGS_ERRORS[result.error]:'思考配置没有保存，请重试。');if(result?.error==='conflict'){const fresh=await window.omniEdu?.getXiaozhiSettings();if(live.current&&fresh?.ok)setView(fresh.value);}}
+          })().catch(()=>{if(live.current)setNotice('思考配置没有保存，请重试。');}).finally(()=>{lock.current=false;if(live.current)setBusy(false);});
+        }}/></SettingsSurface>
         <PiWebSettings locked={busy||!!view?.locked} onBusyChange={setWebBusy}/>
         <PiProviderBalance view={view} onBusyChange={setBalanceBusy}/>
         {notice && <p role="status" data-testid="pi-settings-feedback">{notice}</p>}

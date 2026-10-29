@@ -3,6 +3,7 @@ import {queryDeepSeekBalance} from './vendor/pi-packages/usage-query.js';
 import packageManifest from './vendor/pi-packages/source-manifest.json' with {type:'json'};
 import type {XiaozhiProviderBalance} from '../../shared/xiaozhi-settings';
 import type { XiaozhiModelCapabilities } from '../../shared/xiaozhi-agent';
+import {supportedThinking,validThinkingChoice,type ThinkingInput,type ThinkingView} from '../../shared/xiaozhi-thinking';
 import { fetchDeepSeekCatalogue, readDeepSeekCatalogue } from './model-capabilities';
 import { XIAOZHI_SETTINGS_SCHEMA, type XiaozhiSettingsInput, type XiaozhiSettingsView, type XiaozhiSessionModelInput, type XiaozhiSessionModel, type XiaozhiCredentialInput, type XiaozhiCredentialView } from '../../shared/xiaozhi-settings';
 
@@ -27,6 +28,11 @@ export function validSessionModelInput(value: unknown): value is XiaozhiSessionM
 export function validSettingsQuery(value: unknown): value is { refresh?: boolean; sessionId?: string } | undefined {
   return value === undefined || exact(value, [], ['refresh','sessionId']) && (value.refresh === undefined || typeof value.refresh === 'boolean')
     && (value.sessionId === undefined || validSessionId(value.sessionId));
+}
+export function validThinkingInput(value:unknown):value is ThinkingInput {
+  return exact(value,['schemaVersion','version','choice'],['sessionId'])&&value.schemaVersion===XIAOZHI_SETTINGS_SCHEMA
+    &&revision(value.version)&&(value.sessionId===undefined||validSessionId(value.sessionId))
+    &&(validThinkingChoice(value.choice)||Boolean(value.sessionId)&&value.choice===null);
 }
 export function createModelSettings(options: { store: OmniEduStore; root: string; codec?: SettingsKeyCodec; busy: () => boolean; assertMutation?: () => void;
   switchBound?: (input:XiaozhiSessionModelInput,target:XiaozhiModelCapabilities) => Promise<void> }) {
@@ -79,12 +85,29 @@ export function createModelSettings(options: { store: OmniEduStore; root: string
     // No credential, encrypted blob, private path or provider response is projected.
     return { schemaVersion: XIAOZHI_SETTINGS_SCHEMA, version: saved.revision, provider: 'deepseek', configured: Boolean(settings.apiKey),
       maskedApiKey: settings.apiKey ? '••••••••' + settings.apiKey.slice(-4) : '', defaultModel: settings.model,
-      web: await store.xiaozhiState.modelSettings.web(), locked: options.busy(), models: catalogue?.models || [], catalogue: catalogue ? catalogue.models[0].source : 'unavailable',
+      thinking:await thinking(query?.sessionId),web: await store.xiaozhiState.modelSettings.web(), locked: options.busy(), models: catalogue?.models || [], catalogue: catalogue ? catalogue.models[0].source : 'unavailable',
       packages:packageManifest.packages.map(item=>({name:item.name,version:item.version,label:item.name==='pi-web-access'?'联网资料定位':item.name==='pi-goal-x'?'长任务目标增强':'模型账户余额',state:item.name==='pi-goal-x'?'staged' as const:'active' as const,scope:item.name==='pi-web-access'?'已接入网页关键词定位；其他搜索供应商与视频能力待接入。':item.name==='pi-goal-x'?'已安装；现有目标功能继续使用，增强能力正在适配。':'已接入当前已保存DeepSeek账户的官方余额查询。'})),
       ...(catalogueError ? { catalogueError } : {}), ...(credentialError ? { credentialError } : {}), ...(selection ? { sessionModel: { ...selection, locked: selection.locked || options.busy() } } : {}) };
   }
+  async function thinking(id?:string):Promise<ThinkingView>{
+    if(id&&(await store.getAiConversationSession(id)).session.archivedAt)throw Error('permission_denied');
+    const state=store.xiaozhiState.modelSettings;
+    return {global:await state.thinking(),...(id?{session:await state.thinking(id),lastRun:await state.thinkingRun(id)}:{})};
+  }
   return {
-    runtime, model, sessionModel, view,
+    runtime, model, sessionModel, view,thinking,
+    async saveThinking(input:ThinkingInput){
+      const before=await thinking(input.sessionId),selected=input.sessionId?before.session!:before.global;
+      if(selected.version!==input.version)throw Error('conflict');
+      if(input.choice&&input.choice!=='auto'){
+        const catalogue=await readDeepSeekCatalogue(root);
+        const id=await model(input.sessionId),actual=catalogue?.models.find(item=>item.id===id);
+        if(!supportedThinking(actual).includes(input.choice))throw Error('thinking_unavailable');
+      }
+      options.assertMutation?.();
+      await store.xiaozhiState.modelSettings.saveThinking(input.sessionId,input.version,input.choice);
+      return view(input.sessionId?{sessionId:input.sessionId}:undefined);
+    },
     async balance(signal:AbortSignal):Promise<XiaozhiProviderBalance>{
       const saved=await store.xiaozhiState.modelSettings.configuration(),current=await runtime();
       if(!current.apiKey)throw new Error('authentication');

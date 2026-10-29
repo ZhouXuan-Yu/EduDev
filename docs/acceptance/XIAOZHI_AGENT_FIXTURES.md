@@ -35,6 +35,8 @@ v1.1，2026-10-29。配套[任务书](../product/PRD-XIAOZHI-AGENT-DELIVERY.md)�
 
 ## FX02：文件、目录和设置
 
+E02补充工程夹具：thinking-policy-smoke.mjs与thinking-electron.mjs使用官方格式effort元数据（low/high/max、仅low、明确空列表、缺字段、401），真实UI/SQLite/Pi配合合成SSE，仅记录模型/参数/预算。主路径1M窗口，64K误配失败保留为容量边界；不替代本节合成教学题、FX07历史成果与最终质量判定。证据manifest见AGENT_THINKING_E02_20261029.json。
+
 合成标题“浮力课堂安排”：导入2分钟、探究5分钟、检查3分钟，总10分钟；按任务分别生成DOCX/PDF/XLSX/PPTX/MD/TXT。思考设置任务：“解释漂浮时浮力与重力关系，不超过100汉字”。
 
 新会话无目录、授权目录、只读目录分别运行。文件名“浮力 演示（第1版）.pptx”。同名冲突文件内容“教师保留原稿”，提前记录hash。非法目标含../外部.html、盘符绝对路径、CON.html、NUL、链接目录。测试未授权文件只含合成哨兵，不放真实凭证。

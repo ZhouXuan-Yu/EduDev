@@ -9,7 +9,9 @@ export type XiaozhiAgentError = 'invalid_input' | 'busy' | 'configuration' | 'ev
   | 'rate_limited' | 'timeout' | 'transport' | 'cancelled' | 'model_error' | 'goal_stalled' | 'goal_review_extended' | 'command_conflict' | 'permission_denied' | 'workspace_locked' | 'budget_exhausted' | 'nothing_to_compact' | 'context_limit' | 'compaction_failed' | 'memory_scope_changed' | 'skill_source_changed' | 'skill_scope_changed' | 'attachment_changed';
 export type XiaozhiModelCapabilities = { id: string; name: string; contextWindow: number; maxOutputTokens: number;
   /** Absent in older catalogues means unknown, never an inferred image grant. */
-  inputModalities?: ('text' | 'image')[]; observedAt: string; source: 'official' | 'cache'; stale?: boolean };
+  inputModalities?: ('text' | 'image')[];
+  effort?: { supportedLevels: ('low' | 'high' | 'max')[]; defaultLevel?: 'low' | 'high' | 'max' };
+  observedAt: string; source: 'official' | 'cache'; stale?: boolean };
 export type XiaozhiContextPolicy = { auto: boolean; window: number; maxOutputTokens: number; verified: boolean; testPolicy?: boolean };
 export type XiaozhiCompactInput = { sessionId: string; commandId: string };
 export type XiaozhiBudget = { maxModelCalls: number; maxToolCalls: number; maxTokens: number; activeMs: number; waitMs: number };
