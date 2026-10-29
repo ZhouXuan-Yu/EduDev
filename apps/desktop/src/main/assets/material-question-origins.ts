@@ -6,7 +6,7 @@ import {normalizeMaterialStem} from './material-question-extract';
 type Row=Record<string,unknown>;type Value=string|number|null;
 export type OriginHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>};
 export type RuleOrigin={sources:MaterialSource[];number:string;stem:string;risks:string[]};
-const allowed=(origin:RuleOrigin)=>origin.sources.length>0&&origin.sources.length<=64&&origin.sources.every(validMaterialSource)&&/^\d{1,5}$/.test(origin.number)&&!!origin.stem.trim()&&!origin.risks.some(r=>r!=='visual_unchecked');
+const allowed=(origin:RuleOrigin)=>origin.sources.length>0&&origin.sources.length<=64&&origin.sources.every(s=>validMaterialSource(s)&&s.resourceId===origin.sources[0].resourceId&&s.version===origin.sources[0].version)&&/^\d{1,5}$/.test(origin.number)&&!!origin.stem.trim()&&!origin.risks.some(r=>r!=='visual_unchecked');
 const key=(origin:RuleOrigin)=>createHash('sha256').update(JSON.stringify(['source-question.v1',origin.sources.map(s=>[s.resourceId,s.version,s.offset,s.chunkId,s.bodyVersion]),origin.number,normalizeMaterialStem(origin.stem)])).digest('hex');
 export async function migrateQuestionOrigins(host:OriginHost){
  const before=new Set((await host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>String(r.name)));
