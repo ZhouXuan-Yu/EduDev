@@ -63,6 +63,7 @@ async function launch(){
    return new Response(chunk({role:'assistant',content:''})+chunk(delta)+chunk({},call?'tool_calls':'stop')+'data: [DONE]\n\n',{headers:{'content-type':'text/event-stream'}});
   };
  },{wireFile,controlFile,html,draft:presentationFixture});
+ if(process.env.XIAOZHI_REQUEST_DIAGNOSTICS==='1')await application.evaluate((_app,log)=>{const Original=globalThis.Error;globalThis.Error=new Proxy(Original,{construct(target,args,newTarget){const error=Reflect.construct(target,args,newTarget);if(args[0]==='configuration')globalThis.continuityFs.appendFileSync(log,error.stack+'\n');return error;}});},path.join(output,'configuration-stacks.log'));
  page=await application.firstWindow();page.on('pageerror',e=>report.errors.push(String(e)));await ready();id=await page.locator('.office-composer-container').getAttribute('data-session-id');
 }
 async function send(phase,text){await ready();control({phase});const count=query('SELECT count(*) n FROM ai_agent_runs')[0].n;await page.getByTestId('office-prompt-input').fill(text);await page.getByRole('button',{name:'发送消息',exact:true}).click();await until(()=>query('SELECT count(*) n FROM ai_agent_runs')[0].n>count);}

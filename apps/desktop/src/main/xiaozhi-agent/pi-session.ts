@@ -36,7 +36,7 @@ import { prepareSafeNativeCompaction, estimateFullRequest, NATIVE_COMPACTION_RES
 import { computeCompactionReserveTokens } from './vendor/hana/core/session-compaction-runtime';
 import { createPiInstructionQueue } from './instruction-queue';
 import { privateWorkspaceFingerprintCwd } from './private-workspace-identity';
-import { resolveCreationPromptIdentity } from './creation-prompt-identity';
+import { resolveCreationPromptIdentity,resolveControlPromptIdentity } from './creation-prompt-identity';
 import { createPiMemoryEpoch } from './native-memory-epoch';
 import { createPiMemoryTools, type PiMemoryRuntime } from './memory-tools';
 import { createEducationSkillRuntime } from './skill-runtime';
@@ -267,15 +267,15 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     workspace: historicalWorkspace, tools: legacyNames, basePrompt: XIAOZHI_EDUCATION_PROMPT,
     copyAllowed: Boolean(options.approveCopy), restoring: Boolean(options.sessionFile), snapshot: snapshot?.type === 'custom' ? snapshot.data : undefined });
   const { fingerprint, identityPrompt: legacyPrompt } = creation;
-  let prompt = legacyPrompt + (controls.length ? (options.taskRuntime
-    ? '\n必要歧义用 ask_teacher 提问并等待回答，已有明确要求不要反复确认。计划完成不能代替文件交付的实际结果。教师追加指令沿当前任务继续，所有权限和确认规则保持。'
-    : '\n复杂任务先用 update_plan 公布简短步骤；执行中更新真实进度。必要歧义用 ask_teacher 提问并等待回答，已有明确要求不要反复确认。计划完成不能代替文件交付的实际结果。教师追加指令沿当前任务继续，所有权限和确认规则保持。') : '');
+  const controlSnapshot = manager.getBranch().find(entry => entry.type === 'custom' && entry.customType === 'xiaozhi.education.controls.v1');
+  if(controlSnapshot&&!controls.length)throw Error('configuration');
+  const controlIdentity=resolveControlPromptIdentity({base:fingerprint,tools:names,prompt:legacyPrompt,hasControls:!!controls.length,taskRuntime:!!options.taskRuntime,
+    snapshot:controlSnapshot?.type==='custom'?controlSnapshot.data:undefined});
+  let prompt=controlIdentity.prompt;
   if (!snapshot) manager.appendCustomEntry('xiaozhi.education.snapshot.v1', { fingerprint });
   if (historicalWorkspace !== workspace && !manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.private-workspace-relocation.v1'))
     manager.appendCustomEntry('xiaozhi.private-workspace-relocation.v1',{conversationId:options.privateWorkspaceId,fingerprint});
-  const controlSnapshot = manager.getBranch().find(entry => entry.type === 'custom' && entry.customType === 'xiaozhi.education.controls.v1');
-  const controlFingerprint = createHash('sha256').update(JSON.stringify({ fingerprint,tools:names,prompt })).digest('hex');
-  if (controlSnapshot && (controlSnapshot.type !== 'custom' || !controls.length || JSON.stringify(controlSnapshot.data) !== JSON.stringify({ fingerprint:controlFingerprint }))) throw new Error('configuration');
+  const controlFingerprint = controlIdentity.fingerprint;
   if (controls.length && !controlSnapshot) manager.appendCustomEntry('xiaozhi.education.controls.v1', { fingerprint:controlFingerprint });
 
   const memorySnapshots = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.memory.'));
