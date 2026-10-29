@@ -1,0 +1,24 @@
+import '../office-agent/register-source.mjs';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {createHash,randomUUID} from 'node:crypto';
+const {MaterialFolderAiRepository}=await import('../../src/main/assets/material-folder-ai.ts');
+const {MATERIAL_FOLDER_AI_SCHEMA:schema,validFolderAiGrant}=await import('../../src/shared/material-folder-ai.ts');
+const db=new DatabaseSync(':memory:'),id='batch_'+randomUUID(),resource='resource_'+randomUUID(),version=createHash('sha256').update('original').digest('hex');let repo,creates=0;
+db.exec(`CREATE TABLE material_import_batches(id TEXT PRIMARY KEY,status TEXT,name TEXT);CREATE TABLE material_import_entries(seq INTEGER PRIMARY KEY,batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT);CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT,parse_engine TEXT,title TEXT);CREATE TABLE resource_chunks(id TEXT,resource_id TEXT);CREATE TABLE material_pdf_jobs(resource_id TEXT,version TEXT,total INTEGER,generation TEXT);CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT);CREATE TABLE material_ai_batches(id TEXT PRIMARY KEY,status TEXT,calls INTEGER,config_json TEXT);CREATE TABLE material_ai_units(batch_id TEXT,ordinal INTEGER,status TEXT,error TEXT);CREATE TABLE material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT,batch_id TEXT,folder_id TEXT,folder_revision INTEGER);CREATE TABLE material_ai_members(batch_id TEXT,question_id TEXT);CREATE TABLE question_bank_items(id TEXT,archive_json TEXT);`);
+db.prepare("INSERT INTO material_import_batches VALUES(?,'completed','合成目录')").run(id);db.prepare("INSERT INTO teacher_resources VALUES(?,?,'习题.png','ready','local-ocr','合成原图')").run(resource,version);db.prepare("INSERT INTO resource_chunks VALUES('c',?)").run(resource);db.prepare("INSERT INTO material_import_entries VALUES(1,?,'file','pending','')").run(id);
+const ai={settings:async()=>({revision:9,model:'deepseek-flash',configured:true,secureStorage:true}),create:async(input,task)=>{const existing=db.prepare('SELECT batch_id FROM material_ai_task_keys WHERE task_key=?').get(task.key);if(existing)return existing.batch_id;creates++;const bid='aibatch_'+randomUUID();db.prepare("INSERT INTO material_ai_batches VALUES(?,'running',0,?)").run(bid,JSON.stringify(input));db.prepare("INSERT INTO material_ai_units VALUES(?,1,'pending','')").run(bid);db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(task.key,'fixture',bid,task.folderId,task.revision);return bid;},action:async input=>{db.prepare('UPDATE material_ai_batches SET status=? WHERE id=?').run(input.action==='pause'?'paused':'running',input.batchId);}};
+const host={all:async(sql,p=[])=>db.prepare(sql).all(...p),run:async(sql,p=[])=>{db.prepare(sql).run(...p);},ai:()=>ai,word:()=>({}),writer:async action=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};repo=new MaterialFolderAiRepository(host);
+const input={schemaVersion:schema,batchId:id,settingsRevision:9,maxCalls:4,cloudConsent:true,publicMaterial:true};
+try{
+ await repo.migrate();assert(!validFolderAiGrant({...input,cloudConsent:false}));assert(!validFolderAiGrant({...input,extra:true}));
+ await assert.rejects(repo.authorize({...input,cloudConsent:false}),/invalid_input/);assert.equal(creates,0);
+ const grant=await repo.authorize(input);assert.equal(grant.status,'running');
+ await repo.tick();db.prepare("UPDATE material_import_entries SET status='saved',resource_id=? WHERE seq=1").run(resource);
+ for(let i=0;i<5&&!creates;i++)await repo.tick();assert.equal(creates,1,'A newly archived resource must enter the authorized AI workflow without a per-resource click');
+ for(let i=0;i<4;i++)await repo.tick();assert.equal(creates,1);
+ await repo.action({schemaVersion:schema,batchId:id,action:'pause'});assert.equal((await repo.view(id)).status,'paused');
+ const child=db.prepare('SELECT id FROM material_ai_batches').get();assert.equal(db.prepare('SELECT status FROM material_ai_batches').get().status,'paused');
+ const reopened=new MaterialFolderAiRepository(host);await reopened.migrate();repo=reopened;
+ await repo.action({schemaVersion:schema,batchId:id,action:'resume'});await repo.tick();assert.equal(creates,1,'Reopen must keep the linked child instead of creating a second batch');
+ db.prepare("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown' WHERE batch_id=?").run(child.id);
+ for(let i=0;i<3;i++)await repo.tick();assert.equal(creates,1);const final=await repo.view(id);assert(final.review+final.failed>=1);assert.equal(final.status,'attention');
+ console.log(JSON.stringify({success:true,checks:6,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
+}finally{db.close();}
