@@ -40,7 +40,7 @@
 - 接缝：conversationOutputRoot纯解析 → 原backup/data-root-files、store.exportDataRoot/verifyDataBackup → 原typed结果及DataBackupPanel。沿现manifest.v1增加有版本的conversationOutputs附加元数据，保留旧文件列表；只从本实例输出scope复制到保留前缀，不跟随外部链接、不扫描其他实例或教师授权私人目录。阻止将备份放入源成果目录造成递归。无新表/依赖。
 - 停写回退：启动环境OMNI_EDU_XIAOZHI_FILE_WRITES=0仅停AI text/Office/bundle写入，不撤销读权限、不改变native identity、不删除草稿或文件；原单文件/整包工具仍装配，服务实际写边界拒绝新提案、批准及执行/撤销；只读核验保持。正式页面显示停写原因，模型收到当前实际能力说明。教师手动业务导出不扩大为全盘只读。
 - 检查：一次真实服务/文件备份及清单校验（含同名跨会话、遗漏/变化、旧包、无成果根、递归目标）；正式Electron从设置创建/校验，冷启停写后预览旧HTML/PPT、实读与尝试新生成无文件副作用。build/组件及关键路径门禁；完整C03仍待阶段集中AT。
-- 兼容/恢复：保留所有新增schema/kind与native读取，不整提交回退到无法识别saved_bundle的旧版。备份附加区不是运行根，真正恢复需要迁移默认成果路径、文件事实与任务/会话身份并从UI读回；下一切片继续，尚不承诺迁移或激活可用。
+- 兼容/恢复：保留所有新增schema/kind与native读取，不整提交回退到无法识别saved_bundle的旧版。备份附加区不是运行根，真正恢复需要迁移默认成果路径、文件事实与任务/会话身份并从UI读回；后续C03继续，在W3集中交付前补齐；不将全量恢复迁移加为E02的前置，尚不承诺迁移或激活可用。
 
 ## W0 / E02 真实思考设置
 
