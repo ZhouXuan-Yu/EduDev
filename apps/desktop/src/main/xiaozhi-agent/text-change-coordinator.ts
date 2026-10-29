@@ -88,17 +88,17 @@ export function createTextChangeCoordinator(options: {
           const code = error instanceof Error ? error.message : '';
           if (args[2]?.aborted || code === 'cancelled' || code === 'budget_exhausted') throw new Error(code === 'budget_exhausted' ? code : 'cancelled');
           return { content: [{type:'text' as const,text:JSON.stringify({success:false,message:
-            code==='conflict'?'文件或修改记录已变化，本次没有覆盖。':code==='permission_denied'?'当前操作未获授权或确认已失效。':args[3]==='science'?'科普图未生成，但尚未提交审阅。请只修正本轮工具参数后重试，不要改为普通文本。必须40至80个实体、恰好一个lit、圆柱w=d；实体包围盒不能相交或形成循环遮挡；SVG/HTML上限64KiB。平板重复肋片可直接使用：底板box x=0,y=0,z=0,w=120,d=60,h=4,tone=lo,label=底板；肋片box x=0,y=5,z=4,w=1.5,d=50,h=24,tone=lit,label=散热肋片,repeat={count:40,dx:3,dy:0,dz:0}。teaching.steps的part必须使用实际类别“底板”“散热肋片”。若部件更多，按同样最小角与面接触关系扩展。不能宣称已保存。':'未完成本次文件修改。请核对授权范围、实际文本及支持格式；不能宣称已经保存。'})}],
+            code==='too_large'?'内容超过UTF8 64KiB上限（HTML含宿主策略头），没有保存或截断。请减少冗余或拆成多份后重新提交。':code==='conflict'?'文件或修改记录已变化，本次没有覆盖；请使用新文件名另存。':code==='permission_denied'?'当前操作未获授权或确认已失效。':args[3]==='science'?'科普图未生成，但尚未提交审阅。请只修正本轮工具参数后重试，不要改为普通文本。必须40至80个实体、恰好一个lit、圆柱w=d；实体包围盒不能相交或形成循环遮挡；SVG/HTML上限64KiB。平板重复肋片可直接使用：底板box x=0,y=0,z=0,w=120,d=60,h=4,tone=lo,label=底板；肋片box x=0,y=5,z=4,w=1.5,d=50,h=24,tone=lit,label=散热肋片,repeat={count:40,dx:3,dy:0,dz:0}。teaching.steps的part必须使用实际类别“底板”“散热肋片”。若部件更多，按同样最小角与面接触关系扩展。不能宣称已保存。':'未完成本次文件修改。请核对授权范围、实际文本及支持格式；不能宣称已经保存。'})}],
             details:{success:false},isError:true };
         }
       };
       const path = { type: 'string', minLength: 1, maxLength: 500 };
       return [{ name: 'office_create_text', label: '创建教学文档',
-        description: '在教师授权工作目录提出新UTF8 .md或.txt文件，最多64KiB。既有父目录、相对路径；不能覆盖已有文件。展示真实审阅并等待教师确认后才保存。教师拒绝后本轮不得自动重复请求；教师后续重新发起任务时可以创建新的审阅，必须重新确认，不复用旧批准。',
+        description: '在本会话生成文件区或教师授权目录提出新UTF8 .md/.txt/.html，最多64KiB（含宿主HTML头）。HTML须完整、自包含，使用内联CSS/JS和本地Canvas/SVG/MathML，不依赖外网、CDN或Node；可做滑块/动画/讲解交互。既有父目录、相对路径；不能覆盖已有文件。展示真实审阅并等待教师确认后才保存。教师拒绝后本轮不得自动重复请求；教师后续重新发起任务时可以创建新的审阅，必须重新确认，不复用旧批准。',
         parameters: { type: 'object', properties: { path, content: { type: 'string', maxLength: 65536 } }, required: ['path', 'content'], additionalProperties: false } as ToolDefinition['parameters'],
         execute: (callId, args, signal) => safeExecute(callId, args, signal, 'create'),
       }, { name: 'office_edit_text', label: '修改教学文档',
-        description: '修改授权目录现有UTF8 .md或.txt，最多64KiB。先读取实际文本再提出1至16处唯一oldText/newText替换；原文等于全文时也可按教师明确要求替换。复用Pi编辑算法。展示真实差异，教师确认且原版本仍一致才写。拒绝或冲突后本轮不得自动重试或强写；教师后续重新发起同一修改也属于新任务，应重新实读当前文件并创建新审阅，必须取得新的确认，不能因旧拒绝永久禁止新任务。',
+        description: '修改当前文件区现有UTF8 .md/.txt/.html，最多64KiB。HTML保留宿主离线策略头，只改实际教学内容。先读取实际文本再提出1至16处唯一oldText/newText替换；原文等于全文时也可按教师明确要求替换。复用Pi编辑算法。展示真实差异，教师确认且原版本仍一致才写。拒绝或冲突后本轮不得自动重试或强写；教师后续重新发起同一修改也属于新任务，应重新实读当前文件并创建新审阅，必须取得新的确认，不能因旧拒绝永久禁止新任务。',
         parameters: { type: 'object', properties: { path, edits: { type: 'array', minItems: 1, maxItems: 16, items: { type: 'object', properties: { oldText: { type: 'string', minLength: 1, maxLength: 65536 }, newText: { type: 'string', maxLength: 65536 } }, required: ['oldText', 'newText'], additionalProperties: false } } }, required: ['path', 'edits'], additionalProperties: false } as ToolDefinition['parameters'],
         execute: (callId, args, signal) => safeExecute(callId, args, signal, 'edit'),
       }, { name: 'office_create_science_figure', label: '绘制科普图',

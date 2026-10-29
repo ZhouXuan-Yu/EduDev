@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-29 E01工程检查，完整验收待集中执行
+
+专项服务/SDK7项、HTML Electron3项、正式Electron3项、renderer240/240；build及综合smoke207/207通过，详research/AGENT_DELIVERY_E01_20261029.json。正式Electron使用合成SSE与测试审批，不等于真实教师/模型质量或FX01完整标准；252条AT未判通过。
+
 ## 2026-10-29 后台目录与OCR还原限定验收
 
 最终源码完整npm run test:smoke已自然结束exit0/ok=true/30合成学生，未使用此前运行代替；日志kb-background-restoration-smoke.log及.exit=0。下述限定验收与真实DeepSeek质量范围保持分离。

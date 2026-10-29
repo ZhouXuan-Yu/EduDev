@@ -1,3 +1,4 @@
+import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation';
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
 import { app, BrowserWindow, dialog, ipcMain as electronIpcMain, shell, nativeTheme } from 'electron';
 import {createDesktopIpcLifetime} from './desktop-ipc-lifetime';
@@ -176,6 +177,7 @@ function createWindow() {
     },
   });
   mainWindow = window;
+  installLocalFrameIsolation(window.webContents);
   installDesktopChrome(window);
   installWindowGeometry(window, maximized, geometry);
 

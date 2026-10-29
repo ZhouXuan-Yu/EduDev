@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-29 E01专项证据与待验边界
+
+默认文件专项7、HTML Electron3、正式UI3、renderer240通过，build与综合smoke207/207通过，详../research/AGENT_DELIVERY_E01_20261029.json。合成模型路径/测试审批不替代自然质量/真实教师/Office-WPS或完整AT，新增已实现为0。
+
 ## 2026-10-29 静默目录与OCR还原实证
 
 Store301文件4项、正式资料页151文件5项（暂停/两次冷启/长文尾部实际来源）、26批次/原生6+4/240组件/最终build通过。真实已授权同PDF第1页新版提示首次省略答案标注→4待处理，修复后3自动/1图题待处理，共4新请求。smoke最终状态详goal/KB_IMPLEMENTATION_EVIDENCE；audit23未清，40GB/自然质量/全目录AI/安装仍OPEN。
