@@ -13,6 +13,7 @@ assert(sources.find(s=>s.sourceId==='choice').text.includes('第二份 force.ppt
 let current=true;const sanitize=async text=>text.replaceAll('私人姓名','[个人信息]');
 const tool=createTeacherRequestTool({load:async()=>sources,excluded:()=>['r2'],current:()=>current,sanitize});
 const read=async args=>JSON.parse((await tool.execute('call',args)).content[0].text).data;
+const listed=await read({limit:2});assert.equal(listed.sources.length,2);assert.equal(listed.nextOffset,2);const allListed=[...listed.sources,...(await read({offset:2,limit:20})).sources];assert(allListed.find(s=>s.sourceId==='long').text.startsWith('[个人信息]'));assert(allListed.every(s=>s.text.length<=160));await assert.rejects(()=>read({limit:21}));check('Source catalogue pages through older real requests without a remembered source ID or private text');
 let data=await read({sourceId:'long',limit:1999}),full=data.text;assert.equal(data.offset,0);assert(data.nextOffset);const version=data.sourceVersion;
 while(data.nextOffset!==null){data=await read({sourceId:'long',offset:data.nextOffset,limit:1999,sourceVersion:version});full+=data.text;}
 assert.equal(full,await sanitize(messages[1].content));assert(full.endsWith('尾部必须包含排液体积'));assert(!full.includes('私人姓名'));check('Long sanitized request reconstructs exactly across segments including final constraints');

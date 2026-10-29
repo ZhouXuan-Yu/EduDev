@@ -77,7 +77,7 @@
 ## E03 第三切片：可重读请求与已应用追加（2026-10-30冻结）
 
 - 教师结果：压缩后可按同会话来源ID重读长请求完整正文；生成中实际应用的追加与教师选项回答随本任务保存并恢复，取消/未应用队列不能冒充当前要求。多份课件沿原ask_teacher集中选定，回答保留来源。
-- 复用：原SQLite用户消息、control账本、原ask_teacher UI/typed preload；只增加read_teacher_request只读能力与有界来源索引，不建第二任务/权限系统。正文先沿现student sanitizer脱敏再分页；来源ID/版本不做文本替换。
+- 复用：原SQLite用户消息、control账本、原ask_teacher UI/typed preload；只增加read_teacher_request只读能力与有界来源索引，不建第二任务/权限系统。sourceId未知时同一工具分页列出当前会话旧来源及160字摘要，不能依赖模型记住已被压缩的隐藏ID。正文先沿现student sanitizer脱敏再分页；来源ID/版本不做文本替换。
 - 接缝：request-sources→protected context/reader→Pi独立additive identity与manifest/catalog；control applied回执记录真实应用顺序，旧已应用记录明确顺序未知。旧创建/control/memory身份保持。无DDL、新依赖、新外部请求或额外批准。
 - 兼容与回退：新来源能力的native身份读取保留；只读无文件效果，旧消息/controls无需迁移。撤回/中断/隔离run不恢复为已应用；新版本冲突要求从offset0重读。
 - 检查：一次源码边界与旧身份检查、一次相关构建/组件、正式Electron受控长请求→重读→追加→压缩/选择路径；阶段完整AT后集中备注已实现，不将受控调用当自然推理质量。
