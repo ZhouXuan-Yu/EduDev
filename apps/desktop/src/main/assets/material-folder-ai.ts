@@ -140,7 +140,11 @@ export class MaterialFolderAiRepository{
     if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)continue;
     const rows=await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid>? ORDER BY rowid LIMIT 8",[String(grant.batch_id),Number(grant.plan_cursor)]);
     if(rows.length<8)rows.push(...await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid<=? ORDER BY rowid LIMIT ?",[String(grant.batch_id),Number(grant.plan_cursor),8-rows.length]));
-    for(const row of rows){await this.host.run('UPDATE material_folder_ai SET plan_cursor=? WHERE batch_id=?',[Number(row.plan_rowid),String(grant.batch_id)]);await this.plan(grant,row);if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)break;}
+    for(const row of rows){
+     await this.host.run('UPDATE material_folder_ai SET plan_cursor=? WHERE batch_id=?',[Number(row.plan_rowid),String(grant.batch_id)]);await this.plan(grant,row);
+     const current=(await this.host.all("SELECT status,EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=f.batch_id AND u.state IN ('pending','running')) active FROM material_folder_ai f WHERE batch_id=?",[String(grant.batch_id)]))[0];
+     if(!current||current.status!=='running'||current.active)break;
+    }
     const batch=(await this.host.all('SELECT status FROM material_import_batches WHERE id=?',[String(grant.batch_id)]))[0];
     if(!batch||!['completed','partial','failed'].includes(String(batch.status)))continue;
     const snapshot=(await this.view(String(grant.batch_id)))!;
