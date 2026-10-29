@@ -481,5 +481,7 @@
     "partialImplementation": 6,
     "newAcceptancePasses": 0,
     "csvWritable": true
-  }
+  },
+  "implementationCommit": "51ef5b5c6bb37cee919f1ad0523f45b7cee5e1c1",
+  "validationSource": "same source hashes as implementation commit 51ef5b5; remaining changes only record evidence"
 }

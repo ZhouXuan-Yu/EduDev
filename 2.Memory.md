@@ -6,7 +6,7 @@
 
 专项4、旧默认文件7、正式Electron5及renderer240通过；PowerPoint16.0.20527.20088实际全8页渲染、文字/表格/备注编辑另存重开通过，独立XML确认只改第4页标题时其余7页保持；首次孤立句号已修，PS测试编码与受控回执解析问题已修并保留失败。build及完整smoke207/207通过。无新依赖/DDL/IPC/真实付费调用，audit仍23项。CSV本轮可写，6条E01实施状态同步为部分实现，验收仍未执行；完整AT新增已实现仍0/252。
 
-继续E01整包审批/部分失败续做、C03默认产物备份与兼容停写开关，再E02→E03；全P1功能齐后集中验收。不能将合成8页或Office技术检查称为自然质量、任意旧PPT对象保真、WPS或D盘运行验收。证据../research/AGENT_PRESENTATION_E01_20261029.json；合同AGENT_DELIVERY_IMPLEMENTATION.md。
+继续E01整包审批/部分失败续做、C03默认产物备份与兼容停写开关，再E02→E03；全P1功能齐后集中验收。不能将合成8页或Office技术检查称为自然质量、任意旧PPT对象保真、WPS或D盘运行验收。实施/验证源码51ef5b5；证据../research/AGENT_PRESENTATION_E01_20261029.json；合同AGENT_DELIVERY_IMPLEMENTATION.md。
 
 
 ## 2026-10-29 W0/E01 已进入功能实施（部分，非验收完成）
