@@ -156,6 +156,8 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 #### WP-E01 常用文件工具与默认产物区
 
+2026-10-29 第二切片：精确页数/独立备注契约及审阅编辑/实际读回已接通，本机PowerPoint全8页渲染与编辑重开通过；仍待整包审批/部分续做等及阶段集中验收，证据../research/AGENT_PRESENTATION_E01_20261029.json。
+
 2026-10-29 实施补充：默认产物区、核心注册及通用HTML已接通并做受控界面检查；以下“当前能力”为实施前基线。精确PPT页/备注与整包恢复等尚未完成，全组待阶段集中验收。合同见../goal/AGENT_DELIVERY_IMPLEMENTATION.md，证据见../research/AGENT_DELIVERY_E01_20261029.json。
 
 - **范围/依赖**：P1；M09/M10/M12；C01,C03,C04。
@@ -169,16 +171,16 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-E01-01 | 无工作目录交付 | 同时得到可打开的.html和.pptx；无“请复制代码另存”替代；目录由宿主创建并在文件面板可见 | [AT-E01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-01) | 待验收 |
-| REQ-E01-02 | 目录隔离 | 会话产物不混淆；不能读取B成果或数据根；实际保存目录不是临时执行环境 | [AT-E01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-02) | 待验收 |
+| REQ-E01-01 | 无工作目录交付 | 同时得到可打开的.html和.pptx；无“请复制代码另存”替代；目录由宿主创建并在文件面板可见 | [AT-E01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-01) | 部分实现；待集中验收 |
+| REQ-E01-02 | 目录隔离 | 会话产物不混淆；不能读取B成果或数据根；实际保存目录不是临时执行环境 | [AT-E01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-02) | 部分实现；待集中验收 |
 | REQ-E01-03 | 自选目录 | 成功文件只在所选位置；失败指出权限原因；不擅自改写其他目录；目录变更兼容规则可见 | [AT-E01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-03) | 待验收 |
-| REQ-E01-04 | 工具默认可发现 | 模型能发现当前内置能力；缺少位置触发准备位置而非隐藏工具；工具名存在不计为执行成功 | [AT-E01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-04) | 待验收 |
-| REQ-E01-05 | HTML交互 | 控件和数值联动，中文与公式正常；关键功能无网络依赖；固定Anatomy模板不是唯一HTML形式；内置预览阻止宿主Node/文件/父窗口控制与未授权联网 | [AT-E01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-05) | 待验收 |
+| REQ-E01-04 | 工具默认可发现 | 模型能发现当前内置能力；缺少位置触发准备位置而非隐藏工具；工具名存在不计为执行成功 | [AT-E01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-04) | 部分实现；待集中验收 |
+| REQ-E01-05 | HTML交互 | 控件和数值联动，中文与公式正常；关键功能无网络依赖；固定Anatomy模板不是唯一HTML形式；内置预览阻止宿主Node/文件/父窗口控制与未授权联网 | [AT-E01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-05) | 部分实现；待集中验收 |
 | REQ-E01-06 | 路径与同名冲突 | 非法路径被宿主拒绝且无副作用；同名采用新版本或另存，不覆盖原文件；提示具体可行下一步 | [AT-E01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-06) | 待验收 |
-| REQ-E01-07 | 内容与体积边界 | 空/非法内容不成为正式文件；边界按UTF8字节判定；超限保留草稿并明确分拆方案；不静默截断 | [AT-E01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-07) | 待验收 |
+| REQ-E01-07 | 内容与体积边界 | 空/非法内容不成为正式文件；边界按UTF8字节判定；超限保留草稿并明确分拆方案；不静默截断 | [AT-E01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-07) | 部分实现；待集中验收 |
 | REQ-E01-08 | 整包审批 | 审批覆盖明确的文件和内容版本；只保存确认版；拒绝无正式写入；旧批准不能用于新增文件 | [AT-E01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-08) | 待验收 |
 | REQ-E01-09 | 部分交付 | 显示HTML已保存/PPT未完成及原因；整任务标部分完成；重试只处理未完成文件 | [AT-E01-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-09) | 待验收 |
-| REQ-E01-10 | 旧会话兼容 | 旧记录可读、原身份不重建；补目录不伪造授权；新产物与旧记录均可恢复 | [AT-E01-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-10) | 待验收 |
+| REQ-E01-10 | 旧会话兼容 | 旧记录可读、原身份不重建；补目录不伪造授权；新产物与旧记录均可恢复 | [AT-E01-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-10) | 部分实现；待集中验收 |
 
 #### WP-E02 模型与真实思考档位
 

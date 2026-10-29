@@ -1,5 +1,10 @@
 # Goal 验收台账
 
+## 2026-10-29 精确PPT局部检查结果
+
+4契约/生成、7旧默认、5正式UI、240renderer通过；8页PowerPoint渲染/编辑/另存/重开和独立OOXML通过，中文孤立标点及测试编码问题修后复验。综合smoke207/207通过。详../research/AGENT_PRESENTATION_E01_20261029.json，非252条AT整体通过。
+
+
 ## 2026-10-29 E01工程检查，完整验收待集中执行
 
 专项服务/SDK7项、HTML Electron3项、正式Electron3项、renderer240/240；build及综合smoke207/207通过，详research/AGENT_DELIVERY_E01_20261029.json。正式Electron使用合成SSE与测试审批，不等于真实教师/模型质量或FX01完整标准；252条AT未判通过。

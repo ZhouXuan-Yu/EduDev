@@ -4,7 +4,7 @@ import type {OfficeMathImage} from './office-pdf-renderer';
 import {Document,Packer,Paragraph,TextRun,ImageRun,Table,TableRow,TableCell,HeadingLevel,WidthType,AlignmentType} from 'docx';
 import ExcelJS from 'exceljs';import PptxGenJS from 'pptxgenjs';
 import {wrapTextWithAnsi} from '@earendil-works/pi-tui/dist/utils.js';
-import {validOfficeDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft,type OfficeOutputFormat} from '../../shared/xiaozhi-office-draft';
+import {validOfficeDraft,isPresentationDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft,type OfficeOutputFormat} from '../../shared/xiaozhi-office-draft';
 import {officeImageSnapshot,officeFigureSize} from './office-images';
 const check=(signal?:AbortSignal)=>{if(signal?.aborted)throw new Error('cancelled');};
 /** Pi chooses Unicode/grapheme wrap boundaries; retain spaces that terminal wrapping trims. */
@@ -79,6 +79,7 @@ async function pptx(draft:OfficeDraft){
 /** No file-authority/tool API. The host receives bytes for a later reviewed, versioned commit. */
 export async function generateOfficeDocument(format:OfficeOutputFormat,draft:OfficeDraft,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>}):Promise<Buffer>{
  if(!officeOutputFormat(format)||!validOfficeDraft(draft))throw new Error('invalid_input');check(options.signal);
+ if(isPresentationDraft(draft)&&format!=='pptx')throw Error('invalid_input');
  // Snapshot the strict data before an async library can observe caller mutations.
  const input=JSON.parse(JSON.stringify(draft)) as OfficeDraft;
  const images=officeImageSnapshot(input,options.images);
@@ -88,7 +89,7 @@ export async function generateOfficeDocument(format:OfficeOutputFormat,draft:Off
   const classroomDocument=input.schemaVersion===CLASSROOM_DOCUMENT_OFFICE_SCHEMA;
   const classroomPages=classroomDocument&&'classroomSource'in input?await(await import('../education/classroom-document-pages')).renderClassroomDocumentPages(input.classroomSource,options):new Map<string,OfficeMathImage>();
   const mathImages=format==='docx'&&(isMathPaperOfficeSchema(input.schemaVersion)||classroomDocument)?await(await import('./office-pdf-renderer')).renderOfficeMathImages(input,options):new Map<string,OfficeMathImage>();
-  const bytes='classroomSource'in input&&!classroomDocument?await(await import('../education/classroom-pptx')).generateClassroomPptx(input.classroomSource,options):format==='pdf'?await (await import('./office-pdf-renderer')).renderOfficePdf(input,{...options,images,classroomPages}):format==='docx'?await docx(input,images,mathImages,classroomPages):format==='xlsx'?await xlsx(input):await pptx(input);
+  const bytes=isPresentationDraft(input)?await(await import('./presentation-generator')).generatePresentation(input):'classroomSource'in input&&!classroomDocument?await(await import('../education/classroom-pptx')).generateClassroomPptx(input.classroomSource,options):format==='pdf'?await (await import('./office-pdf-renderer')).renderOfficePdf(input,{...options,images,classroomPages}):format==='docx'?await docx(input,images,mathImages,classroomPages):format==='xlsx'?await xlsx(input):await pptx(input);
   check(options.signal);if(!bytes.length||bytes.length>OFFICE_OUTPUT_MAX_BYTES)throw new Error('too_large');return bytes;
  }catch(error){const code=error instanceof Error?error.message:'';throw Object.assign(new Error(['cancelled','timeout','too_large','configuration','cleanup_failed'].includes(code)?code:'generation_failed'),{cause:error});}
 }

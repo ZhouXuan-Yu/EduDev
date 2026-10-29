@@ -14,6 +14,15 @@
 - 验证：一次相关构建、组件检查、专项受控集成；阶段功能齐后按 AT-E01-01…10 与适用 C 项从正式入口集中取证。受控模型测试仅证明调用链，不证明自然质量、真实教师确认或安装通过。
 - 回退：必须保留新native能力记录的装配兼容、默认目录只读租约及通用HTML预览；只停新增写入。写入停用兼容开关尚待实现/验证，直接整提交回退可能使新能力记录不可装配，不视为已验证回退。目录、SQLite 和已保存文件均不删除。后续备份/恢复须显式覆盖默认产物根，当前不承诺整机迁移已完成。
 
+## E01 第二切片：精确PPT页与教师备注（2026-10-29冻结）
+
+- 教师结果：要求8页就输出8页，不自动多加封面/按段落拆页；每页含可编辑文字/有限表格与独立讲者备注，检查答案只放answer备注。审阅卡能查看、修改备注；本地读取工具能从实际PPT读回备注及页序。
+- 契约：新增 `xiaozhi.presentation-draft.v1`，沿现title/sections；每个section是一页，pageId唯一稳定，speakerNotes为非空的`{kind:script|answer,text}`数组。普通Office v1及课堂/试卷格式保持原验证/生成语义，新schema仅允许pptx。已有工具名、native创建指纹、表/IPC不变。
+- 消费者：shared验证→office_create_document定义→service propose/revise→原SQLite draft_json/content_md与generator_version→PptxGenJS逐页/notes parts；原PiOfficeArtifactCard追加教师备注审阅/编辑；实证Hana anydoc 0.1.2已提取notes，生产直接复用现document-worker/预览/office_read_document，避免再次解析/重复备注；测试独立按OOXML relationship读回页序及备注。
+- 版式：固定16:9，一页一section，标题/文字/表格保持可编辑；按实际换行预算选择字号，内容过密明确拒绝、保留拟稿，不静默截断/自动加页。新生成器版本只用于新schema，旧数据content_md和生成器identity不改变。
+- 恢复/回退：新schema读取必须保留，取消/拒绝/来源冲突复用原机制；已有文件与父版本不覆盖。纯字段与worker解析扩展，无DDL/新依赖/额外权限审批；不能宣称任意旧PPT对象保真修改已完成。
+- 检查：一次必要契约/生成/独立OOXML读回、正式界面修备注/保存/工具读回/重启；构建与renderer门禁。实际Office/WPS编辑、全页渲染与自然模型质量未验证时如实保留，不把局部专项写为AT全组通过。
+
 ## W0 / E02 真实思考设置
 
 - 复用 model-settings/state/api、shared/xiaozhi-settings 与 OfficeComposer；新增受版本检查的会话思考覆盖，默认自动，不改 provider/key/native 模型身份。

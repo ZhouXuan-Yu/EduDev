@@ -1,5 +1,10 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-29 E01精确PPT备注受控路径
+
+`node scripts/xiaozhi-agent/default-file-delivery-electron.mjs --presentation` 5项通过：正式输入→无私人目录→HTML审阅→8页PPT审阅→修改第4页标题/备注→精确版本确认→实际文件/读取工具/面板读回→重启绑定保留。模型为合成SSE、教师点击由测试驱动，非自然质量/完整FX01/真实教师验收。PowerPoint原生另检8页渲染与文字/表格/备注编辑另存重开；精确报告见docs/research/AGENT_PRESENTATION_E01_20261029.json。
+
+
 ## 2026-10-29 后台目录恢复与还原提示复验
 
 当前构建kb-folder-search-journey真实资料页→选择含子目录文件夹→暂停→原生重启仍暂停→继续后退出再开自动接续→151文件/1跳过→长文尾部检索并打开真实正文，5项/0renderer错误（Temp/omni-edu-folder-search-HqON0k）。同已授权PDF第1页新版OCR还原提示从现AI面板两遍实发，修复遗漏解题任务后3条ai_final/1图题review。不能当自然质量/全目录自动AI/40GB通过。

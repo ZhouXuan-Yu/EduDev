@@ -18,7 +18,7 @@ type Options={sessionId:string;runId:string;isCurrent:()=>boolean;resolve:(id:st
 export function createOfficeDocumentTools(options:Options):ToolDefinition[]{
   const current=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!options.isCurrent())throw new Error('permission_denied');};
   const files=createWorkspaceFiles(async id=>{current();const lease=await options.resolve(id);current();return lease;});
-  return [{name:'office_read_document',label:'读取办公文档',description:'读取教师已授权目录的DOCX/PDF/XLSX/PPTX必要正文。明确文件相对路径可直接读取，需要确定名称时先列目录；可分批startLine/lineCount。结果仅提取正文行位置，不是原文件页码；请用真实来源标题及提取行范围引用。扫描PDF需本地OCR，失败不得虚构正文。',
+  return [{name:'office_read_document',label:'读取办公文档',description:'读取当前文件区的DOCX/PDF/XLSX/PPTX必要正文。PPT讲者备注与对应页正文相邻，含讲解/参考答案标记，不属于学生投影文字；引用仍按实际提取行号，不把提取行冒充页码。明确文件相对路径可直接读取，需要确定名称时先列目录；可分批startLine/lineCount。结果仅提取正文行位置，不是原文件页码；请用真实来源标题及提取行范围引用。扫描PDF需本地OCR，失败不得虚构正文。',
     parameters:{type:'object',additionalProperties:false,properties:{path:{type:'string',maxLength:500},startLine:{type:'integer',minimum:1},lineCount:{type:'integer',minimum:1,maximum:100}},required:['path']} as ToolDefinition['parameters'],
     execute:async(_callId,args,signal)=>{
       const failed=(code:XiaozhiFileError)=>({content:[{type:'text' as const,text:XIAOZHI_FILE_ERRORS[code]}],isError:true,details:{success:false,error:{code,message:XIAOZHI_FILE_ERRORS[code],retryable:['busy','timeout','changed','unavailable'].includes(code)}}});

@@ -1,5 +1,10 @@
 # Goal 决策记录
 
+## 2026-10-29 精确PPT页的兼容决策
+
+新presentation-draft.v1表达页ID与备注角色，不悄悄给旧Office v1增加字段。准确页数不靠裁切或自动加页；过密明确失败。读取先实测成熟Hana能力，原anydoc可读notes，因此不新增生产notes解析。现包能力与最终教学质量分别验。
+
+
 ## 2026-10-29 默认产物接入决策
 
 采用单一现有文本修改/Office账本和原typed preload，不新增事实库/IPC/runtime/依赖。生成目录不替换旧native cwd，不额外打开office_copy_file；原teacher审批与版本核验保持。代码检查通过不回填完整AT；CSV被占用不绕锁。

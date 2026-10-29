@@ -1,0 +1,485 @@
+{
+  "date": "2026-10-29",
+  "sourceBase": "c8c0c8b",
+  "status": "E01 exact presentation/notes slice verified; complete E01 and 252 AT still pending",
+  "schema": "xiaozhi.presentation-draft.v1",
+  "reports": {
+    "contract": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-uGRHai\\report.json",
+      "sha256": "9d1d1d4ef5cfda41fe7db6e2b6fe6cdb73c71804a4da33918f1382f44bfd3bb1",
+      "result": {
+        "ok": true,
+        "checks": [
+          "New page/notes schema is strict, old Office remains unchanged",
+          "Eight sections generate real PPT bytes with eight meaningful notes and stable IDs",
+          "Dense pages fail explicitly and wrong output formats cannot drop notes",
+          "Changing page four preserves all other semantic page inputs and notes"
+        ],
+        "boundary": "Actual schema, PptxGenJS bytes and independent local OOXML notes parsing; synthetic content, no real model/teacher acceptance."
+      }
+    },
+    "formalUi": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-default-ui-bVOmKs\\report.json",
+      "sha256": "a8b5139eec6a4ba4a7a7571e2403afdb6ee4a756a07330bf9301603469a94ba5",
+      "result": {
+        "ok": true,
+        "checks": [
+          "Teacher edits page four title and private notes through the existing revision approval card",
+          "No selected directory: formal composer → Pi → two approval cards → actual HTML/PPT files",
+          "Saved generic HTML opens in the existing file panel with working interaction",
+          "Real document utility and model read tool both read actual saved private notes after teacher revision",
+          "Restart retains native binding, saved Office fact and actual output files"
+        ],
+        "errors": [],
+        "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+        "transport": {
+          "index": 5,
+          "requests": [
+            {
+              "index": 0,
+              "tools": [
+                "office_read_text",
+                "office_list_files",
+                "update_plan",
+                "ask_teacher",
+                "read_session_process",
+                "read",
+                "office_create_text",
+                "office_edit_text",
+                "office_read_document",
+                "office_create_document",
+                "office_web_search",
+                "office_web_fetch",
+                "education_export_classroom",
+                "education_append_paper_questions",
+                "education_propose_questions",
+                "update_task_plan",
+                "find_education_tools"
+              ]
+            },
+            {
+              "index": 1,
+              "tools": [
+                "office_read_text",
+                "office_list_files",
+                "update_plan",
+                "ask_teacher",
+                "read_session_process",
+                "read",
+                "office_create_text",
+                "office_edit_text",
+                "office_read_document",
+                "office_create_document",
+                "office_web_search",
+                "office_web_fetch",
+                "education_export_classroom",
+                "education_append_paper_questions",
+                "education_propose_questions",
+                "update_task_plan",
+                "find_education_tools"
+              ]
+            },
+            {
+              "index": 2,
+              "tools": [
+                "office_read_text",
+                "office_list_files",
+                "update_plan",
+                "ask_teacher",
+                "read_session_process",
+                "read",
+                "office_create_text",
+                "office_edit_text",
+                "office_read_document",
+                "office_create_document",
+                "office_web_search",
+                "office_web_fetch",
+                "education_export_classroom",
+                "education_append_paper_questions",
+                "education_propose_questions",
+                "update_task_plan",
+                "find_education_tools"
+              ]
+            },
+            {
+              "index": 3,
+              "tools": [
+                "office_read_text",
+                "office_list_files",
+                "update_plan",
+                "ask_teacher",
+                "read_session_process",
+                "read",
+                "office_create_text",
+                "office_edit_text",
+                "office_read_document",
+                "office_create_document",
+                "office_web_search",
+                "office_web_fetch",
+                "education_export_classroom",
+                "education_append_paper_questions",
+                "education_propose_questions",
+                "update_task_plan",
+                "find_education_tools"
+              ]
+            },
+            {
+              "index": 4,
+              "tools": [
+                "office_read_text",
+                "office_list_files",
+                "update_plan",
+                "ask_teacher",
+                "read_session_process",
+                "read",
+                "office_create_text",
+                "office_edit_text",
+                "office_read_document",
+                "office_create_document",
+                "office_web_search",
+                "office_web_fetch",
+                "education_export_classroom",
+                "education_append_paper_questions",
+                "education_propose_questions",
+                "update_task_plan",
+                "find_education_tools"
+              ]
+            }
+          ],
+          "blocked": [],
+          "html": "<!doctype html><html lang=\"zh-CN\"><title>浮力探究</title><body><label>排液体积<input id=\"volume\" type=\"range\" min=\"1\" max=\"10\" value=\"1\"></label><output id=\"force\">10 N</output><script>volume.oninput=()=>force.textContent=volume.value*10+\" N\";</script></body></html>",
+          "draft": {
+            "schemaVersion": "xiaozhi.presentation-draft.v1",
+            "title": "浮力：从漂浮到下沉",
+            "sections": [
+              {
+                "pageId": "cover",
+                "heading": "浮力：从漂浮到下沉",
+                "paragraphs": [
+                  "八年级 · 10分钟科普课",
+                  "观察木块，解释漂浮条件，判断载荷变化。"
+                ],
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "导入1分钟：请学生先预测增加载荷后水面和木块位置的变化，再说明本课使用理想化的静力模型。"
+                  }
+                ]
+              },
+              {
+                "pageId": "conditions",
+                "heading": "先确认研究条件",
+                "paragraphs": [
+                  "正方体边长10cm；木块密度600kg/m³；水密度1000kg/m³。",
+                  "取g=10N/kg，容器足够大且深；忽略空气浮力及载荷体积，载荷不脱落。"
+                ],
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "用1分钟把厘米换为米：边长0.1m，体积0.001m³。不能把题目说成来自本地题库；它是本次合成自拟。"
+                  }
+                ]
+              },
+              {
+                "pageId": "formula",
+                "heading": "排开的液体决定浮力",
+                "paragraphs": [
+                  "F浮=ρ液gV排；ρ液用kg/m³，V排用m³。",
+                  "漂浮且静止时，浮力等于总向下力；不能把整个木块体积总当作排液体积。"
+                ],
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "讲解2分钟：区分物体总体积和浸入部分排开的体积。让学生指出每个符号和对应单位。"
+                  }
+                ]
+              },
+              {
+                "pageId": "variables",
+                "heading": "改变变量，观察排液体积",
+                "paragraphs": [
+                  "先保持木块和载荷不变，只改变液体密度。",
+                  "比较浸入深度，再改变木块密度和向下载荷；每次只改一个变量。"
+                ],
+                "table": {
+                  "columns": [
+                    "变量",
+                    "可调范围"
+                  ],
+                  "rows": [
+                    [
+                      "木块密度",
+                      "200–950kg/m³"
+                    ],
+                    [
+                      "液体密度",
+                      "800 / 1000 / 1200kg/m³"
+                    ],
+                    [
+                      "附加载荷",
+                      "0–6N"
+                    ]
+                  ]
+                },
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "用HTML演示2分钟：学生先预测，再拖动变量。图示是教学示意，不把静力计算称为真实运动积分。"
+                  }
+                ]
+              },
+              {
+                "pageId": "default",
+                "heading": "默认状态：木块为何漂浮",
+                "paragraphs": [
+                  "质量0.6kg，重力6N；漂浮时浮力为6N。",
+                  "排液体积0.0006m³，即600cm³；浸入6cm、露出4cm。"
+                ],
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "讲解1分钟：通过受力平衡求浮力，再用阿基米德原理求排液体积，最后由底面积0.01m²求浸入深度。"
+                  }
+                ]
+              },
+              {
+                "pageId": "load",
+                "heading": "载荷增加，平衡能否保持",
+                "paragraphs": [
+                  "附加4N时，总向下力10N，达到全浸没最大浮力。",
+                  "附加5N且未触底时，总向下力11N，浮力上限10N；向下合力1N。"
+                ],
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "解释1分钟：4N是中性浮力边界，平衡条件不能唯一确定完全浸没后的深度。5N未触底时有向下合力；若触底静止，则支撑力为1N，不能混淆这两种状态。"
+                  }
+                ]
+              },
+              {
+                "pageId": "checks",
+                "heading": "两道理解检查",
+                "paragraphs": [
+                  "① 木块密度600kg/m³、液体密度800kg/m³且无载荷，漂浮时浮力是多少？",
+                  "② 水中附加5N载荷，木块尚未触底，向下合力是多少？请说明依据。"
+                ],
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "检查1分钟：先独立作答，再说出为什么不能只看液体密度或直接套用平衡条件。"
+                  },
+                  {
+                    "kind": "answer",
+                    "text": "检查①参考答案6N；检查②参考答案1N，方向向下。只在教师备注保留，不放入本页投影。"
+                  }
+                ]
+              },
+              {
+                "pageId": "summary",
+                "heading": "把观察变成有依据的判断",
+                "paragraphs": [
+                  "先确认状态与研究对象，再用浮力公式和受力关系。",
+                  "拓展：把水换成密度更大的液体，木块会浸得更深还是更浅？"
+                ],
+                "speakerNotes": [
+                  {
+                    "kind": "script",
+                    "text": "总结1分钟：让学生用“状态—受力—排液体积”的顺序复述推理。拓展题关注总向下力不变时排液体积减小，木块浸得更浅。"
+                  }
+                ]
+              }
+            ]
+          },
+          "readStarted": true,
+          "readText": [
+            "**浮力：从漂浮到下沉**\n\n八年级 · 10分钟科普课\n\n观察木块，解释漂浮条件，判断载荷变化。\n\n1 / 8\n\n> 讲解备注：导入1分钟：请学生先预测增加载荷后水面和木块位置的变化，再说明本课使用理想化的静力模型。\n\n**先确认研究条件**\n\n正方体边长10cm；木块密度600kg/m³；水密度1000kg/m³。\n\n取g=10N/kg，容器足够大且深；忽略空气浮力及载荷体积，载荷\n\n不脱落。\n\n2 / 8\n\n> 讲解备注：用1分钟把厘米换为米：边长0.1m，体积0.001m³。不能把题目说成来自本地题库；它是本次合成自拟。\n\n**排开的液体决定浮力**\n\nF浮=ρ液gV排；ρ液用kg/m³，V排用m³。\n\n漂浮且静止时，浮力等于总向下力；不能把整个木块体积总当作\n\n排液体积。\n\n3 / 8\n\n> 讲解备注：讲解2分钟：区分物体总体积和浸入部分排开的体积。让学生指出每个符号和对应单位。\n\n**排液体积**\n\n先保持木块和载荷不变，只改变液体密度。\n\n比较浸入深度，再改变木块密度和向下载荷；\n\n每次只改一个变量。\n\n|  |  |\n| --- | --- |\n| 变量 | 可调范围 |\n| 木块密度 | 200–950kg/m³ |\n| 液体密度 | 800 / 1000 / 1200kg/m³ |\n| 附加载荷 | 0–6N |\n\n4 / 8\n\n> 讲解备注：教师修订讲解：先预测排液体积变化。\n\n**默认状态：木块为何漂浮**\n\n质量0.6kg，重力6N；漂浮时浮力为6N。\n\n排液体积0.0006m³，即600cm³；浸入6cm、露出4cm。\n\n5 / 8\n\n> 讲解备注：讲解1分钟：通过受力平衡求浮力，再用阿基米德原理求排液体积，最后由底面积0.01m²求浸入深度。\n\n**载荷增加，平衡能否保持**\n\n附加4N时，总向下力10N，达到全浸没最大浮力。\n\n附加5N且未触底时，总向下力11N，浮力上限10N；向下合力1N。\n\n6 / 8\n\n> 讲解备注：解释1分钟：4N是中性浮力边界，平衡条件不能唯一确定完全浸没后的深度。5N未触底时有向下合力；若触底静止，则支撑力为1N，不能混淆这两种状态。\n\n**两道理解检查**\n\n① 木块密度600kg/m³、液体密度800kg/m³且无载荷，漂浮时浮力\n\n是多少？\n\n② 水中附加5N载荷，木块尚未触底，向下合力是多少？请说明依\n\n据。\n\n7 / 8\n\n> 讲解备注：检查1分钟：先独立作答，再说出为什么不能只看液体密度或直接套用平衡条件。  参考答案：检查①参考答案6N；检查②参考答案1N，方向向下。只在教师备注保留，不放入本页投影。\n\n**把观察变成有依据的判断**\n\n先确认状态与研究对象，再用浮力公式和受力关系。\n\n拓展：把水换成密度更大的液体，木块会浸得更深还是更浅？\n\n8 / 8\n\n> 讲解备注：总结1分钟：让学生用“状态—受力—排液体积”的顺序复述推理。拓展题关注总向下力不变时排液体积减小，木块浸得更浅。\n"
+          ]
+        }
+      }
+    },
+    "office": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-U94HnK\\office-report.json",
+      "sha256": "7df4a3b98b7d7469c4986f8f4151383ecdc6a55f1a3541aa0ba539581ef4214b",
+      "result": {
+        "boundary": "Actual installed PowerPoint rendering and text/table/notes editing of synthetic files only; no WPS or real teacher acceptance",
+        "pages": 8,
+        "ok": true,
+        "originalHash": "9CC2B66F402FAC0FD6F8D491BD8EAC3E51703C37BFF4778F7774B4C1790F5135",
+        "readWriteReopen": true,
+        "copy": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-U94HnK\\office-edited.pptx",
+        "notes": [
+          {
+            "shapes": 6,
+            "page": 1,
+            "notes": "讲解备注：导入1分钟：请学生先预测增加载荷后水面和木块位置的变化，再说明本课使用理想化的静力模型。"
+          },
+          {
+            "shapes": 6,
+            "page": 2,
+            "notes": "讲解备注：用1分钟把厘米换为米：边长0.1m，体积0.001m³。不能把题目说成来自本地题库；它是本次合成自拟。"
+          },
+          {
+            "shapes": 6,
+            "page": 3,
+            "notes": "讲解备注：讲解2分钟：区分物体总体积和浸入部分排开的体积。让学生指出每个符号和对应单位。"
+          },
+          {
+            "shapes": 7,
+            "page": 4,
+            "notes": "讲解备注：用HTML演示2分钟：学生先预测，再拖动变量。图示是教学示意，不把静力计算称为真实运动积分。"
+          },
+          {
+            "shapes": 6,
+            "page": 5,
+            "notes": "讲解备注：讲解1分钟：通过受力平衡求浮力，再用阿基米德原理求排液体积，最后由底面积0.01m²求浸入深度。"
+          },
+          {
+            "shapes": 6,
+            "page": 6,
+            "notes": "讲解备注：解释1分钟：4N是中性浮力边界，平衡条件不能唯一确定完全浸没后的深度。5N未触底时有向下合力；若触底静止，则支撑力为1N，不能混淆这两种状态。"
+          },
+          {
+            "shapes": 6,
+            "page": 7,
+            "notes": "讲解备注：检查1分钟：先独立作答，再说出为什么不能只看液体密度或直接套用平衡条件。\n\n参考答案：检查①参考答案6N；检查②参考答案1N，方向向下。只在教师备注保留，不放入本页投影。"
+          },
+          {
+            "shapes": 6,
+            "page": 8,
+            "notes": "讲解备注：总结1分钟：让学生用“状态—受力—排液体积”的顺序复述推理。拓展题关注总向下力不变时排液体积减小，木块浸得更浅。"
+          }
+        ]
+      }
+    },
+    "legacyFiles": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-default-files-KIWKI3\\report.json",
+      "sha256": "31afc6cc8f7498b763982e7edddfb54f89e5f730065f019700b5e6cec9cb257b",
+      "result": {
+        "ok": true,
+        "checks": [
+          "No-grant production lease creates distinct durable directories without creating a teacher grant",
+          "Default text uses the real approval/version ledger and is listed/read only in its conversation",
+          "General HTML is reviewed, saved, previewed and locally edited with the same exact bytes",
+          "Real editable Office bytes save in the default root after exact approval and survive service recreation",
+          "Explicit teacher workspace still wins and archived conversations cannot resolve the default",
+          "Core file generators remain discoverable with many tools",
+          "Adding file output preserves existing native cwd/session identity and directs reads to generated files"
+        ],
+        "boundary": "Actual production file lease, SQLite/text/Office services, Pi native session and deterministic serialized provider traffic. No paid model, natural quality, teacher or installer acceptance."
+      }
+    }
+  },
+  "officeRuntime": {
+    "exe": "C:/Program Files/Microsoft Office/Root/Office16/POWERPNT.EXE",
+    "version": "16.0.20527.20088",
+    "renderedPages": 8,
+    "checks": [
+      "native text/table/notes edit → SaveCopyAs → reopen",
+      "original SHA unchanged",
+      "one-title-change generation preserves the other seven slide XML trees"
+    ],
+    "images": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-presentation-U94HnK/all-pages.png",
+    "editedImage": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-presentation-U94HnK/office-edited-page4.png"
+  },
+  "checks": {
+    "build": {
+      "command": "npm run test:smoke (includes build)",
+      "build": "passed",
+      "electronSmoke": "passed",
+      "log": "apps/desktop/goal-presentation-smoke.log",
+      "exit": 0,
+      "passed": 207,
+      "total": 207
+    },
+    "renderer": {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240
+    },
+    "independentOOXML": {
+      "command": "bundled python scripts/xiaozhi-agent/verify-presentation-output.py <isolated fixture>",
+      "exit": 0,
+      "pages": 8,
+      "notes": 8,
+      "unchangedOtherPages": 7
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "counts": {
+        "low": 8,
+        "moderate": 7,
+        "high": 8,
+        "total": 23
+      },
+      "newDependencies": 0
+    }
+  },
+  "findingsAndRepairs": [
+    "Rendered page four had orphan punctuation; reflow fixed it and affected page re-rendered",
+    "Windows PowerShell initially decoded UTF8 script literals incorrectly; independent XML assertion caught copy edit corruption; UTF8 BOM fixed the test helper",
+    "Existing Hana anydoc already extracts notes. Removed the redundant production notes parser; OOXML checker stays test-only",
+    "Initial controlled UI transport verifier parsed appended host plan metadata as one JSON value. Fixed the fixture parser and retained assertions; actual main/utility and model tool readback now pass"
+  ],
+  "performance": {
+    "previousRendererEntryKB": 7106.19,
+    "currentRendererEntryKB": 7109.43,
+    "deltaKB": 3.24,
+    "oldPresentationBehavior": "cover + paragraph/table slides; eight sections do not mean eight slides",
+    "newPresentationBehavior": "exactly eight reviewed sections → eight slides; dense content rejected, never cropped or auto-paged",
+    "workerAdditionalParses": 0,
+    "boundary": "One synthetic 8-page layout and build size evidence; no general live-provider latency/RSS before-after claim",
+    "pageCountComparison": {
+      "oldSchema": "xiaozhi.office-draft.v1",
+      "legacySlides": 18,
+      "newSchema": "xiaozhi.presentation-draft.v1",
+      "newSlides": 8,
+      "boundary": "Same public title/paragraph/table content. Notes cannot be expressed in old schema; this compares page semantics, not timing or model quality."
+    }
+  },
+  "compatibility": [
+    "Office v1 schema/output/notes absence kept unchanged",
+    "New generator version prefix presentation1 only for new schema; native artifact identity and old content_md unchanged",
+    "No DDL, IPC channel, credential or dependency change",
+    "Existing reader handles actual notes; new XML reader exists only in test scripts"
+  ],
+  "remaining": [
+    "E01 batch approval and partial delivery recovery",
+    "C03 default output backup/migration and compatible write-disable switch",
+    "E02 thinking settings and E03 full conversation/page modification workflows",
+    "Full FX01 HTML variables, natural quality, WPS and daily D runtime acceptance"
+  ],
+  "paidProviderRequests": 0,
+  "runtimeRoot": "isolated TEMP/data; D:/WorkProject/EduProject not updated",
+  "rollback": "Preserve new schema/notes readers, generator identity and stored files; stop new writes rather than reverting into an old binary that rejects new draft schema. Compatible write-disable switch is still pending.",
+  "sources": [
+    {
+      "title": "Microsoft PowerPoint Presentations.Open",
+      "url": "https://learn.microsoft.com/en-us/office/vba/api/powerpoint.presentations.open"
+    },
+    {
+      "title": "Microsoft PowerPoint Slide.Export",
+      "url": "https://learn.microsoft.com/en-us/office/vba/api/powerpoint.slide.export"
+    }
+  ],
+  "sourceHashes": {
+    "apps/desktop/src/main/xiaozhi-agent/office-artifact-coordinator.ts": "5419b0ec4b66762c334736d8578881959e1eae57145f48c315a70e667c6c1db5",
+    "apps/desktop/src/main/xiaozhi-agent/office-artifact-service.ts": "1d5d3fa480534f02a555194a5558ded41f6c00fdad7be872cfc098feee9fbf6e",
+    "apps/desktop/src/main/xiaozhi-agent/office-artifact-state.ts": "c78172e05e788fbbd49666a755b71aaa01597fc82a2ec4222604c0e5fe8807e5",
+    "apps/desktop/src/main/xiaozhi-agent/office-document-tools.ts": "397a9469f385421186238c6b4d46f9ee284d004487778e0d3be901ccb4204770",
+    "apps/desktop/src/main/xiaozhi-agent/office-generator.ts": "dfdcddce2fa72fb8f117c03cc7bacf16c91c379608073ba42dc4f1b656f98119",
+    "apps/desktop/src/main/xiaozhi-agent/pi-session.ts": "eb8dd921aa6187e9f641e1578b9d0d19d7431b6a7984a705289a685e0e3e84bf",
+    "apps/desktop/src/renderer/components/office/PiOfficeArtifactCard.tsx": "f31acb61836852b6e9218d239510d101056962f60773eea3f31e1729d570b126",
+    "apps/desktop/src/shared/xiaozhi-office-artifacts.ts": "a6df6fa0e082a52f6492a5c5dd79080db2c90fc4b102a1f27b44e0d924c84a53",
+    "apps/desktop/src/shared/xiaozhi-office-draft.ts": "a352202f894bb1e0655f1b3e425f7183054bbb5e60a4f16cc1135f88613c231e",
+    "apps/desktop/src/main/xiaozhi-agent/presentation-generator.ts": "ecf2a879dcc4236c531b8657099261715fcbc1e1f8ce6b9dbcaad0429fea1a0a",
+    "apps/desktop/src/main/xiaozhi-agent/presentation-layout.ts": "a42324bf9f1170951ead234d13bcffad917cebb18cb5a1d771b976c2324cd1cd"
+  },
+  "traceability": {
+    "requirements": 252,
+    "partialImplementation": 6,
+    "newAcceptancePasses": 0,
+    "csvWritable": true
+  }
+}

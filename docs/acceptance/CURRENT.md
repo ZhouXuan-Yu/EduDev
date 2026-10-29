@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-10-29 PPT备注切片的有限证据
+
+presentation专项4、旧默认文件7、正式受控Electron5、renderer240通过；本机PowerPoint全8页渲染与编辑另存重开、独立OOXML页/备注/局部保留检查通过。build及综合smoke207/207通过，详research/AGENT_PRESENTATION_E01_20261029.json。CSV可写并同步6条部分实现，252条AT仍待集中判定，无新增已实现。
+
+
 ## 2026-10-29 E01专项证据与待验边界
 
 默认文件专项7、HTML Electron3、正式UI3、renderer240通过，build与综合smoke207/207通过，详../research/AGENT_DELIVERY_E01_20261029.json。合成模型路径/测试审批不替代自然质量/真实教师/Office-WPS或完整AT，新增已实现为0。
