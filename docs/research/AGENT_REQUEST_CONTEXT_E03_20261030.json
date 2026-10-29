@@ -1,0 +1,198 @@
+{
+  "date": "2026-10-30",
+  "scope": "E03 source reread, applied instructions, target choice and manual compaction compatibility; partial engineering evidence, no full AT acceptance",
+  "sourceSha": "2b0ac36cda842e1020b53dfaf2dc7eae46d8acde",
+  "previousSourceSha": "214e478",
+  "runtimeSourceRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+  "runtimeDataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\data",
+  "dailyRuntimeUpdated": false,
+  "newPaidProviderRequests": 0,
+  "newDependencies": 0,
+  "checks": [
+    {
+      "command": "npm run build",
+      "log": "apps/desktop/continuity-request-final3-build.log",
+      "exit": 0,
+      "sourceSha": "2b0ac36cda842e1020b53dfaf2dc7eae46d8acde"
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/request-sources-smoke.mjs",
+      "exit": 0,
+      "passed": 5,
+      "checks": [
+        "Only actual teacher messages/applied commands/answered choices are readable; owner and application order preserved",
+        "Source catalogue pages through older real requests without a remembered source ID or private text",
+        "Long sanitized request reconstructs exactly across segments including final constraints",
+        "Version changes, invalid pages, other sessions and stale runs cannot deliver a partial or unrelated source",
+        "Protected index retains bounded reread references, actual applied order, answers and exclusions"
+      ],
+      "note": "Source text unchanged since99f82d2"
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/pi-compaction-context-smoke.mjs",
+      "exit": 0,
+      "passed": 8,
+      "checks": [
+        {
+          "name": "Only requested conversation is read and fresh education sanitizer receives bounded input",
+          "pass": true
+        },
+        {
+          "name": "Newest authority has full hash and complete JSON, omitted records counted precisely",
+          "pass": true
+        },
+        {
+          "name": "Sanitized result and explicit non-authorizing provenance are retained",
+          "pass": true
+        },
+        {
+          "name": "Exact original creation identity restores without rewriting it; effective copy rules remain current",
+          "pass": true
+        },
+        {
+          "name": "Unknown or altered provider/model/workspace/tools/base rules and extra snapshot fields still fail closed",
+          "pass": true
+        },
+        {
+          "name": "Private sessions remain exact and new sessions always use current creation identity",
+          "pass": true
+        },
+        {
+          "name": "Manual compaction without task runtime restores exact task/control/memory prefix; old control style also remains readable",
+          "pass": true
+        },
+        {
+          "name": "Known control-style compatibility cannot admit changed authority, tools, base text, or arbitrary fingerprints",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240,
+      "log": "apps/desktop/continuity-request-components.log",
+      "sourceSha": "214e478",
+      "note": "Renderer unchanged by subsequent main-only fixes; not rerun or represented as final new batch"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/request-continuity-electron.mjs",
+      "exit": 1,
+      "passedAssertions": 10,
+      "checks": [
+        "Explicit correction becomes the current task; old ten-page request remains history",
+        "Short confirmation reuses unfinished task and produces one reviewed HTML/PPT bundle through actual tools",
+        "Another continuation retains saved effects without rewriting files or repeating approval",
+        "Formal page edit changes only slide four XML; seven slides and all notes stay identical, old artifact retained",
+        "Actual HTML source is read and edited through the existing diff review while PPT stays unchanged",
+        "Real Pi reads all three request segments including constraints after character 6500",
+        "Composer supplement is actually delivered by Pi at a turn seam and persists application order",
+        "Next actual request rebuilds applied teacher instructions from SQLite",
+        "One teacher choice edits second independent PPT; first deck, other pages and speaker notes remain unchanged",
+        "Answered artifact selection survives the native tool turn in protected request context"
+      ],
+      "sourceSha": "214e478",
+      "requests": 31,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\report.json",
+      "failure": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(nativeText.includes('\"type\":\"compaction\"'))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/request-continuity-electron.mjs:100:233",
+      "cause": "Fixture sent literal /compact; actual command is menu action. Earlier ten checks retained, not labelled suite pass"
+    },
+    {
+      "command": "XIAOZHI_REQUEST_RECOVERY_ROOT=<owned fixture> node scripts/xiaozhi-agent/request-continuity-electron.mjs",
+      "exit": 0,
+      "passed": 3,
+      "checks": [
+        "Existing fixture uses actual command menu and completes native compaction",
+        "After actual compaction long source rereads fully and applied grade/selected target survive",
+        "Cold start retains additive source identity and every saved artifact without replay"
+      ],
+      "sourceSha": "2b0ac36cda842e1020b53dfaf2dc7eae46d8acde",
+      "requests": 6,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\recovery-report.json",
+      "rendererErrors": [],
+      "note": "Only affected compaction/catalogue/reread/restart path rerun against original real database and artifacts"
+    }
+  ],
+  "preservedFailures": [
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\report.json",
+      "reason": "Wrong fixture command entry"
+    },
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\recovery-config-failure.json",
+      "reason": "Real product failure: absent taskRuntime during manual compaction changed control prompt fingerprint before model call"
+    },
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\configuration-stacks.log",
+      "reason": "Bounded fixture-only diagnostic isolated exact identity comparison; disabled in final successful run"
+    }
+  ],
+  "fixes": [
+    "read_teacher_request segmented UTF8 text from same-conversation real user messages/applied controls/answered questions; source version required for further pages; full text sanitized before segmentation",
+    "No remembered ID required: current source catalogue pages at20 entries, each with160-character sanitized excerpt",
+    "Applied queue order persisted in existing control payload; unreceived/withdrawn/interrupted controls excluded; legacy application order explicitly unknown",
+    "Known historical control prompt styles restored exactly; creation/control/memory fingerprints not rewritten; unknown authority/tools/prompt fingerprints still rejected",
+    "Original ask_teacher UI reused for one target choice and actual second-deck page edit"
+  ],
+  "files": [
+    {
+      "artifactId": "artifact_9b75177a-6d8c-4e0e-99d5-2130c146c477",
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\XiaozhiOutputs\\6992d1374763e199\\aisession_073e2f50-9f94-4aa0-9bca-e42d7d027cdf\\lesson.pptx",
+      "bytes": 122332,
+      "sha256": "bc7e66321068b58cda82457d9d66e46798d7d2c0a3f4340c8672c025772ba589"
+    },
+    {
+      "artifactId": "artifact_287bee68-9a2a-4c13-ab32-7a0903e51436",
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\XiaozhiOutputs\\6992d1374763e199\\aisession_073e2f50-9f94-4aa0-9bca-e42d7d027cdf\\lesson-v2.pptx",
+      "bytes": 122311,
+      "sha256": "1cf60a8132cbcd6da5962cef50acfbaaab34da7492a2e005c689c75eff0b144c"
+    },
+    {
+      "artifactId": "artifact_1b92e470-97f9-4bbf-868a-c82496244ce6",
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\XiaozhiOutputs\\6992d1374763e199\\aisession_073e2f50-9f94-4aa0-9bca-e42d7d027cdf\\force.pptx",
+      "bytes": 122317,
+      "sha256": "374bf9aa3c4a04eb125417106a05f07278d8c6d2918ec2663b4e91ac78ee23b8"
+    },
+    {
+      "artifactId": "artifact_1717611b-4b92-4340-84b8-aeecf11920cb",
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-continuity-ui-lVCxwo\\XiaozhiOutputs\\6992d1374763e199\\aisession_073e2f50-9f94-4aa0-9bca-e42d7d027cdf\\force-v2.pptx",
+      "bytes": 122305,
+      "sha256": "b4607e04a50904ed60aa6828f4a2b6a124a57707f76f93fe2e5989c9833c3a56"
+    }
+  ],
+  "capacityComparison": {
+    "oldProtectedRequestExcerptCharacters": 4000,
+    "protectedIndexMaximumCharacters": 12000,
+    "actualRequestCharacters": 6519,
+    "initialBodyReadCalls": 3,
+    "afterCompactionCatalogueCalls": 1,
+    "afterCompactionBodyReadCalls": 3,
+    "latencyOrNaturalQualityImprovement": "not measured or claimed"
+  },
+  "audit": {
+    "report": "apps/desktop/test-results/xiaozhi-agent/continuity-request-audit.json",
+    "existingVulnerabilities": {
+      "critical": 0,
+      "high": 8,
+      "moderate": 7,
+      "low": 8,
+      "total": 23
+    },
+    "dependencyChanges": false
+  },
+  "acceptance": {
+    "newImplementedMarks": 0,
+    "fullE03": "pending concentrated stage acceptance",
+    "full252": "pending",
+    "notRun": [
+      "new real-provider or teacher-quality evaluation",
+      "Office/WPS rendering",
+      "daily D runtime or installer",
+      "full cross-session/necessary-gap and fixed FX AT journeys",
+      "new comprehensive207 batch"
+    ]
+  },
+  "next": "E04 -> E05 functional implementation; W3 stage-concentrated AT including remaining E03/C03 boundaries",
+  "rollback": "Normal revert of2b0ac36,99f82d2,214e478 in reverse order; keep SQLite/user messages and saved files. No DDL/data rewrite. Reverting control compatibility reintroduces the known old compaction failure; rollback not runtime-tested."
+}

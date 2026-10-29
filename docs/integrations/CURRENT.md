@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-30 E03原Pi与SQLite薄适配
+
+新增只读read_teacher_request及独立teacher-requests.v1 native记录；沿原main会话回调/manifest/catalog/task envelope。原teacher消息与controls是唯一请求事实，既有typed preload/ask_teacher/Office文件确认不变。无DDL、新依赖、真实API调用；精确control历史提示词匹配避免压缩误判配置。
+
 ## 2026-10-29 E03工具输入扩展
 
 Hana office_read_text扩展.html/.htm/.svg，仍64KiB UTF8，只读不运行脚本。原office_create_document增加presentationEdit v1参数，不与draft并用，仅本会话已保存逐页PPT按当前version另存修改；普通Office v1及原工具身份保持。PPT旧版/来源漂移返回错误，不重建外部任意PPT。
