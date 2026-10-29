@@ -6,6 +6,8 @@
 
 下一进入E04→E05，按用户要求继续功能对齐，E03完整会话切换/必要澄清/固定FX与贯穿C03恢复等在W3集中验收；本轮新增“已实现”0，E03/P1/252项仍未完整验收。0真实付费请求，D:/WorkProject/EduProject日常构建与安装包未更新；保留并行知识库进度。
 
+整合cc3bc8d主线为910937a，保留双方13份状态文档新增节与原页还原代码；合并后build/type与240组件exit0。主线已有讲义description保存综合断言失败仍OPEN，未改无关讲义、未称207全通过；本轮Electron专项证据源码仍为2b0ac36。
+
 ## 2026-10-30 原页补救证据入口
 
 eae90d6修复题本pageSource未挂载，受控双页PDF正式UI/冷启六项通过；真实DeepSeek两次返回严格整页响应与4题，图题继续待核。15原页边界及240组件、相关既有专项通过。命令、真实与受控边界、RED失败、最终综合退出和残留见docs/goal/KB_IMPLEMENTATION_EVIDENCE.md与docs/research/KB_PAGE_RESTORATION_20261030.json。没有最终EXE/40GB/自然质量验收，D盘日常构建未更新。

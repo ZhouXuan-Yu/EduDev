@@ -194,5 +194,26 @@
     ]
   },
   "next": "E04 -> E05 functional implementation; W3 stage-concentrated AT including remaining E03/C03 boundaries",
-  "rollback": "Normal revert of2b0ac36,99f82d2,214e478 in reverse order; keep SQLite/user messages and saved files. No DDL/data rewrite. Reverting control compatibility reintroduces the known old compaction failure; rollback not runtime-tested."
+  "rollback": "Normal revert of2b0ac36,99f82d2,214e478 in reverse order; keep SQLite/user messages and saved files. No DDL/data rewrite. Reverting control compatibility reintroduces the known old compaction failure; rollback not runtime-tested.",
+  "integration": {
+    "mergeSha": "910937a",
+    "remoteMainIntegrated": "cc3bc8d",
+    "preservedParallelChanges": "原页还原/上标下标与知识库状态原样保留；13份文档冲突仅为双方顶部新增节，均保留",
+    "checks": [
+      {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "apps/desktop/continuity-request-merged-build.log"
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240,
+        "log": "apps/desktop/continuity-request-merged-components.log"
+      }
+    ],
+    "knownUpstreamGate": "主线已有综合检查在讲义description修订保存断言失败，原因未唯一定位；本轮保留并未冒称207全通过。见docs/goal/KB_IMPLEMENTATION_EVIDENCE.md。",
+    "noNewFullElectronRerunAfterUnrelatedMerge": true
+  }
 }
