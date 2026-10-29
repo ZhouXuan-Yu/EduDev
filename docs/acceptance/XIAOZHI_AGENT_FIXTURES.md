@@ -1,6 +1,6 @@
 # 小智教育智能体：验收数据与判定基准
 
-v1.0，2026-10-29。配套[任务书](../product/PRD-XIAOZHI-AGENT-DELIVERY.md)、[验收手册](XIAOZHI_AGENT_ACCEPTANCE.md)。这是数据制作规格，不表示样本已导入或验收已执行。默认使用合成数据；真实教师资料只在单独明确授权的目录使用，原件、响应、密钥不入Git。
+v1.1，2026-10-29。配套[任务书](../product/PRD-XIAOZHI-AGENT-DELIVERY.md)、[验收手册](XIAOZHI_AGENT_ACCEPTANCE.md)。这是数据制作规格，不表示样本已导入或验收已执行。默认使用合成数据；真实教师资料只在单独明确授权的目录使用，原件、响应、密钥不入Git。
 
 ## 数据冻结与操作规则
 
@@ -154,3 +154,7 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 英文：Mia planted two seeds. She watered both every morning. One pot stayed near the window; the other stayed in a dark box. After two weeks, she recorded their heights. 不能推出已证明唯一因果。
 
 制作时冻结全文/hash、三目标、预设语病及可接受修改、词汇排除清单与答案。真实课标/教材发布资格还须用获准且版本明确的真实资料，合成冲突样本不能证明覆盖全部教材。
+
+## Goal执行中的结果备注
+
+按[Goal任务目标](../goal/XIAOZHI_AGENT_DELIVERY_GOAL.md)记录实际结果。FX13的每条达标验收，备注“已实现”并附日期、对应AT、源码/验证SHA和证据位置；未执行/失败/阻塞不能备注已实现，真实费用和授权边界保持。此修订不改变14组样本的答案与数据范围。

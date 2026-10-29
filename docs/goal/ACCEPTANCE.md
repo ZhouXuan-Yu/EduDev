@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-29 达标备注规则已接入
+
+Goal入口XIAOZHI_AGENT_DELIVERY_GOAL.md。任务书252条REQ、验收252条AT、28组均有实现备注；CSV使用既有备注列（当前被占用未改原数据）。当前全部未执行，达标后写已实现与日期/AT/实现和验证SHA/证据；失败/阻塞不标。本轮仅文档检查。
+
 ## 2026-10-29 新完整验收手册入口
 
 ../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md定义252条AT，全部未执行；配套14组FX答案/环境/故障与CSV。结构校验不等功能验收；从正式UI操作，以文件/SQLite/实际wire/重启/Office/WPS/OS独立核验，阶段功能做齐再集中检查。旧AQ和KR证据继续保留，不回填新用例通过。

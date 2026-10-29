@@ -1,8 +1,10 @@
 # 小智教育智能体完整任务书与最终效果规格
 
-v1.0｜2026-10-29｜编制起点92d16aa；收尾源码整合origin/main ce0fd95；本轮未更新日常运行构建｜文档状态：已编制；功能待实施；验收未执行。
+v1.1｜2026-10-29｜编制起点92d16aa；收尾源码整合origin/main ce0fd95；本轮未更新日常运行构建｜文档状态：已编制；功能待实施；验收未执行。
 
 [能力路线](XIAOZHI_AGENT_CAPABILITY_ROADMAP.md) · [逐条验收](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md) · [数据与答案](../acceptance/XIAOZHI_AGENT_FIXTURES.md) · [需求追踪CSV](../acceptance/XIAOZHI_AGENT_TRACEABILITY.csv)
+
+执行Goal及达标标记规则见[Goal任务目标](../goal/XIAOZHI_AGENT_DELIVERY_GOAL.md)。验收达标后，在对应REQ行末、AT记录、CSV同步备注“已实现”；未达标保持待验收，不因本次文档修订升级功能状态。
 
 ## 1. 总结与效力
 
@@ -117,36 +119,36 @@ FX01旅程：完整要求→真实进度→明确HTML/PPT待交付项→工具�
 
 ### 7.5 总览
 
-| 任务 | 功能 | 阶段 | 类型 | 模块 | 前置 | 条目数 | 状态 |
-|---|---|---|---|---|---|---:|---|
-| WP-E01 | 常用文件工具与默认产物区 | P1 | 优化+新增 | M09/M10/M12 | C01,C03,C04 | 10 | 待实施/未验收 |
-| WP-E02 | 模型与真实思考档位 | P1 | 新增设置+优化请求 | M10 | C01,C04 | 10 | 待实施/未验收 |
-| WP-E03 | 多轮任务理解与局部修改 | P1 | 优化 | M10/M09 | E01,E02,C03 | 10 | 待实施/未验收 |
-| WP-E04 | 受管工具发现、下载与环境准备 | P1 | 新增 | M10/M12 | C01,C03,C04 | 10 | 待实施/未验收 |
-| WP-E05 | 工具组合、计算与受限代码执行 | P1 | 新增 | M10/M09 | E01,E04,C01 | 10 | 待实施/未验收 |
-| WP-E06 | 交付前核验与自动修复 | P1 | 优化+新增 | M09/M10 | E01,E05,C04 | 10 | 待实施/未验收 |
-| WP-E07 | 失败诊断、取消与任务恢复 | P1 | 优化 | M10/M11 | E01,E03,C03,C04 | 10 | 待实施/未验收 |
-| WP-E08 | 成果卡、预览、版本与局部回退 | P1 | 优化+新增 | M09/M11 | E01,E03,E06,C03 | 10 | 待实施/未验收 |
-| WP-S01 | 理科资料完整读取、题目结构与原出处 | P2 | 优化 | M02/M03/M04/M05 | E01,E08,C01 | 8 | 待实施/未验收 |
-| WP-S02 | 可验证解题与理科讲解 | P2 | 优化+新增 | M05/M10 | S01,E05,E06 | 8 | 待实施/未验收 |
-| WP-S03 | 受约束组卷与可追溯变式 | P2 | 优化 | M05/M06/M09 | S01,S02,E08 | 8 | 待实施/未验收 |
-| WP-S04 | 科学动态演示与探究活动 | P2 | 优化+新增 | M09/M10 | E01,E05,E06,S02 | 8 | 待实施/未验收 |
-| WP-S05 | 错因分析、针对练习与复测闭环 | P2 | 优化 | M03/M05/M07/M08 | S01,S02,S03,C01 | 8 | 待实施/未验收 |
-| WP-S06 | 同题同知识点的完整理科备课包 | P2 | 新增组合交付 | M04/M05/M06/M09 | S01,S02,S03,S04,S05,E08 | 8 | 待实施/未验收 |
-| WP-T01 | 全学科课标与教材版本关联 | P3 | 新增/领域适配 | M02/M04/M10 | S01,E08 | 8 | 待实施/未验收 |
-| WP-T02 | 目标—活动—评价一致的教案 | P3 | 新增/领域适配 | M04/M09/M10 | T01,S06 | 8 | 待实施/未验收 |
-| WP-T03 | 同一教学目标的分层材料 | P3 | 新增/领域适配 | M05/M09/M10 | T01,T02,S03 | 8 | 待实施/未验收 |
-| WP-T04 | 语文阅读与写作反馈 | P3 | 新增/领域适配 | M04/M09/M10 | T01,T02,E06 | 8 | 待实施/未验收 |
-| WP-T05 | 英语阅读、词汇与语言练习 | P3 | 新增/领域适配 | M04/M05/M09/M10 | T01,T02,S03 | 8 | 待实施/未验收 |
-| WP-T06 | 旧课件与已有教学资料局部升级 | P3 | 优化+新增 | M02/M09/M10 | E03,E06,E08,T02 | 8 | 待实施/未验收 |
-| WP-T07 | 教师模板、表达风格与可撤销记忆 | P3 | 优化+新增 | M04/M09/M10 | E03,E08,C01 | 8 | 待实施/未验收 |
-| WP-T08 | 形成性评价、量规与课后反馈 | P3 | 新增/领域适配 | M05/M07/M08/M09 | T01,T02,T03,S05 | 8 | 待实施/未验收 |
-| WP-C01 | 权限、隐私与真实自主范围 | 贯穿 | 优化/补齐 | M10 | 无 | 10 | 待实施/未验收 |
-| WP-C02 | 流式性能、窗口与精细交互 | 贯穿 | 优化/补齐 | M12/M10 | E01基础入口,C04 | 10 | 待实施/未验收 |
-| WP-C03 | 本地真源、迁移、备份与一致性 | 贯穿 | 优化/补齐 | M01/M11 | 无 | 10 | 待实施/未验收 |
-| WP-C04 | 真实过程、错误分类与可核验记录 | 贯穿 | 优化/补齐 | M10/M12 | 无 | 10 | 待实施/未验收 |
-| WP-C05 | 质量、成本与有界资源 | 贯穿 | 优化/补齐 | M10 | E02,C04 | 10 | 待实施/未验收 |
-| WP-C06 | 日常运行、安装更新与交付一致性 | 贯穿 | 优化/补齐 | M12/M11 | E04,E08,C03,C04 | 10 | 待实施/未验收 |
+| 任务 | 功能 | 阶段 | 类型 | 模块 | 前置 | 条目数 | 状态 | 实现备注 |
+|---|---|---|---|---|---|---:|---|---|
+| WP-E01 | 常用文件工具与默认产物区 | P1 | 优化+新增 | M09/M10/M12 | C01,C03,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-E02 | 模型与真实思考档位 | P1 | 新增设置+优化请求 | M10 | C01,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-E03 | 多轮任务理解与局部修改 | P1 | 优化 | M10/M09 | E01,E02,C03 | 10 | 待实施/未验收 | 待验收 |
+| WP-E04 | 受管工具发现、下载与环境准备 | P1 | 新增 | M10/M12 | C01,C03,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-E05 | 工具组合、计算与受限代码执行 | P1 | 新增 | M10/M09 | E01,E04,C01 | 10 | 待实施/未验收 | 待验收 |
+| WP-E06 | 交付前核验与自动修复 | P1 | 优化+新增 | M09/M10 | E01,E05,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-E07 | 失败诊断、取消与任务恢复 | P1 | 优化 | M10/M11 | E01,E03,C03,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-E08 | 成果卡、预览、版本与局部回退 | P1 | 优化+新增 | M09/M11 | E01,E03,E06,C03 | 10 | 待实施/未验收 | 待验收 |
+| WP-S01 | 理科资料完整读取、题目结构与原出处 | P2 | 优化 | M02/M03/M04/M05 | E01,E08,C01 | 8 | 待实施/未验收 | 待验收 |
+| WP-S02 | 可验证解题与理科讲解 | P2 | 优化+新增 | M05/M10 | S01,E05,E06 | 8 | 待实施/未验收 | 待验收 |
+| WP-S03 | 受约束组卷与可追溯变式 | P2 | 优化 | M05/M06/M09 | S01,S02,E08 | 8 | 待实施/未验收 | 待验收 |
+| WP-S04 | 科学动态演示与探究活动 | P2 | 优化+新增 | M09/M10 | E01,E05,E06,S02 | 8 | 待实施/未验收 | 待验收 |
+| WP-S05 | 错因分析、针对练习与复测闭环 | P2 | 优化 | M03/M05/M07/M08 | S01,S02,S03,C01 | 8 | 待实施/未验收 | 待验收 |
+| WP-S06 | 同题同知识点的完整理科备课包 | P2 | 新增组合交付 | M04/M05/M06/M09 | S01,S02,S03,S04,S05,E08 | 8 | 待实施/未验收 | 待验收 |
+| WP-T01 | 全学科课标与教材版本关联 | P3 | 新增/领域适配 | M02/M04/M10 | S01,E08 | 8 | 待实施/未验收 | 待验收 |
+| WP-T02 | 目标—活动—评价一致的教案 | P3 | 新增/领域适配 | M04/M09/M10 | T01,S06 | 8 | 待实施/未验收 | 待验收 |
+| WP-T03 | 同一教学目标的分层材料 | P3 | 新增/领域适配 | M05/M09/M10 | T01,T02,S03 | 8 | 待实施/未验收 | 待验收 |
+| WP-T04 | 语文阅读与写作反馈 | P3 | 新增/领域适配 | M04/M09/M10 | T01,T02,E06 | 8 | 待实施/未验收 | 待验收 |
+| WP-T05 | 英语阅读、词汇与语言练习 | P3 | 新增/领域适配 | M04/M05/M09/M10 | T01,T02,S03 | 8 | 待实施/未验收 | 待验收 |
+| WP-T06 | 旧课件与已有教学资料局部升级 | P3 | 优化+新增 | M02/M09/M10 | E03,E06,E08,T02 | 8 | 待实施/未验收 | 待验收 |
+| WP-T07 | 教师模板、表达风格与可撤销记忆 | P3 | 优化+新增 | M04/M09/M10 | E03,E08,C01 | 8 | 待实施/未验收 | 待验收 |
+| WP-T08 | 形成性评价、量规与课后反馈 | P3 | 新增/领域适配 | M05/M07/M08/M09 | T01,T02,T03,S05 | 8 | 待实施/未验收 | 待验收 |
+| WP-C01 | 权限、隐私与真实自主范围 | 贯穿 | 优化/补齐 | M10 | 无 | 10 | 待实施/未验收 | 待验收 |
+| WP-C02 | 流式性能、窗口与精细交互 | 贯穿 | 优化/补齐 | M12/M10 | E01基础入口,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-C03 | 本地真源、迁移、备份与一致性 | 贯穿 | 优化/补齐 | M01/M11 | 无 | 10 | 待实施/未验收 | 待验收 |
+| WP-C04 | 真实过程、错误分类与可核验记录 | 贯穿 | 优化/补齐 | M10/M12 | 无 | 10 | 待实施/未验收 | 待验收 |
+| WP-C05 | 质量、成本与有界资源 | 贯穿 | 优化/补齐 | M10 | E02,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-C06 | 日常运行、安装更新与交付一致性 | 贯穿 | 优化/补齐 | M12/M11 | E04,E08,C03,C04 | 10 | 待实施/未验收 | 待验收 |
 
 ### 7.6 功能逐项最终效果与细粒度需求
 
@@ -161,19 +163,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：production-host、text-change-service/coordinator、office-artifact-service/coordinator、workspace-files、shared产物契约和既有文件面板；默认目录与通用HTML预览为新增接缝。
 - **数据/失败/回退**：关闭新增默认产物区入口后仍可读取已存成果；新旧会话身份保留，必要时只读降级，不删除目录或回退业务事实。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E01-01 | 无工作目录交付 | 同时得到可打开的.html和.pptx；无“请复制代码另存”替代；目录由宿主创建并在文件面板可见 | [AT-E01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-01) |
-| REQ-E01-02 | 目录隔离 | 会话产物不混淆；不能读取B成果或数据根；实际保存目录不是临时执行环境 | [AT-E01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-02) |
-| REQ-E01-03 | 自选目录 | 成功文件只在所选位置；失败指出权限原因；不擅自改写其他目录；目录变更兼容规则可见 | [AT-E01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-03) |
-| REQ-E01-04 | 工具默认可发现 | 模型能发现当前内置能力；缺少位置触发准备位置而非隐藏工具；工具名存在不计为执行成功 | [AT-E01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-04) |
-| REQ-E01-05 | HTML交互 | 控件和数值联动，中文与公式正常；关键功能无网络依赖；固定Anatomy模板不是唯一HTML形式；内置预览阻止宿主Node/文件/父窗口控制与未授权联网 | [AT-E01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-05) |
-| REQ-E01-06 | 路径与同名冲突 | 非法路径被宿主拒绝且无副作用；同名采用新版本或另存，不覆盖原文件；提示具体可行下一步 | [AT-E01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-06) |
-| REQ-E01-07 | 内容与体积边界 | 空/非法内容不成为正式文件；边界按UTF8字节判定；超限保留草稿并明确分拆方案；不静默截断 | [AT-E01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-07) |
-| REQ-E01-08 | 整包审批 | 审批覆盖明确的文件和内容版本；只保存确认版；拒绝无正式写入；旧批准不能用于新增文件 | [AT-E01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-08) |
-| REQ-E01-09 | 部分交付 | 显示HTML已保存/PPT未完成及原因；整任务标部分完成；重试只处理未完成文件 | [AT-E01-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-09) |
-| REQ-E01-10 | 旧会话兼容 | 旧记录可读、原身份不重建；补目录不伪造授权；新产物与旧记录均可恢复 | [AT-E01-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E01-01 | 无工作目录交付 | 同时得到可打开的.html和.pptx；无“请复制代码另存”替代；目录由宿主创建并在文件面板可见 | [AT-E01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-01) | 待验收 |
+| REQ-E01-02 | 目录隔离 | 会话产物不混淆；不能读取B成果或数据根；实际保存目录不是临时执行环境 | [AT-E01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-02) | 待验收 |
+| REQ-E01-03 | 自选目录 | 成功文件只在所选位置；失败指出权限原因；不擅自改写其他目录；目录变更兼容规则可见 | [AT-E01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-03) | 待验收 |
+| REQ-E01-04 | 工具默认可发现 | 模型能发现当前内置能力；缺少位置触发准备位置而非隐藏工具；工具名存在不计为执行成功 | [AT-E01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-04) | 待验收 |
+| REQ-E01-05 | HTML交互 | 控件和数值联动，中文与公式正常；关键功能无网络依赖；固定Anatomy模板不是唯一HTML形式；内置预览阻止宿主Node/文件/父窗口控制与未授权联网 | [AT-E01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-05) | 待验收 |
+| REQ-E01-06 | 路径与同名冲突 | 非法路径被宿主拒绝且无副作用；同名采用新版本或另存，不覆盖原文件；提示具体可行下一步 | [AT-E01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-06) | 待验收 |
+| REQ-E01-07 | 内容与体积边界 | 空/非法内容不成为正式文件；边界按UTF8字节判定；超限保留草稿并明确分拆方案；不静默截断 | [AT-E01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-07) | 待验收 |
+| REQ-E01-08 | 整包审批 | 审批覆盖明确的文件和内容版本；只保存确认版；拒绝无正式写入；旧批准不能用于新增文件 | [AT-E01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-08) | 待验收 |
+| REQ-E01-09 | 部分交付 | 显示HTML已保存/PPT未完成及原因；整任务标部分完成；重试只处理未完成文件 | [AT-E01-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-09) | 待验收 |
+| REQ-E01-10 | 旧会话兼容 | 旧记录可读、原身份不重建；补目录不伪造授权；新产物与旧记录均可恢复 | [AT-E01-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e01-10) | 待验收 |
 
 #### WP-E02 模型与真实思考档位
 
@@ -184,19 +187,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：shared/xiaozhi-settings、model-settings/state/api、pi-session/answer-quality、preload、OfficeComposer/PiEducationWorkspace；思考字段/IPC为新增接缝。
 - **数据/失败/回退**：旧设置缺字段时按兼容默认读取；回退显示自动档，不修改密钥、模型身份或旧回答。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E02-01 | 档位显示 | 显示模型真实名称、自动/受支持档位与实际映射；未配置可说明原因；不把Ultra当全模型通用能力 | [AT-E02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-01) |
-| REQ-E02-02 | 请求生效 | 下次请求启停思考、effort和输出预算符合冻结映射；不存在“标签高、请求低” | [AT-E02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-02) |
-| REQ-E02-03 | 持久与作用域 | A/B各自选择保持；明确全局默认与会话覆盖优先级；读旧配置不丢模型选择 | [AT-E02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-03) |
-| REQ-E02-04 | 自动任务路由 | 自动档结合未完成目标决定深度，短确认不会自动降为闲聊；简单问候不无谓开启重执行 | [AT-E02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-04) |
-| REQ-E02-05 | 不支持的能力 | 菜单准确禁用或显示明确降档；请求使用实际支持值；不静默换模型、供应商或伪造强度 | [AT-E02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-05) |
-| REQ-E02-06 | 并发保存 | 旧版本保存返回冲突并刷新；运行中设置按合同禁用，下轮才可变；不改变已开始请求 | [AT-E02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-06) |
-| REQ-E02-07 | 容量与长输出 | 预算受可信容量限制；截断明确为未完成并可继续；不因高档位突破窗口或把截断当完成 | [AT-E02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-07) |
-| REQ-E02-08 | 网络或凭证故障 | 有可重试原因，保留原可用设置；不显示密钥；不把鉴权失败报告为“模型没有思考能力” | [AT-E02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-08) |
-| REQ-E02-09 | 设置不触发生成 | 设置操作不自动发送教学题或续跑旧任务；如目录联网需说明用途；聊天生成次数为0 | [AT-E02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-09) |
-| REQ-E02-10 | 质量比较边界 | 能复核准确性/覆盖与成本；同名档位不当同预算；不把更长回答或不同模型当更聪明实证 | [AT-E02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E02-01 | 档位显示 | 显示模型真实名称、自动/受支持档位与实际映射；未配置可说明原因；不把Ultra当全模型通用能力 | [AT-E02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-01) | 待验收 |
+| REQ-E02-02 | 请求生效 | 下次请求启停思考、effort和输出预算符合冻结映射；不存在“标签高、请求低” | [AT-E02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-02) | 待验收 |
+| REQ-E02-03 | 持久与作用域 | A/B各自选择保持；明确全局默认与会话覆盖优先级；读旧配置不丢模型选择 | [AT-E02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-03) | 待验收 |
+| REQ-E02-04 | 自动任务路由 | 自动档结合未完成目标决定深度，短确认不会自动降为闲聊；简单问候不无谓开启重执行 | [AT-E02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-04) | 待验收 |
+| REQ-E02-05 | 不支持的能力 | 菜单准确禁用或显示明确降档；请求使用实际支持值；不静默换模型、供应商或伪造强度 | [AT-E02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-05) | 待验收 |
+| REQ-E02-06 | 并发保存 | 旧版本保存返回冲突并刷新；运行中设置按合同禁用，下轮才可变；不改变已开始请求 | [AT-E02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-06) | 待验收 |
+| REQ-E02-07 | 容量与长输出 | 预算受可信容量限制；截断明确为未完成并可继续；不因高档位突破窗口或把截断当完成 | [AT-E02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-07) | 待验收 |
+| REQ-E02-08 | 网络或凭证故障 | 有可重试原因，保留原可用设置；不显示密钥；不把鉴权失败报告为“模型没有思考能力” | [AT-E02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-08) | 待验收 |
+| REQ-E02-09 | 设置不触发生成 | 设置操作不自动发送教学题或续跑旧任务；如目录联网需说明用途；聊天生成次数为0 | [AT-E02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-09) | 待验收 |
+| REQ-E02-10 | 质量比较边界 | 能复核准确性/覆盖与成本；同名档位不当同预算；不把更长回答或不同模型当更聪明实证 | [AT-E02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-10) | 待验收 |
 
 #### WP-E03 多轮任务理解与局部修改
 
@@ -207,19 +211,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：tasks/plan、instruction-queue、protected context、education-tool-catalog、pi-session、成果版本投影。
 - **数据/失败/回退**：仅回退新路由规则；历史目标与真实成果不删除；无法可靠绑定修改目标时集中询问一次。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E03-01 | 短确认继续 | 沿原HTML/PPT目标继续；不重问已有学段/题目；不变成仅给大纲或代码 | [AT-E03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-01) |
-| REQ-E03-02 | 当前指令优先 | 当前有效目标为8页浮力；冲突旧约束被标为历史；不把历史偏好覆盖明确新要求 | [AT-E03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-02) |
-| REQ-E03-03 | PPT局部改页 | 只第4页语义内容变化；页序、备注、其他页文字/图形保持；生成可取回的新版本 | [AT-E03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-03) |
-| REQ-E03-04 | 目标歧义 | 仅对真正歧义集中问一次；选择后编辑正确artifact版本，第一份无变化 | [AT-E03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-04) |
-| REQ-E03-05 | 已保存不重放 | 读取保存回执后只续PPT；HTML版本/文件数不因恢复增加；不重复审批已完成同一操作 | [AT-E03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-05) |
-| REQ-E03-06 | 上下文整理 | 保留当前目标、约束、来源版本、已保存回执和失败；摘要不获得权限；必要来源重新实读 | [AT-E03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-06) |
-| REQ-E03-07 | 生成中追加 | 明确说明何时应用追加；只作用本任务；生成中输入不丢失；无跨会话串指令 | [AT-E03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-07) |
-| REQ-E03-08 | 冲突内容与否定 | 遵循教师任务；资料指令不改变目标或授权；最终清单无视频且有两文件 | [AT-E03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-08) |
-| REQ-E03-09 | 切换与重启 | 各自目标、文件和待确认项对应正确；旧工具闭包不跨run复用；A不自动重复外部动作 | [AT-E03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-09) |
-| REQ-E03-10 | 必要信息不足 | 只询问会实质改变内容的缺口；允许合理假设处明确标注；补齐后直接执行，不循环确认 | [AT-E03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E03-01 | 短确认继续 | 沿原HTML/PPT目标继续；不重问已有学段/题目；不变成仅给大纲或代码 | [AT-E03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-01) | 待验收 |
+| REQ-E03-02 | 当前指令优先 | 当前有效目标为8页浮力；冲突旧约束被标为历史；不把历史偏好覆盖明确新要求 | [AT-E03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-02) | 待验收 |
+| REQ-E03-03 | PPT局部改页 | 只第4页语义内容变化；页序、备注、其他页文字/图形保持；生成可取回的新版本 | [AT-E03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-03) | 待验收 |
+| REQ-E03-04 | 目标歧义 | 仅对真正歧义集中问一次；选择后编辑正确artifact版本，第一份无变化 | [AT-E03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-04) | 待验收 |
+| REQ-E03-05 | 已保存不重放 | 读取保存回执后只续PPT；HTML版本/文件数不因恢复增加；不重复审批已完成同一操作 | [AT-E03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-05) | 待验收 |
+| REQ-E03-06 | 上下文整理 | 保留当前目标、约束、来源版本、已保存回执和失败；摘要不获得权限；必要来源重新实读 | [AT-E03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-06) | 待验收 |
+| REQ-E03-07 | 生成中追加 | 明确说明何时应用追加；只作用本任务；生成中输入不丢失；无跨会话串指令 | [AT-E03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-07) | 待验收 |
+| REQ-E03-08 | 冲突内容与否定 | 遵循教师任务；资料指令不改变目标或授权；最终清单无视频且有两文件 | [AT-E03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-08) | 待验收 |
+| REQ-E03-09 | 切换与重启 | 各自目标、文件和待确认项对应正确；旧工具闭包不跨run复用；A不自动重复外部动作 | [AT-E03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-09) | 待验收 |
+| REQ-E03-10 | 必要信息不足 | 只询问会实质改变内容的缺口；允许合理假设处明确标注；补齐后直接执行，不循环确认 | [AT-E03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-10) | 待验收 |
 
 #### WP-E04 受管工具发现、下载与环境准备
 
@@ -230,19 +235,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：managed-skills、受管组件清单/下载/检查接缝（拟新增）、工具注册、typed安装事件、设置入口。
 - **数据/失败/回退**：版本目录不可变、原子切换活动指针；失败保留上一兼容版本；删除仅限本轮可识别临时安装内容。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E04-01 | 真实能力状态 | 模型与界面得到不同的真实状态、原因与下一步；已存在工具不重复安装 | [AT-E04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-01) |
-| REQ-E04-02 | 认可工具自动准备 | 显示用途、来源、大小、进度；自动完成核验/安装/健康检查/注册后继续同任务 | [AT-E04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-02) |
-| REQ-E04-03 | 新来源与付费 | 先给出具体包、用途、权限和费用；无新授权不安装/计费；原免费能力仍可用 | [AT-E04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-03) |
-| REQ-E04-04 | 校验与包完整 | 在激活前拒绝；不能写组件目录外文件；旧版本哈希不变；说明具体失败类别 | [AT-E04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-04) |
-| REQ-E04-05 | 下载中断与续传 | 按实际支持续传或明确重新下载；无残缺包激活；取消后无后台继续安装 | [AT-E04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-05) |
-| REQ-E04-06 | 空间与写入不足 | 下载前能预检的失败提前发现；中途失败回收可识别临时内容；不删教师成果腾空间 | [AT-E04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-06) |
-| REQ-E04-07 | 安装健康与回滚 | 新包不进入可调用状态；自动回到兼容旧版本并说明；不把解压成功当工具可用 | [AT-E04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-07) |
-| REQ-E04-08 | 并发与版本锁 | 下载/安装去重，进度各自可见；在用版本不被替换；新任务按冻结版本调用 | [AT-E04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-08) |
-| REQ-E04-09 | 离线与卸载 | 离线可调用；卸载仅影响组件；任务成果和来源仍可读；占用中卸载有明确处理 | [AT-E04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-09) |
-| REQ-E04-10 | 无隐含授权 | 说明仅作数据；不扩大文件/网络/账户权限；无资料外传；费用与凭证不写日志 | [AT-E04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E04-01 | 真实能力状态 | 模型与界面得到不同的真实状态、原因与下一步；已存在工具不重复安装 | [AT-E04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-01) | 待验收 |
+| REQ-E04-02 | 认可工具自动准备 | 显示用途、来源、大小、进度；自动完成核验/安装/健康检查/注册后继续同任务 | [AT-E04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-02) | 待验收 |
+| REQ-E04-03 | 新来源与付费 | 先给出具体包、用途、权限和费用；无新授权不安装/计费；原免费能力仍可用 | [AT-E04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-03) | 待验收 |
+| REQ-E04-04 | 校验与包完整 | 在激活前拒绝；不能写组件目录外文件；旧版本哈希不变；说明具体失败类别 | [AT-E04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-04) | 待验收 |
+| REQ-E04-05 | 下载中断与续传 | 按实际支持续传或明确重新下载；无残缺包激活；取消后无后台继续安装 | [AT-E04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-05) | 待验收 |
+| REQ-E04-06 | 空间与写入不足 | 下载前能预检的失败提前发现；中途失败回收可识别临时内容；不删教师成果腾空间 | [AT-E04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-06) | 待验收 |
+| REQ-E04-07 | 安装健康与回滚 | 新包不进入可调用状态；自动回到兼容旧版本并说明；不把解压成功当工具可用 | [AT-E04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-07) | 待验收 |
+| REQ-E04-08 | 并发与版本锁 | 下载/安装去重，进度各自可见；在用版本不被替换；新任务按冻结版本调用 | [AT-E04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-08) | 待验收 |
+| REQ-E04-09 | 离线与卸载 | 离线可调用；卸载仅影响组件；任务成果和来源仍可读；占用中卸载有明确处理 | [AT-E04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-09) | 待验收 |
+| REQ-E04-10 | 无隐含授权 | 说明仅作数据；不扩大文件/网络/账户权限；无资料外传；费用与凭证不写日志 | [AT-E04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e04-10) | 待验收 |
 
 #### WP-E05 工具组合、计算与受限代码执行
 
@@ -253,19 +259,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：tool execution boundary、受管任务运行时（拟新增）、工作区/网络授权、计算/转换适配器、结果回执。
 - **数据/失败/回退**：关闭通用执行入口保留原有业务工具；取消并回收本任务进程和临时数据，不杀其他应用。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E05-01 | 真实代码执行 | 实际运行得到240合计及图表；执行环境与输入有记录；不以模型口算伪称代码运行 | [AT-E05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-01) |
-| REQ-E05-02 | 数学复核 | 输出x=11，两边16；非法域被识别；工具不能通过的推理不标已证明 | [AT-E05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-02) |
-| REQ-E05-03 | 数据类型 | 保留文本学号前导零；空值政策明确；转义不破坏表格；不把输入文本当代码执行 | [AT-E05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-03) |
-| REQ-E05-04 | 文件范围 | 访问被宿主/执行隔离拒绝；无私密输出或上传；失败不会转成更宽宿主shell重试 | [AT-E05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-04) |
-| REQ-E05-05 | 网络范围 | 默认计算不联网；允许范围按当前授权生效；重定向不继承到未授权域 | [AT-E05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-05) |
-| REQ-E05-06 | 超时取消 | 超时/输出截断/取消有状态；回收所属进程；UI可操作；不截断最终文件而宣称成功 | [AT-E05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-06) |
-| REQ-E05-07 | 外部服务组合 | 按来源与实际回执串联；失败可降级或有界恢复；不把失败页正文当有效数据 | [AT-E05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-07) |
-| REQ-E05-08 | 成果进入正式区 | 临时文件不冒充正式成果；发布后文件面板可开；执行区清理不影响正式成果 | [AT-E05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-08) |
-| REQ-E05-09 | 依赖兼容 | 走E04准备/兼容检查；不修改用户系统Python或全局包；不能修复时说明具体依赖 | [AT-E05-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-09) |
-| REQ-E05-10 | 作用域与审计 | 输出归正确任务/会话；审计能定位工具/时间/状态/版本；无密钥、整篇私有资料或未授权路径 | [AT-E05-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E05-01 | 真实代码执行 | 实际运行得到240合计及图表；执行环境与输入有记录；不以模型口算伪称代码运行 | [AT-E05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-01) | 待验收 |
+| REQ-E05-02 | 数学复核 | 输出x=11，两边16；非法域被识别；工具不能通过的推理不标已证明 | [AT-E05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-02) | 待验收 |
+| REQ-E05-03 | 数据类型 | 保留文本学号前导零；空值政策明确；转义不破坏表格；不把输入文本当代码执行 | [AT-E05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-03) | 待验收 |
+| REQ-E05-04 | 文件范围 | 访问被宿主/执行隔离拒绝；无私密输出或上传；失败不会转成更宽宿主shell重试 | [AT-E05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-04) | 待验收 |
+| REQ-E05-05 | 网络范围 | 默认计算不联网；允许范围按当前授权生效；重定向不继承到未授权域 | [AT-E05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-05) | 待验收 |
+| REQ-E05-06 | 超时取消 | 超时/输出截断/取消有状态；回收所属进程；UI可操作；不截断最终文件而宣称成功 | [AT-E05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-06) | 待验收 |
+| REQ-E05-07 | 外部服务组合 | 按来源与实际回执串联；失败可降级或有界恢复；不把失败页正文当有效数据 | [AT-E05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-07) | 待验收 |
+| REQ-E05-08 | 成果进入正式区 | 临时文件不冒充正式成果；发布后文件面板可开；执行区清理不影响正式成果 | [AT-E05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-08) | 待验收 |
+| REQ-E05-09 | 依赖兼容 | 走E04准备/兼容检查；不修改用户系统Python或全局包；不能修复时说明具体依赖 | [AT-E05-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-09) | 待验收 |
+| REQ-E05-10 | 作用域与审计 | 输出归正确任务/会话；审计能定位工具/时间/状态/版本；无密钥、整篇私有资料或未授权路径 | [AT-E05-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e05-10) | 待验收 |
 
 #### WP-E06 交付前核验与自动修复
 
@@ -276,19 +283,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：office-generator、文档读取/渲染、通用HTML隔离运行（拟新增）、tasks结果复查、成果检查状态。
 - **数据/失败/回退**：核验器故障不得改变已保存文件；保留待检查状态，可由教师打开检查；关闭自动修复不关闭真实失败反馈。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E06-01 | 结构检查 | 前两者不得通过；有效文件可解析且页数正确；后缀和文件存在不作为充分条件 | [AT-E06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-01) |
-| REQ-E06-02 | 内容检查 | 核验逐条指出缺少要求；修复后重新读取新版本；不能仅凭计划完成放行 | [AT-E06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-02) |
-| REQ-E06-03 | 视觉检查 | 记录缺字、遮挡、越页与裁切；检查页范围明确；未渲染页面不宣称视觉全通过 | [AT-E06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-03) |
-| REQ-E06-04 | 交互检查 | 错误被发现；控件影响可观测结果；空白画布/只有按钮外观不算通过 | [AT-E06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-04) |
-| REQ-E06-05 | 数值核验 | 结果符合冻结答案及模型假设；至少一种独立确定性方法；不以模型自称正确代替 | [AT-E06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-05) |
-| REQ-E06-06 | 跨文件一致 | 指出具体不一致对象；修复到同题同参数同版本；文件数齐不等于整包完成 | [AT-E06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-06) |
-| REQ-E06-07 | 修复预算 | 可修复后重新检查；每类至多2轮自动修复；仍失败保留草稿、原因和已通过项，无无限循环 | [AT-E06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-07) |
-| REQ-E06-08 | 检查版本绑定 | 旧检查标过期；重新核当前内容或说明变更；不能沿旧hash报告新内容已验 | [AT-E06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-08) |
-| REQ-E06-09 | 检查不足与停止 | 区分未检查、失败、通过；停止后不补报成功；已保存文件可取回且真实状态保留 | [AT-E06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-09) |
-| REQ-E06-10 | 终态陈述 | 逐文件陈述保存与检查状态、未完成项；不显示整轮完成；不虚构路径、页数或审批 | [AT-E06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E06-01 | 结构检查 | 前两者不得通过；有效文件可解析且页数正确；后缀和文件存在不作为充分条件 | [AT-E06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-01) | 待验收 |
+| REQ-E06-02 | 内容检查 | 核验逐条指出缺少要求；修复后重新读取新版本；不能仅凭计划完成放行 | [AT-E06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-02) | 待验收 |
+| REQ-E06-03 | 视觉检查 | 记录缺字、遮挡、越页与裁切；检查页范围明确；未渲染页面不宣称视觉全通过 | [AT-E06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-03) | 待验收 |
+| REQ-E06-04 | 交互检查 | 错误被发现；控件影响可观测结果；空白画布/只有按钮外观不算通过 | [AT-E06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-04) | 待验收 |
+| REQ-E06-05 | 数值核验 | 结果符合冻结答案及模型假设；至少一种独立确定性方法；不以模型自称正确代替 | [AT-E06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-05) | 待验收 |
+| REQ-E06-06 | 跨文件一致 | 指出具体不一致对象；修复到同题同参数同版本；文件数齐不等于整包完成 | [AT-E06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-06) | 待验收 |
+| REQ-E06-07 | 修复预算 | 可修复后重新检查；每类至多2轮自动修复；仍失败保留草稿、原因和已通过项，无无限循环 | [AT-E06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-07) | 待验收 |
+| REQ-E06-08 | 检查版本绑定 | 旧检查标过期；重新核当前内容或说明变更；不能沿旧hash报告新内容已验 | [AT-E06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-08) | 待验收 |
+| REQ-E06-09 | 检查不足与停止 | 区分未检查、失败、通过；停止后不补报成功；已保存文件可取回且真实状态保留 | [AT-E06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-09) | 待验收 |
+| REQ-E06-10 | 终态陈述 | 逐文件陈述保存与检查状态、未完成项；不显示整轮完成；不虚构路径、页数或审批 | [AT-E06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-10) | 待验收 |
 
 #### WP-E07 失败诊断、取消与任务恢复
 
@@ -299,19 +307,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：event journal、取消/执行登记、恢复入口、任务和文件效果账本、错误投影。
 - **数据/失败/回退**：保留旧事件与失败证据；新恢复逻辑异常时切只读重查，不修改过去已完成任务。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E07-01 | 首响应暂时失败 | 同任务有界恢复，最多2次重试；等待可停止；总尝试与费用可追踪 | [AT-E07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-01) |
-| REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) |
-| REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) |
-| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) |
-| REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) |
-| REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) |
-| REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) |
-| REQ-E07-08 | 幂等恢复 | 每个真实写入只发生一次；相同调用返回既有回执；新任务有新身份且不复用旧批准 | [AT-E07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-08) |
-| REQ-E07-09 | 版本冲突 | 报告冲突并保留两侧内容；不覆盖教师修改；重新提议需读取最新版本 | [AT-E07-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-09) |
-| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E07-01 | 首响应暂时失败 | 同任务有界恢复，最多2次重试；等待可停止；总尝试与费用可追踪 | [AT-E07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-01) | 待验收 |
+| REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) | 待验收 |
+| REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
+| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 待验收 |
+| REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 待验收 |
+| REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 待验收 |
+| REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 待验收 |
+| REQ-E07-08 | 幂等恢复 | 每个真实写入只发生一次；相同调用返回既有回执；新任务有新身份且不复用旧批准 | [AT-E07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-08) | 待验收 |
+| REQ-E07-09 | 版本冲突 | 报告冲突并保留两侧内容；不覆盖教师修改；重新提议需读取最新版本 | [AT-E07-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-09) | 待验收 |
+| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 待验收 |
 
 #### WP-E08 成果卡、预览、版本与局部回退
 
@@ -322,19 +331,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：office-artifact/text-change状态、workspace-files、教学文件/成果卡、来源与版本投影。
 - **数据/失败/回退**：界面回退不删除文件/版本；不支持格式仍可定位或安全导出；恢复旧版产生新活动版本而非擦除后来版本。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-E08-01 | 成果卡信息 | 显示可读名称、格式、保存状态、版本、最近检查与打开/定位操作；内部ID不堆到正文 | [AT-E08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-01) |
-| REQ-E08-02 | 打开与定位 | 指向同一当前版本文件；调用真实OS打开/定位；失败有反馈而非无反应 | [AT-E08-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-02) |
-| REQ-E08-03 | 文件被移走 | 提示文件缺失/位置变化；账本不删除伪装正常；不自动重生成或打开同名错误文件 | [AT-E08-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-03) |
-| REQ-E08-04 | 版本生成 | 旧版保留可开，新版为当前；说明实际修改范围；不为未变化文件额外产生版本 | [AT-E08-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-04) |
-| REQ-E08-05 | 回退行为 | 恢复产生明确的新当前指向/版本，后来版本仍保留；不会误撤销其他文件或来源 | [AT-E08-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-05) |
-| REQ-E08-06 | 审批与最新内容 | 卡片绑定最终保存版；模型未实读最终编辑不复述旧草稿内容为确认版 | [AT-E08-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-06) |
-| REQ-E08-07 | 整包状态 | 整包部分完成，逐项状态准确；可只重试失败项，已交付文件可独立使用 | [AT-E08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-07) |
-| REQ-E08-08 | 来源导航 | 准确定位来源版本/原页或行；来源变化可见；无来源的生成内容不伪造教材引用 | [AT-E08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-08) |
-| REQ-E08-09 | 导出兼容 | 文字/公式/表格/图片可读；PPT关键文本可编辑；不存在全部截图却声称全可编辑 | [AT-E08-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-09) |
-| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-E08-01 | 成果卡信息 | 显示可读名称、格式、保存状态、版本、最近检查与打开/定位操作；内部ID不堆到正文 | [AT-E08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-01) | 待验收 |
+| REQ-E08-02 | 打开与定位 | 指向同一当前版本文件；调用真实OS打开/定位；失败有反馈而非无反应 | [AT-E08-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-02) | 待验收 |
+| REQ-E08-03 | 文件被移走 | 提示文件缺失/位置变化；账本不删除伪装正常；不自动重生成或打开同名错误文件 | [AT-E08-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-03) | 待验收 |
+| REQ-E08-04 | 版本生成 | 旧版保留可开，新版为当前；说明实际修改范围；不为未变化文件额外产生版本 | [AT-E08-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-04) | 待验收 |
+| REQ-E08-05 | 回退行为 | 恢复产生明确的新当前指向/版本，后来版本仍保留；不会误撤销其他文件或来源 | [AT-E08-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-05) | 待验收 |
+| REQ-E08-06 | 审批与最新内容 | 卡片绑定最终保存版；模型未实读最终编辑不复述旧草稿内容为确认版 | [AT-E08-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-06) | 待验收 |
+| REQ-E08-07 | 整包状态 | 整包部分完成，逐项状态准确；可只重试失败项，已交付文件可独立使用 | [AT-E08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-07) | 待验收 |
+| REQ-E08-08 | 来源导航 | 准确定位来源版本/原页或行；来源变化可见；无来源的生成内容不伪造教材引用 | [AT-E08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-08) | 待验收 |
+| REQ-E08-09 | 导出兼容 | 文字/公式/表格/图片可读；PPT关键文本可编辑；不存在全部截图却声称全可编辑 | [AT-E08-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-09) | 待验收 |
+| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 待验收 |
 
 #### WP-S01 理科资料完整读取、题目结构与原出处
 
@@ -345,17 +355,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M02/M03/M04/M05现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：索引/解析器升级可回到旧版本并重建；原件、确认题和谱系不被覆盖。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-S01-01 | 图文完整性 | 题干、选项、小问、单位、图像对应正确；无法辨认明确缺口；无悄悄省略条件 | [AT-S01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-01) |
-| REQ-S01-02 | 跨页与答案册 | 连续同题不误拆，不串题；答案来源单独保存；无法唯一配对保持未知 | [AT-S01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-02) |
-| REQ-S01-03 | 来源定位 | 题目/图片角色/页码/区域和版本相符；来源点击可达原件，不以OCR片段代替原页 | [AT-S01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-03) |
-| REQ-S01-04 | 校正与失效 | 新检索读当前值；旧引用标旧版或需重读；重建不覆盖教师校正 | [AT-S01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-04) |
-| REQ-S01-05 | AI定稿状态 | 符合既有资格者可AI定稿同库；缺口题隔离可修；不强迫逐题批准，也不伪造教师确认 | [AT-S01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-05) |
-| REQ-S01-06 | 自然查询 | 本题能被找到；空结果说明筛选与放宽方式；不因一次无结果宣称整库无题 | [AT-S01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-06) |
-| REQ-S01-07 | 任务可恢复 | 已完成页/题不重复；无伪running；来源版本和候选数可读，失败页可单独重试 | [AT-S01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-07) |
-| REQ-S01-08 | 数据规模 | 不扫描未授权目录；完整耗时/错误/空间/冷暖延迟有报告；未达既有KR门槛不标规模通过 | [AT-S01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-S01-01 | 图文完整性 | 题干、选项、小问、单位、图像对应正确；无法辨认明确缺口；无悄悄省略条件 | [AT-S01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-01) | 待验收 |
+| REQ-S01-02 | 跨页与答案册 | 连续同题不误拆，不串题；答案来源单独保存；无法唯一配对保持未知 | [AT-S01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-02) | 待验收 |
+| REQ-S01-03 | 来源定位 | 题目/图片角色/页码/区域和版本相符；来源点击可达原件，不以OCR片段代替原页 | [AT-S01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-03) | 待验收 |
+| REQ-S01-04 | 校正与失效 | 新检索读当前值；旧引用标旧版或需重读；重建不覆盖教师校正 | [AT-S01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-04) | 待验收 |
+| REQ-S01-05 | AI定稿状态 | 符合既有资格者可AI定稿同库；缺口题隔离可修；不强迫逐题批准，也不伪造教师确认 | [AT-S01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-05) | 待验收 |
+| REQ-S01-06 | 自然查询 | 本题能被找到；空结果说明筛选与放宽方式；不因一次无结果宣称整库无题 | [AT-S01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-06) | 待验收 |
+| REQ-S01-07 | 任务可恢复 | 已完成页/题不重复；无伪running；来源版本和候选数可读，失败页可单独重试 | [AT-S01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-07) | 待验收 |
+| REQ-S01-08 | 数据规模 | 不扫描未授权目录；完整耗时/错误/空间/冷暖延迟有报告；未达既有KR门槛不标规模通过 | [AT-S01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s01-08) | 待验收 |
 
 #### WP-S02 可验证解题与理科讲解
 
@@ -366,17 +377,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M05/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：核验工具不可用时降低已核验标识，保留题干和解释，不伪造通过。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-S02-01 | 代数与代回 | x=11，两边16；步骤等价；结论与核验方法一致，不凭自报信心判正确 | [AT-S02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-01) |
-| REQ-S02-02 | 条件与定义域 | 列出限制并排除增根；条件不足不猜唯一解；答案不越过原问题约束 | [AT-S02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-02) |
-| REQ-S02-03 | 物理单位 | 数值和量纲正确；cm到m及面积平方换算正确；不混淆质量与重力 | [AT-S02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-03) |
-| REQ-S02-04 | 图形与未见信息 | 不声称看见缺失标注；区分示意与按比例测量；给出需补条件或可确定范围 | [AT-S02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-04) |
-| REQ-S02-05 | 多解与反例 | 两方法结论一致；明确近似与边界；不能用不适用类比代替物理解释 | [AT-S02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-05) |
-| REQ-S02-06 | 讲解适配 | 结论不变；深度/术语/篇幅符合请求；不为高档位增加无关扩展或错误新常数 | [AT-S02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-06) |
-| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) |
-| REQ-S02-08 | 修改后重验 | 按新条件重算与重验；旧答案不可复用；相关图表/结论同步更新 | [AT-S02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-S02-01 | 代数与代回 | x=11，两边16；步骤等价；结论与核验方法一致，不凭自报信心判正确 | [AT-S02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-01) | 待验收 |
+| REQ-S02-02 | 条件与定义域 | 列出限制并排除增根；条件不足不猜唯一解；答案不越过原问题约束 | [AT-S02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-02) | 待验收 |
+| REQ-S02-03 | 物理单位 | 数值和量纲正确；cm到m及面积平方换算正确；不混淆质量与重力 | [AT-S02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-03) | 待验收 |
+| REQ-S02-04 | 图形与未见信息 | 不声称看见缺失标注；区分示意与按比例测量；给出需补条件或可确定范围 | [AT-S02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-04) | 待验收 |
+| REQ-S02-05 | 多解与反例 | 两方法结论一致；明确近似与边界；不能用不适用类比代替物理解释 | [AT-S02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-05) | 待验收 |
+| REQ-S02-06 | 讲解适配 | 结论不变；深度/术语/篇幅符合请求；不为高档位增加无关扩展或错误新常数 | [AT-S02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-06) | 待验收 |
+| REQ-S02-07 | 工具与模型冲突 | 发现冲突并重新推导；未消除前不标已核验；保留失败及修正记录 | [AT-S02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-07) | 待验收 |
+| REQ-S02-08 | 修改后重验 | 按新条件重算与重验；旧答案不可复用；相关图表/结论同步更新 | [AT-S02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s02-08) | 待验收 |
 
 #### WP-S03 受约束组卷与可追溯变式
 
@@ -387,17 +399,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M05/M06/M09现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：蓝图和确认快照不可被生成器覆盖；回退导出不回退原题、教师修改或已发布试卷。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-S03-01 | 蓝图硬约束 | 题量/总分/覆盖满足；估时标估计；不以近似满足替代硬约束；最终集中展示 | [AT-S03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-01) |
-| REQ-S03-02 | 题源模式 | 原题模式缺题明确报告不AI冒充；混合模式标原创/改编及数量，符合指定蓝图 | [AT-S03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-02) |
-| REQ-S03-03 | 去重与谱系 | 不把重复扫描当新题；变式记录父题与变化条件/版本；题源标识可信 | [AT-S03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-03) |
-| REQ-S03-04 | 变式正确性 | 条件自洽、答案各自复算；不是只改题面数字而沿用旧答案；难度说明为估计 | [AT-S03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-04) |
-| REQ-S03-05 | 整卷集中确认 | 确认最终整卷版本；不要求逐题重复批准AI定稿；生成快照不是文件交付 | [AT-S03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-05) |
-| REQ-S03-06 | 学生答案隔离 | 学生文件无教师答案解析泄漏；教师卷题序/答案/分值对应；不只遮挡可见答案 | [AT-S03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-06) |
-| REQ-S03-07 | A4与可读性 | 页边距和题号可读；题图/公式不缺失或无提示裁切；答题留白符合冻结模板 | [AT-S03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-07) |
-| REQ-S03-08 | 不足冲突恢复 | 保持可修候选，不发布过期/被拒试卷；只重试未完成导出；旧正式卷无变化 | [AT-S03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-S03-01 | 蓝图硬约束 | 题量/总分/覆盖满足；估时标估计；不以近似满足替代硬约束；最终集中展示 | [AT-S03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-01) | 待验收 |
+| REQ-S03-02 | 题源模式 | 原题模式缺题明确报告不AI冒充；混合模式标原创/改编及数量，符合指定蓝图 | [AT-S03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-02) | 待验收 |
+| REQ-S03-03 | 去重与谱系 | 不把重复扫描当新题；变式记录父题与变化条件/版本；题源标识可信 | [AT-S03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-03) | 待验收 |
+| REQ-S03-04 | 变式正确性 | 条件自洽、答案各自复算；不是只改题面数字而沿用旧答案；难度说明为估计 | [AT-S03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-04) | 待验收 |
+| REQ-S03-05 | 整卷集中确认 | 确认最终整卷版本；不要求逐题重复批准AI定稿；生成快照不是文件交付 | [AT-S03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-05) | 待验收 |
+| REQ-S03-06 | 学生答案隔离 | 学生文件无教师答案解析泄漏；教师卷题序/答案/分值对应；不只遮挡可见答案 | [AT-S03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-06) | 待验收 |
+| REQ-S03-07 | A4与可读性 | 页边距和题号可读；题图/公式不缺失或无提示裁切；答题留白符合冻结模板 | [AT-S03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-07) | 待验收 |
+| REQ-S03-08 | 不足冲突恢复 | 保持可修候选，不发布过期/被拒试卷；只重试未完成导出；旧正式卷无变化 | [AT-S03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s03-08) | 待验收 |
 
 #### WP-S04 科学动态演示与探究活动
 
@@ -408,17 +421,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M09/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：模型或资源不合格时保留静态说明与限制，旧已确认演示可读，不静默替换授权资源。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-S04-01 | 浮力默认值 | 显示V=0.001m³、质量0.6kg、重力6N、浮力6N、浸入6cm、露出4cm | [AT-S04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-01) |
-| REQ-S04-02 | 全浸没边界 | 4N为本近似模型全浸没/中性浮力边界，不继续假定唯一悬浮深度；5N下沉，浮力上限10N，必要支撑力1N | [AT-S04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-02) |
-| REQ-S04-03 | 变量隔离 | 只修改目标参数，其余保持；读数与图像同步；重置回冻结初值，不能只复位滑块外观 | [AT-S04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-03) |
-| REQ-S04-04 | 控制与操作 | 控件可达、有标签；暂停停止动画更新；恢复无多个计时器；无CDN缺失 | [AT-S04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-04) |
-| REQ-S04-05 | 模型边界 | 允许值稳定无NaN/无限值；非法值被阻止且说明；图像不假装精确显示超范围现象 | [AT-S04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-05) |
-| REQ-S04-06 | 教学用途 | 活动围绕学习目标；问题可由控件观察；讲解和检查答案符合模型，非只有炫动画 | [AT-S04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-06) |
-| REQ-S04-07 | 成熟资源授权 | 保留来源/版本/许可与适用范围；未获必要许可不打包分发；可选择自制或已许可替代 | [AT-S04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-07) |
-| REQ-S04-08 | 跨产物一致 | 当前整包数值/假设/图片一致；旧版保留；不声称PPT静态图片仍可交互 | [AT-S04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-S04-01 | 浮力默认值 | 显示V=0.001m³、质量0.6kg、重力6N、浮力6N、浸入6cm、露出4cm | [AT-S04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-01) | 待验收 |
+| REQ-S04-02 | 全浸没边界 | 4N为本近似模型全浸没/中性浮力边界，不继续假定唯一悬浮深度；5N下沉，浮力上限10N，必要支撑力1N | [AT-S04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-02) | 待验收 |
+| REQ-S04-03 | 变量隔离 | 只修改目标参数，其余保持；读数与图像同步；重置回冻结初值，不能只复位滑块外观 | [AT-S04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-03) | 待验收 |
+| REQ-S04-04 | 控制与操作 | 控件可达、有标签；暂停停止动画更新；恢复无多个计时器；无CDN缺失 | [AT-S04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-04) | 待验收 |
+| REQ-S04-05 | 模型边界 | 允许值稳定无NaN/无限值；非法值被阻止且说明；图像不假装精确显示超范围现象 | [AT-S04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-05) | 待验收 |
+| REQ-S04-06 | 教学用途 | 活动围绕学习目标；问题可由控件观察；讲解和检查答案符合模型，非只有炫动画 | [AT-S04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-06) | 待验收 |
+| REQ-S04-07 | 成熟资源授权 | 保留来源/版本/许可与适用范围；未获必要许可不打包分发；可选择自制或已许可替代 | [AT-S04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-07) | 待验收 |
+| REQ-S04-08 | 跨产物一致 | 当前整包数值/假设/图片一致；旧版保留；不声称PPT静态图片仍可交互 | [AT-S04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s04-08) | 待验收 |
 
 #### WP-S05 错因分析、针对练习与复测闭环
 
@@ -429,17 +443,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M03/M05/M07/M08现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：修订解释保留原证据，撤销不删除原错题；回退训练策略不丢已发生学习记录。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-S05-01 | 学生绑定 | 仅当前绑定且有效学生可读；不得按姓名自行切换或混用B证据 | [AT-S05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-01) |
-| REQ-S05-02 | 错题校正 | 分析依据当前校正版，不猜模糊值；原图/原文字与校正版本可追溯 | [AT-S05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-02) |
-| REQ-S05-03 | 错因证据 | 区分观察证据与推测；每个判断能定位作答；证据不足明确需核对，不贴人格标签 | [AT-S05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-03) |
-| REQ-S05-04 | 针对练习 | 题量/目标满足，答案经S02核验；不生成无关大量作业；父题谱系可查 | [AT-S05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-04) |
-| REQ-S05-05 | 教师修正 | 当前解释与练习策略更新；不增加虚构练习次数；原错误判断留历史但不继续生效 | [AT-S05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-05) |
-| REQ-S05-06 | 复测回流 | 仅已发生证据进入分析；未答不当答错；说明变化与依据，不凭一次对错宣称掌握 | [AT-S05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-06) |
-| REQ-S05-07 | 复习与撤销 | 建议标为建议；授权撤销后停止新读取/送达；不借摘要继续泄漏学生事实 | [AT-S05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-07) |
-| REQ-S05-08 | 长期追踪 | 日期/数量/答案/策略对应当前事实；未来日期不说成已完成；无自动伪造学习行为 | [AT-S05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-S05-01 | 学生绑定 | 仅当前绑定且有效学生可读；不得按姓名自行切换或混用B证据 | [AT-S05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-01) | 待验收 |
+| REQ-S05-02 | 错题校正 | 分析依据当前校正版，不猜模糊值；原图/原文字与校正版本可追溯 | [AT-S05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-02) | 待验收 |
+| REQ-S05-03 | 错因证据 | 区分观察证据与推测；每个判断能定位作答；证据不足明确需核对，不贴人格标签 | [AT-S05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-03) | 待验收 |
+| REQ-S05-04 | 针对练习 | 题量/目标满足，答案经S02核验；不生成无关大量作业；父题谱系可查 | [AT-S05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-04) | 待验收 |
+| REQ-S05-05 | 教师修正 | 当前解释与练习策略更新；不增加虚构练习次数；原错误判断留历史但不继续生效 | [AT-S05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-05) | 待验收 |
+| REQ-S05-06 | 复测回流 | 仅已发生证据进入分析；未答不当答错；说明变化与依据，不凭一次对错宣称掌握 | [AT-S05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-06) | 待验收 |
+| REQ-S05-07 | 复习与撤销 | 建议标为建议；授权撤销后停止新读取/送达；不借摘要继续泄漏学生事实 | [AT-S05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-07) | 待验收 |
+| REQ-S05-08 | 长期追踪 | 日期/数量/答案/策略对应当前事实；未来日期不说成已完成；无自动伪造学习行为 | [AT-S05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s05-08) | 待验收 |
 
 #### WP-S06 同题同知识点的完整理科备课包
 
@@ -450,17 +465,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M04/M05/M06/M09现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：整包回退采用旧manifest及可取回文件，不回滚题库事实或撤销其他任务。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-S06-01 | 整包完整 | 五类都可打开且内容完整；区分原题/自拟题；计划完成或五个标题不算五份成果 | [AT-S06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-01) |
-| REQ-S06-02 | 来源统一 | 来源对应同一当前版本，通用知识另标；无不存在的教材页码或虚构引用 | [AT-S06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-02) |
-| REQ-S06-03 | 教师学生分工 | 学生用材料无泄漏；教师解析与讲稿足够独立使用；公开投影不默认显示答案 | [AT-S06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-03) |
-| REQ-S06-04 | 时长与目标 | 内容量与时间分配可讲；题目测目标而非无关知识；时长声明为设计安排 | [AT-S06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-04) |
-| REQ-S06-05 | 联动修改 | 受影响数值、图、结论全部更新；无关内容保持；旧版本和变更清单可读 | [AT-S06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-05) |
-| REQ-S06-06 | 局部失败 | 整包标部分完成；四类可用；恢复只修HTML并重做一致性检查 | [AT-S06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-06) |
-| REQ-S06-07 | 重启取用 | 无重新生成；文件/版本/检查/来源与manifest一致；教师不需要重发任务 | [AT-S06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-07) |
-| REQ-S06-08 | 真实教学评审 | 关键事实无已知错误，硬要求全部覆盖；主观维度单项达到约定等级，不能平均分掩盖答案错误 | [AT-S06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-S06-01 | 整包完整 | 五类都可打开且内容完整；区分原题/自拟题；计划完成或五个标题不算五份成果 | [AT-S06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-01) | 待验收 |
+| REQ-S06-02 | 来源统一 | 来源对应同一当前版本，通用知识另标；无不存在的教材页码或虚构引用 | [AT-S06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-02) | 待验收 |
+| REQ-S06-03 | 教师学生分工 | 学生用材料无泄漏；教师解析与讲稿足够独立使用；公开投影不默认显示答案 | [AT-S06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-03) | 待验收 |
+| REQ-S06-04 | 时长与目标 | 内容量与时间分配可讲；题目测目标而非无关知识；时长声明为设计安排 | [AT-S06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-04) | 待验收 |
+| REQ-S06-05 | 联动修改 | 受影响数值、图、结论全部更新；无关内容保持；旧版本和变更清单可读 | [AT-S06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-05) | 待验收 |
+| REQ-S06-06 | 局部失败 | 整包标部分完成；四类可用；恢复只修HTML并重做一致性检查 | [AT-S06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-06) | 待验收 |
+| REQ-S06-07 | 重启取用 | 无重新生成；文件/版本/检查/来源与manifest一致；教师不需要重发任务 | [AT-S06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-07) | 待验收 |
+| REQ-S06-08 | 真实教学评审 | 关键事实无已知错误，硬要求全部覆盖；主观维度单项达到约定等级，不能平均分掩盖答案错误 | [AT-S06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-s06-08) | 待验收 |
 
 #### WP-T01 全学科课标与教材版本关联
 
@@ -471,17 +487,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M02/M04/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：版本撤销不删除既有产物，旧内容标历史依据；回退索引可重建。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T01-01 | 版本选择 | 当前版本可见，目标来自选定资料；不混用同名不同版章节 | [AT-T01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-01) |
-| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) |
-| REQ-T01-03 | 缺少标准 | 明确缺少依据，可给通用建议并标待对照；不标正式对齐 | [AT-T01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-03) |
-| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) |
-| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) |
-| REQ-T01-06 | 领域限制 | 区分参考案例和正式标准；缺少映射不给已对齐结论 | [AT-T01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-06) |
-| REQ-T01-07 | 取消恢复 | 已导入原件保留，未完成派生处理可续；不重复或丢版本 | [AT-T01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-07) |
-| REQ-T01-08 | 解释可读 | 用教师能理解的文字解释；改年级重算适配；界面不要求填写内部ID | [AT-T01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T01-01 | 版本选择 | 当前版本可见，目标来自选定资料；不混用同名不同版章节 | [AT-T01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-01) | 待验收 |
+| REQ-T01-02 | 出处定位 | 能定位真实文档/版本/页或段；无资料不编课标编号 | [AT-T01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-02) | 待验收 |
+| REQ-T01-03 | 缺少标准 | 明确缺少依据，可给通用建议并标待对照；不标正式对齐 | [AT-T01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-03) | 待验收 |
+| REQ-T01-04 | 版本冲突 | 列实际差异与来源；教师选择后当前版本生效；不擅自揉成不存在的标准 | [AT-T01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-04) | 待验收 |
+| REQ-T01-05 | 修订传播 | 旧教案依据版本可见；新任务不沿用撤销内容；重新对齐有新版本 | [AT-T01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-05) | 待验收 |
+| REQ-T01-06 | 领域限制 | 区分参考案例和正式标准；缺少映射不给已对齐结论 | [AT-T01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-06) | 待验收 |
+| REQ-T01-07 | 取消恢复 | 已导入原件保留，未完成派生处理可续；不重复或丢版本 | [AT-T01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-07) | 待验收 |
+| REQ-T01-08 | 解释可读 | 用教师能理解的文字解释；改年级重算适配；界面不要求填写内部ID | [AT-T01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t01-08) | 待验收 |
 
 #### WP-T02 目标—活动—评价一致的教案
 
@@ -492,17 +509,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M04/M09/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：修改形成新版本；结构验证失败保留草稿，不覆盖教师已改教案。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T02-01 | 完整结构 | 目标、导入、活动、练习、评价、材料、时间与教师提示齐全，非空骨架 | [AT-T02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-01) |
-| REQ-T02-02 | 目标可观察 | 转为具体可观察行为且不伪造课标；每个目标有对应检查 | [AT-T02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-02) |
-| REQ-T02-03 | 活动评价一致 | 目标都被活动支持并被题目检查；无只在标题出现的目标 | [AT-T02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-03) |
-| REQ-T02-04 | 时间安排 | 总安排仍40分钟或明确冲突待取舍；不偷偷压掉教师指定环节 | [AT-T02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-04) |
-| REQ-T02-05 | 材料不足 | 不能虚构实读；说明可做通用稿与缺少材料；补充后沿任务继续 | [AT-T02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-05) |
-| REQ-T02-06 | 局部改环节 | 导入更新且符合概念；其他环节语义保持；可取回旧版 | [AT-T02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-06) |
-| REQ-T02-07 | 导出可用 | 标题/表格/公式/时间可读，文档内容可编辑范围准确说明 | [AT-T02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-07) |
-| REQ-T02-08 | 恢复与审核 | 旧拒绝不变永久禁令；新任务重新核对与审批；旧批准不复用 | [AT-T02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T02-01 | 完整结构 | 目标、导入、活动、练习、评价、材料、时间与教师提示齐全，非空骨架 | [AT-T02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-01) | 待验收 |
+| REQ-T02-02 | 目标可观察 | 转为具体可观察行为且不伪造课标；每个目标有对应检查 | [AT-T02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-02) | 待验收 |
+| REQ-T02-03 | 活动评价一致 | 目标都被活动支持并被题目检查；无只在标题出现的目标 | [AT-T02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-03) | 待验收 |
+| REQ-T02-04 | 时间安排 | 总安排仍40分钟或明确冲突待取舍；不偷偷压掉教师指定环节 | [AT-T02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-04) | 待验收 |
+| REQ-T02-05 | 材料不足 | 不能虚构实读；说明可做通用稿与缺少材料；补充后沿任务继续 | [AT-T02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-05) | 待验收 |
+| REQ-T02-06 | 局部改环节 | 导入更新且符合概念；其他环节语义保持；可取回旧版 | [AT-T02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-06) | 待验收 |
+| REQ-T02-07 | 导出可用 | 标题/表格/公式/时间可读，文档内容可编辑范围准确说明 | [AT-T02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-07) | 待验收 |
+| REQ-T02-08 | 恢复与审核 | 旧拒绝不变永久禁令；新任务重新核对与审批；旧批准不复用 | [AT-T02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t02-08) | 待验收 |
 
 #### WP-T03 同一教学目标的分层材料
 
@@ -513,17 +531,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M05/M09/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：各层独立版本；回退某层不修改其他层或学生原始记录。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T03-01 | 三层目标一致 | 核心概念一致，挑战和支架变化明确；不把基础版改成无关低年级知识 | [AT-T03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-01) |
-| REQ-T03-02 | 数量与时长 | 题量准确；时间标设计估计；题面与答案各自核对 | [AT-T03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-02) |
-| REQ-T03-03 | 支架差异 | 基础有适当支架，拓展增加迁移而非堆字；无直接把答案当所有层的提示 | [AT-T03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-03) |
-| REQ-T03-04 | 语言调整 | 关键条件/术语解释/答案保持；不能以删限制获得“更易懂” | [AT-T03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-04) |
-| REQ-T03-05 | 学生事实 | 无证据先给通用分层；有记录给可解释建议；不自编成绩或确定性标签 | [AT-T03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-05) |
-| REQ-T03-06 | 跨版本修改 | 仅目标层相关内容变化；共享来源版本仍一致；答案同步更新 | [AT-T03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-06) |
-| REQ-T03-07 | 印刷输出 | 标题与版本可区分，A4可打印，学生文件答案隔离 | [AT-T03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-07) |
-| REQ-T03-08 | 取消部分恢复 | 已完成层可用且不重生成；只续未完成层并保持原目标 | [AT-T03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T03-01 | 三层目标一致 | 核心概念一致，挑战和支架变化明确；不把基础版改成无关低年级知识 | [AT-T03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-01) | 待验收 |
+| REQ-T03-02 | 数量与时长 | 题量准确；时间标设计估计；题面与答案各自核对 | [AT-T03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-02) | 待验收 |
+| REQ-T03-03 | 支架差异 | 基础有适当支架，拓展增加迁移而非堆字；无直接把答案当所有层的提示 | [AT-T03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-03) | 待验收 |
+| REQ-T03-04 | 语言调整 | 关键条件/术语解释/答案保持；不能以删限制获得“更易懂” | [AT-T03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-04) | 待验收 |
+| REQ-T03-05 | 学生事实 | 无证据先给通用分层；有记录给可解释建议；不自编成绩或确定性标签 | [AT-T03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-05) | 待验收 |
+| REQ-T03-06 | 跨版本修改 | 仅目标层相关内容变化；共享来源版本仍一致；答案同步更新 | [AT-T03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-06) | 待验收 |
+| REQ-T03-07 | 印刷输出 | 标题与版本可区分，A4可打印，学生文件答案隔离 | [AT-T03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-07) | 待验收 |
+| REQ-T03-08 | 取消部分恢复 | 已完成层可用且不重生成；只续未完成层并保持原目标 | [AT-T03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t03-08) | 待验收 |
 
 #### WP-T04 语文阅读与写作反馈
 
@@ -534,17 +553,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M04/M09/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：原文/原稿不可被建议覆盖；撤回反馈保留版本，不自动发布给学生或家长。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T04-01 | 阅读依据 | 问题可由原文支持；引用句子真实；区分文本事实和开放解释 | [AT-T04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-01) |
-| REQ-T04-02 | 引文真实性 | 仅真实原文标引文；不存在内容明确指出，不伪造页码/作者 | [AT-T04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-02) |
-| REQ-T04-03 | 年级适配 | 词汇、任务与认知负荷适配；不改变原文事实；学段未经确认不假装正式适配 | [AT-T04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-03) |
-| REQ-T04-04 | 作文定位反馈 | 具体句段对应建议与理由；不只泛泛夸奖；错别字、结构和表达分开 | [AT-T04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-04) |
-| REQ-T04-05 | 保留表达 | 保留立意/人称/事实；修改有对照；不整篇改写后称局部修正 | [AT-T04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-05) |
-| REQ-T04-06 | 评价边界 | 不给无依据长期定性；按明确量规提供待教师确认建议，不冒充教师成绩 | [AT-T04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-06) |
-| REQ-T04-07 | 输出分离 | 原稿完整；教师私有批注不泄入学生版；文件名与角色明确 | [AT-T04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-07) |
-| REQ-T04-08 | 修订与撤销 | 被拒修改不应用；已接受部分和原稿可读；状态与文件一致 | [AT-T04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T04-01 | 阅读依据 | 问题可由原文支持；引用句子真实；区分文本事实和开放解释 | [AT-T04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-01) | 待验收 |
+| REQ-T04-02 | 引文真实性 | 仅真实原文标引文；不存在内容明确指出，不伪造页码/作者 | [AT-T04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-02) | 待验收 |
+| REQ-T04-03 | 年级适配 | 词汇、任务与认知负荷适配；不改变原文事实；学段未经确认不假装正式适配 | [AT-T04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-03) | 待验收 |
+| REQ-T04-04 | 作文定位反馈 | 具体句段对应建议与理由；不只泛泛夸奖；错别字、结构和表达分开 | [AT-T04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-04) | 待验收 |
+| REQ-T04-05 | 保留表达 | 保留立意/人称/事实；修改有对照；不整篇改写后称局部修正 | [AT-T04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-05) | 待验收 |
+| REQ-T04-06 | 评价边界 | 不给无依据长期定性；按明确量规提供待教师确认建议，不冒充教师成绩 | [AT-T04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-06) | 待验收 |
+| REQ-T04-07 | 输出分离 | 原稿完整；教师私有批注不泄入学生版；文件名与角色明确 | [AT-T04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-07) | 待验收 |
+| REQ-T04-08 | 修订与撤销 | 被拒修改不应用；已接受部分和原稿可读；状态与文件一致 | [AT-T04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t04-08) | 待验收 |
 
 #### WP-T05 英语阅读、词汇与语言练习
 
@@ -555,17 +575,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M04/M05/M09/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：保留原文及题目来源；更换文本后旧题标旧版，不覆盖教师修改。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T05-01 | 词汇范围 | 数量与排除要求满足；词义按文中语境；不凭空称教材重点词 | [AT-T05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-01) |
-| REQ-T05-02 | 阅读题依据 | 题干/选项/答案一致；不依赖文本外冷知识；存在多解明确修题 | [AT-T05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-02) |
-| REQ-T05-03 | 语法与答案 | 语法、拼写、答案正确；语境决定答案；不能错误排除合理变体 | [AT-T05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-03) |
-| REQ-T05-04 | 难度调整 | 控制词汇/句长/提示与推断要求；不删除关键事实制造低难度 | [AT-T05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-04) |
-| REQ-T05-05 | 中英格式 | 字符/换行/字体可读；音标不乱码；未提供音频不显示已生成发音 | [AT-T05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-05) |
-| REQ-T05-06 | 范围与缺能力 | 明确可用范围与可选后续能力；不自动产生付费音频任务；文字任务继续 | [AT-T05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-06) |
-| REQ-T05-07 | 原文变更 | 受影响题/答案重验，无关内容保持；旧原文/题可追溯 | [AT-T05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-07) |
-| REQ-T05-08 | 学生教师版 | 题序对应，学生版无答案泄漏；解析与当前版本一致 | [AT-T05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T05-01 | 词汇范围 | 数量与排除要求满足；词义按文中语境；不凭空称教材重点词 | [AT-T05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-01) | 待验收 |
+| REQ-T05-02 | 阅读题依据 | 题干/选项/答案一致；不依赖文本外冷知识；存在多解明确修题 | [AT-T05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-02) | 待验收 |
+| REQ-T05-03 | 语法与答案 | 语法、拼写、答案正确；语境决定答案；不能错误排除合理变体 | [AT-T05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-03) | 待验收 |
+| REQ-T05-04 | 难度调整 | 控制词汇/句长/提示与推断要求；不删除关键事实制造低难度 | [AT-T05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-04) | 待验收 |
+| REQ-T05-05 | 中英格式 | 字符/换行/字体可读；音标不乱码；未提供音频不显示已生成发音 | [AT-T05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-05) | 待验收 |
+| REQ-T05-06 | 范围与缺能力 | 明确可用范围与可选后续能力；不自动产生付费音频任务；文字任务继续 | [AT-T05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-06) | 待验收 |
+| REQ-T05-07 | 原文变更 | 受影响题/答案重验，无关内容保持；旧原文/题可追溯 | [AT-T05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-07) | 待验收 |
+| REQ-T05-08 | 学生教师版 | 题序对应，学生版无答案泄漏；解析与当前版本一致 | [AT-T05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t05-08) | 待验收 |
 
 #### WP-T06 旧课件与已有教学资料局部升级
 
@@ -576,17 +597,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M02/M09/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：始终生成新版本或另存，不覆盖原课件；无法保真时保留原件并提供受限结果而非伪原样。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T06-01 | 原件保护 | 原件哈希不变；新版可开；不把新建8页大纲当作修改旧文件 | [AT-T06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-01) |
-| REQ-T06-02 | 未改页保持 | 语义及对象保持，允许必要容器元数据变化；不得用ZIP总hash相同作为唯一比较 | [AT-T06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-02) |
-| REQ-T06-03 | 备注与隐藏页 | 备注/隐藏状态保留；学生版不泄教师隐藏答案；隐藏页不能被默默删除 | [AT-T06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-03) |
-| REQ-T06-04 | 不支持对象 | 不运行宏/外部代码；识别限制并说明具体对象；未经同意不丢对象后称完整保真 | [AT-T06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-04) |
-| REQ-T06-05 | 明确版式调整 | 只做指定变化；溢出重新检查；图表数字及标签同步，原始数据可核 | [AT-T06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-05) |
-| REQ-T06-06 | 旧资料联动 | 引用真实文本/图页；不重写原稿；新成果可继续修改 | [AT-T06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-06) |
-| REQ-T06-07 | 外部修改冲突 | 检测版本变化并重读/重新确认；不覆盖教师刚改内容或静默沿旧稿 | [AT-T06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-07) |
-| REQ-T06-08 | 兼容取回 | 编辑性与实际保留范围可核；新旧版均可定位；无重复生成 | [AT-T06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T06-01 | 原件保护 | 原件哈希不变；新版可开；不把新建8页大纲当作修改旧文件 | [AT-T06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-01) | 待验收 |
+| REQ-T06-02 | 未改页保持 | 语义及对象保持，允许必要容器元数据变化；不得用ZIP总hash相同作为唯一比较 | [AT-T06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-02) | 待验收 |
+| REQ-T06-03 | 备注与隐藏页 | 备注/隐藏状态保留；学生版不泄教师隐藏答案；隐藏页不能被默默删除 | [AT-T06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-03) | 待验收 |
+| REQ-T06-04 | 不支持对象 | 不运行宏/外部代码；识别限制并说明具体对象；未经同意不丢对象后称完整保真 | [AT-T06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-04) | 待验收 |
+| REQ-T06-05 | 明确版式调整 | 只做指定变化；溢出重新检查；图表数字及标签同步，原始数据可核 | [AT-T06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-05) | 待验收 |
+| REQ-T06-06 | 旧资料联动 | 引用真实文本/图页；不重写原稿；新成果可继续修改 | [AT-T06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-06) | 待验收 |
+| REQ-T06-07 | 外部修改冲突 | 检测版本变化并重读/重新确认；不覆盖教师刚改内容或静默沿旧稿 | [AT-T06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-07) | 待验收 |
+| REQ-T06-08 | 兼容取回 | 编辑性与实际保留范围可核；新旧版均可定位；无重复生成 | [AT-T06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t06-08) | 待验收 |
 
 #### WP-T07 教师模板、表达风格与可撤销记忆
 
@@ -597,17 +619,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M04/M09/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：撤销阻断后续读取与送达；已生成历史文件保留真实版本，不伪称已从过去文件擦除。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T07-01 | 显式模板保存 | 模板可命名和预览；来源版本可查；布局应用到新文件但不复制旧无关内容 | [AT-T07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-01) |
-| REQ-T07-02 | 偏好确认 | 只保存教师认可必要偏好；可查看原依据；不把一次任务长度当永久偏好 | [AT-T07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-02) |
-| REQ-T07-03 | 当前要求优先 | 满足当前要求；不因偏好漏步骤；历史偏好仍可编辑 | [AT-T07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-03) |
-| REQ-T07-04 | 撤销生效 | 不再新读/送达撤销内容；当前执行在安全点停止或重建；不沿缓存继续泄漏 | [AT-T07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-04) |
-| REQ-T07-05 | 版本更新 | 新任务用新版；旧产物标旧模板；不改历史文件冒充一直是新模板 | [AT-T07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-05) |
-| REQ-T07-06 | 隐私隔离 | 不自动长期保存学生敏感事实；资料不能授权；必要事实仅走学生授权链 | [AT-T07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-06) |
-| REQ-T07-07 | 缺失与禁用 | 显示实际缺失可选择通用模板；不读取全局个人配置寻找替代凭证 | [AT-T07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-07) |
-| REQ-T07-08 | 重启一致 | 版本、启用和作用域一致；无串会话记忆；不自动开始生成 | [AT-T07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T07-01 | 显式模板保存 | 模板可命名和预览；来源版本可查；布局应用到新文件但不复制旧无关内容 | [AT-T07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-01) | 待验收 |
+| REQ-T07-02 | 偏好确认 | 只保存教师认可必要偏好；可查看原依据；不把一次任务长度当永久偏好 | [AT-T07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-02) | 待验收 |
+| REQ-T07-03 | 当前要求优先 | 满足当前要求；不因偏好漏步骤；历史偏好仍可编辑 | [AT-T07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-03) | 待验收 |
+| REQ-T07-04 | 撤销生效 | 不再新读/送达撤销内容；当前执行在安全点停止或重建；不沿缓存继续泄漏 | [AT-T07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-04) | 待验收 |
+| REQ-T07-05 | 版本更新 | 新任务用新版；旧产物标旧模板；不改历史文件冒充一直是新模板 | [AT-T07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-05) | 待验收 |
+| REQ-T07-06 | 隐私隔离 | 不自动长期保存学生敏感事实；资料不能授权；必要事实仅走学生授权链 | [AT-T07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-06) | 待验收 |
+| REQ-T07-07 | 缺失与禁用 | 显示实际缺失可选择通用模板；不读取全局个人配置寻找替代凭证 | [AT-T07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-07) | 待验收 |
+| REQ-T07-08 | 重启一致 | 版本、启用和作用域一致；无串会话记忆；不自动开始生成 | [AT-T07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t07-08) | 待验收 |
 
 #### WP-T08 形成性评价、量规与课后反馈
 
@@ -618,17 +641,18 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M05/M07/M08/M09现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：修改量规不改过去真实作答；历史评价标所用版本，撤销建议不删除证据。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-T08-01 | 目标覆盖 | 每目标有可检查项目；题目实际测该目标；权重/分数总计正确 | [AT-T08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-01) |
-| REQ-T08-02 | 量规可操作 | 等级互相可区分、依据可观察；无“优秀/一般”空标签；总分规则可算 | [AT-T08-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-02) |
-| REQ-T08-03 | 开放答案 | 按量规解释可接受范围，不强行唯一答案；反馈定位具体表现 | [AT-T08-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-03) |
-| REQ-T08-04 | 真实证据 | 无记录不编学情；有记录仅汇总授权范围，说明样本和缺失 | [AT-T08-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-04) |
-| REQ-T08-05 | 教师修订 | 保存最终版本与依据；不复述修改前评分为最终成绩 | [AT-T08-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-05) |
-| REQ-T08-06 | 下次教学 | 建议与当前证据关联且可修改；新证据后变化可解释；不伪造学习提升 | [AT-T08-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-06) |
-| REQ-T08-07 | 学生输出边界 | 学生文件仅含获准反馈；无其他学生资料、私有诊断或教师备注 | [AT-T08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-07) |
-| REQ-T08-08 | 历史与停止 | 确认版不变，未完成状态清楚；无自动发布/通知学生家长 | [AT-T08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-08) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-T08-01 | 目标覆盖 | 每目标有可检查项目；题目实际测该目标；权重/分数总计正确 | [AT-T08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-01) | 待验收 |
+| REQ-T08-02 | 量规可操作 | 等级互相可区分、依据可观察；无“优秀/一般”空标签；总分规则可算 | [AT-T08-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-02) | 待验收 |
+| REQ-T08-03 | 开放答案 | 按量规解释可接受范围，不强行唯一答案；反馈定位具体表现 | [AT-T08-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-03) | 待验收 |
+| REQ-T08-04 | 真实证据 | 无记录不编学情；有记录仅汇总授权范围，说明样本和缺失 | [AT-T08-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-04) | 待验收 |
+| REQ-T08-05 | 教师修订 | 保存最终版本与依据；不复述修改前评分为最终成绩 | [AT-T08-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-05) | 待验收 |
+| REQ-T08-06 | 下次教学 | 建议与当前证据关联且可修改；新证据后变化可解释；不伪造学习提升 | [AT-T08-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-06) | 待验收 |
+| REQ-T08-07 | 学生输出边界 | 学生文件仅含获准反馈；无其他学生资料、私有诊断或教师备注 | [AT-T08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-07) | 待验收 |
+| REQ-T08-08 | 历史与停止 | 确认版不变，未完成状态清楚；无自动发布/通知学生家长 | [AT-T08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-t08-08) | 待验收 |
 
 #### WP-C01 权限、隐私与真实自主范围
 
@@ -639,19 +663,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：权限新字段缺失使用兼容最小范围；回退不升级权限；撤销生效且真实历史效果保留。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-C01-01 | 权限文案真实 | 只展示实际支持的模式和范围；宿主返回有效授权；不支持的文案不得宣称可执行 | [AT-C01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-01) |
-| REQ-C01-02 | 范围分离 | 可以按本任务产物规则生成；不能读桌面；默认产物区不变成整个用户目录授权 | [AT-C01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-02) |
-| REQ-C01-03 | 确认精度 | 仅批准的内容与目标版本生效；变化需新审阅；拒绝/停止不能自动换callId绕过 | [AT-C01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-03) |
-| REQ-C01-04 | 学生隐私 | 仅必要脱敏文本按授权送云；日志/截图外发不包含真实隐私；原图不自动上传 | [AT-C01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-04) |
-| REQ-C01-05 | 公开图授权 | 每次用途/图片版本明确；拒绝不发送；后续新授权可执行，不把旧拒绝当永久禁令 | [AT-C01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-05) |
-| REQ-C01-06 | 恶意资料 | 都作为数据处理；不能改变权限/模型配置；无越权读取写入或传输 | [AT-C01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-06) |
-| REQ-C01-07 | 下载与执行区别 | 下载许可不自动覆盖管理员/全局/网络权限；不改变密钥或安全设置 | [AT-C01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-07) |
-| REQ-C01-08 | 正式教学确认 | 沿既有AI定稿资格，不逐题强审；正式整卷仍集中确认；模型不能假造教师记录 | [AT-C01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-08) |
-| REQ-C01-09 | 撤销与缓存 | 停止新读取/送达；缓存不是授权；先前合法发生效果可查但不伪称撤回远端数据 | [AT-C01-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-09) |
-| REQ-C01-10 | 外部动作 | 新外部动作有明确授权范围；没有授权只形成可审阅草稿，不自动发布或改凭证 | [AT-C01-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-C01-01 | 权限文案真实 | 只展示实际支持的模式和范围；宿主返回有效授权；不支持的文案不得宣称可执行 | [AT-C01-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-01) | 待验收 |
+| REQ-C01-02 | 范围分离 | 可以按本任务产物规则生成；不能读桌面；默认产物区不变成整个用户目录授权 | [AT-C01-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-02) | 待验收 |
+| REQ-C01-03 | 确认精度 | 仅批准的内容与目标版本生效；变化需新审阅；拒绝/停止不能自动换callId绕过 | [AT-C01-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-03) | 待验收 |
+| REQ-C01-04 | 学生隐私 | 仅必要脱敏文本按授权送云；日志/截图外发不包含真实隐私；原图不自动上传 | [AT-C01-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-04) | 待验收 |
+| REQ-C01-05 | 公开图授权 | 每次用途/图片版本明确；拒绝不发送；后续新授权可执行，不把旧拒绝当永久禁令 | [AT-C01-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-05) | 待验收 |
+| REQ-C01-06 | 恶意资料 | 都作为数据处理；不能改变权限/模型配置；无越权读取写入或传输 | [AT-C01-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-06) | 待验收 |
+| REQ-C01-07 | 下载与执行区别 | 下载许可不自动覆盖管理员/全局/网络权限；不改变密钥或安全设置 | [AT-C01-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-07) | 待验收 |
+| REQ-C01-08 | 正式教学确认 | 沿既有AI定稿资格，不逐题强审；正式整卷仍集中确认；模型不能假造教师记录 | [AT-C01-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-08) | 待验收 |
+| REQ-C01-09 | 撤销与缓存 | 停止新读取/送达；缓存不是授权；先前合法发生效果可查但不伪称撤回远端数据 | [AT-C01-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-09) | 待验收 |
+| REQ-C01-10 | 外部动作 | 新外部动作有明确授权范围；没有授权只形成可审阅草稿，不自动发布或改凭证 | [AT-C01-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c01-10) | 待验收 |
 
 #### WP-C02 流式性能、窗口与精细交互
 
@@ -662,19 +687,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M12/M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：新渲染优化可开关回退；正文/事件完整性优先；保留原生caption与窗口几何恢复。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-C02-01 | 长流与完整性 | 输出终态与持久正文一致、不掉字/乱序；草稿可继续编辑；无pageerror | [AT-C02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-01) |
-| REQ-C02-02 | 交互性能 | P95≤100ms、最大≤250ms作为本地控制样本目标；记录长任务与RSS；不可推断真实模型首字时间 | [AT-C02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-02) |
-| REQ-C02-03 | 原生拖动 | 普通位置实际改变；最大化拖动还原；菜单不误拖；最小化/最大化/关闭真实有效 | [AT-C02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-03) |
-| REQ-C02-04 | 重启几何 | 可见区域内恢复，标题栏可达；不顶死屏幕或开到屏外；不把HTCAPTION命中当位移通过 | [AT-C02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-04) |
-| REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) |
-| REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) |
-| REQ-C02-07 | 滚动与选择 | 底部正常跟随；离底/选择时不强拉；可一键回到底部；复制不夹入过程或私有字段 | [AT-C02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-07) |
-| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) |
-| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) |
-| REQ-C02-10 | 切换与空错误态 | 不混内容、不丢草稿；空态提示下一动作；失败可恢复且无永转加载 | [AT-C02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-C02-01 | 长流与完整性 | 输出终态与持久正文一致、不掉字/乱序；草稿可继续编辑；无pageerror | [AT-C02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-01) | 待验收 |
+| REQ-C02-02 | 交互性能 | P95≤100ms、最大≤250ms作为本地控制样本目标；记录长任务与RSS；不可推断真实模型首字时间 | [AT-C02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-02) | 待验收 |
+| REQ-C02-03 | 原生拖动 | 普通位置实际改变；最大化拖动还原；菜单不误拖；最小化/最大化/关闭真实有效 | [AT-C02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-03) | 待验收 |
+| REQ-C02-04 | 重启几何 | 可见区域内恢复，标题栏可达；不顶死屏幕或开到屏外；不把HTCAPTION命中当位移通过 | [AT-C02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-04) | 待验收 |
+| REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) | 待验收 |
+| REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) | 待验收 |
+| REQ-C02-07 | 滚动与选择 | 底部正常跟随；离底/选择时不强拉；可一键回到底部；复制不夹入过程或私有字段 | [AT-C02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-07) | 待验收 |
+| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 待验收 |
+| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 待验收 |
+| REQ-C02-10 | 切换与空错误态 | 不混内容、不丢草稿；空态提示下一动作；失败可恢复且无永转加载 | [AT-C02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-10) | 待验收 |
 
 #### WP-C03 本地真源、迁移、备份与一致性
 
@@ -685,19 +711,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M01/M11现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：升级前保留可用备份；回退只读兼容或还原副本验证，不以删除真实库通过检查。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-C03-01 | 新旧数据库 | 迁移幂等，旧会话/文件/权限可读；重复启动不重复DDL或丢字段 | [AT-C03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-01) |
-| REQ-C03-02 | 原件与派生 | 原件哈希、确认题与正式产物保持；派生状态记录版本；不静默混用新旧索引 | [AT-C03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-02) |
-| REQ-C03-03 | 配置并发 | 一个有效提交，另一个冲突刷新；不丢教师修改或出现最后写入无提示 | [AT-C03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-03) |
-| REQ-C03-04 | 文件账本一致 | 原子安装或明确uncertain；重启只读核验后结算；无正式记录指向不存在文件的伪成功 | [AT-C03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-04) |
-| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) |
-| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) |
-| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) |
-| REQ-C03-08 | 跨会话隔离 | 身份与版本不串，引用不能跨授权会话复活；文件路径归属正确 | [AT-C03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-08) |
-| REQ-C03-09 | 异常目录链接 | 拒绝越界；不跟随到其他目录读写或递归清理；教师数据不变 | [AT-C03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-09) |
-| REQ-C03-10 | 回退验证 | 按发布兼容表读或明确阻止写入；无静默清空；回退步骤与备份路径可执行 | [AT-C03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-C03-01 | 新旧数据库 | 迁移幂等，旧会话/文件/权限可读；重复启动不重复DDL或丢字段 | [AT-C03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-01) | 待验收 |
+| REQ-C03-02 | 原件与派生 | 原件哈希、确认题与正式产物保持；派生状态记录版本；不静默混用新旧索引 | [AT-C03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-02) | 待验收 |
+| REQ-C03-03 | 配置并发 | 一个有效提交，另一个冲突刷新；不丢教师修改或出现最后写入无提示 | [AT-C03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-03) | 待验收 |
+| REQ-C03-04 | 文件账本一致 | 原子安装或明确uncertain；重启只读核验后结算；无正式记录指向不存在文件的伪成功 | [AT-C03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-04) | 待验收 |
+| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) | 待验收 |
+| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) | 待验收 |
+| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) | 待验收 |
+| REQ-C03-08 | 跨会话隔离 | 身份与版本不串，引用不能跨授权会话复活；文件路径归属正确 | [AT-C03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-08) | 待验收 |
+| REQ-C03-09 | 异常目录链接 | 拒绝越界；不跟随到其他目录读写或递归清理；教师数据不变 | [AT-C03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-09) | 待验收 |
+| REQ-C03-10 | 回退验证 | 按发布兼容表读或明确阻止写入；无静默清空；回退步骤与备份路径可执行 | [AT-C03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-10) | 待验收 |
 
 #### WP-C04 真实过程、错误分类与可核验记录
 
@@ -708,19 +735,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M10/M12现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：新事件为可选兼容字段；旧回放未知事件安全忽略或说明，不能让渲染异常损坏事实。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-C04-01 | 真实阶段 | 界面阶段来自真实事件；等待模型只称等待；工具结果与公开说明区分 | [AT-C04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-01) |
-| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) |
-| REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) |
-| REQ-C04-04 | 事件保序 | 序列连续不乱序/重复/丢终态；推理合并不丢正文；缺口可补读 | [AT-C04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-04) |
-| REQ-C04-05 | 重复投递 | 一次呈现一次记账；游标正确；不重新执行写文件等副作用 | [AT-C04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-05) |
-| REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) |
-| REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) |
-| REQ-C04-08 | 旧事件回放 | 旧正文/来源/状态可读；未知字段不使整页崩溃；不自动调用模型补写历史 | [AT-C04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-08) |
-| REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) |
-| REQ-C04-10 | 独立检查报告 | 报告带源码SHA、实际运行根、时间、样本、命令退出与证据路径；未执行不能算通过 | [AT-C04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-C04-01 | 真实阶段 | 界面阶段来自真实事件；等待模型只称等待；工具结果与公开说明区分 | [AT-C04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-01) | 待验收 |
+| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收 |
+| REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 |
+| REQ-C04-04 | 事件保序 | 序列连续不乱序/重复/丢终态；推理合并不丢正文；缺口可补读 | [AT-C04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-04) | 待验收 |
+| REQ-C04-05 | 重复投递 | 一次呈现一次记账；游标正确；不重新执行写文件等副作用 | [AT-C04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-05) | 待验收 |
+| REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) | 待验收 |
+| REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) | 待验收 |
+| REQ-C04-08 | 旧事件回放 | 旧正文/来源/状态可读；未知字段不使整页崩溃；不自动调用模型补写历史 | [AT-C04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-08) | 待验收 |
+| REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) | 待验收 |
+| REQ-C04-10 | 独立检查报告 | 报告带源码SHA、实际运行根、时间、样本、命令退出与证据路径；未执行不能算通过 | [AT-C04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-10) | 待验收 |
 
 #### WP-C05 质量、成本与有界资源
 
@@ -731,19 +759,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M10现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：监测关闭不影响原任务执行；默认保守，不把缺失价格按0计费；不改账户凭证。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-C05-01 | 硬要求覆盖 | 所有明确硬要求满足或明确未完成；不以漂亮文字掩盖缺文件/缺题 | [AT-C05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-01) |
-| REQ-C05-02 | 正确性门槛 | 无已知关键事实/答案错误；错误未修不能以平均分过关；自然质量由人工复核 | [AT-C05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-02) |
-| REQ-C05-03 | 简洁与相关 | 一句话不扩成建议清单；100字按FX13计数；详细说明覆盖当前要求，无无关教学段落 | [AT-C05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-03) |
-| REQ-C05-04 | 同条件对照 | 同条件可比较；参数差异单列；失败计入分母，不混用其它构建或不同模型当算法收益 | [AT-C05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-04) |
-| REQ-C05-05 | 费用授权 | 没有本任务新增明确授权不发请求；计划数量/重试上限与费用用途可审阅 | [AT-C05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-05) |
-| REQ-C05-06 | 真实与估算 | 真实值准确记录；估算注明；无用量/价格显示未知，不显示0费用或虚假缓存收益 | [AT-C05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-06) |
-| REQ-C05-07 | 停止后费用 | 说明在途请求可能计费；记录已知usage，不保证撤回远端；无新请求继续消耗 | [AT-C05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-07) |
-| REQ-C05-08 | 重复循环 | 提示或有界改变策略；不无限原样重试；新输入可继续合法任务，不硬禁正常轮询 | [AT-C05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-08) |
-| REQ-C05-09 | 性能解释 | 分别报告，不把模型思考慢说成界面卡；样本不足不报P95；没有前后证据不声称提速 | [AT-C05-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-09) |
-| REQ-C05-10 | 资源回收 | 所属执行进程、定时器、句柄与租约按合同回收；保留RSS/CPU曲线，无持续无界增长 | [AT-C05-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-C05-01 | 硬要求覆盖 | 所有明确硬要求满足或明确未完成；不以漂亮文字掩盖缺文件/缺题 | [AT-C05-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-01) | 待验收 |
+| REQ-C05-02 | 正确性门槛 | 无已知关键事实/答案错误；错误未修不能以平均分过关；自然质量由人工复核 | [AT-C05-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-02) | 待验收 |
+| REQ-C05-03 | 简洁与相关 | 一句话不扩成建议清单；100字按FX13计数；详细说明覆盖当前要求，无无关教学段落 | [AT-C05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-03) | 待验收 |
+| REQ-C05-04 | 同条件对照 | 同条件可比较；参数差异单列；失败计入分母，不混用其它构建或不同模型当算法收益 | [AT-C05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-04) | 待验收 |
+| REQ-C05-05 | 费用授权 | 没有本任务新增明确授权不发请求；计划数量/重试上限与费用用途可审阅 | [AT-C05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-05) | 待验收 |
+| REQ-C05-06 | 真实与估算 | 真实值准确记录；估算注明；无用量/价格显示未知，不显示0费用或虚假缓存收益 | [AT-C05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-06) | 待验收 |
+| REQ-C05-07 | 停止后费用 | 说明在途请求可能计费；记录已知usage，不保证撤回远端；无新请求继续消耗 | [AT-C05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-07) | 待验收 |
+| REQ-C05-08 | 重复循环 | 提示或有界改变策略；不无限原样重试；新输入可继续合法任务，不硬禁正常轮询 | [AT-C05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-08) | 待验收 |
+| REQ-C05-09 | 性能解释 | 分别报告，不把模型思考慢说成界面卡；样本不足不报P95；没有前后证据不声称提速 | [AT-C05-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-09) | 待验收 |
+| REQ-C05-10 | 资源回收 | 所属执行进程、定时器、句柄与租约按合同回收；保留RSS/CPU曲线，无持续无界增长 | [AT-C05-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-10) | 待验收 |
 
 #### WP-C06 日常运行、安装更新与交付一致性
 
@@ -754,19 +783,20 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 - **拟触及接缝**：沿M12/M11现领域/shared/typed preload/正式页面适配；具体消费者、文件/表/目录在.01冻结，不造平行真源。
 - **数据/失败/回退**：主程序与组件各保留兼容旧版本；用户数据独立；不未经授权发布安装包或移动其他工作树分支。
 - **完成交付**：真实功能/版本化契约、可操作入口、适用状态、读回、下列用例证据及回退。当前没有本组新通过结论。
+- **实现备注**：待验收；本组全部适用需求达标后备注“已实现”，保留日期、源码SHA与证据。
 
-| 需求ID | 细项 | 最终效果/通过条件 | 验收 |
-|---|---|---|---|
-| REQ-C06-01 | 实际运行根 | 为D:/WorkProject/EduProject或明确安装路径本次版本；不能以e147测试窗口代替日常已更新 | [AT-C06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-01) |
-| REQ-C06-02 | 第一窗口可见 | 原生窗口可见可操作，不后台无窗；旧实例更新策略真实说明，不多开错数据根 | [AT-C06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-02) |
-| REQ-C06-03 | 源码检查 | 记录精确命令、退出码、通过/失败/跳过；无借用他树node_modules；构建不冒充用户验收 | [AT-C06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-03) |
-| REQ-C06-04 | 无依赖安装 | 受管准备完成且任务可用；无需系统Python/Docker/命令行；网络失败可恢复 | [AT-C06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-04) |
-| REQ-C06-05 | 升级回滚 | 旧兼容版本可用；文件/题库/任务数据保留；不把下载成功当升级完成 | [AT-C06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-05) |
-| REQ-C06-06 | 退出进程 | 本应用所属进程结束或明确安全完成；不杀其他应用同名进程；无后台继续写教师文件 | [AT-C06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-06) |
-| REQ-C06-07 | 已安装证据 | app.isPackaged为true且资源/依赖可用；不能用源码Electron启动当安装包通过 | [AT-C06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-07) |
-| REQ-C06-08 | 卸载与保留 | 用户数据保留策略明确；重装成果/来源可恢复；卸载不静默删除真实资料 | [AT-C06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-08) |
-| REQ-C06-09 | 版本兼容表 | 每项来源/哈希/许可/平台/兼容关系有记录；未知或不兼容不激活 | [AT-C06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-09) |
-| REQ-C06-10 | 发布与Git一致 | 保留协作者工作；普通推送并回读一致性；无发布授权不发安装包；Git同步不计产品验收 | [AT-C06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-10) |
+| 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
+|---|---|---|---|---|
+| REQ-C06-01 | 实际运行根 | 为D:/WorkProject/EduProject或明确安装路径本次版本；不能以e147测试窗口代替日常已更新 | [AT-C06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-01) | 待验收 |
+| REQ-C06-02 | 第一窗口可见 | 原生窗口可见可操作，不后台无窗；旧实例更新策略真实说明，不多开错数据根 | [AT-C06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-02) | 待验收 |
+| REQ-C06-03 | 源码检查 | 记录精确命令、退出码、通过/失败/跳过；无借用他树node_modules；构建不冒充用户验收 | [AT-C06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-03) | 待验收 |
+| REQ-C06-04 | 无依赖安装 | 受管准备完成且任务可用；无需系统Python/Docker/命令行；网络失败可恢复 | [AT-C06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-04) | 待验收 |
+| REQ-C06-05 | 升级回滚 | 旧兼容版本可用；文件/题库/任务数据保留；不把下载成功当升级完成 | [AT-C06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-05) | 待验收 |
+| REQ-C06-06 | 退出进程 | 本应用所属进程结束或明确安全完成；不杀其他应用同名进程；无后台继续写教师文件 | [AT-C06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-06) | 待验收 |
+| REQ-C06-07 | 已安装证据 | app.isPackaged为true且资源/依赖可用；不能用源码Electron启动当安装包通过 | [AT-C06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-07) | 待验收 |
+| REQ-C06-08 | 卸载与保留 | 用户数据保留策略明确；重装成果/来源可恢复；卸载不静默删除真实资料 | [AT-C06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-08) | 待验收 |
+| REQ-C06-09 | 版本兼容表 | 每项来源/哈希/许可/平台/兼容关系有记录；未知或不兼容不激活 | [AT-C06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-09) | 待验收 |
+| REQ-C06-10 | 发布与Git一致 | 保留协作者工作；普通推送并回读一致性；无发布授权不发安装包；Git同步不计产品验收 | [AT-C06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-10) | 待验收 |
 
 ### 7.7 兼容、恢复和回退总规则
 

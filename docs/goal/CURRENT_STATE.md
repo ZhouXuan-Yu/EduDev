@@ -1,5 +1,9 @@
 # 小智 Goal 当前状态
 
+## 2026-10-29 Goal任务目标已编写
+
+XIAOZHI_AGENT_DELIVERY_GOAL.md包含四份规格与顺序执行/简化审核/达标后已实现规则；28组及252条已补备注位，全为待验收/未执行。CSV被占用保留原数据，已有备注列足够后续达标填写。本轮无运行功能变更，也未启动持续实现Goal。
+
 ## 2026-10-29 完整任务书与验收规格
 
 已编制28组/252条需求与用例，含14组数据/答案规格、逐条CSV；全部未执行，功能缺口继续OPEN。入口../product/PRD-XIAOZHI-AGENT-DELIVERY.md及../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md。此轮仅文档，不改变日常构建或新增模型请求。
