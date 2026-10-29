@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 E03原任务与Office薄扩展
+
+不新增工具名或创建指纹；office_create_document可选presentationEdit经原Service转换为完整Office Proposal，再用原审阅/存储/生成/回执。task.resume允许真实短继续，任务修改新请求的历史sources仅供上下文；goal绑定按origin来源，不按sources数组首项。原SQL/文件真源及typed批准IPC不变。长请求完整读取与队列上下文接缝仍待补齐。
+
 ## 2026-10-29 PDF本地发布与目录AI隔离
 
 PDF页回执/暂存chunks与canonical resource_chunks继续由原publish隔离；目录AI在发布就绪后取来源，不引入另一份正文真源。现folder表新增plan_cursor及两个派生部分索引，小批8资源轮转，旧未计费误判页按同版本证据恢复。规则抽题按明确原页边界排除后一题元数据前言，不丢真正跨页条件；共享协议/typed IPC/主页面不变。

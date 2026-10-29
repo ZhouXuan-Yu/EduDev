@@ -122,8 +122,8 @@ FX01旅程：完整要求→真实进度→明确HTML/PPT待交付项→工具�
 | 任务 | 功能 | 阶段 | 类型 | 模块 | 前置 | 条目数 | 状态 | 实现备注 |
 |---|---|---|---|---|---|---:|---|---|
 | WP-E01 | 常用文件工具与默认产物区 | P1 | 优化+新增 | M09/M10/M12 | C01,C03,C04 | 10 | 部分实现/未验收 | 待验收 |
-| WP-E02 | 模型与真实思考档位 | P1 | 新增设置+优化请求 | M10 | C01,C04 | 10 | 待实施/未验收 | 待验收 |
-| WP-E03 | 多轮任务理解与局部修改 | P1 | 优化 | M10/M09 | E01,E02,C03 | 10 | 待实施/未验收 | 待验收 |
+| WP-E02 | 模型与真实思考档位 | P1 | 新增设置+优化请求 | M10 | C01,C04 | 10 | 部分实现/未集中验收 | 待验收 |
+| WP-E03 | 多轮任务理解与局部修改 | P1 | 优化 | M10/M09 | E01,E02,C03 | 10 | 部分实现/未集中验收 | 待验收 |
 | WP-E04 | 受管工具发现、下载与环境准备 | P1 | 新增 | M10/M12 | C01,C03,C04 | 10 | 待实施/未验收 | 待验收 |
 | WP-E05 | 工具组合、计算与受限代码执行 | P1 | 新增 | M10/M09 | E01,E04,C01 | 10 | 待实施/未验收 | 待验收 |
 | WP-E06 | 交付前核验与自动修复 | P1 | 优化+新增 | M09/M10 | E01,E05,C04 | 10 | 待实施/未验收 | 待验收 |
@@ -219,15 +219,15 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-E03-01 | 短确认继续 | 沿原HTML/PPT目标继续；不重问已有学段/题目；不变成仅给大纲或代码 | [AT-E03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-01) | 待验收 |
-| REQ-E03-02 | 当前指令优先 | 当前有效目标为8页浮力；冲突旧约束被标为历史；不把历史偏好覆盖明确新要求 | [AT-E03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-02) | 待验收 |
-| REQ-E03-03 | PPT局部改页 | 只第4页语义内容变化；页序、备注、其他页文字/图形保持；生成可取回的新版本 | [AT-E03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-03) | 待验收 |
-| REQ-E03-04 | 目标歧义 | 仅对真正歧义集中问一次；选择后编辑正确artifact版本，第一份无变化 | [AT-E03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-04) | 待验收 |
-| REQ-E03-05 | 已保存不重放 | 读取保存回执后只续PPT；HTML版本/文件数不因恢复增加；不重复审批已完成同一操作 | [AT-E03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-05) | 待验收 |
-| REQ-E03-06 | 上下文整理 | 保留当前目标、约束、来源版本、已保存回执和失败；摘要不获得权限；必要来源重新实读 | [AT-E03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-06) | 待验收 |
+| REQ-E03-01 | 短确认继续 | 沿原HTML/PPT目标继续；不重问已有学段/题目；不变成仅给大纲或代码 | [AT-E03-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-01) | 部分实现；待集中验收 |
+| REQ-E03-02 | 当前指令优先 | 当前有效目标为8页浮力；冲突旧约束被标为历史；不把历史偏好覆盖明确新要求 | [AT-E03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-02) | 部分实现；待集中验收 |
+| REQ-E03-03 | PPT局部改页 | 只第4页语义内容变化；页序、备注、其他页文字/图形保持；生成可取回的新版本 | [AT-E03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-03) | 部分实现；待集中验收 |
+| REQ-E03-04 | 目标歧义 | 仅对真正歧义集中问一次；选择后编辑正确artifact版本，第一份无变化 | [AT-E03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-04) | 部分实现；待集中验收 |
+| REQ-E03-05 | 已保存不重放 | 读取保存回执后只续PPT；HTML版本/文件数不因恢复增加；不重复审批已完成同一操作 | [AT-E03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-05) | 部分实现；待集中验收 |
+| REQ-E03-06 | 上下文整理 | 保留当前目标、约束、来源版本、已保存回执和失败；摘要不获得权限；必要来源重新实读 | [AT-E03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-06) | 部分实现；待集中验收 |
 | REQ-E03-07 | 生成中追加 | 明确说明何时应用追加；只作用本任务；生成中输入不丢失；无跨会话串指令 | [AT-E03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-07) | 待验收 |
 | REQ-E03-08 | 冲突内容与否定 | 遵循教师任务；资料指令不改变目标或授权；最终清单无视频且有两文件 | [AT-E03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-08) | 待验收 |
-| REQ-E03-09 | 切换与重启 | 各自目标、文件和待确认项对应正确；旧工具闭包不跨run复用；A不自动重复外部动作 | [AT-E03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-09) | 待验收 |
+| REQ-E03-09 | 切换与重启 | 各自目标、文件和待确认项对应正确；旧工具闭包不跨run复用；A不自动重复外部动作 | [AT-E03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-09) | 部分实现；待集中验收 |
 | REQ-E03-10 | 必要信息不足 | 只询问会实质改变内容的缺口；允许合理假设处明确标注；补齐后直接执行，不循环确认 | [AT-E03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e03-10) | 待验收 |
 
 #### WP-E04 受管工具发现、下载与环境准备

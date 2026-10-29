@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-29 E03工具输入扩展
+
+Hana office_read_text扩展.html/.htm/.svg，仍64KiB UTF8，只读不运行脚本。原office_create_document增加presentationEdit v1参数，不与draft并用，仅本会话已保存逐页PPT按当前version另存修改；普通Office v1及原工具身份保持。PPT旧版/来源漂移返回错误，不重建外部任意PPT。
+
 ## 2026-10-29 长PDF沿原Worker修复
 
 复用原PDF file.v3流式Worker/页ACK/发布事务、MaterialFolderAiRepository及AI首终稿与同题本；只修发布就绪判断、持久轮转、未计费旧误判恢复和确定性页前言边界。不新增库/服务/模型/IPC；52MiB测试嵌入载荷通过现PIL/pypdf生成，属于测试夹具而非产品依赖或真实教师语料。无新增付费调用。
