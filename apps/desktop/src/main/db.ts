@@ -4271,8 +4271,8 @@ export class OmniEduStore {
     const rows = await this.all(`SELECT q.*, COALESCE(b.bookmarked, 0) AS notebook_bookmarked, COALESCE(b.version, 0) AS notebook_version, COALESCE(u.usage_count, 0) AS usage_count, COALESCE(u.last_used_at, '') AS last_used_at
       FROM question_bank_items q
       LEFT JOIN question_notebook_bookmarks b ON b.question_id = q.id
-      LEFT JOIN (SELECT question_id, COUNT(*) AS usage_count, MAX(created_at) AS last_used_at FROM question_bank_usage GROUP BY question_id) u ON u.question_id = q.id
-      WHERE q.id = ?`, [id]);
+      LEFT JOIN (SELECT question_id, COUNT(*) AS usage_count, MAX(created_at) AS last_used_at FROM question_bank_usage WHERE question_id=? GROUP BY question_id) u ON u.question_id = q.id
+      WHERE q.id = ?`, [id,id]);
     const row = rows[0];
     if (!row) return undefined;
     const item = this.mapQuestionBankItem(row);

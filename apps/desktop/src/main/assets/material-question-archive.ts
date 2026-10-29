@@ -40,7 +40,7 @@ export class MaterialQuestionArchive{
   try{const value=JSON.parse(String(state?.value_json||'{}'));if(value.schema===1&&Number.isSafeInteger(value.cursor)&&value.cursor>=0)cursor=value.cursor;}catch{/* Derived cursor can be rebuilt. */}
   const rows=await this.host.all('SELECT rowid origin_rowid,id FROM question_bank_items WHERE rowid>? ORDER BY rowid LIMIT 8',[cursor]);
   for(const row of rows){
-   if(this.controller.signal.aborted)return;const q=await this.host.read(String(row.id));let origin:RuleOrigin|undefined;
+   if(this.controller.signal.aborted)return;let q:QuestionBankItem|undefined,origin:RuleOrigin|undefined;try{q=await this.host.read(String(row.id));}catch{/* A corrupt historical row cannot block later rows or new imports. */}
    try{if(q?.archive?.ai&&q.archive.state==='ai_final'&&archiveEligible(q)){
     await this.validate(q,true);const units=[];
     for(const s of q.archive.sources){const window=await this.host.materials().readingWindow(s.resourceId,s.offset,1);if(window.units.length!==1||JSON.stringify(materialSource(window.units[0]))!==JSON.stringify(s))throw Error('source_changed');units.push(window.units[0]);}
@@ -49,8 +49,8 @@ export class MaterialQuestionArchive{
     if(candidates.length===1){const c=candidates[0];origin={sources:q.archive.native?q.archive.sources:c.archive.sources,number:c.archive.number,stem:c.fields.stem,risks:c.archive.sourceRisks};}
    }}catch{/* Invalid historical evidence stays visible; never infer an association. */}
    await this.host.withWriter(async target=>{
-    const current=await target.host.read(String(row.id));if(q&&current&&questionVersion(current)===questionVersion(q)){
-     if(origin){for(const source of origin.sources)await target.host.materials().source(source);await recordAiOrigin(target.host,current,origin);}
+    let current:QuestionBankItem|undefined;if(q)try{current=await target.host.read(String(row.id));}catch{/* Changed/corrupt history stays unassociated. */}if(q&&current&&questionVersion(current)===questionVersion(q)){
+     if(origin){if(!target.host.validateAi)throw Error('source_changed');await target.host.validateAi(current);for(const source of origin.sources)await target.host.materials().source(source);await recordAiOrigin(target.host,current,origin);}
      else await recordRuleOrigin(target.host,current);
     }
     await target.host.run("INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at",['xiaozhi.question-origins.cursor.v1',JSON.stringify({schema:1,cursor:Number(row.origin_rowid)})]);
