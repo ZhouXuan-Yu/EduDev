@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 会话资源与引用补齐
+
+原生SessionManager通过native-session-resources独占租约复用，最多4个空闲、2分钟释放，字节/作用域变化重载；每轮AgentSession、工具、凭证和授权仍新建。来源结构新增可选local行定位，沿既有typed预览IPC核版本；没有新表/迁移。详情../goal/HANA_ANSWER_QUALITY.md。
+
 ## 2026-10-28 Hana回答优化独立切片
 
 Hana ToolCatalog作为唯一Pi的provider-facing适配，不改变原生会话identity；全工具仍由宿主边界执行，按需只改变请求曝光。缓存仅含经全内容复核的技能解析，run工具闭包不复用。每run证据表在内存登记，可选citationId随既有事件和SQLite元数据持久化，无新表/迁移。详../goal/HANA_ANSWER_QUALITY.md。

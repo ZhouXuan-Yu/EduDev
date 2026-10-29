@@ -61,6 +61,8 @@ import {withModelRequestRecovery} from './model-request-recovery';
 import {createQualityMetrics} from './quality-metrics';
 import {createAnswerEvidence} from './answer-evidence';
 import {validCitationId} from '../../shared/answer-citations';
+import {nativeSessionResources,type NativeSessionLease} from './native-session-resources';
+import {validLocalAnswerSource} from '../../shared/local-answer-source';
 
 const PROVIDER = 'xiaozhi_deepseek';
 const MAX_TEXT = 65536;
@@ -186,11 +188,18 @@ function classifyError(raw: unknown): XiaozhiAgentError {
 
 /** Hana-style session assembly using the embedded SDK, no subprocess/CLI entry. */
 export async function createPiXiaozhiSession(options: PiXiaozhiOptions) {
-  try { return await assemblePiXiaozhiSession(options); }
-  catch (error) { await options.mcpDispose?.().catch(() => undefined); throw error; }
+  let lease:NativeSessionLease|undefined,reusable=false;
+  try {
+    const agent=await assemblePiXiaozhiSession(options,value=>{lease=value;});
+    return {...agent,
+      async prompt(text:string){reusable=false;const result=await agent.prompt(text);reusable=result.ok;return result;},
+      async compact(){reusable=false;const result=await agent.compact();reusable=result.ok;return result;},
+      async dispose(){try{await agent.dispose();}catch(error){reusable=false;throw error;}finally{lease?.release(reusable);}},
+    };
+  } catch (error) { lease?.release(false);await options.mcpDispose?.().catch(() => undefined); throw error; }
 }
 
-async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
+async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease:NativeSessionLease)=>void) {
   const quality=answerQualityEnabled(),preparedAt=performance.now();
   let metrics:ReturnType<typeof createQualityMetrics>|undefined,evidence:ReturnType<typeof createAnswerEvidence>|undefined;
   const repetition=createRepeatToolReminder();
@@ -225,7 +234,10 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       validateEducationSessionIdentity(options,preview.getEntries());
     }catch{throw new Error('configuration');}
   }
-  const manager = options.sessionFile ? SessionManager.open(options.sessionFile, sessionDir, workspace) : SessionManager.create(workspace, sessionDir);
+  const nativeLease=quality?nativeSessionResources.acquire({file:options.sessionFile,sessionDir,workspace,
+    scope:JSON.stringify([root,workspace,options.privateWorkspaceId||'',options.model])}):undefined;
+  if(nativeLease)onLease(nativeLease);
+  const manager = nativeLease?.manager || (options.sessionFile ? SessionManager.open(options.sessionFile, sessionDir, workspace) : SessionManager.create(workspace, sessionDir));
   const educationIdentity=validateEducationSessionIdentity(options,manager.getEntries());
   const sessionId = manager.getSessionId();
   const modelIdentity=await phase(async()=>options.modelHistory?.authorize(manager));
@@ -642,7 +654,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
           const title = result.data.source && result.data.source !== '.' ? result.data.source : '授权工作目录';
           const safeTitle = options.sanitizeFileText ? await options.sanitizeFileText(title) : title;
           signal?.throwIfAborted();
-          publicDetails = { ...result, data: { ...result.data, sources: [{ title: safeTitle.slice(0, 200) }] } };
+          const local=def.name==='office_read_text'&&typeof result.data.text==='string'&&safeTitle===title?{
+            kind:'workspace',path:result.data.source.replace(/\\/g,'/'),version:result.data.version,
+            startLine:1,endLine:result.data.text.split('\n').length,locator:'text_lines',
+          }:undefined;
+          publicDetails = { ...result, data: { ...result.data, sources: [{ title: safeTitle.slice(0, 200),
+            ...(validLocalAnswerSource(local)?{local}:{}) }] } };
         }
         return { content: [{ type: 'text' as const, text: JSON.stringify(modelResult) }], details: publicDetails, isError: !result.success };
     },
@@ -969,7 +986,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       const result = event.result as { details?: { data?: { source?: unknown; sources?: import('../../shared/xiaozhi-web').XiaozhiPublicSource[]; webError?: import('../../shared/xiaozhi-web').XiaozhiWebError; webEmpty?: boolean;browserCapture?:unknown } } };
       const source = typeof result?.details?.data?.source === 'string' ? result.details.data.source.slice(0, 512) : undefined;
       const rawSources = result?.details?.data?.sources;
-      const sources = Array.isArray(rawSources) ? rawSources.slice(0, 12).flatMap(value => value && typeof value.title === 'string' ? [{ title: value.title.slice(0, 200), ...(validCitationId(value.citationId)?{citationId:value.citationId}:{}), ...(typeof value.url==='string' && /^https?:\/\//.test(value.url) && value.url.length<=2048 ? {url:value.url}:{}), ...(typeof value.observedAt==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value.observedAt)?{observedAt:value.observedAt}:{}), ...(['read','search'].includes(value.kind||'')?{kind:value.kind}:{}), ...(!event.isError&&['education_search_materials','education_verify_material_quote','office_read_material'].includes(event.toolName)&&validMaterialSource(value.material)?{material:value.material}:{}), ...(!event.isError&&['education_read_student_context','education_analyse_learning'].includes(event.toolName)&&validStudentContextSource(value.student)?{student:value.student}:{}), ...(!event.isError&&['education_search_questions','education_read_question','education_web_answer',MISTAKE_SIMILAR_TOOL].includes(event.toolName)&&validQuestionContextSource(value.question)?{question:value.question}:{}) }] : []) : [];
+      const sources = Array.isArray(rawSources) ? rawSources.slice(0, 12).flatMap(value => value && typeof value.title === 'string' ? [{ title: value.title.slice(0, 200), ...(validCitationId(value.citationId)?{citationId:value.citationId}:{}), ...(!event.isError&&['office_read_text','office_read_attachment'].includes(event.toolName)&&validLocalAnswerSource(value.local)?{local:value.local}:{}), ...(typeof value.url==='string' && /^https?:\/\//.test(value.url) && value.url.length<=2048 ? {url:value.url}:{}), ...(typeof value.observedAt==='string' && /^\d{4}-\d{2}-\d{2}T/.test(value.observedAt)?{observedAt:value.observedAt}:{}), ...(['read','search'].includes(value.kind||'')?{kind:value.kind}:{}), ...(!event.isError&&['education_search_materials','education_verify_material_quote','office_read_material'].includes(event.toolName)&&validMaterialSource(value.material)?{material:value.material}:{}), ...(!event.isError&&['education_read_student_context','education_analyse_learning'].includes(event.toolName)&&validStudentContextSource(value.student)?{student:value.student}:{}), ...(!event.isError&&['education_search_questions','education_read_question','education_web_answer',MISTAKE_SIMILAR_TOOL].includes(event.toolName)&&validQuestionContextSource(value.question)?{question:value.question}:{}) }] : []) : [];
       const capture=result?.details?.data?.browserCapture;
       emit({ kind: 'tool_end', tool: event.toolName, callId: event.toolCallId.slice(0, 128), success: !event.isError, resultSummary:event.isError?publicToolResult(event.toolName,false):publicResults.get(event.toolCallId), ...(durationMs === undefined ? {} : { durationMs }), ...(source ? { source } : {}), ...(sources.length ? { sources } : {}), ...(result?.details?.data?.webError?{webError:result.details.data.webError}:{}), ...(typeof result?.details?.data?.webEmpty==='boolean'?{webEmpty:result.details.data.webEmpty}:{}), ...(!event.isError&&event.toolName==='office_browser'&&validBrowserCapture(capture)?{browserCapture:capture}:{}) });
     }
@@ -991,7 +1008,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
       if (estimateFullRequest(context,Math.min(4096,target.maxOutputTokens)) > Math.min(target.contextWindow,options.testContextWindow || Infinity)) throw new Error('context_limit');
     },
     usage:()=>budget?.snapshot(),
-    qualityMetrics:()=>metrics?.snapshot(),
+    qualityMetrics:()=>metrics?{...metrics.snapshot(),nativeSessionCacheHit:nativeLease?.hit?1:0}:undefined,
     contextPolicy: () => structuredClone(policy),
     diagnostics: () => ({ running, activeTools: session.getActiveToolNames(), executing: executions.activeCount(sessionId),
       toolManifests:manifests,

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-29 Hana资源层继续薄适配
+
+沿Hana加载/空闲生命周期设计复用Pi原生历史资源，未引入另一Engine或Runtime；工具与权限逐轮绑定。local引用扩展现公开来源，主进程登记，renderer使用已有文件/附件预览与OCR审核读API。无新增依赖，主进程legacy开关回退原生缓存和引用注册。
+
 ## 2026-10-28 Hana回答优化独立切片
 
 新增Hana质量ToolCatalog固定SHA/许可证追踪，复用脚本与源清单见 vendor/hana/quality。没有新增npm/Python依赖，也未接入DSH或SourceWeft服务；其机制由当前Pi适配。默认优化可用主进程环境XIAOZHI_ANSWER_QUALITY=legacy回退，既有来源/权限/审阅IPC兼容。详../goal/HANA_ANSWER_QUALITY.md。

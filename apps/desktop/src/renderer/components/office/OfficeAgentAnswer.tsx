@@ -2,9 +2,9 @@ import type { OfficeProjectedItem, OfficeProjectedTurn } from '../../../shared/o
 import type { OfficeConversationProps } from './OfficeConversation';
 import { ChatMessage } from '../../heroui-pro/components/chat-message';
 import { OfficeAnswerMarkdown } from './OfficeAnswerMarkdown';
-import { OfficeReplySources } from './OfficeReplySources';
+import { OfficeReplySources,replySources } from './OfficeReplySources';
 
-export function OfficeAgentAnswer({
+export const OfficeAgentAnswer=memo(function OfficeAgentAnswer({
   turn,
   item,
   sessionId,
@@ -40,4 +40,9 @@ export function OfficeAgentAnswer({
       </ChatMessage.Body>
     </ChatMessage.Assistant>
   );
-}
+},(before,after)=>before.sessionId===after.sessionId&&before.replyActions===after.replyActions
+  &&before.turn.status===after.turn.status
+  &&Object.keys(before.item).length===Object.keys(after.item).length
+  &&Object.keys(before.item).every(key=>before.item[key as keyof OfficeProjectedItem]===after.item[key as keyof OfficeProjectedItem])
+  &&JSON.stringify(replySources(before.turn))===JSON.stringify(replySources(after.turn)));
+import {memo} from 'react';

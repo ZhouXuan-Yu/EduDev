@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-29 回答功能补齐
+
+同一专项新增工作文件引用原版本打开/变化拒绝、已提交附件第2行引用定位，并修复当前输入框有附件就禁发的缺口。最终原生6/6、0页面错误（answer-quality-electron-nBq3rF），缓存命中0/1/1/1；构建、240组件、11边界、22权限及207旧smoke通过。精确日志/指纹及首次失败保留在goal/HANA_ANSWER_QUALITY.md。所有本轮模型传输受控，无新增真实API请求。
+
 ## 2026-10-28 Hana回答优化增量
 
 answer-quality-electron.mjs --paths-only：真实生产Pi入口、合成资料UI导入→实际工具读取→正文引用展开来源并打开原资料、伪造引用标记、503恢复、等待重试时停止、冷重启恢复且0重放，4/4、0 renderer错误；双尺寸截图1366×768/1920×1080。证据test-results/answer-quality-electron-2qjN35，构建指纹与局限详goal/HANA_ANSWER_QUALITY.md。传输使用受控SSE；真实API答案质量独立验收。

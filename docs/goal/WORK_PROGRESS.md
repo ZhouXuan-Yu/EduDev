@@ -1,5 +1,9 @@
 # EduDev 当前任务进度
 
+## 2026-10-29 回答优化续接
+
+当前e147继续codex/hana-answer-quality。用户要求先全部对齐前案功能、每片测试一次、最后集中验收。本轮补原生会话历史复用、活动消息渲染隔离、附件/工作文件引用定位；未开启盲评工具支线或新增API请求。功能清单与最终检查/Git交付状态见HANA_ANSWER_QUALITY.md最新节。并行beca的知识库KR队列维持原进度。
+
 ## 并行回答优化（e147，不替换知识库KR队列）
 
 用户授权在 codex/hana-answer-quality 实现以Hana为核心的回答优化。AQ00–AQ07已接入，AQ08本地验证与真实模型质量分层记录；清单、逐项对比、测试命令与未验边界见 [HANA_ANSWER_QUALITY.md](HANA_ANSWER_QUALITY.md)。真实教师盲评尚未通过，不能据工程测试声称“1+1=3已实现”；KR02与0文件导出旧事实保持。

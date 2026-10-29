@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo,useMemo } from 'react';
 import type { OfficeConversationProps } from './OfficeConversation';
 import type { OfficeProjectedTurn } from '../../../shared/office-agent';
 import { ChatMessage } from '../../heroui-pro/components/chat-message';
@@ -22,6 +22,11 @@ export const OfficeAgentTurn = memo(function OfficeAgentTurn({
 }: Props) {
   const { users, body } = splitAgentTrace(turn);
   const receipts = turn.items.flatMap((item) => (item.imageDelivery ? [item.imageDelivery] : []));
+  // Process disclosure needs body boundaries/order, not every growing answer string.
+  // Preserve all process/source facts; a phase/terminal change still updates immediately.
+  const processView={...turn,items:turn.items.map(item=>body.includes(item)?{...item,text:''}:item)};
+  const processSignature=JSON.stringify(processView);
+  const processTurn=useMemo(()=>processView,[processSignature]);
   return (
     <>
       {users.map((item) => (
@@ -32,7 +37,7 @@ export const OfficeAgentTurn = memo(function OfficeAgentTurn({
           </ChatMessage.Bubble>
         </ChatMessage.User>
       ))}
-      <AgentProcess turn={turn} sessionId={sessionId} renderPlan={renderPlan} />
+      <MemoAgentProcess turn={processTurn} sessionId={sessionId} renderPlan={renderPlan} />
       {receipts.length > 0 && (
         <OfficeImageViews receipts={receipts} renderImages={renderViewedImages} />
       )}
@@ -48,3 +53,5 @@ export const OfficeAgentTurn = memo(function OfficeAgentTurn({
     </>
   );
 });
+
+const MemoAgentProcess=memo(AgentProcess);
