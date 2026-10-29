@@ -195,16 +195,16 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-E02-01 | 档位显示 | 显示模型真实名称、自动/受支持档位与实际映射；未配置可说明原因；不把Ultra当全模型通用能力 | [AT-E02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-01) | 待验收 |
-| REQ-E02-02 | 请求生效 | 下次请求启停思考、effort和输出预算符合冻结映射；不存在“标签高、请求低” | [AT-E02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-02) | 待验收 |
-| REQ-E02-03 | 持久与作用域 | A/B各自选择保持；明确全局默认与会话覆盖优先级；读旧配置不丢模型选择 | [AT-E02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-03) | 待验收 |
-| REQ-E02-04 | 自动任务路由 | 自动档结合未完成目标决定深度，短确认不会自动降为闲聊；简单问候不无谓开启重执行 | [AT-E02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-04) | 待验收 |
-| REQ-E02-05 | 不支持的能力 | 菜单准确禁用或显示明确降档；请求使用实际支持值；不静默换模型、供应商或伪造强度 | [AT-E02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-05) | 待验收 |
-| REQ-E02-06 | 并发保存 | 旧版本保存返回冲突并刷新；运行中设置按合同禁用，下轮才可变；不改变已开始请求 | [AT-E02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-06) | 待验收 |
-| REQ-E02-07 | 容量与长输出 | 预算受可信容量限制；截断明确为未完成并可继续；不因高档位突破窗口或把截断当完成 | [AT-E02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-07) | 待验收 |
-| REQ-E02-08 | 网络或凭证故障 | 有可重试原因，保留原可用设置；不显示密钥；不把鉴权失败报告为“模型没有思考能力” | [AT-E02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-08) | 待验收 |
-| REQ-E02-09 | 设置不触发生成 | 设置操作不自动发送教学题或续跑旧任务；如目录联网需说明用途；聊天生成次数为0 | [AT-E02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-09) | 待验收 |
-| REQ-E02-10 | 质量比较边界 | 能复核准确性/覆盖与成本；同名档位不当同预算；不把更长回答或不同模型当更聪明实证 | [AT-E02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-10) | 待验收 |
+| REQ-E02-01 | 档位显示 | 显示模型真实名称、自动/受支持档位与实际映射；未配置可说明原因；不把Ultra当全模型通用能力 | [AT-E02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-01) | 部分实现；待集中验收 |
+| REQ-E02-02 | 请求生效 | 下次请求启停思考、effort和输出预算符合冻结映射；不存在“标签高、请求低” | [AT-E02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-02) | 部分实现；待集中验收 |
+| REQ-E02-03 | 持久与作用域 | A/B各自选择保持；明确全局默认与会话覆盖优先级；读旧配置不丢模型选择 | [AT-E02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-03) | 部分实现；待集中验收 |
+| REQ-E02-04 | 自动任务路由 | 自动档结合未完成目标决定深度，短确认不会自动降为闲聊；简单问候不无谓开启重执行 | [AT-E02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-04) | 部分实现；待集中验收 |
+| REQ-E02-05 | 不支持的能力 | 菜单准确禁用或显示明确降档；请求使用实际支持值；不静默换模型、供应商或伪造强度 | [AT-E02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-05) | 部分实现；待集中验收 |
+| REQ-E02-06 | 并发保存 | 旧版本保存返回冲突并刷新；运行中设置按合同禁用，下轮才可变；不改变已开始请求 | [AT-E02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-06) | 部分实现；待集中验收 |
+| REQ-E02-07 | 容量与长输出 | 预算受可信容量限制；截断明确为未完成并可继续；不因高档位突破窗口或把截断当完成 | [AT-E02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-07) | 部分实现；待集中验收 |
+| REQ-E02-08 | 网络或凭证故障 | 有可重试原因，保留原可用设置；不显示密钥；不把鉴权失败报告为“模型没有思考能力” | [AT-E02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-08) | 部分实现；待集中验收 |
+| REQ-E02-09 | 设置不触发生成 | 设置操作不自动发送教学题或续跑旧任务；如目录联网需说明用途；聊天生成次数为0 | [AT-E02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-09) | 部分实现；待集中验收 |
+| REQ-E02-10 | 质量比较边界 | 能复核准确性/覆盖与成本；同名档位不当同预算；不把更长回答或不同模型当更聪明实证 | [AT-E02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e02-10) | 部分实现；待集中验收 |
 
 #### WP-E03 多轮任务理解与局部修改
 

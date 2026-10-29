@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 E02薄适配
+
+沿原模型设置State/API、原互斥锁、typed preload、正式composer与唯一Pi Runtime添加thinking契约；独立可选app_settings键/CAS，无新表/业务事实库/运行循环。主进程按官方能力冻结策略，最后payload覆盖普通与工具续轮/压缩的三个参数；完整请求门校验同一输出预算。最近准备配置不冒充已发请求。
+
 ## 2026-10-29 同源派生关联
 
 material_question_origins是可重建展示关系，不是第二题库；同原件版本/完整sources/原始题面指纹区分rule/ai，covered派生联动needs_attention。现AI发布与规则创建同writer登记，历史按8条有界回填并锁内验证，坏历史不阻塞新导入。题目/源/回执变化和教师操作失效，typed notebook showSourceCandidates读取原始记录；ID读取不再先加载50题/全库使用汇总。原业务事实、权限和Pi唯一runtime保持。
