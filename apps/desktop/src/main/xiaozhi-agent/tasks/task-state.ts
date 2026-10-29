@@ -1,4 +1,5 @@
 import type {Sql} from '../session-state';
+import {isTaskContinuation,isTaskAmendment} from './continuation';
 import {TASK_SCHEMA,validTaskOwner,validTaskView,validTaskSteps,validTaskCriterion,taskObject,taskKeys,taskText,taskIdentity,taskDigest,taskNatural,taskStepState,type TaskView,type TaskOwner,type TaskCriterion,type TaskSource,type TaskPlanProposal} from '../../../shared/xiaozhi-task';
 import {validTaskVerification,type TaskVerification} from '../../../shared/xiaozhi-verification';
 import {taskHash as hash,taskToolKinds as toolKinds,applyTaskReadback,applyTaskRecheck} from './task-evidence';
@@ -153,12 +154,17 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
     if(actual.source.version!==initial.source.version||actual.source.runId!==owner.runId)throw Error('task_source_changed');
     const id=taskIdentityFor(owner.sessionId,messageId),prior=await read(work,id);
     if(prior){if(prior.doc.view.origin.commandId!==commandId||!matches(owner,prior.doc.view.binding)||await latestId(work,owner.sessionId)!==id)throw Error('task_revision_conflict');return clone(prior.doc.view);}
-    const previousId=await latestId(work,owner.sessionId);
+    const goal=await goalFromSource(work,owner.sessionId,messageId);
+    const previousId=await latestId(work,owner.sessionId);let contextSources:TaskView['sources']=[];
     if(previousId){const previous=await read(work,previousId);if(!previous||previous.doc.view.sessionId!==owner.sessionId)throw Error('task_corrupt');if(previous.doc.lineage.some(o=>o.runId===owner.runId))throw Error('task_run_already_bound');
+     if(!goal&&isTaskAmendment(actual.text)&&previous.doc.view.state!=='ended'){
+      await sources(work,previous.doc);contextSources=clone(previous.doc.view.sources).filter(source=>!!source.messageId);
+      if(contextSources.length>=32)throw Error('task_capacity');
+     }
      if(previous.doc.view.state==='active'){const interrupted=clone(previous.doc);interrupted.view.state='interrupted';interrupted.view.binding=null;await save(work,previous,interrupted);}
     }
-    const now=stamp(),view:TaskView={schema:TASK_SCHEMA,id,sessionId:owner.sessionId,revision:1,requirementsVersion:1,planRevision:0,planReason:'依据教师实际请求建立任务，步骤尚未采用',state:'active',origin:{messageId,commandId,runId:owner.runId},sources:[actual.source],criteria:[{id:'teacher_request',version:1,sourceId:messageId,sourceVersion:actual.source.version,text:text.length>400?text.slice(0,399)+'…':text,kind:'human'}],steps:[],checks:[],binding:clone(owner),createdAt:now,updatedAt:now};
-    const goal=await goalFromSource(work,owner.sessionId,messageId);if(goal){if(goal.runId!==owner.runId||goal.state!=='active')throw Error('task_source_changed');bindGoalRequirements(view,goal);}
+    const now=stamp(),view:TaskView={schema:TASK_SCHEMA,id,sessionId:owner.sessionId,revision:1,requirementsVersion:1,planRevision:0,planReason:'依据教师当前请求建立任务；历史来源仅保留上下文，冲突约束以最新明确修订为准，步骤尚未采用',state:'active',origin:{messageId,commandId,runId:owner.runId},sources:[...contextSources,actual.source],criteria:[{id:'teacher_request',version:1,sourceId:messageId,sourceVersion:actual.source.version,text:text.length>400?text.slice(0,399)+'…':text,kind:'human'}],steps:[],checks:[],binding:clone(owner),createdAt:now,updatedAt:now};
+    if(goal){if(goal.runId!==owner.runId||goal.state!=='active')throw Error('task_source_changed');bindGoalRequirements(view,goal);}
     const saved=await save(work,null,{view,retiredIds:[],lineage:[{runId:owner.runId,generation:owner.generation,commandId}],admissions:[]});
     if(goal)await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[goalTaskKey(goal.id),JSON.stringify({schema:TASK_SCHEMA,taskId:id}),now]);
     await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at',[latestKey(owner.sessionId),JSON.stringify({schema:TASK_SCHEMA,taskId:id}),now]);return saved;
@@ -205,9 +211,13 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    next.eventOwner=clone(owner);return save(work,before,next);
   });},
   async pause(sessionId:string,id:string,revision:number){return transaction(async work=>{const before=await load(work,id,revision);if(before.doc.view.sessionId!==sessionId||before.doc.view.state!=='active')throw Error('permission_denied');const next=clone(before.doc);next.view.state='paused';next.view.binding=null;return save(work,before,next);});},
-  async resume(owner:TaskOwner,id:string,revision:number,commandId:string,goalId?:string){return transaction(async work=>{
+  async resume(owner:TaskOwner,id:string,revision:number,commandId:string,goalId?:string,continuationMessageId?:string){return transaction(async work=>{
    await current(work,owner);await command(work,owner,commandId);const before=await load(work,id,revision),next=clone(before.doc);
-   if(next.view.sessionId!==owner.sessionId||goalId&&next.view.goal?.id!==goalId||!(['paused','interrupted'].includes(next.view.state)||next.view.state==='review_required'&&(Boolean(goalId)||taskHasRemainingSteps(next.view)))||next.lineage.some(o=>o.runId===owner.runId)||await latestId(work,owner.sessionId)!==id)throw Error('task_resume_invalid');
+   const continuation=continuationMessageId?await source(work,owner.sessionId,continuationMessageId):undefined;
+   if(continuation&&next.view.sources.length>=32)throw Error('task_capacity');
+   if(continuation&&(continuation.source.runId!==owner.runId||!isTaskContinuation(continuation.text)||next.view.goal||next.view.sources.some(s=>s.messageId===continuationMessageId)))throw Error('task_resume_invalid');
+   if(next.view.sessionId!==owner.sessionId||goalId&&next.view.goal?.id!==goalId||!(['paused','interrupted'].includes(next.view.state)||next.view.state==='review_required'&&(Boolean(goalId)||Boolean(continuation)||taskHasRemainingSteps(next.view)))||next.lineage.some(o=>o.runId===owner.runId)||await latestId(work,owner.sessionId)!==id)throw Error('task_resume_invalid');
+   if(continuation)next.view.sources.push(continuation.source);
    if(next.lineage.length>=64)throw Error('task_capacity');next.view.state='active';next.view.binding=clone(owner);next.lineage.push({runId:owner.runId,generation:owner.generation,commandId});
    delete next.eventOwner;
    next.view.lastRunId=owner.runId;

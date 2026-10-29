@@ -156,6 +156,8 @@ export interface PiXiaozhiOptions {
   memory?: PiMemoryRuntime;
   capabilities?: XiaozhiModelCapabilities;
   thinkingPolicy?:import('../../shared/xiaozhi-thinking').ThinkingDecision;
+  /** Main-owned current task hint for Hana's local tool selection, never new authority. */
+  toolTaskQuery?:string;
   /** Main-owned policy; IPC cannot set arbitrary provider capacity. */
   autoCompaction?: boolean;
   testContextWindow?: number;
@@ -1052,7 +1054,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       phaseController=new AbortController();
       try { if (memoryFailure) throw new Error(memoryFailure); await skills?.validateCommand(text); } catch (error) { return { ok: false, runId: '', error: classifyError(error) }; }
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
-      metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text);
+      metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text+'\n'+(options.toolTaskQuery||''));
       thinkingPolicy=options.thinkingPolicy||resolveThinkingPolicy(text,capabilities);
       policy.maxOutputTokens=thinkingPolicy.maxOutputTokens;model.maxTokens=thinkingPolicy.maxOutputTokens;
       session.setThinkingLevel(thinkingPolicy.thinkingType==='disabled'?'off':thinkingPolicy.effort==='low'?'low':'high');

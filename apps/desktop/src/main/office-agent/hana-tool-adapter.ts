@@ -174,7 +174,7 @@ export function createHanaOfficeTools(options: {
             data = { source: path.relative(root, file) || '.', truncated: entries.length > 256,
               entries: entries.slice(0, 256).map(item => ({ name: item.name, kind: item.isSymbolicLink() ? 'blocked_link' : item.isDirectory() ? 'directory' : 'file' })),...(options.fileVersion?{sourceIdentity:officeSourceIdentity(root,resolved.stat)}:{}) };
           } else {
-            if (!resolved.stat.isFile() || !/\.(txt|md|csv|json|yaml|yml)$/i.test(file)) return errorResult('unsupported');
+            if (!resolved.stat.isFile() || !/\.(txt|md|csv|json|yaml|yml|html|htm|svg)$/i.test(file)) return errorResult('unsupported');
             if (resolved.stat.size > 65536) return errorResult('too_large');
             const version = options.fileVersion?.(resolved.stat);
             const bytes = fs.readFileSync(file);
