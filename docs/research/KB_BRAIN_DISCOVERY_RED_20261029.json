@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-29",
+  "scope": "Actual isolated Electron UI, real DeepSeek, existing original-image-corrected question. No raw material, responses, keys or local business IDs.",
+  "result": "RED: first provider request still omits both local question schemas despite existing eligible questions",
+  "calls": 5,
+  "successfulSearches": 1,
+  "successfulFullReads": 1,
+  "directoryCalls": 2,
+  "firstRequestQuestionSchemas": false,
+  "cause": "production-host sourceAvailability uses searchQuestionBank({limit:1}); the newest review-only question is excluded, so the presence probe reports an empty question bank. Catalog pinning alone does not fix this second gate.",
+  "privateReport": "OS Temp/omni-real-material-NGRlNr/real-brain-question-1793258188519.json",
+  "remaining": "Replace presence probe with bounded record-existence reads and repeat the actual natural question path, retaining full per-question eligibility/source checks."
+}
