@@ -2,9 +2,9 @@
 
 ## 2026-10-29 长PDF本地发布与目录AI调度（M02/M03/M05/M10）
 
-教师结果：含长PDF的目录在后台识别期间不得把正常处理中页面误标失败；单页完成但canonical正文尚未发布时等待本地发布，不生成永久失败单元；前面的等待文件不得阻塞后续可处理资料。本轮沿现PDF Worker/page staging、目录持久资源/单元和原AI两阶段执行器修复，不增加模型、依赖、表、IPC或第二真源。
+教师结果：含长PDF的目录在后台识别期间不得把正常处理中页面误标失败；单页完成但canonical正文尚未发布时等待本地发布，不生成永久失败单元；前面的等待文件不得阻塞后续可处理资料。本轮沿现PDF Worker/page staging、目录持久资源/单元和原AI两阶段执行器修复，不增加模型、依赖、业务表、IPC或第二真源。
 
-已查真实协议页面处理中为processing，旧目录调度只等pending/running；PDF complete页的正文直到publish才进入resource_chunks，旧调度提前create会因unavailable永久标review。修改范围material-folder-ai.ts与边界/实际Electron专项；现shared协议/typed preload/文件夹卡片不变。资源调度采用有界轮转，旧DB按既有rowid恢复，无DDL/原件/OCR/已存AI回执重写。失败页/空白页继续保留原待处理，不借此放行缺失来源；旧误判条目只在能证明其为相同版本、尚无子AI任务且由旧本地等待错误产生时恢复排队，不能重发未知模型请求或越过教师暂停。
+已查真实协议页面处理中为processing，旧目录调度只等pending/running；PDF complete页的正文直到publish才进入resource_chunks，旧调度提前create会因unavailable永久标review。修改范围material-folder-ai.ts与边界/实际Electron专项；现shared协议/typed preload/文件夹卡片不变。资源调度采用有界轮转：既有material_folder_ai增量幂等添加plan_cursor整数列，增加待规划资源与本地误判恢复的部分索引，旧DB默认游标0；不改原件/OCR/已存AI回执。失败页/空白页继续保留原待处理，不借此放行缺失来源；旧误判条目只在能证明其为相同版本、尚无子AI任务且由旧本地等待错误产生时恢复排队，不能重发未知模型请求或越过教师暂停。
 
 验收先RED复现processing误失败、已complete未发布误创建、等待资源占满8项的饥饿，再修复；验证本地发布后自动只创建一个子批次、重启无重复、真实failed/blank不冒充成功、来源变化/暂停/额度守卫保留。实际资料页从目录授权启动真实多页PDF本地Worker，故意延长本地发布窗口观察无误判，解除后同库/冷启可读；模型HTTP受控，与自然质量区分。最终build/240组件、目录与AI边界及关键smoke；记录资源扫描上界、失败证据、剩余空页视觉补救/整页AI正文/40GB等缺口。回滚独立revert调度修复，保留所有现有持久记录；不恢复错误的成功或删除资料。
 
