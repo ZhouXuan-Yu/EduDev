@@ -8,6 +8,7 @@ import {createHanaOfficeTools} from '../../src/main/office-agent/hana-tool-adapt
 import {getPiProtectedContext} from '../../src/main/xiaozhi-agent/compaction-context.ts';
 import {fileVersion} from '../../src/main/xiaozhi-agent/workspace-files.ts';
 import {readPresentationNotes} from './presentation-readback.ts';
+import {bindGoalRequirements} from '../../src/main/xiaozhi-agent/tasks/goal-binding.ts';
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-continuity-')),workspace=path.join(output,'files'),dataRoot=path.join(output,'data');fs.mkdirSync(workspace);fs.mkdirSync(dataRoot);
 const db=new DatabaseSync(path.join(dataRoot,'app.db'));
 db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);CREATE TABLE ai_confirmation_items(id TEXT PRIMARY KEY,session_id TEXT,run_id TEXT,payload_json TEXT,action_type TEXT,status TEXT,updated_at TEXT);
@@ -55,6 +56,11 @@ try{
  assert(context.includes('10页'));assert(context.includes('改成8页'));assert(context.includes('最新明确修订替代冲突'));assert(context.includes('非新增授权'));assert(context.length<=12000);
  const records=context.split('\n').filter(l=>l.startsWith('教师要求：')).map(l=>JSON.parse(l.slice('教师要求：'.length)));assert(records.some(r=>r.messageId==='origin'&&r.taskSource));assert(records.every(r=>Number.isInteger(r.sequence)));
  check('Protected context retains original task beyond recent turns and orders explicit teacher correction');
+ const goal={id:'xigoal_'+randomUUID(),sessionId:id,objective:'8页浮力课',criteria:['正确完成当前修订'],createdAt:new Date().toISOString()};
+ const adoption={requirementsVersion:1,sources:[{messageId:'old',version:'a'.repeat(64)},{messageId:'current',version:'b'.repeat(64)}],origin:{messageId:'current'},criteria:[{id:'teacher_request',kind:'human',version:1,sourceId:'current',sourceVersion:'b'.repeat(64),text:'改成8页'}],checks:[],steps:[],planRevision:0};
+ const wrong=structuredClone(adoption);wrong.criteria[0].sourceId='old';assert.throws(()=>bindGoalRequirements(wrong,goal),/legacy_conflict/);
+ bindGoalRequirements(adoption,goal);assert.equal(adoption.goal.id,goal.id);assert(adoption.criteria.every(c=>c.sourceId==='current'));
+ check('Persistent goal adoption uses current request source while retaining historical context, never old criteria');
  report.payloadBytes={fullDraft:Buffer.byteLength(JSON.stringify({path:'lesson-v2.pptx',format:'pptx',draft:prepared.draft,sources:prepared.sources,parentArtifactId:saved.artifactId})),pageEdit:Buffer.byteLength(JSON.stringify(proposal)),scope:'Model tool input only; not end-to-end latency or model quality.'};
  report.ok=true;
 }finally{db.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({output,...report},null,2));}

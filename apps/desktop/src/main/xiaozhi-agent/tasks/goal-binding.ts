@@ -19,9 +19,10 @@ export function bindGoalRequirements(view:TaskView,goal:PrivateGoal){
  if(view.goal)throw Error('task_goal_already_bound');
  // Legacy mapping is structural adoption of the same saved request. Never
  // merge separate tasks, inherit old human approval or change effect versions.
- if(view.requirementsVersion!==1||view.sources.length!==1||view.sources[0].messageId!==view.origin.messageId)throw Error('task_goal_legacy_conflict');
- const old=view.criteria.filter(c=>c.kind==='human'),source=view.sources[0];
- if(old.length!==1||old[0].id!=='teacher_request')throw Error('task_goal_legacy_conflict');
+ const source=view.sources.find(item=>item.messageId===view.origin.messageId);
+ if(view.requirementsVersion!==1||!source)throw Error('task_goal_legacy_conflict');
+ const old=view.criteria.filter(c=>c.kind==='human');
+ if(old.length!==1||old[0].id!=='teacher_request'||old[0].sourceId!==view.origin.messageId||old[0].sourceVersion!==source.version)throw Error('task_goal_legacy_conflict');
  const criteria=goal.criteria.map((text,i)=>({id:goalCriterionId(i),version:1,sourceId:view.origin.messageId,sourceVersion:source.version,text,kind:'human' as const}));
  if(view.criteria.length-1+criteria.length>32)throw Error('task_capacity');
  view.criteria=[...criteria,...view.criteria.filter(c=>c.kind!=='human')];
