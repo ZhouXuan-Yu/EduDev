@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-29",
+  "source": {"base": "60e116d", "redDuplicate": "2401459", "greenFlow": "288a065", "redCorruptHistory": "c62e9df", "greenIsolation": "7de10f8", "upstreamBundle": "b2d7f7d", "merge": "cab14f5", "finalSource": "43e49b5"},
+  "teacherResult": "Qualified AI drafts replace duplicate raw candidates in the default notebook view; originals remain accessible through a typed checkbox. No question/OCR/receipt is overwritten.",
+  "identity": "source-question.v1: same resource/version, exact source fragments including chunk/body versions and offset, source question number and existing layout-normalized ORIGINAL stem. Not fuzzy similarity or number-only grouping.",
+  "storage": {"derivedTable": "material_question_origins", "roles": ["rule", "ai"], "historicalWindow": 8, "timerMs": 900, "sourceFactsChanged": false, "newDependencies": 0},
+  "checks": {
+    "originBoundaryGroups": 13,
+    "aiBatchGroups": 28,
+    "archivePiGroups": 13,
+    "rendererComponents": {"source": "cab14f5", "passed": 240, "total": 240, "exit": 0},
+    "bundleCompatibility": {"source": "cab14f5", "checks": 6, "exit": 0, "report": "OS Temp/xiaozhi-bundle-i2B4J7/report.json"},
+    "comprehensiveBaseline": {"source": "288a065 before later isolation/receipt guards and upstream bundle merge", "passed": 207, "ok": true, "exit": 0, "log": "OS Temp/kb-source-origins-smoke.log", "boundary": "Completed 20:02:11, before the subsequent out/main rewrite at 20:03:34. Not presented as a full rerun of final merged source."},
+    "finalBuild": {"source": "43e49b5", "exit": 0, "log": "apps/desktop/test-results/kb-source-origins-43e49b5-build.log"},
+    "folderElectron": {"source": "cab14f5", "checks": 3, "exit": 0, "defaultQuestions": 3, "originalRecords": 6, "afterTeacherBookmark": 4, "afterRestartWithUnknownCandidate": 5, "unknownExtraRequests": 0, "rendererErrors": 0, "viewports": ["1366x768", "1920x1080"], "report": "OS Temp/omni-folder-ai-ui-T0PrzM/report.json", "modelBoundary": "Actual local OCR/Word rendering/typed IPC/SQLite; synthetic controlled model HTTP only"},
+    "realHistoricalReplay": {"source": "43e49b5", "checks": 2, "exit": 0, "selectedPageCovered": 3, "visible": 47, "allOriginalRecords": 50, "factHashesUnchanged": true, "restartConsistent": true, "modelRequests": 0, "report": "OS Temp/omni-real-material-NGRlNr/origins-history-report.json"},
+    "oldFlagMigration": {"checks": 5, "syntheticRows": 100006, "databaseBytes": 70516736, "marked": 100002, "firstMs": 369, "repeatMs": 1, "repeatUpdates": 0, "archiveJsonUnchanged": true, "report": "OS Temp/omni-verification-migration-EGVP6o/report.json", "boundary": "Not a matched performance comparison to prior 543ms run; no 40GB claim"}
+  },
+  "criticRepairs": [
+    "Actual folder notebook returned 6 rather than 3; default and original-record views now use the same derived source identity",
+    "New notebook source mode initially rejected by existing strict filter; bool/descriptor validation now propagated without accepting arbitrary keys",
+    "One unreadable historical question blocked the whole pump; isolated and cursor advances without hiding evidence",
+    "Receipt revocation while awaiting writer is revalidated inside the transaction",
+    "Receipt/member/original/source mutations and deletions invalidate grouping; deleted originals do not create ghost pending counters",
+    "Identical source metadata rewrites retain associations; actual Word representation changes invalidate them",
+    "Teacher edits/bookmarks/categories/usage preserve independent original records"
+  ],
+  "performance": {"readByIdBefore": "Load first 50 notebook questions/categories, then possibly scan all usage groups", "readByIdAfter": "Direct ID lookup, usage aggregation restricted to that ID", "latencyClaim": "No measured whole-product P95 improvement; bounded SQL/metadata structure only"},
+  "realCallsLedger": {"historicalKnowledge": 16, "priorAuthorizedFolderPage": 2, "databaseTotal": 18, "newThisRound": 0},
+  "audit": {"critical": 0, "high": 8, "moderate": 7, "low": 8, "total": 23, "lockfileChanged": false},
+  "remaining": ["Unmatched complex/cross-chunk/cross-page origins and separate AI revisions remain visible", "Large individual file limits, blank/failed OCR image verification and full-page restored ordinary text reading/indexing", "Independent natural quality/recall and actual sustained 40GB mixed import/cancel/restart/latency", "Managed components, final installed EXE and D-drive daily runtime update"],
+  "rollback": "Disable background association and default hiding; clear only the derived origins table to restore pending flags through its triggers. Retain originals, question JSON and all AI receipts. Old single-resource AI and explicit notebook original-record view remain.",
+  "goalComplete": false
+}
