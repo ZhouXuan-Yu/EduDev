@@ -1,5 +1,9 @@
 # 知识库与智能组卷：唯一当前执行索引
 
+## 2026-10-29 当前知识库线程入口
+
+当前专用分支codex/knowledge-base-reuse-implementation已整合协作主线；OCR原图文字纠错与自然题库检索实读的新有限通过见WORK_PROGRESS与KB_IMPLEMENTATION_EVIDENCE。下方2026-10-12等Next为历史，不覆盖当前KR队列。未完成：真实第4图题接原生v3、跨页/答案册、自然质量、实际40GB长期导入和受管安装。完整Goal继续。
+
 <!-- feature-priority-20261012:start -->
 ## 2026-10-12 功能优先执行中
 

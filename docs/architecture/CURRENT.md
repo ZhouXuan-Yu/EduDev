@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 图文文字回执与轻量范围探测
+
+新增shared/material-ai-image严格响应；现MaterialAiRepository增量幂等创建material_ai_image_inputs保存实际发送图，<=4MiB/unit，按hash与原资料/两遍回执复验，新policy image-text-complete.v1不覆盖OCR。不同批次同图暂重复保存，大库空间未验。无新IPC/Agent/依赖；核心题库只读schema常驻，getChatSourcePresence固定EXISTS代替每请求完整概览和limit1合格检索。关闭新图文请求须保留既有回执读支持。
+
 ## 2026-10-29 流式响应与窗口拖动
 
 OfficeMarkdown在应用适配层memo合并components，默认animated=false；正文保持32ms、推理100ms合并并终态flush。DesktopFrame以独立空白drag区分离实际no-drag按钮，不改原生caption/位置持久化或IPC。

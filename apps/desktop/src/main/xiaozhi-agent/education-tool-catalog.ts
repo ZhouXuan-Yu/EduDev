@@ -2,7 +2,9 @@ import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {createToolCatalog} from './vendor/hana/quality/core/tool-catalog';
 import {ANSWER_QUALITY_PROMPT} from './answer-quality';
 
-const PINNED=new Set(['ask_teacher','read','read_education_memory','read_session_process','office_list_attachments','office_read_attachment','office_list_materials','education_search_materials','office_read_material','office_list_files','office_read_text','search_teacher_knowledge','office_web_search','office_web_fetch','update_plan','update_task_plan','report_goal_progress']);
+// Local question search/read form the core knowledge path, like material search/read.
+// Pin only definitions already granted by the host; discovery still defers writes and enrichment.
+const PINNED=new Set(['ask_teacher','read','read_education_memory','read_session_process','office_list_attachments','office_read_attachment','office_list_materials','education_search_materials','office_read_material','education_search_questions','education_read_question','office_list_files','office_read_text','search_teacher_knowledge','office_web_search','office_web_fetch','update_plan','update_task_plan','report_goal_progress']);
 export const TOOL_DISCOVERY_NAME='find_education_tools';
 /** Keep identity fingerprints unchanged; only the provider-facing assembly is scoped. */
 export function createEducationToolCatalog(prompt:string,definitions:readonly ToolDefinition[]) {

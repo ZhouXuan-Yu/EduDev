@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-29 当前知识库证据入口
+
+本轮真实扫描页文字纠错、自然查题及单题四文件交付限定通过；WeKnora完整Windows Lite对照已完成，仍不足以直接切默认。完整目标保持ACTIVE，40GB/自然高召回/图题与跨页/受管安装仍OPEN；最新事实与执行顺序以WORK_PROGRESS、KB_IMPLEMENTATION_EVIDENCE和research两份20261029匿名证据为准。
+
 ## 2026-10-28 Hana回答优化独立切片
 
 用户本轮要求以Hana为核心吸收DSH/SourceWeft优势，新增独立M10/M12回答优化切片，合同 HANA_ANSWER_QUALITY.md。保留唯一Pi、本地数据真源与现有教师确认边界；不改变并行KR知识库任务或将其未完成问题记为已解决。工程接入与整体质量验收分别登记。

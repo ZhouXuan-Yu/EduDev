@@ -524,8 +524,8 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
     try { return {stateRoot,workspace,...(grant||paperOutput?{fileOutputWorkspace:await resolvePaperOutput(id)||workspace}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
-        const [knowledge,materials,questions,attachments]=await Promise.all([store.getKnowledgeOverview(),store.materials.list({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}),store.searchQuestionBank({limit:1}),store.xiaozhiState.attachments.list(id)]);
-        return {knowledge:knowledge.counts.chunks>0,materials:materials.total>0,questions:questions.length>0,attachments:attachments.some(row=>row.state==='submitted'),workspace:Boolean(await store.xiaozhiState.workspace(id))};
+        const [presence,attachments]=await Promise.all([store.getChatSourcePresence(),store.xiaozhiState.attachments.list(id)]);
+        return {...presence,attachments:attachments.some(row=>row.state==='submitted'),workspace:Boolean(await store.xiaozhiState.workspace(id))};
       },
       ...(owner?.goalId?{goal:createGoalRuntime({store,sessionId:id,goalId:owner.goalId,runId,
         current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
