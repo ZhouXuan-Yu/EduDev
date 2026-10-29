@@ -989,7 +989,11 @@ async function run() {
   await first.page.waitForFunction(() => document.querySelector('[data-testid="mistake-sanitized-text"]')?.textContent?.includes('[手机号]'));
   assert.match(await first.page.getByTestId('mistake-sanitized-text').textContent(), /\[手机号\]/, 'sanitized preview should redact phone number');
   await first.page.getByTestId('mistake-save-correction').click();
-  await first.page.waitForTimeout(120);
+  await first.page.waitForFunction(() => {
+    const select = document.querySelector('[data-testid="mistake-analysis-select"]');
+    const save = document.querySelector('[data-testid="mistake-save-correction"]');
+    return select?.selectedOptions?.[0]?.textContent?.startsWith('已校正') && save && !save.disabled;
+  });
   const correctedAnalysis = await first.page.evaluate((studentId) => window.omniEdu.listMistakeImageAnalyses(studentId), knownStudent.id);
   assert.equal(correctedAnalysis[0]?.ocrStatus, 'teacher_corrected', 'teacher correction should persist through preload and SQLite');
   const exerciseCountBeforeFrontendReject = (await first.page.evaluate((studentId) => window.omniEdu.listExerciseSets(studentId), knownStudent.id)).length;

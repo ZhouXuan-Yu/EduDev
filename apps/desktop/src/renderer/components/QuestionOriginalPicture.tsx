@@ -6,7 +6,9 @@ import {ORIGINAL_REVIEW_SCHEMA} from '../../shared/original-question-review';
 import './office/pi-original-question.css';
 import {QuestionOriginalGallery} from './QuestionOriginalGallery';
 import {NativeQuestionPicture} from './NativeQuestionPicture';
+import {MaterialAiPagePanel} from './product/MaterialAiPagePanel';
 export function QuestionOriginalPicture({question}:{question:QuestionBankItem}){
+ if(question.archive?.pageSource&&question.archive.ai)return <MaterialAiPagePanel batchId={question.archive.ai.batchId} ordinal={question.archive.ai.ordinal}/>;
  if(question.archive?.native)return <NativeQuestionPicture question={question}/>;
  if(!question.document)return null;
  return question.document?.source.parserVersion.startsWith('teacher-transcription.v2+')?<QuestionOriginalGallery question={question}/>:<SingleQuestionOriginalPicture question={question}/>;

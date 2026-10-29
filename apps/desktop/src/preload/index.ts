@@ -5,6 +5,7 @@ import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared
 import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
 import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
+import type {AiPageQuery,AiPageView} from '../shared/material-ai-page';
 import type {WordQuery,WordPage,WordImageQuery,WordImageView,WordRebuild,WordRebuildView} from '../shared/material-word';
 import type {WordQuestionQuery,WordQuestionPage} from '../shared/material-word-question';
 import type {WordProofInput,WordProof,WordProofCancel,WordProofImageQuery,WordProofImage} from '../shared/material-word-proof';
@@ -327,6 +328,7 @@ const api = {
   searchQuestionsByMeaning:(input:QuestionSearchFilters)=>ipcRenderer.invoke('retrieval:questions',input) as Promise<{questions:SimilarQuestionMatch[];semantic?:import('../shared/retrieval').SemanticCoverage}>,
   saveMaterialAiSettings:(input:AiSettingsInput)=>ipcRenderer.invoke('materials:ai-save-settings',input) as Promise<AiSettings>,
   getMaterialAiBatches:(resourceId:string,offset=0)=>ipcRenderer.invoke('materials:ai-list',resourceId,offset) as Promise<AiBatchView[]>,
+  getMaterialAiPage:(input:AiPageQuery)=>ipcRenderer.invoke('materials:ai-page',input) as Promise<AiPageView>,
   createMaterialAiBatch:(input:AiBatchInput)=>ipcRenderer.invoke('materials:ai-create',input) as Promise<string>,
   controlMaterialAiBatch:(input:AiAction)=>ipcRenderer.invoke('materials:ai-action',input) as Promise<void>,
   retryMaterialPdfPages: (input:{schemaVersion:'xiaozhi.local-pdf-file.v3';resourceId:string;version:string}) => ipcRenderer.invoke('materials:pdf-retry',input) as Promise<void>,

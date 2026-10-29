@@ -7,6 +7,7 @@ import {extractMaterialQuestions} from './material-question-extract';
 import {nativeQuestionComplete} from '../../shared/native-question';
 import {migrateQuestionOrigins,recordRuleOrigin,recordAiOrigin,type RuleOrigin} from './material-question-origins';
 import {materialSource} from './material-source';
+import {validateAiPageSource} from './material-ai-page-source';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
@@ -88,6 +89,7 @@ export class MaterialQuestionArchive{
   if(q.archive.native){if(!this.host.validateNative)throw Error('source_changed');await this.host.validateNative(q);}
   if(q.archive.web){if(!this.host.validateWeb)throw new Error('source_changed');await this.host.validateWeb(q);}
   if(q.archive.ai){if(!this.host.validateAi)throw new Error('source_changed');await this.host.validateAi(q);}
+  if(q.archive.pageSource){const source=q.archive.pageSource;await validateAiPageSource(this.host,source);await this.host.materials().verify(source.resourceId,source.version,new AbortController().signal);return;}
   if(!q.archive.sources.length){if(q.archive.web?.base==='manual')return;throw new Error('source_changed');}
   const resource=await this.host.materials().resource(q.archive.sources[0].resourceId);if(resource.contentHash!==q.archive.sources[0].version)throw new Error('source_changed');
   await this.host.materials().verify(resource.id,resource.contentHash,new AbortController().signal);

@@ -1,5 +1,21 @@
 # 知识库实施证据
 
+## 2026-10-30 OCR空白/乱码PDF原页恢复与可见回看
+
+质量补充51ab7fb RED→d021da6 GREEN：旧NFKC将x²/x2及y₁/y1折成一致，实际执行器反例被误判no_questions；现页稿、题干与原答案比对改为NFC，数学上下标差异保留待核，15组通过。其后9份既有专项全部重新exit0（另含联网补答12、原生Pi5）。
+
+综合检查明确未全通过：第一次`npm run test:smoke`构建/type成功、执行器exit1于electron-smoke.mjs:994，120ms固定等待提前读教师校正状态；随后截图已显示已保存。脚本改等UI已校正且保存按钮恢复，SQLite断言不变。第二次`node scripts/electron-smoke.mjs`该点已通过，但exit1于:1313，讲义更新version=2而description仍旧值，原失败日志与两份截图保留。未查明该讲义保存失败的唯一原因，不称最终207通过，不用旧207结果覆盖；本轮不改无关讲义业务。最终NFC构建与已存v5升级读取结果见下文。
+
+实现f64e753 RED→c52a520：page-response.v1输出整页pageText/pageIssues与逐题投影；v5来源绑定实际PDF原件版本/generation/页回执，无正文时不制造chunk。原图/首稿/终稿继续原账本，原OCR不覆盖；同题本/Pi读取、语义来源变更闭包与按需正文IPC接通。7ea6142 RED→403b18e修共享Worker忙被永久失败，未外发阶段2–30秒退避、其他到期任务继续、未知不重发。正常整合协作E03 main为bd8aa30，无冲突、保留协作者工作树。
+
+实机RED e80f111：实际文件夹授权与两页发布/两遍处理均成功，但题本原页组件未挂载，30秒点击超时；原失败Temp omni-folder-pdf-publish-qQPtJq保留。GREEN eae90d6将原页来源接入现题本挂载条件。命令`node scripts/education/kb-folder-pdf-publication-journey.mjs --restore-ocr`最终exit0，Temp omni-folder-pdf-publish-LN9Gi3：6项通过，文件54,589,246B（双扫描页+52MiB嵌入随机夹具），真实本地OCR后在Worker输出边界故意变为空白/乱码，发布前0误发；发布后4受控HTTP/2AI题，原blank及乱码OCR保留，题本正文/真实原图可打开，冷启0请求、两视口/0renderer错误。不是自然OCR失败、真实模型或40GB。
+
+另`node scripts/education/kb-real-page-prompt.mjs <原已授权样本根>` exit0，Temp omni-real-page-prompt-Q2mKpF，独立持久real-page-prompt-ledger.json严格2次，实际DeepSeek200/200（此知识库累计20次，不含协作任务）：已视觉复查的旧PDF第1页图片，故意乱码OCR→整页2072字节、4题、1.5/2.8/0.5保留，两遍pageText一致；第4题requires_image。私有原图/响应/凭证均未入Git。离线把实际首终稿送入生产页质量算法复读：前三题无新增issues，第4题requires_image/ai_mismatch/incomplete_question保留；这是算法复读，不冒充实际新来源发布或数学正确性。
+
+最终代码专项（`node --experimental-transform-types scripts/education/<name>.mjs`）：kb-ai-page-boundaries15、kb-ai-batch-boundaries28、kb-folder-ai-boundaries7、kb-folder-pdf-publication-boundaries8、kb-source-origins-boundaries13、kb-critical-archive-boundaries13、kb-retrieval-boundaries17、kb-native-ledger-boundaries20，全部exit0。`npm run build`含typecheck exit0；`npm run test:renderer-components`240/240 exit0。最终完整综合未通过（两次exit1的原失败见本节首段），不宣称207通过。最终d021da6 `npm run build`含typecheck exit0；重建后的已存v5升级读取实机2项通过（1366/1920、2题/正文/原图、0模型调用/0renderer错误），证据final-nfc-readback.json保留于LN9Gi3。audit exit1为既有23项（0严重/8高/7中/8低），无依赖或lock变化。
+
+性能与回滚：原空OCR为0调用误记无题/无法建立失败页任务，现每页两次受授权请求；真实新提示转录2×2072B，不测普遍耗时。正文只按需读（每页64KB/响应128KiB上限），批次轮询小标志，未新建全库正文JS扫描；实际单次main RSS发布前366,809,088B、结束284,729,344B只是采样，不是峰值/前后基准或40GB性能证明。停新页生产用OMNI_EDU_AI_PAGE_RESTORATION=0，已有v5继续读；新增表/列幂等，不删除原件/题目。普通整页全文索引、独立图片全失败、复杂图题/跨页/答案册、自然Recall/P95、40GB与最终安装仍OPEN；单目录busy后续就绪公平性、teacher暂停后父attention恢复需下一轮复现。D盘日常应用未更新。
+
 ## 2026-10-29 长PDF发布窗口、资源轮转与页前言纠错
 
 最终整合补记：收尾刷新取得协作者思考档位main c0d2b40，正常合并为3ad4abe；12份冲突均为独立新增主题，双方保留，源码无冲突。合并版build/type、240组件、思考策略/SQLite7项与上述54.6MB PDF Electron4项再次通过，0renderer错误/2AI题/冷启0请求，报告Temp/omni-folder-pdf-publish-GTQ1Nr/report.json；main SHA256 24d42f48382be27dd01023f2ca8b89caba6d96179253e36ad93c8f9ecb404a36。日志test-results/kb-folder-pdf-merged-{build,components,journey}.log和kb-folder-pdf-thinking-final.log。思考源码专项初次普通Node静态TS引用无法解析deepseek-fetch，前置现register-source加载器后原7项通过，未改其源码。完整207证据仍对应合并思考前c045dd5，不冒充合并版完整重跑。此次补检无新付费调用；D盘和其他工作树不动，远端状态看最终Git回读。

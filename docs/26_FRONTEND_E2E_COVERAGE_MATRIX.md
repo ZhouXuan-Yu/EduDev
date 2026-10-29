@@ -1,5 +1,11 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-30 PDF空OCR原页还原与题本入口
+
+最终d021da6数学上下标严格比较重建后，已存v5在1366/1920原生两次启动再读取通过2项：2题、正文、原图和0模型请求/0renderer错误。全模块综合在讲义描述保存断言仍失败；本节仅记录该知识库路径，不标完整207通过。
+
+`node scripts/education/kb-folder-pdf-publication-journey.mjs --restore-ocr`六项通过：正式目录授权→真实Worker OCR→输出边界注入blank/乱码→发布等待无误发→4受控请求/2题→题本点击还原正文/OCR对照/真实原图→1920×1080冷启0重发，1366×768同入口可达、0renderer错误。初次实机RED证明组件未被题本挂载，eae90d6已补接；失败和最终报告均保留。生产提示另有已授权第1页的两次真实DeepSeek响应，未冒充本受控旅程的真实模型。精确范围与40GB/自然质量未验边界见goal/KB_IMPLEMENTATION_EVIDENCE.md及research/KB_PAGE_RESTORATION_20261030.json。
+
 ## 2026-10-29 E01精确PPT备注受控路径
 
 `node scripts/xiaozhi-agent/default-file-delivery-electron.mjs --presentation` 5项通过：正式输入→无私人目录→HTML审阅→8页PPT审阅→修改第4页标题/备注→精确版本确认→实际文件/读取工具/面板读回→重启绑定保留。模型为合成SSE、教师点击由测试驱动，非自然质量/完整FX01/真实教师验收。PowerPoint原生另检8页渲染与文字/表格/备注编辑另存重开；精确报告见docs/research/AGENT_PRESENTATION_E01_20261029.json。

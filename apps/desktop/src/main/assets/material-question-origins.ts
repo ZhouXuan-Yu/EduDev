@@ -23,6 +23,11 @@ export async function migrateQuestionOrigins(host:OriginHost){
  await host.run('DROP TRIGGER IF EXISTS question_origins_question_delete');
  for(const event of ['UPDATE','DELETE'])await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_question_${event.toLowerCase()} AFTER ${event} ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; ${event==='DELETE'?'UPDATE material_question_members SET needs_attention=0 WHERE question_id=OLD.id;':''} END`);
  const tables=new Set((await host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>String(r.name)));
+ if(tables.has('material_pdf_pages')&&tables.has('material_pdf_jobs'))for(const [event,name,refs,changed]of [
+  ['UPDATE OF status,result_json,error,generation,page','update','OLD.generation,NEW.generation','OLD.status<>NEW.status OR OLD.result_json<>NEW.result_json OR OLD.error<>NEW.error OR OLD.generation<>NEW.generation OR OLD.page<>NEW.page'],
+  ['DELETE','delete','OLD.generation','']
+ ])await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_pdf_page_${name} AFTER ${event} ON material_pdf_pages ${changed?'WHEN '+changed:''} BEGIN DELETE FROM material_question_origins WHERE resource_id IN (SELECT resource_id FROM material_pdf_jobs WHERE generation IN (${refs})); END`);
+ if(tables.has('material_pdf_jobs'))for(const [event,name,changed]of [['UPDATE OF generation,version','update','OLD.generation<>NEW.generation OR OLD.version<>NEW.version'],['DELETE','delete','']])await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_pdf_job_${name} AFTER ${event} ON material_pdf_jobs ${changed?'WHEN '+changed:''} BEGIN DELETE FROM material_question_origins WHERE resource_id=OLD.resource_id; END`);
  for(const [table,event,field] of [['teacher_resources','UPDATE OF content_hash','id'],['teacher_resources','DELETE','id'],['resource_chunks','UPDATE OF content_md,contains_personal_data,page_number','resource_id'],['resource_chunks','DELETE','resource_id'],['material_word_documents','UPDATE OF version,digest,document_json','resource_id'],['material_word_documents','DELETE','resource_id']])if(tables.has(table)){
   const name=`question_origins_${table}_${event.startsWith('UPDATE')?'update':'delete'}`;
   const changed=event==='DELETE'?'':table==='teacher_resources'?'OLD.content_hash<>NEW.content_hash':table==='resource_chunks'?'OLD.content_md<>NEW.content_md OR OLD.contains_personal_data<>NEW.contains_personal_data OR OLD.page_number IS NOT NEW.page_number':'OLD.version<>NEW.version OR OLD.digest<>NEW.digest OR OLD.document_json<>NEW.document_json';
@@ -33,7 +38,7 @@ export async function migrateQuestionOrigins(host:OriginHost){
  if(tables.has('material_ai_units')&&tables.has('material_ai_members'))await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_receipt_update AFTER UPDATE OF first_json,final_json,image_sha ON material_ai_units WHEN OLD.final_json<>'' AND (OLD.first_json<>NEW.first_json OR OLD.final_json<>NEW.final_json OR OLD.image_sha<>NEW.image_sha) BEGIN DELETE FROM material_question_origins WHERE question_id IN (SELECT question_id FROM material_ai_members WHERE batch_id=OLD.batch_id AND ordinal=OLD.ordinal); END");
  await host.run('DROP TRIGGER IF EXISTS question_origins_native_receipt_update');
  if(tables.has('material_ai_members')){
-  for(const table of ['material_ai_units','material_ai_image_inputs','material_ai_native_context','material_ai_native_inputs'])if(tables.has(table))for(const event of ['UPDATE','DELETE']){
+  for(const table of ['material_ai_units','material_ai_image_inputs','material_ai_native_context','material_ai_native_inputs','material_ai_page_units'])if(tables.has(table))for(const event of ['UPDATE','DELETE']){
    if(table==='material_ai_units'&&event==='UPDATE')continue;
    await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_${table}_${event.toLowerCase()} AFTER ${event} ON ${table} BEGIN DELETE FROM material_question_origins WHERE question_id IN (SELECT question_id FROM material_ai_members WHERE batch_id=OLD.batch_id AND ordinal=OLD.ordinal); END`);
   }

@@ -45,6 +45,8 @@ const parents=await fixture();try{
  const source=materialSource({resourceId:parents.rid,version:'a'.repeat(64),title:'自己的资料.md',offset:0,chunk:{id:row.id,resourceId:row.resource_id,chunkIndex:row.chunk_index,contentMd:row.content_md,containsPersonalData:false}});
  const archive={schemaVersion:'xiaozhi.question-archive.v1',extractor:'numbered-text.v1',state:'rule_extracted',number:'1',sources:[source],issues:[],sourceRisks:[],sourceChecked:false,answerOrigin:'source',analysisOrigin:'source'};
  parents.db.prepare('UPDATE question_bank_items SET archive_json=? WHERE id=?').run(JSON.stringify(archive),id);await parents.ready();
+ assert(!(await parents.repo.questions({query:'来源题'})).questions.some(q=>q.id===id),'Current rule-only sources remain unverified until explicit teacher checking');
+ parents.db.prepare('UPDATE question_bank_items SET archive_json=? WHERE id=?').run(JSON.stringify({...archive,state:'teacher_edited',sourceChecked:true}),id);await parents.ready();
  assert((await parents.repo.questions({query:'来源题'})).questions.some(q=>q.id===id));assert.equal(parents.db.prepare('SELECT COUNT(*) n FROM retrieval_question_sources WHERE question_id=?').get(id).n,1);
  const before=parents.db.prepare('SELECT * FROM question_bank_items WHERE id=?').get(id),seq=parents.db.prepare("SELECT seq FROM retrieval_current WHERE kind='question' AND object_id=?").get(id).seq;
  parents.state.duringQuery=()=>parents.db.prepare('UPDATE resource_chunks SET contains_personal_data=1 WHERE id=?').run(row.id);

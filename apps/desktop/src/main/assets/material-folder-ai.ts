@@ -6,10 +6,10 @@ import type {MaterialWordRepository} from './material-word-repository';
 type Row=Record<string,unknown>;type Value=string|number|null;
 const readable="'ready','partial','parsed','chunked','indexed','graph_extracted'";
 // Only unbilled legacy scheduling errors may be re-queued, after the same page was actually published.
-const recoverable=`u.state='review' AND u.ai_batch_id='' AND u.error IN ('local_page_failed','unavailable')
+const recoverable=`u.state='review' AND u.ai_batch_id='' AND u.error IN ('local_page_failed','unavailable','blank_page_requires_check')
  AND r.content_hash=u.version AND j.version=u.version AND j.state IN ('complete','partial')
- AND p.status='complete' AND u.unit BETWEEN 1 AND j.total AND r.parse_status IN (${readable})
- AND EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id AND c.page_number=u.unit)
+ AND p.status IN ('complete','blank','failed','needs_review') AND u.unit BETWEEN 1 AND j.total AND r.parse_status IN (${readable})
+ AND (p.status<>'complete' OR EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id AND c.page_number=u.unit))
  AND NOT EXISTS(SELECT 1 FROM material_ai_task_keys k LEFT JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=u.batch_id AND CASE WHEN b.id IS NULL OR NOT json_valid(b.config_json) THEN 1 ELSE json_extract(b.config_json,'$.resourceId')=u.resource_id AND json_extract(b.config_json,'$.start')=u.unit END)`;
 const recoveryJoin='FROM material_folder_ai_units u JOIN material_folder_ai_resources fr ON fr.batch_id=u.batch_id AND fr.resource_id=u.resource_id AND fr.version=u.version JOIN teacher_resources r ON r.id=u.resource_id JOIN material_pdf_jobs j ON j.resource_id=r.id JOIN material_pdf_pages p ON p.generation=j.generation AND p.page=u.unit';
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;ai:()=>MaterialAiRepository;word:()=>MaterialWordRepository;writer:<T>(action:(target:MaterialFolderAiRepository)=>Promise<T>)=>Promise<T>};
@@ -24,7 +24,7 @@ export class MaterialFolderAiRepository{
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_plan ON material_folder_ai_resources(batch_id) WHERE status IN ('waiting','running')`,
    `CREATE TABLE IF NOT EXISTS material_folder_ai_units(batch_id TEXT NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,unit INTEGER NOT NULL,state TEXT NOT NULL,ai_batch_id TEXT NOT NULL DEFAULT '',error TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,resource_id,unit))`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_units ON material_folder_ai_units(batch_id,state)`,
-   `CREATE INDEX IF NOT EXISTS idx_folder_ai_local_retry ON material_folder_ai_units(batch_id) WHERE state='review' AND ai_batch_id='' AND error IN ('local_page_failed','unavailable')`,
+   `CREATE INDEX IF NOT EXISTS idx_folder_ai_local_retry_v2 ON material_folder_ai_units(batch_id) WHERE state='review' AND ai_batch_id='' AND error IN ('local_page_failed','unavailable','blank_page_requires_check')`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_keys ON material_ai_task_keys(folder_id)`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_discovery ON material_import_entries(batch_id,seq)`
   ])await this.host.run(sql);
@@ -113,7 +113,7 @@ export class MaterialFolderAiRepository{
    // Page receipts are staging facts. Canonical source chunks are available only after publication.
    if(!['complete','partial'].includes(String(job.state))||!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(row.parse_status==='failed'&&job.state!=='processing')await fail('local_parse_failed');return;}
    if(unit<=total){const page=(await this.host.all('SELECT status FROM material_pdf_pages WHERE generation=? AND page=?',[String(job.generation),unit]))[0];if(!page||['pending','running','processing'].includes(String(page.status)))return;
-    if(page.status!=='complete'){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);return this.finishUnit({...resource,total},unit,'review',page.status==='blank'?'blank_page_requires_check':'local_page_failed');}
+    if(!['complete','blank','failed','needs_review'].includes(String(page.status))){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);return this.finishUnit({...resource,total},unit,'review','local_page_failed');}
    }
   }else if(total<0){total=word?(await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:0}))?.total??0:image?1:Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=?',[id]))[0]?.n||0);}
   await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);
@@ -126,7 +126,7 @@ export class MaterialFolderAiRepository{
    if(['busy','index_busy'].includes(code))return;await this.finishUnit({...resource,total},unit,'review',code);
   }
  }
- private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response'].includes(code)?code:'unavailable';}
+ private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response'].includes(code)?code:'unavailable';}
  async tick(){
   // Two indexed rowid ranges bound each tick and rotate past settled attention cards.
   const eligible=`(status IN ('running','budget_exhausted') OR status='attention' AND (EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused') OR EXISTS(SELECT 1 ${recoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${recoverable})))`;

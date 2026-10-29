@@ -13,6 +13,7 @@ import {previewPdfFile} from '../xiaozhi-agent/pdf-file-host';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {validAiAction,validAiBatch,validAiSettings} from '../../shared/material-ai';
 import {validNativeQuestionImageQuery,validNativeQuestionOriginQuery} from '../../shared/native-question-image';
+import {validAiPageQuery} from '../../shared/material-ai-page';
 
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
   const codec={available:()=>safeStorage.isEncryptionAvailable(),seal:(key:string)=>safeStorage.encryptString(key).toString('base64'),open:(value:string)=>safeStorage.decryptString(Buffer.from(value,'base64')).toString()};
@@ -40,10 +41,11 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
     }
   });
   const check=(event:Electron.IpcMainInvokeEvent)=>{const w=window();if(!w||w.isDestroyed()||event.sender!==w.webContents||event.senderFrame!==w.webContents.mainFrame)throw new Error('permission_denied');};
-  const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error(['unified_settings','invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','budget_exhausted'].includes(code)?code:'unavailable');});
+  const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error(['unified_settings','invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','budget_exhausted'].includes(code)?code:'unavailable');});
   ipcMain.handle('materials:ai-settings',event=>{check(event);return safe(()=>store.materialAi.settings());});
   ipcMain.handle('materials:ai-save-settings',(event,input)=>{check(event);if(!validAiSettings(input))throw new Error('invalid_input');return safe(()=>store.materialAi.saveSettings(structuredClone(input)));});
   ipcMain.handle('materials:ai-list',(event,id,offset=0)=>{check(event);if(!materialId(id)||!Number.isSafeInteger(offset)||offset<0||offset>1000000)throw new Error('invalid_input');return safe(()=>store.materialAi.list(id,offset));});
+  ipcMain.handle('materials:ai-page',(event,input)=>{check(event);if(!validAiPageQuery(input))throw Error('invalid_input');return safe(async()=>{const result=await store.materialAi.page(structuredClone(input));check(event);return result;});});
   ipcMain.handle('materials:ai-create',(event,input)=>{check(event);if(!validAiBatch(input))throw new Error('invalid_input');return safe(()=>store.materialAi.create(structuredClone(input)));});
   ipcMain.handle('materials:ai-action',(event,input)=>{check(event);if(!validAiAction(input))throw new Error('invalid_input');return safe(()=>store.materialAi.action(structuredClone(input)));});
   ipcMain.handle('questions:native-image',async(event,input)=>{check(event);if(!validNativeQuestionImageQuery(input))throw Error('invalid_input');const controller=new AbortController(),closed=()=>controller.abort();event.sender.once('destroyed',closed);try{return await safe(async()=>{const images=await store.nativeQuestions.officeImages(input.questionId,input.version,'teacher',controller.signal),image=images.filter(p=>p.role===input.role)[input.index];if(!image)throw Error('source_changed');check(event);return{figure:image.figure,dataUrl:'data:image/png;base64,'+image.bytes.toString('base64')};});}finally{event.sender.removeListener('destroyed',closed);}});

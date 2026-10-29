@@ -1,7 +1,7 @@
 import {createHash,randomUUID} from 'node:crypto';
 import type {QuestionBankItem,QuestionBankItemInput,ResourceChunk} from '../../shared/contracts';
 import {MATERIAL_AI_SCHEMA,validAiBatch,validAiAction,validAiSettings,parseAiResponse,type AiAction,type AiBatchInput,type AiBatchView,type AiSettings,type AiSettingsInput,type AiUnitInput,type AiResponse} from '../../shared/material-ai';
-import {QUESTION_AI_ARCHIVE_SCHEMA,archiveMissing,type QuestionArchive} from '../../shared/question-archive';
+import {QUESTION_AI_ARCHIVE_SCHEMA,QUESTION_PAGE_ARCHIVE_SCHEMA,archiveMissing,type QuestionArchive} from '../../shared/question-archive';
 import type {SettingsKeyCodec} from '../xiaozhi-agent/model-settings';
 import type {MaterialRepository} from './material-repository';
 import {materialSource} from './material-source';
@@ -17,6 +17,11 @@ import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
 import type {RuleOrigin} from './material-question-origins';
+import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
+import {readAiPageSource,validateAiPageSource} from './material-ai-page-source';
+import {restoredPageQuestions} from './material-ai-page-content';
+import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
+import {readAiPageReceipt} from './material-ai-page-evidence';
 
 type Row=Record<string,unknown>;
 type Value=string|number|null;
@@ -32,7 +37,7 @@ const hash=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 const alive=(pid:number)=>{try{process.kill(pid,0);return true;}catch(error){return (error as NodeJS.ErrnoException).code!=='ESRCH';}};
 const safeError=(error:unknown)=>{
   const code=error instanceof Error?error.message:'';
-  return ['configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','authentication','rate_limit','provider_rejected','invalid_response','outcome_unknown','budget_exhausted','paused','cancelled','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','timeout','busy','index_busy'].includes(code)?code:'unavailable';
+  return ['configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','authentication','rate_limit','provider_rejected','invalid_response','outcome_unknown','budget_exhausted','paused','cancelled','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','timeout','busy','index_busy','page_restoration_disabled'].includes(code)?code:'unavailable';
 };
 
 /** Durable deterministic batch executor. It has no Agent session or tool execution. */
@@ -60,9 +65,12 @@ export class MaterialAiRepository{
       `CREATE INDEX IF NOT EXISTS material_ai_units_pending ON material_ai_units(status,batch_id,ordinal)`,
       `CREATE TABLE IF NOT EXISTS material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT NOT NULL,batch_id TEXT NOT NULL UNIQUE REFERENCES material_ai_batches(id),folder_id TEXT NOT NULL DEFAULT '',folder_revision INTEGER NOT NULL DEFAULT 0)`,
       `CREATE TABLE IF NOT EXISTS material_ai_image_inputs(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,image_sha TEXT NOT NULL,mime TEXT NOT NULL,data_base64 TEXT NOT NULL CHECK(length(data_base64)<=5592408),PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
+      `CREATE TABLE IF NOT EXISTS material_ai_page_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_json TEXT NOT NULL,first_sha TEXT NOT NULL DEFAULT '',final_sha TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
     if(!(await this.host.all('PRAGMA table_info(material_ai_units)')).some(column=>column.name==='dispatched_at'))await this.host.run('ALTER TABLE material_ai_units ADD COLUMN dispatched_at INTEGER NOT NULL DEFAULT 0');
+    const columns=await this.host.all('PRAGMA table_info(material_ai_units)');for(const name of ['retry_at','local_retries'])if(!columns.some(c=>c.name===name))await this.host.run(`ALTER TABLE material_ai_units ADD COLUMN ${name} INTEGER NOT NULL DEFAULT 0`);
+    await this.host.run("CREATE INDEX IF NOT EXISTS material_ai_units_due ON material_ai_units(retry_at,batch_id,ordinal) WHERE status IN ('pending','first_saved')");
     if(!(await this.host.all('PRAGMA table_info(material_ai_batches)')).some(column=>column.name==='pause_reason'))await this.host.run("ALTER TABLE material_ai_batches ADD COLUMN pause_reason TEXT NOT NULL DEFAULT ''");
   }
   private async configuration():Promise<Configuration>{
@@ -113,8 +121,17 @@ export class MaterialAiRepository{
       if(pdf){
         page=input.start+i;
         const job=(await this.host.all('SELECT p.status,p.result_json FROM material_pdf_pages p JOIN material_pdf_jobs j ON j.generation=p.generation WHERE j.resource_id=? AND j.version=? AND p.page=?',[resource.id,input.version,page]))[0];
-        if(!job||!['complete','blank'].includes(String(job.status)))throw new Error('source_incomplete');
-        if(job.status==='blank'){units.push({sources:[],text:'',page,visualRisk:true,stamp});continue;}
+        if(!job||!['complete','blank','failed','needs_review'].includes(String(job.status)))throw new Error('source_incomplete');
+        if(input.images&&process.env.OMNI_EDU_AI_PAGE_RESTORATION!=='0'){
+          const original=await readAiPageSource(this.host,resource.id,input.version,page);let sources:AiUnitInput['sources']=[];
+          if(job.status==='complete'){
+            const rows=await this.host.all('SELECT c.*, (SELECT COUNT(*) FROM resource_chunks x WHERE x.resource_id=c.resource_id AND (x.chunk_index<c.chunk_index OR x.chunk_index=c.chunk_index AND x.id<c.id)) AS body_offset FROM resource_chunks c WHERE c.resource_id=? AND c.page_number=? ORDER BY c.chunk_index,c.id LIMIT 17',[resource.id,page]);
+            if(!rows.length||rows.length>16)throw Error('unit_too_large');const window=await this.host.materials().readingWindow(resource.id,Number(rows[0].body_offset),rows.length);
+            if(window.units.length!==rows.length||window.units.some(u=>u.chunk.pageNumber!==page))throw Error('source_incomplete');sources=window.units.map(materialSource);
+          }
+          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source});continue;
+        }
+        if(job.status!=='complete')throw Error(input.images?'page_restoration_disabled':'source_incomplete');
         const rows=await this.host.all('SELECT c.*, (SELECT COUNT(*) FROM resource_chunks x WHERE x.resource_id=c.resource_id AND (x.chunk_index<c.chunk_index OR x.chunk_index=c.chunk_index AND x.id<c.id)) AS body_offset FROM resource_chunks c WHERE c.resource_id=? AND c.page_number=? ORDER BY c.chunk_index,c.id LIMIT 17',[resource.id,page]);
         if(!rows.length||rows.length>16)throw new Error('unit_too_large');
         offset=Number(rows[0].body_offset);limit=rows.length;
@@ -156,7 +173,10 @@ export class MaterialAiRepository{
       for(const unit of units)await target.validateInput(input,unit);
       await target.host.run('INSERT INTO material_ai_batches(id,resource_id,version,title,config_json,status,created_at) VALUES(?,?,?,?,?,?,?)',
         [id,resource.id,input.version,resource.title,JSON.stringify({...input,model:settings.model}),'running',new Date().toISOString()]);
-      for(const [i,unit]of units.entries())await target.host.run('INSERT INTO material_ai_units(batch_id,ordinal,input_json,status) VALUES(?,?,?,?)',[id,i+1,JSON.stringify(unit),unit.text?'pending':'no_questions']);
+      for(const [i,unit]of units.entries()){
+        await target.host.run('INSERT INTO material_ai_units(batch_id,ordinal,input_json,status) VALUES(?,?,?,?)',[id,i+1,JSON.stringify(unit),unit.text||unit.pageSource?'pending':'no_questions']);
+        if(unit.pageSource)await target.host.run('INSERT INTO material_ai_page_units(batch_id,ordinal,source_json) VALUES(?,?,?)',[id,i+1,JSON.stringify(unit.pageSource)]);
+      }
       if(task)await target.host.run('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)',[task.key,hash(JSON.stringify(input)),id,task.folderId||'',task.revision||0]);
       return id;
     });
@@ -164,7 +184,11 @@ export class MaterialAiRepository{
   private async validateInput(config:AiBatchInput,unit:AiUnitInput){
     const resource=await this.host.materials().resource(config.resourceId);
     if(resource.contentHash!==config.version||await this.host.materials().originalStamp(resource.id,config.version)!==unit.stamp)throw new Error('source_changed');
-    for(const source of unit.sources)await this.host.materials().source(source);
+    for(const source of unit.sources){const view=await this.host.materials().source(source);if(unit.pageSource&&view.body.chunks[0]?.pageNumber!==unit.page)throw Error('source_changed');}
+    if(unit.pageSource){
+      if(!config.images||unit.native||unit.pageSource.resourceId!==config.resourceId||unit.pageSource.version!==config.version||unit.pageSource.page!==unit.page)throw Error('source_changed');
+      const current=await validateAiPageSource(this.host,unit.pageSource);if(current.text!==unit.text)throw Error('source_changed');
+    }
     if(unit.native){
       if(!unit.sources.length||!config.images)throw Error('source_changed');
       if((await this.host.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1 LIMIT 1',[config.resourceId])).length)throw Error('privacy_blocked');
@@ -177,11 +201,11 @@ export class MaterialAiRepository{
     const rows=await this.host.all("SELECT * FROM material_ai_batches WHERE resource_id=? ORDER BY CASE WHEN status IN ('running','paused','attention') THEN 0 ELSE 1 END,created_at DESC,id DESC LIMIT 10 OFFSET ?",[resourceId,offset]);
     const result:AiBatchView[]=[];
     for(const row of rows){
-      const c=JSON.parse(String(row.config_json)),units=await this.host.all('SELECT ordinal,status,error,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions FROM material_ai_units u WHERE batch_id=? ORDER BY ordinal',[String(row.id)]);
+      const c=JSON.parse(String(row.config_json)),units=await this.host.all('SELECT ordinal,status,error,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u WHERE batch_id=? ORDER BY ordinal',[String(row.id)]);
       const n=(...states:string[])=>units.filter(u=>states.includes(String(u.status))).length;
       result.push({id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status:String(row.status),calls:Number(row.calls),maxCalls:c.maxCalls,
         complete:n('complete','no_questions'),review:n('review'),failed:n('failed'),unknown:n('outcome_unknown'),pending:n('pending','first_saved','dispatched'),questions:units.reduce((sum,u)=>sum+Number(u.questions),0),
-        units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions)}))});
+        units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{})}))});
     }
     return result;
   }
@@ -192,6 +216,12 @@ export class MaterialAiRepository{
     if(!row||!['complete','review'].includes(String(row.status))||hash(String(row.first_json))!==receipt.firstSha||hash(String(row.final_json))!==receipt.finalSha||String(row.image_sha)!==receipt.imageSha)throw new Error('source_changed');
     const unit=JSON.parse(String(row.input_json)) as AiUnitInput;
     if(JSON.stringify(unit.sources)!==JSON.stringify(q.archive!.sources))throw new Error('source_changed');
+    if(unit.pageSource||receipt.policy==='page-image-complete.v1'||q.archive?.pageSource){
+      const proof=await this.pageEvidence(receipt.batchId,receipt.ordinal);
+      if(receipt.policy!=='page-image-complete.v1'||!unit.pageSource||JSON.stringify(unit.pageSource)!==JSON.stringify(q.archive?.pageSource))throw Error('source_changed');
+      const original=proof.final.questions.find(p=>p.number===q.archive!.number);if(!original)throw Error('source_changed');
+      if(q.archive!.state==='ai_final'&&(aiPageQuestionIssues(proof.first,proof.final,unit.pageSource,receipt.imageSha,original).length||(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'] as const).some(k=>q[k]!==original[k])||q.archive!.answerOrigin!==original.answerOrigin||q.archive!.analysisOrigin!==original.analysisOrigin))throw Error('source_changed');return;
+    }
     if(receipt.policy==='image-text-complete.v1'){
       const config=JSON.parse(String(row.config_json)),first=parseAiBatchResponse(String(row.first_json)),final=parseAiBatchResponse(String(row.final_json));
       const units=[];for(const source of unit.sources)units.push(...(await this.host.materials().readingWindow(config.resourceId,source.offset,1)).units);
@@ -203,6 +233,14 @@ export class MaterialAiRepository{
       if(hash(Buffer.from(image.data,'base64'))!==receipt.imageSha)throw Error('source_changed');
     }
     await this.validateInput(JSON.parse(String(row.config_json)),unit);
+  }
+  private async pageEvidence(batchId:string,ordinal:number){
+    const proof=await readAiPageReceipt(this.host,batchId,ordinal);await this.validateInput(proof.config,proof.unit);
+    return proof;
+  }
+  async page(input:AiPageQuery):Promise<AiPageView>{
+    if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.first,proof.final,source);
+    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',issues:proof.final.pageIssues};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');
@@ -226,6 +264,7 @@ export class MaterialAiRepository{
     if(!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==image.data||hash(bytes)!==row.image_sha)throw Error('source_changed');return image;
   }
   async recover(){
+    await this.host.run("UPDATE material_ai_units SET retry_at=0 WHERE status IN ('pending','first_saved')");
     const units=await this.host.all("SELECT batch_id,ordinal,owner_pid,lease,dispatched_at FROM material_ai_units WHERE status='dispatched'");
     for(const unit of units)if(!alive(Number(unit.owner_pid))||Date.now()-Number(unit.dispatched_at)>180000)await this.host.run("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown',owner_pid=0,lease='' WHERE batch_id=? AND ordinal=? AND status='dispatched' AND owner_pid=? AND lease=? AND dispatched_at=?",[String(unit.batch_id),Number(unit.ordinal),Number(unit.owner_pid),String(unit.lease),Number(unit.dispatched_at)]);
   }
@@ -238,6 +277,7 @@ export class MaterialAiRepository{
   async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;this.active?.controller.abort();await this.pumping;}
   private async guard(batchId:string,config:AiBatchInput,unit:AiUnitInput,signal:AbortSignal){
     signal.throwIfAborted();const row=(await this.host.all('SELECT status FROM material_ai_batches WHERE id=?',[batchId]))[0];
+    if(unit.pageSource&&process.env.OMNI_EDU_AI_PAGE_RESTORATION==='0')throw Error('page_restoration_disabled');
     if(row?.status!=='running')throw new Error('paused');
     if((await this.configuration()).revision!==config.settingsRevision)throw new Error('configuration');
     await this.validateInput(config,unit);signal.throwIfAborted();
@@ -253,13 +293,13 @@ export class MaterialAiRepository{
       if(saved?.status!==expected)throw new Error('conflict');
       if(Number(batch.calls)>=config.maxCalls)throw new Error('budget_exhausted');
       await target.host.run('UPDATE material_ai_batches SET calls=calls+1 WHERE id=?',[batchId]);
-      await target.host.run("UPDATE material_ai_units SET status='dispatched',owner_pid=?,lease=?,dispatched_at=?,error='' WHERE batch_id=? AND ordinal=?",[process.pid,lease,Date.now(),batchId,ordinal]);
+      await target.host.run("UPDATE material_ai_units SET status='dispatched',owner_pid=?,lease=?,dispatched_at=?,retry_at=0,local_retries=0,error='' WHERE batch_id=? AND ordinal=?",[process.pid,lease,Date.now(),batchId,ordinal]);
     },()=>signal.throwIfAborted());
     return lease;
   }
   async drain(){
     if(!this.runtime||this.closing)return false;
-    const row=(await this.host.all("SELECT u.*,b.config_json,b.resource_id,b.version,b.title FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE b.status='running' AND u.status IN ('pending','first_saved') ORDER BY b.created_at,u.ordinal LIMIT 1"))[0];
+    const row=(await this.host.all("SELECT u.*,b.config_json,b.resource_id,b.version,b.title FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE b.status='running' AND u.status IN ('pending','first_saved') AND u.retry_at<=? ORDER BY b.created_at,u.ordinal LIMIT 1",[Date.now()]))[0];
     if(!row){await this.host.run("UPDATE material_ai_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('failed','outcome_unknown','review')) THEN 'attention' ELSE 'complete' END WHERE status='running' AND NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('pending','first_saved','dispatched'))");return false;}
     const batchId=String(row.batch_id),ordinal=Number(row.ordinal),config=JSON.parse(String(row.config_json)) as AiBatchInput&{model:AiSettings['model']},unit=JSON.parse(String(row.input_json)) as AiUnitInput;
     const controller=new AbortController(),signal=controller.signal;this.active={batchId,controller};let lease='',transportStarted=false;
@@ -291,12 +331,13 @@ export class MaterialAiRepository{
         return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;}},signal);
       };
       if(row.first_json&&row.image_sha!==imageSha)throw new Error('source_changed');
-      let firstRaw=String(row.first_json),first:AiBatchResponse|undefined=firstRaw?parseAiBatchResponse(firstRaw):undefined;
+      const parse=unit.pageSource?parseAiPageResponse:parseAiBatchResponse;
+      let firstRaw=String(row.first_json),first:AiBatchResponse|AiPageResponse|undefined=firstRaw?parse(firstRaw):undefined;
       if(!first){
         await this.guard(batchId,config,unit,signal);
         lease=await this.dispatch(batchId,ordinal,config,unit,'pending',signal);
-        firstRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:!!image&&process.env.OMNI_EDU_AI_IMAGE_TEXT!=='0'});
-        first=parseAiBatchResponse(firstRaw);
+        firstRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:!!image&&(!!unit.pageSource||process.env.OMNI_EDU_AI_IMAGE_TEXT!=='0'),...(unit.pageSource?{page:true as const}:{})});
+        first=parse(firstRaw);
         if(first.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE&&!image)throw Error('invalid_response');
         await this.write(async target=>{
           await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
@@ -307,11 +348,25 @@ export class MaterialAiRepository{
       const cleanDraft=structuredClone(first);
       for(const question of cleanDraft.questions)for(const field of ['stem','answer','analysis','subject','grade','knowledgePoint','questionType'] as const)question[field]=await this.runtime.clean(question[field]);
       // Coverage text is also untrusted model output and must be redacted before the second dispatch.
-      if(cleanDraft.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE)for(const q of cleanDraft.questions)for(const part of Object.values(q.projection))part.text=await this.runtime.clean(part.text);
-      const safeFirst=parseAiBatchResponse(JSON.stringify(cleanDraft));
+      if(cleanDraft.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||cleanDraft.schemaVersion===MATERIAL_AI_PAGE_RESPONSE)for(const q of cleanDraft.questions)for(const part of Object.values(q.projection))part.text=await this.runtime.clean(part.text);
+      if(cleanDraft.schemaVersion===MATERIAL_AI_PAGE_RESPONSE&&await this.runtime.clean(cleanDraft.pageText)!==cleanDraft.pageText)throw Error('privacy_blocked');
+      const safeFirst=parse(JSON.stringify(cleanDraft));
       await this.guard(batchId,config,unit,signal);
       lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
-      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE,previous:safeFirst}),final=parseAiBatchResponse(finalRaw);
+      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||safeFirst.schemaVersion===MATERIAL_AI_PAGE_RESPONSE,previous:safeFirst,...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
+      if(unit.pageSource){
+        const pageFirst=parseAiPageResponse(firstRaw),pageFinal=parseAiPageResponse(finalRaw);
+        if(!image||await this.runtime.clean(pageFinal.pageText)!==pageFinal.pageText)throw Error('privacy_blocked');
+        const sourceUnits=[];for(const source of unit.sources)sourceUnits.push(...(await this.host.materials().readingWindow(config.resourceId,source.offset,1)).units);
+        const originalQuestions=extractMaterialQuestions(sourceUnits,'local-text-v1');
+        await this.write(async target=>{
+          await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
+          await publishAiPage(target.host,{batchId,ordinal,source:unit.pageSource!,sources:unit.sources,originalQuestions,firstRaw,finalRaw,first:pageFirst,final:pageFinal,imageSha,title:String(row.title),model:config.model});
+          await target.guard(batchId,config,unit,signal);
+        },()=>signal.throwIfAborted());lease='';return true;
+      }
+      if(first!.schemaVersion===MATERIAL_AI_PAGE_RESPONSE||final.schemaVersion===MATERIAL_AI_PAGE_RESPONSE)throw Error('invalid_response');
+      const legacyFirst=first!;
       if(final.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE&&!image)throw Error('invalid_response');
       const sourceUnits=[];
       for(const source of unit.sources){const snapshot=await this.host.materials().readingWindow(config.resourceId,source.offset,1);sourceUnits.push(...snapshot.units);}
@@ -319,24 +374,24 @@ export class MaterialAiRepository{
       const omitted=numbered.some(candidate=>!final.questions.some(q=>q.number===candidate.archive.number));
       await this.write(async target=>{
         await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
-        let review=omitted||final.outcome==='needs_review'||first!.outcome!==final.outcome;
+        let review=omitted||final.outcome==='needs_review'||legacyFirst.outcome!==final.outcome;
         for(const q of final.questions){
           const issues=[...q.issues,...archiveMissing(q)],risks:string[]=[];
           if('projection'in q&&(!validQuestionProjection(q.projection,true)||q.projection.figures.state!=='not_applicable'))issues.push('incomplete_question');
           if(omitted)issues.push('ai_mismatch');
           if(q.requiresImage){issues.push('requires_image');risks.push('visual_unchecked');}
           if(unit.visualRisk&&!image){issues.push('visual_unchecked');if(!risks.includes('visual_unchecked'))risks.push('visual_unchecked');}
-          const prior=first!.questions.find(p=>p.number===q.number);
+          const prior=legacyFirst.questions.find(p=>p.number===q.number);
           const normalized=(text:string)=>text.normalize('NFKC').replace(/\s/g,'');
           const independent=numbered.find(candidate=>candidate.archive.number===q.number);
-          const visualText=!!image&&!!independent&&!independent.archive.sourceRisks.some(risk=>risk!=='visual_unchecked')&&!!imageTextEvidence(first!,final,q.number,imageSha,independent.fields.stem);
-          if((first!.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||final.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE)&&!visualText)issues.push('ai_mismatch');
+          const visualText=!!image&&!!independent&&!independent.archive.sourceRisks.some(risk=>risk!=='visual_unchecked')&&!!imageTextEvidence(legacyFirst,final,q.number,imageSha,independent.fields.stem);
+          if((legacyFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||final.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE)&&!visualText)issues.push('ai_mismatch');
           if(!visualText&&(!independent||normalizeMaterialStem(independent.fields.stem)!==normalizeMaterialStem(q.stem)||independent.archive.sourceRisks.some(risk=>risk!=='visual_unchecked')))issues.push('incomplete_question');
           if(!visualText&&!normalizeMaterialStem(unit.text).includes(normalizeMaterialStem(q.stem)))issues.push('uncertain_ocr');
           if(q.answerOrigin==='source'&&!normalized(unit.text).includes(normalized(q.answer)))issues.push('answer_conflict');
           if(q.analysisOrigin==='source'&&!normalized(unit.text).includes(normalized(q.analysis)))issues.push('answer_conflict');
           // Two passes are a consistency check, never independent mathematical verification.
-          if(!prior||prior.stem!==q.stem||prior.answer!==q.answer||first!.questions.length!==final.questions.length||first!.outcome!==final.outcome)issues.push('ai_mismatch');
+          if(!prior||prior.stem!==q.stem||prior.answer!==q.answer||legacyFirst.questions.length!==final.questions.length||legacyFirst.outcome!==final.outcome)issues.push('ai_mismatch');
           if(final.outcome==='needs_review')issues.push('ai_review');
           if(/如图|下图|图中|见图|如下表|下表/.test(q.stem)&&!q.requiresImage){issues.push('requires_image');if(!risks.includes('visual_unchecked'))risks.push('visual_unchecked');}
           const unique=[...new Set(issues)];review||=!!unique.length;
@@ -356,10 +411,12 @@ export class MaterialAiRepository{
     }catch(error){
       const code=signal.aborted?'cancelled':safeError(error);
       await this.write(async target=>{
-        const current=(await target.host.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
-        if(current?.status==='dispatched'&&current.lease===lease&&!transportStarted){
+        const current=(await target.host.all('SELECT status,lease,local_retries FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0],retryLocal=!signal.aborted&&['busy','index_busy'].includes(code),attempt=Math.min(6,Number(current?.local_retries||0)+1),retryAt=Date.now()+Math.min(30000,1000*2**attempt);
+        if(retryLocal&&['pending','first_saved'].includes(String(current?.status))&&!current?.lease){
+          await target.host.run('UPDATE material_ai_units SET retry_at=?,local_retries=?,error=? WHERE batch_id=? AND ordinal=?',[retryAt,attempt,code,batchId,ordinal]);
+        }else if(current?.status==='dispatched'&&current.lease===lease&&!transportStarted){
           const state=(await target.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
-          await target.host.run("UPDATE material_ai_units SET status=?,error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[['cancelled','paused'].includes(code)?state?.first_json?'first_saved':'pending':'failed',code,batchId,ordinal]);
+          await target.host.run("UPDATE material_ai_units SET status=?,error=?,owner_pid=0,lease='',retry_at=?,local_retries=? WHERE batch_id=? AND ordinal=?",[retryLocal||['cancelled','paused'].includes(code)?state?.first_json?'first_saved':'pending':'failed',code,retryLocal?retryAt:0,retryLocal?attempt:0,batchId,ordinal]);
           await target.host.run('UPDATE material_ai_batches SET calls=MAX(0,calls-1) WHERE id=?',[batchId]);
         }else if(current?.status==='dispatched'&&current.lease===lease){await target.host.run("UPDATE material_ai_units SET status='outcome_unknown',error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[code,batchId,ordinal]);}
         else if(!lease&&!signal.aborted&&code!=='paused'&&['pending','first_saved'].includes(String(current?.status)))await target.host.run("UPDATE material_ai_units SET status='failed',error=? WHERE batch_id=? AND ordinal=?",[code,batchId,ordinal]);

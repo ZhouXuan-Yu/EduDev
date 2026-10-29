@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "sourceCommit": "d021da6",
+  "title": "OCR empty/garbled PDF original-page restoration",
+  "status": "slice_verified_comprehensive_failed",
+  "tdd": {
+    "pageSource": [
+      "f64e753",
+      "c52a520"
+    ],
+    "localBusy": [
+      "7ea6142",
+      "403b18e"
+    ],
+    "visibleNotebook": [
+      "e80f111",
+      "eae90d6"
+    ],
+    "mathematicalNotation": [
+      "51ab7fb",
+      "d021da6"
+    ]
+  },
+  "integration": {
+    "mergedMain": "40ecd21",
+    "mergeCommit": "bd8aa30",
+    "collaboratorWorktreeUnchanged": true
+  },
+  "ui": {
+    "command": "node scripts/education/kb-folder-pdf-publication-journey.mjs --restore-ocr",
+    "exit": 0,
+    "success": true,
+    "checks": [
+      "Actual second-page processing plus staged first page creates no false failed unit or model request",
+      "Both staged pages before canonical publication stay waiting with zero AI requests",
+      "After actual publication both pages finish original-image two-pass processing in the same bank without duplicate children",
+      "Visible notebook reads restored full-page text and opens the actual original while blank/garbled OCR is preserved",
+      "Native restart retains original hash, two AI questions and four-call ledger without another request",
+      "Cold-start notebook still reads page-backed v5 receipts and the original image at 1920x1080"
+    ],
+    "fixtureBytes": 54589246,
+    "fixtureScope": "Actual Electron UI, >50MiB valid PDF with two raster OCR pages and a 52MiB incompressible embedded fixture, actual local Worker/SQLite/source and restart; transport gates and model HTTP controlled. With --restore-ocr local page receipts are deliberately changed to blank/garbled before publication. Not natural OCR failure, paid quality, 40GB or installer acceptance",
+    "rendererErrors": [],
+    "viewports": [
+      [
+        1366,
+        768
+      ],
+      [
+        1920,
+        1080
+      ]
+    ],
+    "modelCalls": 4,
+    "readyQuestions": 2,
+    "originalPageReceiptsBeforeInjection": [
+      {
+        "page": 1,
+        "status": "complete",
+        "textBytes": 139
+      },
+      {
+        "page": 2,
+        "status": "complete",
+        "textBytes": 139
+      }
+    ],
+    "mainRssSamples": {
+      "beforePublication": 366809088,
+      "after": 284729344,
+      "peakMeasured": false
+    },
+    "privateEvidenceBasename": "omni-folder-pdf-publish-LN9Gi3",
+    "retainedRedEvidenceBasename": "omni-folder-pdf-publish-qQPtJq",
+    "sourceCommit": "eae90d6"
+  },
+  "realProvider": {
+    "command": "node scripts/education/kb-real-page-prompt.mjs <previously-authorized-root>",
+    "exit": 0,
+    "success": true,
+    "scope": "Two actual DeepSeek calls through the production page prompt and parser, only the previously inspected page-1 image, deliberately garbled OCR input; no question publication or natural accuracy/scale acceptance",
+    "sampleSha": "fbb65aa90d6f2f047bdac014bebf7c76cf32f254be2be28c0276f360fe177ef1",
+    "result": {
+      "transcriptionAgrees": true,
+      "firstTextBytes": 2072,
+      "finalTextBytes": 2072,
+      "pageIssues": [],
+      "outcome": "questions",
+      "questions": [
+        {
+          "number": "1",
+          "requiresImage": false,
+          "issues": [],
+          "answerOrigin": "ai_generated",
+          "analysisOrigin": "ai_generated"
+        },
+        {
+          "number": "2",
+          "requiresImage": false,
+          "issues": [],
+          "answerOrigin": "ai_generated",
+          "analysisOrigin": "ai_generated"
+        },
+        {
+          "number": "3",
+          "requiresImage": false,
+          "issues": [],
+          "answerOrigin": "ai_generated",
+          "analysisOrigin": "ai_generated"
+        },
+        {
+          "number": "4",
+          "requiresImage": true,
+          "issues": [
+            "requires_image"
+          ],
+          "answerOrigin": "ai_generated",
+          "analysisOrigin": "ai_generated"
+        }
+      ],
+      "digitsPreserved": [
+        {
+          "value": "1.5",
+          "present": true
+        },
+        {
+          "value": "2.8",
+          "present": true
+        },
+        {
+          "value": "0.5",
+          "present": true
+        }
+      ]
+    },
+    "calls": [
+      {
+        "call": 1,
+        "status": 200,
+        "imageSha": "fbb65aa90d6f2f047bdac014bebf7c76cf32f254be2be28c0276f360fe177ef1",
+        "at": "2026-10-29T19:17:23.705Z"
+      },
+      {
+        "call": 2,
+        "status": 200,
+        "imageSha": "fbb65aa90d6f2f047bdac014bebf7c76cf32f254be2be28c0276f360fe177ef1",
+        "at": "2026-10-29T19:17:34.539Z"
+      }
+    ],
+    "newCalls": 2,
+    "knowledgeTaskCumulativeCalls": 20,
+    "privateEvidenceBasename": "omni-real-page-prompt-Q2mKpF",
+    "offlineQualityReplay": {
+      "scope": "Actual saved first/final response replay through production assessAiPage and aiPageQuestionIssues only; no new publication or source proof",
+      "pageReview": false,
+      "questions": [
+        {
+          "number": "1",
+          "issues": []
+        },
+        {
+          "number": "2",
+          "issues": []
+        },
+        {
+          "number": "3",
+          "issues": []
+        },
+        {
+          "number": "4",
+          "issues": [
+            "requires_image",
+            "ai_mismatch",
+            "incomplete_question"
+          ]
+        }
+      ]
+    }
+  },
+  "tests": {
+    "newPageBoundaries": {
+      "passed": 15,
+      "exit": 0
+    },
+    "legacyAi": {
+      "passed": 28,
+      "exit": 0
+    },
+    "folder": {
+      "passed": 7,
+      "exit": 0
+    },
+    "pdfFolder": {
+      "passed": 8,
+      "exit": 0
+    },
+    "origins": {
+      "passed": 13,
+      "exit": 0
+    },
+    "archivePi": {
+      "passed": 13,
+      "exit": 0
+    },
+    "retrieval": {
+      "passed": 17,
+      "exit": 0
+    },
+    "nativeLedger": {
+      "passed": 20,
+      "exit": 0
+    },
+    "components": {
+      "passed": 240,
+      "total": 240,
+      "exit": 0
+    },
+    "buildTypecheck": {
+      "exit": 0
+    },
+    "finalSmoke": {
+      "passed": false,
+      "first": {
+        "command": "npm run test:smoke",
+        "buildTypecheckExit": 0,
+        "exit": 1,
+        "failure": "Teacher correction read after fixed 120ms still returned needs_ocr; later failure screenshot shows saved UI",
+        "log": "apps/desktop/test-results/kb-page-final-smoke.log"
+      },
+      "recheck": {
+        "command": "node scripts/electron-smoke.mjs",
+        "exit": 1,
+        "failure": "Teaching-book description remained old after version advanced to 2, line1313; cause not established",
+        "log": "apps/desktop/test-results/kb-page-final-smoke-recheck.log"
+      },
+      "harnessFix": "Wait for visible corrected selection and enabled save button; retain original SQLite assertion",
+      "full207Claimed": false
+    },
+    "webAnswer": {
+      "passed": 12,
+      "exit": 0
+    },
+    "nativePi": {
+      "passed": 5,
+      "exit": 0
+    },
+    "finalBuildTypecheck": {
+      "command": "npm run build",
+      "sourceCommit": "d021da6",
+      "exit": 0,
+      "log": "apps/desktop/test-results/kb-page-math-final-build.log"
+    }
+  },
+  "audit": {
+    "exit": 1,
+    "existingVulnerabilities": {
+      "critical": 0,
+      "high": 8,
+      "moderate": 7,
+      "low": 8,
+      "total": 23
+    },
+    "dependencyOrLockChanges": false
+  },
+  "fingerprints": {
+    "mainSha256": "58d8f705551c13240ca36bdd013826526a4667a309be6a09b5f3932e8d5e52f7"
+  },
+  "rollback": "OMNI_EDU_AI_PAGE_RESTORATION=0 stops new/queued page production while preserving v5 and existing page receipts; do not roll back to a binary without v5 readers",
+  "unverified": [
+    "whole-page ordinary text full-library FTS/Lance and Pi search",
+    "image-file OCR total-failure source proof",
+    "diagrams and complex/cross-page/answer-book recovery",
+    "independent natural quality and mathematical accuracy",
+    "40GB ingestion/recall/P95/peak memory",
+    "managed component installation and final installed EXE",
+    "same-folder pending-worker fairness and parent attention refresh after teacher pause",
+    "full comprehensive 207-check smoke: unresolved teaching-book description persistence assertion"
+  ],
+  "dailyDDriveRuntimeUpdated": false,
+  "finalReaderUpgrade": {
+    "scope": "Final NFC build reads previously saved v5 records through the actual notebook and original-page UI, two native launches; no new import or natural accuracy claim",
+    "checks": [
+      {
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "questions": 2,
+        "originalImageVisible": true,
+        "modelCalls": 0
+      },
+      {
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "questions": 2,
+        "originalImageVisible": true,
+        "modelCalls": 0
+      }
+    ],
+    "rendererErrors": [],
+    "success": true,
+    "exit": 0,
+    "sourceCommit": "d021da6"
+  }
+}
