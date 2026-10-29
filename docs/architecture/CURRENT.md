@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-30 PDF原页还原来源与读取
+
+MaterialAiRepository沿原两阶段/授权/预算/事务保存page-response.v1；新增页来源表绑定实际PDF generation/receipt、原件版本、两遍原始响应和图片SHA。v5保留实际正文sources（可空）及pageSource，旧协议仍读；原件/OCR事实不覆盖。来源变动时原页资格/派生覆盖/检索时钟失效；新typed materials:ai-page按需读正文，轮询只传小标志。原图由既有Worker预览，busy的retry_at/local_retries采用到期索引，不新增运行时或依赖。
+
 ## 2026-10-29 E03原任务与Office薄扩展
 
 不新增工具名或创建指纹；office_create_document可选presentationEdit经原Service转换为完整Office Proposal，再用原审阅/存储/生成/回执。task.resume允许真实短继续，任务修改新请求的历史sources仅供上下文；goal绑定按origin来源，不按sources数组首项。原SQL/文件真源及typed批准IPC不变。长请求完整读取与队列上下文接缝仍待补齐。

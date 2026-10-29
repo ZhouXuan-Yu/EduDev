@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-30 复用原OCR/DeepSeek执行器
+
+还原提示OCR_RESTORATION_INSTRUCTION由文字、图片与Word角色图稿共用，PDF新页模式增加pageText/pageIssues；继续现统一DeepSeek、严格schema、原隐私/来源/额度与双阶段。复用现PDF文件Worker、原图预览、imageTextEvidence、同题本与Pi，不引入第二Agent或后端。无新依赖、许可证或打包体积变更；新v5须保留读取，OMNI_EDU_AI_PAGE_RESTORATION=0停新生产。
+
 ## 2026-10-29 E03工具输入扩展
 
 Hana office_read_text扩展.html/.htm/.svg，仍64KiB UTF8，只读不运行脚本。原office_create_document增加presentationEdit v1参数，不与draft并用，仅本会话已保存逐页PPT按当前version另存修改；普通Office v1及原工具身份保持。PPT旧版/来源漂移返回错误，不重建外部任意PPT。

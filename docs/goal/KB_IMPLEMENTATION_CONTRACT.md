@@ -4,6 +4,8 @@
 
 2026-10-30续接：本地Worker busy/index_busy、且尚无外发请求时保留pending/first_saved，采用2–30秒有界退避；新增material_ai_units.retry_at/local_retries与待执行部分索引，重启重置等待时间。其他已到期单元可继续，真实外发结果未知仍不自动重试。原页还原开关OMNI_EDU_AI_PAGE_RESTORATION=0只停新生产，已有v5与原页回执继续可读。正式界面与自然模型验证分别记录，不将受控响应当真实识别质量。
 
+质量反例追加：NFKC会把x²折成x2、y₁折成y1，不能用来证明数学内容一致；原页双稿、题干及原答案匹配改用NFC并保留上下标差异，空白差异仍可忽略。51ab7fb RED→d021da6 GREEN，15组边界通过。综合检查初次120ms提前读保存状态，改等待UI实际已校正并保留SQLite断言；后续讲义修订描述仍失败，明确保留证据及未通过状态，不借此宣称207全通过或扩写无关讲义模块。
+
 教师结果：本地PDF页已终止为空白/失败/待核且无canonical正文时，已授权目录或单资料原图整理仍可处理该原页；不能凭OCR空就记无题。两遍均输出整页还原正文、逐题完整投影与疑点，来源可回看，正文页无习题也能查看；自动入题使用原页证据，普通body-source和旧回执不改。复用现PDF file.v3/原页预览、MaterialAiRepository、imageTextEvidence、原题本/编辑/Pi，不伪造空正文块或教师确认。
 
 新增shared material-ai-page版本化契约：原页来源含resource/version/page/PDF generation/本地页回执摘要；page-response.v1含pageText/pageIssues及既有图文题结构。新建的PDF原图整理统一采用整页模式，包含OCR已complete但乱码/漏题的页；旧批次继续原协议。QuestionArchive.v5新增pageSource、sources保留该页实际OCR正文引用（无正文时为空）、ai-page-two-pass.v1与page-image-complete.v1策略，旧v1–v4仍严格读取；已有完整规则题仍按原严谨同源指纹关联。联网补答保留原页来源，不把补答当题面核验。现AI单位input增可选pageSource，新material_ai_page_units保存单元原页来源及首/终稿/原图摘要，不复制整页正文；仍以原单位原始回执为事实。
