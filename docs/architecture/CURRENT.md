@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 统一导入题核验资格
+
+共享archiveEligible增加无AI导入来源的明确核验条件，沿现Pi/检索fact/组卷/题本消费，无新schema/IPC/表。MaterialQuestionArchive及QuestionWebAnswerRepository按同一资格写派生needs_attention；迁移仅回填未标记旧成员，不改原始事实。无AI规则题仍可在题本编辑/核验，不能因字段齐全或联网补答自动升级。
+
 ## 2026-10-29 目录AI调度
 
 MaterialFolderAiRepository为既有归档/AI执行器之间的持久调度器，非Agent。material_folder_ai/resources/units及material_ai_task_keys只保存授权、游标和子批次关联，SQLite/本地原件/同题库真源保持。增量pause_reason区分teacher/folder/startup；发送和发布前复核父授权，单元2次预留、未知不重发，有界轮转与全局单AI消费者。typed目录schema/IPC/preload和原资料卡片贯通，旧单资料路径保留。

@@ -1,5 +1,35 @@
 # 知识库实施证据
 
+## 2026-10-29 阻止规则收录绕过核验
+
+批判复现：纯文本规则题fields齐全/issues空即被archiveEligible放行，题本据此声称可组卷；普通保存与联网补答案也可能清needs_attention。RED72e92cc保留真实反例，GREEN77063fc统一有来源无AI题的核验条件：rule_extracted或未sourceChecked不能用于默认Pi/可用语义/组卷，普通手工无archive题和现AI双阶段自动稿兼容，老师仍可在既有编辑入口明确核验或撤销。题目保留在题本，缺图、超长和来源完整性条件不放宽。
+
+变更shared/question-archive.ts、main/assets/material-question-archive.ts、main/education/question-web-answer-repository.ts、renderer/QuestionArchiveEditor.tsx及product/MaterialQuestionStatus.tsx。现schema/IPC/preload/原件目录/AI回执不变，无新依赖或表。历史仅回填needs_attention可重建标记，按attention索引找未标记成员，原archive_json不改；新抽题/编辑/联网写回使用同一资格。底层补答用途读取仍明确usableForPaper=false，不因可补答授予正式组卷。
+
+实际命令（apps/desktop）：
+
+```powershell
+node --experimental-transform-types scripts/education/kb-critical-archive-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-folder-ai-boundaries.mjs
+node --experimental-transform-types scripts/education/question-web-answer-boundaries.mjs
+node --experimental-transform-types scripts/education/question-enrichment-read-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-verification-migration.mjs
+node scripts/education/kb-critical-archive-journey.mjs
+node scripts/education/kb-folder-ai-journey.mjs
+npm run test:smoke
+npm run test:renderer-components
+npm audit --json
+```
+
+13档案/Pi、28AI、7目录、12联网写回及15补答读取边界通过；最终build/type与综合smoke207、ok=true、自然exit0，日志Temp/kb-verification-gate-smoke.log及.exit=0；最终renderer240/240、exit0，日志kb-verification-gate-final-components.log。目录三格式实际本地OCR/Word渲染/typed IPC/同库3AI自动稿、未知请求暂停冷启无重发2项通过，Temp/omni-folder-ai-ui-nC8S1O/report.json；模型HTTP受控，不冒充真实模型质量，本轮0新增真实DeepSeek请求。
+
+实际SQLite旧库100006合成成员/70496256B，100002标待核（含普通保存与陈旧勾选规则态），迁移含索引543ms；再次0ms/0更新，全部10万原规则JSON保持一致，手工/已核/AI夹具原标记保留。Temp/omni-verification-migration-3N1ZGG/report.json。此前完整规则题可自动入候选，现在明确核验；没有真实教学Recall或全量P95前后比较，不以70.5MB合成旧库推导40GB。
+
+首次构建发现抽题Input字段可选，改用已保存的完整题目计算，未放松类型。联网回归原先断言补齐即eligible，改为明确未核题仍不eligible，并保留原来源/缺失写回/冲突/取消断言；同步修写回计数。界面先前反复在重启后的隐藏重复工作区导航失败，独立同根DOM探针证实工作区切换，修测试为可见按钮正常滚动并等待目标页面；未force点击或改业务门禁。最终核验→撤销→检索→组卷确认→原生冷启完整8项exit0/0renderer错误（1366×768），报告Temp/omni-edu-kb-critical-byzN2P/report.json。失败报告保留Temp/omni-edu-kb-critical-PkzEZj、LUOy5Y、YpW4d6、NGFOiD，不将此前7项通过冒充整条通过；本片新增题本提示的1920独立路径未重跑，目录AI面板另有1920通过。
+
+audit真实23项（0critical/8high/7moderate/8low），锁文件无变。精确匿名指标[核验JSON](../research/KB_VERIFICATION_GATE_EVIDENCE_20261029.json)。回滚保留原事实和派生待核标记，回退谓词时需停自动组卷，不能静默恢复未核规则题为就绪；无破坏迁移。完整目标继续：规则候选/AI稿严格同源关联与重复展示/计数合并、空页/失败页、整页普通正文还原、图题跨页/答案册、独立自然质量、真实40GB持续稳定与最终安装仍OPEN。
+
 ## 2026-10-29 文件夹一次授权到后台AI同库入题
 
 整合补记：本片源码b1e3eb8完成上述207综合smoke后，远端新增51ef5b5/cc82219（PPT精确页数与备注）；正常合并为952074a，12处均为不同新增状态段，逐项保留双方，生产源码无冲突。合并版npm run build exit0、renderer240/240与presentation-draft-smoke四项通过；综合207为合并前本片源码证据，不冒充PPT合并后重新完整执行。最终目录界面专项exit0/2项/0renderer错误，仍3自动稿、未知结果冷启无重发，报告Temp/omni-folder-ai-ui-mskv8x/report.json；没有额外真实DeepSeek调用。

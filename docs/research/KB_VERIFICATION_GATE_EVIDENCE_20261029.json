@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-29",
+  "source": {"base": "663d7d5", "red": "72e92cc", "green": "77063fc"},
+  "problem": "Complete rule-extracted source questions bypassed AI/explicit teacher verification; UI and web-answer counters could claim readiness from empty issues alone",
+  "implementation": [
+    "Shared archiveNeedsVerification and archiveEligible govern default Pi, usable semantic facts, paper selection and the visible notebook",
+    "Plain saves and web answer enrichment do not verify an imported stem; explicit teacher source check permits complete text and revocation removes it",
+    "Historical attention migration, new extraction, archive edits and web enrichment preserve the same derived attention state",
+    "Original archive JSON, files, OCR and AI receipts are retained; no new schema/table/IPC/dependency"
+  ],
+  "checks": {
+    "archivePiGroups": 13,
+    "aiBatchGroups": 28,
+    "folderGroups": 7,
+    "webAnswerGroups": 12,
+    "enrichmentReadGroups": 15,
+    "rendererComponents": {"passed": 240, "total": 240, "exit": 0},
+    "buildAndSmoke": {"exit": 0, "ok": true, "passed": 207, "log": "OS Temp/kb-verification-gate-smoke.log"},
+    "folderAiElectron": {"exit": 0, "checks": 2, "aiFinal": 3, "unknownExtraRequests": 0, "rendererErrors": 0, "report": "OS Temp/omni-folder-ai-ui-nC8S1O/report.json", "model": "controlled synthetic HTTP"},
+    "verificationPaperElectron": {"exit": 0, "checks": 8, "rendererErrors": 0, "viewport": "1366x768", "report": "OS Temp/omni-edu-kb-critical-byzN2P/report.json", "scope": "Folder import, plain-save exclusion, explicit verification, revocation, retrieval, paper confirmation and native cold readback with actual SQLite/files; no model call"}
+  },
+  "historicalMigration": {
+    "syntheticRows": 100006,
+    "markedPending": 100002,
+    "firstMs": 543,
+    "repeatMs": 0,
+    "repeatUpdates": 0,
+    "databaseBytes": 70496256,
+    "originalArchiveJsonUnchanged": true,
+    "report": "OS Temp/omni-verification-migration-3N1ZGG/report.json",
+    "boundary": "Synthetic historical derived-flag migration only; no 40GB throughput or real teacher recall claim"
+  },
+  "realModelCalls": 0,
+  "audit": {"critical": 0, "high": 8, "moderate": 7, "low": 8, "total": 23, "dependencyChange": false},
+  "remaining": [
+    "Strict same-source association of rule candidates with AI final questions, duplicate display and combined attention counters",
+    "Blank/failed local OCR pages and full-page AI-restored ordinary text reading/indexing",
+    "Complex diagrams, cross-page and separate answer books",
+    "Independent natural quality/recall, actual sustained 40GB import/cancel/restart and latency",
+    "Managed components and final installed EXE"
+  ],
+  "rollback": "Retain original facts and attention marks, disable automatic paper selection if rolling back qualification code; do not silently restore unverified rule candidates as ready. No destructive migration is required.",
+  "goalComplete": false
+}
