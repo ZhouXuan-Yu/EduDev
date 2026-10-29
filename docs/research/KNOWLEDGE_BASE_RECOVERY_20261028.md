@@ -8,7 +8,7 @@
 
 教师结果：已授权图片处理时，原页清晰但OCR漏字的纯文字题，可由两轮AI完整转录/结构覆盖一致后自动定稿，仍保留原始OCR和来源，不伪造教师确认。现 `MaterialAiRepository.drain` 在两轮看图后仍强制题干等于规则OCR，导致正确补回原页选项也被宿主追加 `incomplete_question/uncertain_ocr`。本片只替换这项不适用的文字证据条件，不解除AI自报不确定、两轮分歧、跨页、原答案冲突、图题或遗漏题检查。
 
-修改：新增版本化图文复核响应与 `image-text-complete.v1` 凭据，复用六项 projection、现两阶段provider、持久units/first/final/imageSHA、题库/来源/权限和既有界面；不加表/IPC/第二模型或Agent，不改变旧文字/Word原生格式。只在实际传图、同原页、两轮同题/结构完整且无依赖图形时启用新凭据；读取时重验两轮原响应、原页SHA与当前来源，旧批次照旧可读。失败保持待处理，配置/隐私/停止/来源CAS规则保留。
+修改：新增版本化图文复核响应与 `image-text-complete.v1` 凭据，复用六项 projection、现两阶段provider、持久units/first/final/imageSHA、题库/来源/权限和既有界面；不加IPC/第二模型或Agent，不改变旧文字/Word原生格式。新增一张增量幂等 `material_ai_image_inputs` 表，保存每单元实际模型输入图（最多4MiB原始字节）及MIME/SHA；同单元两轮与恢复复用这份输入，备份随SQLite，不重渲染整页冒充旧证据，也避免检索时反复启动PDF Worker。只在实际传图、同原页、两轮同题/结构完整且无依赖图形时启用新凭据；读取时重验两轮原响应、持久输入图SHA与当前来源，旧批次照旧可读。失败保持待处理，配置/隐私/停止/来源CAS规则保留。
 
 验收：先用既有真实仓储/SQLite夹具复现OCR漏字被拒，再补结构缺失/不同轮次/伪图SHA/未传图/旧响应兼容反例；实际DeepSeek原PDF页两阶段与界面同库/题意/组卷/文件复读，明确AI一致性不是答案正确率。最终build/组件/领域/Electron路径并正常推main。回滚新增policy/响应生产路径后保留既有账本；新policy数据须显式兼容或留分支，不修改原OCR与原文件。
 

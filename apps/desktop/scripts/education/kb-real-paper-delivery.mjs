@@ -10,9 +10,11 @@ const output=process.argv[2];if(!path.isAbsolute(output)||!fs.existsSync(path.jo
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),data=path.join(output,'data'),profile=path.join(output,'profile'),root=path.join(output,'real-paper-exports'),ledger=path.join(output,'real-paper-cloud-ledger.json');
 const runTag=process.argv[3]||new Date().toISOString().replace(/[^0-9]/g,'');
 if(!/^[a-zA-Z0-9-]{1,32}$/.test(runTag))throw Error('Run tag must be 1-32 letters, digits or hyphens');
+const paperLabel=process.argv[4]||'真实资料物理流程核对 · 2题',expectedQuestions=Number(process.argv[5]||2);
+if(!paperLabel.trim()||paperLabel.length>150||!Number.isSafeInteger(expectedQuestions)||expectedQuestions<1||expectedQuestions>100)throw Error('Valid visible paper label and expected question count required');
 const initialCalls=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')).length:0;
 fs.mkdirSync(root,{recursive:true});
-const report={output,root,runTag,initialCalls,checks:[],deliveries:[],rendererErrors:[],scope:'Actual isolated Electron UI and real DeepSeek Pi export. Automated teacher decisions exercise the test fixture only, not actual teacher sign-off or answer certification.'};
+const report={output,root,runTag,paperLabel,expectedQuestions,initialCalls,checks:[],deliveries:[],rendererErrors:[],scope:'Actual isolated Electron UI and real DeepSeek Pi export. Automated teacher decisions exercise the test fixture only, not actual teacher sign-off or answer certification.'};
 let app,page,session;
 async function until(fn,ms=180000){const end=Date.now()+ms;while(Date.now()<end){const value=await fn();if(value)return value;await delay(500);}throw Error('Timed out');}
 const sql=(query,params=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(query).all(...params);}finally{db.close();}};
@@ -27,16 +29,17 @@ try{
    if(!/chat\/completions/.test(target.pathname))return ordinary(url,options);
    if(target.origin!=='https://api.deepseek.com'||!['/chat/completions','/v1/chat/completions'].includes(target.pathname))throw Error('Only the authorized DeepSeek account may be called');
    const rows=fs.existsSync(ledger)?JSON.parse(fs.readFileSync(ledger,'utf8')):[];if(rows.length-initialCalls>=16)throw Error('Bounded delivery journey call ceiling reached');
-   const body=JSON.parse(typeof options?.body==='string'?options.body:await url.clone().text());rows.push({call:rows.length+1,model:body.model,at:new Date().toISOString(),scope:'confirmed two-question paper export'});fs.writeFileSync(ledger,JSON.stringify(rows,null,2));
+   const body=JSON.parse(typeof options?.body==='string'?options.body:await url.clone().text());rows.push({call:rows.length+1,model:body.model,at:new Date().toISOString(),scope:'confirmed source paper export'});fs.writeFileSync(ledger,JSON.stringify(rows,null,2));
    const response=await ordinary(url,options);rows.at(-1).status=response.status;fs.writeFileSync(ledger,JSON.stringify(rows,null,2));return response;
   };}
   const original=dialog.showOpenDialog;dialog.showOpenDialog=async function(...args){const options=args.length>1?args[1]:args[0];if(/试卷保存文件夹|教学工作目录/.test(options?.title||''))return{canceled:false,filePaths:[root]};return original.apply(dialog,args);};
  },{ledger,root,initialCalls});
  page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});
  await page.getByRole('button',{name:'组卷',exact:true}).click();
- await page.getByTestId('paper-saved').filter({hasText:'真实资料物理流程核对 · 2题'}).first().click();await page.getByTestId('paper-question').nth(1).waitFor();
- if(!await page.getByTestId('paper-confirmed').count())await page.getByTestId('paper-confirm').click();await page.getByTestId('paper-confirmed').waitFor();report.checks.push('Controlled test teacher confirms the actual two-question source-only paper');
+ await page.getByTestId('paper-saved').filter({hasText:paperLabel}).first().click();await page.getByTestId('paper-question').nth(expectedQuestions-1).waitFor();
+ if(!await page.getByTestId('paper-confirmed').count())await page.getByTestId('paper-confirm').click();await page.getByTestId('paper-confirmed').waitFor();report.checks.push('Controlled test teacher confirms the actual source-only paper');
  const paper=sql("SELECT * FROM ai_confirmation_items WHERE action_type='pi_paper_candidate' AND status='confirmed' ORDER BY created_at DESC,id DESC")[0];if(!paper)throw Error('Confirmed paper not persisted');session=paper.session_id;report.paper={id:paper.id,session,count:JSON.parse(paper.payload_json).selection.items.length};
+ if(report.paper.count!==expectedQuestions)throw Error('Persisted paper does not match the requested visible question count');
  const snapshot=()=>page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),session);
  await page.getByTestId('paper-export-student-docx').click();await page.getByTestId('office-prompt-input').waitFor();
  await until(async()=>await page.locator('.office-composer-container').getAttribute('data-session-id')===session);
@@ -61,7 +64,7 @@ try{
  app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});
  page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1920,height:1080});
  // Reopen through the visible paper entry before reading its saved session.
- await page.getByRole('button',{name:'组卷',exact:true}).click();await page.getByTestId('paper-saved').filter({hasText:'真实资料物理流程核对 · 2题'}).first().click();await page.getByTestId('paper-confirmed').waitFor();
+ await page.getByRole('button',{name:'组卷',exact:true}).click();await page.getByTestId('paper-saved').filter({hasText:paperLabel}).first().click();await page.getByTestId('paper-confirmed').waitFor();
  const restored=await snapshot();
  for(const delivery of report.deliveries){
   const saved=restored.officeArtifacts?.find(row=>row.artifactId===delivery.artifactId&&row.state==='saved'),fact=sql('SELECT * FROM document_artifacts WHERE id=?',[delivery.artifactId])[0];
