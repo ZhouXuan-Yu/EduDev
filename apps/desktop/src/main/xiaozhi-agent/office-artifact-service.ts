@@ -1,5 +1,6 @@
 import {isClassroomOfficeSchema,validClassroomOfficeFormat} from '../../shared/classroom-export';
 import {assertFileWritesEnabled} from './file-write-policy';
+import {applyPresentationEdit,validPresentationEditProposal} from '../../shared/xiaozhi-presentation-edit';
 import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -96,6 +97,17 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
   return capture(root,row.path).sha256===row.outputHash?'same' as const:'different' as const;
  }
  return {
+  async preparePresentationEdit(sessionId:string,runId:string,raw:unknown,signal?:AbortSignal){
+   current({sessionId,runId},signal);if(!validPresentationEditProposal(raw))throw Error('invalid_input');
+   const parent=await state.byArtifact(sessionId,raw.parentArtifactId);current({sessionId,runId},signal);
+   if(!parent)throw Error('permission_denied');
+   if(parent.format!=='pptx'||!isPresentationDraft(parent.draft))throw Error('invalid_input');
+   const root=await authority(sessionId,parent);current({sessionId,runId},signal);
+   const captured=capture(root,parent.path,raw.presentationEdit.version);
+   if(captured.sha256!==parent.outputHash)throw Error('conflict');
+   return {path:raw.path,format:'pptx' as const,parentArtifactId:raw.parentArtifactId,
+    draft:applyPresentationEdit(parent.draft,raw.presentationEdit),sources:[{path:parent.path,version:captured.version}]};
+  },
   async propose(sessionId:string,runId:string,callId:string,raw:unknown,signal?:AbortSignal){
    assertFileWritesEnabled();
    current({sessionId,runId},signal);if(!validOfficeProposal(raw)||!callId||callId.length>128)throw new Error('invalid_input');

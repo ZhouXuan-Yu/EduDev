@@ -13,7 +13,7 @@ import {toolManifest} from '../tools/manifest';
 import {acquireToolResource} from '../tools/resource-lock';
 
 type Publisher=ReturnType<typeof createEventPublisher>;
-type Options={sql:Sql;taskId:string;publisher:Publisher;current:()=>boolean;sanitize:(text:string)=>Promise<string>;resources:ReturnType<typeof createTaskResources>;proofs:()=>Promise<TaskVerification[]>;trustedMcpNames?:ReadonlySet<string>};
+type Options={sql:Sql;taskId:string;publisher:Publisher;current:()=>boolean;sanitize:(text:string)=>Promise<string>;resources:ReturnType<typeof createTaskResources>;proofs:()=>Promise<TaskVerification[]>;trustedMcpNames?:ReadonlySet<string>;contextSanitizer?:()=>Promise<(text:string)=>Promise<string>>};
 function normalizeTaskPlanInput(value:unknown):unknown{
  if(!value||typeof value!=='object'||Array.isArray(value))return value;
  const plan=value as Record<string,unknown>;
@@ -35,6 +35,10 @@ function inferredStepId(task:TaskView,tool:string){
  if(executing.length>1)return undefined;
  const ready=matches.filter(step=>['pending','needs_fix'].includes(taskStepState(task,step.id)));
  return ready.length===1?ready[0].id:undefined;
+}
+/** Redact display text only; control IDs, hashes and task linkage stay byte-identical. */
+export async function sanitizeTaskPromptTexts<T extends {criteria:{text:string}[];steps:{text:string}[]}>(snapshot:T,sanitize:(text:string)=>Promise<string>):Promise<T>{
+ return {...snapshot,criteria:await Promise.all(snapshot.criteria.map(async c=>({...c,text:await sanitize(c.text)}))),steps:await Promise.all(snapshot.steps.map(async step=>({...step,text:await sanitize(step.text)})))} as T;
 }
 /** Task governance inside the existing Pi dispatch. No model loop or effect replay. */
 export function createTaskPlanRuntime(options:Options){
@@ -66,18 +70,23 @@ export function createTaskPlanRuntime(options:Options){
    steps.push({id:step.id,text:step.text,dependsOn:step.dependsOn,reported:step.reported,criterionIds:ids});
   }
   const key='xiaozhi.task-plan.v3:'+taskHash([observed.id,owner.runId,callId]),requestHash=taskHash(raw),prior=(await sql.all('SELECT value_json FROM app_settings WHERE key=?',[key]))[0];
-  if(prior){const saved=JSON.parse(String(prior.value_json));if(saved.schema!==TASK_PLAN_SCHEMA||saved.requestHash!==requestHash||saved.taskId!==observed.id||saved.runId!==owner.runId||saved.generation!==owner.generation)throw new TaskAdmissionError('task_plan_call_conflict');return publicState(observed);}
+  if(prior){const saved=JSON.parse(String(prior.value_json));if(saved.schema!==TASK_PLAN_SCHEMA||saved.requestHash!==requestHash||saved.taskId!==observed.id||saved.runId!==owner.runId||saved.generation!==owner.generation)throw new TaskAdmissionError('task_plan_call_conflict');return safePublicState(observed);}
   await preflight(()=>state().previewProposal(owner,observed.id,observed.revision,{expectedRevision:raw.expectedRevision,reason:clean.get(raw.reason)!,steps:steps.map(s=>({...s,text:clean.get(s.text)!}))},criteria));
    const task=await publisher.checkpointTask(async work=>{fence();const tasks=state(inline(work),clean);let current=await tasks.get(observed.id);if(!current)throw Error('task_missing');if(current.requirementsVersion!==raw.requirementsVersion)throw new TaskAdmissionError('task_requirements_changed');
     if(criteria.length)current=await tasks.addCriteria(owner,current.id,current.revision,criteria,true);
     const next=await tasks.propose(owner,current.id,current.revision,{expectedRevision:raw.expectedRevision,reason:raw.reason,steps});
-    await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[key,JSON.stringify({schema:TASK_PLAN_SCHEMA,requestHash,taskId:next.id,runId:owner.runId,generation:owner.generation,revision:next.planRevision}),next.updatedAt]);return next;});return publicState(task);
+    await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[key,JSON.stringify({schema:TASK_PLAN_SCHEMA,requestHash,taskId:next.id,runId:owner.runId,generation:owner.generation,revision:next.planRevision}),next.updatedAt]);return next;});return safePublicState(task);
+ }
+ async function safePublicState(task:TaskView){
+  const snapshot=publicState(task);
+  if(!options.contextSanitizer)return snapshot;
+  const clean=await options.contextSanitizer(),value=await sanitizeTaskPromptTexts(snapshot,clean);fence();return value;
  }
  return{
-  async context(){return '\n本轮宿主任務：单次读取、单次答复或单次起草不要先调用任务计划工具，直接调用目标工具并继续。safe_read可先直接执行，不要把它们登记进任务计划；计划只登记需要taskStepId准入的写入或候选卡工具。计划采用后，目标工具调用必须在参数顶层包含taskStepId，值取当前executing步骤id；宿主只有在同一工具类型恰有一个可执行匹配步骤时才允许无taskStepId的确定性绑定，多个匹配仍失败关闭。kind必须对应实际操作：file仅读取已有文件，attachment读附件，saved_text新建/修改.md/.txt/.html/.svg或用office_copy_file复制现有文件，saved_office为office_create_document生成普通DOCX/PDF/XLSX/PPTX、education_export_paper导出本会话已确认试卷快照（学生卷/教师卷/答题卡，DOCX/PDF，等待教师Office审批）、education_export_classroom导出课堂快照（PPTX/DOCX/PDF，等待教师确认），human只用于最终教师确认；中间起草不是human，也不应让保存步骤依赖human。office_create_science_figure生成的.html/.svg无论之后是否导出PPT，生成步骤都登记为saved_text，不能登记为saved_office。保存计划通常是第一个无human前置的saved_text或saved_questions步骤，加一个依赖它的最终human步骤。题目/练习卡计划可仅用saved_questions target=current登记变式卡、再登记依赖它的练习卡，最后一个人工核对步骤。实际写入必须有步骤；机器前置只有独立核验通过才解锁。不能用旧update_plan的completed代替。读取/保存目标用相对路径，office_copy_file的saved_text target填写复制目标而不是源文件，saved_questions目标为current；无确定性读回的教学工作使用human，最终由教师核对。每个非human步骤必须提供target；human步骤必须完全省略target字段。\n'+JSON.stringify(publicState(await latest()));},
+  async context(){return '\n本轮宿主任務：单次读取、单次答复或单次起草不要先调用任务计划工具，直接调用目标工具并继续。safe_read可先直接执行，不要把它们登记进任务计划；计划只登记需要taskStepId准入的写入或候选卡工具。计划采用后，目标工具调用必须在参数顶层包含taskStepId，值取当前executing步骤id；宿主只有在同一工具类型恰有一个可执行匹配步骤时才允许无taskStepId的确定性绑定，多个匹配仍失败关闭。kind必须对应实际操作：file仅读取已有文件，attachment读附件，saved_text新建/修改.md/.txt/.html/.svg或用office_copy_file复制现有文件，saved_office为office_create_document生成普通DOCX/PDF/XLSX/PPTX、education_export_paper导出本会话已确认试卷快照（学生卷/教师卷/答题卡，DOCX/PDF，等待教师Office审批）、education_export_classroom导出课堂快照（PPTX/DOCX/PDF，等待教师确认），human只用于最终教师确认；中间起草不是human，也不应让保存步骤依赖human。office_create_science_figure生成的.html/.svg无论之后是否导出PPT，生成步骤都登记为saved_text，不能登记为saved_office。保存计划通常是第一个无human前置的saved_text或saved_questions步骤，加一个依赖它的最终human步骤。题目/练习卡计划可仅用saved_questions target=current登记变式卡、再登记依赖它的练习卡，最后一个人工核对步骤。实际写入必须有步骤；机器前置只有独立核验通过才解锁。不能用旧update_plan的completed代替。读取/保存目标用相对路径，office_copy_file的saved_text target填写复制目标而不是源文件，saved_questions目标为current；无确定性读回的教学工作使用human，最终由教师核对。每个非human步骤必须提供target；human步骤必须完全省略target字段。\n'+JSON.stringify(await safePublicState(await latest()));},
   tools:[{name:'update_task_plan',label:'更新任务步骤',description:'提出xiaozhi.task-plan.v3任务步骤。safe_read不需要计划，直接执行且不要登记为file/attachment/web/image步骤。只为需要taskStepId准入的写入或候选卡建立计划；单次读取/答复/起草直接调用目标工具。计划采用后，实际写入或候选卡工具调用必须在参数顶层填写taskStepId，值取当前executing步骤id；无taskStepId时宿主只在同一工具恰有一个可执行匹配步骤时确定性绑定，多个匹配失败关闭。expectedRevision取上次宿主revision，requirementsVersion取当前宿主要求版本；首次revision=0。稳定id/dependsOn/reported。kind必须对应实际操作：file=读取已有文件，attachment=读取附件，web=读取网页，image=查看图片，saved_text=新建/修改.md/.txt/.html/.svg或office_copy_file复制文件（包括office_create_science_figure），saved_office=office_create_document生成普通DOCX/PDF/XLSX/PPTX，education_export_paper导出本会话已确认试卷快照（学生卷/教师卷/答题卡，DOCX/PDF，等待教师Office审批），education_export_classroom导出课堂快照（PPTX/DOCX/PDF，等待教师确认），saved_questions=保存题目/练习候选，human=仅最终教师确认。科普HTML即使后续导出PPT，生成步骤也必须用saved_text，不能因“演示/课件”字样改成saved_office。每个非human步骤都必须提供machine target；saved_text使用目标相对路径，office_copy_file填写复制目标而非源文件，saved_questions及saved_bundle使用current；office_deliver_files整包交付用saved_bundle；human步骤必须完全省略target字段。只有最终教师核对用human；中间起草不是human，保存步骤也不要依赖human。模型reported完成不会通过核验；不要删除仍需核对的标准或复用已退役id。',parameters:TASK_PLAN_PARAMETERS as unknown as ToolDefinition['parameters'],execute:async(callId,args)=>{
    try{const value=await governed(()=>propose(callId,args));return{content:[{type:'text' as const,text:JSON.stringify({success:true,adopted:true,...value})}],details:{success:true}};}
-   catch(e){if(!(e instanceof TaskAdmissionError))throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,adopted:false,reason:e.reason,...publicState(await latest())})}],details:{success:true}};}
+   catch(e){if(!(e instanceof TaskAdmissionError))throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,adopted:false,reason:e.reason,...(await safePublicState(await latest()))})}],details:{success:true}};}
   }}] as ToolDefinition[],
   async admit(callId:string,tool:string,raw:unknown){
    if(TASK_CONTROL_TOOLS.has(tool))return;

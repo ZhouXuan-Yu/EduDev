@@ -10,6 +10,7 @@ import {readTaskAction} from './teacher-actions';
 import {validTaskResume,taskHasRemainingSteps,type TaskResumeInput} from '../../../shared/xiaozhi-task';
 import {createGoalState,publicGoal,type PrivateGoal} from '../goal-state';
 import {goalFromSource,goalCriterionId} from './goal-binding';
+import {isTaskContinuation} from './continuation';
 
 const digest=(s:string)=>createHash('sha256').update(s).digest('hex');
 const errorCode=(e:unknown):TaskApiError=>{
@@ -62,6 +63,10 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
    const detail=await options.store.getAiConversationSession(sessionId),message=detail.messages.find(m=>m.role==='user'&&m.metadata.agentRunId===runId&&m.metadata.piVersion==='xiaozhi.pi.education.v1');if(!message)throw Error('task_source_changed');
    const goal=await goalFromSource(sql,sessionId,message.id),prior=goal?await state().forGoal(sessionId,goal.id):null;
    if(goal&&prior)return publisher.checkpointTask(async work=>{const tasks=state(inline(work)),bound=await tasks.adoptGoal(publisher.owner,prior.id,prior.revision,goal.id);return tasks.resume(publisher.owner,bound.id,bound.revision,commandId,goal.id);});
+   const unfinished=!goal&&isTaskContinuation(message.content)?await committed(sessionId):null;
+   if(unfinished&&!unfinished.goal&&['paused','interrupted','review_required'].includes(unfinished.state)){
+    return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,unfinished.id,unfinished.revision,commandId,undefined,message.id));
+   }
    const cleaned=(await options.store.sanitizeProblemText(message.content)).sanitizedText;
    return publisher.checkpointTask(work=>state(inline(work),async text=>{if(text!==message.content)throw Error('task_source_changed');return cleaned;}).create(publisher.owner,message.id,commandId));
   },
