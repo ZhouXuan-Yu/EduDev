@@ -1,5 +1,69 @@
 # 知识库实施证据
 
+## 2026-10-29 阻止规则收录绕过核验
+
+批判复现：纯文本规则题fields齐全/issues空即被archiveEligible放行，题本据此声称可组卷；普通保存与联网补答案也可能清needs_attention。RED72e92cc保留真实反例，GREEN77063fc统一有来源无AI题的核验条件：rule_extracted或未sourceChecked不能用于默认Pi/可用语义/组卷，普通手工无archive题和现AI双阶段自动稿兼容，老师仍可在既有编辑入口明确核验或撤销。题目保留在题本，缺图、超长和来源完整性条件不放宽。
+
+变更shared/question-archive.ts、main/assets/material-question-archive.ts、main/education/question-web-answer-repository.ts、renderer/QuestionArchiveEditor.tsx及product/MaterialQuestionStatus.tsx。现schema/IPC/preload/原件目录/AI回执不变，无新依赖或表。历史仅回填needs_attention可重建标记，按attention索引找未标记成员，原archive_json不改；新抽题/编辑/联网写回使用同一资格。底层补答用途读取仍明确usableForPaper=false，不因可补答授予正式组卷。
+
+实际命令（apps/desktop）：
+
+```powershell
+node --experimental-transform-types scripts/education/kb-critical-archive-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-folder-ai-boundaries.mjs
+node --experimental-transform-types scripts/education/question-web-answer-boundaries.mjs
+node --experimental-transform-types scripts/education/question-enrichment-read-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-verification-migration.mjs
+node scripts/education/kb-critical-archive-journey.mjs
+node scripts/education/kb-folder-ai-journey.mjs
+npm run test:smoke
+npm run test:renderer-components
+npm audit --json
+```
+
+13档案/Pi、28AI、7目录、12联网写回及15补答读取边界通过；最终build/type与综合smoke207、ok=true、自然exit0，日志Temp/kb-verification-gate-smoke.log及.exit=0；最终renderer240/240、exit0，日志kb-verification-gate-final-components.log。目录三格式实际本地OCR/Word渲染/typed IPC/同库3AI自动稿、未知请求暂停冷启无重发2项通过，Temp/omni-folder-ai-ui-nC8S1O/report.json；模型HTTP受控，不冒充真实模型质量，本轮0新增真实DeepSeek请求。
+
+实际SQLite旧库100006合成成员/70496256B，100002标待核（含普通保存与陈旧勾选规则态），迁移含索引543ms；再次0ms/0更新，全部10万原规则JSON保持一致，手工/已核/AI夹具原标记保留。Temp/omni-verification-migration-3N1ZGG/report.json。此前完整规则题可自动入候选，现在明确核验；没有真实教学Recall或全量P95前后比较，不以70.5MB合成旧库推导40GB。
+
+首次构建发现抽题Input字段可选，改用已保存的完整题目计算，未放松类型。联网回归原先断言补齐即eligible，改为明确未核题仍不eligible，并保留原来源/缺失写回/冲突/取消断言；同步修写回计数。界面先前反复在重启后的隐藏重复工作区导航失败，独立同根DOM探针证实工作区切换，修测试为可见按钮正常滚动并等待目标页面；未force点击或改业务门禁。最终核验→撤销→检索→组卷确认→原生冷启完整8项exit0/0renderer错误（1366×768），报告Temp/omni-edu-kb-critical-byzN2P/report.json。失败报告保留Temp/omni-edu-kb-critical-PkzEZj、LUOy5Y、YpW4d6、NGFOiD，不将此前7项通过冒充整条通过；本片新增题本提示的1920独立路径未重跑，目录AI面板另有1920通过。
+
+audit真实23项（0critical/8high/7moderate/8low），锁文件无变。精确匿名指标[核验JSON](../research/KB_VERIFICATION_GATE_EVIDENCE_20261029.json)。回滚保留原事实和派生待核标记，回退谓词时需停自动组卷，不能静默恢复未核规则题为就绪；无破坏迁移。完整目标继续：规则候选/AI稿严格同源关联与重复展示/计数合并、空页/失败页、整页普通正文还原、图题跨页/答案册、独立自然质量、真实40GB持续稳定与最终安装仍OPEN。
+
+## 2026-10-29 文件夹一次授权到后台AI同库入题
+
+整合补记：本片源码b1e3eb8完成上述207综合smoke后，远端新增51ef5b5/cc82219（PPT精确页数与备注）；正常合并为952074a，12处均为不同新增状态段，逐项保留双方，生产源码无冲突。合并版npm run build exit0、renderer240/240与presentation-draft-smoke四项通过；综合207为合并前本片源码证据，不冒充PPT合并后重新完整执行。最终目录界面专项exit0/2项/0renderer错误，仍3自动稿、未知结果冷启无重发，报告Temp/omni-folder-ai-ui-mskv8x/report.json；没有额外真实DeepSeek调用。
+
+本片教师结果：资料页原文件夹卡片可明确公共资料/必要页或题图上云授权、统一DeepSeek账户修订与调用上限，后台随归档逐PDF页/Word原生题/图片/TXT或MD正文块自动创建原两阶段AI任务；原OCR、首遍、复核稿和实际图像证据分别保留，同一题库显示AI自动稿/待核。暂停/继续/应用重启/结果未知都有持久状态，不再要求每个资料手动建AI批次。
+
+核心文件：shared/material-folder-ai.ts；main/assets/material-folder-ai.ts、material-ai-repository.ts、material-ipc.ts；db.ts/main/index.ts窄接线；typed preload；renderer/components/product/MaterialFolderAiPanel.tsx与原MaterialImportPanel.tsx。SQLite增量四张目录/幂等表和pause_reason，不改原件/原始OCR/现题事实。无新依赖/锁文件/模型资源/独立服务，沿原全局AI单消费者。
+
+批判复现与修复：并发创建/重启可重复子任务→事务内幂等键和相同输入校验；目录预算可能越界→同writer预留、发送前父授权/成员/配置复验；目录恢复覆盖老师手动暂停→teacher/folder/startup原因；首16个attention占满队列导致新目录永远不运行（RED2≠3）→rowid双范围有界轮转，终态无任务不占窗口。未知结果保留outcome_unknown且界面明确未重发。旧单资料面板与人工修正/正式整卷集中确认保持。
+
+实际命令（apps/desktop）：
+
+```powershell
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-folder-ai-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-native-batch-boundaries.mjs
+npm run test:renderer-components
+npm run test:smoke
+node scripts/education/kb-folder-ai-journey.mjs
+node --experimental-transform-types scripts/education/kb-real-folder-ai-journey.mjs <existing-authorized-isolated-root>
+node scripts/xiaozhi-agent/default-file-delivery-smoke.mjs
+npm audit --json
+```
+
+仓储28、目录7、原生响应6+来源4、renderer240/240最终通过。最终test:smoke所含type/build与综合smoke自然退出0，日志Temp/kb-folder-ai-final-smoke.log及.exit=0。三格式正式Electron测试采用实际本地OCR/Word渲染/SQLite与typed IPC，DeepSeek HTTP为受控响应；一次目录授权→子目录MD/PNG/DOCX三题ai_final，传输中暂停→原生重启→继续，未知结果0额外请求/1幂等子任务，1366与1920、0renderer错误。私有报告Temp/omni-folder-ai-ui-Z82I1Y/report.json，首轮旧源码成功亦保留Temp/omni-folder-ai-ui-ntir6G。协作者E01默认文件交付7项再次通过，报告Temp/xiaozhi-default-files-RKc5jx。
+
+真实云端另独立执行：仅将此前人工检查且授权的PDF第1页预览复制为单图目录，一次卡片授权2次真实DeepSeek200；严格核发送像素SHA相同且仅此页，四题中3条ai_final/1图题review。目视原页及保存题干确认第3题三个小问与先前OCR漏掉的电磁波/超声波选项均恢复，保留1.5倍速等条件；不能据此保证参考答案数学零错。原OCR未改，原生冷启同结果、1子批次/0追加请求/0renderer错误。独立新ledger2+历史知识库ledger16=18，不含导出与Pi专题。私有报告Temp/omni-real-material-NGRlNr/real-folder-ai-report.json；原图、回复、密钥与DB不进Git。真实脚本首次静态import先于源码适配失败、其次图片ID不合法，均在应用/请求前停止，核明0新账本后修脚本继续，未改生产校验。
+
+配置受控测试首次空模型目录导致configuration，改测试模型目录后通过；不是生产账户故障。audit真实返回23项（0critical/8high/7moderate/8low），本片无依赖变动。匿名指标见[本片JSON](../research/KB_FOLDER_AI_EVIDENCE_20261029.json)。已保留并整合origin/main c8c0c8b的E01源码，未动D盘日常构建或协作者工作树。
+
+性能前后：此前每资料单独创建AI批次；现在一授权后有界发现<=32项/轮、<=16轮转目录、每目录<=1在途子批次。没有40GB吞吐/P95或普遍准确率前后承诺。回滚时停目录调度与新授权，保留新增表/子批次关联/pause_reason及已保存题目回执读支持，现单资料面板继续可用；不能直接删除已入库事实。
+
+完整Goal仍未完成：规则抽取旧候选不等于AI核验，当前卡片AI数字仅统计关联AI稿，需统一下游资格；空白/本地识别失败页、不支持格式、无结构化Word题显式待处理；整页AI还原普通正文的阅读/检索视图未实现；改统一账户配置暂需新目录批次、待核人工处理后的汇总仍需完善。复杂图题/跨页与答案册、独立自然质量/Recall、真实40GB持续导入/取消恢复/P95、受管组件首装更新与最终EXE继续OPEN。
+
 ## 2026-10-29 后台目录持续处理与专用OCR还原提示
 
 用户最新目标：一次选含子文件夹的完整目录，后台静默持续处理，主界面只反馈必要进度/结果/异常，耗时可以长但质量不能降；OCR后由DeepSeek直接对原图还原核对，不把乱码通顺化当原文正确。完整目录自动AI调度/批次授权/质量就绪汇总仍未接通，本片不冒充全链完成。

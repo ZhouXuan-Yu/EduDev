@@ -1,5 +1,25 @@
 # 知识库方案实施合同
 
+## 2026-10-29 规则候选核验资格闭环（M04–M06/M10，当前实施）
+
+已证实纯文本规则抽题仅因字段齐全就可进入Pi/语义检索/组卷，前端按issues为空直接声称可组卷。目标为规则收录不冒充核验：导入来源题须已有AI双阶段回执或老师明确对照原件核对；普通保存、字段齐全、联网补答均不能替代题面核验。手工录入/旧原生确认题、AI自动定稿和正式整卷集中确认保持。题目保留可浏览编辑，不删除原件/OCR/已有题。
+
+范围为shared/question-archive统一计算资格、MaterialQuestionArchive派生needs_attention迁移/新题/编辑、QuestionArchiveEditor显示和既有题本/检索/组卷实际流程；复用现schema、IPC、typed preload及勾选核验入口，不加模型、依赖、表、Agent或新业务真源。历史仅回填可重建的needs_attention标记，不改archive事实；现Attention索引限定未标记成员，SQLite内部执行，无全库正文JS载入。验证旧库/新库、未核验/plain-save/明确核验/撤销/AI与手工兼容，原资料→题本→语义/Pi/组卷、重启一致及真实迁移规模耗时。回滚应停自动组卷并保留待核标记，不恢复自动把规则题当核验题；完整40GB/自然质量不以本片代替。
+
+## 2026-10-29 目录级自动AI纵向切片（M02–M05，当前实施）
+
+教师结果：从既有文件夹卡片一次开启本批AI整理，明确公共资料/必要页或题图授权、统一DeepSeek账户与调用上限；后台随本地解析逐页/逐题执行现两阶段还原，教师继续使用其他页面。未授权/未配置/缺OCR组件不发送，疑点保留待处理，不把归档完成当AI完成。
+
+具体新增表为material_folder_ai（授权/预算/发现游标）、material_folder_ai_resources（资料版本/处理游标）、material_folder_ai_units（单元状态/子批次/错误）及material_ai_task_keys（同事务幂等关联）；共享schema xiaozhi.material-folder-ai.v1，新typed IPC materials:folder-ai-get/authorize/action；UI复用MaterialImportPanel内卡片，新增MaterialFolderAiPanel，不扩App树。原批次/原生图文回执、未知结果不重发和单资料面板兼容。
+
+批判复现：子批次原先只有paused状态，目录恢复会错误继续老师手动暂停。增量幂等加入material_ai_batches.pause_reason，区分teacher/folder/startup；只自动接续folder/startup的已授权已知阶段，teacher暂停保留待处理，不能擅自恢复。
+
+复用MaterialImportBatches、MaterialAiRepository、Word原生输入/图片证据及单writer；不另建Agent/题库/通用后端。新增目录授权/资源游标/单元状态表及AI批次幂等关联（同资料版本/页或题/目录授权不可重复创建）。创建子批次与幂等键必须同事务；发送/发布前复核父授权，暂停、撤回、配置变化后不能越权继续；未知请求不自动重发。全局AI仍单消费者，调用额度按单元预留，读取/发现/快照均小批分页。
+
+shared新契约→main repository/IPC→typed preload→原文件夹卡片授权/进度/暂停/继续/打开待处理资料贯通；现单资料面板兼容。PDF按本地页状态，Word按原生题号，图片单单元，TXT/MD按正文块；不支持的格式明确待处理，不静默算成功。新建/旧DB幂等迁移；原件、OCR、已确认题目不修改，失败只影响对应单元。回滚保留新表/回执读支持并停目录调度，现单资料整理继续可用。
+
+完成定义：目录一次授权后自动遍历嵌套资料→解析→真实现AI执行器→同题库/来源→卡片按阶段显示；暂停与应用重启恢复，创建后未记账不重复批次，结果未知不重复计费，撤权/超额/来源变化/隐私拦截真实边界通过；实际Electron主路径与现批次回归，最终一次build/240/相关smoke，正常整合main并推送。没有真实证据不标为全目录/40GB或自然准确性通过；图题、整页正文AI阅读仍保留独立缺口。
+
 ## 2026-10-29 后台目录树持续处理与质量基线（M01/M02）
 
 用户随后明确OCR乱码也须由DeepSeek还原题目及内容。追加本片：在既有两阶段/Word原生/图片响应中共用版本化OCR还原提示，明确原图依据、阅读顺序/段落/公式/选项/小问/角色恢复、关键字数值禁止猜补、无图保守限制与第二遍逐项复核。不新增模型schema字段、不覆盖原OCR、不降低既有图题/不确定门禁；原始OCR输入与两遍响应继续分别保存。通过实际provider请求断言与当前真实一页回归确认，不以prompt存在证明内容绝不出错。

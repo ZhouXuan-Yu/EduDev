@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+## 2026-10-29 规则题核验复用
+
+共用现question-archive schema、AI回执和教师sourceChecked编辑入口，未增加模型/依赖/存储真源。现Pi/检索/组卷经同一archiveEligible，联网补答仅补缺失角色并保留题面核验状态；旧原件和题目事实不迁移，needs_attention为可重建派生标记。
+
+## 2026-10-29 目录AI复用边界
+
+复用现MaterialImportBatches、本地解析OCR、MaterialAiRepository、Word原生图稿/图片回执、统一DeepSeek配置与同题库；新增的是目录授权调度与typed卡片入口，不另建模型设置/Agent/检索服务。图片/Word/文本两阶段共用OCR还原规则v1，原图核对与补充解题分开。无新依赖/锁文件/外部部署，Windows包装资源变化为0，完整受管组件与EXE安装验收另续。
+
 ## 2026-10-29 PPT生成与备注读取复用
 
 仍用PptxGenJS4.0.1实际生成文字/表格/notes；Hana anydoc0.1.2本来可提取备注，实证后直接复用，移除重复生产XML解析。独立checker复用既有有界ZIP/XML包，PowerPoint原生检查只打开本轮合成文件；无新包、付费任务或运行时。

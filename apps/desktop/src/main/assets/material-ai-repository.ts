@@ -24,6 +24,7 @@ type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[
   map:(row:Row)=>ResourceChunk;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;
   writer:<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 type Configuration={revision:number;model:AiSettings['model'];sealedKey:string};
+export type AiBatchTask={key:string;folderId?:string;revision?:number};
 export type AiRuntime={account?:()=>Promise<{revision:number;model:'deepseek-flash';apiKey:string}>;codec:SettingsKeyCodec;clean:(text:string)=>Promise<string>;image:(resourceId:string,version:string,page:number|undefined,signal:AbortSignal)=>Promise<{data:string;mime:string}>;complete?:AiCompletion;word?:WordProofRuntime;ocr?:(bytes:Buffer,signal:AbortSignal)=>Promise<{text:string;engine:typeof LOCAL_OCR_ENGINE}>};
 const key='xiaozhi.material-ai.v1';
 const hash=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
@@ -51,10 +52,12 @@ export class MaterialAiRepository{
       `CREATE TABLE IF NOT EXISTS material_ai_batches(id TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,title TEXT NOT NULL,config_json TEXT NOT NULL,status TEXT NOT NULL,calls INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL)`,
       `CREATE TABLE IF NOT EXISTS material_ai_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,input_json TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',first_json TEXT NOT NULL DEFAULT '',final_json TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',error TEXT NOT NULL DEFAULT '',owner_pid INTEGER NOT NULL DEFAULT 0,lease TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal))`,
       `CREATE INDEX IF NOT EXISTS material_ai_units_pending ON material_ai_units(status,batch_id,ordinal)`,
+      `CREATE TABLE IF NOT EXISTS material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT NOT NULL,batch_id TEXT NOT NULL UNIQUE REFERENCES material_ai_batches(id),folder_id TEXT NOT NULL DEFAULT '',folder_revision INTEGER NOT NULL DEFAULT 0)`,
       `CREATE TABLE IF NOT EXISTS material_ai_image_inputs(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,image_sha TEXT NOT NULL,mime TEXT NOT NULL,data_base64 TEXT NOT NULL CHECK(length(data_base64)<=5592408),PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
     if(!(await this.host.all('PRAGMA table_info(material_ai_units)')).some(column=>column.name==='dispatched_at'))await this.host.run('ALTER TABLE material_ai_units ADD COLUMN dispatched_at INTEGER NOT NULL DEFAULT 0');
+    if(!(await this.host.all('PRAGMA table_info(material_ai_batches)')).some(column=>column.name==='pause_reason'))await this.host.run("ALTER TABLE material_ai_batches ADD COLUMN pause_reason TEXT NOT NULL DEFAULT ''");
   }
   private async configuration():Promise<Configuration>{
     if(this.account){const shared=await this.account();return{revision:shared.revision,model:shared.model,sealedKey:shared.apiKey?'shared-deepseek':''};}
@@ -121,21 +124,36 @@ export class MaterialAiRepository{
     }
     return units;
   }
-  async create(input:AiBatchInput){
+  private async taskBatch(input:AiBatchInput,task:AiBatchTask){
+    const row=(await this.host.all('SELECT * FROM material_ai_task_keys WHERE task_key=?',[task.key]))[0];if(!row)return;
+    if(row.input_sha!==hash(JSON.stringify(input))||row.folder_id!==(task.folderId||'')||Number(row.folder_revision)!==(task.revision||0))throw Error('conflict');return String(row.batch_id);
+  }
+  private async folderPermit(folderId:string,revision:number,settingsRevision?:number,resourceId?:string){
+    const row=(await this.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[folderId]))[0];
+    if(!row||!['running','budget_exhausted','attention'].includes(String(row.status))||Number(row.revision)!==revision)throw Error('paused');
+    if(settingsRevision!==undefined&&Number(row.settings_revision)!==settingsRevision)throw Error('configuration');
+    if(resourceId&&!(await this.host.all("SELECT 1 FROM material_import_entries WHERE batch_id=? AND kind='file' AND status='saved' AND resource_id=? LIMIT 1",[folderId,resourceId])).length)throw Error('source_changed');return row;
+  }
+  async create(input:AiBatchInput,task?:AiBatchTask){
     if(!validAiBatch(input))throw new Error('invalid_input');
+    if(task){if(!/^[a-f0-9]{64}$/.test(task.key)||Object.keys(task).some(k=>!['key','folderId','revision'].includes(k))||((task.folderId!==undefined||task.revision!==undefined)&&(!/^batch_[a-f0-9-]{36}$/i.test(task.folderId||'')||!Number.isSafeInteger(task.revision)||Number(task.revision)<1)))throw Error('invalid_input');const prior=await this.taskBatch(input,task);if(prior)return prior;}
     const settings=await this.settings();
     if(!settings.configured||!settings.secureStorage||settings.revision!==input.settingsRevision)throw new Error('configuration');
     const units=await this.inputs(input),resource=await this.host.materials().resource(input.resourceId);
     await this.host.materials().verify(resource.id,input.version,new AbortController().signal);
     const id='aibatch_'+randomUUID();
-    await this.write(async target=>{
+    return this.write(async target=>{
+      if(task){const prior=await target.taskBatch(input,task);if(prior)return prior;
+        if(task.folderId){const grant=await target.folderPermit(task.folderId,task.revision!,input.settingsRevision,input.resourceId),reserved=(await target.host.all("SELECT COALESCE(SUM(json_extract(b.config_json,'$.maxCalls')),0) n FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?",[task.folderId]))[0];if(grant.status!=='running')throw Error('paused');if(Number(reserved.n)+input.maxCalls>Number(grant.max_calls))throw Error('budget_exhausted');}
+      }
       if((await target.configuration()).revision!==input.settingsRevision)throw new Error('conflict');
       for(const unit of units)await target.validateInput(input,unit);
       await target.host.run('INSERT INTO material_ai_batches(id,resource_id,version,title,config_json,status,created_at) VALUES(?,?,?,?,?,?,?)',
         [id,resource.id,input.version,resource.title,JSON.stringify({...input,model:settings.model}),'running',new Date().toISOString()]);
       for(const [i,unit]of units.entries())await target.host.run('INSERT INTO material_ai_units(batch_id,ordinal,input_json,status) VALUES(?,?,?,?)',[id,i+1,JSON.stringify(unit),unit.text?'pending':'no_questions']);
+      if(task)await target.host.run('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)',[task.key,hash(JSON.stringify(input)),id,task.folderId||'',task.revision||0]);
+      return id;
     });
-    return id;
   }
   private async validateInput(config:AiBatchInput,unit:AiUnitInput){
     const resource=await this.host.materials().resource(config.resourceId);
@@ -180,7 +198,7 @@ export class MaterialAiRepository{
     }
     await this.validateInput(JSON.parse(String(row.config_json)),unit);
   }
-  async action(input:AiAction){
+  async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');
     await this.write(async target=>{
       const row=(await target.host.all('SELECT * FROM material_ai_batches WHERE id=?',[input.batchId]))[0];if(!row)throw new Error('invalid_input');
@@ -190,7 +208,7 @@ export class MaterialAiRepository{
         if(Number(row.calls)>=c.maxCalls)throw new Error('budget_exhausted');
         await target.host.run("UPDATE material_ai_units SET status=CASE WHEN first_json='' THEN 'pending' ELSE 'first_saved' END,error='',owner_pid=0,lease='' WHERE batch_id=? AND status='outcome_unknown'",[input.batchId]);
       }
-      await target.host.run('UPDATE material_ai_batches SET status=? WHERE id=?',[input.action==='pause'?'paused':'running',input.batchId]);
+      await target.host.run('UPDATE material_ai_batches SET status=?,pause_reason=? WHERE id=?',[input.action==='pause'?'paused':'running',input.action==='pause'?pauseReason:'',input.batchId]);
     });
     if(input.action==='pause'&&this.active?.batchId===input.batchId)this.active.controller.abort();
   }
@@ -205,7 +223,7 @@ export class MaterialAiRepository{
     const units=await this.host.all("SELECT batch_id,ordinal,owner_pid,lease,dispatched_at FROM material_ai_units WHERE status='dispatched'");
     for(const unit of units)if(!alive(Number(unit.owner_pid))||Date.now()-Number(unit.dispatched_at)>180000)await this.host.run("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown',owner_pid=0,lease='' WHERE batch_id=? AND ordinal=? AND status='dispatched' AND owner_pid=? AND lease=? AND dispatched_at=?",[String(unit.batch_id),Number(unit.ordinal),Number(unit.owner_pid),String(unit.lease),Number(unit.dispatched_at)]);
   }
-  async recoverStartup(){await this.recover();await this.host.run("UPDATE material_ai_batches SET status='paused' WHERE status='running'");}
+  async recoverStartup(){await this.recover();await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
   start(){
     if(this.timer)return;this.closing=false;
     const pump=()=>{if(this.pumping||!this.runtime||this.closing)return;this.pumping=this.recover().then(()=>this.drain()).then(()=>undefined).catch(()=>undefined).finally(()=>{this.pumping=undefined;});};
@@ -217,6 +235,8 @@ export class MaterialAiRepository{
     if(row?.status!=='running')throw new Error('paused');
     if((await this.configuration()).revision!==config.settingsRevision)throw new Error('configuration');
     await this.validateInput(config,unit);signal.throwIfAborted();
+    const task=(await this.host.all('SELECT folder_id,folder_revision FROM material_ai_task_keys WHERE batch_id=?',[batchId]))[0];
+    if(task?.folder_id)await this.folderPermit(String(task.folder_id),Number(task.folder_revision),config.settingsRevision,config.resourceId);
   }
   private async dispatch(batchId:string,ordinal:number,config:AiBatchInput,unit:AiUnitInput,expected:string,signal:AbortSignal){
     const lease=randomUUID();
@@ -259,12 +279,17 @@ export class MaterialAiRepository{
         },()=>signal.throwIfAborted());
       }
       const imageSha=image?hash(Buffer.from(image.data,'base64')):'';
+      const complete=async(args:Parameters<AiCompletion>[0])=>{
+        const beforeSend=async()=>{if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
+        if(this.runtime!.complete){await beforeSend();transportStarted=true;return this.runtime!.complete(args,signal);}
+        return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;}},signal);
+      };
       if(row.first_json&&row.image_sha!==imageSha)throw new Error('source_changed');
       let firstRaw=String(row.first_json),first:AiBatchResponse|undefined=firstRaw?parseAiBatchResponse(firstRaw):undefined;
       if(!first){
         await this.guard(batchId,config,unit,signal);
         lease=await this.dispatch(batchId,ordinal,config,unit,'pending',signal);
-        firstRaw=await (this.runtime.complete||completeMaterialAi)({model:config.model,apiKey,text:clean,image,imageCoverage:!!image&&process.env.OMNI_EDU_AI_IMAGE_TEXT!=='0'},signal);
+        firstRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:!!image&&process.env.OMNI_EDU_AI_IMAGE_TEXT!=='0'});
         first=parseAiBatchResponse(firstRaw);
         if(first.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE&&!image)throw Error('invalid_response');
         await this.write(async target=>{
@@ -280,7 +305,7 @@ export class MaterialAiRepository{
       const safeFirst=parseAiBatchResponse(JSON.stringify(cleanDraft));
       await this.guard(batchId,config,unit,signal);
       lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
-      const finalRaw=await (this.runtime.complete||completeMaterialAi)({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE,previous:safeFirst},signal),final=parseAiBatchResponse(finalRaw);
+      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE,previous:safeFirst}),final=parseAiBatchResponse(finalRaw);
       if(final.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE&&!image)throw Error('invalid_response');
       const sourceUnits=[];
       for(const source of unit.sources){const snapshot=await this.host.materials().readingWindow(config.resourceId,source.offset,1);sourceUnits.push(...snapshot.units);}
@@ -325,7 +350,7 @@ export class MaterialAiRepository{
       const code=signal.aborted?'cancelled':safeError(error);
       await this.write(async target=>{
         const current=(await target.host.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
-        if(current?.status==='dispatched'&&current.lease===lease&&unit.native&&!transportStarted){
+        if(current?.status==='dispatched'&&current.lease===lease&&!transportStarted){
           const state=(await target.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
           await target.host.run("UPDATE material_ai_units SET status=?,error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[['cancelled','paused'].includes(code)?state?.first_json?'first_saved':'pending':'failed',code,batchId,ordinal]);
           await target.host.run('UPDATE material_ai_batches SET calls=MAX(0,calls-1) WHERE id=?',[batchId]);

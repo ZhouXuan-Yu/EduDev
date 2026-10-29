@@ -1,5 +1,13 @@
 # 当前验收入口
 
+## 2026-10-29 规则题核验门禁
+
+本片边界13档案/Pi、28AI、7目录、12联网与15补答读取；十万旧成员标记迁移543ms、幂等0ms且原JSON未改，三格式AI流程2项通过。真实核验/撤销/组卷/冷启与最终综合退出详goal/KB_IMPLEMENTATION_EVIDENCE。不以合成旧库70.5MB代替40GB、自然题意召回或零错。
+
+## 2026-10-29 目录AI当前证据
+
+28仓储/7目录/6原生+4来源边界、240组件、最终build/综合smoke exit0，三格式生产Electron受控模型目录流程通过；真实已授权扫描单页一次目录授权/2次DeepSeek200/3自动1图题待核/原OCR不改/冷启无重发通过。精确命令/回滚见goal/KB_IMPLEMENTATION_EVIDENCE，匿名指标research/KB_FOLDER_AI_EVIDENCE_20261029.json。无真实40GB/自然Recall/数学零错/安装包通过声明。
+
 ## 2026-10-29 PPT备注切片的有限证据
 
 presentation专项4、旧默认文件7、正式受控Electron5、renderer240通过；本机PowerPoint全8页渲染与编辑另存重开、独立OOXML页/备注/局部保留检查通过。build及综合smoke207/207通过，详research/AGENT_PRESENTATION_E01_20261029.json。CSV可写并同步6条部分实现，252条AT仍待集中判定，无新增已实现。

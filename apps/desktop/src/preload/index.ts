@@ -9,6 +9,7 @@ import type {WordQuery,WordPage,WordImageQuery,WordImageView,WordRebuild,WordReb
 import type {WordQuestionQuery,WordQuestionPage} from '../shared/material-word-question';
 import type {WordProofInput,WordProof,WordProofCancel,WordProofImageQuery,WordProofImage} from '../shared/material-word-proof';
 import type {TeacherResource} from '../shared/contracts';
+import type {FolderAiQuery,FolderAiGrant,FolderAiAction,FolderAiView} from '../shared/material-folder-ai';
 import type {MaterialTaskAction,MaterialQueueView} from '../shared/material-parse-task';
 import type {MaterialBatchQuery,MaterialBatchPage,MaterialBatchAction,MaterialBatchFilesQuery,MaterialBatchFiles,MaterialBatchCreated} from '../shared/material-import-batch';
 import type {MaterialTextQuery,MaterialTextPage,MaterialIndexStatus} from '../shared/material-search';
@@ -338,6 +339,9 @@ const api = {
   importMaterialsBackground: () => ipcRenderer.invoke('materials:import-background') as Promise<KnowledgeImportResult>,
   importMaterialsFolder: () => ipcRenderer.invoke('materials:import-folder') as Promise<import('../shared/materials').MaterialFolderResult>,
   createMaterialBatch: () => ipcRenderer.invoke('materials:batch-create') as Promise<MaterialBatchCreated>,
+  getMaterialFolderAi: (input:FolderAiQuery) => ipcRenderer.invoke('materials:folder-ai-get',input) as Promise<FolderAiView|undefined>,
+  authorizeMaterialFolderAi: (input:FolderAiGrant) => ipcRenderer.invoke('materials:folder-ai-authorize',input) as Promise<FolderAiView>,
+  controlMaterialFolderAi: (input:FolderAiAction) => ipcRenderer.invoke('materials:folder-ai-action',input) as Promise<FolderAiView>,
   listMaterialBatches: (query:MaterialBatchQuery) => ipcRenderer.invoke('materials:batches',query) as Promise<MaterialBatchPage>,
   controlMaterialBatch: (input:MaterialBatchAction) => ipcRenderer.invoke('materials:batch-action',input) as Promise<MaterialBatchPage>,
   getMaterialBatchFiles: (query:MaterialBatchFilesQuery) => ipcRenderer.invoke('materials:batch-files',query) as Promise<MaterialBatchFiles>,

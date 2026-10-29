@@ -3,7 +3,7 @@ import type {QuestionBankItem} from '../../shared/contracts';
 import type {XiaozhiBrowserReceipt} from '../../shared/xiaozhi-browser';
 import {QUESTION_WEB_ARCHIVE_SCHEMA,QUESTION_WEB_EVIDENCE_SCHEMA,publicWebAnswerUrl,webAnswerId,type WebAnswerOwner,type WebAnswerProposal,type WebAnswerCandidate,type WebAnswerRole,type WebAnswerRoleProof} from '../../shared/question-web-answer';
 import {validQuestionContextSource,type QuestionContextSource} from '../../shared/question-context';
-import {archiveMissing,validQuestionArchive,type QuestionArchive} from '../../shared/question-archive';
+import {archiveMissing,archiveEligible,validQuestionArchive,type QuestionArchive} from '../../shared/question-archive';
 import {answerEnrichmentRoles} from '../../shared/question-answer-enrichment';
 import {questionVersion} from './question-context-provider';
 type Row=Record<string,unknown>;type Value=string|number|null;
@@ -90,7 +90,7 @@ export class QuestionWebAnswerRepository{
     else{
      if(!validQuestionArchive(archive))throw Error('invalid_input');
      signal.throwIfAborted();await target.host.run('UPDATE question_bank_items SET answer=?,analysis=?,archive_json=?,updated_at=? WHERE id=?',[next.answer,next.analysis,JSON.stringify(archive),next.updatedAt,q.id]);
-     await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archive.issues.length?1:0,q.id]);
+     await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archiveEligible(next)?0:1,q.id]);
      candidate.state='applied';candidate.afterVersion=questionVersion(next);
      await target.host.run('UPDATE question_web_candidates SET state=?,payload_json=?,after_json=? WHERE id=?',[candidate.state,JSON.stringify(candidate),JSON.stringify(next),candidate.id]);
      await target.host.validate(next,signal);

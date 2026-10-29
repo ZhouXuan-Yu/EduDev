@@ -64,6 +64,31 @@ try{
  for(const body of providerRequests){assert(body.messages[0].content.includes('[OCR还原规则 v1]'));assert(body.messages[0].content.includes('数字、正负号'));assert(body.messages[0].content.includes('无原图时'));assert(body.messages[0].content.includes('题面还原与解题标注是两项工作'));assert(body.messages[0].content.includes('schema内analysis是需要完成的解析'));assert.equal(JSON.parse(body.messages[1].content[0].text).material,source);}
  check('Actual image, legacy and native first/final requests retain the OCR restoration rules, original OCR and one strict response version');
 }finally{globalThis.fetch=ordinaryFetch;}
+const scheduled=fixture();try{
+ await scheduled.init();const task={key:sha('same-folder-resource-version-unit')};
+ const [first,second]=await Promise.all([scheduled.repo.create(scheduled.input,task),scheduled.repo.create(scheduled.input,task)]);
+ assert.equal(first,second,'A folder task replay after child creation must reuse the durable AI batch instead of creating another paid workflow');
+ assert.equal(scheduled.db.prepare('SELECT count(*) n FROM material_ai_batches').get().n,1);assert.equal(scheduled.state.calls,0);
+ await assert.rejects(scheduled.repo.create({...scheduled.input,maxCalls:6},task),/conflict/);
+ const reopened=new MaterialAiRepository(scheduled.repo.host);reopened.configure(scheduled.runtime);await reopened.migrate();assert.equal(await reopened.create(scheduled.input,task),first);
+ check('Concurrent folder task creation and restart replay share one durable child batch; changed authorization input conflicts');
+}finally{scheduled.db.close();}
+const folderBound=fixture();try{
+ await folderBound.init();const folderId='batch_'+randomUUID(),input={...folderBound.input,maxCalls:2},task={key:sha('folder-unit-one'),folderId,revision:1};
+ folderBound.db.exec('CREATE TABLE material_folder_ai(batch_id TEXT PRIMARY KEY,status TEXT,revision INTEGER,settings_revision INTEGER,max_calls INTEGER)');
+ folderBound.db.prepare("INSERT INTO material_folder_ai VALUES(?,'running',1,1,2)").run(folderId);
+ folderBound.db.exec('CREATE TABLE material_import_entries(batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT)');folderBound.db.prepare("INSERT INTO material_import_entries VALUES(?,'file','saved',?)").run(folderId,folderBound.id);
+ await assert.rejects(folderBound.repo.create({...input,resourceId:'resource_'+randomUUID()},{...task,key:sha('outside-folder')}),/source_changed/);
+ const batch=await folderBound.repo.create(input,task);
+ await assert.rejects(folderBound.repo.create(input,{...task,key:sha('folder-unit-two')}),/budget_exhausted/);
+ assert.equal(folderBound.db.prepare('SELECT count(*) n FROM material_ai_batches').get().n,1);
+ folderBound.db.prepare("UPDATE material_folder_ai SET status='paused'").run();await folderBound.repo.drain();assert.equal(folderBound.state.calls,0);
+ folderBound.db.prepare("UPDATE material_folder_ai SET status='running',revision=2").run();await folderBound.repo.drain();assert.equal(folderBound.state.calls,0);
+ folderBound.db.prepare('UPDATE material_folder_ai SET revision=1').run();
+ folderBound.runtime.clean=async text=>{if(folderBound.db.prepare("SELECT 1 FROM material_ai_units WHERE status='dispatched'").get())folderBound.db.prepare("UPDATE material_folder_ai SET status='paused'").run();return text;};
+ await folderBound.repo.drain();assert.equal(folderBound.state.calls,0);assert.equal(folderBound.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,0);
+ check('Folder reservations enforce a hard shared budget; pause, stale authorization and last-moment revocation prevent transport without a charge');
+}finally{folderBound.db.close();}
 const corrected=fixture();try{
  await corrected.init();corrected.state.fileName='原图文字题.png';
  const q={...question,stem:'计算 7 + 8，结果单位为米。',answerOrigin:'ai_generated',analysisOrigin:'ai_generated'};

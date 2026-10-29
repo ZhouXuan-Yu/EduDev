@@ -13,6 +13,7 @@ import {recognizeLocalPdfLayout} from '../xiaozhi-agent/ocr-host';
 import {importMaterialFolder} from './material-folder-import';
 import type {MaterialFolderProgress} from '../../shared/materials';
 import {MATERIAL_IMPORT_SCHEMA,validBatchQuery,validBatchAction,validBatchFiles,type MaterialBatchCreated} from '../../shared/material-import-batch';
+import {validFolderAiQuery,validFolderAiGrant,validFolderAiAction} from '../../shared/material-folder-ai';
 import {MATERIAL_SEARCH_SCHEMA,validMaterialTextQuery,type MaterialTextPage} from '../../shared/material-search';
 import {materialSource,materialBodyVersion} from './material-source';
 import {materialCitation} from '../../shared/materials';
@@ -49,6 +50,9 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
   return {schemaVersion:MATERIAL_SEARCH_SCHEMA,hits:selected,offset:input.offset,hasMore:result.hasMore,index:result.index,...(hybrid?{semantic:hybrid.semantic}:{})};
  });
  ipcMain.handle('materials:batches',(event,input)=>{check(event);if(!validBatchQuery(input))throw new Error('invalid_input');return store.materialImports.list(input.offset);});
+ ipcMain.handle('materials:folder-ai-get',(event,input)=>{check(event);if(!validFolderAiQuery(input))throw Error('invalid_input');return store.materialFolderAi.view(input.batchId);});
+ ipcMain.handle('materials:folder-ai-authorize',(event,input)=>{check(event);if(!validFolderAiGrant(input))throw Error('invalid_input');return store.materialFolderAi.authorize(structuredClone(input));});
+ ipcMain.handle('materials:folder-ai-action',(event,input)=>{check(event);if(!validFolderAiAction(input))throw Error('invalid_input');return store.materialFolderAi.action(structuredClone(input));});
  ipcMain.handle('materials:batch-files',(event,input)=>{check(event);if(!validBatchFiles(input))throw new Error('invalid_input');return store.materialImports.files(input.batchId,input.offset);});
  ipcMain.handle('materials:batch-action',(event,input)=>{check(event);if(!validBatchAction(input))throw new Error('invalid_input');return store.materialImports.action(structuredClone(input));});
  ipcMain.handle('materials:batch-create',event=>job(event,async():Promise<MaterialBatchCreated>=>{
@@ -105,7 +109,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  });
  ipcMain.handle('materials:layout-cancel',(event,input)=>{check(event);if(!validLayoutCancel(input))throw new Error('invalid_input');const stopped=layout?.requestId===input.requestId;if(stopped)layout!.controller.abort();return {schemaVersion:MATERIAL_LAYOUT_SCHEMA,stopped};});
  ipcMain.handle('materials:retry',(event,input)=>{check(event);if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).length!==2||input.schemaVersion!==MATERIALS_SCHEMA||!materialId(input.resourceId))throw new Error('invalid_input');return job(event,async signal=>({schemaVersion:MATERIALS_SCHEMA,resource:await store.materials.ingest(input.resourceId,signal)}));});
- ipcMain.handle('materials:cancel',async event=>{check(event);const pending=await store.materialQueue.snapshot();active?.abort();await store.materialImports.pauseAll();await store.materialQueue.cancelAll();return {schemaVersion:MATERIALS_SCHEMA,stopped:!!active||!!pending.pending||!!pending.running};});
+ ipcMain.handle('materials:cancel',async event=>{check(event);const pending=await store.materialQueue.snapshot();active?.abort();const aiStopped=await store.materialFolderAi.pauseAll();await store.materialImports.pauseAll();await store.materialQueue.cancelAll();return {schemaVersion:MATERIALS_SCHEMA,stopped:!!active||!!pending.pending||!!pending.running||aiStopped>0};});
  ipcMain.handle('materials:import-background',event=>job(event,async signal=>{
   const result=await dialog.showOpenDialog(window()!,{title:'选择教学资料',properties:['openFile','multiSelections'],filters:[{name:'教学资料',extensions:['pdf','docx','pptx','xlsx','jpg','jpeg','png','webp','bmp','md','txt']}]});
   check(event);if(result.filePaths.length>50)throw new Error('too_many_files');return store.importKnowledgeResources(result.canceled?[]:result.filePaths,signal,true);

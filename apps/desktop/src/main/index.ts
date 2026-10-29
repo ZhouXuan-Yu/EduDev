@@ -541,7 +541,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
     shutdown=Promise.resolve().then(async()=>{
       // Closing windows stops renderer polling. A repeated quit must still wait.
       for(const window of BrowserWindow.getAllWindows())window.destroy();
-      await Promise.allSettled([ipcDrained,materialAiStartup,xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialAi.close(),store.retrieval.close(),store.materialImports.close().then(()=>materialQueueStartup).then(()=>store.materialQueue.close()).then(()=>store.materialSearch.close()).then(()=>store.materialQuestions.close())]);
+      await Promise.allSettled([ipcDrained,materialAiStartup,xiaozhi.close(),mistakeOcr.close(),mistakeSimilar.close(),store.materialFolderAi.close(),store.materialAi.close(),store.retrieval.close(),store.materialImports.close().then(()=>materialQueueStartup).then(()=>store.materialQueue.close()).then(()=>store.materialSearch.close()).then(()=>store.materialQuestions.close())]);
       // Native SQLite callbacks must drain before Electron tears down Node.
       await store.close();
     })
@@ -555,7 +555,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
   store.materialSearch.start();
   store.materialQuestions.start();
   store.retrieval.start();
-  materialAiStartup=store.materialAi.recoverStartup().then(()=>{if(!shutdown)store.materialAi.start();}).catch(()=>console.error('[material-ai] startup_recovery_failed'));
+  materialAiStartup=store.materialAi.recoverStartup().then(()=>{if(!shutdown){store.materialAi.start();store.materialFolderAi.start();}}).catch(()=>console.error('[material-ai] startup_recovery_failed'));
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

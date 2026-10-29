@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-29",
+  "source": {"knowledgeSlice": "b1e3eb8", "latestUpstream": "cc82219", "merged": "952074a"},
+  "module": "M02-M05/M10 directory AI orchestration",
+  "scope": "Existing recursive folder archive, local OCR/parser and two-pass DeepSeek executor, same SQLite question bank and Pi runtime",
+  "implemented": [
+    "Folder-card batch consent, shared DeepSeek settings, bounded call reservations and necessary-page scope",
+    "Durable discovery/resource/unit cursors, transactional child idempotency keys and late archive retry triggers",
+    "PDF page, native Word question, image and TXT/MD chunk scheduling with one active child per folder and existing global AI consumer",
+    "Parent consent recheck before child creation, request transport and publication; no automatic unknown replay",
+    "Teacher pause distinguished from folder/startup pause; bounded fair scheduling beyond sixteen old attention cards",
+    "Original OCR retained separately from reconstructed questions, first/final responses and actual image evidence"
+  ],
+  "controlledTests": {
+    "repositoryBoundaries": 28,
+    "folderBoundaries": 7,
+    "nativeResponseBoundaries": 6,
+    "nativeSourceSkeleton": 4,
+    "rendererComponents": {"passed": 240, "total": 240, "exit": 0},
+    "electronFolderJourney": {
+      "exit": 0,
+      "checks": 2,
+      "fixtureFiles": 3,
+      "formats": ["nested MD", "PNG with actual local OCR", "native DOCX"],
+      "aiFinalQuestions": 3,
+      "syntheticHttpRequests": 8,
+      "restartUnknownExtraRequests": 0,
+      "rendererErrors": 0,
+      "viewports": ["1366x768", "1920x1080"]
+    },
+    "integratedSmoke": {"source": "b1e3eb8 before latest PPT merge", "exit": 0, "ok": true, "passed": 207, "buildIncluded": true, "log": "OS Temp/kb-folder-ai-final-smoke.log"},
+    "latestMainMerge": {"source": "952074a", "buildExit": 0, "rendererPassed": 240, "presentationContractChecks": 4, "folderUi": {"exit": 0, "checks": 2, "rendererErrors": 0, "evidence": "OS Temp/omni-folder-ai-ui-mskv8x/report.json"}},
+    "collaboratorE01": {"exit": 0, "checks": 7}
+  },
+  "realDeepSeek": {
+    "authorization": "Previously inspected PDF page 1 only, copied as one page image into a dedicated folder; no unchecked pages or entire library",
+    "calls": 2,
+    "httpStatuses": [200, 200],
+    "imageIdenticalAcrossPasses": true,
+    "folderGrants": 1,
+    "childBatches": 1,
+    "questions": 4,
+    "aiFinal": 3,
+    "diagramNeedsReview": 1,
+    "restartAdditionalCalls": 0,
+    "originalOcrUnchanged": true,
+    "rendererErrors": 0,
+    "evidence": "OS Temp/omni-real-material-NGRlNr/real-folder-ai-report.json; raw OCR/provider responses, images, sealed credential and database stay local",
+    "qualityBoundary": "Source page and saved stems inspected: three numbered subquestions and the previously lost electromagnetic/ultrasound choices restored. This is one sample, not proof of natural recall or mathematically error-free solutions."
+  },
+  "performance": {
+    "before": "No folder-level automatic AI queue; each resource required an individual batch",
+    "after": "One folder grant feeds existing AI execution; discovery <=32 entries and <=16 rotating folder grants per tick, <=1 linked active child per folder",
+    "measuredScale": "3 synthetic mixed files and 1 authorized real page; no 40GB or end-to-end P95 claim"
+  },
+  "dependencies": {"added": 0, "lockfileChanged": false, "audit": {"critical": 0, "high": 8, "moderate": 7, "low": 8, "total": 23}},
+  "open": [
+    "Rule-extracted legacy candidates are not globally equivalent to AI verification; folder counters only count linked AI drafts",
+    "Blank/failed OCR pages, unsupported formats and Word without structured questions remain explicit review",
+    "Full-page AI-restored general text reading/index view is not implemented",
+    "Changed shared account configuration currently needs a new folder grant batch; review resolution counters need further work",
+    "Complex diagrams, cross-page questions and separate answer-book association",
+    "Independent natural quality/recall benchmark, actual 40GB sustained ingest, managed component installation and final EXE"
+  ],
+  "rollback": "Stop the folder scheduler/disable new folder grants while retaining new queue tables, child links, pause reasons, OCR and existing question/image receipts. Existing single-resource AI path remains. Do not delete authoritative originals or downgrade receipt read support.",
+  "completeGoal": false
+}
