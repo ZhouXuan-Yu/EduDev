@@ -20,13 +20,22 @@ export async function migrateQuestionOrigins(host:OriginHost){
   UPDATE material_question_members SET needs_attention=CASE WHEN EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=material_question_members.question_id AND o.covered=1) THEN 0 ELSE 1 END WHERE question_id IN (SELECT question_id FROM material_question_origins WHERE origin_key=${ref}.origin_key AND kind='rule');
   ${event==='DELETE'?"UPDATE material_question_members SET needs_attention=1 WHERE question_id=OLD.question_id AND OLD.kind='rule';":''}
  END`);
- for(const event of ['UPDATE','DELETE'])await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_question_${event.toLowerCase()} AFTER ${event} ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; END`);
+ await host.run('DROP TRIGGER IF EXISTS question_origins_question_delete');
+ for(const event of ['UPDATE','DELETE'])await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_question_${event.toLowerCase()} AFTER ${event} ON question_bank_items BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.id; ${event==='DELETE'?'UPDATE material_question_members SET needs_attention=0 WHERE question_id=OLD.id;':''} END`);
  const tables=new Set((await host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>String(r.name)));
  for(const [table,event,field] of [['teacher_resources','UPDATE OF content_hash','id'],['teacher_resources','DELETE','id'],['resource_chunks','UPDATE OF content_md,contains_personal_data,page_number','resource_id'],['resource_chunks','DELETE','resource_id']])if(tables.has(table))await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_${table}_${event.startsWith('UPDATE')?'update':'delete'} AFTER ${event} ON ${table} BEGIN DELETE FROM material_question_origins WHERE resource_id=OLD.${field}; END`);
  for(const table of ['question_notebook_bookmarks','question_notebook_category_links','question_bank_usage'])if(tables.has(table))await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_${table}_insert AFTER INSERT ON ${table} BEGIN DELETE FROM material_question_origins WHERE question_id=NEW.question_id AND kind='rule'; END`);
  if(tables.has('question_notebook_bookmarks'))await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_bookmark_update AFTER UPDATE ON question_notebook_bookmarks BEGIN DELETE FROM material_question_origins WHERE question_id=NEW.question_id AND kind='rule'; END");
  if(tables.has('material_ai_units')&&tables.has('material_ai_members'))await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_receipt_update AFTER UPDATE OF first_json,final_json,image_sha ON material_ai_units WHEN OLD.final_json<>'' AND (OLD.first_json<>NEW.first_json OR OLD.final_json<>NEW.final_json OR OLD.image_sha<>NEW.image_sha) BEGIN DELETE FROM material_question_origins WHERE question_id IN (SELECT question_id FROM material_ai_members WHERE batch_id=OLD.batch_id AND ordinal=OLD.ordinal); END");
- if(tables.has('material_ai_native_context')&&tables.has('material_ai_members'))await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_native_receipt_update AFTER UPDATE OF context_json,digest ON material_ai_native_context BEGIN DELETE FROM material_question_origins WHERE question_id IN (SELECT question_id FROM material_ai_members WHERE batch_id=OLD.batch_id AND ordinal=OLD.ordinal); END");
+ await host.run('DROP TRIGGER IF EXISTS question_origins_native_receipt_update');
+ if(tables.has('material_ai_members')){
+  for(const table of ['material_ai_units','material_ai_image_inputs','material_ai_native_context','material_ai_native_inputs'])if(tables.has(table))for(const event of ['UPDATE','DELETE']){
+   if(table==='material_ai_units'&&event==='UPDATE')continue;
+   await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_${table}_${event.toLowerCase()} AFTER ${event} ON ${table} BEGIN DELETE FROM material_question_origins WHERE question_id IN (SELECT question_id FROM material_ai_members WHERE batch_id=OLD.batch_id AND ordinal=OLD.ordinal); END`);
+  }
+  await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_member_delete AFTER DELETE ON material_ai_members BEGIN DELETE FROM material_question_origins WHERE question_id=OLD.question_id AND kind='ai'; END");
+  await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_member_update AFTER UPDATE ON material_ai_members BEGIN DELETE FROM material_question_origins WHERE question_id IN (OLD.question_id,NEW.question_id) AND kind='ai'; END");
+ }
 }
 export async function recordRuleOrigin(host:OriginHost,q:QuestionBankItem){
  const a=q.archive;if(!a||!validQuestionArchive(a)||a.state!=='rule_extracted'||a.ai||q.createdAt!==q.updatedAt)return;
