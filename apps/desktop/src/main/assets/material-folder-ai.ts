@@ -43,10 +43,10 @@ export class MaterialFolderAiRepository{
   await this.host.run('UPDATE material_folder_ai SET status=? WHERE batch_id=?',[input.action==='pause'?'paused':'running',input.batchId]);
   if(input.action==='pause'){
    const rows=await this.host.all("SELECT b.id FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=? AND b.status='running'",[input.batchId]);
-   for(const row of rows)await this.host.ai().action({schemaVersion:'xiaozhi.material-ai.v1',batchId:String(row.id),action:'pause'});
+   for(const row of rows)await this.host.ai().action({schemaVersion:'xiaozhi.material-ai.v1',batchId:String(row.id),action:'pause'},'folder');
   }return (await this.view(input.batchId))!;
  }
- async pauseAll(){for(const row of await this.host.all("SELECT batch_id FROM material_folder_ai WHERE status IN ('running','budget_exhausted')"))await this.action({schemaVersion:schema,batchId:String(row.batch_id),action:'pause'});}
+ async pauseAll(){const rows=await this.host.all("SELECT batch_id FROM material_folder_ai WHERE status IN ('running','budget_exhausted')");for(const row of rows)await this.action({schemaVersion:schema,batchId:String(row.batch_id),action:'pause'});return rows.length;}
  async view(id:string):Promise<FolderAiView|undefined>{
   if(!materialBatchId(id))throw Error('invalid_input');const grant=(await this.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[id]))[0];if(!grant)return;
   const sums=(await this.host.all("SELECT COUNT(*) units,SUM(state='complete') complete,SUM(state='review') review,SUM(state='failed') failed,SUM(state IN ('pending','running')) waiting FROM material_folder_ai_units WHERE batch_id=?",[id]))[0];
@@ -61,11 +61,14 @@ export class MaterialFolderAiRepository{
   for(const row of rows){if(row.status==='saved'&&row.resource_id&&row.content_hash)await this.host.run('INSERT OR IGNORE INTO material_folder_ai_resources(batch_id,resource_id,version) VALUES(?,?,?)',[id,String(row.resource_id),String(row.content_hash)]);await this.host.run('UPDATE material_folder_ai SET cursor=MAX(cursor,?) WHERE batch_id=?',[Number(row.seq),id]);}
  }
  private async refresh(grant:Row){
-  const id=String(grant.batch_id),rows=await this.host.all("SELECT u.resource_id,u.unit,u.ai_batch_id,a.status,a.error,b.status batch_status FROM material_folder_ai_units u JOIN material_ai_units a ON a.batch_id=u.ai_batch_id AND a.ordinal=1 JOIN material_ai_batches b ON b.id=a.batch_id WHERE u.batch_id=? AND u.state IN ('pending','running') ORDER BY u.rowid LIMIT 32",[id]);
+  const id=String(grant.batch_id),rows=await this.host.all("SELECT u.resource_id,u.unit,u.ai_batch_id,a.status,a.error,b.status batch_status,b.pause_reason FROM material_folder_ai_units u JOIN material_ai_units a ON a.batch_id=u.ai_batch_id AND a.ordinal=1 JOIN material_ai_batches b ON b.id=a.batch_id WHERE u.batch_id=? AND (u.state IN ('pending','running') OR u.state='review' AND u.error='teacher_paused') ORDER BY u.rowid LIMIT 32",[id]);
   for(const row of rows){
    const state=['complete','no_questions'].includes(String(row.status))?'complete':row.status==='review'||row.status==='outcome_unknown'?'review':row.status==='failed'?'failed':undefined;
    if(state)await this.host.run('UPDATE material_folder_ai_units SET state=?,error=? WHERE batch_id=? AND resource_id=? AND unit=?',[state,String(row.error||(state==='complete'?'':'needs_review')),id,String(row.resource_id),Number(row.unit)]);
-   else if(row.batch_status==='paused'&&grant.status==='running'&&['pending','first_saved'].includes(String(row.status)))await this.host.ai().action({schemaVersion:'xiaozhi.material-ai.v1',batchId:String(row.ai_batch_id),action:'resume'});
+   else if(row.batch_status==='paused'&&grant.status==='running'&&['pending','first_saved'].includes(String(row.status))){
+    if(['folder','startup'].includes(String(row.pause_reason)))await this.host.ai().action({schemaVersion:'xiaozhi.material-ai.v1',batchId:String(row.ai_batch_id),action:'resume'});
+    else await this.host.run("UPDATE material_folder_ai_units SET state='review',error='teacher_paused' WHERE batch_id=? AND resource_id=? AND unit=?",[id,String(row.resource_id),Number(row.unit)]);
+   }else if(row.batch_status==='running'&&['pending','first_saved','dispatched'].includes(String(row.status)))await this.host.run("UPDATE material_folder_ai_units SET state='running',error='' WHERE batch_id=? AND resource_id=? AND unit=?",[id,String(row.resource_id),Number(row.unit)]);
   }
  }
  private async finishUnit(resource:Row,unit:number,state:string,error='',aiBatch=''){
@@ -98,10 +101,10 @@ export class MaterialFolderAiRepository{
  }
  private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response'].includes(code)?code:'unavailable';}
  async tick(){
-  for(const grant of await this.host.all("SELECT * FROM material_folder_ai WHERE status IN ('running','budget_exhausted') ORDER BY rowid LIMIT 16")){
+  for(const grant of await this.host.all("SELECT * FROM material_folder_ai WHERE status IN ('running','budget_exhausted','attention') ORDER BY rowid LIMIT 16")){
    if(this.closing)return;try{
     await this.configured(Number(grant.settings_revision));await this.discover(grant);await this.refresh(grant);
-    if(grant.status==='budget_exhausted')continue;
+    if(grant.status!=='running')continue;
     if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)continue;
     const rows=await this.host.all("SELECT * FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') ORDER BY rowid LIMIT 8",[String(grant.batch_id)]);
     for(const row of rows){await this.plan(grant,row);if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)break;}

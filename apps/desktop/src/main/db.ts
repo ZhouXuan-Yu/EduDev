@@ -25,6 +25,7 @@ import {MaterialRepository} from './assets/material-repository';
 import {splitMaterialText as splitIntoChunks} from './assets/material-chunks';
 import {MaterialParseQueue,type MaterialParseLease} from './assets/material-parse-queue';
 import {MaterialImportBatches} from './assets/material-import-batches';
+import {MaterialFolderAiRepository} from './assets/material-folder-ai';
 import {copyMaterialFile} from './assets/material-copy';
 import {MaterialFullTextSearch} from './assets/material-full-text';
 import {MaterialPdfRepository} from './assets/material-pdf-repository';
@@ -1138,6 +1139,7 @@ export class OmniEduStore {
   readonly materials: MaterialRepository;
   readonly materialQueue: MaterialParseQueue;
   readonly materialImports: MaterialImportBatches;
+  readonly materialFolderAi: MaterialFolderAiRepository;
   readonly materialSearch: MaterialFullTextSearch;
   readonly materialQuestions: MaterialQuestionArchive;
   readonly materialAi: MaterialAiRepository;
@@ -1207,6 +1209,10 @@ export class OmniEduStore {
     }});
     this.materialQueue=new MaterialParseQueue({all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
     this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.archiveKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
+    this.materialFolderAi=new MaterialFolderAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),ai:()=>this.materialAi,word:()=>this.materialWord,writer:async action=>{
+      const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
+      try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialFolderAi);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
+    }});
     this.materialSearch=new MaterialFullTextSearch({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
@@ -1306,6 +1312,7 @@ export class OmniEduStore {
   }
 
   async close() {
+    await this.materialFolderAi.close();
     await this.materialImports.close();
     await this.materialQueue.close();
     await this.materialSearch.close();
@@ -6092,6 +6099,7 @@ export class OmniEduStore {
     await this.materialPdf.migrate();
     await this.materialWord.migrate();
     await this.materialAi.migrate();
+    await this.materialFolderAi.migrate();
     await this.nativeQuestions.migrate();
     await this.questionWeb.migrate();
     await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});

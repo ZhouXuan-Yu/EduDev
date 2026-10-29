@@ -6,6 +6,8 @@
 
 具体新增表为material_folder_ai（授权/预算/发现游标）、material_folder_ai_resources（资料版本/处理游标）、material_folder_ai_units（单元状态/子批次/错误）及material_ai_task_keys（同事务幂等关联）；共享schema xiaozhi.material-folder-ai.v1，新typed IPC materials:folder-ai-get/authorize/action；UI复用MaterialImportPanel内卡片，新增MaterialFolderAiPanel，不扩App树。原批次/原生图文回执、未知结果不重发和单资料面板兼容。
 
+批判复现：子批次原先只有paused状态，目录恢复会错误继续老师手动暂停。增量幂等加入material_ai_batches.pause_reason，区分teacher/folder/startup；只自动接续folder/startup的已授权已知阶段，teacher暂停保留待处理，不能擅自恢复。
+
 复用MaterialImportBatches、MaterialAiRepository、Word原生输入/图片证据及单writer；不另建Agent/题库/通用后端。新增目录授权/资源游标/单元状态表及AI批次幂等关联（同资料版本/页或题/目录授权不可重复创建）。创建子批次与幂等键必须同事务；发送/发布前复核父授权，暂停、撤回、配置变化后不能越权继续；未知请求不自动重发。全局AI仍单消费者，调用额度按单元预留，读取/发现/快照均小批分页。
 
 shared新契约→main repository/IPC→typed preload→原文件夹卡片授权/进度/暂停/继续/打开待处理资料贯通；现单资料面板兼容。PDF按本地页状态，Word按原生题号，图片单单元，TXT/MD按正文块；不支持的格式明确待处理，不静默算成功。新建/旧DB幂等迁移；原件、OCR、已确认题目不修改，失败只影响对应单元。回滚保留新表/回执读支持并停目录调度，现单资料整理继续可用。

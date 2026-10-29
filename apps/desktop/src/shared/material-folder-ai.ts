@@ -1,5 +1,6 @@
 import {materialBatchId} from './material-import-batch';
 export const MATERIAL_FOLDER_AI_SCHEMA='xiaozhi.material-folder-ai.v1' as const;
+export type FolderAiQuery={schemaVersion:typeof MATERIAL_FOLDER_AI_SCHEMA;batchId:string};
 export type FolderAiGrant={schemaVersion:typeof MATERIAL_FOLDER_AI_SCHEMA;batchId:string;settingsRevision:number;maxCalls:number;cloudConsent:true;publicMaterial:true};
 export type FolderAiAction={schemaVersion:typeof MATERIAL_FOLDER_AI_SCHEMA;batchId:string;action:'pause'|'resume'};
 export type FolderAiView={schemaVersion:typeof MATERIAL_FOLDER_AI_SCHEMA;batchId:string;status:string;revision:number;maxCalls:number;reserved:number;calls:number;resources:number;units:number;complete:number;review:number;failed:number;waiting:number;readyQuestions:number;reviewQuestions:number;error:string;issues:{resourceId:string;title:string;unit:number;error:string}[]};
@@ -7,3 +8,4 @@ const plain=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>plain(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 export function validFolderAiGrant(v:unknown):v is FolderAiGrant{return exact(v,['schemaVersion','batchId','settingsRevision','maxCalls','cloudConsent','publicMaterial'])&&v.schemaVersion===MATERIAL_FOLDER_AI_SCHEMA&&materialBatchId(v.batchId)&&Number.isSafeInteger(v.settingsRevision)&&Number(v.settingsRevision)>0&&Number.isSafeInteger(v.maxCalls)&&Number(v.maxCalls)>=2&&Number(v.maxCalls)<=1000000&&v.cloudConsent===true&&v.publicMaterial===true;}
 export function validFolderAiAction(v:unknown):v is FolderAiAction{return exact(v,['schemaVersion','batchId','action'])&&v.schemaVersion===MATERIAL_FOLDER_AI_SCHEMA&&materialBatchId(v.batchId)&&['pause','resume'].includes(String(v.action));}
+export function validFolderAiQuery(v:unknown):v is FolderAiQuery{return exact(v,['schemaVersion','batchId'])&&v.schemaVersion===MATERIAL_FOLDER_AI_SCHEMA&&materialBatchId(v.batchId);}

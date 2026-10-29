@@ -2,6 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {MATERIAL_IMPORT_SCHEMA as schema,type MaterialBatchPage,type MaterialBatchFiles,type MaterialBatchAction} from '../../../shared/material-import-batch';
 import {libraryFileSize} from './material-library';
+import {MaterialFolderAiPanel} from './MaterialFolderAiPanel';
 const labels={queued:'等待归档',running:'正在归档',paused:'已暂停',completed:'归档完成',partial:'部分文件待重试',failed:'归档中断'};
 /** Folder batch progress survives navigation, app shutdown and machine restart. */
 export function MaterialImportPanel({revision,changed,open}:{revision:number;changed:()=>void;open:(id:string)=>void}){
@@ -28,6 +29,7 @@ export function MaterialImportPanel({revision,changed,open}:{revision:number;cha
    <p className="teacher-library-caption" data-testid={'batch-counts-'+batch.id}>已发现 {batch.scanned} 个文件 · 已归档 {batch.archived} 个（新增 {batch.imported}、复用 {batch.reused}） · {libraryFileSize(batch.archivedBytes)} / {libraryFileSize(batch.bytes)} · {batch.failed} 项失败 · {batch.skipped} 项跳过</p>
    <p className="teacher-library-caption">{batch.readable} 份完整正文可查{batch.partialReadable?`，${batch.partialReadable} 份部分正文可查`:''}，{batch.waiting} 份正在或等待整理{batch.parseFailed?`，${batch.parseFailed} 份正文需重试`:''}。</p>
    {batch.error&&<p role="alert">{batch.error}</p>}
+   <MaterialFolderAiPanel batchId={batch.id} open={open}/>
    {expanded===batch.id&&<div data-testid="batch-file-list">{!files?<p role="status">正在读取文件…</p>:!files.total?<p>还没有发现文件。</p>:<>
     <ul>{files.files.map(file=><li key={file.relativePath} className="material-batch-file"><span>{file.relativePath}</span><span>{{pending:'等待归档',saved:'已归档',failed:'未完成',skipped:'已跳过'}[file.status]}</span>{file.error&&<span role={file.status==='failed'?'alert':undefined}>{file.error}</span>}{file.resourceId&&<Button size="sm" variant="ghost" onPress={()=>open(file.resourceId)}>打开资料</Button>}</li>)}</ul>
     <div className="teacher-library-toolbar"><Button size="sm" variant="ghost" isDisabled={!fileOffset} onPress={()=>setFileOffset(v=>Math.max(0,v-20))}>前20个文件</Button><span>共 {files.total} 个文件</span><Button size="sm" variant="ghost" isDisabled={!files.hasMore} onPress={()=>setFileOffset(v=>v+20)}>后20个文件</Button></div>
