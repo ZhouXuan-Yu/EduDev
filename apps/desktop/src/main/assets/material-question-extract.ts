@@ -5,6 +5,7 @@ import {materialSource,type MaterialReadingUnit} from './material-source';
 export type ExtractedQuestion={fields:QuestionBankItemInput;archive:QuestionArchive;key:string};
 /** Ignore layout-only blanks, never digits, signs, choices or algebra subscripts. */
 export const normalizeMaterialStem=(text:string)=>text.normalize('NFKC').replace(/(?<![A-Za-z0-9])_{3,}(?![A-Za-z0-9])/g,'').replace(/\s/g,'').replace(/。(?=A[.、])/g,'');
+const stripMetadata=(s:string)=>s.replace(/^\s*(?:【(?:学科|年级|知识点|题型|难度)】|\[(?:学科|年级|知识点|题型|难度)\]|(?:学科|年级|知识点|题型|难度)\s*[:：])[^\n]*\n?/gm,'').trim();
 /** Conservative source extraction. Never supplies an answer/analysis or an AI confirmation. */
 export function extractMaterialQuestions(units:MaterialReadingUnit[],engine:string):ExtractedQuestion[]{
  const ranges:{start:number;end:number;unit:MaterialReadingUnit}[]=[];let text='';
@@ -36,12 +37,18 @@ export function extractMaterialQuestions(units:MaterialReadingUnit[],engine:stri
  const header=text.slice(0,matches[0]?.index??0),numbers=new Map<string,number>();for(const m of matches){const n=m[1]||m[2]||m[3];numbers.set(n,(numbers.get(n)||0)+1);}
  const result:ExtractedQuestion[]=[];
  for(let i=0;i<matches.length;i++){
-  const m=matches[i],start=m.index!,end=matches[i+1]?.index??text.length,body=text.slice(start+m[0].length,end).trim(),number=m[1]||m[2]||m[3];if(!body)continue;
+  const m=matches[i],start=m.index!,number=m[1]||m[2]||m[3],sourceRange=ranges.find(r=>r.start<=start&&r.end>start);
+  let end=matches[i+1]?.index??text.length;
+  const nextRange=matches[i+1]&&ranges.find(r=>r.start<=end&&r.end>end);
+  // A following page's metadata-only preamble belongs to that page, not to the preceding question.
+  // Unknown/same-page boundaries and actual continuation text retain their complete source spans.
+  if(sourceRange?.unit.chunk.pageNumber&&nextRange?.unit.chunk.pageNumber&&sourceRange.unit.chunk.pageNumber!==nextRange.unit.chunk.pageNumber&&stripMetadata(text.slice(nextRange.start,end))==='')end=nextRange.start;
+  const body=text.slice(start+m[0].length,end).trim();if(!body)continue;
   const markers=[...body.matchAll(/(?:^|\n)\s*(?:【(答案|参考答案|解析|解答|分析)】|\[(答案|参考答案|解析|解答|分析)\]|(答案|参考答案|解析|解答|分析)\s*[:：])\s*/g)];
   let answer='',analysis='';for(let j=0;j<markers.length;j++){const marker=markers[j],kind=marker[1]||marker[2]||marker[3],value=body.slice(marker.index!+marker[0].length,markers[j+1]?.index??body.length).trim();if(['答案','参考答案'].includes(kind))answer+=(answer?'\n':'')+value;else analysis+=(analysis?'\n':'')+value;}
-  const stripMetadata=(s:string)=>s.replace(/^\s*(?:【(?:学科|年级|知识点|题型|难度)】|\[(?:学科|年级|知识点|题型|难度)\]|(?:学科|年级|知识点|题型|难度)\s*[:：])[^\n]*\n?/gm,'').trim();
   const stem=stripMetadata(body.slice(0,markers[0]?.index??body.length));if(stem.length<4)continue;
-  const get=(label:string)=>metadata(body,label)||metadata(header,label),difficulty=get('难度');
+  const localHeader=sourceRange?text.slice(sourceRange.start,matches.find(h=>h.index!>=sourceRange.start&&h.index!<sourceRange.end)?.index??start):'';
+  const get=(label:string)=>metadata(body,label)||metadata(localHeader,label)||metadata(header,label),difficulty=get('难度');
   const fields:ArchiveFields={stem,answer:stripMetadata(answer),analysis:stripMetadata(analysis),subject:get('学科'),grade:get('年级'),knowledgePoint:get('知识点'),questionType:get('题型'),difficulty:/难|hard/.test(difficulty)?'hard':/基础|简单|easy/.test(difficulty)?'easy':'medium'};
   const touched=ranges.filter(r=>r.start<end&&r.end>start),issues=archiveMissing(fields);
   if(touched.length>64||Math.max(stem.length,answer.length,analysis.length)>12000){issues.push('long_question');fields.stem='原题内容过长，需打开原资料拆分整理。\n'+stem.slice(0,200);fields.answer='';fields.analysis='';issues.push('missing_answer','missing_analysis');}
