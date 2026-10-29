@@ -4,6 +4,10 @@
 
 Tencent/WeKnora固定dacb9c2未改源，用隔离签名校验UCRT GCC15完整构建277858304B EXE，带三个运行DLL、无编译器PATH健康200。九份同OCR文本/API检索与同向量容量实跑；原图需VLM/PDF需DocReader，百万热P95 3755ms，故未切生产。E5本地桥仅比较夹具、无第二Agent。新增OCR文字纠错复用现DeepSeek/projection/Pi/SQLite，非自建通用后端。详细匿名证据research/KB_WEKNORA_RUNTIME_EVIDENCE_20261029.json。
 
+## 2026-10-29 工具自主准备范围纠偏
+
+用户新增要求常用工具可用、缺少时能自主准备。现生产技能只有本地包导入，自动下载配置仍未完成；该方向纳入统一受管组件层，不另建Agent Loop。候选合同区分技能/工具/依赖/授权，固定来源、版本/校验、许可、隔离与失败恢复，实际方案见../product/XIAOZHI_AGENT_CAPABILITY_ROADMAP.md。
+
 ## 2026-10-29 Hana资源层继续薄适配
 
 沿Hana加载/空闲生命周期设计复用Pi原生历史资源，未引入另一Engine或Runtime；工具与权限逐轮绑定。local引用扩展现公开来源，主进程登记，renderer使用已有文件/附件预览与OCR审核读API。无新增依赖，主进程legacy开关回退原生缓存和引用注册。

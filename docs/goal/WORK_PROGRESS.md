@@ -4,6 +4,10 @@
 
 原图文字题完整转录回执已实现并实机通过，真实同页3条ai_final/1图题review；纠错第3题完成语义检索、单题组卷和四文件冷启。核心题库schema常驻+SQLite存在性探测已修，真实自然提问直接search/read（3请求/0目录）。WeKnora完整Windows Lite对照已完成，原始文件/百万规模缺口不满足默认资格；保留现生产检索。完整Goal继续，下一把第4图题接已有原生v3链，同时推进持续摄入与规模质量；不重复候选下载。精确测试与剩余门禁见KB_IMPLEMENTATION_EVIDENCE。
 
+## 2026-10-29 最新用户优先级：通用执行→理科→全科
+
+已完成成熟产品官方能力对照与当前源码差距核查，入口../product/XIAOZHI_AGENT_CAPABILITY_ROADMAP.md。E01默认可用文件工具、E02真实思考设置、E03多轮承接为建议首批，随后受管工具准备/执行/核验/恢复/版本成果；所有候选未实施，不提高完成数。原工具不可用投诉继续OPEN；下一冻结E01–E03合同，尊重单次必要测试、最终集中试用，不扩评测支线或自动追加用尽20次额度。
+
 ## 2026-10-29 流式响应与窗口拖动
 
 完成流式Markdown重复配置/模糊动画与标题栏全宽no-drag修复。build、240组件、11边界、50段真实Electron合成流通过；真实长历史复杂内容卡顿未全量复现。更新日常窗口后补原生拖动结果，详HANA_ANSWER_QUALITY。
@@ -17,7 +21,7 @@
 用户授权在 codex/hana-answer-quality 实现以Hana为核心的回答优化。AQ00–AQ07已接入，AQ08本地验证与真实模型质量分层记录；清单、逐项对比、测试命令与未验边界见 [HANA_ANSWER_QUALITY.md](HANA_ANSWER_QUALITY.md)。真实教师盲评尚未通过，不能据工程测试声称“1+1=3已实现”；KR02与0文件导出旧事实保持。
 
 
-更新时间：2026-10-29。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main b09073b`。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
+更新时间：2026-10-29。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main 92d16aa`，保留并行产品路线。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
 
 当前主线：**知识库交付纠偏与成熟方案复用，几十GB存储与高效检索是选型硬条件**。不再按通用性能审计顺序优先扩建知识库底层。原26项审计继续保留，其2/26不是知识库完成度。
 

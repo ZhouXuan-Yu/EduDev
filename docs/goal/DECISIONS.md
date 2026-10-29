@@ -4,6 +4,10 @@
 
 完整WeKnora Lite已在Windows未改源运行；九份OCR文本可检索，但原始六图需VLM、三PDF缺DocReader失败，原生百万向量热P95 3755ms。因此不直接切为生产默认。保留已成熟LanceDB/SQLite事实与Pi，先解除原图纠错被OCR字面锁死、核心题库被目录和首条候选假空隐藏的实际缺口。新回执两遍一致不是独立数学正确性；新旧批次严格分版，正式整卷确认保持。
 
+## 2026-10-29 以真实交付确定能力排序
+
+用户明确选择先通用执行，再理科，最后全科。Hana/Pi继续作为唯一Runtime；参照Cowork完整执行、NotebookLM来源工作、Khanmigo/MagicSchool/Brisk/Diffit/希沃教学工作流。具体新增功能列为候选，共同判断后纳入，不把商业产品描述当源码可复制或已优于竞品的证据。
+
 ## 2026-10-29 流式响应与窗口拖动
 
 在OfficeMarkdown应用适配层稳定components并默认关闭blurIn，不修改成熟vendor组件；推理100ms合并保留终态flush。原生窗口标题栏只将实际按钮设no-drag，保留Windows caption按钮和既有位置持久化，无新IPC/迁移。

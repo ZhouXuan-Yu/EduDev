@@ -2,6 +2,10 @@
 
 ## 2026-10-29 原图纠正OCR漏字，并修复题库假空与工具隐藏
 
+Git检查点：RED 7cf9d02→OCR GREEN c5f0415；核心目录RED 948f5ad、真实假空RED d296679→GREEN f964f02。已整合主线b09073b并再整合92d16aa；后者仅文档，10处冲突均保留双方，无生产源码冲突。临时WeKnora/E5桥已按实际PID/绝对路径核验归属后关闭，未触日常D:窗口。完整Goal继续，最终推送及远端一致性另以本轮Git命令结果为准。
+
+旧chat-experience专项被展示断言阻断的空库规则已单独实测通过：空范围隐藏相应只读入口，ask_teacher/写入工具的宿主授权规则不受此提示增加。不能将此独立通过改写为整条旧专项通过。
+
 本轮目标是老师实际能用导入后的题，而非只增加底层索引。保留Pi、SQLite、本地原件、现LanceDB/解析器与正式整卷集中确认。生产变动：`material-ai-image.ts`增加严格图文响应/六项完整覆盖；`material-ai-repository.ts`增量幂等建立`material_ai_image_inputs`，保存实际模型输入图（原始<=4MiB/unit）、校验两遍回执/原件/来源/图hash，允许纯文字原图纠正OCR漏字；`question-archive.ts`增加`image-text-complete.v1`。不同批次同图暂重复存储，没有新IPC或依赖。图依赖、跨页、漏题、两遍不同或不确定继续review；不把模型一致当独立正确性或教师确认。
 
 真实同页新批次4题：1/2/3题ai_final，第4图题review。第3题补回OCR漏掉的选项与完整三个小问，题本原生重启可见，真实语义查询5候选包含该题；单题5分蓝图经隔离测试教师动作确认。真实Pi/DeepSeek再16请求输出学生Word10130B、教师Word10323B、学生PDF66721B、教师PDF77426B；独立完整内容/学生答案隔离/A4/来源谱系与1920×1080冷启哈希通过，目视两份PDF均1页，0renderer错误。测试教师操作不代表实际教师正确性核验；Office/WPS原生未打开。首版图文prompt因旧新schema冲突造成1次HTTP200但严格解析拒绝，未发布题；修prompt后2次有效图文请求成功，没有放松schema。
