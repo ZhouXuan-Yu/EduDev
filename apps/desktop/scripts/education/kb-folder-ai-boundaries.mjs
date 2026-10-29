@@ -23,5 +23,9 @@ try{
  const secondChild=db.prepare('SELECT ai_batch_id FROM material_folder_ai_units WHERE resource_id=?').get(secondResource);db.prepare("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown' WHERE batch_id=?").run(secondChild.ai_batch_id);
  db.prepare("UPDATE material_import_batches SET status='completed' WHERE id=?").run(id);
  for(let i=0;i<3;i++)await repo.tick();assert.equal(creates,2);const final=await repo.view(id);assert(final.review+final.failed>=2);assert.equal(final.status,'attention');
- console.log(JSON.stringify({success:true,checks:6,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
+ // Old attention cards cannot starve later folder grants behind the bounded window.
+ for(let i=0;i<16;i++)db.prepare("INSERT INTO material_folder_ai(batch_id,status,revision,settings_revision,max_calls) VALUES(?,'attention',1,9,2)").run('batch_'+randomUUID());
+ const later='batch_'+randomUUID(),thirdResource='resource_'+randomUUID();db.prepare("INSERT INTO material_import_batches VALUES(?,'completed','后续目录')").run(later);db.prepare("INSERT INTO teacher_resources VALUES(?,?,'后题.png','ready','local-ocr','后续原图')").run(thirdResource,version);db.prepare("INSERT INTO material_import_entries VALUES(3,?,'file','saved',?)").run(later,thirdResource);
+ await repo.authorize({...input,batchId:later,maxCalls:2});for(let i=0;i<4&&creates<3;i++)await repo.tick();assert.equal(creates,3,'Settled attention folders must not starve a newly authorized folder outside the first sixteen rows');
+ console.log(JSON.stringify({success:true,checks:7,scope:'Folder scheduling, SQLite persistence, late archive trigger, pause/reopen, fair bounded scheduling and unknown no-replay with a controlled child executor; not AI quality or UI acceptance'}));
 }finally{db.close();}
