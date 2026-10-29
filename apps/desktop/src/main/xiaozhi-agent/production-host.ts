@@ -16,6 +16,8 @@ import type {ReceiptCapture} from './events/receipts';
 import {createEducationReadback} from './verification/education-readback';
 import {createPracticeReadback} from './verification/practice-readback';
 import {createEffectReadback} from './verification/effect-readback';
+import {createDeliveryReadback} from './verification/delivery-readback';
+import {createDeliveryCoordinator} from './delivery-coordinator';
 import {createHanaOfficeTools} from '../office-agent/hana-tool-adapter';
 import {fileVersion} from './workspace-files';
 import {legacyVerification,validTaskVerification,VERIFICATION_LABELS,verificationDescription} from '../../shared/xiaozhi-verification';
@@ -340,6 +342,20 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     isCurrent:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     emit:(id,runId,payload)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,payload);}
   });
+  const deliveryReadback=(id:string,runId:string)=>createDeliveryReadback({sessionId:id,runId,state:store.xiaozhiState.deliveries,
+    current:()=>!closing&&active.get(id)?.stopped===false,
+    workspace:async()=>(await host.resolveFileWorkspace(id)).path,
+    fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,
+    changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
+  const deliveries=createDeliveryCoordinator({state:store.xiaozhiState.deliveries,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts,
+    text:textChanges.service,office:officeArtifacts.service,
+    current:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+    taskVersion:async id=>{const task=await tasks.committed(id);return task?`${task.id}:${task.requirementsVersion}`:'none';},
+    sanitize:(kind,relative)=>kind==='office'?sanitizeOfficeDocumentText(store,relative):store.sanitizeProblemText(relative).then(v=>v.sanitizedText),
+    verify:(id,ref)=>deliveryReadback(id,ref.runId).child(ref),
+    proposalError:officeArtifacts.proposalError,
+    emit:(id,runId,event)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,event);}
+  });
   const controls = createPiControlCoordinator({ store,
     sanitize:async text=>(await createStudentContextSanitizer(store))(text),
     isCurrent:(id,runId) => !closing && active.get(id)?.runId === runId && !active.get(id)?.stopped,
@@ -422,6 +438,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const storedApprovals = (await store.xiaozhiState.approvals(id)).map(publicApproval);
     const changes = (await store.xiaozhiState.changes.list(id)).map(changeSummary);
     const artifacts=(await store.xiaozhiState.officeArtifacts.list(id)).map(officeSummary);
+    const storedDeliveries=await deliveries.list(id);
     const interruptedSend = await store.xiaozhiState.interruptedSend(id);
     let storedControls = (await store.xiaozhiState.controls(id)).map(publicControl);
     const storedGoal=await store.xiaozhiState.goals.latest(id);
@@ -475,7 +492,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
-      ...(task?{task}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
+      ...(task?{task}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, deliveries:storedDeliveries, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
   }
   function modelCoordinator(id:string,owner?:Active) {
     return createNativeModelSwitch({state:store.xiaozhiState.modelSwitch,root,
@@ -583,12 +600,12 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         emit:image=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'image_delivery',image});}}),
       educationSkills:true,managedSkills:{resources:()=>managedSkills.enabledResources(),sanitize:async text=>(await store.sanitizeProblemText(text)).sanitizedText},
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),
-      officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
+      officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),deliveryTools:wait=>deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         sanitize:text=>sanitizeOfficeDocumentText(store,text)}),
       classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
-      sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:excluded=>getPiProtectedContext(store,id,excluded),
+      sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded))+(await deliveries.context(id)),
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
       questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();}),
@@ -672,7 +689,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       run.results=createRunResultReadback({runId:run.runId,
         ...(run.goalId?{bindDiscovery:createDiscoveryReadback({sessionId:id,runId:run.runId,current:()=>!closing&&active.get(id)===run&&!run.stopped,workspace:()=>host.resolveFileWorkspace(id)})}:{}),
         bindEffect:(callId,tool,payload)=>tool==='education_web_answer'?readWebAnswers(callId,tool,payload):tool==='education_propose_questions'?readSavedQuestions(callId,tool,payload)
-          :tool==='education_propose_practice'?readSavedPractice(callId,tool,payload):readSavedFile(callId,tool,payload),
+          :tool==='education_propose_practice'?readSavedPractice(callId,tool,payload):tool==='office_deliver_files'?deliveryReadback(id,run.runId).bind(callId,payload):readSavedFile(callId,tool,payload),
         readLocal:async(tool,payload)=>{
           const signal=AbortSignal.any([run.abort.signal,AbortSignal.timeout(10000)]);
           if(closing||active.get(id)!==run||run.stopped)throw Error('cancelled');
@@ -752,6 +769,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       await approvals.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
       await textChanges.cancel(run.runId).catch(() => { failure ||= 'configuration'; });
       await officeArtifacts.cancel(run.runId).catch(()=>{failure||='configuration';});
+      await deliveries.cancel(run.runId).catch(()=>{failure||='configuration';});
       await store.xiaozhiState.approvals(id).then(async rows => {
         for (const row of rows) if (row.runId === run.runId && row.state === 'executing') await store.xiaozhiState.transition(row.id, ['executing'], 'uncertain');
       }).catch(() => { failure ||= 'configuration'; });
@@ -957,13 +975,18 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     enabled, snapshot, decide: approvals.decide, answer:controls.answer,
     reviewTextChange: textChanges.review,
     reviewOfficeArtifact:officeArtifacts.review,
-    reviseOfficeArtifact:officeArtifacts.revise,
+    async reviseOfficeArtifact(input:Parameters<typeof officeArtifacts.revise>[0]){
+      return await store.xiaozhiState.deliveries.owner(input?.sessionId,input?.draftId)?deliveries.revise(input):officeArtifacts.revise(input);
+    },
+    decideDelivery:deliveries.decide,
     async decideOfficeArtifact(input:OfficeArtifactDecision):Promise<OfficeArtifactResult<OfficeArtifactSummary>>{
+      if(input?.action!=='verify'&&await store.xiaozhiState.deliveries.owner(input?.sessionId,input?.draftId))return {ok:false,error:'permission_denied'};
       if(input?.action!=='verify')return officeArtifacts.decide(input);
       try{return await host.withLocalSettingsJob(async assertCurrent=>{assertCurrent();return officeArtifacts.decide(input);});}catch{return {ok:false,error:'busy'};}
     },
     async decideTextChange(input: XiaozhiChangeDecision): Promise<XiaozhiChangeResult<XiaozhiChangeSummary>> {
       // Undo and recovery verification reserve the same global idle owner as local backups/settings.
+      if (input?.action !== 'undo' && input?.action !== 'verify' && await store.xiaozhiState.deliveries.owner(input?.sessionId,input?.changeId))return {ok:false,error:'permission_denied'};
       if (input?.action !== 'undo' && input?.action !== 'verify') return textChanges.decide(input);
       try { return await host.withLocalSettingsJob(async assertCurrent => { assertCurrent(); return textChanges.decide(input); }); }
       catch { return { ok: false, error: 'busy' }; }
@@ -1242,7 +1265,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if(!run.runId)return {ok:true}; // Admission has no effect authority to cancel; late SQL is identity-fenced.
       try {await waitForLifecycle('host_stop_cleanup',async()=>{
       if(run.goalId){const goal=await store.xiaozhiState.goals.interrupt(id,run.runId,'教师停止了本轮执行，已保存进度。');if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
-      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await aborting;
+      await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await aborting;
       },{timeoutMs:options.shutdownTimeoutMs??5000});return {ok:true};}
       catch{run.publisher?.fail(Error('event_persistence'));return {ok:false};}
     },
@@ -1258,7 +1281,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       await Promise.allSettled([...modelWrites]);
       await Promise.allSettled([...localSettingsJobs]);
       await Promise.allSettled([...starting.values()].map(item => item.result));
-      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await run.agent?.abort(); }
+      for (const [id,run] of active) { await controls.finish(id,run.runId); await approvals.cancel(run.runId); learningReviews.cancel(run.runId); questionReviews.cancel(run.runId); questionCollections.cancel(run.runId); originalReviews.cancel(run.runId); practiceReviews.cancel(run.runId); paperReviews.cancel(run.runId); await textChanges.cancel(run.runId); await officeArtifacts.cancel(run.runId); await deliveries.cancel(run.runId); await run.agent?.abort(); }
       await Promise.allSettled([...active.values()].map(run => run.done));
       },{timeoutMs:options.shutdownTimeoutMs??5000});}
       catch{for(const run of active.values())run.publisher?.fail(Error('event_persistence'));}

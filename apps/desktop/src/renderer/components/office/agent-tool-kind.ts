@@ -26,7 +26,7 @@ const groups: Partial<Record<AgentToolKind, string[]>> = {
     'office_create_text',
     'office_edit_text',
     'office_copy_file',
-    'office_create_document',
+    'office_create_document','office_deliver_files',
   ],
   'web-search': ['office_web_search'],
   'web-read': ['office_web_fetch'],

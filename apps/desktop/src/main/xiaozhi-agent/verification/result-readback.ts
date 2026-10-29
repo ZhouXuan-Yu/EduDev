@@ -13,8 +13,8 @@ type NativeResult={toolCallId:string;toolName:string;content:unknown;isError?:bo
 type Captured={tool:string;callId:string;version:string;digest:string;payload:Record<string,any>;observedAt:string;effectWork?:Promise<BoundEffect|undefined>;effect?:BoundEffect};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const hex=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
-const effects=new Set(['education_web_answer','office_create_text','office_create_science_figure','office_edit_text','office_create_document','education_propose_questions','education_propose_practice']);
-const kinds:Record<string,string>={education_web_answer:'saved_questions',office_list_files:'directory',office_file_stat:'file_metadata',office_web_fetch:'web',office_browser:'web',office_read_attachment:'attachment',office_read_text:'file',office_view_public_image:'image',office_create_text:'saved_text',office_create_science_figure:'saved_text',office_edit_text:'saved_text',office_create_document:'saved_office',education_propose_questions:'saved_questions',education_propose_practice:'saved_questions'};
+const effects=new Set(['education_web_answer','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','education_propose_questions','education_propose_practice']);
+const kinds:Record<string,string>={education_web_answer:'saved_questions',office_list_files:'directory',office_file_stat:'file_metadata',office_web_fetch:'web',office_browser:'web',office_read_attachment:'attachment',office_read_text:'file',office_view_public_image:'image',office_create_text:'saved_text',office_create_science_figure:'saved_text',office_edit_text:'saved_text',office_create_document:'saved_office',office_deliver_files:'saved_bundle',education_propose_questions:'saved_questions',education_propose_practice:'saved_questions'};
 async function bounded<T>(work:()=>Promise<T>):Promise<T|undefined>{
  let timer:ReturnType<typeof setTimeout>|undefined;
  try{return await Promise.race([Promise.resolve().then(work),new Promise<undefined>(resolve=>{timer=setTimeout(()=>resolve(undefined),10000);})]);}
@@ -61,6 +61,10 @@ function normalize(tool:string,content:unknown,callId:string):Omit<Captured,'too
  }
  if(tool==='education_propose_practice'){
   if(payload.state!=='confirmed'||!Number.isInteger(payload.count)||payload.count<1||payload.count>8||typeof payload.title!=='string'||!payload.title.trim())return;
+  const digest=hash(payload);return{digest,version:digest,payload};
+ }
+ if(tool==='office_deliver_files'){
+  if(typeof payload.bundleId!=='string'||!/^xidelivery_[a-f0-9]{64}$/.test(payload.bundleId)||payload.outcome!=='saved'||!Array.isArray(payload.files)||payload.files.length<2||payload.files.length>8)return;
   const digest=hash(payload);return{digest,version:digest,payload};
  }
  if(effects.has(tool)){

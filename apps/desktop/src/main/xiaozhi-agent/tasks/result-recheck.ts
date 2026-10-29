@@ -5,6 +5,7 @@ import type {TaskView,TaskCandidate} from '../../../shared/xiaozhi-task';
 import {legacyVerification,validTaskVerification} from '../../../shared/xiaozhi-verification';
 import {readNativeToolEntries,type NativeRunBinding} from '../events/native-tail';
 import {createRunResultReadback} from '../verification/result-readback';
+import {createDeliveryReadback} from '../verification/delivery-readback';
 import {createEffectReadback} from '../verification/effect-readback';
 import {createEducationReadback} from '../verification/education-readback';
 import {createPracticeReadback} from '../verification/practice-readback';
@@ -41,11 +42,12 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const sanitize=await createStudentContextSanitizer(store),importer=createAttachmentImportService({dataRoot:options.dataRoot,state:store.xiaozhiState.attachments,imports:store.xiaozhiState.attachmentImports,isCurrent:current});
   const attachments=createAttachmentReadTools({sessionId:id,state:store.xiaozhiState.attachments,ocr:store.xiaozhiState.attachmentOcr,importer,isCurrent:current,authorize:async row=>{const value=await store.getAiConversationSession(id);return !value.session.archivedAt&&value.messages.some(m=>m.id===row.messageId&&m.role==='user'&&m.metadata.agentRunId===row.runId);},sanitize:text=>sanitizeOfficeDocumentText(store,text)});
   const files=createEffectReadback({sessionId:id,runId:candidate.runId,current,workspace:async()=>(await options.workspace(id)).path,fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,fileText:sanitize,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
+  const bundles=createDeliveryReadback({sessionId:id,runId:candidate.runId,current,state:store.xiaozhiState.deliveries,workspace:async()=>(await options.workspace(id)).path,fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
   const webAnswers=createQuestionWebAnswerReadback({sessionId:id,runId:candidate.runId,current,repo:store.questionWeb});
   const questions=createEducationReadback({sessionId:id,runId:candidate.runId,current,questions:store.questionReviews});
   const practice=createPracticeReadback({sessionId:id,runId:candidate.runId,current,practice:store.practiceReviews});
   const results=createRunResultReadback({runId:candidate.runId,bindEffect:(call,tool,payload)=>tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
-    :tool==='education_propose_practice'?practice(call,tool,payload):files(call,tool,payload),readLocal:async(tool,payload)=>{
+    :tool==='education_propose_practice'?practice(call,tool,payload):tool==='office_deliver_files'?bundles.bind(call,payload):files(call,tool,payload),readLocal:async(tool,payload)=>{
    fence();if(tool==='office_read_attachment'){
     const row=await store.xiaozhiState.attachments.get(id,payload.source.attachmentId);if(!row||row.version!==payload.source.version)throw Error('attachment_changed');
     const reader=attachments.find(t=>t.name===tool)!;const value=await reader.execute('task_review_readback',{id:row.id,revision:row.revision,startLine:payload.source.locator.start,lineCount:payload.source.locator.end-payload.source.locator.start+1},signal,undefined,undefined as never);if(value.isError)throw Error('evidence_missing');return value.content;

@@ -26,7 +26,7 @@ function fixture(extra={}){const reads=[],values=[],failures=[];const gate=creat
  const f=fixture();f.gate.open('A');const a=f.gate.hydrate('A');const rejected=assert.rejects(a,/offline/);await tick();f.reads[0].reject(Error('offline'));await rejected;assert.equal(f.failures.length,1);f.gate.changed();assert(!f.gate.needsRecovery(),'No event-driven retry storm after a failed read');const b=f.gate.hydrate('A');await tick();f.reads[1].resolve('retry');await b;assert.deepEqual(f.values,['retry']);passed++;
 }
 {
- const f=fixture();f.gate.open('A');const a=f.gate.hydrate('A');const rejected=assert.rejects(a,/snapshot_changed/);for(let i=0;i<8;i++){await tick();f.gate.changed();f.reads[i].resolve('stale');}await rejected;assert.equal(f.reads.length,8);assert.deepEqual(f.values,[]);assert.equal(f.failures.length,1);const b=f.gate.hydrate('A');await tick();f.reads[8].resolve('after-stop');await b;assert.deepEqual(f.values,['after-stop']);passed++;
+ const f=fixture();f.gate.open('A');const a=f.gate.hydrate('A');const rejected=assert.rejects(a,/snapshot_changed/);for(let i=0;i<64;i++){while(!f.reads[i])await new Promise(r=>setTimeout(r,5));f.gate.changed();f.reads[i].resolve('stale');}await rejected;assert.equal(f.reads.length,64);assert.deepEqual(f.values,[]);assert.equal(f.failures.length,1);const b=f.gate.hydrate('A');await tick();f.reads[64].resolve('after-stop');await b;assert.deepEqual(f.values,['after-stop']);passed++;
 }
 {
  const f=fixture();await f.gate.hydrate('A');f.gate.open('B');await f.gate.hydrate('A');assert.equal(f.reads.length,0);passed++;
@@ -49,4 +49,7 @@ function fixture(extra={}){const reads=[],values=[],failures=[];const gate=creat
 {
  let publications=0;const f=fixture({publish:()=>{if(++publications===1)f.gate.changed();}});f.gate.open('A');const done=f.gate.hydrate('A');await tick();f.reads[0].resolve('raced');await tick();assert.equal(f.reads.length,2);f.reads[1].resolve('stable');await done;assert.equal(publications,2);passed++;
 }
-console.log(JSON.stringify({suite:'pi-snapshot-hydration',passed,total:15,skipped:0}));
+{
+ const f=fixture();f.gate.open('A');const done=f.gate.hydrate('A');for(let i=0;i<12;i++){while(!f.reads[i])await new Promise(r=>setTimeout(r,5));f.gate.changed();f.reads[i].resolve('busy');}while(!f.reads[12])await new Promise(r=>setTimeout(r,5));f.reads[12].resolve('settled-bundle');await done;assert.deepEqual(f.values,['settled-bundle']);assert.equal(f.failures.length,0);passed++;
+}
+console.log(JSON.stringify({suite:'pi-snapshot-hydration',passed,total:16,skipped:0}));

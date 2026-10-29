@@ -54,6 +54,7 @@ export function verificationCheckLabel(id:string):string {
   if(id.startsWith('file:'))return '授权文件正文、当前版本与本轮记录一致';
   if(id.startsWith('image:'))return '公开图片本轮送达、附件版本与保存记录一致';
   if(id.startsWith('saved_text:'))return '教师确认文本、当前文件与保存账本一致';
+  if(id.startsWith('saved_bundle:'))return '整包所有文件与教师确认版本、当前文件和保存账本一致';
   if(id.startsWith('saved_office:'))return '教师确认产物、当前文件与数据库发布记录一致';
   if(id.startsWith('saved_questions:'))return '题目当前版本与保存账本一致';
   if(id==='answer:human')return '回复内容与图片识别结果是否符合你的要求';

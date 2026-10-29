@@ -21,6 +21,7 @@ export function createTaskResources(options:{sessionId:string;workspace:()=>Prom
   }
   if(kind==='web'){const url=new URL(target);if(!['http:','https:'].includes(url.protocol)||url.username||url.password)throw new TaskAdmissionError('task_target_invalid');url.hash='';return taskHash(['web',url.href]);}
   if(kind==='attachment'||kind==='image'){if(!await options.attachment(target))throw new TaskAdmissionError('task_source_changed');return taskHash(['attachment',options.sessionId,target]);}
+  if(kind==='saved_bundle'&&target==='current')return taskHash(['bundle',options.sessionId,path.resolve((await options.workspace()).path).toLowerCase()]);
   if(kind==='saved_questions'&&target==='current')return taskHash(['questions',options.sessionId,await options.studentId()]);
   throw new TaskAdmissionError('task_target_invalid');
  }
@@ -30,7 +31,7 @@ export function createTaskResources(options:{sessionId:string;workspace:()=>Prom
    if(typeof expectedResource!=='string'||!/^[a-f0-9]{64}$/.test(expectedResource))throw new TaskAdmissionError('task_target_invalid');
    return expectedResource;
   }
-  const target=kind==='web'?args.url:kind==='attachment'||kind==='image'?args.id:kind==='saved_questions'?'current':tool==='office_copy_file'?args.target:args.path;
+  const target=kind==='web'?args.url:kind==='attachment'||kind==='image'?args.id:kind==='saved_questions'||kind==='saved_bundle'?'current':tool==='office_copy_file'?args.target:args.path;
   if(typeof target!=='string')throw new TaskAdmissionError('task_target_invalid');
   if(kind==='saved_office'&&tool==='office_create_document'){
    const lease=await options.workspace();return taskHash(['workspace-file',path.resolve(approvedFile(lease.path,target)).toLowerCase()]);
