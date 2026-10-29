@@ -15,7 +15,7 @@ export async function backgroundImportStore(output:string){
  const until=async<T>(fn:()=>Promise<T>,ms=180000)=>{const end=Date.now()+ms;while(Date.now()<end){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,30));}throw Error('background fixture timed out');};
  const started=performance.now();
  try{
-  await store.init();installOverviewCounter();
+  await store.init();await store.materialQueue.start();store.materialSearch.start();store.materialQuestions.start();installOverviewCounter();
   const host=(store.materialImports as any).host,ordinary=host.import;
   host.import=async(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>{
    if(!first){
@@ -32,7 +32,7 @@ export async function backgroundImportStore(output:string){
   await store.materialImports.action({schemaVersion:'xiaozhi.material-import-batch.v1',batchId:id,action:'pause'});
   assert.equal((await store.materialImports.list()).batches[0].status,'paused');assert.equal(Number((await query('SELECT COUNT(*) n FROM teacher_resources'))[0].n),1);
   assert.equal(Number((await query("SELECT COUNT(*) n FROM material_import_entries WHERE status='saved'"))[0].n),0);await store.close();
-  store=new OmniEduStore(root);await store.init();installOverviewCounter();assert.equal((await store.materialImports.list()).batches[0].status,'paused');
+  store=new OmniEduStore(root);await store.init();await store.materialQueue.start();store.materialSearch.start();store.materialQuestions.start();installOverviewCounter();assert.equal((await store.materialImports.list()).batches[0].status,'paused');
   await store.materialImports.action({schemaVersion:'xiaozhi.material-import-batch.v1',batchId:id,action:'resume'});
   const done=await until(async()=>{const row=(await store.materialImports.list()).batches[0];return ['completed','partial','failed'].includes(row.status)?row:undefined;});
   assert.equal(done.status,'completed',JSON.stringify(done));assert.equal(done.archived,count+1);assert.equal(done.failed,0);assert.equal(done.skipped,1);assert.equal(done.reused,1);

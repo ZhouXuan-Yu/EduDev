@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-29 用户后台与质量要求更新
+
+知识库目标增加明确口径：完整目录树后台静默持久处理、只返回必要结果，耗时可长；本地OCR与DeepSeek对原图还原复核，不能将语句通顺当内容正确。当前归档有界化与还原提示切片通过范围详WORK_PROGRESS/EVIDENCE；完整目录自动AI/质量就绪、复杂图题、40GB与最终安装继续OPEN，不改总体完成定义。
+
 ## 2026-10-29 新能力顺序执行Goal入口
 
 本能力任务目标见[XIAOZHI_AGENT_DELIVERY_GOAL.md](XIAOZHI_AGENT_DELIVERY_GOAL.md)，含四份规格、依赖顺序、轻量审核和达标已实现规则；不覆盖本Master产品/数据边界。当前仅编写目标，252条仍未执行；进入执行后按W0–W5推进，已授权动作不重复申请，实际越界才暂停相应动作。

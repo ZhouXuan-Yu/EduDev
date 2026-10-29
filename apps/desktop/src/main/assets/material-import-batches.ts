@@ -4,7 +4,8 @@ import {randomUUID} from 'node:crypto';
 import type {KnowledgeImportResult} from '../../shared/contracts';
 import {MATERIAL_IMPORT_SCHEMA as schema,type MaterialBatch,type MaterialBatchAction,type MaterialBatchPage,type MaterialBatchFiles,type MaterialBatchState} from '../../shared/material-import-batch';
 type Row=Record<string,unknown>;type Value=string|number|null;
-type Host={root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<KnowledgeImportResult>;retryParse:(id:string)=>Promise<void>};
+type Host={root:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;change:(q:string,p:Value[])=>Promise<number>;import:(files:string[],signal:AbortSignal,guard:()=>Promise<void>)=>Promise<Pick<KnowledgeImportResult,'items'|'resources'>>;retryParse:(id:string)=>Promise<void>};
+const DISCOVERY_SLICE=128;
 const supported=/\.(pdf|docx|pptx|xlsx|jpg|jpeg|png|webp|md|txt)$/i;
 const now=()=>new Date().toISOString();
 const inside=(root:string,target:string)=>{const p=path.relative(root,target);return p===''||p!=='..'&&!p.startsWith('..'+path.sep)&&!path.isAbsolute(p);};
@@ -97,7 +98,7 @@ export class MaterialImportBatches{
   let cursor=file;for(;;){const stat=await fs.lstat(cursor);if(stat.isSymbolicLink()||!same(await fs.realpath(cursor),cursor))throw new Error('source_changed');if(same(cursor,root))return {file,stat:await fs.lstat(file)};cursor=path.dirname(cursor);}
  }
  private async run(row:Row,signal:AbortSignal){
-  const root=await this.root(row),id=String(row.id);
+  const root=await this.root(row),id=String(row.id);let discovered=0;
   for(;;){
    signal.throwIfAborted();await this.root(row);
    const dirs=await this.host.all(`SELECT * FROM material_import_entries WHERE batch_id=? AND kind='directory' AND status='pending' ORDER BY seq LIMIT 1`,[id]);if(!dirs.length)break;
@@ -112,12 +113,24 @@ export class MaterialImportBatches{
      const managed=inside(path.resolve(this.host.root()),file),kind=stat.isDirectory()&&!stat.isSymbolicLink()?'directory':'file';
      const skipped=managed||stat.isSymbolicLink()||kind==='file'&&(!stat.isFile()||!supported.test(entry.name));
      await this.host.run(`INSERT OR IGNORE INTO material_import_entries(batch_id,relative_path,kind,status,source_version,file_size,error) VALUES (?,?,?,?,?,?,?)`,[id,child,kind,skipped?'skipped':'pending',stat.isFile()?fileVersion(stat):'',stat.isFile()?stat.size:0,skipped?'非支持格式、链接或应用资料目录，已跳过。':'']);
+     if(++discovered>=DISCOVERY_SLICE){
+      await this.host.run(`UPDATE material_import_batches SET phase='archive' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);
+      await this.archivePending(row,root,signal,DISCOVERY_SLICE);discovered=0;
+      await this.host.run(`UPDATE material_import_batches SET phase='discover' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);
+     }
     }
     await this.host.run(`UPDATE material_import_entries SET status='scanned' WHERE seq=?`,[Number(directory.seq)]);
    }catch(error){signal.throwIfAborted();await this.host.run(`UPDATE material_import_entries SET status='failed',error=? WHERE seq=?`,[errorText(error),Number(directory.seq)]);}
   }
   await this.host.run(`UPDATE material_import_batches SET phase='archive' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);
-  for(;;){
+  await this.archivePending(row,root,signal);
+  const failed=Number((await this.host.all(`SELECT COUNT(*) n FROM material_import_entries WHERE batch_id=? AND status='failed'`,[id]))[0]?.n||0);
+  await this.host.run(`UPDATE material_import_batches SET status=?,error='',updated_at=? WHERE id=? AND owner_nonce=?`,[failed?'partial':'completed',now(),id,this.nonce]);
+ }
+ /** Keep source/copy/ACK validation identical for both interleaved and final drains. */
+ private async archivePending(row:Row,root:string,signal:AbortSignal,limit=Infinity){
+  const id=String(row.id);
+  for(let processed=0;processed<limit;processed++){
    signal.throwIfAborted();await this.root(row);
    const files=await this.host.all(`SELECT * FROM material_import_entries WHERE batch_id=? AND kind='file' AND status='pending' ORDER BY seq LIMIT 1`,[id]);if(!files.length)break;
    const entry=files[0];
@@ -130,7 +143,5 @@ export class MaterialImportBatches{
     await this.host.run(`UPDATE material_import_entries SET status='saved',resource_id=?,file_size=?,reused=?,error='' WHERE seq=?`,[resource.id,source.stat.size,item.reused?1:0,Number(entry.seq)]);
    }catch(error){signal.throwIfAborted();await this.host.run(`UPDATE material_import_entries SET status='failed',error=? WHERE seq=?`,[errorText(error),Number(entry.seq)]);}
   }
-  const failed=Number((await this.host.all(`SELECT COUNT(*) n FROM material_import_entries WHERE batch_id=? AND status='failed'`,[id]))[0]?.n||0);
-  await this.host.run(`UPDATE material_import_batches SET status=?,error='',updated_at=? WHERE id=? AND owner_nonce=?`,[failed?'partial':'completed',now(),id,this.nonce]);
  }
 }

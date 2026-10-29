@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 归档结果与全库概览分离
+
+MaterialImportBatches在每128目录项后有界归档128文件，再继续发现；旧队列/来源版本/取消与原件hash校验复用。db仅窄接线并抽出原归档方法：内部不加载overview，公共导入包装器保留原返回。无DDL/IPC/依赖变更。DeepSeek共用OCR还原规则v1，明确原图恢复、无图保守策略和解题标注分工；模型schema及放行标准未放松。
+
 ## 2026-10-29 新能力规格的架构边界
 
 ../product/PRD-XIAOZHI-AGENT-DELIVERY.md定义待实施逻辑契约、现有schema缺口与复用/兼容/回退要求，不代表已新建表/IPC/Worker。保持Pi唯一Runtime、SQLite/本地文件真源；具体映射在WP .01冻结，新增PPT备注/通用HTML等须同时贯通契约到真实输出。

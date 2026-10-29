@@ -1206,7 +1206,7 @@ export class OmniEduStore {
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialWord);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
     this.materialQueue=new MaterialParseQueue({all:(sql,values)=>this.all(sql,values),change:async(sql,values)=>Number(await this.runWithChanges(sql,values)),resource:id=>this.materials.resource(id),ensureTask:r=>this.enqueueResourceParseTask(r.id,r.title,r.resourceType,now()),ingest:(id,signal,lease)=>this.materials.ingest(id,signal,lease)});
-    this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.importKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
+    this.materialImports=new MaterialImportBatches({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),change:async(sql,p)=>Number(await this.runWithChanges(sql,p)),import:(files,signal,guard)=>this.archiveKnowledgeResources(files,signal,true,guard),retryParse:async id=>{const r=await this.materials.resource(id);if(/\.pdf$/i.test(r.originalFileName)&&await this.materialPdf.status(id))await this.materialPdf.retryFailures(id,r.contentHash);await this.materialQueue.enqueue(id,r.contentHash,0,true);}});
     this.materialSearch=new MaterialFullTextSearch({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
@@ -1943,6 +1943,12 @@ export class OmniEduStore {
   getChatSourcePresence(){return readChatSourcePresence(sql=>this.all(sql));}
 
   async importKnowledgeResources(sourcePaths: string[], signal = new AbortController().signal, background=false,guard?:()=>Promise<void>): Promise<KnowledgeImportResult> {
+    const result=await this.archiveKnowledgeResources(sourcePaths,signal,background,guard);
+    return {...result,overview:await this.getKnowledgeOverview()};
+  }
+
+  /** Background batches need only their own archive outcomes, never a whole-library snapshot per file. */
+  private async archiveKnowledgeResources(sourcePaths: string[], signal:AbortSignal, background:boolean,guard?:()=>Promise<void>): Promise<Omit<KnowledgeImportResult,'overview'>> {
     const resourceRoot = this.resolveInsideDataRoot('teacher_resources');
     mkdirSync(resourceRoot, { recursive: true });
     const items: AttachmentImportItem[] = [];
@@ -2016,7 +2022,7 @@ export class OmniEduStore {
     }
     const failed = items.filter((item) => !item.ok).length;
     const status = signal.aborted || items.length === 0 ? 'canceled' : failed === 0 ? 'succeeded' : failed === items.length ? 'failed' : 'partial';
-    return { status, resources, items, overview: await this.getKnowledgeOverview() };
+    return { status, resources, items };
   }
 
   /** Existing chunk/metadata/graph algorithm, isolated transaction on the same DB. */

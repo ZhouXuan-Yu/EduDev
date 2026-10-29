@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-10-29 后台目录与OCR还原限定验收
+
+最终源码完整npm run test:smoke已自然结束exit0/ok=true/30合成学生，未使用此前运行代替；日志kb-background-restoration-smoke.log及.exit=0。下述限定验收与真实DeepSeek质量范围保持分离。
+
+真实Store301合成文件4项通过（首份发现127时启动、overview0、复制未ACK冷启复用、SHA/全部TXT解析、公有API兼容）；实际资料页151文件5项通过，长文>80chunks尾部可检索，0renderer错误。OCR实际请求26边界/原生6+4/240组件及最终build通过；同已授权PDF页新增4次真实请求，首次4题待处理，修提示后3自动/1图题待处理。完整smoke状态只以本轮EVIDENCE/进程结果为准；audit23风险未清，不计40GB/自然Recall/全目录AI/安装通过。
+
 ## 2026-10-29 达标备注规则已接入
 
 Goal入口XIAOZHI_AGENT_DELIVERY_GOAL.md。任务书252条REQ、验收252条AT、28组均有实现备注；CSV使用既有备注列（当前被占用未改原数据）。当前全部未执行，达标后写已实现与日期/AT/实现和验证SHA/证据；失败/阻塞不标。本轮仅文档检查。

@@ -1,5 +1,38 @@
 # 知识库实施证据
 
+## 2026-10-29 后台目录持续处理与专用OCR还原提示
+
+用户最新目标：一次选含子文件夹的完整目录，后台静默持续处理，主界面只反馈必要进度/结果/异常，耗时可以长但质量不能降；OCR后由DeepSeek直接对原图还原核对，不把乱码通顺化当原文正确。完整目录自动AI调度/批次授权/质量就绪汇总仍未接通，本片不冒充全链完成。
+
+修改：`assets/material-import-batches.ts`每发现128个目录项交替处理最多128个待归档文件，沿原source guard/文件hash/暂停恢复路径；`db.ts`将原导入主体抽为私有archiveKnowledgeResources，仅后台调用返回本次status/resources/items，公共importKnowledgeResources继续补完整overview，兼容旧前端。无DDL/IPC/依赖/原件迁移，未降低OCR或解析质量参数。
+
+RED 4e24173实证：301个支持文件及1跳过文件全部发现（302）后才开始首次复制。GREEN真实Store测试首份复制时发现127文件、约184ms（包含本次初始化，不作一般时延保证），全批后台完整overview调用0；模拟真实文件/业务记录已写但队列未ACK时暂停，原生Store冷启仍paused，继续后复用那份资源且0重复，301文件全部现TXT parser ready、逐份原件SHA256一致，旧公共导入仍有overview并正确复用；4项、13.744秒，一次小规模合成运行，不能推导40GB吞吐。首次修后夹具未按main启动消费者造成301pending/等待超时，补同一解析/索引/抽题队列启动才通过，未放宽生产超时或门禁。生产资料页真实嵌套目录151文件/1跳过，暂停→冷启→继续时退出再开自动接续→长文尾部检索/实际来源→SQLite>80块，5项、0renderer错误。
+
+`assets/material-ai-provider.ts`新增实际生效的`OCR_RESTORATION_INSTRUCTION`（OCR还原规则v1），共用现图片/Word两阶段协议：原图依据，多栏/段落/题号/公式上下标/单位/选项/小问/答案角色恢复；关键数字、符号、否定不猜补；无图保守，不确定保留issues；忠实题面与AI知识标注/解题分开，推导答案必须ai_generated，原OCR/原图/首遍与最终响应分别保留。严格JSON字段、原件/来源复验、缺图/矛盾拦截与正式整卷集中确认保持。
+
+提示RED c523406验证实际请求缺少专用还原规则。随后实际请求装配覆盖图片/legacy/Word的首遍与复核共6请求，保留单一schema和原OCR；批次26、原生响应6+source skeleton4通过。新提示真实同一授权PDF第1页先两遍HTTP200但漏答案/解析/知识标注，4题均review，失败保留；明确“先还原、再解题标注、analysis不是JSON外说明”后再两遍HTTP200，1/2/3题ai_final、第4图题review。未靠降低门禁恢复通过，不承诺模型内容零错误。知识库ledger由12→16，共4次本片请求；与并行回答专题的旧20次额度无关，原件/原始回复不上传Git。
+
+实际命令（`apps/desktop`）：
+
+```powershell
+node scripts/education/kb-background-import-store.mjs
+node scripts/education/kb-folder-search-journey.mjs
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-native-batch-boundaries.mjs
+npm run build
+npm run test:renderer-components
+node scripts/education/kb-real-ai-journey.mjs recheck <existing-isolated-root> unused <inspected-image-name> <inspected-pdf-name> 14
+node scripts/education/kb-real-ai-journey.mjs recheck <existing-isolated-root> unused <inspected-image-name> <inspected-pdf-name> 16
+npm run test:smoke
+npm audit --json
+```
+
+最终build/type exit0（Temp/kb-restoration-final-build.log），renderer240/240；本轮最终源码npm run test:smoke自然结束exit0、ok=true/30合成学生，日志Temp/kb-background-restoration-smoke.log与.exit=0，不作为真实DeepSeek质量替身。audit最新23项（0critical/8high/7moderate/8low），无依赖或锁文件变化。自动审批一次超时未启动任何测试/网络请求，核文件目录和ledger仍12后重试启动成功；不是安全拒绝，也未绕过审批。
+
+私有证据：Temp/omni-background-import-ceAxFj/report.json；Temp/omni-edu-folder-search-HqON0k/report.json；真实同页首失败和最终批次/first_json/final_json留在Temp/omni-real-material-NGRlNr/data/app.db，最终报告ai-recheck-report.json与ledger16。匿名指标见[本轮JSON](../research/KB_BACKGROUND_RESTORATION_EVIDENCE_20261029.json)。已整合协作主线2b96308，仅任务/验收文档变化、无源码冲突；未修改D:日常运行目录或正式资料。
+
+回滚：归档调度和还原提示可独立revert，无数据库/原件迁移；旧代码仍可接续同队列条目。性能仅证明消除逐文件全库overview和首份复制不再等完整树，没有大库P95/40GB承诺。剩余：整目录OCR+DeepSeek自动调度/批次授权与幂等修订，区分归档/解析/AI可用的就绪汇总，规则抽取不能代表双重复核；整页AI还原正文的阅读/检索视图尚未实现；复杂图题/跨页/答案册、自然Recall/准确性、实际40GB持续处理和受管组件/EXE仍OPEN。
+
 ## 2026-10-29 原图纠正OCR漏字，并修复题库假空与工具隐藏
 
 Git检查点：RED 7cf9d02→OCR GREEN c5f0415；核心目录RED 948f5ad、真实假空RED d296679→GREEN f964f02。已整合主线b09073b并再整合92d16aa；后者仅文档，10处冲突均保留双方，无生产源码冲突。临时WeKnora/E5桥已按实际PID/绝对路径核验归属后关闭，未触日常D:窗口。完整Goal继续，最终推送及远端一致性另以本轮Git命令结果为准。
