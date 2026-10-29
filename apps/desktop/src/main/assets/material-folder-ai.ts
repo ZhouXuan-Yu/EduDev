@@ -6,7 +6,7 @@ import type {MaterialWordRepository} from './material-word-repository';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;ai:()=>MaterialAiRepository;word:()=>MaterialWordRepository;writer:<T>(action:(target:MaterialFolderAiRepository)=>Promise<T>)=>Promise<T>};
 export class MaterialFolderAiRepository{
- private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private closing=false;
+ private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private closing=false;private lastGrantRowid=0;
  constructor(private host:Host){}
  async migrate(){
   for(const sql of [
@@ -64,7 +64,7 @@ export class MaterialFolderAiRepository{
   const id=String(grant.batch_id),rows=await this.host.all("SELECT u.resource_id,u.unit,u.ai_batch_id,a.status,a.error,b.status batch_status,b.pause_reason FROM material_folder_ai_units u JOIN material_ai_units a ON a.batch_id=u.ai_batch_id AND a.ordinal=1 JOIN material_ai_batches b ON b.id=a.batch_id WHERE u.batch_id=? AND (u.state IN ('pending','running') OR u.state='review' AND u.error='teacher_paused') ORDER BY u.rowid LIMIT 32",[id]);
   for(const row of rows){
    const state=['complete','no_questions'].includes(String(row.status))?'complete':row.status==='review'||row.status==='outcome_unknown'?'review':row.status==='failed'?'failed':undefined;
-   if(state)await this.host.run('UPDATE material_folder_ai_units SET state=?,error=? WHERE batch_id=? AND resource_id=? AND unit=?',[state,String(row.error||(state==='complete'?'':'needs_review')),id,String(row.resource_id),Number(row.unit)]);
+   if(state)await this.host.run('UPDATE material_folder_ai_units SET state=?,error=? WHERE batch_id=? AND resource_id=? AND unit=?',[state,row.status==='outcome_unknown'?'outcome_unknown':String(row.error||(state==='complete'?'':'needs_review')),id,String(row.resource_id),Number(row.unit)]);
    else if(row.batch_status==='paused'&&grant.status==='running'&&['pending','first_saved'].includes(String(row.status))){
     if(['folder','startup'].includes(String(row.pause_reason)))await this.host.ai().action({schemaVersion:'xiaozhi.material-ai.v1',batchId:String(row.ai_batch_id),action:'resume'});
     else await this.host.run("UPDATE material_folder_ai_units SET state='review',error='teacher_paused' WHERE batch_id=? AND resource_id=? AND unit=?",[id,String(row.resource_id),Number(row.unit)]);
@@ -101,7 +101,12 @@ export class MaterialFolderAiRepository{
  }
  private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response'].includes(code)?code:'unavailable';}
  async tick(){
-  for(const grant of await this.host.all("SELECT * FROM material_folder_ai WHERE status IN ('running','budget_exhausted','attention') ORDER BY rowid LIMIT 16")){
+  // Two indexed rowid ranges bound each tick and rotate past settled attention cards.
+  const eligible="(status IN ('running','budget_exhausted') OR status='attention' AND EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused'))";
+  const grants=await this.host.all(`SELECT rowid grant_rowid,* FROM material_folder_ai WHERE ${eligible} AND rowid>? ORDER BY rowid LIMIT 16`,[this.lastGrantRowid]);
+  if(grants.length<16)grants.push(...await this.host.all(`SELECT rowid grant_rowid,* FROM material_folder_ai WHERE ${eligible} AND rowid<=? ORDER BY rowid LIMIT ?`,[this.lastGrantRowid,16-grants.length]));
+  for(const grant of grants){
+   this.lastGrantRowid=Number(grant.grant_rowid);
    if(this.closing)return;try{
     await this.configured(Number(grant.settings_revision));await this.discover(grant);await this.refresh(grant);
     if(grant.status!=='running')continue;

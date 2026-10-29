@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-29 目录AI当前证据
+
+28仓储/7目录/6原生+4来源边界、240组件、最终build/综合smoke exit0，三格式生产Electron受控模型目录流程通过；真实已授权扫描单页一次目录授权/2次DeepSeek200/3自动1图题待核/原OCR不改/冷启无重发通过。精确命令/回滚见goal/KB_IMPLEMENTATION_EVIDENCE，匿名指标research/KB_FOLDER_AI_EVIDENCE_20261029.json。无真实40GB/自然Recall/数学零错/安装包通过声明。
+
 ## 2026-10-29 E01专项证据与待验边界
 
 默认文件专项7、HTML Electron3、正式UI3、renderer240通过，build与综合smoke207/207通过，详../research/AGENT_DELIVERY_E01_20261029.json。合成模型路径/测试审批不替代自然质量/真实教师/Office-WPS或完整AT，新增已实现为0。

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-29 目录AI复用边界
+
+复用现MaterialImportBatches、本地解析OCR、MaterialAiRepository、Word原生图稿/图片回执、统一DeepSeek配置与同题库；新增的是目录授权调度与typed卡片入口，不另建模型设置/Agent/检索服务。图片/Word/文本两阶段共用OCR还原规则v1，原图核对与补充解题分开。无新依赖/锁文件/外部部署，Windows包装资源变化为0，完整受管组件与EXE安装验收另续。
+
 ## 2026-10-29 默认文件能力复用
 
 复用Hana/Pi目录读取、原文本编辑/差异、Office生成/审阅/SQLite与现文件面板，新增薄接默认产物和HTML离线预览。无新依赖、包下载、第二runtime或外部付费请求。通用HTML不伪装为Anatomy专属导出，备份/工具准备等完整目标继续。

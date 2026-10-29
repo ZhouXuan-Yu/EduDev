@@ -1,5 +1,37 @@
 # 知识库实施证据
 
+## 2026-10-29 文件夹一次授权到后台AI同库入题
+
+本片教师结果：资料页原文件夹卡片可明确公共资料/必要页或题图上云授权、统一DeepSeek账户修订与调用上限，后台随归档逐PDF页/Word原生题/图片/TXT或MD正文块自动创建原两阶段AI任务；原OCR、首遍、复核稿和实际图像证据分别保留，同一题库显示AI自动稿/待核。暂停/继续/应用重启/结果未知都有持久状态，不再要求每个资料手动建AI批次。
+
+核心文件：shared/material-folder-ai.ts；main/assets/material-folder-ai.ts、material-ai-repository.ts、material-ipc.ts；db.ts/main/index.ts窄接线；typed preload；renderer/components/product/MaterialFolderAiPanel.tsx与原MaterialImportPanel.tsx。SQLite增量四张目录/幂等表和pause_reason，不改原件/原始OCR/现题事实。无新依赖/锁文件/模型资源/独立服务，沿原全局AI单消费者。
+
+批判复现与修复：并发创建/重启可重复子任务→事务内幂等键和相同输入校验；目录预算可能越界→同writer预留、发送前父授权/成员/配置复验；目录恢复覆盖老师手动暂停→teacher/folder/startup原因；首16个attention占满队列导致新目录永远不运行（RED2≠3）→rowid双范围有界轮转，终态无任务不占窗口。未知结果保留outcome_unknown且界面明确未重发。旧单资料面板与人工修正/正式整卷集中确认保持。
+
+实际命令（apps/desktop）：
+
+```powershell
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-folder-ai-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-native-batch-boundaries.mjs
+npm run test:renderer-components
+npm run test:smoke
+node scripts/education/kb-folder-ai-journey.mjs
+node --experimental-transform-types scripts/education/kb-real-folder-ai-journey.mjs <existing-authorized-isolated-root>
+node scripts/xiaozhi-agent/default-file-delivery-smoke.mjs
+npm audit --json
+```
+
+仓储28、目录7、原生响应6+来源4、renderer240/240最终通过。最终test:smoke所含type/build与综合smoke自然退出0，日志Temp/kb-folder-ai-final-smoke.log及.exit=0。三格式正式Electron测试采用实际本地OCR/Word渲染/SQLite与typed IPC，DeepSeek HTTP为受控响应；一次目录授权→子目录MD/PNG/DOCX三题ai_final，传输中暂停→原生重启→继续，未知结果0额外请求/1幂等子任务，1366与1920、0renderer错误。私有报告Temp/omni-folder-ai-ui-Z82I1Y/report.json，首轮旧源码成功亦保留Temp/omni-folder-ai-ui-ntir6G。协作者E01默认文件交付7项再次通过，报告Temp/xiaozhi-default-files-RKc5jx。
+
+真实云端另独立执行：仅将此前人工检查且授权的PDF第1页预览复制为单图目录，一次卡片授权2次真实DeepSeek200；严格核发送像素SHA相同且仅此页，四题中3条ai_final/1图题review。目视原页及保存题干确认第3题三个小问与先前OCR漏掉的电磁波/超声波选项均恢复，保留1.5倍速等条件；不能据此保证参考答案数学零错。原OCR未改，原生冷启同结果、1子批次/0追加请求/0renderer错误。独立新ledger2+历史知识库ledger16=18，不含导出与Pi专题。私有报告Temp/omni-real-material-NGRlNr/real-folder-ai-report.json；原图、回复、密钥与DB不进Git。真实脚本首次静态import先于源码适配失败、其次图片ID不合法，均在应用/请求前停止，核明0新账本后修脚本继续，未改生产校验。
+
+配置受控测试首次空模型目录导致configuration，改测试模型目录后通过；不是生产账户故障。audit真实返回23项（0critical/8high/7moderate/8low），本片无依赖变动。匿名指标见[本片JSON](../research/KB_FOLDER_AI_EVIDENCE_20261029.json)。已保留并整合origin/main c8c0c8b的E01源码，未动D盘日常构建或协作者工作树。
+
+性能前后：此前每资料单独创建AI批次；现在一授权后有界发现<=32项/轮、<=16轮转目录、每目录<=1在途子批次。没有40GB吞吐/P95或普遍准确率前后承诺。回滚时停目录调度与新授权，保留新增表/子批次关联/pause_reason及已保存题目回执读支持，现单资料面板继续可用；不能直接删除已入库事实。
+
+完整Goal仍未完成：规则抽取旧候选不等于AI核验，当前卡片AI数字仅统计关联AI稿，需统一下游资格；空白/本地识别失败页、不支持格式、无结构化Word题显式待处理；整页AI还原普通正文的阅读/检索视图未实现；改统一账户配置暂需新目录批次、待核人工处理后的汇总仍需完善。复杂图题/跨页与答案册、独立自然质量/Recall、真实40GB持续导入/取消恢复/P95、受管组件首装更新与最终EXE继续OPEN。
+
 ## 2026-10-29 后台目录持续处理与专用OCR还原提示
 
 用户最新目标：一次选含子文件夹的完整目录，后台静默持续处理，主界面只反馈必要进度/结果/异常，耗时可以长但质量不能降；OCR后由DeepSeek直接对原图还原核对，不把乱码通顺化当原文正确。完整目录自动AI调度/批次授权/质量就绪汇总仍未接通，本片不冒充全链完成。

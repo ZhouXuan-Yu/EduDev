@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 目录AI调度
+
+MaterialFolderAiRepository为既有归档/AI执行器之间的持久调度器，非Agent。material_folder_ai/resources/units及material_ai_task_keys只保存授权、游标和子批次关联，SQLite/本地原件/同题库真源保持。增量pause_reason区分teacher/folder/startup；发送和发布前复核父授权，单元2次预留、未知不重发，有界轮转与全局单AI消费者。typed目录schema/IPC/preload和原资料卡片贯通，旧单资料路径保留。
+
 ## 2026-10-29 默认产物与HTML的实际接入
 
 E01部分接通：conversation-output提供稳定生成目录，production-host默认注册文本/Office/document工具并解析文件租约，pi-session通过独立fileReadWorkspace保持旧cwd和fingerprint。HTML沿原change账本，shared离线策略→opaque iframe→主窗子frame请求/导航限制；原ScienceDemo专属导出仍独立。无DDL/新IPC/新依赖，回退不删文件或旧记录。

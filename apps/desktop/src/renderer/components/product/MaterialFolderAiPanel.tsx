@@ -4,7 +4,7 @@ import {MATERIAL_FOLDER_AI_SCHEMA as schema,type FolderAiView} from '../../../sh
 import type {AiSettings} from '../../../shared/material-ai';
 const labels:Record<string,string>={running:'后台AI整理中',paused:'AI已暂停',budget_exhausted:'额度已预留完，等待追加授权',configuration_changed:'DeepSeek配置已变化',attention:'本批处理结束，有内容待核对',complete:'本批AI处理结束'};
 const errors:Record<string,string>={configuration_changed:'DeepSeek配置不可用或已变化，请先检查统一模型设置；已有授权绑定旧配置时需新建文件夹批次。',budget_exhausted:'额度不能低于本批已预留次数，请增加后重新授权。',consent_required:'本批范围新增了资料，请重新勾选授权后继续。',scope_changed:'本批新增资料尚未获得继续授权。',privacy_blocked:'包含个人信息，未发送。',source_changed:'原件或正文已变化，未继续发送。',unsupported:'暂不支持本格式原图复核，请在资料页处理或转成PDF。',outcome_unknown:'请求结果未知，未自动重发；请打开资料核对批次。',local_parse_failed:'本地解析未完成，请先重试收录。',local_page_failed:'有本地识别失败页，请打开资料重试。',blank_page_requires_check:'本地判为空白的页仍待图像核对。',no_structured_content:'尚无可直接逐题处理的正文，请打开资料核对。',needs_review:'模型结果存在疑点，保留待核对。'};
-const message=(error:unknown)=>Object.entries(errors).find(([code])=>String(error).includes(code))?.[1]||'处理未完成，请刷新后重试。';
+const message=(error:unknown)=>error==='teacher_paused'?'此资料的AI批次已由老师手动暂停；请打开资料决定是否继续。':Object.entries(errors).find(([code])=>String(error).includes(code))?.[1]||'处理未完成，请刷新后重试。';
 /** One durable grant for this folder batch; individual pages still pass the original source/privacy gates. */
 export function MaterialFolderAiPanel({batchId,open}:{batchId:string;open:(id:string)=>void}){
  const [view,setView]=useState<FolderAiView>(),[settings,setSettings]=useState<AiSettings>(),[form,setForm]=useState(false),[budget,setBudget]=useState(200),[consent,setConsent]=useState(false),[publicMaterial,setPublic]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState('');
