@@ -78,7 +78,7 @@ export function assertPaperOffice(paper:PaperView,draft:OfficeDraft){
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
 type RunOffice=(sessionId:string,runId:string,wait:Wait,callId:string,raw:OfficeArtifactProposal,signal?:AbortSignal)=>ReturnType<ToolDefinition['execute']>;
 export function createPaperExportTool(options:{papers:Pick<PaperRepository,'latest'>;sessionId:string;runId:string;current:()=>boolean;wait:Wait;runOffice:RunOffice}):ToolDefinition[]{
- return [{name:PAPER_EXPORT_TOOL,label:'导出已确认试卷',description:'将本会话最新已确认的完整试卷确定性导出为学生卷、教师答案卷或答题卡，并等待教师办公文档审批。只提供format(docx/pdf)、audience(student/teacher)、path(授权目录内不存在的相对文件名)，可选template(paper/answer_sheet，默认paper)；答题卡固定使用学生卷且不含答案或解析。不提供题目、答案、ID或版本；不重新抄题或补题。需要先选择教学工作目录。已确认完整图文题保留本地原图，教师逐版本核对图片后批准；不支持或不完整的题面明确拒绝，不能退回摘要生成。拒绝或停止后不重复写入。',
+ return [{name:PAPER_EXPORT_TOOL,label:'导出已确认试卷',description:'将本会话最新已确认的完整试卷确定性导出为学生卷、教师答案卷或答题卡，并等待教师办公文档审批。只提供format(docx/pdf)、audience(student/teacher)、path(授权目录内不存在的相对文件名)，可选template(paper/answer_sheet，默认paper)；答题卡固定使用学生卷且不含答案或解析。不提供题目、答案、ID或版本；不重新抄题或补题。可使用本会话已授权的试卷保存位置，无需另选教学工作目录；没有可用保存位置时请教师选择，实际授权由宿主校验。已确认完整图文题保留本地原图，教师逐版本核对图片后批准；不支持或不完整的题面明确拒绝，不能退回摘要生成。拒绝或停止后不重复写入。',
   parameters:{type:'object',additionalProperties:false,required:['format','audience','path'],properties:{format:{type:'string',enum:['docx','pdf']},audience:{type:'string',enum:['student','teacher']},path:{type:'string',minLength:1,maxLength:500},template:{type:'string',enum:['paper','answer_sheet']}}} as ToolDefinition['parameters'],
   execute:async(callId,raw,signal)=>{
    const current=()=>{signal?.throwIfAborted();if(!options.current())throw new Error('permission_denied');};

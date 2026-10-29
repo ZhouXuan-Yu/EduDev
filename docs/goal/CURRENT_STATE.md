@@ -1,5 +1,9 @@
 # 小智 Goal 当前状态
 
+## 2026-10-29 真实四文件与成熟方案运行证据
+
+已跑AnythingLLM隔离后端九文件/40向量、默认与多语言对照及原生十万/百万向量；Docling四种同页离线配置均有漏条件。KR02仍部分，WeKnora Windows Lite隔离构建中，未更换生产后端。修导出指引后当前真实Pi两题四份DOCX/PDF、独立读回/A4/重启/谱系通过，旧configuration未再现、原因仍未证。完整40GB/自然质量/图题/受管安装OPEN，详WORK_PROGRESS和运行证据JSON。
+
 ## 2026-10-28 交付前提修正
 
 用户允许本体与自动下载配置的受管组件分离，解除全内嵌EXE假设。专用分支knowledge-base-reuse-implementation已整合d229b1a；官方AnythingLLM v1.19.0已下载/散列核验并隔离解包，未完成运行/摄入/规模或自动安装。当前继续KR02，真实导出0文件仍OPEN；详WORK_PROGRESS和KB_MANAGED_COMPONENTS_CONTRACT。

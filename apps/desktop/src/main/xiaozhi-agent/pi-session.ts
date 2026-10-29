@@ -442,7 +442,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions) {
   if(options.paperExport){
     if(!educationIdentity.paperExport.present)manager.appendCustomEntry('xiaozhi.education.paper-export.v1',educationIdentity.paperExport.data);
     names.push(...educationIdentity.paperExport.data.tools);
-    prompt+='\n导出本会话已确认试卷必须使用education_export_paper，主进程从确认快照生成完整学生卷或教师答案卷，等待现办公文档审批。不要使用office_create_document重新抄题、猜答案或改写原题；未选工作目录时先请教师选择，不能绕过授权。图公式暂不支持时如实报告，不能退回摘要声称完整导出。拒绝或停止后不重试本次写入。';
+    prompt+='\n导出本会话已确认试卷必须使用education_export_paper，主进程从确认快照生成完整学生卷或教师答案卷，等待现办公文档审批。不要使用office_create_document重新抄题、猜答案或改写原题；本会话已授权试卷保存位置时直接使用，无需另选教学工作目录。没有可用保存位置时才请教师选择，实际授权由宿主校验。图公式暂不支持时如实报告，不能退回摘要声称完整导出。拒绝或停止后不重试本次写入。';
   }
   if(options.paperReview){
     if(!educationIdentity.paper.present)manager.appendCustomEntry('xiaozhi.education.paper-review.v1',educationIdentity.paper.data);

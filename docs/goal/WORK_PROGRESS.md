@@ -1,21 +1,22 @@
 # EduDev 当前任务进度
 
-更新时间：2026-10-28。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main d229b1a`。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
+更新时间：2026-10-29。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main 3d11e5b`。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
 
 当前主线：**知识库交付纠偏与成熟方案复用，几十GB存储与高效检索是选型硬条件**。不再按通用性能审计顺序优先扩建知识库底层。原26项审计继续保留，其2/26不是知识库完成度。
 
 | 步骤 | 实际状态 | 下一步/证据 |
 |---|---|---|
-| KR00 需求与真实成果复盘 | 已完成只读审查 | 9文件约10.3MB、18OCR页；最新2条ai_final；真实导出0文件，完整闭环未通过 |
-| KR01 成熟产品官方源/API/许可 | 已完成源码核验 | AnythingLLM已发布v1.19.0 API、WeKnora Lite、Docling、kotaemon固定SHA；尚未安装运行或证明性能胜者 |
-| KR02 同资料与规模资格对照 | **发行件已获取/校验，初始化未通过** | AnythingLLM官方v1.19.0 x64 403299096字节/SHA256一致，已独立解包；本机Node24执行包内Prisma迁移exit1/Schema engine error，原因未确定，未摄入资料。继续兼容运行时及同资料/10万百万chunk资格，未实测不定后端 |
-| KR03 薄接成熟通用层/导出归因 | 未实施 | 保持Pi、原件/SQLite事实、来源/权限和AI自动定稿/正式整卷集中确认；不新造通用引擎 |
-| KR04 真实试卷文件闭环 | 未通过 | 查询→原证据→可用题→正式整卷确认→实际DOCX/PDF→打开/重启；当前真实0文件 |
+| KR00 需求与真实成果复盘 | 已完成只读审查 | 9文件约10.3MB、18OCR页；最新2条ai_final；当前真实四文件已通过，完整资料/图题闭环未通过 |
+| KR01 成熟产品官方源/API/许可 | 已完成源码核验 | AnythingLLM已发布v1.19.0 API、WeKnora Lite、Docling、kotaemon固定SHA；AnythingLLM/Docling已隔离实跑，但未证明质量胜者 |
+| KR02 同资料与规模资格对照 | **部分完成** | AnythingLLM兼容后端9文件/40向量；默认/多语言误排且丢PDF页码；Docling四种同页配置保留坐标却漏条件。原生十万/百万向量热P95 65/326ms，非真实40GB。WeKnora固定源Windows Lite构建中；见运行证据JSON |
+| KR03 薄接成熟通用层/导出归因 | **窄指引修正；后端未接入** | 导出指引承认仅试卷保存授权；旧configuration本轮未复现，不能虚称根因已修。候选不足未解除，不盲切默认 |
+| KR04 真实试卷文件闭环 | **真实两题四文件通过，扩展未完成** | 当前Pi→界面测试审批→学生/教师DOCX/PDF四文件→完整内容/A4/答案隔离→重启哈希/谱系通过；自动审批非真实教师正确性核验，图题/跨页/整库仍未通过 |
 | KR05 自然质量/实际40GB/安装 | 未验证 | 最终自然标注集、真实10GB→40GB、P95/内存/空间/停与恢复；算法规模探针不冒充真实导入 |
 
-用户最新澄清已固化为[本体与受管组件分开交付](KB_MANAGED_COMPONENTS_CONTRACT.md)：安装或首次启用自动下载、配置、托管配套组件/模型，老师免搭环境。解除全内嵌EXE假设；自动安装尚未实现。当前无新增生产接入/模型请求/数据库迁移，也没有新增知识库功能或性能通过结论。
+用户最新澄清已固化为[本体与受管组件分开交付](KB_MANAGED_COMPONENTS_CONTRACT.md)：安装或首次启用自动下载、配置、托管配套组件/模型，老师免搭环境。解除全内嵌EXE假设；自动安装尚未实现。当前未切生产后端、无新表/IPC/索引迁移；有两处导出模型指引修正及真实四文件证据。候选查询与原生容量为有限对照，完整知识库未完成。
 
 - [当前纠偏合同、成熟方案差距与下一步](../research/KNOWLEDGE_BASE_RECOVERY_20261028.md)
+- [同资料/离线解析/原生容量运行证据](../research/KB_REUSE_RUNTIME_EVIDENCE_20261028.json)
 - [公开源码/许可证/API核验证据](../research/KB_REUSE_SOURCE_EVIDENCE_20261028.json)
 - [真实知识库实施证据与失败](KB_IMPLEMENTATION_EVIDENCE.md)
 - [26项性能审计清单（独立台账）](DEEP_AUDIT_20261028_TODOLIST.md)
