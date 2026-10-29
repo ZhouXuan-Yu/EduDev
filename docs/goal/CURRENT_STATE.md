@@ -6,6 +6,9 @@
 
 工程证据：专项7、HTML Electron3、正式界面3、renderer240/240；test:smoke所含build及综合smoke207/207通过。未发真实付费模型请求，无新依赖；audit仍23项既有风险。完整AT均待阶段集中验收，0/252新增已实现。PPT精确页数/备注、整包审批/部分恢复、默认产物备份迁移仍待做，随后E02→E03；D盘日常构建未更新。CSV仍被占用，未绕锁替换，无达标项待回填。具体合同AGENT_DELIVERY_IMPLEMENTATION.md，测试/限制/回滚见../research/AGENT_DELIVERY_E01_20261029.json。
 
+## 2026-10-29 本线程后台与还原切片
+
+目录归档128项交替、内部窄结果已实现；Store301与生产UI151文件恢复/检索限定通过，原件不变。新版OCR专用提示实际同页两遍得到3条ai_final/1图题review，原先漏答案的失败保留。下一必须接完整目录AI自动调度/授权和质量就绪状态，规则抽取不能被当双重验证；40GB/整页正文AI阅读/复杂题型/最终安装尚未交付。详细命令、失败与smoke状态见KB_IMPLEMENTATION_EVIDENCE。
 
 ## 2026-10-29 Goal任务目标已编写
 

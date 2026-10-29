@@ -40,21 +40,29 @@ function fixture(){
 const imageProjection=stem=>Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(field=>[field,{state:field==='statement'?'provided':'not_applicable',text:field==='statement'?stem:''}]));
 const imageResponse=q=>JSON.stringify({schemaVersion:'xiaozhi.material-ai-image-response.v1',outcome:'questions',questions:[{...q,projection:imageProjection(q.stem)}]});
 const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts');
-const ordinaryFetch=globalThis.fetch;let providerImage=true,wrongVersion=false,requests=0;
+const ordinaryFetch=globalThis.fetch;let providerImage=true,providerNative=false,wrongVersion=false,requests=0;const providerRequests=[];
 try{
  globalThis.fetch=async(url,options)=>{
-  requests++;assert.equal(url,'https://api.deepseek.com/chat/completions');assert.equal(options.redirect,'error');const body=JSON.parse(options.body),system=body.messages[0].content;
+  requests++;assert.equal(url,'https://api.deepseek.com/chat/completions');assert.equal(options.redirect,'error');const body=JSON.parse(options.body),system=body.messages[0].content;providerRequests.push(body);
   assert.equal(system.includes('xiaozhi.material-ai-image-response.v1'),providerImage);
-  assert.equal(system.includes('xiaozhi.material-ai-response.v1'),!providerImage,'An actual provider request cannot contain competing response schema names');
-  let raw=providerImage?imageResponse(question):response(question);
+  assert.equal(system.includes('xiaozhi.material-ai-response.v1'),!providerImage&&!providerNative,'An actual provider request cannot contain competing response schema names');
+  let raw=providerNative?JSON.stringify({schemaVersion:'xiaozhi.material-ai-native-response.v1',outcome:'questions',questions:[{...question,projection:imageProjection(question.stem)}]}):providerImage?imageResponse(question):response(question);
   if(wrongVersion)raw=JSON.stringify({...JSON.parse(raw),schemaVersion:MATERIAL_AI_RESPONSE});
   return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}),{status:200});
  };
  const args={model:'deepseek-flash',apiKey:'controlled-test-only-key',text:source,image:{mime:'image/png',data:Buffer.from('owned-image').toString('base64')},imageCoverage:true};
  assert.equal(JSON.parse(await completeMaterialAi(args,new AbortController().signal)).schemaVersion,'xiaozhi.material-ai-image-response.v1');
+ assert(providerRequests[0].messages[0].content.includes('[OCR还原规则 v1]'),'Actual DeepSeek request must include the dedicated conservative OCR restoration instructions');
+ assert.equal(JSON.parse(providerRequests[0].messages[1].content[0].text).material,source,'Restoration must not overwrite the original OCR input before dispatch');
  wrongVersion=true;await assert.rejects(completeMaterialAi(args,new AbortController().signal),/invalid_response/);wrongVersion=false;
  providerImage=false;assert.equal(JSON.parse(await completeMaterialAi({...args,imageCoverage:false},new AbortController().signal)).schemaVersion,MATERIAL_AI_RESPONSE);
- assert.equal(requests,3);check('Actual provider request uses exactly one response version, rejects mixed-schema output and preserves old-image batch requests');
+ providerImage=true;await completeMaterialAi({...args,previous:JSON.parse(imageResponse(question))},new AbortController().signal);
+ providerImage=false;providerNative=true;
+ const nativeArgs={...args,image:undefined,native:true,images:[{role:'question',index:0,mime:'image/png',data:args.image.data}]};
+ const nativeFirst=await completeMaterialAi(nativeArgs,new AbortController().signal);await completeMaterialAi({...nativeArgs,previous:JSON.parse(nativeFirst)},new AbortController().signal);
+ assert.equal(requests,6);
+ for(const body of providerRequests){assert(body.messages[0].content.includes('[OCR还原规则 v1]'));assert(body.messages[0].content.includes('数字、正负号'));assert(body.messages[0].content.includes('无原图时'));assert(body.messages[0].content.includes('题面还原与解题标注是两项工作'));assert(body.messages[0].content.includes('schema内analysis是需要完成的解析'));assert.equal(JSON.parse(body.messages[1].content[0].text).material,source);}
+ check('Actual image, legacy and native first/final requests retain the OCR restoration rules, original OCR and one strict response version');
 }finally{globalThis.fetch=ordinaryFetch;}
 const corrected=fixture();try{
  await corrected.init();corrected.state.fileName='原图文字题.png';

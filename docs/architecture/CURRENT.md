@@ -4,6 +4,9 @@
 
 E01部分接通：conversation-output提供稳定生成目录，production-host默认注册文本/Office/document工具并解析文件租约，pi-session通过独立fileReadWorkspace保持旧cwd和fingerprint。HTML沿原change账本，shared离线策略→opaque iframe→主窗子frame请求/导航限制；原ScienceDemo专属导出仍独立。无DDL/新IPC/新依赖，回退不删文件或旧记录。
 
+## 2026-10-29 归档结果与全库概览分离
+
+MaterialImportBatches在每128目录项后有界归档128文件，再继续发现；旧队列/来源版本/取消与原件hash校验复用。db仅窄接线并抽出原归档方法：内部不加载overview，公共导入包装器保留原返回。无DDL/IPC/依赖变更。DeepSeek共用OCR还原规则v1，明确原图恢复、无图保守策略和解题标注分工；模型schema及放行标准未放松。
 
 ## 2026-10-29 新能力规格的架构边界
 

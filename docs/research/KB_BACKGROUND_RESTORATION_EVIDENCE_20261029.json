@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-29",
+  "scope": "Anonymized metrics only. Synthetic background files and already authorized scanned PDF page 1; original materials, OCR, model responses, account state and business IDs remain private.",
+  "backgroundArchive": {
+    "beforeFirstCopyDiscoveredFiles": 302,
+    "afterFirstCopyDiscoveredFiles": 127,
+    "discoverySliceEntries": 128,
+    "afterFirstCopyElapsedMs": 184.4415,
+    "supportedFiles": 301,
+    "backgroundFullOverviewReads": 0,
+    "copiedButUnacknowledgedResourceReusedAfterRestart": true,
+    "duplicateResourceRows": 0,
+    "originalFileHashesVerified": 301,
+    "allExistingTextParserTasksReady": true,
+    "publicImportCompleteOverviewPreserved": true,
+    "checks": 4,
+    "totalFixtureMs": 13744.2876,
+    "privateReport": "OS Temp/omni-background-import-ceAxFj/report.json",
+    "caveat": "One synthetic 301-file Store run; no before/after total-throughput ratio, OCR quality or 40GB claim."
+  },
+  "productionUi": {
+    "supportedFiles": 151,
+    "unsupportedSkipped": 1,
+    "checks": 5,
+    "manualPauseAndNativeRestart": true,
+    "exitDuringResumeThenAutomaticContinuation": true,
+    "completeLongTextTailSearch": true,
+    "longTextChunksGreaterThan80": true,
+    "rendererErrors": 0,
+    "privateReport": "OS Temp/omni-edu-folder-search-HqON0k/report.json"
+  },
+  "restorationPrompt": {
+    "marker": "OCR还原规则 v1",
+    "scope": "Common first/final instruction for existing image and Word-native protocols; OCR stays distinct from reconstruction and AI-derived answers.",
+    "providerAssemblyChecks": "Actual image, legacy and native first/final requests retain one strict schema, original OCR and restoration/solving instructions",
+    "initialLiveAttempt": {
+      "requests": 2,
+      "questions": 4,
+      "aiFinal": 0,
+      "needsReview": 4,
+      "issue": "Prompt conflated faithful reconstruction with transcription-only output; answers, analysis and knowledge labels were omitted. Strict host held all four."
+    },
+    "finalLiveAttempt": {
+      "requests": 2,
+      "http200": 2,
+      "questions": 4,
+      "aiFinal": 3,
+      "needsReview": 1,
+      "figureDependentQuestionHeld": true,
+      "callsLedgerTotal": 16,
+      "privateReport": "OS Temp/omni-real-material-NGRlNr/ai-recheck-report.json"
+    },
+    "caveat": "One original page, not independent mathematical certification, zero-error proof or a full-page corrected-document reading view."
+  },
+  "verification": {
+    "aiBatchBoundaries": 26,
+    "nativeProtocolBoundaries": 6,
+    "nativeSourceSkeletonChecks": 4,
+    "rendererComponents": 240,
+    "build": "npm run build exit0; kb-restoration-final-build.log",
+    "fullLegacySmoke": "npm run test:smoke exit0, ok=true, 30 synthetic students; kb-background-restoration-smoke.log and .exit=0",
+    "audit": {"critical": 0, "high": 8, "moderate": 7, "low": 8, "total": 23}
+  },
+  "retainedHarnessFailure": "Initial Store fixture omitted main-process parser startup, so all 301 tasks remained pending and its wait timed out. Fixture now starts the same queues as production; no parser permission or timeout relaxed.",
+  "rollback": "Revert background archive orchestration and prompt changes independently. No DDL, IPC or source-file migration; existing queue rows remain readable.",
+  "remaining": ["Whole-folder automatic OCR plus DeepSeek scheduling and batch consent", "Quality-ready summary and preventing unreviewed rule-only candidates from representing double verification", "Full-page corrected-content reading view", "Figure/cross-page/answer-book completeness", "Actual 40GB long-duration mixed-file import and natural recall", "Managed runtime install/update and packaged EXE acceptance"]
+}

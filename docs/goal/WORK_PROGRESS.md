@@ -6,6 +6,9 @@
 
 工程证据：专项7、HTML Electron3、正式界面3、renderer240/240；test:smoke所含build及综合smoke207/207通过。未发真实付费模型请求，无新依赖；audit仍23项既有风险。完整AT均待阶段集中验收，0/252新增已实现。PPT精确页数/备注、整包审批/部分恢复、默认产物备份迁移仍待做，随后E02→E03；D盘日常构建未更新。CSV仍被占用，未绕锁替换，无达标项待回填。具体合同AGENT_DELIVERY_IMPLEMENTATION.md，测试/限制/回滚见../research/AGENT_DELIVERY_E01_20261029.json。
 
+## 2026-10-29 最新知识库切片：后台静默与OCR还原
+
+目录归档改128项交替、内部只返回必要结果；Store301文件4项及生产资料页151文件5项通过，复制后未ACK暂停/冷启复用、长文尾部实际检索通过。OCR还原专用提示共用图片/Word两遍：真实首次只抄文漏解题→4review，修分工后同页3自动/1图题review，共4新增请求。build/240/26/6+4通过，完整smoke状态看EVIDENCE。本线程下一优先整目录自动OCR+DeepSeek/授权/幂等与质量就绪，而非再增加性能探针；图题、整页AI正文阅读、40GB与最终安装仍OPEN。并行28组任务书完整保留。
 
 ## 2026-10-29 Goal目标与后续继续位置
 
@@ -35,7 +38,7 @@
 用户授权在 codex/hana-answer-quality 实现以Hana为核心的回答优化。AQ00–AQ07已接入，AQ08本地验证与真实模型质量分层记录；清单、逐项对比、测试命令与未验边界见 [HANA_ANSWER_QUALITY.md](HANA_ANSWER_QUALITY.md)。真实教师盲评尚未通过，不能据工程测试声称“1+1=3已实现”；KR02与0文件导出旧事实保持。
 
 
-更新时间：2026-10-29。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main 92d16aa`，保留并行产品路线。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
+更新时间：2026-10-29。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main 2b96308`，保留并行产品路线/28组验收任务书。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
 
 当前主线：**知识库交付纠偏与成熟方案复用，几十GB存储与高效检索是选型硬条件**。不再按通用性能审计顺序优先扩建知识库底层。原26项审计继续保留，其2/26不是知识库完成度。
 
@@ -45,6 +48,7 @@
 | KR01 成熟产品官方源/API/许可 | 已完成源码核验 | AnythingLLM已发布v1.19.0 API、WeKnora Lite、Docling、kotaemon固定SHA；AnythingLLM/Docling已隔离实跑，但未证明质量胜者 |
 | KR02 同资料与规模资格对照 | **候选有限对照完成；最终资格未过** | AnythingLLM兼容后端9文件/40向量，误排/丢页码；Docling含medium OCR仍漏条件。WeKnora未改源完整Lite Windows构建/健康/9OCR文本查询通过，原6图需VLM/3PDF需DocReader；百万原生热P95 3755ms，现Lance探针326ms，非同整产品或真实40GB比较 |
 | KR03 薄接成熟通用层/导出归因 | **文字OCR纠错和核心题库调用已修；后端未切换** | 现成熟LanceDB/解析层保留；新图文回执使真实页3题ai_final，原OCR不覆盖。核心题库schema常驻及EXISTS修假空，实际自然问题直接search/read并冷启。第4图题与PDF原生v3仍未通 |
+| KR03-B 后台静默与OCR还原 | **有界归档/专用提示已实现，自动全链未完成** | 后台不逐文件加载overview，128目录项交替处理；301 Store与151 UI恢复/检索通过。原图还原与解题标注分开，真实同页3自动/1review；整目录自动AI、就绪汇总和整页修订正文待接通 |
 | KR04 真实试卷文件闭环 | **两题与纠错单题四文件通过，扩展未完成** | 当前Pi→界面测试审批→学生/教师DOCX/PDF四文件→完整内容/A4/答案隔离→重启哈希/谱系通过；自动审批非真实教师正确性核验，图题/跨页/整库仍未通过 |
 | KR05 自然质量/实际40GB/安装 | 未验证 | 最终自然标注集、真实10GB→40GB、P95/内存/空间/停与恢复；算法规模探针不冒充真实导入 |
 
@@ -54,6 +58,7 @@
 - [同资料/离线解析/原生容量运行证据](../research/KB_REUSE_RUNTIME_EVIDENCE_20261028.json)
 - [WeKnora完整原生运行与规模/原件失败](../research/KB_WEKNORA_RUNTIME_EVIDENCE_20261029.json)
 - [原图文字纠错、自然查题和实际四文件](../research/KB_IMAGE_TEXT_IMPLEMENTATION_20261029.json)
+- [后台目录与OCR还原真实证据](../research/KB_BACKGROUND_RESTORATION_EVIDENCE_20261029.json)
 - [公开源码/许可证/API核验证据](../research/KB_REUSE_SOURCE_EVIDENCE_20261028.json)
 - [真实知识库实施证据与失败](KB_IMPLEMENTATION_EVIDENCE.md)
 - [26项性能审计清单（独立台账）](DEEP_AUDIT_20261028_TODOLIST.md)
