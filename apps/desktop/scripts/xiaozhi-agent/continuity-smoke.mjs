@@ -10,6 +10,7 @@ import {fileVersion} from '../../src/main/xiaozhi-agent/workspace-files.ts';
 import {readPresentationNotes} from './presentation-readback.ts';
 import {bindGoalRequirements} from '../../src/main/xiaozhi-agent/tasks/goal-binding.ts';
 import {createStudentContextSanitizer} from '../../src/main/students/context-sanitizer.ts';
+import {sanitizeTaskPromptTexts} from '../../src/main/xiaozhi-agent/tasks/plan-runtime.ts';
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-continuity-')),workspace=path.join(output,'files'),dataRoot=path.join(output,'data');fs.mkdirSync(workspace);fs.mkdirSync(dataRoot);
 const db=new DatabaseSync(path.join(dataRoot,'app.db'));
 db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);CREATE TABLE ai_confirmation_items(id TEXT PRIMARY KEY,session_id TEXT,run_id TEXT,payload_json TEXT,action_type TEXT,status TEXT,updated_at TEXT);
@@ -60,6 +61,9 @@ try{
  const privateStore={...store,listStudents:async()=>[{realName:'合成学生甲',displayName:'合成学生甲',school:'合成学校'}],getAiConversationSession:async()=>({session:{},messages:[{id:'private',role:'user',content:'合成学校的合成学生甲需要八年级浮力讲解。',metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'private-run'}}]})};
  const privateContext=await getPiProtectedContext(privateStore,id,[],undefined,await createStudentContextSanitizer(privateStore));assert(!privateContext.includes('合成学生甲'));assert(!privateContext.includes('合成学校'));assert(privateContext.includes('八年级浮力'));
  check('Reconstructed teacher request uses the same known-student/school redaction as current input');
+ const taskPrompt={taskId:'合成学校',criteria:[{id:'合成学生甲',text:'合成学生甲需要八年级浮力讲解'}],steps:[{id:'step',criterionIds:['合成学生甲'],text:'合成学校课堂安排'}]};
+ const safeTask=await sanitizeTaskPromptTexts(taskPrompt,await createStudentContextSanitizer(privateStore));assert.equal(safeTask.taskId,taskPrompt.taskId);assert.equal(safeTask.criteria[0].id,taskPrompt.criteria[0].id);assert.deepEqual(safeTask.steps[0].criterionIds,taskPrompt.steps[0].criterionIds);assert(!safeTask.criteria[0].text.includes('合成学生甲'));assert(!safeTask.steps[0].text.includes('合成学校'));
+ check('Task prompt redacts criteria/step text without altering any control identifier');
  const goal={id:'xigoal_'+randomUUID(),sessionId:id,objective:'8页浮力课',criteria:['正确完成当前修订'],createdAt:new Date().toISOString()};
  const adoption={requirementsVersion:1,sources:[{messageId:'old',version:'a'.repeat(64)},{messageId:'current',version:'b'.repeat(64)}],origin:{messageId:'current'},criteria:[{id:'teacher_request',kind:'human',version:1,sourceId:'current',sourceVersion:'b'.repeat(64),text:'改成8页'}],checks:[],steps:[],planRevision:0};
  const wrong=structuredClone(adoption);wrong.criteria[0].sourceId='old';assert.throws(()=>bindGoalRequirements(wrong,goal),/legacy_conflict/);
