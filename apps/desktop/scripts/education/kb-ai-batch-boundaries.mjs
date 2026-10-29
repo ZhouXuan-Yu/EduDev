@@ -37,6 +37,17 @@ function fixture(){
   const input={schemaVersion:MATERIAL_AI_SCHEMA,resourceId:id,version,settingsRevision:1,start:1,count:1,maxCalls:4,images:false,cloudConsent:true,publicMaterial:true};
   return{db,repo,state,input,id,runtime,async init(){await repo.migrate();await repo.saveSettings({schemaVersion:MATERIAL_AI_SCHEMA,revision:0,model:'qwen3-vl-plus',apiKey:'secret-only-for-controlled-test'});},async q(){const row=db.prepare('SELECT * FROM question_bank_items').get();return row?{...state.saved.find(q=>q.id===row.id),archive:JSON.parse(row.archive_json)}:undefined;}};
 }
+const imageProjection=stem=>Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(field=>[field,{state:field==='statement'?'provided':'not_applicable',text:field==='statement'?stem:''}]));
+const imageResponse=q=>JSON.stringify({schemaVersion:'xiaozhi.material-ai-image-response.v1',outcome:'questions',questions:[{...q,projection:imageProjection(q.stem)}]});
+const corrected=fixture();try{
+ await corrected.init();corrected.state.fileName='原图文字题.png';
+ const q={...question,stem:'计算 7 + 8，结果单位为米。',answerOrigin:'ai_generated',analysisOrigin:'ai_generated'};
+ corrected.runtime.complete=async(input,signal)=>{signal.throwIfAborted();corrected.state.calls++;assert(input.image);return imageResponse(q);};
+ await corrected.repo.create({...corrected.input,images:true});await corrected.repo.drain();await corrected.repo.drain();
+ const saved=await corrected.q();assert.equal(saved?.archive?.state,'ai_final','Two complete matching visual transcriptions must correct missing OCR without teacher impersonation');
+ assert.equal(saved.archive.ai.policy,'image-text-complete.v1');assert.equal(saved.archive.sourceChecked,false);assert.equal(saved.archive.ai.imageSha,sha('owned-image'));assert(archiveEligible(saved));await corrected.repo.validate(saved);
+ check('Original-image two-pass complete text transcription can repair OCR omissions while preserving AI authority, image digest and current source');
+}finally{corrected.db.close();}
 assert.throws(()=>parseAiResponse(response({...question,untrusted:1})),/invalid_response/);
 assert.throws(()=>parseAiResponse(response({...question,answerOrigin:'teacher'})),/invalid_response/);
 assert.throws(()=>parseAiResponse(response({...question,answer:'',answerOrigin:'source'})),/invalid_response/);
