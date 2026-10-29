@@ -1,0 +1,8 @@
+import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import {pathToFileURL} from 'node:url';import {build} from 'esbuild';import {_electron} from 'playwright';
+const desktop=process.cwd(),output=fs.mkdtempSync(path.join(os.tmpdir(),'omni-background-import-')),bundle=fs.mkdtempSync(path.join(desktop,'test-results','background-import-build-')),entry=path.join(bundle,'worker.mjs');
+await build({entryPoints:[path.join(desktop,'scripts/education/kb-background-import-store-worker.ts')],outfile:entry,bundle:true,platform:'node',format:'esm',packages:'external',logLevel:'silent'});
+const bootstrap=path.join(output,'bootstrap.cjs');fs.writeFileSync(bootstrap,`const {app,BrowserWindow}=require('electron');app.whenReady().then(async()=>{globalThis.loadBackgroundFixture=()=>import(${JSON.stringify(pathToFileURL(entry).href)});const window=new BrowserWindow({show:false});await window.loadURL('data:text/html,background-import');});`);
+const env={...process.env};for(const key of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[key];let app,report;
+try{app=await _electron.launch({args:[bootstrap,'--user-data-dir='+path.join(output,'profile')],cwd:desktop,env,timeout:60000});await app.firstWindow();report=await app.evaluate(async(_e,output)=>(await globalThis.loadBackgroundFixture()).backgroundImportStore(output),output);}
+catch(e){report={success:false,error:String(e.stack||e)};process.exitCode=1;}
+finally{if(app)await app.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({...report,output}));}
