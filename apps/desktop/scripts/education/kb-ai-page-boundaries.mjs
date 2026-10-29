@@ -23,6 +23,8 @@ function fixture(status='blank'){
   let result={schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[structuredClone(q)]};
   if(state.mode==='ordinary')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'光在同种均匀介质中沿直线传播。',pageIssues:[],questions:[]};
   if(state.mode==='blank')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'',pageIssues:[],questions:[]};
+  if(state.mode==='math_notation_changed')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'公式：x2 + y1':'公式：x² + y₁',pageIssues:[],questions:[]};
+  if(state.mode==='math_stem_changed'){result.pageText='第1题 写出x²。\n【答案】x²\n【解析】原式为x²。';Object.assign(result.questions[0],{stem:'写出x2。',answer:'x²',analysis:'原式为x²。'});result.questions[0].projection.statement.text='写出x2。';}
   if(state.mode==='unclear')result={...result,pageIssues:['uncertain_ocr']};
   if(state.mode==='omitted')result={...result,questions:[],outcome:'no_questions'};
   if(state.mode==='mismatch'&&input.previous)result={...result,pageText:text.replace('7+8','7+9')};
@@ -79,5 +81,8 @@ await check('Actual provider requests carry one page schema, unchanged OCR, an o
 });
 await check('Transient local worker contention stays pending without a charge; due work bypasses it and the original resumes once',async()=>{
  const f=fixture();try{await f.init();f.state.mode='busy_image_once';const first=await f.repo.create(f.input);await f.repo.drain();assert.equal(f.state.calls,0);assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(first).status,'pending','A busy local worker is not a permanent AI failure');const second=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(second).status,'complete');assert.equal(f.state.calls,2);f.db.prepare('UPDATE material_ai_units SET retry_at=0 WHERE batch_id=?').run(first);await f.repo.drain();await f.repo.drain();assert.equal(f.state.calls,4);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(first).calls,2);}finally{f.db.close();}
+});
+await check('Superscript/subscript loss is a mathematical change, never whitespace-compatible page or question agreement',async()=>{
+ for(const mode of ['math_notation_changed','math_stem_changed']){const f=await completed('blank',mode);try{assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(f.batch).status,'review','x²/x2 and y₁/y1 cannot qualify as identical source content');const question=await f.question();if(question)assert(!archiveEligible(question));assert.equal((await f.repo.page(query(f))).status,'needs_review');}finally{f.db.close();}}
 });
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
