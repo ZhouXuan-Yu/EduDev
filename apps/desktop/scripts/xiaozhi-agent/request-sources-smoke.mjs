@@ -1,0 +1,26 @@
+import assert from 'node:assert/strict';
+import {teacherRequestSources,createTeacherRequestTool} from '../../src/main/xiaozhi-agent/request-sources.ts';
+import {getPiProtectedContext} from '../../src/main/xiaozhi-agent/compaction-context.ts';
+const checks=[],check=name=>{checks.push(name);console.log('PASS '+name);};
+const msg=(id,runId,text,role='user')=>({id,role,content:text,metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:runId}});
+const messages=[msg('old','r0','十页'),msg('long','r1','私人姓名'+('浮力条件。'.repeat(1300))+'尾部必须包含排液体积'),msg('private','r1','不可读私人推理','assistant'),msg('blocked','r2','隔离要求')];
+const ctl=(id,state,extra={})=>({id,sessionId:'A',runId:'r1',kind:'instruction',state,text:id,...extra});
+const controls=[ctl('later','applied',{appliedOrder:2,text:'讲解改为八年级'}),ctl('first','applied',{appliedOrder:1,text:'不要视频，仅HTML和PPT'}),ctl('legacy','applied'),ctl('waiting','queued'),ctl('withdrawn','withdrawn'),ctl('interrupted','interrupted'),ctl('choice','answered',{kind:'question',text:'修改哪份？',answer:'第二份 force.pptx'}),ctl('blocked-control','applied',{runId:'r2'})];
+const sources=teacherRequestSources(messages,controls,['r2']);
+assert.equal(sources.length,6);assert(!sources.some(s=>['private','blocked','blocked-control','waiting','withdrawn','interrupted'].includes(s.sourceId)));
+assert.equal(sources.find(s=>s.sourceId==='later').afterMessageId,'long');assert.equal(sources.find(s=>s.sourceId==='legacy').orderKnown,false);
+assert(sources.find(s=>s.sourceId==='choice').text.includes('第二份 force.pptx'));check('Only actual teacher messages/applied commands/answered choices are readable; owner and application order preserved');
+let current=true;const sanitize=async text=>text.replaceAll('私人姓名','[个人信息]');
+const tool=createTeacherRequestTool({load:async()=>sources,excluded:()=>['r2'],current:()=>current,sanitize});
+const read=async args=>JSON.parse((await tool.execute('call',args)).content[0].text).data;
+let data=await read({sourceId:'long',limit:1999}),full=data.text;assert.equal(data.offset,0);assert(data.nextOffset);const version=data.sourceVersion;
+while(data.nextOffset!==null){data=await read({sourceId:'long',offset:data.nextOffset,limit:1999,sourceVersion:version});full+=data.text;}
+assert.equal(full,await sanitize(messages[1].content));assert(full.endsWith('尾部必须包含排液体积'));assert(!full.includes('私人姓名'));check('Long sanitized request reconstructs exactly across segments including final constraints');
+for(const args of [{sourceId:'private'},{sourceId:'blocked'},{sourceId:'long',offset:1},{sourceId:'long',limit:4001},{sourceId:'long',offset:99999,sourceVersion:version},{sourceId:'long',sourceVersion:'0'.repeat(64)},{sourceId:'long',sessionId:'B'}])await assert.rejects(()=>read(args));
+current=false;await assert.rejects(()=>read({sourceId:'long'}),/cancelled/);current=true;check('Version changes, invalid pages, other sessions and stale runs cannot deliver a partial or unrelated source');
+const store={xiaozhiState:{controls:async()=>controls,approvals:async()=>[]},getAiConversationSession:async()=>({session:{},messages}),sanitizeProblemText:async text=>({sanitizedText:text})};
+const context=await getPiProtectedContext(store,'A',['r2'],null,sanitize);
+const index=context.split('\n').filter(s=>s.startsWith('教师要求：')).map(s=>JSON.parse(s.slice(5)));
+assert(index.find(s=>s.sourceId==='long').truncated);assert(index.some(s=>s.sourceId==='choice'));assert(context.includes('read_teacher_request'));assert(!context.includes('私人姓名'));assert(!context.includes('隔离要求'));
+assert(index.findIndex(s=>s.sourceId==='later')<index.findIndex(s=>s.sourceId==='first'));assert(context.length<=12000);check('Protected index retains bounded reread references, actual applied order, answers and exclusions');
+console.log(JSON.stringify({ok:true,checks,boundary:'Source-local checks only; formal Electron path separate.'}));

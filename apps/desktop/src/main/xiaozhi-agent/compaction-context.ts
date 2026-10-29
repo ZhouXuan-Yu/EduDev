@@ -1,3 +1,4 @@
+import {teacherRequestSources} from './request-sources';
 import type { OmniEduStore } from '../db';
 import type {TaskView} from '../../shared/xiaozhi-task';
 
@@ -14,11 +15,10 @@ export async function getPiProtectedContext(store: OmniEduStore, sessionId: stri
   const safeChanges = changes.filter(item => !excluded.has(item.runId));
   const safeArtifacts=artifacts.filter(item=>!excluded.has(item.runId));
   const taskSources=new Set(task?.sources.flatMap(source=>source.messageId?[source.messageId]:[])||[]);
-  const teacherMessages=detail.messages.filter(message=>message.role==='user'&&message.metadata.piVersion==='xiaozhi.pi.education.v1'
-    &&(!excluded.has(String(message.metadata.agentRunId))||taskSources.has(message.id)));
-  const recent=new Set(teacherMessages.slice(-6).map(message=>message.id));
-  const requests=teacherMessages.filter(message=>recent.has(message.id)||taskSources.has(message.id));
-  const requestOrder=new Map(teacherMessages.map((message,index)=>[message.id,index+1]));
+  const allRequests=teacherRequestSources(detail.messages,controls,excludedRunIds,task);
+  const recent=new Set(allRequests.filter(s=>s.kind==='request').slice(-6).map(s=>s.sourceId));
+  const requests=allRequests.filter(s=>recent.has(s.messageId||s.afterMessageId||'')||taskSources.has(s.messageId||s.afterMessageId||''))
+    .sort((a,b)=>(a.sequence||0)-(b.sequence||0)||(a.kind==='request'?0:1)-(b.kind==='request'?0:1)||(a.appliedOrder||0)-(b.appliedOrder||0));
   const titles = new Set<string>();
   for (const message of detail.messages) {
     if (excluded.has(String(message.metadata.agentRunId))) continue;
@@ -46,13 +46,15 @@ export async function getPiProtectedContext(store: OmniEduStore, sessionId: stri
   let length = lines.join('\n').length;
   const add = (line: string, kind: keyof typeof included) => {
     // Reserve the omissions receipt; never cut a JSON record/hash in half.
-    if (length + line.length + 1 > (kind==='requests'?6500:11700)) return;
-    lines.push(line); length += line.length + 1; included[kind]++;
+    if (length + line.length + 1 > (kind==='requests'?6500:11700)) return false;
+    lines.push(line); length += line.length + 1; included[kind]++; return true;
   };
   // Latest changes first for capacity; sequence restores chronology, never a guessed merge.
-  for(const message of [...requests].reverse()){
-    const text=sanitizeRequest?await sanitizeRequest(message.content):(await store.sanitizeProblemText(message.content)).sanitizedText;
-    add(`教师要求：${JSON.stringify({sequence:requestOrder.get(message.id),messageId:message.id,taskSource:taskSources.has(message.id),text:text.slice(0,4000),truncated:text.length>4000})}`,'requests');
+  for(const request of [...requests].reverse()){
+    const text=sanitizeRequest?await sanitizeRequest(request.text):(await store.sanitizeProblemText(request.text)).sanitizedText;
+    const {text:_,...source}=request;
+    const record={...source,taskSource:taskSources.has(request.messageId||request.afterMessageId||''),text:text.slice(0,4000),truncated:text.length>4000};
+    if(!add(`教师要求：${JSON.stringify(record)}`,'requests'))add(`教师要求：${JSON.stringify({...record,text:'',truncated:true})}`,'requests');
   }
   // Preserve the most recent file authority first; every omitted record is counted.
   for (const item of safeApprovals.slice(-16).reverse()) add(`文件审批：${JSON.stringify({ source: item.source, target: item.target, state: item.state, sourceSha256: item.sourceSha256 })}`, 'approvals');
@@ -60,7 +62,7 @@ export async function getPiProtectedContext(store: OmniEduStore, sessionId: stri
   for(const item of safeArtifacts.slice(-16).reverse())add(`办公产物：${JSON.stringify({file:item.path,format:item.format,state:item.state,artifactId:item.state==='saved'?item.artifactId:null})}`,'artifacts');
   for (const plan of plans.slice(-8).reverse()) add(`计划：${JSON.stringify((plan.steps || []).slice(0, 12).map(step => ({ text: step.text.slice(0, 200), status: step.status })))}`, 'plans');
   for (const title of [...titles].slice(-16).reverse()) add(`已检索来源标题：${title}`, 'titles');
-  lines.push(`本索引省略记录：计划${plans.length - included.plans}，审批${safeApprovals.length - included.approvals}，修改${safeChanges.length - included.changes}，产物${safeArtifacts.length-included.artifacts}，来源${titles.size - included.titles}，教师要求${requests.length-included.requests}；计划长步骤仅索引前200字，截断请求以truncated明示，完整事实保留本地。`);
+  lines.push(`本索引省略记录：计划${plans.length - included.plans}，审批${safeApprovals.length - included.approvals}，修改${safeChanges.length - included.changes}，产物${safeArtifacts.length-included.artifacts}，来源${titles.size - included.titles}，教师要求${requests.length-included.requests}；计划长步骤仅索引前200字，截断请求以truncated明示，完整事实保留本地，可用read_teacher_request按sourceId分段重读。`);
   // Apply the same education redaction before any facts enter SDK history/API.
   return (await store.sanitizeProblemText(lines.join('\n'))).sanitizedText;
 }

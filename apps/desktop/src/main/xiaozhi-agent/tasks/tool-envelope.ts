@@ -3,7 +3,7 @@ import {taskObject,taskLocalId} from '../../../shared/xiaozhi-task';
 import {toolManifest} from '../tools/manifest';
 import {taskToolKinds} from './task-evidence';
 
-export const TASK_CONTROL_TOOLS=new Set(['update_task_plan','update_plan','ask_teacher','report_goal_progress','read_education_memory','read_session_process']);
+export const TASK_CONTROL_TOOLS=new Set(['update_task_plan','update_plan','ask_teacher','report_goal_progress','read_education_memory','read_session_process','read_teacher_request']);
 export function unwrapTaskArguments(value:unknown):{stepId?:string;input:Record<string,unknown>}{
  if(!taskObject(value))throw Error('invalid_input');const {taskStepId,...input}=value;
  if(taskStepId!==undefined&&!taskLocalId(taskStepId))throw Error('invalid_input');return{...(typeof taskStepId==='string'?{stepId:taskStepId}:{}),input};

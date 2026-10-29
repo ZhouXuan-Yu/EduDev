@@ -1,3 +1,4 @@
+import {createTeacherRequestTool,teacherRequestSources} from './request-sources';
 import {fileWritesEnabled} from './file-write-policy';
 import {conversationOutput,CONVERSATION_OUTPUT_LABEL} from './conversation-output';
 import {createQuestionWebAnswerReadback} from '../education/question-web-answer-readback';
@@ -614,6 +615,9 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await deliveries.context(id))+(fileWritesEnabled()?'':'\n小智自动文件生成已暂停；已有记录、文件可读取和核验，不能提出或执行新的自动文件写入，不要声称已交付新文件。恢复生成需取消启动停写设置并重启。'),
+      teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
+        load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
+        sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
       educationTools:createEducationTools(store,cleanPrompt),controlTools:controls.tools(id,runId),
       questionContextTools:createQuestionContextProvider(store,()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,(reference,source)=>{observedQuestions.set(reference,source);},questionAliases,(reference,source)=>{observedEnrichmentQuestions.set(reference,source);webAnswerRuntime?.requireAuthorization();}),

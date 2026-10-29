@@ -91,7 +91,8 @@ export function createPiControlCoordinator(options: { store: OmniEduStore; isCur
     },
     async applied(id: string) {
       const item = await store.xiaozhiState.control(id); if (item?.kind !== 'instruction') return;
-      if (await store.xiaozhiState.changeControl(id,['dispatching'],{state:'applied'})) notify({...item,state:'applied'});
+      const appliedOrder=1+Math.max(0,...(await store.xiaozhiState.controls(item.sessionId)).filter(c=>c.runId===item.runId).map(c=>c.appliedOrder||0));
+      if (await store.xiaozhiState.changeControl(id,['dispatching'],{state:'applied',appliedOrder})) notify({...item,state:'applied',appliedOrder});
     },
     async dispatching(id: string) {
       const item = await store.xiaozhiState.control(id);
