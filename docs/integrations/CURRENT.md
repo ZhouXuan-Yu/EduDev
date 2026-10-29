@@ -8,6 +8,10 @@
 
 新增Hana质量ToolCatalog固定SHA/许可证追踪，复用脚本与源清单见 vendor/hana/quality。没有新增npm/Python依赖，也未接入DSH或SourceWeft服务；其机制由当前Pi适配。默认优化可用主进程环境XIAOZHI_ANSWER_QUALITY=legacy回退，既有来源/权限/审阅IPC兼容。详../goal/HANA_ANSWER_QUALITY.md。
 
+## 2026-10-29 候选已运行，尚非生产接入
+
+AnythingLLM官方v1.19.0原生后端经明确兼容调整，隔离摄入九文件并用默认/多语言模型查询；Docling 2.144.0隔离CPU安装/离线同页测试有页码坐标且仍漏条件；WeKnora dacb9c2源已下载并构建Windows Lite中。没有替换小智SQLite或新增第二Agent。Ghostscript许可/Windows短模型路径/兼容初始化须在受管组件清单解决。本片生产只修试卷保存授权指令。
+
 ## 2026-10-28 允许独立受管组件
 
 按最新用户要求，成熟后端/解析器与模型可由安装层自动下载、配置、启动和更新，老师不手动搭环境；不再以单EXE体积排除候选。官方AnythingLLM v1.19.0发行件已获取并通过SHA256核验，仅在隔离目录解包，未接生产或取得桌面白标权。下一继续KR02；自动安装未实现，详../goal/KB_MANAGED_COMPONENTS_CONTRACT.md。

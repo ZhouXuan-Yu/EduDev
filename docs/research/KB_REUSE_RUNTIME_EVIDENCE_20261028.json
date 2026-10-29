@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 1,
+  "checkedOn": "2026-10-28",
+  "purpose": "Candidate admission evidence; not knowledge-base delivery acceptance",
+  "hardware": {
+    "cpu": "Intel Core i7-13650HX",
+    "physicalCores": 14,
+    "logicalProcessors": 20,
+    "ramGiB": 31.6,
+    "gpuUsed": false
+  },
+  "officialRelease": {
+    "product": "AnythingLLM Desktop",
+    "version": "1.19.0",
+    "bytes": 403299096,
+    "sha256": "743d10ddf920087b46cd614cafd2e0e31550089405436f00cbd827c43ca4c90a",
+    "url": "https://github.com/Mintplex-Labs/anything-llm/releases/tag/v1.19.0"
+  },
+  "execution": {
+    "isolated": true,
+    "installedIntoUserProfile": false,
+    "userMaterialsUploadedToCloud": false,
+    "candidateLlmCalls": 0,
+    "runtime": "Official Electron Node 20.18.0",
+    "prisma": "5.3.1",
+    "migrationsApplied": 49,
+    "adjustments": [
+      "Created the empty SQLite file and directory before migration, matching the official desktop bootstrap; this resolves the previous Schema engine error.",
+      "The bundled binary Prisma client hung during the isolated backend evaluation. Regenerated the client with its official library engine; cause of the binary hang is unproven.",
+      "Added official Ghostscript 10.08.0 for the collector PDF renderer. Evaluation extraction used Docker as a tool only; not a proposed product dependency.",
+      "Configured an unreachable loopback Ollama endpoint because vector-search constructs an LLM provider even for local retrieval. No Ollama inference or account was used."
+    ],
+    "isUnmodifiedOfficialDesktopAcceptance": false
+  },
+  "sameCorpus": {
+    "files": 9,
+    "sourceBytes": 10321505,
+    "images": 6,
+    "pdfs": 3,
+    "pdfPages": 18,
+    "wordFiles": 0,
+    "finalSuccessfulUploads": 9,
+    "nativeIndexRows": 40,
+    "indexDimensions": 384,
+    "nativeIndexTypes": [],
+    "localOcrCharacters": 27220,
+    "uploadAndOcrMs": [
+      12263,
+      18696,
+      11761,
+      17202,
+      17436,
+      16055,
+      23884,
+      16120,
+      20929
+    ],
+    "sourcePageAndBoundingBoxesInCollectorMetadata": false
+  },
+  "retrieval": {
+    "naturalHoldoutEvaluated": false,
+    "recallOrPrecisionReported": false,
+    "queryCountPerModel": 4,
+    "candidateCount": 20,
+    "default": {
+      "model": "Xenova/all-MiniLM-L6-v2",
+      "language": "English",
+      "queryMs": [
+        135,
+        82,
+        52,
+        74
+      ],
+      "knownInterferenceOriginalImageRank": 19
+    },
+    "multilingual": {
+      "model": "MintplexLabs/multilingual-e5-small",
+      "onnxBytes": 470268510,
+      "onnxSha256": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+      "indexCompletion": {
+        "state": "observed-completed",
+        "documents": 9,
+        "source": "GET workspace after timed-out POST; original response/time unknown"
+      },
+      "queryMs": [
+        150,
+        49,
+        77,
+        42
+      ],
+      "knownInterferenceOriginalImageRank": 2
+    },
+    "findings": [
+      "A known image improves from rank 19 to rank 2, but this is one probe, not a measured recall improvement.",
+      "Other queries still return unrelated chunks; a matching filename alone is not evidence of a matching question.",
+      "Collector joins PDF page text and loses exact page/bbox provenance; raw OCR has missing conditions and corrupted formulas."
+    ]
+  },
+  "nativeCapacity": {
+    "version": 1,
+    "library": "official AnythingLLM bundled LanceDB",
+    "kind": "synthetic native library capacity; not OCR/semantic relevance/full-app/40GB acceptance",
+    "dimensions": 384,
+    "startedAt": "2026-10-28T13:31:51.678Z",
+    "runs": [
+      {
+        "rows": 100000,
+        "indices": [],
+        "ingestMs": 2746,
+        "firstNativeQueryMs": 94,
+        "warmP50Ms": 55,
+        "warmP95Ms": 65,
+        "samples": [
+          94,
+          47,
+          57,
+          58,
+          48,
+          50,
+          52,
+          62,
+          65,
+          63,
+          68,
+          59,
+          56,
+          57,
+          54,
+          52,
+          55,
+          54,
+          55,
+          55,
+          48
+        ],
+        "exactIdentityHits": 21,
+        "totalQueries": 21,
+        "peakRssMiB": 130,
+        "caveat": "First query is process warm and OS cache warm after insertion; concurrent real PDF OCR may contend. No neural encoding/rerank/IPC/UI. Exact identity probes are not semantic recall."
+      },
+      {
+        "rows": 1000000,
+        "indices": [],
+        "ingestMs": 27106,
+        "firstNativeQueryMs": 419,
+        "warmP50Ms": 299,
+        "warmP95Ms": 326,
+        "samples": [
+          419,
+          294,
+          326,
+          307,
+          299,
+          293,
+          323,
+          319,
+          306,
+          308,
+          285,
+          291,
+          276,
+          299,
+          290,
+          277,
+          280,
+          305,
+          290,
+          339,
+          298
+        ],
+        "exactIdentityHits": 21,
+        "totalQueries": 21,
+        "peakRssMiB": 154,
+        "caveat": "First query is process warm and OS cache warm after insertion; concurrent real PDF OCR may contend. No neural encoding/rerank/IPC/UI. Exact identity probes are not semantic recall."
+      }
+    ],
+    "finishedAt": "2026-10-28T13:32:29.164Z"
+  },
+  "docling": {
+    "version": "docling-slim 2.144.0",
+    "install": "Isolated CPU Python 3.12.14 venv; fixed convert-core, format-pdf, models-local, feat-ocr-rapidocr-onnx and format-docx extras",
+    "modelDownloads": "Public model assets; no user content transmitted",
+    "firstPage": {
+      "version": 1,
+      "parser": "docling-slim 2.144.0",
+      "status": "success",
+      "seconds": 29.26,
+      "pages": [
+        1
+      ],
+      "texts": 27,
+      "pictures": 1,
+      "tables": 0,
+      "items_with_page_bbox": 28,
+      "has_page_image": true,
+      "text_chars": 657,
+      "remote_services": false,
+      "errors": [],
+      "json_schema": "DoclingDocument",
+      "json_version": "1.10.0"
+    },
+    "offlineFullPageOcr": {
+      "version": 1,
+      "parser": "docling-slim 2.144.0",
+      "status": "success",
+      "seconds": 28.45,
+      "pages": [
+        1
+      ],
+      "texts": 29,
+      "pictures": 1,
+      "tables": 0,
+      "items_with_page_bbox": 29,
+      "has_page_image": true,
+      "text_chars": 661,
+      "remote_services": false,
+      "errors": [],
+      "json_schema": "DoclingDocument",
+      "json_version": "1.10.0"
+    },
+    "offlineImageScale2": {
+      "version": 1,
+      "parser": "docling-slim 2.144.0",
+      "status": "success",
+      "seconds": 29.75,
+      "pages": [
+        1
+      ],
+      "texts": 29,
+      "pictures": 1,
+      "tables": 0,
+      "items_with_page_bbox": 29,
+      "has_page_image": true,
+      "text_chars": 661,
+      "remote_services": false,
+      "errors": [],
+      "json_schema": "DoclingDocument",
+      "json_version": "1.10.0"
+    },
+    "offlineTextScore025": {
+      "version": 1,
+      "parser": "docling-slim 2.144.0",
+      "status": "success",
+      "seconds": 24.67,
+      "pages": [
+        1
+      ],
+      "texts": 29,
+      "pictures": 1,
+      "tables": 0,
+      "items_with_page_bbox": 29,
+      "has_page_image": true,
+      "text_chars": 661,
+      "remote_services": false,
+      "errors": [],
+      "json_schema": "DoclingDocument",
+      "json_version": "1.10.0"
+    },
+    "findings": [
+      "Real page/bbox and original page image are preserved.",
+      "Visual comparison with the original page confirms a missing multiple-choice condition and wrong title/reading order despite success status.",
+      "Full-page OCR, output image scaling and lower OCR confidence threshold did not recover the missing condition.",
+      "Shortened only the public HF cache path after reproducing the Windows 260-character path failure; no registry change."
+    ],
+    "isProductionIntegrated": false
+  },
+  "licensing": {
+    "ghostscript": "AGPL/commercial: redistribution/embedding requires separate review; MIT product license does not cover this dependency",
+    "anythingllm": "Desktop distribution / branding rights have not been assumed from repository license",
+    "docling": "MIT code; every downloaded dependency and model still needs its own manifest"
+  },
+  "notVerified": [
+    "Full unmodified AnythingLLM desktop/installer",
+    "WeKnora runtime",
+    "Teacher-labelled relevance and answer correctness",
+    "Actual 10GB/40GB mixed-file ingest and recovery",
+    "Whole-product million-chunk encoding/filtering/rerank/source-validation latency",
+    "Word corpus conversion",
+    "Managed component download/update/rollback in Xiaozhi"
+  ],
+  "privateEvidenceDirectory": "OS Temp/xiaozhi-kb-mature-baseline-20261028",
+  "probeScriptHashes": {
+    "scale-native.cjs": "0f23ca13f30a08027bf45264cfbcfd7641c090cf3f0624983ae12acd50b46eea",
+    "evaluate-real-materials.mjs": "3618225b954de0967a2072236551cee7bbb3833205d1adbec88c731b57550b90",
+    "retry-pdfs.mjs": "e556e286a3315044d19ed2d7680d1ad41de866bcb1fec0c1163e47b3f863a015",
+    "evaluate-e5.mjs": "ae4ea5c0d90d503c1b2800cf30fe8f456163232ecb5783ddb2aa6d190f9a022c",
+    "evaluate-docling.py": "d0fb22fb054ae285e8ce80e99ba37c2b38276c64b4034e3fd4838fc846a6408c",
+    "evaluate-docling-full-ocr.py": "916a8ec507f13a9ad1746778e6711cecfd8ed0bb46465b02a98a2edcfb573cba",
+    "evaluate-docling-144dpi.py": "938162203053a8d44c7615170d6513b542f82dde7555ca93cfa6cb4c09bdcd5d",
+    "evaluate-docling-low-threshold.py": "8c711ccf4e52b994b9245019a13d75a343acb607d18097968cc070ca8342bf2a"
+  },
+  "xiaozhiConfirmedPaper": {
+    "success": true,
+    "questions": 2,
+    "deliveries": [
+      {
+        "audience": "student",
+        "format": "docx",
+        "bytes": 10270
+      },
+      {
+        "audience": "teacher",
+        "format": "docx",
+        "bytes": 10551
+      },
+      {
+        "audience": "student",
+        "format": "pdf",
+        "bytes": 76338
+      },
+      {
+        "audience": "teacher",
+        "format": "pdf",
+        "bytes": 88193
+      }
+    ],
+    "newDeepSeekRequests": 12,
+    "rendererErrors": 0,
+    "independentContentReadback": true,
+    "nativeRestartAndLineage": true,
+    "automatedTeacherDecisionOnly": true,
+    "notVerified": [
+      "Complex image questions",
+      "Cross-page answer matching",
+      "Office/WPS native opening",
+      "Actual teacher answer sign-off"
+    ],
+    "privateReport": "OS Temp/omni-real-material-NGRlNr/real-paper-delivery-managed-reuse-20261028.json"
+  }
+}

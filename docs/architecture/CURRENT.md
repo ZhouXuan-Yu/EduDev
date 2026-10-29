@@ -8,6 +8,10 @@
 
 Hana ToolCatalog作为唯一Pi的provider-facing适配，不改变原生会话identity；全工具仍由宿主边界执行，按需只改变请求曝光。缓存仅含经全内容复核的技能解析，run工具闭包不复用。每run证据表在内存登记，可选citationId随既有事件和SQLite元数据持久化，无新表/迁移。详../goal/HANA_ANSWER_QUALITY.md。
 
+## 2026-10-29 成熟后端实测，生产默认未切换
+
+隔离AnythingLLM包含SQLite/Prisma与LanceDB；按官方空库初始化后49迁移通过，client临时切官方library引擎才能完成此对照，不能当未修改桌面验收。Docling坐标结构有实证但题面仍缺；不迁生产表/IPC/索引。本片仅两处导出模型指引及既有真实UI夹具；仍使用原Pi/Office审批/生成器。
+
 ## 2026-10-28 安装层与本体解耦（待实施）
 
 用户允许安装/首次启用自动下载配置受管后端、运行时和模型，本体提供统一业务入口；组件/版本目录与原件/SQLite事实分离，安装下载与离线Worker分离。解除全内嵌EXE限制，先完成成熟后端同资料/规模资格，再薄适配；现无生产架构或默认引擎变动。详../goal/KB_MANAGED_COMPONENTS_CONTRACT.md。

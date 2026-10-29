@@ -1,5 +1,29 @@
 # 知识库实施证据
 
+## 2026-10-29 真实Pi四文件闭环与成熟方案实跑
+
+本片保留 SQLite/Pi/Office 审批/确定性生成器，仅修 `education/paper-export.ts` 与 `xiaozhi-agent/pi-session.ts` 中错误的“必须先选教学工作目录”指引：本会话已授权试卷保存位置即可调用，真实授权仍由宿主校验。既有真实夹具增加独立运行标签、有界控件等待、每轮16次请求上限及原生冷启后产物/哈希/谱系核对，没有新增业务表、IPC或依赖。
+
+实际命令（工作目录 `apps/desktop`）：
+
+```powershell
+npm run build
+npm run test:renderer-components
+node scripts/education/paper-export-boundaries.mjs
+node scripts/education/kb-paper-output-task-boundaries.mjs
+node scripts/education/kb-real-paper-delivery.mjs "$env:TEMP/omni-real-material-NGRlNr" managed-reuse-20261028
+npm run test:smoke
+npm audit --json
+```
+
+build/type、renderer240/240、导出21/21、仅输出授权11/11及完整legacy smoke通过；后者报告ok=true/30学生，不作为真实Pi替身。真实Pi/DeepSeek本次四任务12个记录请求，在1366×768界面测试审批；学生Word10270B、教师Word10551B、学生PDF76338B、教师PDF88193B。独立python-docx/pypdf/PDFium复读完整2题、教师6个题干/答案/解析标记、学生答案隔离、A4通过；两份PDF各1页，原图嵌入0（本片只验证无图两题）。已目视两份PDF，1920×1080原生重启后四个saved产物、字节SHA与已确认试卷谱系一致，0 renderer错误。自动审批仅测试夹具，不代表真实教师核验答案；未用Office/WPS原生打开。
+
+私有报告：`Temp/omni-real-material-NGRlNr/real-paper-delivery-managed-reuse-20261028.json`；文件位于该目录`real-paper-exports`。原件、OCR、回答、加密账户与文件均未入Git。此前configuration/0文件仍是历史失败；本次同旧bundle的诊断也曾生成首份Word，旧异常原因未证明，不能把本片指引改动宣称为其根因修复。一次主动结束的诊断保留私有日志，未以重复付费推测故障。
+
+成熟产品已运行的范围：[匿名运行证据](../research/KB_REUSE_RUNTIME_EVIDENCE_20261028.json)。AnythingLLM明确兼容后的后端九文件全部摄入；默认/多语言四问仍误排并丢PDF页码；Docling离线真实同页四配置保留坐标但漏清晰选项；百万合成向量热P95 326ms仅原生容量，不含完整模型/权限/重排/IPC。WeKnora固定源Windows Lite本机隔离构建中，未接生产。实际40GB、自然质量、图题与组件自动安装继续OPEN。
+
+性能：两处指令没有计算路径变更，未声称小智时延改善；候选模型的单例原图排名19→2不是Recall改善率。npm audit仍exit1/22项既有风险（8high/6moderate/8low），未升级依赖。回滚本片两处指令及夹具即可，正式资料/数据库无迁移；其他工作树未移动。最终main提交与远端一致性以Git收尾回读为准。
+
 ## 2026-10-28 交付反思与成熟方案复用重审
 
 基于08e26bc核实本文件的真实9文件/2条ai_final及configuration/0文件失败仍未闭合。本轮公开GitHub源与LICENSE/OpenAPI核验、独立Terra只读复审完成；四候选固定SHA见docs/research/KB_REUSE_SOURCE_EVIDENCE_20261028.json。未安装/运行候选、未测同资料胜负、未跑40GB、未上传资料或发新模型调用，生产代码/数据不变。当前用户任务与规模门槛/后续合同见KNOWLEDGE_BASE_RECOVERY_20261028.md和WORK_PROGRESS.md。
