@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import type {QuestionBankItem} from '../../shared/contracts';
-import {archiveIssueLabels,type ArchiveFields} from '../../shared/question-archive';
+import {archiveIssueLabels,archiveEligible,archiveNeedsVerification,type ArchiveFields} from '../../shared/question-archive';
 import {MaterialSourceLink} from './product/MaterialSourceNavigation';
 import './question-archive.css';
 import {NATIVE_IMAGE_SCHEMA} from '../../shared/native-question-image';
@@ -10,7 +10,8 @@ export function QuestionArchiveEditor({question,onSaved}:{question:QuestionBankI
  async function edit(){setBusy(true);setError('');try{const result=await window.omniEdu!.getArchivedQuestionVersion(question.id);const q=result.question;setFields({stem:q.stem,answer:q.answer,analysis:q.analysis,subject:q.subject,grade:q.grade,knowledgePoint:q.knowledgePoint,questionType:q.questionType,difficulty:q.difficulty});setVersion(result.version);setDifficultyChosen(!q.archive?.issues.includes('missing_difficulty'));setChecked(q.archive?.sourceChecked||false);}catch{setError('题目暂不可编辑，请刷新后重试。');}finally{setBusy(false);}}
  async function save(){if(!fields||busy)return;setBusy(true);setError('');try{await window.omniEdu!.editArchivedQuestion({questionId:question.id,version,fields,sourceChecked:checked});setFields(undefined);await onSaved();}catch(error){setError(error instanceof Error&&error.message.includes('web_answer_question_changed')?'题面已改变，请同时核对修改或清空原联网答案与解析后再保存；旧来源记录会保留。':'保存失败：题目或原资料可能已变化。请取消编辑并重新打开，检查原件后重试。');}finally{setBusy(false);}}
  return <section data-testid={'question-archive-'+question.id} className="question-archive">
-  <p><strong>{archive.state==='teacher_edited'?'教师已编辑':archive.web?'联网补答':archive.ai?archive.state==='ai_final'?'AI自动定稿':'AI整理待补全':'自动文本抽题'} · 原题号 {archive.number==='0'?'未编号':archive.number}</strong>　{archive.issues.length?'待整理，暂不用于组卷':'可作为组卷候选，正式试卷集中确认'}</p>
+  <p data-testid="question-archive-eligibility"><strong>{archive.state==='teacher_edited'?'教师已编辑':archive.web?'联网补答':archive.ai?archive.state==='ai_final'?'AI自动定稿':'AI整理待补全':'自动文本抽题'} · 原题号 {archive.number==='0'?'未编号':archive.number}</strong>　{archiveEligible(question)?'可作为组卷候选，正式试卷集中确认':'待整理或核验，暂不用于组卷'}</p>
+  {archiveNeedsVerification(archive)&&<p role="note" data-testid="question-archive-verification-pending">题面尚未经AI整理或老师对照核验。可回资料页开启AI整理，或打开原资料、核对题目后在编辑中勾选核验；仅保存分类和答案不会解除此状态。</p>}
   {archive.web&&<p data-testid="question-web-provenance">已保留独立网页题解记录；已有原资料和教师内容不被自动覆盖，来源不代表答案正确。</p>}
   {archive.ai&&<p data-testid="question-ai-provenance">{archive.ai.provider} · {archive.ai.model} · 两次整理记录保存在本机。AI定稿未经教师逐题确认，答案和解析仍需在正式组卷时核对。</p>}
   {archive.issues.length>0&&<p role="note" data-testid="question-archive-issues">{archive.issues.map(i=>archiveIssueLabels[i]).join('；')}</p>}

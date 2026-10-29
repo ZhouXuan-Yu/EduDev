@@ -40,13 +40,16 @@ export class MaterialQuestionArchive{
     for(const q of questions){
      this.controller.signal.throwIfAborted();const key=createHash('sha256').update(id+'\0'+version+'\0numbered-text.v1\0'+JSON.stringify(q.archive.sources)+'\0'+q.key).digest('hex');
      const exists=(await target.host.all('SELECT question_id FROM material_question_members WHERE extraction_key=?',[key]))[0];if(exists)continue;
-     const saved=await target.host.create(q.fields);await target.host.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(q.archive),saved.id]);await target.host.run('INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,?)',[key,id,saved.id,q.archive.issues.length?1:0]);
+     const saved=await target.host.create(q.fields);await target.host.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(q.archive),saved.id]);await target.host.run('INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,?)',[key,id,saved.id,archiveEligible({...saved,archive:q.archive})?0:1]);
     }
     this.controller.signal.throwIfAborted();await target.host.run("UPDATE material_question_jobs SET status=?,cursor=?,question_count=(SELECT COUNT(*) FROM material_question_members WHERE resource_id=?),error='',updated_at=datetime('now') WHERE resource_id=? AND version=? AND parse_token=?",[snapshot.hasMore?'pending':'complete',cursor+snapshot.units.length,id,id,version,token]);
    });
   }catch(error){if(this.controller.signal.aborted)return false;const code=error instanceof Error?error.message:'';await this.host.run("UPDATE material_question_jobs SET status='failed',error=?,updated_at=datetime('now') WHERE resource_id=? AND version=? AND parse_token=? AND cursor=?",[['source_changed','too_large','too_many_questions','question_too_large'].includes(code)?code:'extract_failed',id,version,token,cursor]);}return true;
  }
- async migrateMembers(){await this.host.run('CREATE TABLE IF NOT EXISTS material_question_members(extraction_key TEXT PRIMARY KEY,resource_id TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,needs_attention INTEGER NOT NULL DEFAULT 0)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_resource ON material_question_members(resource_id)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_attention ON material_question_members(needs_attention)');}
+ async migrateMembers(){await this.host.run('CREATE TABLE IF NOT EXISTS material_question_members(extraction_key TEXT PRIMARY KEY,resource_id TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,needs_attention INTEGER NOT NULL DEFAULT 0)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_resource ON material_question_members(resource_id)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_attention ON material_question_members(needs_attention)');
+  // Derived attention flags only; never rewrite historical source/teacher/AI receipts.
+  await this.host.run(`UPDATE material_question_members SET needs_attention=1 WHERE needs_attention=0 AND EXISTS(SELECT 1 FROM question_bank_items q WHERE q.id=material_question_members.question_id AND json_valid(q.archive_json) AND json_type(q.archive_json,'$.ai') IS NULL AND json_array_length(q.archive_json,'$.sources')>0 AND (json_extract(q.archive_json,'$.state')='rule_extracted' OR COALESCE(json_extract(q.archive_json,'$.sourceChecked'),0)<>1))`);
+ }
  async validate(q:QuestionBankItem,requireComplete=false){
   if(!q.archive)return;if(requireComplete&&!archiveEligible(q))throw new Error('question_archive_incomplete');
   if(q.archive.native){if(!this.host.validateNative)throw Error('source_changed');await this.host.validateNative(q);}
@@ -76,6 +79,6 @@ export class MaterialQuestionArchive{
   }
   if(archive.web){archive.web=structuredClone(archive.web);for(const role of ['answer','analysis'] as const)if(fields[role]!==q[role]||fields.stem!==q.stem)delete archive.web.roles[role];}
   await target.host.run('UPDATE question_bank_items SET subject=?,grade=?,knowledge_point=?,question_type=?,difficulty=?,stem=?,answer=?,analysis=?,archive_json=?,updated_at=? WHERE id=?',[fields.subject,fields.grade,fields.knowledgePoint,fields.questionType,fields.difficulty,fields.stem,fields.answer,fields.analysis,JSON.stringify(archive),new Date().toISOString(),q.id]);
-  await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archive.issues.length?1:0,q.id]);const saved=await target.host.read(q.id);if(archive.native){if(!saved||!permit||!target.host.publishNative)throw Error('source_changed');await target.host.publishNative(saved,permit);}return saved;
+  await target.host.run('UPDATE material_question_members SET needs_attention=? WHERE question_id=?',[archiveEligible({...fields,archive})?0:1,q.id]);const saved=await target.host.read(q.id);if(archive.native){if(!saved||!permit||!target.host.publishNative)throw Error('source_changed');await target.host.publishNative(saved,permit);}return saved;
  });}
 }
