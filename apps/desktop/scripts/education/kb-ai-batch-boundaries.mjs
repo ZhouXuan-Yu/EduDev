@@ -40,10 +40,10 @@ function fixture(){
 const imageProjection=stem=>Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(field=>[field,{state:field==='statement'?'provided':'not_applicable',text:field==='statement'?stem:''}]));
 const imageResponse=q=>JSON.stringify({schemaVersion:'xiaozhi.material-ai-image-response.v1',outcome:'questions',questions:[{...q,projection:imageProjection(q.stem)}]});
 const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts');
-const ordinaryFetch=globalThis.fetch;let providerImage=true,wrongVersion=false,requests=0;
+const ordinaryFetch=globalThis.fetch;let providerImage=true,wrongVersion=false,requests=0;const providerRequests=[];
 try{
  globalThis.fetch=async(url,options)=>{
-  requests++;assert.equal(url,'https://api.deepseek.com/chat/completions');assert.equal(options.redirect,'error');const body=JSON.parse(options.body),system=body.messages[0].content;
+  requests++;assert.equal(url,'https://api.deepseek.com/chat/completions');assert.equal(options.redirect,'error');const body=JSON.parse(options.body),system=body.messages[0].content;providerRequests.push(body);
   assert.equal(system.includes('xiaozhi.material-ai-image-response.v1'),providerImage);
   assert.equal(system.includes('xiaozhi.material-ai-response.v1'),!providerImage,'An actual provider request cannot contain competing response schema names');
   let raw=providerImage?imageResponse(question):response(question);
@@ -52,6 +52,8 @@ try{
  };
  const args={model:'deepseek-flash',apiKey:'controlled-test-only-key',text:source,image:{mime:'image/png',data:Buffer.from('owned-image').toString('base64')},imageCoverage:true};
  assert.equal(JSON.parse(await completeMaterialAi(args,new AbortController().signal)).schemaVersion,'xiaozhi.material-ai-image-response.v1');
+ assert(providerRequests[0].messages[0].content.includes('[OCR还原规则 v1]'),'Actual DeepSeek request must include the dedicated conservative OCR restoration instructions');
+ assert.equal(JSON.parse(providerRequests[0].messages[1].content[0].text).material,source,'Restoration must not overwrite the original OCR input before dispatch');
  wrongVersion=true;await assert.rejects(completeMaterialAi(args,new AbortController().signal),/invalid_response/);wrongVersion=false;
  providerImage=false;assert.equal(JSON.parse(await completeMaterialAi({...args,imageCoverage:false},new AbortController().signal)).schemaVersion,MATERIAL_AI_RESPONSE);
  assert.equal(requests,3);check('Actual provider request uses exactly one response version, rejects mixed-schema output and preserves old-image batch requests');
