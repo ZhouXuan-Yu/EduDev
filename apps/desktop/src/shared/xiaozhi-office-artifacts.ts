@@ -9,9 +9,9 @@ export type OfficeArtifactSource={kind:'workspace_file'|'parent_artifact';source
 export type OfficeArtifactDecision={schemaVersion:typeof OFFICE_ARTIFACT_SCHEMA;sessionId:string;draftId:string;revision:number;action:'approve'|'reject'|'verify';imagesReviewed?:true};
 export type OfficeArtifactReviewInput={schemaVersion:typeof OFFICE_ARTIFACT_SCHEMA;sessionId:string;draftId:string};
 export type OfficeArtifactReviseInput=OfficeArtifactReviewInput&{revision:number;draft:OfficeDraft};
-export type OfficeArtifactError='invalid_input'|'permission_denied'|'conflict'|'busy'|'configuration';
+export type OfficeArtifactError='file_writes_disabled'|'invalid_input'|'permission_denied'|'conflict'|'busy'|'configuration';
 export type OfficeArtifactResult<T>={ok:true;value:T}|{ok:false;error:OfficeArtifactError};
-export const OFFICE_ARTIFACT_ERRORS:Record<OfficeArtifactError,string>={invalid_input:'拟内容或操作格式不正确，请检查后重试。',permission_denied:'会话、确认或工作目录授权已失效，请刷新后检查。',conflict:'拟内容、来源或目标文件已变化，请刷新后检查；没有覆盖原文件。',busy:'有任务正在运行，请结束后再操作。',configuration:'暂时无法读取或提交文档，请刷新状态后重试。'};
+export const OFFICE_ARTIFACT_ERRORS:Record<OfficeArtifactError,string>={file_writes_disabled:'当前已暂停小智自动生成文件；已有文件和记录仍可读取。恢复生成需取消启动停写设置并重启。',invalid_input:'拟内容或操作格式不正确，请检查后重试。',permission_denied:'会话、确认或工作目录授权已失效，请刷新后检查。',conflict:'拟内容、来源或目标文件已变化，请刷新后检查；没有覆盖原文件。',busy:'有任务正在运行，请结束后再操作。',configuration:'暂时无法读取或提交文档，请刷新状态后重试。'};
 export const officeHash=(v:unknown):v is string=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 export const officeRelativePath=(v:unknown):v is string=>typeof v==='string'&&!!v&&v.length<=500
  &&!/[\\:<>"|?*\x00-\x1f]/.test(v)&&!v.startsWith('/')&&v.split('/').length<=8

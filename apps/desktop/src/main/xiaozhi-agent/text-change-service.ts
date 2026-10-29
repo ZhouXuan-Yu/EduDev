@@ -1,4 +1,5 @@
 import {renderScienceFigure} from './science-figure';
+import {assertFileWritesEnabled} from './file-write-policy';
 import {prepareHtmlArtifact} from '../../shared/html-artifact';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -54,6 +55,7 @@ export function createTextChangeService(options: {
     if (!options.isCurrent(row.sessionId, row.runId)) throw new Error('permission_denied');
   }
   function writeVersion(root: string, row: PrivateTextChange, undo: boolean) {
+    assertFileWritesEnabled();
     if (workspaceHash(authorizedWorkspace(root, options.dataRoot)) !== row.workspaceHash) throw new Error('permission_denied');
     if (!version(root, row, undo ? 'after' : 'before')) throw new Error('conflict');
     const file = changeFile(root, row.path), content = undo ? row.before : row.after;
@@ -87,6 +89,7 @@ export function createTextChangeService(options: {
   }
   return {
     async propose(sessionId: string, runId: string, callId: string, raw: unknown, signal?: AbortSignal, anatomy = false) {
+      assertFileWritesEnabled();
       signalCheck(signal);
       if (!options.isCurrent(sessionId, runId) || !callId || callId.length > 128) throw new Error('permission_denied');
       const input = textProposalInput(anatomy ? {operation:'create',...renderScienceFigure(raw)} : raw);
@@ -124,6 +127,7 @@ export function createTextChangeService(options: {
       return { ...publicTextChange(row), before: row.before?.toString('utf8') ?? null, after: row.after.toString('utf8') };
     },
     async decision(input: XiaozhiChangeDecision) {
+      if(input?.action==='approve'||input?.action==='undo')assertFileWritesEnabled();
       if (!input || input.schemaVersion !== 'xiaozhi.change.v1' || !Number.isSafeInteger(input.revision) || input.revision < 0
         || Object.keys(input).some(key => !['schemaVersion', 'sessionId', 'changeId', 'revision', 'action'].includes(key))
         || !['approve', 'reject', 'verify', 'undo'].includes(input.action)) throw new Error('invalid_input');
@@ -161,6 +165,7 @@ export function createTextChangeService(options: {
       });
     },
     async apply(sessionId: string, id: string, signal?: AbortSignal) {
+      assertFileWritesEnabled();
       const row = await owned(sessionId, id), root = await authority(sessionId, row);
       current(row, signal);
       return withFileMutationQueue(changeFile(root, row.path), async () => {

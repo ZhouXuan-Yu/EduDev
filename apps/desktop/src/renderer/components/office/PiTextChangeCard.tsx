@@ -11,7 +11,7 @@ import {ScienceDemoFrame} from './ScienceDemoFrame';
 const labels: Record<XiaozhiChangeState, string> = { pending: '需要你的确认', approved: '已批准，等待保存', executing: '正在保存',
   applied: '已保存并核验', rejected: '已拒绝，未写入', interrupted: '确认已失效，未继续写入', uncertain: '执行中断，需要核验',
   conflict: '文件版本已变化，未覆盖', reverting: '正在撤销', reverted: '已撤销并核验', undo_uncertain: '撤销中断，需要核验', undo_conflict: '文件已另行修改，未撤销' };
-const errors: Record<XiaozhiChangeError, string> = { invalid_input: '这次操作无效，请刷新后重试。', permission_denied: '确认或目录授权已失效，请刷新后检查。',
+const errors: Record<XiaozhiChangeError, string> = { file_writes_disabled:'小智自动文件生成已暂停；已有文件和记录仍可读取。',invalid_input: '这次操作无效，请刷新后重试。', permission_denied: '确认或目录授权已失效，请刷新后检查。',
   conflict: '记录或文件版本已变化，请刷新后检查。', busy: '有任务正在运行，请结束后再操作。', configuration: '暂时无法读取或提交修改，请重试。' };
 
 /** Original Pro disclosure/code block; complete differences stay local and on demand. */

@@ -12,7 +12,7 @@ const session = (v: unknown): v is string => typeof v === 'string' && /^aisessio
 const change = (v: unknown): v is string => typeof v === 'string' && /^xichange_[a-f0-9-]{36}$/i.test(v);
 const errorCode = (raw: unknown): XiaozhiChangeError => {
   const message = raw instanceof Error ? raw.message : '';
-  return ['invalid_input', 'permission_denied', 'conflict', 'busy'].includes(message) ? message as XiaozhiChangeError : 'configuration';
+  return ['file_writes_disabled','invalid_input', 'permission_denied', 'conflict', 'busy'].includes(message) ? message as XiaozhiChangeError : 'configuration';
 };
 const receipt = async (row: XiaozhiChangeSummary, sanitize: (value: string) => Promise<string>) => ({
   // No file content, differences, private root or hash is sent to the model.
@@ -89,7 +89,7 @@ export function createTextChangeCoordinator(options: {
           const code = error instanceof Error ? error.message : '';
           if (args[2]?.aborted || code === 'cancelled' || code === 'budget_exhausted') throw new Error(code === 'budget_exhausted' ? code : 'cancelled');
           return { content: [{type:'text' as const,text:JSON.stringify({success:false,message:
-            code==='too_large'?'内容超过UTF8 64KiB上限（HTML含宿主策略头），没有保存或截断。请减少冗余或拆成多份后重新提交。':code==='conflict'?'文件或修改记录已变化，本次没有覆盖；请使用新文件名另存。':code==='permission_denied'?'当前操作未获授权或确认已失效。':args[3]==='science'?'科普图未生成，但尚未提交审阅。请只修正本轮工具参数后重试，不要改为普通文本。必须40至80个实体、恰好一个lit、圆柱w=d；实体包围盒不能相交或形成循环遮挡；SVG/HTML上限64KiB。平板重复肋片可直接使用：底板box x=0,y=0,z=0,w=120,d=60,h=4,tone=lo,label=底板；肋片box x=0,y=5,z=4,w=1.5,d=50,h=24,tone=lit,label=散热肋片,repeat={count:40,dx:3,dy:0,dz:0}。teaching.steps的part必须使用实际类别“底板”“散热肋片”。若部件更多，按同样最小角与面接触关系扩展。不能宣称已保存。':'未完成本次文件修改。请核对授权范围、实际文本及支持格式；不能宣称已经保存。'})}],
+            code==='file_writes_disabled'?'小智自动文件生成已暂停，本次没有提出或写入文件。已有成果仍可读取；恢复生成需取消启动停写设置并重启。':code==='too_large'?'内容超过UTF8 64KiB上限（HTML含宿主策略头），没有保存或截断。请减少冗余或拆成多份后重新提交。':code==='conflict'?'文件或修改记录已变化，本次没有覆盖；请使用新文件名另存。':code==='permission_denied'?'当前操作未获授权或确认已失效。':args[3]==='science'?'科普图未生成，但尚未提交审阅。请只修正本轮工具参数后重试，不要改为普通文本。必须40至80个实体、恰好一个lit、圆柱w=d；实体包围盒不能相交或形成循环遮挡；SVG/HTML上限64KiB。平板重复肋片可直接使用：底板box x=0,y=0,z=0,w=120,d=60,h=4,tone=lo,label=底板；肋片box x=0,y=5,z=4,w=1.5,d=50,h=24,tone=lit,label=散热肋片,repeat={count:40,dx:3,dy:0,dz:0}。teaching.steps的part必须使用实际类别“底板”“散热肋片”。若部件更多，按同样最小角与面接触关系扩展。不能宣称已保存。':'未完成本次文件修改。请核对授权范围、实际文本及支持格式；不能宣称已经保存。'})}],
             details:{success:false},isError:true };
         }
       };

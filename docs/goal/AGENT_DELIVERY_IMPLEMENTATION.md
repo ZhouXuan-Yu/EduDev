@@ -33,6 +33,15 @@
 - 一次必要检查：实际正式界面整包改PPT/确认与拒绝；故障切点保留HTML、续做PPT并证明HTML未重写；旧批准/新文件、来源变化、取消/冷启及独立整包readback。随后相关构建/renderer/关键路径smoke；完整AT仍在P1齐后集中执行。
 - 回退：保留新元数据读取及native附加identity兼容；可停止注册新整包写入入口，不删子账本/文件。默认产物备份、兼容停写开关为后续切片，不因本切片提前声明完成。
 
+## C03 / E01 第四切片：默认成果备份与兼容停写（2026-10-29冻结）
+
+- 当前缺口：现完整备份只复制dataRoot，默认XiaozhiOutputs在同级，备份会遗漏真实HTML/PPT；目前正式入口只有创建/校验备份，没有真正的新目录恢复入口。不得把导出副本当作已完成恢复。
+- 教师结果：原设置页“创建本地备份”同时包含默认成果及SHA清单，界面说明包含范围和文件数；校验能发现成果缺失/被改。旧无成果附加区的v1备份继续可校验。
+- 接缝：conversationOutputRoot纯解析 → 原backup/data-root-files、store.exportDataRoot/verifyDataBackup → 原typed结果及DataBackupPanel。沿现manifest.v1增加有版本的conversationOutputs附加元数据，保留旧文件列表；只从本实例输出scope复制到保留前缀，不跟随外部链接、不扫描其他实例或教师授权私人目录。阻止将备份放入源成果目录造成递归。无新表/依赖。
+- 停写回退：启动环境OMNI_EDU_XIAOZHI_FILE_WRITES=0仅停AI text/Office/bundle写入，不撤销读权限、不改变native identity、不删除草稿或文件；原单文件/整包工具仍装配，服务实际写边界拒绝新提案、批准及执行/撤销；只读核验保持。正式页面显示停写原因，模型收到当前实际能力说明。教师手动业务导出不扩大为全盘只读。
+- 检查：一次真实服务/文件备份及清单校验（含同名跨会话、遗漏/变化、旧包、无成果根、递归目标）；正式Electron从设置创建/校验，冷启停写后预览旧HTML/PPT、实读与尝试新生成无文件副作用。build/组件及关键路径门禁；完整C03仍待阶段集中AT。
+- 兼容/恢复：保留所有新增schema/kind与native读取，不整提交回退到无法识别saved_bundle的旧版。备份附加区不是运行根，真正恢复需要迁移默认成果路径、文件事实与任务/会话身份并从UI读回；后续C03继续，在W3集中交付前补齐；不将全量恢复迁移加为E02的前置，尚不承诺迁移或激活可用。
+
 ## W0 / E02 真实思考设置
 
 - 复用 model-settings/state/api、shared/xiaozhi-settings 与 OfficeComposer；新增受版本检查的会话思考覆盖，默认自动，不改 provider/key/native 模型身份。

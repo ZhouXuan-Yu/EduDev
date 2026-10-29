@@ -7,7 +7,7 @@ type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const session=(v:unknown):v is string=>typeof v==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(v);
 const id=(v:unknown):v is string=>typeof v==='string'&&/^xioffice_[a-f0-9-]{36}$/i.test(v);
-const error=(raw:unknown):OfficeArtifactError=>{const value=raw instanceof Error?raw.message:'';return ['invalid_input','permission_denied','conflict','busy'].includes(value)?value as OfficeArtifactError:'configuration';};
+const error=(raw:unknown):OfficeArtifactError=>{const value=raw instanceof Error?raw.message:'';return ['file_writes_disabled','invalid_input','permission_denied','conflict','busy'].includes(value)?value as OfficeArtifactError:'configuration';};
 function input(value:unknown,keys:string[]):value is OfficeArtifactReviewInput{
  return object(value)&&Object.keys(value).every(key=>keys.includes(key))&&value.schemaVersion===OFFICE_ARTIFACT_SCHEMA&&session(value.sessionId)&&id(value.draftId);
 }
@@ -52,7 +52,7 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
       await cancel(runId).catch(()=>undefined);if(proposal)await publish(sessionId,proposal.id).catch(()=>undefined);
       if(signal?.aborted||(rawError instanceof Error&&['cancelled','budget_exhausted'].includes(rawError.message)))throw new Error(rawError instanceof Error&&rawError.message==='budget_exhausted'?'budget_exhausted':'cancelled');
       const code=error(rawError);
-      const message=rawError instanceof Error&&rawError.message==='too_large'?'本页内容过密或草稿超过UTF8字节上限，尚未保存，也不会自动加页或截断。请减少投影文字/表格行数，把讲解移入speakerNotes后重新提出。':code==='conflict'?'拟内容、来源或目标已变化，本次没有覆盖。'
+      const message=code==='file_writes_disabled'?'小智自动文件生成已暂停，已有文件与记录仍可读取；恢复生成需取消启动停写设置并重启。':rawError instanceof Error&&rawError.message==='too_large'?'本页内容过密或草稿超过UTF8字节上限，尚未保存，也不会自动加页或截断。请减少投影文字/表格行数，把讲解移入speakerNotes后重新提出。':code==='conflict'?'拟内容、来源或目标已变化，本次没有覆盖。'
        :!proposal&&code==='invalid_input'?'文档结构、表格行列或来源格式不正确，尚未进入教师审阅，也没有生成文件。请按工具格式修正草稿。'
        :!proposal?'文档草稿未成功提交教师审阅，也没有生成文件。请检查当前授权、目标目录与拟内容，不可声称教师已拒绝。'
        :'本次办公文件未确认保存；请检查授权、拟内容与实际状态，不可宣称交付。';
