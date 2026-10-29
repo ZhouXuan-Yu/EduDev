@@ -1,5 +1,10 @@
 # Goal 验收台账
 
+## 2026-10-29 E01工程检查，完整验收待集中执行
+
+专项服务/SDK7项、HTML Electron3项、正式Electron3项、renderer240/240；build及综合smoke207/207通过，详research/AGENT_DELIVERY_E01_20261029.json。正式Electron使用合成SSE与测试审批，不等于真实教师/模型质量或FX01完整标准；252条AT未判通过。
+
+
 ## 2026-10-29 达标备注规则已接入
 
 Goal入口XIAOZHI_AGENT_DELIVERY_GOAL.md。任务书252条REQ、验收252条AT、28组均有实现备注；CSV使用既有备注列（当前被占用未改原数据）。当前全部未执行，达标后写已实现与日期/AT/实现和验证SHA/证据；失败/阻塞不标。本轮仅文档检查。

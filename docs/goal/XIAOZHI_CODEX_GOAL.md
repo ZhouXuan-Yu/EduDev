@@ -1,5 +1,10 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-29 持续Goal实施已启动
+
+按XIAOZHI_AGENT_DELIVERY_GOAL.md与四份规格执行，W0/E01已开始实际功能实施。默认产物区/通用HTML专项与正式受控UI通过，仍为部分实现，完整252项未判通过；后续精确PPT页/备注→整包交付→E02/E03，阶段集中验收。当前工程证据见research/AGENT_DELIVERY_E01_20261029.json及WORK_PROGRESS，旧KR主线状态保留。
+
+
 ## 2026-10-29 新能力顺序执行Goal入口
 
 本能力任务目标见[XIAOZHI_AGENT_DELIVERY_GOAL.md](XIAOZHI_AGENT_DELIVERY_GOAL.md)，含四份规格、依赖顺序、轻量审核和达标已实现规则；不覆盖本Master产品/数据边界。当前仅编写目标，252条仍未执行；进入执行后按W0–W5推进，已授权动作不重复申请，实际越界才暂停相应动作。

@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-10-29 E01专项证据与待验边界
+
+默认文件专项7、HTML Electron3、正式UI3、renderer240通过，build与综合smoke207/207通过，详../research/AGENT_DELIVERY_E01_20261029.json。合成模型路径/测试审批不替代自然质量/真实教师/Office-WPS或完整AT，新增已实现为0。
+
+
 ## 2026-10-29 验收达标后备注已实现
 
 按[Goal任务目标](../goal/XIAOZHI_AGENT_DELIVERY_GOAL.md)执行；REQ/AT/CSV三处同步备注已实现及日期/源码SHA/证据。当前252条均未执行，组清单不先打勾；CSV原有备注列保留，实现阶段一次必要检查，功能齐备后集中验收，不加无关审核。

@@ -1,3 +1,4 @@
+import {conversationOutput,CONVERSATION_OUTPUT_LABEL} from './conversation-output';
 import {createQuestionWebAnswerReadback} from '../education/question-web-answer-readback';
 import {answerQualityEnabled,resolveAnswerPolicy} from './answer-quality';
 import {readChatPresentation} from '../../shared/chat-presentation';
@@ -264,7 +265,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   const decisions = createDecisionLedger({sql:store.xiaozhiState.sql,
     authority:createDecisionAuthority({sql:store.xiaozhiState.sql,
       memory:async id=>{const before=await memory.authority(id),scope=await memory.scope(id),after=await memory.authority(id);if(before.fingerprint!==after.fingerprint||scope.version!==after.version)throw Error('memory_scope_changed');return{fingerprint:after.fingerprint,state:!after.enabled?'off':!after.valid?'unavailable':scope.selections.length?'selected':'empty'};},
-      files:async id=>{const grant=await store.xiaozhiState.workspace(id),lease=grant?await host.resolveFileWorkspace(id):undefined,rows=(await store.xiaozhiState.attachments.list(id)).filter(row=>row.state==='submitted');return{available:Boolean(lease)||rows.length>0,fingerprint:createHash('sha256').update(JSON.stringify([lease?.version||'',rows.map(row=>[row.id,row.revision,row.version,row.format])])).digest('hex')};},
+      files:async id=>{const lease=await host.resolveFileWorkspace(id),rows=(await store.xiaozhiState.attachments.list(id)).filter(row=>row.state==='submitted');return{available:Boolean(lease)||rows.length>0,fingerprint:createHash('sha256').update(JSON.stringify([lease?.version||'',rows.map(row=>[row.id,row.revision,row.version,row.format])])).digest('hex')};},
       web:()=>store.xiaozhiState.modelSettings.web()}),
     preferenceRevision:async()=>(await store.xiaozhiState.teacherPreferences.snapshot()).revision,
     judge:async(id,state,signal)=>judgeDecision(await modelSettings.runtime(id),state,signal),
@@ -307,7 +308,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         if (!validId(id) || closing || choosing.has(id)) throw new Error('permission_denied');
         const detail = await store.getAiConversationSession(id), grant = await store.xiaozhiState.workspace(id);
         if (closing || choosing.has(id) || detail.session.archivedAt) throw new Error('permission_denied');
-        return grant?.path || null;
+        return grant?.path || conversationOutput(options.dataRoot,id).path;
       },
       isCurrent: (id, runId) => !closing && active.get(id)?.runId === runId && !active.get(id)?.stopped,
     }),
@@ -357,7 +358,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   async function resolvePaperOutput(id:string,hash?:string):Promise<string|null>{
     if(closing||choosing.has(id))throw new Error('busy');await authorizePaperConversation(id);
     const grant=await store.xiaozhiState.paperOutput(id,hash),legacy=grant?null:await store.xiaozhiState.workspace(id);
-    const raw=grant?.path||legacy?.path;if(!raw)return null;
+    const raw=grant?.path||legacy?.path||conversationOutput(options.dataRoot,id).path;
     const directory=authorizedWorkspace(raw,options.dataRoot);
     if(hash!==undefined&&workspaceHash(directory)!==hash)throw new Error('permission_denied');
     if(closing||choosing.has(id))throw new Error('busy');await authorizePaperConversation(id);return directory;
@@ -411,7 +412,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       }
     }
     projection.hasMoreHistory=detail.hasMore;
-    const workspace = await store.xiaozhiState.workspace(id);
+    const workspace = await store.xiaozhiState.workspace(id) || {label:CONVERSATION_OUTPUT_LABEL};
     const paperOutput=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.xiaozhiState.paperOutput(id):null;
     const storedLearningReviews=detail.session.studentId&&selectedStudent?.status==='active'&&!detail.session.archivedAt?await store.learningReviews.list(id):[];
     const storedPaperReviews=!detail.session.archivedAt&&(!detail.session.studentId||selectedStudent?.status==='active')?await store.papers.list(id):[];
@@ -508,7 +509,6 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     await skillsReady;
     const stateRoot=path.join(root,id), privateWorkspace=path.join(stateRoot,'workspace'); fs.mkdirSync(privateWorkspace,{recursive:true});
     const grant=await store.xiaozhiState.workspace(id), workspace=grant?authorizedWorkspace(grant.path,options.dataRoot):privateWorkspace;
-    const paperOutput=await store.xiaozhiState.paperOutput(id);
     const binding=await store.xiaozhiState.getBinding(id), sessionFile=binding?path.resolve(root,binding.sessionFile):undefined;
     if(sessionFile && (!inside(root,sessionFile) || binding?.model!==settings.model))throw new Error('configuration');
     const ledger=await store.xiaozhiState.modelSwitch?.current(id), coordinator=modelCoordinator(id,owner);
@@ -522,10 +522,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const observedEnrichmentQuestions=new Map<string,QuestionContextSource>();
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
-    try { return {stateRoot,workspace,...(grant||paperOutput?{fileOutputWorkspace:await resolvePaperOutput(id)||workspace}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
+    try { return {stateRoot,workspace,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
         const [presence,attachments]=await Promise.all([store.getChatSourcePresence(),store.xiaozhiState.attachments.list(id)]);
-        return {...presence,attachments:attachments.some(row=>row.state==='submitted'),workspace:Boolean(await store.xiaozhiState.workspace(id))};
+        return {...presence,attachments:attachments.some(row=>row.state==='submitted'),workspace:true,generatedWorkspace:!Boolean(await store.xiaozhiState.workspace(id))};
       },
       ...(owner?.goalId?{goal:createGoalRuntime({store,sessionId:id,goalId:owner.goalId,runId,
         current:()=>!closing&&active.get(id)===owner&&!owner.stopped,
@@ -583,10 +583,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         emit:image=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,{kind:'image_delivery',image});}}),
       educationSkills:true,managedSkills:{resources:()=>managedSkills.enabledResources(),sanitize:async text=>(await store.sanitizeProblemText(text)).sanitizedText},
       ...(!grant?{privateWorkspaceId:id}:approvals.callbacks(id,runId,workspace)),
-      ...(grant ? { officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
+      officeTextTools: wait => textChanges.tools(id, runId, wait),officeArtifactTools:wait=>officeArtifacts.tools(id,runId,wait),officeDocumentTools:createOfficeDocumentTools({sessionId:id,runId,
         resolve:target=>host.resolveFileWorkspace(target),isCurrent:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
-        sanitize:text=>sanitizeOfficeDocumentText(store,text)}) } : {}),
-      ...(grant||paperOutput?{classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})}}:{}),
+        sanitize:text=>sanitizeOfficeDocumentText(store,text)}),
+      classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:excluded=>getPiProtectedContext(store,id,excluded),
       memory:{runId,authority:()=>memory.authority(id),readSelected:(authority,signal)=>memory.readSelected(id,authority,signal),trace:()=>memory.trace(id)},
@@ -932,7 +932,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if(closing || choosing.has(id))throw new Error('busy');
       const detail=await store.getAiConversationSession(id);
       if(detail.session.archivedAt)throw new Error('permission_denied');
-      const grant=await store.xiaozhiState.workspace(id);if(!grant)throw new Error('no_workspace');
+      const grant=await store.xiaozhiState.workspace(id)||conversationOutput(options.dataRoot,id);
       if(closing||choosing.has(id))throw new Error('busy');
       if((await store.getAiConversationSession(id)).session.archivedAt)throw new Error('permission_denied');
       if(closing||choosing.has(id))throw new Error('busy');

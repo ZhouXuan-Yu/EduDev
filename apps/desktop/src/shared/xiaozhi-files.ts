@@ -3,7 +3,7 @@ export const XIAOZHI_FILES_SCHEMA = 'xiaozhi.files.v1' as const;
 export type XiaozhiFileError = 'invalid_input' | 'permission_denied' | 'no_workspace' | 'not_found' | 'changed'
   | 'too_large' | 'unsupported' | 'busy' | 'cancelled' | 'timeout' | 'read_failed' | 'needs_ocr' | 'parse_failed' | 'empty' | 'unavailable' | 'text_unreadable'
   | 'powerpoint_unavailable' | 'powerpoint_merge_failed';
-export type XiaozhiFileFormat = 'text' | 'markdown' | 'image' | 'science_demo' | 'office' | 'unsupported';
+export type XiaozhiFileFormat = 'text' | 'markdown' | 'image' | 'html' | 'science_demo' | 'office' | 'unsupported';
 export type XiaozhiFileEntry = { path: string; name: string; kind: 'directory' | 'file'; version: string; size: number; format: XiaozhiFileFormat };
 export type XiaozhiFileInput = { schemaVersion: typeof XIAOZHI_FILES_SCHEMA; sessionId: string; requestId: string; path: string; workspaceVersion?: string };
 export type XiaozhiPreviewInput = XiaozhiFileInput & { workspaceVersion: string; version: string };

@@ -81,6 +81,8 @@ export interface PiXiaozhiOptions {
   workspace: string;
   /** Actual host-authorized export directory; never supplied through renderer/model. */
   fileOutputWorkspace?:string;
+  /** Host-owned output folder used for reads without changing native session identity. */
+  fileReadWorkspace?:string;
   apiKey: string;
   model: string;
   sessionFile?: string;
@@ -304,7 +306,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if (officeEntries.some(entry => entry.type !== 'custom' || entry.customType !== 'xiaozhi.education.office-text.v1'
     || JSON.stringify(entry.data) !== JSON.stringify(officeIdentity)) || officeEntries.length && !options.officeTextTools) throw new Error('configuration');
   if (options.officeTextTools) {
-    if (!options.approveCopy) throw new Error('configuration');
+    if (!options.approveCopy&&!options.fileReadWorkspace) throw new Error('configuration');
     if (!manager.getBranch().some(entry => entry.type === 'custom' && entry.customType === 'xiaozhi.education.office-text.v1'))
       manager.appendCustomEntry('xiaozhi.education.office-text.v1', officeIdentity);
     names.push(...officeIdentity.tools);
@@ -322,7 +324,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(documentEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.office-document.v1'||JSON.stringify(entry.data)!==JSON.stringify(documentIdentity))
     ||documentEntries.length&&!options.officeDocumentTools)throw new Error('configuration');
   if(options.officeDocumentTools){
-    if(!options.approveCopy||options.officeDocumentTools.map(def=>def.name).join(',')!=='office_read_document')throw new Error('configuration');
+    if(!options.approveCopy&&!options.fileReadWorkspace||options.officeDocumentTools.map(def=>def.name).join(',')!=='office_read_document')throw new Error('configuration');
     if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.office-document.v1'))manager.appendCustomEntry('xiaozhi.education.office-document.v1',documentIdentity);
     names.push('office_read_document');
     prompt+='\n授权Office/PDF通过office_read_document读取必要正文，不用office_read_text当二进制文本。先实际读取再归纳，分批行范围避免发送整份原始资料；返回提取正文行位置并非原页码，引用实际来源标题/提取行。扫描/损坏/无法解码需如实说明，本地预览不等于正式导出。';
@@ -359,7 +361,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(artifactEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.office-artifact.v1'||JSON.stringify(entry.data)!==JSON.stringify(artifactIdentity))
     ||artifactEntries.length&&!options.officeArtifactTools)throw new Error('configuration');
   if(options.officeArtifactTools){
-    if(!options.approveCopy)throw new Error('configuration');
+    if(!options.approveCopy&&!options.fileReadWorkspace)throw new Error('configuration');
     if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.office-artifact.v1'))manager.appendCustomEntry('xiaozhi.education.office-artifact.v1',artifactIdentity);
     names.push('office_create_document');
     prompt+='\n授权目录可用office_create_document提出DOCX/PDF/XLSX/PPTX真实拟产物。按教师明确要求选择格式、新的相对文件名、标题/章节/段落/有限表格；不要把Office文件写成UTF8文本或凭空宣称已导出。sources只引用本次实读version，无实际源用空数组。工具会等待教师审阅修改或拒绝，只有saved回执与实际artifactId才表示交付；teacher本地修改无需模型再确认，最终正文未回传模型，完成后仅报告真实路径、格式与保存状态，不复述未重新实读的标题、段落或表格值。拒绝、停止或目标冲突后本轮不自动重放写入；教师后续重新发起任务时须重新核实来源/目标并提出新的拟内容与确认，旧批准不能复用。uncertain必须先只读核验效果，不得自动重写。更新已有binary用当前本会话artifactId作为parentArtifactId及新文件名，保留原文件，来源/记忆/技能不是新权限。';
@@ -615,8 +617,12 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let normalRequestAdmitted = false;
   const compactionResponses = new Set<Promise<unknown>>();
   const approveCopy:PiXiaozhiOptions['approveCopy']=options.approveCopy ? (copy,signal)=>budget!.wait(()=>options.approveCopy!(copy,signal)) : undefined;
-  let host = createHanaOfficeTools({ workspace, sessionId, runId: 'idle', excludedRoots: options.excludedRoots, fileVersion,
+  const fileWorkspace=options.fileReadWorkspace?fs.realpathSync(options.fileReadWorkspace):workspace;
+  let host = createHanaOfficeTools({ workspace:fileWorkspace, sessionId, runId: 'idle', excludedRoots: options.excludedRoots, fileVersion,
     networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, beforeCopy: options.beforeCopy, afterCopy: options.afterCopy });
+  if(options.fileReadWorkspace)prompt+='\n本会话有宿主管理的小智生成文件区，可创建与读取本会话成果；未授权其他私人目录。制作文件直接调用已注册工具，按现有审阅确认保存，不要求教师先选择技术技能或工作目录。';
+  if(options.officeTextTools)prompt+='\n需要数值联动、滑块、Canvas或动画的通用教学HTML时直接office_create_text创建完整自包含页面；Anatomy仅用于真实结构装配图，不强制把物理实验或所有科普内容转为40至80实体。HTML用saved_text，PPT用office_create_document并登记saved_office；要求两份文件时分别实际交付。';
+  providerPrompt=prompt;
   const officeDefinitions = options.officeTextTools?.(action => budget!.wait(action)) || [];
   if (options.officeTextTools && officeDefinitions.map(def => def.name).join(',') !== 'office_create_text,office_edit_text,office_create_science_figure') throw new Error('configuration');
   const artifactDefinitions=options.officeArtifactTools?.(action=>budget!.wait(action))||[];
@@ -677,7 +683,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const manifests=manifestForTools(taskDefinitions,trustedMcpNames);
   const outputWorkspace=options.fileOutputWorkspace?fs.realpathSync(options.fileOutputWorkspace):workspace;
   if(!fs.statSync(outputWorkspace).isDirectory())throw Error('configuration');
-  const toolBoundary=createToolExecutionBoundary({trustedMcpNames,sessionId,workspaceKey:`workspace:${workspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
+  const toolBoundary=createToolExecutionBoundary({trustedMcpNames,sessionId,workspaceKey:`workspace:${fileWorkspace.toLowerCase()}`,outputWorkspaceKey:`workspace:${outputWorkspace.toLowerCase()}`,registry:executions,
     epoch:()=>runId,current:epoch=>epoch===runId&&running&&!interrupted&&!disposed&&!memoryFailure,
     waiting:()=>budget?.snapshot().state==='waiting',onWaiting:fn=>{waitingListeners.add(fn);return()=>waitingListeners.delete(fn);},
     beforeDelivery:async(callId,tool,signal,input)=>{await checkMemory();signal.throwIfAborted();await options.beforeDelivery?.({kind:'tool',callId,tool,input},signal);signal.throwIfAborted();await checkMemory();signal.throwIfAborted();budget!.tool(callId);},
@@ -1034,7 +1040,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       budget=createPiRunBudget({budget:limits,runId,limitsEnforced:options.limitsEnforced,onWaiting:waitingChanged,emit:usage=>emit({kind:'usage',usage}),abort:()=>{
         phaseController.abort();executions.abortBySession({sessionId},'Run budget exhausted');session.clearQueue();instructions.clear();autoAbort?.abort();session.abortCompaction();void session.abort();
       }});
-      host = createHanaOfficeTools({ workspace, sessionId, runId, excludedRoots: options.excludedRoots, fileVersion, networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, limitsEnforced:options.limitsEnforced, beforeCopy: options.beforeCopy, afterCopy: options.afterCopy });
+      host = createHanaOfficeTools({ workspace:fileWorkspace, sessionId, runId, excludedRoots: options.excludedRoots, fileVersion, networkAllowed: false, approveCopy, copyWaitMs:limits.waitMs, limitsEnforced:options.limitsEnforced, beforeCopy: options.beforeCopy, afterCopy: options.afterCopy });
       runTools = new Map(createHanaRunToolScope(taskDefinitions,options.limitsEnforced!==false).map(def => [def.name, def]));
       emit({ kind: 'status', status: 'running' });
       budget.start(); watchMemory();

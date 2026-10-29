@@ -1,5 +1,10 @@
 # 当前架构
 
+## 2026-10-29 默认产物与HTML的实际接入
+
+E01部分接通：conversation-output提供稳定生成目录，production-host默认注册文本/Office/document工具并解析文件租约，pi-session通过独立fileReadWorkspace保持旧cwd和fingerprint。HTML沿原change账本，shared离线策略→opaque iframe→主窗子frame请求/导航限制；原ScienceDemo专属导出仍独立。无DDL/新IPC/新依赖，回退不删文件或旧记录。
+
+
 ## 2026-10-29 新能力规格的架构边界
 
 ../product/PRD-XIAOZHI-AGENT-DELIVERY.md定义待实施逻辑契约、现有schema缺口与复用/兼容/回退要求，不代表已新建表/IPC/Worker。保持Pi唯一Runtime、SQLite/本地文件真源；具体映射在WP .01冻结，新增PPT备注/通用HTML等须同时贯通契约到真实输出。

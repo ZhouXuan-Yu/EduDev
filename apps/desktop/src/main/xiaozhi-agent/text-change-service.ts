@@ -1,4 +1,5 @@
 import {renderScienceFigure} from './science-figure';
+import {prepareHtmlArtifact} from '../../shared/html-artifact';
 import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
@@ -89,7 +90,9 @@ export function createTextChangeService(options: {
       signalCheck(signal);
       if (!options.isCurrent(sessionId, runId) || !callId || callId.length > 128) throw new Error('permission_denied');
       const input = textProposalInput(anatomy ? {operation:'create',...renderScienceFigure(raw)} : raw);
-      if (/\.(svg|html)$/i.test(input.path) && !anatomy) throw new Error('permission_denied');
+      if (/\.svg$/i.test(input.path) && !anatomy) throw new Error('permission_denied');
+      if(input.operation==='create'&&!input.content.trim())throw Error('invalid_input');
+      if(/\.html$/i.test(input.path)&&!anatomy&&input.operation==='create')input.content=prepareHtmlArtifact(input.content);
       const root = await authority(sessionId), inputHash = changeHash(JSON.stringify(input));
       const existing = await state.call(sessionId, runId, callId);
       if (existing) {
@@ -99,6 +102,10 @@ export function createTextChangeService(options: {
       const before = read(root, input.path);
       if (input.operation === 'edit' ? before === null : before !== null) throw new Error(input.operation === 'edit' ? 'not_found' : 'conflict');
       const proposal = await prepareTextEdit(root, input, before, callId, signal);
+      if(/\.html$/i.test(input.path)&&!anatomy) {
+        // The displayed diff and the installed bytes must include the same offline policy.
+        if(prepareHtmlArtifact(proposal.after.toString('utf8'))!==proposal.after.toString('utf8'))throw Error('invalid_input');
+      }
       signalCheck(signal);
       if (!options.isCurrent(sessionId, runId) || root !== await authority(sessionId)) throw new Error('permission_denied');
       const row = await state.create({ sessionId, runId, callId, operation: input.operation,
