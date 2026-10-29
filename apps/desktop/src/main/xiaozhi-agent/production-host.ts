@@ -52,6 +52,7 @@ import {createPublicImageRuntime} from './public-image-runtime';
 import {PUBLIC_IMAGE_APPROVE,PUBLIC_IMAGE_REJECT} from '../../shared/xiaozhi-public-images';
 import {validXiaozhiStart,ATTACHMENT_ONLY_PROMPT} from '../../shared/xiaozhi-start';
 import {createPiWebTools} from './web-tools';
+import {resolveThinkingPolicy,isThinkingContinuation} from './answer-quality';
 import {createXiaozhiBrowserHost} from './browser-host';
 import {createPiBrowserTools} from './browser-tools';
 import {createQuestionContextProvider} from '../education/question-context-provider';
@@ -135,7 +136,7 @@ import { validEventsInput, type XiaozhiEventsInput } from '../../shared/xiaozhi-
 import type { XiaozhiAgentError, XiaozhiAgentEvent, XiaozhiAgentEventPayload, XiaozhiStartInput, XiaozhiStartResult, XiaozhiWorkspaceSnapshot } from '../../shared/xiaozhi-agent';
 
 type Agent = Awaited<ReturnType<typeof import('./pi-session')['createPiXiaozhiSession']>>;
-type Active = { task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
+type Active = { unfinishedThinkingTask?:string; task?:import('../../shared/xiaozhi-task').TaskView; teacherPreferenceRevision?:number; runId: string; commandId: string; goalId?:string; operation: 'prompt' | 'compact'; turn: OfficeProjectedTurn; agent?: Agent; stopped: boolean; abort: AbortController; sequence: number; done?: Promise<void>; instructions:Set<string>; usage:XiaozhiUsage; usageWrites:Promise<void>; officePresentation?:ReturnType<typeof createOfficeDeliveryPresentation>; verification?:ReturnType<typeof createRunVerification>; results?:ReturnType<typeof createRunResultReadback>; readResults?:ReturnType<typeof bindNativeResultReadback>; publisher?:ReturnType<typeof createEventPublisher>; pendingEvents?:XiaozhiAgentEventPayload[];receiptCaptures?:Map<string,ReceiptCapture> };
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
@@ -531,6 +532,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     if(sessionFile && (!inside(root,sessionFile) || binding?.model!==settings.model))throw new Error('configuration');
     const ledger=await store.xiaozhiState.modelSwitch?.current(id), coordinator=modelCoordinator(id,owner);
     const web = await store.xiaozhiState.modelSettings.web();
+    const thinking=await modelSettings.thinking(id);
+    const unfinished=owner?.unfinishedThinkingTask;
+    const taskDepth=unfinished&&isThinkingContinuation(unfinished)&&thinking.lastRun?.mode==='deep'?'深入教学任务':unfinished;
+    const thinkingPolicy=resolveThinkingPolicy(cleanPrompt,capabilities,thinking.session?.choice??thinking.global.choice??'auto',thinking.session?.choice?'session':'global',taskDepth);
     const studentId=(await store.getAiConversationSession(id)).session.studentId||'';
     let observedLearning:(Awaited<ReturnType<typeof store.studentContext.learningSnapshot>>&{reviewVersion:number})|undefined;
     const observedMaterials=new Map<string,string>();
@@ -540,7 +545,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     const observedEnrichmentQuestions=new Map<string,QuestionContextSource>();
     let webAnswerRuntime:ReturnType<typeof createQuestionWebAnswerTools>|undefined;
     const questionAliases:QuestionAliases=new Map();let observedMistakeLearning:ObservedMistakeLearning|undefined;
-    try { return {stateRoot,workspace,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
+    try { return {stateRoot,workspace,thinkingPolicy,fileOutputWorkspace:await resolvePaperOutput(id)||workspace,...(!grant?{fileReadWorkspace:conversationOutput(options.dataRoot,id).path}:{}),apiKey:settings.apiKey,model:settings.model,sessionFile,budget,limitsEnforced:false,capabilities,mcpTools:scopeQuestionWebExternalTools(mcpTools.definitions,()=>observedEnrichmentQuestions.size>0),mcpDispose:mcpTools.dispose,
       sourceAvailability:async()=>{
         const [presence,attachments]=await Promise.all([store.getChatSourcePresence(),store.xiaozhiState.attachments.list(id)]);
         return {...presence,attachments:attachments.some(row=>row.state==='submitted'),workspace:true,generatedWorkspace:!Boolean(await store.xiaozhiState.workspace(id))};
@@ -671,6 +676,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const { createPiXiaozhiSession } = await import('./pi-session');
       if (run.stopped) throw new Error('cancelled');
       const base=await preparing(()=>sessionConfiguration(id,{apiKey,model:settings.model},run.runId,capabilities,run.usage.budget,cleanPrompt,run));
+      if(base.thinkingPolicy)await preparing(()=>store.xiaozhiState.modelSettings.saveThinkingRun(id,{...base.thinkingPolicy!,runId:run.runId,model:settings.model}));
       const priorProtectedContext=base.protectedContext,preferenceText=teacherPreferenceContext(preference.snapshot,preference.action)+('trial'in preference&&preference.trial?teacherPreferenceTrialContext(preference.trial):'')+(preference.action==='observed'?teacherPreferenceCorrectionContext(implicitTeacherCorrection(cleanPrompt)):'');
       // Freeze one evaluated version for this run; stable system/tool prefix is unchanged.
       base.protectedContext=async excluded=>(await priorProtectedContext?.(excluded)||'')+preferenceText;
@@ -1020,6 +1026,10 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       try{return await modelSettings.balance(controller.signal);}finally{balanceQueries.delete(controller);}
     },
     async saveWebSettings(input:XiaozhiWebInput) { return mutateSettings(()=>store.xiaozhiState.modelSettings.saveWeb(input,()=>{if(closing||!configuring.has('provider'))throw new Error('busy');})); },
+    async saveThinkingSettings(input:import('../../shared/xiaozhi-thinking').ThinkingInput){
+      const value=await mutateSettings(()=>modelSettings.saveThinking(input));
+      return {...value,locked:settingsBusy()};
+    },
     async verifyModelCredential(input:XiaozhiCredentialInput) {return mutateSettings(()=>modelSettings.verify(input));},
     async saveModelSettings(input: XiaozhiSettingsInput) {
       const value = await mutateSettings(() => modelSettings.save(input));
@@ -1216,6 +1226,11 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         await phase(()=>beginJournal(id, run));
         publicEvent(id, run, { kind: 'status', status: 'running' });
         await phase(()=>run.publisher!.flush());
+        const priorThinkingTask=await phase(()=>tasks.committed(id));
+        if(priorThinkingTask&&!['completed','ended'].includes(priorThinkingTask.state)){
+          run.unfinishedThinkingTask=detail.messages.find(message=>message.id===priorThinkingTask.origin.messageId)?.content
+            ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
+        }
         if(operation==='prompt')run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!));else await phase(()=>tasks.compact(id,run.publisher!));
         if(closing||run.stopped)throw Error('cancelled');
         run.done = execute(id, input.prompt.trim(), run, settings);

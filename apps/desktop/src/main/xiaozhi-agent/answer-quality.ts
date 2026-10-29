@@ -1,4 +1,5 @@
 import type {XiaozhiModelCapabilities} from '../../shared/xiaozhi-agent';
+import { supportedThinking, type ThinkingChoice, type ThinkingDecision } from '../../shared/xiaozhi-thinking';
 
 /** Main-only rollback/controlled A/B. Never supplied by the model or renderer. */
 export function answerQualityEnabled() { return process.env.XIAOZHI_ANSWER_QUALITY !== 'legacy'; }
@@ -14,6 +15,35 @@ export function resolveAnswerPolicy(text:string, capacity?:XiaozhiModelCapabilit
     &&Number.isSafeInteger(capacity.contextWindow)&&capacity.contextWindow>=4096;
   return {mode,thinking:mode==='deep'?'high':mode==='standard'?'medium':'low',
     maxOutputTokens:verified?Math.min(requested,capacity.maxOutputTokens,Math.floor(capacity.contextWindow/2)):4096};
+}
+
+export const isThinkingContinuation=(text:string)=>/^(继续|可以|好的|好|行|没问题|接着做|继续完成|就这样)[！!。\s]*$/u.test(text.trim());
+export function resolveThinkingPolicy(text:string, capacity?:XiaozhiModelCapabilities,
+  requested:ThinkingChoice='auto', scope:ThinkingDecision['scope']='global', unfinishedTask=''):ThinkingDecision {
+  const taskText=isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text;
+  const route=resolveAnswerPolicy(/课件|演示|ppt|html|生成.*(文件|文档)/iu.test(taskText)?'详细 '+taskText:taskText, capacity);
+  const supported=supportedThinking(capacity);
+  const reason=supported.length===1?'capability_unknown':!supported.includes(requested)?'unsupported_choice':undefined;
+  let effective:ThinkingChoice=reason?'auto':requested;
+  if(effective==='auto'&&supported.length>1){
+    const levels=capacity!.effort!.supportedLevels;
+    effective=!levels.length||route.mode==='fast'?'off':route.mode==='deep'?(levels.includes('high')?'high':levels.at(-1)!):(levels.includes('low')?'low':capacity!.effort!.defaultLevel||levels[0]);
+  }
+  const budget=effective==='max'?32768:effective==='high'?16384:effective==='low'?8192:effective==='off'?4096:route.maxOutputTokens;
+  const verified=capacity&&!capacity.stale;
+  return {requested,effective,scope,mode:route.mode,thinkingType:effective==='off'?'disabled':'enabled',
+    ...(effective==='auto'?{}:{effort:effective==='off'?'none':effective}),
+    maxOutputTokens:verified?Math.min(budget,capacity.maxOutputTokens,Math.floor(capacity.contextWindow/2)):4096,
+    ...(reason?{reason}:{})};
+}
+
+/** The final provider payload is authoritative, including tool and compaction calls. */
+export function applyThinkingPayload(payload:unknown, decision:ThinkingDecision):unknown {
+  if(!payload||typeof payload!=='object'||Array.isArray(payload))throw Error('configuration');
+  const value={...payload,thinking:{type:decision.thinkingType},max_tokens:decision.maxOutputTokens} as Record<string,unknown>;
+  delete value.reasoning_effort;
+  if(decision.effort)value.reasoning_effort=decision.effort;
+  return value;
 }
 
 export const ANSWER_QUALITY_PROMPT = `回答先满足教师当前问题，先给有用结论，再按需要解释；能合理假设的事项标明假设，不反复澄清。

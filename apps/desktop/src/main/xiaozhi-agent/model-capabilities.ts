@@ -18,10 +18,16 @@ export function parseDeepSeekCapabilities(raw: unknown, observedAt: string): Dee
       || !integer(entry.context_window) || !integer(entry.max_output_tokens) || Number(entry.max_output_tokens) > Number(entry.context_window)) throw new Error('configuration');
     ids.add(entry.id);
     const input = entry.input_modalities;
+    const effort=entry.effort as {supported_levels?:unknown;default_level?:unknown}|undefined;
+    if(effort!==undefined&&(!effort||!Array.isArray(effort.supported_levels)
+      ||effort.supported_levels.length>3||new Set(effort.supported_levels).size!==effort.supported_levels.length
+      ||effort.supported_levels.some(level=>!['low','high','max'].includes(String(level)))
+      ||effort.default_level!==undefined&&!effort.supported_levels.includes(effort.default_level)))throw Error('configuration');
     if (input !== undefined && (!Array.isArray(input) || !input.length || input.length > 2
       || !input.includes('text') || new Set(input).size !== input.length || input.some(value => value !== 'text' && value !== 'image'))) throw new Error('configuration');
     return { id: entry.id, name: typeof entry.name === 'string' ? entry.name.slice(0, 160) : entry.id,
       contextWindow: Number(entry.context_window), maxOutputTokens: Number(entry.max_output_tokens),
+      ...(effort?{effort:{supportedLevels:[...effort.supported_levels as ('low'|'high'|'max')[]],...(effort.default_level?{defaultLevel:effort.default_level as 'low'|'high'|'max'}:{})}}:{}),
       ...(input === undefined ? {} : { inputModalities: [...input] as ('text' | 'image')[] }), observedAt, source: 'official' as const };
   });
   return { version: 1, endpoint: ENDPOINT, observedAt, models };
@@ -33,6 +39,7 @@ export async function readDeepSeekCatalogue(root: string): Promise<DeepSeekCatal
     const saved = JSON.parse(await fs.readFile(file, 'utf8')) as DeepSeekCatalogue;
     if (saved.version !== 1 || saved.endpoint !== ENDPOINT || !Number.isFinite(Date.parse(saved.observedAt)) || Date.parse(saved.observedAt) > Date.now() + 60000) return undefined;
     const catalogue = parseDeepSeekCapabilities({ object: 'list', data: saved.models.map(item => ({ id: item.id, name: item.name, context_window: item.contextWindow, max_output_tokens: item.maxOutputTokens,
+      ...(item.effort?{effort:{supported_levels:item.effort.supportedLevels,...(item.effort.defaultLevel?{default_level:item.effort.defaultLevel}:{})}}:{}),
       ...(item.inputModalities === undefined ? {} : { input_modalities: item.inputModalities }) })) }, saved.observedAt);
     return { ...catalogue, models: catalogue.models.map(item => ({ ...item, source: 'cache', stale: Date.now() - Date.parse(saved.observedAt) > TTL })) };
   } catch { return undefined; }
@@ -75,7 +82,7 @@ export async function fetchDeepSeekCatalogue(root: string, apiKey: string, signa
 }
 export async function resolveDeepSeekCapabilities(root: string, id: string, apiKey: string, signal?: AbortSignal): Promise<XiaozhiModelCapabilities | undefined> {
   const cached = await readDeepSeekCapabilities(root, id);
-  if (cached && !cached.stale && cached.inputModalities) return cached;
+  if (cached && !cached.stale && cached.inputModalities && cached.effort) return cached;
   let catalogue: DeepSeekCatalogue;
   try { catalogue = await fetchDeepSeekCatalogue(root, apiKey, signal); }
   catch (error) {
