@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-10-29 整包文件薄编排
+
+E01整包工具已贯通原文件/Office服务、schema1引用元数据、typed IPC、正式整包卡和saved_bundle全文件独立核验；2–8份草稿一次审阅确认，PPT改稿使旧确认失效，拒绝不写新文件。HTML成功/PPT失败保留部分成果；可见续做进入新轮，只重提未完成PPT，HTML账本数/文件mtime不变。未知PPT提交先只读核验，已落盘文件不重写。连续事件刷新原8次重试误失败已修为有界等待稳定，不能只用DB状态宣称界面通过。
+
+元数据不保存第二份正文；新增saved_bundle任务类型及附加native identity，旧创建/Office身份不变。
+
 ## 2026-10-29 统一导入题核验资格
 
 共享archiveEligible增加无AI导入来源的明确核验条件，沿现Pi/检索fact/组卷/题本消费，无新schema/IPC/表。MaterialQuestionArchive及QuestionWebAnswerRepository按同一资格写派生needs_attention；迁移仅回填未标记旧成员，不改原始事实。无AI规则题仍可在题本编辑/核验，不能因字段齐全或联网补答自动升级。
