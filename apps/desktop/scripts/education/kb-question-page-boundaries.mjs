@@ -1,0 +1,12 @@
+import '../office-agent/register-source.mjs';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
+const {extractMaterialQuestions}=await import('../../src/main/assets/material-question-extract.ts');
+const rid='resource_'+randomUUID(),version='a'.repeat(64),header1='学科：物理\n年级：高一\n知识点：匀速运动\n题型：解答题\n难度：中等\n',header2='学科：数学\n年级：初二\n知识点：算术\n题型：解答题\n难度：简单\n';
+const unit=(text,page,offset)=>({resourceId:rid,version,title:'原始扫描册',offset,chunk:{id:'chunk_'+randomUUID(),chunkIndex:offset,contentMd:text,containsPersonalData:false,pageNumber:page}});
+const first=header1+'第1题 已知物体匀速运动，速度2m/s，求3秒路程。\n【答案】6m\n【解析】路程等于速度乘时间。';
+let checks=0;
+const questions=extractMaterialQuestions([unit(first,1,0),unit(header2+'第2题 计算7+8。\n【答案】15\n【解析】7与8相加得到15。',2,1)],'pdfium-5.14.0-rapidocr-3.9.2-file.v3');
+assert.equal(questions.length,2);assert.equal(questions[0].fields.subject,'物理','Next-page header must not overwrite the previous question subject');assert.equal(questions[0].fields.grade,'高一');assert.equal(questions[1].fields.subject,'数学');assert.equal(questions[1].fields.grade,'初二');checks++;
+assert.deepEqual(questions[0].archive.sources.map(s=>s.offset),[0],'Unused next-page preamble must not add a cross-page source to a complete previous question');assert(!questions[0].archive.sourceRisks.includes('cross_chunk'));assert.deepEqual(questions[1].archive.sources.map(s=>s.offset),[1]);checks++;
+const cross=extractMaterialQuestions([unit('学科：数学\n第1题 已知x，',1,0),unit('补充条件：x=2，求x+1。\n【答案】3\n【解析】代入得到3。\n第2题 计算7+8。\n【答案】15\n【解析】相加。',2,1)],'pdfium-5.14.0-rapidocr-3.9.2-file.v3');assert.equal(cross.length,2);assert(cross[0].fields.stem.includes('x=2'));assert.deepEqual(cross[0].archive.sources.map(s=>s.offset),[0,1]);assert(cross[0].archive.sourceRisks.includes('cross_chunk'));checks++;
+const samePage=extractMaterialQuestions([unit(first,1,0),unit(header2+'第2题 计算7+8。\n【答案】15\n【解析】相加。',1,1)],'local-text-v1');assert(samePage[0].archive.sourceRisks.includes('cross_chunk'),'A metadata-only fragment without a distinct page boundary is not enough to discard source evidence');checks++;
+console.log(JSON.stringify({success:true,checks,scope:'Actual deterministic extractor; page-local metadata and exact source spans, retaining true cross-page and ambiguous same-page boundaries. Not OCR/model quality.'}));

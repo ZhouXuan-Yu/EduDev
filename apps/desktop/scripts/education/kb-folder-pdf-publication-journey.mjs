@@ -1,0 +1,56 @@
+import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron} from 'playwright';
+const desktop=process.cwd(),output=fs.mkdtempSync(path.join(os.tmpdir(),'omni-folder-pdf-publish-')),folder=path.join(output,'教师资料'),data=path.join(output,'data'),profile=path.join(output,'profile'),file=path.join(folder,'大文件双页.pdf');fs.mkdirSync(folder);
+const python=process.env.OMNI_EDU_FIXTURE_PYTHON||'C:/Users/ZhouXuan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe';
+execFileSync(python,['-c',`import io,os,sys
+from pypdf import PdfReader,PdfWriter
+from PIL import Image,ImageDraw,ImageFont
+images=[]
+for n,expr,ans,explanation in [(1,'6 + 4','10','6与4相加得到10。'),(2,'7 + 8','15','7与8相加得到15。')]:
+ im=Image.new('RGB',(1000,650),'white');d=ImageDraw.Draw(im);font=ImageFont.truetype('C:/Windows/Fonts/msyh.ttc',32)
+ for i,t in enumerate(['学科：数学','年级：初二','知识点：算术','题型：解答题',f'第{n}题 计算 {expr}。',f'【答案】{ans}',f'【解析】{explanation}']):d.text((40,35+i*70),t,font=font,fill='black')
+ images.append(im)
+b=io.BytesIO();images[0].save(b,format='PDF',resolution=72,save_all=True,append_images=images[1:]);b.seek(0)
+doc=PdfWriter();doc.append_pages_from_reader(PdfReader(b));doc.add_attachment('synthetic-size-fixture.bin',os.urandom(52*1024*1024))
+with open(sys.argv[1],'wb') as output:doc.write(output)`,file],{windowsHide:true});
+const digest=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex'),originalHash=digest(file);
+const report={output,fileBytes:fs.statSync(file).size,checks:[],rendererErrors:[],scope:'Actual Electron UI, >50MiB valid PDF with two raster OCR pages and a 52MiB incompressible embedded fixture, actual local file Worker/SQLite/source publication and restart; two transport gates and model HTTP controlled. Not real teacher corpus, paid model quality, 40GB, peak memory or installer acceptance'};assert(report.fileBytes>50*1024*1024);
+let app,page;const sql=(q,p=[])=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(q).all(...p);}finally{db.close();}};
+const until=async(fn,timeout=240000)=>{const end=Date.now()+timeout;while(Date.now()<end){const value=await fn();if(value)return value;await new Promise(r=>setTimeout(r,150));}throw Error('PDF publication journey timed out');};
+async function launch(hook){
+ const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1'};for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL','DEEPSEEK_API_KEY'])delete env[k];
+ app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});
+ await app.evaluate((_electron,{hook})=>{
+  const cp=process.getBuiltinModule('child_process'),spawn=cp.spawn;globalThis.pdfPublicationProbe={phase:'initial',calls:0,hooked:0};const probe=globalThis.pdfPublicationProbe;
+  if(hook){cp.spawn=function(...args){const child=spawn.apply(this,args);if(!String(args[0]).endsWith('omni-edu-ocr.exe')||!child.stdin||!child.stdout)return child;
+   let parsing=false;const write=child.stdin.write.bind(child.stdin);child.stdin.write=(chunk,...rest)=>{try{if(JSON.parse(String(chunk)).operation==='parse')parsing=true;}catch{}return write(chunk,...rest);};
+   const iterator=child.stdout[Symbol.asyncIterator].bind(child.stdout);child.stdout[Symbol.asyncIterator]=async function*(){for await(const chunk of iterator()){
+    if(parsing){const events=String(chunk).split('\n').flatMap(line=>{try{return[JSON.parse(line)];}catch{return[];}});
+     if(events.some(e=>e.kind==='page'&&e.page===2)&&!probe.pageHeld){probe.pageHeld=true;probe.hooked++;probe.phase='page_processing';await new Promise(resolve=>{probe.release=resolve;});}
+     if(events.some(e=>e.kind==='finished')&&!probe.publishHeld){probe.publishHeld=true;probe.hooked++;probe.phase='before_publication';await new Promise(resolve=>{probe.release=resolve;});}
+    }yield chunk;
+   }};return child;};process.getBuiltinModule('module').syncBuiltinESMExports();}
+  for(const owner of [globalThis,_electron.net]){const ordinary=owner.fetch.bind(owner);owner.fetch=async(url,options)=>{
+   const address=new URL(typeof url==='string'?url:url.url||url.href);if(address.origin!=='https://api.deepseek.com')return ordinary(url,options);
+   if(address.pathname==='/v1/models')return new Response(JSON.stringify({object:'list',data:[{id:'deepseek-flash',context_window:1048576,max_output_tokens:65536,input_modalities:['text','image']}]}),{status:200,headers:{'content-type':'application/json'}});
+   if(!/chat\/completions/.test(address.pathname))throw Error('Unexpected model route');const body=JSON.parse(options.body),context=JSON.parse(body.messages[1].content[0].text);assertImage(body);
+   probe.calls++;const second=context.material.replace(/\s/g,'').includes('7+8'),stem=second?'计算 7 + 8。':'计算 6 + 4。',answer=second?'15':'10',analysis=second?'7与8相加得到15。':'6与4相加得到10。';
+   const projection=Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(k=>[k,{state:k==='statement'?'provided':'not_applicable',text:k==='statement'?stem:''}]));
+   const q={number:second?'2':'1',stem,answer,analysis,subject:'数学',grade:'初二',knowledgePoint:'算术',questionType:'解答题',difficulty:'medium',answerOrigin:'ai_generated',analysisOrigin:'ai_generated',requiresImage:false,issues:[],projection};
+   return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:JSON.stringify({schemaVersion:'xiaozhi.material-ai-image-response.v1',outcome:'questions',questions:[q]})}}]}),{status:200,headers:{'content-type':'application/json'}});
+  };}
+  function assertImage(body){if(body.messages[1].content.filter(c=>c.type==='image_url').length!==1||!body.messages[0].content.includes('[OCR还原规则 v1]'))throw Error('Expected real page image and restoration prompt');}
+ },{hook});
+ page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});await page.locator('[data-testid="product-nav-materials"]:visible').click();
+}
+try{
+ await launch(true);const settings=await page.evaluate(()=>window.omniEdu.getXiaozhiSettings().then(s=>window.omniEdu.saveXiaozhiSettings({schemaVersion:'xiaozhi.settings.v1',version:s.value.version,defaultModel:'deepseek-flash',apiKey:'controlled-pdf-not-real-network'})));assert(settings.ok);
+ await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},folder);await page.getByTestId('materials-import-folder').click();const id=await until(()=>sql('SELECT id FROM material_import_batches WHERE root_path=?',[folder])[0]?.id);
+ await until(()=>app.evaluate(()=>globalThis.pdfPublicationProbe.phase==='page_processing'));const card=page.getByTestId('folder-ai-'+id);await card.locator('summary').click();await card.getByTestId('folder-ai-open-authorization').click();await card.getByTestId('folder-ai-budget').fill('4');await card.getByTestId('folder-ai-public').check();await card.getByTestId('folder-ai-consent').check();await until(async()=>!await card.getByTestId('folder-ai-authorize').isDisabled());await card.getByTestId('folder-ai-authorize').click();
+ await new Promise(r=>setTimeout(r,3200));assert.equal(sql("SELECT COUNT(*) n FROM material_pdf_pages WHERE status='processing'")[0].n,1);assert.equal(sql('SELECT COUNT(*) n FROM material_folder_ai_units')[0].n,0);assert.equal((await app.evaluate(()=>globalThis.pdfPublicationProbe.calls)),0);report.checks.push('Actual second-page processing plus staged first page creates no false failed unit or model request');
+ await app.evaluate(()=>{globalThis.pdfPublicationProbe.release();});await until(()=>app.evaluate(()=>globalThis.pdfPublicationProbe.phase==='before_publication'));await new Promise(r=>setTimeout(r,3200));assert.equal(sql("SELECT COUNT(*) n FROM material_pdf_pages WHERE status='complete'")[0].n,2);assert.equal(sql('SELECT COUNT(*) n FROM resource_chunks')[0].n,0);assert.equal(sql('SELECT COUNT(*) n FROM material_folder_ai_units')[0].n,0);assert.equal(await app.evaluate(()=>globalThis.pdfPublicationProbe.calls),0);report.checks.push('Both real OCR pages staged before canonical publication stay waiting with zero AI requests');
+ report.mainRssBeforePublication=await app.evaluate(()=>process.memoryUsage().rss);await app.evaluate(()=>{globalThis.pdfPublicationProbe.release();});
+ const final=await until(async()=>{const v=await page.evaluate(id=>window.omniEdu.getMaterialFolderAi({schemaVersion:'xiaozhi.material-folder-ai.v1',batchId:id}),id);return v?.status==='complete'||v?.status==='attention'?v:undefined;});report.final=final;assert.equal(final.status,'complete',JSON.stringify(final));assert.equal(final.readyQuestions,2);assert.equal(final.calls,4);assert.equal(final.review+final.failed,0);assert.equal(sql('SELECT COUNT(*) n FROM material_ai_task_keys')[0].n,2);assert.equal((await page.evaluate(()=>window.omniEdu.listQuestionNotebook({limit:20}))).total,2);assert.equal(digest(file),originalHash);report.checks.push('After actual publication both pages finish original-image two-pass processing in the same bank without duplicate children');
+ report.mainRssAfter=await app.evaluate(()=>process.memoryUsage().rss);report.modelCalls=await app.evaluate(()=>globalThis.pdfPublicationProbe.calls);await page.screenshot({path:path.join(output,'complete-1366.png'),fullPage:true});await app.close();app=undefined;
+ await launch(false);await page.setViewportSize({width:1920,height:1080});const cold=await page.evaluate(id=>window.omniEdu.getMaterialFolderAi({schemaVersion:'xiaozhi.material-folder-ai.v1',batchId:id}),id);assert.equal(cold.readyQuestions,2);assert.equal(cold.calls,4);assert.equal((await page.evaluate(()=>window.omniEdu.listQuestionNotebook({limit:20}))).total,2);await new Promise(r=>setTimeout(r,2700));assert.equal(await app.evaluate(()=>globalThis.pdfPublicationProbe.calls),0);assert.equal(digest(file),originalHash);report.checks.push('Native restart retains original hash, two AI questions and four-call ledger without another request');assert.deepEqual(report.rendererErrors,[]);await page.screenshot({path:path.join(output,'cold-1920.png'),fullPage:true});report.success=true;
+}catch(e){report.success=false;report.error=e.stack||String(e);process.exitCode=1;if(page)await page.screenshot({path:path.join(output,'failure.png'),fullPage:true}).catch(()=>{});}
+finally{if(app){await app.evaluate(()=>globalThis.pdfPublicationProbe?.release?.()).catch(()=>{});await app.close();}fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));}

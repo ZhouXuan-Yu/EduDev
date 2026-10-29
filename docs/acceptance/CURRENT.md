@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-29 长PDF发布窗口
+
+8调度/4页抽题边界及实际54.6MB双页PDF Electron4项通过，实际OCR/SQLite、模型HTTP受控；两个等待窗口不误判/不发云，最终同题本2AI题、冷启无重发。旧失败、空页和源变化仍严格隔离。build/240与综合最终状态、初次fixture和产品失败均记录goal/KB_IMPLEMENTATION_EVIDENCE；无40GB或自然模型正确率声明。
+
 ## 2026-10-29 E02工程证据
 
 代码352e350，整合远端873bf30后的运行源码2acf669。最终12项正式Electron/合成SSE检查、7项源码策略与SQLite检查和240组件通过；构建/type、合并后综合207/207通过；精确命令与结果记录在 docs/research/AGENT_THINKING_E02_20261029.json。0真实付费请求、无新依赖；npm audit既有23项（8高/7中/8低），本轮未修改依赖。

@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 PDF本地发布与目录AI隔离
+
+PDF页回执/暂存chunks与canonical resource_chunks继续由原publish隔离；目录AI在发布就绪后取来源，不引入另一份正文真源。现folder表新增plan_cursor及两个派生部分索引，小批8资源轮转，旧未计费误判页按同版本证据恢复。规则抽题按明确原页边界排除后一题元数据前言，不丢真正跨页条件；共享协议/typed IPC/主页面不变。
+
 ## 2026-10-29 E02薄适配
 
 沿原模型设置State/API、原互斥锁、typed preload、正式composer与唯一Pi Runtime添加thinking契约；独立可选app_settings键/CAS，无新表/业务事实库/运行循环。主进程按官方能力冻结策略，最后payload覆盖普通与工具续轮/压缩的三个参数；完整请求门校验同一输出预算。最近准备配置不冒充已发请求。

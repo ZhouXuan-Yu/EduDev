@@ -4,6 +4,14 @@ import {createHash} from 'node:crypto';
 import type {MaterialAiRepository} from './material-ai-repository';
 import type {MaterialWordRepository} from './material-word-repository';
 type Row=Record<string,unknown>;type Value=string|number|null;
+const readable="'ready','partial','parsed','chunked','indexed','graph_extracted'";
+// Only unbilled legacy scheduling errors may be re-queued, after the same page was actually published.
+const recoverable=`u.state='review' AND u.ai_batch_id='' AND u.error IN ('local_page_failed','unavailable')
+ AND r.content_hash=u.version AND j.version=u.version AND j.state IN ('complete','partial')
+ AND p.status='complete' AND u.unit BETWEEN 1 AND j.total AND r.parse_status IN (${readable})
+ AND EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id AND c.page_number=u.unit)
+ AND NOT EXISTS(SELECT 1 FROM material_ai_task_keys k LEFT JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=u.batch_id AND CASE WHEN b.id IS NULL OR NOT json_valid(b.config_json) THEN 1 ELSE json_extract(b.config_json,'$.resourceId')=u.resource_id AND json_extract(b.config_json,'$.start')=u.unit END)`;
+const recoveryJoin='FROM material_folder_ai_units u JOIN material_folder_ai_resources fr ON fr.batch_id=u.batch_id AND fr.resource_id=u.resource_id AND fr.version=u.version JOIN teacher_resources r ON r.id=u.resource_id JOIN material_pdf_jobs j ON j.resource_id=r.id JOIN material_pdf_pages p ON p.generation=j.generation AND p.page=u.unit';
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;ai:()=>MaterialAiRepository;word:()=>MaterialWordRepository;writer:<T>(action:(target:MaterialFolderAiRepository)=>Promise<T>)=>Promise<T>};
 export class MaterialFolderAiRepository{
  private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private closing=false;private lastGrantRowid=0;
@@ -13,11 +21,14 @@ export class MaterialFolderAiRepository{
    `CREATE TABLE IF NOT EXISTS material_folder_ai(batch_id TEXT PRIMARY KEY,status TEXT NOT NULL,revision INTEGER NOT NULL,settings_revision INTEGER NOT NULL,max_calls INTEGER NOT NULL,cursor INTEGER NOT NULL DEFAULT 0,error TEXT NOT NULL DEFAULT '')`,
    `CREATE TABLE IF NOT EXISTS material_folder_ai_resources(batch_id TEXT NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,cursor INTEGER NOT NULL DEFAULT 0,total INTEGER NOT NULL DEFAULT -1,status TEXT NOT NULL DEFAULT 'waiting',error TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,resource_id))`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_resources ON material_folder_ai_resources(batch_id,status)`,
+   `CREATE INDEX IF NOT EXISTS idx_folder_ai_plan ON material_folder_ai_resources(batch_id) WHERE status IN ('waiting','running')`,
    `CREATE TABLE IF NOT EXISTS material_folder_ai_units(batch_id TEXT NOT NULL,resource_id TEXT NOT NULL,version TEXT NOT NULL,unit INTEGER NOT NULL,state TEXT NOT NULL,ai_batch_id TEXT NOT NULL DEFAULT '',error TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,resource_id,unit))`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_units ON material_folder_ai_units(batch_id,state)`,
+   `CREATE INDEX IF NOT EXISTS idx_folder_ai_local_retry ON material_folder_ai_units(batch_id) WHERE state='review' AND ai_batch_id='' AND error IN ('local_page_failed','unavailable')`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_keys ON material_ai_task_keys(folder_id)`,
    `CREATE INDEX IF NOT EXISTS idx_folder_ai_discovery ON material_import_entries(batch_id,seq)`
   ])await this.host.run(sql);
+  if(!(await this.host.all('PRAGMA table_info(material_folder_ai)')).some(c=>c.name==='plan_cursor'))await this.host.run('ALTER TABLE material_folder_ai ADD COLUMN plan_cursor INTEGER NOT NULL DEFAULT 0');
   // Catch late successful retries below the initial discovery cursor in the same archive transaction.
   for(const [name,event] of [['saved','UPDATE OF status,resource_id'],['inserted','INSERT']])await this.host.run(`CREATE TRIGGER IF NOT EXISTS folder_ai_${name} AFTER ${event} ON material_import_entries WHEN NEW.kind='file' AND NEW.status='saved' AND NEW.resource_id<>'' BEGIN
    INSERT OR IGNORE INTO material_folder_ai_resources(batch_id,resource_id,version) SELECT f.batch_id,r.id,r.content_hash FROM material_folder_ai f JOIN teacher_resources r ON r.id=NEW.resource_id WHERE f.batch_id=NEW.batch_id;
@@ -49,7 +60,7 @@ export class MaterialFolderAiRepository{
  async pauseAll(){const rows=await this.host.all("SELECT batch_id FROM material_folder_ai WHERE status IN ('running','budget_exhausted')");for(const row of rows)await this.action({schemaVersion:schema,batchId:String(row.batch_id),action:'pause'});return rows.length;}
  async view(id:string):Promise<FolderAiView|undefined>{
   if(!materialBatchId(id))throw Error('invalid_input');const grant=(await this.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[id]))[0];if(!grant)return;
-  const sums=(await this.host.all("SELECT COUNT(*) units,SUM(state='complete') complete,SUM(state='review') review,SUM(state='failed') failed,SUM(state IN ('pending','running')) waiting FROM material_folder_ai_units WHERE batch_id=?",[id]))[0];
+  const sums=(await this.host.all("SELECT COUNT(*) units,SUM(state='complete') complete,SUM(state='review') review,SUM(state='failed') failed,SUM(state IN ('pending','running','pending_local')) waiting FROM material_folder_ai_units WHERE batch_id=?",[id]))[0];
   const billing=(await this.host.all("SELECT COALESCE(SUM(b.calls),0) calls,COALESCE(SUM(json_extract(b.config_json,'$.maxCalls')),0) reserved FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?",[id]))[0];
   const count=(await this.host.all('SELECT COUNT(*) n FROM material_folder_ai_resources WHERE batch_id=?',[id]))[0];
   const questions=(await this.host.all("SELECT SUM(json_extract(q.archive_json,'$.state')='ai_final') ready,SUM(json_extract(q.archive_json,'$.state')='ai_needs_review') review FROM question_bank_items q JOIN material_ai_members m ON m.question_id=q.id JOIN material_ai_task_keys k ON k.batch_id=m.batch_id WHERE k.folder_id=? AND json_valid(q.archive_json)",[id]))[0];
@@ -75,6 +86,20 @@ export class MaterialFolderAiRepository{
   await this.host.run("INSERT INTO material_folder_ai_units(batch_id,resource_id,version,unit,state,ai_batch_id,error) VALUES(?,?,?,?,?,?,?) ON CONFLICT(batch_id,resource_id,unit) DO UPDATE SET state=excluded.state,ai_batch_id=excluded.ai_batch_id,error=excluded.error",[String(resource.batch_id),String(resource.resource_id),String(resource.version),unit,state,aiBatch,error]);
   await this.host.run("UPDATE material_folder_ai_resources SET cursor=MAX(cursor,?),status=CASE WHEN ?>=total THEN 'complete' ELSE 'running' END WHERE batch_id=? AND resource_id=?",[unit,unit,String(resource.batch_id),String(resource.resource_id)]);
  }
+ private async recoverLocalWait(grant:Row){
+  const id=String(grant.batch_id);
+  if(!(await this.host.all(`SELECT 1 ${recoveryJoin} WHERE u.batch_id=? AND ${recoverable} LIMIT 1`,[id])).length)return;
+  await this.host.writer(async target=>{
+   const current=(await target.host.all('SELECT status,settings_revision,revision FROM material_folder_ai WHERE batch_id=?',[id]))[0];
+   if(!current||!['running','attention'].includes(String(current.status))||current.revision!==grant.revision||current.settings_revision!==grant.settings_revision)return;
+   const rows=await target.host.all(`SELECT u.resource_id,u.unit ${recoveryJoin} WHERE u.batch_id=? AND ${recoverable} ORDER BY u.rowid LIMIT 8`,[id]);
+   for(const row of rows){
+    await target.host.run("UPDATE material_folder_ai_units SET state='pending_local',error='' WHERE batch_id=? AND resource_id=? AND unit=?",[id,String(row.resource_id),Number(row.unit)]);
+    await target.host.run("UPDATE material_folder_ai_resources SET cursor=MIN(cursor,?),status='waiting' WHERE batch_id=? AND resource_id=? AND version=(SELECT content_hash FROM teacher_resources WHERE id=?)",[Number(row.unit)-1,id,String(row.resource_id),String(row.resource_id)]);
+   }
+   if(rows.length){await target.host.run("UPDATE material_folder_ai SET status='running',error='' WHERE batch_id=?",[id]);grant.status='running';}
+  });
+ }
  private async plan(grant:Row,resource:Row){
   const id=String(resource.resource_id),row=(await this.host.all('SELECT * FROM teacher_resources WHERE id=?',[id]))[0],unit=Number(resource.cursor)+1;
   if(!row||row.content_hash!==resource.version){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[unit,String(grant.batch_id),id]);await this.finishUnit(resource,unit,'review','source_changed');return;}
@@ -85,7 +110,9 @@ export class MaterialFolderAiRepository{
   let total=Number(resource.total);
   if(pdf){
    const job=(await this.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=? AND version=?',[id,String(resource.version)]))[0];if(!job){if(row.parse_status==='failed')await fail('local_parse_failed');return;}total=Number(job.total);
-   if(unit<=total){const page=(await this.host.all('SELECT status FROM material_pdf_pages WHERE generation=? AND page=?',[String(job.generation),unit]))[0];if(!page||page.status==='pending'||page.status==='running')return;
+   // Page receipts are staging facts. Canonical source chunks are available only after publication.
+   if(!['complete','partial'].includes(String(job.state))||!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(row.parse_status==='failed'&&job.state!=='processing')await fail('local_parse_failed');return;}
+   if(unit<=total){const page=(await this.host.all('SELECT status FROM material_pdf_pages WHERE generation=? AND page=?',[String(job.generation),unit]))[0];if(!page||['pending','running','processing'].includes(String(page.status)))return;
     if(page.status!=='complete'){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);return this.finishUnit({...resource,total},unit,'review',page.status==='blank'?'blank_page_requires_check':'local_page_failed');}
    }
   }else if(total<0){total=word?(await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:0}))?.total??0:image?1:Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=?',[id]))[0]?.n||0);}
@@ -102,17 +129,22 @@ export class MaterialFolderAiRepository{
  private error(error:unknown){const code=(error as Error)?.message;return ['budget_exhausted','configuration','configuration_changed','paused','source_changed','source_incomplete','unit_too_large','privacy_blocked','unsupported','busy','index_busy','ocr_failed','ocr_unavailable','font_unavailable','font_missing_glyph','disk_full','invalid_response'].includes(code)?code:'unavailable';}
  async tick(){
   // Two indexed rowid ranges bound each tick and rotate past settled attention cards.
-  const eligible="(status IN ('running','budget_exhausted') OR status='attention' AND EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused'))";
+  const eligible=`(status IN ('running','budget_exhausted') OR status='attention' AND (EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=material_folder_ai.batch_id AND u.state='review' AND u.error='teacher_paused') OR EXISTS(SELECT 1 ${recoveryJoin} WHERE u.batch_id=material_folder_ai.batch_id AND ${recoverable})))`;
   const grants=await this.host.all(`SELECT rowid grant_rowid,* FROM material_folder_ai WHERE ${eligible} AND rowid>? ORDER BY rowid LIMIT 16`,[this.lastGrantRowid]);
   if(grants.length<16)grants.push(...await this.host.all(`SELECT rowid grant_rowid,* FROM material_folder_ai WHERE ${eligible} AND rowid<=? ORDER BY rowid LIMIT ?`,[this.lastGrantRowid,16-grants.length]));
   for(const grant of grants){
    this.lastGrantRowid=Number(grant.grant_rowid);
    if(this.closing)return;try{
-    await this.configured(Number(grant.settings_revision));await this.discover(grant);await this.refresh(grant);
+    await this.configured(Number(grant.settings_revision));await this.discover(grant);await this.refresh(grant);await this.recoverLocalWait(grant);
     if(grant.status!=='running')continue;
     if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)continue;
-    const rows=await this.host.all("SELECT * FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') ORDER BY rowid LIMIT 8",[String(grant.batch_id)]);
-    for(const row of rows){await this.plan(grant,row);if((await this.host.all("SELECT 1 FROM material_folder_ai_units WHERE batch_id=? AND state IN ('pending','running') LIMIT 1",[String(grant.batch_id)])).length)break;}
+    const rows=await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid>? ORDER BY rowid LIMIT 8",[String(grant.batch_id),Number(grant.plan_cursor)]);
+    if(rows.length<8)rows.push(...await this.host.all("SELECT rowid plan_rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid<=? ORDER BY rowid LIMIT ?",[String(grant.batch_id),Number(grant.plan_cursor),8-rows.length]));
+    for(const row of rows){
+     await this.host.run('UPDATE material_folder_ai SET plan_cursor=? WHERE batch_id=?',[Number(row.plan_rowid),String(grant.batch_id)]);await this.plan(grant,row);
+     const current=(await this.host.all("SELECT status,EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=f.batch_id AND u.state IN ('pending','running')) active FROM material_folder_ai f WHERE batch_id=?",[String(grant.batch_id)]))[0];
+     if(!current||current.status!=='running'||current.active)break;
+    }
     const batch=(await this.host.all('SELECT status FROM material_import_batches WHERE id=?',[String(grant.batch_id)]))[0];
     if(!batch||!['completed','partial','failed'].includes(String(batch.status)))continue;
     const snapshot=(await this.view(String(grant.batch_id)))!;

@@ -1,5 +1,41 @@
 # 知识库实施证据
 
+## 2026-10-29 长PDF发布窗口、资源轮转与页前言纠错
+
+最终整合补记：收尾刷新取得协作者思考档位main c0d2b40，正常合并为3ad4abe；12份冲突均为独立新增主题，双方保留，源码无冲突。合并版build/type、240组件、思考策略/SQLite7项与上述54.6MB PDF Electron4项再次通过，0renderer错误/2AI题/冷启0请求，报告Temp/omni-folder-pdf-publish-GTQ1Nr/report.json；main SHA256 24d42f48382be27dd01023f2ca8b89caba6d96179253e36ad93c8f9ecb404a36。日志test-results/kb-folder-pdf-merged-{build,components,journey}.log和kb-folder-pdf-thinking-final.log。思考源码专项初次普通Node静态TS引用无法解析deepseek-fetch，前置现register-source加载器后原7项通过，未改其源码。完整207证据仍对应合并思考前c045dd5，不冒充合并版完整重跑。此次补检无新付费调用；D盘和其他工作树不动，远端状态看最终Git回读。
+
+批判发现并实际RED：99c5fac在真实SQLite/生产调度器中4项失败（processing误失败、complete staging未发布即创建永久review、前8等待文件饿死后续、旧未计费误判不恢复），真实failed/blank保留用例通过。a3e7b13改为等待job complete/partial和canonical资源可读后建子任务；material_folder_ai幂等增量plan_cursor INTEGER DEFAULT0，idx_folder_ai_plan/idx_folder_ai_local_retry两个派生部分索引，有界双范围每轮最多8资源并持久保存游标。旧误判仅同资源版本/已发布complete页/实际正文齐备、ai_batch_id空且无该目录任务幂等关联时恢复，事务内复验授权，最多8项；pending_local等待保留，暂停/变版本/真实失败/有子任务/已关联未知均不自动重发。共享协议、typed preload和正式卡片复用，原件/OCR/已有题/AI回执不改。
+
+随后批判RED0e16eef实证预算耗尽后的第二次规划把budget_exhausted改paused；GREEN056a0db每次规划后复读父状态与活动单元，终态/暂停立即结束当前窗口。实际54MB双页又暴露默认3≠2：第一题被算入下一页的仅元数据前言，且前题物理/高一会被下一页数学/初二污染。REDb1cb0bf→GREENc045dd5只在明确不同原页、下一题前仅既有元数据/空白时结束前题；本页前言优先，实际跨页条件和同页跨块仍保留全部来源/风险。未放宽同源指纹或改条数断言、未重写旧archive。
+
+实际命令（apps/desktop）：
+
+```powershell
+node --experimental-transform-types scripts/education/kb-folder-pdf-publication-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-question-page-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-folder-ai-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-pdf-publication-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-critical-archive-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-source-origins-boundaries.mjs
+node scripts/education/kb-folder-pdf-publication-journey.mjs
+npm run build
+npm run test:renderer-components
+npm run test:smoke
+npm audit --json
+git diff --check
+```
+
+最终调度8组、页抽题4组、既有PDF发布4/目录7/AI28/档案Pi13/同源13均通过。迁移重复运行/游标冷启保持/EXPLAIN确认idx_folder_ai_plan且无TEMP B-TREE，原8个等待文件阻塞第9文件已复现并修，不能将此限定排序开销/至多4轮夹具进展当整产品P95。旧目录夹具原无PDF state/page_number字段，按真实既有表补齐夹具后7组通过，未给产品放宽表/状态要求。
+
+真实Electron使用54,589,246B有效PDF：两页中文栅格算术题由真实OCR Worker处理，另含52MiB不可压缩嵌入合成载荷，使文件物理超过原内存接口50MiB边界。正式UI目录授权，控制现有Worker输出的两个窗口：第2页processing和两页已staged但未publish，均等待3.2秒以上、0假失败单元/0模型请求；解除后4次受控模型HTTP→2AI题/题本默认2，原件SHA不变；原生冷启2题/原调用账本保持、0新请求，1366/1920、0renderer错误，4项通过。报告Temp/omni-folder-pdf-publish-GTBNBN/report.json。模型请求同时断言实际原页图片和OCR还原v1存在。主进程瞬时RSS在发布前319016960、结束303726592字节，非峰值、非全进程组或40GB结论；期间独立隔离综合smoke并行运行。
+
+失败保留：初次Python缺fitz，改为现成PIL/pypdf，无安装依赖。Temp/omni-folder-pdf-publish-v29hW3模型替身按含空格算式匹配失误导致漏题，被原ai_omitted_questions拦截；修替身排版匹配后Temp/omni-folder-pdf-publish-NksTKj实际得2AI却题本3，进一步修产品页前言来源错误才获得最终4项通过。前两份报告/日志保留，未改失败断言为3，也未用受控结果证明自然模型数学正确。
+
+最终生产源码c045dd5，npm run test:smoke所含build/type及完整207综合自然exit0、ok=true，日志test-results/kb-folder-pdf-smoke.log与.exit=0；该轮期间未改out，实际双页UI同一构建，main SHA256为635a9e898a6f72d19c54ef1124b325ef56894ce66f40fae79f14e51836169c25。240组件在a3e7b13通过（后续仅main逻辑/测试/文档）；最终综合也构建全类型。audit23（0critical/8high/7moderate/8low），依赖和锁文件未变。匿名指标见[PDF调度JSON](../research/KB_PDF_SCHEDULING_EVIDENCE_20261029.json)。未更新D盘日常运行，Git远端一致性另取收尾命令。
+
+回滚先暂停目录AI再独立revert本片，保留plan_cursor/索引/已有回执和新题读取，不删除资料或重写原OCR；不能以回旧调度承诺旧缺陷已消失。完整Goal仍ACTIVE：空白/失败OCR页原图补救、整页AI正文阅读/索引、复杂图题/跨页答案册、实际40GB长时与独立自然召回/答案质量/P95、受管组件/最终EXE均未被本片证明。大于50MiB的单文件通过，TXT正文1MiB及Office内存限制仍待分别处置。
+
 ## 2026-10-29 最后主线整合与OCR提示词接线核对
 
 正常合并main 0b3d277为b82da4c，保留协作者默认成果备份和停自动文件写；12份文档冲突均为不同主题新增段落，双方保留，源码自动合并后检查。b82da4c上build/type exit0、组件240/240、来源边界13组与AI批处理28组通过。新主线备份6项、交付整包/停写7项通过；受限沙箱最初备份目录链接创建EPERM（5项后失败）、整包首项失败均保留，按此前同类隔离本地专项权限重跑原命令通过，不修改断言或协作源码。报告Temp/xiaozhi-output-backup-w81gw4、xiaozhi-bundle-UMGqEh。构建与组件日志在apps/desktop/test-results/kb-source-origins-b82da4c-{build,components}.log。

@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-29",
+  "integration": {"source": "3ad4abe", "upstreamThinking": "c0d2b40", "buildExit": 0, "components": 240, "thinkingPolicyChecks": 7, "pdfElectronChecks": 4, "pdfReport": "OS Temp/omni-folder-pdf-publish-GTQ1Nr/report.json", "rendererErrors": 0, "readyQuestions": 2, "coldNewRequests": 0, "mainSha256": "24d42f48382be27dd01023f2ca8b89caba6d96179253e36ad93c8f9ecb404a36", "initialTestFailure": "Plain Node could not resolve a static TS deepseek-fetch import; original seven checks pass with the existing register-source loader", "boundary": "Comprehensive 207 check remains on c045dd5 before this upstream thinking merge; no claim of a full merged rerun"},
+  "source": {"base": "873bf30", "redLifecycle": "99c5fac", "greenLifecycle": "a3e7b13", "redBudget": "0e16eef", "greenBudget": "056a0db", "redPageMetadata": "b1cb0bf", "finalProduction": "c045dd5"},
+  "teacherResult": "Long PDFs wait for actual canonical publication; waiting resources rotate durably, budget state is preserved, and explicit next-page metadata no longer contaminates previous questions or source grouping.",
+  "storage": {"newBusinessTables": 0, "newColumn": "material_folder_ai.plan_cursor INTEGER NOT NULL DEFAULT 0", "derivedPartialIndexes": ["idx_folder_ai_plan", "idx_folder_ai_local_retry"], "planningWindow": 8, "legacyRecoveryWindow": 8, "existingFactsOverwritten": false, "newDependencies": 0, "newIpc": 0},
+  "legacyRecovery": "Only same-version, published complete pages with real chunks, no AI child and no linked idempotency key. Revalidated inside writer. Teacher pause, changed source, terminal failed/blank and linked unknown requests remain held.",
+  "checks": {
+    "scheduler": 8,
+    "pageExtraction": 4,
+    "existingPdfPublication": 4,
+    "existingFolder": 7,
+    "aiBatch": 28,
+    "archivePi": 13,
+    "origins": 13,
+    "components": {"source": "a3e7b13 before later main-only guards and extractor changes", "passed": 240, "total": 240},
+    "comprehensive": {"productionSource": "c045dd5", "command": "npm run test:smoke", "includesBuildAndType": true, "ok": true, "total": 207, "exit": 0, "log": "apps/desktop/test-results/kb-folder-pdf-smoke.log", "exitFile": "apps/desktop/test-results/kb-folder-pdf-smoke.exit", "mainSha256": "635a9e898a6f72d19c54ef1124b325ef56894ce66f40fae79f14e51836169c25"},
+    "electron": {"checks": 4, "exit": 0, "fileBytes": 54589246, "fixture": "Valid two-page Chinese raster-question PDF plus 52MiB incompressible embedded synthetic payload, not real teacher corpus", "localWorker": "actual PDF file.v3 and local OCR", "controlledGates": ["Second-page processing with first page staged", "Both pages staged before canonical publication"], "minimumWaitPerGateMs": 3200, "falseUnitsAtGates": 0, "modelRequestsAtGates": 0, "controlledModelRequests": 4, "readyQuestions": 2, "defaultNotebookQuestions": 2, "restartNewRequests": 0, "originalHashUnchanged": true, "rendererErrors": 0, "viewports": ["1366x768", "1920x1080"], "report": "OS Temp/omni-folder-pdf-publish-GTBNBN/report.json"}
+  },
+  "performance": {"before": "Four bounded planner ticks could not reach the ninth ready resource behind eight waiting PDFs", "after": "Ready resource reached within four tested ticks; durable indexed rowid range of at most eight, no TEMP B-TREE in checked query plan", "mainInstantaneousRssBytes": {"beforePublication": 319016960, "after": 303726592}, "boundary": "Not peak or aggregate process memory, not natural quality or whole-product P95. Independent isolated comprehensive smoke ran concurrently. A >50MiB file is not 40GB acceptance."},
+  "preservedFailures": ["Initial fixture environment lacks fitz; reused installed PIL/pypdf", "OS Temp/omni-folder-pdf-publish-v29hW3: controlled model whitespace mismatch, actual omitted-question gate held result", "OS Temp/omni-folder-pdf-publish-NksTKj: two AI drafts but three notebook records, actual false cross-page source and metadata bug then fixed without changing expected count"],
+  "audit": {"total": 23, "critical": 0, "high": 8, "moderate": 7, "low": 8, "lockfileChanged": false},
+  "newPaidCalls": 0,
+  "remaining": ["Blank/failed OCR original-image fallback with versioned evidence", "Full-page restored ordinary content reading and indexing", "Complex figures, cross-page questions and answer-book pairing", "Actual sustained 40GB mixed import and independent natural recall, answer quality and P95", "TXT 1MiB/Office memory limits", "Managed components, installed EXE and D-drive daily runtime"],
+  "rollback": "Pause folder AI, revert this slice while retaining new cursor/indexes, sources and all stored receipts/questions. Reverting does not imply prior scheduling defects disappear.",
+  "goalComplete": false
+}
