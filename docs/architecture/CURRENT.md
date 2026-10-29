@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 同源派生关联
+
+material_question_origins是可重建展示关系，不是第二题库；同原件版本/完整sources/原始题面指纹区分rule/ai，covered派生联动needs_attention。现AI发布与规则创建同writer登记，历史按8条有界回填并锁内验证，坏历史不阻塞新导入。题目/源/回执变化和教师操作失效，typed notebook showSourceCandidates读取原始记录；ID读取不再先加载50题/全库使用汇总。原业务事实、权限和Pi唯一runtime保持。
+
 ## 2026-10-29 默认输出纳入既有备份
 
 默认生成文件已纳入原设置页备份/校验：manifest.v1带schema1的conversationOutputs引用信息，包含真实HTML/PPT并显示数量；同名会话文件隔离、另一实例不扫描、源变化/链接/递归目标拒绝，旧v1清单兼容。新增启动停写开关OMNI_EDU_XIAOZHI_FILE_WRITES=0，保留native装配和读取/核验，只阻止自动文件提案/批准/执行/撤销及Pi复制门；无新表/依赖。

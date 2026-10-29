@@ -315,6 +315,7 @@ export type QuestionNotebookUsage = {
 };
 
 export type QuestionNotebookFilters = Omit<QuestionSearchFilters, 'limit'> & {
+  showSourceCandidates?: boolean;
   categoryId?: string;
   bookmarked?: boolean;
   sourceKind?: QuestionBankSourceKind;

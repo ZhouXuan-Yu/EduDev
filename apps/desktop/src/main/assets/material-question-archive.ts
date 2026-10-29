@@ -5,6 +5,8 @@ import {questionVersion} from '../education/question-context-provider';
 import type {MaterialRepository} from './material-repository';
 import {extractMaterialQuestions} from './material-question-extract';
 import {nativeQuestionComplete} from '../../shared/native-question';
+import {migrateQuestionOrigins,recordRuleOrigin,recordAiOrigin,type RuleOrigin} from './material-question-origins';
+import {materialSource} from './material-source';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
@@ -22,10 +24,39 @@ export class MaterialQuestionArchive{
   await this.host.run("INSERT OR IGNORE INTO material_question_jobs(resource_id,version,updated_at) SELECT id,content_hash,datetime('now') FROM teacher_resources WHERE parse_status IN ('ready','parsed','chunked','indexed','graph_extracted')");
  }
  async enqueue(id:string,version:string,parseToken=''){await this.host.run("INSERT INTO material_question_jobs(resource_id,version,parse_token,updated_at) VALUES(?,?,?,datetime('now')) ON CONFLICT(resource_id) DO UPDATE SET version=excluded.version,parse_token=excluded.parse_token,cursor=CASE WHEN material_question_jobs.version<>excluded.version OR material_question_jobs.parse_token<>excluded.parse_token THEN 0 ELSE material_question_jobs.cursor END,status=CASE WHEN material_question_jobs.version<>excluded.version OR material_question_jobs.parse_token<>excluded.parse_token THEN 'pending' ELSE material_question_jobs.status END,updated_at=excluded.updated_at",[id,version,parseToken]);}
- start(){if(this.timer)return;this.controller=new AbortController();const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{const began=Date.now();do{if(!await this.drain())break;await new Promise<void>(resolve=>setImmediate(resolve));}while(Date.now()-began<1000&&!this.controller.signal.aborted);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,900);this.timer.unref();pump();}
+ start(){if(this.timer)return;this.controller=new AbortController();const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.reconcileOrigins();const began=Date.now();do{if(!await this.drain())break;await new Promise<void>(resolve=>setImmediate(resolve));}while(Date.now()-began<1000&&!this.controller.signal.aborted);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,900);this.timer.unref();pump();}
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;this.controller.abort();await this.pumping;}
- async status():Promise<ArchiveStatus>{const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0];const n=(await this.host.all("SELECT COUNT(*) n FROM material_question_members WHERE needs_attention=1"))[0];const failures=(await this.host.all("SELECT r.original_file_name title,j.error code FROM material_question_jobs j JOIN teacher_resources r ON r.id=j.resource_id WHERE j.status='failed' ORDER BY j.updated_at DESC LIMIT 5")).map(row=>({title:String(row.title),code:String(row.code)}));return{failures,pending:Number(r.pending||0),failed:Number(r.failed||0),documents:Number(r.documents||0),questions:Number(r.questions||0),needsAttention:Number(n.n||0)};}
+ async status():Promise<ArchiveStatus>{
+  const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all("SELECT COUNT(*) n FROM material_question_members WHERE needs_attention=1"))[0];
+  const associated=(await this.host.all('SELECT COUNT(*) n FROM material_question_origins WHERE covered=1'))[0];
+  const state=(await this.host.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.question-origins.cursor.v1']))[0];let cursor=0;try{cursor=Number(JSON.parse(String(state?.value_json||'{}')).cursor)||0;}catch{}
+  const latest=(await this.host.all('SELECT COALESCE(MAX(rowid),0) n FROM question_bank_items'))[0];
+  const failures=(await this.host.all("SELECT r.original_file_name title,j.error code FROM material_question_jobs j JOIN teacher_resources r ON r.id=j.resource_id WHERE j.status='failed' ORDER BY j.updated_at DESC LIMIT 5")).map(row=>({title:String(row.title),code:String(row.code)}));
+  return{failures,pending:Number(r.pending||0),failed:Number(r.failed||0),documents:Number(r.documents||0),questions:Number(r.questions||0),needsAttention:Number(n.n||0),associated:Number(associated.n||0),associating:cursor<Number(latest.n)};
+ }
  async retry(){await this.host.run("UPDATE material_question_jobs SET status='pending',error='' WHERE status='failed'");}
+ private async reconcileOrigins(){
+  const state=(await this.host.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.question-origins.cursor.v1']))[0];let cursor=0;
+  try{const value=JSON.parse(String(state?.value_json||'{}'));if(value.schema===1&&Number.isSafeInteger(value.cursor)&&value.cursor>=0)cursor=value.cursor;}catch{/* Derived cursor can be rebuilt. */}
+  const rows=await this.host.all('SELECT rowid origin_rowid,id FROM question_bank_items WHERE rowid>? ORDER BY rowid LIMIT 8',[cursor]);
+  for(const row of rows){
+   if(this.controller.signal.aborted)return;let q:QuestionBankItem|undefined,origin:RuleOrigin|undefined;try{q=await this.host.read(String(row.id));}catch{/* A corrupt historical row cannot block later rows or new imports. */}
+   try{if(q?.archive?.ai&&q.archive.state==='ai_final'&&archiveEligible(q)){
+    await this.validate(q,true);const units=[];
+    for(const s of q.archive.sources){const window=await this.host.materials().readingWindow(s.resourceId,s.offset,1);if(window.units.length!==1||JSON.stringify(materialSource(window.units[0]))!==JSON.stringify(s))throw Error('source_changed');units.push(window.units[0]);}
+    if(q.archive.native){const receipt=q.archive.ai,context=(await this.host.all('SELECT context_json FROM material_ai_native_context WHERE batch_id=? AND ordinal=?',[receipt.batchId,receipt.ordinal]))[0];if(!context||!units.length)throw Error('source_changed');const raw=JSON.parse(String(context.context_json));if(typeof raw.roles?.question!=='string')throw Error('source_changed');units[0]={...units[0],chunk:{...units[0].chunk,contentMd:raw.roles.question}};units.splice(1);}
+    const candidates=extractMaterialQuestions(units,'local-text-v1').filter(c=>c.archive.number===q.archive!.number);
+    if(candidates.length===1){const c=candidates[0];origin={sources:q.archive.native?q.archive.sources:c.archive.sources,number:c.archive.number,stem:c.fields.stem,risks:c.archive.sourceRisks};}
+   }}catch{/* Invalid historical evidence stays visible; never infer an association. */}
+   await this.host.withWriter(async target=>{
+    let current:QuestionBankItem|undefined;if(q)try{current=await target.host.read(String(row.id));}catch{/* Changed/corrupt history stays unassociated. */}if(q&&current&&questionVersion(current)===questionVersion(q)){
+     if(origin){if(!target.host.validateAi)throw Error('source_changed');await target.host.validateAi(current);for(const source of origin.sources)await target.host.materials().source(source);await recordAiOrigin(target.host,current,origin);}
+     else await recordRuleOrigin(target.host,current);
+    }
+    await target.host.run("INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value_json=excluded.value_json,updated_at=excluded.updated_at",['xiaozhi.question-origins.cursor.v1',JSON.stringify({schema:1,cursor:Number(row.origin_rowid)})]);
+   });
+  }
+ }
  async drain(){const row=(await this.host.all("SELECT * FROM material_question_jobs WHERE status='pending' ORDER BY updated_at,resource_id LIMIT 1"))[0];if(!row||this.controller.signal.aborted)return false;const id=String(row.resource_id),version=String(row.version),cursor=Number(row.cursor),token=String(row.parse_token),verification=id+version+token;
   try{
    const resource=await this.host.materials().resource(id);if(resource.contentHash!==version)throw new Error('source_changed');
@@ -41,14 +72,16 @@ export class MaterialQuestionArchive{
      this.controller.signal.throwIfAborted();const key=createHash('sha256').update(id+'\0'+version+'\0numbered-text.v1\0'+JSON.stringify(q.archive.sources)+'\0'+q.key).digest('hex');
      const exists=(await target.host.all('SELECT question_id FROM material_question_members WHERE extraction_key=?',[key]))[0];if(exists)continue;
      const saved=await target.host.create(q.fields);await target.host.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(q.archive),saved.id]);await target.host.run('INSERT INTO material_question_members(extraction_key,resource_id,question_id,needs_attention) VALUES(?,?,?,?)',[key,id,saved.id,archiveEligible({...saved,archive:q.archive})?0:1]);
+     await recordRuleOrigin(target.host,{...saved,archive:q.archive});
     }
     this.controller.signal.throwIfAborted();await target.host.run("UPDATE material_question_jobs SET status=?,cursor=?,question_count=(SELECT COUNT(*) FROM material_question_members WHERE resource_id=?),error='',updated_at=datetime('now') WHERE resource_id=? AND version=? AND parse_token=?",[snapshot.hasMore?'pending':'complete',cursor+snapshot.units.length,id,id,version,token]);
    });
   }catch(error){if(this.controller.signal.aborted)return false;const code=error instanceof Error?error.message:'';await this.host.run("UPDATE material_question_jobs SET status='failed',error=?,updated_at=datetime('now') WHERE resource_id=? AND version=? AND parse_token=? AND cursor=?",[['source_changed','too_large','too_many_questions','question_too_large'].includes(code)?code:'extract_failed',id,version,token,cursor]);}return true;
  }
  async migrateMembers(){await this.host.run('CREATE TABLE IF NOT EXISTS material_question_members(extraction_key TEXT PRIMARY KEY,resource_id TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,needs_attention INTEGER NOT NULL DEFAULT 0)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_resource ON material_question_members(resource_id)');await this.host.run('CREATE INDEX IF NOT EXISTS material_question_members_attention ON material_question_members(needs_attention)');
+  await migrateQuestionOrigins(this.host);
   // Derived attention flags only; never rewrite historical source/teacher/AI receipts.
-  await this.host.run(`UPDATE material_question_members SET needs_attention=1 WHERE needs_attention=0 AND EXISTS(SELECT 1 FROM question_bank_items q WHERE q.id=material_question_members.question_id AND json_valid(q.archive_json) AND json_type(q.archive_json,'$.ai') IS NULL AND json_array_length(q.archive_json,'$.sources')>0 AND (json_extract(q.archive_json,'$.state')='rule_extracted' OR COALESCE(json_extract(q.archive_json,'$.sourceChecked'),0)<>1))`);
+  await this.host.run(`UPDATE material_question_members SET needs_attention=1 WHERE needs_attention=0 AND NOT EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=material_question_members.question_id AND o.covered=1) AND EXISTS(SELECT 1 FROM question_bank_items q WHERE q.id=material_question_members.question_id AND json_valid(q.archive_json) AND json_type(q.archive_json,'$.ai') IS NULL AND json_array_length(q.archive_json,'$.sources')>0 AND (json_extract(q.archive_json,'$.state')='rule_extracted' OR COALESCE(json_extract(q.archive_json,'$.sourceChecked'),0)<>1))`);
  }
  async validate(q:QuestionBankItem,requireComplete=false){
   if(!q.archive)return;if(requireComplete&&!archiveEligible(q))throw new Error('question_archive_incomplete');

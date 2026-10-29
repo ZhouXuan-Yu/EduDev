@@ -12,9 +12,10 @@ import {nativeSourceRoleText,nativeTextContentDigest,wordRoleContentDigest,nativ
 import {validNativeAiContext,nativeMetadata,type NativeAiContext} from './material-ai-native-context';
 import {completeMaterialAi,type AiCompletionInput} from './material-ai-provider';
 import type {AiRuntime} from './material-ai-repository';
+import type {MaterialSource} from '../../shared/materials';
 
 type Row=Record<string,unknown>;type Value=string|number|null;
-export type NativeAiHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;native:()=>NativeQuestionRepository;word:()=>MaterialWordRepository};
+export type NativeAiHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;native:()=>NativeQuestionRepository;word:()=>MaterialWordRepository;associate?:(q:QuestionBankItem,source:WordQuestionSource,sources:MaterialSource[])=>Promise<void>};
 export type NativeAiPreparation=<T>(action:(native:NativeQuestionRepository,word:MaterialWordRepository)=>Promise<T>)=>Promise<T>;
 const hash=(s:string|Buffer)=>createHash('sha256').update(s).digest('hex');
 const signature=(q:NativeAiQuestion)=>JSON.stringify([q.number,q.stem,q.answer,q.analysis,q.answerOrigin,q.analysisOrigin,q.requiresImage,[...q.issues].sort(),...QUESTION_PROJECTION_FIELDS.map(f=>[q.projection[f].state,q.projection[f].text])]);
@@ -91,6 +92,7 @@ export async function executeNativeAi(input:Execution){
    const saved=await h.create({...q,sourceKind:'teacher_resource',sourceTitle:String(row.title),tags:['AI整理',...(q.answerOrigin==='ai_generated'?['AI推导答案']:[])]});
    await h.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(archive),saved.id]);await h.run('INSERT INTO material_ai_members VALUES(?,?,?,?)',[batchId,ordinal,q.number,saved.id]);
    await h.native().publish({...saved,archive},permit,signal);
+   await h.associate?.({...saved,archive},evidence.source,unit.sources);
   }
   await input.guard();
  })));

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-29 规则与AI来源关联复用
+
+沿现确定性抽题器、Word无歧义角色来源、AI回执和SQLite同题库增加派生关系；不另做相似度引擎/Agent。原题/OCR/首终稿不变，现notebook typed通道新增showSourceCandidates并贯通严格布尔校验。无依赖/模型/安装资源增加；整合main整包交付后构建与专项兼容范围分别记录。
+
 ## 2026-10-29 备份与停写复用
 
 原store.exportDataRoot/verifyDataBackup与DataBackupPanel追加默认输出范围和数量，typed结果扩可选字段，无新IPC/DDL/依赖；旧manifest.v1兼容。原text/Office服务、整包工具和Pi复制回调共用启动停写门，审批/权限/native身份不替换。

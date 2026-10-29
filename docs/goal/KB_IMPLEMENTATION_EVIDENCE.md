@@ -1,5 +1,49 @@
 # 知识库实施证据
 
+## 2026-10-29 最后主线整合与OCR提示词接线核对
+
+正常合并main 0b3d277为b82da4c，保留协作者默认成果备份和停自动文件写；12份文档冲突均为不同主题新增段落，双方保留，源码自动合并后检查。b82da4c上build/type exit0、组件240/240、来源边界13组与AI批处理28组通过。新主线备份6项、交付整包/停写7项通过；受限沙箱最初备份目录链接创建EPERM（5项后失败）、整包首项失败均保留，按此前同类隔离本地专项权限重跑原命令通过，不修改断言或协作源码。报告Temp/xiaozhi-output-backup-w81gw4、xiaozhi-bundle-UMGqEh。构建与组件日志在apps/desktop/test-results/kb-source-origins-b82da4c-{build,components}.log。
+
+同一最终构建的真实Electron目录闭环再过3项：本地OCR/原生Word、typed IPC/SQLite真实，模型HTTP受控，默认3/原始6/教师收藏后4/未知单元冷启5与0重发保持；1366/1920、0renderer错误，Temp/omni-folder-ai-ui-9egrkY/report.json。此次补检没有新增付费模型请求，未重跑整套207综合、真实历史回放或40GB，早期证据各保留原源码范围。
+
+用户补充“无法理解的OCR交给DeepSeek还原”：实际provider中的OCR_RESTORATION_INSTRUCTION（[OCR还原规则 v1]）已接入上述图片/普通文本/Word角色图稿及首稿、复核稿。28组内直接拦截实际provider请求，验证6个请求均携带还原规则与未改写的原始OCR，且只包含当前一种响应schema；不是只在文档写提示词。规则要求先忠实恢复版面/公式/否定词/单位/选项/小问，原图优先，无图或不清不能猜补，题面与解题分开，补答标ai_generated，无法确认保留issues；质量门不因两遍一致放宽。正文、原图和回执仍分别留存。空白/失败OCR页和整页普通内容入阅读/检索仍属后续缺口，不由提示词替代通路实现。
+
+## 2026-10-29 同源原始候选与AI稿：默认3题、原始6条均保留
+
+生产构建实测三格式目录在AI完成后题本仍6条，而非3道题，RED2401459保留。新增可重建material_question_origins与source-question.v1：同原件/版本、完整正文来源（offset/chunk/bodyVersion）、题号和确定性原始题面指纹，分别记录rule/ai；AI须已通过原质量条件，原生Word角色来源无歧义且原文精确对应。不能据题号或相似度归并；匹配不了、多条规则同指纹、复杂或跨块来源保持独立。不同AI稿不互相吞并。所有原题、OCR、首终稿和ID均不改。
+
+新规则和AI发布同writer登记，先后顺序均可关联。covered是派生展示/计数，不授予新的读取/组卷权限；教师编辑/收藏/分类/使用会保护原记录，来源、隐私、Word表示、题目、回执及成员变更或删除会失效。相同元数据重写不误失效，原题删除不产生待核幽灵计数。历史每轮8条/900ms游标，旧AI先验真实回执/原件，写锁内再验；单坏历史题阻塞RED c62e9df已由7de10f8隔离，派生表重建重置游标。原始记录可经现typed notebook showSourceCandidates复读；严格布尔/描述符校验仍拒绝未知参数及getter。
+
+修改域：assets/material-question-origins.ts、material-question-archive.ts、material-ai-repository.ts、material-ai-native.ts；db窄接线与ID读取；shared/contracts.ts、question-archive.ts；question-retrieval过滤边界；原QuestionNotebookWorkspace与MaterialQuestionStatus。沿现preload方法，不加通道、依赖、Agent或第二题库。ID读取取消先载入50题/分类，并将使用记录汇总限制到所读ID；无整产品P95前后声明。
+
+实际命令（apps/desktop）：
+
+```powershell
+node --experimental-transform-types scripts/education/kb-source-origins-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-critical-archive-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-verification-migration.mjs
+node scripts/education/kb-folder-ai-journey.mjs
+node scripts/education/kb-origins-historical-journey.mjs <existing-authorized-isolated-root> --replay
+npm run test:smoke
+npm run test:renderer-components
+node --import ./scripts/office-agent/register-source.mjs --experimental-transform-types scripts/xiaozhi-agent/delivery-bundle-smoke.mjs
+npm run build
+npm audit --json
+```
+
+最终来源边界13组通过，覆盖顺序/倒序、回执修改和删除、正文/隐私/源版本变更、相同值重写、教师保护、重复原题不覆盖、删除原题计数、过滤参数及坏历史隔离。原AI28与档案/Pi13保持。十万旧标记5项在100006行/70516736B合成库通过：100002回填、369ms、再次1ms/0更新、原JSON不改（Temp/omni-verification-migration-EGVP6o）；与前轮543ms并非受控性能对照，更不代表40GB。
+
+三格式实际Electron（本地OCR/Word渲染/typed IPC/SQLite真实、模型HTTP受控）3项通过：默认3AI稿，勾选显示原始6记录；收藏原规则后独立显示4条、待核恢复1；加入另一个未知单元后原生冷启共5条、0额外请求。1366/1920与0renderer错误。整合版证据Temp/omni-folder-ai-ui-T0PrzM/report.json，较早首次GREEN rjHJP7也保留。
+
+真实旧样本仅复读已授权的原OCR及实际DeepSeek回执，最终43e49b5构建上重置派生游标重放，通过2项：该页3道文字题关联、图题仍待核；默认47条/全部50条，原题/正文/资料全量事实哈希不改，原生重启结果一致，0模型请求。Temp/omni-real-material-NGRlNr/origins-history-report.json。真实知识库旧ledger16+前次目录页2，DB SUM(calls)=18仍一致，本轮新增0；原件、题干、回复、密钥和DB不进Git。不能以回放证明新模型自然正确率。
+
+综合基线npm run test:smoke（288a065、后续锁内加固及整包合并前）自然exit0/ok=true/207，Temp/kb-source-origins-smoke.log及.exit=0；20:02:11结束，早于后一次out/main在20:03:34改写，未混用构建。此207不是最终合并版完整重跑。正常整合main b2d7f7d整包交付为cab14f5，源码无冲突，合并版240/240组件、整包交付6项及上述三格式3项通过；最终43e49b5类型/build exit0，工作区test-results/kb-source-origins-43e49b5-build.log，及真实回填2项通过。一次自动审批超时未启动最终构建，改为工作区内日志的受限构建成功，不是安全拒绝；未绕过禁止操作。协作专项最初普通Node命令未加载TS解析器，前置--import按现加载器执行成功，未改其源码。
+
+audit真实23项（0critical/8high/7moderate/8low），无新依赖/锁文件。匿名指标[同源JSON](../research/KB_SOURCE_ORIGINS_EVIDENCE_20261029.json)。回滚停后台关联和默认隐藏，只清派生origin表可触发恢复待核标记，保留原事实/AI回执与原始记录入口；不需要改原件。未改D盘日常构建/协作者工作树，Git同步另以最终命令为准。
+
+完整Goal继续。当前不是全量自动去重：复杂Word/跨块跨页/无法严格对应的来源和多AI版本继续显示。下一推进单文件大小门槛、空白/失败OCR页的原图AI与整页还原正文阅读/检索，再实际40GB持续混合导入/取消恢复、独立自然质量/Recall/P95、受管组件及最终EXE。不能把小夹具、合成迁移或此3/6切换称为企业级全产品验收。
+
 ## 2026-10-29 阻止规则收录绕过核验
 
 批判复现：纯文本规则题fields齐全/issues空即被archiveEligible放行，题本据此声称可组卷；普通保存与联网补答案也可能清needs_attention。RED72e92cc保留真实反例，GREEN77063fc统一有来源无AI题的核验条件：rule_extracted或未sourceChecked不能用于默认Pi/可用语义/组卷，普通手工无archive题和现AI双阶段自动稿兼容，老师仍可在既有编辑入口明确核验或撤销。题目保留在题本，缺图、超长和来源完整性条件不放宽。

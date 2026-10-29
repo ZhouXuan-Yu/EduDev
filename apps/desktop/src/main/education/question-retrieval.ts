@@ -1,4 +1,4 @@
-import type {QuestionSearchFilters} from '../../shared/contracts';
+import type {QuestionSearchFilters,QuestionNotebookFilters} from '../../shared/contracts';
 
 type Value=string|number|null;
 type Sql={all:(query:string,values?:Value[])=>Promise<Record<string,unknown>[]>;run:(query:string,values?:Value[])=>Promise<unknown>};
@@ -38,8 +38,9 @@ export async function ensureQuestionRetrievalIndex(sql:Sql):Promise<boolean>{
 export function questionSearchTokens(query:string):string[]{return [...new Set(query.split(/[\s，,、]+/u).filter(Boolean))].slice(0,8);}
 export function validatedQuestionFilters(raw:QuestionSearchFilters):QuestionSearchFilters{
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw new Error('题目筛选参数不正确');
- const allowed=['query','subject','grade','knowledgePoint','questionType','difficulty','sourceKind','limit','offset','categoryId','bookmarked'];
+ const allowed=['query','subject','grade','knowledgePoint','questionType','difficulty','sourceKind','limit','offset','categoryId','bookmarked','showSourceCandidates'];
  if(Reflect.ownKeys(raw).some(key=>typeof key!=='string'||!allowed.includes(key)||!('value' in Object.getOwnPropertyDescriptor(raw,key)!)))throw new Error('题目筛选参数不正确');
+ const sourceMode=(raw as QuestionNotebookFilters).showSourceCandidates;if(sourceMode!==undefined&&typeof sourceMode!=='boolean')throw Error('题目来源筛选参数不正确');
  const result:QuestionSearchFilters={};
  for(const key of ['query','subject','grade','knowledgePoint','questionType'] as const){const value=raw[key];if(value===undefined)continue;if(typeof value!=='string'||value.length>240||/[\x00-\x1f]/.test(value))throw new Error('题目筛选参数不正确');if(value.trim())result[key]=value.trim();}
  if(raw.difficulty!==undefined){if(!['easy','medium','hard'].includes(raw.difficulty))throw new Error('题目难度筛选不正确');result.difficulty=raw.difficulty;}
