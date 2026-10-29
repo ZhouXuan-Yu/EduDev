@@ -1,6 +1,7 @@
 import {materialId,type MaterialSource} from './materials';
 import type {ArchiveFields} from './question-archive';
 import type {AiNativeSelector} from './material-ai-native-input';
+import type {MaterialPageSource} from './material-ai-page';
 
 export const MATERIAL_AI_SCHEMA='xiaozhi.material-ai.v1' as const;
 export const MATERIAL_AI_RESPONSE='xiaozhi.material-ai-response.v1' as const;
@@ -13,13 +14,13 @@ export type AiBatchInput={schemaVersion:typeof MATERIAL_AI_SCHEMA;resourceId:str
 export type AiAction={schemaVersion:typeof MATERIAL_AI_SCHEMA;batchId:string;action:'pause'|'resume'|'retry_unknown';acceptDuplicateCharge?:true};
 export type AiBatchView={id:string;resourceId:string;title:string;model:string;start:number;count:number;images:boolean;
   status:string;calls:number;maxCalls:number;complete:number;review:number;failed:number;unknown:number;pending:number;questions:number;
-  units:{ordinal:number;status:string;error:string;questions:number}[]};
+  units:{ordinal:number;status:string;error:string;questions:number;pageSource?:boolean}[]};
 export type AiOrigin='source'|'ai_generated'|'missing';
 export const AI_ISSUES=['uncertain_ocr','cross_page','requires_image','incomplete_question','answer_conflict'] as const;
 export type AiIssue=typeof AI_ISSUES[number];
 export type AiQuestion=ArchiveFields&{number:string;answerOrigin:AiOrigin;analysisOrigin:AiOrigin;requiresImage:boolean;issues:AiIssue[]};
 export type AiResponse={schemaVersion:typeof MATERIAL_AI_RESPONSE;outcome:'questions'|'no_questions'|'needs_review';questions:AiQuestion[]};
-export type AiUnitInput={sources:MaterialSource[];text:string;page?:number;visualRisk:boolean;stamp:string;native?:AiNativeSelector};
+export type AiUnitInput={sources:MaterialSource[];text:string;page?:number;visualRisk:boolean;stamp:string;native?:AiNativeSelector;pageSource?:MaterialPageSource};
 const exact=(v:unknown,keys:string[],optional:string[]=[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&keys.every(k=>Object.hasOwn(v,k))&&Object.keys(v).every(k=>keys.includes(k)||optional.includes(k));
 const integer=(v:unknown,min:number,max:number):v is number=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=min&&v<=max;
 export const aiBatchId=(v:unknown):v is string=>typeof v==='string'&&/^aibatch_[a-f0-9-]{36}$/i.test(v);

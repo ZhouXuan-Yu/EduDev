@@ -22,7 +22,7 @@ function fixture(){
   state.attempts++;if(db.prepare('SELECT status FROM material_folder_ai WHERE batch_id=?').get(task.folderId).status!=='running')throw Error('paused');if(state.failure)throw Error(state.failure);
   const r=db.prepare('SELECT * FROM teacher_resources WHERE id=?').get(input.resourceId);
   if(!['ready','partial'].includes(r.parse_status))throw Error('unavailable');
-  if(r.original_file_name.endsWith('.pdf')&&!db.prepare('SELECT 1 FROM resource_chunks WHERE resource_id=? AND page_number=?').get(input.resourceId,input.start))throw Error('source_incomplete');
+  if(r.original_file_name.endsWith('.pdf')&&!db.prepare('SELECT 1 FROM resource_chunks WHERE resource_id=? AND page_number=?').get(input.resourceId,input.start)&&db.prepare('SELECT p.status FROM material_pdf_pages p JOIN material_pdf_jobs j ON j.generation=p.generation WHERE j.resource_id=? AND p.page=?').get(input.resourceId,input.start)?.status==='complete')throw Error('source_incomplete');
   const batch='aibatch_'+randomUUID();created.push(input);
   db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'running',0,?)").run(batch,JSON.stringify(input));
   db.prepare("INSERT INTO material_ai_units VALUES(?,1,'pending','')").run(batch);db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(task.key,'fixture',batch,task.folderId,task.revision);return batch;
@@ -44,20 +44,20 @@ async function check(name,fn){try{await fn();results.push({name,ok:true});consol
 await check('PDF processing page remains waiting, never local_page_failed',async()=>{const f=fixture();try{f.resource();await f.start();await f.repo.tick();assert.equal(f.created.length,0);assert.equal((await f.repo.view(f.id)).review,0);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_folder_ai_units').get().n,0);}finally{f.db.close();}});
 await check('Complete staged page waits for canonical publication; published page starts exactly once after restart',async()=>{const f=fixture();try{const r=f.resource('长书.pdf','needs_parser','complete');await f.start();await f.repo.tick();assert.equal((await f.repo.view(f.id)).review,0);assert.equal(f.created.length,0);f.publish(r);await f.reopen();await f.repo.tick();await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].start,1);}finally{f.db.close();}});
 await check('Eight waiting books do not starve later ready text; resource discovery stays bounded',async()=>{const f=fixture();try{for(let i=0;i<8;i++)f.resource('等待.pdf','needs_parser','pending');const ready=f.resource('已完成.md','ready');await f.start();for(let i=0;i<4&&!f.created.length;i++)await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].resourceId,ready.rid);}finally{f.db.close();}});
-await check('Real terminal failed and blank pages remain explicit review with zero model calls',async()=>{const f=fixture();try{f.resource('坏页.pdf','partial','failed','partial');f.resource('空页.pdf','ready','blank','complete');await f.start();for(let i=0;i<3;i++)await f.repo.tick();assert.equal(f.created.length,0);assert.equal((await f.repo.view(f.id)).review,2);}finally{f.db.close();}});
+await check('Terminal failed and blank pages are queued for original-image verification and never counted complete before the AI executor',async()=>{const f=fixture();try{f.resource('坏页.pdf','partial','failed','partial');f.resource('空页.pdf','ready','blank','complete');await f.start();await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].images,true);assert.equal((await f.repo.view(f.id)).complete,0);assert.equal((await f.repo.view(f.id)).waiting,1);}finally{f.db.close();}});
 function legacy(f,r,code='local_page_failed',child=''){
  f.db.prepare("INSERT INTO material_folder_ai_resources(batch_id,resource_id,version,cursor,total,status) VALUES(?,?,?,1,1,'complete')").run(f.id,r.rid,version);
  f.db.prepare("INSERT INTO material_folder_ai_units VALUES(?,?,?,1,'review',?,?)").run(f.id,r.rid,version,child,code);
  f.db.prepare("UPDATE material_folder_ai SET status='attention' WHERE batch_id=?").run(f.id);
 }
 await check('Previously misclassified same-version unbilled page recovers after publication; paused folder stays paused',async()=>{const f=fixture();try{const r=f.resource();await f.start();legacy(f,r);f.db.prepare("UPDATE material_folder_ai SET status='paused' WHERE batch_id=?").run(f.id);f.publish(r);await f.repo.tick();assert.equal(f.created.length,0);assert.equal((await f.repo.view(f.id)).status,'paused');f.db.prepare("UPDATE material_folder_ai SET status='attention' WHERE batch_id=?").run(f.id);await f.reopen();for(let i=0;i<4&&!f.created.length;i++)await f.repo.tick();assert.equal(f.created.length,1);assert.equal((await f.repo.view(f.id)).review,0);await f.repo.tick();assert.equal(f.created.length,1);}finally{f.db.close();}});
-await check('Local unavailable is recovered only after publication; changed originals, true failed pages and linked unknown requests stay held',async()=>{
+await check('Local unavailable recovers same-version complete or failed pages for guarded AI; changed originals and linked unknown requests stay held',async()=>{
  for(const mode of ['unpublished','source_changed','failed_page','linked_unknown','orphan_key','valid']){const f=fixture();try{
   const r=f.resource();await f.start();legacy(f,r,'unavailable',mode==='linked_unknown'?'aibatch_'+randomUUID():'');if(mode!=='unpublished')f.publish(r);
   if(mode==='source_changed')f.db.prepare("UPDATE teacher_resources SET content_hash=? WHERE id=?").run('a'.repeat(64),r.rid);
   if(mode==='failed_page')f.db.prepare("UPDATE material_pdf_pages SET status='failed' WHERE generation=?").run(r.generation);
   if(mode==='orphan_key'){const b='aibatch_'+randomUUID();f.db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'attention',1,?)").run(b,JSON.stringify({resourceId:r.rid,start:1,maxCalls:2}));f.db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run('orphan','fixture',b,f.id,1);}
-  await f.repo.tick();assert.equal(f.created.length,mode==='valid'?1:0,mode);
+  await f.repo.tick();assert.equal(f.created.length,['valid','failed_page'].includes(mode)?1:0,mode);if(mode==='failed_page')assert.equal((await f.repo.view(f.id)).complete,0);
  }finally{f.db.close();}}
 });
 await check('Planner migration is idempotent and persists the indexed bounded cursor across restart',async()=>{const f=fixture();try{

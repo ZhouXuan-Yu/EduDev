@@ -4,7 +4,7 @@
 
 教师结果：本地PDF页已终止为空白/失败/待核且无canonical正文时，已授权目录或单资料原图整理仍可处理该原页；不能凭OCR空就记无题。两遍均输出整页还原正文、逐题完整投影与疑点，来源可回看，正文页无习题也能查看；自动入题使用原页证据，普通body-source和旧回执不改。复用现PDF file.v3/原页预览、MaterialAiRepository、imageTextEvidence、原题本/编辑/Pi，不伪造空正文块或教师确认。
 
-新增shared material-ai-page版本化契约：原页来源含resource/version/page/PDF generation/本地页回执摘要；page-response.v1含pageText/pageIssues及既有图文题结构。QuestionArchive.v5新增pageSource、sources为空、ai-page-two-pass.v1与page-image-complete.v1策略，旧v1–v4仍严格读取；联网补答保留原页来源，不把补答当题面核验。现AI单位input增可选pageSource，新material_ai_page_units保存单元原页来源及首/终稿/原图摘要，不复制整页正文；仍以原单位原始回执为事实。
+新增shared material-ai-page版本化契约：原页来源含resource/version/page/PDF generation/本地页回执摘要；page-response.v1含pageText/pageIssues及既有图文题结构。新建的PDF原图整理统一采用整页模式，包含OCR已complete但乱码/漏题的页；旧批次继续原协议。QuestionArchive.v5新增pageSource、sources保留该页实际OCR正文引用（无正文时为空）、ai-page-two-pass.v1与page-image-complete.v1策略，旧v1–v4仍严格读取；已有完整规则题仍按原严谨同源指纹关联。联网补答保留原页来源，不把补答当题面核验。现AI单位input增可选pageSource，新material_ai_page_units保存单元原页来源及首/终稿/原图摘要，不复制整页正文；仍以原单位原始回执为事实。
 
 原页来源发送/保存/发布/读取均校验同原件版本、页世代/回执、隐私与授权；未知不重发，预算与暂停沿现执行器。新增typed materials:ai-page读取、已有AI批次视图仅返回小型可查看标志，用户按需打开原OCR/还原正文和原页；题本v5同入口回看原页。语义来源闭包补原页资源及页变更时钟，Pi/组卷继续原质量和正式整卷集中确认。旧规则/正文/AI档案不覆写，新表/索引增量幂等，回退先暂停新页生产并保留新契约读取。
 
