@@ -43,6 +43,7 @@ export function createTextChangeCoordinator(options: {
     }
   }
   return {
+    service:options.service,
     cancel,
     async review(input: XiaozhiChangeReviewInput): Promise<XiaozhiChangeResult<XiaozhiChangeReview>> {
       if (!object(input) || Object.keys(input).some(key => !['sessionId', 'changeId'].includes(key))

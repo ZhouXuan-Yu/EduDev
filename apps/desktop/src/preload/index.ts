@@ -285,6 +285,7 @@ const api = {
   decideXiaozhi: (input: XiaozhiDecisionInput) => ipcRenderer.invoke('xiaozhi:decide', input) as Promise<XiaozhiActionResult>,
   reviewXiaozhiChange: (input: XiaozhiChangeReviewInput) => ipcRenderer.invoke('xiaozhi:change-review', input) as Promise<XiaozhiChangeResult<XiaozhiChangeReview>>,
   decideXiaozhiChange: (input: XiaozhiChangeDecision) => ipcRenderer.invoke('xiaozhi:change-decide', input) as Promise<XiaozhiChangeResult<XiaozhiChangeSummary>>,
+  decideXiaozhiDelivery:(input:import('../shared/xiaozhi-delivery').DeliveryDecision)=>ipcRenderer.invoke('xiaozhi:delivery-decide',input) as Promise<import('../shared/xiaozhi-delivery').DeliveryResult>,
   reviewXiaozhiOffice:(input:OfficeArtifactReviewInput)=>ipcRenderer.invoke('xiaozhi:office-review',input) as Promise<OfficeArtifactResult<OfficeArtifactReview>>,
   reviseXiaozhiOffice:(input:OfficeArtifactReviseInput)=>ipcRenderer.invoke('xiaozhi:office-revise',input) as Promise<OfficeArtifactResult<OfficeArtifactSummary>>,
   decideXiaozhiOffice:(input:OfficeArtifactDecision)=>ipcRenderer.invoke('xiaozhi:office-decide',input) as Promise<OfficeArtifactResult<OfficeArtifactSummary>>,

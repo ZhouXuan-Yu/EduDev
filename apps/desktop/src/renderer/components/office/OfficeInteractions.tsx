@@ -5,7 +5,7 @@ import type { OfficeProjectedTurn } from '../../../shared/office-agent';
 
 export type OfficeInteraction = {
   id: string; runId: string; callId?: string;
-  kind: 'question' | 'instruction' | 'approval' | 'change' | 'artifact' | 'learning' | 'collection' | 'question_review' | 'original_batch' | 'paper' | 'practice' | 'task_review';
+  kind: 'delivery' | 'question' | 'instruction' | 'approval' | 'change' | 'artifact' | 'learning' | 'collection' | 'question_review' | 'original_batch' | 'paper' | 'practice' | 'task_review';
   content: ReactNode;
 };
 

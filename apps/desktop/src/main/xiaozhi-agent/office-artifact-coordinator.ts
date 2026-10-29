@@ -61,7 +61,7 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
 
  }
  return {
-  cancel,runOffice,
+  cancel,runOffice,service:options.service,proposalError:options.proposalError,
   async review(value:OfficeArtifactReviewInput):Promise<OfficeArtifactResult<OfficeArtifactReview>>{
    if(!input(value,['schemaVersion','sessionId','draftId']))return {ok:false,error:'invalid_input'};
    try{return {ok:true,value:await options.service.review(value.sessionId,value.draftId)};}catch(raw){return {ok:false,error:error(raw)};}

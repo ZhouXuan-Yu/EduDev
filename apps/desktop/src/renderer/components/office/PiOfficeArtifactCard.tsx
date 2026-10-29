@@ -18,7 +18,7 @@ const preview=(draft:OfficeDraft)=>['# '+escaped(draft.title),...draft.sections.
  '| '+section.table.columns.map(escaped).join(' | ')+' |','| '+section.table.columns.map(()=>'---').join(' | ')+' |',...section.table.rows.map(row=>'| '+row.map(cell=>escaped(cell).replace(/\r?\n/g,' ⏎ ')).join(' | ')+' |')].join('\n')]:[])])].join('\n\n');
 
 /** Original Pro inline approval and HeroUI fields. Draft editing stays local, never JSON in a product flow. */
-export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpen}:{artifact:OfficeArtifactSummary;sessionId:string;running:boolean;onRefresh:()=>Promise<void>;onOpen:(path:string)=>void}){
+export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpen,bundled=false,onReadiness}:{bundled?:boolean;onReadiness?:(id:string,ready:boolean)=>void;artifact:OfficeArtifactSummary;sessionId:string;running:boolean;onRefresh:()=>Promise<void>;onOpen:(path:string)=>void}){
  const {draft,update,lock}=useOfficeControlState(`office-artifact:${artifact.id}`);
  const [review,setReview]=useState<OfficeArtifactReview>(),[reading,setReading]=useState(false),[expanded,setExpanded]=useState(artifact.state==='pending'),[tab,setTab]=useState('preview');
  const [readyClassroomSlides,setReadyClassroomSlides]=useState<Set<string>>(new Set());
@@ -43,6 +43,7 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
  const presentationDraft=!!content&&isPresentationDraft(content);
  const paperDraft=!!content&&isPaperOfficeDraft(content),richDraft=!!content&&isRichPaperOfficeSchema(content.schemaVersion),hasImages=richDraft&&content!.sections.some(s=>s.figures?.length);
  const imagesReady=classroomDraft?classroomSource!.document.scenes.filter(s=>s.type==='slide').every(s=>readyClassroomSlides.has(s.id)):!!review?.images&&!!content&&content.sections.flatMap(s=>s.figures||[]).every(f=>review.images!.some(i=>i.assetId===f.assetId&&i.sha256===f.sha256)&&loadedImages.has(f.assetId));
+ useEffect(()=>{onReadiness?.(artifact.id,!!review&&review.revision===artifact.revision&&!reading&&!draft.busy&&!draft.editing);},[artifact.id,artifact.revision,review,reading,draft.busy,draft.editing,onReadiness]);
  const editable=pending&&running&&!draft.busy&&!reading&&!!review;
  function edit(action:(value:OfficeDraft)=>void){if(!editable||!content)return;setImagesReviewed(undefined);const next=structuredClone(content);action(next);update({officeDraft:next,officeRevision:artifact.revision,editing:true,error:''});}
  async function saveDraft(){
@@ -98,7 +99,7 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
     <p>{pending?draft.editing?'有未保存的修改，请先保存拟内容，再确认此版本。':'确认仅保存本次拟内容；来源或目标发生变化时不会覆盖。':'这是本次操作的拟内容记录；实际文件请从工作区打开。'}</p>
    </div>}
    {pending&&(hasImages||classroomDraft)&&<Checkbox data-testid="pi-office-images-reviewed" isSelected={imagesReviewed===artifact.revision} isDisabled={!editable||draft.editing||!imagesReady} onChange={value=>setImagesReviewed(value?artifact.revision:undefined)}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><span>{classroomDraft?'我已检查全部课页、图形、公式和随堂题；理解完整课页或公式为不可编辑图片，已检查学生讲义的答案隔离。':'我已检查全部图片的完整题面、清晰度、答案隔离及个人信息。'}</span></Checkbox.Content></Checkbox>}
-   {pending&&<ChatTool.Approval><ChatTool.ApprovalActions><ChatTool.Approve isDisabled={!editable||draft.editing||(hasImages||classroomDraft)&&(!imagesReady||imagesReviewed!==artifact.revision)} onPress={()=>void decide('approve')} data-testid="pi-office-approve">确认保存</ChatTool.Approve><ChatTool.Reject isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-office-reject">拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
+   {pending&&!bundled&&<ChatTool.Approval><ChatTool.ApprovalActions><ChatTool.Approve isDisabled={!editable||draft.editing||(hasImages||classroomDraft)&&(!imagesReady||imagesReviewed!==artifact.revision)} onPress={()=>void decide('approve')} data-testid="pi-office-approve">确认保存</ChatTool.Approve><ChatTool.Reject isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-office-reject">拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
   </ChatTool.Content>
   <div className="pi-office-actions">
    {!pending&&<Button size="sm" variant="ghost" onPress={()=>setExpanded(value=>!value)} data-testid="pi-office-review-toggle">{expanded?'收起拟内容':'查看拟内容'}</Button>}

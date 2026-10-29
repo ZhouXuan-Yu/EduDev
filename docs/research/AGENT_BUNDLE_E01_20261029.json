@@ -1,0 +1,375 @@
+{
+  "status": "ENGINEERING_SLICE_VERIFIED_NOT_FULL_AT",
+  "date": "2026-10-29",
+  "implementationSha": "e38cb4a52f28561db32a8f1c8e69e8b68373caa9",
+  "mergedValidationSha": "57ec95cf0eb3bc2681ed8a1904beb0ad2348e2d4",
+  "runtimeRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+  "paidProviderRequestsThisTurn": 0,
+  "newDependencies": [],
+  "results": [
+    "2–8 text/HTML/Office files reviewed together; original draft cards and real file services reused",
+    "Teacher PPT edits invalidate old manifest approval; group rejection produces no new files",
+    "Partial save retains successful HTML; new-run retry verifies and carries it without another write",
+    "Post-write uncertain PPT verified and carried without duplicate files",
+    "saved_bundle/current binds every actual file, original child ledger and current authority independently",
+    "Original native identities unchanged; additive delivery identity and one new typed decision IPC",
+    "Healthy event bursts no longer exhaust eight immediate snapshot retries; stable coverage failures remain bounded"
+  ],
+  "storage": {
+    "metadata": "xiaozhi_delivery_bundles, schemaVersion=1; child refs only, no duplicate draft bodies/file facts",
+    "truth": "original text/Office ledgers, document_artifacts and authorized local files"
+  },
+  "tests": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "boundary": "Final merged source, includes tsc; no installer/daily D: update"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "exitCode": 0,
+      "passed": 240,
+      "total": 240,
+      "boundary": "Final merged source"
+    },
+    {
+      "command": "npm run test:smoke",
+      "exitCode": 0,
+      "passed": 207,
+      "total": 207,
+      "boundary": "Before final snapshot burst fix and remote integration; bounded legacy regression evidence, not merged whole-suite result"
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/audit/snapshot-hydration-test.mjs",
+      "exitCode": 0,
+      "passed": 16,
+      "total": 16
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "exitCode": 0,
+      "passed": 6,
+      "total": 6
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-electron.mjs",
+      "exitCode": 0,
+      "passed": 4,
+      "total": 4,
+      "boundary": "Pre-merge confirmation / saved notes / restart / no synchronization error"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-electron.mjs --reject",
+      "exitCode": 0,
+      "passed": 3,
+      "total": 3,
+      "boundary": "Pre-merge explicit rejection / no files / restart"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/delivery-bundle-electron.mjs --partial",
+      "exitCode": 0,
+      "passed": 6,
+      "total": 6,
+      "boundary": "Final merged source including CSS: true target collision / preserve HTML / visible resume / reapproval / unchanged HTML mtime / aggregate proof / restart"
+    },
+    {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 7,
+        "low": 8,
+        "total": 23
+      },
+      "boundary": "Existing baseline, no new dependency"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "reports": {
+    "service": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-dFLX3c\\report.json",
+      "sha256": "3487861c74768c4a33f2f80712e18dec5a4d551acec3b6e4dd08417280cec72f",
+      "result": {
+        "ok": true,
+        "checks": [
+          "One review covers both files; teacher PPT edit invalidates old approval and saves exact revised notes",
+          "Aggregate independent verification binds every disk file; corruption invalidates the whole bundle",
+          "Rejecting the whole bundle creates neither file",
+          "PPT failure preserves HTML; new-run resume carries HTML without rewriting and reconfirms only the unfinished file",
+          "Task requirement change invalidates bundle; cancellation and cold restart never revive approvals",
+          "A post-write uncertain PPT is verified and carried after restart; neither saved file is written twice"
+        ],
+        "boundary": "Synthetic fixtures, actual original file/Office services, SQLite, disk, independent aggregate readback. No paid model, natural quality or full AT acceptance."
+      }
+    },
+    "ui_confirm_before_merge": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-7a6eWE\\report.json",
+      "sha256": "95da8e1935fc8137c7849978ba131f1cbbc3e39b37c94a741765d79b0dc54dcc",
+      "result": {
+        "ok": true,
+        "checks": [
+          "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+          "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+          "Saved PPT has eight actual pages and teacher notes; task verification independently confirms every bundled file",
+          "Cold restart restores bundle cards, original ledger facts and native session identity without replay"
+        ],
+        "errors": [],
+        "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+        "snapshot": {
+          "running": false,
+          "cursors": [
+            {
+              "runId": "run_75f2bd4a-41f5-4e3b-af10-a90ff778bd8f",
+              "generation": 1,
+              "sequence": 52,
+              "revision": 52
+            }
+          ],
+          "turns": [
+            {
+              "id": "run_75f2bd4a-41f5-4e3b-af10-a90ff778bd8f",
+              "status": "completed"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "xidelivery_a96b59dce5219b86b7f27130524ca0a5628c13adb4d3c039dc8a9e2f229b67a6",
+              "state": "saved"
+            }
+          ]
+        }
+      }
+    },
+    "ui_reject_before_merge": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-M3fRKm\\report.json",
+      "sha256": "4afd1452fb1712f8daaa756a604b3ac77f40d9fc11d7358b2898a06af74f3748",
+      "result": {
+        "ok": true,
+        "checks": [
+          "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+          "One rejection leaves both formal output files unwritten",
+          "Cold restart restores bundle cards, original ledger facts and native session identity without replay"
+        ],
+        "errors": [],
+        "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+        "snapshot": {
+          "running": false,
+          "cursors": [
+            {
+              "runId": "run_f4cf4121-3472-4c8a-8fb0-092c8a2148bd",
+              "generation": 1,
+              "sequence": 45,
+              "revision": 44
+            }
+          ],
+          "turns": [
+            {
+              "id": "run_f4cf4121-3472-4c8a-8fb0-092c8a2148bd",
+              "status": "completed"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "xidelivery_25ef34ee87fc6cafd0916721d35e496ae6289bf10793512d38ae188f10febadf",
+              "state": "rejected"
+            }
+          ]
+        }
+      }
+    },
+    "ui_partial_before_merge": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-15cYW9\\report.json",
+      "sha256": "4ed6935b5534d2a87515098f2ed7ddda47bc87891e8f6c1b0dd3fdc0ade22c9e",
+      "result": {
+        "ok": true,
+        "checks": [
+          "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+          "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+          "A real target conflict after HTML save displays partial delivery and preserves the HTML",
+          "The visible resume action starts a new turn, carries the saved HTML and confirms only unfinished PPT without rewriting HTML",
+          "Saved PPT has eight actual pages and teacher notes; task verification independently confirms every bundled file",
+          "Cold restart restores bundle cards, original ledger facts and native session identity without replay"
+        ],
+        "errors": [],
+        "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+        "snapshot": {
+          "running": false,
+          "cursors": [
+            {
+              "runId": "run_57839897-54d0-4292-ba9a-64f6baec7335",
+              "generation": 1,
+              "sequence": 49,
+              "revision": 48
+            },
+            {
+              "runId": "run_4355003a-8965-4cc6-8340-61a0945a4ddd",
+              "generation": 2,
+              "sequence": 50,
+              "revision": 50
+            }
+          ],
+          "turns": [
+            {
+              "id": "run_57839897-54d0-4292-ba9a-64f6baec7335",
+              "status": "completed"
+            },
+            {
+              "id": "run_4355003a-8965-4cc6-8340-61a0945a4ddd",
+              "status": "completed"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "xidelivery_615b7040bb998f9da320ea9fe3d275c9b8ca8297299de6277192af1f2ab1bff2",
+              "state": "partial"
+            },
+            {
+              "id": "xidelivery_9fab7852a7afc0f8ee14638a97f870911ba89f4ec21153e37de4b5b597ceac3a",
+              "state": "saved"
+            }
+          ]
+        }
+      }
+    },
+    "ui_merged_partial": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-Pndgwa\\report.json",
+      "sha256": "bf486d4bc8e0f974de01c4e6fa74b8037c2c8ca0e327ad4bfb63ffd9f54de9fe",
+      "result": {
+        "ok": true,
+        "checks": [
+          "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+          "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+          "A real target conflict after HTML save displays partial delivery and preserves the HTML",
+          "The visible resume action starts a new turn, carries the saved HTML and confirms only unfinished PPT without rewriting HTML",
+          "Saved PPT has eight actual pages and teacher notes; task verification independently confirms every bundled file",
+          "Cold restart restores bundle cards, original ledger facts and native session identity without replay"
+        ],
+        "errors": [],
+        "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+        "snapshot": {
+          "running": false,
+          "cursors": [
+            {
+              "runId": "run_9946d378-3372-4eec-99c0-50748e9a5f88",
+              "generation": 1,
+              "sequence": 49,
+              "revision": 48
+            },
+            {
+              "runId": "run_1807b1ab-b0b6-42ba-9b30-ca5fbfbaa4a9",
+              "generation": 2,
+              "sequence": 50,
+              "revision": 50
+            }
+          ],
+          "turns": [
+            {
+              "id": "run_9946d378-3372-4eec-99c0-50748e9a5f88",
+              "status": "completed"
+            },
+            {
+              "id": "run_1807b1ab-b0b6-42ba-9b30-ca5fbfbaa4a9",
+              "status": "completed"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "xidelivery_f3e53f73c30d14d34d9e1e82fa560fe750656ddfeade21cf5d341c1f588af510",
+              "state": "partial"
+            },
+            {
+              "id": "xidelivery_023532c402ccac0fd0592794ff6f74bb77bd5e8eb071a1f35d3b703b1701bf48",
+              "state": "saved"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "sources": [
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts",
+      "sha256": "1404fd9531b1686b9d31eb856be86e7b516c08815a09dfb2bfed5ffa716281a9"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/delivery-state.ts",
+      "sha256": "ed39cb8e14ecb6ab7499df05b7f731e975a74e06408bdfcb6e9c54c3a4c19e0a"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/verification/delivery-readback.ts",
+      "sha256": "1c0abae7a2765768f70b06f4306b609a3556d57562a1780961fac235580db953"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiDeliveryBundleCard.tsx",
+      "sha256": "2b4bac0ef3b97ac1f0854a264de42cec2a7c225de1204fa47e12d39a847ff295"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/pi-snapshot-hydrator.ts",
+      "sha256": "3792069b32b702fe6fb5d3ee3383d264cc282b40fccbea4729c8fcd425ba5b0a"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "sha256": "227891fa5e23215afaa7f5a1e21f7f39707a289a3d295f73ab2c0ae20158469d"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/delivery-bundle-electron.mjs",
+      "sha256": "1deeb9f4d5f257bacde047fd82403fa2eca2ca98a5ae0d956ba3529dfdb6d0d7"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/presentation-fixture.mjs",
+      "sha256": "2f434e83fe8cd26bb0c18e1d6a9627e880b53fbd5e468d45362083b22ac02a5a"
+    }
+  ],
+  "performance": {
+    "previousRendererEntryKB": 7109.43,
+    "featurePreMergeEntryKB": 7117.9,
+    "featureDeltaKB": 8.47,
+    "mergedEntryKB": 7128.14,
+    "mergedBoundary": "Contains independent remote knowledge-library changes; total increase is not solely attributed to this slice",
+    "confirmationCountForTwoFiles": {
+      "before": 2,
+      "after": 1
+    },
+    "resumeTextWrites": 0,
+    "additionalOfficeParsingPasses": 0,
+    "snapshotSummaryChildQueries": "one read per child; no repeated content copy",
+    "bounds": "2–8 files, combined raw input 1MiB, 64 bundle manifests/session; staged drafts keep original byte limits",
+    "boundary": "Build size, operation counts and actual unchanged file mtime evidence; no general FPS/latency/RSS claim"
+  },
+  "failuresRetained": [
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-gGI0gg",
+      "reason": "Early DB-only test reported success but visual review found snapshot error; superseded by strict UI synchronization checks"
+    },
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-Mz43cB",
+      "reason": "Actual healthy save event bursts exhausted original 8 snapshot reads; fixed bounded settling/retry and added regression case"
+    },
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-gVAoPw",
+      "reason": "Controlled provider failed to create a fresh adopted task plan before resume; test transport corrected, production admission not relaxed"
+    },
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-zvxRWy",
+      "reason": "Controlled provider looked for bundle ID only in system message; host protected facts use existing context adapter; test reads actual message body"
+    },
+    {
+      "reason": "Initial source-only smoke static import / command cwd setup errors; final exact loader command above succeeds"
+    },
+    {
+      "reason": "Attempting core.autocrlf=false diff --check falsely counted CRLF as trailing whitespace; normal repository-configured git diff --check passed; no line-ending policy changed"
+    }
+  ],
+  "remaining": [
+    "Complete AT-E01-08/09 concentrated acceptance with frozen full fixtures and actual read-only-target case; current collision fault is bounded engineering evidence",
+    "Default output backup/relocation and compatible write-disable switch",
+    "E02 actual thinking control, E03 broader multi-turn/local revisions and subsequent W phases",
+    "8-file / 64-manifest scale; staging interruption before all child drafts exist; multi-level resume history consolidation remain unverified",
+    "Default source data, teacher files and daily D: runtime not updated; WPS/installer/natural provider quality not accepted"
+  ],
+  "rollback": "Preserve delivery schema/table reader, saved_bundle task parsing, child ledgers/files and additive native identity. To stop new bundle writes remove the deliveryTools registration while retaining readers; no rollback verification yet. Do not blanket-revert to code unable to parse new task criteria or delete saved files."
+}

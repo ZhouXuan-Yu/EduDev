@@ -20,7 +20,8 @@ export function createPiSnapshotHydrator<T>(options: {
     owner.failed = false;
     // Defer the read until request ownership is installed, even if read throws.
     const request = Promise.resolve().then(async () => {
-      for (let attempt = 0; attempt < 8 && scope === owner; attempt++) {
+      let changedReads=0,rejectedReads=0;
+      for (let attempt = 0; attempt < 72 && scope === owner; attempt++) {
         const revision = owner.revision;
         let value: T;
         try { value = await options.read(target); }
@@ -28,8 +29,15 @@ export function createPiSnapshotHydrator<T>(options: {
         if (scope !== owner) return;
         // A snapshot captured before an accepted event cannot acknowledge it.
         // Re-read after that burst rather than swallowing the last event.
-        if (revision !== owner.revision || options.canPublish && !options.canPublish(value)) continue;
-        if (options.publish(value) === false || revision !== owner.revision) continue;
+        if (revision !== owner.revision) {
+          // A healthy multi-file save can publish many short bursts. Let it
+          // settle instead of exhausting eight immediate reads and locking UI.
+          if(++changedReads>=64)break;
+          if(changedReads>=4)await new Promise(resolve=>setTimeout(resolve,Math.min(100,(changedReads-3)*10)));
+          continue;
+        }
+        if (options.canPublish && !options.canPublish(value)) {if(++rejectedReads>=8)break;continue;}
+        if (options.publish(value) === false || revision !== owner.revision) {if(++rejectedReads>=8)break;continue;}
         if (scope !== owner) return;
         owner.published = true;
         return;

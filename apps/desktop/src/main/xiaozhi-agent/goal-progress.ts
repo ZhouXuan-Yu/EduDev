@@ -2,7 +2,7 @@ import {createHash} from 'node:crypto';
 import {validTaskVerification,type TaskVerification} from '../../shared/xiaozhi-verification';
 import type {GoalProgress} from '../../shared/xiaozhi-goal';
 
-const resultKinds=new Set(['file','attachment','web','image','saved_text','saved_office','saved_questions','directory','file_metadata']);
+const resultKinds=new Set(['file','attachment','web','image','saved_text','saved_office','saved_bundle','saved_questions','directory','file_metadata']);
 /** Integrity of current host-owned readback, never a teaching/step acceptance.
  * Stable source/effect digests intentionally exclude call ID, prose and time. */
 export function goalEvidenceProgress(input:{runId:string;seen:string[];idle:number;verification?:TaskVerification;teacherAnswerDigests?:string[];now?:number}){

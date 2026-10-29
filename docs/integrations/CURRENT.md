@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-29 整包集成
+
+沿原text/Office service、PPT生成器、Hana读取与原审阅字段，新增office_deliver_files、delivery DTO/event及唯一整包decision IPC。无新依赖/许可证/安装体积依赖；只新增引用元数据表。回退须保留新kind/记录/文件读取，停写开关与备份后续实现。
+
 ## 2026-10-29 规则题核验复用
 
 共用现question-archive schema、AI回执和教师sourceChecked编辑入口，未增加模型/依赖/存储真源。现Pi/检索/组卷经同一archiveEligible，联网补答仅补缺失角色并保留题面核验状态；旧原件和题目事实不迁移，needs_attention为可重建派生标记。

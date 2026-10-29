@@ -12,6 +12,7 @@ import { createModelSettingsState } from './model-settings-state';
 import { createModelSwitchState } from './model-switch-state';
 import { createTextChangeState } from './text-change-state';
 import { createOfficeArtifactState } from './office-artifact-state';
+import {createDeliveryState} from './delivery-state';
 import { createAttachmentState } from './attachment-state';
 import { createAttachmentImportState } from './attachment-import-state';
 import {createAttachmentSendState} from './attachment-send-state';
@@ -35,6 +36,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const modelSwitch=createModelSwitchState(sql);
   const changes = createTextChangeState(sql);
   const officeArtifacts = createOfficeArtifactState(sql);
+  const deliveries=createDeliveryState(sql);
   const attachments = createAttachmentState(sql);
   const attachmentImports = createAttachmentImportState(sql);
   const attachmentSends=createAttachmentSendState(sql);
@@ -54,6 +56,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     modelSwitch,
     changes,
     officeArtifacts,
+    deliveries,
     attachments,
     attachmentImports,
     attachmentSends,
@@ -61,7 +64,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     goals,
     eventJournal,
     classrooms,
-    async recover() { await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
+    async recover() { await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
     async init() {
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_session_bindings (
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1,
@@ -75,6 +78,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await modelSwitch.migrate();
       await changes.migrate();
       await officeArtifacts.migrate();
+      await deliveries.migrate();
       await attachments.migrate();
       await attachmentImports.migrate();
       await attachmentSends.migrate();

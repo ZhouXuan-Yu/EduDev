@@ -1,7 +1,7 @@
 import {taskObject,taskKeys,taskNatural,taskText,validTaskSteps,type TaskCriterionKind} from './xiaozhi-task';
 
 export const TASK_PLAN_SCHEMA='xiaozhi.task-plan.v3' as const;
-export const TASK_PLAN_KINDS=['human','file','attachment','web','image','saved_text','saved_office','saved_questions'] as const;
+export const TASK_PLAN_KINDS=['human','file','attachment','web','image','saved_text','saved_office','saved_bundle','saved_questions'] as const;
 export type TaskPlanInput={schemaVersion:typeof TASK_PLAN_SCHEMA;expectedRevision:number;requirementsVersion:number;reason:string;steps:{id:string;text:string;dependsOn:string[];reported:'pending'|'in_progress'|'completed';kind:TaskCriterionKind;target?:string}[]};
 export function validTaskPlanInput(v:unknown):v is TaskPlanInput{
  if(!taskObject(v)||Object.keys(v).length!==5||!taskKeys(v,['schemaVersion','expectedRevision','requirementsVersion','reason','steps'])||v.schemaVersion!==TASK_PLAN_SCHEMA||!taskNatural(v.expectedRevision)||!taskNatural(v.requirementsVersion)||v.requirementsVersion<1||!taskText(v.reason,500)||!Array.isArray(v.steps))return false;

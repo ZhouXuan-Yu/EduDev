@@ -15,8 +15,8 @@ const errors: Record<XiaozhiChangeError, string> = { invalid_input: '这次操�
   conflict: '记录或文件版本已变化，请刷新后检查。', busy: '有任务正在运行，请结束后再操作。', configuration: '暂时无法读取或提交修改，请重试。' };
 
 /** Original Pro disclosure/code block; complete differences stay local and on demand. */
-export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen }: {
-  change: XiaozhiChangeSummary; sessionId: string; running: boolean; onRefresh: () => Promise<void>; onOpen: (path: string) => void;
+export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen, bundled=false, onReadiness }: {
+  bundled?:boolean;onReadiness?:(id:string,ready:boolean)=>void;change: XiaozhiChangeSummary; sessionId: string; running: boolean; onRefresh: () => Promise<void>; onOpen: (path: string) => void;
 }) {
   const { draft, update, lock } = useOfficeControlState(`text-change:${change.id}`);
   const [review, setReview] = useState<XiaozhiChangeReview>(), [reading, setReading] = useState(false);
@@ -41,6 +41,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
     } catch { update({error:'修改状态未能确认，请刷新后检查。'}); }
     finally { lock.current = false; update({busy:false}); }
   }
+  useEffect(()=>{onReadiness?.(change.id,!!review&&review.revision===change.revision&&!reading&&!draft.busy);},[change.id,change.revision,review,reading,draft.busy,onReadiness]);
   const pending = change.state === 'pending', uncertain = ['uncertain','undo_uncertain'].includes(change.state);
   const science = /\.(html|svg)$/i.test(change.path);
   const state = pending || uncertain ? 'requires-action' : ['approved','executing','reverting'].includes(change.state) ? 'input-available'
@@ -67,7 +68,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
         </>}
         <p>{pending ? '确认后仅保存此版本；原文件另有修改时不会覆盖。' : '此处是该次操作的版本记录；当前文件请从工作区打开。'}</p>
       </div>}
-      {pending && <ChatTool.Approval><ChatTool.ApprovalActions>
+      {pending && !bundled && <ChatTool.Approval><ChatTool.ApprovalActions>
         <ChatTool.Approve isDisabled={draft.busy||reading||!review} onPress={()=>void decide('approve')} data-testid="pi-text-approve">确认保存</ChatTool.Approve>
         <ChatTool.Reject isDisabled={draft.busy} onPress={()=>void decide('reject')} data-testid="pi-text-reject">拒绝</ChatTool.Reject>
       </ChatTool.ApprovalActions></ChatTool.Approval>}

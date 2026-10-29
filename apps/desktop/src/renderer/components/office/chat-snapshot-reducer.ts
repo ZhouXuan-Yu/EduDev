@@ -85,6 +85,7 @@ export function applyChatSnapshotEvent(
     approvals,
     changes,
     officeArtifacts,
+    deliveries:event.kind==='delivery_bundle'?[...(previous.deliveries||[]).filter(d=>d.id!==event.delivery.id),event.delivery]:previous.deliveries,
     learningReviews,
     questionCollections,
     questionReviews,

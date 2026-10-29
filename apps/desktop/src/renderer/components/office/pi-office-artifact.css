@@ -1,4 +1,8 @@
 /* finesse component adapter: existing Pro approval and HeroUI interactive states. */
+.pi-delivery-bundle { display:flex; flex-direction:column; gap:12px; min-width:0; padding:14px; border:1px solid var(--border,#dfe4e2); border-radius:16px; }
+.pi-delivery-bundle > p, .pi-delivery-bundle [data-testid='pi-delivery-file'] > p { margin:0; font-size:13px; line-height:1.6; color:var(--muted,#66736f); overflow-wrap:anywhere; }
+.pi-delivery-bundle [role='alert'] { color:var(--danger,#c43d3d); }
+.pi-delivery-bundle .pi-office-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
 .xiaozhi-pi-workspace .pi-office-artifact .chat-tool__trigger-label > span { overflow-wrap: anywhere; }
 .xiaozhi-pi-workspace .pi-office-review { min-width: 0; }
 .xiaozhi-pi-workspace .pi-office-review > p, .xiaozhi-pi-workspace .pi-office-sources p { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }

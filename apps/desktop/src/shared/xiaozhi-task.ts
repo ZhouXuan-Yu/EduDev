@@ -1,7 +1,7 @@
 import {validTaskVerification,type TaskVerification} from './xiaozhi-verification';
 /** Versioned task authority. v2 native plans remain immutable historical records. */
 export const TASK_SCHEMA='xiaozhi.task.v1' as const;
-export type TaskCriterionKind='human'|'file'|'attachment'|'web'|'image'|'saved_text'|'saved_office'|'saved_questions';
+export type TaskCriterionKind='human'|'file'|'attachment'|'web'|'image'|'saved_text'|'saved_office'|'saved_bundle'|'saved_questions';
 export type TaskSource={runId:string;version:string}&({messageId:string;actionId?:never}|{actionId:string;messageId?:never});
 export type TaskCriterion={id:string;version:number;sourceId:string;sourceVersion:string;text:string;kind:TaskCriterionKind;resource?:string};
 export type TaskStep={id:string;text:string;dependsOn:string[];criterionIds:string[];reported:'pending'|'in_progress'|'completed'};
@@ -41,7 +41,7 @@ export function validTaskCorrection(v:unknown):v is TaskCorrectionInput{return t
 export function validTaskReview(v:unknown):v is TaskReviewInput{return taskObject(v)&&taskKeys(v,[...teacherBaseKeys,'candidate','checked'])&&validTeacherBase(v)&&validTaskCandidate(v.candidate)&&Array.isArray(v.checked)&&v.checked.length>0&&v.checked.length<=8&&v.checked.every(c=>taskObject(c)&&Object.keys(c).length===3&&taskKeys(c,['criterionId','version','accepted'])&&taskLocalId(c.criterionId)&&taskNatural(c.version)&&c.version>0&&typeof c.accepted==='boolean')&&new Set(v.checked.map(c=>c.criterionId)).size===v.checked.length;}
 export function validTaskOwner(v:unknown):v is TaskOwner{return taskObject(v)&&Object.keys(v).length===3&&taskKeys(v,['sessionId','runId','generation'])&&typeof v.sessionId==='string'&&/^aisession_[a-f0-9-]{36}$/iu.test(v.sessionId)&&taskIdentity(v.runId)&&taskNatural(v.generation)&&v.generation>0;}
 export function validTaskCriterion(v:unknown):v is TaskCriterion{
- return taskObject(v)&&taskKeys(v,['id','version','sourceId','sourceVersion','text','kind','resource'])&&taskLocalId(v.id)&&taskNatural(v.version)&&v.version>0&&taskIdentity(v.sourceId)&&taskDigest(v.sourceVersion)&&taskText(v.text,400)&&['human','file','attachment','web','image','saved_text','saved_office','saved_questions'].includes(String(v.kind))&&(v.kind==='human'?v.resource===undefined:taskText(v.resource,512));
+ return taskObject(v)&&taskKeys(v,['id','version','sourceId','sourceVersion','text','kind','resource'])&&taskLocalId(v.id)&&taskNatural(v.version)&&v.version>0&&taskIdentity(v.sourceId)&&taskDigest(v.sourceVersion)&&taskText(v.text,400)&&['human','file','attachment','web','image','saved_text','saved_office','saved_bundle','saved_questions'].includes(String(v.kind))&&(v.kind==='human'?v.resource===undefined:taskText(v.resource,512));
 }
 export function validTaskSteps(v:unknown):v is TaskStep[]{
  if(!Array.isArray(v)||!v.length||v.length>8||v.some(s=>!taskObject(s)||Object.keys(s).length!==5||!taskKeys(s,['id','text','dependsOn','criterionIds','reported'])||!taskLocalId(s.id)||!taskText(s.text,200)||!['pending','in_progress','completed'].includes(String(s.reported))||!Array.isArray(s.dependsOn)||s.dependsOn.length>7||!s.dependsOn.every(taskLocalId)||new Set(s.dependsOn).size!==s.dependsOn.length||!Array.isArray(s.criterionIds)||!s.criterionIds.length||s.criterionIds.length>16||!s.criterionIds.every(taskLocalId)||new Set(s.criterionIds).size!==s.criterionIds.length))return false;

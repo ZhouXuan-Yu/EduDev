@@ -129,6 +129,10 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
       : event.artifact.state === 'saved' ? 'completed' : ['approved','generating','prepared','committing'].includes(event.artifact.state) ? 'inProgress' : 'failed';
     if (event.artifact.state === 'pending') next.status = 'waiting_approval';
     else if (next.status === 'waiting_approval') next.status = 'running';
+  } else if(event.kind==='delivery_bundle'){
+    const item=next.items.find(item=>item.kind==='tool'&&item.id===event.delivery.callId);
+    if(item)item.status=event.delivery.state==='pending'?'waiting_approval':event.delivery.state==='saved'?'completed':event.delivery.state==='rejected'?'declined':['preparing','approving','approved','executing'].includes(event.delivery.state)?'inProgress':'failed';
+    if(event.delivery.state==='pending')next.status='waiting_approval';else if(next.status==='waiting_approval')next.status='running';
   } else if (event.kind === 'control') {
     const control = event.control;
     if (control.kind === 'plan') {

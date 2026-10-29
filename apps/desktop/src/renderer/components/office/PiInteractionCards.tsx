@@ -2,6 +2,7 @@ import type { XiaozhiWorkspaceSnapshot, XiaozhiQueueMutationInput, XiaozhiDecisi
 import type { LearningReviewSummary } from '../../../shared/learning-review';
 import type { OfficeInteraction } from './OfficeInteractions';
 import { PiCopyApproval } from './PiCopyApproval';
+import {PiDeliveryBundleCard} from './PiDeliveryBundleCard';
 import { PiTextChangeCard } from './PiTextChangeCard';
 import { PiOfficeArtifactCard } from './PiOfficeArtifactCard';
 import { PiLearningReview, PiLearningReviewSet } from './PiLearningReview';
@@ -24,13 +25,15 @@ export function buildPiInteractions({ snapshot, sessionId, onRefresh, onOpen, on
   const running = Boolean(snapshot.running);
   const learning = snapshot.learningReviews || [], learningBatches = new Map<string, LearningReviewSummary[]>();
   for (const item of learning) if (item.state === 'pending') learningBatches.set(item.runId, [...(learningBatches.get(item.runId) || []), item]);
+  const managed=new Set((snapshot.deliveries||[]).flatMap(d=>d.files.filter(f=>!f.carried).map(f=>f.draftId)));
   const entries: OfficeInteraction[] = [
+    ...(snapshot.deliveries||[]).map(item=>({id:`delivery:${item.id}`,runId:item.runId,callId:item.callId,kind:'delivery' as const,content:<PiDeliveryBundleCard delivery={item} sessionId={sessionId} running={running} onRefresh={onRefresh} onOpen={onOpen}/>})),
     ...(snapshot.task&&(!snapshot.task.goal||snapshot.task.goal.id!==snapshot.goal?.id)&&snapshot.task.origin.runId!==snapshot.goal?.runId?[{id:`task:${snapshot.task.id}`,runId:snapshot.task.lastRunId||snapshot.task.origin.runId,kind:'task_review' as const,content:<PiTaskReview sessionId={sessionId} task={snapshot.task} running={running} onRefresh={onRefresh}/>}]:[]),
     ...(snapshot.approvals || []).map(item => ({ id: `approval:${item.id}`, runId: item.runId, callId: item.callId, kind: 'approval' as const,
       content: <PiCopyApproval approval={item} onDecision={onDecision} /> })),
-    ...(snapshot.changes || []).map(item => ({ id: `change:${item.id}`, runId: item.runId, callId: item.callId, kind: 'change' as const,
+    ...(snapshot.changes || []).filter(item=>!managed.has(item.id)).map(item => ({ id: `change:${item.id}`, runId: item.runId, callId: item.callId, kind: 'change' as const,
       content: <PiTextChangeCard sessionId={sessionId} change={item} running={running} onRefresh={onRefresh} onOpen={onOpen} /> })),
-    ...(snapshot.officeArtifacts || []).map(item => ({ id: `artifact:${item.id}`, runId: item.runId, callId: item.callId, kind: 'artifact' as const,
+    ...(snapshot.officeArtifacts || []).filter(item=>!managed.has(item.id)).map(item => ({ id: `artifact:${item.id}`, runId: item.runId, callId: item.callId, kind: 'artifact' as const,
       content: <PiOfficeArtifactCard sessionId={sessionId} artifact={item} running={running} onRefresh={onRefresh} onOpen={onOpen} /> })),
     ...learning.filter(item => item.state !== 'pending').map(item => ({ id: `learning:${item.id}`, runId: item.runId, callId: item.callId, kind: 'learning' as const,
       content: <PiLearningReview sessionId={sessionId} review={item} onRefresh={onRefresh} /> })),
