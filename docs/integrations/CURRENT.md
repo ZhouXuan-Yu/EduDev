@@ -1,5 +1,8 @@
 # 当前集成与复用
 
+## 2026-10-29 受管接入与验收规格
+
+详细任务书和AT要求真实工具源/固定版本/hash/许可/平台/兼容/空间/健康检查，不编造未定工具包的hash。受控小包只测边界，真实受管工具准备后继续任务才算产品能力。入口../product/PRD-XIAOZHI-AGENT-DELIVERY.md；此轮无新依赖或运行时集成。
 ## 2026-10-29 WeKnora完整运行对照已完成
 
 Tencent/WeKnora固定dacb9c2未改源，用隔离签名校验UCRT GCC15完整构建277858304B EXE，带三个运行DLL、无编译器PATH健康200。九份同OCR文本/API检索与同向量容量实跑；原图需VLM/PDF需DocReader，百万热P95 3755ms，故未切生产。E5本地桥仅比较夹具、无第二Agent。新增OCR文字纠错复用现DeepSeek/projection/Pi/SQLite，非自建通用后端。详细匿名证据research/KB_WEKNORA_RUNTIME_EVIDENCE_20261029.json。

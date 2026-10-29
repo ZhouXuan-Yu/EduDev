@@ -1,5 +1,8 @@
 # 小智能力与复用矩阵
 
+## 2026-10-29 全能力任务与最终效果
+
+完整能力细项统一../product/PRD-XIAOZHI-AGENT-DELIVERY.md：E8通用执行、S6理科、T8全科、C6共性，252需求/验收初始未执行。现有实现与新规格分开，原AH/KR及AQ范围结论保留；未选目录缺工具等产品缺口继续OPEN。
 ## 2026-10-29 M03/M04/M05：原图文字题纠错与核心题库可达
 
 复用现两遍DeepSeek、六项projection、SQLite writer、Pi题库provider与LanceDB检索。新增图文响应/回执和实际输入图持久表；原图文字纠错可自动入题本并参与现组卷/Office导出。题库两个只读schema常驻已有授权范围，EXISTS存在性不再误判空库。图题仍未转为此文字策略，PDF原生v3/全库质量/40GB未通过。

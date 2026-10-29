@@ -1,5 +1,12 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-29 新能力顺序执行Goal入口
+
+本能力任务目标见[XIAOZHI_AGENT_DELIVERY_GOAL.md](XIAOZHI_AGENT_DELIVERY_GOAL.md)，含四份规格、依赖顺序、轻量审核和达标已实现规则；不覆盖本Master产品/数据边界。当前仅编写目标，252条仍未执行；进入执行后按W0–W5推进，已授权动作不重复申请，实际越界才暂停相应动作。
+
+## 2026-10-29 用户要求完整能力任务书与验收
+
+按最新确认通用执行→理科→全科，完整细粒度规格入口../product/PRD-XIAOZHI-AGENT-DELIVERY.md；252需求/用例均未执行。本规格沿M01–M12/Pi/SQLite与本地文件真源，不改正式整卷集中确认，不将旧KR未完成改为完成，不自动扩费用/发布/多Agent范围。此轮仅规格，运行代码未改。
 ## 2026-10-29 当前知识库证据入口
 
 本轮真实扫描页文字纠错、自然查题及单题四文件交付限定通过；WeKnora完整Windows Lite对照已完成，仍不足以直接切默认。完整目标保持ACTIVE，40GB/自然高召回/图题与跨页/受管安装仍OPEN；最新事实与执行顺序以WORK_PROGRESS、KB_IMPLEMENTATION_EVIDENCE和research两份20261029匿名证据为准。
