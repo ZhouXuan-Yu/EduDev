@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-29 新完整验收手册入口
+
+../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md定义252条AT，全部未执行；配套14组FX答案/环境/故障与CSV。结构校验不等功能验收；从正式UI操作，以文件/SQLite/实际wire/重启/Office/WPS/OS独立核验，阶段功能做齐再集中检查。旧AQ和KR证据继续保留，不回填新用例通过。
+
 ## 2026-10-29 重新打开Hana产品可用性
 
 既有AQ工程测试保留，但本轮源码显示普通会话工具注册、通用HTML、手动思考和自动准备仍缺，不能称完整Hana已实现。路线定义最终一次集中试用五任务：无工作目录HTML+PPT、短追问局部改、缺工具准备、失败/重启、生成中交互。尚未执行，无新provider证据。详../product/XIAOZHI_AGENT_CAPABILITY_ROADMAP.md。

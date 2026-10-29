@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-29 用户要求完整能力任务书与验收
+
+按最新确认通用执行→理科→全科，完整细粒度规格入口../product/PRD-XIAOZHI-AGENT-DELIVERY.md；252需求/用例均未执行。本规格沿M01–M12/Pi/SQLite与本地文件真源，不改正式整卷集中确认，不将旧KR未完成改为完成，不自动扩费用/发布/多Agent范围。此轮仅规格，运行代码未改。
+
 ## 2026-10-28 Hana回答优化独立切片
 
 用户本轮要求以Hana为核心吸收DSH/SourceWeft优势，新增独立M10/M12回答优化切片，合同 HANA_ANSWER_QUALITY.md。保留唯一Pi、本地数据真源与现有教师确认边界；不改变并行KR知识库任务或将其未完成问题记为已解决。工程接入与整体质量验收分别登记。

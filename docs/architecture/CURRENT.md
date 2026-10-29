@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 新能力规格的架构边界
+
+../product/PRD-XIAOZHI-AGENT-DELIVERY.md定义待实施逻辑契约、现有schema缺口与复用/兼容/回退要求，不代表已新建表/IPC/Worker。保持Pi唯一Runtime、SQLite/本地文件真源；具体映射在WP .01冻结，新增PPT备注/通用HTML等须同时贯通契约到真实输出。
+
 ## 2026-10-29 流式响应与窗口拖动
 
 OfficeMarkdown在应用适配层memo合并components，默认animated=false；正文保持32ms、推理100ms合并并终态flush。DesktopFrame以独立空白drag区分离实际no-drag按钮，不改原生caption/位置持久化或IPC。

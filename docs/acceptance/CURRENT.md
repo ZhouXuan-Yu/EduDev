@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-29 全功能详细验收入口
+
+[逐项验收](XIAOZHI_AGENT_ACCEPTANCE.md)、[数据与答案](XIAOZHI_AGENT_FIXTURES.md)、[追踪CSV](XIAOZHI_AGENT_TRACEABILITY.csv)配套[任务书](../product/PRD-XIAOZHI-AGENT-DELIVERY.md)。28组252条均未执行；本轮仅文档一致性检查，不能标功能通过；实现后遵循一次必要局部检查、阶段功能完成后集中验收。
+
 ## 2026-10-29 流式响应与窗口拖动
 
 流式/拖动专项：build、240组件、11回答边界及50段Pi合成流通过。动画峰值51→6，两版无长任务；新构建输入到帧最大6.2ms。D:独立build通过；双击最大化及从最大化拖动还原有真实bounds变化，普通状态自动拖动未取得位移，详HANA_ANSWER_QUALITY末尾。

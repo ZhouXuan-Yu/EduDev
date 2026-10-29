@@ -1,5 +1,9 @@
 # 小智 Goal 当前状态
 
+## 2026-10-29 完整任务书与验收规格
+
+已编制28组/252条需求与用例，含14组数据/答案规格、逐条CSV；全部未执行，功能缺口继续OPEN。入口../product/PRD-XIAOZHI-AGENT-DELIVERY.md及../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md。此轮仅文档，不改变日常构建或新增模型请求。
+
 ## 2026-10-29 执行能力差距重新打开
 
 用户确认先通用执行、再理科、后全科。当前无grant不注册写入/Office、通用HTML受限、无手动思考设置、自动联网安装未实现；AQ机制存在不等于产品对齐。新能力决策稿../product/XIAOZHI_AGENT_CAPABILITY_ROADMAP.md；本轮仅调研/队列，未改运行时代码。知识库KR成果与未完成状态保留。
