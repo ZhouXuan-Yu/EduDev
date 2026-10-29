@@ -1,4 +1,4 @@
-import {validOfficeDraft,officeOutputFormat,type OfficeDraft,type OfficeOutputFormat} from './xiaozhi-office-draft';
+import {validOfficeDraft,isPresentationDraft,officeOutputFormat,type OfficeDraft,type OfficeOutputFormat} from './xiaozhi-office-draft';
 export const OFFICE_ARTIFACT_SCHEMA='xiaozhi.office-artifact.v1' as const;
 export type OfficeArtifactState='pending'|'approved'|'generating'|'prepared'|'committing'|'saved'|'rejected'|'interrupted'|'uncertain'|'conflict'|'failed';
 export type OfficeArtifactProposal={path:string;format:OfficeOutputFormat;draft:OfficeDraft;sources:{path:string;version:string}[];parentArtifactId?:string};
@@ -23,7 +23,7 @@ export function validOfficeProposal(v:unknown):v is OfficeArtifactProposal {
  const x=v as Record<string,unknown>;
  return Object.keys(x).every(k=>['path','format','draft','sources','parentArtifactId'].includes(k))
   &&officeRelativePath(x.path)&&officeOutputFormat(x.format)&&x.path.toLowerCase().endsWith('.'+x.format)
-  &&validOfficeDraft(x.draft)&&Array.isArray(x.sources)&&x.sources.length<=16
+  &&validOfficeDraft(x.draft)&&(!isPresentationDraft(x.draft)||x.format==='pptx')&&Array.isArray(x.sources)&&x.sources.length<=16
   &&Array.from(x.sources).every(s=>!!s&&typeof s==='object'&&!Array.isArray(s)&&Object.keys(s).every(k=>['path','version'].includes(k))&&officeRelativePath(s.path)&&officeHash(s.version))
   &&new Set(x.sources.map(s=>s.path.toLowerCase())).size===x.sources.length
   &&(x.parentArtifactId===undefined||typeof x.parentArtifactId==='string'&&/^artifact_[a-f0-9-]{36}$/i.test(x.parentArtifactId));

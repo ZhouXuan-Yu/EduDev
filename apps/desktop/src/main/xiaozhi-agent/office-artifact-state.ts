@@ -1,10 +1,10 @@
 import {createHash,randomUUID} from 'node:crypto';
 import type {Sql} from './session-state';
-import {validOfficeDraft,isPaperOfficeDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
+import {validOfficeDraft,isPresentationDraft,isPaperOfficeDraft,officeOutputFormat,OFFICE_OUTPUT_MAX_BYTES,type OfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {OFFICE_ARTIFACT_SCHEMA,officeRelativePath,officeHash,type OfficeArtifactSource,type OfficeArtifactSummary,type OfficeArtifactState} from '../../shared/xiaozhi-office-artifacts';
 import {PAPER_RICH_OFFICE_SCHEMA,PAPER_MATH_OFFICE_SCHEMA,PAPER_TABLE_OFFICE_SCHEMA,isRichPaperOfficeSchema} from '../../shared/paper-export';
 export const OFFICE_GENERATOR_VERSION='office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0';
-const generatorVersion=(draft:OfficeDraft)=>isPaperOfficeDraft(draft)?(draft.schemaVersion===PAPER_TABLE_OFFICE_SCHEMA?'paper-office5:marked17.0.6:katex0.16.47:':draft.schemaVersion===PAPER_MATH_OFFICE_SCHEMA?'paper-office4:katex0.16.47:':draft.schemaVersion===PAPER_RICH_OFFICE_SCHEMA?'paper-office3:':'paper-office2:')+OFFICE_GENERATOR_VERSION:OFFICE_GENERATOR_VERSION;
+const generatorVersion=(draft:OfficeDraft)=>isPresentationDraft(draft)?'presentation1:'+OFFICE_GENERATOR_VERSION:isPaperOfficeDraft(draft)?(draft.schemaVersion===PAPER_TABLE_OFFICE_SCHEMA?'paper-office5:marked17.0.6:katex0.16.47:':draft.schemaVersion===PAPER_MATH_OFFICE_SCHEMA?'paper-office4:katex0.16.47:':draft.schemaVersion===PAPER_RICH_OFFICE_SCHEMA?'paper-office3:':'paper-office2:')+OFFICE_GENERATOR_VERSION:OFFICE_GENERATOR_VERSION;
 export const officeSha=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 export type PrivateOfficeArtifact=OfficeArtifactSummary & {sessionId:string;workspaceHash:string;inputHash:string;draft:OfficeDraft;draftHash:string;imageReviewHash:string|null;sources:OfficeArtifactSource[];parentArtifactId:string|null;output:Buffer|null;outputHash:string|null;resultPath:string|null};
 const states=new Set<OfficeArtifactState>(['pending','approved','generating','prepared','committing','saved','rejected','interrupted','uncertain','conflict','failed']);
@@ -13,7 +13,7 @@ export function officeSummary(x:PrivateOfficeArtifact):OfficeArtifactSummary {
  return {schemaVersion,id,runId,callId,path,format,state,revision,artifactId,sourceCount:sourceCount+(isPaperOfficeDraft(x.draft)?1:0)};
 }
 export function officeDraftText(draft:OfficeDraft){
- return [draft.title,...draft.sections.flatMap(s=>[s.heading,...s.paragraphs,...(s.table?[s.table.columns.join(' | '),...s.table.rows.map(row=>row.join(' | '))]:[])])].join('\n\n');
+ return [draft.title,...draft.sections.flatMap(s=>[s.heading,...s.paragraphs,...(isPresentationDraft(draft)?(s.speakerNotes||[]).map(n=>(n.kind==='answer'?'教师参考答案：':'教师讲解备注：')+n.text):[]),...(s.table?[s.table.columns.join(' | '),...s.table.rows.map(row=>row.join(' | '))]:[])])].join('\n\n');
 }
 const mime={docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',pdf:'application/pdf',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation'};
 /** Private draft intent. A saved CAS and its SQLite trigger atomically publish existing artifact facts. */
@@ -31,7 +31,7 @@ export function createOfficeArtifactState(sql:Sql){
    if(Number(row.schema_version)!==1||!/^xioffice_[a-f0-9-]{36}$/i.test(x.id)||!/^aisession_[a-f0-9-]{36}$/i.test(x.sessionId)
     ||!x.runId||x.runId.length>128||!x.callId||x.callId.length>128||!officeRelativePath(x.path)||!officeOutputFormat(x.format)||!x.path.toLowerCase().endsWith('.'+x.format)
     ||!states.has(x.state)||!Number.isSafeInteger(x.revision)||x.revision<0||!officeHash(x.workspaceHash)||!officeHash(x.inputHash)
-    ||!validOfficeDraft(draft)||officeSha(JSON.stringify(draft))!==x.draftHash||String(row.content_md)!==officeDraftText(draft)
+    ||!validOfficeDraft(draft)||isPresentationDraft(draft)&&x.format!=='pptx'||officeSha(JSON.stringify(draft))!==x.draftHash||String(row.content_md)!==officeDraftText(draft)
     ||sources.length>(x.parentArtifactId?17:16)||officeSha(JSON.stringify(sources))!==row.sources_hash||officeSha(String(row.sources_json))!==row.sources_hash||new Set(sources.map(s=>s.path.toLowerCase())).size!==sources.length
     ||sources.filter(s=>s.kind==='parent_artifact').length!==(x.parentArtifactId?1:0)||sources.some(s=>s.kind==='parent_artifact'&&s.sourceId!==x.parentArtifactId)
     ||row.generator_version!==generatorVersion(draft)||row.mime_type!==mime[x.format]||row.title!==draft.title

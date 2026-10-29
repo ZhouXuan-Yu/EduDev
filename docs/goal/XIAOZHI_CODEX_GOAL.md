@@ -1,5 +1,10 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-29 精确PPT页与备注切片
+
+继续既定Goal，新presentation-draft.v1已贯通准确页数、独立讲者备注和本地审阅修改/保存/实际读取。原生PowerPoint8页渲染及编辑另存重开通过，完整P1/252项仍待集中验收。下一E01整包审批/失败续做与兼容回退，再E02/E03；无新付费模型额度调用，不覆盖KR主线。
+
+
 ## 2026-10-29 持续Goal实施已启动
 
 按XIAOZHI_AGENT_DELIVERY_GOAL.md与四份规格执行，W0/E01已开始实际功能实施。默认产物区/通用HTML专项与正式受控UI通过，仍为部分实现，完整252项未判通过；后续精确PPT页/备注→整包交付→E02/E03，阶段集中验收。当前工程证据见research/AGENT_DELIVERY_E01_20261029.json及WORK_PROGRESS，旧KR主线状态保留。

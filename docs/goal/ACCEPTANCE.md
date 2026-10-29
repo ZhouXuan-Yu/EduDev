@@ -4,6 +4,11 @@
 
 仓储28、目录7、原生6+来源4、renderer240/240、最终build与综合smoke exit0、并行E01专项7通过；生产Electron目录授权/三格式本地解析OCR/同库3自动稿/暂停冷启未知不重发2项通过，模型HTTP受控。真实原授权PDF第1页图目录一次授权2次DeepSeek200得4题，其中3自动/1图题待核，原生重启原OCR与结果一致；不冒充整目录自然准确性或40GB。精确证据KB_IMPLEMENTATION_EVIDENCE与research/KB_FOLDER_AI_EVIDENCE_20261029.json。
 
+## 2026-10-29 精确PPT局部检查结果
+
+4契约/生成、7旧默认、5正式UI、240renderer通过；8页PowerPoint渲染/编辑/另存/重开和独立OOXML通过，中文孤立标点及测试编码问题修后复验。综合smoke207/207通过。详../research/AGENT_PRESENTATION_E01_20261029.json，非252条AT整体通过。
+
+
 ## 2026-10-29 E01工程检查，完整验收待集中执行
 
 专项服务/SDK7项、HTML Electron3项、正式Electron3项、renderer240/240；build及综合smoke207/207通过，详research/AGENT_DELIVERY_E01_20261029.json。正式Electron使用合成SSE与测试审批，不等于真实教师/模型质量或FX01完整标准；252条AT未判通过。
