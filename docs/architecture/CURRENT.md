@@ -1,5 +1,17 @@
 # 当前架构
 
+## 2026-10-29 流式响应与窗口拖动
+
+OfficeMarkdown在应用适配层memo合并components，默认animated=false；正文保持32ms、推理100ms合并并终态flush。DesktopFrame以独立空白drag区分离实际no-drag按钮，不改原生caption/位置持久化或IPC。
+
+## 2026-10-29 会话资源与引用补齐
+
+原生SessionManager通过native-session-resources独占租约复用，最多4个空闲、2分钟释放，字节/作用域变化重载；每轮AgentSession、工具、凭证和授权仍新建。来源结构新增可选local行定位，沿既有typed预览IPC核版本；没有新表/迁移。详情../goal/HANA_ANSWER_QUALITY.md。
+
+## 2026-10-28 Hana回答优化独立切片
+
+Hana ToolCatalog作为唯一Pi的provider-facing适配，不改变原生会话identity；全工具仍由宿主边界执行，按需只改变请求曝光。缓存仅含经全内容复核的技能解析，run工具闭包不复用。每run证据表在内存登记，可选citationId随既有事件和SQLite元数据持久化，无新表/迁移。详../goal/HANA_ANSWER_QUALITY.md。
+
 ## 2026-10-29 成熟后端实测，生产默认未切换
 
 隔离AnythingLLM包含SQLite/Prisma与LanceDB；按官方空库初始化后49迁移通过，client临时切官方library引擎才能完成此对照，不能当未修改桌面验收。Docling坐标结构有实证但题面仍缺；不迁生产表/IPC/索引。本片仅两处导出模型指引及既有真实UI夹具；仍使用原Pi/Office审批/生成器。

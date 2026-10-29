@@ -1,4 +1,4 @@
-import {useEffect,useRef,useState} from 'react';
+import {useCallback,useEffect,useMemo,useRef,useState} from 'react';
 import {Button,Modal} from '@heroui/react';
 import {XIAOZHI_ATTACHMENTS_SCHEMA,XIAOZHI_ATTACHMENT_ERRORS,type XiaozhiAttachmentInput,type XiaozhiAttachment,type XiaozhiAttachmentPreview} from '../../../shared/xiaozhi-attachments';
 import {Markdown} from '../../heroui-pro/components/markdown';
@@ -132,11 +132,12 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   onOpen={item=>void open(item)}
   onRemove={submitted?undefined:item=>void remove(item)}
  />;
- const renderHistory=(item:OfficeProjectedItem)=>item.attachments?.length?<section className="pi-attachments pi-attachment-history" data-testid="pi-attachment-history" aria-label="本轮已发送附件">
+ const renderHistory=useCallback((item:OfficeProjectedItem)=>item.attachments?.length?<section className="pi-attachments pi-attachment-history" data-testid="pi-attachment-history" aria-label="本轮已发送附件">
   {renderList(item.attachments,true)}<p className="pi-attachment-local-note">本地附件 · {item.attachments.length} 个</p>
- </section>:undefined;
- const renderViewed=(receipts:PublicImageDelivery[])=>{
-  const metadata=history.flatMap(item=>item.attachments||[]);
+ </section>:undefined,[sessionId,busy,thumbnails]);
+ const metadataSignature=JSON.stringify(history.flatMap(item=>item.attachments||[]));
+ const metadata=useMemo<XiaozhiAttachment[]>(()=>JSON.parse(metadataSignature),[metadataSignature]);
+ const renderViewed=useCallback((receipts:PublicImageDelivery[])=>{
   const matched=receipts.map(receipt=>({receipt,item:metadata.find(item=>item.state==='submitted'&&item.format==='image'
    &&item.id===receipt.attachment?.id&&item.revision===receipt.attachment.revision&&item.version===receipt.attachment.version)}));
   return <section className="pi-attachments pi-viewed-images" data-testid="pi-viewed-image-attachments" aria-label="模型已接收的图片版本">
@@ -146,7 +147,7 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
    {matched.filter(v=>!v.item).map(({receipt})=><p key={receipt.callId} role="status">{receipt.title}：本地版本无法关联，不能打开预览。</p>)}
    <p className="pi-attachment-local-note">图片已由模型接收并返回响应。缩略图和预览来自本机，不代表识别内容已由教师确认。</p>
   </section>;
- };
+ },[sessionId,busy,thumbnails,thumbnailErrors,metadata]);
  const cards=<section className="pi-attachments" data-testid="pi-attachments" aria-label="本地待发送附件">
   {items.length>0&&renderList(items)}
   {busy&&<p role="status">正在添加或更新附件… <Button variant="ghost" size="sm" onPress={cancel}>取消</Button></p>}
@@ -166,5 +167,5 @@ export function usePiAttachments(sessionId:string,visible:boolean,history:Office
   </Modal.Dialog></Modal.Container>
  </Modal.Backdrop>;
  return {cards,modal,choose,importFiles,busy,refresh,renderHistory,renderViewed,hasAttachments:items.length>0,
-  selections:items.map(item=>({id:item.id,revision:item.revision})),sendBlocked:loading||busy||ocrBusy||items.length>0};
+  selections:items.map(item=>({id:item.id,revision:item.revision})),sendBlocked:loading||busy||ocrBusy};
 }

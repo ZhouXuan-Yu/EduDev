@@ -1,4 +1,5 @@
 import {createQuestionWebAnswerReadback} from '../education/question-web-answer-readback';
+import {answerQualityEnabled,resolveAnswerPolicy} from './answer-quality';
 import {readChatPresentation} from '../../shared/chat-presentation';
 import {capturePresentationOrder} from './presentation-event-adapter';
 import {createClassroomExportTools} from '../education/classroom-export-tools';
@@ -471,7 +472,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     }
     return { enabled, projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailures.has(id)?{eventPersistence:'unavailable' as const}:{}), running: Boolean(current)&&!journalFailures.has(id), ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
-        window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
+        window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
         ...(options.testContextWindow ? { testPolicy: true } : {}) },
       ...(task?{task}:{}),...(taskUnavailable?{taskUnavailable:true}:{}),paperReviews:storedPaperReviews,practiceReviews:storedPracticeReviews,questionCollections:storedQuestionCollections,questionReviews:storedQuestionReviews,learningReviews:storedLearningReviews, approvals: storedApprovals, changes, officeArtifacts:artifacts, controls:storedControls, ...(storedGoal?{goal:publicGoal(storedGoal)}:{}), budgetSettings, limitsEnforced:false, browser:browserStatus, usage, memoryScope, skills: skillCatalog, ...(workspace ? { workspace: { label: workspace.label } } : {}),...(paperOutput?{paperOutput:{label:paperOutput.label}}:{}) };
   }
@@ -631,7 +632,8 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
     });
   }
   async function execute(id: string, prompt: string, run: Active, settings: Pick<Awaited<ReturnType<OmniEduStore['getDeepSeekRuntimeSettings']>>, 'provider' | 'apiKey' | 'model'>) {
-    let failure: XiaozhiAgentError | undefined, text = '';
+    const executionStarted=performance.now();let preparationMs:number|undefined,sdkEndedMs:number|undefined;
+    let failure: XiaozhiAgentError | undefined, text = '',answerTruncated=false;
     try {
       publicEvent(id,run,{kind:'activity',stage:'preparing',since:Date.now()});
       if (!settings.apiKey) throw new Error('authentication');
@@ -735,10 +737,12 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       if (run.stopped) throw new Error('cancelled');
       const count=run.turn.items[0]?.attachments?.length||0;
       const deliveredPrompt=count?`${cleanPrompt}\n\n本轮有 ${count} 个已登记的本地附件。文件正文和图片尚未提供给你，请勿声称已阅读、查看或分析这些附件；需要读取时说明所需操作。`:cleanPrompt;
+      preparationMs=performance.now()-executionStarted;
       const result = await (run.operation === 'compact' ? run.agent.compact() : run.agent.prompt(deliveredPrompt));
+      sdkEndedMs=performance.now()-executionStarted;
       if(result.ok&&taskRuntime&&!run.stopped)await taskRuntime.refresh();
       if (run.operation === 'compact' && result.ok) await options.afterCompactCommit?.();
-      if (result.ok) text = result.text; else failure = result.error;
+      if (result.ok) {text = result.text;answerTruncated=result.truncated;} else failure = result.error;
     } catch (error) {
       const code = error instanceof Error ? error.message : '';
       failure = code === 'authentication' || code === 'cancelled' || code === 'permission_denied' || code === 'memory_scope_changed' || code === 'skill_source_changed' || code === 'skill_scope_changed' ? code : 'configuration';
@@ -772,8 +776,8 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         if(lastText?.phase==='final_answer')lastText.phase='commentary';
         finalTurn.items.push({id:`${run.runId}:office-delivery`,kind:'message',role:'assistant',phase:'final_answer',text:deliveryText});
       } else if (!failure && text) {
-        if (lastText) lastText.text = text;
-        else finalTurn.items.push({ id: `${run.runId}:final`, kind: 'message', role: 'assistant', phase: 'final_answer', text });
+        if (lastText) {lastText.text = text;if(answerTruncated)lastText.truncated=true;}
+        else finalTurn.items.push({ id: `${run.runId}:final`, kind: 'message', role: 'assistant', phase: 'final_answer', text,...(answerTruncated?{truncated:true}:{}) });
       }
       // Persist the same partial/final presentation before publishing the committed terminal state.
       run.turn.items=applyXiaozhiEvent(run.turn,{...terminal,sessionId:id,runId:run.runId,sequence:run.sequence}).items;
@@ -792,6 +796,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         }
         await store.appendAiConversationMessage(id, { role: 'assistant', content: text || (failure ? XIAOZHI_ERRORS[failure] : XIAOZHI_ERRORS.model_error),
           metadata: { piVersion: 'xiaozhi.pi.education.v1', agentRunId: run.runId, provider: 'deepseek', model: settings.model,
+            answerQuality:{version:1,mode:process.env.XIAOZHI_ANSWER_QUALITY==='legacy'?'legacy':'optimized',preparationMs,sdkEndedMs,...run.agent?.qualityMetrics()},
             ok: !failure, status, errorMessage: failure ? XIAOZHI_ERRORS[failure] : '',
             publicItems: finalTurn.items.filter(item => item.id !== finalTurn.items[0]?.id),
             ...(finalTurn.presentation?{chatPresentation:finalTurn.presentation}:{}),
@@ -809,6 +814,9 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
         if(run.goalId){const goal=await store.xiaozhiState.goals.finish(id,run.runId,text,Boolean(failure));if(goal)publicEvent(id,run,{kind:'goal',goal:publicGoal(goal)});}
         publicEvent(id, run, {kind:'verification',verification:finalTurn.verification});
         run.publisher?.enqueue(terminal, finalTurn); await run.publisher?.flush();
+        // Numeric audit after durable terminal; it cannot change the completed task.
+        await store.recordAiAgentEvent(run.runId,{phase:'finalize',status:'succeeded',label:'回答时延测量',detail:'本地分段计量，不代表答案质量评分。',
+          outputSummary:{version:1,preparationMs,sdkEndedMs,terminalCommittedMs:performance.now()-executionStarted}}).catch(()=>undefined);
         try{await decisions.sealRoute(id,run.runId);}catch{decisions.unavailable(id);}
       } catch {
         // A failed commit must never be reported as completion; startup recovery owns unresolved rows.

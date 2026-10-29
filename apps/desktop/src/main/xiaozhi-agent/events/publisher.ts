@@ -19,7 +19,11 @@ export function createEventPublisher(options: { journal: ReturnType<typeof creat
     const event: XiaozhiAgentEvent = { ...structuredClone(payload), ...options.owner, schemaVersion: 1, durability: 'committed', sequence: ++sequence };
     pending.push(event);
     if(capture)captures.push(structuredClone(capture));
-    if (payload.kind !== 'text_delta' || pending.length >= 128) drain(finalTurn);
+    // Reasoning progress is cumulative and can arrive hundreds of times per
+    // second. Share the text batch; lifecycle/tool/terminal events still flush
+    // immediately and every event keeps its original committed sequence.
+    const progress=payload.kind==='text_delta'||(payload.kind==='model_reasoning'&&payload.block.status==='streaming');
+    if (!progress || pending.length >= 128) drain(finalTurn);
     else timer ??= setTimeout(() => { timer = undefined; drain(); }, 16);
   }
   function drain(finalTurn?: OfficeProjectedTurn) {

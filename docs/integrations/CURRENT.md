@@ -1,5 +1,13 @@
 # 当前集成与复用
 
+## 2026-10-29 Hana资源层继续薄适配
+
+沿Hana加载/空闲生命周期设计复用Pi原生历史资源，未引入另一Engine或Runtime；工具与权限逐轮绑定。local引用扩展现公开来源，主进程登记，renderer使用已有文件/附件预览与OCR审核读API。无新增依赖，主进程legacy开关回退原生缓存和引用注册。
+
+## 2026-10-28 Hana回答优化独立切片
+
+新增Hana质量ToolCatalog固定SHA/许可证追踪，复用脚本与源清单见 vendor/hana/quality。没有新增npm/Python依赖，也未接入DSH或SourceWeft服务；其机制由当前Pi适配。默认优化可用主进程环境XIAOZHI_ANSWER_QUALITY=legacy回退，既有来源/权限/审阅IPC兼容。详../goal/HANA_ANSWER_QUALITY.md。
+
 ## 2026-10-29 候选已运行，尚非生产接入
 
 AnythingLLM官方v1.19.0原生后端经明确兼容调整，隔离摄入九文件并用默认/多语言模型查询；Docling 2.144.0隔离CPU安装/离线同页测试有页码坐标且仍漏条件；WeKnora dacb9c2源已下载并构建Windows Lite中。没有替换小智SQLite或新增第二Agent。Ghostscript许可/Windows短模型路径/兼容初始化须在受管组件清单解决。本片生产只修试卷保存授权指令。

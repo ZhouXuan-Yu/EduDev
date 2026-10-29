@@ -1,10 +1,10 @@
 import type { OfficeProjectedItem, OfficeProjectedTurn } from '../../../shared/office-agent';
 import type { OfficeConversationProps } from './OfficeConversation';
 import { ChatMessage } from '../../heroui-pro/components/chat-message';
-import { OfficeMarkdown } from './OfficeMarkdown';
-import { OfficeReplySources } from './OfficeReplySources';
+import { OfficeAnswerMarkdown } from './OfficeAnswerMarkdown';
+import { OfficeReplySources,replySources } from './OfficeReplySources';
 
-export function OfficeAgentAnswer({
+export const OfficeAgentAnswer=memo(function OfficeAgentAnswer({
   turn,
   item,
   sessionId,
@@ -26,7 +26,7 @@ export function OfficeAgentAnswer({
       <ChatMessage.Body>
         {partial && <p className="office-partial-label">部分回复 · 尚未完成</p>}
         <ChatMessage.Content>
-          <OfficeMarkdown isStreaming={streaming}>{item.text || ''}</OfficeMarkdown>
+          <OfficeAnswerMarkdown streaming={streaming} text={item.text || ''} turn={turn}/>
           {item.truncated && (
             <p className="office-history-notice">这段内容较长，当前显示部分内容。</p>
           )}
@@ -40,4 +40,9 @@ export function OfficeAgentAnswer({
       </ChatMessage.Body>
     </ChatMessage.Assistant>
   );
-}
+},(before,after)=>before.sessionId===after.sessionId&&before.replyActions===after.replyActions
+  &&before.turn.status===after.turn.status
+  &&Object.keys(before.item).length===Object.keys(after.item).length
+  &&Object.keys(before.item).every(key=>before.item[key as keyof OfficeProjectedItem]===after.item[key as keyof OfficeProjectedItem])
+  &&JSON.stringify(replySources(before.turn))===JSON.stringify(replySources(after.turn)));
+import {memo} from 'react';

@@ -36,5 +36,18 @@ try{
  await check('Transient persistence failure does not advance a committed cursor',async()=>{let failed=0;const receiver=createEventReceiver({list:()=>assert.fail(),apply:()=>assert.fail(),unavailable:()=>failed++,gapFailure:()=>assert.fail()});receiver.seed([{runId:owner.runId,generation:owner.generation,sequence:3,revision:1}]);receiver.accept({...events[2],durability:'unavailable'});assert.equal(failed,1);assert.equal(receiver.cursors()[0].sequence,3);});
  await check('Tail polling recovers a lost terminal notification with no successor',async()=>{const terminal=event(owner,4,{kind:'status',status:'completed'});await journal.append(owner,1,[terminal]);const applied=[],receiver=createEventReceiver({list:i=>journal.list(i),apply:e=>applied.push(e.sequence),unavailable:()=>assert.fail(),gapFailure:()=>assert.fail()});receiver.seed([{runId:owner.runId,generation:owner.generation,sequence:3,revision:1}]);receiver.poll(sessionId);await wait(()=>applied.length);assert.deepEqual(applied,[4]);receiver.poll(sessionId);await new Promise(r=>setTimeout(r,20));assert.deepEqual(applied,[4]);});
  await check('Tail probes target the active run without scanning historical runs',async()=>{const calls=[],receiver=createEventReceiver({list:async i=>{calls.push(i.runId);return journal.list(i);},apply:()=>{},unavailable:()=>assert.fail(),gapFailure:()=>assert.fail()});receiver.seed([{runId:owner.runId,generation:owner.generation,sequence:4,revision:2},{runId:'run_first',generation:1,sequence:3,revision:3}]);receiver.poll(sessionId,owner.runId);await wait(()=>calls.length);assert.deepEqual(calls,[owner.runId]);});
+ await check('Burst reasoning batches actual SQLite commits and flushes complete content before tool admission',async()=>{
+  const owner=await add('run_reasoning_burst');let commits=0,turnSaved,failed;
+  const publisher=createEventPublisher({journal:{...journal,append:async(...args)=>{commits++;return journal.append(...args);}},owner,
+    committed:turn=>{turnSaved=turn;},emit:()=>{},failed:error=>{failed=error;},beforeTerminalEmit:()=>{}});
+  for(let i=1;i<=300;i++)publisher.enqueue({kind:'model_reasoning',block:{id:'reasoning:1:0',source:'provider',text:'甲'.repeat(i),status:'streaming',startedAt:1,durationMs:i}});
+  publisher.enqueue({kind:'model_reasoning',block:{id:'reasoning:1:0',source:'provider',text:'甲'.repeat(300),status:'completed',startedAt:1,durationMs:300}});
+  await publisher.barrier();assert(!failed);assert(commits<=4,'reasoning burst must not create 301 serial transactions');
+  assert.equal(turnSaved.modelReasoning[0].text,'甲'.repeat(300));
+  publisher.enqueue({kind:'tool_start',tool:'office_list_files',callId:'burst-tool'});await publisher.barrier();
+  await publisher.persist(owner=>journal.admitTool(owner,'burst-tool','office_list_files'));
+  assert.equal(db.prepare('SELECT admitted FROM xiaozhi_tool_receipts WHERE run_id=?').get(owner.runId).admitted,1);
+  assert.equal(db.prepare('SELECT count(*) n FROM xiaozhi_event_journal WHERE run_id=?').get(owner.runId).n,302);
+ });
  report.success=true;
 }catch(error){report.error=String(error.stack);process.exitCode=1;}finally{db.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output,error:report.error}));}
