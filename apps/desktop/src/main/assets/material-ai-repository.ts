@@ -16,12 +16,13 @@ import {executeNativeAi,nativeAiTranscription,type NativeAiHost,type NativeAiPre
 import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
+import type {RuleOrigin} from './material-question-origins';
 
 type Row=Record<string,unknown>;
 type Value=string|number|null;
 type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
   word?:()=>MaterialWordRepository;native?:()=>NativeQuestionRepository;prepare?:NativeAiPreparation;
-  map:(row:Row)=>ResourceChunk;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;
+  map:(row:Row)=>ResourceChunk;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>;
   writer:<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 type Configuration={revision:number;model:AiSettings['model'];sealedKey:string};
 export type AiBatchTask={key:string;folderId?:string;revision?:number};
@@ -45,7 +46,12 @@ export class MaterialAiRepository{
   constructor(private host:Host){}
   configure(runtime:AiRuntime){this.runtime=runtime;this.account=runtime.account;}
   private write<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void){return this.host.writer(target=>{target.account=this.runtime?.account||this.account;return action(target);},beforeCommit);}
-  private nativeHost():NativeAiHost{if(!this.host.native||!this.host.word)throw Error('unsupported');return{all:this.host.all,run:this.host.run,create:this.host.create,native:this.host.native,word:this.host.word};}
+  private nativeHost():NativeAiHost{if(!this.host.native||!this.host.word)throw Error('unsupported');return{all:this.host.all,run:this.host.run,create:this.host.create,native:this.host.native,word:this.host.word,associate:async(q,source,sources)=>{
+    if(!this.host.associate||source.issues.length||!sources.length)return;
+    const s=sources[0],row=(await this.host.all('SELECT * FROM resource_chunks WHERE id=? AND resource_id=?',[s.chunkId,s.resourceId]))[0];if(!row)return;
+    const chunk={...this.host.map(row),contentMd:nativeSourceRoleText(source,'question')},candidates=extractMaterialQuestions([{resourceId:s.resourceId,version:s.version,title:'',offset:s.offset,chunk}],'local-text-v1');
+    if(candidates.length!==1||candidates[0].archive.number!==source.number)return;const candidate=candidates[0];await this.host.associate(q,{sources,number:source.number,stem:candidate.fields.stem,risks:candidate.archive.sourceRisks});
+  }};}
   async nativeTranscription(q:QuestionBankItem,source:WordQuestionSource,signal:AbortSignal){return nativeAiTranscription(this.nativeHost(),q,source,(c,u)=>this.validateInput(c,u),signal);}
   async migrate(){
     for(const sql of [
@@ -341,6 +347,7 @@ export class MaterialAiRepository{
           const saved=await target.host.create({...fields,sourceKind:'teacher_resource',sourceTitle:String(row.title),tags:['AI整理',...(visualText?['AI图文复核']:[]),...(q.answerOrigin==='ai_generated'?['AI推导答案']:[])]});
           await target.host.run('UPDATE question_bank_items SET archive_json=? WHERE id=?',[JSON.stringify(archive),saved.id]);
           await target.host.run('INSERT INTO material_ai_members(batch_id,ordinal,number,question_id) VALUES(?,?,?,?)',[batchId,ordinal,q.number,saved.id]);
+          if(independent)await target.host.associate?.({...saved,archive},{sources:independent.archive.sources,number:independent.archive.number,stem:independent.fields.stem,risks:independent.archive.sourceRisks});
         }
         await target.host.run("UPDATE material_ai_units SET status=?,final_json=?,error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[review?'review':final.outcome==='no_questions'?'no_questions':'complete',finalRaw,omitted?'ai_omitted_questions':'',batchId,ordinal]);
         // Check after every awaited write, then again at the COMMIT boundary.

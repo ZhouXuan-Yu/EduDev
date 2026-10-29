@@ -12,6 +12,7 @@ import {QuestionWebAnswerRepository} from './education/question-web-answer-repos
 import { createHash, randomUUID } from 'node:crypto';
 import {readQuestionDocument} from '../shared/question-document';
 import {MaterialAiRepository} from './assets/material-ai-repository';
+import {recordAiOrigin,sourceCandidateHidden,migrateQuestionOrigins} from './assets/material-question-origins';
 import {NativeQuestionRepository} from './assets/native-question-repository';
 import type {NativeAiPreparation} from './assets/material-ai-native';
 import {RetrievalRepository} from './retrieval/repository';
@@ -1221,7 +1222,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');work.nativeWriterTransaction=true;try{const result=await action(work.materialQuestions);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
-    this.materialAi=new MaterialAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,word:()=>this.materialWord,native:()=>this.nativeQuestions,prepare:action=>this.prepareNative(action),map:row=>this.mapResourceChunk(row),create:q=>this.createQuestionBankItem(q),writer:async(action,beforeCommit)=>{
+    this.materialAi=new MaterialAiRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),materials:()=>this.materials,word:()=>this.materialWord,native:()=>this.nativeQuestions,prepare:action=>this.prepareNative(action),map:row=>this.mapResourceChunk(row),create:q=>this.createQuestionBankItem(q),associate:(q,origin)=>recordAiOrigin({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p)},q,origin),writer:async(action,beforeCommit)=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');work.nativeWriterTransaction=true;try{const result=await action(work.materialAi);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
@@ -4216,6 +4217,8 @@ export class OmniEduStore {
    */
   async listQuestionNotebook(filters: QuestionNotebookFilters = {}): Promise<QuestionNotebookListResult> {
     const {clauses,params,method}=questionRetrievalWhere(filters,this.questionRetrievalIndexed);
+    if(filters.showSourceCandidates!==undefined&&typeof filters.showSourceCandidates!=='boolean')throw Error('题目来源筛选参数不正确');
+    if(!filters.showSourceCandidates)clauses.push('NOT '+sourceCandidateHidden);
     if(filters.offset!==undefined&&(!Number.isSafeInteger(filters.offset)||filters.offset<0))throw new Error('题目分页参数不正确');
     if(filters.bookmarked!==undefined&&typeof filters.bookmarked!=='boolean')throw new Error('收藏筛选参数不正确');
     if(filters.categoryId!==undefined&&(typeof filters.categoryId!=='string'||filters.categoryId.length>240||/[\x00-\x1f]/.test(filters.categoryId)))throw new Error('分类筛选参数不正确');
@@ -4265,9 +4268,6 @@ export class OmniEduStore {
 
   async getQuestionNotebookEntry(questionId: string): Promise<QuestionNotebookEntry | undefined> {
     const id = requireNonEmpty(questionId, '题目 ID 不能为空');
-    const result = await this.listQuestionNotebook({ query: '', limit: 50 });
-    const direct = result.items.find((item) => item.id === id);
-    if (direct) return direct;
     const rows = await this.all(`SELECT q.*, COALESCE(b.bookmarked, 0) AS notebook_bookmarked, COALESCE(b.version, 0) AS notebook_version, COALESCE(u.usage_count, 0) AS usage_count, COALESCE(u.last_used_at, '') AS last_used_at
       FROM question_bank_items q
       LEFT JOIN question_notebook_bookmarks b ON b.question_id = q.id
@@ -6102,6 +6102,7 @@ export class OmniEduStore {
     await this.materialFolderAi.migrate();
     await this.nativeQuestions.migrate();
     await this.questionWeb.migrate();
+    await migrateQuestionOrigins({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p)});
     await ensureQuestionDocumentColumn({all:q=>this.all(q),run:q=>this.run(q)});
     await this.retrieval.migrate();
     this.questionRetrievalIndexed=await ensureQuestionRetrievalIndex({all:(sql,values)=>this.all(sql,values),run:(sql,values)=>this.run(sql,values)});
