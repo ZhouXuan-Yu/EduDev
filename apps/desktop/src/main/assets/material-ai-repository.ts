@@ -69,6 +69,8 @@ export class MaterialAiRepository{
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
     if(!(await this.host.all('PRAGMA table_info(material_ai_units)')).some(column=>column.name==='dispatched_at'))await this.host.run('ALTER TABLE material_ai_units ADD COLUMN dispatched_at INTEGER NOT NULL DEFAULT 0');
+    const columns=await this.host.all('PRAGMA table_info(material_ai_units)');for(const name of ['retry_at','local_retries'])if(!columns.some(c=>c.name===name))await this.host.run(`ALTER TABLE material_ai_units ADD COLUMN ${name} INTEGER NOT NULL DEFAULT 0`);
+    await this.host.run("CREATE INDEX IF NOT EXISTS material_ai_units_due ON material_ai_units(retry_at,batch_id,ordinal) WHERE status IN ('pending','first_saved')");
     if(!(await this.host.all('PRAGMA table_info(material_ai_batches)')).some(column=>column.name==='pause_reason'))await this.host.run("ALTER TABLE material_ai_batches ADD COLUMN pause_reason TEXT NOT NULL DEFAULT ''");
   }
   private async configuration():Promise<Configuration>{
@@ -262,6 +264,7 @@ export class MaterialAiRepository{
     if(!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==image.data||hash(bytes)!==row.image_sha)throw Error('source_changed');return image;
   }
   async recover(){
+    await this.host.run("UPDATE material_ai_units SET retry_at=0 WHERE status IN ('pending','first_saved')");
     const units=await this.host.all("SELECT batch_id,ordinal,owner_pid,lease,dispatched_at FROM material_ai_units WHERE status='dispatched'");
     for(const unit of units)if(!alive(Number(unit.owner_pid))||Date.now()-Number(unit.dispatched_at)>180000)await this.host.run("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown',owner_pid=0,lease='' WHERE batch_id=? AND ordinal=? AND status='dispatched' AND owner_pid=? AND lease=? AND dispatched_at=?",[String(unit.batch_id),Number(unit.ordinal),Number(unit.owner_pid),String(unit.lease),Number(unit.dispatched_at)]);
   }
@@ -290,13 +293,13 @@ export class MaterialAiRepository{
       if(saved?.status!==expected)throw new Error('conflict');
       if(Number(batch.calls)>=config.maxCalls)throw new Error('budget_exhausted');
       await target.host.run('UPDATE material_ai_batches SET calls=calls+1 WHERE id=?',[batchId]);
-      await target.host.run("UPDATE material_ai_units SET status='dispatched',owner_pid=?,lease=?,dispatched_at=?,error='' WHERE batch_id=? AND ordinal=?",[process.pid,lease,Date.now(),batchId,ordinal]);
+      await target.host.run("UPDATE material_ai_units SET status='dispatched',owner_pid=?,lease=?,dispatched_at=?,retry_at=0,local_retries=0,error='' WHERE batch_id=? AND ordinal=?",[process.pid,lease,Date.now(),batchId,ordinal]);
     },()=>signal.throwIfAborted());
     return lease;
   }
   async drain(){
     if(!this.runtime||this.closing)return false;
-    const row=(await this.host.all("SELECT u.*,b.config_json,b.resource_id,b.version,b.title FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE b.status='running' AND u.status IN ('pending','first_saved') ORDER BY b.created_at,u.ordinal LIMIT 1"))[0];
+    const row=(await this.host.all("SELECT u.*,b.config_json,b.resource_id,b.version,b.title FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE b.status='running' AND u.status IN ('pending','first_saved') AND u.retry_at<=? ORDER BY b.created_at,u.ordinal LIMIT 1",[Date.now()]))[0];
     if(!row){await this.host.run("UPDATE material_ai_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('failed','outcome_unknown','review')) THEN 'attention' ELSE 'complete' END WHERE status='running' AND NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('pending','first_saved','dispatched'))");return false;}
     const batchId=String(row.batch_id),ordinal=Number(row.ordinal),config=JSON.parse(String(row.config_json)) as AiBatchInput&{model:AiSettings['model']},unit=JSON.parse(String(row.input_json)) as AiUnitInput;
     const controller=new AbortController(),signal=controller.signal;this.active={batchId,controller};let lease='',transportStarted=false;
@@ -408,10 +411,12 @@ export class MaterialAiRepository{
     }catch(error){
       const code=signal.aborted?'cancelled':safeError(error);
       await this.write(async target=>{
-        const current=(await target.host.all('SELECT status,lease FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
-        if(current?.status==='dispatched'&&current.lease===lease&&!transportStarted){
+        const current=(await target.host.all('SELECT status,lease,local_retries FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0],retryLocal=!signal.aborted&&['busy','index_busy'].includes(code),attempt=Math.min(6,Number(current?.local_retries||0)+1),retryAt=Date.now()+Math.min(30000,1000*2**attempt);
+        if(retryLocal&&['pending','first_saved'].includes(String(current?.status))&&!current?.lease){
+          await target.host.run('UPDATE material_ai_units SET retry_at=?,local_retries=?,error=? WHERE batch_id=? AND ordinal=?',[retryAt,attempt,code,batchId,ordinal]);
+        }else if(current?.status==='dispatched'&&current.lease===lease&&!transportStarted){
           const state=(await target.host.all('SELECT first_json FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
-          await target.host.run("UPDATE material_ai_units SET status=?,error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[['cancelled','paused'].includes(code)?state?.first_json?'first_saved':'pending':'failed',code,batchId,ordinal]);
+          await target.host.run("UPDATE material_ai_units SET status=?,error=?,owner_pid=0,lease='',retry_at=?,local_retries=? WHERE batch_id=? AND ordinal=?",[retryLocal||['cancelled','paused'].includes(code)?state?.first_json?'first_saved':'pending':'failed',code,retryLocal?retryAt:0,retryLocal?attempt:0,batchId,ordinal]);
           await target.host.run('UPDATE material_ai_batches SET calls=MAX(0,calls-1) WHERE id=?',[batchId]);
         }else if(current?.status==='dispatched'&&current.lease===lease){await target.host.run("UPDATE material_ai_units SET status='outcome_unknown',error=?,owner_pid=0,lease='' WHERE batch_id=? AND ordinal=?",[code,batchId,ordinal]);}
         else if(!lease&&!signal.aborted&&code!=='paused'&&['pending','first_saved'].includes(String(current?.status)))await target.host.run("UPDATE material_ai_units SET status='failed',error=? WHERE batch_id=? AND ordinal=?",[code,batchId,ordinal]);
