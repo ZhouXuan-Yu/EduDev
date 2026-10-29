@@ -67,7 +67,7 @@ try{
  const {readPresentationNotes}=await import('./presentation-readback.ts');assert.deepEqual(await readPresentationNotes(newBytes),await readPresentationNotes(oldPpt));assert.equal(sha(fs.readFileSync(original.file_path)),hashes[1]);
  const lineage=query('SELECT parent_artifact_id FROM xiaozhi_pi_office_drafts WHERE state=\'saved\' ORDER BY created_at DESC LIMIT 1')[0];assert.equal(lineage.parent_artifact_id,original.id);
  check('Formal page edit changes only slide four XML; seven slides and all notes stay identical, old artifact retained');
- await send('html','只把lesson.html中的原始演示改为修改后演示，其他交互保持。');const edit=page.getByTestId('pi-text-change').last();await edit.waitFor({timeout:60000});await until(async()=>!await edit.getByTestId('pi-text-approve').isDisabled());await edit.getByTestId('pi-text-approve').click();await settled();
+ await send('html','只把lesson.html中的原始演示改为修改后演示，其他交互保持。');const edit=page.locator('[data-testid="pi-text-change"][data-state="pending"]').last();await edit.waitFor({timeout:60000});await until(async()=>!await edit.getByTestId('pi-text-approve').isDisabled());await edit.getByTestId('pi-text-approve').click();await settled();
  const htmlAfter=fs.readFileSync(htmlPath,'utf8');assert(htmlAfter.includes('修改后演示'));assert(!htmlAfter.includes('原始演示'));assert(htmlAfter.includes('load.oninput'));assert(wires().some(w=>w.phase==='html'&&w.tool==='office_read_text'));assert.equal(sha(fs.readFileSync(newer.file_path)),sha(newBytes));
  check('Actual HTML source is read and edited through the existing diff review while PPT stays unchanged');
  await until(async()=>!(await page.locator('body').textContent()).includes('过程记录暂时无法核对'));await page.screenshot({path:path.join(output,'continuity-result.png')});

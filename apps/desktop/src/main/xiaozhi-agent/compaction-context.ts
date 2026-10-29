@@ -2,7 +2,7 @@ import type { OmniEduStore } from '../db';
 import type {TaskView} from '../../shared/xiaozhi-task';
 
 /** Main-owned, same-conversation facts. A summary never grants new authority. */
-export async function getPiProtectedContext(store: OmniEduStore, sessionId: string, excludedRunIds: readonly string[] = [], task?:TaskView|null): Promise<string> {
+export async function getPiProtectedContext(store: OmniEduStore, sessionId: string, excludedRunIds: readonly string[] = [], task?:TaskView|null, sanitizeRequest?:(text:string)=>Promise<string>): Promise<string> {
   const [controls, approvals, detail, changes, artifacts] = await Promise.all([
     store.xiaozhiState.controls(sessionId), store.xiaozhiState.approvals(sessionId), store.getAiConversationSession(sessionId),
     store.xiaozhiState.changes?.list(sessionId) || [],
@@ -50,7 +50,10 @@ export async function getPiProtectedContext(store: OmniEduStore, sessionId: stri
     lines.push(line); length += line.length + 1; included[kind]++;
   };
   // Latest changes first for capacity; sequence restores chronology, never a guessed merge.
-  for(const message of [...requests].reverse())add(`教师要求：${JSON.stringify({sequence:requestOrder.get(message.id),messageId:message.id,taskSource:taskSources.has(message.id),text:message.content.slice(0,4000),truncated:message.content.length>4000})}`,'requests');
+  for(const message of [...requests].reverse()){
+    const text=sanitizeRequest?await sanitizeRequest(message.content):(await store.sanitizeProblemText(message.content)).sanitizedText;
+    add(`教师要求：${JSON.stringify({sequence:requestOrder.get(message.id),messageId:message.id,taskSource:taskSources.has(message.id),text:text.slice(0,4000),truncated:text.length>4000})}`,'requests');
+  }
   // Preserve the most recent file authority first; every omitted record is counted.
   for (const item of safeApprovals.slice(-16).reverse()) add(`文件审批：${JSON.stringify({ source: item.source, target: item.target, state: item.state, sourceSha256: item.sourceSha256 })}`, 'approvals');
   for (const item of safeChanges.slice(-16).reverse()) add(`文件修改：${JSON.stringify({ file: item.path, operation: item.operation, state: item.state })}`, 'changes');

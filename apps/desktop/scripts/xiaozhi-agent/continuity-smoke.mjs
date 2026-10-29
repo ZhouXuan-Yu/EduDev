@@ -9,6 +9,7 @@ import {getPiProtectedContext} from '../../src/main/xiaozhi-agent/compaction-con
 import {fileVersion} from '../../src/main/xiaozhi-agent/workspace-files.ts';
 import {readPresentationNotes} from './presentation-readback.ts';
 import {bindGoalRequirements} from '../../src/main/xiaozhi-agent/tasks/goal-binding.ts';
+import {createStudentContextSanitizer} from '../../src/main/students/context-sanitizer.ts';
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-continuity-')),workspace=path.join(output,'files'),dataRoot=path.join(output,'data');fs.mkdirSync(workspace);fs.mkdirSync(dataRoot);
 const db=new DatabaseSync(path.join(dataRoot,'app.db'));
 db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);CREATE TABLE ai_confirmation_items(id TEXT PRIMARY KEY,session_id TEXT,run_id TEXT,payload_json TEXT,action_type TEXT,status TEXT,updated_at TEXT);
@@ -56,6 +57,9 @@ try{
  assert(context.includes('10页'));assert(context.includes('改成8页'));assert(context.includes('最新明确修订替代冲突'));assert(context.includes('非新增授权'));assert(context.length<=12000);
  const records=context.split('\n').filter(l=>l.startsWith('教师要求：')).map(l=>JSON.parse(l.slice('教师要求：'.length)));assert(records.some(r=>r.messageId==='origin'&&r.taskSource));assert(records.every(r=>Number.isInteger(r.sequence)));
  check('Protected context retains original task beyond recent turns and orders explicit teacher correction');
+ const privateStore={...store,listStudents:async()=>[{realName:'合成学生甲',displayName:'合成学生甲',school:'合成学校'}],getAiConversationSession:async()=>({session:{},messages:[{id:'private',role:'user',content:'合成学校的合成学生甲需要八年级浮力讲解。',metadata:{piVersion:'xiaozhi.pi.education.v1',agentRunId:'private-run'}}]})};
+ const privateContext=await getPiProtectedContext(privateStore,id,[],undefined,await createStudentContextSanitizer(privateStore));assert(!privateContext.includes('合成学生甲'));assert(!privateContext.includes('合成学校'));assert(privateContext.includes('八年级浮力'));
+ check('Reconstructed teacher request uses the same known-student/school redaction as current input');
  const goal={id:'xigoal_'+randomUUID(),sessionId:id,objective:'8页浮力课',criteria:['正确完成当前修订'],createdAt:new Date().toISOString()};
  const adoption={requirementsVersion:1,sources:[{messageId:'old',version:'a'.repeat(64)},{messageId:'current',version:'b'.repeat(64)}],origin:{messageId:'current'},criteria:[{id:'teacher_request',kind:'human',version:1,sourceId:'current',sourceVersion:'b'.repeat(64),text:'改成8页'}],checks:[],steps:[],planRevision:0};
  const wrong=structuredClone(adoption);wrong.criteria[0].sourceId='old';assert.throws(()=>bindGoalRequirements(wrong,goal),/legacy_conflict/);
