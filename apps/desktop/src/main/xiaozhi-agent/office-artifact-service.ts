@@ -1,4 +1,5 @@
 import {isClassroomOfficeSchema,validClassroomOfficeFormat} from '../../shared/classroom-export';
+import {assertFileWritesEnabled} from './file-write-policy';
 import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -74,6 +75,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  async function conflict(row:PrivateOfficeArtifact){return officeSummary(await state.transition(row,[row.state],'conflict'));}
  function compatible(root:string,row:PrivateOfficeArtifact){try{return missing(root,row)&&sourceVersions(root,row);}catch(error){if((error as Error).message==='permission_denied')throw error;return false;}}
  function install(root:string,row:PrivateOfficeArtifact,signal?:AbortSignal){
+  assertFileWritesEnabled();
   if(!row.output||!row.outputHash)throw new Error('configuration');
   current(row,signal);
   if(workspaceHash(authorizedWorkspace(root,options.dataRoot))!==row.workspaceHash)throw new Error('permission_denied');
@@ -95,6 +97,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
  }
  return {
   async propose(sessionId:string,runId:string,callId:string,raw:unknown,signal?:AbortSignal){
+   assertFileWritesEnabled();
    current({sessionId,runId},signal);if(!validOfficeProposal(raw)||!callId||callId.length>128)throw new Error('invalid_input');
    const input=JSON.parse(JSON.stringify(raw)) as typeof raw,root=await authority(sessionId,{draft:input.draft});current({sessionId,runId},signal);
    if(isPresentationDraft(input.draft)){const {presentationPageLayout}=await import('./presentation-layout');input.draft.sections.forEach(presentationPageLayout);current({sessionId,runId},signal);}
@@ -150,6 +153,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    });
   },
   async decide(input:OfficeArtifactDecision){
+   if(input?.action==='approve')assertFileWritesEnabled();
    if(!input||input.schemaVersion!==OFFICE_ARTIFACT_SCHEMA||Object.keys(input).some(k=>!['schemaVersion','sessionId','draftId','revision','action','imagesReviewed'].includes(k))
     ||!Number.isSafeInteger(input.revision)||input.revision<0||!['approve','reject','verify'].includes(input.action)||(input.imagesReviewed!==undefined&&input.imagesReviewed!==true))throw new Error('invalid_input');
    const row=await owned(input.sessionId,input.draftId),root=await authority(input.sessionId,row);
@@ -170,6 +174,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    });
   },
   async apply(sessionId:string,id:string,signal?:AbortSignal){
+   assertFileWritesEnabled();
    const row=await owned(sessionId,id),root=await authority(sessionId,row);current(row,signal);
    return withFileMutationQueue(target(root,row),async()=>{
     let latest=await owned(sessionId,id);await recheck(latest,root,signal);

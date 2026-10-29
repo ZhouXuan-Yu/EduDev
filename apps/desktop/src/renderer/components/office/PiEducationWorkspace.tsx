@@ -337,6 +337,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       {snapshot?.legacyHistory && <p className="pi-history-note">旧对话保留供参考；小智从本轮开始使用新的上下文。</p>}
       {snapshot?.interruptedSend && <p className="pi-history-note" role="status">上次消息接收过程中中断。请重新发送，旧请求不会自动继续。</p>}
       {snapshot?.studentContext&&<p className="pi-history-note" data-testid="pi-student-selection">学习对话 · {snapshot.studentContext.label}{snapshot.studentContext.status==='active'?' · 仅使用必要的脱敏学习记录':' · 档案已归档或不可用，无法读取新记录'}</p>}
+      {snapshot?.fileWritesEnabled===false&&<p role="status" className="pi-history-note" data-testid="pi-file-writes-paused">小智自动文件生成已暂停，已有文件与对话仍可打开。恢复生成需取消启动停写设置并重启。</p>}
       {notice && <p role="alert" className="pi-history-note">{notice}</p>}
       {snapshot?.taskUnavailable&&<p role="alert" className="pi-history-note">本轮要求记录暂时无法核对，请重新读取会话。</p>}
       {syncBlocked&&<OfficeSynchronizationNotice unavailable={eventSync==='unavailable'||refreshFailed||Boolean(snapshot?.eventPersistence)} refreshing={returnHydrating} onRefresh={()=>void refreshCurrent()}/>}

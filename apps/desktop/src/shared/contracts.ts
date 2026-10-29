@@ -711,7 +711,10 @@ export type ExportDataRootResult = {
   manifestPath: string;
   verified: boolean;
   excludedRebuildablePaths?:string[];
+  conversationOutputs?:ConversationOutputsBackup;
 };
+
+export type ConversationOutputsBackup={schemaVersion:1;sourceDataRoot:string;sourceOutputRoot:string;scope:string;backupPrefix:string;fileCount:number};
 
 export type DataBackupVerificationResult = {
   backupPath: string;
@@ -722,6 +725,7 @@ export type DataBackupVerificationResult = {
   changedFiles: string[];
   unexpectedFiles: string[];
   errorMessage?: string;
+  conversationOutputs?:ConversationOutputsBackup;
 };
 
 export type DocumentArtifactType = 'markdown' | 'pdf' | 'docx' | 'xlsx' | 'pptx';

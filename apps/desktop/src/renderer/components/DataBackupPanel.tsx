@@ -50,7 +50,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
     return (
       <div className="backup-feedback success" data-testid="data-backup-export-success">
         <CheckCircle2 size={17} />
-        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small></div>
+        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small>{state.exportResult.conversationOutputs&&<small data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</small>}</div>
       </div>
     );
   }
@@ -139,14 +139,14 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
   };
 
   if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">
-    <p>备份本机资料、题库、对话和工作成果。题意索引缓存不复制，恢复资料后可重新整理。</p>
+    <p>备份本机资料、题库、对话和默认生成文件。题意索引缓存可重建；另选工作目录中的文件需单独备份。</p>
     <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
     <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>{state.status === 'exporting' ? '正在备份…' : '创建本地备份'}</Button>
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
     <div aria-live="polite">
       {state.status === 'idle' ? <p data-testid="data-backup-idle">选择资料目录之外的位置保存备份。</p>
         : <div role={['error','verification_failed'].includes(state.status) ? 'alert' : 'status'} data-testid={`data-backup-${state.status === 'export_success' ? 'export-success' : state.status === 'verify_success' ? 'verify-success' : state.status === 'verification_failed' ? 'verify-failed' : busy ? 'loading' : state.status}`}>
-          <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}
+          <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}{state.exportResult?.conversationOutputs&&<p data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</p>}
           {state.verificationResult && <p className="pi-settings-location" data-testid="data-backup-verify-path">{state.verificationResult.backupPath}</p>}
         </div>}
     </div>
@@ -164,7 +164,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
         </button>
       </div>
       <div aria-live="polite"><DataBackupState state={state} /></div>
-      <p className="backup-boundary" data-testid="data-backup-boundary">备份保留本地资料、题库和产物，题意索引缓存可重建；生成清单后不会自动恢复、上传云端或修改源数据。</p>
+      <p className="backup-boundary" data-testid="data-backup-boundary">备份保留本地资料、题库和默认生成文件；另选工作目录中的文件需单独备份。题意索引缓存可重建；生成清单后不会自动恢复、上传云端或修改源数据。</p>
     </div>
   );
 }

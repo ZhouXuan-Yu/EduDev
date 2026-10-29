@@ -11,7 +11,7 @@ export type XiaozhiTextChange = {
 export type XiaozhiChangeReview = XiaozhiTextChange & { before: string | null; after: string };
 export type XiaozhiChangeSummary = Omit<XiaozhiTextChange, 'diff' | 'patch'>;
 export type XiaozhiChangeReviewInput = { sessionId: string; changeId: string };
-export type XiaozhiChangeError = 'invalid_input' | 'permission_denied' | 'conflict' | 'busy' | 'configuration';
+export type XiaozhiChangeError = 'file_writes_disabled' | 'invalid_input' | 'permission_denied' | 'conflict' | 'busy' | 'configuration';
 export type XiaozhiChangeResult<T> = { ok: true; value: T } | { ok: false; error: XiaozhiChangeError };
 export type XiaozhiChangeDecision = { schemaVersion: 'xiaozhi.change.v1'; sessionId: string;
   changeId: string; revision: number; action: 'approve' | 'reject' | 'verify' | 'undo' };
