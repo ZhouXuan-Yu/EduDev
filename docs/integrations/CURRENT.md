@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-29 备份与停写复用
+
+原store.exportDataRoot/verifyDataBackup与DataBackupPanel追加默认输出范围和数量，typed结果扩可选字段，无新IPC/DDL/依赖；旧manifest.v1兼容。原text/Office服务、整包工具和Pi复制回调共用启动停写门，审批/权限/native身份不替换。
+
 ## 2026-10-29 整包集成
 
 沿原text/Office service、PPT生成器、Hana读取与原审阅字段，新增office_deliver_files、delivery DTO/event及唯一整包decision IPC。无新依赖/许可证/安装体积依赖；只新增引用元数据表。回退须保留新kind/记录/文件读取，停写开关与备份后续实现。

@@ -1,0 +1,332 @@
+{
+  "date": "2026-10-29",
+  "status": "ENGINEERING_SLICE_VERIFIED_FULL_C03_OPEN",
+  "implementationSha": "6693f6c5655f239d84915c9c2c41b6e16d16a262",
+  "runtimeRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+  "newPaidModelRequests": 0,
+  "dependenciesAdded": [],
+  "ddlAdded": false,
+  "features": [
+    "Original settings backup/verification now includes this data instance default output root and detects altered HTML/PPT bytes",
+    "Versioned conversationOutputs extension inside original manifest.v1; unchanged legacy v1 manifests remain verifiable",
+    "Only generated scope is traversed, not other instances or private teacher grant directories; recursive target and directory link refused",
+    "OMNI_EDU_XIAOZHI_FILE_WRITES=0 stops automatic text/Office/bundle generation and Pi copy gates while keeping tools/identities/readers installed",
+    "Cold paused application opens interactive HTML/PPT notes, discovers/executes actual document read and rejects new bundle draft/write"
+  ],
+  "validation": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "scope": "Final source, includes tsc; final Pi copy hook boolean compatibility fixed"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "passed": 240,
+      "total": 240,
+      "exitCode": 0
+    },
+    {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "exitCode": 0,
+      "scope": "This turn backup/policy source before final Pi copy callback wrapper; not a whole-suite rerun after wrapper"
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/conversation-output-backup-smoke.mjs",
+      "passed": 6,
+      "total": 6,
+      "exitCode": 0
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+      "passed": 7,
+      "total": 7,
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/conversation-output-backup-electron.mjs",
+      "passedBeforeFixtureFailure": 8,
+      "exitCode": 1,
+      "scope": "Real settings export/verify/tamper/legacy backup/cold paused preview/PPT tool read passed; final simulated-write step incorrectly dispatched another read, retained failure"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/conversation-output-backup-electron.mjs --resume=C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH",
+      "passed": 1,
+      "total": 1,
+      "exitCode": 0,
+      "scope": "Only failed write-attempt step repeated on same owned fixture after deterministic scenario-state fix; actual tool receipt false/file_writes_disabled; no new draft/bundle/file; old exact bytes retained"
+    },
+    {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "counts": {
+        "high": 8,
+        "moderate": 7,
+        "low": 8,
+        "critical": 0,
+        "total": 23
+      },
+      "scope": "Unchanged pre-existing dependencies; one audit, no new package"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "reports": {
+    "outputCopy": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-nNBO76\\report.json",
+      "sha256": "c826f2ef932497a57bac5234d29283b9149104e911ea1953dacf222cea3573e5",
+      "result": {
+        "ok": true,
+        "checks": [
+          "Missing default output root is described without creating or authorizing it",
+          "Backup contains both same-name conversation files and binary bytes without scanning another data instance",
+          "Targets under the generated root are rejected before recursive backup can begin",
+          "A reserved backup-prefix collision fails instead of replacing original data",
+          "Editing a generated file during its copy invalidates the backup attempt",
+          "A directory junction is rejected and its target bytes remain unchanged"
+        ],
+        "boundary": "Original output location and backup helper, real files/hash-independent byte comparisons; no full restore, UI, natural provider or complete C03 acceptance."
+      }
+    },
+    "filePolicy": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-Wvd1vj\\report.json",
+      "sha256": "27c08b87f046af2377c9e6e5deffacdfcb995341fb300d4367e4caa798b301b6",
+      "result": {
+        "ok": true,
+        "checks": [
+          "One review covers both files; teacher PPT edit invalidates old approval and saves exact revised notes",
+          "Aggregate independent verification binds every disk file; corruption invalidates the whole bundle",
+          "Rejecting the whole bundle creates neither file",
+          "PPT failure preserves HTML; new-run resume carries HTML without rewriting and reconfirms only the unfinished file",
+          "Task requirement change invalidates bundle; cancellation and cold restart never revive approvals",
+          "A post-write uncertain PPT is verified and carried after restart; neither saved file is written twice",
+          "Compatibility pause blocks new and already-approved automatic writes, while saved drafts and uncertain verification remain readable"
+        ],
+        "boundary": "Synthetic fixtures, actual original file/Office services, SQLite, disk, independent aggregate readback. No paid model, natural quality or full AT acceptance."
+      }
+    },
+    "settingsAndRead": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\report.json",
+      "sha256": "da672d7a082d68e176ca607e1f4edc5a83b0b89501b2046d90b6b6fe6c8f111f",
+      "result": {
+        "ok": false,
+        "checks": [
+          "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+          "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+          "Saved PPT has eight actual pages and teacher notes; task verification independently confirms every bundled file",
+          "Settings backup includes exact HTML/PPT bytes, original SQLite bundle/Office facts and a versioned generated-output manifest",
+          "The original visible verifier detects a changed generated file rather than reporting a complete backup",
+          "The unchanged v1 backup format without output metadata remains verifiable through settings",
+          "Cold startup with automatic writes disabled preserves native identity, interactive HTML and actual PPT/notes reading",
+          "A real continued Pi turn reads saved output under the pause switch without native capability reconfiguration"
+        ],
+        "errors": [],
+        "boundary": "Actual formal Electron/settings/Pi, synthetic SSE only, real HTML/PPT/SQLite backup, tamper/legacy verification and pause cold restart. No new-directory restore, real-provider quality, installer or complete C03 acceptance.",
+        "snapshot": {
+          "running": false,
+          "cursors": [
+            {
+              "runId": "run_c4ae4e90-6f9f-4b85-9eba-d1167f268f54",
+              "generation": 1,
+              "sequence": 52,
+              "revision": 52
+            }
+          ],
+          "turns": [
+            {
+              "id": "run_c4ae4e90-6f9f-4b85-9eba-d1167f268f54",
+              "status": "completed"
+            }
+          ],
+          "deliveries": [
+            {
+              "id": "xidelivery_de5eb3bf456b7cc8f07b3cf5331ea6088735679fef3947edf2e8c6a1f36d2bb4",
+              "state": "saved"
+            }
+          ]
+        },
+        "backup": {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\backups\\OmniEduData-backup-2026-10-29T12-03-50-604Z",
+          "manifest": {
+            "schemaVersion": "omni-edu-backup-manifest.v1",
+            "createdAt": "2026-10-29T12:03:50.922Z",
+            "fileCount": 15,
+            "files": [
+              {
+                "path": "__xiaozhi_outputs__/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/浮力讲解.pptx",
+                "size": 122228,
+                "sha256": "cacf2bf97ddc9cc6d36d9dc0158fa78e46e5fc27eae17f1a278f4086709eea3c"
+              },
+              {
+                "path": "__xiaozhi_outputs__/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/浮力演示.html",
+                "size": 646,
+                "sha256": "863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef"
+              },
+              {
+                "path": "app.db",
+                "size": 1957888,
+                "sha256": "5293885ebc7bf39f7d38b550a19696d97d4853946278c5677e03d541f45c9961"
+              },
+              {
+                "path": "xiaozhi-pi/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/education-evidence/SKILL.md",
+                "size": 2527,
+                "sha256": "18e1acd7252878813c186613ad8164902c010e84ea314e6d5210ae1888c6aedc"
+              },
+              {
+                "path": "xiaozhi-pi/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/lesson-preparation/SKILL.md",
+                "size": 2119,
+                "sha256": "570e2bc494c34b0fc52b34906d12017522a1e155b6076a9f4e4b00fd41058560"
+              },
+              {
+                "path": "xiaozhi-pi/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/question-analysis/SKILL.md",
+                "size": 2134,
+                "sha256": "0c45f8c7dfb23e1c7b61fad0f0d75339b24de6b8746d3ca6a9a43be61176c5a7"
+              },
+              {
+                "path": "xiaozhi-pi/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/science-illustration/SKILL.md",
+                "size": 3947,
+                "sha256": "ba7779aeaa761f6ff41a45f3eeee1062baa12c2e421b9906c9a731c2f7bb058e"
+              },
+              {
+                "path": "xiaozhi-pi/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/agent/managed-skills-v2/942f01f3b4c4a8581b60efbd4ba5b8152ff1eb954917fb5a8266217bb4c4424e/teaching-office/SKILL.md",
+                "size": 3053,
+                "sha256": "7b6c201aa84b3fd0d53d3fe75337bb197e050aee9a1d8f95c4f06f8d62b2d216"
+              },
+              {
+                "path": "xiaozhi-pi/aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/sessions/2026-10-29T12-03-07-645Z_01a1878a-defc-779b-b07d-0b27e28f4c4e.jsonl",
+                "size": 197616,
+                "sha256": "58067306e9115690aaa9e02baf799f3522bd9108f47887197c55075f9db29e60"
+              },
+              {
+                "path": "xiaozhi-pi/deepseek-capabilities.v1.json",
+                "size": 295,
+                "sha256": "03a590b945d1a50b9ca6c14002056be31a926c285bd9af0154dd7f35c932127a"
+              },
+              {
+                "path": "xiaozhi-pi/skills/versions/education-evidence/36b803ed-babe-45fb-b88c-ddec8426eb0a/education-evidence/SKILL.md",
+                "size": 2527,
+                "sha256": "18e1acd7252878813c186613ad8164902c010e84ea314e6d5210ae1888c6aedc"
+              },
+              {
+                "path": "xiaozhi-pi/skills/versions/lesson-preparation/e13f6ae4-8ce1-4f95-85e2-905b8763c8e0/lesson-preparation/SKILL.md",
+                "size": 2119,
+                "sha256": "570e2bc494c34b0fc52b34906d12017522a1e155b6076a9f4e4b00fd41058560"
+              },
+              {
+                "path": "xiaozhi-pi/skills/versions/question-analysis/6fff2930-11f2-4fdb-ae01-14c5dada8098/question-analysis/SKILL.md",
+                "size": 2134,
+                "sha256": "0c45f8c7dfb23e1c7b61fad0f0d75339b24de6b8746d3ca6a9a43be61176c5a7"
+              },
+              {
+                "path": "xiaozhi-pi/skills/versions/science-illustration/61994eb3-2739-4b35-a158-efa019e61935/science-illustration/SKILL.md",
+                "size": 3947,
+                "sha256": "ba7779aeaa761f6ff41a45f3eeee1062baa12c2e421b9906c9a731c2f7bb058e"
+              },
+              {
+                "path": "xiaozhi-pi/skills/versions/teaching-office/95141886-c74b-4236-96e6-4a4785235bf1/teaching-office/SKILL.md",
+                "size": 3053,
+                "sha256": "7b6c201aa84b3fd0d53d3fe75337bb197e050aee9a1d8f95c4f06f8d62b2d216"
+              }
+            ],
+            "conversationOutputs": {
+              "schemaVersion": 1,
+              "sourceDataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\data",
+              "sourceOutputRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\XiaozhiOutputs\\3acdee529addd121",
+              "scope": "3acdee529addd121",
+              "backupPrefix": "__xiaozhi_outputs__",
+              "fileCount": 2
+            },
+            "excludedRebuildablePaths": [
+              "cache/semantic-v1",
+              "cache/word-question-pages"
+            ]
+          }
+        },
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n1 !== 0\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/conversation-output-backup-electron.mjs:128:143"
+      }
+    },
+    "correctedWriteCase": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\resume-report.json",
+      "sha256": "630c158aec9f657b07aa09dfed683bcfd9b1423b89b009c17ce559f8168003ff",
+      "result": {
+        "ok": true,
+        "checks": [
+          "Even an attempted real Pi write is refused before creating a new draft or file; old saved outputs retain exact bytes"
+        ],
+        "errors": [],
+        "boundary": "Actual formal Electron/settings/Pi, synthetic SSE only, real HTML/PPT/SQLite backup, tamper/legacy verification and pause cold restart. No new-directory restore, real-provider quality, installer or complete C03 acceptance."
+      }
+    }
+  },
+  "sources": [
+    {
+      "path": "apps/desktop/src/main/backup/conversation-outputs.ts",
+      "sha256": "4a7f1f10164c69e50bf71d17a234b87f6b4618439125b78521900e278bab37f7"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/conversation-output-path.ts",
+      "sha256": "cbd3d76ec49da7d779e22085a3faac28ab8a0b48ddea249ecb99b17c8d9c0c68"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/file-write-policy.ts",
+      "sha256": "c614aad75856094410154981a4ca0c1b412f896ad2b4a4c2ed110411fe415791"
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "sha256": "17b7c4a5305ff323a5a03187f2b1b46ad3545ecdc78a0716b47213bcc2fc12b3"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "sha256": "ebd71beba365421e7df69b19f4e1ae6932f8e819a46a89d42a6270dd5ac3934e"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/conversation-output-backup-electron.mjs",
+      "sha256": "71f08fdf568c32e56aa97c9568feb92b5ea88dcfb96377b28edf46189fe26d41"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/conversation-output-backup-smoke.mjs",
+      "sha256": "22903f92d413aefbeff9135ef2402c19b03240d024ec1e3a7ec378fe0d3ad389"
+    }
+  ],
+  "performance": {
+    "previousRendererEntryKB": 7128.14,
+    "currentRendererEntryKB": 7129.36,
+    "deltaKB": 1.22,
+    "modelStreamingChanges": "No per-token work or extra provider round; pause check only at tool/file-effect boundaries",
+    "backupIO": "Async file copy plus original streamed SHA manifest collection; metadata/stat array only, no full Office parse or file-body copy in renderer",
+    "defaultRootCold": "Pure location resolver does not create missing output roots during backup",
+    "boundary": "Build footprint and concrete copy/byte checks only; no large-library backup duration, RSS or FPS comparison"
+  },
+  "failures": [
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Sjmv6D",
+      "reason": "Controlled provider chose HTML via office_read_text (unsupported) and keyword matched host context, not new intent; old request-count assertion insufficient. Changed to actual office_read_document success/text assertion."
+    },
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\report.json",
+      "reason": "Initial transport still classified generated request as read; preserved eight passed steps and failed final assertion; explicit scenario state and targeted resume pass above."
+    },
+    {
+      "reason": "First Pi beforeCopy guard returned void rather than original boolean; tsc rejected it, fixed preserving original callback/default true. Final build passes."
+    },
+    {
+      "reason": "Initial source-test command ran from repository root without apps/desktop path; corrected explicit workdir, no production effect."
+    }
+  ],
+  "remaining": [
+    "Actual restoration/activation in independent new data directory requires generated-output path/ledger/task/native-identity migration, not implemented in this slice",
+    "External teacher-chosen workspace/output files remain outside this backup extension; UI explicitly says to back them up separately; full C03 scope remains open",
+    "HTML source cannot currently be read by office_read_text; interactive preview works; source-reading adapter remains E03 follow-up",
+    "Full rollback to an older application version and release compatibility table not validated; this is a pause switch in the current compatible build",
+    "Full FX07/AT-C03-05/06/10 concentrated acceptance, large dataset, installer and daily D: build remain unverified",
+    "Full corrected nine-step journey not rerun; eight passed operations plus targeted corrected case are bounded evidence, not a fictitious single green run"
+  ],
+  "rollback": {
+    "pause": "Set OMNI_EDU_XIAOZHI_FILE_WRITES=0 in supported-build launch environment and restart; automatic file tools stay registered but reject writes. Existing histories/output files remain readable and verify actions remain available.",
+    "resume": "Remove the variable or set it to 1 and restart. No database/file deletion or permission recreation.",
+    "limits": "Keep new manifest/schema/Task/native readers when disabling writers. Never blanket-revert to a binary unable to interpret saved_bundle/presentation schema; older-binary rollback remains untested."
+  }
+}
