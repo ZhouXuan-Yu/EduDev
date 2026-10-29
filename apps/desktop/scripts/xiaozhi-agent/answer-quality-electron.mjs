@@ -50,6 +50,8 @@ async function launch(mode,existing=false){
       const chunk=(delta,reason=null)=>'data: '+JSON.stringify({id:'aq-controlled',object:'chat.completion.chunk',created:0,model:body.model,choices:[{index:0,delta,finish_reason:reason}]})+'\n\n';
       const encoder=new TextEncoder();return new Response(new ReadableStream({async start(c){try{
         c.enqueue(encoder.encode(chunk({role:'assistant',content:''})));
+        // Match the reported burst before tools; all bytes are synthetic/local.
+        if(index===0)for(let i=0;i<300;i++){init.signal?.throwIfAborted();c.enqueue(encoder.encode(chunk({reasoning_content:'核对授权资料条件。'})));if(i%10===0)await new Promise(r=>setTimeout(r,1));}
         if(call)c.enqueue(encoder.encode(chunk({tool_calls:[{index:0,id:state.callPrefix+'-'+index,type:'function',function:call}]})));
         else {for(const piece of content.match(/.{1,12}/gs)||[]){init.signal?.throwIfAborted();c.enqueue(encoder.encode(chunk({content:piece})));await new Promise(r=>setTimeout(r,4));}}
         c.enqueue(encoder.encode(chunk({},call?'tool_calls':'stop')+'data: [DONE]\n\n'));c.close();
