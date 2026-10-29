@@ -176,3 +176,9 @@
 修复续接结果：e147与D:源码均build exit0，240组件及20事件边界通过；推理burst原生专项前三项（资料、工作文件、附件引用）通过，随后发送被同步保护禁用，整套6项未通过，失败DL8GkE保留，不声明全修复。D:由08e26bc更新到8448339，原ref backup/daily-before-journal-fix-20261029保留，原生产数据未修改。用户随后明确授权把原问题在原会话真实重发一次，已发送run_9f6fc23e-987e-4581-a0d3-19086cc79989；当前已成功执行两次find_education_tools，仍在观察，不自动重复发。该单次复原授权不重启20次A/B配额。audit23项既有风险。
 
 单次真实复原终态：run_9f6fc23e-987e-4581-a0d3-19086cc79989为succeeded，421条公共事件正常保存，3次find_education_tools均成功，无event_persistence。模型没有执行education_search_questions或education_read_question，最终称无题源并输出未执行的ask_teacher样式文本；没有生成PPT。正式库有20条题记录，尚未证明其课堂可用资格，不能把模型说法当题库为空。此问题保留为后续工具发现/题库可用性对齐缺口；不自动追加真实请求。
+
+## 2026-10-29 流式卡顿与窗口拖动修复合同
+
+本轮目标：生成中输入/滚动/停止保持响应，标题栏空白可原生拖动，最大化可还原。确认缺口：标题栏controls no-drag撑满可用宽度；OfficeMarkdown每个增量重建components且默认blurIn。修改chrome CSS/标题栏空白区、Markdown稳定配置/关闭模糊动画、推理100ms节拍。无表/IPC迁移，不改授权、正文内容或停止语义；保留原生caption按钮与窗口位置持久化。以同一合成流对照旧/新构建、实际输入延迟/长任务/正文一致性及原生拖动检查一次，不调用真实模型。回滚revert本轮提交；D:运行根同步前保留ref并正常退出。
+
+专项结果：`npm run build` exit0（stream-window-build.log），`npm run test:renderer-components` 240/240（stream-window-components.log），`node scripts/xiaozhi-agent/answer-quality-boundaries.mjs` 11/11。`node scripts/xiaozhi-agent/stream-window-performance.mjs test-results/stream-window-fix/before` 与新版相同命令（省略build参数）分别报告stream-window-l7Tq3I、stream-window-Q74xs5；同50段正文全量完成、生成中8次草稿编辑保留、无pageerror；动画峰值51→6，两版均无>50ms长任务，事件循环最大延迟37.4→29ms，输入到帧最大8.5→6.2ms。Playwright fill往返最大16.49→21.92ms、均值14.19→13.81ms存在噪声，不能宣称整体固定提速或已复现用户严重卡顿。原生空白命中HTCAPTION=2且isMovable，初始指针注入未移动，失败报告保留；脚本现在只读命中，实际移动另用原生窗口操作验证。`npm audit --json` 23项既有（8 high/7 moderate/8 low），无新依赖；git diff --check通过。回滚revert本片，日常根另保留更新前ref。

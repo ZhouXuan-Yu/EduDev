@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 流式响应与窗口拖动
+
+OfficeMarkdown在应用适配层memo合并components，默认animated=false；正文保持32ms、推理100ms合并并终态flush。DesktopFrame以独立空白drag区分离实际no-drag按钮，不改原生caption/位置持久化或IPC。
+
 ## 2026-10-29 会话资源与引用补齐
 
 原生SessionManager通过native-session-resources独占租约复用，最多4个空闲、2分钟释放，字节/作用域变化重载；每轮AgentSession、工具、凭证和授权仍新建。来源结构新增可选local行定位，沿既有typed预览IPC核版本；没有新表/迁移。详情../goal/HANA_ANSWER_QUALITY.md。

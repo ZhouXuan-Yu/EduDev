@@ -1029,7 +1029,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       runId = `run_${randomUUID()}`; running = true; interrupted = false; streamedLength = 0; segment=0; automaticId=0; automaticFailure=undefined; goalEndError=undefined;toolStartedAt.clear();
       metrics=createQualityMetrics();evidence=quality?createAnswerEvidence(runId):undefined;repetition.reset();toolCatalog?.reset(text);
       if(quality){const answer=resolveAnswerPolicy(text,capabilities);policy.maxOutputTokens=answer.maxOutputTokens;model.maxTokens=answer.maxOutputTokens;session.setThinkingLevel(answer.thinking);manager.appendCustomEntry('xiaozhi.answer-policy.v1',{runId,...answer});}
-      reasoningTrace=createModelReasoningTrace({sanitize:options.sanitizeFileText|| (async text=>text),secret:options.apiKey,frameMs:quality?33:0,emit:block=>emit({kind:'model_reasoning',block})});
+      reasoningTrace=createModelReasoningTrace({sanitize:options.sanitizeFileText|| (async text=>text),secret:options.apiKey,frameMs:quality?100:0,emit:block=>emit({kind:'model_reasoning',block})});
       imageRuntime?.begin();
       budget=createPiRunBudget({budget:limits,runId,limitsEnforced:options.limitsEnforced,onWaiting:waitingChanged,emit:usage=>emit({kind:'usage',usage}),abort:()=>{
         phaseController.abort();executions.abortBySession({sessionId},'Run budget exhausted');session.clearQueue();instructions.clear();autoAbort?.abort();session.abortCompaction();void session.abort();

@@ -17,9 +17,17 @@
   gap: 2px;
   height: 100%;
   padding-left: 8px;
-  width: env(titlebar-area-width, calc(100% - 140px));
+  flex: 0 1 auto;
+  max-width: env(titlebar-area-width, calc(100% - 140px));
   margin-left: env(titlebar-area-x, 0px);
   -webkit-app-region: no-drag;
+}
+.edu-chrome-drag {
+  flex: 1 1 auto;
+  align-self: stretch;
+  min-width: 32px;
+  margin-right: 140px;
+  -webkit-app-region: drag;
 }
 .edu-desktop-content {
   height: calc(100dvh - var(--edu-chrome-height, 44px));
