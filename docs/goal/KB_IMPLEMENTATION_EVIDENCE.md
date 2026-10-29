@@ -2,6 +2,8 @@
 
 ## 2026-10-29 长PDF发布窗口、资源轮转与页前言纠错
 
+最终整合补记：收尾刷新取得协作者思考档位main c0d2b40，正常合并为3ad4abe；12份冲突均为独立新增主题，双方保留，源码无冲突。合并版build/type、240组件、思考策略/SQLite7项与上述54.6MB PDF Electron4项再次通过，0renderer错误/2AI题/冷启0请求，报告Temp/omni-folder-pdf-publish-GTQ1Nr/report.json；main SHA256 24d42f48382be27dd01023f2ca8b89caba6d96179253e36ad93c8f9ecb404a36。日志test-results/kb-folder-pdf-merged-{build,components,journey}.log和kb-folder-pdf-thinking-final.log。思考源码专项初次普通Node静态TS引用无法解析deepseek-fetch，前置现register-source加载器后原7项通过，未改其源码。完整207证据仍对应合并思考前c045dd5，不冒充合并版完整重跑。此次补检无新付费调用；D盘和其他工作树不动，远端状态看最终Git回读。
+
 批判发现并实际RED：99c5fac在真实SQLite/生产调度器中4项失败（processing误失败、complete staging未发布即创建永久review、前8等待文件饿死后续、旧未计费误判不恢复），真实failed/blank保留用例通过。a3e7b13改为等待job complete/partial和canonical资源可读后建子任务；material_folder_ai幂等增量plan_cursor INTEGER DEFAULT0，idx_folder_ai_plan/idx_folder_ai_local_retry两个派生部分索引，有界双范围每轮最多8资源并持久保存游标。旧误判仅同资源版本/已发布complete页/实际正文齐备、ai_batch_id空且无该目录任务幂等关联时恢复，事务内复验授权，最多8项；pending_local等待保留，暂停/变版本/真实失败/有子任务/已关联未知均不自动重发。共享协议、typed preload和正式卡片复用，原件/OCR/已有题/AI回执不改。
 
 随后批判RED0e16eef实证预算耗尽后的第二次规划把budget_exhausted改paused；GREEN056a0db每次规划后复读父状态与活动单元，终态/暂停立即结束当前窗口。实际54MB双页又暴露默认3≠2：第一题被算入下一页的仅元数据前言，且前题物理/高一会被下一页数学/初二污染。REDb1cb0bf→GREENc045dd5只在明确不同原页、下一题前仅既有元数据/空白时结束前题；本页前言优先，实际跨页条件和同页跨块仍保留全部来源/风险。未放宽同源指纹或改条数断言、未重写旧archive。
