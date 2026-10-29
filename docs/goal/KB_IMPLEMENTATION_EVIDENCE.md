@@ -1,5 +1,13 @@
 # 知识库实施证据
 
+## 2026-10-29 最后主线整合与OCR提示词接线核对
+
+正常合并main 0b3d277为b82da4c，保留协作者默认成果备份和停自动文件写；12份文档冲突均为不同主题新增段落，双方保留，源码自动合并后检查。b82da4c上build/type exit0、组件240/240、来源边界13组与AI批处理28组通过。新主线备份6项、交付整包/停写7项通过；受限沙箱最初备份目录链接创建EPERM（5项后失败）、整包首项失败均保留，按此前同类隔离本地专项权限重跑原命令通过，不修改断言或协作源码。报告Temp/xiaozhi-output-backup-w81gw4、xiaozhi-bundle-UMGqEh。构建与组件日志在apps/desktop/test-results/kb-source-origins-b82da4c-{build,components}.log。
+
+同一最终构建的真实Electron目录闭环再过3项：本地OCR/原生Word、typed IPC/SQLite真实，模型HTTP受控，默认3/原始6/教师收藏后4/未知单元冷启5与0重发保持；1366/1920、0renderer错误，Temp/omni-folder-ai-ui-9egrkY/report.json。此次补检没有新增付费模型请求，未重跑整套207综合、真实历史回放或40GB，早期证据各保留原源码范围。
+
+用户补充“无法理解的OCR交给DeepSeek还原”：实际provider中的OCR_RESTORATION_INSTRUCTION（[OCR还原规则 v1]）已接入上述图片/普通文本/Word角色图稿及首稿、复核稿。28组内直接拦截实际provider请求，验证6个请求均携带还原规则与未改写的原始OCR，且只包含当前一种响应schema；不是只在文档写提示词。规则要求先忠实恢复版面/公式/否定词/单位/选项/小问，原图优先，无图或不清不能猜补，题面与解题分开，补答标ai_generated，无法确认保留issues；质量门不因两遍一致放宽。正文、原图和回执仍分别留存。空白/失败OCR页和整页普通内容入阅读/检索仍属后续缺口，不由提示词替代通路实现。
+
 ## 2026-10-29 同源原始候选与AI稿：默认3题、原始6条均保留
 
 生产构建实测三格式目录在AI完成后题本仍6条，而非3道题，RED2401459保留。新增可重建material_question_origins与source-question.v1：同原件/版本、完整正文来源（offset/chunk/bodyVersion）、题号和确定性原始题面指纹，分别记录rule/ai；AI须已通过原质量条件，原生Word角色来源无歧义且原文精确对应。不能据题号或相似度归并；匹配不了、多条规则同指纹、复杂或跨块来源保持独立。不同AI稿不互相吞并。所有原题、OCR、首终稿和ID均不改。
