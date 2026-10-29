@@ -193,9 +193,10 @@
     "No teacher or Office/WPS layout acceptance",
     "No D:/WorkProject/EduProject runtime update",
     "CSV locked by another process; original preserved",
-    "Managed output backup/relocation remains to implement in C03"
+    "Managed output backup/relocation remains to implement in C03",
+    "Write-disable compatibility rollback not yet implemented or exercised; preserve new native capability readers"
   ],
-  "rollback": "Revert narrow registration/default lease/HTML preview seams. Retain SQLite and real output files; explicit directory selection can reopen them.",
+  "rollback": "Retain native capability assembly, default-directory read leases, HTML preview, SQLite and real output files. A write-disable compatibility switch remains pending; a blanket code revert would hide new generic HTML and can reject newly recorded capabilities, so is not a validated rollback.",
   "verifiedSourceHashes": {
     "apps/desktop/src/main/index.ts": "000bbcb48ae6f2a5b0f571c14cefcdab9ad7e101fc28ac320ee2f4d248f13ead",
     "apps/desktop/src/main/xiaozhi-agent/education-tool-catalog.ts": "1a1571f2f7fd3039e8789dc83fe672688e7ae23dd1b8b3acd493023a9afa6a68",
@@ -212,5 +213,23 @@
     "apps/desktop/src/main/xiaozhi-agent/local-frame-isolation.ts": "775f1a28c9aa6911ea75a7837dd31d4dfe9f85a765d2b40ae688ae2930f831ba",
     "apps/desktop/src/shared/html-artifact.ts": "363e04c69b8c4e82d9b77e957f88ffc4a6e65e2e8a1e93b66129655b676080fd"
   },
-  "sourceBoundary": "Verified worktree based on 2b96308; exact source hashes below. Commit SHA recorded at integration checkpoint, not an AT pass."
+  "sourceBoundary": "Verified worktree based on 2b96308; exact source hashes below. Commit SHA recorded at integration checkpoint, not an AT pass.",
+  "integration": {
+    "implementationCommit": "1967111",
+    "upstream": "86ae612",
+    "validatedSourceCommit": "22ef42c",
+    "conflicts": "14 documentation-only leading additions; every upstream nonblank line and our added lines retained",
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "log": "apps/desktop/goal-e01-merged-build.log"
+    },
+    "formalUi": {
+      "command": "node scripts/xiaozhi-agent/default-file-delivery-electron.mjs",
+      "exit": 0,
+      "checks": 3,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-default-ui-JGExwu\\report.json",
+      "sha256": "3885c9ee3b8e5f05848c469c7a91d1845a41cc9ce6551786d477034ec5e31fd7"
+    }
+  }
 }
