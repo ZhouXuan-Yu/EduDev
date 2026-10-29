@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-29 PDF本地发布与目录AI隔离
+
+PDF页回执/暂存chunks与canonical resource_chunks继续由原publish隔离；目录AI在发布就绪后取来源，不引入另一份正文真源。现folder表新增plan_cursor及两个派生部分索引，小批8资源轮转，旧未计费误判页按同版本证据恢复。规则抽题按明确原页边界排除后一题元数据前言，不丢真正跨页条件；共享协议/typed IPC/主页面不变。
+
 ## 2026-10-29 同源派生关联
 
 material_question_origins是可重建展示关系，不是第二题库；同原件版本/完整sources/原始题面指纹区分rule/ai，covered派生联动needs_attention。现AI发布与规则创建同writer登记，历史按8条有界回填并锁内验证，坏历史不阻塞新导入。题目/源/回执变化和教师操作失效，typed notebook showSourceCandidates读取原始记录；ID读取不再先加载50题/全库使用汇总。原业务事实、权限和Pi唯一runtime保持。
