@@ -6,7 +6,7 @@ const {MaterialFolderAiRepository}=await import('../../src/main/assets/material-
 const version=createHash('sha256').update('original-pdf').digest('hex');
 const schema='xiaozhi.material-folder-ai.v1';
 function fixture(){
- const db=new DatabaseSync(':memory:'),id='batch_'+randomUUID(),created=[];let repo;
+ const db=new DatabaseSync(':memory:'),id='batch_'+randomUUID(),created=[],state={failure:'',attempts:0};let repo;
  db.exec(`CREATE TABLE material_import_batches(id TEXT PRIMARY KEY,status TEXT);CREATE TABLE material_import_entries(seq INTEGER PRIMARY KEY,batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT);
  CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT,parse_engine TEXT,title TEXT);
  CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER);
@@ -19,6 +19,7 @@ function fixture(){
  db.prepare("INSERT INTO material_import_batches VALUES(?,'completed')").run(id);
  const ai={settings:async()=>({revision:9,model:'deepseek-flash',configured:true,secureStorage:true}),create:async(input,task)=>{
   const prior=db.prepare('SELECT batch_id FROM material_ai_task_keys WHERE task_key=?').get(task.key);if(prior)return prior.batch_id;
+  state.attempts++;if(db.prepare('SELECT status FROM material_folder_ai WHERE batch_id=?').get(task.folderId).status!=='running')throw Error('paused');if(state.failure)throw Error(state.failure);
   const r=db.prepare('SELECT * FROM teacher_resources WHERE id=?').get(input.resourceId);
   if(!['ready','partial'].includes(r.parse_status))throw Error('unavailable');
   if(r.original_file_name.endsWith('.pdf')&&!db.prepare('SELECT 1 FROM resource_chunks WHERE resource_id=? AND page_number=?').get(input.resourceId,input.start))throw Error('source_incomplete');
@@ -36,7 +37,7 @@ function fixture(){
   else if(status==='ready')db.prepare('INSERT INTO resource_chunks VALUES(?,?,NULL)').run('chunk_'+randomUUID(),rid);
   return{rid,generation};
  }
- return{db,id,created,resource,get repo(){return repo;},reopen:async()=>{repo=new MaterialFolderAiRepository(host);await repo.migrate();},start:async()=>{await repo.migrate();await repo.authorize({schemaVersion:schema,batchId:id,settingsRevision:9,maxCalls:40,cloudConsent:true,publicMaterial:true});},publish:r=>{db.prepare("UPDATE teacher_resources SET parse_status='ready' WHERE id=?").run(r.rid);db.prepare("UPDATE material_pdf_jobs SET state='complete' WHERE resource_id=?").run(r.rid);db.prepare("UPDATE material_pdf_pages SET status='complete' WHERE generation=?").run(r.generation);db.prepare('INSERT INTO resource_chunks VALUES(?,?,1)').run('chunk_'+randomUUID(),r.rid);}};
+ return{db,id,created,state,resource,get repo(){return repo;},reopen:async()=>{repo=new MaterialFolderAiRepository(host);await repo.migrate();},start:async()=>{await repo.migrate();await repo.authorize({schemaVersion:schema,batchId:id,settingsRevision:9,maxCalls:40,cloudConsent:true,publicMaterial:true});},publish:r=>{db.prepare("UPDATE teacher_resources SET parse_status='ready' WHERE id=?").run(r.rid);db.prepare("UPDATE material_pdf_jobs SET state='complete' WHERE resource_id=?").run(r.rid);db.prepare("UPDATE material_pdf_pages SET status='complete' WHERE generation=?").run(r.generation);db.prepare('INSERT INTO resource_chunks VALUES(?,?,1)').run('chunk_'+randomUUID(),r.rid);}};
 }
 const results=[];let failures=0;
 async function check(name,fn){try{await fn();results.push({name,ok:true});console.log('PASS '+name);}catch(e){failures++;results.push({name,ok:false,error:String(e.stack)});console.error('FAIL '+name+'\n'+e.stack);}}
@@ -63,4 +64,5 @@ await check('Planner migration is idempotent and persists the indexed bounded cu
  for(let i=0;i<8;i++)f.resource('等待.pdf','needs_parser','pending');const ready=f.resource('后续.md','ready');await f.start();await f.repo.tick();const cursor=f.db.prepare('SELECT plan_cursor FROM material_folder_ai').get().plan_cursor;assert(cursor>0);await f.reopen();assert.equal(f.db.prepare('SELECT plan_cursor FROM material_folder_ai').get().plan_cursor,cursor);await f.repo.tick();assert.equal(f.created[0].resourceId,ready.rid);
  const plan=f.db.prepare("EXPLAIN QUERY PLAN SELECT rowid,* FROM material_folder_ai_resources WHERE batch_id=? AND status IN ('waiting','running') AND rowid>? ORDER BY rowid LIMIT 8").all(f.id,0);assert(plan.some(r=>r.detail.includes('idx_folder_ai_plan')));assert(!plan.some(r=>r.detail.includes('TEMP B-TREE')),JSON.stringify(plan));
 }finally{f.db.close();}});
+await check('Budget exhaustion stops this planning window without being overwritten by another paused child attempt',async()=>{const f=fixture();try{f.resource('第一题.md','ready');f.resource('第二题.md','ready');await f.start();f.state.failure='budget_exhausted';await f.repo.tick();assert.equal((await f.repo.view(f.id)).status,'budget_exhausted');assert.equal(f.state.attempts,1);assert.equal(f.created.length,0);}finally{f.db.close();}});
 console.log(JSON.stringify({success:!failures,checks:results.length,results,scope:'Real SQLite/production folder scheduler with a controlled child executor; not provider quality, full UI or scale acceptance'}));if(failures)process.exitCode=1;
