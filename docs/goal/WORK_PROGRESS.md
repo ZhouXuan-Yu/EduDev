@@ -3,6 +3,9 @@
 ## 2026-10-29 任务书编制完成，进入W0准备
 
 用户要求按最终效果细化全部任务与验收。已产出28组/252条REQ↔AT、14组FX和CSV，全部未执行；独立校验编号/文本/链接/夹具/依赖。下一按任务书W0冻结E01–E03具体契约与旧会话兼容，之后实现，阶段全部功能完成后集中验收；不把规格覆盖计为软件完成，保留KR主线事实及已用尽20次预算。入口../product/PRD-XIAOZHI-AGENT-DELIVERY.md。
+## 2026-10-29 知识库本轮落地结果
+
+原图文字题完整转录回执已实现并实机通过，真实同页3条ai_final/1图题review；纠错第3题完成语义检索、单题组卷和四文件冷启。核心题库schema常驻+SQLite存在性探测已修，真实自然提问直接search/read（3请求/0目录）。WeKnora完整Windows Lite对照已完成，原始文件/百万规模缺口不满足默认资格；保留现生产检索。完整Goal继续，下一把第4图题接已有原生v3链，同时推进持续摄入与规模质量；不重复候选下载。精确测试与剩余门禁见KB_IMPLEMENTATION_EVIDENCE。
 
 ## 2026-10-29 最新用户优先级：通用执行→理科→全科
 
@@ -21,23 +24,25 @@
 用户授权在 codex/hana-answer-quality 实现以Hana为核心的回答优化。AQ00–AQ07已接入，AQ08本地验证与真实模型质量分层记录；清单、逐项对比、测试命令与未验边界见 [HANA_ANSWER_QUALITY.md](HANA_ANSWER_QUALITY.md)。真实教师盲评尚未通过，不能据工程测试声称“1+1=3已实现”；KR02与0文件导出旧事实保持。
 
 
-更新时间：2026-10-29。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main 3d11e5b`。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
+更新时间：2026-10-29。当前实现分支：`codex/knowledge-base-reuse-implementation`（beca）；已整合`origin/main 92d16aa`，保留并行产品路线。前轮纠偏研究分支`codex/kb-reuse-recovery`保留。
 
 当前主线：**知识库交付纠偏与成熟方案复用，几十GB存储与高效检索是选型硬条件**。不再按通用性能审计顺序优先扩建知识库底层。原26项审计继续保留，其2/26不是知识库完成度。
 
 | 步骤 | 实际状态 | 下一步/证据 |
 |---|---|---|
-| KR00 需求与真实成果复盘 | 已完成只读审查 | 9文件约10.3MB、18OCR页；最新2条ai_final；当前真实四文件已通过，完整资料/图题闭环未通过 |
+| KR00 需求与真实成果复盘 | 已完成只读审查 | 9文件约10.3MB、18OCR页；最新图文页3条ai_final/1图题review；当前真实四文件已通过，完整资料/图题闭环未通过 |
 | KR01 成熟产品官方源/API/许可 | 已完成源码核验 | AnythingLLM已发布v1.19.0 API、WeKnora Lite、Docling、kotaemon固定SHA；AnythingLLM/Docling已隔离实跑，但未证明质量胜者 |
-| KR02 同资料与规模资格对照 | **部分完成** | AnythingLLM兼容后端9文件/40向量；默认/多语言误排且丢PDF页码；Docling四种同页配置保留坐标却漏条件。原生十万/百万向量热P95 65/326ms，非真实40GB。WeKnora固定源Windows Lite构建中；见运行证据JSON |
-| KR03 薄接成熟通用层/导出归因 | **窄指引修正；后端未接入** | 导出指引承认仅试卷保存授权；旧configuration本轮未复现，不能虚称根因已修。候选不足未解除，不盲切默认 |
-| KR04 真实试卷文件闭环 | **真实两题四文件通过，扩展未完成** | 当前Pi→界面测试审批→学生/教师DOCX/PDF四文件→完整内容/A4/答案隔离→重启哈希/谱系通过；自动审批非真实教师正确性核验，图题/跨页/整库仍未通过 |
+| KR02 同资料与规模资格对照 | **候选有限对照完成；最终资格未过** | AnythingLLM兼容后端9文件/40向量，误排/丢页码；Docling含medium OCR仍漏条件。WeKnora未改源完整Lite Windows构建/健康/9OCR文本查询通过，原6图需VLM/3PDF需DocReader；百万原生热P95 3755ms，现Lance探针326ms，非同整产品或真实40GB比较 |
+| KR03 薄接成熟通用层/导出归因 | **文字OCR纠错和核心题库调用已修；后端未切换** | 现成熟LanceDB/解析层保留；新图文回执使真实页3题ai_final，原OCR不覆盖。核心题库schema常驻及EXISTS修假空，实际自然问题直接search/read并冷启。第4图题与PDF原生v3仍未通 |
+| KR04 真实试卷文件闭环 | **两题与纠错单题四文件通过，扩展未完成** | 当前Pi→界面测试审批→学生/教师DOCX/PDF四文件→完整内容/A4/答案隔离→重启哈希/谱系通过；自动审批非真实教师正确性核验，图题/跨页/整库仍未通过 |
 | KR05 自然质量/实际40GB/安装 | 未验证 | 最终自然标注集、真实10GB→40GB、P95/内存/空间/停与恢复；算法规模探针不冒充真实导入 |
 
-用户最新澄清已固化为[本体与受管组件分开交付](KB_MANAGED_COMPONENTS_CONTRACT.md)：安装或首次启用自动下载、配置、托管配套组件/模型，老师免搭环境。解除全内嵌EXE假设；自动安装尚未实现。当前未切生产后端、无新表/IPC/索引迁移；有两处导出模型指引修正及真实四文件证据。候选查询与原生容量为有限对照，完整知识库未完成。
+用户最新澄清已固化为[本体与受管组件分开交付](KB_MANAGED_COMPONENTS_CONTRACT.md)：安装或首次启用自动下载、配置、托管配套组件/模型，老师免搭环境。解除全内嵌EXE假设；自动安装尚未实现。本轮新增一张有界图文输入证据表及图文回执policy，无新IPC/索引格式/依赖；未切生产后端。候选查询与原生容量为有限对照，完整知识库未完成。
 
 - [当前纠偏合同、成熟方案差距与下一步](../research/KNOWLEDGE_BASE_RECOVERY_20261028.md)
 - [同资料/离线解析/原生容量运行证据](../research/KB_REUSE_RUNTIME_EVIDENCE_20261028.json)
+- [WeKnora完整原生运行与规模/原件失败](../research/KB_WEKNORA_RUNTIME_EVIDENCE_20261029.json)
+- [原图文字纠错、自然查题和实际四文件](../research/KB_IMAGE_TEXT_IMPLEMENTATION_20261029.json)
 - [公开源码/许可证/API核验证据](../research/KB_REUSE_SOURCE_EVIDENCE_20261028.json)
 - [真实知识库实施证据与失败](KB_IMPLEMENTATION_EVIDENCE.md)
 - [26项性能审计清单（独立台账）](DEEP_AUDIT_20261028_TODOLIST.md)

@@ -1,5 +1,9 @@
 # 知识库：小智本体与受管组件分开交付
 
+## 2026-10-29 完整WeKnora原生资格结果
+
+固定dacb9c2完整未改源Lite已构建并运行（277858304B及三个UCRT DLL），私有工具链降到签名验证GCC15才兼容所带DuckDB ABI，无全局环境修改。六原图缺VLM拒绝、三PDF缺DocReader终态失败，百万原生热P95 3755ms；源码能构建不等于适合默认或自动安装已做。后续组件清单仍须解决兼容编译、解析服务/模型、许可和空间，不转嫁给老师。详research/KB_WEKNORA_RUNTIME_EVIDENCE_20261029.json。
+
 ## 2026-10-29 已运行的候选与开放项
 
 AnythingLLM 官方 Electron Node20 配合其桌面初始化（先建空 SQLite 文件）已完成49项迁移；此前 `Schema engine error` 不是已证实数据库缺陷。隔离后端的 binary Prisma client 挂起，使用其官方生成器改为 library 后可查询；另外补齐 Ghostscript 10.08.0 才完成3 PDF/6图片摄入。因此本次是**带明确兼容调整的后端对照**，不是未修改桌面/安装验收。默认和多语言模型仍误排，PDF收集器未保留逐页坐标，不能直接作为教学默认。

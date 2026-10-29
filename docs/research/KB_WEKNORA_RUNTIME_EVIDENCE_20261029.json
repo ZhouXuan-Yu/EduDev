@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-29",
+  "upstream": "Tencent/WeKnora",
+  "commit": "dacb9c2643bdfe7b3f95e0d96e1584513b27f3a2",
+  "upstreamWorktreeClean": true,
+  "buildParameters": {
+    "tags": [
+      "sqlite_fts5"
+    ],
+    "edition": "lite",
+    "go": "1.26.4"
+  },
+  "buildAttempts": [
+    {
+      "name": "MINGW64 GCC15 default PATH",
+      "result": "runtime/cgo exit2",
+      "causeEvidence": "Independent cc1 process failed with Windows -1073741511; scoped compiler runtime PATH resolves independent C and Go/CGO probes."
+    },
+    {
+      "name": "MINGW64 GCC15 scoped runtime PATH",
+      "result": "missing sqlite3.h",
+      "adjustment": "Used headers from the pinned mattn/go-sqlite3 v1.14.24 module in a task-local include directory."
+    },
+    {
+      "name": "MINGW64 GCC15 plus SQLite headers",
+      "result": "DuckDB UCRT link symbols unavailable",
+      "causeEvidence": "DuckDB official README requires UCRT64; compiler was MSVCRT."
+    },
+    {
+      "name": "temporary no-DuckDB-driver profile",
+      "result": "EXE built but startup failed; unknown duckdb driver",
+      "causeEvidence": "NewDuckDB is injected into the application graph, so removing only registration cannot run the full server. This profile was discarded; upstream source restored."
+    },
+    {
+      "name": "UCRT64 GCC16 plus SQLite headers",
+      "result": "DuckDB link missing __emutls_v._ZSt11__once_call and __emutls_v._ZSt15__once_callable",
+      "causeEvidence": "Official MSYS2 native TLS transition documents these exact removed GCC16 libstdc++ symbols. Pinned precompiled DuckDB library still uses the old ABI.",
+      "source": "https://github.com/msys2/msys2.github.io/blob/main/web/news.md"
+    },
+    {
+      "name": "UCRT64 GCC15.2.0-14 signature-verified isolated compiler",
+      "result": "exit0: complete unmodified upstream Lite server using UCRT GCC15.2.0-14",
+      "scope": "Only task-local compiler/package/model/source roots; no global compiler or user DB changed."
+    }
+  ],
+  "compilerPackages": [
+    {
+      "name": "mingw-w64-ucrt-x86_64-gcc-15.2.0-14-any.pkg.tar.zst",
+      "bytes": 48909721,
+      "sha256": "1bd3d0a1e53f56c1bf2b3a1b58c8b27f254b0fc892bd575384f9e93c08154503",
+      "signature": "Good MSYS2 RSA signature 5F944B027F7FE2091985AA2EFA11531AA0AA7F57"
+    },
+    {
+      "name": "mingw-w64-ucrt-x86_64-gcc-libs-15.2.0-14-any.pkg.tar.zst",
+      "bytes": 1074642,
+      "sha256": "0d5492221473ff2456941572a6c03358798161e7ddc8239850a3922027253ef4",
+      "signature": "Good MSYS2 RSA signature 5F944B027F7FE2091985AA2EFA11531AA0AA7F57"
+    }
+  ],
+  "doclingAdditionalProbe": {
+    "rawOcr": {
+      "cells": 45,
+      "missingOptionsPresent": false,
+      "seconds": 25.41
+    },
+    "mediumModel": {
+      "result": {
+        "version": 1,
+        "parser": "docling-slim 2.144.0",
+        "status": "success",
+        "seconds": 154.05,
+        "pages": [
+          1
+        ],
+        "texts": 28,
+        "pictures": 1,
+        "tables": 0,
+        "items_with_page_bbox": 28,
+        "has_page_image": true,
+        "text_chars": 663,
+        "remote_services": false,
+        "errors": [],
+        "json_schema": "DoclingDocument",
+        "json_version": "1.10.0"
+      },
+      "missingOptionsPresent": false
+    },
+    "inference": "Failure is already present in OCR cells, not only final reading order; medium OCR still misses the condition. Need original-page/AI comparison, not confidence threshold relaxation."
+  },
+  "prototypeBridge": {
+    "purpose": "Same official E5 q8 model for backend-only A/B; loopback, bounded inputs, no cloud and no chat",
+    "productionComponent": false,
+    "weightsSha256": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665"
+  },
+  "notClaimed": [
+    "Production WeKnora integration",
+    "Managed installer/automatic downloads",
+    "40GB end-to-end acceptance",
+    "Teacher-labelled recall/precision",
+    "Unmodified official Windows desktop UI acceptance",
+    "Semantic correctness from exact-vector identity probes"
+  ],
+  "executableBytes": 277858304,
+  "runtime": {
+    "healthStatus": 200,
+    "listen": "127.0.0.1:33095",
+    "globalCompilerPathPresent": false,
+    "localDependencies": [
+      "libgcc_s_seh-1.dll",
+      "libstdc++-6.dll",
+      "libwinpthread-1.dll"
+    ],
+    "database": "SQLite + FTS5 + sqlite-vec",
+    "duckdbExtensionsAutoInstall": false,
+    "userCredentialsTransmitted": false
+  },
+  "executableSha256": "e590807c236af61661f0352ec509b62126db071ae148b9a86a81dab2296c6dd7",
+  "executionAdjustments": [
+    "Missing source packages in the initial sparse checkout were fetched; no upstream source edits remain.",
+    "SQLite C headers from pinned mattn/go-sqlite3 v1.14.24 were added to a task-local include directory.",
+    "Pinned precompiled DuckDB requires UCRT and pre-GCC16 emulated-TLS ABI. Signed GCC15.2.0-14 packages were extracted into a private compiler directory.",
+    "DUCKDB_SKIP_EXTENSION_LOAD=1 prevents unrelated spreadsheet extensions from auto-downloading.",
+    "A bounded loopback embedding protocol bridge reuses the official AnythingLLM E5 q8 weights. This is backend isolation, not an official Ollama installation; a health-handshake omission caused two initial model failures, preserved privately.",
+    "No DeepSeek or other LLM account was configured in WeKnora."
+  ],
+  "ocrTextBackendComparison": {
+    "documents": 9,
+    "characters": 27220,
+    "success": true,
+    "queryCases": 12,
+    "includesQueryEncodingTime": false,
+    "sameQueryEmbeddingWeightsAsAnythingLLM": true,
+    "sameChunkerAsAnythingLLM": false,
+    "rawTextOrigin": "Same nine real source conversions from AnythingLLM collector, imported through WeKnora manual knowledge API; not proof of native file OCR.",
+    "queries": [
+      {
+        "case": 1,
+        "mode": "hybrid",
+        "ms": 33,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 1,
+        "mode": "keyword",
+        "ms": 6,
+        "hits": 4,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 1,
+        "mode": "vector",
+        "ms": 12,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 2,
+        "mode": "hybrid",
+        "ms": 16,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 2,
+        "mode": "keyword",
+        "ms": 3,
+        "hits": 0,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 2,
+        "mode": "vector",
+        "ms": 12,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 3,
+        "mode": "hybrid",
+        "ms": 12,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 3,
+        "mode": "keyword",
+        "ms": 7,
+        "hits": 8,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 3,
+        "mode": "vector",
+        "ms": 15,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": null
+      },
+      {
+        "case": 4,
+        "mode": "hybrid",
+        "ms": 13,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": 1
+      },
+      {
+        "case": 4,
+        "mode": "keyword",
+        "ms": 4,
+        "hits": 1,
+        "knownInterferenceOriginalImageRank": 1
+      },
+      {
+        "case": 4,
+        "mode": "vector",
+        "ms": 12,
+        "hits": 20,
+        "knownInterferenceOriginalImageRank": 1
+      }
+    ]
+  },
+  "originalFileIngest": {
+    "files": 9,
+    "bytes": 10321505,
+    "acceptedUploads": 3,
+    "imageUploadsRejected": 6,
+    "imageRejection": "VLM model must be configured",
+    "finalPdfStates": [
+      "failed",
+      "failed",
+      "failed"
+    ],
+    "pdfFailure": "DocReader parsing service is not connected",
+    "chunks": 0,
+    "originalSourcesUnchanged": true
+  },
+  "nativeCapacity": {
+    "boundary": "Native synthetic vectors plus text table only; no application filtering, FTS fusion, embedding, permissions, IPC or 40GB ingest acceptance",
+    "dimensions": 384,
+    "library": "same WeKnora sqlite-vec v0.1.6 and go-sqlite3 v1.14.24",
+    "runs": [
+      {
+        "caveat": "Process and OS cache warm after insertion; same deterministic xorshift unit vectors as LanceDB probe; exact identity is not semantic recall. Separate run/time, so no causal speed winner.",
+        "databaseBytes": 225046528,
+        "exactIdentityHits": 21,
+        "firstNativeQueryMs": 259,
+        "ingestMs": 3521,
+        "peakRssMiB": 120,
+        "rows": 100000,
+        "samples": [
+          259,
+          232,
+          230,
+          230,
+          214,
+          220,
+          212,
+          221,
+          219,
+          221,
+          243,
+          289,
+          220,
+          220,
+          227,
+          236,
+          227,
+          243,
+          232,
+          237,
+          251
+        ],
+        "totalQueries": 21,
+        "warmP50Ms": 230,
+        "warmP95Ms": 251
+      },
+      {
+        "caveat": "Process and OS cache warm after insertion; same deterministic xorshift unit vectors as LanceDB probe; exact identity is not semantic recall. Separate run/time, so no causal speed winner.",
+        "databaseBytes": 2246447104,
+        "exactIdentityHits": 21,
+        "firstNativeQueryMs": 2225,
+        "ingestMs": 40974,
+        "peakRssMiB": 121,
+        "rows": 1000000,
+        "samples": [
+          2225,
+          2287,
+          2170,
+          2283,
+          2441,
+          2484,
+          2589,
+          3157,
+          3338,
+          2804,
+          3158,
+          3264,
+          3156,
+          2954,
+          3172,
+          3462,
+          3755,
+          3116,
+          3087,
+          3239,
+          4214
+        ],
+        "totalQueries": 21,
+        "warmP50Ms": 3156,
+        "warmP95Ms": 3755
+      }
+    ],
+    "version": 1
+  },
+  "decision": "Do not replace production retrieval with unchanged Lite: original mixed scanned files require separate parser/VLM, and native million-vector P95 3755ms already exceeds the provisional 2000ms end-to-end target. Preserve measured reusable retrieval/chunking behavior; do not declare a semantic quality winner.",
+  "probeScriptSha256": {
+    "start-weknora.cjs": "f9848fb9d02cc5f8f2ab5470c34c8095754e294ba2e147656ce38d74b10a0b05",
+    "embedding-evaluation-bridge.mjs": "6aa9797c430fab3b7cd9663ad3a05213abffaf4ca9e8ea7f502447842da61e84",
+    "evaluate-weknora.py": "c4d3e762c61fd673535950d52f1a536c30f3814e83f97e58dd773ee9e5d8a382",
+    "evaluate-weknora-original-files.py": "6939e6ac7751521d9c0092986b623189ed94853b9938615de5eba3318926eb78",
+    "scale-sqlite-vec.go": "6a88678a5581456a9b31a95e789780108d2fd2224c280329c66531f7fbc90e52"
+  }
+}

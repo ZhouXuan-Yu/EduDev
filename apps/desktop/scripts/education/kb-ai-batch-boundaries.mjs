@@ -35,8 +35,65 @@ function fixture(){
   }};
   repo.configure(runtime);
   const input={schemaVersion:MATERIAL_AI_SCHEMA,resourceId:id,version,settingsRevision:1,start:1,count:1,maxCalls:4,images:false,cloudConsent:true,publicMaterial:true};
-  return{db,repo,state,input,id,runtime,async init(){await repo.migrate();await repo.saveSettings({schemaVersion:MATERIAL_AI_SCHEMA,revision:0,model:'qwen3-vl-plus',apiKey:'secret-only-for-controlled-test'});},async q(){const row=db.prepare('SELECT * FROM question_bank_items').get();return row?{...state.saved.find(q=>q.id===row.id),archive:JSON.parse(row.archive_json)}:undefined;}};
+  return{db,repo,state,input,id,runtime,unit,async init(){await repo.migrate();await repo.saveSettings({schemaVersion:MATERIAL_AI_SCHEMA,revision:0,model:'qwen3-vl-plus',apiKey:'secret-only-for-controlled-test'});},async q(){const row=db.prepare('SELECT * FROM question_bank_items').get();return row?{...state.saved.find(q=>q.id===row.id),archive:JSON.parse(row.archive_json)}:undefined;}};
 }
+const imageProjection=stem=>Object.fromEntries(['statement','formulas','tables','figures','choices','subquestions'].map(field=>[field,{state:field==='statement'?'provided':'not_applicable',text:field==='statement'?stem:''}]));
+const imageResponse=q=>JSON.stringify({schemaVersion:'xiaozhi.material-ai-image-response.v1',outcome:'questions',questions:[{...q,projection:imageProjection(q.stem)}]});
+const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts');
+const ordinaryFetch=globalThis.fetch;let providerImage=true,wrongVersion=false,requests=0;
+try{
+ globalThis.fetch=async(url,options)=>{
+  requests++;assert.equal(url,'https://api.deepseek.com/chat/completions');assert.equal(options.redirect,'error');const body=JSON.parse(options.body),system=body.messages[0].content;
+  assert.equal(system.includes('xiaozhi.material-ai-image-response.v1'),providerImage);
+  assert.equal(system.includes('xiaozhi.material-ai-response.v1'),!providerImage,'An actual provider request cannot contain competing response schema names');
+  let raw=providerImage?imageResponse(question):response(question);
+  if(wrongVersion)raw=JSON.stringify({...JSON.parse(raw),schemaVersion:MATERIAL_AI_RESPONSE});
+  return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}),{status:200});
+ };
+ const args={model:'deepseek-flash',apiKey:'controlled-test-only-key',text:source,image:{mime:'image/png',data:Buffer.from('owned-image').toString('base64')},imageCoverage:true};
+ assert.equal(JSON.parse(await completeMaterialAi(args,new AbortController().signal)).schemaVersion,'xiaozhi.material-ai-image-response.v1');
+ wrongVersion=true;await assert.rejects(completeMaterialAi(args,new AbortController().signal),/invalid_response/);wrongVersion=false;
+ providerImage=false;assert.equal(JSON.parse(await completeMaterialAi({...args,imageCoverage:false},new AbortController().signal)).schemaVersion,MATERIAL_AI_RESPONSE);
+ assert.equal(requests,3);check('Actual provider request uses exactly one response version, rejects mixed-schema output and preserves old-image batch requests');
+}finally{globalThis.fetch=ordinaryFetch;}
+const corrected=fixture();try{
+ await corrected.init();corrected.state.fileName='原图文字题.png';
+ const q={...question,stem:'计算 7 + 8，结果单位为米。',answerOrigin:'ai_generated',analysisOrigin:'ai_generated'};
+ corrected.runtime.complete=async(input,signal)=>{signal.throwIfAborted();corrected.state.calls++;assert(input.image);return imageResponse(q);};
+ await corrected.repo.create({...corrected.input,images:true});await corrected.repo.drain();await corrected.repo.drain();
+ const saved=await corrected.q();assert.equal(saved?.archive?.state,'ai_final','Two complete matching visual transcriptions must correct missing OCR without teacher impersonation');
+ assert.equal(saved.archive.ai.policy,'image-text-complete.v1');assert.equal(saved.archive.sourceChecked,false);assert.equal(saved.archive.ai.imageSha,sha('owned-image'));assert(archiveEligible(saved));await corrected.repo.validate(saved);
+ assert.equal(corrected.state.images,1);await corrected.repo.migrate();assert.equal(corrected.db.prepare('SELECT count(*) n FROM material_ai_image_inputs').get().n,1);
+ const reopened=new MaterialAiRepository(corrected.repo.host);await reopened.validate(saved);assert.equal(corrected.state.images,1,'Source readback must reuse the exact durable model image without launching an OCR/PDF worker');
+ corrected.db.prepare("UPDATE material_ai_image_inputs SET data_base64=?").run(Buffer.from('changed').toString('base64'));await assert.rejects(reopened.validate(saved),/source_changed/);
+ check('Original-image two-pass complete text transcription can repair OCR omissions while preserving AI authority, image digest and current source');
+}finally{corrected.db.close();}
+for(const mode of ['missing_projection','figure_dependency','analysis_disagreement','missing_choice_coverage','old_first_draft']){
+ const e=fixture();try{
+  await e.init();e.state.fileName='图文复核.png';const q={...question,answerOrigin:'ai_generated',analysisOrigin:'ai_generated'};
+  if(mode==='figure_dependency')e.unit.chunk.contentMd=e.unit.chunk.contentMd.replace('计算 7 + 8。','计算 7 + 8，如图所示。');
+  if(mode==='missing_choice_coverage')e.unit.chunk.contentMd=e.unit.chunk.contentMd.replace('计算 7 + 8。','计算 7 + 8。选涂“A十五”或“B十六”。');
+  e.runtime.complete=async input=>{
+   e.state.calls++;let value=JSON.parse(imageResponse(q));
+   if(mode==='missing_projection')value.questions[0].projection.formulas={state:'missing',text:''};
+   if(mode==='analysis_disagreement'&&input.previous)value.questions[0].analysis+='补充的不同分析。';
+   if(mode==='old_first_draft'&&!input.previous)return response(q);
+   return JSON.stringify(value);
+  };
+  await e.repo.create({...e.input,images:true});await e.repo.drain();const saved=await e.q();assert.equal(saved?.archive?.state,'ai_needs_review',mode);assert(!archiveEligible(saved));
+  assert.equal(saved.archive.ai.policy,'text-complete.v1');check('Image completeness cannot fall back to legacy release for '+mode);
+ }finally{e.db.close();}
+}
+const noImage=fixture();try{
+ await noImage.init();noImage.runtime.complete=async()=>imageResponse(question);await noImage.repo.create(noImage.input);await noImage.repo.drain();
+ assert.equal(await noImage.q(),undefined);assert.equal((await noImage.repo.list(noImage.id))[0].units[0].error,'invalid_response');
+ check('A model claiming visual coverage without any actual image is refused before publication');
+}finally{noImage.db.close();}
+const invalidImage=fixture();try{
+ await invalidImage.init();invalidImage.state.fileName='不合格图.png';invalidImage.runtime.image=async()=>({mime:'image/png',data:'***not-base64***'});await invalidImage.repo.create({...invalidImage.input,images:true});await invalidImage.repo.drain();
+ assert.equal(invalidImage.state.calls,0);assert.equal((await invalidImage.repo.list(invalidImage.id))[0].units[0].error,'unit_too_large');
+ check('Invalid image bytes cannot be persisted as image authority or dispatched to a provider');
+}finally{invalidImage.db.close();}
 assert.throws(()=>parseAiResponse(response({...question,untrusted:1})),/invalid_response/);
 assert.throws(()=>parseAiResponse(response({...question,answerOrigin:'teacher'})),/invalid_response/);
 assert.throws(()=>parseAiResponse(response({...question,answer:'',answerOrigin:'source'})),/invalid_response/);

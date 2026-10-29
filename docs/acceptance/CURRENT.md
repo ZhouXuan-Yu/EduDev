@@ -3,6 +3,9 @@
 ## 2026-10-29 全功能详细验收入口
 
 [逐项验收](XIAOZHI_AGENT_ACCEPTANCE.md)、[数据与答案](XIAOZHI_AGENT_FIXTURES.md)、[追踪CSV](XIAOZHI_AGENT_TRACEABILITY.csv)配套[任务书](../product/PRD-XIAOZHI-AGENT-DELIVERY.md)。28组252条均未执行；本轮仅文档一致性检查，不能标功能通过；实现后遵循一次必要局部检查、阶段功能完成后集中验收。
+## 2026-10-29 新的有限通过与未通过项
+
+真实纠错题题本/题意检索/组卷四文件/冷启通过；自然DeepSeek查题从5请求2目录到3请求0目录，实际读当前来源题且冷启逐字一致。批次26、核心4、回答11与合并版240/legacy smoke通过，最终核心改动另build通过。额外旧chat-experience第23行失败；audit23风险未清。40GB/自然标注Recall/复杂图题/受管安装/最终EXE仍未通过，详goal/KB_IMPLEMENTATION_EVIDENCE。
 
 ## 2026-10-29 流式响应与窗口拖动
 

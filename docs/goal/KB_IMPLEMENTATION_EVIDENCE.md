@@ -1,5 +1,41 @@
 # 知识库实施证据
 
+## 2026-10-29 原图纠正OCR漏字，并修复题库假空与工具隐藏
+
+Git检查点：RED 7cf9d02→OCR GREEN c5f0415；核心目录RED 948f5ad、真实假空RED d296679→GREEN f964f02。已整合主线b09073b并再整合92d16aa；后者仅文档，10处冲突均保留双方，无生产源码冲突。临时WeKnora/E5桥已按实际PID/绝对路径核验归属后关闭，未触日常D:窗口。完整Goal继续，最终推送及远端一致性另以本轮Git命令结果为准。
+
+旧chat-experience专项被展示断言阻断的空库规则已单独实测通过：空范围隐藏相应只读入口，ask_teacher/写入工具的宿主授权规则不受此提示增加。不能将此独立通过改写为整条旧专项通过。
+
+本轮目标是老师实际能用导入后的题，而非只增加底层索引。保留Pi、SQLite、本地原件、现LanceDB/解析器与正式整卷集中确认。生产变动：`material-ai-image.ts`增加严格图文响应/六项完整覆盖；`material-ai-repository.ts`增量幂等建立`material_ai_image_inputs`，保存实际模型输入图（原始<=4MiB/unit）、校验两遍回执/原件/来源/图hash，允许纯文字原图纠正OCR漏字；`question-archive.ts`增加`image-text-complete.v1`。不同批次同图暂重复存储，没有新IPC或依赖。图依赖、跨页、漏题、两遍不同或不确定继续review；不把模型一致当独立正确性或教师确认。
+
+真实同页新批次4题：1/2/3题ai_final，第4图题review。第3题补回OCR漏掉的选项与完整三个小问，题本原生重启可见，真实语义查询5候选包含该题；单题5分蓝图经隔离测试教师动作确认。真实Pi/DeepSeek再16请求输出学生Word10130B、教师Word10323B、学生PDF66721B、教师PDF77426B；独立完整内容/学生答案隔离/A4/来源谱系与1920×1080冷启哈希通过，目视两份PDF均1页，0renderer错误。测试教师操作不代表实际教师正确性核验；Office/WPS原生未打开。首版图文prompt因旧新schema冲突造成1次HTTP200但严格解析拒绝，未发布题；修prompt后2次有效图文请求成功，没有放松schema。
+
+主线Hana目录把核心题库工具延迟，现固定两项已授权只读schema。首次自然提问仍失败于首请求缺schema断言（真实5请求/2目录，实际search/read成功但非直接可达）：宿主用`searchQuestionBank({limit:1})`判断整库，最新review候选会造成假空。改`chat-source-presence.ts`三个固定SQLite EXISTS，经`OmniEduStore.getChatSourcePresence`接production-host；每请求不再加载完整knowledge概览/排序/计数或合格检索。附件和目录授权保持，题目资格/来源仍逐题复验。第二次同自然提问无需工具名提示，3请求/0目录，实际search→read纠错题，返回题干/参考答案/解析及来源，原生重启逐字一致。一次5→3请求不能宣称普遍提速比例或自然Recall改善。
+
+实际命令（`apps/desktop`）：
+
+```powershell
+node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs
+node --experimental-transform-types scripts/education/kb-critical-archive-boundaries.mjs
+node scripts/education/paper-export-boundaries.mjs
+node scripts/education/kb-brain-discovery-boundaries.mjs
+node scripts/xiaozhi-agent/answer-quality-boundaries.mjs
+npm run test:renderer-components
+npm run test:smoke
+npm run build
+node scripts/education/kb-real-paper-delivery.mjs <existing-isolated-real-material-root> imageocr-20261029 '真实图文OCR纠错单题核对' 1
+node scripts/education/kb-real-brain-question.mjs <existing-isolated-real-material-root> 智能家居
+npm audit --json
+```
+
+批次26/档案12/导出21/核心题库4/回答11通过；合并版build、240/240组件、完整legacy smoke exit0/ok=true/30学生通过，后续只改Pi存在性与目录的最终源码另build及真实Pi/UI通过。最后没有用旧smoke冒充Pi验证。额外`chat-experience-boundary-test.mjs`在第23行`commentary`与`partial_answer`不符失败，尚未执行到空库断言；相关presentation源码本片未改，不为本任务绕过该断言。npm audit新读23项（0critical/8high/7moderate/8low），比前轮22多1个moderate，依赖/锁文件本片未变；首次受限网络EACCES，授权环境重试已取得真实报告。
+
+私有证据保留于OS Temp：`omni-real-material-NGRlNr/image-corrected-journey-report.json`、`real-paper-delivery-imageocr-20261029.json`、首次失败`real-brain-question-1793258188519.json`、成功`real-brain-question-1793258703253.json`；日志根`xiaozhi-kb-mature-baseline-20261028`的`image-text-integrated-smoke.log`/exit=0、`image-text-integrated-components.log`、`kb-core-presence-build.log`。不上传原件、OCR、回答、密钥或数据库。匿名指标见[实现JSON](../research/KB_IMAGE_TEXT_IMPLEMENTATION_20261029.json)。本题片新增图文3次（含1失败）+导出16次+自然查题8次；原有知识库/导出累计ledger分别12/43，另自然8，不能将所有历史调用都算成该片2次。
+
+成熟对照现已完成：WeKnora固定dacb9c2未改源完整Windows Lite、三个运行DLL、无编译器PATH健康200；9份同OCR文本实际检索，6原图因需VLM拒绝、3PDF因缺DocReader全部failed/0chunks。sqlite-vec同库100k/1m热P95为251/3755ms，当前Lance原生合成探针65/326ms；不同时间/缓存且排除编码/重排/宿主，不做因果性能胜者或语义Recall声明。Docling medium OCR及raw OCR截获亦未找回清晰选项。细节见[WeKnora运行证据](../research/KB_WEKNORA_RUNTIME_EVIDENCE_20261029.json)。本轮不能把候选直接切默认。
+
+性能前后：宿主存在性从完整概览+候选资格读取改固定短路EXISTS，真实单问5请求/2目录→3请求/0目录；没有整产品P95前后承诺。图文读回可用持久输入图而不重渲染/OCR；每unit原始图最大4MiB，不同批次不去重，几十GB空间/IO仍待验。回滚：`OMNI_EDU_AI_IMAGE_TEXT=0`仅停新图文覆盖请求，必须保留新policy读支持/输入图表/已保存题；目录和存在性可独立revert，不回退数据。当前完整目标未完成：第4图题/PDF原生v3、跨页与答案册、独立自然质量、实际40GB持续混合导入/取消恢复/P95、受管组件首装更新、最终EXE。
+
 ## 2026-10-29 真实Pi四文件闭环与成熟方案实跑
 
 本片保留 SQLite/Pi/Office 审批/确定性生成器，仅修 `education/paper-export.ts` 与 `xiaozhi-agent/pi-session.ts` 中错误的“必须先选教学工作目录”指引：本会话已授权试卷保存位置即可调用，真实授权仍由宿主校验。既有真实夹具增加独立运行标签、有界控件等待、每轮16次请求上限及原生冷启后产物/哈希/谱系核对，没有新增业务表、IPC或依赖。

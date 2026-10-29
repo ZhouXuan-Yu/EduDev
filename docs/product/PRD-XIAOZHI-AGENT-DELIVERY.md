@@ -1,6 +1,6 @@
 # 小智教育智能体完整任务书与最终效果规格
 
-v1.0｜2026-10-29｜编制基线92d16aa（运行代码承接b09073b）｜文档状态：已编制；功能待实施；验收未执行。
+v1.0｜2026-10-29｜编制起点92d16aa；收尾源码整合origin/main ce0fd95；本轮未更新日常运行构建｜文档状态：已编制；功能待实施；验收未执行。
 
 [能力路线](XIAOZHI_AGENT_CAPABILITY_ROADMAP.md) · [逐条验收](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md) · [数据与答案](../acceptance/XIAOZHI_AGENT_FIXTURES.md) · [需求追踪CSV](../acceptance/XIAOZHI_AGENT_TRACEABILITY.csv)
 
@@ -26,7 +26,7 @@ Master、本地优先、Pi唯一Runtime、SQLite与本地文件真源、来源�
 
 ## 3. 背景与真实缺口
 
-现源码存在：没有grant不注册普通写入/Office；通用HTML受限；没有完整手动思考设置；短追问可能丢原任务路由线索；权限菜单语义大于覆盖；联网受管安装未实现。详[能力路线源码证据](XIAOZHI_AGENT_CAPABILITY_ROADMAP.md)。
+编制起点核查：没有grant不注册普通写入/Office；通用HTML受限；没有完整手动思考设置；短追问可能丢原任务路由线索；权限菜单语义大于覆盖；联网受管安装未实现。详[能力路线源码证据](XIAOZHI_AGENT_CAPABILITY_ROADMAP.md)。收尾主线已修题库search/read常驻与轻量存在性判断、原图文字转录；这些已实现部分不重复当作缺失，仍须在本规格目标链中验证。新增AT不直接回填旧测试通过；本轮未新增或重测生产功能。
 
 已有Office/课堂/题库/学习/备份/授权能力优先复用，不推倒重建。旧组件/受控smoke/20次A/B/流式对照仅证明原范围，不能填本任务书的“通过”。Hana/DSH/SourceWeft机制保留，AQ01/AQ02/AQ07产品可用性仍开放。市场参照沿前轮官方调研，不新增未经证明的份额、效率或质量优势。
 

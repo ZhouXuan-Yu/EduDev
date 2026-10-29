@@ -3,6 +3,9 @@
 ## 2026-10-29 完整任务书与验收规格
 
 已编制28组/252条需求与用例，含14组数据/答案规格、逐条CSV；全部未执行，功能缺口继续OPEN。入口../product/PRD-XIAOZHI-AGENT-DELIVERY.md及../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md。此轮仅文档，不改变日常构建或新增模型请求。
+## 2026-10-29 本知识库线程最新状态（完整目标继续）
+
+真实页3题已图文自动定稿、1图题待处理；纠错第3题完成题本/题意检索/单题组卷及学生教师Word/PDF四文件冷启。自然提问已实际search/read当前题，修复核心schema隐藏及首条待整理导致的假空（3次模型请求/0目录）。WeKnora原生完整Lite对照完成且不足已量化，未切生产。精确验证/失败/回滚见KB_IMPLEMENTATION_EVIDENCE；实际40GB、自然Recall、PDF图题v3、受管安装与最终EXE未完成。
 
 ## 2026-10-29 执行能力差距重新打开
 

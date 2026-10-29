@@ -1,5 +1,7 @@
 # 小智教育智能体：能力路线与共同决策稿
 
+收尾集成更新：origin/main ce0fd95已含c5f0415原图文字纠错与f964f02核心题库常驻/假空修复；下方b09073b核查表为当时快照，已修部分以新代码/限定真实证据为准，不重复计为缺失。文件工具默认可用、通用HTML、手动思考及自动准备仍按任务书推进；本轮未更新日常运行构建。
+
 完整细化见[任务书](PRD-XIAOZHI-AGENT-DELIVERY.md)、[逐项验收](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md)、[数据与答案](../acceptance/XIAOZHI_AGENT_FIXTURES.md)和[追踪表](../acceptance/XIAOZHI_AGENT_TRACEABILITY.csv)。28组252条均未执行；路线/规格不是功能完成证据。
 
 日期：2026-10-29。代码核查基线：`b09073b`。本文件是产品决策与开发排序，不是功能完成报告。

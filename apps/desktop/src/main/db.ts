@@ -15,6 +15,7 @@ import {MaterialAiRepository} from './assets/material-ai-repository';
 import {NativeQuestionRepository} from './assets/native-question-repository';
 import type {NativeAiPreparation} from './assets/material-ai-native';
 import {RetrievalRepository} from './retrieval/repository';
+import {readChatSourcePresence} from './xiaozhi-agent/chat-source-presence';
 import {ensureQuestionDocumentColumn} from './education/question-document-migration';
 import {ensureQuestionRetrievalIndex,questionRetrievalWhere,questionSearchTokens,searchQuestionRows} from './education/question-retrieval';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -1938,6 +1939,8 @@ export class OmniEduStore {
       },
     };
   }
+
+  getChatSourcePresence(){return readChatSourcePresence(sql=>this.all(sql));}
 
   async importKnowledgeResources(sourcePaths: string[], signal = new AbortController().signal, background=false,guard?:()=>Promise<void>): Promise<KnowledgeImportResult> {
     const resourceRoot = this.resolveInsideDataRoot('teacher_resources');
