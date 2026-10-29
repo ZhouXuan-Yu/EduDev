@@ -73,6 +73,20 @@ const scheduled=fixture();try{
  const reopened=new MaterialAiRepository(scheduled.repo.host);reopened.configure(scheduled.runtime);await reopened.migrate();assert.equal(await reopened.create(scheduled.input,task),first);
  check('Concurrent folder task creation and restart replay share one durable child batch; changed authorization input conflicts');
 }finally{scheduled.db.close();}
+const folderBound=fixture();try{
+ await folderBound.init();const folderId='batch_'+randomUUID(),input={...folderBound.input,maxCalls:2},task={key:sha('folder-unit-one'),folderId,revision:1};
+ folderBound.db.exec('CREATE TABLE material_folder_ai(batch_id TEXT PRIMARY KEY,status TEXT,revision INTEGER,settings_revision INTEGER,max_calls INTEGER)');
+ folderBound.db.prepare("INSERT INTO material_folder_ai VALUES(?,'running',1,1,2)").run(folderId);
+ const batch=await folderBound.repo.create(input,task);
+ await assert.rejects(folderBound.repo.create(input,{...task,key:sha('folder-unit-two')}),/budget_exhausted/);
+ assert.equal(folderBound.db.prepare('SELECT count(*) n FROM material_ai_batches').get().n,1);
+ folderBound.db.prepare("UPDATE material_folder_ai SET status='paused'").run();await folderBound.repo.drain();assert.equal(folderBound.state.calls,0);
+ folderBound.db.prepare("UPDATE material_folder_ai SET status='running',revision=2").run();await folderBound.repo.drain();assert.equal(folderBound.state.calls,0);
+ folderBound.db.prepare('UPDATE material_folder_ai SET revision=1').run();
+ folderBound.runtime.clean=async text=>{if(folderBound.db.prepare("SELECT 1 FROM material_ai_units WHERE status='dispatched'").get())folderBound.db.prepare("UPDATE material_folder_ai SET status='paused'").run();return text;};
+ await folderBound.repo.drain();assert.equal(folderBound.state.calls,0);assert.equal(folderBound.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,0);
+ check('Folder reservations enforce a hard shared budget; pause, stale authorization and last-moment revocation prevent transport without a charge');
+}finally{folderBound.db.close();}
 const corrected=fixture();try{
  await corrected.init();corrected.state.fileName='原图文字题.png';
  const q={...question,stem:'计算 7 + 8，结果单位为米。',answerOrigin:'ai_generated',analysisOrigin:'ai_generated'};
