@@ -2,6 +2,8 @@
 
 ## 2026-10-29 文件夹一次授权到后台AI同库入题
 
+整合补记：本片源码b1e3eb8完成上述207综合smoke后，远端新增51ef5b5/cc82219（PPT精确页数与备注）；正常合并为952074a，12处均为不同新增状态段，逐项保留双方，生产源码无冲突。合并版npm run build exit0、renderer240/240与presentation-draft-smoke四项通过；综合207为合并前本片源码证据，不冒充PPT合并后重新完整执行。最终目录界面专项exit0/2项/0renderer错误，仍3自动稿、未知结果冷启无重发，报告Temp/omni-folder-ai-ui-mskv8x/report.json；没有额外真实DeepSeek调用。
+
 本片教师结果：资料页原文件夹卡片可明确公共资料/必要页或题图上云授权、统一DeepSeek账户修订与调用上限，后台随归档逐PDF页/Word原生题/图片/TXT或MD正文块自动创建原两阶段AI任务；原OCR、首遍、复核稿和实际图像证据分别保留，同一题库显示AI自动稿/待核。暂停/继续/应用重启/结果未知都有持久状态，不再要求每个资料手动建AI批次。
 
 核心文件：shared/material-folder-ai.ts；main/assets/material-folder-ai.ts、material-ai-repository.ts、material-ipc.ts；db.ts/main/index.ts窄接线；typed preload；renderer/components/product/MaterialFolderAiPanel.tsx与原MaterialImportPanel.tsx。SQLite增量四张目录/幂等表和pause_reason，不改原件/原始OCR/现题事实。无新依赖/锁文件/模型资源/独立服务，沿原全局AI单消费者。
