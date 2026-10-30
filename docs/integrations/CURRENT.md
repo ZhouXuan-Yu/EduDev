@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-30 最后主线整合42ac7be
+
+最后刷新main83cf832（受管版本/FIFO计算），合并为42ac7be；13份Markdown同位置新增节冲突已逐项保留双方内容，preload自动合并已核对。该源码重新build/type、240组件、20页边界、目录→Pi来源→冷启五项均exit0（iLCx7P，原OCR183B、两视口、0renderer错误、每次2受控JSON/3受控SSE、0付费）。新小样本4资料、重排3候选，查询3918ms/重排3349ms，不能与4候选旧样本当提速A/B。207综合exit0仍明确属于fc2fd0d；未冒充最后这次无关受管版本合并后重跑。代码与新构建指纹见公开JSON latestIntegration。
+
 ## 2026-10-30 AI整页正文进入现检索与小智（M04/M10）
 
 现SQLite FTS5/分词、RetrievalRepository时钟及重建、固定本地ONNX/LanceDB和原Pi的education_search_materials/office_read_material直接复用。没有新增模型、服务、工具名称或Agent循环。typed materials:source识别独立AI正文引用，原六字段OCR来源仍严格；生产Pi公共阅读引用登记后由现来源卡打开MaterialAiPagePanel，旧课堂/归档不接纳AI引用。回退：OMNI_EDU_AI_TEXT_INDEX=0停新派生，已有原页/档案读取保留；旧MaterialSource.v1/QuestionArchive.v1–v5不变。新增三张派生表/列索引增量幂等，重建从原回执恢复，无AI重发；停用不得删除原资料、教师编辑或回执。无本轮新增依赖，main合入的受管组件另见E04记录。npm audit仍23项既有风险（8高/7中/8低），不称审计通过。

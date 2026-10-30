@@ -2,6 +2,50 @@
   "schemaVersion": "xiaozhi.kb-restored-text-evidence.v1",
   "date": "2026-10-30",
   "goalStatus": "active",
+  "latestIntegration": {
+    "revision": "42ac7be61f0cc12bce0d148fbb57c113653514ec",
+    "mergedOriginMain": "83cf832",
+    "conflicts": "Thirteen Markdown insertions, retained both independent sections; source auto-merge inspected",
+    "validation": {
+      "buildExit": 0,
+      "typecheckIncluded": true,
+      "rendererComponents": {
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      "aiPageBoundaries": {
+        "exit": 0,
+        "passed": 20
+      },
+      "journey": {
+        "exit": 0,
+        "passed": 5,
+        "privateArtifact": "omni-restored-text-iLCx7P",
+        "originalOcrBytes": 183,
+        "rendererErrors": 0,
+        "controlledArchiveRequests": 2,
+        "controlledPiRequests": 3,
+        "realPaidCalls": 0
+      },
+      "fullSmoke": "207/207 exit0 belongs to fc2fd0d before the final managed-version merge; not rerun after this unrelated incoming implementation"
+    },
+    "performance": {
+      "corpusResources": 4,
+      "rerankCandidates": 3,
+      "queryMs": 3918,
+      "rerankMs": 3349,
+      "stageIntervalsMs": [
+        11773,
+        12316
+      ],
+      "qualification": "Separate small sample, different candidate count; no speedup or P95 claim"
+    },
+    "buildHashes": {
+      "main": "2ab20601b374ac86520512416a32f19442ff20468922b93f99221e94eb0ea4af",
+      "preload": "c62c3e0915b1c7a72c4250fe8d4d6194fb82fa9ab26ecd409546085771568696"
+    }
+  },
   "productionCodeRevision": "fc2fd0dfa2699423f39a541da5c422aac090c5ef",
   "finalFixtureRevision": "9b128e4e84758d78a3d6b4df362dd37914562016",
   "scope": "Existing SQLite FTS5 and local ONNX/Lance/Pi reuse. Actual folder import, local OCR, derived zero-question AI text, version-bound read/citation, native restart. Model JSON/SSE controlled; not natural quality, Recall/P95, 40GB or installer acceptance.",
