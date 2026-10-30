@@ -6,6 +6,7 @@ import type {MaterialReadingUnit} from '../assets/material-source';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(s:string,p?:Value[])=>Promise<Row[]>;run:(s:string,p?:Value[])=>Promise<void>;page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;write:<T>(action:(index:MaterialAiTextIndex)=>Promise<T>)=>Promise<T>};
 const docs='material_ai_text_documents_v1',dirty='material_ai_text_dirty_v1',control='material_ai_text_control_v1',fts='material_body_fts_v1';
+const clock="CAST(strftime('%s','now') AS INTEGER)*1000";
 const digest=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const safe=(alias:string,key:string)=>{const column=(alias?alias+'.':'')+'source_json';return `json_extract(CASE WHEN json_valid(${column}) THEN ${column} ELSE '{}' END,'$.${key}')`;};
 const keyId=(r:string,v:string,p:number)=>{const h=digest([r,v,p]);return 'chunk_'+[h.slice(0,8),h.slice(8,12),h.slice(12,16),h.slice(16,20),h.slice(20,32)].join('-');};
@@ -19,13 +20,14 @@ export class MaterialAiTextIndex{
    `CREATE INDEX IF NOT EXISTS material_ai_text_unit_v1 ON ${docs}(batch_id,ordinal)`,
    `CREATE INDEX IF NOT EXISTS material_ai_text_resource_v1 ON ${docs}(resource_id,page_number,active)`,
    `CREATE TABLE IF NOT EXISTS ${dirty}(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 1,error TEXT NOT NULL DEFAULT '',retry_at INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(batch_id,ordinal))`,
+   `CREATE INDEX IF NOT EXISTS material_ai_text_due_v1 ON ${dirty}(retry_at,batch_id,ordinal) WHERE error=''`,
    `CREATE TABLE IF NOT EXISTS ${control}(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL DEFAULT 0)`,
    `INSERT OR IGNORE INTO ${control}(id) VALUES(1)`
   ])await this.host.run(sql);
   const tables=new Set((await this.host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>r.name));
   if(tables.has('material_ai_page_units')){
    await this.host.run(`CREATE INDEX IF NOT EXISTS material_ai_page_origin_v1 ON material_ai_page_units(${safe('','resourceId')},${safe('','version')},${safe('','page')})`);
-   const queue=(select:string)=>`INSERT INTO ${dirty}(batch_id,ordinal) ${select} ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,error='',retry_at=0;`;
+   const queue=(select:string)=>`INSERT INTO ${dirty}(retry_at,batch_id,ordinal) ${select.replace(/^SELECT /,`SELECT ${clock},`)} ON CONFLICT(batch_id,ordinal) DO UPDATE SET revision=revision+1,error='',retry_at=${clock};`;
    const invalidate=(where:string)=>`${queue(`SELECT batch_id,ordinal FROM ${docs} WHERE ${where}`)} INSERT INTO retrieval_changes(kind,object_id) SELECT 'material',id FROM ${docs} WHERE ${where};`;
    for(const [table,events]of [
     ['teacher_resources',[['UPDATE OF content_hash,parse_status','old.id'],['DELETE','old.id']]],
@@ -36,15 +38,15 @@ export class MaterialAiTextIndex{
     const changed=event.startsWith('UPDATE'),page=table==='material_pdf_pages'?` AND page_number ${changed?'IN (old.page,new.page)':'='+(event==='INSERT'?'new':'old')+'.page'}`:'';
     const parents=changed&&table==='material_pdf_pages'?`resource_id IN (SELECT resource_id FROM material_pdf_jobs WHERE generation IN (old.generation,new.generation))`:changed&&['resource_chunks','material_pdf_jobs'].includes(table)?`resource_id IN (old.resource_id,new.resource_id)`:`resource_id=${resource}`;
     const version=changed&&table!=='teacher_resources'?'v2':'v1';if(version==='v2')await this.host.run(`DROP TRIGGER IF EXISTS ai_text_parent_${table}_${i}_v1`);
-    await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_parent_${table}_${i}_${version} AFTER ${event} ON ${table} BEGIN ${invalidate(`${parents}${page}`)} END`);
+    await this.host.run(`DROP TRIGGER IF EXISTS ai_text_parent_${table}_${i}_${version}`);await this.host.run(`CREATE TRIGGER ai_text_parent_${table}_${i}_${version} AFTER ${event} ON ${table} BEGIN ${invalidate(`${parents}${page}`)} END`);
    }}
    for(const table of ['material_ai_page_units','material_ai_units','material_ai_image_inputs'])if(tables.has(table))for(const [i,event]of ['INSERT','UPDATE','DELETE'].entries()){
     const ref=event==='INSERT'?'new':'old';
     const affected=`SELECT p.batch_id,p.ordinal FROM material_ai_page_units p WHERE p.batch_id=${ref}.batch_id AND p.ordinal=${ref}.ordinal`;
     const samePage=`resource_id IN (SELECT ${safe('p','resourceId')} FROM material_ai_page_units p WHERE p.batch_id=${ref}.batch_id AND p.ordinal=${ref}.ordinal) AND page_number IN (SELECT ${safe('p','page')} FROM material_ai_page_units p WHERE p.batch_id=${ref}.batch_id AND p.ordinal=${ref}.ordinal)`;
-    await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_receipt_${table}_${i}_v1 BEFORE ${event} ON ${table} BEGIN ${queue(affected)} ${event==='INSERT'&&table==='material_ai_page_units'?queue(`SELECT new.batch_id,new.ordinal WHERE true`):''} ${invalidate(`(batch_id=${ref}.batch_id AND ordinal=${ref}.ordinal) OR (${samePage})`)} END`);
+    await this.host.run(`DROP TRIGGER IF EXISTS ai_text_receipt_${table}_${i}_v1`);await this.host.run(`CREATE TRIGGER ai_text_receipt_${table}_${i}_v1 BEFORE ${event} ON ${table} BEGIN ${queue(affected)} ${event==='INSERT'&&table==='material_ai_page_units'?queue(`SELECT new.batch_id,new.ordinal WHERE true`):''} ${invalidate(`(batch_id=${ref}.batch_id AND ordinal=${ref}.ordinal) OR (${samePage})`)} END`);
    }
-   if(tables.has('material_ai_batches'))for(const [i,event]of ['UPDATE OF config_json,resource_id,version','DELETE'].entries())await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_batch_${i}_v1 BEFORE ${event} ON material_ai_batches BEGIN ${queue('SELECT batch_id,ordinal FROM material_ai_page_units WHERE batch_id=old.id')} ${invalidate('batch_id=old.id')} END`);
+   if(tables.has('material_ai_batches'))for(const [i,event]of ['UPDATE OF config_json,resource_id,version','DELETE'].entries()){await this.host.run(`DROP TRIGGER IF EXISTS ai_text_batch_${i}_v1`);await this.host.run(`CREATE TRIGGER ai_text_batch_${i}_v1 BEFORE ${event} ON material_ai_batches BEGIN ${queue('SELECT batch_id,ordinal FROM material_ai_page_units WHERE batch_id=old.id')} ${invalidate('batch_id=old.id')} END`);}
   }
   for(const [event,ref]of [['INSERT','new'],['UPDATE','new'],['DELETE','old']])await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_clock_${event.toLowerCase()}_v1 AFTER ${event} ON ${docs} BEGIN INSERT INTO retrieval_changes(kind,object_id) VALUES('material',${ref}.id); END`);
   if(reset)await this.reset();
@@ -56,11 +58,11 @@ export class MaterialAiTextIndex{
  private async discover(){
   const exists=(await this.host.all("SELECT 1 FROM sqlite_master WHERE name='material_ai_page_units'")).length;if(!exists)return;
   const rows=await this.host.all(`SELECT rowid,batch_id,ordinal FROM material_ai_page_units WHERE rowid>(SELECT cursor FROM ${control} WHERE id=1) ORDER BY rowid LIMIT 8`);
-  if(rows.length)await this.host.write(async target=>{for(const row of rows)await target.host.run(`INSERT OR IGNORE INTO ${dirty}(batch_id,ordinal) VALUES(?,?)`,[String(row.batch_id),Number(row.ordinal)]);await target.host.run(`UPDATE ${control} SET cursor=MAX(cursor,?) WHERE id=1`,[Number(rows.at(-1)!.rowid)]);});
+  if(rows.length)await this.host.write(async target=>{for(const row of rows)await target.host.run(`INSERT OR IGNORE INTO ${dirty}(batch_id,ordinal,retry_at) VALUES(?,?,?)`,[String(row.batch_id),Number(row.ordinal),Date.now()]);await target.host.run(`UPDATE ${control} SET cursor=MAX(cursor,?) WHERE id=1`,[Number(rows.at(-1)!.rowid)]);});
  }
  async drain(){
   if(process.env.OMNI_EDU_AI_TEXT_INDEX==='0'||!this.host.page)return 0;
-  await this.discover();const rows=await this.host.all(`SELECT * FROM ${dirty} WHERE error='' AND retry_at<=? ORDER BY rowid LIMIT 4`,[Date.now()]);
+  await this.discover();const rows=await this.host.all(`SELECT * FROM ${dirty} INDEXED BY material_ai_text_due_v1 WHERE error='' AND retry_at<=? ORDER BY retry_at,batch_id,ordinal LIMIT 4`,[Date.now()]);
   for(const row of rows){
    const batchId=String(row.batch_id),ordinal=Number(row.ordinal),revision=Number(row.revision);
    let source:AiTextSource|undefined,view:AiPageView|undefined,error='';
