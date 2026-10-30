@@ -791,7 +791,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     authorityChecks++;
     try {
     if (memoryFailure) throw new Error(memoryFailure);
-    try { await phase(async()=>skills?.check()); }
+    try { await phase(async signal=>skills?.check(signal)); }
     catch (error) {
       if(phaseController.signal.aborted||options.lifecycleSignal?.aborted)throw error;
       memoryFailure = classifyError(error) === 'skill_scope_changed' ? 'skill_scope_changed' : 'skill_source_changed'; autoAbort?.abort(); manualAbort?.abort(); session.abortCompaction();

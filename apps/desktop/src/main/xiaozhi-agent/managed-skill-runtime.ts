@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { loadSkillsFromDir, stripFrontmatter, parseFrontmatter, type LoadSkillsResult, type ToolDefinition } from '@earendil-works/pi-coding-agent';
-import { noLinks, boundedRead, readPackage, type createManagedEducationSkills } from './managed-skills';
+import { noLinks, type createManagedEducationSkills } from './managed-skills';
+import {noLinksAsync,readPackageAsync} from './skill-package-async';
 import { SKILL_LIMITS, validSkillName } from './skill-catalog-state';
 import { skillAuthority, type SkillAuthorityIdentity } from './native-skill-epoch';
 import { snapshotSkillsForSession, resolveSessionSkillsForRuntime } from './vendor/hana/lib/skills/session-skill-snapshot';
@@ -13,8 +14,8 @@ const key = (value: string) => process.platform === 'win32' ? path.resolve(value
 const MAX_REFERENCE = 65536;
 /** Model resources contain only authorized necessary text; original packages remain local. */
 export async function createManagedSkillRuntime(agentDir: string, sessionFile: string, source: ManagedSkillSource) {
-  async function capture() {
-    const current = await source.resources(), identities: SkillAuthorityIdentity[] = [];
+  async function capture(signal?:AbortSignal) {
+    signal?.throwIfAborted();const current = await source.resources(signal), identities: SkillAuthorityIdentity[] = [];
     const prepared: { name: string; title: string; texts: Map<string, string> }[] = [];
     for (const { item, bytes } of current.resources) {
       if (!validSkillName(item.name)) throw new Error('configuration');
@@ -23,7 +24,7 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
         if (relative !== 'SKILL.md' && (!/\.(md|txt|json|csv)$/i.test(relative) || value.length > MAX_REFERENCE)) continue;
         let raw: string;
         try { raw = new TextDecoder('utf-8', { fatal: true }).decode(value); } catch { throw new Error('invalid_input'); }
-        const clean = await source.sanitize(raw);
+        signal?.throwIfAborted();const clean = await source.sanitize(raw);signal?.throwIfAborted();
         if (typeof clean !== 'string' || clean.includes('\0') || Buffer.byteLength(clean) > (relative === 'SKILL.md' ? SKILL_LIMITS.instructionBytes : MAX_REFERENCE)) throw new Error('invalid_input');
         texts.set(relative, clean);
       }
@@ -40,7 +41,7 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       prepared.push({ name: item.name, title: body.match(/^#\s+([^\r\n]+)/m)?.[1]?.trim() || item.name, texts });
     }
     identities.sort((a, b) => a.name.localeCompare(b.name));
-    const after = await source.resources();
+    const after = await source.resources(signal);
     if (JSON.stringify(current.resources.map(resource => resource.item)) !== JSON.stringify(after.resources.map(resource => resource.item))) throw new Error('skill_scope_changed');
     return { identity: identities, authority: skillAuthority(identities), prepared };
   }
@@ -48,11 +49,11 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
   noLinks(root, true); fs.mkdirSync(root, { recursive: true }); noLinks(root);
   const expected = new Map<string, { filePath: string; text: string; name: string; title: string; sha256: string }>();
   const loaded: LoadSkillsResult = { skills: [], diagnostics: [] };
-  function verifyDirectory(directory: string, texts: Map<string, string>) {
+  async function verifyDirectory(directory: string, texts: Map<string, string>,signal?:AbortSignal) {
     try {
-      const bytes = readPackage(directory);
-      if (bytes.size !== texts.size || [...texts].some(([relative, text]) => !bytes.has(relative) || sha(bytes.get(relative)!) !== sha(text))) throw new Error();
-    } catch { throw new Error('skill_source_changed'); }
+      const bytes = await readPackageAsync(directory,signal);
+      if (bytes.size !== texts.size || [...texts].some(([relative, text]) => !bytes.has(relative) || bytes.get(relative)!.length!==Buffer.byteLength(text)||sha(bytes.get(relative)!) !== sha(text))) throw new Error();
+    } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
   }
   for (const item of initial.prepared) {
     const directory = path.join(root, item.name); noLinks(directory, true); fs.mkdirSync(directory, { recursive: true });
@@ -63,30 +64,27 @@ export async function createManagedSkillRuntime(agentDir: string, sessionFile: s
       expected.set(key(filePath), { filePath, text, name: item.name, title: item.title, sha256: sha(text) });
     }
     // Check the complete cache before the native parser reads files/ignore rules.
-    verifyDirectory(directory, item.texts);
+    await verifyDirectory(directory, item.texts);
     const result = loadSkillsFromDir({ dir: directory, source: 'path' });
     if (result.diagnostics.length || result.skills.length !== 1 || result.skills[0].name !== item.name) throw new Error('configuration');
     loaded.skills.push(result.skills[0]);
   }
-  function checkFiles() {
+  async function checkFiles(signal?:AbortSignal) {
     try {
-      noLinks(root);
-      for (const item of initial.prepared) verifyDirectory(path.join(root, item.name), item.texts);
-      for (const item of expected.values()) {
-        noLinks(item.filePath);
-        const stat = fs.statSync(item.filePath);
-        if (!stat.isFile() || stat.size !== Buffer.byteLength(item.text) || sha(boundedRead(item.filePath, MAX_REFERENCE)) !== item.sha256) throw new Error();
-      }
-    } catch { throw new Error('skill_source_changed'); }
+      await noLinksAsync(root,signal);
+      // The complete package proof already verifies every exact-sized file and
+      // rejects extra entries, aliases and links; do not reread the same files.
+      for (const item of initial.prepared) await verifyDirectory(path.join(root, item.name), item.texts,signal);
+    } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
   }
-  checkFiles();
+  await checkFiles();
   const result = resolveSessionSkillsForRuntime(await snapshotSkillsForSession(loaded, sessionFile)) as LoadSkillsResult;
   if (result.diagnostics.length || result.skills.length !== initial.identity.length) throw new Error('skill_source_changed');
-  async function check() {
-    checkFiles();
-    const current = await capture();
+  async function check(signal?:AbortSignal) {
+    await checkFiles(signal);
+    const current = await capture(signal);
     if (current.authority !== initial.authority) throw new Error('skill_scope_changed');
-    checkFiles();
+    await checkFiles(signal);
   }
   async function validateCommand(text: string) {
     if (text.startsWith('/skill:') && !result.skills.some(item => item.name === text.slice(7).split(' ')[0])) throw new Error('invalid_input');

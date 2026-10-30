@@ -30,7 +30,8 @@ export async function createEducationSkillRuntime(agentDir: string, sessionFile:
   const snapshot = await snapshotSkillsForSession(skillsResult, sessionFile);
   const result = resolveSessionSkillsForRuntime(snapshot) as LoadSkillsResult;
   if (result.diagnostics.length || result.skills.length !== EDUCATION_SKILLS.length) throw new Error('skill_source_changed');
-  function check() {
+  function check(signal?:AbortSignal) {
+    signal?.throwIfAborted();
     try {
       if (fs.realpathSync(root).toLowerCase() !== root.toLowerCase()) throw new Error();
       for (const item of expected.values()) {
@@ -39,7 +40,8 @@ export async function createEducationSkillRuntime(agentDir: string, sessionFile:
           || fs.realpathSync(item.filePath).toLowerCase() !== item.filePath.toLowerCase()
           || hash(fs.readFileSync(item.filePath)) !== item.sha256) throw new Error();
       }
-    } catch { throw new Error('skill_source_changed'); }
+    } catch { signal?.throwIfAborted();throw new Error('skill_source_changed'); }
+    signal?.throwIfAborted();
   }
   function validateCommand(text: string) {
     if (text.startsWith('/skill:') && !result.skills.some(item => item.name === text.slice(7).split(' ')[0])) throw new Error('invalid_input');
