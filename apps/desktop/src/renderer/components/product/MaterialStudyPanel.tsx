@@ -1,13 +1,13 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button,TextArea} from '@heroui/react';
-import {MATERIALS_SCHEMA,type MaterialSourceView} from '../../../shared/materials';
-import {MATERIAL_STUDY_SCHEMA,type MaterialStudyView} from '../../../shared/material-study';
+import {MATERIALS_SCHEMA} from '../../../shared/materials';
+import {MATERIAL_STUDY_SCHEMA,type MaterialStudyView,type MaterialStudyPage} from '../../../shared/material-study';
 import {MaterialExcerpt} from './MaterialBodyPanel';
 
 const failure=(error:unknown)=>{const message=String(error);return message.includes('source_changed')?'资料正文已变化，旧笔记仍保留。请关闭阅读后重新打开，核对当前版本。':message.includes('revision_conflict')?'阅读记录已在其他操作中更新，请关闭后重新打开，避免覆盖旧笔记。':message.includes('private_content')?'这一段含个人信息，保留在本机；请先处理个人信息后再问小智。':'未能完成操作，请重试。笔记尚未保存时不要离开。';};
 /** Local reader: no model calls until the teacher explicitly asks in the existing Pi composer. */
 export function MaterialStudyPanel({resourceId,onAsk,onDirty}:{resourceId:string;onAsk?:(prompt:string)=>void;onDirty:(dirty:boolean)=>void}){
- const [view,setView]=useState<MaterialStudyView>(),[page,setPage]=useState<MaterialSourceView>(),[note,setNote]=useState(''),[question,setQuestion]=useState('');
+ const [view,setView]=useState<MaterialStudyView>(),[page,setPage]=useState<MaterialStudyPage>(),[note,setNote]=useState(''),[question,setQuestion]=useState('');
  const [busy,setBusy]=useState(true),[error,setError]=useState(''),[notice,setNotice]=useState(''),[dirty,setDirty]=useState(false);
  const alive=useRef(true),lock=useRef(false);
  useEffect(()=>{alive.current=true;let current=true;

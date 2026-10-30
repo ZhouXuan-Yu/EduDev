@@ -1,0 +1,244 @@
+{
+  "schemaVersion": "xiaozhi.kb-restored-text-evidence.v1",
+  "date": "2026-10-30",
+  "goalStatus": "active",
+  "latestIntegration": {
+    "revision": "42ac7be61f0cc12bce0d148fbb57c113653514ec",
+    "mergedOriginMain": "83cf832",
+    "conflicts": "Thirteen Markdown insertions, retained both independent sections; source auto-merge inspected",
+    "validation": {
+      "buildExit": 0,
+      "typecheckIncluded": true,
+      "rendererComponents": {
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      "aiPageBoundaries": {
+        "exit": 0,
+        "passed": 20
+      },
+      "journey": {
+        "exit": 0,
+        "passed": 5,
+        "privateArtifact": "omni-restored-text-iLCx7P",
+        "originalOcrBytes": 183,
+        "rendererErrors": 0,
+        "controlledArchiveRequests": 2,
+        "controlledPiRequests": 3,
+        "realPaidCalls": 0
+      },
+      "fullSmoke": "207/207 exit0 belongs to fc2fd0d before the final managed-version merge; not rerun after this unrelated incoming implementation"
+    },
+    "performance": {
+      "corpusResources": 4,
+      "rerankCandidates": 3,
+      "queryMs": 3918,
+      "rerankMs": 3349,
+      "stageIntervalsMs": [
+        11773,
+        12316
+      ],
+      "qualification": "Separate small sample, different candidate count; no speedup or P95 claim"
+    },
+    "buildHashes": {
+      "main": "2ab20601b374ac86520512416a32f19442ff20468922b93f99221e94eb0ea4af",
+      "preload": "c62c3e0915b1c7a72c4250fe8d4d6194fb82fa9ab26ecd409546085771568696"
+    }
+  },
+  "productionCodeRevision": "fc2fd0dfa2699423f39a541da5c422aac090c5ef",
+  "finalFixtureRevision": "9b128e4e84758d78a3d6b4df362dd37914562016",
+  "scope": "Existing SQLite FTS5 and local ONNX/Lance/Pi reuse. Actual folder import, local OCR, derived zero-question AI text, version-bound read/citation, native restart. Model JSON/SSE controlled; not natural quality, Recall/P95, 40GB or installer acceptance.",
+  "progress": {
+    "before": "Completed no-question AI textbook page absent from full-text search",
+    "after": "Indexed and ranked first above three other-subject resources; Pi reads actual text and opens original page",
+    "originalOcrChunks": 0,
+    "inventedQuestions": 0,
+    "sourceSchema": "xiaozhi.material-ai-text-source.v1",
+    "originalSourceAuthorityUnchanged": true,
+    "originalFileHashPreserved": true
+  },
+  "implementation": {
+    "tables": [
+      "material_ai_text_documents_v1",
+      "material_ai_text_dirty_v1",
+      "material_ai_text_control_v1"
+    ],
+    "fts": "material_body_fts_v1, negative rowid for derived page",
+    "discoverLimit": 8,
+    "drainLimit": 4,
+    "queuePlan": "SEARCH material_ai_text_dirty_v1 USING INDEX material_ai_text_due_v1 (retry_at<?)",
+    "backgroundOnlyStopFlag": "OMNI_EDU_AI_TEXT_INDEX=0",
+    "dependenciesAddedByThisFeature": 0,
+    "compatibleArchiveVersions": "v1-v5",
+    "rebuild": "From saved original receipts, without provider replay"
+  },
+  "gates": [
+    {
+      "command": "npm run build",
+      "log": "kb-restored-merged-build.log",
+      "exit": 0,
+      "revision": "fc2fd0d"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "log": "kb-restored-merged-types.log",
+      "exit": 0,
+      "revision": "fc2fd0d"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "log": "kb-restored-merged-components.log",
+      "exit": 0,
+      "passed": 240,
+      "total": 240,
+      "revision": "fc2fd0d"
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "log": "kb-restored-merged-pages.log",
+      "exit": 0,
+      "passed": 20
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-retrieval-boundaries.mjs",
+      "exit": 0,
+      "passed": 17
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-critical-archive-boundaries.mjs",
+      "exit": 0,
+      "passed": 13
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs",
+      "exit": 0,
+      "passed": 28
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "log": "kb-restored-merged-smoke.log",
+      "exit": 0,
+      "passed": 207,
+      "total": 207,
+      "revision": "fc2fd0d"
+    },
+    {
+      "command": "node scripts/education/kb-restored-text-journey.mjs",
+      "log": "kb-restored-fixture-final-journey.log",
+      "privateArtifact": "omni-restored-text-GASk1N",
+      "exit": 0,
+      "passed": 5,
+      "rendererErrors": 0,
+      "viewports": [
+        [
+          1366,
+          768
+        ],
+        [
+          1920,
+          1080
+        ]
+      ],
+      "originalLocalOcr": {
+        "pages": 1,
+        "utf8Bytes": 183,
+        "boundaryFault": "After actual OCR, blank deliberately injected before publication"
+      },
+      "provider": {
+        "realPaidCalls": 0,
+        "controlledArchiveRequests": 2,
+        "controlledPiRequests": 3
+      },
+      "fixtureFix": "Newlines encoded as JSON argv and decoded with splitlines; text drawing bounds checked. Prior clipped fixture reports retained and excluded as content-quality evidence."
+    }
+  ],
+  "failuresPreserved": [
+    {
+      "artifact": "omni-restored-text-RBHbL4",
+      "type": "Harness clicked a source inside collapsed details; corrected actual expand-before-click path"
+    },
+    {
+      "artifact": "omni-restored-text-NRpnau",
+      "type": "Protocol journey 5 passed but screenshot found clipped synthetic PDF; fixture corrected and final GASk1N repeated"
+    },
+    {
+      "type": "Previous-round teaching-book description failure, not reproduced in this round's two 207/207 runs; unique cause remains unconfirmed"
+    }
+  ],
+  "performance": {
+    "qualification": "Individual small samples, no matched A/B speedup and no Recall/P95 claim",
+    "finalFixture": {
+      "queryMs": 5860,
+      "rerankMs": 5593,
+      "candidates": 4,
+      "providerStageIntervalsMs": [
+        15720,
+        8925
+      ]
+    },
+    "earlierSamples": [
+      {
+        "artifact": "omni-restored-text-QrcbJx",
+        "queryMs": 2570,
+        "rerankMs": 2393,
+        "stageIntervalsMs": [
+          22143,
+          11930
+        ]
+      },
+      {
+        "artifact": "omni-restored-text-NRpnau",
+        "queryMs": 5528,
+        "rerankMs": 5496,
+        "stageIntervalsMs": [
+          8797,
+          5957
+        ]
+      }
+    ],
+    "coldSourceProbe": {
+      "artifact": "omni-restored-text-NRpnau/cold-source-probe.json",
+      "sourceGetterMs": [
+        10.2,
+        6.6,
+        5.2
+      ],
+      "turnHashUnchanged": true,
+      "turnHash": "a08c1aa5541442fe2a716d10ae21e34f8024f1804fb6622aa458da1477997e64"
+    },
+    "journalToolDurationMs": {
+      "artifact": "omni-restored-text-NRpnau",
+      "search": 5939,
+      "read": 3664
+    },
+    "nextDiagnosis": "Reranker CPU execution plus office tool wrapper/guards and Pi context overhead; direct source getter alone does not explain delay"
+  },
+  "buildHashes": {
+    "main": "de7fac2c697d01f81f8a0e12f2aeac9161217f1a78dd680b4bd17e586e1dd2bc",
+    "preload": "087f95affc2d59ac6797f3e1183dc1027d3c0ebbd78582dcc7dca396d0b7612e"
+  },
+  "audit": {
+    "exit": 1,
+    "critical": 0,
+    "high": 8,
+    "moderate": 7,
+    "low": 8,
+    "total": 23,
+    "existing": true
+  },
+  "unverified": [
+    "Actual 10GB to 40GB recursive heterogeneous long run and memory/disk bounds",
+    "Natural OCR/formula/answer quality and held-out Recall/P95",
+    "Wholly failed standalone image input, complex figures/cross-page/answer-book automation",
+    "AI page-transcript teacher correction and partial review-page retrieval need further workflow audit",
+    "Image-input SQLite duplication/disk growth and foreground/background vector scheduling need scale audit",
+    "Managed installer and actual D: daily application"
+  ],
+  "privacy": {
+    "sourceMaterialUploaded": false,
+    "paidCallsThisRound": 0,
+    "priorActualPaidCallCount": 20
+  },
+  "rollback": "Stop new production with OMNI_EDU_AI_TEXT_INDEX=0; retain original files/OCR, teacher edits, receipts and v1-v5 reads. Derived caches are rebuildable, no destructive migration."
+}

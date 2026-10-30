@@ -1,5 +1,17 @@
 # 知识库方案实施合同
 
+## 2026-10-30 整页AI正文进入既有检索与小智读取（M04/M10）
+
+教师结果：目录原图两遍整理后，普通教材页即使没有习题也能被现资料全文/混合检索找到；小智沿education_search_materials和office_read_material读取必要还原文字，引用可打开实际原页与两遍还原。明确标识AI还原、未经教师逐字核验，不把AI推导答案写成原文。现原OCR、原题档案及正式整卷确认不改。
+
+复用现MaterialFullTextSearch的同一个FTS5索引/分词、RetrievalRepository事件时钟/重建/混合排序、原LanceDB/embedding Worker；不增加模型、依赖、工具名、Agent或通用知识库引擎。新增material_ai_text_documents_v1（可重建的页级派生正文/来源摘要）、material_ai_text_dirty_v1（有修订号的有界队列）和回填游标；FTS负rowid保留给AI派生页，正rowid继续对应原resource_chunks。每次只准备少量页，昂贵原页核验在写锁外，入锁复验回执修订；历史有界游标回填，单坏页不阻塞后续。每原件版本/原页仅当前完成的批次成为检索文档，来源或结果待核不得当合格全文，原AI回执不删除。
+
+原MaterialSource.v1继续只指实际OCR/body，QuestionArchive和教学确认仍严格使用旧契约；新增独立AI正文引用（共用resource/version/chunkId/bodyVersion/offset及批次/单元/原页/终稿摘要）和MaterialReference联合类型，仅扩展搜索/公共引用/来源读取。现typed materials:source按引用种类分流，不伪造OCR块。office_read_material增加可选结构化AI正文来源与字符偏移，旧resourceId/offset调用保持；分页不得丢尾部内容。材料来源界面按需展示现MaterialAiPagePanel，不为AI页显示错误的OCR段落翻页或教师确认。
+
+新增派生页插改删纳入现retrieval_changes；原件/PDF页/本地OCR隐私、两遍回执/图片变动在返回前失效，异步搜索尾部复验来源时钟。只索引完整可读且来源有效的页；空白/不一致/疑点/隐私/未知结果不混入已就绪全文，覆盖状态须诚实反映等待与拦截。停新派生索引用独立开关，原AI页与v5读支持保留。新表/列/索引增量幂等，索引丢失可从原回执重建，不重发AI或覆盖老师修改。
+
+RED先证明已保存无习题页无法由FTS/混合检索及Pi读取；GREEN贯通持久派生、来源读取、同源更新、Worker失效/暂停/重启、尾部读取和可见界面。必要专项、build/组件及正式Electron主路径取证；大规模真实40GB、自然Recall/P95、复杂图题/跨页与最终受管安装仍是完整目标后续，不能以受控回答当真实质量。上一轮讲义综合失败保留，不借本切片放宽断言。
+
 ## 2026-10-29 OCR空白/失败PDF页原图补救与整页还原（M03/M04/M05/M10）
 
 2026-10-30续接：本地Worker busy/index_busy、且尚无外发请求时保留pending/first_saved，采用2–30秒有界退避；新增material_ai_units.retry_at/local_retries与待执行部分索引，重启重置等待时间。其他已到期单元可继续，真实外发结果未知仍不自动重试。原页还原开关OMNI_EDU_AI_PAGE_RESTORATION=0只停新生产，已有v5与原页回执继续可读。正式界面与自然模型验证分别记录，不将受控响应当真实识别质量。

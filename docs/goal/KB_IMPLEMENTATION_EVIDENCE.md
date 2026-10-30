@@ -1,5 +1,39 @@
 # 知识库实施证据
 
+## 2026-10-30 最后主线整合42ac7be
+
+最后刷新main83cf832（受管版本/FIFO计算），合并为42ac7be；13份Markdown同位置新增节冲突已逐项保留双方内容，preload自动合并已核对。该源码重新build/type、240组件、20页边界、目录→Pi来源→冷启五项均exit0（iLCx7P，原OCR183B、两视口、0renderer错误、每次2受控JSON/3受控SSE、0付费）。新小样本4资料、重排3候选，查询3918ms/重排3349ms，不能与4候选旧样本当提速A/B。207综合exit0仍明确属于fc2fd0d；未冒充最后这次无关受管版本合并后重跑。代码与新构建指纹见公开JSON latestIntegration。
+
+### 本轮最终整合与夹具修正（2026-10-30）
+
+最终源码fc2fd0d、夹具9b128e4：build/type、240组件、207/207综合、20组AI页/来源、17检索、13归档、28持久批次均通过。正式Electron目录五项最终GASk1N exit0，1366/1920、0renderer错误，真实OCR原回执183B后边界故意清空，受控JSON×2/SSE×3、0付费、0原OCR块/0假题、来源原图/冷启均通过。此前来源折叠点击失败和裁切PDF夹具保留；后者修正换行并加绘制边界，旧夹具不能作内容质量实证。整合主线E04保留；D盘日常构建与安装包未更新。
+
+性能/质量仍OPEN：零习题原文检索从0命中变1；最终四份资料查询5860ms/重排5593ms，另轮2570/2393与5528/5496ms，不是同条件提速或Recall/P95。最终受控Pi请求间阶段约15.7s/8.9s；另轮原生来源接口冷读10.2/6.6/5.2ms且冷启整轮哈希保持，日志工具执行搜索5939ms/读取3664ms，须定位重排与工具包装/上下文开销。长文沿现11000字符重叠切片、512token窗口嵌入，无静默截尾；单次发现8/处理4、到期部分索引实证仍不等于40GB资源上界。40GB长跑/自然质量、独立图片失败、复杂图题/跨页/答案册、人工修正AI教材正文与受管安装均继续。AI图片入SQLite的重复体积及前后台向量调度仍需规模审核。本轮0真实付费（此前累计20），未上传素材。
+
+精确终态：kb-restored-merged-build.exit、kb-restored-merged-pages.exit、kb-restored-merged-smoke.exit和kb-restored-fixture-final-journey.exit均为0。207综合发生在fc2fd0d生产源码，之后只有夹具修正，无生产代码变化，不重复全库测试。第一次npm run test:smoke也报告207/207，但宿主更新后进程句柄丢失，退出码未捕获；最终独立node scripts/electron-smoke.mjs已确认exit0。旧讲义失败仍保留。
+
+冷启补查为同NRpnau语料、无模型请求：三次typed来源接口10.2/6.6/5.2ms，公共阅读轮次SHA保持a08c1aa5541442fe2a716d10ae21e34f8024f1804fb6622aa458da1477997e64，实际EXPLAIN走到期部分索引。NRpnau合成原图后来发现裁切，保留作协议/时延/迁移证据，不当内容质量证据；GASk1N是修正原图后的最终五项。公开JSON完整记录各范围。
+
+## 2026-10-30 整页AI正文检索与小智实际阅读
+
+普通教材页过去只保存在AI页回执、没有习题时也没有原OCR块，FTS/语义/Pi均不可见。现在将合格页从原回执派生到现同一FTS5与Lance事件队列，保留独立AI来源、原图、未经教师逐字核验标识。没有制造题目或OCR，也未增加工具、模型、依赖或Agent循环。
+
+源码：6bf344a RED→5072464 GREEN；d767b3d批判性RED→64b2527 GREEN（旧待核解除、损坏缓存重建、长文/代理对分页、异步父私密状态变动撤回）；d553746到期部分索引/有限8页发现4页执行、正式Electron脚本。正常整合协作E04 main至fc2fd0d；保留双方Pi及preload改动。主要文件为main/retrieval/material-ai-text-index.ts、material-full-text.ts、material-source.ts/material-repository.ts/material-tools.ts、education/search-provider.ts、shared/material-ai-text.ts与MaterialAiPagePanel/MaterialBodyPanel/来源导航；typed preload与公共引用同时贯通。
+
+已终结的命令与范围（工作目录apps/desktop，日志test-results/）：
+
+- `node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs` exit0，20组，最终队列变更复验日志kb-restored-bounded-queue.log；原首轮RED/批判RED均保留。受控模型/图片，真实执行器与SQLite，不是自然识别。
+- `node --experimental-transform-types scripts/education/kb-retrieval-boundaries.mjs` 17、`kb-critical-archive-boundaries.mjs` 13、`kb-ai-batch-boundaries.mjs` 28，各exit0；日志kb-restored-{retrieval,archive,batch}-final.log。
+- `node scripts/education/kb-restored-text-journey.mjs` 首次exit1：来源详情未展开，三项已通过但按钮不可见；Temp omni-restored-text-RBHbL4保留。修正真实UI展开及新会话等待后，exit0/5项，Temp omni-restored-text-QrcbJx，1366/1920和0renderer错误；真实本地OCR输出边界故意清空，原始本地识别回执1页124B仍在报告；两次受控页JSON及三次受控Pi SSE，零真实付费。真实固定本地ONNX/Lance四份资料语义检索、生产工具search→read→公共实际阅读来源登记→可点击原图、同库冷启无重发；原OCR块0/题目0/原件SHA保持。不是自然OCR失败、模型质量或40GB。
+- 整合fc2fd0d后 `npx tsc --noEmit` 与 `npm run test:renderer-components` exit0/240；此前单分支build exit0。整合后构建、正式旅程与综合门禁的终态见本节后续记录。
+- `npm audit --json` exit1：23项既有（8高/7中/8低/0critical），本功能无新依赖，合入E04仅已有间接依赖显式锁定为直接依赖。不能称审计通过。
+
+可证变化：零习题页全文命中从0→1，现同义查询排名四份资料第一。最终QrcbJx一次查询2570ms/重排2393ms，另一轮8095ms/7245ms；非同条件性能A/B、非Recall/P95。受控Pi三次请求间阶段22143ms/11930ms，暴露工具链开销，须继续定位，不能宣称达到快速目标。派生有界队列与到期索引降低历史失败扫描风险，但没有真实40GB或峰值内存/磁盘实证。
+
+仍OPEN：40GB递归混合格式稳定长跑与容量、自然OCR/公式/答案准确率及Recall/P95、独立图片完全OCR失败、复杂图题/跨页/答案册、Pi工具时延、受管安装与D盘日常启动。上一轮讲义description综合失败保留，不能用本专项替代207全通过。无素材上传。本轮付费调用0，历史真实累计20。
+
+回退：`OMNI_EDU_AI_TEXT_INDEX=0`仅停新派生；原v1来源/v1–v5题档案/AI页读取继续。三张派生表与索引增量幂等，已有RAG重建从原始两遍回执恢复，不付费重发、覆盖OCR或删除教师事实。公开脱敏索引：`docs/research/KB_RESTORED_TEXT_20261030.json`。
+
 ## 2026-10-30 OCR空白/乱码PDF原页恢复与可见回看
 
 质量补充51ab7fb RED→d021da6 GREEN：旧NFKC将x²/x2及y₁/y1折成一致，实际执行器反例被误判no_questions；现页稿、题干与原答案比对改为NFC，数学上下标差异保留待核，15组通过。其后9份既有专项全部重新exit0（另含联网补答12、原生Pi5）。

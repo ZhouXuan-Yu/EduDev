@@ -12,6 +12,8 @@ import {MaterialOriginalPreview} from './MaterialOriginalPreview';
 import type {MaterialTaskStatus} from '../../../shared/material-parse-task';
 import {MaterialPdfProgress} from './MaterialPdfProgress';
 import {MaterialAiPanel} from './MaterialAiPanel';
+import {MaterialAiPagePanel} from './MaterialAiPagePanel';
+import {validAiTextSource} from '../../../shared/material-ai-text';
 
 export function MaterialOcrNotice(){return <p role="note" className="teacher-library-caption" data-testid="materials-ocr-notice">以下为本机文字识别结果，尚未由教师核对。公式、题图和手写批注请以原件为准；收录正文不代表题目或答案已确认。</p>;}
 export function MaterialExcerpt({chunk,sourceId}:{chunk:ResourceChunk;sourceId?:string}){return <article className="teacher-library-excerpt" data-testid={`materials-chunk-${chunk.id}`} data-source={chunk.id===sourceId||undefined}><h3>{chunk.pageNumber?`原件第 ${chunk.pageNumber} 页 · `:''}{chunk.heading||'内容摘录'}</h3><Markdown components={{img:({alt})=><span>［图片：{alt||'未加载'}］</span>,a:({children})=><span>{children}</span>}}>{chunk.contentMd}</Markdown></article>;}
@@ -27,6 +29,7 @@ export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retr
   void reading?.then(next=>{if(current)setBody(next);}).catch(()=>{if(current)setError(sourceView?'来源内容已变化，请返回小智重新查找后再打开。':'无法读取这份资料，请刷新后重试。');}).finally(()=>{if(current)setLoading(false);});return()=>{current=false;};
  },[resource?.id,offset,revision,wordRevision,sourceView]);
  const current=body?.resource||resource;
+ if(sourceView&&validAiTextSource(sourceView.source))return <section className="teacher-library-detail" data-testid="materials-detail" aria-label="AI还原资料来源"><header><h2>{sourceView.body.resource.originalFileName}</h2><p data-testid="materials-ai-restored-source">AI还原参考正文 · 原件第{sourceView.source.page}页 · 未经教师逐字核验</p></header><MaterialAiPagePanel batchId={sourceView.source.batchId} ordinal={sourceView.source.ordinal} reference={sourceView.source} initiallyOpen/></section>;
  return <section className="teacher-library-detail" data-testid="materials-detail" aria-label="资料内容">
   {current?<><header><div><h2>{current.title}</h2><p>{current.originalFileName} · 添加于 {libraryDate(current.createdAt)}</p></div><Button variant="secondary" onPress={locate} isDisabled={busy} data-testid="materials-locate"><FolderOpen size={16}/>定位文件</Button></header>
    {/\.pdf$/i.test(current.originalFileName)&&<MaterialPdfProgress resource={current}/>}

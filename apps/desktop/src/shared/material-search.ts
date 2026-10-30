@@ -1,8 +1,8 @@
-import type {MaterialSource} from './materials';
+import type {MaterialReference} from './materials';
 export const MATERIAL_SEARCH_SCHEMA='xiaozhi.material-search.v1' as const;
 export type MaterialTextQuery={schemaVersion:typeof MATERIAL_SEARCH_SCHEMA;query:string;offset:number;mode?:'hybrid'|'keyword'};
-export type MaterialTextHit={title:string;excerpt:string;source:MaterialSource;citation:string;method?:string};
-export type MaterialIndexStatus={available:boolean;pending:number;indexed:number};
+export type MaterialTextHit={title:string;excerpt:string;source:MaterialReference;citation:string;method?:string};
+export type MaterialIndexStatus={available:boolean;pending:number;indexed:number;restored?:{pending:number;blocked:number;ready:number;backfilling:boolean}};
 export type MaterialTextPage={schemaVersion:typeof MATERIAL_SEARCH_SCHEMA;hits:MaterialTextHit[];offset:number;hasMore:boolean;index:MaterialIndexStatus;semantic?:import('./retrieval').SemanticCoverage};
 export function validMaterialTextQuery(v:unknown):v is MaterialTextQuery{
  if(!v||typeof v!=='object'||Array.isArray(v)||Object.values(Object.getOwnPropertyDescriptors(v)).some(d=>!('value'in d)))return false;

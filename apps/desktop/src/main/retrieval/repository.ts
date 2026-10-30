@@ -6,7 +6,9 @@ import {answerEnrichmentRoles} from '../../shared/question-answer-enrichment';
 import type {QuestionContextPurpose} from '../../shared/question-context';
 import {questionFacts,questionFactConflicts} from '../../shared/question-facts';
 import {questionPresentation} from '../../shared/native-question';
-import {materialBodyVersion,type MaterialReadingUnit} from '../assets/material-source';
+import {materialBodyVersion,materialUnitDigest,type MaterialReadingUnit} from '../assets/material-source';
+import {MaterialAiTextIndex} from './material-ai-text-index';
+import type {AiPageView} from '../../shared/material-ai-page';
 import type {MaterialFullTextSearch} from '../assets/material-full-text';
 import {validatedQuestionFilters} from '../education/question-retrieval';
 import type {QuestionBlock} from '../../shared/question-document';
@@ -19,6 +21,7 @@ import {aiPageQuestionIssues} from '../assets/material-ai-page-publish';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type ResultReceipt={id:string;seq:number;sources?:{id:string;revision:number}[]};
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
+  page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;
   fullText:()=>MaterialFullTextSearch;keyword:(f:QuestionSearchFilters)=>Promise<SimilarQuestionMatch[]>;
   writer:<T>(action:(repo:RetrievalRepository)=>Promise<T>)=>Promise<T>};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -28,11 +31,12 @@ export function fuseRanks(lexical:string[],semantic:string[]){const scores=new M
 
 /** SQLite owns facts and the event clock; Lance is a replaceable derivative. */
 export class RetrievalRepository{
+  readonly restoredText:MaterialAiTextIndex;
   private port?:VectorPort;private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private closing=false;private retryAt=0;
-  constructor(private host:Host){}
+  constructor(private host:Host){this.restoredText=new MaterialAiTextIndex({...host,write:action=>host.writer(target=>action(target.restoredText))});}
   configure(port:VectorPort){this.port=port;}
-  async migrate(){return this.host.writer(target=>target.migrateInWriter());}
-  private async migrateInWriter(){
+  async migrate(){const reset=!!this.host.fullText().recreated;await this.host.writer(target=>target.migrateInWriter(reset));if(reset)this.host.fullText().recreated=false;}
+  private async migrateInWriter(reset=false){
     for(const sql of [
       `CREATE TABLE IF NOT EXISTS retrieval_changes(seq INTEGER PRIMARY KEY AUTOINCREMENT,kind TEXT NOT NULL,object_id TEXT NOT NULL)`,
       `CREATE TABLE IF NOT EXISTS retrieval_current(kind TEXT NOT NULL,object_id TEXT NOT NULL,seq INTEGER NOT NULL,PRIMARY KEY(kind,object_id))`,
@@ -66,6 +70,8 @@ export class RetrievalRepository{
       const ids=table==='material_ai_members'?'SELECT old.question_id':`SELECT question_id FROM material_ai_members WHERE batch_id=old.batch_id AND ordinal=old.ordinal`;
       await this.host.run(`CREATE TRIGGER IF NOT EXISTS retrieval_receipt_${table}_${i}_v1 BEFORE ${event} ON ${table} BEGIN INSERT INTO retrieval_source_revisions(resource_id,revision) SELECT DISTINCT s.resource_id,1 FROM retrieval_question_sources s WHERE s.question_id IN (${ids}) ON CONFLICT(resource_id) DO UPDATE SET revision=revision+1; INSERT INTO retrieval_changes(kind,object_id) SELECT DISTINCT 'question',question_id FROM retrieval_question_sources WHERE question_id IN (${ids}); END`);
     }
+    await this.restoredText.migrate(reset);
+    if(!(await this.host.all('PRAGMA table_info(retrieval_generations)')).some(c=>c.name==='restored_cursor'))await this.host.run("ALTER TABLE retrieval_generations ADD COLUMN restored_cursor TEXT NOT NULL DEFAULT ''");
     // Existing derivative generations need one new snapshot when source-closure tracking is introduced.
     if(!(await this.host.all("SELECT name FROM retrieval_schema_migrations WHERE name='source-closure.v2'")).length){
       const c=await this.control();if(c.building)await this.host.run("UPDATE retrieval_generations SET question_cursor='',backfill_done=0 WHERE id=?",[String(c.building)]);else if(c.active)await this.newGeneration();
@@ -88,7 +94,7 @@ export class RetrievalRepository{
   private async maximum(){return Number((await this.host.all('SELECT COALESCE(MAX(seq),0) n FROM retrieval_changes'))[0].n);}
   async action(action:'pause'|'resume'|'rebuild'){
     if(action==='rebuild')await this.host.writer(async target=>{
-      const c=await target.control();if(c.building)throw Error('busy');await target.newGeneration();
+      const c=await target.control();if(c.building)throw Error('busy');await target.restoredText.reset();await target.newGeneration();
     });else await this.host.run('UPDATE retrieval_control SET paused=?,error=CASE WHEN ?=0 THEN \'\' ELSE error END WHERE id=1',[action==='pause'?1:0,action==='pause'?1:0]);
     if(action==='pause')await this.port?.interrupt?.();this.retryAt=0;
   }
@@ -115,7 +121,7 @@ export class RetrievalRepository{
   }
   private async backfill(id:string){
     const g=await this.generation(id);if(g.backfill_done)return;
-    const kind:RetrievalKind=g.material_cursor!=='~'?'material':'question',column=kind==='material'?'material_cursor':'question_cursor',table=kind==='material'?'resource_chunks':'question_bank_items';
+    const column=g.material_cursor!=='~'?'material_cursor':g.restored_cursor!=='~'?'restored_cursor':'question_cursor',kind:RetrievalKind=column==='question_cursor'?'question':'material',table=column==='material_cursor'?'resource_chunks':column==='restored_cursor'?'material_ai_text_documents_v1':'question_bank_items';
     const rows=await this.host.all(`SELECT id FROM ${table} WHERE id>? ORDER BY id COLLATE BINARY LIMIT 8`,[String(g[column])]);
     const objects:{kind:RetrievalKind;id:string}[]=[];for(const row of rows){
       if(this.closing||(await this.control()).paused)return;
@@ -164,7 +170,8 @@ export class RetrievalRepository{
     if(kind==='material'){
       const row=(await this.host.all("SELECT c.*,r.original_file_name source_name,r.content_hash source_version,r.parse_status source_status,k.seq fact_seq FROM (SELECT ? requested_id) s LEFT JOIN resource_chunks c ON c.id=s.requested_id LEFT JOIN teacher_resources r ON r.id=c.resource_id LEFT JOIN retrieval_current k ON k.kind='material' AND k.object_id=s.requested_id",[id]))[0];
       seq=Number(row?.fact_seq||0);deleted.seq=seq;
-      if(!row?.id||row.contains_personal_data||!readable.includes(String(row.source_status)))return {fact:deleted};
+      if(!row?.id){const parent=(await this.host.all('SELECT d.resource_id,COALESCE(v.revision,0) revision FROM material_ai_text_documents_v1 d LEFT JOIN retrieval_source_revisions v ON v.resource_id=d.resource_id WHERE d.id=?',[id]))[0],restored=await this.restoredText.unit(id);if(!restored||!parent||parent.resource_id!==restored.unit.resourceId)return{fact:deleted};return{fact:{...deleted,seq:restored.seq,digest:materialUnitDigest(restored.unit),resourceId:restored.unit.resourceId,text:restored.unit.chunk.contentMd,sourceKind:'ai_restored_page',deleted:false},unit:restored.unit,sources:[{id:restored.unit.resourceId,revision:Number(parent.revision)}]};}
+      if(row.contains_personal_data||!readable.includes(String(row.source_status)))return {fact:deleted};
       const chunk=this.host.chunk(row);
       const unit={resourceId:String(row.resource_id),version:String(row.source_version),title:String(row.source_name),offset:-1,chunk};
       const digest=hash([unit.resourceId,unit.version,materialBodyVersion(chunk)]);
@@ -260,20 +267,20 @@ export class RetrievalRepository{
     let lexical=await this.host.fullText().candidates(query,resourceId,limit,0,false);const semantic=await this.semantic('material',query,{resourceId},100,offset+pageSize);
     const fallback=!semantic.coverage.available;
     if(fallback)lexical=await this.host.fullText().candidates(query,resourceId,pageSize,offset,false);
-    const byId=new Map<string,{unit:MaterialReadingUnit;method:string;start:number;end:number;seq:number}>();
+    const byId=new Map<string,{unit:MaterialReadingUnit;method:string;start:number;end:number;seq:number;sources?:ResultReceipt['sources']}>();
     const lexicalIds:string[]=[];
-    for(const unit of lexical.units){const current=await this.fact('material',unit.chunk.id);if(current.fact.deleted||!current.unit||current.fact.digest!==hash([unit.resourceId,unit.version,materialBodyVersion(unit.chunk)]))continue;lexicalIds.push(unit.chunk.id);byId.set(unit.chunk.id,{unit:current.unit,method:'keyword',start:0,end:0,seq:current.fact.seq});}
+    for(const unit of lexical.units){const current=await this.fact('material',unit.chunk.id);if(current.fact.deleted||!current.unit||current.fact.digest!==materialUnitDigest(unit))continue;lexicalIds.push(unit.chunk.id);byId.set(unit.chunk.id,{unit:current.unit,method:'keyword',start:0,end:0,seq:current.fact.seq,sources:current.sources});}
     const semanticIds:string[]=[];
     for(const hit of semantic.hits){if(semanticIds.includes(hit.id))continue;const current=await this.fact('material',hit.id);
       if(current.fact.deleted||current.fact.seq!==hit.seq||current.fact.digest!==hit.digest||!current.unit||resourceId&&current.unit.resourceId!==resourceId)continue;
-      semanticIds.push(hit.id);const prior=byId.get(hit.id);byId.set(hit.id,{unit:current.unit,method:prior?'hybrid':'semantic',start:hit.start,end:hit.end,seq:current.fact.seq});
+      semanticIds.push(hit.id);const prior=byId.get(hit.id);byId.set(hit.id,{unit:current.unit,method:prior?'hybrid':'semantic',start:hit.start,end:hit.end,seq:current.fact.seq,sources:current.sources});
     }
     const ranked=await this.rerank(fuseRanks(lexicalIds,semanticIds),query,id=>{const hit=byId.get(id)!;return{text:hit.unit.chunk.contentMd,...(hit.method!=='keyword'?{focus:hit.start}:{})};});semantic.coverage.rerank=ranked.coverage;
     const ids=ranked.ids,selected=ids.slice(fallback?0:offset,(fallback?0:offset)+pageSize).map(id=>byId.get(id)!);
-    for(const hit of selected){const c=hit.unit.chunk;hit.unit.offset=Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=? AND (chunk_index<? OR chunk_index=? AND id<?)',[hit.unit.resourceId,c.chunkIndex,c.chunkIndex,c.id]))[0].n);}
+    for(const hit of selected){if(hit.unit.restored)continue;const c=hit.unit.chunk;hit.unit.offset=Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=? AND (chunk_index<? OR chunk_index=? AND id<?)',[hit.unit.resourceId,c.chunkIndex,c.chunkIndex,c.id]))[0].n);}
     await this.refresh(semantic.coverage);
     semantic.coverage.exhausted||=!fallback&&lexical.hasMore;
-    const valid=await this.filterCurrent('material',selected.map(h=>({id:h.unit.chunk.id,seq:h.seq})),semantic.coverage),hits=selected.filter(h=>valid.has(h.unit.chunk.id));if(hits.length!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
+    const valid=await this.filterCurrent('material',selected.map(h=>({id:h.unit.chunk.id,seq:h.seq,sources:h.sources})),semantic.coverage),hits=selected.filter(h=>valid.has(h.unit.chunk.id));if(hits.length!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
     return{...lexical,units:hits.map(v=>v.unit),hits,hasMore:fallback?lexical.hasMore:ids.length>offset+pageSize,semantic:semantic.coverage};
   }
   async questions(raw:QuestionSearchFilters){

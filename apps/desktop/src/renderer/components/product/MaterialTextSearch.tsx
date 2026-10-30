@@ -1,9 +1,9 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button,SearchField} from '@heroui/react';
 import {MATERIAL_SEARCH_SCHEMA as schema,type MaterialTextPage,type MaterialIndexStatus} from '../../../shared/material-search';
-import type {MaterialSource} from '../../../shared/materials';
+import type {MaterialReference} from '../../../shared/materials';
 import {RerankNotice} from './RerankNotice';
-export function MaterialTextSearch({open}:{open:(source:MaterialSource)=>void}){
+export function MaterialTextSearch({open}:{open:(source:MaterialReference)=>void}){
  const [query,setQuery]=useState(''),[result,setResult]=useState<MaterialTextPage>(),[index,setIndex]=useState<MaterialIndexStatus>(),[error,setError]=useState(''),[busy,setBusy]=useState(false);const epoch=useRef(0);
  const [mode,setMode]=useState<'hybrid'|'keyword'>('hybrid');
  useEffect(()=>{let current=true,inFlight=false;async function poll(){if(inFlight)return;inFlight=true;try{const state=await window.omniEdu?.getMaterialIndexStatus();if(current)setIndex(state);}catch{}finally{inFlight=false;}}void poll();const timer=setInterval(()=>void poll(),2000);return()=>{current=false;epoch.current++;clearInterval(timer);};},[]);
@@ -15,6 +15,7 @@ export function MaterialTextSearch({open}:{open:(source:MaterialSource)=>void}){
    <select className="material-search-mode" data-testid="materials-search-mode" aria-label="检索方式" value={mode} onChange={e=>{setMode(e.target.value as typeof mode);setResult(undefined);epoch.current++;setBusy(false);}}><option value="hybrid">按题意与关键词</option><option value="keyword">只查关键词</option></select>
   </form>
   {index&&<p className="teacher-library-caption" data-testid="materials-index-status">{!index.available?'正文查找暂不可用。':`${index.indexed} 段正文可查${index.pending?`，${index.pending} 段正在补充整理；当前结果还不完整`:''}。多个关键词用空格隔开，可查其中任一关键词。`}</p>}
+  {!!index?.restored?.blocked&&<p role="note" className="teacher-library-caption" data-testid="materials-restored-index-warning">部分AI还原页仍需核对，未作为可用正文参与检索；不能据此判断资料库没有相关内容。</p>}
   {error&&<p role="alert">{error}</p>}
   {result?.semantic&&<p role="note" data-testid="materials-semantic-coverage">{result.semantic.available?'已结合本地题意检索。':'本地题意检索暂不可用，当前使用关键词结果。'}{!result.semantic.complete?'语义索引尚未完整覆盖当前资料。':''}{result.semantic.exhausted?'本次候选有数量上限，可缩小关键词范围继续查找。':''}{result.semantic.reason==='source_changed'?'查询时资料发生变化，请重新查找。':''}</p>}
   <RerankNotice value={result?.semantic?.rerank}/>

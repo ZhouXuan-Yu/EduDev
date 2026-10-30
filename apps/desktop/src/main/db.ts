@@ -1,3 +1,4 @@
+import {sanitizeOfficeDocumentText} from './xiaozhi-agent/office-document-tools';
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
 import {MaterialWordRepository} from './assets/material-word-repository';
 import {WORD_PARSER,wordText,type WordPayload} from '../shared/material-word';
@@ -1200,6 +1201,7 @@ export class OmniEduStore {
     all: (sql, params) => this.all(sql, params),
     mapResource: row => this.mapTeacherResource(row),
     mapChunk: row => this.mapResourceChunk(row),
+    restored:source=>this.retrieval.restoredText.read(source).then(value=>value.view),
     commit: (id, content, engine, hash, signal, pages, lease, word) => this.commitMaterialText(id, content, engine, hash, signal, pages, lease, word),
     reuse: (id, engine, lease) => this.updateMaterialState(id,'ready',engine,lease),
     failure: (id, code, lease) => this.failMaterialText(id, code, lease),
@@ -1215,7 +1217,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.materialFolderAi);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.materialSearch=new MaterialFullTextSearch({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
+    this.materialSearch=new MaterialFullTextSearch({restored:()=>this.retrieval.restoredText,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),map:r=>this.mapResourceChunk(r),withWriter:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{await action(work.materialSearch);await work.exec('COMMIT;');}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
@@ -1237,7 +1239,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.questionWeb);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});
-    this.retrieval=new RetrievalRepository({all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),writer:async action=>{
+    this.retrieval=new RetrievalRepository({page:(batchId,ordinal)=>this.materialAi.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:text=>sanitizeOfficeDocumentText(this,text),all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),chunk:row=>this.mapResourceChunk(row),question:row=>this.mapQuestionBankItem(row),fullText:()=>this.materialSearch,keyword:filters=>this.searchQuestionBankKeyword(filters),writer:async action=>{
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{const result=await action(work.retrieval);await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
     }});

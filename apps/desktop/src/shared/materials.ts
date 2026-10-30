@@ -1,6 +1,7 @@
 import type {ResourceChunk,TeacherResource,KnowledgeImportResult} from './contracts';
 import type {MaterialOcrProgress} from './material-pdf-ocr';
 import {LOCAL_OCR_ENGINE} from './xiaozhi-ocr';
+import {validAiTextSource,type AiTextSource} from './material-ai-text';
 
 export const MATERIALS_SCHEMA='xiaozhi.materials.v1' as const;
 export const MATERIAL_PAGE_SIZE=50;
@@ -14,7 +15,9 @@ export type MaterialFolderResult=KnowledgeImportResult&{schemaVersion:'xiaozhi.m
 export type MaterialJob={schemaVersion:typeof MATERIALS_SCHEMA;active:boolean;scan?:MaterialOcrProgress;folder?:MaterialFolderProgress};
 export const MATERIAL_SOURCE_SCHEMA='xiaozhi.material-source.v1' as const;
 export type MaterialSource={schemaVersion:typeof MATERIAL_SOURCE_SCHEMA;resourceId:string;version:string;offset:number;chunkId:string;bodyVersion:string};
-export type MaterialSourceView={source:MaterialSource;body:MaterialBody};
+export type MaterialReference=MaterialSource|AiTextSource;
+export const validMaterialReference=(v:unknown):v is MaterialReference=>validMaterialSource(v)||validAiTextSource(v);
+export type MaterialSourceView={source:MaterialReference;body:MaterialBody;restored?:import('./material-ai-page').AiPageView};
 export function validMaterialSource(v:unknown):v is MaterialSource {
  if(!object(v)||Object.keys(v).length!==6)return false;
  return v.schemaVersion===MATERIAL_SOURCE_SCHEMA&&materialId(v.resourceId)&&offset(v.offset)
