@@ -16,8 +16,9 @@ const known=(error:unknown)=>{const code=error instanceof Error?error.message:''
  * The only production recipe is static and free; model/IPC cannot supply URLs. */
 export function createManagedTools(options:{root:string;bundledWasm?:string|null;
   /** Main-only controlled transport for deterministic installer faults. */
-  fetch?:typeof fetch;health?:typeof runManagedComputation;freeBytes?:()=>Promise<number>}){
+  fetch?:typeof fetch;health?:typeof runManagedComputation;freeBytes?:()=>Promise<number>;enabled?:()=>boolean}){
   const root=path.resolve(options.root),folder=path.join(root,recipe.id),versionDir=path.join(folder,recipe.version),target=path.join(versionDir,'engine.wasm'),pointer=path.join(folder,'active.json');
+  const enabled=options.enabled||(()=>process.env.OMNI_EDU_XIAOZHI_COMPUTE!=='0');
   const fetcher=options.fetch||globalThis.fetch,health=options.health||runManagedComputation;
   let bundled=options.bundledWasm;
   if(bundled===undefined){try{bundled=createRequire(import.meta.url).resolve('quickjs-wasi/quickjs.wasm');}catch{bundled=null;}}
@@ -52,10 +53,11 @@ export function createManagedTools(options:{root:string;bundledWasm?:string|null
   async function view(id:string=recipe.id):Promise<ManagedToolView>{
     const base={id,name:recipe.name,version:recipe.version,sourceUrl:recipe.sourceUrl,license:recipe.license,downloadBytes:recipe.archiveBytes,installedBytes:recipe.bytes,inUse:[...leases.values()].reduce((a,b)=>a+b,0),...progress};
     if(id!==recipe.id)return{...base,id,name:id,sourceUrl:'',version:'',status:'authorization_required',reason:'不在已认可的免费工具清单',nextAction:'先明确工具来源、用途、权限和费用；当前免费工具仍可用'};
+    if(!enabled())return{...base,status:'unsupported',reason:'本地自动计算已暂停',nextAction:'已有成果可继续读取；取消启动停用设置并重启后可恢复计算'};
     if(!supported())return{...base,status:'unsupported',reason:'当前应用运行时不支持该组件',nextAction:'更新到兼容的小智桌面版本'};
     try{const found=await existing();return found?{...base,status:'ready',reason:found.origin==='builtin'?'内置组件已通过实际健康检查':'已下载组件通过校验与健康检查',nextAction:'可离线计算',origin:found.origin}
       :progress?.phase==='failed'?{...base,status:'fault',reason:MANAGED_TOOL_ERRORS[progress.error||'configuration']||MANAGED_TOOL_ERRORS.configuration,nextAction:'可重新准备；中断后会重新下载'}:{...base,status:'missing_dependency',reason:'本地计算组件尚未准备',nextAction:'准备已认可的免费组件；中断后会重新下载'};
-    }catch(error){const code=known(error);return{...base,status:'fault',reason:MANAGED_TOOL_ERRORS[code],nextAction:'保留已有成果；重新检查组件，未占用时可卸载后再准备',error:code};}
+    }catch(error){const code=known(error);return{...base,...(await fs.stat(pointer).catch(()=>null)?{origin:'download' as const}:{}),status:'fault',reason:MANAGED_TOOL_ERRORS[code],nextAction:'保留已有成果；重新检查组件，未占用时可卸载后再准备',error:code};}
   }
   let lastProgressNotification=0;
   function publish(value:Progress){const before=progress;progress=value;const now=Date.now();if(before?.phase===value.phase&&value.phase==='downloading'&&before.downloadedBytes>0&&value.downloadedBytes!==recipe.archiveBytes&&now-lastProgressNotification<100)return;lastProgressNotification=now;for(const listener of job?.listeners||[])try{listener({...value});}catch{}}
@@ -104,7 +106,7 @@ export function createManagedTools(options:{root:string;bundledWasm?:string|null
     finally{if(temp){healthy.delete(path.join(temp,'engine.wasm')+':'+recipe.sha256);noLinks(temp);for(const name of ['package.tgz','engine.wasm'])await fs.unlink(path.join(temp,name)).catch(()=>{});await fs.rmdir(temp).catch(()=>{});}}
   }
   async function prepare(id:string,signal?:AbortSignal,listener?:(state:Progress)=>void){
-    if(closed)throw Error('cancelled');if(id!==recipe.id)throw Error('authorization_required');if(!supported())throw Error('unsupported');if(removing)throw Error('busy');signal?.throwIfAborted();
+    if(closed)throw Error('cancelled');if(id!==recipe.id)throw Error('authorization_required');if(!enabled()||!supported())throw Error('unsupported');if(removing)throw Error('busy');signal?.throwIfAborted();
     const key=Symbol();
     if(!job){const entry:Job={controller:new AbortController(),consumers:new Set(),listeners:new Set(),promise:Promise.resolve('')};job=entry;
       entry.promise=Promise.resolve().then(()=>install(AbortSignal.any([entry.controller.signal,AbortSignal.timeout(120000)]))).finally(()=>{if(job===entry)job=undefined;});void entry.promise.catch(()=>{});}
