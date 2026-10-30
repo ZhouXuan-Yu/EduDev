@@ -429,5 +429,278 @@
     "computation-report-electron.log": "7aa8fc9b2916cc24996b1a3dea609b2f48982722a1f940beadcf6b365e691077",
     "computation-report-comprehensive.log": "b97f67c4a70be91169fd88f610ab5def6349baff398f1eed31ecbd31dad463bd",
     "computation-report-components.log": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+  },
+  "integration": {
+    "implementationSha": "f30212f8da4248e5b09dee5d24189b966f0d83e1",
+    "mergedMain": "28ef0696d1038a724d84a6a923b9f3672c630f95",
+    "docConflictsResolved": 13,
+    "bothThreadsPreserved": true,
+    "unpublishedMarkerCommitAmended": true,
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\computation-report-integration-build.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "exitCode": 0,
+      "passed": 240,
+      "total": 240,
+      "log": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\computation-report-integration-components.log"
+    },
+    "knowledgeBoundaries": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
+      "exitCode": 0,
+      "passed": 20,
+      "log": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\computation-report-integration-kb.log",
+      "initialInvocation": "First Node strip-only invocation failed on pre-existing peer constructor parameter property; retained integration-kb-initial.log, no peer source edit."
+    },
+    "electron": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/computation-report-electron.mjs",
+      "exitCode": 0,
+      "report": {
+        "ok": true,
+        "checks": [
+          "Formal composer computes actual CSV before one original grouped review; three files are not saved before confirmation",
+          "One teacher confirmation writes actual CSV/HTML/XLSX; independent bytes preserve IDs, formulas as text, typed amounts and total240",
+          "Original native report call is independently verified through every original file ledger and disk readback",
+          "Saved offline SVG chart opens in existing real file panel at both target viewports",
+          "Cold restart retains formal files, grouped cards and native identity with zero model replay despite ephemeral calculation cleanup"
+        ],
+        "errors": [],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-computation-report-ui-InrvY8",
+        "boundary": "Formal Electron/Pi/actual bundled QuickJS and original reviewed file ledgers; synthetic SSE only, no paid calls, no Office/WPS or complete E05 AT acceptance.",
+        "wire": {
+          "requests": [
+            {
+              "index": 0,
+              "tool": "update_task_plan"
+            },
+            {
+              "index": 1,
+              "tool": "education_compute"
+            },
+            {
+              "index": 2,
+              "tool": "education_create_report"
+            },
+            {
+              "index": 3,
+              "tool": null
+            }
+          ],
+          "index": 4,
+          "computation": {
+            "value": {
+              "rows": [
+                {
+                  "studentId": "001",
+                  "item": "粉笔",
+                  "unitPrice": 10,
+                  "quantity": 3,
+                  "note": "教具,备用",
+                  "amount": 30
+                },
+                {
+                  "studentId": "002",
+                  "item": "纸张",
+                  "unitPrice": 20,
+                  "quantity": 10,
+                  "note": null,
+                  "amount": 200
+                },
+                {
+                  "studentId": "003",
+                  "item": "胶带",
+                  "unitPrice": 5,
+                  "quantity": 2,
+                  "note": "=1+1（文本）",
+                  "amount": 10
+                }
+              ],
+              "summary": [
+                {
+                  "label": "合计",
+                  "value": 240
+                }
+              ]
+            },
+            "runtime": "3.6.2",
+            "elapsedMs": 13,
+            "inputSha256": "9fa37abba8fc6e24de29bde6a112acfec76ec27f8e68ac6ef9a5ba07561220ce",
+            "codeSha256": "3c99294e95fd5affe5b6ee8b460413cd6bb7de0ecb5dde93a01f2d4a46de322d",
+            "policy": {
+              "schemaVersion": "xiaozhi.table-input.v1",
+              "encoding": "UTF-8",
+              "delimiter": ",",
+              "decimal": ".",
+              "empty": "explicit_nullable",
+              "text": "preserve",
+              "quotedNewlines": true,
+              "columns": [
+                {
+                  "key": "studentId",
+                  "label": "学号",
+                  "type": "text"
+                },
+                {
+                  "key": "item",
+                  "label": "项目",
+                  "type": "text"
+                },
+                {
+                  "key": "unitPrice",
+                  "label": "单价",
+                  "type": "number"
+                },
+                {
+                  "key": "quantity",
+                  "label": "数量",
+                  "type": "number"
+                },
+                {
+                  "key": "note",
+                  "label": "备注",
+                  "type": "text",
+                  "nullable": true
+                }
+              ]
+            },
+            "resultId": "xicompute_58397e2f7d0c4a19046f117618d7b22642440231ac78c96b4928a24151c97df2",
+            "resultSha256": "a4e5344878f5c01afb34c23efaa5f6c210195dd3b8be331477a093b37b1a8905"
+          },
+          "delivery": {
+            "success": true,
+            "bundleId": "xidelivery_bb9907206756aa807a502e56dce55fa2d7f1cda5bfba10401c99471540d131fe",
+            "outcome": "saved",
+            "files": [
+              {
+                "fileId": "computed_0",
+                "file": "课堂费用.csv",
+                "format": "text",
+                "outcome": "applied",
+                "carried": false
+              },
+              {
+                "fileId": "computed_1",
+                "file": "课堂费用图表.html",
+                "format": "text",
+                "outcome": "applied",
+                "carried": false
+              },
+              {
+                "fileId": "computed_2",
+                "file": "课堂费用.xlsx",
+                "format": "xlsx",
+                "outcome": "saved",
+                "carried": false
+              }
+            ],
+            "message": "整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。"
+          }
+        },
+        "files": [
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-computation-report-ui-InrvY8\\XiaozhiOutputs\\a9451ed8dffd05e4\\aisession_e5eb8b62-1ded-40a2-9145-dd73001bb734\\课堂费用.csv",
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-computation-report-ui-InrvY8\\XiaozhiOutputs\\a9451ed8dffd05e4\\aisession_e5eb8b62-1ded-40a2-9145-dd73001bb734\\课堂费用图表.html",
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-computation-report-ui-InrvY8\\XiaozhiOutputs\\a9451ed8dffd05e4\\aisession_e5eb8b62-1ded-40a2-9145-dd73001bb734\\课堂费用.xlsx"
+        ],
+        "verification": {
+          "schema": "xiaozhi.verification.v1",
+          "runId": "run_256d4e73-eea1-413b-bdb1-aa53c55e0f12",
+          "state": "needs_human",
+          "scope": "declared_criteria",
+          "checkedAt": "2026-10-30T09:51:28.467Z",
+          "reason": "human_review",
+          "checks": [
+            {
+              "id": "saved_bundle:actual-report-2",
+              "state": "passed",
+              "evidenceIds": [
+                "result:actual-report-2"
+              ]
+            },
+            {
+              "id": "answer:human",
+              "state": "needs_human",
+              "evidenceIds": []
+            }
+          ],
+          "evidence": [
+            {
+              "id": "actual-report-0",
+              "runId": "run_256d4e73-eea1-413b-bdb1-aa53c55e0f12",
+              "callId": "actual-report-0",
+              "kind": "execution",
+              "digest": "a06fb0529e8a8121180d00cff0f15af37ac568c9990dbd5af2885771dfbd2649",
+              "observedAt": "2026-10-30T09:50:47.462Z"
+            },
+            {
+              "id": "actual-report-1",
+              "runId": "run_256d4e73-eea1-413b-bdb1-aa53c55e0f12",
+              "callId": "actual-report-1",
+              "kind": "execution",
+              "digest": "af68709c1b308139edeb0f5c454355781a171be175597353aec975e9d5ba9af9",
+              "observedAt": "2026-10-30T09:50:59.570Z"
+            },
+            {
+              "id": "actual-report-2",
+              "runId": "run_256d4e73-eea1-413b-bdb1-aa53c55e0f12",
+              "callId": "actual-report-2",
+              "kind": "execution",
+              "digest": "b7dfe3c969d86ba3ec2671ea56c455d7fc1e6767baf0d2abcd48273b416501e8",
+              "observedAt": "2026-10-30T09:51:25.363Z"
+            },
+            {
+              "id": "result:actual-report-2",
+              "runId": "run_256d4e73-eea1-413b-bdb1-aa53c55e0f12",
+              "callId": "actual-report-2",
+              "kind": "readback",
+              "digest": "e1f5af0cbe2389addcd5cdabc68a67ec01a241658c4c5e7633032ac7dd3bb859",
+              "observedAt": "2026-10-30T09:51:25.363Z"
+            }
+          ],
+          "operations": {
+            "succeeded": 3,
+            "failed": 0
+          }
+        }
+      },
+      "log": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\computation-report-integration-electron.log"
+    },
+    "comprehensive": "Earlier207/207 belongs to pre-final-CSS,pre-integration implementation; not rerun after this main merge.",
+    "sourceFilesSha256": {
+      "apps/desktop/scripts/xiaozhi-agent/computation-report-electron.mjs": "a19213ad190f37649c11d4d5eebc4a6200f092ca27486b15aa34a351ab1e41da",
+      "apps/desktop/scripts/xiaozhi-agent/computation-report-fixture.mjs": "aadf866425a47aec57ee6d2c1ce8b410e87e56fa6becf35c087569d03c2ebda3",
+      "apps/desktop/scripts/xiaozhi-agent/computation-report-smoke.mjs": "607d6b9ce0b9227661d053a892474ca8839981d8e91f00973bf62860b337fd6c",
+      "apps/desktop/src/main/managed-tools/result-report.ts": "8ffe89a7217d8dda3167290cb9a269f41ed12d95ac444a70397f46777f9c195b",
+      "apps/desktop/src/main/managed-tools/tools.ts": "c72d43cc4d94c0479ab06a732864fa0d31d5bcf230a595d484a83dcf96f11387",
+      "apps/desktop/src/main/managed-tools/typed-table.ts": "7e6963f637f0305b1b4259fe5671cca29ad924860ad3a3179e45c0bf8512b574",
+      "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts": "7c6dbae4d4e30daecfe5fc3c490588d93b977fa851b613ddcf248df3fb683d3f",
+      "apps/desktop/src/main/xiaozhi-agent/education-tool-catalog.ts": "0e5701a2d371b24733684267106781e5d9b7cc794c87ba8ab736c7867c28c938",
+      "apps/desktop/src/main/xiaozhi-agent/pi-session.ts": "7074848f4fbf89bc39453d4b997807b2a6ad8e750091a7d140b63cd9ab77cdd1",
+      "apps/desktop/src/main/xiaozhi-agent/production-host.ts": "22c3e80e61ef3acc506b6587deb005849795d23b64ad19127af21e62a3fab925",
+      "apps/desktop/src/main/xiaozhi-agent/tasks/plan-runtime.ts": "4b136f79ca90ecab9ee9da14e7fe0b26d9434d73521e6ccfddecf23a1593d521",
+      "apps/desktop/src/main/xiaozhi-agent/tasks/resources.ts": "58760479aebd0c31bb2d4cb044e1c845968567998930eac8c7958783c0ab46d9",
+      "apps/desktop/src/main/xiaozhi-agent/tasks/result-recheck.ts": "6194b1e2f41dedd75b76e178e7e3963981599917c3b9244ee3d5dba103eb274f",
+      "apps/desktop/src/main/xiaozhi-agent/tasks/task-evidence.ts": "3a930b449574bd3e4c099335f4732c38a4380f9303ec51984267f27579ac0d55",
+      "apps/desktop/src/main/xiaozhi-agent/text-change-coordinator.ts": "50d9922f4dcaeb1a52f2f7cd74fb9cb248c2ec32636e543b1fa1ffeae0166d87",
+      "apps/desktop/src/main/xiaozhi-agent/text-change-service.ts": "7042f1e0ba3984ef0b13cbae393063ae630a42839ccadcf507758419e523a80b",
+      "apps/desktop/src/main/xiaozhi-agent/text-edit-proposal.ts": "69643463389fe4425ac17aee3483da12a8b1aba05fe727c412d6d31aac93fd8f",
+      "apps/desktop/src/main/xiaozhi-agent/tools/manifest.ts": "a2ca6126c49a69ad19bbab55105a3a4e85f248a955f930b8b079cf49195f65c0",
+      "apps/desktop/src/main/xiaozhi-agent/verification/result-readback.ts": "aa3283d4c2cb57d92ec77ecfd3f4e5042ca450718b6298332c4d6d3687e75026",
+      "apps/desktop/src/shared/managed-tools.ts": "71c30f0eff7e849c7fbab62dc5b4423f2bcf517345a6aa45c1eaaf8216ba5d9f",
+      "apps/desktop/src/shared/xiaozhi-computation.ts": "b38b6373ab086913c708f458942df51b1fd994f89ef83ffee468f7ee745a4593"
+    },
+    "buildSha256": {
+      "apps\\desktop\\out\\main\\index.js": "284d41221dfae5b475f5f7709c39f064ca83f815a82b4fd0b105cdfc95e79340",
+      "apps\\desktop\\out\\main\\pi-session-H9DE6JZg.js": "2de9564601f813d8489966cfbbfc868c3999fd309f43c4894f69405480603ec2"
+    },
+    "logsSha256": {
+      "computation-report-integration-build.log": "3187950ea692a0452b729061d413acb28a0091f4dc2895650081667d50548606",
+      "computation-report-integration-components.log": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "computation-report-integration-kb.log": "d9fc2273d8ebcb3dae486c580f9c315615c6b06af864765718daf3576125174c",
+      "computation-report-integration-electron.log": "cbdc914dae308180ae70b2fc48f8e5fb843b67052927384896d3b326610c18f4"
+    },
+    "diffCheckExitCode": 0
   }
 }
