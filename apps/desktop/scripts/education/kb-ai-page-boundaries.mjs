@@ -85,4 +85,16 @@ await check('Transient local worker contention stays pending without a charge; d
 await check('Superscript/subscript loss is a mathematical change, never whitespace-compatible page or question agreement',async()=>{
  for(const mode of ['math_notation_changed','math_stem_changed']){const f=await completed('blank',mode);try{assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(f.batch).status,'review','x²/x2 and y₁/y1 cannot qualify as identical source content');const question=await f.question();if(question)assert(!archiveEligible(question));assert.equal((await f.repo.page(query(f))).status,'needs_review');}finally{f.db.close();}}
 });
+await check('A source-backed ordinary AI page with zero questions enters existing full-text and hybrid material retrieval without fabricating OCR',async()=>{
+ const f=await completed('blank','ordinary');try{
+  const {MaterialFullTextSearch}=await import('../../src/main/assets/material-full-text.ts'),{RetrievalRepository}=await import('../../src/main/retrieval/repository.ts');
+  f.db.exec("ALTER TABLE teacher_resources ADD COLUMN title TEXT NOT NULL DEFAULT '原页';");
+  let rag;const map=r=>({id:r.id,resourceId:r.resource_id,chunkIndex:r.chunk_index||0,pageNumber:r.page_number,contentMd:r.content_md,containsPersonalData:!!r.contains_personal_data});
+  const lexical=new MaterialFullTextSearch({...f.host,map,restored:()=>rag?.restoredText});await lexical.migrate();
+  rag=new RetrievalRepository({...f.host,chunk:map,question:r=>r,fullText:()=>lexical,keyword:async()=>[],page:(batchId,ordinal)=>f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:async t=>t,writer:async action=>{f.db.exec('BEGIN IMMEDIATE');try{const v=await action(rag);f.db.exec('COMMIT');return v;}catch(e){f.db.exec('ROLLBACK');throw e;}}});await rag.migrate();
+  if(rag.restoredText)for(let i=0;i<3;i++)await rag.restoredText.drain();
+  const result=await lexical.candidates('均匀介质');assert.equal(result.units.length,1,'A successfully restored textbook page is currently invisible to material retrieval');assert(result.units[0].restored,'AI transcription must carry its own reference rather than an OCR-body receipt');
+  const hybrid=await rag.materials('均匀介质');assert.equal(hybrid.units.length,1);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM resource_chunks').get().n,0);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n,0);assert.equal(f.state.calls,2,'Indexing must not call the model again');
+ }finally{f.db.close();}
+});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
