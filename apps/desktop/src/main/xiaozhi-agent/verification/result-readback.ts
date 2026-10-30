@@ -1,3 +1,4 @@
+import {computationEffectTool} from '../../../shared/xiaozhi-computation';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -13,7 +14,7 @@ type NativeResult={toolCallId:string;toolName:string;content:unknown;isError?:bo
 type Captured={tool:string;callId:string;version:string;digest:string;payload:Record<string,any>;observedAt:string;effectWork?:Promise<BoundEffect|undefined>;effect?:BoundEffect};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const hex=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
-const effects=new Set(['education_web_answer','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','education_propose_questions','education_propose_practice']);
+const effects=new Set(['education_create_report','education_web_answer','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','education_propose_questions','education_propose_practice']);
 const kinds:Record<string,string>={education_web_answer:'saved_questions',office_list_files:'directory',office_file_stat:'file_metadata',office_web_fetch:'web',office_browser:'web',office_read_attachment:'attachment',office_read_text:'file',office_view_public_image:'image',office_create_text:'saved_text',office_create_science_figure:'saved_text',office_edit_text:'saved_text',office_create_document:'saved_office',office_deliver_files:'saved_bundle',education_propose_questions:'saved_questions',education_propose_practice:'saved_questions'};
 async function bounded<T>(work:()=>Promise<T>):Promise<T|undefined>{
  let timer:ReturnType<typeof setTimeout>|undefined;
@@ -50,6 +51,7 @@ function normalize(tool:string,content:unknown,callId:string):Omit<Captured,'too
   return{digest,version:digest,payload};
  }
  if(!payload||payload.success!==true)return;
+ tool=computationEffectTool(tool,payload);
  if(discoveryTools.has(tool))return discoverySnapshot(tool,payload);
  if(tool==='education_web_answer'){
   if(payload.state!=='applied'||payload.currentVersionMatches!==true||!hex(payload.afterVersion)||payload.currentVersion!==payload.afterVersion||typeof payload.id!=='string'||!/^webanswer_[a-f0-9-]{36}$/.test(payload.id))return;
@@ -101,7 +103,7 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
  verifyImage:(receipt:PublicImageDelivery)=>Promise<boolean>;bindEffect?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>;bindDiscovery?:(callId:string,tool:string,payload:Record<string,any>)=>Promise<BoundEffect>}){
  const captured=new Map<string,Captured>(),images=new Map<string,PublicImageDelivery>();let overflow=false,discoveryIncomplete=false,finished=false;
  function capture(callId:string,tool:string,result:unknown,failed:boolean){
-  if(finished||!Object.prototype.hasOwnProperty.call(kinds,tool)||failed)return;
+  if(finished||(!Object.prototype.hasOwnProperty.call(kinds,tool)&&tool!=='education_create_report')||failed)return;
   if(captured.has(callId)||captured.size>=30||!callId||callId.length>90){overflow=true;return;}
   const c=normalize(tool,(result as {content?:unknown})?.content,callId);if(c){
    const value:Captured={...c,tool,callId,observedAt:new Date().toISOString()};captured.set(callId,value);
@@ -138,7 +140,7 @@ export function createRunResultReadback(options:{runId:string;readLocal:(tool:st
    const input=historical.get(c.callId),bound=input||c.effect;
    const digest=bound?hash([c.digest,bound.digest]):c.digest,version=bound?.version||c.version;
    registry.set(id,{id,runId:options.runId,callId:c.callId,kind:'readback',digest,version,succeeded:true,observedAt:c.observedAt});
-   criteria.push({id:`${input?'file_before_edit':kinds[c.tool]}:${c.callId}`,kind:'readback',alternatives:[id],expectedDigest:digest,version});
+   criteria.push({id:`${input?'file_before_edit':kinds[computationEffectTool(c.tool,c.payload)]}:${c.callId}`,kind:'readback',alternatives:[id],expectedDigest:digest,version});
   }
   criteria.push({id:'answer:human',kind:'human',alternatives:[]});
   if(incomplete)criteria.push({id:'coverage:unknown',kind:'readback',alternatives:[]});

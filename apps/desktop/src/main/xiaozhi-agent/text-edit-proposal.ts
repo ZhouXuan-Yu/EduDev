@@ -49,7 +49,7 @@ export function textProposalInput(raw: unknown): XiaozhiTextProposalInput {
   if (v.operation === 'create') {
     if (typeof v.content !== 'string') throw new Error('invalid_input');
     changeText(Buffer.from(v.content));
-    const content = stripGeneratedReviewSuffix(v.content, true);
+    const content = /\.csv$/i.test(v.path) ? v.content : stripGeneratedReviewSuffix(v.content, true);
     changeText(Buffer.from(content));
     return { operation: 'create', path: v.path, content } as XiaozhiTextProposalInput;
   } else {
@@ -59,7 +59,7 @@ export function textProposalInput(raw: unknown): XiaozhiTextProposalInput {
       if (!edit || typeof edit !== 'object' || Array.isArray(edit) || Object.keys(edit).some(key => !['oldText', 'newText'].includes(key))
         || typeof edit.oldText !== 'string' || !edit.oldText || typeof edit.newText !== 'string') throw new Error('invalid_input');
       changeText(Buffer.from(edit.oldText)); changeText(Buffer.from(edit.newText));
-      const newText = stripGeneratedReviewSuffix(edit.newText);
+      const newText = /\.csv$/i.test(v.path) ? edit.newText : stripGeneratedReviewSuffix(edit.newText);
       changeText(Buffer.from(newText));
       edits.push({ oldText: edit.oldText, newText });
     }
