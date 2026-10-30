@@ -2,7 +2,7 @@ import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {createManagedTools} from './service';
 import {MANAGED_TOOL_ERRORS} from '../../shared/managed-tools';
 import {JAVASCRIPT_COMPONENT as recipe} from './manifest';
-export function managedComputationTools(options:{service:ReturnType<typeof createManagedTools>;current:()=>boolean;sanitize:(text:string)=>Promise<string>}):ToolDefinition[]{
+export function managedComputationTools(options:{service:Pick<ReturnType<typeof createManagedTools>,'view'|'prepare'|'compute'>;current:()=>boolean;sanitize:(text:string)=>Promise<string>}):ToolDefinition[]{
   const current=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!options.current())throw Error('cancelled');};
   return[{name:'prepare_education_tool',label:'准备本地计算工具',description:'检查并准备已认可的免费本地计算组件。先检测已安装工具，缺少时核验固定官方包、检查后激活；不修改系统Python或全局包。未知工具返回需授权，不接受下载地址/脚本。准备就绪后继续原任务调用education_compute，不要要求教师手工安装。',
     parameters:{type:'object',properties:{tool:{type:'string',minLength:1,maxLength:64}},required:['tool'],additionalProperties:false} as ToolDefinition['parameters'],
@@ -10,7 +10,7 @@ export function managedComputationTools(options:{service:ReturnType<typeof creat
       current(signal);const value=args as {tool?:unknown};if(!value||typeof value.tool!=='string'||Object.keys(value).join(',')!=='tool'||value.tool.length>64)throw Error('invalid_input');
       const before=await options.service.view(value.tool);current(signal);
       if(before.status==='authorization_required'||before.status==='unsupported')return{content:[{type:'text',text:JSON.stringify({success:false,data:before})}],details:{success:false}};
-      await options.service.prepare(value.tool,signal,state=>update?.({content:[{type:'text',text:JSON.stringify({phase:state.phase,downloadedBytes:state.downloadedBytes,totalBytes:recipe.archiveBytes})}],details:{success:true}}));current(signal);
+      await options.service.prepare(value.tool,signal,state=>update?.({content:[{type:'text',text:JSON.stringify({phase:state.phase,downloadedBytes:state.downloadedBytes,totalBytes:state.totalBytes||recipe.archiveBytes})}],details:{success:true}}));current(signal);
       const after=await options.service.view(value.tool);current(signal);return{content:[{type:'text',text:JSON.stringify({success:true,data:after,nextTool:'education_compute'})}],details:{success:true}};
     }},
     {name:'education_compute',label:'运行本地教学计算',description:'在隔离QuickJS中实际运行JavaScript做计算/数据整理。code为函数体，用return返回JSON；input为独立JSON数据，通过变量input读取。可用标准JS/Math；无process、require、fs、fetch或任意模块导入。缺少免费兼容组件时自动准备并继续本次调用。返回实际结果与运行版本；最终文件仍用原文件工具提出审阅，不把临时计算当正式成果。不要声称仅凭运算已证明教学推理。',
