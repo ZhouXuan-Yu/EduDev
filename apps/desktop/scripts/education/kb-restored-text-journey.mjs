@@ -2,11 +2,13 @@ import fs from 'node:fs';import path from 'node:path';import os from 'node:os';i
 const desktop=process.cwd(),output=fs.mkdtempSync(path.join(os.tmpdir(),'omni-restored-text-')),folder=path.join(output,'原图教材'),distractors=path.join(output,'其他学科'),data=path.join(output,'data'),profile=path.join(output,'profile');fs.mkdirSync(folder);fs.mkdirSync(distractors);
 const text='光的色散与传播\n棱镜能使白光分解成多种颜色，这种现象叫光的色散。\n雨后的彩虹也是光的色散现象。\n光在同种均匀介质中沿直线传播。',file=path.join(folder,'光学教材.pdf');
 const python=process.env.OMNI_EDU_FIXTURE_PYTHON||'C:/Users/ZhouXuan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe';
-execFileSync(python,['-c',`import sys
+execFileSync(python,['-c',`import sys,json
 from PIL import Image,ImageDraw,ImageFont
 im=Image.new('RGB',(1400,1200),'white');d=ImageDraw.Draw(im);f=ImageFont.truetype('C:/Windows/Fonts/msyh.ttc',32)
-for i,line in enumerate(sys.argv[2].split('\\n')):d.text((40,80+i*100),line,font=f,fill='black')
-im.save(sys.argv[1],format='PDF',resolution=90)`,file,text.replaceAll('\n','\\n')],{windowsHide:true});
+for i,line in enumerate(json.loads(sys.argv[2]).splitlines()):
+    assert d.textbbox((40,80+i*100),line,font=f)[2] <= 1360, 'Fixture text clipped'
+    d.text((40,80+i*100),line,font=f,fill='black')
+im.save(sys.argv[1],format='PDF',resolution=90)`,file,JSON.stringify(text)],{windowsHide:true});
 for(const [name,body]of [['生物.md','植物的叶绿体利用阳光进行光合作用，吸收水和二氧化碳，释放氧气。'],['几何.md','直角三角形的两条直角边平方和等于斜边平方。勾股定理讨论三条边的长度关系。'],['古诗.md','古诗常借明月与故乡等意象表达离别和思乡情感。']])fs.writeFileSync(path.join(distractors,name),body);
 const sha=p=>createHash('sha256').update(fs.readFileSync(p)).digest('hex'),originalSha=sha(file),sourceSchema='xiaozhi.material-ai-text-source.v1';
 const report={output,checks:[],rendererErrors:[],scope:'Actual Electron folder/import/local OCR and original-page preview, existing FTS/real local ONNX/Lance, production Pi search/read/citation and native restart. Local blank-OCR fault injection and AI JSON/SSE responses controlled; not natural model accuracy, recall benchmark, 40GB or installer acceptance'};
