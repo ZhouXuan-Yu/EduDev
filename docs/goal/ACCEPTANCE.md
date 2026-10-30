@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-30 E04版本生命周期工程更新
+
+实现8587057；真实双版本冻结/升级/回退与2进程FIFO队列已贯通现设置、typed IPC、Pi和隔离子进程。build、8+12源码专项、240组件、正式Electron5项通过；综合日志207/207（shell退出回执未跨轮保留），讲义既有间歇断言本次未复现。完整AT仍未集中验收，新增已实现0。后续E05图表/CSV/正式文件；精确事实见[WORK_PROGRESS](../goal/WORK_PROGRESS.md)与docs/research/AGENT_MANAGED_TOOL_VERSIONS_E04_20261030.json，D盘日常版本未更新。
+
 ## 2026-10-30 E04限定工程证据
 
 实现f58f5ff，最终主进程兼容停用/故障卸载接缝59b32e9。最终build/type与12源码/真实组件专项exit0；正式Electron5项及240组件在f58f5ff通过，后续renderer未改，非最终重跑。UI从现设置看到缺失→同任务真实官方下载安装→240结果→UI卸载/准备→冷启0下载/0模型调用，0renderer错误，1366/1920截图保留。0真实付费模型请求；npm audit既有23项（0严重），未自动修依赖。证据docs/research/AGENT_MANAGED_TOOLS_E04_20261030.json。
