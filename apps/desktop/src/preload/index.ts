@@ -1,3 +1,4 @@
+import type {ManagedToolView,ManagedToolResult,ManagedToolInput} from '../shared/managed-tools';
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
 import type {MaterialStudyQuery,MaterialStudyView,MaterialStudySave,MaterialStudyQuestion,MaterialStudyPage} from '../shared/material-study';
@@ -188,6 +189,11 @@ function takeAuthorizedAttachmentPaths(input: XiaozhiAttachmentImportInput): str
 }
 
 const api = {
+  listManagedTools:()=>ipcRenderer.invoke('managed-tools:list') as Promise<ManagedToolResult<ManagedToolView[]>>,
+  prepareManagedTool:(input:ManagedToolInput)=>ipcRenderer.invoke('managed-tools:prepare',input) as Promise<ManagedToolResult<ManagedToolView>>,
+  cancelManagedTool:(commandId:string)=>ipcRenderer.invoke('managed-tools:cancel',commandId) as Promise<ManagedToolResult<null>>,
+  removeManagedTool:(id:string)=>ipcRenderer.invoke('managed-tools:remove',id) as Promise<ManagedToolResult<ManagedToolView>>,
+
   getDesktopChrome: () => ipcRenderer.invoke('desktop:state') as Promise<DesktopChromeState>,
   openDesktopMenu: (group:DesktopMenu,x:number,y:number) => ipcRenderer.invoke('desktop:menu',{group,x,y}) as Promise<{ok:boolean;error?:string}>,
   onDesktopCommand: (listener:(command:DesktopCommand)=>void) => {
