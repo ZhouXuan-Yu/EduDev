@@ -81,3 +81,13 @@
 - 接缝：request-sources→protected context/reader→Pi独立additive identity与manifest/catalog；control applied回执记录真实应用顺序，旧已应用记录明确顺序未知。旧创建/control/memory身份保持。无DDL、新依赖、新外部请求或额外批准。
 - 兼容与回退：新来源能力的native身份读取保留；只读无文件效果，旧消息/controls无需迁移。撤回/中断/隔离run不恢复为已应用；新版本冲突要求从offset0重读。
 - 检查：一次源码边界与旧身份检查、一次相关构建/组件、正式Electron受控长请求→重读→追加→压缩/选择路径；阶段完整AT后集中备注已实现，不将受控调用当自然推理质量。
+
+## E04 受管计算工具与准备（2026-10-30冻结）
+
+- 教师结果：现有设置“外部工具”中看到真实就绪/缺依赖/需授权/不支持/故障及准备进度；计算任务发现缺少认可的免费组件时自动准备后继续同一run，已有内置组件不重复下载。
+- 首个生产清单：quickjs-wasi3.6.2（项目Pi现有间接依赖，MIT），官方npm tarball568844B/SHA256 f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982，WASM637405B/SHA256 d4c9375f2b1ca4dc95f72c8aa2982a7a9951ac8011490d79c6582df732b4bbd9。wasm32跨宿主平台；最低Node22/Electron现版本。总展开1524119B，预留8MiB空间。健康实际隔离执行6*7=42、无Node/文件/网络桥。
+- 依赖：将现有quickjs-wasi3.6.2与tar7.5.22明确为直接生产依赖（tar为现有构建间接依赖，BlueOak-1.0.0）；不增加第二Agent Runtime。已从官方npm实取并比对本机锁定WASM相同。包元数据/许可/体积与Windows打包影响入清单；只取tar中固定WASM文件，其他说明不执行。
+- 接缝：shared managed-tools契约→main/managed-tools immutable版本/原子active指针与准备作业→隔离Node子进程健康/计算→原Pi附加native能力identity及manifest/catalog→原typed preload与现设置页组件。无业务DDL/第二账本；组件指针为可重建机器配置，教师文件沿原成果真源。
+- 状态与恢复：下载/核验/提取/健康/激活阶段来自真实字节与步骤；中断明确重新下载、不伪称续传。取消等待所属子进程退出，不后台继续激活；不同请求同版本准备去重，任一消费者取消只释放自己；无消费者则停止。完整包健康后原子激活，在用版本锁不可卸载；失败保留原兼容版本，冷启忽略残留临时区。
+- 范围：认可清单仅固定免费来源；任意新地址/付费服务返回需授权/不支持，不接受renderer注入URL/脚本/凭证。默认计算无宿主fs/process/fetch，输入结构化数据，结果有界；后续E05将结果通过原审阅发布到正式产物。
+- 检查：一次真实官方包下载安装/健康与受控损坏/断网/取消/空间/在用锁专项；正式Electron设置与合成SSE调用准备后续算，SQLite/磁盘和冷启读回；一轮build/组件。完整AT仍按W3集中，0真实模型费用。回退停新调用、保留已知native装配与既有成果，无用户数据迁移或删除。

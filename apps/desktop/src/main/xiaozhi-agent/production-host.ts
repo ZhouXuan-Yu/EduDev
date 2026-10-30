@@ -1,3 +1,5 @@
+import {createManagedTools} from '../managed-tools/service';
+import {managedComputationTools} from '../managed-tools/tools';
 import {createTeacherRequestTool,teacherRequestSources} from './request-sources';
 import {fileWritesEnabled} from './file-write-policy';
 import {conversationOutput,CONVERSATION_OUTPUT_LABEL} from './conversation-output';
@@ -142,7 +144,7 @@ type Active = { unfinishedThinkingTask?:string; task?:import('../../shared/xiaoz
 const validId = (id: unknown): id is string => typeof id === 'string' && /^aisession_[a-f0-9-]{36}$/i.test(id);
 const inside = (root: string, target: string) => { const relative = path.relative(root, target); return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)); };
 
-export function createXiaozhiProductionHost(options: { store: OmniEduStore; dataRoot: string; emit: (event: XiaozhiAgentEvent) => void;
+export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<typeof createManagedTools>; store: OmniEduStore; dataRoot: string; emit: (event: XiaozhiAgentEvent) => void;
   /** Main-owned isolated legacy regression only; product launches always enable Pi. */
   enabled?: boolean;
   /** Main-only acceptance seam; packaged IPC never installs it. */
@@ -162,6 +164,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
   beforeModelDelivery?:()=>Promise<void>;
   afterModelSwitchStage?: (stage:ModelSwitchStage)=>Promise<void> }) {
   const { store } = options;
+  const managedTools=options.managedTools||createManagedTools({root:path.join(options.dataRoot,'managed-tools')});
   const root = path.join(options.dataRoot, 'xiaozhi-pi');
   const active = new Map<string, Active>();
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
@@ -615,6 +618,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       classroomExportTools:wait=>createClassroomExportTools({sessionId:id,runId,state:store.xiaozhiState.classrooms,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped}),paperExport:{studentId,outputOnly:!grant,tools:wait=>createPaperExportTool({papers:store.papers,sessionId:id,runId,wait,runOffice:officeArtifacts.runOffice,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped})},
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await deliveries.context(id))+(fileWritesEnabled()?'':'\n小智自动文件生成已暂停；已有记录、文件可读取和核验，不能提出或执行新的自动文件写入，不要声称已交付新文件。恢复生成需取消启动停写设置并重启。'),
+      computationTools:managedComputationTools({service:managedTools,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:async text=>(await createStudentContextSanitizer(store))(text)}),
       teacherRequestTools:excluded=>[createTeacherRequestTool({excluded,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         load:async blocked=>{const [detail,controls,task]=await Promise.all([store.getAiConversationSession(id),store.xiaozhiState.controls(id),tasks.committed(id)]);return teacherRequestSources(detail.messages,controls,blocked,task);},
         sanitize:async text=>(await createStudentContextSanitizer(store))(text)})],
@@ -1046,6 +1050,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       const value = await mutateSettings(() => modelSettings.select(input));
       return { ...value, locked: value.locked || settingsBusy() };
     },
+    managedTools,
     memoryCatalog: memory.catalog, memoryTrace: memory.trace,
     // Main-only pointers; management IPC returns an explicit public projection.
     skillCatalog: async () => { await skillsReady; return managedSkills.catalog(); },
@@ -1298,6 +1303,7 @@ export function createXiaozhiProductionHost(options: { store: OmniEduStore; data
       for(const controller of balanceQueries)controller.abort();
       try {await waitForLifecycle('host_shutdown',async()=>{
       await attachments.close();
+      await managedTools.dispose();
       await browser.dispose();
       await mcp.dispose();
       await Promise.allSettled([...modelWrites]);

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-30 E04复用现Pi计算依赖
+
+quickjs-wasi3.6.2原已为Pi间接依赖，tar7.5.22原也在锁内；新增直接生产声明，无新包版本/原生addon。官方包与已装WASM实际字节一致；主进程受管服务/独立子进程/现typed preload/原设置组件贯通，原文件生成与确认不变。实现f58f5ff，最终主进程兼容停用/故障卸载接缝59b32e9。最终build/type与12源码/真实组件专项exit0；正式Electron5项及240组件在f58f5ff通过，后续renderer未改，非最终重跑。UI从现设置看到缺失→同任务真实官方下载安装→240结果→UI卸载/准备→冷启0下载/0模型调用，0renderer错误，1366/1920截图保留。0真实付费模型请求；npm audit既有23项（0严重），未自动修依赖。证据docs/research/AGENT_MANAGED_TOOLS_E04_20261030.json。
+
 ## 2026-10-30 E03原Pi与SQLite薄适配
 
 新增只读read_teacher_request及独立teacher-requests.v1 native记录；沿原main会话回调/manifest/catalog/task envelope。原teacher消息与controls是唯一请求事实，既有typed preload/ask_teacher/Office文件确认不变。无DDL、新依赖、真实API调用；精确control历史提示词匹配避免压缩误判配置。

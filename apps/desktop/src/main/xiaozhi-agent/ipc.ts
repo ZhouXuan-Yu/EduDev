@@ -1,3 +1,5 @@
+import {createManagedTools} from '../managed-tools/service';
+import {registerManagedToolIpc} from '../managed-tools/api';
 import {registerScienceExportIpc} from './science-export-api';
 import {registerTaskIpc} from './tasks/api';
 import { registerMcpIpc } from './mcp-api';
@@ -40,7 +42,8 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   const queueDelay = testing ? Math.min(30000, Math.max(0, Number(process.env.OMNI_EDU_E2E_PI_QUEUE_DISPATCH_DELAY_MS) || 0)) : 0;
   const autoCompaction = testing && process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION !== undefined
     ? process.env.OMNI_EDU_E2E_PI_AUTO_COMPACTION === '1' : process.env.OMNI_EDU_PI_AUTO_COMPACTION !== '0';
-  const host = createXiaozhiProductionHost({ ...options, enabled: options.authority.mode === 'pi', autoCompaction,
+  const managedTools=createManagedTools({root:path.join(options.dataRoot,'managed-tools'),...(testing&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})&&process.env.OMNI_EDU_E2E_MANAGED_TOOLS_NO_BUILTIN==='1'?{bundledWasm:null}:{})});
+  const host = createXiaozhiProductionHost({ ...options,managedTools, enabled: options.authority.mode === 'pi', autoCompaction,
     ...(testing&&process.env.OMNI_EDU_E2E_PI_MODEL_WAIT==='1'&&isBackgroundAcceptance({packaged:app.isPackaged,env:process.env,dataRoot:options.dataRoot,profileRoot:app.getPath('userData'),repoRoot:process.env.OMNI_EDU_REPO_ROOT||''})?{beforeModelDelivery:async()=>{
       const held=path.join(options.dataRoot,'.e2e-model-wait');
       if(fs.existsSync(held))return;
@@ -80,6 +83,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
     const window = options.window(); if (window && !window.isDestroyed()) window.webContents.send('xiaozhi:event', event);
   } });
   const fromMain = (event: Electron.IpcMainInvokeEvent) => event.sender === options.window()?.webContents && event.senderFrame === event.sender.mainFrame;
+  registerManagedToolIpc({ipcMain:options.ipcMain,allowed:fromMain,service:managedTools});
   registerAttachmentIpc({ipcMain:options.ipcMain,allowed:fromMain,attachments:host.attachments,choose:async()=>{
     const current=options.window();if(!current||current.isDestroyed())return;
     const result=await dialog.showOpenDialog(current,{title:'添加本地附件',properties:['openFile','multiSelections'],

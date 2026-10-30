@@ -204,10 +204,12 @@
     "pi-goal-x": "0.32.3",
     "pi-web-access": "0.36.0",
     "pptxgenjs": "4.0.1",
+    "quickjs-wasi": "3.6.2",
     "saxes": "6.0.0",
     "sqlite3": "^6.0.1",
     "svg-arc-to-cubic-bezier": "3.2.0",
     "svg-pathdata": "8.0.0",
+    "tar": "7.5.22",
     "tinycolor2": "1.6.0",
     "undici": "7.24.7",
     "yauzl": "3.4.0"

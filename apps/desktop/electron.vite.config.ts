@@ -44,7 +44,7 @@ export default defineConfig(({ command }) => ({
           fs.copyFileSync(resolve('src/main/education/vendor/math',file),resolve(options.dir,'vendor/math',file));
       },
     }],
-    build: { rollupOptions: { input: { index: resolve('src/main/index.ts'), 'retrieval-worker':resolve('src/main/retrieval/vector-worker.ts'), 'word-worker':resolve('src/main/assets/word-worker.ts'), 'education-runtime': resolve('src/main/education/worker-host.ts'), 'ocr-runtime': resolve('src/main/xiaozhi-agent/ocr-host.ts'), 'document-worker': resolve('src/main/xiaozhi-agent/document-worker.ts'), 'image-worker': resolve('src/main/xiaozhi-agent/image-worker.ts'), 'office-generator': resolve('src/main/xiaozhi-agent/office-generator.ts') }, output: { chunkFileNames: '[name]-[hash].js' } } },
+    build: { rollupOptions: { input: { index: resolve('src/main/index.ts'), 'retrieval-worker':resolve('src/main/retrieval/vector-worker.ts'), 'word-worker':resolve('src/main/assets/word-worker.ts'), 'education-runtime': resolve('src/main/education/worker-host.ts'), 'ocr-runtime': resolve('src/main/xiaozhi-agent/ocr-host.ts'), 'document-worker': resolve('src/main/xiaozhi-agent/document-worker.ts'), 'image-worker': resolve('src/main/xiaozhi-agent/image-worker.ts'), 'office-generator': resolve('src/main/xiaozhi-agent/office-generator.ts'), 'managed-tool-worker':resolve('src/main/managed-tools/worker.ts') }, output: { chunkFileNames: '[name]-[hash].js' } } },
   },
   preload: {
     plugins: [externalizeDepsPlugin()],
