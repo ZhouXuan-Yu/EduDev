@@ -1,4 +1,4 @@
-import type {ManagedToolView,ManagedToolResult,ManagedToolInput} from '../shared/managed-tools';
+import type {ManagedToolView,ManagedToolResult,ManagedToolInput,ManagedToolVersionInput} from '../shared/managed-tools';
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
 import type {MaterialStudyQuery,MaterialStudyView,MaterialStudySave,MaterialStudyQuestion,MaterialStudyPage} from '../shared/material-study';
@@ -193,6 +193,9 @@ const api = {
   prepareManagedTool:(input:ManagedToolInput)=>ipcRenderer.invoke('managed-tools:prepare',input) as Promise<ManagedToolResult<ManagedToolView>>,
   cancelManagedTool:(commandId:string)=>ipcRenderer.invoke('managed-tools:cancel',commandId) as Promise<ManagedToolResult<null>>,
   removeManagedTool:(id:string)=>ipcRenderer.invoke('managed-tools:remove',id) as Promise<ManagedToolResult<ManagedToolView>>,
+  activateManagedTool:(input:ManagedToolVersionInput)=>ipcRenderer.invoke('managed-tools:activate',input) as Promise<ManagedToolResult<ManagedToolView>>,
+  rollbackManagedTool:(input:ManagedToolInput)=>ipcRenderer.invoke('managed-tools:rollback',input) as Promise<ManagedToolResult<ManagedToolView>>,
+  removeManagedToolVersion:(input:{id:string;version:string})=>ipcRenderer.invoke('managed-tools:remove-version',input) as Promise<ManagedToolResult<ManagedToolView>>,
 
   getDesktopChrome: () => ipcRenderer.invoke('desktop:state') as Promise<DesktopChromeState>,
   openDesktopMenu: (group:DesktopMenu,x:number,y:number) => ipcRenderer.invoke('desktop:menu',{group,x,y}) as Promise<{ok:boolean;error?:string}>,

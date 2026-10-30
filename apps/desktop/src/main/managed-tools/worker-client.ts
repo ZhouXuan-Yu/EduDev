@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import type {ManagedToolResult} from '../../shared/managed-tools';
 
 export type ComputationResult={value:unknown;runtime:string;elapsedMs:number};
-export function runManagedComputation(wasm:string,code:string,input:unknown,signal?:AbortSignal):Promise<ComputationResult>{
+export function runManagedComputation(wasm:string,code:string,input:unknown,signal?:AbortSignal,version='3.6.2'):Promise<ComputationResult>{
   signal?.throwIfAborted();
   return new Promise((resolve,reject)=>{
     const directory=path.dirname(fileURLToPath(import.meta.url));
@@ -24,7 +24,7 @@ export function runManagedComputation(wasm:string,code:string,input:unknown,sign
       if(failure||code!==0||!result)return reject(Error(failure||'worker_failed'));
       if(!result.ok)return reject(Error(result.error));resolve(result.value);
     });
-    child.send!({schemaVersion:1,wasm,code,input},error=>{if(error)stop('worker_failed');});
+    child.send!({schemaVersion:1,wasm,code,input,version},error=>{if(error)stop('worker_failed');});
     if(signal?.aborted)abort();
   });
 }

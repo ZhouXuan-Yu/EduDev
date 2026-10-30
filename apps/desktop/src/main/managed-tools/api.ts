@@ -14,4 +14,17 @@ export function registerManagedToolIpc(options:{ipcMain:IpcMain;allowed:(event:I
   });
   options.ipcMain.handle('managed-tools:cancel',async(event,id:unknown)=>{if(!options.allowed(event))return{ok:false,error:'permission_denied'};if(typeof id!=='string')return{ok:false,error:'invalid_input'};controllers.get(id)?.abort();return{ok:true,value:null};});
   options.ipcMain.handle('managed-tools:remove',async(event,id:unknown)=>{if(!options.allowed(event))return{ok:false,error:'permission_denied'};if(typeof id!=='string')return{ok:false,error:'invalid_input'};try{return{ok:true,value:await service.remove(id)};}catch(cause){return error(cause);}});
+  for(const action of ['activate','rollback'] as const)options.ipcMain.handle('managed-tools:'+action,async(event,raw:unknown)=>{
+    if(!options.allowed(event))return{ok:false,error:'permission_denied'};
+    const value=raw as {id?:unknown;commandId?:unknown;version?:unknown};
+    if(!value||typeof value.id!=='string'||value.id.length>64||typeof value.commandId!=='string'||!/^mtcmd_[a-f0-9-]{36}$/i.test(value.commandId)
+      ||Object.keys(value).sort().join(',')!==(action==='activate'?'commandId,id,version':'commandId,id')||action==='activate'&&(typeof value.version!=='string'||value.version.length>32))return{ok:false,error:'invalid_input'};
+    if(controllers.has(value.commandId))return{ok:false,error:'busy'};const controller=new AbortController();controllers.set(value.commandId,controller);
+    try{return{ok:true,value:action==='activate'?await service.activate(value.id,value.version as string,controller.signal):await service.rollback(value.id,controller.signal)};}catch(cause){return error(cause);}finally{controllers.delete(value.commandId);}
+  });
+  options.ipcMain.handle('managed-tools:remove-version',async(event,raw:unknown)=>{
+    if(!options.allowed(event))return{ok:false,error:'permission_denied'};const value=raw as {id?:unknown;version?:unknown};
+    if(!value||typeof value.id!=='string'||typeof value.version!=='string'||Object.keys(value).sort().join(',')!=='id,version')return{ok:false,error:'invalid_input'};
+    try{return{ok:true,value:await service.removeVersion(value.id,value.version)};}catch(cause){return error(cause);}
+  });
 }

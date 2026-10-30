@@ -1,15 +1,16 @@
 import fs from 'node:fs/promises';
 import {QuickJS} from 'quickjs-wasi';
 import {createHash} from 'node:crypto';
-import {JAVASCRIPT_COMPONENT as recipe} from './manifest';
+import {reviewedJavaScriptVersion} from './manifest';
 
 /** No guest callbacks expose host IO. The parent owns cancellation and process
  * lifetime; the VM also has its own memory, stack and instruction deadline. */
 process.once('message',async(raw:unknown)=>{
   let vm:Awaited<ReturnType<typeof QuickJS.create>>|undefined;
   try{
-    const value=raw as {schemaVersion?:unknown;wasm?:unknown;code?:unknown;input?:unknown;health?:unknown};
+    const value=raw as {schemaVersion?:unknown;wasm?:unknown;code?:unknown;input?:unknown;health?:unknown;version?:unknown};
     if(value?.schemaVersion!==1||typeof value.wasm!=='string'||typeof value.code!=='string'||value.code.length>32768)throw Error('invalid_input');
+    const recipe=reviewedJavaScriptVersion(typeof value.version==='string'?value.version:'3.6.2');
     const bytes=await fs.readFile(value.wasm);if(bytes.length!==recipe.bytes||createHash('sha256').update(bytes).digest('hex')!==recipe.sha256)throw Error('checksum_mismatch');
     const start=Date.now();vm=await QuickJS.create({wasm:bytes,memoryLimit:32*1024*1024,interruptHandler:()=>Date.now()-start>2000});
     const input=vm.hostToHandle(value.input??null);vm.setProp(vm.global,'input',input);input.dispose();

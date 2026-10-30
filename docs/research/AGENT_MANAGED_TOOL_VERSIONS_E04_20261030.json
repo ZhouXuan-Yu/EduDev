@@ -1,0 +1,335 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-30",
+  "implementationSha": "8587057c665e8598d5793e8521432efd6498c74f",
+  "workspace": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+  "stage": "W2 E04 version lifecycle and computation queue; E05 artifacts next",
+  "acceptedRequirements": 0,
+  "providerRealPaidRequests": 0,
+  "source": {
+    "ok": true,
+    "checks": [
+      "Real 3.6.1 task remains on its frozen binary through upgrade; new calls use 3.6.2; old pin blocks uninstall",
+      "Rollback survives cold manager; installed versions work offline; removing idle previous version clears unavailable rollback",
+      "Version selection only accepts pinned reviewed recipes, without arbitrary sources",
+      "Controlled new health failure preserves exact old active pointer and actually callable previous binary",
+      "Existing schema1 selection and binary remain readable and callable without migration download",
+      "Damaged machine selection is repaired from a health-checked known binary without blocking ordinary run creation",
+      "Actual shared queue caps two children, preserves FIFO, cancels waiting D before spawn and running A without cancelling B/C/E",
+      "Disposal cancels queued work and waits for the two owned child processes to close"
+    ],
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-version-F1YfgX",
+    "boundary": "Actual official two-version binaries, actual isolated processes; controlled health failure/queued cancellation. Engineering checks only, not all E04/E05 AT.",
+    "queueCheckpoint": {
+      "id": "javascript",
+      "name": "本地 JavaScript 计算",
+      "version": "3.6.2",
+      "sourceUrl": "https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.2.tgz",
+      "license": "MIT",
+      "downloadBytes": 568844,
+      "installedBytes": 637405,
+      "inUse": 4,
+      "phase": "ready",
+      "downloadedBytes": 0,
+      "totalBytes": 568844,
+      "status": "ready",
+      "reason": "已下载组件通过校验与健康检查",
+      "nextAction": "可离线计算",
+      "origin": "download",
+      "recommendedVersion": "3.6.2",
+      "versions": [
+        {
+          "version": "3.6.2",
+          "ready": true,
+          "origin": "download",
+          "inUse": 4
+        },
+        {
+          "version": "3.6.1",
+          "ready": false,
+          "inUse": 0
+        }
+      ],
+      "running": 2,
+      "queued": 2,
+      "maximumConcurrent": 2
+    },
+    "queue": {
+      "starts": [
+        "A",
+        "B",
+        "C",
+        "E",
+        "close-A",
+        "close-B"
+      ],
+      "ends": [
+        "A",
+        "C",
+        "E",
+        "B",
+        "close-A",
+        "close-B"
+      ],
+      "maximum": 2,
+      "after": {
+        "running": 0,
+        "queued": 0,
+        "inUse": 0
+      }
+    },
+    "actualFreeDownloads": 2,
+    "binaries": [
+      {
+        "version": "3.6.2",
+        "archiveBytes": 568844,
+        "archiveSha256": "f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982",
+        "wasmSha256": "d4c9375f2b1ca4dc95f72c8aa2982a7a9951ac8011490d79c6582df732b4bbd9"
+      },
+      {
+        "version": "3.6.1",
+        "archiveBytes": 568452,
+        "archiveSha256": "84338f612253e0fc915c314b89969207a7e0de696db42b474e13a1b8030800ad",
+        "wasmSha256": "f92e6eed6ed42aed2f312ff3380257787c11cfe126f00c9449839c3305b8e232"
+      }
+    ],
+    "results": {
+      "oldResult": {
+        "value": 240,
+        "runtime": "3.6.1",
+        "elapsedMs": 12
+      },
+      "newResult": {
+        "value": 240,
+        "runtime": "3.6.2",
+        "elapsedMs": 12
+      }
+    }
+  },
+  "regression": {
+    "ok": true,
+    "checks": [
+      "Official pinned package is downloaded, verified, extracted and actually health checked before atomic activation",
+      "Actual isolated calculation returns240, preserves leading-zero text, exposes no host/network bridge and does not reinstall",
+      "Instruction deadline, explicit cancel and bounded result stop owned child processes without publishing truncated files",
+      "Version lease blocks uninstall; fresh manager calls installed component offline",
+      "Unused component uninstalls only its managed pointer/binary",
+      "Insufficient storage fails before download without deleting teaching files",
+      "Corrupt package never activates and owned temporary files are cleaned",
+      "Cancel after actual received bytes waits for job cleanup and cannot activate partial downloads",
+      "Failed controlled health result never becomes an active callable component",
+      "Concurrent tasks share one download/installation of the exact immutable version",
+      "Cancelling one consumer leaves the other task download intact",
+      "Main-owned compatibility switch stops new computation without changing native tool registration or existing artifacts"
+    ],
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-tools-jejF55",
+    "boundary": "Real official package and actual isolated QuickJS child processes; local controlled transport only for interruption and corruption. Not full E04/E05 AT or installed app acceptance.",
+    "actualComputation": {
+      "value": {
+        "total": 240,
+        "studentId": "00123",
+        "host": [
+          "undefined",
+          "undefined",
+          "undefined"
+        ]
+      },
+      "runtime": "3.6.2",
+      "elapsedMs": 13
+    },
+    "actualFreeDownloads": 1,
+    "packageSha256": "f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982",
+    "progress": [
+      {
+        "phase": "checking",
+        "downloadedBytes": 0,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "downloading",
+        "downloadedBytes": 0,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "downloading",
+        "downloadedBytes": 629,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "downloading",
+        "downloadedBytes": 568844,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "verifying",
+        "downloadedBytes": 568844,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "installing",
+        "downloadedBytes": 568844,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "health",
+        "downloadedBytes": 568844,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "activating",
+        "downloadedBytes": 568844,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      },
+      {
+        "phase": "ready",
+        "downloadedBytes": 568844,
+        "totalBytes": 568844,
+        "version": "3.6.2"
+      }
+    ]
+  },
+  "electron": {
+    "ok": true,
+    "checks": [
+      "Teacher selects the real reviewed 3.6.1 package through version UI and actual typed IPC",
+      "Settings can upgrade while real Pi waits for teacher; original task pin keeps old-version uninstall disabled",
+      "Original pending Pi task resumes with actual frozen3.6.1 child after component upgrade",
+      "Next prompt in existing native session uses actual3.6.2 without recreating conflicting tools or re-downloading",
+      "UI rollback persists across real Electron cold start with zero download/model request/replay"
+    ],
+    "errors": [],
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-version-ui-SllO7g",
+    "boundary": "Formal Electron/Pi/real official component download and actual QuickJS child, synthetic provider SSE; no paid requests or full E04/E05 AT acceptance.",
+    "wire": {
+      "requests": [
+        {
+          "model": "deepseek-flash",
+          "tool": "ask_teacher"
+        },
+        {
+          "model": "deepseek-flash",
+          "tool": "education_compute"
+        },
+        {
+          "model": "deepseek-flash",
+          "tool": null
+        },
+        {
+          "model": "deepseek-flash",
+          "tool": "education_compute"
+        },
+        {
+          "model": "deepseek-flash",
+          "tool": null
+        }
+      ],
+      "downloads": [
+        "https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.1.tgz",
+        "https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.2.tgz"
+      ],
+      "stage": 5,
+      "oldReceipt": {
+        "value": 240,
+        "runtime": "3.6.1",
+        "elapsedMs": 13
+      },
+      "newReceipt": {
+        "value": 240,
+        "runtime": "3.6.2",
+        "elapsedMs": 13
+      }
+    }
+  },
+  "checks": {
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "apps/desktop/managed-version-build-final.log"
+    },
+    "source": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/managed-tools-versions-smoke.mjs",
+      "exitCode": 0,
+      "passed": 8
+    },
+    "regression": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/managed-tools-smoke.mjs",
+      "exitCode": 0,
+      "passed": 12
+    },
+    "renderer": {
+      "command": "npm run test:renderer-components",
+      "exitCode": 0,
+      "passed": 240
+    },
+    "electron": {
+      "command": "node scripts/xiaozhi-agent/managed-tools-versions-electron.mjs",
+      "exitCode": 0,
+      "passed": 5,
+      "rendererErrors": 0
+    },
+    "comprehensive": {
+      "command": "npm run test:smoke",
+      "reportedOk": true,
+      "passed": 207,
+      "total": 207,
+      "exitCode": null,
+      "note": "Shell completion receipt unavailable after turn boundary; complete log reports ok:true and207/207. Previous lecture description assertion did not reproduce; intermittent root cause remains under observation.",
+      "log": "apps/desktop/managed-version-comprehensive.log"
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 7,
+        "low": 8,
+        "total": 23
+      },
+      "note": "Existing dependency findings; no dependency versions changed or automatic fixes."
+    }
+  },
+  "performance": {
+    "before": "No shared cross-version calculation/health process queue in13ef605. No measured old P95 baseline.",
+    "after": {
+      "actualMaximumLiveChildCalls": 2,
+      "queueDrained": {
+        "running": 0,
+        "queued": 0,
+        "inUse": 0
+      },
+      "sourceVmElapsedMs": 12,
+      "electronVmElapsedMs": 13
+    },
+    "boundary": "VM segment timing only, excludes process startup, download and model/UI latency; not natural task quality or P95 acceptance."
+  },
+  "correctedFixtureFailures": [
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-version-ui-XsI4YS\\report.json",
+      "cause": "Synthetic fixture reused one tool call ID for ask_teacher and education_compute; native process journal correctly rejected duplicate identity. Fixture now uses a unique ID per stage; production policy unchanged."
+    },
+    {
+      "log": "apps/desktop/managed-version-build.log",
+      "cause": "Initial bound service used run instead of existing owner parameter; TypeScript caught and corrected before successful build."
+    },
+    {
+      "cause": "Initial source invocation omitted --import hook; corrected invocation passed. Initial error was observed in tool output; log was replaced by final successful run."
+    }
+  ],
+  "rollback": "Prefer existing compute stop flag and restart or UI healthy prior-version rollback. Source downgrade to13ef605 needs stopped app and backed-up/normalized machine-only active selection to schema1 reviewed3.6.2; old worker cannot use3.6.1. Preserve all business SQLite, native sessions, original files and outputs.",
+  "notVerified": [
+    "Full fixed FX08 and C03/C04 AT matrix",
+    "Cross-restart pin for an unfinished task (pin is current active run only)",
+    "CSV/chart/format conversion/formal result publication E05",
+    "Natural provider quality and complete252 acceptance",
+    "D drive daily build, installer, Office/WPS installation acceptance"
+  ]
+}

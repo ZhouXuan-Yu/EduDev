@@ -1,5 +1,9 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-10-30 E04版本生命周期工程更新
+
+实现8587057；真实双版本冻结/升级/回退与2进程FIFO队列已贯通现设置、typed IPC、Pi和隔离子进程。build、8+12源码专项、240组件、正式Electron5项通过；综合日志207/207（shell退出回执未跨轮保留），讲义既有间歇断言本次未复现。完整AT仍未集中验收，新增已实现0。后续E05图表/CSV/正式文件；精确事实见[WORK_PROGRESS](../goal/WORK_PROGRESS.md)与docs/research/AGENT_MANAGED_TOOL_VERSIONS_E04_20261030.json，D盘日常版本未更新。
+
 ## 2026-10-30 FX08首个真实免费包冻结
 
 首个生产工具已冻结并从官方npm实际取包核验：quickjs-wasi3.6.2，MIT，https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.2.tgz；下载568844B/SHA256=f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982，总展开1524119B。仅提取package/quickjs.wasm，637405B/SHA256=d4c9375f2b1ca4dc95f72c8aa2982a7a9951ac8011490d79c6582df732b4bbd9，预留空间8MiB。WASM32，宿主Node>=22；当前Windows Electron已实跑，其他平台未验。健康独立进程6*7=42且无process/require/fetch桥。提取器tar7.5.22/BlueOak-1.0.0，原已锁定。
