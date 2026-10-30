@@ -17,7 +17,7 @@ function changeFile(root: string, raw: string): string {
   if (!raw || raw.length > 500 || path.isAbsolute(raw) || /[:\x00-\x1f]/.test(raw)
     || segments.some(v => !v || v === '.' || v === '..' || /[. ]$/.test(v)
       || /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\..*)?$/i.test(v)
-      || /^(\.pi|\.ssh)$/i.test(v)) || !/\.(md|txt|svg|html)$/i.test(raw)) throw new Error('permission_denied');
+      || /^(\.pi|\.ssh)$/i.test(v)) || !/\.(md|txt|csv|svg|html)$/i.test(raw)) throw new Error('permission_denied');
   const file = approvedFile(root, raw);
   if (!fs.existsSync(path.dirname(file)) || !fs.lstatSync(path.dirname(file)).isDirectory()) throw new Error('not_found');
   return file;

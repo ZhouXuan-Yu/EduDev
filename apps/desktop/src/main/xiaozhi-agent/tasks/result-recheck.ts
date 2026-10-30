@@ -1,3 +1,4 @@
+import {computationEffectTool} from '../../../shared/xiaozhi-computation';
 import {createQuestionWebAnswerReadback} from '../../education/question-web-answer-readback';
 import {createHash} from 'node:crypto';
 import type {OmniEduStore} from '../../db';
@@ -46,8 +47,8 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const webAnswers=createQuestionWebAnswerReadback({sessionId:id,runId:candidate.runId,current,repo:store.questionWeb});
   const questions=createEducationReadback({sessionId:id,runId:candidate.runId,current,questions:store.questionReviews});
   const practice=createPracticeReadback({sessionId:id,runId:candidate.runId,current,practice:store.practiceReviews});
-  const results=createRunResultReadback({runId:candidate.runId,bindEffect:(call,tool,payload)=>tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
-    :tool==='education_propose_practice'?practice(call,tool,payload):tool==='office_deliver_files'?bundles.bind(call,payload):files(call,tool,payload),readLocal:async(tool,payload)=>{
+  const results=createRunResultReadback({runId:candidate.runId,bindEffect:(call,tool,payload)=>{tool=computationEffectTool(tool,payload);return tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
+    :tool==='education_propose_practice'?practice(call,tool,payload):tool==='office_deliver_files'?bundles.bind(call,payload):files(call,tool,payload);},readLocal:async(tool,payload)=>{
    fence();if(tool==='office_read_attachment'){
     const row=await store.xiaozhiState.attachments.get(id,payload.source.attachmentId);if(!row||row.version!==payload.source.version)throw Error('attachment_changed');
     const reader=attachments.find(t=>t.name===tool)!;const value=await reader.execute('task_review_readback',{id:row.id,revision:row.revision,startLine:payload.source.locator.start,lineCount:payload.source.locator.end-payload.source.locator.start+1},signal,undefined,undefined as never);if(value.isError)throw Error('evidence_missing');return value.content;

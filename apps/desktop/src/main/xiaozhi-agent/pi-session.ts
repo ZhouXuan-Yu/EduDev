@@ -155,6 +155,7 @@ export interface PiXiaozhiOptions {
   /** Main-only callbacks and run identity, never accepted from IPC. */
   memory?: PiMemoryRuntime;
   computationTools?:ToolDefinition[];
+  computationReportTools?: (wait: (action: () => Promise<boolean>) => Promise<boolean>) => ToolDefinition[];
   teacherRequestTools?:(excluded:()=>readonly string[])=>ToolDefinition[];
   capabilities?: XiaozhiModelCapabilities;
   thinkingPolicy?:import('../../shared/xiaozhi-thinking').ThinkingDecision;
@@ -308,6 +309,13 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!computeEntries.length)manager.appendCustomEntry('xiaozhi.education.computation.v1',computeIdentity);
     names.push(...computeIdentity.tools);
     prompt+='\n需要代码核算/数据整理时使用education_compute实际执行，缺认可的免费组件由宿主自动准备，结果回执才表示已运行。prepare_education_tool只接受工具名javascript，不接受网址或任意安装命令。计算无文件/网络权限；教学文件仍用现有文件审阅交付，不让教师手动安装系统环境。';
+  }
+
+  const reportIdentity={version:1,tools:['education_create_report']};
+  const reportEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.report.'));
+  if(reportEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.report.v1'||JSON.stringify(entry.data)!==JSON.stringify(reportIdentity))||reportEntries.length&&!options.computationReportTools)throw Error('configuration');
+  if(options.computationReportTools){if(!reportEntries.length)manager.appendCustomEntry('xiaozhi.education.report.v1',reportIdentity);names.push(...reportIdentity.tools);
+   prompt+='\nCSV与图表交付先education_compute得到真实resultId，再education_create_report引用该结果生成教师要求的文件；不用模型重抄行数据或口算总数。CSV列类型和空值须显式声明，学号用text，必填单价空白不能补0。图表在离线HTML内，XLSX保留文本列；沿原审阅/一次整包确认。';
   }
 
   const skillSnapshots = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.skills.'));
@@ -665,6 +673,8 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if (options.officeTextTools && officeDefinitions.map(def => def.name).join(',') !== 'office_create_text,office_edit_text,office_create_science_figure') throw new Error('configuration');
   const deliveryDefinitions=options.deliveryTools?.(action=>budget!.wait(action))||[];
   if(options.deliveryTools&&deliveryDefinitions.map(def=>def.name).join(',')!=='office_deliver_files')throw Error('configuration');
+  const reportDefinitions=options.computationReportTools?.(action=>budget!.wait(action))||[];
+  if(options.computationReportTools&&reportDefinitions.map(def=>def.name).join(',')!=='education_create_report')throw Error('configuration');
   const artifactDefinitions=options.officeArtifactTools?.(action=>budget!.wait(action))||[];
   const classroomExportDefinitions=options.classroomExportTools?.(action=>budget!.wait(action))||[];
   if(options.classroomExportTools&&classroomExportDefinitions.map(def=>def.name).join(',')!==CLASSROOM_EXPORT_TOOLS.join(','))throw Error('configuration');
@@ -709,7 +719,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         }
         return { content: [{ type: 'text' as const, text: JSON.stringify(modelResult) }], details: publicDetails, isError: !result.success };
     },
-  })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...classroomExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
+  })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...classroomExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
     return budget!.wait(()=>def.execute(...args));
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)
