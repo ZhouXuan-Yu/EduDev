@@ -33,8 +33,10 @@ export class MaterialAiTextIndex{
     ['material_pdf_jobs',[['UPDATE','old.resource_id'],['DELETE','old.resource_id']]],
     ['material_pdf_pages',[['INSERT','(SELECT resource_id FROM material_pdf_jobs WHERE generation=new.generation)'],['UPDATE','(SELECT resource_id FROM material_pdf_jobs WHERE generation=old.generation)'],['DELETE','(SELECT resource_id FROM material_pdf_jobs WHERE generation=old.generation)']]]
    ] as [string,[string,string][]][]){if(!tables.has(table))continue;for(const [i,[event,resource]]of events.entries()){
-    const page=table==='material_pdf_pages'?` AND page_number=${event==='INSERT'?'new':'old'}.page`:'';
-    await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_parent_${table}_${i}_v1 AFTER ${event} ON ${table} BEGIN ${invalidate(`resource_id=${resource}${page}`)} END`);
+    const changed=event.startsWith('UPDATE'),page=table==='material_pdf_pages'?` AND page_number ${changed?'IN (old.page,new.page)':'='+(event==='INSERT'?'new':'old')+'.page'}`:'';
+    const parents=changed&&table==='material_pdf_pages'?`resource_id IN (SELECT resource_id FROM material_pdf_jobs WHERE generation IN (old.generation,new.generation))`:changed&&['resource_chunks','material_pdf_jobs'].includes(table)?`resource_id IN (old.resource_id,new.resource_id)`:`resource_id=${resource}`;
+    const version=changed&&table!=='teacher_resources'?'v2':'v1';if(version==='v2')await this.host.run(`DROP TRIGGER IF EXISTS ai_text_parent_${table}_${i}_v1`);
+    await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_parent_${table}_${i}_${version} AFTER ${event} ON ${table} BEGIN ${invalidate(`${parents}${page}`)} END`);
    }}
    for(const table of ['material_ai_page_units','material_ai_units','material_ai_image_inputs'])if(tables.has(table))for(const [i,event]of ['INSERT','UPDATE','DELETE'].entries()){
     const ref=event==='INSERT'?'new':'old';
@@ -45,8 +47,9 @@ export class MaterialAiTextIndex{
    if(tables.has('material_ai_batches'))for(const [i,event]of ['UPDATE OF config_json,resource_id,version','DELETE'].entries())await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_batch_${i}_v1 BEFORE ${event} ON material_ai_batches BEGIN ${queue('SELECT batch_id,ordinal FROM material_ai_page_units WHERE batch_id=old.id')} ${invalidate('batch_id=old.id')} END`);
   }
   for(const [event,ref]of [['INSERT','new'],['UPDATE','new'],['DELETE','old']])await this.host.run(`CREATE TRIGGER IF NOT EXISTS ai_text_clock_${event.toLowerCase()}_v1 AFTER ${event} ON ${docs} BEGIN INSERT INTO retrieval_changes(kind,object_id) VALUES('material',${ref}.id); END`);
-  if(reset){await this.host.run(`UPDATE ${control} SET cursor=0 WHERE id=1`);await this.host.run(`UPDATE ${dirty} SET error='',retry_at=0,revision=revision+1`);}
+  if(reset)await this.reset();
  }
+ async reset(){await this.host.run(`UPDATE ${control} SET cursor=0 WHERE id=1`);await this.host.run(`UPDATE ${dirty} SET error='',retry_at=0,revision=revision+1`);}
  private async latest(resourceId:string,version:string,page:number){
   return(await this.host.all(`SELECT p.batch_id,p.ordinal,p.first_sha,p.final_sha,p.image_sha,u.status FROM material_ai_page_units p JOIN material_ai_batches b ON b.id=p.batch_id JOIN material_ai_units u ON u.batch_id=p.batch_id AND u.ordinal=p.ordinal WHERE ${safe('p','resourceId')}=? AND ${safe('p','version')}=? AND ${safe('p','page')}=? AND u.status NOT IN ('pending','first_saved','dispatched') ORDER BY b.created_at DESC,b.id DESC,p.ordinal DESC LIMIT 1`,[resourceId,version,page]))[0];
  }
@@ -65,13 +68,14 @@ export class MaterialAiTextIndex{
    let origin:{resourceId:string;version:string;page:number}|undefined;try{origin=slot?JSON.parse(String(slot.source_json)):old?{resourceId:String(old.resource_id),version:String(old.version),page:Number(old.page_number)}:undefined;}catch{}
    try{
     if(!origin||slot&&!validMaterialPageSource(origin))throw Error('source_changed');
+    const resource=(await this.host.all('SELECT content_hash FROM teacher_resources WHERE id=?',[String(origin.resourceId)]))[0];if(!resource||resource.content_hash!==origin.version)throw Error('retired_source');
     const latest=await this.latest(String(origin.resourceId),String(origin.version),Number(origin.page));if(!latest){const current=(await this.host.all('SELECT status FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];throw Error(['pending','first_saved','dispatched'].includes(String(current?.status))?'busy':'source_changed');}
     view=await this.host.page!(String(latest.batch_id),Number(latest.ordinal));
     if(view.status!=='complete'&&view.status!=='blank')throw Error('page_needs_review');
     if(this.host.clean&&await this.host.clean(view.text)!==view.text)throw Error('privacy_blocked');
     const after=await this.latest(view.source.resourceId,view.source.version,view.source.page);if(JSON.stringify(after)!==JSON.stringify(latest))throw Error('source_changed');
     source={schemaVersion:AI_TEXT_SOURCE,resourceId:view.source.resourceId,version:view.source.version,page:view.source.page,offset:0,chunkId:keyId(view.source.resourceId,view.source.version,view.source.page),batchId:String(latest.batch_id),ordinal:Number(latest.ordinal),finalSha:String(latest.final_sha),bodyVersion:digest([view.source,latest.first_sha,latest.final_sha,latest.image_sha,view.text])};if(!validAiTextSource(source))throw Error('source_changed');
-   }catch(e){error=['busy','index_busy'].includes((e as Error).message)?'busy':['privacy_blocked','page_needs_review'].includes((e as Error).message)?(e as Error).message:'source_changed';}
+   }catch(e){error=['busy','index_busy'].includes((e as Error).message)?'busy':['privacy_blocked','page_needs_review','retired_source'].includes((e as Error).message)?(e as Error).message:'source_changed';}
    await this.host.write(async target=>{
     const current=(await target.host.all(`SELECT revision FROM ${dirty} WHERE batch_id=? AND ordinal=?`,[batchId,ordinal]))[0];if(current?.revision!==revision)return;
     if(error==='busy'){await target.host.run(`UPDATE ${dirty} SET retry_at=? WHERE batch_id=? AND ordinal=? AND revision=?`,[Date.now()+2000,batchId,ordinal,revision]);return;}
@@ -83,8 +87,10 @@ export class MaterialAiTextIndex{
      if(!same||same.source_json!==JSON.stringify(source)||same.content_md!==view.text||same.active!==1)await target.host.run(`INSERT INTO ${docs}(id,resource_id,version,page_number,batch_id,ordinal,source_json,content_md,active) VALUES(?,?,?,?,?,?,?,?,1) ON CONFLICT(id) DO UPDATE SET batch_id=excluded.batch_id,ordinal=excluded.ordinal,source_json=excluded.source_json,content_md=excluded.content_md,active=1`,[source.chunkId,source.resourceId,source.version,source.page,source.batchId,source.ordinal,JSON.stringify(source),view.text]);
      const saved=(await target.host.all(`SELECT rowid FROM ${docs} WHERE id=?`,[source.chunkId]))[0];await target.host.run(`DELETE FROM ${fts} WHERE rowid=?`,[-Number(saved.rowid)]);
      if(view.text)await target.host.run(`INSERT INTO ${fts}(rowid,tokens,normalised) VALUES(?,?,?)`,[-Number(saved.rowid),materialSearchTokens(view.text),Array.from(view.text.normalize('NFKC').toLowerCase().replace(/\s+/gu,'')).join('')]);
+     await target.host.run(`DELETE FROM ${dirty} WHERE error<>'' AND EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=${dirty}.batch_id AND p.ordinal=${dirty}.ordinal AND ${safe('p','resourceId')}=? AND ${safe('p','version')}=? AND ${safe('p','page')}=?)`,[source.resourceId,source.version,source.page]);
      await target.host.run(`DELETE FROM ${dirty} WHERE batch_id=? AND ordinal=? AND revision=?`,[batchId,ordinal,revision]);
-    }else await target.host.run(`UPDATE ${dirty} SET error=? WHERE batch_id=? AND ordinal=? AND revision=?`,[error||'source_changed',batchId,ordinal,revision]);
+    }else if(error==='retired_source')await target.host.run(`DELETE FROM ${dirty} WHERE batch_id=? AND ordinal=? AND revision=?`,[batchId,ordinal,revision]);
+    else await target.host.run(`UPDATE ${dirty} SET error=? WHERE batch_id=? AND ordinal=? AND revision=?`,[error||'source_changed',batchId,ordinal,revision]);
    });
   }
   return rows.length;
@@ -98,14 +104,14 @@ export class MaterialAiTextIndex{
  }
  async read(source:AiTextSource){
   if(!validAiTextSource(source)||!this.host.page)throw Error('invalid_input');
-  const row=(await this.host.all(`SELECT d.*,r.original_file_name source_name,COALESCE(k.seq,0) seq FROM ${docs} d JOIN teacher_resources r ON r.id=d.resource_id LEFT JOIN retrieval_current k ON k.kind='material' AND k.object_id=d.id WHERE d.id=? AND d.active=1 AND r.content_hash=d.version AND r.parse_status IN ${readable}`,[source.chunkId]))[0];
+  const row=(await this.host.all(`SELECT d.*,r.original_file_name source_name,COALESCE(k.seq,0) seq,COALESCE(v.revision,0) source_revision FROM ${docs} d JOIN teacher_resources r ON r.id=d.resource_id LEFT JOIN retrieval_current k ON k.kind='material' AND k.object_id=d.id LEFT JOIN retrieval_source_revisions v ON v.resource_id=d.resource_id WHERE d.id=? AND d.active=1 AND r.content_hash=d.version AND r.parse_status IN ${readable}`,[source.chunkId]))[0];
   const matches=(json:unknown)=>{try{const saved=JSON.parse(String(json));return validAiTextSource(saved)&&Object.keys(source).every(k=>saved[k as keyof AiTextSource]===source[k as keyof AiTextSource]);}catch{return false;}};
   if(!row||!matches(row.source_json))throw Error('source_changed');
   const latest=await this.latest(source.resourceId,source.version,source.page);
   if(!latest||latest.batch_id!==source.batchId||Number(latest.ordinal)!==source.ordinal||latest.final_sha!==source.finalSha)throw Error('source_changed');
   const view=await this.host.page(source.batchId,source.ordinal);
   if(!['complete','blank'].includes(view.status)||view.text!==row.content_md||view.source.resourceId!==source.resourceId||view.source.version!==source.version||view.source.page!==source.page||digest([view.source,latest.first_sha,latest.final_sha,latest.image_sha,view.text])!==source.bodyVersion||this.host.clean&&await this.host.clean(view.text)!==view.text)throw Error('source_changed');
-  const after=(await this.host.all(`SELECT d.source_json,d.active,COALESCE(k.seq,0) seq FROM ${docs} d LEFT JOIN retrieval_current k ON k.kind='material' AND k.object_id=d.id WHERE d.id=?`,[source.chunkId]))[0];if(after?.active!==1||!matches(after.source_json)||Number(after.seq)!==Number(row.seq))throw Error('source_changed');
+  const after=(await this.host.all(`SELECT d.source_json,d.active,COALESCE(k.seq,0) seq,COALESCE(v.revision,0) source_revision FROM ${docs} d LEFT JOIN retrieval_current k ON k.kind='material' AND k.object_id=d.id LEFT JOIN retrieval_source_revisions v ON v.resource_id=d.resource_id WHERE d.id=?`,[source.chunkId]))[0];if(after?.active!==1||!matches(after.source_json)||Number(after.seq)!==Number(row.seq)||Number(after.source_revision)!==Number(row.source_revision))throw Error('source_changed');
   return{view,seq:Number(row.seq)};
  }
  async unit(id:string):Promise<{unit:MaterialReadingUnit;seq:number}|undefined>{

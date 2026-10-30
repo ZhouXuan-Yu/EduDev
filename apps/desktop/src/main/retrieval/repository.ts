@@ -94,7 +94,7 @@ export class RetrievalRepository{
   private async maximum(){return Number((await this.host.all('SELECT COALESCE(MAX(seq),0) n FROM retrieval_changes'))[0].n);}
   async action(action:'pause'|'resume'|'rebuild'){
     if(action==='rebuild')await this.host.writer(async target=>{
-      const c=await target.control();if(c.building)throw Error('busy');await target.newGeneration();
+      const c=await target.control();if(c.building)throw Error('busy');await target.restoredText.reset();await target.newGeneration();
     });else await this.host.run('UPDATE retrieval_control SET paused=?,error=CASE WHEN ?=0 THEN \'\' ELSE error END WHERE id=1',[action==='pause'?1:0,action==='pause'?1:0]);
     if(action==='pause')await this.port?.interrupt?.();this.retryAt=0;
   }
@@ -170,7 +170,7 @@ export class RetrievalRepository{
     if(kind==='material'){
       const row=(await this.host.all("SELECT c.*,r.original_file_name source_name,r.content_hash source_version,r.parse_status source_status,k.seq fact_seq FROM (SELECT ? requested_id) s LEFT JOIN resource_chunks c ON c.id=s.requested_id LEFT JOIN teacher_resources r ON r.id=c.resource_id LEFT JOIN retrieval_current k ON k.kind='material' AND k.object_id=s.requested_id",[id]))[0];
       seq=Number(row?.fact_seq||0);deleted.seq=seq;
-      if(!row?.id){const restored=await this.restoredText.unit(id);if(!restored)return{fact:deleted};return{fact:{...deleted,seq:restored.seq,digest:materialUnitDigest(restored.unit),resourceId:restored.unit.resourceId,text:restored.unit.chunk.contentMd,sourceKind:'ai_restored_page',deleted:false},unit:restored.unit};}
+      if(!row?.id){const parent=(await this.host.all('SELECT d.resource_id,COALESCE(v.revision,0) revision FROM material_ai_text_documents_v1 d LEFT JOIN retrieval_source_revisions v ON v.resource_id=d.resource_id WHERE d.id=?',[id]))[0],restored=await this.restoredText.unit(id);if(!restored||!parent||parent.resource_id!==restored.unit.resourceId)return{fact:deleted};return{fact:{...deleted,seq:restored.seq,digest:materialUnitDigest(restored.unit),resourceId:restored.unit.resourceId,text:restored.unit.chunk.contentMd,sourceKind:'ai_restored_page',deleted:false},unit:restored.unit,sources:[{id:restored.unit.resourceId,revision:Number(parent.revision)}]};}
       if(row.contains_personal_data||!readable.includes(String(row.source_status)))return {fact:deleted};
       const chunk=this.host.chunk(row);
       const unit={resourceId:String(row.resource_id),version:String(row.source_version),title:String(row.source_name),offset:-1,chunk};
@@ -267,20 +267,20 @@ export class RetrievalRepository{
     let lexical=await this.host.fullText().candidates(query,resourceId,limit,0,false);const semantic=await this.semantic('material',query,{resourceId},100,offset+pageSize);
     const fallback=!semantic.coverage.available;
     if(fallback)lexical=await this.host.fullText().candidates(query,resourceId,pageSize,offset,false);
-    const byId=new Map<string,{unit:MaterialReadingUnit;method:string;start:number;end:number;seq:number}>();
+    const byId=new Map<string,{unit:MaterialReadingUnit;method:string;start:number;end:number;seq:number;sources?:ResultReceipt['sources']}>();
     const lexicalIds:string[]=[];
-    for(const unit of lexical.units){const current=await this.fact('material',unit.chunk.id);if(current.fact.deleted||!current.unit||current.fact.digest!==materialUnitDigest(unit))continue;lexicalIds.push(unit.chunk.id);byId.set(unit.chunk.id,{unit:current.unit,method:'keyword',start:0,end:0,seq:current.fact.seq});}
+    for(const unit of lexical.units){const current=await this.fact('material',unit.chunk.id);if(current.fact.deleted||!current.unit||current.fact.digest!==materialUnitDigest(unit))continue;lexicalIds.push(unit.chunk.id);byId.set(unit.chunk.id,{unit:current.unit,method:'keyword',start:0,end:0,seq:current.fact.seq,sources:current.sources});}
     const semanticIds:string[]=[];
     for(const hit of semantic.hits){if(semanticIds.includes(hit.id))continue;const current=await this.fact('material',hit.id);
       if(current.fact.deleted||current.fact.seq!==hit.seq||current.fact.digest!==hit.digest||!current.unit||resourceId&&current.unit.resourceId!==resourceId)continue;
-      semanticIds.push(hit.id);const prior=byId.get(hit.id);byId.set(hit.id,{unit:current.unit,method:prior?'hybrid':'semantic',start:hit.start,end:hit.end,seq:current.fact.seq});
+      semanticIds.push(hit.id);const prior=byId.get(hit.id);byId.set(hit.id,{unit:current.unit,method:prior?'hybrid':'semantic',start:hit.start,end:hit.end,seq:current.fact.seq,sources:current.sources});
     }
     const ranked=await this.rerank(fuseRanks(lexicalIds,semanticIds),query,id=>{const hit=byId.get(id)!;return{text:hit.unit.chunk.contentMd,...(hit.method!=='keyword'?{focus:hit.start}:{})};});semantic.coverage.rerank=ranked.coverage;
     const ids=ranked.ids,selected=ids.slice(fallback?0:offset,(fallback?0:offset)+pageSize).map(id=>byId.get(id)!);
     for(const hit of selected){if(hit.unit.restored)continue;const c=hit.unit.chunk;hit.unit.offset=Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=? AND (chunk_index<? OR chunk_index=? AND id<?)',[hit.unit.resourceId,c.chunkIndex,c.chunkIndex,c.id]))[0].n);}
     await this.refresh(semantic.coverage);
     semantic.coverage.exhausted||=!fallback&&lexical.hasMore;
-    const valid=await this.filterCurrent('material',selected.map(h=>({id:h.unit.chunk.id,seq:h.seq})),semantic.coverage),hits=selected.filter(h=>valid.has(h.unit.chunk.id));if(hits.length!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
+    const valid=await this.filterCurrent('material',selected.map(h=>({id:h.unit.chunk.id,seq:h.seq,sources:h.sources})),semantic.coverage),hits=selected.filter(h=>valid.has(h.unit.chunk.id));if(hits.length!==selected.length){semantic.coverage.complete=false;semantic.coverage.reason='source_changed';}
     return{...lexical,units:hits.map(v=>v.unit),hits,hasMore:fallback?lexical.hasMore:ids.length>offset+pageSize,semantic:semantic.coverage};
   }
   async questions(raw:QuestionSearchFilters){
