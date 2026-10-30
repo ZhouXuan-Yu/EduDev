@@ -22,6 +22,7 @@ function fixture(status='blank'){
   if(state.mode==='unknown')throw Error('outcome_unknown');
   let result={schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[structuredClone(q)]};
   if(state.mode==='ordinary')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'光在同种均匀介质中沿直线传播。',pageIssues:[],questions:[]};
+  if(state.mode==='ordinary_long')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'甲'.repeat(11999)+'😀'+'乙'.repeat(2000)+'尾部证据：色散与折射。',pageIssues:[],questions:[]};
   if(state.mode==='blank')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'',pageIssues:[],questions:[]};
   if(state.mode==='math_notation_changed')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'公式：x2 + y1':'公式：x² + y₁',pageIssues:[],questions:[]};
   if(state.mode==='math_stem_changed'){result.pageText='第1题 写出x²。\n【答案】x²\n【解析】原式为x²。';Object.assign(result.questions[0],{stem:'写出x2。',answer:'x²',analysis:'原式为x²。'});result.questions[0].projection.statement.text='写出x2。';}
@@ -85,16 +86,55 @@ await check('Transient local worker contention stays pending without a charge; d
 await check('Superscript/subscript loss is a mathematical change, never whitespace-compatible page or question agreement',async()=>{
  for(const mode of ['math_notation_changed','math_stem_changed']){const f=await completed('blank',mode);try{assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(f.batch).status,'review','x²/x2 and y₁/y1 cannot qualify as identical source content');const question=await f.question();if(question)assert(!archiveEligible(question));assert.equal((await f.repo.page(query(f))).status,'needs_review');}finally{f.db.close();}}
 });
-await check('A source-backed ordinary AI page with zero questions enters existing full-text and hybrid material retrieval without fabricating OCR',async()=>{
- const f=await completed('blank','ordinary');try{
+async function indexedPage(mode='ordinary'){
+ const f=await completed('blank',mode);
   const {MaterialFullTextSearch}=await import('../../src/main/assets/material-full-text.ts'),{RetrievalRepository}=await import('../../src/main/retrieval/repository.ts');
   f.db.exec("ALTER TABLE teacher_resources ADD COLUMN title TEXT NOT NULL DEFAULT '原页';");
   let rag;const map=r=>({id:r.id,resourceId:r.resource_id,chunkIndex:r.chunk_index||0,pageNumber:r.page_number,contentMd:r.content_md,containsPersonalData:!!r.contains_personal_data});
   const lexical=new MaterialFullTextSearch({...f.host,map,restored:()=>rag?.restoredText});await lexical.migrate();
   rag=new RetrievalRepository({...f.host,chunk:map,question:r=>r,fullText:()=>lexical,keyword:async()=>[],page:(batchId,ordinal)=>f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId,ordinal}),clean:async t=>t,writer:async action=>{f.db.exec('BEGIN IMMEDIATE');try{const v=await action(rag);f.db.exec('COMMIT');return v;}catch(e){f.db.exec('ROLLBACK');throw e;}}});await rag.migrate();
   if(rag.restoredText)for(let i=0;i<3;i++)await rag.restoredText.drain();
+  // The full repository imports Electron worker hosts. Its typed IPC/source adapter is exercised in Electron;
+  // this source-only fixture delegates directly to the actual index receipt reader, without creating body chunks.
+  const materials={source:async source=>{const {view}=await rag.restoredText.read(source);return{source,restored:view,body:{resource:view.resource,chunks:[],total:0,offset:0,hasMore:false}};}};
+  const store={materials,retrieval:rag,materialSearch:lexical,sanitizeProblemText:async text=>{f.state.onSanitize?.();return{sanitizedText:text};},listStudents:async()=>[]};
+  return{...f,rag,lexical,store,async index(){for(let i=0;i<3;i++)await rag.restoredText.drain();}};
+}
+await check('A source-backed ordinary AI page with zero questions enters existing full-text and hybrid material retrieval without fabricating OCR',async()=>{
+ const f=await indexedPage();try{const {lexical,rag}=f;
   const result=await lexical.candidates('均匀介质');assert.equal(result.units.length,1,'A successfully restored textbook page is currently invisible to material retrieval');assert(result.units[0].restored,'AI transcription must carry its own reference rather than an OCR-body receipt');
   const hybrid=await rag.materials('均匀介质');assert.equal(hybrid.units.length,1);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM resource_chunks').get().n,0);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n,0);assert.equal(f.state.calls,2,'Indexing must not call the model again');
+ }finally{f.db.close();}
+});
+await check('Pi reads the full long restored page with exact source, tail continuation and Unicode-safe boundaries; original-body and classroom authority stay separate',async()=>{
+ const f=await indexedPage('ordinary_long');try{
+  const {createMaterialTools}=await import('../../src/main/assets/material-tools.ts'),{validAiTextSource}=await import('../../src/shared/material-ai-text.ts'),{validMaterialSource}=await import('../../src/shared/materials.ts'),{createAnswerEvidence}=await import('../../src/main/xiaozhi-agent/answer-evidence.ts'),{validClassroomMaterial}=await import('../../src/shared/classroom-context.ts');
+  const source=(await f.lexical.candidates('尾部证据')).units[0].restored;assert(validAiTextSource(source));assert(!validMaterialSource(source));assert(!validClassroomMaterial({source,title:'AI页',characters:10,truncated:false,recognition:'saved_text'}));
+  const tool=createMaterialTools(f.store,()=>true).find(t=>t.name==='office_read_material'),pieces=[];let start=0,last;
+  do{last=await tool.execute('read-'+start,{resourceId:f.id,offset:0,restoredSource:source,characterOffset:start},new AbortController().signal);assert(!last.isError);const body=JSON.parse(last.content[0].text);assert.equal(body.teacherConfirmed,false);assert.equal(body.recognition,'ai_page_two_pass_unreviewed');pieces.push(body.text);start=body.nextCharacterOffset;}while(start!==null);
+  const view=await f.rag.restoredText.read(Object.fromEntries(Object.entries(source).reverse()));assert.equal(pieces.join(''),view.view.text);assert(pieces[1].startsWith('😀'));assert(pieces.join('').endsWith('尾部证据：色散与折射。'));
+  const evidence=createAnswerEvidence('test-restored');assert(evidence.attach('office_read_material',last).details.data.sources[0].citationId);assert.equal(evidence.sources().length,1);
+  const split=await tool.execute('bad',{resourceId:f.id,offset:0,restoredSource:source,characterOffset:12000},new AbortController().signal);assert(split.isError);assert.equal(f.state.calls,2);
+ }finally{f.db.close();}
+});
+await check('A revised AI page is held instead of serving an older transcript, then a new valid page clears obsolete blocked state',async()=>{
+ const f=await indexedPage();try{
+  const old=(await f.lexical.candidates('均匀介质')).units[0].restored;
+  f.state.mode='unclear';await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();await f.repo.drain();await f.index();assert.equal((await f.rag.materials('均匀介质')).units.length,0);await assert.rejects(f.rag.restoredText.read(old),/source_changed/);assert((await f.rag.restoredText.status()).blocked>0);
+  f.state.mode='ordinary';await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();await f.repo.drain();await f.index();assert.equal((await f.rag.materials('均匀介质')).units.length,1);assert.equal((await f.rag.restoredText.status()).blocked,0,'Obsolete failed drafts must not leave the current valid page permanently incomplete');assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_ai_text_documents_v1').get().n,1);
+ }finally{f.db.close();}
+});
+await check('Rebuilding derived indexes restores a corrupted AI text cache from saved receipts with no paid replay; stop-production preserves existing reads',async()=>{
+ const f=await indexedPage(),old=process.env.OMNI_EDU_AI_TEXT_INDEX;try{
+  const source=(await f.lexical.candidates('均匀介质')).units[0].restored;f.db.prepare("UPDATE material_ai_text_documents_v1 SET content_md='corrupted'").run();await assert.rejects(f.rag.restoredText.read(source),/source_changed/);await f.rag.action('rebuild');await f.index();assert.equal((await f.rag.materials('均匀介质')).units.length,1,'A replaceable cache must recover from immutable AI receipts');process.env.OMNI_EDU_AI_TEXT_INDEX='0';assert.equal(await f.rag.restoredText.drain(),0);assert((await f.rag.restoredText.read(source)).view.text.includes('均匀介质'));assert.equal(f.state.calls,2);
+ }finally{if(old===undefined)delete process.env.OMNI_EDU_AI_TEXT_INDEX;else process.env.OMNI_EDU_AI_TEXT_INDEX=old;f.db.close();}
+});
+await check('A chunk moved into a resource as private during reranking revokes both restored-page hits before the asynchronous search returns',async()=>{
+ const f=await indexedPage();try{
+  const generation=f.db.prepare('SELECT generation FROM material_pdf_jobs').get().generation;f.db.prepare('UPDATE material_pdf_jobs SET total=2').run();const receipt=f.db.prepare('SELECT result_json FROM material_pdf_pages WHERE page=1').get().result_json;f.db.prepare("INSERT INTO material_pdf_pages VALUES(?,2,'blank',?,'')").run(generation,receipt);await f.repo.create({...f.input,start:2});await f.repo.drain();await f.repo.drain();await f.repo.drain();await f.index();assert.equal((await f.rag.materials('均匀介质')).units.length,2);
+  const other='resource_'+randomUUID(),chunk='chunk_'+randomUUID();f.db.prepare("INSERT INTO teacher_resources VALUES(?,?,'other.pdf','partial','other')").run(other,'c'.repeat(64));f.db.prepare("INSERT INTO resource_chunks VALUES(?,?,1,1,0,'private')").run(chunk,other);
+  f.rag.configure({rerank:async(_q,items)=>{f.db.prepare('UPDATE resource_chunks SET resource_id=?,page_number=NULL WHERE id=?').run(f.id,chunk);return{scores:items.map(i=>({id:i.id,score:1,complete:true}))};}});
+  const result=await f.rag.materials('均匀介质');assert.equal(result.units.length,0,'Late privacy changes at the new parent cannot escape the source fence');assert.equal(result.semantic.reason,'source_changed');
  }finally{f.db.close();}
 });
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
