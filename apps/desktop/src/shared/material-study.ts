@@ -5,7 +5,7 @@ export type MaterialStudyView={schemaVersion:typeof MATERIAL_STUDY_SCHEMA;entry?
 export type MaterialStudyQuery={schemaVersion:typeof MATERIAL_STUDY_SCHEMA;resourceId:string};
 export type MaterialStudySave={schemaVersion:typeof MATERIAL_STUDY_SCHEMA;source:MaterialSource;expectedRevision:string|null;note:string;completed:boolean};
 export type MaterialStudyQuestion={schemaVersion:typeof MATERIAL_STUDY_SCHEMA;source:MaterialSource;question:string};
-export type MaterialStudyPage=MaterialSourceView&{savedNote?:string};
+export type MaterialStudyPage=Omit<MaterialSourceView,'source'|'restored'>&{source:MaterialSource;savedNote?:string};
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Object.getPrototypeOf(v)===Object.prototype;
 export const studyRevision=(v:unknown):v is string=>typeof v==='string'&&/^read_[a-f0-9-]{36}$/i.test(v);
 const text=(v:unknown,max:number):v is string=>typeof v==='string'&&v.length<=max&&!/[\x00-\x08\x0b\x0c\x0e-\x1f]/.test(v);

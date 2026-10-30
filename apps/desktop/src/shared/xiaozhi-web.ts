@@ -2,7 +2,7 @@ export const XIAOZHI_WEB_SCHEMA = 'xiaozhi.web.v1' as const;
 export type XiaozhiWebPreferences = { version: number; enabled: boolean; dnsMode: 'auto' | 'system' | 'alidns' };
 export type XiaozhiWebInput = XiaozhiWebPreferences & { schemaVersion: typeof XIAOZHI_WEB_SCHEMA };
 export type XiaozhiWebSourceInput = { sessionId: string; url: string };
-export type XiaozhiPublicSource = { citationId?: string; local?:import('./local-answer-source').LocalAnswerSource; title: string; url?: string; observedAt?: string; kind?: 'search' | 'read'; material?:import('./materials').MaterialSource;student?:import('./student-context').StudentContextSource;question?:import('./question-context').QuestionContextSource };
+export type XiaozhiPublicSource = { citationId?: string; local?:import('./local-answer-source').LocalAnswerSource; title: string; url?: string; observedAt?: string; kind?: 'search' | 'read'; material?:import('./materials').MaterialReference;student?:import('./student-context').StudentContextSource;question?:import('./question-context').QuestionContextSource };
 export type XiaozhiWebError = 'permission_denied' | 'dns_blocked' | 'invalid_input' | 'cancelled' | 'timeout' | 'network' | 'rate_limited' | 'service_error' | 'too_large' | 'unsupported';
 export const XIAOZHI_WEB_ERRORS: Record<XiaozhiWebError, string> = {
   dns_blocked:'系统解析返回了代理虚拟地址。请在联网设置中选择自动或国内解析后重试。',

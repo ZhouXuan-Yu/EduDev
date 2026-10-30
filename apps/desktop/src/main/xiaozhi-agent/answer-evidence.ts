@@ -1,7 +1,7 @@
 import {createHash} from 'node:crypto';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {XiaozhiPublicSource} from '../../shared/xiaozhi-web';
-import {validMaterialSource} from '../../shared/materials';
+import {validMaterialReference} from '../../shared/materials';
 import {validQuestionContextSource} from '../../shared/question-context';
 import {normalizeAnswerCitations} from '../../shared/answer-citations';
 import {validLocalAnswerSource} from '../../shared/local-answer-source';
@@ -21,7 +21,7 @@ export function createAnswerEvidence(runId:string) {
         const located=tool==='office_read_attachment'||tool==='office_read_text'?validLocalAnswerSource(source.local)
           :tool==='education_read_question'?validQuestionContextSource(source.question)
           :tool==='office_web_fetch'?typeof source.url==='string'&&/^https?:\/\//.test(source.url)&&source.url.length<=2048
-          :validMaterialSource(source.material);
+          :validMaterialReference(source.material);
         if(!located)return source;
         const key=JSON.stringify([source.title,source.material,source.question,source.url,source.observedAt,source.local]);
         let entry=entries.get(key);

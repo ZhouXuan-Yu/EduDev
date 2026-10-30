@@ -4,7 +4,7 @@ import type {MaterialStudyQuery,MaterialStudyView,MaterialStudySave,MaterialStud
 import type {QuestionContextEditInput,QuestionContextEditResult} from '../shared/question-context-edit';
 import type {OriginalQuestionInput,OriginalQuestionDecision,OriginalQuestionView,OriginalQuestionResult,QuestionImageInput} from '../shared/original-question-review';
 import type {OriginalMultiInput,OriginalMultiDecision,OriginalMultiRevise,OriginalMultiView,OriginalMultiResult,OriginalGalleryInput,OriginalGalleryImage} from '../shared/original-multi-review';
-import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialSource,MaterialSourceView} from '../shared/materials';
+import type {MaterialQuery,MaterialBodyQuery,MaterialPage,MaterialBody,MaterialRetry,MaterialJob,MaterialReference,MaterialSourceView} from '../shared/materials';
 import type {AiPageQuery,AiPageView} from '../shared/material-ai-page';
 import type {WordQuery,WordPage,WordImageQuery,WordImageView,WordRebuild,WordRebuildView} from '../shared/material-word';
 import type {WordQuestionQuery,WordQuestionPage} from '../shared/material-word-question';
@@ -363,7 +363,7 @@ const api = {
   getMaterialWordJob:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-job',input) as Promise<WordRebuildView>,
   rebuildMaterialWord:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-rebuild',input) as Promise<TeacherResource>,
   cancelMaterialWord:(input:WordRebuild)=>ipcRenderer.invoke('materials:word-cancel',input) as Promise<{cancelled:boolean}>,
-  getMaterialSource: (input:MaterialSource) => ipcRenderer.invoke('materials:source',input) as Promise<MaterialSourceView>,
+  getMaterialSource: <T extends MaterialReference>(input:T) => ipcRenderer.invoke('materials:source',input) as Promise<MaterialSourceView&{source:T}>,
   getMaterialPagePreview:(input:MaterialPreviewQuery)=>ipcRenderer.invoke('materials:page-preview',input) as Promise<MaterialPreviewResult>,
   getMaterialPageLayout:(input:LayoutQuery)=>ipcRenderer.invoke('materials:page-layout',input) as Promise<MaterialLayoutResult>,
   cancelMaterialPageLayout:(input:LayoutCancel)=>ipcRenderer.invoke('materials:layout-cancel',input) as Promise<{schemaVersion:'xiaozhi.material-layout.v1';stopped:boolean}>,

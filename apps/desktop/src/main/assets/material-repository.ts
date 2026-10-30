@@ -10,7 +10,9 @@ import {MATERIALS_SCHEMA,MATERIAL_PAGE_SIZE,materialTerms,type MaterialQuery,typ
 import type {TeacherResource,ResourceChunk} from '../../shared/contracts';
 import {DOCUMENT_SCHEMA,DOCUMENT_MAX_INPUT,DOCUMENT_MAX_OUTPUT,isOfficeDocument} from '../../shared/xiaozhi-documents';
 import {extractLocalDocument} from '../xiaozhi-agent/document-host';
-import type {MaterialSource,MaterialSourceView} from '../../shared/materials';
+import type {MaterialReference,MaterialSource,MaterialSourceView} from '../../shared/materials';
+import {validAiTextSource,type AiTextSource} from '../../shared/material-ai-text';
+import type {AiPageView} from '../../shared/material-ai-page';
 import {EDUCATION_SEARCH_MAX_BYTES,EDUCATION_SEARCH_MAX_UNITS} from '../../shared/education-capabilities';
 import {materialBodyVersion,type MaterialReadingUnit} from './material-source';
 import type {MaterialOcrPage,MaterialOcrProgress} from '../../shared/material-pdf-ocr';
@@ -21,6 +23,7 @@ export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:str
 type Row=Record<string,unknown>;
 type SqlValue=string|number|null;
 export type MaterialRepositoryHost={
+ restored?:(source:AiTextSource)=>Promise<AiPageView>;
  root:string;change:(sql:string,params?:SqlValue[])=>Promise<number>;all:(sql:string,params?:SqlValue[])=>Promise<Row[]>;
  mapResource:(row:Row)=>TeacherResource;mapChunk:(row:Row)=>ResourceChunk;
  commit:(id:string,content:string,engine:string,hash:string,signal:AbortSignal,pages?:MaterialOcrPage[],lease?:MaterialParseLease,word?:WordPayload)=>Promise<void>;
@@ -82,7 +85,15 @@ export class MaterialRepository {
   }
   return {units,fingerprint:createHash('sha256').update(JSON.stringify(rows)).digest('hex')};
  }
- async source(input:MaterialSource):Promise<MaterialSourceView>{
+ source(input:MaterialSource):Promise<{source:MaterialSource;body:MaterialBody}>;
+ source(input:AiTextSource):Promise<MaterialSourceView>;
+ source(input:MaterialReference):Promise<MaterialSourceView>;
+ async source(input:MaterialReference):Promise<MaterialSourceView>{
+  if(validAiTextSource(input)){
+   if(!this.host.restored)throw Error('unavailable');const restored=await this.host.restored(input);
+   return{source:input,restored,body:{schemaVersion:MATERIALS_SCHEMA,resource:restored.resource,chunks:[],total:0,offset:0,hasMore:false}};
+  }
+  if(!validMaterialSource(input))throw Error('invalid_input');
   const body=await this.body({schemaVersion:MATERIALS_SCHEMA,resourceId:input.resourceId,offset:input.offset});
   const chunk=body.chunks[0];
   if(body.resource.contentHash!==input.version||!chunk||chunk.id!==input.chunkId||materialBodyVersion(chunk)!==input.bodyVersion)throw new Error('source_changed');

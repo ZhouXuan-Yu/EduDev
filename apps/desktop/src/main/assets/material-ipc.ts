@@ -2,7 +2,7 @@ import {validStudyQuery,validStudySave,validStudyQuestion} from '../../shared/ma
 import {createOfficeDocumentSanitizer} from '../xiaozhi-agent/office-document-tools';
 import {dialog,ipcMain as electronIpcMain,type BrowserWindow} from 'electron';
 import type {OmniEduStore} from '../db';
-import {MATERIALS_SCHEMA,materialId,validMaterialQuery,validMaterialBodyQuery,validMaterialSource} from '../../shared/materials';
+import {MATERIALS_SCHEMA,materialId,validMaterialQuery,validMaterialBodyQuery,validMaterialReference} from '../../shared/materials';
 import {MATERIAL_PREVIEW_SCHEMA,validMaterialPreviewQuery,validMaterialPreviewCancel,type MaterialPreviewError,type MaterialPreviewResult} from '../../shared/material-page-preview';
 import {previewMaterialPage} from './material-page-preview';
 import {renderLocalPdfPage} from '../xiaozhi-agent/ocr-host';
@@ -15,7 +15,7 @@ import type {MaterialFolderProgress} from '../../shared/materials';
 import {MATERIAL_IMPORT_SCHEMA,validBatchQuery,validBatchAction,validBatchFiles,type MaterialBatchCreated} from '../../shared/material-import-batch';
 import {validFolderAiQuery,validFolderAiGrant,validFolderAiAction} from '../../shared/material-folder-ai';
 import {MATERIAL_SEARCH_SCHEMA,validMaterialTextQuery,type MaterialTextPage} from '../../shared/material-search';
-import {materialSource,materialBodyVersion} from './material-source';
+import {materialReference,materialUnitDigest} from './material-source';
 import {materialCitation} from '../../shared/materials';
 import {validArchiveEdit} from '../../shared/question-archive';
 import {questionVersion} from '../education/question-context-provider';
@@ -44,8 +44,8 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
   check(event);if(!validMaterialTextQuery(input))throw new Error('invalid_input');
   const hybrid=input.mode==='keyword'?undefined:await store.retrieval.materials(input.query,undefined,200,input.offset);
   const result=hybrid||await store.materialSearch.candidates(input.query,undefined,20,input.offset);check(event);
-  const hits=[],receipts:{id:string;seq:number}[]=[];for(const unit of result.units){const current=await store.retrieval.fact('material',unit.chunk.id);if(current.fact.deleted||!current.unit||current.unit.version!==unit.version||materialBodyVersion(current.unit.chunk)!==materialBodyVersion(unit.chunk))continue;
-   const source=materialSource(unit);try{await store.materials.source(source);}catch(error){check(event);if(['source_changed','missing','not_found'].includes((error as Error).message))continue;throw error;}check(event);const match=hybrid?.hits.find(h=>h.unit.chunk.id===unit.chunk.id);const excerpt=match?.method==='semantic'?unit.chunk.contentMd.slice(Math.max(0,match.start-80),Math.min(unit.chunk.contentMd.length,Math.max(match.start+400,match.end))).slice(0,500):materialSnippet(unit.chunk.contentMd,input.query);hits.push({title:unit.title,excerpt,source,citation:materialCitation(unit.title,unit.chunk),...(match?{method:match.method}:{})});receipts.push({id:unit.chunk.id,seq:current.fact.seq});}
+  const hits=[],receipts:{id:string;seq:number}[]=[];for(const unit of result.units){const current=await store.retrieval.fact('material',unit.chunk.id);if(current.fact.deleted||!current.unit||current.unit.version!==unit.version||materialUnitDigest(current.unit)!==materialUnitDigest(unit))continue;
+   const source=materialReference(unit);try{await store.materials.source(source);}catch(error){check(event);if(['source_changed','missing','not_found'].includes((error as Error).message))continue;throw error;}check(event);const match=hybrid?.hits.find(h=>h.unit.chunk.id===unit.chunk.id);const excerpt=match?.method==='semantic'?unit.chunk.contentMd.slice(Math.max(0,match.start-80),Math.min(unit.chunk.contentMd.length,Math.max(match.start+400,match.end))).slice(0,500):materialSnippet(unit.chunk.contentMd,input.query);hits.push({title:unit.title,excerpt,source,citation:unit.restored?`${unit.title} · AI还原正文（原件第${unit.restored.page}页）`:materialCitation(unit.title,unit.chunk),...(match?{method:match.method}:{})});receipts.push({id:unit.chunk.id,seq:current.fact.seq});}
   const valid=await store.retrieval.filterCurrent('material',receipts,hybrid?.semantic);check(event);const selected=hits.filter(h=>valid.has(h.source.chunkId));if(hybrid&&selected.length!==result.units.length){hybrid.semantic.complete=false;hybrid.semantic.reason='source_changed';}
   return {schemaVersion:MATERIAL_SEARCH_SCHEMA,hits:selected,offset:input.offset,hasMore:result.hasMore,index:result.index,...(hybrid?{semantic:hybrid.semantic}:{})};
  });
@@ -80,7 +80,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
  });
 
  ipcMain.handle('materials:body',(event,input)=>{check(event);if(!validMaterialBodyQuery(input))throw new Error('invalid_input');return store.materials.body(input);});
- ipcMain.handle('materials:source',(event,input)=>{check(event);if(!validMaterialSource(input))throw new Error('invalid_input');return store.materials.source(input);});
+ ipcMain.handle('materials:source',async(event,input)=>{check(event);if(!validMaterialReference(input))throw new Error('invalid_input');const result=await store.materials.source(structuredClone(input));check(event);return result;});
  ipcMain.handle('materials:page-preview',async(event,input):Promise<MaterialPreviewResult>=>{
   let owned:typeof preview;
   try{
