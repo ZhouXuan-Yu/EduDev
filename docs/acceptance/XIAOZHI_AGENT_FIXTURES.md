@@ -1,5 +1,11 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-10-30 FX08首个真实免费包冻结
+
+首个生产工具已冻结并从官方npm实际取包核验：quickjs-wasi3.6.2，MIT，https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.2.tgz；下载568844B/SHA256=f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982，总展开1524119B。仅提取package/quickjs.wasm，637405B/SHA256=d4c9375f2b1ca4dc95f72c8aa2982a7a9951ac8011490d79c6582df732b4bbd9，预留空间8MiB。WASM32，宿主Node>=22；当前Windows Electron已实跑，其他平台未验。健康独立进程6*7=42且无process/require/fetch桥。提取器tar7.5.22/BlueOak-1.0.0，原已锁定。
+
+真实包安装与受控损坏/空间/取消/健康失败/并发专项12项、正式UI5项见docs/research/AGENT_MANAGED_TOOLS_E04_20261030.json；这些不是完整FX08/AT，错架构/路径/只读/兼容升级及正式安装仍须集中补验，不将真实安装继续标为缺包阻塞。
+
 ## 2026-10-30 E03工程增量（尚未集中验收）
 
 新增read_teacher_request，原请求/已应用追加/已回答问题均沿原SQLite事实，可分页发现旧来源并精确分段重读；全文先脱敏再分页，ID/版本保持。追加按实际送达顺序记录，旧无顺序记录明确未知，撤回/未应用不进入当前要求。复用原ask_teacher选择第二份独立课件后局部改页。修复手动压缩无taskRuntime误换控制提示词指纹的真实配置失败；按已知原提示词精确恢复，未知权限/工具/指纹仍拒绝。无新表/DDL/依赖、第二循环或新审批。

@@ -1,0 +1,183 @@
+{
+  "date": "2026-10-30",
+  "scope": "E04 first real managed component and E05 basic computation; not complete WP or concentrated AT acceptance",
+  "sourceSha": "59b32e9ee3c3127b44d3bf4ebeca1232c63ecf19",
+  "uiAndRendererSourceSha": "f58f5ff",
+  "runtimeSourceRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+  "uiDataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-ui-Y5yelF\\data",
+  "dailyRuntimeUpdated": false,
+  "paidProviderRequests": 0,
+  "capability": [
+    "Actual machine states and first approved free recipe; no arbitrary URL, paid job, credential or global Python mutations",
+    "Pinned official tar download, byte/hash verification, fixed WASM extraction, actual child health, atomic active pointer",
+    "Shared same-version preparation with independent consumer cancellation, lease-aware uninstall, offline persisted reuse",
+    "Pi same-run automatic preparation and real isolated JavaScript computation, actual240/leading-zero text and invalid-domain detection",
+    "Main-only OMNI_EDU_XIAOZHI_COMPUTE=0 stops new execution without removing native capability registration"
+  ],
+  "recipe": {
+    "package": "quickjs-wasi",
+    "version": "3.6.2",
+    "sourceUrl": "https://registry.npmjs.org/quickjs-wasi/-/quickjs-wasi-3.6.2.tgz",
+    "projectUrl": "https://github.com/vercel-labs/quickjs-wasi",
+    "license": "MIT",
+    "archiveBytes": 568844,
+    "archiveSha256": "f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982",
+    "entry": "package/quickjs.wasm",
+    "wasmBytes": 637405,
+    "wasmSha256": "d4c9375f2b1ca4dc95f72c8aa2982a7a9951ac8011490d79c6582df732b4bbd9",
+    "archiveExpandedBytes": 1524119,
+    "requiredFreeBytes": 8388608,
+    "hostRequirement": "Node>=22, WASM supported; current Windows Electron tested",
+    "installedBinaryMatchesExistingPiDependency": true
+  },
+  "dependencies": {
+    "directPinsAdded": [
+      "quickjs-wasi@3.6.2 MIT",
+      "tar@7.5.22 BlueOak-1.0.0"
+    ],
+    "newPackageVersions": 0,
+    "lockChange": "Promoted existing transitive packages to explicit production dependencies; tar resolved URL canonicalized from npmmirror to official npm with same version/integrity",
+    "windowsImpact": "WASM and JS, no new native addon or system interpreter; installed EXE/package size not measured"
+  },
+  "checks": [
+    {
+      "command": "npm run build",
+      "exit": 0,
+      "sourceSha": "59b32e9ee3c3127b44d3bf4ebeca1232c63ecf19",
+      "log": "apps/desktop/managed-tools-stop-policy-build.log"
+    },
+    {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "sourceSha": "f58f5ff",
+      "passed": 240,
+      "total": 240,
+      "log": "apps/desktop/managed-tools-components.log",
+      "note": "Renderer unchanged by later main policy fix; not represented as a final new batch"
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/managed-tools-smoke.mjs",
+      "exit": 0,
+      "sourceSha": "59b32e9ee3c3127b44d3bf4ebeca1232c63ecf19",
+      "passed": 12,
+      "checks": [
+        "Official pinned package is downloaded, verified, extracted and actually health checked before atomic activation",
+        "Actual isolated calculation returns240, preserves leading-zero text, exposes no host/network bridge and does not reinstall",
+        "Instruction deadline, explicit cancel and bounded result stop owned child processes without publishing truncated files",
+        "Version lease blocks uninstall; fresh manager calls installed component offline",
+        "Unused component uninstalls only its managed pointer/binary",
+        "Insufficient storage fails before download without deleting teaching files",
+        "Corrupt package never activates and owned temporary files are cleaned",
+        "Cancel after actual received bytes waits for job cleanup and cannot activate partial downloads",
+        "Failed controlled health result never becomes an active callable component",
+        "Concurrent tasks share one download/installation of the exact immutable version",
+        "Cancelling one consumer leaves the other task download intact",
+        "Main-owned compatibility switch stops new computation without changing native tool registration or existing artifacts"
+      ],
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-tools-j77e1y\\report.json",
+      "actualComputation": {
+        "value": {
+          "total": 240,
+          "studentId": "00123",
+          "host": [
+            "undefined",
+            "undefined",
+            "undefined"
+          ]
+        },
+        "runtime": "3.6.2",
+        "elapsedMs": 13
+      }
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/managed-tools-electron.mjs",
+      "exit": 0,
+      "sourceSha": "f58f5ff",
+      "passed": 5,
+      "checks": [
+        "Existing settings page exposes actual missing component without downloading on view",
+        "Same real Pi task automatically downloads official component and returns actual240 computation in two synthetic model requests",
+        "Actual settings UI reads ready version and uninstalls only unused component",
+        "Teacher can prepare the same reviewed component from settings using actual typed IPC and health process",
+        "Cold start reads installed healthy version without download, model request or task replay"
+      ],
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-ui-Y5yelF\\report.json",
+      "rendererErrors": [],
+      "initialTaskSyntheticProviderRequests": 2,
+      "initialTaskRealComponentDownloads": 1,
+      "note": "Second settings preparation also exercised; initial-task wire snapshot counts only the first preparation, not every HTTP request across script"
+    }
+  ],
+  "firstBuildFailure": {
+    "log": "apps/desktop/managed-tools-build.log",
+    "reason": "Type-level string literal inference, fork option typing and React ref initialization; corrected before successful build/real UI; no runtime assertion weakened"
+  },
+  "limits": {
+    "vmMemoryBytes": 33554432,
+    "childOldSpaceMiB": 128,
+    "vmInstructionDeadlineMs": 2000,
+    "parentDeadlineMs": 10000,
+    "resultBytes": 131072,
+    "scriptCharacters": 32768,
+    "inputBytes": 65536,
+    "downloadDeadlineMs": 120000,
+    "downloadProgressNotificationIntervalMs": 100
+  },
+  "performance": {
+    "before": "No production general isolated computation; missing component could not be automatically prepared",
+    "after": "Actual240 result and preserved00123; component install uses real568844B download and637405B binary",
+    "sample": {
+      "value": {
+        "total": 240,
+        "studentId": "00123",
+        "host": [
+          "undefined",
+          "undefined",
+          "undefined"
+        ]
+      },
+      "runtime": "3.6.2",
+      "elapsedMs": 13
+    },
+    "sampleBoundary": "elapsedMs covers VM segment only, excludes process startup/download; no P95/end-to-end or streaming speed claim",
+    "globalComputeWorkerPool": "Not yet capped/queued; per-child limits and same-component preparation deduplication already present"
+  },
+  "screenshots": [
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-ui-Y5yelF\\tools-1366.png",
+    "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-ui-Y5yelF\\tools-1920.png"
+  ],
+  "audit": {
+    "command": "npm audit --json",
+    "exit": 1,
+    "report": "apps/desktop/test-results/xiaozhi-agent/managed-tools-audit.json",
+    "metadata": {
+      "info": 0,
+      "low": 8,
+      "moderate": 7,
+      "high": 8,
+      "critical": 0,
+      "total": 23
+    },
+    "note": "Existing23 vulnerabilities; no new package versions, no automated audit fix"
+  },
+  "acceptance": {
+    "newImplementedMarks": 0,
+    "E04": "partial, full AT pending",
+    "E05": "basic execution only",
+    "remaining": [
+      "E04 compatible version upgrade/frozen per-run identity and rollback to previous compatible version",
+      "Fault/readonly/platform/archive/path variants and UI stop paths in concentrated fixed FX acceptance",
+      "Global compute process concurrency/queue",
+      "E05 charts/CSV/type policy/conversions and real file publication through existing review",
+      "Full cross-session/OS/Office/WPS/daily runtime/installer and natural teaching-quality evaluation",
+      "Inherited lecture-description save comprehensive-test failure remains open; not rerun or claimed207 green"
+    ]
+  },
+  "rollback": {
+    "switch": "OMNI_EDU_XIAOZHI_COMPUTE=0",
+    "behavior": "Keep known native tool definitions/identity and existing teacher artifacts; new computation/preparation reports unsupported; cached components remain readable configuration",
+    "evidence": "Source12 checks include disabled policy; no new SQLite DDL",
+    "code": "59b32e9/f58f5ff are normal reversible commits; do not delete native custom records or saved files"
+  },
+  "next": "Finish E04 version lifecycle and compute concurrency, then E05 chart/file/composition paths; W3 concentrated AT"
+}
