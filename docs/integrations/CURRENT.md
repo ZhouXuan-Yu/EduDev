@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-30 AI整页正文进入现检索与小智（M04/M10）
+
+现SQLite FTS5/分词、RetrievalRepository时钟及重建、固定本地ONNX/LanceDB和原Pi的education_search_materials/office_read_material直接复用。没有新增模型、服务、工具名称或Agent循环。typed materials:source识别独立AI正文引用，原六字段OCR来源仍严格；生产Pi公共阅读引用登记后由现来源卡打开MaterialAiPagePanel，旧课堂/归档不接纳AI引用。回退：OMNI_EDU_AI_TEXT_INDEX=0停新派生，已有原页/档案读取保留；旧MaterialSource.v1/QuestionArchive.v1–v5不变。新增三张派生表/列索引增量幂等，重建从原回执恢复，无AI重发；停用不得删除原资料、教师编辑或回执。无本轮新增依赖，main合入的受管组件另见E04记录。npm audit仍23项既有风险（8高/7中/8低），不称审计通过。
+
 ## 2026-10-30 E04复用现Pi计算依赖
 
 quickjs-wasi3.6.2原已为Pi间接依赖，tar7.5.22原也在锁内；新增直接生产声明，无新包版本/原生addon。官方包与已装WASM实际字节一致；主进程受管服务/独立子进程/现typed preload/原设置组件贯通，原文件生成与确认不变。实现f58f5ff，最终主进程兼容停用/故障卸载接缝59b32e9。最终build/type与12源码/真实组件专项exit0；正式Electron5项及240组件在f58f5ff通过，后续renderer未改，非最终重跑。UI从现设置看到缺失→同任务真实官方下载安装→240结果→UI卸载/准备→冷启0下载/0模型调用，0renderer错误，1366/1920截图保留。0真实付费模型请求；npm audit既有23项（0严重），未自动修依赖。证据docs/research/AGENT_MANAGED_TOOLS_E04_20261030.json。
