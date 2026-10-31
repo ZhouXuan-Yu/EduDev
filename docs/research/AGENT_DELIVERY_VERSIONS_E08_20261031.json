@@ -665,5 +665,137 @@
       "realPaidRequests": 0,
       "fullStageATStillPending": true
     }
+  },
+  "htmlCatalogSlice": {
+    "date": "2026-11-01",
+    "sourceCommit": "1ff075c75345eb0035c51eed5c6ef187b764b5b9",
+    "baselineCommit": "86c37bb95b1d803f596e3bf3dbc881f98d7a5ef4",
+    "status": "HTML目录与时间工程功能已实现；完整E08/FX/252AT未完成，Goal active",
+    "implementation": [
+      "Original listDocumentArtifacts -> bounded derived HTML metadata -> same typed preload -> Teaching Files -> existing officeVersion/HTML preview/history/restore/native dispatch/source chat. Office export input/result remains unchanged.",
+      "No duplicate document_artifacts HTML facts. Recent100 HTML seeds, at most100 session metadata reads bounded by256 records/session; current family projection. LIMIT bounds returned candidates, not total SQLite rows examined. No filesystem scan, new per-token catalog query, or content bytes in catalog.",
+      "Original text table nullable saved_at/verified_at; normal executing->applied records successful save receipt time (not OS mtime). Uncertain verification has verification timestamp only; original save time retained if known; legacy NULL displayed unknown.",
+      "Current selection stays family-bound across restore, old chat default resolves the same new current HTML. Missing/external change/IPC read error preserve ledger and loaded list; no automatic write or model regeneration."
+    ],
+    "tests": {
+      "source": {
+        "command": "node scripts/xiaozhi-agent/html-catalog-smoke.mjs",
+        "passed": 6,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-catalog-lqVu2d"
+      },
+      "htmlRegression": {
+        "command": "node scripts/xiaozhi-agent/html-versions-smoke.mjs",
+        "passed": 8,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-versions-0IIXHc"
+      },
+      "officeRegression": {
+        "command": "node scripts/xiaozhi-agent/office-versions-smoke.mjs",
+        "passed": 16,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-Z1RXbK"
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "includes": "tsc --noEmit and electron-vite build"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exit": 0
+      },
+      "formalElectron": {
+        "command": "node scripts/xiaozhi-agent/html-catalog-electron.mjs --fixture C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-html-ui-KHunR1",
+        "passed": 8,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-catalog-ui-51PSfC",
+        "sourceFixture": "Actual prior Pi 4N ->5N -> restore4N three-version fixture, reused without regeneration; catalog now restored the second version to fourth current5N HTML. Prior source report remains historical.",
+        "rendererErrors": 0,
+        "modelRequests": 0,
+        "geometry": [
+          {
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5,
+            "scrollWidth": 1366,
+            "rootWidth": 946.375,
+            "controlWidth": 577.5625,
+            "fontSize": "14px",
+            "fontFamily": "system-ui, \"Segoe UI\", \"Microsoft YaHei\", sans-serif"
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5,
+            "scrollWidth": 1920,
+            "rootWidth": 1184,
+            "controlWidth": 744.90625,
+            "fontSize": "14px",
+            "fontFamily": "system-ui, \"Segoe UI\", \"Microsoft YaHei\", sans-serif"
+          }
+        ],
+        "boundary": "Real main/preload/formal UI/SQLite/files; OS callback is observed stub (actual native browser acceptance pending). Intentional IPC error injection then cold actual-handler recovery. All original files hashes/mtimes preserved before owned current-file error simulations."
+      },
+      "comprehensive": {
+        "runThisSlice": false,
+        "reason": "Already observed mastery_quiz checkpoint response.ok=false in prior single comprehensive run. Scope not changed/fixed here; preserve original failure, use affected smoke paths once, full stage AT after functionality. No207/207 claim."
+      }
+    },
+    "build": {
+      "main/index.js": {
+        "bytes": 3356101,
+        "sha256": "b424f9f43a6a4a177e87b8d31317c9ec4c6fd2740b380c8bdc29541737892307"
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      "renderer/assets/index-DlYakT-6.js": {
+        "bytes": 7264397,
+        "sha256": "64c188b3a94ac1a19e220a1991b189620dcec9c1ce12f63e6509549c0604efb5"
+      }
+    },
+    "performance": {
+      "baseline": "htmlVersionSlice final build at86c37bb",
+      "mainDeltaBytes": 2810,
+      "preloadDeltaBytes": 0,
+      "rendererDeltaBytes": 614,
+      "scope": "Only explicit catalog/history loads bounded metadata; selected HTML preview remains64KiB. New save timestamps add columns to existing transition update, no new request/event stream. No comparative streaming latency/P95/RAM measurement; package byte deltas do not prove faster replies."
+    },
+    "migration": "Nullable saved_at and verified_at, original schema_version1 unchanged. Owned legacy-shaped SQLite migration twice and actual prior3-version database migration verified; no backfilled save dates or deleted rows/files.",
+    "archive": "docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031/html-catalog",
+    "realPaidRequests": 0,
+    "newDependencies": 0,
+    "newIpc": 0,
+    "audit": {
+      "exit": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "scope": "Existing45 vulnerabilities, no new dependency or automatic upgrade."
+    },
+    "actualRuntime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "rollback": "Disable/revert HTML catalog projection/UI if needed, retain nullable timestamp/parent read compatibility and all files/original ledger. No DROP columns or data deletion; full rollback rehearsal not performed.",
+    "remaining": [
+      "Complete source version/original-page/line navigation and source-change status across formats, E08/C applicable gaps",
+      "Actual native OS viewing and full FX01 science/content quality plus concentrated complete E08/252AT",
+      "Focused mastery_quiz checkpoint diagnosis in applicable teaching path",
+      "Daily D runtime and installer delivery"
+    ],
+    "rawBuildLog": {
+      "path": "docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031/html-catalog/html-catalog-build.log.gz",
+      "sha256Uncompressed": "486886b0a00fc75a0f0f1ceec6888ab0e8f37f6e2f1645a8500dcf2a14d79e72",
+      "reason": "Preserve exact raw log bytes including Vite trailing spaces; gzip avoids treating generated output as source whitespace. Original raw log also remains in test-results."
+    }
   }
 }

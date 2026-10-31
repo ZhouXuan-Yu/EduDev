@@ -1,0 +1,11 @@
+(node:102000) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Formal Teaching Files searches HTML, groups three old saves, previews current/history and shows legacy save time as unknown
+PASS Catalog restore creates a fourth current HTML with actual save receipt time, keeps selection by family and leaves every earlier file/mtime unchanged
+PASS Teaching Files system-open and locate use the shared authorized HTML host and dispatch exactly the current file
+PASS Moved or externally edited current files produce visible errors while catalog/history survive; retry reads the restored file without overwriting teacher content
+PASS Original catalog and version controls remain reachable at both native CSS window sizes; DPR/computed geometry are recorded
+PASS Source conversation navigation preserves the original session, whose oldest card opens the same fourth current HTML
+PASS An actual IPC read failure shows retry feedback and preserves already loaded catalog entries
+PASS Cold formal catalog restores all four versions/current identity and truthful timestamps with no tool/model replay or renderer errors
+{"ok":true,"checks":8,"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-catalog-ui-51PSfC","fixture":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-KHunR1"}

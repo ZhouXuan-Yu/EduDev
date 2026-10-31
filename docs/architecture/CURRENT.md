@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 E08：原changes新增可空saved_at/verified_at→textVersionCatalog元数据投影→原listDocumentArtifacts typed preload→TeachingArtifactsWorkspace→共用officeVersion host/历史组件。无新表/IPC/Runtime，原Office导出输入和结果不扩展HTML；旧库幂等兼容，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
+
 2026-11-01 E08：原text-change状态/服务→HTML版本薄适配→现officeVersion typed IPC/preload→共用版本组件/原HTML卡；原表仅新增可空parent_change_id，零新表/IPC/Runtime。恢复复用原文件queue和local settings owner。
 
 ## 2026-11-01 知识库整体架构优先

@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 E08：HTML目录复用原text-change/Pi算法、原资源列表/HTML预览与版本组件；0依赖/新IPC/付费。源码6、HTML8、Office16、组件240、正式目录8及build/type通过；原生OS只核回调派发，不声称浏览器接受。证据docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
+
 2026-11-01 E08：HTML历史复用Pi编辑/原text ledger、Office版本DTO/typed IPC和原ScienceDemoFrame；零新组件库/CSS/依赖。Office16与原冲突6专项通过。
 
 ## 2026-11-01 知识库整体架构优先

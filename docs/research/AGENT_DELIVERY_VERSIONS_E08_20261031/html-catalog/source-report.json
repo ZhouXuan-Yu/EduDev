@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-catalog-lqVu2d",
+  "checks": [
+    "Save receipt time differs from proposal time; HTML catalog returns one current family without file bytes or absolute path",
+    "Undo preserves the original save time and catalog points to the remaining applied version",
+    "Prior database shape migrates twice with legacy save time unknown and original bytes/lineage intact",
+    "Save-before-outcome recovery records verification time only, without inventing a save time or writing again",
+    "Pending/non-HTML changes are excluded, session filtering is exact, and no duplicate document artifact table is needed",
+    "Global/session metadata queries are bounded at 100 recent records; older sessions remain independently queryable"
+  ],
+  "boundary": "Real SQLite, original text service/Pi edit algorithm and local files; no model, UI or complete AT claims."
+}
