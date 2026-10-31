@@ -1,5 +1,9 @@
 # 当前产品方向
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+PPTX原生检查现可定位上层不透明矩形完整覆盖的文字页/对象，并经Windows系统字体回退检查缺失码点。PowerPoint16和WPS12同一7页正反例均定位第2页遮挡、第5页U+10FFFD；中文、透明覆盖和后置背景未误报。旋转/复杂图形、部分遮挡、动画及Office与WPF整形差异仍未完整检查，Word/PDF逐字缺字未接入。 原文件面板/原Pi具体失败回执和冷启可用；完整E06仍未验收，下一要求逐条关联。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
 WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
 
 ## 2026-10-31 E06 WPS真实页面（第六切片）

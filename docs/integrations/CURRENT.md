@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+沿本机PowerPoint/WPS只读Automation及Windows WPF成熟整形接入，无下载/新依赖。相同真实课件字节两引擎定位具体问题，原PNG查看/冷启保持；新render.ps1固定代码不接受模型源码，原有界已知文件清理及Job保持。完整动画/嵌入字体/原生编辑矩阵不在本轮达标范围。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
 WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
 
 ## 2026-10-31 E06 WPS真实页面（第六切片）

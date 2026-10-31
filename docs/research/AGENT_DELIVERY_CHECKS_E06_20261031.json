@@ -3793,5 +3793,820 @@
       "goalStatus": "active",
       "newFullyAcceptedRequirements": 0
     }
+  },
+  "layoutSlice": {
+    "date": "2026-10-31",
+    "source": "c31384f41c17130ab80d9ad95e55b198c091d5f2",
+    "workspace": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "branch": "codex/hana-answer-quality",
+    "goalStatus": "active",
+    "newFullyAcceptedRequirements": 0,
+    "scope": "M09/M10, partial REQ-E06-03: original PPTX actual rendering plus bounded top-level static opaque rectangle containment and independent OS glyph shaping; not complete semantic/Office visual acceptance.",
+    "newDependencies": 0,
+    "newBusinessTables": 0,
+    "newIpc": 0,
+    "paidModelRequests": 0,
+    "teacherDataUploaded": false,
+    "native": {
+      "ok": true,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-layout-native-wPYbzR",
+      "checks": [
+        "Real Windows fallback preserves Arial Chinese/formula and detects a missing supplementary glyph; character budget explicitly unchecked",
+        "microsoft: actual7-page PNGs, exact page/object obstruction and missing glyph; transparent/background/Chinese positives not falsely failed; rotated coverage unchecked; source unchanged",
+        "wps: actual7-page PNGs, exact page/object obstruction and missing glyph; transparent/background/Chinese positives not falsely failed; rotated coverage unchecked; source unchanged",
+        "Existing Office/WPS process/window identities preserved; owned native renderers exited"
+      ],
+      "before": [
+        {
+          "hwnd": 0,
+          "pid": 15452,
+          "start": "2026-10-31T04:46:30.9142432Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 21948,
+          "start": "2026-10-31T04:46:27.5460079Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 35668,
+          "start": "2026-10-31T04:46:38.0786438Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 49844,
+          "start": "2026-10-31T08:26:05.4395099Z"
+        }
+      ],
+      "glyph": [
+        {
+          "unchecked": false,
+          "points": []
+        },
+        {
+          "unchecked": false,
+          "points": [
+            "U+10FFFD"
+          ]
+        },
+        {
+          "unchecked": true,
+          "points": []
+        }
+      ],
+      "sha256": "bbf3510ab51a0419ccb5fed71fb138e4785d2a41c8d991380e21a8e9915f53e9",
+      "microsoft": {
+        "elapsedMs": 6787,
+        "actual": {
+          "version": "16.0",
+          "width": 1600,
+          "ok": true,
+          "height": 900,
+          "findings": [
+            {
+              "code": "rendered_text_covered",
+              "page": 2,
+              "cover": 3,
+              "object": 2
+            },
+            {
+              "point": "U+10FFFD",
+              "code": "system_glyph_missing",
+              "page": 5,
+              "object": 2
+            },
+            {
+              "code": "layer_coverage_partial",
+              "page": 7
+            }
+          ],
+          "engine": "PowerPoint",
+          "schemaVersion": "xiaozhi.powerpoint-render.v1",
+          "pages": 7
+        },
+        "proofs": [
+          {
+            "page": 1,
+            "kind": "office_page",
+            "sha256": "ae983c341b888484c34f932cbd93eded83a095d5ed47c39273862d8dd081b7a3",
+            "bytes": 4658,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 2,
+            "kind": "office_page",
+            "sha256": "3e0f2fb1a047ff4bfe29694cff2e6d031092eec23418c3f6253a3e210e2b19fe",
+            "bytes": 320,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 3,
+            "kind": "office_page",
+            "sha256": "bb1cbd14a20688b6afe3ba7ce83573f897fa744836f1fb19a0c3d5530d8d0337",
+            "bytes": 6115,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 4,
+            "kind": "office_page",
+            "sha256": "d86698b3e321b7b9e89c09212cba7dc22c78d3ff5461b2333cf18bc1d5b12f73",
+            "bytes": 5560,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 5,
+            "kind": "office_page",
+            "sha256": "2e2b72175b963af6049b2fb6f0727bf07c4d1cc96a9abefa1747629f8a56f840",
+            "bytes": 4858,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 6,
+            "kind": "office_page",
+            "sha256": "f010d7bbbfbc10972dc680c9058d75e95b4ee230dd84693525409bb8751fbe9a",
+            "bytes": 5384,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 7,
+            "kind": "office_page",
+            "sha256": "924513dac868c2cc7c11f5c4586618ca89ccd8cd4e21e0ae9104ead6ad914fb5",
+            "bytes": 5516,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          }
+        ],
+        "owner": {
+          "start": "2026-10-31T10:44:47.7810887Z",
+          "pid": 42092
+        }
+      },
+      "wps": {
+        "elapsedMs": 10318,
+        "actual": {
+          "version": "12.0",
+          "width": 1600,
+          "ok": true,
+          "height": 900,
+          "findings": [
+            {
+              "code": "rendered_text_covered",
+              "page": 2,
+              "cover": 3,
+              "object": 2
+            },
+            {
+              "point": "U+10FFFD",
+              "code": "system_glyph_missing",
+              "page": 5,
+              "object": 2
+            },
+            {
+              "code": "layer_coverage_partial",
+              "page": 7
+            }
+          ],
+          "engine": "WPS Presentation",
+          "schemaVersion": "xiaozhi.powerpoint-render.v1",
+          "pages": 7
+        },
+        "proofs": [
+          {
+            "page": 1,
+            "kind": "office_page",
+            "sha256": "e82836252341e78a9cce469c9a4cc35e6376c49f08698f3794108ab164782a91",
+            "bytes": 17339,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 2,
+            "kind": "office_page",
+            "sha256": "566fb4d14f1133402c95ae9bde9638a7436c3c352f79a02aac6e6f1372e76c89",
+            "bytes": 7786,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 3,
+            "kind": "office_page",
+            "sha256": "a6b6b5b442053e007d09be0061fd9772fb85d8e1f92e6be18c7dba63a72115e0",
+            "bytes": 21100,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 4,
+            "kind": "office_page",
+            "sha256": "abbe6812de69f7c2ead9c37f34798399124b1c8b7b8dc266287feb00c541f895",
+            "bytes": 20522,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 5,
+            "kind": "office_page",
+            "sha256": "eae54f7ac11ebd14772349c72c186f2f499e9d0a648577f71646eed56b2b1896",
+            "bytes": 18221,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 6,
+            "kind": "office_page",
+            "sha256": "678514c53ab2659f4d51abd5ff161f557c595b70cad423929394af2e84e02a67",
+            "bytes": 19303,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          },
+          {
+            "page": 7,
+            "kind": "office_page",
+            "sha256": "01353b953dc6e15b63aee1f5f8e676170b38edd15c657492ce9d9649925909a1",
+            "bytes": 21741,
+            "width": 1600,
+            "height": 900,
+            "viewport": "1600x900"
+          }
+        ],
+        "owner": {
+          "engine": "KWPP.Application",
+          "pid": 48780,
+          "identity": "registered-automation-start-time",
+          "start": "2026-10-31T10:44:54.2388874Z"
+        }
+      },
+      "after": [
+        {
+          "hwnd": 0,
+          "pid": 15452,
+          "start": "2026-10-31T04:46:30.9142432Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 21948,
+          "start": "2026-10-31T04:46:27.5460079Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 35668,
+          "start": "2026-10-31T04:46:38.0786438Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 49844,
+          "start": "2026-10-31T08:26:05.4395099Z"
+        }
+      ]
+    },
+    "beforeSameBytes": {
+      "ok": true,
+      "source": "af0cbea082f31ec1c1992b23764fca2f24ecf81f",
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-layout-native-wPYbzR",
+      "engines": [
+        {
+          "engine": "microsoft",
+          "elapsedMs": 4124,
+          "actual": {
+            "version": "16.0",
+            "width": 1600,
+            "ok": true,
+            "height": 900,
+            "findings": [],
+            "engine": "PowerPoint",
+            "schemaVersion": "xiaozhi.powerpoint-render.v1",
+            "pages": 7
+          }
+        },
+        {
+          "engine": "wps",
+          "elapsedMs": 6717,
+          "actual": {
+            "version": "12.0",
+            "width": 1600,
+            "ok": true,
+            "height": 900,
+            "findings": [],
+            "engine": "WPS Presentation",
+            "schemaVersion": "xiaozhi.powerpoint-render.v1",
+            "pages": 7
+          }
+        }
+      ],
+      "sha256": "bbf3510ab51a0419ccb5fed71fb138e4785d2a41c8d991380e21a8e9915f53e9"
+    },
+    "formalUi": {
+      "ok": true,
+      "checks": [
+        "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+        "Original Pi tool reports native page2/object obstruction and page5/codepoint failure with7 persisted actual PNGs; positive pages are not falsely failed",
+        "Original file panel selects WPS and shows exact failed-file/page5 pixels at1366/1920; failure and unchecked findings remain separate",
+        "Cold original app reads exact WPS page5 evidence without model/render/publication replay; source bytes unchanged"
+      ],
+      "errors": [],
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-9yADUx",
+      "boundary": "Formal composer/original review/PDF file actions, actual native pages, SQLite and cold restart. Synthetic SSE only; no paid model, teacher data or complete E06 acceptance. Word success is checked only in the explicit --word-success mode; no complete E06/WPS/semantic visual claim.",
+      "layout": {
+        "sha256": "bbf3510ab51a0419ccb5fed71fb138e4785d2a41c8d991380e21a8e9915f53e9",
+        "files": [
+          {
+            "path": "文字遮挡与缺字.pptx",
+            "fileVersion": "1f7c57b603f11810da81c8d71175ccacb95680d1968b18d68ecbfc86a3f968aa",
+            "sha256": "bbf3510ab51a0419ccb5fed71fb138e4785d2a41c8d991380e21a8e9915f53e9",
+            "size": 78357,
+            "format": "pptx",
+            "checks": [
+              {
+                "kind": "visual",
+                "state": "failed",
+                "code": "rendered_text_covered",
+                "page": 2,
+                "message": "PowerPoint 16.0对象2的实际文字边界被上层不透明矩形3完整覆盖，请移开遮挡并重检。"
+              },
+              {
+                "kind": "visual",
+                "state": "failed",
+                "code": "system_glyph_missing",
+                "page": 5,
+                "message": "对象2的字符U+10FFFD在本机系统字体回退后仍无字形，请替换字符或字体并核对原生截图。此项为独立系统整形检查。"
+              },
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "layer_coverage_partial",
+                "page": 7,
+                "message": "本页含动画、组合、表格、旋转文字或超出图层预算；相应遮挡未完整检查，请核对实际页面。"
+              },
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "actual_office_rendered",
+                "message": "PowerPoint 16.0已实际渲染全部7页；已检查文字边界、静态顶层实心矩形完整遮挡，并以系统字体回退检查可读文字的字形覆盖。部分遮挡、复杂图形/公式、Office与系统整形差异及动画仍需查看截图核对。"
+              },
+              {
+                "kind": "structure",
+                "state": "passed",
+                "code": "parsed",
+                "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共7页。"
+              },
+              {
+                "kind": "content",
+                "state": "unchecked",
+                "code": "content_contract",
+                "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+              },
+              {
+                "kind": "numbers",
+                "state": "unchecked",
+                "code": "numeric_contract",
+                "message": "尚未提供数值或合计的核验约定。"
+              },
+              {
+                "kind": "interaction",
+                "state": "not_applicable",
+                "code": "document_interaction",
+                "message": "本次非HTML文件没有约定的交互动作检查。"
+              },
+              {
+                "kind": "consistency",
+                "state": "not_applicable",
+                "code": "single_file",
+                "message": "当前仅检查一份文件。"
+              }
+            ],
+            "renderedPages": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "numbers": [],
+            "state": "failed",
+            "visualEvidence": [
+              {
+                "page": 1,
+                "kind": "office_page",
+                "sha256": "ae983c341b888484c34f932cbd93eded83a095d5ed47c39273862d8dd081b7a3",
+                "bytes": 4658,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 2,
+                "kind": "office_page",
+                "sha256": "3e0f2fb1a047ff4bfe29694cff2e6d031092eec23418c3f6253a3e210e2b19fe",
+                "bytes": 320,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 3,
+                "kind": "office_page",
+                "sha256": "bb1cbd14a20688b6afe3ba7ce83573f897fa744836f1fb19a0c3d5530d8d0337",
+                "bytes": 6115,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 4,
+                "kind": "office_page",
+                "sha256": "d86698b3e321b7b9e89c09212cba7dc22c78d3ff5461b2333cf18bc1d5b12f73",
+                "bytes": 5560,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 5,
+                "kind": "office_page",
+                "sha256": "2e2b72175b963af6049b2fb6f0727bf07c4d1cc96a9abefa1747629f8a56f840",
+                "bytes": 4858,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 6,
+                "kind": "office_page",
+                "sha256": "f010d7bbbfbc10972dc680c9058d75e95b4ee230dd84693525409bb8751fbe9a",
+                "bytes": 5384,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 7,
+                "kind": "office_page",
+                "sha256": "924513dac868c2cc7c11f5c4586618ca89ccd8cd4e21e0ae9104ead6ad914fb5",
+                "bytes": 5516,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              }
+            ],
+            "facts": [],
+            "pageCount": 7
+          },
+          {
+            "path": "文字遮挡与缺字.pptx",
+            "fileVersion": "1f7c57b603f11810da81c8d71175ccacb95680d1968b18d68ecbfc86a3f968aa",
+            "sha256": "bbf3510ab51a0419ccb5fed71fb138e4785d2a41c8d991380e21a8e9915f53e9",
+            "size": 78357,
+            "format": "pptx",
+            "checks": [
+              {
+                "kind": "visual",
+                "state": "failed",
+                "code": "rendered_text_covered",
+                "page": 2,
+                "message": "WPS Presentation 12.0对象2的实际文字边界被上层不透明矩形3完整覆盖，请移开遮挡并重检。"
+              },
+              {
+                "kind": "visual",
+                "state": "failed",
+                "code": "system_glyph_missing",
+                "page": 5,
+                "message": "对象2的字符U+10FFFD在本机系统字体回退后仍无字形，请替换字符或字体并核对原生截图。此项为独立系统整形检查。"
+              },
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "layer_coverage_partial",
+                "page": 7,
+                "message": "本页含动画、组合、表格、旋转文字或超出图层预算；相应遮挡未完整检查，请核对实际页面。"
+              },
+              {
+                "kind": "visual",
+                "state": "unchecked",
+                "code": "actual_office_rendered",
+                "message": "WPS Presentation 12.0已实际渲染全部7页；已检查文字边界、静态顶层实心矩形完整遮挡，并以系统字体回退检查可读文字的字形覆盖。部分遮挡、复杂图形/公式、Office与系统整形差异及动画仍需查看截图核对。"
+              },
+              {
+                "kind": "structure",
+                "state": "passed",
+                "code": "parsed",
+                "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共7页。"
+              },
+              {
+                "kind": "content",
+                "state": "unchecked",
+                "code": "content_contract",
+                "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+              },
+              {
+                "kind": "numbers",
+                "state": "unchecked",
+                "code": "numeric_contract",
+                "message": "尚未提供数值或合计的核验约定。"
+              },
+              {
+                "kind": "interaction",
+                "state": "not_applicable",
+                "code": "document_interaction",
+                "message": "本次非HTML文件没有约定的交互动作检查。"
+              },
+              {
+                "kind": "consistency",
+                "state": "not_applicable",
+                "code": "single_file",
+                "message": "当前仅检查一份文件。"
+              }
+            ],
+            "renderedPages": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "numbers": [],
+            "state": "failed",
+            "visualEvidence": [
+              {
+                "page": 1,
+                "kind": "office_page",
+                "sha256": "e82836252341e78a9cce469c9a4cc35e6376c49f08698f3794108ab164782a91",
+                "bytes": 17339,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 2,
+                "kind": "office_page",
+                "sha256": "566fb4d14f1133402c95ae9bde9638a7436c3c352f79a02aac6e6f1372e76c89",
+                "bytes": 7786,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 3,
+                "kind": "office_page",
+                "sha256": "a6b6b5b442053e007d09be0061fd9772fb85d8e1f92e6be18c7dba63a72115e0",
+                "bytes": 21100,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 4,
+                "kind": "office_page",
+                "sha256": "abbe6812de69f7c2ead9c37f34798399124b1c8b7b8dc266287feb00c541f895",
+                "bytes": 20522,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 5,
+                "kind": "office_page",
+                "sha256": "eae54f7ac11ebd14772349c72c186f2f499e9d0a648577f71646eed56b2b1896",
+                "bytes": 18221,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 6,
+                "kind": "office_page",
+                "sha256": "678514c53ab2659f4d51abd5ff161f557c595b70cad423929394af2e84e02a67",
+                "bytes": 19303,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 7,
+                "kind": "office_page",
+                "sha256": "01353b953dc6e15b63aee1f5f8e676170b38edd15c657492ce9d9649925909a1",
+                "bytes": 21741,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              }
+            ],
+            "facts": [],
+            "pageCount": 7
+          }
+        ],
+        "composerMs": 17049
+      }
+    },
+    "focusedStop": {
+      "ok": true,
+      "checks": [
+        "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+        "Visible cancellation stops the owned native Job and removes the new fixed script plus staging;64-page source and cancellation receipt retained"
+      ],
+      "errors": [],
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-5p5Vym",
+      "layoutStop": {
+        "owner": {
+          "engine": "KWPP.Application",
+          "pid": 7964,
+          "identity": "registered-automation-start-time",
+          "start": "2026-10-31T10:51:25.6742172Z",
+          "folder": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa\\data\\cache\\delivery-office\\v1\\render-RtIpwr"
+        },
+        "elapsedMs": 1103,
+        "sha256": "2bce79fc7db3d3b6dedf074421824e5e036fd754fcc5f94e356b2034e5460aab"
+      }
+    },
+    "firstFailedNative": {
+      "ok": false,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-layout-native-F3RE1Q",
+      "checks": [
+        "Real Windows fallback preserves Arial Chinese/formula and detects a missing supplementary glyph; character budget explicitly unchecked"
+      ],
+      "before": [
+        {
+          "hwnd": 0,
+          "pid": 15452,
+          "start": "2026-10-31T04:46:30.9142432Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 21948,
+          "start": "2026-10-31T04:46:27.5460079Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 35668,
+          "start": "2026-10-31T04:46:38.0786438Z"
+        },
+        {
+          "hwnd": 0,
+          "pid": 49844,
+          "start": "2026-10-31T08:26:05.4395099Z"
+        }
+      ],
+      "glyph": [
+        {
+          "unchecked": false,
+          "points": []
+        },
+        {
+          "unchecked": false,
+          "points": [
+            "U+10FFFD"
+          ]
+        },
+        {
+          "unchecked": true,
+          "points": []
+        }
+      ],
+      "sha256": "431e2f89e6fe14d2516faabf2b1f3e33842c5c63c2aaf551302ede9eaac68d00",
+      "error": "Error: spawn ENAMETOOLONG\n    at ChildProcess.spawn (node:internal/child_process:421:11)\n    at spawn (node:child_process:796:9)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-layout-native.mjs:9:122\n    at new Promise (<anonymous>)\n    at ps (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-layout-native.mjs:9:55)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-layout-native.mjs:18:39"
+    },
+    "firstFailureExit": 1,
+    "repair": "Encoded fixed script hit ENAMETOOLONG. Production writes fixed UTF8-BOM render.ps1 and invokes -File with process-only execution policy; known-file cleanup includes it; exact engines/original UI and in-flight cancellation passed after change. No user configuration change.",
+    "checks": [
+      {
+        "command": "npm run build",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-final-build.log",
+        "exit": 0
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-components.log",
+        "exit": 0,
+        "passed": 240
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-source.log",
+        "exit": 0,
+        "passed": 12
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-layout-native.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-native-fix.log",
+        "exit": 0,
+        "passed": 4
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-layout-before.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-layout-native-wPYbzR",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-before.log",
+        "exit": 0,
+        "passed": 2
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa --layout --layout-native-root C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-layout-native-wPYbzR",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-ui.log",
+        "exit": 0,
+        "passed": 4
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa --layout --layout-stop-only",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-stop.log",
+        "exit": 0,
+        "passed": 2
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0
+      }
+    ],
+    "comprehensive": {
+      "command": "npm run test:smoke",
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-layout-smoke.log",
+      "state": "completed",
+      "runtime": "legacy-test, OMNI_EDU_XIAOZHI_PI=0; not original Pi acceptance",
+      "exit": 0,
+      "passed": 207,
+      "total": 207,
+      "skipped": "not separately reported; complete252AT not run",
+      "source": "c31384f41c17130ab80d9ad95e55b198c091d5f2",
+      "tempRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-smoke-cLapN3",
+      "cleanup": "Legacy smoke removes its own synthetic roots on exit; persisted screenshots remain in apps/desktop/test-results/electron-e2e."
+    },
+    "fingerprints": {
+      "apps/desktop/out/main/index.js": {
+        "bytes": 3232126,
+        "sha256": "5f53c0d64fc790b551dabe25d236a0906fc31b3480c44fa5c07e0eabfb5f0f8e"
+      },
+      "apps/desktop/out/preload/index.cjs": {
+        "bytes": 34761,
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+      },
+      "apps/desktop/out/renderer/assets/index-By4Dx4Si.js": {
+        "bytes": 7179937,
+        "sha256": "aa251a571b43280237b9f5c4d58115fda3825b258c8ea06bc871e0a36462e3f0"
+      }
+    },
+    "images": {
+      "native-chinese": "docs/research/AGENT_DELIVERY_CHECKS_E06_LAYOUT_20261031/native-chinese.png",
+      "native-covered": "docs/research/AGENT_DELIVERY_CHECKS_E06_LAYOUT_20261031/native-covered.png",
+      "native-missing": "docs/research/AGENT_DELIVERY_CHECKS_E06_LAYOUT_20261031/native-missing.png",
+      "wps-missing": "docs/research/AGENT_DELIVERY_CHECKS_E06_LAYOUT_20261031/wps-missing.png",
+      "original-ui-1366": "docs/research/AGENT_DELIVERY_CHECKS_E06_LAYOUT_20261031/original-ui-1366.png",
+      "original-ui-1920": "docs/research/AGENT_DELIVERY_CHECKS_E06_LAYOUT_20261031/original-ui-1920.png"
+    },
+    "performance": {
+      "sameBytes": "bbf3510ab51a0419ccb5fed71fb138e4785d2a41c8d991380e21a8e9915f53e9",
+      "microsoftBeforeMs": 4124,
+      "microsoftAfterMs": 6787,
+      "wpsBeforeMs": 6717,
+      "wpsAfterMs": 10318,
+      "originalPiCheckTurnMs": 17049,
+      "stopObservedMs": 1103,
+      "rendererBeforeBytes": 7179937,
+      "rendererAfterBytes": 7179937,
+      "limitation": "Single sequential observations, new native check takes longer; no P95, pure overhead attribution or end-to-end performance non-regression claim. Main renderer JS unchanged; detector work in bounded external process.",
+      "mainBeforeBytes": 3225754,
+      "mainAfterBytes": 3232126,
+      "mainDeltaBytes": 6372
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-layout-audit-20261031.json",
+      "exit": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "action": "No dependency updates; known45 retained"
+    },
+    "remaining": [
+      "Full teacher requirement/criterion-to-check binding and mixed terminal",
+      "Word/PDF glyphs, partial/complex/semantic occlusion, math/animation coverage",
+      "Actual animation/group/embedded-font cross-engine fixture matrix not run this slice; explicit unchecked pathways are not complete acceptance",
+      "Full FX09/252 AT, E07/E08+C and S/T stages",
+      "D daily runtime and installer unchanged; inherited PromptInput fingerprint/bootstrap IPC gates not rerun or fixed"
+    ],
+    "rollback": "Revert c31384f to restore previous adapter; no business migration, original files/reports/PNG reader remain; full rollback drill not run."
   }
 }

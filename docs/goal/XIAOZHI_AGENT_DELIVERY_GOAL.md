@@ -1,5 +1,9 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+PPTX原生检查现可定位上层不透明矩形完整覆盖的文字页/对象，并经Windows系统字体回退检查缺失码点。PowerPoint16和WPS12同一7页正反例均定位第2页遮挡、第5页U+10FFFD；中文、透明覆盖和后置背景未误报。旋转/复杂图形、部分遮挡、动画及Office与WPF整形差异仍未完整检查，Word/PDF逐字缺字未接入。 E06仍部分实现，完整252AT新增已实现0，Goal保持active。下一补全教师要求与检查逐项绑定、混合终态，再E07/E08+C及阶段集中AT；动画/组合/嵌入字体真实矩阵仍待。0新依赖/DDL/IPC/付费，D盘日常与安装包未更新；audit45（8高29中8低/0严重，exit1）及既有UI两门禁未消除。回退c31384f保留原稿/报告/PNG，无迁移，回退未演练。 全28WP/252REQ范围不缩；日常进度WORK_PROGRESS.md，docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
 ## 2026-10-31 E06 WPS真实页面（第六切片）
 
 WPS Writer/Presentation已沿原Pi检查及原文件面板接通真实三页截图；新增自动/Microsoft/WPS选择，旧规则兼容，实际引擎写入报告。独立新空Automation实例+Job保持用户已有WPS进程/窗口与原稿不变；Office不存在时自动选择WPS，Microsoft忙不静默切换。无新依赖/业务表/IPC/付费。 E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 全28WP/252REQ范围不缩；日常进度见WORK_PROGRESS.md，证据见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。

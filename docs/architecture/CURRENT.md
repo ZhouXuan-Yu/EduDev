@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+现结构metrics可选embeddedFonts→原service→PowerPoint固定助手：WPF系统回退（最多32000字符）及原生文字边界/Z顺序（每页256文字/256实心矩形）。新发现经原检查报告/模型摘要/文件面板，原8槽/45秒/Job与版本绑定保留。只扩既有v1可选字段，无新DDL/IPC/依赖。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
 WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
 
 ## 2026-10-31 E06 WPS真实页面（第六切片）
