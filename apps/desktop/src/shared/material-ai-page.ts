@@ -1,6 +1,6 @@
 import {aiBatchId,AI_ISSUES,type AiIssue} from './material-ai';
 import {materialId} from './materials';
-import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiImageResponse} from './material-ai-image';
+import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,aiTextSignature,type AiImageResponse} from './material-ai-image';
 import type {TeacherResource} from './contracts';
 export const MATERIAL_PAGE_SOURCE='xiaozhi.material-page-source.v1' as const;
 export const MATERIAL_IMAGE_SOURCE='xiaozhi.material-image-source.v1' as const;
@@ -24,7 +24,7 @@ export function parseAiPageResponse(raw:string):AiPageResponse{
  }catch{throw Error('invalid_response');}
 }
 // Compatibility normalization erases mathematical superscripts/subscripts (x² -> x2).
-const normalized=(v:string)=>v.normalize('NFC').replace(/\s/g,'');
+const normalized=aiTextSignature;
 export function pageTranscriptionAgrees(first:AiPageResponse,final:AiPageResponse){return !first.pageIssues.length&&!final.pageIssues.length&&first.outcome===final.outcome&&normalized(first.pageText)===normalized(final.pageText);}
 /** Transcription quality is separate from extracting/solving a figure-dependent question. */
 export function pageTranscriptionStatus(first:AiPageResponse,final:AiPageResponse):AiPageStatus{
