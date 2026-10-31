@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 记忆页最终协调：原detail为服务器读回，draft只保留不同文本；匹配读回的草稿释放。原typed IPC/version锁/SQLite均不变，5项正式UI通过。
+
 2026-11-01 C03：原MemoryGovernanceWorkspace分离server detail和teacher draft；原typed IPC/SQLite/version锁不变，零DDL。延迟真实读回UI4项通过。
 
 2026-11-01 E07：原text-change service→coordinator→typed change-review/preload→单文件/整包共用PiTextChangeCard可选本地currentFile对照，原before/after/账本不改。权限/版本仍由主进程裁定，缺失或不可读只影响当前快照，无新IPC/DDL/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。

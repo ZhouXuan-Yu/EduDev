@@ -1,0 +1,12 @@
+(node:80884) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Formal read → original plan/edit → teacher file change → approval conflict retains original/proposed/current text, no overwrite and precise model receipt
+PASS Visible current-file refresh reads latest teacher edit without model calls, file writes or proposal revision changes
+PASS Moved current file shows missing while original sides remain reachable, explicit refresh recovers exact current content
+PASS Current-file tab and refresh are reachable in both native window sizes, existing HeroUI styles retained
+PASS Explicit new request reads the teacher current version and creates a new review/approval; only freshly confirmed edit installs once
+PASS Owned main force termination after actual saved file before outcome record restores uncertain; visible verify reads existing file without replay or rewriting
+Error: Conflict UI condition timed out
+    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/conflict-review-electron.mjs:6:159)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/conflict-review-electron.mjs:48:60
+{"ok":false,"checks":6,"error":"Error: Conflict UI condition timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/conflict-review-electron.mjs:6:159)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/conflict-review-electron.mjs:48:60","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8"}

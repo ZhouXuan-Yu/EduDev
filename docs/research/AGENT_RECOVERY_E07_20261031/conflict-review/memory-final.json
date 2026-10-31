@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "checks": [
+    "Real L2 and L3 read responses delivered after typing preserve both unsaved teacher drafts",
+    "Visible L2 save persists exact teacher text/version2 and its readback preserves L3 draft",
+    "Visible L3 save persists exact teacher text/version2 through original SQLite API",
+    "Matching saved drafts clear so subsequent explicit refresh displays newer persisted L2 and L3 versions",
+    "Stale save still rejects with visible version conflict while preserving both teacher draft and committed external version"
+  ],
+  "errors": [],
+  "boundary": "Owned actual legacy memory navigation/typed IPC/SQLite, delayed real read responses only. No model requests, fake business responses or teacher files.",
+  "ids": {
+    "l2": "memory_entry_3683ed71-bd9f-4066-bb8f-8c943e7a0cb0",
+    "l3": "memory_l3_entry_3a2e3d23-d746-45c2-8392-15e3b28743ed"
+  },
+  "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-data-yYSvyh",
+  "profileRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-profile-RG4a21",
+  "realProviderCalls": 0
+}

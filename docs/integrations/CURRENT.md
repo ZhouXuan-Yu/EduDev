@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 收尾：main d80b9b5知识库实现完整整合；原记忆接口未改，草稿精确匹配读回再清除。无新依赖/DDL/Runtime，0付费。
+
 2026-11-01 C03：记忆页复用原get/update接口和版本锁，去除两处server→draft灌入；不新增依赖、Runtime或审查层。
 
 2026-11-01 E07：继续复用Pi原编辑/差异、withFileMutationQueue、现有text ledger和HeroUI Tabs/CodeBlock/Button；只补原review快照与冲突提示，无新依赖/下载/组件库/CSS。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。

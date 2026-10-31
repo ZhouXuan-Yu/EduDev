@@ -803,11 +803,11 @@
     "actualFile": {
       "name": "浮力课堂.md",
       "sha256": "064558e6ef40cba6a0bb1eb9b45ff3e0749682f7bc56fb0aa618f2e07dd39223",
-      "content": "# 浮力课堂\\n导入2分钟\\n探究10分钟\\n检查3分钟\\n",
+      "content": "# 浮力课堂\n导入2分钟\n探究10分钟\n检查3分钟\n",
       "scope": "Synthetic owned file only; original conflict before5/proposed6, teacher7→8, new approved9, saved crash10."
     },
     "remaining": "Next functional slice E08 generic HTML/source/version surface and applicable C, then fixed S/T order. Remaining full E07/252 stage matrix stays concentrated after functionality. No daily/installer/provider quality acceptance.",
-    "rollback": "Revert sourced24320e and memory repair7b650b2 as applicable. No schema migration; retain proposal/current teacher files/task journal and original memory records. Full rollback rehearsal not performed.",
+    "rollback": "Revert E07 sourced24320e and/or memory sources7b650b2+cb36263 as applicable, preserving all original files, proposals, journal and memory records. No schema migration; full rollback rehearsal not performed.",
     "memoryDraftRepair": {
       "sourceCommit": "7b650b2",
       "trigger": "Single comprehensive run failed real L2 teacher-edit save at source d24320e. Preserve failure; do not rerun full suite to hide it.",
@@ -833,8 +833,68 @@
           "Initial synthetic L2 entry omitted required real run evidence; rejected0 checks. Fixture now creates original no-provider run and binds its actual ID.",
           "Nested data/profile failed authorized legacy temp-root rule and correctly loaded Pi; nav-memory absent,0 checks. Fixture now uses independent existing direct owned OS temp children. Runtime guard unchanged."
         ]
+      },
+      "refinement": {
+        "sourceCommit": "cb3626314b11728a017c37914865288d0747bc3e",
+        "change": "Clear only draft text exactly matching successful readback, so a later explicit refresh shows new saved versions; distinct unsaved/conflicting drafts survive.",
+        "command": "node scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs",
+        "passed": 5,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-AZoyHj",
+        "realProviderCalls": 0,
+        "rendererErrors": 0,
+        "scope": "Original4 paths plus newer saved L2/L3 values become visible after refresh. Prior4 report preserved separately."
       }
     },
-    "buildScope": "Initial E07 build before C03 memory repair and main integration. Final integrated fingerprints recorded separately."
+    "buildScope": "Initial E07 build before C03 memory repair and main integration. Final integrated fingerprints recorded separately.",
+    "lastIntegration": {
+      "sourceCommit": "cb3626314b11728a017c37914865288d0747bc3e",
+      "mergedMain": "d80b9b5",
+      "mergeCommit": "594fc06",
+      "markdownConflicts": 14,
+      "conflictResolution": "Both complete sides preserved; no production overlap. Knowledge-base source retained.",
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalMemory": {
+        "passed": 5,
+        "exit": 0,
+        "archive": "memory-final.json"
+      },
+      "formalPiCold": {
+        "command": "node scripts/xiaozhi-agent/conflict-review-cold.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8",
+        "passed": 3,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8",
+        "scope": "Same7-case file/proposals/profile; existing current-file review/refresh; native1366/1920; file/mtime/proposal/event hash unchanged.",
+        "modelReplay": 0,
+        "rendererErrors": 0
+      },
+      "build": {
+        "main/index.js": {
+          "bytes": 3341932,
+          "sha256": "a77f213d4d1f68244bf2a6d0699e70be1b98d448f9099ee697b1d5a4bb6c3a03"
+        },
+        "preload/index.cjs": {
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        "renderer/assets/index-Dulbb_dP.js": {
+          "bytes": 7262888,
+          "sha256": "7e4fb65dae80f0ae622963b55cea7167e6133334535baf1167a57a7898918616"
+        }
+      },
+      "performance": "Includes main knowledge-base changes plus memory fix; do not attribute integrated byte delta solely to E07. Original own E07+1319B main/+1481B renderer baseline comparison remains separately recorded. No added per-token work or new model requests; no P95/RAM claim.",
+      "comprehensive": "Original source d24320e single full run exit1 preserved. Affected memory fix passed5 only; full207 suite not repeated or declared passed.",
+      "realPaidRequests": 0,
+      "dailyRuntimeUpdated": false,
+      "installerUpdated": false
+    }
   }
 }

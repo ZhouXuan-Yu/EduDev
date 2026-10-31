@@ -1,0 +1,11 @@
+(node:78172) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Error: permission_denied
+    at authorizedWorkspace (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/workspace-authority.ts:11:86)
+    at authority (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/text-change-service.ts:49:18)
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async Object.propose (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/text-change-service.ts:99:20)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs:52:17
+    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs:48:41)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs:50:3
+{"success":false,"checks":0,"report":"test-results\\xiaozhi-agent\\pi-text-change-foundation-9El1JW\\report.json"}
