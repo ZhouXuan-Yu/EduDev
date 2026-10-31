@@ -71,7 +71,7 @@ export async function captureStyleProbe(page, locator, name) {
     });
     const {address,...result}=sample;
     result.computed=Object.fromEntries(Object.entries(result.computed).map(([key,value])=>[key,styleValue(value)]));
-    return {name,...result,
+    return boundStyleProbe({name,...result,
       matchedRules:(styles.matchedCSSRules||[]).map(mapRule),
       inlineDeclarations:declarations(styles.inlineStyle),attributeDeclarations:declarations(styles.attributesStyle),
       inherited:(styles.inherited||[]).map((entry,ancestorIndex)=>({ancestorIndex,inlineDeclarations:declarations(entry.inlineStyle),matchedRules:(entry.matchedCSSRules||[]).map(mapRule)})),
@@ -79,9 +79,52 @@ export async function captureStyleProbe(page, locator, name) {
       boundaries:['Visual CSS declaration allowlist; content, custom properties and URL values omitted',
         'Matched cascade candidates retain CDP order/layers; this helper does not claim a winning selector',
         'No element text, HTML, attributes dump, or stylesheet body collected'],
-    };
+    });
   } finally {
     await cdp.send('Runtime.releaseObjectGroup',{objectGroup:group}).catch(()=>{});
     await cdp.detach();
   }
+}
+
+// Serialization limits affect diagnostic candidates only, never computed values,
+// geometry, pseudo-state, environment or acceptance assertions.
+const probeLimits = Object.freeze({matchedRules:12, inheritedAncestors:2, inheritedRules:4, declarations:16, selectors:8});
+export function boundStyleProbe(probe) {
+  const uniqueDeclarations = values => {
+    const seen=new Set();
+    return (values||[]).filter(item=>{
+      const key=JSON.stringify([item.name,item.value,item.important,item.disabled,item.parsedOk,item.implicit]);
+      if(seen.has(key))return false;seen.add(key);return true;
+    });
+  };
+  const limitDeclarations = values => uniqueDeclarations(values).slice(-probeLimits.declarations);
+  const limitRules = (rules,limit) => (rules||[]).slice(-limit).map(rule=>({...rule,
+    selectors:(rule.selectors||[]).slice(0,probeLimits.selectors),
+    selectorSpecificities:(rule.selectorSpecificities||[]).slice(0,probeLimits.selectors),
+    declarations:limitDeclarations(rule.declarations),
+    layers:(rule.layers||[]).map(layer=>({text:layer.text,range:layer.range})),
+    scopes:(rule.scopes||[]).map(scope=>({text:scope.text,range:scope.range})),
+    media:(rule.media||[]).map(media=>({text:media.text,source:media.source,mediaList:media.mediaList?.map(item=>({active:item.active}))})),
+  }));
+  const allAncestors=probe.inherited||[];
+  // Keep nearby inheritance plus the root ancestor, with original indices.
+  const chosen=allAncestors.length>probeLimits.inheritedAncestors
+    ? [...allAncestors.slice(0,probeLimits.inheritedAncestors-1),allAncestors.at(-1)] : allAncestors;
+  const inherited=chosen.map(item=>({...item,inlineDeclarations:limitDeclarations(item.inlineDeclarations),matchedRules:limitRules(item.matchedRules,probeLimits.inheritedRules)}));
+  const matchedRules=limitRules(probe.matchedRules,probeLimits.matchedRules);
+  const inlineDeclarations=limitDeclarations(probe.inlineDeclarations),attributeDeclarations=limitDeclarations(probe.attributeDeclarations);
+  const beforeRules=[...(probe.matchedRules||[]),...allAncestors.flatMap(item=>item.matchedRules||[])];
+  const afterRules=[...matchedRules,...inherited.flatMap(item=>item.matchedRules)];
+  const beforeDeclarations=[...(probe.inlineDeclarations||[]),...(probe.attributeDeclarations||[]),...beforeRules.flatMap(rule=>rule.declarations||[]),...allAncestors.flatMap(item=>item.inlineDeclarations||[])];
+  const afterDeclarations=[...inlineDeclarations,...attributeDeclarations,...afterRules.flatMap(rule=>rule.declarations),...inherited.flatMap(item=>item.inlineDeclarations)];
+  const sheetIds=new Set(afterRules.map(rule=>rule.styleSheetId).filter(Boolean));
+  const stylesheets=(probe.stylesheets||[]).filter(sheet=>sheetIds.has(sheet.styleSheetId));
+  const omitted={rules:beforeRules.length-afterRules.length,declarations:beforeDeclarations.length-afterDeclarations.length,
+    inheritedAncestors:allAncestors.length-inherited.length,selectors:beforeRules.reduce((n,r)=>n+(r.selectors?.length||0),0)-afterRules.reduce((n,r)=>n+r.selectors.length,0),
+    stylesheets:(probe.stylesheets||[]).length-stylesheets.length};
+  return {...probe,matchedRules,inlineDeclarations,attributeDeclarations,inherited,stylesheets,
+    serialization:{bounded:true,limits:probeLimits,observed:{rules:beforeRules.length,declarations:beforeDeclarations.length,inheritedAncestors:allAncestors.length},
+      retained:{rules:afterRules.length,declarations:afterDeclarations.length,inheritedAncestorIndices:inherited.map(item=>item.ancestorIndex)},omitted,
+      note:'Exact duplicate declarations are deduplicated; candidate/inheritance lists may be truncated. Computed/rect/state/environment remain complete; no winning-selector claim.'},
+  };
 }

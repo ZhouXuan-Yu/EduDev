@@ -23,7 +23,7 @@ export function DisclosureCard({title, children, className, id, headingLevel = 3
   return <Card.Root id={id} className={[styles.card, className].filter(Boolean).join(' ')}>
     <Disclosure.Root {...rootProps} id={id}>
       <Disclosure.Heading level={headingLevel}>
-        <Disclosure.Trigger>{title} <Disclosure.Indicator/></Disclosure.Trigger>
+        <Disclosure.Trigger className={styles.trigger}><span className={styles.title}>{title}</span><Disclosure.Indicator className={styles.indicator}/></Disclosure.Trigger>
       </Disclosure.Heading>
       <Disclosure.Content>
         <Disclosure.Body className={bodyClassName}>{children}</Disclosure.Body>

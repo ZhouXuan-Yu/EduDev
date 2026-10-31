@@ -71,6 +71,12 @@ try {
     assert.equal(expanded(),false);assert.equal(panel().getAttribute('aria-hidden'),'true');
     assert.equal(trigger().getAttribute('aria-controls'),panel().id);
   });
+  await check('Long ReactNode title stays in the application title slot with official sibling indicator', async () => {
+    const long='合成超长标题'.repeat(30);await mount({title:h('span',null,long)});
+    const parts=trigger().children;assert.equal(parts.length,2);assert.equal(parts[0].tagName,'SPAN');assert.equal(parts[0].textContent,long);
+    assert.equal(parts[1].getAttribute('data-slot'),'disclosure-indicator');assert.notEqual(trigger().className.indexOf('trigger'),-1);
+    await key('Enter');assert.equal(expanded(),true);
+  });
   await check('Pointer toggles official disclosure and reports next state', async () => {
     const changes=[];await mount({onExpandedChange:value=>changes.push(value)});
     await press(trigger());assert.equal(expanded(),true);assert.equal(panel().getAttribute('aria-hidden'),'false');
@@ -101,11 +107,16 @@ try {
     await press(trigger());assert.equal(expanded(),false);assert(document.querySelector('[data-testid="stateful-child"]')===child);assert.equal(unmounts,0);
     await press(trigger());assert.equal(child.textContent,'保留草稿');assert.equal(mounts,1);assert.equal(unmounts,0);
   });
-  await check('Official reduced-motion rules are retained; app CSS only owns outer padding', () => {
+  await check('Official motion/focus stay intact; app CSS owns only explicit Card/trigger/title composition', () => {
     const css=fs.readFileSync(path.join(desktop,'node_modules/@heroui/styles/dist/components/disclosure.css'),'utf8');
     assert.match(css,/motion-reduce:transition-none/);assert.match(css,/data-focus-visible/);
     const ownCss=fs.readFileSync(path.join(desktop,'src/renderer/ui-system/disclosure-card.module.css'),'utf8');
-    const declarations=ownCss.replace(/\/\*[\s\S]*?\*\//g,'').match(/\{([^}]+)\}/)[1].trim();assert.equal(declarations,'padding: var(--space-16, 16px);');
+    const clean=ownCss.replace(/\/\*[\s\S]*?\*\//g,'');
+    assert.equal(clean.match(/\.card\s*\{([^}]+)\}/)[1].trim(),'padding: var(--space-16, 16px);');
+    assert.match(clean,/\.trigger\s*\{[^}]*display:\s*flex;[^}]*width:\s*100%;/);
+    assert.match(clean,/\.title\s*\{[^}]*flex:\s*1;[^}]*min-width:\s*0;[^}]*overflow-wrap:\s*anywhere;/);
+    assert.match(clean,/\.indicator\s*\{[^}]*flex-shrink:\s*0;/);
+    assert(!/!important|\.disclosure__|\[data-slot|(?:^|})\s*(?:button|svg|\*)\b/.test(clean));
   });
   const {MistakeSimilarResults} = await server.ssrLoadModule('/src/renderer/components/students/MistakeSimilarQuestions.tsx');
   const {StudentPracticeResult} = await server.ssrLoadModule('/src/renderer/components/students/StudentPracticeResult.tsx');
