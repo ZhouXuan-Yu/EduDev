@@ -58,7 +58,7 @@ import {createModelReasoningTrace} from './model-reasoning';
 import {capturePresentationOrder,createPresentationEventAdapter,visibleAssistantText} from './presentation-event-adapter';
 import {withPublicResponsePrompt} from './public-response-prompt';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
-import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,applyThinkingPayload,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
+import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,resolveSubjectAnswerInstructions,applyThinkingPayload,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
 import {createEducationToolCatalog,TOOL_DISCOVERY_NAME} from './education-tool-catalog';
 import {createRepeatToolReminder} from './repeat-tool-reminder';
 import {withModelRequestRecovery} from './model-request-recovery';
@@ -1138,7 +1138,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const facts=await phase(()=>getProtectedContext());await checkMemory();
         // Read-only local context precedes the current request. A historical
         // task index must not become the last instruction after compaction.
-        await session.prompt(facts?`${facts}\n\n[教师本次请求]\n${text}`:text);
+        const subjectInstructions=quality?resolveSubjectAnswerInstructions(text,options.toolTaskQuery):'';
+        const context=[facts,subjectInstructions].filter(Boolean).join('\n\n');
+        await session.prompt(context?`${context}\n\n[教师本次请求]\n${text}`:text);
         await checkMemory();
         const last = [...session.messages].reverse().find(message => message.role === 'assistant');
         if (last?.role === 'assistant' && last.stopReason === 'error') failure = classifyError(last.errorMessage);
