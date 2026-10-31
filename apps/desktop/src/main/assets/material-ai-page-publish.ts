@@ -7,6 +7,7 @@ import {restoredPageQuestions} from './material-ai-page-content';
 import type {MaterialSource} from '../../shared/materials';
 import type {ExtractedQuestion} from './material-question-extract';
 import type {RuleOrigin} from './material-question-origins';
+import {nonQuestionPagePurpose} from './material-page-purpose';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>;run:(sql:string,p?:(string|number|null)[])=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>};
 const hash=(v:string)=>createHash('sha256').update(v).digest('hex');
 const normalized=aiTextSignature;
@@ -28,6 +29,7 @@ export async function publishAiPage(host:Host,args:{batchId:string;ordinal:numbe
  const {batchId,ordinal,source,firstRaw,finalRaw,first,final,imageSha}=args;
  const slot=(await host.all('SELECT source_json FROM material_ai_page_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(slot?.source_json!==JSON.stringify(source)||!/^[a-f0-9]{64}$/.test(imageSha))throw Error('source_changed');
  if(args.answerBook&&(first.questions.length||final.questions.length||first.outcome==='questions'||final.outcome==='questions'))throw Error('invalid_response');
+ if((first.questions.length||final.questions.length)&&(nonQuestionPagePurpose(first.pageText)||nonQuestionPagePurpose(final.pageText)))throw Error('invalid_response');
  const assessment=assessAiPage(first,final,source,args.answerBook);let review=assessment.review;
  await host.run('UPDATE material_ai_page_units SET first_sha=?,final_sha=?,image_sha=? WHERE batch_id=? AND ordinal=?',[hash(firstRaw),hash(finalRaw),imageSha,batchId,ordinal]);
  for(const q of final.questions){

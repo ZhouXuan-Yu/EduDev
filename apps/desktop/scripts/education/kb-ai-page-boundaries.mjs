@@ -210,4 +210,10 @@ await check('An answer-book provider that invents a question is rejected without
   await f.repo.create(f.input);await f.repo.drain();assert.equal(await f.question(),undefined);assert.equal(f.state.calls,1);const row=f.db.prepare('SELECT status,error FROM material_ai_units').get();assert.equal(row.status,'outcome_unknown');assert.equal(row.error,'invalid_response');await f.repo.drain();assert.equal(f.state.calls,1);
  }finally{f.db.close();}
 });
+await check('An explicit advertisement cannot publish a provider-invented miniature question',async()=>{
+ const f=fixture('blank');try{
+  await f.init();f.repo.runtime.complete=async()=>{f.state.calls++;return JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:'本页为广告页，打印前可以把这页删掉。\n'+text,pageIssues:[],questions:[q]});};
+  await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();assert.equal(await f.question(),undefined);const row=f.db.prepare('SELECT status,error FROM material_ai_units').get();assert.equal(row.status,'outcome_unknown');assert.equal(row.error,'invalid_response');await f.repo.drain();assert.equal(f.state.calls,2);
+ }finally{f.db.close();}
+});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
