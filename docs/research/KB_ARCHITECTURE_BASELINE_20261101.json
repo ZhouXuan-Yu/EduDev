@@ -434,5 +434,169 @@
       ]
     },
     "rollback": "No DDL or data migration. Preserve originals, responses and existing WIP. Revert only this slice adapters with a reviewed patch while retaining the cache-hit source-authentication fix; do not revert collaborator merge. Full rollback rehearsal not performed."
+  },
+  "wholeSetScheduling": {
+    "date": "2026-11-01",
+    "goalComplete": false,
+    "sourceCommits": [
+      "40a2d9d",
+      "1376e81"
+    ],
+    "integrationCommit": "279c8fe",
+    "userAcceptance": "Complete arbitrary question-set folder through import, OCR, authorized AI, question/answer organization, retrieval/paper, restart; no book/page/question-specific production branches",
+    "scope": "Existing MaterialParseQueue only; no DDL, dependency, IPC or second runtime",
+    "implementation": {
+      "maxParsers": 2,
+      "lowMemoryAdmission": "one when free physical memory <2 GiB or total memory <8 GiB",
+      "foreground": "use a free slot; when full preempt only one background task",
+      "ownership": "existing ai_tasks immutable lease/CAS; same resource excluded until prior task settles",
+      "shutdown": "join tracked claims; priority recheck SQL failure covered"
+    },
+    "verification": [
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs -e <materialQueueBoundaries runner>",
+        "passed": 24,
+        "total": 24,
+        "exitCode": 0,
+        "logBasename": "kb-parallel-queue-boundaries.log"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exitCode": 0,
+        "logBasename": "kb-parallel-components.log"
+      },
+      {
+        "command": "npm.cmd run test:smoke",
+        "passed": 207,
+        "total": 207,
+        "exitCode": 0,
+        "buildSha256": "b1c90694fc6771844c3e729dcf3c87501daa2bad589235b1e05aaf60a201e2bb",
+        "boundary": "Before final SQL-owner tracking fix; final fix covered by 24 boundary cases, final build/type and final real local restart; not claiming final 207 rerun"
+      },
+      {
+        "command": "npm.cmd run build",
+        "exitCode": 0,
+        "logBasename": "kb-parallel-final-build.log",
+        "includes": "tsc --noEmit"
+      },
+      {
+        "command": "npm.cmd audit --json",
+        "exitCode": 1,
+        "existingVulnerabilities": {
+          "critical": 0,
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "total": 45
+        }
+      },
+      {
+        "command": "node node_modules/typescript/bin/tsc --noEmit",
+        "exitCode": 0,
+        "logBasename": "kb-parallel-final-type.log"
+      }
+    ],
+    "realDirectory": {
+      "rootBasename": "omni-real-material-aWObCn",
+      "files": 11,
+      "bytes": 332294145,
+      "pdfFiles": 5,
+      "pdfPages": 111,
+      "successfulPdfPages": 109,
+      "reviewPdfPages": 2,
+      "imageFiles": 6,
+      "archived": 11,
+      "sourceUnchanged": true,
+      "rendererErrors": 0,
+      "cloudCalls": 0,
+      "ruleExtractedCandidates": 524,
+      "answerBookRuleCandidates": 90,
+      "readyMaterials": 9,
+      "partialMaterials": 2,
+      "pendingParsers": 0,
+      "runningParsers": 0,
+      "sourceScope": "All original top-level user-authorized files; no added subfolder/Word claim from this corpus",
+      "baseline": {
+        "buildSha256": "786f43b7769498df6fb6b03c54aae30bbe77980d0d50ddcd5af3e46ade2b7d22",
+        "report": "prior-local-run-Qw9l6M/report.json",
+        "exitCode": 1,
+        "reason": "Old 15-minute observer budget expired, not production parser timeout",
+        "answerManifestDelayMs": 778820
+      },
+      "concurrentResume": {
+        "buildSha256": "b1c90694fc6771844c3e729dcf3c87501daa2bad589235b1e05aaf60a201e2bb",
+        "firstDualAt": "2026-10-31T19:24:13.306Z",
+        "confirmedPageProgressAt": "2026-10-31T19:24:33.844Z",
+        "resources": [
+          "answer book",
+          "physics notes PDF"
+        ],
+        "actualOcrChildren": 2,
+        "workingSetMiBSample": [
+          503,
+          303
+        ],
+        "boundary": "One sample, not peak memory or throughput A/B; resumed different remaining work",
+        "report": "prior-local-run-Ovtcbh/report.json"
+      },
+      "finalReadback": {
+        "command": "node scripts/education/kb-real-material-journey.mjs <authorized-folder> <existing-owned-root> 60",
+        "exitCode": 1,
+        "localOutcome": "attention",
+        "success": false,
+        "reason": "Local material stage requires attention; settled or archived files are not accepted as a usable question bank",
+        "report": "report.json",
+        "latestSnapshot": "2026-10-31T19:35:13.388Z",
+        "buildSha256": "89c8a04c8c0461061e887dfaf1587bc9a8ee0ffa856cf1f54a35facad42e6355",
+        "sourceUnchanged": true,
+        "rendererErrors": 0
+      },
+      "answerPairFailure": {
+        "command": "node scripts/education/kb-wusan-pair-journey.mjs <existing-owned-root>",
+        "exitCode": 1,
+        "report": "book-pair-Nw3yrC/report.json",
+        "observed": "Visible link did not appear within 60s; active pair count remained zero",
+        "codeDiagnosis": "material-book-pairs.ts rejects material_question_members for answer resource; actual 90 rule candidates already exist",
+        "sourceUnchanged": true,
+        "dataDeleted": false
+      }
+    },
+    "criticalReview": {
+      "overallAccepted": false,
+      "confirmedBlockers": [
+        "Whole-set post-OCR answer book has 90 rule candidates; existing pair change rejects any archived answer members (answer_already_processed), so association currently requires an unsafe timing dependency before automatic extraction. No data deleted to bypass it.",
+        "2 source native/OCR text conflicts remain review; 524 local rule candidates are not 524 usable AI questions.",
+        "Full-folder AI, known-answer matching/writeback, Pi retrieval and paper acceptance remain unproved on this fresh directory."
+      ],
+      "next": "Fix answer-role transition and machine-candidate disposition in the existing import/question/book domains; protect teacher edits, bookmarks and usage, then continue the same whole-set AI/answer/search/paper journey. Do not return to per-page green tests."
+    },
+    "rollback": "Revert queue commits to one parser; preserve ai_tasks, originals, PDF receipts and all teacher data. No migration or full rollback rehearsal.",
+    "finalBuild": [
+      {
+        "file": "out/main/index.js",
+        "bytes": 3358349,
+        "sha256": "89c8a04c8c0461061e887dfaf1587bc9a8ee0ffa856cf1f54a35facad42e6355"
+      },
+      {
+        "file": "out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "file": "out/renderer/assets/index-B_f7MQo-.js",
+        "bytes": 7264397,
+        "sha256": "3956118f0a43a1780a047e7c7d92a2c5918244ad3feb7e9cedbcccffcbbbef78"
+      }
+    ],
+    "performance": {
+      "baselineMainBytes": 3357693,
+      "finalMainBytes": 3358349,
+      "mainDeltaBytes": 656,
+      "rendererChanged": false,
+      "preloadChanged": false,
+      "claim": "bounded two-file progress and reduced head-of-line waiting; no whole-corpus throughput/recall/P95 A/B"
+    }
   }
 }
