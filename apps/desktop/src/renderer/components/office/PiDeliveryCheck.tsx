@@ -1,10 +1,11 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {PiDeliveryVisual} from './PiDeliveryVisual';
-import {CHECK_CLASSES,CHECK_LABELS,CHECK_STATE_LABELS,DELIVERY_CHECK_SCHEMA,type DeliveryCheckReport} from '../../../shared/xiaozhi-delivery-checks';
+import {CHECK_CLASSES,CHECK_LABELS,CHECK_STATE_LABELS,DELIVERY_CHECK_SCHEMA,type DeliveryCheckReport,type OfficeCheckEngine} from '../../../shared/xiaozhi-delivery-checks';
 const states:Record<DeliveryCheckReport['state'],string>={passed:'本次约定检查通过',failed:'检查发现问题',partial:'部分检查完成',stale:'检查已过期',cancelled:'检查已停止'};
 export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId}:{sessionId:string;path:string;version?:string;workspaceVersion?:string;draftId?:string}){
  const [report,setReport]=useState<DeliveryCheckReport>(),[busy,setBusy]=useState(false),[error,setError]=useState('');
+ const [officeEngine,setOfficeEngine]=useState<OfficeCheckEngine>('auto'),officeFile=/\.(docx|pptx)$/i.test(path);
  const live=useRef(true),request=useRef(''),loading=useRef(false),epoch=useRef(0);
  useEffect(()=>{live.current=true;return()=>{live.current=false;const requestId=request.current;if(requestId)void window.omniEdu?.cancelXiaozhiDeliveryCheck({sessionId,requestId});};},[sessionId]);
  async function latest(){
@@ -17,14 +18,15 @@ export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId
  }
  async function inspect(){
   if(busy||draftId)return;++epoch.current;setBusy(true);setError('');const requestId=`xicheckreq_${crypto.randomUUID()}`;request.current=requestId;
-  try{const value=await window.omniEdu?.inspectXiaozhiDelivery({schemaVersion:DELIVERY_CHECK_SCHEMA,sessionId,requestId,workspaceVersion,files:[{path,version}]});if(!live.current)return;
+  try{const value=await window.omniEdu?.inspectXiaozhiDelivery({schemaVersion:DELIVERY_CHECK_SCHEMA,sessionId,requestId,workspaceVersion,files:[{path,version,...(officeFile?{rules:{officeEngine}}:{})}]});if(!live.current)return;
    if(value?.ok)setReport(value.report);else setError(value?.error==='cancelled'?'检查已停止，已有文件保留。':value?.error==='changed'?'文件或要求版本已变化，请刷新文件后重试。':value?.error==='busy'?'检查队列暂忙，请稍后重试。':'检查未完成，已有文件保留。');
   }catch{if(live.current)setError('检查未完成，已有文件保留。');}finally{request.current='';if(live.current)setBusy(false);}
  }
  const file=report?.files.find(f=>f.path===path);
  return <details data-edu-domain="delivery-check" className="pi-file-check" data-testid="pi-delivery-check" onToggle={event=>{if(event.target===event.currentTarget&&event.currentTarget.open)void latest();}}>
   <summary>文件检查{report?` · ${states[report.state]}`:''}</summary>
-  <div className="pi-file-check-actions">{!draftId&&<Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void inspect()} data-testid="pi-file-check-run">检查当前文件</Button>}
+  <div className="pi-file-check-actions">{!draftId&&officeFile&&<label>检查应用 <select aria-label="文件检查应用" data-testid="pi-file-check-engine" value={officeEngine} disabled={busy} onChange={event=>setOfficeEngine(event.target.value as OfficeCheckEngine)}><option value="auto">自动选择</option><option value="microsoft">Microsoft Office</option><option value="wps">WPS</option></select></label>}
+   {!draftId&&<Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void inspect()} data-testid="pi-file-check-run">检查当前文件</Button>}
    <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void latest()} data-testid="pi-file-check-refresh">刷新检查记录</Button>
    {busy&&<Button size="sm" variant="ghost" onPress={()=>{if(request.current)void window.omniEdu?.cancelXiaozhiDeliveryCheck({sessionId,requestId:request.current});}} data-testid="pi-file-check-cancel">停止检查</Button>}</div>
   {busy&&<p role="status">正在本机读取和检查，已有文件保持原样…</p>}{error&&<p role="status" data-testid="pi-file-check-error">{error}</p>}

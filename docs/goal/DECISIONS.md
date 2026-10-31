@@ -1,5 +1,15 @@
 # Goal 决策记录
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+复用原Office检查器增加系统WPF字形覆盖与实际Z顺序完整矩形遮挡，失败归原visual类和原Pi有限修复，不另设Runtime/表/IPC。实际PNG仍是视觉查看依据，独立整形不能覆盖Office公式/嵌入字体。固定脚本以进程级-File运行以避编码命令长度限制，原只读/Job/清理保持。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+沿既有FileCheckRules增加可选officeEngine，不增IPC/业务真源/包；旧请求缺省auto，Microsoft未注册才回退WPS。原文件面板用轻量原生select，实际报告引擎不能伪标。WPS新空Automation沿现Job归属；不因用户打开WPS阻断可独立执行的工作。见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 百条候选与共享重排预算
 
 复用现BGE/ONNX、FTS/Lance和Pi，不引入第二知识库。20保留为协议批大小，整次候选100、重排总预算5秒；失败保持现原召回和来源门禁。扩覆盖与限等待分别取证，未以小语料或神经覆盖计数承诺自然Recall。证据见KB_RERANK_CANDIDATES_20261031.json。

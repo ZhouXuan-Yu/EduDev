@@ -4,16 +4,17 @@ import {spawn} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {reserveLocalWorker} from '../local-utility-host';
 import {readMaterialOriginal} from '../../assets/material-original';
-import type {DocumentMetrics,CheckFinding} from '../../../shared/xiaozhi-delivery-checks';
+import type {DocumentMetrics,CheckFinding,OfficeCheckEngine} from '../../../shared/xiaozhi-delivery-checks';
 import {PAGED_DOCUMENT_SCRIPT} from './paged-document-script';
 import {visualMetadata} from './visual-evidence';
+import {clearOfficeStage} from './office-stage';
 
 export const PAGED_RENDER_LIMITS={inputBytes:16*1048576,pages:64,totalBytes:96*1048576,timeout:60000,wordTimeout:15000};
 const hash=(bytes:Buffer)=>createHash('sha256').update(bytes).digest('hex');
 let running=false;
 export type PagedDocumentRender={pages:number[];captures:{bytes:Buffer;page:number;kind:'pdf_page'|'office_page';viewport:string}[];
  findings:CheckFinding[];engine:string;pdfBytes?:Buffer};
-export async function renderPagedDocument(bytes:Buffer,metrics:DocumentMetrics,options:{dataRoot:string;signal:AbortSignal}):Promise<PagedDocumentRender>{
+export async function renderPagedDocument(bytes:Buffer,metrics:DocumentMetrics,options:{dataRoot:string;signal:AbortSignal;officeEngine?:OfficeCheckEngine}):Promise<PagedDocumentRender>{
  const {signal}=options;signal.throwIfAborted();const format=metrics.format;
  if(!['pdf','docx'].includes(format)||!bytes.length||bytes.length>PAGED_RENDER_LIMITS.inputBytes||format==='pdf'&&(!metrics.pageCount||metrics.pageCount>64))throw Error('unsupported');
  if(metrics.externalLinks||metrics.nativeRenderBlocked)throw Error('external_content');
@@ -27,7 +28,7 @@ export async function renderPagedDocument(bytes:Buffer,metrics:DocumentMetrics,o
   }
   folder=await fs.mkdtemp(path.join(base,'render-'));const input=path.join(folder,'input.'+format);
   await fs.writeFile(input,bytes,{flag:'wx'});
-  await fs.writeFile(path.join(folder,'request.json'),JSON.stringify({format,pages:metrics.pageCount,fonts:metrics.fonts||[]}),{flag:'wx'});signal.throwIfAborted();
+  await fs.writeFile(path.join(folder,'request.json'),JSON.stringify({format,pages:metrics.pageCount,fonts:metrics.fonts||[],officeEngine:options.officeEngine||'auto'}),{flag:'wx'});signal.throwIfAborted();
   const result=await new Promise<unknown>((resolve,reject)=>{
    const env=Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP','USERPROFILE','APPDATA','LOCALAPPDATA','ProgramFiles','ProgramFiles(x86)','CommonProgramFiles','CommonProgramFiles(x86)'].flatMap(k=>process.env[k]?[[k,process.env[k]!]]:[]));
    const child=spawn('powershell.exe',['-NoLogo','-NoProfile','-NonInteractive','-STA','-EncodedCommand',Buffer.from(PAGED_DOCUMENT_SCRIPT,'utf16le').toString('base64')],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...env,XIAOZHI_RENDER_ROOT:folder}});
@@ -41,7 +42,7 @@ export async function renderPagedDocument(bytes:Buffer,metrics:DocumentMetrics,o
   });signal.throwIfAborted();
   const value=result as {schemaVersion?:unknown;ok?:unknown;error?:unknown;pages?:unknown;engine?:unknown;findings?:unknown};
   if(value.schemaVersion!=='xiaozhi.paged-render.v1'||value.ok!==true)throw Error(['busy','too_large','unsupported','page_count_changed'].includes(String(value.error))?String(value.error):'unavailable');
-  if(!Array.isArray(value.pages)||!value.pages.length||value.pages.length>64||format==='pdf'&&value.pages.length!==metrics.pageCount||typeof value.engine!=='string'||!/^(?:Word [\d.]{1,40} \/ )?Windows\.Data\.Pdf$/.test(value.engine)||!Array.isArray(value.findings)||value.findings.length>128)throw Error('unavailable');
+  if(!Array.isArray(value.pages)||!value.pages.length||value.pages.length>64||format==='pdf'&&value.pages.length!==metrics.pageCount||typeof value.engine!=='string'||!/^(?:(?:Word|WPS Writer) [\d.]{1,40} \/ )?Windows\.Data\.Pdf$/.test(value.engine)||!Array.isArray(value.findings)||value.findings.length>128)throw Error('unavailable');
   const findings:CheckFinding[]=[],captures:PagedDocumentRender['captures']=[];
   for(const item of value.findings as {code:string;font:string}[]){
    if(!item||item.code!=='font_missing'||typeof item.font!=='string'||!item.font.length||item.font.length>200)throw Error('unavailable');
@@ -65,16 +66,7 @@ export async function renderPagedDocument(bytes:Buffer,metrics:DocumentMetrics,o
   findings.push({kind:'visual',state:'unchecked',code:'actual_paged_rendered',message:`${value.engine}已实际渲染全部${captures.length}页，截图可查看；缺字、公式字形、裁切与语义遮挡仍需核对，未据此判定视觉全通过。`});
   return{pages:captures.map(c=>c.page),captures,findings,engine:value.engine,...(pdfBytes?{pdfBytes}:{})};
  }finally{
-  if(folder){
-   // A Job close initiates Word shutdown; its file handles can outlive the helper's close event.
-   const pending=new Set(['input.docx','input.pdf','request.json','owned.json',...Array.from({length:64},(_,i)=>`page-${i+1}.png`)]),deadline=Date.now()+2000;
-   while(pending.size){
-    for(const name of pending)try{await fs.unlink(path.join(folder,name));pending.delete(name);}catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')pending.delete(name);}
-    if(!pending.size||Date.now()>=deadline)break;
-    await new Promise(resolve=>setTimeout(resolve,50));
-   }
-   await fs.rmdir(folder).catch(()=>{});
-  }
+  await clearOfficeStage(folder,['input.docx','input.pdf','request.json','owned.json']);
   running=false;release();
  }
 }

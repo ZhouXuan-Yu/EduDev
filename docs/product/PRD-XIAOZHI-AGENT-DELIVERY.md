@@ -1,5 +1,9 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+WPS Writer/Presentation已沿原Pi检查及原文件面板接通真实三页截图；新增自动/Microsoft/WPS选择，旧规则兼容，实际引擎写入报告。独立新空Automation实例+Job保持用户已有WPS进程/窗口与原稿不变；Office不存在时自动选择WPS，Microsoft忙不静默切换。无新依赖/业务表/IPC/付费。 E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 E06 Word真实页面与停止清理（第五切片）
 
 此前Word导出阻塞已定位并修复：输出路径显式[string]，Close/Quit使用[ref] SaveChanges；Word16实际三页A4含长标题/表格/OfficeMath现可沿原Pi检查→原文件面板两视口→冷启取回真实PNG。仅去掉字符串转换的同文件对照20秒无PDF。取消还发现Word锁晚于助手退出释放，新增最多2秒异步重试自有临时文件；最终停止/占用专项通过，原文件不变且不接管已有实例。
@@ -345,7 +349,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-E06-01 | 结构检查 | 前两者不得通过；有效文件可解析且页数正确；后缀和文件存在不作为充分条件 | [AT-E06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-01) | 部分实现；真实OOXML/CRC及本地头、后缀、关系与页数解析已接通，完整AT待W3集中验收 |
 | REQ-E06-02 | 内容检查 | 核验逐条指出缺少要求；修复后重新读取新版本；不能仅凭计划完成放行 | [AT-E06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-02) | 部分实现；声明页数/逐页备注/正文要求检查及失败反馈已接通，完整AT待W3集中验收 |
-| REQ-E06-03 | 视觉检查 | 记录缺字、遮挡、越页与裁切；检查页范围明确；未渲染页面不宣称视觉全通过 | [AT-E06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-03) | 部分实现；真实PPT/Word/PDF逐页截图已接通；字体/文字边界按各引擎实测范围记录，WPS、逐字缺字/语义遮挡及完整FX09仍未完成，完整AT待W3集中验收 |
+| REQ-E06-03 | 视觉检查 | 记录缺字、遮挡、越页与裁切；检查页范围明确；未渲染页面不宣称视觉全通过 | [AT-E06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-03) | 部分实现；真实Microsoft/WPS的PPT/Word及PDF逐页截图已接通；字体/文字边界按各引擎实测范围记录，逐字缺字/语义遮挡及完整FX09仍未完成，完整AT待W3集中验收 |
 | REQ-E06-04 | 交互检查 | 错误被发现；控件影响可观测结果；空白画布/只有按钮外观不算通过 | [AT-E06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-04) | 部分实现；真实HTML语法错/滑块/native键盘/重置/画布观察已接通，完整AT待W3集中验收 |
 | REQ-E06-05 | 数值核验 | 结果符合冻结答案及模型假设；至少一种独立确定性方法；不以模型自称正确代替 | [AT-E06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-05) | 部分实现；实际CSV/XLSX240合计及立方体浮力独立确定性复算已接通，完整AT待W3集中验收 |
 | REQ-E06-06 | 跨文件一致 | 指出具体不一致对象；修复到同题同参数同版本；文件数齐不等于整包完成 | [AT-E06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-06) | 部分实现；同名数值/单位和题目版本文本跨文件比较已接通，完整FX整包待集中，完整AT待W3集中验收 |

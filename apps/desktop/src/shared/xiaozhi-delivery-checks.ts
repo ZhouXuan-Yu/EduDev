@@ -14,7 +14,8 @@ export type NumberCheck={id:string;source:NumberSource;tolerance?:number;unit?:s
 export type InteractionCheck={id:string;actions:({kind:'set';selector:string;value:string}|{kind:'click';selector:string}|{kind:'key';selector:string;key:string})[];
  observe:string;expectedText?:string;expectedNumber?:number;expectedFrom?:CubeBuoyancyCheck;tolerance?:number;mustChange?:boolean};
 export type TextFactCheck={id:string;source:{kind:'label';label:string;page?:number}|{kind:'selector';selector:string}};
-export type FileCheckRules={pages?:number;notes?:boolean;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
+export type OfficeCheckEngine='auto'|'microsoft'|'wps';
+export type FileCheckRules={officeEngine?:OfficeCheckEngine;pages?:number;notes?:boolean;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
  excludes?:{text:string;page?:number;scope?:'body'|'notes'}[];numbers?:NumberCheck[];interactions?:InteractionCheck[];facts?:TextFactCheck[]};
 export type CheckFileInput={path:string;version?:string;rules?:FileCheckRules};
 export type DeliveryCheckInput={schemaVersion:typeof DELIVERY_CHECK_SCHEMA;sessionId:string;requestId:string;files:CheckFileInput[];
@@ -72,7 +73,7 @@ function validInteraction(v:unknown):v is InteractionCheck{
   ||a.kind==='key'&&keys(a,['kind','selector','key'])&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' ','Tab'].includes(String(a.key))));
 }
 export function validFileCheckRules(v:unknown):v is FileCheckRules{
- if(!obj(v)||!keys(v,['pages','notes','contains','excludes','numbers','interactions','facts'])||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean')return false;
+ if(!obj(v)||!keys(v,['officeEngine','pages','notes','contains','excludes','numbers','interactions','facts'])||v.officeEngine!==undefined&&(typeof v.officeEngine!=='string'||!['auto','microsoft','wps'].includes(v.officeEngine))||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean')return false;
  if(v.facts!==undefined&&(!Array.isArray(v.facts)||v.facts.length>16||!v.facts.every(f=>obj(f)&&keys(f,['id','source'])&&id(f.id)&&obj(f.source)&&(f.source.kind==='label'&&keys(f.source,['kind','label','page'])&&text(f.source.label)&&(f.source.page===undefined||integer(f.source.page,64))||f.source.kind==='selector'&&keys(f.source,['kind','selector'])&&text(f.source.selector)))||new Set(v.facts.map(f=>f.id)).size!==v.facts.length))return false;
  for(const key of ['contains','excludes'])if(v[key]!==undefined&&(!Array.isArray(v[key])||(v[key] as unknown[]).length>32||!(v[key] as unknown[]).every(r=>obj(r)&&keys(r,['text','page','scope'])&&text(r.text,300)&&(r.page===undefined||integer(r.page,64))&&(r.scope===undefined||['body','notes'].includes(String(r.scope))))))return false;
  for(const [key,validate,max] of [['numbers',validNumber,24],['interactions',validInteraction,12]] as const){const values=v[key];if(values!==undefined&&(!Array.isArray(values)||values.length>max||!values.every(validate)||new Set(values.map(r=>r.id)).size!==values.length))return false;}
@@ -89,7 +90,7 @@ export function validDeliveryCheckInput(v:unknown):v is DeliveryCheckInput{
 /** A worker result is private local data; only bounded findings cross the model boundary. */
 export type DocumentMetrics={format:string;engine:string;pageCount?:number;sheetCount?:number;pages:{index:number;text:string;notes:string}[];
  sheets?:{index:number;name:string;cells:{row:number;column:number;value:string|number;formula?:boolean}[]}[];
- geometry?:{page:number;code:string}[];fonts?:string[];externalLinks?:boolean;nativeRenderBlocked?:boolean;textUnavailablePages?:number[]};
+ geometry?:{page:number;code:string}[];fonts?:string[];embeddedFonts?:boolean;externalLinks?:boolean;nativeRenderBlocked?:boolean;textUnavailablePages?:number[]};
 export const STRUCTURE_SCHEMA='xiaozhi.delivery-structure.v1';
 export type StructureRequest={schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;name:string;bytes:Uint8Array};
 export type StructureResult={schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;ok:true;data:DocumentMetrics}|{schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;ok:false;error:string};
@@ -102,6 +103,7 @@ export function validStructureResult(v:unknown,requestId:string):v is StructureR
  if(!v.ok)return typeof v.error==='string'&&['unsupported','parse_failed','too_large','empty','cancelled','timeout','unavailable','busy'].includes(v.error);
  const d=v.data;if(!obj(d)||!text(d.format,16)||!text(d.engine,80)||!Array.isArray(d.pages)||d.pages.length>64)return false;
  if(!d.pages.every(p=>obj(p)&&integer(p.index,64)&&typeof p.text==='string'&&p.text.length<=256000&&typeof p.notes==='string'&&p.notes.length<=30000))return false;
+ if(d.embeddedFonts!==undefined&&typeof d.embeddedFonts!=='boolean')return false;
  const pages=d.pages;
  if(d.textUnavailablePages!==undefined&&(!Array.isArray(d.textUnavailablePages)||d.textUnavailablePages.length>64||!d.textUnavailablePages.every(n=>integer(n,64)&&pages.some(p=>obj(p)&&p.index===n))))return false;
  try{return JSON.stringify(d).length<=2000000;}catch{return false;}
