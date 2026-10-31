@@ -89,7 +89,7 @@ export function validDeliveryCheckInput(v:unknown):v is DeliveryCheckInput{
 /** A worker result is private local data; only bounded findings cross the model boundary. */
 export type DocumentMetrics={format:string;engine:string;pageCount?:number;sheetCount?:number;pages:{index:number;text:string;notes:string}[];
  sheets?:{index:number;name:string;cells:{row:number;column:number;value:string|number;formula?:boolean}[]}[];
- geometry?:{page:number;code:string}[];fonts?:string[];externalLinks?:boolean};
+ geometry?:{page:number;code:string}[];fonts?:string[];externalLinks?:boolean;nativeRenderBlocked?:boolean};
 export const STRUCTURE_SCHEMA='xiaozhi.delivery-structure.v1';
 export type StructureRequest={schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;name:string;bytes:Uint8Array};
 export type StructureResult={schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;ok:true;data:DocumentMetrics}|{schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;ok:false;error:string};

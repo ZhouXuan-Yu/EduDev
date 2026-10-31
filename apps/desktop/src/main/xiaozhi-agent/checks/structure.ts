@@ -135,5 +135,6 @@ export async function inspectDocumentStructure(name:string,bytes:Buffer):Promise
  else if(format==='xlsx')result=xlsx(all);
  else{const doc=xmlPart(all,'word/document.xml');if(doc.documentElement.namespaceURI!==W||doc.documentElement.localName!=='document')throw Error('parse_failed');result={format,engine:'yauzl3.4.0/jsdom29.0.2',pages:[{index:1,text:bounded(paragraphs(doc,W)),notes:''}]};}
  result.externalLinks=[...all.entries()].filter(([name])=>name.endsWith('.rels')).some(([,b])=>/TargetMode\s*=\s*["']External["']/i.test(b.toString('utf8')));
+ result.nativeRenderBlocked=[...all.keys()].some(name=>/(?:^|\/)(?:embeddings|activeX)\/|\.bin$/i.test(name));
  return result;
 }
