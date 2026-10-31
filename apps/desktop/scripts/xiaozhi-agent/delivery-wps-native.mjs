@@ -9,7 +9,8 @@ const microsoftAuto=process.argv.includes('--microsoft-auto');
 const output=await fs.mkdtemp(path.join(os.tmpdir(),'omni-edu-wps-native-')),report={ok:false,output,checks:[],boundary:'Actual Office/WPS COM and actual PNGs from fixed production scripts, synthetic inputs; no paid calls, no native edit/animation/full FX09 claim.'},sha=b=>createHash('sha256').update(b).digest('hex');
 const check=s=>{report.checks.push(s);console.log('PASS '+s);};
 async function powershell(script,folder,timeout=45000){
- return await new Promise((resolve,reject)=>{let stdout='',stderr='';const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-STA','-EncodedCommand',Buffer.from(script,'utf16le').toString('base64')],{windowsHide:true,env:{...process.env,XIAOZHI_RENDER_ROOT:folder},stdio:['ignore','pipe','pipe']}),timer=setTimeout(()=>child.kill(),timeout);
+ await fs.writeFile(path.join(folder,'probe.ps1'),'\uFEFF'+script);
+ return await new Promise((resolve,reject)=>{let stdout='',stderr='';const child=spawn('powershell.exe',['-NoProfile','-NonInteractive','-STA','-ExecutionPolicy','Bypass','-File',path.join(folder,'probe.ps1')],{windowsHide:true,env:{...process.env,XIAOZHI_RENDER_ROOT:folder},stdio:['ignore','pipe','pipe']}),timer=setTimeout(()=>child.kill(),timeout);
  child.stdout.on('data',x=>stdout+=x);child.stderr.on('data',x=>stderr+=x);child.once('error',reject);child.once('close',async code=>{clearTimeout(timer);await fs.writeFile(path.join(folder,'console.json'),JSON.stringify({code,stdout,stderr}));try{assert.equal(code,0,stdout+' '+stderr);resolve(JSON.parse(stdout.trim()));}catch(e){reject(e);}});});
 }
 const snapshot=()=>powershell("[Console]::OutputEncoding=New-Object Text.UTF8Encoding($false);$p=@(Get-Process wps,wpp,et -ErrorAction SilentlyContinue | ForEach-Object {@{pid=$_.Id;start=$_.StartTime.ToUniversalTime().ToString('o');hwnd=$_.MainWindowHandle.ToInt64()}});ConvertTo-Json -InputObject $p -Compress",output);
