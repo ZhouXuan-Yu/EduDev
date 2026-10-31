@@ -5,11 +5,11 @@ import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
-import JSZip from 'jszip';
 import {testMain,assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {fingerprint,sha256} from './acceptance/evidence.mjs';
 import {fixtureSha256,requirement as pairedRequirement,assertScenes} from './acceptance/openmaic-public-content.mjs';
 import {createClassroomOutlineWait} from './acceptance/classroom-outline-wait.mjs';
+import {readClassroomExport} from './acceptance/classroom-export-readback.mjs';
 
 const requirement=pairedRequirement.replace('附件 buoyancy-review.pdf','资料库 buoyancy-review.pdf');
 function pairedFixture(){
@@ -76,14 +76,13 @@ async function main(){
   assert.equal(sql('SELECT count(*) n FROM learning_records')[0].n,0);await page.getByTestId('classroom-save').click();
   const approved=await page.evaluate(()=>window.omniEdu.listClassrooms());assert(approved.ok);classroom=approved.data.find(c=>c.id===plan.classroomId);assert.equal(classroom.status,'confirmed');
   check('Original sandbox and quiz work; final classroom confirmation is separate and creates no student facts');
-  await dialog(exports);await page.getByTestId('classroom-export-pptx').click();await until(async()=>await page.getByTestId('office-prompt-input').inputValue().then(t=>t.includes(classroom.document.title)),'export draft');await page.getByTestId('office-prompt-input').press('Enter');
+  await page.getByTestId('classroom-export-pptx').click();await until(async()=>await page.getByTestId('office-prompt-input').inputValue().then(t=>t.includes(classroom.document.title)),'export draft');await page.getByTestId('office-prompt-input').press('Enter');
   let artifact;await until(async()=>{artifact=(await snapshot()).officeArtifacts?.find(a=>a.state==='pending');return !!artifact;},'Office export approval');
   const card=page.locator(`[data-testid="pi-office-artifact"][data-office-id="${artifact.id}"]`);await card.getByTestId('pi-classroom-export-preview').waitFor();
   for(const frame of await card.getByTestId('classroom-slide-preview').all())await frame.contentFrame().locator('.classroom-canvas').waitFor();
   await card.getByTestId('pi-office-images-reviewed').locator('[data-slot="checkbox-content"]').click();await card.getByTestId('pi-office-approve').click();
   await until(async()=>!(await snapshot()).running,'saved export');const saved=(await snapshot()).officeArtifacts.find(a=>a.id===artifact.id);assert.equal(saved.state,'saved');
-  const file=path.join(exports,artifact.path),bytes=fs.readFileSync(file),zip=await JSZip.loadAsync(bytes);assert(Object.keys(zip.files).some(n=>/^ppt\/slides\/slide\d+\.xml$/.test(n)));
-  const fact=sql('SELECT id,content_hash FROM document_artifacts').find(r=>r.id===saved.artifactId);assert.equal(fact.content_hash,sha256(bytes));report.export={name:path.basename(file),bytes:bytes.length,sha256:sha256(bytes)};
+  report.export=await readClassroomExport({runRoot:output,sessionId,draftId:artifact.id,artifactId:saved.artifactId,classroomId:classroom.id,classroomVersion:classroom.version});
   check('Original Office review and write approval save a real readable PPTX from the confirmed classroom');
   const before=JSON.stringify(await plans()),runCount=sql('SELECT count(*) n FROM ai_agent_runs')[0].n;await app.close();app=undefined;await launch();assert.equal(JSON.stringify(await plans()),before);assert.equal(sql('SELECT count(*) n FROM ai_agent_runs')[0].n,runCount);assert.equal(sql('SELECT count(*) n FROM learning_records')[0].n,0);
   await navigate('teaching');await page.getByTestId('classroom-'+classroom.id).click();await sizes('cold-confirmed');check('Cold start restores the same ledger with zero model replay and zero student fact writes');report.success=true;

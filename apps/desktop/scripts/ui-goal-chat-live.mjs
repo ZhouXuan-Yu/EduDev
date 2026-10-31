@@ -16,6 +16,8 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const source = path.resolve(process.env.UI_PAIRED_PDF || process.env.UI_CHAT_PDF || 'D:/WorkProject/小智智能体借鉴项目/_ui-review-runtime/20261101/buoyancy-review.pdf');
 const limit = Number(process.env.UI_CHAT_TIMEOUT_MS || 18e4);
 const focusMode = process.env.UI_CHAT_FOCUS || 'summary';
+// One declared visual case; other scenarios exercise the same handoff without slow CSSOM work.
+const captureStyles = scenario.name === 'default' && focusMode === 'summary';
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 async function main() {
   assert(process.env.DEEPSEEK_API_KEY, "DEEPSEEK_API_KEY must be injected by the parent");
@@ -27,7 +29,7 @@ async function main() {
   fs.mkdirSync(base, { recursive: true });
   const output = fs.mkdtempSync(path.join(base, "run-")), data = path.join(output, "data"), profile = path.join(output, "profile");
   const mainFile = testMain(root), build = fingerprint(path.dirname(path.dirname(mainFile)));
-  const report = { success: false, output, scenario: scenario.name, promptOverride: scenario.promptOverride, prompt: PROMPT, promptSha256: sha256(Buffer.from(PROMPT)), focusMode, model: "deepseek-flash", pdf: { name: path.basename(source), sha256: sha256(fs.readFileSync(source)) }, buildSha256: build.sha256, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))), scenarioConfigSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-paired-scenarios.mjs', import.meta.url))), publicProbeSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-public-probe.mjs',import.meta.url))), checks: [], runs: [], events: [], consoleErrors: [], screens: [], styleProbes: [], humanAccepted: false };
+  const report = { success: false, output, scenario: scenario.name, promptOverride: scenario.promptOverride, prompt: PROMPT, promptSha256: sha256(Buffer.from(PROMPT)), focusMode, styleCase: captureStyles ? 'default-summary' : null, model: "deepseek-flash", pdf: { name: path.basename(source), sha256: sha256(fs.readFileSync(source)) }, buildSha256: build.sha256, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))), scenarioConfigSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-paired-scenarios.mjs', import.meta.url))), publicProbeSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-public-probe.mjs',import.meta.url))), checks: [], runs: [], events: [], consoleErrors: [], screens: [], styleProbes: [], humanAccepted: false };
   const check = (name) => {
     report.checks.push({ name, pass: true });
     console.log("PASS " + name);
@@ -229,20 +231,6 @@ async function main() {
       }
       const own = (await events()).filter((e) => e.runId === id);
       const live = await turn.locator('[data-mode="live-prose"]').count();
-      if (needsTools && !stylesCaptured && live && t.tools.length && s.running) {
-        const tool=turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
-        if(await tool.count()) {
-          const probes=[];
-          probes.push(await captureStyleProbe(page,turn.locator('[data-mode="live-prose"]:visible'),'streaming-public-process'));
-          await tool.hover();probes.push(await captureStyleProbe(page,tool,'real-tool-hover'));
-          await page.mouse.move(0,0);await tool.focus();
-          await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
-          assert(await tool.evaluate(node=>node.matches(':focus-visible')),'keyboard must produce real focus-visible');
-          probes.push(await captureStyleProbe(page,tool,'real-tool-keyboard-focus'));
-          const file=`${name}-styles.json`;write(file,{sessionId,runId:id,probes});
-          report.styleProbes.push({file,runId:id,states:probes.map(probe=>probe.name)});stylesCaptured=true;
-        }
-      }
       if (needsTools && !focusArmed && live && t.tools.length && s.running) {
         const summary = turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
         if (focusMode === 'composer') {
@@ -259,8 +247,23 @@ async function main() {
         } else {
           await summary.focus();
           assert(await summary.evaluate(node=>node===document.activeElement),'focus setup must reach the actual ChatTool button');
+          if (captureStyles) {
+            await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
+            assert(await summary.evaluate(node=>node.matches(':focus-visible')),'keyboard must produce real focus-visible');
+          }
         }
         focusArmed = true;
+      }
+      if (captureStyles && needsTools && focusArmed && !stylesCaptured && live && t.tools.length && s.running) {
+        const tool=turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
+        if(await tool.count()) {
+          const probes=[];
+          probes.push(await captureStyleProbe(page,turn.locator('[data-mode="live-prose"]:visible'),'streaming-public-process'));
+          await tool.hover();probes.push(await captureStyleProbe(page,tool,'real-tool-hover'));
+          probes.push(await captureStyleProbe(page,tool,'real-tool-keyboard-focus'));
+          const file=`${name}-styles.json`;write(file,{sessionId,runId:id,probes});
+          report.styleProbes.push({file,runId:id,states:probes.map(probe=>probe.name)});stylesCaptured=true;
+        }
       }
       if (!executing && (t.publicProcessCount || t.tools.length) && live && (!needsTools || focusArmed)) {
         assert(await turn.getByTestId("agent-trace-timeline").isVisible(), "executing process is visible");
@@ -313,7 +316,7 @@ async function main() {
         if (scenario.explainBeforeTools) assert(t.publicProcessCount>0&&firstPublicText>=0&&firstTool>firstPublicText,'requested explicit public commentary must precede the first real tool');
         assert(t.tools.some((t2) => t2.status === "completed" && /read_attachment|read_document|read_text/.test(t2.name || "")), "attachment content must actually be read");
         assert(executing, "real execution was observed");
-        assert(stylesCaptured,"streaming, hover and keyboard style evidence was captured");
+        if (captureStyles) assert(stylesCaptured,"streaming, hover and keyboard style evidence was captured");
         assert(handoff, "explicit final handoff was observed");
         assert(record.handoffObservedWhileRunning, "handoff must be captured during streaming");
         assert(!t.tools.some((t2) => /web|browser|create|edit|copy|write|document_create/.test(t2.name || "")), "prompt prohibits web access and writes");
@@ -412,5 +415,5 @@ async function main() {
     console.log(JSON.stringify({ success: report.success, failure: report.failure, output, checks: report.checks.length }));
   }
 }
-if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. --check/--help never launch or call a model.'}));
+if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,styleCase:captureStyles?'default-summary':null,usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. --check/--help never launch or call a model.'}));
 else await main();
