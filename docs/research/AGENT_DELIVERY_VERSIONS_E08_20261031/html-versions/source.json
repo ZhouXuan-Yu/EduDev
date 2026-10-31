@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "checks": [
+    "Idempotent migration and original create/edit form a two-version HTML lineage; selected historical bytes are exact",
+    "Historical OS dispatch materializes only an exact derived copy, never opens changed same-path current content",
+    "Restore creates a third current file and preserves later, older and unrelated content",
+    "Repeat command and identical content create no extra versions; command cannot be rebound to another selected version",
+    "Old-path branching, foreign session and stale current identity are rejected without mutation",
+    "External changes and moved current files stay visible; no silent rewrite or wrong-file OS dispatch",
+    "Actual save-before-outcome cut resolves uncertain receipt without a second physical write",
+    "Pre-parent legacy metadata remains readable without altering original before/after bytes"
+  ],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-versions-FY5BS7",
+  "boundary": "Real original text ledger/Pi algorithms/file effects and selected fault cut; no model or UI acceptance."
+}

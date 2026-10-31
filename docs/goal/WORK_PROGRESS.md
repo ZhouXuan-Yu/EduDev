@@ -5,6 +5,12 @@
 K0文件式访问切片已实现：资料/AI取图、小智页读取和原题候选共用原文件Worker adapter；原题来源校验改为流式hash；共享页号上限10000，页权限改为单条SQL元数据复验，partial只读已发表正文页。63项边界、build/type、240组件及真实198MB题册第51/62页、区域图像、停止/冷启已有证据，0云端调用；完整续读及最终整合门禁另见证据。K0仍进行中，下一项是原宿主资源优先级/公平性与完整Pi用户链路，不提前转K1或恢复单题补丁。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
 
 
+2026-11-01 E08教学文件HTML目录与时间工程已实现（1ff075c）：原修改账本派生当前族行，同一教学文件/对话版本控制可预览、另存恢复及回来源对话；正常保存记成功回执时间，旧记录未知、中断后只记核验时间。源码6、HTML8、Office16、build/type、240组件、正式Electron8（原三版续成第四版/双尺寸DPR1.5实测/冷启）exit0，0付费/模型重放/renderer错误。主包+2810B、renderer+614B、preload不变，仅按需元数据；无速度/P95结论。系统OS仅派发回调核对；完整来源页/行导航、E08/252AT及既有mastery_quiz失败仍待，未重复综合。D盘日常/安装包未更新，Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
+
+2026-11-01 E08本轮收尾：整合main001093f为ab738bf，13处Markdown冲突保留双方；主线本次仅文档，HTML源码37bd444及实际out指纹逐字节未变，沿已通过源码8/Office16/冲突6/240组件/正式Pi6，不为文档重跑全套。单次综合mastery_quiz checkpoint失败保留，待相关路径定位；完整AT未完成。Goal active，下一HTML目录/来源/版本时间+C，再S/T；D盘日常/安装包未更新。证据htmlVersionSlice.lastIntegration。
+
+2026-11-01 E08通用HTML版本工程已实现（37bd444）：原修改账本增可选parent_change_id，旧记录可读；同一typed officeVersion及原历史组件接通HTML三版预览/选择/另存恢复，旧卡默认打开当前文件。历史副本为派生缓存，不作新真源。源码8、Office16、冲突6、build/type、240组件及正式Pi6（双尺寸DPR按截图推算1.5/冷启）exit0；0付费/重放/renderer错误。一遍综合在mastery_quiz checkpoint提交失败，原日志/截图保留，不记207通过，未改该路径。下一HTML教学文件目录/全部来源定位及版本时间口径+C，再S/T；完整阶段AT/252仍待集中，Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlVersionSlice。
+
 ## 2026-11-01 知识库整体架构优先
 
 知识库本轮根据用户指示收拢到[整体架构与K0合同](../architecture/KNOWLEDGE_BASE.md)，当前K0待实施；生产源码无修改，架构骨架复用可行，完整流程/规模质量/用户安装仍未证明。最新真实新批次2次HTTP200、12题全待核；旧五题答案来源升级保留，不冒充本轮质量通过。单页实验以stash db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb保存未合并。下步先文件host统一，再目录闭环，不继续单题打补丁。[统一基线](../research/KB_ARCHITECTURE_BASELINE_20261101.json)，完整Goal active。

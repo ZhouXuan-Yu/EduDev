@@ -748,7 +748,7 @@ export type DocumentArtifactExportInput = {
 };
 
 export type DocumentArtifactExportResult = {
-  /** Optional derived saved Office family; the historical artifact fact remains unchanged. */
+  /** Derived saved family; the original Office or HTML ledger remains authoritative. */
   officeVersion?: {familyId:string;currentArtifactId:string;version:number};
   id: string;
   sessionId: string;
@@ -766,6 +766,12 @@ export type DocumentArtifactExportResult = {
   errorMessage: string;
   createdAt: string;
   updatedAt: string;
+};
+
+/** Read-only catalog projection. HTML is not routed through the Office exporter. */
+export type TeachingFileCatalogEntry = Omit<DocumentArtifactExportResult, 'type'> & {
+  type: DocumentArtifactType | 'html';
+  htmlVersion?: {savedAt:string|null;verifiedAt:string|null};
 };
 
 export type PlatformOverview = {

@@ -1,0 +1,7 @@
+PASS Formal composer creates and approves HTML, then actual read/edit/approval saves the second version
+PASS Original historical card selects and previews exact first-version HTML without changing current disk content
+PASS Visible restore saves byte-identical first HTML as third current file while second version stays untouched, zero model requests
+PASS Old chat card default open resolves the new current filename through the same typed host
+PASS Existing history selection and restore controls remain reachable in both native window sizes
+PASS Cold original Pi restores the same three HTML versions and current file with zero replay/errors
+{"ok":true,"checks":6,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-KHunR1"}

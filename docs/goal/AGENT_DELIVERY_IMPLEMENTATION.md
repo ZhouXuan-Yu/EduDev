@@ -1,5 +1,21 @@
 # 小智交付能力实施合同
 
+## 2026-11-01 E08 HTML教学文件目录与时间（实施前冻结）
+
+- M09/M11，推进E08-01/02/03/04/05/10。教师可从原“教学文件”查找HTML，按当前谱系只显示一行，沿同一officeVersion host预览当前/历史、另存恢复、系统打开/定位及回来源对话；不把xichange交给仅支持document_artifacts的旧show/get接口。完整教材原页/行来源导航另续，不能以来源对话替代。
+- 原listDocumentArtifacts的typed preload返回派生目录DTO（导出输入/结果不扩展HTML生成器）；原db薄适配组合现Office目录与原text-change账本HTML元数据。最近各100条保存记录及其当前版本，单会话原256上限；仅显式加载查元数据，预览才读所选64KiB，不进入流式更新。无第二产物表、文件写入或全盘扫描。
+- 原text-change表增可空saved_at/verified_at，幂等增量；正常executing→applied记录保存成功回执时间，uncertain核验只记录核验时间，原保存时间不变。旧行保留NULL并明确时间未知，不能把提议/恢复核验日期冒充物理保存时刻。无新增依赖/IPC/Runtime/付费。
+- 复用TeachingArtifactsWorkspace/PiOfficeVersions/PiWorkspaceFiles/Button/搜索，保留Office所有路径；改动、缺失、目录失效/归档、加载失败均保留原记录并反馈，恢复不覆盖后来版本。回退可关闭HTML目录适配并保留新列读取、原谱系/文件；不drop列或账本，不改协作者知识库K顺序。
+- 一次源码SQLite/文件检查覆盖旧数据库两次迁移/未知时间、新保存时间与核验时间、undo时间不漂移、目录限额/分会话/当前分组/Office兼容。正式Electron从真实Pi生成→教学文件搜索/预览/历史恢复/回对话→双尺寸/冷启；沿0付费合成传输，实际SQLite及文件读回。build/type、组件及受影响关键路径一次检查，已有mastery_quiz综合失败保留，不反复整套；完整E08/252AT功能齐后集中。
+
+## 2026-11-01 E08 通用HTML版本（实施前冻结）
+
+- M09/M11，推进E08-01/02/03/04/05/10：复用原text-change before/after账本、Pi编辑算法、mutation queue、Office版本typed IPC与同一历史组件。通用HTML的旧稿目前保存在修改账本，但旧卡打开同路径可能得到后续内容，缺版本选择和恢复。
+- 原账本增可选parent_change_id（增量幂等，无新表）；旧行按同授权目录/路径和创建顺序派生连续历史。新增main薄适配到原officeVersion契约，接受xichange身份，按需返回单份64KiB HTML；非HTML和领域产物不混入。新增HTML原卡当前打开/版本历史，旧版本明确来自账本，预览不执行文件写入；系统打开/定位历史时只在派生缓存制作精确副本，缓存不成为真源。
+- 教师明确恢复将所选字节另存新HTML，链接当时当前版本，后来各版及无关文件保留；原local settings owner、原text service提议/确认/保存与uncertain核验复用，command幂等，不发模型或沿用旧批准。当前文件被改/移走、跨会话/目录、忙碌、同名冲突、暂停写入均有反馈，不强行覆盖。相同内容不产生新版本。旧会话仍可读，回退前先保留新列读兼容，无破坏迁移。
+- UI沿edudev-design，复用既有PiOfficeVersions/ScienceDemoFrame/Button，不加新CSS或组件库。历史仅点击加载，不进入逐字流式工作；0新依赖/真实付费。一次源码SQLite/真实文件检查及正式Pi合成传输生成→局改→历史预览→恢复→旧卡当前版→改动/缺失→双尺寸/冷启，build/type、组件和必要关键路径检查。完整252AT及教学文件HTML目录/全部来源导航仍后续功能及阶段集中，不借本片标整组已实现。
+
+
 ## 2026-11-01 E07 冲突后的当前文件对照（实施前冻结）
 
 - M09/M10/M11，推进REQ-E07-09及E08来源/版本接缝。现text-change已保留before/after并阻止覆盖，但原审阅只返回历史两侧，不能直接对照教师手改后的当前文件；safeExecute冲突提示笼统要求另存。消费者为原service→coordinator→现有typed change-review IPC/preload→PiTextChangeCard，单文件/整包共用；不新增页面或Runtime。

@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "checks": [
+    "One original saved lineage yields two ordered versions and the actual fourth-page notes change",
+    "Teacher restore publishes a third current version with byte-identical first-version PPT and preserved lineage",
+    "Repeated command returns its original receipt; reusing it for another version cannot create or approve a write",
+    "Restoring bytes already identical to the current version is a no-op, without an unnecessary version/file",
+    "Both later/older original files and unrelated HTML bytes and modification times stay unchanged",
+    "Stale current version, wrong session and malformed contracts fail before mutation",
+    "Externally changed and missing files remain visible in history and cannot be opened as the saved version",
+    "OS dispatch resolves exactly the selected saved path after integrity validation",
+    "Save-before-ledger cut recovers by verifying existing exact bytes once, without rewriting the file",
+    "Recreated read service derives the same four-version history from original facts with zero model requests",
+    "One original-ledger projection resolves all four ancestors to the saved current version; unrelated files remain current",
+    "Teaching Files enriches original facts once per session; current-only projection has one row and retains every historical ID",
+    "A newer current publication outside the initial catalog page is included instead of hiding its family",
+    "Version families do not cross workspace or confirmed-domain boundaries and reject cyclic ancestry",
+    "Historical exact-byte proofs remain readable; task confirmation policy refuses a superseded Office proof",
+    "A later saved child invalidates an already captured current proof without rewriting the historical proof or old files"
+  ],
+  "boundary": "Real SQLite, original Office service/generator/queue, exact PPT bytes, own fault cut and local filesystem. No model or UI acceptance.",
+  "family": {
+    "schemaVersion": "xiaozhi.office-versions.v1",
+    "sessionId": "aisession_a86ea8c8-59d3-4a9e-9881-c114b03294df",
+    "selectedArtifactId": "artifact_6c3e0657-9445-4eb7-b5da-251be0c25efa",
+    "currentArtifactId": "artifact_ffd42a0e-a1fa-407d-a99b-36e71b3664ff",
+    "integrity": "same",
+    "canRestore": true,
+    "versions": [
+      {
+        "artifactId": "artifact_6c3e0657-9445-4eb7-b5da-251be0c25efa",
+        "path": "浮力.pptx",
+        "title": "浮力：从漂浮到下沉",
+        "format": "pptx",
+        "number": 1,
+        "savedAt": "2026-10-31T18:47:34.309Z",
+        "parentArtifactId": null,
+        "size": 122332,
+        "change": "首次保存"
+      },
+      {
+        "artifactId": "artifact_a83f61ec-c7f8-491e-b409-a974a1521169",
+        "path": "浮力-修改.pptx",
+        "title": "浮力：从漂浮到下沉",
+        "format": "pptx",
+        "number": 2,
+        "savedAt": "2026-10-31T18:47:34.428Z",
+        "parentArtifactId": "artifact_6c3e0657-9445-4eb7-b5da-251be0c25efa",
+        "size": 122370,
+        "change": "第 4 页内容或备注变化"
+      },
+      {
+        "artifactId": "artifact_cd1d9f8d-4b74-4325-bc65-81bbaf153454",
+        "path": "浮力-恢复版3.pptx",
+        "title": "浮力：从漂浮到下沉",
+        "format": "pptx",
+        "number": 3,
+        "savedAt": "2026-10-31T18:47:34.595Z",
+        "parentArtifactId": "artifact_a83f61ec-c7f8-491e-b409-a974a1521169",
+        "size": 122332,
+        "change": "恢复旧版文件：浮力.pptx"
+      },
+      {
+        "artifactId": "artifact_ffd42a0e-a1fa-407d-a99b-36e71b3664ff",
+        "path": "浮力-恢复版4.pptx",
+        "title": "浮力：从漂浮到下沉",
+        "format": "pptx",
+        "number": 4,
+        "savedAt": "2026-10-31T18:47:34.860Z",
+        "parentArtifactId": "artifact_cd1d9f8d-4b74-4325-bc65-81bbaf153454",
+        "size": 122370,
+        "change": "恢复旧版文件：浮力-修改.pptx"
+      }
+    ]
+  },
+  "currentAfterProof": "artifact_7d38c412-9817-4385-89a6-866758545c61"
+}

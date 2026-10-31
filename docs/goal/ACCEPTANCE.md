@@ -5,6 +5,12 @@
 本轮63项边界、240组件与build/type通过；真实约198MB/62页题册的资料UI、生产页工具工厂+只读SQLite适配与真实文件Worker、局部取图和冷启通过。不是完整Pi/provider/数学质量/自然40GiB验收。完整续读、综合门禁及整合指纹以统一基线k0Implementation为准。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
 
 
+2026-11-01 E08教学文件HTML目录与时间工程已实现（1ff075c）：原修改账本派生当前族行，同一教学文件/对话版本控制可预览、另存恢复及回来源对话；正常保存记成功回执时间，旧记录未知、中断后只记核验时间。源码6、HTML8、Office16、build/type、240组件、正式Electron8（原三版续成第四版/双尺寸DPR1.5实测/冷启）exit0，0付费/模型重放/renderer错误。主包+2810B、renderer+614B、preload不变，仅按需元数据；无速度/P95结论。系统OS仅派发回调核对；完整来源页/行导航、E08/252AT及既有mastery_quiz失败仍待，未重复综合。D盘日常/安装包未更新，Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
+
+2026-11-01 E08本轮收尾：整合main001093f为ab738bf，13处Markdown冲突保留双方；主线本次仅文档，HTML源码37bd444及实际out指纹逐字节未变，沿已通过源码8/Office16/冲突6/240组件/正式Pi6，不为文档重跑全套。单次综合mastery_quiz checkpoint失败保留，待相关路径定位；完整AT未完成。Goal active，下一HTML目录/来源/版本时间+C，再S/T；D盘日常/安装包未更新。证据htmlVersionSlice.lastIntegration。
+
+2026-11-01 E08通用HTML版本工程已实现（37bd444）：原修改账本增可选parent_change_id，旧记录可读；同一typed officeVersion及原历史组件接通HTML三版预览/选择/另存恢复，旧卡默认打开当前文件。历史副本为派生缓存，不作新真源。源码8、Office16、冲突6、build/type、240组件及正式Pi6（双尺寸DPR按截图推算1.5/冷启）exit0；0付费/重放/renderer错误。一遍综合在mastery_quiz checkpoint提交失败，原日志/截图保留，不记207通过，未改该路径。下一HTML教学文件目录/全部来源定位及版本时间口径+C，再S/T；完整阶段AT/252仍待集中，Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlVersionSlice。
+
 ## 2026-11-01 知识库整体架构优先
 
 本轮交付知识库[架构与退出门](../architecture/KNOWLEDGE_BASE.md)，未交付K0实现，完整Goal未完成。[基线证据](../research/KB_ARCHITECTURE_BASELINE_20261101.json)区分历史40GiB有限正文、新2次真实调用全待核及本轮docs-only范围；无性能改善/教师质量/安装包通过声明。下列历史测试仅归其原构建。

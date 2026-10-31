@@ -5,6 +5,10 @@
 K0文件式访问adapter已贯通资料/AI取图、小智原页工具、原题候选及流式来源校验；页读取不再加载整本正文，partial按页准入。仍用原任务/文件Worker，不新增服务；资源优先级/公平性与完整Pi链路仍待验证。 [整体架构](KNOWLEDGE_BASE.md)。
 
 
+2026-11-01 E08：原changes新增可空saved_at/verified_at→textVersionCatalog元数据投影→原listDocumentArtifacts typed preload→TeachingArtifactsWorkspace→共用officeVersion host/历史组件。无新表/IPC/Runtime，原Office导出输入和结果不扩展HTML；旧库幂等兼容，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
+
+2026-11-01 E08：原text-change状态/服务→HTML版本薄适配→现officeVersion typed IPC/preload→共用版本组件/原HTML卡；原表仅新增可空parent_change_id，零新表/IPC/Runtime。恢复复用原文件queue和local settings owner。
+
 ## 2026-11-01 知识库整体架构优先
 
 知识库的层次、模块职责、数据契约、成熟复用选择、现有接缝与实施顺序统一见[整体架构](KNOWLEDGE_BASE.md)。当前K0待实施；SQLite/本地文件为真源，FTS5/LanceDB为派生层，保留Pi与原任务宿主。尚未证明自然几十GB质量、完整用户闭环和Windows交付。下列历史证据保留，不覆盖该知识库顺序。
