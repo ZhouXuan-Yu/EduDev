@@ -1,0 +1,259 @@
+{
+  "date": "2026-10-31",
+  "scope": "M03/M04/M05/M10 bounded cover/answer-book implementation; full goal remains active",
+  "sourceCommit": "b9686ac25a4d061b50906a57d7d58e993d857a84",
+  "implementationCommits": [
+    "194fc3f",
+    "0e42c39"
+  ],
+  "integrations": [
+    {
+      "commit": "0b3afc3",
+      "upstream": "5c293f7",
+      "conflicts": 0
+    },
+    {
+      "commit": "b9686ac",
+      "upstream": "725ba95",
+      "conflicts": "13 Markdown top sections; both full records retained; production preload auto-merged"
+    }
+  ],
+  "delivered": {
+    "cover": "Explicit successfully read covers with no exercise cues:0 rule questions; folder AI completes locally without a paid child. Original PDF retained, mixed/unclear pages preserved.",
+    "matching": "Current pair/version + full exam title + unique number + saved question span. Original executor drains persistent local work. Writable missing/AI roles only, original/teacher roles protected; doubts/conflicts held. Answer-only source preserves separately attributed AI analysis.",
+    "storage": "Same SQLite: rebuildable index/dirty/control/work plus immutable before/after journal. v6 retains v5 AI/page receipts. Teacher role edits detach corresponding proof; stem edits cannot silently reuse an old answer. Pi/export attribution and retrieval index rebuild connected.",
+    "safety": "Dirty/supersession markers fence invalid or empty newer pages; writer rechecks current index, source/receipt hashes, pair revision and question CAS, with rollback and abort commit guard. No model replay."
+  },
+  "realAI": {
+    "newCallsThisRound": 2,
+    "model": "deepseek-flash",
+    "mainPdfPage": 4,
+    "savedQuestions": 12,
+    "status": "held:uncertain_ocr and first/final stem discrepancy",
+    "batchId": "aibatch_1b428d5f-7d42-431e-91cb-688f8ce1389d",
+    "sourceGeneration": "3ddcf77d-ddfc-4320-ab52-dec13564148b",
+    "sourceReceiptSha": "8a5ca623f91015d71e9c44ce17196cff51b18fb10820f71cd6013428360e5b8a",
+    "imageSha": "750c142bd97cd22046e1833e4b135ce737515d60de1fcb2baa4847b26e3da401",
+    "imageBytes": 2551107,
+    "rawReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\question-ai-BSEu7u\\report.json",
+    "twoBatchLedger": [
+      [
+        "aibatch_1b428d5f-7d42-431e-91cb-688f8ce1389d",
+        2
+      ],
+      [
+        "aibatch_eb167f7c-5964-4984-bf99-272022390682",
+        2
+      ]
+    ],
+    "rawBookTextImagesUploadedToGit": false
+  },
+  "realUI": {
+    "success": true,
+    "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-match-6PRDsf\\report.json",
+    "checks": [
+      "Existing background executor matches12 actual main-page questions to the exact exam; question1 retains known D and source page3 while all uncertain questions stay held",
+      "Visible retry reads saved sources, preserves the canonical AI answers/analysis and does not silently promote held questions",
+      "Both desktop sizes reach the final candidate, source page and original answers without horizontal overflow",
+      "Controlled local-page receipt corruption reaches the real IPC source guard, shows a retryable error and retains12 candidates; exact receipt restored afterward",
+      "Unlink/restoring the identical book queues background matching at the new revision with no paid replay or canonical mutation",
+      "Restart preserves held candidates, exact source hashes, both two-call ledgers, all12 canonical questions and SQLite integrity"
+    ],
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "rendererErrors": [],
+    "cloudRequests": 0,
+    "revisions": {
+      "before": 17,
+      "restored": 19
+    },
+    "matched": 12,
+    "held": 12,
+    "canonicalWrites": 0,
+    "question1": {
+      "exam": "第十三、十四章 素养基础测试卷",
+      "knownAnswer": "D",
+      "source": "答案.pdf",
+      "page": 3
+    },
+    "canonicalUnchanged": true,
+    "sourceHashesVerified": true,
+    "SQLiteIntegrity": "ok",
+    "replayedCalls": 0,
+    "positiveNaturalWritebackAccepted": false,
+    "screenshotsInspected": [
+      "match-1366.png"
+    ],
+    "bookScreenshotsRemainLocal": true
+  },
+  "verification": [
+    {
+      "name": "build/type",
+      "exit": 0,
+      "checks": null,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-build.log"
+    },
+    {
+      "name": "renderer components",
+      "exit": 0,
+      "checks": 240,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-components.log"
+    },
+    {
+      "name": "book match",
+      "exit": 0,
+      "checks": 19,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-boundaries.log"
+    },
+    {
+      "name": "AI page",
+      "exit": 0,
+      "checks": 31,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-ai.log"
+    },
+    {
+      "name": "web answer compatibility",
+      "exit": 0,
+      "checks": 12,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-web.log"
+    },
+    {
+      "name": "answer entries",
+      "exit": 0,
+      "checks": 15,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-entries.log"
+    },
+    {
+      "name": "book pair",
+      "exit": 0,
+      "checks": 7,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-pair.log"
+    },
+    {
+      "name": "critical archive",
+      "exit": 0,
+      "checks": 13,
+      "log": "apps\\desktop\\test-results\\kb-book-match-integrated-critical.log"
+    },
+    {
+      "name": "folder PDF and cover",
+      "exit": 0,
+      "checks": 9,
+      "log": "apps\\desktop\\test-results\\kb-book-match-final-folder-pdf.log"
+    },
+    {
+      "name": "rule and actual source cover",
+      "exit": 0,
+      "checks": 19,
+      "log": "apps\\desktop\\test-results\\kb-book-match-final-rule.log"
+    },
+    {
+      "name": "folder scheduler",
+      "exit": 0,
+      "checks": 7,
+      "log": "apps\\desktop\\test-results\\kb-book-match-folder.log"
+    },
+    {
+      "name": "real saved-book UI",
+      "exit": 0,
+      "checks": 6,
+      "log": "apps\\desktop\\test-results\\kb-book-match-frozen-ui.log"
+    }
+  ],
+  "legacySmoke": {
+    "command": "npm.cmd run test:smoke",
+    "exit": 0,
+    "passed": 207,
+    "total": 207,
+    "buildSource": "0b3afc3 before E08 and later bounded-history/mixed-cover changes",
+    "log": "apps\\desktop\\test-results\\kb-book-match-final-smoke.log",
+    "boundary": "Pi=0 legacy regression; final E08 build/type,240 components,source suites and Pi-enabled saved-book UI verified separately, no claim of final full-smoke rerun."
+  },
+  "performance": {
+    "success": true,
+    "pages": 5000,
+    "entries": 100000,
+    "before": {
+      "iterations": 200,
+      "medianMs": 3.3460999999999785,
+      "p95Ms": 3.9623000000000275
+    },
+    "after": {
+      "iterations": 1000,
+      "medianMs": 0.02189999999995962,
+      "p95Ms": 0.042799999999942884
+    },
+    "plan": [
+      "SEARCH e USING INDEX material_book_answer_lookup_v1 (resource_id=? AND version=? AND section_key=? AND number=?)",
+      "CORRELATED SCALAR SUBQUERY 1",
+      "SEARCH n USING COVERING INDEX material_book_answer_latest_v1 (resource_id=? AND version=? AND page=? AND seq>?)",
+      "USE TEMP B-TREE FOR ORDER BY"
+    ],
+    "scope": "Warm in-memory SQLite exact answer-entry lookup only, synthetic metadata. Before is the replaced live batch fence; after uses durable dirty/supersession markers and writer recheck. Excludes source reopening, AI, UI, file I/O and retrieval. Not natural 40GB/P95 acceptance."
+  },
+  "build": {
+    "source": "b9686ac",
+    "mainSha256": "f1909fdbd26933c13e0b88ce003dd70dd69aebadc8b988dda954fa91b5cae4dc",
+    "mainBytes": 3307397,
+    "renderer": "apps\\desktop\\out\\renderer\\assets\\index-CbUsoNDK.js",
+    "rendererSha256": "b94fd3dba36a03fb962ae5379e9ea7ccd5b164a7b3bc7d6da29a8b7c425c1f7e",
+    "rendererBytes": 7245763,
+    "previousRendererBytes": 7227387,
+    "deltaIncludesCollaboratorE07E08": true
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "newDependencies": 0,
+    "autoFix": false
+  },
+  "failuresPreserved": [
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-match-AbxFPI\\report.json",
+      "reason": "Test tried replacing frozen contextBridge API; changed to actual owned-page receipt corruption with exact restoration."
+    },
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-match-IERY49\\report.json",
+      "reason": "Nested summary locator selected14 nodes; direct summary selection fixed."
+    },
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-match-wJuaDH\\report.json",
+      "reason": "Script collapsed an already open page; now checks expansion before clicking."
+    },
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-match-ewG21f\\report.json",
+      "reason": "Passed6 but launch overlapped build completion. Excluded; frozen rerun book-match-6PRDsf passed."
+    }
+  ],
+  "open": [
+    "No positive real-book canonical writeback yet:12 actual main questions and answer page retain quality flags. Next source-backed per-question verification and cross-page completion, without deleting flags.",
+    "Full-book/Word-image mix, natural10GB to40GB durability, recall/precision and end-to-end P95 open.",
+    "Four old unconfirmed frontmatter candidates remain; no destructive cleanup.",
+    "Existing PromptInput/startup gates and collaborator approval issues not repaired/reaccepted by this slice.",
+    "D daily runtime and installer not updated."
+  ],
+  "rollback": {
+    "switch": "OMNI_EDU_BOOK_ANSWER_WRITEBACK=0",
+    "behavior": "Stops new automatic/manual writeback; preserves historical reads and canonical/journal data. Rebuild affects derived indexes only.",
+    "versionSafety": "Keep v6 reader support, or CAS restore unchanged journal afterVersions to before snapshots before reverting. Never delete original files or blindly use an old reader.",
+    "fullRollbackRehearsed": false
+  },
+  "goalComplete": false,
+  "newFullAcceptanceItems": 0
+}

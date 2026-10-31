@@ -2,6 +2,8 @@
 
 ## 2026-10-31 答案册受控回写与封面跳过
 
+新增目录定位微基准：5000页/10万条合成元数据、内存SQLite预热；去掉每次查整本批次元数据的旧fence，换为持久dirty/sentinel及writer复查，median3.3461→0.0219ms，P953.9623→0.0428ms。仅目录查找，不含原图复验、文件IO、AI、完整检索或自然40GB；不据此宣称产品提速验收。
+
 MaterialBookAnswerRepository沿原MaterialAiRepository.drain空闲周期推进本地目录/匹配，复用主库事务与发送之外的历史原件校验。派生表material_book_answer_index_v1、material_book_answer_dirty_v1、material_book_answer_control_v1、material_book_answer_work_v1及不可变业务material_book_answer_journal_v1均在同一SQLite，无新服务/依赖/密钥。原页发表、答案更新、关联恢复触发work；一次一页/最多20道题/每页64KiB、200答案条目。当前页发表顺序以sentinel抑制旧页回退；单元/页回执变更置dirty，writer内再查pending与候选目录，并核对原图、两遍原响应、关联修订和题目版本。检索重建同时重建派生答案目录，保留业务journal。
 
 v6保留v5的AI/pageSource/sources并增加book.roles；教师改角色解除相应来源，改题干不能静默沿用旧答案。Pi/题本读取重新校验journal和原页；解除关联不抹去既有已应用来源，新写入仍要求当前修订。typed materials:book-matches/book-match贯通原页面板，记录轮询只查受限行/版本，不反复读取整本原件。历史记录显示已写入不等于当前数学/教师验收。原AI/联网补答路径保留，书答案仅可用来源字段有book_extracted归属。
