@@ -4,6 +4,30 @@ import {History,FolderOpen,ExternalLink} from 'lucide-react';
 import {OFFICE_VERSIONS_SCHEMA,OFFICE_VERSION_ERRORS,type OfficeVersionView,type OfficeVersionInput} from '../../../shared/xiaozhi-office-versions';
 import './pi-office-versions.css';
 
+/** Resolve on click, so old chat cards never silently open an obsolete default. */
+export function PiOfficeCurrent({sessionId,artifactId,fallbackPath,onOpen,action='preview',label='打开当前文件',testId='pi-office-open',disabled=false}:{sessionId:string;artifactId:string;fallbackPath:string;onOpen:(path:string)=>void;action?:'preview'|'open'|'locate';label?:string;testId?:string;disabled?:boolean}){
+ const [busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');const lock=useRef(false),identity=`${sessionId}:${artifactId}`,current=useRef(identity);current.current=identity;
+ async function open(){if(lock.current||disabled)return;const start=identity;lock.current=true;setBusy(true);setError('');setNotice('');
+  try{
+   const call=(id:string,op:'view'|'open'|'locate')=>window.omniEdu?.officeVersion({schemaVersion:OFFICE_VERSIONS_SCHEMA,sessionId,artifactId:id,action:op});
+   let result=await call(artifactId,'view');if(current.current!==start)return;
+   // Confirmed paper/classroom exports keep their original domain-owned preview.
+   if(result&&!result.ok&&result.error==='unsupported'&&action==='preview'){onOpen(fallbackPath);return;}
+   if(!result?.ok)throw Error(result&&!result.ok?result.error:'configuration');
+   const id=result.value.currentArtifactId;
+   result=await call(id,action==='preview'?'view':action);if(current.current!==start)return;
+   if(!result?.ok)throw Error(result&&!result.ok?result.error:'configuration');
+   if(result.value.sessionId!==sessionId||result.value.selectedArtifactId!==id||result.value.currentArtifactId!==id)throw Error('conflict');
+   if(result.value.integrity!=='same')throw Error(result.value.integrity);
+   const selected=result.value.versions.find(v=>v.artifactId===id);if(!selected)throw Error('configuration');
+   if(action==='preview')onOpen(selected.path);else setNotice(action==='open'?'已交给系统打开当前文件。':'已在文件夹中定位当前文件。');
+  }catch(raw){if(current.current===start)setError(OFFICE_VERSION_ERRORS[(raw instanceof Error?raw.message:'configuration') as keyof typeof OFFICE_VERSION_ERRORS]||OFFICE_VERSION_ERRORS.configuration);}
+  finally{lock.current=false;if(current.current===start)setBusy(false);}
+ }
+ useEffect(()=>{current.current=identity;setBusy(false);setError('');setNotice('');return()=>{current.current='';};},[identity]);
+ return <span><Button size="sm" variant="ghost" isDisabled={busy||disabled} onPress={()=>void open()} data-testid={testId}>{busy?'正在核对当前版本…':label}</Button>{error&&<span role="alert" data-testid={testId+'-error'}>{error}</span>}{notice&&<span role="status">{notice}</span>}</span>;
+}
+
 /** Same ledger-backed control in chat and Teaching Files. It runs only after an explicit click. */
 export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRefresh}:{sessionId:string;artifactId:string;running?:boolean;onOpen:(path:string)=>void;onRefresh?:()=>Promise<void>}){
  const [open,setOpen]=useState(false),[view,setView]=useState<OfficeVersionView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[confirm,setConfirm]=useState(false);

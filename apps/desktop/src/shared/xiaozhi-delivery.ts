@@ -4,7 +4,7 @@ import type {OfficeArtifactSummary,OfficeArtifactError} from './xiaozhi-office-a
 export const DELIVERY_SCHEMA='xiaozhi.delivery.v1' as const;
 export type DeliveryState='preparing'|'pending'|'approving'|'approved'|'executing'|'saved'|'partial'|'failed'|'rejected'|'interrupted'|'conflict';
 export type DeliveryFile={fileId:string;kind:'text'|'office';path:string;draftId:string|null;carried:boolean;error?:string;
- change?:XiaozhiChangeSummary;artifact?:OfficeArtifactSummary};
+ change?:XiaozhiChangeSummary;artifact?:OfficeArtifactSummary;currentVersion?:{artifactId:string;path:string;version:number}};
 export type DeliverySummary={schemaVersion:typeof DELIVERY_SCHEMA;id:string;runId:string;callId:string;revision:number;state:DeliveryState;
  taskVersion:string;files:DeliveryFile[];fingerprint:string;parentId?:string;continuedBy?:string};
 export type DeliveryDecision={schemaVersion:typeof DELIVERY_SCHEMA;sessionId:string;bundleId:string;revision:number;fingerprint:string;action:'approve'|'reject'};

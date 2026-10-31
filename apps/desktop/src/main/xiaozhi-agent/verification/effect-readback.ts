@@ -6,6 +6,7 @@ import {fileVersion} from '../workspace-files';
 import type {createTextChangeState} from '../text-change-state';
 import {officeDraftText,type createOfficeArtifactState} from '../office-artifact-state';
 import {OFFICE_OUTPUT_MAX_BYTES} from '../../../shared/xiaozhi-office-draft';
+import {officeVersionFamilies} from '../office-version-family';
 
 export type EffectSnapshot={digest:string;version:string};
 export type BoundEffect=EffectSnapshot & {read:()=>Promise<EffectSnapshot>;input?:(read:{source:string;version:string;text:string;sha256?:string})=>Promise<BoundEffect|undefined>};
@@ -31,7 +32,7 @@ async function readFile(root:string,relative:string,max:number){
 /** Bind only the main-owned final teacher-confirmed ledger for this exact call.
  * The captured expectation stays immutable; finish independently rereads current
  * authorization, SQLite and disk. A later consistent rewrite cannot reset it. */
-export function createEffectReadback(options:{sessionId:string;runId:string;current:()=>boolean;
+export function createEffectReadback(options:{sessionId:string;runId:string;current:()=>boolean;requireCurrentOffice?:boolean;
  workspace:()=>Promise<string>;fileLabel:(tool:string,path:string)=>Promise<string>;fileText?:(text:string)=>Promise<string>;changes:ReturnType<typeof createTextChangeState>;artifacts:ReturnType<typeof createOfficeArtifactState>}){
  const check=()=>{if(!options.current())throw Error('cancelled');};
  async function snapshot(callId:string,tool:string,payload:Record<string,unknown>):Promise<EffectSnapshot>{
@@ -53,6 +54,7 @@ export function createEffectReadback(options:{sessionId:string;runId:string;curr
    ||row.workspaceHash!==workspaceHash(root)||!row.output||!row.outputHash||!row.artifactId||!row.resultPath
    ||payload.outcome!=='saved'||payload.format!==row.format||payload.artifactId!==row.artifactId)throw Error('evidence_missing');
   if(payload.file!==await options.fileLabel(tool,row.path))throw Error('evidence_missing');check();
+  if(options.requireCurrentOffice){const family=officeVersionFamilies(await options.artifacts.versionRecords(options.sessionId) as import('../office-version-family').OfficeFamilyRecord[]).get(row.artifactId);check();if(family&&family.currentArtifactId!==row.artifactId)throw Error('evidence_missing');}
   const file=await readFile(root,row.path,OFFICE_OUTPUT_MAX_BYTES);check();
   const fact=await options.artifacts.parent(row.artifactId);check();
   if(file.file!==path.resolve(row.resultPath)||file.sha256!==row.outputHash||file.size!==row.output.length
