@@ -127,6 +127,30 @@
     {"id": "K3", "work": "Teacher-relevant bounded hybrid retrieval, Pi and paper workflow", "status": "pending"},
     {"id": "K4", "work": "Natural 40 GiB/high-text corpus, soak and clean Windows delivery", "status": "pending"}
   ],
+  "lastIntegration": {
+    "architectureCommit": "b0ff7b9",
+    "mergedMain": "6deee5db81cf54ce17fee717725740229cb87be6",
+    "mergeCommit": "6d64574e143092df4e52c43cdcaa6ccf404d1df2",
+    "markdownConflictsResolved": 13,
+    "conflictResolution": "Both additive knowledge-base and collaborator E07/memory records retained; no production conflict",
+    "ownProductionDiffAgainstMergedMain": false,
+    "checks": [
+      {"command": "npm.cmd run build", "exitCode": 0, "includes": "tsc --noEmit and electron-vite build", "logBasename": "kb-architecture-integrated-build-20261101.log"},
+      {"command": "npm.cmd run test:renderer-components", "exitCode": 0, "passed": 240, "total": 240, "logBasename": "kb-architecture-integrated-components-20261101.log"},
+      {"command": "git diff --check", "exitCode": 0},
+      {"check": "Architecture relative-link existence and JSON parse/stage assertions", "exitCode": 0, "relativeLinksChecked": 5},
+      {"check": "Merged Markdown has no unresolved conflict markers", "exitCode": 0}
+    ],
+    "fingerprints": [
+      {"file": "out/main/index.js", "bytes": 3341932, "sha256": "a77f213d4d1f68244bf2a6d0699e70be1b98d448f9099ee697b1d5a4bb6c3a03"},
+      {"file": "out/preload/index.cjs", "bytes": 35346, "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"},
+      {"file": "out/renderer/assets/index-Di-5hxfM.js", "bytes": 7262888, "sha256": "6bce694ac1f64561a050fe03ca47a190b89bc3af0759d136666d3aed7409d681"}
+    ],
+    "sizeDeltaFromBaseline": {"mainBytes": 1319, "rendererBytes": 1565, "attribution": "Collaborator source integration; documentation-only knowledge-base changes have no production behavior or latency delta"},
+    "noNewElectronJourneyOrProviderCallOnMergedSource": true,
+    "noSemanticRecallOrP95ImprovementMeasured": true,
+    "rollback": "Revert the knowledge-base documentation commits only; do not revert the collaborator merge or delete the preserved WIP. No business-data/DDL rollback."
+  },
   "officialSourcesChecked": [
     "https://github.com/lancedb/lancedb",
     "https://github.com/RapidAI/RapidOCR",
