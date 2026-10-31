@@ -1,4 +1,5 @@
 import {OFFICE_JOB_SOURCE} from './native-office-job';
+import {WPS_OWNER_SCRIPT} from './wps-owner-script';
 /** Fixed local adapter. Request values are JSON/env data, never PowerShell source. */
 export const POWERPOINT_RENDER_SCRIPT=String.raw`
 $ErrorActionPreference='Stop'
@@ -6,11 +7,18 @@ $ErrorActionPreference='Stop'
 $application=$null;$presentation=$null;$job=$null;$owned=$false
 $result=@{schemaVersion='xiaozhi.powerpoint-render.v1';ok=$false;error='unavailable'}
 try {
- if(Get-Process POWERPNT -ErrorAction SilentlyContinue){throw 'busy'}
  Add-Type -TypeDefinition @'
 ${OFFICE_JOB_SOURCE}
 '@
  $request=Get-Content -Raw -LiteralPath (Join-Path $env:XIAOZHI_RENDER_ROOT 'request.json') | ConvertFrom-Json
+ $useWps=$request.officeEngine -eq 'wps' -or ($request.officeEngine -ne 'microsoft' -and -not [type]::GetTypeFromProgID('PowerPoint.Application'))
+ $engineName='PowerPoint'
+ if($useWps){
+  $wpsProg='KWPP.Application';$wpsSwitch='wpp';$wpsCollection='Presentations'
+${WPS_OWNER_SCRIPT}
+  $engineName='WPS Presentation'
+ }else{
+ if(Get-Process POWERPNT -ErrorAction SilentlyContinue){throw 'busy'}
  $start=[DateTime]::UtcNow
  $application=New-Object -ComObject PowerPoint.Application
  [uint32]$officeId=0;[void][XiaozhiRenderJob]::GetWindowThreadProcessId([IntPtr]([int64]$application.HWND),[ref]$officeId)
@@ -18,6 +26,7 @@ ${OFFICE_JOB_SOURCE}
  if($server.ProcessName -ne 'POWERPNT' -or $server.StartTime.ToUniversalTime() -lt $start.AddSeconds(-1) -or $application.Presentations.Count -ne 0){throw 'busy'}
  $owned=$true;$job=New-Object XiaozhiRenderJob($server.Handle)
  [IO.File]::WriteAllText((Join-Path $env:XIAOZHI_RENDER_ROOT 'owned.json'),(@{pid=[int]$officeId;start=$server.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json -Compress))
+ }
  $application.AutomationSecurity=3;$application.DisplayAlerts=1
  $presentation=$application.Presentations.Open((Join-Path $env:XIAOZHI_RENDER_ROOT 'input.pptx'),-1,0,0)
  $pageCount=[int]$presentation.Slides.Count
@@ -54,7 +63,7 @@ ${OFFICE_JOB_SOURCE}
    if($pageBytes -gt 3145728 -or $renderBytes -gt 100663296){Remove-Item -LiteralPath $output;throw 'too_large'}
   }finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($slide)}
  }
- $result=@{schemaVersion='xiaozhi.powerpoint-render.v1';ok=$true;pages=$pageCount;width=$width;height=$height;version=[string]$application.Version;findings=@($findings.ToArray())}
+ $result=@{schemaVersion='xiaozhi.powerpoint-render.v1';ok=$true;pages=$pageCount;width=$width;height=$height;engine=$engineName;version=[string]$application.Version;findings=@($findings.ToArray())}
 }catch {
  $code=$_.Exception.Message
  if($code -notin @('busy','too_large','unsupported','page_count_changed')){$code='unavailable'}

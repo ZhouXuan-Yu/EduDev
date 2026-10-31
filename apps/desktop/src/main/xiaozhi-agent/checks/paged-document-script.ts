@@ -1,4 +1,5 @@
 import {OFFICE_JOB_SOURCE} from './native-office-job';
+import {WPS_OWNER_SCRIPT} from './wps-owner-script';
 /** Fixed local adapter: Windows rasterizes actual PDF bytes, Word only exports an owned read-only DOCX copy. */
 export const PAGED_DOCUMENT_SCRIPT=String.raw`
 $ErrorActionPreference='Stop'
@@ -12,10 +13,17 @@ try {
  $pdfPath=Join-Path $env:XIAOZHI_RENDER_ROOT 'input.pdf'
  $engine='Windows.Data.Pdf';$findings=New-Object 'Collections.Generic.List[object]'
  if($request.format -eq 'docx'){
-  if(Get-Process WINWORD -ErrorAction SilentlyContinue){throw 'busy'}
   Add-Type -TypeDefinition @'
 ${OFFICE_JOB_SOURCE}
 '@
+  $useWps=$request.officeEngine -eq 'wps' -or ($request.officeEngine -ne 'microsoft' -and -not [type]::GetTypeFromProgID('Word.Application'))
+  $engineName='Word'
+  if($useWps){
+   $wpsProg='KWPS.Application';$wpsSwitch='wps';$wpsCollection='Documents'
+${WPS_OWNER_SCRIPT}
+   $engineName='WPS Writer'
+  }else{
+  if(Get-Process WINWORD -ErrorAction SilentlyContinue){throw 'busy'}
   $start=[DateTime]::UtcNow;$application=New-Object -ComObject Word.Application
   if($application.Documents.Count -ne 0){throw 'busy'}
   $application.Visible=$false;$application.AutomationSecurity=3;$application.DisplayAlerts=0
@@ -26,6 +34,8 @@ ${OFFICE_JOB_SOURCE}
   $owned=$true;$job=New-Object XiaozhiRenderJob($server.Handle)
   [IO.File]::WriteAllText((Join-Path $env:XIAOZHI_RENDER_ROOT 'owned.json'),(@{pid=[int]$officeId;start=$server.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json -Compress))
   $blank.Close([ref]$discard);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($blank);$blank=$null
+  }
+  $application.Visible=$false;$application.AutomationSecurity=3;$application.DisplayAlerts=0
   $document=$application.Documents.Open((Join-Path $env:XIAOZHI_RENDER_ROOT 'input.docx'),$false,$true,$false)
   $document.Repaginate();$pageCount=[int]$document.ComputeStatistics(2)
   if($pageCount -lt 1 -or $pageCount -gt 64){throw 'too_large'}
@@ -38,7 +48,7 @@ ${OFFICE_JOB_SOURCE}
   # Join-Path produces an ETS-wrapped string: marshal a BSTR explicitly or Word may hang.
   $document.ExportAsFixedFormat([string]$pdfPath,17,$false,0,0,1,1,0,$false,$false,0,$false,$true,$false)
   if((Get-Item -LiteralPath $pdfPath).Length -gt 16777216){throw 'too_large'}
-  $engine='Word '+[string]$application.Version+' / Windows.Data.Pdf'
+  $engine=$engineName+' '+[string]$application.Version+' / Windows.Data.Pdf'
   $document.Close([ref]$discard);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($document);$document=$null
   $application.Quit([ref]$discard);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($application);$application=$null
   $job.Dispose();$job=$null

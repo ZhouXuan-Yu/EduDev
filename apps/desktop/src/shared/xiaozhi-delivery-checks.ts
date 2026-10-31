@@ -14,7 +14,8 @@ export type NumberCheck={id:string;source:NumberSource;tolerance?:number;unit?:s
 export type InteractionCheck={id:string;actions:({kind:'set';selector:string;value:string}|{kind:'click';selector:string}|{kind:'key';selector:string;key:string})[];
  observe:string;expectedText?:string;expectedNumber?:number;expectedFrom?:CubeBuoyancyCheck;tolerance?:number;mustChange?:boolean};
 export type TextFactCheck={id:string;source:{kind:'label';label:string;page?:number}|{kind:'selector';selector:string}};
-export type FileCheckRules={pages?:number;notes?:boolean;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
+export type OfficeCheckEngine='auto'|'microsoft'|'wps';
+export type FileCheckRules={officeEngine?:OfficeCheckEngine;pages?:number;notes?:boolean;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
  excludes?:{text:string;page?:number;scope?:'body'|'notes'}[];numbers?:NumberCheck[];interactions?:InteractionCheck[];facts?:TextFactCheck[]};
 export type CheckFileInput={path:string;version?:string;rules?:FileCheckRules};
 export type DeliveryCheckInput={schemaVersion:typeof DELIVERY_CHECK_SCHEMA;sessionId:string;requestId:string;files:CheckFileInput[];
@@ -72,7 +73,7 @@ function validInteraction(v:unknown):v is InteractionCheck{
   ||a.kind==='key'&&keys(a,['kind','selector','key'])&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' ','Tab'].includes(String(a.key))));
 }
 export function validFileCheckRules(v:unknown):v is FileCheckRules{
- if(!obj(v)||!keys(v,['pages','notes','contains','excludes','numbers','interactions','facts'])||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean')return false;
+ if(!obj(v)||!keys(v,['officeEngine','pages','notes','contains','excludes','numbers','interactions','facts'])||v.officeEngine!==undefined&&(typeof v.officeEngine!=='string'||!['auto','microsoft','wps'].includes(v.officeEngine))||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean')return false;
  if(v.facts!==undefined&&(!Array.isArray(v.facts)||v.facts.length>16||!v.facts.every(f=>obj(f)&&keys(f,['id','source'])&&id(f.id)&&obj(f.source)&&(f.source.kind==='label'&&keys(f.source,['kind','label','page'])&&text(f.source.label)&&(f.source.page===undefined||integer(f.source.page,64))||f.source.kind==='selector'&&keys(f.source,['kind','selector'])&&text(f.source.selector)))||new Set(v.facts.map(f=>f.id)).size!==v.facts.length))return false;
  for(const key of ['contains','excludes'])if(v[key]!==undefined&&(!Array.isArray(v[key])||(v[key] as unknown[]).length>32||!(v[key] as unknown[]).every(r=>obj(r)&&keys(r,['text','page','scope'])&&text(r.text,300)&&(r.page===undefined||integer(r.page,64))&&(r.scope===undefined||['body','notes'].includes(String(r.scope))))))return false;
  for(const [key,validate,max] of [['numbers',validNumber,24],['interactions',validInteraction,12]] as const){const values=v[key];if(values!==undefined&&(!Array.isArray(values)||values.length>max||!values.every(validate)||new Set(values.map(r=>r.id)).size!==values.length))return false;}

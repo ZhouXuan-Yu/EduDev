@@ -151,6 +151,15 @@
 
 第四切片实测结果：原Pi交付前及原文件面板现可检查PDF原字节的真实物理页数/逐页文本，并由Windows.Data.Pdf逐页栅格化，沿原PNG缓存、页选择、放大、历史和冷启读取。扫描页没有文本层时内容/数值/事实明确未检查；PNG尺寸读取实际IHDR，兼容本机150%显示缩放。Word只读副本→原生PDF薄适配已接入，但本机原生导出仍超时（不加入Job的30秒诊断亦未完成），生产Word等待限制15秒并明确未检查；不能称Word页面已实现。 原生PDF4项及正式PDF六路径通过，Word正向诊断仍失败，未据适配代码存在标为已实现；后续补齐该真实成功路径。
 
+## E06第六切片：WPS真实页面检查（2026-10-31冻结）
+
+- 目标M09/M10，REQ-E06-01/03/08/09：原Pi交付前/已保存文件检查支持WPS Writer与Presentation真实逐页图，原文件面板可指定自动、Microsoft Office或WPS。原截图选择、放大、冷启、版本绑定沿用，不新建查看页或Agent Runtime。
+- 现状缺口：Microsoft Word/PowerPoint真实图已接通；WPS只有独立QA脚本。复用该脚本独立Automation身份与现Windows Job，限定本次新空实例、PID/启动时间/注册命令或HWND对应；不接管或关闭用户已有WPS。自动模式仅在Microsoft应用未注册时选择WPS，Microsoft忙不隐式换引擎。
+- 修改接缝：FileCheckRules新增可选officeEngine（auto/microsoft/wps，缺省兼容原行为），既有typed IPC直接传递；checks/service、paged-document、powerpoint与固定PowerShell适配；原PiDeliveryCheck内置引擎选择、原工具说明。既有策略hash包含规则，既有v1报告以真实引擎文字标记，不增表/业务DDL/权限/依赖。
+- 有界执行：现8槽、64页、16MiB输入、PNG3MiB/总96MiB、原超时沿用；仅自有只读副本。取消杀所属Job，已知临时文件有界重试清理。不可用/占用/取消保持未检查，不把PDF中转图当原生编辑或动态放映证明。
+- 完成定义：本机WPS真实三页DOCX及PPTX全页截图，独立页数/文本/SHA；原composer明确WPS、原文件面板选择WPS再检查/查看/冷启/停止；用户现有实例身份和原稿保持。一次相关build/type/组件/专项，失败仅修并复验受影响项；完整FX09/AT和语义遮挡/缺字另行集中，不预标已实现。
+- 回退：回退本片引擎选择/薄适配可保留旧默认Microsoft和所有正式文件/检查报告/PNG；无数据库迁移。0新增付费/用户资料上传，D盘日常及安装包不在本片自动替换。
+
 ## E06第五切片：Word导出调用修复（2026-10-31冻结）
 
 - 目标M09/M10：补齐原DOCX只读副本→Word真实PDF→Windows逐页PNG，并使原Pi检查/原文件面板可查看，不重建页面或第二执行器。先定位原生调用阻塞，优先修复COM参数/线程或沿官方原生API薄适配，不改用户Word全局配置、默认打印机或接管既有WPS/Word。

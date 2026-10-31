@@ -104,13 +104,13 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
         catch(error){current();htmlUnavailable=true;row.checks.push({kind:'visual',state:'unchecked',code:'render_unavailable',message:'本地页面检查未完成；未把提取文字当作视觉通过。'},{kind:'interaction',state:'unchecked',code:'render_unavailable',message:'页面未完成实际加载或操作，交互尚未验证。'});}
        }
        if(metrics.format==='pptx'){
-        try{const rendered=await renderPowerPoint(snapshot.bytes,metrics,{dataRoot:options.dataRoot,signal});current();row.renderedPages=rendered.pages;row.checks.push(...rendered.findings);officeRendered=true;
-         try{row.visualEvidence=await visuals.put(rendered.captures,signal);current();}catch{current();row.checks.push({kind:'visual',state:'unchecked',code:'visual_evidence_unavailable',message:'PowerPoint已渲染，但截图未能留存；原文件保留，视觉检查尚不完整。'});}
-        }catch(error){current();const reason=error instanceof Error?error.message:'unavailable';row.checks.push({kind:'visual',state:'unchecked',code:reason==='external_content'?'office_external_content':reason==='busy'?'office_busy':'office_render_unavailable',message:reason==='external_content'?'文件包含外链或嵌入活动对象，未自动在Office打开；结构检查保留，页面仍未检查。':reason==='busy'?'本机PowerPoint正在使用或渲染器繁忙；未接管现有窗口，页面仍未检查。':'本机PowerPoint渲染未完成（未安装、超时或当前不可用）；未以结构或提取文字替代真实页面。'});}
+        try{const rendered=await renderPowerPoint(snapshot.bytes,metrics,{dataRoot:options.dataRoot,signal,officeEngine:file.rules?.officeEngine});current();row.renderedPages=rendered.pages;row.checks.push(...rendered.findings);officeRendered=true;
+         try{row.visualEvidence=await visuals.put(rendered.captures,signal);current();}catch{current();row.checks.push({kind:'visual',state:'unchecked',code:'visual_evidence_unavailable',message:`${rendered.engine}已渲染，但截图未能留存；原文件保留，视觉检查尚不完整。`});}
+        }catch(error){current();const reason=error instanceof Error?error.message:'unavailable';row.checks.push({kind:'visual',state:'unchecked',code:reason==='external_content'?'office_external_content':reason==='busy'?'office_busy':'office_render_unavailable',message:reason==='external_content'?'文件包含外链或嵌入活动对象，未自动在Office/WPS打开；结构检查保留，页面仍未检查。':reason==='busy'?'所选Office检查应用正在使用、无法创建独立WPS实例或渲染器繁忙；未接管现有窗口，页面仍未检查。':'所选Office应用渲染未完成（未安装、超时或当前不可用）；未以结构或提取文字替代真实页面。'});}
        }
        if(metrics.format==='docx'||metrics.format==='pdf'){
         try{
-         const rendered=await renderPagedDocument(snapshot.bytes,metrics,{dataRoot:options.dataRoot,signal});current();
+         const rendered=await renderPagedDocument(snapshot.bytes,metrics,{dataRoot:options.dataRoot,signal,officeEngine:file.rules?.officeEngine});current();
          row.renderedPages=rendered.pages;row.checks.push(...rendered.findings);officeRendered=true;
          if(rendered.pdfBytes){
           const pdfRequest={schemaVersion:STRUCTURE_SCHEMA,requestId:`xicheckreq_${randomUUID()}`,name:'word-render.pdf',bytes:rendered.pdfBytes};
@@ -120,7 +120,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
           else{metrics.pages=rendered.pages.map(index=>({index,text:'',notes:''}));metrics.textUnavailablePages=rendered.pages.slice();row.checks.push({kind:'content',state:'unchecked',code:'page_text_unavailable',message:'Word实际页面已渲染，但导出PDF的逐页文本未读取成功；未以OOXML全文代替第一页。'});}
          }
          try{row.visualEvidence=await visuals.put(rendered.captures,signal);current();}catch{current();row.checks.push({kind:'visual',state:'unchecked',code:'visual_evidence_unavailable',message:'实际页面已渲染，但截图未能留存；视觉检查尚不完整。'});}
-        }catch(error){current();const reason=error instanceof Error?error.message:'unavailable';row.checks.push({kind:'visual',state:'unchecked',code:reason==='external_content'?'office_external_content':reason==='busy'?'office_busy':reason==='too_large'?'paged_render_too_large':reason==='timeout'?'paged_render_timeout':'paged_render_unavailable',message:reason==='external_content'?'文件包含外链、活动对象或外部字段，未自动在Word打开；页面仍未检查。':reason==='busy'?'本机Word正在使用或渲染器繁忙；未接管现有窗口，页面仍未检查。':reason==='timeout'?`${metrics.format==='docx'?'Word原生页面导出在15秒':'Windows PDF页面渲染在60秒'}内未完成；原文件和结构检查保留，实际页面未检查。`:'本机Word/Windows PDF页面渲染未完成（未安装、资源超限或不可用）；未以提取文字替代实际页面。'});}
+        }catch(error){current();const reason=error instanceof Error?error.message:'unavailable';row.checks.push({kind:'visual',state:'unchecked',code:reason==='external_content'?'office_external_content':reason==='busy'?'office_busy':reason==='too_large'?'paged_render_too_large':reason==='timeout'?'paged_render_timeout':'paged_render_unavailable',message:reason==='external_content'?'文件包含外链、活动对象或外部字段，未自动在Word/WPS打开；页面仍未检查。':reason==='busy'?'所选文档检查应用正在使用、无法创建独立WPS实例或渲染器繁忙；未接管现有窗口，页面仍未检查。':reason==='timeout'?`${metrics.format==='docx'?'Word/WPS原生页面导出在15秒':'Windows PDF页面渲染在60秒'}内未完成；原文件和结构检查保留，实际页面未检查。`:'本机Word/WPS/Windows PDF页面渲染未完成（未安装、资源超限或不可用）；未以提取文字替代实际页面。'});}
        }
        const evaluated=evaluateFileRules(metrics,file.rules,observations);row.checks.push(...evaluated.checks.filter(c=>!officeRendered||c.code!=='render_not_run').map(c=>htmlUnavailable&&['content','numbers'].includes(c.kind)?{...c,state:'unchecked' as const,code:'render_unavailable',message:'页面未完成实际运行，静态源未代替当前可见结果。'}:c));row.numbers=htmlUnavailable?[]:evaluated.numbers;row.facts=htmlUnavailable?[]:evaluated.facts;if(metrics.pageCount!==undefined)row.pageCount=metrics.pageCount;
       }
