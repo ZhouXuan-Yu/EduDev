@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
 ## 2026-10-31 E06 WPS真实页面（第六切片）
 
 沿既有FileCheckRules增加可选officeEngine，不增IPC/业务真源/包；旧请求缺省auto，Microsoft未注册才回退WPS。原文件面板用轻量原生select，实际报告引擎不能伪标。WPS新空Automation沿现Job归属；不因用户打开WPS阻断可独立执行的工作。见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。

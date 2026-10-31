@@ -3745,6 +3745,53 @@
       "node": "v24.12.0",
       "electron": "43.8.3",
       "viewportNote": "Original UI CSS1366x768 and1920x1080; native DOCX PNG1697x2400 reflects system DPI, PPT1600x900. Not complete FX09 DPI matrix."
+    },
+    "finalIntegration": {
+      "sourceSha": "bc9777ec992527b49a4a9287d57d411b7a16c608",
+      "mergedMainSha": "e06cc057b5a5ac63e2864bec013c0ae6fa61a0a7",
+      "preservedPeer": "KB full100 candidate rerank and shared5s budget, native recovery/40GiB evidence and all earlier sidebar/Word work retained",
+      "conflicts": "15 Markdown insertion conflicts resolved retaining both complete nonblank stage line sequences in order; no production source conflict.",
+      "wpsSourceUnchangedFrom": "610f3eb81585e2dd90edf8154231f4b64ce9e132",
+      "unchangedPaths": [
+        "apps/desktop/src/main/xiaozhi-agent/checks",
+        "apps/desktop/src/shared/xiaozhi-delivery-checks.ts",
+        "apps/desktop/src/renderer/components/office/PiDeliveryCheck.tsx",
+        "apps/desktop/src/renderer/components/office/PiWorkspaceFiles.tsx"
+      ],
+      "checks": [
+        {
+          "command": "npm run build",
+          "exit": 0,
+          "log": "apps/desktop/delivery-wps-merged-build.log"
+        },
+        {
+          "command": "npm run test:renderer-components",
+          "exit": 0,
+          "passed": 240,
+          "total": 240,
+          "log": "apps/desktop/delivery-wps-merged-components.log"
+        }
+      ],
+      "testAttribution": "207 comprehensive,12 source,3+3 native and formal UI6-before-failure/focused4 belong to production610f3eb before this main integration. No redundant full/native/formal replay; same WPS code verified by git diff.",
+      "fingerprints": {
+        "apps/desktop/out/main/index.js": {
+          "bytes": 3225754,
+          "sha256": "0d44c809b154d18d165d35666ec28d37e98c4083654f93a520100bf1d684e814"
+        },
+        "apps/desktop/out/preload/index.cjs": {
+          "bytes": 34761,
+          "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+        },
+        "apps/desktop/out/renderer/assets/index-By4Dx4Si.js": {
+          "bytes": 7179937,
+          "sha256": "aa251a571b43280237b9f5c4d58115fda3825b258c8ea06bc871e0a36462e3f0"
+        }
+      },
+      "rendererBytes": 7179937,
+      "rendererChangedByIntegration": false,
+      "remaining": "Full E06/FX09/requirements/mixed terminal, E07/E08+C/staged AT remain; inherited PromptInput/bootstrap IPC and audit45 gates not represented as green. D runtime and installer not updated by this WPS slice; zero new paid calls.",
+      "goalStatus": "active",
+      "newFullyAcceptedRequirements": 0
     }
   }
 }

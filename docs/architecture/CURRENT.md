@@ -1,5 +1,7 @@
 # 当前架构
 
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
 ## 2026-10-31 E06 WPS真实页面（第六切片）
 
 FileCheckRules.officeEngine可选→既有typed IPC/Pi checks/preflight→service→固定Word/PowerPoint脚本共享WPS新实例归属与Job；真实引擎及PNG沿原报告/缓存/读器。无DDL/第二Runtime/新包，旧数据规则兼容。见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
