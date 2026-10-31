@@ -41,7 +41,7 @@ export function MaterialAiPanel({resource}:{resource:TeacherResource}){
       <button data-testid="material-ai-create" className="primary-action" disabled={!valid||!settings?.configured||settings.model!==model||!consent||!publicMaterial} onClick={()=>void create()}>开始本批次AI整理</button>
     </fieldset>
     {notice&&<p role="status">{notice}</p>}{error&&<p role="alert">{error}</p>}
-    {batches.length===0?<p>没有AI整理批次，导入资料不会自动上传。</p>:batches.map(batch=><article key={batch.id} data-testid="material-ai-batch" data-status={batch.status}>
+    {batches.length===0?<p>没有AI整理批次，导入资料不会自动上传。</p>:batches.map(batch=><article key={batch.id} data-testid="material-ai-batch" data-batch-id={batch.id} data-status={batch.status}>
       <p><strong>{labels[batch.status]||batch.status}</strong> · {batch.model} · 第{batch.start}起{batch.count}项{batch.images?' · 图文对照':' · 正文整理'}</p>
       <p data-testid="material-ai-summary">完成{batch.complete}，待整理{batch.review}，失败{batch.failed}，结果未知{batch.unknown}，等待{batch.pending}；已入题本{batch.questions}题；调用{batch.calls}/{batch.maxCalls}次</p>
       <MaterialAiPagePanel bookRevision={book?.role?.kind==='questions'?book.revision:undefined} batchId={batch.id} units={batch.units} start={batch.start}/>
