@@ -1,5 +1,11 @@
 # Goal 验收台账
 
+## 2026-10-31 E06逐文件混合终态（第九切片）
+
+源码8项通过；原Pi混合冲突/续做/双视口/冷启9项通过，第一版含技术hash，最终精简版待同文件续测；240组件通过。综合一轮运行中，仅legacy Pi0，不能冒充完整Pi验收。完整252AT新增已实现0。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；唯一日常进度docs/goal/WORK_PROGRESS.md。
+
 要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
 
 ## 2026-10-31 E06教师要求与检查依据（第八切片）

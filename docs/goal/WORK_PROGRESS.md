@@ -1,5 +1,11 @@
 # EduDev 当前任务进度
 
+## 2026-10-31 E06逐文件混合终态（第九切片）
+
+ec55ac2：混合终态工程已实现。HTML保存、PPT冲突时逐文件说明已保存/未保存和草稿检查；原续做只补PPT，HTML字节/mtime不变，冷启公开文本一致，模型“二者全保存”不进入最终回复。原Pi9项/源码8项/组件240通过；随后依据截图移除最终回复的技术hash并增加已通过声明项，最终精简版构建与同文件续测待补。单次综合运行中（初版主进程，legacy Pi0），不标已过。0新依赖/DDL/IPC/付费，audit45（8高29中8低/0严重，exit1）。完整AT新增已实现0，完整E06仍部分实现。Goal已由用户恢复active；上一轮progress。D盘日常/安装包未更新。下一E07取消/恢复、E08+C功能对齐，保留E06语义/视觉完整矩阵及W3集中AT；不重复已过文件生成。回退ec55ac2保留原文件/记录，无迁移，未演练。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；唯一日常进度docs/goal/WORK_PROGRESS.md。
+
 要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
 
 ## 2026-10-31 E06教师要求与检查依据（第八切片）

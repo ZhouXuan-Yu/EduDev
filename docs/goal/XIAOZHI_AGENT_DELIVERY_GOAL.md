@@ -1,5 +1,11 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+## 2026-10-31 E06逐文件混合终态（第九切片）
+
+第九切片推进逐文件混合终态，完整28WP/252REQ及验收标准不缩减。用户已恢复Goal active；上一轮progress已交付6d45424。下一E07/E08+C对齐及E06剩余矩阵，阶段齐后集中AT。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；唯一日常进度docs/goal/WORK_PROGRESS.md。
+
 ## 2026-10-31 E06教师要求与检查依据（第八切片）
 
 本轮要求关联工程切片已实现；完整28WP/252REQ范围、标准和阶段顺序不变，完整AT新增已实现0。下一E06混合终态/余下矩阵→E07/E08+C→阶段集中AT。任务未完成；工具get_goal当前返回blocked，用户继续指令已收到，代理API不支持恢复active。

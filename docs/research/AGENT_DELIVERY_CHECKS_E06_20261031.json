@@ -5830,5 +5830,245 @@
       ],
       "boundary": "207 comprehensive and original Pi journeys belong to implementation0018ab3; final merged build/type and240 components passed. Same slice source; no repeat of complete/native/paid/teacher suites. Upstream changes included in final bundle, not attributed to this slice."
     }
+  },
+  "terminalSlice": {
+    "date": "2026-10-31",
+    "baseSha": "6d4542453eafa984084c774dfc0fbd669d9ee34d",
+    "implementationSha": "ec55ac2315d2e45081715bc450b973e0f93f99a6",
+    "scope": "E06 ninth slice: factual per-file mixed terminal through original final_answer/publicItems; text/HTML, Office, pending failed bundle children, carried saved effects, actual same-run inspection scope. No new ledger/runtime/dependency/DDL/IPC/approval or paid call. Full E06/252AT not accepted.",
+    "previousGoalTurn": "progress: 6d45424 delivered requirement/rule association and synchronized both remote refs; current user resumed goal active.",
+    "prototypeBuild": {
+      "path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "bytes": 3257529,
+      "sha256": "2db45bcc676871884c1bc653bf0eb75f14b1633e34f5c679bf9c838dde82a6c9"
+    },
+    "tests": {
+      "source": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-terminal-smoke.mjs",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "passed": 8,
+          "checks": [
+            "Ordinary no-tool answer retains model output and performs no file-ledger reads",
+            "Mixed HTML saved and PPT failed draft remain separate facts with actual failure and unchecked visual scope",
+            "New failed modification cannot reuse old hash/identity checks and retains prior saved-version history",
+            "Refreshed stale context never becomes a current check pass",
+            "Cancellation keeps saved effects while refusing a late inspection success",
+            "Partial ledger unavailability retains available saved facts and excludes another run",
+            "Original bundle refs recover carried saved children and retain a never-prepared failed file without fabricating it",
+            "Original presentation keeps between-tool commentary and suppresses model-certified final claims after real inspection"
+          ],
+          "boundary": "Source contracts and presentation; actual original Pi/file/SQLite/cold restart covered separately."
+        },
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-final-source.log"
+      },
+      "mixedOriginalPi": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-bundle-electron.mjs --partial --terminal",
+        "exit": 0,
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-rg271g",
+        "report": {
+          "ok": true,
+          "checks": [
+            "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+            "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+            "A real target conflict after HTML save displays partial delivery and preserves the HTML",
+            "Original mixed terminal reports saved HTML and unsaved conflicting PPT, actual draft check and unchecked scope at both viewports",
+            "The visible resume action starts a new turn, carries the saved HTML and confirms only unfinished PPT without rewriting HTML",
+            "Resumed terminal labels carried HTML without rewriting it, saved PPT and unmet semantic/visual scope without whole-task certification",
+            "Saved PPT has eight actual pages and teacher notes; task verification independently confirms every bundled file",
+            "Cold restart restores bundle cards, original ledger facts and native session identity without replay",
+            "Cold original app retrieves identical mixed and resumed terminal text with zero model/publication replay"
+          ],
+          "errors": [],
+          "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+          "terminals": [
+            {
+              "label": "Original mixed terminal reports saved HTML and unsaved conflicting PPT, actual draft check and unchecked scope at both viewports",
+              "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+              "text": "本轮文件结果：\n仍有未完成或未核验项，保存成功不代表检查全部通过。\n\n- 浮力演示\\.html：已保存。\n  保存版本SHA256：863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef。\n  文件检查：仍有未检查项；记录xicheck_b208dec67fb3968c1c39910172c244454d49af8beac7e01d382705c00a2cd544。\n  未检查/未完成：交互、内容、数值、跨文件一致性。\n  完整教师要求语义仍未核验，含未关联规则的要求。\n- 浮力讲解\\.pptx：内容或来源已变化，未保存。\n  检查/草稿版本SHA256：86bbb067124102de642d8bf673f1741c1490519a93f7bfc9cad0fa9037c97696。\n  草稿检查（未正式保存）：仍有未检查项；记录xicheck_b208dec67fb3968c1c39910172c244454d49af8beac7e01d382705c00a2cd544。\n  未检查/未完成：视觉、数值、跨文件一致性。\n  完整教师要求语义仍未核验，含未关联规则的要求。\n\n可在原文件卡或本地文件面板查看、重检或继续修改；本轮未因汇总重新生成文件。",
+              "verification": {
+                "schema": "xiaozhi.verification.v1",
+                "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                "state": "partial",
+                "scope": "declared_criteria",
+                "checkedAt": "2026-10-31T12:01:17.159Z",
+                "reason": "execution_failed",
+                "checks": [],
+                "evidence": [
+                  {
+                    "id": "default-delivery-0",
+                    "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                    "callId": "default-delivery-0",
+                    "kind": "execution",
+                    "digest": "971c551a8613bc3aa4d63307532cb543bdd965326d22fc00703462158be63797",
+                    "observedAt": "2026-10-31T12:00:48.138Z"
+                  },
+                  {
+                    "id": "default-delivery-1",
+                    "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                    "callId": "default-delivery-1",
+                    "kind": "execution",
+                    "digest": "bc97aaf0bdc6add42897286715213059e524a5d9be73f443ac655202a0ce902e",
+                    "observedAt": "2026-10-31T12:01:15.797Z"
+                  }
+                ],
+                "operations": {
+                  "succeeded": 1,
+                  "failed": 1
+                }
+              },
+              "expected": "partial"
+            },
+            {
+              "label": "Resumed terminal labels carried HTML without rewriting it, saved PPT and unmet semantic/visual scope without whole-task certification",
+              "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+              "text": "本轮文件结果：\n仍有未完成或未核验项，保存成功不代表检查全部通过。\n\n- 浮力讲解\\.pptx：已保存。\n  保存版本SHA256：1179398160a0fefd672bee2cbae26f65e9326db104bc7d50c7918aaa67f73cdc。\n  文件检查：仍有未检查项；记录xicheck_bcae821c9f8a8f67b74c86dc6394381c0ae7b93dcaa5f6aeece9b46e3278a984。\n  未检查/未完成：视觉、数值。\n  完整教师要求语义仍未核验，含未关联规则的要求。\n- 浮力演示\\.html：已保存（沿用此前已保存成果，本轮未重复写入）。\n  保存版本SHA256：863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef。\n  检查：未取得当前版本的检查结果。\n\n可在原文件卡或本地文件面板查看、重检或继续修改；本轮未因汇总重新生成文件。",
+              "verification": {
+                "schema": "xiaozhi.verification.v1",
+                "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                "state": "needs_human",
+                "scope": "declared_criteria",
+                "checkedAt": "2026-10-31T12:01:29.660Z",
+                "reason": "human_review",
+                "checks": [
+                  {
+                    "id": "saved_bundle:default-delivery-4",
+                    "state": "passed",
+                    "evidenceIds": [
+                      "result:default-delivery-4"
+                    ]
+                  },
+                  {
+                    "id": "answer:human",
+                    "state": "needs_human",
+                    "evidenceIds": []
+                  }
+                ],
+                "evidence": [
+                  {
+                    "id": "default-delivery-3",
+                    "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                    "callId": "default-delivery-3",
+                    "kind": "execution",
+                    "digest": "6051236f099e0606126e7b68040af40c90eea218918db318ba90618701224096",
+                    "observedAt": "2026-10-31T12:01:20.815Z"
+                  },
+                  {
+                    "id": "default-delivery-4",
+                    "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                    "callId": "default-delivery-4",
+                    "kind": "execution",
+                    "digest": "6424921029e942ae8a44a1803214366df38a27ae15ec4e6a6e5ec8df4b2fed26",
+                    "observedAt": "2026-10-31T12:01:29.042Z"
+                  },
+                  {
+                    "id": "result:default-delivery-4",
+                    "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                    "callId": "default-delivery-4",
+                    "kind": "readback",
+                    "digest": "34b3a4b34c14a7bfa999db354dfa1b09b013fa0112a31b2b13cad000cb4b84a1",
+                    "observedAt": "2026-10-31T12:01:29.042Z"
+                  }
+                ],
+                "operations": {
+                  "succeeded": 2,
+                  "failed": 0
+                }
+              },
+              "expected": "saved"
+            }
+          ],
+          "snapshot": {
+            "running": false,
+            "cursors": [
+              {
+                "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                "generation": 1,
+                "sequence": 48,
+                "revision": 48
+              },
+              {
+                "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                "generation": 2,
+                "sequence": 50,
+                "revision": 50
+              }
+            ],
+            "turns": [
+              {
+                "id": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                "status": "completed"
+              },
+              {
+                "id": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                "status": "completed"
+              }
+            ],
+            "deliveries": [
+              {
+                "id": "xidelivery_6c7f490f715bac9c43bd8f454b4645a85fbff9dd1d41044bdd81685dde78cc25",
+                "state": "partial"
+              },
+              {
+                "id": "xidelivery_775a1fdcefd6539885dca42bd51b05cc59a5037759e6d23c3bfa3a1ec9586f59",
+                "state": "saved"
+              }
+            ]
+          }
+        },
+        "boundary": "9 actual original UI/state/byte/restart checks, synthetic SSE0paid. This first pass had full technical hashes in final text; those have subsequently been removed for teacher-facing clarity. Final concise text is separately verified with the same files without generation replay."
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-components.log",
+        "boundary": "before final presentation refinement; renderer source unchanged"
+      },
+      "comprehensive": {
+        "command": "npm.cmd run test:smoke",
+        "status": "running",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-smoke.log",
+        "boundary": "single legacy-test Pi0 suite against prototype main build before concise-text refinement. Final Pi-only presentation/source reader refinements do not enter legacy bootstrap. Do not call this a final full Pi acceptance."
+      },
+      "finalConciseBuild": {
+        "status": "pending"
+      },
+      "finalConcisePi": {
+        "status": "pending"
+      }
+    },
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0
+      },
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-terminal-audit-20261031.json",
+      "newDependencies": 0
+    },
+    "remaining": [
+      "complete semantic/visual matrices and W3 centralized AT",
+      "E07/E08+C then S/T sequence",
+      "daily runtime/installer unchanged"
+    ],
+    "rollback": {
+      "commit": "ec55ac2315d2e45081715bc450b973e0f93f99a6",
+      "method": "normal revert of ninth slice only; retain ledgers, saved files and existing check records; no migration",
+      "tested": false
+    },
+    "performance": {
+      "baselineMainBytes": 3247835,
+      "baselineMainSha256": "21f1614f7270ed35eef053ae6ff3d7d6a2590582e58f1b2760b7dcbeb23ff3f8",
+      "baselineRendererBytes": 7191016,
+      "baselineRendererSha256": "0341fa6f21efe2389f965096a9cb28318887a4d2e946fcb110db788e0d1f3ca2",
+      "boundary": "No paired runtime latency/P95. Pure no-tool branch provably skips new ledger reads. Final main metrics to be recorded after build."
+    },
+    "dailyDAndInstallerUpdated": false
   }
 }

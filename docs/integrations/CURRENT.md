@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-10-31 E06逐文件混合终态（第九切片）
+
+检查服务observe钩子标记真实检查已发生；forRun按当前会话/run读原表并刷新版本，重复候选证据去重。原Office呈现扩至change/delivery_bundle/实际检查，复用既有assistant_end规则，不改变模型native transcript或文件权限。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；唯一日常进度docs/goal/WORK_PROGRESS.md。
+
 要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
 
 ## 2026-10-31 E06教师要求与检查依据（第八切片）
