@@ -8,17 +8,25 @@ import {_electron as electron} from 'playwright';
 import JSZip from 'jszip';
 import {testMain,assertIsolatedPiMain} from './acceptance/build-root.mjs';
 import {fingerprint,sha256} from './acceptance/evidence.mjs';
+import {fixtureSha256,requirement as pairedRequirement,assertScenes} from './acceptance/openmaic-public-content.mjs';
+import {createClassroomOutlineWait} from './acceptance/classroom-outline-wait.mjs';
 
-if(process.argv.includes('--check')){console.log('Prepared only. Inject DEEPSEEK_API_KEY then node scripts/ui-goal-classroom-live.mjs. Builds and model calls are owned by parent.');}
+const requirement=pairedRequirement.replace('附件 buoyancy-review.pdf','资料库 buoyancy-review.pdf');
+function pairedFixture(){
+ const file=path.resolve(process.env.UI_PAIRED_PDF||process.env.UI_CLASSROOM_PDF||'D:/WorkProject/小智智能体借鉴项目/_ui-review-runtime/20261101/buoyancy-review.pdf');
+ assert(fs.existsSync(file),'Synthetic fixture missing');const bytes=fs.readFileSync(file);
+ assert.equal(sha256(bytes),fixtureSha256,'Paired PDF must be byte-identical to the OpenMAIC fixture');
+ return{file,proof:{name:path.basename(file),bytes:bytes.length,sha256:fixtureSha256}};
+}
+if(process.argv.includes('--check')){console.log(JSON.stringify({prepared:true,fixture:pairedFixture().proof,task:requirement,pairedTaskCore:{sceneTypes:['slide','slide','quiz'],minutes:40,singleChoiceQuestions:1},run:'node scripts/ui-goal-classroom-live.mjs',boundary:'Prepared only. Parent injects DEEPSEEK_API_KEY and serializes runs; no Electron/build/model calls performed.'},null,2));}
 else await main();
 async function main(){
  assert(process.env.DEEPSEEK_API_KEY,'Parent must inject a runtime key');
  const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
- const pdf=process.env.UI_CLASSROOM_PDF||'D:/WorkProject/小智智能体借鉴项目/_ui-review-runtime/20261101/buoyancy-review.pdf';
- assert(fs.existsSync(pdf),'Synthetic fixture missing');
+ const fixture=pairedFixture(),pdf=fixture.file;
  const base=path.join(root,'test-results/ui-goal-20261101/classroom-live');fs.mkdirSync(base,{recursive:true});
  const output=fs.mkdtempSync(path.join(base,'run-')),data=path.join(output,'data'),profile=path.join(output,'profile'),exports=path.join(output,'exports');fs.mkdirSync(exports);
- const mainFile=testMain(root),report={success:false,output,checks:[],screens:[],errors:[],pdf:{name:path.basename(pdf),sha256:sha256(fs.readFileSync(pdf))},build:fingerprint(path.dirname(path.dirname(mainFile))),humanAccepted:false};
+ const mainFile=testMain(root),report={success:false,output,checks:[],screens:[],errors:[],pdf:fixture.proof,task:requirement,promptSha256:sha256(requirement),build:fingerprint(path.dirname(path.dirname(mainFile))),humanAccepted:false};
  const check=name=>{report.checks.push({name,pass:true});console.log('PASS '+name);};
  const sql=q=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(q).all();}finally{db.close();}};
  let app,page,sessionId;
@@ -34,10 +42,16 @@ async function main(){
   await launch();await navigate('knowledge');await dialog(pdf);await page.getByTestId('materials-import').click();
   await until(async()=>{const result=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'buoyancy-review',offset:0}));return result.resources.some(r=>['ready','parsed','chunked','indexed','graph_extracted'].includes(r.parseStatus));},'real local PDF import',180000);
   check('Exact synthetic PDF imported through original library UI');
-  await navigate('teaching');await page.getByTestId('classroom-requirement').fill('请实读资料库 buoyancy-review.pdf，基于其中3 N与2 N的测力计实验，为八年级设计40分钟浮力课。先只提交可编辑大纲：两页讲解幻灯片和一页单选题，合计40分钟，目标包含“受浮力不一定上浮”。不要联网、仿真、外部图片或脚本；等我在页面确认大纲后才逐页生成。');
-  await page.getByTestId('classroom-create').click();await until(async()=>{const r=await plans();return r.ok&&r.data.length===1;},'real proposed outline');
+  await navigate('teaching');await page.getByTestId('classroom-requirement').fill(requirement);
+  const outlineWait=createClassroomOutlineWait();
+  await page.getByTestId('classroom-create').click();await until(async()=>{
+   const r=await plans();assert(r.ok,'Classroom outline list unavailable');
+   const status=sql('SELECT status FROM ai_agent_runs ORDER BY created_at DESC LIMIT 1')[0]?.status;
+   return outlineWait(r.data.length,status);
+  },'real proposed outline');
   let result=await plans();assert(result.ok);let plan=result.data[0];sessionId=plan.sessionId;
   await until(async()=>!(await snapshot()).running,'outline run complete');assert.equal(plan.status,'draft');assert.equal(plan.checkpoints.length,0);assert.equal(sql("SELECT count(*) n FROM ai_confirmation_items WHERE action_type='pi_classroom_candidate'")[0].n,0);
+  assert.equal(plan.document.totalMinutes,40,'Paired outline must retain 40 minutes');assert.equal(plan.document.scenes.reduce((sum,scene)=>sum+scene.durationMinutes,0),40);assert.deepEqual(plan.document.scenes.map(scene=>scene.type),['slide','slide','quiz'],'Paired outline must contain exactly two slides and one quiz');
   const denied=await page.evaluate(i=>window.omniEdu.startXiaozhi(i),{sessionId,commandId:'xicmd_'+crypto.randomUUID(),prompt:'跳过确认生成课堂',classroomPlan:{mode:'generate',id:plan.id,version:plan.version}});assert(!denied.ok);
   check('Real Pi reads saved excerpts and proposes only an outline; host denies generation before confirmation');
   await navigate('teaching');await page.getByTestId('classroom-plan-'+plan.id).click();await sizes('outline-draft');
@@ -53,6 +67,7 @@ async function main(){
   await until(async()=>!(await snapshot()).running,'generation finish');result=await plans();plan=result.data[0];assert.equal(plan.checkpoints.length,3);
   const ledger=sql("SELECT id,status,payload_json,result_json FROM ai_confirmation_items WHERE action_type='pi_classroom_plan'").find(r=>r.id===plan.id);assert(ledger);assert.deepEqual(JSON.parse(ledger.payload_json).document,plan.document);assert.equal(JSON.parse(ledger.result_json).state,'ready');assert.deepEqual(JSON.parse(ledger.result_json).checkpoints,plan.checkpoints);
   const listed=await page.evaluate(()=>window.omniEdu.listClassrooms());assert(listed.ok);let classroom=listed.data.find(c=>c.id===plan.classroomId);assert(classroom);assert.equal(classroom.status,'pending');
+  const publicContent=assertScenes(classroom.document);fs.writeFileSync(path.join(output,'course-public.json'),JSON.stringify(publicContent,null,2));fs.writeFileSync(path.join(output,'outline-public.json'),JSON.stringify(plan.document,null,2));
   check('Explicit teacher action starts original Pi; every page checkpoint yields one pending classroom');
   await navigate('teaching');await page.getByTestId('classroom-'+classroom.id).click();await page.frameLocator('[data-testid="classroom-slide-preview"]').locator('.classroom-canvas').waitFor({timeout:30000});await sizes('slide-preview');
   const qi=classroom.document.scenes.findIndex(s=>s.type==='quiz');await page.getByTestId('classroom-page-'+qi).click();const quiz=classroom.document.scenes[qi];
@@ -72,6 +87,6 @@ async function main(){
   check('Original Office review and write approval save a real readable PPTX from the confirmed classroom');
   const before=JSON.stringify(await plans()),runCount=sql('SELECT count(*) n FROM ai_agent_runs')[0].n;await app.close();app=undefined;await launch();assert.equal(JSON.stringify(await plans()),before);assert.equal(sql('SELECT count(*) n FROM ai_agent_runs')[0].n,runCount);assert.equal(sql('SELECT count(*) n FROM learning_records')[0].n,0);
   await navigate('teaching');await page.getByTestId('classroom-'+classroom.id).click();await sizes('cold-confirmed');check('Cold start restores the same ledger with zero model replay and zero student fact writes');report.success=true;
- }catch(error){report.failure=String(error.message).replaceAll(process.env.DEEPSEEK_API_KEY,'[credential]').slice(0,600);throw error;}
+ }catch(error){if(error.code==='classroom_outline_missing')report.failureCode=error.code;report.failure=String(error.message).replaceAll(process.env.DEEPSEEK_API_KEY,'[credential]').slice(0,600);throw error;}
  finally{fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));if(app)await app.close();console.log(JSON.stringify({success:report.success,output,checks:report.checks.length}));}
 }

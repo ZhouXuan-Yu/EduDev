@@ -1,4 +1,5 @@
 import {createClassroomPlanTools} from '../education/classroom-plan-tools';
+import {admitClassroomOrTaskTool} from '../education/classroom-plan-admission';
 import type {ClassroomPlanStart} from '../../shared/classroom-plan';
 import {deliveryFinal,type DeliveryFinal} from './delivery-final';
 import {deliveryRequirements} from './checks/requirements';
@@ -784,7 +785,16 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           for(const previous of await tasks.admittedRuns(id,task.id)){if(previous.runId===run.runId)continue;try{proofs.push(await resumedResults!.run(previous.runId,task));}catch{run.abort.signal.throwIfAborted();if(closing||run.stopped||active.get(id)!==run)throw Error('cancelled');/* Missing old authority stays unverified; no tool or approval is replayed. */}}
           const v=await run.results.check({...legacyVerification(run.runId),state:'needs_human',reason:'human_review',checkedAt:new Date().toISOString()},run.readResults,run.abort.signal);return[...proofs,v];}}):undefined;
       if(taskRuntime&&run.task?.lastRunId===run.runId)await taskRuntime.refresh();
-      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,beforeModelDelivery:options.beforeModelDelivery,lifecycleSignal:run.abort.signal,lifecycleTimeoutMs:options.lifecycleTimeoutMs,onCriticalToolFailure:error=>run.publisher?.fail(error||Error('event_persistence')),onToolAttempt:async(attempt,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');publicEvent(id,run,{kind:'tool_attempt',attempt});await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},beforeDelivery:async(delivery,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');if(delivery.kind==='tool'){await taskRuntime?.admit(delivery.callId,delivery.tool,delivery.input);await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});}signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},onToolResult:(callId,tool,result,failed)=>{
+      run.agent = await createPiXiaozhiSession({ ...base,taskRuntime,beforeModelDelivery:options.beforeModelDelivery,lifecycleSignal:run.abort.signal,lifecycleTimeoutMs:options.lifecycleTimeoutMs,onCriticalToolFailure:error=>run.publisher?.fail(error||Error('event_persistence')),onToolAttempt:async(attempt,signal)=>{if(!run.publisher)throw Error('event_journal_unavailable');signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');publicEvent(id,run,{kind:'tool_attempt',attempt});await run.publisher.barrier();signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');},beforeDelivery:async(delivery,signal)=>{
+        if(!run.publisher)throw Error('event_journal_unavailable');
+        signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();
+        if(run.stopped||active.get(id)!==run)throw Error('cancelled');
+        if(delivery.kind==='tool'){
+          await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
+          await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});
+        }
+        signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');
+      },onToolResult:(callId,tool,result,failed)=>{
           run.results?.capture(callId,tool,result,failed);
           try{(run.receiptCaptures??=new Map()).set(callId,{callId,tool,failed,digest:toolResultDigest(tool,(result as {content?:unknown})?.content,failed)});}catch{/* Unsupported or oversized bodies remain unknown; no raw body is retained here. */}
         }, onEvent: event => {

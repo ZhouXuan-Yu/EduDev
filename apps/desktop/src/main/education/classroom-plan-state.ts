@@ -60,6 +60,11 @@ export function createClassroomPlanState(sql:Sql){
   if(!run||!current())throw Error('cancelled');await assertClassroomContext(work,value.context);return{row,value,e};
  }
  const state={
+  async assertOutlineRun(sessionId:string,runId:string,current:()=>boolean){
+   await authorize(sql,sessionId);
+   const run=(await sql.all("SELECT id FROM ai_agent_runs WHERE id=? AND session_id=? AND status='running'",[runId,sessionId]))[0];
+   if(!run||!current())throw Error('cancelled');
+  },
   async propose(sessionId:string,runId:string,callId:string,document:ClassroomPlanDocument,context:ClassroomContext,current:()=>boolean){
    if(!validClassroomPlanDocument(document)||!validClassroomContext(context))throw Error('invalid_input');
    if(!context.materials.length)throw Error('source_required');
