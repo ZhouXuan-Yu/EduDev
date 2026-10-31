@@ -3,6 +3,8 @@ import {OFFICE_JOB_SOURCE} from './native-office-job';
 export const PAGED_DOCUMENT_SCRIPT=String.raw`
 $ErrorActionPreference='Stop'
 [Console]::OutputEncoding=New-Object Text.UTF8Encoding($false)
+# Word's optional SaveChanges arguments are COM by-reference variants.
+$discard=[object]0
 $application=$null;$document=$null;$blank=$null;$job=$null;$owned=$false;$pdf=$null
 $result=@{schemaVersion='xiaozhi.paged-render.v1';ok=$false;error='unavailable'}
 try {
@@ -23,7 +25,7 @@ ${OFFICE_JOB_SOURCE}
   if($server.ProcessName -ne 'WINWORD' -or $server.StartTime.ToUniversalTime() -lt $start.AddSeconds(-1) -or $application.Documents.Count -ne 1){throw 'busy'}
   $owned=$true;$job=New-Object XiaozhiRenderJob($server.Handle)
   [IO.File]::WriteAllText((Join-Path $env:XIAOZHI_RENDER_ROOT 'owned.json'),(@{pid=[int]$officeId;start=$server.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json -Compress))
-  $blank.Close(0);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($blank);$blank=$null
+  $blank.Close([ref]$discard);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($blank);$blank=$null
   $document=$application.Documents.Open((Join-Path $env:XIAOZHI_RENDER_ROOT 'input.docx'),$false,$true,$false)
   $document.Repaginate();$pageCount=[int]$document.ComputeStatistics(2)
   if($pageCount -lt 1 -or $pageCount -gt 64){throw 'too_large'}
@@ -33,11 +35,12 @@ ${OFFICE_JOB_SOURCE}
   foreach($family in $collection.Families){[void]$fontSet.Add($family.Name);foreach($language in @(1033,2052)){try{[void]$fontSet.Add($family.GetName($language))}catch{}}}
   foreach($font in @($request.fonts)){if($font -and -not $fontSet.Contains($font) -and $findings.Count -lt 128){$findings.Add(@{code='font_missing';font=$font})}}
   $collection.Dispose()
-  $document.ExportAsFixedFormat($pdfPath,17,$false,0,0,1,1,0,$false,$false,0,$false,$true,$false)
+  # Join-Path produces an ETS-wrapped string: marshal a BSTR explicitly or Word may hang.
+  $document.ExportAsFixedFormat([string]$pdfPath,17,$false,0,0,1,1,0,$false,$false,0,$false,$true,$false)
   if((Get-Item -LiteralPath $pdfPath).Length -gt 16777216){throw 'too_large'}
   $engine='Word '+[string]$application.Version+' / Windows.Data.Pdf'
-  $document.Close(0);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($document);$document=$null
-  $application.Quit(0);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($application);$application=$null
+  $document.Close([ref]$discard);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($document);$document=$null
+  $application.Quit([ref]$discard);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($application);$application=$null
   $job.Dispose();$job=$null
  }elseif($request.format -ne 'pdf'){throw 'unsupported'}
  Add-Type -AssemblyName System.Runtime.WindowsRuntime
@@ -80,9 +83,9 @@ ${OFFICE_JOB_SOURCE}
  $code=$_.Exception.Message;if($code -notin @('busy','too_large','unsupported','page_count_changed')){$code='unavailable'}
  $result.error=$code
 }finally {
- if($blank){try{$blank.Close(0)}catch{};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($blank)}
- if($document){try{$document.Close(0)}catch{};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($document)}
- if($application){if($owned){try{if($application.Documents.Count -eq 0){$application.Quit(0)}}catch{}};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($application)}
+ if($blank){try{$blank.Close([ref]$discard)}catch{};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($blank)}
+ if($document){try{$document.Close([ref]$discard)}catch{};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($document)}
+ if($application){if($owned){try{if($application.Documents.Count -eq 0){$application.Quit([ref]$discard)}}catch{}};[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($application)}
  if($job){$job.Dispose()}
 }
 [Console]::Out.WriteLine(($result | ConvertTo-Json -Depth 5 -Compress))
