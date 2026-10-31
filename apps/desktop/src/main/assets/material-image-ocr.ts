@@ -35,5 +35,5 @@ export async function readImageOcr(host:Pick<Host,'all'>,resourceId:string,versi
   if(row.error!==''||!validLocalOcrReceipt(receipt)||!receipt.ok)throw Error('source_changed');text=receipt.text;
  }else if(!['blank','failed'].includes(String(row.status))||row.receipt_json!==''||!errors.includes(row.error as typeof errors[number])||(row.status==='blank')!==(row.error==='empty'))throw Error('source_changed');
  if(Buffer.byteLength(text)>64000)throw Error('unit_too_large');
- return{generation:row.generation,text,receiptSha:createHash('sha256').update(JSON.stringify([row.schema_version,row.engine,row.generation,row.status,row.receipt_json,row.error])).digest('hex')};
+ return{generation:row.generation,text,status:row.status as 'complete'|'blank'|'failed',receiptSha:createHash('sha256').update(JSON.stringify([row.schema_version,row.engine,row.generation,row.status,row.receipt_json,row.error])).digest('hex')};
 }

@@ -12,7 +12,7 @@ type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unk
 const hash=(v:string)=>createHash('sha256').update(v).digest('hex');
 const normalized=aiTextSignature;
 export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,answerBook=false){
- const numbered=answerBook?[]:restoredPageQuestions(final.pageText,source),omitted=numbered.some(c=>!final.questions.some(q=>q.number===c.number));
+ const numbered=answerBook?[]:restoredPageQuestions(final.pageText,source,final.questions.map(q=>q.number)),omitted=numbered.some(c=>!final.questions.some(q=>q.number===c.number));
  const unstructured=!answerBook&&final.outcome==='no_questions'&&!numbered.length&&/[?？]|求|计算|解方程/.test(final.pageText);
  return{numbered,omitted,review:omitted||unstructured||final.outcome==='needs_review'||!pageTranscriptionAgrees(first,final)};
 }
