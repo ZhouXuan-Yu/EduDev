@@ -1903,5 +1903,323 @@
         "sha256": "3e87865248cb2ae20d7d6bdca8945f767c2880e56863d5420e9434d9f71c7cc7"
       }
     ]
+  },
+  "pagedDocumentSlice": {
+    "date": "2026-10-31",
+    "implementationSha": "1d86357",
+    "integratedMain": "319226197bae37b11127582ba4a017499f4c84e0",
+    "integrationSha": "7bb86716353186d52a2e91ae4ddc516a6bfda4a6",
+    "finalSourceSha": "9ebc430c9812906c946840252d08f1e62dafbae9",
+    "goalStatus": "active",
+    "newFullyAcceptedRequirements": 0,
+    "scope": "Real PDF bytes -> independent physical-page text + Windows native raster -> original inspection/cache/one review/file panel/cold restart; bounded native Word adapter with unpassed positive export. Not full E06/FX09/28WP/252AT.",
+    "runtime": {
+      "sourceWorktree": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+      "dailyDDriveUpdated": false,
+      "installerUpdated": false,
+      "syntheticSSE": true,
+      "newPaidRequests": 0
+    },
+    "dependencies": {
+      "unpdf": "1.8.1",
+      "license": "MIT; bundled PDF.js retains its upstream notices",
+      "installedJsBytes": 2141399,
+      "change": "Existing Hana anydoc transitive package pinned as a direct production dependency; only1line in lockfile. No optional native canvas installation. Windows system PDF rasterizer, no new render dependency."
+    },
+    "tests": {
+      "nativePdf": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-pdf-native.mjs",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-pdf-native-dfSiDe",
+          "checks": [
+            "Actual PDF physical pages/text/6cm numbers are independently read; wrong-page text fails",
+            "Windows rasterizes all3 physical text-PDF pages into independently measured distinct PNGs without changing the original",
+            "A real image-only PDF still renders; absent text leaves contains/excludes/numeric/facts unchecked",
+            "Real65-page PDF is bounded and malformed PDF is rejected"
+          ],
+          "boundary": "Actual Windows PDF rasterizer and independent PDF.js text on owned text/image PDFs; not Word or complete E06 acceptance.",
+          "text": {
+            "pages": [
+              {
+                "page": 1,
+                "kind": "pdf_page",
+                "sha256": "252cce1139f1a07d428170ec73dd443bb3e32a2b43fcb25ca78985288f704024",
+                "bytes": 34910,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              },
+              {
+                "page": 2,
+                "kind": "pdf_page",
+                "sha256": "84dadbed73f70fd341d72288b45e895aeba5458b566d532af859a481d6df48e4",
+                "bytes": 35529,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              },
+              {
+                "page": 3,
+                "kind": "pdf_page",
+                "sha256": "a950b800cfd3142527abbfde647e973c9b98cb9400f688913315400d3bc813a3",
+                "bytes": 35755,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              }
+            ],
+            "ms": 1541
+          },
+          "image": {
+            "pages": [
+              {
+                "page": 1,
+                "kind": "pdf_page",
+                "sha256": "066c27bf693670275a5c62640851a9c6139e0f5a375b62e8755065f009029654",
+                "bytes": 21334,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              }
+            ],
+            "ms": 827
+          }
+        }
+      },
+      "source": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "checks": [
+            "Existing science-figure SVG remains structurally readable without pretending its unrendered visual is verified",
+            "Frozen FX01 default, liquid-density, object-density and load boundaries are independently recalculated; wrong7cm is rejected without a model-supplied expected number",
+            "Actual question-version text mismatch is detected across files independently of numeric equality",
+            "Actual eight-slide PPTX and per-slide speaker notes parse; unrendered slides are explicitly visually unchecked",
+            "Plain text with PPTX suffix and a damaged real ZIP fail actual structure checks",
+            "A missing page and required question are identified independently of file existence",
+            "Real XLSX cells preserve001 and formula-like text; a separate sum of actual numeric cells returns240",
+            "CSV quoted commas/newlines survive inspection; missing numeric data is not treated as0",
+            "An actual cached Excel formula is not mistaken for an independently recomputed result",
+            "Individually matching6cm and7cm facts still fail cross-file consistency with both file names",
+            "Derived migration is idempotent and preserves existing data; cancellation updates the stored terminal receipt and damaged receipts are rejected"
+          ],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-35y7AZ",
+          "boundary": "Actual OOXML/CRC parser, generated Office bytes and SQLite receipts; not actual Office rendering, automatic repair or complete E06 AT."
+        }
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "log": "apps/desktop/delivery-paged-merged-components.log",
+        "report": {
+          "suite": "renderer-component-states",
+          "passed": 240,
+          "total": 240,
+          "materialLayoutCases": 2,
+          "trainingWorkspaceCases": 5,
+          "publicStatusCases": 18,
+          "compactionTransitions": 4,
+          "publicActivityCases": 4,
+          "markdownCases": 5,
+          "productNavigationCases": 4,
+          "materialDirectoryCases": 14,
+          "materialContractCases": 6,
+          "teacherQuickStartCases": 6
+        }
+      },
+      "formalUi": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs",
+        "exit": 1,
+        "report": {
+          "ok": false,
+          "checks": [
+            "Original composer generates actual multi-page PDF; real page/count/text/6cm inspection precedes the existing single teacher approval",
+            "Approved original artifact equals inspected bytes; every persisted actual PDF page has independently verified PNG SHA and dimensions",
+            "Original PDF file panel selects real page2 and enlarges it at1366/1920; Escape preserves the original pane",
+            "Visible Check Current File action rerenders the saved original PDF without altering source bytes",
+            "Cold original application retrieves the exact persisted page2 pixels without model or publication replay",
+            "Original Pi check reports a real wrong-page failure with3 screenshots and retains image-only page evidence with unreadable text explicitly unchecked"
+          ],
+          "errors": [],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa",
+          "boundary": "Formal composer/original review/PDF file actions, actual native pages, SQLite and cold restart. Synthetic SSE only; no paid model, teacher data or complete E06 acceptance. Word export remains a separately recorded unresolved native issue.",
+          "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '停止生成', exact: true })\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\delivery-paged-electron.mjs:18:834"
+        },
+        "note": "All6 positive formal checks passed; final stop selector used old label. This suite is NOT reported exit0."
+      },
+      "focusedContinuation": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "checks": [
+            "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+            "Stopping actual in-flight64-page native PDF inspection records cancellation, removes only its staging files and preserves original bytes"
+          ],
+          "errors": [],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-rJ9WHd",
+          "boundary": "Formal composer/original review/PDF file actions, actual native pages, SQLite and cold restart. Synthetic SSE only; no paid model, teacher data or complete E06 acceptance. Word export remains a separately recorded unresolved native issue.",
+          "stopMs": 2137
+        },
+        "note": "Reuse exact same saved artifacts/profile; no publication or model-generation replay. First stop continuation actually cancelled but guessed cancelled run status; actual original run uses blocked+已停止本轮. Corrected assertion, persisted check report cancelled and actual staging cleanup pass."
+      },
+      "finalWordFailurePath": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa --word-only",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "checks": [
+            "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+            "Final Word unavailable/timeout path returns an explicit unchecked result, not a page-render success; source bytes preserved"
+          ],
+          "errors": [],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-2uOXE4",
+          "boundary": "Formal composer/original review/PDF file actions, actual native pages, SQLite and cold restart. Synthetic SSE only; no paid model, teacher data or complete E06 acceptance. Word export remains a separately recorded unresolved native issue.",
+          "word": {
+            "elapsedMs": 21691,
+            "file": {
+              "path": "原生Word.docx",
+              "fileVersion": "54ece3296ffc9795e70ee92ac11022761cfcf2846cb62844034816dacc78b456",
+              "sha256": "230dfe075c14fa348a82e9f4fcbb9aa19aba5a1d4b490c7c9edd740f5f5ac665",
+              "size": 9463,
+              "format": "docx",
+              "checks": [
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "paged_render_timeout",
+                  "message": "Word原生页面导出在15秒内未完成；原文件和结构检查保留，实际页面未检查。"
+                },
+                {
+                  "kind": "structure",
+                  "state": "passed",
+                  "code": "parsed",
+                  "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2）。"
+                },
+                {
+                  "kind": "content",
+                  "state": "unchecked",
+                  "code": "content_contract",
+                  "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                },
+                {
+                  "kind": "numbers",
+                  "state": "unchecked",
+                  "code": "numeric_contract",
+                  "message": "尚未提供数值或合计的核验约定。"
+                },
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "render_not_run",
+                  "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "not_applicable",
+                  "code": "document_interaction",
+                  "message": "本次非HTML文件没有约定的交互动作检查。"
+                },
+                {
+                  "kind": "consistency",
+                  "state": "not_applicable",
+                  "code": "single_file",
+                  "message": "当前仅检查一份文件。"
+                }
+              ],
+              "renderedPages": [],
+              "numbers": [],
+              "state": "partial",
+              "facts": []
+            }
+          }
+        },
+        "note": "Only unavailable/timeout handling passes. Word has0 rendered pages; positive Word rendering is NOT accepted.15s worker limit,21691ms entire synthetic UI turn including startup/inspection/model-flow."
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "apps/desktop/delivery-paged-merged-build.log",
+        "boundary": "Final merged production TypeScript passed. Subsequent only production change removed a PowerShell Word.Options assignment; no TypeScript type change."
+      },
+      "finalBundle": {
+        "command": "npm exec --offline -- electron-vite build",
+        "exit": 0,
+        "log": "apps/desktop/delivery-paged-final-bundle.log",
+        "boundary": "Built exact current production files after removing global Word.Options write; final focused native stop and Word failure tests use this build."
+      },
+      "powerPointIdentity": {
+        "exit": 0,
+        "scriptSha256": "5baf3bbc051bb19078bd878eec45778c1e37bbcd38f04accfb70888782ba14c3",
+        "boundary": "Shared Job extraction preserves identical executed PowerPoint script bytes from7dc04a8; no new PowerPoint acceptance claimed."
+      }
+    },
+    "performance": {
+      "before": "Delivery checks did not know PDF physical page count or render actual PDF pages. Original Office DOCX aggregate text was not physical page proof.",
+      "after": {
+        "threePageRasterMs": 1541,
+        "imagePageRasterMs": 827,
+        "nativeStopWholeObservationMs": 2137,
+        "rendererBeforeKB": 7175.29,
+        "rendererAfterKB": 7175.68,
+        "rendererDeltaReason": "0.39kB from integrated main MaterialAiPagePanel; this slice changes no renderer files."
+      },
+      "boundary": "Single synthetic local samples only; not P95, response quality, streaming latency, UI1-second target or production/day-to-day acceptance."
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0
+      },
+      "rawLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa\\audit.json",
+      "automaticUpgrades": false
+    },
+    "failuresRetained": {
+      "initialFormalSetup": [
+        "f1JG4n:1file rejected by original bundle minimum2 and old selector",
+        "TsRPlV: missing original task plan admission",
+        "YhDZmj: reused synthetic callId; unique per-call IDs fixed it. No claim about real provider IDs."
+      ],
+      "nativePdf": [
+        "vXrmYT: IAsyncAction GetResult polluted JSON; explicit void fixed",
+        "omHg2w: requested logical size differs from physical PNG at150% DPI; actual IHDR dimensions fixed"
+      ],
+      "word": "Repeated owned Word positive probes time out; /a startup diagnostic did not fix it, not used in final code. A30s unassigned-Job diagnostic also produced no PDF. Exact environment root cause unresolved; do not label implemented.",
+      "initialStop": "jz8LWa main suite used obsolete stop label; iRn393 focused continuation assumed cancelled run terminal rather than actual blocked stop. Final rJ9WHd passes same-source native path."
+    },
+    "fingerprints": {
+      "apps\\desktop\\out\\main\\index.js": {
+        "sha256": "0e847fb115d40faf76cd7acb021592b077bef622d63274075bb0dec37cdf7556",
+        "bytes": 3220658
+      },
+      "apps\\desktop\\out\\renderer\\assets\\index-DojEMfLk.js": {
+        "sha256": "84f5912d2f864c8864b783b3f9eaf9d2c0f45babaad7f913b836cd466d47ed41",
+        "bytes": 7175676
+      },
+      "apps/desktop/out/preload/index.cjs": {
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9",
+        "bytes": 34761
+      }
+    },
+    "knownGaps": [
+      "Word successful actual page export",
+      "WPS actual pages",
+      "Per-glyph missing glyphs, formula glyph correctness, semantic occlusion and complete FX09 A4/PPT fixtures",
+      "All teacher requirements bound, mixed terminals, complete E06/E07/E08/C and staged AT",
+      "Daily D: runtime and installer not updated"
+    ],
+    "rollback": "Revert this slice native adapter/service integration/PDF parsing while retaining optional report/PNG readers and existing formal artifacts; no business DDL or file-root migration, no delete of user data. Complete commit rollback not separately rehearsed.",
+    "researchUsedForDiagnosisOnly": [
+      "https://support.microsoft.com/en-us/office/lifecycle/command-line-switches-for-microsoft-office-products",
+      "https://learn.microsoft.com/en-us/answers/questions/4846980/word-2010-hangs-when-macro-is-used-to-exportasfixe"
+    ]
   }
 }
