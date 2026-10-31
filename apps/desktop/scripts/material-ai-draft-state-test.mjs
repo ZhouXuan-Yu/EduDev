@@ -13,7 +13,7 @@ dom.window.HTMLElement.prototype.scrollTo = function(options){this.scrollTop=opt
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import('react-dom/client');
 const { act } = React;
-const server = await createServer({configFile:false,appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
+const server = await createServer({configFile:false,appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false,ws:false}});
 const runtimeErrors=[];
 dom.window.addEventListener('error', event=>runtimeErrors.push(String(event.error)));
 let passed=0;

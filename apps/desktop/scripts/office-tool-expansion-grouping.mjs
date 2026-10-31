@@ -53,7 +53,7 @@ if (!window.scrollTo) window.scrollTo = () => {};
 globalThis.ResizeObserver=window.ResizeObserver;globalThis.MutationObserver=window.MutationObserver;
 window.HTMLElement.prototype.scrollTo=function(){};
 
-const server = await createServer({ appType: 'custom', optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false, watch: null } });
+const server = await createServer({ appType: 'custom', optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false, watch: null, ws: false } });
 
 try {
   const { OfficeToolProcess } = await server.ssrLoadModule('/src/renderer/components/office/OfficeToolProcess.tsx');

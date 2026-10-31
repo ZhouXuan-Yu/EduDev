@@ -6,7 +6,7 @@ import { JSDOM } from 'jsdom';
 const server = await createServer({
   appType: 'custom',
   optimizeDeps: { noDiscovery: true },
-  server: { middlewareMode: true, hmr: false },
+  server: { middlewareMode: true, hmr: false, watch: null, ws: false },
 });
 let passed = 0;
 const check = async (name, fn) => {
@@ -14,6 +14,18 @@ const check = async (name, fn) => {
   passed++;
   console.log('PASS ' + name);
 };
+// Install real DOM interfaces for React Aria button interaction tests.
+function bindDOM(dom) {
+  const w=dom.window;
+  w.matchMedia ||= query=>({matches:false,media:query,addListener(){},removeListener(){},addEventListener(){},removeEventListener(){}});
+  w.ResizeObserver ||= class {observe(){} unobserve(){} disconnect(){}};
+  const entries={window:w,document:w.document,navigator:w.navigator,IS_REACT_ACT_ENVIRONMENT:true,
+    getComputedStyle:w.getComputedStyle.bind(w),requestAnimationFrame:callback=>setTimeout(()=>callback(Date.now()),0),cancelAnimationFrame:clearTimeout};
+  for(const name of ['HTMLElement','SVGElement','Element','Node','NodeFilter','Event','MouseEvent','KeyboardEvent','PointerEvent','CustomEvent','HTMLInputElement','HTMLTextAreaElement','HTMLButtonElement','HTMLAnchorElement','HTMLSelectElement','HTMLFormElement','Document','ShadowRoot','MutationObserver','ResizeObserver'])entries[name]=w[name];
+  const previous=new Map(Object.keys(entries).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
+  for(const [key,value] of Object.entries(entries))Object.defineProperty(globalThis,key,{value,writable:true,configurable:true});
+  return()=>{for(const [key,descriptor] of previous)if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];};
+}
 try {
   const { createPresentationEventAdapter, visibleAssistantText } = await server.ssrLoadModule(
     '/src/main/xiaozhi-agent/presentation-event-adapter.ts',
@@ -250,8 +262,8 @@ try {
   await check('header wall clock advances despite a stale SDK snapshot and freezes at answer handoff',async()=>{
     const {AgentTraceHeader}=await server.ssrLoadModule('/src/renderer/components/office/AgentTraceHeader.tsx');
     const {createRoot}=await import('react-dom/client');
-    const dom=new JSDOM('<div id="clock"></div>'),previous={window:globalThis.window,document:globalThis.document,act:globalThis.IS_REACT_ACT_ENVIRONMENT};
-    globalThis.window=dom.window;globalThis.document=dom.window.document;globalThis.IS_REACT_ACT_ENVIRONMENT=true;
+    const dom=new JSDOM('<div id="clock"></div>');
+    const restoreDOM=bindDOM(dom);
     const host=dom.window.document.getElementById('clock'),root=createRoot(host);
     const active={id:'clock',status:'running',items:[],startedAt:Date.now()-50000,elapsedMs:0,presentation:{version:1,phase:'process',processStartedAt:Date.now()-5000}};
     try{
@@ -265,7 +277,7 @@ try {
       await React.act(async()=>{await new Promise(resolve=>setTimeout(resolve,1100));});
       assert.equal(host.textContent,frozen);
     }finally{
-      await React.act(async()=>root.unmount());dom.window.close();globalThis.window=previous.window;globalThis.document=previous.document;globalThis.IS_REACT_ACT_ENVIRONMENT=previous.act;
+      await React.act(async()=>root.unmount());dom.window.close();restoreDOM();
     }
   });
   await check('public clock persists exact boundaries and does not count preparation or private events', async () => {
@@ -307,8 +319,8 @@ try {
   await check('manual reopen survives final-token updates and host completion',async()=>{
     const {useAgentTraceState}=await server.ssrLoadModule('/src/renderer/components/office/useAgentTraceState.ts');
     const {createRoot}=await import('react-dom/client');
-    const dom=new JSDOM('<div id="hook"></div>'),previous={window:globalThis.window,document:globalThis.document,act:globalThis.IS_REACT_ACT_ENVIRONMENT};
-    globalThis.window=dom.window;globalThis.document=dom.window.document;globalThis.IS_REACT_ACT_ENVIRONMENT=true;
+    const dom=new JSDOM('<div id="hook"></div>');
+    const restoreDOM=bindDOM(dom);
     let state;const root=createRoot(dom.window.document.getElementById('hook'));
     function Harness({turn}){state=useAgentTraceState(turn);return null;}
     const active={id:'same',status:'running',items:[],presentation:{version:1,phase:'process'}};
@@ -322,7 +334,7 @@ try {
       await render({...final,status:'completed',elapsedMs:10000});assert.equal(state.expanded,true);
       await render({...active,id:'new'});assert.equal(state.expanded,true);
       await render({...active,id:'new',status:'interrupted'});assert.equal(state.expanded,true);
-    }finally{await React.act(async()=>root.unmount());dom.window.close();globalThis.window=previous.window;globalThis.document=previous.document;globalThis.IS_REACT_ACT_ENVIRONMENT=previous.act;}
+    }finally{await React.act(async()=>root.unmount());dom.window.close();restoreDOM();}
   });
   await check('explicit commentary cannot be promoted by a generic SDK stop or terminal status',()=>{
     let t={id:'comment',status:'running',items:[]};
@@ -345,19 +357,19 @@ try {
     const {OfficeToolExpansionScope}=await server.ssrLoadModule('/src/renderer/components/office/OfficeToolExpansion.tsx');
     const {AgentPublicTool}=await server.ssrLoadModule('/src/renderer/components/office/AgentPublicTool.tsx');
     const {createRoot}=await import('react-dom/client');
-    const dom=new JSDOM('<div id="tool-scope"></div>'),previous={window:globalThis.window,document:globalThis.document,act:globalThis.IS_REACT_ACT_ENVIRONMENT};
-    globalThis.window=dom.window;globalThis.document=dom.window.document;globalThis.IS_REACT_ACT_ENVIRONMENT=true;
+    const dom=new JSDOM('<div id="tool-scope"></div>');
+    const restoreDOM=bindDOM(dom);
     const host=dom.window.document.getElementById('tool-scope'),root=createRoot(host);
     const item={id:'kept',kind:'tool',toolName:'office_read_attachment',status:'completed',label:'读取资料',resultSummary:{version:1,scope:'read',text:'已读取指定资料'}};
     const render=show=>React.act(async()=>root.render(React.createElement(OfficeToolExpansionScope,null,show?React.createElement(AgentPublicTool,{item,sessionId:'s'}):null)));
     try{
       await render(true);
-      await React.act(async()=>{const details=host.querySelector('details');details.open=true;details.dispatchEvent(new dom.window.Event('toggle'));});
-      assert.equal(host.querySelector('details').open,true);
-      await render(false);assert.equal(host.querySelector('details'),null);
-      await render(true);assert.equal(host.querySelector('details').open,true);
+      await React.act(async()=>host.querySelector('[data-testid="agent-tool-trigger"]').click());
+      assert.equal(host.querySelector('[data-testid="agent-tool-trigger"]').getAttribute('aria-expanded'),'true');
+      await render(false);assert.equal(host.querySelector('[data-testid="agent-tool-trigger"]'),null);
+      await render(true);assert.equal(host.querySelector('[data-testid="agent-tool-trigger"]').getAttribute('aria-expanded'),'true');
       assert(host.textContent.includes('已读取指定资料'));
-    }finally{await React.act(async()=>root.unmount());dom.window.close();globalThis.window=previous.window;globalThis.document=previous.document;globalThis.IS_REACT_ACT_ENVIRONMENT=previous.act;}
+    }finally{await React.act(async()=>root.unmount());dom.window.close();restoreDOM();}
   });
   await check('public tool target uses recorded title/query, escapes markup and suppresses paths/payloads',async()=>{
     const {agentToolTarget}=await server.ssrLoadModule('/src/renderer/components/office/agent-tool-target.ts');
@@ -373,14 +385,14 @@ try {
     const doc=new JSDOM(html).window.document;
     assert.equal(doc.querySelectorAll('img').length,0);
     assert.equal(doc.querySelector('[data-testid="agent-tool-target"]').textContent,'<img src=x onerror=alert(1)>');
-    assert(doc.querySelector('summary .edu-operation-chevron'));
+    assert(doc.querySelector('[data-testid="agent-tool-trigger"] [data-slot="disclosure-indicator"]'));assert.equal(doc.querySelectorAll('details,summary').length,0);
   });
-  await check('summary focus restores to handoff control without stealing composer focus',async()=>{
+  await check('official tool button focus restores to handoff control without stealing composer focus',async()=>{
     const {OfficeToolExpansionScope}=await server.ssrLoadModule('/src/renderer/components/office/OfficeToolExpansion.tsx');
     const {AgentPublicTool}=await server.ssrLoadModule('/src/renderer/components/office/AgentPublicTool.tsx');
     const {createRoot}=await import('react-dom/client');
-    const dom=new JSDOM('<textarea id="composer-native"></textarea><div id="focus-tools"></div>'),previous={window:globalThis.window,document:globalThis.document,act:globalThis.IS_REACT_ACT_ENVIRONMENT};
-    globalThis.window=dom.window;globalThis.document=dom.window.document;globalThis.IS_REACT_ACT_ENVIRONMENT=true;
+    const dom=new JSDOM('<textarea id="composer-native"></textarea><div id="focus-tools"></div>');
+    const restoreDOM=bindDOM(dom);
     const host=dom.window.document.getElementById('focus-tools'),root=createRoot(host);
     function Harness({show}){
       const fallback=React.useRef(null);
@@ -392,17 +404,42 @@ try {
     const render=show=>React.act(async()=>root.render(React.createElement(Harness,{show})));
     try{
       await render(true);
-      await React.act(async()=>host.querySelector('summary').focus());
-      assert.equal(dom.window.document.activeElement,host.querySelector('summary'));
+      await React.act(async()=>host.querySelector('[data-testid="agent-tool-trigger"]').focus());
+      assert.equal(dom.window.document.activeElement,host.querySelector('[data-testid="agent-tool-trigger"]'));
       await render(false);
       assert.equal(dom.window.document.activeElement,host.querySelector('button'));
       await render(true);
-      await React.act(async()=>host.querySelector('summary').focus());
+      await React.act(async()=>host.querySelector('[data-testid="agent-tool-trigger"]').focus());
       await React.act(async()=>dom.window.document.getElementById('composer-native').focus());
       await render(false);
       assert.equal(dom.window.document.activeElement,dom.window.document.getElementById('composer-native'));
-    }finally{await React.act(async()=>root.unmount());dom.window.close();globalThis.window=previous.window;globalThis.document=previous.document;globalThis.IS_REACT_ACT_ENVIRONMENT=previous.act;}
+    }finally{await React.act(async()=>root.unmount());dom.window.close();restoreDOM();}
   });
+  await check('citation click expands the official sources component, focuses the typed link and never fetches favicons',async()=>{
+    const {OfficeReplySources}=await server.ssrLoadModule('/src/renderer/components/office/OfficeReplySources.tsx');
+    const {OfficeAnswerMarkdown}=await server.ssrLoadModule('/src/renderer/components/office/OfficeAnswerMarkdown.tsx');
+    const {createRoot}=await import('react-dom/client');
+    const dom=new JSDOM('<div id="citations"></div>'),restoreDOM=bindDOM(dom);
+    const host=dom.window.document.getElementById('citations'),root=createRoot(host);
+    const citationId='xz-cite-0123456789abcdef-1';
+    const turn={id:'cite',status:'completed',items:[{id:'read',kind:'tool',status:'completed',resultSummary:{version:1,scope:'read'},sources:[{title:'浮力实验',url:'https://example.org/buoyancy',kind:'read',citationId}]}]};
+    const opened=[];dom.window.omniEdu={openXiaozhiWebSource:async request=>{opened.push(request);return {ok:true};}};
+    let scrolled=0;dom.window.HTMLElement.prototype.scrollIntoView=function(){scrolled++;};
+    try{
+      await React.act(async()=>root.render(React.createElement(React.Fragment,null,
+        React.createElement(OfficeAnswerMarkdown,{text:`依据[资料](#${citationId})。`,streaming:false,turn}),
+        React.createElement(OfficeReplySources,{turn,sessionId:'owned-session'}))));
+      const trigger=host.querySelector('[data-slot="chat-sources-trigger"]');
+      assert.equal(trigger.getAttribute('aria-expanded'),'false');
+      await React.act(async()=>host.querySelector('[data-testid="answer-citation"]').click());
+      assert.equal(trigger.getAttribute('aria-expanded'),'true');assert.equal(scrolled,1);
+      const link=host.querySelector('[data-testid="pi-web-source-open"]');assert.equal(dom.window.document.activeElement,link);
+      await React.act(async()=>link.click());assert.deepEqual(opened,[{sessionId:'owned-session',url:'https://example.org/buoyancy'}]);
+      assert.equal(host.querySelectorAll('details,summary,img').length,0);
+    }finally{await React.act(async()=>root.unmount());restoreDOM();dom.window.close();}
+  });
+  // Real AgentProcess pointer/focus/reopen cases run in u1-review-regressions.mjs,
+  // with DOM globals installed before React Aria module evaluation.
   console.log(JSON.stringify({ suite: 'reply-presentation-boundaries', passed }));
 } finally {
   await server.close();

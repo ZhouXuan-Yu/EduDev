@@ -1,5 +1,6 @@
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {createHash} from 'node:crypto';import {reviewQuestionQuality} from './review-question-quality.mjs';
 import {settleWorkspaceTransitions} from '../xiaozhi-agent/capture-workspace-metrics.mjs';
+import {expandDisclosure} from './paper-ui-disclosure.mjs';
 export async function formulaOfficeJourney(c){
  const sql=q=>{const db=new DatabaseSync(path.join(c.data,'app.db'),{readOnly:true});try{return db.prepare(q).all();}finally{db.close();}},reviews=()=>sql("SELECT * FROM ai_confirmation_items WHERE action_type='pi_question_candidate' ORDER BY created_at,id"),papers=()=>sql("SELECT * FROM ai_confirmation_items WHERE action_type='pi_paper_candidate' ORDER BY created_at,id"),questions=()=>sql('SELECT * FROM question_bank_items ORDER BY id'),page=()=>c.page();
  c.report.boundaries=['Actual sole Pi/DeepSeek four composite high-school mathematics questions → teacher review → original 100-point paper → native output folder → four Office approvals and files → cold restore','Controlled teacher-specified questions/references exercise actual complex formula delivery; no all-subject proof, editable Word equations, natural scanned three-mode or WPS claim'];
@@ -20,7 +21,9 @@ export async function formulaOfficeJourney(c){
   c.report.boundaries=['Current formal Electron reviews four previously teacher-confirmed complex mathematics questions; actual saved facts, no provider replay','Formula readability only, not mathematical correctness or natural three-mode acceptance'];
   await paperCard.getByTestId('pi-paper-preview').click();const dialog=page().getByTestId('pi-paper-dialog');await dialog.waitFor();
   for(const question of await dialog.getByTestId('paper-question').all()){
-   await question.locator('summary').click();assert(await question.getByTestId('paper-question-stem').locator('math').count()>0);assert(await question.getByTestId('question-answer-text').locator('math').count()>0);assert(await question.getByTestId('question-analysis-text').locator('math').count()>0);assert.equal(await question.locator('[role=alert]').count(),0);
+   await expandDisclosure(question,/^第 /);
+   await expandDisclosure(question.getByTestId('paper-question-answer'),'参考答案与解析');
+   assert(await question.getByTestId('paper-question-stem').locator('math').count()>0);assert(await question.getByTestId('question-answer-text').locator('math').count()>0);assert(await question.getByTestId('question-analysis-text').locator('math').count()>0);assert.equal(await question.locator('[role=alert]').count(),0);
   }
   c.check('Actual confirmed composite question stems, answers and full analyses render safe MathML in whole-paper review');
   for(const[theme,width,height]of[['light',1366,768],['dark',1920,1080]]){await page().emulateMedia({colorScheme:theme});await c.app().evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});await settleWorkspaceTransitions(page(),{hiddenSnapshot:true});await dialog.getByTestId('paper-question-stem').first().scrollIntoViewIfNeeded();await c.neutralCapture();assert(await page().evaluate(()=>document.documentElement.scrollWidth<=innerWidth));const png=`review-math-${theme}-${width}x${height}.png`;await page().screenshot({path:path.join(c.output,png),animations:'disabled'});c.report.visuals.push({png,theme,width,height});}

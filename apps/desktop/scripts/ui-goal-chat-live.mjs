@@ -8,6 +8,7 @@ import { fingerprint, sha256 } from "./acceptance/evidence.mjs";
 import { pairedScenario } from './acceptance/chat-paired-scenarios.mjs';
 import { installChatPublicProbe } from './acceptance/chat-live-public-probe.mjs';
 import { readOnlyRunBlocker, stopOwnedChatRun } from './acceptance/chat-live-blocker.mjs';
+import { captureStyleProbe } from './acceptance/ui-style-probe.mjs';
 const scenario = pairedScenario();
 const PROMPT = scenario.prompt;
 const EXPLANATION = scenario.explanation;
@@ -26,7 +27,7 @@ async function main() {
   fs.mkdirSync(base, { recursive: true });
   const output = fs.mkdtempSync(path.join(base, "run-")), data = path.join(output, "data"), profile = path.join(output, "profile");
   const mainFile = testMain(root), build = fingerprint(path.dirname(path.dirname(mainFile)));
-  const report = { success: false, output, scenario: scenario.name, promptOverride: scenario.promptOverride, prompt: PROMPT, promptSha256: sha256(Buffer.from(PROMPT)), focusMode, model: "deepseek-flash", pdf: { name: path.basename(source), sha256: sha256(fs.readFileSync(source)) }, buildSha256: build.sha256, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))), scenarioConfigSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-paired-scenarios.mjs', import.meta.url))), publicProbeSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-public-probe.mjs',import.meta.url))), checks: [], runs: [], events: [], consoleErrors: [], screens: [], humanAccepted: false };
+  const report = { success: false, output, scenario: scenario.name, promptOverride: scenario.promptOverride, prompt: PROMPT, promptSha256: sha256(Buffer.from(PROMPT)), focusMode, model: "deepseek-flash", pdf: { name: path.basename(source), sha256: sha256(fs.readFileSync(source)) }, buildSha256: build.sha256, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))), scenarioConfigSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-paired-scenarios.mjs', import.meta.url))), publicProbeSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-public-probe.mjs',import.meta.url))), checks: [], runs: [], events: [], consoleErrors: [], screens: [], styleProbes: [], humanAccepted: false };
   const check = (name) => {
     report.checks.push({ name, pass: true });
     console.log("PASS " + name);
@@ -57,8 +58,15 @@ async function main() {
   async function safeDOM() {
     assert.equal(await page.locator('[data-testid="agent-raw-reasoning"],[data-testid="model-reasoning"]').count(), 0, "private reasoning UI must be absent before capture");
   }
+  async function noNativeChatDisclosure() {
+    const chat=page.getByTestId('office-conversation');
+    assert.equal(await chat.count(),1,'scope to the actual application conversation');
+    // Playwright CSS does not pierce file-preview frames; composer lives outside this tree.
+    assert.equal(await chat.locator('details,summary').count(),0,'application chat must use component disclosures');
+  }
   async function shot(name) {
     await safeDOM();
+    await noNativeChatDisclosure();
     const file = name + ".png";
     await page.screenshot({ path: path.join(output, file), animations: "disabled" });
     report.screens.push({file,viewport:await page.evaluate(()=>({width:innerWidth,height:innerHeight,devicePixelRatio}))});
@@ -205,7 +213,7 @@ async function main() {
     ownedRun = {sessionId,runId:id};
     report.runs.push(record);
     const turn = section(id);
-    let executing = false, handoff = false, reopened = false, focusArmed = false, firstBodyAt;
+    let executing = false, handoff = false, reopened = false, focusArmed = false, stylesCaptured = false, firstBodyAt;
     await until(async () => {
       const s = await state(), t = s.turns.find((t2) => t2.id === id);
       assert(t, "bound run disappeared");
@@ -221,8 +229,22 @@ async function main() {
       }
       const own = (await events()).filter((e) => e.runId === id);
       const live = await turn.locator('[data-mode="live-prose"]').count();
+      if (needsTools && !stylesCaptured && live && t.tools.length && s.running) {
+        const tool=turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
+        if(await tool.count()) {
+          const probes=[];
+          probes.push(await captureStyleProbe(page,turn.locator('[data-mode="live-prose"]:visible'),'streaming-public-process'));
+          await tool.hover();probes.push(await captureStyleProbe(page,tool,'real-tool-hover'));
+          await page.mouse.move(0,0);await tool.focus();
+          await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
+          assert(await tool.evaluate(node=>node.matches(':focus-visible')),'keyboard must produce real focus-visible');
+          probes.push(await captureStyleProbe(page,tool,'real-tool-keyboard-focus'));
+          const file=`${name}-styles.json`;write(file,{sessionId,runId:id,probes});
+          report.styleProbes.push({file,runId:id,states:probes.map(probe=>probe.name)});stylesCaptured=true;
+        }
+      }
       if (needsTools && !focusArmed && live && t.tools.length && s.running) {
-        const summary = turn.getByTestId('agent-tool-trigger').first();
+        const summary = turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
         if (focusMode === 'composer') await page.getByTestId('office-prompt-input').focus();
         else if (focusMode === 'detail-link') {
           if (await summary.getAttribute('aria-expanded') !== 'true') await summary.click();
@@ -283,6 +305,7 @@ async function main() {
         if (scenario.explainBeforeTools) assert(t.publicProcessCount>0&&firstPublicText>=0&&firstTool>firstPublicText,'requested explicit public commentary must precede the first real tool');
         assert(t.tools.some((t2) => t2.status === "completed" && /read_attachment|read_document|read_text/.test(t2.name || "")), "attachment content must actually be read");
         assert(executing, "real execution was observed");
+        assert(stylesCaptured,"streaming, hover and keyboard style evidence was captured");
         assert(handoff, "explicit final handoff was observed");
         assert(record.handoffObservedWhileRunning, "handoff must be captured during streaming");
         assert(!t.tools.some((t2) => /web|browser|create|edit|copy|write|document_create/.test(t2.name || "")), "prompt prohibits web access and writes");
@@ -294,7 +317,9 @@ async function main() {
       if (t.tools.length) {
         if (await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded") !== "true") await turn.getByTestId("agent-trace-toggle").click();
         for (const row of await turn.getByTestId("office-tool-step").all()) {
-          if (await row.locator("summary").getAttribute("aria-expanded") !== "true") await row.locator("summary").click();
+          const trigger=row.locator('button[data-testid="agent-tool-trigger"]');
+          assert.equal(await trigger.count(),1,"one real tool button per row");
+          if (await trigger.getAttribute("aria-expanded") !== "true") await trigger.click();
           const evidence = await row.getByTestId("office-tool-evidence").innerText();
           assert(evidence.trim(), "real tool has inspectable public content");
           assert(!/实际用时|本次排队|本次执行|执行用时|调用用时|\b\d+(?:\.\d+)?\s*ms\b/.test(evidence), "tool evidence must not display invocation duration");

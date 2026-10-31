@@ -1,3 +1,4 @@
+import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 import {productEntry} from '../product-navigation.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -41,12 +42,12 @@ const nav=space=>productEntry(page,space).click();
 const batches=()=>page.evaluate(id=>window.omniEdu.getMaterialAiBatches(id),id);
 const entries=()=>page.evaluate(()=>window.omniEdu.listQuestionNotebook({limit:30}));
 const notebook=async()=>{await nav('teaching');await page.getByTestId('nav-question_notebook').click();};
-async function openAi(){await nav('materials');await page.getByTestId('material-'+id).click();await ai().locator('summary').click();}
+async function openAi(){await nav('materials');await page.getByTestId('material-'+id).click();await openMaterialDisclosure(ai());}
 async function consent(){await ai().getByTestId('material-ai-public').check();await ai().getByTestId('material-ai-consent').check();await ai().getByTestId('material-ai-create').click();}
 try{
   await launch();await nav('materials');await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},folder);await page.getByTestId('materials-import-folder').click();
   id=await until(async()=>{const r=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));return r.resources.find(r=>r.parseStatus==='ready')?.id;});
-  await page.getByTestId('material-'+id).click();await until(async()=>await ai().count()===1);await delay(1800);assert.equal(await ai().count(),1);await ai().locator('summary').click();
+  await page.getByTestId('material-'+id).click();await until(async()=>await ai().count()===1);await delay(1800);assert.equal(await ai().count(),1);await openMaterialDisclosure(ai());
   assert(await ai().getByTestId('material-ai-create').isDisabled());assert.equal(await app.evaluate(()=>globalThis.__aiBatchProbe.calls),0);
   await ai().getByTestId('material-ai-key').fill('synthetic-private-test-key');await ai().getByTestId('material-ai-save-settings').click();
   await until(async()=>await page.evaluate(()=>window.omniEdu.getMaterialAiSettings()).then(s=>s.configured));assert.equal(await ai().getByTestId('material-ai-key').inputValue(),'');
@@ -79,7 +80,7 @@ try{
   let pdf='%PDF-1.4\n',offsets=[0];for(let i=0;i<objects.length;i++){offsets.push(Buffer.byteLength(pdf));pdf+=(i+1)+' 0 obj\n'+objects[i]+'\nendobj\n';}const xref=Buffer.byteLength(pdf);pdf+='xref\n0 6\n0000000000 65535 f \n'+offsets.slice(1).map(o=>String(o).padStart(10,'0')+' 00000 n \n').join('')+'trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF\n';fs.writeFileSync(pdfFile,pdf);
   await nav('materials');await app.evaluate(({dialog},file)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[file]});},pdfFile);await page.getByTestId('materials-import').click();
   const pdfId=await until(async()=>{const rows=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));return rows.resources.find(r=>r.originalFileName==='owned-page.pdf')?.id;});
-  await until(async()=>await page.evaluate(id=>window.omniEdu.getMaterialPdfStatus(id),pdfId).then(s=>s?.state==='complete'),180000);await page.getByTestId('material-'+pdfId).click();await ai().locator('summary').click();
+  await until(async()=>await page.evaluate(id=>window.omniEdu.getMaterialPdfStatus(id),pdfId).then(s=>s?.state==='complete'),180000);await page.getByTestId('material-'+pdfId).click();await openMaterialDisclosure(ai());
   await ai().getByTestId('material-ai-images').check();await consent();
   const visualBatch=await until(async()=>{const rows=await page.evaluate(id=>window.omniEdu.getMaterialAiBatches(id),pdfId);return rows[0]?.status==='attention'?rows[0]:null;},180000);assert.equal(visualBatch.calls,2);
   const sent=await app.evaluate(()=>globalThis.__aiBatchProbe.payloads.filter(b=>b.messages[1].content.some(v=>v.type==='image_url')).map(b=>b.messages[1].content.find(v=>v.type==='image_url').image_url.url));assert.equal(sent.length,2);assert.equal(sent[0],sent[1]);const png=Buffer.from(sent[0].split(',')[1],'base64');assert(png.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])));assert(png.readUInt32BE(16)>0);assert(png.length<4*1048576);

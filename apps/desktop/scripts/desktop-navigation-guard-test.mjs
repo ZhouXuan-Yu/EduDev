@@ -12,7 +12,7 @@ globalThis.ResizeObserver=class{observe(){}unobserve(){}disconnect(){}};
 globalThis.matchMedia=dom.window.matchMedia=()=>({matches:false,addEventListener(){},removeEventListener(){},addListener(){},removeListener(){}});
 globalThis.IS_REACT_ACT_ENVIRONMENT=true;
 const {createRoot}=await import('react-dom/client');
-const {act}=React,server=await createServer({configFile:false,appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
+const {act}=React,server=await createServer({configFile:false,appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false,ws:false}});
 const errors=[];dom.window.addEventListener('error',event=>errors.push(String(event.error)));
 let root,passed=0,nativeCommand,nav,setDirty,setOtherDirty,delivered=0;
 const check=(label,verify)=>{verify();passed++;console.log('PASS '+label);};

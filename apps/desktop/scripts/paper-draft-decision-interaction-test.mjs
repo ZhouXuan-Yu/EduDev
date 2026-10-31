@@ -14,7 +14,7 @@ globalThis.matchMedia=dom.window.matchMedia=()=>({matches:false,addEventListener
 globalThis.IS_REACT_ACT_ENVIRONMENT=true;
 const {createRoot}=await import('react-dom/client');
 const {act}=React;
-const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false,watch:null}});
+const server=await createServer({configFile:false,appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false,ws:false,watch:null}});
 let root,passed=0;
 const run=fn=>act(async()=>{fn();await new Promise(resolve=>setTimeout(resolve,5));});
 const find=id=>document.querySelector(`[data-testid="${id}"]`);
@@ -39,6 +39,7 @@ try{
  const {PaperBlueprintWorkspace}=await load('renderer/components/PaperBlueprintWorkspace.tsx');
  const {DesktopFrame,useDesktopNavigation,useDesktopCommands,useDesktopNavigationGuard}=await load('renderer/components/desktop/DesktopFrame.tsx');
  const {PAPER_UI_DRAFT_KEY,validPaperUiDraft,readPaperUiDraft}=await load('renderer/components/paper-ui/paper-draft-storage.ts');
+ const {QuestionWebAnswerEvidence}=await load('renderer/components/QuestionWebAnswerEvidence.tsx');
  const snapshot=id=>({id,sessionId:'session-fixture',title:id,state:'pending',count:0,totalPoints:100,revision:1,blueprint:{...defaultPaperBlueprint(),title:id},complete:true,sourceCurrent:true,exportCurrent:true,answerVerified:false,selection:{items:[],shortages:[],scanned:0,scanComplete:true,excluded:{unsupported:0,missing_answer:0,source_unavailable:0},duplicateRecords:0}});
  root=createRoot(document.getElementById('root'));
  for(const oldOutcome of ['success','failure']){
@@ -69,7 +70,11 @@ try{
  await run(()=>root.render(React.createElement(DesktopFrame,null,React.createElement(Host))));
  await run(()=>nav.navigate({view:'paper'}));
  for(const owner of ['new','saved']){
-  if(owner==='saved')await press(find('paper-saved'));
+  if(owner==='saved'){
+   const trigger=find('paper-history').querySelector('button[aria-expanded]');
+   await press(trigger);assert.equal(trigger.getAttribute('aria-expanded'),'true');
+   await press(find('paper-saved'));
+  }
   if(owner==='saved')await press(find('paper-step-blueprint'));
   const baseline=find('paper-title').value;
   await edit('不能丢失的'+owner+'蓝图');
@@ -148,5 +153,17 @@ try{
  window.sessionStorage.setItem(PAPER_UI_DRAFT_KEY,'{corrupted');
  await run(()=>nav.navigate({view:'paper'}));
  check('corrupt draft fails closed and is removed',()=>{assert.equal(find('paper-mode').value,'source_only');assert.equal(find('paper-step-review').disabled,true);assert.equal(find('paper-step-delivery').disabled,true);assert(find('paper-error').textContent.includes('损坏'));assert.equal(window.sessionStorage.getItem(PAPER_UI_DRAFT_KEY),null);assert.equal(confirmCalls,0);});
+ let evidenceLoads=0;
+ window.omniEdu.getQuestionWebAnswerEvidence=async()=>{evidenceLoads++;return {ok:true,items:[{id:'candidate-ui',state:'conflict',reason:'source_changed',observation:{title:'已保存网页证据',url:'https://example.test/solution',observedAt:'2026-11-01T00:00:00.000Z',text:'公开网页原文样本'}}]};};
+ await run(()=>root.render(React.createElement(QuestionWebAnswerEvidence,{question:{id:'question-ui'}})));
+ const evidenceTrigger=find('question-web-evidence-fold-question-ui').querySelector('button[aria-expanded]');
+ check('web evidence uses a real collapsed accessible trigger without native triangles',()=>{assert.equal(evidenceTrigger.getAttribute('aria-expanded'),'false');assert.equal(document.querySelectorAll('details,summary').length,0);});
+ await press(evidenceTrigger);await press(find('question-web-evidence-load'));
+ const candidateTrigger=find('question-web-candidate').querySelector('button[aria-expanded]');
+ await press(candidateTrigger);
+ check('web evidence keeps real read callback, source conflict and stored public text',()=>{assert.equal(evidenceLoads,1);assert.equal(candidateTrigger.getAttribute('aria-expanded'),'true');assert(find('question-web-candidate').textContent.includes('原题或来源已变化'));assert.equal(find('question-web-observed-text').textContent,'公开网页原文样本');});
+ const evidenceText=find('question-web-observed-text');
+ await press(candidateTrigger);await press(candidateTrigger);
+ check('collapse retains evidence nodes without another read or changing the answer',()=>{assert.equal(evidenceLoads,1);assert.strictEqual(find('question-web-observed-text'),evidenceText);assert.equal(confirmCalls,0);});
  console.log(JSON.stringify({success:true,passed,scope:'mounted U4 components; preload fixtures only; no build/Electron/model'}));
 }finally{if(root)await act(async()=>root.unmount());await server.close();dom.window.close();}

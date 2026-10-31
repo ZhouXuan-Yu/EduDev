@@ -3,7 +3,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
 
-const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
+const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false,ws:false}});
 const render=(component,props)=>renderToStaticMarkup(React.createElement(component,props));
 try {
   const {filterMaterialCatalog,MaterialCatalogFilters}=await server.ssrLoadModule('/src/renderer/components/product/MaterialCatalogFilters.tsx');

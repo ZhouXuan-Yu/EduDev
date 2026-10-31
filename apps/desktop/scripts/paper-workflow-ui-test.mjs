@@ -3,7 +3,7 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
 
-const server = await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true}});
+const server = await createServer({configFile:false,appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false,ws:false,watch:null}});
 try {
   const load = path => server.ssrLoadModule('/src/'+path);
   const {defaultPaperBlueprint,validPaperBlueprint} = await load('shared/paper-blueprint.ts');
@@ -13,6 +13,9 @@ try {
   const {PaperReviewPanel} = await load('renderer/components/PaperReviewPanel.tsx');
   const {PaperExportEntry} = await load('renderer/components/PaperExportEntry.tsx');
   const {PaperExportChoices} = await load('renderer/components/paper-ui/PaperExportChoices.tsx');
+  // Import the other migrated surfaces too: catches source/JSX regressions without
+  // executing their effects, desktop bootstrap or the full renderer test suite.
+  for(const file of ['ExerciseSetLibrary','QuestionNotebookWorkspace','TeacherNotebookWorkspace','QuestionSemanticSearch','QuestionWebAnswerEvidence'])await load('renderer/components/'+file+'.tsx');
   const render = (component,props) => renderToStaticMarkup(React.createElement(component,props));
   const blueprint=defaultPaperBlueprint();
   const view={id:'paper-fixture',sessionId:'session-fixture',title:'教师试卷',state:'confirmed',count:0,totalPoints:100,
@@ -45,6 +48,11 @@ try {
     assert.match(html,/paper-confirm[^>]*disabled/);
     assert(html.includes('paper-reject'));
   }
+  const question={id:'question_aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',subject:'数学',grade:'初二',knowledgePoint:'一次函数',questionType:'解答题',difficulty:'medium',stem:'完整题面样本',answer:'参考答案样本',analysis:'解析样本',sourceKind:'local_bank',sourceTitle:'保存来源',tags:[],usageCount:0};
+  const item={sectionId:blueprint.sections[0].id,number:1,points:5,question,source:{schemaVersion:'xiaozhi.education.question-context.v1',questionId:question.id,version:'a'.repeat(64)}};
+  const reviewed=render(PaperReviewPanel,{view:{...view,state:'pending',selection:{...view.selection,items:[item]}},onChanged:()=>{}});
+  assert.doesNotMatch(reviewed,/<(?:details|summary)(?:\s|>)/);
+  for(const content of ['paper-question','完整题面样本','参考答案样本','解析样本','paper-question-source','pi-question-source-open','aria-expanded="false"'])assert(reviewed.includes(content),content);
   const exports=render(PaperExportEntry,{view});
   for (const audience of ['student','teacher','answer_sheet']) for(const format of ['docx','pdf']) assert(exports.includes('paper-export-'+audience+'-'+format));
   assert(!exports.includes('交付成功'));
