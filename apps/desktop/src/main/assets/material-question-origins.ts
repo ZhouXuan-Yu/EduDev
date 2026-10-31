@@ -3,12 +3,14 @@ import type {QuestionBankItem} from '../../shared/contracts';
 import {archiveEligible,validQuestionArchive} from '../../shared/question-archive';
 import {validMaterialSource,type MaterialSource} from '../../shared/materials';
 import {normalizeMaterialStem} from './material-question-extract';
+import {answerRuleCandidateHidden,migrateMaterialBookPairs} from './material-book-pairs';
 type Row=Record<string,unknown>;type Value=string|number|null;
 export type OriginHost={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>};
 export type RuleOrigin={sources:MaterialSource[];number:string;stem:string;risks:string[]};
 const allowed=(origin:RuleOrigin)=>origin.sources.length>0&&origin.sources.length<=64&&origin.sources.every(s=>validMaterialSource(s)&&s.resourceId===origin.sources[0].resourceId&&s.version===origin.sources[0].version)&&/^\d{1,5}$/.test(origin.number)&&!!origin.stem.trim()&&!origin.risks.some(r=>r!=='visual_unchecked');
 const key=(origin:RuleOrigin)=>createHash('sha256').update(JSON.stringify(['source-question.v1',origin.sources.map(s=>[s.resourceId,s.version,s.offset,s.chunkId,s.bodyVersion]),origin.number,normalizeMaterialStem(origin.stem)])).digest('hex');
 export async function migrateQuestionOrigins(host:OriginHost){
+ await migrateMaterialBookPairs(host);
  const before=new Set((await host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>String(r.name)));
  await host.run("CREATE TABLE IF NOT EXISTS material_question_origins(question_id TEXT PRIMARY KEY,kind TEXT NOT NULL CHECK(kind IN ('rule','ai')),origin_key TEXT NOT NULL,resource_id TEXT NOT NULL,covered INTEGER NOT NULL DEFAULT 0)");
  await host.run('CREATE INDEX IF NOT EXISTS idx_question_origins_key ON material_question_origins(origin_key,kind)');
@@ -58,4 +60,4 @@ export async function recordAiOrigin(host:OriginHost,q:QuestionBankItem,origin:R
  if(origin.sources.some(s=>!a.sources.some(t=>JSON.stringify([s.resourceId,s.version,s.offset,s.chunkId,s.bodyVersion])===JSON.stringify([t.resourceId,t.version,t.offset,t.chunkId,t.bodyVersion]))))return;
  await host.run("INSERT OR REPLACE INTO material_question_origins(question_id,kind,origin_key,resource_id) VALUES(?,'ai',?,?)",[q.id,key(origin),origin.sources[0].resourceId]);
 }
-export const sourceCandidateHidden="EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1)";
+export const sourceCandidateHidden=`(EXISTS(SELECT 1 FROM material_question_origins o WHERE o.question_id=q.id AND o.covered=1) OR COALESCE(${answerRuleCandidateHidden},0))`;
