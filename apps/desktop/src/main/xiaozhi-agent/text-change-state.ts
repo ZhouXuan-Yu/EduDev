@@ -91,8 +91,8 @@ export function createTextChangeState(sql: Sql) {
         [to, now(), row.id, row.sessionId, row.state, row.revision]) !== 1) throw new Error('conflict');
       return (await get(row.id))!;
     },
-    async list(sessionId: string) {
-      return (await sql.all('SELECT * FROM xiaozhi_pi_text_changes WHERE conversation_id=? ORDER BY created_at,id', [sessionId])).map(parse);
+    async list(sessionId: string, runId?: string) {
+      return (await sql.all('SELECT * FROM xiaozhi_pi_text_changes WHERE conversation_id=?'+(runId===undefined?'':' AND run_id=?')+' ORDER BY created_at,'+(runId===undefined?'id':'rowid'), runId===undefined?[sessionId]:[sessionId,runId])).map(parse);
     },
     async invalidateRun(runId: string) {
       await sql.run(`UPDATE xiaozhi_pi_text_changes SET state='interrupted',revision=revision+1,updated_at=?

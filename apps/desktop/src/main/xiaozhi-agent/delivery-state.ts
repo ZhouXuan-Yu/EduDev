@@ -17,7 +17,7 @@ function parse(raw:Record<string,unknown>):DeliveryRow{
 /** Only grouping metadata. Original child ledgers own drafts, effects and file versions. */
 export function createDeliveryState(sql:Sql){
  async function get(id:string){const row=(await sql.all('SELECT * FROM xiaozhi_delivery_bundles WHERE id=?',[id]))[0];return row?parse(row):null;}
- async function list(sessionId:string){return (await sql.all('SELECT * FROM xiaozhi_delivery_bundles WHERE session_id=? ORDER BY created_at,id',[sessionId])).map(parse);}
+ async function list(sessionId:string,runId?:string){return (await sql.all('SELECT * FROM xiaozhi_delivery_bundles WHERE session_id=?'+(runId===undefined?'':' AND run_id=?')+' ORDER BY created_at,'+(runId===undefined?'id':'rowid'),runId===undefined?[sessionId]:[sessionId,runId])).map(parse);}
  async function update(row:DeliveryRow,patch:Partial<Pick<DeliveryRow,'files'|'state'|'approval'>>){
   const next={...row,...patch,revision:row.revision+1};if(!sql.change)throw Error('configuration');
   if(await sql.change('UPDATE xiaozhi_delivery_bundles SET value_json=? WHERE id=? AND value_json=?',[JSON.stringify(next),row.id,JSON.stringify(row)])!==1)throw Error('conflict');return next;
