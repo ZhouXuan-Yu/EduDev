@@ -93,8 +93,8 @@ export async function captureWorkspaceMetrics(page, app, directory, name) {
       input: '[data-testid="office-prompt-input"]', inspection: '[data-testid="xiaozhi-pi-inspector"]',
       assistant: '[data-slot="chat-message-assistant"]', tool: '.office-tool [data-slot="chat-tool-trigger"]',
       assistantText: '[data-slot="chat-message-assistant"] [data-slot="markdown"] p',
-      composerShell: '.office-composer [data-slot="prompt-input-shell"]',
-      toolbar: '.office-composer [data-slot="prompt-input-toolbar"]',
+      composerShell: '[data-testid=office-composer] [data-slot="prompt-input-shell"]',
+      toolbar: '[data-testid=office-composer] [data-slot="prompt-input-toolbar"]',
       sidebarHeading: '.pi-conversation-sidebar .ai-session-header h2',
       sidebarTitle: '.pi-conversation-sidebar .chat-list-view__title',
     };
@@ -106,7 +106,7 @@ export async function captureWorkspaceMetrics(page, app, directory, name) {
         fontFamily: style.fontFamily, fontSize: style.fontSize, lineHeight: style.lineHeight, color: style.color,
         background: style.backgroundColor, borderRadius: style.borderRadius, padding: style.padding, gap: style.gap }];
     }));
-    const buttons = Array.from(document.querySelectorAll('.office-composer [data-slot="prompt-input-toolbar"] button')).map(element => {
+    const buttons = Array.from(document.querySelectorAll('[data-testid=office-composer] [data-slot="prompt-input-toolbar"] button')).map(element => {
       const rect = element.getBoundingClientRect();
       return { name: element.getAttribute('aria-label') || element.textContent, disabled: element.disabled,
         rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height } };

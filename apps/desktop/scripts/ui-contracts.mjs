@@ -12,7 +12,7 @@ try{
  const {PRODUCT_PAGES}=await server.ssrLoadModule('/src/renderer/components/product/product-spaces.ts');
  const ids=PAGE_CONTRACTS.map(p=>p.id);
  check('each actual product page has one and only one contract',()=>{
-  const actual=['ai','settings',...Object.values(PRODUCT_PAGES).flat().map(p=>p.view)].sort();
+  const actual=['ai','settings','teaching','student_workbench',...Object.values(PRODUCT_PAGES).flat().map(p=>p.view)].sort();
   assert.deepEqual([...ids].sort(),actual);assert.equal(new Set(ids).size,ids.length);
  });
  for(const p of PAGE_CONTRACTS)check('page contract is actionable: '+p.id,()=>{assert(p.primaryAction&&p.purpose&&p.layout);assert(p.constraints.length>=3&&p.acceptance.length>=1);});

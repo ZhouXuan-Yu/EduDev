@@ -1,0 +1,37 @@
+.wb-context { width: min(var(--edu-panel-width, 340px), 38%); min-width: 300px; max-width: 680px; display: flex; flex-direction: column; flex-shrink: 0; min-height: 0; border-left: 1px solid #eceef2; background: #fff; }
+.wb-context-heading { min-height: 56px; padding: 8px 18px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-shrink: 0; }
+.wb-context-heading strong { font-size: 14px; font-weight: 600; }
+.wb-context-tabs { display: flex; gap: 20px; padding: 0 18px; border-bottom: 1px solid #eceef2; flex-shrink: 0; }
+.wb-context-tabs > button { display: flex; align-items: center; gap: 6px; min-height: 38px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #777e89; font: inherit; font-size: 13px; cursor: pointer; padding: 6px 0; }
+.wb-context-tabs > button:hover { color: #303949; }
+.wb-context-tabs > button:active { color: #1648ac; }
+.wb-context-tabs > button[aria-selected='true'] { color: #2563eb; border-bottom-color: #2563eb; }
+.wb-context-tabs > button:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; border-radius: 3px; }
+.wb-context-body { flex: 1; overflow: auto; min-height: 0; padding: 18px; }
+.wb-context-body[hidden] { display: none; }
+.wb-context-files { display: flex; flex-direction: column; padding: 12px; }
+.wb-context-files .pi-file-panel { flex: 1; min-height: 0; min-width: 0; display: flex; flex-direction: column; }
+.wb-context-files .pi-file-toolbar { display: flex; align-items: center; flex-wrap: wrap; min-height: 44px; flex-shrink: 0; gap: 4px; border-bottom: 1px solid #eceef2; padding-bottom: 8px; }
+.wb-context-files .pi-file-toolbar-empty { flex: 1; font-size: 13px; color: #778092; display: flex; align-items: center; gap: 6px; }
+.wb-context-files .pi-file-body { display: flex; flex: 1; min-height: 0; min-width: 0; }
+.wb-context-files .pi-file-reading { display: flex; flex: 1; flex-direction: column; min-height: 0; min-width: 0; }
+.wb-context-files .pi-file-panel[data-has-preview='false'] .pi-file-reading { display: none; }
+.wb-context-files .pi-file-explorer { display: flex; flex-direction: column; flex: 1; overflow: auto; gap: 10px; min-width: 0; padding: 14px 0; }
+.wb-context-files .pi-file-explorer[hidden] { display: none; }
+.wb-context-files .pi-file-explorer > strong { font-size: 13px; font-weight: 550; color: #303a4c; }
+.wb-context-files .pi-file-explorer > input { border: 1px solid #e2e6ed; border-radius: 8px; background: #fff; padding: 8px 10px; font: inherit; font-size: 13px; width: 100%; box-sizing: border-box; }
+.wb-context-files .pi-file-explorer > input:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+.wb-context-files .pi-file-breadcrumb { display: flex; align-items: center; gap: 8px; padding: 10px 0; font-size: 12px; }
+.wb-context-files .pi-file-breadcrumb > span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wb-context-files .pi-file-preview { overflow: auto; min-height: 0; flex: 1; padding: 12px 4px; font-size: 14px; line-height: 1.8; }
+.wb-context-files .pi-file-preview > pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; }
+.wb-context-files .pi-file-preview > img { max-width: 100%; height: auto; }
+.wb-task-context { display: flex; flex-direction: column; gap: 16px; min-width: 0; font-size: 13px; line-height: 1.65; color: #687183; }
+.wb-task-context > section { border-top: 1px solid #eceef2; padding-top: 16px; }
+.wb-task-context h4 { font-size: 12px; font-weight: 550; color: #737d8d; margin: 0 0 10px; display: flex; align-items: center; gap: 6px; }
+.wb-task-context p { margin: 6px 0; overflow-wrap: anywhere; }
+.wb-task-context > .pi-context-header { font-size: 13px; color: #242d3d; font-weight: 550; }
+.wb-task-context > .pi-context-status, .wb-task-context > .pi-context-location { display: flex; align-items: center; gap: 8px; }
+.wb-task-context .pi-context-sources ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.wb-task-context .pi-context-sources li { display: flex; align-items: center; gap: 8px; }
+@media (max-width: 1050px) { .wb-context { position: absolute; z-index: 25; inset: 0 0 0 auto; width: min(420px, 100%); min-width: 0; box-shadow: -8px 0 24px rgb(20 30 50 / 6%); } }

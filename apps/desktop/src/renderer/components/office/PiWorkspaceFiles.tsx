@@ -115,11 +115,12 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     icon={entry.kind==='directory'?<Folder size={16}/>:<FileText size={16}/>}>
     {entry.kind==='directory'&&directories[entry.path]?.length?tree(entry.path):undefined}
   </FileTree.Item>);}
-  return <section ref={panel} className="pi-file-panel" aria-label="本地文件工作面板" data-testid="pi-file-panel">
+  return <section ref={panel} className="pi-file-panel" data-has-preview={Boolean(selected)} aria-label="本地文件工作面板" data-testid="pi-file-panel">
     <div className="pi-file-toolbar" ref={toolbar}>
         {!!tabs.length?<Tabs selectedKey={selected||undefined} onSelectionChange={key=>{const entry=tabs.find(tab=>tab.path===key);if(entry&&entry.path!==selected)void openFile(entry);}} data-testid="pi-file-tabs">
           <Tabs.ListContainer><Tabs.List aria-label="已打开的教学文件">{tabs.map(tab=><Tabs.Tab key={tab.path} id={tab.path}><FileText size={14}/><span>{tab.name}</span><Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
         </Tabs>:<span className="pi-file-toolbar-empty"><FileText size={16}/>本地文件</span>}
+      <Button variant="ghost" isIconOnly size="sm" aria-label="选择教学工作目录" onPress={onChoose} data-testid="pi-files-choose"><Folder size={16}/></Button>
       <Button variant="ghost" isIconOnly size="sm" aria-label="刷新文件目录" onPress={refresh} data-testid="pi-files-refresh"><RefreshCw size={16}/></Button>
       <Button className="pi-file-explorer-toggle" variant="ghost" size="sm"
         aria-label={explorerOpen?'收起文件列表，扩大正文':'显示文件列表'} aria-pressed={explorerOpen}
@@ -145,7 +146,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
       </div>
       <aside className="pi-file-explorer" hidden={!explorerOpen}>
         <strong title={label}>{label}</strong><input aria-label="筛选已加载文件" placeholder="筛选已加载文件…" value={query} onChange={event=>setQuery(event.target.value)} data-testid="pi-file-filter"/>
-        {error&&<div role="alert" data-testid="pi-file-error"><p>{error}</p><Button size="sm" variant="ghost" onPress={onChoose} data-testid="pi-files-choose">选择工作目录</Button><Button size="sm" variant="ghost" onPress={refresh}>重试</Button></div>}
+        {error&&<div role="alert" data-testid="pi-file-error"><p>{error}</p><Button size="sm" variant="ghost" onPress={refresh}>重试</Button></div>}
         {loading&&<p role="status">正在读取目录…</p>}
         {directories['.']?.length?<FileTree aria-label="教学工作目录文件" reduceMotion expandedKeys={expanded} onExpandedChange={keys=>setExpanded(new Set([...keys].map(String)))}
           onAction={key=>{const entry=Object.values(directories).flat().find(item=>item.path===key);if(!entry)return;if(entry.kind==='directory'){if(!directories[entry.path])void list(entry.path);else setExpanded(previous=>{const next=new Set(previous);next.has(entry.path)?next.delete(entry.path):next.add(entry.path);return next;});}else void openFile(entry);}}>{tree('.')}</FileTree>:

@@ -57,18 +57,23 @@ try {
   assert(!fs.existsSync(path.join(desktop, 'dist')));
   check('Daily out loads its own current file renderer despite inherited development URL and legacy flags');
   const rail = () => page.locator('[data-testid=product-rail]:visible');
-  assert.deepEqual(await rail().locator('.edu-nav-group-title').evaluateAll(items => items.map(x => x.getAttribute('data-testid'))),
-    ['ask','materials','teaching','students'].map(space => 'nav-group-'+space));
+  assert.deepEqual(await rail().locator('[data-testid^="nav-group-"]').evaluateAll(items => items.map(x => x.getAttribute('data-testid'))),
+    ['teaching','students'].map(space => 'nav-group-'+space));
+  async function navigate(view) {
+    const kind = view === 'artifacts' ? 'teaching' : ['students','intake'].includes(view) ? 'students' : null;
+    if(kind) { const toggle=rail().getByTestId('nav-group-'+kind); if(await toggle.getAttribute('aria-expanded') !== 'true') await toggle.click(); }
+    await page.locator('.edu-shell:visible').getByTestId(view === 'ai' ? 'nav-ai-workspace' : 'nav-'+view).click();
+  }
   assert.equal(await page.getByTestId('edu-navigation-footer').getByTestId('nav-settings').count(),1);
   for (const [space, target] of [['materials','materials-workspace'], ['teaching','teaching-artifacts-workspace'], ['students','student-workspace'], ['settings','pi-settings-workspace']]) {
-    await page.locator('.edu-shell:visible').getByTestId('nav-'+({materials:'knowledge',teaching:'artifacts',students:'students',settings:'settings'})[space]).click();
+    await navigate(({materials:'knowledge',teaching:'artifacts',students:'students',settings:'settings'})[space]);
     if (space === 'students') await page.getByTestId('product-space-workspace').waitFor();
     else await page.getByTestId(target).waitFor();
   }
   await rail().getByTestId('nav-ai-workspace').click();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor();
   check('Actual five teacher spaces return to the same sole Pi workspace; no old production shell');
-  await rail().getByTestId('nav-students').click();
+  await navigate('students');
   await page.getByTestId('student-lifecycle-no-student').waitFor();
   assert.deepEqual(studentFacts(), { students: [], records: [] });
   await page.getByTestId('student-create').click();
@@ -81,13 +86,13 @@ try {
   await form.getByLabel('家长关注点', { exact: true }).fill('每周提供已确认进步反馈。');
   await page.getByTestId('student-form-save').click();
   await page.getByTestId('student-lifecycle-feedback-success').waitFor();
-  await rail().getByTestId('nav-intake').click();
+  await navigate('intake');
   await page.getByTestId('record-form-subject').fill('数学');
   await page.getByTestId('record-form-title').fill('新版时间线真实记录');
   await page.getByTestId('record-form-content').fill('教师通过界面保存的课堂事实；不自动作为掌握度结论。');
   await page.getByTestId('record-form-save').click();
   await page.waitForFunction(() => !document.querySelector('[data-testid=record-form-title]')?.value);
-  await rail().getByTestId('nav-students').click();
+  await navigate('students');
   await studentLayout();
   const before = studentFacts();
   assert.equal(before.students.length, 1); assert.equal(before.records.length, 1);
@@ -107,7 +112,7 @@ try {
     const png = `current-students-${theme}-${width}x${height}.png`;
     await page.screenshot({path:path.join(output,png),animations:'disabled'}); report.screenshots.push(png);
   }
-  check('New student page fits both target sizes and themes with the current category sidebar and timeline');
+  check('New student page fits both target sizes and OS color preferences with the current workbench sidebar and timeline');
   await rail().getByTestId('nav-ai-workspace').click();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor();
   const session = await page.locator('.office-composer-container').getAttribute('data-session-id');
@@ -127,7 +132,7 @@ try {
   assert.equal(await page.locator('.office-composer-container').getAttribute('data-session-id'), session);
   assert(page.url().startsWith('file:') && page.url().includes('/out/renderer/index.html'));
   check('Cold restart uses the same default build and restores the same owned local session');
-  await rail().getByTestId('nav-students').click(); await studentLayout();
+  await navigate('students'); await studentLayout();
   assert.deepEqual(studentFacts(), before);
   check('Cold restart preserves the exact student and learning facts in the new page');
   assert.deepEqual(report.rendererErrors, []);

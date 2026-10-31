@@ -22,7 +22,7 @@ async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_E
 function native(){const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{const binding=db.prepare('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(session);const file=path.join(data,'xiaozhi-pi',binding.session_file),bytes=fs.readFileSync(file);return {file,bytes,rows:bytes.toString('utf8').trimEnd().split('\n').map(JSON.parse)};}finally{db.close();}}
 const results=n=>n.rows.filter(row=>row.message?.role==='toolResult'&&row.message.toolName==='office_read_document');
 function payload(row){try{return JSON.parse(row.message.content.filter(x=>x.type==='text').map(x=>x.text).join(''));}catch{return undefined;}}
-async function send(prompt){const input=page.getByTestId('office-prompt-input');await input.fill(prompt);await page.locator('.office-composer [data-slot="prompt-input-send"]').click();assert.equal(await input.inputValue(),'');}
+async function send(prompt){const input=page.getByTestId('office-prompt-input');await input.fill(prompt);await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();assert.equal(await input.inputValue(),'');}
 async function completed(){await until(async()=>{const s=await snapshot();if(!s.running&&s.projection.turns.at(-1)?.status==='failed')throw new Error(`Provider run failed: ${s.projection.turns.at(-1).error}`);return !s.running&&s.projection.turns.at(-1)?.status==='completed';});return (await snapshot()).projection.turns.at(-1);}
 try{
   await launch();await page.getByTestId('pi-files-toggle').click();await page.getByTestId('pi-file-error').waitFor();await app.evaluate(({dialog},root)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[root]});},workspace);
@@ -68,7 +68,7 @@ try{
   await page.evaluate(inputs=>{globalThis.previewResults=[];globalThis.previews=inputs.map(input=>window.omniEdu.previewXiaozhiFile(input).then(value=>{globalThis.previewResults.push(value);return value;}));},previewRequests);
   await until(async()=>await page.evaluate(()=>globalThis.previewResults.some(value=>!value.ok&&value.error==='busy')));assert.equal(await app.evaluate(()=>globalThis.heldDocumentStarts),8);
   check('Actual model read plus previews share the 8-native-worker cap; excess preview reports busy and no API credential reaches worker');
-  await page.locator('.office-composer [data-slot="prompt-input-send"]').click();await until(async()=>!(await snapshot()).running);
+  await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();await until(async()=>!(await snapshot()).running);
   await page.evaluate(async inputs=>{await Promise.all(inputs.map(input=>window.omniEdu.cancelXiaozhiFile({sessionId:input.sessionId,requestId:input.requestId})));await Promise.all(globalThis.previews);},previewRequests);
   await until(async()=>await app.evaluate(()=>globalThis.heldDocumentExits===globalThis.heldDocumentStarts));
   assert.equal((await snapshot()).projection.turns.at(-1).status,'interrupted');check('Composer stop cancels an actual read utility and prevents late model continuation (dispatch held by test)');

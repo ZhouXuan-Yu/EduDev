@@ -73,7 +73,7 @@ try{
   assert.equal((await snapshot(session)).projection.turns.length,0);
   const code='DAILY-COPY-'+randomUUID();
   await page.getByTestId('office-prompt-input').fill('这是配置兼容验收，不涉及任何资料。请只回复下面的无敏感核验码：'+code);
-  await page.locator('.office-composer [data-slot="prompt-input-send"]').click();
+  await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();
   const turn=await until(async()=>{const state=await snapshot(session),last=state.projection.turns.at(-1);return !state.running&&last&&['completed','failed','interrupted'].includes(last.status)?last:undefined;});
   assert.equal(turn.status,'completed',turn.error);
   assert(turn.items.some(item=>item.kind==='message'&&item.role==='assistant'&&item.text.includes(code)));
