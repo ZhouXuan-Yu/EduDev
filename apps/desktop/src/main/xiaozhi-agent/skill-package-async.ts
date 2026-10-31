@@ -16,8 +16,11 @@ export async function noLinksAsync(target:string,signal?:AbortSignal){
  let current=anchor;
  for(const part of absolute.slice(anchor.length).split(path.sep).filter(Boolean)){
   signal?.throwIfAborted();current=path.join(current,part);const stat=await io.lstat(current);signal?.throwIfAborted();
-  if(stat.isSymbolicLink()||canonical(await io.realpath(current))!==canonical(current))throw Error('skill_source_changed');
+  if(stat.isSymbolicLink())throw Error('skill_source_changed');
  }
+ // Keep each ancestor's link check, then resolve the complete path once. A
+ // realpath for every prefix walks the same ancestors repeatedly on Windows.
+ if(canonical(await io.realpath(absolute))!==canonical(absolute))throw Error('skill_source_changed');
  signal?.throwIfAborted();
  },signal);
 }
