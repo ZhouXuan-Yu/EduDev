@@ -37,7 +37,8 @@ try{
  const {defaultPaperBlueprint}=await load('shared/paper-blueprint.ts');
  const {PaperReviewPanel}=await load('renderer/components/PaperReviewPanel.tsx');
  const {PaperBlueprintWorkspace}=await load('renderer/components/PaperBlueprintWorkspace.tsx');
- const {DesktopFrame,useDesktopNavigation,useDesktopCommands}=await load('renderer/components/desktop/DesktopFrame.tsx');
+ const {DesktopFrame,useDesktopNavigation,useDesktopCommands,useDesktopNavigationGuard}=await load('renderer/components/desktop/DesktopFrame.tsx');
+ const {PAPER_UI_DRAFT_KEY,validPaperUiDraft,readPaperUiDraft}=await load('renderer/components/paper-ui/paper-draft-storage.ts');
  const snapshot=id=>({id,sessionId:'session-fixture',title:id,state:'pending',count:0,totalPoints:100,revision:1,blueprint:{...defaultPaperBlueprint(),title:id},complete:true,sourceCurrent:true,exportCurrent:true,answerVerified:false,selection:{items:[],shortages:[],scanned:0,scanComplete:true,excluded:{unsupported:0,missing_answer:0,source_unavailable:0},duplicateRecords:0}});
  root=createRoot(document.getElementById('root'));
  for(const oldOutcome of ['success','failure']){
@@ -55,11 +56,13 @@ try{
   check('B alone commits and releases busy '+oldOutcome,()=>{assert.deepEqual(changed,['B']);assert.equal(find('paper-confirm').disabled,false);});
   await run(()=>root.render(null));
  }
- let nav,nativeCommand;
+ let nav,nativeCommand,setOtherBlocked;
  const saved={...snapshot('saved'),state:'confirmed'};
  window.omniEdu={listPapers:async()=>({ok:true,value:[saved]}),reviewPaper:async()=>({ok:true,value:saved}),getDesktopChrome:async()=>({enabled:false}),onDesktopCommand:handler=>{nativeCommand=handler;return()=>{};}};
  function Host(){
   nav=useDesktopNavigation();
+  const [otherBlocked,updateOtherBlocked]=React.useState(false);setOtherBlocked=updateOtherBlocked;
+  useDesktopNavigationGuard(otherBlocked,'另一个页面的编辑未保存');
   useDesktopCommands(command=>{if(command==='settings'){nav.navigate({view:'settings'});return true;}return false;});
   return nav.target.view==='paper'?React.createElement(PaperBlueprintWorkspace):React.createElement('p',null,nav.target.view);
  }
@@ -88,5 +91,62 @@ try{
   check(owner+' only confirmed discard releases navigation',()=>assert.equal(nav.target.view,'knowledge'));
   await run(()=>nav.navigate({view:'paper'}));
  }
+ const sessionId='aisession_11111111-1111-4111-8111-111111111111';
+ const paperId='xipaper_22222222-2222-4222-8222-222222222222';
+ const generatedBlueprint={...defaultPaperBlueprint(),mode:'hybrid',sections:defaultPaperBlueprint().sections.map(section=>({...section,generatedCount:1}))};
+ const record={schemaVersion:'edudev.paper-ui-draft.v1',blueprint:generatedBlueprint,contextOwner:sessionId,targetSessionId:sessionId,currentView:{id:paperId,sessionId}};
+ check('strict recovery accepts blueprint/reference only',()=>assert(validPaperUiDraft(record)));
+ for(const patch of [{state:'confirmed'},{digest:'forged-confirmation'},{targetSessionId:'aisession_33333333-3333-4333-8333-333333333333'},{currentView:{id:paperId,sessionId,state:'confirmed'}},{blueprint:{...generatedBlueprint,totalPoints:999}}]){
+  check('recovery refuses forged state, owner mismatch or invalid blueprint '+JSON.stringify(Object.keys(patch)),()=>assert.equal(validPaperUiDraft({...record,...patch}),false));
+ }
+ let created=0,confirmCalls=0,createPaperCalls=0;
+ const context={sessionId,title:'已有题组任务',subject:'数学',grade:'初二',originalCount:10,variationCount:10};
+ window.omniEdu.listPaperGenerationContexts=async()=>({ok:true,value:[context]});
+ window.omniEdu.createAiConversationSession=async()=>{created++;return {session:{id:sessionId}};};
+ window.omniEdu.decidePaper=async()=>{confirmCalls++;throw Error('Recovery must not decide papers');};
+ window.omniEdu.createPaper=async()=>{createPaperCalls++;return {ok:false,error:'shortage'};};
+ const chooseMode=mode=>run(()=>{const select=find('paper-mode');select.value=mode;select.dispatchEvent(new window.Event('change',{bubbles:true}));});
+ await chooseMode('hybrid');await edit('混合蓝图返回恢复');
+ await press(find('paper-generation-open-ai'));
+ check('existing target session handoff bypasses only own guard',()=>{assert.equal(nav.target.view,'ai');assert.equal(nav.target.sessionId,sessionId);assert.equal(created,0);assert(nav.target.draft.includes('混合蓝图返回恢复'));});
+ check('only validated local draft and references are stored',()=>{const stored=readPaperUiDraft(window.sessionStorage);assert.equal(stored.status,'ready');assert.equal(stored.draft.contextOwner,sessionId);assert(!('state' in stored.draft));assert(!('selection' in stored.draft));});
+ await run(()=>nativeCommand('back'));
+ check('back restores complete blueprint/context and dirty guard',()=>{assert.equal(nav.target.view,'paper');assert.equal(find('paper-title').value,'混合蓝图返回恢复');assert.equal(find('paper-mode').value,'hybrid');assert.equal(find('paper-generation-context').value,sessionId);assert(find('paper-discard-edits'));assert.equal(find('paper-step-delivery').disabled,true);assert.equal(window.sessionStorage.getItem(PAPER_UI_DRAFT_KEY),null);});
+ await run(()=>setOtherBlocked(true));await press(find('paper-generation-open-ai'));
+ check('other guard rejects controlled handoff without losing edits',()=>{assert.equal(nav.target.view,'paper');assert.equal(find('paper-title').value,'混合蓝图返回恢复');assert(find('paper-discard-edits'));assert(find('paper-error').textContent.includes('未跳转'));assert.equal(window.sessionStorage.getItem(PAPER_UI_DRAFT_KEY),null);assert.equal(created,0);});
+ await run(()=>setOtherBlocked(false));await run(()=>assert.equal(nav.navigate({view:'knowledge'}),false));
+ check('rejected handoff immediately reinstates own guard',()=>assert.equal(nav.target.view,'paper'));
+ await press(find('paper-generation-open-ai'));await run(()=>nativeCommand('back'));
+ check('retry stays in same target session and remains recoverable',()=>{assert.equal(created,0);assert.equal(find('paper-title').value,'混合蓝图返回恢复');});
+ // Recover an existing pending paper by reference, never from a cached approval.
+ await press(find('paper-discard-edits'));await press(find('paper-discard-continue'));
+ await run(()=>nav.navigate({view:'knowledge'}));
+ let reviewCalls=0;
+ const pendingPaper={...snapshot(paperId),sessionId,blueprint:generatedBlueprint};
+ window.omniEdu.reviewPaper=async input=>{reviewCalls++;assert.equal(input.id,paperId);assert.equal(input.sessionId,sessionId);return {ok:true,value:pendingPaper};};
+ window.sessionStorage.setItem(PAPER_UI_DRAFT_KEY,JSON.stringify(record));
+ await run(()=>nav.navigate({view:'paper'}));await press(find('paper-step-review'));
+ check('restored pending snapshot is re-read but cannot confirm/export',()=>{assert.equal(reviewCalls,1);assert.equal(find('paper-confirm').disabled,true);assert.equal(find('paper-step-delivery').disabled,true);assert(find('paper-draft-status'));assert.equal(confirmCalls,0);assert.equal(createPaperCalls,0);});
+ await press(find('paper-step-blueprint'));await press(find('paper-discard-edits'));await press(find('paper-discard-continue'));
+ await run(()=>nav.navigate({view:'knowledge'}));
+ window.omniEdu.reviewPaper=async()=>({ok:false,error:'permission_denied'});
+ window.sessionStorage.setItem(PAPER_UI_DRAFT_KEY,JSON.stringify(record));
+ await run(()=>nav.navigate({view:'paper'}));
+ check('failed host revalidation retains edits with no actionable snapshot',()=>{assert.equal(find('paper-mode').value,'hybrid');assert.equal(find('paper-step-review').disabled,true);assert.equal(find('paper-step-delivery').disabled,true);assert(find('paper-error').textContent.includes('未能重新核验'));});
+ await press(find('paper-discard-edits'));await press(find('paper-discard-continue'));
+ await press([...document.querySelectorAll('button')].find(button=>button.textContent==='新建蓝图'));
+ window.omniEdu.listPaperGenerationContexts=async()=>({ok:true,value:[]});
+ await chooseMode('ai_original');await edit('原创新任务草稿');
+ await press(find('paper-generation-open-ai'));await run(()=>nativeCommand('back'));
+ check('new original task returns to its own unavailable context without pretending approval',()=>{assert.equal(created,1);assert.equal(find('paper-title').value,'原创新任务草稿');assert.equal(find('paper-generation-context').value,sessionId);assert(find('paper-generation-empty'));assert.equal(find('paper-step-delivery').disabled,true);});
+ await press(find('paper-generate'));
+ check('unapproved generated context still cannot create or confirm',()=>{assert.equal(createPaperCalls,0);assert.equal(confirmCalls,0);assert(find('paper-error').textContent.includes('已确认题组'));});
+ await press(find('paper-generation-open-ai'));await run(()=>nativeCommand('back'));
+ check('repeated supplement reuses new session instead of orphaning another task',()=>assert.equal(created,1));
+ await press(find('paper-discard-edits'));await press(find('paper-discard-continue'));
+ await run(()=>nav.navigate({view:'knowledge'}));
+ window.sessionStorage.setItem(PAPER_UI_DRAFT_KEY,'{corrupted');
+ await run(()=>nav.navigate({view:'paper'}));
+ check('corrupt draft fails closed and is removed',()=>{assert.equal(find('paper-mode').value,'source_only');assert.equal(find('paper-step-review').disabled,true);assert.equal(find('paper-step-delivery').disabled,true);assert(find('paper-error').textContent.includes('损坏'));assert.equal(window.sessionStorage.getItem(PAPER_UI_DRAFT_KEY),null);assert.equal(confirmCalls,0);});
  console.log(JSON.stringify({success:true,passed,scope:'mounted U4 components; preload fixtures only; no build/Electron/model'}));
 }finally{if(root)await act(async()=>root.unmount());await server.close();dom.window.close();}

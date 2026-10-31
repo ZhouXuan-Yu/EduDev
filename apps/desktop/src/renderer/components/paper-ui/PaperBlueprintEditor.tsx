@@ -27,6 +27,7 @@ export function PaperBlueprintEditor({blueprint,busy,loading,contextsLoading,con
       </div>
    {blueprint.mode!=='source_only'&&<div data-testid="paper-generation-contexts">
       <label>已确认题组的出题任务<select data-testid="paper-generation-context" value={contextOwner} disabled={contextsLoading} onChange={e=>{onContext(e.target.value);}}>
+      {contextOwner&&!contexts.some(context=>context.sessionId===contextOwner)&&<option value={contextOwner} disabled>此出题任务尚无可用的已确认题组，请先补充并核对</option>}
       <option value="">{contextsLoading?'正在核对已确认题组…':'选择出题任务'}</option>{contexts.map(c=>
       <option key={c.sessionId} value={c.sessionId}>{c.title} · 原创{c.originalCount}题 · 变式{c.variationCount}题</option>)}</select></label>
       <p>仅使用此任务中教师已确认、当前版本仍有效的题目；不把待审或失败题混入试卷。</p>{!contextsLoading&&!contexts.length&&<p data-testid="paper-generation-empty">当前学科年级还没有可用的已确认生成题。</p>}<Button variant="secondary" data-testid="paper-generation-open-ai" onPress={onSupplement}>前往小智补充题组</Button></div>}
