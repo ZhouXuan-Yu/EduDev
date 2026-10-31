@@ -10,6 +10,7 @@ for(const [name,prepare,expected,status]of [
  ['A role change at the writer boundary rejects the stale extraction atomically',f=>{f.state.changeBeforeWrite=true;},0,'failed'],
  ['A cover remains outside the question bank',f=>{f.state.text='5年中考3年模拟\n2026秋\n物理 九年级全一册\n科学备考';},0,'complete'],
  ['An explicitly marked removable advertising page cannot archive its miniature example',f=>{f.state.text='【温馨提示】本页为广告页，打印前可以把这页删掉\n第1题 已知热水温度，求结果。';},0,'complete'],
+ ['A question quoting advertisement instructions is not discarded',f=>{f.state.text='第1题 已知某广告写着：本页为广告页，打印前可以把这页删掉。请说明其中的物理含义。';},1,'complete'],
  ['A genuine exercise on the final page is preserved',f=>{f.state.text='第27题 已知小球质量为10g，计算重力。';},1,'complete'],
  ['Ordinary question-book extraction still publishes its original source record',()=>{},1,'complete']
 ]){const f=fixture();try{prepare(f);assert(await f.archive.drain());assert.equal(f.db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n,expected);const row=f.db.prepare('SELECT status,error FROM material_question_jobs').get();assert.equal(row.status,status);if(status==='failed')assert.equal(row.error,'source_changed');checks++;console.log('PASS '+name);}finally{f.db.close();}}
