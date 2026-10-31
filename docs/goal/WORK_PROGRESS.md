@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+2026-11-01整合收尾：主线c4cd89c已整合为ae18b85，13处Markdown冲突保留双方，无生产代码冲突；原恢复源码c61bd4e不变。最终build/type、240组件与同文件/同任务实际Pi冷启读回3项exit0，0模型/工具请求与renderer错误，文件/事件/任务记录未重写。原Pi7及9/5/15/5仍按原构建归档，一次207只属较早混合out运行。完整28WP/252REQ/AT目标与阶段顺序不变，Goal active；日常D盘/安装包未更新。精确指纹见docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice.lastIntegration。
+
 2026-11-01 E07落账失败原地恢复工程已实现（c61bd4e）：真实文件已保存后journal失败，重新读取会等待旧执行/数据库回调及实际工具归零，核对原事件、native与文件账本后修复原run/task并解除阻断；不重放模型/工具/审批。默认生成目录与独立Office导出目录纳入原效果核对，改动/缺失仍uncertain。
 
 源码9、真实账本/文件5、原回执15、取消回归5、最终正式Pi7（双尺寸/冷启）及build/type通过，240组件同最终renderer。一次207/207归较早legacy启动，期间out被重建，不作为最终构建全套证据；最终Pi与专项覆盖本次源码。完整E07/252AT仍待阶段集中，本轮完整AT新增已实现0。

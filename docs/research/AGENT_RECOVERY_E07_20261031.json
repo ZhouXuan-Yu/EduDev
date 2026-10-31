@@ -335,6 +335,47 @@
     ],
     "paidRequests": 0,
     "archive": "docs/research/AGENT_RECOVERY_E07_20261031/record-recovery",
-    "rollback": "Coordinate active work, then revert source commit; retains original files/journal/task lineage and original restart path. No DDL/downmigration. Full rollback not exercised."
+    "rollback": "Coordinate active work, then revert source commit; retains original files/journal/task lineage and original restart path. No DDL/downmigration. Full rollback not exercised.",
+    "lastIntegration": {
+      "commit": "ae18b8574656e966561edd036705c74f23ab656b",
+      "upstream": "c4cd89c",
+      "markdownConflicts": 13,
+      "resolution": "Preserved both current recovery and collaborator knowledge-base records; no production code conflict. Imported main has 10 material/OCR files; own recovery code unchanged.",
+      "build": {
+        "main/index.js": {
+          "bytes": 3331703,
+          "sha256": "a674d7d3f6dc1f0a19a7517c33591c5429bccd6ccda31ffa63525a26920a2789"
+        },
+        "preload/index.cjs": {
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        "renderer/assets/index-DkLti_dg.js": {
+          "bytes": 7259797,
+          "sha256": "7db874113edfd890c90d4f8b8e71b5355661f47b916ef0c5dbc9e7ec2794fe80"
+        }
+      },
+      "tests": {
+        "buildAndType": {
+          "command": "npm --prefix apps/desktop run build",
+          "exit": 0
+        },
+        "renderer": {
+          "command": "npm --prefix apps/desktop run test:renderer-components",
+          "passed": 240,
+          "exit": 0
+        },
+        "coldReadback": {
+          "command": "node docs/research/AGENT_RECOVERY_E07_20261031/record-recovery/integration-readback.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-6GJIx4",
+          "passed": 3,
+          "exit": 0,
+          "modelOrToolRequests": 0,
+          "rendererErrors": 0,
+          "report": "docs/research/AGENT_RECOVERY_E07_20261031/record-recovery/integration-readback.json"
+        }
+      },
+      "fixtureFailure": "First read-only fixture indexed sorted task session pointer as full task. Changed to exact task-key lookup; final3 passes, durable records unchanged. Initial failure archived.",
+      "limits": "No repeat of full legacy207 or original Pi7; original Pi7 belongs source c61bd4e, final integrated cold3 proves existing task/file/event facts. D daily/installer unchanged, full252AT0."
+    }
   }
 }
