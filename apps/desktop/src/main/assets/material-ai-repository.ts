@@ -17,7 +17,7 @@ import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
 import type {RuleOrigin} from './material-question-origins';
-import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,validAiPagePrompt,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
+import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,MATERIAL_BOOK_PAGE_POLICY,pageResponseMatchesPolicy,validAiPagePrompt,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
 import {readAiPageSource,validateAiPageSource} from './material-ai-page-source';
 import {restoredPageQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
@@ -118,7 +118,7 @@ export class MaterialAiRepository{
     const role=await this.books.role(input.resourceId);
     if(role?.kind==='answers'&&(!input.images||!/\.pdf$/i.test((await this.host.materials().resource(input.resourceId)).originalFileName)))throw Error('answer_book_requires_images');
     const units=await this.rawInputs(input);
-    return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role})):units;
+    return role?.kind==='answers'?units.map(unit=>({...unit,bookRole:role,...(unit.pageSource?{bookPagePolicy:MATERIAL_BOOK_PAGE_POLICY}:{})})):units;
   }
   private async rawInputs(input:AiBatchInput):Promise<AiUnitInput[]>{
     const resource=await this.host.materials().resource(input.resourceId);
@@ -221,6 +221,7 @@ export class MaterialAiRepository{
     await this.validateOriginalInput(proof.config,proof.unit);return proof;
   }
   private async validateOriginalInput(config:AiBatchInput,unit:AiUnitInput){
+    if(unit.bookPagePolicy!==undefined&&(unit.bookPagePolicy!==MATERIAL_BOOK_PAGE_POLICY||!unit.pageSource||!unit.pagePrompt||unit.bookRole?.kind!=='answers'||!validMaterialBookRole(unit.bookRole)))throw Error('source_changed');
     if(unit.pagePrompt!==undefined&&(!unit.pageSource||!validAiPagePrompt(unit.pagePrompt)))throw Error('source_changed');
     const resource=await this.host.materials().resource(config.resourceId);
     if(resource.contentHash!==config.version||await this.host.materials().originalStamp(resource.id,config.version)!==unit.stamp)throw new Error('source_changed');
@@ -282,7 +283,7 @@ export class MaterialAiRepository{
     if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.first,proof.final,source,proof.unit.bookRole?.kind==='answers');
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit,true);
-    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:pageTranscriptionStatus(proof.first,proof.final),issues:proof.final.pageIssues,...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(proof.unit.bookRole?.kind==='answers'?{bookAnswers:bookAnswerPage(proof.first,proof.final)}:{})};
+    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:proof.unit.bookRole?.kind==='answers'&&assessment.review?'needs_review':pageTranscriptionStatus(proof.first,proof.final),issues:proof.final.pageIssues,...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{}),...(proof.unit.bookRole?.kind==='answers'?{bookAnswers:bookAnswerPage(proof.first,proof.final)}:{})};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');
@@ -367,13 +368,14 @@ export class MaterialAiRepository{
       const imageSha=image?hash(Buffer.from(image.data,'base64')):'';
       const complete=async(args:Parameters<AiCompletion>[0])=>{
         if(unit.pagePrompt)args={...args,pagePrompt:unit.pagePrompt};
+        if(unit.bookPagePolicy)args={...args,bookPagePolicy:unit.bookPagePolicy};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
         const beforeSend=async()=>{if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
         if(this.runtime!.complete){await beforeSend();transportStarted=true;return this.runtime!.complete(args,signal);}
         return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;}},signal);
       };
       if(row.first_json&&row.image_sha!==imageSha)throw new Error('source_changed');
-      const parse=(raw:string)=>{const parsed=unit.pageSource?parseAiPageResponse(raw):parseAiBatchResponse(raw);if(unit.bookRole?.kind==='answers'&&(parsed.questions.length||parsed.outcome==='questions'))throw Error('invalid_response');return parsed;};
+      const parse=(raw:string)=>{const parsed=unit.pageSource?parseAiPageResponse(raw):parseAiBatchResponse(raw);if(unit.pageSource&&!pageResponseMatchesPolicy(parsed as AiPageResponse,unit.bookPagePolicy,unit.bookRole?.kind==='answers')||unit.bookRole?.kind==='answers'&&(parsed.questions.length||parsed.outcome==='questions'))throw Error('invalid_response');return parsed;};
       let firstRaw=String(row.first_json),first:AiBatchResponse|AiPageResponse|undefined=firstRaw?parse(firstRaw):undefined;
       if(!first){
         await this.guard(batchId,config,unit,signal);
@@ -390,12 +392,12 @@ export class MaterialAiRepository{
       const cleanDraft=structuredClone(first);
       for(const question of cleanDraft.questions)for(const field of ['stem','answer','analysis','subject','grade','knowledgePoint','questionType'] as const)question[field]=await this.runtime.clean(question[field]);
       // Coverage text is also untrusted model output and must be redacted before the second dispatch.
-      if(cleanDraft.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||cleanDraft.schemaVersion===MATERIAL_AI_PAGE_RESPONSE)for(const q of cleanDraft.questions)for(const part of Object.values(q.projection))part.text=await this.runtime.clean(part.text);
-      if(cleanDraft.schemaVersion===MATERIAL_AI_PAGE_RESPONSE&&await this.runtime.clean(cleanDraft.pageText)!==cleanDraft.pageText)throw Error('privacy_blocked');
+      if(cleanDraft.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in cleanDraft)for(const q of cleanDraft.questions)for(const part of Object.values(q.projection))part.text=await this.runtime.clean(part.text);
+      if('pageText'in cleanDraft&&await this.runtime.clean(cleanDraft.pageText)!==cleanDraft.pageText)throw Error('privacy_blocked');
       const safeFirst=parse(JSON.stringify(cleanDraft));
       await this.guard(batchId,config,unit,signal);
       lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
-      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||safeFirst.schemaVersion===MATERIAL_AI_PAGE_RESPONSE,previous:safeFirst,...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
+      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:safeFirst,...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
       if(unit.pageSource){
         const pageFirst=parseAiPageResponse(firstRaw),pageFinal=parseAiPageResponse(finalRaw);
         if(!image||await this.runtime.clean(pageFinal.pageText)!==pageFinal.pageText)throw Error('privacy_blocked');
@@ -407,7 +409,7 @@ export class MaterialAiRepository{
           await target.guard(batchId,config,unit,signal);
         },()=>signal.throwIfAborted());lease='';return true;
       }
-      if(first!.schemaVersion===MATERIAL_AI_PAGE_RESPONSE||final.schemaVersion===MATERIAL_AI_PAGE_RESPONSE)throw Error('invalid_response');
+      if('pageText'in first!||'pageText'in final)throw Error('invalid_response');
       const legacyFirst=first!;
       if(final.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE&&!image)throw Error('invalid_response');
       const sourceUnits=[];
