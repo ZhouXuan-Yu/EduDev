@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 下一步：继续E07工具运行/下载/审批等待停止及崩溃/回执冲突矩阵、E08 HTML和来源定位+C；再按既定顺序S/T，功能齐后集中验收。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
 2026-11-01整合收尾：主线c4cd89c已整合为ae18b85，13处Markdown冲突保留双方，无生产代码冲突；原恢复源码c61bd4e不变。最终build/type、240组件与同文件/同任务实际Pi冷启读回3项exit0，0模型/工具请求与renderer错误，文件/事件/任务记录未重写。原Pi7及9/5/15/5仍按原构建归档，一次207只属较早混合out运行。完整28WP/252REQ/AT目标与阶段顺序不变，Goal active；日常D盘/安装包未更新。精确指纹见docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice.lastIntegration。
 
 2026-11-01 E07落账失败原地恢复工程已实现（c61bd4e）：真实文件已保存后journal失败，重新读取会等待旧执行/数据库回调及实际工具归零，核对原事件、native与文件账本后修复原run/task并解除阻断；不重放模型/工具/审批。默认生成目录与独立Office导出目录纳入原效果核对，改动/缺失仍uncertain。

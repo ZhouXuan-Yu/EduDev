@@ -1,0 +1,13 @@
+(node:63740) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Attempt binds the existing receipt, sequence, projection and outbox in the real transaction
+PASS Foreign call, tool, private body and already-settled receipt attempts roll back
+PASS A native failure cannot erase an unknown external effect in recovery
+PASS A new cold journal restores the persisted unknown effect and never invents success
+PASS Never-delivered blocked operation cannot claim unknown effect or become admitted
+PASS Real SQLite attempt-event write refusal rolls back uncertain flag with event/projection/outbox
+PASS Cancelled admitted write without a final attempt event remains uncertain, while matched independent effect can resolve it
+PASS A cancelled pure read without a final attempt stays failed, with no invented external effect or replay
+PASS Queued read persists before admission and cold recovery marks it not delivered without replay
+PASS Ordinary missing-file category persists on the existing receipt and restores unchanged after cold recovery
+{"success":true,"checks":10,"output":"C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-tool-attempt-journal-U2xi2K"}

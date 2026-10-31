@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Missing file keeps a directory-check action instead of unknown failure",
+      "pass": true
+    },
+    {
+      "name": "Persistent busy read shows the real category and exhausted attempts",
+      "pass": true
+    },
+    {
+      "name": "Unknown write effect after timeout tells teacher to check and not repeat, without claiming the write was stopped",
+      "pass": true
+    },
+    {
+      "name": "Permission failure is shown as unauthorized with one attempt, never successful retry",
+      "pass": true
+    },
+    {
+      "name": "Bounded pending second read is shown as preparation, never already completed",
+      "pass": true
+    },
+    {
+      "name": "Legacy history without attempt adds no invented count or unknown effect",
+      "pass": true
+    },
+    {
+      "name": "Private or forged-success attempt summary is rejected by existing component contract",
+      "pass": true
+    },
+    {
+      "name": "Queued reads display waiting, with no fake teacher decision or completed work",
+      "pass": true
+    },
+    {
+      "name": "Completed reads expose independent queue/execution timing; legacy records invent neither",
+      "pass": true
+    }
+  ],
+  "scope": "SSR safety/presentation contract only; not visual runtime or provider"
+}

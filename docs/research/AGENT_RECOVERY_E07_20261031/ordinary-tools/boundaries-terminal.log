@@ -1,0 +1,21 @@
+PASS Every named current production manifest has explicit effect/cancel/deadline; unknown registration fails closed
+PASS Normal result and fifth Pi context pass through, cleanup releases registry and listeners
+PASS SDK input schema rejects missing/extra/wrong fields before any dispatch or admission
+PASS Signal-ignoring write times out with unknown effect, never retries, and retains actual registry until real settlement
+PASS Caller cancellation settles ignoring tool promptly and suppresses late progress across a new run
+PASS Pre-aborted call dispatches no work and acquires no stale registry
+PASS Synchronous tool throw and late rejection are drained without wedging the race
+PASS Teacher waiting pauses active deadline via existing budget; cancellation remains effective during the wait
+PASS Safe web network failure retries once with a distinct internal attempt ID; same logical call is admitted only once
+PASS 429 exhausts exactly two attempts; authentication/401/403/permission never retry
+PASS Local write, parsing cache and image upload never automatically retry their transient errors
+PASS Same-call repetition executes once; changed args conflict; a new run has independent identity
+PASS Process-wide resource fence blocks another session writer after timeout until actual work settles, with zero blocked delivery
+PASS Concurrent safe reads share a lock; a same-resource writer is refused while reads are pending
+PASS Attempt persistence failure prevents a second safe-read dispatch and drains registry
+PASS Malformed and oversized output is rejected; public attempts refuse private fields and fake success
+PASS Typed projection records attempts under only matching tool ID and preserves failure across terminal events
+PASS A blocked local read rechecks the resource once after settlement and is admitted only when dispatchable
+PASS Stop during a resource-busy retry wait delivers no local read or admission
+PASS Terminal status settles only pending read waits; started uncertain effects and original source records are preserved
+{"success":true,"checks":20,"output":"C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-tool-execution-SaGwwb"}

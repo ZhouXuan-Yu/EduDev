@@ -1,0 +1,39 @@
+{
+  "success": false,
+  "checks": [
+    {
+      "name": "Attempt binds the existing receipt, sequence, projection and outbox in the real transaction",
+      "pass": true
+    },
+    {
+      "name": "Foreign call, tool, private body and already-settled receipt attempts roll back",
+      "pass": true
+    },
+    {
+      "name": "A native failure cannot erase an unknown external effect in recovery",
+      "pass": true
+    },
+    {
+      "name": "A new cold journal restores the persisted unknown effect and never invents success",
+      "pass": true
+    },
+    {
+      "name": "Never-delivered blocked operation cannot claim unknown effect or become admitted",
+      "pass": true
+    },
+    {
+      "name": "Real SQLite attempt-event write refusal rolls back uncertain flag with event/projection/outbox",
+      "pass": true
+    },
+    {
+      "name": "Cancelled admitted write without a final attempt event remains uncertain, while matched independent effect can resolve it",
+      "pass": true
+    },
+    {
+      "name": "A cancelled pure read without a final attempt stays failed, with no invented external effect or replay",
+      "pass": true
+    }
+  ],
+  "scope": "Actual SQLite attempt transactions and cold journal recovery; native/effect callbacks controlled, not provider/UI",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'failed' !== 'queued'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-tool-attempt-journal.mjs:47:149\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-tool-attempt-journal.mjs:10:31)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-tool-attempt-journal.mjs:41:2"
+}

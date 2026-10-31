@@ -1,0 +1,10 @@
+(node:26988) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Formal composer executes missing read → actual directory listing → renamed-file read; model sees exact category and current file version, original failure stays recorded
+PASS One transient EBUSY succeeds on the second actual Hana read within the same tool call, without a second model tool request
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator('[data-turn-id="run_90fb51a9-7f7c-4cb0-a0a3-29df38b1a97c"]').getByTestId('pi-tool-attempt') to be visible
+
+    at C:\Users\ZhouXuan\.codex\worktrees\e147\EduProject\apps\desktop\scripts\xiaozhi-agent\ordinary-tool-recovery-electron.mjs:40:565
+{"ok":false,"checks":2,"error":"locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-turn-id=\"run_90fb51a9-7f7c-4cb0-a0a3-29df38b1a97c\"]').getByTestId('pi-tool-attempt') to be visible\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\ordinary-tool-recovery-electron.mjs:40:565","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-ordinary-recovery-ui-l5rodR"}
