@@ -1,4 +1,5 @@
 import type { XiaozhiAgentEventPayload } from '../../shared/xiaozhi-agent';
+import {createPublicProviderTextFilter, publicProviderText, type PublicSegmentClose} from '../../shared/public-provider-text';
 export { REPLY_PRESENTATION_PROMPT } from './public-response-prompt';
 
 const markers = { commentary: '<xiaozhi_progress>', final_answer: '<xiaozhi_answer>' } as const;
@@ -9,33 +10,14 @@ export function capturePresentationOrder() {
 }
 /** Parse only an explicit segment prefix. No prose classifier, timer or extra model call. */
 export function createPresentationEventAdapter(emit: (event: XiaozhiAgentEventPayload) => void) {
-  let segment = 0,
-    prefix = '',
-    decided = false,
-    separator = false,
-    closing = '',
-    tail = '';
+  let segment = 0, prefix = '', decided = false, separator = false;
+  const publish = (delta: string) => { if (delta) emit({kind:'text_delta', delta}); };
+  let providerText = createPublicProviderTextFilter(publish);
   const write = (value: string) => {
     const delta = separator ? value.trimStart() : value;
     if (!delta) return;
     separator = false;
-    if (!closing) {
-      emit({ kind: 'text_delta', delta });
-      return;
-    }
-    tail += delta;
-    const at = tail.indexOf(closing);
-    if (at >= 0 && /^\s*$/.test(tail.slice(at + closing.length))) {
-      if (at) emit({ kind: 'text_delta', delta: tail.slice(0, at) });
-      tail = tail.slice(at);
-      return;
-    }
-    let keep = 0;
-    for (let size = 1; size < closing.length && size <= tail.length; size++)
-      if (closing.startsWith(tail.slice(-size))) keep = size;
-    const ready = tail.slice(0, tail.length - keep);
-    tail = tail.slice(tail.length - keep);
-    if (ready) emit({ kind: 'text_delta', delta: ready });
+    providerText.delta(delta);
   };
   function decide(final = false) {
     const value = prefix.trimStart();
@@ -43,13 +25,9 @@ export function createPresentationEventAdapter(emit: (event: XiaozhiAgentEventPa
       if (value.startsWith(marker)) {
         decided = true;
         separator = true;
-        closing = marker.replace('<', '</');
-        emit({
-          kind: 'assistant_phase',
-          segment,
-          phase: phase as keyof typeof markers,
-          since: Date.now(),
-        });
+        // One suffix buffer handles either ordering of provider/native end tags.
+        providerText = createPublicProviderTextFilter(publish, marker.replace('<', '</') as PublicSegmentClose);
+        emit({kind:'assistant_phase', segment, phase:phase as keyof typeof markers, since:Date.now()});
         write(value.slice(marker.length));
         prefix = '';
         return;
@@ -73,27 +51,15 @@ export function createPresentationEventAdapter(emit: (event: XiaozhiAgentEventPa
       prefix = '';
       decided = false;
       separator = false;
-      closing = '';
-      tail = '';
+      providerText = createPublicProviderTextFilter(publish);
     },
     delta(value: string) {
       if (decided) write(value);
-      else {
-        prefix += value;
-        decide();
-      }
+      else { prefix += value; decide(); }
     },
     end() {
       if (!decided) decide(true);
-      // Optional provider-added closing tags are protocol only at the segment tail.
-      // Literal closing tags in fenced/inline code have following characters and survive.
-      if (
-        tail &&
-        !tail.trimEnd().endsWith(closing) &&
-        !(tail.startsWith('</xiaozhi_') && closing.startsWith(tail))
-      )
-        emit({ kind: 'text_delta', delta: tail });
-      tail = '';
+      providerText.end();
     },
   };
 }
@@ -102,10 +68,7 @@ export function createPresentationEventAdapter(emit: (event: XiaozhiAgentEventPa
 export function visibleAssistantText(text: string) {
   const value = text.trimStart();
   for (const marker of Object.values(markers))
-    if (value.startsWith(marker)) {
-      const body = value.slice(marker.length).trim(),
-        closing = marker.replace('<', '</');
-      return (body.endsWith(closing) ? body.slice(0, -closing.length) : body).trim();
-    }
-  return text;
+    if (value.startsWith(marker))
+      return publicProviderText(value.slice(marker.length), marker.replace('<', '</') as PublicSegmentClose).trim();
+  return publicProviderText(text);
 }

@@ -115,6 +115,7 @@ import {validLearningBatchDecision,validLearningReview,type LearningReviewBatchD
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {readModelReasoning} from '../../shared/model-reasoning';
 import { applyXiaozhiEvent, XIAOZHI_ERRORS } from '../../shared/xiaozhi-projection';
+import {publicProviderTurn} from '../../shared/public-provider-text';
 import {readPublicStages} from '../../shared/public-trace';
 import {publicMessageText} from '../../shared/xiaozhi-message-presentation';
 import { createPiApprovalCoordinator } from './approval-coordinator';
@@ -530,6 +531,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if (index >= 0) projection.turns[index] = applyXiaozhiEvent(projection.turns[index],
         { kind: 'usage', usage: metrics, sessionId: id, runId: metrics.runId, sequence: 0 });
     }
+    // Derive the public view after journal/history hydration; persisted audit remains untouched.
+    projection.turns = projection.turns.map(publicProviderTurn);
     return { enabled, fileWritesEnabled:fileWritesEnabled(), projection, eventCursors: durable.map(saved=>saved.cursor), ...(journalFailures.has(id)?{eventPersistence:'unavailable' as const}:{}), running: Boolean(current)&&!journalFailures.has(id), ...(detail.session.studentId?{studentContext:{id:detail.session.studentId,label:selectedStudent?.displayName||'学生档案不可用',status:selectedStudent?.status||'missing'}}:{}), ...(current?.operation === 'compact' ? { operation: 'compact' as const } : {}), legacyHistory: legacyHistory && !binding, interruptedSend,
       modelCapabilities, contextPolicy: current?.agent?.contextPolicy() || { auto: options.autoCompaction === true && Boolean(modelCapabilities), verified: Boolean(modelCapabilities),
         window: Math.min(modelCapabilities?.contextWindow || 32768, options.testContextWindow || Infinity), maxOutputTokens: answerQualityEnabled()?resolveAnswerPolicy('',modelCapabilities).maxOutputTokens:Math.min(4096, modelCapabilities?.maxOutputTokens || 4096),
