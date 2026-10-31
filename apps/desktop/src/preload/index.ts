@@ -345,6 +345,8 @@ const api = {
   searchQuestionsByMeaning:(input:QuestionSearchFilters)=>ipcRenderer.invoke('retrieval:questions',input) as Promise<{questions:SimilarQuestionMatch[];semantic?:import('../shared/retrieval').SemanticCoverage}>,
   saveMaterialAiSettings:(input:AiSettingsInput)=>ipcRenderer.invoke('materials:ai-save-settings',input) as Promise<AiSettings>,
   getMaterialAiBatches:(resourceId:string,offset=0)=>ipcRenderer.invoke('materials:ai-list',resourceId,offset) as Promise<AiBatchView[]>,
+  getMaterialBookMatches:(input:import('../shared/question-book-answer').BookMatchQuery)=>ipcRenderer.invoke('materials:book-matches',input) as Promise<import('../shared/question-book-answer').BookMatchView>,
+  matchMaterialBookAnswers:(input:import('../shared/question-book-answer').BookMatchQuery)=>ipcRenderer.invoke('materials:book-match',input) as Promise<import('../shared/question-book-answer').BookMatchView>,
   getMaterialAiPage:(input:AiPageQuery)=>ipcRenderer.invoke('materials:ai-page',input) as Promise<AiPageView>,
   createMaterialAiBatch:(input:AiBatchInput)=>ipcRenderer.invoke('materials:ai-create',input) as Promise<string>,
   controlMaterialAiBatch:(input:AiAction)=>ipcRenderer.invoke('materials:ai-action',input) as Promise<void>,

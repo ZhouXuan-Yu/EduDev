@@ -1,10 +1,11 @@
+import {MaterialBookMatches} from './MaterialBookMatches';
 import {useEffect,useState} from 'react';
 import {MATERIAL_AI_PAGE,MATERIAL_IMAGE_SOURCE,type AiPageView} from '../../../shared/material-ai-page';
 import {MaterialBookAnswers} from './MaterialBookAnswers';
 import {MaterialOriginalPreview} from './MaterialOriginalPreview';
 import './material-ai.css';
 import type {AiTextSource} from '../../../shared/material-ai-text';
-export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,initiallyOpen=false}:{batchId:string;ordinal?:number;units?:{ordinal:number;pageSource?:boolean}[];start?:number;reference?:AiTextSource;initiallyOpen?:boolean}){
+export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,initiallyOpen=false,bookRevision}:{batchId:string;ordinal?:number;units?:{ordinal:number;pageSource?:boolean}[];start?:number;reference?:AiTextSource;initiallyOpen?:boolean;bookRevision?:number}){
  const choices=units?.filter(u=>u.pageSource).map(u=>u.ordinal)||[ordinal];
  const referenceKey=reference?JSON.stringify(reference):'';
  const [open,setOpen]=useState(initiallyOpen),[selected,setSelected]=useState(ordinal),[view,setView]=useState<AiPageView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[revision,setRevision]=useState(0),[imageOpen,setImageOpen]=useState(false);
@@ -36,6 +37,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
      <button className="secondary-action" data-testid="material-ai-page-image-open" onClick={()=>setImageOpen(v=>!v)}>{imageOpen?'收起核对图':'查看AI核对输入图'}</button>
      {imageOpen&&<><p>这是两遍AI实际核对的输入图，可能经过缩放；完整原件保留在本机资料库。</p><img src={view.inputImage.dataUrl} alt="两遍AI核对的资料图片" style={{maxWidth:'100%',height:'auto'}} data-testid="material-ai-page-image"/></>}
     </div>}
+    {bookRevision&&<MaterialBookMatches key={`${batchId}:${selected}:${bookRevision}`} batchId={batchId} ordinal={selected} revision={bookRevision}/>}
     {view.bookAnswers&&<MaterialBookAnswers page={view.bookAnswers}/>}
     <details><summary>本地识别对照文字</summary><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}</pre></details>
     <p>AI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。</p><pre className="material-ai-page-text" data-testid="material-ai-page-text">{view.text||'本次原图两遍复核未转录出文字。'}</pre>

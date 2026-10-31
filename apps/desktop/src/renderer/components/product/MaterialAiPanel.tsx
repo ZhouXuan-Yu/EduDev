@@ -23,7 +23,7 @@ export function MaterialAiPanel({resource}:{resource:TeacherResource}){
   async function action(id:string,action:AiAction['action']){setBusy(true);setError('');try{await window.omniEdu!.controlMaterialAiBatch({schemaVersion:MATERIAL_AI_SCHEMA,batchId:id,action,...(action==='retry_unknown'?{acceptDuplicateCharge:true as const}:{})});setBatches(await window.omniEdu!.getMaterialAiBatches(resource.id,batchOffset));}catch(e){setError(errorText(e));}finally{setBusy(false);}}
   const valid=Number.isSafeInteger(start)&&start>=1&&Number.isSafeInteger(count)&&count>=1&&count<=100&&Number.isSafeInteger(maxCalls)&&maxCalls>=2*count&&maxCalls<=400;
   return <><MaterialBookPanel resource={resource} onChange={bookChanged}/><details className="material-ai" data-testid="material-ai-panel"><summary>AI深度整理（可选）</summary>
-    {book?.role?.kind==='answers'&&<p data-testid="material-ai-answer-role">本文件是独立答案册：两遍对照原图还原答案原文，保留章节、题号和解析；本批次不生成新题。逐题匹配另行处理。</p>}
+    {book?.role?.kind==='answers'&&<p data-testid="material-ai-answer-role">本文件是独立答案册：两遍对照原图还原答案原文，保留章节、题号和解析；本批次不生成新题。已关联题册会在后台匹配已知答案，有疑点时保留候选。</p>}
     <p>按所选范围分析题目、答案与解析，再对原文复核。完整文字题和已保留图义的 Word 题自动定稿入题本，正式组卷时集中确认；AI结果仍可编辑。缺图、跨页或两次结果不一致的题保留待整理。</p>
     <fieldset disabled={busy}><legend>统一 DeepSeek 模型</legend>
       <p>知识库图文整理使用 deepseek-flash，复用小智模型设置中的 DeepSeek API Key，本机OCR照常运行。此处不保存第二份密钥。</p>
@@ -44,7 +44,7 @@ export function MaterialAiPanel({resource}:{resource:TeacherResource}){
     {batches.length===0?<p>没有AI整理批次，导入资料不会自动上传。</p>:batches.map(batch=><article key={batch.id} data-testid="material-ai-batch" data-status={batch.status}>
       <p><strong>{labels[batch.status]||batch.status}</strong> · {batch.model} · 第{batch.start}起{batch.count}项{batch.images?' · 图文对照':' · 正文整理'}</p>
       <p data-testid="material-ai-summary">完成{batch.complete}，待整理{batch.review}，失败{batch.failed}，结果未知{batch.unknown}，等待{batch.pending}；已入题本{batch.questions}题；调用{batch.calls}/{batch.maxCalls}次</p>
-      <MaterialAiPagePanel batchId={batch.id} units={batch.units} start={batch.start}/>
+      <MaterialAiPagePanel bookRevision={book?.role?.kind==='questions'?book.revision:undefined} batchId={batch.id} units={batch.units} start={batch.start}/>
       <div className="toolbar-row">{batch.status==='running'?<button disabled={busy} onClick={()=>void action(batch.id,'pause')}>暂停此批次</button>:batch.pending>0&&batch.status!=='configuration_changed'?<button disabled={busy} onClick={()=>void action(batch.id,'resume')}>继续本批次授权范围</button>:null}
         {batch.unknown>0&&batch.calls<batch.maxCalls&&<button data-testid="material-ai-retry-unknown" disabled={busy||batch.status==='configuration_changed'} onClick={()=>void action(batch.id,'retry_unknown')}>同意可能重复计费，重发未知项</button>}</div>
       {(batch.review>0||batch.failed>0)&&<button disabled={busy} onClick={()=>{setStart(batch.start);setCount(batch.count);setImages(batch.images);setMaxCalls(Math.max(4,batch.count*2));setConsent(false);setPublic(false);setNotice('已复制处理范围，请重新核对并为新批次授权。');}}>重新选择此范围</button>}

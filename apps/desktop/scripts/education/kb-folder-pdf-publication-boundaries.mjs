@@ -11,7 +11,7 @@ function fixture(){
  CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT,parse_engine TEXT,title TEXT);
  CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER);
  CREATE TABLE material_pdf_jobs(resource_id TEXT,version TEXT,total INTEGER,generation TEXT,state TEXT);
- CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT);
+ CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT NOT NULL DEFAULT '{}');
  CREATE TABLE material_ai_batches(id TEXT PRIMARY KEY,status TEXT,calls INTEGER,config_json TEXT,pause_reason TEXT NOT NULL DEFAULT '');
  CREATE TABLE material_ai_units(batch_id TEXT,ordinal INTEGER,status TEXT,error TEXT);
  CREATE TABLE material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT,batch_id TEXT,folder_id TEXT,folder_revision INTEGER);
@@ -33,7 +33,7 @@ function fixture(){
   const rid='resource_'+randomUUID(),generation=randomUUID(),seq=Number(db.prepare('SELECT COALESCE(MAX(seq),0)+1 n FROM material_import_entries').get().n);
   db.prepare('INSERT INTO teacher_resources VALUES(?,?,?,?,?,?)').run(rid,version,name,status,'local:pending',name);
   db.prepare("INSERT INTO material_import_entries VALUES(?,?,'file','saved',?)").run(seq,id,rid);
-  if(name.endsWith('.pdf')){db.prepare('INSERT INTO material_pdf_jobs VALUES(?,?,1,?,?)').run(rid,version,generation,job);db.prepare('INSERT INTO material_pdf_pages VALUES(?,1,?)').run(generation,page);}
+  if(name.endsWith('.pdf')){db.prepare('INSERT INTO material_pdf_jobs VALUES(?,?,1,?,?)').run(rid,version,generation,job);db.prepare('INSERT INTO material_pdf_pages(generation,page,status) VALUES(?,1,?)').run(generation,page);}
   else if(status==='ready')db.prepare('INSERT INTO resource_chunks VALUES(?,?,NULL)').run('chunk_'+randomUUID(),rid);
   return{rid,generation};
  }
@@ -45,6 +45,9 @@ await check('PDF processing page remains waiting, never local_page_failed',async
 await check('Complete staged page waits for canonical publication; published page starts exactly once after restart',async()=>{const f=fixture();try{const r=f.resource('长书.pdf','needs_parser','complete');await f.start();await f.repo.tick();assert.equal((await f.repo.view(f.id)).review,0);assert.equal(f.created.length,0);f.publish(r);await f.reopen();await f.repo.tick();await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].start,1);}finally{f.db.close();}});
 await check('Eight waiting books do not starve later ready text; resource discovery stays bounded',async()=>{const f=fixture();try{for(let i=0;i<8;i++)f.resource('等待.pdf','needs_parser','pending');const ready=f.resource('已完成.md','ready');await f.start();for(let i=0;i<4&&!f.created.length;i++)await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].resourceId,ready.rid);}finally{f.db.close();}});
 await check('Terminal failed and blank pages are queued for original-image verification and never counted complete before the AI executor',async()=>{const f=fixture();try{f.resource('坏页.pdf','partial','failed','partial');f.resource('空页.pdf','ready','blank','complete');await f.start();await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].images,true);assert.equal((await f.repo.view(f.id)).complete,0);assert.equal((await f.repo.view(f.id)).waiting,1);}finally{f.db.close();}});
+await check('A successfully read explicit cover completes locally without a paid task; a mixed or unclear cover is retained',async()=>{
+ for(const kind of ['cover','mixed','unclear']){const f=fixture();try{const r=f.resource('封面.pdf','ready',kind==='unclear'?'needs_review':'complete','complete');f.publish(r);const text='物理 九年级全一册\n主编曲一线\n首都师范大学出版社'+(kind==='mixed'?'\n第1题 已知温度，计算温差。':'');f.db.prepare('UPDATE material_pdf_pages SET result_json=?,status=?').run(JSON.stringify({text}),kind==='unclear'?'needs_review':'complete');await f.start();await f.repo.tick();if(kind==='cover'){assert.equal(f.created.length,0);assert.equal((await f.repo.view(f.id)).complete,1);assert.equal(f.db.prepare('SELECT error FROM material_folder_ai_units').get().error,'non_question_cover');await f.reopen();await f.repo.tick();assert.equal(f.created.length,0);}else assert.equal(f.created.length,1);}finally{f.db.close();}}
+});
 function legacy(f,r,code='local_page_failed',child=''){
  f.db.prepare("INSERT INTO material_folder_ai_resources(batch_id,resource_id,version,cursor,total,status) VALUES(?,?,?,1,1,'complete')").run(f.id,r.rid,version);
  f.db.prepare("INSERT INTO material_folder_ai_units VALUES(?,?,?,1,'review',?,?)").run(f.id,r.rid,version,child,code);

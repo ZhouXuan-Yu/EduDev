@@ -26,12 +26,13 @@ import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileRef
 import {migrateImageOcr} from './material-image-ocr';
 import {MaterialBookPairs} from './material-book-pairs';
 import {bookAnswerPage} from './material-book-answer-content';
-import {sameMaterialBookIdentity} from '../../shared/material-book-pair';
+import {MaterialBookAnswerRepository} from './material-book-answer-repository';
+import {validMaterialBookRole,sameMaterialBookIdentity} from '../../shared/material-book-pair';
 
 type Row=Record<string,unknown>;
 type Value=string|number|null;
 type Host={root?:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
-  word?:()=>MaterialWordRepository;native?:()=>NativeQuestionRepository;prepare?:NativeAiPreparation;
+  readQuestion?:(id:string)=>Promise<QuestionBankItem|undefined>;validateQuestion?:(q:QuestionBankItem)=>Promise<void>;word?:()=>MaterialWordRepository;native?:()=>NativeQuestionRepository;prepare?:NativeAiPreparation;
   map:(row:Row)=>ResourceChunk;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>;
   writer:<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 type Configuration={revision:number;model:AiSettings['model'];sealedKey:string};
@@ -54,7 +55,8 @@ export class MaterialAiRepository{
   private active?:{batchId:string;controller:AbortController};
   private closing=false;
   readonly books:MaterialBookPairs;
-  constructor(private host:Host){this.books=new MaterialBookPairs({all:host.all,run:host.run,resource:id=>host.materials().resource(id),writer:action=>this.write(target=>action(target.books))});}
+  readonly bookAnswers:MaterialBookAnswerRepository;
+  constructor(private host:Host){this.books=new MaterialBookPairs({all:host.all,run:host.run,resource:id=>host.materials().resource(id),writer:action=>this.write(target=>action(target.books))});this.bookAnswers=new MaterialBookAnswerRepository({all:host.all,run:host.run,receipt:(batch,ordinal)=>this.bookReceipt(batch,ordinal),role:id=>this.books.role(id),read:async id=>host.readQuestion?.(id),validate:async q=>{if(!host.validateQuestion)throw Error('unsupported');await host.validateQuestion(q);},title:async id=>(await host.materials().resource(id)).originalFileName,writer:(fn,beforeCommit)=>this.write(target=>fn(target.bookAnswers),beforeCommit)});}
   configure(runtime:AiRuntime){this.runtime=runtime;this.account=runtime.account;}
   private write<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void){return this.host.writer(target=>{target.account=this.runtime?.account||this.account;return action(target);},beforeCommit);}
   private nativeHost():NativeAiHost{if(!this.host.native||!this.host.word)throw Error('unsupported');return{all:this.host.all,run:this.host.run,create:this.host.create,native:this.host.native,word:this.host.word,associate:async(q,source,sources)=>{
@@ -86,6 +88,7 @@ export class MaterialAiRepository{
     const columns=await this.host.all('PRAGMA table_info(material_ai_units)');for(const name of ['retry_at','local_retries'])if(!columns.some(c=>c.name===name))await this.host.run(`ALTER TABLE material_ai_units ADD COLUMN ${name} INTEGER NOT NULL DEFAULT 0`);
     await this.host.run("CREATE INDEX IF NOT EXISTS material_ai_units_due ON material_ai_units(retry_at,batch_id,ordinal) WHERE status IN ('pending','first_saved')");
     if(!(await this.host.all('PRAGMA table_info(material_ai_batches)')).some(column=>column.name==='pause_reason'))await this.host.run("ALTER TABLE material_ai_batches ADD COLUMN pause_reason TEXT NOT NULL DEFAULT ''");
+    await this.bookAnswers.migrate();
   }
   private async configuration():Promise<Configuration>{
     if(this.account){const shared=await this.account();return{revision:shared.revision,model:shared.model,sealedKey:shared.apiKey?'shared-deepseek':''};}
@@ -211,6 +214,13 @@ export class MaterialAiRepository{
   private async validateInput(config:AiBatchInput,unit:AiUnitInput,archivedRole=false){
     const role=await this.books.role(config.resourceId);
     if(JSON.stringify(role?.kind==='answers'?role:undefined)!==JSON.stringify(unit.bookRole)&&!(archivedRole&&sameMaterialBookIdentity(role,unit.bookRole)))throw Error('source_changed');
+    await this.validateOriginalInput(config,unit);
+  }
+  private async bookReceipt(batchId:string,ordinal:number){
+    const proof=await readAiPageReceipt(this.host,batchId,ordinal);if(proof.unit.bookRole&&!validMaterialBookRole(proof.unit.bookRole))throw Error('source_changed');
+    await this.validateOriginalInput(proof.config,proof.unit);return proof;
+  }
+  private async validateOriginalInput(config:AiBatchInput,unit:AiUnitInput){
     const resource=await this.host.materials().resource(config.resourceId);
     if(resource.contentHash!==config.version||await this.host.materials().originalStamp(resource.id,config.version)!==unit.stamp)throw new Error('source_changed');
     for(const source of unit.sources){const view=await this.host.materials().source(source);if(unit.pageSource&&view.body.chunks[0]?.pageNumber!==unit.page)throw Error('source_changed');}
@@ -328,7 +338,7 @@ export class MaterialAiRepository{
   async drain(){
     if(!this.runtime||this.closing)return false;
     const row=(await this.host.all("SELECT u.*,b.config_json,b.resource_id,b.version,b.title FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE b.status='running' AND u.status IN ('pending','first_saved') AND u.retry_at<=? ORDER BY b.created_at,u.ordinal LIMIT 1",[Date.now()]))[0];
-    if(!row){await this.host.run("UPDATE material_ai_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('failed','outcome_unknown','review')) THEN 'attention' ELSE 'complete' END WHERE status='running' AND NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('pending','first_saved','dispatched'))");return false;}
+    if(!row){await this.host.run("UPDATE material_ai_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('failed','outcome_unknown','review')) THEN 'attention' ELSE 'complete' END WHERE status='running' AND NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('pending','first_saved','dispatched'))");const controller=new AbortController();this.active={batchId:'book-match',controller};try{return await this.bookAnswers.drain(controller.signal);}finally{if(this.active?.controller===controller)this.active=undefined;}}
     const batchId=String(row.batch_id),ordinal=Number(row.ordinal),config=JSON.parse(String(row.config_json)) as AiBatchInput&{model:AiSettings['model']},unit=JSON.parse(String(row.input_json)) as AiUnitInput;
     const controller=new AbortController(),signal=controller.signal;this.active={batchId,controller};let lease='',transportStarted=false;
     try{
