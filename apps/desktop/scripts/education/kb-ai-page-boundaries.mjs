@@ -1,7 +1,7 @@
 import '../office-agent/register-source.mjs';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {createHash,randomUUID} from 'node:crypto';
 const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
 const {archiveEligible,validQuestionArchive}=await import('../../src/shared/question-archive.ts');
-const {parseAiPageResponse,validAiPageQuery,validMaterialPageSource,validAiPagePrompt,MATERIAL_PAGE_PROMPT}=await import('../../src/shared/material-ai-page.ts');
+const {parseAiPageResponse,validAiPageQuery,validMaterialPageSource,validAiPagePrompt,MATERIAL_PAGE_PROMPT,MATERIAL_QUESTION_PAGE_PROMPT}=await import('../../src/shared/material-ai-page.ts');
 const {materialSource}=await import('../../src/main/assets/material-source.ts');
 const sha=x=>createHash('sha256').update(x).digest('hex'),pageSchema='xiaozhi.material-ai-page-response.v1';
 const stem='计算7+8。',text='学科：数学\n年级：初二\n知识点：算术\n题型：解答题\n难度：中等\n第1题 '+stem+'\n【答案】15\n【解析】7与8相加得到15。';
@@ -24,6 +24,7 @@ function fixture(status='blank'){
   if(state.mode==='ordinary')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'光在同种均匀介质中沿直线传播。',pageIssues:[],questions:[]};
   if(state.mode==='ordinary_long')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'甲'.repeat(11999)+'😀'+'乙'.repeat(2000)+'尾部证据：色散与折射。',pageIssues:[],questions:[]};
   if(state.mode==='blank')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'',pageIssues:[],questions:[]};
+   if(state.mode==='page_counter'){result.pageText='第1题 '+stem+'\n第1页共1页';result.questions[0].answerOrigin='ai_generated';result.questions[0].analysisOrigin='ai_generated';}
   if(state.mode==='numeric_spacing')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'两项记录：12':'两项记录：1 2',pageIssues:[],questions:[]};
   if(state.mode==='math_notation_changed')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'公式：x2 + y1':'公式：x² + y₁',pageIssues:[],questions:[]};
   if(state.mode==='math_stem_changed'){result.pageText='第1题 写出x²。\n【答案】x²\n【解析】原式为x²。';Object.assign(result.questions[0],{stem:'写出x2。',answer:'x²',analysis:'原式为x²。'});result.questions[0].projection.statement.text='写出x2。';}
@@ -54,7 +55,7 @@ async function imageFixture(status='blank'){
  await saveImageOcr({all:f.host.all,change:async(s,p=[])=>Number(f.db.prepare(s).run(...p).changes)},f.id,f.version,status==='complete'?receipt:Error(status==='blank'?'empty':'parse_failed'),new AbortController().signal);return f;
 }
 let checks=0;const check=async(name,fn)=>{await fn();checks++;console.log('PASS '+name);};
-async function completed(status='blank',mode='normal'){const f=fixture(status);await f.init();f.state.mode=mode;f.batch=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();await f.repo.drain();return f;}
+async function completed(status='blank',mode='normal',total=1){const f=fixture(status);await f.init();f.db.prepare('UPDATE material_pdf_jobs SET total=?').run(total);f.state.mode=mode;f.batch=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();await f.repo.drain();return f;}
 const query=f=>({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:f.batch,ordinal:1});
 await check('Authorized blank/failed/needs-review OCR pages run both original-image phases, retain empty OCR and publish source-backed v5 questions',async()=>{for(const status of ['blank','failed','needs_review']){const f=await completed(status);try{assert.equal(f.state.calls,2,'An authorized blank OCR page cannot become zero-call no_questions');const question=await f.question();assert(question);assert(validQuestionArchive(question.archive));assert(archiveEligible(question));assert.equal(question.archive.schemaVersion,'xiaozhi.question-archive.v5');assert.equal(question.archive.sources.length,0);assert.equal(question.archive.pageSource.page,1);await f.repo.validate(question);const view=await f.repo.page(query(f));assert.equal(view.text,text);assert.equal(view.ocrText,'');assert.equal(f.db.prepare('SELECT COUNT(*) n FROM resource_chunks').get().n,0,'Do not fabricate an OCR body chunk');assert(!validQuestionArchive({...question.archive,schemaVersion:'xiaozhi.question-archive.v2'}));}finally{f.db.close();}}});
 await check('Ordinary textbook and truly blank pages retain two-pass full-page results without inventing questions',async()=>{for(const mode of ['ordinary','blank']){const f=await completed('blank',mode);try{assert.equal(f.state.calls,2);assert.equal(await f.question(),undefined);const view=await f.repo.page(query(f));assert.equal(view.status,mode==='blank'?'blank':'complete');assert.equal(!!view.text,mode!=='blank');assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'no_questions');}finally{f.db.close();}}});
@@ -95,13 +96,13 @@ await check('Actual provider requests carry one page schema, unchanged OCR, an o
  }finally{globalThis.fetch=ordinary;}
 });
 await check('New original-page units freeze the actual PDF and image OCR status for both passes',async()=>{
- for(const status of ['complete','blank','failed','needs_review']){const f=fixture(status);try{await f.init();const batch=await f.repo.create(f.input),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);assert.deepEqual(unit.pagePrompt,{policy:MATERIAL_PAGE_PROMPT,ocrStatus:status});await f.repo.drain();await f.repo.drain();assert.deepEqual(f.state.prompts,[unit.pagePrompt,unit.pagePrompt]);}finally{f.db.close();}}
- for(const status of ['complete','blank','failed']){const f=await imageFixture(status);try{const batch=await f.repo.create(f.input),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);assert.deepEqual(unit.pagePrompt,{policy:MATERIAL_PAGE_PROMPT,ocrStatus:status});await f.repo.drain();await f.repo.drain();assert.deepEqual(f.state.prompts,[unit.pagePrompt,unit.pagePrompt]);}finally{f.db.close();}}
+ for(const status of ['complete','blank','failed','needs_review']){const f=fixture(status);try{await f.init();const batch=await f.repo.create(f.input),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);assert.deepEqual(unit.pagePrompt,{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:status,totalPages:1});await f.repo.drain();await f.repo.drain();assert.deepEqual(f.state.prompts,[unit.pagePrompt,unit.pagePrompt]);}finally{f.db.close();}}
+ for(const status of ['complete','blank','failed']){const f=await imageFixture(status);try{const batch=await f.repo.create(f.input),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);assert.deepEqual(unit.pagePrompt,{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:status,totalPages:1});await f.repo.drain();await f.repo.drain();assert.deepEqual(f.state.prompts,[unit.pagePrompt,unit.pagePrompt]);}finally{f.db.close();}}
 });
 await check('Invalid, forged or changed prompt metadata is rejected before a paid dispatch',async()=>{
  let invoked=false;assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,get ocrStatus(){invoked=true;return 'complete';}}));assert(!invoked);
  assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:{toString(){invoked=true;return 'complete';}}}));assert(!invoked,'Validation must not coerce or execute nested values');assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:new String('complete')}));
- for(const value of [{policy:'future',ocrStatus:'complete'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'failed'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete',force:true}]){const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);unit.pagePrompt=value;f.db.prepare('UPDATE material_ai_units SET input_json=? WHERE batch_id=?').run(JSON.stringify(unit),batch);await f.repo.drain();assert.equal(f.state.calls,0);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,0);assert.equal(f.db.prepare('SELECT error FROM material_ai_units WHERE batch_id=?').get(batch).error,'source_changed');}finally{f.db.close();}}
+ for(const value of [{policy:'future',ocrStatus:'complete'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'failed'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete',force:true},...[0,2,1.5,10001,'1'].map(totalPages=>({policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:'complete',totalPages}))]){const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);unit.pagePrompt=value;f.db.prepare('UPDATE material_ai_units SET input_json=? WHERE batch_id=?').run(JSON.stringify(unit),batch);await f.repo.drain();assert.equal(f.state.calls,0);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,0);assert.equal(f.db.prepare('SELECT error FROM material_ai_units WHERE batch_id=?').get(batch).error,'source_changed');}finally{f.db.close();}}
 });
 await check('A legacy stored first pass resumes without silently changing its prompt policy; saved v2 receipts retain strict provenance',async()=>{
  const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);delete unit.pagePrompt;const first=JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[q]}),image=Buffer.from('controlled-owned-image'),imageSha=sha(image);f.db.prepare("UPDATE material_ai_units SET input_json=?,status='first_saved',first_json=?,image_sha=? WHERE batch_id=?").run(JSON.stringify(unit),first,imageSha,batch);f.db.prepare('INSERT INTO material_ai_image_inputs(batch_id,ordinal,image_sha,mime,data_base64) VALUES(?,1,?,?,?)').run(batch,imageSha,'image/png',image.toString('base64'));f.db.prepare('UPDATE material_ai_batches SET calls=1 WHERE id=?').run(batch);await f.repo.drain();assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(batch).status,'complete');assert.deepEqual(f.state.prompts,[null]);assert.equal(f.state.calls,1);assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units WHERE batch_id=?').get(batch).first_json,first);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,2);await f.repo.validate(await f.question());}finally{f.db.close();}
@@ -114,6 +115,52 @@ await check('Versioned provider prompt conveys success truthfully, preserves sou
   await completeMaterialAi(args,new AbortController().signal);await completeMaterialAi({...args,previous:parseAiPageResponse(raw)},new AbortController().signal);
   for(const r of requests){const s=r.messages[0].content;assert(s.includes(MATERIAL_PAGE_PROMPT));assert(!s.includes('本次本地OCR为空、失败或待核'));assert(s.includes('出处、年份、难度标记'));assert(s.includes('原图仍有模糊'));assert(s.includes('图题仍按现规则requiresImage=true'));assert(s.includes(pageSchema));assert.deepEqual(JSON.parse(r.messages[1].content[0].text).pageContext,args.pagePrompt);}
   for(const bad of [{...args,pagePrompt:{policy:'future',ocrStatus:'complete'}},{...args,page:false}])await assert.rejects(completeMaterialAi(bad,new AbortController().signal),/invalid_input/);assert.equal(requests.length,2);
+ }finally{globalThis.fetch=ordinary;}
+});
+await check('V3 strips only the verified terminal PDF page counter from parser input, preserving raw evidence and legacy interpretation',async()=>{
+ const {restoredPageQuestions}=await import('../../src/main/assets/material-ai-page-content.ts');
+ const f=await completed('complete','page_counter');try{
+  assert(archiveEligible(await f.question()));await f.repo.validate(await f.question());
+  const view=await f.repo.page(query(f)),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);
+  assert.equal(view.text,'第1题 '+stem+'\n第1页共1页');
+  const parse=(body,prompt=unit.pagePrompt,source=unit.pageSource)=>restoredPageQuestions(body,source,['1'],prompt)[0].fields.stem;
+  assert.equal(parse(view.text),stem);
+  for(const prompt of [undefined,{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete'},{...unit.pagePrompt,totalPages:2}]){
+   const actual=restoredPageQuestions(view.text,unit.pageSource,['1'],prompt)[0].fields.stem;assert(actual.includes('第1页共1页'));
+  }
+  assert(parse('第1题 '+stem+'\n第2页共1页').includes('第2页共1页'));
+  assert(parse(view.text,unit.pagePrompt,{...unit.pageSource,schemaVersion:'xiaozhi.material-image-source.v1'}).includes('第1页共1页'));
+  assert(parse('第1题 '+stem+'\n第1页共1页\n还需要计算面积。').includes('还需要计算面积'));
+  assert(parse('第1题 '+stem+'\n求第1页共1页这一字符串的长度。').includes('字符串'));
+ }finally{f.db.close();}
+ for(const policy of [undefined,MATERIAL_PAGE_PROMPT]){
+  const old=fixture('complete');try{await old.init();old.state.mode='page_counter';const batch=await old.repo.create(old.input),unit=JSON.parse(old.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);
+   if(policy)unit.pagePrompt={policy,ocrStatus:'complete'};else delete unit.pagePrompt;
+   const first=JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:'第1题 '+stem+'\n第1页共1页',pageIssues:[],questions:[{...q,answerOrigin:'ai_generated',analysisOrigin:'ai_generated'}]}),image=Buffer.from('controlled-owned-image'),imageSha=sha(image);
+   old.db.prepare("UPDATE material_ai_units SET input_json=?,status='first_saved',first_json=?,image_sha=? WHERE batch_id=?").run(JSON.stringify(unit),first,imageSha,batch);
+   old.db.prepare('INSERT INTO material_ai_image_inputs(batch_id,ordinal,image_sha,mime,data_base64) VALUES(?,1,?,?,?)').run(batch,imageSha,'image/png',image.toString('base64'));
+   old.db.prepare('UPDATE material_ai_batches SET calls=1 WHERE id=?').run(batch);await old.repo.drain();
+   assert.equal(old.state.calls,1);assert.deepEqual(old.state.prompts,[unit.pagePrompt??null]);assert.equal(old.db.prepare('SELECT first_json FROM material_ai_units').get().first_json,first);
+   assert.equal(old.db.prepare('SELECT status FROM material_ai_units').get().status,'review');assert(!archiveEligible(await old.question()));
+  }finally{old.db.close();}
+ }
+});
+await check('V3 provider gives bounded literal-coverage feedback without editing receipts, adding paid calls or weakening the old provider policy',async()=>{
+ const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts'),ordinary=globalThis.fetch,requests=[];
+ const wrong=structuredClone(q);wrong.projection.choices={state:'provided',text:'A甲；B乙'};wrong.projection.formulas={state:'provided',text:'W=Pt'};
+ const first=parseAiPageResponse(JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[wrong]})),snapshot=JSON.stringify(first);
+ const args={model:'deepseek-flash',apiKey:'controlled-only',text:'原页OCR',page:true,imageCoverage:true,image:{mime:'image/png',data:Buffer.from('controlled-page').toString('base64')},pagePrompt:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:'complete',totalPages:1}};
+ try{
+  globalThis.fetch=async(_url,options)=>{requests.push(JSON.parse(options.body));return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:JSON.stringify(first)}}]}),{status:200});};
+  await completeMaterialAi(args,new AbortController().signal);await completeMaterialAi({...args,previous:first},new AbortController().signal);
+  for(const r of requests){assert(r.messages[0].content.includes('literal-source-coverage.v1'));assert(r.messages[0].content.includes('连续原文'));assert(r.messages[0].content.includes('只写analysis'));assert.deepEqual(JSON.parse(r.messages[1].content[0].text).pageContext,args.pagePrompt);}
+  assert(!('localReview' in JSON.parse(requests[0].messages[1].content[0].text)));
+  const payload=JSON.parse(requests[1].messages[1].content[0].text);assert.deepEqual(payload.localReview,{policy:'literal-source-coverage.v1',questions:[{number:'1',fields:['choices','formulas']}]});assert.equal(JSON.stringify(first),snapshot);assert.deepEqual(payload.firstDraft,first);
+  await completeMaterialAi({...args,pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete'},previous:first},new AbortController().signal);
+  assert(!requests[2].messages[0].content.includes('literal-source-coverage.v1'));assert(!('localReview' in JSON.parse(requests[2].messages[1].content[0].text)));
+  for(const totalPages of [0,1.5,10001,'1'])await assert.rejects(completeMaterialAi({...args,pagePrompt:{...args.pagePrompt,totalPages}},new AbortController().signal),/invalid_input/);
+  await assert.rejects(completeMaterialAi({...args,answerBook:true},new AbortController().signal),/invalid_input/);
+  let invoked=false;assert(!validAiPagePrompt({policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:'complete',get totalPages(){invoked=true;return 1;}}));assert(!invoked);assert.equal(requests.length,3);
  }finally{globalThis.fetch=ordinary;}
 });
 await check('Transient local worker contention stays pending without a charge; due work bypasses it and the original resumes once',async()=>{
@@ -131,8 +178,8 @@ await check('New image source cannot masquerade as PDF; malformed opt-in, stop f
  else if(mode==='stop'){process.env.OMNI_EDU_AI_PAGE_RESTORATION='0';await assert.rejects(f.repo.create(f.input),/source_incomplete/);delete process.env.OMNI_EDU_AI_PAGE_RESTORATION;}
  else{f.batch=await f.repo.create(f.input);const r=f.db.prepare('SELECT input_json FROM material_ai_units').get(),unit=JSON.parse(r.input_json);unit.pageSource.schemaVersion='xiaozhi.material-page-source.v1';f.db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify(unit));await f.repo.drain();assert.equal(await f.question(),undefined);}assert.equal(f.state.calls,0);}finally{delete process.env.OMNI_EDU_AI_PAGE_RESTORATION;f.db.close();}}
 });
-async function indexedPage(mode='ordinary'){
- const f=await completed('blank',mode);
+async function indexedPage(mode='ordinary',total=1){
+ const f=await completed('blank',mode,total);
   const {MaterialFullTextSearch}=await import('../../src/main/assets/material-full-text.ts'),{RetrievalRepository}=await import('../../src/main/retrieval/repository.ts');
   f.db.exec("ALTER TABLE teacher_resources ADD COLUMN title TEXT NOT NULL DEFAULT '原页';");
   let rag;const map=r=>({id:r.id,resourceId:r.resource_id,chunkIndex:r.chunk_index||0,pageNumber:r.page_number,contentMd:r.content_md,containsPersonalData:!!r.contains_personal_data});
@@ -206,8 +253,8 @@ await check('Rebuilding derived indexes restores a corrupted AI text cache from 
  }finally{if(old===undefined)delete process.env.OMNI_EDU_AI_TEXT_INDEX;else process.env.OMNI_EDU_AI_TEXT_INDEX=old;f.db.close();}
 });
 await check('A chunk moved into a resource as private during reranking revokes both restored-page hits before the asynchronous search returns',async()=>{
- const f=await indexedPage();try{
-  const generation=f.db.prepare('SELECT generation FROM material_pdf_jobs').get().generation;f.db.prepare('UPDATE material_pdf_jobs SET total=2').run();const receipt=f.db.prepare('SELECT result_json FROM material_pdf_pages WHERE page=1').get().result_json;f.db.prepare("INSERT INTO material_pdf_pages VALUES(?,2,'blank',?,'')").run(generation,receipt);await f.repo.create({...f.input,start:2});await f.repo.drain();await f.repo.drain();await f.repo.drain();await f.index();assert.equal((await f.rag.materials('均匀介质')).units.length,2);
+ const f=await indexedPage('ordinary',2);try{
+  const generation=f.db.prepare('SELECT generation FROM material_pdf_jobs').get().generation;const receipt=f.db.prepare('SELECT result_json FROM material_pdf_pages WHERE page=1').get().result_json;f.db.prepare("INSERT INTO material_pdf_pages VALUES(?,2,'blank',?,'')").run(generation,receipt);await f.repo.create({...f.input,start:2});await f.repo.drain();await f.repo.drain();await f.repo.drain();await f.index();assert.equal((await f.rag.materials('均匀介质')).units.length,2);
   const other='resource_'+randomUUID(),chunk='chunk_'+randomUUID();f.db.prepare("INSERT INTO teacher_resources VALUES(?,?,'other.pdf','partial','other')").run(other,'c'.repeat(64));f.db.prepare("INSERT INTO resource_chunks VALUES(?,?,1,1,0,'private')").run(chunk,other);
   f.rag.configure({rerank:async(_q,items)=>{f.db.prepare('UPDATE resource_chunks SET resource_id=?,page_number=NULL WHERE id=?').run(f.id,chunk);return{scores:items.map(i=>({id:i.id,score:1,complete:true}))};}});
   const result=await f.rag.materials('均匀介质');assert.equal(result.units.length,0,'Late privacy changes at the new parent cannot escape the source fence');assert.equal(result.semantic.reason,'source_changed');

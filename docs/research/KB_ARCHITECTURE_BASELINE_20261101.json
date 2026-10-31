@@ -2,10 +2,10 @@
   "schemaVersion": "xiaozhi.kb-architecture-baseline.v1",
   "date": "2026-11-01",
   "baselineCommit": "d80b9b5bb4c758492627a1dcbb74bd2761a4cb43",
-  "scope": "Architecture decision, critical feasibility audit and ordered K0 delivery contract; no production source implementation in this delivery",
+  "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_in_progress_whole_set_role_transition_implemented",
+  "currentStage": "K0_in_progress_whole_exam_projection_quality_repair",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -833,5 +833,258 @@
       "Comprehensive smoke gate remains failed at memory readback"
     ],
     "next": "Continue complete-set authorized AI processing and question/answer evidence, then Pi retrieval and paper output; do not implement book/page/question-specific production exceptions."
+  },
+  "wholeExamProjection": {
+    "date": "2026-11-01",
+    "scope": "One complete public six-page physics exam selected from the authorized 11-file folder; actual folder UI, actual local parsing, real DeepSeek, SQLite/file evidence, cold restart. No mocks, source-specific production branches, deleted old rows or changed mathematical gate. This is not arbitrary-library acceptance.",
+    "sourceVersion": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+    "before": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-jPtqvv",
+      "reportSha256": "96ddd572f9a075afe28b2c2be6a3b194092cfcf36ae3eb013a10080f9bc38408",
+      "batchId": "batch_ca78f35e-c03e-4cc9-8614-779de413f999",
+      "buildSha256": "07eac5a3fc35877666c1df70baeff1acaaf51d02084ff9697bf15ea63773e9c5",
+      "folderResult": {
+        "schemaVersion": "xiaozhi.material-folder-ai.v1",
+        "batchId": "batch_ca78f35e-c03e-4cc9-8614-779de413f999",
+        "status": "attention",
+        "revision": 1,
+        "maxCalls": 12,
+        "calls": 12,
+        "reserved": 12,
+        "resources": 1,
+        "units": 6,
+        "complete": 0,
+        "skippedCover": 0,
+        "review": 6,
+        "failed": 0,
+        "waiting": 0,
+        "readyQuestions": 0,
+        "reviewQuestions": 17,
+        "error": "",
+        "issues": [
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 1,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 2,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 3,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 4,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 5,
+            "error": "page_content_incomplete"
+          }
+        ]
+      },
+      "candidateRows": 17,
+      "issueCounts": {
+        "ai_mismatch": 17,
+        "requires_image": 11,
+        "incomplete_question": 14,
+        "missing_grade": 11,
+        "uncertain_ocr": 6
+      },
+      "actualCloudCalls": 12,
+      "allHttp200": true,
+      "pipelineSettled": true,
+      "qualityAccepted": false,
+      "coldRestart": null,
+      "rendererErrors": 0
+    },
+    "after": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-codxqcpn",
+      "reportSha256": "e8af2d4d728e66c49db41f1b3819c66627845a9e541eda996022a4b5d1b9bce7",
+      "batchId": "batch_ee9b0a60-2089-4f09-81a3-a96280f1c30b",
+      "buildSha256": "5227a9c6123e0cb1dfe3d4908476fb6943bb4bc09f38e168073ab81e4abce574",
+      "folderResult": {
+        "schemaVersion": "xiaozhi.material-folder-ai.v1",
+        "batchId": "batch_ee9b0a60-2089-4f09-81a3-a96280f1c30b",
+        "status": "attention",
+        "revision": 1,
+        "maxCalls": 12,
+        "calls": 12,
+        "reserved": 12,
+        "resources": 1,
+        "units": 6,
+        "complete": 0,
+        "skippedCover": 0,
+        "review": 6,
+        "failed": 0,
+        "waiting": 0,
+        "readyQuestions": 4,
+        "reviewQuestions": 11,
+        "error": "",
+        "issues": [
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 1,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 2,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 3,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 4,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 5,
+            "error": "page_content_incomplete"
+          }
+        ]
+      },
+      "candidateRows": 15,
+      "issueCounts": {
+        "ai_mismatch": 11,
+        "requires_image": 11,
+        "incomplete_question": 11,
+        "missing_grade": 9,
+        "uncertain_ocr": 3
+      },
+      "actualCloudCalls": 12,
+      "allHttp200": true,
+      "pipelineSettled": true,
+      "qualityAccepted": false,
+      "coldRestart": {
+        "sameFolderResult": true,
+        "sameQuestions": true,
+        "noAdditionalCalls": true
+      },
+      "rendererErrors": 0
+    },
+    "policy": "page-restoration.v3",
+    "changes": [
+      "Literal contiguous source coverage instead of option summaries or solution formulas in projection",
+      "Bounded local review codes sent only in the existing second pass",
+      "Verified terminal PDF page counter stripped only in the v3 ephemeral parser input; raw transcripts unchanged",
+      "Freeze actual PDF total; validate it before dispatch and source reads; legacy/v2 and answer-book prompt unchanged"
+    ],
+    "checks": {
+      "boundaryChecks": 45,
+      "rendererComponents": 240,
+      "buildAndTypecheck": "passed",
+      "wholeSetQualityGate": "failed, exit 1; 4 ready / 11 held",
+      "wholeSetRestart": "same folder and question readback; no extra calls",
+      "npmAudit": {
+        "exit": 1,
+        "total": 45,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "dependencyChanges": false
+      },
+      "comprehensiveSmoke": "Earlier same-round run failed at memory L2 adoption readback (electron-smoke.mjs:1501). Not rerun after this projection-only fix; not claimed passed."
+    },
+    "commands": [
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
+      "npm.cmd run build",
+      "npm.cmd run test:renderer-components",
+      "node %TEMP%/omni-real-material-aWObCn/whole-exam.mjs run <new inspected whole-exam directory>",
+      "npm.cmd audit --json"
+    ],
+    "build": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3363964,
+        "sha256": "5227a9c6123e0cb1dfe3d4908476fb6943bb4bc09f38e168073ab81e4abce574"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-DGrHaRaL.js",
+        "bytes": 7264669,
+        "sha256": "ec813513f9bc101e934915a689ad65be211e0ffbc3a901c2e22a565e7736b791"
+      }
+    ],
+    "performance": {
+      "mainBytesBefore": 3359953,
+      "mainBytesAfter": 3363964,
+      "mainBytesDelta": 4011,
+      "rendererAndPreloadUnchanged": true,
+      "paidCallsPerWholeExamBefore": 12,
+      "paidCallsPerWholeExamAfter": 12,
+      "stableLatencyOrRecallBenchmark": false
+    },
+    "nextCriticalWork": [
+      "11 diagram-dependent questions are held; retain source image and add governed original-question/diagram publication through the existing model, not a requiresImage bypass",
+      "Parent question continuation across page boundaries remains unassembled",
+      "Later pages lack source-backed document grade/context; do not fill by guess",
+      "Full known-answer pairing, web supplementation, Pi paper generation, held-out corpus, recall/P95, 40GB and installer remain unaccepted"
+    ],
+    "rollback": "Pause v3 batches and stop new v3 creation in a scoped rollback; retain v3 read/source validation and immutable receipts. Do not resume a v3 first draft with v2 instructions or reinterpret old results.",
+    "followThrough": {
+      "success": true,
+      "readbackOnly": true,
+      "runId": "run_1b105bbd-31fd-4949-8dd6-3a53f83bee3a",
+      "questionId": "question_fd372722-2a8f-4e69-b857-8827b51a579f",
+      "notebookUi": true,
+      "actualPiTools": [
+        "education_search_questions",
+        "education_search_questions",
+        "education_read_question"
+      ],
+      "pairedAssistantMatchesStoredStemAndAnswer": true,
+      "sameNewAiFinalQuestion": true,
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "runtimeRequestSummary": {
+        "version": 1,
+        "mode": "optimized",
+        "preparationMs": 740.3265000000001,
+        "sdkEndedMs": 37756.28660000001,
+        "elapsedMs": 36958.474700000006,
+        "firstProviderEventMs": 5136.603999999999,
+        "firstAnswerTextMs": 5431.2094,
+        "lastAnswerTextMs": 36577.1302,
+        "requests": 3,
+        "retries": 0,
+        "requestBytes": 403791,
+        "maxExposedTools": 29,
+        "nativeSessionCacheHit": 0
+      },
+      "independentHttpLedger": false,
+      "extraCallsForReadback": 0,
+      "originalHelperExit": 1,
+      "helperFailure": "Main-process transport interception does not observe Pi runtime; missing pi-transport.json. Original failed report retained.",
+      "scope": "One actual UI question lookup after complete-exam import. No mathematical correctness, whole-library recall/P95 or paper acceptance.",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-codxqcpn\\read-runtime-readback.json",
+      "reportSha256": "e8bef2e9fa9a47cd7c1d1d348e75cc9fe5954a4a2acdebeffc686d21ff2b38b1"
+    }
   }
 }

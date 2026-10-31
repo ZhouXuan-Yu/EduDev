@@ -1,7 +1,12 @@
 import {extractMaterialQuestions} from './material-question-extract';
-import type {MaterialPageSource} from '../../shared/material-ai-page';
+import {MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_PAGE_SOURCE,type AiPagePrompt,type MaterialPageSource} from '../../shared/material-ai-page';
 /** Reuse the deterministic parser on the AI transcript. Adapter body refs never leave this function. */
-export function restoredPageQuestions(text:string,source:MaterialPageSource,declaredNumbers:readonly string[]=[]){
+export function restoredPageQuestions(text:string,source:MaterialPageSource,declaredNumbers:readonly string[]=[],prompt?:AiPagePrompt){
+ // A PDF's terminal standalone page counter is layout, not the last question's condition.
+ // Only new frozen inputs may use this adapter; original transcripts and legacy evidence stay unchanged.
+ if(prompt?.policy===MATERIAL_QUESTION_PAGE_PROMPT&&source.schemaVersion===MATERIAL_PAGE_SOURCE&&source.page<=prompt.totalPages){
+  const lines=text.split(/\r?\n/);if(lines.at(-1)?.replace(/\s/gu,'')===`第${source.page}页共${prompt.totalPages}页`){lines.pop();text=lines.join('\n');}
+ }
  // The structured response already declares these question numbers. Change only the
  // ephemeral parser marker, preserving every original body character and raw receipt.
  // This lets the existing strict parser see MCQs/fill-ins without an interrogative cue.
