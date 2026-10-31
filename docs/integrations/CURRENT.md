@@ -4,6 +4,16 @@
 
 直接验证现Node流式复制/SHA、sqlite3、PDFium/RapidOCR文件Worker、SQLite FTS及Lance/ONNX消费路径，没有替换成熟解析/检索层。既有AttachmentImportItem仅新增可选白名单I/O原因；SQLITE_FULL归一为空间不足，不修改供应商/模型、依赖锁文件或安装组件。实际字节容量长跑与自然OCR/AI质量必须分别记录。
 
+## 2026-10-31 E06真实PDF页面与Word缺口（第四切片）
+
+原Pi交付前及原文件面板现可检查PDF原字节的真实物理页数/逐页文本，并由Windows.Data.Pdf逐页栅格化，沿原PNG缓存、页选择、放大、历史和冷启读取。扫描页没有文本层时内容/数值/事实明确未检查；PNG尺寸读取实际IHDR，兼容本机150%显示缩放。Word只读副本→原生PDF薄适配已接入，但本机原生导出仍超时（不加入Job的30秒诊断亦未完成），生产Word等待限制15秒并明确未检查；不能称Word页面已实现。
+
+实现1d86357，已正常整合主线3192261为7bb8671，无冲突。原生PDF4项、检查源码11项、240组件及构建通过；原正式输入→检查→一次整包确认→精确SHA保存→文件面板实际第2页/两视口→重检→冷启与扫描页/错页6项通过，同批成果续测停止2项exit0（2137ms含完整停止观察），最终Word超时/进程清理反馈2项exit0（0页，非正向通过）；首套UI因旧停止按钮断言exit1仍保留，不冒充整套全绿。最终源码9ebc430，合并build/type、240组件、11项源码通过，删除Word全局Options写入后的最终Vite构建及上述续测通过。完整AT仍未执行，新增已实现0/252，完整Goal保持active。证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#pagedDocumentSlice。
+
+已安装的Hana间接依赖unpdf1.8.1明确直锁（MIT，JS文件合计2141399B），不安装可选canvas；无新Runtime、业务表或IPC。PDF60秒/Word15秒、16MiB/64页、PNG3MiB/合计96MiB，沿原8槽和取消；仅处理派生副本，原文件SHA保持。主renderer7175.29→7175.68kB的0.39kB变化来自主线资料面板，本片无renderer修改；合成3页本机原生渲染1541ms、扫描页827ms，仅单次样本，未测流式/P95。0新增付费；audit45（8高29中8低/0严重，exit1），未自动升级。
+
+继续位置：E06 Word原生导出原因与实际成功路径、WPS、逐字缺字/语义遮挡、全教师要求绑定与混合终态；随后E07/E08+C及W3集中验收，保持28组252项原范围。D:/WorkProject/EduProject日常程序和安装包未更新。回退本片原生适配/检查接入可保留既有正式文件、检查读器与可选PNG索引；不删除业务表或成果，整提交回退未独立演练。
+
 ## 2026-10-31 混合图题正文召回与质量复核
 
 原typed getMaterialAiPage/getMaterialSource保持，AiPageView只加可选transcriptionStatus；office_read_material附题目待核状态及说明，来源引用仍按原版本/批次/摘要验证。新派生控制策略逐批恢复旧页，不发模型、不改模型schema或教师事实；共享文字签名不删除数字/字母间边界。无新外部集成或依赖，原DeepSeek/本地OCR及Windows组件复用。

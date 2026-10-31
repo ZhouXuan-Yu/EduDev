@@ -2,7 +2,7 @@ import path from 'node:path';
 import * as yauzl from 'yauzl';
 import {createRequire} from 'node:module';
 const {JSDOM}=createRequire(import.meta.url)('jsdom') as {JSDOM:new(text:string,options?:{contentType?:string})=>{window:{document:Document;close:()=>void}}};
-import {extractDocument} from '../vendor/hana/lib/document-extract/index';
+import {getDocumentProxy} from 'unpdf';
 import {parseComputationCsv} from '../../managed-tools/typed-table';
 import type {DocumentMetrics} from '../../../shared/xiaozhi-delivery-checks';
 
@@ -121,9 +121,20 @@ export async function inspectDocumentStructure(name:string,bytes:Buffer):Promise
   return{format,engine:format==='html'?'jsdom29.0.2':'utf8-fatal',pages:[{index:1,text:bounded(text),notes:''}]};
  }
  if(format==='pdf'){
-  if(!bytes.subarray(0,5).equals(Buffer.from('%PDF-')))throw Error('parse_failed');const parsed=await extractDocument({buffer:bytes,filename:name});
-  if(!parsed.ok)throw Error(parsed.reason==='scanned-pdf'?'unavailable':'parse_failed');
-  return{format,engine:'hana-anydoc0.1.2',pages:[{index:1,text:bounded(parsed.markdown),notes:''}]};
+  if(!bytes.subarray(0,5).equals(Buffer.from('%PDF-')))throw Error('parse_failed');
+  const doc=await getDocumentProxy(new Uint8Array(bytes),{...{isEvalSupported:false},useSystemFonts:false,disableFontFace:true});
+  try{
+   if(!doc.numPages||doc.numPages>64)throw Error('too_large');
+   const pages:DocumentMetrics['pages']=[],textUnavailablePages:number[]=[];let total=0;
+   for(let index=1;index<=doc.numPages;index++){
+    const page=await doc.getPage(index);try{
+     const content=await page.getTextContent(),text=bounded(content.items.map(item=>'str'in item?item.str+(item.hasEOL?'\n':' '):'').join(''));
+     total+=text.length;if(total>1500000)throw Error('too_large');if(!text.trim())textUnavailablePages.push(index);
+     pages.push({index,text,notes:''});
+    }finally{page.cleanup();}
+   }
+   return{format,engine:'unpdf1.8.1/pdfjs',pageCount:doc.numPages,pages,textUnavailablePages};
+  }finally{await doc.loadingTask.destroy();}
  }
  if(!['pptx','docx','xlsx'].includes(format))throw Error('unsupported');
  const all=await parts(bytes),types=xmlPart(all,'[Content_Types].xml');
@@ -133,8 +144,13 @@ export async function inspectDocumentStructure(name:string,bytes:Buffer):Promise
  let result:DocumentMetrics;
  if(format==='pptx')result=ppt(all);
  else if(format==='xlsx')result=xlsx(all);
- else{const doc=xmlPart(all,'word/document.xml');if(doc.documentElement.namespaceURI!==W||doc.documentElement.localName!=='document')throw Error('parse_failed');result={format,engine:'yauzl3.4.0/jsdom29.0.2',pages:[{index:1,text:bounded(paragraphs(doc,W)),notes:''}]};}
+ else{const doc=xmlPart(all,'word/document.xml');if(doc.documentElement.namespaceURI!==W||doc.documentElement.localName!=='document')throw Error('parse_failed');result={format,engine:'yauzl3.4.0/jsdom29.0.2',pages:[{index:1,text:bounded(paragraphs(doc,W)),notes:''}],fonts:[...new Set(nodes(doc,W,'rFonts').flatMap(n=>['ascii','hAnsi','eastAsia','cs'].map(key=>n.getAttributeNS(W,key)||'')).filter(Boolean))].slice(0,128)};}
  result.externalLinks=[...all.entries()].filter(([name])=>name.endsWith('.rels')).some(([,b])=>/TargetMode\s*=\s*["']External["']/i.test(b.toString('utf8')));
  result.nativeRenderBlocked=[...all.keys()].some(name=>/(?:^|\/)(?:embeddings|activeX)\/|\.bin$/i.test(name));
+ if(format==='docx')result.nativeRenderBlocked ||= [...all.keys()].some(name=>{
+  if(!name.startsWith('word/')||!name.endsWith('.xml'))return false;const doc=xmlPart(all,name);
+  const instructions=nodes(doc,W,'instrText').map(n=>n.textContent||'').join('')+'\n'+nodes(doc,W,'fldSimple').map(n=>n.getAttributeNS(W,'instr')||'').join('\n');
+  return /\b(?:DDEAUTO|DDE|INCLUDETEXT|INCLUDEPICTURE)\b/i.test(instructions);
+ });
  return result;
 }
