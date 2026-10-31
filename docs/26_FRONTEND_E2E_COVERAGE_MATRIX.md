@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 E07停止切片（0222d15）：当前正式composer实际点停止，覆盖停流下载/不结算cancel、真实QuickJS无限循环child及原文件审批等待；本地事件→可见反馈5.9/4.1/7.3ms，宿主下载3ms中止、child12ms关闭，1.1秒无新派发。临时物清理/组件保留、旧批准拒绝/文件未写、新会话实际42、双尺寸及四会话冷启共6项，0真实付费/renderer错误。专项15与原复制取消3通过；整条AT仍阶段集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。 同一冻结源码0222d15的一次legacy综合回归207/207 exit0；正式Pi6另记，完整AT不据此标过。
+
+2026-11-01 E07普通工具前片（3a420f5）：正式Pi6覆盖缺文件→列目录→更名实际读取、短暂/持续占用、读重试等待停止及双尺寸/冷启；已停止历史不再承诺重试，原queued事件保留。源码7/边界20/SQLite10/呈现9，240组件；一次207归终态提示修复前构建，修后相关检查通过。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
 2026-11-01 E07：实际Pi7覆盖HTML保存后SQLite失败→仍失败阻断→恢复原task→不覆盖草稿→显式同task接续→双尺寸→冷启；文件/事件hash不重写，0真实模型/renderer错误。源码9/账本文件5/取消5/回执15；完整AT未集中。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
 
 本轮最终再次整合协作者main6bd287a为1d6358b：第一次正常原子推送遇并发主线更新被拒，未强推；13处Markdown冲突完整保留双方，知识库生产源码未变。最终build/type、240组件、协作者接续源码11与真实知识库UI7（双尺寸/错误/关联恢复/冷启/6道来源读回）exit0，0云端重放/renderer错误；37/28/19/9与207各归先前精确构建，不冒充最新全套重跑。最新主包3324949B、renderer7258909B，均含E07/E08；完整指纹/边界见KB_PAGE_PROMPT_20261031.json#lastIntegration。完整Goal active，D盘日常/安装包未更新。

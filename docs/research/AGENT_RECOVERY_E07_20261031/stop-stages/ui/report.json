@@ -1,0 +1,205 @@
+{
+  "ok": true,
+  "checks": [
+    "Actual composer stops a stalled partial component stream despite never-settled cancel; temporary files are removed, no package activated and no follow-up model action",
+    "Actual owned infinite QuickJS child exits after the stop button; interrupted computation produces no result or new model action and keeps the verified installed version",
+    "Stop at the original file approval marks the proposal interrupted without saving; late approval is rejected and does not revive the run",
+    "Stopped approval and composer remain reachable at both required desktop viewports",
+    "A new explicit task computes actual42 with the retained healthy component, without re-download or any change to existing owned files",
+    "Cold formal app restores all three interruptions and successful new task without model/download/tool replay or source/journal changes"
+  ],
+  "errors": [],
+  "boundary": "Owned formal Electron composer/Pi/Hana registry/actual QuickJS child and file approval. Fixed reviewed package bytes from one real public download, controlled stalled stream and synthetic local model SSE only; zero paid calls. Not full E07 stage acceptance.",
+  "downloadStop": {
+    "feedbackMs": 5.9000000059604645,
+    "eventEpoch": 1793467194748,
+    "automationRoundTripMs": 1443.3778000000002,
+    "settledMs": 295
+  },
+  "computeStop": {
+    "feedbackMs": 4.100000001490116,
+    "eventEpoch": 1793467204807,
+    "automationRoundTripMs": 1389.8433000000005,
+    "settledMs": 294
+  },
+  "installedHash": "d4c9375f2b1ca4dc95f72c8aa2982a7a9951ac8011490d79c6582df732b4bbd9",
+  "approvalStop": {
+    "feedbackMs": 7.299999997019768,
+    "eventEpoch": 1793467215871,
+    "automationRoundTripMs": 1084.739800000003,
+    "settledMs": 362
+  },
+  "wire": {
+    "mode": "resume",
+    "stage": 2,
+    "calls": [
+      {
+        "mode": "download",
+        "n": 0,
+        "tool": "prepare_education_tool"
+      },
+      {
+        "mode": "compute",
+        "n": 0,
+        "tool": "education_compute"
+      },
+      {
+        "mode": "approval",
+        "n": 0,
+        "tool": "update_task_plan"
+      },
+      {
+        "mode": "approval",
+        "n": 1,
+        "tool": "office_create_text"
+      },
+      {
+        "mode": "resume",
+        "n": 0,
+        "tool": "education_compute"
+      },
+      {
+        "mode": "resume",
+        "n": 1,
+        "tool": null
+      }
+    ],
+    "downloads": [
+      {
+        "mode": "download",
+        "aborted": true,
+        "cancelCalls": 1,
+        "abortedAt": 1793467194751,
+        "cancelledAt": 1793467194751
+      },
+      {
+        "mode": "compute",
+        "aborted": true,
+        "cancelCalls": 0,
+        "abortedAt": 1793467203333
+      }
+    ],
+    "observed": [
+      {
+        "mode": "approval",
+        "result": {
+          "success": true,
+          "adopted": true,
+          "schemaVersion": "xiaozhi.task-plan.v3",
+          "taskId": "xitask_73f0980cb5c5224aad1d9aaad0e1ebae09cbe82709913e4c808605368bc3ee18",
+          "requirementsVersion": 1,
+          "revision": 1,
+          "steps": [
+            {
+              "id": "deliver",
+              "text": "创建等待确认的演示",
+              "dependsOn": [],
+              "reported": "pending",
+              "criterionIds": [
+                "check_d94baecf19c85e3526a81d3c"
+              ],
+              "state": "pending"
+            },
+            {
+              "id": "review",
+              "text": "教师核对讲解",
+              "dependsOn": [
+                "deliver"
+              ],
+              "reported": "pending",
+              "criterionIds": [
+                "teacher_request"
+              ],
+              "state": "waiting_dependency"
+            }
+          ],
+          "criteria": [
+            {
+              "id": "teacher_request",
+              "text": "创建停止等待.html浮力说明，先提出审阅，等我确认再保存。",
+              "kind": "human",
+              "version": 1
+            },
+            {
+              "id": "check_d94baecf19c85e3526a81d3c",
+              "text": "创建等待确认的演示",
+              "kind": "saved_text",
+              "version": 1
+            }
+          ],
+          "note": "reported是模型报告；state来自当前主进程核验。human只能教师确认。"
+        }
+      },
+      {
+        "mode": "resume",
+        "result": {
+          "success": true,
+          "data": {
+            "value": {
+              "answer": 42
+            },
+            "runtime": "3.6.2",
+            "elapsedMs": 18,
+            "inputSha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "codeSha256": "344906b8c62bace2ca45a19de3909b6a648c60b61c0f4877ccf6d0a659857c37",
+            "resultId": "xicompute_45252a805b1e6bb3fc9a78eb51a1d8439154964aa3cf68edc221e90d68b54d77",
+            "resultSha256": "ecf59a2696ca44a417e20e2a7eabb1b26e82c779f8546bea354a2cc80e8e1eed"
+          }
+        }
+      }
+    ],
+    "blocked": [],
+    "workers": [
+      {
+        "pid": 62400,
+        "loop": false,
+        "closed": true,
+        "code": 0,
+        "signal": null,
+        "closedAt": 1793467203187
+      },
+      {
+        "pid": 77208,
+        "loop": false,
+        "closed": true,
+        "code": 0,
+        "signal": null,
+        "closedAt": 1793467203326
+      },
+      {
+        "pid": 76852,
+        "loop": true,
+        "closed": true,
+        "code": null,
+        "signal": "SIGTERM",
+        "closedAt": 1793467204819
+      },
+      {
+        "pid": 76752,
+        "loop": false,
+        "closed": true,
+        "code": 0,
+        "signal": null,
+        "closedAt": 1793467226787
+      }
+    ]
+  },
+  "sessions": [
+    {
+      "mode": "download",
+      "id": "aisession_5e514022-1037-4fcd-90aa-b751d6d0141f"
+    },
+    {
+      "mode": "compute",
+      "id": "aisession_791023a4-db3b-4d50-90fb-44ecb26a27c9"
+    },
+    {
+      "mode": "approval",
+      "id": "aisession_38a8c119-6998-4cb8-b12c-6e6f2be45b5c"
+    },
+    {
+      "mode": "resume",
+      "id": "aisession_109a8220-229e-4dad-8d30-7818cd9d0a9a"
+    }
+  ]
+}

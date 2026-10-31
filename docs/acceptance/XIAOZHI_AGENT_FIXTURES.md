@@ -177,6 +177,8 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 
 ## FX10：边界与故障
 
+2026-11-01 E07停止补充：原固定免费包实际下载1次并校验pin；受控无头部响应、部分512字节后停流/取消回调不结算、晚响应与共享消费者。原Pi用同pin包受控流、真实QuickJS无限循环child、原文件审阅卡，三个阶段均实际点停止，核对临时物、child close、SQLite interrupted/旧批准拒绝；新会话实际42、双尺寸及四会话冷启6项。事件计时与自动化往返分开记录，300ms不放宽；原完整故障集不缩减。docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
 2026-11-01 E07普通工具补充：独立临时生成区实际更名文件与占用文件，原Hana真实读/列目录/版本回读，精确目标readFileSync注入EBUSY/ETXTBSY、EACCES和版本变化；生产Pi以合成SSE驱动缺文件→列目录→真实读取、短暂/持续占用、等待中停止、双尺寸/冷启。0真实provider请求；同文件/事件hash不变。首轮折叠详情夹具失败保留，完整FX10故障集合不缩减。docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-11-01 E07补充：独立OS临时根，本地合成SSE驱动原Pi任务/真实HTML批准，SQLite BEFORE INSERT在正文/verification落账持续拒绝。故障下再读仍阻断；撤触发器后核对同run/task及文件hash，显式新run接续、双尺寸/冷启7项。源码另覆盖hash/序列缺口、回滚、晚回调、其他会话和幂等；账本5涵盖默认产物与独立Office输出目录。初始夹具失败及实际目录缺陷保留；不替代完整FX10。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。

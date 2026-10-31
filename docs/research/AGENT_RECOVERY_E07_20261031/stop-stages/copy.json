@@ -1,0 +1,18 @@
+{
+  "suite": "pi-copy-final-cancel-boundary",
+  "success": true,
+  "checks": [
+    {
+      "name": "Cancel during asynchronous FileRef resolution prevents the final exclusive copy",
+      "pass": true
+    },
+    {
+      "name": "Cancel after persisted execution gate still prevents the physical copy",
+      "pass": true
+    },
+    {
+      "name": "Existing teacher file is preserved by non-overwriting copy",
+      "pass": true
+    }
+  ]
+}

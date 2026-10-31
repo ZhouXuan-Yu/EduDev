@@ -1,5 +1,7 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+2026-11-01 E07停止切片完成（0222d15）：原组件下载复用waitOfficeAbort处理无响应头/停流，不再等待可能不结算的reader.cancel；取消后清理本次临时物，晚响应不激活，新的明确准备和共享消费者继续有效。实际Pi下载/计算子进程/审批等待的本地反馈5.9/4.1/7.3ms，宿主下载3ms中止、实际loop子进程12ms退出；旧批准拒绝且文件未写，原组件保留并完成新任务实际42。专项15、取消3、build/type、240组件与正式Pi6（双尺寸/四会话冷启）通过；同一冻结源码0222d15的一次legacy综合回归207/207 exit0，0付费。完整E07/252AT仍待阶段集中。 下一：E07强制中断/版本冲突/部分正式产物回收，E08通用HTML和来源定位+C，再按固定顺序S/T；Goal active，D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
 2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 下一步：继续E07工具运行/下载/审批等待停止及崩溃/回执冲突矩阵、E08 HTML和来源定位+C；再按既定顺序S/T，功能齐后集中验收。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-11-01 E07落账失败原地恢复工程已实现（c61bd4e）：真实文件已保存后journal失败，重新读取会等待旧执行/数据库回调及实际工具归零，核对原事件、native与文件账本后修复原run/task并解除阻断；不重放模型/工具/审批。默认生成目录与独立Office导出目录纳入原效果核对，改动/缺失仍uncertain。 完整28WP/252REQ/AT和四份标准不缩减，Goal active；先功能对齐再阶段集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。

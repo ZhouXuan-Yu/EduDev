@@ -535,5 +535,147 @@
     },
     "terminalFix": "Observed cancelled tool retained retrying evidence even though no retry was dispatched. Existing status projection now settles only queued/retrying no-effect attempts when their run is interrupted/failed; keeps attempt count and started/unknown effects unchanged. No new tool receipt or execution fabricated.",
     "initialSourceCommit": "f1435b948e583083aeb9f1185f1e9e9e208c14d3"
+  },
+  "stopStagesSlice": {
+    "date": "2026-11-01",
+    "status": "Engineering implementation and relevant actual UI paths complete; full stage acceptance pending",
+    "sourceCommit": "0222d152f8a764c31d9e9f0e78d943f547610265",
+    "baseCommit": "c3eb61eafe350934590bc00b5655c5587a8302ac",
+    "requirements": [
+      "REQ-E07-05 running tool/download/approval stop",
+      "REQ-E07-10 partial installer temporary cleanup seam"
+    ],
+    "changes": [
+      "Original version-service reuses waitOfficeAbort for response headers and each body read, checking signal again before writing a delivered chunk",
+      "Reader cancellation is drained without awaiting an uncooperative cancellation callback; finally closes the archive handle and cleans only original owned preparation files",
+      "Late response bodies are cancelled without entering the current/new installation; new explicit prepare can succeed",
+      "Existing shared last-consumer ownership, fixed pinned package/hash/health, actual worker kill/close and original text approval cancellation remain intact; no new Runtime, IPC, schema or dependencies"
+    ],
+    "tests": {
+      "nativeManaged": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/managed-tools-smoke.mjs",
+        "passed": 15,
+        "exit": 0,
+        "realFreeOfficialDownloads": 1,
+        "packageSha256": "f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982"
+      },
+      "copyCancel": {
+        "command": "node scripts/xiaozhi-agent/pi-copy-cancel-boundary-smoke.mjs",
+        "passed": 3,
+        "exit": 0
+      },
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "rendererComponents": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/stop-stages-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-tools-R59br8\\pinned-component.tgz",
+        "passed": 6,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-stop-stages-ui-DB0kQV",
+        "downloads": "Two controlled fixed-package responses: one partial cancelled, one verified installed for actual child; no real network in this UI fixture",
+        "provider": "Synthetic local SSE only, zero paid requests",
+        "rendererErrors": 0,
+        "coldReplay": 0
+      },
+      "comprehensive": {
+        "command": "npm run test:smoke",
+        "status": "passed",
+        "passed": 207,
+        "total": 207,
+        "failed": 0,
+        "exit": 0,
+        "sourceCommit": "0222d152f8a764c31d9e9f0e78d943f547610265",
+        "scope": "One legacy Electron suite with its own build on final frozen source; no concurrent out rebuild. Formal Pi six checks are recorded separately. Stage AT and real provider quality remain pending."
+      }
+    },
+    "timings": {
+      "scope": "Actual renderer pointerdown to visible feedback DOM mutation, not Playwright command initiation; host/child use same-machine epoch. Single samples, no P95/RAM claim. Native previous-path latency was not measured: old code awaited pending read/cancel without an abort race.",
+      "localFeedbackMs": {
+        "download": 5.9000000059604645,
+        "compute": 4.100000001490116,
+        "approval": 7.299999997019768
+      },
+      "turnSettledMs": {
+        "download": 295,
+        "compute": 294,
+        "approval": 362
+      },
+      "downloadHostAbortMs": 3,
+      "ownedChildClosedMs": 12,
+      "noFurtherDispatchObservedMs": 1100,
+      "nativeHeaderStopAndCleanupMs": 3.2831999999998516,
+      "nativeBodyStopAndCleanupMs": 4.809699999999793
+    },
+    "build": {
+      "main/index.js": {
+        "bytes": 3333016,
+        "sha256": "b9dde7857e66de2f811da6c480f358d121ef6079aa1079447ef6b29d07d7b11a"
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      "renderer/assets/index-DobhCql0.js": {
+        "bytes": 7260422,
+        "sha256": "ae94309a3de6cddcf637d4f2a4735b99042c906318a80c29cbdf7f09874ee610"
+      }
+    },
+    "performance": {
+      "priorBuild": {
+        "main/index.js": {
+          "bytes": 3332614,
+          "sha256": "e9cfcbfff14eb3db6ea43ce949b4733c6aafc35251dc10170be481835bc752a3"
+        },
+        "preload/index.cjs": {
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        "renderer/assets/index-DobhCql0.js": {
+          "bytes": 7260422,
+          "sha256": "ae94309a3de6cddcf637d4f2a4735b99042c906318a80c29cbdf7f09874ee610"
+        }
+      },
+      "bytesDelta": {
+        "main": 402,
+        "preload": 0,
+        "renderer": 0
+      },
+      "normalDownloadAddedWork": "A bounded abort listener per received chunk; existing 100ms progress throttle unchanged. No per-token renderer or journal writes added."
+    },
+    "failuresPreserved": [
+      "Initial timer included Playwright pre-click/action waits; failed >300ms automation assertion did not record actual event timing. Precise event-based second run observed6.7ms local feedback and1210ms total automation round trip, showing these are separate measurements. Criteria remain300ms and no new dispatch after stop.",
+      "Next fixture used legacy ai-conversation-new selector; switched only the test to existing current pi-new-session control. Download had passed; final6 actual paths passed without production UI change."
+    ],
+    "archive": "docs/research/AGENT_RECOVERY_E07_20261031/stop-stages",
+    "audit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "newDependencies": 0,
+    "ddl": 0,
+    "newIpc": 0,
+    "realPaidRequests": 0,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "rollback": "Revert source0222d15; retain existing installed components, original files, task/proposal/journal records. No migration or user data deletion. Full rollback rehearsal not performed.",
+    "remaining": "Full E07 crash/receipt/version-conflict/partial formal-output matrix and E08 generic HTML/source/version surface, applicable C; fixed S/T order afterward. Current stop subcases do not replace concentrated full AT or daily/installer validation.",
+    "workerBuild": {
+      "file": "main/managed-tool-worker.js",
+      "bytes": 2133,
+      "sha256": "423f2e98515665479bb83574ed363c6807230aad7340dc1b410d7eef8ba590c5"
+    },
+    "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "testCwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+    "workspace": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject"
   }
 }

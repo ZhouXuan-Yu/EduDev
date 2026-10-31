@@ -1,0 +1,9 @@
+(node:72044) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(feedback<=300)
+
+    at stop (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/stop-stages-electron.mjs:37:260)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/stop-stages-electron.mjs:39:253
+{"ok":false,"checks":0,"error":"AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(feedback<=300)\n\n    at stop (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/stop-stages-electron.mjs:37:260)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/stop-stages-electron.mjs:39:253","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-stop-stages-ui-vnwjnQ"}

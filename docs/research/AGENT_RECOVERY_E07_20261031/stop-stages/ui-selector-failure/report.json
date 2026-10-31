@@ -1,0 +1,38 @@
+{
+  "ok": false,
+  "checks": [
+    "Actual composer stops a stalled partial component stream despite never-settled cancel; temporary files are removed, no package activated and no follow-up model action"
+  ],
+  "errors": [],
+  "boundary": "Owned formal Electron composer/Pi/Hana registry/actual QuickJS child and file approval. Fixed reviewed package bytes from one real public download, controlled stalled stream and synthetic local model SSE only; zero paid calls. Not full E07 stage acceptance.",
+  "downloadStop": {
+    "feedbackMs": 6.700000002980232,
+    "eventEpoch": 1793467077994,
+    "automationRoundTripMs": 1210.0545999999995,
+    "settledMs": 330
+  },
+  "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('ai-conversation-new')\u001b[22m\n\n    at fresh (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\stop-stages-electron.mjs:34:112)\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\stop-stages-electron.mjs:45:8",
+  "wire": {
+    "mode": "download",
+    "stage": 1,
+    "calls": [
+      {
+        "mode": "download",
+        "n": 0,
+        "tool": "prepare_education_tool"
+      }
+    ],
+    "downloads": [
+      {
+        "mode": "download",
+        "aborted": true,
+        "cancelCalls": 1,
+        "abortedAt": 1793467077995,
+        "cancelledAt": 1793467077995
+      }
+    ],
+    "observed": [],
+    "blocked": [],
+    "workers": []
+  }
+}

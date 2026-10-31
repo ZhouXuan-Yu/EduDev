@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+2026-11-01 E07：只补原受管安装等待接缝；工具运行与审批停止沿已有实际child close/原批准事务验证，不新增取消协议、执行器、依赖或审查层。测试固定已认可免费组件，正式Pi用同pin公开包字节的受控传输与本地合成模型，0新付费。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
 2026-11-01 E07：沿Hana adapter、原Pi result/manifest/execution-bound补普通工具错误和有界纯读；使用原SessionExecutionRegistry登记重试等待，不引入第二执行器。缺文件由模型核对目录后再读，固定提示不自动猜替代文件；写入/审批/未知效果仍沿原账本处理。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-11-01 E07：沿原journal、取消修复、task coordinator加单轮在线恢复；复用实际executing计数及配置锁，追加publisher结束栅栏，不加执行器。仅在原账本核对后清runtime失败标记，读回不执行工具或继承批准。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。

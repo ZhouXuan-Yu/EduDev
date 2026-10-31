@@ -1,0 +1,10 @@
+(node:43928) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Actual composer stops a stalled partial component stream despite never-settled cancel; temporary files are removed, no package activated and no follow-up model action
+locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for getByTestId('ai-conversation-new')
+
+    at fresh (C:\Users\ZhouXuan\.codex\worktrees\e147\EduProject\apps\desktop\scripts\xiaozhi-agent\stop-stages-electron.mjs:34:112)
+    at C:\Users\ZhouXuan\.codex\worktrees\e147\EduProject\apps\desktop\scripts\xiaozhi-agent\stop-stages-electron.mjs:45:8
+{"ok":false,"checks":1,"error":"locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('ai-conversation-new')\u001b[22m\n\n    at fresh (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\stop-stages-electron.mjs:34:112)\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\stop-stages-electron.mjs:45:8","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-stop-stages-ui-yyaMUx"}
