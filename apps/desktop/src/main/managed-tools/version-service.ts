@@ -7,6 +7,7 @@ import type {ManagedRecipe} from './manifest';
 import {runManagedComputation} from './worker-client';
 import {noLinks} from '../xiaozhi-agent/managed-skills';
 import {MANAGED_TOOL_ERRORS,type ManagedToolView,type ManagedToolPhase} from '../../shared/managed-tools';
+import {waitOfficeAbort} from '../office-agent/office-network';
 
 type Progress=import('../../shared/managed-tools').ManagedToolProgress;
 type Job={controller:AbortController;consumers:Set<symbol>;listeners:Set<(state:Progress)=>void>;promise:Promise<string>};
@@ -74,11 +75,19 @@ export function createManagedToolVersion(options:{recipe:ManagedRecipe;root:stri
       const archive=path.join(temp,'package.tgz');
       publish({phase:'downloading',downloadedBytes:0});
       let response:Response;
-      try{response=await fetcher(recipe.sourceUrl,{redirect:'error',credentials:'omit',signal});}catch{signal.throwIfAborted();throw Error('network_error');}
+      try{
+        const pending=Promise.resolve().then(()=>{signal.throwIfAborted();return fetcher(recipe.sourceUrl,{redirect:'error',credentials:'omit',signal});});
+        // Some transports settle after cancellation. Drain their result and close
+        // the body without allowing it to enter a later installation.
+        void pending.then(late=>{if(signal.aborted)void late.body?.cancel().catch(()=>{});},()=>{});
+        response=await waitOfficeAbort(pending,signal);
+      }catch{signal.throwIfAborted();throw Error('network_error');}
       if(!response.ok||!response.body)throw Error('network_error');
       const stream=await fs.open(archive,'wx'),reader=response.body.getReader();let count=0;
-      try{for(;;){signal.throwIfAborted();const next=await reader.read();if(next.done)break;count+=next.value.length;if(count>recipe.archiveBytes)throw Error('checksum_mismatch');await stream.writeFile(next.value);publish({phase:'downloading',downloadedBytes:count});}}
-      catch(error){await reader.cancel().catch(()=>{});signal.throwIfAborted();const category=known(error);throw Error(category==='configuration'?'network_error':category);}
+      try{for(;;){signal.throwIfAborted();const next=await waitOfficeAbort(reader.read(),signal);signal.throwIfAborted();if(next.done)break;count+=next.value.length;if(count>recipe.archiveBytes)throw Error('checksum_mismatch');await stream.writeFile(next.value);signal.throwIfAborted();publish({phase:'downloading',downloadedBytes:count});}}
+      // Reader cancellation may itself never settle. It must not hold the file
+      // handle, shared installer job or subsequent explicit preparation open.
+      catch(error){void reader.cancel().catch(()=>{});signal.throwIfAborted();const category=known(error);throw Error(category==='configuration'?'network_error':category);}
       finally{reader.releaseLock();await stream.close();}
       signal.throwIfAborted();publish({phase:'verifying',downloadedBytes:count});
       const archiveBytes=await fs.readFile(archive);if(count!==recipe.archiveBytes||hash(archiveBytes)!==recipe.archiveSha256)throw Error('checksum_mismatch');

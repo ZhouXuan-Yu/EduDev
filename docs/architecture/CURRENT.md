@@ -6,6 +6,8 @@
 
 回退先暂停新批次，并以 OMNI_EDU_BOOK_ANSWER_WRITEBACK=0 停新回写；保留新schema严格读适配、原件、两遍原响应和v6 journal。恢复字段须走未被教师修改快照的CAS，不让未知旧provider执行新单元；无DDL回退，完整回滚未演练。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
 
+2026-11-01 E07：原Pi stop→run.abort/Hana registry→受管version-service等待，新增复用waitOfficeAbort约束header/body，停止后释放原临时文件/安装job；晚响应不入新job。原child kill/close、text-change取消和typed IPC保持，无DDL/新Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
 
 2026-11-01 E07：原Hana adapter→Pi内容与details→execution boundary→typed journal/projection→原OfficeToolEvidence贯通not_found/resource_busy。原manifest仅纯本地read/stat/list增至2次；同call准入1次、内部retry ID独立，等待沿原Hana registry可停，当前路径/版本检查每次保留。无DDL/新IPC/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 

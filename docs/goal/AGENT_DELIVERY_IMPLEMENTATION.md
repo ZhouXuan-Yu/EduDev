@@ -1,5 +1,12 @@
 # 小智交付能力实施合同
 
+## 2026-11-01 E07 工具运行、下载及审批等待停止（实施前冻结）
+
+- M10/M11，推进REQ-E07-05/10，沿原Pi stop、Hana实际执行登记、受管组件服务和审批卡。现下载仅在await reader.read前查signal，且异常时await reader.cancel；无响应数据/不结算cancel会挂住实际安装与dispose。头部fetch不响应signal亦有同类缺口。计算child已有kill/close、审批已有cancel，先核对并复用。
+- 教师结果：下载或工具执行/审批等待时点击停止，本机300ms内反馈、1秒内停止派发；组件下载的头部/数据等待可取消，原安装临时物清理、未核验包不激活，晚响应/取消回调不再写入或翻转新任务。新的明确准备仍可执行；共享下载只在最后消费者退出时中止。正式成果和已安装版本不删除，旧批准不得复用。
+- 修改原managed-tools/version-service的等待/清理，优先复用waitOfficeAbort，不新建下载器/Runtime/账本/IPC/审批层或依赖。实际工具/审批状态沿原共享契约、typed preload及当前界面与事件投影；若既有功能已正确只补真实路径证据。协议/目录/数据版本不变，无DDL；回退本片源码保留既有文件/安装与任务记录。
+- 一次相关源码故障检查：无头部响应、收到部分字节后无后续chunk、cancel不结算/晚回调、共享消费者、重新准备/原安装保留；原真实QuickJS子进程退出和批准前停止。正式Pi从原composer/停止按钮覆盖下载、运行、审批并读回SQLite/文件，双尺寸/冷启，合成模型0付费。build/type、组件及必要关键路径综合一次，修失败只重验影响项；不替代完整E07/252AT阶段集中或日常D盘/安装验收。
+
 ## 2026-11-01 E07 普通文件工具失败与有界读取恢复（实施前冻结）
 
 - M10/M09，推进REQ-E07-04及05接缝。现Hana已返回not_found，但ToolExecutionCode不接受它；OS文件占用在Hana adapter落unsupported，模型错误正文又缺code。修复原shared→Hana adapter→Pi result→执行边界→journal/preload既有事件→原工具过程显示，不新增执行器或页面。

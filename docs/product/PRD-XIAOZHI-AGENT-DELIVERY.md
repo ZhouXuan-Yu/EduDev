@@ -1,5 +1,7 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-11-01 E07停止切片完成（0222d15）：原组件下载复用waitOfficeAbort处理无响应头/停流，不再等待可能不结算的reader.cancel；取消后清理本次临时物，晚响应不激活，新的明确准备和共享消费者继续有效。实际Pi下载/计算子进程/审批等待的本地反馈5.9/4.1/7.3ms，宿主下载3ms中止、实际loop子进程12ms退出；旧批准拒绝且文件未写，原组件保留并完成新任务实际42。专项15、取消3、build/type、240组件与正式Pi6（双尺寸/四会话冷启）通过；同一冻结源码0222d15的一次legacy综合回归207/207 exit0，0付费。完整E07/252AT仍待阶段集中。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
 2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-10-31 E07请求诊断/接续工程已实现：首响应暂时拒绝最多2次重试并显示记录；鉴权/余额/限流/服务错误分开。断流尾部正文显示未完成，准备稿不覆盖教师草稿、不自动发送；原样发送绑定原任务/要求版本，新run/command保留原criteria及效果，过时绑定拒绝。 完整E07与252AT仍待阶段集中，本轮完整AT新增已实现0。0付费/新依赖/DDL/Runtime；audit45（8高29中8低/0严重，exit1）未升级，既有UI-contract指纹门禁未修/未重跑。D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
@@ -394,12 +396,12 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) | 待验收 |
 | REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
 | REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。 |
-| REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 已实现（工程专项）：本地读取重试等待停止37.49ms，无后续读取/模型；既有连接等待证据保留，运行/下载/审批等待矩阵待补。 |
+| REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 部分实现：本轮下载/实际计算child/原审批等待停止工程通过（反馈5.9/4.1/7.3ms，原下载与child分别3/12ms中止）；1.1秒无新派发，旧批准拒绝，新任务可用；既有连接/读重试证据保留。完整AT待阶段集中。 |
 | REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：恢复后冷启读回已实现，完整强制中断矩阵待集中（c61bd4e；recordRecoverySlice） |
 | REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
 | REQ-E07-08 | 幂等恢复 | 每个真实写入只发生一次；相同调用返回既有回执；新任务有新身份且不复用旧批准 | [AT-E07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-08) | 部分实现：重复读回幂等及原任务显式接续已实现，完整重复调用矩阵待集中（c61bd4e；recordRecoverySlice） |
 | REQ-E07-09 | 版本冲突 | 报告冲突并保留两侧内容；不覆盖教师修改；重新提议需读取最新版本 | [AT-E07-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-09) | 待验收 |
-| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 待验收 |
+| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 部分实现：停流后只清理本job.prepare临时物，既有组件及自有文件哈希保留，后续任务实际计算可用；正式部分交付打开/回收全矩阵仍待阶段集中。 |
 
 #### WP-E08 成果卡、预览、版本与局部回退
 

@@ -1,0 +1,9 @@
+(node:64596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Actual composer stops a stalled partial component stream despite never-settled cancel; temporary files are removed, no package activated and no follow-up model action
+PASS Actual owned infinite QuickJS child exits after the stop button; interrupted computation produces no result or new model action and keeps the verified installed version
+PASS Stop at the original file approval marks the proposal interrupted without saving; late approval is rejected and does not revive the run
+PASS Stopped approval and composer remain reachable at both required desktop viewports
+PASS A new explicit task computes actual42 with the retained healthy component, without re-download or any change to existing owned files
+PASS Cold formal app restores all three interruptions and successful new task without model/download/tool replay or source/journal changes
+{"ok":true,"checks":6,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-stop-stages-ui-DB0kQV"}

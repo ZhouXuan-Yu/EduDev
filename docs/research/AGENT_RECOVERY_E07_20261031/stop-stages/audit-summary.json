@@ -1,0 +1,12 @@
+{
+  "exit": 1,
+  "vulnerabilities": {
+    "info": 0,
+    "low": 8,
+    "moderate": 29,
+    "high": 8,
+    "critical": 0,
+    "total": 45
+  },
+  "scope": "Existing dependency baseline, no package changes or automatic upgrades"
+}

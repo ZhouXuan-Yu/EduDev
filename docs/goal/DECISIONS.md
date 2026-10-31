@@ -6,6 +6,8 @@
 
 回退先暂停新批次，并以 OMNI_EDU_BOOK_ANSWER_WRITEBACK=0 停新回写；保留新schema严格读适配、原件、两遍原响应和v6 journal。恢复字段须走未被教师修改快照的CAS，不让未知旧provider执行新单元；无DDL回退，完整回滚未演练。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
 
+2026-11-01 E07：只补原受管安装等待接缝；工具运行与审批停止沿已有实际child close/原批准事务验证，不新增取消协议、执行器、依赖或审查层。测试固定已认可免费组件，正式Pi用同pin公开包字节的受控传输与本地合成模型，0新付费。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
 
 2026-11-01 E07：沿Hana adapter、原Pi result/manifest/execution-bound补普通工具错误和有界纯读；使用原SessionExecutionRegistry登记重试等待，不引入第二执行器。缺文件由模型核对目录后再读，固定提示不自动猜替代文件；写入/审批/未知效果仍沿原账本处理。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
