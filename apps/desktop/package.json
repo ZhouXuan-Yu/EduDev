@@ -212,7 +212,8 @@
     "tar": "7.5.22",
     "tinycolor2": "1.6.0",
     "undici": "7.24.7",
-    "yauzl": "3.4.0"
+    "yauzl": "3.4.0",
+    "unpdf": "1.8.1"
   },
   "overrides": {
     "html2canvas-pro": "2.5.1",

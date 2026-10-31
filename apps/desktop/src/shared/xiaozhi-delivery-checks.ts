@@ -89,7 +89,7 @@ export function validDeliveryCheckInput(v:unknown):v is DeliveryCheckInput{
 /** A worker result is private local data; only bounded findings cross the model boundary. */
 export type DocumentMetrics={format:string;engine:string;pageCount?:number;sheetCount?:number;pages:{index:number;text:string;notes:string}[];
  sheets?:{index:number;name:string;cells:{row:number;column:number;value:string|number;formula?:boolean}[]}[];
- geometry?:{page:number;code:string}[];fonts?:string[];externalLinks?:boolean;nativeRenderBlocked?:boolean};
+ geometry?:{page:number;code:string}[];fonts?:string[];externalLinks?:boolean;nativeRenderBlocked?:boolean;textUnavailablePages?:number[]};
 export const STRUCTURE_SCHEMA='xiaozhi.delivery-structure.v1';
 export type StructureRequest={schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;name:string;bytes:Uint8Array};
 export type StructureResult={schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;ok:true;data:DocumentMetrics}|{schemaVersion:typeof STRUCTURE_SCHEMA;requestId:string;ok:false;error:string};
@@ -102,5 +102,7 @@ export function validStructureResult(v:unknown,requestId:string):v is StructureR
  if(!v.ok)return typeof v.error==='string'&&['unsupported','parse_failed','too_large','empty','cancelled','timeout','unavailable','busy'].includes(v.error);
  const d=v.data;if(!obj(d)||!text(d.format,16)||!text(d.engine,80)||!Array.isArray(d.pages)||d.pages.length>64)return false;
  if(!d.pages.every(p=>obj(p)&&integer(p.index,64)&&typeof p.text==='string'&&p.text.length<=256000&&typeof p.notes==='string'&&p.notes.length<=30000))return false;
+ const pages=d.pages;
+ if(d.textUnavailablePages!==undefined&&(!Array.isArray(d.textUnavailablePages)||d.textUnavailablePages.length>64||!d.textUnavailablePages.every(n=>integer(n,64)&&pages.some(p=>obj(p)&&p.index===n))))return false;
  try{return JSON.stringify(d).length<=2000000;}catch{return false;}
 }
