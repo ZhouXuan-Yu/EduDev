@@ -183,6 +183,14 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     if (event.error) {next.error = XIAOZHI_ERRORS[event.error];next.errorCode=event.error;}
     if (event.status !== 'running') {
       if(next.modelRequests)next.modelRequests=next.modelRequests.map(row=>{if(!['sending','retry_wait'].includes(row.state))return row;const {waitMs,...stopped}=row;return {...stopped,state:'interrupted'};});
+      // A persisted retry wait must not keep promising another read after the
+      // owning run stops. Started/unknown effects still require actual receipts.
+      if(event.status==='interrupted'||event.status==='failed')for(const item of next.items){
+        const attempt=item.toolAttempt;
+        if(validToolAttempt(attempt)&&attempt.effect==='none'&&['queued','retrying'].includes(attempt.state)){
+          item.toolAttempt={...attempt,state:'failed',code:event.status==='interrupted'?'cancelled':'unknown'};
+        }
+      }
       if(next.modelReasoning)next.modelReasoning=next.modelReasoning.map(b=>b.status==='streaming'?{...b,status:event.status==='completed'?'completed':event.status==='interrupted'?'interrupted':'failed'}:b);
       const lastText = [...next.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
       // A broken first response has no final assistant_end. Keep trailing prose visible
