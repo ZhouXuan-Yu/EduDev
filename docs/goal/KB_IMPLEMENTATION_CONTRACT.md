@@ -1,5 +1,17 @@
 # 知识库方案实施合同
 
+## 2026-10-31 AI原页图片证据文件化（M01/M03/M04/M10/M11）
+
+真实定位：4候选固定EXE推理62ms、冷调用4348ms，其中全组件核验2883ms；同数据热文件缓存复测核验370ms。暂不以冷热差异当并发重写依据，保留首查冷启动待优化。已确认PDF/普通图片AI输入把最大4MiB图片按Base64存入material_ai_image_inputs，违背大产物落文件系统的既有基线；Word原生图稿已文件化，本片不重写。
+
+教师可见结果：原目录授权→两遍AI→题本/普通教材正文→Pi检索/来源原图/重启入口保持，新AI原页证据只在SQLite存SHA、MIME、字节数和版本，本地按内容SHA去重保留原始输入字节，不重绘图、不更换模型、不减少两遍核验。原OCR/回执/教师事实保持，图片损坏/失联继续待处理，不能凭文件路径放行。
+
+复用readMaterialOriginal的FD/路径/大小/完整哈希证明、acquireWriterLock的Windows独占锁、现SQLite writer及全数据根备份。新增assets/material-ai-image-files.ts领域存储；dataRoot/material-ai-images/v1下分SHA前缀存.bin，短暂.pending文件先登记SQLite再写/sync/原子改名，提交图引用后清理日志；崩溃恢复仅查有界pending记录和引用索引，不扫整库/全目录。prepare在writer事务外，短事务只校验当前授权并发表引用；锁持有到发表/清理结束。磁盘不足/取消/发表失败不误发云，孤立文件可由日志恢复，不删已有被引用证据。
+
+material_ai_image_inputs增storage_version（旧行为inline.v1）与image_bytes默认0，新file.v1的data_base64为空；新增material_ai_image_pending及image_sha部分引用索引，增量幂等，旧inline记录不强制搬迁或VACUUM。Host仅新增可选本机root，生产db必接；无root的旧适配器仍inline并可回归，file.v1无root拒绝。material-ai-repository、page-evidence统一经领域读器，保持未知版本/混填/缺件/篡改失败；原字节→回执来源权限不提升，派生检索触发仍用原image_inputs表。现typed IPC/UI不变，文件备份不属于可重建排除项。
+
+RED先证明实际目录旅程仍保存SQLite大块，再实现新文件引用/去重/持久保存/重启；新增真实SQLite+文件专项验证旧库/新库/重复迁移、同大小篡改、链接、路径替换、取消、磁盘/提交故障、崩溃前后恢复、备份与未知版本拒绝。实际Electron目录原页→两遍受控AI→FTS/ONNX/Lance→Pi实读/来源→冷启验证，构建/组件/相关边界与关键smoke按最终源码运行。0付费受控流程不替代自然质量或40GB；明确实测SQLite输入量/文件量及未验规模。回退先设OMNI_EDU_AI_IMAGE_FILES=0停新file.v1写入，保留新版本读器、文件及pending恢复；不得直接删除新格式证据或降级成空图，旧inline事实无格式变化。
+
 ## 2026-10-30 检索与资料工具阶段性能修复（M04/M10）
 
 2026-10-31追加：每个文件的读前/读后均顺序lstat每级祖先，完整目标realpath只做一次（合计最多两次），禁止为减少重复解析跳过父目录链接证明。RED以实际调用计数复现重复工作，并覆盖父目录junction；不引入时效缓存。同步空闲编辑/安装入口本片保留，只有迁移并证明其写入/版本语义后才删除。
