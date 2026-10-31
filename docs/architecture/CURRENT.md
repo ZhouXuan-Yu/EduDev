@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-31 归档空间不足的可恢复边界
+
+仍以SQLite/文件为事实真源，复用MaterialImportBatches、MaterialParseQueue、现PDF文件Worker和FTS/Lance/ONNX，无新服务/依赖/IPC/表。可选I/O错误码贯穿原导入返回值；ENOSPC（含SQLITE_FULL）中断当前批次，pending和未扫描目录保留。复制后未发表的副本只在确认没有SQLite事实持有时清理，查询/清理失败时保留原件。现页协议、隐私授权、题目资格与教师正式组卷确认不变。
+
 ## 2026-10-31 混合图题正文召回与质量复核
 
 本轮沿现原页回执→AiPageView→MaterialAiTextIndex→原FTS/Lance→Pi来源读取增加独立transcriptionStatus，原整体status/题库资格不变；共享aiTextSignature保留数字/字母边界。增量控制列transcription_policy=2，游标每次发现8条/处理4条，来源/隐私在索引及读取时照旧复验。无新IPC、依赖、模型或业务真源。证据KB_TRANSCRIPTION_RECALL_20261031.json；保留合并主线Office实际渲染能力。

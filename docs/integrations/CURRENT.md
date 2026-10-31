@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-31 大库容量与磁盘故障
+
+直接验证现Node流式复制/SHA、sqlite3、PDFium/RapidOCR文件Worker、SQLite FTS及Lance/ONNX消费路径，没有替换成熟解析/检索层。既有AttachmentImportItem仅新增可选白名单I/O原因；SQLITE_FULL归一为空间不足，不修改供应商/模型、依赖锁文件或安装组件。实际字节容量长跑与自然OCR/AI质量必须分别记录。
+
 ## 2026-10-31 混合图题正文召回与质量复核
 
 原typed getMaterialAiPage/getMaterialSource保持，AiPageView只加可选transcriptionStatus；office_read_material附题目待核状态及说明，来源引用仍按原版本/批次/摘要验证。新派生控制策略逐批恢复旧页，不发模型、不改模型schema或教师事实；共享文字签名不删除数字/字母间边界。无新外部集成或依赖，原DeepSeek/本地OCR及Windows组件复用。
