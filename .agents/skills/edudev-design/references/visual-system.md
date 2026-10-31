@@ -8,7 +8,9 @@
 
 ## 样张数值不是生产 Token
 
-项目 `docs/design/system/review/review.css` 中带 `--review-` 前缀的数值仅用于布局审阅。当前提案：4/8px节奏、主区24–32px边距、正文行高1.7、左栏224px、阅读宽720px。色值、圆角、宽度和断点待样张接受及实际组件测量后校准，不直接覆盖 HeroUI 变量。密度要求按 CSS viewport 评估，记录 native尺寸、DPR和缩放，不能混称物理分辨率。
+最终布局表达在 `docs/design/system/ideal/`，旧 review/ 保留归档。原型色值、圆角、宽度、断点不是生产 Token。应用布局使用 4/8px 节奏、主区约24–32px边距、正文行高约1.7、阅读宽约720px；正式值先核对当前 token 与实际 HeroUI 测量。不要直接覆盖 HeroUI 变量，也不要复制原型 tokens.css 的全局 button/input 规则。密度按 CSS viewport 评估，记录 native尺寸、DPR和缩放，不能混称物理分辨率。
+
+输入框、底部工具栏及弹层保持当前正式软件原样；只可调整其外层在首页与已有消息页的位置，不重挂载丢草稿，不改变配置或内部设计。
 
 ## HeroUI
 

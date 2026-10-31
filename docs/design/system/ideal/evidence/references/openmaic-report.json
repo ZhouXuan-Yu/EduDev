@@ -1,0 +1,17 @@
+{
+  "app": "OpenMAIC",
+  "sourceSha": "636fab0d7edee5e7c2694117c38ece8f623573f9",
+  "layer": "real_local_ui_and_server_model_generation",
+  "homePageErrors": [],
+  "runId": "run-k6IyZJoNhD1BIorr",
+  "observed": [
+    "Homepage usable on 3013 with default Turbopack",
+    "Real model generated 2 slide outlines and 1 quiz",
+    "Default continued after outline wait countdown; explicit teacher-review policy not enabled",
+    "Server generated 4 profiles, 2 slide scenes and 1 quiz scene and reached completed",
+    "New browser context requesting the original run URL received 404; classroom import/reopen path not accepted"
+  ],
+  "completedFromServerLog": true,
+  "classroomInteractionVerified": false,
+  "boundary": "No image/TTS/video providers; not full classroom acceptance. No credentials or reasoning content included."
+}
