@@ -1,5 +1,11 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+原Pi指定WPS检查两文件、原文件面板WPS选择/实际第二页1366与1920/冷启读回、DOCX在途停止通过；PPT三页提前完成首套exit1保留，64页在途停止补测通过，0renderer错误。E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 百条候选与共享重排预算
 
 证据docs/research/KB_RERANK_CANDIDATES_20261031.json：RED20≠40；候选8、宿主3、既有边界8、生命周期15、冻结模型5、真实原生超时恢复2通过。3e7d1c2的207/207综合smoke通过；正常整合f818237为4fadfb0，无冲突，5个检索生产文件未变。整合后build/type、240组件、候选8、交付源码11/真实PDF4、新侧栏13及正式40GiB复开3通过，首次可见/冷启均明确完整重排40/40、0renderer/云端。

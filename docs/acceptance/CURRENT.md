@@ -1,5 +1,15 @@
 # 当前验收入口
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+源码c31384f：build/type、240组件、12源码、原生4项及正式Electron4项（含恢复准备1）通过；新增固定脚本的64页在途停止2项（含恢复1）通过，原稿/用户实例保持，冷启0模型读回。首次编码命令超过Windows长度限制而exit1，已改固定UTF8 BOM脚本文件并复验实际两引擎及原界面；失败保留。同源码一轮综合smoke207/207通过（含build/type；legacy-test的Pi=0，正式Pi/原生路径单独记录），没有重复全套。 同一7页字节，旧af0cbea→新c31384f单次原生观测：PowerPoint4124→6787ms、WPS6717→10318ms；旧检查无上述两类发现。新检查增加耗时，非P95/纯算法归因，也未证明整应用性能不退化；renderer7179937B与SHA不变。原Pi整轮17049ms、停止1103ms含进程/清理观察。 E06仍部分实现，完整252AT新增已实现0，Goal保持active。下一补全教师要求与检查逐项绑定、混合终态，再E07/E08+C及阶段集中AT；动画/组合/嵌入字体真实矩阵仍待。0新依赖/DDL/IPC/付费，D盘日常与安装包未更新；audit45（8高29中8低/0严重，exit1）及既有UI两门禁未消除。回退c31384f保留原稿/报告/PNG，无迁移，回退未演练。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+源码610f3eb：build/type、240组件、12源码及WPS原生3项、默认Microsoft原生3项通过。原正式UI6项（含准备1）后因三页PPT已完成赶不上停止而exit1，失败保留；改64页在途夹具，仅补测PPT停止/同文件复用4项exit0，0renderer错误。同源码综合smoke207/207通过（含build/type，legacy-test；实际Pi/WPS路径单列）。 E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 百条候选与共享重排预算
 
 证据docs/research/KB_RERANK_CANDIDATES_20261031.json：RED20≠40；候选8、宿主3、既有边界8、生命周期15、冻结模型5、真实原生超时恢复2通过。3e7d1c2的207/207综合smoke通过；正常整合f818237为4fadfb0，无冲突，5个检索生产文件未变。整合后build/type、240组件、候选8、交付源码11/真实PDF4、新侧栏13及正式40GiB复开3通过，首次可见/冷启均明确完整重排40/40、0renderer/云端。

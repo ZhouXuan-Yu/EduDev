@@ -1,5 +1,15 @@
 # 小智能力与复用矩阵
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+PPTX原生检查现可定位上层不透明矩形完整覆盖的文字页/对象，并经Windows系统字体回退检查缺失码点。PowerPoint16和WPS12同一7页正反例均定位第2页遮挡、第5页U+10FFFD；中文、透明覆盖和后置背景未误报。旋转/复杂图形、部分遮挡、动画及Office与WPF整形差异仍未完整检查，Word/PDF逐字缺字未接入。 仅此有界范围有真实测试；完整REQ-E06-03/FX09未验收，不把新增检测代码当全语义视觉完成。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+E06/M09-M10：原Pi/文件面板/现typed IPC/既有检查报告与PNG缓存已接WPS明确引擎和真实页面；自动默认兼容Microsoft。E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 百条候选与共享重排预算
 
 M04候选比较：20/40→40/40实际原生通过；最多100/每消息20/总重排5秒。证据docs/research/KB_RERANK_CANDIDATES_20261031.json：RED20≠40；候选8、宿主3、既有边界8、生命周期15、冻结模型5、真实原生超时恢复2通过。3e7d1c2的207/207综合smoke通过；正常整合f818237为4fadfb0，无冲突，5个检索生产文件未变。整合后build/type、240组件、候选8、交付源码11/真实PDF4、新侧栏13及正式40GiB复开3通过，首次可见/冷启均明确完整重排40/40、0renderer/云端。

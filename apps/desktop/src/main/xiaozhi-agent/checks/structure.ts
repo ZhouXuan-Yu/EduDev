@@ -83,7 +83,7 @@ function ppt(all:Map<string,Buffer>):DocumentMetrics{
   const notesPath=[...relationships(all,file).values()].find(v=>v.startsWith('ppt/notesSlides/'));
   const notes=notesPath?nodes(xmlPart(all,notesPath),P,'sp').filter(s=>!nodes(s,P,'ph').some(p=>['sldNum','hdr','ftr','dt'].includes(p.getAttribute('type')||''))).map(s=>paragraphs(s,A)).filter(Boolean).join('\n'):'';
   return{index:index+1,text:bounded(paragraphs(page,A)),notes:bounded(notes,30000)};
- });return{format:'pptx',engine:'yauzl3.4.0/jsdom29.0.2',pageCount:pages.length,pages,geometry,fonts:[...fonts]};
+ });return{format:'pptx',engine:'yauzl3.4.0/jsdom29.0.2',pageCount:pages.length,pages,geometry,fonts:[...fonts],embeddedFonts:[...all.keys()].some(k=>/^ppt\/fonts\//i.test(k))};
 }
 function columnIndex(address:string){const match=/^([A-Z]{1,3})([1-9][0-9]{0,5})$/.exec(address);if(!match)throw Error('parse_failed');let column=0;for(const c of match[1])column=column*26+c.charCodeAt(0)-64;return{column,row:Number(match[2])};}
 function xlsx(all:Map<string,Buffer>):DocumentMetrics{

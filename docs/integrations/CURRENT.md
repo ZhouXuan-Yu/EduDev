@@ -1,5 +1,15 @@
 # 当前集成与复用
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+沿本机PowerPoint/WPS只读Automation及Windows WPF成熟整形接入，无下载/新依赖。相同真实课件字节两引擎定位具体问题，原PNG查看/冷启保持；新render.ps1固定代码不接受模型源码，原有界已知文件清理及Job保持。完整动画/嵌入字体/原生编辑矩阵不在本轮达标范围。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+复用本机已安装WPS COM KWPS/KWPP与既有pi-office-wps-acceptance归属经验，生产薄适配共享Office Job/清理/PNG路径；旧默认Microsoft三页回归通过。无安装/依赖/凭证变化。E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 百条候选与共享重排预算
 
 生产3e7d1c2将20条单次协议与整次候选分离：最多100条分批全局比较，5秒共享重排预算贯穿宿主启动/IPC/排队/原生执行，失败原子回到完整原排序；第21条之后可晋级，100以后的尾部保留。模型/原生v1/业务事实不变，无新依赖/迁移/付费/上传。

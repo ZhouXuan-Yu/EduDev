@@ -1,5 +1,15 @@
 # 当前产品方向
 
+## 2026-10-31 E06文字遮挡与系统字形（第七切片）
+
+PPTX原生检查现可定位上层不透明矩形完整覆盖的文字页/对象，并经Windows系统字体回退检查缺失码点。PowerPoint16和WPS12同一7页正反例均定位第2页遮挡、第5页U+10FFFD；中文、透明覆盖和后置背景未误报。旋转/复杂图形、部分遮挡、动画及Office与WPF整形差异仍未完整检查，Word/PDF逐字缺字未接入。 原文件面板/原Pi具体失败回执和冷启可用；完整E06仍未验收，下一要求逐条关联。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。
+
+WPS整合收尾：正常合并main e06cc05为bc9777e，15处Markdown冲突保留双方完整阶段文字，无生产冲突；WPS检查源码与610f3eb一致。合并后build/type及240组件通过，207综合与WPS实际路径归整合前610f3eb，未重复全量。renderer7179937B/SHA未变；主线检索改进保留。完整Goal仍active、AT新增已实现0；本轮WPS未更新D盘日常/安装包。最终指纹与边界见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice.finalIntegration。
+
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+WPS Writer/Presentation已沿原Pi检查及原文件面板接通真实三页截图；新增自动/Microsoft/WPS选择，旧规则兼容，实际引擎写入报告。独立新空Automation实例+Job保持用户已有WPS进程/窗口与原稿不变；Office不存在时自动选择WPS，Microsoft忙不静默切换。无新依赖/业务表/IPC/付费。 E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 百条候选与共享重排预算
 
 资料库和题本的后列候选现在可参与同次题意比较并晋级，老师继续使用原查询和来源入口。超过候选上限、长上下文或预算未完成时仍按现提示保留可用结果，不承诺已全面比较。合成40GiB仅40页/6040B正文；最终首查4248/4824ms未改善，不是自然教材Recall/P95。5秒只限重排阶段；复杂/大候选池超时会明确退回原召回排序，质量权衡仍需验收。《初中物理·五年中考三年模拟》未找到本地文件，路径待提供、尚未导入。完整Goal保持active、完整252AT新增0，audit45（8高29中8低/0严重、exit1），D盘日常与安装包未更新；上游记录的PromptInput/启动IPC门禁亦未在本轮重跑。下一步拆解冷启动/索引等待，再做真实教材及Pi大页/大文件闭环。回退3e7d1c2保留协作者导航和业务事实，无需清库。

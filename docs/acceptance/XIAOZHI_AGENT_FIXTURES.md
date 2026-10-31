@@ -1,5 +1,9 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+工程夹具复用上一轮三页A4长标题/表格/OfficeMath DOCX，另三页含第二页PAGE_2/6cm与备注PPT；WPS全页真实PNG及物理文本读回。专用64页PPT仅用于在途停止，不代替FX09完整长表/页眉/图片/编辑/动画矩阵；hash/过程见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 E06 Word真实页面与停止清理（第五切片）
 
 此前Word导出阻塞已定位并修复：输出路径显式[string]，Close/Quit使用[ref] SaveChanges；Word16实际三页A4含长标题/表格/OfficeMath现可沿原Pi检查→原文件面板两视口→冷启取回真实PNG。仅去掉字符串转换的同文件对照20秒无PDF。取消还发现Word锁晚于助手退出释放，新增最多2秒异步重试自有临时文件；最终停止/占用专项通过，原文件不变且不接管已有实例。
