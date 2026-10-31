@@ -15,7 +15,9 @@ function lines(text:string,width:number){
   });
 }
 export function presentationPageLayout(section:PresentationSection){
-  const heading=lines(section.heading,12*72/32*1.65),headingHeight=heading.length*32/72*1.3;
+  // Native Microsoft YaHei glyph bounds exceed the nominal32pt*1.3 line box.
+  // Keep room for actual ascenders/descenders rather than relying on visible overflow.
+  const heading=lines(section.heading,12*72/32*1.65),headingHeight=heading.length*32/72*1.3+0.12;
   if(heading.length>2)throw Error('too_large');
   const top=0.6+headingHeight+0.45,bottom=6.8;
   for(const fontSize of [24,22,20,18]){

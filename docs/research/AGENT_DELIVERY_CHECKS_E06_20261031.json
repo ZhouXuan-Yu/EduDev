@@ -1560,5 +1560,293 @@
     "implementationSha": "c72a526bc6a299cc2fb1486649202cacc4eb324b",
     "verifiedSourceSha": "c72a526bc6a299cc2fb1486649202cacc4eb324b",
     "integration": "Fetched origin/main after implementation commit; already up to date at537c3dd, no production merge changes and no unrelated test rerun."
+  },
+  "powerPointSlice": {
+    "baseSha": "de9dd389d79ee98074381dd2a801f3ec65695f56",
+    "scope": "E06 actual PowerPoint PPTX rendering into existing original inspection/cache/UI, font availability and native text bounds. Same Pi runtime, file ledgers, single review. Word/PDF/WPS and semantic occlusion/glyph proof still pending.",
+    "implementation": "checks/powerpoint.ts + fixed bundled PowerShell/.NET Job adapter; same pool8 slots, one native render at a time, newly created HWND/PID/start/empty collection identity, no existing PowerPoint takeover. Source bytes read-only in owned derived staging; no extra IPC or DB migration.",
+    "titleRepair": {
+      "beforeHeightPt": 41.599998474121094,
+      "nativeTextHeightPt": 45.05503845214844,
+      "after": "Add0.12in to heading box and derive body position from expanded title; same fontsize/content/pages/notes. Re-render all8 without findings; unchanged diagnostic threshold.",
+      "failureProbeLog": "delivery-office-native-diagnostic.log",
+      "fixedProbeLog": "delivery-office-native-repaired.log"
+    },
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "log": "delivery-office-build-final.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240,
+      "log": "delivery-office-components.log",
+      "boundary": "Before title-height-only correction; related generation4 and native8-page/actualUI checks cover title correction. Renderer output unchanged."
+    },
+    "presentation": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/presentation-draft-smoke.mjs",
+      "ok": true,
+      "passed": 4,
+      "total": 4,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-presentation-Vj6Hwh",
+      "log": "delivery-office-presentation.log"
+    },
+    "formalUiFirst": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-preflight-electron.mjs --office-only",
+      "exit": 1,
+      "passedBeforeTimingFailure": 7,
+      "report": {
+        "ok": false,
+        "checks": [
+          "Original grouped review includes actual generated PPT bytes but no formal artifact; teacher edit invalidates the checked candidate cache",
+          "After teacher edit the original bundle approval regenerates and rechecks; exact inspected PPT bytes are saved with eight pages/notes, while unproven visual properties remain explicitly unchecked",
+          "Actual PowerPoint renders all8 inspected/saved pages with independent PNG hashes/dimensions and no false full-visual pass; repaired titles fit native bounds",
+          "Original file panel offers all8 real Office pages; page7 exact pixels enlarge at1366/1920 and Escape retains the original pane",
+          "Teacher checks the saved original from its visible file action; actual renderer preserves source bytes and produces a new current receipt",
+          "Native rendering detects a genuinely missing font and overflowing long text on the concrete page; failure retains actual screenshot evidence",
+          "Actual external relationship is parsed but never automatically opened in Office; unrendered page remains explicitly unchecked"
+        ],
+        "errors": [],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-jO5t9h",
+        "boundary": "Formal composer and original review, actual isolated inspectors and retained SQLite drafts. Synthetic SSE, no paid provider, Office rendering when installed, no complete E06 acceptance.",
+        "native": {
+          "sourceSha": "066e44907df16030df1945ea3ab349cafdf65db601175e4b44e8946cebf731a7",
+          "visualEvidence": [
+            {
+              "page": 1,
+              "kind": "office_page",
+              "sha256": "0e5bcc7cd24bea58f8fa0145d161e3bef6bfbc42acabb3fd64afa6cfd009c3a8",
+              "bytes": 18251,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            },
+            {
+              "page": 2,
+              "kind": "office_page",
+              "sha256": "15a56bb36bc161c3d153f81317138a50cd0265d085abf4305797eb927b998fdb",
+              "bytes": 26474,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            },
+            {
+              "page": 3,
+              "kind": "office_page",
+              "sha256": "7b70504ebfa9fd5e8b707219934163190a0152ab1e38deb1e95c4f44e5774c62",
+              "bytes": 23966,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            },
+            {
+              "page": 4,
+              "kind": "office_page",
+              "sha256": "c9ad675746817e6d3aff22b63dad62f47496df4caf8daad632d566884b6fa29a",
+              "bytes": 34193,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            },
+            {
+              "page": 5,
+              "kind": "office_page",
+              "sha256": "f3db5603372bf3581781c51316999b7aca01d28480a06e072c9e3244b86d85ff",
+              "bytes": 22073,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            },
+            {
+              "page": 6,
+              "kind": "office_page",
+              "sha256": "7d96514c9e3eb892b09a03af6ea9b9e5e28721fc94a6d490fadc09f48c8d5430",
+              "bytes": 23223,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            },
+            {
+              "page": 7,
+              "kind": "office_page",
+              "sha256": "a6017bcb00db9d2f0a9f206ead9b302cd484ad64c3c069bf0b7854c20c622321",
+              "bytes": 27775,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            },
+            {
+              "page": 8,
+              "kind": "office_page",
+              "sha256": "ccfb60031c981dfb16a2e8e544d8d904aad9278a504f66f10f035753ff643e48",
+              "bytes": 26764,
+              "width": 1600,
+              "height": 900,
+              "viewport": "1600x900"
+            }
+          ],
+          "defects": [
+            {
+              "kind": "visual",
+              "state": "failed",
+              "code": "font_missing",
+              "message": "本机未安装文件声明的字体“XiaozhiMissingFont20261031”；页面可能使用替代字体，不能判定原字体视觉通过。"
+            },
+            {
+              "kind": "visual",
+              "state": "failed",
+              "code": "rendered_text_outside",
+              "page": 1,
+              "message": "PowerPoint实际排版的文字边界超出页面。"
+            },
+            {
+              "kind": "visual",
+              "state": "failed",
+              "code": "rendered_text_overflow",
+              "page": 1,
+              "message": "PowerPoint实际排版的文字高度超出文本框，请核对截图中的裁切或遮挡。"
+            },
+            {
+              "kind": "visual",
+              "state": "unchecked",
+              "code": "actual_office_rendered",
+              "message": "PowerPoint 16.0已实际渲染全部1页并核对文字边界；截图可查看。语义遮挡、逐字缺字及动画效果仍未完整验证。"
+            },
+            {
+              "kind": "structure",
+              "state": "passed",
+              "code": "parsed",
+              "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共1页。"
+            },
+            {
+              "kind": "content",
+              "state": "passed",
+              "code": "page_count",
+              "message": "要求1页，实际1页。"
+            },
+            {
+              "kind": "numbers",
+              "state": "unchecked",
+              "code": "numeric_contract",
+              "message": "尚未提供数值或合计的核验约定。"
+            },
+            {
+              "kind": "interaction",
+              "state": "not_applicable",
+              "code": "document_interaction",
+              "message": "本次非HTML文件没有约定的交互动作检查。"
+            },
+            {
+              "kind": "consistency",
+              "state": "not_applicable",
+              "code": "single_file",
+              "message": "当前仅检查一份文件。"
+            }
+          ]
+        },
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'partial'\n- 'cancelled'\n\n    at runPowerPointUiChecks (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-office-ui-checks.mjs:20:247)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:44:44"
+      },
+      "log": "delivery-office-electron.log",
+      "boundary": "7 actual formal paths passed. Stop clicked after8-page renderer had already completed; latest receipt correctly remained partial, assertion expecting cancelled was invalid at that timing. Keep failure; do not mark this entire command passed."
+    },
+    "focusedContinuation": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-office-stop-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-jO5t9h",
+      "exit": 0,
+      "passed": 3,
+      "report": {
+        "ok": true,
+        "checks": [
+          "Cold original application retrieves exact page7 screenshot for the saved PPT without model replay or publication replay",
+          "Stopping after actual Office Job ownership terminates that registered native process, records cancellation and leaves the saved original unchanged",
+          "An existing independent PowerPoint instance stays running and is not adopted; actual check reports busy/unrendered"
+        ],
+        "errors": [],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-office-stop-3oXobY",
+        "previous": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-jO5t9h",
+        "boundary": "Focused continuation on the same owned synthetic formal artifacts: actual cold restart, native cancellation and existing-process protection. No real provider or user files.",
+        "native": {
+          "sourceSha": "066e44907df16030df1945ea3ab349cafdf65db601175e4b44e8946cebf731a7",
+          "stopMs": 2235,
+          "cancelledOwner": {
+            "start": "2026-10-31T08:10:49.1664610Z",
+            "pid": 45844
+          },
+          "finalSourceSha": "066e44907df16030df1945ea3ab349cafdf65db601175e4b44e8946cebf731a7"
+        }
+      },
+      "log": "delivery-office-stop.log",
+      "boundary": "Reused same owned saved synthetic artifacts/data/profile after actual app close; no repeat publication of successful paths.64-page actual workload gives measurable in-flight cancellation without a product pause/test hook."
+    },
+    "verifiedCombined": {
+      "distinctFormalPathsPassed": 10,
+      "rendererErrors": 0,
+      "nativeStopObservedMs": 2235,
+      "stopBoundary": "Includes process disappearance probe; not flow P95 or dispatch latency.0 leftover POWERPNT after focused run."
+    },
+    "limits": {
+      "inputBytes": 16777216,
+      "pages": 64,
+      "timeoutMs": 45000,
+      "maxShapes": 8192,
+      "maxFindings": 128,
+      "helperStdoutChars": 65536,
+      "pageImageBytes": 3145728,
+      "totalImageBytes": 100663296
+    },
+    "performance": {
+      "rendererBeforeKB": 7173.83,
+      "rendererAfterKB": 7173.83,
+      "deltaKB": 0,
+      "nativeStartupAndRendering": "Separate fixed local helper, only on explicit file checks/preflight. Actual8-page pipeline completed; no claim of first-token/P95 improvement.",
+      "boundaries": "No new resident service/model; native slot held through actual helper close.45-second native timeout path and activation-hang cleanup not separately injected."
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "critical": 0,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "total": 45,
+      "newDependencies": 0,
+      "automaticUpgrade": false
+    },
+    "paidRequests": 0,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "acceptance": "E06 remains partial,0 new full AT or252 requirements marked. Office Word/PDF/WPS, glyph and semantic occlusion detection, all teacher requirements binding and mixed terminal semantics still pending; original full scope unchanged.",
+    "rollback": "Revert native adapter/service integration/optional structure marker and title-height adjustment; retain original ledgers/files/check JSON/PNG cache. Existing previous render-not-run fallback remains. Whole-commit rollback not separately rehearsed.",
+    "sources": [
+      {
+        "url": "https://learn.microsoft.com/en-us/office/vba/api/powerpoint.presentations.open",
+        "use": "ReadOnly/WithWindow parameters"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/office/vba/api/powerpoint.slide.export",
+        "use": "Actual slide raster export, not redrafted HTML"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/office/vba/api/powerpoint.application.automationsecurity",
+        "use": "ForceDisable macros in owned automation instance"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects",
+        "use": "Assigned owned process cleanup through kill-on-close Job"
+      },
+      {
+        "url": "https://learn.microsoft.com/en-us/office/vba/api/powerpoint.textrange.boundheight",
+        "use": "Native laid out text bounding height"
+      }
+    ],
+    "sourceSha256": {
+      "src/main/xiaozhi-agent/checks/powerpoint.ts": "56b69dc714d25b125380ecc689f075f95e6ae28803d21d70dadd93ae2eafb510",
+      "src/main/xiaozhi-agent/checks/powerpoint-script.ts": "8f8a3703cca146ae7868b98421686376281e64a4eea39df6320eaca501b99a89",
+      "src/main/xiaozhi-agent/checks/service.ts": "e2ab23a71576d702a33e29ab3446d37c5f9b780e4d7f812474ebb11fa7e01d5d",
+      "src/main/xiaozhi-agent/presentation-layout.ts": "a757bff03d6c84e958e9dd9d7940375c80cea97bfd4722ea4d69fbc8e5e135e9",
+      "scripts/xiaozhi-agent/delivery-office-ui-checks.mjs": "f2502705c30d644da10efe37d1976126625afbe9e9123326373253d34a0877a2",
+      "scripts/xiaozhi-agent/delivery-office-stop-electron.mjs": "cff3ba8a7814097d26e3ee5a8b725dcd8ba3250cacfb7aa0d367bcd95b17e4aa"
+    }
   }
 }

@@ -11,6 +11,7 @@ import {createInspectionState} from './state';
 import {evaluateFileRules,evaluateConsistency,fileCheckState} from './evaluate';
 import {inspectInteractiveHtml} from './html';
 import {createVisualEvidenceCache} from './visual-evidence';
+import {renderPowerPoint} from './powerpoint';
 import type {DeliveryVisualResult} from '../../../shared/xiaozhi-delivery-checks';
 
 const hash=(value:string|Buffer)=>createHash('sha256').update(value).digest('hex');
@@ -94,14 +95,19 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
       const parsed=await runLocalUtility({entry:'inspection-worker.js',serviceName:'小智交付文件检查',request,timeout:15000,signal,valid:(v):v is StructureResult=>validStructureResult(v,request.requestId),fail});current();
       if(!parsed.ok){row.checks.push({kind:'structure',state:['busy','unavailable','timeout','too_large'].includes(parsed.error)?'unchecked':'failed',code:parsed.error,message:['busy','unavailable','timeout','too_large'].includes(parsed.error)?'解析器未能在当前资源范围内完成检查；文件保持原样。':'实际文件未通过格式或结构检查。'});}
       else{
-       const metrics=parsed.data;let observations:Record<string,string[]>={},htmlUnavailable=false;
+       const metrics=parsed.data;let observations:Record<string,string[]>={},htmlUnavailable=false,officeRendered=false;
        if(metrics.format==='html'){
         try{const html=await inspectInteractiveHtml(new TextDecoder('utf-8',{fatal:true}).decode(snapshot.bytes),file.rules||{},{dataRoot:options.dataRoot,signal});current();metrics.pages=[{index:1,text:html.text,notes:html.notes}];observations=html.observations;row.checks.push(...html.findings);row.renderedPages=html.renderedPages;
          try{row.visualEvidence=await visuals.put(html.screenshots.map(s=>({bytes:s.bytes,page:1,kind:'html_viewport' as const,viewport:s.viewport})),signal);current();}catch{current();row.checks.push({kind:'visual',state:'unchecked',code:'visual_evidence_unavailable',message:'实际页面已渲染，但截图未能留存；不能把缺少视觉证据当作完整检查。'});}
         }
         catch(error){current();htmlUnavailable=true;row.checks.push({kind:'visual',state:'unchecked',code:'render_unavailable',message:'本地页面检查未完成；未把提取文字当作视觉通过。'},{kind:'interaction',state:'unchecked',code:'render_unavailable',message:'页面未完成实际加载或操作，交互尚未验证。'});}
        }
-       const evaluated=evaluateFileRules(metrics,file.rules,observations);row.checks.push(...evaluated.checks.map(c=>htmlUnavailable&&['content','numbers'].includes(c.kind)?{...c,state:'unchecked' as const,code:'render_unavailable',message:'页面未完成实际运行，静态源未代替当前可见结果。'}:c));row.numbers=htmlUnavailable?[]:evaluated.numbers;row.facts=htmlUnavailable?[]:evaluated.facts;if(metrics.pageCount!==undefined)row.pageCount=metrics.pageCount;
+       if(metrics.format==='pptx'){
+        try{const rendered=await renderPowerPoint(snapshot.bytes,metrics,{dataRoot:options.dataRoot,signal});current();row.renderedPages=rendered.pages;row.checks.push(...rendered.findings);officeRendered=true;
+         try{row.visualEvidence=await visuals.put(rendered.captures,signal);current();}catch{current();row.checks.push({kind:'visual',state:'unchecked',code:'visual_evidence_unavailable',message:'PowerPoint已渲染，但截图未能留存；原文件保留，视觉检查尚不完整。'});}
+        }catch(error){current();const reason=error instanceof Error?error.message:'unavailable';row.checks.push({kind:'visual',state:'unchecked',code:reason==='external_content'?'office_external_content':reason==='busy'?'office_busy':'office_render_unavailable',message:reason==='external_content'?'文件包含外链或嵌入活动对象，未自动在Office打开；结构检查保留，页面仍未检查。':reason==='busy'?'本机PowerPoint正在使用或渲染器繁忙；未接管现有窗口，页面仍未检查。':'本机PowerPoint渲染未完成（未安装、超时或当前不可用）；未以结构或提取文字替代真实页面。'});}
+       }
+       const evaluated=evaluateFileRules(metrics,file.rules,observations);row.checks.push(...evaluated.checks.filter(c=>!officeRendered||c.code!=='render_not_run').map(c=>htmlUnavailable&&['content','numbers'].includes(c.kind)?{...c,state:'unchecked' as const,code:'render_unavailable',message:'页面未完成实际运行，静态源未代替当前可见结果。'}:c));row.numbers=htmlUnavailable?[]:evaluated.numbers;row.facts=htmlUnavailable?[]:evaluated.facts;if(metrics.pageCount!==undefined)row.pageCount=metrics.pageCount;
       }
       current();if(candidate){if(!(await options.candidateStatus?.(input.sessionId,row))?.current)throw Error('changed');}
       else{const after=await capture(lease,file.path);if(after.fileVersion!==snapshot.fileVersion||after.sha256!==snapshot.sha256)throw Error('changed');}
