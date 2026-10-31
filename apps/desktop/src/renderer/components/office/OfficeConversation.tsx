@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import { Button } from '@heroui/react';
 import type { ReactNode, Ref, UIEventHandler } from 'react';
 import { Fragment, useCallback, useLayoutEffect, useRef, useState } from 'react';
@@ -137,7 +138,7 @@ export function OfficeConversation({ projection, agentTrace=false, homeHeadingOn
               const body = <OfficeMarkdown animated={false} isStreaming={isStreaming}>{item.text ?? ''}</OfficeMarkdown>;
               const partial=item.phase==='partial_answer'||(['failed','interrupted'].includes(turn.status)&&item===turn.items.filter(v=>v.role==='assistant').at(-1));
               const final=item.phase==='final_answer'||partial;
-              if(item.role==='assistant'&&!final&&!isStreaming&&turn.status!=='running')return <details className="office-commentary" data-testid="reply-process-summary"><summary>查看工作过程说明</summary>{body}</details>;
+              if(item.role==='assistant'&&!final&&!isStreaming&&turn.status!=='running')return <DisclosureCard className="office-commentary" data-testid="reply-process-summary" title={<>查看工作过程说明</>}>{body}</DisclosureCard>;
               return item.role === 'user'
                 ? <ChatMessage.User key={item.id} data-item-id={item.id}>{renderAttachments?.(item)}<ChatMessage.Bubble>{body}</ChatMessage.Bubble></ChatMessage.User>
                 : <ChatMessage.Assistant key={item.id} data-item-id={item.id} data-phase={partial?'partial_answer':item.phase}><ChatMessage.Body>{partial&&<p className="office-partial-label">部分回复 · 尚未完成</p>}<ChatMessage.Content>{body}{item.truncated && <p className="office-history-notice">这段内容较长，当前显示部分内容。</p>}</ChatMessage.Content>{final&&!isStreaming&&replyActions&&<><OfficeReplySources turn={turn} sessionId={projection.threadId}/>{replyActions(turn,item)}</>}</ChatMessage.Body></ChatMessage.Assistant>;

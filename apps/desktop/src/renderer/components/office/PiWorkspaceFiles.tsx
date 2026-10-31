@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {PiDeliveryCheck} from './PiDeliveryCheck';
 import {ScienceClassroomExport} from './ScienceClassroomExport';
 import { useEffect, useRef, useState } from 'react';
@@ -130,12 +131,12 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     <div className="pi-file-body">
       <div className="pi-file-reading">
         {selected&&<div className="pi-file-breadcrumb"><span title={selected}>{selected}</span><Button variant="ghost" size="sm" isIconOnly aria-label="关闭当前文件" onPress={()=>closeTab(selected)} data-testid="pi-file-tab-close"><X size={14}/></Button></div>}
-        {preview?.format==='markdown'&&outline.length>1&&<details className="pi-file-outline" data-testid="pi-file-outline" key={preview.path+preview.version}>
-          <summary>文章目录 · {outline.length} 节</summary>
+        {preview?.format==='markdown'&&outline.length>1&&<DisclosureCard className="pi-file-outline" data-testid="pi-file-outline" key={preview.path+preview.version} title={<>文章目录 · {outline.length} 节</>}>
+
           <div className="pi-file-outline-list">{outline.map((item,index)=><Button key={`${item.level}:${index}:${item.title}`} size="sm" variant="ghost"
             className="pi-file-outline-item" data-level={item.level} onPress={()=>jumpToHeading(index,item.title)} data-testid={`pi-file-outline-item-${index}`}>{item.title}</Button>)}</div>
           {outlineNotice&&<p className="pi-file-outline-status" role="status" data-testid="pi-file-outline-status">{outlineNotice}</p>}
-        </details>}
+        </DisclosureCard>}
         {preview&&<PiDeliveryCheck key={sessionId+preview.path} sessionId={sessionId} path={preview.path} version={preview.version} workspaceVersion={authority.current}/>}
         <div ref={previewRoot} className="pi-file-preview" data-testid="pi-file-preview" aria-busy={reading}>
           {reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>刷新目录后，选择最新文件继续预览。</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='image'?<img src={preview.image} alt={preview.name} data-testid="pi-file-image"/>:

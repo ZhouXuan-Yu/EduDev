@@ -3,7 +3,8 @@ import { useMemo, useState, type ReactNode } from 'react';
 import type { OfficeProjectedItem } from '../../../shared/office-agent';
 import { validToolAttempt } from '../../../shared/xiaozhi-tool-attempt';
 import { WebSearch, getWebSearchRowCount, type WebSearchSource, type WebSearchStep } from '../../vendor/boardui-web-search';
-import { formatProcessDuration } from './office-process';
+import { DisclosureCard } from '../ui/DisclosureCard';
+import { useToolExpansion } from './OfficeToolExpansion';
 import './office-web-search.css';
 
 type State = NonNullable<WebSearchStep['status']>;
@@ -24,6 +25,12 @@ function stateOf(item: OfficeProjectedItem): State {
 }
 const labels: Record<State, string> = { running: '正在执行', completed: '已完成', failed: '未完成', waiting: '等待操作', stopped: '已停止', unknown: '等待状态同步' };
 const icons = { running: LoaderCircle, completed: Check, failed: X, waiting: Pause, stopped: Pause, unknown: CircleHelp };
+function SearchDetails({item,children}:{item:OfficeProjectedItem;children:ReactNode}){
+  const status=stateOf(item);
+  const attention=['failed','stopped','waiting','unknown'].includes(status);
+  const {expanded,onExpandedChange,regionProps}=useToolExpansion('web-details:'+item.id,attention);
+  return <DisclosureCard {...regionProps} isExpanded={expanded} onExpandedChange={onExpandedChange} title="查看操作详情">{children}</DisclosureCard>;
+}
 function sourceUrl(raw?: string): URL | undefined {
   try { const url = new URL(raw || ''); return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password ? url : undefined; }
   catch { return undefined; }
@@ -51,10 +58,8 @@ export function OfficeWebSearchProcess({ items, sessionId, renderDetails }: {
         return [{ title: source.title, domain: `${url.hostname} · ${source.kind === 'read' ? '已读正文' : '搜索摘要'}${stamp}`, href: url.href, icon: <Globe size={15} aria-hidden="true" /> }];
       });
       return { id: item.id, label: item.label || '联网检索', status, icon: icons[status], sources,
-        meta: `${statusLabel}${item.webEmpty ? ' · 无可用结果' : sources.length ? ` · ${sources.length} 个来源` : ''}${item.durationMs !== undefined ? ` · ${formatProcessDuration(item.durationMs)}` : ''}`,
-        details: <details className="office-web-search-details" open={status === 'failed' || status === 'stopped' || status === 'waiting' || status === 'unknown' ? true : undefined}>
-          <summary>查看操作详情</summary>{renderDetails(item)}
-        </details> };
+        meta: `${statusLabel}${item.webEmpty ? ' · 无可用结果' : sources.length ? ` · ${sources.length} 个来源` : ''}`,
+        details: <SearchDetails item={item}>{renderDetails(item)}</SearchDetails> };
     }),
   ], [items, completed, state]);
 

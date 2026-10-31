@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import { useEffect, useState } from 'react';
 import { Button, Tabs } from '@heroui/react';
 import { FilePenLine } from 'lucide-react';
@@ -61,13 +62,13 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
       {reading ? <p role="status">正在读取本地修改…</p> : review && <div className="pi-text-review" data-testid="pi-text-review">
         {change.path.toLowerCase().endsWith('.svg')&&<img data-testid="pi-science-preview" alt="科普图草稿：请核对科学含义" src={'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(review.after)} style={{display:'block',width:'100%',maxHeight:520,objectFit:'contain',background:'#fff'}}/>}
         {change.path.toLowerCase().endsWith('.html')&&<ScienceDemoFrame html={review.after}/>}
-        {science ? <details data-testid="pi-science-technical">
-          <summary>技术内容（通常无需查看）</summary>
+        {science ? <DisclosureCard data-testid="pi-science-technical" title={<>技术内容（通常无需查看）</>}>
+
           <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
             <Tabs.ListContainer><Tabs.List aria-label="文件修改审阅">{tabs.map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
           </Tabs>
           <CodeBlock><CodeBlock.Code code={text} language={tab==='changes'?'diff':change.path.endsWith('.md')?'markdown':'text'} data-testid="pi-text-diff"/></CodeBlock>
-        </details> : <>
+        </DisclosureCard> : <>
           <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
             <Tabs.ListContainer><Tabs.List aria-label="文件修改审阅">{tabs.map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
           </Tabs>

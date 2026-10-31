@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useState} from 'react';
 import {Button} from '@heroui/react';
 import {ClipboardCheck} from 'lucide-react';
@@ -56,7 +57,7 @@ export function PiLearningReview({sessionId,review,onRefresh,selection}:{session
   <ChatTool.Trigger><ClipboardCheck size={16}/><strong>{review.kind==='assessment'?'核对学习结果':draft?.kind==='strategy'&&draft.plan?'核对两周训练计划':'调整复习节奏'}</strong><span>{labels[review.state]}</span></ChatTool.Trigger>
   <ChatTool.Content>
    {loading&&<p role="status">正在读取本地证据…</p>}
-   {view?.source&&<details open className="pi-learning-source"><summary>原学习证据 · {view.source.subject} · {view.source.title}</summary><p>{new Date(view.source.occurredAt).toLocaleString('zh-CN')}</p><pre data-testid="learning-review-source">{learningSourcePreview(view.source.content)}</pre></details>}
+   {view?.source&&<DisclosureCard defaultExpanded className="pi-learning-source" title={<>原学习证据 · {view.source.subject} · {view.source.title}</>}><p>{new Date(view.source.occurredAt).toLocaleString('zh-CN')}</p><pre data-testid="learning-review-source">{learningSourcePreview(view.source.content)}</pre></DisclosureCard>}
    {view?.planSources&&<ul aria-label="训练计划依据">{view.planSources.map(s=><StudentSourceLink key={s.reference.recordId} source={{kind:'read',title:s.title,student:s.reference}}/>)}</ul>}
    {view?.planCurrent===false&&<p role="status">学习证据或复习策略已变化，这是当时保存的计划，请重新分析后再安排训练。</p>}
    {view?.heuristic&&<p data-testid="learning-review-heuristic">本地参考评分：{view.heuristic.isCorrect?'答案匹配':'答案未匹配'}。这是启发式建议，请核对学生作答与参考答案后决定。</p>}

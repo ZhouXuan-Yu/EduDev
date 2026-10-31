@@ -1,5 +1,6 @@
 import { useToolExpansion } from './OfficeToolExpansion';
-import { CircleCheck, CircleAlert, LoaderCircle, Clock3, ChevronRight } from 'lucide-react';
+import { CircleCheck, CircleAlert, LoaderCircle, Clock3 } from 'lucide-react';
+import { ChatTool, type ToolPartState } from '../../heroui-pro/components/chat-tool';
 import type { OfficeProjectedItem } from '../../../shared/office-agent';
 import { OfficeToolEvidence } from './OfficeToolProcess';
 import { AgentToolGlyph } from './AgentToolGlyph';
@@ -12,7 +13,10 @@ export function AgentPublicTool({
   item: OfficeProjectedItem;
   sessionId: string;
 }) {
-  const { expanded: open, onExpandedChange: setOpen, triggerProps, regionProps } = useToolExpansion<HTMLElement>('step:' + item.id, false);
+  const { expanded: open, onExpandedChange: setOpen, triggerProps, regionProps } = useToolExpansion('step:' + item.id, false);
+  const state: ToolPartState = item.status === 'completed' ? 'output-available'
+    : item.status === 'failed' || item.status === 'declined' ? 'output-error'
+    : item.status === 'inProgress' ? 'input-available' : 'requires-action';
   const target = agentToolTarget(item);
   const label =
     item.status === 'completed'
@@ -37,40 +41,38 @@ export function AgentPublicTool({
           ? LoaderCircle
           : Clock3;
   return (
-    <details
+    <div
       {...regionProps}
-      className="edu-process-tool"
-      open={open}
-      onToggle={(e) => setOpen(e.currentTarget.open)}
       data-testid="office-tool-step"
       data-item-id={item.id}
       data-tool-name={item.toolName}
       data-operation-state={item.status}
     >
-      <summary
-        {...triggerProps}
-        className="edu-process-tool-label"
-        data-testid="agent-tool-trigger"
-        aria-expanded={open}
-      >
-        <AgentToolGlyph item={item} />
-        <span className="edu-operation-label">{item.label || '授权工具'}</span>
-        {target && <span className="edu-operation-target" data-testid="agent-tool-target">{target}</span>}
-        <Status
-          size={14}
-          aria-label={label}
-          className={item.status === 'inProgress' ? 'edu-operation-running' : undefined}
-        />
-        <span className="edu-operation-status">{label}</span>
-        <ChevronRight className="edu-operation-chevron" size={14} aria-hidden="true" data-expanded={open} />
-      </summary>
-      <div
-        className="edu-process-tool-evidence edu-domain"
-        data-edu-domain=""
-        data-testid="office-tool-evidence"
-      >
-        <OfficeToolEvidence item={item} sessionId={sessionId} />
-      </div>
-    </details>
+      <ChatTool state={state} isExpanded={open} onExpandedChange={setOpen}>
+        <ChatTool.Trigger
+          {...triggerProps}
+          data-testid="agent-tool-trigger"
+        >
+          <AgentToolGlyph item={item} />
+          <span className="edu-operation-label">{item.label || '授权工具'}</span>
+          {target && <span className="edu-operation-target" data-testid="agent-tool-target">{target}</span>}
+          <Status
+            size={14}
+            aria-label={label}
+            className={item.status === 'inProgress' ? 'edu-operation-running' : undefined}
+          />
+          <span className="edu-operation-status">{label}</span>
+        </ChatTool.Trigger>
+        <ChatTool.Content>
+        <div
+          className="edu-process-tool-evidence edu-domain"
+          data-edu-domain=""
+          data-testid="office-tool-evidence"
+        >
+          <OfficeToolEvidence item={item} sessionId={sessionId} />
+        </div>
+        </ChatTool.Content>
+      </ChatTool>
+    </div>
   );
 }

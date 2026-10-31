@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {PLAN_HISTORY_ERRORS,validPlanHistoryPage,type PlanHistoryPage,type VersionedPlan} from '../../../shared/xiaozhi-plan';
@@ -10,7 +11,7 @@ function StepSnapshot({plan}:{plan:VersionedPlan}){
 /** Read-only committed revisions. Opening or locating a record never executes a tool. */
 export function PiPlanHistory({sessionId,plan}:{sessionId:string;plan:VersionedPlan}){
  const [open,setOpen]=useState(false),[records,setRecords]=useState<Record[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState(''),[hasMore,setHasMore]=useState(false),[notice,setNotice]=useState('');
- const lock=useRef(false),epoch=useRef(0),requestedRevision=useRef(0),root=useRef<HTMLDetailsElement>(null);
+ const lock=useRef(false),epoch=useRef(0),requestedRevision=useRef(0),root=useRef<HTMLDivElement>(null);
  useEffect(()=>()=>{epoch.current++;},[sessionId,plan.id]);
  async function load(beforeSequence?:number){
   if(lock.current)return;const stamp=epoch.current;lock.current=true;setBusy(true);setError('');
@@ -30,18 +31,18 @@ export function PiPlanHistory({sessionId,plan}:{sessionId:string;plan:VersionedP
   if(!node){setNotice('关联操作未包含在当前记录中。');return;}
   node.scrollIntoView({block:'center',behavior:'auto'});node.querySelector<HTMLElement>('[data-slot="chat-tool-trigger"],[data-slot="chain-of-thought-trigger"]')?.focus({preventScroll:true});setNotice('已定位到本轮关联操作。');
  }
- return <details ref={root} className="pi-plan-history" data-testid="pi-plan-history" onToggle={e=>setOpen(e.currentTarget.open)}>
-  <summary>查看计划调整记录</summary><p>这里只读取已保存的公开建议与宿主采用记录；步骤进度仍需独立核验。</p>
+ return <DisclosureCard ref={root} className="pi-plan-history" data-testid="pi-plan-history" isExpanded={open} onExpandedChange={setOpen} title={<>查看计划调整记录</>}>
+  <p>这里只读取已保存的公开建议与宿主采用记录；步骤进度仍需独立核验。</p>
   {busy&&<p role="status">正在读取计划记录…</p>}{error&&<p role="alert" data-testid="pi-plan-history-error">{error}</p>}
   {error&&<Button size="sm" variant="ghost" onPress={()=>void load()} isDisabled={busy}>重新读取计划记录</Button>}
   {!busy&&!error&&!records.length&&open&&<p>尚未找到已提交的调整记录。</p>}
   {records.map((record,index)=>{const current=record.control,previous=records[index+1]?.control,adjacent=previous?.plan.revision===current.plan.previousRevision;return <section className="pi-plan-revision" key={current.plan.revision} data-testid="pi-plan-revision" data-revision={current.plan.revision}>
    <h4>第 {current.plan.revision} 版 · 已采用计划结构</h4><p><time dateTime={current.plan.changedAt}>{new Date(current.plan.changedAt).toLocaleString()}</time> · 小智公开建议</p><p data-testid="pi-plan-reason">调整说明：{current.plan.reason}</p>
    {current.plan.basis.length>0&&<ul aria-label="调整关联的实际操作">{current.plan.basis.map(b=><li key={b.callId}>{xiaozhiToolLabel(b.tool)} · {b.outcome==='succeeded'?'工具返回成功':b.outcome==='not_delivered'?'未交付执行':'工具返回失败'}<Button size="sm" variant="ghost" onPress={()=>locate(b.callId)}>定位关联操作</Button></li>)}</ul>}
-   <details data-testid="pi-plan-comparison"><summary>查看调整前后</summary><section aria-label="调整前"><strong>调整前</strong>{current.plan.previousRevision===0?<p>首次建立计划。</p>:adjacent?<StepSnapshot plan={previous}/>:<><p>上一版尚未载入，暂时无法比较。</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void load(record.cursor.sequence)}>载入上一版</Button></>}</section><section aria-label="调整后"><strong>调整后</strong><StepSnapshot plan={current}/></section></details>
-   <details className="pi-plan-record-identity"><summary>查看记录标识</summary><p>计划版本 {current.plan.revision}，记录序号 {record.cursor.sequence}，代次 {record.cursor.generation}。</p></details>
+   <DisclosureCard data-testid="pi-plan-comparison" title={<>查看调整前后</>}><section aria-label="调整前"><strong>调整前</strong>{current.plan.previousRevision===0?<p>首次建立计划。</p>:adjacent?<StepSnapshot plan={previous}/>:<><p>上一版尚未载入，暂时无法比较。</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void load(record.cursor.sequence)}>载入上一版</Button></>}</section><section aria-label="调整后"><strong>调整后</strong><StepSnapshot plan={current}/></section></DisclosureCard>
+   <DisclosureCard className="pi-plan-record-identity" title={<>查看记录标识</>}><p>计划版本 {current.plan.revision}，记录序号 {record.cursor.sequence}，代次 {record.cursor.generation}。</p></DisclosureCard>
   </section>;})}
   {hasMore&&records.length>0&&<Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void load(records.at(-1)!.cursor.sequence)} data-testid="pi-plan-history-more">读取更早记录</Button>}
   {notice&&<p role="status">{notice}</p>}
- </details>;
+ </DisclosureCard>;
 }

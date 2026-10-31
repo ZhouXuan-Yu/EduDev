@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {questionChoiceText} from '../../../shared/question-text';
 import {QuestionMathText} from '../QuestionMathText';
 import {PiOriginalQuestionReview} from './PiOriginalQuestionReview';
@@ -58,7 +59,7 @@ export function GeneratedQuestionReview({sessionId,review,onRefresh,grouped=fals
      {q.questionType==='choice'&&(['A','B','C','D'] as const).map(k=><label key={k}>选项 {k}<input data-testid={`question-review-option-${k}`} maxLength={2000} value={q.options?.[k]||''} onChange={e=>itemChange(i,{options:{...q.options,[k]:e.target.value}})}/></label>)}
      <label>参考答案<textarea data-testid="question-review-answer" readOnly={explanation&&view?.explanationTargets?.[i]?.answerLocked} maxLength={8000} value={q.answer} onChange={e=>itemChange(i,{answer:e.target.value})}/><small>{explanation?'请核对全部小问的答案，与讲解一一对应；已有答案不能覆盖。':q.questionType==='choice'?'选择题填写 A、B、C 或 D。':q.questionType==='concept'?'判断题填写 true（正确）或 false（错误）。':'请完整填写答案。填空题题干用 ____ 标明空格。'}</small></label>
      <label>解析<textarea data-testid="question-review-analysis" readOnly={explanation&&view?.explanationTargets?.[i]?.analysisLocked} maxLength={12000} value={q.analysis} onChange={e=>itemChange(i,{analysis:e.target.value})}/></label>
-     <details data-testid="question-review-formula-preview"><summary>查看题目排版（随编辑更新）</summary><strong>题干</strong><div data-testid="question-review-body-preview"><QuestionMathText text={questionChoiceText(q).text}/></div>{questionChoiceText(q).conflict&&<p role="alert">题干内的选项与选项字段冲突，请统一后重新检查。</p>}<strong>参考答案</strong><QuestionMathText text={q.answer}/><strong>解析</strong><QuestionMathText text={q.analysis}/></details>
+     <DisclosureCard data-testid="question-review-formula-preview" title={<>查看题目排版（随编辑更新）</>}><strong>题干</strong><div data-testid="question-review-body-preview"><QuestionMathText text={questionChoiceText(q).text}/></div>{questionChoiceText(q).conflict&&<p role="alert">题干内的选项与选项字段冲突，请统一后重新检查。</p>}<strong>参考答案</strong><QuestionMathText text={q.answer}/><strong>解析</strong><QuestionMathText text={q.analysis}/></DisclosureCard>
 
     </section>)}</div>
     <label>核对说明<textarea data-testid="question-review-reason" maxLength={1000} value={draft.reason} onChange={e=>change({...draft,reason:e.target.value})}/></label>
