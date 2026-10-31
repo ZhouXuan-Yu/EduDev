@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { Button } from '@heroui/react';
 import { ArrowLeft, ArrowRight, PanelLeft } from 'lucide-react';
 import type { DesktopChromeState, DesktopCommand, DesktopMenu } from '../../../shared/desktop-chrome';
@@ -6,10 +6,16 @@ import '../../ui-system/chrome.css';
 
 type Target={view:string;sessionId?:string;draft?:string};
 type Handler=(command:DesktopCommand)=>boolean;
-type Navigation={target:Target;canBack:boolean;canForward:boolean;navigate:(target:Target)=>void;consumeDraft:(sessionId:string)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;flush:()=>void};
-const empty:Navigation={target:{view:'ai'},canBack:false,canForward:false,navigate:()=>{},consumeDraft:()=>{},reject:()=>{},register:()=>()=>{},flush:()=>{}};
+type NavigationGuard=()=>string|undefined;
+type Navigation={target:Target;canBack:boolean;canForward:boolean;navigate:(target:Target)=>boolean;consumeDraft:(sessionId:string)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;registerGuard:(guard:NavigationGuard)=>()=>void;flush:()=>void};
+const empty:Navigation={target:{view:'ai'},canBack:false,canForward:false,navigate:()=>true,consumeDraft:()=>{},reject:()=>{},register:()=>()=>{},registerGuard:()=>()=>{},flush:()=>{}};
 const NavigationContext=createContext<Navigation>(empty);
 export const useDesktopNavigation=()=>useContext(NavigationContext);
+/** Shared by draft owners. Blocking consumes native commands instead of replaying them later. */
+export function useDesktopNavigationGuard(dirty:boolean,message:string) {
+  const {registerGuard}=useDesktopNavigation(),latest=useRef({dirty,message});latest.current={dirty,message};
+  useLayoutEffect(()=>registerGuard(()=>latest.current.dirty?latest.current.message:undefined),[registerGuard]);
+}
 export function useDesktopCommands(handler:Handler,priority=0) {
   const {register}=useDesktopNavigation(),latest=useRef(handler);latest.current=handler;
   useEffect(()=>register(command=>latest.current(command),priority),[register,priority]);
@@ -19,21 +25,34 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   const [chrome,setChrome]=useState<DesktopChromeState>();
   const [notice,setNotice]=useState('');
   const [history,setHistory]=useState({entries:[{view:'ai'}] as Target[],index:0});
+  const historyRef=useRef(history);historyRef.current=history;
+  const guards=useRef(new Map<symbol,NavigationGuard>());
+  const registerGuard=useCallback((guard:NavigationGuard)=>{const id=Symbol();guards.current.set(id,guard);return()=>{guards.current.delete(id);};},[]);
+  const allowNavigation=useCallback(()=>{
+    for(const guard of guards.current.values()){const reason=guard();if(reason){setNotice(reason);return false;}}
+    setNotice('');return true;
+  },[]);
   const handlers=useRef(new Map<symbol,{handler:Handler;priority:number}>()),pending=useRef<DesktopCommand[]>([]);
   const deliver=useCallback((command:DesktopCommand)=>{
+    // Native IPC has no DOM event to cancel; guard before any handler mutates page/session state.
+    if(['settings','new-chat','sidebar','files'].includes(command)&&!allowNavigation())return true;
     for(const {handler} of [...handlers.current.values()].sort((a,b)=>b.priority-a.priority))if(handler(command))return true;
     return false;
-  },[]);
+  },[allowNavigation]);
   const flush=useCallback(()=>{pending.current=pending.current.filter(command=>!deliver(command));},[deliver]);
   const register=useCallback((handler:Handler,priority:number)=>{const id=Symbol();handlers.current.set(id,{handler,priority});return ()=>{handlers.current.delete(id);};},[]);
-  const navigate=useCallback((target:Target)=>setHistory(old=>{
+  const navigate=useCallback((target:Target)=>{
+    const active=historyRef.current.entries[historyRef.current.index];
+    if((active.view!==target.view||active.sessionId!==target.sessionId||target.draft!==undefined)&&!allowNavigation())return false;
+    setHistory(old=>{
     const current=old.entries[old.index];if(current.view===target.view&&current.sessionId===target.sessionId){
       if(target.draft===undefined)return old;
       // Same-session actions may prepare a new request without another history entry.
       const entries=[...old.entries];entries[old.index]={...current,draft:target.draft};return {...old,entries};
     }
     const entries=[...old.entries.slice(0,old.index+1),target].slice(-80);return {entries,index:entries.length-1};
-  }),[]);
+    });return true;
+  },[allowNavigation]);
   const reject=useCallback((sessionId:string)=>setHistory(old=>{
     const keep=(target:Target)=>target.sessionId!==sessionId;
     const entries=old.entries.filter(keep),before=old.entries.slice(0,old.index+1).filter(keep).length;
@@ -41,9 +60,12 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   }),[]);
   const consumeDraft=useCallback((sessionId:string)=>setHistory(old=>({...old,entries:old.entries.map(entry=>{if(entry.sessionId!==sessionId||entry.draft===undefined)return entry;const {draft:_draft,...target}=entry;return target;})})),[]);
   const command=useCallback((value:DesktopCommand)=>{
-    if(value==='back'||value==='forward'){setHistory(old=>({...old,index:Math.max(0,Math.min(old.entries.length-1,old.index+(value==='back'?-1:1)))}));return;}
+    if(value==='back'||value==='forward'){
+      const old=historyRef.current,index=Math.max(0,Math.min(old.entries.length-1,old.index+(value==='back'?-1:1)));
+      if(index!==old.index&&allowNavigation())setHistory({...old,index});return;
+    }
     if(!deliver(value)&&pending.current.length<8)pending.current.push(value);
-  },[deliver]);
+  },[deliver,allowNavigation]);
   useEffect(()=>{
     let live=true;void window.omniEdu?.getDesktopChrome?.().then(value=>{if(live)setChrome(value);}).catch(()=>{if(live)setNotice('窗口菜单暂时不可用，请重试。');});
     const offState=window.omniEdu?.onDesktopChrome?.(setChrome),offCommand=window.omniEdu?.onDesktopCommand?.(command);
@@ -54,7 +76,7 @@ export function DesktopFrame({children}:{children:ReactNode}) {
     try{const result=await window.omniEdu?.openDesktopMenu(group,box.left,box.bottom);if(!result?.ok)throw new Error();setNotice('');}
     catch{setNotice('无法打开窗口菜单，请重试。');}
   }
-  const navigation={target:history.entries[history.index],canBack:history.index>0,canForward:history.index<history.entries.length-1,navigate,consumeDraft,reject,register,flush};
+  const navigation={target:history.entries[history.index],canBack:history.index>0,canForward:history.index<history.entries.length-1,navigate,consumeDraft,reject,register,registerGuard,flush};
   return <NavigationContext.Provider value={navigation}>
     {chrome?.enabled?<div className="edu-desktop-frame desktop-native-frame" data-testid="desktop-native-frame" style={{'--edu-chrome-height':`${Math.max(44,chrome.height)}px`} as React.CSSProperties}>
       <header className="edu-chrome-bar" data-heroui-native="" data-theme="light" data-testid="desktop-titlebar" style={{height:Math.max(44,chrome.height)}}>
@@ -66,8 +88,8 @@ export function DesktopFrame({children}:{children:ReactNode}) {
         </div>
         <div className="edu-chrome-drag" data-testid="desktop-titlebar-drag" aria-hidden="true" />
       </header>
-      {notice&&<div className="edu-desktop-notice" role="status">{notice}</div>}
+      {notice&&<div className="edu-desktop-notice" role="status" data-testid="desktop-navigation-notice">{notice}</div>}
       <div className="edu-desktop-content desktop-content">{children}</div>
-    </div>:children}
+    </div>:<>{notice&&<div className="edu-desktop-notice" role="status" data-testid="desktop-navigation-notice">{notice}</div>}{children}</>}
   </NavigationContext.Provider>;
 }
