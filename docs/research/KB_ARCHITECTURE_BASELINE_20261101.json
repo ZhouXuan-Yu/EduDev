@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "xiaozhi.kb-architecture-baseline.v1",
+  "date": "2026-11-01",
+  "baselineCommit": "d80b9b5bb4c758492627a1dcbb74bd2761a4cb43",
+  "scope": "Architecture decision, critical feasibility audit and ordered K0 delivery contract; no production source implementation in this delivery",
+  "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
+  "goalComplete": false,
+  "currentStage": "K0_pending_implementation",
+  "decision": {
+    "businessTruth": "Existing SQLite writer and versioned business facts",
+    "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
+    "parsing": "Existing Hana/anydoc and Word adapters; PDFium file worker with RapidOCR",
+    "retrieval": "Existing SQLite FTS5, LanceDB 0.30.0 and versioned local BGE embedding/reranker",
+    "ai": "Existing MaterialAiRepository and unified DeepSeek transport; no second agent loop",
+    "agent": "Existing production Pi tools and source validation",
+    "delivery": "EXE body plus existing managed optional-component download/configuration",
+    "noNewDependencies": true,
+    "noWholeSecondRagProduct": true,
+    "feasibility": "Existing component integration is plausible and partially exercised. The complete teacher workflow, natural-corpus scale/quality and Windows end-user delivery are not yet proven."
+  },
+  "blockingSeams": [
+    {
+      "file": "apps/desktop/src/shared/xiaozhi-documents.ts",
+      "fact": "DOCUMENT_MAX_INPUT is 50 MiB for the existing byte interface; raising it is not a streaming architecture"
+    },
+    {
+      "file": "apps/desktop/src/main/assets/material-page-tools.ts",
+      "fact": "Pi page tool has page maximum 50, before/after readingSnapshot and byte-default preview/layout calls"
+    },
+    {
+      "file": "apps/desktop/src/main/education/original-question-coordinator.ts",
+      "fact": "Single-page and multi-region tool schemas have page maximum 50"
+    },
+    {
+      "file": "apps/desktop/src/main/education/original-multi-repository.ts",
+      "fact": "Region staging calls previewMaterialPage with byte renderer and no file renderer"
+    },
+    {
+      "file": "apps/desktop/src/main/assets/material-ipc.ts",
+      "fact": "Material UI preview/layout already supply previewPdfFile/layoutPdfFile; existing integration to reuse"
+    }
+  ],
+  "historicalCapacity": {
+    "evidence": "docs/research/KB_BYTE_CAPACITY_20261031.json",
+    "rerunThisRound": false,
+    "archiveBytes": 42949672960,
+    "files": 40,
+    "chunks": 40,
+    "utf8TextBytes": 6040,
+    "corpus": "Forty synthetic one-page PDFs, accumulated through four 10 GiB selections",
+    "earlierColdHybridUiMs": [4000.6219, 5962.91],
+    "laterMergedColdHybridUiMs": [3962.54, 4543.14],
+    "laterMergedRerank": {"candidates": 40, "reranked": 20, "complete": false, "reason": "candidate_limit"},
+    "limitations": [
+      "Not one natural mixed 40 GiB folder import",
+      "Not high-cardinality text or question retrieval",
+      "Not teacher-labelled semantic recall, P95 or controlled performance improvement",
+      "Not 24/72-hour soak, hard-power-loss recovery or clean Windows installer acceptance"
+    ]
+  },
+  "realProviderObservationThisRound": {
+    "localReportBasename": "question-ai-S0dq5s/report.json",
+    "batchId": "aibatch_c50766ae-aea0-4d0c-965a-ac0544c0edba",
+    "buildContext": "Unfinished local table-evidence experiment before architecture-first steering, now stashed. This is an observed model-quality failure, not current-main feature acceptance.",
+    "buildSha256": "6271939b164ab18b572734f908d48b2ee96086aeaa92d2a36100f0d9e5428f95",
+    "scope": "Explicit visible batch consent, previously inspected main-book page 4 and necessary local OCR only",
+    "model": "deepseek-flash",
+    "policy": "page-restoration.v2",
+    "ocrStatus": "complete",
+    "realCalls": 2,
+    "httpStatuses": [200, 200],
+    "questionsPublished": 12,
+    "questionsNeedingReview": 12,
+    "batchStatus": "attention",
+    "pageIssue": "uncertain_ocr",
+    "newCanonicalBookAnswerUpgrades": 0,
+    "rendererErrors": 0,
+    "journeyExitCode": 0,
+    "meaning": "Transport/source persistence succeeded; content-quality acceptance failed. Existing five historical book-source answer upgrades remain distinct.",
+    "rawTextImagesOrCredentialsCommitted": false
+  },
+  "wipPreservation": {
+    "stashObject": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+    "files": 13,
+    "purpose": "Preserve unfinished PDF table/evidence/local reassessment experiment before returning to the architecture main line",
+    "appliedToDelivery": false,
+    "committedOrPushed": false,
+    "futureStage": "K2 only after K0/K1 prerequisites"
+  },
+  "deliveryChecks": {
+    "productionCodeChanged": false,
+    "schemaOrDependencyChanged": false,
+    "baselineBuild": {
+      "command": "npm.cmd run build",
+      "directory": "apps/desktop",
+      "reason": "Restore build artifacts to unchanged production source after stashing the experiment",
+      "logBasename": "kb-architecture-baseline-build-20261101.log",
+      "observation": "All build phases logged completion; process no longer running. Terminal exit code was lost in truncated tool output and is not claimed.",
+      "exitCode": null,
+      "fingerprints": [
+        {"file": "out/main/index.js", "bytes": 3340613, "sha256": "f79435e6594a2039e4483464e551a7f19745eb647354f946d040ec0c964b6e02"},
+        {"file": "out/preload/index.cjs", "bytes": 35346, "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"},
+        {"file": "out/renderer/assets/index-W_wcqK5i.js", "bytes": 7261323, "sha256": "6535fb9fa971bf50aa0dfd86382eacb13a3786b4d5b1b19fc043daf010f60c6f"}
+      ]
+    },
+    "dependencyAudit": {
+      "command": "npm.cmd audit --json",
+      "logBasename": "kb-architecture-audit-20261101.json",
+      "critical": 0,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "total": 45,
+      "exitCode": null,
+      "meaning": "Existing vulnerability snapshot, not a clean security gate; terminal code not retained, no dependency upgrades in this round"
+    },
+    "fullRendererSmokeRerunForDocs": false,
+    "performanceImprovementClaimed": false,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "rollback": "Revert this documentation-only delivery; no data/schema rollback required. Retain local WIP stash and immutable real-provider evidence."
+  },
+  "orderedStages": [
+    {"id": "K0", "work": "Unify file-source/page/region consumers and existing task resource boundaries", "status": "pending"},
+    {"id": "K1", "work": "Durable recursive mixed-directory background workflow and recovery", "status": "pending"},
+    {"id": "K2", "work": "Multimodal question completeness, per-item quality and paired answer books", "status": "pending"},
+    {"id": "K3", "work": "Teacher-relevant bounded hybrid retrieval, Pi and paper workflow", "status": "pending"},
+    {"id": "K4", "work": "Natural 40 GiB/high-text corpus, soak and clean Windows delivery", "status": "pending"}
+  ],
+  "officialSourcesChecked": [
+    "https://github.com/lancedb/lancedb",
+    "https://github.com/RapidAI/RapidOCR",
+    "https://pypdfium2.readthedocs.io/en/stable/python_api.html",
+    "https://www.sqlite.org/fts5.html",
+    "https://github.com/Tencent/WeKnora",
+    "https://github.com/Mintplex-Labs/anything-llm",
+    "https://github.com/docling-project/docling"
+  ]
+}
