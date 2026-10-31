@@ -1847,6 +1847,61 @@
       "src/main/xiaozhi-agent/presentation-layout.ts": "a757bff03d6c84e958e9dd9d7940375c80cea97bfd4722ea4d69fbc8e5e135e9",
       "scripts/xiaozhi-agent/delivery-office-ui-checks.mjs": "f2502705c30d644da10efe37d1976126625afbe9e9123326373253d34a0877a2",
       "scripts/xiaozhi-agent/delivery-office-stop-electron.mjs": "cff3ba8a7814097d26e3ee5a8b725dcd8ba3250cacfb7aa0d367bcd95b17e4aa"
-    }
+    },
+    "implementationSha": "4661a2d",
+    "finalSourceSha": "25149d181b285f23e1aca187ad1e2576718775c5",
+    "finalIntegration": {
+      "mainSha": "4ff4fea",
+      "mergeSha": "ba225b7",
+      "conflicts": "14 additive Markdown conflicts; retained both complete parent versions as ordered line subsequences. No production code conflicts.",
+      "sourceCheck": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+        "exit": 0,
+        "passed": 11,
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-3eXc2T\\report.json",
+        "log": "delivery-office-merged-source.log"
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "delivery-office-final-build.log"
+      },
+      "finalNativeProbe": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs --input-type=module (fixed production PowerPoint script, same repaired synthetic8-page file)",
+        "exit": 0,
+        "pages": 8,
+        "findings": 0,
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-native-final-zSXeHX\\report.json",
+        "log": "delivery-office-final-native.log"
+      },
+      "resourceFix": "25149d1 sums actual output sizes after each slide and removes the over-limit generated page; native staging stops at96MiB rather than waiting until all64 pages are generated. Same per-image3MiB bound.",
+      "verificationBoundary": "Final build and unchanged-parser11 source checks on merged tree; latest production-script8-page probe after size guard. Formal originalUI7+focused3 and240 components were before peer image-source merge; no repeated207 comprehensive or paid calls. Full over-limit96MiB stress,45-second timeout and COM activation-hang cleanup not separately injected.",
+      "rendererKB": 7175.29,
+      "rendererDeltaFromOwnPremergeKB": 1.46,
+      "rendererDeltaReason": "Peer material-image panel update; own native adapter remains main-only."
+    },
+    "finalSourceSha256": {
+      "src/main/xiaozhi-agent/checks/powerpoint.ts": "56b69dc714d25b125380ecc689f075f95e6ae28803d21d70dadd93ae2eafb510",
+      "src/main/xiaozhi-agent/checks/powerpoint-script.ts": "239ccc7e24903bc990c7b97150e4129f269979fbaa846a056771ee72b3addc38",
+      "src/main/xiaozhi-agent/checks/service.ts": "e2ab23a71576d702a33e29ab3446d37c5f9b780e4d7f812474ebb11fa7e01d5d",
+      "src/main/xiaozhi-agent/presentation-layout.ts": "a757bff03d6c84e958e9dd9d7940375c80cea97bfd4722ea4d69fbc8e5e135e9"
+    },
+    "finalArtifacts": [
+      {
+        "path": "apps\\desktop\\out\\main\\index.js",
+        "bytes": 3200478,
+        "sha256": "92437df5d5aecb72aa36dd6821ebc9f3709db73404db4e81674346642230160b"
+      },
+      {
+        "path": "apps\\desktop\\out\\preload\\index.cjs",
+        "bytes": 34761,
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+      },
+      {
+        "path": "apps\\desktop\\out\\renderer\\assets\\index-D_lpjEF1.js",
+        "bytes": 7175291,
+        "sha256": "3e87865248cb2ae20d7d6bdca8945f767c2880e56863d5420e9434d9f71c7cc7"
+      }
+    ]
   }
 }
