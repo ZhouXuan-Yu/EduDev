@@ -34,6 +34,7 @@
     "test:xiaozhi-document-ui": "node scripts/xiaozhi-agent/pi-office-document-ui-smoke.mjs",
     "start": "node scripts/start-desktop.mjs",
     "test:daily-entry": "node scripts/daily-entry-smoke.mjs",
+    "test:sidebar-navigation": "node scripts/sidebar-navigation-ui.mjs",
     "verify:deeptutor-reading": "node scripts/education/reuse-deeptutor-reading.mjs --verify",
     "test:education-capabilities": "node scripts/education/capability-boundary-smoke.mjs",
     "test:education-journeys": "node scripts/education/golden-teacher-journeys.mjs",

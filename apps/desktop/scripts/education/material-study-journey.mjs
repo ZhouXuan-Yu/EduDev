@@ -13,7 +13,7 @@ export async function materialStudyJourney(ctx){
  await page().getByTestId('material-'+resource.id).click();await page().getByTestId('materials-study-toggle').click();
  await until(async()=>await page().getByTestId('material-study-note').isEnabled());
  await page().getByTestId('material-study-note').fill(`教师阅读笔记：先核对题图和单位，再让学生说出所用的物理条件。本次补充第${initialCount+1}次：检查参照物选择。`);
- await page().locator('[data-testid=product-rail]:visible').getByTestId('product-nav-ask').click();assert(await page().getByTestId('material-study-error').innerText().then(t=>t.includes('尚未保存')));
+ await page().locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').click();assert(await page().getByTestId('material-study-error').innerText().then(t=>t.includes('尚未保存')));
  await page().getByTestId('material-study-save').click();await until(async()=>await page().getByTestId('material-study-next').isEnabled());
  const first=read('SELECT * FROM material_reading_entries ORDER BY sequence DESC LIMIT 1')[0];assert(first.note.includes('题图和单位'));
  await page().getByTestId('material-study-next').click();await until(async()=>await page().getByTestId('material-study-note').isEnabled());

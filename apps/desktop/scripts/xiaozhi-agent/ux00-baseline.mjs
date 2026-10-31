@@ -1,3 +1,4 @@
+import {productEntry} from '../product-navigation.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -34,7 +35,7 @@ async function step(label,action,type='click'){const t=performance.now();await a
 const click=id=>step(id,()=>tid(id).click());
 const fill=(id,value)=>step(id,()=>tid(id).fill(value),'field');
 const rail=()=>page.locator('[data-testid=product-rail]:visible');
-const navigate=id=>step('navigate '+id,()=>rail().getByTestId('product-nav-'+id).click());
+const navigate=id=>step('navigate '+id,()=>productEntry(page,id).click());
 function begin(name){journey={name,steps:[],started:Date.now(),scope:'actual visible UI'};report.journeys.push(journey);}
 function end(result,unverified=[]){Object.assign(journey,{result,unverified,elapsedMs:Date.now()-journey.started,clicks:journey.steps.filter(s=>s.type==='click').length,fieldEdits:journey.steps.filter(s=>s.type==='field').length});journey=undefined;flush();}
 async function launch(){app=await electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:desktop,env,timeout:60000});page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(String(e)));await ready();await app.evaluate(({BrowserWindow})=>BrowserWindow.getAllWindows()[0].setContentSize(1366,768));}

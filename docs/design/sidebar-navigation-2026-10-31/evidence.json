@@ -1,0 +1,257 @@
+{
+  "date": "2026-10-31",
+  "scope": "sidebar-only",
+  "baseline": "ef55c53",
+  "branch": "codex/sidebar-navigation-20261031",
+  "build": {
+    "sha256": "69e0d2a9eb9c6e86d733579878b5d541ef3a4cb0f216734c08ff127bb6ed0407",
+    "fileCount": 454,
+    "keyFiles": [
+      {
+        "file": "main/index.js",
+        "sha256": "0e847fb115d40faf76cd7acb021592b077bef622d63274075bb0dec37cdf7556"
+      },
+      {
+        "file": "preload/index.cjs",
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+      },
+      {
+        "file": "renderer/assets/index-_n0xDPmm.js",
+        "sha256": "4caf369aa38d25454facd901218588276ebb7ca0a7e4368d74e180103d705dbb"
+      },
+      {
+        "file": "renderer/assets/index-DL5wOQwY.css",
+        "sha256": "ccafb50b0ab3489489dd1a82698645f026d1ca04c057d9f4653d9ce4d5cb236a"
+      },
+      {
+        "file": "renderer/index.html",
+        "sha256": "7aab43b61a9592930a3cec3f0733438d277b475f516587a566efdabc2df5a560"
+      }
+    ]
+  },
+  "source": "file:///D:/WorkProject/EduProject-sidebar/apps/desktop/out/renderer/index.html",
+  "ui": {
+    "success": true,
+    "checks": [
+      "existing disabled guard applies to every group, destination and footer settings",
+      "corrupt, unknown-version, partially valid and blocked preferences recover safely",
+      "four multi-expand groups, unchanged labels, settings outside scroll area and removed note",
+      "heading toggles without navigation; zero-height collapse, inert descendants, Enter/Space and multi-expand",
+      "page changes and history auto-reveal destination while preserving other collapsed groups",
+      "all 15 existing page routes are reachable with one visible active item",
+      "local import persists in original SQLite and UI across restart; collapsed preferences survive",
+      "1366×768 and 1920×1080: one navigation scroller, fixed footer, safe spacing, no viewport overflow",
+      "settings Hover, pressed, focus-visible and active-page styles are distinct",
+      "reduced-motion disables transitions; chevron rotates 90 degrees",
+      "reduced-motion history navigation reveals the active destination inside the scroll viewport",
+      "unavailable storage does not block toggling or page navigation",
+      "zero renderer exceptions"
+    ],
+    "errors": [],
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "client": 570,
+        "scroll": 656,
+        "overflow": "auto",
+        "asideOverflow": "hidden",
+        "documentOverflow": false
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "client": 882,
+        "scroll": 882,
+        "overflow": "auto",
+        "asideOverflow": "hidden",
+        "documentOverflow": false
+      }
+    ],
+    "styles": {
+      "default": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(86, 86, 79)",
+        "outline": "none",
+        "outlineWidth": "3px",
+        "transition": "0s"
+      },
+      "hover": {
+        "background": "rgb(237, 237, 235)",
+        "color": "rgb(32, 32, 32)",
+        "outline": "none",
+        "outlineWidth": "3px",
+        "transition": "0s"
+      },
+      "pressed": {
+        "background": "rgb(226, 226, 223)",
+        "color": "rgb(32, 32, 32)",
+        "outline": "none",
+        "outlineWidth": "3px",
+        "transition": "0s"
+      },
+      "focus": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(86, 86, 79)",
+        "outline": "solid",
+        "outlineWidth": "2px",
+        "transition": "0s"
+      },
+      "selected": {
+        "background": "rgb(233, 237, 244)",
+        "color": "rgb(37, 86, 164)",
+        "outline": "none",
+        "outlineWidth": "3px",
+        "transition": "0s"
+      }
+    },
+    "modelTasksSubmitted": 0,
+    "localReport": "apps\\desktop\\test-results\\sidebar-navigation-C1zuOC\\report.json"
+  },
+  "tests": [
+    {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "includes": "tsc --noEmit; electron-vite build",
+      "rendererKB": 7179.09
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240
+    },
+    {
+      "command": "npm.cmd run test:sidebar-navigation",
+      "exit": 0,
+      "passed": 13,
+      "total": 13
+    },
+    {
+      "command": "npm.cmd run test:daily-entry",
+      "exit": 0,
+      "passed": 8,
+      "total": 8,
+      "build": "7b3676739de7a19bb16eeffc843548508be4615015ab40a02c17e83879e012ba"
+    },
+    {
+      "command": "node --check (all 41 modified/new test scripts)",
+      "exit": 0,
+      "passed": 41
+    },
+    {
+      "command": "npm.cmd run test:ui-contracts",
+      "exit": 1,
+      "boundary": "unchanged PromptInput files differ from older frozen fingerprint; no baseline edits"
+    },
+    {
+      "command": "node scripts/production-bootstrap-ui.mjs",
+      "exit": 1,
+      "probes": [
+        [
+          "aiConversations:list",
+          "xiaozhi:enabled",
+          "xiaozhi:enabled"
+        ]
+      ],
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(pending.length > 0 && pending.every(channel => channel === 'xiaozhi:enabled'))\n\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/production-bootstrap-ui.mjs:89:3",
+      "boundary": "first assertion before navigation; bootstrap code unchanged"
+    },
+    {
+      "command": "node scripts/electron-smoke.mjs",
+      "exit": 1,
+      "status": "interrupted, no completed suite count",
+      "boundary": "legacy-only suite stalled at memory-governance stage; stopped only owned isolated process tree; build changed during the run so it is not final-build acceptance"
+    },
+    {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      }
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "lint": "No configured lint script or ESLint config; not claimed.",
+  "changedFiles": [
+    "1.Agent.md",
+    "2.Memory.md",
+    "3.Learning.md",
+    "4.Wiki.md",
+    "apps/desktop/package.json",
+    "apps/desktop/scripts/daily-entry-smoke.mjs",
+    "apps/desktop/scripts/education/golden-teacher-journeys.mjs",
+    "apps/desktop/scripts/education/kb-ai-batch-journey.mjs",
+    "apps/desktop/scripts/education/kb-critical-archive-journey.mjs",
+    "apps/desktop/scripts/education/kb-folder-ai-journey.mjs",
+    "apps/desktop/scripts/education/kb-folder-pdf-publication-journey.mjs",
+    "apps/desktop/scripts/education/kb-folder-search-journey.mjs",
+    "apps/desktop/scripts/education/kb-index-maintenance-journey.mjs",
+    "apps/desktop/scripts/education/kb-native-batch-journey.mjs",
+    "apps/desktop/scripts/education/kb-origins-historical-journey.mjs",
+    "apps/desktop/scripts/education/kb-pdf-file-journey.mjs",
+    "apps/desktop/scripts/education/kb-pdf-legacy-migration.mjs",
+    "apps/desktop/scripts/education/kb-pdf-preview-readback.mjs",
+    "apps/desktop/scripts/education/kb-real-ai-journey.mjs",
+    "apps/desktop/scripts/education/kb-real-folder-ai-journey.mjs",
+    "apps/desktop/scripts/education/kb-real-image-restoration-journey.mjs",
+    "apps/desktop/scripts/education/kb-real-material-journey.mjs",
+    "apps/desktop/scripts/education/kb-reranker-journey.mjs",
+    "apps/desktop/scripts/education/kb-restored-text-journey.mjs",
+    "apps/desktop/scripts/education/kb-retrieval-journey.mjs",
+    "apps/desktop/scripts/education/kb-retrieval-recovery.mjs",
+    "apps/desktop/scripts/education/kb-retrieval-ui-readback.mjs",
+    "apps/desktop/scripts/education/kb-saved-page-recovery-journey.mjs",
+    "apps/desktop/scripts/education/kb-word-job-journey.mjs",
+    "apps/desktop/scripts/education/kb-word-journey.mjs",
+    "apps/desktop/scripts/education/kb-word-proof-journey.mjs",
+    "apps/desktop/scripts/education/kb-word-question-journey.mjs",
+    "apps/desktop/scripts/education/material-study-journey.mjs",
+    "apps/desktop/scripts/product-navigation.mjs",
+    "apps/desktop/scripts/production-bootstrap-ui.mjs",
+    "apps/desktop/scripts/release/packaged-smoke.mjs",
+    "apps/desktop/scripts/sidebar-navigation-ui.mjs",
+    "apps/desktop/scripts/ui-production-navigation.mjs",
+    "apps/desktop/scripts/ui-reset-runtime-audit.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/chat-experience-electron.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/pi-office-artifact-ui-smoke.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/pi-practice-source-count-ui.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/pi-settings-workspace-ui-smoke.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/pi-workspace-shell-ui-smoke.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/thinking-electron.mjs",
+    "apps/desktop/scripts/xiaozhi-agent/ux00-baseline.mjs",
+    "apps/desktop/src/renderer/ui-system/EduNavigation.tsx",
+    "apps/desktop/src/renderer/ui-system/NavigationGroup.tsx",
+    "apps/desktop/src/renderer/ui-system/layout.css",
+    "apps/desktop/src/renderer/ui-system/navigation-preferences.ts",
+    "apps/desktop/src/renderer/ui-system/navigation.css",
+    "docs/design/sidebar-navigation-2026-10-31/README.md",
+    "docs/design/sidebar-navigation-2026-10-31/collapsed-1366.png",
+    "docs/design/sidebar-navigation-2026-10-31/collapsed-1920.png",
+    "docs/design/sidebar-navigation-2026-10-31/evidence.json",
+    "docs/design/sidebar-navigation-2026-10-31/expanded-1366.png",
+    "docs/design/sidebar-navigation-2026-10-31/expanded-1920.png",
+    "docs/design/sidebar-navigation-2026-10-31/settings-active.png",
+    "docs/design/sidebar-navigation-2026-10-31/settings-focus.png",
+    "docs/design/sidebar-navigation-2026-10-31/settings-hover.png"
+  ],
+  "preservation": {
+    "databaseMigrations": 0,
+    "ipcChanges": 0,
+    "newDependencies": 0,
+    "vendorDiff": false,
+    "otherWorktreesUntouched": true
+  },
+  "performance": {
+    "measured": "180ms disclosure/Chevron transition; zero-transition reduced motion; navigation geometry in ui.viewports",
+    "notMeasured": "whole-app P95, streaming speed and teacher productivity"
+  },
+  "humanAccepted": false
+}

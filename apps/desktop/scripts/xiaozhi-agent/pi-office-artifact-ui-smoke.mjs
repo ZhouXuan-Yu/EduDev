@@ -1,3 +1,4 @@
+import {productEntry} from '../product-navigation.mjs';
 import {fingerprint,sha256} from '../acceptance/evidence.mjs';
 import {assertWorkspaceChrome,measureTextContrast,settleWorkspaceTransitions} from './capture-workspace-metrics.mjs';
 import {testMain,assertIsolatedPiMain} from '../acceptance/build-root.mjs';
@@ -41,7 +42,7 @@ async function finish(row,action){await card(row.id).getByTestId(`pi-office-${ac
 function native(){const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{const binding=db.prepare('SELECT * FROM xiaozhi_pi_session_bindings WHERE conversation_id=?').get(session),file=path.join(data,'xiaozhi-pi',binding.session_file),bytes=fs.readFileSync(file),rows=bytes.toString().trim().split('\n').map(JSON.parse);return{file,bytes,header:rows[0],creation:rows.find(r=>r.customType==='xiaozhi.education.snapshot.v1'),capability:rows.filter(r=>r.customType==='xiaozhi.education.office-artifact.v1').length};}finally{db.close();}}
 function facts(){const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return{artifacts:db.prepare('SELECT id,title,artifact_type,file_name,file_size,content_hash,status FROM document_artifacts WHERE session_id=?').all(session),sources:db.prepare('SELECT s.* FROM document_artifact_sources s JOIN document_artifacts a ON a.id=s.artifact_id WHERE a.session_id=?').all(session)};}finally{db.close();}}
 async function killOwned(){const pid=app.process().pid;execFileSync('taskkill',['/PID',String(pid),'/T','/F'],{windowsHide:true,stdio:'pipe'});await app.close().catch(()=>{});app=undefined;}
-async function navigateProduct(space){await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-'+space).click();}
+async function navigateProduct(space){await productEntry(page,space).click();}
 async function captureLibrary(label){for(const theme of ['light','dark'])for(const size of [{width:1366,height:768},{width:1920,height:1080}]){
  await page.emulateMedia({colorScheme:theme});await app.browserWindow(page).then(win=>win.evaluate((window,v)=>window.setContentSize(v.width,v.height),size));await page.waitForFunction(v=>innerWidth===v.width&&innerHeight===v.height,size);await settleWorkspaceTransitions(page);
  const main=page.getByTestId('product-space-content'),heading=main.locator('.teacher-library-heading h1');await heading.scrollIntoViewIfNeeded();if(label.startsWith('preview-'))await page.getByTestId('pi-file-panel').scrollIntoViewIfNeeded();const contrast=await measureTextContrast(heading);assert(contrast.ratio>=4.5);

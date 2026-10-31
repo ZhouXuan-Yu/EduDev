@@ -75,7 +75,7 @@ async function waitCall(channel) {
 }
 function noLegacy(value) { for (const channel of legacyChannels) assert(!value.includes(channel), 'unexpected old bootstrap read: '+channel); }
 async function openStudents() {
-  await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-students').click();
+  await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-students').click();
   await page.getByRole('region',{name:'学生目录',exact:true}).waitFor();
 }
 try {

@@ -1,3 +1,4 @@
+import {productEntry} from '../product-navigation.mjs';
 import fs from 'node:fs';import path from 'node:path';import {tmpdir} from 'node:os';import {fileURLToPath} from 'node:url';import assert from 'node:assert/strict';import {setTimeout as delay} from 'node:timers/promises';import {DatabaseSync} from 'node:sqlite';import {_electron} from 'playwright';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..'),output=fs.mkdtempSync(path.join(tmpdir(),'omni-edu-kb-critical-')),folder=path.join(output,'教师资料'),data=path.join(output,'data'),profile=path.join(output,'profile');fs.mkdirSync(folder);
 fs.writeFileSync(path.join(folder,'初二算术习题.md'),'学科：数学\n年级：初二\n知识点：算术\n题型：解答题\n难度：中等\n\n第1题 计算 7 + 8。\n【答案】15\n【解析】7与8相加得到15。\n\n第2题 计算 12 - 5。\n【答案】7\n\n第3题 如图，求三角形面积。\n【答案】6\n【解析】底乘高除以2。');
@@ -6,7 +7,7 @@ const large=path.join(folder,'超限扫描.pdf');fs.closeSync(fs.openSync(large,
 let app,page;const report={output,checks:[],rendererErrors:[],scope:'Teacher folder -> automatic question bank -> source -> correction -> paper -> cold readback. Synthetic local data; no model/provider call.'};const note=s=>{report.checks.push(s);console.log('PASS '+s);};
 async function until(fn,ms=90000){const end=Date.now()+ms;while(Date.now()<end){const r=await fn();if(r)return r;await delay(200);}throw Error('Timed out');}
 async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:data};for(const k of Object.keys(env))if(k.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(k))delete env[k];Object.assign(env,{OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1'});app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});}
-const nav=async space=>page.locator(`[data-testid="product-nav-${space}"]:visible`).click();
+const nav=async space=>productEntry(page,space).click();
 const notebook=async()=>{const target=page.getByRole('button',{name:'题本',exact:true}).filter({visible:true});await target.scrollIntoViewIfNeeded();await target.click();await page.getByTestId('question-notebook-search').waitFor();};
 const paper=async()=>{const target=page.getByRole('button',{name:'组卷',exact:true}).filter({visible:true});await target.scrollIntoViewIfNeeded();await target.click();await page.getByTestId('paper-workspace').waitFor();};
 const entries=()=>page.evaluate(()=>window.omniEdu.listQuestionNotebook({limit:20}));
