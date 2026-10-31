@@ -1,0 +1,6 @@
+{
+  "success": false,
+  "checks": [],
+  "boundary": "Real Pi0.80.3 tools/diff, SQLite, local files and child-process exits. No provider, UI/IPC, production tool registration or full P07-A claim.",
+  "error": "Error: permission_denied\n    at authorizedWorkspace (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/workspace-authority.ts:11:86)\n    at authority (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/text-change-service.ts:49:18)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Object.propose (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/text-change-service.ts:99:20)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs:52:17\n    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs:48:41)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs:50:3"
+}

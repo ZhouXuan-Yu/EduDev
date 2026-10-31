@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+2026-11-01 C03：记忆页复用原get/update接口和版本锁，去除两处server→draft灌入；不新增依赖、Runtime或审查层。
+
+2026-11-01 E07：继续复用Pi原编辑/差异、withFileMutationQueue、现有text ledger和HeroUI Tabs/CodeBlock/Button；只补原review快照与冲突提示，无新依赖/下载/组件库/CSS。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 2026-11-01 E07：复用第一方office-network.waitOfficeAbort到原managed-tools/version-service，继续固定quickjs-wasi3.6.2 pin/哈希/健康检查与共享消费者；本轮无依赖或版本更新。实际受管child及批准流程不重写。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
 
 2026-11-01 E07：继续复用Hana真实文件IO及SessionExecutionRegistry，原OpenMAIC等待边界和Pi工具dispatcher。错误用现shared枚举贯通主进程及原工具证据；没有下载或替换依赖，原写/缓存/外部操作最大1次。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。

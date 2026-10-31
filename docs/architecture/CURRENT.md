@@ -1,5 +1,9 @@
 # 当前架构
 
+2026-11-01 C03：原MemoryGovernanceWorkspace分离server detail和teacher draft；原typed IPC/SQLite/version锁不变，零DDL。延迟真实读回UI4项通过。
+
+2026-11-01 E07：原text-change service→coordinator→typed change-review/preload→单文件/整包共用PiTextChangeCard可选本地currentFile对照，原before/after/账本不改。权限/版本仍由主进程裁定，缺失或不可读只影响当前快照，无新IPC/DDL/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 2026-11-01 E07：原Pi stop→run.abort/Hana registry→受管version-service等待，新增复用waitOfficeAbort约束header/body，停止后释放原临时文件/安装job；晚响应不入新job。原child kill/close、text-change取消和typed IPC保持，无DDL/新Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
 
 2026-11-01 E07：原Hana adapter→Pi内容与details→execution boundary→typed journal/projection→原OfficeToolEvidence贯通not_found/resource_busy。原manifest仅纯本地read/stat/list增至2次；同call准入1次、内部retry ID独立，等待沿原Hana registry可停，当前路径/版本检查每次保留。无DDL/新IPC/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。

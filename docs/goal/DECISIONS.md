@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+2026-11-01 C03：一次综合回归的真实草稿覆盖只修原组件两处加载函数，受影响正式UI专项复验；保留首次整套失败，不重新跑全套掩盖。
+
+2026-11-01 E07：当前文件三方对照沿原review返回可选快照，绝不将快照变成新事实库或批准；后续操作仍实读/重新确认。0付费合成SSE验证真实Pi/文件和owned强退，不新增安全审查。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 2026-11-01 E07：只补原受管安装等待接缝；工具运行与审批停止沿已有实际child close/原批准事务验证，不新增取消协议、执行器、依赖或审查层。测试固定已认可免费组件，正式Pi用同pin公开包字节的受控传输与本地合成模型，0新付费。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
 
 2026-11-01 E07：沿Hana adapter、原Pi result/manifest/execution-bound补普通工具错误和有界纯读；使用原SessionExecutionRegistry登记重试等待，不引入第二执行器。缺文件由模型核对目录后再读，固定提示不自动猜替代文件；写入/审批/未知效果仍沿原账本处理。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。

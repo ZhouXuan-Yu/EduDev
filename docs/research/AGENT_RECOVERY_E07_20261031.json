@@ -677,5 +677,164 @@
     "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
     "testCwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
     "workspace": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject"
+  },
+  "conflictReviewSlice": {
+    "date": "2026-11-01",
+    "status": "Engineering implementation and relevant actual UI paths passed; full stage acceptance pending",
+    "sourceCommit": "d24320ed9e94eb5ca88d8a07f847de494c2d1788",
+    "baseCommit": "d381833d0fd9a2d0a36cfe5d69853cdcdd78e9a2",
+    "requirements": [
+      "REQ-E07-09 current text conflict review",
+      "REQ-E07-06 generation/saved-file-before-outcome force termination paths"
+    ],
+    "changes": [
+      "Original change-review typed IPC adds optional on-demand currentFile snapshot (content/SHA/readAt or missing/unavailable category) only for conflict/undo_conflict. No persisted snapshot or model upload.",
+      "Original card reuses Tabs/CodeBlock/Button for three sides and explicit current-file refresh; historical before/after survive missing or unsupported current targets. No CSS/vendor/new component library.",
+      "Original coordinator conflict receipt and exception advice ask for latest read and fresh teacher approval, retain the original proposal and never force-write."
+    ],
+    "tests": {
+      "source": {
+        "command": "node scripts/xiaozhi-agent/conflict-review.mjs",
+        "passed": 6,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-review-JTCP3W"
+      },
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/conflict-review-electron.mjs; resume same owned root only for remaining final check",
+        "passed": 7,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8",
+        "firstExecution": {
+          "passed": 6,
+          "exit": 1,
+          "reason": "Fixture read nonexistent turn.answer instead of actual items[].text; actual partial response existed."
+        },
+        "resume": {
+          "firstExit": 1,
+          "reason": "Fixture s variable scoped inside completed first-six block; force termination and cold launch had already occurred. Final resume inspected same cold file/records without regenerating or rewriting.",
+          "finalExit": 0
+        },
+        "actualMainForceKills": [
+          81524,
+          83396
+        ],
+        "realProviderCalls": 0,
+        "rendererErrors": 0,
+        "coldReplayCalls": 0,
+        "viewports": [
+          {
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5
+          }
+        ]
+      },
+      "legacyFoundation": {
+        "command": "node scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs",
+        "exit": 1,
+        "passed": 0,
+        "reason": "Legacy fixture workspace under protected .codex fails authority and hardcoded prior app.db is absent. Existing script/guards unchanged; new focused tests use an owned OS temp root and actual SQLite/files."
+      },
+      "comprehensive": {
+        "command": "npm run test:smoke",
+        "exit": 1,
+        "status": "failed",
+        "sourceCommit": "d24320ed9e94eb5ca88d8a07f847de494c2d1788",
+        "reason": "L2 edit click should persist teacher text: actual Observed route stage: succeeded. instead of teacher revision. Late loadL2 response seeds old server text into l2Edits, overwriting teacher input. No207/207 claim. Preserve failed log/screenshot; repair C03 draft seam and recheck affected path only."
+      }
+    },
+    "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "testCwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+    "archive": "docs/research/AGENT_RECOVERY_E07_20261031/conflict-review",
+    "build": {
+      "main/index.js": {
+        "bytes": 3334335,
+        "sha256": "3116a1ecdcd8e1b30160f82dbdec6abfd7332bc5d3fd46b315a34eeeff4773f2"
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      "renderer/assets/index-BBpe4p21.js": {
+        "bytes": 7261903,
+        "sha256": "f096c3c52564d8db69716cd89845c17232a072f6853ca26dc4cfd9b1d23d1fee"
+      }
+    },
+    "performance": {
+      "baseline": "stopStagesSlice.build at source0222d15 (d381833 docs only)",
+      "bytesDelta": {
+        "main": 1319,
+        "preload": 0,
+        "renderer": 1481
+      },
+      "scope": "At most64KiB extra local read/hash only on explicit expanded conflict review/refresh; zero added per-token work/journal writes/network requests. No paired latency, P95 or RAM measurement; no broad speed claim."
+    },
+    "audit": {
+      "exit": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      }
+    },
+    "newDependencies": 0,
+    "ddl": 0,
+    "newIpc": 0,
+    "realPaidRequests": 0,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "actualFile": {
+      "name": "浮力课堂.md",
+      "sha256": "064558e6ef40cba6a0bb1eb9b45ff3e0749682f7bc56fb0aa618f2e07dd39223",
+      "content": "# 浮力课堂\\n导入2分钟\\n探究10分钟\\n检查3分钟\\n",
+      "scope": "Synthetic owned file only; original conflict before5/proposed6, teacher7→8, new approved9, saved crash10."
+    },
+    "remaining": "Next functional slice E08 generic HTML/source/version surface and applicable C, then fixed S/T order. Remaining full E07/252 stage matrix stays concentrated after functionality. No daily/installer/provider quality acceptance.",
+    "rollback": "Revert sourced24320e and memory repair7b650b2 as applicable. No schema migration; retain proposal/current teacher files/task journal and original memory records. Full rollback rehearsal not performed.",
+    "memoryDraftRepair": {
+      "sourceCommit": "7b650b2",
+      "trigger": "Single comprehensive run failed real L2 teacher-edit save at source d24320e. Preserve failure; do not rerun full suite to hide it.",
+      "change": "Original loadL2/loadL3 update server detail only; textarea falls back to server until a teacher draft exists. No schema/IPC/version-lock change.",
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalMemory": {
+        "command": "node scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs",
+        "exit": 0,
+        "passed": 4,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-Tj4I6o",
+        "realProviderCalls": 0,
+        "rendererErrors": 0,
+        "scope": "Actual legacy memory navigation, delayed actual IPC read responses, exact L2/L3 saves and stale-version conflict preserving draft. No fabricated business results.",
+        "fixtureFailures": [
+          "Initial synthetic L2 entry omitted required real run evidence; rejected0 checks. Fixture now creates original no-provider run and binds its actual ID.",
+          "Nested data/profile failed authorized legacy temp-root rule and correctly loaded Pi; nav-memory absent,0 checks. Fixture now uses independent existing direct owned OS temp children. Runtime guard unchanged."
+        ]
+      }
+    },
+    "buildScope": "Initial E07 build before C03 memory repair and main integration. Final integrated fingerprints recorded separately."
   }
 }

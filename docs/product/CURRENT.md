@@ -1,5 +1,9 @@
 # 当前产品方向
 
+2026-11-01 同轮C03修复（7b650b2）：一次综合回归在真实L2教师编辑处失败，已保留首次日志/截图，不记207通过。loadL2/loadL3只读回已存数据，教师草稿独立保留；原版本锁不变。受影响项build/type、240组件和正式记忆页4项通过（延迟真实读回/L2及L3保存/旧版本冲突），0付费。下一功能E08通用HTML与来源定位+C，再S/T；剩余完整E07/252矩阵功能齐后集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+2026-11-01 E07：冲突三方对照/当前文件重读和新稿重新确认已贯通原Pi/typed IPC/审阅卡；实际生成中与保存后强退恢复亦有证据。源码6、组件240、正式Pi7及build/type通过，0付费，完整阶段AT仍待集中。日常进度见docs/goal/WORK_PROGRESS.md，证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 2026-11-01 E07停止切片完成（0222d15）：原组件下载复用waitOfficeAbort处理无响应头/停流，不再等待可能不结算的reader.cancel；取消后清理本次临时物，晚响应不激活，新的明确准备和共享消费者继续有效。实际Pi下载/计算子进程/审批等待的本地反馈5.9/4.1/7.3ms，宿主下载3ms中止、实际loop子进程12ms退出；旧批准拒绝且文件未写，原组件保留并完成新任务实际42。专项15、取消3、build/type、240组件与正式Pi6（双尺寸/四会话冷启）通过；同一冻结源码0222d15的一次legacy综合回归207/207 exit0，0付费。完整E07/252AT仍待阶段集中。 下一：E07强制中断/版本冲突/部分正式产物回收，E08通用HTML和来源定位+C，再按固定顺序S/T；Goal active，D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
 
 2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 下一步：继续E07工具运行/下载/审批等待停止及崩溃/回执冲突矩阵、E08 HTML和来源定位+C；再按既定顺序S/T，功能齐后集中验收。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。

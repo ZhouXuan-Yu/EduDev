@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "checks": [
+    "Formal read → original plan/edit → teacher file change → approval conflict retains original/proposed/current text, no overwrite and precise model receipt",
+    "Visible current-file refresh reads latest teacher edit without model calls, file writes or proposal revision changes",
+    "Moved current file shows missing while original sides remain reachable, explicit refresh recovers exact current content",
+    "Current-file tab and refresh are reachable in both native window sizes, existing HeroUI styles retained",
+    "Explicit new request reads the teacher current version and creates a new review/approval; only freshly confirmed edit installs once",
+    "Owned main force termination after actual saved file before outcome record restores uncertain; visible verify reads existing file without replay or rewriting",
+    "Force termination during actual generation retains partial body and saved files; cold original conflict/fresh/recovered states persist with zero replay or renderer errors"
+  ],
+  "errors": [],
+  "boundary": "Formal original Pi/composer/teacher approval, actual local file edits/conflicts/SQLite and owned main force termination, synthetic SSE only; zero paid calls. Full E07/FX02/FX07 stage AT and natural model quality remain pending.",
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1.5
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "dpr": 1.5
+    }
+  ],
+  "conflictId": "xichange_b7259aca-3ef3-411a-8cee-5a14f066a637",
+  "freshId": "xichange_32ee25da-b9a2-4ab9-b6da-7921dfe09ef0",
+  "kills": [
+    {
+      "pid": 81524,
+      "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8\\profile"
+    },
+    {
+      "pid": 83396,
+      "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8\\profile"
+    }
+  ],
+  "crashId": "xichange_17b69a46-6e8d-438c-a01a-59d0ee6bf671",
+  "resumedFromFailure": true,
+  "pendingGenerationId": "run_d99ae649-19d7-489e-8b83-3c6243703b78",
+  "sha256": "064558e6ef40cba6a0bb1eb9b45ff3e0749682f7bc56fb0aa618f2e07dd39223",
+  "realProviderCalls": 0
+}

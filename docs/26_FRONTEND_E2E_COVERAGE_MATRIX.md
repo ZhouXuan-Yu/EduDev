@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 同轮C03修复（7b650b2）：一次综合回归在真实L2教师编辑处失败，已保留首次日志/截图，不记207通过。loadL2/loadL3只读回已存数据，教师草稿独立保留；原版本锁不变。受影响项build/type、240组件和正式记忆页4项通过（延迟真实读回/L2及L3保存/旧版本冲突），0付费。下一功能E08通用HTML与来源定位+C，再S/T；剩余完整E07/252矩阵功能齐后集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+2026-11-01 E07（d24320e）：当前正式composer→实读→原计划/编辑→教师手改→批准冲突→原/提议/当前三方对照、重读、移走文件/恢复、新任务实读并重新确认保存，双尺寸DPR1.5；生成中和文件已写outcome前owned main强退、冷启/原卡核验无重放。正式Pi7分首6与原文件末项续测，失败均归档。源码6/组件240/build/type通过；完整AT仍阶段集中。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 2026-11-01 E07停止切片（0222d15）：当前正式composer实际点停止，覆盖停流下载/不结算cancel、真实QuickJS无限循环child及原文件审批等待；本地事件→可见反馈5.9/4.1/7.3ms，宿主下载3ms中止、child12ms关闭，1.1秒无新派发。临时物清理/组件保留、旧批准拒绝/文件未写、新会话实际42、双尺寸及四会话冷启共6项，0真实付费/renderer错误。专项15与原复制取消3通过；整条AT仍阶段集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。 同一冻结源码0222d15的一次legacy综合回归207/207 exit0；正式Pi6另记，完整AT不据此标过。
 
 2026-11-01 E07普通工具前片（3a420f5）：正式Pi6覆盖缺文件→列目录→更名实际读取、短暂/持续占用、读重试等待停止及双尺寸/冷启；已停止历史不再承诺重试，原queued事件保留。源码7/边界20/SQLite10/呈现9，240组件；一次207归终态提示修复前构建，修后相关检查通过。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
