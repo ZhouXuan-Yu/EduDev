@@ -5,7 +5,7 @@
   "scope": "Architecture decision, critical feasibility audit and ordered K0 delivery contract; no production source implementation in this delivery",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_in_progress_file_consumers_implemented",
+  "currentStage": "K0_in_progress_whole_set_role_transition_implemented",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -598,5 +598,240 @@
       "preloadChanged": false,
       "claim": "bounded two-file progress and reduced head-of-line waiting; no whole-corpus throughput/recall/P95 A/B"
     }
+  },
+  "lateAnswerRole": {
+    "baseCommit": "013a6b998e449c45b609e76db41c40c00430bd7f",
+    "goalComplete": false,
+    "teacherOutcome": "An answer PDF can be associated after local extraction, preserving all raw questions and teacher facts; only untouched rule candidates are hidden by default, restored on unlink. Incompatible/in-flight AI input roles remain blocked.",
+    "implementation": [
+      "Shared idempotent migration for existing material_book_pairs (no schema change)",
+      "Indexed derived candidate ID set limited to current answer resources and source versions, with teacher edits/confirmation/bookmark/category/usage protection",
+      "Existing notebook raw switch and pending attention presentation, no canonical question or needs_attention mutation",
+      "Local extraction role race leaves pending cursor for reread; source/fingerprint changes still fail closed",
+      "Existing association and notebook UI copy updated; no new IPC, dependency, model, runtime or service"
+    ],
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "typecheckIncluded": true,
+      "fingerprints": [
+        {
+          "file": "apps/desktop/out/main/index.js",
+          "bytes": 3359953,
+          "sha256": "07eac5a3fc35877666c1df70baeff1acaaf51d02084ff9697bf15ea63773e9c5"
+        },
+        {
+          "file": "apps/desktop/out/preload/index.cjs",
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        {
+          "file": "apps/desktop/out/renderer/assets/index-DGrHaRaL.js",
+          "bytes": 7264669,
+          "sha256": "ec813513f9bc101e934915a689ad65be211e0ffbc3a901c2e22a565e7736b791"
+        }
+      ],
+      "mainDeltaBytes": 1604,
+      "rendererDeltaBytes": 272,
+      "preloadDeltaBytes": 0
+    },
+    "checks": [
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-pairs-boundaries.mjs",
+        "passed": 15,
+        "exit": 0,
+        "scope": "Versioned roles/CAS/idempotence; late linking without loss; teacher protection; malformed/unknown/stale archives; unlink/relink; indexed query plan; concurrent role reread; real body change still rejected"
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-source-origins-boundaries.mjs",
+        "passed": 13,
+        "exit": 0,
+        "scope": "Existing origin associations and invalidation; controlled AI evidence, not provider quality"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "exit": 0,
+        "scope": "Final unchanged renderer source; later edits confined to main SQL/race and scripts/docs"
+      },
+      {
+        "command": "node scripts/education/kb-wusan-pair-journey.mjs %TEMP%\\omni-real-material-aWObCn",
+        "passed": 6,
+        "exit": 0,
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\book-pair-5xm8eY\\report.json",
+        "scope": "Late answer-role association in the existing whole-directory acceptance database: actual question PDF62pages and answer PDF31pages, production UI/SQLite, candidate preservation/default visibility/unlink/relink and cold restart. Other imported files remain present. No model calls, whole-set AI-quality, per-question answer-match, retrieval/paper or scale acceptance claim."
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "exit": 1,
+        "scope": "Earlier same-round build fa6492c017a15579b0582c88094c2713e57ff4df8e1065cebf1c4fe4f2d65ec3 before indexed-ID-set/race changes; do not report 207 passed",
+        "failure": "scripts/electron-smoke.mjs:1501 L2 memory adoption readback: l2Detail.entries[0] undefined after prior length wait. No memory-module changes in this slice; cause not established; evidence retained, not weakened or rerun to hide failure"
+      }
+    ],
+    "realDirectory": {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn",
+      "inputFiles": 11,
+      "bytes": 332294145,
+      "existingAnswerCandidates": 90,
+      "before": {
+        "normal": 524,
+        "raw": 524,
+        "attention": 524
+      },
+      "after": {
+        "normal": 434,
+        "raw": 524,
+        "attention": 434
+      },
+      "canonicalRecordsUnchanged": true,
+      "unlinkRestoresCounts": true,
+      "restartSame": true,
+      "pairRevision": 7,
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768,
+          "css": {
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5
+          }
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "css": {
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5
+          }
+        }
+      ],
+      "rendererErrors": [],
+      "cloudCalls": 0,
+      "pdfStates": [
+        {
+          "name": "主书.pdf",
+          "generation": "2c179816-bf32-4536-8703-39a190ccfa72",
+          "total": 62,
+          "complete": 61,
+          "blank": 0,
+          "review": 1,
+          "failed": 0,
+          "pending": 0,
+          "state": "partial",
+          "bytes": 854369,
+          "failures": [
+            {
+              "page": 61,
+              "error": "text_conflict",
+              "attempts": 1
+            }
+          ]
+        },
+        {
+          "name": "答案.pdf",
+          "generation": "22bcc78a-fff7-4ce6-a590-43d809fa87af",
+          "total": 31,
+          "complete": 30,
+          "blank": 0,
+          "review": 1,
+          "failed": 0,
+          "pending": 0,
+          "state": "partial",
+          "bytes": 838358,
+          "failures": [
+            {
+              "page": 30,
+              "error": "text_conflict",
+              "attempts": 1
+            }
+          ]
+        }
+      ],
+      "wholeSetAccepted": false
+    },
+    "performance": {
+      "firstCorrelatedQuery": {
+        "rows": 524,
+        "iterations": 50,
+        "before": {
+          "count": 524,
+          "medianMs": 0.054400000000015325,
+          "p95Ms": 0.0741999999999905,
+          "maxMs": 0.09979999999998768
+        },
+        "after": {
+          "count": 434,
+          "medianMs": 2.0556000000000267,
+          "p95Ms": 2.4775000000000205,
+          "maxMs": 2.720100000000002
+        },
+        "scope": "Warm read-only local count query on the existing 524-rule-candidate acceptance database; not user-path latency or tens-of-GB capacity"
+      },
+      "finalIndexedQuery": {
+        "rows": 524,
+        "iterations": 50,
+        "scope": "Warm read-only local count query, current real acceptance DB; not end-to-end or scale acceptance",
+        "before": {
+          "count": 524,
+          "medianMs": 0.054000000000002046,
+          "p95Ms": 0.07110000000000127,
+          "maxMs": 0.08039999999999736
+        },
+        "after": {
+          "count": 434,
+          "medianMs": 0.7028999999999996,
+          "p95Ms": 0.9114999999999895,
+          "maxMs": 1.1973000000000127
+        },
+        "plan": [
+          "SCAN q USING COVERING INDEX sqlite_autoindex_question_bank_items_1",
+          "CORRELATED SCALAR SUBQUERY 1",
+          "SEARCH o USING INDEX sqlite_autoindex_material_question_origins_1 (question_id=?)",
+          "LIST SUBQUERY 6",
+          "SCAN p USING INDEX idx_material_book_answer",
+          "SEARCH a USING INDEX sqlite_autoindex_teacher_resources_1 (id=?)",
+          "SEARCH r USING INDEX sqlite_autoindex_teacher_resources_1 (id=?)",
+          "SEARCH m USING INDEX material_question_members_resource (resource_id=?)",
+          "SEARCH aq USING INDEX sqlite_autoindex_question_bank_items_1 (id=?)",
+          "CORRELATED SCALAR SUBQUERY 2",
+          "SEARCH b USING INDEX sqlite_autoindex_question_notebook_bookmarks_1 (question_id=?)",
+          "CORRELATED SCALAR SUBQUERY 3",
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_question_notebook_category_links_1 (question_id=?)",
+          "CORRELATED SCALAR SUBQUERY 4",
+          "SEARCH u USING COVERING INDEX idx_question_bank_usage (question_id=?)",
+          "CORRELATED SCALAR SUBQUERY 5",
+          "SCAN s VIRTUAL TABLE INDEX 3:",
+          "CREATE BLOOM FILTER"
+        ]
+      },
+      "conclusion": "Added role filtering costs about 0.65ms median on the 524-row warm local sample; indexed ID set reduces initial draft overhead. Not an end-to-end speedup, natural-scale, memory-peak or retrieval P95 claim."
+    },
+    "preservedFailures": [
+      "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\book-pair-Nw3yrC\\report.json",
+      "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\book-pair-LplUUx\\report.json"
+    ],
+    "testHarnessRepair": "Replay initially queried linked/unlinked controls before async loading finished; waits for one actual state now. SQLite fixture count expectation corrected to retain all existing memberships instead of assuming zero.",
+    "audit": {
+      "vulnerabilities": {
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "dependenciesChanged": false,
+      "clean": false
+    },
+    "rollback": "Unlink the new association to restore original default visibility. Revert only this slice if needed; original/teacher/AI records retained, old readers will show raw candidates. Full code rollback not rehearsed.",
+    "notAccepted": [
+      "Whole-set OCR/AI quality and complete known/missing-answer workflow",
+      "Pi retrieval/similar-question/paper user path on the whole set",
+      "40GB natural corpus recall, latency and durable resource stability",
+      "Windows installed EXE/optional-component delivery",
+      "Comprehensive smoke gate remains failed at memory readback"
+    ],
+    "next": "Continue complete-set authorized AI processing and question/answer evidence, then Pi retrieval and paper output; do not implement book/page/question-specific production exceptions."
   }
 }
