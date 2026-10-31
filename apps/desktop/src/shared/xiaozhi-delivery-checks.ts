@@ -5,7 +5,7 @@ export const DELIVERY_CHECK_SCHEMA='xiaozhi.delivery-checks.v1' as const;
 export const CHECK_CLASSES=['structure','content','visual','interaction','numbers','consistency'] as const;
 export type CheckClass=typeof CHECK_CLASSES[number];
 export type CheckState='passed'|'failed'|'unchecked'|'not_applicable';
-export type CheckFinding={kind:CheckClass;state:CheckState;code:string;message:string;page?:number;ruleId?:string};
+export type CheckFinding={kind:CheckClass;state:CheckState;code:string;message:string;page?:number;ruleId?:string;checkId?:string};
 export type NumberSource=
  |{kind:'label';label:string;page?:number}
  |{kind:'column';column:string|number;sheet?:number;headerRow?:number;startRow?:number;endRow?:number;empty?:'fail'|'ignore'}
@@ -15,7 +15,10 @@ export type InteractionCheck={id:string;actions:({kind:'set';selector:string;val
  observe:string;expectedText?:string;expectedNumber?:number;expectedFrom?:CubeBuoyancyCheck;tolerance?:number;mustChange?:boolean};
 export type TextFactCheck={id:string;source:{kind:'label';label:string;page?:number}|{kind:'selector';selector:string}};
 export type OfficeCheckEngine='auto'|'microsoft'|'wps';
-export type FileCheckRules={officeEngine?:OfficeCheckEngine;pages?:number;notes?:boolean;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
+export type RequirementBinding={taskId:string;criterionId:string;criterionVersion:number;checks:string[]};
+export type DeliveryRequirements={taskId:string;version:number;digest:string;criteria:{id:string;version:number;text:string;sourceId:string;sourceVersion:string}[]};
+export type RequirementCoverage={criterionId:string;criterionVersion:number;state:'checks_passed'|'checks_failed'|'unchecked'|'unmapped';semantics:'unchecked';evidence:{path:string;checkId:string;state:CheckState;messages:string[]}[]};
+export type FileCheckRules={bindings?:RequirementBinding[];officeEngine?:OfficeCheckEngine;pages?:number;notes?:boolean;contains?:{text:string;page?:number;scope?:'body'|'notes'}[];
  excludes?:{text:string;page?:number;scope?:'body'|'notes'}[];numbers?:NumberCheck[];interactions?:InteractionCheck[];facts?:TextFactCheck[]};
 export type CheckFileInput={path:string;version?:string;rules?:FileCheckRules};
 export type DeliveryCheckInput={schemaVersion:typeof DELIVERY_CHECK_SCHEMA;sessionId:string;requestId:string;files:CheckFileInput[];
@@ -24,12 +27,12 @@ export type CheckedNumber={id:string;value:number;unit?:string};
 /** Derived local render proof; the report's file SHA binds these pixels to that inspected version. */
 export type DeliveryVisualEvidence={sha256:string;bytes:number;width:number;height:number;page:number;viewport:string;kind:'html_viewport'|'pdf_page'|'office_page'};
 export type DeliveryVisualResult={ok:true;evidence:DeliveryVisualEvidence;dataBase64:string;historical:boolean;fileSha256:string}|{ok:false;error:'invalid_input'|'permission_denied'|'not_found'|'unavailable'};
-export type FileCheckReport={path:string;fileVersion:string|null;sha256:string|null;format:string;size:number|null;checks:CheckFinding[];
+export type FileCheckReport={path:string;fileVersion:string|null;sha256:string|null;format:string;size:number|null;rules?:FileCheckRules;checks:CheckFinding[];
  pageCount?:number;renderedPages:number[];numbers:CheckedNumber[];state:'passed'|'failed'|'partial'|'stale';
  candidate?:{kind:'text'|'office';id:string;revision:number};facts?:{id:string;value:string}[];visualEvidence?:DeliveryVisualEvidence[]};
 export type DeliveryCheckReport={schemaVersion:typeof DELIVERY_CHECK_SCHEMA;id:string;sessionId:string;runId:string|null;callId:string|null;
  workspaceVersion:string;requirementsVersion:number|null;policySha256:string;createdAt:string;state:'passed'|'failed'|'partial'|'stale'|'cancelled';
- files:FileCheckReport[];repairAttempts:Partial<Record<CheckClass,number>>;scope:string;candidate?:boolean;repairExhausted?:CheckClass[]};
+ files:FileCheckReport[];contextCurrent?:boolean;requirements?:DeliveryRequirements;requirementCoverage?:RequirementCoverage[];repairAttempts:Partial<Record<CheckClass,number>>;scope:string;candidate?:boolean;repairExhausted?:CheckClass[]};
 export type DeliveryCheckResult={ok:true;report:DeliveryCheckReport}|{ok:false;error:'invalid_input'|'permission_denied'|'busy'|'cancelled'|'timeout'|'changed'|'not_found'|'too_large'|'unavailable'};
 
 export const CHECK_LABELS:Record<CheckClass,string>={structure:'文件结构',content:'内容要求',visual:'页面与排版',interaction:'控件与交互',numbers:'数值复核',consistency:'跨文件一致性'};
@@ -72,11 +75,18 @@ function validInteraction(v:unknown):v is InteractionCheck{
   ||a.kind==='set'&&keys(a,['kind','selector','value'])&&typeof a.value==='string'&&a.value.length<=128&&!/[\x00-\x1f]/.test(a.value)
   ||a.kind==='key'&&keys(a,['kind','selector','key'])&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Enter',' ','Tab'].includes(String(a.key))));
 }
+export function declaredCheckIds(rules:FileCheckRules):string[]{
+ return [...(rules.pages!==undefined?['pages']:[]),...(rules.notes?['notes']:[]),...(rules.contains||[]).map((_,i)=>'contains:'+i),...(rules.excludes||[]).map((_,i)=>'excludes:'+i),...(['numbers','interactions','facts'] as const).flatMap(k=>(rules[k]||[]).map(r=>k+':'+r.id))];
+}
 export function validFileCheckRules(v:unknown):v is FileCheckRules{
- if(!obj(v)||!keys(v,['officeEngine','pages','notes','contains','excludes','numbers','interactions','facts'])||v.officeEngine!==undefined&&(typeof v.officeEngine!=='string'||!['auto','microsoft','wps'].includes(v.officeEngine))||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean')return false;
+ if(!obj(v)||!keys(v,['bindings','officeEngine','pages','notes','contains','excludes','numbers','interactions','facts'])||v.officeEngine!==undefined&&(typeof v.officeEngine!=='string'||!['auto','microsoft','wps'].includes(v.officeEngine))||v.pages!==undefined&&!integer(v.pages,64)||v.notes!==undefined&&typeof v.notes!=='boolean')return false;
  if(v.facts!==undefined&&(!Array.isArray(v.facts)||v.facts.length>16||!v.facts.every(f=>obj(f)&&keys(f,['id','source'])&&id(f.id)&&obj(f.source)&&(f.source.kind==='label'&&keys(f.source,['kind','label','page'])&&text(f.source.label)&&(f.source.page===undefined||integer(f.source.page,64))||f.source.kind==='selector'&&keys(f.source,['kind','selector'])&&text(f.source.selector)))||new Set(v.facts.map(f=>f.id)).size!==v.facts.length))return false;
  for(const key of ['contains','excludes'])if(v[key]!==undefined&&(!Array.isArray(v[key])||(v[key] as unknown[]).length>32||!(v[key] as unknown[]).every(r=>obj(r)&&keys(r,['text','page','scope'])&&text(r.text,300)&&(r.page===undefined||integer(r.page,64))&&(r.scope===undefined||['body','notes'].includes(String(r.scope))))))return false;
+ if(v.bindings!==undefined){
+  if(!Array.isArray(v.bindings)||v.bindings.length>32||v.bindings.some(b=>!obj(b)||!keys(b,['taskId','criterionId','criterionVersion','checks'])||typeof b.taskId!=='string'||!/^xitask_[a-f0-9]{64}$/.test(b.taskId)||!text(b.criterionId,160)||!integer(b.criterionVersion,1000000)||!Array.isArray(b.checks)||!b.checks.length||b.checks.length>64||b.checks.some(c=>!text(c,80))||new Set(b.checks).size!==b.checks.length)||new Set(v.bindings.map(b=>b.criterionId)).size!==v.bindings.length)return false;
+ }
  for(const [key,validate,max] of [['numbers',validNumber,24],['interactions',validInteraction,12]] as const){const values=v[key];if(values!==undefined&&(!Array.isArray(values)||values.length>max||!values.every(validate)||new Set(values.map(r=>r.id)).size!==values.length))return false;}
+ if(v.bindings!==undefined){const refs=declaredCheckIds(v as FileCheckRules);if((v.bindings as RequirementBinding[]).some(b=>b.checks.some(c=>!refs.includes(c))))return false;}
  return true;
 }
 export function validDeliveryCheckInput(v:unknown):v is DeliveryCheckInput{
@@ -85,6 +95,18 @@ export function validDeliveryCheckInput(v:unknown):v is DeliveryCheckInput{
   &&(v.workspaceVersion===undefined||hash(v.workspaceVersion))&&(v.requirementsVersion===undefined||integer(v.requirementsVersion,1000000))
   &&Array.isArray(v.files)&&v.files.length>0&&v.files.length<=8&&v.files.every(f=>obj(f)&&keys(f,['path','version','rules'])&&officeRelativePath(f.path)&&(f.version===undefined||hash(f.version))&&(f.rules===undefined||validFileCheckRules(f.rules)))
   &&new Set(v.files.map(f=>f.path.toLowerCase())).size===v.files.length;
+}
+
+/** Optional v1 extensions; old receipts remain readable without invented requirement evidence. */
+export function validRequirementEvidence(report:DeliveryCheckReport):boolean{
+ const r=report.requirements,coverage=report.requirementCoverage;
+ if(!r)return coverage===undefined||Array.isArray(coverage)&&coverage.length===0;
+ if(!obj(r)||typeof r.taskId!=='string'||!/^xitask_[a-f0-9]{64}$/.test(r.taskId)||!integer(r.version,1000000)||!hash(r.digest)||!Array.isArray(r.criteria)||r.criteria.length>32
+  ||!r.criteria.every(c=>obj(c)&&text(c.id,160)&&integer(c.version,1000000)&&text(c.text,400)&&text(c.sourceId,160)&&hash(c.sourceVersion))||new Set(r.criteria.map(c=>c.id)).size!==r.criteria.length)return false;
+ if(coverage===undefined)return true;
+ return Array.isArray(coverage)&&coverage.length<=32&&new Set(coverage.map(c=>c.criterionId)).size===coverage.length&&coverage.every(c=>obj(c)&&r.criteria.some(k=>k.id===c.criterionId&&k.version===c.criterionVersion)
+  &&['checks_passed','checks_failed','unchecked','unmapped'].includes(c.state)&&c.semantics==='unchecked'&&Array.isArray(c.evidence)&&c.evidence.length<=512
+  &&c.evidence.every(e=>obj(e)&&typeof e.path==='string'&&officeRelativePath(e.path)&&text(e.checkId,80)&&['passed','failed','unchecked','not_applicable'].includes(e.state)&&Array.isArray(e.messages)&&e.messages.length<=4&&e.messages.every(m=>text(m,2000))));
 }
 
 /** A worker result is private local data; only bounded findings cross the model boundary. */

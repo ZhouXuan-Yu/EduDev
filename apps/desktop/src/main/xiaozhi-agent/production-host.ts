@@ -1,3 +1,4 @@
+import {deliveryRequirements} from './checks/requirements';
 import {createTaskState} from './tasks/task-state';
 import {createDeliveryChecks} from './checks/service';
 import {deliveryCheckTools,inspectionSummary} from './checks/tools';
@@ -173,7 +174,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const managedTools=options.managedTools||createManagedTools({root:path.join(options.dataRoot,'managed-tools')});
   const root = path.join(options.dataRoot, 'xiaozhi-pi');
   const active = new Map<string, Active>();
-  const fileChecks=createDeliveryChecks({state:store.xiaozhiState.inspections,dataRoot:options.dataRoot,resolve:id=>host.resolveFileWorkspace(id),requirements:async id=>(await createTaskState(store.xiaozhiState.sql,{sanitize:async text=>(await createStudentContextSanitizer(store))(text)}).latest(id))?.requirementsVersion??null,
+  const fileChecks=createDeliveryChecks({state:store.xiaozhiState.inspections,dataRoot:options.dataRoot,resolve:id=>host.resolveFileWorkspace(id),requirements:async id=>deliveryRequirements(await createTaskState(store.xiaozhiState.sql,{sanitize:async text=>(await createStudentContextSanitizer(store))(text)}).requirements(id)),
     candidateStatus:async(id,file)=>{const ref=file.candidate;if(!ref)return{current:false,published:false};const row=ref.kind==='text'?await store.xiaozhiState.changes.get(ref.id):await store.xiaozhiState.officeArtifacts.get(ref.id);
       return{current:!!row&&row.sessionId===id&&row.path===file.path&&row.state!=='reverted'&&('afterSha256'in row?row.afterSha256===file.sha256:row.draftHash===file.fileVersion&&row.outputHash===file.sha256),published:row?.state==='saved'||row?.state==='applied'};}});
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});

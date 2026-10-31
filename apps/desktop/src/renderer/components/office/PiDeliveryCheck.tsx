@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {PiDeliveryVisual} from './PiDeliveryVisual';
+import {PiRequirementCoverage} from './PiRequirementCoverage';
 import {CHECK_CLASSES,CHECK_LABELS,CHECK_STATE_LABELS,DELIVERY_CHECK_SCHEMA,type DeliveryCheckReport,type OfficeCheckEngine} from '../../../shared/xiaozhi-delivery-checks';
 const states:Record<DeliveryCheckReport['state'],string>={passed:'本次约定检查通过',failed:'检查发现问题',partial:'部分检查完成',stale:'检查已过期',cancelled:'检查已停止'};
 export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId}:{sessionId:string;path:string;version?:string;workspaceVersion?:string;draftId?:string}){
@@ -18,7 +19,8 @@ export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId
  }
  async function inspect(){
   if(busy||draftId)return;++epoch.current;setBusy(true);setError('');const requestId=`xicheckreq_${crypto.randomUUID()}`;request.current=requestId;
-  try{const value=await window.omniEdu?.inspectXiaozhiDelivery({schemaVersion:DELIVERY_CHECK_SCHEMA,sessionId,requestId,workspaceVersion,files:[{path,version,...(officeFile?{rules:{officeEngine}}:{})}]});if(!live.current)return;
+  const previous=report?.contextCurrent!==false&&(report?.state!=='stale'||report?.contextCurrent===true)?report?.files.find(f=>f.path===path)?.rules:undefined;
+  try{const value=await window.omniEdu?.inspectXiaozhiDelivery({schemaVersion:DELIVERY_CHECK_SCHEMA,sessionId,requestId,workspaceVersion,files:[{path,version,...(previous||officeFile?{rules:{...previous,...(officeFile?{officeEngine}:{})}}:{})}]});if(!live.current)return;
    if(value?.ok)setReport(value.report);else setError(value?.error==='cancelled'?'检查已停止，已有文件保留。':value?.error==='changed'?'文件或要求版本已变化，请刷新文件后重试。':value?.error==='busy'?'检查队列暂忙，请稍后重试。':'检查未完成，已有文件保留。');
   }catch{if(live.current)setError('检查未完成，已有文件保留。');}finally{request.current='';if(live.current)setBusy(false);}
  }
@@ -32,6 +34,7 @@ export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId
   {busy&&<p role="status">正在本机读取和检查，已有文件保持原样…</p>}{error&&<p role="status" data-testid="pi-file-check-error">{error}</p>}
   {report&&file?<div data-testid="pi-file-check-result" data-state={report.state}><p><strong>{states[report.state]}</strong> · {new Date(report.createdAt).toLocaleString()}</p>
    <p>{report.candidate?'这是交付前草稿检查，不代表文件已保存。':'保存状态与检查状态分别记录。'}未检查的项目不代表通过。</p>
+   <PiRequirementCoverage report={report}/>
    {report.repairExhausted?.length&&<p role="status">已达到每类2轮自动修复上限，失败草稿与先前结果保留。</p>}
    <dl>{CHECK_CLASSES.map(kind=>{const checks=file.checks.filter(c=>c.kind===kind),state=checks.some(c=>c.state==='failed')?'failed':checks.some(c=>c.state==='unchecked')?'unchecked':checks.some(c=>c.state==='passed')?'passed':'not_applicable';return <div key={kind} data-check-kind={kind} data-check-state={state}><dt>{CHECK_LABELS[kind]}</dt><dd>{CHECK_STATE_LABELS[state]}</dd></div>;})}</dl>
    <p>实际页数：{file.pageCount??'未确定'}；实际渲染页：{file.renderedPages.length?file.renderedPages.join('、'):'未渲染'}。</p>
