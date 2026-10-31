@@ -150,6 +150,8 @@ export type AttachmentImportItem = {
   ok: boolean;
   fileSize: number;
   errorMessage?: string;
+  /** Whitelisted local I/O cause; background batches can distinguish global disk exhaustion. */
+  errorCode?: 'ENOSPC' | 'EACCES' | 'EPERM' | 'ENOENT';
   reused?: boolean;
 };
 

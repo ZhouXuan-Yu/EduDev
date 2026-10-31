@@ -2028,6 +2028,8 @@ export class OmniEduStore {
           ok: false,
           fileSize: 0,
           errorMessage: error instanceof Error ? error.message : '知识资源导入失败',
+          errorCode: ['ENOSPC','EACCES','EPERM','ENOENT'].includes(String((error as NodeJS.ErrnoException)?.code))
+            ? (error as NodeJS.ErrnoException).code as AttachmentImportItem['errorCode'] : undefined,
         });
       }
     }
