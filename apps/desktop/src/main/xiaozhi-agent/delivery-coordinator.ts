@@ -9,7 +9,7 @@ import {officeSummary,createOfficeArtifactState} from './office-artifact-state';
 import type {createTextChangeService} from './text-change-service';
 import type {createOfficeArtifactService} from './office-artifact-service';
 import type {BoundEffect} from './verification/effect-readback';
-import {CHECKS_PARAMETERS,type CheckPreflight,type CheckReceipt} from './checks/preflight';
+import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
 
 type FileSpec={fileId:string;kind:'text';path:string;content:string}|({fileId:string;kind:'office'}&OfficeArtifactProposal);
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
@@ -177,7 +177,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const view=await summary(row);let all=view.files.every(saved);
    // A successful ledger alone is insufficient, including carried files.
    if(all)for(const ref of row.files){try{await options.verify(sessionId,ref);}catch{all=false;row=await options.state.update(row,{files:row.files.map(f=>f.fileId===ref.fileId?{...f,error:'conflict'}:f)});}}
-   row=await options.state.update(row,{state:all?'saved':view.files.some(saved)?'partial':'failed'});const result=await receipt(await publish(row));result.content.push(...(await options.checkReceipt?.(sessionId,runId,callId)||[]));return result;
+   row=await options.state.update(row,{state:all?'saved':view.files.some(saved)?'partial':'failed'});const result=await receipt(await publish(row));return withCheckReceipt(result,await options.checkReceipt?.(sessionId,runId,callId));
   }catch(e){
    row=await owned(sessionId,row.id);await invalidate(row);
    const view=await summary(row);row=await options.state.update(row,{state:view.files.some(saved)?'partial':signal?.aborted||!options.current(sessionId,runId)?'interrupted':'failed',approval:null,

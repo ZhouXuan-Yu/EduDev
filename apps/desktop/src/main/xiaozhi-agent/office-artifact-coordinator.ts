@@ -4,7 +4,7 @@ import {OFFICE_ARTIFACT_SCHEMA,type OfficeArtifactDecision,type OfficeArtifactEr
 import type {XiaozhiAgentEventPayload} from '../../shared/xiaozhi-agent';
 import {createOfficeArtifactState,officeSummary} from './office-artifact-state';
 import {createOfficeArtifactService} from './office-artifact-service';
-import {CHECKS_PARAMETERS,type CheckPreflight,type CheckReceipt} from './checks/preflight';
+import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
 const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 const session=(v:unknown):v is string=>typeof v==='string'&&/^aisession_[a-f0-9-]{36}$/i.test(v);
@@ -51,7 +51,7 @@ export function createOfficeArtifactCoordinator(options:{state:ReturnType<typeof
        if(signal?.aborted||!options.isCurrent(sessionId,runId))abort();else void publish(sessionId,pending.id).catch(()=>abort());
       }));
       signal?.throwIfAborted();
-      if(approved){const saved=await options.service.apply(sessionId,pending.id,signal);await publish(sessionId,pending.id);const result=await receipt(saved);result.content.push(...(await options.checkReceipt?.(sessionId,runId,callId)||[]));return result;}
+      if(approved){const saved=await options.service.apply(sessionId,pending.id,signal);await publish(sessionId,pending.id);const result=await receipt(saved);return withCheckReceipt(result,await options.checkReceipt?.(sessionId,runId,callId));}
       return receipt(await publish(sessionId,pending.id));
      }catch(rawError){
       await cancel(runId).catch(()=>undefined);if(proposal)await publish(sessionId,proposal.id).catch(()=>undefined);

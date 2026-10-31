@@ -383,9 +383,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     candidate:async(id,ref,signal)=>{if(ref.kind==='office')return officeArtifacts.service.candidate(id,ref.id,signal);const row=await store.xiaozhiState.changes.get(ref.id);if(!row||row.sessionId!==id||row.state!=='pending')throw Error('conflict');return{path:row.path,bytes:row.after,version:row.afterSha256,candidate:{kind:'text',id:row.id,revision:row.revision}};},
     defaults:async(id,ref)=>{if(ref.kind!=='office')return undefined;const row=await store.xiaozhiState.officeArtifacts.get(ref.id);if(!row||row.sessionId!==id)throw Error('permission_denied');return row.draft.schemaVersion==='xiaozhi.presentation-draft.v1'?{pages:row.draft.sections.length,notes:true}:undefined;}
   });
-  async function checkReceipt(id:string,runId:string,callId:string){
-    const run=active.get(id);if(!run||run.runId!==runId||run.stopped)return[];
-    try{const value=await store.xiaozhiState.inspections.call(id,runId,callId);if(!value)return[];const report=await fileChecks.get(id,value.id);if(!report)return[];return[{type:'text' as const,text:JSON.stringify({deliveryInspection:await inspectionSummary(report,await createStudentContextSanitizer(store)),note:'逐文件分开说明真实保存状态与实际检查范围；partial/stale/未检查不说全部完成。'})}];}catch{return[{type:'text' as const,text:JSON.stringify({deliveryInspection:{state:'unchecked'},note:'检查记录未能重新读取；保存状态沿原文件回执，不能声称全面检查通过。'})}];}
+  async function checkReceipt(id:string,runId:string,callId:string):Promise<import('./checks/preflight').InspectionReceipt|undefined>{
+    const run=active.get(id);if(!run||run.runId!==runId||run.stopped)return undefined;
+    try{const value=await store.xiaozhiState.inspections.call(id,runId,callId);if(!value)return undefined;const report=await fileChecks.get(id,value.id);if(!report)return undefined;return{deliveryInspection:await inspectionSummary(report,await createStudentContextSanitizer(store)),note:'逐文件分开说明真实保存状态与实际检查范围；partial/stale/未检查不说全部完成。'};}catch{return{deliveryInspection:{state:'unchecked'},note:'检查记录未能重新读取；保存状态沿原文件回执，不能声称全面检查通过。'};}
   }
   const controls = createPiControlCoordinator({ store,
     sanitize:async text=>(await createStudentContextSanitizer(store))(text),

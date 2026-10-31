@@ -5,7 +5,14 @@ import type {CandidateBytes,createDeliveryChecks} from './service';
 import {inspectionSummary} from './tools';
 
 export type CandidateRef={kind:'text'|'office';id:string};
-export type CheckReceipt=(sessionId:string,runId:string,callId:string)=>Promise<{type:'text';text:string}[]>;
+export type InspectionReceipt={deliveryInspection:unknown;note:string};
+export type CheckReceipt=(sessionId:string,runId:string,callId:string)=>Promise<InspectionReceipt|undefined>;
+/** Keep the original single-JSON receipt consumable by native effect/readback readers. */
+export function withCheckReceipt<T extends {content:{type:string;text?:string}[]}>(result:T,extra:InspectionReceipt|undefined):T{
+ if(!extra)return result;const first=result.content.find(c=>c.type==='text');if(!first?.text)return result;
+ try{const receipt=JSON.parse(first.text);if(!receipt||typeof receipt!=='object'||Array.isArray(receipt))return result;first.text=JSON.stringify({...receipt,deliveryInspection:extra.deliveryInspection,inspectionNote:extra.note});}catch{/* Original receipt remains authoritative if an optional summary is unavailable. */}
+ return result;
+}
 export type CheckPreflight=(sessionId:string,runId:string,callId:string,refs:CandidateRef[],checks:unknown,signal?:AbortSignal)=>Promise<Awaited<ReturnType<ToolDefinition['execute']>>|undefined>;
 export const CHECKS_PARAMETERS={type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['path','rules'],properties:{path:{type:'string',maxLength:500},rules:{type:'object'}}}};
 /** Existing file services own the drafts. Only their immutable bytes reach the inspector. */

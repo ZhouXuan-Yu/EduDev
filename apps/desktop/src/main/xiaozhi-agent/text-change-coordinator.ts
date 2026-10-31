@@ -5,7 +5,7 @@ import type { XiaozhiChangeDecision, XiaozhiChangeReviewInput, XiaozhiChangeResu
   XiaozhiChangeReview, XiaozhiChangeSummary, XiaozhiChangeError } from '../../shared/xiaozhi-changes';
 import { createTextChangeState, changeSummary } from './text-change-state';
 import { createTextChangeService } from './text-change-service';
-import {CHECKS_PARAMETERS,type CheckPreflight,type CheckReceipt} from './checks/preflight';
+import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
 
 type Wait = (action: () => Promise<boolean>) => Promise<boolean>;
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -83,7 +83,7 @@ export function createTextChangeCoordinator(options: {
             else void publish(sessionId, row.id).catch(() => abort());
           }));
           signal?.throwIfAborted();
-          if (approved) { const outcome = await options.service.apply(sessionId, row.id, signal); await publish(sessionId, row.id); const result=await receipt(changeSummary(outcome), options.sanitize);result.content.push(...(await options.checkReceipt?.(sessionId,runId,callId)||[]));return result; }
+          if (approved) { const outcome = await options.service.apply(sessionId, row.id, signal); await publish(sessionId, row.id); const result=await receipt(changeSummary(outcome), options.sanitize);return withCheckReceipt(result,await options.checkReceipt?.(sessionId,runId,callId)); }
           return receipt(await publish(sessionId, row.id), options.sanitize);
         } catch (error) {
           await cancel(runId); await publish(sessionId, row.id).catch(() => undefined); throw error;
