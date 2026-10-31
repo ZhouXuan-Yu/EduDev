@@ -1,5 +1,7 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-10-31 E08：E08本轮复用FX01合成浮力草稿与独立HTML，正式Pi保存两版PPT并恢复旧版为第三版，最终续测仍用原文件，未重新生成。既定FX/16MiB等边界不变；新增工程故障用自有临时目录模拟写后落账中断，未写教师资料；不替代完整FX09/FX10集中验收。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
+
 ## 2026-10-31 E06 WPS真实页面（第六切片）
 
 工程夹具复用上一轮三页A4长标题/表格/OfficeMath DOCX，另三页含第二页PAGE_2/6cm与备注PPT；WPS全页真实PNG及物理文本读回。专用64页PPT仅用于在途停止，不代替FX09完整长表/页眉/图片/编辑/动画矩阵；hash/过程见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
