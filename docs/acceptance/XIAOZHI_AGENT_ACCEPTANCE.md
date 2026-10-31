@@ -1,5 +1,7 @@
 # 小智教育智能体逐项验收手册
 
+2026-10-31 E08：2026-10-31 E08工程专项已取证：原Pi6及最终同文件续测6；完整AT-E08与其余252AT仍待阶段集中，验收操作和通过条件不变。早期夹具失败与既有UI-contract指纹/audit门禁均保留。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
+
 2026-10-31 E06混合终态工程已实现：逐文件保存/失败/未检查、只续做PPT、carried HTML不重写、最终精简回复与冷启已取证。完整AT仍未执行，标准不变；最终build/type240+原Pi同文件3通过，初版原Pi9/综合207单列。证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；日常进度WORK_PROGRESS.md。
 
 ## 2026-10-31 E06逐文件混合终态（第九切片）

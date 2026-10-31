@@ -10,6 +10,10 @@
 
 完整Goal仍active、252AT新增已实现0。当前主要缺口是对真实疑点进行逐题原图核验/跨页补全后安全入库，以及自然几十GB长期质量、召回率和端到端性能；D盘日常/安装包未更新。OMNI_EDU_BOOK_ANSWER_WRITEBACK=0可停新回写、保留历史读；回退须保留v6读适配，或对未被教师修改的journal快照CAS恢复，不能直接旧版读v6。完整回滚未演练。
 
+## 2026-10-31 协作者 E08 版本恢复记录
+
+2026-10-31 E08：a8a3120的版本历史/恢复专项与真实同文件续测已完成，证据AGENT_DELIVERY_VERSIONS_E08_20261031.json；最终build/type及240组件通过。207综合归早期切片，正式Pi单列。完整AT仍待阶段齐后集中；UI-contract旧指纹与audit45保留，日常安装验收未做。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
+
 最终再次整合main32e7071为c99f6bb，14处Markdown冲突保留双方，终态及对话UI源码与b35b5fc一致；最终build/type和240组件exit0。原Pi精简回复3项归b35b5fc，本次未重跑。最终构建另含答案分组功能，指纹/范围见AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice.lastIntegration；Goal active，完整AT仍待阶段集中，D盘日常/安装包未更新。
 
 收尾实测：正常整合main0723242为b35b5fc，4处根Markdown冲突完整保留双方记录，终态源码与ec55ac2一致。最终合并build/type、240组件及同文件精简回复/双视口/冷启3项均exit0，0renderer；原混合UI9项归技术信息精简前构建；一轮综合207/207归整合前界面（legacy Pi0，观测到的主进程入口哈希与最终入口相同），没有重复全套。主进程3247835→3257529B（+9694B），本切片无renderer改动；合并renderer变大来自上游工作台。无配对时延/P95，不宣称性能不退化。Goal active，完整252AT新增已实现0，E06仍部分实现；D盘日常/安装包未更新，audit45保留。下一E07/E08+C功能对齐，E06语义/FX09矩阵与W3集中AT继续保留。回退ec55ac2保留成果/记录，无迁移，未演练。

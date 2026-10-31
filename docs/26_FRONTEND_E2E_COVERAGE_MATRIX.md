@@ -10,6 +10,10 @@
 
 完整Goal仍active、252AT新增已实现0。当前主要缺口是对真实疑点进行逐题原图核验/跨页补全后安全入库，以及自然几十GB长期质量、召回率和端到端性能；D盘日常/安装包未更新。OMNI_EDU_BOOK_ANSWER_WRITEBACK=0可停新回写、保留历史读；回退须保留v6读适配，或对未被教师修改的journal快照CAS恢复，不能直接旧版读v6。完整回滚未演练。
 
+## 2026-10-31 协作者 E08 版本恢复记录
+
+2026-10-31 E08：E08覆盖更新：原Pi整包审批→PPT第4页备注新版→旧版恢复新当前、幂等/外改/移走/实际定位6项已取证；同一三份原文件最终Teaching Files预览/真实grid与控件几何/1366与1920/冷启/0请求/文件hash-mtime不变续测6项通过。不是完整E08或252AT通过。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
+
 2026-10-31 E06混合终态工程已实现：逐文件保存/失败/未检查、只续做PPT、carried HTML不重写、最终精简回复与冷启已取证。完整AT仍未执行，标准不变；最终build/type240+原Pi同文件3通过，初版原Pi9/综合207单列。证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；日常进度WORK_PROGRESS.md。
 
 ## 2026-10-31 已知答案逐条证据（第二切片）

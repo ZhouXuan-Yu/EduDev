@@ -140,6 +140,15 @@ export function createOfficeArtifactState(sql:Sql){
   async list(sessionId:string,runId?:string){return Promise.all((await sql.all('SELECT * FROM xiaozhi_pi_office_drafts WHERE conversation_id=?'+(runId===undefined?'':' AND run_id=?')+' ORDER BY created_at,'+(runId===undefined?'id':'rowid'),runId===undefined?[sessionId]:[sessionId,runId])).map(parse));},
   async parent(id:string){return (await sql.all("SELECT * FROM document_artifacts WHERE id=? AND status='exported'",[id]))[0]??null;},
   async byArtifact(sessionId:string,id:string){const row=(await sql.all("SELECT * FROM xiaozhi_pi_office_drafts WHERE artifact_id=? AND conversation_id=? AND state='saved'",[id,sessionId]))[0];return row?parse(row):null;},
+  // Version navigation needs metadata only. Never hydrate every saved BLOB/draft on a UI read.
+  async versionRecords(sessionId:string){return sql.all(`SELECT artifact_id AS artifactId,relative_path AS path,title,format,parent_artifact_id AS parentArtifactId,updated_at AS savedAt,length(output_bytes) AS size,output_hash AS sha256,workspace_hash AS workspaceHash,
+   json_extract(draft_json,'$.schemaVersion') AS draftSchema,
+   (SELECT json_group_array(CAST(c.key AS INTEGER)+1) FROM json_each(d.draft_json,'$.sections') c WHERE json(c.value) IS NOT json_extract((SELECT p.draft_json FROM xiaozhi_pi_office_drafts p WHERE p.artifact_id=d.parent_artifact_id AND p.conversation_id=d.conversation_id),'$.sections['||c.key||']')) AS changedSections,
+   json_array_length(draft_json,'$.sections') AS sectionCount,
+   (SELECT json_array_length(p.draft_json,'$.sections') FROM xiaozhi_pi_office_drafts p WHERE p.artifact_id=d.parent_artifact_id AND p.conversation_id=d.conversation_id) AS parentSectionCount,
+   run_id AS runId,
+   (SELECT json_group_array(relative_path) FROM xiaozhi_pi_office_draft_sources s WHERE s.draft_id=d.id AND s.kind='workspace_file') AS sourcePaths
+   FROM xiaozhi_pi_office_drafts d WHERE conversation_id=? AND state='saved' ORDER BY updated_at,rowid`,[sessionId]);},
   async invalidateRun(runId:string){await sql.run("UPDATE xiaozhi_pi_office_drafts SET state=CASE WHEN state='committing' THEN 'uncertain' ELSE 'interrupted' END,revision=revision+1,updated_at=? WHERE run_id=? AND state IN ('pending','approved','generating','prepared','committing')",[now(),runId]);},
   async recover(){await sql.run("UPDATE xiaozhi_pi_office_drafts SET state=CASE WHEN state='committing' THEN 'uncertain' ELSE 'interrupted' END,revision=revision+1,updated_at=? WHERE schema_version=1 AND state IN ('pending','approved','generating','prepared','committing')",[now()]);}
  };

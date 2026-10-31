@@ -119,6 +119,8 @@ import { createTextChangeCoordinator } from './text-change-coordinator';
 import { changeSummary } from './text-change-state';
 import {createOfficeArtifactCoordinator} from './office-artifact-coordinator';
 import {createOfficeArtifactService} from './office-artifact-service';
+import {createOfficeVersions} from './office-versions';
+import type {OfficeVersionInput,OfficeVersionResult} from '../../shared/xiaozhi-office-versions';
 import {officeSummary} from './office-artifact-state';
 import {createOfficeDeliveryPresentation,officeDeliveryText} from './office-delivery-presentation';
 import type {OfficeArtifactDecision,OfficeArtifactResult,OfficeArtifactSummary} from '../../shared/xiaozhi-office-artifacts';
@@ -1033,6 +1035,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     enabled, snapshot, decide: approvals.decide, answer:controls.answer,
     reviewTextChange: textChanges.review,
     reviewOfficeArtifact:officeArtifacts.review,
+    async officeVersion(input:OfficeVersionInput,useFile?:(file:string,action:'open'|'locate')=>Promise<void>):Promise<OfficeVersionResult>{
+      const versions=createOfficeVersions({state:store.xiaozhiState.officeArtifacts,dataRoot:options.dataRoot,workspace:async id=>(await host.resolveFileWorkspace(id)).path,afterStage:options.afterOfficeArtifactStage});
+      if(input?.action==='view')return versions.execute(input,()=>{if(closing)throw Error('busy');});
+      try{return await host.withLocalSettingsJob(assertCurrent=>versions.execute(input,assertCurrent,useFile));}catch{return {ok:false,error:'busy'};}
+    },
     async reviseOfficeArtifact(input:Parameters<typeof officeArtifacts.revise>[0]){
       return await store.xiaozhiState.deliveries.owner(input?.sessionId,input?.draftId)?deliveries.revise(input):officeArtifacts.revise(input);
     },

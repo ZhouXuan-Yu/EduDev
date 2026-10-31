@@ -115,7 +115,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     icon={entry.kind==='directory'?<Folder size={16}/>:<FileText size={16}/>}>
     {entry.kind==='directory'&&directories[entry.path]?.length?tree(entry.path):undefined}
   </FileTree.Item>);}
-  return <section ref={panel} className="pi-file-panel" data-has-preview={Boolean(selected)} aria-label="本地文件工作面板" data-testid="pi-file-panel">
+  return <section ref={panel} className="pi-file-panel" data-edu-domain="" data-has-preview={Boolean(selected)} aria-label="本地文件工作面板" data-testid="pi-file-panel">
     <div className="pi-file-toolbar" ref={toolbar}>
         {!!tabs.length?<Tabs selectedKey={selected||undefined} onSelectionChange={key=>{const entry=tabs.find(tab=>tab.path===key);if(entry&&entry.path!==selected)void openFile(entry);}} data-testid="pi-file-tabs">
           <Tabs.ListContainer><Tabs.List aria-label="已打开的教学文件">{tabs.map(tab=><Tabs.Tab key={tab.path} id={tab.path}><FileText size={14}/><span>{tab.name}</span><Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>

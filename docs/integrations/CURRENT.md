@@ -8,6 +8,10 @@ v6保留v5的AI/pageSource/sources并增加book.roles；教师改角色解除相
 
 封面策略本地只接受明确书目信息且无实际习题线索、OCR成功；不按页码位置推断。无题封面跳过文件夹付费子任务，普通/不清/混合页仍进入原处理链。证据docs/research/KB_BOOK_MATCH_20261031.json；完整Goal未完成。
 
+## 2026-10-31 协作者 E08 版本恢复记录
+
+2026-10-31 E08：新增xiaozhi:office-version（schema xiaozhi.office-versions.v1），shared DTO→主进程原Office版本投影/保存服务→typed preload→PiOfficeVersions双入口。系统打开/定位只对本次哈希一致的选定原文件派发；恢复不调用provider，无DDL/worker/native identity变更。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
+
 最终再次整合main32e7071为c99f6bb，14处Markdown冲突保留双方，终态及对话UI源码与b35b5fc一致；最终build/type和240组件exit0。原Pi精简回复3项归b35b5fc，本次未重跑。最终构建另含答案分组功能，指纹/范围见AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice.lastIntegration；Goal active，完整AT仍待阶段集中，D盘日常/安装包未更新。
 
 收尾实测：正常整合main0723242为b35b5fc，4处根Markdown冲突完整保留双方记录，终态源码与ec55ac2一致。最终合并build/type、240组件及同文件精简回复/双视口/冷启3项均exit0，0renderer；原混合UI9项归技术信息精简前构建；一轮综合207/207归整合前界面（legacy Pi0，观测到的主进程入口哈希与最终入口相同），没有重复全套。主进程3247835→3257529B（+9694B），本切片无renderer改动；合并renderer变大来自上游工作台。无配对时延/P95，不宣称性能不退化。Goal active，完整252AT新增已实现0，E06仍部分实现；D盘日常/安装包未更新，audit45保留。下一E07/E08+C功能对齐，E06语义/FX09矩阵与W3集中AT继续保留。回退ec55ac2保留成果/记录，无迁移，未演练。

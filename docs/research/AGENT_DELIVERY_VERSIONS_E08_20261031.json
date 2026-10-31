@@ -1,0 +1,243 @@
+{
+  "date": "2026-10-31",
+  "module": "M09/M11 E08 saved Office versions",
+  "status": "engineering slice implemented; full E08 and 252 AT not accepted",
+  "sourceSha": "a8a3120d56d3b7be91f1274665d6e5541cca3a8b",
+  "goal": "active",
+  "productionRuntime": "Existing Pi/Hana only; teacher local version action does not invoke a model",
+  "implemented": [
+    "Same original-ledger version family in chat card and Teaching Files",
+    "Selected version save time/number, actual PPT page/notes difference and current pointer",
+    "Exact saved-byte restore creates a new current version, keeping later versions",
+    "Same-byte restore is a no-op; command id bound to selected and current versions",
+    "Changed/missing original file stays in history and is not silently reopened/regenerated",
+    "Existing uncertain write is verified once; no replay; stale current version rejected",
+    "Original native CSS geometry domain restored in the three touched surfaces"
+  ],
+  "contracts": {
+    "schema": "xiaozhi.office-versions.v1",
+    "ipc": "xiaozhi:office-version",
+    "truth": "existing Office drafts/artifacts/sources; no DDL or second artifact store",
+    "limits": "ordinary Office v1 and presentation v1; selected file <=16MiB; history metadata <=256 original rows; no all-history BLOB hydration; only explicit clicks read versions",
+    "current": "last saved updated_at/rowid in same parent family; uncertain excluded",
+    "confirmation": "one explicit teacher restore confirmation through existing idle owner/file mutation queue; no model/old approval reuse",
+    "excluded": "Confirmed paper/classroom exports retain original source confirmation flow; HTML history, version merge/deletion and full semantic/FX09 acceptance not delivered here"
+  },
+  "checks": {
+    "source": {
+      "command": "cd apps/desktop; node scripts/xiaozhi-agent/office-versions-smoke.mjs",
+      "exit": 0,
+      "passed": 10,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-YRUju8\\report.json",
+      "checks": [
+        "One original saved lineage yields two ordered versions and the actual fourth-page notes change",
+        "Teacher restore publishes a third current version with byte-identical first-version PPT and preserved lineage",
+        "Repeated command returns its original receipt; reusing it for another version cannot create or approve a write",
+        "Restoring bytes already identical to the current version is a no-op, without an unnecessary version/file",
+        "Both later/older original files and unrelated HTML bytes and modification times stay unchanged",
+        "Stale current version, wrong session and malformed contracts fail before mutation",
+        "Externally changed and missing files remain visible in history and cannot be opened as the saved version",
+        "OS dispatch resolves exactly the selected saved path after integrity validation",
+        "Save-before-ledger cut recovers by verifying existing exact bytes once, without rewriting the file",
+        "Recreated read service derives the same four-version history from original facts with zero model requests"
+      ]
+    },
+    "formalGenerationRestore": {
+      "command": "cd apps/desktop; node scripts/xiaozhi-agent/office-versions-electron.mjs",
+      "exit": 1,
+      "passedBeforeHarnessFailure": 6,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-ui-PfqHov\\report.json",
+      "checks": [
+        "Original composer creates actual PPT plus independent HTML through one teacher bundle approval",
+        "Original single-file edit saves a second real PPT version and preserves the original file",
+        "Visible chat history selects the first version and restores byte-identical PPT as a third current version",
+        "Repeated typed restore returns the saved receipt once; both old PPTs and unrelated HTML retain exact bytes/mtime",
+        "Visible external-change and moved-file states retain all three versions and disable misleading open/restore",
+        "Original typed IPC dispatches the selected exact path, reports injected OS open failure and performs actual OS locate"
+      ],
+      "remainingFailure": "locator.waitFor: Error: strict mode violation: getByTestId('pi-file-preview') resolved to 2 elements:\n    1) <div aria-busy=\"false\" class=\"pi-file-preview\" data-testid=\"pi-file-preview\">…</div> aka getByTestId('edu-context-panel').getByTestId('pi-file-preview')\n    2) <div aria-busy=\"false\" class=\"pi-file-preview\" data-testid=\"pi-file-preview\">…</div> aka getByTestId('artifacts-detail').getByTestId('pi-file-preview')\n\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-file-preview') to be visible\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\office-versions-electron.mjs:45:549",
+      "attribution": "Final main logic; renderer before the three geometry-domain attributes; do not claim whole journey exit0"
+    },
+    "finalFocused": {
+      "command": "cd apps/desktop; node scripts/xiaozhi-agent/office-versions-electron.mjs --reopen C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-versions-ui-PfqHov",
+      "exit": 0,
+      "passed": 6,
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-ui-H0vJdF\\report.json",
+      "checks": [
+        "Focused continuation reopens the original three saved versions without regeneration",
+        "Teaching Files exposes the same three-version ledger and previews the selected original PPT through the authorized file panel",
+        "Existing domain scope restores actual teaching-file grid and version-control geometry inside native Tabs",
+        "Version selection, restore and refresh controls remain reachable at 1366×768 and 1920×1080",
+        "Cold restart reads the same current/older versions and actual restored bytes with zero model replay and zero renderer errors",
+        "Focused history/preview/restart leaves every original PPT and unrelated HTML hash/mtime unchanged"
+      ],
+      "rendererErrors": [],
+      "geometry": {
+        "grid": "grid",
+        "versionPadding": "12px",
+        "label": "flex"
+      },
+      "unchangedFiles": [
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-ui-PfqHov\\XiaozhiOutputs\\85a428989ae3935e\\aisession_1e766ed0-65da-4863-83e0-49c77c1d4048\\保留演示.html",
+          "hash": "3ebf81054ce4119ca2cdf1dc0a7063361b96380673a33d52f47880f472453b44",
+          "mtime": 1793451968732.2195
+        },
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-ui-PfqHov\\XiaozhiOutputs\\85a428989ae3935e\\aisession_1e766ed0-65da-4863-83e0-49c77c1d4048\\浮力讲解-恢复版3.pptx",
+          "hash": "f145d1fff653c1775f822d4e4b4f9372ae997f4ffef47a866fb2ad3942e81885",
+          "mtime": 1793451986670.8186
+        },
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-ui-PfqHov\\XiaozhiOutputs\\85a428989ae3935e\\aisession_1e766ed0-65da-4863-83e0-49c77c1d4048\\浮力讲解-第二版.pptx",
+          "hash": "83b5df5eb441f256a8db01c981e8f350f7e3a424c368b0362c13ecfde5dfe03d",
+          "mtime": 1793451986989.305
+        },
+        {
+          "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-ui-PfqHov\\XiaozhiOutputs\\85a428989ae3935e\\aisession_1e766ed0-65da-4863-83e0-49c77c1d4048\\浮力讲解.pptx",
+          "hash": "f145d1fff653c1775f822d4e4b4f9372ae997f4ffef47a866fb2ad3942e81885",
+          "mtime": 1793451969000.606
+        }
+      ],
+      "syntheticChatRequests": 0
+    },
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "log": "%TEMP%/office-versions-layout-build.log",
+      "includes": "typecheck and final domain geometry attributes"
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "log": "%TEMP%/office-versions-layout-components.log"
+    },
+    "comprehensive": {
+      "command": "npm.cmd run test:smoke",
+      "exit": 0,
+      "passed": 207,
+      "log": "%TEMP%/office-versions-smoke.log",
+      "boundary": "Executed once on earlier slice build. Final same-byte/order/uncertain binding changes covered by source10 and real Pi restore/focused checks; final geometry attrs covered by final build/components/focused6. Legacy-test Pi=0, original Pi evidence separate."
+    },
+    "uiContracts": {
+      "command": "npm.cmd run test:ui-contracts",
+      "exit": 1,
+      "log": "%TEMP%/office-versions-ui-contracts.log",
+      "failure": "Existing prompt-input/index.ts native source fingerprint differs from recorded component-baseline.json; this slice does not change that source/baseline. Stopped at first hash assertion; remaining checks not run."
+    },
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "log": "%TEMP%/office-versions-audit.json",
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "total": 45
+      },
+      "newDependencies": 0
+    },
+    "diffCheck": {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  },
+  "failuresRetained": [
+    {
+      "log": "%TEMP%/office-versions-type.log",
+      "reason": "Initial useRef lacked explicit undefined; corrected before final build"
+    },
+    {
+      "log": "%TEMP%/office-versions-source.log",
+      "report": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-versions-source-4ciODc/report.json",
+      "reason": "Duplicate restore selected-source check accidentally matched parent source; fixed kind binding, source10 passes"
+    },
+    {
+      "log": "%TEMP%/office-versions-ui.log",
+      "reason": "Synthetic fixture lacked original required task plan; no generated files"
+    },
+    {
+      "log": "%TEMP%/office-versions-ui-plan.log",
+      "reason": "Synthetic fixture reused plan/tool call ID; cancelled before bundle saved; fixed unique call IDs and saved_office kind"
+    },
+    {
+      "log": "%TEMP%/office-versions-ui-reopen.log",
+      "reason": "Preview container visible while still loading; focused wait now checks actual text/idle"
+    },
+    {
+      "log": "%TEMP%/office-versions-ui-focused.log",
+      "reason": "Passed5 before geometry follow-up; do not count as final6"
+    }
+  ],
+  "performance": {
+    "baselineSha": "5c293f78c7b31b38447b4eeebec426d9cc5b35ef",
+    "baselineBytes": {
+      "main": 3264380,
+      "preload": 34965,
+      "renderer": 7227387
+    },
+    "final": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3277275,
+        "sha256": "ae4410ec1ebf8e37bd6fe1771f62230c807c074a41f39ce7641ff587ea878209"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 35055,
+        "sha256": "d971294ee39c09ffdc4494f8f0d88504682905aa4c5cd1895ccaf2fc85030774"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-wsfe6dBi.js",
+        "bytes": 7237843,
+        "sha256": "f4881cd40dc78cfc2c1ef1fa24b194d2d962749a5da982703a891236a4ba0a22"
+      }
+    ],
+    "deltaBytes": {
+      "main": 12895,
+      "preload": 90,
+      "renderer": 10456
+    },
+    "boundary": "No paired latency/P95/CPU/memory benchmark; no claim of global performance nonregression. History has no stream subscription or eager file/BLOB read."
+  },
+  "artifacts": {
+    "versions": [
+      {
+        "artifact_id": "artifact_a420e3c7-caae-452e-b0ed-705de242b381",
+        "id": "xioffice_8099636e-07b7-4651-b4ff-5e7351fbebb3",
+        "relative_path": "浮力讲解.pptx",
+        "output_hash": "f145d1fff653c1775f822d4e4b4f9372ae997f4ffef47a866fb2ad3942e81885"
+      },
+      {
+        "artifact_id": "artifact_cab13dba-aa55-45c3-970c-fdaad41c9069",
+        "id": "xioffice_b7a04543-f301-4774-8b0f-a8a2a9a2ea34",
+        "relative_path": "浮力讲解-第二版.pptx",
+        "output_hash": "83b5df5eb441f256a8db01c981e8f350f7e3a424c368b0362c13ecfde5dfe03d"
+      },
+      {
+        "artifact_id": "artifact_7dfd8b26-d07e-42b8-b3e5-b6c8073db5c0",
+        "id": "xioffice_45334b06-63dd-4720-9827-f12cbbb92e1a",
+        "relative_path": "浮力讲解-恢复版3.pptx",
+        "output_hash": "f145d1fff653c1775f822d4e4b4f9372ae997f4ffef47a866fb2ad3942e81885"
+      }
+    ],
+    "screenshots": [
+      "docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031/versions-1366.png",
+      "docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031/versions-1920.png"
+    ]
+  },
+  "rollBack": {
+    "sourceCommit": "a8a3120d56d3b7be91f1274665d6e5541cca3a8b",
+    "procedure": "Normal revert of slice code/entry, keep every original artifact/draft/file/source record; existing schemas remain readable; no migration",
+    "exercised": false
+  },
+  "boundaries": [
+    "No paid model calls; SSE fixtures only; no teacher files uploaded",
+    "Actual OS locate exercised; system-open failure callback exercised, successful Office OS open/layout not accepted",
+    "D:/WorkProject/EduProject daily app and installer unchanged",
+    "Full 28WP/252REQ/AT goal remains active; stage concentrated acceptance still pending",
+    "Bundle manifest/current-family references, existing task/check evidence binding to a restored version and teaching-file family grouping remain E08 follow-up; old per-file facts are preserved, not rewritten."
+  ]
+}
