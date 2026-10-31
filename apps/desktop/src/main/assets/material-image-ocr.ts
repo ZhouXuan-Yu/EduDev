@@ -9,6 +9,13 @@ const errors=['empty','parse_failed','configuration','too_large','invalid_input'
 /** One local recognition attempt, including failures with no worker receipt. No fabricated body. */
 export async function migrateImageOcr(host:{run:(sql:string)=>Promise<unknown>}){
  await host.run(`CREATE TABLE IF NOT EXISTS material_image_ocr_receipts(resource_id TEXT PRIMARY KEY REFERENCES teacher_resources(id),version TEXT NOT NULL,generation TEXT NOT NULL,schema_version TEXT NOT NULL,engine TEXT NOT NULL,status TEXT NOT NULL,receipt_json TEXT NOT NULL,error TEXT NOT NULL)`);
+ await host.run(`CREATE TABLE IF NOT EXISTS material_image_ocr_history(resource_id TEXT NOT NULL REFERENCES teacher_resources(id),version TEXT NOT NULL,generation TEXT PRIMARY KEY,schema_version TEXT NOT NULL,engine TEXT NOT NULL,status TEXT NOT NULL,receipt_json TEXT NOT NULL,error TEXT NOT NULL)`);
+ await host.run('CREATE INDEX IF NOT EXISTS material_image_ocr_history_owner ON material_image_ocr_history(resource_id,version)');
+ await host.run(`CREATE TRIGGER IF NOT EXISTS material_image_ocr_keep_v1 BEFORE UPDATE ON material_image_ocr_receipts BEGIN
+ INSERT INTO material_image_ocr_history SELECT old.resource_id,old.version,old.generation,old.schema_version,old.engine,old.status,old.receipt_json,old.error WHERE NOT EXISTS(SELECT 1 FROM material_image_ocr_history WHERE generation=old.generation); END`);
+ // Also works for an existing receipt table whose foreign key did not cascade.
+ await host.run(`CREATE TRIGGER IF NOT EXISTS material_image_ocr_remove_v1 BEFORE DELETE ON teacher_resources BEGIN
+ DELETE FROM material_image_ocr_history WHERE resource_id=old.id; DELETE FROM material_image_ocr_receipts WHERE resource_id=old.id; END`);
 }
 export async function saveImageOcr(host:Host,resourceId:string,version:string,result:Extract<LocalOcrReceipt,{ok:true}>|Error,signal:AbortSignal,lease?:MaterialParseLease){
  signal.throwIfAborted();const failed=result instanceof Error,error=failed?result.message:'';
