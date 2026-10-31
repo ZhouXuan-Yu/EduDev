@@ -35,7 +35,11 @@ async function search(label,mode){
   await until(async()=>!await page.getByTestId('materials-text-submit').isDisabled());
   await until(async()=>await page.locator('[data-testid^="material-text-hit-"]').count()>0);
   assert((await page.getByTestId('materials-text-results').innerText()).includes(label));
-  report.queries.push({label,mode,uiMs:performance.now()-start});
+  const sample={label,mode,uiMs:performance.now()-start};report.queries.push(sample);
+  if(mode==='hybrid'){
+    sample.rerankNotice=(await page.locator('[data-testid="retrieval-rerank-notice"]:visible').innerText()).trim();
+    assert.equal(sample.rerankNotice,'已用本地模型进一步比较题意。','The first visible query must complete comparison, rather than succeeding only on a cached retry');
+  }
 }
 try{
   await launch();
