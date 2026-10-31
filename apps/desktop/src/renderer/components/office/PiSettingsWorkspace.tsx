@@ -19,6 +19,8 @@ import { SettingsSection } from './hana-settings/SettingsSection';
 import { SettingsRow } from './hana-settings/SettingsRow';
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
 import navStyles from './hana-settings/workspace-nav.module.css';
+import {SettingsNavigation} from './SettingsNavigation';
+import layoutStyles from '../../ui-system/u5-settings.module.css';
 import {teacherWorkspaceLabel} from './workspace-label';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
 import './pi-settings-workspace.css';
@@ -32,6 +34,7 @@ const tabs = [
   { id: 'interface', label: '界面偏好', icon: Monitor },
   { id: 'archives', label: '归档', icon: Archive },
   { id: 'backup', label: '备份', icon: HardDrive },
+  { id: 'diagnostics', label: '策略与诊断', icon: RefreshCw },
 ] as const;
 type Tab = typeof tabs[number]['id'];
 // Capability-only metadata. Never index credentials, history, paths or document contents.
@@ -145,9 +148,9 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             <span className={navStyles['settings-search-result-title']}>{result.title}</span><span className={navStyles['settings-search-result-path']}>{result.path}</span>
           </Button>)}
           {!results.length && <p className={navStyles['settings-search-empty']} data-testid="pi-settings-search-empty">没有找到设置，试试“技能”“目录”或“备份”。</p>}
-        </div> : tabs.map(item => <button key={item.id} className="edu-settings-nav-item" aria-current={tab === item.id ? 'page' : undefined} data-testid={`pi-settings-tab-${item.id}`} disabled={busy} onClick={() => open(item.id)}><item.icon size={18}/>{item.label}</button>)}
+        </div> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
       </nav>
-      <main className="edu-settings-main" aria-label={title} data-testid="pi-settings-main">
+      <main className={`edu-settings-main ${layoutStyles.main}`} aria-label={title} data-testid="pi-settings-main">
         {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
         {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
         {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
@@ -160,8 +163,13 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             </SettingsSection>
             <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
             {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
-            <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/></>}
+            </>}
         </SettingsStack></SettingsPage>}
+        {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>策略与诊断</h1><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
+          {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>
+            <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
+            <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
+          </>}</SettingsStack></SettingsPage>}
         {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>调整小智工作区的面板显示。</p></div><SettingsSection title="工作区面板">
           {([{ field: 'sidebar', label: '会话侧栏', hint: '显示项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '打开时显示已授权目录中的文件，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}
         </SettingsSection>{preferenceNotice && <p role="status" data-testid="pi-preference-notice">{preferenceNotice}</p>}</SettingsStack></SettingsPage>}

@@ -58,9 +58,10 @@ import { DataBackupPanel } from './components/DataBackupPanel';
 import { AiConversationSidebar, type AiConversationTarget } from './components/AiConversationSidebar';
 import { PiEducationWorkspace } from './components/office/PiEducationWorkspace';
 import { PiRuntimeStartup } from './components/office/PiRuntimeStartup';
-import { useDesktopCommands, useDesktopNavigation } from './components/desktop/DesktopFrame';
+import { useDesktopCommands, useDesktopNavigation, useDesktopNavigationGuard } from './components/desktop/DesktopFrame';
 import { ProductSpaceShell } from './components/product/ProductSpaceShell';
 import { WorkbenchHub } from './components/product/WorkbenchHub';
+import {StudentWorkbench} from './components/product/StudentWorkbench';
 import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
 import {MaterialSourceNavigation} from './components/product/MaterialSourceNavigation';
 import type {MaterialSourceView} from '../shared/materials';
@@ -407,8 +408,9 @@ export function App() {
   const [studentSourceView,setStudentSourceView]=useState<StudentContextSourceView>();
   function setActiveView(view:ViewKey){
     const target = runtime === 'legacy-test' || isProductView(view) ? view : 'ai';
+    if(!desktopNavigation.navigate({view:target}))return;
     if(target !== activeView)setStatus('');
-    updateActiveView(target);desktopNavigation.navigate({view:target});
+    updateActiveView(target);
   }
   useEffect(()=>{
     const view=desktopNavigation.target.view;
@@ -433,6 +435,7 @@ export function App() {
   const [activeStudentId, setActiveStudentId] = useState('');
   const activeStudentIdRef=useRef('');
   const [studentQuery, setStudentQuery] = useState('');
+  const studentSearchRequest = useRef(0);
   const [recordKeyword, setRecordKeyword] = useState('');
   const [recordTypeFilter, setRecordTypeFilter] = useState('');
   const [recordSubjectFilter, setRecordSubjectFilter] = useState('');
@@ -463,6 +466,7 @@ export function App() {
   const [deepSeekForm, setDeepSeekForm] = useState({ provider: 'deepseek' as DeepSeekSettings['provider'], apiKey: '', model: 'deepseek-v4-flash' });
   const [studentForm, setStudentForm] = useState<StudentInput>(initialStudentForm);
   const [studentFormMode, setStudentFormMode] = useState<StudentFormMode>('closed');
+  useDesktopNavigationGuard(studentFormMode !== 'closed', '学生档案尚未保存，请先保存或取消再离开。');
   const [recordForm, setRecordForm] = useState({
     recordType: 'mistake',
     subject: '数学',
@@ -671,8 +675,9 @@ export function App() {
   }
 
   async function refreshStudents(query = studentQuery) {
+    const own = ++studentSearchRequest.current;
     const nextStudents = await window.omniEdu?.listStudents(query);
-    setStudents(nextStudents ?? []);
+    if (own === studentSearchRequest.current) setStudents(nextStudents ?? []);
     await refreshOverview();
   }
 
@@ -1521,7 +1526,7 @@ export function App() {
     });
   }
 
-  function renderStudentDirectory() {
+  function renderStudentDirectory(onSelected?: (studentId: string) => void) {
     return (
       <section className="directory-panel" aria-label="学生目录">
         <WorkspaceLabel number="01" title="学生目录" description="搜索真实档案，选择后进入证据链。" />
@@ -1548,8 +1553,10 @@ export function App() {
               data-testid={`student-row-${student.id}`}
               className={`student-row ${student.id === activeStudent?.id ? 'active' : ''} ${student.status === 'archived' ? 'archived' : ''}`}
               onClick={() => {
+                if (studentFormMode !== 'closed' && !window.confirm('学生档案尚未保存。放弃修改并切换学生？')) return;
                 setActiveStudentId(student.id);
                 setStudentFormMode('closed');
+                onSelected?.(student.id);
               }}
             >
               <span className="student-row-name">{student.displayName}{student.status === 'archived' ? <em data-testid={`student-row-status-${student.id}`}>已归档</em> : null}</span>
@@ -2428,10 +2435,10 @@ export function App() {
     );
   }
 
-  function renderStudentsView() {
+  function renderStudentsView(withDirectory = true) {
     return (
-      <div className="split-workspace">
-        {renderStudentDirectory()}
+      <div className={withDirectory ? "split-workspace" : "stack"}>
+        {withDirectory && renderStudentDirectory()}
         <div className="stack">
           {piEnabled&&<StudentConversationAction student={activeStudent}/>}
           {studentSourceView?.student.id===activeStudent?.id&&studentSourceView&&<StudentEvidencePanel view={studentSourceView} onClose={()=>setStudentSourceView(undefined)}/>}
@@ -2794,7 +2801,7 @@ export function App() {
 
   function renderCurrentView() {
     if (activeView === 'teaching') return <WorkbenchHub kind="teaching"><TeachingArtifactsWorkspace /></WorkbenchHub>;
-    if (activeView === 'student_workbench') return <WorkbenchHub kind="students">{renderStudentsView()}</WorkbenchHub>;
+    if (activeView === 'student_workbench') return <WorkbenchHub kind="students"><StudentWorkbench student={activeStudent} creating={studentFormMode !== 'closed'} directory={onSelected => renderStudentDirectory(onSelected)}>{renderStudentsView(false)}</StudentWorkbench></WorkbenchHub>;
     if (activeView === 'today') return renderTodayView();
     if (activeView === 'ai') return renderAIConsoleViewV2();
     if (activeView === 'knowledge') return renderKnowledgeBaseView();
