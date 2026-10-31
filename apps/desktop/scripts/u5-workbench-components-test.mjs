@@ -15,7 +15,7 @@ try {
  const markup=renderToStaticMarkup(React.createElement(nav.WorkbenchPageNavigation,{view:'mistakes'}));
  check(markup.includes('aria-current="page"'),'active route announced');
  check(markup.includes('hub-entry-intake'),'intake reachable');
- const {StudentWorkbench,canShowStudentContext}=await server.ssrLoadModule('/src/renderer/components/product/StudentWorkbench.tsx');
+ const {StudentWorkbench,canShowStudentContext,rememberStudentContext}=await server.ssrLoadModule('/src/renderer/components/product/StudentWorkbench.tsx');
  check(canShowStudentContext('one','one'),'explicit matching selection');
  check(!canShowStudentContext('one','two'),'late different student cannot show details');
  check(!canShowStudentContext('one',undefined),'deleted or missing student cannot show details');
@@ -29,6 +29,23 @@ try {
  check(!empty.includes('PRIVATE_DETAIL'),'implicit host fallback does not expose student detail');
  const creating=renderToStaticMarkup(React.createElement(StudentWorkbench,{...props,creating:true}));
  check(creating.includes('PRIVATE_DETAIL'),'existing create/edit form remains visible');
+ check(!creating.includes(student.displayName),'new profile form does not show previous student context header');
+ const previousStorage=Object.getOwnPropertyDescriptor(globalThis,'sessionStorage');
+ const preferences=new Map();
+ try {
+   Object.defineProperty(globalThis,'sessionStorage',{configurable:true,value:{getItem:key=>preferences.get(key)||null,setItem:(key,value)=>preferences.set(key,value)}});
+   rememberStudentContext('one');
+   const restored=renderToStaticMarkup(React.createElement(StudentWorkbench,props));
+   check(restored.includes('PRIVATE_DETAIL'),'explicit legacy directory choice survives home remount');
+   rememberStudentContext('other');
+   const mismatched=renderToStaticMarkup(React.createElement(StudentWorkbench,props));
+   check(!mismatched.includes('PRIVATE_DETAIL'),'mismatched persisted ID still cannot reveal fallback student');
+   rememberStudentContext('one');
+   const current=renderToStaticMarkup(React.createElement(StudentWorkbench,props));
+   check(current.includes('PRIVATE_DETAIL'),'new explicit selection replaces older preference');
+ } finally {
+   if(previousStorage)Object.defineProperty(globalThis,'sessionStorage',previousStorage);else delete globalThis.sessionStorage;
+ }
  const {SettingsNavigation}=await server.ssrLoadModule('/src/renderer/components/office/SettingsNavigation.tsx');
  const {Plug}=await import('lucide-react');
  const tabs=['models','permissions','interface','backup','archives','skills','tools','diagnostics'].map(id=>({id,label:id,icon:Plug}));

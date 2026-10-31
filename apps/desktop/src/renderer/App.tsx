@@ -61,7 +61,7 @@ import { PiRuntimeStartup } from './components/office/PiRuntimeStartup';
 import { useDesktopCommands, useDesktopNavigation, useDesktopNavigationGuard } from './components/desktop/DesktopFrame';
 import { ProductSpaceShell } from './components/product/ProductSpaceShell';
 import { WorkbenchHub } from './components/product/WorkbenchHub';
-import {StudentWorkbench} from './components/product/StudentWorkbench';
+import {StudentWorkbench,rememberStudentContext} from './components/product/StudentWorkbench';
 import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
 import {MaterialSourceNavigation} from './components/product/MaterialSourceNavigation';
 import type {MaterialSourceView} from '../shared/materials';
@@ -1554,6 +1554,7 @@ export function App() {
               className={`student-row ${student.id === activeStudent?.id ? 'active' : ''} ${student.status === 'archived' ? 'archived' : ''}`}
               onClick={() => {
                 if (studentFormMode !== 'closed' && !window.confirm('学生档案尚未保存。放弃修改并切换学生？')) return;
+                rememberStudentContext(student.id);
                 setActiveStudentId(student.id);
                 setStudentFormMode('closed');
                 onSelected?.(student.id);

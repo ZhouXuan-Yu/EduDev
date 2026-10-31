@@ -7,6 +7,10 @@ const selectionPreference = 'edudev.ui.student-context.v1';
 function readSelection() {
   try {return sessionStorage.getItem(selectionPreference) || '';} catch {return '';}
 }
+/** Record only an explicit user selection; never infer one from App's fallback student. */
+export function rememberStudentContext(studentId: string) {
+  try {sessionStorage.setItem(selectionPreference, studentId);} catch { /* Preference only; domain state remains in App. */ }
+}
 export function canShowStudentContext(selectedId: string, currentId: string | undefined) {
   return !!selectedId && selectedId === currentId;
 }
@@ -18,7 +22,7 @@ export function StudentWorkbench({student, directory, children, creating}: {
   const [revealedId, setRevealedId] = useState(readSelection);
   function reveal(studentId: string) {
     setRevealedId(studentId);
-    try {sessionStorage.setItem(selectionPreference, studentId);} catch { /* Preference only; domain state remains in App. */ }
+    rememberStudentContext(studentId);
   }
   return <section className={styles.studentLayout} data-testid="student-workbench-layout">
     <div className={styles.directory}>{directory(reveal)}</div>
