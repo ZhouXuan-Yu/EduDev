@@ -1,4 +1,4 @@
-import {pageSha,type MaterialPreviewError} from './material-page-preview';
+import {MATERIAL_PDF_MAX_PAGES,pageSha,type MaterialPreviewError} from './material-page-preview';
 export const MATERIAL_LAYOUT_SCHEMA='xiaozhi.material-layout.v1' as const;
 export const PDF_LAYOUT_SCHEMA='xiaozhi.local-pdf-layout.v1' as const;
 export const PDF_LAYOUT_ENGINE='pdfium-5.14.0-rapidocr-3.9.2-layout.v1' as const;
@@ -14,7 +14,7 @@ function plain(v:unknown):v is Record<string,unknown>{return !!v&&typeof v==='ob
 function array(v:unknown,size?:number):v is unknown[]{return Array.isArray(v)&&Object.getPrototypeOf(v)===Array.prototype&&(size===undefined||v.length===size)&&Reflect.ownKeys(v).length===v.length+1&&Array.from({length:v.length},(_,i)=>Object.getOwnPropertyDescriptor(v,String(i))).every(d=>!!d&&'value' in d);}
 const uuid=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v);
 const integer=(v:unknown,max:number)=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=1&&v<=max;
-export function validLayoutQuery(v:unknown):v is LayoutQuery{return plain(v)&&Object.keys(v).length===6&&v.schemaVersion===MATERIAL_LAYOUT_SCHEMA&&uuid(v.requestId)&&typeof v.resourceId==='string'&&/^resource_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v.resourceId)&&pageSha(v.version)&&integer(v.page,10000)&&typeof v.refresh==='boolean';}
+export function validLayoutQuery(v:unknown):v is LayoutQuery{return plain(v)&&Object.keys(v).length===6&&v.schemaVersion===MATERIAL_LAYOUT_SCHEMA&&uuid(v.requestId)&&typeof v.resourceId==='string'&&/^resource_[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(v.resourceId)&&pageSha(v.version)&&integer(v.page,MATERIAL_PDF_MAX_PAGES)&&typeof v.refresh==='boolean';}
 export function validLayoutCancel(v:unknown):v is LayoutCancel{return plain(v)&&Object.keys(v).length===2&&v.schemaVersion===MATERIAL_LAYOUT_SCHEMA&&uuid(v.requestId);}
 function quad(v:unknown,width:number,height:number):v is Quad{
  if(!array(v,4)||!v.every(p=>array(p,2)&&p.every((n,i)=>typeof n==='number'&&Number.isFinite(n)&&n>=0&&n<=[width,height][i])))return false;
@@ -25,7 +25,7 @@ function quad(v:unknown,width:number,height:number):v is Quad{
 export function validPdfLayout(v:unknown):v is PdfLayoutReceipt{
  if(!plain(v)||v.schemaVersion!==PDF_LAYOUT_SCHEMA)return false;
  if(v.ok===false)return Object.keys(v).length===3&&typeof v.error==='string'&&['invalid_input','too_large','configuration','empty','parse_failed'].includes(v.error);
- if(v.ok!==true||Object.keys(v).length!==11||v.engine!==PDF_LAYOUT_ENGINE||!pageSha(v.inputSha256)||!pageSha(v.rasterSha256)||!integer(v.width,2401)||!integer(v.height,2401)||!integer(v.page,10000)||!integer(v.total,10000)||(v.page as number)>(v.total as number)||typeof v.png!=='string'||!v.png||v.png.length>5592408||v.png.length%4!==0||!/^[A-Za-z0-9+/]+={0,2}$/.test(v.png)||!array(v.lines)||v.lines.length>2000)return false;
+ if(v.ok!==true||Object.keys(v).length!==11||v.engine!==PDF_LAYOUT_ENGINE||!pageSha(v.inputSha256)||!pageSha(v.rasterSha256)||!integer(v.width,2401)||!integer(v.height,2401)||!integer(v.page,MATERIAL_PDF_MAX_PAGES)||!integer(v.total,MATERIAL_PDF_MAX_PAGES)||(v.page as number)>(v.total as number)||typeof v.png!=='string'||!v.png||v.png.length>5592408||v.png.length%4!==0||!/^[A-Za-z0-9+/]+={0,2}$/.test(v.png)||!array(v.lines)||v.lines.length>2000)return false;
  let chars=0;
  return v.lines.every((line,i)=>{if(!plain(line)||Object.keys(line).length!==7||line.id!==`line-${i+1}`||line.kind!=='text'||line.needsReview!==true||typeof line.text!=='string'||!line.text.trim()||line.text.length>128000||typeof line.score!=='number'||!Number.isFinite(line.score)||line.score<0||line.score>1||!quad(line.quad,v.width as number,v.height as number)||!quad(line.normalizedQuad,1,1))return false;
   chars+=line.text.length;if(chars>128000)return false;

@@ -1,3 +1,4 @@
+import {renderPdfFilePage} from './xiaozhi-agent/pdf-file-host';
 import {sanitizeOfficeDocumentText} from './xiaozhi-agent/office-document-tools';
 import {officeVersionCatalog} from './xiaozhi-agent/office-version-catalog';
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
@@ -1132,7 +1133,7 @@ export class OmniEduStore {
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
-  }},()=>this.materials,new QuestionAssets(()=>this.dataRoot),renderLocalPdfPage);
+  }},()=>this.materials,new QuestionAssets(()=>this.dataRoot),renderLocalPdfPage,renderPdfFilePage);
   async readQuestionDocumentContext(questionId:string,version:string,signal?:AbortSignal){return this.originalQuestions.context(questionId,version,signal);}
   readonly learningReviews = new LearningReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),snapshot:(...args)=>this.studentContext.learningSnapshot(...args),createRecord:(input,id)=>this.createRecord(input,id),practiceSource:(studentId,id)=>this.practiceReviews.source(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);

@@ -1,6 +1,6 @@
 import {plainStudentInput} from './student-context';
 import {materialId} from './materials';
-import {validPageBox,type PageBox} from './material-page-preview';
+import {MATERIAL_PDF_MAX_PAGES,validPageBox,type PageBox} from './material-page-preview';
 
 export const MATERIAL_PAGE_TEXT_SCHEMA='xiaozhi.material-page-text.v1' as const;
 export const MATERIAL_PAGE_TEXT_TOOL='education_read_material_page' as const;
@@ -10,5 +10,5 @@ export type MaterialPageText={schemaVersion:typeof MATERIAL_PAGE_TEXT_SCHEMA;suc
 export function validMaterialPageTextInput(value:unknown):value is MaterialPageTextInput{
  if(!plainStudentInput(value,['resourceId','page','offset','characterOffset','refresh','box']))return false;
  const integer=(v:unknown,max:number,min=0)=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=min&&v<=max;
- return materialId(value.resourceId)&&integer(value.page,50,1)&&(value.offset===undefined||integer(value.offset,2000))&&(value.characterOffset===undefined||integer(value.characterOffset,128000))&&(value.refresh===undefined||typeof value.refresh==='boolean')&&(value.box===undefined||validPageBox(value.box));
+ return materialId(value.resourceId)&&integer(value.page,MATERIAL_PDF_MAX_PAGES,1)&&(value.offset===undefined||integer(value.offset,2000))&&(value.characterOffset===undefined||integer(value.characterOffset,128000))&&(value.refresh===undefined||typeof value.refresh==='boolean')&&(value.box===undefined||validPageBox(value.box));
 }

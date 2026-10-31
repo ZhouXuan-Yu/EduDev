@@ -9,13 +9,13 @@ export async function materialPageToolBoundaries(check,output){
  fs.writeFileSync(source,bytes);let current=true,privatePage=false,fingerprint='v1',calls=0;
  const png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aDZkAAAAASUVORK5CYII=',quad=[[.1,.1],[.9,.1],[.9,.9],[.1,.9]];
  const original='合成学生甲 '+('复合公式条件；'.repeat(2000)),receipt={schemaVersion:PDF_LAYOUT_SCHEMA,ok:true,engine:PDF_LAYOUT_ENGINE,inputSha256:version,page:1,total:1,width:1,height:1,png,rasterSha256:sha(Buffer.from(png,'base64')),lines:[{id:'line-1',kind:'text',needsReview:true,text:original,score:.99,quad,normalizedQuad:quad}]};
- const store={getDataRoot:()=>root,listStudents:async()=>[{realName:'合成学生甲'}],sanitizeProblemText:async text=>({sanitizedText:text}),materials:{resource:async()=>({originalFileName:'source.pdf',contentHash:version}),original:async(_id,v,s)=>readMaterialOriginal(root,source,v,s,1024),readingSnapshot:async()=>({fingerprint,units:[{version,chunk:{pageNumber:1,containsPersonalData:privatePage}}]})}};
+ const store={getDataRoot:()=>root,listStudents:async()=>[{realName:'合成学生甲'}],sanitizeProblemText:async text=>({sanitizedText:text}),materials:{resource:async()=>({originalFileName:'source.pdf',contentHash:version}),original:async(_id,v,s)=>readMaterialOriginal(root,source,v,s,1024),readingSnapshot:async()=>{throw Error('Whole-book snapshot forbidden');},pageReadAccess:async()=>({version:fingerprint==='v1'?version:'b'.repeat(64),eligible:true,privatePage})}};
  const tool=(recognize=async()=>{calls++;return receipt;})=>createMaterialPageTools(store,()=>current,observed,recognize)[0];
  const run=async(t,args,signal=new AbortController().signal)=>JSON.parse((await t.execute('owned',args,signal)).content[0].text);
  const input={resourceId:id,page:1};
  await check('Page tool strict parameters and observed/private-page authority deny reads before OCR',async()=>{
   let reads=0;const accessor={...input};Object.defineProperty(accessor,'page',{get(){reads++;return 1;},enumerable:true});assert(!validMaterialPageTextInput(accessor));assert.equal(reads,0);
-  for(const value of [{...input,path:source},{...input,version},{...input,page:51},{...input,offset:-1}])assert(!validMaterialPageTextInput(value));
+  for(const value of [{...input,path:source},{...input,version},{...input,page:10001},{...input,offset:-1}])assert(!validMaterialPageTextInput(value));
   observed.clear();assert.equal((await run(tool(),input)).code,'permission_denied');observed.set(id,version);privatePage=true;assert.equal((await run(tool(),input)).code,'permission_denied');privatePage=false;assert.equal(calls,0);
  });
  await check('Region reread uses local crop/image OCR, labels selected region rather than line geometry and preserves authority/CAS/cancel',async()=>{
@@ -48,7 +48,7 @@ export async function materialLayoutBoundaries(check,output){
  const query={schemaVersion:schema,requestId:randomUUID(),resourceId:'resource_'+randomUUID(),version,page:1,refresh:false};
  const png='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aDZkAAAAASUVORK5CYII=',quad=[[.1,.1],[.9,.1],[.9,.9],[.1,.9]];
  const receipt={schemaVersion:PDF_LAYOUT_SCHEMA,ok:true,engine:PDF_LAYOUT_ENGINE,inputSha256:version,page:1,total:1,width:1,height:1,png,rasterSha256:sha(Buffer.from(png,'base64')),lines:[{id:'line-1',kind:'text',needsReview:true,text:'未校对文字<script>',score:.99,quad,normalizedQuad:quad}]};
- const cache=()=>new MaterialLayoutCache(()=>root),repository={resource:async()=>({originalFileName:'source.pdf'}),original:async(_id,v,s)=>readMaterialOriginal(root,source,v,s,1024)};
+ const cache=()=>new MaterialLayoutCache(()=>root),repository={resource:async()=>({originalFileName:'source.pdf',contentHash:version}),original:async(_id,v,s)=>readMaterialOriginal(root,source,v,s,1024)};
  await check('Layout query/cancel schema denies paths, provider fields, malformed IDs, accessors and unknown versions',async()=>{
   assert(validLayoutQuery(query));assert(validLayoutCancel({schemaVersion:schema,requestId:query.requestId}));
   for(const q of [{...query,path:source},{...query,provider:'cloud'},{...query,page:10001},{...query,version:'old'},{...query,refresh:'yes'},{...query,schemaVersion:'v2'}])assert(!validLayoutQuery(q));

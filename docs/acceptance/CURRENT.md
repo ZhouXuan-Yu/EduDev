@@ -1,5 +1,10 @@
 # 当前验收入口
 
+## 2026-11-01 K0文件式访问实施
+
+K0文件访问验证：63边界、240组件、真实大题册UI及生产页工具工厂/文件Worker、区域图像、停止与冷启；完整续读/综合门禁/最终整合证据见统一基线k0Implementation。无新AI请求，不替代真实Pi/provider或质量/40GiB验收。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
 ## 2026-11-01 知识库整体架构优先
 
 知识库采用[整体架构K0–K4退出门](../architecture/KNOWLEDGE_BASE.md#9-固定实施顺序与退出门)与[统一基线](../research/KB_ARCHITECTURE_BASELINE_20261101.json)。40 GiB/40正文块只证明有限字节容量；真实新批次2次HTTP200/12题待核不算质量通过。自然语料召回/P95、长稳与干净Windows安装仍待验证。阶段目标数值是待验门槛。

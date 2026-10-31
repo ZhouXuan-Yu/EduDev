@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-01 K0文件式访问实施
+
+沿原PDF文件Worker新增唯一renderPdfFilePage adapter，替换资料/AI原图回调并接通原题候选与小智页工具；原题verify复用既有流式hash。无依赖/许可证/组件版本变化，保留旧byte小文件测试入口，失败不自动切回整书字节。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
 ## 2026-11-01 知识库整体架构优先
 
 知识库复用选择冻结于[整体架构第7节](../architecture/KNOWLEDGE_BASE.md#7-成熟方案复用决策)：保留现有LanceDB、RapidOCR/PDFium、Hana/Word、FTS5/BGE、DeepSeek与Pi；AnythingLLM/WeKnora为真实对照，Docling为待同样本证明收益的parser候选。当前不嵌完整第三方RAG产品、不新增服务或依赖。先统一已有文件host消费者。

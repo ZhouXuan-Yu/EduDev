@@ -1,5 +1,10 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-01 K0文件式访问实施
+
+知识库K0已开始落实文件式消费者及有界页权限；完整K0/K1–K4、自然几十GB质量召回和Windows交付仍未完成，Goal active。原产品边界与协作者其他模块不变。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
 ## 2026-11-01 知识库整体架构优先
 
 知识库执行补充（不改变Master产品边界）：用户要求先明确并贯通整体架构；以[KNOWLEDGE_BASE](../architecture/KNOWLEDGE_BASE.md)固定K0–K4顺序，当前K0待实施。原始文件字节、正文基数、质量召回与实际交付分别证明；不能由单页测试/字节容量关闭完整Goal。其他模块及协作者进度保留。

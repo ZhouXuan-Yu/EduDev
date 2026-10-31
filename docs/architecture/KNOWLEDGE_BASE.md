@@ -154,14 +154,14 @@ FTS 当前已有中文字符/双字 token 适配；embedding 当前身份为 bge
 | 层 | 当前代码入口 | 证据结论 |
 | --- | --- | --- |
 | 递归导入/恢复 | `main/assets/material-import-batches.ts`、`material-folder-ai.ts` | 持久发现与调度已存在；自然大目录和硬断电窗口仍未全验收 |
-| 大 PDF 文件 Worker | `main/xiaozhi-agent/pdf-file-host.ts`、`python/omni_edu_ocr/pdf_stream.py` | 资料页/后台路径已接入；Pi/原题消费者仍有旧通道，须先统一 |
+| 大 PDF 文件 Worker | `main/xiaozhi-agent/pdf-file-host.ts`、`python/omni_edu_ocr/pdf_stream.py` | 资料页/后台路径已有文件host，K0现已接通Pi页工具及原题消费者；资源与全用户链路仍待验证 |
 | 来源/图稿 | `shared/material-ai-page.ts`、`shared/question-document.ts`、`shared/native-question.ts` | PDF有原页证据，Word有按角色题图；PDF逐题图稿及跨页还缺，不能假称图题已完成 |
 | AI与答案册 | `main/assets/material-ai-repository.ts`、`material-book-answer-repository.ts` | 已有实际五题v6回写；最新另一批次两次HTTP200仍整页不确定，模型稳定性未通过 |
 | 检索 | `main/assets/material-full-text.ts`、`main/retrieval/repository.ts`、`vector-store.ts` | FTS/向量/重排及 generation 已接入；自然语义召回、冷查与完整覆盖未达标 |
-| Pi读取 | `main/assets/material-page-tools.ts`、`main/education/question-context-provider.ts` | 正式题源校验已有；page tool最大50页，仍有旧字节通道及 readingSnapshot 全量快照，影响大书/大正文 |
+| Pi读取 | `main/assets/material-page-tools.ts`、`main/education/question-context-provider.ts` | K0已统一文件host和流式来源校验，page tool按共享10000页合同验证，改元数据页权限；完整Pi用户链路仍待验 |
 | 交付 | 原OCR/embedding/reranker运行时及受管下载 | 开发证据不等于EXE安装闭包；干净Windows/普通教师机仍待验证 |
 
-现有 `DOCUMENT_MAX_INPUT=50 MiB` 的 Buffer 文档接口不能承担大 PDF；不是把数字放宽就解决内存/IPC问题。Pi page tool 的 `maximum:50` 也不能承载62页实际题册。K0先统一文件式原件访问与页查询，再在同一边界处理细节。
+基线中的 `DOCUMENT_MAX_INPUT=50 MiB` Buffer接口和Pi的50页参数不能承担大PDF。K0当前已将这些原页/原题消费者接入原文件host、流式verify和统一页号合同；50MiB byte协议保留给其合法旧调用者。调度与完整Pi链路仍待关闭，不能据此宣称所有知识库规模限制已消失。
 
 证据入口：
 
@@ -202,7 +202,7 @@ FTS 当前已有中文字符/双字 token 适配；embedding 当前身份为 bge
 5. 同图同模型两次输出仍不稳定；新请求实际全待核。复用不可变证据、确定性校验与可追溯本地再处理，避免不断重复付费；保留真实疑点。
 6. 回归应跟随架构风险。每个实现阶段跑一次必要集中门禁和关键故障；源码未再变不反复重跑同套测试，不拿测试数量代替功能。
 
-当前阶段：**K0待实施**。本轮交付整体架构、可行性边界与顺序，未改变生产源代码、安装包或D盘日常运行；保留旧事实、失败证据和WIP。架构不可因单页测试成功就提前标为整体验收完成。
+当前阶段：**K0进行中**。文件式访问消费者和元数据页权限已实现，资源优先级/公平性、完整Pi用户链路和所有退出门尚未关闭。旧架构审查证据与本轮实现分开，D盘日常和安装包未更新；表格WIP保持本地保存。
 
 ## 11. K0实施合同：先贯通已有底座
 
@@ -218,6 +218,8 @@ FTS 当前已有中文字符/双字 token 适配；embedding 当前身份为 bge
 | 导入/PDF页任务/AI单元/索引执行器 | 已有各自持久状态，尚无完整全局资源与公平性保证 | 复用原任务事实及资源宿主，列明取消/暂停/租约和索引前台优先关系；不得新增平行调度系统 |
 
 修改范围：上述main消费者、相关shared页号/来源校验、现有工具与IPC契约测试、真实Electron来源路径和必要进度界面；仅在需要显式状态时扩展原typed preload。暂不新增业务表、不迁移原件、不升级依赖、不改Pi运行时、不删除旧入口、不在本阶段处理单题图表/跨页语义。
+
+K0实现补充：页读取用同一SQLite语句查询来源版本、解析状态、正文/本页存在性与已知/未知页隐私标记，不加载整本正文。`partial`资料只允许已发表正文的对应页；未发表页仍拒绝，不能因同书其他页可读而放行。识别后再次复验相同权限和来源，原件由文件host复验。该规则与已有资料正文允许读取partial的方向一致，不自动把全书标完整。
 
 验证顺序：先查明所有调用者和现有校验，冻结共享输入/错误/取消合同；实现同一文件host适配；用授权真实62页题册验证第51/62页、整页/区域、停止、来源变化和冷启。继续使用旧byte协议的合法消费者保留兼容回归；检查无整书Buffer及`readingSnapshot`全量扫描。未有实际用户路径、来源readback和进程资源证据，不标K0完成。
 

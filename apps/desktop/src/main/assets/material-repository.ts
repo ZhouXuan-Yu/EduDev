@@ -73,6 +73,17 @@ export class MaterialRepository {
   const total=readable?resource.chunkCount:0;
   return {schemaVersion:MATERIALS_SCHEMA,resource,chunks:rows.map(this.host.mapChunk),total,offset:input.offset,hasMore:input.offset+rows.length<total};
  }
+ /** Metadata-only page authority: never materialize the book's text to authorize OCR. */
+ async pageReadAccess(resourceId:string,page:number){
+  const row=(await this.host.all(`SELECT r.content_hash AS version,r.parse_status AS status,
+   EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id) AS has_body,
+   EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id AND c.page_number=?) AS has_page,
+   EXISTS(SELECT 1 FROM resource_chunks c WHERE c.resource_id=r.id AND c.contains_personal_data<>0 AND (c.page_number IS NULL OR c.page_number=0 OR c.page_number=?)) AS private_page
+   FROM teacher_resources r WHERE r.id=?`,[page,page,resourceId]))[0];
+  if(!row)throw new Error('material_not_found');
+  const eligible=Number(row.has_body)===1&&(['ready','parsed','chunked','indexed','graph_extracted'].includes(String(row.status))||row.status==='partial'&&Number(row.has_page)===1);
+  return {version:String(row.version),eligible,privatePage:Number(row.private_page)!==0};
+ }
  /** One SQLite statement is a consistent snapshot across resources and derivatives. */
  async readingSnapshot(resourceId?:string):Promise<MaterialReadingSnapshot>{
   if(resourceId)await this.resource(resourceId);

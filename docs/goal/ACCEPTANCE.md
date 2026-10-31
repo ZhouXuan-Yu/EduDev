@@ -1,5 +1,10 @@
 # Goal 验收台账
 
+## 2026-11-01 K0文件式访问实施
+
+本轮63项边界、240组件与build/type通过；真实约198MB/62页题册的资料UI、生产页工具工厂+只读SQLite适配与真实文件Worker、局部取图和冷启通过。不是完整Pi/provider/数学质量/自然40GiB验收。完整续读、综合门禁及整合指纹以统一基线k0Implementation为准。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
 ## 2026-11-01 知识库整体架构优先
 
 本轮交付知识库[架构与退出门](../architecture/KNOWLEDGE_BASE.md)，未交付K0实现，完整Goal未完成。[基线证据](../research/KB_ARCHITECTURE_BASELINE_20261101.json)区分历史40GiB有限正文、新2次真实调用全待核及本轮docs-only范围；无性能改善/教师质量/安装包通过声明。下列历史测试仅归其原构建。
