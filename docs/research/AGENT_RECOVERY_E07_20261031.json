@@ -149,6 +149,10 @@
       "reason": "Existing test wrote selected sources under blocked .codex worktree. First4 passed then import permission_denied before admission. Test fixture moved to owned OS temp; production restrictions unchanged; full native rerun passed.",
       "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-attachment-send-native-vrXxdW",
       "log": "agent-recovery-attachment.log"
+    },
+    {
+      "phase": "Documentation archive whitespace gate",
+      "reason": "Raw Vite reporter logs contain trailing spaces; diff-check flagged them. Archive copies normalized only trailing whitespace, original logs retained unchanged."
     }
   ],
   "performance": {
@@ -209,5 +213,6 @@
     "sourceCommit": "aafd974e02ad53381b120d29ec066baa25d07097",
     "base": "3ce98d129a0ea8d2dd09084c124bb6419a405aef",
     "remoteSync": "pending normal merge/push verification"
-  }
+  },
+  "evidenceArchive": "Tracked copies of command logs normalize trailing whitespace only so git diff --check passes; original command logs retained unchanged in the OS temp paths."
 }
