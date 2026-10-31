@@ -1,5 +1,17 @@
 # EduDev 当前任务进度
 
+## 2026-10-31 E06 Word真实页面与停止清理（第五切片）
+
+此前Word导出阻塞已定位并修复：输出路径显式[string]，Close/Quit使用[ref] SaveChanges；Word16实际三页A4含长标题/表格/OfficeMath现可沿原Pi检查→原文件面板两视口→冷启取回真实PNG。仅去掉字符串转换的同文件对照20秒无PDF。取消还发现Word锁晚于助手退出释放，新增最多2秒异步重试自有临时文件；最终停止/占用专项通过，原文件不变且不接管已有实例。
+
+源码a94ab29→44eb69a。原生4项、240组件与207综合通过（207归a94ab29）；正式Word3个正向用户路径及准备1项通过，首套因停止清理缺陷exit1保留；最终build/type与同文件恢复/停止/占用4项exit0，停止1167ms含进程/清理观察。三页正式整轮17538ms，不当作纯渲染/P95；renderer7175676B及SHA未变。0新依赖/业务DDL/IPC/UI/付费，audit45（8高29中8低/0严重，exit1）；无自动升级。
+
+WPS、逐字缺字/语义遮挡、完整FX09与全教师要求绑定/混合终态仍未齐；E06及完整Goal保持active，完整252AT新增已实现0。随后E07/E08+C及W3集中验收。D盘日常与安装包未更新。回退上述调用/清理提交保留原文件、报告及PNG读器，无业务迁移，完整回退未演练。
+
+精确命令/源码/失败和指纹见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wordInteropSlice；日常进度仍以docs/goal/WORK_PROGRESS.md为准。
+
+继续位置：先复用apps/desktop/scripts/xiaozhi-agent/pi-office-wps-acceptance.ps1的独立Automation归属经验推进WPS薄适配，保留当前用户已打开的WPS；再补齐E06缺字/遮挡和要求绑定，勿重做已通过的Word/PDF页面旅程。
+
 ## 2026-10-31 E06真实PDF页面与Word缺口（第四切片）
 
 原Pi交付前及原文件面板现可检查PDF原字节的真实物理页数/逐页文本，并由Windows.Data.Pdf逐页栅格化，沿原PNG缓存、页选择、放大、历史和冷启读取。扫描页没有文本层时内容/数值/事实明确未检查；PNG尺寸读取实际IHDR，兼容本机150%显示缩放。Word只读副本→原生PDF薄适配已接入，但本机原生导出仍超时（不加入Job的30秒诊断亦未完成），生产Word等待限制15秒并明确未检查；不能称Word页面已实现。
