@@ -1,6 +1,6 @@
 import {createHash} from 'node:crypto';
 import {AI_TEXT_SOURCE,validAiTextSource,type AiTextSource} from '../../shared/material-ai-text';
-import {validMaterialPageSource,type AiPageView} from '../../shared/material-ai-page';
+import {validMaterialPageSource,readablePageTranscription,type AiPageView} from '../../shared/material-ai-page';
 import {materialSearchTokens} from '../assets/material-full-text';
 import type {MaterialReadingUnit} from '../assets/material-source';
 type Row=Record<string,unknown>;type Value=string|number|null;
@@ -26,6 +26,14 @@ export class MaterialAiTextIndex{
    `CREATE TABLE IF NOT EXISTS ${control}(id INTEGER PRIMARY KEY CHECK(id=1),cursor INTEGER NOT NULL DEFAULT 0)`,
    `INSERT OR IGNORE INTO ${control}(id) VALUES(1)`
   ])await this.host.run(sql);
+  const columns=await this.host.all(`PRAGMA table_info(${control})`);
+  if(!columns.some(c=>c.name==='transcription_policy'))await this.host.run(`ALTER TABLE ${control} ADD COLUMN transcription_policy INTEGER NOT NULL DEFAULT 1`);
+  const policy=(await this.host.all(`SELECT transcription_policy FROM ${control} WHERE id=1`))[0];
+  if(Number(policy?.transcription_policy)<2){
+   // Upgrade only the old quality hold. Privacy/source failures still require their original repair.
+   // Replay the existing 8-row cursor, not an unbounded UPDATE of a large library.
+   await this.host.run(`UPDATE ${control} SET cursor=0,transcription_policy=2 WHERE id=1`);
+  }
   const tables=new Set((await this.host.all("SELECT name FROM sqlite_master WHERE type='table'")).map(r=>r.name));
   if(tables.has('material_ai_page_units')){
    await this.host.run(`CREATE INDEX IF NOT EXISTS material_ai_page_origin_v1 ON material_ai_page_units(${safe('','resourceId')},${safe('','version')},${safe('','page')})`);
@@ -61,7 +69,7 @@ export class MaterialAiTextIndex{
  private async discover(){
   const exists=(await this.host.all("SELECT 1 FROM sqlite_master WHERE name='material_ai_page_units'")).length;if(!exists)return;
   const rows=await this.host.all(`SELECT rowid,batch_id,ordinal FROM material_ai_page_units WHERE rowid>(SELECT cursor FROM ${control} WHERE id=1) ORDER BY rowid LIMIT 8`);
-  if(rows.length)await this.host.write(async target=>{for(const row of rows)await target.host.run(`INSERT OR IGNORE INTO ${dirty}(batch_id,ordinal,retry_at) VALUES(?,?,?)`,[String(row.batch_id),Number(row.ordinal),Date.now()]);await target.host.run(`UPDATE ${control} SET cursor=MAX(cursor,?) WHERE id=1`,[Number(rows.at(-1)!.rowid)]);});
+  if(rows.length)await this.host.write(async target=>{for(const row of rows)await target.host.run(`INSERT INTO ${dirty}(batch_id,ordinal,retry_at) VALUES(?,?,?) ON CONFLICT(batch_id,ordinal) DO UPDATE SET error='',retry_at=excluded.retry_at,revision=revision+1 WHERE error='page_needs_review'`,[String(row.batch_id),Number(row.ordinal),Date.now()]);await target.host.run(`UPDATE ${control} SET cursor=MAX(cursor,?) WHERE id=1`,[Number(rows.at(-1)!.rowid)]);});
  }
  async drain(){
   if(process.env.OMNI_EDU_AI_TEXT_INDEX==='0'||!this.host.page)return 0;
@@ -76,7 +84,7 @@ export class MaterialAiTextIndex{
     const resource=(await this.host.all('SELECT content_hash FROM teacher_resources WHERE id=?',[String(origin.resourceId)]))[0];if(!resource||resource.content_hash!==origin.version)throw Error('retired_source');
     const latest=await this.latest(String(origin.resourceId),String(origin.version),Number(origin.page));if(!latest){const current=(await this.host.all('SELECT status FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];throw Error(['pending','first_saved','dispatched'].includes(String(current?.status))?'busy':'source_changed');}
     view=await this.host.page!(String(latest.batch_id),Number(latest.ordinal));
-    if(view.status!=='complete'&&view.status!=='blank')throw Error('page_needs_review');
+    if(!readablePageTranscription(view))throw Error('page_needs_review');
     if(this.host.clean&&await this.host.clean(view.text)!==view.text)throw Error('privacy_blocked');
     const after=await this.latest(view.source.resourceId,view.source.version,view.source.page);if(JSON.stringify(after)!==JSON.stringify(latest))throw Error('source_changed');
     source={schemaVersion:AI_TEXT_SOURCE,resourceId:view.source.resourceId,version:view.source.version,page:view.source.page,offset:0,chunkId:keyId(view.source.resourceId,view.source.version,view.source.page),batchId:String(latest.batch_id),ordinal:Number(latest.ordinal),finalSha:String(latest.final_sha),bodyVersion:digest([view.source,latest.first_sha,latest.final_sha,latest.image_sha,view.text])};if(!validAiTextSource(source))throw Error('source_changed');
@@ -115,7 +123,7 @@ export class MaterialAiTextIndex{
   const latest=await this.latest(source.resourceId,source.version,source.page);
   if(!latest||latest.batch_id!==source.batchId||Number(latest.ordinal)!==source.ordinal||latest.final_sha!==source.finalSha)throw Error('source_changed');
   const view=await this.host.page(source.batchId,source.ordinal);
-  if(!['complete','blank'].includes(view.status)||view.text!==row.content_md||view.source.resourceId!==source.resourceId||view.source.version!==source.version||view.source.page!==source.page||digest([view.source,latest.first_sha,latest.final_sha,latest.image_sha,view.text])!==source.bodyVersion||this.host.clean&&await this.host.clean(view.text)!==view.text)throw Error('source_changed');
+  if(!readablePageTranscription(view)||view.text!==row.content_md||view.source.resourceId!==source.resourceId||view.source.version!==source.version||view.source.page!==source.page||digest([view.source,latest.first_sha,latest.final_sha,latest.image_sha,view.text])!==source.bodyVersion||this.host.clean&&await this.host.clean(view.text)!==view.text)throw Error('source_changed');
   const after=(await this.host.all(`SELECT d.source_json,d.active,COALESCE(k.seq,0) seq,COALESCE(v.revision,0) source_revision FROM ${docs} d LEFT JOIN retrieval_current k ON k.kind='material' AND k.object_id=d.id LEFT JOIN retrieval_source_revisions v ON v.resource_id=d.resource_id WHERE d.id=?`,[source.chunkId]))[0];if(after?.active!==1||!matches(after.source_json)||Number(after.seq)!==Number(row.seq)||Number(after.source_revision)!==Number(row.source_revision))throw Error('source_changed');
   return{view,seq:Number(row.seq)};
  }
