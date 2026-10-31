@@ -1,0 +1,6 @@
+{
+  "ok": false,
+  "checks": [],
+  "boundary": "Actual native SQLite private ledgers and original teacher-confirmed local file services. No provider or formal UI.",
+  "error": "Error: no such table: main.ai_confirmation_items\n    at Object.run (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-readback.mjs:14:77)\n    at Object.migrate (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/persistent-state.ts:51:17)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-readback.mjs:17:2"
+}

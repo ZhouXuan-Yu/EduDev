@@ -1,5 +1,7 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 E07：实际Pi7覆盖HTML保存后SQLite失败→仍失败阻断→恢复原task→不覆盖草稿→显式同task接续→双尺寸→冷启；文件/事件hash不重写，0真实模型/renderer错误。源码9/账本文件5/取消5/回执15；完整AT未集中。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 2026-10-31 E07：正式Pi首响应503/500、401/402/长429及等待停止的初次6项通过；断流隐藏缺陷保留并修复。最终接续4项验证双尺寸、原task/version、新run及冷启；最终停止/冷启2项41.95ms，0模型/renderer错误。源码11、任务SQLite11及原生附件21；完整E07与252AT仍未执行。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
 
 

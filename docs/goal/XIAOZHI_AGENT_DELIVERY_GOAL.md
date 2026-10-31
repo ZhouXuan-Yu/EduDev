@@ -1,5 +1,7 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+2026-11-01 E07落账失败原地恢复工程已实现（c61bd4e）：真实文件已保存后journal失败，重新读取会等待旧执行/数据库回调及实际工具归零，核对原事件、native与文件账本后修复原run/task并解除阻断；不重放模型/工具/审批。默认生成目录与独立Office导出目录纳入原效果核对，改动/缺失仍uncertain。 完整28WP/252REQ/AT和四份标准不缩减，Goal active；先功能对齐再阶段集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 2026-10-31 E08当前版本：继续完整28WP/252REQ/AT目标。本片fc0102d实现E08当前版本/历史证明接缝，工程源码16/原Pi8通过；完整AT不提前通过，Goal active。下一E07余项/E08 HTML与来源定位+C，阶段齐后集中。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
 2026-10-31 E08：本轮a8a3120推进E08版本历史与恢复，完整28WP/252REQ/AT目标及四份标准不缩减。工程专项已实现，完整需求仍部分实现/未验收；下一E07诊断/停止/恢复与E08 HTML/来源版本/C，阶段齐后集中AT。Goal保持active。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。

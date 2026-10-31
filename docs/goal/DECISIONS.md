@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+2026-11-01 E07：沿原journal、取消修复、task coordinator加单轮在线恢复；复用实际executing计数及配置锁，追加publisher结束栅栏，不加执行器。仅在原账本核对后清runtime失败标记，读回不执行工具或继承批准。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 2026-10-31 E07：复用HTTP恢复、事件journal、task resume与typed start，新增可选意图和公开事件，无新IPC/账本。真实测试发现文字接续另建任务，改为宿主两层复查ID/版本；原样准备稿绑定，编辑按普通新请求，不静默绑定其他任务。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
 
 

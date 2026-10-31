@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 E07：复用createEffectReadback、conversationOutputLocation、原Office/Text账本及native receipts；DB仅向原session state传惰性dataRoot。新guarded records-refresh/typed preload接现有刷新按钮，旧事件兼容，无依赖/迁移。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 2026-10-31 E07：复用withModelRequestRecovery、XiaozhiStartInput、原preload start/snapshot、task coordinator/state、composer与设置入口；无新通道、表或依赖。原参数无continueTask时命令hash及goal路径不变。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
 
 

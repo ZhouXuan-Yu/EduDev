@@ -1,5 +1,7 @@
 # 当前验收入口
 
+源码9、真实账本/文件5、原回执15、取消回归5、最终正式Pi7（双尺寸/冷启）及build/type通过，240组件同最终renderer。一次207/207归较早legacy启动，期间out被重建，不作为最终构建全套证据；最终Pi与专项覆盖本次源码。完整E07/252AT仍待阶段集中，本轮完整AT新增已实现0。 0付费/新依赖/DDL/Runtime。audit45（8高29中8低/0严重，exit1）未升级，既有UI-contract指纹门禁未重跑。D盘日常/安装包未更新。下一E07其余普通工具/停止/崩溃/冲突矩阵、E08 HTML与来源定位+C，再S/T。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice；Goal active。
+
 源码11、真实SQLite任务专项11及原生附件专项21、最终原Pi接续4及等待停止/冷启2、build/type与240组件通过；初始原Pi前6通过后发现正文隐藏并修复，首次接续另建任务后补typed绑定。一次207/207归绑定前legacy构建，未重复全套。 完整E07与252AT仍待阶段集中，本轮完整AT新增已实现0。0付费/新依赖/DDL/Runtime；audit45（8高29中8低/0严重，exit1）未升级，既有UI-contract指纹门禁未修/未重跑。D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
 
 
