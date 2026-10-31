@@ -43,6 +43,30 @@ export async function backgroundImportStore(output:string){
   checks.push('All 301 supported files reach the existing local text parser, with exact persisted original-file SHA256');
   const firstName=resources[0].original_file_name,selected=firstName==='尾页.txt'?path.join(folder,'子目录',firstName):path.join(folder,firstName);
   const publicResult=await store.importKnowledgeResources([selected],new AbortController().signal,true);assert(publicResult.overview);assert.equal(publicResult.resources.length,1);assert(publicResult.items[0].reused);assert.equal(overviews,1);checks.push('Existing public import still returns the complete overview and unchanged duplicate behavior');
+  const noSpace=path.join(output,'空间不足后恢复');await fs.mkdir(noSpace);
+  for(let i=0;i<129;i++)await fs.writeFile(path.join(noSpace,`恢复-${i}.txt`),`空间恢复资料 ${i}：光在均匀介质中沿直线传播。`);
+  const statfs=fs.statfs,archiveRoot=path.join(root,'teacher_resources');let archiveAttempts=0;
+  const currentHost=(store.materialImports as any).host,currentImport=currentHost.import;
+  currentHost.import=async(...args:any[])=>{archiveAttempts++;return currentImport(...args);};
+  fs.statfs=(async(target:any,options:any)=>{const info=await statfs(target,options);return path.resolve(String(target))===archiveRoot?{...info,bavail:0}:info;}) as typeof fs.statfs;
+  let failedId:string;
+  try{
+   failedId=await store.materialImports.create(noSpace);
+   const failed=await until(async()=>{const batch=(await store.materialImports.list()).batches.find(b=>b.id===failedId);return batch&&['failed','partial','completed'].includes(batch.status)?batch:undefined;});
+   assert.equal(failed.status,'failed','Disk full must stop the whole batch instead of attempting every file');
+   assert.match(failed.error,/磁盘空间不足/);assert.equal(archiveAttempts,1);assert.equal(failed.archived,0);
+   assert.equal(Number((await query("SELECT COUNT(*) n FROM material_import_entries WHERE batch_id=? AND kind='directory' AND status='failed'",[failedId]))[0].n),0);
+   assert.equal(Number((await query("SELECT COUNT(*) n FROM material_import_entries WHERE batch_id=? AND kind='file' AND status='pending'",[failedId]))[0].n),127);
+   assert.equal(Number((await query('SELECT COUNT(*) n FROM teacher_resources'))[0].n),count+1);
+   checks.push('Real archive disk-space guard stops after one ENOSPC, preserves pending files and unscanned directory, and exposes actionable batch error');
+  }finally{fs.statfs=statfs;currentHost.import=currentImport;}
+  await store.close();store=new OmniEduStore(root);await store.init();await store.materialQueue.start();store.materialSearch.start();store.materialQuestions.start();
+  const reopened=(await store.materialImports.list()).batches.find(b=>b.id===failedId!);assert.equal(reopened?.status,'failed');assert.match(reopened?.error||'',/磁盘空间不足/);
+  await store.materialImports.action({schemaVersion:'xiaozhi.material-import-batch.v1',batchId:failedId!,action:'retry'});
+  const recovered=await until(async()=>{const b=(await store.materialImports.list()).batches.find(b=>b.id===failedId!);return b&&['completed','partial','failed'].includes(b.status)?b:undefined;});
+  assert.equal(recovered.status,'completed');assert.equal(recovered.archived,129);assert.equal(recovered.failed,0);assert.equal(recovered.scanned,129);
+  assert.equal(Number((await query('SELECT COUNT(*) n FROM teacher_resources'))[0].n),count+130);
+  checks.push('After native Store reopen and restored space, explicit retry rescans the interrupted directory and archives all 129 originals without loss or duplicate facts');
   return {success:true,checks,first,files:count+1,overviewsDuringBackground:0,totalMs:performance.now()-started,scope:'Actual OmniEduStore, SQLite, real file copying and local text parsing; synthetic 301 files, not 40GB, OCR, cloud quality or installer acceptance'};
  }finally{await store.close();}
 }
