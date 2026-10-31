@@ -24,7 +24,7 @@
     },
     "rules": {
       "command": "node scripts/education/kb-book-rule-boundaries.mjs <owned-real-root>",
-      "checks": 23,
+      "checks": 24,
       "exit": 0
     },
     "initialBuild": {
@@ -40,12 +40,62 @@
     },
     "smoke": {
       "command": "npm.cmd run test:smoke",
-      "status": "running",
+      "status": "complete",
       "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-cover-smoke-20261031.log",
-      "scope": "Build frozen before final reserved-task/billing guard; final supplemental build/UI required"
+      "scope": "Legacy-test compatibility on pre-final reserved-task/billing and indented-number guards. Not final whole-suite replay; frozen final source covered by supplemental build/type, boundary and actual UI below.",
+      "passed": 207,
+      "total": 207,
+      "exit": 0
+    },
+    "finalBuild": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-cover-frozen-build-20261031.log",
+      "source": "eab6d1b5c726301292601c38023dd4c64d450fcf"
     }
   },
-  "actualCover": {
+  "preFinalGuardBuild": [
+    {
+      "path": "apps\\desktop\\out\\main\\index.js",
+      "bytes": 3309133,
+      "sha256": "d2a3869a6a9308f2aae43b8047a6a4716fffaf77bba33fb1bf3050a533218bbd"
+    },
+    {
+      "path": "apps\\desktop\\out\\renderer\\assets\\index-DR_8N49S.js",
+      "bytes": 7246099,
+      "sha256": "c7faf858518419d215875861d1efb01a268c1cd986ce438f948be75c50196b1d"
+    }
+  ],
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "total": 45,
+    "high": 8,
+    "moderate": 29,
+    "low": 8,
+    "critical": 0,
+    "newDependencies": 0
+  },
+  "failuresRetained": [
+    "First boundary run omitted --experimental-transform-types; no product test executed in those two scripts",
+    "Initial cover helper queried nonexistent q.version; then a wrong-cwd edit failed and reran unchanged helper; no app launched or cloud sent",
+    "pypdf warned of malformed source xrefs; replaced extraction with existing PDFium and verified original/derived page pixels equal",
+    "cover-skip-DKrJBR incorrectly required a sealed account while the authorized test used an existing environment credential; launch failed before import, 0 cloud",
+    "Malformed billing JSON boundary initially threw raw SQLite error; fixed fail-closed view, boundary now passes",
+    "Critic-found reserved/orphan task guard initially exposed raw malformed billing JSON; view now fails unavailable instead of fabricated zero reservations",
+    "Broad indented-number guard initially misread actual cover branding 5.3; preserved the real OCR assertion and excluded decimal numbers, final24 rules pass",
+    "One final build command ran at repository root with no build script (exit1); corrected desktop cwd and frozen build exited0"
+  ],
+  "limitations": [
+    "This is verified explicit PDF cover handling, not universal non-question classification across all image/Word/manual AI paths",
+    "Old four preface candidates are retained; no destructive cleanup",
+    "Actual 12 question-page items and independent answer entries remain held; this slice does not resolve their uncertainty",
+    "Natural tens-of-GB content quality/recall/P95, daily D runtime, installer and full Goal are not accepted"
+  ],
+  "rollback": "Pause folder processing, revert this slice; original PDFs/OCR/question facts and prior local skip rows remain readable. No DDL rollback. Full revert drill not performed",
+  "finalValidation": "Frozen eab6d1b build/type exit0; final12 PDF boundary +24 rules +7 scheduling, actual real-cover UI3 with two sizes/cold restart and0 cloud. 240 components use identical renderer.207 whole compatibility refers only to the explicitly recorded earlier frozen build.",
+  "sourceCommit": "eab6d1b5c726301292601c38023dd4c64d450fcf",
+  "firstActualCoverBeforeFinalGuard": {
     "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\cover-skip-6cCVbR\\report.json",
     "sourcePage": 1,
     "sourceSha": "e9e2b393cf8b5cb5ebe03999245310a5b88074317e30cc6388d4dfe414345ee5",
@@ -89,41 +139,86 @@
     ],
     "sourceTextImagesUploaded": false
   },
-  "preFinalGuardBuild": [
+  "actualCover": {
+    "command": "node scripts/education/kb-real-cover-skip-journey.mjs <owned-real-root>",
+    "exit": 0,
+    "source": "eab6d1b5c726301292601c38023dd4c64d450fcf",
+    "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\cover-skip-TOCxeO\\report.json",
+    "sourcePage": 1,
+    "sourceSha": "e9e2b393cf8b5cb5ebe03999245310a5b88074317e30cc6388d4dfe414345ee5",
+    "derivedSha": "f9337d273f0220e953c351c52d8b941578c5af7f5ee8fdee89e70c4cd53a9066",
+    "pixelEquality": {
+      "pageCount": 1,
+      "width": 1815,
+      "height": 1324,
+      "pixelSha": "0bf059be1028bc30ab4ef6b0a396c7696edb510b7acd82dbb1f3617d23134b3f"
+    },
+    "batchId": "batch_f9b01407-07c9-4cb5-8203-bf2192d4ddc9",
+    "resourceId": "resource_1aa4d0ab-79c5-429d-814e-42c4a86d6a8a",
+    "ocrReceiptSha": "3e1b056308d81156ae0a577e68b05fc757edea6da536a30e4fa2a393f21f666e",
+    "checks": 3,
+    "starts": 2,
+    "cloudAttempts": 0,
+    "rendererErrors": [],
+    "result": {
+      "schemaVersion": "xiaozhi.material-folder-ai.v1",
+      "batchId": "batch_f9b01407-07c9-4cb5-8203-bf2192d4ddc9",
+      "status": "complete",
+      "revision": 1,
+      "maxCalls": 2,
+      "calls": 0,
+      "reserved": 0,
+      "resources": 1,
+      "units": 1,
+      "complete": 1,
+      "skippedCover": 1,
+      "review": 0,
+      "failed": 0,
+      "waiting": 0,
+      "readyQuestions": 0,
+      "reviewQuestions": 0,
+      "error": "",
+      "issues": []
+    },
+    "importToCompleteMs": 13890,
+    "scope": "Actual authorized book cover, fresh local PDF OCR, folder import/consent/skip UI, typed IPC, SQLite and restart; no provider, mathematical quality, whole-book or natural 40GB acceptance",
+    "sourceTextImagesUploaded": false
+  },
+  "finalBuild": [
     {
-      "path": "apps\\desktop\\out\\main\\index.js",
-      "bytes": 3309133,
-      "sha256": "d2a3869a6a9308f2aae43b8047a6a4716fffaf77bba33fb1bf3050a533218bbd"
+      "path": "apps/desktop/out/main/index.js",
+      "bytes": 3309674,
+      "sha256": "0e3de6090653cf1a7a866bc2cb32ed5af807891837f90e0c57c4a060b0b152f2"
     },
     {
-      "path": "apps\\desktop\\out\\renderer\\assets\\index-DR_8N49S.js",
+      "path": "apps/desktop/out/renderer/assets/index-DR_8N49S.js",
       "bytes": 7246099,
       "sha256": "c7faf858518419d215875861d1efb01a268c1cd986ce438f948be75c50196b1d"
     }
   ],
-  "audit": {
-    "command": "npm.cmd audit --json",
-    "exit": 1,
-    "total": 45,
-    "high": 8,
-    "moderate": 29,
-    "low": 8,
-    "critical": 0,
-    "newDependencies": 0
+  "performance": {
+    "baselineSource": "f714981",
+    "mainBytesBefore": 3307397,
+    "mainBytesAfter": 3309674,
+    "mainDeltaBytes": 2277,
+    "rendererBytesBefore": 7245763,
+    "rendererBytesAfter": 7246099,
+    "rendererDeltaBytes": 336,
+    "sameRendererAsComponentRun": true,
+    "coverPaidCallsBefore": 0,
+    "coverPaidCallsAfter": 0,
+    "observedFreshCoverOcrAndImportMs": [
+      15101,
+      13890
+    ],
+    "scope": "Bundle-size comparison and two actual local-only cover runs, NOT a controlled latency improvement, natural tens-of-GB throughput, Recall or P95. Guard uses task-key primary-key lookup, no full task metadata scan."
   },
-  "failuresRetained": [
-    "First boundary run omitted --experimental-transform-types; no product test executed in those two scripts",
-    "Initial cover helper queried nonexistent q.version; then a wrong-cwd edit failed and reran unchanged helper; no app launched or cloud sent",
-    "pypdf warned of malformed source xrefs; replaced extraction with existing PDFium and verified original/derived page pixels equal",
-    "cover-skip-DKrJBR incorrectly required a sealed account while the authorized test used an existing environment credential; launch failed before import, 0 cloud",
-    "Malformed billing JSON boundary initially threw raw SQLite error; fixed fail-closed view, boundary now passes"
-  ],
-  "limitations": [
-    "This is verified explicit PDF cover handling, not universal non-question classification across all image/Word/manual AI paths",
-    "Old four preface candidates are retained; no destructive cleanup",
-    "Actual 12 question-page items and independent answer entries remain held; this slice does not resolve their uncertainty",
-    "Natural tens-of-GB content quality/recall/P95, daily D runtime, installer and full Goal are not accepted"
-  ],
-  "rollback": "Pause folder processing, revert this slice; original PDFs/OCR/question facts and prior local skip rows remain readable. No DDL rollback. Full revert drill not performed",
-  "finalValidation": "pending after smoke and final build"
+  "gitDelivery": {
+    "sourceCommitted": "eab6d1b5c726301292601c38023dd4c64d450fcf",
+    "upstreamAtFinalFetch": "f7149812a972976925c10156d98ddbbaf28e219e",
+    "mainAlreadyAncestor": true,
+    "delivery": "Normal atomic HEAD:main and HEAD:codex/knowledge-base-reuse-implementation, verify ls-remote matches final HEAD; final transport result reported in chat",
+    "force": false,
+    "dailyDTreeOrInstallerUpdated": false
+  }
 }
