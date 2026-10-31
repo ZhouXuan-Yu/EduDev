@@ -1,3 +1,4 @@
+import {productEntry} from '../product-navigation.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {tmpdir} from 'node:os';
@@ -36,7 +37,7 @@ async function launch(){
   page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});
 }
 const ai=()=>page.locator('[data-testid="material-ai-panel"]:visible');
-const nav=space=>page.locator(`[data-testid="product-nav-${space}"]:visible`).click();
+const nav=space=>productEntry(page,space).click();
 const batches=()=>page.evaluate(id=>window.omniEdu.getMaterialAiBatches(id),id);
 const entries=()=>page.evaluate(()=>window.omniEdu.listQuestionNotebook({limit:30}));
 const notebook=async()=>{await nav('teaching');await page.getByTestId('nav-question_notebook').click();};

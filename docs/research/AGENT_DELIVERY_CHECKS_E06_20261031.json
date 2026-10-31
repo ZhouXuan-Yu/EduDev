@@ -2221,5 +2221,522 @@
       "https://support.microsoft.com/en-us/office/lifecycle/command-line-switches-for-microsoft-office-products",
       "https://learn.microsoft.com/en-us/answers/questions/4846980/word-2010-hangs-when-macro-is-used-to-exportasfixe"
     ]
+  },
+  "wordInteropSlice": {
+    "date": "2026-10-31",
+    "implementationSha": "a94ab29",
+    "goalStatus": "active",
+    "newFullyAcceptedRequirements": 0,
+    "scope": "Word actual three-page PDF/PNG now works through original composer, original file panel and cold restart. Bounded lock-release cleanup fixed; focused original cancel and pre-existing Word busy paths pass. Not complete E06/FX09/WPS/252AT.",
+    "changes": [
+      "Explicit string/BSTR path for ExportAsFixedFormat; Join-Path wrapped value stalls the same source at export in the untyped control.",
+      "COM by-reference SaveChanges for blank/document Close and application Quit, including cleanup.",
+      "Same original service/worker/PNG cache/file panel; no business DDL, IPC, dependency, renderer or Word user-options changes.",
+      "After owned Job shutdown, retry only known stage-file unlink operations for at most2s, retaining the worker reservation; no recursive delete or user-file change."
+    ],
+    "diagnosticControl": {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-word-untyped-control-xAkarJ",
+      "ms": 20025,
+      "timeout": true,
+      "code": null,
+      "out": "",
+      "trace": "exporting",
+      "files": [
+        "input.docx",
+        "owned.json",
+        "request.json",
+        "trace.txt"
+      ]
+    },
+    "typedExportIntermediate": {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-word-typed-s1D4eo",
+      "ms": 6432,
+      "code": 1,
+      "trace": "opened export exported",
+      "files": [
+        "input.docx",
+        "input.pdf",
+        "owned.json",
+        "request.json",
+        "trace.txt"
+      ]
+    },
+    "intermediateCloseError": "After string cast actual PDF exists; next call fails Parameter1 requires System.Management.Automation.PSReference. Close/Quit ref corrected; failed report retained at omni-edu-paged-native-sroJnu.",
+    "native": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-word-native-diagnostic.mjs",
+      "exit": 0,
+      "report": {
+        "ok": true,
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-native-yktGwh",
+        "checks": [
+          "OOXML aggregate body cannot masquerade as a known physical Word page before actual pagination",
+          "Real three-page A4 DOCX with long title, table and Office formula exports and rasterizes every actual page; original bytes unchanged",
+          "Independent actual PDF text preserves physical page2 and numeric6cm; the same required text on page1 fails",
+          "Rendering the actual exported PDF produces identical page pixels without launching Word or modifying PDF bytes"
+        ],
+        "boundary": "Actual native Word PDF export, Windows PDF rasterization and independent PDF page text; synthetic owned fixtures, no real provider or teacher files. Not complete E06/Office/WPS acceptance.",
+        "word": {
+          "engine": "Word 16.0 / Windows.Data.Pdf",
+          "sha256": "47055264432541abe76577603983fc189d60c1e1342e1036fdc49cd54d1741e2",
+          "pages": [
+            {
+              "page": 1,
+              "kind": "office_page",
+              "sha256": "8e1d802ec2ea3603f00b85facf2f3d12957b43fbcac31374a6a677dd6f09c759",
+              "bytes": 44301,
+              "width": 1697,
+              "height": 2400,
+              "viewport": "1697x2400"
+            },
+            {
+              "page": 2,
+              "kind": "office_page",
+              "sha256": "7336a9ae9269df42b80c5fba22e19dbe29a1a2b07ce52e34db7e27fed230ec47",
+              "bytes": 32028,
+              "width": 1697,
+              "height": 2400,
+              "viewport": "1697x2400"
+            },
+            {
+              "page": 3,
+              "kind": "office_page",
+              "sha256": "9cb728cac62083bbfdc8ffdda079d0eacd2ace05cc5eb2f194de49984baa8db0",
+              "bytes": 26217,
+              "width": 1697,
+              "height": 2400,
+              "viewport": "1697x2400"
+            }
+          ]
+        },
+        "pdfSha256": "bed1ad97bd06519ce1376080cd00a3ed6612e962914090d5c95d0650cf120cd8"
+      },
+      "sourceBoundary": "String cast and ref behavior match current production script; subsequent comments/test fixture extraction only. Final formal UI uses current built source."
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "rawLocal": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-word-audit-20261031.json",
+      "automaticUpgrades": false
+    },
+    "runtime": {
+      "sourceWorktree": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+      "dailyDDriveUpdated": false,
+      "installerUpdated": false,
+      "newPaidRequests": 0
+    },
+    "rollback": "Revert44eb69a cleanup change and a94ab29 Word invocation adjustment while preserving original files, reports and optional PNG readers; no business DDL/migration. Full rollback not separately rehearsed.",
+    "references": [
+      "https://learn.microsoft.com/en-us/office/vba/api/word.document.exportasfixedformat",
+      "https://learn.microsoft.com/zh-cn/dotnet/api/microsoft.office.interop.word._document.close?view=word-pia",
+      "https://learn.microsoft.com/en-us/dotnet/api/microsoft.office.interop.word._application.quit?view=word-pia"
+    ],
+    "fingerprints": {
+      "apps/desktop/out/main/index.js": {
+        "sha256": "ace38e81d80670ce05357937a704cf4fd357df4a1257ab019b1722a658c75c62",
+        "bytes": 3221295
+      },
+      "apps/desktop/out/preload/index.cjs": {
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9",
+        "bytes": 34761
+      },
+      "apps/desktop/out/renderer/assets/index-DojEMfLk.js": {
+        "sha256": "84f5912d2f864c8864b783b3f9eaf9d2c0f45babaad7f913b836cd466d47ed41",
+        "bytes": 7175676
+      }
+    },
+    "finalSourceSha": "44eb69a7ffe3e65d9d3a102ee3906de9faad3904",
+    "initialBuildFingerprints": {
+      "apps/desktop/out/main/index.js": {
+        "sha256": "c70cac29630e25fcdf5195963cde2b34875990abde2cfdad2a5d1d77f74a1aad",
+        "bytes": 3220918
+      },
+      "apps/desktop/out/preload/index.cjs": {
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9",
+        "bytes": 34761
+      },
+      "apps/desktop/out/renderer/assets/index-DojEMfLk.js": {
+        "sha256": "84f5912d2f864c8864b783b3f9eaf9d2c0f45babaad7f913b836cd466d47ed41",
+        "bytes": 7175676
+      }
+    },
+    "tests": {
+      "comprehensive": {
+        "command": "npm run test:smoke",
+        "exit": 0,
+        "includes": "npm run build (typecheck + electron-vite) and actual isolated legacy-test Electron regression",
+        "passed": 207,
+        "total": 207,
+        "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-smoke-dsJR7X",
+        "log": "apps/desktop/delivery-word-smoke.log",
+        "source": "a94ab29",
+        "boundary": "Passed before subsequent Word stage cleanup repair; no complete Pi/Word/teacher acceptance claim."
+      },
+      "finalBuild": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "apps/desktop/delivery-word-cleanup-build.log",
+        "source": "44eb69a7ffe3e65d9d3a102ee3906de9faad3904"
+      },
+      "formalWord": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-paged-ui-jz8LWa --word-success",
+        "exit": 1,
+        "report": {
+          "ok": false,
+          "checks": [
+            "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+            "Original composer reads the actual three-page Word file, exports real Word PDF and persists all3 independently hashed PNGs; page2 text and6cm pass without modifying source bytes",
+            "Original Word file panel selects exact native page2 pixels and enlarges at1366/1920; Escape preserves the original file panel",
+            "Cold original application retrieves the same persisted actual Word page2 without a model call or file/publication replay"
+          ],
+          "errors": [],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-ynsfe4",
+          "boundary": "Formal composer/original review/PDF file actions, actual native pages, SQLite and cold restart. Synthetic SSE only; no paid model, teacher data or complete E06 acceptance. Word success is checked only in the explicit --word-success mode; no complete E06/WPS/semantic visual claim.",
+          "word": {
+            "elapsedMs": 17538,
+            "file": {
+              "path": "三页Word实际检查.docx",
+              "fileVersion": "e2e06d18bcdfd17bf0ebe14383eb7c2f5cc4dee51e730b5679050c408daf7c7b",
+              "sha256": "f590a7147f7d2eee07d24314851d41ca85e5ecf45a8623f24499ae7de09c42ac",
+              "size": 9900,
+              "format": "docx",
+              "checks": [
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "actual_paged_rendered",
+                  "message": "Word 16.0 / Windows.Data.Pdf已实际渲染全部3页，截图可查看；缺字、公式字形、裁切与语义遮挡仍需核对，未据此判定视觉全通过。"
+                },
+                {
+                  "kind": "structure",
+                  "state": "passed",
+                  "code": "parsed",
+                  "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "page_count",
+                  "message": "要求3页，实际3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "contains",
+                  "page": 2,
+                  "message": "正文应包含“PAGE_TWO”：符合。"
+                },
+                {
+                  "kind": "numbers",
+                  "state": "passed",
+                  "code": "numeric_comparison",
+                  "ruleId": "depth",
+                  "message": "按声明核对：期望6cm，实际6cm。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "not_applicable",
+                  "code": "document_interaction",
+                  "message": "本次非HTML文件没有约定的交互动作检查。"
+                },
+                {
+                  "kind": "consistency",
+                  "state": "not_applicable",
+                  "code": "single_file",
+                  "message": "当前仅检查一份文件。"
+                }
+              ],
+              "renderedPages": [
+                1,
+                2,
+                3
+              ],
+              "numbers": [
+                {
+                  "id": "depth",
+                  "value": 6,
+                  "unit": "cm"
+                }
+              ],
+              "state": "partial",
+              "visualEvidence": [
+                {
+                  "page": 1,
+                  "kind": "office_page",
+                  "sha256": "8e1d802ec2ea3603f00b85facf2f3d12957b43fbcac31374a6a677dd6f09c759",
+                  "bytes": 44301,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 2,
+                  "kind": "office_page",
+                  "sha256": "7336a9ae9269df42b80c5fba22e19dbe29a1a2b07ce52e34db7e27fed230ec47",
+                  "bytes": 32028,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 3,
+                  "kind": "office_page",
+                  "sha256": "9cb728cac62083bbfdc8ffdda079d0eacd2ace05cc5eb2f194de49984baa8db0",
+                  "bytes": 26217,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                }
+              ],
+              "facts": [],
+              "pageCount": 3
+            }
+          },
+          "error": "Error: Paged UI condition timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-paged-electron.mjs:4:346)\n    at async checkWordPages (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-word-ui-checks.mjs:45:63)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-paged-electron.mjs:22:79"
+        },
+        "boundary": "Original composer actual Word inspect, original file panel1366/1920 and exact native cold page retrieval pass. Later stop assertion found real stage cleanup failure, retained as exit1. Export script unchanged in final source; not an all-green suite."
+      },
+      "focusedWordRecovery": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-paged-ui-jz8LWa --word-success --word-recovery-only",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "checks": [
+            "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+            "Recovery continuation reuses the exact prior Word bytes and persisted3-page proof; positive render/view/restart are not replayed",
+            "Visible Word Check Current File can be stopped after real Office ownership; its process and staging exit, cancelled receipt persists and original bytes remain unchanged",
+            "An independent already-open Word instance stays alive while original composer reports busy and unrendered; it is not adopted or closed"
+          ],
+          "errors": [],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-PkUFYI",
+          "boundary": "Formal composer/original review/PDF file actions, actual native pages, SQLite and cold restart. Synthetic SSE only; no paid model, teacher data or complete E06 acceptance. Word success is checked only in the explicit --word-success mode; no complete E06/WPS/semantic visual claim.",
+          "word": {
+            "elapsedMs": 29,
+            "file": {
+              "path": "三页Word实际检查.docx",
+              "fileVersion": "e2e06d18bcdfd17bf0ebe14383eb7c2f5cc4dee51e730b5679050c408daf7c7b",
+              "sha256": "f590a7147f7d2eee07d24314851d41ca85e5ecf45a8623f24499ae7de09c42ac",
+              "size": 9900,
+              "format": "docx",
+              "checks": [
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "actual_paged_rendered",
+                  "message": "Word 16.0 / Windows.Data.Pdf已实际渲染全部3页，截图可查看；缺字、公式字形、裁切与语义遮挡仍需核对，未据此判定视觉全通过。"
+                },
+                {
+                  "kind": "structure",
+                  "state": "passed",
+                  "code": "parsed",
+                  "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "page_count",
+                  "message": "要求3页，实际3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "contains",
+                  "page": 2,
+                  "message": "正文应包含“PAGE_TWO”：符合。"
+                },
+                {
+                  "kind": "numbers",
+                  "state": "passed",
+                  "code": "numeric_comparison",
+                  "ruleId": "depth",
+                  "message": "按声明核对：期望6cm，实际6cm。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "not_applicable",
+                  "code": "document_interaction",
+                  "message": "本次非HTML文件没有约定的交互动作检查。"
+                },
+                {
+                  "kind": "consistency",
+                  "state": "not_applicable",
+                  "code": "single_file",
+                  "message": "当前仅检查一份文件。"
+                }
+              ],
+              "renderedPages": [
+                1,
+                2,
+                3
+              ],
+              "numbers": [
+                {
+                  "id": "depth",
+                  "value": 6,
+                  "unit": "cm"
+                }
+              ],
+              "state": "partial",
+              "visualEvidence": [
+                {
+                  "page": 1,
+                  "kind": "office_page",
+                  "sha256": "8e1d802ec2ea3603f00b85facf2f3d12957b43fbcac31374a6a677dd6f09c759",
+                  "bytes": 44301,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 2,
+                  "kind": "office_page",
+                  "sha256": "7336a9ae9269df42b80c5fba22e19dbe29a1a2b07ce52e34db7e27fed230ec47",
+                  "bytes": 32028,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 3,
+                  "kind": "office_page",
+                  "sha256": "9cb728cac62083bbfdc8ffdda079d0eacd2ace05cc5eb2f194de49984baa8db0",
+                  "bytes": 26217,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                }
+              ],
+              "facts": [],
+              "pageCount": 3
+            },
+            "recoveryOnly": true,
+            "stopMs": 1167,
+            "cancelledOwner": {
+              "start": "2026-10-31T09:50:58.1151694Z",
+              "pid": 23148,
+              "folder": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa\\data\\cache\\delivery-paged\\v1\\render-40jnjP"
+            },
+            "busyOwner": {
+              "start": "2026-10-31T09:51:04.3974290Z",
+              "pid": 51164
+            }
+          }
+        },
+        "boundary": "Same exact previously inspected Word file and3-page proofs reused; cancel and busy checked in final build. Does not replay generation/view/cold path or pretend elapsedMs29 is render time."
+      }
+    },
+    "retainedFailures": {
+      "uiSetup": [
+        "omni-edu-paged-ui-CWPuKb: synthetic files[{}] from using Electron evaluate first argument as payload; only resume check passed, exit1.",
+        "omni-edu-paged-ui-gISAds: run wait fixed but same invalid synthetic payload persisted, exit1. Corrected evaluate to use its second payload parameter and require matching actual runId."
+      ],
+      "nativeClose": "omni-edu-paged-native-sroJnu: explicit string exported PDF but Close requires ref; retained failed intermediate.",
+      "realCancelCleanup": "omni-edu-paged-ui-ynsfe4: actual Word process stopped and cancelled receipt saved, but input.docx was locked when one-shot unlink ran; current2s bounded retry verified by focus.",
+      "oldOwnedStageFiles": [
+        {
+          "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa\\data\\cache\\delivery-paged\\v1\\render-HkP3Nk\\input.docx",
+          "retained": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-PkUFYI\\retained-before-cleanup\\render-HkP3Nk.docx",
+          "sha256": "230dfe075c14fa348a82e9f4fcbb9aa19aba5a1d4b490c7c9edd740f5f5ac665",
+          "bytes": 9463
+        },
+        {
+          "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa\\data\\cache\\delivery-paged\\v1\\render-mXEg6Q\\input.docx",
+          "retained": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-PkUFYI\\retained-before-cleanup\\render-mXEg6Q.docx",
+          "sha256": "f590a7147f7d2eee07d24314851d41ca85e5ecf45a8623f24499ae7de09c42ac",
+          "bytes": 9900
+        }
+      ],
+      "oldStageHandling": "After recording exact synthetic hashes, copied these2 own pre-fix leftover files into retained failure evidence and removed only those verified input files and now-empty folders. Not claimed as automatic old-cache recovery. New final operation stage removed itself."
+    },
+    "performance": {
+      "before": "Untyped same Word file stalls at ExportAsFixedFormat for20s with no PDF; original production15s worker returned unchecked.",
+      "after": {
+        "typedExportDiagnosticMs": 6432,
+        "formalThreePageWholeTurnMs": 17538,
+        "finalStopWholeObservationMs": 1167,
+        "rendererBeforeBytes": 7175676,
+        "rendererAfterBytes": 7175676
+      },
+      "boundary": "Typed intermediate includes later ref failure, so6432ms is an export diagnostic rather than complete render latency.17538ms includes synthetic provider/startup/tool/whole turn;1167ms includes process/stage observation. Single samples only, no P95 or1-second dispatch claim."
+    },
+    "knownGaps": [
+      "WPS actual pages",
+      "Per-glyph missing glyphs, semantic occlusion, full FX09 long table/header/image and formulas",
+      "All teacher requirements bound, mixed terminal and complete E06/E07/E08/C with staged AT",
+      "Daily D: runtime and installer not updated; no new paid calls"
+    ],
+    "scriptUnchangedFromPositiveNativeAndUi": "paged-document-script.ts unchanged since a94ab29; final production repair changes only bounded stage cleanup in paged-document.ts. Renderer bundle SHA unchanged.",
+    "finalIntegration": {
+      "sourceSha": "feef9d4ea6e8146d6cda9fd21a41d79137ad2a13",
+      "mergedMainSha": "f4dce3fb071fde5022074b587621a6a740d26dd0",
+      "earlierIntegrationSha": "dcf4f9cea2293a2e1620490e9a40d243547072e0",
+      "earlierMainSha": "cbe47349c83a0e2e04a9158117350fcae9e26a36",
+      "conflicts": "First integration15 Markdown files, latest4 root Markdown files; both full stage texts retained in order. No production source conflicts.",
+      "preservedPeers": "KB disk-full retry/40GiB evidence and sidebar collapsible groups/settings anchor retained. Peer changes are not attributed to Word slice.",
+      "wordSourceUnchangedFrom": "44eb69a7ffe3e65d9d3a102ee3906de9faad3904",
+      "unchangedPaths": [
+        "apps/desktop/src/main/xiaozhi-agent/checks",
+        "apps/desktop/src/shared/xiaozhi-delivery-checks.ts",
+        "apps/desktop/src/renderer/components/office/PiDeliveryCheck.tsx",
+        "apps/desktop/src/renderer/components/office/PiWorkspaceFiles.tsx"
+      ],
+      "checks": [
+        {
+          "command": "npm run build",
+          "exit": 0,
+          "includes": "TypeScript and electron-vite main/preload/renderer",
+          "log": "apps/desktop/delivery-word-sidebar-merged-build.log"
+        },
+        {
+          "command": "npm run test:renderer-components",
+          "exit": 0,
+          "passed": 240,
+          "total": 240,
+          "log": "apps/desktop/delivery-word-sidebar-merged-components.log"
+        }
+      ],
+      "fingerprints": {
+        "apps/desktop/out/main/index.js": {
+          "bytes": 3222093,
+          "sha256": "983ec4cd4537d078cdcc35095538d557dc3e0d0b9d5d926627a7c9f912637271"
+        },
+        "apps/desktop/out/preload/index.cjs": {
+          "bytes": 34761,
+          "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+        },
+        "apps/desktop/out/renderer/assets/index-kh9HPLG9.js": {
+          "bytes": 7179075,
+          "sha256": "5be081adbc8b53242d70048f3574d517794ffce3a734643fe15e41fe3198fa12"
+        }
+      },
+      "rendererBytesBeforeIntegration": 7175676,
+      "rendererBytesAfterIntegration": 7179075,
+      "performanceBoundary": "Bundle difference comes from merged main material retry/sidebar work. No final-app P95 or streaming measurements. Word native script and cancellation code are unchanged from their tested source.",
+      "testAttribution": "207/207 comprehensive suite belongs to a94ab29; initial Word positive paths belong to a94ab29, final cancel/busy4 assertions to44eb69a. Neither full suite nor native Word replayed after source-identical integrations.",
+      "inheritedFailedGates": [
+        "test:ui-contracts: existing PromptInput vendor fingerprint mismatch",
+        "production-bootstrap-ui.mjs: pre-navigation IPC expectation mismatch",
+        "npm audit:45 (8 high,29 moderate,8 low,0 critical),exit1"
+      ],
+      "inheritedEvidence": "docs/design/sidebar-navigation-2026-10-31/README.md",
+      "goalStatus": "active",
+      "newFullyAcceptedRequirements": 0,
+      "dailyRuntimeUpdated": false,
+      "installerUpdated": false,
+      "newPaidCalls": 0
+    }
   }
 }

@@ -51,7 +51,7 @@ async function send(text,expected){
  return batch;
 }
 async function globalSettings(){await page.getByRole('button',{name:'设置',exact:true}).click();await page.getByTestId('pi-settings-workspace').waitFor();await until(async()=>await page.getByTestId('pi-thinking-global-trigger').count()&&!await page.getByTestId('pi-thinking-global-trigger').isDisabled());}
-async function back(){await page.locator('[data-testid="product-rail"]:visible').getByTestId('product-nav-ask').click();await ready();}
+async function back(){await page.locator('[data-testid="product-rail"]:visible').getByTestId('nav-ai-workspace').click();await ready();}
 try{
  await launch();idA=await page.locator('.office-composer-container').getAttribute('data-session-id');
  await globalSettings();await choose('global','high');await back();

@@ -22,8 +22,8 @@ async function launch(){
  app=await _electron.launch({executablePath:exe,args:['--user-data-dir='+profile],cwd:output,env,timeout:60000});
  page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));
  await page.setViewportSize({width:1366,height:768});
- await page.getByTestId('product-nav-materials').waitFor({timeout:60000});
- await page.getByTestId('product-nav-materials').click();await page.getByTestId('materials-import').waitFor();
+ await page.getByTestId('nav-knowledge').waitFor({timeout:60000});
+ await page.getByTestId('nav-knowledge').click();await page.getByTestId('materials-import').waitFor();
 }
 try{
  await launch();

@@ -23,7 +23,7 @@ async function launch(fault){
     if(fault){const fs=process.getBuiltinModule('node:fs/promises'),statfs=fs.statfs;fs.statfs=async function(target,...args){const info=await statfs.call(this,target,...args);return String(target)===archiveRoot?{...info,bavail:0}:info;};}
   },{fault,archiveRoot:path.join(data,'teacher_resources')});
   page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));
-  await page.locator('[data-testid="product-nav-materials"]:visible').click();
+  await page.locator('[data-testid="nav-knowledge"]:visible').click();
 }
 async function close(){if(app){report.cloudRequests+=await app.evaluate(()=>globalThis.diskFullCloud||0);await app.close();app=undefined;}}
 async function visual(width,height,name){await app.evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(s.width,s.height),{width,height});await page.waitForFunction(s=>innerWidth===s.width&&innerHeight===s.height,{width,height});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(output,name),fullPage:true});}

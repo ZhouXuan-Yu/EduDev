@@ -87,7 +87,7 @@ async function launch(){
   });
   page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));
   await page.evaluate(()=>{globalThis.capacityCommands=[];globalThis.capacityEvents=[];window.omniEdu.onDesktopCommand?.(command=>globalThis.capacityCommands.push({command,time:Date.now()}));document.addEventListener('click',e=>{globalThis.capacityEvents.push({time:Date.now(),testId:e.target.closest('[data-testid]')?.getAttribute('data-testid')});globalThis.capacityEvents=globalThis.capacityEvents.slice(-20);},true);});
-  await page.locator('[data-testid="product-nav-materials"]:visible').click();
+  await page.locator('[data-testid="nav-knowledge"]:visible').click();
   await page.getByTestId('materials-search-mode').waitFor();
   timer=setInterval(()=>void sample(),5000);await sample();
 }
@@ -102,7 +102,7 @@ async function close(){
 async function query(label){
   const before=await page.evaluate(()=>({view:document.querySelector('.edu-shell[data-view]')?.getAttribute('data-view'),materials:!!document.querySelector('[data-testid="materials-workspace"]'),commands:globalThis.capacityCommands||[],events:globalThis.capacityEvents||[]}));
   if(!before.materials){(report.navigationInterruptions??=[]).push({time:Date.now(),label,...before});await page.screenshot({path:path.join(output,'navigation-interruption-'+Date.now()+'.png')});}
-  await page.locator('[data-testid="product-nav-materials"]:visible').click();
+  await page.locator('[data-testid="nav-knowledge"]:visible').click();
   await page.getByTestId('materials-workspace').waitFor();
   const start=performance.now();await page.getByTestId('materials-search-mode').selectOption('keyword');
   await page.getByTestId('materials-text-query').fill(label);await page.getByTestId('materials-text-submit').click();

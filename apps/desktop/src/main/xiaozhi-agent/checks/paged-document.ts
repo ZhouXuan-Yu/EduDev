@@ -65,7 +65,16 @@ export async function renderPagedDocument(bytes:Buffer,metrics:DocumentMetrics,o
   findings.push({kind:'visual',state:'unchecked',code:'actual_paged_rendered',message:`${value.engine}已实际渲染全部${captures.length}页，截图可查看；缺字、公式字形、裁切与语义遮挡仍需核对，未据此判定视觉全通过。`});
   return{pages:captures.map(c=>c.page),captures,findings,engine:value.engine,...(pdfBytes?{pdfBytes}:{})};
  }finally{
-  if(folder){for(const name of ['input.docx','input.pdf','request.json','owned.json',...Array.from({length:64},(_,i)=>`page-${i+1}.png`)])await fs.unlink(path.join(folder,name)).catch(()=>{});await fs.rmdir(folder).catch(()=>{});}
+  if(folder){
+   // A Job close initiates Word shutdown; its file handles can outlive the helper's close event.
+   const pending=new Set(['input.docx','input.pdf','request.json','owned.json',...Array.from({length:64},(_,i)=>`page-${i+1}.png`)]),deadline=Date.now()+2000;
+   while(pending.size){
+    for(const name of pending)try{await fs.unlink(path.join(folder,name));pending.delete(name);}catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')pending.delete(name);}
+    if(!pending.size||Date.now()>=deadline)break;
+    await new Promise(resolve=>setTimeout(resolve,50));
+   }
+   await fs.rmdir(folder).catch(()=>{});
+  }
   running=false;release();
  }
 }

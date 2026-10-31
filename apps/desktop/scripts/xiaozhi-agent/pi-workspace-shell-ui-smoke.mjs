@@ -1,3 +1,4 @@
+import {productEntry} from '../product-navigation.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -34,7 +35,7 @@ async function capture(theme,width,height,part){await page.emulateMedia({colorSc
 }
 
 const rail=()=>page.locator('[data-testid=product-rail]:visible');
-async function productNavigate(space){await rail().getByTestId('product-nav-'+space).click();await until(async()=>await rail().getByTestId('product-nav-'+space).getAttribute('aria-current')==='page');}
+async function productNavigate(space){await productEntry(page,space).click();await until(async()=>await productEntry(page,space).getAttribute('aria-current')==='page');}
 async function productCapture(space,theme,width,height,part=''){
   await page.emulateMedia({colorScheme:theme});await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});await page.waitForFunction(size=>innerWidth===size.width&&innerHeight===size.height,{width,height});await settleWorkspaceTransitions(page);
   const buttons=rail().locator('button');assert.equal(await buttons.count(),5);assert.deepEqual(await buttons.evaluateAll(nodes=>nodes.map(n=>n.getAttribute('aria-label'))),['问小智','我的资料','教学内容','学生','设置']);
@@ -70,7 +71,7 @@ try{
     const title=page.getByTestId(`ai-conversation-session-${session}`).locator('[data-slot="chat-list-view-title"]'),titleBox=await title.boundingBox();assert(titleBox.width>160);assert.equal(await title.evaluate(element=>element.scrollWidth<=element.clientWidth),true);
     await page.getByTestId('pi-task-details-expand').click();await page.getByTestId('pi-model-capabilities').waitFor({state:'visible'});assert(await page.getByTestId('pi-run-observation').isVisible());assert(!await page.getByTestId('pi-budget-save').count());assert(await page.getByTestId('pi-memory-scope').isVisible());await page.getByTestId('pi-task-details-expand').click();
     await page.getByTestId('pi-aside-toggle').click();assert(!await page.getByTestId('xiaozhi-pi-inspector').isVisible());await page.getByTestId('pi-aside-toggle').click();assert(await page.getByTestId('xiaozhi-pi-inspector').isVisible());
-    await page.getByTestId('pi-sidebar-toggle').click();await until(async()=>(await page.locator('.sidebar__offcanvas-wrapper').boundingBox())?.width===0);await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-ask').click();await until(async()=>Math.abs((await page.locator('.sidebar__offcanvas-wrapper').boundingBox()).width-254)<1);
+    await page.getByTestId('pi-sidebar-toggle').click();await until(async()=>(await page.locator('.sidebar__offcanvas-wrapper').boundingBox())?.width===0);await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').click();await until(async()=>Math.abs((await page.locator('.sidebar__offcanvas-wrapper').boundingBox()).width-254)<1);
     check(`Actual shell/table/code/details/sidebar and no-budget observation are reachable in ${theme} at ${width}x${height}`,()=>{});
   }
 
@@ -90,7 +91,7 @@ try{
   await page.getByTestId('pi-sidebar-toggle').click();await page.getByTestId('pi-aside-toggle').click();await until(async()=>(await page.locator('.sidebar__offcanvas-wrapper').boundingBox())?.width===0);
   const preserved=await state();report.preferencesBeforeRestart=await page.evaluate(()=>localStorage.getItem('xiaozhi.ui.v1'));assert.deepEqual(JSON.parse(report.preferencesBeforeRestart),{schema:1,sidebar:false,aside:false});report.userData=await app.evaluate(({app})=>app.getPath('userData'));await app.close();app=undefined;await launch();report.preferencesAfterRestart=await page.evaluate(()=>localStorage.getItem('xiaozhi.ui.v1'));assert.equal(report.preferencesAfterRestart,report.preferencesBeforeRestart);await until(async()=>(await page.locator('.sidebar__offcanvas-wrapper').boundingBox())?.width===0);assert(!await page.getByTestId('xiaozhi-pi-inspector').isVisible());assert.deepEqual(await state(),preserved);
   check('Actual restart retains closed-pane preferences, folders, archive and local conversation facts',()=>{});
-  await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-ask').click();await page.getByTestId('pi-aside-toggle').click();await page.getByTestId('product-nav-materials').click();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'hidden'});
+  await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').click();await page.getByTestId('pi-aside-toggle').click();await page.getByTestId('nav-knowledge').click();await page.getByTestId('xiaozhi-pi-workspace').waitFor({state:'hidden'});
   await acceptMaterials();
   check('Five-space materials entry invokes the actual local teacher page',()=>{});await acceptNotebook();
   }

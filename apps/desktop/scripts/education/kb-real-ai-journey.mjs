@@ -51,7 +51,7 @@ try{
   };}
  },{ledger,mode,callLimit});
  page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});
- await page.locator('[data-testid="product-nav-materials"]:visible').click();await page.getByTestId('materials-import-folder').waitFor();
+ await page.locator('[data-testid="nav-knowledge"]:visible').click();await page.getByTestId('materials-import-folder').waitFor();
  const rows=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));
  const image=rows.resources.find(r=>r.originalFileName===imageName),pdf=rows.resources.find(r=>r.originalFileName===pdfName);if(!image||!pdf)throw Error('Selected resources missing');
  report.settings=await page.evaluate(()=>window.omniEdu.getMaterialAiSettings());if(!report.settings.configured)throw Error('Shared credential unavailable');
@@ -76,14 +76,14 @@ try{
    await app.evaluate(()=>{globalThis.__realAuthorizedSample=null;});report.batches.push({name:resource.originalFileName,batch});console.log(JSON.stringify(report.batches.at(-1)));
    if(!batch)throw Error('No AI batch created: '+await ai.innerText());if(!['complete','attention','configuration_changed'].includes(batch.status))throw Error('Batch did not settle; do not automatically retry');
    await page.screenshot({path:path.join(output,resource===image?'real-image-ai.png':'real-pdf-ai.png'),fullPage:true});
-   await page.locator('[data-testid="product-nav-materials"]:visible').click();
+   await page.locator('[data-testid="nav-knowledge"]:visible').click();
   }
   report.questions=await page.evaluate(()=>window.omniEdu.listQuestionNotebook({limit:30}));
   report.aiQuestions=report.questions.items.filter(q=>q.archive?.ai).map(q=>({id:q.id,state:q.archive.state,issues:q.archive.issues}));
   report.search=await page.evaluate(()=>window.omniEdu.searchQuestionsByMeaning({query:'洛埃镜 光的干涉',limit:10})).catch(e=>({error:String(e)}));
   const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{report.units=db.prepare('SELECT * FROM material_ai_units').all();}finally{db.close();}
   if(mode==='inspect'){
-   await page.locator('[data-testid="product-nav-teaching"]:visible').click();await page.locator('[data-testid="nav-question_notebook"]:visible').click();
+   await page.locator('[data-testid="nav-artifacts"]:visible').click();await page.locator('[data-testid="nav-question_notebook"]:visible').click();
    await page.getByTestId('question-notebook-search').fill('洛埃镜');await delay(1500);
    report.notebookSearchCount=await page.locator('[data-testid^="question-notebook-card-"]').count();await page.screenshot({path:path.join(output,'real-question-search.png'),fullPage:true});
    await page.getByTestId('question-semantic-query').fill('光的折射');await page.getByTestId('question-semantic-submit').click();await page.getByTestId('question-semantic-coverage').waitFor({timeout:90000});

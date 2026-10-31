@@ -10,6 +10,7 @@ import { assertIsolatedPiMain } from './acceptance/build-root.mjs';
 import { settleWorkspaceTransitions } from './xiaozhi-agent/capture-workspace-metrics.mjs';
 
 const desktop = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+fs.mkdirSync(path.join(desktop, 'test-results'), { recursive: true });
 const output = fs.mkdtempSync(path.join(desktop, 'test-results/daily-entry-'));
 const main = path.join(desktop, 'out/main/index.js');
 const profile = path.join(output, 'profile');
@@ -56,17 +57,18 @@ try {
   assert(!fs.existsSync(path.join(desktop, 'dist')));
   check('Daily out loads its own current file renderer despite inherited development URL and legacy flags');
   const rail = () => page.locator('[data-testid=product-rail]:visible');
-  assert.deepEqual(await rail().locator('[data-testid^="product-nav-"]').evaluateAll(items => items.map(x => x.getAttribute('data-testid'))),
-    ['ask','materials','teaching','students','settings'].map(space => 'product-nav-'+space));
+  assert.deepEqual(await rail().locator('.edu-nav-group-title').evaluateAll(items => items.map(x => x.getAttribute('data-testid'))),
+    ['ask','materials','teaching','students'].map(space => 'nav-group-'+space));
+  assert.equal(await page.getByTestId('edu-navigation-footer').getByTestId('nav-settings').count(),1);
   for (const [space, target] of [['materials','materials-workspace'], ['teaching','teaching-artifacts-workspace'], ['students','student-workspace'], ['settings','pi-settings-workspace']]) {
-    await rail().getByTestId('product-nav-' + space).click();
+    await page.locator('.edu-shell:visible').getByTestId('nav-'+({materials:'knowledge',teaching:'artifacts',students:'students',settings:'settings'})[space]).click();
     if (space === 'students') await page.getByTestId('product-space-workspace').waitFor();
     else await page.getByTestId(target).waitFor();
   }
-  await rail().getByTestId('product-nav-ask').click();
+  await rail().getByTestId('nav-ai-workspace').click();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor();
   check('Actual five teacher spaces return to the same sole Pi workspace; no old production shell');
-  await rail().getByTestId('product-nav-students').click();
+  await rail().getByTestId('nav-students').click();
   await page.getByTestId('student-lifecycle-no-student').waitFor();
   assert.deepEqual(studentFacts(), { students: [], records: [] });
   await page.getByTestId('student-create').click();
@@ -106,7 +108,7 @@ try {
     await page.screenshot({path:path.join(output,png),animations:'disabled'}); report.screenshots.push(png);
   }
   check('New student page fits both target sizes and themes with the current category sidebar and timeline');
-  await rail().getByTestId('product-nav-ask').click();
+  await rail().getByTestId('nav-ai-workspace').click();
   await page.getByTestId('xiaozhi-pi-workspace').waitFor();
   const session = await page.locator('.office-composer-container').getAttribute('data-session-id');
   const duplicate = spawn(path.join(desktop, 'node_modules/electron/dist/electron.exe'), [main, '--user-data-dir=' + profile], { cwd: desktop, env, stdio: 'ignore', windowsHide: true });
@@ -125,7 +127,7 @@ try {
   assert.equal(await page.locator('.office-composer-container').getAttribute('data-session-id'), session);
   assert(page.url().startsWith('file:') && page.url().includes('/out/renderer/index.html'));
   check('Cold restart uses the same default build and restores the same owned local session');
-  await rail().getByTestId('product-nav-students').click(); await studentLayout();
+  await rail().getByTestId('nav-students').click(); await studentLayout();
   assert.deepEqual(studentFacts(), before);
   check('Cold restart preserves the exact student and learning facts in the new page');
   assert.deepEqual(report.rendererErrors, []);

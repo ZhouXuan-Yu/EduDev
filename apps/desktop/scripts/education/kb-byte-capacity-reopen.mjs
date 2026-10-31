@@ -26,11 +26,11 @@ async function launch(){
   app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+path.join(output,'profile')],cwd:output,env,timeout:60000});
   await app.evaluate(({net})=>{globalThis.capacityReopenCloud=0;for(const object of [globalThis,net])object.fetch=async()=>{globalThis.capacityReopenCloud++;throw Error('Owned capacity verification blocks cloud');};});
   page=await app.firstWindow();page.setDefaultTimeout(60000);page.on('pageerror',e=>report.rendererErrors.push(e.message));
-  await page.locator('[data-testid="product-nav-materials"]:visible').click();await page.getByTestId('materials-text-query').waitFor();
+  await page.locator('[data-testid="nav-knowledge"]:visible').click();await page.getByTestId('materials-text-query').waitFor();
 }
 async function close(){if(app){report.cloudRequests+=await app.evaluate(()=>globalThis.capacityReopenCloud||0);await app.close();app=undefined;}}
 async function search(label,mode){
-  await page.locator('[data-testid="product-nav-materials"]:visible').click();await page.getByTestId('materials-search-mode').selectOption(mode);
+  await page.locator('[data-testid="nav-knowledge"]:visible').click();await page.getByTestId('materials-search-mode').selectOption(mode);
   await page.getByTestId('materials-text-query').fill(label);const start=performance.now();await page.getByTestId('materials-text-submit').click();
   await until(async()=>!await page.getByTestId('materials-text-submit').isDisabled());
   await until(async()=>await page.locator('[data-testid^="material-text-hit-"]').count()>0);
