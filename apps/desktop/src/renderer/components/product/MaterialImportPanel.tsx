@@ -22,7 +22,7 @@ export function MaterialImportPanel({revision,changed,open}:{revision:number;cha
   {error&&<p role="alert">{error}</p>}
   {page?.batches.map(batch=><article key={batch.id} className="material-batch" data-testid={'material-batch-'+batch.id} data-status={batch.status}>
    <div className="teacher-library-toolbar"><strong>{batch.name}</strong><span role="status">{labels[batch.status]}{batch.status==='running'&&batch.phase==='discover'?' · 扫描目录':''}</span>
-    {['queued','running'].includes(batch.status)?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'pause')} data-testid={'batch-pause-'+batch.id}>暂停归档</Button>:['paused','failed'].includes(batch.status)?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'resume')} data-testid={'batch-resume-'+batch.id}>继续归档</Button>:null}
+    {['queued','running'].includes(batch.status)?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'pause')} data-testid={'batch-pause-'+batch.id}>暂停归档</Button>:batch.status==='paused'?<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'resume')} data-testid={'batch-resume-'+batch.id}>继续归档</Button>:null}
     {(batch.failed>0||batch.parseFailed>0||batch.status==='failed')&&<Button size="sm" variant="secondary" isDisabled={!!pending} onPress={()=>void action(batch.id,'retry')} data-testid={'batch-retry-'+batch.id}>重试未完成</Button>}
     <Button size="sm" variant="ghost" onPress={()=>{setExpanded(expanded===batch.id?'':batch.id);setFileOffset(0);setFiles(undefined);}} data-testid={'batch-files-'+batch.id}>{expanded===batch.id?'收起文件':'查看文件'}</Button>
    </div>

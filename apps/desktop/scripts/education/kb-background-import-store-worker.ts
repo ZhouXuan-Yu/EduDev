@@ -43,6 +43,53 @@ export async function backgroundImportStore(output:string){
   checks.push('All 301 supported files reach the existing local text parser, with exact persisted original-file SHA256');
   const firstName=resources[0].original_file_name,selected=firstName==='尾页.txt'?path.join(folder,'子目录',firstName):path.join(folder,firstName);
   const publicResult=await store.importKnowledgeResources([selected],new AbortController().signal,true);assert(publicResult.overview);assert.equal(publicResult.resources.length,1);assert(publicResult.items[0].reused);assert.equal(overviews,1);checks.push('Existing public import still returns the complete overview and unchanged duplicate behavior');
-  return {success:true,checks,first,files:count+1,overviewsDuringBackground:0,totalMs:performance.now()-started,scope:'Actual OmniEduStore, SQLite, real file copying and local text parsing; synthetic 301 files, not 40GB, OCR, cloud quality or installer acceptance'};
+  const noSpace=path.join(output,'空间不足后恢复');await fs.mkdir(noSpace);
+  for(let i=0;i<129;i++)await fs.writeFile(path.join(noSpace,`恢复-${i}.txt`),`空间恢复资料 ${i}：光在均匀介质中沿直线传播。`);
+  const statfs=fs.statfs,archiveRoot=path.join(root,'teacher_resources');let archiveAttempts=0;
+  const currentHost=(store.materialImports as any).host,currentImport=currentHost.import;
+  currentHost.import=async(...args:any[])=>{archiveAttempts++;return currentImport(...args);};
+  fs.statfs=(async(target:any,options:any)=>{const info=await statfs(target,options);return path.resolve(String(target))===archiveRoot?{...info,bavail:0}:info;}) as typeof fs.statfs;
+  let failedId:string;
+  try{
+   failedId=await store.materialImports.create(noSpace);
+   const failed=await until(async()=>{const batch=(await store.materialImports.list()).batches.find(b=>b.id===failedId);return batch&&['failed','partial','completed'].includes(batch.status)?batch:undefined;});
+   assert.equal(failed.status,'failed','Disk full must stop the whole batch instead of attempting every file');
+   assert.match(failed.error,/磁盘空间不足/);assert.equal(archiveAttempts,1);assert.equal(failed.archived,0);
+   assert.equal(Number((await query("SELECT COUNT(*) n FROM material_import_entries WHERE batch_id=? AND kind='directory' AND status='failed'",[failedId]))[0].n),0);
+   assert.equal(Number((await query("SELECT COUNT(*) n FROM material_import_entries WHERE batch_id=? AND kind='file' AND status='pending'",[failedId]))[0].n),127);
+   assert.equal(Number((await query('SELECT COUNT(*) n FROM teacher_resources'))[0].n),count+1);
+   checks.push('Real archive disk-space guard stops after one ENOSPC, preserves pending files and unscanned directory, and exposes actionable batch error');
+  }finally{fs.statfs=statfs;currentHost.import=currentImport;}
+  await store.close();store=new OmniEduStore(root);await store.init();await store.materialQueue.start();store.materialSearch.start();store.materialQuestions.start();
+  const reopened=(await store.materialImports.list()).batches.find(b=>b.id===failedId!);assert.equal(reopened?.status,'failed');assert.match(reopened?.error||'',/磁盘空间不足/);
+  await store.materialImports.action({schemaVersion:'xiaozhi.material-import-batch.v1',batchId:failedId!,action:'retry'});
+  const recovered=await until(async()=>{const b=(await store.materialImports.list()).batches.find(b=>b.id===failedId!);return b&&['completed','partial','failed'].includes(b.status)?b:undefined;});
+  assert.equal(recovered.status,'completed');assert.equal(recovered.archived,129);assert.equal(recovered.failed,0);assert.equal(recovered.scanned,129);
+  assert.equal(Number((await query('SELECT COUNT(*) n FROM teacher_resources'))[0].n),count+130);
+  checks.push('After native Store reopen and restored space, explicit retry rescans the interrupted directory and archives all 129 originals without loss or duplicate facts');
+  const single=path.join(output,'尾批空间不足');await fs.mkdir(single);await fs.writeFile(path.join(single,'尾批.txt'),'尾批空间恢复后必须能继续归档。');
+  fs.statfs=(async(target:any,options:any)=>{const info=await statfs(target,options);return path.resolve(String(target))===archiveRoot?{...info,bavail:0}:info;}) as typeof fs.statfs;
+  let tailId:string;
+  try{tailId=await store.materialImports.create(single);const tail=await until(async()=>{const b=(await store.materialImports.list()).batches.find(b=>b.id===tailId);return b&&['failed','partial','completed'].includes(b.status)?b:undefined;});assert.equal(tail.status,'failed');assert.match(tail.error,/磁盘空间不足/);}
+  finally{fs.statfs=statfs;}
+  await store.materialImports.action({schemaVersion:'xiaozhi.material-import-batch.v1',batchId:tailId!,action:'retry'});
+  const tail=await until(async()=>{const b=(await store.materialImports.list()).batches.find(b=>b.id===tailId);return b&&['failed','partial','completed'].includes(b.status)?b:undefined;});assert.equal(tail.status,'completed');assert.equal(tail.archived,1);
+  checks.push('Final drain below the 128-item discovery window also stops on ENOSPC and recovers through the unchanged retry action');
+  const permissions=path.join(output,'单文件权限');await fs.mkdir(permissions);for(let i=0;i<3;i++)await fs.writeFile(path.join(permissions,`${i}.txt`),'权限问题不得阻止其他文件归档。');
+  const permissionHost=(store.materialImports as any).host,permissionImport=permissionHost.import;
+  permissionHost.import=async(files:string[],...args:any[])=>path.basename(files[0])==='1.txt'?{items:[{sourcePath:files[0],fileName:'1.txt',ok:false,fileSize:0,errorCode:'EACCES',errorMessage:'controlled local permission failure'}],resources:[]}:permissionImport(files,...args);
+  try{const permissionId=await store.materialImports.create(permissions);const partial=await until(async()=>{const b=(await store.materialImports.list()).batches.find(b=>b.id===permissionId);return b&&['failed','partial','completed'].includes(b.status)?b:undefined;});assert.equal(partial.status,'partial');assert.equal(partial.archived,2);assert.equal(partial.failed,1);assert.match((await store.materialImports.files(permissionId,0)).files.find(f=>f.status==='failed')?.error||'',/权限/);}
+  finally{permissionHost.import=permissionImport;}
+  checks.push('Single-file EACCES remains a partial batch with two other real archives and an actionable permission message');
+  const dbFullFolder=path.join(output,'复制后数据库空间不足');await fs.mkdir(dbFullFolder);await fs.writeFile(path.join(dbFullFolder,'数据库写满.txt'),'原件复制成功但数据库写满时不得遗留无主副本。');
+  const filesBefore=(await fs.readdir(archiveRoot)).sort(),resourcesBefore=Number((await query('SELECT COUNT(*) n FROM teacher_resources'))[0].n),ordinaryRun=(store as any).run.bind(store);
+  (store as any).run=async(sql:string,...args:any[])=>{if(/INSERT INTO teacher_resources\s*\(/.test(sql))throw Object.assign(new Error('database or disk is full'),{code:'SQLITE_FULL'});return ordinaryRun(sql,...args);};
+  let dbFullId:string;
+  try{dbFullId=await store.materialImports.create(dbFullFolder);const full=await until(async()=>{const b=(await store.materialImports.list()).batches.find(b=>b.id===dbFullId);return b&&['failed','partial','completed'].includes(b.status)?b:undefined;});assert.deepEqual((await fs.readdir(archiveRoot)).sort(),filesBefore,'A copied original with no SQLite resource must be removed on failed publication');assert.equal(full.status,'failed');assert.match(full.error,/磁盘空间不足/);assert.equal(Number((await query('SELECT COUNT(*) n FROM teacher_resources'))[0].n),resourcesBefore);}
+  finally{(store as any).run=ordinaryRun;}
+  await store.materialImports.action({schemaVersion:'xiaozhi.material-import-batch.v1',batchId:dbFullId!,action:'retry'});
+  const dbRecovered=await until(async()=>{const b=(await store.materialImports.list()).batches.find(b=>b.id===dbFullId);return b&&['failed','partial','completed'].includes(b.status)?b:undefined;});assert.equal(dbRecovered.status,'completed');assert.equal(dbRecovered.archived,1);assert.equal((await fs.readdir(archiveRoot)).length,filesBefore.length+1);
+  checks.push('SQLITE_FULL after a real successful copy removes only the unpublished original, preserves existing files/facts and retries without an orphan duplicate');
+  return {success:true,checks,first,files:count+1,recoveryFiles:129,tailFiles:1,permissionFiles:2,dbRecoveryFiles:1,overviewsDuringBackground:0,totalMs:performance.now()-started,scope:'Actual OmniEduStore, SQLite and real copy/parser: initial 301 files parsed, plus 129+1 disk-recovery, 2 permission-survivor and 1 SQLITE_FULL recovery archives. Controlled statfs/one permission result/SQLite insert failure, never fills the real disk. Not 40GB, OCR/cloud quality or installer acceptance'};
  }finally{await store.close();}
 }
