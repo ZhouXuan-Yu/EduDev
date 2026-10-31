@@ -44,7 +44,8 @@ import {createPaperCoordinator} from '../education/paper-coordinator';
 import {assertPaperOffice,createPaperExportTool} from '../education/paper-export';
 import {isPaperOfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {resolvePaperOfficeImages} from '../education/paper-office-images';
-import {validPaperCreate,validPaperReview,type PaperCreateInput,type PaperDecision} from '../../shared/paper-blueprint';
+import {PAPER_TOOLS,validPaperCreate,validPaperReview,type PaperCreateInput,type PaperDecision} from '../../shared/paper-blueprint';
+import {TaskAdmissionError} from './tasks/admission-error';
 import {createPracticeReviewCoordinator} from '../education/practice-review-coordinator';
 import {validPracticeReview,type PracticeReviewDecision,type PracticeReviewResult,type PracticeReviewSummary} from '../../shared/practice-review';
 import {validBrowserCaptureInput,validBrowserCapture,type BrowserCaptureResult} from '../../shared/xiaozhi-browser-capture';
@@ -793,7 +794,11 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         signal?.throwIfAborted();await run.publisher.barrier();signal?.throwIfAborted();
         if(run.stopped||active.get(id)!==run)throw Error('cancelled');
         if(delivery.kind==='tool'){
-          await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
+          if(delivery.tool===PAPER_TOOLS[0]){
+            if(!taskRuntime||!run.task)throw new TaskAdmissionError('task_owner_stale');
+            await taskRuntime.refresh();
+            await paperReviews.admitProposal({sessionId:id,runId:run.runId,commandId:run.commandId,generation:run.publisher.owner.generation,callId:delivery.callId,taskId:run.task.id,requirementsVersion:run.task.requirementsVersion},delivery.input,signal);
+          }else await admitClassroomOrTaskTool({sessionId:id,runId:run.runId,intent:run.classroomPlan,plans:store.xiaozhiState.classroomPlans,current:()=>!closing&&!run.stopped&&active.get(id)===run,signal,task:taskRuntime},delivery.callId,delivery.tool,delivery.input);
           await run.publisher.persist(owner=>{signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');return store.xiaozhiState.eventJournal.admitTool(owner,delivery.callId,delivery.tool);});
         }
         signal?.throwIfAborted();if(run.stopped||active.get(id)!==run)throw Error('cancelled');
