@@ -22,10 +22,17 @@ export function parseAiBatchResponse(raw:string):AiBatchResponse{
  return value as AiImageResponse;
  }catch{throw Error('invalid_response');}
 }
-const normalized=(s:string)=>s.normalize('NFKC').replace(/\s/g,'');
+// Compatibility normalization destroys mathematical meaning (x² -> x2, y₁ -> y1).
+const normalized=(s:string)=>s.normalize('NFC').replace(/\s/g,'');
+const questionTypes=new Set(['填空','选择','解答','计算','判断','证明','作图','实验','综合']);
+function typeSignature(value:string){
+ const text=normalized(value),parts=text.split(/[/、,，]/).map(p=>p.replace(/题$/,''));
+ // Only a closed vocabulary of classification labels; never normalize content, unknown labels or order.
+ return parts.length>0&&parts.every(p=>questionTypes.has(p))?'known:'+JSON.stringify(parts):'raw:'+text;
+}
 function signature(q:AiImageQuestion){
  return JSON.stringify([
-  q.number,...(['stem','answer','analysis','subject','grade','knowledgePoint','questionType'] as const).map(k=>normalized(q[k])),
+  q.number,...(['stem','answer','analysis','subject','grade','knowledgePoint'] as const).map(k=>normalized(q[k])),typeSignature(q.questionType),
   q.difficulty,q.answerOrigin,q.analysisOrigin,q.requiresImage,q.issues,
   ...QUESTION_PROJECTION_FIELDS.map(k=>[q.projection[k].state,normalized(q.projection[k].text)])
  ]);

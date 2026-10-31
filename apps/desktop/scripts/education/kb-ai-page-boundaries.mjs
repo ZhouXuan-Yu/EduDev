@@ -39,6 +39,14 @@ function fixture(status='blank'){
  const input={schemaVersion:'xiaozhi.material-ai.v1',resourceId:id,version,settingsRevision:1,start:1,count:1,maxCalls:4,images:true,cloudConsent:true,publicMaterial:true};
  return{db,id,version,state,input,repo,host,saved,async init(){await repo.migrate();await repo.saveSettings({schemaVersion:input.schemaVersion,revision:0,model:'deepseek-flash',apiKey:'controlled-no-network'});},async question(){const r=db.prepare('SELECT * FROM question_bank_items').get();return r?{...saved.find(v=>v.id===r.id),archive:JSON.parse(r.archive_json)}:undefined;}};
 }
+async function imageFixture(status='blank'){
+ const f=fixture(status);await f.init();f.db.prepare("UPDATE teacher_resources SET original_file_name='题目.png',parse_status=?").run(status==='complete'?'ready':'failed');
+ const resource=f.host.materials().resource;f.host.materials().resource=async()=>({...await resource(),originalFileName:'题目.png',parseStatus:status==='complete'?'ready':'failed',chunkCount:status==='complete'?1:0});
+ const {saveImageOcr}=await import('../../src/main/assets/material-image-ocr.ts');
+ const {LOCAL_OCR_SCHEMA,LOCAL_OCR_ENGINE}=await import('../../src/shared/xiaozhi-ocr.ts');
+ const receipt={schemaVersion:LOCAL_OCR_SCHEMA,ok:true,engine:LOCAL_OCR_ENGINE,text:'本地乱码#???',lines:1,width:100,height:100,scores:[.9]};
+ await saveImageOcr({all:f.host.all,change:async(s,p=[])=>Number(f.db.prepare(s).run(...p).changes)},f.id,f.version,status==='complete'?receipt:Error(status==='blank'?'empty':'parse_failed'),new AbortController().signal);return f;
+}
 let checks=0;const check=async(name,fn)=>{await fn();checks++;console.log('PASS '+name);};
 async function completed(status='blank',mode='normal'){const f=fixture(status);await f.init();f.state.mode=mode;f.batch=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();await f.repo.drain();return f;}
 const query=f=>({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:f.batch,ordinal:1});
@@ -85,6 +93,15 @@ await check('Transient local worker contention stays pending without a charge; d
 });
 await check('Superscript/subscript loss is a mathematical change, never whitespace-compatible page or question agreement',async()=>{
  for(const mode of ['math_notation_changed','math_stem_changed']){const f=await completed('blank',mode);try{assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(f.batch).status,'review','x²/x2 and y₁/y1 cannot qualify as identical source content');const question=await f.question();if(question)assert(!archiveEligible(question));assert.equal((await f.repo.page(query(f))).status,'needs_review');}finally{f.db.close();}}
+});
+await check('Independent images with blank, failed or garbled OCR reuse the durable two-pass page path, bank source proof and exact original OCR',async()=>{
+ for(const status of ['blank','failed','complete']){const f=await imageFixture(status);try{const before=f.db.prepare('SELECT * FROM material_image_ocr_receipts').get();f.batch=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();const question=await f.question();assert(question&&validQuestionArchive(question.archive)&&archiveEligible(question));assert.equal(question.archive.pageSource.schemaVersion,'xiaozhi.material-image-source.v1');await f.repo.validate(question);assert.equal(f.state.calls,2);const view=await f.repo.page(query(f));assert.equal(view.text,text);assert.equal(view.ocrText,status==='complete'?'本地乱码#???':'');assert(!('inputImage'in view),'Index/Pi reads must not carry a Base64 image');const pictured=await f.repo.page({...query(f),includeImage:true});assert(pictured.inputImage.dataUrl.startsWith('data:image/png;base64,'));assert.deepEqual(f.db.prepare('SELECT * FROM material_image_ocr_receipts').get(),before);f.db.prepare("UPDATE material_image_ocr_receipts SET generation=?").run(randomUUID());await assert.rejects(f.repo.validate(question),/source_changed/);await assert.rejects(f.repo.page(query(f)),/source_changed/);}finally{f.db.close();}}
+});
+await check('New image source cannot masquerade as PDF; malformed opt-in, stop flag and private images cannot dispatch',async()=>{
+ assert(!validAiPageQuery({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:'aibatch_'+randomUUID(),ordinal:1,includeImage:false}));
+ for(const mode of ['private','stop','pdf_alias']){const f=await imageFixture();try{if(mode==='private'){f.db.prepare('INSERT INTO resource_chunks VALUES(?,?,1,1,0,?)').run('chunk_'+randomUUID(),f.id,'private');await assert.rejects(f.repo.create(f.input),/privacy_blocked/);}
+ else if(mode==='stop'){process.env.OMNI_EDU_AI_PAGE_RESTORATION='0';await assert.rejects(f.repo.create(f.input),/source_incomplete/);delete process.env.OMNI_EDU_AI_PAGE_RESTORATION;}
+ else{f.batch=await f.repo.create(f.input);const r=f.db.prepare('SELECT input_json FROM material_ai_units').get(),unit=JSON.parse(r.input_json);unit.pageSource.schemaVersion='xiaozhi.material-page-source.v1';f.db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify(unit));await f.repo.drain();assert.equal(await f.question(),undefined);}assert.equal(f.state.calls,0);}finally{delete process.env.OMNI_EDU_AI_PAGE_RESTORATION;f.db.close();}}
 });
 async function indexedPage(mode='ordinary'){
  const f=await completed('blank',mode);

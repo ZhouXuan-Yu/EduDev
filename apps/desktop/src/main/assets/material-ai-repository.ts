@@ -17,12 +17,13 @@ import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
 import type {RuleOrigin} from './material-question-origins';
-import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
+import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
 import {readAiPageSource,validateAiPageSource} from './material-ai-page-source';
 import {restoredPageQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
 import {readAiPageReceipt} from './material-ai-page-evidence';
 import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileReference} from './material-ai-image-files';
+import {migrateImageOcr} from './material-image-ocr';
 
 type Row=Record<string,unknown>;
 type Value=string|number|null;
@@ -60,6 +61,7 @@ export class MaterialAiRepository{
   }};}
   async nativeTranscription(q:QuestionBankItem,source:WordQuestionSource,signal:AbortSignal){return nativeAiTranscription(this.nativeHost(),q,source,(c,u)=>this.validateInput(c,u),signal);}
   async migrate(){
+    await migrateImageOcr(this.host);
     for(const sql of [
       `CREATE TABLE IF NOT EXISTS material_ai_batches(id TEXT PRIMARY KEY,resource_id TEXT NOT NULL,version TEXT NOT NULL,title TEXT NOT NULL,config_json TEXT NOT NULL,status TEXT NOT NULL,calls INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL)`,
       `CREATE TABLE IF NOT EXISTS material_ai_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,input_json TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',first_json TEXT NOT NULL DEFAULT '',final_json TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',error TEXT NOT NULL DEFAULT '',owner_pid INTEGER NOT NULL DEFAULT 0,lease TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal))`,
@@ -122,6 +124,13 @@ export class MaterialAiRepository{
     }
     if(input.images&&!pdf&&!image)throw new Error('unsupported');
     if(image&&(input.start!==1||input.count!==1))throw new Error('invalid_input');
+    if(image&&input.images&&process.env.OMNI_EDU_AI_PAGE_RESTORATION!=='0'&&(await this.host.all('SELECT 1 FROM material_image_ocr_receipts WHERE resource_id=? AND version=? LIMIT 1',[resource.id,input.version])).length){
+      const original=await readAiPageSource(this.host,resource.id,input.version,1);
+      // Image text can span multiple chunks; the receipt, rather than a truncated first chunk, is authoritative.
+      let sources:AiUnitInput['sources']=[];
+      if(resource.chunkCount){const window=await this.host.materials().readingWindow(resource.id,0,16);if(window.hasMore||window.units.length!==resource.chunkCount||window.units.some(u=>u.chunk.pageNumber!==1))throw Error('unit_too_large');sources=window.units.map(materialSource);}
+      return[{sources,text:original.text,page:1,visualRisk:true,stamp,pageSource:original.source}];
+    }
     const units:AiUnitInput[]=[];
     for(let i=0;i<input.count;i++){
       let page:number|undefined,offset=input.start+i-1,limit=1,extra='';
@@ -247,7 +256,9 @@ export class MaterialAiRepository{
   }
   async page(input:AiPageQuery):Promise<AiPageView>{
     if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.first,proof.final,source);
-    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',issues:proof.final.pageIssues};
+    const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
+    if(image)await this.validateInput(proof.config,proof.unit);
+    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',issues:proof.final.pageIssues,...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{})};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');

@@ -1,18 +1,24 @@
 import {useEffect,useState} from 'react';
-import {MATERIAL_AI_PAGE,type AiPageView} from '../../../shared/material-ai-page';
+import {MATERIAL_AI_PAGE,MATERIAL_IMAGE_SOURCE,type AiPageView} from '../../../shared/material-ai-page';
 import {MaterialOriginalPreview} from './MaterialOriginalPreview';
 import './material-ai.css';
 import type {AiTextSource} from '../../../shared/material-ai-text';
 export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,initiallyOpen=false}:{batchId:string;ordinal?:number;units?:{ordinal:number;pageSource?:boolean}[];start?:number;reference?:AiTextSource;initiallyOpen?:boolean}){
  const choices=units?.filter(u=>u.pageSource).map(u=>u.ordinal)||[ordinal];
  const referenceKey=reference?JSON.stringify(reference):'';
- const [open,setOpen]=useState(initiallyOpen),[selected,setSelected]=useState(ordinal),[view,setView]=useState<AiPageView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[revision,setRevision]=useState(0);
+ const [open,setOpen]=useState(initiallyOpen),[selected,setSelected]=useState(ordinal),[view,setView]=useState<AiPageView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[revision,setRevision]=useState(0),[imageOpen,setImageOpen]=useState(false);
  useEffect(()=>{setSelected(choices.includes(ordinal)?ordinal:choices[0]||ordinal);setOpen(initiallyOpen);},[batchId,ordinal,referenceKey,initiallyOpen]);
  useEffect(()=>{setSelected(current=>choices.includes(current)?current:choices[0]||ordinal);},[choices.join(','),ordinal]);
  useEffect(()=>{
-  if(!open)return;let current=true;setBusy(true);setView(undefined);setError('');
+  if(!open)return;let current=true;setBusy(true);setView(undefined);setError('');setImageOpen(false);
   const reading=reference?window.omniEdu!.getMaterialSource(reference).then(r=>{if(!r.restored)throw Error('source_changed');return r.restored;}):window.omniEdu!.getMaterialAiPage({schemaVersion:MATERIAL_AI_PAGE,batchId,ordinal:selected});
-  void reading.then(r=>{if(current)setView(r);}).catch(()=>{if(current)setError('还原结果尚未完成，或原件、识别回执及隐私状态已变化。请刷新状态后重试。');}).finally(()=>{if(current)setBusy(false);});return()=>{current=false;};
+  void reading.then(async r=>{
+   if(r.source.schemaVersion===MATERIAL_IMAGE_SOURCE){
+    const pictured=await window.omniEdu!.getMaterialAiPage({schemaVersion:MATERIAL_AI_PAGE,batchId,ordinal:selected,includeImage:true});
+    if(JSON.stringify(pictured.source)!==JSON.stringify(r.source)||pictured.text!==r.text)throw Error('source_changed');r=pictured;
+   }
+   if(current)setView(r);
+  }).catch(()=>{if(current)setError('还原结果尚未完成，或原件、识别回执及隐私状态已变化。请刷新状态后重试。');}).finally(()=>{if(current)setBusy(false);});return()=>{current=false;};
  },[open,batchId,selected,revision,referenceKey]);
  if(!choices.length)return null;
  return <section className="material-ai-page" data-testid="material-ai-page-panel">
@@ -24,6 +30,10 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
    {view&&<>
     <p data-testid="material-ai-page-status">原件第{view.source.page}页 · {view.status==='needs_review'?'整页内容仍需核对':view.status==='blank'?'AI两遍判断为空白，可回看原页核对':'AI整页转录，未经教师逐字核验'}</p>
     <MaterialOriginalPreview key={`${batchId}:${selected}:${revision}`} resource={view.resource} initialPage={view.source.page} busy={busy}/>
+    {view.inputImage&&<div>
+     <button className="secondary-action" data-testid="material-ai-page-image-open" onClick={()=>setImageOpen(v=>!v)}>{imageOpen?'收起核对图':'查看AI核对输入图'}</button>
+     {imageOpen&&<><p>这是两遍AI实际核对的输入图，可能经过缩放；完整原件保留在本机资料库。</p><img src={view.inputImage.dataUrl} alt="两遍AI核对的资料图片" style={{maxWidth:'100%',height:'auto'}} data-testid="material-ai-page-image"/></>}
+    </div>}
     <details><summary>本地识别对照文字</summary><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}</pre></details>
     <p>AI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。</p><pre className="material-ai-page-text" data-testid="material-ai-page-text">{view.text||'本次原图两遍复核未转录出文字。'}</pre>
    </>}
