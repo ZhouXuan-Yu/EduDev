@@ -148,6 +148,16 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
    const resolved=await images(sessionId,row.draft);await authority(sessionId,row);
    return {...officeSummary(row),draft:row.draft,sources:row.sources,parentArtifactId:row.parentArtifactId,...(resolved?{images:[...resolved].map(([assetId,bytes])=>({assetId,sha256:officeSha(bytes),dataUrl:'data:image/png;base64,'+bytes.toString('base64')}))}:{})};
   },
+  async candidate(sessionId:string,id:string,signal?:AbortSignal){
+   let row=await owned(sessionId,id);const root=await authority(sessionId,row);current(row,signal);await recheck(row,root,signal);
+   if(row.state!=='pending')throw Error('conflict');
+   if(!row.output){
+    const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
+    const resolved=await images(sessionId,row.draft,signal),bytes=await generate(row.format,row.draft,{dataRoot:options.dataRoot,signal,images:resolved});
+    await recheck(row,root,signal);row=await state.cacheCandidate(row,bytes);
+   }
+   return{path:row.path,bytes:row.output!,version:row.draftHash,candidate:{kind:'office' as const,id:row.id,revision:row.revision}};
+  },
   async revise(sessionId:string,id:string,revision:number,draft:unknown){
    if(!Number.isSafeInteger(revision)||revision<0||!validOfficeDraft(draft))throw new Error('invalid_input');
    const content=JSON.parse(JSON.stringify(draft)) as OfficeDraft,row=await owned(sessionId,id),root=await authority(sessionId,row);current(row);
@@ -197,7 +207,7 @@ export function createOfficeArtifactService(options:{state:Ledger;dataRoot:strin
      const generate=options.generate??(await import('./office-generator')).generateOfficeDocument;
      await recheck(latest,root,signal);
      const resolved=await images(sessionId,latest.draft,signal);await recheck(latest,root,signal);
-     const bytes=await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal,images:resolved});
+     const bytes=latest.output??await generate(latest.format,latest.draft,{dataRoot:options.dataRoot,signal,images:resolved});
      await recheck(latest,root,signal);
      if(!compatible(root,latest))return conflict(latest);
      latest=await state.transition(latest,['generating'],'prepared',{output:bytes,resultPath:target(root,latest)});

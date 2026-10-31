@@ -155,6 +155,7 @@ export interface PiXiaozhiOptions {
   /** Main-only callbacks and run identity, never accepted from IPC. */
   memory?: PiMemoryRuntime;
   computationTools?:ToolDefinition[];
+  deliveryCheckTools?:ToolDefinition[];
   computationReportTools?: (wait: (action: () => Promise<boolean>) => Promise<boolean>) => ToolDefinition[];
   teacherRequestTools?:(excluded:()=>readonly string[])=>ToolDefinition[];
   capabilities?: XiaozhiModelCapabilities;
@@ -317,6 +318,11 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   if(options.computationReportTools){if(!reportEntries.length)manager.appendCustomEntry('xiaozhi.education.report.v1',reportIdentity);names.push(...reportIdentity.tools);
    prompt+='\nCSV与图表交付先education_compute得到真实resultId，再education_create_report引用该结果生成教师要求的文件；不用模型重抄行数据或口算总数。CSV列类型和空值须显式声明，学号用text，必填单价空白不能补0。图表在离线HTML内，XLSX保留文本列；沿原审阅/一次整包确认。';
   }
+
+  const inspectionIdentity={version:1,tools:['education_check_delivery']};
+  const inspectionEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.inspection.'));
+  if(inspectionEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.inspection.v1'||JSON.stringify(entry.data)!==JSON.stringify(inspectionIdentity))||inspectionEntries.length&&!options.deliveryCheckTools)throw Error('configuration');
+  if(options.deliveryCheckTools){if(options.deliveryCheckTools.map(t=>t.name).join(',')!=='education_check_delivery')throw Error('configuration');if(!inspectionEntries.length)manager.appendCustomEntry('xiaozhi.education.inspection.v1',inspectionIdentity);names.push(...inspectionIdentity.tools);prompt+='\n教学文件生成后用education_check_delivery独立检查实际结构/要求/数值/同名跨文件事实；HTML交互须实际操作声明控件。未渲染、未提供核验约定和过期检查明确说明；文件已保存与检查通过分别报告。不要把文件数齐或模型自报正确当整包检查通过。';}
 
   const skillSnapshots = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.skills.'));
   if (skillSnapshots.some(entry => entry.type === 'custom' && entry.customType !== 'xiaozhi.education.skills.v1' && (entry.customType !== 'xiaozhi.education.skills.v2' || !options.managedSkills))
@@ -720,7 +726,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         }
         return { content: [{ type: 'text' as const, text: JSON.stringify(modelResult) }], details: publicDetails, isError: !result.success };
     },
-  })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...classroomExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
+  })), ...[...officeDefinitions,...(options.materialTools||[]),...(options.materialPageTools||[]),...(options.educationCapabilityTools||[]),...(options.classroomTools||[]),...(options.educationSearchTools||[]),...(options.questionContextTools||[]),...(options.questionReviewTools||[]),...(options.questionCollectionTools||[]),...(options.originalQuestionReviewTools||[]),...(options.practiceReview?.tools||[]),...(options.paperReview?.tools||[]),...(options.studentContext?.tools||[]),...(options.studentLearning?.tools||[]),...(options.studentSimilar?.tools||[]),...(options.studentLearningReview?.tools||[]),...(options.officeDocumentTools||[]),...(options.attachmentTools||[]),...artifactDefinitions,...deliveryDefinitions,...reportDefinitions,...(options.deliveryCheckTools||[]),...classroomExportDefinitions,...paperExportDefinitions,...(options.webTools||[]),...(options.mcpTools||[]),...browserDefinitions,...webAnswerDefinitions,...(imageRuntime?.tools||[])], ...(options.teacherRequestTools?.(()=>[...new Set([...(memoryEpoch?.blockedRunIds()||[]),...(skillEpoch?.blockedRunIds()||[])])])||[]), ...(options.computationTools||[]), ...(options.goal?.tools||[]), ...educational, ...controls.map(def => def.name !== 'ask_teacher' ? def : { ...def, execute:async (...args: Parameters<ToolDefinition['execute']>) => {
     return budget!.wait(()=>def.execute(...args));
   } }), ...(options.memory && memoryEpoch ? createPiMemoryTools(options.memory, initialAuthority!.fingerprint, () => memoryEpoch.beforeDelivery()) : []), ...(skills ? [skills.tool] : [])]
     .map(def=>new Set(['education_propose_questions','education_propose_original_question','education_propose_original_questions','education_review_paper_questions','education_propose_practice','education_propose_paper','education_propose_learning_change']).has(def.name)

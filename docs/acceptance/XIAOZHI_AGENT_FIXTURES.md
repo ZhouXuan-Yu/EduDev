@@ -1,5 +1,11 @@
 # 小智教育智能体：验收数据与判定基准
 
+## 2026-10-31 E06工程切片，完整AT仍待集中
+
+源码11项、240组件、正式界面9条原路径与独立停止1项已通过；新原Pi修复/原一次确认/预算/教师改稿4项及同库只读PPT精确SHA回读1项通过。早期测试的错误计划缺human步骤、错误SQL列名、停止状态错误断言及坏ZIP检查失败均保留，未以它们宣称全通过。最终构建/改名预算补跑/整合验证以证据JSON后续记录为准。audit本次45项（8高/29中/8低/0严重），依赖文件未变化，未自动升级。
+
+E06仍部分实现：Office实际页面/字体/遮挡渲染、持久视觉证据、自动绑定全部教师语义要求及完整混合终态仍待补齐；未渲染保持未检查。下一继续E06再E07/E08+C与W3集中AT，新增“已实现”0/252。D盘日常版本/安装包未更新，0真实付费请求。 实际夹具脚本：delivery-check-smoke、delivery-check-electron、delivery-check-stop-electron、delivery-preflight-electron及delivery-preflight-readback；本地合成资料、实际隔离执行，不能替代完整FX01/09/10及自然质量。详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json。
+
 ## 2026-10-30 E04版本生命周期工程更新
 
 实现8587057；真实双版本冻结/升级/回退与2进程FIFO队列已贯通现设置、typed IPC、Pi和隔离子进程。build、8+12源码专项、240组件、正式Electron5项通过；综合日志207/207（shell退出回执未跨轮保留），讲义既有间歇断言本次未复现。完整AT仍未集中验收，新增已实现0。后续E05图表/CSV/正式文件；精确事实见[WORK_PROGRESS](../goal/WORK_PROGRESS.md)与docs/research/AGENT_MANAGED_TOOL_VERSIONS_E04_20261030.json，D盘日常版本未更新。

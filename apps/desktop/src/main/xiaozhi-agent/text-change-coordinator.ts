@@ -5,6 +5,7 @@ import type { XiaozhiChangeDecision, XiaozhiChangeReviewInput, XiaozhiChangeResu
   XiaozhiChangeReview, XiaozhiChangeSummary, XiaozhiChangeError } from '../../shared/xiaozhi-changes';
 import { createTextChangeState, changeSummary } from './text-change-state';
 import { createTextChangeService } from './text-change-service';
+import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
 
 type Wait = (action: () => Promise<boolean>) => Promise<boolean>;
 const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
@@ -29,6 +30,8 @@ export function createTextChangeCoordinator(options: {
   isCurrent: (sessionId: string, runId: string) => boolean;
   emit: (sessionId: string, runId: string, event: XiaozhiAgentEventPayload) => void;
   sanitize: (value: string) => Promise<string>;
+  preflight?:CheckPreflight;
+  checkReceipt?:CheckReceipt;
 }) {
   const waits = new Map<string, { sessionId: string; runId: string; finish: (approved: boolean) => void }>();
   const publish = async (sessionId: string, id: string) => {
@@ -66,8 +69,11 @@ export function createTextChangeCoordinator(options: {
     tools(sessionId: string, runId: string, wait: Wait): ToolDefinition[] {
       const execute = async (callId: string, raw: unknown, signal: AbortSignal | undefined, operation: 'create' | 'edit' | 'science') => {
         if (!object(raw) || 'operation' in raw) throw new Error('invalid_input');
-        const row = await options.service.propose(sessionId, runId, callId, operation === 'science' ? raw : { ...raw, operation }, signal, operation === 'science');
+        const {checks,...proposal}=raw;
+        const row = await options.service.propose(sessionId, runId, callId, operation === 'science' ? proposal : { ...proposal, operation }, signal, operation === 'science');
         if (row.state !== 'pending') return receipt(changeSummary(row), options.sanitize);
+        const blocked=await options.preflight?.(sessionId,runId,callId,[{kind:'text',id:row.id}],checks,signal);
+        if(blocked){const current=await options.state.get(row.id);if(current?.state==='pending')await options.state.transition(current,['pending'],'interrupted');await publish(sessionId,row.id);return blocked;}
         try {
           const approved = await wait(() => new Promise<boolean>(resolve => {
             const finish = (value: boolean) => { waits.delete(row.id); signal?.removeEventListener('abort', abort); resolve(value); };
@@ -77,7 +83,7 @@ export function createTextChangeCoordinator(options: {
             else void publish(sessionId, row.id).catch(() => abort());
           }));
           signal?.throwIfAborted();
-          if (approved) { const outcome = await options.service.apply(sessionId, row.id, signal); await publish(sessionId, row.id); return receipt(changeSummary(outcome), options.sanitize); }
+          if (approved) { const outcome = await options.service.apply(sessionId, row.id, signal); await publish(sessionId, row.id); const result=await receipt(changeSummary(outcome), options.sanitize);return withCheckReceipt(result,await options.checkReceipt?.(sessionId,runId,callId)); }
           return receipt(await publish(sessionId, row.id), options.sanitize);
         } catch (error) {
           await cancel(runId); await publish(sessionId, row.id).catch(() => undefined); throw error;
@@ -95,12 +101,12 @@ export function createTextChangeCoordinator(options: {
       };
       const path = { type: 'string', minLength: 1, maxLength: 500 };
       return [{ name: 'office_create_text', label: '创建教学文档',
-        description: '在本会话生成文件区或教师授权目录提出新UTF8 .md/.txt/.csv/.html，最多64KiB（含宿主HTML头）。HTML须完整、自包含，使用内联CSS/JS和本地Canvas/SVG/MathML，不依赖外网、CDN或Node；可做滑块/动画/讲解交互。既有父目录、相对路径；不能覆盖已有文件。展示真实审阅并等待教师确认后才保存。教师拒绝后本轮不得自动重复请求；教师后续重新发起任务时可以创建新的审阅，必须重新确认，不复用旧批准。',
-        parameters: { type: 'object', properties: { path, content: { type: 'string', maxLength: 65536 } }, required: ['path', 'content'], additionalProperties: false } as ToolDefinition['parameters'],
+        description: '交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。在本会话生成文件区或教师授权目录提出新UTF8 .md/.txt/.csv/.html，最多64KiB（含宿主HTML头）。HTML须完整、自包含，使用内联CSS/JS和本地Canvas/SVG/MathML，不依赖外网、CDN或Node；可做滑块/动画/讲解交互。既有父目录、相对路径；不能覆盖已有文件。展示真实审阅并等待教师确认后才保存。教师拒绝后本轮不得自动重复请求；教师后续重新发起任务时可以创建新的审阅，必须重新确认，不复用旧批准。',
+        parameters: { type: 'object', properties: { path, content: { type: 'string', maxLength: 65536 }, checks:CHECKS_PARAMETERS }, required: ['path', 'content'], additionalProperties: false } as ToolDefinition['parameters'],
         execute: (callId, args, signal) => safeExecute(callId, args, signal, 'create'),
       }, { name: 'office_edit_text', label: '修改教学文档',
         description: '修改当前文件区现有UTF8 .md/.txt/.csv/.html，最多64KiB。HTML保留宿主离线策略头，只改实际教学内容。先读取实际文本再提出1至16处唯一oldText/newText替换；原文等于全文时也可按教师明确要求替换。复用Pi编辑算法。展示真实差异，教师确认且原版本仍一致才写。拒绝或冲突后本轮不得自动重试或强写；教师后续重新发起同一修改也属于新任务，应重新实读当前文件并创建新审阅，必须取得新的确认，不能因旧拒绝永久禁止新任务。',
-        parameters: { type: 'object', properties: { path, edits: { type: 'array', minItems: 1, maxItems: 16, items: { type: 'object', properties: { oldText: { type: 'string', minLength: 1, maxLength: 65536 }, newText: { type: 'string', maxLength: 65536 } }, required: ['oldText', 'newText'], additionalProperties: false } } }, required: ['path', 'edits'], additionalProperties: false } as ToolDefinition['parameters'],
+        parameters: { type: 'object', properties: { path, checks:CHECKS_PARAMETERS, edits: { type: 'array', minItems: 1, maxItems: 16, items: { type: 'object', properties: { oldText: { type: 'string', minLength: 1, maxLength: 65536 }, newText: { type: 'string', maxLength: 65536 } }, required: ['oldText', 'newText'], additionalProperties: false } } }, required: ['path', 'edits'], additionalProperties: false } as ToolDefinition['parameters'],
         execute: (callId, args, signal) => safeExecute(callId, args, signal, 'edit'),
       }, { name: 'office_create_science_figure', label: '绘制科普图',
         description: '复用Anatomy绘制40至80个真实部件的等轴测SVG科普图。教学演示优先.html（离线逐部件装配、播放/暂停/拖动/全貌），静态图.svg；不是物理仿真。先用office_list_files核实父目录，相对路径以.html或.svg结束。用box/cylinder描述实体；重复结构优先repeat={count,dx,dy,dz}，宿主精确展开，lit重复组仅首个强调。x/y/z是包围盒最小角起点，绝不是中心；沿+x/+y/+z延伸w/d/h，部件必须落在支撑面上，不改教师指定数量与尺寸；w/d/h为尺寸，圆柱w=d。lo底座、mid结构、hi主体、lit唯一强调。平板重复肋片的安全构造：底板一实体x=0,y=0,z=0,w=120,d=60,h=4,tone=lo,label=底板；肋片一重复实体x=0,y=5,z=4,w=1.5,d=50,h=24,tone=lit,label=散热肋片,repeat={count:40,dx:3,dy:0,dz:0}，展开40片后再加底板共41实体。title/caption/label只填文字，caption说明科学含义与待教师核对处；teaching.steps.part使用实际类别“底板”“散热肋片”。几何失败时只修正参数重试，不改用普通文本工具。禁止脚本、外链、原始SVG或伪造已有资料。提出本机图像预览，教师确认后才保存；拒绝/取消不重试，不覆盖已有文件。',

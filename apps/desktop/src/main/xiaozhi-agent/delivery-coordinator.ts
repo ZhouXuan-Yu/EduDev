@@ -9,6 +9,7 @@ import {officeSummary,createOfficeArtifactState} from './office-artifact-state';
 import type {createTextChangeService} from './text-change-service';
 import type {createOfficeArtifactService} from './office-artifact-service';
 import type {BoundEffect} from './verification/effect-readback';
+import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
 
 type FileSpec={fileId:string;kind:'text';path:string;content:string}|({fileId:string;kind:'office'}&OfficeArtifactProposal);
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
@@ -23,7 +24,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
  text:ReturnType<typeof createTextChangeService>;office:ReturnType<typeof createOfficeArtifactService>;
  current:(sessionId:string,runId:string)=>boolean;taskVersion:(sessionId:string)=>Promise<string>;
  emit:(sessionId:string,runId:string,event:XiaozhiAgentEventPayload)=>void;sanitize:(kind:'text'|'office',path:string)=>Promise<string>;
- verify:(sessionId:string,ref:DeliveryRef)=>Promise<BoundEffect>;proposalError?:(sessionId:string,runId:string,raw:unknown)=>string|undefined|Promise<string|undefined>}){
+ verify:(sessionId:string,ref:DeliveryRef)=>Promise<BoundEffect>;proposalError?:(sessionId:string,runId:string,raw:unknown)=>string|undefined|Promise<string|undefined>;preflight?:CheckPreflight;checkReceipt?:CheckReceipt}){
  const waits=new Map<string,{sessionId:string;runId:string;finish:(approved:boolean)=>void}>();
  const locks=new Map<string,Promise<unknown>>();
  async function locked<T>(id:string,action:()=>Promise<T>):Promise<T>{
@@ -68,6 +69,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
     if(!waiting||waiting.sessionId!==input.sessionId||row.state!=='pending')throw Error('permission_denied');
     await version(row);const before=await summary(row);
     if(row.revision!==input.revision||before.fingerprint!==input.fingerprint)throw Error('conflict');
+    if(input.action==='approve'){const blocked=await options.preflight?.(row.sessionId,row.runId,row.callId,row.files.filter(f=>!f.carried&&f.draftId).map(f=>({kind:f.kind,id:f.draftId!})),undefined);if(blocked)return{ok:false,error:'configuration'};}
     row=await options.state.update(row,{state:'approving',approval:input.fingerprint});
     if(input.action==='reject'){
      for(const ref of row.files)if(!ref.carried&&ref.draftId){
@@ -101,7 +103,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
  }
  async function execute(sessionId:string,runId:string,wait:Wait,callId:string,raw:unknown,signal?:AbortSignal){
   assertFileWritesEnabled();
-  if(!object(raw)||Object.keys(raw).some(k=>!['files','resumeBundleId','renames'].includes(k)))throw Error('invalid_input');
+  if(!object(raw)||Object.keys(raw).some(k=>!['files','resumeBundleId','renames','checks'].includes(k)))throw Error('invalid_input');
   let specs:FileSpec[]=[],carried:DeliveryRef[]=[],parentId:string|undefined;
   if(raw.resumeBundleId!==undefined){
    if(!deliveryId(raw.resumeBundleId)||raw.files!==undefined)throw Error('invalid_input');
@@ -149,6 +151,8 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
     row=await options.state.update(row,{files:row.files.map(f=>f.fileId===ref.fileId?{...f,draftId:child.id}:f)});
    }
    row=await options.state.update(row,{state:'pending'});
+   const blocked=await options.preflight?.(sessionId,runId,callId,row.files.filter(f=>!f.carried&&f.draftId).map(f=>({kind:f.kind,id:f.draftId!})),raw.checks,signal);
+   if(blocked){await invalidate(row);row=await options.state.update(row,{state:'failed',approval:null});await publish(row);return blocked;}
    const approved=await wait(()=>new Promise<boolean>(resolve=>{
     const finish=(ok:boolean)=>{waits.delete(row.id);signal?.removeEventListener('abort',abort);resolve(ok);};
     const abort=()=>{void cancel(runId).catch(()=>undefined).finally(()=>finish(false));};
@@ -173,7 +177,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const view=await summary(row);let all=view.files.every(saved);
    // A successful ledger alone is insufficient, including carried files.
    if(all)for(const ref of row.files){try{await options.verify(sessionId,ref);}catch{all=false;row=await options.state.update(row,{files:row.files.map(f=>f.fileId===ref.fileId?{...f,error:'conflict'}:f)});}}
-   row=await options.state.update(row,{state:all?'saved':view.files.some(saved)?'partial':'failed'});return receipt(await publish(row));
+   row=await options.state.update(row,{state:all?'saved':view.files.some(saved)?'partial':'failed'});const result=await receipt(await publish(row));return withCheckReceipt(result,await options.checkReceipt?.(sessionId,runId,callId));
   }catch(e){
    row=await owned(sessionId,row.id);await invalidate(row);
    const view=await summary(row);row=await options.state.update(row,{state:view.files.some(saved)?'partial':signal?.aborted||!options.current(sessionId,runId)?'interrupted':'failed',approval:null,
@@ -198,8 +202,9 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   },
   tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters']):ToolDefinition[]{
    const office=officeParameters as unknown as {properties:Record<string,unknown>;required:string[]};
-   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。严格页数PPT用presentation-draft.v1。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
-    parameters:{type:'object',additionalProperties:false,properties:{files:{type:'array',minItems:2,maxItems:8,items:{type:'object',additionalProperties:false,properties:{fileId:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,63}$'},kind:{type:'string',enum:['text','office']},content:{type:'string',maxLength:65536},...office.properties},required:['fileId','kind','path']}},resumeBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},renames:{type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['fileId','path'],properties:{fileId:{type:'string'},path:{type:'string',maxLength:500}}}}}} as ToolDefinition['parameters'],
+   const {checks:_,...officeProperties}=office.properties;
+   return[{name:'office_deliver_files',label:'整包交付教学文件',description:'交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。严格页数PPT用presentation-draft.v1。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
+    parameters:{type:'object',additionalProperties:false,properties:{checks:CHECKS_PARAMETERS,files:{type:'array',minItems:2,maxItems:8,items:{type:'object',additionalProperties:false,properties:{fileId:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,63}$'},kind:{type:'string',enum:['text','office']},content:{type:'string',maxLength:65536},...officeProperties},required:['fileId','kind','path']}},resumeBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},renames:{type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['fileId','path'],properties:{fileId:{type:'string'},path:{type:'string',maxLength:500}}}}}} as ToolDefinition['parameters'],
     execute:async(callId,raw,signal)=>{try{return await execute(sessionId,runId,wait,callId,raw,signal);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
    }];
   }

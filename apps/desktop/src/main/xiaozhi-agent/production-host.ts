@@ -1,3 +1,7 @@
+import {createTaskState} from './tasks/task-state';
+import {createDeliveryChecks} from './checks/service';
+import {deliveryCheckTools,inspectionSummary} from './checks/tools';
+import {createCheckPreflight} from './checks/preflight';
 import {computationReportTools,createComputationResults} from '../managed-tools/result-report';
 import {computationEffectTool} from '../../shared/xiaozhi-computation';
 import {createManagedTools} from '../managed-tools/service';
@@ -169,6 +173,9 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const managedTools=options.managedTools||createManagedTools({root:path.join(options.dataRoot,'managed-tools')});
   const root = path.join(options.dataRoot, 'xiaozhi-pi');
   const active = new Map<string, Active>();
+  const fileChecks=createDeliveryChecks({state:store.xiaozhiState.inspections,dataRoot:options.dataRoot,resolve:id=>host.resolveFileWorkspace(id),requirements:async id=>(await createTaskState(store.xiaozhiState.sql,{sanitize:async text=>(await createStudentContextSanitizer(store))(text)}).latest(id))?.requirementsVersion??null,
+    candidateStatus:async(id,file)=>{const ref=file.candidate;if(!ref)return{current:false,published:false};const row=ref.kind==='text'?await store.xiaozhiState.changes.get(ref.id):await store.xiaozhiState.officeArtifacts.get(ref.id);
+      return{current:!!row&&row.sessionId===id&&row.path===file.path&&row.state!=='reverted'&&('afterSha256'in row?row.afterSha256===file.sha256:row.draftHash===file.fileVersion&&row.outputHash===file.sha256),published:row?.state==='saved'||row?.state==='applied'};}});
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
   const tasks=createTaskCoordinator({store,closing:()=>closing,running:id=>active.has(id),busy:id=>active.has(id)||Boolean(admissions.get(id)?.size)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating,
     emit:options.emit,resultRecheck:idleTaskResults,taskRecheck:async task=>{const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];for(const run of await tasks.admittedRuns(task.sessionId,task.id))try{proofs.push(await idleTaskResults.run(run.runId,task));}catch{/* Unknown historical effects cannot be confirmed or replayed. */}return proofs;}});
@@ -312,6 +319,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     isCurrent: (id, run) => !closing && active.get(id)?.runId === run && !active.get(id)?.stopped,
     emit: (id, runId, payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id, run, payload); } });
   const textChanges = createTextChangeCoordinator({ state: store.xiaozhiState.changes,
+    preflight:(...args)=>preflight(...args),
+    checkReceipt:(...args)=>checkReceipt(...args),
     sanitize: async text => (await store.sanitizeProblemText(text)).sanitizedText,
     service: createTextChangeService({ state: store.xiaozhiState.changes, dataRoot: options.dataRoot,
       afterStage: options.afterTextChangeStage,
@@ -327,6 +336,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     emit: (id, runId, payload) => { const run = active.get(id); if (run?.runId === runId) publicEvent(id, run, payload); },
   });
   const officeArtifacts=createOfficeArtifactCoordinator({state:store.xiaozhiState.officeArtifacts,
+    preflight:(...args)=>preflight(...args),
+    checkReceipt:(...args)=>checkReceipt(...args),
     proposalError:async(id,runId,raw)=>{
       const run=active.get(id);if(run?.runId!==runId||run.stopped)throw Error('cancelled');
       const instructions=(await store.xiaozhiState.controls(id)).filter(item=>item.runId===runId&&item.kind==='instruction'&&item.state==='applied'&&/负责人/.test(item.text));
@@ -357,6 +368,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     fileLabel:async(tool,relative)=>tool==='office_create_document'?sanitizeOfficeDocumentText(store,relative):(await store.sanitizeProblemText(relative)).sanitizedText,
     changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts});
   const deliveries=createDeliveryCoordinator({state:store.xiaozhiState.deliveries,changes:store.xiaozhiState.changes,artifacts:store.xiaozhiState.officeArtifacts,
+    preflight:(...args)=>preflight(...args),
+    checkReceipt:(...args)=>checkReceipt(...args),
     text:textChanges.service,office:officeArtifacts.service,
     current:(id,runId)=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
     taskVersion:async id=>{const task=await tasks.committed(id);return task?`${task.id}:${task.requirementsVersion}`:'none';},
@@ -365,6 +378,15 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     proposalError:officeArtifacts.proposalError,
     emit:(id,runId,event)=>{const run=active.get(id);if(run?.runId===runId)publicEvent(id,run,event);}
   });
+  const preflight=createCheckPreflight({service:fileChecks,sanitize:()=>createStudentContextSanitizer(store),
+    owner:(id,runId)=>{const run=active.get(id);if(!run||run.runId!==runId||run.stopped)throw Error('cancelled');return{signal:run.abort.signal,scope:run.goalId||run.task?.id||runId,current:()=>!closing&&active.get(id)===run&&!run.stopped};},
+    candidate:async(id,ref,signal)=>{if(ref.kind==='office')return officeArtifacts.service.candidate(id,ref.id,signal);const row=await store.xiaozhiState.changes.get(ref.id);if(!row||row.sessionId!==id||row.state!=='pending')throw Error('conflict');return{path:row.path,bytes:row.after,version:row.afterSha256,candidate:{kind:'text',id:row.id,revision:row.revision}};},
+    defaults:async(id,ref)=>{if(ref.kind!=='office')return undefined;const row=await store.xiaozhiState.officeArtifacts.get(ref.id);if(!row||row.sessionId!==id)throw Error('permission_denied');return row.draft.schemaVersion==='xiaozhi.presentation-draft.v1'?{pages:row.draft.sections.length,notes:true}:undefined;}
+  });
+  async function checkReceipt(id:string,runId:string,callId:string):Promise<import('./checks/preflight').InspectionReceipt|undefined>{
+    const run=active.get(id);if(!run||run.runId!==runId||run.stopped)return undefined;
+    try{const value=await store.xiaozhiState.inspections.call(id,runId,callId);if(!value)return undefined;const report=await fileChecks.get(id,value.id);if(!report)return undefined;return{deliveryInspection:await inspectionSummary(report,await createStudentContextSanitizer(store)),note:'逐文件分开说明真实保存状态与实际检查范围；partial/stale/未检查不说全部完成。'};}catch{return{deliveryInspection:{state:'unchecked'},note:'检查记录未能重新读取；保存状态沿原文件回执，不能声称全面检查通过。'};}
+  }
   const controls = createPiControlCoordinator({ store,
     sanitize:async text=>(await createStudentContextSanitizer(store))(text),
     isCurrent:(id,runId) => !closing && active.get(id)?.runId === runId && !active.get(id)?.stopped,
@@ -621,6 +643,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       autoCompaction:options.autoCompaction,testContextWindow:options.testContextWindow,afterAutoCompactCommit:options.afterAutoCompactCommit,beforeAutoCompactCommit:options.beforeAutoCompactCommit,
       sanitizeFileText:async text=>(await store.sanitizeProblemText(text)).sanitizedText,protectedContext:async excluded=>(await getPiProtectedContext(store,id,excluded,await tasks.committed(id),await createStudentContextSanitizer(store)))+(await deliveries.context(id))+(fileWritesEnabled()?'':'\n小智自动文件生成已暂停；已有记录、文件可读取和核验，不能提出或执行新的自动文件写入，不要声称已交付新文件。恢复生成需取消启动停写设置并重启。'),
       computationTools:managedComputationTools({service:owner?.computationScope||managedTools,capture:owner?.computationResults?.capture,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitize:async text=>(await createStudentContextSanitizer(store))(text)}),
+      deliveryCheckTools:deliveryCheckTools({service:fileChecks,sessionId:id,runId,scope:()=>owner?.goalId||owner?.task?.id||runId,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,sanitizer:()=>createStudentContextSanitizer(store)}),
       computationReportTools:wait=>computationReportTools({results:owner?.computationResults,current:()=>!closing&&active.get(id)?.runId===runId&&!active.get(id)?.stopped,
         publish:async(files,args)=>{
           if(files.length>1)return deliveries.tools(id,runId,wait,officeArtifacts.tools(id,runId,wait)[0].parameters)[0].execute(args[0],{files},args[2],args[3],args[4]);
@@ -873,6 +896,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
   }
   const host = {
+    deliveryChecks:fileChecks,
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),
     listPaperGenerationContexts:paperReviews.generationContexts,
@@ -1315,6 +1339,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       for(const controller of balanceQueries)controller.abort();
       try {await waitForLifecycle('host_shutdown',async()=>{
       await attachments.close();
+      await fileChecks.close();
       await managedTools.dispose();
       await browser.dispose();
       await mcp.dispose();

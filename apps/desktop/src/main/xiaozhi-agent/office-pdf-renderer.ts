@@ -20,7 +20,7 @@ export function officeDraftHtml(draft:OfficeDraft,images:ReadonlyMap<string,Buff
  return `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; script-src 'none'; base-uri 'none'; form-action 'none'"><title>${escape(draft.title)}</title><style>@page{size:A4;margin:20mm}body{font-family:SimSun,"Microsoft YaHei",sans-serif;font-size:11pt;line-height:1.6;color:#111;overflow-wrap:anywhere}h1{font-size:20pt;text-align:center}h2{font-size:15pt;break-after:avoid}p{white-space:normal}math{font-family:"Cambria Math",math}math[display="block"]{margin:6pt 0;break-inside:avoid}table{width:100%;border-collapse:collapse;table-layout:fixed;margin:10pt 0}thead{display:table-header-group}tr{break-inside:avoid}td,th{border:1px solid #aaa;padding:6pt;vertical-align:top;white-space:pre-wrap}th{background:#eee}section{break-inside:auto}</style></head><body><h1>${escape(draft.title)}</h1>${draft.sections.map((section,index)=>`<section><h2>${escape(section.heading)}</h2>${page(index)}${body(section)}${section.table?`<table><thead><tr>${section.table.columns.map(cell=>`<th>${cellText(cell)}</th>`).join('')}</tr></thead><tbody>${section.table.rows.map(row=>`<tr>${row.map(cell=>`<td>${cellText(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table>`:''}</section>`).join('')}</body></html>`;
 }
 /** Main-only private staging. The original Hana helper owns printToPDF and normal destruction. */
-export async function withStaticOfficePage<T>(html:string,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;fontResources?:readonly string[];imageResources?:ReadonlyArray<{mime:'image/png'|'image/jpeg'|'image/webp';data:Buffer}>},run:(context:{Window:typeof BrowserWindow;htmlPath:string;outputPath:string;deadline:number})=>Promise<T>):Promise<T>{
+export async function withStaticOfficePage<T>(html:string,options:{dataRoot:string;signal?:AbortSignal;deadlineMs?:number;images?:ReadonlyMap<string,Buffer>;fontResources?:readonly string[];inlineResources?:boolean;onBlockedResource?:()=>void;imageResources?:ReadonlyArray<{mime:'image/png'|'image/jpeg'|'image/webp';data:Buffer}>},run:(context:{Window:typeof BrowserWindow;htmlPath:string;outputPath:string;deadline:number})=>Promise<T>):Promise<T>{
  if(options.signal?.aborted)throw new Error('cancelled');
  if(!path.isAbsolute(options.dataRoot))throw new Error('configuration');
  if(process.platform==='win32'){
@@ -34,7 +34,10 @@ export async function withStaticOfficePage<T>(html:string,options:{dataRoot:stri
  const htmlPath=path.join(staging,'input.html'),outputPath=path.join(staging,'output.pdf'),url=pathToFileURL(htmlPath).href;
  const privateSession=session.fromPartition(`office-render-${randomUUID()}`);let window:BrowserWindow|undefined,reason:string|undefined;
  privateSession.setPermissionRequestHandler((_wc,_permission,callback)=>callback(false));privateSession.setPermissionCheckHandler(()=>false);
- privateSession.webRequest.onBeforeRequest({urls:['<all_urls>']},(details,callback)=>callback({cancel:details.url!==url&&!allowedImages.has(details.url)}));
+ privateSession.webRequest.onBeforeRequest({urls:['<all_urls>']},(details,callback)=>{
+  const cancel=details.url!==url&&!allowedImages.has(details.url)&&!(options.inlineResources&&/^(data:|blob:)/.test(details.url));
+  if(cancel)options.onBlockedResource?.();callback({cancel});
+ });
  privateSession.on('will-download',event=>event.preventDefault());
  const stop=(code:string)=>{reason??=code;if(window&&!window.isDestroyed())window.destroy();};
  const abort=()=>stop('cancelled'),deadline=options.deadlineMs??60000;

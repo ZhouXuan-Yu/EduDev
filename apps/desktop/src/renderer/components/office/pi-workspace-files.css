@@ -47,3 +47,5 @@
 .pi-file-explorer [role='alert'] { color: #a55341; }
 .pi-file-explorer p { font-size: 12px; line-height: 1.7; }
 @media (max-width: 1500px) { .pi-file-explorer { width: 160px; flex-basis: 160px; } .pi-file-preview { padding: 14px; } }
+
+.pi-file-check{margin:8px 12px;padding:10px;border:1px solid var(--border,#d9dce2);border-radius:10px;font-size:13px;max-height:360px;overflow:auto}.pi-file-check>summary{cursor:pointer;font-weight:600}.pi-file-check-actions{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}.pi-file-check dl>div{display:flex;justify-content:space-between;gap:12px;margin:4px 0}.pi-file-check dd{margin:0}.pi-file-check [data-check-state="failed"]{color:#b42318}.pi-file-check [data-check-state="unchecked"]{color:#886014}.pi-file-check li{margin:6px 0}.pi-file-check-hash{overflow-wrap:anywhere}
