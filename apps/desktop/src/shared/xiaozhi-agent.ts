@@ -68,7 +68,7 @@ export type XiaozhiAgentEventPayload = (
   | { kind: 'memory_isolation'; excludedRuns: number; reason?: 'memory_authority' | 'interrupted_tool' }
   | { kind: 'skill_isolation'; excludedRuns: number; reason?: 'skill_authority' | 'interrupted_tool' }
   | { kind: 'status'; status: 'running' | 'completed' | 'interrupted' | 'failed'; error?: XiaozhiAgentError; finishedAt?:number }
-) & { /** SDK capture order, independent of asynchronous reasoning sanitization. */ traceOrder?:number; schemaVersion?: 1; generation?: number; revision?: number; durability?: 'committed' | 'unavailable' };
+) & { /** SDK capture order, independent of asynchronous reasoning sanitization. */ traceOrder?:number; capturedAt?:number; schemaVersion?: 1; generation?: number; revision?: number; durability?: 'committed' | 'unavailable' };
 export type XiaozhiAgentEvent = { sessionId: string; runId: string; sequence: number } & XiaozhiAgentEventPayload;
 export type XiaozhiAgentResult = { ok: true; runId: string; text: string; truncated: boolean }
   | { ok: false; runId: string; error: XiaozhiAgentError };

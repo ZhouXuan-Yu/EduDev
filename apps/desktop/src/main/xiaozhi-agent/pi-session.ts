@@ -928,7 +928,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   };
   const emit = (value: XiaozhiAgentEventPayload) => {
     if (!runId || disposed) return;
-    try { options.onEvent?.({ ...value, traceOrder:value.traceOrder??capturePresentationOrder(), sessionId, runId, sequence: ++sequence }); }
+    try { options.onEvent?.({ ...value, capturedAt:Date.now(), traceOrder:value.traceOrder??capturePresentationOrder(), sessionId, runId, sequence: ++sequence }); }
     catch { /* Public UI consumer does not own the model/tool outcome. */ }
   };
   async function maybeCompactContext(turn: { context: unknown; message?: { role: string } }, signal?: AbortSignal) {

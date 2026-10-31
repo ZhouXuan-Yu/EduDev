@@ -17,24 +17,17 @@ export function AgentTraceHeader({
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, [timing]);
-  const elapsed =
-    turn.presentation?.processElapsedMs ??
-    (timing && turn.startedAt !== undefined ? Math.max(0, now - turn.startedAt) : undefined) ??
-    turn.traceElapsedMs ??
-    turn.elapsedMs ??
-    (turn.startedAt === undefined ? undefined : Math.max(0, now - turn.startedAt));
-  const title =
-    turn.status === 'interrupted'
-      ? '处理已停止'
-      : turn.status === 'failed'
-        ? '处理未完成'
-        : turn.status === 'waiting_approval'
-          ? '等待你确认'
-          : turn.status === 'waiting_input'
-            ? '等待你补充'
-            : timing
-              ? '已处理'
-              : '用时';
+  const presentation = turn.presentation;
+  const start = presentation?.processStartedAt;
+  const elapsed = presentation?.toolAfterAnswer ? undefined
+    : presentation?.processEndedAt !== undefined && start !== undefined
+      ? presentation.processElapsedMs
+      : timing && start !== undefined ? Math.max(0, now - start) : undefined;
+  const title = turn.status === 'interrupted' ? '处理已停止'
+    : turn.status === 'failed' ? '处理未完成'
+    : turn.status === 'waiting_approval' ? '等待你确认'
+    : turn.status === 'waiting_input' ? '等待你补充'
+    : timing ? '正在处理' : '处理过程';
   return (
     <>
       {title}

@@ -1,6 +1,7 @@
 import type { OfficeProjectedItem } from '../../../shared/office-agent';
 
 export type AgentToolKind =
+  | 'execution'
   | 'file-read'
   | 'directory'
   | 'file-write'
@@ -14,6 +15,7 @@ export type AgentToolKind =
   | 'image'
   | 'tool';
 const groups: Partial<Record<AgentToolKind, string[]>> = {
+  execution: ['education_compute'],
   'file-read': [
     'office_read_text',
     'office_read_attachment',

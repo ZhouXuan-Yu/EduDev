@@ -77,7 +77,7 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
   } else if(event.kind === 'assistant_end') {
     const item=next.items.find(item=>item.id === `${turn.id}:segment:${event.segment}` && item.kind === 'message');
     if(item && !item.text?.trim())next.items=next.items.filter(value=>value !== item);
-    else if(item && event.final)item.phase='final_answer';
+    else if(item && event.final && (item.phaseSource!=='explicit'||item.phase==='final_answer'))item.phase='final_answer';
   } else if (event.kind === 'text_delta') {
     let item = next.items.at(-1);
     if (item?.kind !== 'message' || item.role !== 'assistant') {
@@ -195,8 +195,8 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
       const lastText = [...next.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
       // A broken first response has no final assistant_end. Keep trailing prose visible
       // as partial; a preamble followed by tool work stays in the process disclosure.
-      const trailingProse=lastText?.text?.trim()&&!next.items.slice(next.items.indexOf(lastText)+1).some(item=>item.kind==='tool');
-      if (lastText&&(event.status==='completed'||lastText.phase==='final_answer'||lastText.phase==='partial_answer'||trailingProse)) lastText.phase = event.status === 'completed' ? 'final_answer' : 'partial_answer';
+      const trailingProse=lastText?.phaseSource!=='explicit'&&lastText?.text?.trim()&&!next.items.slice(next.items.indexOf(lastText)+1).some(item=>item.kind==='tool');
+      if (lastText&&((event.status==='completed'&&lastText.phaseSource!=='explicit')||lastText.phase==='final_answer'||lastText.phase==='partial_answer'||trailingProse)) lastText.phase = event.status === 'completed' ? 'final_answer' : 'partial_answer';
       for (const item of next.items) if (item.kind === 'tool' && ['inProgress','waiting_input'].includes(item.status || '')) item.status = 'failed';
       for (const item of next.items) if (item.kind === 'compaction' && item.status === 'inProgress') { item.status = 'failed'; item.text = event.error ? XIAOZHI_ERRORS[event.error] : '压缩没有完成，原对话记录保留。'; }
     }

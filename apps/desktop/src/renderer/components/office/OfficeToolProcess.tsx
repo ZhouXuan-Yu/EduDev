@@ -4,7 +4,7 @@ import type { OfficeProjectedItem } from '../../../shared/office-agent';
 import { ChatTool, ChatToolGroup, type ToolPartState } from '../../heroui-pro/components/chat-tool';
 import { ChatSource } from '../../heroui-pro/components/chat-source';
 import { XIAOZHI_WEB_ERRORS, type XiaozhiPublicSource } from '../../../shared/xiaozhi-web';
-import { formatProcessDuration, processNeedsAttention } from './office-process';
+import { processNeedsAttention } from './office-process';
 import {OfficeBrowserCapture} from './OfficeBrowserCapture';
 import {MaterialSourceLink} from '../product/MaterialSourceNavigation';
 import {QuestionSourceLink} from './PiQuestionSource';
@@ -33,7 +33,7 @@ export function WebSource({ source, sessionId }: { source: XiaozhiPublicSource; 
       event.preventDefault(); if (!sessionId || !source.url) return;
       void window.omniEdu?.openXiaozhiWebSource({ sessionId, url: source.url }).then(result => setNotice(result.ok ? '' : '来源未打开，请检查网络后重试。')).catch(() => setNotice('来源未打开，请重试。'));
     }}/></ChatSource>
-    {source.observedAt && <span data-testid="pi-web-source-time">{source.kind === 'search' ? '搜索摘要' : '已读取网页'} · {new Date(source.observedAt).toLocaleString('zh-CN')} 读取</span>}
+
     {notice && <p role="alert">{notice}</p>}
   </li>;
 }
@@ -51,7 +51,6 @@ function ToolStep({ item, sessionId }: { item: OfficeProjectedItem; sessionId?: 
     <ChatTool.Trigger {...triggerProps}><ActionIcon size={16} aria-hidden="true" /><span>{item.label || '授权工具'}{item.sources?.length ? ` · ${item.sources.map(source => source.title).join('、')}` : ''}</span>
       <span className="office-step-state">{status}</span>
       {item.resultSummary?.count===0&&<span className="office-result-empty">未找到匹配</span>}
-      {item.durationMs !== undefined && <span className="office-step-duration">{formatProcessDuration(item.durationMs)}</span>}
     </ChatTool.Trigger>
     <ChatTool.Content className="office-tool-evidence" data-testid="office-tool-evidence"><OfficeToolEvidence item={item} sessionId={sessionId}/></ChatTool.Content>
   </ChatTool>;
@@ -62,13 +61,8 @@ export function OfficeToolEvidence({item,sessionId}:{item:OfficeProjectedItem;se
   const status=statusText(item);
   return <>
       {item.status==='completed'&&item.browserCapture&&sessionId&&<OfficeBrowserCapture capture={item.browserCapture} sessionId={sessionId}/>}
-      <p>{item.resultSummary?.text || `${item.label || '授权工具'}：${status}。这条旧记录未保存结果摘要。`}</p>
+      <p>{item.resultSummary?.text || `${item.label || '授权工具'}：${status}。未保存公开详情。`}</p>
       {item.resultSummary?.query&&<p>查找条件：{item.resultSummary.query}</p>}
-      {item.durationMs!==undefined&&<p>实际用时 {formatProcessDuration(item.durationMs)}</p>}
-      {validToolAttempt(item.toolAttempt)&&(item.toolAttempt.queueWaitMs!==undefined||item.toolAttempt.executionMs!==undefined)&&<p data-testid="pi-tool-timing">
-        {item.toolAttempt.queueWaitMs!==undefined&&`本次排队 ${formatProcessDuration(item.toolAttempt.queueWaitMs)}。`}
-        {item.toolAttempt.executionMs!==undefined&&`本次执行${item.toolAttempt.state==='succeeded'?'用时':'已等待'} ${formatProcessDuration(item.toolAttempt.executionMs)}。`}
-      </p>}
       {validToolAttempt(item.toolAttempt)&&(item.toolAttempt.attempt>1||item.toolAttempt.state==='retrying'||item.toolAttempt.state==='failed')&&<p data-testid="pi-tool-attempt" data-attempt={item.toolAttempt.attempt} data-attempt-state={item.toolAttempt.state}>
         {item.toolAttempt.state==='retrying'?`正在准备第 ${item.toolAttempt.attempt+1} 次读取（最多 ${item.toolAttempt.maxAttempts} 次）。`:`本次操作尝试 ${item.toolAttempt.attempt} 次。`}
         {item.toolAttempt.code&&TOOL_EXECUTION_MESSAGES[item.toolAttempt.code]}

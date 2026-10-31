@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  Terminal,
   Brain,
   FileText,
   FolderOpen,
@@ -16,6 +17,7 @@ import type { OfficeProjectedItem } from '../../../shared/office-agent';
 import { agentToolKind, type AgentToolKind } from './agent-tool-kind';
 
 const icons = {
+  execution: Terminal,
   'file-read': FileText,
   directory: FolderOpen,
   'file-write': FilePenLine,
