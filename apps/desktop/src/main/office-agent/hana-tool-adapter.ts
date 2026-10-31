@@ -31,7 +31,7 @@ const inside = (root: string, target: string) => {
 };
 const fail = (code: OfficeToolErrorCode): never => { throw new Error(code); };
 const keys = new Set<OfficeToolErrorCode>(['invalid_input', 'permission_denied', 'not_found', 'too_large',
-  'unsupported', 'conflict', 'cancelled', 'timeout', 'network', 'dns_blocked', 'rate_limited', 'service_error', 'budget_exhausted']);
+  'unsupported', 'conflict', 'resource_busy', 'cancelled', 'timeout', 'network', 'dns_blocked', 'rate_limited', 'service_error', 'budget_exhausted']);
 
 export function createHanaOfficeTools(options: {
   workspace: string; sessionId: string; runId: string;
@@ -192,7 +192,9 @@ export function createHanaOfficeTools(options: {
         const e = error as Error & { code?: string; status?: number };
         const code = outerSignal?.aborted ? 'cancelled' : timeoutSignal.aborted ? 'timeout'
           : keys.has(e.message as OfficeToolErrorCode) ? e.message as OfficeToolErrorCode
-            : e.code === 'ENOENT' ? 'not_found' : e.code === 'EEXIST' ? 'conflict'
+            : e.code === 'ENOENT' || e.code === 'ENOTDIR' ? 'not_found' : e.code === 'EEXIST' ? 'conflict'
+              : e.code === 'EBUSY' || e.code === 'ETXTBSY' ? 'resource_busy'
+              : e.code === 'EACCES' || e.code === 'EPERM' ? 'permission_denied'
               : e.status === 429 || e.status === 402 ? 'rate_limited'
                 : /^AnySearch API /.test(e.message) ? 'service_error'
                 : name.startsWith('office_web_') ? 'network' : 'unsupported';

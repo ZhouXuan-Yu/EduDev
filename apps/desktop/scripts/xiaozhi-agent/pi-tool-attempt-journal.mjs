@@ -46,5 +46,13 @@ try{
   journal=createEventJournal(sql,{readNative:async()=>native,readEffect:async()=>effect});await journal.recover();
   const restored=(await journal.snapshots(sessionId)).find(s=>s.cursor.runId===owner.runId);assert.equal(restored.turn.status,'interrupted');assert.equal(restored.turn.items[0].toolAttempt.state,'queued');assert.equal(restored.turn.recovery.receipts[0].disposition,'not_delivered');assert.equal(restored.turn.recovery.automaticReplay,false);
  });
+ await check('Ordinary missing-file category persists on the existing receipt and restores unchanged after cold recovery',async()=>{
+  owner=await add();const read='office_read_text';native=[];effect='not_checked';
+  await journal.append(owner,0,[event(owner,1,{kind:'tool_start',tool:read,callId:call})]);await journal.admitTool(owner,call,read);
+  await journal.append(owner,1,[event(owner,2,{kind:'tool_attempt',attempt:a('failed',{tool:read,maxAttempts:2,code:'not_found'})})]);
+  await journal.append(owner,2,[event(owner,3,{kind:'tool_end',tool:read,callId:call,success:false})]);
+  journal=createEventJournal(sql,{readNative:async()=>native,readEffect:async()=>effect});await journal.recover();
+  const restored=(await journal.snapshots(sessionId)).find(s=>s.cursor.runId===owner.runId);assert.equal(restored.turn.items[0].toolAttempt.code,'not_found');assert.equal(restored.turn.items[0].toolAttempt.attempt,1);assert.equal(restored.turn.items[0].status,'failed');assert.equal(restored.turn.recovery.automaticReplay,false);
+ });
  report.success=true;
 }catch(error){report.error=error.stack;process.exitCode=1;}finally{db.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,output,error:report.error}));}

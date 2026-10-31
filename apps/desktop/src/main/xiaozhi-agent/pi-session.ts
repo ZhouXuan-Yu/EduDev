@@ -25,6 +25,7 @@ import {manifestForTools} from './tools/manifest';
 import {createToolExecutionBoundary} from './tools/execution-bound';
 import {waitForLifecycle} from './lifecycle-wait';
 import type {XiaozhiToolAttempt} from '../../shared/xiaozhi-tool-attempt';
+import {TOOL_EXECUTION_MESSAGES} from '../../shared/xiaozhi-tool-attempt';
 import { installToolOutcomeAdapter } from './vendor/hana/lib/pi-sdk/tool-outcome-adapter';
 import { installAssistantStreamGuard } from './vendor/hana/lib/pi-sdk/stream-guard';
 import { SessionExecutionRegistry } from './vendor/hana/lib/session-execution-registry';
@@ -708,9 +709,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
           signal?.throwIfAborted();
         }
         const toolErrors: Record<string, string> = { permission_denied: '教师已拒绝或授权已失效，操作未执行。', conflict: '来源在确认期间发生变化，或目标已存在；未完成复制，不会覆盖原文件。',
-          cancelled: '本次操作已停止。', not_found: '授权范围内未找到资料。', invalid_input: '工具参数不正确，请在授权范围内重试。',
+          cancelled: '本次操作已停止。', not_found: TOOL_EXECUTION_MESSAGES.not_found, resource_busy: TOOL_EXECUTION_MESSAGES.resource_busy, invalid_input: '工具参数不正确，请在授权范围内重试。',
           timeout: '工具等待超时。', too_large: '资料超出本次工具支持大小。', unsupported: '当前工具不支持此资料或操作。' };
-        const modelResult = result.success ? result : { success: false, error: { message: toolErrors[result.error?.code || ''] || '工具没有完成本次操作。', retryable: result.error?.retryable === true } };
+        const modelResult = result.success ? result : { success: false, error: { code: result.error?.code || 'unknown', message: toolErrors[result.error?.code || ''] || '工具没有完成本次操作。', retryable: result.error?.retryable === true } };
         let publicDetails = result;
         // Actual Hana relative source, sanitized by the existing education boundary.
         // This projection enriches main-owned evidence without changing model payload.

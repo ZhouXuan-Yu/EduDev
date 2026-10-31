@@ -1,5 +1,13 @@
 # 小智交付能力实施合同
 
+## 2026-11-01 E07 普通文件工具失败与有界读取恢复（实施前冻结）
+
+- M10/M09，推进REQ-E07-04及05接缝。现Hana已返回not_found，但ToolExecutionCode不接受它；OS文件占用在Hana adapter落unsupported，模型错误正文又缺code。修复原shared→Hana adapter→Pi result→执行边界→journal/preload既有事件→原工具过程显示，不新增执行器或页面。
+- 最终效果：找不到文件明确建议先列当前目录核对名称/移动情况，再读实际目标版本；不自动猜替代文件或新建。纯本地read/stat/list遇短暂占用时在原call下最多2次尝试，每次重新走原Hana路径/授权和文件版本检查；仍占用则保留失败并建议释放占用后核对。写/缓存/外部操作不自动重放；未知写效果仍unknown。
+- 保留原调用幂等、资源锁、Hana实际执行登记和有界等待。等待可停止，停止后无下一次派发；关键journal失败不能转成普通可重试错误。直接OS ENOENT/ENOTDIR、EBUSY/ETXTBSY、EACCES/EPERM有类别；DNS ENOTFOUND仍网络，权限/版本变化不重试。
+- 只改原可选错误枚举/文案、Hana错误翻译、原manifest和retry分支/现工具过程。无DDL/新依赖/新IPC/新账本；旧事件/会话仍可读。回退本片源码恢复原错误与读取策略，保留所有文件/任务/journal，无迁移；不更新日常D盘或安装包。
+- 验证一次相关源码/原Hana真实文件及SQLite事件、正式Pi合成传输：缺文件→列出更名文件→真实版本读取；短暂占用→同call第二次成功；持续占用→可读失败；等待中停止→无后续派发；双尺寸/冷启。build/type、组件与一次必要综合，失败只重验相关。0真实付费模型；完整E07与252AT仍阶段集中，不缩减强制崩溃/下载/审批等待等其余矩阵。
+
 ## 2026-10-31 E07 落账失败后原地恢复（实施前冻结）
 
 - M10/M11，补REQ-E07-06/07/08接缝：现有journal失败后永久关闭publisher/abort本轮正确，但journalFailures只在下一次begin清除，而start又被它阻断；现有重新读取按钮不能恢复。沿原按钮、typed preload及宿主增加明确恢复动作，不要求重启应用，不新建Runtime/数据真源。
