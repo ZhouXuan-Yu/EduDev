@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-31 文件化原页的真实入口回归
+
+29b4d07同一最终生产构建：kb-restored-text-journey.mjs六项（9uqSXR）沿现目录授权→本地OCR空白故障→两遍原图→SQLite元数据/实际文件SHA→FTS/本地ONNX/Lance→Pi真实search/read/来源→1366/1920冷启；kb-folder-pdf-publication-journey.mjs --restore-ocr七项（MjMyry）沿实际双页>50MiB PDF发布等待→空白/乱码故障→两遍AI/2题→题本原文/原图→实际语义召回→冷启。两轮0renderer、0重发，云端受控/0付费；新增存储沿现typed入口，不加无用控件。最终240组件通过，综合精确终态见goal/KB_IMPLEMENTATION_EVIDENCE.md。不是自然复杂题/40GB/安装验收。
+
 ## 2026-10-31 活动工具IO的实机回归
 
 5b4343b生产构建T2NRe7沿原kb-restored-text-journey附只记录方法/耗时的私有CPU探针，正式目录→本地OCR空白边界→两遍受控整页→实际FTS/ONNX/Lance→Pi实际search/read/引用原图→两尺寸冷启五项exit0、0renderer错误、0重发/0假题/0原OCR块。工具664/464ms；首次查询4335ms/重排4308ms、启动1951ms间隙仍保留。受控模型不能替代自然质量、Recall/P95、40GB或安装验收，精确综合结果见goal/KB_IMPLEMENTATION_EVIDENCE。

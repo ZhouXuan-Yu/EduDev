@@ -1,5 +1,11 @@
 # EduDev 当前任务进度
 
+## 2026-10-31 AI原图容量与恢复实现
+
+6b03aa0 RED→ec589d2 GREEN：实际UI目录原页的SQLite图片Base64降为0，原始输入按SHA本地保存、去重与备份；b80285e RED→29b4d07 GREEN：Windows临时占用恢复不再永久判坏。新增领域文件存储模块，窄接material-ai-repository/page-evidence、retrieval Host根目录和db两个构造点，无新依赖/IPC/UI入口/模型。旧库两列增量幂等、旧inline数据不改，新增pending与两个部分索引；关停新写必须保留读器和文件。
+
+最终构建/240组件、15文件边界与100%行82.98%分支覆盖、20页/28批次/17检索/13档案通过；正式教材6项及双页PDF7项exit0，0renderer错误，真实原OCR/ONNX/Lance/Pi/来源与重启，受控模型0付费。综合精确回执及审计45项见KB_IMPLEMENTATION_EVIDENCE与research/KB_AI_IMAGE_FILES_20261031.json。首查仍4815ms；冷热证明差不是本轮重排提速，10GB→40GB/自然质量/安装、旧inline搬迁均未完成；252项集中验收计数不增加。
+
 ## 2026-10-31 知识库工具核验工程切片
 
 6c02f44 RED→10cf03c GREEN修复主循环阻塞，1f59c06→236ef22保留缺失来源错误，50391c1→5b4343b限制重复完整路径解析；714edcc整合协作E05/main4d1f3ce。保留所有内容/来源/链接/取消检查；无业务schema/依赖变化。实际Electron五步通过，搜索664ms/读取464ms，首次重排4308ms与启动间隙仍待优化。现10 IO/22权限/20页、build/type/240通过；技能状态已过23但缺旧夹具导致exit1。集中AT/40GB/自然质量未变更，精确综合结果与性能界限见KB_IMPLEMENTATION_EVIDENCE及公开JSON。

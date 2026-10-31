@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-31 AI输入文件证据
+
+assets/material-ai-image-files.ts复用现FD/路径/哈希证明与Windows独占锁，按SHA在dataRoot/material-ai-images/v1分片保存原始输入，SQLite只保存file.v1引用与pending日志；旧inline.v1兼容。文件准备不占业务writer事务，引用发表仍经原授权guard/短事务，锁持有到清理。两个部分索引支持每次8条恢复和引用检查，备份沿原data-root-files收录；Pi/typed IPC/前端入口保持。来源读取与题目检索共用新旧读器，未知版本/混填/损坏拒绝。具体表列/回退和验证见goal/KB_IMPLEMENTATION_CONTRACT.md及KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-31 活动工具文件证明
 
 managed-skills.enabledResources与managed-skill-runtime.check接阶段AbortSignal，调用独立skill-package-async.ts的Node有界异步读。每次仍核对全部注册文件（含不发送模型的二进制）、目录/链接/规范路径、句柄与当前路径及内容哈希；解析缓存只保存不可变原生解析结果。模型缓存完整包证明覆盖的逐文件重读被取消，同步空闲编辑接口暂保留。SQLite/文件真源、Pi、现检索、typed IPC与schema均不变；性能和剩余启动阻塞见goal/KB_IMPLEMENTATION_EVIDENCE.md。

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-31 AI图片复用现文件基础
+
+继续复用SQLite事实、Node内置fs/crypto、readMaterialOriginal、Windows acquireWriterLock、现SQLite writer与data-root-files备份；无新依赖、许可证/下载体积/安装组件增量。MaterialAi/检索Host仅接现dataRoot，不增加IPC/服务/Agent循环；两列与pending/部分索引增量幂等。原字节文件保留在数据根，后续安装备份不能当缓存删除。npm audit本次45项（8高29中8低0严重）exit1，锁文件和依赖未改，较上一轮23为现审计反馈变化，不自动扩域升级。
+
 ## 2026-10-31 Pi完整文件核验优化
 
 继续复用Pi原生技能加载器、既有不可变解析缓存、SQLite/FTS5/Lance/本地ONNX及原资料来源界面；无新增依赖、服务、表、IPC或安装组件。Node内置异步文件API用于运行期完整证明，逐级链接与内容哈希保留；空闲导入/编辑同步API待单独迁移。已整合main4d1f3ce协作E05，未改变对方受管工具/报告身份。npm audit本轮23项既有风险（8高7中8低/0严重），exit1，不称通过。

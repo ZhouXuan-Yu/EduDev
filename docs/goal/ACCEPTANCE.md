@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-31 AI原页文件证据限定验收
+
+29b4d07最终build、240组件、15文件生命周期/实际SQLite备份、20页/28批次/17检索/13档案边界exit0。新文件模块行/分支/函数100/82.98/100，仅该模块。实际教材9uqSXR六项及双页题库MjMyry七项exit0，0renderer错误、两视口与冷启0重发；同SHA输入Base64336636B→0，本地252475B。实际本地OCR/ONNX/Lance/Pi，云端HTTP受控且0付费，不代表自然答案正确性；综合最终回执见research/KB_AI_IMAGE_FILES_20261031.json。首查4815ms、40GB长跑、Recall/P95、旧inline迁移与安装仍开放，完整AT/252项不增加。audit45项exit1，不称审计通过。
+
 ## 2026-10-31 M04/M10工具核验切片
 
 源码5b4343b：build/type、240组件、10 IO边界、22来源权限与20页边界通过；正式Electron五项T2NRe7 exit0/0renderer，两尺寸/原页/实读来源/冷启0重发。两遍JSON/3次SSE受控，0付费；不代表自然AI质量。状态专项23项通过后因历史旧库夹具缺失整体exit1，该旧库段未验。首次检索4335ms/重排4308ms、启动仍有1951ms主循环间隙；小样本工具664/464ms不能作严格提速或40GB/P95结论。完整AT/252项不因此增加，综合结果见KB_IMPLEMENTATION_EVIDENCE与research/KB_TOOL_IO_20261031.json。

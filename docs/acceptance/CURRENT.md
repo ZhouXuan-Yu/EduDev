@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-31 原页图片文件化验证
+
+29b4d07最终build/240组件，15文件生命周期与实际备份副本、20页/28批次/17检索/13档案通过。新模块100%行/82.98%分支，不是全仓库覆盖；正式Electron教材6项和双页题库7项0renderer、两尺寸与冷启0重发、真实本地ONNX/Lance/Pi，0付费受控HTTP。相同SHA输入SQLite Base64336636B→0、本地252475B；不是物理整库缩小。综合终态、命令与失败见goal/KB_IMPLEMENTATION_EVIDENCE.md和research/KB_AI_IMAGE_FILES_20261031.json。audit45项exit1；40GB/自然质量/首次检索性能与安装仍未验收。
+
 ## 2026-10-31 知识库工具IO验证
 
 源码5b4343b实际Electron五项通过，build/type/240组件、10 IO/22权限/20页专项通过。技能状态专项23项已过但历史旧库夹具缺失，整体exit1；不能称全套通过。综合命令、结果与失败证据见goal/KB_IMPLEMENTATION_EVIDENCE.md及research/KB_TOOL_IO_20261031.json。性能为单小样本观测，最终合并E05后工具664/464ms；首次重排4308ms/启动1951ms间隙仍未解决，非40GB/P95或自然质量验收。

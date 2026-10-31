@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-31 原页图片容量切片
+
+29b4d07将新AI原页输入由SQLite Base64迁为本地SHA去重文件，复用现SQLite/文件真源、读取证明、Windows锁、备份及Pi，不引入第二知识库或服务。最终真实教材6项/双页题库7项贯通检索、原图和冷启；同SHA输入SQLite336636B→0、本地252475B。旧inline记录兼容不强迁，新模块覆盖100%行/82.98%分支，详细门禁及综合回执见KB_IMPLEMENTATION_EVIDENCE.md与research/KB_AI_IMAGE_FILES_20261031.json。完整Goal及集中252项不因此提高：首次检索仍4815ms，10GB→40GB/自然质量/受管安装未验收，继续active。
+
 ## 2026-10-31 M04/M10工具核验性能工程更新
 
 实际CPU证据定位同步技能包证明堵塞主循环，源码5b4343b沿原Pi/SQLite/FTS/Lance修复为可取消异步完整核验、减少冗余路径/内容重读，保留全部当前哈希与来源权限。不增加服务/依赖/迁移。实际目录→整页→检索→Pi实读引用→冷启5项通过，工具搜索664ms/读取464ms；首次语义重排4308ms、启动间隙1951ms仍待优化。主线4d1f3ce协作E05已保留，完整Goal及252项集中验收状态不因本片提高。大样本、自然质量与安装未通过；本轮证据见research/KB_TOOL_IO_20261031.json及KB_IMPLEMENTATION_EVIDENCE.md。
