@@ -189,7 +189,10 @@
     "apps/desktop/scripts/daily-entry-smoke.mjs",
     "apps/desktop/scripts/education/golden-teacher-journeys.mjs",
     "apps/desktop/scripts/education/kb-ai-batch-journey.mjs",
+    "apps/desktop/scripts/education/kb-byte-capacity-journey.mjs",
+    "apps/desktop/scripts/education/kb-byte-capacity-reopen.mjs",
     "apps/desktop/scripts/education/kb-critical-archive-journey.mjs",
+    "apps/desktop/scripts/education/kb-disk-full-journey.mjs",
     "apps/desktop/scripts/education/kb-folder-ai-journey.mjs",
     "apps/desktop/scripts/education/kb-folder-pdf-publication-journey.mjs",
     "apps/desktop/scripts/education/kb-folder-search-journey.mjs",
@@ -253,5 +256,149 @@
     "measured": "180ms disclosure/Chevron transition; zero-transition reduced motion; navigation geometry in ui.viewports",
     "notMeasured": "whole-app P95, streaming speed and teacher productivity"
   },
-  "humanAccepted": false
+  "humanAccepted": false,
+  "integration": {
+    "sourceCommit": "d17cff6",
+    "integratedMain": "cbe4734",
+    "conflicts": "Four root collaboration Markdown insertions, both sections retained; no production conflicts",
+    "build": {
+      "sha256": "5be579c18821273ddf107aab06103e4fc54128a14b9148f127f937f86f7c72e7",
+      "fileCount": 454,
+      "keyFiles": [
+        {
+          "file": "main/index.js",
+          "sha256": "2a042fbf8c2a108d7a2b8105721824cdb3dda1177388cf5cbc92b572dc987b25"
+        },
+        {
+          "file": "preload/index.cjs",
+          "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+        },
+        {
+          "file": "renderer/assets/index-DL5wOQwY.css",
+          "sha256": "ccafb50b0ab3489489dd1a82698645f026d1ca04c057d9f4653d9ce4d5cb236a"
+        },
+        {
+          "file": "renderer/assets/index-iXd5nsM3.js",
+          "sha256": "fdcbe9c287800498aa24377b25682a54d131cd610992cc164c6f31f9f43ee38f"
+        },
+        {
+          "file": "renderer/index.html",
+          "sha256": "2cb46a71cbda2fdcc41811dcc58bde8c2270904a9c63c5bbca2dfe7e176a83e9"
+        }
+      ]
+    },
+    "tests": [
+      {
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "rendererKB": 7179.08
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      {
+        "command": "npm.cmd run test:sidebar-navigation",
+        "exit": 0,
+        "passed": 13,
+        "total": 13
+      },
+      {
+        "command": "node scripts/education/kb-background-import-store.mjs",
+        "exit": 0,
+        "passed": 9,
+        "total": 9
+      },
+      {
+        "command": "node --check (all 44 changed/new scripts)",
+        "exit": 0,
+        "passed": 44
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0
+      }
+    ],
+    "ui": {
+      "success": true,
+      "checks": [
+        "existing disabled guard applies to every group, destination and footer settings",
+        "corrupt, unknown-version, partially valid and blocked preferences recover safely",
+        "four multi-expand groups, unchanged labels, settings outside scroll area and removed note",
+        "heading toggles without navigation; zero-height collapse, inert descendants, Enter/Space and multi-expand",
+        "page changes and history auto-reveal destination while preserving other collapsed groups",
+        "all 15 existing page routes are reachable with one visible active item",
+        "local import persists in original SQLite and UI across restart; collapsed preferences survive",
+        "1366×768 and 1920×1080: one navigation scroller, fixed footer, safe spacing, no viewport overflow",
+        "settings Hover, pressed, focus-visible and active-page styles are distinct",
+        "reduced-motion disables transitions; chevron rotates 90 degrees",
+        "reduced-motion history navigation reveals the active destination inside the scroll viewport",
+        "unavailable storage does not block toggling or page navigation",
+        "zero renderer exceptions"
+      ],
+      "errors": [],
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768,
+          "client": 570,
+          "scroll": 656,
+          "overflow": "auto",
+          "asideOverflow": "hidden",
+          "documentOverflow": false
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "client": 882,
+          "scroll": 882,
+          "overflow": "auto",
+          "asideOverflow": "hidden",
+          "documentOverflow": false
+        }
+      ],
+      "styles": {
+        "default": {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(86, 86, 79)",
+          "outline": "none",
+          "outlineWidth": "3px",
+          "transition": "0s"
+        },
+        "hover": {
+          "background": "rgb(237, 237, 235)",
+          "color": "rgb(32, 32, 32)",
+          "outline": "none",
+          "outlineWidth": "3px",
+          "transition": "0s"
+        },
+        "pressed": {
+          "background": "rgb(226, 226, 223)",
+          "color": "rgb(32, 32, 32)",
+          "outline": "none",
+          "outlineWidth": "3px",
+          "transition": "0s"
+        },
+        "focus": {
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(86, 86, 79)",
+          "outline": "solid",
+          "outlineWidth": "2px",
+          "transition": "0s"
+        },
+        "selected": {
+          "background": "rgb(233, 237, 244)",
+          "color": "rgb(37, 86, 164)",
+          "outline": "none",
+          "outlineWidth": "3px",
+          "transition": "0s"
+        }
+      },
+      "modelTasksSubmitted": 0,
+      "localReport": "apps\\desktop\\test-results\\sidebar-navigation-kEoYM0\\report.json"
+    },
+    "notRepeated": "Daily-entry 8 checks, old fingerprint/bootstrap failed gates, audit and incomplete legacy regression are recorded under the pre-integration build, not claimed rerun."
+  }
 }
