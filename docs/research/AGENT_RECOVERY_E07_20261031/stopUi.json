@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "checks": [
+    "Retry-wait stop gives local feedback within 300ms, settles interrupted and emits no later attempt after the original delay",
+    "Cold restart reads original persisted attempt/error records without replay, duplicate events or renderer errors"
+  ],
+  "errors": [],
+  "boundary": "Formal isolated Electron/Pi, synthetic local HTTP/SSE rejection and partial-body faults, actual composer/stop/settings-entry/continuation and SQLite/cold readback. Zero real model requests; not full E07 AT or natural quality.",
+  "stopFeedbackMs": 41.94630000000052,
+  "wire": [
+    {
+      "mode": "waiting",
+      "n": 1,
+      "at": 1793459819995
+    }
+  ],
+  "eventCount": 3,
+  "originalRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-4ICaVG"
+}

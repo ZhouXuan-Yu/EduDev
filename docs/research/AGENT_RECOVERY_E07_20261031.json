@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-31",
+  "status": "Engineering slice implemented; full E07 and 252 AT pending",
+  "baseCommit": "3ce98d129a0ea8d2dd09084c124bb6419a405aef",
+  "sourceCommit": "aafd974e02ad53381b120d29ec066baa25d07097",
+  "workspace": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+  "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+  "dailyRuntimeUpdated": false,
+  "installerUpdated": false,
+  "requirements": [
+    "E07-01 pre-body recovery feedback",
+    "E07-02 distinct auth/balance/rate/service handling",
+    "E07-03 partial answer and bound editable continuation",
+    "E07-05 retry-wait stop; other stop stages pending"
+  ],
+  "implementation": [
+    "Existing Pi fetch adapter: at most 2 retries for explicit pre-body 429/500/502/503/504 and Retry-After <=5s; auth/balance/ambiguous network/body break stay one-shot; original owner/budget checks remain",
+    "Optional versioned model_request events on existing journal, max64 projected attempts; no raw error/URL/key/body",
+    "Broken trailing prose becomes visible partial_answer; pre-tool narration stays process text",
+    "Preparation preserves teacher draft and never sends automatically. Unchanged prepared prompt has optional typed original task/version binding checked again in existing resume transaction. New run/command/source, current criteria and effects preserved, old approvals never become grants. Changed prepared text follows ordinary new-request admission; goal flow unchanged",
+    "Attachment admission uses the identical bound-task hash as host; original attachment hash preserved without intent. Native SQLite accepts bound digest and rejects altered requirements version."
+  ],
+  "tests": {
+    "source": {
+      "command": "node scripts/xiaozhi-agent/request-recovery-smoke.mjs",
+      "passed": 11,
+      "exit": 0
+    },
+    "taskStore": {
+      "command": "node scripts/xiaozhi-agent/pi-task-store-smoke.mjs",
+      "passed": 11,
+      "exit": 0
+    },
+    "ui": {
+      "initialUi": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\initialUi.json",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-vTlfSV",
+        "checks": 6,
+        "ok": false
+      },
+      "partialFixUi": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\partialFixUi.json",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-aBQHsK",
+        "checks": 4,
+        "ok": true
+      },
+      "boundUi": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\boundUi.json",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-H9OArp",
+        "checks": 4,
+        "ok": true
+      },
+      "stopUi": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\stopUi.json",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-4ICaVG",
+        "checks": 2,
+        "ok": true
+      },
+      "source": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\source.json",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-recovery-source-n4lMru",
+        "checks": 11,
+        "ok": true
+      },
+      "taskStore": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\taskStore.json",
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-task-store-s8XaES",
+        "checks": 11,
+        "ok": true
+      }
+    },
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "log": "agent-recovery-final-build2.log",
+      "boundary": "Final build includes attachment intent hash compatibility; focused Pi4+2 ran immediately before that main-only adapter correction, their affected Pi sources unchanged. Native attachment suite covers the correction."
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "passed": 240,
+      "exit": 0
+    },
+    "comprehensive": {
+      "command": "npm run test:smoke",
+      "passed": 207,
+      "total": 207,
+      "exit": 0,
+      "boundary": "Once on the pre-bound-continuation build, legacy Pi=0. Later binding changes covered by task-store11/focused Pi4+2/finalbuild, not full207 rerun."
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "critical": 0,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "total": 45
+      },
+      "newDependencies": 0
+    },
+    "attachment": {
+      "command": "node scripts/xiaozhi-agent/pi-attachment-send-native-smoke.mjs",
+      "passed": 21,
+      "exit": 0,
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-attachment-send-native-ZVMs7r",
+      "boundary": "Native attachment admission and bounded owned process terminations, selected synthetic sources outside .codex; not bound-attachment full Pi user flow."
+    }
+  },
+  "failuresPreserved": [
+    {
+      "phase": "source harness",
+      "reason": "Static TS imports linked before source loader; corrected dynamic imports",
+      "log": "agent-recovery-source.log"
+    },
+    {
+      "phase": "initial formal UI",
+      "reason": "6 checks passed then broken prose partial-label assertion failed; fixed trailing prose projection",
+      "report": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\initialUi.json",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-vTlfSV",
+        "checks": 6,
+        "ok": false
+      }
+    },
+    {
+      "phase": "binding gap",
+      "reason": "First partial-fix run created another task; final bound UI asserts same task and requirements version",
+      "report": {
+        "report": "docs\\research\\AGENT_RECOVERY_E07_20261031\\partialFixUi.json",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-aBQHsK",
+        "checks": 4,
+        "ok": true
+      }
+    },
+    {
+      "phase": "task-store harness",
+      "reason": "10 checks passed then new publisher lacked beforeTerminalEmit callback; corrected and11 passed",
+      "log": "agent-recovery-task-store.log"
+    },
+    {
+      "phase": "focused stop harness",
+      "reason": "Block-scope variable TDZ; fixed declaration and finalstop2 passed",
+      "log": "agent-recovery-electron-stop.log"
+    },
+    {
+      "phase": "Native attachment fixture",
+      "reason": "Existing test wrote selected sources under blocked .codex worktree. First4 passed then import permission_denied before admission. Test fixture moved to owned OS temp; production restrictions unchanged; full native rerun passed.",
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-attachment-send-native-vrXxdW",
+      "log": "agent-recovery-attachment.log"
+    },
+    {
+      "phase": "Documentation archive whitespace gate",
+      "reason": "Raw Vite reporter logs contain trailing spaces; diff-check flagged them. Archive copies normalized only trailing whitespace, original logs retained unchanged."
+    }
+  ],
+  "performance": {
+    "buildBytes": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out\\main\\index.js",
+        "bytes": 3319467,
+        "sha256": "3e7f85a198ca50cce69e91372be7add08ec3b6158ef4b39c34f2daf509f02181",
+        "beforeBytes": 3313876,
+        "deltaBytes": 5591
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out\\preload\\index.cjs",
+        "bytes": 35253,
+        "sha256": "bdc3d3fccf5acbdb9c3e3e41cde2970e2527ffa146697e254edc8383e2ab3e9b",
+        "beforeBytes": 35253,
+        "deltaBytes": 0
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out\\renderer\\assets\\index-TTxILEjv.js",
+        "bytes": 7258909,
+        "sha256": "762a3d5e9ae550185ed214a7de64613f69bc736b04f66ab03cc6de5f707dd5f3",
+        "beforeBytes": 7251525,
+        "deltaBytes": 7384
+      }
+    ],
+    "stopFeedbackMs": 41.94630000000052,
+    "initialStopFeedbackMs": 32.59780000000319,
+    "design": "Request transitions only, no token timer/subscription or per-token diagnostics; max64 projected attempts, no new full-history reads.",
+    "pairedLatencyBaseline": null,
+    "p95": null,
+    "memoryBeforeAfter": null,
+    "claim": "No broad performance/non-regression claim from one stop sample or build size."
+  },
+  "unverified": [
+    "Full E07 FX10 and 252 AT",
+    "Other tool/download/approval stop stages and forced crash/write-in-flight faults",
+    "Real provider/natural teacher quality or cost: paid20 exhausted, zero new paid calls",
+    "Edited continuation text follows ordinary request admission",
+    "Settings entry presence only, no key/account changes",
+    "Existing prompt-input UI-contract fingerprint gate not repaired/repeated",
+    "D daily runtime/installer/native Office-WPS unchanged and untested"
+  ],
+  "rollback": {
+    "strategy": "Revert feature commit as a whole to base3ce98d1, preserve journal/task lineage/all files; no DDL/dependency/runtime migration. Stop new UI before rollback.",
+    "drill": "Not exercised"
+  },
+  "references": [
+    {
+      "title": "DeepSeek official error codes",
+      "url": "https://api-docs.deepseek.com/quick_start/error_codes/",
+      "use": "401/402/429/500/503 categories verified this turn"
+    }
+  ],
+  "next": "Other E07 recovery and E08 HTML/source-position + C functionality, then S/T and concentrated stage AT",
+  "goal": "active; zero new full AT accepted",
+  "git": {
+    "sourceCommit": "aafd974e02ad53381b120d29ec066baa25d07097",
+    "base": "3ce98d129a0ea8d2dd09084c124bb6419a405aef",
+    "remoteSync": "Verified atomic push/readback checkpoint; following delivery documentation commit changes no production source",
+    "verifiedCheckpoint": "b337d274a3e9cf495490affe7f97459df3610aca",
+    "refs": [
+      "origin/main",
+      "origin/codex/hana-answer-quality"
+    ],
+    "workingTreeAtCheckpoint": "clean",
+    "merge": "origin/main already ancestor; no conflicts",
+    "verification": "git ls-remote origin refs/heads/main refs/heads/codex/hana-answer-quality both exactly matched HEAD"
+  },
+  "evidenceArchive": "Tracked copies of command logs normalize trailing whitespace only so git diff --check passes; original command logs retained unchanged in the OS temp paths."
+}

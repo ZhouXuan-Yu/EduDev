@@ -1,0 +1,69 @@
+{
+  "ok": false,
+  "checks": [
+    "503 wait is visible in the original turn, exactly two wire attempts succeed under one task and two request records persist",
+    "auth displays the exact actionable category and makes one attempt without automatic key/account changes",
+    "balance displays the exact actionable category and makes one attempt without automatic key/account changes",
+    "limited displays the exact actionable category and makes one attempt without automatic key/account changes",
+    "HTTP500 exhaustion stops at three wire/budget attempts and displays service failure rather than model incapability",
+    "Retry-wait stop gives local feedback within 300ms, settles interrupted and emits no later attempt after the original delay"
+  ],
+  "errors": [],
+  "boundary": "Formal isolated Electron/Pi, synthetic local HTTP/SSE rejection and partial-body faults, actual composer/stop/settings-entry/continuation and SQLite/cold readback. Zero real model requests; not full E07 AT or natural quality.",
+  "retryRunId": "run_b4cdd6e1-3550-420b-a987-8d1a1fe08878",
+  "stopFeedbackMs": 32.59780000000319,
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert((await partialElement.textContent()).includes('部分回复'))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/request-recovery-electron.mjs:36:346",
+  "wire": [
+    {
+      "mode": "transient",
+      "n": 1,
+      "at": 1793458516973
+    },
+    {
+      "mode": "transient",
+      "n": 2,
+      "at": 1793458518405
+    },
+    {
+      "mode": "auth",
+      "n": 1,
+      "at": 1793458520718
+    },
+    {
+      "mode": "balance",
+      "n": 1,
+      "at": 1793458522673
+    },
+    {
+      "mode": "limited",
+      "n": 1,
+      "at": 1793458524522
+    },
+    {
+      "mode": "exhaust",
+      "n": 1,
+      "at": 1793458526469
+    },
+    {
+      "mode": "exhaust",
+      "n": 2,
+      "at": 1793458526722
+    },
+    {
+      "mode": "exhaust",
+      "n": 3,
+      "at": 1793458526987
+    },
+    {
+      "mode": "waiting",
+      "n": 1,
+      "at": 1793458529163
+    },
+    {
+      "mode": "partial",
+      "n": 1,
+      "at": 1793458534831
+    }
+  ],
+  "originalRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-vTlfSV"
+}

@@ -4,6 +4,8 @@
 
 新原页单元冻结page-restoration.v2及真实OCR状态；旧first_saved沿原提示。完整stem必须含选项、小问、表格和公式，projection不能代替规范题面；parser只临时识别已声明原文编号，不改原回执。真实缺图/跨页/不清晰继续待核。ai_final仅表示当前AI原页证据资格，不是教师确认或数学正确性保证。回退保留新单元严格读适配，不让未知旧provider静默恢复。详见docs/research/KB_PAGE_PROMPT_20261031.json。
 
+2026-10-31 E07：复用withModelRequestRecovery、XiaozhiStartInput、原preload start/snapshot、task coordinator/state、composer与设置入口；无新通道、表或依赖。原参数无continueTask时命令hash及goal路径不变。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
+
 
 2026-10-31 E08当前版本：Office族投影沿原listDocumentArtifacts、delivery summary及officeVersion typed IPC使用，无新通道；任务idle复核要求当前Office，历史来源维持原策略。普通Office支持当前预览/系统打开/定位，confirmed领域保留原流程；未改D盘日常/安装包。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 

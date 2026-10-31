@@ -9,6 +9,7 @@ import { applyXiaozhiEvent } from '../../../shared/xiaozhi-projection';
 import { legacyVerification } from '../../../shared/xiaozhi-verification';
 import {validRecovery} from '../../../shared/xiaozhi-recovery';
 import {validToolAttempt} from '../../../shared/xiaozhi-tool-attempt';
+import {validModelRequest} from '../../../shared/xiaozhi-model-request';
 import {createToolReceipts,type ReceiptCapture,type ReceiptReadback} from './receipts';
 import type {NativeRunBinding} from './native-tail';
 import {interruptedVerification,type TerminalCancellation} from './terminal-cancellation';
@@ -17,7 +18,7 @@ import {taskGoalProjection} from '../tasks/goal-binding';
 
 export type JournalOwner = { sessionId: string; runId: string; generation: number };
 const hash = (text: string) => createHash('sha256').update(text).digest('hex');
-const kinds = new Set(['activity','text_delta','model_reasoning','assistant_start','assistant_phase','assistant_end','tool_start','tool_attempt','tool_end','approval','change','office_artifact','delivery_bundle','learning_review','question_collection','question_review','paper_review','practice_review','control','goal','task','image_delivery','usage','verification','recovery','compaction','memory_isolation','skill_isolation','status']);
+const kinds = new Set(['model_request','activity','text_delta','model_reasoning','assistant_start','assistant_phase','assistant_end','tool_start','tool_attempt','tool_end','approval','change','office_artifact','delivery_bundle','learning_review','question_collection','question_review','paper_review','practice_review','control','goal','task','image_delivery','usage','verification','recovery','compaction','memory_isolation','skill_isolation','status']);
 const identity = (value: string) => /^[A-Za-z0-9_-]{1,160}$/.test(value);
 function json(value: unknown) {
   const text = JSON.stringify(value);
@@ -45,6 +46,7 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       if (event.sessionId !== owner.sessionId || event.runId !== owner.runId || event.generation !== owner.generation || event.durability !== 'committed' || !Number.isSafeInteger(event.sequence) || !kinds.has(event.kind)) throw Error('invalid_input');
       if(event.kind==='recovery'&&(!validRecovery(event.recovery)||event.recovery.runId!==owner.runId))throw Error('invalid_input');
       if(event.kind==='tool_attempt'&&!validToolAttempt(event.attempt))throw Error('invalid_input');
+      if(event.kind==='model_request'&&!validModelRequest(event.request))throw Error('invalid_input');
       if(event.kind==='control'&&event.control.plan&&(!validVersionedPlan(event.control)||event.control.runId!==owner.runId))throw Error('invalid_input');
       if(event.kind==='task'&&(!taskMutation||!validTaskView(event.task)||event.task.sessionId!==owner.sessionId))throw Error('invalid_input');
       return json(event);

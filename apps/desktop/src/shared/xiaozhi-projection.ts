@@ -8,12 +8,16 @@ import {validRecovery} from './xiaozhi-recovery';
 import {validToolAttempt} from './xiaozhi-tool-attempt';
 import {validVersionedPlan} from './xiaozhi-plan';
 import {validTaskView} from './xiaozhi-task';
+import {validModelRequest,MAX_MODEL_REQUEST_RECORDS} from './xiaozhi-model-request';
 export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   attachment_changed:'待发送附件已变化或未全部接收，请重新检查附件后发送。',
   invalid_input: '消息格式不正确，请重新输入。', busy: '本会话正在运行，请先停止或等待完成。',
   configuration: '当前模型或会话配置不可用，请检查 DeepSeek 设置或新建会话。',
   event_persistence: '本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。',
-  authentication: 'DeepSeek 凭证不可用，请检查 API Key。', rate_limited: 'DeepSeek 额度不足或请求过于频繁，请稍后重试。',
+  authentication: 'DeepSeek 凭证不可用，请在模型设置中检查当前 API Key；原任务和草稿保留。',
+  insufficient_balance:'DeepSeek 账户余额不足，请检查当前账户余额后再继续；不会自动更换密钥或账户。原任务和草稿保留。',
+  rate_limited: 'DeepSeek 请求受到限流，请按服务等待时间稍后继续；原任务和草稿保留。',
+  provider_unavailable:'DeepSeek 服务暂不可用，本轮未完成。请稍后继续，已保存文件和部分回复保留。',
   timeout: '本轮等待超时，请重试。', transport: '无法连接 DeepSeek，请检查网络后重试。',
   cancelled: '已停止本轮。', model_error: '模型没有完成有效回复，请重试。',
   goal_stalled:'未取得新的可核验证据，已停止自动继续。请核对目标进度后恢复；已完成操作会保留。',
@@ -46,6 +50,14 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     const blocks=[...(turn.modelReasoning||[])];const index=blocks.findIndex(b=>b.id===event.block.id);
     if(index<0)blocks.push(event.block);else blocks[index]=event.block;
     next.modelReasoning=readModelReasoning({version:1,blocks});
+  } else if(event.kind === 'model_request') {
+    if(validModelRequest(event.request)){
+      let rows=(next.modelRequests||[]).map(row=>({...row}));const incoming=event.request,index=rows.findIndex(row=>row.request===incoming.request&&row.attempt===incoming.attempt);
+      if(index>=0){if(rows[index].at<=incoming.at)rows[index]={...incoming};}
+      else{rows=rows.map(row=>row.request===incoming.request&&row.attempt<incoming.attempt&&row.state==='retry_wait'?{...row,state:'retried' as const}:row);rows.push({...incoming});}
+      if(rows.length>MAX_MODEL_REQUEST_RECORDS)next.modelRequestsOmitted=(next.modelRequestsOmitted||0)+rows.length-MAX_MODEL_REQUEST_RECORDS;
+      next.modelRequests=rows.slice(-MAX_MODEL_REQUEST_RECORDS);
+    }
   } else if(event.kind === 'activity') {
     if(Number.isFinite(event.since)&&event.since>0){
       if(event.stage==='preparing'&&next.startedAt===undefined)next.startedAt=event.since;
@@ -167,11 +179,15 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
   } else if(event.kind === 'status') {
     next.status = event.status;
     if(event.status!=='running'&&event.finishedAt!==undefined&&next.startedAt!==undefined&&Number.isFinite(event.finishedAt)&&event.finishedAt>=next.startedAt)next.traceElapsedMs=event.finishedAt-next.startedAt;
-    if (event.error) next.error = XIAOZHI_ERRORS[event.error];
+    if (event.error) {next.error = XIAOZHI_ERRORS[event.error];next.errorCode=event.error;}
     if (event.status !== 'running') {
+      if(next.modelRequests)next.modelRequests=next.modelRequests.map(row=>{if(!['sending','retry_wait'].includes(row.state))return row;const {waitMs,...stopped}=row;return {...stopped,state:'interrupted'};});
       if(next.modelReasoning)next.modelReasoning=next.modelReasoning.map(b=>b.status==='streaming'?{...b,status:event.status==='completed'?'completed':event.status==='interrupted'?'interrupted':'failed'}:b);
       const lastText = [...next.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
-      if (lastText&&(event.status==='completed'||lastText.phase==='final_answer'||lastText.phase==='partial_answer')) lastText.phase = event.status === 'completed' ? 'final_answer' : 'partial_answer';
+      // A broken first response has no final assistant_end. Keep trailing prose visible
+      // as partial; a preamble followed by tool work stays in the process disclosure.
+      const trailingProse=lastText?.text?.trim()&&!next.items.slice(next.items.indexOf(lastText)+1).some(item=>item.kind==='tool');
+      if (lastText&&(event.status==='completed'||lastText.phase==='final_answer'||lastText.phase==='partial_answer'||trailingProse)) lastText.phase = event.status === 'completed' ? 'final_answer' : 'partial_answer';
       for (const item of next.items) if (item.kind === 'tool' && ['inProgress','waiting_input'].includes(item.status || '')) item.status = 'failed';
       for (const item of next.items) if (item.kind === 'compaction' && item.status === 'inProgress') { item.status = 'failed'; item.text = event.error ? XIAOZHI_ERRORS[event.error] : '压缩没有完成，原对话记录保留。'; }
     }

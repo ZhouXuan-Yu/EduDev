@@ -1,0 +1,12 @@
+PASS 503 then success makes exactly two attempts and rechecks the original gate before the second send
+PASS Transient HTTP500 is capped at two retries, three total attempts
+PASS Auth, balance, invalid parameters and long rate windows stay one-shot and have distinct public categories
+PASS Ambiguous transport failure is never replayed and raw error text never enters diagnostics
+PASS Stop cancels an actual three-second retry wait within 300ms and dispatches no later attempt
+PASS An accepted response whose body later breaks is not retried as a fresh whole response
+PASS Projection preserves per-attempt retry history, bounds it at 64 and settles waiting rows on interruption
+PASS Partial output and finished tools prepare continuation with original constraints; a pre-effect failure can restore the original editable prompt
+PASS Broken trailing commentary becomes a visible partial answer; pre-tool narration remains process text
+PASS Optional typed task continuation admits valid task/version only, preserves legacy input and rejects unknown/accessor fields
+PASS Attachment admission includes the same bound-task intent digest as host while legacy hash remains unchanged
+{"ok":true,"checks":11,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-recovery-source-n4lMru"}

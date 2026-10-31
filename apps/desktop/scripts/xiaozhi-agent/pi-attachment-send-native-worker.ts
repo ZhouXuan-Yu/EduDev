@@ -1,3 +1,4 @@
+import os from 'node:os';
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
@@ -71,7 +72,8 @@ try{
    check('Prior committed trigger upgrades idempotently; injected CREATE failure rolls back the dropped trigger and preserves send facts');
   }
   const sessionId=(await store.createAiConversationSession({title:'新对话',folderId:null})).session.id;
-  const sources=path.join(output,'selected-files');fs.mkdirSync(sources,{recursive:true});
+  const sources=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-owned-attachment-source-')); // Native picker fixture must live outside the blocked .codex configuration tree.
+  report.boundary+=' Selected source fixture: '+sources;
   const file=path.join(sources,'合成附件.txt');fs.writeFileSync(file,'真实本地合成文件，不上传正文。');
   const importer=createAttachmentImportService({dataRoot:data,state:state.attachments,imports:state.attachmentImports});
   const imported=await importer.importFile(sessionId,file,signal());
@@ -113,7 +115,7 @@ try{
   const frozen=await business();assert.deepEqual(await state.attachmentSends.admit(input),first);assert.equal(await business(),frozen);check('Same admitted command returns the same run/message and causes no duplicate effects');
   await rejects(state.attachmentSends.admit({...input,prompt:'变化',hash:attachmentStartHash(sessionId,'变化',input.selections,input.attachments)}),'command_conflict');check('Changed request cannot reuse the original admitted command');
   await store.renameAiConversationSession(sessionId,{title:'新对话'});const manualImport=await importer.importFile(sessionId,file,signal()),manualAttachment=(await state.attachments.get(sessionId,manualImport.id))!;
-  const manual={...input,commandId:`xicmd_${randomUUID()}`,attachments:[manualAttachment],selections:[selected(manualAttachment)]};manual.hash=attachmentStartHash(sessionId,manual.prompt,manual.selections,manual.attachments);await state.claimCommand(manual.commandId,sessionId,manual.hash);await state.attachmentSends.admit(manual);assert.equal((await store.getAiConversationSession(sessionId)).session.title,'新对话');check('Atomic attachment publication also preserves a teacher rename to the default label');
+  const manual={...input,continueTask:{taskId:'xitask_'+'a'.repeat(64),requirementsVersion:2},commandId:`xicmd_${randomUUID()}`,attachments:[manualAttachment],selections:[selected(manualAttachment)]};manual.hash=attachmentStartHash(sessionId,manual.prompt,manual.selections,manual.attachments,undefined,manual.continueTask);await state.claimCommand(manual.commandId,sessionId,manual.hash);await state.attachmentSends.admit(manual);assert.equal((await store.getAiConversationSession(sessionId)).session.title,'新对话');assert.notEqual(manual.hash,attachmentStartHash(sessionId,manual.prompt,manual.selections,manual.attachments));await rejects(state.attachmentSends.admit({...manual,continueTask:{...manual.continueTask,requirementsVersion:3}}),'invalid_input');check('Atomic attachment publication accepts bound-task digest, rejects altered version and preserves teacher rename');
   fs.unlinkSync(file);const preview=await importer.preview(sessionId,selected(first.attachments[0]),signal());assert(preview.text?.includes('真实本地合成文件'));check('Submitted attachment preview reads the captured copy after original deletion');
   const other=(await store.createAiConversationSession({title:'合成另一会话',folderId:null})).session.id;
   const foreign={...input,sessionId:other,commandId:`xicmd_${randomUUID()}`};foreign.hash=attachmentStartHash(other,foreign.prompt,foreign.selections,foreign.attachments);await state.claimCommand(foreign.commandId,other,foreign.hash);

@@ -3,16 +3,17 @@ import type {Sql} from './session-state';
 import type {PrivateAttachment} from './attachment-state';
 import {publicAttachment} from './attachment-state';
 import type {XiaozhiAttachmentSelection} from '../../shared/xiaozhi-attachments';
-import {validXiaozhiStart} from '../../shared/xiaozhi-start';
+import {validXiaozhiStart,type TaskContinuation} from '../../shared/xiaozhi-start';
 import {conversationTitle} from './conversation-title';
 import type {XiaozhiMessagePresentation} from '../../shared/xiaozhi-message-presentation';
 
-type Input={sessionId:string;commandId:string;prompt:string;presentation?:XiaozhiMessagePresentation;hash:string;model:string;attachments:PrivateAttachment[];selections:XiaozhiAttachmentSelection[]};
+type Input={continueTask?:TaskContinuation;sessionId:string;commandId:string;prompt:string;presentation?:XiaozhiMessagePresentation;hash:string;model:string;attachments:PrivateAttachment[];selections:XiaozhiAttachmentSelection[]};
 const stamp=()=>new Date().toISOString();
 const privateSelection=(selection:XiaozhiAttachmentSelection,row:PrivateAttachment)=>({id:selection.id,revision:selection.revision,version:row.version,sha256:row.contentSha256});
-export function attachmentStartHash(sessionId:string,prompt:string,selections:XiaozhiAttachmentSelection[],rows:PrivateAttachment[],presentation?:XiaozhiMessagePresentation){
+export function attachmentStartHash(sessionId:string,prompt:string,selections:XiaozhiAttachmentSelection[],rows:PrivateAttachment[],presentation?:XiaozhiMessagePresentation,continueTask?:TaskContinuation){
  const attachments=selections.map(s=>{const row=rows.find(v=>v.id===s.id);if(!row)throw new Error('attachment_changed');return privateSelection(s,row);});
- return createHash('sha256').update(JSON.stringify({sessionId,prompt,attachments,...(presentation?{presentation}: {})})).digest('hex');
+ const baseHash=createHash('sha256').update(JSON.stringify({sessionId,prompt,attachments,...(presentation?{presentation}: {})})).digest('hex');
+ return continueTask?createHash('sha256').update(JSON.stringify({baseHash,continueTask})).digest('hex'):baseHash;
 }
 
 /** Like the existing office artifact publication trigger: one statement owns every visible fact. */
@@ -70,9 +71,9 @@ export function createAttachmentSendState(sql:Sql){
    }
   },
   async admit(input:Input){
-   if(!validXiaozhiStart({sessionId:input.sessionId,commandId:input.commandId,prompt:input.prompt,attachments:input.selections,...(input.presentation?{presentation:input.presentation}:{})})
+   if(!validXiaozhiStart({sessionId:input.sessionId,commandId:input.commandId,prompt:input.prompt,attachments:input.selections,...(input.continueTask?{continueTask:input.continueTask}:{}),...(input.presentation?{presentation:input.presentation}:{})})
     ||!input.prompt.trim()||!Array.isArray(input.attachments)||typeof input.model!=='string'||!/^[-.A-Za-z0-9_]{1,120}$/.test(input.model)
-    ||input.hash!==attachmentStartHash(input.sessionId,input.prompt,input.selections,input.attachments,input.presentation))throw new Error('invalid_input');
+    ||input.hash!==attachmentStartHash(input.sessionId,input.prompt,input.selections,input.attachments,input.presentation,input.continueTask))throw new Error('invalid_input');
    let row=await get(input.commandId);
    if(row){if(row.conversation_id!==input.sessionId||row.request_hash!==input.hash)throw new Error('command_conflict');}
    else{

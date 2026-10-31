@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "checks": [
+    "503 then success makes exactly two attempts and rechecks the original gate before the second send",
+    "Transient HTTP500 is capped at two retries, three total attempts",
+    "Auth, balance, invalid parameters and long rate windows stay one-shot and have distinct public categories",
+    "Ambiguous transport failure is never replayed and raw error text never enters diagnostics",
+    "Stop cancels an actual three-second retry wait within 300ms and dispatches no later attempt",
+    "An accepted response whose body later breaks is not retried as a fresh whole response",
+    "Projection preserves per-attempt retry history, bounds it at 64 and settles waiting rows on interruption",
+    "Partial output and finished tools prepare continuation with original constraints; a pre-effect failure can restore the original editable prompt",
+    "Broken trailing commentary becomes a visible partial answer; pre-tool narration remains process text",
+    "Optional typed task continuation admits valid task/version only, preserves legacy input and rejects unknown/accessor fields",
+    "Attachment admission includes the same bound-task intent digest as host while legacy hash remains unchanged"
+  ],
+  "boundary": "Actual HTTP recovery adapter, public projection and editable continuation policy; synthetic local fetch responses, no provider/UI/full AT claim.",
+  "originalRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-recovery-source-n4lMru"
+}

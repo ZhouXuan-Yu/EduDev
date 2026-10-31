@@ -1,5 +1,8 @@
 # 小智能力与复用矩阵
 
+2026-10-31 E07请求诊断/接续工程已实现：首响应暂时拒绝最多2次重试并显示记录；鉴权/余额/限流/服务错误分开。断流尾部正文显示未完成，准备稿不覆盖教师草稿、不自动发送；原样发送绑定原任务/要求版本，新run/command保留原criteria及效果，过时绑定拒绝。 E07-01/02/03/05只计工程部分，整组仍部分实现；其他取消/重启/落账/文件回收仍按原矩阵推进。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
+
+
 2026-10-31 E08当前版本：新增工程已实现：当前成果按版本族归并、双入口默认当前、整包原提交/当前分开、旧检查过期与旧Office任务证明失效；真实Pi同原三份文件恢复第四版并冷启。HTML/全部来源定位及完整AT继续待补。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
 2026-10-31 E08：E08工程新增已实现：原成果卡/教学文件统一历史、当前/旧版与PPT逐页差异、精确字节恢复为新版本、幂等/同字节不加版、变化/缺失及冷启。普通Office/精确PPT适用；HTML版本、全来源定位、原生成功打开/Office质量和完整AT未因此完成。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。

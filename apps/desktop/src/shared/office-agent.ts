@@ -30,6 +30,9 @@ export interface OfficeProjectedTurn {
   status: OfficeRunStatus;
   items: OfficeProjectedItem[];
   error?: string;
+  errorCode?:import('./xiaozhi-agent').XiaozhiAgentError;
+  modelRequests?:import('./xiaozhi-model-request').XiaozhiModelRequest[];
+  modelRequestsOmitted?:number;
   /** Main-measured actual active + waiting time; absent in older history. */
   elapsedMs?: number;
   /** Wall time from first public preparing event to the host terminal decision. */

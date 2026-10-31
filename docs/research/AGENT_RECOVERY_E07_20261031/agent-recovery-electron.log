@@ -1,0 +1,14 @@
+(node:49980) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS 503 wait is visible in the original turn, exactly two wire attempts succeed under one task and two request records persist
+PASS auth displays the exact actionable category and makes one attempt without automatic key/account changes
+PASS balance displays the exact actionable category and makes one attempt without automatic key/account changes
+PASS limited displays the exact actionable category and makes one attempt without automatic key/account changes
+PASS HTTP500 exhaustion stops at three wire/budget attempts and displays service failure rather than model incapability
+PASS Retry-wait stop gives local feedback within 300ms, settles interrupted and emits no later attempt after the original delay
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert((await partialElement.textContent()).includes('部分回复'))
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/request-recovery-electron.mjs:36:346
+{"ok":false,"checks":6,"error":"AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert((await partialElement.textContent()).includes('部分回复'))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/request-recovery-electron.mjs:36:346","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-vTlfSV"}
