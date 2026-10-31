@@ -42,6 +42,7 @@ import { PiSettingsWorkspace } from './components/office/PiSettingsWorkspace';
 import { QuestionNotebookWorkspace } from './components/QuestionNotebookWorkspace';
 import { TeacherNotebookWorkspace } from './components/TeacherNotebookWorkspace';
 import { AiObservabilityWorkspace } from './components/AiObservabilityWorkspace';
+import { DisclosureCard } from './components/ui/DisclosureCard';
 import { TeachingBookWorkspace } from './components/TeachingBookWorkspace';
 import { MemoryGovernanceWorkspace } from './components/MemoryGovernanceWorkspace';
 import { MasteryPathWorkspace } from './components/MasteryPathWorkspace';
@@ -2634,9 +2635,6 @@ export function App() {
   function renderAnalyticsView() {
     return (
       <div className="page-grid">
-        <div className="span-2">
-          <AiObservabilityWorkspace />
-        </div>
         <section className="work-panel span-2">
           <WorkspaceLabel number="01" title="教师工作台概览" description="只展示已有本地聚合，不展示假趋势。" />
           <div className="pro-kpi-grid large">
@@ -2663,6 +2661,11 @@ export function App() {
           <WorkspaceLabel number="04" title="高频薄弱点" />
           <EmptyState>薄弱点聚合将在错题和标签体系稳定后接入。</EmptyState>
         </section>
+        <div className="span-2">
+          <DisclosureCard title="运行与诊断" defaultExpanded={false} data-testid="analytics-runtime-diagnostics">
+            <AiObservabilityWorkspace />
+          </DisclosureCard>
+        </div>
       </div>
     );
   }
