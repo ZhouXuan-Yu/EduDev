@@ -120,7 +120,7 @@ export class MaterialImportBatches{
      }
     }
     await this.host.run(`UPDATE material_import_entries SET status='scanned' WHERE seq=?`,[Number(directory.seq)]);
-   }catch(error){signal.throwIfAborted();await this.host.run(`UPDATE material_import_entries SET status='failed',error=? WHERE seq=?`,[errorText(error),Number(directory.seq)]);}
+   }catch(error){signal.throwIfAborted();if((error as NodeJS.ErrnoException)?.code==='ENOSPC')throw error;await this.host.run(`UPDATE material_import_entries SET status='failed',error=? WHERE seq=?`,[errorText(error),Number(directory.seq)]);}
   }
   await this.host.run(`UPDATE material_import_batches SET phase='archive' WHERE id=? AND owner_nonce=?`,[id,this.nonce]);
   await this.archivePending(row,root,signal);
@@ -139,9 +139,9 @@ export class MaterialImportBatches{
     const guard=async()=>{signal.throwIfAborted();await this.root(row);const current=await this.safePath(root,String(entry.relative_path));if(fileVersion(current.stat)!==fileVersion(source.stat))throw new Error('source_changed');};
     if(!entry.source_version)await this.host.run(`UPDATE material_import_entries SET source_version=?,file_size=? WHERE seq=?`,[fileVersion(source.stat),source.stat.size,Number(entry.seq)]);
     const result=await this.host.import([source.file],signal,guard);signal.throwIfAborted();
-    const item=result.items[0],resource=result.resources[0];if(!item?.ok||!resource)throw new Error(item?.errorMessage||'archive_failed');
+    const item=result.items[0],resource=result.resources[0];if(!item?.ok||!resource)throw Object.assign(new Error(item?.errorMessage||'archive_failed'),{code:item?.errorCode});
     await this.host.run(`UPDATE material_import_entries SET status='saved',resource_id=?,file_size=?,reused=?,error='' WHERE seq=?`,[resource.id,source.stat.size,item.reused?1:0,Number(entry.seq)]);
-   }catch(error){signal.throwIfAborted();await this.host.run(`UPDATE material_import_entries SET status='failed',error=? WHERE seq=?`,[errorText(error),Number(entry.seq)]);}
+   }catch(error){signal.throwIfAborted();await this.host.run(`UPDATE material_import_entries SET status='failed',error=? WHERE seq=?`,[errorText(error),Number(entry.seq)]);if((error as NodeJS.ErrnoException)?.code==='ENOSPC')throw error;}
   }
  }
 }

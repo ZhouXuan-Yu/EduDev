@@ -1967,6 +1967,7 @@ export class OmniEduStore {
     for (const sourcePath of sourcePaths) {
       if (signal.aborted) break;
       const originalName = basename(sourcePath);
+      let unpublishedTarget:string|undefined;
       try {
         await guard?.();
         const stat = statSync(sourcePath);
@@ -1989,6 +1990,7 @@ export class OmniEduStore {
         const targetPath = resolveInsideRoot(resourceRoot, targetName);
         await guard?.();
         await copyMaterialFile(sourcePath,targetPath,stat.size,signal);
+        unpublishedTarget=targetPath;
         const hash = await hashFileSha256(targetPath,signal).catch(async error=>{await import('node:fs/promises').then(fs=>fs.rm(targetPath,{force:true}));throw error;});
         try{await guard?.();}catch(error){await import('node:fs/promises').then(fs=>fs.rm(targetPath,{force:true}));throw error;}
         const afterCopy=statSync(sourcePath);
@@ -2008,6 +2010,7 @@ export class OmniEduStore {
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [id, title, resourceType, originalName, targetPath, stat.size, hash, parseStatus, parseEngine, timestamp, timestamp],
         );
+        unpublishedTarget=undefined;
         await this.ensureTeacherLibraryNode();
         await this.createResourceGraph(id, title, resourceType, stat.size, timestamp);
         if(background)await this.materialQueue.enqueue(id,hash);else await this.materials.ingest(id, signal);
@@ -2022,12 +2025,21 @@ export class OmniEduStore {
         resources.push(this.mapTeacherResource(saved));
         items.push({ sourcePath, fileName: originalName, ok: true, fileSize: stat.size });
       } catch (error) {
+        if(unpublishedTarget){
+          // Delete only this exclusive copy, and only after proving no business fact owns it.
+          const owners=await this.all('SELECT id FROM teacher_resources WHERE local_path=? LIMIT 1',[unpublishedTarget]).catch(()=>undefined);
+          if(owners?.length===0)await import('node:fs/promises').then(fs=>fs.rm(unpublishedTarget!,{force:true})).catch(()=>undefined);
+        }
+        const cause=(error as NodeJS.ErrnoException)?.code;
+        const ioCode=cause==='SQLITE_FULL'?'ENOSPC':cause;
         items.push({
           sourcePath,
           fileName: originalName,
           ok: false,
           fileSize: 0,
           errorMessage: error instanceof Error ? error.message : '知识资源导入失败',
+          errorCode: ['ENOSPC','EACCES','EPERM','ENOENT'].includes(String(ioCode))
+            ? ioCode as AttachmentImportItem['errorCode'] : undefined,
         });
       }
     }
