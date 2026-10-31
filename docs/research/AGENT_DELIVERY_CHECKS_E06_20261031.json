@@ -1556,6 +1556,9 @@
       "src/shared/xiaozhi-delivery-checks.ts": "aac1d1439c6b87453e74f92648cb2135bc76ca4888f309ebf143d83f8eba8332",
       "src/renderer/components/office/PiDeliveryVisual.tsx": "88a962a6440b79d121a859f6e2a2b3d4fa98880203f8aaf8c9ea51c7217f5379",
       "scripts/xiaozhi-agent/delivery-check-electron.mjs": "8f797b9622945f166bfdab7d21822dc402ceabdcc81fe4cd04d7e22f46710880"
-    }
+    },
+    "implementationSha": "c72a526bc6a299cc2fb1486649202cacc4eb324b",
+    "verifiedSourceSha": "c72a526bc6a299cc2fb1486649202cacc4eb324b",
+    "integration": "Fetched origin/main after implementation commit; already up to date at537c3dd, no production merge changes and no unrelated test rerun."
   }
 }
