@@ -2678,6 +2678,65 @@
       "All teacher requirements bound, mixed terminal and complete E06/E07/E08/C with staged AT",
       "Daily D: runtime and installer not updated; no new paid calls"
     ],
-    "scriptUnchangedFromPositiveNativeAndUi": "paged-document-script.ts unchanged since a94ab29; final production repair changes only bounded stage cleanup in paged-document.ts. Renderer bundle SHA unchanged."
+    "scriptUnchangedFromPositiveNativeAndUi": "paged-document-script.ts unchanged since a94ab29; final production repair changes only bounded stage cleanup in paged-document.ts. Renderer bundle SHA unchanged.",
+    "finalIntegration": {
+      "sourceSha": "feef9d4ea6e8146d6cda9fd21a41d79137ad2a13",
+      "mergedMainSha": "f4dce3fb071fde5022074b587621a6a740d26dd0",
+      "earlierIntegrationSha": "dcf4f9cea2293a2e1620490e9a40d243547072e0",
+      "earlierMainSha": "cbe47349c83a0e2e04a9158117350fcae9e26a36",
+      "conflicts": "First integration15 Markdown files, latest4 root Markdown files; both full stage texts retained in order. No production source conflicts.",
+      "preservedPeers": "KB disk-full retry/40GiB evidence and sidebar collapsible groups/settings anchor retained. Peer changes are not attributed to Word slice.",
+      "wordSourceUnchangedFrom": "44eb69a7ffe3e65d9d3a102ee3906de9faad3904",
+      "unchangedPaths": [
+        "apps/desktop/src/main/xiaozhi-agent/checks",
+        "apps/desktop/src/shared/xiaozhi-delivery-checks.ts",
+        "apps/desktop/src/renderer/components/office/PiDeliveryCheck.tsx",
+        "apps/desktop/src/renderer/components/office/PiWorkspaceFiles.tsx"
+      ],
+      "checks": [
+        {
+          "command": "npm run build",
+          "exit": 0,
+          "includes": "TypeScript and electron-vite main/preload/renderer",
+          "log": "apps/desktop/delivery-word-sidebar-merged-build.log"
+        },
+        {
+          "command": "npm run test:renderer-components",
+          "exit": 0,
+          "passed": 240,
+          "total": 240,
+          "log": "apps/desktop/delivery-word-sidebar-merged-components.log"
+        }
+      ],
+      "fingerprints": {
+        "apps/desktop/out/main/index.js": {
+          "bytes": 3222093,
+          "sha256": "983ec4cd4537d078cdcc35095538d557dc3e0d0b9d5d926627a7c9f912637271"
+        },
+        "apps/desktop/out/preload/index.cjs": {
+          "bytes": 34761,
+          "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+        },
+        "apps/desktop/out/renderer/assets/index-kh9HPLG9.js": {
+          "bytes": 7179075,
+          "sha256": "5be081adbc8b53242d70048f3574d517794ffce3a734643fe15e41fe3198fa12"
+        }
+      },
+      "rendererBytesBeforeIntegration": 7175676,
+      "rendererBytesAfterIntegration": 7179075,
+      "performanceBoundary": "Bundle difference comes from merged main material retry/sidebar work. No final-app P95 or streaming measurements. Word native script and cancellation code are unchanged from their tested source.",
+      "testAttribution": "207/207 comprehensive suite belongs to a94ab29; initial Word positive paths belong to a94ab29, final cancel/busy4 assertions to44eb69a. Neither full suite nor native Word replayed after source-identical integrations.",
+      "inheritedFailedGates": [
+        "test:ui-contracts: existing PromptInput vendor fingerprint mismatch",
+        "production-bootstrap-ui.mjs: pre-navigation IPC expectation mismatch",
+        "npm audit:45 (8 high,29 moderate,8 low,0 critical),exit1"
+      ],
+      "inheritedEvidence": "docs/design/sidebar-navigation-2026-10-31/README.md",
+      "goalStatus": "active",
+      "newFullyAcceptedRequirements": 0,
+      "dailyRuntimeUpdated": false,
+      "installerUpdated": false,
+      "newPaidCalls": 0
+    }
   }
 }
