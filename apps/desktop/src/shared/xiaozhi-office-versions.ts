@@ -1,7 +1,7 @@
 export const OFFICE_VERSIONS_SCHEMA='xiaozhi.office-versions.v1' as const;
 type Address={schemaVersion:typeof OFFICE_VERSIONS_SCHEMA;sessionId:string;artifactId:string};
 export type OfficeVersionInput=Address&({action:'view'|'open'|'locate'}|{action:'restore';currentArtifactId:string;commandId:string});
-export type OfficeVersion={artifactId:string;path:string;title:string;format:string;number:number;savedAt:string;parentArtifactId:string|null;size:number;change:string};
+export type OfficeVersion={artifactId:string;path:string;title:string;format:string;number:number;savedAt:string|null;verifiedAt?:string|null;parentArtifactId:string|null;size:number;change:string};
 export type OfficeVersionView={schemaVersion:typeof OFFICE_VERSIONS_SCHEMA;sessionId:string;selectedArtifactId:string;currentArtifactId:string;versions:OfficeVersion[];integrity:'same'|'missing'|'changed';canRestore:boolean;htmlPreview?:string;historyBacking?:'text_ledger'};
 export type OfficeVersionError='invalid_input'|'permission_denied'|'busy'|'changed'|'missing'|'conflict'|'unsupported'|'file_writes_disabled'|'open_failed'|'configuration';
 export type OfficeVersionResult={ok:true;value:OfficeVersionView}|{ok:false;error:OfficeVersionError};

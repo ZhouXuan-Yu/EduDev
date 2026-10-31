@@ -1,5 +1,7 @@
 import {sanitizeOfficeDocumentText} from './xiaozhi-agent/office-document-tools';
 import {officeVersionCatalog} from './xiaozhi-agent/office-version-catalog';
+import {textVersionCatalog} from './xiaozhi-agent/text-version-catalog';
+import type {TeachingFileCatalogEntry} from '../shared/contracts';
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
 import {MaterialWordRepository} from './assets/material-word-repository';
 import {WORD_PARSER,wordText,type WordPayload} from '../shared/material-word';
@@ -4861,14 +4863,16 @@ export class OmniEduStore {
     return row ? this.mapDocumentArtifact(row) : null;
   }
 
-  async listDocumentArtifacts(sessionId?: string): Promise<DocumentArtifactExportResult[]> {
+  async listDocumentArtifacts(sessionId?: string): Promise<TeachingFileCatalogEntry[]> {
     const rows = sessionId?.trim()
       ? await this.all(
         `SELECT * FROM document_artifacts WHERE session_id = ? ORDER BY updated_at DESC, rowid DESC LIMIT 100`,
         [sessionId.trim()],
       )
       : await this.all(`SELECT * FROM document_artifacts ORDER BY updated_at DESC, rowid DESC LIMIT 100`);
-    return officeVersionCatalog(rows.map((row) => this.mapDocumentArtifact(row)),async id=>this.xiaozhiState.officeArtifacts.versionRecords(id) as Promise<import('./xiaozhi-agent/office-version-family').OfficeFamilyRecord[]>,id=>this.getDocumentArtifact(id));
+    const office=await officeVersionCatalog(rows.map((row) => this.mapDocumentArtifact(row)),async id=>this.xiaozhiState.officeArtifacts.versionRecords(id) as Promise<import('./xiaozhi-agent/office-version-family').OfficeFamilyRecord[]>,id=>this.getDocumentArtifact(id));
+    const html=await textVersionCatalog(this.xiaozhiState.changes,sessionId?.trim());
+    return [...office,...html].sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt));
   }
 
   async buildAiTelemetrySnapshot(input: Pick<AiRegressionReportInput, 'since' | 'until'> = {}): Promise<AiTelemetrySnapshot> {

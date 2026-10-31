@@ -36,7 +36,7 @@ export function createTextVersions(options:{state:ReturnType<typeof createTextCh
   return {schemaVersion:OFFICE_VERSIONS_SCHEMA,sessionId,selectedArtifactId:id,currentArtifactId:c.latest.id,
    integrity:id===c.latest.id?status:'same',canRestore:!!c.family.currentId&&id!==c.latest.id&&c.selected.afterSha256!==c.latest.afterSha256&&status==='same',
    historyBacking:'text_ledger',htmlPreview:htmlArtifactPreview(c.selected.after.toString('utf8')),
-   versions:c.family.versions.map((r,i)=>({artifactId:r.id,path:r.path,title:path.posix.basename(r.path),format:'html',number:i+1,savedAt:r.savedAt,parentArtifactId:r.parentChangeId,size:r.size,
+   versions:c.family.versions.map((r,i)=>({artifactId:r.id,path:r.path,title:path.posix.basename(r.path),format:'html',number:i+1,savedAt:r.savedAt,verifiedAt:r.verifiedAt,parentArtifactId:r.parentChangeId,size:r.size,
     change:r.callId.startsWith('restore:')?'从历史版本恢复，另存新文件':r.operation==='create'?'首次保存':'原文件局部修改；先前内容仍保留在修改记录中'}))};
  }
  async function restore(input:Extract<OfficeVersionInput,{action:'restore'}>,assertCurrent:()=>void) {
