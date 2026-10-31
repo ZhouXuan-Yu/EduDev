@@ -472,6 +472,60 @@
         }
       },
       "boundary": "Source16, original full Pi8 and one 207 comprehensive suite were not rerun; own feature source unchanged. Final integrated warm/cold readback3 + build/type + components240 passed. Integrated size includes upstream KB additions; no latency/P95 claim."
-    }
+    },
+    "lastIntegration": {
+      "sourceSha": "03a0204f2e853d2a37cb5fb734aafc749333a06a",
+      "upstreamSha": "95cd21d",
+      "markdownConflicts": 13,
+      "resolution": "Each original conflict block retained both sides verbatim; no production conflict",
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "C:/Users/ZhouXuan/AppData/Local/Temp/office-current-last-build.log"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240,
+        "log": "C:/Users/ZhouXuan/AppData/Local/Temp/office-current-last-components.log"
+      },
+      "fingerprints": {
+        "main": {
+          "bytes": 3313876,
+          "sha256": "19a0f790af4d7dfff61278ac2fcb32bf35f5ee6e2cdaafd29cc59fb80bfadd18"
+        },
+        "preload": {
+          "bytes": 35253,
+          "sha256": "bdc3d3fccf5acbdb9c3e3e41cde2970e2527ffa146697e254edc8383e2ab3e9b"
+        },
+        "renderer": {
+          "bytes": 7251525,
+          "sha256": "f5bbbcccef2c8691265624f07ae82c76e77c8d9b4099dee6dd475a07a929267c"
+        }
+      },
+      "boundary": "Own Office family/catalog/history/bundle/task/readback code unchanged since c500cb5/fc0102d; further upstream cover-classification/UI-count fixes integrated. No repeat of full Pi8, c500cb5 focused Pi3, source16 or comprehensive207; these retain their exact earlier source/build boundaries. Final 03a0204 Electron UI was not rerun. No D daily runtime/installer update."
+    },
+    "changedSourceFiles": [
+      "apps/desktop/scripts/xiaozhi-agent/office-current-electron.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/office-versions-smoke.mjs",
+      "apps/desktop/src/main/db.ts",
+      "apps/desktop/src/main/xiaozhi-agent/checks/service.ts",
+      "apps/desktop/src/main/xiaozhi-agent/delivery-coordinator.ts",
+      "apps/desktop/src/main/xiaozhi-agent/office-version-catalog.ts",
+      "apps/desktop/src/main/xiaozhi-agent/office-version-family.ts",
+      "apps/desktop/src/main/xiaozhi-agent/office-versions.ts",
+      "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "apps/desktop/src/main/xiaozhi-agent/tasks/result-recheck.ts",
+      "apps/desktop/src/main/xiaozhi-agent/verification/effect-readback.ts",
+      "apps/desktop/src/renderer/components/office/PiDeliveryBundleCard.tsx",
+      "apps/desktop/src/renderer/components/office/PiOfficeArtifactCard.tsx",
+      "apps/desktop/src/renderer/components/office/PiOfficeVersions.tsx",
+      "apps/desktop/src/renderer/components/product/TeachingArtifactsWorkspace.tsx",
+      "apps/desktop/src/shared/contracts.ts",
+      "apps/desktop/src/shared/xiaozhi-delivery.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ],
+    "next": "E07 first-response/auth/interruption/tool-error/stop/restart/journal-failure alignment, E08 HTML history and source-version/page navigation, remaining C; stage AT after functionality, then S/T. Keep complete 28 WP/252 requirements."
   }
 }
