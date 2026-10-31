@@ -7,15 +7,28 @@ import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {_electron as electron} from 'playwright';
 const desktop=path.resolve(import.meta.dirname,'../..'),output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-bundle-ui-'));
+const reopenIndex=process.argv.indexOf('--terminal-reopen'),reopen=reopenIndex>=0?path.resolve(process.argv[reopenIndex+1]):undefined;if(reopen){assert.equal(path.dirname(reopen).toLowerCase(),os.tmpdir().replace(/[\\/]$/,'').toLowerCase());assert(path.basename(reopen).startsWith('xiaozhi-bundle-ui-'));}
 const rejectMode=process.argv.includes('--reject');
 const partialMode=process.argv.includes('--partial');
-const data=path.join(output,'data'),profile=path.join(output,'profile');
+const terminalMode=process.argv.includes('--terminal');
+const data=path.join(reopen||output,'data'),profile=path.join(reopen||output,'profile');
 const report={ok:false,checks:[],errors:[],boundary:'Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.'};
 const html='<!doctype html><html lang="zh-CN"><title>浮力探究</title><body><label>排液体积<input id="volume" type="range" min="1" max="10" value="1"></label><output id="force">10 N</output><script>volume.oninput=()=>force.textContent=volume.value*10+" N";</script></body></html>';
 let application,page,sessionId;
 const query=(sql)=>{const db=new DatabaseSync(path.join(data,'app.db'),{readOnly:true});try{return db.prepare(sql).all();}finally{db.close();}};
 const until=async(action,ms=45000)=>{const deadline=Date.now()+ms;while(Date.now()<deadline){const value=await action();if(value)return value;await new Promise(resolve=>setTimeout(resolve,70));}throw Error('UI operation timed out');};
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
+async function assertTerminal(expected,label){
+ const row=query("SELECT content,metadata_json FROM ai_conversation_messages WHERE role='assistant' ORDER BY rowid DESC LIMIT 1")[0];assert(row);const metadata=JSON.parse(row.metadata_json),runId=metadata.agentRunId,turn=page.locator('[data-turn-id="'+runId+'"]');
+ assert(row.content.includes('浮力演示\\.html'));assert(row.content.includes('浮力讲解\\.pptx'));assert(row.content.includes('未检查'));assert(!row.content.includes('两份文件已保存，请核对教学内容。'));
+ if(expected==='partial'){assert(row.content.includes('已保存'));assert(row.content.includes('未保存'));assert(row.content.includes('草稿检查（未正式保存）'));assert(row.content.includes('仍有未完成'));}
+ if(expected==='saved'){assert(row.content.includes('沿用此前已保存成果'));assert(row.content.includes('是否完整满足你的教学要求'));assert(!row.content.includes('SHA256'));assert(!row.content.includes('xicheck_'));assert.notEqual(metadata.verification.state,'verified');}
+ const snapshot=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId),stored=snapshot.projection.turns.find(t=>t.id===runId);assert(stored);assert(stored.items.some(i=>i.phase==='final_answer'&&i.text===row.content));
+ const final=turn.locator('[data-phase="final_answer"]');await final.waitFor({timeout:10000});assert((await final.innerText()).includes('本轮文件结果'));assert(!(await final.innerText()).includes('两份文件已保存，请核对教学内容。'));
+ report.terminals??=[];report.terminals.push({label,runId,text:row.content,verification:metadata.verification,expected});
+ for(const [width,height] of [[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await final.scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:path.join(output,'terminal-'+expected+'-'+width+'.png')});}
+ check(label);return{runId,text:row.content};
+}
 async function launch(){
  const env={...process.env,OMNI_EDU_REPO_ROOT:path.resolve(desktop,'../..'),OMNI_EDU_DATA_ROOT:data,OMNI_EDU_XIAOZHI_PI:'1',OMNI_EDU_E2E_DIALOG_MODE:'1',DEEPSEEK_API_KEY:'synthetic-local-only',DEEPSEEK_MODEL:'deepseek-flash'};
  for(const key of ['NODE_OPTIONS','ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL'])delete env[key];
@@ -32,7 +45,8 @@ async function launch(){
    const planned=tools.includes('update_task_plan'),stage=index-(planned?1:0);let call;
    const user=body.messages.filter(m=>m.role==='user').at(-1)?.content;
    const text=typeof user==='string'?user:JSON.stringify(user);
-   if(index===0&&planned){const system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');const version=Number([...system.matchAll(/"requirementsVersion":(\d+)/g)].at(-1)?.[1]||1);call={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:version,expectedRevision:0,reason:'整包保存合成教学文件',steps:[{id:'deliver',text:'整包保存HTML与PPT',dependsOn:[],reported:'pending',kind:'saved_bundle',target:'current'},{id:'review',text:'教师核对教学内容',dependsOn:['deliver'],reported:'pending',kind:'human'}]})};}
+   if(state.checkOnly){if(index===0)call={name:'education_check_delivery',arguments:JSON.stringify({files:[{path:'浮力演示.html',rules:{contains:[{text:'排液体积'}]}},{path:'浮力讲解.pptx',rules:{contains:[{text:'故意缺失的课堂问题XYZ'}]}}]})};}
+   else if(index===0&&planned){const system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');const version=Number([...system.matchAll(/"requirementsVersion":(\d+)/g)].at(-1)?.[1]||1);call={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:version,expectedRevision:0,reason:'整包保存合成教学文件',steps:[{id:'deliver',text:'整包保存HTML与PPT',dependsOn:[],reported:'pending',kind:'saved_bundle',target:'current'},{id:'review',text:'教师核对教学内容',dependsOn:['deliver'],reported:'pending',kind:'human'}]})};}
    else if(text.includes('继续交付')&&!state.resumeStarted){
     if(planned&&!state.resumePlan){state.resumePlan=true;const system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');const version=Number([...system.matchAll(/"requirementsVersion":(\d+)/g)].at(-1)?.[1]||1);call={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:version,expectedRevision:0,reason:'续做未完成教学文件',steps:[{id:'deliver',text:'整包交付未完成部分',dependsOn:[],reported:'pending',kind:'saved_bundle',target:'current'},{id:'review',text:'教师核对教学内容',dependsOn:['deliver'],reported:'pending',kind:'human'}]})};}
     else{state.resumeStarted=true;const bundleId=JSON.stringify(body.messages).match(/xidelivery_[a-f0-9]{64}/)?.[0];if(!bundleId)throw Error('Missing bundle id');
@@ -50,6 +64,17 @@ async function launch(){
 }
 try{
  await launch();assert(sessionId);
+ if(reopen){
+  const old=query('SELECT file_path FROM document_artifacts')[0];assert(old);const root=path.dirname(old.file_path),paths=['浮力演示.html','浮力讲解.pptx'];const before=paths.map(n=>({path:n,bytes:fs.readFileSync(path.join(root,n)),mtime:fs.statSync(path.join(root,n)).mtimeMs}));
+  assert.equal((await application.evaluate(()=>globalThis.defaultDelivery)).requests.length,0);check('Focused continuation opens the same owned saved HTML/PPT without regenerating documents');
+  await application.evaluate(()=>Object.assign(globalThis.defaultDelivery,{checkOnly:true}));await page.getByTestId('office-prompt-input').fill('只检查现有浮力演示.html和浮力讲解.pptx，确认HTML有排液体积，并指出PPT是否缺少故意缺失的课堂问题XYZ。不要修改文件。');await page.getByRole('button',{name:'发送消息',exact:true}).click();
+  await until(()=>query('SELECT status FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1')[0]?.status!=='running');const row=query("SELECT content,metadata_json FROM ai_conversation_messages WHERE role='assistant' ORDER BY rowid DESC LIMIT 1")[0],metadata=JSON.parse(row.metadata_json),runId=metadata.agentRunId;
+  assert(row.content.includes('发现问题'));assert(row.content.includes('故意缺失的课堂问题XYZ'));assert(row.content.includes('本轮仅检查，无保存操作'));assert(row.content.includes('已通过的声明项'));assert(!row.content.includes('SHA256'));assert(!row.content.includes('xicheck_'));assert(!row.content.includes('两份文件已保存，请核对教学内容。'));
+  const final=page.locator('[data-turn-id="'+runId+'"] [data-phase="final_answer"]');await final.waitFor();for(const [width,height]of[[1366,768],[1920,1080]]){await page.setViewportSize({width,height});await final.scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));await page.screenshot({path:path.join(output,'terminal-focused-'+width+'.png')});}
+  for(const b of before){assert.deepEqual(fs.readFileSync(path.join(root,b.path)),b.bytes);assert.equal(fs.statSync(path.join(root,b.path)).mtimeMs,b.mtime);}report.focused={runId,text:row.content,metadata,before:before.map(({bytes,...b})=>({...b,bytes:bytes.length})),dataRoot:data};check('Final concise presentation shows actual passed and failed declared checks in the original dual-viewport reply without technical hashes or model completion claims');
+  await application.close();application=undefined;await launch();const snap=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId);assert(snap.projection.turns.find(t=>t.id===runId)?.items.some(i=>i.phase==='final_answer'&&i.text===row.content));assert.equal((await application.evaluate(()=>globalThis.defaultDelivery)).requests.length,0);check('Cold final build retrieves the exact concise terminal with no model/publication replay and saved file bytes unchanged');
+ }else{
+
  await page.getByTestId('office-prompt-input').fill('为八年级生成浮力HTML演示和8页可编辑PPT，每页有教师讲解备注。整包审阅后交付实际文件。');
  await page.getByRole('button',{name:'发送消息',exact:true}).click();
  await page.getByTestId('pi-delivery-bundle').waitFor({timeout:45000});
@@ -78,11 +103,13 @@ try{
   if(partialMode){
    assert.equal(value.state,'partial');assert(fs.statSync(collision).isDirectory());
    const root=path.dirname(collision),htmlPath=path.join(root,'浮力演示.html'),before=fs.statSync(htmlPath);assert(fs.readFileSync(htmlPath,'utf8').includes('xiaozhi.html-artifact.v1'));check('A real target conflict after HTML save displays partial delivery and preserves the HTML');
+   if(terminalMode)await assertTerminal('partial','Original mixed terminal reports saved HTML and unsaved conflicting PPT, actual draft check and unchecked scope at both viewports');
    fs.rmdirSync(collision);await bundle.getByTestId('pi-delivery-resume').click();
    const resumed=page.getByTestId('pi-delivery-bundle').last();await until(async()=>await resumed.getAttribute('data-bundle-id')!==value.id&&await resumed.getAttribute('data-state')==='pending');
    await until(async()=>!await resumed.getByTestId('pi-delivery-approve').isDisabled());assert(await resumed.getByText(/已保存并核验，续做时保留/).count());await resumed.getByTestId('pi-delivery-approve').click();
    await until(()=>query('SELECT status FROM ai_agent_runs ORDER BY created_at DESC LIMIT 1')[0]?.status!=='running');
    value=JSON.parse(query('SELECT value_json FROM xiaozhi_delivery_bundles ORDER BY created_at DESC LIMIT 1')[0].value_json);assert.equal(value.state,'saved');assert.equal(query('SELECT count(*) n FROM xiaozhi_pi_text_changes')[0].n,1);assert.equal(fs.statSync(htmlPath).mtimeMs,before.mtimeMs);check('The visible resume action starts a new turn, carries the saved HTML and confirms only unfinished PPT without rewriting HTML');
+   if(terminalMode)await assertTerminal('saved','Resumed terminal labels carried HTML without rewriting it, saved PPT and unmet semantic/visual scope without whole-task certification');
   }
   assert.equal(value.state,'saved');const fact=query('SELECT file_path FROM document_artifacts')[0];assert(fact&&fs.existsSync(fact.file_path));
   const {readPresentationNotes}=await import('./presentation-readback.ts');const notes=await readPresentationNotes(fs.readFileSync(fact.file_path));assert.equal(notes.length,8);assert(notes[3].text.includes('整包教师讲解备注'));
@@ -93,6 +120,8 @@ try{
  await until(async()=>!(await page.locator('body').textContent()).includes('过程记录暂时无法核对'),10000);
  await page.screenshot({path:path.join(output,'bundle-result.png')});
  const binding=query('SELECT session_file FROM xiaozhi_pi_session_bindings')[0];await application.close();application=undefined;await launch();assert.equal(query('SELECT session_file FROM xiaozhi_pi_session_bindings')[0].session_file,binding.session_file);await page.getByTestId('pi-delivery-bundle').first().waitFor({timeout:30000});check('Cold restart restores bundle cards, original ledger facts and native session identity without replay');
+ if(terminalMode){const state=await application.evaluate(()=>globalThis.defaultDelivery);assert.equal(state.requests.length,0);for(const saved of report.terminals||[]){const snap=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId),t=snap.projection.turns.find(t=>t.id===saved.runId);assert(t?.items.some(i=>i.phase==='final_answer'&&i.text===saved.text));}check('Cold original app retrieves identical mixed and resumed terminal text with zero model/publication replay');}
+ }
  assert.deepEqual(report.errors,[]);report.ok=true;
 }catch(error){report.error=String(error.stack);process.exitCode=1;console.error(report.error);if(page)await page.screenshot({path:path.join(output,'failure.png')}).catch(()=>{});}
 finally{await application?.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,output}));}

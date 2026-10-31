@@ -1,3 +1,4 @@
+import {deliveryFinal,type DeliveryFinal} from './delivery-final';
 import {deliveryRequirements} from './checks/requirements';
 import {createTaskState} from './tasks/task-state';
 import {createDeliveryChecks} from './checks/service';
@@ -174,7 +175,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const managedTools=options.managedTools||createManagedTools({root:path.join(options.dataRoot,'managed-tools')});
   const root = path.join(options.dataRoot, 'xiaozhi-pi');
   const active = new Map<string, Active>();
-  const fileChecks=createDeliveryChecks({state:store.xiaozhiState.inspections,dataRoot:options.dataRoot,resolve:id=>host.resolveFileWorkspace(id),requirements:async id=>deliveryRequirements(await createTaskState(store.xiaozhiState.sql,{sanitize:async text=>(await createStudentContextSanitizer(store))(text)}).requirements(id)),
+  const fileChecks=createDeliveryChecks({state:store.xiaozhiState.inspections,dataRoot:options.dataRoot,observe:report=>{const run=active.get(report.sessionId);if(run&&run.runId===report.runId){run.officePresentation??=createOfficeDeliveryPresentation(run.runId);run.officePresentation.inspected();}},resolve:id=>host.resolveFileWorkspace(id),requirements:async id=>deliveryRequirements(await createTaskState(store.xiaozhiState.sql,{sanitize:async text=>(await createStudentContextSanitizer(store))(text)}).requirements(id)),
     candidateStatus:async(id,file)=>{const ref=file.candidate;if(!ref)return{current:false,published:false};const row=ref.kind==='text'?await store.xiaozhiState.changes.get(ref.id):await store.xiaozhiState.officeArtifacts.get(ref.id);
       return{current:!!row&&row.sessionId===id&&row.path===file.path&&row.state!=='reverted'&&('afterSha256'in row?row.afterSha256===file.sha256:row.draftHash===file.fileVersion&&row.outputHash===file.sha256),published:row?.state==='saved'||row?.state==='applied'};}});
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
@@ -828,11 +829,13 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       }).catch(() => { failure ||= 'configuration'; });
       if (run.stopped) failure = 'cancelled';
       await run.usageWrites.catch(()=>{failure ||= 'configuration';});
-      let deliveryText: string | undefined;
-      try { if (run.officePresentation?.hasArtifacts) {
-        const rows=(await store.xiaozhiState.officeArtifacts.list(id)).map(officeSummary);
-        deliveryText=officeDeliveryText(run.runId,rows,failure==='cancelled'?'stopped':failure?'failed':undefined);
-      } } catch { failure ||= 'configuration'; }
+      let deliveryText: string | undefined, fileFinal: DeliveryFinal | undefined;
+      try {
+        fileFinal=await deliveryFinal({sessionId:id,runId:run.runId,callOrder:run.turn.items.filter(item=>item.kind==='tool').map(item=>item.id),observed:run.officePresentation?.hasArtifacts===true,failure:failure==='cancelled'?'stopped':failure?'failed':undefined,ports:{
+          changes:()=>store.xiaozhiState.changes.list(id,run.runId),office:()=>store.xiaozhiState.officeArtifacts.list(id,run.runId),bundles:()=>store.xiaozhiState.deliveries.list(id,run.runId),
+          text:changeId=>store.xiaozhiState.changes.get(changeId),artifact:artifactId=>store.xiaozhiState.officeArtifacts.get(artifactId),inspections:()=>fileChecks.forRun(id,run.runId)}});
+        deliveryText=fileFinal?.text;
+      } catch { failure ||= 'configuration'; }
       if (deliveryText) text=deliveryText;
       await run.publisher?.flush().catch(()=>{failure='event_persistence';});
       if(run.publisher&&!run.publisher.failed){try{const recovery=await run.publisher.persist(owner=>store.xiaozhiState.eventJournal.reconcile(owner));if(recovery.receipts.length){publicEvent(id,run,{kind:'recovery',recovery});await run.publisher.flush();}}catch{failure='event_persistence';}}
@@ -860,6 +863,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         finalTurn.verification=run.verification.finish({failed:Boolean(failure),stopped:run.stopped,
           teacherCriteria:taskGoal?.sessionId===id&&taskGoal.runId===run.runId?taskGoal.criteria:undefined});
         if(run.results&&run.readResults)finalTurn.verification=await run.results.finish(finalTurn.verification,run.readResults);
+        if(fileFinal?.incomplete&&finalTurn.verification.state==='verified'){finalTurn.verification={...finalTurn.verification,state:'partial',reason:'evidence_missing',checks:finalTurn.verification.checks.some(c=>c.id==='coverage:unknown')?finalTurn.verification.checks:[...finalTurn.verification.checks.slice(0,63),{id:'coverage:unknown',state:'unknown',evidenceIds:[]}]};}
         for (const item of finalTurn.items.filter(item => item.kind === 'tool')) {
           await store.recordAiAgentEvent(run.runId, { phase: 'observe', status: item.status === 'completed' ? 'succeeded' : 'failed',
             label: item.label || '授权工具', detail: item.status === 'completed' ? '工具实际执行完成。' : '工具没有完成。',

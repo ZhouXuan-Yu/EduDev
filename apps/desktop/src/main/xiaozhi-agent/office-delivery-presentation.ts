@@ -30,11 +30,14 @@ export function createOfficeDeliveryPresentation(runId: string) {
   let buffered = '';
   return {
     get hasArtifacts() { return observed; },
+    inspected() { observed=true; terminalEffect=true; },
     events(payload: XiaozhiAgentEventPayload): XiaozhiAgentEventPayload[] {
       if (payload.kind === 'office_artifact' && payload.artifact.runId === runId) {
         observed = true;
         if (outcomes.has(payload.artifact.state)) terminalEffect = true;
       }
+      if(payload.kind==='change'&&payload.change.runId===runId){observed=true;if(!['pending','approved','executing'].includes(payload.change.state))terminalEffect=true;}
+      if(payload.kind==='delivery_bundle'&&payload.delivery.runId===runId){observed=true;if(!['preparing','pending','approving','approved','executing'].includes(payload.delivery.state))terminalEffect=true;}
       if (terminalEffect && payload.kind === 'text_delta') {
         buffered = (buffered + payload.delta).slice(0, 65536);
         return [];

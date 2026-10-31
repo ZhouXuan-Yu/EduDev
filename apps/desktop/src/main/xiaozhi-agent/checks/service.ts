@@ -26,6 +26,7 @@ export type CandidateBytes={path:string;bytes:Buffer;version:string;candidate:No
 /** One inspected bundle at a time. Parsing and dynamic DOM run in owned isolated processes. */
 export function createDeliveryChecks(options:{state:ReturnType<typeof createInspectionState>;dataRoot:string;
  resolve:(id:string)=>Promise<WorkspaceLease>;requirements:(id:string)=>Promise<number|null|DeliveryRequirements>;
+ observe?:(report:DeliveryCheckReport)=>void;
  candidateStatus?:(sessionId:string,file:FileCheckReport)=>Promise<{current:boolean;published:boolean}>}){
  let tail=Promise.resolve<unknown>(undefined),slots=0,closing=false;const controllers=new Set<AbortController>();const visuals=createVisualEvidenceCache(options.dataRoot);
  async function requirementsFor(id:string){const value=await options.requirements(id);return{version:typeof value==='number'?value:value?.version??null,context:typeof value==='object'&&value?structuredClone(value):null};}
@@ -87,7 +88,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
     if(exhausted.length){
      report.repairExhausted=exhausted;
      for(const candidate of supplied!){const checks=CHECK_CLASSES.map(kind=>({kind,state:exhausted.includes(kind)?'failed' as const:'unchecked' as const,code:'repair_budget_exhausted',message:'此类自动修复已达2轮，本次未再执行检查或写入。原失败草稿与检查结果已保留，请说明未完成项。'}));files.push({path:candidate.path,fileVersion:candidate.version,sha256:hash(candidate.bytes),size:candidate.bytes.length,format:path.extname(candidate.path).slice(1),candidate:candidate.candidate,checks,renderedPages:[],numbers:[],state:'failed'});}
-     report.state='failed';current();await options.state.put(report,input);current();return{ok:true,report};
+     report.state='failed';current();await options.state.put(report,input);options.observe?.(report);current();return{ok:true,report};
     }
     if(newCandidate)for(const kind of failedKinds)report.repairAttempts[kind]=(report.repairAttempts[kind]||0)+1;
     for(const file of input.files){
@@ -142,7 +143,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
      if(edited)for(const kind of CHECK_CLASSES)if(prior.files.some(f=>f.checks.some(c=>c.kind===kind&&c.state==='failed')))report.repairAttempts[kind]=(report.repairAttempts[kind]||0)+1;
     }
     report.requirementCoverage=requirementCoverage(report,input);
-    report.state=files.some(f=>f.state==='failed')?'failed':files.some(f=>f.state==='partial')?'partial':report.requirements?.criteria.length?'partial':'passed';current();await options.state.put(report,input);current();return{ok:true,report};
+    report.state=files.some(f=>f.state==='failed')?'failed':files.some(f=>f.state==='partial')?'partial':report.requirements?.criteria.length?'partial':'passed';current();await options.state.put(report,input);options.observe?.(report);current();return{ok:true,report};
    }catch(error){
     if(report&&(signal.aborted||closing||owner&&!owner.current())){report.state='cancelled';await options.state.cancel(report,input).catch(()=>undefined);}
     return{ok:false,error:signal.aborted?(signal.reason==='timeout'?'timeout':'cancelled'):errorCode(error)};
@@ -154,6 +155,11 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
   inspect,
   async get(sessionId:string,id:string){await options.state.migrate();const value=await options.state.get(sessionId,id);return value?refresh(value.report):null;},
   async list(sessionId:string){await options.state.migrate();await options.resolve(sessionId);return(await options.state.list(sessionId)).map(r=>({id:r.id,state:r.state,createdAt:r.createdAt,files:r.files.map(f=>({path:f.path,state:f.state}))}));},
+  async forRun(sessionId:string,runId:string){
+   await options.state.migrate();const stored=await options.state.forRun(sessionId,runId),seen=new Set<string>();
+   const selected=stored.filter(r=>{const keys=r.files.map(f=>f.candidate?'candidate:'+f.candidate.id:'file:'+f.path+':'+f.sha256);if(keys.every(k=>seen.has(k)))return false;keys.forEach(k=>seen.add(k));return true;});
+   const read=await Promise.allSettled(selected.map(refresh));return{reports:read.flatMap(r=>r.status==='fulfilled'?[r.value]:[]),unavailable:read.some(r=>r.status==='rejected')};
+  },
   async visual(sessionId:string,id:string,sha256:string):Promise<DeliveryVisualResult>{
    try{if(closing)return{ok:false,error:'unavailable'};await options.state.migrate();const stored=await options.state.get(sessionId,id);if(!stored)return{ok:false,error:'not_found'};
     const report=await refresh(stored.report),file=report.files.find(f=>f.visualEvidence?.some(e=>e.sha256===sha256)),evidence=file?.visualEvidence?.find(e=>e.sha256===sha256);

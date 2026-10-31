@@ -5830,5 +5830,762 @@
       ],
       "boundary": "207 comprehensive and original Pi journeys belong to implementation0018ab3; final merged build/type and240 components passed. Same slice source; no repeat of complete/native/paid/teacher suites. Upstream changes included in final bundle, not attributed to this slice."
     }
+  },
+  "terminalSlice": {
+    "date": "2026-10-31",
+    "baseSha": "6d4542453eafa984084c774dfc0fbd669d9ee34d",
+    "implementationSha": "ec55ac2315d2e45081715bc450b973e0f93f99a6",
+    "scope": "E06 ninth slice: factual per-file mixed terminal through original final_answer/publicItems; text/HTML, Office, pending failed bundle children, carried saved effects, actual same-run inspection scope. No new ledger/runtime/dependency/DDL/IPC/approval or paid call. Full E06/252AT not accepted.",
+    "previousGoalTurn": "progress: 6d45424 delivered requirement/rule association and synchronized both remote refs; current user resumed goal active.",
+    "tests": {
+      "source": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-terminal-smoke.mjs",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "passed": 8,
+          "checks": [
+            "Ordinary no-tool answer retains model output and performs no file-ledger reads",
+            "Mixed HTML saved and PPT failed draft remain separate facts with actual failure and unchecked visual scope",
+            "New failed modification cannot reuse old hash/identity checks and retains prior saved-version history",
+            "Refreshed stale context never becomes a current check pass",
+            "Cancellation keeps saved effects while refusing a late inspection success",
+            "Partial ledger unavailability retains available saved facts and excludes another run",
+            "Original bundle refs recover carried saved children and retain a never-prepared failed file without fabricating it",
+            "Original presentation keeps between-tool commentary and suppresses model-certified final claims after real inspection"
+          ],
+          "boundary": "Source contracts and presentation; actual original Pi/file/SQLite/cold restart covered separately."
+        },
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-final-source.log"
+      },
+      "mixedOriginalPi": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-bundle-electron.mjs --partial --terminal",
+        "exit": 0,
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-rg271g",
+        "report": {
+          "ok": true,
+          "checks": [
+            "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+            "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+            "A real target conflict after HTML save displays partial delivery and preserves the HTML",
+            "Original mixed terminal reports saved HTML and unsaved conflicting PPT, actual draft check and unchecked scope at both viewports",
+            "The visible resume action starts a new turn, carries the saved HTML and confirms only unfinished PPT without rewriting HTML",
+            "Resumed terminal labels carried HTML without rewriting it, saved PPT and unmet semantic/visual scope without whole-task certification",
+            "Saved PPT has eight actual pages and teacher notes; task verification independently confirms every bundled file",
+            "Cold restart restores bundle cards, original ledger facts and native session identity without replay",
+            "Cold original app retrieves identical mixed and resumed terminal text with zero model/publication replay"
+          ],
+          "errors": [],
+          "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+          "terminals": [
+            {
+              "label": "Original mixed terminal reports saved HTML and unsaved conflicting PPT, actual draft check and unchecked scope at both viewports",
+              "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+              "text": "本轮文件结果：\n仍有未完成或未核验项，保存成功不代表检查全部通过。\n\n- 浮力演示\\.html：已保存。\n  保存版本SHA256：863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef。\n  文件检查：仍有未检查项；记录xicheck_b208dec67fb3968c1c39910172c244454d49af8beac7e01d382705c00a2cd544。\n  未检查/未完成：交互、内容、数值、跨文件一致性。\n  完整教师要求语义仍未核验，含未关联规则的要求。\n- 浮力讲解\\.pptx：内容或来源已变化，未保存。\n  检查/草稿版本SHA256：86bbb067124102de642d8bf673f1741c1490519a93f7bfc9cad0fa9037c97696。\n  草稿检查（未正式保存）：仍有未检查项；记录xicheck_b208dec67fb3968c1c39910172c244454d49af8beac7e01d382705c00a2cd544。\n  未检查/未完成：视觉、数值、跨文件一致性。\n  完整教师要求语义仍未核验，含未关联规则的要求。\n\n可在原文件卡或本地文件面板查看、重检或继续修改；本轮未因汇总重新生成文件。",
+              "verification": {
+                "schema": "xiaozhi.verification.v1",
+                "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                "state": "partial",
+                "scope": "declared_criteria",
+                "checkedAt": "2026-10-31T12:01:17.159Z",
+                "reason": "execution_failed",
+                "checks": [],
+                "evidence": [
+                  {
+                    "id": "default-delivery-0",
+                    "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                    "callId": "default-delivery-0",
+                    "kind": "execution",
+                    "digest": "971c551a8613bc3aa4d63307532cb543bdd965326d22fc00703462158be63797",
+                    "observedAt": "2026-10-31T12:00:48.138Z"
+                  },
+                  {
+                    "id": "default-delivery-1",
+                    "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                    "callId": "default-delivery-1",
+                    "kind": "execution",
+                    "digest": "bc97aaf0bdc6add42897286715213059e524a5d9be73f443ac655202a0ce902e",
+                    "observedAt": "2026-10-31T12:01:15.797Z"
+                  }
+                ],
+                "operations": {
+                  "succeeded": 1,
+                  "failed": 1
+                }
+              },
+              "expected": "partial"
+            },
+            {
+              "label": "Resumed terminal labels carried HTML without rewriting it, saved PPT and unmet semantic/visual scope without whole-task certification",
+              "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+              "text": "本轮文件结果：\n仍有未完成或未核验项，保存成功不代表检查全部通过。\n\n- 浮力讲解\\.pptx：已保存。\n  保存版本SHA256：1179398160a0fefd672bee2cbae26f65e9326db104bc7d50c7918aaa67f73cdc。\n  文件检查：仍有未检查项；记录xicheck_bcae821c9f8a8f67b74c86dc6394381c0ae7b93dcaa5f6aeece9b46e3278a984。\n  未检查/未完成：视觉、数值。\n  完整教师要求语义仍未核验，含未关联规则的要求。\n- 浮力演示\\.html：已保存（沿用此前已保存成果，本轮未重复写入）。\n  保存版本SHA256：863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef。\n  检查：未取得当前版本的检查结果。\n\n可在原文件卡或本地文件面板查看、重检或继续修改；本轮未因汇总重新生成文件。",
+              "verification": {
+                "schema": "xiaozhi.verification.v1",
+                "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                "state": "needs_human",
+                "scope": "declared_criteria",
+                "checkedAt": "2026-10-31T12:01:29.660Z",
+                "reason": "human_review",
+                "checks": [
+                  {
+                    "id": "saved_bundle:default-delivery-4",
+                    "state": "passed",
+                    "evidenceIds": [
+                      "result:default-delivery-4"
+                    ]
+                  },
+                  {
+                    "id": "answer:human",
+                    "state": "needs_human",
+                    "evidenceIds": []
+                  }
+                ],
+                "evidence": [
+                  {
+                    "id": "default-delivery-3",
+                    "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                    "callId": "default-delivery-3",
+                    "kind": "execution",
+                    "digest": "6051236f099e0606126e7b68040af40c90eea218918db318ba90618701224096",
+                    "observedAt": "2026-10-31T12:01:20.815Z"
+                  },
+                  {
+                    "id": "default-delivery-4",
+                    "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                    "callId": "default-delivery-4",
+                    "kind": "execution",
+                    "digest": "6424921029e942ae8a44a1803214366df38a27ae15ec4e6a6e5ec8df4b2fed26",
+                    "observedAt": "2026-10-31T12:01:29.042Z"
+                  },
+                  {
+                    "id": "result:default-delivery-4",
+                    "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                    "callId": "default-delivery-4",
+                    "kind": "readback",
+                    "digest": "34b3a4b34c14a7bfa999db354dfa1b09b013fa0112a31b2b13cad000cb4b84a1",
+                    "observedAt": "2026-10-31T12:01:29.042Z"
+                  }
+                ],
+                "operations": {
+                  "succeeded": 2,
+                  "failed": 0
+                }
+              },
+              "expected": "saved"
+            }
+          ],
+          "snapshot": {
+            "running": false,
+            "cursors": [
+              {
+                "runId": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                "generation": 1,
+                "sequence": 48,
+                "revision": 48
+              },
+              {
+                "runId": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                "generation": 2,
+                "sequence": 50,
+                "revision": 50
+              }
+            ],
+            "turns": [
+              {
+                "id": "run_b9179d64-948c-4c2a-8899-386feb0dcf19",
+                "status": "completed"
+              },
+              {
+                "id": "run_56c1e621-2191-4c37-8e52-92e780f857ce",
+                "status": "completed"
+              }
+            ],
+            "deliveries": [
+              {
+                "id": "xidelivery_6c7f490f715bac9c43bd8f454b4645a85fbff9dd1d41044bdd81685dde78cc25",
+                "state": "partial"
+              },
+              {
+                "id": "xidelivery_775a1fdcefd6539885dca42bd51b05cc59a5037759e6d23c3bfa3a1ec9586f59",
+                "state": "saved"
+              }
+            ]
+          }
+        },
+        "boundary": "9 actual original UI/state/byte/restart checks, synthetic SSE0paid. This first pass had full technical hashes in final text; those have subsequently been removed for teacher-facing clarity. Final concise text is separately verified with the same files without generation replay.",
+        "buildAttribution": {
+          "log": "C:/Users/ZhouXuan/AppData/Local/Temp/delivery-terminal-final-build.log",
+          "mainEntryDisplayedSize": "3,257.12 kB",
+          "digest": "not captured before first UI",
+          "boundary": "Before concise presentation refinement; final main displays3,257.53kB. Do not assign final source digest to the earlier 9 path run."
+        }
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-components.log",
+        "boundary": "before final presentation refinement; renderer source unchanged"
+      },
+      "comprehensive": {
+        "command": "npm.cmd run test:smoke",
+        "status": "passed",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-smoke.log",
+        "boundary": "One legacy-test Pi0 suite before upstream workbench renderer merge. Its observed main entry matches the final merged main entry, but no complete final Pi or final renderer regression claim; final original Pi3 and240 components separately verified.",
+        "exit": 0,
+        "passed": 207,
+        "report": {
+          "ok": true,
+          "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-smoke-XdQBLD",
+          "createdStudents": 30,
+          "knowledgeResources": 1,
+          "knowledgeChunks": 2,
+          "knowledgeNodes": 5,
+          "frontendAcceptance": {
+            "cases": [
+              "native attachment dialog adapter click",
+              "attachment copy and hash readback",
+              "attachment source retained",
+              "attachment cancel zero writes",
+              "attachment status feedback",
+              "needs_ocr persisted",
+              "teacher correction persisted",
+              "phone sanitized",
+              "missing credential actionable",
+              "triplet preview editable",
+              "triplet reject zero writes",
+              "triplet confirm writes exercise set",
+              "exercise source kinds retained",
+              "local_bank source visible",
+              "generated source visible",
+              "bookmark persisted",
+              "bookmarked-only filter hit",
+              "question search no-hit state",
+              "question search hit state",
+              "artifact export file and hash",
+              "PDF UI click export",
+              "PDF Unicode file bytes",
+              "PDF SQLite metadata readback",
+              "DOCX UI click export",
+              "DOCX Unicode and style bytes",
+              "DOCX long content SQLite readback",
+              "empty artifact visible failure",
+              "empty artifact zero writes",
+              "PDF and DOCX restart readback",
+              "question UI canonical create",
+              "teacher provenance cannot forge generated",
+              "question category create",
+              "question category versioned rename",
+              "question category assignment",
+              "question category soft delete",
+              "question category restore",
+              "question usage empty state",
+              "question manual usage readback",
+              "question management restart readback",
+              "question empty validation zero writes",
+              "question category conflict fail closed",
+              "exercise/bookmark/artifact restart readback",
+              "1366x768 and 1920x1080 visual capture",
+              "teacher notebook empty state",
+              "teacher notebook create readback",
+              "teacher note create readback",
+              "teacher note versioned edit",
+              "teacher note soft delete audit",
+              "teacher notebook soft delete",
+              "teacher notebook restore",
+              "teacher notebook restart readback",
+              "AI observability summary readback",
+              "regression report click persistence",
+              "computed regression gates visible",
+              "recent run inspector visible",
+              "bounded trace boundary visible",
+              "raw prompt and hidden reasoning excluded",
+              "regression report restart readback",
+              "teaching book empty state",
+              "teaching book create readback",
+              "teaching book versioned update",
+              "teaching chapter create",
+              "teaching page create",
+              "manual source binding",
+              "source-anchored block create",
+              "read-only compiled preview",
+              "patch draft zero writes",
+              "patch apply readback",
+              "patch undo readback",
+              "selection patch exact preview",
+              "selection patch zero writes",
+              "selection patch apply and undo",
+              "versioned direct block edit",
+              "teaching source health refresh",
+              "page and block pending regeneration state",
+              "teaching book Markdown export",
+              "teaching book archive boundary",
+              "teaching book restart readback",
+              "teaching book dual-viewport capture",
+              "memory workspace empty state",
+              "L2 candidate zero writes",
+              "L2 teacher adoption",
+              "L2 versioned edit",
+              "L2 stale conflict fail closed",
+              "L2 conflict preserves readback",
+              "L2 revision history",
+              "L2 disable and restore",
+              "L2 soft delete audit",
+              "L3 candidate zero writes",
+              "L3 teacher adoption",
+              "L3 versioned edit",
+              "L3 stale conflict fail closed",
+              "L3 conflict preserves readback",
+              "L3 disable and restore",
+              "bounded evidence graph",
+              "raw prompt and hidden reasoning excluded from memory",
+              "memory governance counts",
+              "memory restart readback",
+              "memory dual-viewport capture",
+              "AI formal memory write disabled",
+              "mastery path navigation click",
+              "mastery path SQLite version readback",
+              "mastery module and type order visible",
+              "mastery refresh stable readback",
+              "mastery percentage not invented",
+              "mastery empty state",
+              "mastery student isolation",
+              "mastery AI handoff prefill",
+              "mastery restart and dual-viewport readback",
+              "global search navigation and idle state",
+              "global search blank validation",
+              "global student search hit",
+              "global student result navigation",
+              "global record search hit",
+              "global record owner navigation",
+              "global search no-hit state",
+              "global search restart readback",
+              "global search dual-viewport capture",
+              "exercise-set teacher-visible readback",
+              "exercise-set read-only boundary",
+              "exercise-set source labels visible",
+              "exercise-set refresh zero writes",
+              "exercise-set empty state",
+              "exercise-set student isolation",
+              "exercise-set restart UI readback",
+              "exercise-set 1366x768 capture",
+              "exercise-set 1920x1080 capture",
+              "review reminder navigation click",
+              "review reminder due SQLite readback",
+              "review reminder bounded projection",
+              "review reminder refresh zero writes",
+              "review reminder evidence navigation",
+              "review reminder clear state",
+              "review reminder student isolation",
+              "review reminder restart UI readback",
+              "review reminder 1366x768 capture",
+              "review reminder 1920x1080 capture",
+              "student create form SQLite readback",
+              "student edit identity and SQLite readback",
+              "student folder open visible feedback",
+              "student export user click",
+              "student export metadata file readback",
+              "student export SQLite record projection",
+              "student export cancel zero writes",
+              "student archive confirmation cancel zero writes",
+              "student archive confirm SQLite write",
+              "student archived row label",
+              "student archived read-only controls",
+              "student lifecycle restart readback",
+              "student lifecycle dual-viewport capture",
+              "data backup settings navigation",
+              "data backup export user click",
+              "data backup outside live root",
+              "data backup manifest schema and file count",
+              "data backup relative paths and SHA-256",
+              "data backup clean verification",
+              "data backup export cancel zero writes",
+              "data backup changed file detection",
+              "data backup unexpected file detection",
+              "data backup verify cancel zero writes",
+              "data backup restart verification",
+              "data backup dual-viewport capture",
+              "AI conversation sidebar navigation",
+              "AI folder blank validation zero writes",
+              "AI folder create SQLite readback",
+              "AI conversation create SQLite readback",
+              "AI conversation rename SQLite readback",
+              "AI conversation drag move SQLite readback",
+              "AI conversation archive cancel zero writes",
+              "AI conversation archive confirm",
+              "AI folder rename SQLite readback",
+              "AI folder archive cancel zero writes",
+              "AI folder cascade archive",
+              "AI archived workspace restart readback",
+              "AI archived settings UI readback",
+              "AI conversation dual-viewport capture",
+              "review report navigation and validation",
+              "review invalid range zero writes",
+              "review generation SQLite readback",
+              "review source evidence visible",
+              "review quality checks visible",
+              "review initial Markdown snapshot",
+              "review edit zero writes before save",
+              "review save SQLite readback",
+              "review parent summary readback",
+              "review initial snapshot boundary",
+              "review history reopen",
+              "review student isolation",
+              "review restart SQLite readback",
+              "review restart file boundary",
+              "review report dual-viewport capture",
+              "AI quality settings navigation and loading",
+              "quality blank validation zero writes",
+              "quality invalid CSV zero writes",
+              "teacher quality score SQLite readback",
+              "teacher rewrite flag and failure visibility",
+              "quality summary refresh readback",
+              "model grader truthful mode visibility",
+              "quality sample replay to AI input",
+              "quality before selection visibility",
+              "quality after review SQLite readback",
+              "quality replay experiment SQLite link",
+              "quality score delta visible",
+              "quality valid CSV import",
+              "quality reviews restart readback",
+              "quality experiment and model grade restart readback",
+              "AI quality dual-viewport capture"
+            ],
+            "passed": 207,
+            "total": 207,
+            "viewports": [
+              "1366x768",
+              "1920x1080"
+            ],
+            "screenshots": [
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mistakes-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mistakes-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-question-notebook-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-artifact-pdf-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-artifact-docx-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-artifact-error-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teacher-notebook-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teacher-notebook-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-observability-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-observability-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teaching-book-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teaching-book-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-memory-governance-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-memory-governance-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mastery-path-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mastery-path-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-global-search-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-global-search-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-exercise-sets-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-exercise-sets-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-reminder-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-reminder-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-student-lifecycle-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-student-lifecycle-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-data-backup-success-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-data-backup-failed-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-conversation-library-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-conversation-archive-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-report-draft-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-report-saved-1920x1080.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-quality-review-1366x768.png",
+              "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-quality-experiment-1920x1080.png"
+            ]
+          }
+        }
+      },
+      "finalConciseBuild": {
+        "status": "passed",
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "validationSha": "b35b5fc0a8867dde9b5c2d4ab8eaac3df10575cc",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-merged-build.log"
+      },
+      "finalConcisePi": {
+        "status": "passed",
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-bundle-electron.mjs --terminal-reopen C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-bundle-ui-rg271g",
+        "exit": 0,
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-mq5b9I",
+        "report": {
+          "ok": true,
+          "checks": [
+            "Focused continuation opens the same owned saved HTML/PPT without regenerating documents",
+            "Final concise presentation shows actual passed and failed declared checks in the original dual-viewport reply without technical hashes or model completion claims",
+            "Cold final build retrieves the exact concise terminal with no model/publication replay and saved file bytes unchanged"
+          ],
+          "errors": [],
+          "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+          "focused": {
+            "runId": "run_a4375f1e-89e4-4ce9-b856-9d73d73e0990",
+            "text": "本轮文件结果：\n仍有未完成或未核验项，保存成功不代表检查全部通过。\n\n- 浮力演示\\.html：本轮仅检查，无保存操作。\n  文件检查：仍有未检查项。\n  已通过的声明项：结构、内容、视觉。\n  未检查/未完成：交互、数值、跨文件一致性。\n- 浮力讲解\\.pptx：本轮仅检查，无保存操作。\n  文件检查：发现问题。\n  已通过的声明项：结构。\n  发现问题：正文应包含“故意缺失的课堂问题XYZ”：不符合。。\n  未检查/未完成：视觉、数值、跨文件一致性。\n尚待核对：是否完整满足你的教学要求，其中有要求尚未关联具体检查。\n\n可在上方文件卡打开成果，在本地文件面板重新检查或继续修改。",
+            "metadata": {
+              "piVersion": "xiaozhi.pi.education.v1",
+              "agentRunId": "run_a4375f1e-89e4-4ce9-b856-9d73d73e0990",
+              "provider": "deepseek",
+              "model": "deepseek-flash",
+              "answerQuality": {
+                "version": 1,
+                "mode": "optimized",
+                "preparationMs": 929.4285,
+                "sdkEndedMs": 19562.6492,
+                "elapsedMs": 18467.000500000002,
+                "firstProviderEventMs": 4848.3726,
+                "firstAnswerTextMs": 18016.9965,
+                "lastAnswerTextMs": 18016.9975,
+                "requests": 2,
+                "retries": 0,
+                "requestBytes": 272739,
+                "maxExposedTools": 21,
+                "nativeSessionCacheHit": 0
+              },
+              "ok": true,
+              "status": "completed",
+              "errorMessage": "",
+              "publicItems": [
+                {
+                  "id": "default-delivery-0",
+                  "kind": "tool",
+                  "toolName": "education_check_delivery",
+                  "label": "执行授权工具",
+                  "status": "completed",
+                  "traceSequence": 10,
+                  "traceOrder": 8745652,
+                  "toolAttempt": {
+                    "schemaVersion": 1,
+                    "callId": "default-delivery-0",
+                    "tool": "education_check_delivery",
+                    "attempt": 1,
+                    "maxAttempts": 1,
+                    "state": "succeeded",
+                    "effect": "none",
+                    "executionMs": 10835
+                  },
+                  "resultSummary": {
+                    "version": 1,
+                    "scope": "operation",
+                    "text": "操作已返回，保存和审核状态以对应结果卡为准。"
+                  },
+                  "durationMs": 12442.4895
+                },
+                {
+                  "id": "run_a4375f1e-89e4-4ce9-b856-9d73d73e0990:office-delivery",
+                  "kind": "message",
+                  "role": "assistant",
+                  "phase": "final_answer",
+                  "text": "本轮文件结果：\n仍有未完成或未核验项，保存成功不代表检查全部通过。\n\n- 浮力演示\\.html：本轮仅检查，无保存操作。\n  文件检查：仍有未检查项。\n  已通过的声明项：结构、内容、视觉。\n  未检查/未完成：交互、数值、跨文件一致性。\n- 浮力讲解\\.pptx：本轮仅检查，无保存操作。\n  文件检查：发现问题。\n  已通过的声明项：结构。\n  发现问题：正文应包含“故意缺失的课堂问题XYZ”：不符合。。\n  未检查/未完成：视觉、数值、跨文件一致性。\n尚待核对：是否完整满足你的教学要求，其中有要求尚未关联具体检查。\n\n可在上方文件卡打开成果，在本地文件面板重新检查或继续修改。"
+                }
+              ],
+              "chatPresentation": {
+                "version": 1,
+                "phase": "answer",
+                "processElapsedMs": 19285
+              },
+              "publicStages": [
+                {
+                  "stage": "preparing",
+                  "since": 1793449080485,
+                  "sequence": 3
+                },
+                {
+                  "stage": "waiting_model",
+                  "since": 1793449083698,
+                  "sequence": 6
+                },
+                {
+                  "stage": "waiting_model",
+                  "since": 1793449099761,
+                  "sequence": 16
+                },
+                {
+                  "stage": "responding",
+                  "since": 1793449099770,
+                  "sequence": 18
+                }
+              ],
+              "publicStagesOmitted": 0,
+              "traceElapsedMs": 19728,
+              "verification": {
+                "schema": "xiaozhi.verification.v1",
+                "runId": "run_a4375f1e-89e4-4ce9-b856-9d73d73e0990",
+                "state": "unknown",
+                "scope": "declared_criteria",
+                "checkedAt": "2026-10-31T12:18:20.216Z",
+                "reason": "no_criteria",
+                "checks": [],
+                "evidence": [
+                  {
+                    "id": "default-delivery-0",
+                    "runId": "run_a4375f1e-89e4-4ce9-b856-9d73d73e0990",
+                    "callId": "default-delivery-0",
+                    "kind": "execution",
+                    "digest": "70ab214c8b41ff213ac24b2179b0049cd827ad3ddaffe1d956a096d97f236a0f",
+                    "observedAt": "2026-10-31T12:18:19.046Z"
+                  }
+                ],
+                "operations": {
+                  "succeeded": 1,
+                  "failed": 0
+                }
+              }
+            },
+            "before": [
+              {
+                "path": "浮力演示.html",
+                "mtime": 1793448074840.7517,
+                "bytes": 646
+              },
+              {
+                "path": "浮力讲解.pptx",
+                "mtime": 1793448088629.6675,
+                "bytes": 122228
+              }
+            ],
+            "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-rg271g\\data"
+          }
+        },
+        "boundary": "3 checks include owned-file resume1; actual final merged app, same saved bytes/mtime, actual inspection success/failure, final concise original dual-viewport reply and cold0model/publication. Earlier generation/partial save/resume is not replayed."
+      },
+      "mergedComponents": {
+        "command": "npm.cmd run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-merged-components.log"
+      }
+    },
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0
+      },
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-terminal-audit-20261031.json",
+      "newDependencies": 0
+    },
+    "remaining": [
+      "complete semantic/visual matrices and W3 centralized AT",
+      "E07/E08+C then S/T sequence",
+      "daily runtime/installer unchanged"
+    ],
+    "rollback": {
+      "commit": "ec55ac2315d2e45081715bc450b973e0f93f99a6",
+      "method": "normal revert of ninth slice only; retain ledgers, saved files and existing check records; no migration",
+      "tested": false
+    },
+    "performance": {
+      "baselineMainBytes": 3247835,
+      "baselineMainSha256": "21f1614f7270ed35eef053ae6ff3d7d6a2590582e58f1b2760b7dcbeb23ff3f8",
+      "baselineRendererBytes": 7191016,
+      "baselineRendererSha256": "0341fa6f21efe2389f965096a9cb28318887a4d2e946fcb110db788e0d1f3ca2",
+      "boundary": "No paired runtime latency/P95. Pure no-tool branch provably skips new ledger reads. Final main metrics to be recorded after build.",
+      "finalMainBytes": 3257529,
+      "mainBytesDelta": 9694,
+      "sliceRendererSourceChanged": false,
+      "finalMergedRendererBytes": 7223047,
+      "mergedRendererDeltaAttribution": "upstream workbench UI, not this main-only slice; no latency/P95 comparison"
+    },
+    "dailyDAndInstallerUpdated": false,
+    "changedFiles": [
+      "apps/desktop/scripts/xiaozhi-agent/delivery-bundle-electron.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/delivery-terminal-smoke.mjs",
+      "apps/desktop/src/main/xiaozhi-agent/checks/service.ts",
+      "apps/desktop/src/main/xiaozhi-agent/checks/state.ts",
+      "apps/desktop/src/main/xiaozhi-agent/delivery-final.ts",
+      "apps/desktop/src/main/xiaozhi-agent/delivery-state.ts",
+      "apps/desktop/src/main/xiaozhi-agent/office-artifact-state.ts",
+      "apps/desktop/src/main/xiaozhi-agent/office-delivery-presentation.ts",
+      "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "apps/desktop/src/main/xiaozhi-agent/text-change-state.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ],
+    "finalIntegration": {
+      "mergeSha": "b35b5fc0a8867dde9b5c2d4ab8eaac3df10575cc",
+      "remoteMainMerged": "0723242",
+      "conflicts": {
+        "count": 4,
+        "scope": "root Markdown stage entries only",
+        "resolution": "Both complete sections retained; no production conflicts"
+      },
+      "sliceSourceUnchangedFrom": "ec55ac2315d2e45081715bc450b973e0f93f99a6",
+      "artifacts": [
+        {
+          "path": "apps\\desktop\\out\\main\\index.js",
+          "bytes": 3257529,
+          "sha256": "2db45bcc676871884c1bc653bf0eb75f14b1633e34f5c679bf9c838dde82a6c9"
+        },
+        {
+          "path": "apps\\desktop\\out\\preload\\index.cjs",
+          "bytes": 34965,
+          "sha256": "27148817cddba73e408e80d07e3b6f2746c69ae76340f848a90e51c6d7cd9b28"
+        },
+        {
+          "path": "apps\\desktop\\out\\renderer\\assets\\index-CmYN5xnC.js",
+          "bytes": 7223047,
+          "sha256": "f6291b8f9ff66427e2aff19dafe470544493cfa337f67c4b1261baf3622bceae"
+        }
+      ],
+      "boundary": "Upstream workbench renderer retained; final merged build/type240 and focused original Pi3 pass. Full mixed save/resume originalPi9 preceded concise text refinement. Single legacy207 preceded renderer integration; observed main-entry hash equals final main-entry hash. No blanket final renderer/Pi/AT claim."
+    },
+    "screenshots": [
+      {
+        "path": "docs\\research\\AGENT_DELIVERY_CHECKS_E06_TERMINAL_20261031\\terminal-focused-1366.png",
+        "bytes": 107280,
+        "sha256": "5cc2f931abd56df3c7faa1f4ed2dcd67842fb860c482fdb888b62451845b72b1"
+      },
+      {
+        "path": "docs\\research\\AGENT_DELIVERY_CHECKS_E06_TERMINAL_20261031\\terminal-focused-1920.png",
+        "bytes": 135956,
+        "sha256": "67fc6bf2b424be76c7dd8b8d779b96a6e71ae07f4b45fe348363f72e1dc3d5fd"
+      }
+    ],
+    "comprehensiveObservedEntry": {
+      "path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "bytes": 3257529,
+      "sha256": "2db45bcc676871884c1bc653bf0eb75f14b1633e34f5c679bf9c838dde82a6c9",
+      "boundary": "Captured after the comprehensive build, not before first prototype UI. Its main entry hash equals the final merged main entry; renderer changed in the merge. First UI prototype digest was not captured."
+    },
+    "lastIntegration": {
+      "mergeSha": "c99f6bbb0cd3e90325170931537468893fd13ca9",
+      "remoteMainMerged": "32e7071",
+      "conflicts": {
+        "count": 14,
+        "scope": "Markdown only, both complete stage records retained"
+      },
+      "terminalAndOfficeUiSourceUnchangedFrom": "b35b5fc0a8867dde9b5c2d4ab8eaac3df10575cc",
+      "build": {
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-final-merged-build.log"
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-final-merged-components.log"
+      },
+      "artifacts": [
+        {
+          "path": "apps\\desktop\\out\\main\\index.js",
+          "bytes": 3264380,
+          "sha256": "e2fd17fc7b7081a20add12ea4c24ffa9cc53735b1fc843bf5596701078877caf"
+        },
+        {
+          "path": "apps\\desktop\\out\\preload\\index.cjs",
+          "bytes": 34965,
+          "sha256": "27148817cddba73e408e80d07e3b6f2746c69ae76340f848a90e51c6d7cd9b28"
+        },
+        {
+          "path": "apps\\desktop\\out\\renderer\\assets\\index-DQ13p2Jv.js",
+          "bytes": 7227387,
+          "sha256": "df01d7419717fc9880e2405da372163f57e775b37f9875f4df85ee5d7c79daef"
+        }
+      ],
+      "boundary": "Further answer-domain integration, no changed ninth-slice/office UI source. Final build/type240 passed, focused originalPi3 belongs to b35b5fc; no replay. Final bundle includes upstream answer domain and renderer, do not attribute whole bundle delta to this slice."
+    }
   }
 }

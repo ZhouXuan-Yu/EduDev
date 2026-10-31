@@ -137,7 +137,7 @@ export function createOfficeArtifactState(sql:Sql){
    if(inserted!==1){const existing=await call(input.sessionId,input.runId,input.callId);if(!existing||existing.inputHash!==input.inputHash||existing.workspaceHash!==input.workspaceHash)throw new Error('conflict');return existing;}
    return (await get(id))!;
   },
-  async list(sessionId:string){return Promise.all((await sql.all('SELECT * FROM xiaozhi_pi_office_drafts WHERE conversation_id=? ORDER BY created_at,id',[sessionId])).map(parse));},
+  async list(sessionId:string,runId?:string){return Promise.all((await sql.all('SELECT * FROM xiaozhi_pi_office_drafts WHERE conversation_id=?'+(runId===undefined?'':' AND run_id=?')+' ORDER BY created_at,'+(runId===undefined?'id':'rowid'),runId===undefined?[sessionId]:[sessionId,runId])).map(parse));},
   async parent(id:string){return (await sql.all("SELECT * FROM document_artifacts WHERE id=? AND status='exported'",[id]))[0]??null;},
   async byArtifact(sessionId:string,id:string){const row=(await sql.all("SELECT * FROM xiaozhi_pi_office_drafts WHERE artifact_id=? AND conversation_id=? AND state='saved'",[id,sessionId]))[0];return row?parse(row):null;},
   async invalidateRun(runId:string){await sql.run("UPDATE xiaozhi_pi_office_drafts SET state=CASE WHEN state='committing' THEN 'uncertain' ELSE 'interrupted' END,revision=revision+1,updated_at=? WHERE run_id=? AND state IN ('pending','approved','generating','prepared','committing')",[now(),runId]);},
