@@ -18,6 +18,7 @@ import {materialBodyVersion,type MaterialReadingUnit} from './material-source';
 import type {MaterialOcrPage,MaterialOcrProgress} from '../../shared/material-pdf-ocr';
 import {readMaterialOriginal,verifyMaterialOriginal} from './material-original';
 import type {MaterialParseLease} from './material-parse-queue';
+import {saveImageOcr} from './material-image-ocr';
 export type MaterialReadingSnapshot={units:MaterialReadingUnit[];fingerprint:string};
 
 type Row=Record<string,unknown>;
@@ -168,7 +169,15 @@ export class MaterialRepository {
        else {try{content=new TextDecoder('utf-8',{fatal:true}).decode(bytes);}catch{failure='text_unreadable';}}
       } else if(/\.(jpe?g|png|webp)$/i.test(resource.originalFileName)){
        const {recognizeLocalImage}=await import('../xiaozhi-agent/ocr-host');
-       const ocr=await recognizeLocalImage(bytes,signal);
+       let ocr:Awaited<ReturnType<typeof recognizeLocalImage>>;
+       try{ocr=await recognizeLocalImage(bytes,signal);}
+       catch(error){
+        if(!signal.aborted&&error instanceof Error&&['empty','parse_failed','configuration','too_large','invalid_input','timeout','unavailable'].includes(error.message)){
+         await this.original(id,hash,signal);await saveImageOcr(this.host,id,hash,error,signal,lease);
+        }
+        throw error;
+       }
+       signal.throwIfAborted();await this.original(id,hash,signal);await saveImageOcr(this.host,id,hash,ocr,signal,lease);
        content=ocr.text;engine='image-'+ocr.engine;
        pages=[{page:1,text:ocr.text,width:ocr.width,height:ocr.height}];
       } else if(/\.docx$/i.test(resource.originalFileName)){

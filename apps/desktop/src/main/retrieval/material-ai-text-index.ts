@@ -10,7 +10,9 @@ const clock="CAST(strftime('%s','now') AS INTEGER)*1000";
 const digest=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
 const safe=(alias:string,key:string)=>{const column=(alias?alias+'.':'')+'source_json';return `json_extract(CASE WHEN json_valid(${column}) THEN ${column} ELSE '{}' END,'$.${key}')`;};
 const keyId=(r:string,v:string,p:number)=>{const h=digest([r,v,p]);return 'chunk_'+[h.slice(0,8),h.slice(8,12),h.slice(12,16),h.slice(16,20),h.slice(20,32)].join('-');};
-const readable="('ready','partial','parsed','chunked','indexed','graph_extracted')";
+// A failed local OCR may still have a separately verified two-pass image transcript.
+// read() always reopens the page proof; failed PDFs and arbitrary failed resources cannot qualify.
+const readable="('ready','partial','parsed','chunked','indexed','graph_extracted','failed')";
 /** Rebuildable page documents using the original FTS and vector event clock. No OCR rows are created. */
 export class MaterialAiTextIndex{
  constructor(private host:Host){}
@@ -33,10 +35,11 @@ export class MaterialAiTextIndex{
     ['teacher_resources',[['UPDATE OF content_hash,parse_status','old.id'],['DELETE','old.id']]],
     ['resource_chunks',[['INSERT','new.resource_id'],['UPDATE OF resource_id,content_md,contains_personal_data,page_number,chunk_index','old.resource_id'],['DELETE','old.resource_id']]],
     ['material_pdf_jobs',[['UPDATE','old.resource_id'],['DELETE','old.resource_id']]],
+    ['material_image_ocr_receipts',[['UPDATE','old.resource_id'],['DELETE','old.resource_id']]],
     ['material_pdf_pages',[['INSERT','(SELECT resource_id FROM material_pdf_jobs WHERE generation=new.generation)'],['UPDATE','(SELECT resource_id FROM material_pdf_jobs WHERE generation=old.generation)'],['DELETE','(SELECT resource_id FROM material_pdf_jobs WHERE generation=old.generation)']]]
    ] as [string,[string,string][]][]){if(!tables.has(table))continue;for(const [i,[event,resource]]of events.entries()){
     const changed=event.startsWith('UPDATE'),page=table==='material_pdf_pages'?` AND page_number ${changed?'IN (old.page,new.page)':'='+(event==='INSERT'?'new':'old')+'.page'}`:'';
-    const parents=changed&&table==='material_pdf_pages'?`resource_id IN (SELECT resource_id FROM material_pdf_jobs WHERE generation IN (old.generation,new.generation))`:changed&&['resource_chunks','material_pdf_jobs'].includes(table)?`resource_id IN (old.resource_id,new.resource_id)`:`resource_id=${resource}`;
+    const parents=changed&&table==='material_pdf_pages'?`resource_id IN (SELECT resource_id FROM material_pdf_jobs WHERE generation IN (old.generation,new.generation))`:changed&&['resource_chunks','material_pdf_jobs','material_image_ocr_receipts'].includes(table)?`resource_id IN (old.resource_id,new.resource_id)`:`resource_id=${resource}`;
     const version=changed&&table!=='teacher_resources'?'v2':'v1';if(version==='v2')await this.host.run(`DROP TRIGGER IF EXISTS ai_text_parent_${table}_${i}_v1`);
     await this.host.run(`DROP TRIGGER IF EXISTS ai_text_parent_${table}_${i}_${version}`);await this.host.run(`CREATE TRIGGER ai_text_parent_${table}_${i}_${version} AFTER ${event} ON ${table} BEGIN ${invalidate(`${parents}${page}`)} END`);
    }}

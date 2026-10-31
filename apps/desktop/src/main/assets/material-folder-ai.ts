@@ -106,7 +106,8 @@ export class MaterialFolderAiRepository{
   const name=String(row.original_file_name),pdf=/\.pdf$/i.test(name),word=/\.docx$/i.test(name),image=/\.(?:png|jpe?g|webp)$/i.test(name),text=/\.(?:txt|md)$/i.test(name);
   const fail=async(code:string)=>{await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[unit,String(grant.batch_id),id]);await this.finishUnit(resource,unit,'review',code);};
   if(!pdf&&!word&&!image&&!text)return fail('unsupported');
-  if(!pdf&&!['ready','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(['failed','partial','needs_ocr'].includes(String(row.parse_status))||row.parse_status==='needs_parser'&&!String(row.parse_engine).endsWith(':pending'))await fail('local_parse_failed');return;}
+  const imageRecovery=image&&process.env.OMNI_EDU_AI_PAGE_RESTORATION!=='0'&&['failed','partial'].includes(String(row.parse_status))&&(await this.host.all('SELECT 1 FROM material_image_ocr_receipts WHERE resource_id=? AND version=? LIMIT 1',[id,String(resource.version)])).length>0;
+  if(!pdf&&!imageRecovery&&!['ready','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(['failed','partial','needs_ocr'].includes(String(row.parse_status))||row.parse_status==='needs_parser'&&!String(row.parse_engine).endsWith(':pending'))await fail('local_parse_failed');return;}
   let total=Number(resource.total);
   if(pdf){
    const job=(await this.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=? AND version=?',[id,String(resource.version)]))[0];if(!job){if(row.parse_status==='failed')await fail('local_parse_failed');return;}total=Number(job.total);
