@@ -1,5 +1,12 @@
 # 当前架构
 
+## 2026-11-01 答案条目局部疑点与真实回写
+
+新答案册单元冻结 answer-entry-uncertainty.v2，六字段响应按完整试卷标题与原题号记录局部疑点；两遍任一疑点拦截对应条目，未知/歧义范围及原 pageIssues 仍整页拦截。无政策的旧 first_saved 保持原提示/schema。解析器发现的跨页/漏条等问题也进入页面待核与整页检索门禁，不能只相信模型 outcome。既有题面资格、原件/图片/两遍hash、关联身份、教师字段、journal/CAS不放宽；无新依赖、表或IPC。
+
+回退先暂停新批次，并以 OMNI_EDU_BOOK_ANSWER_WRITEBACK=0 停新回写；保留新schema严格读适配、原件、两遍原响应和v6 journal。恢复字段须走未被教师修改快照的CAS，不让未知旧provider执行新单元；无DDL回退，完整回滚未演练。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+
 2026-11-01 E07：原Hana adapter→Pi内容与details→execution boundary→typed journal/projection→原OfficeToolEvidence贯通not_found/resource_busy。原manifest仅纯本地read/stat/list增至2次；同call准入1次、内部retry ID独立，等待沿原Hana registry可停，当前路径/版本检查每次保留。无DDL/新IPC/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-11-01 E07：现有Pi host/typed preload加显式记录刷新；原journal事务校验失败owner与分页事件，补保守终态及业务记录。先等execute/publisher回调/实际executing，配置锁隔离同会话新派发，task沿原coordinator恢复。无新Runtime/真源/DDL。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。

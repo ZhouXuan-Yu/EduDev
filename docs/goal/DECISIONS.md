@@ -1,5 +1,12 @@
 # Goal 决策记录
 
+## 2026-11-01 答案条目局部疑点与真实回写
+
+新答案册单元冻结 answer-entry-uncertainty.v2，六字段响应按完整试卷标题与原题号记录局部疑点；两遍任一疑点拦截对应条目，未知/歧义范围及原 pageIssues 仍整页拦截。无政策的旧 first_saved 保持原提示/schema。解析器发现的跨页/漏条等问题也进入页面待核与整页检索门禁，不能只相信模型 outcome。既有题面资格、原件/图片/两遍hash、关联身份、教师字段、journal/CAS不放宽；无新依赖、表或IPC。
+
+回退先暂停新批次，并以 OMNI_EDU_BOOK_ANSWER_WRITEBACK=0 停新回写；保留新schema严格读适配、原件、两遍原响应和v6 journal。恢复字段须走未被教师修改快照的CAS，不让未知旧provider执行新单元；无DDL回退，完整回滚未演练。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+
 2026-11-01 E07：沿Hana adapter、原Pi result/manifest/execution-bound补普通工具错误和有界纯读；使用原SessionExecutionRegistry登记重试等待，不引入第二执行器。缺文件由模型核对目录后再读，固定提示不自动猜替代文件；写入/审批/未知效果仍沿原账本处理。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-11-01 E07：沿原journal、取消修复、task coordinator加单轮在线恢复；复用实际executing计数及配置锁，追加publisher结束栅栏，不加执行器。仅在原账本核对后清runtime失败标记，读回不执行工具或继承批准。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。

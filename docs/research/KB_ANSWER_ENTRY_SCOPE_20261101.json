@@ -1,0 +1,326 @@
+{
+  "date": "2026-11-01",
+  "goalStatus": "active",
+  "previousTurnClassification": "progress",
+  "scope": "M03/M05/M10 answer-entry uncertainty and actual known-answer canonical enrichment; full tens-GB goal remains intact",
+  "implementationCommit": "d738d7f",
+  "validatedIntegration": "4bcfc97cd1233ab54ed652d1479e28103e9b5de5",
+  "integratedRemoteMain": "c3eb61e",
+  "newDependenciesTablesIpc": 0,
+  "implemented": [
+    "Freeze answer-entry-uncertainty.v2 for new answer units; strict six-field v2 response and uniquely scoped section/number issues",
+    "Preserve legacy prompts/responses including stored first_saved; reject policy mixing before a paid call or receipt readback",
+    "Either-pass local doubt blocks that entry; unresolved scope and existing pageIssues still block globally",
+    "Deterministic cross-page/omission/structure risks govern answer page review and whole-page retrieval even when model omits flags",
+    "Reuse original SQLite journal/CAS, source validation, book pairing and teacher protections; visible per-entry issue labels and exact batch test identity"
+  ],
+  "build": {
+    "file": "apps\\desktop\\out\\main\\index.js",
+    "bytes": 3340133,
+    "sha256": "cee27f5e819c5d9d0dd16296c2b29bb4ede90d2f159eb0eca18e5a196f8aeaa4"
+  },
+  "renderer": {
+    "file": "apps\\desktop\\out\\renderer\\assets\\index-W_wcqK5i.js",
+    "bytes": 7261323,
+    "sha256": "6535fb9fa971bf50aa0dfd86382eacb13a3786b4d5b1b19fc043daf010f60c6f"
+  },
+  "baseline": {
+    "commit": "c4cd89cc7ea99a094329a11c453d1e40d3f2fce8",
+    "mainBytes": 3324949,
+    "rendererBytes": 7258909,
+    "mainSha256": "9fc8edb8e275ec62d6f503acba8e0b9026922b73f824d2b0c5d7d14da75a6775",
+    "rendererSha256": "6c62c0831369eaefcbb46afaf4fc3c634c449fb85fef753ad406076ba4e6c26e"
+  },
+  "tests": {
+    "buildIntegrated": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-answer-scope-build-integrated-20261101.log"
+    },
+    "typeIntegrated": {
+      "command": "npx.cmd tsc --noEmit",
+      "exit": 0
+    },
+    "componentsIntegrated": {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240
+    },
+    "pageIntegrated": {
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "exit": 0,
+      "passed": 42
+    },
+    "matchIntegrated": {
+      "command": "node --experimental-transform-types scripts/education/kb-book-match-boundaries.mjs",
+      "exit": 0,
+      "passed": 21
+    },
+    "answerParser": {
+      "command": "node --experimental-transform-types scripts/education/kb-book-answer-boundaries.mjs <ownedRoot>",
+      "exit": 0,
+      "passed": 19,
+      "scope": "18 controlled checks plus read-only legacy actual p3 regression, never silently select new schema as legacy"
+    },
+    "batch": {
+      "command": "node --experimental-transform-types scripts/education/kb-ai-batch-boundaries.mjs",
+      "exit": 0,
+      "passed": 28
+    },
+    "collaboratorRecordRecovery": {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/record-recovery-boundaries.mjs",
+      "exit": 0,
+      "passed": 9
+    },
+    "collaboratorToolRecovery": {
+      "command": "node --experimental-transform-types scripts/xiaozhi-agent/ordinary-tool-recovery.mjs",
+      "exit": 0,
+      "passed": 7
+    },
+    "comprehensiveBeforeMerge": {
+      "command": "node scripts/electron-smoke.mjs",
+      "exit": 0,
+      "passed": 207,
+      "total": 207,
+      "buildSha256": "47ce67201453dfb3bed2e89b7fe5137ed897e203f50a46683e688d964fad505a",
+      "scope": "Own core answer implementation before collaborator E07 merge and exact-batch DOM attribute; not falsely described as final integrated 207 rerun"
+    }
+  },
+  "realProvider": {
+    "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\answer-ai-jf9XjG\\report.json",
+    "success": true,
+    "buildSha256": "cb409f8af91778abbf8e0351a28572116036ad9eaafd6559d0614caf69c72337",
+    "batchId": "aibatch_210ab05b-0ca2-4760-8a73-68adcc8d39c1",
+    "mainQuestionBatch": "aibatch_7b2850fb-84b4-4915-8515-5bbbd119f2d9",
+    "calls": 2,
+    "http": [
+      200,
+      200
+    ],
+    "page": 3,
+    "inputImage": {
+      "bytes": 2875824,
+      "sha256": "fe417ad9a5d0d3461fc92a57115aac1a950f75d462c950394a403b6005665e4f"
+    },
+    "answerPolicy": "answer-entry-uncertainty.v2",
+    "passes": [
+      {
+        "phase": "first_json",
+        "rawSha256": "ce5dcca156abcf1812418b7280c9f41230e44a0a4cb344e34a97929d3549a1b7",
+        "schemaVersion": "xiaozhi.material-ai-book-page-response.v2",
+        "outcome": "no_questions",
+        "pageIssues": [],
+        "answerIssues": [],
+        "textBytes": 9696
+      },
+      {
+        "phase": "final_json",
+        "rawSha256": "ce5dcca156abcf1812418b7280c9f41230e44a0a4cb344e34a97929d3549a1b7",
+        "schemaVersion": "xiaozhi.material-ai-book-page-response.v2",
+        "outcome": "no_questions",
+        "pageIssues": [],
+        "answerIssues": [],
+        "textBytes": 9696
+      }
+    ],
+    "derivedEntries": 22,
+    "clearEntries": 19,
+    "scope": "Only previously inspected authorized answer p3 and necessary OCR, actual production DeepSeek, no substitute. The subsequent deterministic-tail review fix did not replay paid requests."
+  },
+  "actualCanonical": [
+    {
+      "number": "1",
+      "schemaVersion": "xiaozhi.question-archive.v6",
+      "state": "book_enriched",
+      "answerOrigin": "book_extracted",
+      "analysisOrigin": "book_extracted",
+      "issues": []
+    },
+    {
+      "number": "2",
+      "schemaVersion": "xiaozhi.question-archive.v6",
+      "state": "book_enriched",
+      "answerOrigin": "book_extracted",
+      "analysisOrigin": "book_extracted",
+      "issues": []
+    },
+    {
+      "number": "3",
+      "schemaVersion": "xiaozhi.question-archive.v6",
+      "state": "book_enriched",
+      "answerOrigin": "book_extracted",
+      "analysisOrigin": "book_extracted",
+      "issues": []
+    },
+    {
+      "number": "4",
+      "schemaVersion": "xiaozhi.question-archive.v5",
+      "state": "ai_needs_review",
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated",
+      "issues": [
+        "requires_image",
+        "ai_mismatch",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "5",
+      "schemaVersion": "xiaozhi.question-archive.v5",
+      "state": "ai_needs_review",
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated",
+      "issues": [
+        "requires_image",
+        "ai_mismatch",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "6",
+      "schemaVersion": "xiaozhi.question-archive.v5",
+      "state": "ai_needs_review",
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated",
+      "issues": [
+        "requires_image",
+        "ai_mismatch",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "7",
+      "schemaVersion": "xiaozhi.question-archive.v6",
+      "state": "book_enriched",
+      "answerOrigin": "book_extracted",
+      "analysisOrigin": "book_extracted",
+      "issues": []
+    },
+    {
+      "number": "8",
+      "schemaVersion": "xiaozhi.question-archive.v5",
+      "state": "ai_needs_review",
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated",
+      "issues": [
+        "ai_mismatch",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "9",
+      "schemaVersion": "xiaozhi.question-archive.v6",
+      "state": "book_enriched",
+      "answerOrigin": "book_extracted",
+      "analysisOrigin": "book_extracted",
+      "issues": []
+    },
+    {
+      "number": "10",
+      "schemaVersion": "xiaozhi.question-archive.v5",
+      "state": "ai_needs_review",
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated",
+      "issues": [
+        "requires_image",
+        "ai_mismatch",
+        "incomplete_question"
+      ]
+    },
+    {
+      "number": "11",
+      "schemaVersion": "xiaozhi.question-archive.v5",
+      "state": "ai_final",
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated",
+      "issues": []
+    },
+    {
+      "number": "12",
+      "schemaVersion": "xiaozhi.question-archive.v5",
+      "state": "ai_needs_review",
+      "answerOrigin": "ai_generated",
+      "analysisOrigin": "ai_generated",
+      "issues": [
+        "requires_image",
+        "ai_mismatch",
+        "incomplete_question"
+      ]
+    }
+  ],
+  "verifiedChanges": {
+    "canonicalBookEnrichedBefore": 0,
+    "canonicalBookEnrichedAfter": 5,
+    "numbers": [
+      "1",
+      "2",
+      "3",
+      "7",
+      "9"
+    ],
+    "stillHeldImageTable": [
+      "4",
+      "5",
+      "6",
+      "8",
+      "10",
+      "12"
+    ],
+    "existingAnswerConflict": [
+      "11"
+    ],
+    "mathOrTeacherAcceptance": false
+  },
+  "firstUiAttempts": [
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-enriched-yvhF4y\\report.json",
+      "success": false,
+      "reason": "Test expected ai_final; actual successful canonical state is book_enriched. Five writes persisted; no paid replay."
+    },
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-enriched-unBTUR\\report.json",
+      "success": false,
+      "checksBeforeFailure": 7,
+      "reason": "Selected first prioritized old attention batch rather than exact new complete batch; source/UI evidence was correctly old. Added data-batch-id and exact selection."
+    }
+  ],
+  "integratedUi": {
+    "status": "pending",
+    "command": "node --experimental-transform-types scripts/education/kb-wusan-book-match-journey.mjs <ownedRoot> enriched"
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "scope": "Existing baseline; no dependency added or automatic upgrade"
+  },
+  "performance": {
+    "mainByteDelta": 15184,
+    "rendererByteDelta": 2414,
+    "scope": "Includes collaborator E07 integration, not isolated KB size or speed attribution. Canonical progression0 to5 on one real page is not natural recall, throughput or P95 measurement."
+  },
+  "rollback": [
+    "Pause new work and set OMNI_EDU_BOOK_ANSWER_WRITEBACK=0",
+    "Retain strict v2 reading and immutable source/image/raw receipts/journals; do not resume new policy under unaware old provider",
+    "Restore only unedited canonical fields by existing journal CAS; no DDL rollback; full rollback not rehearsed"
+  ],
+  "unresolved": [
+    "PDF figure/table source-backed question publishing",
+    "Cross-page context reconstruction with original source spans",
+    "Structured fill-in equivalence without lossy punctuation/math normalization",
+    "Natural tens-GB soak, held-out recall/accuracy and end-to-end P95",
+    "Teacher mathematical acceptance and packaged/installer delivery",
+    "Existing45 dependency audit findings"
+  ],
+  "dailyRuntimeOrInstallerUpdated": false,
+  "gitDelivery": {
+    "status": "pending normal push and remote equality readback"
+  }
+}

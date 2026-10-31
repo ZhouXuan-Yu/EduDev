@@ -1,5 +1,10 @@
 # 当前集成与复用
 
+## 2026-11-01 答案条目局部疑点与真实回写
+
+沿原DeepSeek统一API、原执行器/typed preload和SQLite writer复用，新增单元政策 answer-entry-uncertainty.v2 与六字段答案响应；旧单元不改提示、不重写响应。未知政策/新旧混用在付费前或回执读回拦截，无新表、依赖、IPC、运行时与外传范围。回退先暂停新批次，并以 OMNI_EDU_BOOK_ANSWER_WRITEBACK=0 停新回写；保留新schema严格读适配、原件、两遍原响应和v6 journal。恢复字段须走未被教师修改快照的CAS，不让未知旧provider执行新单元；无DDL回退，完整回滚未演练。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+
 2026-11-01 E07：继续复用Hana真实文件IO及SessionExecutionRegistry，原OpenMAIC等待边界和Pi工具dispatcher。错误用现shared枚举贯通主进程及原工具证据；没有下载或替换依赖，原写/缓存/外部操作最大1次。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-11-01 E07：复用createEffectReadback、conversationOutputLocation、原Office/Text账本及native receipts；DB仅向原session state传惰性dataRoot。新guarded records-refresh/typed preload接现有刷新按钮，旧事件兼容，无依赖/迁移。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。

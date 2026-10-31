@@ -1,5 +1,10 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-01 答案条目局部疑点与真实回写
+
+真实答案册第3页本轮2次HTTP200，22条原编号、两个试卷分组，19条满足现有局部条目门禁；17/18缺明确独立答案、提优卷4跨页继续保留。实际同卷匹配后，主书第4页1/2/3/7/9五题规范答案与解析升级为v6 book_extracted/book_enriched，原题干及已有答案值未变；六道图表题仍question_unchecked，第11题仍existing_answer_conflict（填空分隔形式不同）。AI一致/答案册来源不代表教师或数学正确性验收。 完整Goal仍active：PDF图题原页证据归档、跨页补全、填空结构化冲突消解、自然几十GB长期稳定与召回/P95、真实教师/安装包验收尚未完成。D盘日常与安装包未更新。 版本政策、可复核门禁及回退见 docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+
 2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 下一步：继续E07工具运行/下载/审批等待停止及崩溃/回执冲突矩阵、E08 HTML和来源定位+C；再按既定顺序S/T，功能齐后集中验收。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 本轮最终再次整合协作者main6bd287a为1d6358b：第一次正常原子推送遇并发主线更新被拒，未强推；13处Markdown冲突完整保留双方，知识库生产源码未变。最终build/type、240组件、协作者接续源码11与真实知识库UI7（双尺寸/错误/关联恢复/冷启/6道来源读回）exit0，0云端重放/renderer错误；37/28/19/9与207各归先前精确构建，不冒充最新全套重跑。最新主包3324949B、renderer7258909B，均含E07/E08；完整指纹/边界见KB_PAGE_PROMPT_20261031.json#lastIntegration。完整Goal active，D盘日常/安装包未更新。
