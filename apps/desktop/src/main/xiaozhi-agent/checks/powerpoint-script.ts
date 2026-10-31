@@ -44,7 +44,7 @@ public sealed class XiaozhiRenderJob:IDisposable {
  foreach($family in $collection.Families){[void]$fontSet.Add($family.Name);foreach($language in @(1033,2052)){try{[void]$fontSet.Add($family.GetName($language))}catch{}}}
  foreach($font in @($request.fonts)){if($font -and -not $font.StartsWith('+') -and -not $fontSet.Contains($font)){if($findings.Count -lt 128){$findings.Add(@{code='font_missing';font=$font;page=0})}}}
  $collection.Dispose()
- $shapeCount=0
+ $shapeCount=0;$renderBytes=0
  for($index=1;$index -le $pageCount;$index++){
   $slide=$presentation.Slides.Item($index)
   try {
@@ -62,7 +62,8 @@ public sealed class XiaozhiRenderJob:IDisposable {
    }
    $output=Join-Path $env:XIAOZHI_RENDER_ROOT ('page-'+$index+'.png')
    $slide.Export($output,'PNG',$width,$height)
-   if((Get-Item -LiteralPath $output).Length -gt 3145728){throw 'too_large'}
+   $pageBytes=(Get-Item -LiteralPath $output).Length;$renderBytes+=$pageBytes
+   if($pageBytes -gt 3145728 -or $renderBytes -gt 100663296){Remove-Item -LiteralPath $output;throw 'too_large'}
   }finally{[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($slide)}
  }
  $result=@{schemaVersion='xiaozhi.powerpoint-render.v1';ok=$true;pages=$pageCount;width=$width;height=$height;version=[string]$application.Version;findings=@($findings.ToArray())}
