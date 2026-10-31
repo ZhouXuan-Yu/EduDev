@@ -401,7 +401,8 @@
         "privateBytes": 1527832576
       }
     ],
-    "success": true
+    "success": true,
+    "sourceContext": "Pre-integration a3667ce production build; preserved history. See finalIntegration.reopen for merged 03f4654 evidence."
   },
   "validation": {
     "smoke": {
@@ -469,7 +470,8 @@
     "newDependencies": 0,
     "newPaidCalls": 0,
     "dailyDWorktreeUpdated": false,
-    "installerUpdated": false
+    "installerUpdated": false,
+    "scope": "Pre-integration a3667ce production source. finalIntegration separately records the final merged production checks; prior 207 checks were not rerun after the upstream merge."
   },
   "remaining": [
     "Current-build hybrid cold UI 4000.62ms and post-restart 5962.91ms; prioritize startup/cold-path latency rather than reporting keyword timing as hybrid performance",
@@ -484,5 +486,381 @@
   "rollback": {
     "instructions": "Normal revert a3667ce and da20965 to restore prior behavior; optional errorCode is backward-compatible, no migration or fact deletion. Test/docs commits can be reverted independently.",
     "testData": "Synthetic retained root is about 40GiB. It is not shipped or pushed. Keep for subsequent large-PDF source tests; cleanup only this exact owned test root after review, never the authorized teacher materials or daily data."
+  },
+  "finalIntegration": {
+    "productionSource": "03f465475482bb550746be702285188d52a28cc1",
+    "upstreamMain": "ef55c53",
+    "merge": "Normal merge; 14 Markdown conflict blocks retain both collaborators dated sections. No code conflict; the four knowledge-import production files match a3667ce exactly.",
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "includes": "tsc --noEmit and electron-vite build",
+      "fingerprints": [
+        {
+          "file": "out/main/index.js",
+          "bytes": 3221456,
+          "sha256": "2a042fbf8c2a108d7a2b8105721824cdb3dda1177388cf5cbc92b572dc987b25"
+        },
+        {
+          "file": "out/preload/index.cjs",
+          "bytes": 34761,
+          "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+        },
+        {
+          "file": "out/renderer/index.html",
+          "bytes": 1451,
+          "sha256": "2d0a4e4f38cca6dcbc46066498e6994de240f6ca42728aba98afdadb276adca6"
+        },
+        {
+          "file": "out/renderer/assets/index-CCQ7oM2H.js",
+          "bytes": 7175658,
+          "sha256": "d650cef08658f8134a565e11f472c9adc3d576b678cb401e07fa2b91c0dc6e0b"
+        }
+      ]
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240
+    },
+    "delivery": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+      "exit": 0,
+      "passed": 11,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-1QroFA"
+    },
+    "nativePdf": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-pdf-native.mjs",
+      "exit": 0,
+      "passed": 4,
+      "report": {
+        "ok": true,
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-pdf-native-OEyRiU",
+        "checks": [
+          "Actual PDF physical pages/text/6cm numbers are independently read; wrong-page text fails",
+          "Windows rasterizes all3 physical text-PDF pages into independently measured distinct PNGs without changing the original",
+          "A real image-only PDF still renders; absent text leaves contains/excludes/numeric/facts unchecked",
+          "Real65-page PDF is bounded and malformed PDF is rejected"
+        ],
+        "boundary": "Actual Windows PDF rasterizer and independent PDF.js text on owned text/image PDFs; not Word or complete E06 acceptance.",
+        "text": {
+          "pages": [
+            {
+              "page": 1,
+              "kind": "pdf_page",
+              "sha256": "252cce1139f1a07d428170ec73dd443bb3e32a2b43fcb25ca78985288f704024",
+              "bytes": 34910,
+              "width": 1697,
+              "height": 2400,
+              "viewport": "1697x2400"
+            },
+            {
+              "page": 2,
+              "kind": "pdf_page",
+              "sha256": "84dadbed73f70fd341d72288b45e895aeba5458b566d532af859a481d6df48e4",
+              "bytes": 35529,
+              "width": 1697,
+              "height": 2400,
+              "viewport": "1697x2400"
+            },
+            {
+              "page": 3,
+              "kind": "pdf_page",
+              "sha256": "a950b800cfd3142527abbfde647e973c9b98cb9400f688913315400d3bc813a3",
+              "bytes": 35755,
+              "width": 1697,
+              "height": 2400,
+              "viewport": "1697x2400"
+            }
+          ],
+          "ms": 1503
+        },
+        "image": {
+          "pages": [
+            {
+              "page": 1,
+              "kind": "pdf_page",
+              "sha256": "066c27bf693670275a5c62640851a9c6139e0f5a375b62e8755065f009029654",
+              "bytes": 21334,
+              "width": 1697,
+              "height": 2400,
+              "viewport": "1697x2400"
+            }
+          ],
+          "ms": 848
+        }
+      }
+    },
+    "diskRecovery": {
+      "command": "node scripts/education/kb-disk-full-journey.mjs",
+      "exit": 0,
+      "report": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-disk-full-ui-3wALFi",
+        "checks": [
+          "Native folder action reports disk full, preserves 127 pending entries, creates no original and offers explicit retry",
+          "After real application restart with space restored, the visible retry button completes all 129 original copies and local text parsing",
+          "Second native restart retains exact 129 resource facts with SQLite integrity ok; both viewport sizes remain reachable"
+        ],
+        "rendererErrors": [],
+        "cloudRequests": 0,
+        "buildSha256": "2a042fbf8c2a108d7a2b8105721824cdb3dda1177388cf5cbc92b572dc987b25",
+        "scope": "Production Electron folder UI, typed preload, actual archive statfs guard, SQLite/files and native restart. Controlled zero-space observation only for this owned resource directory; never fills the real disk. Synthetic text, no cloud, semantic-quality or installer claim.",
+        "success": true
+      }
+    },
+    "reopen": {
+      "command": "node scripts/education/kb-byte-capacity-reopen.mjs <owned-40GiB-root>",
+      "exit": 0,
+      "report": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-byte-capacity-RAFTac\\reopen-JwqGFo",
+        "checks": [
+          "Current build finds each of the 40 persisted sources through typed keyword retrieval; visible first/last queries reach the full 40GiB library",
+          "Existing local embeddings cover these 40 small texts and real reranking processes bounded candidates; teacher opens exact source and actual page image from a 1GiB PDF",
+          "Second current-build native restart preserves all 40 immutable resource facts; final source remains retrievable, both viewport sizes are reachable"
+        ],
+        "queries": [
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "keyword",
+            "uiMs": 46.90679999999975
+          },
+          {
+            "label": "KBLOAD3DOC009",
+            "mode": "keyword",
+            "uiMs": 54.0314000000003
+          },
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "hybrid",
+            "uiMs": 3962.5405
+          },
+          {
+            "label": "KBLOAD3DOC009",
+            "mode": "hybrid",
+            "uiMs": 4543.137999999999
+          }
+        ],
+        "rendererErrors": [],
+        "cloudRequests": 0,
+        "buildSha256": "2a042fbf8c2a108d7a2b8105721824cdb3dda1177388cf5cbc92b572dc987b25",
+        "scope": "Current production build reopens the actual retained 40GiB byte-capacity fixture. 40 one-page synthetic PDFs, small visible text plus binary load. Source UI, real local embedding/reranker, typed keyword queries and original-page image; NOT natural large-corpus recall, OCR/AI correctness or installer acceptance.",
+        "retrieval": {
+          "schemaVersion": "xiaozhi.retrieval.v1",
+          "available": true,
+          "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+          "building": "",
+          "paused": false,
+          "phase": "ready",
+          "pending": 0,
+          "indexed": 40,
+          "failed": 0,
+          "error": "",
+          "model": "bge-small-zh-v1.5.q8.cls-l2.window512-stride64.v1",
+          "maintenance": {
+            "schemaVersion": "xiaozhi.index-maintenance.v1",
+            "phase": "running",
+            "mode": "flat",
+            "error": "",
+            "completedAt": "2026-10-31T09:15:59.391Z",
+            "vectorVersion": 69,
+            "objectVersion": 37,
+            "indexedRows": 0,
+            "partitions": 0,
+            "probes": 0,
+            "sampleRecall": 0,
+            "samples": 0
+          }
+        },
+        "hybridCoverage": {
+          "available": true,
+          "complete": true,
+          "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+          "pending": 0,
+          "failed": 0,
+          "backfilling": false,
+          "reason": "",
+          "candidateLimit": 100,
+          "exhausted": false,
+          "rerank": {
+            "available": true,
+            "complete": false,
+            "model": "bge-reranker-base.q8.pair512.window2.v1",
+            "candidates": 40,
+            "processed": 20,
+            "elapsedMs": 1,
+            "reason": "candidate_limit"
+          }
+        },
+        "memory": [
+          {
+            "pid": 4616,
+            "type": "Browser",
+            "workingSetKiB": 362572
+          },
+          {
+            "pid": 49284,
+            "type": "GPU",
+            "workingSetKiB": 209368
+          },
+          {
+            "pid": 536,
+            "type": "Utility",
+            "workingSetKiB": 62532
+          },
+          {
+            "pid": 49704,
+            "type": "Tab",
+            "workingSetKiB": 188992
+          },
+          {
+            "pid": 46852,
+            "type": "Utility",
+            "workingSetKiB": 160480
+          }
+        ],
+        "nativeMemory": [
+          {
+            "pid": 49840,
+            "name": "omni-edu-retrieval",
+            "parentPid": 46852,
+            "workingSetBytes": 123387904,
+            "privateBytes": 735744000
+          },
+          {
+            "pid": 49876,
+            "name": "omni-edu-reranker",
+            "parentPid": 46852,
+            "workingSetBytes": 908554240,
+            "privateBytes": 1527341056
+          }
+        ],
+        "viewports": [
+          {
+            "requested": {
+              "width": 1366,
+              "height": 768
+            },
+            "before": {
+              "id": 1,
+              "bounds": {
+                "x": 173,
+                "y": 59,
+                "width": 1360,
+                "height": 900
+              },
+              "maximized": false,
+              "zoom": 1
+            },
+            "native": {
+              "x": 173,
+              "y": 59,
+              "width": 1366,
+              "height": 768
+            },
+            "css": {
+              "width": 1366,
+              "height": 768,
+              "dpr": 1.5
+            }
+          },
+          {
+            "requested": {
+              "width": 1920,
+              "height": 1080
+            },
+            "before": {
+              "id": 1,
+              "bounds": {
+                "x": 173,
+                "y": 59,
+                "width": 1366,
+                "height": 768
+              },
+              "maximized": false,
+              "zoom": 1
+            },
+            "native": {
+              "x": 173,
+              "y": 59,
+              "width": 1920,
+              "height": 1080
+            },
+            "css": {
+              "width": 1920,
+              "height": 1080,
+              "dpr": 1.5
+            }
+          }
+        ],
+        "success": true
+      }
+    },
+    "retainedFailures": [
+      {
+        "commands": [
+          "node scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+          "node scripts/xiaozhi-agent/delivery-pdf-native.mjs"
+        ],
+        "exit": 1,
+        "reason": "Runner omitted the existing source registration loader, causing extensionless TypeScript import errors. Corrected invocation above passed; no product code changed for this runner error."
+      },
+      {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-byte-capacity-RAFTac\\reopen-gBSajI",
+        "exit": 1,
+        "error": "page.waitForFunction: Timeout 60000ms exceeded.\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\scripts\\education\\kb-byte-capacity-reopen.mjs:63:189",
+        "checks": [
+          "Current build finds each of the 40 persisted sources through typed keyword retrieval; visible first/last queries reach the full 40GiB library",
+          "Existing local embeddings cover these 40 small texts and real reranking processes bounded candidates; teacher opens exact source and actual page image from a 1GiB PDF"
+        ],
+        "queries": [
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "keyword",
+            "uiMs": 301.0864999999999
+          },
+          {
+            "label": "KBLOAD3DOC009",
+            "mode": "keyword",
+            "uiMs": 42.177599999999984
+          },
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "hybrid",
+            "uiMs": 4503.5706
+          }
+        ],
+        "reason": "After source search and actual page preview, exact viewport wait timed out. Diagnostic harness now targets app.browserWindow(page) and records requested/native/CSS dimensions. Subsequent run passed both sizes at DPR1.5; no product resize fix or definitive original failure cause is claimed."
+      }
+    ],
+    "smoke207": {
+      "source": "a3667ce",
+      "passed": 207,
+      "total": 207,
+      "exit": 0,
+      "repeatedAfterMerge": false,
+      "boundary": "Prior full legacy-test suite; merged build/components/domain/UI checks above are distinct evidence, not a new integrated 207 claim."
+    },
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "autoFix": false
+    },
+    "dependencies": "Knowledge-import slice adds none. Upstream merge explicitly declares already-installed unpdf1.8.1 (MIT, measured JS2141399B), preserving its lock and omitting optional canvas. Final package lock therefore differs from 3192261; no dependency reinstall or automatic upgrade was done.",
+    "performance": "Merged cold hybrid UI3962.54ms and post-restart4543.14ms, 40 candidates but only20 reranked (complete=false candidate_limit). This does not meet the fast/high-recall goal. Pre-integration4000.62/5962.91ms remain separate observations, not a controlled improvement A/B.",
+    "newPaidCalls": 0,
+    "cloudUploads": 0,
+    "dailyDWorktreeUpdated": false,
+    "installerUpdated": false,
+    "goalComplete": false,
+    "rollback": "Ordinary revert a3667ce and da20965 restores the prior import behavior, retaining facts; no migration. Revert test/docs independently, preserving upstream Office changes."
   }
 }

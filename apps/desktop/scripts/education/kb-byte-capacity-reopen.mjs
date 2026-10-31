@@ -60,7 +60,17 @@ try{
   await page.getByTestId('materials-detail').getByTestId('materials-original-open').click();await page.getByTestId('materials-detail').locator('img').waitFor({state:'visible'});
   assert(await page.getByTestId('materials-detail').locator('img').evaluate(i=>i.naturalWidth>0));
   report.checks.push('Existing local embeddings cover these 40 small texts and real reranking processes bounded candidates; teacher opens exact source and actual page image from a 1GiB PDF');
-  for(const [width,height]of [[1366,768],[1920,1080]]){await app.evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(s.width,s.height),{width,height});await page.waitForFunction(s=>innerWidth===s.width&&innerHeight===s.height,{width,height});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(output,`source-${width}.png`),fullPage:true});}
+  report.viewports=[];
+  const window=await app.browserWindow(page);
+  for(const [width,height]of [[1366,768],[1920,1080]]){
+    const before=await window.evaluate(w=>({id:w.id,bounds:w.getContentBounds(),maximized:w.isMaximized(),zoom:w.webContents.getZoomFactor()}));
+    await window.evaluate((w,s)=>w.setContentSize(s.width,s.height),{width,height});
+    const sample={requested:{width,height},before,native:await window.evaluate(w=>w.getContentBounds()),css:await page.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio}))};
+    report.viewports.push(sample);
+    await page.waitForFunction(s=>innerWidth===s.width&&innerHeight===s.height,{width,height},{timeout:10000});
+    sample.css=await page.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio}));
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:path.join(output,`source-${width}.png`),fullPage:true});
+  }
   await close();await launch();assert.deepEqual(facts(),before);assert.equal(sql('PRAGMA integrity_check')[0].integrity_check,'ok');await search(last,'hybrid');
   report.checks.push('Second current-build native restart preserves all 40 immutable resource facts; final source remains retrievable, both viewport sizes are reachable');
   assert.equal(report.rendererErrors.length,0);report.success=true;

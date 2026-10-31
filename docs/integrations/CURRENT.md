@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-31 40GiB最终主线整合
+
+正常整合origin/main ef55c53为03f4654，14处Markdown冲突保留双方完整证据，4个知识导入生产文件与a3667ce一致。整合后build（含typecheck）、240组件、协作者11项源码/4项真实Windows PDF、空间恢复UI3项、40GiB旧库再开3项均exit0；207/207属于整合前a3667ce，未重复运行，不冒充最终合并验收。再开首次尺寸断言超时保留，测试改为页面所属窗口并记录native/CSS/DPR，后续两尺寸通过，未宣称产品窗口缺陷修复。合并后混合首查3963ms、重启后4543ms，40候选仅重排20，速度/召回质量仍未达标。知识库切片无新依赖；上游明确直锁已安装unpdf1.8.1，故最终锁文件发生上游变更。audit仍45（8高29中8低/0严重，exit1）；0新增付费/上传。完整Goal保持active、完整AT新增0、D盘日常树与安装包未更新。下一步处理混合冷启和候选覆盖，再复现Pi/原题旧页数/字节限制。完整历史、失败及最终构建指纹见docs/research/KB_BYTE_CAPACITY_20261031.json#finalIntegration。
+
 ## 2026-10-31 大库容量与磁盘故障
 
 直接验证现Node流式复制/SHA、sqlite3、PDFium/RapidOCR文件Worker、SQLite FTS及Lance/ONNX消费路径，没有替换成熟解析/检索层。既有AttachmentImportItem仅新增可选白名单I/O原因；SQLITE_FULL归一为空间不足，不修改供应商/模型、依赖锁文件或安装组件。实际字节容量长跑与自然OCR/AI质量必须分别记录。
