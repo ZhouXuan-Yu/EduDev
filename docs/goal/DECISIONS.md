@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
+
 ## 2026-10-31 E06教师要求与检查依据（第八切片）
 
 采用已有TaskView快照+声明规则引用，不增第二要求编辑器、真源或审批。实际检查finding附checkId，coverage从真实结果派生；未关联要求逐项展示。digest排除执行进度，包含任务/要求/来源；同版本不同任务不能复用。全文语义仍未验证，完整E06继续部分实现。

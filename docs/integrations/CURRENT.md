@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
+
 ## 2026-10-31 E06教师要求与检查依据（第八切片）
 
 inspect_delivery_files现支持file.rules.bindings引用真实taskId、criterion/version及已声明规则ID；工具回执带原要求预览/来源和实际证据，语义固定未检查。现Pi/preflight/缓存/修复预算复用；policy摘要含检查器版本与要求digest。无新服务或依赖。

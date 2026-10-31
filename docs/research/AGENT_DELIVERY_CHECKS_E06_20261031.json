@@ -5773,6 +5773,62 @@
         "bytes": 174892,
         "sha256": "3770f5819bf310d0e72950478bc8888e139ded59734ca2f69633fc9b91d5312d"
       }
-    ]
+    ],
+    "changedFiles": [
+      "apps/desktop/scripts/xiaozhi-agent/delivery-paged-electron.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/delivery-requirements-smoke.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/delivery-requirements-ui-checks.mjs",
+      "apps/desktop/src/main/xiaozhi-agent/checks/evaluate.ts",
+      "apps/desktop/src/main/xiaozhi-agent/checks/requirements.ts",
+      "apps/desktop/src/main/xiaozhi-agent/checks/service.ts",
+      "apps/desktop/src/main/xiaozhi-agent/checks/state.ts",
+      "apps/desktop/src/main/xiaozhi-agent/checks/tools.ts",
+      "apps/desktop/src/main/xiaozhi-agent/production-host.ts",
+      "apps/desktop/src/main/xiaozhi-agent/tasks/task-state.ts",
+      "apps/desktop/src/renderer/components/office/PiDeliveryCheck.tsx",
+      "apps/desktop/src/renderer/components/office/PiRequirementCoverage.tsx",
+      "apps/desktop/src/shared/xiaozhi-delivery-checks.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ],
+    "finalIntegration": {
+      "mergeSha": "4cc627bae50405a61ade9f01765f8e1a8e396755",
+      "mergedRemoteMain": "ad06954",
+      "conflicts": {
+        "count": 12,
+        "scope": "Markdown stage entries only",
+        "resolution": "Both complete sections retained; no production conflicts"
+      },
+      "sliceSourceUnchangedFrom": "0018ab3344d7d7e8e5008abba32156d627e18576",
+      "build": {
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-requirements-merged-build.log"
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-requirements-merged-components.log"
+      },
+      "artifacts": [
+        {
+          "path": "apps\\desktop\\out\\main\\index.js",
+          "bytes": 3247835,
+          "sha256": "21f1614f7270ed35eef053ae6ff3d7d6a2590582e58f1b2760b7dcbeb23ff3f8"
+        },
+        {
+          "path": "apps\\desktop\\out\\preload\\index.cjs",
+          "bytes": 34965,
+          "sha256": "27148817cddba73e408e80d07e3b6f2746c69ae76340f848a90e51c6d7cd9b28"
+        },
+        {
+          "path": "apps\\desktop\\out\\renderer\\assets\\index-C7UWEmNv.js",
+          "bytes": 7191016,
+          "sha256": "0341fa6f21efe2389f965096a9cb28318887a4d2e946fcb110db788e0d1f3ca2"
+        }
+      ],
+      "boundary": "207 comprehensive and original Pi journeys belong to implementation0018ab3; final merged build/type and240 components passed. Same slice source; no repeat of complete/native/paid/teacher suites. Upstream changes included in final bundle, not attributed to this slice."
+    }
   }
 }
