@@ -403,7 +403,14 @@
     "baseRendererBytes": 7246099,
     "finalRendererBytes": 7251525,
     "rendererDeltaBytes": 5426,
-    "scope": "Includes collaborator E08 integration. Single same-page qualification0/12 to6/12 is bounded quality evidence; no P95, global recall or natural40GB claim."
+    "scope": "Includes collaborator E08 integration. Single same-page qualification0/12 to6/12 is bounded quality evidence; no P95, global recall or natural40GB claim.",
+    "lastIntegration": {
+      "mainBytes": 3324949,
+      "rendererBytes": 7258909,
+      "deltaFromRoundStartMain": 15275,
+      "deltaFromRoundStartRenderer": 12810,
+      "scope": "Includes E08/E07 collaborator changes; relative to latest E07 main build3319467, this KB implementation adds5482 main bytes and no renderer bytes. No measured latency/P95/recall guarantee."
+    }
   },
   "audit": {
     "command": "npm.cmd audit --json",
@@ -442,5 +449,72 @@
       "Answerbook uncertainty continues to block true canonical answer writeback",
       "No natural tens-GB stability/recall/P95 or installer acceptance yet"
     ]
-  }
+  },
+  "lastIntegration": {
+    "sourceCommit": "1d6358b032b3d421981fea4f391c33966ad602b5",
+    "mergedMain": "6bd287a",
+    "reason": "A concurrent collaborator advanced main during the first normal atomic push; it was rejected without changing remote refs. Fetched and merged, preserving both complete sides of13 Markdown conflicts; no production conflicts. No forced push.",
+    "build": {
+      "file": "apps/desktop/out/main/index.js",
+      "bytes": 3324949,
+      "sha256": "9fc8edb8e275ec62d6f503acba8e0b9026922b73f824d2b0c5d7d14da75a6775"
+    },
+    "renderer": {
+      "file": "apps/desktop/out/renderer/assets/index-Cym5ISFk.js",
+      "bytes": 7258909,
+      "sha256": "6c62c0831369eaefcbb46afaf4fc3c634c449fb85fef753ad406076ba4e6c26e"
+    },
+    "buildTypecheckExit": 0,
+    "rendererComponents": 240,
+    "rendererComponentsExit": 0,
+    "collaboratorRecoverySourceChecks": 11,
+    "collaboratorRecoverySourceExit": 0,
+    "ui": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\page-quality-9TnYtx",
+      "buildSha256": "9fc8edb8e275ec62d6f503acba8e0b9026922b73f824d2b0c5d7d14da75a6775",
+      "checks": [
+        "Existing background executor matches12 actual main-page questions to the exact exam; question1 retains known D and source page3 while all uncertain questions stay held",
+        "All6 complete text questions retain full canonical stems and pass actual typed source readback shared with Pi; no teacher or mathematical acceptance claimed",
+        "Visible retry reads saved sources, preserves the canonical AI answers/analysis and does not silently promote held questions",
+        "Both desktop sizes reach the final candidate, source page and original answers without horizontal overflow",
+        "Controlled local-page receipt corruption reaches the real IPC source guard, shows a retryable error and retains12 candidates; exact receipt restored afterward",
+        "Unlink/restoring the identical book queues background matching at the new revision with no paid replay or canonical mutation",
+        "Restart preserves held candidates, exact source hashes, both two-call ledgers, all12 canonical questions and SQLite integrity"
+      ],
+      "success": true,
+      "cloudRequests": 0,
+      "rendererErrors": [],
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "width": 1920,
+          "height": 1080
+        }
+      ],
+      "revisions": {
+        "before": 23,
+        "restored": 25
+      }
+    },
+    "unchangedKbSource": true,
+    "scope": "Final merged build/type,240 components, recovery11 and actual KB UI7 passed;37/28/19/9 and207 remain their recorded earlier source scopes, not rerun claims."
+  },
+  "changedFiles": [
+    "apps/desktop/src/main/assets/material-ai-page-content.ts",
+    "apps/desktop/src/main/assets/material-ai-page-evidence.ts",
+    "apps/desktop/src/main/assets/material-ai-page-publish.ts",
+    "apps/desktop/src/main/assets/material-ai-page-source.ts",
+    "apps/desktop/src/main/assets/material-ai-page-instruction.ts",
+    "apps/desktop/src/main/assets/material-ai-provider.ts",
+    "apps/desktop/src/main/assets/material-ai-repository.ts",
+    "apps/desktop/src/main/assets/material-image-ocr.ts",
+    "apps/desktop/src/shared/material-ai-page.ts",
+    "apps/desktop/src/shared/material-ai.ts",
+    "apps/desktop/scripts/education/kb-ai-page-boundaries.mjs",
+    "apps/desktop/scripts/education/kb-wusan-answer-ai-journey.mjs",
+    "apps/desktop/scripts/education/kb-wusan-book-match-journey.mjs"
+  ]
 }
