@@ -14,9 +14,11 @@ const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..')
 const resume=process.argv[3];
 if(resume&&(!path.isAbsolute(resume)||!fs.existsSync(path.join(resume,'progress.json'))))throw Error('Resume requires an existing journey output');
 const output=resume||fs.mkdtempSync(path.join(tmpdir(),'omni-real-material-'));
+const timeoutMinutes=Number(process.argv[4]||60);if(!Number.isFinite(timeoutMinutes)||timeoutMinutes<1||timeoutMinutes>1440)throw Error('Expected an observation budget of 1..1440 minutes');
+if(resume){const prior=fs.mkdtempSync(path.join(output,'prior-local-run-'));for(const name of ['progress.json','report.json','failure.png'])if(fs.existsSync(path.join(output,name)))fs.copyFileSync(path.join(output,name),path.join(prior,name));}
 const data=path.join(output,'data'),profile=path.join(output,'profile');
 const fingerprint=()=>fs.readdirSync(folder,{withFileTypes:true}).filter(f=>f.isFile()).map(f=>{const p=path.join(folder,f.name),b=fs.readFileSync(p);return {name:f.name,bytes:b.length,sha256:createHash('sha256').update(b).digest('hex')};});
-const report={output,folder,source:fingerprint(),checks:[],rendererErrors:[],snapshots:[],scope:'Actual local folder, production Electron UI/OCR/index. Isolated data and profile; no cloud requests.'};
+const report={output,folder,timeoutMinutes,source:fingerprint(),checks:[],rendererErrors:[],snapshots:[],scope:'Actual local folder, production Electron UI/OCR/index. Isolated data and profile; no cloud requests. Local processing only; not AI/answer matching/retrieval quality/paper or whole knowledge-base acceptance.'};
 let app,page;
 const note=s=>{report.checks.push(s);console.log(s);};
 async function launch(){
@@ -32,13 +34,14 @@ const materials=()=>page.evaluate(()=>window.omniEdu.listMaterials({schemaVersio
 try{
  console.log('OUTPUT '+output);await launch();
  if(!resume){await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},folder);await page.getByTestId('materials-import-folder').click();}
- const deadline=Date.now()+15*60*1000;let stable=0;
+ const deadline=Date.now()+timeoutMinutes*60*1000;let stable=0;
  while(Date.now()<deadline){
   const resources=(await materials()).resources;
   const batches=await page.evaluate(()=>window.omniEdu.listMaterialBatches({schemaVersion:'xiaozhi.material-import-batch.v1',offset:0}));
   const pdf=[];for(const r of resources.filter(r=>r.originalFileName.endsWith('.pdf')))pdf.push({name:r.originalFileName,...await page.evaluate(id=>window.omniEdu.getMaterialPdfStatus(id),r.id)});
   const index=await page.evaluate(()=>window.omniEdu.getMaterialIndexStatus());
-  const snapshot={at:new Date().toISOString(),resources:resources.map(r=>({id:r.id,name:r.originalFileName,status:r.parseStatus})),batches,pdf,index};report.snapshots.push(snapshot);
+  const queue=await page.evaluate(()=>window.omniEdu.getMaterialQueue());
+  const snapshot={at:new Date().toISOString(),resources:resources.map(r=>({id:r.id,name:r.originalFileName,status:r.parseStatus})),batches,pdf,index,queue};report.snapshots.push(snapshot);
   console.log(JSON.stringify(snapshot));fs.writeFileSync(path.join(output,'progress.json'),JSON.stringify(report,null,2));
   const terminal=resources.length===report.source.length&&resources.every(r=>!['pending','running','queued','parsing','needs_parser'].includes(r.parseStatus))&&pdf.length===report.source.filter(f=>/\.pdf$/i.test(f.name)).length&&pdf.every(p=>p.pending===0&&p.total>0)&&index.pending===0;
   if(terminal&&++stable>=2)break;if(!terminal)stable=0;await delay(10000);
