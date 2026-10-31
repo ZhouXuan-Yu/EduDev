@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
+import {DisclosureCard} from '../ui/DisclosureCard';
 import type {MistakeImageAnalysis} from '../../../shared/contracts';
 import {MISTAKE_OCR_SCHEMA,MISTAKE_OCR_ERRORS,type MistakeOcrInput} from '../../../shared/mistake-ocr';
 export function MistakeRecognitionState({analysis,busy,error,onStart,onCancel}:{analysis:MistakeImageAnalysis;busy:boolean;error:string;onStart:()=>void;onCancel:()=>void}){
@@ -7,7 +8,7 @@ export function MistakeRecognitionState({analysis,busy,error,onStart,onCancel}:{
   <p data-testid="student-mistake-ocr-status">{busy?'正在本地识别图片…':analysis.ocrStatus==='teacher_corrected'?'教师校正已保存':analysis.localOcr?'已识别，请核对文字':'可在本机识别图片文字'}</p>
   <p className="muted">图片保留在本机；请核对数字、公式及姓名，保存校正后再交给小智。</p>
   {busy?<Button variant="secondary" data-testid="student-mistake-ocr-cancel" onPress={onCancel}>取消识别</Button>:<Button variant="secondary" data-testid="student-mistake-ocr-start" isDisabled={!analysis.version||analysis.ocrStatus==='teacher_corrected'} onPress={onStart}>{analysis.localOcr?'读取识别结果':'识别图片文字'}</Button>}
-  {analysis.localOcr&&<details><summary>查看识别原文</summary><pre data-testid="student-mistake-ocr-original">{analysis.localOcr.original}</pre></details>}
+  {analysis.localOcr&&<DisclosureCard title="查看识别原文"><pre data-testid="student-mistake-ocr-original">{analysis.localOcr.original}</pre></DisclosureCard>}
   {error&&<p role="alert" data-testid="student-mistake-ocr-error">{error}</p>}
  </section>;
 }

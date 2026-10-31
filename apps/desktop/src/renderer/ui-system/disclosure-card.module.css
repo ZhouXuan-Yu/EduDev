@@ -1,0 +1,4 @@
+/* App-owned Card geometry only. HeroUI owns all disclosure internals.
+ * Kept with UI system CSS to avoid the legacy domain stylesheet adapter.
+ */
+.card { padding: var(--space-16, 16px); }

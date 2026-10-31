@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
+import {DisclosureCard} from '../ui/DisclosureCard';
 import type {MistakeFactsReceipt} from '../../../shared/mistake-facts';
 import {MISTAKE_SIMILAR_SCHEMA,MISTAKE_SIMILAR_ERRORS,type MistakeSimilarInput,type MistakeSimilarView} from '../../../shared/mistake-similar';
 import {QuestionAnswerEvidence} from '../QuestionAnswerEvidence';
@@ -10,7 +11,7 @@ export function MistakeSimilarResults({value}:{value:MistakeSimilarView}){
  return <div data-testid="mistake-similar-results"><p role="status" data-testid="mistake-similar-count">找到 {value.items.length} / 10 道本地关联题{value.items.length<10?'，题库不足，未自动补题。':'。'}</p>
   <p className="muted">按同学科、同年级、同知识点和题干文字线索匹配；仅作关联候选，语义与答案正确性需要教师核对。</p>
   {!value.items.length&&<p data-testid="mistake-similar-empty">暂无可用关联题，请先在题本补充对应学科与年级的题目。</p>}
-  {value.items.map((item,index)=><details className="work-panel" key={item.source.questionId} data-testid={'mistake-similar-item-'+index}><summary>{index+1}. {item.question.knowledgePoint||'本地题目'} · {item.question.stem.slice(0,100)}</summary><p>{item.reasons.join('；')} · {item.question.grade} · {item.question.subject}</p><p style={{whiteSpace:'pre-wrap'}}>{item.question.stem}</p><ul><QuestionSourceLink source={{title:item.question.sourceTitle||'本地题库',question:item.source}}/></ul>{item.question.document&&<QuestionOriginalPicture question={item.question}/>}<QuestionAnswerEvidence question={item.question}/></details>)}
+  {value.items.map((item,index)=><DisclosureCard key={item.source.questionId} data-testid={'mistake-similar-item-'+index} title={<>{index+1}. {item.question.knowledgePoint||'本地题目'} · {item.question.stem.slice(0,100)}</>}><p>{item.reasons.join('；')} · {item.question.grade} · {item.question.subject}</p><p style={{whiteSpace:'pre-wrap'}}>{item.question.stem}</p><ul><QuestionSourceLink source={{title:item.question.sourceTitle||'本地题库',question:item.source}}/></ul>{item.question.document&&<QuestionOriginalPicture question={item.question}/>}<QuestionAnswerEvidence question={item.question}/></DisclosureCard>)}
   <p className="muted">已查看 {value.scanned} 条当前范围的题目，保守排除原题及同题副本；不改变已保存的题目和学生事实。</p>
  </div>;
 }
