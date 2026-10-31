@@ -15,6 +15,8 @@ export class MaterialQuestionArchive{
  private timer?:ReturnType<typeof setInterval>;private pumping?:Promise<void>;private host:Host;
  private controller=new AbortController();private verified=new Map<string,string>();
  constructor(host:Host){this.host=host;}
+ private bookRole?:(id:string)=>Promise<import('../../shared/material-book-pair').MaterialBookRole|null>;
+ configureBooks(role:NonNullable<MaterialQuestionArchive['bookRole']>){this.bookRole=role;}
  async migrate(){
   if(!(await this.host.all('PRAGMA table_info(question_bank_items)')).some(c=>c.name==='archive_json'))await this.host.run("ALTER TABLE question_bank_items ADD COLUMN archive_json TEXT NOT NULL DEFAULT ''");
   await this.host.run("CREATE TABLE IF NOT EXISTS material_question_jobs(resource_id TEXT PRIMARY KEY,version TEXT NOT NULL,status TEXT NOT NULL DEFAULT 'pending',question_count INTEGER NOT NULL DEFAULT 0,error TEXT NOT NULL DEFAULT '',updated_at TEXT NOT NULL)");
@@ -63,11 +65,13 @@ export class MaterialQuestionArchive{
    const resource=await this.host.materials().resource(id);if(resource.contentHash!==version)throw new Error('source_changed');
    const stamp=await this.host.materials().originalStamp(id,version);
    if(this.verified.get(verification)!==stamp){await this.host.materials().verify(id,version,this.controller.signal);if(await this.host.materials().originalStamp(id,version)!==stamp)throw new Error('source_changed');if(this.verified.size>=32)this.verified.delete(this.verified.keys().next().value!);this.verified.set(verification,stamp);}
-   const snapshot=await this.host.materials().readingWindow(id,cursor),questions=extractMaterialQuestions(snapshot.units,resource.parseEngine);
+   const role=await this.bookRole?.(id);
+   const snapshot=await this.host.materials().readingWindow(id,cursor),questions=role?.kind==='answers'?[]:extractMaterialQuestions(snapshot.units,resource.parseEngine);
    // A window boundary does not establish question hierarchy or a complete final solution.
    for(const [i,q]of questions.entries())if(cursor>0||snapshot.hasMore&&i===questions.length-1){if(!q.archive.issues.includes('cross_chunk'))q.archive.issues.push('cross_chunk');if(!q.archive.sourceRisks.includes('cross_chunk'))q.archive.sourceRisks.push('cross_chunk');}
    await this.host.withWriter(async target=>{
     const current=(await target.host.all("SELECT version,status,cursor,parse_token FROM material_question_jobs WHERE resource_id=?",[id]))[0];if(!current||current.version!==version||current.status!=='pending'||Number(current.cursor)!==cursor||current.parse_token!==token)return;
+    if(JSON.stringify(await target.bookRole?.(id))!==JSON.stringify(role))throw Error('source_changed');
     const fresh=await target.host.materials().readingWindow(id,cursor);if(fresh.fingerprint!==snapshot.fingerprint)throw new Error('source_changed');
     for(const q of questions){
      this.controller.signal.throwIfAborted();const key=createHash('sha256').update(id+'\0'+version+'\0numbered-text.v1\0'+JSON.stringify(q.archive.sources)+'\0'+q.key).digest('hex');
