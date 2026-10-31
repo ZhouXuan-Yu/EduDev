@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+inspect_delivery_files现支持file.rules.bindings引用真实taskId、criterion/version及已声明规则ID；工具回执带原要求预览/来源和实际证据，语义固定未检查。现Pi/preflight/缓存/修复预算复用；policy摘要含检查器版本与要求digest。无新服务或依赖。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice；日常进度docs/goal/WORK_PROGRESS.md。
+
 ## 2026-10-31 E06文字遮挡与系统字形（第七切片）
 
 沿本机PowerPoint/WPS只读Automation及Windows WPF成熟整形接入，无下载/新依赖。相同真实课件字节两引擎定位具体问题，原PNG查看/冷启保持；新render.ps1固定代码不接受模型源码，原有界已知文件清理及Job保持。完整动画/嵌入字体/原生编辑矩阵不在本轮达标范围。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。

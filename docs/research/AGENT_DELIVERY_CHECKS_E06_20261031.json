@@ -4608,5 +4608,910 @@
       "D daily runtime and installer unchanged; inherited PromptInput fingerprint/bootstrap IPC gates not rerun or fixed"
     ],
     "rollback": "Revert c31384f to restore previous adapter; no business migration, original files/reports/PNG reader remain; full rollback drill not run."
+  },
+  "requirementsSlice": {
+    "date": "2026-10-31",
+    "implementationSha": "0018ab3344d7d7e8e5008abba32156d627e18576",
+    "worktree": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+    "scope": "E06 eighth slice: actual declared checks linked to existing task/criterion/source snapshots; whole natural-language semantics remain unchecked. No new task truth, dependency, DDL, IPC, paid call or teacher data. Full E06/252 AT not accepted.",
+    "sourceReader": "production uses task-state.requirements() with existing immutable message/correction/goal source validation; no automatic hard-constraint extraction from arbitrary natural language.",
+    "tests": {
+      "source": {
+        "exit": 0,
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-requirements-smoke.mjs",
+        "report": {
+          "ok": true,
+          "passed": 6,
+          "checks": [
+            "Old rules retained; real task identity, distinct references and declared-rule bounds validated",
+            "Same numeric version cannot rebind another task/source; transient plan revisions do not invalidate identical requirements",
+            "Actual read text distinguishes a missing required phrase from repaired content; untouched criteria remain unmapped and semantics never self-certified",
+            "A structural failure with no rule execution cannot manufacture passing requirement evidence",
+            "Cross-file disagreement remains part of linked numeric evidence",
+            "Legacy receipts stay readable and malformed requirement evidence or self-certified semantics is rejected"
+          ]
+        }
+      },
+      "existingSource": {
+        "exit": 0,
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+        "report": {
+          "ok": true,
+          "checks": [
+            "Old rules remain valid; explicit bounded Office engines accepted and malformed/unknown engines rejected at shared boundary",
+            "Existing science-figure SVG remains structurally readable without pretending its unrendered visual is verified",
+            "Frozen FX01 default, liquid-density, object-density and load boundaries are independently recalculated; wrong7cm is rejected without a model-supplied expected number",
+            "Actual question-version text mismatch is detected across files independently of numeric equality",
+            "Actual eight-slide PPTX and per-slide speaker notes parse; unrendered slides are explicitly visually unchecked",
+            "Plain text with PPTX suffix and a damaged real ZIP fail actual structure checks",
+            "A missing page and required question are identified independently of file existence",
+            "Real XLSX cells preserve001 and formula-like text; a separate sum of actual numeric cells returns240",
+            "CSV quoted commas/newlines survive inspection; missing numeric data is not treated as0",
+            "An actual cached Excel formula is not mistaken for an independently recomputed result",
+            "Individually matching6cm and7cm facts still fail cross-file consistency with both file names",
+            "Derived migration is idempotent and preserves existing data; cancellation updates the stored terminal receipt and damaged receipts are rejected"
+          ],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-bQxpwX",
+          "boundary": "Actual OOXML/CRC parser, generated Office bytes and SQLite receipts; not actual Office rendering, automatic repair or complete E06 AT."
+        }
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-requirements-components.log"
+      },
+      "build": {
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-requirements-reader-build-fixed.log"
+      },
+      "originalPi": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-paged-ui-jz8LWa --requirements",
+        "exit": 0,
+        "checks": [
+          "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+          "Original composer uses actual current-task identity from model context; missing classroom discussion is linked to the immutable teacher requirement and exact file SHA",
+          "Original file panel exposes the teacher preview, source version and exact failed rule at1366/1920 without horizontal overflow",
+          "Visible recheck after an external teacher edit preserves the same requirement/rules and checks repaired bytes; semantic acceptance remains unchecked",
+          "Cold original app reads linked requirement evidence with no model, inspection or publication replay",
+          "Another actual teacher task with the same version1 invalidates old requirement evidence; unmapped semantic expectations stay visible, current source bytes preserved"
+        ],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-QqxTbK",
+        "errors": [],
+        "requirements": {
+          "failed": {
+            "schemaVersion": "xiaozhi.delivery-checks.v1",
+            "id": "xicheck_b9c2874fd2e0a51a1f2b5eb506c8924e46972b52b819a94d8dec8aeaead0ed8c",
+            "sessionId": "aisession_ac4df79b-c8d2-424f-bde5-4aaa17aa1da5",
+            "runId": "run_fc12e8b0-1118-432c-b720-b133b5db41df",
+            "callId": "paged-inspect-0",
+            "workspaceVersion": "896088213026bc064c5acbae3d7c589d476a7ea40fffe5cebbfb3a429efa4727",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+              "version": 1,
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "请检查教师要求核对.txt，内容要求同时包含质量守恒和课堂讨论，逐项告诉我缺什么，只检查现有文件。",
+                  "sourceId": "aimsg_8627f7ff-0902-49d0-ae5d-ffb7f4727572",
+                  "sourceVersion": "f938e52cdc52da0f10c99450b0f55460ed95568909361cbc52b79491aaa2ca76"
+                }
+              ],
+              "digest": "b34c3348dead92b2b67df8c6fdb82be6c37b02342d7f797faf72cf7beb8ca61a"
+            },
+            "policySha256": "62f7105e68b32d5197abeaefdfbfc4cc8ef9793d5d2d56f5b0a2a8a03704e960",
+            "scope": "21e13b4f1ab7ad5311cfb9f519e1b797f437aa3ee54a99dbe9c892abe5132088",
+            "createdAt": "2026-10-31T11:12:39.439Z",
+            "state": "failed",
+            "files": [
+              {
+                "path": "教师要求核对.txt",
+                "fileVersion": "99f05e5e9ddbcf6e0c153f1da909d65dc9162a6f81fe86730a42219524797404",
+                "sha256": "0ccc495b7cbd775313e90198642b8fd5d69ec0a97f369a70806859cb3f92584a",
+                "size": 15,
+                "format": "txt",
+                "checks": [
+                  {
+                    "kind": "structure",
+                    "state": "passed",
+                    "code": "parsed",
+                    "message": "实际解析完成（utf8-fatal）。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "passed",
+                    "code": "contains",
+                    "checkId": "contains:0",
+                    "message": "正文应包含“质量守恒”：符合。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "failed",
+                    "code": "contains",
+                    "checkId": "contains:1",
+                    "message": "正文应包含“课堂讨论”：不符合。"
+                  },
+                  {
+                    "kind": "numbers",
+                    "state": "unchecked",
+                    "code": "numeric_contract",
+                    "message": "尚未提供数值或合计的核验约定。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  },
+                  {
+                    "kind": "interaction",
+                    "state": "not_applicable",
+                    "code": "document_interaction",
+                    "message": "本次非HTML文件没有约定的交互动作检查。"
+                  },
+                  {
+                    "kind": "consistency",
+                    "state": "not_applicable",
+                    "code": "single_file",
+                    "message": "当前仅检查一份文件。"
+                  }
+                ],
+                "renderedPages": [],
+                "numbers": [],
+                "state": "failed",
+                "rules": {
+                  "contains": [
+                    {
+                      "text": "质量守恒"
+                    },
+                    {
+                      "text": "课堂讨论"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+                      "criterionId": "teacher_request",
+                      "criterionVersion": 1,
+                      "checks": [
+                        "contains:0",
+                        "contains:1"
+                      ]
+                    }
+                  ]
+                },
+                "facts": []
+              }
+            ],
+            "repairAttempts": {},
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "checks_failed",
+                "semantics": "unchecked",
+                "evidence": [
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:0",
+                    "state": "passed",
+                    "messages": [
+                      "正文应包含“质量守恒”：符合。"
+                    ]
+                  },
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:1",
+                    "state": "failed",
+                    "messages": [
+                      "正文应包含“课堂讨论”：不符合。"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "checkTurnMs": 8488,
+          "source": {
+            "id": "teacher_request",
+            "version": 1,
+            "text": "请检查教师要求核对.txt，内容要求同时包含质量守恒和课堂讨论，逐项告诉我缺什么，只检查现有文件。",
+            "sourceId": "aimsg_8627f7ff-0902-49d0-ae5d-ffb7f4727572",
+            "sourceVersion": "f938e52cdc52da0f10c99450b0f55460ed95568909361cbc52b79491aaa2ca76"
+          },
+          "repaired": {
+            "schemaVersion": "xiaozhi.delivery-checks.v1",
+            "id": "xicheck_13bf461e3ab9dd00a1e7c2729fd8023696510e17775f164b4880da9efded758c",
+            "sessionId": "aisession_ac4df79b-c8d2-424f-bde5-4aaa17aa1da5",
+            "runId": null,
+            "callId": null,
+            "workspaceVersion": "896088213026bc064c5acbae3d7c589d476a7ea40fffe5cebbfb3a429efa4727",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+              "version": 1,
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "请检查教师要求核对.txt，内容要求同时包含质量守恒和课堂讨论，逐项告诉我缺什么，只检查现有文件。",
+                  "sourceId": "aimsg_8627f7ff-0902-49d0-ae5d-ffb7f4727572",
+                  "sourceVersion": "f938e52cdc52da0f10c99450b0f55460ed95568909361cbc52b79491aaa2ca76"
+                }
+              ],
+              "digest": "b34c3348dead92b2b67df8c6fdb82be6c37b02342d7f797faf72cf7beb8ca61a"
+            },
+            "policySha256": "62f7105e68b32d5197abeaefdfbfc4cc8ef9793d5d2d56f5b0a2a8a03704e960",
+            "scope": "008920235831b2714be35e35e3594b5a45cd616c7dff1c8928b3895c5c9e9843",
+            "createdAt": "2026-10-31T11:13:09.330Z",
+            "state": "partial",
+            "files": [
+              {
+                "path": "教师要求核对.txt",
+                "fileVersion": "9bfccce94e09a052b8b0dc68427aa0e4d02075b346d1dd3b5f269a9c091e3177",
+                "sha256": "71915bd042104ff3361116ef700a5b37061821441537a47e928b950ddea3911c",
+                "size": 51,
+                "format": "txt",
+                "checks": [
+                  {
+                    "kind": "structure",
+                    "state": "passed",
+                    "code": "parsed",
+                    "message": "实际解析完成（utf8-fatal）。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "passed",
+                    "code": "contains",
+                    "checkId": "contains:0",
+                    "message": "正文应包含“质量守恒”：符合。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "passed",
+                    "code": "contains",
+                    "checkId": "contains:1",
+                    "message": "正文应包含“课堂讨论”：符合。"
+                  },
+                  {
+                    "kind": "numbers",
+                    "state": "unchecked",
+                    "code": "numeric_contract",
+                    "message": "尚未提供数值或合计的核验约定。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  },
+                  {
+                    "kind": "interaction",
+                    "state": "not_applicable",
+                    "code": "document_interaction",
+                    "message": "本次非HTML文件没有约定的交互动作检查。"
+                  },
+                  {
+                    "kind": "consistency",
+                    "state": "not_applicable",
+                    "code": "single_file",
+                    "message": "当前仅检查一份文件。"
+                  }
+                ],
+                "renderedPages": [],
+                "numbers": [],
+                "state": "partial",
+                "rules": {
+                  "contains": [
+                    {
+                      "text": "质量守恒"
+                    },
+                    {
+                      "text": "课堂讨论"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+                      "criterionId": "teacher_request",
+                      "criterionVersion": 1,
+                      "checks": [
+                        "contains:0",
+                        "contains:1"
+                      ]
+                    }
+                  ]
+                },
+                "facts": []
+              }
+            ],
+            "repairAttempts": {},
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "checks_passed",
+                "semantics": "unchecked",
+                "evidence": [
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:0",
+                    "state": "passed",
+                    "messages": [
+                      "正文应包含“质量守恒”：符合。"
+                    ]
+                  },
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:1",
+                    "state": "passed",
+                    "messages": [
+                      "正文应包含“课堂讨论”：符合。"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "newTask": {
+            "schemaVersion": "xiaozhi.delivery-checks.v1",
+            "id": "xicheck_5448b5ce81e85cb60eac4a68ec1807f9c06e90533343b961eb620bf751e555f5",
+            "sessionId": "aisession_ac4df79b-c8d2-424f-bde5-4aaa17aa1da5",
+            "runId": "run_ad7c7909-15dd-435b-bf28-19fe728dc143",
+            "callId": "paged-inspect-0",
+            "workspaceVersion": "896088213026bc064c5acbae3d7c589d476a7ea40fffe5cebbfb3a429efa4727",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_64551f69a6fb531e447aa51b87e5b7330f04947e0c6942f5dcd9bf306892c6cc",
+              "version": 1,
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "这是另一项新任务：只检查教师要求核对.txt中是否有质量守恒，并另行评价讲解是否适合初中。不要修改文件。",
+                  "sourceId": "aimsg_b9bd2072-e103-4ae0-ad56-97c58ac63343",
+                  "sourceVersion": "4c12d27810121586518ec425273e3cd574e14241ccefe4ff07ce9c7e3b4172bb"
+                }
+              ],
+              "digest": "4b0099361538fab0de1ad25471a66095668281d91a845f1ad968beb2a0b7a8c0"
+            },
+            "policySha256": "3a8fda02edc9e8c088bd704d1cda7516c6b43a74d08e43b03a2a4622ff6e54cd",
+            "scope": "e52ac666846be8836e65efeb6662d78a8bb19312044451be119c80a37c95242c",
+            "createdAt": "2026-10-31T11:13:28.173Z",
+            "state": "partial",
+            "files": [
+              {
+                "path": "教师要求核对.txt",
+                "fileVersion": "9bfccce94e09a052b8b0dc68427aa0e4d02075b346d1dd3b5f269a9c091e3177",
+                "sha256": "71915bd042104ff3361116ef700a5b37061821441537a47e928b950ddea3911c",
+                "size": 51,
+                "format": "txt",
+                "checks": [
+                  {
+                    "kind": "structure",
+                    "state": "passed",
+                    "code": "parsed",
+                    "message": "实际解析完成（utf8-fatal）。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "passed",
+                    "code": "contains",
+                    "checkId": "contains:0",
+                    "message": "正文应包含“质量守恒”：符合。"
+                  },
+                  {
+                    "kind": "numbers",
+                    "state": "unchecked",
+                    "code": "numeric_contract",
+                    "message": "尚未提供数值或合计的核验约定。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  },
+                  {
+                    "kind": "interaction",
+                    "state": "not_applicable",
+                    "code": "document_interaction",
+                    "message": "本次非HTML文件没有约定的交互动作检查。"
+                  },
+                  {
+                    "kind": "consistency",
+                    "state": "not_applicable",
+                    "code": "single_file",
+                    "message": "当前仅检查一份文件。"
+                  }
+                ],
+                "renderedPages": [],
+                "numbers": [],
+                "state": "partial",
+                "rules": {
+                  "contains": [
+                    {
+                      "text": "质量守恒"
+                    }
+                  ]
+                },
+                "facts": []
+              }
+            ],
+            "repairAttempts": {},
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "unmapped",
+                "semantics": "unchecked",
+                "evidence": []
+              }
+            ]
+          },
+          "oldAfterNewTask": {
+            "schemaVersion": "xiaozhi.delivery-checks.v1",
+            "id": "xicheck_13bf461e3ab9dd00a1e7c2729fd8023696510e17775f164b4880da9efded758c",
+            "sessionId": "aisession_ac4df79b-c8d2-424f-bde5-4aaa17aa1da5",
+            "runId": null,
+            "callId": null,
+            "workspaceVersion": "896088213026bc064c5acbae3d7c589d476a7ea40fffe5cebbfb3a429efa4727",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+              "version": 1,
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "请检查教师要求核对.txt，内容要求同时包含质量守恒和课堂讨论，逐项告诉我缺什么，只检查现有文件。",
+                  "sourceId": "aimsg_8627f7ff-0902-49d0-ae5d-ffb7f4727572",
+                  "sourceVersion": "f938e52cdc52da0f10c99450b0f55460ed95568909361cbc52b79491aaa2ca76"
+                }
+              ],
+              "digest": "b34c3348dead92b2b67df8c6fdb82be6c37b02342d7f797faf72cf7beb8ca61a"
+            },
+            "policySha256": "62f7105e68b32d5197abeaefdfbfc4cc8ef9793d5d2d56f5b0a2a8a03704e960",
+            "scope": "008920235831b2714be35e35e3594b5a45cd616c7dff1c8928b3895c5c9e9843",
+            "createdAt": "2026-10-31T11:13:09.330Z",
+            "state": "stale",
+            "files": [
+              {
+                "path": "教师要求核对.txt",
+                "fileVersion": "9bfccce94e09a052b8b0dc68427aa0e4d02075b346d1dd3b5f269a9c091e3177",
+                "sha256": "71915bd042104ff3361116ef700a5b37061821441537a47e928b950ddea3911c",
+                "size": 51,
+                "format": "txt",
+                "checks": [
+                  {
+                    "kind": "structure",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "checkId": "contains:0",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "checkId": "contains:1",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "numbers",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "interaction",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "consistency",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  }
+                ],
+                "renderedPages": [],
+                "numbers": [],
+                "state": "stale",
+                "rules": {
+                  "contains": [
+                    {
+                      "text": "质量守恒"
+                    },
+                    {
+                      "text": "课堂讨论"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+                      "criterionId": "teacher_request",
+                      "criterionVersion": 1,
+                      "checks": [
+                        "contains:0",
+                        "contains:1"
+                      ]
+                    }
+                  ]
+                },
+                "facts": []
+              }
+            ],
+            "repairAttempts": {},
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "unchecked",
+                "semantics": "unchecked",
+                "evidence": [
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:0",
+                    "state": "unchecked",
+                    "messages": [
+                      "正文应包含“质量守恒”：符合。"
+                    ]
+                  },
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:1",
+                    "state": "unchecked",
+                    "messages": [
+                      "正文应包含“课堂讨论”：符合。"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "contextCurrent": false
+          }
+        },
+        "boundary": "6 checks include resume preparation1. First pass used .latest reader, final production source-validating reader tested separately below; synthetic SSE only, actual production checker/file/SQLite/UI. Prior historical Office reports are excluded."
+      },
+      "finalReader": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-paged-ui-jz8LWa --requirements --requirements-reopen-only",
+        "exit": 0,
+        "checks": [
+          "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+          "Focused final reader validates real stored task/message sources and rechecks the same existing file from the visible panel without model/publication replay",
+          "Final source-validating reader retains old same-version task evidence as stale; earlier composer/repair/dual-viewport paths are not replayed"
+        ],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-GHclyW",
+        "errors": [],
+        "report": {
+          "current": {
+            "schemaVersion": "xiaozhi.delivery-checks.v1",
+            "id": "xicheck_75794d972c03c6623ad861d6f4686d5e4dfff2af9479a7cf262d1891ea8db566",
+            "sessionId": "aisession_ac4df79b-c8d2-424f-bde5-4aaa17aa1da5",
+            "runId": null,
+            "callId": null,
+            "workspaceVersion": "896088213026bc064c5acbae3d7c589d476a7ea40fffe5cebbfb3a429efa4727",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_64551f69a6fb531e447aa51b87e5b7330f04947e0c6942f5dcd9bf306892c6cc",
+              "version": 1,
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "这是另一项新任务：只检查教师要求核对.txt中是否有质量守恒，并另行评价讲解是否适合初中。不要修改文件。",
+                  "sourceId": "aimsg_b9bd2072-e103-4ae0-ad56-97c58ac63343",
+                  "sourceVersion": "4c12d27810121586518ec425273e3cd574e14241ccefe4ff07ce9c7e3b4172bb"
+                }
+              ],
+              "digest": "4b0099361538fab0de1ad25471a66095668281d91a845f1ad968beb2a0b7a8c0"
+            },
+            "policySha256": "3a8fda02edc9e8c088bd704d1cda7516c6b43a74d08e43b03a2a4622ff6e54cd",
+            "scope": "fdd1984f4940b1d6a526d63bd739700a654b5ee6c636239cea7d2cab34c9f093",
+            "createdAt": "2026-10-31T11:16:43.607Z",
+            "state": "partial",
+            "files": [
+              {
+                "path": "教师要求核对.txt",
+                "fileVersion": "9bfccce94e09a052b8b0dc68427aa0e4d02075b346d1dd3b5f269a9c091e3177",
+                "sha256": "71915bd042104ff3361116ef700a5b37061821441537a47e928b950ddea3911c",
+                "size": 51,
+                "format": "txt",
+                "checks": [
+                  {
+                    "kind": "structure",
+                    "state": "passed",
+                    "code": "parsed",
+                    "message": "实际解析完成（utf8-fatal）。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "passed",
+                    "code": "contains",
+                    "checkId": "contains:0",
+                    "message": "正文应包含“质量守恒”：符合。"
+                  },
+                  {
+                    "kind": "numbers",
+                    "state": "unchecked",
+                    "code": "numeric_contract",
+                    "message": "尚未提供数值或合计的核验约定。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  },
+                  {
+                    "kind": "interaction",
+                    "state": "not_applicable",
+                    "code": "document_interaction",
+                    "message": "本次非HTML文件没有约定的交互动作检查。"
+                  },
+                  {
+                    "kind": "consistency",
+                    "state": "not_applicable",
+                    "code": "single_file",
+                    "message": "当前仅检查一份文件。"
+                  }
+                ],
+                "renderedPages": [],
+                "numbers": [],
+                "state": "partial",
+                "rules": {
+                  "contains": [
+                    {
+                      "text": "质量守恒"
+                    }
+                  ]
+                },
+                "facts": []
+              }
+            ],
+            "repairAttempts": {},
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "unmapped",
+                "semantics": "unchecked",
+                "evidence": []
+              }
+            ]
+          },
+          "old": {
+            "schemaVersion": "xiaozhi.delivery-checks.v1",
+            "id": "xicheck_13bf461e3ab9dd00a1e7c2729fd8023696510e17775f164b4880da9efded758c",
+            "sessionId": "aisession_ac4df79b-c8d2-424f-bde5-4aaa17aa1da5",
+            "runId": null,
+            "callId": null,
+            "workspaceVersion": "896088213026bc064c5acbae3d7c589d476a7ea40fffe5cebbfb3a429efa4727",
+            "requirementsVersion": 1,
+            "requirements": {
+              "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+              "version": 1,
+              "criteria": [
+                {
+                  "id": "teacher_request",
+                  "version": 1,
+                  "text": "请检查教师要求核对.txt，内容要求同时包含质量守恒和课堂讨论，逐项告诉我缺什么，只检查现有文件。",
+                  "sourceId": "aimsg_8627f7ff-0902-49d0-ae5d-ffb7f4727572",
+                  "sourceVersion": "f938e52cdc52da0f10c99450b0f55460ed95568909361cbc52b79491aaa2ca76"
+                }
+              ],
+              "digest": "b34c3348dead92b2b67df8c6fdb82be6c37b02342d7f797faf72cf7beb8ca61a"
+            },
+            "policySha256": "62f7105e68b32d5197abeaefdfbfc4cc8ef9793d5d2d56f5b0a2a8a03704e960",
+            "scope": "008920235831b2714be35e35e3594b5a45cd616c7dff1c8928b3895c5c9e9843",
+            "createdAt": "2026-10-31T11:13:09.330Z",
+            "state": "stale",
+            "files": [
+              {
+                "path": "教师要求核对.txt",
+                "fileVersion": "9bfccce94e09a052b8b0dc68427aa0e4d02075b346d1dd3b5f269a9c091e3177",
+                "sha256": "71915bd042104ff3361116ef700a5b37061821441537a47e928b950ddea3911c",
+                "size": 51,
+                "format": "txt",
+                "checks": [
+                  {
+                    "kind": "structure",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "checkId": "contains:0",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "content",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "checkId": "contains:1",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "numbers",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "interaction",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  },
+                  {
+                    "kind": "consistency",
+                    "state": "unchecked",
+                    "code": "inspection_stale",
+                    "message": "文件、工作区或要求版本已变化；旧检查不能证明当前内容。"
+                  }
+                ],
+                "renderedPages": [],
+                "numbers": [],
+                "state": "stale",
+                "rules": {
+                  "contains": [
+                    {
+                      "text": "质量守恒"
+                    },
+                    {
+                      "text": "课堂讨论"
+                    }
+                  ],
+                  "bindings": [
+                    {
+                      "taskId": "xitask_c0401e3aa2812190d8fdec45da363cf03bde49524ae2fd6e77ec3fab34047b4f",
+                      "criterionId": "teacher_request",
+                      "criterionVersion": 1,
+                      "checks": [
+                        "contains:0",
+                        "contains:1"
+                      ]
+                    }
+                  ]
+                },
+                "facts": []
+              }
+            ],
+            "repairAttempts": {},
+            "requirementCoverage": [
+              {
+                "criterionId": "teacher_request",
+                "criterionVersion": 1,
+                "state": "unchecked",
+                "semantics": "unchecked",
+                "evidence": [
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:0",
+                    "state": "unchecked",
+                    "messages": [
+                      "正文应包含“质量守恒”：符合。"
+                    ]
+                  },
+                  {
+                    "path": "教师要求核对.txt",
+                    "checkId": "contains:1",
+                    "state": "unchecked",
+                    "messages": [
+                      "正文应包含“课堂讨论”：符合。"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "contextCurrent": false
+          }
+        },
+        "boundary": "3 checks include resume1; same files/profile, zero model/generation/publication replay. Focused actual current requirements readback, visible recheck and stale old task."
+      },
+      "comprehensive": {
+        "command": "npm.cmd run test:smoke",
+        "status": "running",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-requirements-smoke.log",
+        "boundary": "one suite; legacy-test Pi=0, actual original Pi evidence above"
+      }
+    },
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0
+      },
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-requirements-audit-20261031.json",
+      "newDependencies": 0
+    },
+    "failedInvocations": [
+      {
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-requirements-reader-build.log",
+        "exit": 1,
+        "reason": "npm build invoked from repository root instead of apps/desktop; fixed only cwd"
+      },
+      {
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-requirements-final-source.log",
+        "exit": 1,
+        "reason": "Node source script invoked from repository root instead of apps/desktop; fixed only cwd"
+      }
+    ],
+    "artifacts": [
+      {
+        "path": "apps\\desktop\\out\\main\\index.js",
+        "bytes": 3237547,
+        "sha256": "fe377e38d47748cd4ca766e288f0a516045d5b44d0f3327069a27662bf739a4a"
+      },
+      {
+        "path": "apps\\desktop\\out\\preload\\index.cjs",
+        "bytes": 34761,
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+      },
+      {
+        "path": "apps\\desktop\\out\\renderer\\assets\\index-DDmLETkW.js",
+        "bytes": 7182635,
+        "sha256": "dd8d87012bd84d149a3d915cfe5fe0e00e274c0d3b188838b131e209deb3e153"
+      }
+    ],
+    "performance": {
+      "previousRendererBytes": 7179937,
+      "currentRendererBytes": 7182635,
+      "firstSyntheticOriginalPiCheckTurnMs": 8488,
+      "boundary": "single synthetic observed turn, no paired old latency/P95 or complete streaming performance claim"
+    },
+    "rollback": {
+      "commit": "0018ab3344d7d7e8e5008abba32156d627e18576",
+      "method": "normal revert of this slice, retain existing saved files/inspection records; no schema migration",
+      "tested": false
+    },
+    "remaining": [
+      "automatic natural-language requirement extraction/semantic acceptance",
+      "mixed whole-turn terminal behavior",
+      "complete FX09/visual matrices, E07/E08+C and phase AT"
+    ],
+    "dailyDAndInstallerUpdated": false,
+    "screenshots": [
+      {
+        "path": "docs\\research\\AGENT_DELIVERY_CHECKS_E06_REQUIREMENTS_20261031\\requirements-1366.png",
+        "bytes": 140604,
+        "sha256": "c903d49f0cb83d7a5ff47ba87dae559075212b5d2a04ed93f3a5d5c0ada9ad7b"
+      },
+      {
+        "path": "docs\\research\\AGENT_DELIVERY_CHECKS_E06_REQUIREMENTS_20261031\\requirements-1920.png",
+        "bytes": 174892,
+        "sha256": "3770f5819bf310d0e72950478bc8888e139ded59734ca2f69633fc9b91d5312d"
+      }
+    ]
   }
 }

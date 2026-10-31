@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+沿现task-state→delivery-checks→typed preload→PiDeliveryCheck/PiRequirementCoverage贯通要求关联。来源验证复用sources(sql,row.doc)，报告v1可选扩展兼容旧记录，无新业务表/IPC/运行时。文件字节与完整要求上下文分别失效；旧报告保留原快照。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice；日常进度docs/goal/WORK_PROGRESS.md。
+
 ## 2026-10-31 E06文字遮挡与系统字形（第七切片）
 
 现结构metrics可选embeddedFonts→原service→PowerPoint固定助手：WPF系统回退（最多32000字符）及原生文字边界/Z顺序（每页256文字/256实心矩形）。新发现经原检查报告/模型摘要/文件面板，原8槽/45秒/Job与版本绑定保留。只扩既有v1可选字段，无新DDL/IPC/依赖。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。

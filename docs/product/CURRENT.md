@@ -1,5 +1,11 @@
 # 当前产品方向
 
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+原文件检查面板新增“教师要求与检查依据”，列出每条要求、来源版本、相关文件/规则/实际结果；补齐内容后原按钮可重检，新任务使旧报告过期。关联检查通过不代表完整语义满足；功能工程切片已实现，完整E06仍部分实现。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice；日常进度docs/goal/WORK_PROGRESS.md。
+
 ## 2026-10-31 E06文字遮挡与系统字形（第七切片）
 
 PPTX原生检查现可定位上层不透明矩形完整覆盖的文字页/对象，并经Windows系统字体回退检查缺失码点。PowerPoint16和WPS12同一7页正反例均定位第2页遮挡、第5页U+10FFFD；中文、透明覆盖和后置背景未误报。旋转/复杂图形、部分遮挡、动画及Office与WPF整形差异仍未完整检查，Word/PDF逐字缺字未接入。 原文件面板/原Pi具体失败回执和冷启可用；完整E06仍未验收，下一要求逐条关联。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。

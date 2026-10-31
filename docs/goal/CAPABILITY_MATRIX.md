@@ -1,5 +1,11 @@
 # 小智能力与复用矩阵
 
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+REQ-E06-02/08/10仍部分实现：教师要求逐项关联、缺失规则定位、原面板修复重检、冷启和同版本新任务过期工程已实现。自然语言约束自动抽取/完整语义与混合终态未齐，不将完整AT标已实现。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice；日常进度docs/goal/WORK_PROGRESS.md。
+
 ## 2026-10-31 E06文字遮挡与系统字形（第七切片）
 
 PPTX原生检查现可定位上层不透明矩形完整覆盖的文字页/对象，并经Windows系统字体回退检查缺失码点。PowerPoint16和WPS12同一7页正反例均定位第2页遮挡、第5页U+10FFFD；中文、透明覆盖和后置背景未误报。旋转/复杂图形、部分遮挡、动画及Office与WPF整形差异仍未完整检查，Word/PDF逐字缺字未接入。 仅此有界范围有真实测试；完整REQ-E06-03/FX09未验收，不把新增检测代码当全语义视觉完成。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。

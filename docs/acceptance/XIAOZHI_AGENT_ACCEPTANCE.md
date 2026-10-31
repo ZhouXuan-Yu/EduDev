@@ -1,5 +1,9 @@
 # 小智教育智能体逐项验收手册
 
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+REQ/AT-E06-02、08、10工程补充：要求与规则关联、同版本不同任务过期、修复重检/冷启读回已取证。完整语义和混合终态仍待，保持部分实现/完整AT未执行；原验收条件不变。详见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice，日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 E06 WPS真实页面（第六切片）
 
 源码610f3eb：build/type、240组件、12源码及WPS原生3项、默认Microsoft原生3项通过。原正式UI6项（含准备1）后因三页PPT已完成赶不上停止而exit1，失败保留；改64页在途夹具，仅补测PPT停止/同文件复用4项exit0，0renderer错误。同源码综合smoke207/207通过（含build/type，legacy-test；实际Pi/WPS路径单列）。 E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 完整AT原标准不改；见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。

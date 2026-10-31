@@ -1,5 +1,9 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+REQ/AT-E06-02、08、10工程补充：要求与规则关联、同版本不同任务过期、修复重检/冷启读回已取证。完整语义和混合终态仍待，保持部分实现/完整AT未执行；原验收条件不变。详见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice，日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 E06 WPS真实页面（第六切片）
 
 WPS Writer/Presentation已沿原Pi检查及原文件面板接通真实三页截图；新增自动/Microsoft/WPS选择，旧规则兼容，实际引擎写入报告。独立新空Automation实例+Job保持用户已有WPS进程/窗口与原稿不变；Office不存在时自动选择WPS，Microsoft忙不静默切换。无新依赖/业务表/IPC/付费。 E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
