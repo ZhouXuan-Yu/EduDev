@@ -2,7 +2,8 @@ import {createHash} from 'node:crypto';
 import {parseAiPageResponse,validMaterialPageSource} from '../../shared/material-ai-page';
 import {validAiBatch,type AiUnitInput} from '../../shared/material-ai';
 import {validMaterialSource} from '../../shared/materials';
-type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
+import {readAiImageInput} from './material-ai-image-files';
+type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 const hash=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 /** Reopen persisted receipts and image bytes; callers still validate the current original. */
 export async function readAiPageReceipt(host:Host,batchId:string,ordinal:number){
@@ -11,8 +12,7 @@ export async function readAiPageReceipt(host:Host,batchId:string,ordinal:number)
  let unit:AiUnitInput,config;try{unit=JSON.parse(row.input_json);config=JSON.parse(String(row.config_json));}catch{throw Error('source_changed');}
  if(!config||typeof config!=='object')throw Error('source_changed');const {model,...batch}=config;
  if(model!=='deepseek-flash'||!validAiBatch(batch)||!batch.images||ordinal>batch.count||!validMaterialPageSource(unit.pageSource)||unit.native||!Array.isArray(unit.sources)||unit.sources.length>64||!unit.sources.every(s=>validMaterialSource(s)&&s.resourceId===batch.resourceId&&s.version===batch.version)||unit.pageSource.resourceId!==batch.resourceId||unit.pageSource.version!==batch.version||unit.pageSource.page!==batch.start+ordinal-1||unit.page!==unit.pageSource.page||typeof unit.text!=='string'||Buffer.byteLength(unit.text)>64000||typeof unit.stamp!=='string'||JSON.stringify(unit.pageSource)!==row.source_json)throw Error('source_changed');
- const image=(await host.all('SELECT image_sha,mime,data_base64 FROM material_ai_image_inputs WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
- if(!image||image.image_sha!==row.image_sha||!['image/png','image/jpeg','image/webp'].includes(String(image.mime))||typeof image.data_base64!=='string'||image.data_base64.length>5592408)throw Error('source_changed');
- const bytes=Buffer.from(image.data_base64,'base64');if(!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==image.data_base64||hash(bytes)!==row.image_sha)throw Error('source_changed');
+ const image=(await host.all('SELECT * FROM material_ai_image_inputs WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];
+ if(!image||image.image_sha!==row.image_sha)throw Error('source_changed');await readAiImageInput(host,image);
  return{unit,config,first:parseAiPageResponse(String(row.first_json)),final:parseAiPageResponse(String(row.final_json)),status:String(row.status),imageSha:row.image_sha,firstSha:String(row.first_sha),finalSha:String(row.final_sha)};
 }

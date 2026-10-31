@@ -20,7 +20,7 @@ import {readAiPageReceipt} from '../assets/material-ai-page-evidence';
 import {aiPageQuestionIssues} from '../assets/material-ai-page-publish';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type ResultReceipt={id:string;seq:number;sources?:{id:string;revision:number}[]};
-type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
+type Host={root?:()=>string;all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;chunk:(r:Row)=>ResourceChunk;question:(r:Row)=>QuestionBankItem;
   page?:(batchId:string,ordinal:number)=>Promise<AiPageView>;clean?:(text:string)=>Promise<string>;
   fullText:()=>MaterialFullTextSearch;keyword:(f:QuestionSearchFilters)=>Promise<SimilarQuestionMatch[]>;
   writer:<T>(action:(repo:RetrievalRepository)=>Promise<T>)=>Promise<T>};
