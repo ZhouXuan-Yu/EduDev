@@ -1,0 +1,294 @@
+{
+  "schemaVersion": "xiaozhi.kb-book-answer-entry-evidence.v1",
+  "date": "2026-10-31",
+  "sourceCommit": "a4bda04",
+  "integrationCommit": "c3fa341",
+  "status": "partial_feature_evidence",
+  "scope": "Existing answer-role two-pass receipts and bounded derived per-entry view, no per-question pairing or writeback completion.",
+  "actualProvider": {
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\answer-ai-OzCX7A",
+    "sourcePage": 3,
+    "limit": 2,
+    "cloudScope": "Previously inspected public answerPDF page3 and necessary local OCR only; real DeepSeek, no substitution. This is not question matching or mathematical acceptance.",
+    "checks": [
+      "Visible batch authorization sends only inspected answerPDF page3 twice through actual production DeepSeek transport",
+      "Both actual responses are persisted and readable through typed source API and renderer; zero new question rows"
+    ],
+    "rendererErrors": [],
+    "buildSha256": "eb5c4752f5ffb7e68024c0fe09da998de678659f835b3cf348662ca2f562706a",
+    "resourceId": "resource_578a1f1f-e229-4a9d-8d94-f4dd6ade1c2d",
+    "role": {
+      "schemaVersion": "xiaozhi.material-book-pair.v1",
+      "resourceId": "resource_578a1f1f-e229-4a9d-8d94-f4dd6ade1c2d",
+      "revision": 5,
+      "role": {
+        "kind": "answers",
+        "questionId": "resource_271e5c3a-643d-4eb4-865f-58999778f460",
+        "questionVersion": "e9e2b393cf8b5cb5ebe03999245310a5b88074317e30cc6388d4dfe414345ee5",
+        "answerId": "resource_578a1f1f-e229-4a9d-8d94-f4dd6ade1c2d",
+        "answerVersion": "249122c2686c873bc9a93fca8b03eff9f61e8181fe54c513bfa59bdd555a54bf",
+        "revision": 5
+      },
+      "questionTitle": "主书.pdf",
+      "answerTitle": "答案.pdf",
+      "current": true
+    },
+    "batch": {
+      "id": "aibatch_eb167f7c-5964-4984-bf99-272022390682",
+      "resourceId": "resource_578a1f1f-e229-4a9d-8d94-f4dd6ade1c2d",
+      "title": "答案",
+      "model": "deepseek-flash",
+      "start": 3,
+      "count": 1,
+      "images": true,
+      "status": "running",
+      "calls": 2,
+      "maxCalls": 2,
+      "complete": 0,
+      "review": 1,
+      "failed": 0,
+      "unknown": 0,
+      "pending": 0,
+      "questions": 0,
+      "units": [
+        {
+          "ordinal": 1,
+          "status": "review",
+          "error": "page_content_incomplete",
+          "questions": 0,
+          "pageSource": true
+        }
+      ]
+    },
+    "transport": {
+      "calls": 2,
+      "requests": [
+        {
+          "number": 1,
+          "at": 1793446440911,
+          "model": "deepseek-flash",
+          "images": [
+            {
+              "bytes": 2875824,
+              "sha256": "fe417ad9a5d0d3461fc92a57115aac1a950f75d462c950394a403b6005665e4f"
+            }
+          ],
+          "http": 200
+        },
+        {
+          "number": 2,
+          "at": 1793446452231,
+          "model": "deepseek-flash",
+          "images": [
+            {
+              "bytes": 2875824,
+              "sha256": "fe417ad9a5d0d3461fc92a57115aac1a950f75d462c950394a403b6005665e4f"
+            }
+          ],
+          "http": 200
+        }
+      ]
+    },
+    "pageView": {
+      "source": {
+        "schemaVersion": "xiaozhi.material-page-source.v1",
+        "resourceId": "resource_578a1f1f-e229-4a9d-8d94-f4dd6ade1c2d",
+        "version": "249122c2686c873bc9a93fca8b03eff9f61e8181fe54c513bfa59bdd555a54bf",
+        "page": 3,
+        "generation": "85d628a4-efde-461e-9a11-7564fe6efcd4",
+        "receiptSha": "ce1f9b070230ddc8b6947077107960b60976fd88bc2b48ef20e8ac2a32784e61"
+      },
+      "status": "needs_review",
+      "transcriptionStatus": "needs_review",
+      "issues": [
+        "uncertain_ocr"
+      ],
+      "textBytes": 9722
+    },
+    "success": true
+  },
+  "actualUiBeforeIntegration": {
+    "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\answer-entries-I2Jjl2",
+    "checks": [
+      "Teacher opens actual saved answer page;22 entries in two exam groups retain page uncertainty, separate question1 answers and physical cross-page tail",
+      "Visible unlink blocks the old receipt; restoring the identical completed pair reopens the same source evidence without granting another batch or changing stored results",
+      "Both1366x768 and1920x1080 reach the last entry and both original quotations without horizontal overflow",
+      "Restart preserves all22 entries and source hashes with unchanged two-call ledger, no new question rows and SQLite integrity"
+    ],
+    "rendererErrors": [],
+    "cloudRequests": 0,
+    "starts": 2,
+    "buildSha256": "5480662ea657a9afef99bfbf383977e7d2e2d14aa9fa005acfccc3564d8d9223",
+    "scope": "Actual saved answerPDF page3 two-pass DeepSeek receipts. Visible grouped entries and exact-source unlink/restore/restart; zero replay. Not mathematical correctness, automatic question matching or writeback.",
+    "batch": {
+      "id": "aibatch_eb167f7c-5964-4984-bf99-272022390682",
+      "calls": 2
+    },
+    "entries": {
+      "total": 22,
+      "sections": [
+        "第十三、十四章 素养基础测试卷",
+        "第十三、十四章 素养提优测试卷"
+      ],
+      "agreed": 22,
+      "transcription": "needs_review"
+    },
+    "revisions": {
+      "before": 5,
+      "restored": 7
+    },
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "success": true
+  },
+  "parserTiming": {
+    "scope": "Derived entry parser only; local single process microbenchmark, not end-to-end retrieval/P95 or natural corpus correctness",
+    "actual": {
+      "entries": 22,
+      "iterations": 1000,
+      "medianMs": 0.17699999999996407,
+      "p95Ms": 0.34309999999999263,
+      "maxMs": 2.875399999999985
+    },
+    "bounded": {
+      "entries": 200,
+      "textBytes": 39126,
+      "oneSampleMs": 4.342699999999979
+    },
+    "before": "No entry view before this slice; original two-pass transcript unchanged"
+  },
+  "checks": [
+    {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "scope": "Before c3fa341 integration, includes typecheck"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "scope": "Before integration"
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-book-pairs-boundaries.mjs",
+      "exit": 0,
+      "passed": 7
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-book-answer-boundaries.mjs %TEMP%/omni-real-material-iezmkb",
+      "exit": 0,
+      "passed": 15,
+      "scope": "14 synthetic + 1 real saved two-pass response; not visual/math correctness"
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "exit": 0,
+      "passed": 31
+    },
+    {
+      "command": "node --experimental-transform-types scripts/education/kb-critical-archive-boundaries.mjs",
+      "exit": 0,
+      "passed": 13
+    },
+    {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-requirements-smoke.mjs",
+      "exit": 0,
+      "passed": 6,
+      "scope": "Integrated collaborator contract; no claim of rerunning their Office UI"
+    },
+    {
+      "command": "npm.cmd run test:smoke",
+      "exit": 0,
+      "passed": 207,
+      "total": 207,
+      "source": "a4bda04 production; main5480662ea657a9afef99bfbf383977e7d2e2d14aa9fa005acfccc3564d8d9223 built before c3fa341 integration",
+      "scope": "Legacy regression with Pi=0; actual production Pi knowledge UI and provider recorded separately",
+      "log": "apps/desktop/test-results/kb-answer-smoke.log"
+    }
+  ],
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "automaticFix": false
+  },
+  "retainedFailures": [
+    {
+      "name": "First real provider harness dynamic import unsupported in Electron evaluate",
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\answer-ai-GRuA9t\\report.json",
+      "calls": 0,
+      "correction": "Use process.getBuiltinModule; subsequent real two-call run succeeded"
+    },
+    {
+      "name": "New in-flight boundary fixture assumed one drain only executes one pass",
+      "log": "apps/desktop/test-results/kb-answer-ai-boundaries.log",
+      "correction": "Change role while first provider call is in flight; production guard remained strict, corrected test31 passed"
+    },
+    {
+      "name": "One patch command used repository-relative path while cwd was apps/desktop",
+      "calls": 0,
+      "correction": "Use the actual script-relative path; no production files were lost"
+    }
+  ],
+  "criticalReview": [
+    {
+      "finding": "Same number restarts in another exam; number-only join corrupts answers",
+      "action": "Separate complete section keys, explicit duplicate/missing-section issues, exact source quotes; real q1 D and B remain separate"
+    },
+    {
+      "finding": "Two agreeing transcriptions can share an error; current page still uncertain",
+      "action": "Retain global uncertainty on every entry and physical cross-page tail; no automatic promotion/writeback"
+    },
+    {
+      "finding": "Unlinking an already processed pair previously made its completed receipts impossible to restore",
+      "action": "Allow only same source identities and completed answer-role units to restore; read-only receipt may survive revision change, live dispatch/publication stays strict"
+    },
+    {
+      "finding": "No chapter-aware question matching, cross-page merging or answer correction/writeback UI yet",
+      "action": "Still open; next implementation must use immutable known-answer provenance, original question version CAS and existing AI/web fallback. This preview is insufficient for the final teacher workflow."
+    },
+    {
+      "finding": "Both passes use the same model and the second receives the first transcript; agreement is correlated, not independent truth verification",
+      "action": "Keep uncertainty/teacher correction and original OCR/image evidence; do not qualify book writeback merely from equal transcripts. Independent local/image checks and targeted re-recognition remain necessary."
+    }
+  ],
+  "unchangedBoundaries": {
+    "originalFiles": true,
+    "rawAiReceipts": true,
+    "teacherQuestionFacts": true,
+    "newDependencies": 0,
+    "newModels": 0,
+    "newServices": 0,
+    "newTables": 0,
+    "extraCloudPermissions": 0,
+    "dailyDDriveRuntimeUpdated": false,
+    "installerUpdated": false,
+    "fullGoalComplete": false,
+    "newFullAcceptanceCases": 0
+  },
+  "remaining": [
+    "Actual chapter/test/question alignment and known-answer writeback",
+    "Full93-page AI transcription, cross-page/multi-column quality and editable known-answer evidence",
+    "Natural tens-of-GB recall/latency/endurance acceptance",
+    "Four historical unconfirmed frontmatter candidates not removed; source-only recheck does not clean the bank",
+    "Earlier intermittent material route loss on resize not diagnosed",
+    "Existing PromptInput fingerprint/startup IPC gates not rerun or fixed in this slice",
+    "Existing npm audit45 vulnerabilities"
+  ],
+  "rollback": "Pause affected AI/question jobs, revert the entry-view production commit and restoration exception while preserving source PDFs, raw saved two-pass receipts, SQLite facts, association table and collaborator changes; no destructive migration. Full rollback not rehearsed."
+}

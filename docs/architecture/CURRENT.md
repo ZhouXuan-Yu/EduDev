@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-31 已知答案逐条证据（第二切片）
+
+bounded material-book-answer-content从不可变两遍转录派生BookAnswerPage，沿既有MaterialAiRepository.page→typed AiPageView→MaterialAiPagePanel/MaterialBookAnswers交付，不增DDL/IPC/依赖。误解除后可恢复完全相同两份原件/版本且所有历史单元已保存为complete/review/no_questions的关联；空、在途、失败、未知或其他角色/来源批次仍拒绝。仅历史只读回执允许跨revision；发送、迟到发表和续跑仍严格revision，不继承云端授权。真实UI修订5→7、两尺寸/重启4项通过且0新增云端调用、原账本仍2次；整合后证据待本轮收尾追加。
+
 要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
 
 ## 2026-10-31 E06教师要求与检查依据（第八切片）
