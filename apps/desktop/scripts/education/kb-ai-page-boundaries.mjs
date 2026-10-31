@@ -100,6 +100,7 @@ await check('New original-page units freeze the actual PDF and image OCR status 
 });
 await check('Invalid, forged or changed prompt metadata is rejected before a paid dispatch',async()=>{
  let invoked=false;assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,get ocrStatus(){invoked=true;return 'complete';}}));assert(!invoked);
+ assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:{toString(){invoked=true;return 'complete';}}}));assert(!invoked,'Validation must not coerce or execute nested values');assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:new String('complete')}));
  for(const value of [{policy:'future',ocrStatus:'complete'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'failed'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete',force:true}]){const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);unit.pagePrompt=value;f.db.prepare('UPDATE material_ai_units SET input_json=? WHERE batch_id=?').run(JSON.stringify(unit),batch);await f.repo.drain();assert.equal(f.state.calls,0);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,0);assert.equal(f.db.prepare('SELECT error FROM material_ai_units WHERE batch_id=?').get(batch).error,'source_changed');}finally{f.db.close();}}
 });
 await check('A legacy stored first pass resumes without silently changing its prompt policy; saved v2 receipts retain strict provenance',async()=>{
