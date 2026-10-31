@@ -33,7 +33,7 @@ try{
  await button.focus();samples.push(await auditor.sample('.ai-chat-header button','rejected-renderer-focus'));
  const data=await app.evaluate(async({BrowserWindow})=>(await BrowserWindow.getAllWindows()[0].webContents.capturePage()).toDataURL());
  fs.writeFileSync(path.join(out,'rejected-chat.png'),Buffer.from(data.split(',')[1],'base64'));
- await page.getByTestId('product-nav-materials').click();
+ await page.getByTestId('nav-knowledge').click();
  await page.getByTestId('product-space-header').waitFor();
  for(const selector of ['.product-header','.product-page-link','.product-workspace'])samples.push(await auditor.sample(selector,'materials-default'));
  fs.writeFileSync(path.join(out,'cssom.json'),JSON.stringify({actualRuntime:'rejected final build, existing isolated acceptance dataset; no provider request',samples,errors},null,2));

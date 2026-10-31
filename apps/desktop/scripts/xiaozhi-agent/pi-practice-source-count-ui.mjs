@@ -31,7 +31,7 @@ try{
   report.launch=await assertIsolatedPiMain(app,main,profile);
   page=await app.firstWindow();
   const rail=page.locator('[data-testid=product-rail]:visible');await rail.waitFor({timeout:60000});
-  await rail.getByTestId('product-nav-students').click();
+  await rail.getByTestId('nav-students').click();
   const studentRow=page.getByText(student.display_name,{exact:true}).first();
   await studentRow.waitFor();
   await studentRow.click();

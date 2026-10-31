@@ -43,7 +43,7 @@ async function launch(hook){
   };}
   function assertImage(body){if(body.messages[1].content.filter(c=>c.type==='image_url').length!==1||!body.messages[0].content.includes('[OCR还原规则 v1]'))throw Error('Expected real page image and restoration prompt');}
  },{hook,restoreOcr});
- page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});await page.locator('[data-testid="product-nav-materials"]:visible').click();
+ page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});await page.locator('[data-testid="nav-knowledge"]:visible').click();
 }
 try{
  await launch(true);const settings=await page.evaluate(()=>window.omniEdu.getXiaozhiSettings().then(s=>window.omniEdu.saveXiaozhiSettings({schemaVersion:'xiaozhi.settings.v1',version:s.value.version,defaultModel:'deepseek-flash',apiKey:'controlled-pdf-not-real-network'})));assert(settings.ok);

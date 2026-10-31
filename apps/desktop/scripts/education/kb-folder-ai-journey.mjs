@@ -26,7 +26,7 @@ async function launch(holdFinal=false){
    const raw=JSON.stringify({schemaVersion:native?'xiaozhi.material-ai-native-response.v1':image?'xiaozhi.material-ai-image-response.v1':'xiaozhi.material-ai-response.v1',outcome:'questions',questions:[question]});return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}),{status:200,headers:{'content-type':'application/json'}});
   };}
  },{ledger,holdFinal});
- page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});await page.locator('[data-testid="product-nav-materials"]:visible').click();
+ page=await app.firstWindow();page.setDefaultTimeout(30000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});await page.locator('[data-testid="nav-knowledge"]:visible').click();
 }
 const panel=id=>page.getByTestId('folder-ai-'+id);
 async function addFolder(selected){await app.evaluate(({dialog},selected)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[selected]});},selected);await page.getByTestId('materials-import-folder').click();return until(()=>sql('SELECT id FROM material_import_batches WHERE root_path=?',[selected])[0]?.id);}
@@ -41,7 +41,7 @@ try{
  const status=await page.evaluate(()=>window.omniEdu.getMaterialQuestionStatus());assert.equal(status.associated,3);assert.equal(status.needsAttention,0);
  const nav=page.getByRole('button',{name:'题本',exact:true}).filter({visible:true});await nav.scrollIntoViewIfNeeded();await nav.click();await page.getByTestId('question-notebook-search').waitFor();const cards=page.locator('[data-testid^="question-notebook-card-"]:visible');await until(async()=>await cards.count()===3);const history=page.getByTestId('question-notebook-source-candidates').filter({visible:true});await history.check();await until(async()=>await cards.count()===6);
  const raw=originalRecords.items.find(q=>q.archive?.state==='rule_extracted'&&q.stem.includes('12'));assert(raw);await page.getByTestId('question-notebook-bookmark-'+raw.id).click();await until(async()=>(await page.evaluate(()=>window.omniEdu.listQuestionNotebook({limit:20}))).total===4);await history.uncheck();await until(async()=>await cards.count()===4);assert.equal((await page.evaluate(()=>window.omniEdu.getMaterialQuestionStatus())).needsAttention,1);report.protectedRawId=raw.id;report.checks.push('Default notebook shows 3 AI drafts, history reveals all 6 original records, counts agree, and a teacher bookmark preserves the original as a fourth independent visible record');
- await page.locator('[data-testid="product-nav-materials"]:visible').click();
+ await page.locator('[data-testid="nav-knowledge"]:visible').click();
  await page.screenshot({path:path.join(output,'folder-ai-complete-1366.png'),fullPage:true});
  await app.evaluate(()=>{globalThis.folderAiProbe.holdFinal=true;});const second=await addFolder(secondFolder);await grant(second,2);
  await until(()=>fs.existsSync(ledger)&&JSON.parse(fs.readFileSync(ledger,'utf8')).length===8);await panel(second).getByTestId('folder-ai-pause').click();await until(async()=>(await view(second)).status==='paused');

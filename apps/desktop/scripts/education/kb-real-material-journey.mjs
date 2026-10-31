@@ -26,7 +26,7 @@ async function launch(){
  app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});
  await app.evaluate(({net})=>{for(const owner of [globalThis,net]){const ordinary=owner.fetch.bind(owner);owner.fetch=async(url,...args)=>{if(/chat\/completions/.test(String(url)))throw Error('Cloud disabled for local material journey');return ordinary(url,...args);};}});
  page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});
- await page.locator('[data-testid="product-nav-materials"]:visible').click();await page.getByTestId('materials-import-folder').waitFor();
+ await page.locator('[data-testid="nav-knowledge"]:visible').click();await page.getByTestId('materials-import-folder').waitFor();
 }
 const materials=()=>page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));
 try{

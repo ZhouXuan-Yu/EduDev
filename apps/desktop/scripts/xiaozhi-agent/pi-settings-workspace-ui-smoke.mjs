@@ -90,7 +90,7 @@ async function packageJourney(){
 }
 try {
  if(packagesOnly){await packageJourney();}else{
-  await launch(); await open(); await page.getByTestId('pi-settings-key').fill(apiKey); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-ask').isDisabled());assert.equal(await page.locator('[data-testid=product-rail]:visible').locator('button:disabled').count(),5); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
+  await launch(); await open(); await page.getByTestId('pi-settings-key').fill(apiKey); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').isDisabled());assert.equal(await page.locator('[data-testid=product-rail]:visible').locator('button:disabled').count(),18); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
   assert.equal(await page.getByTestId('pi-settings-key').inputValue(), ''); assert((await settings()).value.models.length >= 2); check('Unified formal entry embeds the existing encrypted model form and live official model directory');
   const savedConfig = config(); assert(savedConfig && !savedConfig.includes(apiKey));
   // A normal read intentionally labels the locally cached official directory as cache.
@@ -98,7 +98,7 @@ try {
   const official = fresh.value.models; report.models = official.map(({ id, source, stale, inputModalities }) => ({ id, source, stale, inputModalities }));
   assert(official.some(v => v.id === 'deepseek-flash' && v.source === 'official' && !v.stale));
   assert(official.some(v => v.id === 'deepseek-v4-pro' && v.source === 'official' && !v.stale));
-  await page.getByTestId('pi-settings-default-model').click(); await page.getByRole('menuitemradio', { name: 'deepseek-flash', exact: true }).click(); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('product-nav-ask').isDisabled());assert.equal(await page.locator('[data-testid=product-rail]:visible').locator('button:disabled').count(),5); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
+  await page.getByTestId('pi-settings-default-model').click(); await page.getByRole('menuitemradio', { name: 'deepseek-flash', exact: true }).click(); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').isDisabled());assert.equal(await page.locator('[data-testid=product-rail]:visible').locator('button:disabled').count(),18); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
   const storedConfig = config(); assert(storedConfig && !storedConfig.includes(apiKey)); report.defaultModel = (await settings()).value.defaultModel;
   assert.equal(report.defaultModel, 'deepseek-flash'); check('Fresh official model menu saves the current Flash default with encrypted local credentials');
   assert.equal(await page.locator('[data-testid^="pi-settings-tab-"]').count(), 7); await tab('tools'); await page.getByTestId('pi-mcp-empty').waitFor(); check('Seven setting capabilities include the actual empty external-tool management page');

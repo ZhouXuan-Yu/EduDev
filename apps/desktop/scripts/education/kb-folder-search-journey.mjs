@@ -17,7 +17,7 @@ const note=name=>{report.checks.push(name);console.log('PASS '+name);};
 async function until(fn,timeout=90000){const end=Date.now()+timeout;while(Date.now()<end){const result=await fn();if(result)return result;await delay(150);}throw Error('Timed out');}
 async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:data};for(const key of Object.keys(env))if(key.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(key))delete env[key];
  env.OMNI_EDU_E2E_DIALOG_MODE='1';env.OMNI_EDU_E2E_VISIBLE='0';env.OMNI_EDU_XIAOZHI_PI='1';
- app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});await page.locator('[data-testid="product-nav-materials"]:visible').click();await page.getByTestId('materials-import-folder').waitFor();}
+ app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+profile],cwd:output,env,timeout:60000});page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.setViewportSize({width:1366,height:768});await page.locator('[data-testid="nav-knowledge"]:visible').click();await page.getByTestId('materials-import-folder').waitFor();}
 const batches=()=>page.evaluate(()=>window.omniEdu.listMaterialBatches({schemaVersion:'xiaozhi.material-import-batch.v1',offset:0}));
 try{
  await launch();await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},folder);
@@ -28,7 +28,7 @@ try{
  const done=await until(async()=>{const row=(await batches()).batches[0];return ['completed','partial','failed'].includes(row.status)?row:null;},180000);
  assert.equal(done.status,'completed',JSON.stringify(done));assert.equal(done.archived,151);assert.equal(done.failed,0);assert.equal(done.skipped,1);note('Resume then exit automatically continues after restart; 151 files archived, unsupported file skipped');
  await until(async()=>{const status=await page.evaluate(()=>window.omniEdu.getMaterialIndexStatus());return status.pending===0&&status.indexed>80;},90000);
- if(await page.locator('[data-testid="product-nav-materials"]:visible').getAttribute('aria-current')!=='page')await page.locator('[data-testid="product-nav-materials"]:visible').click();
+ if(await page.locator('[data-testid="nav-knowledge"]:visible').getAttribute('aria-current')!=='page')await page.locator('[data-testid="nav-knowledge"]:visible').click();
  await page.getByTestId('materials-text-query').fill('末章压轴');await page.getByTestId('materials-text-submit').click();
  const hit=page.locator('[data-testid^="material-text-hit-"]').first();await hit.waitFor({timeout:90000});await hit.click();
  await page.getByTestId('materials-detail').getByText(/末章压轴/, {exact:false}).waitFor();note('Teacher searches the complete long-text tail and opens its actual saved source');

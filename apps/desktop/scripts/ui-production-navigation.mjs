@@ -22,7 +22,7 @@ page.on('pageerror',e=>errors.push(String(e)));
 const check=(name,fn=()=>{})=>{fn();checks.push(name);console.log('PASS '+name);};
 const shell=()=>page.locator('.edu-shell:visible');
 async function shot(name){const data=await app.evaluate(async({BrowserWindow})=>(await BrowserWindow.getAllWindows()[0].webContents.capturePage()).toDataURL());fs.writeFileSync(path.join(output,name+'.png'),Buffer.from(data.split(',')[1],'base64'));}
-async function navigate(view){await shell().getByTestId(view==='ai'?'nav-ai-workspace':'nav-'+view).click();await page.locator('.edu-shell[data-view="'+view+'"]:visible').waitFor();}
+async function navigate(view){const entry=shell().getByTestId(view==='ai'?'nav-ai-workspace':'nav-'+view);const closed=await entry.evaluate(e=>e.closest('.edu-nav-disclosure[inert]')?.id);if(closed)await shell().locator(`button[aria-controls="${closed}"]`).click();await entry.click();await page.locator('.edu-shell[data-view="'+view+'"]:visible').waitFor();}
 const views=['ai','knowledge','artifacts','notebook','book','question_notebook','paper','students','search','intake','mistakes','mastery','review','analytics','settings'];
 try{
  await page.getByTestId('office-prompt-input').waitFor({timeout:90000});
