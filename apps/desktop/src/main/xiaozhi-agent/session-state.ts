@@ -26,7 +26,7 @@ import {readNativeToolEntries} from './events/native-tail';
 import {createRecoveryEffectReader} from './events/recovery-readback';
 import {serializeStateWrites} from './serialized-state-sql';
 /** Incremental private SDK binding; visible messages/runs remain in existing tables. */
-export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string}) {
+export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>string;dataRoot?:()=>string}) {
   const sql=serializeStateWrites(source);
   const persistent = createPiPersistentState(sql);
   const controls = createPiControlState(sql);
@@ -44,7 +44,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const attachmentSends=createAttachmentSendState(sql);
   const attachmentOcr=createAttachmentOcrState(sql);
   const goals=createGoalState(sql);
-  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts})});
+  const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot})});
   const classrooms=createClassroomState(sql);
   return {
     sql,

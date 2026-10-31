@@ -117,6 +117,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   } });
   options.ipcMain.handle('xiaozhi:enabled', event => { if (!fromMain(event)) throw new Error('permission_denied'); return host.enabled; });
   options.ipcMain.handle('xiaozhi:snapshot', (event, id) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.snapshot(id); });
+  options.ipcMain.handle('xiaozhi:records-refresh',(event,id)=>fromMain(event)?host.refreshRecords(id):{ok:false,error:'permission_denied'});
   options.ipcMain.handle('xiaozhi:history-page', (event, input) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.historyPage(input); });
   options.ipcMain.handle('xiaozhi:events', (event, input) => { if (!fromMain(event)) throw new Error('permission_denied'); return host.listEvents(input); });
   options.ipcMain.handle('xiaozhi:plan-history',(event,input)=>fromMain(event)?host.planHistory(input):{ok:false,error:'permission_denied'});
