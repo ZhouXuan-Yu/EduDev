@@ -74,6 +74,8 @@ v1.1，2026-10-29。配套[任务书](../product/PRD-XIAOZHI-AGENT-DELIVERY.md)�
 
 ## FX01：浮力文件交付与连续修改
 
+2026-11-01 HTML版本工程夹具：合成浮力课堂HTML载荷4N→实读局改5N→原卡预览4N→另存恢复第3版4N，旧5N文件和mtime保持。实际Pi6含双尺寸/冷启，源码8含保存后outcome故障核验。不是完整FX01动态科学演示、真实模型或原生OS验收；原输入/答案不变。证据htmlVersionSlice。
+
 E03补充工程夹具：continuity-electron.mjs以10页→8页修订、可以→继续、原PPT第4页标题另存和HTML差异修改验证主链；真实文件检查七页XML/全部备注保持、父子账本、旧文件hash与冷启零重放。合成SSE不代替下述FX01完整科学演示/真实模型质量和原生Office渲染；首次夹具失败保留在AGENT_CONTINUITY_E03_20261029.json。
 
 完整输入：

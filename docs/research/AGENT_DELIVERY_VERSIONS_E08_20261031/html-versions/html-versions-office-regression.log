@@ -1,0 +1,19 @@
+(node:89844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS One original saved lineage yields two ordered versions and the actual fourth-page notes change
+PASS Teacher restore publishes a third current version with byte-identical first-version PPT and preserved lineage
+PASS Repeated command returns its original receipt; reusing it for another version cannot create or approve a write
+PASS Restoring bytes already identical to the current version is a no-op, without an unnecessary version/file
+PASS Both later/older original files and unrelated HTML bytes and modification times stay unchanged
+PASS Stale current version, wrong session and malformed contracts fail before mutation
+PASS Externally changed and missing files remain visible in history and cannot be opened as the saved version
+PASS OS dispatch resolves exactly the selected saved path after integrity validation
+PASS Save-before-ledger cut recovers by verifying existing exact bytes once, without rewriting the file
+PASS Recreated read service derives the same four-version history from original facts with zero model requests
+PASS One original-ledger projection resolves all four ancestors to the saved current version; unrelated files remain current
+PASS Teaching Files enriches original facts once per session; current-only projection has one row and retains every historical ID
+PASS A newer current publication outside the initial catalog page is included instead of hiding its family
+PASS Version families do not cross workspace or confirmed-domain boundaries and reject cyclic ancestry
+PASS Historical exact-byte proofs remain readable; task confirmation policy refuses a superseded Office proof
+PASS A later saved child invalidates an already captured current proof without rewriting the historical proof or old files
+{"ok":true,"checks":16,"output":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-versions-source-qVSqSK"}

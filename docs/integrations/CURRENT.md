@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 E08：HTML历史复用Pi编辑/原text ledger、Office版本DTO/typed IPC和原ScienceDemoFrame；零新组件库/CSS/依赖。Office16与原冲突6专项通过。
+
 2026-11-01 收尾：main d80b9b5知识库实现完整整合；原记忆接口未改，草稿精确匹配读回再清除。无新依赖/DDL/Runtime，0付费。
 
 2026-11-01 C03：记忆页复用原get/update接口和版本锁，去除两处server→draft灌入；不新增依赖、Runtime或审查层。
