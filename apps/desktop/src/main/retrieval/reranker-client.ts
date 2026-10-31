@@ -1,6 +1,7 @@
 import {spawn,type ChildProcessWithoutNullStreams} from 'node:child_process';
 import {createHash,randomUUID} from 'node:crypto';
 import {StringDecoder} from 'node:string_decoder';
+import os from 'node:os';
 import {RERANK_SCHEMA,RERANK_ID,RERANK_MODEL,RERANK_TOKENIZER,RERANK_LIMIT,type RerankInput,type RerankResult} from '../../shared/reranker';
 type RankJob={query:string;items:RerankInput[];key:string;done:boolean;timer?:ReturnType<typeof setTimeout>;resolve:(v:RerankResult)=>void;reject:(e:Error)=>void};
 
@@ -15,11 +16,18 @@ export class RerankerClient {
   private pumping=false;
   private closed=false;
   private idle?:ReturnType<typeof setTimeout>;
+  private startup?:AbortController;
+  private warming?:Promise<void>;
+  private warmRetryAt=0;
   private cache=new Map<string,RerankResult>();
-  constructor(private executable:()=>Promise<string>){}
+  constructor(private executable:(signal:AbortSignal)=>Promise<string>){}
   private start(){
     if(this.ready)return this.ready;
-    const epoch=this.epoch,promise=(async()=>{const executable=await this.executable();if(this.closed||epoch!==this.epoch)throw Error('cancelled');
+    const epoch=this.epoch,controller=new AbortController();this.startup=controller;
+    const promise=(async()=>{let stop!:()=>void;
+      const cancelled=new Promise<string>((_,reject)=>{stop=()=>reject(Error('cancelled'));controller.signal.addEventListener('abort',stop,{once:true});});
+      let executable:string;try{executable=await Promise.race([this.executable(controller.signal),cancelled]);}finally{controller.signal.removeEventListener('abort',stop);}
+      controller.signal.throwIfAborted();if(this.closed||epoch!==this.epoch)throw Error('cancelled');
       return new Promise<void>((resolve,reject)=>{
         const child=spawn(executable,['--parent-pid',String(process.pid)],{windowsHide:true,stdio:['pipe','pipe','pipe'],env:Object.fromEntries(['SystemRoot','WINDIR','TEMP','TMP'].flatMap(k=>process.env[k]?[[k,process.env[k]!]]:[]))});this.child=child;
         let settled=false,buffer='',stderr=0;const decoder=new StringDecoder('utf8'),timer=setTimeout(()=>fail(),60000);
@@ -38,6 +46,27 @@ export class RerankerClient {
       });
     })().catch(error=>{if(this.ready===promise)this.ready=undefined;throw error;});this.ready=promise;return promise;
   }
+  /** Optional preparation shares the real startup; foreground requests never use its failure cooldown. */
+  warm():Promise<void>{
+    if(this.closed)return Promise.reject(Error('cancelled'));
+    if(this.warming)return this.warming;
+    if(this.pumping||Date.now()<this.warmRetryAt||os.freemem()<2*1024**3)return Promise.resolve();
+    if(this.idle)clearTimeout(this.idle);
+    const promise=Promise.resolve().then(async()=>{let timer:ReturnType<typeof setTimeout>|undefined;
+      try{if(this.closed)throw Error('cancelled');await Promise.race([this.start(),new Promise<void>((_,reject)=>{timer=setTimeout(()=>{this.closeChild();reject(Error('reranker_timeout'));},15000);})]);}
+      catch(error){this.warmRetryAt=Date.now()+60000;throw error;}
+      finally{if(timer)clearTimeout(timer);this.warming=undefined;if(!this.pumping&&!this.active&&!this.queue.length)this.park();}
+    });this.warming=promise;return promise;
+  }
+  private park(){
+    if(this.idle)clearTimeout(this.idle);if(this.closed||!this.child)return;
+    const until=Date.now()+600000;
+    const check=()=>{if(this.closed||this.pumping||this.active||this.queue.length)return;
+      if(os.freemem()<1024**3||Date.now()>=until){this.closeChild();return;}
+      this.idle=setTimeout(check,Math.min(30000,until-Date.now()));this.idle.unref();
+    };
+    this.idle=setTimeout(check,30000);this.idle.unref();
+  }
   rerank(query:string,items:RerankInput[]):Promise<RerankResult>{
     if(this.closed)return Promise.reject(Error('cancelled'));
     if(typeof query!=='string'||!query.trim()||query.length>240||query.includes('\0')||!Array.isArray(items)||!items.length||items.length>RERANK_LIMIT||items.some(i=>!i||typeof i.id!=='string'||!/^[A-Za-z0-9_.:-]{1,128}$/.test(i.id)||typeof i.text!=='string'||!i.text.trim()||i.text.length>1024||i.text.includes('\0')||typeof i.complete!=='boolean')||new Set(items.map(i=>i.id)).size!==items.length)return Promise.reject(Error('invalid_input'));
@@ -55,8 +84,8 @@ export class RerankerClient {
         this.child!.stdin.write(JSON.stringify({schemaVersion:RERANK_SCHEMA,requestId:id,identity:RERANK_ID,query:request.query,items:request.items.map(({id,text})=>({id,text}))})+'\n');
       });if(!request.done){if(this.cache.size>=16)this.cache.delete(this.cache.keys().next().value!);this.cache.set(request.key,value);request.resolve(structuredClone(value));}
     }catch(error){const known=['invalid_input','reranker_timeout','cancelled'];request.reject(Error(known.includes((error as Error).message)?(error as Error).message:'reranker_unavailable'));if((error as Error).message!=='invalid_input')this.closeChild();}finally{this.active=undefined;}}}
-    finally{this.pumping=false;if(!this.closed){this.idle=setTimeout(()=>this.closeChild(),60000);this.idle.unref();}}
+    finally{this.pumping=false;this.park();}
   }
-  private closeChild(){this.epoch++;this.child?.kill();this.child=undefined;this.ready=undefined;}
+  private closeChild(){this.epoch++;this.startup?.abort();this.startup=undefined;this.child?.kill();this.child=undefined;this.ready=undefined;}
   close(){this.closed=true;if(this.idle)clearTimeout(this.idle);this.active?.reject(Error('cancelled'));this.accept?.reject(Error('cancelled'));this.accept=undefined;for(const q of this.queue)q.reject(Error('cancelled'));this.queue=[];this.cache.clear();this.closeChild();}
 }

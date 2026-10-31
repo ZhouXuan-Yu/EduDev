@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "xiaozhi.kb-reranker-warm-evidence.v1",
+  "date": "2026-10-31",
+  "sourceCommit": "10e6f1003f5a19ba90f3be140935a6f360e699ac",
+  "baselineCommit": "8f8d97f217062c28c1333e770142a2f28956b340",
+  "status": "Lifecycle optimization implemented; full knowledge-base goal ACTIVE",
+  "changedProductionFiles": [
+    "apps/desktop/src/main/retrieval/reranker-client.ts",
+    "apps/desktop/src/main/retrieval/reranker-runtime.ts",
+    "apps/desktop/src/main/retrieval/vector-worker.ts"
+  ],
+  "build": {
+    "mainSha256": "54e6c476baa4485d5cf8b4f36d3e77979b50ea971d3ee7040ecf1d1f4cc57f96",
+    "preloadSha256": "c62c3e0915b1c7a72c4250fe8d4d6194fb82fa9ab26ecd409546085771568696",
+    "workerSha256": "559902e79451f5da50fab7585cd715d9ee5826e2c8b46f091489c03c6d86c150"
+  },
+  "tdd": [
+    {
+      "red": "b261770",
+      "evidence": "kb-reranker-lifecycle-idle-red.exit",
+      "observed": "Native model verification ran twice after a virtual 90-second teacher pause"
+    },
+    {
+      "red": "407323e",
+      "evidence": "kb-reranker-warm-hysteresis-red.exit",
+      "observed": "In-progress version still prepared a roughly 862MiB working-set model at 1.5GiB free memory"
+    },
+    {
+      "red": "824c442",
+      "evidence": "kb-reranker-close-real-red.exit",
+      "observed": "In-progress preparation did not settle on close until a stalled verification callback was released"
+    }
+  ],
+  "green": "10e6f10",
+  "policy": {
+    "prewarmMinimumFreeBytes": 2147483648,
+    "idleReleaseBelowFreeBytes": 1073741824,
+    "idleMemoryPollMilliseconds": 30000,
+    "maxIdleMilliseconds": 600000,
+    "prewarmDeadlineMilliseconds": 15000,
+    "backgroundFailureCooldownMilliseconds": 60000,
+    "note": "Memory admission and periodic release policy, not a hard cap on total application or native peak memory. Foreground requests retain their existing bounded startup/fallback path."
+  },
+  "native": {
+    "checks": [
+      "A teacher pause of 90 seconds reuses the actual verified process for a new uncached question",
+      "Concurrent background warmers share one fully verified native startup before uncached foreground inference",
+      "A foreground question arriving during background verification shares that startup",
+      "Low memory skips optional warming but an explicit question still starts the actual model",
+      "Idle memory pressure releases the native model and a later uncached question verifies anew",
+      "A model is never retained beyond ten idle minutes",
+      "Closing during verification aborts it and cannot launch a delayed native process",
+      "Background verification failure cools down automatic retries but never blocks an explicit query",
+      "A stuck warmup times out, aborts verification and does not spawn after its gate opens",
+      "A cancelled runtime verifier rejects before opening component files",
+      "Background preparation may retry after its cooldown without a new user query",
+      "A model that exits after warming is reverified for the next uncached question",
+      "Cancellation interrupts a real component stream instead of hashing the rest of the package",
+      "Memory hysteresis prevents optional model loading between the release and preparation thresholds",
+      "Immediate close before the preparation microtask cannot even begin verification"
+    ],
+    "coldMilliseconds": 1928.5215,
+    "prewarmMilliseconds": 1757.2859,
+    "foregroundMilliseconds": 27.29949999999917,
+    "nativeInferenceMilliseconds": 31,
+    "workingSetBytes": 905392128,
+    "scope": "Actual fixed EXE and model, distinct uncached IDs, virtual idle time and controlled memory policy. Working set sampled after startup; excludes total app/embedding/OCR and does not measure peak. Timing is an observation, not P95."
+  },
+  "uiComparison": {
+    "before": {
+      "fixture": "omni-restored-text-9uqSXR",
+      "sourceCommit": "29b4d07",
+      "queryMilliseconds": 4815,
+      "rerank": {
+        "available": true,
+        "complete": true,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 4,
+        "processed": 4,
+        "elapsedMs": 4704,
+        "reason": ""
+      }
+    },
+    "after": {
+      "fixture": "omni-restored-text-3PaftH",
+      "queryMilliseconds": 170,
+      "rerank": {
+        "available": true,
+        "complete": true,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 4,
+        "processed": 4,
+        "elapsedMs": 116,
+        "reason": ""
+      },
+      "checks": [
+        "Actual folder plus local worker receives a blank-OCR fault, runs two original-image phases and indexes a zero-question textbook page without OCR or question fabrication",
+        "Actual AI image bytes are retained as hash-addressed local evidence while SQLite contains metadata only",
+        "Visible material search opens the current AI transcript, original empty OCR and actual original-page image",
+        "Actual fixed local ONNX/Lance hybrid retrieval ranks the restored optics page above three other-subject documents for a paraphrase, with no original OCR text",
+        "Production Pi executes real search and version-bound restored read; actual-read citation survives public events and opens the source UI",
+        "Native restart at 1920x1080 retains the same source and zero invented questions, without another AI call or original-file change"
+      ],
+      "rendererErrors": 0,
+      "originalOcr": [
+        {
+          "page": 1,
+          "status": "complete",
+          "textBytes": 183
+        }
+      ],
+      "imageStorage": {
+        "rows": 1,
+        "sqliteBase64Bytes": 0,
+        "fileBytes": 252475,
+        "versions": [
+          "file.v1"
+        ]
+      },
+      "controlledJsonCalls": 2,
+      "controlledSseCalls": 3
+    },
+    "scope": "Unmodified same synthetic four-document UI flow. First actual query in each run; startup moved earlier and total preparation cost still exists. File-cache/system load not controlled; one observation, not strict A/B, natural quality, P95 or 40GB."
+  },
+  "verification": [
+    {
+      "name": "build",
+      "command": "npm.cmd run build",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "exitEvidence": "apps/desktop/test-results/kb-reranker-warm-delivery-build.exit"
+    },
+    {
+      "name": "renderer components",
+      "command": "npm.cmd run test:renderer-components",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 240,
+      "exitEvidence": "apps/desktop/test-results/kb-reranker-warm-final-components.exit"
+    },
+    {
+      "name": "lifecycle, frozen model, real component and immediate cancellation",
+      "command": "node --experimental-transform-types --test --test-concurrency=1 --experimental-test-coverage --test-coverage-include=**/reranker-client.ts --test-coverage-include=**/reranker-runtime.ts scripts/education/kb-reranker-lifecycle.mjs scripts/education/kb-reranker-frozen.mjs scripts/education/kb-reranker-runtime-boundaries.mjs scripts/education/kb-reranker-cancel.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 25,
+      "exitEvidence": "apps/desktop/test-results/kb-reranker-warm-final-coverage.exit"
+    },
+    {
+      "name": "repository source changes while reranking",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-reranker-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 8,
+      "exitEvidence": "apps/desktop/test-results/kb-reranker-warm-boundaries-repaired.exit"
+    },
+    {
+      "name": "actual production Electron directory/Pi journey",
+      "command": "node scripts/education/kb-restored-text-journey.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 6,
+      "exitEvidence": "apps/desktop/test-results/kb-reranker-warm-final-journey.exit"
+    }
+  ],
+  "coverage": {
+    "files": [
+      "reranker-client.ts",
+      "reranker-runtime.ts"
+    ],
+    "aggregate": {
+      "lines": 100,
+      "branches": 81.1,
+      "functions": 83.33
+    },
+    "perFile": {
+      "reranker-client.ts": {
+        "lines": 100,
+        "branches": 79.09,
+        "functions": 82.86
+      },
+      "reranker-runtime.ts": {
+        "lines": 100,
+        "branches": 94.12,
+        "functions": 100
+      }
+    },
+    "scope": "These two modules only; four Node suites and 25 internal checks. Not repository coverage."
+  },
+  "frozenQuality": {
+    "cases": 16,
+    "baselineNdcg3": 0.8311268489920642,
+    "fusionNdcg3": 0.8689303323733945,
+    "baselineTop1Best": 10,
+    "fusionTop1Best": 11,
+    "scope": "Frozen cross-encoder + fixed original BGE cosine ordering on a pre-frozen synthetic validation set, not natural teacher or whole-corpus retrieval quality"
+  },
+  "failuresRetained": [
+    {
+      "evidence": "kb-reranker-warm-kb-reranker-boundaries.log",
+      "exit": 1,
+      "reason": "Old source-mutation fixture was already ineligible under current teacher-review rules before the mutation; repaired to teacher_edited+sourceChecked with a positive precondition, keeping all invalidation assertions and production eligibility unchanged"
+    },
+    {
+      "evidence": "kb-reranker-warm-build.exit",
+      "exit": 2,
+      "reason": "TS2454 promise self-reference in initial draft; fixed before final successful build"
+    },
+    {
+      "evidence": "kb-reranker-close-red.exit",
+      "exit": 1,
+      "reason": "Static import linked before the source loader registered; fixed to dynamic import before actual RED was captured"
+    }
+  ],
+  "fullSmoke": {
+    "command": "node scripts/electron-smoke.mjs",
+    "status": "finished",
+    "exit": 0,
+    "exitEvidence": "apps/desktop/test-results/kb-reranker-warm-final-smoke.exit",
+    "passed": 207,
+    "total": 207
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "newDependencies": 0,
+    "dependencyLockfileChanged": false
+  },
+  "rollback": "Revert the three production lifecycle files from this slice through normal Git review; preserve the corrected test fixture and previous file.v1 reader. No new business schema or data deletion.",
+  "references": [
+    {
+      "title": "ONNX Runtime InferenceSession API",
+      "url": "https://onnxruntime.ai/docs/api/python/api_summary.html#load-and-run-a-model"
+    },
+    {
+      "title": "Node os.freemem",
+      "url": "https://nodejs.org/api/os.html#osfreemem"
+    },
+    {
+      "title": "Node test MockTimers",
+      "url": "https://nodejs.org/api/test.html#class-mocktimers"
+    }
+  ],
+  "paidModelCallsThisSlice": 0,
+  "userMaterialsUploadedThisSlice": 0,
+  "unresolved": [
+    "10GB to 40GB heterogeneous corpus, long-run memory/disk/recovery, natural Recall/P95",
+    "Reranker still has roughly 863MiB idle working set; lower-memory hardware and concurrent workloads need acceptance. Cold paths remain after low-memory release or long idle.",
+    "Independent image, real material/formula/diagram/answer-book/cross-page quality and teacher-editable restored textbook text",
+    "Pi end-to-end latency not claimed improved by the isolated query observation",
+    "Windows packaged component installation and daily D: runtime not updated",
+    "Legacy inline image migration remains deferred",
+    "Existing teaching-book description intermittent failure root cause unknown; current green runs do not prove a fix",
+    "45 audit advisories remain without automatic unrelated dependency changes"
+  ]
+}

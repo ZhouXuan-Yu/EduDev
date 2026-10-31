@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-31 最后整合重排预热主线
+
+追加整合origin/main26bd4fd，保留双方14份新增Markdown段落；生产代码无冲突。最终build/type、8项重排边界及1项停止取消exit0。完整原生重排专项因本工作树未安装.local-reranker模型包返回unavailable、0项执行，保留主线既有25项证据但不冒充本地重跑；未新下载模型。240组件/207综合属于12f9dbf，正式Pi交付10项与0renderer错误属于4310c04；最新仅检索生命周期变动，未无差别重跑。E06仍部分实现，下一续Office实际渲染/持久视觉证据等，再E07/E08+C；0新增付费、D盘日常版本与安装包未更新。详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json的latestIntegration。
+
 ## 2026-10-31 E06整合与回执兼容修复
 
 实现6b11cb0，整合origin/main8f8d97f为12f9dbf；4310c04修复检查摘要追加第二段JSON导致原saved_bundle独立回读失效，摘要现合入原JSON且保留原字段/核验器。最终构建、正式Pi交付10/10及0renderer错误通过：真实CSV/HTML/XLSX一次确认、原文件账本核验、两尺寸预览、过期、冷启0模型重放、真实控件/键盘/画布、脚本错误与死循环停止（1750ms）。240组件与207/207综合在整合12f9dbf通过；综合禁用Pi，未冒充4310c04后再次运行。原11源码/两轮修复预算/教师改稿后8页8备注精确SHA证据保留；初期失败与修复原因均入证据JSON。
@@ -9,6 +13,10 @@ E06仍部分实现，新增已实现0/252：继续实际Office页面/字体/遮�
 ## 2026-10-31 E06候选检查与有界修复
 
 E06复用Hana/Pi、原Office生成/私有页面、原文本/Office/bundle状态与文件权限、已有jsdom29.0.2/yauzl3.4.0。新增inspection-worker和typed IPC，仅派生表增量CREATE IF NOT EXISTS；不改旧native创建/control/memory/computation身份，独立inspection.v1追加。E06仍部分实现：Office实际页面/字体/遮挡渲染、持久视觉证据、自动绑定全部教师语义要求及完整混合终态仍待补齐；未渲染保持未检查。下一继续E06再E07/E08+C与W3集中AT，新增“已实现”0/252。D盘日常版本/安装包未更新，0真实付费请求。 详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json。
+
+## 2026-10-31 继续复用现ONNX重排
+
+原BGE冻结EXE/ONNX InferenceSession直接预热复用，未换模型/修改Python模型包或新增依赖、下载和安装产物。Node内置os、AbortSignal、Promise和测试MockTimers支撑有界驻留/取消；现SQLite/FTS/Lance/Pi/typed IPC均保持。2GiB/1GiB内存滞回对应实测约863MiB工作集，并不等于整应用内存硬上限。官方API参考与构建指纹记录在research/KB_RERANKER_WARM_20261031.json；audit仍45项（8高29中8低/0严重），依赖锁未改，不自动扩域升级。
 
 ## 2026-10-31 AI图片复用现文件基础
 

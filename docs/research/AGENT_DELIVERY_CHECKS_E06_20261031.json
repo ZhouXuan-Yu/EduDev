@@ -819,5 +819,39 @@
     "apps/desktop/out/main/index.js": "9af6cce6e93c9a74cfbad0e71c01c73e7fcb960c62bf90c458d065284544015d",
     "apps/desktop/out/preload/index.cjs": "6ae40dfa34b8ad01d6340b266c31473b99a9d349083d508be6a398511a214618",
     "apps/desktop/out/renderer/assets/index-DuV71YEV.js": "076dc3d756d323cfad9bdd66ca9473e63d2cbd858d25e3e39449f11d3a35ebc8"
+  },
+  "latestIntegration": {
+    "sourceMain": "26bd4fdd4d4d72b1306c879a904989e19509caf1",
+    "sourceFilesChangedByMain": [
+      "retrieval/reranker-client.ts",
+      "retrieval/reranker-runtime.ts",
+      "retrieval/vector-worker.ts"
+    ],
+    "conflicts": "14 additive Markdown conflicts; preserve both complete sections; no production code conflicts",
+    "build": {
+      "command": "npm run build",
+      "exit": 0,
+      "log": "delivery-check-latest-build.log"
+    },
+    "rerankerBoundaries": {
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-reranker-boundaries.mjs",
+      "exit": 0,
+      "passed": 8,
+      "log": "delivery-check-latest-boundaries.log"
+    },
+    "rerankerCancel": {
+      "command": "node --experimental-transform-types scripts/education/kb-reranker-cancel.mjs",
+      "exit": 0,
+      "passed": 1,
+      "log": "delivery-check-latest-cancel.log"
+    },
+    "rerankerNativeLifecycle": {
+      "command": "node --experimental-transform-types scripts/education/kb-reranker-lifecycle.mjs",
+      "exit": 1,
+      "passed": 0,
+      "reason": "Missing .local-reranker/dist/omni-edu-reranker in this worktree; reranker_unavailable, no native case ran. No new download. Main-branch25-case native evidence is separate, not claimed as rerun here.",
+      "log": "delivery-check-latest-reranker.log"
+    },
+    "boundary": "240 components/207 comprehensive passed on12f9dbf; final10 Pi paths on4310c04. Latest main changes only retrieval lifecycle: final build and8+1 relevant checks pass. Do not claim comprehensive/Pi/native lifecycle rerun on this final merge."
   }
 }
