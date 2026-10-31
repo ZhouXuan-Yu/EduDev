@@ -1,5 +1,9 @@
 # 当前验收入口
 
+## 2026-10-31 后台重排准备实证
+
+源码10e6f10最终build/240，25生命周期/冻结模型/真实组件/立即取消、8来源竞态和正式Electron六项通过；双视口/0renderer/冷启0重发。两模块合计100%行/81.10%分支/83.33%函数。170ms首查、116ms重排属于单小样本，准备1757ms/空闲模型约863MiB不能隐藏；自然质量/40GB/低内存/P95/安装未验。综合精确回执与早期失败见goal/KB_IMPLEMENTATION_EVIDENCE.md及research/KB_RERANKER_WARM_20261031.json，audit45项仍exit1。
+
 ## 2026-10-31 原页图片文件化验证
 
 29b4d07最终build/240组件，15文件生命周期与实际备份副本、20页/28批次/17检索/13档案通过。新模块100%行/82.98%分支，不是全仓库覆盖；正式Electron教材6项和双页题库7项0renderer、两尺寸与冷启0重发、真实本地ONNX/Lance/Pi，0付费受控HTTP。相同SHA输入SQLite Base64336636B→0、本地252475B；不是物理整库缩小。综合终态、命令与失败见goal/KB_IMPLEMENTATION_EVIDENCE.md和research/KB_AI_IMAGE_FILES_20261031.json。audit45项exit1；40GB/自然质量/首次检索性能与安装仍未验收。

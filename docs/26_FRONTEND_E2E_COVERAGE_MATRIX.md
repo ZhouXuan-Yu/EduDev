@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-31 后台预热的实际查询回归
+
+10e6f10最终同一构建运行未改的kb-restored-text-journey.mjs，3PaftH六项exit0：正式目录→真实OCR空白边界→两遍受控AI→文件化图片/SQLite0B→全文与实际本地ONNX/Lance语义→Pi实读引用原图→两视口冷启0重发，0renderer/0假题/0原OCR块。首次查询170ms/其中重排116ms；前轮相同小样本4815/4704ms，非严格A/B/大库P95。240组件通过；综合终态见goal/KB_IMPLEMENTATION_EVIDENCE.md。后台预热不新增UI，既有错误/降级保持；自然质量与规模不据此完成。
+
 ## 2026-10-31 文件化原页的真实入口回归
 
 29b4d07同一最终生产构建：kb-restored-text-journey.mjs六项（9uqSXR）沿现目录授权→本地OCR空白故障→两遍原图→SQLite元数据/实际文件SHA→FTS/本地ONNX/Lance→Pi真实search/read/来源→1366/1920冷启；kb-folder-pdf-publication-journey.mjs --restore-ocr七项（MjMyry）沿实际双页>50MiB PDF发布等待→空白/乱码故障→两遍AI/2题→题本原文/原图→实际语义召回→冷启。两轮0renderer、0重发，云端受控/0付费；新增存储沿现typed入口，不加无用控件。最终240组件通过，综合精确终态见goal/KB_IMPLEMENTATION_EVIDENCE.md。不是自然复杂题/40GB/安装验收。

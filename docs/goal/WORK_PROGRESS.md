@@ -1,5 +1,11 @@
 # EduDev 当前任务进度
 
+## 2026-10-31 重排预热与恢复
+
+b261770/407323e/824c442 RED→10e6f10 GREEN，复用原RerankerClient与ONNX完整启动，仅改三生产文件，无数据迁移/依赖/新IPC。索引后异步准备、查询共用单一启动、内存双门槛/10分钟驻留、后台失败冷却与立即取消已实现。旧边界夹具修为真正已核题并加变更前命中断言，生产核题资格不变。
+
+build/type/240组件、25生命周期/固定模型/组件完整性/立即关闭及8来源边界通过；两模块100%行/81.10%分支/83.33%函数，非全仓库。真实Electron 3PaftH六项，170ms首查/116ms重排，0renderer且两视口冷启0重发；HTTP受控0付费。native准备1757ms、后续27ms、工作集约863MiB，不是无成本提速。综合终态及初始失败见research/KB_RERANKER_WARM_20261031.json与KB_IMPLEMENTATION_EVIDENCE；40GB/自然质量/低内存及安装继续，252项集中验收不增加。
+
 ## 2026-10-31 AI原图容量与恢复实现
 
 6b03aa0 RED→ec589d2 GREEN：实际UI目录原页的SQLite图片Base64降为0，原始输入按SHA本地保存、去重与备份；b80285e RED→29b4d07 GREEN：Windows临时占用恢复不再永久判坏。新增领域文件存储模块，窄接material-ai-repository/page-evidence、retrieval Host根目录和db两个构造点，无新依赖/IPC/UI入口/模型。旧库两列增量幂等、旧inline数据不改，新增pending与两个部分索引；关停新写必须保留读器和文件。

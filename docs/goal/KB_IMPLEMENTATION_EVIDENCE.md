@@ -1,5 +1,21 @@
 # 知识库实施证据
 
+## 2026-10-31 M04/M10重排预热与内存滞回
+
+**结果与范围**：源码10e6f10，b261770 RED证明虚拟90秒教师停顿后真实EXE重复校验/启动；407323e RED证明实际约862MiB工作集模型在1.5GiB可用内存仍被预热；824c442 RED证明close后仍等卡住回调。现只改reranker-client.ts、reranker-runtime.ts与vector-worker.ts三个生产文件，原BGE/ONNX实例、20候选/2窗口/分数、现FTS/Lance/Pi和资料来源权限保持；无新依赖、模型包、IPC、表或业务迁移。旧来源竞态夹具改为真正teacher_edited+sourceChecked并新增变更前命中断言，保留全部失效断言和生产核验规则。
+
+**生命周期**：ensure/apply/applyMany成功回包后安全异步准备，后台失败不回第二份错误或停向量服务；原完整校验/ready在查询与准备间共享，不多开模型。不少于2GiB可用内存才预热；空闲低于1GiB释放，每30秒检查、最多10分钟。后台失败只冷却自动准备60秒，明确查询仍走原有界路径。15秒准备预算、关闭和超时中止校验；独立可取消等待防止不协作回调迟到启动。仍逐次读取/复验当前资料来源，模型复用不提升权限。
+
+**实机结果**：最终10e6f10同一成功构建、未改的kb-restored-text-journey.mjs，3PaftH六项exit0：真实目录/OCR183B后故障清空、两遍受控AI、SQLite图片Base64为0/文件252475B、普通教材零假题、FTS与真实本地ONNX/Lance、Pi实际search/read及可见来源原图、1366/1920冷启0重发/0renderer。2受控JSON/3受控SSE，0付费/0用户素材上传。首次实际查询170ms/重排116ms；前轮9uqSXR同一四资料流程4815/4704ms，文件缓存/系统负载未控制，不是严格A/B、全Pi时延或40GB/P95结论。
+
+**准备和内存代价**：独立真实EXE检查冷调用1929ms、后台prepare1757ms、随后不同ID的非结果缓存查询27ms；原推理约31ms。模型空闲工作集905392128B约863MiB，不含完整应用、OCR/embedding及峰值。预热是提前支付启动成本，不减少模型计算或完整组件核验；低内存/长闲置后的冷路径仍存在。不能据170ms单点称全目标高性能完成。
+
+**验证**（apps/desktop）：npm.cmd run build（最终kb-reranker-warm-delivery-build.exit=0）；npm.cmd run test:renderer-components（240/240、exit0）；node --experimental-transform-types --test --test-concurrency=1 --experimental-test-coverage --test-coverage-include=**/reranker-client.ts --test-coverage-include=**/reranker-runtime.ts scripts/education/kb-reranker-lifecycle.mjs scripts/education/kb-reranker-frozen.mjs scripts/education/kb-reranker-runtime-boundaries.mjs scripts/education/kb-reranker-cancel.mjs（4 Node套件exit0，15生命周期+5固定模型/16预冻结合成案例+4真实组件+1立即退出=25检查）；node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-reranker-boundaries.mjs（8/exit0）；node scripts/education/kb-restored-text-journey.mjs（6/exit0）。两目标模块合计100%行/81.10%分支/83.33%函数；client单文件分支79.09%、runtime94.12%，不是全仓库覆盖。冻结合成验证nDCG3 .831127→.868930、最佳top1 10→11/16，是既有模型对既有向量基线，不是本片换模型提升。同一最终10e6f10成功构建运行node scripts/electron-smoke.mjs，207/207且最终shell exit0（test-results/kb-reranker-warm-final-smoke.log/.exit）；之后仅文档变化，未并发重建out。旧讲义间歇失败本次未复现，根因不标已修复。
+
+**失败与边界保留**：旧来源竞态夹具一开始已被当前核题政策排除（断言期望source_changed但实际空原因），修正夹具资格后8项通过，未放宽生产规则。首版Promise自引用触发TS2454导致build exit2，修正后再完整构建；取消脚本静态导入在注册器前解析导致前置失败，改动态导入后才取得真正RED。精确日志/exit、构建SHA和[公开元数据](../research/KB_RERANKER_WARM_20261031.json)保留。npm.cmd audit --json exit1仍45项（8高29中8低0严重），无依赖锁变化，不称通过。
+
+**回退与下一步**：通过普通Git审阅回退本片三个生产生命周期文件，保留修正后的夹具和上轮file.v1读器；无业务格式变化，不删资料/索引/回执。D盘日常构建和安装包未更新。下一优先真实授权素材/独立图片与自然题目质量、老师修正文稿、低内存/并发及重排内存优化，再10GB→40GB长跑、Recall/P95/受管安装；旧inline迁移、跨页/复杂图题/答案册及旧讲义间歇失败根因继续。完整Goal active，252项集中验收状态不因窄切片增加。
+
 ## 2026-10-31 M01/M03/M04/M10/M11原页输入文件化
 
 **结果与范围**：生产源码29b4d07；6b03aa0 RED→ec589d2 GREEN证明实际目录新图不再写SQLite Base64，b80285e RED→29b4d07 GREEN证明Windows EBUSY临时清理占用可以重试。新增assets/material-ai-image-files.ts，窄接material-ai-repository/page-evidence、检索Host和db两构造点，复用原文件FD/规范路径/链接/全哈希证明、Windows独占锁、SQLite writer、备份。无新增依赖、IPC、模型或第二业务真源。新file.v1保存到dataRoot/material-ai-images/v1/<SHA前两位>/<SHA>.bin，SQLite只留摘要/MIME/字节数/版本，旧inline.v1增量兼容不强迁。

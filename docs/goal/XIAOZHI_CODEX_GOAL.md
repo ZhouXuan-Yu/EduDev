@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-31 重排冷启动工程更新
+
+源码10e6f10复用现ONNX实例在后台完成原完整启动，避免60秒教师停顿即重启；2GiB准备/1GiB释放、10分钟空闲上限与取消/失败恢复均有实证。正式同小样本流程首次查询本轮170ms/重排116ms，前轮4815/4704ms，非严格A/B/大库P95；模型空闲工作集约863MiB，低内存仍会释放。build/240、25生命周期与模型检查、8来源竞态、实际Electron六项通过；综合回执见KB_IMPLEMENTATION_EVIDENCE.md及research/KB_RERANKER_WARM_20261031.json。未增加业务真源/模型/依赖，40GB/自然质量/安装和集中252项状态不因此完成，完整Goal继续active。
+
 ## 2026-10-31 原页图片容量切片
 
 29b4d07将新AI原页输入由SQLite Base64迁为本地SHA去重文件，复用现SQLite/文件真源、读取证明、Windows锁、备份及Pi，不引入第二知识库或服务。最终真实教材6项/双页题库7项贯通检索、原图和冷启；同SHA输入SQLite336636B→0、本地252475B。旧inline记录兼容不强迁，新模块覆盖100%行/82.98%分支，详细门禁及综合回执见KB_IMPLEMENTATION_EVIDENCE.md与research/KB_AI_IMAGE_FILES_20261031.json。完整Goal及集中252项不因此提高：首次检索仍4815ms，10GB→40GB/自然质量/受管安装未验收，继续active。

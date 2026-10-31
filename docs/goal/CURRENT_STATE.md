@@ -1,5 +1,9 @@
 # 小智 Goal 当前状态
 
+## 2026-10-31 重排后台准备
+
+10e6f10已把原重排启动接入现索引后的异步准备，保留模型/完整校验与来源权限；2GiB/1GiB内存滞回、10分钟闲置释放、15秒准备预算和立即取消。build/type/240组件，25生命周期/冻结模型/完整性/退出检查与8来源竞态通过。实际Electron六项3PaftH，0renderer/冷启0重发，首查170ms/重排116ms；约863MiB模型工作集必须计入成本。综合回执见KB_IMPLEMENTATION_EVIDENCE；自然质量、40GB/低内存并发/P95与安装未验收，完整Goal继续。
+
 ## 2026-10-31 原页输入文件化
 
 源码29b4d07新file.v1按SHA本地去重、SQLite元数据，旧inline.v1保持；有界pending恢复、临时共享占用可重试、损坏/链接拒绝和原备份复制已验证。最终build/240组件、15文件、20页/28批次/17检索/13归档通过，实际教材6项/双页题库7项0renderer且冷启0重发；模型传输受控，0付费。综合最终回执另见KB_IMPLEMENTATION_EVIDENCE及research/KB_AI_IMAGE_FILES_20261031.json，不替代40GB/自然质量/安装验收。首查4815ms与旧inline迁移仍开放；D盘日常构建/安装包未更新，完整Goal继续active。

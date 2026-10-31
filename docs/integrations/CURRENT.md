@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-31 继续复用现ONNX重排
+
+原BGE冻结EXE/ONNX InferenceSession直接预热复用，未换模型/修改Python模型包或新增依赖、下载和安装产物。Node内置os、AbortSignal、Promise和测试MockTimers支撑有界驻留/取消；现SQLite/FTS/Lance/Pi/typed IPC均保持。2GiB/1GiB内存滞回对应实测约863MiB工作集，并不等于整应用内存硬上限。官方API参考与构建指纹记录在research/KB_RERANKER_WARM_20261031.json；audit仍45项（8高29中8低/0严重），依赖锁未改，不自动扩域升级。
+
 ## 2026-10-31 AI图片复用现文件基础
 
 继续复用SQLite事实、Node内置fs/crypto、readMaterialOriginal、Windows acquireWriterLock、现SQLite writer与data-root-files备份；无新依赖、许可证/下载体积/安装组件增量。MaterialAi/检索Host仅接现dataRoot，不增加IPC/服务/Agent循环；两列与pending/部分索引增量幂等。原字节文件保留在数据根，后续安装备份不能当缓存删除。npm audit本次45项（8高29中8低0严重）exit1，锁文件和依赖未改，较上一轮23为现审计反馈变化，不自动扩域升级。

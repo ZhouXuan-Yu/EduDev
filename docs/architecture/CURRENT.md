@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-31 现检索Worker中的重排预热
+
+vector-worker在ensure/apply/applyMany成功回包后以Promise隔离可选准备失败，原RerankerClient共享完整启动/ready给预热及真实查询；Node os.freemem控制2GiB准备/1GiB释放滞回，空闲最多10分钟/30秒检查。启动校验贯通AbortSignal且等待可独立取消，15秒准备超时与关闭均防迟到启动；后台故障仅冷却自动准备，不停止向量服务。原模型/排序/FTS/Lance、资料来源复验、typed IPC及业务schema不变，三生产文件窄切片；验证与内存代价见goal/KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-31 AI输入文件证据
 
 assets/material-ai-image-files.ts复用现FD/路径/哈希证明与Windows独占锁，按SHA在dataRoot/material-ai-images/v1分片保存原始输入，SQLite只保存file.v1引用与pending日志；旧inline.v1兼容。文件准备不占业务writer事务，引用发表仍经原授权guard/短事务，锁持有到清理。两个部分索引支持每次8条恢复和引用检查，备份沿原data-root-files收录；Pi/typed IPC/前端入口保持。来源读取与题目检索共用新旧读器，未知版本/混填/损坏拒绝。具体表列/回退和验证见goal/KB_IMPLEMENTATION_CONTRACT.md及KB_IMPLEMENTATION_EVIDENCE.md。
