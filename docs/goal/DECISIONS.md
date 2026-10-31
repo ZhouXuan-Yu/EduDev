@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-10-31 百条候选与共享重排预算
+
+复用现BGE/ONNX、FTS/Lance和Pi，不引入第二知识库。20保留为协议批大小，整次候选100、重排总预算5秒；失败保持现原召回和来源门禁。扩覆盖与限等待分别取证，未以小语料或神经覆盖计数承诺自然Recall。证据见KB_RERANK_CANDIDATES_20261031.json。
+
 本轮收尾：最终整合feef9d4保留main f4dce3f的资料库与侧栏改动，Word检查生产源码与44eb69a一致；整合后build/type、240/240组件通过。207综合归整合前a94ab29，Word停止/占用专项归44eb69a，未重复运行。既有PromptInput指纹/启动IPC两项失败门禁与audit45保留，完整AT新增0，日常D盘与安装包未更新；详细指纹、范围见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wordInteropSlice.finalIntegration。
 
 ## 2026-10-31 E06 Word真实页面与停止清理（第五切片）

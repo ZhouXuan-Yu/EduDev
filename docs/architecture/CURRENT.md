@@ -1,5 +1,11 @@
 # 当前架构
 
+## 2026-10-31 百条候选与共享重排预算
+
+生产3e7d1c2将20条单次协议与整次候选分离：最多100条分批全局比较，5秒共享重排预算贯穿宿主启动/IPC/排队/原生执行，失败原子回到完整原排序；第21条之后可晋级，100以后的尾部保留。模型/原生v1/业务事实不变，无新依赖/迁移/付费/上传。
+
+内部可选截止时间向后兼容，typed preload/业务表与原生协议未变；query准备仍使用同一个受控ranker。模型、索引与来源事实保留。详见KB_RERANK_CANDIDATES_20261031.json。
+
 本轮收尾：最终整合feef9d4保留main f4dce3f的资料库与侧栏改动，Word检查生产源码与44eb69a一致；整合后build/type、240/240组件通过。207综合归整合前a94ab29，Word停止/占用专项归44eb69a，未重复运行。既有PromptInput指纹/启动IPC两项失败门禁与audit45保留，完整AT新增0，日常D盘与安装包未更新；详细指纹、范围见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wordInteropSlice.finalIntegration。
 
 ## 2026-10-31 E06 Word真实页面与停止清理（第五切片）
