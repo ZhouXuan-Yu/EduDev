@@ -27,7 +27,7 @@ export async function checkWordPages(ctx){
   const page=ctx.page;if(!await page.getByTestId('pi-file-panel').isVisible())await page.getByTestId('pi-files-toggle').click();
   await page.getByTestId('pi-files-refresh').click();const toggle=page.getByTestId('pi-files-explorer-toggle');if(await toggle.getAttribute('aria-pressed')==='false')await toggle.click();
   await page.getByTestId('pi-file-entry-'+name).click();const pane=page.getByTestId('pi-file-panel'),details=pane.getByTestId('pi-delivery-check');
-  await details.locator('summary').first().click();return{pane,details};
+  await details.locator(':scope > [data-slot="disclosure-heading"] > button[data-slot="disclosure-trigger"]').click();return{pane,details};
  };
  const openPage=async()=>{const{pane,details}=await openDetails();await details.getByTestId('pi-file-check-result').waitFor();const visual=details.getByTestId('pi-check-visual');
   await visual.getByTestId('pi-check-visual-select').selectOption('1');await visual.getByTestId('pi-check-visual-load').click();

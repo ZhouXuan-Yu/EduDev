@@ -28,7 +28,12 @@ export async function formulaOfficeJourney(c){
   c.check('Actual confirmed composite question stems, answers and full analyses render safe MathML in whole-paper review');
   for(const[theme,width,height]of[['light',1366,768],['dark',1920,1080]]){await page().emulateMedia({colorScheme:theme});await c.app().evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(size.width,size.height),{width,height});await settleWorkspaceTransitions(page(),{hiddenSnapshot:true});await dialog.getByTestId('paper-question-stem').first().scrollIntoViewIfNeeded();await c.neutralCapture();assert(await page().evaluate(()=>document.documentElement.scrollWidth<=innerWidth));const png=`review-math-${theme}-${width}x${height}.png`;await page().screenshot({path:path.join(c.output,png),animations:'disabled'});c.report.visuals.push({png,theme,width,height});}
   await dialog.getByRole('button',{name:'关闭',exact:true}).click();
-  const review=page().getByTestId('pi-question-review').last();if(!await review.getByTestId('question-review-formula-preview').first().isVisible())await review.locator('[data-slot=chat-tool-trigger]').click();await review.getByTestId('question-review-formula-preview').first().locator('summary').click();assert(await review.getByTestId('question-review-formula-preview').first().locator('math').count()>0);c.check('Existing generated-question card exposes readable formula preview while retaining original editor and confirmation history');
+  const review=page().getByTestId('pi-question-review').last();
+  const formulaPreview=review.getByTestId('question-review-formula-preview').first();
+  if(!await formulaPreview.isVisible())await review.locator('[data-slot=chat-tool-trigger]').click();
+  await expandDisclosure(formulaPreview,'查看题目排版（随编辑更新）');
+  assert(await formulaPreview.locator('math').count()>0);
+  c.check('Existing generated-question card exposes readable formula preview while retaining original editor and confirmation history');
   await c.restart();assert.deepEqual(questions(),before);assert.deepEqual(c.native().entries,history);c.check('Cold read preserves exact saved question facts and Pi history with zero new model requests');c.report.result={restoredFrom:restore,paperId:paper.id,questions:before,modelRequests:0};return;
  }
  const deliveries=[];let dialog,chosen=false;

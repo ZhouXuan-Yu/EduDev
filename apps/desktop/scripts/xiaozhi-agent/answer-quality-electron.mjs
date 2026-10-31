@@ -82,7 +82,7 @@ try{
       await until(()=>page.evaluate(async()=>{const id=document.querySelector('.office-composer-container')?.getAttribute('data-session-id');return id&&(await window.omniEdu.getXiaozhiSnapshot(id)).workspace?.label==='教学工作文件';}));
       await scenario('citation');const id=await send('依据合成折射教材说明折射规律，逐条标注来源。');await complete(id);
       const turn=page.locator(`[data-turn-id="${id}"]`);await turn.getByTestId('answer-citation').click();
-      assert(await turn.getByTestId('reply-sources').evaluate(el=>el.open));assert((await turn.innerText()).includes('引用未核验'));
+      assert.equal(await turn.getByTestId('reply-sources').locator('button[data-slot="chat-sources-trigger"]').getAttribute('aria-expanded'),'true');assert((await turn.innerText()).includes('引用未核验'));
       await turn.getByTestId('pi-material-source-open').click();await page.getByTestId('materials-detail').waitFor();
       assert((await page.getByTestId('materials-detail').innerText()).includes('折射'));await page.locator('[data-testid="nav-ai-workspace"]:visible').click();await ready();
       const saved=query("SELECT metadata_json FROM ai_conversation_messages WHERE role='assistant' ORDER BY created_at DESC LIMIT 1")[0];

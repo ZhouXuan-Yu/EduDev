@@ -27,7 +27,7 @@ try{
   const row=metadataBefore.filter(r=>r.role==='assistant').map(r=>JSON.parse(r.metadata_json||'{}')).find(m=>m.agentRunId===turn.id);assert.deepEqual(turn.verification,row.verification);
   assert.notEqual(turn.verification.state,'verified');const notice=page.locator(`.office-turn[data-turn-id="${turn.id}"] [data-testid="office-verification"]`);
   assert.equal(await notice.getByTestId('office-verification-time').locator('time').getAttribute('datetime'),turn.verification.checkedAt);
-  await notice.getByTestId('office-verification-checks').locator('summary').click();const body=await notice.innerText();assert(body.includes('回复内容与图片识别结果是否符合你的要求'));assert(body.includes('需要你核对'));
+  await notice.getByTestId('office-verification-checks').locator(':scope > [data-slot="disclosure-heading"] > button[data-slot="disclosure-trigger"]').click();const body=await notice.innerText();assert(body.includes('回复内容与图片识别结果是否符合你的要求'));assert(body.includes('需要你核对'));
   for(const c of turn.verification.checks){const item=notice.locator(`[data-check-id="${c.id}"]`);assert.equal(await item.getAttribute('data-state'),c.state);}
   for(const [theme,width,height]of[['light',1366,768],['dark',1920,1080]]){
    await page.emulateMedia({colorScheme:theme,reducedMotion:'reduce'});await app.evaluate(({BrowserWindow},s)=>{BrowserWindow.getAllWindows()[0].setContentSize(s.width,s.height);return true;},{width,height});

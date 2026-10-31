@@ -6,6 +6,7 @@ import {trainingNextJourney} from './training-next-journey.mjs';
 import {materialStudyJourney} from './material-study-journey.mjs';
 import {linearSystemAiJourney} from './linear-system-ai-journey.mjs';
 import {formulaOfficeJourney} from './formula-office-journey.mjs';
+import {expandDisclosure} from './paper-ui-disclosure.mjs';
 import {multiStepAiJourney} from './multistep-ai-journey.mjs';
 import {collectionExportJourney} from './collection-export-journey.mjs';
 import {questionCollectionJourney} from './question-collection-journey.mjs';
@@ -259,7 +260,9 @@ async function choiceTextJourney(){
  // Teacher supplies the precise natural-physics representation, preserving actual Pi proposal separately.
  const stem='扁担水平平衡，以肩膀接触点为支点，动力臂与阻力臂L₁∶L₂=1∶2，重物重80 N，不计扁担质量与摩擦。动力为（　　）\nA. 40 N\nB. 160 N\nC. 80 N\nD. 20 N';
  await card.getByTestId('question-review-stem').fill(stem);for(const [k,v]of Object.entries({A:'40 N',B:'160 N',C:'80 N',D:'20 N'}))await card.getByTestId('question-review-option-'+k).fill(v);await card.getByTestId('question-review-answer').fill('B');await card.getByTestId('question-review-analysis').fill('F₁L₁=GL₂，F₁=80×2=160 N，动力臂较短，所以费力。');
- await card.getByTestId('question-review-formula-preview').locator('summary').click();assert.equal((await card.getByTestId('question-review-body-preview').innerText()).match(/A\. 40 N/g)?.length,1);check('Actual teacher preview renders embedded and structured A–D once without changing raw draft');
+ await expandDisclosure(card.getByTestId('question-review-formula-preview'),'查看题目排版（随编辑更新）');
+ assert.equal((await card.getByTestId('question-review-body-preview').innerText()).match(/A\. 40 N/g)?.length,1);
+ check('Actual teacher preview renders embedded and structured A–D once without changing raw draft');
  await card.getByTestId('question-review-option-B').fill('150 N');await card.getByTestId('question-quality-check').click();await card.getByTestId('question-quality-issues').getByText('题干内的A–D与选项字段冲突',{exact:false}).waitFor();assert(await card.getByTestId('question-quality-reviewed').getByRole('checkbox').isDisabled());await card.getByTestId('question-review-confirm').click();await card.getByRole('alert').getByText('题目检查未通过，候选仍被隔离；请修正问题后重新检查。',{exact:true}).waitFor();assert.equal(facts().questions.length,1);check('Conflicting option stays isolated and actual confirmation cannot save it');
  await card.getByTestId('question-review-option-B').fill('160 N');await card.getByTestId('question-quality-check').click();await until(async()=>!await card.getByTestId('question-quality-reviewed').getByRole('checkbox').isDisabled());
  for(const [theme,width,height]of [['light',1366,768],['dark',1920,1080]]){await page.emulateMedia({colorScheme:theme});await page.setViewportSize({width,height});await settleWorkspaceTransitions(page,{hiddenSnapshot:true});await card.getByTestId('question-review-body-preview').scrollIntoViewIfNeeded();await page.waitForTimeout(150);const png='choice-preview-'+theme+'-'+width+'.png';await page.screenshot({path:path.join(output,png),animations:'disabled'});report.visuals.push({png,theme,width,height});}
