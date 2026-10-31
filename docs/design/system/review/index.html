@@ -1,27 +1,443 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小智 · UI规范审阅样张</title><link rel="stylesheet" href="review.css"></head>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>
+   小智 · UI规范审阅样张
+  </title>
+<link href="review.css" rel="stylesheet"/>
+</head>
 <body>
-<div class="review-bar"><strong>布局样张 · 非正式工作台</strong><nav aria-label="样张页面"><button data-page="chat" aria-current="page">对话首页</button><button data-page="students">学生工作台</button><button data-page="settings">设置提案 · 待确认</button></nav><button id="file-demo">演示文件提示</button></div>
+<div class="review-bar">
+<strong>
+    布局样张 · 非正式工作台
+   </strong>
+<nav aria-label="样张页面">
+<button aria-current="page" data-page="chat">
+     对话首页
+    </button>
+<button data-page="students">
+     学生工作台
+    </button>
+<button data-page="settings">
+     设置提案 · 待确认
+    </button>
+</nav>
+<button id="file-demo">
+    演示文件提示
+   </button>
+</div>
 <div class="app">
- <aside class="sidebar" aria-label="主导航">
-  <div class="brand"><span data-icon="book"></span><strong>小智</strong><button id="collapse" class="icon" aria-label="收起导航" aria-expanded="true" title="收起导航"><span data-icon="panel"></span></button></div>
-  <div class="side-scroll"><button data-destination="chat" class="side-action selected" aria-current="page"><span data-icon="chat"></span><span class="nav-label">问小智</span></button><button class="side-action" id="new-chat"><span data-icon="plus"></span><span class="nav-label">新建对话</span></button><button class="side-action" id="search-chat"><span data-icon="search"></span><span class="nav-label">搜索对话</span></button>
-   <section class="history"><h2>教学空间</h2><p class="muted">还没有教学空间</p><h2>最近对话</h2><p class="muted">你的教学任务会保留在这里</p></section>
-  </div>
-  <nav class="destinations" aria-label="工作区"><button data-destination="knowledge"><span data-icon="library"></span><span class="nav-label">资料库</span></button><button data-destination="teaching"><span data-icon="book"></span><span class="nav-label">教学工作台</span></button><button data-destination="students"><span data-icon="users"></span><span class="nav-label">学生工作台</span></button></nav>
-  <footer><button data-destination="settings"><span data-icon="settings"></span><span class="nav-label">设置</span></button></footer>
- </aside>
- <main><header class="page-header"><span id="page-title">问小智</span><div class="header-actions"><button id="file-notice" hidden>示例文件（1）</button><button id="panel-toggle" class="icon" aria-label="打开任务与文件" aria-expanded="false" title="任务与文件"><span data-icon="panel"></span></button></div></header>
- <div class="content-shell">
-  <section class="page home" data-view="chat" aria-labelledby="welcome"><div class="home-content"><h1 id="welcome">今天想完成什么教学任务？</h1><p class="muted intro">告诉小智你的教学需求。</p>
-   <form id="composer" class="composer"><label class="sr-only" for="prompt">教学需求</label><textarea id="prompt" placeholder="例如：帮我准备一节关于浮力的课……" rows="3"></textarea><div class="composer-toolbar"><button type="button" class="icon" id="attachment" aria-label="添加资料"><span data-icon="clip"></span></button><div class="composer-end"><button type="button" id="model-menu" aria-expanded="false">模型与选项 <span aria-hidden="true">⌄</span></button><button class="send icon" type="submit" aria-label="发送教学需求" disabled><span data-icon="arrow"></span></button></div></div><div id="options" hidden><p>模型与权限设置在正式组件中沿用；此样张只演示披露位置。</p></div></form>
-   <div class="quick-actions" aria-label="教学任务"><button data-prompt="帮我准备一节课">智能备课</button><button data-prompt="请先帮我梳理组卷要求">智能组卷</button><button data-prompt="我想结合已有学习记录分析学情">学情分析</button></div>
-   <div class="suggestions"><button data-prompt="帮我设计一个让学生理解浮力的课堂实验">设计一个浮力课堂实验 <span aria-hidden="true">↗</span></button><button data-prompt="根据我提供的错题，梳理学生容易混淆的知识点">从错题中梳理薄弱知识点 <span aria-hidden="true">↗</span></button></div>
-  </div><p class="home-note muted">生成的教学内容仍需你核对。</p></section>
-  <section class="page student-page" data-view="students" hidden aria-labelledby="student-title"><div class="page-heading"><div><h1 id="student-title">学生工作台</h1><p class="muted">先选择学生，再查看和整理学习情况。</p></div><button class="primary" id="add-student">添加学生</button></div><p class="sample-label">以下是合成数据，仅演示选中与切换，不读取本机档案。</p><div class="student-layout"><section class="student-list" aria-label="学生列表"><label class="sr-only" for="student-search">搜索学生</label><input id="student-search" type="search" placeholder="搜索姓名、年级或标签"><div id="student-results"><button data-student="A"><span class="avatar">A</span><span>合成学生 A<small>八年级 · 物理</small></span></button><button data-student="B"><span class="avatar">B</span><span>合成学生 B<small>九年级 · 化学</small></span></button></div><p id="no-students" hidden class="muted">没有匹配的学生</p></section><section class="student-detail" aria-label="当前学生"><div id="student-empty" class="empty"><span data-icon="users"></span><h2>选择一位学生</h2><p class="muted">学习记录、错题和计划会在这里集中显示。</p></div><div id="student-selected" hidden><h2 id="student-name"></h2><nav class="tabs" aria-label="学生内容"><button data-tab="学习记录" aria-current="page">学习记录</button><button data-tab="错题与练习">错题与练习</button><button data-tab="学习计划">学习计划</button><button data-tab="学习复盘">学习复盘</button><button data-tab="学习概览">学习概览</button></nav><div class="detail-heading"><h3 id="tab-title">学习记录</h3><button id="record-action">添加记录</button></div><div class="empty compact"><p id="student-state">这位合成学生还没有学习记录</p><p class="muted">正式页面将复用已有记录和权限。</p></div></div></section></div></section>
-  <section class="page settings-page" data-view="settings" hidden aria-labelledby="settings-title"><div class="page-heading"><div><h1 id="settings-title">设置</h1><p class="muted">常用设置清晰可见，技术细节按需查看。</p></div><span class="pending">分层方式待确认</span></div><div class="settings-layout"><nav class="settings-nav" aria-label="设置分类"><button aria-current="page">日常设置</button><button id="advanced-link">高级与诊断</button></nav><div class="settings-form"><section class="setting-section"><h2>模型与连接</h2><div class="setting-row"><div><label for="api-key">API 密钥</label><p class="muted">留空时保留现有密钥。</p></div><input id="api-key" type="password" autocomplete="off" placeholder="样张不接收或保存密钥" disabled></div><div class="setting-row"><label for="model">默认模型</label><select id="model"><option>使用当前已配置模型</option></select></div><div class="save-row"><button class="primary" id="save-demo">保存样张选择</button></div></section><section class="setting-section"><h2>资料与权限</h2><div class="setting-row"><div><strong>工作目录</strong><p class="muted">授权属于当前会话，写入前仍需确认。</p></div><button id="directory-demo">在对话中管理</button></div></section><section class="setting-section"><h2>界面与备份</h2><div class="setting-row"><span>界面外观</span><span class="muted">浅色 · 均衡易读</span></div><div class="setting-row"><div><strong>本地备份</strong><p class="muted">沿用已有备份与恢复功能。</p></div><button id="backup-demo">管理备份</button></div></section><details id="advanced"><summary>高级与诊断</summary><p class="muted">外部工具、策略记录、解析诊断等在此提供明确入口；不会隐藏实际操作中的权限提醒。此处为结构提案，尚未确认。</p></details></div></div></section>
-  <aside id="context" class="context" aria-label="任务与文件" hidden><div class="context-heading"><h2>任务与文件</h2><button class="icon" id="context-close" aria-label="关闭任务与文件">×</button></div><p class="sample-label">示例成果 · 非真实生成</p><button id="sample-file" class="file-row"><span data-icon="file"></span><span>浮力教学设计.docx<small>布局占位，不是文件预览</small></span></button><p class="muted">正式页面点击后沿用原文件预览、来源核对与导出。</p></aside>
- </div></main>
-</div><div id="notice" role="status" aria-live="polite"></div><script src="review.js"></script>
-</body></html>
+<aside aria-label="主导航" class="sidebar">
+<div class="brand">
+<span data-icon="book">
+</span>
+<strong>
+      小智
+     </strong>
+<button aria-expanded="true" aria-label="收起导航" class="icon" id="collapse" title="收起导航">
+<span data-icon="panel">
+</span>
+</button>
+</div>
+<div class="side-scroll">
+<button aria-current="page" class="side-action selected" data-destination="chat">
+<span data-icon="chat">
+</span>
+<span class="nav-label">
+       问小智
+      </span>
+</button>
+<button class="side-action" id="new-chat">
+<span data-icon="plus">
+</span>
+<span class="nav-label">
+       新建对话
+      </span>
+</button>
+<button class="side-action" id="search-chat">
+<span data-icon="search">
+</span>
+<span class="nav-label">
+       搜索对话
+      </span>
+</button>
+<section class="history">
+<h2>
+       教学空间
+      </h2>
+<p class="muted">
+       还没有教学空间
+      </p>
+<h2>
+       最近对话
+      </h2>
+<p class="muted">
+       你的教学任务会保留在这里
+      </p>
+</section>
+</div>
+<nav aria-label="工作区" class="destinations">
+<button data-destination="knowledge">
+<span data-icon="library">
+</span>
+<span class="nav-label">
+       资料库
+      </span>
+</button>
+<button data-destination="teaching">
+<span data-icon="book">
+</span>
+<span class="nav-label">
+       教学工作台
+      </span>
+</button>
+<button data-destination="students">
+<span data-icon="users">
+</span>
+<span class="nav-label">
+       学生工作台
+      </span>
+</button>
+</nav>
+<footer>
+<button data-destination="settings">
+<span data-icon="settings">
+</span>
+<span class="nav-label">
+       设置
+      </span>
+</button>
+</footer>
+</aside>
+<main>
+<header class="page-header">
+<span id="page-title">
+      问小智
+     </span>
+<div class="header-actions">
+<button hidden="" id="file-notice">
+       示例文件（1）
+      </button>
+<button aria-expanded="false" aria-label="打开任务与文件" class="icon" id="panel-toggle" title="任务与文件">
+<span data-icon="panel">
+</span>
+</button>
+</div>
+</header>
+<div class="content-shell">
+<section aria-labelledby="welcome" class="page home" data-view="chat">
+<div class="home-content">
+<h1 id="welcome">
+        今天想完成什么教学任务？
+       </h1>
+<p class="muted intro">
+        告诉小智你的教学需求。
+       </p>
+<form class="composer" id="composer">
+<label class="sr-only" for="prompt">
+         教学需求
+        </label>
+<textarea id="prompt" placeholder="例如：帮我准备一节关于浮力的课……" rows="3"></textarea>
+<div class="composer-toolbar">
+<button aria-label="添加资料" class="icon" id="attachment" type="button">
+<span data-icon="clip">
+</span>
+</button>
+<div class="composer-end">
+<button aria-expanded="false" id="model-menu" type="button">
+           模型与选项
+           <span aria-hidden="true">
+            ⌄
+           </span>
+</button>
+<button aria-label="发送教学需求" class="send icon" disabled="" type="submit">
+<span data-icon="arrow">
+</span>
+</button>
+</div>
+</div>
+<div hidden="" id="options">
+<p>
+          模型与权限设置在正式组件中沿用；此样张只演示披露位置。
+         </p>
+</div>
+</form>
+<div aria-label="教学任务" class="quick-actions">
+<button data-prompt="帮我准备一节课">
+         智能备课
+        </button>
+<button data-prompt="请先帮我梳理组卷要求">
+         智能组卷
+        </button>
+<button data-prompt="我想结合已有学习记录分析学情">
+         学情分析
+        </button>
+</div>
+<div class="suggestions">
+<button data-prompt="帮我设计一个让学生理解浮力的课堂实验">
+         设计一个浮力课堂实验
+         <span aria-hidden="true">
+          ↗
+         </span>
+</button>
+<button data-prompt="根据我提供的错题，梳理学生容易混淆的知识点">
+         从错题中梳理薄弱知识点
+         <span aria-hidden="true">
+          ↗
+         </span>
+</button>
+</div>
+</div>
+<p class="home-note muted">
+       生成的教学内容仍需你核对。
+      </p>
+</section>
+<section aria-labelledby="student-title" class="page student-page" data-view="students" hidden="">
+<div class="page-heading">
+<div>
+<h1 id="student-title">
+         学生工作台
+        </h1>
+<p class="muted">
+         先选择学生，再查看和整理学习情况。
+        </p>
+</div>
+<button class="primary" id="add-student">
+        添加学生
+       </button>
+</div>
+<p class="sample-label">
+       以下是合成数据，仅演示选中与切换，不读取本机档案。
+      </p>
+<div class="student-layout">
+<section aria-label="学生列表" class="student-list">
+<label class="sr-only" for="student-search">
+         搜索学生
+        </label>
+<input id="student-search" placeholder="搜索姓名、年级或标签" type="search"/>
+<div id="student-results">
+<button data-student="A">
+<span class="avatar">
+           A
+          </span>
+<span>
+           合成学生 A
+           <small>
+            八年级 · 物理
+           </small>
+</span>
+</button>
+<button data-student="B">
+<span class="avatar">
+           B
+          </span>
+<span>
+           合成学生 B
+           <small>
+            九年级 · 化学
+           </small>
+</span>
+</button>
+</div>
+<p class="muted" hidden="" id="no-students">
+         没有匹配的学生
+        </p>
+</section>
+<section aria-label="当前学生" class="student-detail">
+<div class="empty" id="student-empty">
+<span data-icon="users">
+</span>
+<h2>
+          选择一位学生
+         </h2>
+<p class="muted">
+          学习记录、错题和计划会在这里集中显示。
+         </p>
+</div>
+<div hidden="" id="student-selected">
+<h2 id="student-name">
+</h2>
+<nav aria-label="学生内容" class="tabs">
+<button aria-current="page" data-tab="学习记录">
+           学习记录
+          </button>
+<button data-tab="错题与练习">
+           错题与练习
+          </button>
+<button data-tab="学习计划">
+           学习计划
+          </button>
+<button data-tab="学习复盘">
+           学习复盘
+          </button>
+<button data-tab="学习概览">
+           学习概览
+          </button>
+</nav>
+<div class="detail-heading">
+<h3 id="tab-title">
+           学习记录
+          </h3>
+<button id="record-action">
+           添加记录
+          </button>
+</div>
+<div class="empty compact">
+<p id="student-state">
+           这位合成学生还没有学习记录
+          </p>
+<p class="muted">
+           正式页面将复用已有记录和权限。
+          </p>
+</div>
+</div>
+</section>
+</div>
+</section>
+<section aria-labelledby="settings-title" class="page settings-page" data-view="settings" hidden="">
+<div class="page-heading">
+<div>
+<h1 id="settings-title">
+         设置
+        </h1>
+<p class="muted">
+         常用设置清晰可见，技术细节按需查看。
+        </p>
+</div>
+<span class="pending">
+        分层方式待确认
+       </span>
+</div>
+<div class="settings-layout">
+<nav aria-label="设置分类" class="settings-nav">
+<button aria-current="page">
+         日常设置
+        </button>
+<button id="advanced-link">
+         高级与诊断
+        </button>
+</nav>
+<div class="settings-form">
+<section class="setting-section">
+<h2>
+          模型与连接
+         </h2>
+<div class="setting-row">
+<div>
+<label for="api-key">
+            API 密钥
+           </label>
+<p class="muted">
+            留空时保留现有密钥。
+           </p>
+</div>
+<input autocomplete="off" disabled="" id="api-key" placeholder="样张不接收或保存密钥" type="password"/>
+</div>
+<div class="setting-row">
+<label for="model">
+           默认模型
+          </label>
+<select id="model">
+<option>
+            使用当前已配置模型
+           </option>
+</select>
+</div>
+<div class="save-row">
+<button class="primary" id="save-demo">
+           保存样张选择
+          </button>
+</div>
+</section>
+<section class="setting-section">
+<h2>
+          资料与权限
+         </h2>
+<div class="setting-row">
+<div>
+<strong>
+            工作目录
+           </strong>
+<p class="muted">
+            授权属于当前会话，写入前仍需确认。
+           </p>
+</div>
+<button id="directory-demo">
+           在对话中管理
+          </button>
+</div>
+</section>
+<section class="setting-section">
+<h2>
+          界面与备份
+         </h2>
+<div class="setting-row">
+<span>
+           界面外观
+          </span>
+<span class="muted">
+           浅色 · 均衡易读
+          </span>
+</div>
+<div class="setting-row">
+<div>
+<strong>
+            本地备份
+           </strong>
+<p class="muted">
+            沿用已有备份与恢复功能。
+           </p>
+</div>
+<button id="backup-demo">
+           管理备份
+          </button>
+</div>
+</section>
+<details id="advanced">
+<summary>
+          高级与诊断
+         </summary>
+<p class="muted">
+          外部工具、策略记录、解析诊断等在此提供明确入口；不会隐藏实际操作中的权限提醒。此处为结构提案，尚未确认。
+         </p>
+</details>
+</div>
+</div>
+</section>
+<aside aria-label="任务与文件" class="context" hidden="" id="context">
+<div class="context-heading">
+<h2>
+        任务与文件
+       </h2>
+<button aria-label="关闭任务与文件" class="icon" id="context-close">
+        ×
+       </button>
+</div>
+<p class="sample-label">
+       示例成果 · 非真实生成
+      </p>
+<button class="file-row" id="sample-file">
+<span data-icon="file">
+</span>
+<span>
+        浮力教学设计.docx
+        <small>
+         布局占位，不是文件预览
+        </small>
+</span>
+</button>
+<p class="muted">
+       正式页面点击后沿用原文件预览、来源核对与导出。
+      </p>
+</aside>
+</div>
+</main>
+</div>
+<div aria-live="polite" id="notice" role="status"></div>
+<script src="review.js">
+</script>
+</body>
+</html>

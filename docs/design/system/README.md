@@ -34,6 +34,8 @@
 
 首轮失败保留于review/evidence/report-first-failure.json和first-failure.png：侧栏尚处于8px入场位移时，边界测量失败；测试改为等待实际动画完成，仍检查完整边界，重跑通过。截图禁用过渡并等待临时提示消失，避免将旧选中态过渡误认为最终状态。
 
+可读性格式整理曾给空提示节点加入空白，使`:empty`失效；已清除提示节点及空输入框的空白并复验通过，失败报告保留于review/evidence/report-formatting-failure.json。失败截图直接捕获页面，不依赖正常提示消失，避免二次超时遮蔽原错误。
+
 正式页面尚未实现D01–D08全部行为；设置D09仍待确认，不会以继续任务当作对此选项的批准。正式视觉接受及真实HeroUI切片留待用户审阅这些样张后执行。
 
 提交前npm audit --json仍exit1，45项（8 high、29 moderate、8 low、0 critical）；无依赖变更和自动升级。原始审计报告保留于本机TEMP/edudev-design-skill-audit.json。不把本轮规范与样张交付计入正式功能AT。

@@ -34,9 +34,9 @@
   "success": true,
   "viewportScope": "CSS viewports; 911x512 approximates reduced CSS area at 150% of 1366x768, not native OS scaling",
   "artifactHashes": {
-    "index.html": "da30860b688b90b5b38522e0eef3d67feaf16695eb9d4a04d198bd289c53b7a8",
-    "review.css": "18273269c17588446bb0afbf2adce2e34282f7575af4f63ee6a83f36186bd295",
-    "review.js": "68a83b109f47fff0349052cf2cb72c9f96a15d3937a947109ef7dbdb8acefb7c",
-    "check.mjs": "616b272debf9c12e29c26a06d2f1d30eb9fee8551379e8ad79907af43e4363bc"
+    "index.html": "66b8d0442eda8dafbcc132da1f424398346318520a7658b199f102ba7e60efa1",
+    "review.css": "65eb70dcc0b418fc0e93397a3a8e3e5475145d07280f2d0ccfc90264395ccd8a",
+    "review.js": "aa71e521f03cd6b3a137f780515445898186df7ca3278ddaca337ce30bd60339",
+    "check.mjs": "c0426f10429d9b17a7d2ce658f207cec4087b72adeb5df84c2ca51f62032d473"
   }
 }
