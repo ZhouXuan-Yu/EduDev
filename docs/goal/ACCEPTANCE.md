@@ -2,7 +2,7 @@
 
 ## 2026-11-01 K0文件式访问实施
 
-本轮63项边界、240组件与build/type通过；真实约198MB/62页题册的资料UI、生产页工具工厂+只读SQLite适配与真实文件Worker、局部取图和冷启通过。不是完整Pi/provider/数学质量/自然40GiB验收。完整续读、综合门禁及整合指纹以统一基线k0Implementation为准。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+本轮64项边界、240组件与build/type通过；真实约198MB/62页题册的资料UI、生产页工具工厂+只读SQLite适配与真实文件Worker、局部取图和冷启通过。不是完整Pi/provider/数学质量/自然40GiB验收。完整续读、综合门禁及整合指纹以统一基线k0Implementation为准。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
 
 
 2026-11-01 E08教学文件HTML目录与时间工程已实现（1ff075c）：原修改账本派生当前族行，同一教学文件/对话版本控制可预览、另存恢复及回来源对话；正常保存记成功回执时间，旧记录未知、中断后只记核验时间。源码6、HTML8、Office16、build/type、240组件、正式Electron8（原三版续成第四版/双尺寸DPR1.5实测/冷启）exit0，0付费/模型重放/renderer错误。主包+2810B、renderer+614B、preload不变，仅按需元数据；无速度/P95结论。系统OS仅派发回调核对；完整来源页/行导航、E08/252AT及既有mastery_quiz失败仍待，未重复综合。D盘日常/安装包未更新，Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
