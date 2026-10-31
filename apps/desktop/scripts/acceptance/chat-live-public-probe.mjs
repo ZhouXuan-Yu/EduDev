@@ -7,7 +7,8 @@ export function installChatPublicProbe() {
     if (element?.matches('[data-testid="office-prompt-input"]')) return 'composer';
     if (!turn?.contains(element)) return element === document.body ? 'body' : 'other';
     if (element?.matches('[data-testid="agent-trace-toggle"]')) return 'process-trigger';
-    if (element?.closest('summary[data-testid="agent-tool-trigger"]')) return 'summary';
+    // The production ChatTool trigger is a real button, not the old native summary.
+    if (element?.closest('button[data-testid="agent-tool-trigger"]')) return 'summary';
     if (element?.matches('[data-testid="office-tool-evidence"] a, [data-testid="office-tool-evidence"] a *')) return 'detail-link';
     return 'other';
   };

@@ -245,13 +245,21 @@ async function main() {
       }
       if (needsTools && !focusArmed && live && t.tools.length && s.running) {
         const summary = turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
-        if (focusMode === 'composer') await page.getByTestId('office-prompt-input').focus();
+        if (focusMode === 'composer') {
+          const input=page.getByTestId('office-prompt-input');
+          await input.focus();
+          assert(await input.evaluate(node=>node===document.activeElement),'focus setup must reach the real composer');
+        }
         else if (focusMode === 'detail-link') {
           if (await summary.getAttribute('aria-expanded') !== 'true') await summary.click();
           const link = turn.getByTestId('office-tool-evidence').locator('a:visible').first();
           assert(await link.count(), 'detail-link focus mode requires a real public source link; do not fabricate one');
           await link.focus();
-        } else await summary.focus();
+          assert(await link.evaluate(node=>node===document.activeElement),'focus setup must reach the real public source link');
+        } else {
+          await summary.focus();
+          assert(await summary.evaluate(node=>node===document.activeElement),'focus setup must reach the actual ChatTool button');
+        }
         focusArmed = true;
       }
       if (!executing && (t.publicProcessCount || t.tools.length) && live && (!needsTools || focusArmed)) {

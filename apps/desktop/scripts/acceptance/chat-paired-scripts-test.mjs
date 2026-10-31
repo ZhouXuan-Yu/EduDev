@@ -50,7 +50,7 @@ await check('shared environment prompt and PDF override resolve identically in b
 });
 
 async function withProbe(run){
-  const dom=new JSDOM('<!doctype html><body><textarea data-testid="office-prompt-input"></textarea><section class="office-turn" data-turn-id="run"><details open><summary data-testid="agent-tool-trigger" tabindex="0">读取资料</summary><div data-testid="office-tool-evidence"><a href="https://example.invalid/source">公开来源</a></div></details></section></body>',{pretendToBeVisual:true});
+  const dom=new JSDOM('<!doctype html><body><textarea data-testid="office-prompt-input"></textarea><section class="office-turn" data-turn-id="run"><div data-testid="office-tool-step"><h3 data-slot="disclosure-heading"><button data-testid="agent-tool-trigger" data-slot="chat-tool-trigger" aria-expanded="true"><span>读取资料</span></button></h3><div data-testid="office-tool-evidence"><a href="https://example.invalid/source">公开来源</a></div></div></section></body>',{pretendToBeVisual:true});
   globalThis.window=dom.window;globalThis.document=dom.window.document;globalThis.MutationObserver=dom.window.MutationObserver;
   let listener;
   dom.window.omniEdu={onXiaozhiEvent(callback){listener=callback;return()=>{};}};
@@ -61,7 +61,8 @@ async function withProbe(run){
   finally{window.__uiChatObserver.disconnect();dom.window.close();delete globalThis.window;delete globalThis.document;delete globalThis.MutationObserver;}
 }
 for(const focus of ['summary','detail-link','composer'])await check('public handoff probe records '+focus+' focus and explicit-before-terminal DOM collapse',()=>withProbe(async({emit,turn,tick})=>{
-  const selected=document.querySelector(focus==='summary'?'summary':focus==='detail-link'?'a':'textarea');selected.focus();
+  const selected=document.querySelector(focus==='summary'?'button[data-testid="agent-tool-trigger"]':focus==='detail-link'?'a':'textarea');selected.focus();
+  assert.equal(document.activeElement,selected,'fixture must focus the actual official-shape control');
   emit({kind:'assistant_start',segment:1});emit({kind:'assistant_phase',segment:1,phase:'commentary',since:100});
   emit({kind:'model_reasoning',block:{text:'PRIVATE_SENTINEL_DO_NOT_SAVE'}});
   emit({kind:'text_delta',delta:'PUBLIC_TEXT_NOT_STORED'});
