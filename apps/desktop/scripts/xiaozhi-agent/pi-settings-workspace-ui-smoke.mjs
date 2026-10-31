@@ -123,6 +123,13 @@ async function setPreference(name, selected) {
   if ((await control.getAttribute('data-selected') === 'true') !== selected) await preference(name);
   assert.equal(await control.getAttribute('data-selected') === 'true', selected, staticAssertionMessages.preferenceState);
 }
+async function assertNavigationCollapsed(collapsed) {
+  const navigation = page.locator('[data-testid="edu-navigation"]:visible');
+  await until(async () => await navigation.getAttribute('data-collapsed') === String(collapsed));
+  assert.equal(await navigation.getByTestId('nav-ai-workspace').locator('.wb-label').isVisible(), !collapsed);
+  assert(await navigation.getByTestId('nav-ai-workspace').isVisible(), 'Collapsed icon rail retains chat access');
+  assert(await navigation.getByTestId('nav-settings').isVisible(), 'Collapsed icon rail retains settings access');
+}
 const permissionMemory = () => page.getByTestId('pi-settings-main');
 async function memoryPanel() { if (!await permissionMemory().getByTestId('pi-memory-enabled').isVisible()) await permissionMemory().getByTestId('pi-memory-scope').locator('[data-slot="chat-tool-trigger"]').click(); }
 async function stableCapture(name) {
@@ -226,10 +233,13 @@ try {
   activeStage = 'display-preferences-storage-failure';
   await page.evaluate(() => { window.__settingsRestoreStorage = Storage.prototype.setItem; Storage.prototype.setItem = function(key, value) { if (key === 'xiaozhi.ui.v1') throw new Error('owned storage unavailable'); return window.__settingsRestoreStorage.call(this, key, value); }; });
   await preference('sidebar'); assert.match(await page.getByTestId('pi-preference-notice').innerText(), /未能保存/); assert.equal(await page.getByTestId('pi-preference-sidebar').getAttribute('data-selected'), null); await page.evaluate(() => { Storage.prototype.setItem = window.__settingsRestoreStorage; delete window.__settingsRestoreStorage; }); check('Storage failure shows a visible failure and does not claim preference success');
-  await page.getByTestId('nav-ai').click(); await aiShell().waitFor(); assert.equal(await page.locator('.sidebar__offcanvas-wrapper').boundingBox().then(box=>box.width), 0); assert(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed') === 'true');
-  const beforeColdId = id; await close(); await launch(); assert.equal(id, beforeColdId); assert.equal(config(), storedConfig); assert.equal((await page.evaluate(() => globalThis.currentSettingsEvents)).filter(e => e.kind === 'tool_start').length, 0); assert.equal(await page.locator('.sidebar__offcanvas-wrapper').boundingBox().then(box=>box.width), 0); assert.equal(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed'), 'true'); check('Returning and restarting the same owned profile preserve actual disclosures, encrypted configuration and session without replay');
-  await open(); await tab('interface'); await preference('sidebar'); await preference('aside'); await preference('files');
-  await page.getByTestId('nav-ai').click(); await aiShell().waitFor(); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled());
+  await productEntry(page, 'ask').click(); await aiShell().waitFor(); await assertNavigationCollapsed(true);
+  assert.equal(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed'), 'false', 'Blank chat keeps the right panel closed despite a saved preference');
+  await page.getByTestId('pi-files-toggle').click(); assert.equal(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed'), 'true', 'Explicit file-panel action still opens real files');
+  const beforeColdId = id; await close(); await launch(); assert.equal(id, beforeColdId); assert.equal(config(), storedConfig); assert.equal((await page.evaluate(() => globalThis.currentSettingsEvents)).filter(e => e.kind === 'tool_start').length, 0); await assertNavigationCollapsed(true); assert.equal(await page.getByTestId('pi-files-toggle').getAttribute('aria-pressed'), 'false'); check('Returning and restarting preserve navigation collapse, encrypted configuration and session without replay; blank chat panels stay on demand');
+  await page.locator('[data-testid="edu-navigation"]:visible').getByTestId('workbench-sidebar-toggle').click(); await assertNavigationCollapsed(false);
+  await open(); await tab('interface'); assert.equal(await page.getByTestId('pi-preference-sidebar').getAttribute('data-selected'), 'true', 'Manual navigation toggle updates the same settings state'); await setPreference('sidebar', true); await setPreference('aside', false); await setPreference('files', false);
+  await productEntry(page, 'ask').click(); await aiShell().waitFor(); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled());
   await page.evaluate(() => localStorage.setItem('xiaozhi.ui.v1', JSON.stringify({ schema: 999, sidebar: false, aside: false, files: true, path: 'must-not-authorize' })));
   await open(); await tab('interface'); assert.equal(await page.getByTestId('pi-preference-sidebar').getAttribute('data-selected'), 'true'); assert.equal(await page.getByTestId('pi-preference-files').getAttribute('data-selected'), null); await preference('sidebar'); await preference('sidebar'); check('Unknown preference schema falls back safely and never turns a stored path into authority');
   const archiveMarker = '合成归档纪要：教研课40分钟。';

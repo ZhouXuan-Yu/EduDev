@@ -45,7 +45,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
   function toggleCollapsed() {
     if (disabled) return;
     if (narrow) setMobileOpen(!mobileOpen);
-    else update({ collapsed: !storedCollapsed });
+    else if (!update({ collapsed: !storedCollapsed })) setError('未能保存界面偏好。请确认本机存储可用后重试。');
   }
   useDesktopCommands(command => {
     if (command !== 'sidebar' || !root.current || root.current.closest('[hidden]')) return false;
