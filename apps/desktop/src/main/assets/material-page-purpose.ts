@@ -9,6 +9,6 @@ export function nonQuestionPagePurpose(text:string):'advertisement'|'promotion'|
  const numbered=/^\s{0,3}(?:第\d{1,5}题\s*[:：]?|\d{1,5}[.、](?!\d))\s*\S/m;
  if(/(?:^|\n)\s*目\s*录\s*(?:\n|$)/.test(prefix)&&!numbered.test(normalized)&&(normalized.match(/测试卷|训练卷/g)||[]).length>=6&&(normalized.match(/(?:^|\n)\s*\d{1,3}\s*(?:\n|$)|P\d+\s*T\d+/g)||[]).length>=3)return'contents';
  // Publisher/author/edition metadata together identify a cover; a numbered exercise or task keeps the page.
- if(normalized.length<1800&&!numbered.test(normalized)&&!/[?？]|已知|如图|求出|计算|解方程/.test(normalized)&&/出版社/.test(normalized)&&/主编|编著|编者/.test(normalized)&&/[一二三四五六七八九十]年级/.test(normalized)&&/语文|数学|英语|物理|化学|生物|历史|地理|道德与法治/.test(normalized))return'cover';
+ if(normalized.length<1800&&!numbered.test(normalized)&&!/[?？]|已知|如图|求出|计算|解方程|下列|正确的是|错误的是|选择题|填空题|判断题|简答题|解答题|试一试|想一想|说明理由/.test(normalized)&&!/(?:^|\n)\s*(?:[（(]\d+[)）]|[一二三四五六七八九十]+[、．.])/.test(normalized)&&/出版社/.test(normalized)&&/主编|编著|编者/.test(normalized)&&/[一二三四五六七八九十]年级/.test(normalized)&&/语文|数学|英语|物理|化学|生物|历史|地理|道德与法治/.test(normalized))return'cover';
  return null;
 }

@@ -20,6 +20,10 @@ for(const [name,prepare,expected,status]of [
  ['A real question quoting promotional text is preserved',f=>{f.state.text='第1题 已知宣传文案如下：\n图书结构\n试卷亮点\n命题思路紧贴考情\n答案单独梳理\n请说明以上文字的含义。';},1,'complete'],
  ['Ordinary question-book extraction still publishes its original source record',()=>{},1,'complete']
 ]){const f=fixture();try{prepare(f);assert(await f.archive.drain());assert.equal(f.db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n,expected);const row=f.db.prepare('SELECT status,error FROM material_question_jobs').get();assert.equal(row.status,status);if(status==='failed')assert.equal(row.error,'source_changed');checks++;console.log('PASS '+name);}finally{f.db.close();}}
+{
+ const {nonQuestionPagePurpose}=await import('../../src/main/assets/material-page-purpose.ts');
+ for(const suffix of ['\n一、选择题\n下列说法正确的是','\n（1）请说明这种变化的原因。']){assert.equal(nonQuestionPagePurpose('物理 九年级全一册\n主编曲一线\n首都师范大学出版社'+suffix),null);checks++;}
+}
 if(process.argv[2]){
  const path=await import('node:path'),os=await import('node:os'),fs=await import('node:fs');const root=path.resolve(process.argv[2]);assert.equal(path.dirname(root),path.resolve(os.tmpdir()));assert(/^omni-real-material-[a-z0-9]+$/i.test(path.basename(root)));assert.equal(fs.realpathSync(root),root);
  const {extractMaterialQuestions}=await import('../../src/main/assets/material-question-extract.ts'),{nonQuestionPagePurpose}=await import('../../src/main/assets/material-page-purpose.ts');
