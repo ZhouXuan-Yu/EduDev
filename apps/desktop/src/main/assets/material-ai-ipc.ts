@@ -14,6 +14,7 @@ import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {validAiAction,validAiBatch,validAiSettings} from '../../shared/material-ai';
 import {validNativeQuestionImageQuery,validNativeQuestionOriginQuery} from '../../shared/native-question-image';
 import {validAiPageQuery} from '../../shared/material-ai-page';
+import {validMaterialBookPairInput} from '../../shared/material-book-pair';
 
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
   const codec={available:()=>safeStorage.isEncryptionAvailable(),seal:(key:string)=>safeStorage.encryptString(key).toString('base64'),open:(value:string)=>safeStorage.decryptString(Buffer.from(value,'base64')).toString()};
@@ -42,6 +43,8 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
   });
   const check=(event:Electron.IpcMainInvokeEvent)=>{const w=window();if(!w||w.isDestroyed()||event.sender!==w.webContents||event.senderFrame!==w.webContents.mainFrame)throw new Error('permission_denied');};
   const safe=<T>(action:()=>Promise<T>)=>action().catch(error=>{const code=error instanceof Error?error.message:'';throw new Error(['unified_settings','invalid_input','configuration','storage_unavailable','conflict','source_changed','source_incomplete','unit_too_large','privacy_blocked','page_restoration_disabled','unsupported','budget_exhausted'].includes(code)?code:'unavailable');});
+  ipcMain.handle('materials:book-pair-get',(event,id)=>{check(event);if(!materialId(id))throw Error('invalid_input');return safe(()=>store.materialAi.books.view(id));});
+  ipcMain.handle('materials:book-pair-set',(event,input)=>{check(event);if(!validMaterialBookPairInput(input))throw Error('invalid_input');return store.materialAi.books.change(structuredClone(input)).catch(error=>{const code=error instanceof Error?error.message:'';throw Error(['invalid_input','source_changed','conflict','unsupported','answer_already_processed'].includes(code)?code:'unavailable');});});
   ipcMain.handle('materials:ai-settings',event=>{check(event);return safe(()=>store.materialAi.settings());});
   ipcMain.handle('materials:ai-save-settings',(event,input)=>{check(event);if(!validAiSettings(input))throw new Error('invalid_input');return safe(()=>store.materialAi.saveSettings(structuredClone(input)));});
   ipcMain.handle('materials:ai-list',(event,id,offset=0)=>{check(event);if(!materialId(id)||!Number.isSafeInteger(offset)||offset<0||offset>1000000)throw new Error('invalid_input');return safe(()=>store.materialAi.list(id,offset));});

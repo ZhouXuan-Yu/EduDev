@@ -191,4 +191,23 @@ await check('A chunk moved into a resource as private during reranking revokes b
   const result=await f.rag.materials('均匀介质');assert.equal(result.units.length,0,'Late privacy changes at the new parent cannot escape the source fence');assert.equal(result.semantic.reason,'source_changed');
  }finally{f.db.close();}
 });
+await check('An explicitly linked answer book retains original-page transcription and never publishes numbered answers as questions',async()=>{
+ const f=fixture('blank');try{
+  await f.init();assert(f.repo.books,'Answer-book identity must use the durable role repository');
+  f.repo.books.role=async()=>({kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.input.version,answerId:f.input.resourceId,answerVersion:f.input.version,revision:1});
+  // Keep a stable snapshot just like the persisted pair.
+  const role=await f.repo.books.role();f.repo.books.role=async()=>role;
+  const runtime=f.repo.runtime;runtime.complete=async input=>{f.state.calls++;assert.equal(input.answerBook,true);return JSON.stringify({schemaVersion:pageSchema,outcome:'no_questions',pageText:'第十三章 内能\n1. A\n2. C\n3. 热传递',pageIssues:[],questions:[]});};
+  const id=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();assert.equal(f.state.calls,2);assert.equal(await f.question(),undefined);
+  const view=await f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:id,ordinal:1});assert.equal(view.status,'complete');assert(view.text.includes('1. A'));assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'no_questions');
+  f.repo.books.role=async()=>null;await assert.rejects(f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:id,ordinal:1}),/source_changed/);
+ }finally{f.db.close();}
+});
+await check('An answer-book provider that invents a question is rejected without publishing it',async()=>{
+ const f=fixture('blank');try{
+  await f.init();const role={kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.input.version,answerId:f.input.resourceId,answerVersion:f.input.version,revision:1};f.repo.books.role=async()=>role;
+  f.repo.runtime.complete=async()=>{f.state.calls++;return JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[q]});};
+  await f.repo.create(f.input);await f.repo.drain();assert.equal(await f.question(),undefined);assert.equal(f.state.calls,1);const row=f.db.prepare('SELECT status,error FROM material_ai_units').get();assert.equal(row.status,'outcome_unknown');assert.equal(row.error,'invalid_response');await f.repo.drain();assert.equal(f.state.calls,1);
+ }finally{f.db.close();}
+});
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));

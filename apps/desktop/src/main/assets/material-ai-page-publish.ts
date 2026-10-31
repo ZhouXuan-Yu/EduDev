@@ -10,9 +10,9 @@ import type {RuleOrigin} from './material-question-origins';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>;run:(sql:string,p?:(string|number|null)[])=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>};
 const hash=(v:string)=>createHash('sha256').update(v).digest('hex');
 const normalized=aiTextSignature;
-export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource){
- const numbered=restoredPageQuestions(final.pageText,source),omitted=numbered.some(c=>!final.questions.some(q=>q.number===c.number));
- const unstructured=final.outcome==='no_questions'&&!numbered.length&&/[?？]|求|计算|解方程/.test(final.pageText);
+export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,answerBook=false){
+ const numbered=answerBook?[]:restoredPageQuestions(final.pageText,source),omitted=numbered.some(c=>!final.questions.some(q=>q.number===c.number));
+ const unstructured=!answerBook&&final.outcome==='no_questions'&&!numbered.length&&/[?？]|求|计算|解方程/.test(final.pageText);
  return{numbered,omitted,review:omitted||unstructured||final.outcome==='needs_review'||!pageTranscriptionAgrees(first,final)};
 }
 export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,imageSha:string,q:AiImageQuestion){
@@ -24,10 +24,11 @@ export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,s
  return [...new Set(issues)];
 }
 /** Called only inside the original executor's guarded writer transaction. */
-export async function publishAiPage(host:Host,args:{batchId:string;ordinal:number;source:MaterialPageSource;sources:MaterialSource[];originalQuestions:ExtractedQuestion[];firstRaw:string;finalRaw:string;first:AiPageResponse;final:AiPageResponse;imageSha:string;title:string;model:string}){
+export async function publishAiPage(host:Host,args:{batchId:string;ordinal:number;source:MaterialPageSource;sources:MaterialSource[];originalQuestions:ExtractedQuestion[];firstRaw:string;finalRaw:string;first:AiPageResponse;final:AiPageResponse;imageSha:string;title:string;model:string;answerBook?:boolean}){
  const {batchId,ordinal,source,firstRaw,finalRaw,first,final,imageSha}=args;
  const slot=(await host.all('SELECT source_json FROM material_ai_page_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(slot?.source_json!==JSON.stringify(source)||!/^[a-f0-9]{64}$/.test(imageSha))throw Error('source_changed');
- const assessment=assessAiPage(first,final,source);let review=assessment.review;
+ if(args.answerBook&&(first.questions.length||final.questions.length||first.outcome==='questions'||final.outcome==='questions'))throw Error('invalid_response');
+ const assessment=assessAiPage(first,final,source,args.answerBook);let review=assessment.review;
  await host.run('UPDATE material_ai_page_units SET first_sha=?,final_sha=?,image_sha=? WHERE batch_id=? AND ordinal=?',[hash(firstRaw),hash(finalRaw),imageSha,batchId,ordinal]);
  for(const q of final.questions){
   const unique=aiPageQuestionIssues(first,final,source,imageSha,q);review||=!!unique.length;

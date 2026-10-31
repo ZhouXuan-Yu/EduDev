@@ -9,7 +9,7 @@ const stripMetadata=(s:string)=>s.replace(/^\s*(?:【(?:学科|年级|知识点|
 /** Conservative source extraction. Never supplies an answer/analysis or an AI confirmation. */
 export function extractMaterialQuestions(units:MaterialReadingUnit[],engine:string):ExtractedQuestion[]{
  const ranges:{start:number;end:number;unit:MaterialReadingUnit}[]=[];let text='';
- for(const unit of units){const start=text.length;text+=unit.chunk.contentMd+'\n\n';ranges.push({start,end:text.length,unit});}
+ for(const unit of units){const start=text.length;text+=(/本页为广告页[，,、\s]*打印(?:前|时)(?:可以|可)?(?:把这页|将本页|把这页删掉)/.test(unit.chunk.contentMd)?'':unit.chunk.contentMd)+'\n\n';ranges.push({start,end:text.length,unit});}
  // A separate answer book needs an explicit matching stage; do not turn its numbered answers into new questions.
  const answerSection=/^\s*(?:#{1,6}\s*)?(?:参考答案|答案与解析|答案及解析)\s*[:：]?\s*$/m.exec(text);if(answerSection)text=text.slice(0,answerSection.index);
  const heading=/^\s{0,3}(?:#{1,6}\s*)?(?:第(\d{1,5})题\s*[:：]?|(\d{1,5})[.、．](?!\d))\s*/gm;
