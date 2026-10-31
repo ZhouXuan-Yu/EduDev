@@ -8,30 +8,34 @@ import {OFFICE_JOB_SOURCE} from '../../src/main/xiaozhi-agent/checks/native-offi
 /** Continue the owned PDF profile; exercise existing-file Word checks through the original composer and file panel. */
 export async function checkWordPages(ctx){
  const {workspace,data,output,report,send,finished,until,check,latest,sha}=ctx;
- const name='三页Word实际检查.docx',source=await wordPageFixture(),filePath=path.join(workspace,name),stageRoot=path.join(data,'cache/delivery-paged/v1');
- fs.writeFileSync(filePath,source);
+ const recoveryOnly=process.argv.includes('--word-recovery-only'),name='三页Word实际检查.docx',filePath=path.join(workspace,name),source=recoveryOnly?fs.readFileSync(filePath):await wordPageFixture(),stageRoot=path.join(data,'cache/delivery-paged/v1');
+ if(!recoveryOnly)fs.writeFileSync(filePath,source);
  const inspect=async rules=>{
-  await ctx.app.evaluate(({name,rules})=>Object.assign(globalThis.pagedTest,{mode:'inspect',stage:0,files:[{path:name,...(rules?{rules}:{})}]}),{name,rules});
-  await send(`只检查${name}的真实页面，不改写文件。`);await finished();return latest().files[0];
+  await ctx.app.evaluate((_,{name,rules})=>Object.assign(globalThis.pagedTest,{mode:'inspect',stage:0,files:[{path:name,...(rules?{rules}:{})}]}),{name,rules});
+  await send(`只检查${name}的真实页面，不改写文件。`);await finished();const result=latest();
+  assert.equal(result.runId,ctx.query('SELECT id FROM ai_agent_runs ORDER BY rowid DESC LIMIT 1')[0].id,'Inspection must belong to this actual run');
+  assert.equal(result.files[0]?.path,name);return result.files[0];
  };
- const start=Date.now(),file=await inspect({pages:3,contains:[{text:'PAGE_TWO',page:2}],numbers:[{id:'depth',source:{kind:'label',label:'浸入高度',page:2},expected:6,unit:'cm'}]});
+ const start=Date.now(),file=recoveryOnly?ctx.query('SELECT report_json FROM xiaozhi_delivery_inspections ORDER BY created_at DESC').flatMap(r=>JSON.parse(r.report_json).files).find(f=>f.path===name&&f.sha256===sha(source)&&f.renderedPages.length===3):await inspect({pages:3,contains:[{text:'PAGE_TWO',page:2}],numbers:[{id:'depth',source:{kind:'label',label:'浸入高度',page:2},expected:6,unit:'cm'}]});
  assert.deepEqual(file.renderedPages,[1,2,3]);assert.equal(file.pageCount,3);assert.equal(file.visualEvidence.length,3);
  assert(file.checks.some(c=>c.code==='numeric_comparison'&&c.state==='passed'));assert(!file.checks.some(c=>c.state==='failed'));
  assert(file.checks.some(c=>c.code==='actual_paged_rendered'&&c.state==='unchecked'));assert.equal(sha(fs.readFileSync(filePath)),sha(source));
  for(const proof of file.visualEvidence){const png=fs.readFileSync(path.join(data,'cache/delivery-check-visual/v1',proof.sha256+'.png'));assert.equal(sha(png),proof.sha256);assert.equal(proof.kind,'office_page');assert.equal(png.readUInt32BE(16),proof.width);assert.equal(png.readUInt32BE(20),proof.height);}
- report.word={elapsedMs:Date.now()-start,file};check('Original composer reads the actual three-page Word file, exports real Word PDF and persists all3 independently hashed PNGs; page2 text and6cm pass without modifying source bytes');
+ report.word={elapsedMs:Date.now()-start,file,recoveryOnly};if(!recoveryOnly)check('Original composer reads the actual three-page Word file, exports real Word PDF and persists all3 independently hashed PNGs; page2 text and6cm pass without modifying source bytes');
 
- const openPage=async()=>{
+ const openDetails=async()=>{
   const page=ctx.page;if(!await page.getByTestId('pi-file-panel').isVisible())await page.getByTestId('pi-files-toggle').click();
   await page.getByTestId('pi-files-refresh').click();const toggle=page.getByTestId('pi-files-explorer-toggle');if(await toggle.getAttribute('aria-pressed')==='false')await toggle.click();
   await page.getByTestId('pi-file-entry-'+name).click();const pane=page.getByTestId('pi-file-panel'),details=pane.getByTestId('pi-delivery-check');
-  await details.locator('summary').first().click();await details.getByTestId('pi-file-check-result').waitFor();const visual=details.getByTestId('pi-check-visual');
+  await details.locator('summary').first().click();return{pane,details};
+ };
+ const openPage=async()=>{const{pane,details}=await openDetails();await details.getByTestId('pi-file-check-result').waitFor();const visual=details.getByTestId('pi-check-visual');
   await visual.getByTestId('pi-check-visual-select').selectOption('1');await visual.getByTestId('pi-check-visual-load').click();
   await until(async()=>await visual.getByTestId('pi-check-visual-image').evaluate(e=>e.complete&&e.naturalWidth>0));
   assert.equal(sha(Buffer.from((await visual.getByTestId('pi-check-visual-image').getAttribute('src')).split(',')[1],'base64')),file.visualEvidence[1].sha256);
   return{pane,details,visual};
  };
- let ui=await openPage();for(const[width,height]of[[1366,768],[1920,1080]]){
+ let ui;if(!recoveryOnly){ui=await openPage();for(const[width,height]of[[1366,768],[1920,1080]]){
   await ctx.page.setViewportSize({width,height});await ui.visual.getByTestId('pi-check-visual-expand').click();const bounds=await ui.visual.getByTestId('pi-check-visual-close').boundingBox();
   assert(bounds.x>=0&&bounds.y>=0&&bounds.x+bounds.width<=width&&bounds.y+bounds.height<=height);await ctx.page.screenshot({path:path.join(output,`word-${width}.png`)});
   await ctx.page.keyboard.press('Escape');assert(await ui.pane.isVisible());
@@ -39,10 +43,11 @@ export async function checkWordPages(ctx){
  check('Original Word file panel selects exact native page2 pixels and enlarges at1366/1920; Escape preserves the original file panel');
  await ctx.close();await ctx.boot();ui=await openPage();assert.equal((await ctx.app.evaluate(()=>globalThis.pagedTest)).requests.length,0);
  check('Cold original application retrieves the same persisted actual Word page2 without a model call or file/publication replay');
+ }else{ui=await openDetails();check('Recovery continuation reuses the exact prior Word bytes and persisted3-page proof; positive render/view/restart are not replayed');}
 
- const owner=()=>{for(const entry of fs.readdirSync(stageRoot)){const dir=path.join(stageRoot,entry),registered=path.join(dir,'owned.json'),input=path.join(dir,'input.docx');if(fs.existsSync(registered)&&fs.existsSync(input)&&sha(fs.readFileSync(input))===sha(source))return JSON.parse(fs.readFileSync(registered,'utf8'));}};
+ const owner=()=>{for(const entry of fs.readdirSync(stageRoot)){const dir=path.join(stageRoot,entry),registered=path.join(dir,'owned.json'),input=path.join(dir,'input.docx');if(fs.existsSync(registered)&&fs.existsSync(input)&&sha(fs.readFileSync(input))===sha(source))return{...JSON.parse(fs.readFileSync(registered,'utf8')),folder:dir};}};
  await ui.details.getByTestId('pi-file-check-run').click();let owned;await until(()=>{owned=owner();return owned;});const stopped=Date.now();
- await ui.details.getByTestId('pi-file-check-cancel').click();await until(()=>latest()?.state==='cancelled'&&fs.readdirSync(stageRoot).length===0);
+ await ui.details.getByTestId('pi-file-check-cancel').click();await until(()=>latest()?.state==='cancelled'&&!fs.existsSync(owned.folder));
  const exists=()=>{try{process.kill(owned.pid,0);return true;}catch{return false;}};await until(()=>!exists(),15000);assert.equal(sha(fs.readFileSync(filePath)),sha(source));
  report.word.stopMs=Date.now()-stopped;report.word.cancelledOwner=owned;check('Visible Word Check Current File can be stopped after real Office ownership; its process and staging exit, cancelled receipt persists and original bytes remain unchanged');
 
