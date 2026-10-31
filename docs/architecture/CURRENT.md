@@ -2,6 +2,11 @@
 
 2026-11-01 E08：原text-change状态/服务→HTML版本薄适配→现officeVersion typed IPC/preload→共用版本组件/原HTML卡；原表仅新增可空parent_change_id，零新表/IPC/Runtime。恢复复用原文件queue和local settings owner。
 
+## 2026-11-01 知识库整体架构优先
+
+知识库的层次、模块职责、数据契约、成熟复用选择、现有接缝与实施顺序统一见[整体架构](KNOWLEDGE_BASE.md)。当前K0待实施；SQLite/本地文件为真源，FTS5/LanceDB为派生层，保留Pi与原任务宿主。尚未证明自然几十GB质量、完整用户闭环和Windows交付。下列历史证据保留，不覆盖该知识库顺序。
+
+
 2026-11-01 记忆页最终协调：原detail为服务器读回，draft只保留不同文本；匹配读回的草稿释放。原typed IPC/version锁/SQLite均不变，5项正式UI通过。
 
 2026-11-01 C03：原MemoryGovernanceWorkspace分离server detail和teacher draft；原typed IPC/SQLite/version锁不变，零DDL。延迟真实读回UI4项通过。

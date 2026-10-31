@@ -2,6 +2,11 @@
 
 2026-11-01 E08：HTML历史复用Pi编辑/原text ledger、Office版本DTO/typed IPC和原ScienceDemoFrame；零新组件库/CSS/依赖。Office16与原冲突6专项通过。
 
+## 2026-11-01 知识库整体架构优先
+
+知识库复用选择冻结于[整体架构第7节](../architecture/KNOWLEDGE_BASE.md#7-成熟方案复用决策)：保留现有LanceDB、RapidOCR/PDFium、Hana/Word、FTS5/BGE、DeepSeek与Pi；AnythingLLM/WeKnora为真实对照，Docling为待同样本证明收益的parser候选。当前不嵌完整第三方RAG产品、不新增服务或依赖。先统一已有文件host消费者。
+
+
 2026-11-01 收尾：main d80b9b5知识库实现完整整合；原记忆接口未改，草稿精确匹配读回再清除。无新依赖/DDL/Runtime，0付费。
 
 2026-11-01 C03：记忆页复用原get/update接口和版本锁，去除两处server→draft灌入；不新增依赖、Runtime或审查层。

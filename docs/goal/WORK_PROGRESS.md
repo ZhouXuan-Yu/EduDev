@@ -2,6 +2,11 @@
 
 2026-11-01 E08通用HTML版本工程已实现（37bd444）：原修改账本增可选parent_change_id，旧记录可读；同一typed officeVersion及原历史组件接通HTML三版预览/选择/另存恢复，旧卡默认打开当前文件。历史副本为派生缓存，不作新真源。源码8、Office16、冲突6、build/type、240组件及正式Pi6（双尺寸DPR按截图推算1.5/冷启）exit0；0付费/重放/renderer错误。一遍综合在mastery_quiz checkpoint提交失败，原日志/截图保留，不记207通过，未改该路径。下一HTML教学文件目录/全部来源定位及版本时间口径+C，再S/T；完整阶段AT/252仍待集中，Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlVersionSlice。
 
+## 2026-11-01 知识库整体架构优先
+
+知识库本轮根据用户指示收拢到[整体架构与K0合同](../architecture/KNOWLEDGE_BASE.md)，当前K0待实施；生产源码无修改，架构骨架复用可行，完整流程/规模质量/用户安装仍未证明。最新真实新批次2次HTTP200、12题全待核；旧五题答案来源升级保留，不冒充本轮质量通过。单页实验以stash db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb保存未合并。下步先文件host统一，再目录闭环，不继续单题打补丁。[统一基线](../research/KB_ARCHITECTURE_BASELINE_20261101.json)，完整Goal active。
+
+
 2026-11-01 本轮整合收尾：main d80b9b5整合为594fc06，14处Markdown冲突完整保留双方，无生产冲突；记忆草稿补充cb36263仅在读回文字精确一致时释放已保存草稿，后续刷新显示新版本，不同值仍保留。最终build/type、240组件、正式记忆页5项、原同文件/提议冷启3项exit0；文件/mtime/事件及提议记录不重写，0模型重放/付费。一次综合回归的初始L2失败保留，修后只复验受影响项，不宣称207通过。源码6及正式Pi7仍归其原构建。下一功能E08 HTML/来源定位+C，再S/T；完整阶段AT/252仍待集中，Goal active；D盘日常/安装包未更新。精确构建指纹及证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice.lastIntegration。
 
 2026-11-01 同轮C03修复（7b650b2）：一次综合回归在真实L2教师编辑处失败，已保留首次日志/截图，不记207通过。loadL2/loadL3只读回已存数据，教师草稿独立保留；原版本锁不变。受影响项build/type、240组件和正式记忆页4项通过（延迟真实读回/L2及L3保存/旧版本冲突），0付费。下一功能E08通用HTML与来源定位+C，再S/T；剩余完整E07/252矩阵功能齐后集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。

@@ -1,5 +1,10 @@
 # 知识库实施证据
 
+## 2026-11-01 知识库整体架构优先
+
+整体架构可行性基线：[KB_ARCHITECTURE_BASELINE_20261101](../research/KB_ARCHITECTURE_BASELINE_20261101.json)；架构/当前阶段：[KNOWLEDGE_BASE](../architecture/KNOWLEDGE_BASE.md)。本轮架构与证据整理不改生产源码，不把WIP测试算主线证据；K0待实施、完整Goal active。历史40GiB仅40正文块，最新真实2调用仍12题待核。
+
+
 本轮最终整合主线d381833为ad3731a，14处Markdown冲突保留双方、生产代码无冲突。最终build（含tsc）、原页43、匹配21、批次28、答案条目18＋真实旧回执1、组件240（最终renderer逐字节相同）、协作者专项9/7/15、真实UI8（题/答案双尺寸、来源错误/恢复、原关联重连、冷启及6道Pi共用来源读取）均通过；207/207归最终空白保护/两次E07合并前的47ce构建，不冒充最终全套重跑。实际规范回写0→5，另7题保留；本轮仅2次真实HTTP200，UI复读0云端/0renderer错误。主包3340613B（较c4cd89c增加15664），renderer7261323B（增加2414），含协作者改动，不作速度/召回提升归因。audit既有45项（8高29中8低/0严重，exit1）未升级。完整Goal active、D盘日常/安装包未更新。指纹与边界见docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json；提交后正常推送及远端一致性另行读回。
 
 
