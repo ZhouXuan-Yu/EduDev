@@ -17,7 +17,7 @@ import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
 import type {RuleOrigin} from './material-question-origins';
-import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
+import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_PAGE_PROMPT,validAiPagePrompt,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
 import {readAiPageSource,validateAiPageSource} from './material-ai-page-source';
 import {restoredPageQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
@@ -143,7 +143,7 @@ export class MaterialAiRepository{
       // Image text can span multiple chunks; the receipt, rather than a truncated first chunk, is authoritative.
       let sources:AiUnitInput['sources']=[];
       if(resource.chunkCount){const window=await this.host.materials().readingWindow(resource.id,0,16);if(window.hasMore||window.units.length!==resource.chunkCount||window.units.some(u=>u.chunk.pageNumber!==1))throw Error('unit_too_large');sources=window.units.map(materialSource);}
-      return[{sources,text:original.text,page:1,visualRisk:true,stamp,pageSource:original.source}];
+      return[{sources,text:original.text,page:1,visualRisk:true,stamp,pageSource:original.source,pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:original.status}}];
     }
     const units:AiUnitInput[]=[];
     for(let i=0;i<input.count;i++){
@@ -159,7 +159,7 @@ export class MaterialAiRepository{
             if(!rows.length||rows.length>16)throw Error('unit_too_large');const window=await this.host.materials().readingWindow(resource.id,Number(rows[0].body_offset),rows.length);
             if(window.units.length!==rows.length||window.units.some(u=>u.chunk.pageNumber!==page))throw Error('source_incomplete');sources=window.units.map(materialSource);
           }
-          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source});continue;
+          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:original.status}});continue;
         }
         if(job.status!=='complete')throw Error(input.images?'page_restoration_disabled':'source_incomplete');
         const rows=await this.host.all('SELECT c.*, (SELECT COUNT(*) FROM resource_chunks x WHERE x.resource_id=c.resource_id AND (x.chunk_index<c.chunk_index OR x.chunk_index=c.chunk_index AND x.id<c.id)) AS body_offset FROM resource_chunks c WHERE c.resource_id=? AND c.page_number=? ORDER BY c.chunk_index,c.id LIMIT 17',[resource.id,page]);
@@ -221,12 +221,13 @@ export class MaterialAiRepository{
     await this.validateOriginalInput(proof.config,proof.unit);return proof;
   }
   private async validateOriginalInput(config:AiBatchInput,unit:AiUnitInput){
+    if(unit.pagePrompt!==undefined&&(!unit.pageSource||!validAiPagePrompt(unit.pagePrompt)))throw Error('source_changed');
     const resource=await this.host.materials().resource(config.resourceId);
     if(resource.contentHash!==config.version||await this.host.materials().originalStamp(resource.id,config.version)!==unit.stamp)throw new Error('source_changed');
     for(const source of unit.sources){const view=await this.host.materials().source(source);if(unit.pageSource&&view.body.chunks[0]?.pageNumber!==unit.page)throw Error('source_changed');}
     if(unit.pageSource){
       if(!config.images||unit.native||unit.pageSource.resourceId!==config.resourceId||unit.pageSource.version!==config.version||unit.pageSource.page!==unit.page)throw Error('source_changed');
-      const current=await validateAiPageSource(this.host,unit.pageSource);if(current.text!==unit.text)throw Error('source_changed');
+      const current=await validateAiPageSource(this.host,unit.pageSource);if(current.text!==unit.text||unit.pagePrompt&&current.status!==unit.pagePrompt.ocrStatus)throw Error('source_changed');
     }
     if(unit.native){
       if(!unit.sources.length||!config.images)throw Error('source_changed');
@@ -365,6 +366,7 @@ export class MaterialAiRepository{
       }
       const imageSha=image?hash(Buffer.from(image.data,'base64')):'';
       const complete=async(args:Parameters<AiCompletion>[0])=>{
+        if(unit.pagePrompt)args={...args,pagePrompt:unit.pagePrompt};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
         const beforeSend=async()=>{if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
         if(this.runtime!.complete){await beforeSend();transportStarted=true;return this.runtime!.complete(args,signal);}

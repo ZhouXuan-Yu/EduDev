@@ -6,6 +6,17 @@
 
 0付费/新依赖/DDL/Runtime。audit45（8高29中8低/0严重，exit1）未升级，既有UI-contract指纹门禁未重跑。D盘日常/安装包未更新。下一E07其余普通工具/停止/崩溃/冲突矩阵、E08 HTML与来源定位+C，再S/T。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice；Goal active。
 
+本轮最终再次整合协作者main6bd287a为1d6358b：第一次正常原子推送遇并发主线更新被拒，未强推；13处Markdown冲突完整保留双方，知识库生产源码未变。最终build/type、240组件、协作者接续源码11与真实知识库UI7（双尺寸/错误/关联恢复/冷启/6道来源读回）exit0，0云端重放/renderer错误；37/28/19/9与207各归先前精确构建，不冒充最新全套重跑。最新主包3324949B、renderer7258909B，均含E07/E08；完整指纹/边界见KB_PAGE_PROMPT_20261031.json#lastIntegration。完整Goal active，D盘日常/安装包未更新。
+
+
+## 2026-10-31 原页完整题面与真实OCR状态
+
+已修复成功OCR被误称失败、选项仅在projection而规范stem缺失、陈述句题号被旧问句线索漏切三个真实缺口。新单元在既有input_json绑定page-restoration.v2与真实状态，来源复验；旧first_saved仍用旧提示。复用原parser的临时编号adapter，不改原OCR/原响应；覆盖字段须实际包含于完整stem与原页题面。无新表、依赖、IPC或额外执行器，数学/图题/跨页/来源门禁保留。
+
+本轮6次真实HTTP200（同已检查主书第4页两轮各2次、答案第3页2次）：最新主书12题全部保留，6道纯文字题达到现有ai_final资格（1/2/3/7/9/11），另6道图/表题仍待核。答案册22条两遍一致仍有整页uncertain_ocr及页尾跨页；真实12条匹配到最新答案页、0规范回写。不能把AI一致或ai_final称数学正确/教师验收。整合96286b0后真实UI7项（双尺寸、错误、原关联恢复、冷启、6道typed Pi共用来源读回）通过，0云端重放/renderer错误，题目及原件hash不变。一次测试故障注入因SQLite争用失败，原回执未变；增加有界等待/CAS/关闭后恢复后正式通过。
+
+整合build/type、240组件、原页37/批次28/匹配19/原生DeepSeek9通过，207/207综合exit0；207在最后原始字符串类型保护前构建，最终严格保护已有37项通过，不冒充207重跑。最终renderer与240组件构建逐字节相同。 64a8b2f最终构建再次真实UI7项通过，0付费重放/renderer错误，严格类型保护与原回执读取兼容。audit45（8高29中8低，0严重；exit1），未自动升级。主包3309674→3319358B、renderer7246099→7251525B，含协作者E08整合，不据单页宣称性能或召回提升。完整Goal active，图表/跨页、真实已知答案安全回写、自然几十GB质量/性能仍待推进；D盘日常/安装包未更新。回退先暂停新批次并用OMNI_EDU_AI_PAGE_RESTORATION=0停新页生产，保留v2读适配和原件/回执，不混用未知旧provider；无DDL回退，完整回滚未演练。证据：docs/research/KB_PAGE_PROMPT_20261031.json。
+
 E07本轮收尾：源码aafd974，b337d27检查点已正常原子推送并读回main/功能分支相同，工作树干净；本条归档不改生产源码。最终构建主包3319467B（+5591）、renderer7258909B（+7384）、preload不变；精确hash及分层测试边界见 AGENT_RECOVERY_E07_20261031.json。Goal active，D盘日常/安装包未更新，后续继续其余功能。
 
 

@@ -1,7 +1,7 @@
 import '../office-agent/register-source.mjs';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {createHash,randomUUID} from 'node:crypto';
 const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
 const {archiveEligible,validQuestionArchive}=await import('../../src/shared/question-archive.ts');
-const {parseAiPageResponse,validAiPageQuery,validMaterialPageSource}=await import('../../src/shared/material-ai-page.ts');
+const {parseAiPageResponse,validAiPageQuery,validMaterialPageSource,validAiPagePrompt,MATERIAL_PAGE_PROMPT}=await import('../../src/shared/material-ai-page.ts');
 const {materialSource}=await import('../../src/main/assets/material-source.ts');
 const sha=x=>createHash('sha256').update(x).digest('hex'),pageSchema='xiaozhi.material-ai-page-response.v1';
 const stem='计算7+8。',text='学科：数学\n年级：初二\n知识点：算术\n题型：解答题\n难度：中等\n第1题 '+stem+'\n【答案】15\n【解析】7与8相加得到15。';
@@ -18,7 +18,7 @@ function fixture(status='blank'){
  const materials={resource:async()=>({id,contentHash:version,originalFileName:'原页.pdf',title:'原页',parseStatus:'partial'}),originalStamp:async()=>state.stamp,verify:async()=>{},readingWindow:async(_id,offset)=>({units:offset===0&&unit()?[unit()]:[],hasMore:false}),source:async source=>{const u=unit();if(!u||JSON.stringify(materialSource(u))!==JSON.stringify(source))throw Error('source_changed');return{body:{chunks:[u.chunk]}};}};
  const host={all:async(s,p=[])=>db.prepare(s).all(...p),run:async(s,p=[])=>{db.prepare(s).run(...p);},materials:()=>materials,map:r=>r,create:async fields=>{const v={...fields,id:'question_'+randomUUID(),createdAt:'x',updatedAt:'x'};db.prepare("INSERT INTO question_bank_items(id,archive_json) VALUES(?,'')").run(v.id);saved.push(v);return v;},writer:async(action,before)=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);before?.();db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};repo=new MaterialAiRepository(host);
  repo.configure({codec:{available:()=>true,seal:v=>v,open:v=>v},clean:async v=>state.mode==='privacy'?v.replaceAll('张同学','[个人信息]'):v,image:async()=>{if(state.mode==='busy_image_once'){state.mode='normal';throw Error('busy');}return{mime:'image/png',data:Buffer.from('controlled-owned-image').toString('base64')};},complete:async input=>{
-  state.calls++;assert(input.image);assert.equal(input.page,true);assert.equal(input.text,ocr);
+  state.calls++;(state.prompts??=[]).push(input.pagePrompt??null);assert(input.image);assert.equal(input.page,true);assert.equal(input.text,ocr);
   if(state.mode==='unknown')throw Error('outcome_unknown');
   let result={schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[structuredClone(q)]};
   if(state.mode==='ordinary')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'光在同种均匀介质中沿直线传播。',pageIssues:[],questions:[]};
@@ -92,6 +92,28 @@ await check('Actual provider requests carry one page schema, unchanged OCR, an o
  try{const raw=JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[q]});globalThis.fetch=async(_url,options)=>{requests.push(JSON.parse(options.body));return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}),{status:200});};
   const args={model:'deepseek-flash',apiKey:'controlled-test-only',text:'原始OCR乱码',page:true,imageCoverage:true,image:{mime:'image/png',data:Buffer.from('controlled-page').toString('base64')}};await completeMaterialAi(args,new AbortController().signal);await completeMaterialAi({...args,previous:parseAiPageResponse(raw)},new AbortController().signal);
   assert.equal(requests.length,2);for(const r of requests){const s=r.messages[0].content;assert(s.includes(pageSchema));assert(s.includes('schemaVersion/outcome/questions/pageText/pageIssues五个字段'));assert(!s.includes('xiaozhi.material-ai-image-response.v1'));assert(!s.includes('xiaozhi.material-ai-response.v1'));assert.equal(JSON.parse(r.messages[1].content[0].text).material,args.text);assert.equal(r.messages[1].content.filter(c=>c.type==='image_url').length,1);}assert.equal(JSON.parse(requests[1].messages[1].content[0].text).firstDraft.pageText,text);
+ }finally{globalThis.fetch=ordinary;}
+});
+await check('New original-page units freeze the actual PDF and image OCR status for both passes',async()=>{
+ for(const status of ['complete','blank','failed','needs_review']){const f=fixture(status);try{await f.init();const batch=await f.repo.create(f.input),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);assert.deepEqual(unit.pagePrompt,{policy:MATERIAL_PAGE_PROMPT,ocrStatus:status});await f.repo.drain();await f.repo.drain();assert.deepEqual(f.state.prompts,[unit.pagePrompt,unit.pagePrompt]);}finally{f.db.close();}}
+ for(const status of ['complete','blank','failed']){const f=await imageFixture(status);try{const batch=await f.repo.create(f.input),unit=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch).input_json);assert.deepEqual(unit.pagePrompt,{policy:MATERIAL_PAGE_PROMPT,ocrStatus:status});await f.repo.drain();await f.repo.drain();assert.deepEqual(f.state.prompts,[unit.pagePrompt,unit.pagePrompt]);}finally{f.db.close();}}
+});
+await check('Invalid, forged or changed prompt metadata is rejected before a paid dispatch',async()=>{
+ let invoked=false;assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,get ocrStatus(){invoked=true;return 'complete';}}));assert(!invoked);
+ assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:{toString(){invoked=true;return 'complete';}}}));assert(!invoked,'Validation must not coerce or execute nested values');assert(!validAiPagePrompt({policy:MATERIAL_PAGE_PROMPT,ocrStatus:new String('complete')}));
+ for(const value of [{policy:'future',ocrStatus:'complete'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'failed'},{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete',force:true}]){const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);unit.pagePrompt=value;f.db.prepare('UPDATE material_ai_units SET input_json=? WHERE batch_id=?').run(JSON.stringify(unit),batch);await f.repo.drain();assert.equal(f.state.calls,0);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,0);assert.equal(f.db.prepare('SELECT error FROM material_ai_units WHERE batch_id=?').get(batch).error,'source_changed');}finally{f.db.close();}}
+});
+await check('A legacy stored first pass resumes without silently changing its prompt policy; saved v2 receipts retain strict provenance',async()=>{
+ const f=fixture('complete');try{await f.init();const batch=await f.repo.create(f.input),row=f.db.prepare('SELECT input_json FROM material_ai_units WHERE batch_id=?').get(batch),unit=JSON.parse(row.input_json);delete unit.pagePrompt;const first=JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[q]}),image=Buffer.from('controlled-owned-image'),imageSha=sha(image);f.db.prepare("UPDATE material_ai_units SET input_json=?,status='first_saved',first_json=?,image_sha=? WHERE batch_id=?").run(JSON.stringify(unit),first,imageSha,batch);f.db.prepare('INSERT INTO material_ai_image_inputs(batch_id,ordinal,image_sha,mime,data_base64) VALUES(?,1,?,?,?)').run(batch,imageSha,'image/png',image.toString('base64'));f.db.prepare('UPDATE material_ai_batches SET calls=1 WHERE id=?').run(batch);await f.repo.drain();assert.equal(f.db.prepare('SELECT status FROM material_ai_units WHERE batch_id=?').get(batch).status,'complete');assert.deepEqual(f.state.prompts,[null]);assert.equal(f.state.calls,1);assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units WHERE batch_id=?').get(batch).first_json,first);assert.equal(f.db.prepare('SELECT calls FROM material_ai_batches WHERE id=?').get(batch).calls,2);await f.repo.validate(await f.question());}finally{f.db.close();}
+ const v=await completed('complete');try{await v.repo.validate(await v.question());const row=v.db.prepare('SELECT input_json FROM material_ai_units').get(),unit=JSON.parse(row.input_json);unit.pagePrompt={policy:'forged',ocrStatus:'complete'};v.db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify(unit));await assert.rejects(v.repo.page(query(v)),/source_changed/);}finally{v.db.close();}
+});
+await check('Versioned provider prompt conveys success truthfully, preserves source metadata and keeps real doubts and strict output',async()=>{
+ const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts'),ordinary=globalThis.fetch,requests=[];
+ try{const raw=JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:text,pageIssues:[],questions:[q]});globalThis.fetch=async(_url,options)=>{requests.push(JSON.parse(options.body));return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:raw}}]}),{status:200});};
+  const args={model:'deepseek-flash',apiKey:'controlled-only',text:'成功识别但仍可能错字',page:true,imageCoverage:true,image:{mime:'image/png',data:Buffer.from('controlled-page').toString('base64')},pagePrompt:{policy:MATERIAL_PAGE_PROMPT,ocrStatus:'complete'}};
+  await completeMaterialAi(args,new AbortController().signal);await completeMaterialAi({...args,previous:parseAiPageResponse(raw)},new AbortController().signal);
+  for(const r of requests){const s=r.messages[0].content;assert(s.includes(MATERIAL_PAGE_PROMPT));assert(!s.includes('本次本地OCR为空、失败或待核'));assert(s.includes('出处、年份、难度标记'));assert(s.includes('原图仍有模糊'));assert(s.includes('图题仍按现规则requiresImage=true'));assert(s.includes(pageSchema));assert.deepEqual(JSON.parse(r.messages[1].content[0].text).pageContext,args.pagePrompt);}
+  for(const bad of [{...args,pagePrompt:{policy:'future',ocrStatus:'complete'}},{...args,page:false}])await assert.rejects(completeMaterialAi(bad,new AbortController().signal),/invalid_input/);assert.equal(requests.length,2);
  }finally{globalThis.fetch=ordinary;}
 });
 await check('Transient local worker contention stays pending without a charge; due work bypasses it and the original resumes once',async()=>{
@@ -223,5 +245,22 @@ await check('An explicit advertisement cannot publish a provider-invented miniat
   await f.init();f.repo.runtime.complete=async()=>{f.state.calls++;return JSON.stringify({schemaVersion:pageSchema,outcome:'questions',pageText:'本页为广告页，打印前可以把这页删掉。\n'+text,pageIssues:[],questions:[q]});};
   await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();assert.equal(await f.question(),undefined);const row=f.db.prepare('SELECT status,error FROM material_ai_units').get();assert.equal(row.status,'outcome_unknown');assert.equal(row.error,'invalid_response');await f.repo.drain();assert.equal(f.state.calls,2);
  }finally{f.db.close();}
+});
+await check('Declared declarative MCQs and fill-ins preserve their full source bodies without promoting decimal headings or undeclared lists',async()=>{
+ const {restoredPageQuestions}=await import('../../src/main/assets/material-ai-page-content.ts');const f=await completed();try{const source=(await f.repo.page(query(f))).source;
+ const mcq='物体的内能变化（ ）。\nA.温度升高\nB.温度降低\nC.温度不变\nD.不能确定',fill='分子在不停地做______运动。',raw='1. '+mcq+'\n11. '+fill;
+ const result=restoredPageQuestions(raw,source,['1','11']);assert.deepEqual(result.map(v=>v.number),['1','11']);assert.equal(result[0].fields.stem,mcq);assert.equal(result[1].fields.stem,fill);assert.deepEqual(result.map(v=>v.risks),[[],[]]);assert.equal(raw,'1. '+mcq+'\n11. '+fill);
+ assert.equal(restoredPageQuestions('1. 目录\n2. 前言\n5.3 练习版本',source).length,0);assert.equal(restoredPageQuestions('5.3 练习版本',source,['5']).length,0);
+ const duplicate=restoredPageQuestions('1. '+mcq+'\n1. '+fill,source,['1']);assert(duplicate.every(v=>v.risks.includes('ambiguous_number')));assert.equal(restoredPageQuestions(raw,source,['12']).some(v=>v.number==='12'),false);
+ const {assessAiPage}=await import('../../src/main/assets/material-ai-page-publish.ts');const response={schemaVersion:pageSchema,outcome:'questions',pageText:raw+'\n第12题 计算7+8。',pageIssues:[],questions:[{...q,number:'1'},{...q,number:'11'}]};assert(assessAiPage(response,response,source).omitted,'Undeclared visible questions must still block completeness');
+ }finally{f.db.close();}
+});
+await check('Coverage stored only outside the canonical stem cannot qualify choices, subquestions, tables or formulas',async()=>{
+ const {pageQuestionEvidence}=await import('../../src/shared/material-ai-page.ts');
+ for(const [field,body] of Object.entries({choices:'A.甲\nB.乙\nC.丙\nD.丁',subquestions:'（1）写出结果。\n（2）说明理由。',tables:'温度/℃ 20 30\n时间/s 1 2',formulas:'Q=cmΔt'})){
+  const item=structuredClone(q);item.projection[field]={state:'provided',text:body};const response={schemaVersion:pageSchema,outcome:'questions',pageText:'第1题 '+stem+'\n'+body,pageIssues:[],questions:[item]};assert.equal(pageQuestionEvidence(response,response,'1',sha('pixels'),stem+'\n'+body),undefined,field+' omitted from stem');
+  item.stem+='\n'+body;item.projection.statement.text=item.stem;assert.equal(pageQuestionEvidence(response,response,'1',sha('pixels'),stem),undefined,field+' absent from actual page candidate');
+  if(field!=='tables')assert(pageQuestionEvidence(response,response,'1',sha('pixels'),item.stem),field+' complete source must remain usable');
+ }
 });
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));
