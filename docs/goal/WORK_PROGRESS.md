@@ -1,6 +1,6 @@
 # EduDev 当前任务进度
 
-最终再次整合main95cd21d为03a0204：13处Markdown冲突逐段保留双方，无生产冲突；本片版本功能源码未变。最终build/type与240组件exit0；正式Pi8归fc0102d、同四版文件只读/冷启3项归c500cb5，一次207归fc0102d，均未重复全套。最终renderer7251534B（含主线封面计数改动），完整指纹以currentVersionSlice.lastIntegration为准。Goal active；D盘日常/安装包未更新。
+最终再次整合main95cd21d为03a0204：13处Markdown冲突逐段保留双方，无生产冲突；本片版本功能源码未变。最终build/type与240组件exit0；正式Pi8归fc0102d、同四版文件只读/冷启3项归c500cb5，一次207归fc0102d，均未重复全套。最终renderer7251525B（含主线封面计数改动），完整指纹以currentVersionSlice.lastIntegration为准。Goal active；D盘日常/安装包未更新。
 
 ## 2026-10-31 E08 当前成果与历史检查一致性
 
