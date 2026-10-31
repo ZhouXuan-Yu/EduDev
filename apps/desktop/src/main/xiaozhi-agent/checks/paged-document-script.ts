@@ -24,7 +24,6 @@ ${OFFICE_JOB_SOURCE}
   $owned=$true;$job=New-Object XiaozhiRenderJob($server.Handle)
   [IO.File]::WriteAllText((Join-Path $env:XIAOZHI_RENDER_ROOT 'owned.json'),(@{pid=[int]$officeId;start=$server.StartTime.ToUniversalTime().ToString('o')} | ConvertTo-Json -Compress))
   $blank.Close(0);[void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($blank);$blank=$null
-  $application.Options.UpdateLinksAtOpen=$false;$application.Options.UpdateFieldsAtPrint=$false;$application.Options.UpdateLinksAtPrint=$false
   $document=$application.Documents.Open((Join-Path $env:XIAOZHI_RENDER_ROOT 'input.docx'),$false,$true,$false)
   $document.Repaginate();$pageCount=[int]$document.ComputeStatistics(2)
   if($pageCount -lt 1 -or $pageCount -gt 64){throw 'too_large'}
