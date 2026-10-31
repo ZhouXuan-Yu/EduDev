@@ -1,0 +1,6 @@
+.pi-office-versions{min-width:0;width:100%;font-size:.8125rem;color:var(--office-muted,#64748b)}
+.pi-office-versions-body{border:1px solid var(--office-line,#e2e8f0);border-radius:12px;padding:12px;margin:4px 0 8px;overflow-wrap:anywhere}
+.pi-office-versions-body p{margin:6px 0;white-space:normal}
+.pi-office-versions-body label{display:flex;flex-direction:column;gap:4px}
+.pi-office-versions-body select{max-width:100%;width:100%;color:inherit;background:var(--office-bg,#fff);border:1px solid var(--office-line,#e2e8f0);border-radius:8px;padding:8px}
+.pi-office-version-actions{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}

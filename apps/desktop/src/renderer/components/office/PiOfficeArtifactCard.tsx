@@ -11,6 +11,7 @@ import {OFFICE_ARTIFACT_SCHEMA,OFFICE_ARTIFACT_ERRORS,type OfficeArtifactDecisio
 import {validOfficeDraft,isPresentationDraft,isPaperOfficeDraft,type OfficeDraft} from '../../../shared/xiaozhi-office-draft';
 import {isMathPaperOfficeSchema,isRichPaperOfficeSchema} from '../../../shared/paper-export';
 import './pi-office-artifact.css';
+import {PiOfficeVersions} from './PiOfficeVersions';
 
 const labels:Record<OfficeArtifactState,string>={pending:'需要你的确认',approved:'已确认，等待生成',generating:'正在生成',prepared:'已生成，等待保存',committing:'正在保存',saved:'已保存并核验',rejected:'已拒绝，未写入',interrupted:'已中断，未继续写入',uncertain:'保存中断，需要核验',conflict:'内容或文件已变化，未覆盖',failed:'生成或保存未完成'};
 const escaped=(v:string|number)=>String(v).replace(/[\\`*_{}\[\]()#+.!|<>-]/g,'\\$&');
@@ -109,6 +110,7 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
    {draft.busy&&<span role="status">正在提交…</span>}
   </div>
   {draft.error&&<p role="alert" data-testid="pi-office-error">{draft.error}<Button size="sm" variant="ghost" onPress={()=>void onRefresh()}>刷新状态</Button></p>}
+  {artifact.state==='saved'&&artifact.artifactId&&<PiOfficeVersions sessionId={sessionId} artifactId={artifact.artifactId} running={running} onOpen={onOpen} onRefresh={onRefresh}/>}
  </ChatTool>;
 }
 
