@@ -57,6 +57,11 @@ try{
   action=()=>db.prepare('UPDATE teacher_resources SET content_hash=? WHERE id=?').run('b'.repeat(64),id);assert.equal((await run()).code,'source_changed');db.prepare('UPDATE teacher_resources SET content_hash=? WHERE id=?').run(version,id);
   const ctl=new AbortController();action=()=>ctl.abort();assert.equal((await run(ctl.signal)).code,'cancelled');action=()=>{throw Error('busy');};assert.equal((await run()).code,'busy');action=()=>{};
  });
+ await check('File-cache hit detects same-length original tampering before the call, without original() byte access',async()=>{
+  const saved=Buffer.alloc(6),fd=fs.openSync(source,'r+');try{fs.readSync(fd,saved,0,6,0);fs.writeSync(fd,Buffer.from('BROKEN'),0,6,0);}finally{fs.closeSync(fd);}
+  try{const result=JSON.parse((await tool.execute('owned-cache',input,new AbortController().signal)).content[0].text);assert.equal(result.code,'source_changed');}
+  finally{const fd=fs.openSync(source,'r+');try{fs.writeSync(fd,saved,0,6,0);}finally{fs.closeSync(fd);}}
+ });
  report.success=true;
 }catch(error){report.success=false;report.error=String(error.stack||error);process.exitCode=1;}
 finally{db?.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({success:report.success,checks:checks.length,error:report.error,report:path.join(output,'report.json')}));}
