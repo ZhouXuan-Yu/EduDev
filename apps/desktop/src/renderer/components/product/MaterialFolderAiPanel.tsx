@@ -12,8 +12,9 @@ export function MaterialFolderAiPanel({batchId,open}:{batchId:string;open:(id:st
  const authorize=async()=>{if(!settings||busy)return;setBusy(true);setError('');try{const next=await window.omniEdu?.authorizeMaterialFolderAi({schemaVersion:schema,batchId,settingsRevision:settings.revision,maxCalls:budget,cloudConsent:true,publicMaterial:true});setView(next);setForm(false);setConsent(false);setPublic(false);}catch(e){setError(message(e));}finally{setBusy(false);}};
  const action=async(action:'pause'|'resume')=>{setBusy(true);setError('');try{setView(await window.omniEdu?.controlMaterialFolderAi({schemaVersion:schema,batchId,action}));}catch(e){setError(message(e));}finally{setBusy(false);}};
  return <details className="teacher-library-caption" data-testid={'folder-ai-'+batchId}><summary>后台 AI 整理{view?` · ${labels[view.status]||'等待处理'}`:' · 尚未授权'}</summary>
-  <p>本地收录完成的资料将逐页或逐题交给DeepSeek对照原图整理。原始OCR与AI稿分别保存，疑点保留待处理；归档和正文可查不代表题目已经核对。</p>
+  <p>本地收录完成后，明确无题的封面直接跳过，其余资料逐页或逐题交给DeepSeek对照原图整理。原始OCR与AI稿分别保存，疑点保留待处理；归档和正文可查不代表题目已经核对。</p>
   {view&&<><p role="status" data-testid="folder-ai-counts">涉及 {view.resources} 份资料 · 单元 {view.complete} 已完成 / {view.units} 已安排 · {view.waiting} 等待或处理中 · {view.review+view.failed} 待处理；AI自动稿 {view.readyQuestions} 题，待核对 {view.reviewQuestions} 题。调用 {view.calls} / {view.maxCalls}（已预留 {view.reserved}）。</p>
+   {view.skippedCover>0&&<p role="status" data-testid="folder-ai-skipped-cover">其中 {view.skippedCover} 页为非题目封面，已直接跳过，未调用AI。原始资料保留。</p>}
    <div className="teacher-library-toolbar">{['running','budget_exhausted'].includes(view.status)?<Button size="sm" variant="secondary" isDisabled={busy} onPress={()=>void action('pause')} data-testid="folder-ai-pause">暂停AI</Button>:view.status==='paused'?<Button size="sm" variant="secondary" isDisabled={busy} onPress={()=>void action('resume')} data-testid="folder-ai-resume">继续本批授权范围</Button>:null}</div>
    {view.error&&<p role="alert">{message(view.error)}</p>}{view.issues.map(issue=><p key={issue.resourceId+':'+issue.unit}>{issue.title} · 单元 {issue.unit}：{message(issue.error)} <Button size="sm" variant="ghost" onPress={()=>open(issue.resourceId)}>打开资料处理</Button></p>)}
   </>}

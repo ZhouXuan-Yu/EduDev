@@ -6,12 +6,12 @@ const {MaterialFolderAiRepository}=await import('../../src/main/assets/material-
 const version=createHash('sha256').update('original-pdf').digest('hex');
 const schema='xiaozhi.material-folder-ai.v1';
 function fixture(){
- const db=new DatabaseSync(':memory:'),id='batch_'+randomUUID(),created=[],state={failure:'',attempts:0};let repo;
+ const db=new DatabaseSync(':memory:'),id='batch_'+randomUUID(),created=[],state={failure:'',attempts:0,beforeWrite:undefined};let repo;
  db.exec(`CREATE TABLE material_import_batches(id TEXT PRIMARY KEY,status TEXT);CREATE TABLE material_import_entries(seq INTEGER PRIMARY KEY,batch_id TEXT,kind TEXT,status TEXT,resource_id TEXT);
  CREATE TABLE teacher_resources(id TEXT PRIMARY KEY,content_hash TEXT,original_file_name TEXT,parse_status TEXT,parse_engine TEXT,title TEXT);
  CREATE TABLE resource_chunks(id TEXT,resource_id TEXT,page_number INTEGER);
  CREATE TABLE material_pdf_jobs(resource_id TEXT,version TEXT,total INTEGER,generation TEXT,state TEXT);
- CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT NOT NULL DEFAULT '{}');
+ CREATE TABLE material_pdf_pages(generation TEXT,page INTEGER,status TEXT,result_json TEXT NOT NULL DEFAULT '{}',error TEXT NOT NULL DEFAULT '');
  CREATE TABLE material_ai_batches(id TEXT PRIMARY KEY,status TEXT,calls INTEGER,config_json TEXT,pause_reason TEXT NOT NULL DEFAULT '');
  CREATE TABLE material_ai_units(batch_id TEXT,ordinal INTEGER,status TEXT,error TEXT);
  CREATE TABLE material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT,batch_id TEXT,folder_id TEXT,folder_revision INTEGER);
@@ -27,7 +27,7 @@ function fixture(){
   db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'running',0,?)").run(batch,JSON.stringify(input));
   db.prepare("INSERT INTO material_ai_units VALUES(?,1,'pending','')").run(batch);db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(task.key,'fixture',batch,task.folderId,task.revision);return batch;
  },action:async()=>{}};
- const host={all:async(q,p=[])=>db.prepare(q).all(...p),run:async(q,p=[])=>{db.prepare(q).run(...p);},ai:()=>ai,word:()=>({}),writer:async action=>{db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};
+ const host={all:async(q,p=[])=>db.prepare(q).all(...p),run:async(q,p=[])=>{db.prepare(q).run(...p);},ai:()=>ai,word:()=>({}),writer:async action=>{const hook=state.beforeWrite;state.beforeWrite=undefined;hook?.();db.exec('BEGIN IMMEDIATE');try{const result=await action(repo);db.exec('COMMIT');return result;}catch(e){db.exec('ROLLBACK');throw e;}}};
  repo=new MaterialFolderAiRepository(host);
  function resource(name='长书.pdf',status='needs_parser',page='processing',job='processing'){
   const rid='resource_'+randomUUID(),generation=randomUUID(),seq=Number(db.prepare('SELECT COALESCE(MAX(seq),0)+1 n FROM material_import_entries').get().n);
@@ -39,6 +39,8 @@ function fixture(){
  }
  return{db,id,created,state,resource,get repo(){return repo;},reopen:async()=>{repo=new MaterialFolderAiRepository(host);await repo.migrate();},start:async()=>{await repo.migrate();await repo.authorize({schemaVersion:schema,batchId:id,settingsRevision:9,maxCalls:40,cloudConsent:true,publicMaterial:true});},publish:r=>{db.prepare("UPDATE teacher_resources SET parse_status='ready' WHERE id=?").run(r.rid);db.prepare("UPDATE material_pdf_jobs SET state='complete' WHERE resource_id=?").run(r.rid);db.prepare("UPDATE material_pdf_pages SET status='complete' WHERE generation=?").run(r.generation);db.prepare('INSERT INTO resource_chunks VALUES(?,?,1)').run('chunk_'+randomUUID(),r.rid);}};
 }
+const cover='物理 九年级全一册\n主编曲一线\n首都师范大学出版社';
+const receipt=(text=cover)=>({status:'complete',error:'',method:'ocr',text,nativeText:'',ocrText:text,width:1200,height:1800,imageArea:1,nativeBoxes:[]});
 const results=[];let failures=0;
 async function check(name,fn){try{await fn();results.push({name,ok:true});console.log('PASS '+name);}catch(e){failures++;results.push({name,ok:false,error:String(e.stack)});console.error('FAIL '+name+'\n'+e.stack);}}
 await check('PDF processing page remains waiting, never local_page_failed',async()=>{const f=fixture();try{f.resource();await f.start();await f.repo.tick();assert.equal(f.created.length,0);assert.equal((await f.repo.view(f.id)).review,0);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_folder_ai_units').get().n,0);}finally{f.db.close();}});
@@ -46,7 +48,31 @@ await check('Complete staged page waits for canonical publication; published pag
 await check('Eight waiting books do not starve later ready text; resource discovery stays bounded',async()=>{const f=fixture();try{for(let i=0;i<8;i++)f.resource('等待.pdf','needs_parser','pending');const ready=f.resource('已完成.md','ready');await f.start();for(let i=0;i<4&&!f.created.length;i++)await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].resourceId,ready.rid);}finally{f.db.close();}});
 await check('Terminal failed and blank pages are queued for original-image verification and never counted complete before the AI executor',async()=>{const f=fixture();try{f.resource('坏页.pdf','partial','failed','partial');f.resource('空页.pdf','ready','blank','complete');await f.start();await f.repo.tick();assert.equal(f.created.length,1);assert.equal(f.created[0].images,true);assert.equal((await f.repo.view(f.id)).complete,0);assert.equal((await f.repo.view(f.id)).waiting,1);}finally{f.db.close();}});
 await check('A successfully read explicit cover completes locally without a paid task; a mixed or unclear cover is retained',async()=>{
- for(const kind of ['cover','mixed','unclear']){const f=fixture();try{const r=f.resource('封面.pdf','ready',kind==='unclear'?'needs_review':'complete','complete');f.publish(r);const text='物理 九年级全一册\n主编曲一线\n首都师范大学出版社'+(kind==='mixed'?'\n第1题 已知温度，计算温差。':'');f.db.prepare('UPDATE material_pdf_pages SET result_json=?,status=?').run(JSON.stringify({text}),kind==='unclear'?'needs_review':'complete');await f.start();await f.repo.tick();if(kind==='cover'){assert.equal(f.created.length,0);assert.equal((await f.repo.view(f.id)).complete,1);assert.equal(f.db.prepare('SELECT error FROM material_folder_ai_units').get().error,'non_question_cover');await f.reopen();await f.repo.tick();assert.equal(f.created.length,0);}else assert.equal(f.created.length,1);}finally{f.db.close();}}
+ for(const kind of ['cover','mixed','unclear']){const f=fixture();try{const r=f.resource('封面.pdf','ready',kind==='unclear'?'needs_review':'complete','complete');f.publish(r);const text='物理 九年级全一册\n主编曲一线\n首都师范大学出版社'+(kind==='mixed'?'\n第1题 已知温度，计算温差。':'');f.db.prepare('UPDATE material_pdf_pages SET result_json=?,status=?').run(JSON.stringify(receipt(text)),kind==='unclear'?'needs_review':'complete');await f.start();await f.repo.tick();if(kind==='cover'){assert.equal(f.created.length,0);assert.equal((await f.repo.view(f.id)).complete,1);assert.equal((await f.repo.view(f.id)).skippedCover,1);assert.equal((await f.repo.view(f.id)).calls,0);assert.equal((await f.repo.view(f.id)).reserved,0);assert.equal(f.db.prepare('SELECT error FROM material_folder_ai_units').get().error,'non_question_cover');await f.reopen();await f.repo.tick();assert.equal(f.created.length,0);}else assert.equal(f.created.length,1);}finally{f.db.close();}}
+});
+await check('All OCR channels and complete valid receipts are required before discarding a cover',async()=>{
+ for(const mode of ['native_question','ocr_question','partial_shape','malformed','status_mismatch','error_mismatch','unknown_field','chinese_number','circled_number']){const f=fixture();try{
+  const r=f.resource('混合封面.pdf','ready','complete','complete');f.publish(r);let body=receipt();
+  if(mode==='native_question')body.nativeText='1. 温度反映冷热程度。';if(mode==='ocr_question')body.ocrText='1. 温度反映冷热程度。';
+  if(mode==='partial_shape')body={text:cover};if(mode==='status_mismatch')body.status='needs_review';if(mode==='unknown_field')body.extra=true;
+  if(mode==='chinese_number')body.ocrText+='\n第十二题 温度反映冷热程度。';if(mode==='circled_number')body.ocrText+='\n① 温度反映冷热程度。';
+  f.db.prepare('UPDATE material_pdf_pages SET result_json=?,error=?').run(mode==='malformed'?'{':JSON.stringify(body),mode==='error_mismatch'?'ocr_failed':'');
+  await f.start();await f.repo.tick();const view=await f.repo.view(f.id);assert.equal(view.skippedCover,0,mode);assert.equal(view.complete,0,mode);assert.equal(f.created.length,1,mode+' retains original guarded AI path');
+ }finally{f.db.close();}}
+});
+await check('Writer rechecks source receipt, folder pause and source version before skipping; cursor and outcome rollback together',async()=>{
+ for(const mode of ['receipt','pause','version','rollback']){const f=fixture();try{
+  const r=f.resource('封面.pdf','ready','complete','complete');f.publish(r);f.db.prepare('UPDATE material_pdf_pages SET result_json=?').run(JSON.stringify(receipt()));await f.start();
+  f.state.beforeWrite=()=>{if(mode==='receipt')f.db.prepare('UPDATE material_pdf_pages SET result_json=?').run(JSON.stringify(receipt(cover+'\n1. 温度反映冷热程度。')));if(mode==='pause')f.db.prepare("UPDATE material_folder_ai SET status='paused' WHERE batch_id=?").run(f.id);if(mode==='version')f.db.prepare('UPDATE teacher_resources SET content_hash=? WHERE id=?').run('b'.repeat(64),r.rid);if(mode==='rollback')f.db.exec("CREATE TRIGGER reject_cover BEFORE UPDATE OF cursor ON material_folder_ai_resources BEGIN SELECT RAISE(ABORT,'forced_cursor_failure'); END");};
+  await f.repo.tick();const view=await f.repo.view(f.id);assert.equal(view.skippedCover,0,mode);assert.equal(view.complete,0,mode);if(mode==='pause')assert.equal(f.created.length,0);if(mode==='rollback'){assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_folder_ai_units').get().n,0);assert.equal(f.db.prepare('SELECT cursor FROM material_folder_ai_resources').get().cursor,0);}
+ }finally{f.db.close();}}
+});
+await check('A previously reserved or orphaned page task cannot be relabelled as an unbilled local cover skip',async()=>{
+ for(const mode of ['reserved','orphan','malformed']){const f=fixture();try{
+  const r=f.resource('封面.pdf','ready','complete','complete');f.publish(r);f.db.prepare('UPDATE material_pdf_pages SET result_json=?').run(JSON.stringify(receipt()));await f.start();const batch='aibatch_'+randomUUID();
+  if(mode!=='orphan')f.db.prepare("INSERT INTO material_ai_batches(id,status,calls,config_json) VALUES(?,'attention',1,?)").run(batch,mode==='malformed'?'{':JSON.stringify({resourceId:r.rid,start:1,maxCalls:2}));
+  const key=createHash('sha256').update(JSON.stringify([schema,f.id,1,r.rid,version,1])).digest('hex');f.db.prepare('INSERT INTO material_ai_task_keys VALUES(?,?,?,?,?)').run(key,'fixture',batch,f.id,1);await f.repo.tick();if(mode==='malformed')await assert.rejects(f.repo.view(f.id),/^Error: unavailable$/);else{assert.equal((await f.repo.view(f.id)).skippedCover,0);assert.equal((await f.repo.view(f.id)).complete,0);}assert.equal(f.db.prepare("SELECT COUNT(*) n FROM material_folder_ai_units WHERE error='non_question_cover'").get().n,0);
+ }finally{f.db.close();}}
 });
 function legacy(f,r,code='local_page_failed',child=''){
  f.db.prepare("INSERT INTO material_folder_ai_resources(batch_id,resource_id,version,cursor,total,status) VALUES(?,?,?,1,1,'complete')").run(f.id,r.rid,version);

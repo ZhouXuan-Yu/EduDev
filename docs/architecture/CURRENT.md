@@ -2,6 +2,10 @@
 
 2026-10-31 E08当前版本：原保存谱系的统一轻量family投影贯通catalog、bundle、history与task proof policy；原已有typed接口只添可选元数据。历史检查按新版本派生stale，不改原报告/原清单/历史来源。无新Runtime/表/依赖或token级历史读取。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
+## 2026-10-31 封面跳过补强
+
+封面跳过必须校验完整成功页回执、全部识别文字通道及明确无题线索；在原writer内复查版本、发表状态、游标和暂停，不能覆盖既有付费任务。当前页任务键采用原主键查询，不逐页扫描整批付费元数据。skippedCover从既有本地完成单元派生，原PDF/OCR保留，无新真源或云端权限。正式结果和边界见 docs/research/KB_COVER_SKIP_20261031.json；完整Goal仍active。
+
 ## 2026-10-31 答案册受控回写与封面跳过
 
 新增目录定位微基准：5000页/10万条合成元数据、内存SQLite预热；去掉每次查整本批次元数据的旧fence，换为持久dirty/sentinel及writer复查，median3.3461→0.0219ms，P953.9623→0.0428ms。仅目录查找，不含原图复验、文件IO、AI、完整检索或自然40GB；不据此宣称产品提速验收。

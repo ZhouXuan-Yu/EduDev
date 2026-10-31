@@ -1,10 +1,16 @@
 import {nonQuestionPagePurpose} from './material-page-purpose';
+import {validPdfFilePage} from '../../shared/material-pdf-file';
 import {MATERIAL_FOLDER_AI_SCHEMA as schema,validFolderAiGrant,validFolderAiAction,type FolderAiGrant,type FolderAiAction,type FolderAiView} from '../../shared/material-folder-ai';
 import {materialBatchId} from '../../shared/material-import-batch';
 import {createHash} from 'node:crypto';
 import type {MaterialAiRepository} from './material-ai-repository';
 import type {MaterialWordRepository} from './material-word-repository';
 type Row=Record<string,unknown>;type Value=string|number|null;
+const folderTaskKey=(grant:Row,resource:Row,unit:number)=>createHash('sha256').update(JSON.stringify([schema,grant.batch_id,grant.revision,resource.resource_id,resource.version,unit])).digest('hex');
+function verifiedCover(page:Row){
+ if(page.status!=='complete'||page.error!==''||typeof page.result_json!=='string'||Buffer.byteLength(page.result_json)>1048576)return false;
+ try{const receipt:unknown=JSON.parse(page.result_json);return validPdfFilePage(receipt)&&receipt.status==='complete'&&receipt.error===''&&nonQuestionPagePurpose([...new Set([receipt.text,receipt.nativeText,receipt.ocrText].filter(Boolean))].join('\n'))==='cover';}catch{return false;}
+}
 const readable="'ready','partial','parsed','chunked','indexed','graph_extracted'";
 // Only unbilled legacy scheduling errors may be re-queued, after the same page was actually published.
 const recoverable=`u.state='review' AND u.ai_batch_id='' AND u.error IN ('local_page_failed','unavailable','blank_page_requires_check')
@@ -61,12 +67,13 @@ export class MaterialFolderAiRepository{
  async pauseAll(){const rows=await this.host.all("SELECT batch_id FROM material_folder_ai WHERE status IN ('running','budget_exhausted')");for(const row of rows)await this.action({schemaVersion:schema,batchId:String(row.batch_id),action:'pause'});return rows.length;}
  async view(id:string):Promise<FolderAiView|undefined>{
   if(!materialBatchId(id))throw Error('invalid_input');const grant=(await this.host.all('SELECT * FROM material_folder_ai WHERE batch_id=?',[id]))[0];if(!grant)return;
-  const sums=(await this.host.all("SELECT COUNT(*) units,SUM(state='complete') complete,SUM(state='review') review,SUM(state='failed') failed,SUM(state IN ('pending','running','pending_local')) waiting FROM material_folder_ai_units WHERE batch_id=?",[id]))[0];
-  const billing=(await this.host.all("SELECT COALESCE(SUM(b.calls),0) calls,COALESCE(SUM(json_extract(b.config_json,'$.maxCalls')),0) reserved FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?",[id]))[0];
+  const sums=(await this.host.all("SELECT COUNT(*) units,SUM(state='complete') complete,SUM(state='complete' AND error='non_question_cover' AND ai_batch_id='') skipped_cover,SUM(state='review') review,SUM(state='failed') failed,SUM(state IN ('pending','running','pending_local')) waiting FROM material_folder_ai_units WHERE batch_id=?",[id]))[0];
+  const billing=(await this.host.all("SELECT COALESCE(SUM(b.calls),0) calls,COALESCE(SUM(CASE WHEN json_valid(b.config_json) THEN json_extract(b.config_json,'$.maxCalls') END),0) reserved,SUM(NOT json_valid(b.config_json)) invalid FROM material_ai_task_keys k JOIN material_ai_batches b ON b.id=k.batch_id WHERE k.folder_id=?",[id]))[0];
+  if(Number(billing.invalid)>0)throw Error('unavailable'); // Never report a fabricated zero reservation for a damaged ledger.
   const count=(await this.host.all('SELECT COUNT(*) n FROM material_folder_ai_resources WHERE batch_id=?',[id]))[0];
   const questions=(await this.host.all("SELECT SUM(json_extract(q.archive_json,'$.state')='ai_final') ready,SUM(json_extract(q.archive_json,'$.state')='ai_needs_review') review FROM question_bank_items q JOIN material_ai_members m ON m.question_id=q.id JOIN material_ai_task_keys k ON k.batch_id=m.batch_id WHERE k.folder_id=? AND json_valid(q.archive_json)",[id]))[0];
   const issues=await this.host.all("SELECT u.resource_id,r.title,u.unit,u.error FROM material_folder_ai_units u LEFT JOIN teacher_resources r ON r.id=u.resource_id WHERE u.batch_id=? AND u.state IN ('failed','review') ORDER BY u.rowid LIMIT 5",[id]);
-  return{schemaVersion:schema,batchId:id,status:String(grant.status),revision:Number(grant.revision),maxCalls:Number(grant.max_calls),calls:Number(billing.calls),reserved:Number(billing.reserved),resources:Number(count.n),units:Number(sums.units),complete:Number(sums.complete||0),review:Number(sums.review||0),failed:Number(sums.failed||0),waiting:Number(sums.waiting||0),readyQuestions:Number(questions.ready||0),reviewQuestions:Number(questions.review||0),error:String(grant.error),issues:issues.map(r=>({resourceId:String(r.resource_id),title:String(r.title||'本地资料'),unit:Number(r.unit),error:String(r.error)}))};
+  return{schemaVersion:schema,batchId:id,status:String(grant.status),revision:Number(grant.revision),maxCalls:Number(grant.max_calls),calls:Number(billing.calls),reserved:Number(billing.reserved),resources:Number(count.n),units:Number(sums.units),complete:Number(sums.complete||0),skippedCover:Number(sums.skipped_cover||0),review:Number(sums.review||0),failed:Number(sums.failed||0),waiting:Number(sums.waiting||0),readyQuestions:Number(questions.ready||0),reviewQuestions:Number(questions.review||0),error:String(grant.error),issues:issues.map(r=>({resourceId:String(r.resource_id),title:String(r.title||'本地资料'),unit:Number(r.unit),error:String(r.error)}))};
  }
  private async discover(grant:Row){
   const id=String(grant.batch_id),rows=await this.host.all('SELECT e.seq,e.status,e.resource_id,r.content_hash FROM material_import_entries e LEFT JOIN teacher_resources r ON r.id=e.resource_id WHERE e.batch_id=? AND e.seq>? ORDER BY e.seq LIMIT 32',[id,Number(grant.cursor)]);
@@ -101,6 +108,24 @@ export class MaterialFolderAiRepository{
    if(rows.length){await target.host.run("UPDATE material_folder_ai SET status='running',error='' WHERE batch_id=?",[id]);grant.status='running';}
   });
  }
+ private async skipCover(grant:Row,resource:Row,total:number,unit:number,generation:string,page:Row){
+  if(!verifiedCover(page))return false;
+  return this.host.writer(async target=>{
+   const current=(await target.host.all(`SELECT p.status,p.error,p.result_json FROM material_pdf_pages p
+    JOIN material_pdf_jobs j ON j.generation=p.generation JOIN teacher_resources r ON r.id=j.resource_id
+    JOIN material_folder_ai_resources fr ON fr.resource_id=r.id JOIN material_folder_ai f ON f.batch_id=fr.batch_id
+    WHERE f.batch_id=? AND fr.resource_id=? AND fr.version=? AND r.content_hash=fr.version AND j.version=fr.version
+    AND f.status='running' AND f.revision=? AND f.settings_revision=? AND fr.cursor=? AND fr.status IN ('waiting','running')
+    AND j.state IN ('complete','partial') AND j.total=? AND p.generation=? AND p.page=? AND r.parse_status IN (${readable})
+    AND NOT EXISTS(SELECT 1 FROM material_folder_ai_units u WHERE u.batch_id=f.batch_id AND u.resource_id=r.id AND u.unit=p.page AND u.ai_batch_id<>'')
+    AND NOT EXISTS(SELECT 1 FROM material_ai_task_keys k WHERE k.task_key=?)`,
+    [String(grant.batch_id),String(resource.resource_id),String(resource.version),Number(grant.revision),Number(grant.settings_revision),unit-1,total,generation,unit,folderTaskKey(grant,resource,unit)]))[0];
+   if(!current||current.result_json!==page.result_json||!verifiedCover(current))return false;
+   // This is a local decision, never an AI outcome. Cursor and disposition commit together.
+   await target.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),String(resource.resource_id)]);
+   await target.finishUnit({...resource,total},unit,'complete','non_question_cover');return true;
+  });
+ }
  private async plan(grant:Row,resource:Row){
   const id=String(resource.resource_id),row=(await this.host.all('SELECT * FROM teacher_resources WHERE id=?',[id]))[0],unit=Number(resource.cursor)+1;
   if(!row||row.content_hash!==resource.version){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[unit,String(grant.batch_id),id]);await this.finishUnit(resource,unit,'review','source_changed');return;}
@@ -114,16 +139,16 @@ export class MaterialFolderAiRepository{
    const job=(await this.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=? AND version=?',[id,String(resource.version)]))[0];if(!job){if(row.parse_status==='failed')await fail('local_parse_failed');return;}total=Number(job.total);
    // Page receipts are staging facts. Canonical source chunks are available only after publication.
    if(!['complete','partial'].includes(String(job.state))||!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(row.parse_status==='failed'&&job.state!=='processing')await fail('local_parse_failed');return;}
-   if(unit<=total){const page=(await this.host.all('SELECT status,result_json FROM material_pdf_pages WHERE generation=? AND page=?',[String(job.generation),unit]))[0];if(!page||['pending','running','processing'].includes(String(page.status)))return;
+   if(unit<=total){const page=(await this.host.all('SELECT status,result_json,error FROM material_pdf_pages WHERE generation=? AND page=?',[String(job.generation),unit]))[0];if(!page||['pending','running','processing'].includes(String(page.status)))return;
     // Skip only explicit, successfully read covers. Failed/unclear OCR can never justify discarding a page.
-    if(page.status==='complete'){let content='';try{const receipt=JSON.parse(String(page.result_json));content=typeof receipt.text==='string'?receipt.text:'';}catch{/* Older receipts need the normal guarded path. */}if(nonQuestionPagePurpose(content)==='cover'){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);return this.finishUnit({...resource,total},unit,'complete','non_question_cover');}}
+    if(await this.skipCover(grant,resource,total,unit,String(job.generation),page))return;
     if(!['complete','blank','failed','needs_review'].includes(String(page.status))){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);return this.finishUnit({...resource,total},unit,'review','local_page_failed');}
    }
   }else if(total<0){total=word?(await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:0}))?.total??0:image?1:Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=?',[id]))[0]?.n||0);}
   await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);
   if(!total)return fail('no_structured_content');if(unit>total){await this.host.run("UPDATE material_folder_ai_resources SET status='complete' WHERE batch_id=? AND resource_id=?",[String(grant.batch_id),id]);return;}
   const input={schemaVersion:'xiaozhi.material-ai.v1' as const,resourceId:id,version:String(resource.version),settingsRevision:Number(grant.settings_revision),start:unit,count:1,maxCalls:2,images:!text,cloudConsent:true as const,publicMaterial:true as const};
-  const key=createHash('sha256').update(JSON.stringify([schema,grant.batch_id,grant.revision,id,resource.version,unit])).digest('hex');
+  const key=folderTaskKey(grant,resource,unit);
   try{const child=await this.host.ai().create(input,{key,folderId:String(grant.batch_id),revision:Number(grant.revision)});await this.finishUnit({...resource,total},unit,'running','',child);}
   catch(error){const code=this.error(error);
    if(['budget_exhausted','configuration','configuration_changed','paused'].includes(code)){await this.host.run('UPDATE material_folder_ai SET status=?,error=? WHERE batch_id=?',[code==='paused'?'paused':code==='budget_exhausted'?'budget_exhausted':'configuration_changed',code,String(grant.batch_id)]);return;}
