@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-10-31 E06候选检查与有界修复
+
+E06复用Hana/Pi、原Office生成/私有页面、原文本/Office/bundle状态与文件权限、已有jsdom29.0.2/yauzl3.4.0。新增inspection-worker和typed IPC，仅派生表增量CREATE IF NOT EXISTS；不改旧native创建/control/memory/computation身份，独立inspection.v1追加。E06仍部分实现：Office实际页面/字体/遮挡渲染、持久视觉证据、自动绑定全部教师语义要求及完整混合终态仍待补齐；未渲染保持未检查。下一继续E06再E07/E08+C与W3集中AT，新增“已实现”0/252。D盘日常版本/安装包未更新，0真实付费请求。 详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json。
+
 ## 2026-10-30 E05与知识库主线最终整合
 
 正常整合origin/main28ef069为f30212f，保留双方知识库正文来源与E05真实计算报告代码及13份Markdown完整新增节。合并后的build/type、240组件、20知识库页边界、E05正式Electron5项均exit0，0renderer错误；实际CSV/HTML/XLSX一次确认、所有文件账本回读、两尺寸预览及冷启0模型重放通过。最初KB专项因Node缺transform-types前置失败，按原脚本补正确参数后通过，未改协作源码。207综合仍属于合并前本轮代码，不冒充本次合并后重跑。 本地合并脚本曾未在失败后停止，误含标记的未推送提交已修正；全树标记与diff检查通过，未强推、未动其他已检出分支。下一仍E06→E07/E08+C→W3集中验收，新增已实现0/252；D盘日常版本及安装包未更新。详[最终整合证据](../research/AGENT_COMPUTATION_REPORTS_E05_20261030.json)的integration。

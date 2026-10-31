@@ -1,3 +1,4 @@
+import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport} from '../shared/xiaozhi-delivery-checks';
 import type {ManagedToolView,ManagedToolResult,ManagedToolInput,ManagedToolVersionInput} from '../shared/managed-tools';
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
@@ -257,6 +258,10 @@ const api = {
   cancelScienceExport: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:science-export-cancel',input) as Promise<{ok:boolean}>,
   revealScienceExport: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:science-export-reveal',input) as Promise<{ok:boolean}>,
   listXiaozhiFiles: (input:XiaozhiFileInput) => ipcRenderer.invoke('xiaozhi:files-list',input) as Promise<XiaozhiFileResult<XiaozhiFileList>>,
+  inspectXiaozhiDelivery:(input:DeliveryCheckInput)=>ipcRenderer.invoke('xiaozhi:delivery-check',input) as Promise<DeliveryCheckResult>,
+  getXiaozhiDeliveryCheck:(input:{sessionId:string;id:string})=>ipcRenderer.invoke('xiaozhi:delivery-check-get',input) as Promise<DeliveryCheckResult>,
+  listXiaozhiDeliveryChecks:(input:{sessionId:string})=>ipcRenderer.invoke('xiaozhi:delivery-check-list',input) as Promise<{ok:true;items:{id:string;state:DeliveryCheckReport['state'];createdAt:string;files:{path:string;state:string}[]}[]}|{ok:false;error:string}>,
+  cancelXiaozhiDeliveryCheck:(input:{sessionId:string;requestId:string})=>ipcRenderer.invoke('xiaozhi:delivery-check-cancel',input) as Promise<{ok:boolean}>,
   previewXiaozhiFile: (input:XiaozhiPreviewInput) => ipcRenderer.invoke('xiaozhi:files-preview',input) as Promise<XiaozhiFileResult<XiaozhiFilePreview>>,
   cancelXiaozhiFile: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:files-cancel',input) as Promise<{ok:boolean}>,
   reviewXiaozhiLearning:(input:LearningReviewInput)=>ipcRenderer.invoke('xiaozhi:learning-review',input) as Promise<LearningReviewResult<LearningReviewView>>,

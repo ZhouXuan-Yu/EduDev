@@ -1,3 +1,4 @@
+import {createInspectionState} from './checks/state';
 type SqlValue = string | number | null | Buffer;
 export type Sql = { run: (sql: string, values?: SqlValue[]) => Promise<unknown>;
   change?: (sql: string, values?: SqlValue[]) => Promise<number>;
@@ -37,6 +38,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const changes = createTextChangeState(sql);
   const officeArtifacts = createOfficeArtifactState(sql);
   const deliveries=createDeliveryState(sql);
+  const inspections=createInspectionState(sql);
   const attachments = createAttachmentState(sql);
   const attachmentImports = createAttachmentImportState(sql);
   const attachmentSends=createAttachmentSendState(sql);
@@ -57,6 +59,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     changes,
     officeArtifacts,
     deliveries,
+    inspections,
     attachments,
     attachmentImports,
     attachmentSends,
@@ -79,6 +82,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
       await changes.migrate();
       await officeArtifacts.migrate();
       await deliveries.migrate();
+      await inspections.migrate();
       await attachments.migrate();
       await attachmentImports.migrate();
       await attachmentSends.migrate();

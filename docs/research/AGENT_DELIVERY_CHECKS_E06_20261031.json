@@ -1,0 +1,306 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-31",
+  "worktree": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+  "branch": "codex/hana-answer-quality",
+  "baseSha": "4d1f3ce998dd3b882bce61bfacbfc58c7d08701a",
+  "scope": "E06 partial: actual post-save/candidate inspection, original Pi bounded repair and original one review. Full 28 WP/252 AT Goal remains active.",
+  "implementationSha": null,
+  "tests": {
+    "source": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+      "exit": 0,
+      "report": {
+        "ok": true,
+        "checks": [
+          "Existing science-figure SVG remains structurally readable without pretending its unrendered visual is verified",
+          "Frozen FX01 default, liquid-density, object-density and load boundaries are independently recalculated; wrong7cm is rejected without a model-supplied expected number",
+          "Actual question-version text mismatch is detected across files independently of numeric equality",
+          "Actual eight-slide PPTX and per-slide speaker notes parse; unrendered slides are explicitly visually unchecked",
+          "Plain text with PPTX suffix and a damaged real ZIP fail actual structure checks",
+          "A missing page and required question are identified independently of file existence",
+          "Real XLSX cells preserve001 and formula-like text; a separate sum of actual numeric cells returns240",
+          "CSV quoted commas/newlines survive inspection; missing numeric data is not treated as0",
+          "An actual cached Excel formula is not mistaken for an independently recomputed result",
+          "Individually matching6cm and7cm facts still fail cross-file consistency with both file names",
+          "Derived migration is idempotent and preserves existing data; cancellation updates the stored terminal receipt and damaged receipts are rejected"
+        ],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-R0VV06",
+        "boundary": "Actual OOXML/CRC parser, generated Office bytes and SQLite receipts; not actual Office rendering, automatic repair or complete E06 AT."
+      }
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240,
+      "log": "delivery-preflight-components.log"
+    },
+    "originalUi": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-electron.mjs",
+      "exit": 1,
+      "report": {
+        "ok": false,
+        "checks": [
+          "Formal composer computes actual CSV before one original grouped review; three files are not saved before confirmation",
+          "Original Pi invokes the real inspector: actual CSV/HTML/XLSX totals agree while unrendered Office stays unchecked",
+          "One teacher confirmation writes actual CSV/HTML/XLSX; independent bytes preserve IDs, formulas as text, typed amounts and total240",
+          "Original native report call is independently verified through every original file ledger and disk readback",
+          "Saved offline SVG chart opens in existing real file panel at both target viewports",
+          "Original file panel reads the actual persisted check; external file change makes that receipt stale",
+          "Cold restart retains formal files, grouped cards, native identity and inspection rows without model replay",
+          "Actual isolated HTML checks real slider, native arrow key, reset and changed canvas pixels",
+          "Actual JavaScript syntax error and inert controls fail inspection without changing the file"
+        ],
+        "errors": [],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-ui-ZWvOBt",
+        "boundary": "Actual formal Pi, actual isolated parser and private Chromium inspection, persisted receipts and original file panel. Synthetic SSE only; no paid calls, no Office visual renderer/preflight repair/full E06 acceptance.",
+        "interactive": {
+          "state": "passed",
+          "id": "xicheck_0bb5395ab65068f36d84b2200230f888c59accd23ba221275243299f023d4b5b",
+          "createdAt": "2026-10-31T04:53:10.565Z",
+          "requirementsVersion": 1,
+          "repairAttempts": {},
+          "files": [
+            {
+              "path": "控件检查.html",
+              "state": "passed",
+              "sha256": "2378bb7af1f05d62f5b868501ff702b65e8bf09b56a2aa5e6bbb5c3017fb907d",
+              "renderedPages": [
+                1
+              ],
+              "coverage": {
+                "structure": "checked",
+                "content": "checked",
+                "visual": "checked",
+                "interaction": "checked",
+                "numbers": "checked",
+                "consistency": "checked"
+              },
+              "findings": [],
+              "findingCount": 9
+            }
+          ]
+        },
+        "broken": {
+          "state": "failed",
+          "id": "xicheck_3dee0b06a693f63c99a020c4960d9769922c3c864abeb4a2523259b9a1d9ccc1",
+          "createdAt": "2026-10-31T04:53:28.886Z",
+          "requirementsVersion": 1,
+          "repairAttempts": {},
+          "files": [
+            {
+              "path": "控件语法错.html",
+              "state": "failed",
+              "sha256": "4cd0155d1bba41bd3a45a85711b7458ff52dc0d7c375e19a2654c5400e5335ea",
+              "renderedPages": [
+                1
+              ],
+              "coverage": {
+                "structure": "checked",
+                "content": "checked",
+                "visual": "unchecked",
+                "interaction": "failed",
+                "numbers": "checked",
+                "consistency": "checked"
+              },
+              "findings": [
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "load",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "keyboard",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "reset",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "pixels",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "canvas_content_unverified",
+                  "message": "页面含画布，但尚无实际控件到画面变化的验证，未把空白画布当作通过。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "script_error",
+                  "message": "实际页面执行记录到5条脚本或控制台错误。"
+                }
+              ],
+              "findingCount": 11
+            }
+          ]
+        },
+        "error": "electronApplication.evaluate: Resulting promise was garbage collected.\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\delivery-check-electron.mjs:41:746\n    at until (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\delivery-check-electron.mjs:4:94)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-check-electron.mjs:41:726"
+      },
+      "interpretation": "9 passed paths; final stop observation harness failed. Actual looping stop was separately reproduced and verified; retain failed report."
+    },
+    "focusedStop": {
+      "command": "node scripts/xiaozhi-agent/delivery-check-stop-electron.mjs",
+      "exit": 0,
+      "report": {
+        "ok": true,
+        "checks": [
+          "Formal Stop cancels an actually entered infinite script, closes only its owned renderer, keeps main UI responsive and stores cancelled receipt without model replay"
+        ],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-stop-ui-a5DYj8",
+        "errors": [],
+        "boundary": "Focused actual looping renderer cancellation through formal composer; synthetic SSE, no paid provider or repeated passed nine-path bundle checks.",
+        "loop": {
+          "windowId": 2,
+          "rendererPid": 33900,
+          "enteredAt": 1793428441781
+        },
+        "stopMs": 1403,
+        "closed": {
+          "closedAt": 1793428442935
+        }
+      }
+    },
+    "preflightInitial": {
+      "command": "node scripts/xiaozhi-agent/delivery-preflight-electron.mjs",
+      "exit": 1,
+      "report": {
+        "ok": false,
+        "checks": [
+          "Actual missing content, numeric error and broken script return to original Pi; one repaired candidate passes physics and real control checks before any formal write",
+          "Original single teacher confirmation publishes exactly the inspected bytes; failed draft and reviewable inspection stay in the original history",
+          "Original Pi receives exactly two repair rounds; weakening later rules does not remove the frozen requirement; next attempt is blocked, all drafts retained and no repeated teacher approval",
+          "Original grouped review includes actual generated PPT bytes but no formal artifact; teacher edit invalidates the checked candidate cache"
+        ],
+        "errors": [],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-T65ljn",
+        "boundary": "Formal composer and original review, actual isolated inspectors and retained SQLite drafts. Synthetic SSE, no paid provider, no Office visual rendering or complete E06 acceptance.",
+        "error": "Error: no such column: format\n    at query (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:3:158)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:38:174"
+      },
+      "interpretation": "4 real UI checks passed; final query used nonexistent format column. Same finished journey checked read-only below without replay."
+    },
+    "preflightReadback": {
+      "command": "node scripts/xiaozhi-agent/delivery-preflight-readback.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-T65ljn",
+      "exit": 0,
+      "report": {
+        "ok": true,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-T65ljn",
+        "checks": [
+          "Same formal UI journey saved the exact newly inspected teacher-edited PPT bytes, with eight slides and eight actual notes; earlier candidate differs and unrendered Office remains unchecked"
+        ],
+        "inspectionId": "xicheck_b158c0f0be37768031afe2e619a34aa6de40ea24cafc55b305c59110dd8a07e8",
+        "sha256": "7f0270bc90d636d78ef0f30f4142737521095142dc25923dacbc4799aa1b61f0",
+        "pageCount": 8,
+        "priorJourneyError": "Error: no such column: format\n    at query (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:3:158)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:38:174",
+        "boundary": "Read-only follow-up after the UI harness used the wrong document_artifacts column name. Original failed harness report is preserved; no user/model operation repeated."
+      }
+    },
+    "preflightRemaining": {
+      "command": "node scripts/xiaozhi-agent/delivery-preflight-electron.mjs --remaining",
+      "exit": 1,
+      "report": {
+        "ok": false,
+        "checks": [
+          "Original Pi receives exactly two repair rounds; renaming drafts and weakening later rules do not remove the frozen requirement; next attempt is blocked, all drafts retained and no repeated teacher approval",
+          "Original grouped review includes actual generated PPT bytes but no formal artifact; teacher edit invalidates the checked candidate cache"
+        ],
+        "errors": [],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-HyWGwW",
+        "boundary": "Formal composer and original review, actual isolated inspectors and retained SQLite drafts. Synthetic SSE, no paid provider, no Office visual rendering or complete E06 acceptance.",
+        "error": "Error: ENOENT: no such file or directory, open 'C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\aisession_5bb8ca78-e409-418e-8f21-a8e150654658\\sessions\\2026-10-31T07-01-19-303Z_01a190c3-4746-7669-b7d0-c71f1198c92a.jsonl'\n    at Object.readFileSync (node:fs:440:20)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:39:718"
+      },
+      "interpretation": "Two formal paths passed; final native-session log read used a relative path incorrectly. Formal save completed; read-only follow-up below verifies same journey without replay."
+    },
+    "preflightRemainingReadback": {
+      "command": "node scripts/xiaozhi-agent/delivery-preflight-readback.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-HyWGwW",
+      "exit": 0,
+      "report": {
+        "ok": true,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-preflight-ui-HyWGwW",
+        "checks": [
+          "Same formal UI journey saved the exact newly inspected teacher-edited PPT bytes, with eight slides and eight actual notes; earlier candidate differs and unrendered Office remains unchecked"
+        ],
+        "inspectionId": "xicheck_1369210c32f6946c547b347f125e28774483fa5d8ad33cb0259cd5856621205d",
+        "sha256": "2ebe20e092177669e795f51e104cdf72b6683df1bf7bae57994327cbe7fd9d4e",
+        "pageCount": 8,
+        "priorJourneyError": "Error: ENOENT: no such file or directory, open 'C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\aisession_5bb8ca78-e409-418e-8f21-a8e150654658\\sessions\\2026-10-31T07-01-19-303Z_01a190c3-4746-7669-b7d0-c71f1198c92a.jsonl'\n    at Object.readFileSync (node:fs:440:20)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:39:718",
+        "boundary": "Read-only follow-up after the UI harness used a wrong SQL column or un-resolved relative native session path. Original failed harness report is preserved; no user/model operation repeated."
+      }
+    }
+  },
+  "performance": {
+    "rendererBuildBeforeKB": 7166.22,
+    "rendererBuildAfterKB": 7167.51,
+    "increaseKB": 1.29,
+    "htmlInspectionDeadlineMs": 20000,
+    "parserDeadlineMs": 15000,
+    "inspectionActive": 1,
+    "inspectionQueueMax": 4,
+    "sharedUtilityPoolMax": 8,
+    "sourceFileMaxBytes": 16777216,
+    "storedReceiptsPerSession": 64,
+    "actualLoopStopMs": 1403,
+    "inputP95": "not measured; no speedup/latency acceptance claimed"
+  },
+  "dependencyAudit": {
+    "command": "npm audit --json",
+    "exit": 1,
+    "counts": {
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "packageManifestOrLockChanged": false,
+    "note": "New observation from current advisory database; previous23 is historical, not a same-time baseline. No automated upgrade."
+  },
+  "sourceFingerprints": {
+    "apps/desktop/src/main/xiaozhi-agent/checks/api.ts": "3f488b563048b66b90dfcc91d1d697d83441ca6cb7c0839b9b3f882dfd0393b0",
+    "apps/desktop/src/main/xiaozhi-agent/checks/evaluate.ts": "30dc508697147aeff7006dd33b5387f665d27909f3ab4b9358e446f24ac1e442",
+    "apps/desktop/src/main/xiaozhi-agent/checks/html.ts": "38d1523e0bccae7dccd67af861e9644041dcf2b55c1dc89852109a8477e93f6b",
+    "apps/desktop/src/main/xiaozhi-agent/checks/preflight.ts": "f0a440353742d26af597a60451c9d18ba3205567a0fcf6ede34f3372b3d6b6d6",
+    "apps/desktop/src/main/xiaozhi-agent/checks/service.ts": "1d44871dfb0b53b72e0b19111de83abe18941b0745448cbef36f179daff894c2",
+    "apps/desktop/src/main/xiaozhi-agent/checks/state.ts": "a244d02eb52bbb785584dab83ff5f956641a07448ed5aec9d5637816b9220e3f",
+    "apps/desktop/src/main/xiaozhi-agent/checks/structure.ts": "4dc94a13be64a08e3efb9359341389cf379bda62700d53bc49f788094863fabc",
+    "apps/desktop/src/main/xiaozhi-agent/checks/tools.ts": "ac8bb1a450d6b21038e84e2faadf425d45b3f75a36cffc7ed308a175a9d1b3df",
+    "apps/desktop/src/main/xiaozhi-agent/checks/worker.ts": "76ca1e930859b841e7ce87a7b6be73c1ed0057ff5e7f74b4ef6a362bbf6a73cb",
+    "apps/desktop/src/shared/xiaozhi-delivery-checks.ts": "191a39370b27db944c0567151a1b0f786803a4e71d690d0929b89bb11a07a4ee",
+    "apps/desktop/src/shared/xiaozhi-science-check.ts": "f976b408713e5f1bb9a6ac54ba33e6edf7752ccbb17b1c219e8297162f9ef47d",
+    "apps/desktop/src/renderer/components/office/PiDeliveryCheck.tsx": "1af932f22c784269739ddff5be93a5e60500c060b02bdbeb923d7d4ec2b4abd6"
+  },
+  "realPaidRequestsThisSlice": 0,
+  "priorThreadRealPaidRequests": 20,
+  "dailyRuntimeUpdated": false,
+  "installerUpdated": false,
+  "newFullyAcceptedReqCount": 0,
+  "remaining": [
+    "Actual Office/PDF/A4 render adapter, fonts, missing glyphs and semantic occlusion checks",
+    "Persisted bounded visual evidence and original UI viewing",
+    "Complete teacher requirement provenance binding; current declarative checks must not be presented as complete semantic coverage",
+    "Resume/carry-over whole bundle checking and full mixed saved/check failed terminal acceptance",
+    "Complete fixed FX09/10, W3 concentrated AT and canonical daily/installed validation",
+    "E07/E08+C, then W4 and W5; no scope reduction"
+  ],
+  "rollback": "Revert the E06 implementation commits normally. Existing original file/draft/effect tables and published files remain authoritative; inspection table is additive/rebuildable and need not be deleted.",
+  "integration": {
+    "status": "pending",
+    "target": "origin/main 8f8d97f",
+    "dailyRuntimeUpdated": false
+  }
+}

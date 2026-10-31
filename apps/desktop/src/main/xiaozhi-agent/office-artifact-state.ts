@@ -53,7 +53,8 @@ export function createOfficeArtifactState(sql:Sql){
  async function call(sessionId:string,runId:string,callId:string){const row=(await sql.all('SELECT * FROM xiaozhi_pi_office_drafts WHERE conversation_id=? AND run_id=? AND call_id=?',[sessionId,runId,callId]))[0];return row?parse(row):null;}
  async function cas(row:PrivateOfficeArtifact,from:OfficeArtifactState[],to:OfficeArtifactState,extra:{draft?:OfficeDraft;output?:Buffer;resultPath?:string;imagesReviewed?:true}={}){
   if(!from.includes(row.state)||!states.has(to)||!sql.change)throw new Error('conflict');
-  const draft=extra.draft??row.draft,output=extra.output??row.output;
+  // A teacher revision invalidates the previously generated candidate bytes.
+  const draft=extra.draft??row.draft,output=extra.output??(extra.draft?null:row.output);
   if(isRichPaperOfficeSchema(draft.schemaVersion)&&draft.sections.some(s=>s.figures?.length)&&to==='approved'&&extra.imagesReviewed!==true)throw new Error('invalid_input');
   const imageReviewHash=to==='pending'?null:extra.imagesReviewed===true?officeSha(JSON.stringify(draft)):row.imageReviewHash;
   if(!validOfficeDraft(draft)||output&&(!output.length||output.length>OFFICE_OUTPUT_MAX_BYTES))throw new Error('invalid_input');
@@ -62,6 +63,11 @@ export function createOfficeArtifactState(sql:Sql){
   if(updated!==1)throw new Error('conflict');return (await get(row.id))!;
  }
  return {get,call,transition:cas,
+  async cacheCandidate(row:PrivateOfficeArtifact,bytes:Buffer){
+   if(!sql.change||row.state!=='pending'||!bytes.length||bytes.length>OFFICE_OUTPUT_MAX_BYTES)throw Error('conflict');
+   const changed=await sql.change("UPDATE xiaozhi_pi_office_drafts SET output_bytes=?,output_hash=? WHERE id=? AND conversation_id=? AND state='pending' AND revision=? AND draft_hash=?",[bytes,officeSha(bytes),row.id,row.sessionId,row.revision,row.draftHash]);
+   if(changed!==1)throw Error('conflict');return(await get(row.id))!;
+  },
   async migrate(){
    await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_office_drafts (
     id TEXT PRIMARY KEY,conversation_id TEXT NOT NULL REFERENCES ai_conversation_sessions(id),schema_version INTEGER NOT NULL CHECK(schema_version=1),run_id TEXT NOT NULL,call_id TEXT NOT NULL,workspace_hash TEXT NOT NULL,input_hash TEXT NOT NULL,

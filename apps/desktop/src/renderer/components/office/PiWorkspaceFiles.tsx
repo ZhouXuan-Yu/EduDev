@@ -1,3 +1,4 @@
+import {PiDeliveryCheck} from './PiDeliveryCheck';
 import {ScienceClassroomExport} from './ScienceClassroomExport';
 import { useEffect, useRef, useState } from 'react';
 import {ScienceDemoFrame} from './ScienceDemoFrame';
@@ -134,6 +135,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
             className="pi-file-outline-item" data-level={item.level} onPress={()=>jumpToHeading(index,item.title)} data-testid={`pi-file-outline-item-${index}`}>{item.title}</Button>)}</div>
           {outlineNotice&&<p className="pi-file-outline-status" role="status" data-testid="pi-file-outline-status">{outlineNotice}</p>}
         </details>}
+        {preview&&<PiDeliveryCheck key={sessionId+preview.path} sessionId={sessionId} path={preview.path} version={preview.version} workspaceVersion={authority.current}/>}
         <div ref={previewRoot} className="pi-file-preview" data-testid="pi-file-preview" aria-busy={reading}>
           {reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>刷新目录后，选择最新文件继续预览。</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='image'?<img src={preview.image} alt={preview.name} data-testid="pi-file-image"/>:
             preview?.format==='html'?<ScienceDemoFrame html={preview.html||''}/>:preview?.format==='science_demo'?<><ScienceClassroomExport key={preview.path+preview.version} sessionId={sessionId} workspaceVersion={authority.current} preview={preview}/><ScienceDemoFrame html={preview.html||''}/></>:preview?.format==='office'?<div data-testid="pi-file-document"><p role="status" data-testid="pi-file-document-info">{preview.document?.format.toUpperCase()} · 本地提取正文，版式以原文件为准</p><Markdown components={{img:({alt})=><span>［图片：{alt||'文档图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown></div>:
