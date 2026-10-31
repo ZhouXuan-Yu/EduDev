@@ -4,7 +4,7 @@ import {DELIVERY_CHECK_SCHEMA,type DeliveryCheckResult,type DeliveryCheckReport,
 import type {createDeliveryChecks} from './service';
 export async function inspectionSummary(report:DeliveryCheckReport,clean:(text:string)=>Promise<string>){
   return{state:report.state,id:report.id,candidate:report.candidate===true,createdAt:report.createdAt,requirementsVersion:report.requirementsVersion,repairAttempts:report.repairAttempts,repairExhausted:report.repairExhausted,
-   files:await Promise.all(report.files.map(async file=>({path:await clean(file.path),state:file.state,sha256:file.sha256,pageCount:file.pageCount,renderedPages:file.renderedPages,
+   files:await Promise.all(report.files.map(async file=>({path:await clean(file.path),state:file.state,sha256:file.sha256,pageCount:file.pageCount,renderedPages:file.renderedPages,visualEvidenceCount:file.visualEvidence?.length||0,
     coverage:Object.fromEntries(CHECK_CLASSES.map(kind=>{const checks=file.checks.filter(c=>c.kind===kind);return[kind,checks.some(c=>c.state==='failed')?'failed':checks.some(c=>c.state==='unchecked')?'unchecked':checks.length?'checked':'unchecked'];})),
     findings:await Promise.all(file.checks.filter(c=>c.state==='failed'||c.state==='unchecked').slice(0,12).map(async c=>({...c,message:await clean(c.message)}))),findingCount:file.checks.length}))) };
  }

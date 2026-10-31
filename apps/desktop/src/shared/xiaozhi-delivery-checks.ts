@@ -20,9 +20,12 @@ export type CheckFileInput={path:string;version?:string;rules?:FileCheckRules};
 export type DeliveryCheckInput={schemaVersion:typeof DELIVERY_CHECK_SCHEMA;sessionId:string;requestId:string;files:CheckFileInput[];
  workspaceVersion?:string;requirementsVersion?:number};
 export type CheckedNumber={id:string;value:number;unit?:string};
+/** Derived local render proof; the report's file SHA binds these pixels to that inspected version. */
+export type DeliveryVisualEvidence={sha256:string;bytes:number;width:number;height:number;page:number;viewport:string;kind:'html_viewport'|'pdf_page'|'office_page'};
+export type DeliveryVisualResult={ok:true;evidence:DeliveryVisualEvidence;dataBase64:string;historical:boolean;fileSha256:string}|{ok:false;error:'invalid_input'|'permission_denied'|'not_found'|'unavailable'};
 export type FileCheckReport={path:string;fileVersion:string|null;sha256:string|null;format:string;size:number|null;checks:CheckFinding[];
  pageCount?:number;renderedPages:number[];numbers:CheckedNumber[];state:'passed'|'failed'|'partial'|'stale';
- candidate?:{kind:'text'|'office';id:string;revision:number};facts?:{id:string;value:string}[]};
+ candidate?:{kind:'text'|'office';id:string;revision:number};facts?:{id:string;value:string}[];visualEvidence?:DeliveryVisualEvidence[]};
 export type DeliveryCheckReport={schemaVersion:typeof DELIVERY_CHECK_SCHEMA;id:string;sessionId:string;runId:string|null;callId:string|null;
  workspaceVersion:string;requirementsVersion:number|null;policySha256:string;createdAt:string;state:'passed'|'failed'|'partial'|'stale'|'cancelled';
  files:FileCheckReport[];repairAttempts:Partial<Record<CheckClass,number>>;scope:string;candidate?:boolean;repairExhausted?:CheckClass[]};
@@ -43,6 +46,11 @@ const id=(v:unknown)=>typeof v==='string'&&/^[a-zA-Z][a-zA-Z0-9_.-]{0,47}$/.test
 const integer=(v:unknown,max=10000)=>Number.isInteger(v)&&Number(v)>0&&Number(v)<=max;
 const finite=(v:unknown)=>typeof v==='number'&&Number.isFinite(v);
 const hash=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
+export function validVisualEvidence(v:unknown):v is DeliveryVisualEvidence{
+ return obj(v)&&keys(v,['sha256','bytes','width','height','page','viewport','kind'])&&hash(v.sha256)&&integer(v.bytes,3*1048576)
+  &&integer(v.width,4096)&&integer(v.height,4096)&&integer(v.page,64)&&typeof v.viewport==='string'&&/^[1-9]\d{0,3}x[1-9]\d{0,3}$/.test(v.viewport)&&v.viewport.split('x').every(n=>Number(n)<=4096)
+  &&['html_viewport','pdf_page','office_page'].includes(String(v.kind));
+}
 const tolerance=(v:unknown)=>v===undefined||finite(v)&&Number(v)>=0&&Number(v)<=1e6;
 function validNumber(v:unknown):v is NumberCheck{
  if(!obj(v)||!keys(v,['id','source','expected','expectedFrom','tolerance','unit'])||!id(v.id)||!(finite(v.expected)&&v.expectedFrom===undefined||v.expected===undefined&&validScienceCheck(v.expectedFrom))||!tolerance(v.tolerance)

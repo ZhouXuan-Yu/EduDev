@@ -1,4 +1,4 @@
-import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport} from '../shared/xiaozhi-delivery-checks';
+import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
 import type {ManagedToolView,ManagedToolResult,ManagedToolInput,ManagedToolVersionInput} from '../shared/managed-tools';
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
@@ -259,6 +259,7 @@ const api = {
   revealScienceExport: (input:{sessionId:string;requestId:string}) => ipcRenderer.invoke('xiaozhi:science-export-reveal',input) as Promise<{ok:boolean}>,
   listXiaozhiFiles: (input:XiaozhiFileInput) => ipcRenderer.invoke('xiaozhi:files-list',input) as Promise<XiaozhiFileResult<XiaozhiFileList>>,
   inspectXiaozhiDelivery:(input:DeliveryCheckInput)=>ipcRenderer.invoke('xiaozhi:delivery-check',input) as Promise<DeliveryCheckResult>,
+  getXiaozhiDeliveryVisual:(input:{sessionId:string;id:string;sha256:string})=>ipcRenderer.invoke('xiaozhi:delivery-check-visual',input) as Promise<DeliveryVisualResult>,
   getXiaozhiDeliveryCheck:(input:{sessionId:string;id:string})=>ipcRenderer.invoke('xiaozhi:delivery-check-get',input) as Promise<DeliveryCheckResult>,
   listXiaozhiDeliveryChecks:(input:{sessionId:string})=>ipcRenderer.invoke('xiaozhi:delivery-check-list',input) as Promise<{ok:true;items:{id:string;state:DeliveryCheckReport['state'];createdAt:string;files:{path:string;state:string}[]}[]}|{ok:false;error:string}>,
   cancelXiaozhiDeliveryCheck:(input:{sessionId:string;requestId:string})=>ipcRenderer.invoke('xiaozhi:delivery-check-cancel',input) as Promise<{ok:boolean}>,

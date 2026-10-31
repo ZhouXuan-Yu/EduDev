@@ -10,6 +10,8 @@ import {DELIVERY_CHECK_SCHEMA,STRUCTURE_SCHEMA,validDeliveryCheckInput,validStru
 import {createInspectionState} from './state';
 import {evaluateFileRules,evaluateConsistency,fileCheckState} from './evaluate';
 import {inspectInteractiveHtml} from './html';
+import {createVisualEvidenceCache} from './visual-evidence';
+import type {DeliveryVisualResult} from '../../../shared/xiaozhi-delivery-checks';
 
 const hash=(value:string|Buffer)=>createHash('sha256').update(value).digest('hex');
 const knownErrors=new Set(['invalid_input','permission_denied','busy','cancelled','timeout','changed','not_found','too_large','unavailable']);
@@ -21,7 +23,7 @@ export type CandidateBytes={path:string;bytes:Buffer;version:string;candidate:No
 export function createDeliveryChecks(options:{state:ReturnType<typeof createInspectionState>;dataRoot:string;
  resolve:(id:string)=>Promise<WorkspaceLease>;requirements:(id:string)=>Promise<number|null>;
  candidateStatus?:(sessionId:string,file:FileCheckReport)=>Promise<{current:boolean;published:boolean}>}){
- let tail=Promise.resolve<unknown>(undefined),slots=0,closing=false;const controllers=new Set<AbortController>();
+ let tail=Promise.resolve<unknown>(undefined),slots=0,closing=false;const controllers=new Set<AbortController>();const visuals=createVisualEvidenceCache(options.dataRoot);
  async function capture(lease:WorkspaceLease,relative:string){
   const target=approvedFile(lease.path,relative),before=await fs.lstat(target);if(!before.isFile()||before.isSymbolicLink()||before.nlink!==1)throw Error('permission_denied');
   if(before.size>16*1048576)throw Error('too_large');const opened=await fs.open(target,constants.O_RDONLY|(constants.O_NOFOLLOW||0));
@@ -94,7 +96,9 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
       else{
        const metrics=parsed.data;let observations:Record<string,string[]>={},htmlUnavailable=false;
        if(metrics.format==='html'){
-        try{const html=await inspectInteractiveHtml(new TextDecoder('utf-8',{fatal:true}).decode(snapshot.bytes),file.rules||{},{dataRoot:options.dataRoot,signal});current();metrics.pages=[{index:1,text:html.text,notes:html.notes}];observations=html.observations;row.checks.push(...html.findings);row.renderedPages=html.renderedPages;}
+        try{const html=await inspectInteractiveHtml(new TextDecoder('utf-8',{fatal:true}).decode(snapshot.bytes),file.rules||{},{dataRoot:options.dataRoot,signal});current();metrics.pages=[{index:1,text:html.text,notes:html.notes}];observations=html.observations;row.checks.push(...html.findings);row.renderedPages=html.renderedPages;
+         try{row.visualEvidence=await visuals.put(html.screenshots.map(s=>({bytes:s.bytes,page:1,kind:'html_viewport' as const,viewport:s.viewport})),signal);current();}catch{current();row.checks.push({kind:'visual',state:'unchecked',code:'visual_evidence_unavailable',message:'实际页面已渲染，但截图未能留存；不能把缺少视觉证据当作完整检查。'});}
+        }
         catch(error){current();htmlUnavailable=true;row.checks.push({kind:'visual',state:'unchecked',code:'render_unavailable',message:'本地页面检查未完成；未把提取文字当作视觉通过。'},{kind:'interaction',state:'unchecked',code:'render_unavailable',message:'页面未完成实际加载或操作，交互尚未验证。'});}
        }
        const evaluated=evaluateFileRules(metrics,file.rules,observations);row.checks.push(...evaluated.checks.map(c=>htmlUnavailable&&['content','numbers'].includes(c.kind)?{...c,state:'unchecked' as const,code:'render_unavailable',message:'页面未完成实际运行，静态源未代替当前可见结果。'}:c));row.numbers=htmlUnavailable?[]:evaluated.numbers;row.facts=htmlUnavailable?[]:evaluated.facts;if(metrics.pageCount!==undefined)row.pageCount=metrics.pageCount;
@@ -124,6 +128,13 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
   inspect,
   async get(sessionId:string,id:string){await options.state.migrate();const value=await options.state.get(sessionId,id);return value?refresh(value.report):null;},
   async list(sessionId:string){await options.state.migrate();await options.resolve(sessionId);return(await options.state.list(sessionId)).map(r=>({id:r.id,state:r.state,createdAt:r.createdAt,files:r.files.map(f=>({path:f.path,state:f.state}))}));},
+  async visual(sessionId:string,id:string,sha256:string):Promise<DeliveryVisualResult>{
+   try{if(closing)return{ok:false,error:'unavailable'};await options.state.migrate();const stored=await options.state.get(sessionId,id);if(!stored)return{ok:false,error:'not_found'};
+    const report=await refresh(stored.report),file=report.files.find(f=>f.visualEvidence?.some(e=>e.sha256===sha256)),evidence=file?.visualEvidence?.find(e=>e.sha256===sha256);
+    if(!file?.sha256||!evidence)return{ok:false,error:'not_found'};const bytes=await visuals.read(evidence,new AbortController().signal);
+    return{ok:true,evidence,dataBase64:bytes.toString('base64'),historical:report.state==='stale'||file.state==='stale',fileSha256:file.sha256};
+   }catch{return{ok:false,error:'unavailable'};}
+  },
   async close(){closing=true;controllers.forEach(c=>c.abort('cancelled'));await tail.catch(()=>undefined);},
  };
 }
