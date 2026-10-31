@@ -1,0 +1,20 @@
+import '../office-agent/register-source.mjs';
+import {fixture} from './kb-retrieval-boundaries.mjs';
+import {mock} from 'node:test';import assert from 'node:assert/strict';
+const {RerankerClient}=await import('../../src/main/retrieval/reranker-client.ts');
+const checks=[],note=s=>{checks.push(s);console.log('PASS '+s);};
+const ids=Array.from({length:130},(_,i)=>'candidate_'+i),context=id=>({text:'教学资料 '+id});
+const scores=items=>({scores:items.map(i=>({id:i.id,score:Number(i.id.split('_').at(-1)),complete:true})),elapsedMs:1});
+const f=await fixture(0);
+try{
+ const calls=[];f.port.rerank=async(q,items,timeout)=>{calls.push({size:items.length,timeout});return scores(items);};
+ const result=await f.repo.rerank(ids.slice(0,40),'知识点',context);
+ assert.equal(result.coverage.processed,40,'Native batch size must not truncate the entire candidate pool at20');assert(result.coverage.complete);assert.deepEqual(calls.map(c=>c.size),[20,20]);assert(result.ids.slice(0,20).some(id=>ids.indexOf(id)>=20),'Strong tail candidates must be able to enter the first result page');assert.deepEqual(new Set(result.ids),new Set(ids.slice(0,40)));note('All40 candidates participate across bounded native batches; strong tail candidates enter the first page without losing recall members');
+ calls.length=0;const bounded=await f.repo.rerank(ids,'知识点',context);assert.equal(bounded.coverage.processed,100);assert.equal(bounded.coverage.reason,'candidate_limit');assert(!bounded.coverage.complete);assert.deepEqual(calls.map(c=>c.size),[20,20,20,20,20]);assert.deepEqual(bounded.ids.slice(100),ids.slice(100));assert.deepEqual(new Set(bounded.ids),new Set(ids));note('At most100 candidates are compared, each native message stays at20 and unscored tail order remains intact');
+ let n=0;f.port.rerank=async(_q,items)=>++n===1?scores(items):{scores:[],elapsedMs:1};const malformed=await f.repo.rerank(ids.slice(0,40),'知识点',context);assert.deepEqual(malformed.ids,ids.slice(0,40));assert(!malformed.coverage.available&&malformed.coverage.processed===0);note('A malformed later batch publishes no partial ranking and restores the complete original recall order');
+ let now=1000;mock.method(Date,'now',()=>now);const budgets=[];f.port.rerank=async(_q,items,timeout)=>{budgets.push(timeout);now+=4500;if(budgets.length===2)throw Error('reranker_timeout');return scores(items);};const timeout=await f.repo.rerank(ids.slice(0,40),'知识点',context);assert.deepEqual(budgets,[5000,500]);assert.deepEqual(timeout.ids,ids.slice(0,40));assert.equal(timeout.coverage.reason,'reranker_timeout');note('Native batches share one5-second budget including wait/startup; a later timeout restores the original ranking');
+ now=1000;n=0;f.port.rerank=async(_q,items)=>{n++;now+=5001;return scores(items);};const expired=await f.repo.rerank(ids.slice(0,40),'知识点',context);assert.equal(n,1);assert.equal(expired.coverage.reason,'reranker_timeout');assert.deepEqual(expired.ids,ids.slice(0,40));note('An expired budget never dispatches a new native batch');mock.restoreAll();
+ let verified=0;const client=new RerankerClient(async signal=>{verified++;await new Promise((_,reject)=>signal.addEventListener('abort',()=>reject(Error('cancelled')),{once:true}));throw Error('unexpected');});
+ try{for(const invalid of [0,-1,15001,1.5,NaN])await assert.rejects(client.rerank('知识点',[{id:'valid',text:'教学资料',complete:true}],invalid),/invalid_input/);assert.equal(verified,0);const began=performance.now();await assert.rejects(client.rerank('知识点',[{id:'valid',text:'教学资料',complete:true}],50),/reranker_timeout/);assert(performance.now()-began<1000);assert.equal(verified,1);note('Client validates caller deadlines and aborts stalled real startup promptly when its shared budget expires');}finally{client.close();}
+ console.log(JSON.stringify({success:true,checks:checks.length,scope:'Actual repository fusion and client cancellation, controlled scores/clock and stalled verifier; native model/Electron evidence remains separate'}));
+}finally{mock.restoreAll();f.db.close();}

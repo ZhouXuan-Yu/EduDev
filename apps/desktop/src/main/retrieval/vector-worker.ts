@@ -29,9 +29,13 @@ async function receive(message:unknown){
     if(v.op==='ensure')value=await store.ensure(v.spec);
     else if(v.op==='apply')value=await store.apply(v.spec,v.fact);
     else if(v.op==='applyMany')value=await store.applyMany(v.spec,v.facts);
-    else if(v.op==='query')value=await store.query(v.spec,v.query);
+    else if(v.op==='query'){void ranker?.warm().catch(()=>undefined);value=await store.query(v.spec,v.query);}
     else if(v.op==='counts')value=await store.counts(v.spec);
-    else if(v.op==='rerank'){if(!ranker)throw Error('reranker_unavailable');value=await ranker.rerank(v.query,v.items);}
+    else if(v.op==='rerank'){
+      if(!ranker)throw Error('reranker_unavailable');
+      const remaining=v.deadlineAt===undefined?15000:Number.isSafeInteger(v.deadlineAt)?Math.min(15000,v.deadlineAt-Date.now()):NaN;
+      if(remaining<=0)throw Error('reranker_timeout');value=await ranker.rerank(v.query,v.items,remaining);
+    }
     else if(v.op==='optimize')value=await store.optimize(v.spec,v.force===true);
     else throw Error('invalid_input');
     reply({id,ok:true,value});

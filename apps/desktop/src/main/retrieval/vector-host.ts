@@ -6,7 +6,7 @@ import {verifyRetrievalRuntime} from './runtime-command';
 import type {GenerationSpec,RetrievalFact,VectorQuery,VectorCandidate} from '../../shared/retrieval';
 import {RETRIEVAL_SCHEMA,validIndexMaintenance,type IndexMaintenance} from '../../shared/retrieval';
 import type {RerankInput,RerankResult} from '../../shared/reranker';
-export type VectorPort={ensure:(spec:GenerationSpec)=>Promise<void>;apply:(spec:GenerationSpec,fact:RetrievalFact)=>Promise<unknown>;applyMany?:(spec:GenerationSpec,facts:RetrievalFact[])=>Promise<unknown>;query:(spec:GenerationSpec,query:VectorQuery)=>Promise<{hits:VectorCandidate[];exhausted:boolean;ann:boolean}>;counts:(spec:GenerationSpec)=>Promise<{objects:number;vectors:number;ann:boolean}>;optimize:(spec:GenerationSpec)=>Promise<unknown>;maintain?:(spec:GenerationSpec,force?:boolean)=>Promise<IndexMaintenance>;rerank?:(query:string,items:RerankInput[])=>Promise<RerankResult>;interrupt?:()=>Promise<void>;close:()=>Promise<void>};
+export type VectorPort={ensure:(spec:GenerationSpec)=>Promise<void>;apply:(spec:GenerationSpec,fact:RetrievalFact)=>Promise<unknown>;applyMany?:(spec:GenerationSpec,facts:RetrievalFact[])=>Promise<unknown>;query:(spec:GenerationSpec,query:VectorQuery)=>Promise<{hits:VectorCandidate[];exhausted:boolean;ann:boolean}>;counts:(spec:GenerationSpec)=>Promise<{objects:number;vectors:number;ann:boolean}>;optimize:(spec:GenerationSpec)=>Promise<unknown>;maintain?:(spec:GenerationSpec,force?:boolean)=>Promise<IndexMaintenance>;rerank?:(query:string,items:RerankInput[],timeoutMs?:number)=>Promise<RerankResult>;interrupt?:()=>Promise<void>;close:()=>Promise<void>};
 /** Sole persistent native-index owner. Renderer never supplies an executable or index path. */
 export class VectorHost implements VectorPort{
   private child?:Electron.UtilityProcess;
@@ -42,7 +42,12 @@ export class VectorHost implements VectorPort{
   applyMany(spec:GenerationSpec,facts:RetrievalFact[]){return this.call('applyMany',{spec,facts});}
   query(spec:GenerationSpec,query:VectorQuery){return this.call('query',{spec,query}) as Promise<{hits:VectorCandidate[];exhausted:boolean;ann:boolean}>;}
   counts(spec:GenerationSpec){return this.call('counts',{spec}) as Promise<{objects:number;vectors:number;ann:boolean}>;}
-  rerank(query:string,items:RerankInput[]){return this.call('rerank',{query,items}) as Promise<RerankResult>;}
+  async rerank(query:string,items:RerankInput[],timeoutMs=15000):Promise<RerankResult>{
+    if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>15000)throw Error('invalid_input');
+    const deadlineAt=Date.now()+timeoutMs;let timer:ReturnType<typeof setTimeout>|undefined;
+    try{return await Promise.race([(async()=>{await this.start();if(Date.now()>=deadlineAt)throw Error('reranker_timeout');return this.send('rerank',{query,items,deadlineAt});})(),new Promise<never>((_,reject)=>{timer=setTimeout(()=>reject(Error('reranker_timeout')),timeoutMs);})]);}
+    finally{if(timer)clearTimeout(timer);}
+  }
   optimize(spec:GenerationSpec){return this.call('optimize',{spec,force:true});}
   async maintain(spec:GenerationSpec,force=false){const result=await this.call('optimize',{spec,force});if(!validIndexMaintenance(result))throw Error('index_unavailable');return result;}
   async interrupt(){this.epoch++;const starting=this.starting,child=this.child;if(child){this.stopping.add(child);const exited=new Promise<void>(resolve=>child.once('exit',()=>resolve()));child.kill();await exited;}await starting?.catch(()=>undefined);}

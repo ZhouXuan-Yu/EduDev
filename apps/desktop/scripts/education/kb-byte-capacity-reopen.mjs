@@ -49,7 +49,7 @@ try{
   report.checks.push('Current build finds each of the 40 persisted sources through typed keyword retrieval; visible first/last queries reach the full 40GiB library');
   await search(first,'hybrid');
   const hybrid=await page.evaluate(query=>window.omniEdu.searchMaterialText({schemaVersion:'xiaozhi.material-search.v1',query,offset:0,mode:'hybrid'}),first);
-  assert(hybrid.semantic?.available&&hybrid.semantic.complete,JSON.stringify(hybrid.semantic));assert(hybrid.semantic.rerank?.available&&hybrid.semantic.rerank.processed>0,JSON.stringify(hybrid.semantic.rerank));report.hybridCoverage=hybrid.semantic;
+  assert(hybrid.semantic?.available&&hybrid.semantic.complete,JSON.stringify(hybrid.semantic));assert(hybrid.semantic.rerank?.available&&hybrid.semantic.rerank.processed===40&&hybrid.semantic.rerank.complete,JSON.stringify(hybrid.semantic.rerank));report.hybridCoverage=hybrid.semantic;
   report.memory=await app.evaluate(({app})=>app.getAppMetrics().map(m=>({pid:m.pid,type:m.type,workingSetKiB:m.memory.workingSetSize})));
   if(process.platform==='win32'){
     const parents=report.memory.map(m=>m.pid).filter(Number.isSafeInteger);
