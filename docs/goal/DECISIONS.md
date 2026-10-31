@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+沿既有FileCheckRules增加可选officeEngine，不增IPC/业务真源/包；旧请求缺省auto，Microsoft未注册才回退WPS。原文件面板用轻量原生select，实际报告引擎不能伪标。WPS新空Automation沿现Job归属；不因用户打开WPS阻断可独立执行的工作。见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 本轮收尾：最终整合feef9d4保留main f4dce3f的资料库与侧栏改动，Word检查生产源码与44eb69a一致；整合后build/type、240/240组件通过。207综合归整合前a94ab29，Word停止/占用专项归44eb69a，未重复运行。既有PromptInput指纹/启动IPC两项失败门禁与audit45保留，完整AT新增0，日常D盘与安装包未更新；详细指纹、范围见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wordInteropSlice.finalIntegration。
 
 ## 2026-10-31 E06 Word真实页面与停止清理（第五切片）

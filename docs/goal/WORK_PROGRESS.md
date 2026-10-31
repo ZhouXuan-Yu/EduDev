@@ -1,5 +1,17 @@
 # EduDev 当前任务进度
 
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+WPS Writer/Presentation已沿原Pi检查及原文件面板接通真实三页截图；新增自动/Microsoft/WPS选择，旧规则兼容，实际引擎写入报告。独立新空Automation实例+Job保持用户已有WPS进程/窗口与原稿不变；Office不存在时自动选择WPS，Microsoft忙不静默切换。无新依赖/业务表/IPC/付费。
+
+源码610f3eb：build/type、240组件、12源码及WPS原生3项、默认Microsoft原生3项通过。原正式UI6项（含准备1）后因三页PPT已完成赶不上停止而exit1，失败保留；改64页在途夹具，仅补测PPT停止/同文件复用4项exit0，0renderer错误。同源码综合smoke207/207通过（含build/type，legacy-test；实际Pi/WPS路径单列）。
+
+本机合成单次：WPS DOCX原生6470ms、PPTX5509ms；两文件正式整轮17371ms；Word停止1814ms、PPT停止1116ms含进程/清理观察，非P95或1秒派发达标。renderer7179075→7179937B（+862B），未测整应用流式性能。
+
+E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。
+
+继续位置：E06逐字缺字/语义遮挡、全教师要求绑定和混合终态，再E07/E08+C与W3集中AT；勿重做已过Office/WPS正向与冷启旅程。回退610f3eb可保留成果/报告/PNG，无数据库迁移，回退未演练。命令、真实文件/进程、失败、截图和指纹见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 本轮收尾：最终整合feef9d4保留main f4dce3f的资料库与侧栏改动，Word检查生产源码与44eb69a一致；整合后build/type、240/240组件通过。207综合归整合前a94ab29，Word停止/占用专项归44eb69a，未重复运行。既有PromptInput指纹/启动IPC两项失败门禁与audit45保留，完整AT新增0，日常D盘与安装包未更新；详细指纹、范围见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wordInteropSlice.finalIntegration。
 
 ## 2026-10-31 E06 Word真实页面与停止清理（第五切片）

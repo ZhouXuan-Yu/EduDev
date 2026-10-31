@@ -2738,5 +2738,1013 @@
       "installerUpdated": false,
       "newPaidCalls": 0
     }
+  },
+  "wpsSlice": {
+    "date": "2026-10-31",
+    "implementationSha": "610f3eb81585e2dd90edf8154231f4b64ce9e132",
+    "baseSha": "f8182370303e953cca17fd0c88aacd0dd423d498",
+    "goalStatus": "active",
+    "newFullyAcceptedRequirements": 0,
+    "scope": "M09/M10 E06 optional engine rules through original Pi/preflight/manual file checks and existing PNG/history UI; not full E06/FX09/native editing or animation.",
+    "changes": [
+      "FileCheckRules.officeEngine optional auto/microsoft/wps, existing typed IPC, existing policy hash binds selection; old rules valid.",
+      "Default selects registered Microsoft app, otherwise WPS; busy Microsoft does not silently switch. Explicit WPS uses a newly empty KWPS/KWPP server verified by HWND or exact new registered Automation command/PID/start/path, existing users untouched.",
+      "Fixed production scripts export actual pages; reports name actual engine. PPT text bounds/font checks preserved. Original file panel has engine select, no new page/runtime/table/dependency.",
+      "Reuse Job lifetime and2s bounded known-file cleanup for both Office adapters; original bytes unchanged."
+    ],
+    "tests": {
+      "nativeWps": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-wps-native.mjs",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-wps-native-2lAKRj",
+          "checks": [
+            "Actual WPS docx renders all3 pages with independently read PNG dimensions and unchanged source; Word PDF physical page2 text verified",
+            "Actual WPS pptx renders all3 pages with independently read PNG dimensions and unchanged source; Word PDF physical page2 text verified",
+            "Every existing WPS PID/start/window preserved; both owned Automation servers exited"
+          ],
+          "boundary": "Actual WPS COM and actual PNGs from fixed production scripts, synthetic inputs; no paid calls, no native edit/animation/full FX09 claim.",
+          "before": [
+            {
+              "hwnd": 0,
+              "pid": 15452,
+              "start": "2026-10-31T04:46:30.9142432Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 21948,
+              "start": "2026-10-31T04:46:27.5460079Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 35668,
+              "start": "2026-10-31T04:46:38.0786438Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 49844,
+              "start": "2026-10-31T08:26:05.4395099Z"
+            }
+          ],
+          "docx": {
+            "elapsedMs": 6470,
+            "actual": {
+              "pages": [
+                {
+                  "width": 1697,
+                  "page": 1,
+                  "height": 2400
+                },
+                {
+                  "width": 1697,
+                  "page": 2,
+                  "height": 2400
+                },
+                {
+                  "width": 1697,
+                  "page": 3,
+                  "height": 2400
+                }
+              ],
+              "ok": true,
+              "schemaVersion": "xiaozhi.paged-render.v1",
+              "findings": [],
+              "engine": "WPS Writer 12.0 / Windows.Data.Pdf"
+            },
+            "proofs": [
+              {
+                "page": 1,
+                "kind": "office_page",
+                "sha256": "5e4ee12b0d053198c5b4b909bdf7ac0398afb796337cdad3ca47720a586b2eba",
+                "bytes": 45953,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              },
+              {
+                "page": 2,
+                "kind": "office_page",
+                "sha256": "bc45e8886e46fc371aee79dc9a3eba4b670208ef1b99c75bdfcc9d5605f0b44b",
+                "bytes": 32598,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              },
+              {
+                "page": 3,
+                "kind": "office_page",
+                "sha256": "fa74515e81e060837a2ee978d70c4acb80c70ea08feb3a44855d0e3da4b0b1dd",
+                "bytes": 26267,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              }
+            ],
+            "sha256": "1d5cba5f572a539667f2008761d3cd1a126deb1e9882471f0a0cfd5a8cc9d22d",
+            "owner": {
+              "engine": "KWPS.Application",
+              "pid": 536,
+              "identity": "registered-automation-start-time",
+              "start": "2026-10-31T10:09:21.4719213Z"
+            }
+          },
+          "pptx": {
+            "elapsedMs": 5509,
+            "actual": {
+              "version": "12.0",
+              "width": 1600,
+              "ok": true,
+              "height": 900,
+              "findings": [],
+              "engine": "WPS Presentation",
+              "schemaVersion": "xiaozhi.powerpoint-render.v1",
+              "pages": 3
+            },
+            "proofs": [
+              {
+                "page": 1,
+                "kind": "office_page",
+                "sha256": "6fd6a29b977be6f85ce72d0f3fcdb6b411cb1ea055efaaad7777f5bde5c85a71",
+                "bytes": 26733,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 2,
+                "kind": "office_page",
+                "sha256": "069b51415551e6ff1f182f9100038f1fc0077097a4012b61d805624816931205",
+                "bytes": 25273,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 3,
+                "kind": "office_page",
+                "sha256": "09fca42e2f140d7f51a8669cae10482e706a502a3e253592cdbffe0488519742",
+                "bytes": 27863,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              }
+            ],
+            "sha256": "36734d3657c1c50e50f60ee99567ceff022a0807d203afa026ee86a33eee3678",
+            "owner": {
+              "engine": "KWPP.Application",
+              "pid": 14112,
+              "identity": "registered-automation-start-time",
+              "start": "2026-10-31T10:09:28.4246843Z"
+            }
+          },
+          "after": [
+            {
+              "hwnd": 0,
+              "pid": 15452,
+              "start": "2026-10-31T04:46:30.9142432Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 21948,
+              "start": "2026-10-31T04:46:27.5460079Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 35668,
+              "start": "2026-10-31T04:46:38.0786438Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 49844,
+              "start": "2026-10-31T08:26:05.4395099Z"
+            }
+          ]
+        }
+      },
+      "defaultMicrosoft": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-wps-native.mjs --microsoft-auto",
+        "exit": 0,
+        "report": {
+          "ok": true,
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-wps-native-LsKfNo",
+          "checks": [
+            "Actual default Microsoft docx renders all3 pages with independently read PNG dimensions and unchanged source; physical PDF page2 text verified",
+            "Actual default Microsoft pptx renders all3 pages with independently read PNG dimensions and unchanged source; slide page markers preserved",
+            "Every existing WPS PID/start/window preserved; both owned Automation servers exited"
+          ],
+          "boundary": "Actual Office/WPS COM and actual PNGs from fixed production scripts, synthetic inputs; no paid calls, no native edit/animation/full FX09 claim.",
+          "microsoftAuto": true,
+          "before": [
+            {
+              "hwnd": 0,
+              "pid": 15452,
+              "start": "2026-10-31T04:46:30.9142432Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 21948,
+              "start": "2026-10-31T04:46:27.5460079Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 35668,
+              "start": "2026-10-31T04:46:38.0786438Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 49844,
+              "start": "2026-10-31T08:26:05.4395099Z"
+            }
+          ],
+          "docx": {
+            "elapsedMs": 8253,
+            "actual": {
+              "pages": [
+                {
+                  "width": 1697,
+                  "page": 1,
+                  "height": 2400
+                },
+                {
+                  "width": 1697,
+                  "page": 2,
+                  "height": 2400
+                },
+                {
+                  "width": 1697,
+                  "page": 3,
+                  "height": 2400
+                }
+              ],
+              "ok": true,
+              "schemaVersion": "xiaozhi.paged-render.v1",
+              "findings": [],
+              "engine": "Word 16.0 / Windows.Data.Pdf"
+            },
+            "proofs": [
+              {
+                "page": 1,
+                "kind": "office_page",
+                "sha256": "8e1d802ec2ea3603f00b85facf2f3d12957b43fbcac31374a6a677dd6f09c759",
+                "bytes": 44301,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              },
+              {
+                "page": 2,
+                "kind": "office_page",
+                "sha256": "7336a9ae9269df42b80c5fba22e19dbe29a1a2b07ce52e34db7e27fed230ec47",
+                "bytes": 32028,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              },
+              {
+                "page": 3,
+                "kind": "office_page",
+                "sha256": "9cb728cac62083bbfdc8ffdda079d0eacd2ace05cc5eb2f194de49984baa8db0",
+                "bytes": 26217,
+                "width": 1697,
+                "height": 2400,
+                "viewport": "1697x2400"
+              }
+            ],
+            "sha256": "e933f1b9244967b20e5cd3b211544e54b9635490b6951cf8011890181fc2e458",
+            "owner": {
+              "start": "2026-10-31T10:15:19.8742502Z",
+              "pid": 4480
+            }
+          },
+          "pptx": {
+            "elapsedMs": 3787,
+            "actual": {
+              "version": "16.0",
+              "width": 1600,
+              "ok": true,
+              "height": 900,
+              "findings": [],
+              "engine": "PowerPoint",
+              "schemaVersion": "xiaozhi.powerpoint-render.v1",
+              "pages": 3
+            },
+            "proofs": [
+              {
+                "page": 1,
+                "kind": "office_page",
+                "sha256": "bfafbde96dbc135627f72af95a8325cc9854a760831afa2d33c45a7a5f57d2bd",
+                "bytes": 7435,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 2,
+                "kind": "office_page",
+                "sha256": "1e05aa434f7e77d131377a90d27fa75447d2a52cfcd1f30142d0f760b4821cf8",
+                "bytes": 6913,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              },
+              {
+                "page": 3,
+                "kind": "office_page",
+                "sha256": "3866ec353fc494b6b0444a22519b77c4b7458bb1897f597ee47198a998859075",
+                "bytes": 7660,
+                "width": 1600,
+                "height": 900,
+                "viewport": "1600x900"
+              }
+            ],
+            "sha256": "ef4b14aafc158513ca0ab1cfc89d0b97a6899dd2c1224fd84f875e751e3c3e42",
+            "owner": {
+              "start": "2026-10-31T10:15:28.2528701Z",
+              "pid": 49860
+            }
+          },
+          "after": [
+            {
+              "hwnd": 0,
+              "pid": 15452,
+              "start": "2026-10-31T04:46:30.9142432Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 21948,
+              "start": "2026-10-31T04:46:27.5460079Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 35668,
+              "start": "2026-10-31T04:46:38.0786438Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 49844,
+              "start": "2026-10-31T08:26:05.4395099Z"
+            }
+          ]
+        },
+        "boundary": "Same fixed scripts confirm old omitted engine rules still select actual Word/PowerPoint on this machine; an Office-free host fallback not separately tested."
+      },
+      "source": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+        "exit": 0,
+        "passed": 12,
+        "report": {
+          "ok": true,
+          "checks": [
+            "Old rules remain valid; explicit bounded Office engines accepted and malformed/unknown engines rejected at shared boundary",
+            "Existing science-figure SVG remains structurally readable without pretending its unrendered visual is verified",
+            "Frozen FX01 default, liquid-density, object-density and load boundaries are independently recalculated; wrong7cm is rejected without a model-supplied expected number",
+            "Actual question-version text mismatch is detected across files independently of numeric equality",
+            "Actual eight-slide PPTX and per-slide speaker notes parse; unrendered slides are explicitly visually unchecked",
+            "Plain text with PPTX suffix and a damaged real ZIP fail actual structure checks",
+            "A missing page and required question are identified independently of file existence",
+            "Real XLSX cells preserve001 and formula-like text; a separate sum of actual numeric cells returns240",
+            "CSV quoted commas/newlines survive inspection; missing numeric data is not treated as0",
+            "An actual cached Excel formula is not mistaken for an independently recomputed result",
+            "Individually matching6cm and7cm facts still fail cross-file consistency with both file names",
+            "Derived migration is idempotent and preserves existing data; cancellation updates the stored terminal receipt and damaged receipts are rejected"
+          ],
+          "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-UXu12K",
+          "boundary": "Actual OOXML/CRC parser, generated Office bytes and SQLite receipts; not actual Office rendering, automatic repair or complete E06 AT."
+        }
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "apps/desktop/delivery-wps-build.log"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240,
+        "log": "apps/desktop/delivery-wps-components.log"
+      },
+      "formalUi": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-paged-ui-jz8LWa --wps --wps-native-root C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-wps-native-2lAKRj",
+        "exit": 1,
+        "checksBeforeFailure": [
+          "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+          "Original Pi composer explicitly selects WPS for the exact DOCX/PPTX fixtures; both persist3 actual pages with physical-page content checks and distinct engine findings",
+          "Original docx file panel selects WPS and rechecks actual current bytes; exact page2 opens/enlarges at1366/1920 without closing the pane",
+          "Original pptx file panel selects WPS and rechecks actual current bytes; exact page2 opens/enlarges at1366/1920 without closing the pane",
+          "Cold original app retrieves both persisted WPS page2 PNGs without model/publication/render replay",
+          "Visible docx WPS check stops its independently owned Automation server and removes staging; cancellation receipt and original bytes retained"
+        ],
+        "errors": [],
+        "wps": {
+          "before": [
+            {
+              "hwnd": 0,
+              "pid": 15452,
+              "start": "2026-10-31T04:46:30.9142432Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 21948,
+              "start": "2026-10-31T04:46:27.5460079Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 35668,
+              "start": "2026-10-31T04:46:38.0786438Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 49844,
+              "start": "2026-10-31T08:26:05.4395099Z"
+            }
+          ],
+          "files": [
+            {
+              "path": "WPS实际三页.docx",
+              "fileVersion": "6f8448b9b69a5415be37f626322260dc5777a8418b5efad7a575f7e36e81f1a8",
+              "sha256": "1d5cba5f572a539667f2008761d3cd1a126deb1e9882471f0a0cfd5a8cc9d22d",
+              "size": 9899,
+              "format": "docx",
+              "checks": [
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "actual_paged_rendered",
+                  "message": "WPS Writer 12.0 / Windows.Data.Pdf已实际渲染全部3页，截图可查看；缺字、公式字形、裁切与语义遮挡仍需核对，未据此判定视觉全通过。"
+                },
+                {
+                  "kind": "structure",
+                  "state": "passed",
+                  "code": "parsed",
+                  "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "page_count",
+                  "message": "要求3页，实际3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "contains",
+                  "page": 2,
+                  "message": "正文应包含“PAGE_TWO”：符合。"
+                },
+                {
+                  "kind": "numbers",
+                  "state": "passed",
+                  "code": "numeric_comparison",
+                  "ruleId": "depth",
+                  "message": "按声明核对：期望6cm，实际6cm。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "not_applicable",
+                  "code": "document_interaction",
+                  "message": "本次非HTML文件没有约定的交互动作检查。"
+                },
+                {
+                  "kind": "consistency",
+                  "state": "unchecked",
+                  "code": "shared_facts_missing",
+                  "message": "尚未取得可对照的同名事实，未判定整包一致。"
+                }
+              ],
+              "renderedPages": [
+                1,
+                2,
+                3
+              ],
+              "numbers": [
+                {
+                  "id": "depth",
+                  "value": 6,
+                  "unit": "cm"
+                }
+              ],
+              "state": "partial",
+              "visualEvidence": [
+                {
+                  "page": 1,
+                  "kind": "office_page",
+                  "sha256": "5e4ee12b0d053198c5b4b909bdf7ac0398afb796337cdad3ca47720a586b2eba",
+                  "bytes": 45953,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 2,
+                  "kind": "office_page",
+                  "sha256": "bc45e8886e46fc371aee79dc9a3eba4b670208ef1b99c75bdfcc9d5605f0b44b",
+                  "bytes": 32598,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 3,
+                  "kind": "office_page",
+                  "sha256": "fa74515e81e060837a2ee978d70c4acb80c70ea08feb3a44855d0e3da4b0b1dd",
+                  "bytes": 26267,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                }
+              ],
+              "facts": [],
+              "pageCount": 3
+            },
+            {
+              "path": "WPS实际三页.pptx",
+              "fileVersion": "b0983a8e3b671a1e870a68974a6b59d3edcaeba5fe39c93c64cddad6e7ab8ccc",
+              "sha256": "36734d3657c1c50e50f60ee99567ceff022a0807d203afa026ee86a33eee3678",
+              "size": 57993,
+              "format": "pptx",
+              "checks": [
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "actual_office_rendered",
+                  "message": "WPS Presentation 12.0已实际渲染全部3页并核对文字边界；截图可查看。语义遮挡、逐字缺字及动画效果仍未完整验证。"
+                },
+                {
+                  "kind": "structure",
+                  "state": "passed",
+                  "code": "parsed",
+                  "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "page_count",
+                  "message": "要求3页，实际3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "speaker_notes",
+                  "page": 1,
+                  "message": "本页有实际讲者备注。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "speaker_notes",
+                  "page": 2,
+                  "message": "本页有实际讲者备注。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "speaker_notes",
+                  "page": 3,
+                  "message": "本页有实际讲者备注。"
+                },
+                {
+                  "kind": "content",
+                  "state": "passed",
+                  "code": "contains",
+                  "page": 2,
+                  "message": "正文应包含“PAGE_2”：符合。"
+                },
+                {
+                  "kind": "numbers",
+                  "state": "unchecked",
+                  "code": "numeric_contract",
+                  "message": "尚未提供数值或合计的核验约定。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "not_applicable",
+                  "code": "document_interaction",
+                  "message": "本次非HTML文件没有约定的交互动作检查。"
+                },
+                {
+                  "kind": "consistency",
+                  "state": "unchecked",
+                  "code": "shared_facts_missing",
+                  "message": "尚未取得可对照的同名事实，未判定整包一致。"
+                }
+              ],
+              "renderedPages": [
+                1,
+                2,
+                3
+              ],
+              "numbers": [],
+              "state": "partial",
+              "visualEvidence": [
+                {
+                  "page": 1,
+                  "kind": "office_page",
+                  "sha256": "6fd6a29b977be6f85ce72d0f3fcdb6b411cb1ea055efaaad7777f5bde5c85a71",
+                  "bytes": 26733,
+                  "width": 1600,
+                  "height": 900,
+                  "viewport": "1600x900"
+                },
+                {
+                  "page": 2,
+                  "kind": "office_page",
+                  "sha256": "069b51415551e6ff1f182f9100038f1fc0077097a4012b61d805624816931205",
+                  "bytes": 25273,
+                  "width": 1600,
+                  "height": 900,
+                  "viewport": "1600x900"
+                },
+                {
+                  "page": 3,
+                  "kind": "office_page",
+                  "sha256": "09fca42e2f140d7f51a8669cae10482e706a502a3e253592cdbffe0488519742",
+                  "bytes": 27863,
+                  "width": 1600,
+                  "height": 900,
+                  "viewport": "1600x900"
+                }
+              ],
+              "facts": [],
+              "pageCount": 3
+            }
+          ],
+          "stops": [
+            {
+              "format": "docx",
+              "elapsedMs": 1814,
+              "owner": {
+                "engine": "KWPS.Application",
+                "pid": 38936,
+                "identity": "registered-automation-start-time",
+                "start": "2026-10-31T10:15:54.3877269Z",
+                "folder": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa\\data\\cache\\delivery-paged\\v1\\render-D6PMCp"
+              }
+            }
+          ],
+          "composerMs": 17371
+        },
+        "failure": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('pi-file-panel').getByTestId('pi-delivery-check').getByTestId('pi-file-check-cancel')\u001b[22m\n\u001b[2m    - locator resolved to <button data-rac=\"\" tabindex=\"0\" type=\"button\" data-slot=\"button\" data-react-aria-pressable=\"true\" id=\"react-aria3417059418-_r_nr_\" data-testid=\"pi-file-check-cancel\" class=\"button button--sm button--ghost\">停止检查</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m  - element was detached from the DOM, retrying\u001b[22m\n\n    at checkWpsPages (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\delivery-wps-ui-checks.mjs:33:172)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-paged-electron.mjs:22:78",
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-8DTcT8",
+        "boundary": "6 assertions include1 resume preparation plus composer,2 original manual/view paths, cold read and DOCX cancel. PPT3-page positive finished before stop click, so initial suite is not all green."
+      },
+      "focusedPptStop": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-paged-electron.mjs C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-paged-ui-jz8LWa --wps --wps-pptx-stop-only --wps-native-root C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-wps-native-2lAKRj",
+        "exit": 0,
+        "checks": [
+          "Focused continuation resumes the same owned saved files with no generation/model/publication replay",
+          "Focused recovery reuses both exact previously inspected WPS files and their persisted3-page proofs without replaying passed composer/view/cold/Word cancellation paths",
+          "Visible pptx WPS check stops its independently owned Automation server and removes staging; cancellation receipt and original bytes retained",
+          "All pre-existing WPS processes and window identities survive original composer, manual checks, cold reads and both in-flight cancellations"
+        ],
+        "errors": [],
+        "wps": {
+          "before": [
+            {
+              "hwnd": 0,
+              "pid": 15452,
+              "start": "2026-10-31T04:46:30.9142432Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 21948,
+              "start": "2026-10-31T04:46:27.5460079Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 35668,
+              "start": "2026-10-31T04:46:38.0786438Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 49844,
+              "start": "2026-10-31T08:26:05.4395099Z"
+            }
+          ],
+          "files": [
+            {
+              "path": "WPS实际三页.docx",
+              "fileVersion": "6f8448b9b69a5415be37f626322260dc5777a8418b5efad7a575f7e36e81f1a8",
+              "sha256": "1d5cba5f572a539667f2008761d3cd1a126deb1e9882471f0a0cfd5a8cc9d22d",
+              "size": 9899,
+              "format": "docx",
+              "checks": [
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "actual_paged_rendered",
+                  "message": "WPS Writer 12.0 / Windows.Data.Pdf已实际渲染全部3页，截图可查看；缺字、公式字形、裁切与语义遮挡仍需核对，未据此判定视觉全通过。"
+                },
+                {
+                  "kind": "structure",
+                  "state": "passed",
+                  "code": "parsed",
+                  "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "unchecked",
+                  "code": "content_contract",
+                  "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                },
+                {
+                  "kind": "numbers",
+                  "state": "unchecked",
+                  "code": "numeric_contract",
+                  "message": "尚未提供数值或合计的核验约定。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "not_applicable",
+                  "code": "document_interaction",
+                  "message": "本次非HTML文件没有约定的交互动作检查。"
+                },
+                {
+                  "kind": "consistency",
+                  "state": "not_applicable",
+                  "code": "single_file",
+                  "message": "当前仅检查一份文件。"
+                }
+              ],
+              "renderedPages": [
+                1,
+                2,
+                3
+              ],
+              "numbers": [],
+              "state": "partial",
+              "visualEvidence": [
+                {
+                  "page": 1,
+                  "kind": "office_page",
+                  "sha256": "5e4ee12b0d053198c5b4b909bdf7ac0398afb796337cdad3ca47720a586b2eba",
+                  "bytes": 45953,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 2,
+                  "kind": "office_page",
+                  "sha256": "bc45e8886e46fc371aee79dc9a3eba4b670208ef1b99c75bdfcc9d5605f0b44b",
+                  "bytes": 32598,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                },
+                {
+                  "page": 3,
+                  "kind": "office_page",
+                  "sha256": "fa74515e81e060837a2ee978d70c4acb80c70ea08feb3a44855d0e3da4b0b1dd",
+                  "bytes": 26267,
+                  "width": 1697,
+                  "height": 2400,
+                  "viewport": "1697x2400"
+                }
+              ],
+              "facts": [],
+              "pageCount": 3
+            },
+            {
+              "path": "WPS实际三页.pptx",
+              "fileVersion": "b0983a8e3b671a1e870a68974a6b59d3edcaeba5fe39c93c64cddad6e7ab8ccc",
+              "sha256": "36734d3657c1c50e50f60ee99567ceff022a0807d203afa026ee86a33eee3678",
+              "size": 57993,
+              "format": "pptx",
+              "checks": [
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "actual_office_rendered",
+                  "message": "WPS Presentation 12.0已实际渲染全部3页并核对文字边界；截图可查看。语义遮挡、逐字缺字及动画效果仍未完整验证。"
+                },
+                {
+                  "kind": "structure",
+                  "state": "passed",
+                  "code": "parsed",
+                  "message": "实际解析完成（yauzl3.4.0/jsdom29.0.2），共3页。"
+                },
+                {
+                  "kind": "content",
+                  "state": "unchecked",
+                  "code": "content_contract",
+                  "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                },
+                {
+                  "kind": "numbers",
+                  "state": "unchecked",
+                  "code": "numeric_contract",
+                  "message": "尚未提供数值或合计的核验约定。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "not_applicable",
+                  "code": "document_interaction",
+                  "message": "本次非HTML文件没有约定的交互动作检查。"
+                },
+                {
+                  "kind": "consistency",
+                  "state": "not_applicable",
+                  "code": "single_file",
+                  "message": "当前仅检查一份文件。"
+                }
+              ],
+              "renderedPages": [
+                1,
+                2,
+                3
+              ],
+              "numbers": [],
+              "state": "partial",
+              "visualEvidence": [
+                {
+                  "page": 1,
+                  "kind": "office_page",
+                  "sha256": "6fd6a29b977be6f85ce72d0f3fcdb6b411cb1ea055efaaad7777f5bde5c85a71",
+                  "bytes": 26733,
+                  "width": 1600,
+                  "height": 900,
+                  "viewport": "1600x900"
+                },
+                {
+                  "page": 2,
+                  "kind": "office_page",
+                  "sha256": "069b51415551e6ff1f182f9100038f1fc0077097a4012b61d805624816931205",
+                  "bytes": 25273,
+                  "width": 1600,
+                  "height": 900,
+                  "viewport": "1600x900"
+                },
+                {
+                  "page": 3,
+                  "kind": "office_page",
+                  "sha256": "09fca42e2f140d7f51a8669cae10482e706a502a3e253592cdbffe0488519742",
+                  "bytes": 27863,
+                  "width": 1600,
+                  "height": 900,
+                  "viewport": "1600x900"
+                }
+              ],
+              "facts": [],
+              "pageCount": 3
+            }
+          ],
+          "stops": [
+            {
+              "format": "pptx",
+              "elapsedMs": 1116,
+              "owner": {
+                "engine": "KWPP.Application",
+                "pid": 49352,
+                "identity": "registered-automation-start-time",
+                "start": "2026-10-31T10:17:55.3868922Z",
+                "folder": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-jz8LWa\\data\\cache\\delivery-office\\v1\\render-lVBsel"
+              }
+            }
+          ],
+          "after": [
+            {
+              "hwnd": 0,
+              "pid": 15452,
+              "start": "2026-10-31T04:46:30.9142432Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 21948,
+              "start": "2026-10-31T04:46:27.5460079Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 35668,
+              "start": "2026-10-31T04:46:38.0786438Z"
+            },
+            {
+              "hwnd": 0,
+              "pid": 49844,
+              "start": "2026-10-31T08:26:05.4395099Z"
+            }
+          ]
+        },
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-paged-ui-7oYbO8",
+        "boundary": "64-page synthetic PPTX keeps actual WPS in-flight long enough to click visible stop after registered ownership. Reuses exact old3-page files/proofs; does not replay passed composer/view/cold/DOCX cancellation. Last check text in raw report refers to earlier positives collectively; this focus itself asserts only its existing-process snapshot and PPT cancellation."
+      },
+      "comprehensive": {
+        "command": "npm run test:smoke",
+        "exit": 0,
+        "passed": 207,
+        "total": 207,
+        "log": "apps/desktop/delivery-wps-smoke.log",
+        "source": "610f3eb81585e2dd90edf8154231f4b64ce9e132",
+        "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-smoke-D2xOYg",
+        "includes": "npm run build (tsc + electron-vite) and isolated legacy-test Electron regression",
+        "boundary": "207 broad legacy cases are not full Pi/Office/WPS or teacher acceptance; actual WPS positive/cancel/restart paths have separate formal UI evidence. No complete AT claimed."
+      }
+    },
+    "retainedSetupFailure": "First source smoke invoked from repository root exited1 before module loading (ERR_MODULE_NOT_FOUND), log delivery-wps-source.log at repository root; corrected cwd apps/desktop and source12 passed. No production change for this setup error.",
+    "performance": {
+      "before": "Production WPS page check unavailable, no WPS engine choice.",
+      "nativeWpsDocxMs": 6470,
+      "nativeWpsPptxMs": 5509,
+      "combinedComposerWholeTurnMs": 17371,
+      "docxStopWholeObservationMs": 1814,
+      "pptxStopWholeObservationMs": 1116,
+      "rendererBeforeBytes": 7179075,
+      "rendererAfterBytes": 7179937,
+      "boundary": "Single synthetic samples; render helper plus PNG reads versus whole composer turn/stop observations are different measures. Not P95/streaming100ms/300ms feedback/1s dispatch or engine speed comparison."
+    },
+    "buildFingerprints": {
+      "apps/desktop/out/main/index.js": {
+        "bytes": 3224647,
+        "sha256": "03b556138994af610083a20098e80f053d20cd9b41d06e602c415e1faf00b220"
+      },
+      "apps/desktop/out/preload/index.cjs": {
+        "bytes": 34761,
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+      },
+      "apps/desktop/out/renderer/assets/index-By4Dx4Si.js": {
+        "bytes": 7179937,
+        "sha256": "aa251a571b43280237b9f5c4d58115fda3825b258c8ea06bc871e0a36462e3f0"
+      }
+    },
+    "screenshots": {
+      "docs/research/AGENT_DELIVERY_CHECKS_E06_WPS_20261031/wps-docx-1366.png": {
+        "bytes": 27425,
+        "sha256": "d446422d0d0b7e2a110d159ec2b467a57f98caf4278c52d88efe30c252f20a49",
+        "source": "Original Electron enlarged actual WPS page2; initial suite later failed only because3-page PPT inspection ended before stop click."
+      },
+      "docs/research/AGENT_DELIVERY_CHECKS_E06_WPS_20261031/wps-pptx-1920.png": {
+        "bytes": 90467,
+        "sha256": "1cc048af480eb6c0c3fe37afa37116a92df01172e057fdf521063867b0c7b995",
+        "source": "Original Electron enlarged actual WPS page2; initial suite later failed only because3-page PPT inspection ended before stop click."
+      }
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "raw": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-wps-audit-20261031.json",
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "newDependencies": 0
+    },
+    "remaining": [
+      "Per-glyph missing glyphs, semantic occlusion, full FX09 long table/header/image/formula matrix",
+      "All teacher requirement binding, mixed terminal and full E06/E07/E08/C, then staged AT",
+      "Native WPS editable save/reopen and dynamic presentation are separate acceptance, not inferred from PNG export",
+      "Office-free host auto fallback not separately tested; no new paid model requests; daily D runtime/installer unchanged",
+      "Inherited PromptInput fingerprint and production bootstrap IPC gates remain recorded in docs/design/sidebar-navigation-2026-10-31/README.md; not rerun or claimed fixed"
+    ],
+    "rollback": "Revert this slice engine selection/adapter commit610f3eb, retaining formal files/old reports/cache. Optional rules absent uses old default; no DB migration. Rollback not rehearsed.",
+    "runtime": {
+      "sourceRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject",
+      "dailyRuntimeUpdated": false,
+      "installerUpdated": false,
+      "newPaidCalls": 0
+    },
+    "readback": {
+      "method": "Read-only SQLite actual stored policy_json/report_json,6 cached PNG SHA/dimensions and empty current stage roots verified",
+      "reports": [
+        {
+          "reportId": "xicheck_e22196a08394f847ee846d30ab00d2428f317b951cb2ce69b5e553a35beb9aea",
+          "path": "WPS实际三页.docx",
+          "policyOfficeEngine": "wps",
+          "policySha256": "ecb9d4c0a19a0a0e59bfa933f1a083136262644faea5128e9171fc3ecdf0229c",
+          "fileSha256": "1d5cba5f572a539667f2008761d3cd1a126deb1e9882471f0a0cfd5a8cc9d22d",
+          "actualPngVerified": 3
+        },
+        {
+          "reportId": "xicheck_d03c7d45b9f7a206c1aa349969f5f72f5e002f66a3870e1b7f829f3a17ba8cb6",
+          "path": "WPS实际三页.pptx",
+          "policyOfficeEngine": "wps",
+          "policySha256": "98b9bc53be8988ef8a0ee89cd565bfb5b6d772c982d3f89552c6adb8c5890bfa",
+          "fileSha256": "36734d3657c1c50e50f60ee99567ceff022a0807d203afa026ee86a33eee3678",
+          "actualPngVerified": 3
+        }
+      ],
+      "newActionsOrModelCalls": 0
+    },
+    "environment": {
+      "os": {
+        "Caption": "Microsoft Windows 11 家庭版 中文版",
+        "Version": "10.0.26200",
+        "BuildNumber": "26200",
+        "OSArchitecture": "64 位"
+      },
+      "cpu": {
+        "Name": "13th Gen Intel(R) Core(TM) i7-13650HX"
+      },
+      "ramBytes": 33943298048,
+      "wpsExe": "D:\\WPS\\WPS Office\\12.1.0.29161\\office6\\wps.exe",
+      "wpsFileVersion": "12,1,0,29161",
+      "node": "v24.12.0",
+      "electron": "43.8.3",
+      "viewportNote": "Original UI CSS1366x768 and1920x1080; native DOCX PNG1697x2400 reflects system DPI, PPT1600x900. Not complete FX09 DPI matrix."
+    }
   }
 }

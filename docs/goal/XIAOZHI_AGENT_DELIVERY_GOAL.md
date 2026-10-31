@@ -1,5 +1,9 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+## 2026-10-31 E06 WPS真实页面（第六切片）
+
+WPS Writer/Presentation已沿原Pi检查及原文件面板接通真实三页截图；新增自动/Microsoft/WPS选择，旧规则兼容，实际引擎写入报告。独立新空Automation实例+Job保持用户已有WPS进程/窗口与原稿不变；Office不存在时自动选择WPS，Microsoft忙不静默切换。无新依赖/业务表/IPC/付费。 E06仍部分实现，完整AT新增已实现0/252，Goal保持active。逐字缺字/语义遮挡、完整FX09、全教师要求绑定/混合终态仍待补；WPS图片导出不代表原生编辑保存或动态放映验收。日常D盘和安装包未更新；audit45（8高29中8低/0严重，exit1），既有两个UI门禁未修。 全28WP/252REQ范围不缩；日常进度见WORK_PROGRESS.md，证据见docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## 2026-10-31 E06 Word真实页面与停止清理（第五切片）
 
 此前Word导出阻塞已定位并修复：输出路径显式[string]，Close/Quit使用[ref] SaveChanges；Word16实际三页A4含长标题/表格/OfficeMath现可沿原Pi检查→原文件面板两视口→冷启取回真实PNG。仅去掉字符串转换的同文件对照20秒无PDF。取消还发现Word锁晚于助手退出释放，新增最多2秒异步重试自有临时文件；最终停止/占用专项通过，原文件不变且不接管已有实例。

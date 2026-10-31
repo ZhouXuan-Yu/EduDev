@@ -160,6 +160,8 @@
 - 完成定义：本机WPS真实三页DOCX及PPTX全页截图，独立页数/文本/SHA；原composer明确WPS、原文件面板选择WPS再检查/查看/冷启/停止；用户现有实例身份和原稿保持。一次相关build/type/组件/专项，失败仅修并复验受影响项；完整FX09/AT和语义遮挡/缺字另行集中，不预标已实现。
 - 回退：回退本片引擎选择/薄适配可保留旧默认Microsoft和所有正式文件/检查报告/PNG；无数据库迁移。0新增付费/用户资料上传，D盘日常及安装包不在本片自动替换。
 
+第六切片实测（610f3eb）：WPS三页DOCX/PPT真实页面与原Pi/原文件面板双视口/冷启、DOCX停止通过；首套PPT三页已完成后停止按钮消失，exit1保留；专用64页在途停止补测通过，无生产取消修改。build/type、240组件、12源码、WPS原生3项、默认Microsoft原生3项及207综合均通过，实际Pi/WPS证据与legacy综合分开。原稿与用户WPS身份不变，0新依赖/业务DDL/IPC/付费；audit45项exit1。完整AT仍待集中，E06/Goal保持未完成。详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#wpsSlice。
+
 ## E06第五切片：Word导出调用修复（2026-10-31冻结）
 
 - 目标M09/M10：补齐原DOCX只读副本→Word真实PDF→Windows逐页PNG，并使原Pi检查/原文件面板可查看，不重建页面或第二执行器。先定位原生调用阻塞，优先修复COM参数/线程或沿官方原生API薄适配，不改用户Word全局配置、默认打印机或接管既有WPS/Word。
