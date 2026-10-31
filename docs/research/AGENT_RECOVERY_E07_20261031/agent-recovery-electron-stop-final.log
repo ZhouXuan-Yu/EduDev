@@ -1,0 +1,5 @@
+(node:44132) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Retry-wait stop gives local feedback within 300ms, settles interrupted and emits no later attempt after the original delay
+PASS Cold restart reads original persisted attempt/error records without replay, duplicate events or renderer errors
+{"ok":true,"checks":2,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-4ICaVG"}

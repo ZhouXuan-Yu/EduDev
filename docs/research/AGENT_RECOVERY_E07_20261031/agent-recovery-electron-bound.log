@@ -1,0 +1,7 @@
+(node:53424) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Broken response body preserves the original partial answer, never auto-replays it, and continuation preparation protects an existing teacher draft
+PASS Teacher explicitly sends one new continuation run; original partial text and task-version references remain available
+PASS Original failed-turn diagnostics and continuation controls stay reachable in both required viewports
+PASS Cold restart reads original persisted attempt/error records without replay, duplicate events or renderer errors
+{"ok":true,"checks":4,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-H9OArp"}

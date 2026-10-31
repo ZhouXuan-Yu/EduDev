@@ -1,5 +1,8 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-10-31 E07：正式Pi首响应503/500、401/402/长429及等待停止的初次6项通过；断流隐藏缺陷保留并修复。最终接续4项验证双尺寸、原task/version、新run及冷启；最终停止/冷启2项41.95ms，0模型/renderer错误。源码11、任务SQLite11及原生附件21；完整E07与252AT仍未执行。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
+
+
 2026-10-31 E08当前版本：E08当前版本接缝工程已实现：正式Pi原对话默认当前→教学文件按族/历史→实际当前检查→教师恢复第四版→旧检查可见过期→双视口/冷启8项，0renderer；源码16/240/一次207通过。完整AT仍未执行，原生打开成功不计入。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
 ## 2026-10-31 封面跳过补强与明确计数

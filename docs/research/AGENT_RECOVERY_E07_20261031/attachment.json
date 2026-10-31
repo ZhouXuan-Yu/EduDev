@@ -1,0 +1,103 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Shared local title uses Pi ASCII-space boundary, task text, whitespace normalization and intact Unicode code points",
+      "pass": true
+    },
+    {
+      "name": "Actual pre-column SQLite migrates twice preserving legacy titles/timestamps; unknown old manual provenance is never guessed",
+      "pass": true
+    },
+    {
+      "name": "Ordinary append preserves raw prompt, manual default-name title and actual interleaved rename using current-row CAS",
+      "pass": true
+    },
+    {
+      "name": "Prior committed trigger upgrades idempotently; injected CREATE failure rolls back the dropped trigger and preserves send facts",
+      "pass": true
+    },
+    {
+      "name": "Strict start accepts attachment-only input and rejects accessors, symbols, sparse/empty/duplicate/extra selections without invoking getters",
+      "pass": true
+    },
+    {
+      "name": "Original three-field text request remains valid; empty no-attachment request remains invalid",
+      "pass": true
+    },
+    {
+      "name": "Presentation v1 requires exact execution/input binding; old/literal/code messages stay intact and corrupt versions/accessors never hide content",
+      "pass": true
+    },
+    {
+      "name": "Incremental migration runs twice without changing existing conversation/message/run facts",
+      "pass": true
+    },
+    {
+      "name": "Actual native SQLite failure after teacher/run insert rolls back every visible fact and retains only starting command/draft",
+      "pass": true
+    },
+    {
+      "name": "Stale revision cannot partially create a message/run/send ledger",
+      "pass": true
+    },
+    {
+      "name": "Single native statement binds real teacher message/run/command/submitted attachments and session summary",
+      "pass": true
+    },
+    {
+      "name": "Same admitted command returns the same run/message and causes no duplicate effects",
+      "pass": true
+    },
+    {
+      "name": "Changed request cannot reuse the original admitted command",
+      "pass": true
+    },
+    {
+      "name": "Atomic attachment publication accepts bound-task digest, rejects altered version and preserves teacher rename",
+      "pass": true
+    },
+    {
+      "name": "Submitted attachment preview reads the captured copy after original deletion",
+      "pass": true
+    },
+    {
+      "name": "Foreign conversation attachment selection cannot publish user facts",
+      "pass": true
+    },
+    {
+      "name": "Archived conversation is refused by the same atomic publication statement",
+      "pass": true
+    },
+    {
+      "name": "Atomic native presentation persisted with raw command; changed presentation cannot reuse command identity",
+      "pass": true
+    },
+    {
+      "name": "Actual production host returns an admitted receipt after post-commit failure and confirms the same run without replay",
+      "pass": true
+    },
+    {
+      "name": "Actual owned OS termination at claimed, then two separate native restarts preserve draft/submitted history and never replay",
+      "pass": true
+    },
+    {
+      "name": "Actual owned OS termination at committed, then two separate native restarts preserve draft/submitted history and never replay",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual Electron/native sqlite3/OmniEduStore, selected synthetic files and OS terminations. Persistence foundation only, no renderer/Pi/model reading claims. Selected source fixture: C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-owned-attachment-source-RFURxv",
+  "terminations": [
+    {
+      "stage": "claimed",
+      "exitCode": 1,
+      "signal": null
+    },
+    {
+      "stage": "committed",
+      "exitCode": 1,
+      "signal": null
+    }
+  ],
+  "originalRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-attachment-send-native-ZVMs7r"
+}

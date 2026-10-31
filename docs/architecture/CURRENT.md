@@ -1,5 +1,8 @@
 # 当前架构
 
+2026-10-31 E07：原Pi fetch恢复增加公开model_request事件，投影64上限，原journal/typed snapshot无DDL。可选continueTask纳入原命令hash并走原任务resume事务，核对当前同会话任务/要求版本；新run保留旧效果/criteria，无审批继承。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
+
+
 2026-10-31 E08当前版本：原保存谱系的统一轻量family投影贯通catalog、bundle、history与task proof policy；原已有typed接口只添可选元数据。历史检查按新版本派生stale，不改原报告/原清单/历史来源。无新Runtime/表/依赖或token级历史读取。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
 ## 2026-10-31 封面跳过补强

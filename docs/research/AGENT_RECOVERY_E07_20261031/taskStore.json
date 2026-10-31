@@ -1,0 +1,52 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Actual production transaction callback exposes same-connection CAS with accurate changed-row counts",
+      "pass": true
+    },
+    {
+      "name": "Production callback change and run roll back together without a second connection escape",
+      "pass": true
+    },
+    {
+      "name": "Actual store starts a stable task and commits its private state, journal and outbox atomically",
+      "pass": true
+    },
+    {
+      "name": "Actual persisted candidate is review-required and never automatically teaching-verified",
+      "pass": true
+    },
+    {
+      "name": "Real SQLite journal insertion failure rolls back teacher receipt, task and immutable history together",
+      "pass": true
+    },
+    {
+      "name": "Teacher retry on the real store is exactly idempotent and keeps the original run terminal state",
+      "pass": true
+    },
+    {
+      "name": "Cold real-store initialization preserves the exact confirmation with no event replay",
+      "pass": true
+    },
+    {
+      "name": "Current teacher correction increments requirements and clears acceptance without another run",
+      "pass": true
+    },
+    {
+      "name": "Bound continuation rejects stale requirements or a different task before mutating the current task",
+      "pass": true
+    },
+    {
+      "name": "Bound edited-prose continuation retains corrected task criteria/version while recording a new run, command and source",
+      "pass": true
+    },
+    {
+      "name": "Bound continuation lineage and the corrected requirements survive cold real-store initialization without replay",
+      "pass": true
+    }
+  ],
+  "boundary": "Actual OmniEduStore/SQLite production transaction adapter, coordinator, journal and cold reopen in Electron. User/assistant content is explicitly synthetic; no model or rendered teacher acceptance.",
+  "taskId": "xitask_3808757579dcc2cc7b2441109cb2e1973dde5849d5f1e2348941909065f9c251",
+  "originalRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-task-store-s8XaES"
+}

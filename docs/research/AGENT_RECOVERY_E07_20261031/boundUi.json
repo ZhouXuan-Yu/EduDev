@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "checks": [
+    "Broken response body preserves the original partial answer, never auto-replays it, and continuation preparation protects an existing teacher draft",
+    "Teacher explicitly sends one new continuation run; original partial text and task-version references remain available",
+    "Original failed-turn diagnostics and continuation controls stay reachable in both required viewports",
+    "Cold restart reads original persisted attempt/error records without replay, duplicate events or renderer errors"
+  ],
+  "errors": [],
+  "boundary": "Formal isolated Electron/Pi, synthetic local HTTP/SSE rejection and partial-body faults, actual composer/stop/settings-entry/continuation and SQLite/cold readback. Zero real model requests; not full E07 AT or natural quality.",
+  "partialRunId": "run_5683c23e-d0e4-4bf6-9dcf-5369a83acabe",
+  "continuation": {
+    "originalTask": "xitask_61b373b0b2e4d74424ea90bdcd2d4420650f46b33cd409257524dfa0eb43f3f8",
+    "currentTask": "xitask_61b373b0b2e4d74424ea90bdcd2d4420650f46b33cd409257524dfa0eb43f3f8",
+    "originalRequirements": 1,
+    "currentRequirements": 1
+  },
+  "wire": [
+    {
+      "mode": "partial",
+      "n": 1,
+      "at": 1793459683825
+    },
+    {
+      "mode": "continue",
+      "n": 1,
+      "at": 1793459686990
+    }
+  ],
+  "eventCount": 4,
+  "originalRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-H9OArp"
+}

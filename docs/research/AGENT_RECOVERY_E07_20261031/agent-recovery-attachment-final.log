@@ -1,0 +1,24 @@
+
+PASS Shared local title uses Pi ASCII-space boundary, task text, whitespace normalization and intact Unicode code points
+PASS Actual pre-column SQLite migrates twice preserving legacy titles/timestamps; unknown old manual provenance is never guessed
+PASS Ordinary append preserves raw prompt, manual default-name title and actual interleaved rename using current-row CAS
+PASS Prior committed trigger upgrades idempotently; injected CREATE failure rolls back the dropped trigger and preserves send facts
+PASS Strict start accepts attachment-only input and rejects accessors, symbols, sparse/empty/duplicate/extra selections without invoking getters
+PASS Original three-field text request remains valid; empty no-attachment request remains invalid
+PASS Presentation v1 requires exact execution/input binding; old/literal/code messages stay intact and corrupt versions/accessors never hide content
+PASS Incremental migration runs twice without changing existing conversation/message/run facts
+PASS Actual native SQLite failure after teacher/run insert rolls back every visible fact and retains only starting command/draft
+PASS Stale revision cannot partially create a message/run/send ledger
+PASS Single native statement binds real teacher message/run/command/submitted attachments and session summary
+PASS Same admitted command returns the same run/message and causes no duplicate effects
+PASS Changed request cannot reuse the original admitted command
+PASS Atomic attachment publication accepts bound-task digest, rejects altered version and preserves teacher rename
+PASS Submitted attachment preview reads the captured copy after original deletion
+PASS Foreign conversation attachment selection cannot publish user facts
+PASS Archived conversation is refused by the same atomic publication statement
+PASS Atomic native presentation persisted with raw command; changed presentation cannot reuse command identity
+PASS Actual production host returns an admitted receipt after post-commit failure and confirms the same run without replay
+PASS Actual owned OS termination at claimed, then two separate native restarts preserve draft/submitted history and never replay
+PASS Actual owned OS termination at committed, then two separate native restarts preserve draft/submitted history and never replay
+
+{"exitCode":0,"output":"C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-attachment-send-native-ZVMs7r"}

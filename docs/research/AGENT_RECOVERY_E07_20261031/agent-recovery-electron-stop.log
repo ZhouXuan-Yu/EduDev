@@ -1,0 +1,5 @@
+(node:47996) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ReferenceError: Cannot access 's' before initialization
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/request-recovery-electron.mjs:34:464
+{"ok":false,"checks":0,"error":"ReferenceError: Cannot access 's' before initialization\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/request-recovery-electron.mjs:34:464","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-request-recovery-ui-oKu3pA"}

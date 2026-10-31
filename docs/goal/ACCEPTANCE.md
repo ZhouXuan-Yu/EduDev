@@ -1,5 +1,8 @@
 # Goal 验收台账
 
+源码11、真实SQLite任务专项11及原生附件专项21、最终原Pi接续4及等待停止/冷启2、build/type与240组件通过；初始原Pi前6通过后发现正文隐藏并修复，首次接续另建任务后补typed绑定。一次207/207归绑定前legacy构建，未重复全套。 完整E07与252AT仍待阶段集中，本轮完整AT新增已实现0。0付费/新依赖/DDL/Runtime；audit45（8高29中8低/0严重，exit1）未升级，既有UI-contract指纹门禁未修/未重跑。D盘日常/安装包未更新。 停止样本41.95ms；cold readback 0重复请求/renderer错误。源码路径、精确构建hash、失败和回退见证据。证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
+
+
 最终再次整合main95cd21d为03a0204：13处Markdown冲突逐段保留双方，无生产冲突；本片版本功能源码未变。最终build/type与240组件exit0；正式Pi8归fc0102d、同四版文件只读/冷启3项归c500cb5，一次207归fc0102d，均未重复全套。最终renderer7251525B（含主线封面计数改动），完整指纹以currentVersionSlice.lastIntegration为准。Goal active；D盘日常/安装包未更新。
 
 2026-10-31 E08当前版本：本片工程源码16及正式Pi8通过，旧报告partial→stale、原报告hash与四份原文件hash/mtime保持；240及一次207通过。系统打开为注入失败验证，Explorer定位真实；不声称原生打开成功。全252AT阶段未执行，完整条目不标过。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。 最终整合c500cb5：build/type、240组件、同四版文件只读/冷启3项exit0，0模型/renderer错误；原Pi8与一次207仅合并前，功能源码未变。

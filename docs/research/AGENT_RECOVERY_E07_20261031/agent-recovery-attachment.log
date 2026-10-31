@@ -1,0 +1,12 @@
+
+PASS Shared local title uses Pi ASCII-space boundary, task text, whitespace normalization and intact Unicode code points
+PASS Actual pre-column SQLite migrates twice preserving legacy titles/timestamps; unknown old manual provenance is never guessed
+PASS Ordinary append preserves raw prompt, manual default-name title and actual interleaved rename using current-row CAS
+PASS Prior committed trigger upgrades idempotently; injected CREATE failure rolls back the dropped trigger and preserves send facts
+
+Error: permission_denied
+    at source2 (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-send-native-vrXxdW/worker.mjs:36497:234)
+    at Object.importFile (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-send-native-vrXxdW/worker.mjs:36606:24)
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/test-results/xiaozhi-agent/pi-attachment-send-native-vrXxdW/worker.mjs:60914:37
+
+{"exitCode":1,"output":"C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-attachment-send-native-vrXxdW"}
