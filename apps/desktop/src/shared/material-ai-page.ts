@@ -2,6 +2,7 @@ import {aiBatchId,AI_ISSUES,type AiIssue} from './material-ai';
 import {materialId} from './materials';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,aiTextSignature,type AiImageResponse} from './material-ai-image';
 import type {TeacherResource} from './contracts';
+import type {BookAnswerPage} from './material-book-answer';
 export const MATERIAL_PAGE_SOURCE='xiaozhi.material-page-source.v1' as const;
 export const MATERIAL_IMAGE_SOURCE='xiaozhi.material-image-source.v1' as const;
 export const MATERIAL_AI_PAGE='xiaozhi.material-ai-page.v1' as const;
@@ -10,7 +11,7 @@ export type MaterialPageSource={schemaVersion:typeof MATERIAL_PAGE_SOURCE|typeof
 export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE;pageText:string;pageIssues:AiIssue[]};
 export type AiPageQuery={schemaVersion:typeof MATERIAL_AI_PAGE;batchId:string;ordinal:number;includeImage?:true};
 export type AiPageStatus='complete'|'needs_review'|'blank';
-export type AiPageView={schemaVersion:typeof MATERIAL_AI_PAGE;resource:TeacherResource;source:MaterialPageSource;text:string;ocrText:string;status:AiPageStatus;transcriptionStatus?:AiPageStatus;issues:AiIssue[];inputImage?:{dataUrl:string}};
+export type AiPageView={schemaVersion:typeof MATERIAL_AI_PAGE;resource:TeacherResource;source:MaterialPageSource;text:string;ocrText:string;status:AiPageStatus;transcriptionStatus?:AiPageStatus;issues:AiIssue[];inputImage?:{dataUrl:string};bookAnswers?:BookAnswerPage};
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v))&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>{const d=Object.getOwnPropertyDescriptor(v,k);return !!d&&d.enumerable&&'value'in d;});
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 export function validMaterialPageSource(v:unknown):v is MaterialPageSource{return plain(v,['schemaVersion','resourceId','version','page','generation','receiptSha'])&&(v.schemaVersion===MATERIAL_PAGE_SOURCE||v.schemaVersion===MATERIAL_IMAGE_SOURCE&&v.page===1)&&materialId(v.resourceId)&&sha(v.version)&&Number.isSafeInteger(v.page)&&Number(v.page)>=1&&Number(v.page)<=10000&&typeof v.generation==='string'&&/^[a-f0-9-]{36}$/i.test(v.generation)&&sha(v.receiptSha);}

@@ -34,7 +34,9 @@ export class MaterialBookPairs{
    if(existing?.kind==='answers'||Number(prior?.revision||0)!==input.revision||await target.role(input.answerId!))throw Error('conflict');
    // Never reinterpret already archived answer-book questions or in-flight paid output as another role.
    const archived=await target.host.all('SELECT 1 FROM material_question_members WHERE resource_id=? LIMIT 1',[input.answerId!]);
-   const ai=await target.host.all('SELECT 1 FROM material_ai_batches WHERE resource_id=? LIMIT 1',[input.answerId!]);
+   // Restore only completed answer-role receipts for this exact pair, never unrelated or in-flight output.
+   const role="CASE WHEN json_valid(u.input_json) THEN u.input_json ELSE '{}' END";
+   const ai=await target.host.all(`SELECT 1 FROM material_ai_batches b WHERE b.resource_id=? AND (NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=b.id) OR EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=b.id AND (u.status NOT IN ('complete','review','no_questions') OR COALESCE(json_extract(${role},'$.bookRole.kind'),'')<>'answers' OR COALESCE(json_extract(${role},'$.bookRole.questionId'),'')<>? OR COALESCE(json_extract(${role},'$.bookRole.questionVersion'),'')<>? OR COALESCE(json_extract(${role},'$.bookRole.answerId'),'')<>? OR COALESCE(json_extract(${role},'$.bookRole.answerVersion'),'')<>?))) LIMIT 1`,[input.answerId!,input.resourceId,input.version,input.answerId!,input.answerVersion!]);
    if(archived.length||ai.length)throw Error('answer_already_processed');
    await target.host.run(`INSERT INTO material_book_pairs VALUES(?,?,?,?,?,1) ON CONFLICT(question_id) DO UPDATE SET question_version=excluded.question_version,answer_id=excluded.answer_id,answer_version=excluded.answer_version,revision=excluded.revision,active=1`,[input.resourceId,input.version,input.answerId!,input.answerVersion!,input.revision+1]);
    return target.view(input.resourceId);
