@@ -1,0 +1,30 @@
+{
+  "layer": "offline_layout_proposal_not_production",
+  "checks": [
+    "chat layout 1366",
+    "students layout 1366",
+    "settings layout 1366",
+    "chat layout 1920",
+    "students layout 1920",
+    "settings layout 1920",
+    "Draft stays intact across pages and suggestions never overwrite",
+    "File notification does not auto-open; explicit open and Escape return focus",
+    "Student identity retained across tabs and replaced on student switch",
+    "Advanced settings proposal opens by keyboard and remains marked pending"
+  ],
+  "errors": [],
+  "requests": [],
+  "screenshots": [
+    "chat-1366.png",
+    "students-1366.png",
+    "settings-1366.png",
+    "chat-1920.png",
+    "students-1920.png",
+    "settings-1920.png",
+    "students-selected.png",
+    "settings-advanced.png",
+    "failure.png"
+  ],
+  "success": false,
+  "error": "AssertionError [ERR_ASSERTION]: #context outside {\"width\":840,\"height\":768}: {\"x\":508,\"y\":96,\"width\":340,\"height\":672}\n    at fits (file:///D:/WorkProject/EduProject-sidebar/docs/design/system/review/check.mjs:15:112)\n    at async file:///D:/WorkProject/EduProject-sidebar/docs/design/system/review/check.mjs:26:271\n    at async check (file:///D:/WorkProject/EduProject-sidebar/docs/design/system/review/check.mjs:12:30)\n    at async file:///D:/WorkProject/EduProject-sidebar/docs/design/system/review/check.mjs:26:2"
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "小智 UI 设计"
+  short_description: "按已确认的对话优先、渐进披露与 HeroUI 边界设计和审查小智界面"
+  default_prompt: "使用 $edudev-design 审查小智页面，区分已确认规范与待确认提案，并验证业务与组件边界。"
