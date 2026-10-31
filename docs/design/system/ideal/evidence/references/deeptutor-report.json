@@ -1,0 +1,45 @@
+{
+  "app": "DeepTutor",
+  "layer": "real_local_ui_with_live_model",
+  "success": true,
+  "modelCompleted": true,
+  "metrics": {
+    "stage_startMs": 19377,
+    "tool_callMs": 20044,
+    "contentMs": 30525,
+    "resultMs": 68217,
+    "doneMs": 68290
+  },
+  "url": "http://127.0.0.1:3012/home/unified_1793470927697_b32c2b38",
+  "errors": [],
+  "shots": [
+    "deeptutor-chat-empty.png",
+    "deeptutor-chat-live-0.png",
+    "deeptutor-chat-live-2.png",
+    "deeptutor-chat-live-5.png",
+    "deeptutor-chat-result.png",
+    "deeptutor-knowledge.png",
+    "deeptutor-notebook.png",
+    "deeptutor-workflows.png"
+  ],
+  "counts": {
+    "isrManifest": 9,
+    "turbopack-connected": 4,
+    "sync": 4,
+    "building": 12,
+    "built": 11,
+    "session": 1,
+    "stage_start": 2,
+    "progress": 10,
+    "tool_call": 2,
+    "tool_result": 2,
+    "thinking": 2168,
+    "stage_end": 2,
+    "pong": 2,
+    "content": 480,
+    "result": 1,
+    "done": 1,
+    "session_meta": 1
+  },
+  "boundary": "One synthetic PDF, one request; not latency P95 or answer-quality acceptance. No event contents or credentials included."
+}

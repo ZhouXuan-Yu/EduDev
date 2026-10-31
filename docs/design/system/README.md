@@ -1,5 +1,15 @@
 # 小智 UI 规范与审阅入口
 
+## 2026-11-01 V2 最终设计交付
+
+入口：[设计总览](ideal/handoff.html) · [完整可交互HTML](ideal/index.html) · [差距与证据](UI_GAP_AND_DECISIONS_V2.md) · [项目Skill](../../../.agents/skills/edudev-design/SKILL.md) · [开发Goal](../../goal/UI_DESIGN_IMPLEMENTATION_V2.md)。本轮用户已要求同步交付Skills和Goal；正式业务实现仍由另一AI负责。输入框、底部工具栏及弹层原样保留，资料库和组卷深化，课堂预演为独立新增提案。最终检查见ideal/VALIDATION.md；下文旧25/44、待整理Skills与D09待确认均为历史记录，不覆盖V2。
+
+## 2026-11-01 当前审阅：完整 HTML 设计
+
+用户已确认此前布局方向和设置日常/高级分层，并明确本 Agent 只负责设计，正式代码由另一 AI 实施。当前入口改为 [完整 HTML](ideal/index.html) 与[审阅说明](ideal/README.md)：覆盖全部业务入口、对话六态、工作台、设置与文件预览。25 项离线检查通过，44 张截图，0 页面错误/外部请求；不等于正式业务验收。待完整视觉确认后才整理最终 Skills 与 Goal，本轮未改其文件，也未改正式应用源码。以下为上轮归档，保留原证据与当时的待确认状态。
+
+## 2026-10-31 归档
+
 2026-10-31。状态：用户已确认设计方向；布局样张待视觉接受；设置分层提案未确认。正式 UI 仍为原实现，本轮不是页面重构交付。
 
 单一规范入口：[项目Skill](../../../.agents/skills/edudev-design/SKILL.md)。细节保存在其references，不在多个文档复制数值。用户已确认条目与待确认项见[台账](../../../.agents/skills/edudev-design/references/decisions.md)。

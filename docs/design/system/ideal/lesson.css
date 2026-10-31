@@ -1,0 +1,42 @@
+/* Teacher lesson flow: prototype only. Existing composer/vendor styles stay separate. */
+.lesson-page { max-width: 1360px; margin: auto; }
+.lesson-page .page-heading { margin-bottom: 22px; }
+.lesson-steps { display: flex; gap: 8px; border-bottom: 1px solid var(--line); margin-bottom: 24px; padding-bottom: 10px; }
+.lesson-steps button { display: flex; align-items: center; gap: 8px; padding: 8px 12px; color: var(--muted); }
+.lesson-steps button[aria-current=step] { background: var(--selected); color: var(--accent); }
+.lesson-steps b { font-size: 12px; font-weight: 500; border: 1px solid currentColor; border-radius: 50%; height: 23px; width: 23px; display: grid; place-content: center; }
+.lesson-grid { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 32px; }
+.lesson-main h2 { font-size: 20px; margin-bottom: 8px; }
+.lesson-main > p { color: var(--muted); margin-bottom: 20px; }
+.lesson-outline { border-top: 1px solid var(--line); margin-top: 20px; }
+.lesson-outline > div { display: grid; grid-template-columns: 30px minmax(0, 1fr) 85px 70px; align-items: center; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.lesson-outline small { display: block; color: var(--muted); margin-top: 3px; }
+.lesson-outline input { width: 58px; }
+.lesson-side { border-left: 1px solid var(--line); padding-left: 24px; font-size: 13px; }
+.lesson-side section { margin-bottom: 24px; }
+.lesson-side h3 { font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 500; }
+.lesson-side button { text-align: left; display: flex; gap: 7px; padding: 8px 0; }
+.lesson-side p { margin-top: 8px; line-height: 1.8; }
+.lesson-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 18px 0; }
+.lesson-preview { padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: #fafbfc; }
+.lesson-preview h3 { font-size: 19px; }
+.lesson-preview p { color: var(--muted); margin-top: 8px; }
+.lesson-apparatus { display: grid; grid-template-columns: minmax(0, 1fr) 190px; align-items: center; gap: 16px; margin-top: 20px; }
+.lesson-apparatus svg { width: 100%; height: 255px; stroke-width: 1.6; }
+.lesson-controls { display: grid; gap: 12px; font-size: 14px; }
+.lesson-controls input[type=range] { width: 100%; accent-color: var(--accent); }
+.lesson-controls output { font-size: 24px; color: var(--text); }
+.lesson-preview .lesson-explanation { margin-top: 18px; color: var(--text); font-size: 14px; }
+.lesson-checks { display: grid; gap: 13px; margin: 20px 0; }
+.lesson-checks label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.lesson-checks input { margin-top: 5px; accent-color: var(--accent); }
+.lesson-quiz { border-block: 1px solid var(--line); padding: 24px 0; margin: 20px 0; }
+.lesson-quiz h3 { font-size: 17px; margin-bottom: 18px; }
+.lesson-quiz label { display: flex; gap: 10px; padding: 10px; border-radius: 8px; }
+.lesson-quiz label:has(input:checked) { background: var(--selected); }
+.lesson-delivery { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 20px; }
+.lesson-footer { position: sticky; bottom: 0; z-index: 2; margin-top: 28px; border-top: 1px solid var(--line); padding-block: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; }
+.lesson-footer small { max-width: 62%; }
+.lesson-proposal { font-size: 12px; color: var(--muted); margin-top: 18px; }
+@media (max-width: 1150px) { .lesson-grid { grid-template-columns: minmax(0, 1fr); } .lesson-side { border-left: 0; border-top: 1px solid var(--line); padding: 18px 0 0; display: flex; flex-wrap: wrap; gap: 25px; } .lesson-side section { max-width: 320px; margin-bottom: 0; } }
+@media (max-width: 760px) { .lesson-steps { overflow-x: auto; } .lesson-steps button { white-space: nowrap; } .lesson-apparatus { grid-template-columns: minmax(0, 1fr); } .lesson-controls { grid-template-columns: 1fr 1fr; } .lesson-outline > div { grid-template-columns: 22px minmax(0, 1fr) 70px; } .lesson-outline .lesson-type { display: none; } .lesson-footer { align-items: flex-start; } }

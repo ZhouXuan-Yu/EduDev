@@ -7,6 +7,8 @@
 3. 正式页面：build/type、相关组件及原回归；真实Electron记录CSSOM/获胜选择器/来源/层、renderer错误、IME/草稿/流式/停止/恢复，按原runId核对工具与正文。
 4. 教师视觉接受：用户审阅前后截图；不能以自动化通过替代。
 
+开发任务的可追踪验收编号在 `docs/goal/UI_DESIGN_IMPLEMENTATION_V2.md`。报告每个编号的通过/失败/未测，不把离线 34 项（或后续增量）自动记为生产 AT。最终 HTML 检查报告读取当前 evidence/report.json，不沿用文档中的旧次数。
+
 截图必须写明源码、native/CSS尺寸、DPR、数据根、场景和是否样张。对比Hover/Focus/Pressed、empty/loading/ready/running/completed/partial/failed/cancelled/retry、展开/收起；本产品仅浅色。只跑本轮相关检查，不为文档更改重复全业务付费验收。
 
 ## 从本轮否决截图派生的反例

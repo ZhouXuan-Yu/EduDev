@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>小智 · 最终设计与开发交接 V2</title><link rel="stylesheet" href="handoff.css"></head><body>
+<header><div><b>小智 / 教师工作台</b><span>UI 设计交付版 V2 · 2026-11-01 · 待产品视觉验收</span></div></header>
+<main>
+<section class="hero"><div class="eyebrow">把教学任务做完，而不只是生成一段回答</div><h1>从提出需求，到可核对的教学成果。</h1><p class="lead">对话是入口，资料是依据，教师掌握最终决定。让界面更安静，让真实过程、来源与下一步更清楚。</p><div class="actions"><a class="action primary" href="index.html">进入完整可交互设计 →</a><a class="action" href="../UI_GAP_AND_DECISIONS_V2.md">差距、取舍与证据</a><a class="action" href="../../../goal/UI_DESIGN_IMPLEMENTATION_V2.md">分阶段 Goal 任务书</a><a class="action" href="../../../../.agents/skills/edudev-design/SKILL.md">项目 UI Skill</a></div></section>
+<p class="notice">这是离线设计与开发交接稿。全部内容为合成数据；不调用模型、不读真实文件、不写学生记录。输入框、底部工具栏及弹层在正式软件中复用现有组件，本稿不能作为修改它们外观或配置的依据。</p>
+<section class="section"><h2>六条可实际操作的审阅路径</h2><div class="pages">
+<a class="page" href="index.html"><img src="evidence/chat-1366.png" alt="输入优先的对话首页"><div><h3>01 · 问小智</h3><p>正常展开公开工作说明，显示真实工具；交接正文时整段收起，用时在上。</p><small>首页 → 发送 → 过程 → 正文 → 成果预览</small></div></a>
+<a class="page" href="index.html#page=library"><img src="evidence/library-1366.png" alt="重新组织的资料库"><div><h3>02 · 资料库</h3><p>目录与标签组织资料，区分查文件与检索内容。先看概要，再看原页和校正。</p><small>筛选 → 原页 → 识别对照 → 题目 → 处理队列</small></div></a>
+<a class="page" href="index.html#page=teaching&tab=组卷"><img src="evidence/paper-blueprint.png" alt="保留原有蓝图能力的智能组卷"><div><h3>03 · 智能组卷</h3><p>保留蓝图与三种来源模式；缺题、来源变化和未保存修改分别处理。</p><small>蓝图 → 逐题核对 → 确认 → 六种导出选择</small></div></a>
+<a class="page" href="index.html#page=teaching&tab=备课本&lesson=1"><img src="evidence/lesson-preview-1366.png" alt="课堂设计和互动预演提案"><div><h3>04 · 课堂设计与预演 <span class="badge">新增提案</span></h3><p>吸收教育智能体的活动、大纲和检查理解优势，保留教师预演与交付控制。</p><small>课堂安排 → 互动实验 → 理解检查 → 教师核对</small></div></a>
+<a class="page" href="index.html#page=students"><img src="evidence/students-1366.png" alt="学生上下文工作台"><div><h3>05 · 学生工作台</h3><p>先选学生，再看记录、错题、计划和复盘。结论绑定真实证据。</p><small>搜索学生 → 选择 → 页内六个视图 → 编辑保护</small></div></a>
+<a class="page" href="index.html#page=settings"><img src="evidence/settings-1366.png" alt="日常与高级分层设置"><div><h3>06 · 设置与恢复</h3><p>日常配置就近保存；技术诊断按需进入，实际权限提醒依然明确可见。</p><small>模型 → 权限 → 备份 → 恢复影响确认</small></div></a>
+</div></section>
+<section class="section"><h2>相对之前，究竟改变什么</h2><div class="table-wrap"><table><thead><tr><th>问题</th><th>此前体验 / 风险</th><th>最终设计决定</th><th>正式开发验收</th></tr></thead><tbody>
+<tr><td>过程与正文</td><td>状态占位被当成思考，折叠时机不稳定，正文与过程混合。</td><td>按真实事件分类，最终正文显式交接，失败不冒充完成。</td><td>同一 runId 的事件、界面、冷启恢复逐一对齐。</td></tr>
+<tr><td>资料库</td><td>长识别结果挤占页面，服务就绪与资料可用混淆。</td><td>文件列表＋详情；原件、派生识别、教师修改分开；任务失败可恢复。</td><td>原页可回到、错误可重试、归档不删原件。</td></tr>
+<tr><td>智能组卷</td><td>条件、来源与答案核对容易脱节，“已生成”被当成可交付。</td><td>蓝图→核对→交付；明确纯原题/混合/原创，版本变化使确认失效。</td><td>不暗自补题、放宽条件或复用失效确认。</td></tr>
+<tr><td>课堂成果</td><td>生成了文档，未必能直接开展课堂活动。</td><td>先课堂安排、再预演和理解检查；新增能力独立排期。</td><td>教师实际操作可用后确认，不自动写学生档案。</td></tr>
+<tr><td>设计一致性</td><td>全局 CSS、重复入口与大卡片削弱层级。</td><td>白灰基线、四主入口、页内导航、组件内部设计受保护。</td><td>CSSOM 对照、键盘焦点、双尺寸和长内容截图。</td></tr>
+</tbody></table></div></section>
+<section class="section"><h2>过程的交接规则</h2><div class="flow"><div><b>1 · 请求已接受</b><p>立即反馈；没有事件时不虚构工具或推理。</p></div><div><b>2 · 公开工作过程</b><p>说明与真实工具自然展开，不铺私有推理。</p></div><div><b>3 · 最终正文开始</b><p>整段过程收起，冻结上方用时，正文继续流式。</p></div><div><b>4 · 核对与使用</b><p>来源、文件与审批按需进入；手动可重看过程。</p></div></div><p class="meta" style="margin-top:14px">正式实现依赖 Pi 真实事件。HTML 中的定时演示仅用于看时序，不能复制成生产执行逻辑。</p></section>
+<section class="section two"><div><h2>参考项目的实际证据</h2><p><span class="badge good">DeepTutor · 真模型已完成</span></p><p>合成 PDF → 读取资料 → 工具执行 → 最终回答；刷新后过程收起。资料索引失败也被保留，未把引擎就绪说成资料可检索。</p><p>OpenMAIC 已真实生成大纲，服务端完成两页讲解和一道检查题；新浏览器回原任务地址为404，课堂重开与互动尚未验收。</p><div class="links"><a href="evidence/references/deeptutor-restored-result.png">查看真实完成界面</a><a href="evidence/references/deeptutor-report.json">查看脱敏事件计数与时间</a><a href="evidence/references/openmaic-report.json">查看 OpenMAIC 实测边界</a></div></div><div><h2>交给下一位开发 AI</h2><p>先复用、再重组；一个阶段一个验收。先完成样式边界、对话、资料库与组卷，再安排新增课堂预演。不能把原型中模拟的导入、组卷和导出当成业务完成。</p><div class="links"><a href="../../../goal/UI_DESIGN_IMPLEMENTATION_V2.md">读取 Goal 顺序和验收编号</a><a href="../../../../.agents/skills/edudev-design/SKILL.md">读取组件、状态和页面约束</a><a href="README.md">运行方法、测试结果与未验证边界</a></div></div></section>
+</main><footer>设计交付版不等于教师视觉通过。保留现有数据、权限、路由、Pi Runtime 与输入组件；新增课程能力是独立提案。完整业务验收在正式 Electron 中进行。</footer></body></html>
