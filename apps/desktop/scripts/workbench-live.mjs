@@ -101,7 +101,9 @@ try{
   await page.getByRole('button',{name:'发送消息',exact:true}).click();
   await until(snapshot,s=>s.running&&s.projection.turns.length>count,'Run never started');
   await page.getByRole('button',{name:'停止本轮',exact:true}).click();
-  const stopped=await until(snapshot,s=>!s.running,'Stop not acknowledged');assert.equal(stopped.projection.turns.at(-1).status,'interrupted');check('Actual active run stops through original composer');
+  // Runtime activity can clear before the final projection event is persisted.
+  // Require both boundaries; never accept an intermediate "running" turn.
+  const stopped=await until(snapshot,s=>!s.running&&s.projection.turns.at(-1)?.status!=='running','Stop terminal event not acknowledged');assert.equal(stopped.projection.turns.at(-1).status,'interrupted');check('Actual active run stops through original composer');
   const prior=stopped.approvals,priorSession=session;await app.close();app=undefined;await launch();
   assert.equal(session,priorSession);assert.equal((await snapshot()).projection.threadId,priorSession);assert.deepEqual((await snapshot()).approvals,prior);
   assert.deepEqual(fs.readFileSync(source),bytes);if(!readOnly)assert.deepEqual(fs.readFileSync(path.join(workspace,'确认的草稿.txt')),bytes);

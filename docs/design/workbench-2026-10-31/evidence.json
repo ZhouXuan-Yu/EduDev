@@ -1,17 +1,17 @@
 {
-  "sourceCommit": "49a41ade3491b1c88592e203c85d55f532c1e803",
-  "upstreamIncluded": "ad06954ba83f84b555b6ce6ae972e4db54349b85",
+  "sourceCommit": "b8ea47290f0ffe30f12732b6b17e0d788ed2af05",
+  "upstreamIncluded": "6d4542453eafa984084c774dfc0fbd669d9ee34d",
   "scope": "Light workbench UI integration; existing 15 domain routes retained; not all inner domain pages redesigned.",
   "build": {
     "command": "npm run build",
     "exit": 0,
-    "log": "apps/desktop/workbench-build-integrated.log"
+    "log": "apps/desktop/workbench-build-delivery.log"
   },
   "ui": {
     "command": "npm run test:workbench-ui",
     "exit": 0,
-    "report": "apps/desktop/test-results/workbench-H5Bzvt/report.json",
-    "reportSha256": "13cf11bb0f2b4320de2463b65afe8b6ba261344e4dc0b2f0023c011eefe1f05f",
+    "report": "apps/desktop/test-results/workbench-4Ot9ba/report.json",
+    "reportSha256": "9c62027a0f667d5b632e6c8a2be662cbf5a8d13e688e6ed258c4488b16c63316",
     "summary": {
       "passed": 25,
       "failed": 0,
@@ -22,117 +22,117 @@
       {
         "name": "isolated formal production launch",
         "pass": true,
-        "ms": 4365
+        "ms": 4549
       },
       {
         "name": "first home and three columns 1366",
         "pass": true,
-        "ms": 316
+        "ms": 420
       },
       {
         "name": "first home and three columns 1920",
         "pass": true,
-        "ms": 292
+        "ms": 333
       },
       {
         "name": "home tasks and suggestions prepare drafts only",
         "pass": true,
-        "ms": 236
+        "ms": 337
       },
       {
         "name": "initial disclosure and all original 15 pages",
         "pass": true,
-        "ms": 1444
+        "ms": 1710
       },
       {
         "name": "both hubs and all domain entries",
         "pass": true,
-        "ms": 1827
+        "ms": 1984
       },
       {
         "name": "history autoopens child disclosure",
         "pass": true,
-        "ms": 497
+        "ms": 606
       },
       {
         "name": "fixed settings footer and independent scroll",
         "pass": true,
-        "ms": 239
+        "ms": 272
       },
       {
         "name": "real folder and titled sessions through forms and SQLite",
         "pass": true,
-        "ms": 1339
+        "ms": 1451
       },
       {
         "name": "title search empty results grouped results and click",
         "pass": true,
-        "ms": 370
+        "ms": 408
       },
       {
         "name": "original history management retained",
         "pass": true,
-        "ms": 1060
+        "ms": 1195
       },
       {
         "name": "session drafts isolated and survive hub navigation",
         "pass": true,
-        "ms": 1199
+        "ms": 1286
       },
       {
         "name": "sidebar collapse expand and keyboard focus",
         "pass": true,
-        "ms": 164
+        "ms": 181
       },
       {
         "name": "modal initial focus Tab trap Escape return focus",
         "pass": true,
-        "ms": 654
+        "ms": 822
       },
       {
         "name": "right tasks files tabs keyboard close reopen",
         "pass": true,
-        "ms": 308
+        "ms": 371
       },
       {
         "name": "owned file native authorization and actual text preview",
         "pass": true,
-        "ms": 477
+        "ms": 472
       },
       {
         "name": "real knowledge txt import and SQLite readback",
         "pass": true,
-        "ms": 201
+        "ms": 211
       },
       {
         "name": "840 viewport controls reachable without overlap",
         "pass": true,
-        "ms": 2057
+        "ms": 2274
       },
       {
         "name": "reduced motion",
         "pass": true,
-        "ms": 297
+        "ms": 334
       },
       {
         "name": "sidebar states and 700px effective collapse",
         "pass": true,
-        "ms": 458
+        "ms": 501
       },
       {
         "name": "cold restart SQLite sessions folders and imported resource",
         "pass": true,
-        "ms": 20
+        "ms": 32
       },
       {
         "name": "cold restart UI sessions titles folders drafts and knowledge import",
         "pass": true,
-        "ms": 868
+        "ms": 834
       },
       {
         "name": "zero model tasks and unchanged fixtures",
         "pass": true,
-        "ms": 6
+        "ms": 7
       },
       {
         "name": "zero renderer errors across both launches including shutdown",
@@ -142,20 +142,20 @@
       {
         "name": "frozen production build and test script unchanged",
         "pass": true,
-        "ms": 73
+        "ms": 93
       }
     ],
     "modelTasksSubmitted": 0,
     "errors": [],
-    "buildFingerprintBefore": "45c35aa77dd2a368f258d742c16e5aa46ee046e4c62ddb62debd2534e2f75b60",
-    "buildFingerprintAfter": "45c35aa77dd2a368f258d742c16e5aa46ee046e4c62ddb62debd2534e2f75b60"
+    "buildFingerprintBefore": "e60e20678ca477c6fb558b59e92b37552e3077a9e8322d13428bc1b414c4d83a",
+    "buildFingerprintAfter": "e60e20678ca477c6fb558b59e92b37552e3077a9e8322d13428bc1b414c4d83a"
   },
   "components": {
     "command": "npm run test:renderer-components",
     "exit": 0,
     "passed": 240,
     "total": 240,
-    "note": "Vite printed port 24678 already in use; suite still finished 240/240, not counted as a renderer runtime error."
+    "note": "Final integration run exited 0 with 240/240 and no port warning."
   },
   "reading": {
     "command": "node scripts/office-reading-browser.mjs",
@@ -174,10 +174,10 @@
   "realProvider": {
     "command": "node scripts/workbench-live.mjs --env-file <local private env> --read-only",
     "exit": 0,
-    "report": "apps/desktop/test-results/workbench-live-gkj5RD/report.json",
-    "reportSha256": "c515d90791fec7c7ecce4bbd094f47783486146c4a685761dc45e89264008e1d",
+    "report": "apps/desktop/test-results/workbench-live-wWz1XU/report.json",
+    "reportSha256": "7ac800f8c79f07bc27b416664a6d50932004e64006b3f368a1824e565a8be3a9",
     "model": "deepseek-flash",
-    "buildFingerprint": "45c35aa77dd2a368f258d742c16e5aa46ee046e4c62ddb62debd2534e2f75b60",
+    "buildFingerprint": "e60e20678ca477c6fb558b59e92b37552e3077a9e8322d13428bc1b414c4d83a",
     "checks": [
       "Directory selection follows original authorization",
       "Real read tool streams public process, collapses and displays final answer",
@@ -186,9 +186,13 @@
     ],
     "errors": [],
     "realRun": {
-      "runId": "run_aba97607-316f-4fb9-b24a-9ad778ac1d03",
-      "elapsedMs": 6927,
+      "runId": "run_58a3c4b3-d48a-4a83-b39a-ebf1ffa3cb58",
+      "elapsedMs": 9880,
       "tools": [
+        {
+          "label": "查看授权文件目录",
+          "status": "completed"
+        },
         {
           "label": "读取授权资料",
           "status": "completed"
@@ -258,6 +262,11 @@
       "low": 8,
       "critical": 0,
       "total": 45
+    },
+    "stopIntermediateSnapshot": {
+      "exit": 1,
+      "report": "apps/desktop/test-results/workbench-live-kHDgQd/report.json",
+      "observation": "Runtime running=false while persisted turn still running; immediate interrupted assertion failed. Test now waits both inactive runtime and terminal projection, still asserts interrupted; final retry passed without product stop changes."
     }
   },
   "earlierBoundarySuites": {
@@ -271,67 +280,67 @@
     {
       "file": "snapshots/home-three-columns-1366.png",
       "sha256": "644521e02ffd014dc94ad945bc2b6af34af24df493fd234fdae96da85c11873b",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\home-three-columns-1366.png"
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\home-three-columns-1366.png"
     },
     {
       "file": "snapshots/home-three-columns-1920.png",
       "sha256": "8ff8266d899420dfba835e7af41dd66a600a4004fec5a608fc3e03820bf2383d",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\home-three-columns-1920.png"
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\home-three-columns-1920.png"
     },
     {
       "file": "snapshots/hub-teaching-1366.png",
-      "sha256": "4602833040cda671f359eef573404dc59d8dd8b1fd7b70422d33660f2e0f599f",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\hub-teaching-1366.png"
+      "sha256": "3e0992bf09debbababf86a20f431c05502524adac658b2783799c8ba024807fd",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\hub-teaching-1366.png"
     },
     {
       "file": "snapshots/hub-students-1366.png",
       "sha256": "a1d83218ab8f5f17179a941f9eb2d854d91af9c5e725b59baca56aa510824934",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\hub-students-1366.png"
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\hub-students-1366.png"
     },
     {
       "file": "snapshots/narrow-700-navigation-expanded.png",
-      "sha256": "c095697f9c8650a207acebe70d12f34b8adf86e7730b34f83ddeba4d550f3213",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\narrow-700-navigation-expanded.png"
+      "sha256": "3fdb0f892328092bb4de13c0cc1a8222928b535bfb8d9c0e1e558acabd25a270",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\narrow-700-navigation-expanded.png"
     },
     {
       "file": "snapshots/narrow-840-composer-controls.png",
-      "sha256": "1bcae092e6db7a4865b19dbc72acd464dd86007ab5af802984ae1e24aefa5024",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\narrow-840-composer-controls.png"
+      "sha256": "c60e801b6d313da170a03be1bf15222e893a4af73154ac1610983e2906b9bffc",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\narrow-840-composer-controls.png"
     },
     {
       "file": "snapshots/owned-txt-actual-preview.png",
-      "sha256": "568dbcb25943b336fe265854d7baf3aea0499bea10046866858ef229e5ac7c0f",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\owned-txt-actual-preview.png"
+      "sha256": "4c9be27f9eefdc6897e464ec3fd0b492f7d0dc24cdd0e3adf11c4abd98722a96",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\owned-txt-actual-preview.png"
     },
     {
       "file": "snapshots/search-title-groups.png",
-      "sha256": "5eeaa05ee3f428476bcbe1f4f81be6e8a95d0190521cc9268c008db45182f182",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\search-title-groups.png"
+      "sha256": "ebe43942b9cb37f96e1a553b6878edf1d73fc0677df168acff24ed39af02ecba",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\search-title-groups.png"
     },
     {
       "file": "snapshots/sidebar-collapsed.png",
-      "sha256": "d529ca715d635a6d92fde0b5a9fc33ac4a079920b210fe99d17fd92daa720ce7",
-      "source": "apps\\desktop\\test-results\\workbench-H5Bzvt\\sidebar-collapsed.png"
+      "sha256": "3a41d289b2093fdc9aba96e80182da9ed007be2129909b6dfb1ae458c189aefe",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\sidebar-collapsed.png"
     },
     {
       "file": "snapshots/real-reading-running.png",
-      "sha256": "c5f9a91d39e963395d499db0dbaa2a4d76e0ef659c65eabf9805d9ec3a42d05d",
-      "source": "apps\\desktop\\test-results\\workbench-live-gkj5RD\\real-reading-running.png"
+      "sha256": "6099d0a33aba7d44287e243bebdebe908edca35c8e3828ed8d41df6871e9550e",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-reading-running.png"
     },
     {
       "file": "snapshots/real-reading-complete-1366.png",
-      "sha256": "5e35e56cfa2af45c6789fa3341e26182516e2c3f3b764a485d4158734252009d",
-      "source": "apps\\desktop\\test-results\\workbench-live-gkj5RD\\real-reading-complete-1366.png"
+      "sha256": "49328349955dfde90fa7971a00075322b850c90b5a9befd9ab243aba913c38de",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-reading-complete-1366.png"
     },
     {
       "file": "snapshots/real-reading-complete-1920.png",
-      "sha256": "9ff4f7b1efb1d4f6f2a7bfa4c0f159ffa567dea10897c82c24174a5d944e2d35",
-      "source": "apps\\desktop\\test-results\\workbench-live-gkj5RD\\real-reading-complete-1920.png"
+      "sha256": "1d2ff0cbf33c59a978deab325923df630969aa49b57ec8bdfc12cbb71154f042",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-reading-complete-1920.png"
     },
     {
       "file": "snapshots/real-tools-expanded.png",
-      "sha256": "cfd24dd39d049d8292966ad9ad46fb721d1d1ee91eb13e23cda6aa8cbbada060",
-      "source": "apps\\desktop\\test-results\\workbench-live-gkj5RD\\real-tools-expanded.png"
+      "sha256": "6d46cf460adb59be602a0318937b4fc9f42254f1bbb61d5237085c4b59cdadf5",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-tools-expanded.png"
     }
   ],
   "unverified": [
@@ -345,5 +354,21 @@
     "architectureAndReview": "gpt-6-astra High",
     "implementation": "gpt-6.1-sol High",
     "staticReview": "No confirmed new P1/P2 after repairs; not runtime acceptance"
+  },
+  "previousIntegration": {
+    "sourceCommit": "49a41ade3491b1c88592e203c85d55f532c1e803",
+    "ui": "apps/desktop/test-results/workbench-H5Bzvt/report.json",
+    "realProvider": "apps/desktop/test-results/workbench-live-gkj5RD/report.json",
+    "buildFingerprint": "45c35aa77dd2a368f258d742c16e5aa46ee046e4c62ddb62debd2534e2f75b60"
+  },
+  "upstreamRequirements": {
+    "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-requirements-smoke.mjs",
+    "exit": 0,
+    "checks": 6,
+    "note": "First invocation without the existing source loader failed ERR_MODULE_NOT_FOUND; retained workbench-upstream-requirements.log, corrected invocation passed."
+  },
+  "versionBoundaries": {
+    "readingAndDaily": "49a41ad after KB merge; not rerun after requirements upstream. Final UI25 + components240 + requirements6 + real read/stop/cold rerun on b8ea472.",
+    "finalOnlyTestChange": "workbench-live terminal wait; production unchanged from b8ea472."
   }
 }
