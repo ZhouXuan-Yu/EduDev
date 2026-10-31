@@ -35,7 +35,11 @@ async function search(label,mode){
   await until(async()=>!await page.getByTestId('materials-text-submit').isDisabled());
   await until(async()=>await page.locator('[data-testid^="material-text-hit-"]').count()>0);
   assert((await page.getByTestId('materials-text-results').innerText()).includes(label));
-  report.queries.push({label,mode,uiMs:performance.now()-start});
+  const sample={label,mode,uiMs:performance.now()-start};report.queries.push(sample);
+  if(mode==='hybrid'){
+    sample.rerankNotice=(await page.locator('[data-testid="retrieval-rerank-notice"]:visible').innerText()).trim();
+    assert.equal(sample.rerankNotice,'已用本地模型进一步比较题意。','The first visible query must complete comparison, rather than succeeding only on a cached retry');
+  }
 }
 try{
   await launch();
@@ -49,7 +53,7 @@ try{
   report.checks.push('Current build finds each of the 40 persisted sources through typed keyword retrieval; visible first/last queries reach the full 40GiB library');
   await search(first,'hybrid');
   const hybrid=await page.evaluate(query=>window.omniEdu.searchMaterialText({schemaVersion:'xiaozhi.material-search.v1',query,offset:0,mode:'hybrid'}),first);
-  assert(hybrid.semantic?.available&&hybrid.semantic.complete,JSON.stringify(hybrid.semantic));assert(hybrid.semantic.rerank?.available&&hybrid.semantic.rerank.processed>0,JSON.stringify(hybrid.semantic.rerank));report.hybridCoverage=hybrid.semantic;
+  assert(hybrid.semantic?.available&&hybrid.semantic.complete,JSON.stringify(hybrid.semantic));assert(hybrid.semantic.rerank?.available&&hybrid.semantic.rerank.processed===40&&hybrid.semantic.rerank.complete,JSON.stringify(hybrid.semantic.rerank));report.hybridCoverage=hybrid.semantic;
   report.memory=await app.evaluate(({app})=>app.getAppMetrics().map(m=>({pid:m.pid,type:m.type,workingSetKiB:m.memory.workingSetSize})));
   if(process.platform==='win32'){
     const parents=report.memory.map(m=>m.pid).filter(Number.isSafeInteger);

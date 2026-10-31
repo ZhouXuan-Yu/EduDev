@@ -12,7 +12,7 @@ import type {AiPageView} from '../../shared/material-ai-page';
 import type {MaterialFullTextSearch} from '../assets/material-full-text';
 import {validatedQuestionFilters} from '../education/question-retrieval';
 import type {QuestionBlock} from '../../shared/question-document';
-import {RERANK_ID,RERANK_LIMIT,type RerankCoverage} from '../../shared/reranker';
+import {RERANK_ID,RERANK_LIMIT,RERANK_CANDIDATE_LIMIT,RERANK_BUDGET_MS,type RerankCoverage} from '../../shared/reranker';
 import {rerankContext} from './rerank-context';
 import type {VectorPort} from './vector-host';
 import {validateAiPageSource} from '../assets/material-ai-page-source';
@@ -253,13 +253,20 @@ export class RetrievalRepository{
     const began=Date.now(),coverage:RerankCoverage={available:false,complete:false,model:RERANK_ID,candidates:ids.length,processed:0,elapsedMs:0,reason:'unavailable'};
     if(ids.length<2){coverage.available=true;coverage.complete=true;coverage.reason='not_needed';return{ids,coverage};}
     if(!this.port?.rerank)return{ids,coverage};
-    try{const selected=ids.slice(0,RERANK_LIMIT),items=selected.map(id=>{const value=context(id);return rerankContext(id,value.text,query,value.focus);}),result=await this.port.rerank(query,items);
-      if(!Array.isArray(result.scores)||result.scores.length!==items.length||new Set(result.scores.map(s=>s.id)).size!==items.length||result.scores.some(s=>!selected.includes(s.id)||!Number.isFinite(s.score)||typeof s.complete!=='boolean'))throw Error('invalid_result');
-      const scores=new Map(result.scores.map(s=>[s.id,s.score]));selected.sort((a,b)=>scores.get(b)!-scores.get(a)!||ids.indexOf(a)-ids.indexOf(b));
+    try{const selected=ids.slice(0,RERANK_CANDIDATE_LIMIT),items=selected.map(id=>{const value=context(id);return rerankContext(id,value.text,query,value.focus);});
+      const deadline=began+RERANK_BUDGET_MS,scores=new Map<string,number>();let complete=true;
+      for(let at=0;at<items.length;at+=RERANK_LIMIT){
+        const remaining=deadline-Date.now();if(remaining<=0)throw Error('reranker_timeout');
+        const batch=items.slice(at,at+RERANK_LIMIT),result=await this.port.rerank(query,batch,remaining);
+        if(!Array.isArray(result.scores)||result.scores.length!==batch.length||new Set(result.scores.map(s=>s.id)).size!==batch.length||result.scores.some(s=>!batch.some(item=>item.id===s.id)||!Number.isFinite(s.score)||typeof s.complete!=='boolean'))throw Error('invalid_result');
+        for(const score of result.scores){scores.set(score.id,score.score);complete&&=score.complete;}
+      }
+      if(Date.now()>deadline)throw Error('reranker_timeout');
+      selected.sort((a,b)=>scores.get(b)!-scores.get(a)!||ids.indexOf(a)-ids.indexOf(b));
       // The cross-encoder is another relevance signal; preserve the original recall ranking as an equal vote.
       const fused=new Map(selected.map((id,i)=>[id,1/(61+i)+1/(61+ids.indexOf(id))]));selected.sort((a,b)=>fused.get(b)!-fused.get(a)!||ids.indexOf(a)-ids.indexOf(b));
-      coverage.available=true;coverage.processed=items.length;coverage.complete=ids.length<=RERANK_LIMIT&&items.every(i=>i.complete)&&result.scores.every(s=>s.complete);coverage.reason=items.some(i=>!i.complete)||result.scores.some(s=>!s.complete)?'partial_context':ids.length>RERANK_LIMIT?'candidate_limit':'';
-      return{ids:[...selected,...ids.slice(RERANK_LIMIT)],coverage};
+      coverage.available=true;coverage.processed=items.length;coverage.complete=ids.length<=RERANK_CANDIDATE_LIMIT&&items.every(i=>i.complete)&&complete;coverage.reason=items.some(i=>!i.complete)||!complete?'partial_context':ids.length>RERANK_CANDIDATE_LIMIT?'candidate_limit':'';
+      return{ids:[...selected,...ids.slice(RERANK_CANDIDATE_LIMIT)],coverage};
     }catch(error){coverage.reason=['busy','reranker_timeout','invalid_input'].includes((error as Error).message)?(error as Error).message:'unavailable';return{ids,coverage};}
     finally{coverage.elapsedMs=Date.now()-began;}
   }

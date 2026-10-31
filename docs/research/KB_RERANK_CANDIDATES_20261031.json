@@ -1,0 +1,837 @@
+{
+  "schemaVersion": "xiaozhi.kb-rerank-candidates-evidence.v1",
+  "date": "2026-10-31",
+  "productionSource": "3e7d1c293d00f90c2449dc87675b3dccee47e139",
+  "goalComplete": false,
+  "delivered": "Up to100 fused candidates, native batches of20, global5s atomic rerank budget through host/IPC/client, and query-start optional model preparation; no new service or model",
+  "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+  "files": [
+    {
+      "file": "apps/desktop/src/shared/reranker.ts",
+      "sha256": "7406445e2fc31c32982cfa44228b7fc3bf19a990910c6e88ba806fff69298278"
+    },
+    {
+      "file": "apps/desktop/src/main/retrieval/repository.ts",
+      "sha256": "ea7f12924788f96b185b7907bdea0d09bf719743a30bfba1d8e9ad4ffdda4652"
+    },
+    {
+      "file": "apps/desktop/src/main/retrieval/reranker-client.ts",
+      "sha256": "9a2f42964c8c2b17feaa66fd994156ac5f8fe6c685a688bb86f7f78fc72018c1"
+    },
+    {
+      "file": "apps/desktop/src/main/retrieval/vector-host.ts",
+      "sha256": "09a90afa47ef5739986d80da85ca99834ebb6e98b5a413ea9e9e3587c7236b4f"
+    },
+    {
+      "file": "apps/desktop/src/main/retrieval/vector-worker.ts",
+      "sha256": "beade83ff1847f4fcf6b2f9b56fdd473ac6ffce1602c5138b3909c18fd76650c"
+    }
+  ],
+  "red": {
+    "command": "node --experimental-transform-types scripts/education/kb-rerank-candidates.mjs",
+    "exit": 1,
+    "error": "Actual repository returned processed20 instead of required40"
+  },
+  "tests": {
+    "candidates": {
+      "command": "node --experimental-transform-types scripts/education/kb-rerank-candidates.mjs",
+      "exit": 0,
+      "report": {
+        "success": true,
+        "checks": 8,
+        "scope": "Actual repository fusion and client cancellation, controlled scores/clock and stalled verifier; native model/Electron evidence remains separate"
+      }
+    },
+    "host": {
+      "command": "node scripts/education/kb-rerank-host-deadlines.mjs",
+      "exit": 0,
+      "report": {
+        "success": true,
+        "checks": 3,
+        "output": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\test-results\\rerank-host-kY9z5Q",
+        "scope": "Bundled actual VectorHost methods with controlled startup/send; no Electron/native latency claim",
+        "names": [
+          "Host startup waiting is included in the caller deadline; late startup completion never dispatches a stale rerank",
+          "Host forwards an absolute deadline so IPC transit does not reset the remaining budget",
+          "Malformed deadlines are rejected without touching the worker"
+        ]
+      }
+    },
+    "boundaries": {
+      "command": "node --experimental-transform-types scripts/education/kb-reranker-boundaries.mjs",
+      "exit": 0,
+      "report": {
+        "success": true,
+        "checks": 8,
+        "scope": "Actual repository and in-memory SQLite with controlled model/native ports; no semantic quality or runtime packaging claim"
+      }
+    },
+    "lifecycle": {
+      "command": "node --experimental-transform-types scripts/education/kb-reranker-lifecycle.mjs",
+      "exit": 0,
+      "report": {
+        "scope": "Actual fixed native EXE/model and full verification; virtual idle time only. Distinct IDs bypass result cache. No cloud or natural corpus quality claim",
+        "checks": [
+          "A teacher pause of 90 seconds reuses the actual verified process for a new uncached question",
+          "Concurrent background warmers share one fully verified native startup before uncached foreground inference",
+          "A foreground question arriving during background verification shares that startup",
+          "Low memory skips optional warming but an explicit question still starts the actual model",
+          "Idle memory pressure releases the native model and a later uncached question verifies anew",
+          "A model is never retained beyond ten idle minutes",
+          "Closing during verification aborts it and cannot launch a delayed native process",
+          "Background verification failure cools down automatic retries but never blocks an explicit query",
+          "A stuck warmup times out, aborts verification and does not spawn after its gate opens",
+          "A cancelled runtime verifier rejects before opening component files",
+          "Background preparation may retry after its cooldown without a new user query",
+          "A model that exits after warming is reverified for the next uncached question",
+          "Cancellation interrupts a real component stream instead of hashing the rest of the package",
+          "Memory hysteresis prevents optional model loading between the release and preparation thresholds",
+          "Immediate close before the preparation microtask cannot even begin verification"
+        ],
+        "coldMilliseconds": 2248.2058,
+        "prewarmMilliseconds": 2161.9342999999994,
+        "rerankerWorkingSetBytes": 905457664,
+        "foregroundMilliseconds": 30.654999999999745,
+        "nativeInferenceMilliseconds": 31,
+        "success": true
+      }
+    },
+    "frozen": {
+      "command": "node --experimental-transform-types scripts/education/kb-reranker-frozen.mjs",
+      "exit": 0,
+      "report": {
+        "success": true,
+        "scope": "Frozen cross-encoder + fixed original BGE cosine ordering on a pre-frozen synthetic validation set, not natural teacher or whole-corpus retrieval quality",
+        "checks": 5,
+        "coldMs": 2264.7931,
+        "baselineNdcg3": 0.8311268489920642,
+        "fusionNdcg3": 0.8689303323733945,
+        "baselineTop1Best": 10,
+        "fusionTop1Best": 11,
+        "cases": 16
+      }
+    },
+    "nativeDeadline": {
+      "command": "node --experimental-transform-types scripts/education/kb-rerank-native-deadline.mjs",
+      "exit": 0,
+      "report": {
+        "scope": "Actual verified Windows cross encoder process; intentionally tiny caller deadline cancels owned inference, then a new uncached query recovers; synthetic only",
+        "checks": [
+          "Caller deadline interrupts actual in-flight native inference and the owned process exits",
+          "Next uncached query reverifies and starts a new actual native model with valid Chinese scores"
+        ],
+        "rejectionMs": 15.496399999999994,
+        "success": true
+      }
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "report": {
+        "suite": "renderer-component-states",
+        "passed": 240,
+        "total": 240,
+        "materialLayoutCases": 2,
+        "trainingWorkspaceCases": 5,
+        "publicStatusCases": 18,
+        "compactionTransitions": 4,
+        "publicActivityCases": 4,
+        "markdownCases": 5,
+        "productNavigationCases": 4,
+        "materialDirectoryCases": 14,
+        "materialContractCases": 6,
+        "teacherQuickStartCases": 6
+      }
+    },
+    "reopened": {
+      "command": "node scripts/education/kb-byte-capacity-reopen.mjs <owned-40GiB-root>",
+      "exit": 0,
+      "report": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-byte-capacity-RAFTac\\reopen-BVEITr",
+        "checks": [
+          "Current build finds each of the 40 persisted sources through typed keyword retrieval; visible first/last queries reach the full 40GiB library",
+          "Existing local embeddings cover these 40 small texts and real reranking processes bounded candidates; teacher opens exact source and actual page image from a 1GiB PDF",
+          "Second current-build native restart preserves all 40 immutable resource facts; final source remains retrievable, both viewport sizes are reachable"
+        ],
+        "queries": [
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "keyword",
+            "uiMs": 329.93939999999975
+          },
+          {
+            "label": "KBLOAD3DOC009",
+            "mode": "keyword",
+            "uiMs": 308.3268000000003
+          },
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "hybrid",
+            "uiMs": 4001.3100000000004
+          },
+          {
+            "label": "KBLOAD3DOC009",
+            "mode": "hybrid",
+            "uiMs": 4527.533299999999
+          }
+        ],
+        "rendererErrors": [],
+        "cloudRequests": 0,
+        "buildSha256": "bf71b02aab7bdea2ae2b1121a377fb4380151c5002fe2f3abe342df9bf9f9a79",
+        "scope": "Current production build reopens the actual retained 40GiB byte-capacity fixture. 40 one-page synthetic PDFs, small visible text plus binary load. Source UI, real local embedding/reranker, typed keyword queries and original-page image; NOT natural large-corpus recall, OCR/AI correctness or installer acceptance.",
+        "retrieval": {
+          "schemaVersion": "xiaozhi.retrieval.v1",
+          "available": true,
+          "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+          "building": "",
+          "paused": false,
+          "phase": "ready",
+          "pending": 0,
+          "indexed": 40,
+          "failed": 0,
+          "error": "",
+          "model": "bge-small-zh-v1.5.q8.cls-l2.window512-stride64.v1",
+          "maintenance": {
+            "schemaVersion": "xiaozhi.index-maintenance.v1",
+            "phase": "running",
+            "mode": "flat",
+            "error": "",
+            "completedAt": "2026-10-31T09:15:59.391Z",
+            "vectorVersion": 69,
+            "objectVersion": 37,
+            "indexedRows": 0,
+            "partitions": 0,
+            "probes": 0,
+            "sampleRecall": 0,
+            "samples": 0
+          }
+        },
+        "hybridCoverage": {
+          "available": true,
+          "complete": true,
+          "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+          "pending": 0,
+          "failed": 0,
+          "backfilling": false,
+          "reason": "",
+          "candidateLimit": 100,
+          "exhausted": false,
+          "rerank": {
+            "available": true,
+            "complete": true,
+            "model": "bge-reranker-base.q8.pair512.window2.v1",
+            "candidates": 40,
+            "processed": 40,
+            "elapsedMs": 1,
+            "reason": ""
+          }
+        },
+        "memory": [
+          {
+            "pid": 46368,
+            "type": "Browser",
+            "workingSetKiB": 359428
+          },
+          {
+            "pid": 47336,
+            "type": "GPU",
+            "workingSetKiB": 198416
+          },
+          {
+            "pid": 26432,
+            "type": "Utility",
+            "workingSetKiB": 62420
+          },
+          {
+            "pid": 48732,
+            "type": "Tab",
+            "workingSetKiB": 189664
+          },
+          {
+            "pid": 45112,
+            "type": "Utility",
+            "workingSetKiB": 160660
+          }
+        ],
+        "nativeMemory": [
+          {
+            "pid": 28132,
+            "name": "omni-edu-retrieval",
+            "parentPid": 45112,
+            "workingSetBytes": 122777600,
+            "privateBytes": 735117312
+          },
+          {
+            "pid": 22868,
+            "name": "omni-edu-reranker",
+            "parentPid": 45112,
+            "workingSetBytes": 907616256,
+            "privateBytes": 1526325248
+          }
+        ],
+        "viewports": [
+          {
+            "requested": {
+              "width": 1366,
+              "height": 768
+            },
+            "before": {
+              "id": 1,
+              "bounds": {
+                "x": 173,
+                "y": 59,
+                "width": 1360,
+                "height": 900
+              },
+              "maximized": false,
+              "zoom": 1
+            },
+            "native": {
+              "x": 173,
+              "y": 59,
+              "width": 1366,
+              "height": 768
+            },
+            "css": {
+              "width": 1366,
+              "height": 768,
+              "dpr": 1.5
+            }
+          },
+          {
+            "requested": {
+              "width": 1920,
+              "height": 1080
+            },
+            "before": {
+              "id": 1,
+              "bounds": {
+                "x": 173,
+                "y": 59,
+                "width": 1366,
+                "height": 768
+              },
+              "maximized": false,
+              "zoom": 1
+            },
+            "native": {
+              "x": 173,
+              "y": 59,
+              "width": 1920,
+              "height": 1080
+            },
+            "css": {
+              "width": 1920,
+              "height": 1080,
+              "dpr": 1.5
+            }
+          }
+        ],
+        "success": true
+      }
+    },
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "includes": "tsc --noEmit; electron-vite build"
+    },
+    "smoke": {
+      "command": "npm.cmd run test:smoke",
+      "source": "3e7d1c2",
+      "exit": 0,
+      "passed": 207,
+      "total": 207,
+      "scope": "Full legacy-test regression; separate production Pi-enabled materials UI above, not a Pi Agent conversation"
+    }
+  },
+  "performance": {
+    "before": {
+      "source": "03f4654",
+      "queries": [
+        {
+          "label": "KBLOAD0DOC000",
+          "mode": "keyword",
+          "uiMs": 46.90679999999975
+        },
+        {
+          "label": "KBLOAD3DOC009",
+          "mode": "keyword",
+          "uiMs": 54.0314000000003
+        },
+        {
+          "label": "KBLOAD0DOC000",
+          "mode": "hybrid",
+          "uiMs": 3962.5405
+        },
+        {
+          "label": "KBLOAD3DOC009",
+          "mode": "hybrid",
+          "uiMs": 4543.137999999999
+        }
+      ],
+      "coverage": {
+        "available": true,
+        "complete": false,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 40,
+        "processed": 20,
+        "elapsedMs": 1,
+        "reason": "candidate_limit"
+      }
+    },
+    "after": {
+      "source": "3e7d1c2",
+      "queries": [
+        {
+          "label": "KBLOAD0DOC000",
+          "mode": "keyword",
+          "uiMs": 329.93939999999975
+        },
+        {
+          "label": "KBLOAD3DOC009",
+          "mode": "keyword",
+          "uiMs": 308.3268000000003
+        },
+        {
+          "label": "KBLOAD0DOC000",
+          "mode": "hybrid",
+          "uiMs": 4001.3100000000004
+        },
+        {
+          "label": "KBLOAD3DOC009",
+          "mode": "hybrid",
+          "uiMs": 4527.533299999999
+        }
+      ],
+      "coverage": {
+        "available": true,
+        "complete": true,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 40,
+        "processed": 40,
+        "elapsedMs": 1,
+        "reason": ""
+      }
+    },
+    "interpretation": "Single sequential observations on identical retained40GiB/40-page synthetic fixture; not randomized A/B, P95, natural Recall@K, or proof of latency improvement. Before3963/4543ms and after4001/4528ms remain about4s. Coverage20/40 became40/40.",
+    "nativeCostProbe": {
+      "scope": "Actual unchanged native cross encoder, 40GiB fixture text shape, timings distinguish startup from inference; not natural corpus quality",
+      "samples": [
+        {
+          "count": 1,
+          "wallMs": 21.545100000000275,
+          "nativeMs": 15
+        },
+        {
+          "count": 5,
+          "wallMs": 86.08480000000009,
+          "nativeMs": 78
+        },
+        {
+          "count": 20,
+          "wallMs": 338.3654999999999,
+          "nativeMs": 344
+        }
+      ],
+      "startupMs": 2146.3062,
+      "success": true
+    },
+    "firstTypedColdDiagnostic": {
+      "source": "cbe4734 (before production fix)",
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-byte-capacity-RAFTac\\reopen-azWOgz",
+      "firstTyped": [
+        {
+          "query": "KBLOAD0DOC000 light",
+          "ms": 12685.871900000002,
+          "semantic": {
+            "available": true,
+            "complete": true,
+            "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+            "pending": 0,
+            "failed": 0,
+            "backfilling": false,
+            "reason": "",
+            "candidateLimit": 100,
+            "exhausted": false,
+            "rerank": {
+              "available": true,
+              "complete": false,
+              "model": "bge-reranker-base.q8.pair512.window2.v1",
+              "candidates": 40,
+              "processed": 20,
+              "elapsedMs": 3237,
+              "reason": "candidate_limit"
+            }
+          }
+        },
+        {
+          "query": "KBLOAD3DOC009 colours",
+          "ms": 451.21500000000015,
+          "semantic": {
+            "available": true,
+            "complete": true,
+            "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+            "pending": 0,
+            "failed": 0,
+            "backfilling": false,
+            "reason": "",
+            "candidateLimit": 100,
+            "exhausted": false,
+            "rerank": {
+              "available": true,
+              "complete": false,
+              "model": "bge-reranker-base.q8.pair512.window2.v1",
+              "candidates": 40,
+              "processed": 20,
+              "elapsedMs": 373,
+              "reason": "candidate_limit"
+            }
+          }
+        }
+      ],
+      "boundary": "Different immediate typed path, not comparable with the keyword-first UI benchmark. First12685.87ms, next451.22ms; component breakdown is incomplete and no specific background task is proven causal."
+    }
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "autoFix": false
+  },
+  "invariants": {
+    "schemaAndModel": "Native xiaozhi.rerank.v1 and fixed BGE model/tokenizer unchanged; only internal host/worker optional deadline added",
+    "facts": "No tables/migrations/fact rewrites; immutable40 resource rows/source hashes remain verified",
+    "privacy": "0 new paid calls or teacher uploads; synthetic benchmark blocks cloud",
+    "dependencies": "No new dependency/lock/runtime asset",
+    "failure": "Any later batch invalid/timeout/busy returns all original fused IDs in original order, coverage not marked complete; no partially published ranking",
+    "review": "Self critical code/flow review; no child agents dispatched"
+  },
+  "realBook": {
+    "title": "初中物理·五年中考三年模拟",
+    "state": "awaiting_local_path",
+    "searched": "D:\\WorkProject\\EduProject\\大哥素材 (9 files) and project file names; no matching book found",
+    "imported": false,
+    "uploaded": false
+  },
+  "remaining": [
+    "Final merged cold hybrid UI4248/4824ms still needs real phase timing and startup optimization; broader/longer candidate pools may exhaust5s and explicitly retain original recall ranking",
+    "Cold first search remains about4s in tested UI; immediate typed cold path had12686ms before fix and still needs phase timing/optimization",
+    "Natural textbook question/answer/formula/figure correctness, Recall@K/P95 and high-cardinality corpus remain unproven",
+    "Only up to100 fused candidates are reranked; larger tail is preserved and coverage explicitly incomplete",
+    "Full252 acceptance and dailyD/installer/packaged EXE remain unexecuted for this slice",
+    "Specific book cannot be imported until its local path is provided; no substitute claimed",
+    "Existing Pi/original reader byte/page contract discrepancies still need runtime reproduction"
+  ],
+  "rollback": "Ordinary revert3e7d1c2 while retaining upstream navigation changes. No migration or original/index deletion; test/docs changes can be reverted independently.",
+  "finalIntegration": {
+    "source": "4fadfb0b7672f88503af3f690196d327b6503e58",
+    "upstreamMain": "f8182370303e953cca17fd0c88aacd0dd423d498",
+    "merge": "Normal merge, no conflicts; all5 retrieval production files exactly match3e7d1c2. Retained upstream Word/native cleanup and navigation changes; actual knowledge destination nav-knowledge now used in the same owned40GiB journey.",
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "includes": "tsc --noEmit and electron-vite build",
+      "fingerprints": [
+        {
+          "file": "out/main/index.js",
+          "bytes": 3223200,
+          "sha256": "505237b8df50587fc2ca4c4d24e1dac39c2cb118accbe7659ffdc8a934d09885"
+        },
+        {
+          "file": "out/main/retrieval-worker.js",
+          "bytes": 62891,
+          "sha256": "613c2cc172b00044cc25cee20d32a9ff6aa1f906e4162f5aa4223488f25e11c6"
+        },
+        {
+          "file": "out/preload/index.cjs",
+          "bytes": 34761,
+          "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+        },
+        {
+          "file": "out/renderer/index.html",
+          "bytes": 1451,
+          "sha256": "77675430b33997e02a6b39e94e3fa9ee41a3c1f88e2adcb0c40bad177049dceb"
+        },
+        {
+          "file": "out/renderer/assets/index-Cfj1bMYM.js",
+          "bytes": 7179075,
+          "sha256": "86fcbbdf3589cdfb8cb54f14d4a74fbcf7d10e69aa906befda9fe0a89edbca20"
+        }
+      ]
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240
+    },
+    "candidates": {
+      "command": "node --experimental-transform-types scripts/education/kb-rerank-candidates.mjs",
+      "exit": 0,
+      "report": {
+        "success": true,
+        "checks": 8,
+        "scope": "Actual repository fusion and client cancellation, controlled scores/clock and stalled verifier; native model/Electron evidence remains separate"
+      }
+    },
+    "delivery": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+      "exit": 0,
+      "checks": 11,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-hnSZJO"
+    },
+    "pdf": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-pdf-native.mjs",
+      "exit": 0,
+      "checks": 4,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-pdf-native-fZXNMm"
+    },
+    "sidebar": {
+      "command": "npm.cmd run test:sidebar-navigation",
+      "exit": 0,
+      "checks": 13,
+      "output": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\beca\\EduProject\\apps\\desktop\\test-results\\sidebar-navigation-ft7VGK",
+      "errors": [],
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768,
+          "client": 570,
+          "scroll": 656,
+          "overflow": "auto",
+          "asideOverflow": "hidden",
+          "documentOverflow": false
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "client": 882,
+          "scroll": 882,
+          "overflow": "auto",
+          "asideOverflow": "hidden",
+          "documentOverflow": false
+        }
+      ],
+      "boundary": "Upstream navigation suite is Vite development renderer with the actual Electron main; production bundled materials UI is independently covered by reopened below."
+    },
+    "reopened": {
+      "command": "node scripts/education/kb-byte-capacity-reopen.mjs <owned-40GiB-root>",
+      "exit": 0,
+      "report": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-byte-capacity-RAFTac\\reopen-KMCQAq",
+        "checks": [
+          "Current build finds each of the 40 persisted sources through typed keyword retrieval; visible first/last queries reach the full 40GiB library",
+          "Existing local embeddings cover these 40 small texts and real reranking processes bounded candidates; teacher opens exact source and actual page image from a 1GiB PDF",
+          "Second current-build native restart preserves all 40 immutable resource facts; final source remains retrievable, both viewport sizes are reachable"
+        ],
+        "queries": [
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "keyword",
+            "uiMs": 55.94619999999986
+          },
+          {
+            "label": "KBLOAD3DOC009",
+            "mode": "keyword",
+            "uiMs": 56.45859999999993
+          },
+          {
+            "label": "KBLOAD0DOC000",
+            "mode": "hybrid",
+            "uiMs": 4247.6294,
+            "rerankNotice": "已用本地模型进一步比较题意。"
+          },
+          {
+            "label": "KBLOAD3DOC009",
+            "mode": "hybrid",
+            "uiMs": 4824.415100000002,
+            "rerankNotice": "已用本地模型进一步比较题意。"
+          }
+        ],
+        "rendererErrors": [],
+        "cloudRequests": 0,
+        "buildSha256": "505237b8df50587fc2ca4c4d24e1dac39c2cb118accbe7659ffdc8a934d09885",
+        "scope": "Current production build reopens the actual retained 40GiB byte-capacity fixture. 40 one-page synthetic PDFs, small visible text plus binary load. Source UI, real local embedding/reranker, typed keyword queries and original-page image; NOT natural large-corpus recall, OCR/AI correctness or installer acceptance.",
+        "retrieval": {
+          "schemaVersion": "xiaozhi.retrieval.v1",
+          "available": true,
+          "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+          "building": "",
+          "paused": false,
+          "phase": "ready",
+          "pending": 0,
+          "indexed": 40,
+          "failed": 0,
+          "error": "",
+          "model": "bge-small-zh-v1.5.q8.cls-l2.window512-stride64.v1",
+          "maintenance": {
+            "schemaVersion": "xiaozhi.index-maintenance.v1",
+            "phase": "running",
+            "mode": "flat",
+            "error": "",
+            "completedAt": "2026-10-31T09:15:59.391Z",
+            "vectorVersion": 69,
+            "objectVersion": 37,
+            "indexedRows": 0,
+            "partitions": 0,
+            "probes": 0,
+            "sampleRecall": 0,
+            "samples": 0
+          }
+        },
+        "hybridCoverage": {
+          "available": true,
+          "complete": true,
+          "generation": "generation_983f13b0-ce45-4290-a03f-be47f34818d5",
+          "pending": 0,
+          "failed": 0,
+          "backfilling": false,
+          "reason": "",
+          "candidateLimit": 100,
+          "exhausted": false,
+          "rerank": {
+            "available": true,
+            "complete": true,
+            "model": "bge-reranker-base.q8.pair512.window2.v1",
+            "candidates": 40,
+            "processed": 40,
+            "elapsedMs": 1,
+            "reason": ""
+          }
+        },
+        "memory": [
+          {
+            "pid": 34072,
+            "type": "Browser",
+            "workingSetKiB": 358816
+          },
+          {
+            "pid": 43424,
+            "type": "GPU",
+            "workingSetKiB": 210376
+          },
+          {
+            "pid": 2448,
+            "type": "Utility",
+            "workingSetKiB": 62716
+          },
+          {
+            "pid": 41596,
+            "type": "Tab",
+            "workingSetKiB": 188292
+          },
+          {
+            "pid": 30048,
+            "type": "Utility",
+            "workingSetKiB": 158044
+          }
+        ],
+        "nativeMemory": [
+          {
+            "pid": 41836,
+            "name": "omni-edu-retrieval",
+            "parentPid": 30048,
+            "workingSetBytes": 123568128,
+            "privateBytes": 735760384
+          },
+          {
+            "pid": 7680,
+            "name": "omni-edu-reranker",
+            "parentPid": 30048,
+            "workingSetBytes": 907747328,
+            "privateBytes": 1526542336
+          }
+        ],
+        "viewports": [
+          {
+            "requested": {
+              "width": 1366,
+              "height": 768
+            },
+            "before": {
+              "id": 1,
+              "bounds": {
+                "x": 173,
+                "y": 59,
+                "width": 1360,
+                "height": 900
+              },
+              "maximized": false,
+              "zoom": 1
+            },
+            "native": {
+              "x": 173,
+              "y": 59,
+              "width": 1366,
+              "height": 768
+            },
+            "css": {
+              "width": 1366,
+              "height": 768,
+              "dpr": 1.5
+            }
+          },
+          {
+            "requested": {
+              "width": 1920,
+              "height": 1080
+            },
+            "before": {
+              "id": 1,
+              "bounds": {
+                "x": 173,
+                "y": 59,
+                "width": 1366,
+                "height": 768
+              },
+              "maximized": false,
+              "zoom": 1
+            },
+            "native": {
+              "x": 173,
+              "y": 59,
+              "width": 1920,
+              "height": 1080
+            },
+            "css": {
+              "width": 1920,
+              "height": 1080,
+              "dpr": 1.5
+            }
+          }
+        ],
+        "success": true
+      }
+    },
+    "performance": "Final merged UI4247.63ms and4824.42ms versus prior3962.54/4543.14ms. Coverage doubled20→40, latency has not improved; this sequential sample is not randomized A/B, throughput, natural Recall orP95. The5s budget covers only the rerank phase, not the entire query.",
+    "smoke207": {
+      "source": "3e7d1c2",
+      "passed": 207,
+      "total": 207,
+      "exit": 0,
+      "repeatedAfterMerge": false,
+      "boundary": "All retrieval production files unchanged. Pre-merge legacy-test suite is distinct from final build/components/candidates/sidebar/PDF and production source/restart journey above."
+    },
+    "upstreamRecordedGates": {
+      "source": "docs/goal/CURRENT_STATE.md atf818237",
+      "notRerunHere": [
+        "PromptInput fingerprint gate",
+        "startup IPC gate"
+      ],
+      "scope": "Preserved upstream recorded failures; not claimed fixed by this knowledge-base slice"
+    },
+    "newDependencies": 0,
+    "newPaidCalls": 0,
+    "teacherUploads": 0,
+    "dailyDWorktreeUpdated": false,
+    "installerUpdated": false,
+    "goalComplete": false
+  }
+}

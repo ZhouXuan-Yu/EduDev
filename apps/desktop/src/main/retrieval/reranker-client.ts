@@ -67,13 +67,14 @@ export class RerankerClient {
     };
     this.idle=setTimeout(check,30000);this.idle.unref();
   }
-  rerank(query:string,items:RerankInput[]):Promise<RerankResult>{
+  rerank(query:string,items:RerankInput[],timeoutMs=15000):Promise<RerankResult>{
     if(this.closed)return Promise.reject(Error('cancelled'));
+    if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1||timeoutMs>15000)return Promise.reject(Error('invalid_input'));
     if(typeof query!=='string'||!query.trim()||query.length>240||query.includes('\0')||!Array.isArray(items)||!items.length||items.length>RERANK_LIMIT||items.some(i=>!i||typeof i.id!=='string'||!/^[A-Za-z0-9_.:-]{1,128}$/.test(i.id)||typeof i.text!=='string'||!i.text.trim()||i.text.length>1024||i.text.includes('\0')||typeof i.complete!=='boolean')||new Set(items.map(i=>i.id)).size!==items.length)return Promise.reject(Error('invalid_input'));
     const key=createHash('sha256').update(JSON.stringify([RERANK_ID,query,items])).digest('hex'),cached=this.cache.get(key);if(cached)return Promise.resolve(structuredClone(cached));
     if(this.queue.length>=4)return Promise.reject(Error('busy'));
     return new Promise((resolve,reject)=>{const job:RankJob={query,items:structuredClone(items),key,done:false,resolve:v=>{if(job.done)return;job.done=true;clearTimeout(job.timer);resolve(v);},reject:e=>{if(job.done)return;job.done=true;clearTimeout(job.timer);reject(e);}};
-      job.timer=setTimeout(()=>{job.reject(Error('reranker_timeout'));if(this.active===job){this.accept?.reject(Error('reranker_timeout'));this.accept=undefined;this.closeChild();}},15000);this.queue.push(job);void this.pump();});
+      job.timer=setTimeout(()=>{job.reject(Error('reranker_timeout'));if(this.active===job){this.accept?.reject(Error('reranker_timeout'));this.accept=undefined;this.closeChild();}},timeoutMs);this.queue.push(job);void this.pump();});
   }
   private async pump(){
     if(this.pumping)return;this.pumping=true;if(this.idle)clearTimeout(this.idle);
