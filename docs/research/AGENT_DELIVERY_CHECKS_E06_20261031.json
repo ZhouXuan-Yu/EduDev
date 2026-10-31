@@ -6547,6 +6547,45 @@
       "bytes": 3257529,
       "sha256": "2db45bcc676871884c1bc653bf0eb75f14b1633e34f5c679bf9c838dde82a6c9",
       "boundary": "Captured after the comprehensive build, not before first prototype UI. Its main entry hash equals the final merged main entry; renderer changed in the merge. First UI prototype digest was not captured."
+    },
+    "lastIntegration": {
+      "mergeSha": "c99f6bbb0cd3e90325170931537468893fd13ca9",
+      "remoteMainMerged": "32e7071",
+      "conflicts": {
+        "count": 14,
+        "scope": "Markdown only, both complete stage records retained"
+      },
+      "terminalAndOfficeUiSourceUnchangedFrom": "b35b5fc0a8867dde9b5c2d4ab8eaac3df10575cc",
+      "build": {
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-final-merged-build.log"
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\delivery-terminal-final-merged-components.log"
+      },
+      "artifacts": [
+        {
+          "path": "apps\\desktop\\out\\main\\index.js",
+          "bytes": 3264380,
+          "sha256": "e2fd17fc7b7081a20add12ea4c24ffa9cc53735b1fc843bf5596701078877caf"
+        },
+        {
+          "path": "apps\\desktop\\out\\preload\\index.cjs",
+          "bytes": 34965,
+          "sha256": "27148817cddba73e408e80d07e3b6f2746c69ae76340f848a90e51c6d7cd9b28"
+        },
+        {
+          "path": "apps\\desktop\\out\\renderer\\assets\\index-DQ13p2Jv.js",
+          "bytes": 7227387,
+          "sha256": "df01d7419717fc9880e2405da372163f57e775b37f9875f4df85ee5d7c79daef"
+        }
+      ],
+      "boundary": "Further answer-domain integration, no changed ninth-slice/office UI source. Final build/type240 passed, focused originalPi3 belongs to b35b5fc; no replay. Final bundle includes upstream answer domain and renderer, do not attribute whole bundle delta to this slice."
     }
   }
 }
