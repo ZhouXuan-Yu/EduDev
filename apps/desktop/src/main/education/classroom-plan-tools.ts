@@ -5,6 +5,7 @@ import {CLASSROOM_PLAN_SCHEMA,type ClassroomPlanStart,type ClassroomPlanDocument
 import type {ClassroomContext} from '../../shared/classroom-context';
 import {validClassroomScene,classroomErrors} from '../../shared/classroom';
 import type {createClassroomPlanState} from './classroom-plan-state';
+import {physicsAnswerInstructions} from '../xiaozhi-agent/physics-answer-quality';
 
 const empty={type:'object',additionalProperties:false,properties:{}} as const;
 const sceneId={type:'string',pattern:'^[A-Za-z0-9_-]{1,64}$'};
@@ -45,7 +46,12 @@ export function createClassroomPlanTools(options:{sessionId:string;runId:string;
   {name:'education_prepare_planned_scene',label:'准备已确认课页',description:'对宿主绑定大纲的指定sceneId获取OpenMAIC原生system/user提示。本Pi按提示生成contentJson，交education_save_classroom_scene保存；不得新开Agent/模型循环。仅slide原生文字/形状/线/公式和quiz选择题，无外部资源或脚本。',parameters:{type:'object',additionalProperties:false,required:['sceneId'],properties:{sceneId}} as ToolDefinition['parameters'],execute:async(_id,raw,signal)=>{
    try{check(signal);if(!exact(raw,['sceneId'])||typeof raw.sceneId!=='string')throw Error('invalid_input');const item=await read(signal),index=item.document.scenes.findIndex(s=>s.sceneId===raw.sceneId);if(index<0)throw Error('invalid_input');if(item.checkpoints.some(c=>c.sceneId===raw.sceneId))return await deliverApproved({alreadySaved:true,sceneId:raw.sceneId,instructions:'此页已保存，继续下一缺页。'},signal);
     const {generateSceneContent}=await import('@openmaic/generation');let prompt:{system:string;user:string}|undefined;const captured=Symbol('Pi prompt');try{await generateSceneContent(outline(item.document.scenes[index],index,item.document),async(system,user)=>{prompt={system,user};throw captured;},{targetLanguage:'zh-CN',languageDirective:'中文。仅文字/形状/线/公式和选择题，不使用外部资源、链接、脚本。'});}catch(error){if(error!==captured)throw error;}
-    check(signal);if(!prompt||JSON.stringify(prompt).length>48000)throw Error('invalid_input');return await deliverApproved({sceneId:raw.sceneId,...prompt,instructions:'生成原生contentJson，保留必要条件、题目、字母答案和解析，然后调用education_save_classroom_scene。'},signal);
+    check(signal);if(!prompt)throw Error('invalid_input');
+    // The approved lesson, rather than a generic resume title, determines subject
+    // context. This stays in the existing Pi tool response for every missing page.
+    const subjectInstructions=physicsAnswerInstructions(JSON.stringify(item.document));
+    const pagePrompt={...prompt,system:subjectInstructions?`${prompt.system}\n\n${subjectInstructions}`:prompt.system};
+    if(JSON.stringify(pagePrompt).length>48000)throw Error('invalid_input');return await deliverApproved({sceneId:raw.sceneId,...pagePrompt,instructions:'生成原生contentJson，保留必要条件、题目、字母答案和解析，然后调用education_save_classroom_scene。'},signal);
    }catch(error){return fail(error);}
   }},
   {name:'education_save_classroom_scene',label:'保存课堂课页检查点',description:'将指定已确认sceneId的contentJson交原OpenMAIC归一化/组装和离线DSL校验，成功一页即持久保存。失败只修本页，停止保留成功页。不能修改大纲或覆盖成功页，来源变化/旧run/旧版本将拒绝。',parameters:{type:'object',additionalProperties:false,required:['sceneId','contentJson'],properties:{sceneId,contentJson:string(80000)}} as ToolDefinition['parameters'],execute:async(_id,raw,signal)=>{

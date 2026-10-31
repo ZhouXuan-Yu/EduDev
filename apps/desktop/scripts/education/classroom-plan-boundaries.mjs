@@ -14,6 +14,7 @@ export {createClassroomState} from './src/main/education/classroom-state';
 export {materialBodyVersion} from './src/main/assets/material-source';
 export {validXiaozhiStart} from './src/shared/xiaozhi-start';
 export {createClassroomPlanTools} from './src/main/education/classroom-plan-tools';
+export {physicsAnswerInstructions} from './src/main/xiaozhi-agent/physics-answer-quality';
 export {registerClassroomIpc} from './src/main/education/classroom-api';`,resolveDir:process.cwd()},bundle:true,platform:'node',format:'esm',external:['@openmaic/generation'],outfile:entry});
 const domain=await import(pathToFileURL(entry));
 const {createClassroomPlanState,createClassroomState,materialBodyVersion,CLASSROOM_PLAN_SCHEMA,validClassroomPlanDocument,validClassroomPlanStart,validXiaozhiStart}=domain;
@@ -168,6 +169,27 @@ response=await safeDelivery.invoke(modelExits[1]);assert(!response.isError);asse
 assert.equal(sanitizedDeliveries,2);assert.deepEqual(await cold.read(safeDelivery.item.id),safeDelivery.item);
 await cold.finishRun('generate');
 check('Safe teacher-edited approved outline and native scene prompts pass unchanged through the shared sanitizer');
+// Exercise the actual page-preparation tool for all page types, independent of
+// the UI start title. The lesson contains the subject only in another scene.
+const physicsDocument={...document,title:'实验课',objectives:['观察现象并解释测量关系。'],scenes:document.scenes.map((scene,index)=>({...scene,title:['实验导入','现象解释','理解检查'][index],activity:index===1?'分析静止悬挂物体的浮力、重力和测力计拉力。':'按已确认活动组织课堂。'}))};
+const guarded=await approvedTools('subject-page-prompts',physicsDocument,async text=>text);
+const subjectInstructions=domain.physicsAnswerInstructions(JSON.stringify(physicsDocument));assert(subjectInstructions);
+for(const scene of physicsDocument.scenes){
+ const response=await guarded.invoke({name:'education_prepare_planned_scene',input:{sceneId:scene.sceneId}});assert(!response.isError);
+ const prepared=JSON.parse(response.content[0].text);assert(prepared.user);assert(prepared.system.endsWith(subjectInstructions));
+ assert.equal(prepared.system.split(subjectInstructions).length,2,'Each slide and quiz must receive the shared subject guard exactly once');
+}
+assert.deepEqual(await cold.read(guarded.item.id),guarded.item,'Prompt guidance must not edit approved versions or save/replay checkpoints');
+await cold.finishRun('generate');
+const languageDocument={...physicsDocument,title:'阅读课堂',objectives:['识别文章主题并用文本证据解释段落。'],scenes:physicsDocument.scenes.map(scene=>({...scene,title:'段落阅读',activity:'朗读课文并解释关键词。'}))};
+assert.equal(domain.physicsAnswerInstructions(JSON.stringify(languageDocument)),'');
+const unrelated=await approvedTools('unrelated-page-prompts',languageDocument,async text=>text);
+for(const scene of languageDocument.scenes){
+ const response=await unrelated.invoke({name:'education_prepare_planned_scene',input:{sceneId:scene.sceneId}});assert(!response.isError);
+ const prepared=JSON.parse(response.content[0].text);assert(prepared.system&&prepared.user);assert(!prepared.system.includes(subjectInstructions));
+}
+assert.deepEqual(await cold.read(unrelated.item.id),unrelated.item);await cold.finishRun('generate');
+check('Actual two-slide/quiz prompts reuse the conditional physics guard from the approved lesson; unrelated lessons remain unchanged and no approved content is rewritten');
 for(const mode of ['stop','abort','source','revision','run-ended']){
  for(const exit of modelExits){
   let active=true,release,entered;
