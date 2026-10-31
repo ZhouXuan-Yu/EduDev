@@ -24,6 +24,7 @@ function fixture(status='blank'){
   if(state.mode==='ordinary')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'光在同种均匀介质中沿直线传播。',pageIssues:[],questions:[]};
   if(state.mode==='ordinary_long')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'甲'.repeat(11999)+'😀'+'乙'.repeat(2000)+'尾部证据：色散与折射。',pageIssues:[],questions:[]};
   if(state.mode==='blank')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'',pageIssues:[],questions:[]};
+  if(state.mode==='numeric_spacing')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'两项记录：12':'两项记录：1 2',pageIssues:[],questions:[]};
   if(state.mode==='math_notation_changed')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'公式：x2 + y1':'公式：x² + y₁',pageIssues:[],questions:[]};
   if(state.mode==='math_stem_changed'){result.pageText='第1题 写出x²。\n【答案】x²\n【解析】原式为x²。';Object.assign(result.questions[0],{stem:'写出x2。',answer:'x²',analysis:'原式为x²。'});result.questions[0].projection.statement.text='写出x2。';}
   if(state.mode==='unclear')result={...result,pageIssues:['uncertain_ocr']};
@@ -133,6 +134,9 @@ await check('A fully agreeing mixed figure page enters text retrieval while its 
 });
 await check('Question outcome revisions do not hide an unchanged transcript or qualify the held extraction',async()=>{
  const f=await indexedPage('outcome_changed');try{assert.equal((await f.repo.page(query(f))).transcriptionStatus,'complete');assert.equal((await f.lexical.candidates('7+8')).units.length,1);assert(!archiveEligible(await f.question()));assert.equal(f.state.calls,2);}finally{f.db.close();}
+});
+await check('Whitespace cannot merge separate numbers or algebraic tokens into a different source value',async()=>{
+ const f=await indexedPage('numeric_spacing');try{assert.equal((await f.repo.page(query(f))).transcriptionStatus,'needs_review','1 2 cannot become12 through whitespace removal');assert.equal((await f.rag.restoredText.status()).ready,0);assert.equal(f.state.calls,2);}finally{f.db.close();}
 });
 await check('Transcription uncertainty in either pass, mathematical changes and page-level doubts remain excluded from text retrieval',async()=>{
  for(const mode of ['question_uncertain','question_final_uncertain','question_cross_page','question_incomplete','mismatch','math_notation_changed','unclear']){const f=await indexedPage(mode);try{
