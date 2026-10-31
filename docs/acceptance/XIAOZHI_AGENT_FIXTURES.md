@@ -99,6 +99,8 @@ E03补充工程夹具：continuity-electron.mjs以10页→8页修订、可以→
 
 ## FX02：文件、目录和设置
 
+2026-11-01 E07冲突工程夹具：同一隔离“浮力课堂.md”，初稿探究5分钟/提议6分钟；审批前教师改7、刷新时再改8，原提议不覆盖。新明确任务实读8并重新批准保存9；后续实际写10后outcome前强退→uncertain→原卡只读核验，再生成中强退保留partial。当前文件移走/不可读不隐藏原两侧。双尺寸DPR1.5，0付费；首6及末项同根续测、失败现场归档。完整FX02/FX07/AT标准不缩。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 E02补充工程夹具：thinking-policy-smoke.mjs与thinking-electron.mjs使用官方格式effort元数据（low/high/max、仅low、明确空列表、缺字段、401），真实UI/SQLite/Pi配合合成SSE，仅记录模型/参数/预算。主路径1M窗口，64K误配失败保留为容量边界；不替代本节合成教学题、FX07历史成果与最终质量判定。证据manifest见AGENT_THINKING_E02_20261029.json。
 
 合成标题“浮力课堂安排”：导入2分钟、探究5分钟、检查3分钟，总10分钟；按任务分别生成DOCX/PDF/XLSX/PPTX/MD/TXT。思考设置任务：“解释漂浮时浮力与重力关系，不超过100汉字”。

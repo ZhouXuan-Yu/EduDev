@@ -1,0 +1,4 @@
+Error: Memory draft condition timed out
+    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs:5:159)
+    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs:12:2
+{"ok":false,"checks":0,"error":"Error: Memory draft condition timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs:5:159)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs:12:2","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-ko3hjR"}

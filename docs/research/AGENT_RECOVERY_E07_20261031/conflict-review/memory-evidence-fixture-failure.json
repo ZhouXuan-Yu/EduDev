@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "checks": [],
+  "errors": [],
+  "boundary": "Owned actual legacy memory navigation/typed IPC/SQLite, delayed real read responses only. No model requests, fake business responses or teacher files.",
+  "error": "page.evaluate: Error: Error invoking remote method 'aiMemory:createEntry': Error: L2 memory entry requires at least one evidence ref\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\memory-draft-refresh-electron.mjs:10:23"
+}

@@ -8,7 +8,12 @@ export type XiaozhiTextChange = {
   path: string; operation: XiaozhiChangeOperation; state: XiaozhiChangeState; revision: number;
   beforeSha256: string | null; afterSha256: string; diff: string; patch: string;
 };
-export type XiaozhiChangeReview = XiaozhiTextChange & { before: string | null; after: string };
+// On-demand local snapshot only: never an approval, persisted version or model payload.
+export type XiaozhiCurrentTextFile = { readAt: string } & (
+  | { state: 'readable'; content: string; sha256: string }
+  | { state: 'missing' }
+  | { state: 'unavailable'; reason: 'permission_denied' | 'too_large' | 'unsupported' | 'configuration' });
+export type XiaozhiChangeReview = XiaozhiTextChange & { before: string | null; after: string; currentFile?: XiaozhiCurrentTextFile };
 export type XiaozhiChangeSummary = Omit<XiaozhiTextChange, 'diff' | 'patch'>;
 export type XiaozhiChangeReviewInput = { sessionId: string; changeId: string };
 export type XiaozhiChangeError = 'file_writes_disabled' | 'invalid_input' | 'permission_denied' | 'conflict' | 'busy' | 'configuration';

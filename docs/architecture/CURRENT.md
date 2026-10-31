@@ -5,6 +5,12 @@
 知识库的层次、模块职责、数据契约、成熟复用选择、现有接缝与实施顺序统一见[整体架构](KNOWLEDGE_BASE.md)。当前K0待实施；SQLite/本地文件为真源，FTS5/LanceDB为派生层，保留Pi与原任务宿主。尚未证明自然几十GB质量、完整用户闭环和Windows交付。下列历史证据保留，不覆盖该知识库顺序。
 
 
+2026-11-01 记忆页最终协调：原detail为服务器读回，draft只保留不同文本；匹配读回的草稿释放。原typed IPC/version锁/SQLite均不变，5项正式UI通过。
+
+2026-11-01 C03：原MemoryGovernanceWorkspace分离server detail和teacher draft；原typed IPC/SQLite/version锁不变，零DDL。延迟真实读回UI4项通过。
+
+2026-11-01 E07：原text-change service→coordinator→typed change-review/preload→单文件/整包共用PiTextChangeCard可选本地currentFile对照，原before/after/账本不改。权限/版本仍由主进程裁定，缺失或不可读只影响当前快照，无新IPC/DDL/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 ## 2026-11-01 答案条目局部疑点与真实回写
 
 新答案册单元冻结 answer-entry-uncertainty.v2，六字段响应按完整试卷标题与原题号记录局部疑点；两遍任一疑点拦截对应条目，未知/歧义范围及原 pageIssues 仍整页拦截。无政策的旧 first_saved 保持原提示/schema。解析器发现的跨页/漏条等问题也进入页面待核与整页检索门禁，不能只相信模型 outcome。既有题面资格、原件/图片/两遍hash、关联身份、教师字段、journal/CAS不放宽；无新依赖、表或IPC。

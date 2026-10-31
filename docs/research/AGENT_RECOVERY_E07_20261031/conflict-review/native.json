@@ -1,0 +1,12 @@
+{
+  "ok": true,
+  "checks": [
+    "Approval-time and installation-time conflicts retain original/proposed/current contents; refresh is read-only and old approvals never apply",
+    "Missing/non-file/oversized/invalid UTF8 current targets retain historical sides, without truncation or false readable content",
+    "Moved parent directory does not hide original diff or proposal",
+    "Undo conflict exposes current file and never undoes teacher changes",
+    "Authority/session/hard-link guards remain; unauthorized current text cannot leak through review",
+    "Original coordinator conflict receipt asks for latest read; local current/before/proposed contents are not model payloads"
+  ],
+  "boundary": "Original Pi text edit algorithm, actual SQLite/files/authority, on-demand local conflict review. No model requests or UI; formal UI recorded separately."
+}

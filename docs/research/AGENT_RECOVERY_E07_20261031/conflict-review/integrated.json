@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "checks": [
+    "Integrated main/preload/renderer restore the same conflict/applied/interrupted records without false running",
+    "Same original card reads/refreshed current text in both native sizes with existing component style",
+    "Actual file/mtime/proposal/event hashes unchanged, zero model replay or renderer errors"
+  ],
+  "errors": [],
+  "boundary": "Final integrated build, same actual files/proposals/profile from completed seven Pi cases. Cold readback and existing review/refresh only, zero generation or model requests.",
+  "styles": {
+    "fontSize": "14px",
+    "fontFamily": "ui-sans-serif, system-ui, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+    "background": "rgba(0, 0, 0, 0)",
+    "color": "oklch(0.2103 0.0059 285.89)",
+    "height": "32px",
+    "width": 1920,
+    "dpr": 1.5,
+    "css": "button button--sm button--ghost"
+  },
+  "calls": [],
+  "sha256": "064558e6ef40cba6a0bb1eb9b45ff3e0749682f7bc56fb0aa618f2e07dd39223"
+}

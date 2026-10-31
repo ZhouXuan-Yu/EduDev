@@ -5,6 +5,12 @@
 本轮交付知识库[架构与退出门](../architecture/KNOWLEDGE_BASE.md)，未交付K0实现，完整Goal未完成。[基线证据](../research/KB_ARCHITECTURE_BASELINE_20261101.json)区分历史40GiB有限正文、新2次真实调用全待核及本轮docs-only范围；无性能改善/教师质量/安装包通过声明。下列历史测试仅归其原构建。
 
 
+2026-11-01 本轮整合收尾：main d80b9b5整合为594fc06，14处Markdown冲突完整保留双方，无生产冲突；记忆草稿补充cb36263仅在读回文字精确一致时释放已保存草稿，后续刷新显示新版本，不同值仍保留。最终build/type、240组件、正式记忆页5项、原同文件/提议冷启3项exit0；文件/mtime/事件及提议记录不重写，0模型重放/付费。一次综合回归的初始L2失败保留，修后只复验受影响项，不宣称207通过。源码6及正式Pi7仍归其原构建。下一功能E08 HTML/来源定位+C，再S/T；完整阶段AT/252仍待集中，Goal active；D盘日常/安装包未更新。精确构建指纹及证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice.lastIntegration。
+
+2026-11-01 同轮C03修复（7b650b2）：一次综合回归在真实L2教师编辑处失败，已保留首次日志/截图，不记207通过。loadL2/loadL3只读回已存数据，教师草稿独立保留；原版本锁不变。受影响项build/type、240组件和正式记忆页4项通过（延迟真实读回/L2及L3保存/旧版本冲突），0付费。下一功能E08通用HTML与来源定位+C，再S/T；剩余完整E07/252矩阵功能齐后集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+2026-11-01 E07：冲突三方对照/当前文件重读和新稿重新确认已贯通原Pi/typed IPC/审阅卡；实际生成中与保存后强退恢复亦有证据。源码6、组件240、正式Pi7及build/type通过，0付费，完整阶段AT仍待集中。日常进度见docs/goal/WORK_PROGRESS.md，证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
 ## 2026-11-01 答案条目局部疑点与真实回写
 
 本轮新增严格v2/旧first_saved/混用拒绝、局部范围唯一定位、任一遍疑点、全局保留、检索排除和SQLite正反回写专项；真实两次HTTP200完成22条及五题已知来源规范升级。最终各命令、通过/失败、构建与实际UI范围以 docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json 为准，不将源码控制夹具称自然识别正确性。完整Goal仍active：PDF图题原页证据归档、跨页补全、填空结构化冲突消解、自然几十GB长期稳定与召回/P95、真实教师/安装包验收尚未完成。D盘日常与安装包未更新。

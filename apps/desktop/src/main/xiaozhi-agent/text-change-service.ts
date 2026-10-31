@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { withFileMutationQueue } from '@earendil-works/pi-coding-agent';
-import type { XiaozhiChangeDecision } from '../../shared/xiaozhi-changes';
+import type { XiaozhiChangeDecision, XiaozhiChangeReview, XiaozhiCurrentTextFile } from '../../shared/xiaozhi-changes';
 import { authorizedWorkspace, approvedFile, workspaceHash } from './workspace-authority';
 import { prepareTextEdit, textProposalInput, changeText, MAX_CHANGE_BYTES } from './text-edit-proposal';
 import { changeHash, createTextChangeState, publicTextChange, type PrivateTextChange } from './text-change-state';
@@ -121,10 +121,25 @@ export function createTextChangeService(options: {
       }
       return publicTextChange(row);
     },
-    async review(sessionId: string, id: string) {
+    async review(sessionId: string, id: string): Promise<XiaozhiChangeReview> {
       const row = await owned(sessionId, id); const root = await authority(sessionId, row);
-      changeFile(root, row.path);
-      return { ...publicTextChange(row), before: row.before?.toString('utf8') ?? null, after: row.after.toString('utf8') };
+      let currentFile: XiaozhiCurrentTextFile | undefined;
+      if (row.state === 'conflict' || row.state === 'undo_conflict') {
+        const readAt = new Date().toISOString();
+        try {
+          // Keep historical before/after readable even when the current target
+          // disappeared or is no longer a supported, authorized text file.
+          fs.lstatSync(changeFile(root, row.path));
+          const bytes = read(root, row.path);
+          currentFile = bytes === null ? {readAt,state:'missing'} : {readAt,state:'readable',content:bytes.toString('utf8'),sha256:changeHash(bytes)};
+        } catch (error) {
+          const code = (error as NodeJS.ErrnoException).code, message = error instanceof Error ? error.message : '';
+          currentFile = ['ENOENT','ENOTDIR'].includes(code || '') || message === 'not_found' ? {readAt,state:'missing'}
+            : {readAt,state:'unavailable',reason:code === 'EACCES' || code === 'EPERM' || message === 'permission_denied' ? 'permission_denied'
+              : message === 'too_large' ? 'too_large' : message === 'unsupported' ? 'unsupported' : 'configuration'};
+        }
+      } else changeFile(root, row.path);
+      return { ...publicTextChange(row), before: row.before?.toString('utf8') ?? null, after: row.after.toString('utf8'), ...(currentFile ? {currentFile} : {}) };
     },
     async decision(input: XiaozhiChangeDecision) {
       if(input?.action==='approve'||input?.action==='undo')assertFileWritesEnabled();
