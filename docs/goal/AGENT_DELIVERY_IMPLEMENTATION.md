@@ -1,5 +1,13 @@
 # 小智交付能力实施合同
 
+## 2026-11-01 E08 通用HTML版本（实施前冻结）
+
+- M09/M11，推进E08-01/02/03/04/05/10：复用原text-change before/after账本、Pi编辑算法、mutation queue、Office版本typed IPC与同一历史组件。通用HTML的旧稿目前保存在修改账本，但旧卡打开同路径可能得到后续内容，缺版本选择和恢复。
+- 原账本增可选parent_change_id（增量幂等，无新表）；旧行按同授权目录/路径和创建顺序派生连续历史。新增main薄适配到原officeVersion契约，接受xichange身份，按需返回单份64KiB HTML；非HTML和领域产物不混入。新增HTML原卡当前打开/版本历史，旧版本明确来自账本，预览不执行文件写入；系统打开/定位历史时只在派生缓存制作精确副本，缓存不成为真源。
+- 教师明确恢复将所选字节另存新HTML，链接当时当前版本，后来各版及无关文件保留；原local settings owner、原text service提议/确认/保存与uncertain核验复用，command幂等，不发模型或沿用旧批准。当前文件被改/移走、跨会话/目录、忙碌、同名冲突、暂停写入均有反馈，不强行覆盖。相同内容不产生新版本。旧会话仍可读，回退前先保留新列读兼容，无破坏迁移。
+- UI沿edudev-design，复用既有PiOfficeVersions/ScienceDemoFrame/Button，不加新CSS或组件库。历史仅点击加载，不进入逐字流式工作；0新依赖/真实付费。一次源码SQLite/真实文件检查及正式Pi合成传输生成→局改→历史预览→恢复→旧卡当前版→改动/缺失→双尺寸/冷启，build/type、组件和必要关键路径检查。完整252AT及教学文件HTML目录/全部来源导航仍后续功能及阶段集中，不借本片标整组已实现。
+
+
 ## 2026-11-01 E07 冲突后的当前文件对照（实施前冻结）
 
 - M09/M10/M11，推进REQ-E07-09及E08来源/版本接缝。现text-change已保留before/after并阻止覆盖，但原审阅只返回历史两侧，不能直接对照教师手改后的当前文件；safeExecute冲突提示笼统要求另存。消费者为原service→coordinator→现有typed change-review IPC/preload→PiTextChangeCard，单文件/整包共用；不新增页面或Runtime。

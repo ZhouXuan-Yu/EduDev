@@ -7,6 +7,7 @@ import { useOfficeControlState } from './OfficeComposerState';
 import type { XiaozhiChangeDecision, XiaozhiChangeSummary, XiaozhiChangeReview, XiaozhiChangeError, XiaozhiChangeState } from '../../../shared/xiaozhi-changes';
 import './pi-text-changes.css';
 import {ScienceDemoFrame} from './ScienceDemoFrame';
+import {PiOfficeCurrent,PiOfficeVersions} from './PiOfficeVersions';
 
 const labels: Record<XiaozhiChangeState, string> = { pending: '需要你的确认', approved: '已批准，等待保存', executing: '正在保存',
   applied: '已保存并核验', rejected: '已拒绝，未写入', interrupted: '确认已失效，未继续写入', uncertain: '执行中断，需要核验',
@@ -85,10 +86,11 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
     </ChatTool.Content>
     <div className="pi-text-change-actions">
       {!pending&&<Button size="sm" variant="ghost" onPress={()=>setExpanded(value=>!value)} data-testid="pi-text-review-toggle">{expanded?'收起修改':'查看修改'}</Button>}
-      {change.state==='applied'&&<><Button size="sm" variant="ghost" onPress={()=>onOpen(change.path)} data-testid="pi-text-open">打开文件</Button><Button size="sm" variant="ghost" isDisabled={draft.busy||running} onPress={()=>void decide('undo')} data-testid="pi-text-undo">撤销</Button></>}
+      {change.state==='applied'&&<>{change.path.toLowerCase().endsWith('.html')?<PiOfficeCurrent sessionId={sessionId} artifactId={change.id} fallbackPath={change.path} onOpen={onOpen} testId="pi-text-open"/>:<Button size="sm" variant="ghost" onPress={()=>onOpen(change.path)} data-testid="pi-text-open">打开文件</Button>}<Button size="sm" variant="ghost" isDisabled={draft.busy||running} onPress={()=>void decide('undo')} data-testid="pi-text-undo">撤销</Button></>}
       {uncertain&&<Button size="sm" variant="ghost" isDisabled={draft.busy||running} onPress={()=>void decide('verify')} data-testid="pi-text-verify">核验现有文件</Button>}
       {draft.busy&&<span role="status">正在提交…</span>}
     </div>
+    {['applied','reverted'].includes(change.state)&&change.path.toLowerCase().endsWith('.html')&&<PiOfficeVersions sessionId={sessionId} artifactId={change.id} running={running} onOpen={onOpen} onRefresh={onRefresh}/>}
     {draft.error&&<p role="alert" data-testid="pi-text-error">{draft.error}<Button size="sm" variant="ghost" onPress={()=>void onRefresh()}>刷新状态</Button></p>}
   </ChatTool>;
 }

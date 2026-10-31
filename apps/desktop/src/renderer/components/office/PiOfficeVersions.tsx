@@ -3,6 +3,7 @@ import {Button} from '@heroui/react';
 import {History,FolderOpen,ExternalLink} from 'lucide-react';
 import {OFFICE_VERSIONS_SCHEMA,OFFICE_VERSION_ERRORS,type OfficeVersionView,type OfficeVersionInput} from '../../../shared/xiaozhi-office-versions';
 import './pi-office-versions.css';
+import {ScienceDemoFrame} from './ScienceDemoFrame';
 
 /** Resolve on click, so old chat cards never silently open an obsolete default. */
 export function PiOfficeCurrent({sessionId,artifactId,fallbackPath,onOpen,action='preview',label='打开当前文件',testId='pi-office-open',disabled=false}:{sessionId:string;artifactId:string;fallbackPath:string;onOpen:(path:string)=>void;action?:'preview'|'open'|'locate';label?:string;testId?:string;disabled?:boolean}){
@@ -12,7 +13,7 @@ export function PiOfficeCurrent({sessionId,artifactId,fallbackPath,onOpen,action
    const call=(id:string,op:'view'|'open'|'locate')=>window.omniEdu?.officeVersion({schemaVersion:OFFICE_VERSIONS_SCHEMA,sessionId,artifactId:id,action:op});
    let result=await call(artifactId,'view');if(current.current!==start)return;
    // Confirmed paper/classroom exports keep their original domain-owned preview.
-   if(result&&!result.ok&&result.error==='unsupported'&&action==='preview'){onOpen(fallbackPath);return;}
+   if(result&&!result.ok&&result.error==='unsupported'&&action==='preview'&&artifactId.startsWith('artifact_')){onOpen(fallbackPath);return;}
    if(!result?.ok)throw Error(result&&!result.ok?result.error:'configuration');
    const id=result.value.currentArtifactId;
    result=await call(id,action==='preview'?'view':action);if(current.current!==start)return;
@@ -32,10 +33,11 @@ export function PiOfficeCurrent({sessionId,artifactId,fallbackPath,onOpen,action
 export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRefresh}:{sessionId:string;artifactId:string;running?:boolean;onOpen:(path:string)=>void;onRefresh?:()=>Promise<void>}){
  const [open,setOpen]=useState(false),[view,setView]=useState<OfficeVersionView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[confirm,setConfirm]=useState(false);
  const epoch=useRef(0),lock=useRef(false),identity=`${sessionId}:${artifactId}`,current=useRef(identity),command=useRef<{key:string;id:string}|undefined>(undefined);current.current=identity;
+ const [preview,setPreview]=useState(false);
  useEffect(()=>{++epoch.current;lock.current=false;setOpen(false);setView(undefined);setBusy(false);setError('');setNotice('');setConfirm(false);command.current=undefined;return()=>{++epoch.current;};},[identity]);
  async function act(action:OfficeVersionInput['action']='view',id=view?.selectedArtifactId??artifactId){
   if(lock.current||action!=='view'&&running)return;
-  const stamp=++epoch.current;lock.current=true;setBusy(true);setError('');setNotice('');setConfirm(false);
+  const stamp=++epoch.current;lock.current=true;setBusy(true);setError('');setNotice('');setConfirm(false);setPreview(false);
   const address={schemaVersion:OFFICE_VERSIONS_SCHEMA,sessionId,artifactId:id};
   let input:OfficeVersionInput;
   if(action==='restore'){
@@ -61,13 +63,14 @@ export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRe
    {view&&<><p data-testid="office-versions-current">当前：第 {latest?.number} 版 · {latest?.path}</p>
     <label>查看版本<select value={view.selectedArtifactId} disabled={busy} onChange={event=>void act('view',event.target.value)} data-testid="office-version-select">{view.versions.map(v=><option key={v.artifactId} value={v.artifactId}>第 {v.number} 版 · {v.path}{v.artifactId===view.currentArtifactId?'（当前）':''}</option>)}</select></label>
     {selected&&<><p>{selected.title} · {selected.format.toUpperCase()} · {new Date(selected.savedAt).toLocaleString()} · {selected.size.toLocaleString()} 字节</p><p data-testid="office-version-change">{selected.change}</p></>}
-    <p data-testid="office-version-integrity" data-integrity={view.integrity}>{view.integrity==='same'?'本次核对：文件与保存记录一致；内容质量请查看原检查。':view.integrity==='missing'?OFFICE_VERSION_ERRORS.missing:OFFICE_VERSION_ERRORS.changed}</p>
+    <p data-testid="office-version-integrity" data-integrity={view.integrity}>{view.integrity==='same'?(view.historyBacking==='text_ledger'?'历史内容保存在原修改记录中；系统打开历史版会制作查看副本。':'本次核对：文件与保存记录一致；内容质量请查看原检查。'):view.integrity==='missing'?OFFICE_VERSION_ERRORS.missing:OFFICE_VERSION_ERRORS.changed}</p>
     <div className="pi-office-version-actions">
-     <Button size="sm" variant="secondary" isDisabled={busy||view.integrity!=='same'} onPress={()=>selected&&onOpen(selected.path)} data-testid="office-version-preview">预览此版</Button>
+     <Button size="sm" variant="secondary" isDisabled={busy||view.integrity!=='same'} onPress={()=>{if(view.htmlPreview)setPreview(true);else if(selected)onOpen(selected.path);}} data-testid="office-version-preview">预览此版</Button>
      <Button size="sm" variant="ghost" isDisabled={busy||running||view.integrity!=='same'} onPress={()=>void act('open')} data-testid="office-version-open"><ExternalLink size={14}/>系统打开</Button>
      <Button size="sm" variant="ghost" isDisabled={busy||running||view.integrity!=='same'} onPress={()=>void act('locate')} data-testid="office-version-locate"><FolderOpen size={14}/>定位</Button>
      <Button size="sm" variant="ghost" isDisabled={busy||running||!view.canRestore} onPress={()=>setConfirm(true)} data-testid="office-version-restore">恢复此版</Button>
     </div>
+    {preview&&view.htmlPreview&&<ScienceDemoFrame html={view.htmlPreview}/>}
     {confirm&&<div role="group" aria-label="确认恢复版本"><p>将第 {selected?.number} 版另存为新的当前版本，所有历史文件都会保留。</p><Button size="sm" variant="secondary" isDisabled={busy||running} onPress={()=>void act('restore')} data-testid="office-version-confirm">确认恢复为新版本</Button><Button size="sm" variant="ghost" onPress={()=>setConfirm(false)}>取消</Button></div>}
    </>}
    <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void act()} data-testid="office-versions-refresh">刷新历史</Button>
