@@ -31,6 +31,7 @@ try{
  const {applyXiaozhiEvent}=await server.ssrLoadModule('/src/shared/xiaozhi-projection.ts');
  const {createPiTextViewBuffer,piTextViewEvent}=await server.ssrLoadModule('/src/renderer/components/office/pi-text-view-buffer.ts');
  const {AgentProcess}=await server.ssrLoadModule('/src/renderer/components/office/AgentProcess.tsx');
+ const {OfficeModelRequestNotice}=await server.ssrLoadModule('/src/renderer/components/office/OfficeModelRequestNotice.tsx');
  const base=()=>({id:'run',status:'running',items:[]});
  await check('untagged prose is not a timed public execution activity',()=>{
    let turn=base();for(const event of [{kind:'assistant_start',segment:1},{kind:'text_delta',delta:'普通正文',capturedAt:1000},{kind:'assistant_end',segment:1,final:true,since:5000}])turn=applyXiaozhiEvent(turn,event);
@@ -83,6 +84,44 @@ try{
    const render=turn=>React.act(async()=>root.render(React.createElement(AgentProcess,{turn,sessionId:'s'})));
    try{await render(active);await render({...active,status});const trigger=host.querySelector('[data-testid="agent-trace-toggle"]');assert.equal(trigger.getAttribute('aria-expanded'),'true');assert.equal(host.querySelector('[data-testid="agent-trace"]').getAttribute('data-thinking'),'settled');assert(host.querySelector('[data-testid="agent-trace-timeline"]'));}
    finally{await React.act(async()=>root.unmount());}
+ });
+ const request=(request,state='accepted',patch={})=>({schemaVersion:1,request,attempt:1,state,at:1000+request,...(state==='accepted'?{status:200}:{}),...patch});
+ await check('three normal model requests use one collapsed titled card without a duplicate connection heading',async()=>{
+   const host=document.getElementById('root'),root=createRoot(host);
+   try{
+     await React.act(async()=>root.render(React.createElement(OfficeModelRequestNotice,{turn:{...base(),modelRequests:[request(1),request(2),request(3)]}})));
+     const trigger=host.querySelector('button[data-slot="disclosure-trigger"]');
+     assert.equal(trigger.textContent,'模型请求记录（3）');assert.equal(trigger.getAttribute('aria-expanded'),'false');
+     assert.equal(host.querySelectorAll('button[data-slot="disclosure-trigger"]').length,1);
+     assert.equal(host.querySelectorAll('strong').length,0);
+     assert(!host.textContent.includes('连接尝试'));assert(!host.textContent.includes('查看请求与重试记录'));
+     await press(trigger);assert.equal(trigger.getAttribute('aria-expanded'),'true');
+     assert.equal(host.querySelectorAll('li[data-request]').length,3);
+     assert(host.textContent.includes('HTTP响应不代表任务完成'));
+     await press(trigger);assert.equal(trigger.getAttribute('aria-expanded'),'false');
+   }finally{await React.act(async()=>root.unmount());}
+ });
+ await check('real retry wait remains visible in the collapsed trigger with its original stop guidance and details',async()=>{
+   const host=document.getElementById('root'),root=createRoot(host);
+   try{
+     const row=request(1,'retry_wait',{status:503,waitMs:3000});
+     await React.act(async()=>root.render(React.createElement(OfficeModelRequestNotice,{turn:{...base(),modelRequests:[row],modelRequestsOmitted:2}})));
+     const trigger=host.querySelector('button[data-slot="disclosure-trigger"]');
+     assert.match(trigger.textContent,/模型请求记录（3）/);assert.match(trigger.textContent,/等待重试（1\/2）/);assert.match(trigger.textContent,/约 3 秒后尝试/);
+     assert.equal(trigger.getAttribute('aria-expanded'),'false');
+     await press(trigger);assert(host.textContent.includes('可用下方停止按钮结束本轮'));assert(host.textContent.includes('HTTP 503'));assert(host.textContent.includes('等待 3000 毫秒'));assert(host.textContent.includes('较早 2 次尝试未在此展开'));
+   }finally{await React.act(async()=>root.unmount());}
+ });
+ await check('real model rejection/interruption stays visible while normal single success remains hidden',async()=>{
+   const host=document.getElementById('root'),root=createRoot(host);
+   try{
+     for(const [state,expected] of [['rejected','服务拒绝了本次请求'],['interrupted','本次尝试已停止']]){
+       await React.act(async()=>root.render(React.createElement(OfficeModelRequestNotice,{turn:{...base(),status:'failed',modelRequests:[request(1,state,{status:503})]}})));
+       const trigger=host.querySelector('button[data-slot="disclosure-trigger"]');assert(trigger.textContent.includes(expected));assert(trigger.textContent.includes('HTTP 503'));
+     }
+     await React.act(async()=>root.render(React.createElement(OfficeModelRequestNotice,{turn:{...base(),modelRequests:[request(1)]}})));
+     assert.equal(host.querySelector('[data-testid="office-model-requests"]'),null);
+   }finally{await React.act(async()=>root.unmount());}
  });
  assert.deepEqual(domErrors,[],'actual component interaction must produce no DOM errors');
  console.log(JSON.stringify({suite:'u1-review-regressions',passed}));
