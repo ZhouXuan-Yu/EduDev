@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Stop before terminal commit repairs actual messages/runs/commands/usage and emits no completed event",
+      "pass": true
+    },
+    {
+      "name": "Stop write terminal commit repairs actual messages/runs/commands/usage and emits no completed event",
+      "pass": true
+    },
+    {
+      "name": "Stop commit terminal commit repairs actual messages/runs/commands/usage and emits no completed event",
+      "pass": true
+    },
+    {
+      "name": "A cancellation repair failure rolls back original terminal and partial repairs",
+      "pass": true
+    },
+    {
+      "name": "A superseded owner cannot repair another run or touch old teacher facts",
+      "pass": true
+    }
+  ],
+  "scope": "Actual local SQLite transactions, current journal/publisher and cancellation adapter; controlled stop timing, not provider/UI evidence."
+}

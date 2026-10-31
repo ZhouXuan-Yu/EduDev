@@ -1,0 +1,66 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Native binding is immutable, additive and private",
+      "pass": true
+    },
+    {
+      "name": "Intent and public start share one transaction; success before durable admission is refused",
+      "pass": true
+    },
+    {
+      "name": "Admission cannot change call, tool, generation or duplicate a delivery",
+      "pass": true
+    },
+    {
+      "name": "Settled receipt digest and public tool end commit atomically, exact retry remains idempotent",
+      "pass": true
+    },
+    {
+      "name": "Exact native ID/digest is associated; public recovery excludes private body/binding/native fields",
+      "pass": true
+    },
+    {
+      "name": "Later native ID or body mutation conflicts and cannot reset the captured receipt",
+      "pass": true
+    },
+    {
+      "name": "Tool settled then host interruption preserves result evidence but never completes the task",
+      "pass": true
+    },
+    {
+      "name": "Undelivered planned operation is never sent or effect-checked on recovery",
+      "pass": true
+    },
+    {
+      "name": "Effect already exists but tool-end/native result absent is read-only reconciled, not replayed",
+      "pass": true
+    },
+    {
+      "name": "Unknown effect stays needs_check and cannot become recorded from an empty native tail",
+      "pass": true
+    },
+    {
+      "name": "A real receipt insert failure rolls back public event/outbox and closes future delivery",
+      "pass": true
+    },
+    {
+      "name": "Recovery receipt, public recovery event and terminal projection roll back together",
+      "pass": true
+    },
+    {
+      "name": "Public schema refuses extra private fields and automatic action replay",
+      "pass": true
+    },
+    {
+      "name": "Database construction defers native root until recovery, after constructor authority exists",
+      "pass": true
+    },
+    {
+      "name": "Prototype receipt migration retains nullable unknown admission, never fabricates proof of non-delivery",
+      "pass": true
+    }
+  ],
+  "scope": "Actual SQLite transactions, owner admission, receipt and recovery negatives; controlled readback callbacks, not actual main crash/provider/UI"
+}

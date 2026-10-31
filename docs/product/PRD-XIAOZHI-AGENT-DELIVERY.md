@@ -393,9 +393,9 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
 | REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 待验收 |
 | REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 待验收 |
-| REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 待验收 |
-| REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 待验收 |
-| REQ-E07-08 | 幂等恢复 | 每个真实写入只发生一次；相同调用返回既有回执；新任务有新身份且不复用旧批准 | [AT-E07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-08) | 待验收 |
+| REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：恢复后冷启读回已实现，完整强制中断矩阵待集中（c61bd4e；recordRecoverySlice） |
+| REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
+| REQ-E07-08 | 幂等恢复 | 每个真实写入只发生一次；相同调用返回既有回执；新任务有新身份且不复用旧批准 | [AT-E07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-08) | 部分实现：重复读回幂等及原任务显式接续已实现，完整重复调用矩阵待集中（c61bd4e；recordRecoverySlice） |
 | REQ-E07-09 | 版本冲突 | 报告冲突并保留两侧内容；不覆盖教师修改；重新提议需读取最新版本 | [AT-E07-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-09) | 待验收 |
 | REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 待验收 |
 

@@ -1,0 +1,26 @@
+{
+  "ok": false,
+  "checks": [],
+  "errors": [],
+  "boundary": "Owned formal Electron/Pi composer, actual local text generation/teacher publication, SQLite storage fault, explicit refresh/continuation and cold readback; synthetic local SSE only, zero real provider calls. Not full E07 AT.",
+  "failedRun": "run_6fc483f8-0a76-4887-80d7-6c1ae325c20e",
+  "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-ZvoKt2\\XiaozhiOutputs\\5af7173ea42492d0\\aisession_5f528ccb-1781-456f-ac86-85d2cc5b5baf\\浮力恢复.html",
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(await input().isDisabled())\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-electron.mjs:37:149",
+  "calls": [
+    {
+      "mode": "create",
+      "n": 0,
+      "tool": "update_task_plan"
+    },
+    {
+      "mode": "create",
+      "n": 1,
+      "tool": "office_create_text"
+    },
+    {
+      "mode": "create",
+      "n": 2,
+      "tool": null
+    }
+  ]
+}

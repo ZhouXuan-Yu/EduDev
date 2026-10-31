@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+2026-11-01 E07：沿原journal、取消修复、task coordinator加单轮在线恢复；复用实际executing计数及配置锁，追加publisher结束栅栏，不加执行器。仅在原账本核对后清runtime失败标记，读回不执行工具或继承批准。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 ## 2026-10-31 原页题面与提示版本
 
 新原页单元冻结page-restoration.v2及真实OCR状态；旧first_saved沿原提示。完整stem必须含选项、小问、表格和公式，projection不能代替规范题面；parser只临时识别已声明原文编号，不改原回执。真实缺图/跨页/不清晰继续待核。ai_final仅表示当前AI原页证据资格，不是教师确认或数学正确性保证。回退保留新单元严格读适配，不让未知旧provider静默恢复。详见docs/research/KB_PAGE_PROMPT_20261031.json。

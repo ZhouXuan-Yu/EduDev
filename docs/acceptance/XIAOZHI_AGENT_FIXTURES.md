@@ -177,6 +177,8 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 
 ## FX10：边界与故障
 
+2026-11-01 E07补充：独立OS临时根，本地合成SSE驱动原Pi任务/真实HTML批准，SQLite BEFORE INSERT在正文/verification落账持续拒绝。故障下再读仍阻断；撤触发器后核对同run/task及文件hash，显式新run接续、双尺寸/冷启7项。源码另覆盖hash/序列缺口、回滚、晚回调、其他会话和幂等；账本5涵盖默认产物与独立Office输出目录。初始夹具失败及实际目录缺陷保留；不替代完整FX10。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 2026-10-31 E07补充执行记录：隔离正式Electron/Pi以本地net.fetch返回503→200、500三次、401/402/长429、503等待停止及200正文ReadableStream断流；不碰实际provider/真实教师文件。源码/任务SQLite及新run同task/version、双尺寸/冷启见docs/research/AGENT_RECOVERY_E07_20261031.json。这是工程故障路径，不替换本夹具其余故障和完整AT。
 
 按契约L−1/L/L+1制作样本：文本/HTML沿现64KiB UTF8、普通Office草稿256KiB、Office产物16MiB。需要提升必须升契约并同步上限/错误/恢复/夹具，不能随意扩限。UTF8字节不等于字符数。

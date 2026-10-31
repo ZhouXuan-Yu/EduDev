@@ -1,0 +1,10 @@
+(node:53044) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Actual teacher approval saves original HTML before a real SQLite journal failure; failed turn and unsent draft remain visible
+PASS Still failing storage keeps the original page blocked and does not replay model, approval or file effects
+PASS Visible explicit refresh repairs the same journal/task after storage returns, rechecks the actual saved HTML, and clears the composer block without replay
+PASS Repeated recovery is idempotent with no duplicate event, new run or file write
+PASS Teacher prepares and explicitly sends one continuation under the original task/version, preserves a prior draft, and does not regenerate the saved file
+PASS Original failed turn and continuation controls remain reachable in both required viewports
+PASS Cold actual application restores repaired task/error/receipts and unchanged file/event hashes with zero replay or renderer errors
+{"ok":true,"checks":7,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-6GJIx4"}

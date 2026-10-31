@@ -114,9 +114,9 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       if (!active.current || token !== hydration.current!.token() || revision !== hydration.current!.revision() || snapshotRef.current !== merged) return false;
       viewBuffer.current!.acknowledge(current, previous?.projection);
       if (settings?.ok) setModels(settings.value);
-      if (!current.eventPersistence && !current.projection.needsHydration) eventReceiver.current?.seed(current.eventCursors || []);
+      if (!current.eventPersistence && !current.projection.needsHydration) eventReceiver.current?.seed(current.eventCursors || [],true);
       for (const cursor of current.eventCursors || []) sequences.current.set(cursor.runId, Math.max(sequences.current.get(cursor.runId) || 0, cursor.sequence));
-      if (current.eventPersistence === 'unavailable') setNotice('本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。');
+      if (current.eventPersistence === 'unavailable') setNotice(XIAOZHI_ERRORS.event_persistence);
       const turn = current.projection.turns.at(-1);
       if (turn && current.running) sequences.current.set(turn.id, Math.max(sequences.current.get(turn.id) || 0, current.projection.sourceSequence));
       setRefreshFailed(false);
@@ -147,7 +147,15 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   },[permissionMode,id,snapshot?.approvals,syncBlocked]);
   async function refreshCurrent(){
     if(refreshing.current)return;const target=idRef.current,token=hydration.current!.token();setHydrating(true);
-    try{await hydrate(target);}catch{if(active.current&&hydration.current!.token()===token)setRefreshFailed(true);}
+    const failed=Boolean(snapshotRef.current?.eventPersistence)||eventReceiver.current?.synchronization()==='unavailable';
+    try{
+      const result=await window.omniEdu?.refreshXiaozhiRecords(target);
+      if(!active.current||hydration.current!.token()!==token)return;
+      await hydrate(target);
+      if(!active.current||hydration.current!.token()!==token)return;
+      if(!result?.ok)setNotice(result&&result.error==='busy'?'上一轮执行仍在结束，请稍后重新读取记录。':result?XIAOZHI_ERRORS[result.error]:'无法刷新本地会话，请重试。');
+      else if(failed&&!snapshotRef.current?.eventPersistence)setNotice('已重新核对本地记录。已保存的成果会保留，请核对后继续任务。');
+    }catch{if(active.current&&hydration.current!.token()===token)setRefreshFailed(true);}
     finally{if(active.current&&hydration.current!.token()===token)setHydrating(false);}
   }
   function applyProjectedEvent(event: XiaozhiAgentEvent, throughSequence = event.sequence) {
@@ -283,7 +291,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       list: input => { if (!window.omniEdu) return Promise.reject(Error('configuration')); return window.omniEdu.listXiaozhiEvents(input); },
       apply: applyEvent,
       syncChanged: state=>{if(live)setEventSync(state);},
-      unavailable: () => { if (live) { viewBuffer.current!.flush(); setNotice('本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。'); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
+      unavailable: () => { if (live) { viewBuffer.current!.flush(); setNotice(XIAOZHI_ERRORS.event_persistence); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
       gapFailure: () => { if (live) { viewBuffer.current!.flush(); if (!hydration.current!.hasFailed()) void hydrate(idRef.current).catch(()=>undefined); } },
     });
     eventReceiver.current = receiver;

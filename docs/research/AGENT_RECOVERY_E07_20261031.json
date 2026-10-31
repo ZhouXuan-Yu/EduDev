@@ -222,5 +222,160 @@
     "merge": "origin/main already ancestor; no conflicts",
     "verification": "git ls-remote origin refs/heads/main refs/heads/codex/hana-answer-quality both exactly matched HEAD"
   },
-  "evidenceArchive": "Tracked copies of command logs normalize trailing whitespace only so git diff --check passes; original command logs retained unchanged in the OS temp paths."
+  "evidenceArchive": "Tracked copies of command logs normalize trailing whitespace only so git diff --check passes; original command logs retained unchanged in the OS temp paths.",
+  "recordRecoverySlice": {
+    "date": "2026-11-01",
+    "status": "Engineering slice implemented; full E07/252 AT pending",
+    "sourceCommit": "c61bd4ee89e65f2e114dc74070f9b4733e4553fd",
+    "baseCommit": "6bd287af5990118bb8529876f3d33a3f4a6ccaf3",
+    "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "scope": [
+      "E07-07 explicit record refresh repair",
+      "E07-06/08 saved-effect/idempotent continuation seam"
+    ],
+    "implementation": [
+      "Original failure map retains run; refresh waits execute, late publisher COMMIT/correction chain and actual Hana execution count. Existing configuration lock excludes new dispatch in that session. No other-session recovery.",
+      "Failed-owner transaction verifies original event identity/hash/sequence/cursor in pages128, reconciles original native/effect receipts, repairs failed/event_recovered plus message/run/command/usage/goal. Original coordinator recovers task; clear runtime fence only after persisted state matches.",
+      "Typed refreshXiaozhiRecords -> guarded records-refresh IPC -> existing button; healthy authoritative snapshot clears persistence overlay, unresolved event gaps still block.",
+      "Readback resolves current original Office output grant or legacy folder, else existing app-owned output location without creating directories. Original ledger/file digest and bounded read remain; changed/missing files stay uncertain.",
+      "No model/tool/approval replay, no publisher revival, no new runtime/DDL/dependency; old events compatible."
+    ],
+    "tests": {
+      "boundaries": {
+        "command": "node scripts/xiaozhi-agent/record-recovery-boundaries.mjs",
+        "passed": 9,
+        "exit": 0
+      },
+      "readback": {
+        "command": "node scripts/xiaozhi-agent/record-recovery-readback.mjs",
+        "passed": 5,
+        "exit": 0
+      },
+      "nativeReceipts": {
+        "command": "node scripts/xiaozhi-agent/pi-tool-receipt-boundaries.mjs",
+        "passed": 15,
+        "exit": 0
+      },
+      "cancellation": {
+        "command": "node scripts/xiaozhi-agent/pi-terminal-cancellation-boundaries.mjs",
+        "passed": 5,
+        "exit": 0
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/record-recovery-electron.mjs",
+        "passed": 7,
+        "exit": 0
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "scope": "final source includes generated-output readback; includes tsc --noEmit"
+      },
+      "typecheck": {
+        "command": "npx tsc --noEmit",
+        "exit": 0,
+        "scope": "standalone before generated-output fix; final build typechecks final source"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0,
+        "scope": "same final renderer; before main-only readback fix"
+      },
+      "smoke": {
+        "command": "npm run test:smoke",
+        "passed": 207,
+        "total": 207,
+        "exit": 0,
+        "scope": "one legacy launch before generated-output fix; out rebuilt while suite still alive, not immutable final-build replay. Final Pi7/readback5 cover final repair. No full-suite repeat."
+      }
+    },
+    "failureHistory": [
+      "SQLite corruption fixture deleted FK parent before outbox; owned fixture fixed, source9 passes.",
+      "Readback fixture lacked core confirmation table; owned core schema fixed, readback5 passes.",
+      "Initial UI expected textarea disabled although draft editing intentionally remains; corrected to assert sending blocked.",
+      "Second UI exposed actual generated-directory omission: native matched but effect uncertain; original resolver wired, final Pi7 passes."
+    ],
+    "build": {
+      "main/index.js": {
+        "bytes": 3326221,
+        "sha256": "7f497dc20883bc31c58c152460b116d201d3db1de57cc6d667ef999a9f568ba3",
+        "deltaBytes": 6754
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51",
+        "deltaBytes": 93
+      },
+      "renderer/assets/index-DkLti_dg.js": {
+        "bytes": 7259797,
+        "sha256": "7db874113edfd890c90d4f8b8e71b5355661f47b916ef0c5dbc9e7ec2794fe80",
+        "deltaBytes": 888
+      }
+    },
+    "performance": "Entry-size comparison only, no paired latency/P95/RAM benchmark or broad performance claim.",
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "total": 45,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "critical": 0,
+      "action": "existing advisories retained; no automatic upgrades"
+    },
+    "limits": [
+      "Full E07/252 AT remain stage-concentrated; complete AT newly implemented=0.",
+      "Actual held-tool busy path inspected through existing registry; publisher late-settlement tested at source, no new UI held-tool fixture.",
+      "No fresh-generation forced kill or full abrupt-crash matrix in this slice.",
+      "Existing UI-contract/fingerprint gates not repaired/rerun; no provider/teacher quality claim.",
+      "D daily runtime and installer unchanged."
+    ],
+    "paidRequests": 0,
+    "archive": "docs/research/AGENT_RECOVERY_E07_20261031/record-recovery",
+    "rollback": "Coordinate active work, then revert source commit; retains original files/journal/task lineage and original restart path. No DDL/downmigration. Full rollback not exercised.",
+    "lastIntegration": {
+      "commit": "ae18b8574656e966561edd036705c74f23ab656b",
+      "upstream": "c4cd89c",
+      "markdownConflicts": 13,
+      "resolution": "Preserved both current recovery and collaborator knowledge-base records; no production code conflict. Imported main has 10 material/OCR files; own recovery code unchanged.",
+      "build": {
+        "main/index.js": {
+          "bytes": 3331703,
+          "sha256": "a674d7d3f6dc1f0a19a7517c33591c5429bccd6ccda31ffa63525a26920a2789"
+        },
+        "preload/index.cjs": {
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        "renderer/assets/index-DkLti_dg.js": {
+          "bytes": 7259797,
+          "sha256": "7db874113edfd890c90d4f8b8e71b5355661f47b916ef0c5dbc9e7ec2794fe80"
+        }
+      },
+      "tests": {
+        "buildAndType": {
+          "command": "npm --prefix apps/desktop run build",
+          "exit": 0
+        },
+        "renderer": {
+          "command": "npm --prefix apps/desktop run test:renderer-components",
+          "passed": 240,
+          "exit": 0
+        },
+        "coldReadback": {
+          "command": "node docs/research/AGENT_RECOVERY_E07_20261031/record-recovery/integration-readback.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-6GJIx4",
+          "passed": 3,
+          "exit": 0,
+          "modelOrToolRequests": 0,
+          "rendererErrors": 0,
+          "report": "docs/research/AGENT_RECOVERY_E07_20261031/record-recovery/integration-readback.json"
+        }
+      },
+      "fixtureFailure": "First read-only fixture indexed sorted task session pointer as full task. Changed to exact task-key lookup; final3 passes, durable records unchanged. Initial failure archived.",
+      "limits": "No repeat of full legacy207 or original Pi7; original Pi7 belongs source c61bd4e, final integrated cold3 proves existing task/file/event facts. D daily/installer unchanged, full252AT0."
+    }
+  }
 }

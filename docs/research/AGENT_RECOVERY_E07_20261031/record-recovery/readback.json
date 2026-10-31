@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "checks": [
+    "Generated text without any explicit folder grant matches original applied ledger and bytes",
+    "Edited/missing generated text remains uncertain and is never overwritten",
+    "Office recovery uses the original separate export directory and real artifact fact",
+    "Changing the export directory cannot confirm an old file through a new grant",
+    "Missing generated output directory is not recreated by a readback"
+  ],
+  "boundary": "Actual native SQLite private ledgers and original teacher-confirmed local file services. No provider or formal UI."
+}

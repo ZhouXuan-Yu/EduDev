@@ -5,7 +5,7 @@ import type { XiaozhiMemoryScope } from './xiaozhi-memory';
 import type { XiaozhiSkill } from './xiaozhi-skills';
 import type { XiaozhiChangeSummary } from './xiaozhi-changes';
 import type { OfficeArtifactSummary } from './xiaozhi-office-artifacts';
-export type XiaozhiAgentError = 'invalid_input' | 'busy' | 'configuration' | 'event_persistence' | 'authentication'
+export type XiaozhiAgentError = 'invalid_input' | 'busy' | 'configuration' | 'event_persistence' | 'event_recovered' | 'authentication'
   | 'rate_limited' | 'insufficient_balance' | 'provider_unavailable' | 'timeout' | 'transport' | 'cancelled' | 'model_error' | 'goal_stalled' | 'goal_review_extended' | 'command_conflict' | 'permission_denied' | 'workspace_locked' | 'budget_exhausted' | 'nothing_to_compact' | 'context_limit' | 'compaction_failed' | 'memory_scope_changed' | 'skill_source_changed' | 'skill_scope_changed' | 'attachment_changed';
 export type XiaozhiModelCapabilities = { id: string; name: string; contextWindow: number; maxOutputTokens: number;
   /** Absent in older catalogues means unknown, never an inferred image grant. */

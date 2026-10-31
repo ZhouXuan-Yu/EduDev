@@ -1,5 +1,7 @@
 # 当前产品方向
 
+2026-11-01 E07落账失败原地恢复工程已实现（c61bd4e）：真实文件已保存后journal失败，重新读取会等待旧执行/数据库回调及实际工具归零，核对原事件、native与文件账本后修复原run/task并解除阻断；不重放模型/工具/审批。默认生成目录与独立Office导出目录纳入原效果核对，改动/缺失仍uncertain。 完整REQ-E07-06/07/08仍部分实现，完整AT0。草稿可编辑，发送/确认暂停；恢复后由教师显式继续。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 ## 2026-10-31 原页题面与提示版本
 
 新原页单元冻结page-restoration.v2及真实OCR状态；旧first_saved沿原提示。完整stem必须含选项、小问、表格和公式，projection不能代替规范题面；parser只临时识别已声明原文编号，不改原回执。真实缺图/跨页/不清晰继续待核。ai_final仅表示当前AI原页证据资格，不是教师确认或数学正确性保证。回退保留新单元严格读适配，不让未知旧provider静默恢复。详见docs/research/KB_PAGE_PROMPT_20261031.json。

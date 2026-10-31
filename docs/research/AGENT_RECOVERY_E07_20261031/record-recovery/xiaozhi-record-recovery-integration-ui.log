@@ -1,0 +1,3 @@
+(node:25208) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"ok":false,"checks":0,"error":"TypeError: Cannot read properties of undefined (reading 'id')\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/docs/research/AGENT_RECOVERY_E07_20261031/record-recovery/integration-readback.mjs:14:268","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-6GJIx4"}

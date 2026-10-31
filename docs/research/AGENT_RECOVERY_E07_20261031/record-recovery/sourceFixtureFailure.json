@@ -1,0 +1,10 @@
+{
+  "ok": false,
+  "checks": [
+    "One failed run repairs committed partial text and run/message/usage/command while another live owner stays unchanged",
+    "Late completed commit is conservatively corrected without accepting completion",
+    "Still unwritable recovery rolls back all repairs; writable retry succeeds once"
+  ],
+  "boundary": "Actual SQLite journal and original terminal repair; native/effect readback controlled; zero provider calls. Formal UI evidence separate.",
+  "error": "Error: FOREIGN KEY constraint failed\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-boundaries.mjs:30:720\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-boundaries.mjs:17:30)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-boundaries.mjs:30:35"
+}

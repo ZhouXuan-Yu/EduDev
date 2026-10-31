@@ -1,0 +1,8 @@
+{
+  "ok": false,
+  "checks": [],
+  "errors": [],
+  "requests": [],
+  "scope": "Read-only user actions on the same owned previously passed file/task after main integration; no model/tool dispatch, no user directories.",
+  "error": "TypeError: Cannot read properties of undefined (reading 'id')\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/docs/research/AGENT_RECOVERY_E07_20261031/record-recovery/integration-readback.mjs:14:268"
+}

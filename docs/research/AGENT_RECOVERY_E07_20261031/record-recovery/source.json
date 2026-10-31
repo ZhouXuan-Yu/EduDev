@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "checks": [
+    "Failed publisher settlement waits for the original late callback and never revives it",
+    "One failed run repairs committed partial text and run/message/usage/command while another live owner stays unchanged",
+    "Late completed commit is conservatively corrected without accepting completion",
+    "Still unwritable recovery rolls back all repairs; writable retry succeeds once",
+    "Corrupt hash cannot be acknowledged or repaired",
+    "Corrupt gap cannot be acknowledged or repaired",
+    "Original receipt readback preserves saved bytes and uncertain effects without automatic replay",
+    "Superseded journal owner cannot recover or alter its replacement",
+    "Authoritative healthy seed clears persistence failure; unresolved gaps still block"
+  ],
+  "boundary": "Actual SQLite journal and original terminal repair; native/effect readback controlled; zero provider calls. Formal UI evidence separate."
+}
