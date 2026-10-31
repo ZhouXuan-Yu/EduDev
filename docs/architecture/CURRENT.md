@@ -1,5 +1,7 @@
 # 当前架构
 
+收尾实测：正常整合main0723242为b35b5fc，4处根Markdown冲突完整保留双方记录，终态源码与ec55ac2一致。最终合并build/type、240组件及同文件精简回复/双视口/冷启3项均exit0，0renderer；原混合UI9项归技术信息精简前构建；一轮综合207/207归整合前界面（legacy Pi0，观测到的主进程入口哈希与最终入口相同），没有重复全套。主进程3247835→3257529B（+9694B），本切片无renderer改动；合并renderer变大来自上游工作台。无配对时延/P95，不宣称性能不退化。Goal active，完整252AT新增已实现0，E06仍部分实现；D盘日常/安装包未更新，audit45保留。下一E07/E08+C功能对齐，E06语义/FX09矩阵与W3集中AT继续保留。回退ec55ac2保留成果/记录，无迁移，未演练。
+
 ## 2026-10-31 E06逐文件混合终态（第九切片）
 
 新增main-only delivery-final派生器；既有四类账本只读按run过滤，Bundle ref覆盖carried旧run子项，实际检查刷新版本。终态沿原final_answer/content/publicItems进typed preload/renderer/冷启，不改IPC/数据格式，不新增业务表或依赖。

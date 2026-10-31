@@ -1,5 +1,7 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-10-31 E06混合终态工程已实现：逐文件保存/失败/未检查、只续做PPT、carried HTML不重写、最终精简回复与冷启已取证。完整AT仍未执行，标准不变；最终build/type240+原Pi同文件3通过，初版原Pi9/综合207单列。证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 E06逐文件混合终态（第九切片）
 
 REQ/AT-E06-09/10工程补充：逐文件实际保存与检查终态、混合冲突/续做carried和冷启取证；完整AT仍未执行，标准保持。精简教师回复最终续测待补；进度见WORK_PROGRESS，证据terminalSlice。

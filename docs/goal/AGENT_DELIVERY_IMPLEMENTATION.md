@@ -1,5 +1,7 @@
 # 小智交付能力实施合同
 
+2026-10-31 E06混合终态工程已实现：逐文件保存/失败/未检查、只续做PPT、carried HTML不重写、最终精简回复与冷启已取证。完整AT仍未执行，标准不变；最终build/type240+原Pi同文件3通过，初版原Pi9/综合207单列。证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；日常进度WORK_PROGRESS.md。
+
 执行入口为 `XIAOZHI_AGENT_DELIVERY_GOAL.md` 及其四份规格；唯一进度入口仍是 `WORK_PROGRESS.md`。本文件保存具体切片设计，不替代验收记录。2026-10-29 启动 W0/W1，所有 REQ/AT 仍待阶段集中验收。
 
 ## W0 / E01 默认文件能力

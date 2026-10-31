@@ -1,5 +1,7 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-10-31 E06混合终态工程已实现：逐文件保存/失败/未检查、只续做PPT、carried HTML不重写、最终精简回复与冷启已取证。完整AT仍未执行，标准不变；最终build/type240+原Pi同文件3通过，初版原Pi9/综合207单列。证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 五三题册与独立答案册第一切片
 
 实际93页已终结：91complete、2needs_review、0failed/0pending；待核为主书61和答案30，目视均为广告，主书62仍是真题。关联/解除/答案角色/两尺寸/重启正式Electron4项通过，0renderer/云端。原导入测试误带2张生成封面PNG，不能将其4文件结果称为2本原始文件；15分钟harness超时及首次调整尺寸后资料页消失失败保留，最终重跑通过但导航根因未确认。
