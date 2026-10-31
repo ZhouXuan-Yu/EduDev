@@ -29,7 +29,7 @@ export function EduShell({
   headerTestId?: string;
   navigationResizable?: boolean;
 }) {
-  const [navWidth, setNavWidth] = useState(() => readColumnWidth('xiaozhi.ui.navWidth.v1', 224, 170, 360));
+  const [navWidth, setNavWidth] = useState(() => readColumnWidth('xiaozhi.ui.navWidth.v1', 248, 200, 360));
   useEffect(() => { writeColumnWidth('xiaozhi.ui.navWidth.v1', navWidth); }, [navWidth]);
   const contract = PAGE_CONTRACTS.find((p) => p.id === view)!;
   return (
@@ -44,12 +44,11 @@ export function EduShell({
       style={{'--edu-nav-width': `${navWidth}px`} as CSSProperties}
     >
       {navigationOpen && <EduNavigation view={view} disabled={disabled} />}
-      {navigationOpen && navigationResizable && <ColumnResizeHandle side="left" width={navWidth} min={170} max={360} label="调整左侧导航宽度" onResize={setNavWidth} onReset={() => setNavWidth(224)} />}
+      {navigationOpen && navigationResizable && <ColumnResizeHandle side="left" width={navWidth} min={200} max={360} label="调整左侧导航宽度" onResize={setNavWidth} onReset={() => setNavWidth(248)} />}
       <main className="edu-workspace">
         <header className="edu-header" data-testid={headerTestId || 'edu-header'}>
           <div className="edu-breadcrumb">
-            <span>{contract.group}</span>
-            <ChevronRight size={14} />
+            {!['ai', 'teaching', 'student_workbench'].includes(view) && <><span>{contract.group}</span><ChevronRight size={14} /></>}
             <strong>{contract.title}</strong>
             {title && title !== contract.title && (
               <span className="edu-session-title" title={title}>

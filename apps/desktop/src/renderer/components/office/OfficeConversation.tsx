@@ -21,6 +21,7 @@ import {OfficeRecoveryNotice} from './OfficeRecoveryNotice';
 import {OfficeToolExpansionScope} from './OfficeToolExpansion';
 import {OfficeTextSelection} from './OfficeTextSelection';
 import { interactionLayout, OfficeInteractionCards, type OfficeInteraction } from './OfficeInteractions';
+import { WorkbenchHome } from '../product/WorkbenchHome';
 
 export interface OfficeConversationProps {
   agentTrace?: boolean;
@@ -89,6 +90,11 @@ export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier
       setLoadingEarlier(false);
     }
   }
+  // An empty landing page is not a conversation: bottom anchoring clips its heading.
+  // Mount the original streaming scroller only when there is history to follow.
+  if (!projection.turns.length && !projection.needsHydration && !projection.hasMoreHistory) {
+    return <div className="wb-home-scroll" tabIndex={0} aria-label="小智对话" data-testid="office-conversation"><WorkbenchHome onSuggest={onSuggest}/></div>;
+  }
   return (
     <OfficeTextSelection threadId={projection.threadId} host={host}>
     <ChatConversation key={projection.threadId} ref={setHost} onScroll={onReadingScroll} initial="instant" resize="instant" tabIndex={0} className={`office-conversation${agentTrace?' default':''}`} aria-label="小智对话" data-testid="office-conversation" data-heroui-native={agentTrace?'':undefined} data-theme={agentTrace?nativeTheme:undefined}>
@@ -96,7 +102,7 @@ export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier
         {projection.needsHydration && <p className="office-history-notice" role="status">正在同步对话记录…</p>}
         {projection.hasMoreHistory && <Button variant="ghost" size="sm" isDisabled={!onLoadEarlier||loadingEarlier} aria-label="加载较早的消息" data-testid="office-load-earlier" onPress={()=>void loadEarlier()}>{loadingEarlier?'正在加载较早的消息…':'加载较早的消息'}</Button>}
         {earlierError&&<p className="office-history-notice" role="alert">{earlierError}</p>}
-        {projection.turns.length === 0 && !projection.needsHydration && <div className="office-conversation-empty"><h1>今天的教学，小智和你一起准备</h1><p>说出年级、课题和需要的内容，或添加你的资料。</p>{onSuggest&&<div className="office-task-suggestions">{['备一节课','根据资料组卷','处理学生错题','修改一份讲义'].map((title,index)=><Button key={title} variant="outline" data-testid={`chat-suggestion-${index}`} onPress={()=>onSuggest(['请帮我备一节课，年级和课题是：','请根据我提供的资料组卷，年级、题型和总分要求是：','请帮我整理学生错题。我会先添加本地照片并校正识别结果。','请帮我修改讲义。我会添加原稿，修改要求是：'][index])}>{title}</Button>)}</div>}</div>}
+        {projection.turns.length === 0 && !projection.needsHydration && <WorkbenchHome onSuggest={onSuggest} />}
         {projection.turns.map(turn => {
           if(agentTrace)return <section key={turn.id} className="office-turn" data-turn-id={turn.id} data-state={turn.status}>
             <OfficeAgentTurn turn={turn} sessionId={projection.threadId} renderPlan={renderPlan} renderAttachments={renderAttachments} renderViewedImages={renderViewedImages} replyActions={replyActions}/>

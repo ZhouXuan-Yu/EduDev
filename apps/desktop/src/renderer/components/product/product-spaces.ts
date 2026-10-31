@@ -29,10 +29,12 @@ export const PRODUCT_PAGES = {
   ],
 } as const;
 export type ProductPageSpace = keyof typeof PRODUCT_PAGES;
-export type ProductView = 'ai' | 'settings' | typeof PRODUCT_PAGES[ProductPageSpace][number]['view'];
+export type ProductView = 'ai' | 'settings' | 'teaching' | 'student_workbench' | typeof PRODUCT_PAGES[ProductPageSpace][number]['view'];
 export function productSpaceFor(view: string): ProductSpace | undefined {
   if (view === 'ai') return 'ask';
   if (view === 'settings') return 'settings';
+  if (view === 'teaching') return 'teaching';
+  if (view === 'student_workbench') return 'students';
   for (const key of Object.keys(PRODUCT_PAGES) as ProductPageSpace[]) {
     if (PRODUCT_PAGES[key].some(page => page.view === view)) return key;
   }

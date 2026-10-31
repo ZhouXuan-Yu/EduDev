@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useOfficeComposerState } from './OfficeComposerState';
 
 export interface OfficeReadingBookmark {
@@ -13,6 +13,7 @@ const blocks = (item: Element) => [...item.querySelectorAll('p,li,h1,h2,h3,h4,pr
 export function useOfficeReadingPosition(threadId: string, visible: boolean) {
   const { readingBookmark } = useOfficeComposerState();
   const element = useRef<HTMLDivElement | null>(null), restoring = useRef(false);
+  const [mountedHost, setMountedHost] = useState<HTMLDivElement | null>(null);
   const currentVisible = useRef(visible); currentVisible.current = visible;
   const record = useCallback(() => {
     const host = element.current;
@@ -32,6 +33,7 @@ export function useOfficeReadingPosition(threadId: string, visible: boolean) {
   const ref = useCallback((host: HTMLDivElement | null) => {
     if (!host) record();
     element.current = host;
+    setMountedHost(host);
     restoring.current = !!host && readingBookmark.current?.threadId === threadId;
   }, [record, readingBookmark, threadId]);
 
@@ -55,7 +57,7 @@ export function useOfficeReadingPosition(threadId: string, visible: boolean) {
     host.addEventListener('wheel', wheel, { passive: false });
     host.addEventListener('keydown', key);
     return () => { host.removeEventListener('wheel', wheel); host.removeEventListener('keydown', key); };
-  }, [threadId, visible]);
+  }, [threadId, visible, mountedHost]);
 
   useLayoutEffect(() => {
     if (!visible) { restoring.current = true; return; }
@@ -80,6 +82,6 @@ export function useOfficeReadingPosition(threadId: string, visible: boolean) {
       secondFrame = requestAnimationFrame(() => { restore(); restoring.current = false; record(); });
     });
     return () => { cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame); record(); };
-  }, [threadId, visible, readingBookmark, record]);
+  }, [threadId, visible, readingBookmark, record, mountedHost]);
   return { ref, onScroll: record };
 }
