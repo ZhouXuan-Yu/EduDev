@@ -21,7 +21,7 @@ async function receive(message:unknown){
       const root=path.resolve(v.root);await fs.mkdir(root,{recursive:true});
       if((await fs.lstat(root)).isSymbolicLink()||(await fs.realpath(root)).toLowerCase()!==root.toLowerCase())throw Error('index_path');
       owner=await acquireWriterLock(root);
-      if(typeof v.rerankerRoot==='string'&&path.isAbsolute(v.rerankerRoot))ranker=new RerankerClient(()=>verifyRerankerRuntime(v.rerankerRoot));
+      if(typeof v.rerankerRoot==='string'&&path.isAbsolute(v.rerankerRoot))ranker=new RerankerClient(signal=>verifyRerankerRuntime(v.rerankerRoot,signal));
       store=new LocalVectorStore(root,new EmbeddingClient(v.executable,async()=>{await verifyRetrievalRuntime(path.dirname(v.executable));}),()=>!!owner&&owner.fd>=0);reply({id,ok:true,value:{ready:true}});return;
     }
     if(!store||!owner||owner.fd<0)throw Error('unavailable');
@@ -35,6 +35,7 @@ async function receive(message:unknown){
     else if(v.op==='optimize')value=await store.optimize(v.spec,v.force===true);
     else throw Error('invalid_input');
     reply({id,ok:true,value});
+    if(v.op==='ensure'||v.op==='apply'||v.op==='applyMany')void Promise.resolve().then(()=>ranker?.warm()).catch(()=>undefined);
   }catch(error){const code=error instanceof Error?error.message:'';reply({id,ok:false,error:['generation_mismatch','embedding_unavailable','invalid_input','index_busy','index_path','index_disk_full','index_validation_failed','reranker_unavailable','reranker_timeout','busy'].includes(code)?code:'index_unavailable'});}
 }
 if(parent)parent.on('message',event=>void receive(event.data));else process.on('message',v=>void receive(v));
