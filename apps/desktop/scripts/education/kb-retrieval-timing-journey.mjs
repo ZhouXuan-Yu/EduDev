@@ -1,0 +1,22 @@
+import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import {createHash} from 'node:crypto';import {execFile} from 'node:child_process';import assert from 'node:assert/strict';
+const desktop=process.cwd(),source=path.resolve(process.argv[2]||'');assert.equal(path.dirname(source),path.resolve(os.tmpdir()));assert(/^omni-byte-capacity-[a-z0-9]+$/i.test(path.basename(source)));assert.equal(fs.realpathSync(source),source);
+const output=fs.mkdtempSync(path.resolve('test-results/retrieval-timing-')),timeline=path.join(output,'timeline.jsonl'),hash=b=>createHash('sha256').update(b).digest('hex');
+const files=['out/main/index.js','out/main/retrieval-worker.js'].map(file=>({file,bytes:fs.readFileSync(file)}));
+const report={output,scope:'Temporarily instrumented own out, exact source workflow and native runtimes, owned40GiB fixture; method timings have file-I/O overhead and are not untouched-production performance acceptance',source,files:files.map(f=>({file:f.file,sha256:hash(f.bytes)}))};
+const common=`\nlet kbTimingEvents=0,kbTimingCall=0;function kbTimingWrap(object,key,label){const original=object[key];if(typeof original!=='function')throw Error('Missing timing target '+label);object[key]=function(...args){const call=++kbTimingCall,at=Date.now(),began=performance.now();const finish=()=>{try{if(kbTimingEvents++<5000)kbTimingAppend(${JSON.stringify(timeline)},JSON.stringify({pid:process.pid,call,label,at,ms:performance.now()-began})+'\\n');}catch{}};let result;try{result=original.apply(this,args);}catch(error){finish();throw error;}if(result&&typeof result.then==='function')return result.then(value=>{finish();return value;},error=>{finish();throw error;});finish();return result;};}\n`;
+const main=common+`for(const name of ['materials','semantic','rerank','fact','filterCurrent'])kbTimingWrap(RetrievalRepository.prototype,name,'repo.'+name);kbTimingWrap(MaterialFullTextSearch.prototype,'candidates','lexical.candidates');kbTimingWrap(VectorHost.prototype,'start','host.start');\n`;
+const worker=common+`for(const name of ['ensure','open','query','counts','optimize'])kbTimingWrap(LocalVectorStore.prototype,name,'vector.'+name);for(const name of ['start','embed'])kbTimingWrap(EmbeddingClient.prototype,name,'embedding.'+name);for(const name of ['start','warm','rerank'])kbTimingWrap(RerankerClient.prototype,name,'reranker.'+name);const kbVerifyBox={run:verifyRetrievalRuntime};kbTimingWrap(kbVerifyBox,'run','embedding.verify');\n`;
+let patched=false;
+try{
+ const markers=['if (ownsDesktop) app.whenReady()','const parent = process.parentPort;'];
+ for(const [i,f]of files.entries()){const text=f.bytes.toString('utf8'),at=text.lastIndexOf(markers[i]);assert(at>=0,'Build marker changed');fs.writeFileSync(path.join(output,path.basename(f.file)),f.bytes);}
+ patched=true;
+ for(const [i,f]of files.entries()){let text=f.bytes.toString('utf8');if(i===1){assert.equal(text.split('await verifyRetrievalRuntime(').length,2);text=text.replace('await verifyRetrievalRuntime(','await kbVerifyBox.run(');}const at=text.lastIndexOf(markers[i]);fs.writeFileSync(f.file,"import {appendFileSync as kbTimingAppend} from 'node:fs';\n"+text.slice(0,at)+(i===0?main:worker)+text.slice(at));}
+ const result=await new Promise(resolve=>execFile(process.execPath,['scripts/education/kb-byte-capacity-reopen.mjs',source],{cwd:desktop,windowsHide:true,maxBuffer:4*1024**2,timeout:240000},(error,stdout,stderr)=>resolve({code:error?.code||0,stdout,stderr})));
+ fs.writeFileSync(path.join(output,'journey.log'),result.stdout+'\n'+result.stderr);report.exit=result.code;const line=result.stdout.trim().split(/\r?\n/).findLast(s=>s.startsWith('{'));if(line)report.journey=JSON.parse(line);assert.equal(result.code,0,result.stderr);assert(report.journey?.success);report.success=true;
+}catch(error){report.success=false;report.error=String(error.stack||error);process.exitCode=1;}
+finally{
+ if(patched)for(const f of files){fs.writeFileSync(f.file,f.bytes);assert.equal(hash(fs.readFileSync(f.file)),hash(f.bytes));}
+ report.restored=true;if(fs.existsSync(timeline))report.events=fs.readFileSync(timeline,'utf8').trim().split('\n').filter(Boolean).map(s=>JSON.parse(s));fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));
+ console.log(JSON.stringify({output,success:report.success,restored:report.restored,queries:report.journey?.queries,slow:report.events?.filter(e=>e.ms>50).map(e=>({label:e.label,at:e.at,ms:e.ms})).sort((a,b)=>a.at-b.at),error:report.error}));
+}

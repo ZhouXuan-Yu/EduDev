@@ -1229,6 +1229,7 @@ export class OmniEduStore {
       const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
       try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');work.nativeWriterTransaction=true;try{const result=await action(work.materialAi);beforeCommit?.();await work.exec('COMMIT;');return result;}catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{work.nativeWriterTransaction=false;await work.close();}
     }});
+    this.materialQuestions.configureBooks(id=>this.materialAi.books.role(id));
     this.nativeQuestions=new NativeQuestionRepository({root:()=>this.dataRoot,all:(sql,p)=>this.all(sql,p),run:(sql,p)=>this.run(sql,p),read:id=>this.getQuestionBankItem(id),inTransaction:()=>this.nativeWriterTransaction,
       source:async base=>{const page=await this.materialWord.questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:base.resourceId,version:base.version,ordinal:base.ordinal,offset:base.ordinal-1});if(!page?.source)throw Error('source_changed');return page.source;},
       verify:async(base,signal)=>{if((await this.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1 LIMIT 1',[base.resourceId])).length)throw Error('privacy_blocked');await this.materials.verify(base.resourceId,base.version,signal);if((await this.all('SELECT 1 FROM resource_chunks WHERE resource_id=? AND contains_personal_data=1 LIMIT 1',[base.resourceId])).length)throw Error('privacy_blocked');},

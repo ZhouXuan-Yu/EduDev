@@ -2,14 +2,19 @@ import type {QuestionBankItemInput} from '../../shared/contracts';
 import {QUESTION_ARCHIVE_SCHEMA,archiveMissing,type QuestionArchive,type ArchiveFields} from '../../shared/question-archive';
 import {materialIsOcr} from '../../shared/materials';
 import {materialSource,type MaterialReadingUnit} from './material-source';
+import {nonQuestionPagePurpose} from './material-page-purpose';
 export type ExtractedQuestion={fields:QuestionBankItemInput;archive:QuestionArchive;key:string};
 /** Ignore layout-only blanks, never digits, signs, choices or algebra subscripts. */
 export const normalizeMaterialStem=(text:string)=>text.normalize('NFKC').replace(/(?<![A-Za-z0-9])_{3,}(?![A-Za-z0-9])/g,'').replace(/\s/g,'').replace(/。(?=A[.、])/g,'');
 const stripMetadata=(s:string)=>s.replace(/^\s*(?:【(?:学科|年级|知识点|题型|难度)】|\[(?:学科|年级|知识点|题型|难度)\]|(?:学科|年级|知识点|题型|难度)\s*[:：])[^\n]*\n?/gm,'').trim();
 /** Conservative source extraction. Never supplies an answer/analysis or an AI confirmation. */
 export function extractMaterialQuestions(units:MaterialReadingUnit[],engine:string):ExtractedQuestion[]{
+ // A printed page can span multiple OCR chunks. Classify the available page text together.
+ const pageKey=(unit:MaterialReadingUnit)=>unit.resourceId+'\0'+unit.version+'\0'+(unit.chunk.pageNumber===undefined?unit.chunk.id:unit.chunk.pageNumber);
+ const pages=new Map<string,string[]>();for(const unit of units){const key=pageKey(unit);pages.set(key,[...(pages.get(key)||[]),unit.chunk.contentMd]);}
+ const ignored=new Set([...pages].filter(([,parts])=>nonQuestionPagePurpose(parts.join('\n'))).map(([key])=>key));
  const ranges:{start:number;end:number;unit:MaterialReadingUnit}[]=[];let text='';
- for(const unit of units){const start=text.length;text+=unit.chunk.contentMd+'\n\n';ranges.push({start,end:text.length,unit});}
+ for(const unit of units){if(ignored.has(pageKey(unit)))continue;const start=text.length;text+=unit.chunk.contentMd+'\n\n';ranges.push({start,end:text.length,unit});}
  // A separate answer book needs an explicit matching stage; do not turn its numbered answers into new questions.
  const answerSection=/^\s*(?:#{1,6}\s*)?(?:参考答案|答案与解析|答案及解析)\s*[:：]?\s*$/m.exec(text);if(answerSection)text=text.slice(0,answerSection.index);
  const heading=/^\s{0,3}(?:#{1,6}\s*)?(?:第(\d{1,5})题\s*[:：]?|(\d{1,5})[.、．](?!\d))\s*/gm;
