@@ -853,5 +853,709 @@
       "log": "delivery-check-latest-reranker.log"
     },
     "boundary": "240 components/207 comprehensive passed on12f9dbf; final10 Pi paths on4310c04. Latest main changes only retrieval lifecycle: final build and8+1 relevant checks pass. Do not claim comprehensive/Pi/native lifecycle rerun on this final merge."
+  },
+  "visualEvidenceSlice": {
+    "baseSha": "537c3dd1a157a433f3d7484296836ad8a5249896",
+    "implementation": "This commit adds compatible optional metadata to existing inspection JSON; actual local PNG cache, typed preload, original file/draft check UI with on-demand image, history and cold restart. No new business DDL or dependencies.",
+    "source": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-visual-smoke.mjs",
+      "exit": 0,
+      "report": {
+        "ok": true,
+        "checks": [
+          "Actual PNG metadata and hash round-trip; fresh cache instance cold-reads exact bytes and duplicate capture uses one file",
+          "Malformed proof, path-shaped identity, unsupported dimensions and over-limit capture are rejected",
+          "Changed cached bytes cannot impersonate a checked screenshot; a new actual capture repairs the derived cache",
+          "Evicted screenshot is unavailable rather than fabricated; a new capture restores it",
+          "Linked cache target is neither read nor overwritten; original file remains intact",
+          "The 257th image evicts only an old owned cache file and retains the current capture within256 files",
+          "Actual on-disk cache pressure obeys the96MiB ceiling independently of image count",
+          "Already-stopped capture cannot publish a fresh proof"
+        ],
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-visual-cache-fG72vq",
+        "boundary": "Actual derived-cache IO and bounded PNG metadata; no Office/HTML rendering or full E06 AT claim."
+      },
+      "log": "delivery-visual-source-dpi.log"
+    },
+    "build": {
+      "command": "npm run build",
+      "completion": "main/preload/renderer built successfully; actual final Electron run uses this output",
+      "log": "delivery-visual-build-modal.log"
+    },
+    "components": {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240,
+      "log": "delivery-visual-components.log",
+      "boundary": "Before final modal Escape/style-scope and report-key refinements; final15 actual UI checks verify affected refinements, no unrelated repeat."
+    },
+    "originalUi": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-electron.mjs",
+      "exit": 0,
+      "passed": 15,
+      "total": 15,
+      "report": {
+        "ok": true,
+        "checks": [
+          "Formal composer computes actual CSV before one original grouped review; three files are not saved before confirmation",
+          "Original Pi invokes the real inspector: actual CSV/HTML/XLSX totals agree while unrendered Office stays unchecked",
+          "One teacher confirmation writes actual CSV/HTML/XLSX; independent bytes preserve IDs, formulas as text, typed amounts and total240",
+          "Original native report call is independently verified through every original file ledger and disk readback",
+          "Saved offline SVG chart opens in existing real file panel at both target viewports",
+          "Actual rendered PNGs persist with exact hashes and measured dimensions; SQLite stores references and UI loads no image before teacher action",
+          "Teacher can choose both actual captures and enlarge at1366/1920; close and Escape remain reachable",
+          "Original file panel reads the actual persisted check; external file change makes that receipt stale",
+          "Changed source is explicitly historical when its prior screenshot is loaded; old pixels never prove the changed file",
+          "Cold restart retains formal files, grouped cards, native identity and inspection rows without model replay",
+          "Cold application restart retrieves the exact prior screenshot through original file panel without a model request",
+          "Corrupted or evicted screenshots display an explicit unavailable state, preserve the formal file, and can be read again after actual cache restoration",
+          "Actual isolated HTML checks real slider, native arrow key, reset and changed canvas pixels",
+          "Actual JavaScript syntax error and inert controls fail inspection without changing the file",
+          "Stopping a real looping inspection closes its owned renderer and retains existing formal files"
+        ],
+        "errors": [],
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-ui-C56a0d",
+        "boundary": "Actual formal Pi, actual isolated parser and private Chromium inspection, persisted receipts and original file panel. Synthetic SSE only; no paid calls, no Office visual renderer or full E06 acceptance; original creation now also runs preflight.",
+        "wire": {
+          "requests": [
+            {
+              "index": 0,
+              "tool": "update_task_plan"
+            },
+            {
+              "index": 1,
+              "tool": "education_compute"
+            },
+            {
+              "index": 2,
+              "tool": "education_create_report"
+            },
+            {
+              "index": 3,
+              "tool": "education_check_delivery"
+            },
+            {
+              "index": 4,
+              "tool": null
+            }
+          ],
+          "index": 5,
+          "computation": {
+            "value": {
+              "rows": [
+                {
+                  "studentId": "001",
+                  "item": "粉笔",
+                  "unitPrice": 10,
+                  "quantity": 3,
+                  "note": "教具,备用",
+                  "amount": 30
+                },
+                {
+                  "studentId": "002",
+                  "item": "纸张",
+                  "unitPrice": 20,
+                  "quantity": 10,
+                  "note": null,
+                  "amount": 200
+                },
+                {
+                  "studentId": "003",
+                  "item": "胶带",
+                  "unitPrice": 5,
+                  "quantity": 2,
+                  "note": "=1+1（文本）",
+                  "amount": 10
+                }
+              ],
+              "summary": [
+                {
+                  "label": "合计",
+                  "value": 240
+                }
+              ]
+            },
+            "runtime": "3.6.2",
+            "elapsedMs": 12,
+            "inputSha256": "9fa37abba8fc6e24de29bde6a112acfec76ec27f8e68ac6ef9a5ba07561220ce",
+            "codeSha256": "3c99294e95fd5affe5b6ee8b460413cd6bb7de0ecb5dde93a01f2d4a46de322d",
+            "policy": {
+              "schemaVersion": "xiaozhi.table-input.v1",
+              "encoding": "UTF-8",
+              "delimiter": ",",
+              "decimal": ".",
+              "empty": "explicit_nullable",
+              "text": "preserve",
+              "quotedNewlines": true,
+              "columns": [
+                {
+                  "key": "studentId",
+                  "label": "学号",
+                  "type": "text"
+                },
+                {
+                  "key": "item",
+                  "label": "项目",
+                  "type": "text"
+                },
+                {
+                  "key": "unitPrice",
+                  "label": "单价",
+                  "type": "number"
+                },
+                {
+                  "key": "quantity",
+                  "label": "数量",
+                  "type": "number"
+                },
+                {
+                  "key": "note",
+                  "label": "备注",
+                  "type": "text",
+                  "nullable": true
+                }
+              ]
+            },
+            "resultId": "xicompute_9f578cfe2ff7a4d34a71f8306708f192526fd29f32ee9ba86c4daeb37158a117",
+            "resultSha256": "a4e5344878f5c01afb34c23efaa5f6c210195dd3b8be331477a093b37b1a8905"
+          },
+          "delivery": {
+            "success": true,
+            "bundleId": "xidelivery_b9ae1509063c44e090e0f66375671fd1d029d93c30e18d43cdbbb063816ed80b",
+            "outcome": "saved",
+            "files": [
+              {
+                "fileId": "computed_0",
+                "file": "课堂费用.csv",
+                "format": "text",
+                "outcome": "applied",
+                "carried": false
+              },
+              {
+                "fileId": "computed_1",
+                "file": "课堂费用图表.html",
+                "format": "text",
+                "outcome": "applied",
+                "carried": false
+              },
+              {
+                "fileId": "computed_2",
+                "file": "课堂费用.xlsx",
+                "format": "xlsx",
+                "outcome": "saved",
+                "carried": false
+              }
+            ],
+            "message": "整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。",
+            "deliveryInspection": {
+              "state": "partial",
+              "id": "xicheck_c382d813b0529150527894614e26247a22cfe8dc727e389b373f8d39ec1cf17a",
+              "candidate": true,
+              "createdAt": "2026-10-31T07:50:55.468Z",
+              "requirementsVersion": 1,
+              "repairAttempts": {},
+              "files": [
+                {
+                  "path": "课堂费用.csv",
+                  "state": "partial",
+                  "sha256": "954b638d35b66c1d05119d05f0a845de0e8f6fc34af8e3f03fb430183d3cbac1",
+                  "renderedPages": [],
+                  "visualEvidenceCount": 0,
+                  "coverage": {
+                    "structure": "checked",
+                    "content": "unchecked",
+                    "visual": "unchecked",
+                    "interaction": "checked",
+                    "numbers": "unchecked",
+                    "consistency": "unchecked"
+                  },
+                  "findings": [
+                    {
+                      "kind": "content",
+                      "state": "unchecked",
+                      "code": "content_contract",
+                      "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                    },
+                    {
+                      "kind": "numbers",
+                      "state": "unchecked",
+                      "code": "numeric_contract",
+                      "message": "尚未提供数值或合计的核验约定。"
+                    },
+                    {
+                      "kind": "visual",
+                      "state": "unchecked",
+                      "code": "render_not_run",
+                      "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                    },
+                    {
+                      "kind": "consistency",
+                      "state": "unchecked",
+                      "code": "shared_facts_missing",
+                      "message": "尚未取得可对照的同名事实，未判定整包一致。"
+                    }
+                  ],
+                  "findingCount": 6
+                },
+                {
+                  "path": "课堂费用图表.html",
+                  "state": "partial",
+                  "sha256": "d09b890d309ea177fc524c8df8ef0242e4a21002d349f6e030f4d6fb17248143",
+                  "renderedPages": [
+                    1
+                  ],
+                  "visualEvidenceCount": 2,
+                  "coverage": {
+                    "structure": "checked",
+                    "content": "unchecked",
+                    "visual": "checked",
+                    "interaction": "unchecked",
+                    "numbers": "unchecked",
+                    "consistency": "unchecked"
+                  },
+                  "findings": [
+                    {
+                      "kind": "interaction",
+                      "state": "unchecked",
+                      "code": "interaction_contract",
+                      "message": "发现控件，但尚未提供操作与观察结果的检查约定。"
+                    },
+                    {
+                      "kind": "content",
+                      "state": "unchecked",
+                      "code": "content_contract",
+                      "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                    },
+                    {
+                      "kind": "numbers",
+                      "state": "unchecked",
+                      "code": "numeric_contract",
+                      "message": "尚未提供数值或合计的核验约定。"
+                    },
+                    {
+                      "kind": "consistency",
+                      "state": "unchecked",
+                      "code": "shared_facts_missing",
+                      "message": "尚未取得可对照的同名事实，未判定整包一致。"
+                    }
+                  ],
+                  "findingCount": 6
+                },
+                {
+                  "path": "课堂费用.xlsx",
+                  "state": "partial",
+                  "sha256": "03f3aa807f90367b4851244d90fc765d651c353137852251745ae7ce189c5e76",
+                  "renderedPages": [],
+                  "visualEvidenceCount": 0,
+                  "coverage": {
+                    "structure": "checked",
+                    "content": "unchecked",
+                    "visual": "unchecked",
+                    "interaction": "checked",
+                    "numbers": "unchecked",
+                    "consistency": "unchecked"
+                  },
+                  "findings": [
+                    {
+                      "kind": "content",
+                      "state": "unchecked",
+                      "code": "content_contract",
+                      "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+                    },
+                    {
+                      "kind": "numbers",
+                      "state": "unchecked",
+                      "code": "numeric_contract",
+                      "message": "尚未提供数值或合计的核验约定。"
+                    },
+                    {
+                      "kind": "visual",
+                      "state": "unchecked",
+                      "code": "render_not_run",
+                      "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                    },
+                    {
+                      "kind": "consistency",
+                      "state": "unchecked",
+                      "code": "shared_facts_missing",
+                      "message": "尚未取得可对照的同名事实，未判定整包一致。"
+                    }
+                  ],
+                  "findingCount": 6
+                }
+              ]
+            },
+            "inspectionNote": "逐文件分开说明真实保存状态与实际检查范围；partial/stale/未检查不说全部完成。"
+          },
+          "inspection": {
+            "state": "partial",
+            "id": "xicheck_f9181c1cf0f2612a46b77aaebbf21a149d89a02144794818c1e26fa6c42d2688",
+            "candidate": false,
+            "createdAt": "2026-10-31T07:51:00.763Z",
+            "requirementsVersion": 1,
+            "repairAttempts": {},
+            "files": [
+              {
+                "path": "课堂费用.csv",
+                "state": "partial",
+                "sha256": "954b638d35b66c1d05119d05f0a845de0e8f6fc34af8e3f03fb430183d3cbac1",
+                "renderedPages": [],
+                "visualEvidenceCount": 0,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "checked",
+                  "visual": "unchecked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  }
+                ],
+                "findingCount": 7
+              },
+              {
+                "path": "课堂费用图表.html",
+                "state": "partial",
+                "sha256": "d09b890d309ea177fc524c8df8ef0242e4a21002d349f6e030f4d6fb17248143",
+                "renderedPages": [
+                  1
+                ],
+                "visualEvidenceCount": 2,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "checked",
+                  "visual": "checked",
+                  "interaction": "unchecked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "interaction",
+                    "state": "unchecked",
+                    "code": "interaction_contract",
+                    "message": "发现控件，但尚未提供操作与观察结果的检查约定。"
+                  }
+                ],
+                "findingCount": 7
+              },
+              {
+                "path": "课堂费用.xlsx",
+                "state": "partial",
+                "sha256": "03f3aa807f90367b4851244d90fc765d651c353137852251745ae7ce189c5e76",
+                "renderedPages": [],
+                "visualEvidenceCount": 0,
+                "coverage": {
+                  "structure": "checked",
+                  "content": "checked",
+                  "visual": "unchecked",
+                  "interaction": "checked",
+                  "numbers": "checked",
+                  "consistency": "checked"
+                },
+                "findings": [
+                  {
+                    "kind": "visual",
+                    "state": "unchecked",
+                    "code": "render_not_run",
+                    "message": "尚未实际渲染此文件；结构、几何和提取文字不能证明视觉全通过。"
+                  }
+                ],
+                "findingCount": 7
+              }
+            ]
+          }
+        },
+        "files": [
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-ui-C56a0d\\XiaozhiOutputs\\7453bbe325066746\\aisession_60b43a00-6a55-4cbb-a46e-de85a5c60f76\\课堂费用.csv",
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-ui-C56a0d\\XiaozhiOutputs\\7453bbe325066746\\aisession_60b43a00-6a55-4cbb-a46e-de85a5c60f76\\课堂费用图表.html",
+          "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-ui-C56a0d\\XiaozhiOutputs\\7453bbe325066746\\aisession_60b43a00-6a55-4cbb-a46e-de85a5c60f76\\课堂费用.xlsx"
+        ],
+        "verification": {
+          "schema": "xiaozhi.verification.v1",
+          "runId": "run_1c44a3eb-afc9-4781-a6e8-9c2edc59aaf8",
+          "state": "needs_human",
+          "scope": "declared_criteria",
+          "checkedAt": "2026-10-31T07:51:03.758Z",
+          "reason": "human_review",
+          "checks": [
+            {
+              "id": "saved_bundle:checked-initial-2",
+              "state": "passed",
+              "evidenceIds": [
+                "result:checked-initial-2"
+              ]
+            },
+            {
+              "id": "answer:human",
+              "state": "needs_human",
+              "evidenceIds": []
+            }
+          ],
+          "evidence": [
+            {
+              "id": "checked-initial-0",
+              "runId": "run_1c44a3eb-afc9-4781-a6e8-9c2edc59aaf8",
+              "callId": "checked-initial-0",
+              "kind": "execution",
+              "digest": "b6b0986a29c96d4e6a3f7e5e61692b4260f6526461481f35f3ff6c4303228513",
+              "observedAt": "2026-10-31T07:50:53.251Z"
+            },
+            {
+              "id": "checked-initial-1",
+              "runId": "run_1c44a3eb-afc9-4781-a6e8-9c2edc59aaf8",
+              "callId": "checked-initial-1",
+              "kind": "execution",
+              "digest": "85523562d89de2ef834d781a3ab8d71af3a550f0ee907b37e6d1e416eeb10ae9",
+              "observedAt": "2026-10-31T07:50:54.465Z"
+            },
+            {
+              "id": "checked-initial-2",
+              "runId": "run_1c44a3eb-afc9-4781-a6e8-9c2edc59aaf8",
+              "callId": "checked-initial-2",
+              "kind": "execution",
+              "digest": "2778e6ed48f92a685514b6ba74e00acca680d36b5574be41d7ced9739cda041e",
+              "observedAt": "2026-10-31T07:51:00.065Z"
+            },
+            {
+              "id": "checked-initial-3",
+              "runId": "run_1c44a3eb-afc9-4781-a6e8-9c2edc59aaf8",
+              "callId": "checked-initial-3",
+              "kind": "execution",
+              "digest": "8102bfec776555c1feff55a0c2243c11252bee970f098580dad38afc56d48b88",
+              "observedAt": "2026-10-31T07:51:03.217Z"
+            },
+            {
+              "id": "result:checked-initial-2",
+              "runId": "run_1c44a3eb-afc9-4781-a6e8-9c2edc59aaf8",
+              "callId": "checked-initial-2",
+              "kind": "readback",
+              "digest": "6733c1defad8991f830d5f36eeae50617a01dc0ac2ff132dec2998aa4bb0b0b0",
+              "observedAt": "2026-10-31T07:51:00.065Z"
+            }
+          ],
+          "operations": {
+            "succeeded": 4,
+            "failed": 0
+          }
+        },
+        "interactive": {
+          "state": "passed",
+          "id": "xicheck_39f276336339c582eaf5d8348291eb349026b552a5d5a84c9355e27bdd1d07bc",
+          "candidate": false,
+          "createdAt": "2026-10-31T07:51:50.993Z",
+          "requirementsVersion": 1,
+          "repairAttempts": {},
+          "files": [
+            {
+              "path": "控件检查.html",
+              "state": "passed",
+              "sha256": "2378bb7af1f05d62f5b868501ff702b65e8bf09b56a2aa5e6bbb5c3017fb907d",
+              "renderedPages": [
+                1
+              ],
+              "visualEvidenceCount": 2,
+              "coverage": {
+                "structure": "checked",
+                "content": "checked",
+                "visual": "checked",
+                "interaction": "checked",
+                "numbers": "checked",
+                "consistency": "checked"
+              },
+              "findings": [],
+              "findingCount": 9
+            }
+          ]
+        },
+        "broken": {
+          "state": "failed",
+          "id": "xicheck_04fc18158f487217884357d17c93af203607ace76281b480dd30391c2036c7ed",
+          "candidate": false,
+          "createdAt": "2026-10-31T07:51:55.772Z",
+          "requirementsVersion": 1,
+          "repairAttempts": {},
+          "files": [
+            {
+              "path": "控件语法错.html",
+              "state": "failed",
+              "sha256": "4cd0155d1bba41bd3a45a85711b7458ff52dc0d7c375e19a2654c5400e5335ea",
+              "renderedPages": [
+                1
+              ],
+              "visualEvidenceCount": 2,
+              "coverage": {
+                "structure": "checked",
+                "content": "checked",
+                "visual": "unchecked",
+                "interaction": "failed",
+                "numbers": "checked",
+                "consistency": "checked"
+              },
+              "findings": [
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "load",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "keyboard",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "reset",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "control_result",
+                  "ruleId": "pixels",
+                  "message": "控件操作后结果未变化或不符合声明。"
+                },
+                {
+                  "kind": "visual",
+                  "state": "unchecked",
+                  "code": "canvas_content_unverified",
+                  "message": "页面含画布，但尚无实际控件到画面变化的验证，未把空白画布当作通过。"
+                },
+                {
+                  "kind": "interaction",
+                  "state": "failed",
+                  "code": "script_error",
+                  "message": "实际页面执行记录到5条脚本或控制台错误。"
+                }
+              ],
+              "findingCount": 11
+            }
+          ]
+        },
+        "stopMs": 1859
+      },
+      "log": "delivery-visual-electron-final.log"
+    },
+    "retainedFailures": [
+      {
+        "log": "delivery-visual-build.log",
+        "exit": 1,
+        "reason": "TypeScript optional image narrowing; fixed by explicit image guard"
+      },
+      {
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-delivery-check-ui-kuwBuA\\report.json",
+        "exit": 1,
+        "reason": "Escape propagated to EduPanel and closed original file pane; screenshot CSS excluded by existing native-style boundary. Fixed child Escape propagation and local data-edu-domain scope; final test asserts actual flex style and Escape leaves pane."
+      }
+    ],
+    "actualOfficeProbe": {
+      "exit": 0,
+      "report": {
+        "version": "16.0",
+        "boundary": "Actual installed PowerPoint opens only a copied synthetic fixture; probe only, not production renderer or full E06 acceptance.",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-ppt-probe-tt1rt98y",
+        "ok": true,
+        "pageCount": 8,
+        "pages": [
+          {
+            "sha256": "fb97409cf7421a484630f470765f816abd6f6eabeffab8a64d61a240b221d879",
+            "page": 1,
+            "bytes": 13893
+          },
+          {
+            "sha256": "9674c468a65c425379980918af3cd58a9ad3d7619f41b4d50279158c97833583",
+            "page": 2,
+            "bytes": 19914
+          },
+          {
+            "sha256": "10d23fcc5040a17b4fa7ac39a37959d83b62e6125b477deec0b7f88cf781976e",
+            "page": 3,
+            "bytes": 18366
+          },
+          {
+            "sha256": "8fa60e3824803b8268fed27da31c63dc3cbfaee548ac4e27b8bdc627649b6bf1",
+            "page": 4,
+            "bytes": 24837
+          },
+          {
+            "sha256": "f770e965fcfbdf6bd469ed4927c06b6ba625104869c39f3ad1f1d2ccf44ecce7",
+            "page": 5,
+            "bytes": 16940
+          },
+          {
+            "sha256": "cb8d8813f40f4e6e1983ee2393aec421551e9981d5fdc08825b84152dbca4c20",
+            "page": 6,
+            "bytes": 17792
+          },
+          {
+            "sha256": "7a5731a4b48c70fe7ef5ef62f63faf12bcaf27cb68d42e51f448df504d3fe2bf",
+            "page": 7,
+            "bytes": 21334
+          },
+          {
+            "sha256": "dcee5679d5ec90dc5fd6d7bec131512bc13848876bc3eee748704574deb63a56",
+            "page": 8,
+            "bytes": 20434
+          }
+        ]
+      },
+      "script": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-ppt-probe-tt1rt98y\\probe.ps1",
+      "boundary": "Installed PowerPoint16 exported8 actual pages of copied synthetic PPTX. Feasibility probe only; production adapter, cancellation and full visual/font/occlusion acceptance still unimplemented. No existing user PowerPoint process was reused; owned COM closed."
+    },
+    "cache": {
+      "maxImageBytes": 3145728,
+      "maxBytes": 100663296,
+      "maxFiles": 256,
+      "maxImagesPerFile": 64,
+      "directory": "<dataRoot>/cache/delivery-check-visual/v1",
+      "database": "SHA and bounded metadata only; never image Base64",
+      "transfer": "one teacher-selected image, max2 concurrent reads; no automatic cloud image transfer",
+      "dimensions": "viewport CSS pixels and actual PNG physical pixels are distinct at DPI scaling"
+    },
+    "performance": {
+      "rendererBeforeKB": 7167.51,
+      "rendererAfterKB": 7173.83,
+      "deltaKB": 6.32,
+      "artifact": "index-BpVVZ3qK.js",
+      "firstTokenOrP95": "Not measured; do not claim speed improvement. Screenshot decoding is on teacher demand, not streaming reply path.",
+      "loopStopMs": 1859
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "critical": 0,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "total": 45,
+      "newDependencies": 0,
+      "lockfileChanged": false,
+      "automaticUpgrade": false
+    },
+    "paidRequests": 0,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "acceptance": "E06 partial; no new fully accepted REQ/AT,0/252 newly marked. Actual Office production render/font/occlusion, complete requirement binding and mixed terminal semantics still pending.",
+    "rollback": "Revert this additive visual slice. Existing optional metadata may be ignored, derived image cache can be recreated; original file ledgers/bytes and one review unchanged. Whole-commit rollback not independently rehearsed.",
+    "sourceSha256": {
+      "src/main/xiaozhi-agent/checks/visual-evidence.ts": "4e7afe767f00f938bbaddf891e58be40f32a53a783c5a2cb849c6b70616f454d",
+      "src/main/xiaozhi-agent/checks/service.ts": "62a4faafc9defbc1962ddcd951427681a90762ac542a3d505124b4d101f3a380",
+      "src/shared/xiaozhi-delivery-checks.ts": "aac1d1439c6b87453e74f92648cb2135bc76ca4888f309ebf143d83f8eba8332",
+      "src/renderer/components/office/PiDeliveryVisual.tsx": "88a962a6440b79d121a859f6e2a2b3d4fa98880203f8aaf8c9ea51c7217f5379",
+      "scripts/xiaozhi-agent/delivery-check-electron.mjs": "8f797b9622945f166bfdab7d21822dc402ceabdcc81fe4cd04d7e22f46710880"
+    }
   }
 }

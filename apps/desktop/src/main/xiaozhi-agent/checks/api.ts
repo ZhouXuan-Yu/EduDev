@@ -6,6 +6,13 @@ const report=(v:unknown):v is string=>typeof v==='string'&&/^xicheck_[a-f0-9]{64
 const obj=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v);
 export function registerDeliveryCheckIpc(options:{ipcMain:IpcMain;allowed:(event:Electron.IpcMainInvokeEvent)=>boolean;service:ReturnType<typeof createDeliveryChecks>}){
  const requests=new Map<string,{sessionId:string;abort:AbortController}>();
+ let visualReads=0;
+ options.ipcMain.handle('xiaozhi:delivery-check-visual',async(event,input)=>{
+  if(!options.allowed(event))return{ok:false,error:'permission_denied'};
+  if(!obj(input)||Object.keys(input).some(k=>!['sessionId','id','sha256'].includes(k))||!session(input.sessionId)||!report(input.id)||typeof input.sha256!=='string'||!/^[a-f0-9]{64}$/.test(input.sha256))return{ok:false,error:'invalid_input'};
+  if(visualReads>=2)return{ok:false,error:'unavailable'};visualReads++;
+  try{return await options.service.visual(input.sessionId,input.id,input.sha256);}finally{visualReads--;}
+ });
  options.ipcMain.handle('xiaozhi:delivery-check',async(event,input):Promise<DeliveryCheckResult>=>{
   if(!options.allowed(event))return{ok:false,error:'permission_denied'};if(!validDeliveryCheckInput(input))return{ok:false,error:'invalid_input'};
   if(requests.has(input.requestId)||requests.size>=4)return{ok:false,error:'busy'};
