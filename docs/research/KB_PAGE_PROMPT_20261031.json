@@ -1,0 +1,446 @@
+{
+  "date": "2026-10-31",
+  "scope": "M03/M05/M10: truthful frozen OCR context, full canonical question stems, declared-number parser adapter; full KB goal remains active",
+  "implementationCommit": "5ffe1ef",
+  "validatedIntegration": "96286b089ec973303f32dcea4cf10deb3cf6e4a1",
+  "implemented": [
+    "Freeze page-restoration.v2 and actual OCR status in existing input_json; revalidate against actual local receipt before each dispatch",
+    "Legacy units including first_saved keep their previous instruction; malformed or changed metadata cannot dispatch",
+    "Preserve full original prefixes, choices, subquestions, tables and formulas inside canonical stem; coverage-only omissions fail qualification",
+    "Reuse existing parser with temporary explicit markers only for structured declared numbers; immutable raw receipts and OCR are unchanged",
+    "Keep full-page agreement, source/image hashes, mathematics, figure/cross-page doubts and known-answer writeback guards",
+    "Strictly require a primitive OCR status string; reject boxed/coercible objects without invoking user code"
+  ],
+  "newDependenciesTablesIpc": 0,
+  "build": {
+    "file": "apps/desktop/out/main/index.js",
+    "bytes": 3319358,
+    "sha256": "d4d44209ab245cbba5923a1a9a682a0c46a4e1b668374096dbe90f705eee381b"
+  },
+  "renderer": {
+    "file": "apps\\desktop\\out\\renderer\\assets\\index-BoOX7V3I.js",
+    "bytes": 7251525,
+    "sha256": "42b235c46ab109a270add735b1ff54fc2a1593d0fd5b43b07dcdc720e6acde8e"
+  },
+  "tests": {
+    "buildTypecheck": {
+      "command": "npm.cmd run build",
+      "exit": 0
+    },
+    "rendererComponents": {
+      "command": "npm.cmd run test:renderer-components",
+      "passed": 240,
+      "exit": 0,
+      "scope": "Same renderer bytes/hash as final strict build"
+    },
+    "pageBoundaries": {
+      "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "checks": 37,
+      "exit": 0,
+      "source": "64a8b2f strict validation"
+    },
+    "batchBoundaries": {
+      "checks": 28,
+      "exit": 0
+    },
+    "bookMatchBoundaries": {
+      "checks": 19,
+      "exit": 0
+    },
+    "nativeDeepSeekBoundaries": {
+      "checks": 9,
+      "exit": 0
+    },
+    "fullElectronSmoke": {
+      "command": "node scripts/electron-smoke.mjs",
+      "state": "complete",
+      "scope": "Merged final production before the last strict OCR-status typeof guard. Final37 and actual UI cover that guard; do not label207 a post-guard rerun.",
+      "passed": 207,
+      "total": 207,
+      "exit": 0,
+      "buildSha256": "d3e6fa24e81612f171563f86e9cdcb8417d09cc94cd2cf0b4d7919a6b67dde30"
+    },
+    "finalUi": {
+      "command": "node --experimental-transform-types scripts/education/kb-wusan-book-match-journey.mjs <owned-test-root> quality",
+      "checks": 7,
+      "exit": 0,
+      "buildSha256": "d4d44209ab245cbba5923a1a9a682a0c46a4e1b668374096dbe90f705eee381b",
+      "cloudCalls": 0
+    }
+  },
+  "real": {
+    "callsThisRound": 6,
+    "earlierV2Trial": {
+      "batchId": "aibatch_3a624d21-adcc-40a3-92ff-3c6ebc7a866c",
+      "buildSha256": "4d8de33f9729f6f27adc51e1a9b9cf7af0c23631418ebf0d88e39ee9c95b9849",
+      "calls": 2,
+      "http": [
+        200,
+        200
+      ],
+      "questions": 12,
+      "qualified": 0,
+      "held": 12,
+      "transcription": "complete",
+      "finding": "Two-pass page and question fields agreed; choices missing in canonical stem and declarative numbers1/11 dropped by parser. Retained raw evidence unchanged."
+    },
+    "mainPage4": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\question-ai-4x99Mm",
+      "buildSha256": "4462001ea794acb6dc7cc12756eaf7ddd11d5cd74ca48c3cc1a5097320f32d29",
+      "sourcePage": 4,
+      "limit": 2,
+      "transport": {
+        "calls": 2,
+        "requests": [
+          {
+            "number": 1,
+            "at": 1793458815049,
+            "model": "deepseek-flash",
+            "pagePrompt": {
+              "policy": "page-restoration.v2",
+              "ocrStatus": "complete"
+            },
+            "images": [
+              {
+                "bytes": 2551107,
+                "sha256": "750c142bd97cd22046e1833e4b135ce737515d60de1fcb2baa4847b26e3da401"
+              }
+            ],
+            "http": 200
+          },
+          {
+            "number": 2,
+            "at": 1793458843432,
+            "model": "deepseek-flash",
+            "pagePrompt": {
+              "policy": "page-restoration.v2",
+              "ocrStatus": "complete"
+            },
+            "images": [
+              {
+                "bytes": 2551107,
+                "sha256": "750c142bd97cd22046e1833e4b135ce737515d60de1fcb2baa4847b26e3da401"
+              }
+            ],
+            "http": 200
+          }
+        ]
+      },
+      "pageView": {
+        "source": {
+          "schemaVersion": "xiaozhi.material-page-source.v1",
+          "resourceId": "resource_271e5c3a-643d-4eb4-865f-58999778f460",
+          "version": "e9e2b393cf8b5cb5ebe03999245310a5b88074317e30cc6388d4dfe414345ee5",
+          "page": 4,
+          "generation": "3ddcf77d-ddfc-4320-ab52-dec13564148b",
+          "receiptSha": "8a5ca623f91015d71e9c44ce17196cff51b18fb10820f71cd6013428360e5b8a"
+        },
+        "status": "needs_review",
+        "transcriptionStatus": "complete",
+        "issues": [],
+        "textBytes": 5320
+      },
+      "published": 12,
+      "success": true
+    },
+    "answerPage3": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\answer-ai-gyWnr0",
+      "buildSha256": "4462001ea794acb6dc7cc12756eaf7ddd11d5cd74ca48c3cc1a5097320f32d29",
+      "sourcePage": 3,
+      "limit": 2,
+      "transport": {
+        "calls": 2,
+        "requests": [
+          {
+            "number": 1,
+            "at": 1793458958697,
+            "model": "deepseek-flash",
+            "pagePrompt": {
+              "policy": "page-restoration.v2",
+              "ocrStatus": "complete"
+            },
+            "images": [
+              {
+                "bytes": 2875824,
+                "sha256": "fe417ad9a5d0d3461fc92a57115aac1a950f75d462c950394a403b6005665e4f"
+              }
+            ],
+            "http": 200
+          },
+          {
+            "number": 2,
+            "at": 1793458970436,
+            "model": "deepseek-flash",
+            "pagePrompt": {
+              "policy": "page-restoration.v2",
+              "ocrStatus": "complete"
+            },
+            "images": [
+              {
+                "bytes": 2875824,
+                "sha256": "fe417ad9a5d0d3461fc92a57115aac1a950f75d462c950394a403b6005665e4f"
+              }
+            ],
+            "http": 200
+          }
+        ]
+      },
+      "pageView": {
+        "source": {
+          "schemaVersion": "xiaozhi.material-page-source.v1",
+          "resourceId": "resource_578a1f1f-e229-4a9d-8d94-f4dd6ade1c2d",
+          "version": "249122c2686c873bc9a93fca8b03eff9f61e8181fe54c513bfa59bdd555a54bf",
+          "page": 3,
+          "generation": "85d628a4-efde-461e-9a11-7564fe6efcd4",
+          "receiptSha": "ce1f9b070230ddc8b6947077107960b60976fd88bc2b48ef20e8ac2a32784e61"
+        },
+        "status": "needs_review",
+        "transcriptionStatus": "needs_review",
+        "issues": [
+          "uncertain_ocr"
+        ],
+        "textBytes": 9726
+      },
+      "published": 0,
+      "success": true
+    },
+    "mainQuality": [
+      {
+        "number": "1",
+        "state": "ai_final",
+        "issues": [],
+        "sourceRisks": []
+      },
+      {
+        "number": "2",
+        "state": "ai_final",
+        "issues": [],
+        "sourceRisks": []
+      },
+      {
+        "number": "3",
+        "state": "ai_final",
+        "issues": [],
+        "sourceRisks": []
+      },
+      {
+        "number": "4",
+        "state": "ai_needs_review",
+        "issues": [
+          "requires_image",
+          "ai_mismatch",
+          "incomplete_question"
+        ],
+        "sourceRisks": [
+          "visual_unchecked"
+        ]
+      },
+      {
+        "number": "5",
+        "state": "ai_needs_review",
+        "issues": [
+          "requires_image",
+          "ai_mismatch",
+          "incomplete_question"
+        ],
+        "sourceRisks": [
+          "visual_unchecked"
+        ]
+      },
+      {
+        "number": "6",
+        "state": "ai_needs_review",
+        "issues": [
+          "requires_image",
+          "ai_mismatch",
+          "incomplete_question"
+        ],
+        "sourceRisks": [
+          "visual_unchecked"
+        ]
+      },
+      {
+        "number": "7",
+        "state": "ai_final",
+        "issues": [],
+        "sourceRisks": []
+      },
+      {
+        "number": "8",
+        "state": "ai_needs_review",
+        "issues": [
+          "ai_mismatch",
+          "incomplete_question"
+        ],
+        "sourceRisks": []
+      },
+      {
+        "number": "9",
+        "state": "ai_final",
+        "issues": [],
+        "sourceRisks": []
+      },
+      {
+        "number": "10",
+        "state": "ai_needs_review",
+        "issues": [
+          "requires_image",
+          "ai_mismatch",
+          "incomplete_question"
+        ],
+        "sourceRisks": [
+          "visual_unchecked"
+        ]
+      },
+      {
+        "number": "11",
+        "state": "ai_final",
+        "issues": [],
+        "sourceRisks": []
+      },
+      {
+        "number": "12",
+        "state": "ai_needs_review",
+        "issues": [
+          "requires_image",
+          "ai_mismatch",
+          "incomplete_question"
+        ],
+        "sourceRisks": [
+          "visual_unchecked"
+        ]
+      }
+    ],
+    "qualifiedNumbers": [
+      "1",
+      "2",
+      "3",
+      "7",
+      "9",
+      "11"
+    ],
+    "answerQuality": {
+      "entries": 22,
+      "entryAgreement": 22,
+      "pageUncertain": true,
+      "issues": [
+        "page_uncertainty",
+        "missing_answer",
+        "cross_page"
+      ],
+      "canonicalWrites": 0
+    },
+    "integratedUi": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\page-quality-Os8j0Q",
+      "buildSha256": "d3e6fa24e81612f171563f86e9cdcb8417d09cc94cd2cf0b4d7919a6b67dde30",
+      "checks": [
+        "Existing background executor matches12 actual main-page questions to the exact exam; question1 retains known D and source page3 while all uncertain questions stay held",
+        "All6 complete text questions retain full canonical stems and pass actual typed source readback shared with Pi; no teacher or mathematical acceptance claimed",
+        "Visible retry reads saved sources, preserves the canonical AI answers/analysis and does not silently promote held questions",
+        "Both desktop sizes reach the final candidate, source page and original answers without horizontal overflow",
+        "Controlled local-page receipt corruption reaches the real IPC source guard, shows a retryable error and retains12 candidates; exact receipt restored afterward",
+        "Unlink/restoring the identical book queues background matching at the new revision with no paid replay or canonical mutation",
+        "Restart preserves held candidates, exact source hashes, both two-call ledgers, all12 canonical questions and SQLite integrity"
+      ],
+      "success": true,
+      "cloudRequests": 0,
+      "rendererErrors": [],
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "width": 1920,
+          "height": 1080
+        }
+      ],
+      "revisions": {
+        "before": 19,
+        "restored": 21
+      },
+      "result": "All12 match latest answer receipt;6 held for answer-page uncertainty and6 for question uncertainty; no canonical overwrite. All6 complete text rows pass actual typed source readback shared with Pi."
+    },
+    "failedUiAttempt": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\page-quality-QCUZSB",
+      "result": "exit1: controlled fault injector encountered SQLite writer contention; original source error remained empty. Added bounded busy wait, CAS and after-close exact-restore safeguard; final integrated run passed."
+    },
+    "finalUi": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\page-quality-vLCO64",
+      "buildSha256": "d4d44209ab245cbba5923a1a9a682a0c46a4e1b668374096dbe90f705eee381b",
+      "checks": [
+        "Existing background executor matches12 actual main-page questions to the exact exam; question1 retains known D and source page3 while all uncertain questions stay held",
+        "All6 complete text questions retain full canonical stems and pass actual typed source readback shared with Pi; no teacher or mathematical acceptance claimed",
+        "Visible retry reads saved sources, preserves the canonical AI answers/analysis and does not silently promote held questions",
+        "Both desktop sizes reach the final candidate, source page and original answers without horizontal overflow",
+        "Controlled local-page receipt corruption reaches the real IPC source guard, shows a retryable error and retains12 candidates; exact receipt restored afterward",
+        "Unlink/restoring the identical book queues background matching at the new revision with no paid replay or canonical mutation",
+        "Restart preserves held candidates, exact source hashes, both two-call ledgers, all12 canonical questions and SQLite integrity"
+      ],
+      "success": true,
+      "cloudRequests": 0,
+      "rendererErrors": [],
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "width": 1920,
+          "height": 1080
+        }
+      ],
+      "revisions": {
+        "before": 21,
+        "restored": 23
+      }
+    }
+  },
+  "performance": {
+    "baseMainBytes": 3309674,
+    "finalMainBytes": 3319358,
+    "mainDeltaBytes": 9684,
+    "baseRendererBytes": 7246099,
+    "finalRendererBytes": 7251525,
+    "rendererDeltaBytes": 5426,
+    "scope": "Includes collaborator E08 integration. Single same-page qualification0/12 to6/12 is bounded quality evidence; no P95, global recall or natural40GB claim."
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "total": 45,
+    "high": 8,
+    "moderate": 29,
+    "low": 8,
+    "critical": 0,
+    "dependencyChanges": false
+  },
+  "open": [
+    "Remaining6 source figure/table questions need complete visual/table evidence",
+    "Answer-page uncertainty and cross-page tail still prevent all12 real known-answer canonical writes",
+    "AI answer consistency is not mathematical or teacher acceptance; repeated page candidates and broader book-scale flows require continued assessment",
+    "Natural tens-GB long runs, corpus recall, P95, full teacher acceptance and installer remain unverified",
+    "D daily runtime and installer have not been updated"
+  ],
+  "rollback": "Pause new batches; OMNI_EDU_AI_PAGE_RESTORATION=0 stops new page production while retaining old receipts. Keep strict pagePrompt read support for saved v2 units; do not execute them with an unaware old provider. No DDL downgrade. Full rollback not exercised.",
+  "strictValidationCommit": "64a8b2f",
+  "priorIntegratedBuild": {
+    "file": "apps\\desktop\\out\\main\\index.js",
+    "bytes": 3319330,
+    "sha256": "d3e6fa24e81612f171563f86e9cdcb8417d09cc94cd2cf0b4d7919a6b67dde30"
+  },
+  "criticReview": {
+    "fixed": [
+      "False OCR failure context caused artificial uncertainty",
+      "Projection options were discarded from canonical stems",
+      "Declarative MCQs/fill-ins were dropped by question-cue filter",
+      "Coercible OCR status could pass strict metadata validation",
+      "Fault-test writes needed bounded lock handling and exact recovery"
+    ],
+    "remaining": [
+      "Full visual/table evidence and cross-page recovery are not complete",
+      "Answerbook uncertainty continues to block true canonical answer writeback",
+      "No natural tens-GB stability/recall/P95 or installer acceptance yet"
+    ]
+  }
+}

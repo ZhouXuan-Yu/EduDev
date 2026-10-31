@@ -1,5 +1,10 @@
 # Goal 决策记录
 
+## 2026-10-31 原页题面与提示版本
+
+新原页单元冻结page-restoration.v2及真实OCR状态；旧first_saved沿原提示。完整stem必须含选项、小问、表格和公式，projection不能代替规范题面；parser只临时识别已声明原文编号，不改原回执。真实缺图/跨页/不清晰继续待核。ai_final仅表示当前AI原页证据资格，不是教师确认或数学正确性保证。回退保留新单元严格读适配，不让未知旧provider静默恢复。详见docs/research/KB_PAGE_PROMPT_20261031.json。
+
+
 2026-10-31 E08当前版本：复用统一officeVersionFamilies轻量投影，原Office账本/原报告不变；当前交付证明策略只用于空闲教师任务复核，历史工具/来源证明不改。列表读后遇到新发布版本补读原artifact事实，避免整族消失；无DDL/依赖/付费。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
 ## 2026-10-31 封面跳过补强
