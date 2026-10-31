@@ -11,6 +11,8 @@ for(const [name,prepare,expected,status]of [
  ['A cover remains outside the question bank',f=>{f.state.text='5年中考3年模拟\n2026秋\n物理 九年级全一册\n科学备考';},0,'complete'],
  ['An explicitly marked removable advertising page cannot archive its miniature example',f=>{f.state.text='【温馨提示】本页为广告页，打印前可以把这页删掉\n第1题 已知热水温度，求结果。';},0,'complete'],
  ['A question quoting advertisement instructions is not discarded',f=>{f.state.text='第1题 已知某广告写着：本页为广告页，打印前可以把这页删掉。请说明其中的物理含义。';},1,'complete'],
+ ['A branded cover with author and publisher is discarded',f=>{f.state.text='2026秋\n物理 九年级全一册\n主编曲一线\n首都师范大学出版社';},0,'complete'],
+ ['Cover metadata mixed with a real exercise preserves the exercise',f=>{f.state.text='物理 九年级全一册\n主编曲一线\n首都师范大学出版社\n第1题 已知热水温度，计算温差。';},1,'complete'],
  ['A genuine exercise on the final page is preserved',f=>{f.state.text='第27题 已知小球质量为10g，计算重力。';},1,'complete'],
  ['A pure contents page is not turned into a numbered exercise',f=>{f.state.text='目录\n第十三章 测试卷\n1\n第十四章 测试卷\n3\n专项训练卷（一）\n5\n专项训练卷（二）\n7\n期中测试卷\n9\n期末测试卷\n11';},0,'complete'],
  ['A contents heading mixed with a real numbered question preserves that question',f=>{f.state.text='目录\n第十三章 测试卷\n1\n第十四章 测试卷\n3\n专项训练卷（一）\n5\n专项训练卷（二）\n7\n期中测试卷\n9\n期末测试卷\n11\n第1题 已知热水温度，计算温差。';},1,'complete'],
@@ -18,11 +20,15 @@ for(const [name,prepare,expected,status]of [
  ['A real question quoting promotional text is preserved',f=>{f.state.text='第1题 已知宣传文案如下：\n图书结构\n试卷亮点\n命题思路紧贴考情\n答案单独梳理\n请说明以上文字的含义。';},1,'complete'],
  ['Ordinary question-book extraction still publishes its original source record',()=>{},1,'complete']
 ]){const f=fixture();try{prepare(f);assert(await f.archive.drain());assert.equal(f.db.prepare('SELECT COUNT(*) n FROM question_bank_items').get().n,expected);const row=f.db.prepare('SELECT status,error FROM material_question_jobs').get();assert.equal(row.status,status);if(status==='failed')assert.equal(row.error,'source_changed');checks++;console.log('PASS '+name);}finally{f.db.close();}}
+{
+ const {nonQuestionPagePurpose}=await import('../../src/main/assets/material-page-purpose.ts');
+ for(const suffix of ['\n一、选择题\n下列说法正确的是','\n（1）请说明这种变化的原因。']){assert.equal(nonQuestionPagePurpose('物理 九年级全一册\n主编曲一线\n首都师范大学出版社'+suffix),null);checks++;}
+}
 if(process.argv[2]){
  const path=await import('node:path'),os=await import('node:os'),fs=await import('node:fs');const root=path.resolve(process.argv[2]);assert.equal(path.dirname(root),path.resolve(os.tmpdir()));assert(/^omni-real-material-[a-z0-9]+$/i.test(path.basename(root)));assert.equal(fs.realpathSync(root),root);
  const {extractMaterialQuestions}=await import('../../src/main/assets/material-question-extract.ts'),{nonQuestionPagePurpose}=await import('../../src/main/assets/material-page-purpose.ts');
  const db=new DatabaseSync(path.join(root,'data','app.db'),{readOnly:true});try{
-  for(const [page,purpose]of [[2,'promotion'],[3,'contents'],[62,null]]){
+  for(const [page,purpose]of [[1,'cover'],[2,'promotion'],[3,'contents'],[62,null]]){
    const rows=db.prepare("SELECT c.*,r.content_hash,r.original_file_name FROM resource_chunks c JOIN teacher_resources r ON r.id=c.resource_id WHERE r.original_file_name='主书.pdf' AND c.page_number=? ORDER BY c.chunk_index").all(page);assert(rows.length);const units=rows.map(r=>({resourceId:r.resource_id,version:r.content_hash,title:r.original_file_name,offset:r.chunk_index,chunk:{id:r.id,resourceId:r.resource_id,chunkIndex:r.chunk_index,contentMd:r.content_md,pageNumber:r.page_number,containsPersonalData:!!r.contains_personal_data}}));
    assert.equal(nonQuestionPagePurpose(rows.map(r=>r.content_md).join('\n')),purpose);const count=extractMaterialQuestions(units,'local-ocr').length;if(purpose)assert.equal(count,0);else assert(count>0);checks++;console.log(JSON.stringify({actualSavedOCRPage:page,purpose,newRuleCandidates:count,scope:'Read-only saved source and current rule, NOT a replay of the production UI archiver or deletion of historical records'}));
   }

@@ -1,3 +1,4 @@
+import {nonQuestionPagePurpose} from './material-page-purpose';
 import {MATERIAL_FOLDER_AI_SCHEMA as schema,validFolderAiGrant,validFolderAiAction,type FolderAiGrant,type FolderAiAction,type FolderAiView} from '../../shared/material-folder-ai';
 import {materialBatchId} from '../../shared/material-import-batch';
 import {createHash} from 'node:crypto';
@@ -113,7 +114,9 @@ export class MaterialFolderAiRepository{
    const job=(await this.host.all('SELECT * FROM material_pdf_jobs WHERE resource_id=? AND version=?',[id,String(resource.version)]))[0];if(!job){if(row.parse_status==='failed')await fail('local_parse_failed');return;}total=Number(job.total);
    // Page receipts are staging facts. Canonical source chunks are available only after publication.
    if(!['complete','partial'].includes(String(job.state))||!['ready','partial','parsed','chunked','indexed','graph_extracted'].includes(String(row.parse_status))){if(row.parse_status==='failed'&&job.state!=='processing')await fail('local_parse_failed');return;}
-   if(unit<=total){const page=(await this.host.all('SELECT status FROM material_pdf_pages WHERE generation=? AND page=?',[String(job.generation),unit]))[0];if(!page||['pending','running','processing'].includes(String(page.status)))return;
+   if(unit<=total){const page=(await this.host.all('SELECT status,result_json FROM material_pdf_pages WHERE generation=? AND page=?',[String(job.generation),unit]))[0];if(!page||['pending','running','processing'].includes(String(page.status)))return;
+    // Skip only explicit, successfully read covers. Failed/unclear OCR can never justify discarding a page.
+    if(page.status==='complete'){let content='';try{const receipt=JSON.parse(String(page.result_json));content=typeof receipt.text==='string'?receipt.text:'';}catch{/* Older receipts need the normal guarded path. */}if(nonQuestionPagePurpose(content)==='cover'){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);return this.finishUnit({...resource,total},unit,'complete','non_question_cover');}}
     if(!['complete','blank','failed','needs_review'].includes(String(page.status))){await this.host.run('UPDATE material_folder_ai_resources SET total=? WHERE batch_id=? AND resource_id=?',[total,String(grant.batch_id),id]);return this.finishUnit({...resource,total},unit,'review','local_page_failed');}
    }
   }else if(total<0){total=word?(await this.host.word().questions({schemaVersion:'xiaozhi.word-question-source.v1',resourceId:id,version:String(resource.version),offset:0}))?.total??0:image?1:Number((await this.host.all('SELECT COUNT(*) n FROM resource_chunks WHERE resource_id=?',[id]))[0]?.n||0);}

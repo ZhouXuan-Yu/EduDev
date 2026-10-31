@@ -1,5 +1,17 @@
 # 当前架构
 
+## 2026-10-31 答案册受控回写与封面跳过
+
+新增目录定位微基准：5000页/10万条合成元数据、内存SQLite预热；去掉每次查整本批次元数据的旧fence，换为持久dirty/sentinel及writer复查，median3.3461→0.0219ms，P953.9623→0.0428ms。仅目录查找，不含原图复验、文件IO、AI、完整检索或自然40GB；不据此宣称产品提速验收。
+
+MaterialBookAnswerRepository沿原MaterialAiRepository.drain空闲周期推进本地目录/匹配，复用主库事务与发送之外的历史原件校验。派生表material_book_answer_index_v1、material_book_answer_dirty_v1、material_book_answer_control_v1、material_book_answer_work_v1及不可变业务material_book_answer_journal_v1均在同一SQLite，无新服务/依赖/密钥。原页发表、答案更新、关联恢复触发work；一次一页/最多20道题/每页64KiB、200答案条目。当前页发表顺序以sentinel抑制旧页回退；单元/页回执变更置dirty，writer内再查pending与候选目录，并核对原图、两遍原响应、关联修订和题目版本。检索重建同时重建派生答案目录，保留业务journal。
+
+v6保留v5的AI/pageSource/sources并增加book.roles；教师改角色解除相应来源，改题干不能静默沿用旧答案。Pi/题本读取重新校验journal和原页；解除关联不抹去既有已应用来源，新写入仍要求当前修订。typed materials:book-matches/book-match贯通原页面板，记录轮询只查受限行/版本，不反复读取整本原件。历史记录显示已写入不等于当前数学/教师验收。原AI/联网补答路径保留，书答案仅可用来源字段有book_extracted归属。
+
+封面策略本地只接受明确书目信息且无实际习题线索、OCR成功；不按页码位置推断。无题封面跳过文件夹付费子任务，普通/不清/混合页仍进入原处理链。证据docs/research/KB_BOOK_MATCH_20261031.json；完整Goal未完成。
+
+## 2026-10-31 协作者 E08 版本恢复记录
+
 2026-10-31 E08：E08版本服务是原Office账本的按需投影：轻量元数据查询，不批量加载历史BLOB；仅选定版本读盘核哈希。新typed office-version通道复用原全局空闲所有者、Pi文件队列和uncertain核验；无新Runtime/表/依赖。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
 
 最终再次整合main32e7071为c99f6bb，14处Markdown冲突保留双方，终态及对话UI源码与b35b5fc一致；最终build/type和240组件exit0。原Pi精简回复3项归b35b5fc，本次未重跑。最终构建另含答案分组功能，指纹/范围见AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice.lastIntegration；Goal active，完整AT仍待阶段集中，D盘日常/安装包未更新。
