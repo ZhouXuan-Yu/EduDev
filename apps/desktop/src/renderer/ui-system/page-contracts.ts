@@ -23,6 +23,18 @@ export const COMMON_STATES = [
 ] as const;
 export const PAGE_CONTRACTS: PageContract[] = [
   {
+    id: 'teaching', title: '教学工作台', group: '教学', layout: 'overview',
+    purpose: '聚合现有教学内容及真实教学文件。', primaryAction: '新建备课',
+    constraints: ['复用五个教学原页面，不创建第二份事实', '列表只展示真实已保存文件', '文件的打开、来源及审核沿原入口'],
+    acceptance: ['全部五个领域入口可达', '真实教学文件仍可打开'],
+  },
+  {
+    id: 'student_workbench', title: '学生工作台', group: '学生', layout: 'overview',
+    purpose: '聚合教师管理学生学习的现有功能。', primaryAction: '添加学生',
+    constraints: ['保留七个学生领域入口及原档案操作', '不新增学生端或虚构学情', '档案与学习记录沿原本地真源'],
+    acceptance: ['全部七个领域入口可达', '原档案增改与学习记录保留'],
+  },
+  {
     id: 'ai',
     title: '问小智',
     group: '工作',

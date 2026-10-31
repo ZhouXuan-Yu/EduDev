@@ -1,0 +1,374 @@
+{
+  "sourceCommit": "b8ea47290f0ffe30f12732b6b17e0d788ed2af05",
+  "upstreamIncluded": "6d4542453eafa984084c774dfc0fbd669d9ee34d",
+  "scope": "Light workbench UI integration; existing 15 domain routes retained; not all inner domain pages redesigned.",
+  "build": {
+    "command": "npm run build",
+    "exit": 0,
+    "log": "apps/desktop/workbench-build-delivery.log"
+  },
+  "ui": {
+    "command": "npm run test:workbench-ui",
+    "exit": 0,
+    "report": "apps/desktop/test-results/workbench-4Ot9ba/report.json",
+    "reportSha256": "9c62027a0f667d5b632e6c8a2be662cbf5a8d13e688e6ed258c4488b16c63316",
+    "summary": {
+      "passed": 25,
+      "failed": 0,
+      "errors": 0,
+      "notRun": 0
+    },
+    "checks": [
+      {
+        "name": "isolated formal production launch",
+        "pass": true,
+        "ms": 4549
+      },
+      {
+        "name": "first home and three columns 1366",
+        "pass": true,
+        "ms": 420
+      },
+      {
+        "name": "first home and three columns 1920",
+        "pass": true,
+        "ms": 333
+      },
+      {
+        "name": "home tasks and suggestions prepare drafts only",
+        "pass": true,
+        "ms": 337
+      },
+      {
+        "name": "initial disclosure and all original 15 pages",
+        "pass": true,
+        "ms": 1710
+      },
+      {
+        "name": "both hubs and all domain entries",
+        "pass": true,
+        "ms": 1984
+      },
+      {
+        "name": "history autoopens child disclosure",
+        "pass": true,
+        "ms": 606
+      },
+      {
+        "name": "fixed settings footer and independent scroll",
+        "pass": true,
+        "ms": 272
+      },
+      {
+        "name": "real folder and titled sessions through forms and SQLite",
+        "pass": true,
+        "ms": 1451
+      },
+      {
+        "name": "title search empty results grouped results and click",
+        "pass": true,
+        "ms": 408
+      },
+      {
+        "name": "original history management retained",
+        "pass": true,
+        "ms": 1195
+      },
+      {
+        "name": "session drafts isolated and survive hub navigation",
+        "pass": true,
+        "ms": 1286
+      },
+      {
+        "name": "sidebar collapse expand and keyboard focus",
+        "pass": true,
+        "ms": 181
+      },
+      {
+        "name": "modal initial focus Tab trap Escape return focus",
+        "pass": true,
+        "ms": 822
+      },
+      {
+        "name": "right tasks files tabs keyboard close reopen",
+        "pass": true,
+        "ms": 371
+      },
+      {
+        "name": "owned file native authorization and actual text preview",
+        "pass": true,
+        "ms": 472
+      },
+      {
+        "name": "real knowledge txt import and SQLite readback",
+        "pass": true,
+        "ms": 211
+      },
+      {
+        "name": "840 viewport controls reachable without overlap",
+        "pass": true,
+        "ms": 2274
+      },
+      {
+        "name": "reduced motion",
+        "pass": true,
+        "ms": 334
+      },
+      {
+        "name": "sidebar states and 700px effective collapse",
+        "pass": true,
+        "ms": 501
+      },
+      {
+        "name": "cold restart SQLite sessions folders and imported resource",
+        "pass": true,
+        "ms": 32
+      },
+      {
+        "name": "cold restart UI sessions titles folders drafts and knowledge import",
+        "pass": true,
+        "ms": 834
+      },
+      {
+        "name": "zero model tasks and unchanged fixtures",
+        "pass": true,
+        "ms": 7
+      },
+      {
+        "name": "zero renderer errors across both launches including shutdown",
+        "pass": true,
+        "ms": 0
+      },
+      {
+        "name": "frozen production build and test script unchanged",
+        "pass": true,
+        "ms": 93
+      }
+    ],
+    "modelTasksSubmitted": 0,
+    "errors": [],
+    "buildFingerprintBefore": "e60e20678ca477c6fb558b59e92b37552e3077a9e8322d13428bc1b414c4d83a",
+    "buildFingerprintAfter": "e60e20678ca477c6fb558b59e92b37552e3077a9e8322d13428bc1b414c4d83a"
+  },
+  "components": {
+    "command": "npm run test:renderer-components",
+    "exit": 0,
+    "passed": 240,
+    "total": 240,
+    "note": "Final integration run exited 0 with 240/240 and no port warning."
+  },
+  "reading": {
+    "command": "node scripts/office-reading-browser.mjs",
+    "exit": 0,
+    "checks": 11,
+    "report": "apps/desktop/test-results/goal/harness-h09b-20261020/browser-Lq83J3/report.json",
+    "scope": "controlled public display projection, actual wheel/selection in Chromium, not provider"
+  },
+  "daily": {
+    "command": "npm run test:daily-entry",
+    "exit": 0,
+    "checks": 8,
+    "report": "apps/desktop/test-results/daily-entry-hrG2HT/report.json",
+    "reportSha256": "68fcd37b90435a451bb4b0031fffb6e1e626f2b34446b7db411c8c43a8c48fc0"
+  },
+  "realProvider": {
+    "command": "node scripts/workbench-live.mjs --env-file <local private env> --read-only",
+    "exit": 0,
+    "report": "apps/desktop/test-results/workbench-live-wWz1XU/report.json",
+    "reportSha256": "7ac800f8c79f07bc27b416664a6d50932004e64006b3f368a1824e565a8be3a9",
+    "model": "deepseek-flash",
+    "buildFingerprint": "e60e20678ca477c6fb558b59e92b37552e3077a9e8322d13428bc1b414c4d83a",
+    "checks": [
+      "Directory selection follows original authorization",
+      "Real read tool streams public process, collapses and displays final answer",
+      "Actual active run stops through original composer",
+      "Cold restart preserves decisions without replaying writes"
+    ],
+    "errors": [],
+    "realRun": {
+      "runId": "run_58a3c4b3-d48a-4a83-b39a-ebf1ffa3cb58",
+      "elapsedMs": 9880,
+      "tools": [
+        {
+          "label": "查看授权文件目录",
+          "status": "completed"
+        },
+        {
+          "label": "读取授权资料",
+          "status": "completed"
+        }
+      ]
+    },
+    "scope": "Real provider + original Pi + real owned files; OS chooser return controlled. No user data. Read-only mode: approval is explicitly NOT tested."
+  },
+  "retainedFailure": {
+    "writeApproval": {
+      "exit": 1,
+      "report": "apps/desktop/test-results/workbench-live-xESB8T/report.json",
+      "result": {
+        "running": false,
+        "approvals": 0,
+        "turns": [
+          {
+            "id": "run_d0735a7b-1a27-4aec-b5af-166e5f405e31",
+            "status": "completed",
+            "tools": [
+              {
+                "label": "读取授权资料",
+                "status": "completed"
+              },
+              {
+                "label": "创建教学文档",
+                "status": "failed"
+              },
+              {
+                "label": "更新任务计划",
+                "status": "failed"
+              },
+              {
+                "label": "更新任务计划",
+                "status": "completed"
+              },
+              {
+                "label": "创建教学文档",
+                "status": "failed"
+              },
+              {
+                "label": "执行授权工具",
+                "status": "completed"
+              },
+              {
+                "label": "创建教学文档",
+                "status": "failed"
+              }
+            ]
+          }
+        ]
+      },
+      "note": "No approval produced; write tool failures; approve/reject NOT accepted; failure screenshot omitted due to incidental names of unverified origin."
+    },
+    "vendorGate": {
+      "command": "npm run test:ui-contracts",
+      "exit": 1,
+      "actual": "1459eb1a57a19699a612c07225df6bf92d347d6f8ccc856c8c3e593a7e46d644",
+      "expected": "671d52c67ed93575992fca4e63ea2a4241e6f5bb0822a31e36cdafdd4c0fac26",
+      "note": "Existing prompt-input/index.ts drift; vendor and gate unchanged"
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "stopIntermediateSnapshot": {
+      "exit": 1,
+      "report": "apps/desktop/test-results/workbench-live-kHDgQd/report.json",
+      "observation": "Runtime running=false while persisted turn still running; immediate interrupted assertion failed. Test now waits both inactive runtime and terminal projection, still asserts interrupted; final retry passed without product stop changes."
+    }
+  },
+  "earlierBoundarySuites": {
+    "agentTrace": 19,
+    "desktopProcess": 7,
+    "exit": 0,
+    "binding": "before final read-only empty-state fix and upstream KB merge; process components unchanged"
+  },
+  "beforeScreenshots": "../sidebar-navigation-2026-10-31/expanded-1366.png and expanded-1920.png",
+  "screenshots": [
+    {
+      "file": "snapshots/home-three-columns-1366.png",
+      "sha256": "644521e02ffd014dc94ad945bc2b6af34af24df493fd234fdae96da85c11873b",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\home-three-columns-1366.png"
+    },
+    {
+      "file": "snapshots/home-three-columns-1920.png",
+      "sha256": "8ff8266d899420dfba835e7af41dd66a600a4004fec5a608fc3e03820bf2383d",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\home-three-columns-1920.png"
+    },
+    {
+      "file": "snapshots/hub-teaching-1366.png",
+      "sha256": "3e0992bf09debbababf86a20f431c05502524adac658b2783799c8ba024807fd",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\hub-teaching-1366.png"
+    },
+    {
+      "file": "snapshots/hub-students-1366.png",
+      "sha256": "a1d83218ab8f5f17179a941f9eb2d854d91af9c5e725b59baca56aa510824934",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\hub-students-1366.png"
+    },
+    {
+      "file": "snapshots/narrow-700-navigation-expanded.png",
+      "sha256": "3fdb0f892328092bb4de13c0cc1a8222928b535bfb8d9c0e1e558acabd25a270",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\narrow-700-navigation-expanded.png"
+    },
+    {
+      "file": "snapshots/narrow-840-composer-controls.png",
+      "sha256": "c60e801b6d313da170a03be1bf15222e893a4af73154ac1610983e2906b9bffc",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\narrow-840-composer-controls.png"
+    },
+    {
+      "file": "snapshots/owned-txt-actual-preview.png",
+      "sha256": "4c9be27f9eefdc6897e464ec3fd0b492f7d0dc24cdd0e3adf11c4abd98722a96",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\owned-txt-actual-preview.png"
+    },
+    {
+      "file": "snapshots/search-title-groups.png",
+      "sha256": "ebe43942b9cb37f96e1a553b6878edf1d73fc0677df168acff24ed39af02ecba",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\search-title-groups.png"
+    },
+    {
+      "file": "snapshots/sidebar-collapsed.png",
+      "sha256": "3a41d289b2093fdc9aba96e80182da9ed007be2129909b6dfb1ae458c189aefe",
+      "source": "apps\\desktop\\test-results\\workbench-4Ot9ba\\sidebar-collapsed.png"
+    },
+    {
+      "file": "snapshots/real-reading-running.png",
+      "sha256": "6099d0a33aba7d44287e243bebdebe908edca35c8e3828ed8d41df6871e9550e",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-reading-running.png"
+    },
+    {
+      "file": "snapshots/real-reading-complete-1366.png",
+      "sha256": "49328349955dfde90fa7971a00075322b850c90b5a9befd9ab243aba913c38de",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-reading-complete-1366.png"
+    },
+    {
+      "file": "snapshots/real-reading-complete-1920.png",
+      "sha256": "1d2ff0cbf33c59a978deab325923df630969aa49b57ec8bdfc12cbb71154f042",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-reading-complete-1920.png"
+    },
+    {
+      "file": "snapshots/real-tools-expanded.png",
+      "sha256": "6d46cf460adb59be602a0318937b4fc9f42254f1bbb61d5237085c4b59cdadf5",
+      "source": "apps\\desktop\\test-results\\workbench-live-wWz1XU\\real-tools-expanded.png"
+    }
+  ],
+  "unverified": [
+    "Teacher visual acceptance",
+    "Full domain CRUD",
+    "Provider approve/reject write flow",
+    "Full Office format edit/export",
+    "Complete rollback rehearsal"
+  ],
+  "orchestration": {
+    "architectureAndReview": "gpt-6-astra High",
+    "implementation": "gpt-6.1-sol High",
+    "staticReview": "No confirmed new P1/P2 after repairs; not runtime acceptance"
+  },
+  "previousIntegration": {
+    "sourceCommit": "49a41ade3491b1c88592e203c85d55f532c1e803",
+    "ui": "apps/desktop/test-results/workbench-H5Bzvt/report.json",
+    "realProvider": "apps/desktop/test-results/workbench-live-gkj5RD/report.json",
+    "buildFingerprint": "45c35aa77dd2a368f258d742c16e5aa46ee046e4c62ddb62debd2534e2f75b60"
+  },
+  "upstreamRequirements": {
+    "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-requirements-smoke.mjs",
+    "exit": 0,
+    "checks": 6,
+    "note": "First invocation without the existing source loader failed ERR_MODULE_NOT_FOUND; retained workbench-upstream-requirements.log, corrected invocation passed."
+  },
+  "versionBoundaries": {
+    "readingAndDaily": "49a41ad after KB merge; not rerun after requirements upstream. Final UI25 + components240 + requirements6 + real read/stop/cold rerun on b8ea472.",
+    "finalOnlyTestChange": "workbench-live terminal wait; production unchanged from b8ea472."
+  }
+}

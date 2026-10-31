@@ -60,6 +60,7 @@ import { PiEducationWorkspace } from './components/office/PiEducationWorkspace';
 import { PiRuntimeStartup } from './components/office/PiRuntimeStartup';
 import { useDesktopCommands, useDesktopNavigation } from './components/desktop/DesktopFrame';
 import { ProductSpaceShell } from './components/product/ProductSpaceShell';
+import { WorkbenchHub } from './components/product/WorkbenchHub';
 import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
 import {MaterialSourceNavigation} from './components/product/MaterialSourceNavigation';
 import type {MaterialSourceView} from '../shared/materials';
@@ -148,7 +149,7 @@ const emptyKnowledgeOverview: KnowledgeOverview = {
 };
 
 
-type ViewKey = 'today' | 'ai' | 'knowledge' | 'artifacts' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'paper' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
+type ViewKey = 'today' | 'ai' | 'knowledge' | 'teaching' | 'student_workbench' | 'artifacts' | 'students' | 'mastery' | 'intake' | 'mistakes' | 'review' | 'search' | 'paper' | 'question_notebook' | 'notebook' | 'book' | 'memory' | 'team' | 'analytics' | 'settings';
 
 type AiArtifact = {
   id: string;
@@ -2792,6 +2793,8 @@ export function App() {
   }
 
   function renderCurrentView() {
+    if (activeView === 'teaching') return <WorkbenchHub kind="teaching"><TeachingArtifactsWorkspace /></WorkbenchHub>;
+    if (activeView === 'student_workbench') return <WorkbenchHub kind="students">{renderStudentsView()}</WorkbenchHub>;
     if (activeView === 'today') return renderTodayView();
     if (activeView === 'ai') return renderAIConsoleViewV2();
     if (activeView === 'knowledge') return renderKnowledgeBaseView();

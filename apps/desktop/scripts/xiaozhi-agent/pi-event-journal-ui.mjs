@@ -20,7 +20,7 @@ try{
    if(event.kind==='tool_start'&&event.tool==='office_read_attachment'&&!cut.dropped.length){cut.dropped.push(event);return;}
    if(event.kind==='status'&&event.status!=='running'){cut.held.push(event);return;}
  }return send(channel,...args);};return true;});
- await page.getByTestId('office-prompt-input').fill('读取附件正文，告诉我核验码、时长和练习数量，标注文件来源。');await page.locator('.office-composer [data-slot="prompt-input-send"]').click();assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');
+ await page.getByTestId('office-prompt-input').fill('读取附件正文，告诉我核验码、时长和练习数量，标注文件来源。');await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');
  const turn=await until(async()=>{const s=await snapshot(),t=s.projection.turns.at(-1);return !s.running&&t?.status==='completed'?t:undefined;});const final=turn.items.filter(i=>i.kind==='message'&&i.role==='assistant'&&i.phase==='final_answer').map(i=>i.text).join('\n');assert(final.includes(code)&&final.includes('37')&&final.includes('8'),final);
  const cut=await app.evaluate(()=>({dropped:globalThis.journalCut.dropped,held:globalThis.journalCut.held}));assert.equal(cut.dropped.length,1);assert.equal(cut.held.length,1);assert.equal(cut.dropped[0].tool,'office_read_attachment');report.notificationCut=cut;
  await until(async()=>await turnView(turn.id).getAttribute('data-state')==='completed',20000);assert((await turnView(turn.id).innerText()).includes(code));assert((await turnView(turn.id).innerText()).includes('读取附件'));
@@ -33,7 +33,7 @@ try{
  const nativePath=path.join(data,'xiaozhi-pi',query('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?',[session])[0].session_file),nativeBefore=fs.readFileSync(nativePath),journalBefore=events.map(e=>e.event_hash);
  await page.screenshot({path:path.join(output,'gap-recovered.png'),animations:'disabled'});await page.reload();await page.getByTestId('xiaozhi-pi-workspace').waitFor();await until(async()=>await turnView(turn.id).getAttribute('data-state')==='completed');assert.deepEqual((await snapshot()).projection.turns.find(t=>t.id===turn.id),turn);assert(nativeBefore.equals(fs.readFileSync(nativePath)));check('Renderer reload reads the same saved projection and does not replay tool or model');
  await app.close();app=undefined;await launch();assert.deepEqual((await snapshot()).projection.turns.find(t=>t.id===turn.id),turn);assert(nativeBefore.equals(fs.readFileSync(nativePath)));assert.deepEqual(query('SELECT event_hash FROM xiaozhi_event_journal WHERE run_id=? ORDER BY sequence',[turn.id]).map(e=>e.event_hash),journalBefore);assert.equal((await page.evaluate(()=>globalThis.journalEvents)).length,0);await page.screenshot({path:path.join(output,'cold-recovered.png'),animations:'disabled'});check('Cold formal restart preserves exact event/native bytes, answer and verification with zero effect replay');
- await page.getByTestId('office-prompt-input').fill('我想备课，但还没有确定年级。请先向我提一个选择问题，并等待我在问题卡里回答；现在先不要生成教案。');await page.locator('.office-composer [data-slot="prompt-input-send"]').click();
+ await page.getByTestId('office-prompt-input').fill('我想备课，但还没有确定年级。请先向我提一个选择问题，并等待我在问题卡里回答；现在先不要生成教案。');await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();
  const asking=await until(async()=>{const s=await snapshot(),q=s.controls?.find(c=>c.kind==='question'&&c.state==='pending'&&c.runId!==turn.id);return q?{snapshot:s,question:q}:undefined;});
  assert.equal(asking.snapshot.projection.turns.find(t=>t.id===asking.question.runId).status,'waiting_input');assert.equal((await snapshot()).projection.turns.find(t=>t.id===asking.question.runId).status,'waiting_input');
  const questionCard=page.locator(`[data-testid="pi-teacher-question"][data-control-id="${asking.question.id}"]`);await questionCard.getByTestId('pi-question-answer').fill('七年级数学。现在先不生成教案，本轮只回复：课堂范围已确认。');await questionCard.getByTestId('pi-question-submit').click();
@@ -41,7 +41,7 @@ try{
  check('Real pending question snapshot is waiting_input after committed queue flush; visible teacher answer resumes exactly this run');
  const trigger=new DatabaseSync(path.join(data,'app.db'));trigger.exec("CREATE TRIGGER h03_fail_tool_start BEFORE INSERT ON xiaozhi_event_journal WHEN json_extract(NEW.event_json,'$.kind')='tool_start' BEGIN SELECT RAISE(ABORT,'owned H03 journal write failure'); END");trigger.close();
  const priorNative=fs.readFileSync(nativePath).toString().trim().split('\n').length;
- await page.getByTestId('office-prompt-input').fill('再次读取本会话的附件正文，告诉我课堂核验码。请实际调用读取附件工具。');await page.locator('.office-composer [data-slot="prompt-input-send"]').click();
+ await page.getByTestId('office-prompt-input').fill('再次读取本会话的附件正文，告诉我课堂核验码。请实际调用读取附件工具。');await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();
  const failed=await until(async()=>{const s=await snapshot();return s.eventPersistence==='unavailable'&&!s.running?s:undefined;});const failedTurn=failed.projection.turns.at(-1);assert.equal(failedTurn.status,'failed');report.persistenceFailedRun=failedTurn.id;
  await page.getByText('本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。',{exact:true}).first().waitFor();
  assert.equal(failedTurn.error,'本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。');

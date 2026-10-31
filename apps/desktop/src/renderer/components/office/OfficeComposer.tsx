@@ -175,7 +175,8 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
       </section>}
       <PromptInput value={draft} onValueChange={setDraft} onSubmit={() => void send(draft, true)}
         onStop={() => void stop()} status={running ? 'streaming' : submitting ? 'submitted' : 'ready'}
-        lockInputOnRun={false} isDisabled={disabled} maxHeight={220} className="office-composer" data-testid="office-composer">
+        lockInputOnRun={false} isDisabled={disabled} maxHeight={220} className="wb-composer" data-testid="office-composer">
+        <div className="wb-input-frame">
         <ChatAttachmentInput accept={XIAOZHI_ATTACHMENT_ACCEPT} onFilesSelected={files => void onFilesSelected?.(files)} disabled={disabled || sync.blocked || attachDisabled} multiple>
           <ChatAttachmentInput.Dropzone render={dropzoneProps => (
             <PromptInput.Shell {...dropzoneProps}>
@@ -191,6 +192,29 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
                       <Paperclip size={20} />
                     </PromptInput.Action>
                   )}/>
+            </PromptInput.ToolbarStart>
+            <PromptInput.ToolbarEnd>
+              <Dropdown isOpen={visible&&openMenu==='models'} onOpenChange={open=>menuChange('models',open)}>
+                <Button variant="ghost" size="sm" className="office-model-picker" aria-label="选择模型" isDisabled={running || submitting || disabled || sync.blocked || !onModelChange || models.length === 0}>
+                  <span title={selectedModel?.label ?? model}>{selectedModel?.label ?? model}</span><ChevronDown size={14} />
+                </Button>
+                <Dropdown.Popover {...nativeProps} className={`pi-office-menu${nativeAppearance?' default':''}`} placement="top end">
+                  <Dropdown.Menu aria-label="模型" selectionMode="single" selectedKeys={[model]} onAction={key => {
+                    const option = models.find(candidate => candidate.id === String(key));
+                    if (option && !option.disabled && !sync.isBlocked() && !running && !sendLock.current) onModelChange?.(option.id);
+                  }}>
+                    {models.map(option => <Dropdown.Item key={option.id} id={option.id} textValue={option.label} isDisabled={option.disabled}><Label>{option.label}</Label><Dropdown.ItemIndicator /></Dropdown.Item>)}
+                  </Dropdown.Menu>
+                </Dropdown.Popover>
+              </Dropdown>
+              {onVoice && <Tooltip><Button variant="ghost" isIconOnly aria-label="语音输入" isDisabled={disabled} onPress={onVoice}><Mic size={17} /></Button><Tooltip.Content {...nativeProps} className={nativeAppearance?'default':undefined}>语音输入</Tooltip.Content></Tooltip>}
+              <PromptInput.Send aria-label={running ? '停止本轮' : '发送消息'} isDisabled={disabled || stopping || (!running && (submitting || sync.blocked || sendBlocked || (!draft.trim()&&!hasAttachments)))} />
+            </PromptInput.ToolbarEnd>
+          </PromptInput.Toolbar>
+            </PromptInput.Shell>
+          )}/>
+        </ChatAttachmentInput>
+        <div className="wb-composer-tools" aria-label="对话选项">
               <Dropdown isOpen={visible&&openMenu==='permissions'} onOpenChange={open=>menuChange('permissions',open)}>
                 <Button variant="ghost" size="sm" className="office-permission" aria-label={permissionText} data-testid="pi-permission-picker" isDisabled={disabled || sync.blocked}><ShieldCheck size={15} /><span title={permissionText}>{permissionText}</span></Button>
                 <Dropdown.Popover {...nativeProps} className={`pi-office-menu pi-permission-menu${nativeAppearance?' default':''}`} placement="top start">
@@ -219,7 +243,7 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
                 </Dropdown.Menu></Dropdown.Popover>
               </Dropdown>{skill && <Button variant="ghost" size="sm" data-testid="pi-skill-view" aria-expanded={showSkill} onPress={() => setShowSkill(value => !value)}>查看说明</Button>}</>}
               <Dropdown isOpen={visible&&openMenu==='commands'} onOpenChange={open=>menuChange('commands',open)}>
-                <Button variant="ghost" size="sm" className="office-command-picker" aria-label="常用命令" data-testid="pi-command-picker" isDisabled={disabled || sync.blocked}><Command size={15} /><span>命令</span><ChevronDown size={13} /></Button>
+                <Button variant="ghost" size="sm" className="wb-command-picker" aria-label="常用命令" data-testid="pi-command-picker" isDisabled={disabled || sync.blocked}><Command size={15} /><span>命令</span><ChevronDown size={13} /></Button>
                 <Dropdown.Popover {...nativeProps} className={`pi-office-menu pi-command-menu${nativeAppearance?' default':''}`} placement="top start">
                   <Dropdown.Menu aria-label="常用命令" onAction={key=>runCommand(String(key))}>
                     {COMMON_COMMANDS.map(item=>{const Icon=item.icon;const available=item.id==='clear'?Boolean(onNewChat):item.id==='goal'?Boolean(onOpenGoal):item.id==='compact'?Boolean(onCompact):item.id==='permissions'?Boolean(onPermissions):Boolean(onSkills);return <Dropdown.Item key={item.id} id={item.id} data-testid={`pi-command-${item.id}`} textValue={`${item.command} ${item.label}`} isDisabled={running||submitting||sync.blocked||!available}>
@@ -228,29 +252,9 @@ function OfficeComposerDraft({ sessionId, status, model, models, thinkingControl
                   </Dropdown.Menu>
                 </Dropdown.Popover>
               </Dropdown>
-            </PromptInput.ToolbarStart>
-            <PromptInput.ToolbarEnd>
-              {thinkingControl}
-              <Dropdown isOpen={visible&&openMenu==='models'} onOpenChange={open=>menuChange('models',open)}>
-                <Button variant="ghost" size="sm" className="office-model-picker" aria-label="选择模型" isDisabled={running || submitting || disabled || sync.blocked || !onModelChange || models.length === 0}>
-                  <span title={selectedModel?.label ?? model}>{selectedModel?.label ?? model}</span><ChevronDown size={14} />
-                </Button>
-                <Dropdown.Popover {...nativeProps} className={`pi-office-menu${nativeAppearance?' default':''}`} placement="top end">
-                  <Dropdown.Menu aria-label="模型" selectionMode="single" selectedKeys={[model]} onAction={key => {
-                    const option = models.find(candidate => candidate.id === String(key));
-                    if (option && !option.disabled && !sync.isBlocked() && !running && !sendLock.current) onModelChange?.(option.id);
-                  }}>
-                    {models.map(option => <Dropdown.Item key={option.id} id={option.id} textValue={option.label} isDisabled={option.disabled}><Label>{option.label}</Label><Dropdown.ItemIndicator /></Dropdown.Item>)}
-                  </Dropdown.Menu>
-                </Dropdown.Popover>
-              </Dropdown>
-              {onVoice && <Tooltip><Button variant="ghost" isIconOnly aria-label="语音输入" isDisabled={disabled} onPress={onVoice}><Mic size={17} /></Button><Tooltip.Content {...nativeProps} className={nativeAppearance?'default':undefined}>语音输入</Tooltip.Content></Tooltip>}
-              <PromptInput.Send aria-label={running ? '停止本轮' : '发送消息'} isDisabled={disabled || stopping || (!running && (submitting || sync.blocked || sendBlocked || (!draft.trim()&&!hasAttachments)))} />
-            </PromptInput.ToolbarEnd>
-            </PromptInput.Toolbar>
-            </PromptInput.Shell>
-          )}/>
-        </ChatAttachmentInput>
+          {thinkingControl}
+        </div>
+        </div>
         <PromptInput.Footer data-testid="pi-composer-disclaimer">AI 可能会出错，请核对重要信息。</PromptInput.Footer>
       </PromptInput>
     </div>

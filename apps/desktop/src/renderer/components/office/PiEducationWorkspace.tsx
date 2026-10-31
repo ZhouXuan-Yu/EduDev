@@ -23,12 +23,11 @@ import {PiDeliveryBundleCard} from './PiDeliveryBundleCard';
 import { PiTextChangeCard } from './PiTextChangeCard';
 import {PiOfficeArtifactCard} from './PiOfficeArtifactCard';
 import { PiControlCards } from './PiControlCards';
-import { PiTaskPlan } from './PiTaskPlan';
-import { PiWorkspaceActivity } from './PiWorkspaceActivity';
 import { PiSkillSettings } from './PiSkillSettings';
 import { PiWorkspaceShell } from './PiWorkspaceShell';
 import { PiWorkspaceContext } from './PiWorkspaceContext';
 import { PiWorkspaceFiles } from './PiWorkspaceFiles';
+import { PiWorkbenchBridge } from './PiWorkbenchBridge';
 import {usePiAttachments} from './usePiAttachments';
 import { createPiSnapshotHydrator } from './pi-snapshot-hydrator';
 import { createPiTextViewBuffer, mergePiViewSnapshot } from './pi-text-view-buffer';
@@ -203,10 +202,10 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     compactAttempt.current=undefined;
     try { await hydrate(target); } catch { if (active.current && hydration.current!.token() === token) setNotice('无法读取本地会话，请重试。'); }
   }
-  async function fresh(folderId: string | null = null) {
-    const detail = await window.omniEdu?.createAiConversationSession({ title: '新对话', folderId });
+  async function fresh(folderId: string | null = null, title = '新对话') {
+    const detail = await window.omniEdu?.createAiConversationSession({ title: title.trim() || '新对话', folderId });
     if(!active.current)return;
-    if (detail) { await open(detail.session.id); await refreshList(); }
+    if (detail) { await open(detail.session.id); await refreshList(); return detail.session.id; }
   }
   async function loadEarlier() {
     const current=snapshotRef.current,target=idRef.current;
@@ -307,7 +306,6 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const projection = snapshot?.projection;
   const current = projection?.turns.at(-1);
   const compacting = snapshot?.running && snapshot.operation === 'compact';
-  const activePlan = snapshot?.running ? snapshot.controls?.filter(control=>control.kind==='plan'&&control.runId===current?.id).at(-1) : undefined;
   async function compact() {
     if (mutationsBlocked() || !id || !snapshot || snapshot.running || compactLock.current) return;
     compactLock.current = true; setCompactBusy(true); setNotice(''); const target = id;
@@ -320,7 +318,18 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     } catch { if (idRef.current === target) setNotice('压缩请求未确认，请重试。'); }
     finally { compactLock.current = false; setCompactBusy(false); }
   }
-  return <OfficeComposerState key={id || 'loading'} sessionId={id}><OfficeSynchronization blocked={syncBlocked} isBlocked={mutationsBlocked}><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
+  const history = (onSelected?: () => void) => <AiConversationSidebar codexStyle inline folders={workspace.folders} sessions={workspace.sessions} activeSessionId={id}
+      onOpenSession={async target=>{await open(target);navigation.navigate({view:'ai',sessionId:target});onSelected?.();}}
+      onNewSession={async folder=>{const target=await fresh(folder);if(target){navigation.navigate({view:'ai',sessionId:target});onSelected?.();}}} onLeaveAi={onLeave}
+      onCreateFolder={async name => { const list = await window.omniEdu?.createAiConversationFolder({ name }); if (list) setWorkspace(list); }}
+      onMoveSession={async (session, folder) => { const list = await window.omniEdu?.moveAiConversationSession(session, folder); if (list) setWorkspace(list); }}
+      onRename={async (target, value) => { const list = target.type === 'folder' ? await window.omniEdu?.renameAiConversationFolder(target.id, { name: value }) : await window.omniEdu?.renameAiConversationSession(target.id, { title: value }); if (list) setWorkspace(list); }}
+      onArchive={async target => { const list = target.type === 'folder' ? await window.omniEdu?.archiveAiConversationFolder(target.id) : await window.omniEdu?.archiveAiConversationSession(target.id); if (list) setWorkspace(list); if (target.id === id) await fresh(); }} />;
+  return <OfficeComposerState key={id || 'loading'} sessionId={id}><OfficeSynchronization blocked={syncBlocked} isBlocked={mutationsBlocked}><PiWorkbenchBridge data={{folders:workspace.folders,sessions:workspace.sessions,activeSessionId:id,blocked:syncBlocked||!id,
+      history,onOpenSession:async target=>{await open(target);navigation.navigate({view:'ai',sessionId:target});},
+      onNewSession:async(folderId,title)=>{requireSynchronized();const target=await fresh(folderId??null,title);if(!target)throw Error('对话创建失败，请重试。');navigation.navigate({view:'ai',sessionId:target});},
+      onCreateFolder:async name=>{requireSynchronized();const list=await window.omniEdu?.createAiConversationFolder({name});if(!list)throw Error('folder_failed');setWorkspace(list);}
+    }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
@@ -328,12 +337,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     })().catch(()=>setNotice('无法选择教学工作目录，请重试。'))}/>}
     aside={<PiWorkspaceContext sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}
       goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>}/>}
-    sidebar={<AiConversationSidebar codexStyle inline folders={workspace.folders} sessions={workspace.sessions} activeSessionId={id}
-      onOpenSession={target=>open(target)} onNewSession={fresh} onLeaveAi={onLeave}
-      onCreateFolder={async name => { const list = await window.omniEdu?.createAiConversationFolder({ name }); if (list) setWorkspace(list); }}
-      onMoveSession={async (session, folder) => { const list = await window.omniEdu?.moveAiConversationSession(session, folder); if (list) setWorkspace(list); }}
-      onRename={async (target, value) => { const list = target.type === 'folder' ? await window.omniEdu?.renameAiConversationFolder(target.id, { name: value }) : await window.omniEdu?.renameAiConversationSession(target.id, { title: value }); if (list) setWorkspace(list); }}
-      onArchive={async target => { const list = target.type === 'folder' ? await window.omniEdu?.archiveAiConversationFolder(target.id) : await window.omniEdu?.archiveAiConversationSession(target.id); if (list) setWorkspace(list); if (target.id === id) await fresh(); }} />}>
+    sidebar={history()}>
     <section className="work-panel ai-chat-surface">
       {snapshot?.legacyHistory && <p className="pi-history-note">旧对话保留供参考；小智从本轮开始使用新的上下文。</p>}
       {snapshot?.interruptedSend && <p className="pi-history-note" role="status">上次消息接收过程中中断。请重新发送，旧请求不会自动继续。</p>}
@@ -363,8 +367,8 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           })().catch(()=>{if(active.current&&idRef.current===target)setNotice('思考配置没有保存，请重试。');})
             .finally(()=>{modelLock.current=false;if(active.current)setModelSelecting(false);});
         }}/ >}
-        showQuickStarts={!projection?.turns.length&&!snapshot?.running}
-        taskSummary={<><PiWorkspaceActivity snapshot={snapshot} compactBusy={compactBusy}/><PiGoalControl headless sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments||syncBlocked} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>{activePlan&&(!snapshot?.goal||['completed','ended'].includes(snapshot.goal.state))&&<PiTaskPlan plan={activePlan} sessionId={id} compact/>}</>}
+        showQuickStarts={false}
+        taskSummary={<><PiGoalControl headless sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments||syncBlocked} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/></>}
         skills={snapshot?.skills}
         disabled={!snapshot || !id || modelSelecting || Boolean(snapshot.studentContext&&snapshot.studentContext.status!=='active')} model={projection?.model || 'DeepSeek'} models={models?.models.map(item => ({ id: item.id, label: item.id })) || [{ id: projection?.model || 'DeepSeek', label: projection?.model || 'DeepSeek' }]}
         onModelChange={!models?.sessionModel || models.sessionModel.locked || models.locked ? undefined : model => {

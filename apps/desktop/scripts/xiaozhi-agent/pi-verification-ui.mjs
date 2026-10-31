@@ -38,7 +38,7 @@ async function launch(){const env={...process.env,DEEPSEEK_API_KEY:key,DEEPSEEK_
  (report.launches||=[]).push(await assertIsolatedPiMain(app,main,profile));
 }
 async function run(text){const prior=(await snapshot()).projection.turns.at(-1)?.id;
- await page.getByTestId('office-prompt-input').fill(text);await page.locator('.office-composer [data-slot="prompt-input-send"]').click();
+ await page.getByTestId('office-prompt-input').fill(text);await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();
  assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');
  return until(async()=>{const s=await snapshot(),t=s.projection.turns.at(-1);return t?.id!==prior&&!s.running&&['completed','failed','interrupted'].includes(t?.status)?t:undefined;});
 }

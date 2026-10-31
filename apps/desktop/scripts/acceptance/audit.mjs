@@ -350,7 +350,7 @@ async function captureBaseline(){
     for(const size of [{width:1366,height:768},{width:1920,height:1080}]){
       await application.evaluate(({BrowserWindow},s)=>BrowserWindow.getAllWindows()[0].setContentSize(s.width,s.height),size);
       await page.waitForFunction(s=>innerWidth===s.width&&innerHeight===s.height,size);
-      const send=await page.locator('.office-composer [data-slot="prompt-input-send"]').boundingBox();assert(send&&send.x>=0&&send.x+send.width<=size.width&&send.y+send.height<=size.height);
+      const send=await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').boundingBox();assert(send&&send.x>=0&&send.x+send.width<=size.width&&send.y+send.height<=size.height);
       await page.screenshot({path:path.join(output,`chat-dark-${size.width}.png`),animations:'disabled'});
     }
     check('Actual light/dark reading text exceeds 4.5 contrast with reduced motion and pinned composer at both sizes');

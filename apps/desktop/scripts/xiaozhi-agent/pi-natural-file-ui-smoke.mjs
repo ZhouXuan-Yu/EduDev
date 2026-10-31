@@ -49,7 +49,7 @@ async function launch(){const env={...process.env,DEEPSEEK_API_KEY:key,DEEPSEEK_
  app=await electron.launch({args:[testMain(desktop),`--user-data-dir=${path.join(output,'profile')}`],env,timeout:60000});page=await app.firstWindow();page.on('pageerror',e=>errors.push(String(e)));await page.getByTestId('xiaozhi-pi-workspace').waitFor({timeout:60000});await until(async()=>!await page.getByTestId('office-prompt-input').isDisabled());const current=await page.locator('.office-composer-container').getAttribute('data-session-id');if(session)assert.equal(current,session);session=current;
  await page.evaluate(()=>{globalThis.fileEvents=[];window.omniEdu.onXiaozhiEvent(e=>globalThis.fileEvents.push(e));});
 }
-async function begin(text){const prior=(await snapshot()).projection.turns.at(-1)?.id;await page.getByTestId('office-prompt-input').fill(text);await page.locator('.office-composer [data-slot="prompt-input-send"]').click();assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');return prior;}
+async function begin(text){const prior=(await snapshot()).projection.turns.at(-1)?.id;await page.getByTestId('office-prompt-input').fill(text);await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();assert.equal(await page.getByTestId('office-prompt-input').inputValue(),'');return prior;}
 async function completed(prior){return until(async()=>{const s=await snapshot(),t=s.projection.turns.at(-1);if(t?.id!==prior&&!s.running){assert.equal(t.status,'completed',t.error);return t;}});}
 async function run(text){return completed(await begin(text));}
 async function proposed(text,kind){

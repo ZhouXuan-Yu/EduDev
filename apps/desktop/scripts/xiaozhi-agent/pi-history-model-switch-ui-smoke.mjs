@@ -32,7 +32,7 @@ async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_E
   const current=await page.locator('.office-composer-container').getAttribute('data-session-id');if(id)assert.equal(current,id);else id=current;
 }
 async function send(text,expectedModel,marker,busyCheck=false){const before=(await snapshot()).projection.turns.length,input=page.getByTestId('office-prompt-input');
-  await input.fill(text);await page.locator('.office-composer [data-slot="prompt-input-send"]').click();assert.equal(await input.inputValue(),'');
+  await input.fill(text);await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').click();assert.equal(await input.inputValue(),'');
   await until(async()=>(await snapshot()).projection.turns.length>before);
   if(busyCheck){await until(async()=>(await snapshot()).running);assert(await page.getByRole('button',{name:'选择模型',exact:true}).isDisabled());
     const result=await page.evaluate(id=>window.omniEdu.selectXiaozhiModel({schemaVersion:'xiaozhi.settings.v1',sessionId:id,version:0,model:'deepseek-v4-pro'}),id);assert(!result.ok&&result.error==='busy');check('Active run disables the actual menu and main rejects concurrent model mutation');}
@@ -74,7 +74,7 @@ try{
     await page.getByRole('button',{name:'选择模型',exact:true}).click();assert(await page.getByRole('menuitemradio',{name:'deepseek-v4-pro',exact:true}).isVisible());
     const dimensions=await page.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,overflow:document.documentElement.scrollWidth>innerWidth+1}));assert(!dimensions.overflow);
     await page.screenshot({path:path.join(output,`history-models-${size.width}.png`),animations:'disabled'});await page.keyboard.press('Escape');report.viewports.push(dimensions);
-    const send=await page.locator('.office-composer [data-slot="prompt-input-send"]').boundingBox(),composer=await page.locator('.office-composer [data-slot="prompt-input-shell"]').boundingBox();assert(send&&composer&&send.x>=composer.x&&send.x+send.width<=composer.x+composer.width+1&&send.y>=composer.y&&send.y+send.height<=composer.y+composer.height+1);
+    const send=await page.locator('[data-testid=office-composer] [data-slot="prompt-input-send"]').boundingBox(),composer=await page.locator('[data-testid=office-composer] [data-slot="prompt-input-shell"]').boundingBox();assert(send&&composer&&send.x>=composer.x&&send.x+send.width<=composer.x+composer.width+1&&send.y>=composer.y&&send.y+send.height<=composer.y+composer.height+1);
   }check('Existing HeroUI model menu is reachable with real history at both required viewports');
   const beforeRestart=native();await app.close();app=undefined;await launch();assert.equal(id,initialId);const restored=native();
   assert.equal(restored.header.id,initialNativeId);assert.equal(restored.ledger.current_model,'deepseek-flash');assert.equal(restored.ledger.revision,2);assert.deepEqual(restored.counts,beforeRestart.counts);
