@@ -201,6 +201,14 @@ await check('An explicitly linked answer book retains original-page transcriptio
   const id=await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();assert.equal(f.state.calls,2);assert.equal(await f.question(),undefined);
   const view=await f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:id,ordinal:1});assert.equal(view.status,'complete');assert(view.text.includes('1. A'));assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'no_questions');
   f.repo.books.role=async()=>null;await assert.rejects(f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:id,ordinal:1}),/source_changed/);
+  f.repo.books.role=async()=>({...role,revision:3});assert.equal((await f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:id,ordinal:1})).bookAnswers.entries.length,3);assert.equal(f.state.calls,2);
+  f.repo.books.role=async()=>({...role,questionVersion:'b'.repeat(64),revision:3});await assert.rejects(f.repo.page({schemaVersion:'xiaozhi.material-ai-page.v1',batchId:id,ordinal:1}),/source_changed/);
+ }finally{f.db.close();}
+});
+await check('Restoring a saved receipt never permits a stale revision to dispatch or publish an in-flight unit',async()=>{
+ const f=fixture('blank');try{await f.init();let role={kind:'answers',questionId:'resource_'+randomUUID(),questionVersion:f.input.version,answerId:f.input.resourceId,answerVersion:f.input.version,revision:1};f.repo.books.role=async()=>role;
+ f.repo.runtime.complete=async()=>{f.state.calls++;role={...role,revision:3};return JSON.stringify({schemaVersion:pageSchema,outcome:'no_questions',pageText:'第十三章 素养基础测试卷\n1. A 解析：原文。',pageIssues:[],questions:[]});};
+ await f.repo.create(f.input);await f.repo.drain();assert.equal(f.state.calls,1);role={...role,revision:3};await f.repo.drain();assert.equal(f.state.calls,1);assert.equal(await f.question(),undefined);assert.equal(f.db.prepare('SELECT error FROM material_ai_units').get().error,'source_changed');
  }finally{f.db.close();}
 });
 await check('An answer-book provider that invents a question is rejected without publishing it',async()=>{

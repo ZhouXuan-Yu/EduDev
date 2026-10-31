@@ -2,7 +2,7 @@ import {useEffect,useState} from 'react';
 import type {TeacherResource} from '../../../shared/contracts';
 import {MATERIAL_BOOK_PAIR_SCHEMA,type MaterialBookPairView} from '../../../shared/material-book-pair';
 import {MATERIALS_SCHEMA,type MaterialPage} from '../../../shared/materials';
-const errorText=(error:unknown)=>{const code=error instanceof Error?error.message:String(error);return code.includes('answer_already_processed')?'这份答案册已有抽题或AI批次。为保留原记录，请先使用尚未整理的答案册。':code.includes('conflict')?'关联已变化或这份资料已被其他题册使用，请刷新后重试。':code.includes('source_changed')?'原文件版本已变化，请刷新资料后重新关联。':'无法完成关联，请稍后重试。';};
+const errorText=(error:unknown)=>{const code=error instanceof Error?error.message:String(error);return code.includes('answer_already_processed')?'这份答案册已有抽题、未完成AI任务或其他题册的记录。请先处理原记录；同一题册已完成的答案转录可以恢复关联。':code.includes('conflict')?'关联已变化或这份资料已被其他题册使用，请刷新后重试。':code.includes('source_changed')?'原文件版本已变化，请刷新资料后重新关联。':'无法完成关联，请稍后重试。';};
 export function MaterialBookPanel({resource,onChange}:{resource:TeacherResource;onChange:(view:MaterialBookPairView)=>void}){
  const [view,setView]=useState<MaterialBookPairView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  const [query,setQuery]=useState(''),[page,setPage]=useState<MaterialPage>(),[selection,setSelection]=useState('');

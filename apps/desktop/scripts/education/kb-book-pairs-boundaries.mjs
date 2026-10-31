@@ -1,8 +1,8 @@
 import '../office-agent/register-source.mjs';import {DatabaseSync} from 'node:sqlite';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';
 const {MaterialBookPairs}=await import('../../src/main/assets/material-book-pairs.ts');
-const {validMaterialBookPairInput}=await import('../../src/shared/material-book-pair.ts');
+const {validMaterialBookPairInput,sameMaterialBookIdentity}=await import('../../src/shared/material-book-pair.ts');
 const db=new DatabaseSync(':memory:'),ids=Array.from({length:4},()=>`resource_${randomUUID()}`),sha='a'.repeat(64),resources=new Map(ids.map((id,i)=>[id,{id,contentHash:sha,originalFileName:`${i}.pdf`}]));let books;let checks=0;
-db.exec('CREATE TABLE material_question_members(resource_id TEXT);CREATE TABLE material_ai_batches(resource_id TEXT,status TEXT);');
+db.exec('CREATE TABLE material_question_members(resource_id TEXT);CREATE TABLE material_ai_batches(id TEXT PRIMARY KEY,resource_id TEXT,status TEXT);CREATE TABLE material_ai_units(batch_id TEXT,status TEXT,input_json TEXT);');
 const host={all:async(s,p=[])=>db.prepare(s).all(...p),run:async(s,p=[])=>{db.prepare(s).run(...p);},resource:async id=>{const r=resources.get(id);if(!r)throw Error('missing');return r;},writer:async fn=>{db.exec('BEGIN IMMEDIATE');try{const v=await fn(books);db.exec('COMMIT');return v;}catch(e){db.exec('ROLLBACK');throw e;}}};books=new MaterialBookPairs(host);
 const input={schemaVersion:'xiaozhi.material-book-pair.v1',action:'link',resourceId:ids[0],version:sha,revision:0,answerId:ids[1],answerVersion:sha};
 const check=async(name,fn)=>{await fn();checks++;console.log('PASS '+name);};
@@ -12,6 +12,18 @@ try{
  await check('Two durable versioned roles, idempotent retry and restart readback',async()=>{const v=await books.change(input);assert.equal(v.role.kind,'questions');assert.equal(v.role.revision,1);assert.equal((await books.role(ids[1])).kind,'answers');assert.deepEqual(await books.change(input),v);const reopened=new MaterialBookPairs(host);assert.deepEqual(await reopened.view(ids[0]),v);});
  await check('Answer reuse, role cycles and old original versions cannot modify the pair',async()=>{await assert.rejects(books.change({...input,resourceId:ids[2]}),/conflict/);await assert.rejects(books.change({...input,resourceId:ids[1],answerId:ids[2]}),/conflict/);await assert.rejects(books.change({...input,answerVersion:'b'.repeat(64)}),/source_changed/);assert.equal((await books.role(ids[0])).answerId,ids[1]);});
  await check('Unlink increments a persistent tombstone; a stale replay cannot clear a new pairing',async()=>{const unlink={schemaVersion:input.schemaVersion,action:'unlink',resourceId:ids[0],version:sha,revision:1};await books.change(unlink);assert.equal(await books.role(ids[1]),null);await assert.rejects(books.change(input),/conflict/);await books.change({...input,revision:2});await assert.rejects(books.change(unlink),/conflict/);assert.equal((await books.role(ids[0])).revision,3);});
- await check('Previously archived or billable answer sources are preserved and refused',async()=>{db.prepare('INSERT INTO material_question_members VALUES(?)').run(ids[3]);await assert.rejects(books.change({...input,resourceId:ids[2],answerId:ids[3]}),/answer_already_processed/);db.exec('DELETE FROM material_question_members');db.prepare('INSERT INTO material_ai_batches VALUES(?,?)').run(ids[3],'paused');await assert.rejects(books.change({...input,resourceId:ids[2],answerId:ids[3]}),/answer_already_processed/);assert.equal(await books.role(ids[2]),null);});
+ await check('Previously archived or billable answer sources are preserved and refused',async()=>{db.prepare('INSERT INTO material_question_members VALUES(?)').run(ids[3]);await assert.rejects(books.change({...input,resourceId:ids[2],answerId:ids[3]}),/answer_already_processed/);db.exec('DELETE FROM material_question_members');db.prepare('INSERT INTO material_ai_batches VALUES(?,?,?)').run('empty',ids[3],'paused');await assert.rejects(books.change({...input,resourceId:ids[2],answerId:ids[3]}),/answer_already_processed/);assert.equal(await books.role(ids[2]),null);});
+
+ await check('Only fully saved answer-role units of the identical pair can restore a removed association',async()=>{
+  db.exec('DELETE FROM material_ai_batches');const role={kind:'answers',questionId:ids[0],questionVersion:sha,answerId:ids[1],answerVersion:sha,revision:3};
+  db.prepare('INSERT INTO material_ai_batches VALUES(?,?,?)').run('saved',ids[1],'attention');
+  db.prepare('INSERT INTO material_ai_units VALUES(?,?,?)').run('saved','review',JSON.stringify({bookRole:role}));
+  await books.change({schemaVersion:input.schemaVersion,action:'unlink',resourceId:ids[0],version:sha,revision:3});
+  for(const status of ['pending','first_saved','dispatched','failed','outcome_unknown']){db.prepare('UPDATE material_ai_units SET status=?').run(status);await assert.rejects(books.change({...input,revision:4}),/answer_already_processed/);}
+  db.prepare('UPDATE material_ai_units SET status=?').run('review');
+  for(const raw of ['invalid','{}',JSON.stringify({bookRole:{...role,kind:'questions'}}),JSON.stringify({bookRole:{...role,questionId:ids[2]}}),JSON.stringify({bookRole:{...role,answerVersion:'b'.repeat(64)}})]){db.prepare('UPDATE material_ai_units SET input_json=?').run(raw);await assert.rejects(books.change({...input,revision:4}),/answer_already_processed/);}
+  db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify({bookRole:role}));const restored=await books.change({...input,revision:4});assert.equal(restored.role.revision,5);assert(sameMaterialBookIdentity(role,{...role,revision:5}));
+ });
+ await check('Archived role identity rejects forged shapes and accessors without executing them',async()=>{const role=await books.role(ids[1]);for(const bad of [{...role,extra:true},{...role,revision:0},{...role,kind:'questions'},{...role,answerId:ids[2]}])assert(!sameMaterialBookIdentity(role,bad));let called=false;assert(!sameMaterialBookIdentity(role,{...role,get revision(){called=true;return 5;}}));assert(!called);});
  console.log(JSON.stringify({success:true,checks}));
 }finally{db.close();}
