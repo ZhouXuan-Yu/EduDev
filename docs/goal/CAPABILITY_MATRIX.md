@@ -1,5 +1,7 @@
 # 小智能力与复用矩阵
 
+2026-10-31 E08当前版本：新增工程已实现：当前成果按版本族归并、双入口默认当前、整包原提交/当前分开、旧检查过期与旧Office任务证明失效；真实Pi同原三份文件恢复第四版并冷启。HTML/全部来源定位及完整AT继续待补。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
+
 2026-10-31 E08：E08工程新增已实现：原成果卡/教学文件统一历史、当前/旧版与PPT逐页差异、精确字节恢复为新版本、幂等/同字节不加版、变化/缺失及冷启。普通Office/精确PPT适用；HTML版本、全来源定位、原生成功打开/Office质量和完整AT未因此完成。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
 
 最终再次整合main32e7071为c99f6bb，14处Markdown冲突保留双方，终态及对话UI源码与b35b5fc一致；最终build/type和240组件exit0。原Pi精简回复3项归b35b5fc，本次未重跑。最终构建另含答案分组功能，指纹/范围见AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice.lastIntegration；Goal active，完整AT仍待阶段集中，D盘日常/安装包未更新。

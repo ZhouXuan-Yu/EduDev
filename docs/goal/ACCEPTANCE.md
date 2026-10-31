@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+2026-10-31 E08当前版本：本片工程源码16及正式Pi8通过，旧报告partial→stale、原报告hash与四份原文件hash/mtime保持；240及一次207通过。系统打开为注入失败验证，Explorer定位真实；不声称原生打开成功。全252AT阶段未执行，完整条目不标过。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。 最终整合c500cb5：build/type、240组件、同四版文件只读/冷启3项exit0，0模型/renderer错误；原Pi8与一次207仅合并前，功能源码未变。
+
 ## 2026-10-31 封面跳过与已知答案匹配回写（第三切片）
 
 复用原资料AI执行器、SQLite writer、两遍原图回执和 typed preload，接通独立答案册的本地匹配及受控回写。按当前关联文件版本＋完整试卷标题＋唯一题号＋题干原页定位；仅补齐缺失或升级未确认AI字段，教师/原资料字段保护。新增v6 book_extracted来源，保留原AI与journal前后快照；答案册缺解析时只升级答案，原AI解析继续独立标注。题目/答案先后到达、重新关联沿原drain的持久队列衔接，无第二个执行器或额外付费。目录采用受限增量与B-tree，写入前复查索引和原件，失效/冲突/跨卷重号保留候选。

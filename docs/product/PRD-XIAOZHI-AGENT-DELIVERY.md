@@ -1,5 +1,7 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-10-31 E08当前版本：E08本片进一步实现当前版本接缝：按族的教学文件默认当前、双入口默认同一文件、整包原提交/当前并列、旧检查过期及任务复核拒绝旧Office证明。普通Office工程已实现；不替代HTML/全部来源/原生成功打开与完整需求验收。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
+
 2026-10-31 E08：2026-10-31 E08普通Office/精确PPT版本历史、逐页差异、精确字节恢复新当前及幂等/缺失/外改/冷启工程功能已实现（a8a3120）。完整E08仍部分实现/未验收；HTML/来源定位/原生成功打开与完整AT继续保留。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
 
 2026-10-31 E06混合终态工程已实现：逐文件保存/失败/未检查、只续做PPT、carried HTML不重写、最终精简回复与冷启已取证。完整AT仍未执行，标准不变；最终build/type240+原Pi同文件3通过，初版原Pi9/综合207单列。证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#terminalSlice；日常进度WORK_PROGRESS.md。

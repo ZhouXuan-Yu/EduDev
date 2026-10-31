@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-10-31 E08当前版本：原保存谱系的统一轻量family投影贯通catalog、bundle、history与task proof policy；原已有typed接口只添可选元数据。历史检查按新版本派生stale，不改原报告/原清单/历史来源。无新Runtime/表/依赖或token级历史读取。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 答案册受控回写与封面跳过
 
 新增目录定位微基准：5000页/10万条合成元数据、内存SQLite预热；去掉每次查整本批次元数据的旧fence，换为持久dirty/sentinel及writer复查，median3.3461→0.0219ms，P953.9623→0.0428ms。仅目录查找，不含原图复验、文件IO、AI、完整检索或自然40GB；不据此宣称产品提速验收。

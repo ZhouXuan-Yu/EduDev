@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-10-31 E08当前版本：Office族投影沿原listDocumentArtifacts、delivery summary及officeVersion typed IPC使用，无新通道；任务idle复核要求当前Office，历史来源维持原策略。普通Office支持当前预览/系统打开/定位，confirmed领域保留原流程；未改D盘日常/安装包。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 答案册受控回写与封面跳过
 
 新增目录定位微基准：5000页/10万条合成元数据、内存SQLite预热；去掉每次查整本批次元数据的旧fence，换为持久dirty/sentinel及writer复查，median3.3461→0.0219ms，P953.9623→0.0428ms。仅目录查找，不含原图复验、文件IO、AI、完整检索或自然40GB；不据此宣称产品提速验收。

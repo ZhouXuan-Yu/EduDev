@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+2026-10-31 E08当前版本：复用统一officeVersionFamilies轻量投影，原Office账本/原报告不变；当前交付证明策略只用于空闲教师任务复核，历史工具/来源证明不改。列表读后遇到新发布版本补读原artifact事实，避免整族消失；无DDL/依赖/付费。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 答案册受控回写与封面跳过
 
 新增目录定位微基准：5000页/10万条合成元数据、内存SQLite预热；去掉每次查整本批次元数据的旧fence，换为持久dirty/sentinel及writer复查，median3.3461→0.0219ms，P953.9623→0.0428ms。仅目录查找，不含原图复验、文件IO、AI、完整检索或自然40GB；不据此宣称产品提速验收。
