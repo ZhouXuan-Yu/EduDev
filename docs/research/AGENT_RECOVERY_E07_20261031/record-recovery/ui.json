@@ -1,0 +1,43 @@
+{
+  "ok": true,
+  "checks": [
+    "Actual teacher approval saves original HTML before a real SQLite journal failure; failed turn and unsent draft remain visible",
+    "Still failing storage keeps the original page blocked and does not replay model, approval or file effects",
+    "Visible explicit refresh repairs the same journal/task after storage returns, rechecks the actual saved HTML, and clears the composer block without replay",
+    "Repeated recovery is idempotent with no duplicate event, new run or file write",
+    "Teacher prepares and explicitly sends one continuation under the original task/version, preserves a prior draft, and does not regenerate the saved file",
+    "Original failed turn and continuation controls remain reachable in both required viewports",
+    "Cold actual application restores repaired task/error/receipts and unchanged file/event hashes with zero replay or renderer errors"
+  ],
+  "errors": [],
+  "boundary": "Owned formal Electron/Pi composer, actual local text generation/teacher publication, SQLite storage fault, explicit refresh/continuation and cold readback; synthetic local SSE only, zero real provider calls. Not full E07 AT.",
+  "failedRun": "run_3f0e83c7-81a3-43ab-97fd-a3b660c65d7f",
+  "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-6GJIx4\\XiaozhiOutputs\\4bb1019fc49d56ed\\aisession_3c08966c-be57-4c96-93db-492cfffc1b63\\浮力恢复.html",
+  "receipts": {
+    "schemaVersion": 1,
+    "runId": "run_3f0e83c7-81a3-43ab-97fd-a3b660c65d7f",
+    "receipts": [
+      {
+        "id": "receipt_run_3f0e83c7-81a3-43ab-97fd-a3b660c65d7f_record-create-0",
+        "runId": "run_3f0e83c7-81a3-43ab-97fd-a3b660c65d7f",
+        "callId": "record-create-0",
+        "tool": "update_task_plan",
+        "disposition": "recorded",
+        "native": "matched",
+        "effect": "not_checked"
+      },
+      {
+        "id": "receipt_run_3f0e83c7-81a3-43ab-97fd-a3b660c65d7f_record-create-1",
+        "runId": "run_3f0e83c7-81a3-43ab-97fd-a3b660c65d7f",
+        "callId": "record-create-1",
+        "tool": "office_create_text",
+        "disposition": "recorded",
+        "native": "matched",
+        "effect": "matched"
+      }
+    ],
+    "automaticReplay": false
+  },
+  "sha256": "5ad61ea336ff69f299830a0b31391221f16634adeba7725c7fa2b771c4972c3b",
+  "wire": 3
+}

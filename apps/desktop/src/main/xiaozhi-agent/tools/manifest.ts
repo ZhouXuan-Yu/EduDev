@@ -16,7 +16,8 @@ export function toolManifest(name:string,trustedMcpNames:ReadonlySet<string>=new
  const web=name==='office_web_fetch'||name==='office_web_search';
  const files=['education_check_delivery','education_create_report','office_read_text','office_file_stat','office_list_files','office_copy_file','office_create_text','office_create_science_figure','office_edit_text','office_create_document','office_deliver_files','office_read_document'].includes(name);
  const output=name==='education_export_paper'||name==='education_export_classroom';
- return Object.freeze({version:1,name,effect,timeoutMs:web?45000:effect==='safe_read'?60000:300000,maxAttempts:web?2:1,resource:output?'output':files?'workspace':web||effect==='safe_read'?'none':'session',lock:effect==='safe_read'?'read':'write',cancel:'signal_and_wait_bound',input:'sdk_and_domain',output:'bounded_pi_result_and_domain',teacherWait:'pause_active_deadline'});
+ const localRead=['office_read_text','office_file_stat','office_list_files'].includes(name);
+ return Object.freeze({version:1,name,effect,timeoutMs:web?45000:effect==='safe_read'?60000:300000,maxAttempts:web||localRead?2:1,resource:output?'output':files?'workspace':web||effect==='safe_read'?'none':'session',lock:effect==='safe_read'?'read':'write',cancel:'signal_and_wait_bound',input:'sdk_and_domain',output:'bounded_pi_result_and_domain',teacherWait:'pause_active_deadline'});
 }
 export function manifestForTools(definitions:readonly ToolDefinition[],trustedMcpNames:ReadonlySet<string>=new Set()):readonly ToolManifest[]{
  if(new Set(definitions.map(d=>d.name)).size!==definitions.length)throw Error('tool_manifest_conflict');

@@ -1,5 +1,9 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 下一步：继续E07工具运行/下载/审批等待停止及崩溃/回执冲突矩阵、E08 HTML和来源定位+C；再按既定顺序S/T，功能齐后集中验收。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
+2026-11-01 E07落账失败原地恢复工程已实现（c61bd4e）：真实文件已保存后journal失败，重新读取会等待旧执行/数据库回调及实际工具归零，核对原事件、native与文件账本后修复原run/task并解除阻断；不重放模型/工具/审批。默认生成目录与独立Office导出目录纳入原效果核对，改动/缺失仍uncertain。 完整28WP/252REQ/AT和四份标准不缩减，Goal active；先功能对齐再阶段集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 2026-10-31 E08当前版本：继续完整28WP/252REQ/AT目标。本片fc0102d实现E08当前版本/历史证明接缝，工程源码16/原Pi8通过；完整AT不提前通过，Goal active。下一E07余项/E08 HTML与来源定位+C，阶段齐后集中。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
 2026-10-31 E08：本轮a8a3120推进E08版本历史与恢复，完整28WP/252REQ/AT目标及四份标准不缩减。工程专项已实现，完整需求仍部分实现/未验收；下一E07诊断/停止/恢复与E08 HTML/来源版本/C，阶段齐后集中AT。Goal保持active。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。

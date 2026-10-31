@@ -186,7 +186,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
   const tasks=createTaskCoordinator({store,closing:()=>closing,running:id=>active.has(id),busy:id=>active.has(id)||Boolean(admissions.get(id)?.size)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating,
     emit:options.emit,resultRecheck:idleTaskResults,taskRecheck:async task=>{const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];for(const run of await tasks.admittedRuns(task.sessionId,task.id))try{proofs.push(await idleTaskResults.run(run.runId,task));}catch{/* Unknown historical effects cannot be confirmed or replayed. */}return proofs;}});
-  const journalFailures = new Map<string, string>();
+  const journalFailures = new Map<string, {runId:string;run:Active}>();
   const starting = new Map<string, { sessionId: string; hash: string; result: Promise<XiaozhiStartResult> }>();
   const admissions=new Map<string,Set<AbortController>>();
   // A late idle decision must not regain authority after a start/stop cycle.
@@ -270,7 +270,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         const timeoutMs=error&&typeof error==='object'&&'timeoutMs'in error&&Number.isSafeInteger(error.timeoutMs)&&Number(error.timeoutMs)>0?Number(error.timeoutMs):undefined;
         console.error('[xiaozhi-journal]',JSON.stringify({code,type,nativeCode,tool,timeoutMs,locations}));
         console.error('[xiaozhi-cancel]',JSON.stringify({source:'journal',runId:run.runId,code}));
-        journalFailures.set(id, run.runId); run.stopped = true; run.abort.abort();
+        journalFailures.set(id, {runId:run.runId,run}); run.stopped = true; run.abort.abort();
         void run.agent?.abort().catch(() => undefined);
         // Transient failure notification, never a committed journal event.
         try { options.emit({ sessionId: id, runId: run.runId, sequence: run.sequence, generation: owner.generation,
@@ -518,7 +518,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     storedControls=storedControls.filter(control=>!control.plan);
     for(const turn of projection.turns)for(const item of turn.items)if(validVersionedPlan(item.plan))storedControls.push(structuredClone(item.plan));
     if (journalFailures.has(id)) {
-      const index = projection.turns.findIndex(turn => turn.id === journalFailures.get(id));
+      const index = projection.turns.findIndex(turn => turn.id === journalFailures.get(id)?.runId);
       if (index >= 0) projection.turns[index] = applyXiaozhiEvent(projection.turns[index], { sessionId: id, runId: projection.turns[index].id, sequence: 0, kind: 'status', status: 'failed', error: 'event_persistence' });
     }
     for (const metrics of usage) {
@@ -1025,6 +1025,33 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       if((await store.getAiConversationSession(input.sessionId)).session.archivedAt)throw Error('permission_denied');
       return store.xiaozhiState.eventJournal.list(input);
     },
+    async refreshRecords(id:string):Promise<XiaozhiActionResult>{
+      if(!validId(id))return{ok:false,error:'invalid_input'};
+      if(closing||configuring.has(id)||configuring.has('provider')||choosing.has(id)||skillsMutating)return{ok:false,error:'busy'};
+      const failure=journalFailures.get(id);
+      if(!failure)return{ok:true};
+      configuring.add(id);
+      try{
+        if((await store.getAiConversationSession(id)).session.archivedAt)return{ok:false,error:'permission_denied'};
+        if(failure.run.done)try{await waitForLifecycle('record_recovery',()=>failure.run.done!,{timeoutMs:5000});}catch{return{ok:false,error:'busy'};}
+        if(failure.run.publisher)try{await waitForLifecycle('record_writer_recovery',()=>failure.run.publisher!.settled(),{timeoutMs:5000});}catch{return{ok:false,error:'busy'};}
+        if(closing||active.has(id)||admissions.get(id)?.size||failure.run.agent?.diagnostics().executing)return{ok:false,error:'busy'};
+        if(journalFailures.get(id)!==failure)return{ok:false,error:'busy'};
+        if((await store.getAiConversationSession(id)).session.archivedAt)return{ok:false,error:'permission_denied'};
+        const saved=await store.xiaozhiState.eventJournal.snapshot(id,failure.runId);
+        if(!saved)throw Error('event_run_missing');
+        await store.xiaozhiState.eventJournal.recoverFailedRun({sessionId:id,runId:failure.runId,generation:saved.cursor.generation},{requested:()=>true,
+          repair:(work,turn)=>repairCancelledRun(work,id,failure.runId,failure.run.commandId,turn,{status:'failed',error:'event_recovered'})});
+        await tasks.recover(id);
+        await tasks.committed(id);
+        const repaired=await store.xiaozhiState.eventJournal.snapshot(id,failure.runId);
+        if(repaired?.status!=='failed'||repaired.turn.errorCode!=='event_recovered')throw Error('event_recovery_incomplete');
+        if(closing||active.has(id)||admissions.get(id)?.size||failure.run.agent?.diagnostics().executing||journalFailures.get(id)!==failure)return{ok:false,error:'busy'};
+        journalFailures.delete(id);
+        return{ok:true};
+      }catch{return{ok:false,error:'event_persistence'};}
+      finally{configuring.delete(id);}
+    },
     async historyPage(input:XiaozhiHistoryPageInput):Promise<XiaozhiHistoryPage>{
       if(!validXiaozhiHistoryPageInput(input))throw Error('invalid_input');
       const view=await snapshot(input.sessionId,0,input.before);
@@ -1301,7 +1328,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       } catch(error) {
         if(active.get(id)===run)active.delete(id);
         const cleanup=trackModelWrite(async()=>{if(closing)return;await interruptClaim();if(!closing&&run.runId)await store.completeAiAgentRun(run.runId,'failed',run.stopped||controller.signal.aborted?XIAOZHI_ERRORS.cancelled:XIAOZHI_ERRORS.configuration);});
-        void cleanup.catch(()=>{journalFailures.set(id,run.runId);});
+        void cleanup.catch(()=>{journalFailures.set(id,{runId:run.runId,run});});
         // Once the atomic teacher/run/files fact exists, the receipt must not claim it was unsent.
         // Later host failures are shown on that admitted turn; a retry confirms its original run.
         if(input.attachments&&run.runId&&run.turn.items[0]?.attachments?.length){publicEvent(id,run,{kind:'status',status:'failed',error:'configuration'});return {ok:true,runId:run.runId};}

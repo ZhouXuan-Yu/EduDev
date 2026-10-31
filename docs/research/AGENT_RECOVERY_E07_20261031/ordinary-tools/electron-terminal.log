@@ -1,0 +1,9 @@
+(node:61032) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Formal composer executes missing read → actual directory listing → renamed-file read; model sees exact category and current file version, original failure stays recorded
+PASS One transient EBUSY succeeds on the second actual Hana read within the same tool call, without a second model tool request
+PASS Persistent EBUSY stops after two real reads and retains the same precise error in model result, journal and visible original tool process
+PASS Failure details remain reachable without horizontal overflow at both required desktop viewports
+PASS Stop during actual local-read retry wait responds within 300ms, interrupts the turn and sends no second read or model request after the delay
+PASS Cold formal application restores missing/busy/retried/stopped histories without new model/tool dispatch or any source/event hash change
+{"ok":true,"checks":6,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-ordinary-recovery-ui-c92gKj"}

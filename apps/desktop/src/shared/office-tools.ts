@@ -2,7 +2,7 @@ export type OfficeToolName = 'office_read_text' | 'office_file_stat' | 'office_l
   | 'office_copy_file' | 'office_web_fetch' | 'office_web_search';
 
 export type OfficeToolErrorCode = 'invalid_input' | 'permission_denied' | 'not_found'
-  | 'too_large' | 'unsupported' | 'conflict' | 'cancelled' | 'timeout'
+  | 'too_large' | 'unsupported' | 'conflict' | 'resource_busy' | 'cancelled' | 'timeout'
   | 'network' | 'dns_blocked' | 'rate_limited' | 'service_error' | 'budget_exhausted';
 
 export type OfficeToolResult = {

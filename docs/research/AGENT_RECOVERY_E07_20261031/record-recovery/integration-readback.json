@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "checks": [
+    "Integrated main restores the same recovered task/native-effect receipts and unchanged file, event and run facts",
+    "Integrated actual cold application preserves reachable recovery controls in both required viewports",
+    "Read-only cold user path dispatches zero model/tool requests and produces no renderer error or duplicate durable state"
+  ],
+  "errors": [],
+  "requests": [],
+  "scope": "Read-only user actions on the same owned previously passed file/task after main integration; no model/tool dispatch, no user directories."
+}

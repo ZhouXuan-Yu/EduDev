@@ -1,0 +1,28 @@
+import '../office-agent/register-source.mjs';
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import assert from 'node:assert/strict';import {randomUUID} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';
+const {createRecoveryEffectReader}=await import('../../src/main/xiaozhi-agent/events/recovery-readback.ts');
+const {createTextChangeState}=await import('../../src/main/xiaozhi-agent/text-change-state.ts');
+const {createTextChangeService}=await import('../../src/main/xiaozhi-agent/text-change-service.ts');
+const {createOfficeArtifactState}=await import('../../src/main/xiaozhi-agent/office-artifact-state.ts');
+const {createOfficeArtifactService}=await import('../../src/main/xiaozhi-agent/office-artifact-service.ts');
+const {createPiPersistentState}=await import('../../src/main/xiaozhi-agent/persistent-state.ts');
+const {conversationOutput}=await import('../../src/main/xiaozhi-agent/conversation-output.ts');
+const {workspaceHash}=await import('../../src/main/xiaozhi-agent/workspace-authority.ts');
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-record-readback-')),data=path.join(root,'data'),db=new DatabaseSync(path.join(root,'app.db')),sessionId='aisession_'+randomUUID(),owner={sessionId,runId:'run_owned',generation:1};fs.mkdirSync(data);
+const report={ok:false,checks:[],boundary:'Actual native SQLite private ledgers and original teacher-confirmed local file services. No provider or formal UI.'};
+db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);CREATE TABLE ai_confirmation_items(session_id TEXT,run_id TEXT,payload_json TEXT,action_type TEXT);CREATE TABLE document_artifacts(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,message_id TEXT NOT NULL,title TEXT NOT NULL,artifact_type TEXT NOT NULL,file_name TEXT NOT NULL,mime_type TEXT NOT NULL,description TEXT NOT NULL,content_md TEXT NOT NULL,file_path TEXT NOT NULL,file_size INTEGER NOT NULL,content_hash TEXT NOT NULL,status TEXT NOT NULL,error_message TEXT NOT NULL,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);`);db.prepare('INSERT INTO ai_conversation_sessions VALUES(?)').run(sessionId);
+const sql={all:async(q,p=[])=>db.prepare(q).all(...p),run:async(q,p=[])=>db.prepare(q).run(...p),change:async(q,p=[])=>Number(db.prepare(q).run(...p).changes)},persistent=createPiPersistentState(sql),changes=createTextChangeState(sql),artifacts=createOfficeArtifactState(sql);
+const check=async(name,fn)=>{await fn();report.checks.push(name);console.log('PASS '+name);};
+try{
+ await persistent.migrate();await changes.migrate();await artifacts.migrate();const generated=conversationOutput(data,sessionId).path;
+ const textService=createTextChangeService({state:changes,dataRoot:data,workspace:async()=>generated,isCurrent:()=>true}),read=createRecoveryEffectReader({persistent,changes,artifacts,dataRoot:()=>data});
+ let row=await textService.propose(sessionId,owner.runId,'text',{operation:'create',path:'演示.html',content:'<!doctype html><h1>浮力</h1>'});await textService.decision({schemaVersion:'xiaozhi.change.v1',sessionId,changeId:row.id,revision:row.revision,action:'approve'});await textService.apply(sessionId,row.id);
+ await check('Generated text without any explicit folder grant matches original applied ledger and bytes',async()=>{assert.equal(await persistent.workspace(sessionId),null);assert.equal(await read(owner,'text','office_create_text'),'matched');});
+ await check('Edited/missing generated text remains uncertain and is never overwritten',async()=>{const file=path.join(generated,'演示.html');fs.writeFileSync(file,'教师后来修改');assert.equal(await read(owner,'text','office_create_text'),'uncertain');assert.equal(fs.readFileSync(file,'utf8'),'教师后来修改');fs.renameSync(file,file+'.kept');assert.equal(await read(owner,'text','office_create_text'),'uncertain');assert(!fs.existsSync(file));});
+ const output=path.join(root,'selected-output');fs.mkdirSync(output);await persistent.setPaperOutput(sessionId,output,'教师选择的导出目录',workspaceHash(output));
+ const service=createOfficeArtifactService({state:artifacts,dataRoot:data,workspace:async()=>output,isCurrent:()=>true});row=await service.propose(sessionId,owner.runId,'office',{path:'讲解.xlsx',format:'xlsx',draft:{schemaVersion:'xiaozhi.office-draft.v1',title:'讲解',sections:[{heading:'浮力',paragraphs:['方向竖直向上']}]},sources:[]});await service.decide({schemaVersion:'xiaozhi.office-artifact.v1',sessionId,draftId:row.id,revision:row.revision,action:'approve'});await service.apply(sessionId,row.id);
+ await check('Office recovery uses the original separate export directory and real artifact fact',async()=>assert.equal(await read(owner,'office','office_create_document'),'matched'));
+ await check('Changing the export directory cannot confirm an old file through a new grant',async()=>{const next=path.join(root,'next-output');fs.mkdirSync(next);await persistent.setPaperOutput(sessionId,next,'新目录',workspaceHash(next));assert.equal(await read(owner,'office','office_create_document'),'uncertain');assert(fs.existsSync(path.join(output,'讲解.xlsx')));assert.deepEqual(fs.readdirSync(next),[]);});
+ await check('Missing generated output directory is not recreated by a readback',async()=>{const missing='aisession_'+randomUUID(),location=path.join(path.dirname(generated),missing);assert.equal(await read({...owner,sessionId:missing},'missing','office_create_text'),'uncertain');assert(!fs.existsSync(location));});
+ report.ok=true;
+}catch(e){report.error=e.stack;process.exitCode=1;}finally{db.close();fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,error:report.error,root}));}

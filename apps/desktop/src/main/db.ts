@@ -1177,7 +1177,7 @@ export class OmniEduStore {
       } catch (error) { await work.exec('ROLLBACK;').catch(() => undefined); throw error; }
       finally { await work.close(); }
     }
-  } },{nativeRoot:()=>join(this.dataRoot,'xiaozhi-pi')});
+  } },{nativeRoot:()=>join(this.dataRoot,'xiaozhi-pi'),dataRoot:()=>this.dataRoot});
   private db!: sqlite3.Database;
   private dbPath: string;
   private questionRetrievalIndexed = false;

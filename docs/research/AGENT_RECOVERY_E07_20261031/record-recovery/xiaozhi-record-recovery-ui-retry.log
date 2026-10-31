@@ -1,0 +1,10 @@
+(node:44708) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Actual teacher approval saves original HTML before a real SQLite journal failure; failed turn and unsent draft remain visible
+PASS Still failing storage keeps the original page blocked and does not replay model, approval or file effects
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(repaired.recovery.receipts.some(r=>r.tool==='office_create_text'&&r.effect==='matched'))
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-electron.mjs:39:617
+{"ok":false,"checks":2,"error":"AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(repaired.recovery.receipts.some(r=>r.tool==='office_create_text'&&r.effect==='matched'))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-electron.mjs:39:617","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-NeoeQO"}

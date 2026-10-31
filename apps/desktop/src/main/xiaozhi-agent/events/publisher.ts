@@ -57,6 +57,9 @@ export function createEventPublisher(options: { journal: ReturnType<typeof creat
     owner:options.owner,
     /** Main-only permanent closure; it does not claim an in-flight DB write rolled back. */
     fail,
+    /** Recovery must wait for late native COMMIT/correction callbacks too.
+     * flush intentionally rejects immediately once failed; it is not this fence. */
+    settled:()=>chain.then(()=>undefined,()=>undefined),
     async checkpointTask(mutate:(work:Sql)=>Promise<TaskView>):Promise<TaskView>{
       if(failure||sealed)throw failure||Error('event_run_settled');drain();const reserved=++sequence;let value:TaskView;
       chain=chain.then(async()=>{

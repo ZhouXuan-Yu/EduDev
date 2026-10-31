@@ -7,7 +7,7 @@ import type { XiaozhiEventCursor, XiaozhiEventsInput, XiaozhiEventsPage } from '
 import { validEventsInput } from '../../../shared/xiaozhi-events';
 import { applyXiaozhiEvent } from '../../../shared/xiaozhi-projection';
 import { legacyVerification } from '../../../shared/xiaozhi-verification';
-import {validRecovery} from '../../../shared/xiaozhi-recovery';
+import {validRecovery,type XiaozhiRecovery} from '../../../shared/xiaozhi-recovery';
 import {validToolAttempt} from '../../../shared/xiaozhi-tool-attempt';
 import {validModelRequest} from '../../../shared/xiaozhi-model-request';
 import {createToolReceipts,type ReceiptCapture,type ReceiptReadback} from './receipts';
@@ -61,7 +61,13 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       if (finalTurn && hash(json(finalTurn)) !== hash(String(row.turn_json))) throw Error('event_revision_conflict');
       return { cursor: cursor(row), turn: JSON.parse(String(row.turn_json)) as OfficeProjectedTurn };
     }
-    if (row.status !== 'running' && !(taskMutation&&events.length===1&&events[0].kind==='task') && !(cancellationCorrection&&events.length===2&&events[0].kind==='verification'&&events[1].kind==='status'&&events[1].status==='interrupted'&&finalTurn?.status==='interrupted')) throw Error('event_run_settled');
+    const correction = cancellationCorrection && (
+      events.length===2&&events[0].kind==='verification'&&events[1].kind==='status'&&events[1].status==='interrupted'&&finalTurn?.status==='interrupted'
+      || (events.length===2||events.length===3&&events[0].kind==='recovery')&&events.at(-2)?.kind==='verification'
+        &&events.at(-1)?.kind==='status'&&finalTurn?.status==='failed'&&finalTurn.errorCode==='event_recovered'
+        &&events.some(event=>event.kind==='status'&&event.status==='failed'&&event.error==='event_recovered')
+    );
+    if (row.status !== 'running' && !(taskMutation&&events.length===1&&events[0].kind==='task') && !correction) throw Error('event_run_settled');
     let turn = JSON.parse(String(row.turn_json)) as OfficeProjectedTurn;
     let sequence = Number(row.sequence);
     const timestamp = new Date().toISOString();
@@ -84,13 +90,16 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
     await work.run('UPDATE xiaozhi_event_runs SET sequence=?,revision=revision+1,status=?,turn_json=?,updated_at=? WHERE run_id=? AND revision=?', [sequence, status, json(turn), timestamp, owner.runId, revision]);
     return { cursor: { runId: owner.runId, generation: owner.generation, sequence, revision: revision + 1 }, turn };
   }
-  async function correctCancellation(work:Sql,owner:JournalOwner,cancellation:TerminalCancellation) {
+  async function correctCancellation(work:Sql,owner:JournalOwner,cancellation:TerminalCancellation,recovery?:XiaozhiRecovery,recordRecovery=false) {
     const row=(await work.all('SELECT * FROM xiaozhi_event_runs WHERE run_id=? AND session_id=?',[owner.runId,owner.sessionId]))[0];
     const fence=(await work.all('SELECT * FROM xiaozhi_event_owners WHERE session_id=?',[owner.sessionId]))[0];
     if(!row||!fence||Number(row.generation)!==owner.generation||Number(fence.generation)!==owner.generation||fence.run_id!==owner.runId)throw Error('event_owner_stale');
     let turn=JSON.parse(String(row.turn_json)) as OfficeProjectedTurn;
     const verification=interruptedVerification(turn),base={...owner,schemaVersion:1 as const,durability:'committed' as const,revision:Number(row.revision)+1};
-    const events:XiaozhiAgentEvent[]=[{...base,sequence:Number(row.sequence)+1,kind:'verification',verification},{...base,sequence:Number(row.sequence)+2,kind:'status',status:'interrupted',error:'cancelled'}];
+    let sequence=Number(row.sequence);
+    const events:XiaozhiAgentEvent[]=[];
+    if(recovery?.receipts.length)events.push({...base,sequence:++sequence,kind:'recovery',recovery});
+    events.push({...base,sequence:++sequence,kind:'verification',verification},{...base,sequence:++sequence,kind:'status',status:recordRecovery?'failed':'interrupted',error:recordRecovery?'event_recovered':'cancelled'});
     for(const event of events)turn=applyXiaozhiEvent(turn,event);
     await cancellation.repair(work,turn);
     return {...await append(work,owner,Number(row.revision),events,turn,[],true),events};
@@ -120,6 +129,31 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       return finalTurn&&cancellation?.requested()?correctCancellation(work,owner,cancellation):{...saved,events};
     }),
     correctCancellation:(owner:JournalOwner,cancellation:TerminalCancellation)=>transaction(work=>correctCancellation(work,owner,cancellation)),
+    /** Explicit repair of one quiescent failed writer. The host proves quiescence;
+     * this transaction checks its fence and every committed page before repair.
+     * It never reopens the old publisher or replays a tool/model. */
+    recoverFailedRun:(owner:JournalOwner,cancellation:TerminalCancellation)=>transaction(async work=>{
+      const row=(await work.all('SELECT * FROM xiaozhi_event_runs WHERE run_id=? AND session_id=?',[owner.runId,owner.sessionId]))[0];
+      const fence=(await work.all('SELECT * FROM xiaozhi_event_owners WHERE session_id=?',[owner.sessionId]))[0];
+      if(!row||!fence||Number(row.generation)!==owner.generation||Number(fence.generation)!==owner.generation||fence.run_id!==owner.runId)throw Error('event_owner_stale');
+      const turn=JSON.parse(String(row.turn_json)) as OfficeProjectedTurn;
+      if(turn.id!==owner.runId||!Number.isSafeInteger(row.sequence)||Number(row.sequence)<0||!Number.isSafeInteger(row.revision)||Number(row.revision)<0)throw Error('event_journal_corrupt');
+      let sequence=0,terminal:string|undefined;
+      for(;;){
+        const page=await work.all('SELECT sequence,generation,event_json,event_hash FROM xiaozhi_event_journal WHERE run_id=? AND sequence>? ORDER BY sequence LIMIT 128',[owner.runId,sequence]);
+        if(!page.length)break;
+        for(const item of page){
+          const raw=String(item.event_json);if(hash(raw)!==item.event_hash)throw Error('event_journal_corrupt');
+          const event=JSON.parse(raw) as XiaozhiAgentEvent;
+          if(Number(item.sequence)!==++sequence||Number(item.generation)!==owner.generation||event.sequence!==sequence||event.schemaVersion!==1||event.sessionId!==owner.sessionId||event.runId!==owner.runId||event.generation!==owner.generation||event.durability!=='committed'||!kinds.has(event.kind))throw Error('event_journal_corrupt');
+          if(event.kind==='status')terminal=event.status;
+        }
+      }
+      if(sequence!==Number(row.sequence)||row.status!=='running'&&(terminal!==row.status||turn.status!==row.status))throw Error('event_journal_corrupt');
+      if(turn.status==='failed'&&turn.errorCode==='event_recovered')return{cursor:cursor(row),turn,events:[] as XiaozhiAgentEvent[]};
+      const recovery=await receipts.reconcile(work,owner);
+      return correctCancellation(work,owner,cancellation,recovery,true);
+    }),
     /** State/action receipt and public task checkpoint share one SQLite commit.
      * A terminal run keeps its status; this cannot dispatch any model/tool. */
     changeTask:(owner:JournalOwner,revision:number,sequence:number,mutate:(work:Sql)=>Promise<TaskView>)=>transaction(async work=>{

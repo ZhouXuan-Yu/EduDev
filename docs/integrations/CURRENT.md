@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+2026-11-01 E07：继续复用Hana真实文件IO及SessionExecutionRegistry，原OpenMAIC等待边界和Pi工具dispatcher。错误用现shared枚举贯通主进程及原工具证据；没有下载或替换依赖，原写/缓存/外部操作最大1次。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
+2026-11-01 E07：复用createEffectReadback、conversationOutputLocation、原Office/Text账本及native receipts；DB仅向原session state传惰性dataRoot。新guarded records-refresh/typed preload接现有刷新按钮，旧事件兼容，无依赖/迁移。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
+
 ## 2026-10-31 原页题面与提示版本
 
 新原页单元冻结page-restoration.v2及真实OCR状态；旧first_saved沿原提示。完整stem必须含选项、小问、表格和公式，projection不能代替规范题面；parser只临时识别已声明原文编号，不改原回执。真实缺图/跨页/不清晰继续待核。ai_final仅表示当前AI原页证据资格，不是教师确认或数学正确性保证。回退保留新单元严格读适配，不让未知旧provider静默恢复。详见docs/research/KB_PAGE_PROMPT_20261031.json。

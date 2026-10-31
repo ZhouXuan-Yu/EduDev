@@ -1,0 +1,8 @@
+(node:46568) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert(await input().isDisabled())
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-electron.mjs:37:149
+{"ok":false,"checks":0,"error":"AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(await input().isDisabled())\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-electron.mjs:37:149","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-ZvoKt2"}

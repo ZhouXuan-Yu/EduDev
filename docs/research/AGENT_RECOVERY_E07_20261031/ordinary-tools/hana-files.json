@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Native missing, busy and permission categories remain distinct from DNS failure",
+      "pass": true
+    },
+    {
+      "name": "Missing file fails once; actual directory listing and fresh read recover the renamed file",
+      "pass": true
+    },
+    {
+      "name": "One transient file busy retries once with fresh bytes/version, distinct internal ID and one admission",
+      "pass": true
+    },
+    {
+      "name": "Persistent file busy exhausts two reads, without unsupported or unknown effect",
+      "pass": true
+    },
+    {
+      "name": "Permission failure and in-read file version conflict never retry",
+      "pass": true
+    },
+    {
+      "name": "Busy copy is never replayed, retains uncertain effect and creates no target",
+      "pass": true
+    },
+    {
+      "name": "Stop during registered retry wait cancels promptly and dispatches no second Hana read",
+      "pass": true
+    }
+  ],
+  "scope": "Actual Hana file IO and execution boundary, owned synthetic filesystem failures; not provider or UI acceptance"
+}

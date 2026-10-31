@@ -66,7 +66,7 @@ export function createEventReceiver(options: {
   return {
     /** Only the caller's authoritative snapshot may seed a cursor. An older or
      * foreign-generation cursor cannot acknowledge a newer observed gap. */
-    seed(values: XiaozhiEventCursor[]) {
+    seed(values: XiaozhiEventCursor[], persistenceRestored=false) {
       for (const value of values) {
         if (!Number.isSafeInteger(value.sequence) || value.sequence < 0 || !Number.isSafeInteger(value.generation) || value.generation < 1) continue;
         const old = cursors.get(value.runId);
@@ -74,6 +74,7 @@ export function createEventReceiver(options: {
           cursors.set(value.runId, { ...value }); failures.delete(value.runId); settle(value.runId);
         }
       }
+      if(persistenceRestored){persistenceFailed=false;publish();}
     },
     reset() { epoch++; cursors.clear(); gaps.clear(); failures.clear(); pulls.clear(); persistenceFailed = false; publish(); },
     cursors: () => [...cursors.values()].map(value => ({ ...value })),

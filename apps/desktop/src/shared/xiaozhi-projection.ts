@@ -13,7 +13,8 @@ export const XIAOZHI_ERRORS: Record<XiaozhiAgentError, string> = {
   attachment_changed:'待发送附件已变化或未全部接收，请重新检查附件后发送。',
   invalid_input: '消息格式不正确，请重新输入。', busy: '本会话正在运行，请先停止或等待完成。',
   configuration: '当前模型或会话配置不可用，请检查 DeepSeek 设置或新建会话。',
-  event_persistence: '本轮过程未能保存，执行已停止。请重启后重试，已保存的记录会保留。',
+  event_persistence: '本轮过程未能保存，执行已停止。请重新读取本地记录，已保存的成果会保留。',
+  event_recovered: '本轮因记录保存失败而中止。已重新核对本地记录，已保存的成果会保留，可核对后继续。',
   authentication: 'DeepSeek 凭证不可用，请在模型设置中检查当前 API Key；原任务和草稿保留。',
   insufficient_balance:'DeepSeek 账户余额不足，请检查当前账户余额后再继续；不会自动更换密钥或账户。原任务和草稿保留。',
   rate_limited: 'DeepSeek 请求受到限流，请按服务等待时间稍后继续；原任务和草稿保留。',
@@ -182,6 +183,14 @@ export function applyXiaozhiEvent(turn: OfficeProjectedTurn, event: XiaozhiAgent
     if (event.error) {next.error = XIAOZHI_ERRORS[event.error];next.errorCode=event.error;}
     if (event.status !== 'running') {
       if(next.modelRequests)next.modelRequests=next.modelRequests.map(row=>{if(!['sending','retry_wait'].includes(row.state))return row;const {waitMs,...stopped}=row;return {...stopped,state:'interrupted'};});
+      // A persisted retry wait must not keep promising another read after the
+      // owning run stops. Started/unknown effects still require actual receipts.
+      if(event.status==='interrupted'||event.status==='failed')for(const item of next.items){
+        const attempt=item.toolAttempt;
+        if(validToolAttempt(attempt)&&attempt.effect==='none'&&['queued','retrying'].includes(attempt.state)){
+          item.toolAttempt={...attempt,state:'failed',code:event.status==='interrupted'?'cancelled':'unknown'};
+        }
+      }
       if(next.modelReasoning)next.modelReasoning=next.modelReasoning.map(b=>b.status==='streaming'?{...b,status:event.status==='completed'?'completed':event.status==='interrupted'?'interrupted':'failed'}:b);
       const lastText = [...next.items].reverse().find(item => item.kind === 'message' && item.role === 'assistant');
       // A broken first response has no final assistant_end. Keep trailing prose visible

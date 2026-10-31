@@ -1,0 +1,29 @@
+{
+  "ok": false,
+  "checks": [
+    "Actual teacher approval saves original HTML before a real SQLite journal failure; failed turn and unsent draft remain visible",
+    "Still failing storage keeps the original page blocked and does not replay model, approval or file effects"
+  ],
+  "errors": [],
+  "boundary": "Owned formal Electron/Pi composer, actual local text generation/teacher publication, SQLite storage fault, explicit refresh/continuation and cold readback; synthetic local SSE only, zero real provider calls. Not full E07 AT.",
+  "failedRun": "run_642cf6c2-35ca-4d7c-9fa7-7019c68f0907",
+  "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-record-recovery-ui-NeoeQO\\XiaozhiOutputs\\dc8c62bde63bf6f9\\aisession_bb490733-aeb9-4ae7-8b88-c9e6c3ca8e67\\浮力恢复.html",
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(repaired.recovery.receipts.some(r=>r.tool==='office_create_text'&&r.effect==='matched'))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/record-recovery-electron.mjs:39:617",
+  "calls": [
+    {
+      "mode": "create",
+      "n": 0,
+      "tool": "update_task_plan"
+    },
+    {
+      "mode": "create",
+      "n": 1,
+      "tool": "office_create_text"
+    },
+    {
+      "mode": "create",
+      "n": 2,
+      "tool": null
+    }
+  ]
+}

@@ -17,6 +17,10 @@ export function toolExecutionCode(raw:unknown):ToolExecutionCode{
  if(taskAdmissionFailure(raw))return'task_blocked';
  if(raw instanceof AgentToolTimeoutError)return'timeout';if(raw instanceof AgentToolAbortedError||raw instanceof Error&&raw.name==='AbortError')return'cancelled';
  const message=raw instanceof Error?raw.message:'';
+ const nativeCode=object(raw)&&typeof raw.code==='string'?raw.code:'';
+ if(['ENOENT','ENOTDIR'].includes(nativeCode))return'not_found';
+ if(['EBUSY','ETXTBSY'].includes(nativeCode))return'resource_busy';
+ if(['EACCES','EPERM'].includes(nativeCode))return'permission_denied';
  if(TOOL_EXECUTION_CODES.includes(message as ToolExecutionCode))return message as ToolExecutionCode;
  if(/\b401\b|authentication|api.?key/i.test(message))return'authentication';
  if(/\b403\b|permission/i.test(message))return'permission_denied';
@@ -56,6 +60,13 @@ export function createToolExecutionBoundary(options:Options){
    let input:unknown;try{input=validateToolArguments(def,{type:'toolCall',id:callId,name:def.name,arguments:snapshot.value as Parameters<typeof validateToolArguments>[1]['arguments']});}catch{return failed('invalid_input',summary(1,'failed','invalid_input'));}
    if(!options.current(epoch)||signal?.aborted)return failed('cancelled',summary(1,'failed','cancelled'));
    let admitted=false;
+   // Actual IO releases its registry entry when it settles. Keep the subsequent
+   // retry wait registered too, so session stop can cancel it immediately.
+   const waitForRetry=async(ms:number)=>{
+    const pending=options.registry.begin({sessionId:options.sessionId,toolName:def.name,toolCallId:callId,signal});
+    try{pending.signal.throwIfAborted();if(!options.current(epoch))return false;await delay(ms,undefined,{signal:pending.signal});return options.current(epoch)&&!pending.signal.aborted;}
+    catch{return false;}finally{pending.release();}
+   };
    for(let n=1;n<=manifest.maxAttempts;n++){
     const active=options.registry.begin({sessionId:options.sessionId,toolName:def.name,toolCallId:callId,signal});
     const timeoutMs=options.timeout?.(manifest)??manifest.timeoutMs;
@@ -82,6 +93,11 @@ export function createToolExecutionBoundary(options:Options){
       // A failed journal gate is fatal. It cannot turn into a retryable read.
       if(!queuePersisted&&code!=='cancelled'||!['cancelled','resource_busy'].includes(code))throw error;
       const state=summary(n,'failed',code,'none',safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{});
+      if(code==='resource_busy'&&manifest.effect==='safe_read'&&n<manifest.maxAttempts&&options.current(epoch)&&!signal?.aborted){
+       await persistAttempt(summary(n,'retrying',code,'none',safeSlot?{queueWaitMs:safeSlot.queueWaitMs}:{}));
+       if(!await waitForRetry(300))return failed('cancelled',summary(n,'failed','cancelled'));
+       continue;
+      }
       if(code!=='cancelled')await persistAttempt(state);
       return failed(code,state);
      }finally{release();}
@@ -120,9 +136,9 @@ export function createToolExecutionBoundary(options:Options){
     if(!code&&result){const state=summary(n,'succeeded',undefined,'none',timing());await persistAttempt(state);return{...result,details:{...(object(result.details)?result.details:{}),execution:state}};}
     code??='unknown';
     if(code==='cancelled'||!options.current(epoch))return failed('cancelled',summary(n,'failed','cancelled',effect,timing()));
-    if(manifest.effect==='safe_read'&&n<manifest.maxAttempts&&['network','rate_limited','service_error','timeout'].includes(code)&&options.current(epoch)&&!signal?.aborted){
+    if(manifest.effect==='safe_read'&&n<manifest.maxAttempts&&['network','rate_limited','service_error','timeout','resource_busy'].includes(code)&&options.current(epoch)&&!signal?.aborted){
      await persistAttempt(summary(n,'retrying',code,'none',timing()));
-     try{await delay(code==='rate_limited'?1000:300,undefined,{signal:active.signal});}catch{const state=summary(n,'failed','cancelled');return failed('cancelled',state);}
+     if(!await waitForRetry(code==='rate_limited'?1000:300))return failed('cancelled',summary(n,'failed','cancelled'));
      continue;
     }
     const state=summary(n,'failed',code,effect,timing());await persistAttempt(state);

@@ -1,0 +1,16 @@
+{
+  "layer": "offline_layout_proposal_not_production",
+  "checks": [],
+  "errors": [],
+  "requests": [],
+  "screenshots": [],
+  "success": false,
+  "error": "locator.waitFor: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#notice') to be hidden\u001b[22m\n\u001b[2m    13 × locator resolved to visible <div id=\"notice\" role=\"status\" aria-live=\"polite\">↵  </div>\u001b[22m\n\n    at screenshot (D:\\WorkProject\\EduProject-sidebar\\docs\\design\\system\\review\\check.mjs:44:33)\n    at D:\\WorkProject\\EduProject-sidebar\\docs\\design\\system\\review\\check.mjs:82:13\n    at async check (D:\\WorkProject\\EduProject-sidebar\\docs\\design\\system\\review\\check.mjs:39:3)\n    at async file:///D:/WorkProject/EduProject-sidebar/docs/design/system/review/check.mjs:71:58",
+  "viewportScope": "CSS viewports; 911x512 approximates reduced CSS area at 150% of 1366x768, not native OS scaling",
+  "artifactHashes": {
+    "index.html": "4868ad8ede9d89f0dd872d62c6d88ebc87cb6aed6a436a84931e0f42ede364f1",
+    "review.css": "65eb70dcc0b418fc0e93397a3a8e3e5475145d07280f2d0ccfc90264395ccd8a",
+    "review.js": "aa71e521f03cd6b3a137f780515445898186df7ca3278ddaca337ce30bd60339",
+    "check.mjs": "4651aec2c631aa3feb0b6367c13478b2ff0293ac504bd2bee0b3ae4317c470d6"
+  }
+}
