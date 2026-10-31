@@ -6,6 +6,14 @@
 
 E06仍部分实现：Office实际页面/字体/遮挡渲染、持久视觉证据、自动绑定全部教师语义要求及完整混合终态仍待补齐；未渲染保持未检查。下一继续E06再E07/E08+C与W3集中AT，新增“已实现”0/252。D盘日常版本/安装包未更新，0真实付费请求。 详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json。
 
+## 2026-10-31 原页图片文件化验证
+
+29b4d07最终build/240组件，15文件生命周期与实际备份副本、20页/28批次/17检索/13档案通过。新模块100%行/82.98%分支，不是全仓库覆盖；正式Electron教材6项和双页题库7项0renderer、两尺寸与冷启0重发、真实本地ONNX/Lance/Pi，0付费受控HTTP。相同SHA输入SQLite Base64336636B→0、本地252475B；不是物理整库缩小。综合终态、命令与失败见goal/KB_IMPLEMENTATION_EVIDENCE.md和research/KB_AI_IMAGE_FILES_20261031.json。audit45项exit1；40GB/自然质量/首次检索性能与安装仍未验收。
+
+## 2026-10-31 知识库工具IO验证
+
+源码5b4343b实际Electron五项通过，build/type/240组件、10 IO/22权限/20页专项通过。技能状态专项23项已过但历史旧库夹具缺失，整体exit1；不能称全套通过。综合命令、结果与失败证据见goal/KB_IMPLEMENTATION_EVIDENCE.md及research/KB_TOOL_IO_20261031.json。性能为单小样本观测，最终合并E05后工具664/464ms；首次重排4308ms/启动1951ms间隙仍未解决，非40GB/P95或自然质量验收。
+
 ## 2026-10-30 E05与知识库主线最终整合
 
 正常整合origin/main28ef069为f30212f，保留双方知识库正文来源与E05真实计算报告代码及13份Markdown完整新增节。合并后的build/type、240组件、20知识库页边界、E05正式Electron5项均exit0，0renderer错误；实际CSV/HTML/XLSX一次确认、所有文件账本回读、两尺寸预览及冷启0模型重放通过。最初KB专项因Node缺transform-types前置失败，按原脚本补正确参数后通过，未改协作源码。207综合仍属于合并前本轮代码，不冒充本次合并后重跑。 本地合并脚本曾未在失败后停止，误含标记的未推送提交已修正；全树标记与diff检查通过，未强推、未动其他已检出分支。下一仍E06→E07/E08+C→W3集中验收，新增已实现0/252；D盘日常版本及安装包未更新。详[最终整合证据](../research/AGENT_COMPUTATION_REPORTS_E05_20261030.json)的integration。

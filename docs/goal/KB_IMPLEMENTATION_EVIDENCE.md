@@ -1,5 +1,46 @@
 # 知识库实施证据
 
+## 2026-10-31 M01/M03/M04/M10/M11原页输入文件化
+
+**结果与范围**：生产源码29b4d07；6b03aa0 RED→ec589d2 GREEN证明实际目录新图不再写SQLite Base64，b80285e RED→29b4d07 GREEN证明Windows EBUSY临时清理占用可以重试。新增assets/material-ai-image-files.ts，窄接material-ai-repository/page-evidence、检索Host和db两构造点，复用原文件FD/规范路径/链接/全哈希证明、Windows独占锁、SQLite writer、备份。无新增依赖、IPC、模型或第二业务真源。新file.v1保存到dataRoot/material-ai-images/v1/<SHA前两位>/<SHA>.bin，SQLite只留摘要/MIME/字节数/版本，旧inline.v1增量兼容不强迁。
+
+**实际容量对照**：只读RED库QGSMwz及最终库9uqSXR，图片SHA均4a760d1970c9cb678d7c0e74577cfb1d09a97dc4271ccc4ae222a3114620f183；输入原始252475B不变，SQLite Base64由336636B变0，新本地证据252475B。同图多单元引用不重写文件；这里只比较图像载荷位置，不冒充整库物理缩小、旧库VACUUM或40GB实证。
+
+**一致性与失败恢复**：短暂pending先登记再写/sync/rename，文件准备在业务事务外；持锁到guard/引用提交与清理。每次LIMIT8恢复且实际EXPLAIN使用ready部分索引，引用检查走SHA部分索引；未引用孤儿可清，已提交图不删。临时共享/IO错误保留due，非法路径/链接才隔离。15组实际SQLite+文件检查涵盖旧库重复迁移、同SHA去重、同大小同mtime篡改、缺root/未知版本/混填、硬链接/父junction、打开后路径替换、提交回滚/准备后取消/并发独占、提交后中断、临时占用恢复、磁盘不足/超限、有界坏日志隔离与现备份复制。备份实际VACUUM INTO副本重开，按同一读器验证原字节；不是完整UI/40GB恢复验收。新模块覆盖100%行/82.98%分支/100%函数，不声称全仓库覆盖。
+
+**最终实际Electron**：教材9uqSXR六项exit0：目录导入→真实本地OCR183B后故障置空→两遍受控原图→0假题/0原OCR块→新文件SHA与SQLite0B→可见全文/同义查询→生产Pi实读及原图引用→两视口冷启0模型重放；2受控JSON/3受控SSE。双页MjMyry七项exit0：54589246B物理有效PDF含52MiB夹具载荷，真实OCR各139B后注入空白/乱码，等待发布期间0请求/0假失败；发表后4受控请求/2AI题，题本原文/原图、实际ONNX/Lance语义召回2题、1366/1920冷启0重发。两轮0renderer错误/0付费，原OCR/文件哈希保持。测试HTTP受控且大文件有人工夹具载荷，不是自然内容质量或规模验收。
+
+**精确命令**（apps/desktop，退出码均0）：npm.cmd run build；npm.cmd run test:renderer-components（240）；node --experimental-transform-types --test --experimental-test-coverage --test-coverage-include=**/material-ai-image-files.ts scripts/education/kb-ai-image-files-boundaries.mjs（15）；node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/{kb-ai-page-boundaries,kb-ai-batch-boundaries,kb-retrieval-boundaries,kb-critical-archive-boundaries}.mjs分别执行（20/28/17/13）；node scripts/education/kb-restored-text-journey.mjs（6）；node scripts/education/kb-folder-pdf-publication-journey.mjs --restore-ocr（7）。同一最终29b4d07成功构建运行node scripts/electron-smoke.mjs，207/207且最终shell exit0（test-results/kb-image-files-final-smoke.log/.exit），未并发重建out；讲义旧间歇失败本次未复现，根因不据此标已修复。后续仅补文档。具体exit文件、构建哈希、综合终态见[公开元数据](../research/KB_AI_IMAGE_FILES_20261031.json)。
+
+**性能与未完成项**：固定native探针冷调用4348ms，文件证明2882.5ms、4候选推理62ms；热文件缓存证明369.9ms，组件399017988B逐次完整核验。本片未改生产重排，冷热差不能当优化A/B；最终教材查询4815ms/其中重排4704ms仍OPEN。10GB→40GB、100k/1M块、自然Recall/P95/图题公式答案、老师编辑教材正文、独立图片失败、受管安装继续；旧inline记录未搬迁，D盘日常构建/安装包未更新。旧讲义description间歇断言根因仍未知，绿灯不构成修复证据。npm audit --json exit1：当前45项（8高29中8低0严重），锁文件/依赖未改，不能沿用上一轮23或称审计通过。
+
+**回退**：OMNI_EDU_AI_IMAGE_FILES=0停新file.v1写入，必须保留新格式读器、本地证据与pending恢复；旧inline继续读取。已发表新图后不可直接降级旧读器/删除证据，不执行强搬迁、批量VACUUM或用户资料删除。完整Goal保持active，集中252项不因窄切片提高。
+
+## 2026-10-31 M04/M10活动工具完整核验IO
+
+源码5b4343b，714edcc已整合origin/main4d1f3ce并保留协作者E05。CPU采样证实原managed-skills.noLinks/readPackage及运行时checkFiles的同步重复核验占主线程，SQLite回调耗时不能当原生SQL执行耗时。改独立skill-package-async.ts、managed-skills.ts、managed-skill-runtime.ts及Pi阶段取消窄接线；原同步空闲变更入口保留，暂无新依赖、表、协议、IPC或安装组件。原权限、来源哈希、模型缓存、逐级链接检查均保留；每文件前后各做一次完整realpath，去除重复前缀解析及完整包证明已覆盖的重读。
+
+RED/GREEN提交：6c02f44→10cf03c（主循环可前进）、1f59c06→236ef22（缺失路径保留source_changed语义）、50391c1→5b4343b（规范路径工作有界、父目录链接仍拒绝）。十组IO边界实际SQLite/目录/native Pi验证涵盖同大小同mtime篡改、不发送二进制、模型缓存、取消、打开后换路径及大小/链接；22组原权限专项仍通过。完整覆盖率未测量，不据通过数声称百分比覆盖。
+
+正式Electron私有CPU/IO探针沿原kb-restored-text-journey执行，T2NRe7五项exit0/0renderer错误：可见目录授权、真实OCR183B后故障边界置空、两遍受控原图整理、实际FTS5/本地ONNX/Lance、生产Pi真实search/read/引用打开原页、1366/1920及冷启0重发/0假题/0原OCR块。每轮2受控JSON/3受控SSE，0付费；不是自然识别质量。只记录方法、时间、表名和栈名的诊断留ignored本机，公开元数据见[本轮JSON](../research/KB_TOOL_IO_20261031.json)。
+
+同探针流程观测（4资料/4重排候选，非严格A/B；最后一轮已合并E05）：
+
+|阶段|修改前iJwl1f|异步但未减路径zRWhjx|最终T2NRe7|
+|---|---:|---:|---:|
+|实际资料搜索工具|11449ms|11631ms|664ms|
+|实际资料正文读取工具|7436ms|4498ms|464ms|
+|首次语义查询|3079ms|2883ms|4335ms|
+|其中本地重排|2838ms|2826ms|4308ms|
+
+最终两工具区间未观测到>40ms主循环间隙（100ms采样）；全旅程仍有6次，其中启动最大1951ms，不能声称整个主线程无阻塞。早轮观测最多记录100次，SQL方法耗时可能嵌套/重叠，不能相加当墙钟。当前只证明具体重复工作减少及小样本改善，不证明P95/自然Recall/40GB或重排提速。
+
+最终命令在apps/desktop：npm run build、npx tsc --noEmit、npm run test:renderer-components（240）、node scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs（10）、node scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs（22）、node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs（20）与私有探针五项均exit0。node scripts/xiaozhi-agent/pi-skills-management-state-smoke.mjs已过23项，但test-results/xiaozhi-agent/pi-control-ui-2AWPBO旧夹具不存在导致整体exit1；旧数据库部分未执行，未伪造降级数据。npm audit --json exit1：既有23项（8高/7中/8低/0严重），无本片新增依赖。
+
+同一最终5b4343b成功构建后运行node scripts/electron-smoke.mjs，综合207/207、最终shell exit0（test-results/kb-tool-io-final-smoke.log/.exit）；未再并发重建同一out。此次讲义修订描述的既有间歇失败未复现，根因仍未确定，不把绿灯当修复原因。源码未再变化，仅补交付文档/公开元数据；D盘日常构建与安装包未更新。
+
+授权素材目录本轮仅查元数据：9文件10321505B（3PDF/5PNG/1JPG），未发送；不能以小素材替代10GB→40GB。下一继续真实重排/向量调度、图片SQLite体积、启动核验、独立图片失败、跨页/复杂图题/答案册、教材正文人工修正及受管安装。自然内容绝不出错不在本轮证据范围。回滚采用普通revert本轮实现提交，既有同步入口保留且没有业务格式迁移，不删原资料/教师事实。
+
 ## 2026-10-30 最后主线整合42ac7be
 
 最后刷新main83cf832（受管版本/FIFO计算），合并为42ac7be；13份Markdown同位置新增节冲突已逐项保留双方内容，preload自动合并已核对。该源码重新build/type、240组件、20页边界、目录→Pi来源→冷启五项均exit0（iLCx7P，原OCR183B、两视口、0renderer错误、每次2受控JSON/3受控SSE、0付费）。新小样本4资料、重排3候选，查询3918ms/重排3349ms，不能与4候选旧样本当提速A/B。207综合exit0仍明确属于fc2fd0d；未冒充最后这次无关受管版本合并后重跑。代码与新构建指纹见公开JSON latestIntegration。

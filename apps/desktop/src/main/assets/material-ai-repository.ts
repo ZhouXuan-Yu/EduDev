@@ -22,10 +22,11 @@ import {readAiPageSource,validateAiPageSource} from './material-ai-page-source';
 import {restoredPageQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
 import {readAiPageReceipt} from './material-ai-page-evidence';
+import {readAiImageInput,withAiImageFile,recoverAiImageFiles,type AiImageFileReference} from './material-ai-image-files';
 
 type Row=Record<string,unknown>;
 type Value=string|number|null;
-type Host={all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
+type Host={root?:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;
   word?:()=>MaterialWordRepository;native?:()=>NativeQuestionRepository;prepare?:NativeAiPreparation;
   map:(row:Row)=>ResourceChunk;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>;
   writer:<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
@@ -65,9 +66,15 @@ export class MaterialAiRepository{
       `CREATE INDEX IF NOT EXISTS material_ai_units_pending ON material_ai_units(status,batch_id,ordinal)`,
       `CREATE TABLE IF NOT EXISTS material_ai_task_keys(task_key TEXT PRIMARY KEY,input_sha TEXT NOT NULL,batch_id TEXT NOT NULL UNIQUE REFERENCES material_ai_batches(id),folder_id TEXT NOT NULL DEFAULT '',folder_revision INTEGER NOT NULL DEFAULT 0)`,
       `CREATE TABLE IF NOT EXISTS material_ai_image_inputs(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,image_sha TEXT NOT NULL,mime TEXT NOT NULL,data_base64 TEXT NOT NULL CHECK(length(data_base64)<=5592408),PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
+      `CREATE TABLE IF NOT EXISTS material_ai_image_pending(sha256 TEXT PRIMARY KEY,temporary_name TEXT NOT NULL,error TEXT NOT NULL DEFAULT '')`,
       `CREATE TABLE IF NOT EXISTS material_ai_page_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_json TEXT NOT NULL,first_sha TEXT NOT NULL DEFAULT '',final_sha TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
+    const imageColumns=await this.host.all('PRAGMA table_info(material_ai_image_inputs)');
+    if(!imageColumns.some(c=>c.name==='storage_version'))await this.host.run("ALTER TABLE material_ai_image_inputs ADD COLUMN storage_version TEXT NOT NULL DEFAULT 'inline.v1'");
+    if(!imageColumns.some(c=>c.name==='image_bytes'))await this.host.run('ALTER TABLE material_ai_image_inputs ADD COLUMN image_bytes INTEGER NOT NULL DEFAULT 0');
+    await this.host.run("CREATE INDEX IF NOT EXISTS material_ai_image_file_refs ON material_ai_image_inputs(image_sha) WHERE storage_version='file.v1'");
+    await this.host.run("CREATE INDEX IF NOT EXISTS material_ai_image_pending_ready ON material_ai_image_pending(sha256) WHERE error=''");
     if(!(await this.host.all('PRAGMA table_info(material_ai_units)')).some(column=>column.name==='dispatched_at'))await this.host.run('ALTER TABLE material_ai_units ADD COLUMN dispatched_at INTEGER NOT NULL DEFAULT 0');
     const columns=await this.host.all('PRAGMA table_info(material_ai_units)');for(const name of ['retry_at','local_retries'])if(!columns.some(c=>c.name===name))await this.host.run(`ALTER TABLE material_ai_units ADD COLUMN ${name} INTEGER NOT NULL DEFAULT 0`);
     await this.host.run("CREATE INDEX IF NOT EXISTS material_ai_units_due ON material_ai_units(retry_at,batch_id,ordinal) WHERE status IN ('pending','first_saved')");
@@ -256,19 +263,16 @@ export class MaterialAiRepository{
     });
     if(input.action==='pause'&&this.active?.batchId===input.batchId)this.active.controller.abort();
   }
-  private async storedImage(batchId:string,ordinal:number){
+  private async storedImage(batchId:string,ordinal:number,signal?:AbortSignal){
     const row=(await this.host.all('SELECT * FROM material_ai_image_inputs WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(!row)return;
-    const image={data:String(row.data_base64),mime:String(row.mime)};
-    if(!['image/png','image/jpeg','image/webp'].includes(image.mime)||image.data.length>5592408)throw Error('source_changed');
-    const bytes=Buffer.from(image.data,'base64');
-    if(!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==image.data||hash(bytes)!==row.image_sha)throw Error('source_changed');return image;
+    return readAiImageInput(this.host,row,signal);
   }
   async recover(){
     await this.host.run("UPDATE material_ai_units SET retry_at=0 WHERE status IN ('pending','first_saved')");
     const units=await this.host.all("SELECT batch_id,ordinal,owner_pid,lease,dispatched_at FROM material_ai_units WHERE status='dispatched'");
     for(const unit of units)if(!alive(Number(unit.owner_pid))||Date.now()-Number(unit.dispatched_at)>180000)await this.host.run("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown',owner_pid=0,lease='' WHERE batch_id=? AND ordinal=? AND status='dispatched' AND owner_pid=? AND lease=? AND dispatched_at=?",[String(unit.batch_id),Number(unit.ordinal),Number(unit.owner_pid),String(unit.lease),Number(unit.dispatched_at)]);
   }
-  async recoverStartup(){await this.recover();await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
+  async recoverStartup(){await this.recover();await recoverAiImageFiles(this.host);await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
   start(){
     if(this.timer)return;this.closing=false;
     const pump=()=>{if(this.pumping||!this.runtime||this.closing)return;this.pumping=this.recover().then(()=>this.drain()).then(()=>undefined).catch(()=>undefined).finally(()=>{this.pumping=undefined;});};
@@ -314,15 +318,16 @@ export class MaterialAiRepository{
       if(config.images&&clean!==unit.text)throw new Error('privacy_blocked');
       let image:Awaited<ReturnType<AiRuntime['image']>>|undefined;
       if(config.images){
-        image=await this.storedImage(batchId,ordinal)||await this.runtime.image(config.resourceId,config.version,unit.page,signal);
+        const stored=await this.storedImage(batchId,ordinal,signal);image=stored||await this.runtime.image(config.resourceId,config.version,unit.page,signal);
         const bytes=Buffer.from(image.data,'base64');
         if(!['image/png','image/jpeg','image/webp'].includes(image.mime)||!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==image.data)throw Error('unit_too_large');
         const savedImage=image;
-        await this.write(async target=>{
+        const publish=(reference?:AiImageFileReference)=>this.write(async target=>{
           await target.guard(batchId,config,unit,signal);
-          const prior=await target.storedImage(batchId,ordinal);if(prior){if(prior.data!==savedImage.data||prior.mime!==savedImage.mime)throw Error('source_changed');return;}
-          await target.host.run('INSERT INTO material_ai_image_inputs VALUES(?,?,?,?,?)',[batchId,ordinal,hash(bytes),savedImage.mime,savedImage.data]);
+          const prior=await target.storedImage(batchId,ordinal,signal);if(prior){if(prior.data!==savedImage.data||prior.mime!==savedImage.mime)throw Error('source_changed');return;}
+          await target.host.run('INSERT INTO material_ai_image_inputs(batch_id,ordinal,image_sha,mime,data_base64,storage_version,image_bytes) VALUES(?,?,?,?,?,?,?)',[batchId,ordinal,hash(bytes),savedImage.mime,reference?'':savedImage.data,reference?'file.v1':'inline.v1',reference?.bytes||0]);
         },()=>signal.throwIfAborted());
+        if(!stored&&this.host.root&&process.env.OMNI_EDU_AI_IMAGE_FILES!=='0')await withAiImageFile(this.host,savedImage,signal,publish);else await publish();
       }
       const imageSha=image?hash(Buffer.from(image.data,'base64')):'';
       const complete=async(args:Parameters<AiCompletion>[0])=>{

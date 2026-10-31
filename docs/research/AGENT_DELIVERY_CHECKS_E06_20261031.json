@@ -5,7 +5,7 @@
   "branch": "codex/hana-answer-quality",
   "baseSha": "4d1f3ce998dd3b882bce61bfacbfc58c7d08701a",
   "scope": "E06 partial: actual post-save/candidate inspection, original Pi bounded repair and original one review. Full 28 WP/252 AT Goal remains active.",
-  "implementationSha": null,
+  "implementationSha": "6b11cb02127d2f4ad451aba206e01e16abdddcbb",
   "tests": {
     "source": {
       "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
@@ -241,6 +241,13 @@
         "priorJourneyError": "Error: ENOENT: no such file or directory, open 'C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\aisession_5bb8ca78-e409-418e-8f21-a8e150654658\\sessions\\2026-10-31T07-01-19-303Z_01a190c3-4746-7669-b7d0-c71f1198c92a.jsonl'\n    at Object.readFileSync (node:fs:440:20)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-preflight-electron.mjs:39:718",
         "boundary": "Read-only follow-up after the UI harness used a wrong SQL column or un-resolved relative native session path. Original failed harness report is preserved; no user/model operation repeated."
       }
+    },
+    "mergedComponents": {
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240,
+      "log": "delivery-check-merged-components.log"
     }
   },
   "performance": {
@@ -268,7 +275,8 @@
       "total": 45
     },
     "packageManifestOrLockChanged": false,
-    "note": "New observation from current advisory database; previous23 is historical, not a same-time baseline. No automated upgrade."
+    "note": "New observation from current advisory database; previous23 is historical, not a same-time baseline. No automated upgrade.",
+    "rawLocalReport": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-edu-preflight-ui-HyWGwW/dependency-audit.json"
   },
   "sourceFingerprints": {
     "apps/desktop/src/main/xiaozhi-agent/checks/api.ts": "3f488b563048b66b90dfcc91d1d697d83441ca6cb7c0839b9b3f882dfd0393b0",
@@ -297,7 +305,7 @@
     "Complete fixed FX09/10, W3 concentrated AT and canonical daily/installed validation",
     "E07/E08+C, then W4 and W5; no scope reduction"
   ],
-  "rollback": "Revert the E06 implementation commits normally. Existing original file/draft/effect tables and published files remain authoritative; inspection table is additive/rebuildable and need not be deleted.",
+  "rollback": "First stop new AI file writes with existing OMNI_EDU_XIAOZHI_FILE_WRITES=0; retain native identity/readers, original business ledgers and published files. A full source revert with newly created sessions has not been independently verified; do not delete derived inspections or formal files as a rollback shortcut.",
   "integration": {
     "status": "pending",
     "target": "origin/main 8f8d97f",

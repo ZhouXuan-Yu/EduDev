@@ -1,0 +1,264 @@
+{
+  "schemaVersion": "xiaozhi.kb-image-file-evidence.v1",
+  "date": "2026-10-31",
+  "sourceCommit": "29b4d07",
+  "baselineCommit": "b558e6c04c8e1856afe193f8bf50b78d9f9b289b",
+  "status": "Storage slice implemented; full knowledge-base goal ACTIVE",
+  "build": {
+    "mainSha256": "54e6c476baa4485d5cf8b4f36d3e77979b50ea971d3ee7040ecf1d1f4cc57f96",
+    "preloadSha256": "c62c3e0915b1c7a72c4250fe8d4d6194fb82fa9ab26ecd409546085771568696"
+  },
+  "tdd": [
+    {
+      "red": "6b03aa0",
+      "green": "ec589d2",
+      "observed": "Actual directory journey saved 336636 SQLite Base64 bytes before file-backed publication"
+    },
+    {
+      "red": "b80285e",
+      "green": "29b4d07",
+      "observed": "Windows transient EBUSY cleanup must remain due for retry; invalid paths and links are held"
+    }
+  ],
+  "storageComparison": {
+    "sameInputSha256": "4a760d1970c9cb678d7c0e74577cfb1d09a97dc4271ccc4ae222a3114620f183",
+    "before": {
+      "sqliteBase64Bytes": 336636,
+      "decodedBytes": 252475,
+      "fixture": "omni-restored-text-QGSMwz"
+    },
+    "after": {
+      "rows": 1,
+      "sqliteBase64Bytes": 0,
+      "fileBytes": 252475,
+      "versions": [
+        "file.v1"
+      ],
+      "fixture": "omni-restored-text-9uqSXR"
+    },
+    "scope": "Read-only SQLite comparison proves identical image SHA. Measures payload placement only, not physical database shrink or a bulk migration."
+  },
+  "verification": [
+    {
+      "name": "build",
+      "command": "npm.cmd run build",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-final-build.exit"
+    },
+    {
+      "name": "renderer",
+      "command": "npm.cmd run test:renderer-components",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 240,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-final-components.exit"
+    },
+    {
+      "name": "image lifecycle coverage",
+      "command": "node --experimental-transform-types --test --experimental-test-coverage --test-coverage-include=**/material-ai-image-files.ts scripts/education/kb-ai-image-files-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 15,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-coverage.exit"
+    },
+    {
+      "name": "AI page",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 20,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-page.exit"
+    },
+    {
+      "name": "AI batches",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-batch-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 28,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-batch.exit"
+    },
+    {
+      "name": "retrieval",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-retrieval-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 17,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-kb-retrieval-boundaries.log.exit"
+    },
+    {
+      "name": "archive",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-critical-archive-boundaries.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 13,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-kb-critical-archive-boundaries.log.exit"
+    },
+    {
+      "name": "textbook Electron",
+      "command": "node scripts/education/kb-restored-text-journey.mjs",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 6,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-final-journey.exit"
+    },
+    {
+      "name": "question Electron",
+      "command": "node scripts/education/kb-folder-pdf-publication-journey.mjs --restore-ocr",
+      "cwd": "apps/desktop",
+      "exit": 0,
+      "passed": 7,
+      "exitEvidence": "apps/desktop/test-results/kb-image-files-final-question-journey.exit"
+    }
+  ],
+  "coverage": {
+    "file": "apps/desktop/src/main/assets/material-ai-image-files.ts",
+    "lines": 100,
+    "branches": 82.98,
+    "functions": 100,
+    "scope": "New module only, not repository-wide"
+  },
+  "journeys": {
+    "textbook": {
+      "fixture": "omni-restored-text-9uqSXR",
+      "passed": 6,
+      "rendererErrors": 0,
+      "originalOcr": [
+        {
+          "page": 1,
+          "status": "complete",
+          "textBytes": 183
+        }
+      ],
+      "queryMilliseconds": 4815,
+      "rerank": {
+        "available": true,
+        "complete": true,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 4,
+        "processed": 4,
+        "elapsedMs": 4704,
+        "reason": ""
+      },
+      "controlledJsonCalls": 2,
+      "controlledSseCalls": 3,
+      "checks": [
+        "Actual folder plus local worker receives a blank-OCR fault, runs two original-image phases and indexes a zero-question textbook page without OCR or question fabrication",
+        "Actual AI image bytes are retained as hash-addressed local evidence while SQLite contains metadata only",
+        "Visible material search opens the current AI transcript, original empty OCR and actual original-page image",
+        "Actual fixed local ONNX/Lance hybrid retrieval ranks the restored optics page above three other-subject documents for a paraphrase, with no original OCR text",
+        "Production Pi executes real search and version-bound restored read; actual-read citation survives public events and opens the source UI",
+        "Native restart at 1920x1080 retains the same source and zero invented questions, without another AI call or original-file change"
+      ]
+    },
+    "questions": {
+      "fixture": "omni-folder-pdf-publish-MjMyry",
+      "passed": 7,
+      "pdfBytes": 54589246,
+      "rendererErrors": 0,
+      "readyQuestions": 2,
+      "originalOcr": [
+        {
+          "page": 1,
+          "status": "complete",
+          "textBytes": 139
+        },
+        {
+          "page": 2,
+          "status": "complete",
+          "textBytes": 139
+        }
+      ],
+      "questionRetrieval": {
+        "hits": 2,
+        "semantic": {
+          "available": true,
+          "complete": true,
+          "generation": "generation_9baef37a-4ec4-4e7f-bf8d-d28262c127be",
+          "pending": 0,
+          "failed": 0,
+          "backfilling": false,
+          "reason": "",
+          "candidateLimit": 100,
+          "exhausted": false,
+          "rerank": {
+            "available": true,
+            "complete": true,
+            "model": "bge-reranker-base.q8.pair512.window2.v1",
+            "candidates": 2,
+            "processed": 2,
+            "elapsedMs": 2002,
+            "reason": ""
+          }
+        }
+      },
+      "controlledJsonCalls": 4,
+      "checks": [
+        "Actual second-page processing plus staged first page creates no false failed unit or model request",
+        "Both staged pages before canonical publication stay waiting with zero AI requests",
+        "After actual publication both pages finish original-image two-pass processing in the same bank without duplicate children",
+        "Visible notebook reads restored full-page text and opens the actual original while blank/garbled OCR is preserved",
+        "File-backed page question receipts remain valid in actual typed semantic question retrieval",
+        "Native restart retains original hash, two AI questions and four-call ledger without another request",
+        "Cold-start notebook still reads page-backed v5 receipts and the original image at 1920x1080"
+      ]
+    },
+    "scope": "Actual UI/local OCR/SQLite/FTS/native ONNX/Lance/Pi/source and restart. OCR faults injected and HTTP controlled. Not natural recognition or paid answer-quality acceptance."
+  },
+  "performanceDiagnosis": {
+    "nativeColdMs": 4348,
+    "firstFileVerificationMs": 2882.5,
+    "fourCandidateInferenceMs": 62,
+    "hotCacheFileVerificationMs": 369.9,
+    "verifiedComponentBytes": 399017988,
+    "scope": "Existing runtime phase observation only. Cold versus hot cache is not optimization A/B; no production reranker change. First query remains slow."
+  },
+  "backup": {
+    "passed": true,
+    "scope": "Existing data-root copier plus manifest SHA and real VACUUM INTO SQLite copy reopened through the same file reader; not full UI/40GB/installer restore acceptance"
+  },
+  "audit": {
+    "command": "npm audit --json",
+    "exit": 1,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "newDependencies": 0,
+    "lockfileChanged": false,
+    "note": "Feed reports 45 now versus previous round 23 without dependency changes. No unrelated automatic upgrade."
+  },
+  "rollback": {
+    "stopNewWrites": "OMNI_EDU_AI_IMAGE_FILES=0",
+    "retain": [
+      "file.v1 reader",
+      "local evidence files",
+      "bounded pending recovery",
+      "legacy inline.v1 reader"
+    ],
+    "note": "Do not delete evidence or downgrade to an old reader after publishing file.v1; old inline images remain unchanged."
+  },
+  "fullSmoke": {
+    "command": "node scripts/electron-smoke.mjs",
+    "status": "finished",
+    "exit": 0,
+    "exitEvidence": "apps/desktop/test-results/kb-image-files-final-smoke.exit",
+    "passed": 207,
+    "total": 207
+  },
+  "paidModelCallsThisSlice": 0,
+  "userMaterialsUploadedThisSlice": 0,
+  "unresolved": [
+    "10GB to 40GB heterogeneous corpus, long-run recovery, memory/disk/ANN and natural Recall/P95",
+    "Cold first rerank and startup verification latency",
+    "Natural formulas/diagrams/answers, independent image failure and cross-page cases",
+    "Teacher correction of restored textbook text",
+    "Legacy inline images await a separately verified migration",
+    "Packaged Windows managed-component installation and daily D: runtime unchanged",
+    "Earlier intermittent teaching-book-description assertion root cause remains unknown"
+  ]
+}

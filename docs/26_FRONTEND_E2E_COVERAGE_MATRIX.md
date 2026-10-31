@@ -6,6 +6,14 @@
 
 E06仍部分实现：Office实际页面/字体/遮挡渲染、持久视觉证据、自动绑定全部教师语义要求及完整混合终态仍待补齐；未渲染保持未检查。下一继续E06再E07/E08+C与W3集中AT，新增“已实现”0/252。D盘日常版本/安装包未更新，0真实付费请求。 详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json。
 
+## 2026-10-31 文件化原页的真实入口回归
+
+29b4d07同一最终生产构建：kb-restored-text-journey.mjs六项（9uqSXR）沿现目录授权→本地OCR空白故障→两遍原图→SQLite元数据/实际文件SHA→FTS/本地ONNX/Lance→Pi真实search/read/来源→1366/1920冷启；kb-folder-pdf-publication-journey.mjs --restore-ocr七项（MjMyry）沿实际双页>50MiB PDF发布等待→空白/乱码故障→两遍AI/2题→题本原文/原图→实际语义召回→冷启。两轮0renderer、0重发，云端受控/0付费；新增存储沿现typed入口，不加无用控件。最终240组件通过，综合精确终态见goal/KB_IMPLEMENTATION_EVIDENCE.md。不是自然复杂题/40GB/安装验收。
+
+## 2026-10-31 活动工具IO的实机回归
+
+5b4343b生产构建T2NRe7沿原kb-restored-text-journey附只记录方法/耗时的私有CPU探针，正式目录→本地OCR空白边界→两遍受控整页→实际FTS/ONNX/Lance→Pi实际search/read/引用原图→两尺寸冷启五项exit0、0renderer错误、0重发/0假题/0原OCR块。工具664/464ms；首次查询4335ms/重排4308ms、启动1951ms间隙仍保留。受控模型不能替代自然质量、Recall/P95、40GB或安装验收，精确综合结果见goal/KB_IMPLEMENTATION_EVIDENCE。
+
 最终fc2fd0d生产源码/9b128e4夹具：目录→AI整页→检索→Pi实读与引用→冷启5项exit0/0renderer错误，GASk1N原OCR183B后受控清空。修正换行/绘制边界并实看截图，旧裁切夹具不计自然质量。整合后240组件与207综合exit0；冷读/来源哈希与到期查询计划补查通过，详见KB_IMPLEMENTATION_EVIDENCE及公开JSON。
 
 ## 2026-10-30 AI整页正文进入现检索与小智（M04/M10）

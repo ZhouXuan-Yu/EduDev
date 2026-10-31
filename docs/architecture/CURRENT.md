@@ -6,6 +6,14 @@
 
 E06仍部分实现：Office实际页面/字体/遮挡渲染、持久视觉证据、自动绑定全部教师语义要求及完整混合终态仍待补齐；未渲染保持未检查。下一继续E06再E07/E08+C与W3集中AT，新增“已实现”0/252。D盘日常版本/安装包未更新，0真实付费请求。 详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json。
 
+## 2026-10-31 AI输入文件证据
+
+assets/material-ai-image-files.ts复用现FD/路径/哈希证明与Windows独占锁，按SHA在dataRoot/material-ai-images/v1分片保存原始输入，SQLite只保存file.v1引用与pending日志；旧inline.v1兼容。文件准备不占业务writer事务，引用发表仍经原授权guard/短事务，锁持有到清理。两个部分索引支持每次8条恢复和引用检查，备份沿原data-root-files收录；Pi/typed IPC/前端入口保持。来源读取与题目检索共用新旧读器，未知版本/混填/损坏拒绝。具体表列/回退和验证见goal/KB_IMPLEMENTATION_CONTRACT.md及KB_IMPLEMENTATION_EVIDENCE.md。
+
+## 2026-10-31 活动工具文件证明
+
+managed-skills.enabledResources与managed-skill-runtime.check接阶段AbortSignal，调用独立skill-package-async.ts的Node有界异步读。每次仍核对全部注册文件（含不发送模型的二进制）、目录/链接/规范路径、句柄与当前路径及内容哈希；解析缓存只保存不可变原生解析结果。模型缓存完整包证明覆盖的逐文件重读被取消，同步空闲编辑接口暂保留。SQLite/文件真源、Pi、现检索、typed IPC与schema均不变；性能和剩余启动阻塞见goal/KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-30 E05与知识库主线最终整合
 
 正常整合origin/main28ef069为f30212f，保留双方知识库正文来源与E05真实计算报告代码及13份Markdown完整新增节。合并后的build/type、240组件、20知识库页边界、E05正式Electron5项均exit0，0renderer错误；实际CSV/HTML/XLSX一次确认、所有文件账本回读、两尺寸预览及冷启0模型重放通过。最初KB专项因Node缺transform-types前置失败，按原脚本补正确参数后通过，未改协作源码。207综合仍属于合并前本轮代码，不冒充本次合并后重跑。 本地合并脚本曾未在失败后停止，误含标记的未推送提交已修正；全树标记与diff检查通过，未强推、未动其他已检出分支。下一仍E06→E07/E08+C→W3集中验收，新增已实现0/252；D盘日常版本及安装包未更新。详[最终整合证据](../research/AGENT_COMPUTATION_REPORTS_E05_20261030.json)的integration。

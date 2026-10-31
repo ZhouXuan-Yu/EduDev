@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import {answerQualityEnabled} from './answer-quality';
+import {readPackageAsync} from './skill-package-async';
 import { loadSkillsFromDir, parseFrontmatter } from '@earendil-works/pi-coding-agent';
 import { EDUCATION_SKILLS, EDUCATION_SKILL_VERSION, skillDocument } from './education-skills';
 import { LEGACY_EDUCATION_SKILLS, legacySkillDocument } from './education-skills-legacy-v1';
@@ -134,8 +135,7 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
   // Cache only immutable parser output, after full content/link verification on every
   // access. No authority, source bytes, sanitizer or run-specific closures are cached.
   const parsedSkills=new Map<string,ReturnType<typeof loadSkillsFromDir>>();
-  function verify(item: PrivateManagedSkill) {
-    const directory = resolveDirectory(item), bytes = readPackage(directory);
+  function parseVerified(item:PrivateManagedSkill,directory:string,bytes:PackageBytes){
     if (JSON.stringify(filesOf(bytes)) !== JSON.stringify(item.files)) throw new Error('skill_source_changed');
     const meta = metadata(bytes);
     if (meta.name !== item.name || meta.description !== item.description || meta.title !== item.title) throw new Error('skill_source_changed');
@@ -143,10 +143,23 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
     const cached=answerQualityEnabled()?parsedSkills.get(cacheKey):undefined;
     const loaded = cached?structuredClone(cached):loadSkillsFromDir({ dir: directory, source: item.origin === 'builtin' ? 'builtin' : 'path' });
     if (loaded.diagnostics.length || loaded.skills.length !== 1 || loaded.skills[0].name !== item.name) throw new Error('invalid_input');
-    // Native loader reads the same files only after the bounded package check.
-    if (JSON.stringify(filesOf(readPackage(directory))) !== JSON.stringify(item.files)) throw new Error('skill_source_changed');
-    if(!cached&&answerQualityEnabled()){if(parsedSkills.size>=32)parsedSkills.delete(parsedSkills.keys().next().value!);parsedSkills.set(cacheKey,structuredClone(loaded));}
-    return { bytes, loaded, document: meta.document };
+    return {bytes,loaded,document:meta.document,directory,cacheKey,cached:!!cached};
+  }
+  function remember(result:ReturnType<typeof parseVerified>){
+    if(!result.cached&&answerQualityEnabled()){if(parsedSkills.size>=32)parsedSkills.delete(parsedSkills.keys().next().value!);parsedSkills.set(result.cacheKey,structuredClone(result.loaded));}
+    return result;
+  }
+  function verify(item:PrivateManagedSkill){
+    const directory=resolveDirectory(item),result=parseVerified(item,directory,readPackage(directory));
+    if(JSON.stringify(filesOf(readPackage(directory)))!==JSON.stringify(item.files))throw Error('skill_source_changed');
+    return remember(result);
+  }
+  async function verifyRuntime(item:PrivateManagedSkill,signal?:AbortSignal){
+    const directory=path.join(root,item.directory);assertInstallTargetInsideRoot(directory,root);
+    const result=parseVerified(item,directory,await readPackageAsync(directory,signal));
+    // Only the native parser rereads disk. An immutable cached parse does not.
+    if(!result.cached&&JSON.stringify(filesOf(await readPackageAsync(directory,signal)))!==JSON.stringify(item.files))throw Error('skill_source_changed');
+    signal?.throwIfAborted();return remember(result);
   }
   function writeVersion(bytes: PackageBytes, origin: PrivateManagedSkill['origin'], version: number): PrivateManagedSkill {
     const meta = metadata(bytes), id = randomUUID(), relative = `versions/${meta.name}/${id}/${meta.name}`;
@@ -268,12 +281,13 @@ export function createManagedEducationSkills(options: { root: string; state: Sta
       });
     },
     /** Main-only runtime descriptors; UI never receives local source paths. */
-    async enabledResources() {
+    async enabledResources(signal?:AbortSignal) {
       const catalog = await readCatalog();
-      const resources = catalog.skills.filter(item => item.enabled && !item.archived).map(item => {
-        const { loaded, bytes } = verify(item);
-        return { item: structuredClone(item), directory: resolveDirectory(item), skill: loaded.skills[0], bytes };
-      });
+      const resources=[];
+      for(const item of catalog.skills.filter(item=>item.enabled&&!item.archived)){
+        signal?.throwIfAborted();const {loaded,bytes,directory}=await verifyRuntime(item,signal);
+        resources.push({item:structuredClone(item),directory,skill:loaded.skills[0],bytes});
+      }
       return { revision: catalog.revision, resources };
     },
   };
