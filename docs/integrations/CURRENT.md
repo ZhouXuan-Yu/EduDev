@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-10-31 E08当前版本：Office族投影沿原listDocumentArtifacts、delivery summary及officeVersion typed IPC使用，无新通道；任务idle复核要求当前Office，历史来源维持原策略。普通Office支持当前预览/系统打开/定位，confirmed领域保留原流程；未改D盘日常/安装包。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 封面跳过补强
 
 封面跳过必须校验完整成功页回执、全部识别文字通道及明确无题线索；在原writer内复查版本、发表状态、游标和暂停，不能覆盖既有付费任务。当前页任务键采用原主键查询，不逐页扫描整批付费元数据。skippedCover从既有本地完成单元派生，原PDF/OCR保留，无新真源或云端权限。正式结果和边界见 docs/research/KB_COVER_SKIP_20261031.json；完整Goal仍active。

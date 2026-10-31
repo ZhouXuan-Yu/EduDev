@@ -27,6 +27,7 @@ export type CandidateBytes={path:string;bytes:Buffer;version:string;candidate:No
 export function createDeliveryChecks(options:{state:ReturnType<typeof createInspectionState>;dataRoot:string;
  resolve:(id:string)=>Promise<WorkspaceLease>;requirements:(id:string)=>Promise<number|null|DeliveryRequirements>;
  observe?:(report:DeliveryCheckReport)=>void;
+ publishedCurrent?:(sessionId:string,path:string)=>Promise<boolean>;
  candidateStatus?:(sessionId:string,file:FileCheckReport)=>Promise<{current:boolean;published:boolean}>}){
  let tail=Promise.resolve<unknown>(undefined),slots=0,closing=false;const controllers=new Set<AbortController>();const visuals=createVisualEvidenceCache(options.dataRoot);
  async function requirementsFor(id:string){const value=await options.requirements(id);return{version:typeof value==='number'?value:value?.version??null,context:typeof value==='object'&&value?structuredClone(value):null};}
@@ -44,10 +45,11 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
   const lease=await options.resolve(report.sessionId),requirements=await requirementsFor(report.sessionId);const contextStale=lease.version!==report.workspaceVersion||requirements.version!==report.requirementsVersion||requirements.context?.digest!==report.requirements?.digest;let stale=contextStale;
   const files:FileCheckReport[]=[];
   for(const file of report.files){
-   let changed=contextStale;
+   let changed=contextStale,superseded=false;
+   if(options.publishedCurrent)try{superseded=!await options.publishedCurrent(report.sessionId,file.path);changed ||= superseded;}catch{changed=true;}
    try{if(file.candidate){const status=await options.candidateStatus?.(report.sessionId,file);changed ||= !status?.current;if(status?.published){const actual=await capture(lease,file.path);changed ||=actual.sha256!==file.sha256;}}
     else{const current=await capture(lease,file.path);changed ||= current.fileVersion!==file.fileVersion||current.sha256!==file.sha256;}}catch{changed=true;}
-   if(changed){stale=true;files.push({...file,state:'stale',numbers:[],facts:[],checks:file.checks.map(c=>({...c,state:'unchecked',code:'inspection_stale',message:'文件、工作区或要求版本已变化；旧检查不能证明当前内容。'}))});}else files.push(file);
+   if(changed){stale=true;files.push({...file,state:'stale',numbers:[],facts:[],checks:file.checks.map(c=>({...c,state:'unchecked',code:superseded?'office_version_replaced':'inspection_stale',message:superseded?'此成果已有更新版本；保留旧检查供参考，请检查当前文件。':'文件、工作区或要求版本已变化；旧检查不能证明当前内容。'}))});}else files.push(file);
   }
   if(stale)for(const file of files)if(file.state!=='stale'){file.checks=file.checks.map(c=>c.kind==='consistency'?{...c,state:'unchecked',code:'counterpart_changed',message:'整包其他文件或要求已变化，一致性需要重新检查。'}:c);file.state=fileCheckState(file.checks);}
   return{...report,contextCurrent:!contextStale,files,...(stale&&report.requirementCoverage?{requirementCoverage:report.requirementCoverage.map(c=>({...c,state:'unchecked' as const,evidence:c.evidence.map(e=>({...e,state:'unchecked' as const}))}))}:{}),state:stale?'stale':report.state};
@@ -143,7 +145,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
      if(edited)for(const kind of CHECK_CLASSES)if(prior.files.some(f=>f.checks.some(c=>c.kind===kind&&c.state==='failed')))report.repairAttempts[kind]=(report.repairAttempts[kind]||0)+1;
     }
     report.requirementCoverage=requirementCoverage(report,input);
-    report.state=files.some(f=>f.state==='failed')?'failed':files.some(f=>f.state==='partial')?'partial':report.requirements?.criteria.length?'partial':'passed';current();await options.state.put(report,input);options.observe?.(report);current();return{ok:true,report};
+    report.state=files.some(f=>f.state==='failed')?'failed':files.some(f=>f.state==='partial')?'partial':report.requirements?.criteria.length?'partial':'passed';current();await options.state.put(report,input);const shown=await refresh(report);current();options.observe?.(shown);return{ok:true,report:shown};
    }catch(error){
     if(report&&(signal.aborted||closing||owner&&!owner.current())){report.state='cancelled';await options.state.cancel(report,input).catch(()=>undefined);}
     return{ok:false,error:signal.aborted?(signal.reason==='timeout'?'timeout':'cancelled'):errorCode(error)};

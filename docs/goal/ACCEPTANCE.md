@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+最终再次整合main95cd21d为03a0204：13处Markdown冲突逐段保留双方，无生产冲突；本片版本功能源码未变。最终build/type与240组件exit0；正式Pi8归fc0102d、同四版文件只读/冷启3项归c500cb5，一次207归fc0102d，均未重复全套。最终renderer7251525B（含主线封面计数改动），完整指纹以currentVersionSlice.lastIntegration为准。Goal active；D盘日常/安装包未更新。
+
+2026-10-31 E08当前版本：本片工程源码16及正式Pi8通过，旧报告partial→stale、原报告hash与四份原文件hash/mtime保持；240及一次207通过。系统打开为注入失败验证，Explorer定位真实；不声称原生打开成功。全252AT阶段未执行，完整条目不标过。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。 最终整合c500cb5：build/type、240组件、同四版文件只读/冷启3项exit0，0模型/renderer错误；原Pi8与一次207仅合并前，功能源码未变。
+
 ## 2026-10-31 封面跳过补强与明确计数
 
 文件夹 PDF 封面现在校验完整成功回执及 text/nativeText/ocrText 全部通道，保护中文、全角与圈号题号；原 writer 内复查来源/游标/暂停及既有付费任务，跳过数沿原 typed IPC 显示。无新表/依赖/付费/上传，原件和教师数据保留。真实五三第1页派生PDF已通过原页像素一致验证，实际导入→本地OCR→文件夹授权→跳过→双尺寸→冷启3项通过，0调用/子任务/新题，原12题未变。

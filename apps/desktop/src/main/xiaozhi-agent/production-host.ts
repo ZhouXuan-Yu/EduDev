@@ -28,6 +28,7 @@ import type {ReceiptCapture} from './events/receipts';
 import {createEducationReadback} from './verification/education-readback';
 import {createPracticeReadback} from './verification/practice-readback';
 import {createEffectReadback} from './verification/effect-readback';
+import {officeVersionFamilies,officePathIsCurrent,type OfficeFamilyRecord} from './office-version-family';
 import {createDeliveryReadback} from './verification/delivery-readback';
 import {createDeliveryCoordinator} from './delivery-coordinator';
 import {createHanaOfficeTools} from '../office-agent/hana-tool-adapter';
@@ -178,8 +179,10 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
   const root = path.join(options.dataRoot, 'xiaozhi-pi');
   const active = new Map<string, Active>();
   const fileChecks=createDeliveryChecks({state:store.xiaozhiState.inspections,dataRoot:options.dataRoot,observe:report=>{const run=active.get(report.sessionId);if(run&&run.runId===report.runId){run.officePresentation??=createOfficeDeliveryPresentation(run.runId);run.officePresentation.inspected();}},resolve:id=>host.resolveFileWorkspace(id),requirements:async id=>deliveryRequirements(await createTaskState(store.xiaozhiState.sql,{sanitize:async text=>(await createStudentContextSanitizer(store))(text)}).requirements(id)),
+    publishedCurrent:async(id,relative)=>officePathIsCurrent(await store.xiaozhiState.officeArtifacts.versionRecords(id) as OfficeFamilyRecord[],relative),
     candidateStatus:async(id,file)=>{const ref=file.candidate;if(!ref)return{current:false,published:false};const row=ref.kind==='text'?await store.xiaozhiState.changes.get(ref.id):await store.xiaozhiState.officeArtifacts.get(ref.id);
-      return{current:!!row&&row.sessionId===id&&row.path===file.path&&row.state!=='reverted'&&('afterSha256'in row?row.afterSha256===file.sha256:row.draftHash===file.fileVersion&&row.outputHash===file.sha256),published:row?.state==='saved'||row?.state==='applied'};}});
+      const family=row&&'artifactId'in row&&row.artifactId?officeVersionFamilies(await store.xiaozhiState.officeArtifacts.versionRecords(id) as OfficeFamilyRecord[]).get(row.artifactId):undefined;
+      return{current:!!row&&(!family||family.currentArtifactId===('artifactId'in row?row.artifactId:null))&&row.sessionId===id&&row.path===file.path&&row.state!=='reverted'&&('afterSha256'in row?row.afterSha256===file.sha256:row.draftHash===file.fileVersion&&row.outputHash===file.sha256),published:row?.state==='saved'||row?.state==='applied'};}});
   const idleTaskResults=createTaskResultRecheck({store,dataRoot:options.dataRoot,nativeRoot:root,current:id=>!closing&&!active.has(id)&&!admissions.get(id)?.size&&!choosing.has(id)&&!configuring.has(id)&&!configuring.has('provider'),workspace:id=>host.resolveFileWorkspace(id)});
   const tasks=createTaskCoordinator({store,closing:()=>closing,running:id=>active.has(id),busy:id=>active.has(id)||Boolean(admissions.get(id)?.size)||choosing.has(id)||configuring.has(id)||configuring.has('provider')||skillsMutating,
     emit:options.emit,resultRecheck:idleTaskResults,taskRecheck:async task=>{const proofs:import('../../shared/xiaozhi-verification').TaskVerification[]=[];for(const run of await tasks.admittedRuns(task.sessionId,task.id))try{proofs.push(await idleTaskResults.run(run.runId,task));}catch{/* Unknown historical effects cannot be confirmed or replayed. */}return proofs;}});

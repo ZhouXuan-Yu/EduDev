@@ -748,6 +748,8 @@ export type DocumentArtifactExportInput = {
 };
 
 export type DocumentArtifactExportResult = {
+  /** Optional derived saved Office family; the historical artifact fact remains unchanged. */
+  officeVersion?: {familyId:string;currentArtifactId:string;version:number};
   id: string;
   sessionId: string;
   messageId: string;

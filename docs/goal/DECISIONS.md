@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+2026-10-31 E08当前版本：复用统一officeVersionFamilies轻量投影，原Office账本/原报告不变；当前交付证明策略只用于空闲教师任务复核，历史工具/来源证明不改。列表读后遇到新发布版本补读原artifact事实，避免整族消失；无DDL/依赖/付费。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
+
 ## 2026-10-31 封面跳过补强
 
 封面跳过必须校验完整成功页回执、全部识别文字通道及明确无题线索；在原writer内复查版本、发表状态、游标和暂停，不能覆盖既有付费任务。当前页任务键采用原主键查询，不逐页扫描整批付费元数据。skippedCover从既有本地完成单元派生，原PDF/OCR保留，无新真源或云端权限。正式结果和边界见 docs/research/KB_COVER_SKIP_20261031.json；完整Goal仍active。

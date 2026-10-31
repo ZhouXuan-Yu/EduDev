@@ -8,6 +8,7 @@ import {createOfficeArtifactState,officeSha} from './office-artifact-state';
 import {authorizedWorkspace,approvedFile,workspaceHash} from './workspace-authority';
 import {fileVersion} from './workspace-files';
 import {assertFileWritesEnabled} from './file-write-policy';
+import {officeVersionFamilies} from './office-version-family';
 
 type RecordVersion={artifactId:string;path:string;title:string;format:string;parentArtifactId:string|null;savedAt:string;size:number;sha256:string;workspaceHash:string;draftSchema:string;sourcePaths:string;changedSections:string;sectionCount:number;parentSectionCount:number|null;runId:string};
 const ordinary=(row:RecordVersion)=>['xiaozhi.office-draft.v1','xiaozhi.presentation-draft.v1'].includes(row.draftSchema);
@@ -22,9 +23,8 @@ export function createOfficeVersions(options:{state:ReturnType<typeof createOffi
   return rows;
  }
  function family(rows:RecordVersion[],id:string){
-  const byId=new Map(rows.map(row=>[row.artifactId,row]));if(!byId.has(id))throw Error('permission_denied');
-  function root(row:RecordVersion){const seen=new Set<string>();while(row.parentArtifactId&&byId.has(row.parentArtifactId)){if(seen.has(row.artifactId))throw Error('configuration');seen.add(row.artifactId);row=byId.get(row.parentArtifactId)!;}return row.artifactId;}
-  const ancestor=root(byId.get(id)!);return rows.filter(row=>root(row)===ancestor);
+  const selected=rows.find(row=>row.artifactId===id);if(!selected)throw Error('permission_denied');if(!ordinary(selected))throw Error('unsupported');
+  const families=officeVersionFamilies(rows),ancestor=families.get(id)!.familyId;return rows.filter(row=>families.get(row.artifactId)?.familyId===ancestor);
  }
  async function workspace(sessionId:string,row:RecordVersion){const root=authorizedWorkspace(await options.workspace(sessionId),options.dataRoot);if(workspaceHash(root)!==row.workspaceHash)throw Error('permission_denied');return root;}
  async function inspect(root:string,row:RecordVersion){

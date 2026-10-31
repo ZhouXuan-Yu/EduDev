@@ -11,7 +11,7 @@ import {OFFICE_ARTIFACT_SCHEMA,OFFICE_ARTIFACT_ERRORS,type OfficeArtifactDecisio
 import {validOfficeDraft,isPresentationDraft,isPaperOfficeDraft,type OfficeDraft} from '../../../shared/xiaozhi-office-draft';
 import {isMathPaperOfficeSchema,isRichPaperOfficeSchema} from '../../../shared/paper-export';
 import './pi-office-artifact.css';
-import {PiOfficeVersions} from './PiOfficeVersions';
+import {PiOfficeVersions,PiOfficeCurrent} from './PiOfficeVersions';
 
 const labels:Record<OfficeArtifactState,string>={pending:'需要你的确认',approved:'已确认，等待生成',generating:'正在生成',prepared:'已生成，等待保存',committing:'正在保存',saved:'已保存并核验',rejected:'已拒绝，未写入',interrupted:'已中断，未继续写入',uncertain:'保存中断，需要核验',conflict:'内容或文件已变化，未覆盖',failed:'生成或保存未完成'};
 const escaped=(v:string|number)=>String(v).replace(/[\\`*_{}\[\]()#+.!|<>-]/g,'\\$&');
@@ -105,7 +105,7 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
   </ChatTool.Content>
   <div className="pi-office-actions">
    {!pending&&<Button size="sm" variant="ghost" onPress={()=>setExpanded(value=>!value)} data-testid="pi-office-review-toggle">{expanded?'收起拟内容':'查看拟内容'}</Button>}
-   {artifact.state==='saved'&&<Button size="sm" variant="ghost" onPress={()=>onOpen(artifact.path)} data-testid="pi-office-open">打开文件</Button>}
+   {artifact.state==='saved'&&(artifact.artifactId?<PiOfficeCurrent key={artifact.artifactId} sessionId={sessionId} artifactId={artifact.artifactId} fallbackPath={artifact.path} onOpen={onOpen}/>:<Button size="sm" variant="ghost" onPress={()=>onOpen(artifact.path)} data-testid="pi-office-open">打开文件</Button>)}
    {artifact.state==='uncertain'&&<Button size="sm" variant="ghost" isDisabled={draft.busy||running} onPress={()=>void decide('verify')} data-testid="pi-office-verify">核验现有文件</Button>}
    {draft.busy&&<span role="status">正在提交…</span>}
   </div>

@@ -14,6 +14,7 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
  const readiness=useCallback((id:string,value:boolean)=>setReady(old=>old[id]===value?old:{...old,[id]:value}),[]);
  const pending=delivery.state==='pending',complete=delivery.files.filter(f=>f.change?.state==='applied'||f.artifact?.state==='saved').length;
  const allReady=delivery.files.every(f=>f.carried||!!f.draftId&&ready[f.draftId]);
+ const revised=delivery.files.some(f=>f.currentVersion&&f.currentVersion.artifactId!==f.artifact?.artifactId);
  async function decide(action:'approve'|'reject'){
   if(lock.current||!running||!pending||action==='approve'&&!allReady)return;lock.current=true;update({busy:true,error:''});
   try{const result=await window.omniEdu?.decideXiaozhiDelivery({schemaVersion:DELIVERY_SCHEMA,sessionId,bundleId:delivery.id,revision:delivery.revision,fingerprint:delivery.fingerprint,action});if(!result?.ok)update({error:result?OFFICE_ARTIFACT_ERRORS[result.error]:'整包没有提交，请刷新后重试。'});await onRefresh();}
@@ -27,8 +28,10 @@ export function PiDeliveryBundleCard({delivery,sessionId,running,onRefresh,onOpe
   }catch{update({error:'续做状态未能确认，请刷新后检查。'});}finally{lock.current=false;update({busy:false});}
  }
  return <section className="pi-delivery-bundle" data-testid="pi-delivery-bundle" data-bundle-id={delivery.id} data-state={delivery.state} aria-label="整包教学文件">
-  <strong>{labels[delivery.state]}</strong><p>{complete} / {delivery.files.length} 份已保存。{pending?'请核对下面各文件；PPT修改后先保存拟内容，再一次确认整包。':complete<delivery.files.length?'已保存文件保留，续做仅处理未完成部分。':'可分别打开文件继续使用。'}</p>
+  <strong>{revised&&delivery.state==='saved'?'原整包已保存，部分成果后来已更新':labels[delivery.state]}</strong><p>{complete} / {delivery.files.length} 份已保存。{pending?'请核对下面各文件；PPT修改后先保存拟内容，再一次确认整包。':complete<delivery.files.length?'已保存文件保留，续做仅处理未完成部分。':'可分别打开文件继续使用。'}</p>
+  {revised&&<p data-testid="pi-delivery-revised">下面保留原整包的保存记录；默认打开当前成果。旧检查仅对应当时版本，当前整包需重新检查。</p>}
   {delivery.files.map(f=><div key={f.fileId} data-testid="pi-delivery-file" data-file-id={f.fileId}>
+   {f.currentVersion&&f.currentVersion.artifactId!==f.artifact?.artifactId&&<p data-testid="pi-delivery-current-file">当前第 {f.currentVersion.version} 版：{f.currentVersion.path} · 原提交：{f.path}</p>}
    {f.carried&&<p>已保存并核验，续做时保留：{f.path}</p>}
    {f.change&&<PiTextChangeCard bundled change={f.change} sessionId={sessionId} running={running&&pending} onRefresh={onRefresh} onOpen={onOpen} onReadiness={readiness}/>}
    {f.artifact&&<PiOfficeArtifactCard bundled artifact={f.artifact} sessionId={sessionId} running={running&&pending} onRefresh={onRefresh} onOpen={onOpen} onReadiness={readiness}/>}

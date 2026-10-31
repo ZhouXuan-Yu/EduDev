@@ -10,6 +10,7 @@ import type {createTextChangeService} from './text-change-service';
 import type {createOfficeArtifactService} from './office-artifact-service';
 import type {BoundEffect} from './verification/effect-readback';
 import {CHECKS_PARAMETERS,withCheckReceipt,type CheckPreflight,type CheckReceipt} from './checks/preflight';
+import {officeVersionFamilies,type OfficeFamilyRecord} from './office-version-family';
 
 type FileSpec={fileId:string;kind:'text';path:string;content:string}|({fileId:string;kind:'office'}&OfficeArtifactProposal);
 type Wait=(action:()=>Promise<boolean>)=>Promise<boolean>;
@@ -37,9 +38,12 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    const child=ref.draftId?(ref.kind==='text'?await options.changes.get(ref.draftId):await options.artifacts.get(ref.draftId)):null;
    if(child&&(child.sessionId!==row.sessionId||child.runId!==ref.runId||child.callId!==ref.callId||child.path!==ref.path))throw Error('configuration');return child;
   }));
+  const families=children.some(child=>child&&'artifactId'in child&&child.state==='saved')?officeVersionFamilies(await options.artifacts.versionRecords(row.sessionId) as OfficeFamilyRecord[]):new Map();
   const files=row.files.map((ref,index)=>{
    const child=children[index];
+   const family=child&&'artifactId'in child&&child.artifactId?families.get(child.artifactId):undefined;
    return{fileId:ref.fileId,kind:ref.kind,path:ref.path,draftId:ref.draftId,carried:ref.carried,...(ref.error?{error:ref.error}:{}),
+    ...(family?{currentVersion:{artifactId:family.currentArtifactId,path:family.path,version:family.version}}:{}),
     ...(child?(ref.kind==='text'?{change:changeSummary(child as NonNullable<Awaited<ReturnType<typeof options.changes.get>>>)}:{artifact:officeSummary(child as NonNullable<Awaited<ReturnType<typeof options.artifacts.get>>>)}):{})};
   });
   const versions=children.map(child=>child?[child.id,child.revision,child.workspaceHash,'afterSha256'in child?child.afterSha256:child.draftHash,child.inputHash]:null);
