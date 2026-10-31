@@ -1,3 +1,4 @@
+import {CLASSROOM_PLAN_TOOLS} from '../../shared/classroom-plan';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import fs from 'node:fs';
 import {ensureNativePlanContract,ensureNativeTaskContract,withPlanBasisReference} from './plan-native';
@@ -486,10 +487,18 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const classroomEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.classroom.'));
   if(classroomEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom.v1'||JSON.stringify(entry.data)!==JSON.stringify(classroomIdentity))||classroomEntries.length&&!options.classroomTools)throw new Error('configuration');
   if(options.classroomTools){
-    if(options.classroomTools.map(tool=>tool.name).join(',')!==CLASSROOM_TOOLS.join(','))throw new Error('configuration');
+    const actual=options.classroomTools.map(tool=>tool.name);
+    if(actual.join(',')!==CLASSROOM_TOOLS.join(',')&&actual.join(',')!==[...CLASSROOM_TOOLS,...CLASSROOM_PLAN_TOOLS].join(','))throw new Error('configuration');
     if(!classroomEntries.length)manager.appendCustomEntry('xiaozhi.education.classroom.v1',classroomIdentity);
-    names.push(...CLASSROOM_TOOLS);
-    prompt+='\n教师请求互动课/互动课堂时，必须使用education_prepare_classroom_scene取得原生提示并逐页生成内容，再education_stage_classroom一次提交，至少讲解幻灯片与互动题。不能以普通文本或Office文件代替互动课堂。不额外发起Agent或模型；本Pi完成内容。保留数学条件/图形/答案供教师核对；自动对照不等于正确性验证。工具成功后教师从教学内容→互动课堂预览/修改/确认。';
+    names.push(...options.classroomTools.map(tool=>tool.name));
+    if(options.classroomTools.some(tool=>tool.name===CLASSROOM_PLAN_TOOLS[0])){
+      const identity={version:1,tools:[...CLASSROOM_PLAN_TOOLS],source:'sqlite-confirmed-outline-checkpoints-v1'};
+      const entries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.classroom-plan.'));
+      if(entries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom-plan.v1'||JSON.stringify(entry.data)!==JSON.stringify(identity)))throw Error('configuration');
+      if(!entries.length)manager.appendCustomEntry('xiaozhi.education.classroom-plan.v1',identity);
+      prompt+='\n来源驱动课堂必须先office_list_materials/office_read_material实读保存正文，再education_propose_classroom_outline提交schemaVersion=xiaozhi.classroom-plan.v1的大纲（总时长与各页之和相等、稳定sceneId）。仅保存草稿后停止，提示教师到教学工作台互动课堂明确确认；不能自行确认，不能用旧prepare/stage绕过。教师已在页面点击生成或继续时，education_read_classroom_plan会返回宿主绑定当前版本与缺页；成功则只对缺页调用education_prepare_planned_scene生成contentJson、education_save_classroom_scene逐页保存，全部成功后education_finish_classroom_plan。已保存页不重复，来源变化或旧版本拒绝，不自行重试写入。完成只得到待核对课堂；大纲确认、最终课堂确认和Office写入批准是三件事。仅原生讲解slide与选择题quiz，无仿真/脚本/远程资源，不记录学生成绩。旧无资料互动课堂入口才兼容旧prepare/stage。';
+    }
+    if(!options.classroomTools.some(tool=>tool.name===CLASSROOM_PLAN_TOOLS[0]))prompt+='\n教师请求互动课/互动课堂时，必须使用education_prepare_classroom_scene取得原生提示并逐页生成内容，再education_stage_classroom一次提交，至少讲解幻灯片与互动题。不能以普通文本或Office文件代替互动课堂。不额外发起Agent或模型；本Pi完成内容。保留数学条件/图形/答案供教师核对；自动对照不等于正确性验证。工具成功后教师从教学内容→互动课堂预览/修改/确认。';
   }
   if(capabilityEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.deeptutor-reading.v1'||JSON.stringify(entry.data)!==JSON.stringify(capabilityIdentity))
     ||capabilityEntries.length&&!options.educationCapabilityTools)throw new Error('configuration');

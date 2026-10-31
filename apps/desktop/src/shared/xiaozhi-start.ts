@@ -1,3 +1,4 @@
+import {validClassroomPlanStart} from './classroom-plan';
 import type {XiaozhiStartInput} from './xiaozhi-agent';
 import {validMessagePresentation} from './xiaozhi-message-presentation';
 import {MAX_XIAOZHI_ATTACHMENTS,validAttachmentSession,validAttachmentSelection} from './xiaozhi-attachments';
@@ -6,12 +7,13 @@ import {MAX_XIAOZHI_ATTACHMENTS,validAttachmentSession,validAttachmentSelection}
 export function validXiaozhiStart(value:unknown):value is XiaozhiStartInput{
  if(!value||typeof value!=='object'||Array.isArray(value))return false;
  const descriptors=Object.getOwnPropertyDescriptors(value),keys=Reflect.ownKeys(value);
- if(keys.some(k=>typeof k!=='string'||!['sessionId','commandId','prompt','attachments','presentation','continueTask'].includes(k))
+ if(keys.some(k=>typeof k!=='string'||!['sessionId','commandId','prompt','attachments','presentation','continueTask','classroomPlan'].includes(k))
   ||!['sessionId','commandId','prompt'].every(k=>Object.prototype.hasOwnProperty.call(descriptors,k))
   ||Object.values(descriptors).some(d=>!('value'in d)))return false;
  const session=descriptors.sessionId.value,command=descriptors.commandId.value,prompt=descriptors.prompt.value;
  if(!validAttachmentSession(session)||typeof command!=='string'||!/^xicmd_[a-f0-9-]{36}$/i.test(command)
   ||typeof prompt!=='string'||prompt.length>32768||prompt.includes('\0'))return false;
+ if(descriptors.classroomPlan&&(!validClassroomPlanStart(descriptors.classroomPlan.value)||descriptors.attachments||descriptors.continueTask))return false;
  if(descriptors.continueTask&&!validTaskContinuation(descriptors.continueTask.value))return false;
  if(descriptors.presentation&&!validMessagePresentation(prompt,descriptors.presentation.value))return false;
  if(!descriptors.attachments)return Boolean(prompt.trim());
