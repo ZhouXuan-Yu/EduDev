@@ -1,0 +1,61 @@
+import assert from 'node:assert/strict';
+import React from 'react';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createServer} from 'vite';
+
+const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
+const render=(component,props)=>renderToStaticMarkup(React.createElement(component,props));
+try {
+  const {filterMaterialCatalog,MaterialCatalogFilters}=await server.ssrLoadModule('/src/renderer/components/product/MaterialCatalogFilters.tsx');
+  const base={id:'resource_local',title:'<script>资料</script>',originalFileName:'教材.PDF',contentHash:'a'.repeat(64),parseStatus:'ready',chunkCount:2,parseEngine:'text',fileSize:32,createdAt:'2026-10-01',updatedAt:'2026-10-02'};
+  const failed={...base,id:'failed',originalFileName:'题目.docx',parseStatus:'failed'};
+  const partial={...base,id:'partial',parseStatus:'partial'};
+  const rows=[base,failed,partial];
+  const {selectMaterialSnapshot,materialTaskForSelection}=await server.ssrLoadModule('/src/renderer/components/product/MaterialSelectionState.ts');
+  const oldSelection={resource:base,source:{source:{resourceId:base.id,version:base.contentHash},body:{resource:base}}};
+  const changed={...base,contentHash:'b'.repeat(64),parseStatus:'partial'};
+  const newSelection={resource:changed,source:undefined};
+  assert.strictEqual(selectMaterialSnapshot(oldSelection,newSelection,true),oldSelection);
+  assert.strictEqual(selectMaterialSnapshot(oldSelection,newSelection,false),newSelection);
+  assert.strictEqual(selectMaterialSnapshot(oldSelection,{resource:failed,source:undefined},true),oldSelection);
+  const task={resourceId:base.id,version:base.contentHash,status:'succeeded'};
+  const queue={tasks:[task],pending:0,running:0,invalid:0};
+  assert.strictEqual(materialTaskForSelection(queue,base),task);
+  assert.equal(materialTaskForSelection(queue,changed),undefined);
+  assert.equal(materialTaskForSelection(queue,failed),undefined);
+  assert.equal(materialTaskForSelection(queue,undefined),undefined);
+
+  assert.deepEqual(filterMaterialCatalog(rows,{format:'PDF',state:'ready'}),[base]);
+  assert.deepEqual(filterMaterialCatalog(rows,{format:'',state:'error'}),[failed]);
+  assert.deepEqual(filterMaterialCatalog(rows,{format:'PDF',state:'waiting'}),[partial]);
+  assert.equal(filterMaterialCatalog(rows,{format:'XLSX',state:''}).length,0);
+  assert.equal(filterMaterialCatalog(rows,{format:'',state:''}).length,3);
+  const facets=render(MaterialCatalogFilters,{rows,value:{format:'PDF',state:'ready'},disabled:true,onChange:()=>{}});
+  assert.match(facets,/当前页格式/);assert.match(facets,/当前页状态/);assert.match(facets,/清除筛选/);assert.match(facets,/disabled/);
+  const {MaterialDetailNavigation,materialDetailSections}=await server.ssrLoadModule('/src/renderer/components/product/MaterialDetailNavigation.tsx');
+  assert.equal(materialDetailSections.length,6);
+  const {JSDOM}=await import('jsdom');
+  const nav=new JSDOM(render(MaterialDetailNavigation,{section:'notes',disabled:true,onChange:()=>{}})).window.document;
+  assert.equal(nav.querySelectorAll('button').length,6);
+  assert.equal(nav.querySelectorAll('button[disabled]').length,5);
+  assert.equal(nav.querySelector('button[aria-pressed="true"]').textContent,'阅读笔记');
+  const {MaterialBodyPanel}=await server.ssrLoadModule('/src/renderer/components/product/MaterialBodyPanel.tsx');
+  const props={resource:base,busy:false,revision:0,locate:()=>{},retry:()=>{}};
+  const overview=render(MaterialBodyPanel,props);
+  assert.match(overview,/materials-overview/);assert.match(overview,/materials-original-open/);assert.match(overview,/materials-study-toggle/);assert.doesNotMatch(overview,/<script>/);
+  assert.doesNotMatch(overview,/data-testid="material-ai-panel"|data-testid="material-word-source"|data-testid="material-study"/);
+  assert.match(overview,/不代表题目、公式或答案已经教师核验/);
+  const pending={...props,resource:{...base,parseStatus:'needs_parser',parseEngine:'parser:cancelled',chunkCount:0}};
+  const running=render(MaterialBodyPanel,{...pending,taskStatus:'running'});
+  assert.match(running,/正在本机后台收录/);assert.doesNotMatch(running,/materials-retry|已停止收录/);
+  assert.match(running,/materials-background-status/);
+  // Existing usable text must not hide an ongoing background parse/retry.
+  const partialRunning=render(MaterialBodyPanel,{...props,resource:partial,taskStatus:'running'});
+  assert.match(partialRunning,/materials-background-status/);assert.match(partialRunning,/正在本机后台收录/);
+  const queued=render(MaterialBodyPanel,{...pending,taskStatus:'pending'});
+  assert.match(queued,/等待本机后台收录/);assert.doesNotMatch(queued,/materials-retry/);
+  const stopped=render(MaterialBodyPanel,{...pending,taskStatus:'cancelled'});
+  assert.match(stopped,/已停止收录/);assert.match(stopped,/materials-retry/);
+  const empty=render(MaterialBodyPanel,{...props,resource:undefined});assert.match(empty,/选择一份资料/);
+  console.log('PASS materials UI: composed page facets, six detail destinations, dirty navigation guard, escaped metadata, progressive overview, pending/running/cancelled recovery and empty selection.');
+} finally {await server.close();}
