@@ -117,6 +117,15 @@ async function indexedPage(mode='ordinary'){
   const store={materials,retrieval:rag,materialSearch:lexical,sanitizeProblemText:async text=>{f.state.onSanitize?.();return{sanitizedText:text};},listStudents:async()=>[]};
   return{...f,rag,lexical,store,async index(){for(let i=0;i<3;i++)await rag.restoredText.drain();}};
 }
+await check('A fully agreeing mixed figure page enters text retrieval while its question remains held and Pi states the boundary',async()=>{
+ const f=await indexedPage('figure');try{
+  const question=await f.question();assert(!archiveEligible(question));assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'review');
+  const result=await f.lexical.candidates('7+8');assert.equal(result.units.length,1,'A held figure question cannot hide an independently complete transcript');
+  const view=await f.repo.page(query(f));assert.equal(view.status,'needs_review');assert.equal(view.transcriptionStatus,'complete');
+  const {createMaterialTools}=await import('../../src/main/assets/material-tools.ts');const tool=createMaterialTools(f.store,()=>true).find(t=>t.name==='office_read_material');
+  const read=await tool.execute('mixed',{resourceId:f.id,offset:0,restoredSource:result.units[0].restored},new AbortController().signal);assert(!read.isError);const body=JSON.parse(read.content[0].text);assert.equal(body.teacherConfirmed,false);assert.equal(body.questionExtractionStatus,'needs_review');assert(body.warning.includes('题目'));assert.equal(body.text,text);assert.equal(f.state.calls,2);
+ }finally{f.db.close();}
+});
 await check('A source-backed ordinary AI page with zero questions enters existing full-text and hybrid material retrieval without fabricating OCR',async()=>{
  const f=await indexedPage();try{const {lexical,rag}=f;
   const result=await lexical.candidates('均匀介质');assert.equal(result.units.length,1,'A successfully restored textbook page is currently invisible to material retrieval');assert(result.units[0].restored,'AI transcription must carry its own reference rather than an OCR-body receipt');
