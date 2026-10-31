@@ -1,0 +1,4 @@
+(node:77684) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Force termination during actual generation retains partial body and saved files; cold original conflict/fresh/recovered states persist with zero replay or renderer errors
+{"ok":true,"checks":7,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8"}

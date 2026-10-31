@@ -1,0 +1,5 @@
+PASS Real L2 and L3 read responses delivered after typing preserve both unsaved teacher drafts
+PASS Visible L2 save persists exact teacher text/version2 and its readback preserves L3 draft
+PASS Visible L3 save persists exact teacher text/version2 through original SQLite API
+PASS Stale save still rejects with visible version conflict while preserving both teacher draft and committed external version
+{"ok":true,"checks":4,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-Tj4I6o"}

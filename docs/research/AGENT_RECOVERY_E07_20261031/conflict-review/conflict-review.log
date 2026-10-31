@@ -1,0 +1,9 @@
+(node:80072) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Approval-time and installation-time conflicts retain original/proposed/current contents; refresh is read-only and old approvals never apply
+PASS Missing/non-file/oversized/invalid UTF8 current targets retain historical sides, without truncation or false readable content
+PASS Moved parent directory does not hide original diff or proposal
+PASS Undo conflict exposes current file and never undoes teacher changes
+PASS Authority/session/hard-link guards remain; unauthorized current text cannot leak through review
+PASS Original coordinator conflict receipt asks for latest read; local current/before/proposed contents are not model payloads
+{"ok":true,"checks":6,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-review-JTCP3W"}

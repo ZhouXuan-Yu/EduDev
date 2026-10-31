@@ -1,0 +1,5 @@
+(node:71372) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ReferenceError: s is not defined
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/conflict-review-electron.mjs:53:265
+{"ok":false,"checks":6,"error":"ReferenceError: s is not defined\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/conflict-review-electron.mjs:53:265","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8"}

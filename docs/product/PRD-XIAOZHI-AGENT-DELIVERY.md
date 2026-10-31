@@ -1,5 +1,11 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-11-01 E07：冲突三方对照/当前文件重读和新稿重新确认已贯通原Pi/typed IPC/审阅卡；实际生成中与保存后强退恢复亦有证据。源码6、组件240、正式Pi7及build/type通过，0付费，完整阶段AT仍待集中。日常进度见docs/goal/WORK_PROGRESS.md，证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+2026-11-01 E07停止切片完成（0222d15）：原组件下载复用waitOfficeAbort处理无响应头/停流，不再等待可能不结算的reader.cancel；取消后清理本次临时物，晚响应不激活，新的明确准备和共享消费者继续有效。实际Pi下载/计算子进程/审批等待的本地反馈5.9/4.1/7.3ms，宿主下载3ms中止、实际loop子进程12ms退出；旧批准拒绝且文件未写，原组件保留并完成新任务实际42。专项15、取消3、build/type、240组件与正式Pi6（双尺寸/四会话冷启）通过；同一冻结源码0222d15的一次legacy综合回归207/207 exit0，0付费。完整E07/252AT仍待阶段集中。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
+2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
 2026-10-31 E07请求诊断/接续工程已实现：首响应暂时拒绝最多2次重试并显示记录；鉴权/余额/限流/服务错误分开。断流尾部正文显示未完成，准备稿不覆盖教师草稿、不自动发送；原样发送绑定原任务/要求版本，新run/command保留原criteria及效果，过时绑定拒绝。 完整E07与252AT仍待阶段集中，本轮完整AT新增已实现0。0付费/新依赖/DDL/Runtime；audit45（8高29中8低/0严重，exit1）未升级，既有UI-contract指纹门禁未修/未重跑。D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json；日常进度 docs/goal/WORK_PROGRESS.md。
 
 
@@ -391,13 +397,13 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-01 | 首响应暂时失败 | 同任务有界恢复，最多2次重试；等待可停止；总尝试与费用可追踪 | [AT-E07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-01) | 待验收 |
 | REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) | 待验收 |
 | REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
-| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 待验收 |
-| REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 待验收 |
-| REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：恢复后冷启读回已实现，完整强制中断矩阵待集中（c61bd4e；recordRecoverySlice） |
+| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。 |
+| REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 部分实现：本轮下载/实际计算child/原审批等待停止工程通过（反馈5.9/4.1/7.3ms，原下载与child分别3/12ms中止）；1.1秒无新派发，旧批准拒绝，新任务可用；既有连接/读重试证据保留。完整AT待阶段集中。 |
+| REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：已实测生成中、实际文本写入后outcome前强退，重启保留部分正文/uncertain，原卡核验不重写；其余恢复/部分正式产物及完整AT仍阶段集中。 |
 | REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
 | REQ-E07-08 | 幂等恢复 | 每个真实写入只发生一次；相同调用返回既有回执；新任务有新身份且不复用旧批准 | [AT-E07-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-08) | 部分实现：重复读回幂等及原任务显式接续已实现，完整重复调用矩阵待集中（c61bd4e；recordRecoverySlice） |
-| REQ-E07-09 | 版本冲突 | 报告冲突并保留两侧内容；不覆盖教师修改；重新提议需读取最新版本 | [AT-E07-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-09) | 待验收 |
-| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 待验收 |
+| REQ-E07-09 | 版本冲突 | 报告冲突并保留两侧内容；不覆盖教师修改；重新提议需读取最新版本 | [AT-E07-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-09) | 部分实现：已实现原内容/提议/当前文件按需对照与重读，教师改稿不覆盖，当前缺失/不可读仍保留原提议；新明确任务实读最新稿、重新审阅确认。正式Pi7含双尺寸/强退/冷启；完整AT仍阶段集中。 |
+| REQ-E07-10 | 部分成果回收 | 正式文件仍可开；只清理本任务临时物；取消、失败、部分完成区分展示 | [AT-E07-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-10) | 部分实现：停流后只清理本job.prepare临时物，既有组件及自有文件哈希保留，后续任务实际计算可用；正式部分交付打开/回收全矩阵仍待阶段集中。 |
 
 #### WP-E08 成果卡、预览、版本与局部回退
 
@@ -412,16 +418,16 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-E08-01 | 成果卡信息 | 显示可读名称、格式、保存状态、版本、最近检查与打开/定位操作；内部ID不堆到正文 | [AT-E08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-01) | 待验收 |
-| REQ-E08-02 | 打开与定位 | 指向同一当前版本文件；调用真实OS打开/定位；失败有反馈而非无反应 | [AT-E08-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-02) | 待验收 |
-| REQ-E08-03 | 文件被移走 | 提示文件缺失/位置变化；账本不删除伪装正常；不自动重生成或打开同名错误文件 | [AT-E08-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-03) | 待验收 |
-| REQ-E08-04 | 版本生成 | 旧版保留可开，新版为当前；说明实际修改范围；不为未变化文件额外产生版本 | [AT-E08-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-04) | 待验收 |
-| REQ-E08-05 | 回退行为 | 恢复产生明确的新当前指向/版本，后来版本仍保留；不会误撤销其他文件或来源 | [AT-E08-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-05) | 待验收 |
+| REQ-E08-01 | 成果卡信息 | 显示可读名称、格式、保存状态、版本、最近检查与打开/定位操作；内部ID不堆到正文 | [AT-E08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-01) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
+| REQ-E08-02 | 打开与定位 | 指向同一当前版本文件；调用真实OS打开/定位；失败有反馈而非无反应 | [AT-E08-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-02) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
+| REQ-E08-03 | 文件被移走 | 提示文件缺失/位置变化；账本不删除伪装正常；不自动重生成或打开同名错误文件 | [AT-E08-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-03) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
+| REQ-E08-04 | 版本生成 | 旧版保留可开，新版为当前；说明实际修改范围；不为未变化文件额外产生版本 | [AT-E08-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-04) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
+| REQ-E08-05 | 回退行为 | 恢复产生明确的新当前指向/版本，后来版本仍保留；不会误撤销其他文件或来源 | [AT-E08-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-05) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
 | REQ-E08-06 | 审批与最新内容 | 卡片绑定最终保存版；模型未实读最终编辑不复述旧草稿内容为确认版 | [AT-E08-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-06) | 待验收 |
 | REQ-E08-07 | 整包状态 | 整包部分完成，逐项状态准确；可只重试失败项，已交付文件可独立使用 | [AT-E08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-07) | 待验收 |
 | REQ-E08-08 | 来源导航 | 准确定位来源版本/原页或行；来源变化可见；无来源的生成内容不伪造教材引用 | [AT-E08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-08) | 待验收 |
 | REQ-E08-09 | 导出兼容 | 文字/公式/表格/图片可读；PPT关键文本可编辑；不存在全部截图却声称全可编辑 | [AT-E08-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-09) | 待验收 |
-| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 待验收 |
+| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
 
 #### WP-S01 理科资料完整读取、题目结构与原出处
 

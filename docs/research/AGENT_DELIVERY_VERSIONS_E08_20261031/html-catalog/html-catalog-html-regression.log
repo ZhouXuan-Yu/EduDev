@@ -1,0 +1,11 @@
+(node:83784) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Idempotent migration and original create/edit form a two-version HTML lineage; selected historical bytes are exact
+PASS Historical OS dispatch materializes only an exact derived copy, never opens changed same-path current content
+PASS Restore creates a third current file and preserves later, older and unrelated content
+PASS Repeat command and identical content create no extra versions; command cannot be rebound to another selected version
+PASS Old-path branching, foreign session and stale current identity are rejected without mutation
+PASS External changes and moved current files stay visible; no silent rewrite or wrong-file OS dispatch
+PASS Actual save-before-outcome cut resolves uncertain receipt without a second physical write
+PASS Pre-parent legacy metadata remains readable without altering original before/after bytes
+{"ok":true,"checks":8,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-versions-0IIXHc"}

@@ -1,0 +1,7 @@
+{
+  "ok": false,
+  "checks": [],
+  "errors": [],
+  "boundary": "Owned actual legacy memory navigation/typed IPC/SQLite, delayed real read responses only. No model requests, fake business responses or teacher files.",
+  "error": "Error: Memory draft condition timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs:5:159)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs:12:2"
+}

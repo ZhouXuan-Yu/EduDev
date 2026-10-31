@@ -101,6 +101,7 @@ import type {
   AttachmentImportResult,
   DocumentArtifactExportInput,
   DocumentArtifactExportResult,
+  TeachingFileCatalogEntry,
   DataBackupVerificationResult,
   ExportDataRootResult,
   KnowledgeImportResult,
@@ -410,7 +411,7 @@ const api = {
   exportDocumentArtifact: (input: DocumentArtifactExportInput) =>
     ipcRenderer.invoke('documents:exportArtifact', input) as Promise<DocumentArtifactExportResult | null>,
   listDocumentArtifacts: (sessionId?: string) =>
-    ipcRenderer.invoke('documents:listArtifacts', sessionId) as Promise<DocumentArtifactExportResult[]>,
+    ipcRenderer.invoke('documents:listArtifacts', sessionId) as Promise<TeachingFileCatalogEntry[]>,
   getDocumentArtifact: (id: string) =>
     ipcRenderer.invoke('documents:getArtifact', id) as Promise<DocumentArtifactExportResult | null>,
   showDocumentArtifact: (id: string) => ipcRenderer.invoke('documents:showArtifact', id),

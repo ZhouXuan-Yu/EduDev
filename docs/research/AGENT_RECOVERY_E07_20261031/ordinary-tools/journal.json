@@ -1,0 +1,46 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Attempt binds the existing receipt, sequence, projection and outbox in the real transaction",
+      "pass": true
+    },
+    {
+      "name": "Foreign call, tool, private body and already-settled receipt attempts roll back",
+      "pass": true
+    },
+    {
+      "name": "A native failure cannot erase an unknown external effect in recovery",
+      "pass": true
+    },
+    {
+      "name": "A new cold journal restores the persisted unknown effect and never invents success",
+      "pass": true
+    },
+    {
+      "name": "Never-delivered blocked operation cannot claim unknown effect or become admitted",
+      "pass": true
+    },
+    {
+      "name": "Real SQLite attempt-event write refusal rolls back uncertain flag with event/projection/outbox",
+      "pass": true
+    },
+    {
+      "name": "Cancelled admitted write without a final attempt event remains uncertain, while matched independent effect can resolve it",
+      "pass": true
+    },
+    {
+      "name": "A cancelled pure read without a final attempt stays failed, with no invented external effect or replay",
+      "pass": true
+    },
+    {
+      "name": "Queued read persists before admission; cold interruption displays stopped without rewriting its original queued event or replaying",
+      "pass": true
+    },
+    {
+      "name": "Ordinary missing-file category persists on the existing receipt and restores unchanged after cold recovery",
+      "pass": true
+    }
+  ],
+  "scope": "Actual SQLite attempt transactions and cold journal recovery; native/effect callbacks controlled, not provider/UI"
+}

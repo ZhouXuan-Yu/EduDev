@@ -1,5 +1,36 @@
 # 当前架构
 
+## 2026-11-01 K0文件式访问实施
+
+K0文件式访问adapter已贯通资料/AI取图、小智原页工具、原题候选及流式来源校验；页读取不再加载整本正文，partial按页准入。仍用原任务/文件Worker，不新增服务；资源优先级/公平性与完整Pi链路仍待验证。 [整体架构](KNOWLEDGE_BASE.md)。
+
+
+2026-11-01 E08：原changes新增可空saved_at/verified_at→textVersionCatalog元数据投影→原listDocumentArtifacts typed preload→TeachingArtifactsWorkspace→共用officeVersion host/历史组件。无新表/IPC/Runtime，原Office导出输入和结果不扩展HTML；旧库幂等兼容，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
+
+2026-11-01 E08：原text-change状态/服务→HTML版本薄适配→现officeVersion typed IPC/preload→共用版本组件/原HTML卡；原表仅新增可空parent_change_id，零新表/IPC/Runtime。恢复复用原文件queue和local settings owner。
+
+## 2026-11-01 知识库整体架构优先
+
+知识库的层次、模块职责、数据契约、成熟复用选择、现有接缝与实施顺序统一见[整体架构](KNOWLEDGE_BASE.md)。当前K0待实施；SQLite/本地文件为真源，FTS5/LanceDB为派生层，保留Pi与原任务宿主。尚未证明自然几十GB质量、完整用户闭环和Windows交付。下列历史证据保留，不覆盖该知识库顺序。
+
+
+2026-11-01 记忆页最终协调：原detail为服务器读回，draft只保留不同文本；匹配读回的草稿释放。原typed IPC/version锁/SQLite均不变，5项正式UI通过。
+
+2026-11-01 C03：原MemoryGovernanceWorkspace分离server detail和teacher draft；原typed IPC/SQLite/version锁不变，零DDL。延迟真实读回UI4项通过。
+
+2026-11-01 E07：原text-change service→coordinator→typed change-review/preload→单文件/整包共用PiTextChangeCard可选本地currentFile对照，原before/after/账本不改。权限/版本仍由主进程裁定，缺失或不可读只影响当前快照，无新IPC/DDL/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+## 2026-11-01 答案条目局部疑点与真实回写
+
+新答案册单元冻结 answer-entry-uncertainty.v2，六字段响应按完整试卷标题与原题号记录局部疑点；两遍任一疑点拦截对应条目，未知/歧义范围及原 pageIssues 仍整页拦截。无政策的旧 first_saved 保持原提示/schema。解析器发现的跨页/漏条等问题也进入页面待核与整页检索门禁，不能只相信模型 outcome。既有题面资格、原件/图片/两遍hash、关联身份、教师字段、journal/CAS不放宽；无新依赖、表或IPC。
+
+回退先暂停新批次，并以 OMNI_EDU_BOOK_ANSWER_WRITEBACK=0 停新回写；保留新schema严格读适配、原件、两遍原响应和v6 journal。恢复字段须走未被教师修改快照的CAS，不让未知旧provider执行新单元；无DDL回退，完整回滚未演练。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+2026-11-01 E07：原Pi stop→run.abort/Hana registry→受管version-service等待，新增复用waitOfficeAbort约束header/body，停止后释放原临时文件/安装job；晚响应不入新job。原child kill/close、text-change取消和typed IPC保持，无DDL/新Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
+
+2026-11-01 E07：原Hana adapter→Pi内容与details→execution boundary→typed journal/projection→原OfficeToolEvidence贯通not_found/resource_busy。原manifest仅纯本地read/stat/list增至2次；同call准入1次、内部retry ID独立，等待沿原Hana registry可停，当前路径/版本检查每次保留。无DDL/新IPC/Runtime。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
 2026-11-01 E07：现有Pi host/typed preload加显式记录刷新；原journal事务校验失败owner与分页事件，补保守终态及业务记录。先等execute/publisher回调/实际executing，配置锁隔离同会话新派发，task沿原coordinator恢复。无新Runtime/真源/DDL。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
 
 ## 2026-10-31 原页题面与提示版本

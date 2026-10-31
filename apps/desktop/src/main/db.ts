@@ -1,5 +1,8 @@
+import {renderPdfFilePage} from './xiaozhi-agent/pdf-file-host';
 import {sanitizeOfficeDocumentText} from './xiaozhi-agent/office-document-tools';
 import {officeVersionCatalog} from './xiaozhi-agent/office-version-catalog';
+import {textVersionCatalog} from './xiaozhi-agent/text-version-catalog';
+import type {TeachingFileCatalogEntry} from '../shared/contracts';
 import {ensureMaterialReadingEntries} from './assets/material-reading-migration';
 import {MaterialWordRepository} from './assets/material-word-repository';
 import {WORD_PARSER,wordText,type WordPayload} from '../shared/material-word';
@@ -1132,7 +1135,7 @@ export class OmniEduStore {
     try{await work.exec('PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000; BEGIN IMMEDIATE;');try{
       const result=await action({all:(sql,params)=>work.all(sql,params),run:(sql,params)=>work.run(sql,params),read:id=>work.getQuestionBankItem(id),create:input=>work.createQuestionBankItem(input)});await work.exec('COMMIT;');return result;
     }catch(error){await work.exec('ROLLBACK;').catch(()=>undefined);throw error;}}finally{await work.close();}
-  }},()=>this.materials,new QuestionAssets(()=>this.dataRoot),renderLocalPdfPage);
+  }},()=>this.materials,new QuestionAssets(()=>this.dataRoot),renderLocalPdfPage,renderPdfFilePage);
   async readQuestionDocumentContext(questionId:string,version:string,signal?:AbortSignal){return this.originalQuestions.context(questionId,version,signal);}
   readonly learningReviews = new LearningReviewRepository({all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),snapshot:(...args)=>this.studentContext.learningSnapshot(...args),createRecord:(input,id)=>this.createRecord(input,id),practiceSource:(studentId,id)=>this.practiceReviews.source(studentId,id),transaction:async action=>{
     const work=new OmniEduStore(this.dataRoot);work.db=await this.openDatabase(this.dbPath);
@@ -4861,14 +4864,16 @@ export class OmniEduStore {
     return row ? this.mapDocumentArtifact(row) : null;
   }
 
-  async listDocumentArtifacts(sessionId?: string): Promise<DocumentArtifactExportResult[]> {
+  async listDocumentArtifacts(sessionId?: string): Promise<TeachingFileCatalogEntry[]> {
     const rows = sessionId?.trim()
       ? await this.all(
         `SELECT * FROM document_artifacts WHERE session_id = ? ORDER BY updated_at DESC, rowid DESC LIMIT 100`,
         [sessionId.trim()],
       )
       : await this.all(`SELECT * FROM document_artifacts ORDER BY updated_at DESC, rowid DESC LIMIT 100`);
-    return officeVersionCatalog(rows.map((row) => this.mapDocumentArtifact(row)),async id=>this.xiaozhiState.officeArtifacts.versionRecords(id) as Promise<import('./xiaozhi-agent/office-version-family').OfficeFamilyRecord[]>,id=>this.getDocumentArtifact(id));
+    const office=await officeVersionCatalog(rows.map((row) => this.mapDocumentArtifact(row)),async id=>this.xiaozhiState.officeArtifacts.versionRecords(id) as Promise<import('./xiaozhi-agent/office-version-family').OfficeFamilyRecord[]>,id=>this.getDocumentArtifact(id));
+    const html=await textVersionCatalog(this.xiaozhiState.changes,sessionId?.trim());
+    return [...office,...html].sort((a,b)=>b.updatedAt.localeCompare(a.updatedAt));
   }
 
   async buildAiTelemetrySnapshot(input: Pick<AiRegressionReportInput, 'since' | 'until'> = {}): Promise<AiTelemetrySnapshot> {

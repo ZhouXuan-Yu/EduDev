@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "checks": [
+    "Formal composer creates and approves HTML, then actual read/edit/approval saves the second version",
+    "Original historical card selects and previews exact first-version HTML without changing current disk content",
+    "Visible restore saves byte-identical first HTML as third current file while second version stays untouched, zero model requests",
+    "Old chat card default open resolves the new current filename through the same typed host",
+    "Existing history selection and restore controls remain reachable in both native window sizes",
+    "Cold original Pi restores the same three HTML versions and current file with zero replay/errors"
+  ],
+  "errors": [],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-KHunR1",
+  "boundary": "Original formal Pi/composer/read/edit/approve/history/restore with synthetic SSE, actual disk/SQLite and cold readback; zero paid calls. Complete E08/FX01/252 AT remains pending.",
+  "viewports": [
+    1366,
+    1920
+  ],
+  "sessionId": "aisession_a3982e02-2cfa-46c7-a977-8424e813b22a",
+  "versions": [
+    {
+      "artifactId": "xichange_6e924aa5-fa59-4042-9ff9-4818f7dafe28",
+      "path": "浮力.html",
+      "title": "浮力.html",
+      "format": "html",
+      "number": 1,
+      "savedAt": "2026-10-31T18:26:35.408Z",
+      "parentArtifactId": null,
+      "size": 542,
+      "change": "首次保存"
+    },
+    {
+      "artifactId": "xichange_51d57a3b-700d-4c28-a494-f0ac5894590b",
+      "path": "浮力.html",
+      "title": "浮力.html",
+      "format": "html",
+      "number": 2,
+      "savedAt": "2026-10-31T18:26:54.360Z",
+      "parentArtifactId": "xichange_6e924aa5-fa59-4042-9ff9-4818f7dafe28",
+      "size": 542,
+      "change": "原文件局部修改；先前内容仍保留在修改记录中"
+    },
+    {
+      "artifactId": "xichange_e72328c9-5bb0-4ff8-930a-1d5926a86a94",
+      "path": "浮力-恢复版3.html",
+      "title": "浮力-恢复版3.html",
+      "format": "html",
+      "number": 3,
+      "savedAt": "2026-10-31T18:27:09.467Z",
+      "parentArtifactId": "xichange_51d57a3b-700d-4c28-a494-f0ac5894590b",
+      "size": 542,
+      "change": "从历史版本恢复，另存新文件"
+    }
+  ]
+}

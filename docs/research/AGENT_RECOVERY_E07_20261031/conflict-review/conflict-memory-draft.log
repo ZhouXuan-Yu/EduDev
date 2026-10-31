@@ -1,0 +1,3 @@
+page.evaluate: Error: Error invoking remote method 'aiMemory:createEntry': Error: L2 memory entry requires at least one evidence ref
+    at C:\Users\ZhouXuan\.codex\worktrees\e147\EduProject\apps\desktop\scripts\xiaozhi-agent\memory-draft-refresh-electron.mjs:10:23
+{"ok":false,"checks":0,"error":"page.evaluate: Error: Error invoking remote method 'aiMemory:createEntry': Error: L2 memory entry requires at least one evidence ref\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\memory-draft-refresh-electron.mjs:10:23","root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-FbM8zv"}

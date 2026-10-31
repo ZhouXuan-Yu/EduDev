@@ -10,7 +10,7 @@ import {preparePublicModelImage} from '../xiaozhi-agent/image-host';
 import {previewMaterialPage} from './material-page-preview';
 import {renderLocalPdfPage,recognizeLocalImage} from '../xiaozhi-agent/ocr-host';
 import {LOCAL_OCR_ENGINE} from '../../shared/xiaozhi-ocr';
-import {previewPdfFile} from '../xiaozhi-agent/pdf-file-host';
+import {renderPdfFilePage} from '../xiaozhi-agent/pdf-file-host';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {validAiAction,validAiBatch,validAiSettings} from '../../shared/material-ai';
 import {validNativeQuestionImageQuery,validNativeQuestionOriginQuery} from '../../shared/native-question-image';
@@ -31,7 +31,7 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
       if(resource.contentHash!==version)throw new Error('source_changed');
       if(/\.pdf$/i.test(resource.originalFileName)){
         if(!page)throw new Error('source_incomplete');
-        const result=await previewMaterialPage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:id,version,page,box:[0,0,1,1]},signal,renderLocalPdfPage,(r,i,s)=>previewPdfFile(r,i.page,i.box,s));
+        const result=await previewMaterialPage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:id,version,page,box:[0,0,1,1]},signal,renderLocalPdfPage,renderPdfFilePage);
         return {data:result.dataUrl.split(',')[1],mime:'image/png'};
       }
       const suffix=resource.originalFileName.split('.').pop()?.toLowerCase(),mime=suffix==='png'?'image/png':suffix==='webp'?'image/webp':'image/jpeg';

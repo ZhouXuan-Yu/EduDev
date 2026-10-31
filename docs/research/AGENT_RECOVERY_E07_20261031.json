@@ -377,5 +377,524 @@
       "fixtureFailure": "First read-only fixture indexed sorted task session pointer as full task. Changed to exact task-key lookup; final3 passes, durable records unchanged. Initial failure archived.",
       "limits": "No repeat of full legacy207 or original Pi7; original Pi7 belongs source c61bd4e, final integrated cold3 proves existing task/file/event facts. D daily/installer unchanged, full252AT0."
     }
+  },
+  "ordinaryToolSlice": {
+    "date": "2026-11-01",
+    "status": "Implemented engineering slice; stage acceptance remains pending",
+    "baseCommit": "af28330fbc384d12902228d7fe997e483a4f849e",
+    "sourceCommit": "3a420f58fc8c9767f06f766c9e02ef6ba8c44779",
+    "integrationCommit": "1399b75defa67adfb84d606a6bd27e1e56d038b6",
+    "upstream": "7c767fe",
+    "integration": "Merged upstream 7c767fe documentation/design skill additions as 1399b75, with no production conflicts; final terminal projection fix tested afterward as 3a420f5. Full207 belongs initial frozen build, final affected build/type, boundaries20, journal10, components240 and actual Pi6 passed; no repeated full suite.",
+    "requirements": [
+      "REQ-E07-04 missing file and temporary occupancy",
+      "REQ-E07-05 local-read retry-wait stop seam"
+    ],
+    "changes": [
+      "Preserve not_found/resource_busy/permission codes through existing Hana/Pi result, execution boundary, typed journal projection and original tool evidence",
+      "Model receives exact sanitized code and fixed actionable guidance: list actual directory and re-read real file/version; no fabricated replacements",
+      "Only pure local read/stat/list join existing two-attempt bound; each internal attempt re-enters Hana path/current-file checks; logical admission once, distinct retry ID",
+      "Retry waits remain registered with Hana execution registry; session stop cancels promptly and no next dispatch",
+      "Writes/cache/external effects retain one attempt and original uncertain-effect semantics; critical persistence failures are not retryable tool errors"
+    ],
+    "tests": {
+      "hanaFiles": {
+        "command": "node scripts/xiaozhi-agent/ordinary-tool-recovery.mjs",
+        "passed": 7,
+        "exit": 0,
+        "sourceCommit": "f1435b948e583083aeb9f1185f1e9e9e208c14d3"
+      },
+      "executionBoundaries": {
+        "command": "node scripts/xiaozhi-agent/pi-tool-execution-boundaries.mjs",
+        "passed": 20,
+        "exit": 0,
+        "sourceCommit": "3a420f58fc8c9767f06f766c9e02ef6ba8c44779"
+      },
+      "journal": {
+        "command": "node scripts/xiaozhi-agent/pi-tool-attempt-journal.mjs",
+        "passed": 10,
+        "exit": 0,
+        "sourceCommit": "3a420f58fc8c9767f06f766c9e02ef6ba8c44779"
+      },
+      "rendererEvidence": {
+        "command": "node scripts/xiaozhi-agent/tool-attempt-renderer.mjs",
+        "passed": 9,
+        "exit": 0,
+        "sourceCommit": "f1435b948e583083aeb9f1185f1e9e9e208c14d3"
+      },
+      "rendererComponents": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0,
+        "sourceCommit": "3a420f58fc8c9767f06f766c9e02ef6ba8c44779"
+      },
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0,
+        "sourceCommit": "3a420f58fc8c9767f06f766c9e02ef6ba8c44779"
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/ordinary-tool-recovery-electron.mjs",
+        "passed": 6,
+        "exit": 0,
+        "stopFeedbackMs": 37.49009999999544,
+        "rendererErrors": 0,
+        "realProviderCalls": 0,
+        "coldReplayCalls": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-ordinary-recovery-ui-c92gKj",
+        "sourceCommit": "3a420f58fc8c9767f06f766c9e02ef6ba8c44779",
+        "terminalEvidence": "Stopped visible tool details say cancelled, not preparing another read; same state cold-restored. Original queued event preserved in SQLite专项."
+      },
+      "comprehensive": {
+        "command": "npm run test:smoke",
+        "passed": 207,
+        "total": 207,
+        "exit": 0,
+        "sourceCommit": "f1435b948e583083aeb9f1185f1e9e9e208c14d3",
+        "runtimeMode": "legacy Pi=0 regression, not Pi agent acceptance",
+        "scope": "Single frozen full regression before the pending-wait terminal projection fix. Final affected-path checks separately recorded; no repeat of full suite."
+      }
+    },
+    "build": {
+      "main/index.js": {
+        "bytes": 3332614,
+        "sha256": "e9cfcbfff14eb3db6ea43ce949b4733c6aafc35251dc10170be481835bc752a3"
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      "renderer/assets/index-DobhCql0.js": {
+        "bytes": 7260422,
+        "sha256": "ae94309a3de6cddcf637d4f2a4735b99042c906318a80c29cbdf7f09874ee610"
+      }
+    },
+    "performance": {
+      "priorBuild": {
+        "main/index.js": {
+          "bytes": 3331703,
+          "sha256": "a674d7d3f6dc1f0a19a7517c33591c5429bccd6ccda31ffa63525a26920a2789"
+        },
+        "preload/index.cjs": {
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        "renderer/assets/index-DkLti_dg.js": {
+          "bytes": 7259797,
+          "sha256": "7db874113edfd890c90d4f8b8e71b5355661f47b916ef0c5dbc9e7ec2794fe80"
+        }
+      },
+      "bytesDelta": {
+        "main": 911,
+        "preload": 0,
+        "renderer": 625
+      },
+      "pairedLatencyOrMemory": false,
+      "scope": "Additional asynchronous bounded delay only on recoverable read failures; unchanged successful read payload/event counts. No P95/RAM or general fluent-answer improvement claimed. Final main +911B, renderer +625B, preload unchanged against af28330 baseline; paired runtime timing/memory not measured."
+    },
+    "firstFailure": "First actual UI fixture waited for an evidence paragraph inside collapsed terminal disclosures. Changed only test to open original outer/process details; production unchanged. Stop observes committed retry state and clicks actual visible stop button. Initial failure and screenshot preserved. Terminal journal regression originally expected a stopped cold read to stay queued. Updated the expectation to cancelled/failed, retaining independent assertion that the original raw event remains queued, not-delivered receipt and no replay. Archived original assertion failure. One source invocation from repository root failed before fixture creation (missing root test-results directory); reran in required apps/desktop cwd. One archive copy used the wrong cwd; archived its existing failure report directly instead. No production data affected.",
+    "audit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "archive": "docs/research/AGENT_RECOVERY_E07_20261031/ordinary-tools",
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "newDependencies": 0,
+    "ddl": 0,
+    "rollback": "Revert source f1435b9 to restore previous code and read policy, retaining all actual files/tasks/journal; no database migration. Full rollback rehearsal not performed.",
+    "remaining": "Full E07 stop stages, crash/receipt-conflict matrices, E08 HTML/source location and cross-cutting C; then S/T in fixed order. Engineering synthetic transport is not autonomous real-model reasoning-quality or complete 252 AT acceptance.",
+    "preTerminalBuild": {
+      "main/index.js": {
+        "bytes": 3332201,
+        "sha256": "3f652ed6333228c3449d73bcbaa775e355f4c1fa5ace6eb83f9d0e07b821e2fa"
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      "renderer/assets/index-XkAOKDGU.js": {
+        "bytes": 7260011,
+        "sha256": "41c2bc8adca06e41834571e9c9f521bb507e52dd7c058169c35f9e61af0523c9"
+      }
+    },
+    "preTerminalFormalPi": {
+      "command": "node scripts/xiaozhi-agent/ordinary-tool-recovery-electron.mjs",
+      "passed": 6,
+      "exit": 0,
+      "stopFeedbackMs": 60.79239999999845,
+      "rendererErrors": 0,
+      "realProviderCalls": 0,
+      "coldReplayCalls": 0,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-ordinary-recovery-ui-kIa3GK",
+      "sourceCommit": "f1435b948e583083aeb9f1185f1e9e9e208c14d3"
+    },
+    "terminalFix": "Observed cancelled tool retained retrying evidence even though no retry was dispatched. Existing status projection now settles only queued/retrying no-effect attempts when their run is interrupted/failed; keeps attempt count and started/unknown effects unchanged. No new tool receipt or execution fabricated.",
+    "initialSourceCommit": "f1435b948e583083aeb9f1185f1e9e9e208c14d3"
+  },
+  "stopStagesSlice": {
+    "date": "2026-11-01",
+    "status": "Engineering implementation and relevant actual UI paths complete; full stage acceptance pending",
+    "sourceCommit": "0222d152f8a764c31d9e9f0e78d943f547610265",
+    "baseCommit": "c3eb61eafe350934590bc00b5655c5587a8302ac",
+    "requirements": [
+      "REQ-E07-05 running tool/download/approval stop",
+      "REQ-E07-10 partial installer temporary cleanup seam"
+    ],
+    "changes": [
+      "Original version-service reuses waitOfficeAbort for response headers and each body read, checking signal again before writing a delivered chunk",
+      "Reader cancellation is drained without awaiting an uncooperative cancellation callback; finally closes the archive handle and cleans only original owned preparation files",
+      "Late response bodies are cancelled without entering the current/new installation; new explicit prepare can succeed",
+      "Existing shared last-consumer ownership, fixed pinned package/hash/health, actual worker kill/close and original text approval cancellation remain intact; no new Runtime, IPC, schema or dependencies"
+    ],
+    "tests": {
+      "nativeManaged": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/managed-tools-smoke.mjs",
+        "passed": 15,
+        "exit": 0,
+        "realFreeOfficialDownloads": 1,
+        "packageSha256": "f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982"
+      },
+      "copyCancel": {
+        "command": "node scripts/xiaozhi-agent/pi-copy-cancel-boundary-smoke.mjs",
+        "passed": 3,
+        "exit": 0
+      },
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "rendererComponents": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/stop-stages-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-tools-R59br8\\pinned-component.tgz",
+        "passed": 6,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-stop-stages-ui-DB0kQV",
+        "downloads": "Two controlled fixed-package responses: one partial cancelled, one verified installed for actual child; no real network in this UI fixture",
+        "provider": "Synthetic local SSE only, zero paid requests",
+        "rendererErrors": 0,
+        "coldReplay": 0
+      },
+      "comprehensive": {
+        "command": "npm run test:smoke",
+        "status": "passed",
+        "passed": 207,
+        "total": 207,
+        "failed": 0,
+        "exit": 0,
+        "sourceCommit": "0222d152f8a764c31d9e9f0e78d943f547610265",
+        "scope": "One legacy Electron suite with its own build on final frozen source; no concurrent out rebuild. Formal Pi six checks are recorded separately. Stage AT and real provider quality remain pending."
+      }
+    },
+    "timings": {
+      "scope": "Actual renderer pointerdown to visible feedback DOM mutation, not Playwright command initiation; host/child use same-machine epoch. Single samples, no P95/RAM claim. Native previous-path latency was not measured: old code awaited pending read/cancel without an abort race.",
+      "localFeedbackMs": {
+        "download": 5.9000000059604645,
+        "compute": 4.100000001490116,
+        "approval": 7.299999997019768
+      },
+      "turnSettledMs": {
+        "download": 295,
+        "compute": 294,
+        "approval": 362
+      },
+      "downloadHostAbortMs": 3,
+      "ownedChildClosedMs": 12,
+      "noFurtherDispatchObservedMs": 1100,
+      "nativeHeaderStopAndCleanupMs": 3.2831999999998516,
+      "nativeBodyStopAndCleanupMs": 4.809699999999793
+    },
+    "build": {
+      "main/index.js": {
+        "bytes": 3333016,
+        "sha256": "b9dde7857e66de2f811da6c480f358d121ef6079aa1079447ef6b29d07d7b11a"
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      "renderer/assets/index-DobhCql0.js": {
+        "bytes": 7260422,
+        "sha256": "ae94309a3de6cddcf637d4f2a4735b99042c906318a80c29cbdf7f09874ee610"
+      }
+    },
+    "performance": {
+      "priorBuild": {
+        "main/index.js": {
+          "bytes": 3332614,
+          "sha256": "e9cfcbfff14eb3db6ea43ce949b4733c6aafc35251dc10170be481835bc752a3"
+        },
+        "preload/index.cjs": {
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        "renderer/assets/index-DobhCql0.js": {
+          "bytes": 7260422,
+          "sha256": "ae94309a3de6cddcf637d4f2a4735b99042c906318a80c29cbdf7f09874ee610"
+        }
+      },
+      "bytesDelta": {
+        "main": 402,
+        "preload": 0,
+        "renderer": 0
+      },
+      "normalDownloadAddedWork": "A bounded abort listener per received chunk; existing 100ms progress throttle unchanged. No per-token renderer or journal writes added."
+    },
+    "failuresPreserved": [
+      "Initial timer included Playwright pre-click/action waits; failed >300ms automation assertion did not record actual event timing. Precise event-based second run observed6.7ms local feedback and1210ms total automation round trip, showing these are separate measurements. Criteria remain300ms and no new dispatch after stop.",
+      "Next fixture used legacy ai-conversation-new selector; switched only the test to existing current pi-new-session control. Download had passed; final6 actual paths passed without production UI change."
+    ],
+    "archive": "docs/research/AGENT_RECOVERY_E07_20261031/stop-stages",
+    "audit": {
+      "info": 0,
+      "low": 8,
+      "moderate": 29,
+      "high": 8,
+      "critical": 0,
+      "total": 45
+    },
+    "newDependencies": 0,
+    "ddl": 0,
+    "newIpc": 0,
+    "realPaidRequests": 0,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "rollback": "Revert source0222d15; retain existing installed components, original files, task/proposal/journal records. No migration or user data deletion. Full rollback rehearsal not performed.",
+    "remaining": "Full E07 crash/receipt/version-conflict/partial formal-output matrix and E08 generic HTML/source/version surface, applicable C; fixed S/T order afterward. Current stop subcases do not replace concentrated full AT or daily/installer validation.",
+    "workerBuild": {
+      "file": "main/managed-tool-worker.js",
+      "bytes": 2133,
+      "sha256": "423f2e98515665479bb83574ed363c6807230aad7340dc1b410d7eef8ba590c5"
+    },
+    "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "testCwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+    "workspace": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject"
+  },
+  "conflictReviewSlice": {
+    "date": "2026-11-01",
+    "status": "Engineering implementation and relevant actual UI paths passed; full stage acceptance pending",
+    "sourceCommit": "d24320ed9e94eb5ca88d8a07f847de494c2d1788",
+    "baseCommit": "d381833d0fd9a2d0a36cfe5d69853cdcdd78e9a2",
+    "requirements": [
+      "REQ-E07-09 current text conflict review",
+      "REQ-E07-06 generation/saved-file-before-outcome force termination paths"
+    ],
+    "changes": [
+      "Original change-review typed IPC adds optional on-demand currentFile snapshot (content/SHA/readAt or missing/unavailable category) only for conflict/undo_conflict. No persisted snapshot or model upload.",
+      "Original card reuses Tabs/CodeBlock/Button for three sides and explicit current-file refresh; historical before/after survive missing or unsupported current targets. No CSS/vendor/new component library.",
+      "Original coordinator conflict receipt and exception advice ask for latest read and fresh teacher approval, retain the original proposal and never force-write."
+    ],
+    "tests": {
+      "source": {
+        "command": "node scripts/xiaozhi-agent/conflict-review.mjs",
+        "passed": 6,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-review-JTCP3W"
+      },
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalPi": {
+        "command": "node scripts/xiaozhi-agent/conflict-review-electron.mjs; resume same owned root only for remaining final check",
+        "passed": 7,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8",
+        "firstExecution": {
+          "passed": 6,
+          "exit": 1,
+          "reason": "Fixture read nonexistent turn.answer instead of actual items[].text; actual partial response existed."
+        },
+        "resume": {
+          "firstExit": 1,
+          "reason": "Fixture s variable scoped inside completed first-six block; force termination and cold launch had already occurred. Final resume inspected same cold file/records without regenerating or rewriting.",
+          "finalExit": 0
+        },
+        "actualMainForceKills": [
+          81524,
+          83396
+        ],
+        "realProviderCalls": 0,
+        "rendererErrors": 0,
+        "coldReplayCalls": 0,
+        "viewports": [
+          {
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5
+          }
+        ]
+      },
+      "legacyFoundation": {
+        "command": "node scripts/xiaozhi-agent/pi-text-change-foundation-smoke.mjs",
+        "exit": 1,
+        "passed": 0,
+        "reason": "Legacy fixture workspace under protected .codex fails authority and hardcoded prior app.db is absent. Existing script/guards unchanged; new focused tests use an owned OS temp root and actual SQLite/files."
+      },
+      "comprehensive": {
+        "command": "npm run test:smoke",
+        "exit": 1,
+        "status": "failed",
+        "sourceCommit": "d24320ed9e94eb5ca88d8a07f847de494c2d1788",
+        "reason": "L2 edit click should persist teacher text: actual Observed route stage: succeeded. instead of teacher revision. Late loadL2 response seeds old server text into l2Edits, overwriting teacher input. No207/207 claim. Preserve failed log/screenshot; repair C03 draft seam and recheck affected path only."
+      }
+    },
+    "runtime": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\out",
+    "testCwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+    "archive": "docs/research/AGENT_RECOVERY_E07_20261031/conflict-review",
+    "build": {
+      "main/index.js": {
+        "bytes": 3334335,
+        "sha256": "3116a1ecdcd8e1b30160f82dbdec6abfd7332bc5d3fd46b315a34eeeff4773f2"
+      },
+      "preload/index.cjs": {
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      "renderer/assets/index-BBpe4p21.js": {
+        "bytes": 7261903,
+        "sha256": "f096c3c52564d8db69716cd89845c17232a072f6853ca26dc4cfd9b1d23d1fee"
+      }
+    },
+    "performance": {
+      "baseline": "stopStagesSlice.build at source0222d15 (d381833 docs only)",
+      "bytesDelta": {
+        "main": 1319,
+        "preload": 0,
+        "renderer": 1481
+      },
+      "scope": "At most64KiB extra local read/hash only on explicit expanded conflict review/refresh; zero added per-token work/journal writes/network requests. No paired latency, P95 or RAM measurement; no broad speed claim."
+    },
+    "audit": {
+      "exit": 1,
+      "vulnerabilities": {
+        "info": 0,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      }
+    },
+    "newDependencies": 0,
+    "ddl": 0,
+    "newIpc": 0,
+    "realPaidRequests": 0,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "actualFile": {
+      "name": "浮力课堂.md",
+      "sha256": "064558e6ef40cba6a0bb1eb9b45ff3e0749682f7bc56fb0aa618f2e07dd39223",
+      "content": "# 浮力课堂\n导入2分钟\n探究10分钟\n检查3分钟\n",
+      "scope": "Synthetic owned file only; original conflict before5/proposed6, teacher7→8, new approved9, saved crash10."
+    },
+    "remaining": "Next functional slice E08 generic HTML/source/version surface and applicable C, then fixed S/T order. Remaining full E07/252 stage matrix stays concentrated after functionality. No daily/installer/provider quality acceptance.",
+    "rollback": "Revert E07 sourced24320e and/or memory sources7b650b2+cb36263 as applicable, preserving all original files, proposals, journal and memory records. No schema migration; full rollback rehearsal not performed.",
+    "memoryDraftRepair": {
+      "sourceCommit": "7b650b2",
+      "trigger": "Single comprehensive run failed real L2 teacher-edit save at source d24320e. Preserve failure; do not rerun full suite to hide it.",
+      "change": "Original loadL2/loadL3 update server detail only; textarea falls back to server until a teacher draft exists. No schema/IPC/version-lock change.",
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalMemory": {
+        "command": "node scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs",
+        "exit": 0,
+        "passed": 4,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-Tj4I6o",
+        "realProviderCalls": 0,
+        "rendererErrors": 0,
+        "scope": "Actual legacy memory navigation, delayed actual IPC read responses, exact L2/L3 saves and stale-version conflict preserving draft. No fabricated business results.",
+        "fixtureFailures": [
+          "Initial synthetic L2 entry omitted required real run evidence; rejected0 checks. Fixture now creates original no-provider run and binds its actual ID.",
+          "Nested data/profile failed authorized legacy temp-root rule and correctly loaded Pi; nav-memory absent,0 checks. Fixture now uses independent existing direct owned OS temp children. Runtime guard unchanged."
+        ]
+      },
+      "refinement": {
+        "sourceCommit": "cb3626314b11728a017c37914865288d0747bc3e",
+        "change": "Clear only draft text exactly matching successful readback, so a later explicit refresh shows new saved versions; distinct unsaved/conflicting drafts survive.",
+        "command": "node scripts/xiaozhi-agent/memory-draft-refresh-electron.mjs",
+        "passed": 5,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-memory-draft-AZoyHj",
+        "realProviderCalls": 0,
+        "rendererErrors": 0,
+        "scope": "Original4 paths plus newer saved L2/L3 values become visible after refresh. Prior4 report preserved separately."
+      }
+    },
+    "buildScope": "Initial E07 build before C03 memory repair and main integration. Final integrated fingerprints recorded separately.",
+    "lastIntegration": {
+      "sourceCommit": "cb3626314b11728a017c37914865288d0747bc3e",
+      "mergedMain": "d80b9b5",
+      "mergeCommit": "594fc06",
+      "markdownConflicts": 14,
+      "conflictResolution": "Both complete sides preserved; no production overlap. Knowledge-base source retained.",
+      "buildType": {
+        "command": "npm run build",
+        "exit": 0
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "exit": 0
+      },
+      "formalMemory": {
+        "passed": 5,
+        "exit": 0,
+        "archive": "memory-final.json"
+      },
+      "formalPiCold": {
+        "command": "node scripts/xiaozhi-agent/conflict-review-cold.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8",
+        "passed": 3,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8",
+        "scope": "Same7-case file/proposals/profile; existing current-file review/refresh; native1366/1920; file/mtime/proposal/event hash unchanged.",
+        "modelReplay": 0,
+        "rendererErrors": 0
+      },
+      "build": {
+        "main/index.js": {
+          "bytes": 3341932,
+          "sha256": "a77f213d4d1f68244bf2a6d0699e70be1b98d448f9099ee697b1d5a4bb6c3a03"
+        },
+        "preload/index.cjs": {
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        "renderer/assets/index-Dulbb_dP.js": {
+          "bytes": 7262888,
+          "sha256": "7e4fb65dae80f0ae622963b55cea7167e6133334535baf1167a57a7898918616"
+        }
+      },
+      "performance": "Includes main knowledge-base changes plus memory fix; do not attribute integrated byte delta solely to E07. Original own E07+1319B main/+1481B renderer baseline comparison remains separately recorded. No added per-token work or new model requests; no P95/RAM claim.",
+      "comprehensive": "Original source d24320e single full run exit1 preserved. Affected memory fix passed5 only; full207 suite not repeated or declared passed.",
+      "realPaidRequests": 0,
+      "dailyRuntimeUpdated": false,
+      "installerUpdated": false
+    }
   }
 }

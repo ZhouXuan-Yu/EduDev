@@ -1,0 +1,158 @@
+{
+  "ok": true,
+  "checks": [
+    "Formal composer executes missing read → actual directory listing → renamed-file read; model sees exact category and current file version, original failure stays recorded",
+    "One transient EBUSY succeeds on the second actual Hana read within the same tool call, without a second model tool request",
+    "Persistent EBUSY stops after two real reads and retains the same precise error in model result, journal and visible original tool process",
+    "Failure details remain reachable without horizontal overflow at both required desktop viewports",
+    "Stop during actual local-read retry wait responds within 300ms, interrupts the turn and sends no second read or model request after the delay",
+    "Cold formal application restores missing/busy/retried/stopped histories without new model/tool dispatch or any source/event hash change"
+  ],
+  "errors": [],
+  "boundary": "Formal Electron composer/Pi/Hana/typed IPC/SQLite and owned files, local synthetic SSE and controlled EBUSY only; zero paid requests. No natural-model-quality or full E07 acceptance.",
+  "missingRun": "run_d1ce6b30-ae47-4cd3-a216-c7608e04eaca",
+  "busyRun": "run_66b9afcf-9f18-409d-95d9-2806b58166a5",
+  "stopFeedbackMs": 37.49009999999544,
+  "wire": {
+    "mode": "stop",
+    "stage": 1,
+    "target": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-ordinary-recovery-ui-c92gKj\\XiaozhiOutputs\\cc7cf7612b048028\\aisession_ad61ab85-c094-4f9a-aeda-9add82828fb9\\占用讲解.txt",
+    "readCalls": 1,
+    "calls": [
+      {
+        "mode": "missing",
+        "n": 0,
+        "tool": "office_read_text"
+      },
+      {
+        "mode": "missing",
+        "n": 1,
+        "tool": "office_list_files"
+      },
+      {
+        "mode": "missing",
+        "n": 2,
+        "tool": "office_read_text"
+      },
+      {
+        "mode": "missing",
+        "n": 3,
+        "tool": null
+      },
+      {
+        "mode": "transient",
+        "n": 0,
+        "tool": "office_read_text"
+      },
+      {
+        "mode": "transient",
+        "n": 1,
+        "tool": null
+      },
+      {
+        "mode": "persistent",
+        "n": 0,
+        "tool": "office_read_text"
+      },
+      {
+        "mode": "persistent",
+        "n": 1,
+        "tool": null
+      },
+      {
+        "mode": "stop",
+        "n": 0,
+        "tool": "office_read_text"
+      }
+    ],
+    "observed": [
+      {
+        "mode": "missing",
+        "n": 1,
+        "result": {
+          "success": false,
+          "error": {
+            "code": "not_found",
+            "message": "授权范围内未找到目标文件，可能已移动或更名。请先列出当前目录核对名称，再读取实际文件和版本。",
+            "retryable": false
+          }
+        }
+      },
+      {
+        "mode": "missing",
+        "n": 2,
+        "result": {
+          "schemaVersion": "xiaozhi.office.tool.v1",
+          "tool": "office_list_files",
+          "success": true,
+          "data": {
+            "source": ".",
+            "truncated": false,
+            "entries": [
+              {
+                "name": "占用讲解.txt",
+                "kind": "file"
+              },
+              {
+                "name": "更名后的讲解.txt",
+                "kind": "file"
+              }
+            ],
+            "sourceIdentity": "ce6b6b4fd6da167db1263045db275e9f7896252f04e2a7e452bf5fd27cdbb2d4"
+          }
+        }
+      },
+      {
+        "mode": "missing",
+        "n": 3,
+        "result": {
+          "schemaVersion": "xiaozhi.office.tool.v1",
+          "tool": "office_read_text",
+          "success": true,
+          "data": {
+            "source": "更名后的讲解.txt",
+            "text": "合成浮力资料：浮力方向竖直向上，核验码37。",
+            "sha256": "fab0929516f8221273e777b51b1869b322f97a09b8a3973f12930f49d60019dd",
+            "version": "23f1a572a77c0efa9eef90596bac2d934b5c968d3ba465fc4cf9f0a7556250e7",
+            "untrusted": true,
+            "sanitized": true
+          }
+        }
+      },
+      {
+        "mode": "transient",
+        "n": 1,
+        "result": {
+          "schemaVersion": "xiaozhi.office.tool.v1",
+          "tool": "office_read_text",
+          "success": true,
+          "data": {
+            "source": "占用讲解.txt",
+            "text": "当前占用已释放后的合成讲解，核验码58。",
+            "sha256": "f28a6f68af9b59423df7a218b7221b48f286b75eab53bd6dedde5365f5c8ff01",
+            "version": "da98a45d1f5e2a36ea30741b2e64db75835b7a435d0d1e318e6d93561a16807f",
+            "untrusted": true,
+            "sanitized": true
+          }
+        }
+      },
+      {
+        "mode": "persistent",
+        "n": 1,
+        "result": {
+          "success": false,
+          "error": {
+            "code": "resource_busy",
+            "message": "文件或相关操作暂时被占用。请稍后重新核对当前文件；不会自动重复写入。",
+            "retryable": false
+          }
+        }
+      }
+    ],
+    "blocked": []
+  },
+  "files": [
+    "fab0929516f8221273e777b51b1869b322f97a09b8a3973f12930f49d60019dd",
+    "f28a6f68af9b59423df7a218b7221b48f286b75eab53bd6dedde5365f5c8ff01"
+  ]
+}

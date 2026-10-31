@@ -5,10 +5,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { withFileMutationQueue } from '@earendil-works/pi-coding-agent';
-import type { XiaozhiChangeDecision } from '../../shared/xiaozhi-changes';
+import type { XiaozhiChangeDecision, XiaozhiChangeReview, XiaozhiCurrentTextFile } from '../../shared/xiaozhi-changes';
 import { authorizedWorkspace, approvedFile, workspaceHash } from './workspace-authority';
 import { prepareTextEdit, textProposalInput, changeText, MAX_CHANGE_BYTES } from './text-edit-proposal';
 import { changeHash, createTextChangeState, publicTextChange, type PrivateTextChange } from './text-change-state';
+import {textVersionFamilies} from './text-version-family';
 
 type Ledger = ReturnType<typeof createTextChangeState>;
 const signalCheck = (signal?: AbortSignal) => { if (signal?.aborted) throw new Error('cancelled'); };
@@ -88,7 +89,7 @@ export function createTextChangeService(options: {
     if (latest?.state === (undo ? 'reverting' : 'executing')) await state.transition(latest, [latest.state], undo ? 'undo_uncertain' : 'uncertain');
   }
   return {
-    async propose(sessionId: string, runId: string, callId: string, raw: unknown, signal?: AbortSignal, anatomy = false) {
+    async propose(sessionId: string, runId: string, callId: string, raw: unknown, signal?: AbortSignal, anatomy = false, parentChangeId?:string) {
       assertFileWritesEnabled();
       signalCheck(signal);
       if (!options.isCurrent(sessionId, runId) || !callId || callId.length > 128) throw new Error('permission_denied');
@@ -104,6 +105,12 @@ export function createTextChangeService(options: {
       }
       const before = read(root, input.path);
       if (input.operation === 'edit' ? before === null : before !== null) throw new Error(input.operation === 'edit' ? 'not_found' : 'conflict');
+      const records=/\.html$/i.test(input.path)?await state.versionRecords(sessionId):[];
+      const previous=records.filter(v=>v.path===input.path&&v.workspaceHash===workspaceHash(root)&&['applied','reverted'].includes(v.state)).at(-1);
+      const families=textVersionFamilies(records);
+      const parent=parentChangeId|| (input.operation==='edit'&&previous?families.get(previous.id)?.currentId||undefined:undefined);
+      if(input.operation==='edit'&&previous&&families.get(previous.id)?.currentId&&families.get(previous.id)?.currentId!==previous.id&&previous.state!=='reverted')throw Error('conflict');
+      if(parent&&(families.get(parent)?.currentId!==parent||records.find(v=>v.id===parent)?.workspaceHash!==workspaceHash(root)))throw Error('conflict');
       const proposal = await prepareTextEdit(root, input, before, callId, signal);
       if(/\.html$/i.test(input.path)&&!anatomy) {
         // The displayed diff and the installed bytes must include the same offline policy.
@@ -114,17 +121,32 @@ export function createTextChangeService(options: {
       const row = await state.create({ sessionId, runId, callId, operation: input.operation,
         path: path.relative(root, changeFile(root, input.path)).replace(/\\/g, '/'), workspaceHash: workspaceHash(root), inputHash,
         before, beforeSha256: before === null ? null : changeHash(before), after: proposal.after,
-        afterSha256: changeHash(proposal.after), diff: proposal.diff, patch: proposal.patch });
+        afterSha256: changeHash(proposal.after), diff: proposal.diff, patch: proposal.patch, parentChangeId:parent });
       // Cancel after proposal persistence must not leave a live grant.
       if (signal?.aborted || !options.isCurrent(sessionId, runId)) {
         await state.transition(row, ['pending'], 'interrupted'); throw new Error('cancelled');
       }
       return publicTextChange(row);
     },
-    async review(sessionId: string, id: string) {
+    async review(sessionId: string, id: string): Promise<XiaozhiChangeReview> {
       const row = await owned(sessionId, id); const root = await authority(sessionId, row);
-      changeFile(root, row.path);
-      return { ...publicTextChange(row), before: row.before?.toString('utf8') ?? null, after: row.after.toString('utf8') };
+      let currentFile: XiaozhiCurrentTextFile | undefined;
+      if (row.state === 'conflict' || row.state === 'undo_conflict') {
+        const readAt = new Date().toISOString();
+        try {
+          // Keep historical before/after readable even when the current target
+          // disappeared or is no longer a supported, authorized text file.
+          fs.lstatSync(changeFile(root, row.path));
+          const bytes = read(root, row.path);
+          currentFile = bytes === null ? {readAt,state:'missing'} : {readAt,state:'readable',content:bytes.toString('utf8'),sha256:changeHash(bytes)};
+        } catch (error) {
+          const code = (error as NodeJS.ErrnoException).code, message = error instanceof Error ? error.message : '';
+          currentFile = ['ENOENT','ENOTDIR'].includes(code || '') || message === 'not_found' ? {readAt,state:'missing'}
+            : {readAt,state:'unavailable',reason:code === 'EACCES' || code === 'EPERM' || message === 'permission_denied' ? 'permission_denied'
+              : message === 'too_large' ? 'too_large' : message === 'unsupported' ? 'unsupported' : 'configuration'};
+        }
+      } else changeFile(root, row.path);
+      return { ...publicTextChange(row), before: row.before?.toString('utf8') ?? null, after: row.after.toString('utf8'), ...(currentFile ? {currentFile} : {}) };
     },
     async decision(input: XiaozhiChangeDecision) {
       if(input?.action==='approve'||input?.action==='undo')assertFileWritesEnabled();

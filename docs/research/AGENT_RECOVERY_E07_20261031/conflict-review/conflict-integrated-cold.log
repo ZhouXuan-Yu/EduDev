@@ -1,0 +1,6 @@
+(node:84372) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Integrated main/preload/renderer restore the same conflict/applied/interrupted records without false running
+PASS Same original card reads/refreshed current text in both native sizes with existing component style
+PASS Actual file/mtime/proposal/event hashes unchanged, zero model replay or renderer errors
+{"ok":true,"checks":3,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-conflict-ui-Vc23g8"}

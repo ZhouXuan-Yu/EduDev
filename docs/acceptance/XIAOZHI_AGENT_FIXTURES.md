@@ -74,6 +74,10 @@ v1.1，2026-10-29。配套[任务书](../product/PRD-XIAOZHI-AGENT-DELIVERY.md)�
 
 ## FX01：浮力文件交付与连续修改
 
+2026-11-01 HTML目录续测：复用原真实Pi隔离三版夹具KHunR1，不重新生成；从教学文件恢复第2版为新第4版5N，旧文件hash/mtime保持，旧三版时间未知/新版成功回执有值。正式目录8、源码6通过；实际1366×768/1920×1080 CSS viewport和DPR1.5记录，系统回调观察不代替原生OS。完整FX输入/答案/科学质量标准不变，证据htmlCatalogSlice。
+
+2026-11-01 HTML版本工程夹具：合成浮力课堂HTML载荷4N→实读局改5N→原卡预览4N→另存恢复第3版4N，旧5N文件和mtime保持。实际Pi6含双尺寸/冷启，源码8含保存后outcome故障核验。不是完整FX01动态科学演示、真实模型或原生OS验收；原输入/答案不变。证据htmlVersionSlice。
+
 E03补充工程夹具：continuity-electron.mjs以10页→8页修订、可以→继续、原PPT第4页标题另存和HTML差异修改验证主链；真实文件检查七页XML/全部备注保持、父子账本、旧文件hash与冷启零重放。合成SSE不代替下述FX01完整科学演示/真实模型质量和原生Office渲染；首次夹具失败保留在AGENT_CONTINUITY_E03_20261029.json。
 
 完整输入：
@@ -98,6 +102,8 @@ E03补充工程夹具：continuity-electron.mjs以10页→8页修订、可以→
 <a id="fx02"></a>
 
 ## FX02：文件、目录和设置
+
+2026-11-01 E07冲突工程夹具：同一隔离“浮力课堂.md”，初稿探究5分钟/提议6分钟；审批前教师改7、刷新时再改8，原提议不覆盖。新明确任务实读8并重新批准保存9；后续实际写10后outcome前强退→uncertain→原卡只读核验，再生成中强退保留partial。当前文件移走/不可读不隐藏原两侧。双尺寸DPR1.5，0付费；首6及末项同根续测、失败现场归档。完整FX02/FX07/AT标准不缩。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
 
 E02补充工程夹具：thinking-policy-smoke.mjs与thinking-electron.mjs使用官方格式effort元数据（low/high/max、仅low、明确空列表、缺字段、401），真实UI/SQLite/Pi配合合成SSE，仅记录模型/参数/预算。主路径1M窗口，64K误配失败保留为容量边界；不替代本节合成教学题、FX07历史成果与最终质量判定。证据manifest见AGENT_THINKING_E02_20261029.json。
 
@@ -176,6 +182,10 @@ Office旧PPT8页含文字、表格、公式、图片、图表、备注与隐藏�
 <a id="fx10"></a>
 
 ## FX10：边界与故障
+
+2026-11-01 E07停止补充：原固定免费包实际下载1次并校验pin；受控无头部响应、部分512字节后停流/取消回调不结算、晚响应与共享消费者。原Pi用同pin包受控流、真实QuickJS无限循环child、原文件审阅卡，三个阶段均实际点停止，核对临时物、child close、SQLite interrupted/旧批准拒绝；新会话实际42、双尺寸及四会话冷启6项。事件计时与自动化往返分开记录，300ms不放宽；原完整故障集不缩减。docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
+2026-11-01 E07普通工具补充：独立临时生成区实际更名文件与占用文件，原Hana真实读/列目录/版本回读，精确目标readFileSync注入EBUSY/ETXTBSY、EACCES和版本变化；生产Pi以合成SSE驱动缺文件→列目录→真实读取、短暂/持续占用、等待中停止、双尺寸/冷启。0真实provider请求；同文件/事件hash不变。首轮折叠详情夹具失败保留，完整FX10故障集合不缩减。docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
 
 2026-11-01 E07补充：独立OS临时根，本地合成SSE驱动原Pi任务/真实HTML批准，SQLite BEFORE INSERT在正文/verification落账持续拒绝。故障下再读仍阻断；撤触发器后核对同run/task及文件hash，显式新run接续、双尺寸/冷启7项。源码另覆盖hash/序列缺口、回滚、晚回调、其他会话和幂等；账本5涵盖默认产物与独立Office输出目录。初始夹具失败及实际目录缺陷保留；不替代完整FX10。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
 

@@ -1,0 +1,28 @@
+{
+  "ok": false,
+  "checks": [],
+  "errors": [],
+  "boundary": "Owned formal Electron composer/Pi/Hana registry/actual QuickJS child and file approval. Fixed reviewed package bytes from one real public download, controlled stalled stream and synthetic local model SSE only; zero paid calls. Not full E07 stage acceptance.",
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(feedback<=300)\n\n    at stop (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/stop-stages-electron.mjs:37:260)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/stop-stages-electron.mjs:39:253",
+  "wire": {
+    "mode": "download",
+    "stage": 1,
+    "calls": [
+      {
+        "mode": "download",
+        "n": 0,
+        "tool": "prepare_education_tool"
+      }
+    ],
+    "downloads": [
+      {
+        "mode": "download",
+        "aborted": true,
+        "cancelCalls": 1
+      }
+    ],
+    "observed": [],
+    "blocked": [],
+    "workers": []
+  }
+}

@@ -1,5 +1,25 @@
 # 知识库实施证据
 
+## 2026-11-01 K0文件式访问实施
+
+文件式访问切片真实结果与最终源码/构建/失败边界统一写入research/KB_ARCHITECTURE_BASELINE_20261101.json#k0Implementation，旧架构审查和真实AI失败证据保留；不得把当前局部来源探针称完整Pi/几十GB验收。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
+## 2026-11-01 知识库整体架构优先
+
+整体架构可行性基线：[KB_ARCHITECTURE_BASELINE_20261101](../research/KB_ARCHITECTURE_BASELINE_20261101.json)；架构/当前阶段：[KNOWLEDGE_BASE](../architecture/KNOWLEDGE_BASE.md)。本轮架构与证据整理不改生产源码，不把WIP测试算主线证据；K0待实施、完整Goal active。历史40GiB仅40正文块，最新真实2调用仍12题待核。
+
+
+本轮最终整合主线d381833为ad3731a，14处Markdown冲突保留双方、生产代码无冲突。最终build（含tsc）、原页43、匹配21、批次28、答案条目18＋真实旧回执1、组件240（最终renderer逐字节相同）、协作者专项9/7/15、真实UI8（题/答案双尺寸、来源错误/恢复、原关联重连、冷启及6道Pi共用来源读取）均通过；207/207归最终空白保护/两次E07合并前的47ce构建，不冒充最终全套重跑。实际规范回写0→5，另7题保留；本轮仅2次真实HTTP200，UI复读0云端/0renderer错误。主包3340613B（较c4cd89c增加15664），renderer7261323B（增加2414），含协作者改动，不作速度/召回提升归因。audit既有45项（8高29中8低/0严重，exit1）未升级。完整Goal active、D盘日常/安装包未更新。指纹与边界见docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json；提交后正常推送及远端一致性另行读回。
+
+
+## 2026-11-01 答案条目局部疑点与真实回写
+
+真实答案册第3页本轮2次HTTP200，22条原编号、两个试卷分组，19条满足现有局部条目门禁；17/18缺明确独立答案、提优卷4跨页继续保留。实际同卷匹配后，主书第4页1/2/3/7/9五题规范答案与解析升级为v6 book_extracted/book_enriched，原题干及已有答案值未变；六道图表题仍question_unchecked，第11题仍existing_answer_conflict（填空分隔形式不同）。AI一致/答案册来源不代表教师或数学正确性验收。
+
+新增原页43、答案条目18纯/真实旧回执另1、SQLite回写21、原批次28通过；构建/组件/综合/集成真实UI按最终记录归属，不跨版本冒充。完整Goal仍active：PDF图题原页证据归档、跨页补全、填空结构化冲突消解、自然几十GB长期稳定与召回/P95、真实教师/安装包验收尚未完成。D盘日常与安装包未更新。 完整证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+
 本轮最终再次整合协作者main6bd287a为1d6358b：第一次正常原子推送遇并发主线更新被拒，未强推；13处Markdown冲突完整保留双方，知识库生产源码未变。最终build/type、240组件、协作者接续源码11与真实知识库UI7（双尺寸/错误/关联恢复/冷启/6道来源读回）exit0，0云端重放/renderer错误；37/28/19/9与207各归先前精确构建，不冒充最新全套重跑。最新主包3324949B、renderer7258909B，均含E07/E08；完整指纹/边界见KB_PAGE_PROMPT_20261031.json#lastIntegration。完整Goal active，D盘日常/安装包未更新。
 
 

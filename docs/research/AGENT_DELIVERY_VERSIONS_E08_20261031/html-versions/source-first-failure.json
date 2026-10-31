@@ -1,0 +1,13 @@
+{
+  "ok": false,
+  "checks": [
+    "Idempotent migration and original create/edit form a two-version HTML lineage; selected historical bytes are exact",
+    "Historical OS dispatch materializes only an exact derived copy, never opens changed same-path current content",
+    "Restore creates a third current file and preserves later, older and unrelated content",
+    "Repeat command and identical content create no extra versions; command cannot be rebound to another selected version",
+    "Old-path branching, foreign session and stale current identity are rejected without mutation"
+  ],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-versions-3D8vpw",
+  "boundary": "Real original text ledger/Pi algorithms/file effects and selected fault cut; no model or UI acceptance.",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'open_failed'\n- 'changed'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/html-versions-smoke.mjs:14:131"
+}

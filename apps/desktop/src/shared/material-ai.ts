@@ -1,7 +1,7 @@
 import {materialId,type MaterialSource} from './materials';
 import type {ArchiveFields} from './question-archive';
 import type {AiNativeSelector} from './material-ai-native-input';
-import type {MaterialPageSource,AiPagePrompt} from './material-ai-page';
+import type {MaterialPageSource,AiPagePrompt,MATERIAL_BOOK_PAGE_POLICY} from './material-ai-page';
 import type {MaterialBookRole} from './material-book-pair';
 
 export const MATERIAL_AI_SCHEMA='xiaozhi.material-ai.v1' as const;
@@ -21,7 +21,7 @@ export const AI_ISSUES=['uncertain_ocr','cross_page','requires_image','incomplet
 export type AiIssue=typeof AI_ISSUES[number];
 export type AiQuestion=ArchiveFields&{number:string;answerOrigin:AiOrigin;analysisOrigin:AiOrigin;requiresImage:boolean;issues:AiIssue[]};
 export type AiResponse={schemaVersion:typeof MATERIAL_AI_RESPONSE;outcome:'questions'|'no_questions'|'needs_review';questions:AiQuestion[]};
-export type AiUnitInput={sources:MaterialSource[];text:string;page?:number;visualRisk:boolean;stamp:string;native?:AiNativeSelector;pageSource?:MaterialPageSource;pagePrompt?:AiPagePrompt;bookRole?:MaterialBookRole};
+export type AiUnitInput={sources:MaterialSource[];text:string;page?:number;visualRisk:boolean;stamp:string;native?:AiNativeSelector;pageSource?:MaterialPageSource;pagePrompt?:AiPagePrompt;bookPagePolicy?:typeof MATERIAL_BOOK_PAGE_POLICY;bookRole?:MaterialBookRole};
 const exact=(v:unknown,keys:string[],optional:string[]=[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&keys.every(k=>Object.hasOwn(v,k))&&Object.keys(v).every(k=>keys.includes(k)||optional.includes(k));
 const integer=(v:unknown,min:number,max:number):v is number=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=min&&v<=max;
 export const aiBatchId=(v:unknown):v is string=>typeof v==='string'&&/^aibatch_[a-f0-9-]{36}$/i.test(v);

@@ -1,0 +1,15 @@
+(node:97212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Idempotent migration and original create/edit form a two-version HTML lineage; selected historical bytes are exact
+PASS Historical OS dispatch materializes only an exact derived copy, never opens changed same-path current content
+PASS Restore creates a third current file and preserves later, older and unrelated content
+PASS Repeat command and identical content create no extra versions; command cannot be rebound to another selected version
+PASS Old-path branching, foreign session and stale current identity are rejected without mutation
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'open_failed'
+- 'changed'
+
+    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/html-versions-smoke.mjs:14:131
+{"ok":false,"checks":5,"root":"C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-versions-3D8vpw"}

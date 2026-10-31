@@ -1,0 +1,438 @@
+{
+  "schemaVersion": "xiaozhi.kb-architecture-baseline.v1",
+  "date": "2026-11-01",
+  "baselineCommit": "d80b9b5bb4c758492627a1dcbb74bd2761a4cb43",
+  "scope": "Architecture decision, critical feasibility audit and ordered K0 delivery contract; no production source implementation in this delivery",
+  "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
+  "goalComplete": false,
+  "currentStage": "K0_in_progress_file_consumers_implemented",
+  "decision": {
+    "businessTruth": "Existing SQLite writer and versioned business facts",
+    "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
+    "parsing": "Existing Hana/anydoc and Word adapters; PDFium file worker with RapidOCR",
+    "retrieval": "Existing SQLite FTS5, LanceDB 0.30.0 and versioned local BGE embedding/reranker",
+    "ai": "Existing MaterialAiRepository and unified DeepSeek transport; no second agent loop",
+    "agent": "Existing production Pi tools and source validation",
+    "delivery": "EXE body plus existing managed optional-component download/configuration",
+    "noNewDependencies": true,
+    "noWholeSecondRagProduct": true,
+    "feasibility": "Existing component integration is plausible and partially exercised. The complete teacher workflow, natural-corpus scale/quality and Windows end-user delivery are not yet proven."
+  },
+  "blockingSeams": [
+    {
+      "file": "apps/desktop/src/shared/xiaozhi-documents.ts",
+      "fact": "DOCUMENT_MAX_INPUT is 50 MiB for the existing byte interface; raising it is not a streaming architecture"
+    },
+    {
+      "file": "apps/desktop/src/main/assets/material-page-tools.ts",
+      "fact": "Pi page tool has page maximum 50, before/after readingSnapshot and byte-default preview/layout calls"
+    },
+    {
+      "file": "apps/desktop/src/main/education/original-question-coordinator.ts",
+      "fact": "Single-page and multi-region tool schemas have page maximum 50"
+    },
+    {
+      "file": "apps/desktop/src/main/education/original-multi-repository.ts",
+      "fact": "Region staging calls previewMaterialPage with byte renderer and no file renderer"
+    },
+    {
+      "file": "apps/desktop/src/main/assets/material-ipc.ts",
+      "fact": "Material UI preview/layout already supply previewPdfFile/layoutPdfFile; existing integration to reuse"
+    }
+  ],
+  "historicalCapacity": {
+    "evidence": "docs/research/KB_BYTE_CAPACITY_20261031.json",
+    "rerunThisRound": false,
+    "archiveBytes": 42949672960,
+    "files": 40,
+    "chunks": 40,
+    "utf8TextBytes": 6040,
+    "corpus": "Forty synthetic one-page PDFs, accumulated through four 10 GiB selections",
+    "earlierColdHybridUiMs": [
+      4000.6219,
+      5962.91
+    ],
+    "laterMergedColdHybridUiMs": [
+      3962.54,
+      4543.14
+    ],
+    "laterMergedRerank": {
+      "candidates": 40,
+      "reranked": 20,
+      "complete": false,
+      "reason": "candidate_limit"
+    },
+    "limitations": [
+      "Not one natural mixed 40 GiB folder import",
+      "Not high-cardinality text or question retrieval",
+      "Not teacher-labelled semantic recall, P95 or controlled performance improvement",
+      "Not 24/72-hour soak, hard-power-loss recovery or clean Windows installer acceptance"
+    ]
+  },
+  "realProviderObservationThisRound": {
+    "localReportBasename": "question-ai-S0dq5s/report.json",
+    "batchId": "aibatch_c50766ae-aea0-4d0c-965a-ac0544c0edba",
+    "buildContext": "Unfinished local table-evidence experiment before architecture-first steering, now stashed. This is an observed model-quality failure, not current-main feature acceptance.",
+    "buildSha256": "6271939b164ab18b572734f908d48b2ee96086aeaa92d2a36100f0d9e5428f95",
+    "scope": "Explicit visible batch consent, previously inspected main-book page 4 and necessary local OCR only",
+    "model": "deepseek-flash",
+    "policy": "page-restoration.v2",
+    "ocrStatus": "complete",
+    "realCalls": 2,
+    "httpStatuses": [
+      200,
+      200
+    ],
+    "questionsPublished": 12,
+    "questionsNeedingReview": 12,
+    "batchStatus": "attention",
+    "pageIssue": "uncertain_ocr",
+    "newCanonicalBookAnswerUpgrades": 0,
+    "rendererErrors": 0,
+    "journeyExitCode": 0,
+    "meaning": "Transport/source persistence succeeded; content-quality acceptance failed. Existing five historical book-source answer upgrades remain distinct.",
+    "rawTextImagesOrCredentialsCommitted": false
+  },
+  "wipPreservation": {
+    "stashObject": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+    "files": 13,
+    "purpose": "Preserve unfinished PDF table/evidence/local reassessment experiment before returning to the architecture main line",
+    "appliedToDelivery": false,
+    "committedOrPushed": false,
+    "futureStage": "K2 only after K0/K1 prerequisites"
+  },
+  "deliveryChecks": {
+    "productionCodeChanged": false,
+    "schemaOrDependencyChanged": false,
+    "baselineBuild": {
+      "command": "npm.cmd run build",
+      "directory": "apps/desktop",
+      "reason": "Restore build artifacts to unchanged production source after stashing the experiment",
+      "logBasename": "kb-architecture-baseline-build-20261101.log",
+      "observation": "All build phases logged completion; process no longer running. Terminal exit code was lost in truncated tool output and is not claimed.",
+      "exitCode": null,
+      "fingerprints": [
+        {
+          "file": "out/main/index.js",
+          "bytes": 3340613,
+          "sha256": "f79435e6594a2039e4483464e551a7f19745eb647354f946d040ec0c964b6e02"
+        },
+        {
+          "file": "out/preload/index.cjs",
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        {
+          "file": "out/renderer/assets/index-W_wcqK5i.js",
+          "bytes": 7261323,
+          "sha256": "6535fb9fa971bf50aa0dfd86382eacb13a3786b4d5b1b19fc043daf010f60c6f"
+        }
+      ]
+    },
+    "dependencyAudit": {
+      "command": "npm.cmd audit --json",
+      "logBasename": "kb-architecture-audit-20261101.json",
+      "critical": 0,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "total": 45,
+      "exitCode": null,
+      "meaning": "Existing vulnerability snapshot, not a clean security gate; terminal code not retained, no dependency upgrades in this round"
+    },
+    "fullRendererSmokeRerunForDocs": false,
+    "performanceImprovementClaimed": false,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "rollback": "Revert this documentation-only delivery; no data/schema rollback required. Retain local WIP stash and immutable real-provider evidence."
+  },
+  "orderedStages": [
+    {
+      "id": "K0",
+      "work": "Unify file-source/page/region consumers and existing task resource boundaries",
+      "status": "in_progress_file_consumers_implemented"
+    },
+    {
+      "id": "K1",
+      "work": "Durable recursive mixed-directory background workflow and recovery",
+      "status": "pending"
+    },
+    {
+      "id": "K2",
+      "work": "Multimodal question completeness, per-item quality and paired answer books",
+      "status": "pending"
+    },
+    {
+      "id": "K3",
+      "work": "Teacher-relevant bounded hybrid retrieval, Pi and paper workflow",
+      "status": "pending"
+    },
+    {
+      "id": "K4",
+      "work": "Natural 40 GiB/high-text corpus, soak and clean Windows delivery",
+      "status": "pending"
+    }
+  ],
+  "lastIntegration": {
+    "architectureCommit": "b0ff7b9",
+    "mergedMain": "6deee5db81cf54ce17fee717725740229cb87be6",
+    "mergeCommit": "6d64574e143092df4e52c43cdcaa6ccf404d1df2",
+    "markdownConflictsResolved": 13,
+    "conflictResolution": "Both additive knowledge-base and collaborator E07/memory records retained; no production conflict",
+    "ownProductionDiffAgainstMergedMain": false,
+    "checks": [
+      {
+        "command": "npm.cmd run build",
+        "exitCode": 0,
+        "includes": "tsc --noEmit and electron-vite build",
+        "logBasename": "kb-architecture-integrated-build-20261101.log"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "exitCode": 0,
+        "passed": 240,
+        "total": 240,
+        "logBasename": "kb-architecture-integrated-components-20261101.log"
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      },
+      {
+        "check": "Architecture relative-link existence and JSON parse/stage assertions",
+        "exitCode": 0,
+        "relativeLinksChecked": 5
+      },
+      {
+        "check": "Merged Markdown has no unresolved conflict markers",
+        "exitCode": 0
+      }
+    ],
+    "fingerprints": [
+      {
+        "file": "out/main/index.js",
+        "bytes": 3341932,
+        "sha256": "a77f213d4d1f68244bf2a6d0699e70be1b98d448f9099ee697b1d5a4bb6c3a03"
+      },
+      {
+        "file": "out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "file": "out/renderer/assets/index-Di-5hxfM.js",
+        "bytes": 7262888,
+        "sha256": "6bce694ac1f64561a050fe03ca47a190b89bc3af0759d136666d3aed7409d681"
+      }
+    ],
+    "sizeDeltaFromBaseline": {
+      "mainBytes": 1319,
+      "rendererBytes": 1565,
+      "attribution": "Collaborator source integration; documentation-only knowledge-base changes have no production behavior or latency delta"
+    },
+    "noNewElectronJourneyOrProviderCallOnMergedSource": true,
+    "noSemanticRecallOrP95ImprovementMeasured": true,
+    "rollback": "Revert the knowledge-base documentation commits only; do not revert the collaborator merge or delete the preserved WIP. No business-data/DDL rollback."
+  },
+  "officialSourcesChecked": [
+    "https://github.com/lancedb/lancedb",
+    "https://github.com/RapidAI/RapidOCR",
+    "https://pypdfium2.readthedocs.io/en/stable/python_api.html",
+    "https://www.sqlite.org/fts5.html",
+    "https://github.com/Tencent/WeKnora",
+    "https://github.com/Mintplex-Labs/anything-llm",
+    "https://github.com/docling-project/docling"
+  ],
+  "k0Implementation": {
+    "sourceCommits": [
+      "cbcfbb7bd67b42c74dc1152366699ee2a61da014",
+      "6322fa9"
+    ],
+    "mergedMain": "c446966ab4a5931dc2da2b1155e615c2a86498b2",
+    "mergeCommit": "613cc84591eb42c9a81cfd5dd437865a5069be59",
+    "markdownConflictsResolved": 13,
+    "productionConflicts": 0,
+    "changes": [
+      "Reuse renderPdfFilePage adapter for material UI, AI input, original question single/multi image staging and default Pi page tools",
+      "Use existing streaming verify for original-question source and on file-backed layout cache hits",
+      "Shared 10000-page input bound with unchanged actual-count/image/window bounds",
+      "Metadata-only SQLite page authority before/after OCR; unknown-page privacy remains global; partial permits only pages with committed body; no book readingSnapshot"
+    ],
+    "noNewTablesDependenciesIpcOrWorkerVersion": true,
+    "noOriginalsQuestionsOrAnswerEdits": true,
+    "noCloudCalls": true,
+    "dailyRuntimeOrInstallerUpdated": false,
+    "checks": [
+      {
+        "command": "npm.cmd run build",
+        "exitCode": 0,
+        "includes": "tsc --noEmit + electron-vite",
+        "logBasename": "kb-k0-integrated-build.log"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "exitCode": 0,
+        "passed": 240,
+        "total": 240,
+        "logBasename": "kb-k0-integrated-components.log"
+      },
+      {
+        "command": "node scripts/education/kb-k0-file-access-boundaries.mjs",
+        "exitCode": 0,
+        "passed": 64,
+        "localReportBasename": "omni-k0-boundary-4capM4/report.json",
+        "scope": "Actual SQLite 10001 text chunks, 51 MiB fixture, injected rendering, privacy/version/stop/busy/CAS/legacy original review and pre-call same-length source tampering; not real parser accuracy"
+      },
+      {
+        "command": "node scripts/education/kb-k0-real-journey.mjs <authorized-existing-test-root>",
+        "exitCode": 0,
+        "passed": 5,
+        "localReportBasename": "k0-file-lWsuwH/report.json",
+        "scope": "Actual production Electron material UI plus source-bundled production page-tool factory/file Worker against existing authorized real-book SQLite read-only adapter. No Pi/provider generation, mathematical/quality or 40GB acceptance.",
+        "rendererErrors": 0,
+        "cloudRequests": 0
+      },
+      {
+        "command": "npm.cmd run test:smoke",
+        "exitCode": 0,
+        "passed": 207,
+        "total": 207,
+        "buildSha256": "62ec945f790a8a50ae7dc7ee472e4702a838cb32fbabafadb041fb4129ca05af",
+        "logBasename": "kb-k0-smoke.log",
+        "scope": "Single comprehensive pass on file-consumer build BEFORE cache-hit stream-verification fix and collaborator HTML integration. Not claimed rerun on final build; affected 64 boundaries, final build/240 components and real journey passed after those changes."
+      },
+      {
+        "command": "npm.cmd audit --json",
+        "exitCode": 1,
+        "vulnerabilities": {
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "critical": 0,
+          "total": 45
+        },
+        "meaning": "Existing unresolved audit; dependencies unchanged including merged main"
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      }
+    ],
+    "finalBuild": [
+      {
+        "file": "out/main/index.js",
+        "bytes": 3357693,
+        "sha256": "786f43b7769498df6fb6b03c54aae30bbe77980d0d50ddcd5af3e46ade2b7d22"
+      },
+      {
+        "file": "out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "file": "out/renderer/assets/index-B_f7MQo-.js",
+        "bytes": 7264397,
+        "sha256": "3956118f0a43a1780a047e7c7d92a2c5918244ad3feb7e9cedbcccffcbbbef78"
+      }
+    ],
+    "baselineCombinedSizeDeltaBytes": {
+      "main": 15761,
+      "renderer": 1509,
+      "preload": 0,
+      "meaning": "Includes collaborator source changes; not a latency improvement"
+    },
+    "realObservations": [
+      {
+        "success": true,
+        "page": 51,
+        "totalPages": 62,
+        "totalLines": 156,
+        "next": null,
+        "windows": 3,
+        "returnedLines": 156,
+        "characters": 1899,
+        "ms": 1775.1143999999986,
+        "rssBefore": 454840320,
+        "rssAfter": 467079168
+      },
+      {
+        "success": true,
+        "page": 62,
+        "totalPages": 62,
+        "totalLines": 68,
+        "next": null,
+        "windows": 2,
+        "returnedLines": 68,
+        "characters": 1225,
+        "ms": 3645.447900000003,
+        "rssBefore": 467197952,
+        "rssAfter": 499523584
+      },
+      {
+        "success": true,
+        "page": 62,
+        "totalPages": 62,
+        "totalLines": 29,
+        "next": null,
+        "windows": 1,
+        "returnedLines": 29,
+        "positionBasis": "selected_region",
+        "characters": 592,
+        "ms": 6925.138999999999,
+        "rssBefore": 499544064,
+        "rssAfter": 299220992
+      },
+      {
+        "ok": true,
+        "page": 62,
+        "total": 62,
+        "sha256": "8b31f1f2919a41f97d9b94b38b8f2e0f58208aa49eee3ea6178eabfc25fdf621",
+        "width": 2400,
+        "height": 1752,
+        "ms": 7126.8367
+      },
+      {
+        "success": true,
+        "page": 62,
+        "totalPages": 62,
+        "totalLines": 68,
+        "next": null,
+        "windows": 2,
+        "returnedLines": 68,
+        "characters": 1225,
+        "ms": 410.4623999999999,
+        "rssBefore": 255639552,
+        "rssAfter": 294518784
+      }
+    ],
+    "performanceBoundary": "Single read samples, no controlled latency A/B/P95/semantic recall or total worker-memory measurement. Final page 62 cold-restarted cached complete two-window read includes stream hash and is about 410ms; first new OCR in earlier same-source journey about 10-13 seconds. Earlier 48ms sample predates cache-hit source fix and is not current performance.",
+    "preservedFailures": [
+      {
+        "kind": "Old source-only layout/original fixtures omitted contentHash; fail-closed production check rejected them",
+        "localLogBasename": "kb-k0-boundaries.log",
+        "fix": "Supply actual fixture hash, no gate relaxation"
+      },
+      {
+        "kind": "Electron probe dynamic import unavailable in Playwright evaluate",
+        "localReportBasename": "k0-file-TYjjUR/report.json",
+        "fix": "Use Node builtin createRequire; no production change"
+      },
+      {
+        "kind": "Typecheck invoked at root with wrong npx tsc",
+        "localLogBasename": "kb-k0-type.log",
+        "fix": "Use installed desktop TypeScript; final build typecheck passed"
+      }
+    ],
+    "criticalReview": {
+      "fixed": "A stable within-call stamp does not authenticate an older cached OCR result. Added stream-hash verification and a same-length pre-call original mutation regression.",
+      "stillOpen": [
+        "Existing 8-worker shared pool lacks measured heavy-task/foreground fairness; preserve original parse queue priorities and extend existing host next",
+        "High-cardinality SQL page/privacy query plans and index strategy not measured",
+        "Full production Pi conversation and teacher original-candidate confirm/export on real >50-page book not yet accepted; factory/SQLite adapter probe is narrower",
+        "Pending partial-page tool feedback still uses existing source/availability errors",
+        "K1-K4 natural directory quality/recall/P95, long soak and Windows end-user delivery still open"
+      ]
+    },
+    "rollback": "No DDL or data migration. Preserve originals, responses and existing WIP. Revert only this slice adapters with a reviewed patch while retaining the cache-hit source-authentication fix; do not revert collaborator merge. Full rollback rehearsal not performed."
+  }
+}

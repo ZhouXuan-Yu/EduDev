@@ -1,5 +1,36 @@
 # 当前产品方向
 
+## 2026-11-01 K0文件式访问实施
+
+老师可在现有资料入口查看大PDF后段页；小智原页读取及原题取图已接到相同文件能力，部分完成书籍仅放行已发表对应页。目录后台、题库质量/双册匹配、检索组卷仍按整体K0–K4顺序闭合，不宣称整体完成。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
+2026-11-01 E08教学文件HTML目录与时间工程已实现（1ff075c）：原修改账本派生当前族行，同一教学文件/对话版本控制可预览、另存恢复及回来源对话；正常保存记成功回执时间，旧记录未知、中断后只记核验时间。源码6、HTML8、Office16、build/type、240组件、正式Electron8（原三版续成第四版/双尺寸DPR1.5实测/冷启）exit0，0付费/模型重放/renderer错误。主包+2810B、renderer+614B、preload不变，仅按需元数据；无速度/P95结论。系统OS仅派发回调核对；完整来源页/行导航、E08/252AT及既有mastery_quiz失败仍待，未重复综合。D盘日常/安装包未更新，Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
+
+2026-11-01 E08本轮收尾：整合main001093f为ab738bf，13处Markdown冲突保留双方；主线本次仅文档，HTML源码37bd444及实际out指纹逐字节未变，沿已通过源码8/Office16/冲突6/240组件/正式Pi6，不为文档重跑全套。单次综合mastery_quiz checkpoint失败保留，待相关路径定位；完整AT未完成。Goal active，下一HTML目录/来源/版本时间+C，再S/T；D盘日常/安装包未更新。证据htmlVersionSlice.lastIntegration。
+
+2026-11-01 E08通用HTML版本工程已实现（37bd444）：原修改账本增可选parent_change_id，旧记录可读；同一typed officeVersion及原历史组件接通HTML三版预览/选择/另存恢复，旧卡默认打开当前文件。历史副本为派生缓存，不作新真源。源码8、Office16、冲突6、build/type、240组件及正式Pi6（双尺寸DPR按截图推算1.5/冷启）exit0；0付费/重放/renderer错误。一遍综合在mastery_quiz checkpoint提交失败，原日志/截图保留，不记207通过，未改该路径。下一HTML教学文件目录/全部来源定位及版本时间口径+C，再S/T；完整阶段AT/252仍待集中，Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlVersionSlice。
+
+## 2026-11-01 知识库整体架构优先
+
+知识库主线按[整体架构](../architecture/KNOWLEDGE_BASE.md)推进：目录静默后台处理，题册/答案册归档，知识问答、相似题与蓝图组卷，正式试卷集中确认。默认本地保存，必要云端输入沿批次授权。先贯通大文件访问与目录恢复，再补图题/跨页；当前不宣称整体功能已交付。
+
+
+2026-11-01 本轮整合收尾：main d80b9b5整合为594fc06，14处Markdown冲突完整保留双方，无生产冲突；记忆草稿补充cb36263仅在读回文字精确一致时释放已保存草稿，后续刷新显示新版本，不同值仍保留。最终build/type、240组件、正式记忆页5项、原同文件/提议冷启3项exit0；文件/mtime/事件及提议记录不重写，0模型重放/付费。一次综合回归的初始L2失败保留，修后只复验受影响项，不宣称207通过。源码6及正式Pi7仍归其原构建。下一功能E08 HTML/来源定位+C，再S/T；完整阶段AT/252仍待集中，Goal active；D盘日常/安装包未更新。精确构建指纹及证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice.lastIntegration。
+
+2026-11-01 同轮C03修复（7b650b2）：一次综合回归在真实L2教师编辑处失败，已保留首次日志/截图，不记207通过。loadL2/loadL3只读回已存数据，教师草稿独立保留；原版本锁不变。受影响项build/type、240组件和正式记忆页4项通过（延迟真实读回/L2及L3保存/旧版本冲突），0付费。下一功能E08通用HTML与来源定位+C，再S/T；剩余完整E07/252矩阵功能齐后集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+2026-11-01 E07：冲突三方对照/当前文件重读和新稿重新确认已贯通原Pi/typed IPC/审阅卡；实际生成中与保存后强退恢复亦有证据。源码6、组件240、正式Pi7及build/type通过，0付费，完整阶段AT仍待集中。日常进度见docs/goal/WORK_PROGRESS.md，证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+## 2026-11-01 答案条目局部疑点与真实回写
+
+老师可在答案页按完整试卷/原题号查看逐条疑点，对应题册显示真实匹配/写回状态；清晰且通过全部题面、来源和冲突检查的条目才升级答案册来源。真实五题已完成v6规范升级，未获得教师确认；其余七题保留。完整Goal仍active：PDF图题原页证据归档、跨页补全、填空结构化冲突消解、自然几十GB长期稳定与召回/P95、真实教师/安装包验收尚未完成。D盘日常与安装包未更新。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+2026-11-01 E07停止切片完成（0222d15）：原组件下载复用waitOfficeAbort处理无响应头/停流，不再等待可能不结算的reader.cancel；取消后清理本次临时物，晚响应不激活，新的明确准备和共享消费者继续有效。实际Pi下载/计算子进程/审批等待的本地反馈5.9/4.1/7.3ms，宿主下载3ms中止、实际loop子进程12ms退出；旧批准拒绝且文件未写，原组件保留并完成新任务实际42。专项15、取消3、build/type、240组件与正式Pi6（双尺寸/四会话冷启）通过；同一冻结源码0222d15的一次legacy综合回归207/207 exit0，0付费。完整E07/252AT仍待阶段集中。 下一：E07强制中断/版本冲突/部分正式产物回收，E08通用HTML和来源定位+C，再按固定顺序S/T；Goal active，D盘日常/安装包未更新。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
+
+2026-11-01 E07普通文件工具恢复工程已实现（3a420f5，含f1435b9）：缺文件保留not_found并引导列当前目录核对真实名称/版本；纯read/stat/list短暂占用最多2次，重新走Hana真实IO，持续占用明确resource_busy。读重试等待登记到原Hana registry，停止反馈37.49ms，延迟后无新工具/模型派发。源码7、边界20、SQLite10、呈现9、组件240与正式Pi6（双尺寸/冷启）exit0，0真实付费请求。一次207/207属停止提示结算前构建，修后只重验受影响项；中断历史显示已停止，原始排队事件保留。完整E07/252AT仍阶段集中，Goal active；D盘日常/安装包未更新。 下一步：继续E07工具运行/下载/审批等待停止及崩溃/回执冲突矩阵、E08 HTML和来源定位+C；再按既定顺序S/T，功能齐后集中验收。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
 2026-11-01 E07落账失败原地恢复工程已实现（c61bd4e）：真实文件已保存后journal失败，重新读取会等待旧执行/数据库回调及实际工具归零，核对原事件、native与文件账本后修复原run/task并解除阻断；不重放模型/工具/审批。默认生成目录与独立Office导出目录纳入原效果核对，改动/缺失仍uncertain。 完整REQ-E07-06/07/08仍部分实现，完整AT0。草稿可编辑，发送/确认暂停；恢复后由教师显式继续。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
 
 ## 2026-10-31 原页题面与提示版本

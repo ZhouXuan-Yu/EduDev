@@ -1,0 +1,111 @@
+PASS Official pinned package is downloaded, verified, extracted and actually health checked before atomic activation
+PASS Actual isolated calculation returns240, preserves leading-zero text, exposes no host/network bridge and does not reinstall
+PASS Instruction deadline, explicit cancel and bounded result stop owned child processes without publishing truncated files
+PASS Version lease blocks uninstall; fresh manager calls installed component offline
+PASS Unused component uninstalls only its managed pointer/binary
+PASS Insufficient storage fails before download without deleting teaching files
+PASS Corrupt package never activates and owned temporary files are cleaned
+PASS Cancel after actual received bytes waits for job cleanup and cannot activate partial downloads
+PASS Stop before headers cleans the job; a late uncooperative response is discarded while a fresh explicit preparation succeeds
+PASS Stop while reader.read waits does not await a never-settled reader.cancel; partial files are removed and the next preparation is healthy
+PASS Stopping one consumer during a stalled shared body preserves the other task and installs the same verified version once
+PASS Failed controlled health result never becomes an active callable component
+PASS Concurrent tasks share one download/installation of the exact immutable version
+PASS Cancelling one consumer leaves the other task download intact
+PASS Main-owned compatibility switch stops new computation without changing native tool registration or existing artifacts
+{
+  "ok": true,
+  "checks": [
+    "Official pinned package is downloaded, verified, extracted and actually health checked before atomic activation",
+    "Actual isolated calculation returns240, preserves leading-zero text, exposes no host/network bridge and does not reinstall",
+    "Instruction deadline, explicit cancel and bounded result stop owned child processes without publishing truncated files",
+    "Version lease blocks uninstall; fresh manager calls installed component offline",
+    "Unused component uninstalls only its managed pointer/binary",
+    "Insufficient storage fails before download without deleting teaching files",
+    "Corrupt package never activates and owned temporary files are cleaned",
+    "Cancel after actual received bytes waits for job cleanup and cannot activate partial downloads",
+    "Stop before headers cleans the job; a late uncooperative response is discarded while a fresh explicit preparation succeeds",
+    "Stop while reader.read waits does not await a never-settled reader.cancel; partial files are removed and the next preparation is healthy",
+    "Stopping one consumer during a stalled shared body preserves the other task and installs the same verified version once",
+    "Failed controlled health result never becomes an active callable component",
+    "Concurrent tasks share one download/installation of the exact immutable version",
+    "Cancelling one consumer leaves the other task download intact",
+    "Main-owned compatibility switch stops new computation without changing native tool registration or existing artifacts"
+  ],
+  "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-tools-R59br8",
+  "boundary": "Real official package and actual isolated QuickJS child processes; local controlled transport only for interruption and corruption. Not full E04/E05 AT or installed app acceptance.",
+  "packageFixture": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-managed-tools-R59br8\\pinned-component.tgz",
+  "actualComputation": {
+    "value": {
+      "total": 240,
+      "studentId": "00123",
+      "host": [
+        "undefined",
+        "undefined",
+        "undefined"
+      ]
+    },
+    "runtime": "3.6.2",
+    "elapsedMs": 15
+  },
+  "headerStopMs": 3.2831999999998516,
+  "bodyStopMs": 4.809699999999793,
+  "actualFreeDownloads": 1,
+  "packageSha256": "f1f4349f19a2d849e33ea0ae9bec2e7062b8839f4eceb17c9051ddbaa2720982",
+  "progress": [
+    {
+      "phase": "checking",
+      "downloadedBytes": 0,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "downloading",
+      "downloadedBytes": 0,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "downloading",
+      "downloadedBytes": 626,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "downloading",
+      "downloadedBytes": 568844,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "verifying",
+      "downloadedBytes": 568844,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "installing",
+      "downloadedBytes": 568844,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "health",
+      "downloadedBytes": 568844,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "activating",
+      "downloadedBytes": 568844,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    },
+    {
+      "phase": "ready",
+      "downloadedBytes": 568844,
+      "totalBytes": 568844,
+      "version": "3.6.2"
+    }
+  ]
+}

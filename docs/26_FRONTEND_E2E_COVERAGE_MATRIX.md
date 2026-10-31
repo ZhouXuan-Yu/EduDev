@@ -1,5 +1,24 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 E08 HTML教学文件：正式Electron8项通过（源码1ff075c，htmlCatalogSlice）：实际原三版Pi夹具→目录搜索/分组→当前/历史预览→另存第四版→旧卡同当前→缺失/外改/读取失败→双尺寸DPR1.5及冷启。0模型/renderer错误；OS派发仅回调观察；完整来源导航/AT仍待，不替代既有失败综合。
+
+2026-11-01 E08通用HTML版本工程已实现（37bd444）：原修改账本增可选parent_change_id，旧记录可读；同一typed officeVersion及原历史组件接通HTML三版预览/选择/另存恢复，旧卡默认打开当前文件。历史副本为派生缓存，不作新真源。源码8、Office16、冲突6、build/type、240组件及正式Pi6（双尺寸DPR按截图推算1.5/冷启）exit0；0付费/重放/renderer错误。一遍综合在mastery_quiz checkpoint提交失败，原日志/截图保留，不记207通过，未改该路径。下一HTML教学文件目录/全部来源定位及版本时间口径+C，再S/T；完整阶段AT/252仍待集中，Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlVersionSlice。
+
+2026-11-01 本轮整合收尾：main d80b9b5整合为594fc06，14处Markdown冲突完整保留双方，无生产冲突；记忆草稿补充cb36263仅在读回文字精确一致时释放已保存草稿，后续刷新显示新版本，不同值仍保留。最终build/type、240组件、正式记忆页5项、原同文件/提议冷启3项exit0；文件/mtime/事件及提议记录不重写，0模型重放/付费。一次综合回归的初始L2失败保留，修后只复验受影响项，不宣称207通过。源码6及正式Pi7仍归其原构建。下一功能E08 HTML/来源定位+C，再S/T；完整阶段AT/252仍待集中，Goal active；D盘日常/安装包未更新。精确构建指纹及证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice.lastIntegration。
+
+2026-11-01 同轮C03修复（7b650b2）：一次综合回归在真实L2教师编辑处失败，已保留首次日志/截图，不记207通过。loadL2/loadL3只读回已存数据，教师草稿独立保留；原版本锁不变。受影响项build/type、240组件和正式记忆页4项通过（延迟真实读回/L2及L3保存/旧版本冲突），0付费。下一功能E08通用HTML与来源定位+C，再S/T；剩余完整E07/252矩阵功能齐后集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+2026-11-01 E07（d24320e）：当前正式composer→实读→原计划/编辑→教师手改→批准冲突→原/提议/当前三方对照、重读、移走文件/恢复、新任务实读并重新确认保存，双尺寸DPR1.5；生成中和文件已写outcome前owned main强退、冷启/原卡核验无重放。正式Pi7分首6与原文件末项续测，失败均归档。源码6/组件240/build/type通过；完整AT仍阶段集中。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+## 2026-11-01 答案条目局部疑点与真实回写
+
+M03/M05/M10：真实主书第4页与答案第3页已实现五题book_enriched规范回写；局部疑点按条目显示、模型漏报跨页由解析器继续拦截整页检索。双尺寸、错误/恢复、重试、同源关联恢复、冷启及Pi共用来源读取的最终结果见 docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json；旧状态断言与误选历史批次失败单独保留，不充当通过。完整Goal仍active：PDF图题原页证据归档、跨页补全、填空结构化冲突消解、自然几十GB长期稳定与召回/P95、真实教师/安装包验收尚未完成。D盘日常与安装包未更新。
+
+2026-11-01 E07停止切片（0222d15）：当前正式composer实际点停止，覆盖停流下载/不结算cancel、真实QuickJS无限循环child及原文件审批等待；本地事件→可见反馈5.9/4.1/7.3ms，宿主下载3ms中止、child12ms关闭，1.1秒无新派发。临时物清理/组件保留、旧批准拒绝/文件未写、新会话实际42、双尺寸及四会话冷启共6项，0真实付费/renderer错误。专项15与原复制取消3通过；整条AT仍阶段集中。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。 同一冻结源码0222d15的一次legacy综合回归207/207 exit0；正式Pi6另记，完整AT不据此标过。
+
+2026-11-01 E07普通工具前片（3a420f5）：正式Pi6覆盖缺文件→列目录→更名实际读取、短暂/持续占用、读重试等待停止及双尺寸/冷启；已停止历史不再承诺重试，原queued事件保留。源码7/边界20/SQLite10/呈现9，240组件；一次207归终态提示修复前构建，修后相关检查通过。证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
+
 2026-11-01 E07：实际Pi7覆盖HTML保存后SQLite失败→仍失败阻断→恢复原task→不覆盖草稿→显式同task接续→双尺寸→冷启；文件/事件hash不重写，0真实模型/renderer错误。源码9/账本文件5/取消5/回执15；完整AT未集中。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
 
 本轮最终再次整合协作者main6bd287a为1d6358b：第一次正常原子推送遇并发主线更新被拒，未强推；13处Markdown冲突完整保留双方，知识库生产源码未变。最终build/type、240组件、协作者接续源码11与真实知识库UI7（双尺寸/错误/关联恢复/冷启/6道来源读回）exit0，0云端重放/renderer错误；37/28/19/9与207各归先前精确构建，不冒充最新全套重跑。最新主包3324949B、renderer7258909B，均含E07/E08；完整指纹/边界见KB_PAGE_PROMPT_20261031.json#lastIntegration。完整Goal active，D盘日常/安装包未更新。

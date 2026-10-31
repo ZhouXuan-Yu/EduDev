@@ -30,6 +30,14 @@ function revisionSummary(revision: AiMemoryRevision) {
   return typeof after?.text === 'string' ? after.text : revision.action;
 }
 
+function clearSavedEdits(edits: Record<string, string>, entries: { id: string; text: string }[]) {
+  const next = { ...edits };
+  for (const entry of entries) {
+    if (next[entry.id] === entry.text) delete next[entry.id];
+  }
+  return next;
+}
+
 export function MemoryGovernanceWorkspace({ setStatus }: Props) {
   const [surface, setSurface] = useState<AiMemorySurface>('chat');
   const [documents, setDocuments] = useState<AiMemoryDocument[]>([]);
@@ -66,7 +74,9 @@ export function MemoryGovernanceWorkspace({ setStatus }: Props) {
     ]);
     setDocuments(nextDocuments ?? []);
     setDetail(nextDetail ?? null);
-    if (nextDetail) setL2Edits((current) => ({ ...current, ...Object.fromEntries(nextDetail.entries.map((entry) => [entry.id, entry.text])) }));
+    // Local edits contain only teacher drafts. Server text is the textarea
+    // fallback; a late refresh must never replace an unsaved teacher edit.
+    if (nextDetail) setL2Edits((current) => clearSavedEdits(current, nextDetail.entries));
   }
 
   async function loadL3(nextSlot = slot) {
@@ -76,7 +86,8 @@ export function MemoryGovernanceWorkspace({ setStatus }: Props) {
     ]);
     setL3Documents(nextDocuments ?? []);
     setL3Detail(nextDetail ?? null);
-    if (nextDetail) setL3Edits((current) => ({ ...current, ...Object.fromEntries(nextDetail.entries.map((entry) => [entry.id, entry.text])) }));
+    // Preserve drafts across readback here for the same reason as L2.
+    if (nextDetail) setL3Edits((current) => clearSavedEdits(current, nextDetail.entries));
   }
 
   async function loadGovernance() {

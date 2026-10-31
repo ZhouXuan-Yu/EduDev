@@ -1,5 +1,36 @@
 # Goal 决策记录
 
+## 2026-11-01 K0文件式访问实施
+
+K0沿现有文件Worker接通遗漏消费者，页权限改用原SQLite一条一致元数据查询；partial仅放行已发表对应页，原件/隐私/取消校验不降级。无新表/依赖/IPC/Agent；K0余项为资源协调和完整Pi链路。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
+2026-11-01 E08：HTML教学文件目录是原账本的只读投影；Office生成器/旧show/get不接管HTML。时间语义明确成功保存回执/恢复核验/未知，不追填旧日期。沿原三版真实Pi夹具续测，不反复生成或重跑已知失败综合；完整来源导航与集中AT继续。
+
+2026-11-01 E08：HTML不另建成果/版本真源，旧版本按需从原修改账本预览，OS查看副本可重建；恢复另存链接当前版本。教学文件HTML目录与全来源导航仍后续实现，不用合成Pi6替代完整AT或真实OS接受。
+
+## 2026-11-01 知识库整体架构优先
+
+按用户最新指示，知识库先冻结并贯通整体架构，固定K0→K1→K2→K3→K4；[架构正文](../architecture/KNOWLEDGE_BASE.md)作为唯一当前知识库顺序。保留现有本地组件，先统一原件访问及任务边界，不重新选一整套RAG产品；未完成单页实验保存本地stash，不混入main。若同真实留出集证明候选引擎更好，再在同层替换。
+
+
+2026-11-01 记忆修复采用最小原组件协调：读回不同值保留输入、相同值释放已保存草稿；既有版本锁保持。5项受影响UI复验，不新增机制或重复综合验收。
+
+2026-11-01 C03：一次综合回归的真实草稿覆盖只修原组件两处加载函数，受影响正式UI专项复验；保留首次整套失败，不重新跑全套掩盖。
+
+2026-11-01 E07：当前文件三方对照沿原review返回可选快照，绝不将快照变成新事实库或批准；后续操作仍实读/重新确认。0付费合成SSE验证真实Pi/文件和owned强退，不新增安全审查。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
+
+## 2026-11-01 答案条目局部疑点与真实回写
+
+新答案册单元冻结 answer-entry-uncertainty.v2，六字段响应按完整试卷标题与原题号记录局部疑点；两遍任一疑点拦截对应条目，未知/歧义范围及原 pageIssues 仍整页拦截。无政策的旧 first_saved 保持原提示/schema。解析器发现的跨页/漏条等问题也进入页面待核与整页检索门禁，不能只相信模型 outcome。既有题面资格、原件/图片/两遍hash、关联身份、教师字段、journal/CAS不放宽；无新依赖、表或IPC。
+
+回退先暂停新批次，并以 OMNI_EDU_BOOK_ANSWER_WRITEBACK=0 停新回写；保留新schema严格读适配、原件、两遍原响应和v6 journal。恢复字段须走未被教师修改快照的CAS，不让未知旧provider执行新单元；无DDL回退，完整回滚未演练。 证据：docs/research/KB_ANSWER_ENTRY_SCOPE_20261101.json。
+
+2026-11-01 E07：只补原受管安装等待接缝；工具运行与审批停止沿已有实际child close/原批准事务验证，不新增取消协议、执行器、依赖或审查层。测试固定已认可免费组件，正式Pi用同pin公开包字节的受控传输与本地合成模型，0新付费。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#stopStagesSlice。
+
+
+2026-11-01 E07：沿Hana adapter、原Pi result/manifest/execution-bound补普通工具错误和有界纯读；使用原SessionExecutionRegistry登记重试等待，不引入第二执行器。缺文件由模型核对目录后再读，固定提示不自动猜替代文件；写入/审批/未知效果仍沿原账本处理。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#ordinaryToolSlice。
+
 2026-11-01 E07：沿原journal、取消修复、task coordinator加单轮在线恢复；复用实际executing计数及配置锁，追加publisher结束栅栏，不加执行器。仅在原账本核对后清runtime失败标记，读回不执行工具或继承批准。 证据：docs/research/AGENT_RECOVERY_E07_20261031.json#recordRecoverySlice。
 
 ## 2026-10-31 原页题面与提示版本

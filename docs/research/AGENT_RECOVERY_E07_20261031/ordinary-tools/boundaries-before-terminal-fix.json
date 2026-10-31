@@ -1,0 +1,82 @@
+{
+  "success": true,
+  "checks": [
+    {
+      "name": "Every named current production manifest has explicit effect/cancel/deadline; unknown registration fails closed",
+      "pass": true
+    },
+    {
+      "name": "Normal result and fifth Pi context pass through, cleanup releases registry and listeners",
+      "pass": true
+    },
+    {
+      "name": "SDK input schema rejects missing/extra/wrong fields before any dispatch or admission",
+      "pass": true
+    },
+    {
+      "name": "Signal-ignoring write times out with unknown effect, never retries, and retains actual registry until real settlement",
+      "pass": true
+    },
+    {
+      "name": "Caller cancellation settles ignoring tool promptly and suppresses late progress across a new run",
+      "pass": true
+    },
+    {
+      "name": "Pre-aborted call dispatches no work and acquires no stale registry",
+      "pass": true
+    },
+    {
+      "name": "Synchronous tool throw and late rejection are drained without wedging the race",
+      "pass": true
+    },
+    {
+      "name": "Teacher waiting pauses active deadline via existing budget; cancellation remains effective during the wait",
+      "pass": true
+    },
+    {
+      "name": "Safe web network failure retries once with a distinct internal attempt ID; same logical call is admitted only once",
+      "pass": true
+    },
+    {
+      "name": "429 exhausts exactly two attempts; authentication/401/403/permission never retry",
+      "pass": true
+    },
+    {
+      "name": "Local write, parsing cache and image upload never automatically retry their transient errors",
+      "pass": true
+    },
+    {
+      "name": "Same-call repetition executes once; changed args conflict; a new run has independent identity",
+      "pass": true
+    },
+    {
+      "name": "Process-wide resource fence blocks another session writer after timeout until actual work settles, with zero blocked delivery",
+      "pass": true
+    },
+    {
+      "name": "Concurrent safe reads share a lock; a same-resource writer is refused while reads are pending",
+      "pass": true
+    },
+    {
+      "name": "Attempt persistence failure prevents a second safe-read dispatch and drains registry",
+      "pass": true
+    },
+    {
+      "name": "Malformed and oversized output is rejected; public attempts refuse private fields and fake success",
+      "pass": true
+    },
+    {
+      "name": "Typed projection records attempts under only matching tool ID and preserves failure across terminal events",
+      "pass": true
+    },
+    {
+      "name": "A blocked local read rechecks the resource once after settlement and is admitted only when dispatchable",
+      "pass": true
+    },
+    {
+      "name": "Stop during a resource-busy retry wait delivers no local read or admission",
+      "pass": true
+    }
+  ],
+  "scope": "Actual execution-bound and native timers/registry/SDK schema; synthetic tools, no provider or UI claim"
+}
