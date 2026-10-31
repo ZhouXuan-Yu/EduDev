@@ -1,12 +1,12 @@
 import {createHash} from 'node:crypto';
 import type {Sql} from '../session-state';
-import {DELIVERY_CHECK_SCHEMA,CHECK_CLASSES,validVisualEvidence,type DeliveryCheckReport,type DeliveryCheckInput} from '../../../shared/xiaozhi-delivery-checks';
+import {DELIVERY_CHECK_SCHEMA,CHECK_CLASSES,validVisualEvidence,validRequirementEvidence,validFileCheckRules,type DeliveryCheckReport,type DeliveryCheckInput} from '../../../shared/xiaozhi-delivery-checks';
 const hash=(v:string)=>createHash('sha256').update(v).digest('hex');
 function parse(row:Record<string,unknown>):DeliveryCheckReport{
  const text=String(row.report_json);if(text.length>512000||hash(text)!==row.report_sha256)throw Error('configuration');const value=JSON.parse(text) as DeliveryCheckReport;
- if(Number(row.schema_version)!==1||value.schemaVersion!==DELIVERY_CHECK_SCHEMA||value.id!==row.id||value.sessionId!==row.conversation_id||!Array.isArray(value.files)||value.files.length>8
+ if(Number(row.schema_version)!==1||value.schemaVersion!==DELIVERY_CHECK_SCHEMA||value.id!==row.id||value.sessionId!==row.conversation_id||!validRequirementEvidence(value)||!Array.isArray(value.files)||value.files.length>8
   ||!['passed','failed','partial','cancelled'].includes(value.state)||value.files.some(f=>!Array.isArray(f.checks)||f.checks.some(c=>!CHECK_CLASSES.includes(c.kind)||!['passed','failed','unchecked','not_applicable'].includes(c.state))
-   ||f.visualEvidence!==undefined&&(!Array.isArray(f.visualEvidence)||f.visualEvidence.length>64||!f.visualEvidence.every(validVisualEvidence))))throw Error('configuration');
+   ||f.rules!==undefined&&!validFileCheckRules(f.rules)||f.visualEvidence!==undefined&&(!Array.isArray(f.visualEvidence)||f.visualEvidence.length>64||!f.visualEvidence.every(validVisualEvidence))))throw Error('configuration');
  return value;
 }
 /** Rebuildable inspection receipts in the existing SQLite. Never a file-effect authority. */

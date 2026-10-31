@@ -1,5 +1,13 @@
 # Goal 决策记录
 
+要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
+
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+采用已有TaskView快照+声明规则引用，不增第二要求编辑器、真源或审批。实际检查finding附checkId，coverage从真实结果派生；未关联要求逐项展示。digest排除执行进度，包含任务/要求/来源；同版本不同任务不能复用。全文语义仍未验证，完整E06继续部分实现。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice；日常进度docs/goal/WORK_PROGRESS.md。
+
 ## 2026-10-31 E06文字遮挡与系统字形（第七切片）
 
 复用原Office检查器增加系统WPF字形覆盖与实际Z顺序完整矩形遮挡，失败归原visual类和原Pi有限修复，不另设Runtime/表/IPC。实际PNG仍是视觉查看依据，独立整形不能覆盖Office公式/嵌入字体。固定脚本以进程级-File运行以避编码命令长度限制，原只读/Job/清理保持。docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#layoutSlice。

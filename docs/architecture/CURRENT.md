@@ -1,5 +1,13 @@
 # 当前架构
 
+要求关联整合收尾：正常合并origin/main ad06954为4cc627b，12处Markdown冲突保留双方完整记录，本切片生产/脚本与0018ab3一致，无生产冲突。合并后build/type、240/240组件exit0；207综合和正式Pi旅程归整合前0018ab3，未重复全套。最终构建另含上游题册关联/非习题页处理，指纹及边界见AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice.finalIntegration；D盘日常/安装包仍未更新。
+
+## 2026-10-31 E06教师要求与检查依据（第八切片）
+
+沿现task-state→delivery-checks→typed preload→PiDeliveryCheck/PiRequirementCoverage贯通要求关联。来源验证复用sources(sql,row.doc)，报告v1可选扩展兼容旧记录，无新业务表/IPC/运行时。文件字节与完整要求上下文分别失效；旧报告保留原快照。
+
+证据docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#requirementsSlice；日常进度docs/goal/WORK_PROGRESS.md。
+
 ## 2026-10-31 五三题册与独立答案册第一切片
 
 已按用户指定在隔离数据根导入主书.pdf（62页、198230194B）和答案.pdf（31页、123742446B）。现可从资料详情关联两份PDF，保存原件版本和修订号；答案册仅原页转录、不抽新题，关联不授权上传。独立排队复用同一受限OCR Worker，不能称为同时推理。封面无抽题，明确标记的广告页在规则抽题阶段跳过，AI提示排除非习题页与宣传缩略例题；保留原PDF/OCR回执，不按首尾页位置丢弃真实题目。

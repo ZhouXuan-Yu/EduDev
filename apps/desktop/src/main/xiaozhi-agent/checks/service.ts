@@ -1,4 +1,6 @@
 import fs from 'node:fs/promises';
+import {requirementCoverage,validateRequirementBindings} from './requirements';
+import type {DeliveryRequirements} from '../../../shared/xiaozhi-delivery-checks';
 import {constants} from 'node:fs';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
@@ -23,9 +25,10 @@ const errorCode=(error:unknown):Extract<DeliveryCheckResult,{ok:false}>['error']
 export type CandidateBytes={path:string;bytes:Buffer;version:string;candidate:NonNullable<FileCheckReport['candidate']>};
 /** One inspected bundle at a time. Parsing and dynamic DOM run in owned isolated processes. */
 export function createDeliveryChecks(options:{state:ReturnType<typeof createInspectionState>;dataRoot:string;
- resolve:(id:string)=>Promise<WorkspaceLease>;requirements:(id:string)=>Promise<number|null>;
+ resolve:(id:string)=>Promise<WorkspaceLease>;requirements:(id:string)=>Promise<number|null|DeliveryRequirements>;
  candidateStatus?:(sessionId:string,file:FileCheckReport)=>Promise<{current:boolean;published:boolean}>}){
  let tail=Promise.resolve<unknown>(undefined),slots=0,closing=false;const controllers=new Set<AbortController>();const visuals=createVisualEvidenceCache(options.dataRoot);
+ async function requirementsFor(id:string){const value=await options.requirements(id);return{version:typeof value==='number'?value:value?.version??null,context:typeof value==='object'&&value?structuredClone(value):null};}
  async function capture(lease:WorkspaceLease,relative:string){
   const target=approvedFile(lease.path,relative),before=await fs.lstat(target);if(!before.isFile()||before.isSymbolicLink()||before.nlink!==1)throw Error('permission_denied');
   if(before.size>16*1048576)throw Error('too_large');const opened=await fs.open(target,constants.O_RDONLY|(constants.O_NOFOLLOW||0));
@@ -37,7 +40,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
   }finally{await opened.close();}
  }
  async function refresh(report:DeliveryCheckReport):Promise<DeliveryCheckReport>{
-  const lease=await options.resolve(report.sessionId),requirements=await options.requirements(report.sessionId);const contextStale=lease.version!==report.workspaceVersion||requirements!==report.requirementsVersion;let stale=contextStale;
+  const lease=await options.resolve(report.sessionId),requirements=await requirementsFor(report.sessionId);const contextStale=lease.version!==report.workspaceVersion||requirements.version!==report.requirementsVersion||requirements.context?.digest!==report.requirements?.digest;let stale=contextStale;
   const files:FileCheckReport[]=[];
   for(const file of report.files){
    let changed=contextStale;
@@ -46,7 +49,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
    if(changed){stale=true;files.push({...file,state:'stale',numbers:[],facts:[],checks:file.checks.map(c=>({...c,state:'unchecked',code:'inspection_stale',message:'文件、工作区或要求版本已变化；旧检查不能证明当前内容。'}))});}else files.push(file);
   }
   if(stale)for(const file of files)if(file.state!=='stale'){file.checks=file.checks.map(c=>c.kind==='consistency'?{...c,state:'unchecked',code:'counterpart_changed',message:'整包其他文件或要求已变化，一致性需要重新检查。'}:c);file.state=fileCheckState(file.checks);}
-  return{...report,files,state:stale?'stale':report.state};
+  return{...report,contextCurrent:!contextStale,files,...(stale&&report.requirementCoverage?{requirementCoverage:report.requirementCoverage.map(c=>({...c,state:'unchecked' as const,evidence:c.evidence.map(e=>({...e,state:'unchecked' as const}))}))}:{}),state:stale?'stale':report.state};
  }
  async function inspect(raw:unknown,signal:AbortSignal,owner?:{runId:string;callId:string;scope?:string;current:()=>boolean},candidates?:CandidateBytes[]):Promise<DeliveryCheckResult>{
   if(!validDeliveryCheckInput(raw))return{ok:false,error:'invalid_input'};let input:DeliveryCheckInput=raw;if(closing)return{ok:false,error:'unavailable'};if(slots>=4)return{ok:false,error:'busy'};
@@ -58,7 +61,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
    const current=()=>{signal.throwIfAborted();if(closing||owner&&!owner.current())throw Error('cancelled');};
    const files:FileCheckReport[]=[];let report:DeliveryCheckReport|undefined;
    try{
-    current();await options.state.migrate();const lease=await options.resolve(input.sessionId),requirements=await options.requirements(input.sessionId);current();
+    current();await options.state.migrate();const lease=await options.resolve(input.sessionId),requirementState=await requirementsFor(input.sessionId),requirements=requirementState.version;current();
     if(input.workspaceVersion!==undefined&&input.workspaceVersion!==lease.version||input.requirementsVersion!==undefined&&input.requirementsVersion!==requirements)throw Error('changed');
     const scope=hash([input.sessionId,owner?.scope||owner?.runId||input.requestId,requirements??''].join(':'));
     const previousCandidate=supplied?await options.state.candidate(scope):null;
@@ -68,9 +71,10 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
      if(missing.length>newPaths.length)throw Error('changed');
      input={...input,files:input.files.map(f=>{const prior=priorFiles.find(p=>p.path===f.path)||missing[newPaths.findIndex(n=>n.path===f.path)];return prior?.rules?{...f,rules:prior.rules}:f;})};
     }
-    const policySha256=hash(JSON.stringify({files:input.files.map(f=>({path:f.path,rules:f.rules||{}})),requirements}));
+    validateRequirementBindings(input,requirementState.context);
+    const policySha256=hash(JSON.stringify({inspector:'requirements.1',requirementDigest:requirementState.context?.digest,files:input.files.map(f=>({path:f.path,rules:f.rules||{}})),requirements}));
     report={schemaVersion:DELIVERY_CHECK_SCHEMA,id:'xicheck_'+hash(randomUUID()+input.requestId),sessionId:input.sessionId,runId:owner?.runId||null,callId:owner?.callId||null,
-     workspaceVersion:lease.version,requirementsVersion:requirements,policySha256,scope,createdAt:new Date().toISOString(),state:'partial',files,repairAttempts:{},...(supplied?{candidate:true}:{})};
+     workspaceVersion:lease.version,requirementsVersion:requirements,...(requirementState.context?{requirements:requirementState.context}:{}),policySha256,scope,createdAt:new Date().toISOString(),state:'partial',files,repairAttempts:{},...(supplied?{candidate:true}:{})};
     const prior=supplied?previousCandidate?.report:await options.state.latest(scope);
     if(supplied&&prior&&prior.policySha256===policySha256&&prior.workspaceVersion===lease.version&&prior.requirementsVersion===requirements&&supplied.length===prior.files.length
      &&supplied.every(c=>{const p=prior.files.find(f=>f.path===c.path);return p?.candidate?.id===c.candidate.id&&p.candidate.revision===c.candidate.revision&&p.sha256===hash(c.bytes);})
@@ -90,7 +94,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
      current();const format=path.extname(file.path).slice(1).toLowerCase();let row:FileCheckReport={path:file.path,fileVersion:null,sha256:null,size:null,format,checks:[],renderedPages:[],numbers:[],state:'partial'};
      try{
       const candidate=supplied?.find(c=>c.path===file.path),snapshot=candidate?{bytes:candidate.bytes,fileVersion:candidate.version,sha256:hash(candidate.bytes),size:candidate.bytes.length}:await capture(lease,file.path);current();if(file.version!==undefined&&file.version!==snapshot.fileVersion)throw Error('changed');
-      row={...row,fileVersion:snapshot.fileVersion,sha256:snapshot.sha256,size:snapshot.size,...(candidate?{candidate:candidate.candidate}:{})};
+      row={...row,...(file.rules?{rules:structuredClone(file.rules)}:{}),fileVersion:snapshot.fileVersion,sha256:snapshot.sha256,size:snapshot.size,...(candidate?{candidate:candidate.candidate}:{})};
       const request={schemaVersion:STRUCTURE_SCHEMA,requestId:`xicheckreq_${randomUUID()}`,name:path.basename(file.path),bytes:snapshot.bytes};
       const fail=(error:string):StructureResult=>({schemaVersion:STRUCTURE_SCHEMA,requestId:request.requestId,ok:false,error});
       const parsed=await runLocalUtility({entry:'inspection-worker.js',serviceName:'小智交付文件检查',request,timeout:15000,signal,valid:(v):v is StructureResult=>validStructureResult(v,request.requestId),fail});current();
@@ -132,12 +136,13 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
      for(const kind of CHECK_CLASSES.filter(k=>k!=='consistency'))if(!row.checks.some(c=>c.kind===kind))row.checks.push({kind,state:'unchecked',code:'not_checked',message:'此项尚未取得可验证结果。'});
      files.push(row);
     }
-    current();if((await options.resolve(input.sessionId)).version!==lease.version||await options.requirements(input.sessionId)!==requirements)throw Error('changed');
+    current();if((await options.resolve(input.sessionId)).version!==lease.version||JSON.stringify(await requirementsFor(input.sessionId))!==JSON.stringify(requirementState))throw Error('changed');
     evaluateConsistency(files);for(const file of files)file.state=fileCheckState(file.checks);
     if(prior&&!supplied){const edited=files.some(f=>prior.files.find(p=>p.path===f.path)?.sha256!==f.sha256);
      if(edited)for(const kind of CHECK_CLASSES)if(prior.files.some(f=>f.checks.some(c=>c.kind===kind&&c.state==='failed')))report.repairAttempts[kind]=(report.repairAttempts[kind]||0)+1;
     }
-    report.state=files.some(f=>f.state==='failed')?'failed':files.some(f=>f.state==='partial')?'partial':'passed';current();await options.state.put(report,input);current();return{ok:true,report};
+    report.requirementCoverage=requirementCoverage(report,input);
+    report.state=files.some(f=>f.state==='failed')?'failed':files.some(f=>f.state==='partial')?'partial':report.requirements?.criteria.length?'partial':'passed';current();await options.state.put(report,input);current();return{ok:true,report};
    }catch(error){
     if(report&&(signal.aborted||closing||owner&&!owner.current())){report.state='cancelled';await options.state.cancel(report,input).catch(()=>undefined);}
     return{ok:false,error:signal.aborted?(signal.reason==='timeout'?'timeout':'cancelled'):errorCode(error)};

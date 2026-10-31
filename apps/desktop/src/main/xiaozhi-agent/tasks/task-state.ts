@@ -146,6 +146,10 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    await work.run('INSERT INTO app_settings(key,value_json,updated_at) VALUES(?,?,?)',[goalTaskKey(goalId),JSON.stringify({schema:TASK_SCHEMA,taskId:id}),stamp()]);return saved;
   });},
   async latest(sessionId:string){if(!validTaskOwner({sessionId,runId:'validation',generation:1}))throw Error('invalid_input');const id=await latestId(sql,sessionId);if(!id)return null;const row=await read(sql,id);if(!row||row.doc.view.sessionId!==sessionId)throw Error('task_corrupt');return clone(row.doc.view);},
+  async requirements(sessionId:string){
+   if(!validTaskOwner({sessionId,runId:'validation',generation:1}))throw Error('invalid_input');const id=await latestId(sql,sessionId);if(!id)return null;
+   const row=await read(sql,id);if(!row||row.doc.view.sessionId!==sessionId)throw Error('task_corrupt');await sources(sql,row.doc);return clone(row.doc.view);
+  },
   async create(owner:TaskOwner,messageId:string,commandId:string){
    if(!validTaskOwner(owner))throw Error('invalid_input');
    const initial=await source(sql,owner.sessionId,messageId),text=await options.sanitize(initial.text);if(!taskText(text,64000))throw Error('invalid_input');
