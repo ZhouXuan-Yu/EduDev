@@ -655,6 +655,15 @@
       "Daily D runtime and installer not updated"
     ],
     "dailyRuntimeUpdated": false,
-    "installerUpdated": false
+    "installerUpdated": false,
+    "lastIntegration": {
+      "main": "001093f",
+      "merge": "ab738bfe7f56beb214deb51d8a123cd37fd35d3b",
+      "conflicts": 13,
+      "scope": "Only Markdown architecture/status additions on main; all complete sides retained. No desktop source/scripts changed after source37bd444. Original final build hashes re-read and matched exactly; no redundant full test/build rerun for docs-only merge.",
+      "buildRecheckedByHash": true,
+      "realPaidRequests": 0,
+      "fullStageATStillPending": true
+    }
   }
 }
