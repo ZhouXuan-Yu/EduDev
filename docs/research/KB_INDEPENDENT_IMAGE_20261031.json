@@ -312,5 +312,101 @@
     "dailyRuntimeUpdated": false,
     "installerPublished": false,
     "git": "Normal merge/push only; remote consistency recorded after final documentation commit"
+  },
+  "latestIntegration": {
+    "sourceSha": "057c4892c655f956ddbabb0171aa54ccd775a267",
+    "originMain": "de9dd389d79ee98074381dd2a801f3ec65695f56",
+    "merge": "Normal merge; all14 Markdown insertion conflicts retain both KB and E06 sections; no production conflicts",
+    "gates": {
+      "build": {
+        "command": "npm.cmd run build",
+        "exit": 0
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exit": 0
+      },
+      "focused": {
+        "command": "$env:OMNI_EDU_REAL_IMAGE_RECEIPT=Join-Path $env:TEMP 'omni-real-image-page-QtstIt'; node --experimental-transform-types --test --test-concurrency=1 scripts/education/kb-image-ocr-boundaries.mjs scripts/education/kb-image-consistency-boundaries.mjs scripts/education/kb-ai-page-boundaries.mjs",
+        "passed": 16,
+        "failed": 0,
+        "skipped": 0,
+        "pageChecksInsideOneEntry": 22,
+        "exit": 0
+      },
+      "e06": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+        "checks": 11,
+        "exit": 0
+      },
+      "visual": {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-visual-smoke.mjs",
+        "checks": 8,
+        "exit": 0
+      },
+      "journey": {
+        "command": "node scripts/education/kb-restored-text-journey.mjs --image",
+        "checks": 6,
+        "rendererErrors": 0,
+        "exit": 0,
+        "privateReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-restored-text-xsW8lV\\report.json",
+        "queryMilliseconds": 179,
+        "rerankMilliseconds": 137,
+        "candidates": 4,
+        "sqliteBase64Bytes": 0,
+        "controlledArchiveCalls": 2,
+        "controlledPiCalls": 3,
+        "paidCalls": 0
+      }
+    },
+    "logPrefix": "apps/desktop/test-results/kb-image-latest-",
+    "earlierFull207Source": "bfd754c97e20d99c5a2dad455430c4626aea0529",
+    "earlierFull207Repeated": false,
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "total": 45,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "critical": 0,
+      "dependencyChanges": 0
+    },
+    "fingerprints": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3185587,
+        "sha256": "0b8cd15e61ac01970a91f87d28f6c98c27070969dc6aee0bd281ff87fa848ced"
+      },
+      {
+        "path": "apps/desktop/out/main/retrieval-worker.js",
+        "bytes": 62472,
+        "sha256": "559902e79451f5da50fab7585cd715d9ee5826e2c8b46f091489c03c6d86c150"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 34761,
+        "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-Ch2HPleZ.js",
+        "bytes": 7175291,
+        "sha256": "bf55acd1f91bed2e4de7432c365ccf1e1ccfd3f972657565ef207844b3ce59c4"
+      }
+    ],
+    "newPaidCalls": 0,
+    "dailyRuntimeUpdated": false,
+    "installerPublished": false,
+    "performanceBoundary": "Observed179ms/137ms on four controlled documents. Earlier193ms is another run, not strict A/B or40GB/P95 acceptance.",
+    "remaining": [
+      "40GB heterogeneous long run, 100k/1M chunks, natural Recall/P95 and peak memory",
+      "Diagram/cross-page/answer-book quality and teacher-editable restored textbook body",
+      "A mixed real page with a figure remains page-review: its AI text is not indexed, while three eligible bank questions and original OCR remain available",
+      "Legacy ready images without OCR receipt remain on old image path; old failed images need local retry, no fake OCR bypass",
+      "Previous inline image migration and managed installer/daily D runtime acceptance",
+      "Existing 45 dependency advisories"
+    ]
   }
 }
