@@ -1,0 +1,42 @@
+{
+  "layer": "offline_layout_proposal_not_production",
+  "checks": [
+    "chat layout 1366",
+    "students layout 1366",
+    "settings layout 1366",
+    "chat layout 1920",
+    "students layout 1920",
+    "settings layout 1920",
+    "Draft stays intact across pages and suggestions never overwrite",
+    "File notification does not auto-open; explicit open and Escape return focus",
+    "Student identity retained across tabs and replaced on student switch",
+    "Advanced settings proposal opens by keyboard and remains marked pending",
+    "Narrow 840 and 700 keep composer and footer reachable",
+    "150 percent equivalent CSS viewport and visible focus",
+    "Reduced motion and collapsed navigation"
+  ],
+  "errors": [],
+  "requests": [],
+  "screenshots": [
+    "chat-1366.png",
+    "students-1366.png",
+    "settings-1366.png",
+    "chat-1920.png",
+    "students-1920.png",
+    "settings-1920.png",
+    "students-selected.png",
+    "settings-advanced.png",
+    "chat-840.png",
+    "chat-700.png",
+    "chat-css911x512.png",
+    "collapsed-reduced-motion.png"
+  ],
+  "success": true,
+  "viewportScope": "CSS viewports; 911x512 approximates reduced CSS area at 150% of 1366x768, not native OS scaling",
+  "artifactHashes": {
+    "index.html": "66b8d0442eda8dafbcc132da1f424398346318520a7658b199f102ba7e60efa1",
+    "review.css": "65eb70dcc0b418fc0e93397a3a8e3e5475145d07280f2d0ccfc90264395ccd8a",
+    "review.js": "aa71e521f03cd6b3a137f780515445898186df7ca3278ddaca337ce30bd60339",
+    "check.mjs": "c0426f10429d9b17a7d2ce658f207cec4087b72adeb5df84c2ca51f62032d473"
+  }
+}
