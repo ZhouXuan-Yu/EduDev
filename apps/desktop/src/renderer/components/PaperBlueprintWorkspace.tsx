@@ -5,6 +5,7 @@ import {PaperReviewPanel} from './PaperReviewPanel';
 import {PaperExportEntry} from './PaperExportEntry';
 import {PaperComparePanel} from './PaperComparePanel';
 import {usePaperDraftHandoff} from './paper-ui/usePaperDraftHandoff';
+import {DisclosureCard} from './ui/DisclosureCard';
 import {PaperBlueprintEditor} from './paper-ui/PaperBlueprintEditor';
 import {PaperWorkflowNavigation} from './paper-ui/PaperWorkflowNavigation';
 import {paperDeliveryAllowed, type PaperStage} from './paper-ui/paper-workflow';
@@ -102,10 +103,26 @@ export function PaperBlueprintWorkspace(){
       <div><dt>题数</dt><dd>{blueprint.sections.reduce((n,s)=>n+s.count,0)}</dd></div>
       <div><dt>分值</dt><dd>{actualPoints} / {blueprint.totalPoints}</dd></div></dl>
       <p>{dirty?'蓝图有未保存修改，当前快照不能交付':view?{pending:'待教师逐题核对',confirmed:'整卷快照已确认，文件需另行导出',rejected:'已拒绝，保留原记录'}[view.state]:'完善蓝图后生成预览'}</p></section>
-   <details className="edu-paper-history" data-testid="paper-history"><summary>已保存的组卷记录（{papers.length}）</summary>
-      <div className="edu-paper-history-list">{papers.map(p=>
-      <Button variant="secondary" data-testid="paper-saved" data-paper-id={p.id} key={p.id} isDisabled={busy||reading} onPress={()=>requestOpen(p)}>{p.title} · {p.count}题 · {{pending:'待核对',confirmed:'已确认',rejected:'已拒绝'}[p.state]}</Button>)}{!loading&&!papers.length&&<p>暂无组卷记录。</p>}</div></details>
+   <DisclosureCard
+    className="edu-paper-history"
+    data-testid="paper-history"
+    title={`已保存的组卷记录（${papers.length}）`}
+   >
+    <div className="edu-paper-history-list">
+     {papers.map(p=><Button
+      variant="secondary"
+      data-testid="paper-saved"
+      data-paper-id={p.id}
+      key={p.id}
+      isDisabled={busy||reading}
+      onPress={()=>requestOpen(p)}
+     >{p.title} · {p.count}题 · {{pending:'待核对',confirmed:'已确认',rejected:'已拒绝'}[p.state]}</Button>)}
+     {!loading&&!papers.length&&<p>暂无组卷记录。</p>}
+    </div>
+   </DisclosureCard>
   </aside></div>
-  <details className="edu-paper-history"><summary>比较已保存试卷</summary><PaperComparePanel papers={papers} loading={reading||busy}/></details>
+  <DisclosureCard className="edu-paper-history" data-testid="paper-compare-details" title="比较已保存试卷">
+   <PaperComparePanel papers={papers} loading={reading||busy}/>
+  </DisclosureCard>
  </div>;
 }

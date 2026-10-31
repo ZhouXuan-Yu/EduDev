@@ -5,6 +5,7 @@ import './material-ai.css';
 import {MaterialAiPagePanel} from './MaterialAiPagePanel';
 import {MaterialBookPanel} from './MaterialBookPanel';
 import type {MaterialBookPairView} from '../../../shared/material-book-pair';
+import {DisclosureCard} from '../ui/DisclosureCard';
 
 const errors:Record<string,string>={page_restoration_disabled:'原页还原暂时停用，已存的题目和还原结果仍可查看。',ocr_unavailable:'本地OCR运行包不可用，未发送图片。请修复安装后重新选择此范围。',ocr_failed:'本地OCR未完成，未发送这一项。可对照原件处理后重新选择范围。',font_unavailable:'本机排版字体不可用，尚未发送题图。',font_missing_glyph:'题目有当前字体无法显示的字符，请补齐字体后重新整理。',disk_full:'保存题图的磁盘空间不足，批次已停止。',timeout:'本地整理超时，请拆小范围后重试。',busy:'本地处理器忙，请稍后重试。',index_busy:'另一个进程正在保存题图，请稍后重试。',ai_omitted_questions:'AI遗漏了本地识别出的题号，已阻止标为完成。请重新选择此范围建立新批次，或对照原件补齐题本。',unified_settings:'请在小智模型设置修改统一DeepSeek配置。',configuration:'请先配置小智的DeepSeek；配置变化后需建立新批次重新授权。',storage_unavailable:'Windows安全存储不可用，未保存密钥，也未发送资料。',conflict:'配置已变化，请刷新后重新操作。',source_changed:'原件或正文已变化，请重新收录后建立新批次。',source_incomplete:'所选范围存在未完成页或缺失正文，请先完成本地收录。',unit_too_large:'所选单页文字过多，请先拆分资料。',privacy_blocked:'检测到个人信息或脱敏会改变图片内容，未发送这一项。请在本地处理并移除个人信息。',unsupported:'本格式暂不能做原图对照，可使用正文整理，或转换为PDF。',budget_exhausted:'调用额度已用完，未继续发送。请检查结果后建立新批次。',authentication:'模型账户凭证无效，请检查配置后新建批次。',rate_limit:'模型服务限流，结果保留，请稍后决定是否重发。',outcome_unknown:'请求结果未知，已停止自动发送；重发可能重复计费。',invalid_response:'模型结果未通过结构校验，未作为完整题目入库。',provider_rejected:'模型拒绝了请求，请检查账户和模型。'};
 const errorText=(value:unknown)=>{const message=value instanceof Error?value.message:String(value);return Object.entries(errors).find(([key])=>message.includes(key))?.[1]||'操作未完成，请刷新状态后重试。';};
@@ -26,7 +27,7 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
   async function create(){if(dirtyRef.current)return;setBusy(true);setError('');setNotice('');try{await window.omniEdu!.createMaterialAiBatch({schemaVersion:MATERIAL_AI_SCHEMA,resourceId:resource.id,version:resource.contentHash,settingsRevision:settings!.revision,start,count,maxCalls,images,cloudConsent:true,publicMaterial:true});setConsent(false);setPublic(false);setBatchOffset(0);const rows=await window.omniEdu!.getMaterialAiBatches(resource.id);if(!dirtyRef.current)setBatches(rows);setNotice('已启动本批次，结果自动进入题本。可继续使用小智或暂停。');}catch(e){setError(errorText(e));}finally{setBusy(false);}}
   async function action(id:string,action:AiAction['action']){if(dirtyRef.current&&action!=='pause')return;setBusy(true);setError('');try{await window.omniEdu!.controlMaterialAiBatch({schemaVersion:MATERIAL_AI_SCHEMA,batchId:id,action,...(action==='retry_unknown'?{acceptDuplicateCharge:true as const}:{})});const rows=await window.omniEdu!.getMaterialAiBatches(resource.id,batchOffset);if(!dirtyRef.current)setBatches(rows);}catch(e){setError(errorText(e));}finally{setBusy(false);}}
   const valid=Number.isSafeInteger(start)&&start>=1&&Number.isSafeInteger(count)&&count>=1&&count<=100&&Number.isSafeInteger(maxCalls)&&maxCalls>=2*count&&maxCalls<=400;
-  return <><MaterialBookPanel resource={resource} onChange={bookChanged}/><details className="material-ai" data-testid="material-ai-panel"><summary>AI深度整理（可选）</summary>{draftDirty&&<p role="note" data-testid="material-ai-unsaved">有临时校对文字，批次列表暂时保留当前显示。清除暂存文字后再切换批次或启动新整理；后台处理继续运行。</p>}
+  return <><MaterialBookPanel resource={resource} onChange={bookChanged}/><DisclosureCard className="material-ai" data-testid="material-ai-panel" title="AI深度整理（可选）">{draftDirty&&<p role="note" data-testid="material-ai-unsaved">有临时校对文字，批次列表暂时保留当前显示。清除暂存文字后再切换批次或启动新整理；后台处理继续运行。</p>}
     {book?.role?.kind==='answers'&&<p data-testid="material-ai-answer-role">本文件是独立答案册：两遍对照原图还原答案原文，保留章节、题号和解析；本批次不生成新题。已关联题册会在后台匹配已知答案，有疑点时保留候选。</p>}
     <p>按所选范围分析题目、答案与解析，再对原文复核。完整文字题和已保留图义的 Word 题自动定稿入题本，正式组卷时集中确认；AI结果仍可编辑。缺图、跨页或两次结果不一致的题保留待整理。</p>
     <fieldset disabled={busy||draftDirty}><legend>统一 DeepSeek 模型</legend>
@@ -55,5 +56,5 @@ export function MaterialAiPanel({resource,onDraftDirty}:{resource:TeacherResourc
       {batch.units.some(u=>u.error)&&<ul>{batch.units.filter(u=>u.error).slice(0,5).map(u=><li key={u.ordinal}>第{batch.start+u.ordinal-1}项：{errorText(u.error)}</li>)}</ul>}
     </article>)}
     {(batchOffset>0||batches.length===10)&&<div className="toolbar-row"><button disabled={busy||draftDirty||batchOffset===0} onClick={()=>setBatchOffset(Math.max(0,batchOffset-10))}>前10个批次</button><span>第{Math.floor(batchOffset/10)+1}页，进行中批次优先</span><button disabled={busy||draftDirty||batches.length<10} onClick={()=>setBatchOffset(batchOffset+10)}>后10个批次</button></div>}
-  </details></>;
+  </DisclosureCard></>;
 }

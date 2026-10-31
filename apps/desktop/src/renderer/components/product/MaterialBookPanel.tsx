@@ -2,6 +2,7 @@ import {useEffect,useState} from 'react';
 import type {TeacherResource} from '../../../shared/contracts';
 import {MATERIAL_BOOK_PAIR_SCHEMA,type MaterialBookPairView} from '../../../shared/material-book-pair';
 import {MATERIALS_SCHEMA,type MaterialPage} from '../../../shared/materials';
+import {DisclosureCard} from '../ui/DisclosureCard';
 const errorText=(error:unknown)=>{const code=error instanceof Error?error.message:String(error);return code.includes('answer_already_processed')?'这份答案册已有抽题、未完成AI任务或其他题册的记录。请先处理原记录；同一题册已完成的答案转录可以恢复关联。':code.includes('conflict')?'关联已变化或这份资料已被其他题册使用，请刷新后重试。':code.includes('source_changed')?'原文件版本已变化，请刷新资料后重新关联。':'无法完成关联，请稍后重试。';};
 export function MaterialBookPanel({resource,onChange}:{resource:TeacherResource;onChange:(view:MaterialBookPairView)=>void}){
  const [view,setView]=useState<MaterialBookPairView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
@@ -12,7 +13,7 @@ export function MaterialBookPanel({resource,onChange}:{resource:TeacherResource;
   const v=await window.omniEdu!.setMaterialBookPair({schemaVersion:MATERIAL_BOOK_PAIR_SCHEMA,action:unlink?'unlink':'link',resourceId:resource.id,version:resource.contentHash,revision:view.revision,...(!unlink?{answerId:answer!.id,answerVersion:answer!.contentHash}:{})});setView(v);onChange(v);setNotice(unlink?'已解除关联；原文件和历史整理记录保留。':'已关联。答案册只还原原文，整理后会后台匹配；题面或答案有疑点时保留候选，不覆盖题本。');
  }catch(e){setError(errorText(e));}finally{setBusy(false);}}
  if(!/\.pdf$/i.test(resource.originalFileName))return null;
- return <details className="material-ai" data-testid="material-book-panel"><summary>独立答案册关联</summary>
+ return <DisclosureCard className="material-ai" data-testid="material-book-panel" title="独立答案册关联">
   {!view&&!error&&<p role="status">正在读取关联…</p>}
   {view?.role?<><p data-testid="material-book-linked">题册：{view.questionTitle} · 答案册：{view.answerTitle}</p><p>本文件角色：{view.role.kind==='answers'?'答案册（仅转录，不抽题）':'题册'}。关联不等于逐题匹配，AI和联网补答授权保持独立。</p>{!view.current&&<p role="alert">关联中的原件版本已变化，需要解除后重新关联。</p>}{view.role.kind==='questions'?<button className="secondary-action" data-testid="material-book-unlink" disabled={busy} onClick={()=>void save(true)}>解除关联</button>:<p>需要解除时，请打开对应题册操作。</p>}</>:view&&<fieldset disabled={busy}><legend>为本题册选择已收录的答案 PDF</legend>
    <label>按文件名查找<input data-testid="material-book-query" value={query} maxLength={128} onChange={e=>setQuery(e.target.value)}/></label><button className="secondary-action" data-testid="material-book-search" onClick={()=>void search()}>查找答案册</button>
@@ -20,5 +21,5 @@ export function MaterialBookPanel({resource,onChange}:{resource:TeacherResource;
    <p>只保存两份原件的关联，不上传资料。封面、目录、广告不作为习题；答案原文另行整理，后续匹配须核对章节和题号。</p><button className="primary-action" data-testid="material-book-link" disabled={busy||!selection} onClick={()=>void save()}>关联答案册</button>
   </fieldset>}
   {busy&&<p role="status">正在保存或查找…</p>}{notice&&<p role="status">{notice}</p>}{error&&<><p role="alert">{error}</p><button disabled={busy} onClick={()=>{setError('');void window.omniEdu!.getMaterialBookPair(resource.id).then(v=>{setView(v);onChange(v);}).catch(e=>setError(errorText(e)));}}>刷新关联</button></>}
- </details>;
+ </DisclosureCard>;
 }

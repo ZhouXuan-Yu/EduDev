@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState} from 'react';
+import {DisclosureCard} from '../ui/DisclosureCard';
 import {Button,Pagination,SearchField} from '@heroui/react';
 import {FileText,FolderPlus,Plus,RefreshCw,Square} from 'lucide-react';
 import {ResourceTable} from '../../ui-system/ResourceTable';
@@ -72,15 +73,15 @@ export function MaterialsWorkspace({sourceView,onAsk}:{sourceView?:MaterialSourc
    <Button variant="ghost" onPress={()=>{void load();setRevision(v=>v+1);}} isDisabled={busy||fetching} data-testid="materials-refresh"><RefreshCw size={16}/>刷新</Button>{(busy||background)&&<Button variant="secondary" onPress={()=>void stop()} data-testid="materials-stop"><Square size={14}/>停止收录</Button>}</div>
   <MaterialCatalogFilters rows={rows} value={filters} disabled={busy||studyDirty} onChange={setFilters}/>
   <p className="teacher-library-caption">名称查找覆盖全部资料；格式与状态筛选仅针对当前页。正文检索请切换到“检索正文”。</p></div>
-  <details className="edu-material-queue" data-testid="materials-queue"><summary>收录与处理{background?` · ${queue?.running} 份处理中，${queue?.pending} 份等待`:''}{queue?.invalid?' · 有记录需处理':''}{task?.status==='failed'?' · 当前资料收录未完成':''}</summary>
+  <DisclosureCard className="edu-material-queue" data-testid="materials-queue" title={'收录与处理'+(background?` · ${queue?.running} 份处理中，${queue?.pending} 份等待`:'')+(queue?.invalid?' · 有记录需处理':'')+(task?.status==='failed'?' · 当前资料收录未完成':'')}>
   {(busy||background)&&<p role="status" className="teacher-library-caption" data-testid="materials-progress">{folderProgress?`正在添加文件夹：已查看 ${folderProgress.scanned} 个文件，新增 ${folderProgress.imported} 份、复用 ${folderProgress.reused} 份；原件不会上传…`:scan?`正在本机识别第 ${scan.page} / ${scan.total} 页，原文件不会上传…`:background?`${queue?.pending} 份等待收录，${queue?.running} 份正在处理，可以继续浏览…`:'正在保存本地资料，原文件不会上传…'}</p>}
   {!!queue?.invalid&&<p role="alert" className="teacher-library-error">有收录记录不可读取，尚未执行。请保留原件并重新添加。</p>}
   {task&&<div className="teacher-library-toolbar" data-testid="materials-task" data-status={task.status}><p role="status">{task.title}：{{pending:'等待收录',running:'正在收录',succeeded:'正文已收录',failed:'收录未完成',cancelled:'已停止'}[task.status]}{task.error&&task.status==='failed'?` · ${materialFailureText('parser:'+task.error)}`:''}</p>{(task.status==='pending'||task.status==='running'&&task.priority===0)&&<Button variant="secondary" onPress={()=>void control('prioritize')} isDisabled={busy} data-testid="materials-prioritize">优先处理</Button>}{['pending','running'].includes(task.status)&&<Button variant="ghost" onPress={()=>void control('cancel')} isDisabled={busy} data-testid="materials-task-stop">停止这份</Button>}</div>}
-  </details>
+  </DisclosureCard>
   {notice&&<p role="status" className="teacher-library-notice" data-testid="materials-notice">{notice}</p>}
   {error&&<p role="alert" className="teacher-library-error" data-testid="materials-error">{error}</p>}
-  <details className="edu-material-queue" data-testid="materials-batches"><summary>文件夹批次与恢复</summary><MaterialImportPanel revision={revision} changed={()=>{void load(location.current.query,location.current.offset);setRevision(v=>v+1);}} open={id=>void openBatchResource(id)}/></details>
-  <details className="edu-material-queue" data-testid="materials-diagnostics"><summary>题库归档与检索状态</summary><MaterialQuestionStatus/><RetrievalProgress/></details>
+  <DisclosureCard className="edu-material-queue" data-testid="materials-batches" title="文件夹批次与恢复"><MaterialImportPanel revision={revision} changed={()=>{void load(location.current.query,location.current.offset);setRevision(v=>v+1);}} open={id=>void openBatchResource(id)}/></DisclosureCard>
+  <DisclosureCard className="edu-material-queue" data-testid="materials-diagnostics" title="题库归档与检索状态"><MaterialQuestionStatus/><RetrievalProgress/></DisclosureCard>
   <div hidden={mode!=='text'}><MaterialTextSearch open={source=>{if(!canChangeSource())return;const stamp=++sourceEpoch.current;void window.omniEdu?.getMaterialSource(source).then(view=>{if(!alive.current||stamp!==sourceEpoch.current||!canChangeSource())return;setSourceActive(false);setTextSource(view);setSelected(source.resourceId);requestAnimationFrame(()=>document.querySelector('[data-testid="materials-detail"]')?.scrollIntoView({block:'start'}));}).catch(()=>{if(alive.current&&stamp===sourceEpoch.current)setError('资料来源已变化，请重新查找。');});}}/></div>
   {imported?.items.some(item=>!item.ok)&&<ul className="teacher-library-import-failures" data-testid="materials-import-failures">{imported.items.filter(item=>!item.ok).map((item,index)=><li key={index}>{item.fileName}：未能添加，请检查文件是否可读取。</li>)}</ul>}
   {studyDirty&&candidateResource&&resource&&candidateResource.contentHash!==resource.contentHash&&<p role="alert">资料版本已更新，当前草稿仍绑定旧版本。请先处理未保存内容，再重新打开当前资料。</p>}

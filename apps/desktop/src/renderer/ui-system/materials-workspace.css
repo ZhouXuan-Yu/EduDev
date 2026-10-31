@@ -21,10 +21,7 @@
 .edu-material-filters label { display: grid; gap: 5px; color: var(--muted); font-size: 13px; }
 .edu-material-filters select { font: inherit; color: var(--foreground); background: var(--surface); border: 1px solid var(--separator); border-radius: 8px; padding: 7px 10px; min-width: 145px; }
 .edu-material-filters select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.edu-material-queue { border-bottom: 1px solid var(--separator); padding: 10px 0; margin: 0; }
-.edu-material-queue > summary { cursor: pointer; font-size: 13px; color: var(--muted); width: fit-content; }
-.edu-material-queue > summary:hover { color: var(--foreground); }
-.edu-material-queue > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+.edu-material-queue { margin: 10px 0; }
 .edu-material-overview dl { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin: 20px 0; }
 .edu-material-overview dt { color: var(--muted); font-size: 13px; }
 .edu-material-overview dd { margin: 4px 0 0; overflow-wrap: anywhere; }

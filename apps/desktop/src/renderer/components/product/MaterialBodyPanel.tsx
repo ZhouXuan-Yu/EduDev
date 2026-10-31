@@ -17,6 +17,7 @@ import {MaterialAiPagePanel} from './MaterialAiPagePanel';
 import {MaterialBodyAvailability} from './MaterialBodyAvailability';
 import {useMaterialDraftGuard} from './useMaterialDraftGuard';
 import {validAiTextSource} from '../../../shared/material-ai-text';
+import {DisclosureCard} from '../ui/DisclosureCard';
 
 export function MaterialOcrNotice(){return <p role="note" className="teacher-library-caption" data-testid="materials-ocr-notice">以下为本机文字识别结果，尚未由教师核对。公式、题图和手写批注请以原件为准；收录正文不代表题目或答案已确认。</p>;}
 export function MaterialExcerpt({chunk,sourceId}:{chunk:ResourceChunk;sourceId?:string}){return <article className="teacher-library-excerpt" data-testid={`materials-chunk-${chunk.id}`} data-source={chunk.id===sourceId||undefined}><h3>{chunk.pageNumber?`原件第 ${chunk.pageNumber} 页 · `:''}{chunk.heading||'内容摘录'}</h3><Markdown components={{img:({alt})=><span>［图片：{alt||'未加载'}］</span>,a:({children})=><span>{children}</span>}}>{chunk.contentMd}</Markdown></article>;}
@@ -52,7 +53,7 @@ export function MaterialBodyPanel({resource,sourceView,busy,revision,locate,retr
     <dl><div><dt>收录状态</dt><dd>{materialReadiness(current).label}</dd></div><div><dt>已收录正文</dt><dd>{current.chunkCount} 段</dd></div><div><dt>原件大小</dt><dd>{libraryFileSize(current.fileSize)}</dd></div><div><dt>更新时间</dt><dd>{libraryDate(current.updatedAt)}</dd></div></dl>
     <p>原件保存在本机。正文可查找不代表题目、公式或答案已经教师核验。</p>
     <div className="teacher-library-toolbar"><Button variant="secondary" isDisabled={busy||studyDirty||!body?.chunks.length} onPress={()=>{setStudying(true);setSection('notes');}} data-testid="materials-study-toggle">开始／继续阅读</Button><Button variant="ghost" onPress={()=>setSection('content')}>阅读已收录正文</Button></div>
-    {loading?<p role="status">正在读取资料概要…</p>:error?<p role="alert">{error}</p>:body?.chunks[0]?<details><summary>查看正文首段</summary><MaterialExcerpt chunk={body.chunks[0]}/></details>:<MaterialBodyAvailability resource={current} taskStatus={taskStatus} busy={busy} retry={retry}/>}
+    {loading?<p role="status">正在读取资料概要…</p>:error?<p role="alert">{error}</p>:body?.chunks[0]?<DisclosureCard title="查看正文首段" data-testid="materials-first-excerpt"><MaterialExcerpt chunk={body.chunks[0]}/></DisclosureCard>:<MaterialBodyAvailability resource={current} taskStatus={taskStatus} busy={busy} retry={retry}/>}
    </div>}
    {section==='advanced'&&<div data-testid="materials-processing-detail">{/\.pdf$/i.test(current.originalFileName)&&<MaterialPdfProgress resource={current}/>}<p>收录、索引与题目核对是独立状态；已保存原件与成功页不会因停止而删除。</p></div>}
    {(questionsVisited||section==='questions')&&<div hidden={section!=='questions'} data-testid="materials-question-detail"><p className="teacher-library-caption">对照原件整理题目、配套答案和来源。完整题面与教师确认继续使用原有题本流程。</p><MaterialAiPanel key={'ai-'+current.id+current.contentHash} resource={current} onDraftDirty={reportAiDirty}/>{/\.docx$/i.test(current.originalFileName)&&<MaterialWordPanel key={'word-'+current.id+current.contentHash} resource={current} disabled={busy||studyDirty||!!sourceView} onRebuilt={()=>{setOffset(0);setWordRevision(v=>v+1);}}/>}</div>}

@@ -5,6 +5,7 @@ import {MaterialBookAnswers} from './MaterialBookAnswers';
 import {MaterialOriginalPreview} from './MaterialOriginalPreview';
 import './material-ai.css';
 import type {AiTextSource} from '../../../shared/material-ai-text';
+import {DisclosureCard} from '../ui/DisclosureCard';
 export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,initiallyOpen=false,bookRevision,onDraftDirty}:{batchId:string;ordinal?:number;units?:{ordinal:number;pageSource?:boolean}[];start?:number;reference?:AiTextSource;initiallyOpen?:boolean;bookRevision?:number;onDraftDirty?:(dirty:boolean)=>void}){
  const [draftDirty,setDraftDirty]=useState(false);
  useEffect(()=>{onDraftDirty?.(draftDirty);},[draftDirty,onDraftDirty]);
@@ -42,7 +43,7 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
     </div>}
     {bookRevision&&<MaterialBookMatches key={`${batchId}:${selected}:${bookRevision}`} batchId={batchId} ordinal={selected} revision={bookRevision}/>}
     {view.bookAnswers&&<MaterialBookAnswers page={view.bookAnswers}/>}
-    <details><summary>本地识别对照文字</summary><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}</pre></details>
+    <DisclosureCard title="本地识别对照文字" headingLevel={4} data-testid="material-ai-ocr-reference"><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}</pre></DisclosureCard>
     <p>AI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。</p><pre className="material-ai-page-text" data-testid="material-ai-page-text">{view.text||'本次原图两遍复核未转录出文字。'}</pre>
    </>}
   </div>}

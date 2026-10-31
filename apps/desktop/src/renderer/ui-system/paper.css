@@ -17,11 +17,10 @@
 .edu-paper-workspace .paper-review-actions,
 .edu-paper-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 20px; }
 .edu-paper-workspace .paper-review-actions { position: static; }
-.edu-paper-history { padding-block: 16px; border-top: 1px solid var(--border); }
-.edu-paper-history > summary { cursor: pointer; font-weight: 550; }
+.edu-paper-history { min-width: 0; }
 .edu-paper-history-list { display: grid; gap: 8px; margin-top: 16px; max-height: 360px; overflow: auto; }
-.edu-paper-workspace .paper-question { border-top: 1px solid var(--border); padding-block: 16px; overflow-wrap: anywhere; }
-.edu-paper-workspace .paper-question > summary { cursor: pointer; line-height: 1.7; }
+.edu-paper-question-card { min-width: 0; margin-block: 12px; overflow-wrap: anywhere; }
+.edu-paper-evidence-card { margin-block: 12px; }
 .edu-paper-workspace .paper-source-text { white-space: pre-wrap; overflow-wrap: anywhere; }
 .edu-paper-workspace .paper-layout { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
 .edu-paper-workspace .paper-section-preview { margin-block: 24px; }
