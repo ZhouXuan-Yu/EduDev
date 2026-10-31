@@ -17,7 +17,7 @@ import {nativeSourceRoleText} from './native-question-content';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,type AiBatchResponse} from '../../shared/material-ai-image';
 import {validQuestionProjection} from '../../shared/question-projection';
 import type {RuleOrigin} from './material-question-origins';
-import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
+import {MATERIAL_AI_PAGE,MATERIAL_AI_PAGE_RESPONSE,MATERIAL_IMAGE_SOURCE,parseAiPageResponse,pageQuestionEvidence,pageTranscriptionAgrees,pageTranscriptionStatus,validAiPageQuery,type AiPageResponse,type AiPageQuery,type AiPageView} from '../../shared/material-ai-page';
 import {readAiPageSource,validateAiPageSource} from './material-ai-page-source';
 import {restoredPageQuestions} from './material-ai-page-content';
 import {publishAiPage,assessAiPage,aiPageQuestionIssues} from './material-ai-page-publish';
@@ -258,7 +258,7 @@ export class MaterialAiRepository{
     if(!validAiPageQuery(input))throw Error('invalid_input');const proof=await this.pageEvidence(input.batchId,input.ordinal),source=proof.unit.pageSource!,resource=await this.host.materials().resource(source.resourceId),assessment=assessAiPage(proof.first,proof.final,source);
     const image=input.includeImage&&source.schemaVersion===MATERIAL_IMAGE_SOURCE?await this.storedImage(input.batchId,input.ordinal):undefined;
     if(image)await this.validateInput(proof.config,proof.unit);
-    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',issues:proof.final.pageIssues,...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{})};
+    return{schemaVersion:MATERIAL_AI_PAGE,resource,source,text:proof.final.pageText,ocrText:proof.unit.text,status:proof.status==='review'||assessment.review?'needs_review':proof.final.pageText?'complete':'blank',transcriptionStatus:pageTranscriptionStatus(proof.first,proof.final),issues:proof.final.pageIssues,...(image?{inputImage:{dataUrl:`data:${image.mime};base64,${image.data}`}}:{})};
   }
   async action(input:AiAction,pauseReason:'teacher'|'folder'='teacher'){
     if(!validAiAction(input))throw new Error('invalid_input');

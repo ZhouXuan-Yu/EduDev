@@ -24,12 +24,18 @@ function fixture(status='blank'){
   if(state.mode==='ordinary')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'光在同种均匀介质中沿直线传播。',pageIssues:[],questions:[]};
   if(state.mode==='ordinary_long')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'甲'.repeat(11999)+'😀'+'乙'.repeat(2000)+'尾部证据：色散与折射。',pageIssues:[],questions:[]};
   if(state.mode==='blank')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:'',pageIssues:[],questions:[]};
+  if(state.mode==='numeric_spacing')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'两项记录：12':'两项记录：1 2',pageIssues:[],questions:[]};
   if(state.mode==='math_notation_changed')result={schemaVersion:pageSchema,outcome:'no_questions',pageText:input.previous?'公式：x2 + y1':'公式：x² + y₁',pageIssues:[],questions:[]};
   if(state.mode==='math_stem_changed'){result.pageText='第1题 写出x²。\n【答案】x²\n【解析】原式为x²。';Object.assign(result.questions[0],{stem:'写出x2。',answer:'x²',analysis:'原式为x²。'});result.questions[0].projection.statement.text='写出x2。';}
   if(state.mode==='unclear')result={...result,pageIssues:['uncertain_ocr']};
   if(state.mode==='omitted')result={...result,questions:[],outcome:'no_questions'};
   if(state.mode==='mismatch'&&input.previous)result={...result,pageText:text.replace('7+8','7+9')};
   if(state.mode==='source_answer')result.questions[0].answer='99';
+  if(state.mode==='outcome_changed'&&input.previous)result.outcome='needs_review';
+  if(state.mode==='question_final_uncertain'&&input.previous)result.questions[0].issues=['uncertain_ocr'];
+  if(state.mode==='question_uncertain')result.questions[0].issues=['uncertain_ocr'];
+  if(state.mode==='question_cross_page')result.questions[0].issues=['cross_page'];
+  if(state.mode==='question_incomplete')result.questions[0].issues=['incomplete_question'];
   if(state.mode==='figure'){result.questions[0].requiresImage=true;result.questions[0].projection.figures={state:'provided',text:'原图中的几何图'};}
   if(state.mode==='privacy')result.pageText+='\n张同学';
   if(state.mode==='changed_final'&&input.previous)db.prepare("UPDATE material_pdf_pages SET error='changed'").run();
@@ -117,6 +123,37 @@ async function indexedPage(mode='ordinary'){
   const store={materials,retrieval:rag,materialSearch:lexical,sanitizeProblemText:async text=>{f.state.onSanitize?.();return{sanitizedText:text};},listStudents:async()=>[]};
   return{...f,rag,lexical,store,async index(){for(let i=0;i<3;i++)await rag.restoredText.drain();}};
 }
+await check('A fully agreeing mixed figure page enters text retrieval while its question remains held and Pi states the boundary',async()=>{
+ const f=await indexedPage('figure');try{
+  const question=await f.question();assert(!archiveEligible(question));assert.equal(f.db.prepare('SELECT status FROM material_ai_units').get().status,'review');
+  const result=await f.lexical.candidates('7+8');assert.equal(result.units.length,1,'A held figure question cannot hide an independently complete transcript');
+  const view=await f.repo.page(query(f));assert.equal(view.status,'needs_review');assert.equal(view.transcriptionStatus,'complete');
+  const {createMaterialTools}=await import('../../src/main/assets/material-tools.ts');const tool=createMaterialTools(f.store,()=>true).find(t=>t.name==='office_read_material');
+  const read=await tool.execute('mixed',{resourceId:f.id,offset:0,restoredSource:result.units[0].restored},new AbortController().signal);assert(!read.isError);const body=JSON.parse(read.content[0].text);assert.equal(body.teacherConfirmed,false);assert.equal(body.questionExtractionStatus,'needs_review');assert(body.warning.includes('题目'));assert.equal(body.text,text);assert.equal(f.state.calls,2);
+ }finally{f.db.close();}
+});
+await check('Question outcome revisions do not hide an unchanged transcript or qualify the held extraction',async()=>{
+ const f=await indexedPage('outcome_changed');try{assert.equal((await f.repo.page(query(f))).transcriptionStatus,'complete');assert.equal((await f.lexical.candidates('7+8')).units.length,1);assert(!archiveEligible(await f.question()));assert.equal(f.state.calls,2);}finally{f.db.close();}
+});
+await check('Whitespace cannot merge separate numbers or algebraic tokens into a different source value',async()=>{
+ const f=await indexedPage('numeric_spacing');try{assert.equal((await f.repo.page(query(f))).transcriptionStatus,'needs_review','1 2 cannot become12 through whitespace removal');assert.equal((await f.rag.restoredText.status()).ready,0);assert.equal(f.state.calls,2);}finally{f.db.close();}
+});
+await check('Transcription uncertainty in either pass, mathematical changes and page-level doubts remain excluded from text retrieval',async()=>{
+ for(const mode of ['question_uncertain','question_final_uncertain','question_cross_page','question_incomplete','mismatch','math_notation_changed','unclear']){const f=await indexedPage(mode);try{
+  const view=await f.repo.page(query(f));assert.equal(view.transcriptionStatus,'needs_review',mode);assert.equal((await f.lexical.candidates('7+8')).units.length,0,mode);assert.equal((await f.rag.restoredText.status()).ready,0,mode);assert.equal(f.state.calls,2);
+ }finally{f.db.close();}}
+});
+await check('Old blocked-page policy migrates once, requeues only a bounded cursor and keeps privacy/source blocks and question facts',async()=>{
+ const f=await indexedPage('figure');try{
+  const before=f.db.prepare('SELECT archive_json FROM question_bank_items').all();
+  f.db.prepare('UPDATE material_ai_text_documents_v1 SET active=0').run();f.db.prepare('UPDATE material_ai_text_control_v1 SET transcription_policy=1,cursor=9999').run();
+  f.db.prepare("INSERT INTO material_ai_text_dirty_v1(batch_id,ordinal,error) VALUES(?,1,'page_needs_review')").run(f.batch);
+  const privateId='aibatch_'+randomUUID();f.db.prepare("INSERT INTO material_ai_text_dirty_v1(batch_id,ordinal,error) VALUES(?,1,'privacy_blocked')").run(privateId);
+  await f.rag.restoredText.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_ai_text_control_v1').get().cursor,0);assert.equal(f.db.prepare('SELECT error FROM material_ai_text_dirty_v1 WHERE batch_id=?').get(f.batch).error,'page_needs_review','Migration must not rewrite the whole blocked queue');
+  await f.index();assert.equal((await f.lexical.candidates('7+8')).units.length,1);const cursor=f.db.prepare('SELECT cursor FROM material_ai_text_control_v1').get().cursor;
+  await f.rag.restoredText.migrate();assert.equal(f.db.prepare('SELECT cursor FROM material_ai_text_control_v1').get().cursor,cursor);assert.equal(f.db.prepare('SELECT error FROM material_ai_text_dirty_v1 WHERE batch_id=?').get(privateId).error,'privacy_blocked');assert.deepEqual(f.db.prepare('SELECT archive_json FROM question_bank_items').all(),before);assert.equal(f.state.calls,2);
+ }finally{f.db.close();}
+});
 await check('A source-backed ordinary AI page with zero questions enters existing full-text and hybrid material retrieval without fabricating OCR',async()=>{
  const f=await indexedPage();try{const {lexical,rag}=f;
   const result=await lexical.candidates('均匀介质');assert.equal(result.units.length,1,'A successfully restored textbook page is currently invisible to material retrieval');assert(result.units[0].restored,'AI transcription must carry its own reference rather than an OCR-body receipt');

@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-10-31 混合图题正文召回与质量复核
+
+本轮沿现原页回执→AiPageView→MaterialAiTextIndex→原FTS/Lance→Pi来源读取增加独立transcriptionStatus，原整体status/题库资格不变；共享aiTextSignature保留数字/字母边界。增量控制列transcription_policy=2，游标每次发现8条/处理4条，来源/隐私在索引及读取时照旧复验。无新IPC、依赖、模型或业务真源。证据KB_TRANSCRIPTION_RECALL_20261031.json；保留合并主线Office实际渲染能力。
+
 ## 2026-10-31 E06实际页面最终整合
 
 实现4661a2d，整合图片主线4ff4fea为ba225b7，逐页临时图总量限制修正25149d1。14处新增Markdown冲突保留双方完整内容，生产代码无冲突。最终build/type、11项检查源码、修正后固定生产脚本全8页实际PowerPoint渲染通过（0发现）；原正式UI7+同成果冷启/取消/占用3项及240组件属于整合前，未冒充全部最终重跑。原生源码未变部分沿其真实证据；新增总量限制不改变原稿。最终renderer7175.29kB，较本片整合前+1.46kB来自主线图片面板，未测流式P95。0新增付费，D盘与安装包未更新，E06/完整Goal仍未完成。详docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#powerPointSlice的finalIntegration。

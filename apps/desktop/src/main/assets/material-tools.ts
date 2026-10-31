@@ -29,7 +29,7 @@ export function createMaterialTools(store:OmniEduStore,isCurrent:()=>boolean,obs
     // Reopen the same receipt after asynchronous sanitizing; no latest-page substitution.
     await store.materials.source(source);current(signal);
     const citation=`${title} · AI还原正文（原件第${source.page}页，字符${Number(start)+1}–${end}）`;
-    payload={success:true,title,text,sanitized:true,teacherConfirmed:false,recognition:'ai_page_two_pass_unreviewed',warning:'这是对原图的AI双遍转录，未经教师逐字核验；不是原始OCR或答案正确性证明。',restoredSource:source,resourceId:source.resourceId,offset:0,nextOffset:null,characterOffset:start,nextCharacterOffset:end<view.text.length?end:null,totalCharacters:view.text.length,truncated:end<view.text.length,citation};
+    payload={success:true,title,text,sanitized:true,teacherConfirmed:false,recognition:'ai_page_two_pass_unreviewed',questionExtractionStatus:view.status==='needs_review'?'needs_review':'complete',warning:'这是对原图的AI双遍转录，未经教师逐字核验；不是原始OCR或答案正确性证明。'+(view.status==='needs_review'?'本页题目仍有待核项，不能据此视为可直接组卷。':''),restoredSource:source,resourceId:source.resourceId,offset:0,nextOffset:null,characterOffset:start,nextCharacterOffset:end<view.text.length?end:null,totalCharacters:view.text.length,truncated:end<view.text.length,citation};
     sources=[{title:citation,material:source}];
    }else if(body){
     if(Object.hasOwn(args,'characterOffset'))throw Error('invalid_input');

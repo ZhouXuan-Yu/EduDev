@@ -23,10 +23,12 @@ export function parseAiBatchResponse(raw:string):AiBatchResponse{
  }catch{throw Error('invalid_response');}
 }
 // Compatibility normalization destroys mathematical meaning (x² -> x2, y₁ -> y1).
-const normalized=(s:string)=>s.normalize('NFC').replace(/\s/g,'');
+// Keep word/number boundaries (1 2 != 12, x 2 != x2), while accepting layout around operators.
+export const aiTextSignature=(s:string)=>s.normalize('NFC').replace(/\s+/gu,' ').replace(/(?<=[^\p{L}\p{N}]) | (?=[^\p{L}\p{N}])|^ | $/gu,'');
+const normalized=aiTextSignature;
 const questionTypes=new Set(['填空','选择','解答','计算','判断','证明','作图','实验','综合']);
 function typeSignature(value:string){
- const text=normalized(value),parts=text.split(/[/、,，]/).map(p=>p.replace(/题$/,''));
+ const text=value.normalize('NFC').replace(/\s/g,''),parts=text.split(/[/、,，]/).map(p=>p.replace(/题$/,''));
  // Only a closed vocabulary of classification labels; never normalize content, unknown labels or order.
  return parts.length>0&&parts.every(p=>questionTypes.has(p))?'known:'+JSON.stringify(parts):'raw:'+text;
 }

@@ -1,5 +1,15 @@
 # 知识库方案实施合同
 
+## 2026-10-31 混合图题页的正文召回（M04/M05/M10）
+
+真实原页qVnqCD两遍pageText逐字一致且pageIssues为空，仅第4题requires_image；原unit.status=review导致MaterialAiTextIndex拒整页，3题AI定稿可用却AI正文active=0。教师结果为完整可靠转录进入现FTS/Lance/Pi，而图题/答案仍按原规则待核，正式组卷仍教师集中确认。沿既有SQLite/文件、原页回执、typed preload及面板，无新依赖/模型/服务/IPC。
+
+共享AiPageView新增可选transcriptionStatus，旧消费者继续使用原status；从原两遍响应派生，不改变原模型schema或保存事实。仅pageText两遍NFC词元边界一致、pageIssues都空且题内无uncertain_ocr/cross_page/incomplete_question时正文可用；图形/参考答案待核不提升题目资格。索引及来源读取均重新核对该状态，Pi和教师面板说明正文与题目状态不同，保持AI转录/非教师签署。material_ai_text_control_v1增量幂等增加策略版本；仅一次重排旧page_needs_review队列，不重发模型/扫原文件/删除事实，其他隐私/来源阻塞不放行。
+
+先RED真实SQLite复现figure正文0命中；GREEN检查图题仍不合格、两遍/上下标/模糊/跨页/遗漏风险、隐私/来源失效、旧库副本与冷启零重放。正式Electron现目录→混合页→全文/原生语义→Pi实际引用/原图→重启、1366与1920可达；已授权真实页复用本地回执进行生产读器验证，除非需要新行为不额外付费。build/组件/领域与关键smoke按源码记录，不用此片宣称40GB或自然正确率达标。回退停止新AI正文索引并普通revert本片消费策略，可选字段和派生control列保留，原两遍/题库/图片与教师事实不回写。
+
+批判复核追加：数字/字母词元边界空白不得全部删除，1 2/12、x 2/x2与希腊字母边界须拒绝；操作符周围排版空白可等价。复用同一签名于原页/图片两遍与候选原文字段比较，不修改原响应和旧事实。转录判断不依赖抽题outcome是否改变，抽题本身仍按原严格门禁。
+
 ## 2026-10-31 独立图片空白/失败OCR补救（M02/M03/M04/M05/M10）
 
 现状：独立PNG/JPEG/WebP走旧OCR正文分支；empty/failed使目录AI直接local_parse_failed，无原页回执，不能复用PDF整页两遍还原和普通正文检索。现PDF原页预览也不接受图片。本片教师结果为递归目录内独立图片在一次明确批次授权后，沿原执行器自动进行OCR对照、同一DeepSeek两遍原图还原、题目/普通正文归档与检索，页面可回看实际AI核对输入图；不将缩放后的AI输入图冒充未变换原件。

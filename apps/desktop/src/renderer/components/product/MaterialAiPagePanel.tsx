@@ -28,7 +28,8 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
    {busy&&<p role="status">正在核对原页来源及两遍回执…</p>}{error&&<p role="alert" data-testid="material-ai-page-error">{error}</p>}
    {!busy&&<button className="secondary-action" data-testid="material-ai-page-refresh" onClick={()=>setRevision(n=>n+1)}>重新核对</button>}
    {view&&<>
-    <p data-testid="material-ai-page-status">原件第{view.source.page}页 · {view.status==='needs_review'?'整页内容仍需核对':view.status==='blank'?'AI两遍判断为空白，可回看原页核对':'AI整页转录，未经教师逐字核验'}</p>
+    <p data-testid="material-ai-page-status">原件第{view.source.page}页 · {view.status==='needs_review'?(view.transcriptionStatus==='complete'?'正文可检索，题目仍需核对':'正文和题目仍需核对'):view.status==='blank'?'AI两遍判断为空白，可回看原页核对':'AI整页转录，未经教师逐字核验'}</p>
+    {view.status==='needs_review'&&view.transcriptionStatus==='complete'&&<p data-testid="material-ai-page-transcription-status">正文双遍转录一致，可检索；本页题目仍有待核项，未经教师逐字核验。</p>}
     <MaterialOriginalPreview key={`${batchId}:${selected}:${revision}`} resource={view.resource} initialPage={view.source.page} busy={busy}/>
     {view.inputImage&&<div>
      <button className="secondary-action" data-testid="material-ai-page-image-open" onClick={()=>setImageOpen(v=>!v)}>{imageOpen?'收起核对图':'查看AI核对输入图'}</button>
