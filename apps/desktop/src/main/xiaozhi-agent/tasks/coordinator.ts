@@ -1,3 +1,4 @@
+import type {TaskContinuation} from '../../../shared/xiaozhi-start';
 import {createHash,randomUUID} from 'node:crypto';
 import type {OmniEduStore} from '../../db';
 import type {Sql} from '../session-state';
@@ -59,8 +60,13 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   return{task,...(candidate?{candidate}:{}),canAccept,canResume};
  }
  return{
-  async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>){
+  async start(sessionId:string,runId:string,commandId:string,publisher:ReturnType<typeof createEventPublisher>,continuation?:TaskContinuation){
    const detail=await options.store.getAiConversationSession(sessionId),message=detail.messages.find(m=>m.role==='user'&&m.metadata.agentRunId===runId&&m.metadata.piVersion==='xiaozhi.pi.education.v1');if(!message)throw Error('task_source_changed');
+   if(continuation){
+    const current=await committed(sessionId);
+    if(!current||current.id!==continuation.taskId||current.requirementsVersion!==continuation.requirementsVersion||current.goal||!['paused','interrupted','review_required'].includes(current.state))throw Error('task_resume_invalid');
+    return publisher.checkpointTask(work=>state(inline(work)).resume(publisher.owner,current.id,current.revision,commandId,undefined,message.id,continuation));
+   }
    const goal=await goalFromSource(sql,sessionId,message.id),prior=goal?await state().forGoal(sessionId,goal.id):null;
    if(goal&&prior)return publisher.checkpointTask(async work=>{const tasks=state(inline(work)),bound=await tasks.adoptGoal(publisher.owner,prior.id,prior.revision,goal.id);return tasks.resume(publisher.owner,bound.id,bound.revision,commandId,goal.id);});
    const unfinished=!goal&&isTaskContinuation(message.content)?await committed(sessionId):null;

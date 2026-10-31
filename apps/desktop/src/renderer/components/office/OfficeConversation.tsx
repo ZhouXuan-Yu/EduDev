@@ -18,6 +18,7 @@ import {OfficeAgentTurn} from './OfficeAgentTurn';
 import {useNativeHeroUITheme} from './useNativeHeroUITheme';
 import {OfficeVerificationNotice} from './OfficeVerificationNotice';
 import {OfficeRecoveryNotice} from './OfficeRecoveryNotice';
+import {OfficeModelRequestNotice} from './OfficeModelRequestNotice';
 import {OfficeToolExpansionScope} from './OfficeToolExpansion';
 import {OfficeTextSelection} from './OfficeTextSelection';
 import { interactionLayout, OfficeInteractionCards, type OfficeInteraction } from './OfficeInteractions';
@@ -28,6 +29,7 @@ export interface OfficeConversationProps {
   projection: OfficeProjection;
   onLoadEarlier?: () => void | Promise<void>;
   onRetry?: (turnId: string) => void;
+  onConfigure?:()=>void;
   retryLabel?: string;
   onContinue?: (turnId:string)=>void;
   onSuggest?: (text:string)=>void;
@@ -41,7 +43,7 @@ export interface OfficeConversationProps {
   interactions?: readonly OfficeInteraction[];
 }
 
-function TurnNotice({ turn, onRetry, retryLabel, onContinue }: { turn: OfficeProjectedTurn; onRetry?: (turnId: string) => void; retryLabel?: string;onContinue?:(id:string)=>void }) {
+function TurnNotice({ turn, onRetry, retryLabel, onContinue, onConfigure }: { turn: OfficeProjectedTurn; onRetry?: (turnId: string) => void; retryLabel?: string;onContinue?:(id:string)=>void;onConfigure?:()=>void }) {
   if (turn.status === 'completed' || turn.status === 'running') return null;
   const label = turn.status === 'failed' ? '小智未完成本轮' : turn.status === 'interrupted'
     ? '本轮已中断' : turn.status === 'waiting_approval' ? '等待你的确认' : '等待你的补充';
@@ -49,13 +51,14 @@ function TurnNotice({ turn, onRetry, retryLabel, onContinue }: { turn: OfficePro
     <div className="office-turn-notice" data-state={turn.status} role={turn.status === 'failed' ? 'alert' : 'status'}>
       <FileCheck2 size={16} aria-hidden="true" />
       <div><strong>{label}</strong>{turn.error && <p>{turn.error}</p>}</div>
+      {turn.status==='failed'&&onConfigure&&['authentication','insufficient_balance','configuration'].includes(turn.errorCode||'')&&<Button size="sm" variant="outline" onPress={onConfigure} data-testid="office-turn-configure">检查模型设置</Button>}
       {turn.status === 'failed' && onRetry && <Button size="sm" variant="outline" data-testid="office-turn-retry" onPress={() => onRetry(turn.id)}>{retryLabel||'重试'}</Button>}
       {turn.status === 'interrupted' && onContinue && <Button size="sm" variant="outline" data-testid="office-turn-continue" onPress={()=>onContinue(turn.id)}>准备继续</Button>}
     </div>
   );
 }
 
-export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier, onRetry, retryLabel, onContinue, onSuggest, replyActions, renderPlan, renderApprovals, renderAttachments, renderViewedImages, readingRef, onReadingScroll, interactions = [] }: OfficeConversationProps) {
+export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier, onRetry, retryLabel, onContinue, onConfigure, onSuggest, replyActions, renderPlan, renderApprovals, renderAttachments, renderViewedImages, readingRef, onReadingScroll, interactions = [] }: OfficeConversationProps) {
   const nativeTheme=useNativeHeroUITheme();
   const host = useRef<HTMLDivElement | null>(null);
   const [loadingEarlier,setLoadingEarlier]=useState(false);
@@ -106,8 +109,9 @@ export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier
         {projection.turns.map(turn => {
           if(agentTrace)return <section key={turn.id} className="office-turn" data-turn-id={turn.id} data-state={turn.status}>
             <OfficeAgentTurn turn={turn} sessionId={projection.threadId} renderPlan={renderPlan} renderAttachments={renderAttachments} renderViewedImages={renderViewedImages} replyActions={replyActions}/>
+            <OfficeModelRequestNotice turn={turn}/>
             {renderApprovals?.(turn.id)}
-            <TurnNotice turn={turn} onRetry={onRetry} retryLabel={retryLabel} onContinue={onContinue}/>
+            <TurnNotice onConfigure={onConfigure} turn={turn} onRetry={onRetry} retryLabel={retryLabel} onContinue={onContinue}/>
           </section>;
           const placement = interactionLayout(turn, interactions);
           const parts = groupOfficeProcess(turn.items, new Set(placement.anchored.keys())), firstProcess = parts.findIndex(part => part.kind === 'tools' || part.item.role !== 'user');
@@ -141,9 +145,9 @@ export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier
             {firstProcess < 0 && duration}
             {renderApprovals?.(turn.id)}
             <OfficeInteractionCards items={placement.unanchored} anchored={false} />
-            <TurnNotice turn={turn} onRetry={onRetry} retryLabel={retryLabel} onContinue={onContinue} />
+            <TurnNotice onConfigure={onConfigure} turn={turn} onRetry={onRetry} retryLabel={retryLabel} onContinue={onContinue} />
             <OfficeVerificationNotice turn={turn}/>
-            <OfficeRecoveryNotice turn={turn}/>
+            <OfficeModelRequestNotice turn={turn}/><OfficeRecoveryNotice turn={turn}/>
           </section>
           </OfficeToolExpansionScope>
         );})}

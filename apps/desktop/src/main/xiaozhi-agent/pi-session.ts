@@ -59,6 +59,7 @@ import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,applyThin
 import {createEducationToolCatalog,TOOL_DISCOVERY_NAME} from './education-tool-catalog';
 import {createRepeatToolReminder} from './repeat-tool-reminder';
 import {withModelRequestRecovery} from './model-request-recovery';
+import {modelHttpError} from '../../shared/xiaozhi-model-request';
 import {createQualityMetrics} from './quality-metrics';
 import {createAnswerEvidence} from './answer-evidence';
 import {validCitationId} from '../../shared/answer-citations';
@@ -191,7 +192,8 @@ function classifyError(raw: unknown): XiaozhiAgentError {
   const text = raw instanceof Error ? raw.message : typeof raw === 'string' ? raw : '';
   if (text === 'event_persistence' || text === 'cancelled' || text === 'context_limit' || text === 'compaction_failed' || text === 'memory_scope_changed' || text === 'skill_scope_changed' || text === 'skill_source_changed' || text === 'configuration' || text === 'invalid_input') return text;
   if (/401|403|authentication|api.?key/i.test(text)) return 'authentication';
-  if (/429|rate.?limit|quota|balance/i.test(text)) return 'rate_limited';
+  if (/\b402\b|insufficient[_ -]*(balance|quota)|余额不足/i.test(text)) return 'insufficient_balance';
+  if (/429|rate.?limit|quota/i.test(text)) return 'rate_limited';
   if (/timeout|timed out/i.test(text)) return 'timeout';
   if (/fetch|connect|network|ECONN|ENOTFOUND|TLS/i.test(text)) return 'transport';
   return 'model_error';
@@ -841,8 +843,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     memoryTimer.unref();
   }
   function stopMemoryWatch() { if (memoryTimer) clearInterval(memoryTimer); memoryTimer = undefined; }
+  let modelHttpStatus:number|undefined;
   const nativeStream=session.agent.streamFunction,rawProviderFetch=await createDeepSeekFetch();
-  const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
+  const providerFetch=quality?withModelRequestRecovery(rawProviderFetch,{onState:request=>{if(request.state==='sending')modelHttpStatus=undefined;else if(request.status!==undefined)modelHttpStatus=request.status;emit({kind:'model_request',request});},beforeRetry:async()=>{await checkMemory();if(interrupted||disposed||options.lifecycleSignal?.aborted)throw Error('cancelled');await options.beforeDelivery?.({kind:'model'},options.lifecycleSignal);await checkMemory();budget!.model();},onRetry:(attempt,status)=>{metrics?.retry();manager.appendCustomEntry('xiaozhi.model-retry.v1',{runId,attempt,status,state:'scheduled'});}}):rawProviderFetch;
   session.agent.streamFunction=async (...args)=>{
     args[2]={...args[2],fetch:providerFetch};
     await checkMemory();
@@ -1132,6 +1135,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         if (last?.role === 'assistant' && last.stopReason === 'length') outputLimited=true;
       } catch (error) { failure = classifyError(error); }
       finally { stopMemoryWatch(); skillEpoch?.endRun(); await Promise.allSettled([...compactionResponses]); await delivered; if(deliveryFailed)failure ||= 'configuration'; await reasoningTrace?.finish(interrupted||failure==='cancelled'?'interrupted':failure?'failed':'completed'); running = false; session.clearQueue(); instructions.clear(); }
+      if(failure==='model_error')failure=modelHttpError(modelHttpStatus)||failure;
       if (automaticFailure) failure = automaticFailure;
       if (memoryFailure) failure = memoryFailure;
       if (budget.snapshot().exhausted) failure = 'budget_exhausted'; else if (interrupted) failure = 'cancelled';

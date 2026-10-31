@@ -1,3 +1,4 @@
+import type {TaskContinuation} from '../../../shared/xiaozhi-start';
 import type {Sql} from '../session-state';
 import {isTaskContinuation,isTaskAmendment} from './continuation';
 import {TASK_SCHEMA,validTaskOwner,validTaskView,validTaskSteps,validTaskCriterion,taskObject,taskKeys,taskText,taskIdentity,taskDigest,taskNatural,taskStepState,type TaskView,type TaskOwner,type TaskCriterion,type TaskSource,type TaskPlanProposal} from '../../../shared/xiaozhi-task';
@@ -215,11 +216,12 @@ export function createTaskState(sql:Sql,options:{sanitize:(text:string)=>Promise
    next.eventOwner=clone(owner);return save(work,before,next);
   });},
   async pause(sessionId:string,id:string,revision:number){return transaction(async work=>{const before=await load(work,id,revision);if(before.doc.view.sessionId!==sessionId||before.doc.view.state!=='active')throw Error('permission_denied');const next=clone(before.doc);next.view.state='paused';next.view.binding=null;return save(work,before,next);});},
-  async resume(owner:TaskOwner,id:string,revision:number,commandId:string,goalId?:string,continuationMessageId?:string){return transaction(async work=>{
+  async resume(owner:TaskOwner,id:string,revision:number,commandId:string,goalId?:string,continuationMessageId?:string,continuationTarget?:TaskContinuation){return transaction(async work=>{
    await current(work,owner);await command(work,owner,commandId);const before=await load(work,id,revision),next=clone(before.doc);
    const continuation=continuationMessageId?await source(work,owner.sessionId,continuationMessageId):undefined;
+   if(continuationTarget&&(!continuation||continuationTarget.taskId!==next.view.id||continuationTarget.requirementsVersion!==next.view.requirementsVersion))throw Error('task_resume_invalid');
    if(continuation&&next.view.sources.length>=32)throw Error('task_capacity');
-   if(continuation&&(continuation.source.runId!==owner.runId||!isTaskContinuation(continuation.text)||next.view.goal||next.view.sources.some(s=>s.messageId===continuationMessageId)))throw Error('task_resume_invalid');
+   if(continuation&&(continuation.source.runId!==owner.runId||!continuationTarget&&!isTaskContinuation(continuation.text)||next.view.goal||next.view.sources.some(s=>s.messageId===continuationMessageId)))throw Error('task_resume_invalid');
    if(next.view.sessionId!==owner.sessionId||goalId&&next.view.goal?.id!==goalId||!(['paused','interrupted'].includes(next.view.state)||next.view.state==='review_required'&&(Boolean(goalId)||Boolean(continuation)||taskHasRemainingSteps(next.view)))||next.lineage.some(o=>o.runId===owner.runId)||await latestId(work,owner.sessionId)!==id)throw Error('task_resume_invalid');
    if(continuation)next.view.sources.push(continuation.source);
    if(next.lineage.length>=64)throw Error('task_capacity');next.view.state='active';next.view.binding=clone(owner);next.lineage.push({runId:owner.runId,generation:owner.generation,commandId});

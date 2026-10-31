@@ -1206,7 +1206,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     async start(input: XiaozhiStartInput, operation: 'prompt' | 'compact' = 'prompt',goalId?:string,taskResume?:TaskResumeInput): Promise<XiaozhiStartResult> {
       if (!enabled || closing) return { ok: false, error: 'configuration' };
       if (skillsMutating || configuring.has('provider')) return { ok: false, error: 'busy' };
-      if(!validXiaozhiStart(input)||(operation==='compact'&&input.attachments))return {ok:false,error:'invalid_input'};
+      if(!validXiaozhiStart(input)||(operation==='compact'&&(input.attachments||input.continueTask))||input.continueTask&&(Boolean(goalId)||Boolean(taskResume)))return {ok:false,error:'invalid_input'};
       if(taskResume&&(!validTaskResume(taskResume)||taskResume.sessionId!==input.sessionId||taskResume.commandId!==input.commandId||operation!=='prompt'||goalId||input.attachments))return{ok:false,error:'invalid_input'};
       input = { ...input, prompt: input.prompt.trim()||ATTACHMENT_ONLY_PROMPT,
         ...(input.presentation?{presentation:{version:1,skill:input.presentation.skill,text:input.presentation.text}}:{}),
@@ -1223,7 +1223,8 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
       // Retain the exact historical prompt hash; compact has a distinct command identity.
       let selectedRows:Awaited<ReturnType<typeof store.xiaozhiState.attachments.list>>=[];
       if(input.attachments){try{selectedRows=await phase(()=>store.xiaozhiState.attachments.list(id));if(input.attachments.some(s=>!selectedRows.some(row=>row.id===s.id)))return {ok:false,error:'attachment_changed'};}catch{return {ok:false,error:'configuration'};}}
-      const hash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt, ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
+      const baseHash = input.attachments?attachmentStartHash(id,input.prompt,input.attachments,selectedRows,input.presentation):createHash('sha256').update(JSON.stringify({ sessionId: id, prompt: input.prompt, ...(operation === 'compact' ? { operation } : {}),...(goalId?{goalId}:{}),...(taskResume?{taskResume:{taskId:taskResume.taskId,revision:taskResume.revision,requirementsVersion:taskResume.requirementsVersion}}:{}),...(input.presentation?{presentation:input.presentation}:{}) })).digest('hex');
+      const hash=input.continueTask?createHash('sha256').update(JSON.stringify({baseHash,continueTask:input.continueTask})).digest('hex'):baseHash;
       const priorStart = starting.get(input.commandId);
       if (priorStart) return priorStart.hash === hash ? priorStart.result : { ok: false, error: 'command_conflict' };
       const admission = invalidateLearningDecisions(id);
@@ -1268,7 +1269,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
         const settings = await phase(()=>modelSettings.runtime(id));
         if(input.attachments){
           if(closing||run.stopped)throw new Error('cancelled');
-          const admitted=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId:input.commandId,prompt:input.prompt,...(input.presentation?{presentation:input.presentation}:{}),hash,model:settings.model,attachments:drafts,selections:input.attachments});
+          const admitted=await store.xiaozhiState.attachmentSends.admit({sessionId:id,commandId:input.commandId,prompt:input.prompt,...(input.continueTask?{continueTask:input.continueTask}:{}),...(input.presentation?{presentation:input.presentation}:{}),hash,model:settings.model,attachments:drafts,selections:input.attachments});
           run.runId=admitted.runId;
           run.turn.id=admitted.runId;
           run.turn.items.push({id:admitted.messageId,kind:'message',role:'user',text:publicMessageText(input.prompt,input.presentation),attachments:admitted.attachments});
@@ -1293,7 +1294,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
           run.unfinishedThinkingTask=detail.messages.find(message=>message.id===priorThinkingTask.origin.messageId)?.content
             ||priorThinkingTask.criteria.map(criterion=>criterion.text).join('\n');
         }
-        if(operation==='prompt')run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!));else await phase(()=>tasks.compact(id,run.publisher!));
+        if(operation==='prompt')run.task=await phase(()=>taskResume?tasks.resume(taskResume,run.publisher!):tasks.start(id,run.runId,input.commandId,run.publisher!,input.continueTask));else await phase(()=>tasks.compact(id,run.publisher!));
         if(closing||run.stopped)throw Error('cancelled');
         run.done = execute(id, input.prompt.trim(), run, settings);
         return { ok: true, runId: run.runId };
