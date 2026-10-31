@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+## 2026-10-31 活动工具IO的实机回归
+
+5b4343b生产构建T2NRe7沿原kb-restored-text-journey附只记录方法/耗时的私有CPU探针，正式目录→本地OCR空白边界→两遍受控整页→实际FTS/ONNX/Lance→Pi实际search/read/引用原图→两尺寸冷启五项exit0、0renderer错误、0重发/0假题/0原OCR块。工具664/464ms；首次查询4335ms/重排4308ms、启动1951ms间隙仍保留。受控模型不能替代自然质量、Recall/P95、40GB或安装验收，精确综合结果见goal/KB_IMPLEMENTATION_EVIDENCE。
+
 最终fc2fd0d生产源码/9b128e4夹具：目录→AI整页→检索→Pi实读与引用→冷启5项exit0/0renderer错误，GASk1N原OCR183B后受控清空。修正换行/绘制边界并实看截图，旧裁切夹具不计自然质量。整合后240组件与207综合exit0；冷读/来源哈希与到期查询计划补查通过，详见KB_IMPLEMENTATION_EVIDENCE及公开JSON。
 
 ## 2026-10-30 AI整页正文进入现检索与小智（M04/M10）

@@ -1,5 +1,30 @@
 # 知识库实施证据
 
+## 2026-10-31 M04/M10活动工具完整核验IO
+
+源码5b4343b，714edcc已整合origin/main4d1f3ce并保留协作者E05。CPU采样证实原managed-skills.noLinks/readPackage及运行时checkFiles的同步重复核验占主线程，SQLite回调耗时不能当原生SQL执行耗时。改独立skill-package-async.ts、managed-skills.ts、managed-skill-runtime.ts及Pi阶段取消窄接线；原同步空闲变更入口保留，暂无新依赖、表、协议、IPC或安装组件。原权限、来源哈希、模型缓存、逐级链接检查均保留；每文件前后各做一次完整realpath，去除重复前缀解析及完整包证明已覆盖的重读。
+
+RED/GREEN提交：6c02f44→10cf03c（主循环可前进）、1f59c06→236ef22（缺失路径保留source_changed语义）、50391c1→5b4343b（规范路径工作有界、父目录链接仍拒绝）。十组IO边界实际SQLite/目录/native Pi验证涵盖同大小同mtime篡改、不发送二进制、模型缓存、取消、打开后换路径及大小/链接；22组原权限专项仍通过。完整覆盖率未测量，不据通过数声称百分比覆盖。
+
+正式Electron私有CPU/IO探针沿原kb-restored-text-journey执行，T2NRe7五项exit0/0renderer错误：可见目录授权、真实OCR183B后故障边界置空、两遍受控原图整理、实际FTS5/本地ONNX/Lance、生产Pi真实search/read/引用打开原页、1366/1920及冷启0重发/0假题/0原OCR块。每轮2受控JSON/3受控SSE，0付费；不是自然识别质量。只记录方法、时间、表名和栈名的诊断留ignored本机，公开元数据见[本轮JSON](../research/KB_TOOL_IO_20261031.json)。
+
+同探针流程观测（4资料/4重排候选，非严格A/B；最后一轮已合并E05）：
+
+|阶段|修改前iJwl1f|异步但未减路径zRWhjx|最终T2NRe7|
+|---|---:|---:|---:|
+|实际资料搜索工具|11449ms|11631ms|664ms|
+|实际资料正文读取工具|7436ms|4498ms|464ms|
+|首次语义查询|3079ms|2883ms|4335ms|
+|其中本地重排|2838ms|2826ms|4308ms|
+
+最终两工具区间未观测到>40ms主循环间隙（100ms采样）；全旅程仍有6次，其中启动最大1951ms，不能声称整个主线程无阻塞。早轮观测最多记录100次，SQL方法耗时可能嵌套/重叠，不能相加当墙钟。当前只证明具体重复工作减少及小样本改善，不证明P95/自然Recall/40GB或重排提速。
+
+最终命令在apps/desktop：npm run build、npx tsc --noEmit、npm run test:renderer-components（240）、node scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs（10）、node scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs（22）、node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs（20）与私有探针五项均exit0。node scripts/xiaozhi-agent/pi-skills-management-state-smoke.mjs已过23项，但test-results/xiaozhi-agent/pi-control-ui-2AWPBO旧夹具不存在导致整体exit1；旧数据库部分未执行，未伪造降级数据。npm audit --json exit1：既有23项（8高/7中/8低/0严重），无本片新增依赖。
+
+同一最终5b4343b成功构建后运行node scripts/electron-smoke.mjs，综合207/207、最终shell exit0（test-results/kb-tool-io-final-smoke.log/.exit）；未再并发重建同一out。此次讲义修订描述的既有间歇失败未复现，根因仍未确定，不把绿灯当修复原因。源码未再变化，仅补交付文档/公开元数据；D盘日常构建与安装包未更新。
+
+授权素材目录本轮仅查元数据：9文件10321505B（3PDF/5PNG/1JPG），未发送；不能以小素材替代10GB→40GB。下一继续真实重排/向量调度、图片SQLite体积、启动核验、独立图片失败、跨页/复杂图题/答案册、教材正文人工修正及受管安装。自然内容绝不出错不在本轮证据范围。回滚采用普通revert本轮实现提交，既有同步入口保留且没有业务格式迁移，不删原资料/教师事实。
+
 ## 2026-10-30 最后主线整合42ac7be
 
 最后刷新main83cf832（受管版本/FIFO计算），合并为42ac7be；13份Markdown同位置新增节冲突已逐项保留双方内容，preload自动合并已核对。该源码重新build/type、240组件、20页边界、目录→Pi来源→冷启五项均exit0（iLCx7P，原OCR183B、两视口、0renderer错误、每次2受控JSON/3受控SSE、0付费）。新小样本4资料、重排3候选，查询3918ms/重排3349ms，不能与4候选旧样本当提速A/B。207综合exit0仍明确属于fc2fd0d；未冒充最后这次无关受管版本合并后重跑。代码与新构建指纹见公开JSON latestIntegration。

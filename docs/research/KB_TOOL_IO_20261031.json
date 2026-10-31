@@ -1,0 +1,430 @@
+{
+  "date": "2026-10-31",
+  "sourceRevision": "5b4343b",
+  "integratedMain": "4d1f3ce",
+  "status": "partial; full knowledge-base goal remains active",
+  "changes": [
+    "Full current source and model-cache integrity checks use bounded asynchronous Node IO and propagate cancellation",
+    "Preserve sequential ancestor link checks and canonicalize complete paths once before and once after a file read",
+    "Reuse immutable native parse cache only after full current package proofs; remove redundant per-file rereads already covered by complete cache-package proof",
+    "Retain original idle import/edit synchronous API and all existing business/IPC/SQLite authorities"
+  ],
+  "checkpointCommits": {
+    "eventLoopRed": "6c02f44",
+    "asyncGreen": "10cf03c",
+    "missingSourceRed": "1f59c06",
+    "missingSourceGreen": "236ef22",
+    "canonicalRed": "50391c1",
+    "canonicalGreen": "5b4343b"
+  },
+  "tests": [
+    {
+      "label": "build",
+      "command": "npm run build",
+      "exit": 0
+    },
+    {
+      "label": "typecheck",
+      "command": "npx tsc --noEmit",
+      "exit": 0
+    },
+    {
+      "label": "renderer",
+      "command": "npm run test:renderer-components",
+      "exit": 0,
+      "checks": 240
+    },
+    {
+      "label": "runtime IO",
+      "command": "node scripts/xiaozhi-agent/pi-skill-runtime-io-smoke.mjs",
+      "exit": 0,
+      "checks": 10,
+      "log": "test-results/kb-skill-canonical-green.log"
+    },
+    {
+      "label": "authority",
+      "command": "node scripts/xiaozhi-agent/pi-skill-authority-smoke.mjs",
+      "exit": 0,
+      "checks": 22
+    },
+    {
+      "label": "AI page",
+      "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
+      "exit": 0,
+      "checks": 20
+    },
+    {
+      "label": "Electron main journey with private instrumentation",
+      "command": "node test-results/kb-tool-timing-probe.mjs",
+      "exit": 0,
+      "checks": 5
+    },
+    {
+      "label": "integrated Electron smoke using preceding successful build",
+      "command": "node scripts/electron-smoke.mjs",
+      "exit": 0,
+      "checks": 207
+    },
+    {
+      "label": "catalog state suite",
+      "command": "node scripts/xiaozhi-agent/pi-skills-management-state-smoke.mjs",
+      "exit": 1,
+      "passedCases": 23,
+      "reason": "Historical pi-control-ui-2AWPBO fixture absent; old-database section not executed. Do not fabricate a legacy database or call the whole suite passed."
+    }
+  ],
+  "measurements": [
+    {
+      "id": "iJwl1f",
+      "revision": "pre-async, based on 28ef069",
+      "scope": "Same CPU/IO instrumented actual journey before these changes",
+      "success": true,
+      "checks": 5,
+      "rendererErrors": 0,
+      "originalOcr": [
+        {
+          "page": 1,
+          "status": "complete",
+          "textBytes": 183
+        }
+      ],
+      "aiRequests": {
+        "controlledArchive": 2,
+        "controlledBrain": 3,
+        "paid": 0
+      },
+      "queryMilliseconds": 3079,
+      "rerank": {
+        "available": true,
+        "complete": true,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 4,
+        "processed": 4,
+        "elapsedMs": 2838,
+        "reason": ""
+      },
+      "requestStageMilliseconds": [
+        16011,
+        10983
+      ],
+      "tools": [
+        {
+          "tool": "education_search_materials",
+          "elapsedMilliseconds": 11449,
+          "sourceReadsMilliseconds": [
+            24.7,
+            3,
+            4.6,
+            6.4
+          ],
+          "observedLoopGapsOver40ms": 24,
+          "maxObservedLoopGap": 1164
+        },
+        {
+          "tool": "office_read_material",
+          "elapsedMilliseconds": 7436,
+          "sourceReadsMilliseconds": [
+            82.3,
+            5.7
+          ],
+          "observedLoopGapsOver40ms": 10,
+          "maxObservedLoopGap": 538
+        }
+      ],
+      "wholeJourneyLoopObservation": {
+        "intervalMs": 100,
+        "thresholdMs": 40,
+        "cap": 100,
+        "count": 100,
+        "maxGapMs": 1523,
+        "includesStartup": true
+      },
+      "cpu": {
+        "samples": 56449,
+        "totalUs": 89120540,
+        "hot": [
+          {
+            "samples": 33949,
+            "chain": [
+              "(idle)",
+              "(root)"
+            ]
+          },
+          {
+            "samples": 2215,
+            "chain": [
+              "realpath",
+              "",
+              "",
+              "noLinks$1",
+              "boundedRead",
+              "visit",
+              "readPackage"
+            ]
+          },
+          {
+            "samples": 2040,
+            "chain": [
+              "realpath",
+              "",
+              "",
+              "noLinks$1",
+              "visit",
+              "readPackage",
+              "verify"
+            ]
+          },
+          {
+            "samples": 1016,
+            "chain": [
+              "realpath",
+              "",
+              "",
+              "noLinks$1",
+              "readPackage",
+              "verify",
+              ""
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "zRWhjx",
+      "revision": "236ef22",
+      "scope": "Async IO before canonical path optimization and E05 integration",
+      "success": true,
+      "checks": 5,
+      "rendererErrors": 0,
+      "originalOcr": [
+        {
+          "page": 1,
+          "status": "complete",
+          "textBytes": 183
+        }
+      ],
+      "aiRequests": {
+        "controlledArchive": 2,
+        "controlledBrain": 3,
+        "paid": 0
+      },
+      "queryMilliseconds": 2883,
+      "rerank": {
+        "available": true,
+        "complete": true,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 4,
+        "processed": 4,
+        "elapsedMs": 2826,
+        "reason": ""
+      },
+      "requestStageMilliseconds": [
+        18261,
+        5814
+      ],
+      "tools": [
+        {
+          "tool": "education_search_materials",
+          "elapsedMilliseconds": 11631,
+          "sourceReadsMilliseconds": [
+            4.3,
+            1.2,
+            0.8,
+            0.7
+          ],
+          "observedLoopGapsOver40ms": 6,
+          "maxObservedLoopGap": 960
+        },
+        {
+          "tool": "office_read_material",
+          "elapsedMilliseconds": 4498,
+          "sourceReadsMilliseconds": [],
+          "observedLoopGapsOver40ms": 0,
+          "maxObservedLoopGap": 0
+        }
+      ],
+      "wholeJourneyLoopObservation": {
+        "intervalMs": 100,
+        "thresholdMs": 40,
+        "cap": 100,
+        "count": 39,
+        "maxGapMs": 960,
+        "includesStartup": true
+      },
+      "cpu": {
+        "samples": 43307,
+        "totalUs": 68246527,
+        "hot": [
+          {
+            "samples": 39439,
+            "chain": [
+              "(idle)",
+              "(root)"
+            ]
+          },
+          {
+            "samples": 592,
+            "chain": [
+              "(program)",
+              "(root)"
+            ]
+          },
+          {
+            "samples": 238,
+            "chain": [
+              "update",
+              "update",
+              "verifyOcrRuntime",
+              "(root)"
+            ]
+          },
+          {
+            "samples": 202,
+            "chain": [
+              "ImageView",
+              "createWindow",
+              "",
+              "(root)"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "T2NRe7",
+      "revision": "5b4343b",
+      "scope": "Final actual production bundle after E05 integration",
+      "success": true,
+      "checks": 5,
+      "rendererErrors": 0,
+      "originalOcr": [
+        {
+          "page": 1,
+          "status": "complete",
+          "textBytes": 183
+        }
+      ],
+      "aiRequests": {
+        "controlledArchive": 2,
+        "controlledBrain": 3,
+        "paid": 0
+      },
+      "queryMilliseconds": 4335,
+      "rerank": {
+        "available": true,
+        "complete": true,
+        "model": "bge-reranker-base.q8.pair512.window2.v1",
+        "candidates": 4,
+        "processed": 4,
+        "elapsedMs": 4308,
+        "reason": ""
+      },
+      "requestStageMilliseconds": [
+        1044,
+        812
+      ],
+      "tools": [
+        {
+          "tool": "education_search_materials",
+          "elapsedMilliseconds": 664,
+          "sourceReadsMilliseconds": [
+            3.3,
+            0.6,
+            0.6,
+            0.4
+          ],
+          "observedLoopGapsOver40ms": 0,
+          "maxObservedLoopGap": 0
+        },
+        {
+          "tool": "office_read_material",
+          "elapsedMilliseconds": 464,
+          "sourceReadsMilliseconds": [
+            3.3,
+            2.1
+          ],
+          "observedLoopGapsOver40ms": 0,
+          "maxObservedLoopGap": 0
+        }
+      ],
+      "wholeJourneyLoopObservation": {
+        "intervalMs": 100,
+        "thresholdMs": 40,
+        "cap": 100,
+        "count": 6,
+        "maxGapMs": 1951,
+        "includesStartup": true
+      },
+      "cpu": {
+        "samples": 17358,
+        "totalUs": 26962551,
+        "hot": [
+          {
+            "samples": 13681,
+            "chain": [
+              "(idle)",
+              "(root)"
+            ]
+          },
+          {
+            "samples": 395,
+            "chain": [
+              "(program)",
+              "(root)"
+            ]
+          },
+          {
+            "samples": 252,
+            "chain": [
+              "update",
+              "update",
+              "verifyOcrRuntime",
+              "(root)"
+            ]
+          },
+          {
+            "samples": 232,
+            "chain": [
+              "createUnsafeArrayBuffer",
+              "createUnsafeBuffer",
+              "allocUnsafeSlow",
+              "readFileHandle",
+              "(root)"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "comparisonLimits": [
+    "One small four-document controlled-model journey per observation; not P95, natural accuracy or tens-of-GB qualification",
+    "E05 main changes integrated before final measurement; not a strict isolated A/B",
+    "Local rerank uses four candidates and remains seconds; final 4308ms versus earlier 2838ms, no rerank acceleration claimed",
+    "IO timing sums can overlap or nest and are not wall time; trace storage caps at 4000 events",
+    "Loop delay observation covers startup too; final journey still has a 1951ms startup gap even though neither measured tool has an observed gap over40ms",
+    "Raw diagnostics and model request contents stay in ignored local test outputs; public artifact carries metadata only"
+  ],
+  "dependencies": {
+    "new": 0,
+    "auditExit": 1,
+    "existingVulnerabilities": {
+      "info": 0,
+      "low": 8,
+      "moderate": 7,
+      "high": 8,
+      "critical": 0,
+      "total": 23
+    }
+  },
+  "paidCallsThisRound": 0,
+  "remaining": [
+    "Natural OCR/formula/answer quality and real 10GB to40GB long-run/recall/P95/install qualification",
+    "First uncached semantic reranking, foreground/background vector scheduling and original-image SQLite duplication",
+    "OCR runtime startup latency, failed standalone images, cross-page/figure/answer-book workflows, teacher correction of restored textbook text"
+  ],
+  "rollback": "Revert this round implementation commits using normal review/integration; no database/schema/file format changes and no user data removal. Original synchronous idle mutation APIs retained.",
+  "buildFingerprints": {
+    "out/main/index.js": "5b2e07dcb289db121562ae3131d9c36753e3b2cb4ea85973bd9acc332d1405c7",
+    "out/preload/index.cjs": "c62c3e0915b1c7a72c4250fe8d4d6194fb82fa9ab26ecd409546085771568696"
+  }
+}

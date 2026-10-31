@@ -1,5 +1,9 @@
 # Goal 验收台账
 
+## 2026-10-31 M04/M10工具核验切片
+
+源码5b4343b：build/type、240组件、10 IO边界、22来源权限与20页边界通过；正式Electron五项T2NRe7 exit0/0renderer，两尺寸/原页/实读来源/冷启0重发。两遍JSON/3次SSE受控，0付费；不代表自然AI质量。状态专项23项通过后因历史旧库夹具缺失整体exit1，该旧库段未验。首次检索4335ms/重排4308ms、启动仍有1951ms主循环间隙；小样本工具664/464ms不能作严格提速或40GB/P95结论。完整AT/252项不因此增加，综合结果见KB_IMPLEMENTATION_EVIDENCE与research/KB_TOOL_IO_20261031.json。
+
 ## 2026-10-30 E05与知识库主线最终整合
 
 正常整合origin/main28ef069为f30212f，保留双方知识库正文来源与E05真实计算报告代码及13份Markdown完整新增节。合并后的build/type、240组件、20知识库页边界、E05正式Electron5项均exit0，0renderer错误；实际CSV/HTML/XLSX一次确认、所有文件账本回读、两尺寸预览及冷启0模型重放通过。最初KB专项因Node缺transform-types前置失败，按原脚本补正确参数后通过，未改协作源码。207综合仍属于合并前本轮代码，不冒充本次合并后重跑。 本地合并脚本曾未在失败后停止，误含标记的未推送提交已修正；全树标记与diff检查通过，未强推、未动其他已检出分支。下一仍E06→E07/E08+C→W3集中验收，新增已实现0/252；D盘日常版本及安装包未更新。详[最终整合证据](../research/AGENT_COMPUTATION_REPORTS_E05_20261030.json)的integration。

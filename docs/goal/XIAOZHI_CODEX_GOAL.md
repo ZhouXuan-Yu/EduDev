@@ -1,5 +1,9 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-10-31 M04/M10工具核验性能工程更新
+
+实际CPU证据定位同步技能包证明堵塞主循环，源码5b4343b沿原Pi/SQLite/FTS/Lance修复为可取消异步完整核验、减少冗余路径/内容重读，保留全部当前哈希与来源权限。不增加服务/依赖/迁移。实际目录→整页→检索→Pi实读引用→冷启5项通过，工具搜索664ms/读取464ms；首次语义重排4308ms、启动间隙1951ms仍待优化。主线4d1f3ce协作E05已保留，完整Goal及252项集中验收状态不因本片提高。大样本、自然质量与安装未通过；本轮证据见research/KB_TOOL_IO_20261031.json及KB_IMPLEMENTATION_EVIDENCE.md。
+
 ## 2026-10-30 E05与知识库主线最终整合
 
 正常整合origin/main28ef069为f30212f，保留双方知识库正文来源与E05真实计算报告代码及13份Markdown完整新增节。合并后的build/type、240组件、20知识库页边界、E05正式Electron5项均exit0，0renderer错误；实际CSV/HTML/XLSX一次确认、所有文件账本回读、两尺寸预览及冷启0模型重放通过。最初KB专项因Node缺transform-types前置失败，按原脚本补正确参数后通过，未改协作源码。207综合仍属于合并前本轮代码，不冒充本次合并后重跑。 本地合并脚本曾未在失败后停止，误含标记的未推送提交已修正；全树标记与diff检查通过，未强推、未动其他已检出分支。下一仍E06→E07/E08+C→W3集中验收，新增已实现0/252；D盘日常版本及安装包未更新。详[最终整合证据](../research/AGENT_COMPUTATION_REPORTS_E05_20261030.json)的integration。
