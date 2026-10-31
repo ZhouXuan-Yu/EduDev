@@ -8,13 +8,16 @@ import type {MaterialSource} from '../../shared/materials';
 import type {ExtractedQuestion} from './material-question-extract';
 import type {RuleOrigin} from './material-question-origins';
 import {nonQuestionPagePurpose} from './material-page-purpose';
+import {bookAnswerPage} from './material-book-answer-content';
 type Host={all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>;run:(sql:string,p?:(string|number|null)[])=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;associate?:(q:QuestionBankItem,origin:RuleOrigin)=>Promise<void>};
 const hash=(v:string)=>createHash('sha256').update(v).digest('hex');
 const normalized=aiTextSignature;
 export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,answerBook=false){
  const numbered=answerBook?[]:restoredPageQuestions(final.pageText,source,final.questions.map(q=>q.number)),omitted=numbered.some(c=>!final.questions.some(q=>q.number===c.number));
  const unstructured=!answerBook&&final.outcome==='no_questions'&&!numbered.length&&/[?？]|求|计算|解方程/.test(final.pageText);
- return{numbered,omitted,review:omitted||unstructured||final.outcome==='needs_review'||!pageTranscriptionAgrees(first,final)};
+ const answers=answerBook?bookAnswerPage(first,final):undefined;
+ const answerReview=!!answers&&(answers.status==='too_large'||answers.status==='unstructured'&&!!(first.pageText||final.pageText)||answers.pageUncertain||answers.firstOnly.length>0||answers.entries.some(e=>!e.agrees||e.issues.some(i=>i!=='missing_analysis')));
+ return{numbered,omitted,review:answerReview||omitted||unstructured||final.outcome==='needs_review'||!pageTranscriptionAgrees(first,final)};
 }
 export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,imageSha:string,q:AiImageQuestion){
  const assessment=assessAiPage(first,final,source),candidate=assessment.numbered.find(c=>c.number===q.number),evidence=candidate&&!candidate.risks.length?pageQuestionEvidence(first,final,q.number,imageSha,candidate.fields.stem):undefined;
