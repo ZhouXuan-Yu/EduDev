@@ -290,5 +290,151 @@
     "Existing PromptInput fingerprint/startup IPC gates not rerun or fixed in this slice",
     "Existing npm audit45 vulnerabilities"
   ],
-  "rollback": "Pause affected AI/question jobs, revert the entry-view production commit and restoration exception while preserving source PDFs, raw saved two-pass receipts, SQLite facts, association table and collaborator changes; no destructive migration. Full rollback not rehearsed."
+  "rollback": "Pause affected AI/question jobs, revert the entry-view production commit and restoration exception while preserving source PDFs, raw saved two-pass receipts, SQLite facts, association table and collaborator changes; no destructive migration. Full rollback not rehearsed.",
+  "firstIntegration": {
+    "commit": "c3fa341",
+    "origin": "6d45424",
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "mainSha256": "e35f777f7787fabbad917beb93799e40cb595b3048ea06cfa0ffb6b6a50f2f6c"
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240
+    },
+    "actualUi": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\answer-entries-JiZp6i",
+      "checks": [
+        "Teacher opens actual saved answer page;22 entries in two exam groups retain page uncertainty, separate question1 answers and physical cross-page tail",
+        "Visible unlink blocks the old receipt; restoring the identical completed pair reopens the same source evidence without granting another batch or changing stored results",
+        "Both1366x768 and1920x1080 reach the last entry and both original quotations without horizontal overflow",
+        "Restart preserves all22 entries and source hashes with unchanged two-call ledger, no new question rows and SQLite integrity"
+      ],
+      "rendererErrors": [],
+      "cloudRequests": 0,
+      "starts": 2,
+      "buildSha256": "e35f777f7787fabbad917beb93799e40cb595b3048ea06cfa0ffb6b6a50f2f6c",
+      "scope": "Actual saved answerPDF page3 two-pass DeepSeek receipts. Visible grouped entries and exact-source unlink/restore/restart; zero replay. Not mathematical correctness, automatic question matching or writeback.",
+      "batch": {
+        "id": "aibatch_eb167f7c-5964-4984-bf99-272022390682",
+        "calls": 2
+      },
+      "entries": {
+        "total": 22,
+        "sections": [
+          "第十三、十四章 素养基础测试卷",
+          "第十三、十四章 素养提优测试卷"
+        ],
+        "agreed": 22,
+        "transcription": "needs_review"
+      },
+      "revisions": {
+        "before": 7,
+        "restored": 9
+      },
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "width": 1920,
+          "height": 1080
+        }
+      ],
+      "success": true
+    }
+  },
+  "secondIntegration": {
+    "commit": "c2e8e5c",
+    "origin": "0723242",
+    "productionConflicts": 0,
+    "documentationConflicts": [
+      "1.Agent.md",
+      "2.Memory.md",
+      "3.Learning.md",
+      "4.Wiki.md"
+    ],
+    "resolution": "Preserved both complete sections in every shared file. Knowledge entry production files byte-identical to a4bda04; includes new collaborator workbench.",
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "includesTypecheck": true,
+      "mainSha256": "e35f777f7787fabbad917beb93799e40cb595b3048ea06cfa0ffb6b6a50f2f6c",
+      "rendererFile": "apps\\desktop\\out\\renderer\\assets\\index-D-DMdmwW.js",
+      "rendererBytes": 7227387,
+      "rendererSha256": "a998356bc31de400c9ccdf663d8c792c2205b08a43bc5c81392fa74e049695aa"
+    },
+    "components": {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240
+    },
+    "actualUi": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\answer-entries-QmyOx9",
+      "checks": [
+        "Teacher opens actual saved answer page;22 entries in two exam groups retain page uncertainty, separate question1 answers and physical cross-page tail",
+        "Visible unlink blocks the old receipt; restoring the identical completed pair reopens the same source evidence without granting another batch or changing stored results",
+        "Both1366x768 and1920x1080 reach the last entry and both original quotations without horizontal overflow",
+        "Restart preserves all22 entries and source hashes with unchanged two-call ledger, no new question rows and SQLite integrity"
+      ],
+      "rendererErrors": [],
+      "cloudRequests": 0,
+      "starts": 2,
+      "buildSha256": "e35f777f7787fabbad917beb93799e40cb595b3048ea06cfa0ffb6b6a50f2f6c",
+      "scope": "Actual saved answerPDF page3 two-pass DeepSeek receipts. Visible grouped entries and exact-source unlink/restore/restart; zero replay. Not mathematical correctness, automatic question matching or writeback.",
+      "batch": {
+        "id": "aibatch_eb167f7c-5964-4984-bf99-272022390682",
+        "calls": 2
+      },
+      "entries": {
+        "total": 22,
+        "sections": [
+          "第十三、十四章 素养基础测试卷",
+          "第十三、十四章 素养提优测试卷"
+        ],
+        "agreed": 22,
+        "transcription": "needs_review"
+      },
+      "revisions": {
+        "before": 9,
+        "restored": 11
+      },
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768
+        },
+        {
+          "width": 1920,
+          "height": 1080
+        }
+      ],
+      "success": true
+    },
+    "screenshotsVisuallyInspected": true,
+    "legacy207Suite": "Passed once against a4bda04 frozen production before integration, not rerun or attributed to final workbench. Final production knowledge UI covered separately."
+  },
+  "performanceComparison": {
+    "previousRendererBytes": 7188318,
+    "finalRendererBytes": 7227387,
+    "overallDeltaBytes": 39069,
+    "scope": "Final delta includes collaborator requirements/workbench. Entry-view addition alone approx4.34kB per earlier Vite output; no end-to-end retrieval speed improvement claimed. Parser-only measured cost recorded separately."
+  },
+  "changedProductionFiles": [
+    "apps/desktop/src/main/assets/material-ai-repository.ts",
+    "apps/desktop/src/main/assets/material-book-pairs.ts",
+    "apps/desktop/src/main/assets/material-book-answer-content.ts",
+    "apps/desktop/src/shared/material-ai-page.ts",
+    "apps/desktop/src/shared/material-book-pair.ts",
+    "apps/desktop/src/shared/material-book-answer.ts",
+    "apps/desktop/src/renderer/components/product/MaterialAiPagePanel.tsx",
+    "apps/desktop/src/renderer/components/product/MaterialBookPanel.tsx",
+    "apps/desktop/src/renderer/components/product/MaterialBookAnswers.tsx"
+  ],
+  "knowledgeSourceUnchangedByIntegration": true,
+  "finalEvidenceStatus": "All listed bounded checks completed; full teacher book alignment/writeback and natural large-corpus quality remain open."
 }
