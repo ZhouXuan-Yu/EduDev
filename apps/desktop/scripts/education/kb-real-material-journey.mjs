@@ -54,6 +54,8 @@ try{
  report.sourceUnchanged=JSON.stringify(fingerprint())===JSON.stringify(report.source);if(!report.sourceUnchanged)throw Error('Source changed');
  note('Local processing and readback captured; original file hashes unchanged');
  await app.close();app=undefined;await launch();report.restart=await materials();await page.setViewportSize({width:1920,height:1080});await page.screenshot({path:path.join(output,'restart-1920.png'),fullPage:true});
- report.success=report.materials.resources.length===report.source.length&&report.rendererErrors.length===0;
+ report.localOutcome=report.materials.resources.every(r=>['ready','parsed','chunked','indexed','graph_extracted'].includes(r.parseStatus))&&report.snapshots.at(-1).pdf.every(p=>p.state==='complete'&&!p.review&&!p.failed)?'complete':'attention';
+ report.success=report.materials.resources.length===report.source.length&&report.rendererErrors.length===0&&report.localOutcome==='complete';
+ if(!report.success){report.error='Local material stage requires attention; settled or archived files are not accepted as a usable question bank';process.exitCode=1;}
 }catch(e){report.success=false;report.error=String(e.stack||e);process.exitCode=1;if(page)await page.screenshot({path:path.join(output,'failure.png'),fullPage:true}).catch(()=>{});}
 finally{if(app)await app.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({output,success:report.success,error:report.error,checks:report.checks}));}

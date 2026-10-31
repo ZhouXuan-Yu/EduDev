@@ -105,9 +105,10 @@ export class MaterialParseQueue {
    const row=pending.find(row=>{const p=parse(row);return p&&!this.active.has(p.resourceId);});if(!row){if(quarantined)continue;return;}if(this.closing)return;
    const p=parse(row)!,claim={...p,attempt:p.attempt+1,owner:{pid:process.pid,nonce:this.nonce}};if(!await this.cas(row,'running',claim))continue;
    const lease={taskId:String(row.id),payload:JSON.stringify(claim)},active:ActiveParse={id:p.resourceId,priority:p.priority,controller:new AbortController()};this.active.set(p.resourceId,active);
+   // Track the owner before any further SQL can fail, so shutdown always joins it.
+   active.work=this.runClaim(claim,lease,active).catch(()=>undefined).finally(()=>{this.active.delete(p.resourceId);this.wake();});
    if(this.closing){active.reason='shutdown';active.controller.abort();}
    else if(p.priority===0&&this.active.size>=this.slots()&&(await this.rows('pending')).some(row=>parse(row)?.priority===100)){active.reason='preempt';active.controller.abort();}
-   active.work=this.runClaim(claim,lease,active).catch(()=>undefined).finally(()=>{this.active.delete(p.resourceId);this.wake();});
   }
  }
  private async runClaim(claim:Payload,lease:MaterialParseLease,active:ActiveParse){
