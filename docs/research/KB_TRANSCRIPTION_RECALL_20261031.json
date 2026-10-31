@@ -1,0 +1,349 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-31",
+  "sourceSha": "7743efe2c8e4d15e10245ab13c2ad6c526b51ba4",
+  "branch": "codex/knowledge-base-reuse-implementation",
+  "originMainIntegrated": "7dc04a8540e29927387eca5d4dae14e8cb5a7af8",
+  "mergeSha": "25888a15eb11bfaa02b76945b9b178bf2500f14c",
+  "scope": "M04/M05/M10: retrieve a reliable mixed-page transcript while independently preserving held question/answer/figure status. Entire knowledge-base Goal stays active.",
+  "red": [
+    {
+      "commit": "e542ddb",
+      "log": "kb-mixed-transcript-red.log",
+      "exit": 1,
+      "result": "Real SQLite executor held the image question; full-page text retrieval returned0 instead of1"
+    },
+    {
+      "commit": "3b29807",
+      "log": "kb-mixed-transcript-spacing-red.log",
+      "exit": 1,
+      "result": "Whitespace erasure incorrectly treated1 2 and12 as equivalent, returning complete"
+    }
+  ],
+  "implementation": {
+    "greenCommits": [
+      "3c536ff",
+      "7743efe"
+    ],
+    "reuse": [
+      "original two-pass receipts and durable executor",
+      "existing typed page interface",
+      "SQLite/local files, original FTS/Lance/ONNX/Pi",
+      "existing cursor8 and drain4"
+    ],
+    "newDependencies": 0,
+    "newModels": 0,
+    "newServices": 0,
+    "newIpcChannels": 0,
+    "newViewField": "Optional AiPageView.transcriptionStatus; legacy overall status unchanged",
+    "sourceFacts": "No model-response schema change or original OCR/question/teacher fact rewriting",
+    "quality": "Both page texts must agree; page-level doubts and question-level uncertain_ocr/cross_page/incomplete_question block text. Question extraction outcome or pure figure/answer hold does not qualify a question or hide otherwise reliable text.",
+    "mathematicalSignature": "NFC; preserve whitespace boundaries between Unicode letters/numbers; accept layout around punctuation/operators. Shared by page/image consistency and page/source question field comparison; known taxonomy labels alone retain label normalization.",
+    "migration": "Add transcription_policy to existing derived control. One-time cursor reset; replay8 slots per discover and process4 due units. Only page_needs_review is cleared during bounded discovery; privacy/source blocks remain.",
+    "rollback": "OMNI_EDU_AI_TEXT_INDEX=0 stops new derived indexing. Revert7743efe then3c536ff production behavior if necessary; preserve optional metadata/control column and all original receipts/images/teacher facts. Rebuild derived text through existing UI when re-enabling after a rollback."
+  },
+  "verification": {
+    "final": {
+      "build": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-final-build-774.log",
+        "exit": 0
+      },
+      "components": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-final-components-774.log",
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      "focused": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-spacing-green.log",
+        "exit": 0,
+        "nodePassed": 7,
+        "nodeFailed": 0,
+        "nodeSkipped": 0,
+        "pageChecksWithinOneEntry": 27,
+        "consistencyTests": 6,
+        "actualSavedResponses": "QtstIt read-only",
+        "coverage": {
+          "line": 100,
+          "branch": 84.42,
+          "function": 100,
+          "targets": {
+            "pageBranch": 95.45,
+            "indexBranch": 80.65,
+            "existingImageBranch": 78.05
+          },
+          "boundary": "Three target modules only; not whole-repository coverage"
+        }
+      },
+      "naturalReceiptConsistency": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-real-consistency.log",
+        "exit": 0,
+        "nodePassed": 6,
+        "nodeSkipped": 0,
+        "actualSavedResponses": "qVnqCD read-only"
+      },
+      "mixedJourney": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-final-journey-774.log",
+        "exit": 0,
+        "checks": 6,
+        "rendererErrors": 0,
+        "privateReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-restored-text-LDMjIB\\report.json",
+        "queryMilliseconds": 163,
+        "rerankMilliseconds": 86,
+        "bankStates": [
+          "ai_final",
+          "ai_needs_review"
+        ],
+        "controlledArchiveCalls": 2,
+        "controlledPiCalls": 3
+      },
+      "savedRealPageReopen": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-final-saved-774.log",
+        "exit": 0,
+        "checks": 4,
+        "rendererErrors": 0,
+        "privateReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-saved-page-recovery-qeBlNa\\report.json",
+        "bankStates": {
+          "rule_extracted": 4,
+          "ai_final": 3,
+          "ai_needs_review": 1
+        },
+        "before": {
+          "active": 1,
+          "policy": 2,
+          "blocked": [],
+          "factsSha": "c7ceecb9b843ace6de77195e498c2322832ab7aee7b72328d39294d47a78b153"
+        },
+        "after": {
+          "active": 1,
+          "policy": 2
+        },
+        "textBytes": 2031,
+        "networkRequests": 0
+      }
+    },
+    "integratedBeforeSpacingFix": {
+      "sourceSha": "25888a15eb11bfaa02b76945b9b178bf2500f14c",
+      "fullLegacySmoke": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-integrated-smoke.log",
+        "exit": 0,
+        "passed": 207,
+        "total": 207,
+        "command": "npm.cmd run test:smoke",
+        "boundary": "Explicit legacy-test runtime; not complete Pi/teacher AT; final spacing signature fix subsequently gets focused/UI verification"
+      },
+      "components": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-components-integrated.log",
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      "page": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-page-integrated.log",
+        "exit": 0,
+        "checks": 26
+      },
+      "retrieval": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-retrieval-integrated.log",
+        "exit": 0,
+        "checks": 17
+      },
+      "archives": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-archive-integrated.log",
+        "exit": 0,
+        "checks": 13
+      },
+      "folder": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-folder-integrated.log",
+        "exit": 0,
+        "checks": 7
+      },
+      "e06": {
+        "log": "apps/desktop/test-results/kb-mixed-transcript-e06-integrated.log",
+        "exit": 0,
+        "checks": 11
+      },
+      "buildFingerprints": [
+        {
+          "path": "apps/desktop/out/main/index.js",
+          "bytes": 3201899,
+          "sha256": "2776b50f614ef63f02fbf82ab31f2b1eba1e7f953bae2ac273102f7ad0d1e445"
+        },
+        {
+          "path": "apps/desktop/out/preload/index.cjs",
+          "bytes": 34761,
+          "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+        },
+        {
+          "path": "apps/desktop/out/main/retrieval-worker.js",
+          "bytes": 62472,
+          "sha256": "559902e79451f5da50fab7585cd715d9ee5826e2c8b46f091489c03c6d86c150"
+        },
+        {
+          "path": "apps/desktop/out/renderer/assets/index-Byex5yPy.js",
+          "bytes": 7175676,
+          "sha256": "7f3a9f93808068b3e712d9d020535d86f954dc0dbe184bf89179c67759e0e2d4"
+        }
+      ]
+    },
+    "firstNaturalLibraryRecovery": {
+      "log": "apps/desktop/test-results/kb-mixed-transcript-saved.log",
+      "exit": 0,
+      "checks": 4,
+      "rendererErrors": 0,
+      "privateReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-saved-page-recovery-YnqgUF\\report.json",
+      "bankStates": {
+        "rule_extracted": 4,
+        "ai_final": 3,
+        "ai_needs_review": 1
+      },
+      "before": {
+        "active": 0,
+        "policy": 1,
+        "blocked": [
+          {
+            "error": "page_needs_review",
+            "n": 1
+          }
+        ],
+        "factsSha": "c7ceecb9b843ace6de77195e498c2322832ab7aee7b72328d39294d47a78b153"
+      },
+      "after": {
+        "active": 1,
+        "policy": 2
+      },
+      "textBytes": 2031,
+      "networkRequests": 0,
+      "sourceBoundary": "Initial working build before final source checkpoint; migration implementation unchanged, later final774 source reopens the recovered library separately. This is recovery of earlier natural responses, not new paid model accuracy evidence.",
+      "facts": "Full question/OCR/unit/page receipt hash stayed exactly unchanged; original PNG retained",
+      "beforeActive": 0,
+      "afterActive": 1,
+      "beforePolicy": 1,
+      "afterPolicy": 2
+    }
+  },
+  "performance": {
+    "sameRealSourceBeforeActive": 0,
+    "sameRealSourceAfterActive": 1,
+    "naturalTextBytes": 2031,
+    "observedMixedQueryMs": 163,
+    "observedMixedRerankMs": 86,
+    "rendererBeforeBytes": 7175291,
+    "rendererAfterBytes": 7175676,
+    "rendererDeltaBytes": 385,
+    "boundary": "Four-document controlled mixed fixture, no strict speed A/B, no40GB/P95/Recall/peak-memory acceptance. New status checks are bounded by existing64KiB page and20 questions; no new model process."
+  },
+  "failuresRetained": [
+    {
+      "log": "kb-mixed-transcript-journey.log",
+      "exit": 1,
+      "report": "omni-restored-text-GQiTgl",
+      "reason": "After two successful data checks the active UI was Settings; script waited for a materials search control. Re-entered actual materials navigation and serialized desktop journeys; original failure retained."
+    },
+    "Both RED reports retained; no assertions deleted or private source responses published"
+  ],
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "info": 0,
+    "low": 8,
+    "moderate": 29,
+    "high": 8,
+    "critical": 0,
+    "total": 45,
+    "dependencyLockChanged": false
+  },
+  "paidRequestsThisRound": 0,
+  "rawUserDataUploadedThisRound": false,
+  "fingerprints": [
+    {
+      "path": "apps/desktop/out/main/index.js",
+      "bytes": 3201965,
+      "sha256": "b26a8eea5d37ce6f113c1b9c18f43d2bc864675ab2b3a2eb62d03c8181e6f417"
+    },
+    {
+      "path": "apps/desktop/out/preload/index.cjs",
+      "bytes": 34761,
+      "sha256": "d55e6ec136f82ea6569fd0bc5953b636964f5c1c3e0727e2fd530d1dd982a3a9"
+    },
+    {
+      "path": "apps/desktop/out/main/retrieval-worker.js",
+      "bytes": 62472,
+      "sha256": "559902e79451f5da50fab7585cd715d9ee5826e2c8b46f091489c03c6d86c150"
+    },
+    {
+      "path": "apps/desktop/out/renderer/assets/index-Byex5yPy.js",
+      "bytes": 7175676,
+      "sha256": "7f3a9f93808068b3e712d9d020535d86f954dc0dbe184bf89179c67759e0e2d4"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-page.ts",
+      "bytes": 4919,
+      "sha256": "55d1d3368d82bf14d99f8f52893723cd95b9e76f91bc02ac4c8ba9345847d67d"
+    },
+    {
+      "path": "apps/desktop/src/shared/material-ai-image.ts",
+      "bytes": 4218,
+      "sha256": "adb1e693438c2211100842d7e4e1c3dbffabf1963612cb13666000632a48639a"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-page-publish.ts",
+      "bytes": 5162,
+      "sha256": "663ba9abeeca8ab50f5693914323cc01fab68f78ca4c169b0f8eeed400b8bce2"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+      "bytes": 49490,
+      "sha256": "946229b10fc709f4c1d45699e60f43d868fce7af66c29d9ddcbfc9efa3278f2c"
+    },
+    {
+      "path": "apps/desktop/src/main/assets/material-tools.ts",
+      "bytes": 8721,
+      "sha256": "0ce61d213bc5ed59601cbddf0dc2ec0270b5f8bd3fb548d88cd278eb08deb48a"
+    },
+    {
+      "path": "apps/desktop/src/main/retrieval/material-ai-text-index.ts",
+      "bytes": 18967,
+      "sha256": "9898dd4982f20f589bff87690f7c91a22cd331c5d96a8ba6c97c78bd5846fb0e"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/product/MaterialAiPagePanel.tsx",
+      "bytes": 4808,
+      "sha256": "2c88f8211c039abe85b41930171443a8f4e2c1cd5d22308b6f4695d9222f7bec"
+    },
+    {
+      "path": "apps/desktop/scripts/education/kb-saved-page-recovery-journey.mjs",
+      "bytes": 7509,
+      "sha256": "8f1c2005ce63c0509b0d2a717c21aca2b8baeb03a96db43cdac3da96ece7ef2a"
+    }
+  ],
+  "remaining": [
+    "10GB->40GB recursive mixed-format long run,100k/1M chunks, natural Recall/P95 and peak memory",
+    "Independent OCR/math/answer quality evaluation and teacher correction of restored textbook text",
+    "Cross-page/answer-book/complex-figure workflows and old inline image migration",
+    "Managed installer and actual daily D runtime acceptance",
+    "Existing45 dependency advisories"
+  ],
+  "delivery": {
+    "dailyRuntimeUpdated": false,
+    "installerPublished": false,
+    "goal": "active",
+    "newlyAcceptedFullProductAT": 0,
+    "git": "Normal merge and atomic push to main plus implementation branch; exact remote equality verified after final documentation commit"
+  },
+  "commands": {
+    "cwd": "apps/desktop",
+    "build": "npm.cmd run build",
+    "components": "npm.cmd run test:renderer-components",
+    "focused": "$env:OMNI_EDU_REAL_IMAGE_RECEIPT=Join-Path $env:TEMP 'omni-real-image-page-QtstIt'; node --experimental-transform-types --test --test-concurrency=1 --experimental-test-coverage --test-coverage-include='**/material-ai-page.ts' --test-coverage-include='**/material-ai-image.ts' --test-coverage-include='**/material-ai-text-index.ts' scripts/education/kb-ai-page-boundaries.mjs scripts/education/kb-image-consistency-boundaries.mjs",
+    "mixedJourney": "node scripts/education/kb-restored-text-journey.mjs --image --mixed",
+    "savedPage": "node scripts/education/kb-saved-page-recovery-journey.mjs \"$env:TEMP/omni-real-image-page-qVnqCD\"",
+    "realReadonly": "$env:OMNI_EDU_REAL_IMAGE_RECEIPT=Join-Path $env:TEMP 'omni-real-image-page-qVnqCD'; node --experimental-transform-types --test scripts/education/kb-image-consistency-boundaries.mjs",
+    "smoke": "npm.cmd run test:smoke",
+    "retrieval": "node --experimental-transform-types --test scripts/education/kb-retrieval-boundaries.mjs",
+    "archives": "node --experimental-transform-types --test scripts/education/kb-critical-archive-boundaries.mjs",
+    "folder": "node --experimental-transform-types --test scripts/education/kb-folder-ai-boundaries.mjs",
+    "e06": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+    "audit": "npm.cmd audit --json"
+  }
+}
