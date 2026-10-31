@@ -1,5 +1,5 @@
 import { ArrowUpRight, ChartNoAxesCombined, ClipboardList, NotebookPen } from 'lucide-react';
-import '../../ui-system/workbench-pages.css';
+import '../../ui-system/workbench-home.css';
 
 const tasks = [
   {
@@ -32,51 +32,30 @@ const suggestions = [
   '帮我把这份教学资料整理成课堂讲义提纲。',
 ] as const;
 
-/** Suggestions prepare a draft through the host; the host owns explicit sending. */
-export function WorkbenchHome({ onSuggest }: { onSuggest?: (text: string) => void }) {
-  return (
-    <section className="wb-home" aria-label="教学任务首页" data-testid="workbench-home">
-      <header className="wb-home-heading">
-        <h1 className="wb-home-title">今天想完成什么教学任务？</h1>
-        <p className="wb-home-description">从一个教学任务开始，或选择下面的提问作为草稿。</p>
-      </header>
+/** Suggestions prepare an unsent draft; they never start a model request. */
+export function WorkbenchHome({ onSuggest, headingOnly = false }: { onSuggest?: (text: string) => void; headingOnly?: boolean }) {
+  return <section className="wb-start" aria-label="教学任务首页" data-testid="workbench-home">
+    <header className="wb-start-heading">
+      <h1>今天想完成什么教学任务？</h1>
+      <p>告诉小智你的教学需求。</p>
+    </header>
+    {!headingOnly && <WorkbenchHomeSuggestions onSuggest={onSuggest} />}
+  </section>;
+}
 
-      <div className="wb-home-tasks">
-        {tasks.map(({ id, title, description, icon: Icon, prompt }) => (
-          <button
-            key={id}
-            type="button"
-            className="wb-home-task"
-            data-testid={`home-task-${id}`}
-            disabled={!onSuggest}
-            onClick={() => onSuggest?.(prompt)}
-          >
-            <Icon className="wb-home-task-icon" size={26} strokeWidth={1.7} aria-hidden="true" />
-            <span className="wb-home-task-title">{title}</span>
-            <span className="wb-home-task-description">{description}</span>
-          </button>
-        ))}
-      </div>
-
-      <section className="wb-home-suggestions" aria-label="你可以这样问">
-        <h2 className="wb-home-suggestions-title">你可以这样问</h2>
-        <div className="wb-home-suggestion-list">
-          {suggestions.map((text, index) => (
-            <button
-              key={text}
-              type="button"
-              className="wb-home-suggestion"
-              data-testid={`home-suggestion-${index + 1}`}
-              disabled={!onSuggest}
-              onClick={() => onSuggest?.(text)}
-            >
-              <span className="wb-home-suggestion-text">{text}</span>
-              <ArrowUpRight className="wb-home-suggestion-icon" size={18} aria-hidden="true" />
-            </button>
-          ))}
-        </div>
-        <p className="wb-home-draft-note">选择后仅填入草稿，确认并发送后才开始处理。</p>
-      </section>
-    </section>
-  );
+export function WorkbenchHomeSuggestions({ onSuggest }: { onSuggest?: (text: string) => void }) {
+  return <section className="wb-start-options" aria-label="教学任务建议">
+    <div className="wb-start-shortcuts">
+      {tasks.map(({ id, title, icon: Icon, prompt }) => <button key={id} type="button" className="wb-start-shortcut"
+        data-testid={`home-task-${id}`} disabled={!onSuggest} onClick={() => onSuggest?.(prompt)}>
+        <Icon size={17} aria-hidden="true" /><span>{title}</span>
+      </button>)}
+    </div>
+    <div className="wb-start-examples" aria-label="示例提问">
+      {suggestions.slice(0, 2).map((text, index) => <button key={text} type="button" className="wb-start-example"
+        data-testid={`home-suggestion-${index + 1}`} disabled={!onSuggest} onClick={() => onSuggest?.(text)}>
+        <span>{text}</span><ArrowUpRight size={15} aria-hidden="true" />
+      </button>)}
+    </div>
+  </section>;
 }

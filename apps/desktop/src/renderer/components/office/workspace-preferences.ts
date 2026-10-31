@@ -7,7 +7,12 @@ export function readWorkspacePreferences(): WorkspacePreferences {
     if (value?.schema === 1 && typeof value.sidebar === 'boolean' && typeof value.aside === 'boolean')
       return { sidebar: value.sidebar, aside: value.aside, files: value.files === true };
   } catch { /* Invalid or inaccessible preferences must not block the workspace. */ }
-  return { sidebar: true, aside: true, files: false };
+  return { sidebar: true, aside: false, files: false };
+}
+/** Old panel visibility is a preference, never a reason to occupy a new blank chat. */
+export function initialWorkspacePreferences(empty: boolean): WorkspacePreferences {
+  const saved = readWorkspacePreferences();
+  return empty ? { ...saved, aside: false, files: false } : saved;
 }
 export function writeWorkspacePreferences(value: WorkspacePreferences): boolean {
   try {

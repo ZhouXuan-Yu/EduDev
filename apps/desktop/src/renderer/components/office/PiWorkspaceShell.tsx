@@ -4,16 +4,22 @@ import { History, PanelRight, Files, SquarePen, Ellipsis } from 'lucide-react';
 import { useDesktopCommands } from '../desktop/DesktopFrame';
 import { EduShell } from '../../ui-system/EduShell';
 import { EduPanel } from '../../ui-system/EduPanel';
-import { readWorkspacePreferences, writeWorkspacePreferences } from './workspace-preferences';
+import { initialWorkspacePreferences, writeWorkspacePreferences } from './workspace-preferences';
 import { ColumnResizeHandle, readColumnWidth, writeColumnWidth } from '../../ui-system/ColumnResizeHandle';
+import { focusWorkspacePending, type WorkspacePendingItem } from './workspace-notifications';
 import { WorkbenchContextPanel, type WorkbenchPanelMode } from './WorkbenchContextPanel';
 
-export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey }: {
+export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSkills, onSettings, visible = true, fileRequest, onNewChat, sessionKey, isEmpty = false, notifications = { hasFiles: false, pending: [] } }: {
   title: string; sidebar: ReactNode; aside: ReactNode; children: ReactNode;
   onLeave: () => void; onSkills: () => void; onSettings: () => void;
   files?: (close: () => void) => ReactNode; visible?: boolean; fileRequest?: string; onNewChat?: () => void; sessionKey?: string;
+  isEmpty?: boolean; notifications?: { hasFiles: boolean; pending: WorkspacePendingItem[] };
 }) {
-  const [preferences, setPreferences] = useState(readWorkspacePreferences);
+  const main = useRef<HTMLDivElement>(null);
+  const { hasFiles, pending } = notifications;
+  const [preferences, setPreferences] = useState(() => initialWorkspacePreferences(isEmpty));
+  const handledFileRequest = useRef<string | undefined>(undefined);
+  const emptyWasVisible = useRef(isEmpty);
   const [historyOpen, setHistoryOpen] = useState(false);
   const historyWasOpen = useRef(false);
   const [panelWidth, setPanelWidth] = useState(() => readColumnWidth('xiaozhi.ui.panelWidth.v1', 340, 300, 680));
@@ -37,9 +43,20 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
     return () => query.removeEventListener('change', resize);
   }, []);
   useEffect(() => { writeColumnWidth('xiaozhi.ui.panelWidth.v1', panelWidth); }, [panelWidth]);
-  useEffect(() => { if (visible) setPreferences(readWorkspacePreferences()); }, [visible]);
+  useEffect(() => { if (visible) setPreferences(initialWorkspacePreferences(isEmpty)); }, [visible, sessionKey]);
+  // Loading first becomes an empty thread after hydration. Do not close a panel the
+  // teacher subsequently opens in that same empty thread.
+  useEffect(() => {
+    if (isEmpty && !emptyWasVisible.current) setPreferences(previous => ({ ...previous, files: false, aside: false }));
+    emptyWasVisible.current = isEmpty;
+  }, [isEmpty]);
   useEffect(() => { setHistoryOpen(false); }, [sessionKey]);
-  useEffect(() => { if (fileRequest && visible) panel('files'); }, [fileRequest, visible]);
+  useEffect(() => {
+    if (fileRequest && visible && fileRequest !== handledFileRequest.current) {
+      handledFileRequest.current = fileRequest;
+      panel('files');
+    }
+  }, [fileRequest, visible]);
   useEffect(() => {
     if (historyWasOpen.current && !historyOpen) document.querySelector<HTMLElement>('[data-testid="pi-sidebar-toggle"]')?.focus();
     historyWasOpen.current = historyOpen;
@@ -58,7 +75,15 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
   </>;
   return <EduShell view="ai" title={title} actions={actions} navigationResizable testId="xiaozhi-pi-workspace" headerTestId="pi-workspace-header">
     <div className="edu-chat" data-context-open={open} style={{ '--edu-panel-width': `${panelWidth}px` } as CSSProperties}>
-      <div className="edu-chat-main">{children}</div>
+      <div className="edu-chat-main" ref={main}>
+        {((hasFiles && files && !(open && mode === 'files')) || pending.length > 0) && <div className="wb-workspace-notifications" aria-label="会话事项">
+          {hasFiles && files && !(open && mode === 'files') && <Button variant="ghost" size="sm" data-testid="workspace-files-available" onPress={() => panel('files')}><Files size={15} />查看已保存文件</Button>}
+          {pending.map(item => <Button key={`${item.kind}:${item.id}`} variant="ghost" size="sm" data-testid="workspace-pending-approval" data-pending-kind={item.kind} data-pending-id={item.id} onPress={() => {
+            if (main.current) focusWorkspacePending(main.current, item);
+          }}>{item.label}</Button>)}
+        </div>}
+        {children}
+      </div>
       {open && <ColumnResizeHandle side="right" width={panelWidth} min={300} max={680} label="调整右侧任务栏宽度" onResize={setPanelWidth} onReset={() => setPanelWidth(340)} />}
       {open && <WorkbenchContextPanel mode={mode} onModeChange={panel} onClose={() => panel('closed')} tasks={aside} files={files?.(() => panel('closed'))} />}
     </div>

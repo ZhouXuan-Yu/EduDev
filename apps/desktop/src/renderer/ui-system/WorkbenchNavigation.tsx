@@ -8,8 +8,8 @@ import './workbench-navigation.css';
 
 type Dialog = 'new' | 'search' | 'folder' | 'history';
 const workbenches = [
-  { id: 'teaching', title: '教学工作台', group: '教学', disclosure: 'teaching', Icon: BookOpen },
-  { id: 'student_workbench', title: '学生工作台', group: '学生', disclosure: 'students', Icon: Users },
+  { id: 'teaching', title: '教学工作台', group: '教学', Icon: BookOpen },
+  { id: 'student_workbench', title: '学生工作台', group: '学生', Icon: Users },
 ] as const;
 function dateLabel(value: string) {
   const date = new Date(value);
@@ -23,7 +23,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
   const dialogTrigger = useRef<HTMLElement | null>(null);
   const lock = useRef(false);
   const panelId = useId();
-  const { preferences: { collapsed: storedCollapsed, expanded, openFolders }, update } = useWorkbenchPreferences();
+  const { preferences: { collapsed: storedCollapsed, openFolders }, update } = useWorkbenchPreferences();
   const [narrow, setNarrow] = useState(() => typeof matchMedia !== 'undefined' && matchMedia('(max-width: 700px)').matches);
   const [mobileOpen, setMobileOpen] = useState(false);
   const collapsed = narrow ? !mobileOpen : storedCollapsed;
@@ -33,7 +33,6 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
     query.addEventListener('change', changed);
     return () => query.removeEventListener('change', changed);
   }, []);
-  const setExpanded = (value: (old: Record<string, boolean>) => Record<string, boolean>) => update({ expanded: value(expanded) });
   const setOpenFolders = (value: (old: Record<string, boolean>) => Record<string, boolean>) => update({ openFolders: value(openFolders) });
   const [dialog, setDialog] = useState<Dialog>();
   const [query, setQuery] = useState('');
@@ -55,8 +54,6 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
   }, 30);
   useEffect(() => {
     if (!root.current || root.current.closest('[hidden]')) return;
-    const group = workbenches.find(item => view !== item.id && PAGE_CONTRACTS.some(page => page.id === view && page.group === item.group));
-    if (group && !expanded[group.disclosure]) update({ expanded: { ...expanded, [group.disclosure]: true } });
     const frame = requestAnimationFrame(() => root.current?.querySelector('[aria-current="page"]')?.scrollIntoView?.({ block: 'nearest' }));
     return () => cancelAnimationFrame(frame);
   }, [view]);
@@ -84,9 +81,11 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
     void run(() => data!.onOpenSession(id), true);
   }
   function navItem(id: string, label: string, Icon: LucideIcon) {
+    const group = workbenches.find(item => item.id === id)?.group;
+    const active = view === id || !!group && PAGE_CONTRACTS.some(page => page.id === view && page.group === group);
     return <button type="button" key={id} className="wb-item" disabled={disabled} aria-label={label} title={label}
       data-testid={id === 'ai' ? 'nav-ai-workspace' : id === 'student_workbench' ? 'nav-student-workbench' : `nav-${id}`}
-      aria-current={view === id ? 'page' : undefined} onClick={() => { setMobileOpen(false); navigation.navigate({ view: id }); }}>
+      aria-current={active ? 'page' : undefined} onClick={() => { setMobileOpen(false); navigation.navigate({ view: id }); }}>
       <Icon size={19} aria-hidden="true" /><span className="wb-label">{label}</span>
     </button>;
   }
@@ -117,10 +116,7 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
       </section>
       <div className="wb-destinations">
         {navItem('knowledge', '资料库', Library)}
-        {workbenches.map(({ id, title: label, group, disclosure, Icon }) => <section key={id}>
-          <div className="wb-workbench-row">{navItem(id, label, Icon)}<button type="button" className="wb-icon-button wb-disclosure" disabled={disabled} title={`${expanded[disclosure] ? '收起' : '展开'}${label}页面`} aria-label={`${expanded[disclosure] ? '收起' : '展开'}${label}页面`} data-testid={`nav-group-${disclosure}`} aria-expanded={expanded[disclosure]} aria-controls={`${panelId}-${disclosure}`} onClick={() => { if (collapsed) toggleCollapsed(); setExpanded(old => ({ ...old, [disclosure]: !old[disclosure] })); }}><ChevronRight size={15} className="wb-chevron" data-expanded={expanded[disclosure]} /></button></div>
-          <div className="wb-subnav" id={`${panelId}-${disclosure}`} hidden={collapsed || !expanded[disclosure]}>{PAGE_CONTRACTS.filter(page => page.group === group && page.id !== id).map(page => navItem(page.id, page.title, Icon))}</div>
-        </section>)}
+        {workbenches.map(({ id, title: label, Icon }) => navItem(id, label, Icon))}
       </div>
     </nav>
     <footer className="wb-footer" data-testid="edu-navigation-footer" aria-label="工作台设置">{navItem('settings', '设置', Settings)}</footer>

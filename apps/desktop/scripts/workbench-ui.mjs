@@ -51,9 +51,9 @@ const teaching = ['artifacts', 'notebook', 'book', 'question_notebook', 'paper']
 const students = ['students', 'search', 'intake', 'mistakes', 'mastery', 'review', 'analytics'];
 const originalViews = ['ai', 'knowledge', ...teaching, ...students, 'settings'];
 const planned = [
-  'isolated formal production launch', 'first home and three columns 1366', 'first home and three columns 1920',
-  'home tasks and suggestions prepare drafts only', 'initial disclosure and all original 15 pages',
-  'both hubs and all domain entries', 'history autoopens child disclosure', 'fixed settings footer and independent scroll',
+  'isolated formal production launch', 'first home and input-first layout 1366', 'first home and input-first layout 1920',
+  'home tasks and suggestions prepare drafts only', 'simple main navigation and all original pages',
+  'both hubs and all domain entries', 'history restores domain route and main navigation highlight', 'fixed settings footer and independent scroll',
   'real folder and titled sessions through forms and SQLite', 'title search empty results grouped results and click',
   'original history management retained', 'session drafts isolated and survive hub navigation',
   'sidebar collapse expand and keyboard focus', 'modal initial focus Tab trap Escape return focus',
@@ -100,19 +100,30 @@ async function active(view) {
   assert.equal(await shell().count(), 1, 'exactly one visible product shell');
   await attr(nav().getByTestId(navId(view)), 'aria-current', 'page');
 }
-const navId = view => view === 'ai' ? 'nav-ai-workspace' : view === 'student_workbench' ? 'nav-student-workbench' : `nav-${view}`;
-async function group(id, expanded = true) {
-  const button = nav().getByTestId(`nav-group-${id}`);
-  if (await button.getAttribute('aria-expanded') !== String(expanded)) await button.click();
-  await attr(button, 'aria-expanded', String(expanded));
+const navId = view => view === 'ai' ? 'nav-ai-workspace' : students.includes(view) || view === 'student_workbench' ? 'nav-student-workbench' : teaching.includes(view) ? 'nav-teaching' : `nav-${view}`;
+async function selectStudentContext() {
+  const rows = shell().locator('[data-testid^="student-row-"]').filter({ has: page.locator('.student-row-name') });
+  if (!await rows.count()) {
+    await ui('student-create').click();
+    await ui('student-form-display-name').fill(`UI验收学生-${token}`);
+    await ui('student-form-grade').fill('八年级');
+    await ui('student-profile-form').getByRole('button', {name:'创建学生',exact:true}).click();
+    await rows.first().waitFor();
+  }
+  await rows.first().click();
+  await ui('student-page-navigation').waitFor();
 }
 async function navigate(view) {
   if (await nav().getAttribute('data-collapsed') === 'true') await nav().getByTestId('workbench-sidebar-toggle').click();
-  if (teaching.includes(view)) await group('teaching');
-  if (students.includes(view)) await group('students');
-  await nav().getByTestId(navId(view)).click();
+  if (teaching.includes(view) || students.includes(view)) {
+    const hub = teaching.includes(view) ? 'teaching' : 'student_workbench';
+    await nav().getByTestId(navId(hub)).click(); await active(hub);
+    if (hub === 'student_workbench') await selectStudentContext();
+    await ui(`hub-entry-${view}`).click();
+  } else await nav().getByTestId(navId(view)).click();
   await active(view);
 }
+
 function dbRead(read) {
   const db = new DatabaseSync(path.join(data, 'app.db'), { readOnly: true });
   try { return read(db); } finally { db.close(); }
@@ -263,15 +274,18 @@ try {
       const home = ui('workbench-home'); await home.waitFor();
       const heading = await home.locator('h1').boundingBox();
       assert(heading.y >= 100 && heading.y < height - 240, 'home title visible on initial paint without scrolling');
-      assert.equal(await home.locator('[data-testid^="home-task-"]').count(), 3);
-      assert.deepEqual(await home.locator('.wb-home-task-title').allTextContents(), ['智能备课', '智能组卷', '学情分析']);
+      assert.equal(await shell().locator('[data-testid^="home-task-"]').count(), 3);
+      assert.deepEqual(await shell().locator('.wb-start-shortcut span').allTextContents(), ['智能备课', '智能组卷', '学情分析']);
       const boxes = [];
-      for (const id of ['notebook', 'paper', 'analytics']) boxes.push(await assertTarget(home.getByTestId(`home-task-${id}`)));
-      assert(Math.max(...boxes.map(b => b.y)) - Math.min(...boxes.map(b => b.y)) <= 2, 'three task cards in one row');
-      const columns = await Promise.all([nav().boundingBox(), shell().locator('.edu-chat-main').boundingBox(), ui('edu-context-panel').boundingBox()]);
-      assert(columns.every(Boolean), 'navigation/chat/context columns present');
-      assert(columns[0].x + columns[0].width <= columns[1].x + 1 && columns[1].x + columns[1].width <= columns[2].x + 1, 'three columns must not overlap');
-      await noOverflow(); await shot(`home-three-columns-${width}`);
+      for (const id of ['notebook', 'paper', 'analytics']) boxes.push(await assertTarget(ui(`home-task-${id}`)));
+      assert(Math.max(...boxes.map(b => b.y)) - Math.min(...boxes.map(b => b.y)) <= 2, 'three lightweight shortcuts in one row');
+      const columns = await Promise.all([nav().boundingBox(), shell().locator('.edu-chat-main').boundingBox()]);
+      assert(columns.every(Boolean), 'navigation and chat present');
+      assert.equal(await ui('edu-context-panel').count(), 0, 'blank chat must not restore an open right panel');
+      assert(columns[0].x + columns[0].width <= columns[1].x + 1, 'main columns must not overlap');
+      const inputBox=await composer().boundingBox();
+      assert(inputBox.y > heading.y && inputBox.y < boxes[0].y, 'original input sits between welcome and shortcuts');
+      await noOverflow(); await shot(`home-input-first-${width}`);
       await composer().fill('仅验证发送按钮可达，不提交');
       await assertTarget(page.getByRole('button', { name: '发送消息', exact: true }));
       await composer().fill('');
@@ -287,14 +301,10 @@ try {
     await composer().fill('');
   });
   await test(planned[4], async () => {
-    assert.deepEqual(await nav().locator('[data-testid^="nav-group-"]').evaluateAll(elements => elements.map(el => [el.dataset.testid, el.getAttribute('aria-expanded')])), [['nav-group-teaching', 'false'], ['nav-group-students', 'false']]);
-    for (const kind of ['teaching', 'students']) {
-      const button = nav().getByTestId(`nav-group-${kind}`);
-      const panel = await button.getAttribute('aria-controls');
-      assert(await page.locator(`[id=${JSON.stringify(panel)}]`).evaluate(el => el.hidden));
-      await button.focus(); await page.keyboard.press('Enter');
-      await attr(button, 'aria-expanded', 'true'); await active('ai');
-      await page.keyboard.press('Space'); await attr(button, 'aria-expanded', 'false'); await active('ai');
+    assert.equal(await nav().locator('[data-testid^="nav-group-"]').count(), 0, 'domain subnavigation belongs inside workbenches');
+    for (const target of ['teaching', 'student_workbench']) {
+      await nav().getByTestId(navId(target)).focus(); await page.keyboard.press('Enter'); await active(target);
+      await nav().getByTestId('nav-ai-workspace').focus(); await page.keyboard.press('Space'); await active('ai');
     }
     for (const view of originalViews) {
       await navigate(view);
@@ -308,25 +318,29 @@ try {
       await navigate(view); await ui(`workbench-hub-${kind}`).waitFor();
       for (const [width, height] of [[1366,768],[1920,1080]]) { await size(width,height); await shot(`hub-${kind}-${width}`); }
       await size(1366,768);
-      assert.equal(await ui(`workbench-hub-${kind}`).locator('[data-testid^="hub-entry-"]').count(), entries.length);
+      if (kind === 'students') await selectStudentContext();
+      assert.equal(await ui(`${kind === 'students' ? 'student' : 'teaching'}-page-navigation`).locator('[data-testid^="hub-entry-"]').count(), entries.length);
       for (const child of entries) {
-        await navigate(view); await ui(`hub-entry-${child}`).click(); await active(child);
-        await attr(nav().getByTestId(`nav-group-${kind}`), 'aria-expanded', 'true');
+        await navigate(view); if (kind === 'students') await selectStudentContext();
+        await ui(`hub-entry-${child}`).click(); await active(child);
+        await attr(nav().getByTestId(navId(child)), 'aria-current', 'page');
+        await attr(ui(`hub-entry-${child}`), 'aria-current', 'page');
       }
-      await navigate(view); await ui(`hub-primary-${kind}`).click(); await active(kind === 'teaching' ? 'notebook' : 'students');
+      await navigate(kind === 'teaching' ? 'notebook' : 'students');
+      await active(kind === 'teaching' ? 'notebook' : 'students');
     }
     await shot('hub-domain-navigation');
   });
   await test(planned[6], async () => {
     for (const [child, next, kind] of [['notebook', 'book', 'teaching'], ['analytics', 'students', 'students']]) {
-      await navigate(child); await navigate(next); await group(kind, false);
+      await navigate(child); await ui(`hub-entry-${next}`).click(); await active(next);
       await page.getByTestId('desktop-back').click(); await active(child);
-      await attr(nav().getByTestId(`nav-group-${kind}`), 'aria-expanded', 'true');
+      await attr(ui(`hub-entry-${child}`), 'aria-current', 'page');
       await assertTarget(nav().getByTestId(navId(child)));
     }
   });
   await test(planned[7], async () => {
-    await navigate('ai'); await size(1366, 768); await group('teaching'); await group('students');
+    await navigate('ai'); await size(1366, 480);
     const rail = ui('product-rail'), footer = ui('edu-navigation-footer');
     assert.equal(await rail.getByTestId('nav-settings').count(), 0);
     assert.equal(await footer.locator('xpath=ancestor::nav').count(), 0, 'settings footer cannot have a nav ancestor');
@@ -337,7 +351,7 @@ try {
     await rail.evaluate(el => { el.scrollTop = el.scrollHeight; });
     assert.deepEqual(await footer.boundingBox(), before); await assertTarget(footer.getByTestId('nav-settings'));
     await shot('independent-nav-scroll-footer');
-    return geometry;
+    await size(1366,768); return geometry;
   });
   const created = await test(planned[8], async () => {
     await navigate('ai');
@@ -483,14 +497,16 @@ try {
   await test(planned[18], async () => {
     await navigate('ai'); await page.emulateMedia({ reducedMotion: 'reduce' });
     assert(await page.evaluate(() => matchMedia('(prefers-reduced-motion: reduce)').matches));
-    await group('teaching', false); await group('teaching');
-    const chevron = nav().getByTestId('nav-group-teaching').locator('.wb-chevron');
+    const folder = nav().getByRole('button',{name:folderName,exact:true});
+    await folder.click(); await folder.click();
+    const chevron = folder.locator('.wb-chevron');
     assert.equal(await chevron.evaluate(el => getComputedStyle(el).transitionDuration), '0s');
     await ui('workbench-home').waitFor();
-    assert.equal(await ui('workbench-home').locator('.wb-home-task').count(), 3);
-    for (const element of await ui('workbench-home').locator('.wb-home-task,.wb-home-suggestion').all()) assert.equal(await element.evaluate(el => getComputedStyle(el).transitionDuration), '0s');
+    assert.equal(await shell().locator('.wb-start-shortcut').count(), 3);
+    for (const element of await shell().locator('.wb-start-shortcut,.wb-start-example').all()) assert.equal(await element.evaluate(el => getComputedStyle(el).transitionDuration), '0s');
     await navigate('teaching');
-    for (const element of await ui('workbench-hub-teaching').locator('.wb-hub-entry,.wb-hub-primary').all()) assert.equal(await element.evaluate(el => getComputedStyle(el).transitionDuration), '0s');
+    assert.equal(await ui('teaching-page-navigation').locator('[data-testid^="hub-entry-"]').count(),teaching.length);
+    for (const element of await ui('teaching-page-navigation').getByRole('button').all()) await assertTarget(element);
     await shot('reduced-motion-hub'); await navigate('ai');
   });
   await test('sidebar states and 700px effective collapse', async () => {

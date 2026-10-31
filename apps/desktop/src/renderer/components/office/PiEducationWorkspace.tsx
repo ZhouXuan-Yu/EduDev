@@ -25,13 +25,15 @@ import { PiTextChangeCard } from './PiTextChangeCard';
 import {PiOfficeArtifactCard} from './PiOfficeArtifactCard';
 import { PiControlCards } from './PiControlCards';
 import { PiSkillSettings } from './PiSkillSettings';
+import { PiHomeSuggestions, isHomeConversation } from './PiHomeLayout';
+import { workspaceNotifications } from './workspace-notifications';
 import { PiWorkspaceShell } from './PiWorkspaceShell';
 import { PiWorkspaceContext } from './PiWorkspaceContext';
 import { PiWorkspaceFiles } from './PiWorkspaceFiles';
 import { PiWorkbenchBridge } from './PiWorkbenchBridge';
 import {usePiAttachments} from './usePiAttachments';
 import { createPiSnapshotHydrator } from './pi-snapshot-hydrator';
-import { createPiTextViewBuffer, mergePiViewSnapshot } from './pi-text-view-buffer';
+import { createPiTextViewBuffer, mergePiViewSnapshot, piTextViewEvent } from './pi-text-view-buffer';
 import {readPiPermissionMode,writePiPermissionMode,type PiPermissionMode} from './permissionModes';
 import { useDesktopCommands, useDesktopNavigation } from '../desktop/DesktopFrame';
 import './pi-education-workspace.css';
@@ -84,7 +86,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
   const eventReceiver = useRef<ReturnType<typeof createEventReceiver> | undefined>(undefined);
   const viewBuffer = useRef<ReturnType<typeof createPiTextViewBuffer> | undefined>(undefined);
   if (!viewBuffer.current) viewBuffer.current = createPiTextViewBuffer({
-    text: view => applyProjectedEvent({ kind: 'text_delta', sessionId: view.sessionId, runId: view.runId, sequence: view.firstSequence, delta: view.delta }, view.throughSequence),
+    text: view => applyProjectedEvent(piTextViewEvent(view), view.throughSequence),
     immediate: event => applyProjectedEvent(event),
   });
   const hydration = useRef<ReturnType<typeof createPiSnapshotHydrator<Awaited<ReturnType<typeof readPiSnapshot>>>> | undefined>(undefined);
@@ -341,6 +343,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       onNewSession:async(folderId,title)=>{requireSynchronized();const target=await fresh(folderId??null,title);if(!target)throw Error('对话创建失败，请重试。');navigation.navigate({view:'ai',sessionId:target});},
       onCreateFolder:async name=>{requireSynchronized();const list=await window.omniEdu?.createAiConversationFolder({name});if(!list)throw Error('folder_failed');setWorkspace(list);}
     }}/><OfficeComposerSeed text={navigation.target.sessionId===id?navigation.target.draft:undefined} onConsumed={()=>navigation.consumeDraft(id)}/><PiWorkspaceShell visible={visible} sessionKey={id} onNewChat={()=>void fresh(null)} title={workspace.sessions.find(session=>session.id===id)?.title||'新对话'}
+    isEmpty={!projection || isHomeConversation(projection)} notifications={workspaceNotifications(snapshot)}
     fileRequest={fileReveal?.sessionId===id?fileReveal.id:undefined}
     onLeave={onLeave} onSettings={onSettings} onSkills={()=>{if(!mutationsBlocked())setSkillsOpen(true);}}
     files={close=><PiWorkspaceFiles key={`${id}:${snapshot?.workspace?.label||''}`} sessionId={id} changes={snapshot?.changes} officeArtifacts={snapshot?.officeArtifacts} reveal={fileReveal?.sessionId===id?fileReveal:undefined} onClose={close} onChoose={()=>void (async()=>{
@@ -349,7 +352,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
     aside={<PiWorkspaceContext sessionId={id} snapshot={snapshot} compactBusy={compactBusy} compacting={Boolean(compacting)} onCompact={()=>void compact()} onRefresh={()=>hydrate(id)}
       goalControl={<PiGoalControl key={id} sessionId={id} goal={snapshot?.goal} task={snapshot?.task} running={Boolean(snapshot?.running)} disabled={!snapshot||!id||modelSelecting||returnHydrating||attachments.hasAttachments} onRefresh={()=>hydrate(id)} openSignal={goalOpenSignal}/>}/>}
     sidebar={history()}>
-    <section className="work-panel ai-chat-surface">
+    <section className="work-panel ai-chat-surface" data-empty={isHomeConversation(projection)}>
       {snapshot?.legacyHistory && <p className="pi-history-note">旧对话保留供参考；小智从本轮开始使用新的上下文。</p>}
       {snapshot?.interruptedSend && <p className="pi-history-note" role="status">上次消息接收过程中中断。请重新发送，旧请求不会自动继续。</p>}
       {snapshot?.studentContext&&<p className="pi-history-note" data-testid="pi-student-selection">学习对话 · {snapshot.studentContext.label}{snapshot.studentContext.status==='active'?' · 仅使用必要的脱敏学习记录':' · 档案已归档或不可用，无法读取新记录'}</p>}
@@ -357,7 +360,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
       {notice && <p role="alert" className="pi-history-note">{notice}</p>}
       {snapshot?.taskUnavailable&&<p role="alert" className="pi-history-note">本轮要求记录暂时无法核对，请重新读取会话。</p>}
       {syncBlocked&&<OfficeSynchronizationNotice unavailable={eventSync==='unavailable'||refreshFailed||Boolean(snapshot?.eventPersistence)} refreshing={returnHydrating} onRefresh={()=>void refreshCurrent()}/>}
-      <div className="ai-conversation-frame">{projection ? <PiConversationSurface onConfigure={onSettings} visible={visible} projection={projection} onLoadEarlier={loadingEarlier?undefined:loadEarlier} renderAttachments={attachments.renderHistory} renderViewedImages={attachments.renderViewed} running={Boolean(snapshot?.running)} controls={snapshot?.controls} renderApprovals={turnId => snapshot?.approvals?.filter(item => item.runId === turnId).map(approval => <PiCopyApproval key={approval.id} approval={approval} onDecision={async (approvalId, decision) => {
+      <div className="ai-conversation-frame">{projection ? <PiConversationSurface homeHeadingOnly onConfigure={onSettings} visible={visible} projection={projection} onLoadEarlier={loadingEarlier?undefined:loadEarlier} renderAttachments={attachments.renderHistory} renderViewedImages={attachments.renderViewed} running={Boolean(snapshot?.running)} controls={snapshot?.controls} renderApprovals={turnId => snapshot?.approvals?.filter(item => item.runId === turnId).map(approval => <PiCopyApproval key={approval.id} approval={approval} onDecision={async (approvalId, decision) => {
         const target = id; const result = await window.omniEdu?.decideXiaozhi({ sessionId: target, approvalId, decision });
         if (!result?.ok) throw new Error('decision_failed'); await hydrate(target);
       }} />).concat((snapshot?.changes||[]).filter(item=>item.runId===turnId&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(change=><PiTextChangeCard key={change.id} sessionId={id} change={change} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.officeArtifacts||[]).filter(item=>item.runId===turnId&&!(snapshot?.deliveries||[]).some(d=>d.files.some(f=>!f.carried&&f.draftId===item.id))).map(artifact=><PiOfficeArtifactCard key={artifact.id} sessionId={id} artifact={artifact} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.deliveries||[]).filter(item=>item.runId===turnId).map(delivery=><PiDeliveryBundleCard key={delivery.id} delivery={delivery} sessionId={id} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)} onOpen={path=>setFileReveal({sessionId:id,id:crypto.randomUUID(),path})}/>)).concat((snapshot?.learningReviews||[]).filter(item=>item.runId===turnId).map(review=><PiLearningReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionCollections||[]).filter(item=>item.runId===turnId).map(review=><PiQuestionCollection key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.questionReviews||[]).filter(item=>item.runId===turnId&&!item.collectionId).map(review=><PiQuestionReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.paperReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPaperReview key={review.id} sessionId={id} review={review} running={Boolean(snapshot?.running)} onRefresh={()=>hydrate(id)}/>)).concat((snapshot?.practiceReviews||[]).filter(item=>item.runId===turnId).map(review=><PiPracticeReview key={review.id} sessionId={id} review={review} onRefresh={()=>hydrate(id)}/>)).concat(<PiControlCards key={`controls:${turnId}`} items={snapshot?.controls?.filter(item=>item.runId === turnId) || []} onAnswer={async(controlId,answer)=>{
@@ -405,6 +408,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           requireSynchronized();setNotice(''); const target = id; const result = await window.omniEdu?.selectXiaozhiWorkspace(target);
           if (result && !result.ok) setNotice(XIAOZHI_ERRORS[result.error]); else await hydrate(target);
         })().catch(() => setNotice('无法选择教学工作目录，请重试。')); }} onSubmit={send} onStop={async () => { viewBuffer.current!.flush(); const result = await window.omniEdu?.stopXiaozhi(id); if (!result?.ok) throw new Error('stop_failed'); }} />
+      <PiHomeSuggestions visible={isHomeConversation(projection)} />
     </section>
     {attachments.modal}
     {skillsOpen && <PiSkillSettings running={Boolean(snapshot?.running)} onClose={() => setSkillsOpen(false)} onChanged={() => hydrate(id)} />}

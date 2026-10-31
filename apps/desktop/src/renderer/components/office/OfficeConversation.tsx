@@ -26,6 +26,7 @@ import { WorkbenchHome } from '../product/WorkbenchHome';
 
 export interface OfficeConversationProps {
   agentTrace?: boolean;
+  homeHeadingOnly?: boolean;
   projection: OfficeProjection;
   onLoadEarlier?: () => void | Promise<void>;
   onRetry?: (turnId: string) => void;
@@ -58,7 +59,7 @@ function TurnNotice({ turn, onRetry, retryLabel, onContinue, onConfigure }: { tu
   );
 }
 
-export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier, onRetry, retryLabel, onContinue, onConfigure, onSuggest, replyActions, renderPlan, renderApprovals, renderAttachments, renderViewedImages, readingRef, onReadingScroll, interactions = [] }: OfficeConversationProps) {
+export function OfficeConversation({ projection, agentTrace=false, homeHeadingOnly=false, onLoadEarlier, onRetry, retryLabel, onContinue, onConfigure, onSuggest, replyActions, renderPlan, renderApprovals, renderAttachments, renderViewedImages, readingRef, onReadingScroll, interactions = [] }: OfficeConversationProps) {
   const nativeTheme=useNativeHeroUITheme();
   const host = useRef<HTMLDivElement | null>(null);
   const [loadingEarlier,setLoadingEarlier]=useState(false);
@@ -96,7 +97,7 @@ export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier
   // An empty landing page is not a conversation: bottom anchoring clips its heading.
   // Mount the original streaming scroller only when there is history to follow.
   if (!projection.turns.length && !projection.needsHydration && !projection.hasMoreHistory) {
-    return <div className="wb-home-scroll" tabIndex={0} aria-label="小智对话" data-testid="office-conversation">{onSuggest ? <WorkbenchHome onSuggest={onSuggest}/> : <p role="status">暂无对话记录。</p>}</div>;
+    return <div className="wb-home-scroll" tabIndex={0} aria-label="小智对话" data-testid="office-conversation">{onSuggest ? <WorkbenchHome headingOnly={homeHeadingOnly} onSuggest={onSuggest}/> : <p role="status">暂无对话记录。</p>}</div>;
   }
   return (
     <OfficeTextSelection threadId={projection.threadId} host={host}>
@@ -105,7 +106,7 @@ export function OfficeConversation({ projection, agentTrace=false, onLoadEarlier
         {projection.needsHydration && <p className="office-history-notice" role="status">正在同步对话记录…</p>}
         {projection.hasMoreHistory && <Button variant="ghost" size="sm" isDisabled={!onLoadEarlier||loadingEarlier} aria-label="加载较早的消息" data-testid="office-load-earlier" onPress={()=>void loadEarlier()}>{loadingEarlier?'正在加载较早的消息…':'加载较早的消息'}</Button>}
         {earlierError&&<p className="office-history-notice" role="alert">{earlierError}</p>}
-        {projection.turns.length === 0 && !projection.needsHydration && (onSuggest ? <WorkbenchHome onSuggest={onSuggest} /> : <p role="status">暂无对话记录。</p>)}
+        {projection.turns.length === 0 && !projection.needsHydration && (onSuggest ? <WorkbenchHome headingOnly={homeHeadingOnly} onSuggest={onSuggest} /> : <p role="status">暂无对话记录。</p>)}
         {projection.turns.map(turn => {
           if(agentTrace)return <section key={turn.id} className="office-turn" data-turn-id={turn.id} data-state={turn.status}>
             <OfficeAgentTurn turn={turn} sessionId={projection.threadId} renderPlan={renderPlan} renderAttachments={renderAttachments} renderViewedImages={renderViewedImages} replyActions={replyActions}/>
