@@ -4,20 +4,21 @@
   "previousTurnClassification": "progress",
   "scope": "M03/M05/M10 answer-entry uncertainty and actual known-answer canonical enrichment; full tens-GB goal remains intact",
   "implementationCommit": "d738d7f",
-  "validatedIntegration": "4bcfc97cd1233ab54ed652d1479e28103e9b5de5",
-  "integratedRemoteMain": "c3eb61e",
+  "validatedIntegration": "ad3731aa33729c63d04d5711fa8005c508fc5811",
+  "integratedRemoteMain": "d381833",
   "newDependenciesTablesIpc": 0,
   "implemented": [
     "Freeze answer-entry-uncertainty.v2 for new answer units; strict six-field v2 response and uniquely scoped section/number issues",
     "Preserve legacy prompts/responses including stored first_saved; reject policy mixing before a paid call or receipt readback",
     "Either-pass local doubt blocks that entry; unresolved scope and existing pageIssues still block globally",
     "Deterministic cross-page/omission/structure risks govern answer page review and whole-page retrieval even when model omits flags",
-    "Reuse original SQLite journal/CAS, source validation, book pairing and teacher protections; visible per-entry issue labels and exact batch test identity"
+    "Reuse original SQLite journal/CAS, source validation, book pairing and teacher protections; visible per-entry issue labels and exact batch test identity",
+    "Genuinely blank answer pages remain blank; structural review does not manufacture entries or permanent holds"
   ],
   "build": {
     "file": "apps\\desktop\\out\\main\\index.js",
-    "bytes": 3340133,
-    "sha256": "cee27f5e819c5d9d0dd16296c2b29bb4ede90d2f159eb0eca18e5a196f8aeaa4"
+    "bytes": 3340613,
+    "sha256": "f79435e6594a2039e4483464e551a7f19745eb647354f946d040ec0c964b6e02"
   },
   "renderer": {
     "file": "apps\\desktop\\out\\renderer\\assets\\index-W_wcqK5i.js",
@@ -35,21 +36,25 @@
     "buildIntegrated": {
       "command": "npm.cmd run build",
       "exit": 0,
-      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-answer-scope-build-integrated-20261101.log"
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-answer-scope-build-final-merge-20261101.log",
+      "includes": "tsc --noEmit and final electron-vite bundles"
     },
     "typeIntegrated": {
       "command": "npx.cmd tsc --noEmit",
-      "exit": 0
+      "exit": 0,
+      "scope": "Explicit pre-blank-guard integration check; final npm build reruns tsc on all final source"
     },
     "componentsIntegrated": {
       "command": "npm.cmd run test:renderer-components",
       "exit": 0,
-      "passed": 240
+      "passed": 240,
+      "rendererSha256": "6535fb9fa971bf50aa0dfd86382eacb13a3786b4d5b1b19fc043daf010f60c6f",
+      "scope": "Final renderer is byte-identical to the verified integrated component build; subsequent production changes only main managed-tools/blank guard"
     },
     "pageIntegrated": {
       "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
       "exit": 0,
-      "passed": 42
+      "passed": 43
     },
     "matchIntegrated": {
       "command": "node --experimental-transform-types scripts/education/kb-book-match-boundaries.mjs",
@@ -84,6 +89,12 @@
       "total": 207,
       "buildSha256": "47ce67201453dfb3bed2e89b7fe5137ed897e203f50a46683e688d964fad505a",
       "scope": "Own core answer implementation before collaborator E07 merge and exact-batch DOM attribute; not falsely described as final integrated 207 rerun"
+    },
+    "collaboratorManagedTools": {
+      "command": "node --import ./scripts/office-agent/register-source.mjs --experimental-transform-types scripts/xiaozhi-agent/managed-tools-smoke.mjs",
+      "exit": 0,
+      "passed": 15,
+      "scope": "Actual official pinned component and isolated QuickJS processes, interrupted transport cases; initial missing-loader launch failed before cases and was corrected"
     }
   },
   "realProvider": {
@@ -282,11 +293,77 @@
       "success": false,
       "checksBeforeFailure": 7,
       "reason": "Selected first prioritized old attention batch rather than exact new complete batch; source/UI evidence was correctly old. Added data-batch-id and exact selection."
+    },
+    {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-enriched-QuBXDs\\report.json",
+      "success": false,
+      "checksBeforeFailure": 5,
+      "reason": "Clicked noninteractive table row rather than its file button; did not select target file. Corrected to actual button plus details filename wait."
     }
   ],
   "integratedUi": {
-    "status": "pending",
-    "command": "node --experimental-transform-types scripts/education/kb-wusan-book-match-journey.mjs <ownedRoot> enriched"
+    "command": "node --experimental-transform-types scripts/education/kb-wusan-book-match-journey.mjs <ownedRoot> enriched",
+    "exit": 0,
+    "success": true,
+    "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-iezmkb\\book-enriched-rXHMK3\\report.json",
+    "checks": [
+      "Actual local executor upgrades five exact source-matched answers with book attribution; six image/table and one existing-answer conflict remain held",
+      "All6 complete text questions retain full canonical stems and pass actual typed source readback shared with Pi; no teacher or mathematical acceptance claimed",
+      "Visible retry reads saved sources, preserves the canonical AI answers/analysis and does not silently promote held questions",
+      "Both desktop sizes reach the final candidate, source page and original answers without horizontal overflow",
+      "Controlled local-page receipt corruption reaches the real IPC source guard, shows a retryable error and retains12 candidates; exact receipt restored afterward",
+      "Unlink/restoring the identical book queues background matching at the new revision with no paid replay or canonical mutation",
+      "Restart preserves five book-source upgrades, seven holds, exact source hashes, paid ledgers and SQLite integrity",
+      "Cold answer-page readback displays22 source entries and localized doubts in both sizes; the deterministic cross-page tail prevents whole-page retrieval despite model omission"
+    ],
+    "passed": 8,
+    "buildSha256": "f79435e6594a2039e4483464e551a7f19745eb647354f946d040ec0c964b6e02",
+    "cloudRequests": 0,
+    "rendererErrors": 0,
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "revisions": {
+      "before": 31,
+      "restored": 33
+    },
+    "canonicalUpgrades": [
+      {
+        "number": "1",
+        "schema": "xiaozhi.question-archive.v6"
+      },
+      {
+        "number": "2",
+        "schema": "xiaozhi.question-archive.v6"
+      },
+      {
+        "number": "7",
+        "schema": "xiaozhi.question-archive.v6"
+      },
+      {
+        "number": "3",
+        "schema": "xiaozhi.question-archive.v6"
+      },
+      {
+        "number": "9",
+        "schema": "xiaozhi.question-archive.v6"
+      }
+    ],
+    "answerReadback": {
+      "policy": "section-number-two-pass.v2",
+      "status": "needs_review",
+      "transcriptionStatus": "needs_review",
+      "entries": 22,
+      "clear": 19
+    },
+    "scope": "Final ad3731a integration,5 source-attributed canonical upgrades/7 holds, actual typed Pi-common source readback, error/retry/relink and cold restart; no paid replay or mathematical/40GB acceptance"
   },
   "audit": {
     "command": "npm.cmd audit --json",
@@ -302,7 +379,7 @@
     "scope": "Existing baseline; no dependency added or automatic upgrade"
   },
   "performance": {
-    "mainByteDelta": 15184,
+    "mainByteDelta": 15664,
     "rendererByteDelta": 2414,
     "scope": "Includes collaborator E07 integration, not isolated KB size or speed attribution. Canonical progression0 to5 on one real page is not natural recall, throughput or P95 measurement."
   },
@@ -321,6 +398,14 @@
   ],
   "dailyRuntimeOrInstallerUpdated": false,
   "gitDelivery": {
-    "status": "pending normal push and remote equality readback"
+    "normalPushCommand": "git push --atomic origin HEAD:main HEAD:codex/knowledge-base-reuse-implementation",
+    "mustVerifyRemoteRefsAfterPush": true,
+    "forceAllowed": false,
+    "scope": "This committed evidence records tested source integration. Final push SHA and remote equality are read back after committing the evidence and reported in final response."
+  },
+  "integrationConflicts": {
+    "count": 14,
+    "type": "Markdown only; inspected and preserved both KB and E07 blocks",
+    "productionCodeConflicts": 0
   }
 }
