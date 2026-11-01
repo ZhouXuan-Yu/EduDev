@@ -1,11 +1,9 @@
-import fs from 'node:fs/promises';
 import {requirementCoverage,validateRequirementBindings} from './requirements';
 import type {DeliveryRequirements} from '../../../shared/xiaozhi-delivery-checks';
-import {constants} from 'node:fs';
 import path from 'node:path';
 import {createHash,randomUUID} from 'node:crypto';
-import {approvedFile} from '../workspace-authority';
-import {fileVersion,type WorkspaceLease} from '../workspace-files';
+import type {WorkspaceLease} from '../workspace-files';
+import {readInspectionFile} from './read-file';
 import {runLocalUtility} from '../local-utility-host';
 import {DELIVERY_CHECK_SCHEMA,STRUCTURE_SCHEMA,validDeliveryCheckInput,validStructureResult,CHECK_CLASSES,
  type DeliveryCheckInput,type DeliveryCheckReport,type DeliveryCheckResult,type FileCheckReport,type StructureResult} from '../../../shared/xiaozhi-delivery-checks';
@@ -31,16 +29,7 @@ export function createDeliveryChecks(options:{state:ReturnType<typeof createInsp
  candidateStatus?:(sessionId:string,file:FileCheckReport)=>Promise<{current:boolean;published:boolean}>}){
  let tail=Promise.resolve<unknown>(undefined),slots=0,closing=false;const controllers=new Set<AbortController>();const visuals=createVisualEvidenceCache(options.dataRoot);
  async function requirementsFor(id:string){const value=await options.requirements(id);return{version:typeof value==='number'?value:value?.version??null,context:typeof value==='object'&&value?structuredClone(value):null};}
- async function capture(lease:WorkspaceLease,relative:string){
-  const target=approvedFile(lease.path,relative),before=await fs.lstat(target);if(!before.isFile()||before.isSymbolicLink()||before.nlink!==1)throw Error('permission_denied');
-  if(before.size>16*1048576)throw Error('too_large');const opened=await fs.open(target,constants.O_RDONLY|(constants.O_NOFOLLOW||0));
-  try{
-   const stat=await opened.stat();if(!stat.isFile()||stat.nlink!==1||fileVersion(stat)!==fileVersion(before))throw Error('changed');
-   const bytes=await opened.readFile(),after=await opened.stat(),last=await fs.lstat(approvedFile(lease.path,relative));
-   if(bytes.length!==before.size||fileVersion(after)!==fileVersion(before)||fileVersion(last)!==fileVersion(before)||last.isSymbolicLink()||last.nlink!==1)throw Error('changed');
-   return{bytes,fileVersion:fileVersion(before),sha256:hash(bytes),size:bytes.length};
-  }finally{await opened.close();}
- }
+ const capture=readInspectionFile;
  async function refresh(report:DeliveryCheckReport):Promise<DeliveryCheckReport>{
   const lease=await options.resolve(report.sessionId),requirements=await requirementsFor(report.sessionId);const contextStale=lease.version!==report.workspaceVersion||requirements.version!==report.requirementsVersion||requirements.context?.digest!==report.requirements?.digest;let stale=contextStale;
   const files:FileCheckReport[]=[];

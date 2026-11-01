@@ -328,5 +328,502 @@
     "pause": "Set OMNI_EDU_XIAOZHI_FILE_WRITES=0 in supported-build launch environment and restart; automatic file tools stay registered but reject writes. Existing histories/output files remain readable and verify actions remain available.",
     "resume": "Remove the variable or set it to 1 and restart. No database/file deletion or permission recreation.",
     "limits": "Keep new manifest/schema/Task/native readers when disabling writers. Never blanket-revert to a binary unable to interpret saved_bundle/presentation schema; older-binary rollback remains untested."
+  },
+  "restoreSlice": {
+    "date": "2026-11-01",
+    "status": "ENGINEERING_RESTORE_PATH_VERIFIED_COMPLETE_C03_OPEN",
+    "sourceSha": "b4518081c934d69871a3b07bf014d08bb118b8eb",
+    "verifiedIntegrationSha": "331144f1391a0e49c761eaf7feeab269dbf9b872",
+    "baseSha": "0082f2bf09725eb5b868ff38c355960ceb4ea565",
+    "integratedRemoteMain": "d0d8db77e14447b600971583dcc831ce71bad9a7",
+    "runtimeRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+    "actualRestoreRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\OmniEduData",
+    "newPaidModelRequests": 0,
+    "newDependencies": [],
+    "ddlAdded": false,
+    "dailyRuntimeUpdated": false,
+    "installerUpdated": false,
+    "features": [
+      "Original settings: select a checked backup and a parent, create a new unique instance, show final path/warnings; explicit activation and return keep original data directory.",
+      "Original manifest files copied and hashed before/after; final migrated copy rehashed before profile selection; collision/link/bad metadata/modified prepared files refused, copy failure leaves diagnosed owned partial directory.",
+      "Copied SQLite only: relocate known original-file columns and default-output/workspace identities; preserve immutable journal/native bindings and file bytes; pause copied queued/running background imports and old parse jobs. Original startup handlers remain usable for new explicit work.",
+      "Versioned typed IPC/preload uses original settings job gate; profile pointer selected before the original store/authority, no parallel Runtime, ledger or data store. Invalid pointer warns and returns to existing base only; missing base exits instead of silently creating an empty replacement."
+    ],
+    "validation": [
+      {
+        "command": "npm run build",
+        "exitCode": 0,
+        "scope": "Final integration including tsc; PROCESS_EXIT=0 in archived integration-build log."
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exitCode": 0,
+        "scope": "Final integration; original 240 checks, not 240 new restore tests."
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+        "passed": 8,
+        "total": 8,
+        "exitCode": 0,
+        "scope": "Actual controlled SQLite/files/links/copy and source functions. ENOSPC is injected copy error, not real exhausted disk; late null-shape/fallback guards compiled and cold-tested but not separately bad-pointer UI tested."
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/backup-restore-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH",
+        "passedBeforeLocatorFailure": 3,
+        "exitCode": 1,
+        "scope": "Fresh real settings backup, copy/activation, dual native sizes and immutable readback passed. Original test then used wrong preview button name; preserve first failure."
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/backup-restore-cold-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg",
+        "passed": 4,
+        "total": 4,
+        "exitCode": 0,
+        "scope": "Only remaining PPT/HTML/history/cold/return paths on the same already prepared instance, after scoping controls. No export/copy/generation replay. Final integration same 4 passed; before launch source selection helper chooses the existing restored root for readback; original visible activation was tested on own build."
+      },
+      {
+        "command": "Independent read-only SQLite and extended-path file SHA readback",
+        "exitCode": 0,
+        "scope": "168 immutable journal rows, 4 native run bindings, one session binding/native file and two actual generated files equal. Inspection table empty in UI fixture; populated original check-report preservation covered controlled source fixture only."
+      },
+      {
+        "command": "npm audit --json",
+        "exitCode": 1,
+        "counts": {
+          "critical": 0,
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "total": 45
+        },
+        "scope": "Existing dependencies; no package/lock change. Not fixed by this backup slice."
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "exitCode": 1,
+        "scope": "Once, original comprehensive runner equivalent to test:smoke after build; failed at electron-smoke.mjs:1460 waiting for hidden ai-observability-workspace after analytics navigation. Not 207 passed. Started on own b451808 output, shared out was rebuilt during integration while test process remained alive, so not immutable final-build acceptance. No complete repeat."
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      }
+    ],
+    "evidenceManifest": "docs/research/evidence/agent-output-backup-c03/restore-20261101/manifest.json",
+    "sourceReport": {
+      "ok": true,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-v7GC83",
+      "checks": [
+        "New instance copies exact original/output bytes, relocates only mutable addresses and workspace hashes, retains original checks and pauses copied backlog without touching source",
+        "Explicit profile selection and return survive cold reader and cannot redirect a different launcher data instance",
+        "Changed prepared output refuses activation rather than accepting a stale prepared receipt",
+        "Changed original backup is rejected before creating an instance or changing selection",
+        "Source/backup nesting and actual Windows directory links are rejected without traversing or overwriting them",
+        "Actual copy-phase space failure leaves a diagnosed owned incomplete instance and preserves source/profile selection",
+        "Mismatched origin metadata and old manifests without origin cannot silently redirect files; original verifier remains separate",
+        "Versioned activation accepts only a prepared opaque identity, not arbitrary renderer file paths"
+      ],
+      "boundary": "Actual isolated SQLite/files/manifest/copy/address migration/profile selection; source fixture rows are contract data, not teacher actions. Actual original Pi/settings restore is tested separately.",
+      "prepared": {
+        "schemaVersion": "xiaozhi.backup-restore.v1",
+        "id": "restore_5a877fdb-b42b-483a-b7aa-b267d12cb738",
+        "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-v7GC83\\target\\XiaozhiRecovered-5a877fdb-b42b-483a-b7aa-b267d12cb738\\OmniEduData",
+        "backupPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-v7GC83\\backup",
+        "fileCount": 3,
+        "generatedFiles": 1,
+        "warnings": [
+          "另选工作目录未包含在此备份中；原记录保留，使用其文件前请重新选择已单独恢复的目录。"
+        ]
+      }
+    },
+    "uiInitialReport": {
+      "ok": false,
+      "checks": [
+        "Actual settings creates a fresh verified backup containing existing real Pi default HTML/PPT and complete original SQLite",
+        "Visible restore creates a separate checked instance; original data remains selected until explicit activation, reachable in both native sizes",
+        "Cold activation selects the new root, relocates actual output paths, preserves exact output/native bytes and immutable journal hashes, and leaves original database untouched"
+      ],
+      "errors": [],
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg",
+      "sourceRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH",
+      "boundary": "Original formal settings export/restore, existing actual Pi-generated default HTML/PPT bytes, typed activation with test-only manual cold restart, same original runtime. No real-provider calls, complete FX07 A/B corpus, Office/WPS or installer claim.",
+      "originalFiles": [
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\XiaozhiOutputs\\3acdee529addd121\\aisession_677e1b23-4717-49b8-9f24-ac3547f072e8\\浮力讲解.pptx",
+          "sha256": "cacf2bf97ddc9cc6d36d9dc0158fa78e46e5fc27eae17f1a278f4086709eea3c",
+          "size": 122228
+        },
+        {
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\XiaozhiOutputs\\3acdee529addd121\\aisession_677e1b23-4717-49b8-9f24-ac3547f072e8\\浮力演示.html",
+          "sha256": "863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef",
+          "size": 646
+        }
+      ],
+      "sessionId": "aisession_677e1b23-4717-49b8-9f24-ac3547f072e8",
+      "backupPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\exports\\OmniEduData-backup-2026-11-01T08-05-09-004Z",
+      "preparedText": "独立恢复副本已准备好。使用前请切换并重启，当前数据仍在原目录。\n\nC:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\OmniEduData\n\n原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。\n\n使用恢复数据并重启",
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768,
+          "dpr": 1.5,
+          "scrollWidth": 1366
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "dpr": 1.5,
+          "scrollWidth": 1920
+        }
+      ],
+      "restoredDataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\OmniEduData",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('artifacts-detail').getByRole('button', { name: /^打开$/ }).first()\u001b[22m\n\n    at C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\backup-restore-electron.mjs:22:279"
+    },
+    "uiTargetedReport": {
+      "ok": true,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg",
+      "checks": [
+        "Formal Teaching Files preview reads the migrated real editable PPT and notes from the restored output root",
+        "Actual restored offline HTML interaction and original version history work, with the same task identity and no automatic run",
+        "Another cold startup keeps current files/history and preserves original root/output bytes with zero model replay",
+        "Visible return action and normal cold startup select the retained original data without replay"
+      ],
+      "errors": [],
+      "boundary": "Continue only remaining readback/rollback after successful real settings backup/copy/activation. No regeneration/re-export or paid/provider request. Prior initial locator failure retained.",
+      "version": {
+        "schemaVersion": "xiaozhi.office-versions.v1",
+        "sessionId": "aisession_677e1b23-4717-49b8-9f24-ac3547f072e8",
+        "selectedArtifactId": "xichange_05065cf8-b423-441a-b9c3-b07c8b123412",
+        "currentArtifactId": "xichange_05065cf8-b423-441a-b9c3-b07c8b123412",
+        "integrity": "same",
+        "canRestore": false,
+        "historyBacking": "text_ledger",
+        "htmlPreview": "<!-- xiaozhi.html-artifact.v1 -->\n<!doctype html><meta charset=\"utf-8\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'\">\n<!doctype html><html lang=\"zh-CN\"><title>浮力探究</title><body><label>排液体积<input id=\"volume\" type=\"range\" min=\"1\" max=\"10\" value=\"1\"></label><output id=\"force\">10 N</output><script>volume.oninput=()=>force.textContent=volume.value*10+\" N\";</script></body></html>",
+        "versions": [
+          {
+            "artifactId": "xichange_05065cf8-b423-441a-b9c3-b07c8b123412",
+            "path": "浮力演示.html",
+            "title": "浮力演示.html",
+            "format": "html",
+            "number": 1,
+            "savedAt": null,
+            "verifiedAt": null,
+            "parentArtifactId": null,
+            "size": 646,
+            "change": "首次保存"
+          }
+        ]
+      },
+      "task": {
+        "schema": "xiaozhi.task.v1",
+        "id": "xitask_d1371c88c410ab3641d11e49d7717357505f656797c6909d5bb207755a74ca9b",
+        "sessionId": "aisession_677e1b23-4717-49b8-9f24-ac3547f072e8",
+        "revision": 7,
+        "requirementsVersion": 1,
+        "planRevision": 1,
+        "planReason": "整包保存合成教学文件",
+        "state": "review_required",
+        "origin": {
+          "messageId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+          "commandId": "xicmd_26f27f37-bdf7-44df-80c0-51317276392b",
+          "runId": "run_e6cf706d-8716-41be-a410-9caf8bdc9ed8"
+        },
+        "sources": [
+          {
+            "messageId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+            "runId": "run_e6cf706d-8716-41be-a410-9caf8bdc9ed8",
+            "version": "b9a4d06c9dc8037600aa2a1c3816c4a215d903cd6f06b9d31a83a4c6a040a8e3"
+          }
+        ],
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "sourceId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+            "sourceVersion": "b9a4d06c9dc8037600aa2a1c3816c4a215d903cd6f06b9d31a83a4c6a040a8e3",
+            "text": "生成一组新的HTML和PPT教学文件",
+            "kind": "human"
+          },
+          {
+            "id": "check_1062cab2aceb7dfcb53cd05a",
+            "version": 1,
+            "sourceId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+            "sourceVersion": "b9a4d06c9dc8037600aa2a1c3816c4a215d903cd6f06b9d31a83a4c6a040a8e3",
+            "text": "整包保存HTML与PPT",
+            "kind": "saved_bundle",
+            "resource": "40cad7f8c473da1545ca724eba3ab0b7b2deab006471f653c201a09e9947f1d2"
+          }
+        ],
+        "steps": [
+          {
+            "id": "deliver",
+            "text": "整包保存HTML与PPT",
+            "dependsOn": [],
+            "reported": "pending",
+            "criterionIds": [
+              "check_1062cab2aceb7dfcb53cd05a"
+            ]
+          },
+          {
+            "id": "review",
+            "text": "教师核对教学内容",
+            "dependsOn": [
+              "deliver"
+            ],
+            "reported": "pending",
+            "criterionIds": [
+              "teacher_request"
+            ]
+          }
+        ],
+        "checks": [],
+        "binding": null,
+        "createdAt": "2026-10-29T12:08:54.407Z",
+        "updatedAt": "2026-10-29T12:09:16.136Z"
+      }
+    },
+    "uiFinalIntegrationReport": {
+      "ok": true,
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg",
+      "checks": [
+        "Formal Teaching Files preview reads the migrated real editable PPT and notes from the restored output root",
+        "Actual restored offline HTML interaction and original version history work, with the same task identity and no automatic run",
+        "Another cold startup keeps current files/history and preserves original root/output bytes with zero model replay",
+        "Visible return action and normal cold startup select the retained original data without replay"
+      ],
+      "errors": [],
+      "boundary": "Continue only remaining readback/rollback after successful real settings backup/copy/activation. No regeneration/re-export or paid/provider request. Prior initial locator failure retained.",
+      "version": {
+        "schemaVersion": "xiaozhi.office-versions.v1",
+        "sessionId": "aisession_677e1b23-4717-49b8-9f24-ac3547f072e8",
+        "selectedArtifactId": "xichange_05065cf8-b423-441a-b9c3-b07c8b123412",
+        "currentArtifactId": "xichange_05065cf8-b423-441a-b9c3-b07c8b123412",
+        "integrity": "same",
+        "canRestore": false,
+        "historyBacking": "text_ledger",
+        "htmlPreview": "<!-- xiaozhi.html-artifact.v1 -->\n<!doctype html><meta charset=\"utf-8\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; frame-src 'none'; worker-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'\">\n<!doctype html><html lang=\"zh-CN\"><title>浮力探究</title><body><label>排液体积<input id=\"volume\" type=\"range\" min=\"1\" max=\"10\" value=\"1\"></label><output id=\"force\">10 N</output><script>volume.oninput=()=>force.textContent=volume.value*10+\" N\";</script></body></html>",
+        "versions": [
+          {
+            "artifactId": "xichange_05065cf8-b423-441a-b9c3-b07c8b123412",
+            "path": "浮力演示.html",
+            "title": "浮力演示.html",
+            "format": "html",
+            "number": 1,
+            "savedAt": null,
+            "verifiedAt": null,
+            "parentArtifactId": null,
+            "size": 646,
+            "change": "首次保存"
+          }
+        ]
+      },
+      "task": {
+        "schema": "xiaozhi.task.v1",
+        "id": "xitask_d1371c88c410ab3641d11e49d7717357505f656797c6909d5bb207755a74ca9b",
+        "sessionId": "aisession_677e1b23-4717-49b8-9f24-ac3547f072e8",
+        "revision": 7,
+        "requirementsVersion": 1,
+        "planRevision": 1,
+        "planReason": "整包保存合成教学文件",
+        "state": "review_required",
+        "origin": {
+          "messageId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+          "commandId": "xicmd_26f27f37-bdf7-44df-80c0-51317276392b",
+          "runId": "run_e6cf706d-8716-41be-a410-9caf8bdc9ed8"
+        },
+        "sources": [
+          {
+            "messageId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+            "runId": "run_e6cf706d-8716-41be-a410-9caf8bdc9ed8",
+            "version": "b9a4d06c9dc8037600aa2a1c3816c4a215d903cd6f06b9d31a83a4c6a040a8e3"
+          }
+        ],
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "sourceId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+            "sourceVersion": "b9a4d06c9dc8037600aa2a1c3816c4a215d903cd6f06b9d31a83a4c6a040a8e3",
+            "text": "生成一组新的HTML和PPT教学文件",
+            "kind": "human"
+          },
+          {
+            "id": "check_1062cab2aceb7dfcb53cd05a",
+            "version": 1,
+            "sourceId": "aimsg_4991f12c-4da6-465a-9766-074447093efe",
+            "sourceVersion": "b9a4d06c9dc8037600aa2a1c3816c4a215d903cd6f06b9d31a83a4c6a040a8e3",
+            "text": "整包保存HTML与PPT",
+            "kind": "saved_bundle",
+            "resource": "40cad7f8c473da1545ca724eba3ab0b7b2deab006471f653c201a09e9947f1d2"
+          }
+        ],
+        "steps": [
+          {
+            "id": "deliver",
+            "text": "整包保存HTML与PPT",
+            "dependsOn": [],
+            "reported": "pending",
+            "criterionIds": [
+              "check_1062cab2aceb7dfcb53cd05a"
+            ]
+          },
+          {
+            "id": "review",
+            "text": "教师核对教学内容",
+            "dependsOn": [
+              "deliver"
+            ],
+            "reported": "pending",
+            "criterionIds": [
+              "teacher_request"
+            ]
+          }
+        ],
+        "checks": [],
+        "binding": null,
+        "createdAt": "2026-10-29T12:08:54.407Z",
+        "updatedAt": "2026-10-29T12:09:16.136Z"
+      }
+    },
+    "independentReadback": {
+      "schemaVersion": "xiaozhi.restore-readback.v1",
+      "backup": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\exports\\OmniEduData-backup-2026-11-01T08-05-09-004Z",
+      "restored": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\OmniEduData",
+      "checkedAt": "2026-11-01T08:26:11.867923+00:00",
+      "immutable": {
+        "xiaozhi_pi_session_bindings": {
+          "rows": 1,
+          "rowsSha256": "a9db43d62d5bfe1fe0156d0166932b7b1ba66b5f3f4acb4a0b06dde58e7ff2a7",
+          "equal": true
+        },
+        "xiaozhi_event_journal": {
+          "rows": 168,
+          "rowsSha256": "cf41ebb7cc4fe3cef360de9b7ca90e71c9ce1e13a24fbd807d0fcad7fcc34913",
+          "equal": true
+        },
+        "xiaozhi_native_run_bindings": {
+          "rows": 4,
+          "rowsSha256": "be8899ae1a1378b259ad3c081b012b9da5bc5a39de093481c6ef925e53d78412",
+          "equal": true
+        },
+        "xiaozhi_delivery_inspections": {
+          "rows": 0,
+          "rowsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "equal": true
+        }
+      },
+      "nativeFiles": [
+        {
+          "relative": "aisession_677e1b23-4717-49b8-9f24-ac3547f072e8/sessions/2026-10-29T12-03-07-645Z_01a1878a-defc-779b-b07d-0b27e28f4c4e.jsonl",
+          "bytes": 360327,
+          "sha256": "58e77aacb3f47bf06b9f0a125fea43070e88b93ab159891565df41d4799efd79",
+          "equal": true
+        }
+      ],
+      "outputFiles": [
+        {
+          "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\XiaozhiOutputs\\3acdee529addd121\\aisession_677e1b23-4717-49b8-9f24-ac3547f072e8\\浮力讲解.pptx",
+          "restored": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\XiaozhiOutputs\\ecdfaf567698380a\\aisession_677e1b23-4717-49b8-9f24-ac3547f072e8\\浮力讲解.pptx",
+          "bytes": 122228,
+          "sha256": "cacf2bf97ddc9cc6d36d9dc0158fa78e46e5fc27eae17f1a278f4086709eea3c",
+          "equal": true
+        },
+        {
+          "original": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-output-backup-ui-Fbt4hH\\XiaozhiOutputs\\3acdee529addd121\\aisession_677e1b23-4717-49b8-9f24-ac3547f072e8\\浮力演示.html",
+          "restored": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\XiaozhiOutputs\\ecdfaf567698380a\\aisession_677e1b23-4717-49b8-9f24-ac3547f072e8\\浮力演示.html",
+          "bytes": 646,
+          "sha256": "863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef",
+          "equal": true
+        }
+      ],
+      "observerCorrection": "First independent Python read did not use Windows extended paths and reported FileNotFoundError for the >260-character native path. Actual file enumeration and Node UI read succeeded; this observer now uses extended path API. No product file or assertion changed.",
+      "currentTask": {
+        "id": "xitask_d1371c88c410ab3641d11e49d7717357505f656797c6909d5bb207755a74ca9b",
+        "revision": 7,
+        "requirementsVersion": 1,
+        "state": "review_required"
+      },
+      "boundary": "Independent SQLite/file reads after original UI/cold startup, controlled default-output fixture only. Zero-row table comparisons not populated coverage. No cloud or real teacher data."
+    },
+    "buildFingerprints": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3489968,
+        "sha256": "e2a6718b14c51c745b49f26e54a239f97a763ff601722617dce4466e6fe9d1ea"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-DgbKQkmJ.js",
+        "bytes": 7368548,
+        "sha256": "8bd3aa8cd696c5af4cc9c35b270c10f036de0e6e83f882ca3d528b2cc6c83baa"
+      }
+    ],
+    "performance": {
+      "baselineSha": "c3f7416b3846fe87991439f469002239d42923c0",
+      "baselineFingerprints": [
+        {
+          "path": "apps/desktop/out/main/index.js",
+          "bytes": 3436086,
+          "sha256": "4703604f8fc28342175dac321af2d557557ac65614af4818a8ff74b1f5c8efc8"
+        },
+        {
+          "path": "apps/desktop/out/preload/index.cjs",
+          "bytes": 35975,
+          "sha256": "33afd136f77265e4453e61e8f82b56b5987468ef0fb4d5854fbc602f9fe4e4a1"
+        },
+        {
+          "path": "apps/desktop/out/renderer/assets/index-B063HZI-.js",
+          "bytes": 7364103,
+          "sha256": "ec99577679b2b326e220a67b2caac4496d97df05c115acea45fd714ac5a9c908"
+        }
+      ],
+      "finalIntegrationBytesDelta": {
+        "main": 53882,
+        "preload": 273,
+        "renderer": 4445
+      },
+      "ownPreIntegrationMainApproxKB": 3453.85,
+      "ownPreIntegrationRendererApproxKB": 7367.66,
+      "boundary": "Bundle size only; final delta includes collaborator graph-question changes. Restore is requested only from settings; async file copy/streamed SHA, SQLite address migration on new copy, no stream-time polling/subscription. No startup latency, input P95, memory or natural-model quality claim."
+    },
+    "failures": [
+      "Initial source assertion treated Uint8Array.toString as UTF8; corrected test Buffer conversion, product assertion retained.",
+      "First UI journey used wrong Open label; first cold followup matched three version toggles, then a wrong-cwd edit did not apply and repeated same locator failure. Logs/screens retained; corrected only scoped locators, no data regeneration.",
+      "One first build failed TS18048 on optional renderer API; guarded API availability and rebuilt successfully.",
+      "Independent Python native hash observer initially lacked Windows extended paths for >260-character restored path; enumeration/Node read confirmed file exists. Corrected observer uses extended path, no production data change.",
+      "Comprehensive legacy regression stopped on hidden diagnostics panel at line1460, archived whole raw log and screenshot. This change did not edit analytics navigation; root cause not established, not dismissed as harmless."
+    ],
+    "remaining": [
+      "Complete original FX07 A/B old/current sessions, file/source versions and all teacher-data domains; arbitrary immutable JSON source paths are not rewritten by known-column relocation.",
+      "Old manifests without original data/output metadata still verify but restore is explicitly rejected; full old-backup/old-binary compatibility remains incomplete.",
+      "External custom workspace files are not in original default backup: preserve original references, drop copied access grants and require separate backup/reselection; full custom-directory restore/rebind unverified.",
+      "Real native automatic app.relaunch/exit path not independently accepted: E2E uses test-only manual close/cold launch; original production relaunch/drain reused.",
+      "Prepare cancelled/permission denied/damaged backup UI variants, actual disk exhaustion, target long-path corpus, full FX10 crash windows and cold pending-prepare recovery remain.",
+      "Complete C02 stream-performance/window and C06 actual D daily runtime/installer alignment still pending; 252 AT not completed.",
+      "Diagnose comprehensive analytics visibility failure before claiming complete general regression; earlier mastery_quiz/L2 failure records remain separate."
+    ],
+    "rollback": {
+      "user": "Use visible return action to retained previous directory and restart; original directory/files untouched by restore copy.",
+      "code": "Revert b451808 as scoped code change while preserving all original/recovered folders and receipts; no DDL reversal. Existing readers remain required, older binary compatibility not implied."
+    },
+    "goal": "active",
+    "sourceFiles": [
+      "apps/desktop/scripts/xiaozhi-agent/backup-restore-cold-electron.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/backup-restore-electron.mjs",
+      "apps/desktop/scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "apps/desktop/src/main/backup/activation.ts",
+      "apps/desktop/src/main/backup/restore-api.ts",
+      "apps/desktop/src/main/backup/restore-database.ts",
+      "apps/desktop/src/main/backup/restore.ts",
+      "apps/desktop/src/main/index.ts",
+      "apps/desktop/src/preload/index.ts",
+      "apps/desktop/src/renderer/components/DataBackupPanel.tsx",
+      "apps/desktop/src/shared/backup-restore.ts",
+      "docs/goal/AGENT_DELIVERY_IMPLEMENTATION.md"
+    ]
   }
 }

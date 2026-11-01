@@ -103,7 +103,7 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
    </div>}
    {pending&&(hasImages||classroomDraft)&&<Checkbox data-testid="pi-office-images-reviewed" isSelected={imagesReviewed===artifact.revision} isDisabled={!editable||draft.editing||!imagesReady} onChange={value=>setImagesReviewed(value?artifact.revision:undefined)}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><span>{classroomDraft?'我已检查全部课页、图形、公式和随堂题；理解完整课页或公式为不可编辑图片，已检查学生讲义的答案隔离。':'我已检查全部图片的完整题面、清晰度、答案隔离及个人信息。'}</span></Checkbox.Content></Checkbox>}
    {pending&&!bundled&&<ChatTool.Approval><ChatTool.ApprovalActions><ChatTool.Approve isDisabled={!editable||draft.editing||(hasImages||classroomDraft)&&(!imagesReady||imagesReviewed!==artifact.revision)} onPress={()=>void decide('approve')} data-testid="pi-office-approve">确认保存</ChatTool.Approve><ChatTool.Reject isDisabled={draft.busy||!running} onPress={()=>void decide('reject')} data-testid="pi-office-reject">拒绝</ChatTool.Reject></ChatTool.ApprovalActions></ChatTool.Approval>}
-   <PiDeliveryCheck key={artifact.id+':'+artifact.revision} sessionId={sessionId} path={artifact.path} draftId={artifact.id}/>
+   <PiDeliveryCheck key={artifact.id+':'+artifact.revision} sessionId={sessionId} path={artifact.path} {...(artifact.state==='saved'&&artifact.artifactId?{artifactId:artifact.artifactId}:{draftId:artifact.id})}/>
   </ChatTool.Content>
   <div className="pi-office-actions">
    {!pending&&<Button size="sm" variant="ghost" onPress={()=>setExpanded(value=>!value)} data-testid="pi-office-review-toggle">{expanded?'收起拟内容':'查看拟内容'}</Button>}

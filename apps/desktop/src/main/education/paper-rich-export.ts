@@ -14,7 +14,7 @@ export function compileRichPaperOffice(paper:PaperView,audience:PaperExportInput
  const plainSplit=math?officeMathChunks:chunks;const split=(text:string)=>paperTextBlocks(text).some(b=>!!b.table)?[text]:plainSplit(text);
  const sections:OfficeSection[]=[{heading:'试卷说明',paragraphs:[`${paper.blueprint.grade} · ${paper.blueprint.subject} · ${paper.blueprint.durationMinutes} 分钟 · 满分 ${paper.totalPoints} 分`,
   audience==='student'?'学生卷 · 请在答题纸上作答。':'教师答案卷 · 参考答案和解析尚未独立核验，请逐题核对。',
-  math?'图文题保留教师确认的原图。Word中的排版公式以图片交付，非可编辑公式。请核对题面、公式、清晰度及答案和个人信息隔离。':'图文题保留教师确认的原图，公式不是可编辑数学对象。请核对全部题面、清晰度与图片中的答案和个人信息。']}];
+  math?'图文题保留来源原图。Word中的排版公式以图片交付，非可编辑公式。请核对题面、公式、清晰度及答案和个人信息隔离。':'图文题保留来源原图，公式不是可编辑数学对象。请核对全部题面、清晰度与图片中的答案和个人信息。']}];
  for(const group of paper.blueprint.sections){
   sections.push({heading:group.label,paragraphs:[]});
   for(const item of paper.selection.items.filter(i=>i.sectionId===group.id)){

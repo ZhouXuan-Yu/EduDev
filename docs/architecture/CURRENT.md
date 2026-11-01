@@ -1,5 +1,13 @@
 # 当前架构
 
+2026-11-01 C03：backup领域恢复服务→v1 typed IPC/preload→原DataBackupPanel，原store启动前读取profile选择，Pi/SQLite/文件真源不变。新副本校验和已知地址迁移后才显式激活；原退出drain/relaunch复用，UI测试手动冷启。后台旧积压在副本暂停，不停原调度服务。无新表/依赖；全领域/旧备份/外选目录矩阵未完成。见docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
+
+## 2026-11-01 图题自动归档的独立来源检查
+
+两遍AI一致、区域坐标相同和名义ready数不能证明裁剪完整。新图题必须保存本地像素边缘及RapidOCR首尾/邻题证据，下一页续题或来源未知保持待核；旧实验缺证据不补写成功。原PDF/首稿/终稿/错误裁剪保留，测试观察器失败不能归因模型或静默重放未知调用。原题面AI来源与教师核对来源保持区分。
+
+2026-11-01 saved artifactCheck只读v1：原text/Office元数据与精确原回执按需投影；历史明细和当前适用性分开，取消沿原64上限，无新表/依赖/Runtime。源码c3f7416；SQLite9/解析12/Pi11/最终冷启3与240组件/build通过，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。
+
 2026-11-01 E08整包目录：原delivery state metadata分页→readonly deliveryCatalog host→typed IPC/preload→Teaching Files整包tab→原卡/预览/原Pi start。resumeDeliveryId可选字段绑定原命令hash、Active与整包工具；后继沿原parentId，无新表/依赖/Runtime。
 
 2026-11-01 E08：原office/text state + journal.sourceWindow → artifact-sources只读薄适配 → typed IPC/preload → chat/Teaching Files/selected history；现有源控件/文件面板精确版本锁复用，无新表/依赖/Runtime。合并主线ChatSources保留引用展开/焦点；详artifactSourcesSlice。

@@ -1,0 +1,491 @@
+{
+  "ok": true,
+  "checks": [
+    "Formal composer creates and approves HTML, then actual read/edit/approval saves the second version",
+    "Teaching Files opens current saved-version receipt and runs actual local HTML inspection with no model request",
+    "Original historical card selects and previews exact first-version HTML without changing current disk content",
+    "Selected older same-path HTML retains its exact original successful findings, visibly historical and unable to certify current content",
+    "Visible restore saves byte-identical first HTML as third current file while second version stays untouched, zero model requests",
+    "Restored new identity never inherits an unrelated old receipt; teacher explicitly inspects actual restored file",
+    "Actual external edit and deletion invalidate applicability while retaining diagnostic findings, no regenerated output",
+    "Old chat card default open resolves the new current filename through the same typed host",
+    "Existing history selection and restore controls remain reachable in both native window sizes",
+    "Cold history and Teaching Files retrieve the same selected receipts and honest stale applicability with zero model replay",
+    "Cold original Pi restores the same three HTML versions and current file with zero replay/errors"
+  ],
+  "errors": [],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb",
+  "boundary": "Original formal Pi/composer/read/edit/approve/history/restore with synthetic SSE, actual disk/SQLite and cold readback; zero paid calls. Complete E08/FX01/252 AT remains pending.",
+  "currentCheck": {
+    "schemaVersion": "xiaozhi.artifact-check.v1",
+    "artifactId": "xichange_d7d183bb-be6b-4942-970f-6b3d181d8372",
+    "path": "浮力.html",
+    "sha256": "a2749a1a4388236c63affc394392700724aa69e32bb989b7aae1405fe62f9958",
+    "current": true,
+    "integrity": "same",
+    "fileVersion": "0e6a2b8b6ef74d6c08fc13ce89e7802eb8303c657ae7cba9d4cd67804df0d770",
+    "workspaceVersion": "6144b3862c84cf1c3090e72c0937f79e0d2661a18d96da0f19056a64513924d7",
+    "report": {
+      "schemaVersion": "xiaozhi.delivery-checks.v1",
+      "id": "xicheck_05eb249fedf17e154da9416a67c9672ff43ff0fed39fe78c3330f7e37cf6d9f1",
+      "sessionId": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+      "runId": null,
+      "callId": null,
+      "workspaceVersion": "6144b3862c84cf1c3090e72c0937f79e0d2661a18d96da0f19056a64513924d7",
+      "requirementsVersion": 1,
+      "requirements": {
+        "taskId": "xitask_b2854ca9b8ff59e08c0a29a3ca39d5909add36645e60bf8401936884c33b609b",
+        "version": 1,
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "text": "读取刚保存的浮力.html，只把载荷4N改成载荷5N，保留其他内容，先展示让我确认。",
+            "sourceId": "aimsg_d0c06409-9e68-4f19-a3d5-34a94d063793",
+            "sourceVersion": "675622a571dc0d1bdc45f7bfc0c12a46d2d0ab335a53322bc393550b3da92a09"
+          },
+          {
+            "id": "check_8aa8422c9f5fe274f3e6eeb3",
+            "version": 1,
+            "text": "保存HTML教学文件",
+            "sourceId": "aimsg_d0c06409-9e68-4f19-a3d5-34a94d063793",
+            "sourceVersion": "675622a571dc0d1bdc45f7bfc0c12a46d2d0ab335a53322bc393550b3da92a09"
+          }
+        ],
+        "digest": "19051bda6fdc6f73c63ecc86b704b2c24ea9c47e7aa14a61d1cd67e0572d376f"
+      },
+      "policySha256": "0cdd9f452645ea00a8963f07b2175383effe603085940fc55d7dd5a43d43b7fe",
+      "scope": "a349f04708aa332e327077b264fcc8648910f8050edc9736eb8862b4e999f4c3",
+      "createdAt": "2026-11-01T07:37:26.555Z",
+      "state": "partial",
+      "files": [
+        {
+          "path": "浮力.html",
+          "fileVersion": "0e6a2b8b6ef74d6c08fc13ce89e7802eb8303c657ae7cba9d4cd67804df0d770",
+          "sha256": "a2749a1a4388236c63affc394392700724aa69e32bb989b7aae1405fe62f9958",
+          "size": 542,
+          "format": "html",
+          "checks": [
+            {
+              "kind": "visual",
+              "state": "passed",
+              "code": "html_viewports",
+              "message": "实际渲染1366×768和1920×1080；已检查页面宽度与文字容器裁切，未涵盖任意语义遮挡或未展开区域。"
+            },
+            {
+              "kind": "interaction",
+              "state": "unchecked",
+              "code": "interaction_contract",
+              "message": "发现控件，但尚未提供操作与观察结果的检查约定。"
+            },
+            {
+              "kind": "structure",
+              "state": "passed",
+              "code": "parsed",
+              "message": "实际解析完成（jsdom29.0.2）。"
+            },
+            {
+              "kind": "content",
+              "state": "passed",
+              "code": "contains",
+              "checkId": "contains:0",
+              "message": "正文应包含“载荷5N”：符合。"
+            },
+            {
+              "kind": "numbers",
+              "state": "unchecked",
+              "code": "numeric_contract",
+              "message": "尚未提供数值或合计的核验约定。"
+            },
+            {
+              "kind": "consistency",
+              "state": "not_applicable",
+              "code": "single_file",
+              "message": "当前仅检查一份文件。"
+            }
+          ],
+          "renderedPages": [
+            1
+          ],
+          "numbers": [],
+          "state": "partial",
+          "rules": {
+            "contains": [
+              {
+                "text": "载荷5N"
+              }
+            ]
+          },
+          "visualEvidence": [
+            {
+              "page": 1,
+              "kind": "html_viewport",
+              "sha256": "1875d4bde16356091b63354c42ebd9426651643f3d3654c801014989b3eb1219",
+              "bytes": 18515,
+              "width": 2049,
+              "height": 1152,
+              "viewport": "1366x768"
+            },
+            {
+              "page": 1,
+              "kind": "html_viewport",
+              "sha256": "e8adf8bbdb90d275efd9a148b2bfb72e0ac91fdd20a6423a7693921a2db057a4",
+              "bytes": 26270,
+              "width": 2880,
+              "height": 1620,
+              "viewport": "1920x1080"
+            }
+          ],
+          "facts": []
+        }
+      ],
+      "repairAttempts": {},
+      "requirementCoverage": [
+        {
+          "criterionId": "teacher_request",
+          "criterionVersion": 1,
+          "state": "unmapped",
+          "semantics": "unchecked",
+          "evidence": []
+        },
+        {
+          "criterionId": "check_8aa8422c9f5fe274f3e6eeb3",
+          "criterionVersion": 1,
+          "state": "unmapped",
+          "semantics": "unchecked",
+          "evidence": []
+        }
+      ]
+    },
+    "applicable": true,
+    "retainedReports": 64
+  },
+  "historicalCheck": {
+    "schemaVersion": "xiaozhi.artifact-check.v1",
+    "artifactId": "xichange_8cbb42c2-c836-496d-86f0-4025ad80e8ad",
+    "path": "浮力.html",
+    "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+    "current": false,
+    "integrity": "changed",
+    "workspaceVersion": "6144b3862c84cf1c3090e72c0937f79e0d2661a18d96da0f19056a64513924d7",
+    "report": {
+      "schemaVersion": "xiaozhi.delivery-checks.v1",
+      "id": "xicheck_b016b0ebf83af135283a6f60072e7ae47d059208415bb1882dcca535206ca14a",
+      "sessionId": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+      "runId": "run_be2b5900-6bde-44b5-be91-b79df9fb7df3",
+      "callId": "html-create-1",
+      "workspaceVersion": "6144b3862c84cf1c3090e72c0937f79e0d2661a18d96da0f19056a64513924d7",
+      "requirementsVersion": 1,
+      "requirements": {
+        "taskId": "xitask_466a4c63c8c42602e6da34fdb5fcabb1b199ad14565ba54153c1ebd8e337bbe6",
+        "version": 1,
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "text": "制作一份可离线打开的浮力课堂HTML，主线载荷4N，带互动按钮，实际保存并让我确认。",
+            "sourceId": "aimsg_0487c29b-3dc5-46ac-a673-8b169a9c57ab",
+            "sourceVersion": "810ac4d4294519d657c1eaa5e715b03d75ff53174d948b75e4afa3456cb269e4"
+          },
+          {
+            "id": "check_f7181f17f9fea75f69f2f18c",
+            "version": 1,
+            "text": "保存HTML教学文件",
+            "sourceId": "aimsg_0487c29b-3dc5-46ac-a673-8b169a9c57ab",
+            "sourceVersion": "810ac4d4294519d657c1eaa5e715b03d75ff53174d948b75e4afa3456cb269e4"
+          }
+        ],
+        "digest": "182b95dc71afb9b7ebe4d0f3021eadf95b72dc91ea448ff1d98952aecf9b1186"
+      },
+      "policySha256": "f49fa913ce08d2c556d689270da29916ecfacea30067d64c91c9a20f89dd62d6",
+      "scope": "b588e166e31d094d1a2339cf45fd0d867137409897cdcefe9413515efda716b1",
+      "createdAt": "2026-11-01T07:37:01.261Z",
+      "state": "partial",
+      "files": [
+        {
+          "path": "浮力.html",
+          "fileVersion": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+          "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+          "size": 542,
+          "format": "html",
+          "checks": [
+            {
+              "kind": "visual",
+              "state": "passed",
+              "code": "html_viewports",
+              "message": "实际渲染1366×768和1920×1080；已检查页面宽度与文字容器裁切，未涵盖任意语义遮挡或未展开区域。"
+            },
+            {
+              "kind": "interaction",
+              "state": "unchecked",
+              "code": "interaction_contract",
+              "message": "发现控件，但尚未提供操作与观察结果的检查约定。"
+            },
+            {
+              "kind": "structure",
+              "state": "passed",
+              "code": "parsed",
+              "message": "实际解析完成（jsdom29.0.2）。"
+            },
+            {
+              "kind": "content",
+              "state": "passed",
+              "code": "contains",
+              "checkId": "contains:0",
+              "message": "正文应包含“载荷4N”：符合。"
+            },
+            {
+              "kind": "numbers",
+              "state": "unchecked",
+              "code": "numeric_contract",
+              "message": "尚未提供数值或合计的核验约定。"
+            },
+            {
+              "kind": "consistency",
+              "state": "not_applicable",
+              "code": "single_file",
+              "message": "当前仅检查一份文件。"
+            }
+          ],
+          "renderedPages": [
+            1
+          ],
+          "numbers": [],
+          "state": "partial",
+          "rules": {
+            "contains": [
+              {
+                "text": "载荷4N"
+              }
+            ]
+          },
+          "candidate": {
+            "kind": "text",
+            "id": "xichange_8cbb42c2-c836-496d-86f0-4025ad80e8ad",
+            "revision": 0
+          },
+          "visualEvidence": [
+            {
+              "page": 1,
+              "kind": "html_viewport",
+              "sha256": "f91939ae5eb8ca6cda06af28eb4a6f5bc93d7d617a14bac691dcd6975ec866a0",
+              "bytes": 18413,
+              "width": 2049,
+              "height": 1152,
+              "viewport": "1366x768"
+            },
+            {
+              "page": 1,
+              "kind": "html_viewport",
+              "sha256": "46d02c13a323010101aad9ec15ce6d1c794c08c8b2a25ec869cfc6a335180bac",
+              "bytes": 26175,
+              "width": 2880,
+              "height": 1620,
+              "viewport": "1920x1080"
+            }
+          ],
+          "facts": []
+        }
+      ],
+      "repairAttempts": {},
+      "candidate": true,
+      "requirementCoverage": [
+        {
+          "criterionId": "teacher_request",
+          "criterionVersion": 1,
+          "state": "unmapped",
+          "semantics": "unchecked",
+          "evidence": []
+        },
+        {
+          "criterionId": "check_f7181f17f9fea75f69f2f18c",
+          "criterionVersion": 1,
+          "state": "unmapped",
+          "semantics": "unchecked",
+          "evidence": []
+        }
+      ]
+    },
+    "applicable": false,
+    "retainedReports": 64
+  },
+  "restoredCheck": {
+    "schemaVersion": "xiaozhi.artifact-check.v1",
+    "artifactId": "xichange_b5031103-119c-4de6-baed-7b1ebc64edb5",
+    "path": "浮力-恢复版3.html",
+    "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+    "current": true,
+    "integrity": "same",
+    "fileVersion": "9e574cf5d36ea80092a526405d8c1f5f42666b721dc223711533e183037cc942",
+    "workspaceVersion": "6144b3862c84cf1c3090e72c0937f79e0d2661a18d96da0f19056a64513924d7",
+    "report": {
+      "schemaVersion": "xiaozhi.delivery-checks.v1",
+      "id": "xicheck_c47b70032399f081b48da6fac37870b9f912d8b77ee53315df666182b4fd6008",
+      "sessionId": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+      "runId": null,
+      "callId": null,
+      "workspaceVersion": "6144b3862c84cf1c3090e72c0937f79e0d2661a18d96da0f19056a64513924d7",
+      "requirementsVersion": 1,
+      "requirements": {
+        "taskId": "xitask_b2854ca9b8ff59e08c0a29a3ca39d5909add36645e60bf8401936884c33b609b",
+        "version": 1,
+        "criteria": [
+          {
+            "id": "teacher_request",
+            "version": 1,
+            "text": "读取刚保存的浮力.html，只把载荷4N改成载荷5N，保留其他内容，先展示让我确认。",
+            "sourceId": "aimsg_d0c06409-9e68-4f19-a3d5-34a94d063793",
+            "sourceVersion": "675622a571dc0d1bdc45f7bfc0c12a46d2d0ab335a53322bc393550b3da92a09"
+          },
+          {
+            "id": "check_8aa8422c9f5fe274f3e6eeb3",
+            "version": 1,
+            "text": "保存HTML教学文件",
+            "sourceId": "aimsg_d0c06409-9e68-4f19-a3d5-34a94d063793",
+            "sourceVersion": "675622a571dc0d1bdc45f7bfc0c12a46d2d0ab335a53322bc393550b3da92a09"
+          }
+        ],
+        "digest": "19051bda6fdc6f73c63ecc86b704b2c24ea9c47e7aa14a61d1cd67e0572d376f"
+      },
+      "policySha256": "7b0f5e71f5bbfc3bcbe57536239bd8e3c437fc2c1f21d04b5a15ef16407b3191",
+      "scope": "2f14a9d2556990284015a8f8ec568d77b502b02e7dcba9721ed3aa95c4f09abd",
+      "createdAt": "2026-11-01T07:37:45.664Z",
+      "state": "partial",
+      "files": [
+        {
+          "path": "浮力-恢复版3.html",
+          "fileVersion": "9e574cf5d36ea80092a526405d8c1f5f42666b721dc223711533e183037cc942",
+          "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+          "size": 542,
+          "format": "html",
+          "checks": [
+            {
+              "kind": "visual",
+              "state": "passed",
+              "code": "html_viewports",
+              "message": "实际渲染1366×768和1920×1080；已检查页面宽度与文字容器裁切，未涵盖任意语义遮挡或未展开区域。"
+            },
+            {
+              "kind": "interaction",
+              "state": "unchecked",
+              "code": "interaction_contract",
+              "message": "发现控件，但尚未提供操作与观察结果的检查约定。"
+            },
+            {
+              "kind": "structure",
+              "state": "passed",
+              "code": "parsed",
+              "message": "实际解析完成（jsdom29.0.2）。"
+            },
+            {
+              "kind": "content",
+              "state": "unchecked",
+              "code": "content_contract",
+              "message": "尚未提供页数、备注或内容要求，未判定要求已齐全。"
+            },
+            {
+              "kind": "numbers",
+              "state": "unchecked",
+              "code": "numeric_contract",
+              "message": "尚未提供数值或合计的核验约定。"
+            },
+            {
+              "kind": "consistency",
+              "state": "not_applicable",
+              "code": "single_file",
+              "message": "当前仅检查一份文件。"
+            }
+          ],
+          "renderedPages": [
+            1
+          ],
+          "numbers": [],
+          "state": "partial",
+          "visualEvidence": [
+            {
+              "page": 1,
+              "kind": "html_viewport",
+              "sha256": "f91939ae5eb8ca6cda06af28eb4a6f5bc93d7d617a14bac691dcd6975ec866a0",
+              "bytes": 18413,
+              "width": 2049,
+              "height": 1152,
+              "viewport": "1366x768"
+            },
+            {
+              "page": 1,
+              "kind": "html_viewport",
+              "sha256": "46d02c13a323010101aad9ec15ce6d1c794c08c8b2a25ec869cfc6a335180bac",
+              "bytes": 26175,
+              "width": 2880,
+              "height": 1620,
+              "viewport": "1920x1080"
+            }
+          ],
+          "facts": []
+        }
+      ],
+      "repairAttempts": {},
+      "requirementCoverage": [
+        {
+          "criterionId": "teacher_request",
+          "criterionVersion": 1,
+          "state": "unmapped",
+          "semantics": "unchecked",
+          "evidence": []
+        },
+        {
+          "criterionId": "check_8aa8422c9f5fe274f3e6eeb3",
+          "criterionVersion": 1,
+          "state": "unmapped",
+          "semantics": "unchecked",
+          "evidence": []
+        }
+      ]
+    },
+    "applicable": true,
+    "retainedReports": 64
+  },
+  "viewports": [
+    1366,
+    1920
+  ],
+  "sessionId": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+  "versions": [
+    {
+      "artifactId": "xichange_8cbb42c2-c836-496d-86f0-4025ad80e8ad",
+      "path": "浮力.html",
+      "title": "浮力.html",
+      "format": "html",
+      "number": 1,
+      "savedAt": "2026-11-01T07:37:04.456Z",
+      "verifiedAt": null,
+      "parentArtifactId": null,
+      "size": 542,
+      "change": "首次保存"
+    },
+    {
+      "artifactId": "xichange_d7d183bb-be6b-4942-970f-6b3d181d8372",
+      "path": "浮力.html",
+      "title": "浮力.html",
+      "format": "html",
+      "number": 2,
+      "savedAt": "2026-11-01T07:37:15.522Z",
+      "verifiedAt": null,
+      "parentArtifactId": "xichange_8cbb42c2-c836-496d-86f0-4025ad80e8ad",
+      "size": 542,
+      "change": "原文件局部修改；先前内容仍保留在修改记录中"
+    },
+    {
+      "artifactId": "xichange_b5031103-119c-4de6-baed-7b1ebc64edb5",
+      "path": "浮力-恢复版3.html",
+      "title": "浮力-恢复版3.html",
+      "format": "html",
+      "number": 3,
+      "savedAt": "2026-11-01T07:37:39.685Z",
+      "verifiedAt": null,
+      "parentArtifactId": "xichange_d7d183bb-be6b-4942-970f-6b3d181d8372",
+      "size": 542,
+      "change": "从历史版本恢复，另存新文件"
+    }
+  ]
+}

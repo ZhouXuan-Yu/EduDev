@@ -1,3 +1,5 @@
+import {registerBackupRestore} from './backup/restore-api';
+import {selectedBackupRoot} from './backup/activation';
 import {installLocalFrameIsolation} from './xiaozhi-agent/local-frame-isolation';
 import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
 import { app, BrowserWindow, dialog, ipcMain as electronIpcMain, shell, nativeTheme } from 'electron';
@@ -239,7 +241,9 @@ else app.on('second-instance', () => {
 
 if (ownsDesktop) app.whenReady().then(async () => {
   loadLocalEnv();
-  const dataRoot = process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData');
+  const baseDataRoot = process.env.OMNI_EDU_DATA_ROOT || join(app.getPath('userData'), 'OmniEduData');
+  let dataRoot=baseDataRoot;
+  try{dataRoot=(await selectedBackupRoot(app.getPath('userData'),baseDataRoot)).dataRoot;}catch(error){dialog.showErrorBox('恢复目录不可用',error instanceof Error?error.message:'仍使用原数据目录');if(!existsSync(join(baseDataRoot,'app.db'))){app.quit();return;}}
   const authority = resolveRuntimeAuthority({ packaged: app.isPackaged, env: process.env, dataRoot, profileRoot: app.getPath('userData') });
   store = new OmniEduStore(dataRoot);
   await store.init();
@@ -528,6 +532,7 @@ if (ownsDesktop) app.whenReady().then(async () => {
 
   const xiaozhi = registerXiaozhiIpc({ ipcMain, store, authority, dataRoot, window: () => mainWindow });
   registerReplyExport({ipcMain,store,dataRoot,window:()=>mainWindow});
+  registerBackupRestore({ipcMain,store,baseRoot:baseDataRoot,profile:app.getPath('userData'),allowed:settingsSender,job:work=>xiaozhi.withLocalSettingsJob(work),restart:()=>{app.relaunch();app.quit();}});
   const mistakeOcr=registerMistakeOcrIpc({ipcMain,repository:store.mistakeOcr,facts:store.mistakeFacts,allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const mistakeSimilar=registerMistakeSimilarIpc({ipcMain,find:(input,signal)=>store.findMistakeSimilar(input,signal),allowed:event=>!!mainWindow&&!mainWindow.isDestroyed()&&event.sender===mainWindow.webContents&&event.senderFrame===mainWindow.webContents.mainFrame});
   const piConsole = createPiConsoleFacade({store,host:xiaozhi});

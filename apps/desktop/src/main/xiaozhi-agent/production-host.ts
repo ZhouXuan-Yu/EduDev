@@ -12,6 +12,7 @@ import {computationEffectTool} from '../../shared/xiaozhi-computation';
 import {createManagedTools} from '../managed-tools/service';
 import {managedComputationTools} from '../managed-tools/tools';
 import {createTeacherRequestTool,teacherRequestSources} from './request-sources';
+import {createArtifactCheck} from './artifact-check';
 import {createArtifactSources} from './artifact-sources';
 import {fileWritesEnabled} from './file-write-policy';
 import {conversationOutput,CONVERSATION_OUTPUT_LABEL} from './conversation-output';
@@ -1089,6 +1090,7 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     enabled, snapshot, decide: approvals.decide, answer:controls.answer,
     reviewTextChange: textChanges.review,
     reviewOfficeArtifact:officeArtifacts.review,
+    artifactCheck:createArtifactCheck({changes:store.xiaozhiState.changes,office:store.xiaozhiState.officeArtifacts,inspections:store.xiaozhiState.inspections,checks:fileChecks,authorize:authorizePaperConversation,workspace:(id):Promise<import('./workspace-files').WorkspaceLease>=>host.resolveFileWorkspace(id)}),
     artifactSources:(input:unknown)=>createArtifactSources({changes:store.xiaozhiState.changes,office:store.xiaozhiState.officeArtifacts,journal:store.xiaozhiState.eventJournal,
       authorize:authorizePaperConversation,workspace:id=>host.resolveFileWorkspace(id),paper:(id,paperId)=>store.papers.review(id,paperId),current:()=>!closing,
       producer:async(id,recordId,runId,callId)=>{const bundle=await store.xiaozhiState.deliveries.owner(id,recordId);return bundle&&bundle.runId===runId&&bundle.files.some(file=>file.draftId===recordId&&file.runId===runId&&file.callId===callId)?bundle.callId:callId;}
