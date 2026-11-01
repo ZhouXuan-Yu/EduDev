@@ -1951,7 +1951,7 @@
   "localLayoutRegions": {
     "date": "2026-11-01",
     "sourceCommit": "28669c3",
-    "integrationCommit": "63cbc06",
+    "integrationCommit": "3f0ddd6095a626ae65867f7e7387aa7026bac855",
     "schemaVersion": "xiaozhi.local-layout-acceptance.v1",
     "policy": "page-regions.v3",
     "candidateSchema": "xiaozhi.local-page-regions.v1",
@@ -2065,12 +2065,12 @@
       "critique": "Even exact OCR heading coordinates cannot isolate interleaved figure captions using one full-width rectangle. Initial inspection was geometry only; it never certified automatic archive."
     },
     "finalCandidateInspection": {
-      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\layout-regions-jz1WDf",
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\layout-regions-keYuM5",
       "pages": [
         {
           "page": 1,
           "cached": true,
-          "layoutMs": 275,
+          "layoutMs": 337,
           "regions": [
             {
               "number": "1",
@@ -2172,7 +2172,7 @@
         {
           "page": 2,
           "cached": true,
-          "layoutMs": 249,
+          "layoutMs": 331,
           "regions": [
             {
               "number": "9",
@@ -2198,13 +2198,13 @@
         {
           "page": 3,
           "cached": true,
-          "layoutMs": 235,
+          "layoutMs": 195,
           "regions": []
         },
         {
           "page": 4,
           "cached": true,
-          "layoutMs": 159,
+          "layoutMs": 150,
           "regions": [
             {
               "number": "12",
@@ -2230,13 +2230,13 @@
         {
           "page": 5,
           "cached": true,
-          "layoutMs": 158,
+          "layoutMs": 162,
           "regions": []
         },
         {
           "page": 6,
           "cached": true,
-          "layoutMs": 158,
+          "layoutMs": 203,
           "regions": [
             {
               "number": "15",
@@ -2262,14 +2262,15 @@
       ],
       "rendererErrors": [],
       "cloudCalls": 0,
-      "buildSha256": "24920272ea355f8f64c57307c6d38f6f79e626374567f463b9b18eb4cfb93fe4",
-      "scope": "Eight numeric proposals, not eight accepted questions. Ambiguous neighbours held; cross-page question still requires original next-page checks.",
+      "buildSha256": "a6b59535a84d2937e72898a318bd0448b4d9241f970ef9c8922b7ca8ad452251",
+      "scope": "Eight proposals, not eight accepted questions. Ambiguous neighbours held; cross-page parent still requires next-page gates.",
       "success": true,
       "regions": 8,
-      "allCandidateEdgesClear": true
+      "allCandidateEdgesClear": true,
+      "sameNativeArtifactAsDelivery": true
     },
     "historicalBadCropRegression": {
-      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\crop-quality-osQPdf",
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\crop-quality-BOs1C3",
       "success": true,
       "checks": 6,
       "crops": [
@@ -2327,25 +2328,29 @@
         }
       ],
       "rendererErrors": [],
-      "cloudCalls": 0
+      "cloudCalls": 0,
+      "buildSha256": "a6b59535a84d2937e72898a318bd0448b4d9241f970ef9c8922b7ca8ad452251"
     },
     "tests": {
       "build": {
         "command": "npm run build",
         "exit": 0,
-        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-layout-integrated-build.log",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-layout-delivery-build.log",
         "includesTypecheck": true
       },
       "components": {
         "command": "npm run test:renderer-components",
         "passed": 240,
         "total": 240,
-        "exit": 0
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-layout-delivery-components.log"
       },
       "boundaries": {
         "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
-        "passed": 56,
-        "exit": 0
+        "passed": 57,
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-layout-delivery-boundaries.log",
+        "shutdownCancellation": true
       },
       "localCandidates": {
         "command": "node scripts/education/kb-layout-regions-real.mjs <owned-temp-root> <retained-whole-exam-directory>",
@@ -2369,8 +2374,8 @@
     "build": [
       {
         "path": "apps/desktop/out/main/index.js",
-        "bytes": 3496438,
-        "sha256": "24920272ea355f8f64c57307c6d38f6f79e626374567f463b9b18eb4cfb93fe4"
+        "bytes": 3497000,
+        "sha256": "a6b59535a84d2937e72898a318bd0448b4d9241f970ef9c8922b7ca8ad452251"
       },
       {
         "path": "apps/desktop/out/preload/index.cjs",
@@ -2378,9 +2383,9 @@
         "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
       },
       {
-        "path": "apps/desktop/out/renderer/assets/index-BR-maNwr.js",
-        "bytes": 7368548,
-        "sha256": "0a007fd08cb0c5213e0ec18c6a4c838db84c8369a6e5c9cd04923233809b05e4"
+        "path": "apps/desktop/out/renderer/assets/index-GsVq_O3H.js",
+        "bytes": 7374774,
+        "sha256": "3b3a8d74e7a01bf19ee0638b9b82fe2aa611783eb412bc3223f113e0d037091e"
       }
     ],
     "performance": {
@@ -2393,19 +2398,20 @@
         6672
       ],
       "warmLayoutMs": [
-        275,
-        249,
-        235,
-        159,
-        158,
-        158
+        337,
+        331,
+        195,
+        150,
+        162,
+        203
       ],
       "sample": "Single retained six-page 1548438-byte PDF; no latency percentile, high-recall or 40GB claim",
       "versusD0d8Bytes": {
-        "main": 24229,
+        "main": 24791,
         "preload": 273,
-        "renderer": 3557,
-        "includesSixIncomingMainCommits": true
+        "renderer": 9783,
+        "incomingMainCommits": 16,
+        "featureOnly": false
       },
       "additionalWork": "One existing local layout OCR on a cold page. Cached PNG/layout disk usage and large-source hash cost still need scale acceptance."
     },
@@ -2419,6 +2425,31 @@
       "Retrieval recall and P95",
       "Packaged delivery"
     ],
-    "rollback": "Pause v3 batches and set OMNI_EDU_AI_PAGE_REGIONS=0 for new inputs. Keep v3 read adapters and immutable source/first/final/crop evidence. No destructive schema or dependency change."
+    "rollback": "Pause v3 batches and set OMNI_EDU_AI_PAGE_REGIONS=0 for new inputs. Keep v3 read adapters and immutable source/first/final/crop evidence. No destructive schema or dependency change.",
+    "previousIntegratedVerification": {
+      "integrationCommit": "63cbc06",
+      "build": [
+        {
+          "path": "apps/desktop/out/main/index.js",
+          "bytes": 3496438,
+          "sha256": "24920272ea355f8f64c57307c6d38f6f79e626374567f463b9b18eb4cfb93fe4"
+        },
+        {
+          "path": "apps/desktop/out/preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        {
+          "path": "apps/desktop/out/renderer/assets/index-BR-maNwr.js",
+          "bytes": 7368548,
+          "sha256": "0a007fd08cb0c5213e0ec18c6a4c838db84c8369a6e5c9cd04923233809b05e4"
+        }
+      ],
+      "candidateOutput": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\layout-regions-jz1WDf"
+    },
+    "sourceCommits": [
+      "28669c3",
+      "a30cba8"
+    ]
   }
 }
