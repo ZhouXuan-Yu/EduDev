@@ -17,5 +17,5 @@
   modal.addEventListener('close',()=>{modal.style.width='';},{once:true});
  }
  const original=D.paper.render;
- D.paper.render=function(){original();const button=document.createElement('button');button.className='button primary';button.id='paper-preview-current';button.textContent='预览当前试卷 / 导出';button.onclick=preview;D.$('#question-selection').prepend(button);};
+ D.paper.render=function(){original();const button=document.createElement('button');button.className='button primary';button.id='paper-preview-current';button.textContent='预览当前试卷 / 导出';button.onclick=preview;D.$('#question-selection').before(button);};
 })(window.Design);
