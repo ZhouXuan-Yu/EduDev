@@ -33,11 +33,13 @@ export function focusWorkspacePending(root: HTMLElement, item: WorkspacePendingI
   const trigger = card.querySelector<HTMLButtonElement>('[data-slot="chat-tool-trigger"]');
   if (trigger?.getAttribute('aria-expanded') === 'false') trigger.click();
   requestAnimationFrame(() => {
-    if (!card.isConnected) return;
+    if (!root.isConnected || !card.isConnected || root.closest('[hidden],[inert],[aria-hidden="true"]')) return;
     card.scrollIntoView({ block: 'center' });
-    const input = card.querySelector<HTMLElement>('textarea:not(:disabled),input:not(:disabled)');
-    const button = [...card.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')].find(node => node !== trigger);
-    (input ?? button ?? trigger)?.focus({ preventScroll: true });
+    const input = [...card.querySelectorAll<HTMLElement>('textarea:not(:disabled),input:not(:disabled):not([type="hidden"])')]
+      .find(node => !node.closest('[hidden],[inert],[aria-hidden="true"]') && (node.checkVisibility?.({ checkVisibilityCSS: true }) ?? true));
+    // A review card may contain an inactive editor. Keep its preview/trigger in
+    // focus instead of choosing an invisible input or a write decision button.
+    (input ?? trigger)?.focus({ preventScroll: true });
   });
   return true;
 }

@@ -8,6 +8,12 @@
 
 原parse_failed间歇根因未关闭：同一hash资产在独立进程与实际宿主复探均成功，不能据此称OCR引擎已修复。原宿主每次认证646文件279039929B的成本、跨页/双遍内容与解题稳定性、答案联网、Pi整卷、40GB召回/P95和最终安装均保持开放，Goal active；D日常/安装未更新。回滚先暂停新本地任务并停止调度写路径，保留新读适配、日志、原件/资产与两遍回执，不删除新表或退回只读旧回执的版本。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#localCropRecovery。
 
+2026-11-01 回执入口复用原OfficeVerificationNotice/OfficeRecoveryNotice及应用DisclosureCard，不修改HeroUI/Pi/Hana vendor；官方Disclosure内部另设应用domain边界，旧样式不进入原生控件。0依赖/付费/IPC变化，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
+2026-11-01 键盘交互整合收尾：f288868/078ff4c整合main 4fe07fc为62fbf1e，13处文档冲突保留双方，三处焦点生产文件内容不变；整合后build/type、240组件和原Pi 0模型焦点2项通过。此前流程6项/207综合分别绑定原固定构建，不冒充最终整合重跑；所有诊断失败已归档，177+份原始证据逐项hash核对。完整AT仍3/252、Goal active，继续W3后S/T；日常D最后核对05782b4，本片与选读修复未应用，实际窗口仍待解锁。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice.integration。
+
+2026-11-01 C02键盘待处理工程：源码f288868，固定构建01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b，主进程/preload与b8e3651基线字节/hash一致，renderer入口较基线+2026B，无新依赖或许可变化。实际Pi6项/240组件/build通过，0付费；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。D保留原05782b4运行与脏文档，等待解锁再核对，不发安装包。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
+
 ## 2026-11-01 结构化题面来源与局部OCR失败
 
 冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。

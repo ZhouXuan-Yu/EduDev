@@ -1,5 +1,7 @@
 # 小智能力与复用矩阵
 
+2026-11-01 C02键盘待处理工程：C02-08/09子项原Pi6项及最终build/type/240组件通过；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。完整FX01/09、全部菜单/档位/对话框、教师REVIEW、IME及物理drag未完成，未增加完整“已实现”AT，累计仍3/252。D日常/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
+
 2026-11-01 C02-06/07及C03-06仅部分实现：选读/复制/冷启与私有目录续写已测，完整AT累计仍3/252、Goal active。源码eb5d8cd，整合93fb5be；5原生/9边界/6+3实际Pi/207固定综合，最终整合build/type/240组件通过。D按授权重启到05782b4，新切片未应用日常；锁屏页面/drag、系统IME与完整REVIEW矩阵待验。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
 
 2026-11-01 WP-C02正文/控件子功能已接通（af4b7ab），实际Pi12项/18组布局、模型档位/面板/设置/停止/冷启通过；REQ05/09/10仍部分，完整AT仍3/252，不降低252条标准。详WORK_PROGRESS及docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。

@@ -1,5 +1,9 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-01 执行补充（不改冻结FX）：独立自有资料合成资料.txt含核对码37，缺失资料.txt不存在；原Pi实际读取一成功一not_found，受控SSE故意声称均完成，UI仍显示host partial。6次本机合成请求/0付费，同记录样式补尾0调用、原消息/事件/源文件hash不变。此子夹具不替代FX10混合产物与完整AT，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
+2026-11-01 C02键盘待处理工程补充夹具keyboard-synthetic.v1/5d9d981886ae10f0f2b705e4bb9cb820e487e6452905e55ad513df0a45ed0e54：合成课堂形式问题（小组合作/独立观察）、原v3任务计划及keyboard-lesson.md，最终固定原Pi5次本机SSE，精确文件hash cf044f21c732bfda17ed6394c5e4361eb564f46a95c1a54d2aed1355cc2cb127；宽1366/480 CSS px，实际环境DPR按截图，本轮不替代原FX01/FX09输入或完整判定。生成/确认/冷启6项通过；0真实provider。详docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
+
 2026-11-01 FX09 UI子样本冻结：fx09-complex-stream.v1，hash 26768810795d9553c3b4ab6c0d06f96e2050b2b7ef39b4ef9fb283dd8ea8bd22，50段/10公式/100行表格/2中文代码及原UI生成10轮历史；生成期间30输入/45滚动。原Pi本地合成传输，消息/journal/冷启正文hash相等，原CPU/RSS/长任务/环境样本归档。geometry-restart.v1 hash a7747b8cdae6bf1d5c7d3a6b37467dbc2803cf7e954a6e2fdadba7c464810e8f（390/480/800、立即退出/最大化、实际双屏100%/150%与模拟断屏）。仅支持AT-C02-01/02/04本地控制条款；FX09完整Office/WPS材料、弹层/多缩放/IME/其他交互不缩减，AT03因前台拒绝保持未通过。详docs/research/AGENT_INTERACTION_C02_20261101.json。
 
 2026-11-01 FX07/FX10工程补充：沿原合成Pi浮力HTML/PPT做真实设置备份（16文件）→新实例→激活→实际交互/PPT/版本→冷启→返回。相同副本续测，不为定位错误重建。独立168事件、4 native绑定、1 native文件和2成果一致；源码夹具非空检查报告保留另测，UI检查表0不算非空。ENOSPC仅注入复制错误，DPR1.5双尺寸，不代替真实磁盘满/100%缩放/原生自动重启及完整FX07 A/B与FX10。原集合和判定不改，详docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。

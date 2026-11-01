@@ -19,6 +19,7 @@ import {OfficeAgentTurn} from './OfficeAgentTurn';
 import {useNativeHeroUITheme} from './useNativeHeroUITheme';
 import {OfficeVerificationNotice} from './OfficeVerificationNotice';
 import {OfficeRecoveryNotice} from './OfficeRecoveryNotice';
+import {OfficeRunReceipts} from './OfficeRunReceipts';
 import {OfficeModelRequestNotice} from './OfficeModelRequestNotice';
 import {OfficeToolExpansionScope} from './OfficeToolExpansion';
 import {OfficeTextSelection} from './OfficeTextSelection';
@@ -114,6 +115,7 @@ export function OfficeConversation({ projection, agentTrace=false, homeHeadingOn
             <OfficeModelRequestNotice turn={turn}/>
             {renderApprovals?.(turn.id)}
             <TurnNotice onConfigure={onConfigure} turn={turn} onRetry={onRetry} retryLabel={retryLabel} onContinue={onContinue}/>
+            <OfficeRunReceipts turn={turn}/>
           </section>;
           const placement = interactionLayout(turn, interactions);
           const parts = groupOfficeProcess(turn.items, new Set(placement.anchored.keys())), firstProcess = parts.findIndex(part => part.kind === 'tools' || part.item.role !== 'user');

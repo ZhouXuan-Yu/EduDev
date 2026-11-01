@@ -8,6 +8,12 @@
 
 原parse_failed间歇根因未关闭：同一hash资产在独立进程与实际宿主复探均成功，不能据此称OCR引擎已修复。原宿主每次认证646文件279039929B的成本、跨页/双遍内容与解题稳定性、答案联网、Pi整卷、40GB召回/P95和最终安装均保持开放，Goal active；D日常/安装未更新。回滚先暂停新本地任务并停止调度写路径，保留新读适配、日志、原件/资产与两遍回执，不删除新表或退回只读旧回执的版本。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#localCropRecovery。
 
+2026-11-01 本轮核对入口已实现（工程子项）：回复结束后能直接看到原执行未完成/结果待核对摘要，按需展开原范围；普通无证据回复不加空卡，不增加批准。完整E06/E07仍待W3集中，日常窗口未更新。详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
+2026-11-01 键盘交互整合收尾：f288868/078ff4c整合main 4fe07fc为62fbf1e，13处文档冲突保留双方，三处焦点生产文件内容不变；整合后build/type、240组件和原Pi 0模型焦点2项通过。此前流程6项/207综合分别绑定原固定构建，不冒充最终整合重跑；所有诊断失败已归档，177+份原始证据逐项hash核对。完整AT仍3/252、Goal active，继续W3后S/T；日常D最后核对05782b4，本片与选读修复未应用，实际窗口仍待解锁。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice.integration。
+
+2026-11-01 C02键盘待处理工程已实现的细项：键盘打开/切换/关闭右栏、进入真实提问回答及文件审阅、原确认保存、返回真实文件提醒；冷启保留原任务/草稿且不重放。仅本功能子项，完整C02及自然教学质量未验；D日常尚未应用。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
+
 ## 2026-11-01 结构化题面来源与局部OCR失败
 
 冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。

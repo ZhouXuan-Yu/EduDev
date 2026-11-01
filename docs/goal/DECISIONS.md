@@ -6,6 +6,10 @@
 
 原parse_failed间歇根因未关闭：同一hash资产在独立进程与实际宿主复探均成功，不能据此称OCR引擎已修复。原宿主每次认证646文件279039929B的成本、跨页/双遍内容与解题稳定性、答案联网、Pi整卷、40GB召回/P95和最终安装均保持开放，Goal active；D日常/安装未更新。回滚先暂停新本地任务并停止调度写路径，保留新读适配、日志、原件/资产与两遍回执，不删除新表或退回只读旧回执的版本。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#localCropRecovery。
 
+2026-11-01 本轮核对接线：复用原host回执、原notice和官方Disclosure，失效/跨轮不显示为有效，本轮核对/跨轮任务/逐文件状态保持各自范围；不新建核验或安全批准流程。源码399f1f7，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
+2026-11-01 C02键盘待处理工程：只为教师显式进入移交焦点，非问题卡无可见输入时停在审阅trigger，不默认选批准。原File通知可能卸载，关闭后按同会话稳定入口返回；不扩大权限、确认层次或Agent循环。完整252验收定义与W3→S/T顺序不变。
+
 ## 2026-11-01 结构化题面来源与局部OCR失败
 
 冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。

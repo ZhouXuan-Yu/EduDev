@@ -1,5 +1,7 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-11-01 E06/E07当前入口：已实现（工程子项，399f1f7）：当前对话核对/恢复只读入口，失败摘要、展开范围与冷启零重放；原Pi4项、最终同记录补尾2项、组件边界7及build/type/240组件通过。完整AT不提前通过，仍按W3集中。证据docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
 2026-11-01 C02：窗口几何修复已实现（4f6ce66）：host与v1偏好统一390px下限，菜单退出前保存最后尺寸，修复150% DPI冷启逐次增宽。最终整合8c6b705后build/type、240组件、源码10、实际Electron几何7（390/480/800、立即退出、最大化、真实双屏100%/150%及模拟断屏）、复杂正文冷读3通过。FX09 50段/10公式/100行表格/2中文代码/10轮历史，生成中30输入/45滚动；输入P95 7.8→6.7ms，滚动2.2→1.6ms，最终样本输入最大6.8ms，长任务69ms×2→0；两次均达本地目标，不归因速度提升或真实模型首字。原正文/消息/journal hash及草稿完整，0新付费。AT-C02-01/02/04已实现，累计3/252，其余249未完整验收，WP仍部分；实际pointer因系统前台焦点拒绝未派发，AT03不通过。D目录由另一任务更新至2749d3d并运行，本轮保留该窗口/脏文档，当前窗口尚未用此geometry修复；安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json，45份原始证据hash归档；下一补C02剩余实际交互/C06，与E06/E07/E08+C功能齐备后集中W3，再S/T，Goal active。
 
 2026-11-01 E07：冲突三方对照/当前文件重读和新稿重新确认已贯通原Pi/typed IPC/审阅卡；实际生成中与保存后强退恢复亦有证据。源码6、组件240、正式Pi7及build/type通过，0付费，完整阶段AT仍待集中。日常进度见docs/goal/WORK_PROGRESS.md，证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
@@ -783,8 +785,8 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
 | REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) | 部分实现；2026-11-01原输入框浏览器组合态/229、普通Enter单发、Shift+Enter、长中文草稿及冷启通过，真实系统拼音仍待；eb5d8cd；[证据](../research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice) |
 | REQ-C02-07 | 滚动与选择 | 底部正常跟随；离底/选择时不强拉；可一键回到底部；复制不夹入过程或私有字段 | [AT-C02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-07) | 部分实现；2026-11-01选区/阅读位置、上滚/原latest、流式完成转换、公开复制与原历史hash专项通过，完整FX09/REVIEW仍待集中；eb5d8cd；[证据](../research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice) |
-| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 待验收 |
-| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
+| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 部分实现；键盘待处理子项已实现，原Pi6项通过；完整FX01/交接矩阵待验，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#keyboardSlice |
+| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 部分实现；补齐键盘右栏/真实问题/文件审阅/返回入口，最终原Pi6项与240组件通过；完整菜单/档位/对话框/REVIEW待验；保留bodyLayoutSlice证据，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#keyboardSlice |
 | REQ-C02-10 | 切换与空错误态 | 不混内容、不丢草稿；空态提示下一动作；失败可恢复且无永转加载 | [AT-C02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-10) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
 
 #### WP-C03 本地真源、迁移、备份与一致性
