@@ -1,5 +1,11 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+2026-11-01 C02窄窗标题栏工程已实现（fab49e4，整合d8640d4）：原生安全区按实际zoom布局，窄窗聚合为原生应用菜单，完整菜单/导航保留；390px控件不再压入caption，drag由重叠变为59px独立空白。最终build/type、240组件及原Electron6项（20组尺寸/页面zoom、菜单点击/Enter、sender边界、双草稿/冷启）通过，0付费/renderer错误。仅标题栏子项，未替代物理drag、系统DPI、IME/全部弹层或正文矩阵；极窄260 CSS px正文截断另列待修。累计完整AT仍3/252，Goal active。日常窗口/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#captionLayoutSlice；下一C02正文/关键弹层等功能与C06，阶段对齐后集中W3，再S/T。
+
+2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。
+
+2026-11-01 C02：窗口几何修复已实现（4f6ce66）：host与v1偏好统一390px下限，菜单退出前保存最后尺寸，修复150% DPI冷启逐次增宽。最终整合8c6b705后build/type、240组件、源码10、实际Electron几何7（390/480/800、立即退出、最大化、真实双屏100%/150%及模拟断屏）、复杂正文冷读3通过。FX09 50段/10公式/100行表格/2中文代码/10轮历史，生成中30输入/45滚动；输入P95 7.8→6.7ms，滚动2.2→1.6ms，最终样本输入最大6.8ms，长任务69ms×2→0；两次均达本地目标，不归因速度提升或真实模型首字。原正文/消息/journal hash及草稿完整，0新付费。AT-C02-01/02/04已实现，累计3/252，其余249未完整验收，WP仍部分；实际pointer因系统前台焦点拒绝未派发，AT03不通过。D目录由另一任务更新至2749d3d并运行，本轮保留该窗口/脏文档，当前窗口尚未用此geometry修复；安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json，45份原始证据hash归档；下一补C02剩余实际交互/C06，与E06/E07/E08+C功能齐备后集中W3，再S/T，Goal active。
+
 2026-11-01 E08教学文件HTML目录与时间工程已实现（1ff075c）：原修改账本派生当前族行，同一教学文件/对话版本控制可预览、另存恢复及回来源对话；正常保存记成功回执时间，旧记录未知、中断后只记核验时间。源码6、HTML8、Office16、build/type、240组件、正式Electron8（原三版续成第四版/双尺寸DPR1.5实测/冷启）exit0，0付费/模型重放/renderer错误。主包+2810B、renderer+614B、preload不变，仅按需元数据；无速度/P95结论。系统OS仅派发回调核对；完整来源页/行导航、E08/252AT及既有mastery_quiz失败仍待，未重复综合。D盘日常/安装包未更新，Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
 
 2026-11-01 E08通用HTML版本工程已实现（37bd444）：原修改账本增可选parent_change_id，旧记录可读；同一typed officeVersion及原历史组件接通HTML三版预览/选择/另存恢复，旧卡默认打开当前文件。历史副本为派生缓存，不作新真源。源码8、Office16、冲突6、build/type、240组件及正式Pi6（双尺寸DPR按截图推算1.5/冷启）exit0；0付费/重放/renderer错误。一遍综合在mastery_quiz checkpoint提交失败，原日志/截图保留，不记207通过，未改该路径。下一HTML教学文件目录/全部来源定位及版本时间口径+C，再S/T；完整阶段AT/252仍待集中，Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlVersionSlice。
@@ -195,7 +201,7 @@ C类在适用阶段贯穿，不把安全、持久化和取消留到最后补，�
 | WP-T07 | 教师模板、风格与可撤销记忆 | 待实施/待验收 | 待验收 |
 | WP-T08 | 形成性评价、量规与反馈 | 待实施/待验收 | 待验收 |
 | WP-C01 | 权限、隐私与真实自主范围 | 贯穿/待验收 | 待验收 |
-| WP-C02 | 流式性能、窗口与交互 | 贯穿/待验收 | 待验收 |
+| WP-C02 | 流式性能、窗口与交互 | 部分实现（3/10条通过） | AT01/02/04 已实现；其余待验收 |
 | WP-C03 | 本地真源、迁移、备份与一致性 | 贯穿/待验收 | 待验收 |
 | WP-C04 | 真实过程、错误与可核验记录 | 贯穿/待验收 | 待验收 |
 | WP-C05 | 质量、成本与有界资源 | 贯穿/待验收 | 待验收 |

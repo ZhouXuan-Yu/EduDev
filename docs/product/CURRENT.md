@@ -1,5 +1,11 @@
 # 当前产品方向
 
+2026-11-01 窄窗原生标题栏菜单收拢已接通，功能保留，原输入框不变；20组标题栏/双草稿冷启专项通过。正文极窄视口截断、实际drag及完整交互仍未通过。完整AT仍3/252。详WORK_PROGRESS.md及C02证据captionLayoutSlice。
+
+2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。
+
+2026-11-01 C02：窗口几何修复已实现（4f6ce66）：host与v1偏好统一390px下限，菜单退出前保存最后尺寸，修复150% DPI冷启逐次增宽。最终整合8c6b705后build/type、240组件、源码10、实际Electron几何7（390/480/800、立即退出、最大化、真实双屏100%/150%及模拟断屏）、复杂正文冷读3通过。FX09 50段/10公式/100行表格/2中文代码/10轮历史，生成中30输入/45滚动；输入P95 7.8→6.7ms，滚动2.2→1.6ms，最终样本输入最大6.8ms，长任务69ms×2→0；两次均达本地目标，不归因速度提升或真实模型首字。原正文/消息/journal hash及草稿完整，0新付费。AT-C02-01/02/04已实现，累计3/252，其余249未完整验收，WP仍部分；实际pointer因系统前台焦点拒绝未派发，AT03不通过。D目录由另一任务更新至2749d3d并运行，本轮保留该窗口/脏文档，当前窗口尚未用此geometry修复；安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json，45份原始证据hash归档；下一补C02剩余实际交互/C06，与E06/E07/E08+C功能齐备后集中W3，再S/T，Goal active。
+
 ## 2026-11-01 复用本地布局辅助图题取图
 
 新批次用本地OCR坐标辅助图题取图，无法完整分离或错号/跨页时仍待核，保留原页。根因仍含图注与下题标题交错，单矩形不能承载；相邻两题候选保守拒绝，OCR将14.读成1.4.不猜补。下一沿原QuestionDocument支持分块来源与跨页父题，再处理两遍答案/解析稳定性，不能只继续加拒绝条件。40GB、召回/P95、已知答案/联网补答与完整组卷安装仍未验收，Goal active。证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#localLayoutRegions。

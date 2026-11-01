@@ -5,7 +5,7 @@ import { registerPiConsoleEndpoints } from './xiaozhi-agent/legacy-runtime-ipc';
 import { app, BrowserWindow, dialog, ipcMain as electronIpcMain, shell, nativeTheme } from 'electron';
 import {createDesktopIpcLifetime} from './desktop-ipc-lifetime';
 import { nativeChromeOptions, installDesktopChrome, registerDesktopChromeIpc } from './desktop-chrome';
-import { restoreWindowGeometry, installWindowGeometry } from './desktop-chrome/window-geometry';
+import { restoreWindowGeometry, installWindowGeometry, MIN_HOST_WINDOW_WIDTH } from './desktop-chrome/window-geometry';
 import { existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { isAbsolute, join } from 'node:path';
@@ -164,7 +164,7 @@ function createWindow() {
   const { maximized, ...geometry } = restoreWindowGeometry();
   const window = new BrowserWindow({
     ...geometry,
-    minWidth: 390,
+    minWidth: MIN_HOST_WINDOW_WIDTH,
     minHeight: 720,
     title: 'Omni-Edu Agent',
     show: !backgroundAcceptance,

@@ -335,3 +335,62 @@ D4/D5的有界更新：
 | `chat-main-final-misconception/run-LvqyDM/report.json` | `a7059abe364a7dd4e2510ada1062991f659e48e57023ad416c4a07cfc6b9dc08` |
 | 原样可见body字符串 | `8b3256680a9d3f3f2cda80902db148e2e4187ec1bb6cbd54a7594377d28502c6` |
 | 原样final_answer.text字符串 | `fec296edfe71f96385977f5ecf9ae5d7b90e63fe440b24376e8d09c7970dd95b` |
+
+
+## M4：CONTINUATION_02 预声明唯一 MIS 运行 J9YdNN（追加并冻结）
+
+本例为父任务预声明的唯一一次同prompt/PDF真实运行，不择优、不替换旧答案。仅核对 `continuation-02-mis/run-J9YdNN/{attachment-visible-body.json,attachment-answer.json,report.json}` 的公开答案及安全元数据，并与原MIS报告安全身份字段、冻结rubric核对；未读取native私有思考、原始工具载荷或请求正文。原M/M2/M3、参考及课堂评分和失败记录均保留。
+
+### 配对身份与字数
+
+- session：`aisession_e1b91587-921a-4fdb-b724-09a318131146`；run：`run_cff4dc6b-b474-410e-94c5-4896b6013bf1`。body、answer、report.runs和全部546条安全事件身份一致。最终答案唯一为该run的 `segment:3 / final_answer`。
+- 完整prompt与原M、M3及DeepTutor MIS逐字一致；独立重算SHA-256为 `b3aa3d746779dc9e3384f2856f77889d51ea3c94171b423cfafdcfc36a3743f3`。新report.pdf与answer.sourcePdfSha256均为 `309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90`，匹配旧报告和参考fixture。报告支持UI导入同字节PDF；本审查未重新读取PDF正文或启动导入。
+- report.buildSha256：`31ebaae252a38f209d0ecf0dad9edb5a249bc6a133f5d9176d56392143414ffe`；源码 `7f8220d`（aa95 own与8c6b705合入）及实际exit0由父任务提供，本审查未执行Git/build。报告success=true、5/5检查通过、consoleErrors为空、humanAccepted=false；独立profile位于本run目录。模型标签deepseek-flash不证明底层版本/采样/系统和工具链等同参考。
+- rubric字节SHA仍为 `5dbdcda835ce39c7cba2f0163fedc11c97b5ea340a870b9625d60b5fe739cadc`。沿用MIS解释160–240去空白Unicode字符口径，不改上限，不以汉字数替代，不因标题自称“约200字”判通过。
+- 明确解释段从“浸没后测力计示数”至“因此不能仅凭受浮力判断运动方向。”，原样 **243字符、194汉字**；保留标点、数字、单位。该段无引用显示文字，未删任何引用凑数。与旧MIS一致另计段标题；若连同“解释（约200字）”标题则252字符，仍不通过。前置诊断/附件引用、变式/答案和末尾来源说明均保留并计入完整答案总长，没有把超长解释转移到其他段后重算。
+- 去除Markdown加粗语法后的显示等价答案657字符，与可见body前缀逐字对应（忽略空白）；UI来源尾栏63字符，可见body共720字符。答案与body均未发现DSML协议残片；未先过滤或改写原答案再评分。
+
+### 安全时序、运行中重开与冷恢复
+
+546条公开元数据事件均同session/run且sequence严格递增；含518条text_delta、6条model_request状态、7条activity、各3条assistant_start/end和assistant_phase、各2条tool_start/end以及2条status。序号有间隔，不冒称完整native日志。delta仅核对长度/阶段，未读隐藏思考。
+
+| 序号/字段 | 可核验结论 |
+| --- | --- |
+| seq1 | status=running |
+| seq44→49 | office_list_attachments，同callId，success=true |
+| seq75→79 | office_read_attachment，同callId，success=true；公开工具卡completed，来源为buoyancy-review.pdf提取正文第1–8行，原页码未定位 |
+| seq7/8、52/53、82/83 | 三组sending/accepted，attempt均1；不把6条状态算6次调用或把accepted算完成 |
+| seq14、56、120 | 前两段commentary，第三段final_answer；publicProcessCount=2。本任务不强制工具前说明，不因本轮数量多于M3加分 |
+| seq120交接 | collapsed=true、beforeTerminal=true，焦点summary→process-trigger；同run显式交接与投影一致 |
+| manualReopen.before | running=true、turnStatus=running、expanded=false，sourceSequence321/eventSequence311 |
+| manualReopen.after | running=true、turnStatus=running、expanded=true，sourceSequence/eventSequence均336；没有终态字段，真实交互记录为Playwright trigger.focus + trigger.press Enter |
+| seq337–595 | 独立按同session/run、final_answer阶段、chars>0、晚于屏障336重算得到259条增量，均早于终态；与报告计数及首末序号一致 |
+| seq596→603 | final assistant_end，随后status=completed；manualReopen.completedExpanded=true |
+
+manualReopenScope.required与本轮manualReopen.required均true；status=passed、missing=[]、manualReopenedWhileRunning=true。因此本例已补足M3缺失的“运行中真实Enter重开→随后final增量→完成仍展开”证据，不是终态后重开假绿。冷恢复检查报告通过：stage/time/body相同、默认折叠、无模型重放；这是报告与已审QA消费者支持的有界结论，本审查未另启浏览器复现。双尺寸open/collapsed截图名均明确completed，不能据此声称取得运行相截图，也未将未查看的截图当视觉验收。
+
+### 六维评分与科学边界
+
+| 维度 | M4 | 证据与理由 |
+| --- | ---: | --- |
+| D1 学科正确性 | **3** | 解释正确算1N，区分3N重力和2N拉力，明确三力平衡1+2=3而静止；自由浮沉判断限定从静止释放且只受重力/浮力。变式按新设静止测量条件算3−1.2=1.8N，剪绳后从静止下沉正确，没有重现旧M遗漏拉力的关键错误。轻微条件歧义：题干“挂在”未明确静止，静止条件到答案才补出；“同一物体”又容易被理解为原例同物体、同水、同完全浸没状态，却把示数2N改为1.2N，未交代这是独立的新设情境。按独立变式理解计算成立；若承接原物体且排液体积/水密度等不变，不能仅换读数。此处记为表述与条件缺口，不断言必然核心错误。等浮力即悬浮应限于完全浸没；本例上下文为浸没，不把它扩展为任意漂浮情境。 |
+| D2 来源忠实与可追溯 | **4** | 诊断前明确3N/2N及附件提取行，1N为公开计算推导；1.2N位于独立变式栏，未伪称附件数据。本任务允许自设变式；末尾明确“本地调研合成样例”、非正式教材、非学生证据，补足M3来源边界遗漏。不虚构PDF页码，不因缺专有引用链接扣分。 |
+| D3 八年级教学适配 | **4** | 直接纠正误区，一道连贯变式两问检查计算与释放后的趋势，答案可判分、未引入密度/体积多重计算。g=10N/kg未使用，属可省的小负担；D1已记条件歧义，不据同一问题重复扩大扣分。 |
+| D4 指令完整性 | **3** | 诊断、解释、一题变式及答案齐全；解释243字符超240上限3字符，严格保留不合规。按偏离程度记轻微超长，与旧MIS约251字符记3分的尺度一致；不放宽容差，也不因仅超3字符给4分。 |
+| D5 过程真实性与边界 | **4** | 同run实读成功先于final，来源工具卡与公开引用一致，可靠完成及冷恢复有安全证据，真实运行中重开证据齐全。仅对本MIS及公开投影评分，不等于完整native审计、教师认可或其他任务的禁联网证明。 |
+| D6 可读性与教师可用性 | **4** | 诊断/解释/变式/答案/来源说明可区分，数值单位与三力关系清楚，无DSML或未整理草稿。字数违令记D4，不以同一超长原因重复扣分；未将公开JSON替代全屏视觉验收。 |
+| 加权总分 | **90/100** | 18.75+20+15+11.25+15+10；无NE维度。 |
+
+**结论：M4工程证据通过，运行中手动重开的旧缺证在本例补齐；约200字要求仍不通过，不能宣布全项质量验收通过。** 解释从M3的307字符减少到243字符，但保持原160–240合同，因此仍失败；不靠改口径、删字符或再次运行刷绿。新答案补足合成来源说明，未见旧M同等级关键受力错误；变式静止及与原情境的衔接仍可更明确。
+
+原M3为81.25/100，原M/M2/参考分别56.25/85、55/85、62.5/85，原分及失败全部保留；不同分母不直接排名，不补填旧D5。本例只能证明这一预声明样本的表现，不能证明helper的普遍因果效果、总体质量优胜、稳定达标或学科教师认可；U6的55/70及既有NE不改，U4-V3仍是另一片生产增量。
+
+最小续接仅登记：保留243字符未达标与变式条件歧义。用户已有持续实施及验证授权；后续对应修复如需复测，预先声明假设与输入、保留旧结果，不挑绿。本审查当前不改答案、不自行重跑；本节追加后冻结，仅改本文件，未执行Git、测试、Electron、build或模型。
+
+| 原样证据 | SHA-256 |
+| --- | --- |
+| attachment-visible-body.json | d06ff066485e8fdf5522c0a4c8c6b9d89afa70aa71fe87614ac0f54b42f8641c |
+| attachment-answer.json | 832801b2b968d8cfae358fae3b295cdea507dca9553e66e04e693a49ba92f2da |
+| report.json | 04fd18ccea2f933c86ace34c60e7cc63701aa5c3ee4b1f7380131b173be60ebd |
+| 原样可见body字符串 | 81e5c8eda35b16c85cc090ec4e72a26da60bfa6561debf9bed580b80055609aa |
+| 原样final_answer.text字符串 | 4b8a7a9397b030f2b72a8d6246f5c3bb292fb9f96e2334891d2d1e52cca5ecb1 |

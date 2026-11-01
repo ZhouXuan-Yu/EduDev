@@ -1,5 +1,17 @@
 # 小智交付能力实施合同
 
+## 2026-11-01 C02 长历史生成交互与原生窗口（实施前冻结）
+
+- M10/M12，REQ-C02-01/02/03/04/07及适用05/06/08/09/10。沿原Pi→持久事件→receiver/view buffer→projection→Office组件；当前32ms文本合并、Markdown块缓存、原生caption/窗口几何已存在，不再造Runtime、事件队列或第二正文真源。
+- 先固定当前out副本，原正式UI产生10轮合成历史；本轮50段、10公式、100行表格、2段中文代码的实际Pi合成SSE生成期间执行至少30次输入/滚动，记录输入至下一帧、长任务、RSS及精确正文/SQLite/重启。前后保持同一输入节拍/样本和本机环境，模型请求全部本机截获，0真实付费。
+- 核对两个候选热点：无controls时默认新数组、阅读位置全段落测量。实测当前controls已有稳定数组，复杂FX09输入P95 7.8ms，未复现严重卡顿；本轮不为假设修改流式/阅读/projection。记录当前基线与整合后对照，不将微调或模型延迟当作性能提升。
+- 文件预计为PiConversationSurface、OfficeReadingPosition及适用原projection纯映射/专项脚本；必要时薄调Office组件，不改vendor、composer外观、表/DDL、权限/凭证。窗口复用原desktop-chrome，必须实际指针位移/最大化拖还原及重启位置证据；OS锁屏或环境不可用单列，不以setBounds/HTCAPTION充当实际拖动。
+- 必要验证一次；只补测失败或改动影响路径。固定测试build避免重建影响活跃进程；build/type、240组件、相关源/正式Pi专项和适用综合门禁，保留原失败。FX09完整门槛不降，尚未覆盖的缩放/OS/自然质量仍待集中，不因局部通过批量标已实现。
+- 回退应用层优化与可选显示适配，保留原事件/SQLite/文件；无数据库迁移。D日常目录与安装器是否更新由C06单独核对，不冒用其他工作树构建。
+- 2026-11-01 实测后补充冻结：实际host最小宽390、原geometry仍拒绝<1100且沿上游size解析抬到1100，造成窄窗尺寸/位置不能保存。仅应用层geometry适配及host共享390常量，保留上游原码、v1文件和原高度/最大化/原子写；覆盖390/480/800及小屏/旧v1/关闭最大化/冷启。原复杂fixture先做精确message+event哈希及冷读，不重跑已完成历史。原生pointer测试在系统前台焦点拒绝时保留失败，不以setBounds冒充拖动。D目录已由另一任务更新至2749d3d并运行PID52540，本轮不改其源/out或结束进程。
+
+- 实施反馈：实际立即app.quit缺偏好文件和150% DPI 481→482断言先后失败，已补before-quit保存及最多两次测量修正；最终源码10/整合几何7/复杂冷读3通过。[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)。本轮AT01/02/04按各自完整局部条款记已实现，整组C02及W3仍未完成。
+
 ## 2026-11-01 C03 独立目录恢复（实施前冻结）
 
 - M01/M11，推进REQ-C03-05/06/07及E08重启一致：现正式设置只有export/verify，新版备份含原SQLite与外置默认生成文件但没有恢复入口；原件/确认事实/历史及Pi binding继续沿原真源，不另建业务表或Runtime。
@@ -326,3 +338,10 @@ renderer7179937→7182635B；合成Pi单次8488ms，不当作前后延迟/P95或
 - 回退本切片代码保留原记录/文件，无迁移；老数据无新增字段要求。自然质量和完整28WP/252AT不因此宣布完成。
 
 本片收尾：a8a3120与上述工程路径已取证；普通Office/精确PPT版本入口和恢复已实现，完整E08/252AT仍未执行。最终三处data-edu-domain只恢复已有几何，不修改全局隔离/native源码。详AGENT_DELIVERY_VERSIONS_E08_20261031.json及WORK_PROGRESS.md；D盘日常/安装包未更新。
+# 2026-11-01 C02 窄窗标题栏交付合同
+
+- 目标：REQ-C02-03/05/09 的功能缺口。当前390px窗口的7个标题栏控件实际溢出253px可用区，菜单压进原生caption及drag区域；常规双击最大化已响应，物理drag失败原因仍未知，不由本修复自动转为通过。
+- 改动：沿现有DesktopChrome typed契约增加应用菜单分组；main复用原生Menu及现有命令，在视图菜单补后退/前进；renderer根据原生titlebar可用宽度收拢菜单，极窄时导航通过原生菜单进入，留至少32px空白drag。原preload通道、来源、权限、数据与Pi不变。
+- 文件：shared/desktop-chrome.ts、main/desktop-chrome/index.ts、renderer/components/desktop/DesktopFrame.tsx、renderer/ui-system/chrome.css；新增定向Electron测试。无依赖、表、迁移、文件目录协议变化。
+- 定义：隔离原Electron以390/480/800/1366/1920和100/125/150/200%页面zoom检查可见控件不溢出原生可用区、drag余量、完整应用菜单、中文标签、原生菜单触发及导航、草稿切换与冷启；build/type与组件门禁。保留修前实际CSS测量。系统DPI/实际pointer/完整AT矩阵仍独立待验，不能以DOM边界或setBounds冒充。
+- 失败/回滚：原IPC仍校验sender/组名/窗口坐标，菜单失败原提示不变。回退本片4个生产文件即可恢复旧布局；无数据迁移或真实资料清理。日常窗口不输入、不因本片测试抢占用户操作；隔离测试不调用付费provider。
