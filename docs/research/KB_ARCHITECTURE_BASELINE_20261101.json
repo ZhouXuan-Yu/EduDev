@@ -3660,6 +3660,64 @@
       "Owned v2 11-call and first v3 9-call natural exams retained with zero ready results",
       "One partial receipt build failed TypeScript before output; explicit bounded runtime validation/casts added, final build passed",
       "Wrong source probe import path, initial working-directory prefix and preload .js guess were corrected; not counted as successful checks"
-    ]
+    ],
+    "integration": {
+      "sourceCommit": "1401519",
+      "mergedMain": "b8e365165b401967337c793a4a3b762638164576",
+      "mergeCommit": "f9e8a05ca078a0e16ba54a665c8cafd6dfcf0465",
+      "markdownConflictsResolved": 12,
+      "conflictResolution": "Both additive records retained verbatim; no production code conflicts",
+      "checks": [
+        {
+          "command": "npm.cmd run build",
+          "exitCode": 0,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-build.log"
+        },
+        {
+          "command": "npm.cmd run test:renderer-components",
+          "passed": 240,
+          "total": 240,
+          "exitCode": 0,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-components.log"
+        },
+        {
+          "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+          "passed": 73,
+          "exitCode": 0,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-boundaries.log"
+        },
+        {
+          "command": "node scripts/electron-smoke.mjs",
+          "exitCode": 0,
+          "passed": 207,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-smoke.log",
+          "exitObservation": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-exit.json",
+          "scope": "Existing isolated legacy education regression; not current Pi natural provider or full exam quality acceptance. Screenshot directory is shared with a concurrent collaborator smoke; do not use overwritten screenshots as uniquely attributable evidence."
+        }
+      ],
+      "fingerprints": [
+        {
+          "path": "out/main/index.js",
+          "bytes": 3534895,
+          "sha256": "a568690ba9b0a1d1a49698e13b35f173d51427c1e1980ce7e078e0edd52daae2"
+        },
+        {
+          "path": "out/preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        {
+          "path": "out/renderer/assets/index-DSuxmw3r.js",
+          "bytes": 7383041,
+          "sha256": "b27f769b20e5da0e26ea92ba0ff856aaf57e45f19d046db021f4486f5a06ed55"
+        }
+      ],
+      "mainDeltaFromOwnTestBytes": 0,
+      "preloadDeltaFromOwnTestBytes": 0,
+      "rendererDeltaFromOwnTestBytes": 1905,
+      "attribution": "Integration contains collaborator Pi historical workspace and OfficeTextSelection changes. KB production source matches the final 12-call natural run; that run was before integration. No final integrated natural provider rerun or 40GB/P95 claim.",
+      "dailyRuntimeUpdated": false,
+      "installerUpdated": false
+    }
   }
 }
