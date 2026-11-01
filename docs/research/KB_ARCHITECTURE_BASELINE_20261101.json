@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_in_progress_whole_exam_projection_quality_repair",
+  "currentStage": "K0_in_progress_whole_set_diagram_source_quality_repair",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -1085,6 +1085,867 @@
       "scope": "One actual UI question lookup after complete-exam import. No mathematical correctness, whole-library recall/P95 or paper acceptance.",
       "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-codxqcpn\\read-runtime-readback.json",
       "reportSha256": "e8bef2e9fa9a47cd7c1d1d348e75cc9fe5954a4a2acdebeffc686d21ff2b38b1"
+    }
+  },
+  "wholeExamRegions": {
+    "date": "2026-11-01",
+    "implementationCommit": "9a0c802",
+    "integratedCommit": "0f8477b5bc892677541eecd28c9ee66b9cf36d95",
+    "newDependencies": false,
+    "newIpc": false,
+    "policy": "page-regions.v2",
+    "responseSchema": "xiaozhi.material-ai-page-regions.v1",
+    "localQuality": "xiaozhi.material-ai-crop-quality.v1",
+    "runsBeforeQualityGate": [
+      {
+        "directory": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-Y8DgVv",
+        "reportSha256": "64413247e7a8a14ae40061e9f64c9a32063cf47034aa58a0ef09efb87a46ec0e",
+        "batchId": "batch_d96bfdab-a5e4-4c6b-a5d2-11e1cab0cd72",
+        "result": {
+          "schemaVersion": "xiaozhi.material-folder-ai.v1",
+          "batchId": "batch_d96bfdab-a5e4-4c6b-a5d2-11e1cab0cd72",
+          "status": "attention",
+          "revision": 1,
+          "maxCalls": 12,
+          "calls": 11,
+          "reserved": 12,
+          "resources": 1,
+          "units": 6,
+          "complete": 0,
+          "skippedCover": 0,
+          "review": 6,
+          "failed": 0,
+          "waiting": 0,
+          "readyQuestions": 2,
+          "reviewQuestions": 12,
+          "error": "",
+          "issues": [
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 1,
+              "error": "page_content_incomplete"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 2,
+              "error": "page_content_incomplete"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 3,
+              "error": "page_content_incomplete"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 4,
+              "error": "outcome_unknown"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 5,
+              "error": "page_content_incomplete"
+            }
+          ]
+        },
+        "qualityAccepted": false,
+        "transportCalls": 11,
+        "http200": 11,
+        "coldRestart": {
+          "sameFolderResult": true,
+          "sameQuestions": true,
+          "noAdditionalCalls": true
+        },
+        "rendererErrors": 0,
+        "buildSha256": "3c95327cac55f2c35668177536e95f899fa12b3cc12c0c02288185fd944486da",
+        "unitStates": [
+          {
+            "unit": 1,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          },
+          {
+            "unit": 2,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          },
+          {
+            "unit": 3,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          },
+          {
+            "unit": 4,
+            "state": "review",
+            "error": "outcome_unknown",
+            "status": "outcome_unknown",
+            "ai_error": "invalid_response"
+          },
+          {
+            "unit": 5,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          },
+          {
+            "unit": 6,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          }
+        ]
+      },
+      {
+        "directory": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-aHo7lv",
+        "reportSha256": "b442b1e017275afdc146ab0679607e182a9664e8c659e2e6e78a153784315e79",
+        "batchId": "batch_aeeca88e-1ef0-4772-a9ff-60d6a789b020",
+        "result": {
+          "schemaVersion": "xiaozhi.material-folder-ai.v1",
+          "batchId": "batch_aeeca88e-1ef0-4772-a9ff-60d6a789b020",
+          "status": "attention",
+          "revision": 1,
+          "maxCalls": 12,
+          "calls": 10,
+          "reserved": 12,
+          "resources": 1,
+          "units": 6,
+          "complete": 1,
+          "skippedCover": 0,
+          "review": 5,
+          "failed": 0,
+          "waiting": 0,
+          "readyQuestions": 8,
+          "reviewQuestions": 5,
+          "error": "",
+          "issues": [
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 2,
+              "error": "page_content_incomplete"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 3,
+              "error": "page_content_incomplete"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 4,
+              "error": "outcome_unknown"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 5,
+              "error": "page_content_incomplete"
+            },
+            {
+              "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+              "title": "26年6月风华初三三模模拟测试卷(1)",
+              "unit": 6,
+              "error": "outcome_unknown"
+            }
+          ]
+        },
+        "qualityAccepted": false,
+        "transportCalls": 10,
+        "http200": 10,
+        "coldRestart": {
+          "sameFolderResult": true,
+          "sameQuestions": true,
+          "noAdditionalCalls": true
+        },
+        "rendererErrors": 0,
+        "buildSha256": "91be6615acb708fbb19bbeb16a0b7c975526aa522f3eeced222d414bdfb59e98",
+        "unitStates": [
+          {
+            "unit": 1,
+            "state": "complete",
+            "error": "",
+            "status": "complete",
+            "ai_error": ""
+          },
+          {
+            "unit": 2,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          },
+          {
+            "unit": 3,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          },
+          {
+            "unit": 4,
+            "state": "review",
+            "error": "outcome_unknown",
+            "status": "outcome_unknown",
+            "ai_error": "invalid_response"
+          },
+          {
+            "unit": 5,
+            "state": "review",
+            "error": "page_content_incomplete",
+            "status": "review",
+            "ai_error": "page_content_incomplete"
+          },
+          {
+            "unit": 6,
+            "state": "review",
+            "error": "outcome_unknown",
+            "status": "outcome_unknown",
+            "ai_error": "invalid_response"
+          }
+        ]
+      }
+    ],
+    "criticalFinding": "Second experiment nominal 8 ready includes four visually wrong crops. This count is NOT verified quality. Existing experimental crops without local checks are refused on source/gallery/agent/paper reads.",
+    "rejectedRealCrops": [
+      {
+        "id": "question_7299e31a-2a12-45eb-8e41-4623abb18c87",
+        "number": "2",
+        "page": 1,
+        "sha256": "c525e14f6edd1d65e316b8a045afb4c53524fef0ed1e90d01ed9413e492fbc9e",
+        "qualified": false,
+        "clearEdges": [
+          true,
+          false,
+          true,
+          true
+        ],
+        "localOcrSha256": "8a606d865f3a1dbdc100f94712ed20c8bce1203899e29f7b4e26e67535b029a3"
+      },
+      {
+        "id": "question_cbaf146c-8d5e-48e4-b5c1-bca0dbfea5aa",
+        "number": "7",
+        "page": 2,
+        "sha256": "a397151066e0155f5d9a9d3ce0bc305587b9d9c7adc04696c9cf6d86a0dc3259",
+        "qualified": false,
+        "clearEdges": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "localOcrSha256": "c6842bc06935ddb5ed06e12c182d6d5d3fe7f545e58ea6ba093fcccf9962238a"
+      },
+      {
+        "id": "question_2356f7b8-ef80-4a2b-971c-878456ab85de",
+        "number": "8",
+        "page": 2,
+        "sha256": "713d7453103395f15f1b22b9f49576cb466dd7d3ecd49e24cd53d013d65f0059",
+        "qualified": false,
+        "clearEdges": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "localOcrSha256": "6d8f688232e44030dcf23cac28b113fa9a45b39005ffcbd0a463a264a9c6b120"
+      },
+      {
+        "id": "question_9c46654e-e597-4d07-9278-eb0f3944380e",
+        "number": "9",
+        "page": 2,
+        "sha256": "67b6c2abd398a8877557980b5acf4d0eb3c110dbb3fef04de2e4abae5f0256da",
+        "qualified": false,
+        "clearEdges": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "localOcrSha256": "fcd6bc1e00fffa0ffbd1a0dcbcc5b121369cb4752b440c0c1a0b355417c10260"
+      }
+    ],
+    "localRealAcceptance": {
+      "directory": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\crop-quality-7AK1tv",
+      "reportSha256": "05ab2a06bc874b56ddefe348960e6eba293809ca2cc5ff68f19d890a1682bef4",
+      "checks": 6,
+      "success": true,
+      "rendererErrors": [],
+      "cloudCalls": 0,
+      "buildSha256": "914f98f97467fabadd2d7f7c8a032e3205e3af5e464e3e06ea59a9a00d107e17",
+      "boundary": "Four real failed crops, actual RapidOCR, production gallery rejection, teacher notebook error and cold receipt preservation; NOT natural positive diagram/paper/math acceptance"
+    },
+    "failedAcceptanceObserver": {
+      "directory": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-YX68np",
+      "attemptedRemoteCalls": 5,
+      "reason": "Observer had an out-of-scope path variable; returned response was withheld by the test wrapper. Owner stopped the exact test processes and paused the batch through existing IPC. Responses remain unknown and were not silently replayed.",
+      "firstUiFailure": "Upstream folder disclosures require opening outer and inner controls; first failure made zero calls.",
+      "qualityAccepted": false
+    },
+    "verification": {
+      "boundaries": {
+        "passed": 53,
+        "exit": 0,
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs"
+      },
+      "components": {
+        "passed": 240,
+        "exit": 0,
+        "command": "npm.cmd run test:renderer-components"
+      },
+      "type": {
+        "exit": 0,
+        "command": ".\\node_modules\\.bin\\tsc.cmd --noEmit"
+      },
+      "build": {
+        "exit": 0,
+        "command": "npm.cmd run build"
+      },
+      "npmAudit": {
+        "exit": 1,
+        "critical": 0,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "total": 45,
+        "dependencyChanges": false
+      },
+      "fullSmoke": "Prior failure retained; not rerun or claimed passed by this slice",
+      "originalBoundaries": {
+        "passed": 47,
+        "exit": 0,
+        "command": "Node source loader invokes originalQuestionBoundaries(check, ownedTemporaryOutput); direct module import alone does not execute tests."
+      }
+    },
+    "rollback": {
+      "stopNewRegions": "OMNI_EDU_AI_PAGE_REGIONS=0",
+      "stopAllNewPageProcessing": "OMNI_EDU_AI_PAGE_RESTORATION=0",
+      "preserve": [
+        "Original files",
+        "Raw first/final responses and frozen prompt policies",
+        "material_ai_page_crops and quality_json",
+        "material_ai_page_document_edits",
+        "Immutable question-assets/v1",
+        "Strict read adapters"
+      ],
+      "noDdlRollback": true
+    },
+    "remaining": [
+      "Source fidelity and answer/review stability both required; do not accept inconsistent answers to increase ready counts",
+      "General OCR layout based parent region proposal and refinement",
+      "Cross-page parent assembly",
+      "Natural full-set successful diagram archive and actual teacher paper export",
+      "Known-answer and missing-answer full-set workflow",
+      "40GB, recall, P95, foreground fairness, soak and installer acceptance"
+    ],
+    "goalComplete": false,
+    "integratedArtifacts": [
+      {
+        "path": "apps\\desktop\\out\\main\\index.js",
+        "bytes": 3472209,
+        "sha256": "914f98f97467fabadd2d7f7c8a032e3205e3af5e464e3e06ea59a9a00d107e17"
+      },
+      {
+        "path": "apps\\desktop\\out\\preload\\index.cjs",
+        "bytes": 35975,
+        "sha256": "33afd136f77265e4453e61e8f82b56b5987468ef0fb4d5854fbc602f9fe4e4a1"
+      },
+      {
+        "path": "apps\\desktop\\out\\renderer\\assets\\index-D3iXmTCa.js",
+        "bytes": 7364991,
+        "sha256": "c2cda5b30ebba5641c6331771972ed4b88e780c6343fbf80752ee767d2beb744"
+      }
+    ],
+    "performanceScope": "Bounded 8 crops/16MiB compressed per page, one local OCR worker per crop, sequential; per-question validation reads only target PNG bytes. No measured latency/P95/peak-memory or recall improvement claim. Integrated artifacts include 53 upstream commits.",
+    "finalIntegratedWholeSet": {
+      "directory": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-DyrzHx",
+      "reportSha256": "b63722f6b03f6e74ddb2cdd6df3c891702175291bf7c3b8a9c655466fcfd17ea",
+      "buildSha256": "914f98f97467fabadd2d7f7c8a032e3205e3af5e464e3e06ea59a9a00d107e17",
+      "batchId": "batch_49c01383-2d09-495e-acd5-2ae06ef6bc88",
+      "result": {
+        "schemaVersion": "xiaozhi.material-folder-ai.v1",
+        "batchId": "batch_49c01383-2d09-495e-acd5-2ae06ef6bc88",
+        "status": "attention",
+        "revision": 1,
+        "maxCalls": 12,
+        "calls": 11,
+        "reserved": 12,
+        "resources": 1,
+        "units": 6,
+        "complete": 0,
+        "skippedCover": 0,
+        "review": 6,
+        "failed": 0,
+        "waiting": 0,
+        "readyQuestions": 0,
+        "reviewQuestions": 10,
+        "error": "",
+        "issues": [
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 1,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 2,
+            "error": "outcome_unknown"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 3,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 4,
+            "error": "outcome_unknown"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 5,
+            "error": "page_content_incomplete"
+          }
+        ]
+      },
+      "unitStates": [
+        {
+          "unit": 1,
+          "state": "review",
+          "error": "page_content_incomplete",
+          "status": "review",
+          "ai_error": "page_content_incomplete"
+        },
+        {
+          "unit": 2,
+          "state": "review",
+          "error": "outcome_unknown",
+          "status": "outcome_unknown",
+          "ai_error": "outcome_unknown"
+        },
+        {
+          "unit": 3,
+          "state": "review",
+          "error": "page_content_incomplete",
+          "status": "review",
+          "ai_error": "page_content_incomplete"
+        },
+        {
+          "unit": 4,
+          "state": "review",
+          "error": "outcome_unknown",
+          "status": "outcome_unknown",
+          "ai_error": "invalid_response"
+        },
+        {
+          "unit": 5,
+          "state": "review",
+          "error": "page_content_incomplete",
+          "status": "review",
+          "ai_error": "page_content_incomplete"
+        },
+        {
+          "unit": 6,
+          "state": "review",
+          "error": "page_content_incomplete",
+          "status": "review",
+          "ai_error": "page_content_incomplete"
+        }
+      ],
+      "recordedRemoteRequests": 10,
+      "http200": 10,
+      "attemptCounter": 11,
+      "qualityAccepted": false,
+      "runnerExit": 1,
+      "runnerError": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n11 !== 10\n\n    at file:///C:/Users/ZhouXuan/AppData/Local/Temp/omni-real-material-aWObCn/whole-exam-regions.mjs:21:888",
+      "localObserverBindingFailure": "One second pass blocked locally: raw pretty JSON was compared against compact serialization. Original hash and parsed data binding fixed for future runs; this failed run was not replayed.",
+      "invalidModelResponse": {
+        "page": 4,
+        "finishReason": "stop",
+        "responseSha256": "92ed5b80c43492ca05c2f4c9b84d8d50ac00bc822fd3117e723a572492e9ff8c",
+        "failure": "JSON syntax error, missing object delimiter; no observed output-token truncation."
+      },
+      "localDiagnosis": [
+        {
+          "page": 3,
+          "status": "review",
+          "error": "page_content_incomplete",
+          "firstSaved": true,
+          "finalSaved": true,
+          "pageAgrees": false,
+          "pageIssues": [
+            [
+              "uncertain_ocr"
+            ],
+            [
+              "uncertain_ocr"
+            ]
+          ],
+          "questions": [
+            {
+              "number": "10",
+              "issues": [
+                "uncertain_ocr",
+                "ai_mismatch",
+                "requires_image",
+                "incomplete_question"
+              ],
+              "candidateRisks": [
+                "visual_unchecked"
+              ],
+              "stemMatchesCandidate": false,
+              "firstFinalDifferences": [
+                "answer",
+                "analysis"
+              ]
+            },
+            {
+              "number": "11",
+              "issues": [
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question",
+                "requires_image"
+              ],
+              "candidateRisks": [],
+              "stemMatchesCandidate": false,
+              "firstFinalDifferences": []
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "status": "outcome_unknown",
+          "error": "outcome_unknown",
+          "firstSaved": true,
+          "finalSaved": false
+        },
+        {
+          "page": 6,
+          "status": "review",
+          "error": "page_content_incomplete",
+          "firstSaved": true,
+          "finalSaved": true,
+          "pageAgrees": false,
+          "pageIssues": [
+            [
+              "requires_image",
+              "incomplete_question"
+            ],
+            [
+              "requires_image",
+              "incomplete_question"
+            ]
+          ],
+          "questions": [
+            {
+              "number": "15",
+              "issues": [
+                "requires_image",
+                "incomplete_question",
+                "ai_mismatch"
+              ],
+              "candidateRisks": [
+                "visual_unchecked"
+              ],
+              "stemMatchesCandidate": true,
+              "firstFinalDifferences": []
+            }
+          ]
+        },
+        {
+          "page": 5,
+          "status": "review",
+          "error": "page_content_incomplete",
+          "firstSaved": true,
+          "finalSaved": true,
+          "pageAgrees": false,
+          "pageIssues": [
+            [
+              "uncertain_ocr"
+            ],
+            [
+              "uncertain_ocr"
+            ]
+          ],
+          "questions": [
+            {
+              "number": "13",
+              "issues": [
+                "uncertain_ocr",
+                "ai_mismatch",
+                "requires_image",
+                "incomplete_question"
+              ],
+              "candidateRisks": [
+                "visual_unchecked"
+              ],
+              "stemMatchesCandidate": false,
+              "firstFinalDifferences": [
+                "answer",
+                "analysis"
+              ]
+            },
+            {
+              "number": "14",
+              "issues": [
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question",
+                "requires_image"
+              ],
+              "candidateRisks": [
+                "visual_unchecked"
+              ],
+              "stemMatchesCandidate": false,
+              "firstFinalDifferences": [
+                "analysis"
+              ]
+            }
+          ]
+        },
+        {
+          "page": 4,
+          "status": "outcome_unknown",
+          "error": "invalid_response",
+          "firstSaved": false,
+          "finalSaved": false
+        },
+        {
+          "page": 1,
+          "status": "review",
+          "error": "page_content_incomplete",
+          "firstSaved": true,
+          "finalSaved": true,
+          "pageAgrees": true,
+          "pageIssues": [
+            [],
+            []
+          ],
+          "questions": [
+            {
+              "number": "1",
+              "issues": [
+                "ai_mismatch"
+              ],
+              "candidateRisks": [],
+              "stemMatchesCandidate": true,
+              "firstFinalDifferences": [
+                "answer",
+                "analysis"
+              ]
+            },
+            {
+              "number": "2",
+              "issues": [
+                "ai_mismatch",
+                "requires_image",
+                "incomplete_question"
+              ],
+              "candidateRisks": [],
+              "stemMatchesCandidate": false,
+              "firstFinalDifferences": [
+                "answer",
+                "analysis"
+              ]
+            },
+            {
+              "number": "3",
+              "issues": [
+                "ai_mismatch"
+              ],
+              "candidateRisks": [],
+              "stemMatchesCandidate": true,
+              "firstFinalDifferences": [
+                "answer",
+                "analysis"
+              ]
+            },
+            {
+              "number": "4",
+              "issues": [
+                "ai_mismatch"
+              ],
+              "candidateRisks": [],
+              "stemMatchesCandidate": true,
+              "firstFinalDifferences": [
+                "answer",
+                "analysis"
+              ]
+            },
+            {
+              "number": "5",
+              "issues": [
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "candidateRisks": [],
+              "stemMatchesCandidate": true,
+              "firstFinalDifferences": [
+                "answer",
+                "analysis"
+              ]
+            }
+          ]
+        }
+      ],
+      "coldReadback": {
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-DyrzHx\\cold-readback.json",
+        "sha256": "aa74e9afdb8df46bc1abe3e84c244c5143e3066f37e142c0f2522a46f7b1bd1e",
+        "cloudCalls": 0,
+        "checks": [
+          "Same full folder result after restart",
+          "All ten question scalar/document/archive facts preserved",
+          "Original page and review state remain readable"
+        ],
+        "qualityAccepted": false,
+        "scope": "Read-only recovery of failed full-exam acceptance. Does not overwrite the failed whole-run report or replay calls.",
+        "rendererErrors": [],
+        "success": true
+      },
+      "transportReceipts": [
+        {
+          "call": 1,
+          "page": 1,
+          "imageSha": "adc5222ebfc5b5283b899fb8541c2aa5c9300743d305e4229f4fb2a691778674",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "1d0a9f4f2637c70c324f95e0b19435476a2e6ca73db1a8fa762ed1bccf9af83a",
+          "responseBytes": 15317,
+          "finishReason": "stop",
+          "contentBytes": 14178
+        },
+        {
+          "call": 2,
+          "page": 1,
+          "imageSha": "adc5222ebfc5b5283b899fb8541c2aa5c9300743d305e4229f4fb2a691778674",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "f782e9eca694cd666e1faa1839d687f34ed6d45ed421018a0d71685faff30292",
+          "responseBytes": 17008,
+          "finishReason": "stop",
+          "contentBytes": 15867
+        },
+        {
+          "call": 3,
+          "page": 2,
+          "imageSha": "c76d9bbe6d8b24513c4f511a70f268942f0bd46883a3426e2e26b5b31a50208d",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "ac304660486346cfa82965aeda9ac1ccb80a20efe334b13e13fb77f533e6f480",
+          "responseBytes": 14428,
+          "finishReason": "stop",
+          "contentBytes": 13402
+        },
+        {
+          "call": 4,
+          "page": 3,
+          "imageSha": "386726a1b2e455c640475128080208ae1bee515e8a5958ce1785f5072ad44c7a",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "2380b8574a40a629030d189177cad40fa2fc8aa63aa68433fcd233918df21a75",
+          "responseBytes": 10990,
+          "finishReason": "stop",
+          "contentBytes": 10208
+        },
+        {
+          "call": 5,
+          "page": 3,
+          "imageSha": "386726a1b2e455c640475128080208ae1bee515e8a5958ce1785f5072ad44c7a",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "d1840153448ceac239fd2aad09ebb45a1d4f8dffde232c819f8c4fc34a738f8b",
+          "responseBytes": 10961,
+          "finishReason": "stop",
+          "contentBytes": 10177
+        },
+        {
+          "call": 6,
+          "page": 4,
+          "imageSha": "369662114412b2e8c166775f51daabd7339f01764b9cbf62737f5cf188916602",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "92ed5b80c43492ca05c2f4c9b84d8d50ac00bc822fd3117e723a572492e9ff8c",
+          "responseBytes": 14181,
+          "finishReason": "stop",
+          "contentBytes": 13500
+        },
+        {
+          "call": 7,
+          "page": 5,
+          "imageSha": "b28f6e146dcc59fc76fa31bc1dfc031a46b7e75d09b415388ca59999f22cb570",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "6e605bab7c686ac0076e45c7a5d1d8274f7847221446bd00bd008687cdfe7442",
+          "responseBytes": 18125,
+          "finishReason": "stop",
+          "contentBytes": 17350
+        },
+        {
+          "call": 8,
+          "page": 5,
+          "imageSha": "b28f6e146dcc59fc76fa31bc1dfc031a46b7e75d09b415388ca59999f22cb570",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "ac572269467ee64b4d3a4e001caef20cc901553747a5655941a009a371098e62",
+          "responseBytes": 12340,
+          "finishReason": "stop",
+          "contentBytes": 11561
+        },
+        {
+          "call": 9,
+          "page": 6,
+          "imageSha": "f7598e19d29686c2ea3dc416813ff09c3b53b82d2e56cf59a92159cc99cf8bc2",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "30fff78056dba7cc65422a8da28d0820f2bd4e1c80679c2b06e69ef19997eec0",
+          "responseBytes": 12793,
+          "finishReason": "stop",
+          "contentBytes": 12130
+        },
+        {
+          "call": 10,
+          "page": 6,
+          "imageSha": "f7598e19d29686c2ea3dc416813ff09c3b53b82d2e56cf59a92159cc99cf8bc2",
+          "policy": "page-regions.v2",
+          "http": 200,
+          "responseSha256": "aaa6caaa786be104a2207a1b991035f9d4a40fc5cbbaffaa1f91476ecd3d91b0",
+          "responseBytes": 12795,
+          "finishReason": "stop",
+          "contentBytes": 12130
+        }
+      ]
+    },
+    "performanceComparison": {
+      "beforeCommit": "8d99a21eee76652e8ef37c8acb98810792b66b0f",
+      "beforeBytes": {
+        "main": 3363964,
+        "preload": 35346,
+        "renderer": 7264669
+      },
+      "afterBytes": {
+        "main": 3472209,
+        "preload": 35975,
+        "renderer": 7364991
+      },
+      "qualification": "Includes 53 upstream commits; no feature-only cost, speed, peak-memory, P95 or retrieval improvement established."
     }
   }
 }
