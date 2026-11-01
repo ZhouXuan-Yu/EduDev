@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 C03：backup领域恢复服务→v1 typed IPC/preload→原DataBackupPanel，原store启动前读取profile选择，Pi/SQLite/文件真源不变。新副本校验和已知地址迁移后才显式激活；原退出drain/relaunch复用，UI测试手动冷启。后台旧积压在副本暂停，不停原调度服务。无新表/依赖；全领域/旧备份/外选目录矩阵未完成。见docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
+
 ## 2026-11-01 图题自动归档的独立来源检查
 
 两遍AI一致、区域坐标相同和名义ready数不能证明裁剪完整。新图题必须保存本地像素边缘及RapidOCR首尾/邻题证据，下一页续题或来源未知保持待核；旧实验缺证据不补写成功。原PDF/首稿/终稿/错误裁剪保留，测试观察器失败不能归因模型或静默重放未知调用。原题面AI来源与教师核对来源保持区分。
