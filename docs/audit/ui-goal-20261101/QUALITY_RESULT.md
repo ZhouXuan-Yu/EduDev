@@ -271,3 +271,67 @@ D4/D5的有界更新：
 | `public-replay/run-PMeI5w/report.json` | `1de34c55d624ecd8d98a41549024712da477ab209af10be0dbf9854791bb3c85` |
 
 仅向本文件追加此节；没有构建、运行应用、触发模型、导出或修改生产源码。此工程补证不改变已给出的Markdown源码接受结论。
+
+## M3：最终构建单次预声明 MIS 重跑 LvqyDM（最终追加并冻结）
+
+本例是协调器在运行前明确声明的、最终集成构建上一次同prompt/同PDF真实chat，用于最终消费者/streaming及质量复评。仅读取 `chat-main-final-misconception/run-LvqyDM/{attachment-visible-body.json,attachment-answer.json,report.json}` 的公开正文与安全元数据；不读native私有思考、原始工具载荷或model_request.request正文，不自行调用模型、不挑选结果。原M、M2、参考及公开过滤重放的分数/失败全部保留，不用本例覆盖历史。
+
+### 身份、正文与口径
+
+- session：`aisession_51120a26-2168-4ef8-bc50-3f0609dd18f5`；run：`run_49fed786-36be-4a94-95e9-14b1150d849e`。report.runs、可见body及answer身份一致；公开答案为该run唯一 `segment:3 / final_answer`，不是取最后一条助手消息猜测。
+- 完整prompt与原小智 `run-kias9P`、原DeepTutor `deeptutor-misconception`逐字一致：有学生说：物体受到浮力就一定会上浮。请结合附件的3N和2N数据，诊断这个说法，用约200字解释，并给一道变式及答案。独立重算prompt SHA-256为 `b3aa3d746779dc9e3384f2856f77889d51ea3c94171b423cfafdcfc36a3743f3`，匹配报告及参考。
+- PDF SHA-256为 `309735f1bb95aef4b849af7a759848393a4b780d52269abaae0c390f36fccf90`；新report.pdf、answer.sourcePdfSha256、旧小智report.pdf和原参考report.fixture一致。参考身份仍为session `unified_1793477933997_88fd86fa`、turn `turn_1793477934009_a97d1275d5`。模型标签均deepseek-flash；未据标签推定底层版本、采样参数、系统提示和工具链等同。
+- 新report.buildSha256：`0231af8014551c3f27f1db4188bfacb0d8db2d1d12aeb19a6583fe79845454bc`；source `63e3`为协调器提供的源码标识，不是本节重新构建验证。runtime userData/sessionData绑定该run的独立profile。报告success=true、5/5 checks通过、consoleErrors为空、humanAccepted=false；exit0为协调器回报，最终父进程poll由父任务负责。
+- rubric字节SHA仍为 `5dbdcda835ce39c7cba2f0163fedc11c97b5ea340a870b9625d60b5fe739cadc`。已知产品及旧参考，属于非盲的独立审查。此任务是M，不套用默认教学建议的40分钟/300字/先说明再工具要求，也不套用其他任务的禁联网/写文件限制。
+- 对answer的Markdown标题标记及引用链接做显示等价展开后，去空白正文与可见body的前缀完全一致；答案547字符，UI读取来源尾栏63字符，可见body合计610字符。没有先清洗协议残片再评分。解释段定位为“由附件资料可知”至“变式题及答案”之前，307去空白Unicode字符、198汉字；按冻结口径须计标点/数字/引用显示文字，198汉字不等于满足200字符。即便仅作敏感性核对去除括号引用显示文字，仍276字符，高于240；评分采用原样307，不用删引用后的数字凑通过。
+
+### 安全事件核验（只读字段投影）
+
+报告446条事件全部绑定上述session/run，sequence严格递增；这是有筛选的公开元数据，序号有间隔，不解释为完整native事件流。分类为422条text_delta、6条model_request状态、5条activity、各3条assistant_start/end、各2条tool_start/end、2条status和1条assistant_phase。仅统计text_delta长度/标志，不读取任何私有推理文本。
+
+| 事件序号 | 已核对事实 |
+| --- | --- |
+| 1 | status=running |
+| 15→20 | `office_list_attachments`，同callId，tool_end.success=true |
+| 28→32 | `office_read_attachment`，同callId，tool_end.success=true；安全工具卡completed，sourceCount=1，公开来源标题为 `buoyancy-review.pdf · 提取正文第1–8行（原页码未定位）` |
+| 7/8、23/24、35/36 | 三组sending/accepted请求状态，attempt均1；6条状态不是6次请求，不由accepted推断任务完成 |
+| 92 | segment3显式final_answer交接；handoffEvidence同身份/序号，collapsed=true、beforeTerminal=true，报告handoffObservedWhileRunning=true |
+| 515→522 | segment3 final=true，随后status=completed，读取先于最终答案阶段且可靠终态存在 |
+
+由安全调用回执、指定PDF来源标题、正确公开引用、绑定终态和冷恢复检查，已可对本M任务D5评分；无需读取私有内容。没有发现公开过程与工具元数据矛盾。publicProcessCount=0、publicCommentary标志为true的delta数0，不补造“工具前公开说明”；本M prompt不要求该说明，因此不机械扣D4/D5。本次未在公开答案看到DSML协议残片，不据此宣称已审查所有内部内容或排除一切泄漏。
+
+报告5项覆盖指定附件UI导入、绑定run/过程/正文/工具详情/双尺寸采集、冷恢复相同stage/time/body且折叠/无模型重放、无renderer/console错误、构建指纹不变。**运行中手动重开并未由本例证明**：manualReopenedWhileRunning=false，manualReopenAfterSequence=522已是completed，publicDeltasAfterManualReopen=0。保留此覆盖边界，不能把截图名或5项通过写成正在流式时重开成功。交接前终态的折叠有独立seq92证据，与此限制不冲突。
+
+### 科学与六维评分
+
+公开正文定位：首句诊断；“诊断与约200字解释”下为解释段；“变式题及答案”下为新情境与两小问；其后为答案。
+
+| 维度 | 新M3 | 可核验理由 |
+| --- | ---: | --- |
+| D1 学科正确性 | **3** | 解释段正确算1N，并明确2N是拉力、静止悬挂三力平衡3=1+2；自由浮沉关系明确限制“只受重力和浮力、由静止释放”。变式6N/2.5N得到浮力3.5N，剪断细线、由静止释放后初始合力2.5N向下，正确；未重现旧M遗漏拉力却断言下沉。轻微遗漏：深度不变句给了完全浸没/均匀水，仍宜说明排液体积不变、g近似不变；通用F浮=G即悬浮宜明确完全浸没，避免涵盖自由漂浮。“运动方向由合力方向决定”本句有剪断瞬间速度零条件，不判为对任意已有速度运动的普遍错误。 |
+| D2 来源忠实与可追溯 | **3** | 3N/2N有对应公开文件/提取行引用，1N明确计算推出；6N/2.5N位于独立“变式”新情境，是允许自设的数据，没有伪称附件原文。公开答案未重申资料为合成流程样例，来源边界不如原参考完整；提取行号不是原PDF页码，UI也明确“原页码未定位”，不虚构页码。 |
+| D3 八年级教学适配 | **4** | 直接诊断误区并展示三力关系；一道连贯变式的两小问分别查浮力计算和释放后的运动趋势，条件、数值及答案齐全，可判分。未再次引入M2密度/体积/多重新假设负担。 |
+| D4 指令完整性 | **2** | 诊断、解释、一道变式及答案齐全；解释307字符超过160–240工作容差，且标题“约200字”不能代替计数。不因本prompt没有要求的工具前说明扣分。 |
+| D5 过程真实性与边界 | **4** | 本次已核对同run附件列举/实读成功、公开来源对应、实读先于final_answer、完成终态以及冷恢复无重放检查；无需以工程总检查数代替这些具体证据。仅对该M任务及授权公开证据范围评分，不扩展为完整native审计或其他任务的禁联网证明。 |
+| D6 可读性与教师可用性 | **4** | 标题、解释、变式与解答清楚，公开答案无DSML残片或未整理草稿，UI引用尾栏可与答案区分。字数违令主要记D4，不重复以同一超长原因扣D6；评分仅覆盖已读取公开文本，不等于教师或所有屏幕视觉验收。 |
+| 完整加权分 | **81.25/100** | 18.75+15+15+7.5+15+10；本例D5有新增安全证据可评分，没有NE维度。 |
+
+对照只保留原评：首代小智M为56.25/85（D1=1、D5=NE），参考M为62.5/85（D1=2、D5=NE），M2为55/85（D1=3、D6=1、D5=NE）。不将新81.25/100与不同分母直接排名，不倒填旧D5、不重算参考；参考“零示数即悬浮”的条件缺口仍保留，新M3变式未采用那个欠约束情境。M3改善了旧关键受力错误、变式负担及公开协议污染；没有证明跨任务总体优胜、教师认可或护栏的普遍因果效果。
+
+**本例结论：未发现旧M同等级核心科学错误，最终公开答案干净且真实读取/终态有安全证据；但约200字要求仍未达标、适用条件和合成来源边界仍有轻微遗漏，不能宣布全项质量验收通过。** 此结论来自预声明单次运行，不择优拼接旧答案或把过滤重放当新生成。
+
+### 最小续接遗留与冻结
+
+1. 内容改进遗留：解释压到既定160–240字符并保留三力/释放条件；补足深度不变和等浮力状态条件、合成来源边界。仅登记后续改进，不修改本次原样答案、不自动重跑模型。
+2. 工程覆盖遗留：本例未证明运行中手动重开后继续接收流式增量；保留上述false/0元数据。父任务完成已有进程终态确认；本审查不再新增测试或构建。
+3. 全局原有边界继续有效：独立教师/独立教材留出验收仍未完成；其他样本的NE、旧失败及U6的55/70不因本例获得D5评分而改写。已完成的legacy诊断QA闭环及源码接受结论不重开。
+
+本节追加后冻结；本轮仅改QUALITY_RESULT.md，不提交、不改源码、不运行Electron/build/model、不另读私有载荷。
+
+| 本次证据 | SHA-256 |
+| --- | --- |
+| `chat-main-final-misconception/run-LvqyDM/attachment-visible-body.json` | `4edabba181c9b4f5ef959e9878314d7e1a592eb3ff73df93f7bcfa003342e767` |
+| `chat-main-final-misconception/run-LvqyDM/attachment-answer.json` | `25351e88ecf20662f42c4c352058eccb7f6451caa111729da53656bf2a83badd` |
+| `chat-main-final-misconception/run-LvqyDM/report.json` | `a7059abe364a7dd4e2510ada1062991f659e48e57023ad416c4a07cfc6b9dc08` |
+| 原样可见body字符串 | `8b3256680a9d3f3f2cda80902db148e2e4187ec1bb6cbd54a7594377d28502c6` |
+| 原样final_answer.text字符串 | `fec296edfe71f96385977f5ecf9ae5d7b90e63fe440b24376e8d09c7970dd95b` |
