@@ -83,6 +83,19 @@ async function navigate(page, view) {
   await page.getByTestId(`nav-${view}`).click();
 }
 
+async function expandAnalyticsDiagnostics(page) {
+  // Analytics intentionally keeps runtime diagnostics behind the official Disclosure.
+  const diagnostics = page.getByTestId('analytics-runtime-diagnostics');
+  const trigger = diagnostics.getByRole('button', { name: '运行与诊断', exact: true });
+  await trigger.waitFor({ state: 'visible' });
+  if (await trigger.getAttribute('aria-expanded') !== 'true') {
+    assert.equal(await trigger.getAttribute('aria-expanded'), 'false', 'diagnostics must expose an official collapsed trigger');
+    await trigger.click();
+  }
+  await diagnostics.getByTestId('ai-observability-workspace').waitFor({ state: 'visible' });
+  assert.equal(await trigger.getAttribute('aria-expanded'), 'true', 'diagnostics must expand through the real UI trigger');
+}
+
 async function closeApp(app) {
   let child = null;
   try {
@@ -1457,6 +1470,7 @@ async function run() {
 
   await first.page.setViewportSize({ width: 1366, height: 768 });
   await navigate(first.page, 'analytics');
+  await expandAnalyticsDiagnostics(first.page);
   await first.page.getByTestId('ai-observability-workspace').waitFor({ state: 'visible' });
   await first.page.getByTestId('ai-observability-summary').waitFor({ state: 'visible' });
   await first.page.getByTestId(`ai-run-item-${observabilityRun.id}`).click();
@@ -2064,6 +2078,7 @@ async function run() {
   await second.page.getByTestId(`global-search-record-${mistakeRecord.id}`).waitFor({ state: 'visible' });
   assert.match(await second.page.getByTestId(`global-search-record-${mistakeRecord.id}`).textContent(), /错题图片前端验收/, 'global search must read the same persisted SQLite record after restart');
   await navigate(second.page, 'analytics');
+  await expandAnalyticsDiagnostics(second.page);
   await second.page.getByTestId(`ai-regression-item-${observabilityReport.id}`).waitFor({ state: 'visible' });
   assert.equal((await second.page.locator('body').textContent())?.includes(observabilityRawPrompt), false, 'raw prompt must remain absent after restart');
   const l2AfterRestart = await second.page.evaluate(() => window.omniEdu.getAiMemoryDocument('chat'));

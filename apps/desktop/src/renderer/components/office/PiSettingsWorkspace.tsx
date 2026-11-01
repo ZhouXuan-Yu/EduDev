@@ -143,7 +143,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
     <div className="edu-settings edu-domain" data-edu-domain="" data-testid="pi-settings-workspace" data-tab={tab}>
       <nav className="edu-settings-nav" aria-label="小智设置分类">
         <SearchField value={query} onChange={setQuery} aria-label="搜索设置" isDisabled={busy} className="pi-settings-search">
-          <SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
+          <SearchField.Group><SearchField.SearchIcon/><SearchField.Input className="edu-settings-search-input" placeholder="搜索设置" data-testid="pi-settings-search" onKeyDown={event => { if (event.key === 'Escape') setQuery(''); }}/><SearchField.ClearButton aria-label="清空设置搜索"/></SearchField.Group>
         </SearchField>
         {query.trim() ? <div className={navStyles['settings-search-results']} data-testid="pi-settings-search-results" aria-live="polite">
           <span className={navStyles['settings-search-results-title']}>搜索结果</span>

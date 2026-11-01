@@ -9,9 +9,15 @@ import { pairedScenario } from './acceptance/chat-paired-scenarios.mjs';
 import { installChatPublicProbe } from './acceptance/chat-live-public-probe.mjs';
 import { readOnlyRunBlocker, stopOwnedChatRun } from './acceptance/chat-live-blocker.mjs';
 import { captureStyleProbe } from './acceptance/ui-style-probe.mjs';
+import { assertChatMarkdownDisclosure } from './acceptance/chat-markdown-disclosure.mjs';
 const scenario = pairedScenario();
+const expectDisclosure = process.env.UI_CHAT_EXPECT_DISCLOSURE === '1';
 const PROMPT = scenario.prompt;
 const EXPLANATION = scenario.explanation;
+if (expectDisclosure) {
+  assert(scenario.promptOverride, 'UI_CHAT_EXPECT_DISCLOSURE=1 requires an explicit UI_PAIRED_PROMPT for a functional run, not a paired benchmark');
+  assert(!EXPLANATION, 'Use --scenario=practice or --scenario=misconception for one disclosure model run; default scenario includes a second explanation round');
+}
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const source = path.resolve(process.env.UI_PAIRED_PDF || process.env.UI_CHAT_PDF || 'D:/WorkProject/小智智能体借鉴项目/_ui-review-runtime/20261101/buoyancy-review.pdf');
 const limit = Number(process.env.UI_CHAT_TIMEOUT_MS || 18e4);
@@ -30,6 +36,13 @@ async function main() {
   const output = fs.mkdtempSync(path.join(base, "run-")), data = path.join(output, "data"), profile = path.join(output, "profile");
   const mainFile = testMain(root), build = fingerprint(path.dirname(path.dirname(mainFile)));
   const report = { success: false, output, scenario: scenario.name, promptOverride: scenario.promptOverride, prompt: PROMPT, promptSha256: sha256(Buffer.from(PROMPT)), focusMode, styleCase: captureStyles ? 'default-summary' : null, model: "deepseek-flash", pdf: { name: path.basename(source), sha256: sha256(fs.readFileSync(source)) }, buildSha256: build.sha256, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))), scenarioConfigSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-paired-scenarios.mjs', import.meta.url))), publicProbeSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-public-probe.mjs',import.meta.url))), checks: [], runs: [], events: [], consoleErrors: [], screens: [], styleProbes: [], humanAccepted: false };
+  if (expectDisclosure) Object.assign(report, {
+    disclosureScope: {enabled: true, kind: 'single-model-HTML-functional-run', promptOverride: true,
+      pairedBenchmark: false, stages: ['completed', 'cold-restored'],
+      screenshots: 'existing completed/cold dual-viewport captures; existing private-UI guard'},
+    disclosureHelperSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-markdown-disclosure.mjs', import.meta.url))),
+    markdownDisclosures: [],
+  });
   const check = (name) => {
     report.checks.push({ name, pass: true });
     console.log("PASS " + name);
@@ -341,6 +354,14 @@ async function main() {
       const body = await turn.getByTestId("agent-reply-body").allTextContents();
       write(`${name}-visible-body.json`, { sessionId, runId: id, body });
       assert(body.join("").trim(), "visible answer body must render");
+      if (expectDisclosure && name === 'attachment') {
+        await safeDOM();
+        const evidence = await assertChatMarkdownDisclosure(page, {
+          conversation: page.getByTestId('office-conversation'), turn, completedTurn: t,
+        });
+        report.markdownDisclosures.push({stage: 'completed', runId: id, ...evidence});
+        check('completed: actual raw HTML final / app-owned Markdown Card / Enter+Space+focus');
+      }
       await sizes(`${name}-completed`);
       check(`${name}: real bound run / public process / body / tool details / dual-size captures`);
       return true;
@@ -375,6 +396,14 @@ async function main() {
     assert.equal((await state()).sourceSequence, before.sourceSequence, "cold restore does not append events");
     assert.equal((await state()).turns.length, before.turns.length, "cold restore adds no turn");
     assert.equal(await section(attachment.id).getByTestId("agent-trace-toggle").getAttribute("aria-expanded"), "false", "restored completed process starts collapsed");
+    if (expectDisclosure) {
+      await safeDOM();
+      const evidence = await assertChatMarkdownDisclosure(page, {
+        conversation: page.getByTestId('office-conversation'), turn: section(attachment.id), completedTurn: again,
+      });
+      report.markdownDisclosures.push({stage: 'cold-restored', runId: attachment.id, ...evidence});
+      check('cold: same raw HTML final / app-owned Markdown Card / Enter+Space+focus');
+    }
     await sizes("cold-restored");
     check("cold restart: identical stage/time/body, collapsed, no model replay");
     if (EXPLANATION) {
@@ -415,5 +444,5 @@ async function main() {
     console.log(JSON.stringify({ success: report.success, failure: report.failure, output, checks: report.checks.length }));
   }
 }
-if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,styleCase:captureStyles?'default-summary':null,usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. --check/--help never launch or call a model.'}));
+if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,styleCase:captureStyles?'default-summary':null,...(expectDisclosure?{expectDisclosure:true,promptOverride:scenario.promptOverride,scope:'single-model-HTML-functional-run; not a paired benchmark; completed+cold same consumer; existing dual-viewport captures'}:{}),usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. Opt-in UI_CHAT_EXPECT_DISCLOSURE=1 requires UI_PAIRED_PROMPT and --scenario=practice|misconception for ONE model run. --check/--help never launch or call a model.'}));
 else await main();

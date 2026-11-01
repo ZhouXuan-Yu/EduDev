@@ -34,14 +34,20 @@ export async function settleWorkspaceTransitions(page, options={}) {
 /** Chrome must never own hidden scroll; only history/side panes may scroll. */
 export async function assertWorkspaceChrome(page) {
   const result = await page.evaluate(() => {
+    const visible = element => element.getClientRects().length > 0;
+    const first = (root, selector) => [...root.querySelectorAll(selector)].find(visible);
+    const workspace = first(document, '[data-testid="xiaozhi-pi-workspace"]') || document;
+    const header = first(workspace, '[data-testid="pi-workspace-header"]') || first(workspace, '.ai-chat-header');
+    const input = first(workspace, '[data-testid="office-prompt-input"]');
+    if (!header || !input) throw new Error(`Visible workspace chrome anchors missing: header=${!!header}, input=${!!input}`);
     const sample = element => {
       const rect = element.getBoundingClientRect();
       return { className: element.className, rect: {x: rect.x, y: rect.y, width: rect.width, height: rect.height},
         scrollTop: element.scrollTop, overflow: element.scrollHeight - element.clientHeight };
     };
-    return {width: innerWidth, height: innerHeight, header: sample(document.querySelector('.ai-chat-header')),
-      input: sample(document.querySelector('[data-testid="office-prompt-input"]')),
-      parents: [...document.querySelectorAll('.pi-shell, .app-layout__body, .app-layout__main, .ai-chat-surface, .ai-conversation-frame')].map(sample)};
+    return {width: innerWidth, height: innerHeight, header: sample(header), input: sample(input),
+      anchors: {header: header.getAttribute('data-testid') || '.ai-chat-header', input: 'office-prompt-input'},
+      parents: [...document.querySelectorAll('.edu-shell, .edu-workspace, .edu-chat, .edu-chat-main, .pi-shell, .app-layout__body, .app-layout__main, .ai-chat-surface, .ai-conversation-frame')].filter(visible).map(sample)};
   });
   for (const parent of result.parents) {
     assert(parent.overflow <= 1, `${parent.className}: ${parent.overflow}px hidden overflow`);

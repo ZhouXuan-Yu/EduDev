@@ -44,7 +44,7 @@ export function AiConversationArchiveConfirmation({ target, busy, onConfirm, onC
     <Modal.Container size="sm" scroll="inside"><Modal.Dialog role="alertdialog" className="pi-conversation-dialog pi-themed-surface" data-testid="ai-conversation-archive-confirmation">
       <Modal.Header><Modal.Heading>确认归档{target.type === 'folder' ? '文件夹' : '对话'}？</Modal.Heading></Modal.Header>
       <Modal.Body><p>{target.type === 'folder' ? '文件夹及其中对话将从小智侧栏隐藏，但本地消息不会删除。' : '对话将从小智侧栏隐藏，但本地消息不会删除。'}</p></Modal.Body>
-      <Modal.Footer><Button autoFocus variant="secondary" isDisabled={busy} onPress={onCancel} data-testid="ai-conversation-archive-cancel">取消</Button><Button variant="primary" isDisabled={busy} onPress={onConfirm} data-testid="ai-conversation-archive-confirm">{busy ? '归档中…' : '确认归档'}</Button></Modal.Footer>
+      <Modal.Footer><Button autoFocus variant="secondary" isDisabled={busy} onPress={onCancel} data-testid="ai-conversation-archive-cancel">取消</Button><Button variant="primary" className="edu-primary-action-contrast" isDisabled={busy} onPress={onConfirm} data-testid="ai-conversation-archive-confirm">{busy ? '归档中…' : '确认归档'}</Button></Modal.Footer>
     </Modal.Dialog></Modal.Container>
   </Modal.Backdrop>;
   return (

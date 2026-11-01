@@ -8,15 +8,65 @@ import { _electron as electron } from 'playwright';
 import { testMain, assertIsolatedPiMain } from '../acceptance/build-root.mjs';
 import { fingerprint, sha256 } from '../acceptance/evidence.mjs';
 import {productEntry} from '../product-navigation.mjs';
-import {measureTextContrast,assertWorkspaceChrome} from './capture-workspace-metrics.mjs';
-const desktop = process.cwd(), output = fs.mkdtempSync(path.resolve('test-results/xiaozhi-agent/pi-settings-workspace-ui-'));
-const data = path.join(output, 'data'), profile = path.join(output, 'profile'), working = path.join(output, 'teaching-work'), backupRoot = path.join(output, 'backup-target'), skillRoot = path.join(output, 'teacher-skill');
-for (const directory of [working, backupRoot, skillRoot]) fs.mkdirSync(directory);
-fs.writeFileSync(path.join(working, 'meeting.txt'), '合成教研纪要：分数课40分钟。');
+import {measureTextContrast,assertWorkspaceChrome,settleWorkspaceTransitions} from './capture-workspace-metrics.mjs';
+import {settingsBackgroundEvidence} from './settings-background-evidence.mjs';
+const desktop = process.cwd();
+const continuationIndex = process.argv.indexOf('--continue-after29');
+const archiveIndex = process.argv.indexOf('--archive-only-from'), archiveOnly = archiveIndex !== -1;
+const checkContinuation = process.argv.includes('--check-continuation') || process.argv.includes('--check');
+for (const flag of process.argv.slice(2).filter(value => value.startsWith('--'))) assert(['--continue-after29','--archive-only-from','--check-continuation','--check','--packages-only'].includes(flag), 'Unknown QA option');
+assert(!(archiveOnly && continuationIndex !== -1), 'Choose one continuation mode');
+let continuation;
+if (continuationIndex !== -1 || archiveOnly) {
+  assert(!process.argv.includes('--packages-only'), 'Continuation cannot run the package journey');
+  const allowed = path.resolve('test-results/xiaozhi-agent/pi-settings-workspace-ui-0FGfz0');
+  const requested = archiveOnly ? allowed : process.argv[continuationIndex + 1];
+  assert(requested && path.resolve(requested) === allowed, 'Continuation is restricted to the owned 0FGfz0 run');
+  assert.equal(fs.realpathSync(allowed), allowed, 'Continuation root must not redirect through a link');
+  const priorFile = path.join(allowed, 'report.json'), priorBytes = fs.readFileSync(priorFile), prior = JSON.parse(priorBytes);
+  assert.equal(prior.success, false); assert.equal(prior.checks.length, 29);
+  assert(prior.checks.every(item => item.pass)); assert.deepEqual(prior.rendererErrors, []);
+  assert.equal(prior.checks.at(-1).name, 'Real official DeepSeek reply completes through the preserved formal composer after unified settings');
+  for (const child of ['data', 'profile', 'teaching-work', 'backup-target', 'teacher-skill']) {
+    assert.equal(fs.realpathSync(path.join(allowed, child)), path.join(allowed, child), 'Owned continuation directories must not redirect');
+  }
+  continuation = {root: allowed, priorReport: priorFile,
+    priorReportSha256: createHash('sha256').update(priorBytes).digest('hex'),
+    priorSuccess: false, priorChecks: 29, priorError: prior.error, priorBuildSha256: prior.build.sha256,
+    scope: 'Only checks after the first official reply; preceding 29 checks are referenced, never counted as rerun passes.'};
+  if (archiveOnly) {
+    const resumeRoot = path.resolve('test-results/xiaozhi-agent/pi-settings-workspace-ui-continuation-gubq7n');
+    assert(process.argv[archiveIndex + 1] && path.resolve(process.argv[archiveIndex + 1]) === resumeRoot, 'Archive-only resume is restricted to gubq7n evidence and its owned 0FGfz0 profile');
+    assert.equal(fs.realpathSync(resumeRoot), resumeRoot);
+    const resumeReport = path.join(resumeRoot, 'report.json'), bytes = fs.readFileSync(resumeReport), resume = JSON.parse(bytes);
+    assert.equal(resume.success, false); assert.equal(resume.checks.length, 8); assert(resume.checks.every(item => item.pass));
+    assert.equal(resume.checks.at(-1).name, 'U2 history manager renames and navigation search filters the real conversation while retaining original native message bytes');
+    assert.deepEqual(resume.rendererErrors, []); assert.equal(resume.continuation.root, allowed);
+    assert.equal(resume.continuation.priorReportSha256, continuation.priorReportSha256);
+    assert.equal(resume.build.sha256, continuation.priorBuildSha256);
+    Object.assign(continuation, {mode: 'archive-only', resumeReport,
+      resumeReportSha256: createHash('sha256').update(bytes).digest('hex'), sessionId: resume.continuation.sessionId,
+      scope: 'Archive checks only on the already renamed three-turn conversation; no model sends, no preceding checks counted as rerun passes.'});
+  }
+}
+if (checkContinuation) {
+  assert(continuation, '--check-continuation requires --continue-after29');
+  const currentBuild = fingerprint(path.dirname(path.dirname(testMain(desktop))));
+  assert.equal(currentBuild.sha256, continuation.priorBuildSha256, 'Continuation requires the preserved run build');
+  console.log(JSON.stringify({prepared: true, ...continuation, currentBuildSha256: currentBuild.sha256, launches: 0, modelRequests: 0}, null, 2));
+  process.exit(0); // Read-only plan: no profile contents, credential loading or output creation.
+}
+const output = fs.mkdtempSync(path.resolve(`test-results/xiaozhi-agent/pi-settings-workspace-ui-${archiveOnly ? 'archive-only-' : continuation ? 'continuation-' : ''}`));
+const fixtureRoot = continuation?.root || output;
+const data = path.join(fixtureRoot, 'data'), profile = path.join(fixtureRoot, 'profile'), working = path.join(fixtureRoot, 'teaching-work'), backupRoot = path.join(fixtureRoot, 'backup-target'), skillRoot = path.join(fixtureRoot, 'teacher-skill');
+if (!continuation) {
+  for (const directory of [working, backupRoot, skillRoot]) fs.mkdirSync(directory);
+  fs.writeFileSync(path.join(working, 'meeting.txt'), '合成教研纪要：分数课40分钟。');
+}
 const skillText = '---\nname: office-review\ndescription: 整理合成教研纪要并核对课时。\n---\n# 教研办公复核\n先读取经教师授权的资料，核对课时，再输出简洁纪要。写入必须经教师确认。\n';
-fs.writeFileSync(path.join(skillRoot, 'SKILL.md'), skillText);
-let apiKey = process.env.DEEPSEEK_API_KEY?.trim();
-if (!apiKey) {
+if (!continuation) fs.writeFileSync(path.join(skillRoot, 'SKILL.md'), skillText);
+let apiKey = archiveOnly ? '[archive-only-no-credential-loaded]' : process.env.DEEPSEEK_API_KEY?.trim();
+if (!apiKey && !archiveOnly) {
   const configFile = path.join(desktop, '.env.local');
   if (fs.existsSync(configFile)) apiKey = fs.readFileSync(configFile, 'utf8').match(/^DEEPSEEK_API_KEY\s*=\s*(.*?)\s*$/m)?.[1]?.replace(/^['"]|['"]$/g, '').trim();
 }
@@ -52,14 +102,51 @@ const safeError = error => {
 };
 const errors = [], report = { success: false, checks: [], viewports: [], launches: [], boundaries: ['Actual formal Electron + owned fresh SQLite/profile, live official DeepSeek catalogue and chat, actual local backup/readback; synthetic teacher files only.', 'Native chooser returns controlled in main; browser storage failure injected only for the owned profile.', 'Archive fixtures created via existing typed APIs; archive creation UI and OS chooser clicking not claimed.', 'No full Codex pixel-match, VPN-off or installer proof.', 'Recovery is a filesystem restoration drill to a new owned root; production has no restore UI/IPC. Application stays light under either OS color preference.'] };
 const buildRoot = path.dirname(path.dirname(testMain(desktop))), fixed = fingerprint(buildRoot);
+if (continuation) {
+  assert.equal(fixed.sha256, continuation.priorBuildSha256, 'Continuation requires the same actual build as the preserved failed run');
+  report.continuation = continuation; report.fullSuiteSuccess = false;
+  if (archiveOnly) report.boundaries.push('Archive-only: no credential loading or config-equality claim; model transport is forbidden, preceding failures preserved.');
+  report.boundaries[0] = 'Targeted continuation on owned 0FGfz0 SQLite/profile; preceding 29 checks were not rerun. Original failed report remains unchanged.';
+  report.contrast = []; report.backgrounds = [];
+}
 Object.assign(report, { layer: 'C isolated formal Electron', humanAccepted: false, build: { root: buildRoot, files: fixed.files.length, sha256: fixed.sha256 }, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))) });
 const query = (sql, values = []) => { const db = new DatabaseSync(path.join(data, 'app.db'), { readOnly: true }); try { return db.prepare(sql).all(...values); } finally { db.close(); } };
 const config = () => query('SELECT value_json FROM app_settings WHERE key=?', ['xiaozhi.provider.v1'])[0]?.value_json;
 const requests = [];
 const packagesOnly=process.argv.includes('--packages-only');
-let app, page, id, archivedId, backupPath;
+let app, page, id, archivedId, backupPath, storedConfig;
+const marker = '设置验收合成教研纪要';
 const aiShell = (owner = page) => owner.locator('[data-testid="xiaozhi-pi-workspace"]:visible');
 const settingsShell = (owner = page) => owner.locator('[data-testid="pi-settings-workspace"]:visible');
+const navigation = () => page.locator('[data-testid="edu-navigation"]:visible');
+const navigationDialog = kind => page.locator(`[data-testid="workbench-${kind}-dialog"]:visible`);
+async function expandNavigation() {
+  if (await navigation().getAttribute('data-collapsed') === 'true') await navigation().getByTestId('workbench-sidebar-toggle').click();
+  await until(async () => await navigation().getAttribute('data-collapsed') === 'false');
+}
+async function showHistory() {
+  await expandNavigation();
+  if (!await navigationDialog('history').isVisible()) await navigation().getByTestId('workbench-manage-history').click();
+  await navigationDialog('history').getByTestId('ai-conversation-sidebar').waitFor();
+  return navigationDialog('history');
+}
+async function closeHistory() {
+  if (await navigationDialog('history').isVisible()) {
+    await navigationDialog('history').getByRole('button', {name:'关闭',exact:true}).click();
+    await navigationDialog('history').waitFor({state:'hidden'});
+  }
+}
+async function historyAction(sessionId, action) {
+  const history = await showHistory();
+  await history.getByTestId(`ai-conversation-session-${sessionId}`).click({button:'right'});
+  await page.getByTestId(`ai-conversation-context-${action}`).click();
+}
+async function renameHistory(sessionId, title) {
+  await historyAction(sessionId, 'rename');
+  const input = navigationDialog('history').getByTestId(`ai-conversation-rename-session-${sessionId}`);
+  await input.fill(title); await input.press('Enter'); await input.waitFor({state:'hidden'});
+  await closeHistory();
+}
 // TooltipTrigger may itself expose role=button: require the actual visible HTML button.
 const aiButton = name => aiShell().getByRole('button', {name, exact:true}).and(page.locator('button:visible'));
 
@@ -79,12 +166,16 @@ async function launch() {
   await aiShell().waitFor({ timeout: 60000 }); assert.equal(path.resolve(await page.evaluate(()=>window.omniEdu.getDataRoot())),path.resolve(data),'Settings QA must use owned isolated data, never daily data'); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled()); id = await aiShell().locator('.office-composer-container:visible').getAttribute('data-session-id');
   assert(await app.evaluate(() => process.env.DEEPSEEK_API_KEY === '' && process.env.DEEPSEEK_MODEL === '' && process.env.OMNI_EDU_E2E_DIALOG_MODE === '1'));
   // Observe only safe transport facts; original SDK requests/responses remain unchanged.
-  await app.evaluate((_, expectedKey) => {
+  await app.evaluate((_, {expectedKey, archiveOnly}) => {
     globalThis.currentSettingsRequests = []; const original = globalThis.fetch;
     globalThis.fetch = async function(input, init) {
       const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input?.url; let record;
+      if (archiveOnly && typeof url === 'string' && /\/chat\/completions(?:\?|$)/.test(url)) {
+        globalThis.currentSettingsRequests.push({kind:'forbidden-model-request', blocked:true});
+        throw new Error('Archive-only QA forbids model requests');
+      }
       if(url==='https://api.deepseek.com/user/balance'){
-        record={kind:'balance',url,credentialMatchesSaved:new Headers(init?.headers||input?.headers).get('authorization')===`Bearer ${expectedKey}`,status:null};globalThis.currentSettingsRequests.push(record);
+        record={kind:'balance',url,credentialMatchesSaved:archiveOnly?null:new Headers(init?.headers||input?.headers).get('authorization')===`Bearer ${expectedKey}`,status:null};globalThis.currentSettingsRequests.push(record);
       }
       if (typeof url === 'string' && url.startsWith('https://api.deepseek.com/') && url.endsWith('/chat/completions') && typeof init?.body === 'string') {
         const body = JSON.parse(init.body), headers = new Headers(init.headers || input?.headers);
@@ -94,7 +185,7 @@ async function launch() {
       try { const response = await original.apply(this, arguments); if (record) record.status = response.status; return response; }
       catch (error) { if (record) { record.errorName = error.name; record.aborted = Boolean(init?.signal?.aborted); } throw error; }
     };
-  }, apiKey);
+  }, {expectedKey:apiKey, archiveOnly});
   await page.evaluate(() => { globalThis.currentSettingsEvents = []; window.omniEdu.onXiaozhiEvent(e => globalThis.currentSettingsEvents.push({kind:e.kind})); });
 }
 async function close() { if (!app) return; requests.push(...await app.evaluate(() => globalThis.currentSettingsRequests)); await app.close(); app = undefined; }
@@ -132,9 +223,18 @@ async function assertNavigationCollapsed(collapsed) {
 }
 const permissionMemory = () => page.getByTestId('pi-settings-main');
 async function memoryPanel() { if (!await permissionMemory().getByTestId('pi-memory-enabled').isVisible()) await permissionMemory().getByTestId('pi-memory-scope').locator('[data-slot="chat-tool-trigger"]').click(); }
+async function settleActualWindowTransitions(label) {
+  const window = await app.browserWindow(page);
+  let windowVisible;
+  try { windowVisible = await window.evaluate(nativeWindow => nativeWindow.isVisible()); }
+  finally { await window.dispose(); }
+  const started = Date.now();
+  const settled = await settleWorkspaceTransitions(page, {hiddenSnapshot: !windowVisible});
+  (report.transitions ??= []).push({label, windowVisible, elapsedMs: Date.now() - started, ...settled});
+}
 async function stableCapture(name) {
-  await page.addStyleTag({ content: '*,*::before,*::after{animation:none!important;transition:none!important}' });
-  await page.evaluate(async () => { await document.fonts.ready; await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); });
+  await page.evaluate(() => document.fonts.ready);
+  await settleActualWindowTransitions(`screenshot:${name}`);
   await page.screenshot({ path: path.join(output, `${name}.png`) });
 }
 
@@ -190,6 +290,7 @@ async function packageJourney(){
 }
 try {
  if(packagesOnly){await packageJourney();}else{
+  if (!continuation) {
   await launch(); await open(); await page.getByTestId('pi-settings-key').fill(apiKey); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').isDisabled());await assertSavingNavigationLocked(); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
   assert.equal(await page.getByTestId('pi-settings-key').inputValue(), ''); assert((await settings()).value.models.length >= 2); check('Unified formal entry embeds the existing encrypted model form and live official model directory');
   const savedConfig = config(); assert(savedConfig && !savedConfig.includes(apiKey));
@@ -199,7 +300,7 @@ try {
   assert(official.some(v => v.id === 'deepseek-flash' && v.source === 'official' && !v.stale));
   assert(official.some(v => v.id === 'deepseek-v4-pro' && v.source === 'official' && !v.stale));
   await page.getByTestId('pi-settings-default-model').click(); await page.getByRole('menuitemradio', { name: 'deepseek-flash', exact: true }).click(); await page.getByTestId('pi-settings-save').click(); await until(async()=>await page.locator('[data-testid=product-rail]:visible').getByTestId('nav-ai-workspace').isDisabled());await assertSavingNavigationLocked(); await until(async () => /已保存/.test(await page.getByTestId('pi-settings-feedback').innerText()));
-  const storedConfig = config(); assert(storedConfig && !storedConfig.includes(apiKey)); report.defaultModel = (await settings()).value.defaultModel;
+  storedConfig = config(); assert(storedConfig && !storedConfig.includes(apiKey)); report.defaultModel = (await settings()).value.defaultModel;
   assert.equal(report.defaultModel, 'deepseek-flash'); check('Fresh official model menu saves the current Flash default with encrypted local credentials');
   assert.equal(await page.locator('[data-testid^="pi-settings-tab-"]').count(), 8);
   for (const name of ['models','permissions','interface','backup','archives']) assert(await page.getByTestId(`pi-settings-tab-${name}`).isVisible());
@@ -261,7 +362,7 @@ try {
   const denied = await app.evaluate(async ({ BrowserWindow }, preload) => { const side = new BrowserWindow({ show: false, webPreferences: { preload, contextIsolation: true, sandbox: false } }); try { await side.loadURL('about:blank'); return await side.webContents.executeJavaScript(`Promise.all([window.omniEdu.exportDataRoot(),window.omniEdu.verifyDataBackup()].map(p=>p.then(()=>false,e=>String(e).includes('permission_denied'))))`); } finally { side.destroy(); } }, path.join(buildRoot, 'preload/index.cjs')); assert.deepEqual(denied, [true, true]); check('A secondary renderer cannot invoke either local backup action');
   await page.getByTestId('data-backup-export').click(); await page.getByTestId('data-backup-error').waitFor(); assert(!await page.getByTestId('data-backup-export').isDisabled()); check('Exhausted controlled chooser shows bounded human feedback and releases local ownership');
   await chooser(working);
-  report.contrast=[];
+  report.contrast=[]; report.backgrounds=[];
   for (const theme of ['light','dark']) for (const viewport of [{ width: 1366, height: 768 }, { width: 1920, height: 1080 }]) {
     await page.emulateMedia({colorScheme:theme});
     await app.evaluate(({ BrowserWindow }, size) => BrowserWindow.getAllWindows()[0].setContentSize(size.width, size.height), viewport); await until(async () => await page.evaluate(size => innerWidth === size.width && innerHeight === size.height, viewport));
@@ -272,9 +373,9 @@ try {
       const measurements = await page.evaluate(control => { const main = document.querySelector('[data-testid="pi-settings-main"]'), nav = document.querySelector('.edu-settings-nav'), content = main.querySelector(':scope>div,:scope>section'), action = document.querySelector(`[data-testid="${control}"]`).getBoundingClientRect(), back = document.querySelector('[data-testid="nav-ai"]').getBoundingClientRect(); return { mainWidth: main.clientWidth, mainScroll: main.scrollWidth, contentWidth: content.getBoundingClientRect().width, navWidth: nav.clientWidth, navScroll: nav.scrollWidth, bodyWidth: document.documentElement.clientWidth, bodyScroll: document.documentElement.scrollWidth, actionRect: { x: action.x, y: action.y, right: action.right, bottom: action.bottom }, backRect: { x: back.x, y: back.y, right: back.right, bottom: back.bottom } }; }, control);
       assert(measurements.mainScroll <= measurements.mainWidth + 1, `${name} main overflow`); assert(measurements.contentWidth >= Math.min(700, measurements.mainWidth - 24) - 1 && measurements.contentWidth <= Math.min(801, measurements.mainWidth), `${name} readable responsive content width`); assert(measurements.navScroll <= measurements.navWidth + 1); assert(measurements.bodyScroll <= measurements.bodyWidth + 1);
       for (const rect of [measurements.actionRect, measurements.backRect]) assert(rect.x >= 0 && rect.y >= 0 && rect.right <= viewport.width && rect.bottom <= viewport.height, `${name} complete action reachable`);
-      const color=await settingsShell().evaluate(n=>{for(let node=n;node;node=node.parentElement){const color=getComputedStyle(node).backgroundColor;if(color!=='transparent'&&color!=='rgba(0, 0, 0, 0)')return color;}return 'rgb(255, 255, 255)';});
-      const intensity=color.match(/[\d.]+/g).slice(0,3).map(Number).reduce((a,b)=>a+b,0);
-      assert(intensity>500,`Light-only application remains light under OS ${theme}: ${color}`);
+      const workspaceBackground=await settingsBackgroundEvidence(settingsShell());
+      report.backgrounds.push({theme,width:viewport.width,tab:name,label:'workspace',...workspaceBackground});
+      assert(workspaceBackground.sum>500,`Light-only application remains light under OS ${theme}: ${JSON.stringify(workspaceBackground)}`);
       for(const [label,locator]of [['heading',page.getByTestId('pi-settings-main').locator('h1').first()],['description',page.getByTestId('pi-settings-main').locator('p').first()],['navigation',page.getByTestId(`pi-settings-tab-${name}`)]]){
         const contrast=await measureTextContrast(locator);report.contrast.push({theme,width:viewport.width,tab:name,label,...contrast});assert(contrast.ratio>=4.5,`${theme} ${name} ${label} contrast ${contrast.ratio}`);
       }
@@ -285,8 +386,9 @@ try {
           ['default-model-trigger',page.getByTestId('pi-settings-default-model'),null],
           ['save-button',page.getByTestId('pi-settings-save'),null],
         ]){const contrast=await measureTextContrast(locator,pseudo);report.contrast.push({theme,width:viewport.width,label,...contrast});assert(contrast.ratio>=4.5,`${theme} ${label} contrast ${contrast.ratio}`);}
-        const fieldBackground=await page.getByTestId('pi-settings-search').evaluate(n=>{for(let node=n.parentElement;node;node=node.parentElement){const color=getComputedStyle(node).backgroundColor;if(color!=='transparent'&&color!=='rgba(0, 0, 0, 0)')return color;}return 'rgb(255, 255, 255)';});
-        const sum=fieldBackground.match(/[\d.]+/g).slice(0,3).map(Number).reduce((a,b)=>a+b,0);assert(sum>500,`Light-only search field under OS ${theme}: ${fieldBackground}`);
+        const fieldBackground=await settingsBackgroundEvidence(page.getByTestId('pi-settings-search'));
+        report.backgrounds.push({theme,width:viewport.width,tab:name,label:'search-field',...fieldBackground});
+        assert(fieldBackground.sum>500,`Light-only search field under OS ${theme}: ${JSON.stringify(fieldBackground)}`);
         await page.getByTestId('pi-settings-default-model').hover();
         await page.waitForFunction(()=>!document.querySelector('[data-testid="pi-settings-default-model"]').getAnimations().some(a=>a.playState==='running'));
         const hover=await measureTextContrast(page.getByTestId('pi-settings-default-model'));report.contrast.push({theme,width:viewport.width,label:'default-model-hover',...hover});assert(hover.ratio>=4.5,`${theme} hovered default-model contrast ${hover.ratio}`);
@@ -302,13 +404,40 @@ try {
   } check('All six real setting pages and default-model portals fit light/dark native viewports with readable text and real Escape focus restoration');
   await page.emulateMedia({colorScheme:'light'});
   await page.getByTestId('nav-ai').click(); await aiShell().waitFor(); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled());
-  const marker = '设置验收合成教研纪要';
   await aiButton('选择模型').click(); await page.getByRole('menuitemradio', { name: 'deepseek-v4-pro', exact: true }).click(); await until(async () => (await snapshot()).projection.model === 'deepseek-v4-pro' && !await page.getByTestId('office-prompt-input').isDisabled()); assert.equal(config(), storedConfig);
   await aiButton('选择模型').click(); await page.getByRole('menuitemradio', { name: 'deepseek-flash', exact: true }).click(); await until(async () => (await snapshot()).projection.model === 'deepseek-flash' && !await page.getByTestId('office-prompt-input').isDisabled()); assert.equal(config(), storedConfig); check('Current conversation model menu selects both actual official models while preserving saved default configuration');
   await page.getByTestId('pi-skill-picker').click(); await page.getByRole('menuitemradio', { name: '教学办公文稿', exact: true }).click();
   await page.getByTestId('office-prompt-input').fill(`这是合成办公连接验收。不要调用工具，仅回复“${marker}”。`); await aiButton('发送消息').click(); await until(async () => (await snapshot()).projection.turns.length > 0); await until(async () => !(await snapshot()).running);
   const completed = (await snapshot()).projection.turns.at(-1);assert.equal(completed.items.find(v=>v.role==='user').text,`这是合成办公连接验收。不要调用工具，仅回复“${marker}”。`);check('Ordinary selected-skill live and completed public bubble presents teacher input without the injected command'); assert.equal(completed.status, 'completed'); assert(completed.items.some(item => item.role === 'assistant' && item.text?.includes(marker))); assert.equal(await page.getByTestId('office-prompt-input').inputValue(), ''); check('Real official DeepSeek reply completes through the preserved formal composer after unified settings');
-  const titleObservation = { raw: query('SELECT title FROM ai_conversation_sessions WHERE id=?', [id])[0].title, rendered: await page.getByTestId(`ai-conversation-session-${id}`).innerText(), rawPromptPrefix: query('SELECT content FROM ai_conversation_messages WHERE session_id=? AND role=? ORDER BY created_at LIMIT 1', [id, 'user'])[0].content.slice(0, 80) };
+  } else {
+    activeStage = 'continuation-preflight';
+    await launch();
+    const candidates = query('SELECT DISTINCT session_id FROM ai_conversation_messages WHERE role=? AND content LIKE ?', ['user', `%这是合成办公连接验收。不要调用工具，仅回复“${marker}”。%`]);
+    assert.equal(candidates.length, 1, 'Continuation must identify exactly one original synthetic conversation');
+    const target = candidates[0].session_id;
+    assert.equal(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?', [target])[0].archived_at, null);
+    await expandNavigation();
+    await navigation().getByTestId(`workbench-session-${target}`).filter({visible:true}).first().click();
+    await until(async () => await aiShell().locator('.office-composer-container:visible').getAttribute('data-session-id') === target);
+    id = target;
+    const original = await snapshot();
+    assert(!original.running); assert.equal(original.projection.turns.length, archiveOnly ? 3 : 1, 'Continuation requires the exact owned conversation checkpoint');
+    assert.equal(original.projection.turns[0].status, 'completed');
+    assert(original.projection.turns[0].items.some(item => item.role === 'assistant' && item.text?.includes(marker)));
+    if (archiveOnly) {
+      assert.equal(target, continuation.sessionId);
+      assert.equal(original.projection.turns.at(-1).status, 'interrupted');
+      const row = query('SELECT title,title_source FROM ai_conversation_sessions WHERE id=?', [target])[0];
+      assert.equal(row.title, '合成教研设置复核'); assert.equal(row.title_source, 'manual');
+    } else { storedConfig = config(); assert(storedConfig && !storedConfig.includes(apiKey)); }
+    report.continuation.sessionId = target;
+    check(archiveOnly ? 'Archive-only resume opens the existing renamed three-turn conversation through U2 without model sends' : 'Owned continuation opens the original completed conversation through U2 navigation without repeating the first 29 checks');
+  }
+  let liveId, nativeFile, nativeBytes;
+  const renamed = '合成教研设置复核';
+  if (!archiveOnly) {
+  await expandNavigation();
+  const titleObservation = { raw: query('SELECT title FROM ai_conversation_sessions WHERE id=?', [id])[0].title, rendered: await navigation().getByTestId(`workbench-session-${id}`).filter({visible:true}).first().innerText(), rawPromptPrefix: query('SELECT content FROM ai_conversation_messages WHERE session_id=? AND role=? ORDER BY created_at LIMIT 1', [id, 'user'])[0].content.slice(0, 80) };
   assert(titleObservation.raw.startsWith('这是合成办公连接验收。'));assert(!titleObservation.raw.includes('/skill:'));assert(titleObservation.rawPromptPrefix.startsWith('/skill:teaching-office '));assert(titleObservation.rendered.includes(titleObservation.raw));report.titleObservation={sessionId:id,taskOnlyTitle:true,nativeSkillPrefixPreserved:true,renderedTitleMatches:true};check('Ordinary selected-skill send has a task-only persisted/rendered title while the original prompt retains its Pi command');
   const manualPrompt='/skill:teaching-office 仅回复“MANUAL-'+marker+'”，不要调用工具。';
   await page.getByTestId('office-prompt-input').fill(manualPrompt);await aiButton('发送消息').click();await until(async()=>{const v=await snapshot();return v.projection.turns.length===2&&!v.running;});
@@ -318,7 +447,7 @@ try {
     await page.locator('.chat-message--user').first().scrollIntoViewIfNeeded();assert(!(await page.locator('.chat-message--user').first().innerText()).startsWith('/skill:'));assert((await page.locator('.chat-message--user').nth(1).innerText()).startsWith('/skill:teaching-office '));await stableCapture('public-message-'+theme+'-'+size[0]);
   }check('Ordinary automatic input and explicit literal command retain distinct public rendering in both native sizes and themes');
   await page.emulateMedia({colorScheme:'light'});
-  await page.getByTestId(`ai-conversation-session-${id}`).click({button:'right'});await page.getByTestId('ai-conversation-context-rename').click();await page.getByTestId(`ai-conversation-rename-session-${id}`).fill('新对话');await page.getByTestId(`ai-conversation-rename-session-${id}`).press('Enter');await until(()=>query('SELECT title_source FROM ai_conversation_sessions WHERE id=?',[id])[0].title_source==='manual');
+  await renameHistory(id, '新对话');await until(()=>query('SELECT title_source FROM ai_conversation_sessions WHERE id=?',[id])[0].title_source==='manual');
   report.stoppedRequestOffset = requests.length + (await app.evaluate(() => globalThis.currentSettingsRequests)).length;
   await page.getByTestId('office-prompt-input').fill('这是合成教研办公验收。请不要调用工具，分成15段详细写一篇分数课教研方案，每段至少100字。'); await aiButton('发送消息').click(); await until(async () => (await snapshot()).running);
   const runId = (await snapshot()).projection.turns.at(-1).id;
@@ -329,25 +458,30 @@ try {
   assert.equal(query('SELECT title FROM ai_conversation_sessions WHERE id=?',[id])[0].title,'新对话');check('Real subsequent ordinary task and stop preserve the teacher rename to the default label');
   await open(); await tab('permissions'); assert(await page.getByTestId('pi-settings-workspace-choose').isDisabled()); check('Bound conversation directory remains locked after real native history exists');
   await page.getByTestId('nav-ai').click(); await aiShell().waitFor(); await until(async () => !await page.getByTestId('office-prompt-input').isDisabled());
-  const liveId = id, nativeFile = path.join(data, 'xiaozhi-pi', query('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?', [liveId])[0].session_file), nativeBytes = fs.readFileSync(nativeFile);
-  await page.getByTestId(`ai-conversation-session-${liveId}`).click({ button: 'right' }); await page.getByTestId('ai-conversation-context-rename').click(); const renamed = '合成教研设置复核'; await page.getByTestId(`ai-conversation-rename-session-${liveId}`).fill(renamed); await page.getByTestId(`ai-conversation-rename-session-${liveId}`).press('Enter'); await until(() => query('SELECT title FROM ai_conversation_sessions WHERE id=?', [liveId])[0].title === renamed);
-  await page.getByTestId('pi-conversation-search').click(); await page.getByTestId('pi-conversation-search-input').fill('设置复核'); assert(await page.getByTestId(`ai-conversation-session-${liveId}`).isVisible()); await page.getByTestId('pi-conversation-search-input').fill('无此对话随机标题'); assert.equal(await page.getByTestId(`ai-conversation-session-${liveId}`).count(), 0); await page.getByTestId('pi-conversation-search-input').press('Escape'); await page.getByTestId(`ai-conversation-session-${liveId}`).waitFor(); assert(fs.readFileSync(nativeFile).equals(nativeBytes)); check('Original sidebar renames and filters the real conversation while retaining original native message bytes');
+  liveId = id; nativeFile = path.join(data, 'xiaozhi-pi', query('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?', [liveId])[0].session_file); nativeBytes = fs.readFileSync(nativeFile);
+  await renameHistory(liveId, renamed); await until(() => query('SELECT title FROM ai_conversation_sessions WHERE id=?', [liveId])[0].title === renamed);
+  await navigation().getByTestId('workbench-search').click(); const search = navigationDialog('search'), searchInput = search.getByRole('searchbox'); await searchInput.fill('设置复核'); assert(await search.getByTestId(`workbench-session-${liveId}`).isVisible()); await searchInput.fill('无此对话随机标题'); assert.equal(await search.getByTestId(`workbench-session-${liveId}`).count(), 0); await searchInput.press('Escape'); await search.waitFor({state:'hidden'}); await navigation().getByTestId(`workbench-session-${liveId}`).filter({visible:true}).first().waitFor(); assert(fs.readFileSync(nativeFile).equals(nativeBytes)); check('U2 history manager renames and navigation search filters the real conversation while retaining original native message bytes');
+  } else {
+    liveId = id; nativeFile = path.join(data, 'xiaozhi-pi', query('SELECT session_file FROM xiaozhi_pi_session_bindings WHERE conversation_id=?', [liveId])[0].session_file); nativeBytes = fs.readFileSync(nativeFile);
+  }
   for(const theme of ['light','dark'])for(const size of [[1366,768],[1920,1080]]){
     await page.emulateMedia({colorScheme:theme});await app.evaluate(({BrowserWindow},size)=>BrowserWindow.getAllWindows()[0].setContentSize(...size),size);await page.waitForFunction(([w,h])=>innerWidth===w&&innerHeight===h,size);
-    await page.getByTestId(`ai-conversation-session-${liveId}`).click({button:'right'});await page.getByTestId('ai-conversation-context-archive').click();const dialog=page.getByRole('alertdialog');await dialog.waitFor();
+    await historyAction(liveId, 'archive');const dialog=page.getByRole('alertdialog');await dialog.waitFor();
+    await settleActualWindowTransitions(`archive-entry:${theme}:${size[0]}`);
     await page.waitForFunction(()=>document.activeElement?.getAttribute('data-testid')==='ai-conversation-archive-cancel');
     for(let i=0;i<4;i++){await page.keyboard.press('Tab');assert(await dialog.evaluate(n=>n.contains(document.activeElement)),'Archive modal must trap keyboard focus');}
+    await settleActualWindowTransitions(`archive-focus:${theme}:${size[0]}`);
     for(const locator of [dialog.locator('p'),page.getByTestId('ai-conversation-archive-cancel'),page.getByTestId('ai-conversation-archive-confirm')]){const contrast=await measureTextContrast(locator);report.contrast.push({theme,width:size[0],label:'archive-confirmation',...contrast});assert(contrast.ratio>=4.5);}
     const r=await dialog.boundingBox();assert(r&&r.x>=0&&r.y>=0&&r.x+r.width<=size[0]+1&&r.y+r.height<=size[1]+1);await stableCapture(`archive-dialog-${theme}-${size[0]}`);
-    await page.keyboard.press('Escape');await dialog.waitFor({state:'hidden'});assert.equal(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?',[liveId])[0].archived_at,null);report.viewports.push({theme,width:size[0],height:size[1],surface:'archive-dialog',chrome:await assertWorkspaceChrome(page)});
+    await page.keyboard.press('Escape');await dialog.waitFor({state:'hidden'});assert.equal(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?',[liveId])[0].archived_at,null);await closeHistory();report.viewports.push({theme,width:size[0],height:size[1],surface:'archive-dialog',chrome:await assertWorkspaceChrome(page)});
   }check('Real archive confirmation traps focus and Escape cancels without mutation across native light/dark viewports');
   await page.emulateMedia({colorScheme:'light'});
-  await page.getByTestId(`ai-conversation-session-${liveId}`).click({ button: 'right' }); await page.getByTestId('ai-conversation-context-archive').click(); await page.getByTestId('ai-conversation-archive-cancel').click(); assert.equal(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?', [liveId])[0].archived_at, null);
-  await page.getByTestId(`ai-conversation-session-${liveId}`).click({ button: 'right' }); await page.getByTestId('ai-conversation-context-archive').click(); await page.getByTestId('ai-conversation-archive-confirm').click(); await until(async () => await aiShell().locator('.office-composer-container:visible').getAttribute('data-session-id') !== liveId); id = await aiShell().locator('.office-composer-container:visible').getAttribute('data-session-id'); assert(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?', [liveId])[0].archived_at); check('Actual live conversation archive cancellation preserves history and confirmation creates a fresh conversation from the sidebar');
+  await historyAction(liveId, 'archive'); await page.getByTestId('ai-conversation-archive-cancel').click(); assert.equal(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?', [liveId])[0].archived_at, null); await closeHistory();
+  await historyAction(liveId, 'archive'); await page.getByTestId('ai-conversation-archive-confirm').click(); await until(async () => await aiShell().locator('.office-composer-container:visible').getAttribute('data-session-id') !== liveId); id = await aiShell().locator('.office-composer-container:visible').getAttribute('data-session-id'); assert(query('SELECT archived_at FROM ai_conversation_sessions WHERE id=?', [liveId])[0].archived_at); await closeHistory(); check('Actual live conversation archive cancellation preserves history and confirmation creates a fresh conversation through the U2 history manager');
   await open(); await tab('archives'); await page.getByTestId(`pi-archive-read-${liveId}`).click(); await page.getByTestId('pi-settings-archive-reader').getByText(marker, { exact: true }).waitFor(); assert.equal((await snapshot()).projection.turns.length, 0); assert(fs.readFileSync(nativeFile).equals(nativeBytes));assert.equal(await page.getByTestId('pi-settings-archive-reader').locator('.chat-message--user').first().innerText(),`这是合成办公连接验收。不要调用工具，仅回复“${marker}”。`);check('Archived real selected-skill message uses the same public overlay without editing native history');
-  await page.getByTestId('nav-ai').click(); await close(); await launch(); assert.equal(config(), storedConfig); assert(fs.readFileSync(nativeFile).equals(nativeBytes)); assert.equal(query('SELECT title FROM ai_conversation_sessions WHERE id=?', [liveId])[0].title, renamed); assert.equal((await page.evaluate(() => globalThis.currentSettingsEvents)).filter(e => e.kind === 'tool_start').length, 0); await open(); await tab('archives'); await page.getByTestId(`pi-archive-read-${liveId}`).click(); await page.getByTestId('pi-settings-archive-reader').getByText(marker, { exact: true }).waitFor(); check('Actual archived live reply and teacher title remain readable after cold restart with unchanged native bytes and zero startup tool replay');
+  await page.getByTestId('nav-ai').click(); await close(); await launch(); if (!archiveOnly) assert.equal(config(), storedConfig); assert(fs.readFileSync(nativeFile).equals(nativeBytes)); assert.equal(query('SELECT title FROM ai_conversation_sessions WHERE id=?', [liveId])[0].title, renamed); assert.equal((await page.evaluate(() => globalThis.currentSettingsEvents)).filter(e => e.kind === 'tool_start').length, 0); await open(); await tab('archives'); await page.getByTestId(`pi-archive-read-${liveId}`).click(); await page.getByTestId('pi-settings-archive-reader').getByText(marker, { exact: true }).waitFor(); check('Actual archived live reply and teacher title remain readable after cold restart with unchanged native bytes and zero startup tool replay');
   assert.equal(sha(path.join(working, 'meeting.txt')), sourceHashes[0]); assert.equal(sha(path.join(skillRoot, 'SKILL.md')), sourceHashes[1]); assert.deepEqual(errors, []); check('Source teacher fixtures remain byte-identical and renderer has no runtime exceptions');
   assert.equal(fingerprint(buildRoot).sha256, fixed.sha256); report.success = true;
  }
 } catch (error) { process.exitCode = 1; report.error = safeError(error); await page?.getByTestId('pi-settings-key').fill('').catch(() => {}); await page?.screenshot({ path: path.join(output, 'failure.png') }).catch(() => {}); }
-finally { await close().catch(() => {}); report.requests = requests; report.rendererErrors = errors; if(report.success&&packagesOnly&&(!requests.some(v=>v.kind==='balance'&&v.status===200)||!requests.some(v=>v.model&&v.status===200)||requests.some(v=>!v.credentialMatchesSaved||v.status!==200))){report.success=false;report.error='Actual package credential transport evidence failed';process.exitCode=1;}if (report.success && !packagesOnly && (!requests.some((v,i) => i < report.stoppedRequestOffset && v.status === 200) || requests.some((v,i) => !v.credentialMatchesSaved || (v.status !== 200 && !(i >= report.stoppedRequestOffset && report.stoppedRunId && v.aborted === true))))) { report.success = false; report.error = 'Actual saved credential transport evidence failed'; process.exitCode = 1; } fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify({ success: report.success, checks: report.checks.length, output, error: report.error })); }
+finally { await close().catch(() => {}); if (archiveOnly) { report.noModelRequests = !requests.some(item => item.model || item.kind === 'forbidden-model-request'); if (!report.noModelRequests) { report.success = false; report.error = 'Archive-only model request boundary failed'; process.exitCode = 1; } } report.requests = requests; report.rendererErrors = errors; if(report.success&&packagesOnly&&(!requests.some(v=>v.kind==='balance'&&v.status===200)||!requests.some(v=>v.model&&v.status===200)||requests.some(v=>!v.credentialMatchesSaved||v.status!==200))){report.success=false;report.error='Actual package credential transport evidence failed';process.exitCode=1;}if (report.success && !packagesOnly && !archiveOnly && (!requests.some((v,i) => i < report.stoppedRequestOffset && v.status === 200) || requests.some((v,i) => !v.credentialMatchesSaved || (v.status !== 200 && !(i >= report.stoppedRequestOffset && report.stoppedRunId && v.aborted === true))))) { report.success = false; report.error = 'Actual saved credential transport evidence failed'; process.exitCode = 1; } fs.writeFileSync(path.join(output, 'report.json'), JSON.stringify(report, null, 2)); console.log(JSON.stringify({ success: report.success, checks: report.checks.length, output, error: report.error })); }
