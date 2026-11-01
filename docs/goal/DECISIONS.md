@@ -2,6 +2,10 @@
 
 2026-11-01 C02键盘待处理工程：只为教师显式进入移交焦点，非问题卡无可见输入时停在审阅trigger，不默认选批准。原File通知可能卸载，关闭后按同会话稳定入口返回；不扩大权限、确认层次或Agent循环。完整252验收定义与W3→S/T顺序不变。
 
+## 2026-11-01 结构化题面来源与局部OCR失败
+
+冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。
+
 ## 2026-11-01 后台多块原题归档
 
 沿原MaterialAiRepository双遍执行器和QuestionAssets接入多块归档，复用RapidLayout/PP-DocLayoutV3、PDFium/RapidOCR及question-document.v2多图。page-fragments.v1回执保留；新v2冻结同页OCR块线索，最多32个选块，仅在不框入其他检测块时合并为最多8张图片。原题查看和Office源图读取全部图片；无新DDL、依赖、Agent或IPC。OMNI_EDU_AI_PAGE_FRAGMENTS=0只停止新策略，旧回执仍可读。 两遍归属一致仅作为原题来源的一项证据；失败不修改首稿/终稿，不自动复发结果未知的收费请求。

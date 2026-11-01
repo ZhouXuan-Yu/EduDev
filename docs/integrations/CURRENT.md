@@ -2,6 +2,10 @@
 
 2026-11-01 C02键盘待处理工程：源码f288868，固定构建01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b，主进程/preload与b8e3651基线字节/hash一致，renderer入口较基线+2026B，无新依赖或许可变化。实际Pi6项/240组件/build通过，0付费；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。D保留原05782b4运行与脏文档，等待解锁再核对，不发安装包。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
 
+## 2026-11-01 结构化题面来源与局部OCR失败
+
+冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。
+
 2026-11-01 eb5d8cd正常整合origin/main54bf791为93fb5be，无冲突；两自身生产文件按Git行尾规范化内容一致，整合后build/type/240通过，未重放已有Pi输出。D用户明确接管授权已正常关闭旧PID54720并快进177f882→05782b4重启PID72544，3脏文档hash保留；锁屏停止实际输入，新切片/安装未部署。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice与dailyRefresh。
 
 ## 2026-11-01 后台多块原题归档

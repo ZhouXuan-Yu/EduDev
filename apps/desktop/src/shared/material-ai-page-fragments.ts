@@ -1,14 +1,25 @@
 import {validPageBlocks,type PageBlocks} from './material-page-blocks';
 import type {PageBox} from './material-page-preview';
 import type {PdfLayout} from './material-layout';
+import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
 
 export const MATERIAL_PAGE_FRAGMENTS_PROMPT='page-fragments.v1' as const;
 export const MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT='page-fragments.v2' as const;
-export const pageFragmentsPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENTS_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT=>v===MATERIAL_PAGE_FRAGMENTS_PROMPT||v===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT;
+export const MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT='page-fragments.v3' as const;
+export const pageFragmentTextPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT||v===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT;
+export const pageFragmentsPolicy=(v:unknown):v is typeof MATERIAL_PAGE_FRAGMENTS_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT=>v===MATERIAL_PAGE_FRAGMENTS_PROMPT||pageFragmentTextPolicy(v);
 export const MATERIAL_PAGE_FRAGMENTS_RESPONSE='xiaozhi.material-ai-page-fragments.v1' as const;
 export type BlockTextHint={blockId:string;text:string};
 export type FragmentPageSource={blocks:PageBlocks;blockTexts:BlockTextHint[]};
 export type AiQuestionFragments={number:string;blockIds:string[];complete:boolean};
+/** Comparison-only adapter. The final stem must already match the independently parsed source. */
+export function comparableFragmentQuestion(a:AiImageQuestion,b:AiImageQuestion|undefined,sourceStem:string,policy:unknown):AiImageQuestion{
+ if(policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!b||a.number!==b.number||aiTextSignature(b.stem)!==aiTextSignature(sourceStem)||a.stem===b.stem)return a;
+ const marker=new RegExp('^(?:第'+a.number+'题[ \\t]*[:：]?[ \\t]*|'+a.number+'[.、．](?!\\d)[ \\t]*)').exec(a.stem);
+ if(!marker||aiTextSignature(a.stem.slice(marker[0].length))!==aiTextSignature(b.stem))return a;
+ const projection={...a.projection};for(const key of ['statement','choices','subquestions','tables','formulas','figures'] as const){const left=a.projection[key],right=b.projection[key];if(left.state==='provided'&&right.state==='provided'&&left.text===a.stem&&right.text===b.stem)projection[key]={...left,text:b.stem};}
+ return{...a,stem:b.stem,projection};
+}
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v))&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>{const d=Object.getOwnPropertyDescriptor(v,k);return !!d&&d.enumerable&&'value'in d;});
 const array=(v:unknown,max:number):v is unknown[]=>Array.isArray(v)&&Object.getPrototypeOf(v)===Array.prototype&&v.length<=max&&Reflect.ownKeys(v).length===v.length+1&&Array.from({length:v.length},(_,i)=>Object.getOwnPropertyDescriptor(v,String(i))).every(d=>!!d&&d.enumerable&&'value'in d);
 export function validBlockTexts(v:unknown,page:PageBlocks):v is BlockTextHint[]{return array(v,256)&&v.length===page.blocks.length&&v.every((r,i)=>plain(r,['blockId','text'])&&r.blockId===page.blocks[i].id&&typeof r.text==='string'&&r.text===r.text.trim()&&r.text.length<=2048&&!/[\x00]/.test(r.text))&&new TextEncoder().encode(JSON.stringify(v)).length<=48*1024;}

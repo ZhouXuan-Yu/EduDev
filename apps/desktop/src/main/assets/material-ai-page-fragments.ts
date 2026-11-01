@@ -1,25 +1,28 @@
 import {createHash} from 'node:crypto';
-import {pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
+import {pageFragmentsPolicy,pageFragmentTextPolicy,comparableFragmentQuestion,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,pageFragmentGroups,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
 import {pageTranscriptionAgrees,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
 import {visualQuestionAgrees} from '../../shared/material-ai-page-regions';
 import {aiTextSignature,type AiImageQuestion} from '../../shared/material-ai-image';
 import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument,type QuestionDocument,type QuestionEvidence} from '../../shared/question-document';
 import {QUESTION_PROJECTION_SCHEMA} from '../../shared/question-projection';
 import {checkedPageCropImage,type PageCrop,type PageCropRenderer} from './material-ai-page-crops';
-import {validCropQuality,cropTextComplete,type CropInspector,type CropQuality} from './material-ai-crop-quality';
+import {validCropQuality,cropTextComplete,CROP_OCR_FAILURE_REASONS,type CropInspector,type CropQuality,type CropOcrFailureReason} from './material-ai-crop-quality';
 import {QuestionAssets,type OriginalImage} from './question-assets';
 
 const SCHEMA='xiaozhi.material-ai-fragment-crops.v1';
 const GROUP_SCHEMA='xiaozhi.material-ai-fragment-crops.v2';
+const FAILED_SCHEMA='xiaozhi.material-ai-fragment-crops.failed.v1';
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
 export type PageFragment={blockId:string;blockIds?:string[];image:OriginalImage;quality:CropQuality};
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 export function selectedPageFragments(first:AiPageResponse,prompt?:AiPagePrompt){
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!fragmentsMatchPage(first.fragments,prompt.blocks))throw Error('source_changed');
- return first.fragments.filter(r=>{if(!r.complete||!first.questions.some(q=>q.number===r.number&&q.requiresImage))return false;try{pageFragmentGroups(prompt.blocks,r.blockIds,prompt.policy===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT);return true;}catch{return false;}});
+ return first.fragments.filter(r=>{if(!r.complete||!first.questions.some(q=>q.number===r.number&&q.requiresImage))return false;try{pageFragmentGroups(prompt.blocks,r.blockIds,pageFragmentTextPolicy(prompt.policy));return true;}catch{return false;}});
 }
-export function pageCropStorage(crop:PageCrop){return crop.fragments?.some(f=>f.blockIds)?{
+export function pageCropStorage(crop:PageCrop){return crop.failure?{
+ image:JSON.stringify({schemaVersion:FAILED_SCHEMA,...crop.failure,image:crop.image}),quality:JSON.stringify({schemaVersion:FAILED_SCHEMA,error:crop.failure.error,reason:crop.failure.reason})
+ }:crop.fragments?.some(f=>f.blockIds)?{
  image:JSON.stringify({schemaVersion:GROUP_SCHEMA,fragments:crop.fragments.map(({blockIds,image})=>({blockIds,image}))}),
  quality:JSON.stringify({schemaVersion:GROUP_SCHEMA,fragments:crop.fragments.map(({blockIds,quality})=>({blockIds,quality}))})
  }:crop.fragments?{
@@ -35,7 +38,13 @@ export async function readPageFragments(host:Host,batchId:string,ordinal:number,
   signal.throwIfAborted();const row=rows.find(r=>r.number===region.number);
   if(!row||row.first_sha!==hash(firstRaw)||row.page_image_sha!==imageSha||row.source_json!==JSON.stringify(source)||typeof row.image_json!=='string'||Buffer.byteLength(row.image_json)>65536||typeof row.quality_json!=='string'||Buffer.byteLength(row.quality_json)>128*1024)throw Error('source_changed');
   let images,qualities;try{images=JSON.parse(row.image_json);qualities=JSON.parse(row.quality_json);}catch{throw Error('source_changed');}
-  const grouped=prompt.policy===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT,groups=pageFragmentGroups(prompt.blocks,region.blockIds,grouped),schema=grouped?GROUP_SCHEMA:SCHEMA;
+  const grouped=pageFragmentTextPolicy(prompt.policy),groups=pageFragmentGroups(prompt.blocks,region.blockIds,grouped),schema=grouped?GROUP_SCHEMA:SCHEMA;
+  if(images?.schemaVersion===FAILED_SCHEMA){
+   const group=groups.find(g=>g.blockIds[0]===images.blockId);
+   if(prompt.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!group||!plain(images,['schemaVersion','blockId','error','reason','image'])||typeof images.blockId!=='string'||images.error!=='ocr_failed'||!CROP_OCR_FAILURE_REASONS.includes(images.reason as CropOcrFailureReason)||!plain(qualities,['schemaVersion','error','reason'])||qualities.schemaVersion!==FAILED_SCHEMA||qualities.error!==images.error||qualities.reason!==images.reason)throw Error('source_changed');
+   const image=checkedPageCropImage(images.image as OriginalImage,source,group.box);if(!onlyNumber||region.number===onlyNumber){total+=(await assets.read(image,true,signal)).length;if(total>16*1048576)throw Error('unit_too_large');}
+   result.push({number:region.number,image,failure:{blockId:images.blockId,error:'ocr_failed',reason:images.reason as CropOcrFailureReason}});continue;
+  }
   if(!plain(images,['schemaVersion','fragments'])||images.schemaVersion!==schema||!Array.isArray(images.fragments)||images.fragments.length!==groups.length||!plain(qualities,['schemaVersion','fragments'])||qualities.schemaVersion!==schema||!Array.isArray(qualities.fragments)||qualities.fragments.length!==groups.length)throw Error('source_changed');
   const fragments:PageFragment[]=[];
   for(const [i,group]of groups.entries()){
@@ -51,18 +60,21 @@ export async function preparePageFragments(host:Host,batchId:string,ordinal:numb
  const regions=selectedPageFragments(first,prompt);if(!host.root||!pageFragmentsPolicy(prompt?.policy))throw Error('storage_unavailable');
  if((await host.all('SELECT number FROM material_ai_page_crops WHERE batch_id=? AND ordinal=?',[batchId,ordinal])).length)return readPageFragments(host,batchId,ordinal,source,first,firstRaw,imageSha,signal,undefined,prompt);
  const assets=new QuestionAssets(host.root),result:PageCrop[]=[];let total=0;
- for(const region of regions){const fragments:PageFragment[]=[];
-  for(const group of pageFragmentGroups(prompt.blocks,region.blockIds,prompt.policy===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT)){signal.throwIfAborted();const box=group.box,{dataUrl,...raw}=await render(source,box,signal),image=checkedPageCropImage(raw,source,box),bytes=Buffer.from(dataUrl.split(',')[1]||'','base64');
-   total+=bytes.length;if(total>16*1048576)throw Error('unit_too_large');await assets.put(image,bytes,true,signal);const quality=await inspect(bytes,signal);if(!validCropQuality(quality))throw Error('ocr_failed');fragments.push({blockId:group.blockIds[0],...(prompt.policy===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT?{blockIds:group.blockIds}:{}),image,quality});
+ for(const region of regions){const fragments:PageFragment[]=[];let failed=false;
+  for(const group of pageFragmentGroups(prompt.blocks,region.blockIds,pageFragmentTextPolicy(prompt.policy))){signal.throwIfAborted();const box=group.box,{dataUrl,...raw}=await render(source,box,signal),image=checkedPageCropImage(raw,source,box),bytes=Buffer.from(dataUrl.split(',')[1]||'','base64');
+   total+=bytes.length;if(total>16*1048576)throw Error('unit_too_large');await assets.put(image,bytes,true,signal);let quality:CropQuality;
+   try{quality=await inspect(bytes,signal);}catch(error){signal.throwIfAborted();if(prompt.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!(error instanceof Error)||error.message!=='ocr_failed')throw error;const cause=error.cause instanceof Error?error.cause.message:'unknown',reason=CROP_OCR_FAILURE_REASONS.includes(cause as CropOcrFailureReason)?cause as CropOcrFailureReason:'unknown';result.push({number:region.number,image,failure:{blockId:group.blockIds[0],error:'ocr_failed',reason}});failed=true;break;}
+   if(!validCropQuality(quality))throw Error('ocr_failed');fragments.push({blockId:group.blockIds[0],...(pageFragmentTextPolicy(prompt.policy)?{blockIds:group.blockIds}:{}),image,quality});
   }
+  if(failed)continue;
   const crop={number:region.number,image:fragments[0].image,quality:fragments[0].quality,fragments},stored=pageCropStorage(crop);if(Buffer.byteLength(stored.image)>65536||Buffer.byteLength(stored.quality)>128*1024)throw Error('unit_too_large');result.push(crop);
  }return result;
 }
 export function pageFragmentsAgree(first:AiPageResponse,final:AiPageResponse,number:string,crops:PageCrop[],sourceStem:string,prompt?:AiPagePrompt){
  if(first.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||!pageFragmentsPolicy(prompt?.policy)||!pageTranscriptionAgrees(first,final)||!fragmentsMatchPage(first.fragments,prompt.blocks)||!fragmentsMatchPage(final.fragments,prompt.blocks))return false;
- const a=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
+ const originalA=first.questions.find(q=>q.number===number),b=final.questions.find(q=>q.number===number),a=originalA&&b?comparableFragmentQuestion(originalA,b,sourceStem,prompt.policy):undefined,left=first.fragments.find(r=>r.number===number),right=final.fragments.find(r=>r.number===number),crop=crops.find(c=>c.number===number);
  if(!a||!b||!left?.complete||!right?.complete||JSON.stringify(left.blockIds)!==JSON.stringify(right.blockIds)||!crop?.fragments||JSON.stringify(crop.fragments.flatMap(f=>f.blockIds||[f.blockId]))!==JSON.stringify(left.blockIds)||!visualQuestionAgrees(a,b)||aiTextSignature(sourceStem)!==aiTextSignature(b.stem))return false;
- let groups;try{groups=pageFragmentGroups(prompt.blocks,left.blockIds,prompt.policy===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT);}catch{return false;}
+ let groups;try{groups=pageFragmentGroups(prompt.blocks,left.blockIds,pageFragmentTextPolicy(prompt.policy));}catch{return false;}
  if(groups.length!==crop.fragments.length||crop.fragments.some((f,i)=>!validCropQuality(f.quality)||!f.quality.clearEdges.every(Boolean)||JSON.stringify(f.image.box)!==JSON.stringify(groups[i].box)))return false;
  const quality:CropQuality={...crop.fragments[0].quality,text:crop.fragments.map(f=>f.quality.text).join('\n'),clearEdges:[true,true,true,true]};
  return cropTextComplete(quality,a,first.questions)&&cropTextComplete(quality,b,final.questions)&&[a,b].every(q=>(['choices','subquestions','tables','formulas'] as const).every(k=>q.projection[k].state!=='provided'||aiTextSignature(sourceStem).includes(aiTextSignature(q.projection[k].text))));

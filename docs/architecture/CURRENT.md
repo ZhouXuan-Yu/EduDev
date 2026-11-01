@@ -2,6 +2,10 @@
 
 2026-11-01 C02键盘待处理工程：应用层三文件焦点适配，Pi/main/preload/数据库/事件及Composer/vendor不变。仅显式动作产生focusRequest，原生偏好恢复不请求；关闭RAF限定当前可见会话，文件通知重挂后仍可返回。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
 
+## 2026-11-01 结构化题面来源与局部OCR失败
+
+冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。
+
 2026-11-01 仅OfficeTextSelection与Pi原五类文件身份接缝；沿原私有迁移校验保持历史逻辑身份，执行cwd仍当前目录；选择经原scroll通知/原组件恢复，未改vendor/Composer/Pi循环、IPC/数据真源。源码eb5d8cd，证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
 
 ## 2026-11-01 后台多块原题归档

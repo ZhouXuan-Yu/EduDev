@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_multi_block_archive_implemented_natural_quality_failed",
+  "currentStage": "K0_structured_page_source_integrated_natural_exam_quality_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -3122,6 +3122,602 @@
       "audit": "npm.cmd audit --json",
       "legacyFixture": "node scripts/education/kb-ai-batch-journey.mjs",
       "repository": "git diff --check"
+    }
+  },
+  "structuredPageSource": {
+    "date": "2026-11-01",
+    "baseCommit": "54bf791c09c3a33cc147c23c1116aa45c5a263ed",
+    "goalComplete": false,
+    "policy": "page-fragments.v3",
+    "implementation": [
+      "Comparison-only exact extra parent marker, final body must match independently parsed source; immutable raw model receipts remain unchanged",
+      "Standalone captions require selected original figure_title, same-source OCR or successful separate single-block OCR, and figure projection; conditional or descriptive text cannot be dropped",
+      "Only exact unowned OCR section headings with explicit ordinal, score and next parent boundary leave the ephemeral parser input",
+      "Explicit crop OCR failure is persisted in fragment-crops.failed.v1 with source/first/actual-asset bindings and closed reason; hold that image question while independent text proceeds",
+      "Existing writer/provider/preload/gallery/QuestionDocument/assets reused, no dependency/table/IPC/Agent changes; legacy v1/v2 interpretation retained"
+    ],
+    "checks": {
+      "buildExit": 0,
+      "buildLog": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-final-build.log",
+      "boundaries": 73,
+      "boundariesExit": 0,
+      "boundariesLog": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-final-boundaries2.log",
+      "rendererComponents": 240,
+      "componentsExit": 0,
+      "componentsLog": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-components.log",
+      "componentsScope": "Final renderer SHA equals the component-tested build; latest main merge not yet included",
+      "auditExit": 1,
+      "auditExisting": {
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0
+      },
+      "auditLog": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-audit.json"
+    },
+    "naturalRuns": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-Np8TkD\\report.json",
+        "scriptExit": 1,
+        "scriptSuccess": false,
+        "scope": "Teacher folder import/grant, two-pass DeepSeek, notebook image gallery and cold restart; not full exam quality",
+        "buildSha256": "6f8f4f1a574c71bd70342c70f4d795a5e853631e8193360f56041eab519a49ae",
+        "calls": 11,
+        "units": 6,
+        "candidates": 13,
+        "ready": 0,
+        "review": 13,
+        "failedUnits": 1,
+        "multiImageQuestions": 0,
+        "rendererErrors": [],
+        "fullExamQualityAccepted": false
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-QdAKS3\\report.json",
+        "scriptExit": 1,
+        "scriptSuccess": false,
+        "scope": "Teacher folder import/grant, two-pass DeepSeek, notebook image gallery and cold restart; not full exam quality",
+        "buildSha256": "e7f02f64612bf92d1eb7d8c6933c3251f88b97085bb0274525e33a8eb48f9c9e",
+        "calls": 9,
+        "units": 6,
+        "candidates": 4,
+        "ready": 0,
+        "review": 4,
+        "failedUnits": 3,
+        "multiImageQuestions": 0,
+        "rendererErrors": [],
+        "fullExamQualityAccepted": false
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-bHzthu\\report.json",
+        "scriptExit": 0,
+        "scriptSuccess": true,
+        "scope": "Teacher folder import/grant, two-pass DeepSeek, notebook image gallery and cold restart; not full exam quality",
+        "buildSha256": "0759123191ca1c44cc30677788dca6723610995242557b5a86430a0e46c548bd",
+        "calls": 12,
+        "units": 6,
+        "candidates": 15,
+        "ready": 4,
+        "review": 11,
+        "failedUnits": 0,
+        "multiImageQuestions": 1,
+        "rendererErrors": [],
+        "fullExamQualityAccepted": false
+      }
+    ],
+    "localReplay": {
+      "scope": "Hypothetical v3 comparison of immutable v2 model receipts and actual saved asset hashes only; no canonical writes or calls, not a fresh provider acceptance.",
+      "reports": [
+        {
+          "source": "page-fragments-vGHZZS",
+          "rows": [
+            {
+              "page": 1,
+              "number": "1",
+              "image": false,
+              "before": [],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "2",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "3",
+              "image": false,
+              "before": [],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "4",
+              "image": false,
+              "before": [],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "5",
+              "image": false,
+              "before": [
+                "incomplete_question"
+              ],
+              "after": [
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "6",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "7",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "8",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "9",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "cross_page",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "cross_page",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 3,
+              "number": "1",
+              "image": false,
+              "before": [
+                "cross_page",
+                "incomplete_question",
+                "missing_answer",
+                "missing_analysis",
+                "missing_grade",
+                "ai_mismatch"
+              ],
+              "after": [
+                "cross_page",
+                "incomplete_question",
+                "missing_answer",
+                "missing_analysis",
+                "missing_grade",
+                "ai_mismatch"
+              ]
+            },
+            {
+              "page": 3,
+              "number": "10",
+              "image": true,
+              "before": [
+                "requires_image",
+                "uncertain_ocr",
+                "missing_grade",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "uncertain_ocr",
+                "missing_grade",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 3,
+              "number": "11",
+              "image": true,
+              "before": [
+                "requires_image",
+                "uncertain_ocr",
+                "missing_grade",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "uncertain_ocr",
+                "missing_grade",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 5,
+              "number": "13",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 5,
+              "number": "14",
+              "image": true,
+              "before": [
+                "requires_image",
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 6,
+              "number": "15",
+              "image": true,
+              "before": [
+                "requires_image",
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            }
+          ],
+          "eligibleBefore": 3,
+          "eligibleAfter": 4,
+          "imageAfter": 1,
+          "verifiedAssets": 6
+        },
+        {
+          "source": "page-fragments-Np8TkD",
+          "rows": [
+            {
+              "page": 1,
+              "number": "1",
+              "image": false,
+              "before": [
+                "ai_mismatch"
+              ],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "2",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "3",
+              "image": false,
+              "before": [
+                "ai_mismatch"
+              ],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "4",
+              "image": false,
+              "before": [
+                "ai_mismatch"
+              ],
+              "after": []
+            },
+            {
+              "page": 1,
+              "number": "5",
+              "image": false,
+              "before": [
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "6",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "7",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "8",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 2,
+              "number": "9",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "cross_page",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "cross_page",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 4,
+              "number": "12",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 5,
+              "number": "13",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 5,
+              "number": "14",
+              "image": true,
+              "before": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            },
+            {
+              "page": 6,
+              "number": "15",
+              "image": true,
+              "before": [
+                "requires_image",
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question"
+              ],
+              "after": [
+                "requires_image",
+                "uncertain_ocr",
+                "ai_mismatch",
+                "incomplete_question"
+              ]
+            }
+          ],
+          "eligibleBefore": 0,
+          "eligibleAfter": 4,
+          "imageAfter": 1,
+          "verifiedAssets": 6
+        }
+      ]
+    },
+    "ocrInvestigation": {
+      "files": 646,
+      "bytesReadPerVerification": 279039929,
+      "manifestMismatch": 0,
+      "standaloneSameCrops": 6,
+      "validHostSchema": 6,
+      "probeReport": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-ocr-probes.json",
+      "conclusion": "Actual runtime manifests and six isolated probes passed; original hosted parse_failed cause remains unresolved. No claim that failure localization fixes the engine."
+    },
+    "performance": {
+      "fingerprints": [
+        {
+          "path": "out/main/index.js",
+          "bytes": 3534895,
+          "sha256": "0759123191ca1c44cc30677788dca6723610995242557b5a86430a0e46c548bd"
+        },
+        {
+          "path": "out/preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        {
+          "path": "out/renderer/assets/index-C1pJvoPl.js",
+          "bytes": 7381136,
+          "sha256": "bde76ae9824b3cb54dce9671a2e881786de784d336cd9ef3018de3deb8f37fea"
+        }
+      ],
+      "mainDeltaBytes": 7625,
+      "preloadDeltaBytes": 0,
+      "rendererDeltaBytes": 0,
+      "claim": "Bundle bytes only versus 54bf791; not measured wall-clock, P95, memory, recall or 40GB throughput improvement"
+    },
+    "open": [
+      "11 of 15 natural exam candidates still held; full quality not accepted",
+      "Cross-page parent assembly and per-question source/solution disagreements",
+      "Hosted local OCR parse_failed root cause and explicit local-only recheck/recovery UI",
+      "Repeated whole OCR runtime verification IO under safe component integrity rules",
+      "Known answer matching, online supplementation and Pi whole-paper user path",
+      "Natural 10GB/40GB quality, recall/P95, long-running recovery and managed component/Windows delivery"
+    ],
+    "rollback": "Pause new batches and set OMNI_EDU_AI_PAGE_FRAGMENTS=0; retain v3/negative-receipt readers, all originals, assets and immutable responses; no DDL rollback",
+    "failures": [
+      "Owned v2 11-call and first v3 9-call natural exams retained with zero ready results",
+      "One partial receipt build failed TypeScript before output; explicit bounded runtime validation/casts added, final build passed",
+      "Wrong source probe import path, initial working-directory prefix and preload .js guess were corrected; not counted as successful checks"
+    ],
+    "integration": {
+      "sourceCommit": "1401519",
+      "mergedMain": "b8e365165b401967337c793a4a3b762638164576",
+      "mergeCommit": "f9e8a05ca078a0e16ba54a665c8cafd6dfcf0465",
+      "markdownConflictsResolved": 12,
+      "conflictResolution": "Both additive records retained verbatim; no production code conflicts",
+      "checks": [
+        {
+          "command": "npm.cmd run build",
+          "exitCode": 0,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-build.log"
+        },
+        {
+          "command": "npm.cmd run test:renderer-components",
+          "passed": 240,
+          "total": 240,
+          "exitCode": 0,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-components.log"
+        },
+        {
+          "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+          "passed": 73,
+          "exitCode": 0,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-boundaries.log"
+        },
+        {
+          "command": "node scripts/electron-smoke.mjs",
+          "exitCode": 0,
+          "passed": 207,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-smoke.log",
+          "exitObservation": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-fragments-source-integrated-exit.json",
+          "scope": "Existing isolated legacy education regression; not current Pi natural provider or full exam quality acceptance. Screenshot directory is shared with a concurrent collaborator smoke; do not use overwritten screenshots as uniquely attributable evidence."
+        }
+      ],
+      "fingerprints": [
+        {
+          "path": "out/main/index.js",
+          "bytes": 3534895,
+          "sha256": "a568690ba9b0a1d1a49698e13b35f173d51427c1e1980ce7e078e0edd52daae2"
+        },
+        {
+          "path": "out/preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        {
+          "path": "out/renderer/assets/index-DSuxmw3r.js",
+          "bytes": 7383041,
+          "sha256": "b27f769b20e5da0e26ea92ba0ff856aaf57e45f19d046db021f4486f5a06ed55"
+        }
+      ],
+      "mainDeltaFromOwnTestBytes": 0,
+      "preloadDeltaFromOwnTestBytes": 0,
+      "rendererDeltaFromOwnTestBytes": 1905,
+      "attribution": "Integration contains collaborator Pi historical workspace and OfficeTextSelection changes. KB production source matches the final 12-call natural run; that run was before integration. No final integrated natural provider rerun or 40GB/P95 claim.",
+      "dailyRuntimeUpdated": false,
+      "installerUpdated": false
     }
   }
 }
