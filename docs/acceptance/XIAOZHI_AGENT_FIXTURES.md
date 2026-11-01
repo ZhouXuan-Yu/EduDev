@@ -1,5 +1,7 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-01 FX09 UI子样本冻结：fx09-complex-stream.v1，hash 26768810795d9553c3b4ab6c0d06f96e2050b2b7ef39b4ef9fb283dd8ea8bd22，50段/10公式/100行表格/2中文代码及原UI生成10轮历史；生成期间30输入/45滚动。原Pi本地合成传输，消息/journal/冷启正文hash相等，原CPU/RSS/长任务/环境样本归档。geometry-restart.v1 hash a7747b8cdae6bf1d5c7d3a6b37467dbc2803cf7e954a6e2fdadba7c464810e8f（390/480/800、立即退出/最大化、实际双屏100%/150%与模拟断屏）。仅支持AT-C02-01/02/04本地控制条款；FX09完整Office/WPS材料、弹层/多缩放/IME/其他交互不缩减，AT03因前台拒绝保持未通过。详docs/research/AGENT_INTERACTION_C02_20261101.json。
+
 2026-11-01 FX07/FX10工程补充：沿原合成Pi浮力HTML/PPT做真实设置备份（16文件）→新实例→激活→实际交互/PPT/版本→冷启→返回。相同副本续测，不为定位错误重建。独立168事件、4 native绑定、1 native文件和2成果一致；源码夹具非空检查报告保留另测，UI检查表0不算非空。ENOSPC仅注入复制错误，DPR1.5双尺寸，不代替真实磁盘满/100%缩放/原生自动重启及完整FX07 A/B与FX10。原集合和判定不改，详docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
 
 2026-11-01 FX01/FX07/FX10补充工程夹具：html-versions-electron --checks以真实原Pi生成4N、局部5N、历史另存恢复及原本机检查验证精确版本回执；实际外改/删除保留诊断但失效，最终构建冷启3双尺寸DPR1.5、0模型重放/文件重写。原数据库9含>12旧回执定位及取消64有界；受控receipt不冒充真实检查。完整FX题目、A/B会话、备份及故障集合不变；详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。

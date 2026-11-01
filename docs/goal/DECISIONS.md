@@ -1,5 +1,9 @@
 # Goal 决策记录
 
+2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。
+
+2026-11-01 C02约定：原host最小宽与窗口偏好须共用常量；可选geometry既处理窗口close，也在app before-quit同步保存，因为原退出drain会destroy窗口。分数DPI只按实际测量做最多两次小幅修正，不能放宽精确冷启断言掩盖逐次漂移。OS前台条件拒绝不能换成setBounds/HTCAPTION宣布拖动通过；日常目录有其他任务活跃进程时保留现场。固定测试构建通过OMNI_EDU_TEST_BUILD_ROOT或专项build参数选择。 当前复杂控制样本未复现严重卡顿，故本轮不改projection/阅读锚点或历史memo来追求数字。
+
 ## 2026-11-01 复用本地布局辅助图题取图
 
 复用现有本地layout和缓存，禁止新建OCR/Agent真源。新普通PDF使用page-regions.v3，旧首稿按旧政策恢复。只有来源与原图hash一致、区域与冻结候选一致才取图；交错图注/多栏/错号保守拒绝，答案差异保持待核。回滚先暂停v3批次、设OMNI_EDU_AI_PAGE_REGIONS=0停用新区域生产，保留v3读适配及原证据。

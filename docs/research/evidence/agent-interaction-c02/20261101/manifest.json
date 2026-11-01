@@ -1,0 +1,399 @@
+{
+  "schema": "xiaozhi.evidence-files.v1",
+  "date": "2026-11-01",
+  "scope": "Only isolated synthetic data and test/build/audit metadata; original root paths are in the archived reports.",
+  "files": [
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/audit.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 57044,
+      "rawSha256": "851cd617ba3063116f07792e9b62e0ed64c1257ba0ec731490f23318db0ef46b",
+      "storedBytes": 6483,
+      "storedSha256": "bd4676730257d0d69611fc89121e85a8634c1287b733dba897c6a17a3c5406f0"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/baseline-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "761554b253f6a877255ac416b825f4466e4dcbbb4860748ca41a2146215a755e",
+      "storedBytes": 27540,
+      "storedSha256": "323244c6db4f2f79d63f8e8560526fa79ddd830f02b7460c7d5e0a51d0a9628d"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/baseline-first.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 1003,
+      "rawSha256": "8302cd824c8bd03c0245a592f18e8051e2d7fc1f8981edda9887b3b71c8afc7e",
+      "storedBytes": 457,
+      "storedSha256": "1300ca2c49d53b8d257cb780fedf609aa6e069e514a3916ff18ee16ed13fc904"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/baseline-harness-failure.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 1133,
+      "rawSha256": "3d7ae5f6a91b174f28fa6c3b7bad82223686cfd9a69b7b97ddf28816e1c5bc67",
+      "storedBytes": 635,
+      "storedSha256": "9eaf83af5c437aa291f4bc6c8b832991540e9662dcede5b35bc824ed544e682c"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/baseline-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 53500,
+      "rawSha256": "3e1758b591bfff2715230dd404d7a6268eccf6862d8d5da770ba6910c8d3dc66",
+      "storedBytes": 6866,
+      "storedSha256": "0dc6542687941d9ff11a61d844965b7b3760c0496611d10e2975c1a000cfa586"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/baseline.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 756,
+      "rawSha256": "6a471821737b5e88b9c693f995ad6ade0ad13b05272f6bd43de466f319ce5718",
+      "storedBytes": 501,
+      "storedSha256": "bd9ac7feffeb196dc2ba50057570c99ff529ad9cf649c9c7350d48a44675059b"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/build.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 40559,
+      "rawSha256": "ad71b2d5f37e3cf49aff4d03658210234dbeba54b31b79db2a0bfd42ebf6a9bc",
+      "storedBytes": 8109,
+      "storedSha256": "0172fe1e1d0e9196eefe267183f20de2b594e403e9f9ea6f75b722c43405fb3e"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/complex-complete.png",
+      "encoding": "raw",
+      "rawBytes": 174062,
+      "rawSha256": "864d9a53ca11ae6f3f4041ae75c52782b552ce8f66d236694f43d110f07c7d53",
+      "storedBytes": 174062,
+      "storedSha256": "864d9a53ca11ae6f3f4041ae75c52782b552ce8f66d236694f43d110f07c7d53"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/complex-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "1b4ba24efea934fb6b8aec066e39ffe7d11407e844fa9a2280bc8adbba1c2c61",
+      "storedBytes": 27544,
+      "storedSha256": "8d794b5c58638e3e2407b167675aec1611d74fa41e6684378a39779a7012622e"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/components.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "storedBytes": 280,
+      "storedSha256": "93388790a1d5110a96990b5de3ec09da644cc218431729072ee09dc66ca2d6dd"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/daily-before.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 752,
+      "rawSha256": "755888acdaa59cf614814c92807bd929c38251e121c846b2e0a71164cc7e09ed",
+      "storedBytes": 476,
+      "storedSha256": "5e87fc2943150cee40289edb46e3c03699de1c68ceda9324349958fbb0f06e81"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/daily-dirty-files-preserved.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 569,
+      "rawSha256": "1573ec69387ced4f4f45ffd2a2243e92bddf9d41d43583532356348be6c0e3af",
+      "storedBytes": 342,
+      "storedSha256": "b287a16ab9948acc9a488a1604f98ecaf0047d4002a1bf0e08a6f6f3b8627e7b"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/daily-runtime.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 2658,
+      "rawSha256": "4e62b1386efc6555d78ac5546784b410d0ecc2af555bd85be29bfc392df87b78",
+      "storedBytes": 1326,
+      "storedSha256": "e9917eda7301025c9190584db78e49d65fd49d2d37de8b81e7f2c761a432decd"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/daily-start.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 39067,
+      "rawSha256": "ef61eaa5882b37406e1d3f1bac8dfe25722cb9cdd46933ec4d1a6ec5fe9b166c",
+      "storedBytes": 8289,
+      "storedSha256": "56e09e2b6e73144e5f7eafa1d62b527c92d5aac7371e4e333a5646bd66d585c2"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/dpi-build.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 40558,
+      "rawSha256": "0fba3424e2c293c1d3cfdab596882333597b2e61db97bfd11161bae3839a18e5",
+      "storedBytes": 8107,
+      "storedSha256": "99925ba3c21eec49ffcbdd2b6e3d93b7e34772efca683d5dda3b4b77870be10b"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/dpi-readback.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 592,
+      "rawSha256": "8ed1d4653d9d75fd481e4801f9763fc6ac2b377c11a186c1c01d343d8dc99a4d",
+      "storedBytes": 425,
+      "storedSha256": "5e43d1272a8a3b3ba92e9acfbbfeb52c430b1c7ff2870e61018e9c3e1dedf2e5"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/environment.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 1484,
+      "rawSha256": "edc6aa1a569181769195a63348aac9fb10ff4ea50fdb0e4c8f8c973b987ab982",
+      "storedBytes": 572,
+      "storedSha256": "a94d51c0f3fcc0d2f356c2ef0bf6aacf0a1c0a79d2a134489fab34a78d7252ac"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/final-complex.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 767,
+      "rawSha256": "7b100fe2f59bcbd6791fdc865b497c732943136ad93b5d94f5fe2e854f9ca435",
+      "storedBytes": 508,
+      "storedSha256": "86c32b3b6ea1352ddccb74c723dd0cac7f4c7881aaed2e83d0f6fad48fec7f52"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/final-readback.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 592,
+      "rawSha256": "0824f7ad60cf5f68b532e37d35e01779c95674334307e1cbaf23f89db5563341",
+      "storedBytes": 426,
+      "storedSha256": "e5f2bcdc476e93420703f1745cbcb589f4ca7b7677704538f52fdff8cf08794c"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/final-smoke.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 171,
+      "rawSha256": "8893dbfafb0355227c821bda7eeb3293d41bee7677cf1f8110c72c0ed11cad17",
+      "storedBytes": 152,
+      "storedSha256": "de379a0209428360bed68102d53d534a964c0e020fefe2c3e192f38d552a6955"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/finalComplex-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 56340,
+      "rawSha256": "b429cde5e7fd31e8bf228d638087f87a2e8ea7c04c7eb9f3ffbd89c10751da40",
+      "storedBytes": 6988,
+      "storedSha256": "95af7c862e2719b80485204d164fab143d7ed6cb4f5cae4c85380b15d4fcce40"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometry-before.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 1474,
+      "rawSha256": "83b16075344fd0abe9caf0947508f483e5495acd8fd8d4c5ff2d44b1517db475",
+      "storedBytes": 702,
+      "storedSha256": "a6bf18931c5708d5a5153f1c6a412de4dc83de1767ca90133e62c95456eb7feb"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometry-dpi-ui.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 739,
+      "rawSha256": "5e83bb56dd6680973b8e6877e01933dd4aacdd300d0b4948b1b7315c0d7c9466",
+      "storedBytes": 367,
+      "storedSha256": "5d954da6fd4cfebd33e085a7dcb2308f77cf72ccb6a236c9b5181c2d7d1b75db"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometry-quit-ui.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 764,
+      "rawSha256": "f502974df19af61657ec2443f880b8c4edb52ee1180e0b03ff7967de35789db4",
+      "storedBytes": 388,
+      "storedSha256": "8e7bb2a69d7d741962672e05a1cce4c8007738d8e138ce9f7c473a28c7b778e3"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometry-source.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 952,
+      "rawSha256": "bdb3ea3c9ad4771b208d62b82eff7c178a78438ce93587ab24aed900cb54a798",
+      "storedBytes": 506,
+      "storedSha256": "b58215aa1c2fa3cfa08f21dc4ceb100bdd523beed3d0bc2f42b7870489b46c0a"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometry-ui.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 864,
+      "rawSha256": "d882ed7313c10e431d4585a4373ba0d9a215ac1e47817e9b1cf94a4e6d34567c",
+      "storedBytes": 358,
+      "storedSha256": "cad504d99ac018aebd796e9eb3d9ec4eaa2057faefa4076b8530d64098e271b6"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometryDpi-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "aab75904d06cdf3b5e392707769fa9f4d9ce3d2cd5f1cd8bb8f436d84ae756bb",
+      "storedBytes": 27545,
+      "storedSha256": "612bb0b972bc931d785b14ca50acf64dd0667958160c6ae906293369c3ecb998"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometryDpiFailure-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 1633,
+      "rawSha256": "7a44135a7ba928d9b0887be42a9e2e3c039753387897b989dd76871e86a35c32",
+      "storedBytes": 709,
+      "storedSha256": "9951b8d482d5021457525d398bfa0898a6d4123f15e6eefdda7e78124a9582c5"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometryDpiFix-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 6659,
+      "rawSha256": "11c7bbd20f3d148c73f2aafad8cc2520cc55e2159a5e0a506c94a479d1d6523c",
+      "storedBytes": 1017,
+      "storedSha256": "8a46d6c24bb5aabb94f4936f828104bdcae527c9f4df3b8f37b5c5ed12cb3d5e"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometryIntegration-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 10002,
+      "rawSha256": "9d10a8d6c0cba1ca2c4fff3ff2c54c6b6ef49d9315d91e373d5ff1d628043815",
+      "storedBytes": 1482,
+      "storedSha256": "eb9d3071176fb1077cec0dac5951834fda858412cc44b9a9ce8a1cc0c7caafe4"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/geometryMissingQuit-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 1333,
+      "rawSha256": "e1da55130f5cb39e0c18c317bd0a8890e886cb1ceb4a76e553265577158510e4",
+      "storedBytes": 673,
+      "storedSha256": "11510368378ff1475b414360498ca5958d6cd2a09666c6efbe00069d117e3b67"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/integrate.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 2017,
+      "rawSha256": "e1d38d870af3f7bc0222bb7caa0cb1b0e8e7fa43e1be08df5ff367ed15fac70a",
+      "storedBytes": 654,
+      "storedSha256": "a79bd877a92188af7036e5eb05a2a681aa51dc6a9ba6107924da5c7e07cbf5b8"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/integrated-geometry.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 859,
+      "rawSha256": "c4a66389a3558312af1e8552ddcbc29872c05508efc126f13d851be1ee120b4e",
+      "storedBytes": 417,
+      "storedSha256": "f9076e00b7c9a1d4768cde5660bcac8bb1d106101b60335dcd44f5c056d313f0"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/integrated-readback-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 1365,
+      "rawSha256": "a9c27f49973bf037515a80e9eb0d1f9b49769fb02300435fa1add31fc8f9340c",
+      "storedBytes": 712,
+      "storedSha256": "1c05943d2fa4aa71ce9bd9f7465633fcd249cca289aa1aaadf2da12347c8aac5"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/integrated-readback.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 592,
+      "rawSha256": "9a95668dadd5985efeac18d4543b614b0197716e1845595bcac8e5f5e44f285a",
+      "storedBytes": 426,
+      "storedSha256": "6ddee18fcca53bead12ab26a211e89b13bacf01eaf8c224ab48e39456f6c8e2f"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/integration-build.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 40558,
+      "rawSha256": "157d98f5513f298325bc7189d880a95dbbe9497e3ef303c66b90a45bf41eb795",
+      "storedBytes": 8107,
+      "storedSha256": "d8a099d726b32f939c8ce029588b4d2de0be80a34840030422ba75f817d213da"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/integration-components.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "storedBytes": 280,
+      "storedSha256": "93388790a1d5110a96990b5de3ec09da644cc218431729072ee09dc66ca2d6dd"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/integration-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "63039fd473ab644f79a1acffd673dfb3afabff86118e4f20e5c2e885168efc3c",
+      "storedBytes": 27537,
+      "storedSha256": "f87c0a38964da4275456b6d6cd2afd605f9168af4cf36147ccb952490d0b59c5"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/pinned-smoke.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 13983,
+      "rawSha256": "16d29febded90506cc6f7ffcc1d9ff1de5dee47d77b184cb53131f854bf3fec7",
+      "storedBytes": 2629,
+      "storedSha256": "770129161d7c1437f17da93711c04396e9d722d5ac1f9ac2fad2ed69744d8d7e"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/quit-build.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 40558,
+      "rawSha256": "e4ec55a5c761a398459138f44ef06d3d1af9db7db55d691f3a9d35aae296a88e",
+      "storedBytes": 8107,
+      "storedSha256": "38faf55477460249e4c1f96a22f7434ab9f644fbab6439fab3881b7dbddd1565"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/recovery-native-final.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 3992,
+      "rawSha256": "402f2cc54fc1c926b1f4ebc863c211ed16d353d8e0caf0150658bccefca39ecd",
+      "storedBytes": 1030,
+      "storedSha256": "a0fac50f01f997e02fb2afd3dc49d0eeded025cc8ddded3f1c8208a3bfd4f830"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/recovery-native-first-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 2460,
+      "rawSha256": "1f7763697f5c47925c6eef7db983722c77014776fb7fa65062bb0c3d3be4e639",
+      "storedBytes": 1188,
+      "storedSha256": "c157fdfdce4724a2a09d38393aa7315a29a90f8406db43d2c59a5b4d02476f73"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/recovery-native-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 2697,
+      "rawSha256": "ead981fca77d5e188df7e5fba011a206bd25263ef9cbd5a0fe545fb4f5d02ca6",
+      "storedBytes": 1245,
+      "storedSha256": "f02ebf0981e438695522676cb318c44133f27788fb74493310e5341d8aab8945"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/recovery-native-retry.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 3761,
+      "rawSha256": "0155fc7c9f6f385245726f3cc5f782093066c38caaf4b85082e5c638e9f7c421",
+      "storedBytes": 993,
+      "storedSha256": "0b4aefb39aa0a2fcfcc56011c15029c05085348bb8abebb381275acc51a3225e"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/recovery-native-second-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 2618,
+      "rawSha256": "e5e50f3f9c53e0880916d24d2e28d794b6c1500d826e4a69d3ec13e4f1ba7d54",
+      "storedBytes": 1212,
+      "storedSha256": "133806a6bd43cdf0d6066f5550b07d62d14410cc869c81995ff7761203efba3c"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/recovery-native.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 3299,
+      "rawSha256": "bffad127e40f106e0349883c7248bfe9490e469d190daed930ddd749db20db64",
+      "storedBytes": 948,
+      "storedSha256": "2a899cd68be91e390c8eab51b7cd7ada9ae31fe470fc9ba18e886db8ccd435bf"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/smoke-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "b155e04f140b2f273a69697be2454eb2d07bdbd0ade8325bff8517f08f33c284",
+      "storedBytes": 27548,
+      "storedSha256": "0533f5b4672bc0799ade62919dc0404e835ccce3b8b9b37bae2b378dd3e83375"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/visible-geometry-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 11125,
+      "rawSha256": "6fc86f0c0fb500cba517a1850718b4ed7c50fdb46bcad8ca9b595084c22957e0",
+      "storedBytes": 1552,
+      "storedSha256": "7d077c5ca9b59a7d54e6dc90c2f0f9d27a38693f909692e7d263959a91fd3a52"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/visible-geometry.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 859,
+      "rawSha256": "3b36f90aa6c98ce30258632ab5db47e67d445e2f47842f5f9a0afe48c106d77c",
+      "storedBytes": 415,
+      "storedSha256": "fabfdd7a0d189f1031f21995e9440ca8f20c4c27409881d8bce43e36175dc482"
+    }
+  ]
+}

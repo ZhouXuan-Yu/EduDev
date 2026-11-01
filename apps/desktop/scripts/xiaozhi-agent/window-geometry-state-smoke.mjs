@@ -21,7 +21,13 @@ const check=(name,action)=>{action();passed++;console.log(`PASS ${name}`);};
 check('Known finite schema admits normal bounds including negative monitor coordinates',()=>assert.equal(JSON.stringify(parse(valid)),JSON.stringify(valid)));
 check('Unknown schema or extra metadata never restores a geometry',()=>{for(const value of [null,[],{...valid,version:2},{...valid,credential:'synthetic'},{...valid,maximized:1}])assert.equal(parse(value),undefined);});
 check('Malformed dimensions and coordinates are rejected at the local file boundary',()=>{for(const key of ['x','y','width','height'])for(const value of [NaN,Infinity,2**53,1000001,'1200',1.5])assert.equal(parse({...valid,[key]:value}),undefined);});
-check('Dimensions below the established desktop minimum are rejected',()=>{assert.equal(parse({...valid,width:1099}),undefined);assert.equal(parse({...valid,height:719}),undefined);});
+check('Dimensions below the current responsive host minimum are rejected',()=>{assert.equal(parse({...valid,width:389}),undefined);assert.equal(parse({...valid,height:719}),undefined);});
+check('Narrow normal windows retain their size and position in the unchanged v1 format',()=>{
+  for(const width of [390,480,800,1099]){
+    const state={...valid,width};assert.equal(JSON.stringify(parse(state)),JSON.stringify(state));
+    assert.equal(JSON.stringify(resolve(parse(state),area)),JSON.stringify({width,height:760,maximized:false,x:-1500,y:10}));
+  }
+});
 check('A connected negative-coordinate monitor keeps a valid saved position and normal size',()=>assert.equal(JSON.stringify(resolve(parse(valid),area)),JSON.stringify({width:1280,height:760,maximized:false,x:-1500,y:10})));
 check('Absent state centers original defaults in the chosen work area',()=>assert.equal(JSON.stringify(resolve(undefined,area)),JSON.stringify({width:1360,height:900,maximized:false,x:-1640,y:70})));
 check('Missing monitor and oversized saved bounds stay inside the current available work area',()=>{
@@ -29,6 +35,9 @@ check('Missing monitor and oversized saved bounds stay inside the current availa
   assert.equal(JSON.stringify(result),JSON.stringify({width:1920,height:1040,maximized:true,x:-1920,y:0}));
 });
 check('Small work area preserves host minimum with the native titlebar reachable',()=>{
-  const result=resolve(undefined,{x:20,y:30,width:1024,height:600});assert.equal(result.x,20);assert.equal(result.y,30);assert.equal(result.width,1100);assert.equal(result.height,720);
+  const result=resolve(undefined,{x:20,y:30,width:1024,height:600});assert.equal(result.x,20);assert.equal(result.y,30);assert.equal(result.width,1024);assert.equal(result.height,720);
 });
-console.log(JSON.stringify({success:true,passed,total:8,boundary:'Pure schema/display arithmetic; actual OS behavior requires the native Electron instance suite'}));
+check('A work area narrower than the host minimum keeps the titlebar on screen',()=>{
+  const result=resolve(parse({...valid,width:480}),{x:20,y:30,width:300,height:800});assert.equal(result.x,20);assert.equal(result.y,30);assert.equal(result.width,390);
+});
+console.log(JSON.stringify({success:true,passed,total:10,boundary:'Pure schema/display arithmetic; actual OS behavior requires the native Electron instance suite'}));
