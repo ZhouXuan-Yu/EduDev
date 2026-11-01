@@ -1019,5 +1019,169 @@
       "Root UI V2 design and collaborators production changes retained, including ChatSources citation reveal/focus."
     ],
     "rollback": "Revert own 7a2d782 source additions and remove shared source call sites while retaining merged collaborators ChatSources behavior. No schema migration; preserve all original SQLite/files/history. Full rollback not exercised."
+  },
+  "bundleCatalogSlice": {
+    "date": "2026-11-01",
+    "sourceSha": "a73b389f5f0a58ab35d2856baebb22c4d8dc35ed",
+    "integrationSha": "9a49e4e5b37300e6eb560e29ef4556418f10df3b",
+    "goal": "active",
+    "status": "engineering implemented; full FX10 and AT-E08-07 pending centralized acceptance",
+    "implemented": [
+      "Teaching Files bundle task tab from original 12-item paged metadata; selection hydrates only chosen child facts",
+      "Original partial/file states and independently openable saved HTML",
+      "Bound original Pi resume, command hash identity, successful files carried and reconfirm only unfinished",
+      "Original/continuation records preserved with actual state; follow successor rather than retry obsolete parent",
+      "No new tables, dependencies or runtime; explicit refresh only, zero token-stream subscriptions"
+    ],
+    "tests": [
+      {
+        "command": "npm run build",
+        "exit": 0,
+        "typecheck": true
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+        "exit": 0,
+        "passed": 8,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-bCFKJ3"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/delivery-bundle-electron.mjs --partial --catalog",
+        "exit": 0,
+        "passed": 10,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-cqQiNm"
+      },
+      {
+        "command": "npm audit --json",
+        "exit": 1,
+        "existingVulnerabilities": {
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "critical": 0,
+          "total": 45
+        },
+        "dependencyChanges": 0
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0
+      }
+    ],
+    "realProviderRequests": 0,
+    "coldModelReplay": 0,
+    "rendererErrors": [],
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ],
+    "buildFingerprints": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3431228,
+        "sha256": "744902f1c89d9dc43b953aff1fc489b3c697030913c160a359ac8f4c43a7e997",
+        "deltaFrom26fcbf4": 4418
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 35885,
+        "sha256": "2dbb9ed55bc535c2755c5dbfca5fe0d1b3c4741f973172dc41dd1b84228452b1",
+        "deltaFrom26fcbf4": 94
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-BXDeccBL.js",
+        "bytes": 7360250,
+        "sha256": "691c9f1d7e1a833a9961c69d96cfdc2a1ddb624c1e8428bbb18f897ee6a36163",
+        "deltaFrom26fcbf4": 9061
+      }
+    ],
+    "rawLogs": [
+      {
+        "file": "xiaozhi-delivery-catalog-build.log.gz",
+        "rawBytes": 40558,
+        "rawSha256": "b51727a002e40967723e116c211e17d7b32b27a67d009b47106429719c1a875c"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-build-final.log.gz",
+        "rawBytes": 40558,
+        "rawSha256": "2caece97eec1ed65804326822f617bc5dc0acb1664d91d1307b1df3482188cde"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-components.log.gz",
+        "rawBytes": 496,
+        "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-initial.log.gz",
+        "rawBytes": 1435,
+        "rawSha256": "283c17016315d71b9d36689b0488277628c42ca385c1e1b80273b545231956c0"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-transaction-fixture.log.gz",
+        "rawBytes": 1532,
+        "rawSha256": "e2523f2ebd3d9c5595f5cd5a47ab44bbae1017f8882c0ee28fad2138e80ebdc8"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-final.log.gz",
+        "rawBytes": 1133,
+        "rawSha256": "876d0a3b8070da50d699d7a3ba7c9eab437b830b400a66c67af2e09f117ce40c"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-idempotency.log.gz",
+        "rawBytes": 1133,
+        "rawSha256": "556171642f2c50800a70a9c5bde0bba9a1be6e982a07c3935304b491ebc68bc6"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-ui-initial.log.gz",
+        "rawBytes": 913,
+        "rawSha256": "f9058da9a6aadef9f412ee64a03502c7c489ba80940913ef7ab0f5fb0dc5b28e"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-ui-before-idempotency.log.gz",
+        "rawBytes": 1318,
+        "rawSha256": "d4b3faf3f52d806eaa710bffc4253bf4ee747b081d5be83cca5b80d10990f75f"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-ui-final.log.gz",
+        "rawBytes": 1472,
+        "rawSha256": "8b4acc9ee46e6a0e75f0503893f74b50afcbd5bb71e3e93fed467a235026d734"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-audit.json.gz",
+        "rawBytes": 59019,
+        "rawSha256": "7184f772839df89474377c0f4d3448d0481b734f5b8558683666381398f0da77"
+      }
+    ],
+    "evidence": "docs/research/evidence/agent-delivery-e08/bundle-catalog",
+    "performance": "Previous 26fcbf4 -> current main +4418 B, preload +94 B, renderer +9061 B. List performs metadata SQL only; original child hydration occurs only when selected. No streaming event listener/polling. No latency/P95/answer-quality claim.",
+    "failuresPreserved": [
+      "Initial Node source invocation loaded transitive extensionless imports before hooks: use explicit --import at startup",
+      "Original source fixture lacked transaction required by merged classroom-plan state: added real SQLite transaction",
+      "UI fixture expected filename text inside HTML frame: now verifies actual rendered 排液体积 control"
+    ],
+    "notAccepted": [
+      "Full original FX10 fault collection/252 AT",
+      "Natural teaching/provider quality",
+      "Native Office/WPS and installer",
+      "D daily runtime update",
+      "Existing mastery_quiz/L2 comprehensive failures not rerun"
+    ],
+    "rollback": "Revert this thin catalog/optional start field; retain original SQLite/file ledgers. No migrations or data deletion."
   }
 }

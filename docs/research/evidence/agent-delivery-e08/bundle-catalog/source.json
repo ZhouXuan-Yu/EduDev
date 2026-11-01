@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "checks": [
+    "One review covers both files; teacher PPT edit invalidates old approval and saves exact revised notes",
+    "Aggregate independent verification binds every disk file; corruption invalidates the whole bundle",
+    "Rejecting the whole bundle creates neither file",
+    "PPT failure preserves HTML; new-run resume carries HTML without rewriting and reconfirms only the unfinished file",
+    "Task requirement change invalidates bundle; cancellation and cold restart never revive approvals",
+    "A post-write uncertain PPT is verified and carried after restart; neither saved file is written twice",
+    "Compatibility pause blocks new and already-approved automatic writes, while saved drafts and uncertain verification remain readable",
+    "Teaching catalog pages original grouping metadata only; selected facts, ownership, archive and successor remain truthful"
+  ],
+  "boundary": "Synthetic fixtures, actual original file/Office services, SQLite, disk, independent aggregate readback. No paid model, natural quality or full AT acceptance."
+}

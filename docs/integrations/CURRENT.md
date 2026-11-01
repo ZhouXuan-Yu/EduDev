@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 E08复用PiDeliveryBundleCard、原coordinator/text/Office服务及ResourceTable；目录只读，待确认编辑回原对话，已保存文件直接原预览。a73b389整合原型docs主线为9a49e4e，生产源码相同；build/type、240组件、SQLite8及正式Electron10通过，见bundleCatalogSlice；0付费，D未更新。
+
 2026-11-01 E08复用原Question/Material/LocalAnswerSource/Student/Web/File控件及Pi，0新依赖；原ledger/journal按32项投影来源。7a2d782整合bfaa6ae为bfb0691后build/type、240组件及正式Pi8通过；领域3仅契约输入，不冒充原页/FX05验收，见artifactSourcesSlice。
 
 ## 2026-11-01 整份试卷质量漏斗与共性修复
