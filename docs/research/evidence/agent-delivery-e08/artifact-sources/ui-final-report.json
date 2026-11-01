@@ -1,0 +1,67 @@
+{
+  "ok": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-artifact-source-ui-2ceksC",
+  "checks": [
+    "Formal Pi actually reads local source, confirms and saves both files; HTML source control opens exact original lines with read-versus-citation wording",
+    "Saved Office source tab separates original bound file and observed read; same existing file panel previews the exact cited version",
+    "Selected historical version opens its own original source association through the shared control",
+    "After source modification both original line link and declared file preview refuse replacement; refresh and tree reselect keep the citation version lock",
+    "Missing source keeps its original association and explicit unavailable state",
+    "Teaching Files current artifact exposes its original source without opening a chat or issuing a model request",
+    "Source controls remain reachable without document overflow at both native viewport sizes",
+    "Cold source/catalog readback preserves original associations and actual output bytes, zero model replay and renderer errors"
+  ],
+  "errors": [],
+  "boundary": "Formal Pi/composer -> actual file read -> bundle approval -> original chat/catalog/history source controls -> changed/missing -> cold readback, synthetic SSE only. Not natural-model quality or FX05/manual REVIEW/full 252 AT.",
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1.5,
+      "scrollWidth": 1366
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "dpr": 1.5,
+      "scrollWidth": 1920
+    }
+  ],
+  "sessionId": "aisession_648dc0ae-903d-486d-8925-e4796aa9a814",
+  "artifacts": {
+    "html": {
+      "schemaVersion": "xiaozhi.change.v1",
+      "id": "xichange_a4cc8c67-aa82-4e5d-bfc1-1ffc8646c506",
+      "runId": "run_625a94d2-55d3-4512-b3ab-25f5a435ed44",
+      "callId": "delivery_8ce893ea3998806912c1313a9ad52702c4782787b301388cc5053c9bf9d30ba3",
+      "path": "浮力演示.html",
+      "operation": "create",
+      "state": "applied",
+      "revision": 3,
+      "beforeSha256": null,
+      "afterSha256": "c92a40db3f6ff3f90339c9962d141abb17c892c6546ca2a214b04c2948c58662"
+    },
+    "office": {
+      "schemaVersion": "xiaozhi.office-artifact.v1",
+      "id": "xioffice_22d27b6d-da94-4058-a1e1-18a0894031ea",
+      "runId": "run_625a94d2-55d3-4512-b3ab-25f5a435ed44",
+      "callId": "delivery_cb213bc24789e7df2fb650a043f3409357e3f1f54b05b3388aeeccb4a659ce83",
+      "path": "浮力讲解.pptx",
+      "format": "pptx",
+      "state": "saved",
+      "revision": 5,
+      "artifactId": "artifact_c8769717-7adf-4372-b518-fb3522d731f1",
+      "sourceCount": 1
+    },
+    "hashes": [
+      {
+        "path": "浮力演示.html",
+        "sha256": "c92a40db3f6ff3f90339c9962d141abb17c892c6546ca2a214b04c2948c58662"
+      },
+      {
+        "path": "浮力讲解.pptx",
+        "sha256": "4f6120f77a0a5108442857f06ae8e54f1e7e5e0e6b8ca2682b8aaf5dcf876049"
+      }
+    ]
+  }
+}
