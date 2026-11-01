@@ -1,5 +1,10 @@
 # 当前产品方向
 
+## 2026-11-01 复用成熟图文分块来源层
+
+资料原页核对区可在原文字识别后显式查看图形、图注等图文分块；缺组件时保留原文字和校对草稿。透明边框保持原文可读。该入口用于来源核对，分块仍待核对，不代表自动完成题目/答案；静默归档与完整题库要求不变。
+
+
 2026-11-01 窄窗原生标题栏菜单收拢已接通，功能保留，原输入框不变；20组标题栏/双草稿冷启专项通过。正文极窄视口截断、实际drag及完整交互仍未通过。完整AT仍3/252。详WORK_PROGRESS.md及C02证据captionLayoutSlice。
 
 2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。

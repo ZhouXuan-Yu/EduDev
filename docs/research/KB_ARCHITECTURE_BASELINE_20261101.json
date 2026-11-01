@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_in_progress_whole_set_diagram_source_quality_repair",
+  "currentStage": "K0_in_progress_optional_mature_page_blocks_before_automatic_question_ownership",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -14,9 +14,10 @@
     "ai": "Existing MaterialAiRepository and unified DeepSeek transport; no second agent loop",
     "agent": "Existing production Pi tools and source validation",
     "delivery": "EXE body plus existing managed optional-component download/configuration",
-    "noNewDependencies": true,
+    "noNewDependencies": false,
     "noWholeSecondRagProduct": true,
-    "feasibility": "Existing component integration is plausible and partially exercised. The complete teacher workflow, natural-corpus scale/quality and Windows end-user delivery are not yet proven."
+    "feasibility": "Existing component integration is plausible and partially exercised. The complete teacher workflow, natural-corpus scale/quality and Windows end-user delivery are not yet proven.",
+    "optionalPageBlocks": "RapidLayout 1.2.1 and pinned PP-DocLayoutV3; separate optional frozen component; existing OCR and npm dependencies unchanged"
   },
   "blockingSeams": [
     {
@@ -232,7 +233,12 @@
     },
     "noNewElectronJourneyOrProviderCallOnMergedSource": true,
     "noSemanticRecallOrP95ImprovementMeasured": true,
-    "rollback": "Revert the knowledge-base documentation commits only; do not revert the collaborator merge or delete the preserved WIP. No business-data/DDL rollback."
+    "rollback": "Revert the knowledge-base documentation commits only; do not revert the collaborator merge or delete the preserved WIP. No business-data/DDL rollback.",
+    "pageBlocks": {
+      "testedProductionCommit": "6ed24ba",
+      "mergedMain": "df789a1",
+      "delivery": "Normal atomic HEAD:main and HEAD:codex/knowledge-base-reuse-implementation; live equality reported after push."
+    }
   },
   "officialSourcesChecked": [
     "https://github.com/lancedb/lancedb",
@@ -2450,6 +2456,514 @@
     "sourceCommits": [
       "28669c3",
       "a30cba8"
+    ]
+  },
+  "pageBlocksComponent": {
+    "implementationCommit": "58ee8e3",
+    "integrationCommit": "7b912f4f459a0a131f3842b666b365e7c2bec104",
+    "goalComplete": false,
+    "scope": "Local mature layout source layer, explicit existing original-page UI and bounded rebuildable cache. Automatic block-to-question ownership/publication is not implemented.",
+    "component": {
+      "code": "RapidAI/RapidLayout",
+      "version": "1.2.1",
+      "sourceCommit": "4cfe33f6ceb3deb7c3a0eb242fd8db57994a7ac4",
+      "model": "Paddle PP-DocLayoutV3 ONNX",
+      "modelSha256": "250dbad1dfb9e4983fab75e1bf5085cd56ec3f41d5c7d0f8623ec74856e7aa67",
+      "modelBytes": 130502330,
+      "license": "Apache-2.0 code and publisher-declared Apache-2.0 model; notices checked in",
+      "frozenFiles": 767,
+      "frozenBytes": 417644037,
+      "workerSha256": "cf73ba661f86b645b8f643f1c0ea6ac8d3d2c9c25810f177fba1b9b6c1b97179",
+      "adapterSha256": "df131a32aaaa2478d23c6bbbac142c15793e5bd0e3d7711140b0378c2c3f2a73",
+      "buildCommand": "$env:OMNI_EDU_BUILD_PYTHON=<desktop>/.local-ocr/layout-build-env/Scripts/python.exe; node scripts/release/build-page-blocks-runtime.mjs",
+      "buildExit": 0,
+      "buildLog": "%TEMP%/kb-blocks-secure-component-build.log",
+      "toolchain": [
+        "Python 3.12.14",
+        "PyInstaller 6.22.3",
+        "RapidOCR 3.9.2",
+        "ONNX Runtime 1.30.0",
+        "PDFium 5.14.0",
+        "RapidLayout 1.2.1"
+      ],
+      "dependencyCheck": {
+        "command": "uv pip check --python .local-ocr/layout-build-env/Scripts/python.exe",
+        "exit": 0
+      },
+      "delivery": "Separate blocks-v1-dist and compiled manifest. Default legacy OCR root/manifest are unchanged. Packaging opt-in OMNI_EDU_BUNDLE_PAGE_BLOCKS=1; managed user download/configuration and final installer acceptance are still pending.",
+      "firstFreeze": {
+        "files": 702,
+        "bytes": 417151136
+      },
+      "securityFix": {
+        "legacyLockChanged": false,
+        "packages": {
+          "pillow": "13.0.0",
+          "certifi": "2026.10.19",
+          "pip": "26.2",
+          "setuptools": "84.1.0"
+        },
+        "auditBefore": {
+          "command": "uv tool run --from pip-audit pip-audit --path .local-ocr/layout-build-env/Lib/site-packages --format json",
+          "exit": 1,
+          "log": "%TEMP%/kb-page-blocks-pip-audit.json",
+          "reportedFindings": 54,
+          "affectedPackages": 4,
+          "note": "Advisory aliases/duplicates are present; not 54 unique vulnerabilities. Legacy OCR findings remain outside this optional-component fix."
+        },
+        "auditAfter": {
+          "command": "uv tool run --from pip-audit pip-audit --path .local-ocr/layout-build-env/Lib/site-packages --format json",
+          "exit": 0,
+          "log": "%TEMP%/kb-page-blocks-pip-audit-fixed.json",
+          "reportedFindings": 0
+        },
+        "notices": "Fixed build validates every installed locked dependency, then collects updated dependency licenses into component manifest."
+      }
+    },
+    "sourceContract": {
+      "schema": "xiaozhi.local-page-blocks.v1",
+      "engine": "rapid-layout-1.2.1-pp-doclayoutv3-250dbad1.v1",
+      "maxBlocks": 256,
+      "maxCacheBytes": 131072,
+      "maxInputPngBytes": 4194304,
+      "reviewStatus": "needsReview true; never question/answer approval",
+      "canonicalWrites": false
+    },
+    "commands": [
+      {
+        "command": "npm run build",
+        "log": "%TEMP%/kb-blocks-ready-build.log",
+        "exit": 0
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "log": "%TEMP%/kb-page-blocks-paint-components.log",
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-page-blocks-boundaries.mjs",
+        "log": "%TEMP%/kb-page-blocks-boundaries.log",
+        "exit": 0,
+        "passed": 12
+      },
+      {
+        "suite": "existing AI page/executor boundaries",
+        "log": "%TEMP%/kb-blocks-ai-boundaries.log",
+        "exit": 0,
+        "passed": 57
+      },
+      {
+        "suite": "existing K0 file/source boundaries",
+        "log": "%TEMP%/kb-blocks-k0-boundaries.log",
+        "exit": 0,
+        "passed": 64
+      },
+      {
+        "command": "npm audit --json",
+        "log": "%TEMP%/kb-blocks-npm-audit.json",
+        "exit": 1,
+        "vulnerabilities": {
+          "critical": 0,
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "total": 45
+        },
+        "scope": "Existing npm dependency findings, npm lock unchanged; optional Python component checked separately"
+      }
+    ],
+    "realUi": {
+      "command": "node scripts/education/kb-page-blocks-real.mjs <owned TEMP root> <retained whole-exam run>",
+      "log": "%TEMP%/kb-page-blocks-fixed-ui-third.log",
+      "privateReport": "%TEMP%/omni-real-material-aWObCn/page-blocks-Cfcwu4/report.json",
+      "exit": 0,
+      "success": true,
+      "checks": [
+        {
+          "name": "Source blocks are visible transparent outlines",
+          "page": 1,
+          "fill": "rgba(100, 116, 139, 0.04)",
+          "stroke": "oklch(0.5517 0.0138 285.94)"
+        },
+        {
+          "name": "Source blocks are visible transparent outlines",
+          "page": 2,
+          "fill": "rgba(100, 116, 139, 0.04)",
+          "stroke": "oklch(0.5517 0.0138 285.94)"
+        },
+        {
+          "name": "Visible block controls fit teacher viewport",
+          "width": 1366,
+          "height": 768,
+          "dpr": 1.5
+        },
+        {
+          "name": "Visible block controls fit teacher viewport",
+          "width": 1920,
+          "height": 1080,
+          "dpr": 1.5
+        },
+        {
+          "name": "Source blocks are visible transparent outlines",
+          "page": 3,
+          "fill": "rgba(100, 116, 139, 0.04)",
+          "stroke": "oklch(0.5517 0.0138 285.94)"
+        },
+        {
+          "name": "Source blocks are visible transparent outlines",
+          "page": 4,
+          "fill": "rgba(100, 116, 139, 0.04)",
+          "stroke": "oklch(0.5517 0.0138 285.94)"
+        },
+        {
+          "name": "Source blocks are visible transparent outlines",
+          "page": 5,
+          "fill": "rgba(100, 116, 139, 0.04)",
+          "stroke": "oklch(0.5517 0.0138 285.94)"
+        },
+        {
+          "name": "Source blocks are visible transparent outlines",
+          "page": 6,
+          "fill": "rgba(100, 116, 139, 0.04)",
+          "stroke": "oklch(0.5517 0.0138 285.94)"
+        },
+        {
+          "name": "All six natural pages use the actual optional frozen worker, typed IPC, overlay and authenticated original raster"
+        },
+        {
+          "name": "Missing optional model fails clearly; legacy OCR and teacher correction remain usable, retry restores blocks"
+        },
+        {
+          "name": "Stop terminates the actual optional worker; late output is ignored and original OCR remains"
+        },
+        {
+          "name": "Cold teacher UI reuses durable geometry without inference",
+          "milliseconds": 157
+        },
+        {
+          "name": "Original and canonical question/AI/parsed-text facts remain unchanged; no cloud requests"
+        }
+      ],
+      "buildSha256": "5d5f814658b84da168c116daff9b5c8e347229589eb7ead25e5e2b641cecbc99",
+      "pages": [
+        {
+          "page": 1,
+          "blocks": 21,
+          "images": 1,
+          "captions": 1,
+          "milliseconds": 591
+        },
+        {
+          "page": 2,
+          "blocks": 31,
+          "images": 6,
+          "captions": 7,
+          "milliseconds": 636
+        },
+        {
+          "page": 3,
+          "blocks": 17,
+          "images": 2,
+          "captions": 3,
+          "milliseconds": 488
+        },
+        {
+          "page": 4,
+          "blocks": 13,
+          "images": 0,
+          "captions": 2,
+          "milliseconds": 467
+        },
+        {
+          "page": 5,
+          "blocks": 19,
+          "images": 4,
+          "captions": 2,
+          "milliseconds": 435
+        },
+        {
+          "page": 6,
+          "blocks": 15,
+          "images": 3,
+          "captions": 5,
+          "milliseconds": 389
+        }
+      ],
+      "totalBlocks": 116,
+      "imageBlocks": 16,
+      "captionBlocks": 20,
+      "cloudCalls": 0,
+      "rendererErrors": 0,
+      "canonicalFactsUnchanged": true,
+      "originalUnchanged": true,
+      "screenshots": "Private owned TEMP only; 1366x768 and 1920x1080 CSS pixels, actual DPR1.5. No user pages uploaded."
+    },
+    "performance": {
+      "firstUncachedFrozenUiMilliseconds": [
+        23815,
+        8666,
+        9531,
+        5264,
+        4596,
+        4704
+      ],
+      "firstUncachedScope": "Actual optional component through teacher UI including host manifest integrity/model loading; prior diagnostic run completed all 6 pages but later harness assertion failed.",
+      "fixedUiCacheMilliseconds": [
+        591,
+        636,
+        488,
+        467,
+        435,
+        389
+      ],
+      "coldCacheMilliseconds": 157,
+      "comparison": "Before: no mature block source; single rectangles cannot represent interleaved figures/captions. Now: local typed block receipt with 116 unreviewed elements on this 6-page sample; this is not measured question accuracy/recall improvement.",
+      "limits": "Single 1.5MB exam; no P95, peak RSS, 40GB concurrency, download size, installer size or latency guarantee. Optional frozen disk component is 417644037 bytes, not the 130502330-byte model alone. Ordinary OCR does not load/verify the optional model. Final secured UI timings include initial cache read plus explicit fresh inference per page; not directly comparable to earlier cold-miss timings.",
+      "finalSecuredUiRefreshMilliseconds": [
+        6942,
+        6229,
+        5714,
+        6133,
+        6920,
+        5005
+      ],
+      "finalColdCacheMilliseconds": 188,
+      "finalBytesDeltaVersusPreviousKbBuild": [
+        {
+          "kind": "main",
+          "bytes": 5409
+        },
+        {
+          "kind": "preload",
+          "bytes": 0
+        },
+        {
+          "kind": "renderer",
+          "bytes": 6223
+        }
+      ],
+      "bytesDeltaScope": "Includes merged upstream desktop chrome/Pi response scope, optional compiled manifest and this slice. Not isolated feature size or measured latency improvement."
+    },
+    "failuresRetained": [
+      {
+        "run": "page-blocks-wwuMGn",
+        "reason": "Harness navigated before renderer bootstrap; now waits Pi workspace and enabled composer."
+      },
+      {
+        "run": "page-blocks-VD6DVF",
+        "reason": "Six real pages processed; later checkbox-wrapper harness assertion failed. Screenshots exposed a real opaque source overlay."
+      },
+      {
+        "run": "page-blocks-SWgIlC / page-blocks-PeeVbo / page-blocks-af2Rul / page-blocks-w3xKxx",
+        "reason": "Real paint assertion failed: legacy CSS geometry adapter dropped SVG fill/stroke. Active materials-only stylesheet restores transparent outlines. First post-fix harness launched before build finished; it still loaded old CSS."
+      },
+      {
+        "run": "page-blocks-vquIoI",
+        "reason": "Playwright clicked HeroUI hidden native input, intercepted by visible control. Harness now clicks official checkbox-content label; no forced clicks or change-event injection."
+      },
+      {
+        "probe": "isolated Docling layout probe",
+        "log": "%TEMP%/kb-docling-layout-probe.log",
+        "reason": "Existing isolated env psutil _pswindows missing; no layout inference performed, not a model quality result."
+      },
+      {
+        "probe": "first strict secure-component build",
+        "reason": "Stopped before build on pip lock 26.2.0 versus canonical installed metadata 26.2. Corrected exact lock to 26.2; final full-lock build passes."
+      }
+    ],
+    "rollback": "Disable optional packaging/usage and revert adapter/UI commits if needed; no DB migration or canonical overwrite. Retain legacy file-v3 runtime, originals and teacher facts. New component and manifest must match; derived cache is rebuildable.",
+    "next": "Freeze a new automatic policy carrying bounded source block IDs and geometry into the existing two-pass MaterialAiRepository and question-document.v2 multi-image assets. Handle interleaved and cross-page question ownership before claiming reliable auto archive.",
+    "open": [
+      "Automatic block ownership and multi-region/cross-page source publication",
+      "Background optional-component download/configuration for end users",
+      "Natural known-answer-book pairing and answer correctness",
+      "Whole-folder arbitrary mixed-corpus end-to-end quality",
+      "40GB resumability, peak memory, recall and retrieval P95",
+      "Final EXE/installer acceptance"
+    ],
+    "intermediateIntegratedUi": {
+      "privateReport": "%TEMP%/omni-real-material-aWObCn/page-blocks-zIYN37/report.json",
+      "exit": 0,
+      "success": true,
+      "checks": 13,
+      "scope": "Merged main; original pre-security frozen component. Final secured component and refresh-only behavior tested separately."
+    },
+    "finalProductionCommit": "6ed24ba",
+    "finalValidation": {
+      "sourceCommit": "6ed24ba",
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "%TEMP%/kb-blocks-secure-final-build.log"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240,
+        "skipped": 0,
+        "log": "%TEMP%/kb-blocks-secure-final-components.log"
+      },
+      "boundaries": {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-page-blocks-boundaries.mjs",
+        "exit": 0,
+        "passed": 12,
+        "log": "%TEMP%/kb-blocks-secure-final-boundaries.log"
+      },
+      "realUi": {
+        "command": "node scripts/education/kb-page-blocks-real.mjs <owned TEMP root> <retained whole-exam run> --refresh-blocks",
+        "exit": 0,
+        "success": true,
+        "privateReport": "%TEMP%/omni-real-material-aWObCn/page-blocks-2XFfdO/report.json",
+        "log": "%TEMP%/kb-blocks-secure-final-real.log",
+        "checks": [
+          {
+            "name": "Source blocks are visible transparent outlines",
+            "page": 1,
+            "fill": "rgba(100, 116, 139, 0.04)",
+            "stroke": "oklch(0.5517 0.0138 285.94)"
+          },
+          {
+            "name": "Source blocks are visible transparent outlines",
+            "page": 2,
+            "fill": "rgba(100, 116, 139, 0.04)",
+            "stroke": "oklch(0.5517 0.0138 285.94)"
+          },
+          {
+            "name": "Visible block controls fit teacher viewport",
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5
+          },
+          {
+            "name": "Visible block controls fit teacher viewport",
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5
+          },
+          {
+            "name": "Source blocks are visible transparent outlines",
+            "page": 3,
+            "fill": "rgba(100, 116, 139, 0.04)",
+            "stroke": "oklch(0.5517 0.0138 285.94)"
+          },
+          {
+            "name": "Source blocks are visible transparent outlines",
+            "page": 4,
+            "fill": "rgba(100, 116, 139, 0.04)",
+            "stroke": "oklch(0.5517 0.0138 285.94)"
+          },
+          {
+            "name": "Source blocks are visible transparent outlines",
+            "page": 5,
+            "fill": "rgba(100, 116, 139, 0.04)",
+            "stroke": "oklch(0.5517 0.0138 285.94)"
+          },
+          {
+            "name": "Source blocks are visible transparent outlines",
+            "page": 6,
+            "fill": "rgba(100, 116, 139, 0.04)",
+            "stroke": "oklch(0.5517 0.0138 285.94)"
+          },
+          {
+            "name": "All six natural pages use the actual optional frozen worker, typed IPC, overlay and authenticated original raster"
+          },
+          {
+            "name": "Refreshing optional blocks reuses authenticated text layout without rerunning legacy OCR or changing selection IDs"
+          },
+          {
+            "name": "Missing optional model fails clearly; legacy OCR and teacher correction remain usable, retry restores blocks"
+          },
+          {
+            "name": "Stop terminates the actual optional worker; late output is ignored and original OCR remains"
+          },
+          {
+            "name": "Cold teacher UI reuses durable geometry without inference",
+            "milliseconds": 188
+          },
+          {
+            "name": "Original and canonical question/AI/parsed-text facts remain unchanged; no cloud requests"
+          }
+        ],
+        "pages": [
+          {
+            "page": 1,
+            "blocks": 21,
+            "images": 1,
+            "captions": 1,
+            "milliseconds": 6942
+          },
+          {
+            "page": 2,
+            "blocks": 31,
+            "images": 6,
+            "captions": 7,
+            "milliseconds": 6229
+          },
+          {
+            "page": 3,
+            "blocks": 17,
+            "images": 2,
+            "captions": 3,
+            "milliseconds": 5714
+          },
+          {
+            "page": 4,
+            "blocks": 13,
+            "images": 0,
+            "captions": 2,
+            "milliseconds": 6133
+          },
+          {
+            "page": 5,
+            "blocks": 19,
+            "images": 4,
+            "captions": 2,
+            "milliseconds": 6920
+          },
+          {
+            "page": 6,
+            "blocks": 15,
+            "images": 3,
+            "captions": 5,
+            "milliseconds": 5005
+          }
+        ],
+        "cloudCalls": 0,
+        "rendererErrors": 0,
+        "scope": "Six pages force real inference through secured optional worker and teacher UI; initial cache read plus explicit refresh are timed together. No legacy OCR rerun on block refresh. question_bank_items/material_ai_units/resource_chunks digest and original PDF hash unchanged."
+      },
+      "broadSmoke": {
+        "command": "npm run test:smoke",
+        "exit": 0,
+        "passed": 207,
+        "total": 207,
+        "log": "%TEMP%/kb-blocks-integrated-smoke.log",
+        "scope": "Fixed merged 7b912f4 build before optional dependency/refresh-only fixes; deterministic provider/proxy fixtures, not real model quality acceptance. Its out was unchanged throughout. Final block changes have separate final build/components/boundaries/real UI checks."
+      },
+      "diffCheck": {
+        "command": "git diff --check",
+        "exit": 0
+      }
+    },
+    "finalBuild": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3502409,
+        "sha256": "d8041d14686335b48b9a459b2754ff455bb29dccc98ac6fc8bff63401d1c0f50"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-kkazRe_R.js",
+        "bytes": 7380997,
+        "sha256": "2eb3a70df6607f3695eb36a9c157d947b19665e28f743a578fe2e30dec0c26d0"
+      }
     ]
   }
 }
