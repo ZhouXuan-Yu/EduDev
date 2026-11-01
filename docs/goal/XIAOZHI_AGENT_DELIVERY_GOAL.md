@@ -1,5 +1,7 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+2026-11-01 按用户“直接关了重启，接管使用”更新日常D：旧PID72544经CloseMainWindow正常退出、无强杀；D保留3份脏文档hash，从05782b4正常切换到cd93a69，用自身依赖npm.cmd start完成build/type并启动，独立240组件exit0。新PID143132/窗口22287116，准确D路径/入口、响应及原生visible=true已核，本轮用量和此前C03/焦点/回执修复进入日常源码。未发送对话/新增付费，未归档教师UI。Windows仍有LogonUI，未做实际输入/drag/IME或完整日常旅程；启动不代替C06/完整AT，累计仍3/252、Goal active。构建指纹d59ac006…与4份本机启动证据见docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime；前述“本片未更新日常”为此前状态，本条覆盖当前运行状态。
+
 2026-11-01 C04/C05用量显示工程子项已实现（0be9823），build/type/240组件、7边界、原Pi4及同记录双尺寸冷读2通过；完整AT仍3/252、Goal active，继续W3功能后集中验收再S/T。日常D仍05782b4/锁屏，未应用本片。docs/research/AGENT_USAGE_C05_20261101.json。
 
 2026-11-01 C03外选目录备份工程子项已实现（27bb1b6/整合c792d82），原Pi4、领域7及整合build/type/240组件通过；完整AT仍3/252，Goal active。完整28WP/252条及W3先齐功能后集中、再S/T的目标不缩减。后续仍补C03全领域/故障与E06/E07/E08+C未齐功能。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。

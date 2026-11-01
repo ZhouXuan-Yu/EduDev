@@ -307,12 +307,68 @@
   "limitations": [
     "Controlled SSE/SDK usage proves local parsing/persistence/display only, not a real provider invoice or natural-answer quality.",
     "Legacy enforced-budget controls checked by existing renderer suite and targeted receipt boundaries; old paid budget smoke not rerun.",
-    "Full FX10/13, physical desktop/IME/drag, daily runtime and installer remain pending. D daily last verified at 05782b4; Windows unlock pending."
+    "Full FX10/13, physical desktop/IME/drag and installer remain pending. Daily D was normally restarted at cd93a69 with own build/type/240 and visible responding window; actual teacher journey still unverified while LogonUI remains."
   ],
   "rollback": "Revert three display files while preserving original usage/event rows, native session history and drafts. No DB/shared/IPC/dependency changes or user file deletion.",
   "testSources": {
     "apps/desktop/scripts/xiaozhi-agent/usage-receipt-ui.mjs": "b8de1b9080578b59f521cc1ebae94fde8ecec7d32cea8ea442b133783ce3a6af",
     "apps/desktop/scripts/xiaozhi-agent/usage-receipt-viewport.mjs": "52b0365999c1106cea5c7309e0ca55e6ea9fa13c18e4798b0c5d94f13ece0b4c"
   },
-  "testSourceBoundary": "Original three generation cases bind the archived UI script hash/report. Later viewport assertion repair independently checked on those same completed records with zero regeneration; source syntax checked, no claim of rerunning generation."
+  "testSourceBoundary": "Original three generation cases bind the archived UI script hash/report. Later viewport assertion repair independently checked on those same completed records with zero regeneration; source syntax checked, no claim of rerunning generation.",
+  "dailyRuntime": {
+    "date": "2026-11-01",
+    "authorization": "直接关了重启，接管使用",
+    "beforeSource": "05782b4e9a39d44c40472894c190df0e77fda8ef",
+    "sourceCommit": "cd93a69cbd98e70a22965a56340d779c0212b4a9",
+    "root": "D:/WorkProject/EduProject",
+    "previousPid": 72544,
+    "shutdown": "CloseMainWindow returned true; original main and children exited, no forced kill.",
+    "launchCommand": "npm.cmd start (D:/WorkProject/EduProject/apps/desktop)",
+    "exitCode": 0,
+    "ownBuildTypecheck": "exit 0 through original daily launcher",
+    "ownRendererComponents": {
+      "passed": 240,
+      "exitCode": 0
+    },
+    "process": {
+      "Pid": 143132,
+      "ParentPid": 142656,
+      "ExecutablePath": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+      "CommandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "WindowHandle": 22287116,
+      "Title": "Omni-Edu Agent",
+      "Responding": true,
+      "NativeWindowVisible": true
+    },
+    "build": {
+      "sha256": "d59ac006313bf1a83d077906760bd55aebf626ee9a7332130fe8da43e79dd8cf",
+      "sizes": {
+        "main": 14589911,
+        "preload": 36248,
+        "renderer": 20117264
+      }
+    },
+    "preservedDirtyFiles": [
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "status": " M",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "status": " M",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "status": "??",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "paidRequests": 0,
+    "conversationsSent": 0,
+    "rawEvidence": "docs/research/evidence/usage-receipt/20261101/daily/manifest.json",
+    "boundary": "Main process, exact D executable/source entry, responding native visible window and own build verified. Windows LogonUI still present: no physical desktop input, no renderer UI/drag/IME/daily teacher journey or installer acceptance claim.",
+    "rollback": "Normal close, detached checkout of previous 05782b4 and original npm start; preserve the three dirty documents and existing data/optional logs. Do not delete tables, files or user state."
+  }
 }

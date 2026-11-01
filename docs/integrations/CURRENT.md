@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
+
 2026-11-01 用量复用原SDK/host预算观测及snapshot，不改Hana/Pi/vendor/凭证/依赖/下载。4次本地合成响应+1次失败本地尝试，0付费；审计45（8高29中8低/0严重，exit1）沿旧记录。docs/research/AGENT_USAGE_C05_20261101.json。
 
 2026-11-01 C03复用原sqlite3只读快照、文件hash、workspace路径校验及原恢复激活；无下载、依赖或凭证修改。局部扩展不改Hana/Pi/vendor，0付费；正常整合origin/main ad55ed9的独立OCR恢复，无冲突，本片生产文件无差异，最终build/type/240组件通过。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
