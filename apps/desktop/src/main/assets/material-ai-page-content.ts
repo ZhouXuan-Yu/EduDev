@@ -1,6 +1,34 @@
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT} from '../../shared/material-ai-page-regions';
 import {extractMaterialQuestions} from './material-question-extract';
-import {MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_PAGE_SOURCE,type AiPagePrompt,type MaterialPageSource} from '../../shared/material-ai-page';
+import {MATERIAL_QUESTION_PAGE_PROMPT,MATERIAL_PAGE_SOURCE,type AiPagePrompt,type AiPageResponse,type MaterialPageSource} from '../../shared/material-ai-page';
+import {MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,MATERIAL_PAGE_FRAGMENTS_RESPONSE,fragmentsMatchPage} from '../../shared/material-ai-page-fragments';
+import {aiTextSignature} from '../../shared/material-ai-image';
+import type {PageCrop} from './material-ai-page-crops';
+import {validCropQuality} from './material-ai-crop-quality';
+
+/** Source-owned layout metadata stays in the raw transcript and original images. Never fold body symbols. */
+export function restoredResponseQuestions(response:AiPageResponse,source:MaterialPageSource,prompt?:AiPagePrompt,crops:PageCrop[]=[]){
+ if(response.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE||prompt?.policy!==MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT||!fragmentsMatchPage(response.fragments,prompt.blocks))return restoredPageQuestions(response.pageText,source,response.questions.map(q=>q.number),prompt);
+ const layoutLiteral=(s:string)=>s.normalize('NFC').replace(/\s/gu,''),owned=new Set(response.fragments.flatMap(f=>f.blockIds));
+ const titles=new Set(prompt.blocks.blocks.filter(b=>['paragraph_title','doc_title'].includes(b.kind)&&!owned.has(b.id)).map(b=>layoutLiteral(prompt.blockTexts.find(t=>t.blockId===b.id)?.text||'')).filter(s=>/^[一二三四五六七八九十百]+[、.．]?[^\n]{1,120}[（(]\d{1,3}分[）)]$/.test(s)));
+ const lines=response.pageText.split(/\r?\n/),bodyLines=[...lines],numbers=new Set(response.questions.map(q=>q.number));let next='';
+ for(let i=lines.length-1;i>=0;i--){const line=lines[i];if(!line.trim())continue;
+  if(titles.has(layoutLiteral(line))&&/^\s*[一二三四五六七八九十百]+(?:[、.．][ \t]*|[ \t]+)\S[^\r\n]{0,160}[（(]\d{1,3}分[）)]\s*$/.test(line)){const number=next.match(/^\s*(?:第(\d{1,5})题\s*[:：]?|(\d{1,5})[.、．](?!\d))/);if(number&&numbers.has(number[1]||number[2]))bodyLines[i]='';}next=line;
+ }
+ const body=bodyLines.join('\n');
+ return restoredPageQuestions(body,source,response.questions.map(q=>q.number),prompt).map(candidate=>{
+  const q=response.questions.find(q=>q.number===candidate.number),fragment=response.fragments.find(f=>f.number===candidate.number);
+  if(!q?.requiresImage||q.projection.figures.state!=='provided'||!fragment?.complete||aiTextSignature(candidate.fields.stem)===aiTextSignature(q.stem))return candidate;
+  const captions=new Map<string,number>();
+  for(const id of fragment.blockIds){if(prompt.blocks.blocks.find(b=>b.id===id)?.kind!=='figure_title')continue;
+   const crop=crops.find(c=>c.number===candidate.number)?.fragments?.find(f=>JSON.stringify(f.blockIds||[f.blockId])===JSON.stringify([id]));
+   const local=crop&&validCropQuality(crop.quality)&&crop.quality.clearEdges.every(Boolean)?crop.quality.text:'',label=layoutLiteral(prompt.blockTexts.find(t=>t.blockId===id)?.text||local);
+   if(/^图\d{1,3}(?:[-–.]\d{1,3})?$/.test(label)&&new RegExp(label.replaceAll('.','\\.')+'(?![0-9])').test(layoutLiteral(q.projection.figures.text)))captions.set(label,(captions.get(label)||0)+1);
+  }
+  const stem=candidate.fields.stem.split('\n').filter(line=>{const label=layoutLiteral(line),left=captions.get(label)||0;if(!left)return true;captions.set(label,left-1);return false;}).join('\n').trim();
+  return aiTextSignature(stem)===aiTextSignature(q.stem)?{...candidate,fields:{...candidate.fields,stem}}:candidate;
+ });
+}
 /** Reuse the deterministic parser on the AI transcript. Adapter body refs never leave this function. */
 export function restoredPageQuestions(text:string,source:MaterialPageSource,declaredNumbers:readonly string[]=[],prompt?:AiPagePrompt){
  // A PDF's terminal standalone page counter is layout, not the last question's condition.
