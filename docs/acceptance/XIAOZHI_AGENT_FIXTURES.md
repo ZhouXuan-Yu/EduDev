@@ -1,5 +1,8 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-02 C05循环提醒子项工程已实现（c37c2ab）：修复宿主调用ID污染重复比较，增加2–4步短周期及长序列提醒，新输入/真实进度仍可继续；13领域/240组件/最终build/type/正式Pi3通过，0付费。完整C05-08/E07-04与FX10/13保持原标准，累计完整AT仍3/252。docs/research/AGENT_REPEAT_C05_20261102.json。 日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。
+
+
 2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
 
 

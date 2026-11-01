@@ -1,5 +1,8 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-11-02 C05循环提醒子项工程已实现（c37c2ab）：修复宿主调用ID污染重复比较，增加2–4步短周期及长序列提醒，新输入/真实进度仍可继续；13领域/240组件/最终build/type/正式Pi3通过，0付费。完整C05-08/E07-04与FX10/13保持原标准，累计完整AT仍3/252。docs/research/AGENT_REPEAT_C05_20261102.json。 日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。
+
+
 2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
 
 
@@ -411,7 +414,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-01 | 首响应暂时失败 | 同任务有界恢复，最多2次重试；等待可停止；总尝试与费用可追踪 | [AT-E07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-01) | 待验收 |
 | REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) | 待验收 |
 | REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
-| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。 |
+| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) |
 | REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 部分实现：本轮下载/实际计算child/原审批等待停止工程通过（反馈5.9/4.1/7.3ms，原下载与child分别3/12ms中止）；1.1秒无新派发，旧批准拒绝，新任务可用；既有连接/读重试证据保留。完整AT待阶段集中。 |
 | REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：已实测生成中、实际文本写入后outcome前强退，重启保留部分正文/uncertain，原卡核验不重写；其余恢复/部分正式产物及完整AT仍阶段集中。 |
 | REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
@@ -867,7 +870,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C05-05 | 费用授权 | 没有本任务新增明确授权不发请求；计划数量/重试上限与费用用途可审阅 | [AT-C05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-05) | 待验收 |
 | REQ-C05-06 | 真实与估算 | 真实值准确记录；估算注明；无用量/价格显示未知，不显示0费用或虚假缓存收益 | [AT-C05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-06) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json) |
 | REQ-C05-07 | 停止后费用 | 说明在途请求可能计费；记录已知usage，不保证撤回远端；无新请求继续消耗 | [AT-C05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-07) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json) |
-| REQ-C05-08 | 重复循环 | 提示或有界改变策略；不无限原样重试；新输入可继续合法任务，不硬禁正常轮询 | [AT-C05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-08) | 待验收 |
+| REQ-C05-08 | 重复循环 | 提示或有界改变策略；不无限原样重试；新输入可继续合法任务，不硬禁正常轮询 | [AT-C05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-08) | 待验收  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) |
 | REQ-C05-09 | 性能解释 | 分别报告，不把模型思考慢说成界面卡；样本不足不报P95；没有前后证据不声称提速 | [AT-C05-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-09) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json) |
 | REQ-C05-10 | 资源回收 | 所属执行进程、定时器、句柄与租约按合同回收；保留RSS/CPU曲线，无持续无界增长 | [AT-C05-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-10) | 待验收 |
 

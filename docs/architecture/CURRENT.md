@@ -1,5 +1,8 @@
 # 当前架构
 
+2026-11-02 C05循环提醒：toolBoundary真实结果→repeat/evidence→原planBasis回执→公共投影；关联及账本保持，不在摘要中过滤工具真实字段。观察器只留有界hash，原新输入/run reset，无IPC/DDL/依赖/定时器/审批变化。main+1437B，renderer/preload字节不变。docs/research/AGENT_REPEAT_C05_20261102.json。
+
+
 2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
 
 

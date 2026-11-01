@@ -1,5 +1,8 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-02 C05循环提醒：原正式输入→6次真实Hana本地缺文件读取→两步循环提醒→结束原样重试→新输入1次读取无旧警告→native/journal/草稿冷启，共3项通过。首7次本地失败与最终9次均保留，0付费；7条planBasis关联逐一核对。无UI修改，renderer/preload字节不变；不冒充真实provider/自然质量/完整AT。docs/research/AGENT_REPEAT_C05_20261102.json。
+
+
 2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
 
 
