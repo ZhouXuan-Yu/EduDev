@@ -64,4 +64,12 @@
 
 正文/run与17771ms不变，工具内容可达且无每工具计时、无原生details/summary及私有推理UI；0新增run/模型请求/事件，console errors为空。原夹具前后hash `05f8408c86db8c28ce7e8aef841d4066cca7cb2c4ae2371fa630b1dc5617651c`、build及native历史hash均一致。[截图指纹与断言清单](evidence/continuation-02/manifest.json)。网络拦截只观察firstWindow之后，启动前截面不冒称全程拦截；持久账本独立证明没有新增运行或模型请求。此补验只证明完成态读回，不重复计算原M4流式证据。
 
-main交付和D盘新版启动证据在完成后补录；当前不据已启动首轮窗口冒称新main代码已运行。
+## 最新主线整合复验
+
+`a17e8785aafbe02eca76312aafec74eb0202518c` 正常合入协作者主线505cb7a（含d76e6e5/4f6ce66窗口几何修复），无冲突。新增生产差异只有 `desktop-chrome/window-geometry.ts` 与main入口，原31eb对应的Pi/helper及renderer源码不变；合作者的完整证据和原失败保留。
+
+- `npm.cmd run build`（apps/desktop）：exit0，含TSC；新out 455文件，SHA256 `95263dc1288eb0129cee1bcdbd9c3f6a3b8805809892bcf13894c5412b2070ac`，逐文件清单为 `build-continuation-02-integrated.json`。原M4及完成态补图仍限定31eb构建，不改写为在9526运行。
+- `node scripts/xiaozhi-agent/window-geometry-state-smoke.mjs`：10/10、exit0。仅证明v1尺寸schema/显示算术，不把它冒称原生拖动验收；协作者AT03原生拖动余项仍保留。
+- 没有因几何整合重复付费生成M4。原240组件、KB57及scope/传输测试保留各自7f8220d范围；不累加为新的整包功能验收。依赖与lock未变，审计45项仍未关闭。
+
+main推送和D盘新版启动证据在完成后补录；不据已启动首轮或协作者d76窗口冒称本片新代码已运行。
