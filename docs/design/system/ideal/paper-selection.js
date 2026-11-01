@@ -7,6 +7,7 @@
   {id:'PHY-004',point:'浮沉条件',type:'解答题',level:'提高',text:'物体受到浮力就一定上浮吗？结合受力解释。',answer:'不一定，应比较浮力与重力及其他作用力。'}
  ];
  let selected=[],query='',point='全部知识点',sequence=0;
+ D.paperSelection={snapshot:()=>JSON.parse(JSON.stringify(selected))};
  function render(){
   const area=D.$('#question-selection');if(!area)return;
   const results=bank.filter(q=>(point==='全部知识点'||q.point===point)&&[q.id,q.text,q.point,q.type,q.level].join(' ').includes(query));
