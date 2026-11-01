@@ -1,0 +1,29 @@
+{
+  "scope": "Daily own-source launch metadata/logs only; no teacher UI/content, credentials or model requests.",
+  "entries": [
+    {
+      "file": "usage-receipt-daily-before.json.gz",
+      "bytes": 626,
+      "sha256": "150cef04d24aa7e59601ee50be4992f7b7eb3c80aa999e0c51e87516fc26132a",
+      "gzipSha256": "d0acd4ea425f91cc7a44964bdab81f7a5d86cf61e8e364f0015c62e39a327dbf"
+    },
+    {
+      "file": "usage-receipt-daily-process.json.gz",
+      "bytes": 402,
+      "sha256": "e1391f467736ae75f86cf23a5588d7dd12ec950e5f0f2f57beeafa277b1bb8e0",
+      "gzipSha256": "3cdaa1a1a029c99e5d30d57df4ed659015daa7fc8733e673c190cba7a41305b8"
+    },
+    {
+      "file": "usage-receipt-daily-start.log.gz",
+      "bytes": 39067,
+      "sha256": "ecbf5ec568801d77706c2be3bb29a952b80dd01ba97d67e874ca9ecd5791bdf9",
+      "gzipSha256": "91362cecb911add071223cfbcde7d0fbb93e0e156f064195bae9f84eacf88fc3"
+    },
+    {
+      "file": "usage-receipt-daily-components.log.gz",
+      "bytes": 496,
+      "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561"
+    }
+  ]
+}

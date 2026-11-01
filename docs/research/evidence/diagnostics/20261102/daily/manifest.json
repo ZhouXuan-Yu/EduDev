@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-02",
+  "scope": "Daily source/build/process/three dirty document hashes only; no teacher UI or data archived",
+  "entries": [
+    {
+      "name": "diagnostics-daily-before.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-daily-before.json",
+      "rawBytes": 1160,
+      "rawSha256": "0fa46fc3a01efa78c8abc6b0324e3f0b924de75c709979529f5158eb865750f2",
+      "gzipBytes": 594,
+      "gzipSha256": "7688696ef5eebefaa06d93d50bcf683f7f1b5a37312ff604d45e851f2271124b",
+      "file": "docs/research/evidence/diagnostics/20261102/daily/diagnostics-daily-before.json.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-daily-after.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-daily-after.json",
+      "rawBytes": 1245,
+      "rawSha256": "25e6d749320300b52aedb4916d1fe4ec92a6843d2cec6bf5cbef2ab758906bd6",
+      "gzipBytes": 645,
+      "gzipSha256": "d6c93a4010158ec56dc2746469b4b6ad30311f87c14424eb79180a11c08a8fda",
+      "file": "docs/research/evidence/diagnostics/20261102/daily/diagnostics-daily-after.json.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-daily-start.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-daily-start.log",
+      "rawBytes": 39066,
+      "rawSha256": "556ab287759c8677f70544d7acdec93795c88277a0f6054b370f9fc802c33ac7",
+      "gzipBytes": 8381,
+      "gzipSha256": "534b7949acdf5fe096105fe11c9e7191db6890a166e9c813d328f96929035bbf",
+      "file": "docs/research/evidence/diagnostics/20261102/daily/diagnostics-daily-start.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-daily-components.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-daily-components.log",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipBytes": 279,
+      "gzipSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561",
+      "file": "docs/research/evidence/diagnostics/20261102/daily/diagnostics-daily-components.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-daily-source-compare.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-daily-source-compare.json",
+      "rawBytes": 4258,
+      "rawSha256": "dae2fb0538cc704fd4f5247aff97d8a022cec58bbe043bb5aeb2c110e0311869",
+      "gzipBytes": 1354,
+      "gzipSha256": "6777e4211590f217ad4f19e47e571db2bf4ffadfc1d28275bb3f881dda2d2b62",
+      "file": "docs/research/evidence/diagnostics/20261102/daily/diagnostics-daily-source-compare.json.gz",
+      "verified": true
+    }
+  ]
+}

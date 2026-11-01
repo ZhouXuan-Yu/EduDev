@@ -8,6 +8,21 @@
 
 完整Goal仍active。下一优先解决题面/图义与原图的完整对应、双遍答案稳定性和跨页拼接，再贯通已知答案/联网补答、Pi整卷与40GB召回/P95、按需下载和最终安装。原OCR间歇parse_failed及每次646文件279039929B认证成本未关闭。D日常工作树、运行窗口和安装未改。回退用OMNI_EDU_AI_CROP_REVIEW=0停止新策略创建，保留新读适配及原件/回执/资产，不重放旧付费调用。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C05循环提醒工程子项已实现（c37c2ab）：正式Pi比较真实工具结果后再附加planBasisCallId，修复每次关联ID不同导致旧重复提醒失效的问题；保留原调用/计划回执。DSH 3/5/8提醒扩展到2–4步短周期及16/32/64等持续稀疏提醒；真实进度/参数变化和新用户输入沿原reset，不硬禁合法轮询、不代执行或新增批准。13领域、240组件、最终build/type与原Pi3项通过；原记录证明7个计划关联逐一保留，冷启0重放/renderer错误。初次真实UI暴露根因（7次本地请求）及原思考能力夹具失败保留，修复后9次本地SSE；独立wire夹具修复及dispatcher改后各1项通过，0新付费，24份原始证据hash已核。main+1437B，renderer/preload字节完全不变，无新P95或自然智能质量结论。原循环提醒可能被真实模型忽略，完整C05/E07与阶段AT仍待集中，累计3/252、Goal active；继续W3 E06/E07/E08+C功能对齐后集中，再S/T。docs/research/AGENT_REPEAT_C05_20261102.json。 日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。
+
+
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断工程子项已实现（9e9e586）：原设置→高级与诊断→策略与诊断可选择当前会话轮次，先预览版本/阶段/分类错误/请求工具计数及用量，再另存同一快照；allowlist排除原文/推理/学生字段/路径/凭证，保留原journal/native/usage，不新增日志真源或批准。取消不写，保存失败可重试，过期须显式重读。build/type、240组件、12领域、原Pi5及同记录0调用双尺寸补尾2项通过，1366×768/1920×1080均原生DPR1；2本地请求（1SSE成功+1HTTP401）、0付费。首次高级分组导航失败和1366截图旧帧保留，同记录续测不重生成；18份原始证据逐项hash核对。main+9720B/preload+204B/renderer入口+5953B，仅包体对比，无新P95/智能质量结论。C04-02/06/07仅部分工程证据，完整AT仍3/252、Goal active；继续W3 E06/E07/E08+C功能对齐后集中，再S/T。证据docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。 日常D已更新相同生产源码，详本页日常更新记录；锁屏与安装边界不变。
+
+
+2026-11-01 按用户“直接关了重启，接管使用”更新日常D：旧PID72544经CloseMainWindow正常退出、无强杀；D保留3份脏文档hash，从05782b4正常切换到cd93a69，用自身依赖npm.cmd start完成build/type并启动，独立240组件exit0。新PID143132/窗口22287116，准确D路径/入口、响应及原生visible=true已核，本轮用量和此前C03/焦点/回执修复进入日常源码。未发送对话/新增付费，未归档教师UI。Windows仍有LogonUI，未做实际输入/drag/IME或完整日常旅程；启动不代替C06/完整AT，累计仍3/252、Goal active。构建指纹d59ac006…与4份本机启动证据见docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime；前述“本片未更新日常”为此前状态，本条覆盖当前运行状态。
+
+2026-11-01 C04/C05用量显示工程子项已实现（0be9823）：原任务详情和兼容预算卡按当前run显示请求尝试/工具数、已记录Token及reported/partial/unknown、活动/教师等待和费用未知；停止/失败保留用量并提示在途可能计费，无虚构缓存命中率。build/type、240组件、7边界、原Pi三场景/冷启4项及同记录双尺寸补尾2项通过（1366/1920均原生DPR1，最终重断言实际尺寸与像素；探针期间第二显示器先不可用后恢复）；4次本地SSE+1次夹具失败本地尝试，0新付费。首夹具失败、动画/尺寸探针及SQLite对象原型比较失败保留，37份原始证据逐项hash核对，不重做已保存任务。main/preload字节不变、renderer入口-125B，仅体积对比，无新P95/质量结论。完整AT仍3/252、Goal active；继续W3 E06/E07/E08与C功能对齐后集中验收，再S/T。D日常最后已核05782b4，本片未更新日常/安装。证据docs/research/AGENT_USAGE_C05_20261101.json。
+
+2026-11-01 C03外选目录备份工程子项已实现（27bb1b6，整合c792d82）：原设置可备份账本可定位的外选HTML/Office及已登记原件；新实例只恢复已复制文件，教学文件可打开实际PPT/交互HTML，不复活原目录授权。缺失/旧目录不可定位显示遗漏。领域7、遗漏显示3、既有恢复8、原Pi实际UI4及整合build/type/240组件通过；首次HTML宿主前缀断言失败保留，同一已保存包续测，0重新生成、0新付费（共3次本地SSE）。完整FX07/10与C03/E08仍待W3集中，累计完整AT仍3/252，Goal active。功能包main+10853B、preload不变、renderer入口+1433B，仅体积差异；整合另含上游OCR恢复，无新P95/质量结论。D日常最后已核05782b4、Windows待解锁，本片未应用日常/安装。证据docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json（20份原始证据hash归档）。下一继续W3剩余E06/E07/E08与C功能，再集中验收，依次S/T。
+
 ## 2026-11-01 已存局部OCR失败的本地恢复
 
 源码66976ed，整合main 4c58080后为4c1e683；13处Markdown冲突逐段保留双方，无知识库生产冲突。最终固定构建build/type、240组件、81边界、既有桌面207/207及原记录0云读回3项均exit0，测试后main/preload/renderer指纹未变。207为隔离既有综合路径，不代替自然整卷/完整Pi验收；共享截图目录不作唯一证据。真实8块恢复与最终读回共用相同main/preload字节；最终renderer含协作者焦点/核对回执及本地错误提示，较4fe07fc +6278B，main +19260B/preload不变，仅体积对比，无吞吐/P95结论。完整Goal active，仍4自动稿/11待核；D日常和安装未更新。

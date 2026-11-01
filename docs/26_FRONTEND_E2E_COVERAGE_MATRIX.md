@@ -4,6 +4,21 @@
 
 当前教师文件夹授权→后台两遍→题本六图题→冷启实际路径通过，6个复核请求的局部OCR与持久化回执对应；质量仍4/15、11待核，完整主线不计通过。本轮build（含type）、240组件及88项原页边界通过；讲义忙碌态组件断言通过。综合回归首次发现创建后回填覆盖教师说明，已沿原loading/saving禁止信息编辑和重复保存，保留失败日志/截图；原断言不放宽，最终桌面复验结果待追加。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C05循环提醒：原正式输入→6次真实Hana本地缺文件读取→两步循环提醒→结束原样重试→新输入1次读取无旧警告→native/journal/草稿冷启，共3项通过。首7次本地失败与最终9次均保留，0付费；7条planBasis关联逐一核对。无UI修改，renderer/preload字节不变；不冒充真实provider/自然质量/完整AT。docs/research/AGENT_REPEAT_C05_20261102.json。
+
+
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断工程已实现：原设置展开高级分组→选择成功/失败轮→预览→取消/另存/失败重试→文件hash/SQLite/native/draft→冷启；5项通过，另0调用双尺寸稳定帧补尾2项（1366/1920原生DPR1）。首导航失败和旧帧保留；12领域/240组件/build/type通过，0付费。原生保存对话框为自有路径适配夹具，物理桌面锁屏不验；完整FX06/10/13与AT仍待集中，不新增完整通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
+2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
+
+2026-11-01 C04/C05工程：usage-receipt-ui.mjs原Pi实际完整usage/部分缺usage/Stop三场景及冷启通过4项；初版双尺寸仅isVisible证据不足，改用usage-receipt-viewport.mjs同记录0模型冷读2项，展开动画完成后实际滚动/矩形边界、1366×768与1920×1080、DPR1及截图均通过，原usage/events/草稿一致。build/type/240组件、7边界通过，4本地SSE+1失败本地尝试/0新付费，37原始证据含全部失败。完整FX09/10/13、物理桌面/IME/日常/安装保留未验；docs/research/AGENT_USAGE_C05_20261101.json。
+
+2026-11-01 C03工程检查：external-output-backup-ui.mjs沿原Pi明确选目录→整包审阅保存HTML/8页PPT→原设置导出→新副本恢复/显式激活/冷启→教学文件PPT与HTML交互，共4项通过，1366×768/1920×1080控件可达；原生/事件及源文件hash不变，0重放/renderer错误。首次HTML断言失败后复用同一已保存包，3本地SSE/0付费。固定构建fe48aee6…；最终c792d82整合另行build/type/240组件通过，未冒称最终包重跑全部UI。完整FX07/10及252AT仍待，日常D/Office/WPS/安装未验。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 ## 2026-11-01 已存局部OCR失败的本地恢复
 
 源码66976ed，整合main 4c58080后为4c1e683；13处Markdown冲突逐段保留双方，无知识库生产冲突。最终固定构建build/type、240组件、81边界、既有桌面207/207及原记录0云读回3项均exit0，测试后main/preload/renderer指纹未变。207为隔离既有综合路径，不代替自然整卷/完整Pi验收；共享截图目录不作唯一证据。真实8块恢复与最终读回共用相同main/preload字节；最终renderer含协作者焦点/核对回执及本地错误提示，较4fe07fc +6278B，main +19260B/preload不变，仅体积对比，无吞吐/P95结论。完整Goal active，仍4自动稿/11待核；D日常和安装未更新。

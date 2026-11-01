@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+2026-11-02 C05循环提醒：REQ-C05-08/E07-04提醒子项工程已实现；真实Pi调用关联污染digest已修，13领域/240组件/最终build/type/Pi3通过。来源/批准/停止不变；0付费，完整自然模型/阶段AT不新增通过，累计3/252。docs/research/AGENT_REPEAT_C05_20261102.json。
+
+
+2026-11-02 C04本轮诊断：C04-06、C04-07及C04-02分类诊断子项已实现；原设置/typed IPC/SQLite与精确文件读回贯通，12领域、240组件、原Pi5与0调用双尺寸补尾2通过。真实provider/完整FX06/10/13仍待集中，完整AT3/252不变。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
+2026-11-01 C04-07/C05-06/07/09：当前run用量/未知费用及停止后保留工程已实现，build/type/240组件、7边界、原Pi4及双尺寸冷读2通过；局部证据不代替真实provider/全FX09/10/13，完整通过仍3/252。docs/research/AGENT_USAGE_C05_20261101.json。
+
 2026-11-01 C02键盘待处理工程：C02-08/09子项原Pi6项及最终build/type/240组件通过；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。完整FX01/09、全部菜单/档位/对话框、教师REVIEW、IME及物理drag未完成，未增加完整“已实现”AT，累计仍3/252。D日常/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
 
 2026-11-01 C02-06/07及C03-06仅部分实现：选读/复制/冷启与私有目录续写已测，完整AT累计仍3/252、Goal active。源码eb5d8cd，整合93fb5be；5原生/9边界/6+3实际Pi/207固定综合，最终整合build/type/240组件通过。D按授权重启到05782b4，新切片未应用日常；锁屏页面/drag、系统IME与完整REVIEW矩阵待验。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。

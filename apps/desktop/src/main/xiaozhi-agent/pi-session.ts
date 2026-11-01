@@ -768,15 +768,15 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   let publicStage='';
   const dispatchers: ToolDefinition[] = taskDefinitions.map(def => ({ ...def,description:toolCatalog&&def.name!==TOOL_DISCOVERY_NAME?toolCatalog.description(def):def.description,
     execute: async (callId, args, signal, onUpdate, context) => {
-      let result = await toolBoundary.execute({...def,execute:async(...values)=>{
-        const value=await runTools.get(def.name)!.execute(...values);
-        return versionedPlanReferences?withPlanBasisReference(value,callId,def.name):value;
-      }},callId,args,signal,onUpdate,context);
+      let result = await toolBoundary.execute({...def,execute:(...values)=>runTools.get(def.name)!.execute(...values)},callId,args,signal,onUpdate,context);
       if(quality){
         const reminder=repetition.observe(def.name,args,{content:result.content,isError:result.isError});
         result=evidence?.attach(def.name,result)||result;
         if(reminder)result={...result,content:[...result.content,{type:'text' as const,text:reminder}]};
       }
+      // Correlation metadata is not tool progress. Preserve it in the model receipt,
+      // after repetition compares the actual outcome, before any public projection.
+      if(versionedPlanReferences)result=withPlanBasisReference(result,callId,def.name);
       const data=(result.details as {data?:{count?:unknown;sources?:unknown[]}}|undefined)?.data;
       const rawQuery=(args as Record<string,unknown>)?.query ?? (args as Record<string,unknown>)?.keyword;
       const query=typeof rawQuery==='string'&&options.sanitizeFileText ? await options.sanitizeFileText(rawQuery.slice(0,140)) : undefined;

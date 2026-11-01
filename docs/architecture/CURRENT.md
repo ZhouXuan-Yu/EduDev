@@ -4,6 +4,21 @@
 
 新v3原页单元冻结cropReviewPolicy=local-crop-review.v1，第二遍沿原执行器发送已认证局部OCR、边缘、原块坐标/资产hash及首稿比较，绑定原页和首稿hash。只作为不可信辅助证据，发送前隐私差异阻断；每块2048B、合计24KiB，截断明确。旧单元不补字段或重解释；无新模型调用、图片、依赖、表或IPC。带分值章节标题后紧接父题号才认下一页另起节，正文/图注/续题仍保守。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C05循环提醒：toolBoundary真实结果→repeat/evidence→原planBasis回执→公共投影；关联及账本保持，不在摘要中过滤工具真实字段。观察器只留有界hash，原新输入/run reset，无IPC/DDL/依赖/定时器/审批变化。main+1437B，renderer/preload字节不变。docs/research/AGENT_REPEAT_C05_20261102.json。
+
+
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断：原journal/usage→有界单轮纯读→v1 allowlist DTO→typed preload→原高级设置预览→同hash本地另存。无DDL/新事实库/轮询/模型或批准；取消/失败/过期有恢复，回退只撤该入口/IPC/读适配并保留原事实与文件。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
+2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
+
+2026-11-01 C04/C05显示沿原Pi runtime-budget→SQLite→typed snapshot；PiUsageReceipt为纯呈现，PiWorkspaceContext/PiBudgetCard复用，无订阅/轮询/新DDL/IPC/Runtime。原main/preload全文件hash不变，renderer入口-125B，无新延迟结论。源码0be9823；docs/research/AGENT_USAGE_C05_20261101.json。
+
+2026-11-01 外选成果备份接原OmniEduStore导出/校验和原prepareBackupRestore；新增backup/external-outputs.ts负责冻结SQLite→精确文件→可选v1扩展，恢复只迁移已复制文件地址/根hash。shared结果可选扩展，原typed IPC不变；无DDL/依赖/Pi循环变化。不可变事件/native/check保留。源码27bb1b6，整合c792d82；docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 ## 2026-11-01 已存局部OCR失败的本地恢复
 
 沿原MaterialAiRepository.drain、writer与typed preload，在资料详情→题目与校正→原AI批次增加“仅重检本地OCR”。不新建模型批次、不读取模型账户、不增加云请求；旧失败/首稿/终稿不可变。新增material_ai_crop_rechecks与material_ai_crop_recheck_results幂等任务/结果日志；成功证据依原件、冻结输入、原块和资产hash读回，同一题ID只重算archive/document。原题全部字段和教师/答案册改动受完整指纹保护；OCR成功不自动消除两遍模型内容分歧。待处理可暂停/重启中断/显式重试，原云批次保持暂停。

@@ -17,8 +17,8 @@ const {validLocalAnswerSource}=await import('../../src/shared/local-answer-sourc
 
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-answer-quality-'));
 const report={ok:false,checks:[],metrics:{},boundary:'Real Pi SDK + serialized wire payload, deterministic HTTP/SSE and synthetic local resources. Not real DeepSeek answer quality or teacher acceptance.'};
-const check=async(name,fn)=>{await fn();report.checks.push(name);console.log('PASS '+name);};
-const capacity={id:'deepseek-flash',name:'DeepSeek Flash',contextWindow:1048576,maxOutputTokens:32768,observedAt:new Date().toISOString(),source:'official'};
+const check=async(name,fn)=>{if(process.argv.includes('--wire-only')&&!name.startsWith('actual Pi wire'))return;await fn();report.checks.push(name);console.log('PASS '+name);};
+const capacity={id:'deepseek-flash',name:'DeepSeek Flash',contextWindow:1048576,maxOutputTokens:32768,observedAt:new Date().toISOString(),source:'official',effort:{supportedLevels:['low','high','max'],defaultLevel:'high'}};
 const originalFetch=globalThis.fetch,originalMode=process.env.XIAOZHI_ANSWER_QUALITY;
 const definition=i=>({name:`mcp_${'a'.repeat(24)}_tool${i}`,label:`功能${i}`,description:i===29?'光学折射分析工具':'教育能力 '+i,parameters:{type:'object',properties:{query:{type:'string'}},required:['query']},execute:async()=>({content:[{type:'text',text:'授权内结果'}],details:{success:true}})});
 let agent;
@@ -131,7 +131,7 @@ try{
     const result=await agent.prompt('详细证明 1+1=2');assert(result.ok,JSON.stringify(result));assert.equal(captures.length,3);
     assert(captures[1].tools.length>captures[0].tools.length);
     assert.equal(captures[0].max_tokens,16384);assert.equal(captures[0].reasoning_effort,'high');assert(captures[0].tools.length<33);
-    const next=await agent.prompt('你好');assert(next.ok);assert.equal(next.truncated,true,'provider output limit must be visible to the host');assert.equal(captures.at(-1).max_tokens,4096);assert.equal(captures.at(-1).reasoning_effort,'low');
+    const next=await agent.prompt('你好');assert(next.ok);assert.equal(next.truncated,true,'provider output limit must be visible to the host');assert.equal(captures.at(-1).max_tokens,4096);assert.equal(captures.at(-1).thinking.type,'disabled');assert.equal(captures.at(-1).reasoning_effort,'none');
     assert.equal(agent.session.sessionManager.getEntries().filter(e=>e.customType==='xiaozhi.answer-metrics.v1').length,2);
     report.metrics.wire={firstTools:captures[0].tools.length,afterDiscovery:captures[1].tools.length,deepMaxTokens:captures[0].max_tokens,fastMaxTokens:captures.at(-1).max_tokens};
     const sessionFile=agent.sessionFile;await agent.dispose();agent=undefined;

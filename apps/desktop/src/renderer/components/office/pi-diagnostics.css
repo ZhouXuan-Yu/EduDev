@@ -1,0 +1,4 @@
+.pi-diagnostic-choice { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pi-diagnostic-choice select { max-width: 100%; min-height: 32px; }
+.pi-diagnostic-preview { max-height: 360px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
+.pi-diagnostic-digest { overflow-wrap: anywhere; }
