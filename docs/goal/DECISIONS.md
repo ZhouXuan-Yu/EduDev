@@ -1,5 +1,11 @@
 # Goal 决策记录
 
+## 2026-11-01 已存局部OCR失败的本地恢复
+
+沿原MaterialAiRepository.drain、writer与typed preload，在资料详情→题目与校正→原AI批次增加“仅重检本地OCR”。不新建模型批次、不读取模型账户、不增加云请求；旧失败/首稿/终稿不可变。新增material_ai_crop_rechecks与material_ai_crop_recheck_results幂等任务/结果日志；成功证据依原件、冻结输入、原块和资产hash读回，同一题ID只重算archive/document。原题全部字段和教师/答案册改动受完整指纹保护；OCR成功不自动消除两遍模型内容分歧。待处理可暂停/重启中断/显式重试，原云批次保持暂停。
+
+原parse_failed间歇根因未关闭：同一hash资产在独立进程与实际宿主复探均成功，不能据此称OCR引擎已修复。原宿主每次认证646文件279039929B的成本、跨页/双遍内容与解题稳定性、答案联网、Pi整卷、40GB召回/P95和最终安装均保持开放，Goal active；D日常/安装未更新。回滚先暂停新本地任务并停止调度写路径，保留新读适配、日志、原件/资产与两遍回执，不删除新表或退回只读旧回执的版本。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#localCropRecovery。
+
 2026-11-01 本轮核对接线：复用原host回执、原notice和官方Disclosure，失效/跨轮不显示为有效，本轮核对/跨轮任务/逐文件状态保持各自范围；不新建核验或安全批准流程。源码399f1f7，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
 
 2026-11-01 C02键盘待处理工程：只为教师显式进入移交焦点，非问题卡无可见输入时停在审阅trigger，不默认选批准。原File通知可能卸载，关闭后按同会话稳定入口返回；不扩大权限、确认层次或Agent循环。完整252验收定义与W3→S/T顺序不变。
