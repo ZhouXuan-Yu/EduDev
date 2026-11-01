@@ -64,6 +64,10 @@ export function createPiBudgetState(sql: Sql) {
     async usage(id:string):Promise<XiaozhiUsage[]> {
       return (await sql.all('SELECT * FROM xiaozhi_pi_usage WHERE conversation_id=? ORDER BY updated_at,rowid',[id])).map(publicUsage);
     },
+    async usageForRun(id:string,runId:string):Promise<XiaozhiUsage|undefined>{
+      const row=(await sql.all('SELECT * FROM xiaozhi_pi_usage WHERE conversation_id=? AND run_id=? AND length(CAST(payload_json AS BLOB))<=16384',[id,runId]))[0];
+      return row?publicUsage(row):undefined;
+    },
     async recoverBudget() {
       for(const row of await sql.all('SELECT * FROM xiaozhi_pi_usage WHERE schema_version IN (1,2)')) {
         let value:XiaozhiUsage;try{value=publicUsage(row);}catch{continue;}

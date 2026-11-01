@@ -1,4 +1,5 @@
 import {registerDeliveryCheckIpc} from './checks/api';
+import {registerDiagnosticsIpc} from './diagnostics/api';
 import {createManagedTools} from '../managed-tools/service';
 import {registerManagedToolIpc} from '../managed-tools/api';
 import {registerScienceExportIpc} from './science-export-api';
@@ -109,6 +110,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerQuestionContextIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerWorkspaceFileIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});
   registerDeliveryCheckIpc({ipcMain:options.ipcMain,allowed:fromMain,service:host.deliveryChecks});
+  registerDiagnosticsIpc({ipcMain:options.ipcMain,allowed:fromMain,store:options.store});
   registerScienceExportIpc({ipcMain:options.ipcMain,allowed:fromMain,resolve:host.resolveFileWorkspace});
   registerSkillManagementIpc({ ipcMain: options.ipcMain, allowed: fromMain, host, choose: async () => {
     const current = options.window(); if (!current || current.isDestroyed()) return;

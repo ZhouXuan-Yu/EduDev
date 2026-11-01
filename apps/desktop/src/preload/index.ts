@@ -1,4 +1,5 @@
 import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
+import type {DiagnosticInput,DiagnosticExportInput,DiagnosticPreview,DiagnosticSaved,DiagnosticResult} from '../shared/xiaozhi-diagnostics';
 import type {ManagedToolView,ManagedToolResult,ManagedToolInput,ManagedToolVersionInput} from '../shared/managed-tools';
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
@@ -224,6 +225,8 @@ const api = {
   selectXiaozhiModel: (input: XiaozhiSessionModelInput) => ipcRenderer.invoke('xiaozhi:model-select', input) as Promise<XiaozhiSettingsResult<XiaozhiSessionModel>>,
   saveXiaozhiThinking: (input: import('../shared/xiaozhi-thinking').ThinkingInput) => ipcRenderer.invoke('xiaozhi:thinking-save', input) as Promise<XiaozhiSettingsResult<XiaozhiSettingsView>>,
   getXiaozhiSnapshot: (id: string) => ipcRenderer.invoke('xiaozhi:snapshot', id) as Promise<XiaozhiWorkspaceSnapshot>,
+  previewXiaozhiDiagnostic:(input:DiagnosticInput)=>ipcRenderer.invoke('xiaozhi:diagnostic-preview',input) as Promise<DiagnosticResult<DiagnosticPreview>>,
+  saveXiaozhiDiagnostic:(input:DiagnosticExportInput)=>ipcRenderer.invoke('xiaozhi:diagnostic-save',input) as Promise<DiagnosticResult<DiagnosticSaved>>,
   refreshXiaozhiRecords: (id:string)=>ipcRenderer.invoke('xiaozhi:records-refresh',id) as Promise<XiaozhiActionResult>,
   exportXiaozhiReply: (input: import('../shared/reply-export').ReplyExportInput) => ipcRenderer.invoke('xiaozhi:reply-export', input) as Promise<import('../shared/reply-export').ReplyExportResult>,
   getXiaozhiHistoryPage: (input: import('../shared/xiaozhi-agent').XiaozhiHistoryPageInput) => ipcRenderer.invoke('xiaozhi:history-page', input) as Promise<import('../shared/xiaozhi-agent').XiaozhiHistoryPage>,

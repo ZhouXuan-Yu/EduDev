@@ -199,6 +199,11 @@ export function createEventJournal(sql: Sql,readback:ReceiptReadback={}) {
       const row=(await sql.all('SELECT * FROM xiaozhi_event_runs WHERE session_id=? AND run_id=?',[sessionId,runId]))[0];
       return row?{cursor:cursor(row),status:String(row.status),turn:JSON.parse(String(row.turn_json)) as OfficeProjectedTurn}:null;
     },
+    /** Explicit support read: one owned run, bounded bytes, no recovery or replay. */
+    async diagnosticSnapshot(sessionId:string,runId:string){
+      const row=(await sql.all('SELECT generation,revision,sequence,run_id,turn_json FROM xiaozhi_event_runs WHERE session_id=? AND run_id=? AND length(CAST(turn_json AS BLOB))<=4194304',[sessionId,runId]))[0];
+      return row?{cursor:cursor(row),turn:JSON.parse(String(row.turn_json)) as OfficeProjectedTurn}:null;
+    },
     async sourceWindow(sessionId:string,runId:string,callId:string,offset:number,limit:number) {
       if(!Number.isSafeInteger(offset)||offset<0||!Number.isSafeInteger(limit)||limit<0||limit>32)throw Error('invalid_input');
       const anchor=(await sql.all(`SELECT j.sequence FROM xiaozhi_event_journal j JOIN xiaozhi_event_runs r ON r.run_id=j.run_id
