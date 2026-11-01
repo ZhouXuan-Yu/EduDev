@@ -1,6 +1,7 @@
 import { useEffect,useRef,useState } from 'react';
 import { ChatTool } from '../../heroui-pro/components/chat-tool';
 import type { XiaozhiBudget, XiaozhiBudgetSettings, XiaozhiUsage } from '../../../shared/xiaozhi-agent';
+import {PiUsageReceipt} from './PiUsageReceipt';
 
 const fields: {key:keyof XiaozhiBudget;label:string;min:number;max:number;scale:number}[]=[
   {key:'maxModelCalls',label:'模型请求上限',min:1,max:64,scale:1},
@@ -15,16 +16,9 @@ export function PiBudgetCard({sessionId,settings,usage,running,onSave}:{sessionI
   useEffect(()=>{setDraft(settings.budget);},[sessionId,settings.version]);
   async function save(){if(running||lock.current)return;lock.current=true;setBusy(true);setMessage('');try{await onSave(settings.version,draft);setMessage('已保存，下轮生效。');}catch(error){setMessage(error instanceof Error?error.message:'预算未保存，请重试。');}finally{lock.current=false;setBusy(false);}}
   return <section className="pi-budget-card" data-testid="pi-budget-card">
-    <h4>本轮用量</h4><div data-testid="pi-usage-receipt">
-      {usage ? <>
-        <p>模型请求 {usage.modelCalls} / {usage.budget.maxModelCalls} · 工具 {usage.toolCalls} / {usage.budget.maxToolCalls}</p>
-        <p>Token：{usage.tokens?`${usage.tokens.total.toLocaleString()}${usage.completeness==='partial'?'（部分记录）':''}`:'未知'}</p>
-        {usage.tokens && <p>输入 {usage.tokens.input} · 输出 {usage.tokens.output}<br/>缓存读取 {usage.tokens.cacheRead} · 缓存写入 {usage.tokens.cacheWrite}</p>}
-        <p>活动 {(usage.activeMs/1000).toFixed(1)} 秒 · 等待 {(usage.waitingMs/1000).toFixed(1)} 秒</p>
-        {usage.exhausted && <p role="status">已达到{reasons[usage.exhausted]}，后续调用已停止。</p>}
-      </> : <p>发送后显示实际用量。</p>}
-      <p>费用：未知</p><p className="pi-budget-help">Token 为供应商已报告用量；阈值限制下一次请求，单次请求可能超过。</p>
-    </div>
+    <h4>本轮用量</h4><PiUsageReceipt usage={usage} runId={usage?.runId} limited/>
+    {usage?.exhausted && <p role="status">已达到{reasons[usage.exhausted]}，后续调用已停止。</p>}
+    <p className="pi-budget-help">Token 为供应商已报告用量；阈值限制下一次请求，单次请求可能超过。</p>
     <ChatTool defaultExpanded={false} state="output-available" data-testid="pi-budget-settings">
       <ChatTool.Trigger data-testid="pi-budget-expand">运行预算</ChatTool.Trigger>
       <ChatTool.Content>
