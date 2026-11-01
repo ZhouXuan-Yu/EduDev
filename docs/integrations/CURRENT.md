@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 C03复用原sqlite3只读快照、文件hash、workspace路径校验及原恢复激活；无下载、依赖或凭证修改。局部扩展不改Hana/Pi/vendor，0付费；正常整合origin/main ad55ed9的独立OCR恢复，无冲突，本片生产文件无差异，最终build/type/240组件通过。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 ## 2026-11-01 已存局部OCR失败的本地恢复
 
 沿原MaterialAiRepository.drain、writer与typed preload，在资料详情→题目与校正→原AI批次增加“仅重检本地OCR”。不新建模型批次、不读取模型账户、不增加云请求；旧失败/首稿/终稿不可变。新增material_ai_crop_rechecks与material_ai_crop_recheck_results幂等任务/结果日志；成功证据依原件、冻结输入、原块和资产hash读回，同一题ID只重算archive/document。原题全部字段和教师/答案册改动受完整指纹保护；OCR成功不自动消除两遍模型内容分歧。待处理可暂停/重启中断/显式重试，原云批次保持暂停。

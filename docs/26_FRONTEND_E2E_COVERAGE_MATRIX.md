@@ -1,5 +1,7 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 C03工程检查：external-output-backup-ui.mjs沿原Pi明确选目录→整包审阅保存HTML/8页PPT→原设置导出→新副本恢复/显式激活/冷启→教学文件PPT与HTML交互，共4项通过，1366×768/1920×1080控件可达；原生/事件及源文件hash不变，0重放/renderer错误。首次HTML断言失败后复用同一已保存包，3本地SSE/0付费。固定构建fe48aee6…；最终c792d82整合另行build/type/240组件通过，未冒称最终包重跑全部UI。完整FX07/10及252AT仍待，日常D/Office/WPS/安装未验。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 ## 2026-11-01 已存局部OCR失败的本地恢复
 
 源码66976ed，整合main 4c58080后为4c1e683；13处Markdown冲突逐段保留双方，无知识库生产冲突。最终固定构建build/type、240组件、81边界、既有桌面207/207及原记录0云读回3项均exit0，测试后main/preload/renderer指纹未变。207为隔离既有综合路径，不代替自然整卷/完整Pi验收；共享截图目录不作唯一证据。真实8块恢复与最终读回共用相同main/preload字节；最终renderer含协作者焦点/核对回执及本地错误提示，较4fe07fc +6278B，main +19260B/preload不变，仅体积对比，无吞吐/P95结论。完整Goal active，仍4自动稿/11待核；D日常和安装未更新。

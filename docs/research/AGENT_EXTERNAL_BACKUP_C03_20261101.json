@@ -1,0 +1,163 @@
+{
+  "date": "2026-11-01",
+  "sourceCommit": "27bb1b6cf3e4c575c5e5ea23692b525dc40ba881",
+  "integratedCommit": "c792d821d2c5eb95e9e48d0012db75c5e08412ea",
+  "requirements": [
+    "C03-05",
+    "C03-06",
+    "C03-07",
+    "E08-10"
+  ],
+  "state": "Engineering subfeature implemented. Full FX07/10 and complete AT remain pending; Goal active, 3/252 fully accepted.",
+  "changes": [
+    "Backup snapshot includes exact registered external text/copy/Office outputs and registered attachment/resource/mistake originals. No external directory enumeration.",
+    "Optional v1 extension records copied roots/counts and missing/unlocatable items. Actual bytes are preserved independently of historical saved-byte/check facts.",
+    "Restore copies files into owned RecoveredWorkspaces, relocates exact mutable file addresses/root bindings and preserves immutable event/native/check facts.",
+    "Original settings shows counts/omissions; original Teaching Files opens restored HTML/PPT. Old v1 without extension still works."
+  ],
+  "checks": {
+    "domain": [
+      "Snapshot facts copy exact external targets, inferred old Office root and registered originals without scanning unrelated files",
+      "Teacher outside edits are preserved byte-for-byte without rewriting the old saved-byte evidence or source database",
+      "Optional extension validates exact counts, roots, duplicate keys and descriptive source identities",
+      "Restoration creates independent owned workspaces and relocates only copied files; original data and native event facts remain unchanged",
+      "Prepared-copy verification detects subsequent external-copy corruption before activation",
+      "An actual link in a recorded output is rejected without following or copying its target",
+      "A recorded file changing during its copy aborts the backup instead of certifying mixed bytes"
+    ],
+    "rendererOmissions": 3,
+    "existingRestore": 8,
+    "originalPiUi": [
+      "Original Pi creates and approves real HTML plus eight-page editable PPT in the explicitly selected external workspace",
+      "Visible original settings backup includes two exact external files, reports their count and excludes unregistered teacher-workspace files",
+      "Explicit activation and cold launch relocate the selected workspace only to its owned copied files; source database/files and immutable native/event identities stay unchanged",
+      "Formal Teaching Files opens the restored PPT and exact HTML version; the offline HTML control still changes its visible result"
+    ],
+    "initialBuildTypecheck": "exit 0",
+    "initialRendererComponents": 240,
+    "integratedBuildTypecheck": "exit 0",
+    "integratedRendererComponents": 240,
+    "newPaidRequests": 0,
+    "localSyntheticRequests": 3,
+    "coldReplayRequests": 0,
+    "full207": "Not repeated; passed original evidence remains on its original build.",
+    "rawEvidenceIntegrity": "20 gzip archives decompressed and hash/size verified; source script hashes match; controlled feature preload tree identical to baseline.",
+    "traceability": "252 rows retained, only four target rows changed, three prior passed AT rows unchanged."
+  },
+  "diagnostics": [
+    "First UI attempt asserted input HTML equals saved HTML and failed because original host adds its offline marker/CSP header. Product behavior was correct; assertion now checks preserved approved payload and hashes actual saved bytes. Same already-saved bundle resumed with no regeneration.",
+    "An early domain fixture misinterpreted paper_outputs.workspace_hash as input-root hash. Source inspection corrected it to hash(actual output directory); final domain and original formal UI pass. Initial report retained.",
+    "Code graph search_code timed out; new unindexed module discovery used bounded direct-file fallback after insufficient graph results."
+  ],
+  "performance": {
+    "before": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e06-run-receipts-final-71a6908",
+      "hash": "222f6adcb381da25f6d5831f229bc84fd1343a958d47bd520af3ff90a04aedc9",
+      "sizes": {
+        "main": 14555460,
+        "preload": 36248,
+        "renderer": 20119783
+      },
+      "rendererEntryBytes": 7386960
+    },
+    "feature": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c03-external-backup-4c58080",
+      "hash": "fe48aee6b47610dcc5778adedce5ff98d044b01bae1e52b528e2645bdee9ef16",
+      "sizes": {
+        "main": 14566313,
+        "preload": 36248,
+        "renderer": 20121216
+      },
+      "rendererEntryBytes": 7388393
+    },
+    "integrated": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c03-external-backup-integrated-c792d82",
+      "hash": "c83642b392f767aaf0e55ae7d1b4116a8eff4d04c5b28e0f734cdf1d9be6248e",
+      "sizes": {
+        "main": 14585590,
+        "preload": 36248,
+        "renderer": 20123575
+      },
+      "rendererEntryBytes": 7390752
+    },
+    "controlledFeatureByteDelta": {
+      "main": 10853,
+      "preload": 0,
+      "renderer": 1433,
+      "rendererEntry": 1433
+    },
+    "scope": "Byte comparison only. Integrated build also includes unrelated upstream local OCR recheck. No new P95, model quality or throughput conclusion. Backup work runs only on explicit settings action; no streaming subscriptions added."
+  },
+  "audit": {
+    "exitCode": 1,
+    "newDependencies": 0,
+    "info": 0,
+    "low": 8,
+    "moderate": 29,
+    "high": 8,
+    "critical": 0,
+    "total": 45,
+    "note": "Existing dependency findings; lockfile unchanged. No audit fix or dependency upgrade."
+  },
+  "scripts": [
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/external-output-backup-smoke.mjs",
+      "sha256": "7af8c35625c5aac6bcb5a5f6a0c13bdde55aadd29045ed4e0edfbb5c8b26233b"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/external-output-backup-ui.mjs",
+      "sha256": "55a55a49b7bba411dff6b04388c1cc91531b57f1671694ea0bccf7bf07f4966c"
+    },
+    {
+      "path": "apps/desktop/scripts/xiaozhi-agent/external-output-backup-renderer.mjs",
+      "sha256": "9d7f6327b84855644b20d5049b8c17c4535d67fd99eaec1bfd4e8e4808f2a80b"
+    }
+  ],
+  "sourceFileHashes": [
+    {
+      "name": "外选浮力.html",
+      "sha256": "e5eb313c83a00c983a0bf2b11efc8a845ce374c46a2ae9310e0a00edd401bd27"
+    },
+    {
+      "name": "外选浮力.pptx",
+      "sha256": "274bbed9ea81b33fd5317ac7a26708ea919900d863738c39af6aa2cafd9cc2be"
+    }
+  ],
+  "fixtureRoots": {
+    "ui": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-external-backup-ui-9Xe61g",
+    "domain": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-external-backup-ZCR7jI",
+    "restoredDataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-external-backup-ui-9Xe61g\\restored\\XiaozhiRecovered-03a8e381-33cb-468a-9c8f-bb97a6177472\\OmniEduData"
+  },
+  "rawEvidence": {
+    "manifest": "docs/research/evidence/external-backup/20261101/manifest.json",
+    "count": 20
+  },
+  "limitations": [
+    "Full cross-domain FX07/FX10, teacher quality review, nonempty check-report preservation and native Office/WPS/system behavior remain separate acceptance.",
+    "Historical unlocatable text/copy directories and missing files produce explicit omissions; unregistered external files are not scanned or included.",
+    "Current D daily runtime last verified at 05782b4; Windows unlock still pending. This source/integrated build has not been applied to daily/installed app."
+  ],
+  "rollback": "Revert new export/restore adapters while preserving optional manifest readers, existing backups and recovered instances. No table/column/dependency changes; no user directory deletion.",
+  "changedProductionFiles": [
+    "apps/desktop/src/main/backup/external-outputs.ts",
+    "apps/desktop/src/main/backup/restore.ts",
+    "apps/desktop/src/main/backup/restore-database.ts",
+    "apps/desktop/src/main/db.ts",
+    "apps/desktop/src/shared/contracts.ts",
+    "apps/desktop/src/renderer/components/DataBackupPanel.tsx"
+  ],
+  "commands": {
+    "cwd": "C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop",
+    "passed": [
+      "npm.cmd run build",
+      "npm.cmd run test:renderer-components",
+      "node scripts/xiaozhi-agent/backup-restore-smoke.mjs",
+      "node scripts/xiaozhi-agent/external-output-backup-smoke.mjs",
+      "node scripts/xiaozhi-agent/external-output-backup-renderer.mjs",
+      "node scripts/xiaozhi-agent/external-output-backup-ui.mjs test-results/c03-external-backup-4c58080 --resume C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-external-backup-ui-9Xe61g"
+    ],
+    "diagnostic": "Original UI command without --resume failed at the host HTML-prefix assertion; retained attempt-1.json and failure.png. Resume only uses that saved record.",
+    "audit": "npm.cmd audit --json (exit 1, 45 existing findings)",
+    "rootCheck": "git diff --check (exit 0)"
+  }
+}

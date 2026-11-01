@@ -1,5 +1,7 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-01 C03外选目录工程子夹具：自有teacher-workspace通过原Pi保存HTML+原8页/每页备注PPT，另有未登记资料不复制；外选浮力.html SHA256 e5eb313c83a00c983a0bf2b11efc8a845ce374c46a2ae9310e0a00edd401bd27；外选浮力.pptx SHA256 274bbed9ea81b33fd5317ac7a26708ea919900d863738c39af6aa2cafd9cc2be。领域夹具另含两根同名文件、历史Office根、另选paper输出、登记原件、缺失/未知根/实际链接/中途外改及恢复副本损坏。原设置/冷启/教学文件4项通过，实际源字节/native/journal一致；3本地SSE/0付费。只补充、不替换原FX07/FX10集合与判定。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 2026-11-01 执行补充（不改冻结FX）：独立自有资料合成资料.txt含核对码37，缺失资料.txt不存在；原Pi实际读取一成功一not_found，受控SSE故意声称均完成，UI仍显示host partial。6次本机合成请求/0付费，同记录样式补尾0调用、原消息/事件/源文件hash不变。此子夹具不替代FX10混合产物与完整AT，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
 
 2026-11-01 C02键盘待处理工程补充夹具keyboard-synthetic.v1/5d9d981886ae10f0f2b705e4bb9cb820e487e6452905e55ad513df0a45ed0e54：合成课堂形式问题（小组合作/独立观察）、原v3任务计划及keyboard-lesson.md，最终固定原Pi5次本机SSE，精确文件hash cf044f21c732bfda17ed6394c5e4361eb564f46a95c1a54d2aed1355cc2cb127；宽1366/480 CSS px，实际环境DPR按截图，本轮不替代原FX01/FX09输入或完整判定。生成/确认/冷启6项通过；0真实provider。详docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。

@@ -1,5 +1,7 @@
 # Goal 决策记录
 
+2026-11-01 C03：复用原设置/在线SQLite快照/manifest/新副本激活，不新增备份服务、IPC或依赖；外选文件来源限已登记精确路径，实际字节独立于原保存证据。原外部权限不恢复，只绑定自有副本；有遗漏须显式显示。完整252AT及W3→S/T顺序不变。
+
 ## 2026-11-01 已存局部OCR失败的本地恢复
 
 沿原MaterialAiRepository.drain、writer与typed preload，在资料详情→题目与校正→原AI批次增加“仅重检本地OCR”。不新建模型批次、不读取模型账户、不增加云请求；旧失败/首稿/终稿不可变。新增material_ai_crop_rechecks与material_ai_crop_recheck_results幂等任务/结果日志；成功证据依原件、冻结输入、原块和资产hash读回，同一题ID只重算archive/document。原题全部字段和教师/答案册改动受完整指纹保护；OCR成功不自动消除两遍模型内容分歧。待处理可暂停/重启中断/显式重试，原云批次保持暂停。

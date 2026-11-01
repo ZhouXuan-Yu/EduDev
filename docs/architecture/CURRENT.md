@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 外选成果备份接原OmniEduStore导出/校验和原prepareBackupRestore；新增backup/external-outputs.ts负责冻结SQLite→精确文件→可选v1扩展，恢复只迁移已复制文件地址/根hash。shared结果可选扩展，原typed IPC不变；无DDL/依赖/Pi循环变化。不可变事件/native/check保留。源码27bb1b6，整合c792d82；docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 ## 2026-11-01 已存局部OCR失败的本地恢复
 
 沿原MaterialAiRepository.drain、writer与typed preload，在资料详情→题目与校正→原AI批次增加“仅重检本地OCR”。不新建模型批次、不读取模型账户、不增加云请求；旧失败/首稿/终稿不可变。新增material_ai_crop_rechecks与material_ai_crop_recheck_results幂等任务/结果日志；成功证据依原件、冻结输入、原块和资产hash读回，同一题ID只重算archive/document。原题全部字段和教师/答案册改动受完整指纹保护；OCR成功不自动消除两遍模型内容分歧。待处理可暂停/重启中断/显式重试，原云批次保持暂停。

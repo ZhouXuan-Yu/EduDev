@@ -1,5 +1,7 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+2026-11-01 C03外选目录备份工程子项已实现（27bb1b6/整合c792d82），原Pi4、领域7及整合build/type/240组件通过；完整AT仍3/252，Goal active。完整28WP/252条及W3先齐功能后集中、再S/T的目标不缩减。后续仍补C03全领域/故障与E06/E07/E08+C未齐功能。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 2026-11-01 C02-06/07及C03-06仅部分实现：选读/复制/冷启与私有目录续写已测，完整AT累计仍3/252、Goal active。源码eb5d8cd，整合93fb5be；5原生/9边界/6+3实际Pi/207固定综合，最终整合build/type/240组件通过。D按授权重启到05782b4，新切片未应用日常；锁屏页面/drag、系统IME与完整REVIEW矩阵待验。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
 
 2026-11-01 C02正文缩放工程已实现（af4b7ab，整合be7657c）：修复极窄导航占列、顶部换行/发送可达、文件任务面板关闭被裁剪及设置主区0宽；窄设置行上下排列。原输入框内部/弹层与Pi不变。最终build/type、240组件、原正式Pi12项/18组布局及复杂历史hash/长草稿/冷启、一次受控流停止通过，0新付费/renderer错误；一次固定整合构建207综合通过（最后一行设置CSS前，最终专项另列）。保留失败和测试名称/截图修正，不重复全套。完整AT仍3/252、Goal active；物理drag/IME/全键盘审批和完整C矩阵未通过，日常窗口/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice；下一剩余C02功能与C06，阶段对齐后集中W3，再S/T。
