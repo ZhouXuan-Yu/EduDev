@@ -1,5 +1,11 @@
 # 当前架构
 
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断：原journal/usage→有界单轮纯读→v1 allowlist DTO→typed preload→原高级设置预览→同hash本地另存。无DDL/新事实库/轮询/模型或批准；取消/失败/过期有恢复，回退只撤该入口/IPC/读适配并保留原事实与文件。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
 2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
 
 2026-11-01 C04/C05显示沿原Pi runtime-budget→SQLite→typed snapshot；PiUsageReceipt为纯呈现，PiWorkspaceContext/PiBudgetCard复用，无订阅/轮询/新DDL/IPC/Runtime。原main/preload全文件hash不变，renderer入口-125B，无新延迟结论。源码0be9823；docs/research/AGENT_USAGE_C05_20261101.json。

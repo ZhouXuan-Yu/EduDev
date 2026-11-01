@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断：沿原Pi事件/预算纯读，不改vendor/Hana循环、权限、Composer或provider；新增两条typed IPC及临时快照服务，无依赖或迁移。原正式Pi5项与双尺寸冷读2项通过，2本地响应/0付费。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
 2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
 
 2026-11-01 用量复用原SDK/host预算观测及snapshot，不改Hana/Pi/vendor/凭证/依赖/下载。4次本地合成响应+1次失败本地尝试，0付费；审计45（8高29中8低/0严重，exit1）沿旧记录。docs/research/AGENT_USAGE_C05_20261101.json。

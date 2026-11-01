@@ -1,5 +1,11 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断（9e9e586）工程子项已实现：原设置先预览allowlist单轮快照再导出精确字节，分类错误与unknown用量保持，取消/失败/冷启局部通过；12领域/240组件/原Pi5/同记录双尺寸补尾2，2本地请求、0付费。完整FX06/10/13及AT标准不变，累计完整通过仍3/252。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
 2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
 
 2026-11-01 C04/C05用量工程子项（0be9823）：本轮记录完整性、未知费用、停止后记录及无虚假缓存收益已贯通原详情/兼容预算，局部检查通过；完整AT仍按W3集中，累计3/252，最终效果标准不变。另将上轮C03外选文件备份的真实进度补记到本任务书原REQ行；不新增验收通过。docs/research/AGENT_USAGE_C05_20261101.json。
@@ -831,12 +837,12 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
 | REQ-C04-01 | 真实阶段 | 界面阶段来自真实事件；等待模型只称等待；工具结果与公开说明区分 | [AT-C04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-01) | 待验收 |
-| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收 |
+| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 |
 | REQ-C04-04 | 事件保序 | 序列连续不乱序/重复/丢终态；推理合并不丢正文；缺口可补读 | [AT-C04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-04) | 待验收 |
 | REQ-C04-05 | 重复投递 | 一次呈现一次记账；游标正确；不重新执行写文件等副作用 | [AT-C04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-05) | 待验收 |
-| REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) | 待验收 |
-| REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json) |
+| REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
+| REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json)  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-08 | 旧事件回放 | 旧正文/来源/状态可读；未知字段不使整页崩溃；不自动调用模型补写历史 | [AT-C04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-08) | 待验收 |
 | REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) | 待验收 |
 | REQ-C04-10 | 独立检查报告 | 报告带源码SHA、实际运行根、时间、样本、命令退出与证据路径；未执行不能算通过 | [AT-C04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-10) | 待验收 |

@@ -1,5 +1,11 @@
 # 当前产品方向
 
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断：教师可在原高级设置选择已存轮次，先查看脱敏版本/阶段/错误和已记录用量，再将同一快照另存本机；不会自动重做任务。功能工程子项已实现，完整C04/阶段AT待集中，累计3/252。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
 2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
 
 2026-11-01 原任务详情可看本轮已记录Token/完整性、模型尝试/工具数与活动/等待，费用未知；部分记录明确总量未知，停止仍可查看并提示在途可能计费。无虚构缓存收益，不增加教师操作。完整C04/C05、日常/安装尚未验收；docs/research/AGENT_USAGE_C05_20261101.json。

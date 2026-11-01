@@ -1,5 +1,11 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断工程已实现：原设置展开高级分组→选择成功/失败轮→预览→取消/另存/失败重试→文件hash/SQLite/native/draft→冷启；5项通过，另0调用双尺寸稳定帧补尾2项（1366/1920原生DPR1）。首导航失败和旧帧保留；12领域/240组件/build/type通过，0付费。原生保存对话框为自有路径适配夹具，物理桌面锁屏不验；完整FX06/10/13与AT仍待集中，不新增完整通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
 2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
 
 2026-11-01 C04/C05工程：usage-receipt-ui.mjs原Pi实际完整usage/部分缺usage/Stop三场景及冷启通过4项；初版双尺寸仅isVisible证据不足，改用usage-receipt-viewport.mjs同记录0模型冷读2项，展开动画完成后实际滚动/矩形边界、1366×768与1920×1080、DPR1及截图均通过，原usage/events/草稿一致。build/type/240组件、7边界通过，4本地SSE+1失败本地尝试/0新付费，37原始证据含全部失败。完整FX09/10/13、物理桌面/IME/日常/安装保留未验；docs/research/AGENT_USAGE_C05_20261101.json。
