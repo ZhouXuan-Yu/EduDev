@@ -308,6 +308,7 @@ const api = {
   decideXiaozhi: (input: XiaozhiDecisionInput) => ipcRenderer.invoke('xiaozhi:decide', input) as Promise<XiaozhiActionResult>,
   reviewXiaozhiChange: (input: XiaozhiChangeReviewInput) => ipcRenderer.invoke('xiaozhi:change-review', input) as Promise<XiaozhiChangeResult<XiaozhiChangeReview>>,
   decideXiaozhiChange: (input: XiaozhiChangeDecision) => ipcRenderer.invoke('xiaozhi:change-decide', input) as Promise<XiaozhiChangeResult<XiaozhiChangeSummary>>,
+  deliveryCatalog:(input:import('../shared/xiaozhi-delivery').DeliveryCatalogInput)=>ipcRenderer.invoke('xiaozhi:delivery-catalog',input) as Promise<import('../shared/xiaozhi-delivery').DeliveryCatalogResult>,
   decideXiaozhiDelivery:(input:import('../shared/xiaozhi-delivery').DeliveryDecision)=>ipcRenderer.invoke('xiaozhi:delivery-decide',input) as Promise<import('../shared/xiaozhi-delivery').DeliveryResult>,
   reviewXiaozhiOffice:(input:OfficeArtifactReviewInput)=>ipcRenderer.invoke('xiaozhi:office-review',input) as Promise<OfficeArtifactResult<OfficeArtifactReview>>,
   officeVersion:(input:import('../shared/xiaozhi-office-versions').OfficeVersionInput)=>ipcRenderer.invoke('xiaozhi:office-version',input) as Promise<import('../shared/xiaozhi-office-versions').OfficeVersionResult>,

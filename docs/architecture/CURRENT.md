@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 E08整包目录：原delivery state metadata分页→readonly deliveryCatalog host→typed IPC/preload→Teaching Files整包tab→原卡/预览/原Pi start。resumeDeliveryId可选字段绑定原命令hash、Active与整包工具；后继沿原parentId，无新表/依赖/Runtime。
+
 2026-11-01 E08：原office/text state + journal.sourceWindow → artifact-sources只读薄适配 → typed IPC/preload → chat/Teaching Files/selected history；现有源控件/文件面板精确版本锁复用，无新表/依赖/Runtime。合并主线ChatSources保留引用展开/焦点；详artifactSourcesSlice。
 
 ## 2026-11-01 整份试卷质量漏斗与共性修复

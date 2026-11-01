@@ -23,6 +23,11 @@ export function createDeliveryState(sql:Sql){
   if(await sql.change('UPDATE xiaozhi_delivery_bundles SET value_json=? WHERE id=? AND value_json=?',[JSON.stringify(next),row.id,JSON.stringify(row)])!==1)throw Error('conflict');return next;
  }
  return {get,list,update,
+  async catalog(offset:number){
+   const rows=await sql.all(`SELECT b.*,s.title FROM xiaozhi_delivery_bundles b JOIN ai_conversation_sessions s ON s.id=b.session_id WHERE s.archived_at IS NULL ORDER BY b.created_at DESC,b.id DESC LIMIT 12 OFFSET ?`,[offset]);
+   const total=Number((await sql.all('SELECT count(*) AS n FROM xiaozhi_delivery_bundles b JOIN ai_conversation_sessions s ON s.id=b.session_id WHERE s.archived_at IS NULL'))[0]?.n??0);
+   return {items:rows.map(raw=>{const row=parse(raw);return{id:row.id,sessionId:row.sessionId,title:String(raw.title||'教学文件'),createdAt:String(raw.created_at),state:row.state,paths:row.files.map(f=>f.path)};}),total,...(offset+rows.length<total?{nextOffset:offset+rows.length}:{})};
+  },
   async migrate(){await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_delivery_bundles(id TEXT PRIMARY KEY,session_id TEXT NOT NULL REFERENCES ai_conversation_sessions(id),run_id TEXT NOT NULL,call_id TEXT NOT NULL,value_json TEXT NOT NULL CHECK(json_valid(value_json)),created_at TEXT NOT NULL,UNIQUE(session_id,run_id,call_id))`);await sql.run('CREATE INDEX IF NOT EXISTS xiaozhi_delivery_session ON xiaozhi_delivery_bundles(session_id,created_at)');},
   async create(row:DeliveryRow){
    if(!sql.change)throw Error('configuration');

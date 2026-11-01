@@ -1,4 +1,6 @@
 import '../office-agent/register-source.mjs';
+import {productEntry} from '../product-navigation.mjs';
+import {createHash} from 'node:crypto';
 import {presentationFixture} from './presentation-fixture.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -11,6 +13,8 @@ const reopenIndex=process.argv.indexOf('--terminal-reopen'),reopen=reopenIndex>=
 const rejectMode=process.argv.includes('--reject');
 const partialMode=process.argv.includes('--partial');
 const terminalMode=process.argv.includes('--terminal');
+const catalogMode=process.argv.includes('--catalog');
+const digest=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const data=path.join(reopen||output,'data'),profile=path.join(reopen||output,'profile');
 const report={ok:false,checks:[],errors:[],boundary:'Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.'};
 const html='<!doctype html><html lang="zh-CN"><title>浮力探究</title><body><label>排液体积<input id="volume" type="range" min="1" max="10" value="1"></label><output id="force">10 N</output><script>volume.oninput=()=>force.textContent=volume.value*10+" N";</script></body></html>';
@@ -50,7 +54,7 @@ async function launch(){
    else if(text.includes('继续交付')&&!state.resumeStarted){
     if(planned&&!state.resumePlan){state.resumePlan=true;const system=body.messages.filter(m=>m.role==='system').map(m=>m.content).join('\n');const version=Number([...system.matchAll(/"requirementsVersion":(\d+)/g)].at(-1)?.[1]||1);call={name:'update_task_plan',arguments:JSON.stringify({schemaVersion:'xiaozhi.task-plan.v3',requirementsVersion:version,expectedRevision:0,reason:'续做未完成教学文件',steps:[{id:'deliver',text:'整包交付未完成部分',dependsOn:[],reported:'pending',kind:'saved_bundle',target:'current'},{id:'review',text:'教师核对教学内容',dependsOn:['deliver'],reported:'pending',kind:'human'}]})};}
     else{state.resumeStarted=true;const bundleId=JSON.stringify(body.messages).match(/xidelivery_[a-f0-9]{64}/)?.[0];if(!bundleId)throw Error('Missing bundle id');
-    call={name:'office_deliver_files',arguments:JSON.stringify({resumeBundleId:bundleId,...(planned?{taskStepId:'deliver'}:{})})};}
+    state.resumedBundleId=bundleId;call={name:'office_deliver_files',arguments:JSON.stringify({resumeBundleId:bundleId,...(planned?{taskStepId:'deliver'}:{})})};}
    }
    else if(stage===0)call={name:'office_deliver_files',arguments:JSON.stringify({files:[{fileId:'html',kind:'text',path:'浮力演示.html',content:state.html},{fileId:'ppt',kind:'office',path:'浮力讲解.pptx',format:'pptx',sources:[],draft:state.draft}],...(planned?{taskStepId:'deliver'}:{})})};
    const delta=call?{tool_calls:[{index:0,id:'default-delivery-'+index,type:'function',function:call}]}:{content:'两份文件已保存，请核对教学内容。'};
@@ -104,12 +108,22 @@ try{
    assert.equal(value.state,'partial');assert(fs.statSync(collision).isDirectory());
    const root=path.dirname(collision),htmlPath=path.join(root,'浮力演示.html'),before=fs.statSync(htmlPath);assert(fs.readFileSync(htmlPath,'utf8').includes('xiaozhi.html-artifact.v1'));check('A real target conflict after HTML save displays partial delivery and preserves the HTML');
    if(terminalMode)await assertTerminal('partial','Original mixed terminal reports saved HTML and unsaved conflicting PPT, actual draft check and unchecked scope at both viewports');
-   fs.rmdirSync(collision);await bundle.getByTestId('pi-delivery-resume').click();
+   if(catalogMode){
+    report.catalog={parentId:value.id,htmlPath,htmlHash:digest(htmlPath),htmlMtime:before.mtimeMs};const requests=(await application.evaluate(()=>globalThis.defaultDelivery)).requests.length;
+    await productEntry(page,'teaching').click();await page.getByTestId('teaching-deliveries-tab').click();await page.getByTestId('delivery-'+value.id).getByRole('button').click();const panel=page.getByTestId('delivery-detail'),card=panel.getByTestId('pi-delivery-bundle');await until(async()=>await card.getAttribute('data-state')==='partial');assert((await card.innerText()).includes('1 / 2 份已保存'));assert.equal(await card.locator('[data-state="conflict"]').count(),1);
+    await card.getByTestId('pi-text-open').click();await panel.getByTestId('pi-file-preview').frameLocator('iframe[data-testid=pi-science-demo]').locator('label').waitFor();assert((await panel.getByTestId('pi-file-preview').frameLocator('iframe[data-testid=pi-science-demo]').locator('body').innerText()).includes('排液体积'));await panel.getByTestId('pi-files-close').click();assert.equal((await application.evaluate(()=>globalThis.defaultDelivery)).requests.length,requests);check('Teaching Files bundle entry shows real partial/per-file states and independently opens saved HTML without dispatching a model');
+    report.catalog.viewports=[];for(const[width,height]of[[1366,768],[1920,1080]]){await application.evaluate(({BrowserWindow},v)=>BrowserWindow.getAllWindows()[0].setContentSize(v.width,v.height),{width,height});await page.waitForFunction(v=>innerWidth===v.width&&innerHeight===v.height,{width,height});await card.getByTestId('pi-delivery-resume').scrollIntoViewIfNeeded();const metrics=await page.evaluate(()=>({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,scrollWidth:document.documentElement.scrollWidth}));assert(metrics.scrollWidth<=width+1);report.catalog.viewports.push(metrics);await page.screenshot({path:path.join(output,'catalog-partial-'+width+'.png')});}check('Catalog partial/retry controls are reachable at both native viewport sizes');
+    fs.rmdirSync(collision);await card.getByTestId('pi-delivery-resume').click();await page.getByTestId('xiaozhi-pi-workspace').waitFor();
+   }else{fs.rmdirSync(collision);await bundle.getByTestId('pi-delivery-resume').click();}
    const resumed=page.getByTestId('pi-delivery-bundle').last();await until(async()=>await resumed.getAttribute('data-bundle-id')!==value.id&&await resumed.getAttribute('data-state')==='pending');
    await until(async()=>!await resumed.getByTestId('pi-delivery-approve').isDisabled());assert(await resumed.getByText(/已保存并核验，续做时保留/).count());await resumed.getByTestId('pi-delivery-approve').click();
    await until(()=>query('SELECT status FROM ai_agent_runs ORDER BY created_at DESC LIMIT 1')[0]?.status!=='running');
    value=JSON.parse(query('SELECT value_json FROM xiaozhi_delivery_bundles ORDER BY created_at DESC LIMIT 1')[0].value_json);assert.equal(value.state,'saved');assert.equal(query('SELECT count(*) n FROM xiaozhi_pi_text_changes')[0].n,1);assert.equal(fs.statSync(htmlPath).mtimeMs,before.mtimeMs);check('The visible resume action starts a new turn, carries the saved HTML and confirms only unfinished PPT without rewriting HTML');
    if(terminalMode)await assertTerminal('saved','Resumed terminal labels carried HTML without rewriting it, saved PPT and unmet semantic/visual scope without whole-task certification');
+  }
+  if(catalogMode){report.catalog.childId=value.id;const wire=await application.evaluate(()=>globalThis.defaultDelivery);assert.equal(wire.resumedBundleId,report.catalog.parentId);
+   const command=query("SELECT command_id,run_id FROM xiaozhi_pi_commands ORDER BY rowid DESC LIMIT 1")[0],user=query("SELECT content FROM ai_conversation_messages WHERE role='user' ORDER BY rowid DESC LIMIT 1")[0];
+   const request={sessionId,commandId:command.command_id,prompt:user.content,resumeDeliveryId:report.catalog.parentId};const repeat=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),request);assert(repeat.ok);assert.equal(repeat.runId,command.run_id);const mismatch=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{...request,resumeDeliveryId:value.id});assert.equal(mismatch.error,'command_conflict');const obsolete=await page.evaluate(input=>window.omniEdu.startXiaozhi(input),{...request,commandId:'xicmd_'+crypto.randomUUID()});assert.equal(obsolete.error,'command_conflict');assert.equal((await application.evaluate(()=>globalThis.defaultDelivery)).requests.length,wire.requests.length);check('Selected bundle binding reaches original Pi; repeated command reuses its run, altered identity and obsolete parent cannot start another model turn');
   }
   assert.equal(value.state,'saved');const fact=query('SELECT file_path FROM document_artifacts')[0];assert(fact&&fs.existsSync(fact.file_path));
   const {readPresentationNotes}=await import('./presentation-readback.ts');const notes=await readPresentationNotes(fs.readFileSync(fact.file_path));assert.equal(notes.length,8);assert(notes[3].text.includes('整包教师讲解备注'));
@@ -120,6 +134,9 @@ try{
  await until(async()=>!(await page.locator('body').textContent()).includes('过程记录暂时无法核对'),10000);
  await page.screenshot({path:path.join(output,'bundle-result.png')});
  const binding=query('SELECT session_file FROM xiaozhi_pi_session_bindings')[0];await application.close();application=undefined;await launch();assert.equal(query('SELECT session_file FROM xiaozhi_pi_session_bindings')[0].session_file,binding.session_file);await page.getByTestId('pi-delivery-bundle').first().waitFor({timeout:30000});check('Cold restart restores bundle cards, original ledger facts and native session identity without replay');
+ if(catalogMode){
+  assert.equal((await application.evaluate(()=>globalThis.defaultDelivery)).requests.length,0);await productEntry(page,'teaching').click();await page.getByTestId('teaching-deliveries-tab').click();await page.getByTestId('delivery-'+report.catalog.parentId).getByRole('button').click();const panel=page.getByTestId('delivery-detail');await panel.getByTestId('pi-delivery-continuation').waitFor();assert((await panel.getByTestId('pi-delivery-continuation').innerText()).includes('已保存并核验'));assert.equal(await panel.getByTestId('pi-delivery-resume').count(),0);await panel.getByTestId('pi-delivery-follow').click();await until(async()=>await panel.getByTestId('pi-delivery-bundle').getAttribute('data-bundle-id')===report.catalog.childId);assert.equal(await panel.getByTestId('pi-delivery-bundle').getAttribute('data-state'),'saved');assert.equal(digest(report.catalog.htmlPath),report.catalog.htmlHash);assert.equal(fs.statSync(report.catalog.htmlPath).mtimeMs,report.catalog.htmlMtime);assert.equal((await application.evaluate(()=>globalThis.defaultDelivery)).requests.length,0);check('Cold catalog retains original partial record, follows saved successor, hides obsolete retry, preserves HTML bytes/mtime and issues zero model replay');
+ }
  if(terminalMode){const state=await application.evaluate(()=>globalThis.defaultDelivery);assert.equal(state.requests.length,0);for(const saved of report.terminals||[]){const snap=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),sessionId),t=snap.projection.turns.find(t=>t.id===saved.runId);assert(t?.items.some(i=>i.phase==='final_answer'&&i.text===saved.text));}check('Cold original app retrieves identical mixed and resumed terminal text with zero model/publication replay');}
  }
  assert.deepEqual(report.errors,[]);report.ok=true;

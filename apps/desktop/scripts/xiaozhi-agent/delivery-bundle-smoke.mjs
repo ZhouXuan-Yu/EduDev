@@ -13,16 +13,20 @@ import {createOfficeArtifactCoordinator} from '../../src/main/xiaozhi-agent/offi
 import {createDeliveryCoordinator} from '../../src/main/xiaozhi-agent/delivery-coordinator.ts';
 import {createDeliveryReadback} from '../../src/main/xiaozhi-agent/verification/delivery-readback.ts';
 import {createRunResultReadback} from '../../src/main/xiaozhi-agent/verification/result-readback.ts';
+import {createDeliveryCatalog} from '../../src/main/xiaozhi-agent/delivery-catalog.ts';
+import {DELIVERY_CATALOG_SCHEMA} from '../../src/shared/xiaozhi-delivery.ts';
+import {validXiaozhiStart} from '../../src/shared/xiaozhi-start.ts';
 import {legacyVerification} from '../../src/shared/xiaozhi-verification.ts';
 import {readPresentationNotes} from './presentation-readback.ts';
 
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-bundle-')),dataRoot=path.join(output,'data'),workspace=path.join(output,'files');fs.mkdirSync(dataRoot);fs.mkdirSync(workspace);
 const db=new DatabaseSync(path.join(dataRoot,'app.db'));
-db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY);
+db.exec(`CREATE TABLE ai_conversation_sessions(id TEXT PRIMARY KEY,title TEXT,archived_at TEXT);
 CREATE TABLE ai_confirmation_items(id TEXT PRIMARY KEY,session_id TEXT,run_id TEXT,payload_json TEXT,action_type TEXT,status TEXT,updated_at TEXT);
 CREATE TABLE document_artifacts(id TEXT PRIMARY KEY,session_id TEXT NOT NULL,message_id TEXT NOT NULL,title TEXT NOT NULL,artifact_type TEXT NOT NULL,file_name TEXT NOT NULL,mime_type TEXT NOT NULL,description TEXT NOT NULL,content_md TEXT NOT NULL,file_path TEXT NOT NULL,file_size INTEGER NOT NULL,content_hash TEXT NOT NULL,status TEXT NOT NULL,error_message TEXT NOT NULL,created_at TEXT NOT NULL,updated_at TEXT NOT NULL);`);
-const id=`aisession_${randomUUID()}`;db.prepare('INSERT INTO ai_conversation_sessions VALUES(?)').run(id);
-const state=createXiaozhiSessionState({all:async(s,v=[])=>db.prepare(s).all(...v),run:async(s,v=[])=>db.prepare(s).run(...v),change:async(s,v=[])=>Number(db.prepare(s).run(...v).changes)});
+const id=`aisession_${randomUUID()}`;db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES(?)').run(id);
+const sql={all:async(s,v=[])=>db.prepare(s).all(...v),run:async(s,v=[])=>db.prepare(s).run(...v),change:async(s,v=[])=>Number(db.prepare(s).run(...v).changes),transaction:async work=>{db.exec('BEGIN IMMEDIATE');try{const value=await work(sql);db.exec('COMMIT');return value;}catch(error){db.exec('ROLLBACK');throw error;}}};
+const state=createXiaozhiSessionState(sql);
 const report={ok:false,checks:[],boundary:'Synthetic fixtures, actual original file/Office services, SQLite, disk, independent aggregate readback. No paid model, natural quality or full AT acceptance.'};
 const check=async(name,fn)=>{await fn();report.checks.push(name);console.log('PASS '+name);};
 const until=async(fn)=>{for(let i=0;i<500;i++){const v=await fn();if(v)return v;await new Promise(r=>setTimeout(r,10));}throw Error('timeout');};
@@ -62,7 +66,7 @@ try{
  await check('PPT failure preserves HTML; new-run resume carries HTML without rewriting and reconfirms only the unfinished file',async()=>{
   runId='partial';fault=true;const work=start({files:files('partial')});const view=await pending();assert((await coordinator.decide(decision(view))).ok);partial=payload(await work);assert.equal(partial.outcome,'partial');assert.equal(partial.files[0].outcome,'applied');assert(!fs.existsSync(path.join(workspace,'partial.pptx')));
   const html=path.join(workspace,'partial.html'),before=fs.statSync(html),bytes=fs.readFileSync(html);const changes=(await state.changes.list(id)).length;
-  fault=false;runId='resume';const resume=start({resumeBundleId:partial.bundleId});const renewed=await pending();assert(renewed.files[0].carried);assert((await coordinator.decide(decision(renewed))).ok);const result=payload(await resume);assert(result.success,JSON.stringify(result));assert.equal((await state.changes.list(id)).length,changes);assert.equal(fs.statSync(html).mtimeMs,before.mtimeMs);assert(fs.readFileSync(html).equals(bytes));await (await read().bind('bundle',result)).read();
+  fault=false;runId='resume';const resume=start({resumeBundleId:partial.bundleId});const renewed=await pending();assert(renewed.files[0].carried);assert((await coordinator.decide(decision(renewed))).ok);const result=payload(await resume);assert(result.success,JSON.stringify(result));assert.equal((await state.changes.list(id)).length,changes);assert.equal(fs.statSync(html).mtimeMs,before.mtimeMs);assert(fs.readFileSync(html).equals(bytes));await (await read().bind('bundle',result)).read();const repeated=payload(await start({resumeBundleId:partial.bundleId}));assert.equal(repeated.bundleId,result.bundleId);assert(repeated.success);assert.equal((await state.changes.list(id)).length,changes);assert.equal(fs.statSync(html).mtimeMs,before.mtimeMs);
  });
  await check('Task requirement change invalidates bundle; cancellation and cold restart never revive approvals',async()=>{
   runId='version';const work=start({files:files('version')});const view=await pending();taskVersion='task:2';assert.equal((await coordinator.decide(decision(view))).error,'conflict');current=false;await coordinator.cancel(runId);await work.catch(()=>{});assert(!fs.existsSync(path.join(workspace,'version.html')));current=true;
@@ -83,6 +87,20 @@ try{
    const row=await state.officeArtifacts.get(uncertain.id);assert.equal((await office.decide({schemaVersion:'xiaozhi.office-artifact.v1',sessionId:id,draftId:row.id,revision:row.revision,action:'verify'})).state,'saved');assert((await office.review(id,row.id)).draft.sections.length===8);assert((await text.review(id,pendingText.id)).after==='do not write');
    const count=(await state.deliveries.list(id)).length;const blocked=payload(await start({files:files('blocked')}));assert.equal(blocked.error,'file_writes_disabled');assert.equal((await state.deliveries.list(id)).length,count);
   }finally{if(oldEnv===undefined)delete process.env.OMNI_EDU_XIAOZHI_FILE_WRITES;else process.env.OMNI_EDU_XIAOZHI_FILE_WRITES=oldEnv;}
+ });
+ await check('Teaching catalog pages original grouping metadata only; selected facts, ownership, archive and successor remain truthful',async()=>{
+  let reads=0;const catalog=createDeliveryCatalog({state:state.deliveries,coordinator:{read:async(...args)=>{++reads;return coordinator.read(...args);}},authorize:async sid=>{if(!db.prepare('SELECT id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL').get(sid))throw Error('permission_denied');},running:()=>false});
+  const list=offset=>catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'list',offset});
+  const original=(await state.deliveries.list(id))[0];for(let i=0;i<14;i++){const suffix=(i+100).toString(16).padStart(64,'0');await state.deliveries.create({...original,id:'xidelivery_'+suffix,callId:'catalog-'+i,runId:'catalog-'+i});}
+  const first=await list(0);assert(first.ok&&first.kind==='list');assert.equal(first.items.length,12);assert.equal(first.nextOffset,12);assert.equal(reads,0);const second=await list(12);assert(second.ok&&second.kind==='list');assert.equal(new Set([...first.items,...second.items].map(v=>v.id)).size,first.total);
+  assert(first.items.every(v=>!('files'in v)&&!('content'in v)&&v.paths.length===2));
+  const picked=await catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'get',sessionId:id,bundleId:partial.bundleId});assert(picked.ok&&picked.kind==='get');assert.equal(reads,1);assert.equal(picked.delivery.state,'partial');assert.equal(picked.delivery.continuation.state,'saved');assert.equal(picked.delivery.files.filter(f=>f.change?.state==='applied').length,1);
+  const foreign='aisession_'+randomUUID();db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES(?)').run(foreign);assert.equal((await catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'get',sessionId:foreign,bundleId:partial.bundleId})).error,'permission_denied');assert.equal(reads,1);
+  db.prepare('UPDATE ai_conversation_sessions SET archived_at=? WHERE id=?').run('2026-11-01',id);assert.equal((await list(0)).total,0);assert.equal((await catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'get',sessionId:id,bundleId:partial.bundleId})).error,'permission_denied');db.prepare('UPDATE ai_conversation_sessions SET archived_at=NULL WHERE id=?').run(id);
+  assert.equal((await list(-1)).error,'invalid_input');assert.equal((await list(100001)).error,'invalid_input');assert.equal((await catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'list',sessionId:id})).error,'invalid_input');
+  const input={sessionId:id,commandId:'xicmd_'+randomUUID(),prompt:'继续交付未完成文件',resumeDeliveryId:partial.bundleId};assert(validXiaozhiStart(input));assert(!validXiaozhiStart({...input,resumeDeliveryId:'wrong'}));assert(!validXiaozhiStart({...input,continueTask:{taskId:'xitask_'+'a'.repeat(64),requirementsVersion:1}}));
+  const bound=coordinator.tools(id,runId,async f=>f(),officeParameters,partial.bundleId)[0];const before=(await state.deliveries.list(id)).length;assert.equal(payload(await bound.execute('wrong',{resumeBundleId:good.bundleId},new AbortController().signal)).error,'invalid_input');assert.equal(payload(await bound.execute('new',{files:files('wrong')},new AbortController().signal)).error,'invalid_input');assert.equal((await state.deliveries.list(id)).length,before);
+  assert((await coordinator.context(id,partial.bundleId)).includes(partial.bundleId));assert(!(await coordinator.context(id,partial.bundleId)).includes(good.bundleId));
  });
  report.ok=true;
 }catch(e){report.error=String(e.stack);console.error(report.error);process.exitCode=1;}
