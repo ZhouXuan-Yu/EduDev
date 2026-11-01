@@ -3735,7 +3735,7 @@
     "noProviderAccountRead": true,
     "checks": [
       {
-        "command": "node scripts/education/kb-ai-page-boundaries.mjs",
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
         "log": "%TEMP%/kb-local-recheck-final-boundaries.log",
         "passed": 81,
         "exit": 0
@@ -3815,7 +3815,17 @@
         "exit": 1,
         "reason": "Test did not open existing lazy-loaded questions/correction section; no local task or network call. Navigation corrected without product route change."
       },
-      "Controlled first run captured optional root too early; constructor now delegates dynamically. Startup assertion checks local queue and call count separately from independent answer-book work."
+      "Controlled first run captured optional root too early; constructor now delegates dynamically. Startup assertion checks local queue and call count separately from independent answer-book work.",
+      {
+        "command": "node scripts/education/kb-ai-page-boundaries.mjs",
+        "exit": 1,
+        "log": "%TEMP%/kb-local-recheck-integrated-boundaries.log",
+        "reason": "Invocation omitted existing --experimental-transform-types; Node rejected parameter property before checks. Corrected command passed all 81 without code changes."
+      },
+      {
+        "operation": "Pre-test fingerprint script used out/preload/index.js instead of existing index.cjs",
+        "reason": "Read-only file lookup failed. Corrected path captured all fingerprints; smoke continued once against unchanged build, no duplicate run."
+      }
     ],
     "performance": {
       "scope": "Pre-main-merge bundle size only; no throughput or P95 improvement claim",
@@ -3842,7 +3852,147 @@
     ],
     "rollback": "Pause queued local work before disabling new write/schedule path. Keep new overlay readers, append-only result/task tables, original negative/two-pass receipts, source files and crop assets; no destructive downgrade.",
     "integration": {
-      "status": "Pending commit, latest main merge and final fixed-build checks; no remote delivery claimed yet"
+      "status": "All integrated fixed-build checks passed; ready for normal atomic push to main and knowledge-base branch",
+      "sourceCommit": "66976ed",
+      "mergedCommit": "4c1e683",
+      "mergedMain": "4c580802ab6e274c95fd1b2c7f7e52f455984c53",
+      "additiveConflictFiles": 13,
+      "preservationHashes": "%TEMP%/kb-local-recheck-merge-preservation.json",
+      "checks": [
+        {
+          "command": "npm.cmd run build",
+          "log": "%TEMP%/kb-local-recheck-integrated-build.log",
+          "exit": 0
+        },
+        {
+          "command": "npm.cmd run test:renderer-components",
+          "log": "%TEMP%/kb-local-recheck-integrated-components.log",
+          "passed": 240,
+          "exit": 0
+        },
+        {
+          "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+          "log": "%TEMP%/kb-local-recheck-integrated-boundaries-corrected.log",
+          "passed": 81,
+          "exit": 0
+        },
+        {
+          "command": "node scripts/education/kb-local-recheck-real.mjs <owned-root> <original-run> --readback",
+          "report": "%TEMP%/omni-real-material-aWObCn/local-recheck-b2mPOp/report.json",
+          "log": "%TEMP%/kb-local-recheck-integrated-readback.log",
+          "passed": 3,
+          "exit": 0,
+          "networkAttempts": 0,
+          "newModelCalls": 0,
+          "ready": 4,
+          "held": 11,
+          "scope": "Already-completed local receipt, teacher UI and cold restart; no new OCR or model rerun"
+        },
+        {
+          "command": "node scripts/electron-smoke.mjs (after explicit npm.cmd run build)",
+          "log": "%TEMP%/kb-local-recheck-integrated-smoke.log",
+          "passed": 207,
+          "total": 207,
+          "exit": 0,
+          "scope": "Existing isolated desktop education flow; not full natural exam/current Pi quality acceptance. Shared screenshot directory is not sole evidence."
+        }
+      ],
+      "fingerprints": {
+        "out/main/index.js": {
+          "bytes": 3554155,
+          "sha256": "e38f99c24c54fdce8842f5d7cf1640ff1c3b85e410361eab4d6900a1cf841ed7"
+        },
+        "out/preload/index.cjs": {
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "out/renderer/assets/index-D2fJBWi1.js": {
+          "bytes": 7389319,
+          "sha256": "44ac01b13a74738e6f18e62e0fd3b32d89d539325181980ac1eadc02a06caa63"
+        }
+      },
+      "bundleDifferenceVersus4fe07fc": {
+        "mainBytes": 19260,
+        "preloadBytes": 0,
+        "rendererBytes": 6278,
+        "scope": "Includes collaborator focus and run-receipt UI; size only, no P95 improvement conclusion"
+      },
+      "coldReadbackQuestionHashUnchanged": true,
+      "coldReadbackQuestionSha256": "7ef2c37f7d8f7d75c48fceb190105740d35d9d875efe78dd2ae0c699ee050d30",
+      "immutableReceiptSha256": "1fa4a985cf903dc664061dbd86307d86cbf36d53d218dc859b2d1b7351ea32d2",
+      "fixedBuildHashesUnchangedAfterChecks": true,
+      "remoteBaselineAtFinalFetch": "4c580802ab6e274c95fd1b2c7f7e52f455984c53",
+      "stashPreserved": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+      "dailyRuntimeAndInstallerUpdated": false,
+      "evidenceFiles": [
+        {
+          "path": "%TEMP%/kb-local-recheck-integrated-build.log",
+          "bytes": 40558,
+          "sha256": "7fd747e6c94be56af1682d9ebbf3020ae4f716b5ea37a1d038d6fcda0ee084a7"
+        },
+        {
+          "path": "%TEMP%/kb-local-recheck-integrated-components.log",
+          "bytes": 496,
+          "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+        },
+        {
+          "path": "%TEMP%/kb-local-recheck-integrated-boundaries.log",
+          "bytes": 2416,
+          "sha256": "f6862db8b3d74ad537ceef659e011e5a31549088d7d38cdf0a919461c53c7981"
+        },
+        {
+          "path": "%TEMP%/kb-local-recheck-integrated-boundaries-corrected.log",
+          "bytes": 9961,
+          "sha256": "f3e986f77481826338a7fa2778a57492e01e85141dd3a8a57c3748354cae9324"
+        },
+        {
+          "path": "%TEMP%/kb-local-recheck-integrated-smoke.log",
+          "bytes": 13984,
+          "sha256": "f61b20cc8b03d1657fd9c7dad4d8cda9aa2499bd32b72d0fed8d23ebd81f8252"
+        },
+        {
+          "path": "%TEMP%/kb-local-recheck-integrated-readback.log",
+          "bytes": 638,
+          "sha256": "e10690bf26cb5f84aa8cc15cb2e887ff97d1b4e8317f68c308d9bbee7bbfd462"
+        },
+        {
+          "path": "%TEMP%/kb-local-recheck-merge-preservation.json",
+          "bytes": 3823,
+          "sha256": "88d361d1362763233dbe8065b0152205b0d857ac2d12e48f745fea0fea28273f"
+        },
+        {
+          "path": "%TEMP%/omni-real-material-aWObCn/local-recheck-o4kLgN/report.json",
+          "bytes": 10368,
+          "sha256": "f985c56ecf579e492e9ae3f3c559860ee16a6cf51abfd8ee36e6bce990cd5e84"
+        },
+        {
+          "path": "%TEMP%/omni-real-material-aWObCn/local-recheck-vtllT7/report.json",
+          "bytes": 1159,
+          "sha256": "635c68d216b124f4b3b3db8dab4b5423c7df36cf12095d470274139dea1105c9"
+        },
+        {
+          "path": "%TEMP%/omni-real-material-aWObCn/local-recheck-b2mPOp/report.json",
+          "bytes": 10746,
+          "sha256": "785aacca9071cf61bd9cd21851911ba0861788db2d278ae55a5ac0688417b0d7"
+        }
+      ]
+    },
+    "followUpDiagnosis": {
+      "scope": "Read-only aggregate over retained original two-pass responses/current same 15 question rows; no rewriting or model call",
+      "archiveIssueCounts": {
+        "incomplete_question": 11,
+        "requires_image": 10,
+        "uncertain_ocr": 5,
+        "ai_mismatch": 10,
+        "cross_page": 1
+      },
+      "observedDifferentFields": [
+        "answer",
+        "analysis",
+        "projection"
+      ],
+      "pageTextSameAcrossBothPasses": true,
+      "conclusion": "Do not clear held states after OCR success; repair common source completeness, cross-page and model projection/solving gaps next."
     }
   }
 }
