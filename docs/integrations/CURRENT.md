@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 窗口几何仍是profile/desktop-window.v1.json UI元数据，无SQLite迁移或新依赖；MIN_HOST_WINDOW_WIDTH=390在host与应用层geometry共享，原ZCode文件保持。save读取原getNormalBounds，moved/close/before-quit同步原子写并去重；closed移除app listener。冷启在原分数DPI/工作区夹取上加最多两次测量修正。真实双屏几何与实际pointer拖动是两个独立标准。4f6ce66及docs/research/AGENT_INTERACTION_C02_20261101.json为当前实现/证据。 固定样本走原Pi+原event/SQLite，仅本机截获SSE；没有新Agent/第二正文/自建窗口框架。
+
 ## 2026-11-01 复用本地布局辅助图题取图
 
 沿原layoutPdfFile、MaterialLayoutCache、readMaterialLayout、PDFium裁剪、RapidOCR检查与MaterialAi writer实现page-regions.v3；共享数值候选认证及选择，原preload/题本/Pi/组卷适配继续承接。没有新依赖、Worker协议、IPC、数据真源或Agent。

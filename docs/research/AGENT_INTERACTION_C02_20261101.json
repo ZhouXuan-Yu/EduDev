@@ -1,0 +1,1396 @@
+{
+  "schema": "xiaozhi.interaction-c02-evidence.v1",
+  "date": "2026-11-01",
+  "sourceCommit": "4f6ce6606b6cf709d1966896ed6bad5c477e26db",
+  "integrationBase": "8c6b705",
+  "goal": "active",
+  "accepted": [
+    "AT-C02-01",
+    "AT-C02-02",
+    "AT-C02-04"
+  ],
+  "implementation": {
+    "changes": [
+      "Share 390px minimum between actual host and existing v1 geometry preferences; adapt upstream width defaults without editing upstream source.",
+      "Persist final normal bounds synchronously at app before-quit, and remove the listener when that window closes.",
+      "Correct measured fractional-DPI rounding with at most two bounded size adjustments, preserving offscreen clamping and old v1 preferences."
+    ],
+    "productionFiles": [
+      "apps/desktop/src/main/desktop-chrome/window-geometry.ts",
+      "apps/desktop/src/main/index.ts"
+    ],
+    "preserved": [
+      "Pi/runtime/events/receiver/view buffer",
+      "SQLite/message/journal hashes",
+      "composer appearance and drafts",
+      "vendor source",
+      "credentials, permissions and all data roots"
+    ],
+    "newDependencies": 0,
+    "migrations": 0
+  },
+  "builds": {
+    "baseline": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-baseline-331cb53",
+      "files": 455,
+      "bytes": 34517474,
+      "treeSha256": "761554b253f6a877255ac416b825f4466e4dcbbb4860748ca41a2146215a755e",
+      "algorithm": "SHA256 of UTF8 compact JSON sorted path/bytes/sha256 list",
+      "main": {
+        "path": "main/index.js",
+        "bytes": 3489968,
+        "sha256": "e2a6718b14c51c745b49f26e54a239f97a763ff601722617dce4466e6fe9d1ea"
+      },
+      "preload": {
+        "path": "preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      "renderer": {
+        "path": "renderer/assets/index-DgbKQkmJ.js",
+        "bytes": 7368548,
+        "sha256": "8bd3aa8cd696c5af4cc9c35b270c10f036de0e6e83f882ca3d528b2cc6c83baa"
+      }
+    },
+    "complex": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-final-2749d3d-narrow-fix",
+      "files": 455,
+      "bytes": 34524571,
+      "treeSha256": "1b4ba24efea934fb6b8aec066e39ffe7d11407e844fa9a2280bc8adbba1c2c61",
+      "algorithm": "SHA256 of UTF8 compact JSON sorted path/bytes/sha256 list",
+      "main": {
+        "path": "main/index.js",
+        "bytes": 3490232,
+        "sha256": "49a4461dcf94f1b017912c39e76a7d0acbc72c21ec5c026c30f74ca22977a12b"
+      },
+      "preload": {
+        "path": "preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      "renderer": {
+        "path": "renderer/assets/index-Fb3DdA6z.js",
+        "bytes": 7374774,
+        "sha256": "ee682366e5a31382a88212b6e55e5d3c7237beb78fff642c092a7dc86efa6137"
+      }
+    },
+    "geometryDpi": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-final-2749d3d-dpi-fix",
+      "files": 455,
+      "bytes": 34525440,
+      "treeSha256": "aab75904d06cdf3b5e392707769fa9f4d9ce3d2cd5f1cd8bb8f436d84ae756bb",
+      "algorithm": "SHA256 of UTF8 compact JSON sorted path/bytes/sha256 list",
+      "main": {
+        "path": "main/index.js",
+        "bytes": 3491101,
+        "sha256": "079900edc07d854938b08b41db930d522b61840e40b6fcc39c669276d4d8ade4"
+      },
+      "preload": {
+        "path": "preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      "renderer": {
+        "path": "renderer/assets/index-Fb3DdA6z.js",
+        "bytes": 7374774,
+        "sha256": "ee682366e5a31382a88212b6e55e5d3c7237beb78fff642c092a7dc86efa6137"
+      }
+    },
+    "smoke": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-final-2749d3d-geometry-quit",
+      "files": 455,
+      "bytes": 34524677,
+      "treeSha256": "b155e04f140b2f273a69697be2454eb2d07bdbd0ade8325bff8517f08f33c284",
+      "algorithm": "SHA256 of UTF8 compact JSON sorted path/bytes/sha256 list",
+      "main": {
+        "path": "main/index.js",
+        "bytes": 3490338,
+        "sha256": "b8b90cf71b1351c6c081412ba9100dcbd9e5480077d45cfcfd4496a6aa420e43"
+      },
+      "preload": {
+        "path": "preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      "renderer": {
+        "path": "renderer/assets/index-Fb3DdA6z.js",
+        "bytes": 7374774,
+        "sha256": "ee682366e5a31382a88212b6e55e5d3c7237beb78fff642c092a7dc86efa6137"
+      }
+    },
+    "integration": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-integration-8c6b705",
+      "files": 455,
+      "bytes": 34532472,
+      "treeSha256": "63039fd473ab644f79a1acffd673dfb3afabff86118e4f20e5c2e885168efc3c",
+      "algorithm": "SHA256 of UTF8 compact JSON sorted path/bytes/sha256 list",
+      "main": {
+        "path": "main/index.js",
+        "bytes": 3498133,
+        "sha256": "93b493df7bd7ff23af069de97094225017db8b9886d3c1402fafa48944dd76b5"
+      },
+      "preload": {
+        "path": "preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      "renderer": {
+        "path": "renderer/assets/index-CHNsKW9X.js",
+        "bytes": 7374774,
+        "sha256": "cf6c80abbdfb3e45664d315c8b67aa9712a770ebc97eccb6b92134125aebe41c"
+      }
+    }
+  },
+  "fixture": {
+    "revision": "fx09-complex-stream.v1",
+    "paragraphs": 50,
+    "formulas": 10,
+    "tableRows": 100,
+    "codeFences": 2,
+    "historyTurns": 10,
+    "utf8Bytes": 24879,
+    "sha256": "26768810795d9553c3b4ab6c0d06f96e2050b2b7ef39b4ef9fb283dd8ea8bd22",
+    "rawTextSha256": "432c2852863155518b4b34d5bd15284c40f46d2715a7c2d2611fdebe11dff2a6"
+  },
+  "performance": {
+    "before": {
+      "inputToFrame": {
+        "count": 30,
+        "p95": 7.799999998882413,
+        "max": 8.5
+      },
+      "scrollToFrame": {
+        "count": 45,
+        "p95": 2.199999999254942,
+        "max": 2.799999998882413
+      },
+      "longTasks": {
+        "count": 2,
+        "p95": 69,
+        "max": 69
+      },
+      "eventLoopGaps": {
+        "count": 1172,
+        "p95": 4.900000000372529,
+        "max": 88
+      }
+    },
+    "after": {
+      "inputToFrame": {
+        "count": 30,
+        "p95": 6.700000001117587,
+        "max": 6.799999998882413
+      },
+      "scrollToFrame": {
+        "count": 45,
+        "p95": 1.599999999627471,
+        "max": 2
+      },
+      "longTasks": {
+        "count": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "eventLoopGaps": {
+        "count": 1230,
+        "p95": 2.900000000372529,
+        "max": 74.40000000037253
+      }
+    },
+    "beforeResources": {
+      "samples": 6,
+      "unit": "KiB (Electron workingSetSize)",
+      "first": 940144,
+      "peak": 948340,
+      "last": 948340,
+      "scope": "Sampled sum of process working sets; raw per-process CPU/memory is in the archive. Not a leak study."
+    },
+    "afterResources": {
+      "samples": 7,
+      "unit": "KiB (Electron workingSetSize)",
+      "first": 915692,
+      "peak": 915692,
+      "last": 862788,
+      "scope": "Sampled sum of process working sets; raw per-process CPU/memory is in the archive. Not a leak study."
+    },
+    "interpretation": "Both measured frozen builds meet local input/scroll P95 <=100ms and max <=250ms. Severe lag not reproduced. Cross-build variance and integration changes preclude an attributed speedup or real-provider latency claim. Final own changes after this sample concern only startup/quit geometry; final integrated original UI/body readback is separately verified."
+  },
+  "integratedReadback": {
+    "ok": true,
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-complex-stream-ZKcive",
+    "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-integration-8c6b705",
+    "checks": [
+      "Exact assistant message and full text_delta journal match the saved UI SHA and unchanged journal hash",
+      "Cold actual UI restores all eleven runs, exact complex正文 and unsent draft without replay",
+      "Readback-only completion keeps exact persisted records, no renderer errors and zero provider requests"
+    ],
+    "errors": [],
+    "providerRequests": 0,
+    "boundary": "Preserved synthetic FX09 data only; actual Pi readback, original SQLite and Win32 physical pointer. No provider or teacher data. No full DPI/IME/installer acceptance.",
+    "persistedBefore": {
+      "journalRows": 436,
+      "journalSha256": "edf6c16c9fee538c17c2dc50f8e75ace3758ac4aeca5cb9da3b158c5aaa9a71d",
+      "textSha256": "432c2852863155518b4b34d5bd15284c40f46d2715a7c2d2611fdebe11dff2a6",
+      "messageId": "aimsg_ebfd9b14-9983-4dc2-83d5-833002514c07"
+    },
+    "persistedAfter": {
+      "journalRows": 436,
+      "journalSha256": "edf6c16c9fee538c17c2dc50f8e75ace3758ac4aeca5cb9da3b158c5aaa9a71d",
+      "textSha256": "432c2852863155518b4b34d5bd15284c40f46d2715a7c2d2611fdebe11dff2a6",
+      "messageId": "aimsg_ebfd9b14-9983-4dc2-83d5-833002514c07"
+    }
+  },
+  "integratedGeometry": {
+    "ok": true,
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-c02-geometry-Sf3owW",
+    "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-integration-8c6b705",
+    "checks": [
+      "Actual 480px normal window retains exact native size/position, same session and draft after immediate close/restart",
+      "Actual 800px normal window retains exact native size/position, same session and draft after immediate close/restart",
+      "Actual 390px normal window retains exact native size/position, same session and draft after immediate close/restart",
+      "Maximized cold restart retains the narrow normal bounds for restore",
+      "Actual second-display native coordinates and size survive close/restart across the two real monitor scale factors",
+      "Existing wide v1 preferences with a disconnected monitor restore a fully reachable window",
+      "Every actual cold launch remains interactive with zero provider requests and renderer errors"
+    ],
+    "errors": [],
+    "requests": 0,
+    "windows": [
+      {
+        "normal": {
+          "x": 173,
+          "y": 59,
+          "width": 1360,
+          "height": 900
+        },
+        "bounds": {
+          "x": 173,
+          "y": 59,
+          "width": 1360,
+          "height": 900
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1360,
+          "height": 44
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 481,
+          "height": 761
+        },
+        "bounds": {
+          "x": 90,
+          "y": 80,
+          "width": 481,
+          "height": 761
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 480,
+          "height": 44
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 801,
+          "height": 761
+        },
+        "bounds": {
+          "x": 90,
+          "y": 80,
+          "width": 801,
+          "height": 761
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 800,
+          "height": 44
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761
+        },
+        "bounds": {
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 390,
+          "height": 44
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761
+        },
+        "bounds": {
+          "x": -7,
+          "y": -7,
+          "width": 1722,
+          "height": 1034
+        },
+        "maximized": true,
+        "visible": true,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1707.3333740234375,
+          "height": 44
+        }
+      },
+      {
+        "normal": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "bounds": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 793,
+          "height": 44
+        }
+      },
+      {
+        "normal": {
+          "x": 2987,
+          "y": 0,
+          "width": 1280,
+          "height": 760
+        },
+        "bounds": {
+          "x": 2987,
+          "y": 0,
+          "width": 1280,
+          "height": 760
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        },
+        "titlebar": {
+          "x": 0,
+          "y": 0,
+          "width": 1280,
+          "height": 44
+        }
+      }
+    ],
+    "boundary": "Actual original UI/native cold launches with synthetic isolated data; setBounds/maximize are setup for persistence checks, not proof of actual caption pointer or full multi-DPI acceptance.",
+    "sessionId": "aisession_c0a53399-cbb5-4eda-9efb-3a1e3fa8741e",
+    "narrow": [
+      {
+        "requested": 480,
+        "before": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "maximized": false,
+          "visible": true,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "after": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "maximized": false,
+          "visible": true,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "saved": {
+          "version": 1,
+          "x": 90,
+          "y": 80,
+          "width": 481,
+          "height": 761,
+          "maximized": false
+        }
+      },
+      {
+        "requested": 800,
+        "before": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "maximized": false,
+          "visible": true,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "after": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "maximized": false,
+          "visible": true,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "saved": {
+          "version": 1,
+          "x": 90,
+          "y": 80,
+          "width": 801,
+          "height": 761,
+          "maximized": false
+        }
+      },
+      {
+        "requested": 390,
+        "before": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "maximized": false,
+          "visible": true,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "after": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "maximized": false,
+          "visible": true,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "saved": {
+          "version": 1,
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761,
+          "maximized": false
+        }
+      }
+    ],
+    "displays": {
+      "primary": 2963872884,
+      "displays": [
+        {
+          "accelerometerSupport": "unknown",
+          "bounds": {
+            "x": 1707,
+            "y": 0,
+            "width": 2560,
+            "height": 1440
+          },
+          "colorDepth": 24,
+          "colorSpace": "{primaries:BT709, transfer:SRGB, matrix:RGB, range:FULL}",
+          "depthPerComponent": 8,
+          "detected": true,
+          "displayFrequency": 144,
+          "id": 2107855836,
+          "internal": false,
+          "label": "G7e",
+          "maximumCursorSize": {
+            "width": 0,
+            "height": 0
+          },
+          "monochrome": false,
+          "nativeOrigin": {
+            "x": 2560,
+            "y": 0
+          },
+          "rotation": 0,
+          "scaleFactor": 1,
+          "size": {
+            "width": 2560,
+            "height": 1440
+          },
+          "workArea": {
+            "x": 1707,
+            "y": 0,
+            "width": 2560,
+            "height": 1392
+          },
+          "workAreaSize": {
+            "width": 2560,
+            "height": 1392
+          },
+          "touchSupport": "unknown"
+        },
+        {
+          "accelerometerSupport": "unknown",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1067
+          },
+          "colorDepth": 24,
+          "colorSpace": "{primaries:BT709, transfer:SRGB, matrix:RGB, range:FULL}",
+          "depthPerComponent": 8,
+          "detected": true,
+          "displayFrequency": 165,
+          "id": 2963872884,
+          "internal": true,
+          "label": "NE160QDM-NYM",
+          "maximumCursorSize": {
+            "width": 0,
+            "height": 0
+          },
+          "monochrome": false,
+          "nativeOrigin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scaleFactor": 1.5,
+          "size": {
+            "width": 1707,
+            "height": 1067
+          },
+          "workArea": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          },
+          "workAreaSize": {
+            "width": 1707,
+            "height": 1019
+          },
+          "touchSupport": "unknown"
+        }
+      ]
+    },
+    "secondDisplay": {
+      "before": {
+        "normal": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "bounds": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      },
+      "after": {
+        "normal": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "bounds": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "maximized": false,
+        "visible": true,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      }
+    },
+    "offscreen": {
+      "normal": {
+        "x": 2987,
+        "y": 0,
+        "width": 1280,
+        "height": 760
+      },
+      "bounds": {
+        "x": 2987,
+        "y": 0,
+        "width": 1280,
+        "height": 760
+      },
+      "maximized": false,
+      "visible": true,
+      "area": {
+        "x": 1707,
+        "y": 0,
+        "width": 2560,
+        "height": 1392
+      }
+    }
+  },
+  "nativePointer": {
+    "status": "foreground unavailable; AT-C02-03 unaccepted",
+    "attempts": [
+      "Initial PS UInt64 -> IntPtr cast failed before any pointer action; helper corrected.",
+      "Two later attempts refused before input because the owned HWND could not become foreground."
+    ],
+    "boundary": "No physical pointer gesture was dispatched. setBounds and HTCAPTION never count as actual drag or caption-button acceptance."
+  },
+  "checks": [
+    {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "scope": "Final integrated 8c6b705 + 4f6ce66 source; includes tsc --noEmit"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 240,
+      "total": 240,
+      "scope": "Final integrated source"
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/window-geometry-state-smoke.mjs",
+      "exit": 0,
+      "passed": 10
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/complex-stream-ui.mjs test-results/c02-final-2749d3d-narrow-fix",
+      "exit": 0,
+      "passed": 3
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/complex-stream-recovery-ui.mjs <preserved-final-root> test-results/c02-integration-8c6b705 --readback-only",
+      "exit": 0,
+      "passed": 3
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/window-geometry-restart-ui.mjs test-results/c02-integration-8c6b705",
+      "exit": 0,
+      "passed": 7
+    }
+  ],
+  "comprehensive": {
+    "command": "OMNI_EDU_TEST_BUILD_ROOT=<immutable smoke root>; node scripts/electron-smoke.mjs",
+    "exit": 0,
+    "ok": true,
+    "frontendCases": 207,
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-smoke-Yp4XuN",
+    "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-final-2749d3d-geometry-quit",
+    "scope": "Immutable 2749d3d + width/quit fix, before final startup DPI correction and unrelated 8c6b705 KB integration. Later affected native/readback checks and build/components are on final integrated source. Not a claim of full final 252 AT.",
+    "cancelledInvocation": {
+      "exit": 1,
+      "reason": "Earlier unpinned test cancelled when out was rebuilt; only verified owned isolated PID tree stopped; no pass claimed.",
+      "log": "final-smoke.log.gz"
+    },
+    "priorC03Failure": "Old analytics-hidden report retained. Current immutable smoke includes upstream disclosure-aware navigation and passes; do not rewrite old failure."
+  },
+  "audit": {
+    "command": "npm.cmd audit --json",
+    "exit": 1,
+    "total": 45,
+    "high": 8,
+    "moderate": 29,
+    "low": 8,
+    "critical": 0,
+    "newDependencies": 0
+  },
+  "runtime": {
+    "dailyRoot": "D:/WorkProject/EduProject",
+    "observedHead": "2749d3d",
+    "observedMainPid": 52540,
+    "owner": "Another current task updated and launched D. Live window and three unrelated dirty docs preserved.",
+    "updatedByThisSlice": false,
+    "geometryFixActiveInDailyWindow": false,
+    "installerVerified": false,
+    "restartApproval": "Asked user asynchronously to allow normal close/restart of the other task's daily window after confirming idle. No response yet, so no update/restart performed."
+  },
+  "paidRequests": 0,
+  "failuresPreserved": [
+    "Baseline helper require undefined (corrected harness only)",
+    "Geometry preferences missing after immediate app.quit: real lifecycle defect fixed",
+    "Narrow width grew from 481 to 482 DIP after restart: real 150% DPI defect fixed",
+    "Native pointer helper cast error; later OS foreground refusals",
+    "Unpinned comprehensive invocation cancelled, never accepted",
+    "Evidence assembly duplicate revision key failed before writing report; recovered from unchanged raw archives, no tests repeated"
+  ],
+  "remaining": [
+    "AT-C02-03 actual OS pointer/button path",
+    "AT-C02-05 full viewports/system-scale/popups; AT06 IME; AT07 selection/follow; AT08 process/approval; AT09 keyboard; AT10 switch/error matrices",
+    "C06 activate this geometry fix in actual D runtime when current owner releases it; installer not released",
+    "Full W3 and S/T order unchanged, no blanket Hana or natural teaching-quality superiority"
+  ],
+  "rollback": "Revert scoped production changes in 4f6ce66 or disable optional OMNI_EDU_WINDOW_GEOMETRY, preserving v1 preferences, database and files. Existing >=1100px records remain readable. Entire rollback not rehearsed.",
+  "evidenceManifest": "docs/research/evidence/agent-interaction-c02/20261101/manifest.json",
+  "geometryFixture": {
+    "revision": "geometry-restart.v1",
+    "widths": [
+      480,
+      800,
+      390
+    ],
+    "height": 760,
+    "position": [
+      90,
+      80
+    ],
+    "secondMonitorSize": [
+      1200,
+      760
+    ],
+    "offscreenV1": {
+      "width": 1280,
+      "height": 760,
+      "x": 999999,
+      "y": -999999,
+      "maximized": false
+    },
+    "sha256": "a7747b8cdae6bf1d5c7d3a6b37467dbc2803cf7e954a6e2fdadba7c464810e8f"
+  },
+  "acceptedScope": {
+    "AT-C02-01": "FX09 controlled complex stream; exact original UI/message/event text + final integrated cold readback and draft, zero pageerrors.",
+    "AT-C02-02": "Measured immutable local FX09 sample (30 inputs,45 scrolls) meets all timing/CPU/RSS requirements. Final own delta affects only startup/quit, and final integrated readback remains exact; no model-latency, all-machine or scale-matrix claim.",
+    "AT-C02-04": "Final integrated actual native restart on both connected displays and simulated missing display; 390/480/800, immediate quit and maximized normal restore. setBounds is setup; actual dragging is separate AT03."
+  },
+  "previousIntegratedGeometry": {
+    "ok": true,
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-c02-geometry-6RbR8E",
+    "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-integration-8c6b705",
+    "checks": [
+      "Actual 480px normal window retains exact native size/position, same session and draft after immediate close/restart",
+      "Actual 800px normal window retains exact native size/position, same session and draft after immediate close/restart",
+      "Actual 390px normal window retains exact native size/position, same session and draft after immediate close/restart",
+      "Maximized cold restart retains the narrow normal bounds for restore",
+      "Actual second-display native coordinates and size survive close/restart across the two real monitor scale factors",
+      "Existing wide v1 preferences with a disconnected monitor restore a fully reachable window",
+      "Every actual cold launch remains interactive with zero provider requests and renderer errors"
+    ],
+    "errors": [],
+    "requests": 0,
+    "windows": [
+      {
+        "normal": {
+          "x": 173,
+          "y": 59,
+          "width": 1360,
+          "height": 900
+        },
+        "bounds": {
+          "x": 173,
+          "y": 59,
+          "width": 1360,
+          "height": 900
+        },
+        "maximized": false,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 481,
+          "height": 761
+        },
+        "bounds": {
+          "x": 90,
+          "y": 80,
+          "width": 481,
+          "height": 761
+        },
+        "maximized": false,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 801,
+          "height": 761
+        },
+        "bounds": {
+          "x": 90,
+          "y": 80,
+          "width": 801,
+          "height": 761
+        },
+        "maximized": false,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761
+        },
+        "bounds": {
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761
+        },
+        "maximized": false,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        }
+      },
+      {
+        "normal": {
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761
+        },
+        "bounds": {
+          "x": -7,
+          "y": -7,
+          "width": 1722,
+          "height": 1034
+        },
+        "maximized": true,
+        "area": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        }
+      },
+      {
+        "normal": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "bounds": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "maximized": false,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      },
+      {
+        "normal": {
+          "x": 2987,
+          "y": 0,
+          "width": 1280,
+          "height": 760
+        },
+        "bounds": {
+          "x": 2987,
+          "y": 0,
+          "width": 1280,
+          "height": 760
+        },
+        "maximized": false,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      }
+    ],
+    "boundary": "Actual original UI/native cold launches with synthetic isolated data; setBounds/maximize are setup for persistence checks, not proof of actual caption pointer or full multi-DPI acceptance.",
+    "sessionId": "aisession_a5eb2b88-e68c-49d2-9f13-10ab36cea4d0",
+    "narrow": [
+      {
+        "requested": 480,
+        "before": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "maximized": false,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "after": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 481,
+            "height": 761
+          },
+          "maximized": false,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "saved": {
+          "version": 1,
+          "x": 90,
+          "y": 80,
+          "width": 481,
+          "height": 761,
+          "maximized": false
+        }
+      },
+      {
+        "requested": 800,
+        "before": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "maximized": false,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "after": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 801,
+            "height": 761
+          },
+          "maximized": false,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "saved": {
+          "version": 1,
+          "x": 90,
+          "y": 80,
+          "width": 801,
+          "height": 761,
+          "maximized": false
+        }
+      },
+      {
+        "requested": 390,
+        "before": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "maximized": false,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "after": {
+          "normal": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "bounds": {
+            "x": 90,
+            "y": 80,
+            "width": 391,
+            "height": 761
+          },
+          "maximized": false,
+          "area": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          }
+        },
+        "saved": {
+          "version": 1,
+          "x": 90,
+          "y": 80,
+          "width": 391,
+          "height": 761,
+          "maximized": false
+        }
+      }
+    ],
+    "displays": {
+      "primary": 2963872884,
+      "displays": [
+        {
+          "accelerometerSupport": "unknown",
+          "bounds": {
+            "x": 1707,
+            "y": 0,
+            "width": 2560,
+            "height": 1440
+          },
+          "colorDepth": 24,
+          "colorSpace": "{primaries:BT709, transfer:SRGB, matrix:RGB, range:FULL}",
+          "depthPerComponent": 8,
+          "detected": true,
+          "displayFrequency": 144,
+          "id": 2107855836,
+          "internal": false,
+          "label": "G7e",
+          "maximumCursorSize": {
+            "width": 0,
+            "height": 0
+          },
+          "monochrome": false,
+          "nativeOrigin": {
+            "x": 2560,
+            "y": 0
+          },
+          "rotation": 0,
+          "scaleFactor": 1,
+          "size": {
+            "width": 2560,
+            "height": 1440
+          },
+          "workArea": {
+            "x": 1707,
+            "y": 0,
+            "width": 2560,
+            "height": 1392
+          },
+          "workAreaSize": {
+            "width": 2560,
+            "height": 1392
+          },
+          "touchSupport": "unknown"
+        },
+        {
+          "accelerometerSupport": "unknown",
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1067
+          },
+          "colorDepth": 24,
+          "colorSpace": "{primaries:BT709, transfer:SRGB, matrix:RGB, range:FULL}",
+          "depthPerComponent": 8,
+          "detected": true,
+          "displayFrequency": 165,
+          "id": 2963872884,
+          "internal": true,
+          "label": "NE160QDM-NYM",
+          "maximumCursorSize": {
+            "width": 0,
+            "height": 0
+          },
+          "monochrome": false,
+          "nativeOrigin": {
+            "x": 0,
+            "y": 0
+          },
+          "rotation": 0,
+          "scaleFactor": 1.5,
+          "size": {
+            "width": 1707,
+            "height": 1067
+          },
+          "workArea": {
+            "x": 0,
+            "y": 0,
+            "width": 1707,
+            "height": 1019
+          },
+          "workAreaSize": {
+            "width": 1707,
+            "height": 1019
+          },
+          "touchSupport": "unknown"
+        }
+      ]
+    },
+    "secondDisplay": {
+      "before": {
+        "normal": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "bounds": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "maximized": false,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      },
+      "after": {
+        "normal": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "bounds": {
+          "x": 1788,
+          "y": 60,
+          "width": 793,
+          "height": 720
+        },
+        "maximized": false,
+        "area": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      }
+    },
+    "offscreen": {
+      "normal": {
+        "x": 2987,
+        "y": 0,
+        "width": 1280,
+        "height": 760
+      },
+      "bounds": {
+        "x": 2987,
+        "y": 0,
+        "width": 1280,
+        "height": 760
+      },
+      "maximized": false,
+      "area": {
+        "x": 1707,
+        "y": 0,
+        "width": 2560,
+        "height": 1392
+      }
+    }
+  },
+  "validationScriptCommit": "18fc836aaa66399e18c434a531790d59900cf89f",
+  "validationScriptSha256": "37136b66025e93ac8d71b3cb1f64815f5a98c0f6d8b9f865dbb567b720fe3fa1",
+  "geometryAcceptanceDetail": "Every final launch explicitly verifies native isVisible=true and a reachable rendered titlebar; both connected physical displays tested, no pointer or focus claim."
+}
