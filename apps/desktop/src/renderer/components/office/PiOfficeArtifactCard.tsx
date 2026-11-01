@@ -13,6 +13,7 @@ import {validOfficeDraft,isPresentationDraft,isPaperOfficeDraft,type OfficeDraft
 import {isMathPaperOfficeSchema,isRichPaperOfficeSchema} from '../../../shared/paper-export';
 import './pi-office-artifact.css';
 import {PiOfficeVersions,PiOfficeCurrent} from './PiOfficeVersions';
+import {PiArtifactSources,OfficeFileSource} from './PiArtifactSources';
 
 const labels:Record<OfficeArtifactState,string>={pending:'需要你的确认',approved:'已确认，等待生成',generating:'正在生成',prepared:'已生成，等待保存',committing:'正在保存',saved:'已保存并核验',rejected:'已拒绝，未写入',interrupted:'已中断，未继续写入',uncertain:'保存中断，需要核验',conflict:'内容或文件已变化，未覆盖',failed:'生成或保存未完成'};
 const escaped=(v:string|number)=>String(v).replace(/[\\`*_{}\[\]()#+.!|<>-]/g,'\\$&');
@@ -96,7 +97,7 @@ export function PiOfficeArtifactCard({artifact,sessionId,running,onRefresh,onOpe
        </div>)}
       </>}
      </div><div className="pi-office-actions"><Button size="sm" variant="secondary" isDisabled={!editable||!draft.editing} onPress={()=>void saveDraft()} data-testid="pi-office-save-draft">保存拟内容</Button><Button size="sm" variant="ghost" isDisabled={!editable||!draft.editing} onPress={()=>update({officeDraft:structuredClone(review.draft),officeRevision:artifact.revision,editing:false,error:''})} data-testid="pi-office-discard-edit">放弃修改</Button></div></Tabs.Panel>}
-     <Tabs.Panel id="sources"><div className="pi-office-sources" data-testid="pi-office-sources">{classroomSource?<><ClassroomSources context={classroomSource.context}/><p>来自教师已确认课堂版本 {classroomSource.revision}；生成与保存前再次核对源版本，导出不会覆盖课堂。课堂图义和参考答案并非独立正确性证明。</p></>:isPaperOfficeDraft(review.draft)?<p>已确认试卷 · {review.draft.paperSource.audience==='student'?'学生卷（不含文本答案与解析）':'教师答案卷（参考答案尚未独立核验）'}。完整题目版本在生成和保存前再次核对；内容并非模型重新抄写。</p>:review.sources.length?review.sources.map(source=><p key={`${source.kind}:${source.path}`}>{source.kind==='parent_artifact'?'上一版产物':'资料来源'} · {source.path}</p>):<p>本次没有文件资料来源；内容为 AI 起草，经教师审阅后保存。</p>}{review.parentArtifactId&&<p>此文档为新版本，原文件保持不变。</p>}</div></Tabs.Panel>
+     <Tabs.Panel id="sources"><div className="pi-office-sources" data-testid="pi-office-sources">{artifact.state==='saved'&&artifact.artifactId?(tab==='sources'&&<PiArtifactSources sessionId={sessionId} artifactId={artifact.artifactId} auto/>):classroomSource?<><ClassroomSources context={classroomSource.context}/><p>来自教师已确认课堂版本 {classroomSource.revision}；生成与保存前再次核对源版本，导出不会覆盖课堂。课堂图义和参考答案并非独立正确性证明。</p></>:isPaperOfficeDraft(review.draft)?<p>已确认试卷 · {review.draft.paperSource.audience==='student'?'学生卷（不含文本答案与解析）':'教师答案卷（参考答案尚未独立核验）'}。完整题目版本在生成和保存前再次核对；内容并非模型重新抄写。</p>:review.sources.length?<ul>{review.sources.map(source=><OfficeFileSource key={`${source.kind}:${source.path}`} source={source} sessionId={sessionId}/>)}</ul>:<p>本次没有文件资料来源；内容为 AI 起草，经教师审阅后保存。</p>}{review.parentArtifactId&&<p>此文档为新版本，原文件保持不变。</p>}</div></Tabs.Panel>
     </Tabs>
     <p>{pending?draft.editing?'有未保存的修改，请先保存拟内容，再确认此版本。':'确认仅保存本次拟内容；来源或目标发生变化时不会覆盖。':'这是本次操作的拟内容记录；实际文件请从工作区打开。'}</p>
    </div>}

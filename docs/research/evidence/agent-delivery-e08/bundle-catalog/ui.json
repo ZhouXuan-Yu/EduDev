@@ -1,0 +1,75 @@
+{
+  "ok": true,
+  "checks": [
+    "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+    "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+    "A real target conflict after HTML save displays partial delivery and preserves the HTML",
+    "Teaching Files bundle entry shows real partial/per-file states and independently opens saved HTML without dispatching a model",
+    "Catalog partial/retry controls are reachable at both native viewport sizes",
+    "The visible resume action starts a new turn, carries the saved HTML and confirms only unfinished PPT without rewriting HTML",
+    "Selected bundle binding reaches original Pi; repeated command reuses its run, altered identity and obsolete parent cannot start another model turn",
+    "Saved PPT has eight actual pages and teacher notes; task verification independently confirms every bundled file",
+    "Cold restart restores bundle cards, original ledger facts and native session identity without replay",
+    "Cold catalog retains original partial record, follows saved successor, hides obsolete retry, preserves HTML bytes/mtime and issues zero model replay"
+  ],
+  "errors": [],
+  "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+  "catalog": {
+    "parentId": "xidelivery_9923eb0367c1023e29598897f3807344d5e93434494fe9bb580a09882bec067b",
+    "htmlPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-cqQiNm\\XiaozhiOutputs\\390df5f7c58466e5\\aisession_534c88d9-0566-47c6-aceb-32a045b06df5\\浮力演示.html",
+    "htmlHash": "863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef",
+    "htmlMtime": 1793517468057.3452,
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ],
+    "childId": "xidelivery_9aa1bcc5754a5a00395903ddf295f90601e5deb7ec7cc6a3212007f5fe71950e"
+  },
+  "snapshot": {
+    "running": false,
+    "cursors": [
+      {
+        "runId": "run_9ba382de-0d2d-4fe1-8c16-8e410df0648a",
+        "generation": 1,
+        "sequence": 54,
+        "revision": 54
+      },
+      {
+        "runId": "run_48711e21-3bb3-47e5-bfc8-3c2df9a25e2f",
+        "generation": 2,
+        "sequence": 56,
+        "revision": 56
+      }
+    ],
+    "turns": [
+      {
+        "id": "run_9ba382de-0d2d-4fe1-8c16-8e410df0648a",
+        "status": "completed"
+      },
+      {
+        "id": "run_48711e21-3bb3-47e5-bfc8-3c2df9a25e2f",
+        "status": "completed"
+      }
+    ],
+    "deliveries": [
+      {
+        "id": "xidelivery_9923eb0367c1023e29598897f3807344d5e93434494fe9bb580a09882bec067b",
+        "state": "partial"
+      },
+      {
+        "id": "xidelivery_9aa1bcc5754a5a00395903ddf295f90601e5deb7ec7cc6a3212007f5fe71950e",
+        "state": "saved"
+      }
+    ]
+  }
+}

@@ -28,7 +28,7 @@ function markdownOutline(text:string){
 }
 
 /** Local-only data from typed main. No paths/bytes are sent to the model or persisted. */
-export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],officeArtifacts=[]}:{sessionId:string;onChoose:()=>void;onClose:()=>void;reveal?:{id:string;path:string};changes?:XiaozhiChangeSummary[];officeArtifacts?:OfficeArtifactSummary[]}) {
+export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],officeArtifacts=[]}:{sessionId:string;onChoose?:()=>void;onClose:()=>void;reveal?:{id:string;path:string;version?:string;workspaceVersion?:string};changes?:XiaozhiChangeSummary[];officeArtifacts?:OfficeArtifactSummary[]}) {
   const [directories,setDirectories]=useState<Record<string,XiaozhiFileEntry[]>>({});
   const [expanded,setExpanded]=useState(new Set<string>()),[label,setLabel]=useState('教学工作目录'),[query,setQuery]=useState('');
   const [tabs,setTabs]=useState<XiaozhiFileEntry[]>([]),[selected,setSelected]=useState(''),[preview,setPreview]=useState<XiaozhiFilePreview>();
@@ -58,7 +58,8 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
   async function list(relative='.') {
     const stamp=epoch.current,requestId=request();setLoading(true);setError('');
     try{
-      const result=await window.omniEdu?.listXiaozhiFiles({schemaVersion:XIAOZHI_FILES_SCHEMA,sessionId,requestId,path:relative,...(authority.current?{workspaceVersion:authority.current}:{})});
+      const version=reveal?.workspaceVersion||authority.current;
+      const result=await window.omniEdu?.listXiaozhiFiles({schemaVersion:XIAOZHI_FILES_SCHEMA,sessionId,requestId,path:relative,...(version?{workspaceVersion:version}:{})});
       if(stamp!==epoch.current)return;
       if(!result?.ok){setError(result?XIAOZHI_FILE_ERRORS[result.error]:'无法读取本地目录，请重试。');return;}
       if(loadedCount.current+result.data.entries.length>1024){setError('已加载较多文件，请刷新后选择更具体的目录。');return;}
@@ -75,7 +76,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     setTabs(previous=>previous.some(tab=>tab.path===entry.path)?previous.map(tab=>tab.path===entry.path?entry:tab):[...previous.slice(-7),entry]);
     const requestId=request();
     try{
-      const result=await window.omniEdu?.previewXiaozhiFile({schemaVersion:XIAOZHI_FILES_SCHEMA,sessionId,requestId,path:entry.path,workspaceVersion:authority.current,version:entry.version});
+      const result=await window.omniEdu?.previewXiaozhiFile({schemaVersion:XIAOZHI_FILES_SCHEMA,sessionId,requestId,path:entry.path,workspaceVersion:authority.current,version:entry.path===reveal?.path&&reveal.version?reveal.version:entry.version});
       if(stamp!==previewEpoch.current||life!==epoch.current)return;
       if(!result?.ok)setPreviewError(result?XIAOZHI_FILE_ERRORS[result.error]:'无法预览文件，请重试。');else setPreview(result.data);
     }catch{if(stamp===previewEpoch.current&&life===epoch.current)setPreviewError('无法预览文件，请重试。');}
@@ -99,6 +100,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
     cancelAll();++epoch.current;++previewEpoch.current;loadedCount.current=0;authority.current='';setDirectories({});setExpanded(new Set());setPartial(false);setPreview(undefined);setReading(false);
     const life=epoch.current;let live=true;
     void (async()=>{
+      if(reveal.workspaceVersion)authority.current=reveal.workspaceVersion;
       const parts=reveal.path.split('/');
       if(parts.length>1)await list('.');
       for(let i=1;i<parts.length-1;i++){if(!live||life!==epoch.current)return;await list(parts.slice(0,i).join('/'));}
@@ -121,7 +123,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
         {!!tabs.length?<Tabs selectedKey={selected||undefined} onSelectionChange={key=>{const entry=tabs.find(tab=>tab.path===key);if(entry&&entry.path!==selected)void openFile(entry);}} data-testid="pi-file-tabs">
           <Tabs.ListContainer><Tabs.List aria-label="已打开的教学文件">{tabs.map(tab=><Tabs.Tab key={tab.path} id={tab.path}><FileText size={14}/><span>{tab.name}</span><Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
         </Tabs>:<span className="pi-file-toolbar-empty"><FileText size={16}/>本地文件</span>}
-      <Button variant="ghost" isIconOnly size="sm" aria-label="选择教学工作目录" onPress={onChoose} data-testid="pi-files-choose"><Folder size={16}/></Button>
+      {onChoose&&<Button variant="ghost" isIconOnly size="sm" aria-label="选择教学工作目录" onPress={onChoose} data-testid="pi-files-choose"><Folder size={16}/></Button>}
       <Button variant="ghost" isIconOnly size="sm" aria-label="刷新文件目录" onPress={refresh} data-testid="pi-files-refresh"><RefreshCw size={16}/></Button>
       <Button className="pi-file-explorer-toggle" variant="ghost" size="sm"
         aria-label={explorerOpen?'收起文件列表，扩大正文':'显示文件列表'} aria-pressed={explorerOpen}
@@ -139,7 +141,7 @@ export function PiWorkspaceFiles({sessionId,onChoose,onClose,reveal,changes=[],o
         </DisclosureCard>}
         {preview&&<PiDeliveryCheck key={sessionId+preview.path} sessionId={sessionId} path={preview.path} version={preview.version} workspaceVersion={authority.current}/>}
         <div ref={previewRoot} className="pi-file-preview" data-testid="pi-file-preview" aria-busy={reading}>
-          {reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>刷新目录后，选择最新文件继续预览。</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='image'?<img src={preview.image} alt={preview.name} data-testid="pi-file-image"/>:
+          {reading?<p role="status">正在读取文件…</p>:previewError?<div role="alert"><p>{previewError}</p><p>{reveal?.version?'此处核对引用时的版本；刷新仍保留版本检查。请回来源对话重新读取当前资料。':'刷新目录后，选择最新文件继续预览。'}</p><Button variant="ghost" size="sm" onPress={refresh} data-testid="pi-file-preview-refresh">刷新目录</Button></div>:preview?.format==='image'?<img src={preview.image} alt={preview.name} data-testid="pi-file-image"/>:
             preview?.format==='html'?<ScienceDemoFrame html={preview.html||''}/>:preview?.format==='science_demo'?<><ScienceClassroomExport key={preview.path+preview.version} sessionId={sessionId} workspaceVersion={authority.current} preview={preview}/><ScienceDemoFrame html={preview.html||''}/></>:preview?.format==='office'?<div data-testid="pi-file-document"><p role="status" data-testid="pi-file-document-info">{preview.document?.format.toUpperCase()} · 本地提取正文，版式以原文件为准</p><Markdown components={{img:({alt})=><span>［图片：{alt||'文档图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown></div>:
             preview?.format==='markdown'?<Markdown components={{img:({alt})=><span>［图片：{alt||'引用图片'}，未加载］</span>,a:({children})=><span>{children}</span>}}>{preview.text||''}</Markdown>:
             preview?.format==='text'?<pre data-testid="pi-file-text">{preview.text}</pre>:preview?<div><h3>{preview.name}</h3><p>{preview.size} 字节</p><p>暂不支持此格式的内容预览。</p></div>:<p className="pi-file-empty">从右侧选择教学文件进行本地预览。</p>}

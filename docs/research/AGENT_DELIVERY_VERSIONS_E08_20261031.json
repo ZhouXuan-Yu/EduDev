@@ -797,5 +797,391 @@
       "sha256Uncompressed": "486886b0a00fc75a0f0f1ceec6888ab0e8f37f6e2f1645a8500dcf2a14d79e72",
       "reason": "Preserve exact raw log bytes including Vite trailing spaces; gzip avoids treating generated output as source whitespace. Original raw log also remains in test-results."
     }
+  },
+  "artifactSourcesSlice": {
+    "date": "2026-11-01",
+    "sourceCommit": "7a2d78278cb6ece0183f76c3e03289ffbfe341cd",
+    "verifiedIntegrationCommit": "bfb0691856b0d51cb0310516ae6e7e50a2558dc7",
+    "integratedMain": "bfaa6ae622e0298e363505740c228c92adfd1068",
+    "goal": "active",
+    "status": "工程来源导航已实现；完整FX05/原页矩阵/人工REVIEW/E08/252AT未验收",
+    "implementation": [
+      "Versioned read-only source DTO -> original office/text state and pre-producer committed journal window -> typed preload -> same chat/current Teaching Files/selected history control. No extra table, dependency, runtime or per-token request.",
+      "Declared Office file version, original confirmed-paper question version, frozen classroom material reference and observed prior reads stay distinct. Reading does not prove use in content or correctness. Legacy/no-source is explicit.",
+      "SQL only includes successful read tool_end before exact producer tool_start, excludes overlapping late completions and foreign session; bundle child maps to original producer. 32/page with actual total and next offset.",
+      "HTML restore follows selected copied content call identity/hash, not newer current-parent history. Existing local-line/attachment/question/material/student/web controls reused.",
+      "Bound file uses original version on preview, retries and tree reselection; workspace lease lock retained on refresh. Changed/deleted/unavailable sources preserve original association. No dead choose-directory button in source-only preview."
+    ],
+    "tests": {
+      "sqlAndFiles": {
+        "command": "node scripts/xiaozhi-agent/artifact-sources-smoke.mjs",
+        "passed": 10,
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-artifact-sources-qpLuDQ",
+        "scope": "Original real SQLite/journal/text/Office service and files, actual HTML restore. Backend files unchanged by final integration; this evidence ran before integration."
+      },
+      "domainProjection": {
+        "command": "node scripts/xiaozhi-agent/artifact-domain-sources-smoke.mjs",
+        "passed": 3,
+        "exit": 0,
+        "scope": "Repository-shaped frozen inputs only; not actual paper/classroom export or original-page acceptance."
+      },
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "sourceSha": "bfb0691856b0d51cb0310516ae6e7e50a2558dc7",
+        "includes": "tsc --noEmit + electron-vite build",
+        "rawLog": "artifact-sources-final-merge-build.log.gz"
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exit": 0,
+        "sourceSha": "bfb0691856b0d51cb0310516ae6e7e50a2558dc7"
+      },
+      "formalElectron": {
+        "command": "node scripts/xiaozhi-agent/artifact-sources-electron.mjs",
+        "passed": 8,
+        "exit": 0,
+        "sourceSha": "bfb0691856b0d51cb0310516ae6e7e50a2558dc7",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-artifact-source-ui-2ceksC",
+        "actualPath": "Formal original Pi composer/read/bundle approval/chat source/selected history/source change/refresh/missing/catalog/native window resize/cold readback",
+        "syntheticTransport": true,
+        "realPaidCalls": 0,
+        "rendererErrors": 0,
+        "modelReplayAfterColdStart": 0,
+        "geometry": [
+          {
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5,
+            "scrollWidth": 1366
+          },
+          {
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5,
+            "scrollWidth": 1920
+          }
+        ],
+        "outputFileHashes": [
+          {
+            "path": "浮力演示.html",
+            "sha256": "c92a40db3f6ff3f90339c9962d141abb17c892c6546ca2a214b04c2948c58662"
+          },
+          {
+            "path": "浮力讲解.pptx",
+            "sha256": "4f6120f77a0a5108442857f06ae8e54f1e7e5e0e6b8ca2682b8aaf5dcf876049"
+          }
+        ]
+      }
+    },
+    "failuresRetained": [
+      "Initial source fixture wrongly expected conflict on same-byte restore; actual supported no-op. Fixed assertion without changing production or reducing required behavior, source10 passed.",
+      "First UI script closed an already expanded Office review; subsequent cold continuation passed next four cases then used obsolete teaching navigation locator. Both logs/screenshots/reports retained; corrected selectors and final integrated fresh full8 passed.",
+      "Prior comprehensive mastery_quiz/L2 failures remain historical unresolved comprehensive findings; not rerun or counted as passing."
+    ],
+    "performance": {
+      "baselineCommit": "c446966ab4a5931dc2da2b1155e615c2a86498b2",
+      "baselineBytes": {
+        "main": 3356101,
+        "preload": 35346,
+        "renderer": 7264397
+      },
+      "ownBeforeMainIntegrationBytes": {
+        "main": 3366077,
+        "preload": 35440,
+        "renderer": 7273341
+      },
+      "ownDeltaBytes": {
+        "main": 9976,
+        "preload": 94,
+        "renderer": 8944
+      },
+      "finalIntegratedBuild": [
+        {
+          "path": "apps/desktop/out/main/index.js",
+          "bytes": 3426810,
+          "sha256": "1346f50e4267b2cbc1bff7125f5fe21042fbd95603c8ab3389d2060c685f1052"
+        },
+        {
+          "path": "apps/desktop/out/preload/index.cjs",
+          "bytes": 35791,
+          "sha256": "1ff78228a0acb3177cca505b90e52840be95daae8a00c8d9f64048ced06ee40a"
+        },
+        {
+          "path": "apps/desktop/out/renderer/assets/index-Ce4b39YG.js",
+          "bytes": 7351189,
+          "sha256": "103e573a9198e468e6ea335050b468f5f10e0b5910f19622f73ea7c15fb4d267"
+        }
+      ],
+      "scope": "Final merged size includes collaborators chat/classroom/KB/UI changes; no speed/P95 or quality claim. Reads are click-only and metadata paginated; selected Office get may hydrate its existing bounded draft/output, not all versions."
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exit": 1,
+      "total": 45,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "critical": 0,
+      "newDependencies": 0,
+      "scope": "Existing findings, not auto-upgraded. Run once before commit; merged package/lock dependency set unchanged."
+    },
+    "evidenceDirectory": "docs/research/evidence/agent-delivery-e08/artifact-sources",
+    "rawLogs": [
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-domain-sources.log.gz",
+        "rawSha256": "a28df98acce9a80c5ae5fe79c685e87d71465ef9c2ee61a3250230bceb3e1e09",
+        "rawBytes": 382
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-build-final.log.gz",
+        "rawSha256": "ba767e5a193c16dbb0e5ee499445e13220615bc7cc1994f1312dd1dd5f51ec6f",
+        "rawBytes": 40499
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-build.log.gz",
+        "rawSha256": "5ecf0549fd2043e298ee46e2f1a2da1eed8bca8b64fb8355be3f208c83622feb",
+        "rawBytes": 40499
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-bundle-final.log.gz",
+        "rawSha256": "ac3af19ce0ba2e388337101d2c4152b6ae83d3f33397759ea0b2b97f1ad62c70",
+        "rawBytes": 40293
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-components.log.gz",
+        "rawSha256": "dae7cff48598010a7bf56370f9f301ef3edc8cbb8c83fe5bbc10cfc695862477",
+        "rawBytes": 550
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-electron-catalog.log.gz",
+        "rawSha256": "4e263c36d3de3213b2652daa4ec4475937172139d311364b2011c73ab1479c8b",
+        "rawBytes": 452
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-electron-resume.log.gz",
+        "rawSha256": "930eb2b83945c40ab927789ae5c1d92e52b02d188837a3120c0b9de78aa1996b",
+        "rawBytes": 832
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-electron.log.gz",
+        "rawSha256": "d3df2521b42b0507a8c37a94629ac96e8dc67423b2c441d91c52ff83b2c5b03d",
+        "rawBytes": 632
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-final-electron.log.gz",
+        "rawSha256": "09129e3b08c92648f7f513eb965ee9e9f90d4ede6302b37929040c256de06bf2",
+        "rawBytes": 1091
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-final-merge-build.log.gz",
+        "rawSha256": "541a7302f782ff804a80f41e12f8abd285b3e349038ab8c30588cfbd891e1da8",
+        "rawBytes": 40558
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-final-merge-components.log.gz",
+        "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+        "rawBytes": 496
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-integrated-build.log.gz",
+        "rawSha256": "1086ee92d7724577c32345ffa050d8f72265631e82b89f394549e2947a955fb1",
+        "rawBytes": 40498
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-integrated-components.log.gz",
+        "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+        "rawBytes": 496
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-merge.log.gz",
+        "rawSha256": "7d6980e743881e5b9a861bde1c5d3f3821fae1a2c08146de83102f40960fe017",
+        "rawBytes": 111
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-smoke-recheck.log.gz",
+        "rawSha256": "d87fe97b62c794cf43b43f65d9c4d9611c6b7fd0e6585c416618a81d2ce68f3d",
+        "rawBytes": 1417
+      },
+      {
+        "file": "docs/research/evidence/agent-delivery-e08/artifact-sources/artifact-sources-smoke.log.gz",
+        "rawSha256": "f9fcf2234adf764796cc90a881d3a7508c21189478990e33b0bf8a022bc28a9b",
+        "rawBytes": 1221
+      }
+    ],
+    "boundaries": [
+      "Worktree formal Electron only; D:/WorkProject/EduProject daily runtime and installer not updated.",
+      "Synthetic teaching files/transport verify execution and associations, not real-provider answer intelligence, textbook accuracy or teacher REVIEW.",
+      "Full FX05 multi-format original-page, attachment OCR update, native Office/WPS, E08/252 AT remain for stage acceptance.",
+      "Root UI V2 design and collaborators production changes retained, including ChatSources citation reveal/focus."
+    ],
+    "rollback": "Revert own 7a2d782 source additions and remove shared source call sites while retaining merged collaborators ChatSources behavior. No schema migration; preserve all original SQLite/files/history. Full rollback not exercised."
+  },
+  "bundleCatalogSlice": {
+    "date": "2026-11-01",
+    "sourceSha": "a73b389f5f0a58ab35d2856baebb22c4d8dc35ed",
+    "integrationSha": "9a49e4e5b37300e6eb560e29ef4556418f10df3b",
+    "goal": "active",
+    "status": "engineering implemented; full FX10 and AT-E08-07 pending centralized acceptance",
+    "implemented": [
+      "Teaching Files bundle task tab from original 12-item paged metadata; selection hydrates only chosen child facts",
+      "Original partial/file states and independently openable saved HTML",
+      "Bound original Pi resume, command hash identity, successful files carried and reconfirm only unfinished",
+      "Original/continuation records preserved with actual state; follow successor rather than retry obsolete parent",
+      "No new tables, dependencies or runtime; explicit refresh only, zero token-stream subscriptions"
+    ],
+    "tests": [
+      {
+        "command": "npm run build",
+        "exit": 0,
+        "typecheck": true
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-bundle-smoke.mjs",
+        "exit": 0,
+        "passed": 8,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-bCFKJ3"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/delivery-bundle-electron.mjs --partial --catalog",
+        "exit": 0,
+        "passed": 10,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-cqQiNm"
+      },
+      {
+        "command": "npm audit --json",
+        "exit": 1,
+        "existingVulnerabilities": {
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "critical": 0,
+          "total": 45
+        },
+        "dependencyChanges": 0
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0
+      }
+    ],
+    "realProviderRequests": 0,
+    "coldModelReplay": 0,
+    "rendererErrors": [],
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ],
+    "buildFingerprints": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3431228,
+        "sha256": "744902f1c89d9dc43b953aff1fc489b3c697030913c160a359ac8f4c43a7e997",
+        "deltaFrom26fcbf4": 4418
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 35885,
+        "sha256": "2dbb9ed55bc535c2755c5dbfca5fe0d1b3c4741f973172dc41dd1b84228452b1",
+        "deltaFrom26fcbf4": 94
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-BXDeccBL.js",
+        "bytes": 7360250,
+        "sha256": "691c9f1d7e1a833a9961c69d96cfdc2a1ddb624c1e8428bbb18f897ee6a36163",
+        "deltaFrom26fcbf4": 9061
+      }
+    ],
+    "rawLogs": [
+      {
+        "file": "xiaozhi-delivery-catalog-build.log.gz",
+        "rawBytes": 40558,
+        "rawSha256": "b51727a002e40967723e116c211e17d7b32b27a67d009b47106429719c1a875c"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-build-final.log.gz",
+        "rawBytes": 40558,
+        "rawSha256": "2caece97eec1ed65804326822f617bc5dc0acb1664d91d1307b1df3482188cde"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-components.log.gz",
+        "rawBytes": 496,
+        "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-initial.log.gz",
+        "rawBytes": 1435,
+        "rawSha256": "283c17016315d71b9d36689b0488277628c42ca385c1e1b80273b545231956c0"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-transaction-fixture.log.gz",
+        "rawBytes": 1532,
+        "rawSha256": "e2523f2ebd3d9c5595f5cd5a47ab44bbae1017f8882c0ee28fad2138e80ebdc8"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-final.log.gz",
+        "rawBytes": 1133,
+        "rawSha256": "876d0a3b8070da50d699d7a3ba7c9eab437b830b400a66c67af2e09f117ce40c"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-smoke-idempotency.log.gz",
+        "rawBytes": 1133,
+        "rawSha256": "556171642f2c50800a70a9c5bde0bba9a1be6e982a07c3935304b491ebc68bc6"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-ui-initial.log.gz",
+        "rawBytes": 913,
+        "rawSha256": "f9058da9a6aadef9f412ee64a03502c7c489ba80940913ef7ab0f5fb0dc5b28e"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-ui-before-idempotency.log.gz",
+        "rawBytes": 1318,
+        "rawSha256": "d4b3faf3f52d806eaa710bffc4253bf4ee747b081d5be83cca5b80d10990f75f"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-ui-final.log.gz",
+        "rawBytes": 1472,
+        "rawSha256": "8b4acc9ee46e6a0e75f0503893f74b50afcbd5bb71e3e93fed467a235026d734"
+      },
+      {
+        "file": "xiaozhi-delivery-catalog-audit.json.gz",
+        "rawBytes": 59019,
+        "rawSha256": "7184f772839df89474377c0f4d3448d0481b734f5b8558683666381398f0da77"
+      }
+    ],
+    "evidence": "docs/research/evidence/agent-delivery-e08/bundle-catalog",
+    "performance": "Previous 26fcbf4 -> current main +4418 B, preload +94 B, renderer +9061 B. List performs metadata SQL only; original child hydration occurs only when selected. No streaming event listener/polling. No latency/P95/answer-quality claim.",
+    "failuresPreserved": [
+      "Initial Node source invocation loaded transitive extensionless imports before hooks: use explicit --import at startup",
+      "Original source fixture lacked transaction required by merged classroom-plan state: added real SQLite transaction",
+      "UI fixture expected filename text inside HTML frame: now verifies actual rendered 排液体积 control"
+    ],
+    "notAccepted": [
+      "Full original FX10 fault collection/252 AT",
+      "Natural teaching/provider quality",
+      "Native Office/WPS and installer",
+      "D daily runtime update",
+      "Existing mastery_quiz/L2 comprehensive failures not rerun"
+    ],
+    "rollback": "Revert this thin catalog/optional start field; retain original SQLite/file ledgers. No migrations or data deletion."
   }
 }

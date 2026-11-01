@@ -1,12 +1,14 @@
 import {useEffect,useRef,useState} from 'react';
 import {Button,SearchField,Tabs} from '@heroui/react';
 import {ClassroomWorkspace} from './ClassroomWorkspace';
+import {TeachingDeliveryWorkspace} from './TeachingDeliveryWorkspace';
 import {FileText,FolderOpen,MessageSquare,RefreshCw} from 'lucide-react';
 import {ResourceTable} from '../../ui-system/ResourceTable';
 import type {TeachingFileCatalogEntry} from '../../../shared/contracts';
 import {useDesktopNavigation} from '../desktop/DesktopFrame';
 import {PiWorkspaceFiles} from '../office/PiWorkspaceFiles';
 import {PiOfficeVersions,PiOfficeCurrent} from '../office/PiOfficeVersions';
+import {PiArtifactSources} from '../office/PiArtifactSources';
 import {OfficeMarkdown as Markdown} from '../office/OfficeMarkdown';
 import {LibraryEmpty} from './LibraryEmpty';
 import {libraryDate,libraryFileSize,matchesMaterial} from './material-library';
@@ -14,7 +16,7 @@ import './teacher-library.css';
 
 /** Read existing durable artifact facts; preview uses the same authorized host. */
 export function TeachingArtifactsWorkspace() {
-  return <Tabs defaultSelectedKey="files" aria-label="教学内容"><Tabs.List><Tabs.Tab id="files">教学文件<Tabs.Indicator/></Tabs.Tab><Tabs.Tab id="classrooms" data-testid="teaching-classrooms-tab">互动课堂<Tabs.Indicator/></Tabs.Tab></Tabs.List><Tabs.Panel id="files"><TeachingFilesWorkspace/></Tabs.Panel><Tabs.Panel id="classrooms"><ClassroomWorkspace/></Tabs.Panel></Tabs>;
+  return <Tabs defaultSelectedKey="files" aria-label="教学内容"><Tabs.List><Tabs.Tab id="files">教学文件<Tabs.Indicator/></Tabs.Tab><Tabs.Tab id="deliveries" data-testid="teaching-deliveries-tab">整包任务<Tabs.Indicator/></Tabs.Tab><Tabs.Tab id="classrooms" data-testid="teaching-classrooms-tab">互动课堂<Tabs.Indicator/></Tabs.Tab></Tabs.List><Tabs.Panel id="files"><TeachingFilesWorkspace/></Tabs.Panel><Tabs.Panel id="deliveries"><TeachingDeliveryWorkspace/></Tabs.Panel><Tabs.Panel id="classrooms"><ClassroomWorkspace/></Tabs.Panel></Tabs>;
 }
 function TeachingFilesWorkspace() {
   const navigation=useDesktopNavigation();const [rows,setRows]=useState<TeachingFileCatalogEntry[]>([]),[query,setQuery]=useState(''),[selected,setSelected]=useState('');
@@ -40,6 +42,7 @@ function TeachingFilesWorkspace() {
           {artifact.officeVersion?<><PiOfficeCurrent key={artifact.id+'open'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="open" label="系统打开" testId="artifacts-open"/><PiOfficeCurrent key={artifact.id+'locate'} sessionId={artifact.sessionId} artifactId={artifact.id} fallbackPath={artifact.fileName} onOpen={()=>{}} action="locate" label="定位当前文件" testId="artifacts-locate"/></>:<Button variant="ghost" isDisabled={busy||artifact.status!=='exported'} onPress={()=>void locate()} data-testid="artifacts-locate"><FolderOpen size={16}/>定位文件</Button>}
           <Button variant="ghost" isDisabled={!artifact.sessionId} onPress={()=>navigation.navigate({view:'ai',sessionId:artifact.sessionId})} data-testid="artifacts-conversation"><MessageSquare size={16}/>查看来源对话</Button></div>
           {artifact.status==='exported'&&artifact.sessionId&&['pptx','docx','pdf','xlsx','html'].includes(artifact.type)&&<PiOfficeVersions key={artifact.id} sessionId={artifact.sessionId} artifactId={artifact.id} onOpen={path=>setReveal({id:crypto.randomUUID(),path})} onRefresh={load}/>}
+          {artifact.status==='exported'&&artifact.officeVersion&&<PiArtifactSources key={artifact.id+':sources'} sessionId={artifact.sessionId} artifactId={artifact.id}/>}
           {reveal?<div className="teacher-artifact-preview pi-themed-surface"><PiWorkspaceFiles key={artifact.sessionId+':'+artifact.id} sessionId={artifact.sessionId} reveal={reveal} onChoose={()=>setError('请在来源对话中选择教学工作目录，再返回这里预览。')} onClose={()=>setReveal(undefined)}/></div>:<><p className="teacher-library-caption">{artifact.htmlVersion?'HTML内容按需预览；历史和保存时间来自原修改记录。':'保存时的内容 · 预览文件可查看当前本地版本'}</p><Markdown components={{img:({alt})=><span>［图片：{alt||'未加载'}］</span>,a:({children})=><span>{children}</span>}}>{artifact.contentMd||(artifact.htmlVersion?'点击“预览当前文件”查看，或展开版本历史对照先前内容。':'没有保存内容摘要，请定位查看文件。')}</Markdown></>}
         </>:<LibraryEmpty title="选择一份教学文件" description="查看内容、预览当前文件，或回到制作时的对话继续修改。"/>}
       </section>
