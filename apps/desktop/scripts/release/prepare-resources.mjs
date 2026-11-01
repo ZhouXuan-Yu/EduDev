@@ -5,6 +5,7 @@ import {createHash} from 'node:crypto';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const sha=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const manifests=[
+ ...(process.env.OMNI_EDU_BUNDLE_PAGE_BLOCKS==='1'?[['src/main/xiaozhi-agent/page-blocks-runtime-manifest.json','.local-ocr/blocks-v1-dist/omni-edu-ocr']]:[]),
  ['src/main/xiaozhi-agent/ocr-runtime-manifest.json','.local-ocr/file-v3-dist/omni-edu-ocr'],
  ['src/main/education/runtime-manifest.json','.local-education/dist/omni-edu-education'],
  ['src/main/retrieval/runtime-manifest.json','.local-retrieval/dist/omni-edu-retrieval'],

@@ -9,7 +9,8 @@ import {renderLocalPdfPage} from '../xiaozhi-agent/ocr-host';
 import {validMaterialTaskAction} from '../../shared/material-parse-task';
 import {MATERIAL_LAYOUT_SCHEMA,validLayoutQuery,validLayoutCancel,type MaterialLayoutResult,type LayoutError} from '../../shared/material-layout';
 import {MaterialLayoutCache,readMaterialLayout} from './material-layout';
-import {recognizeLocalPdfLayout} from '../xiaozhi-agent/ocr-host';
+import {recognizeLocalPdfLayout,recognizeLocalPageBlocks} from '../xiaozhi-agent/ocr-host';
+import {withMaterialPageBlocks} from './material-page-blocks';
 import {importMaterialFolder} from './material-folder-import';
 import type {MaterialFolderProgress} from '../../shared/materials';
 import {MATERIAL_IMPORT_SCHEMA,validBatchQuery,validBatchAction,validBatchFiles,type MaterialBatchCreated} from '../../shared/material-import-batch';
@@ -100,7 +101,9 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
   try{check(event);if(!validLayoutQuery(input))throw new Error('invalid_input');if(layout)throw new Error('busy');
    const query=structuredClone(input),controller=new AbortController();owned={requestId:query.requestId,controller};layout=owned;
    const closed=()=>controller.abort();event.sender.once('destroyed',closed);
-   try{const result=await readMaterialLayout(store.materials,layoutCache,query,controller.signal,recognizeLocalPdfLayout,layoutPdfFile);check(event);controller.signal.throwIfAborted();return result;}
+   try{let result=await readMaterialLayout(store.materials,layoutCache,query,controller.signal,recognizeLocalPdfLayout,layoutPdfFile);
+    if(query.includeBlocks)result=await withMaterialPageBlocks(store.materials,store.getDataRoot(),result,query.refresh,controller.signal,recognizeLocalPageBlocks);
+    check(event);controller.signal.throwIfAborted();return result;}
    finally{event.sender.removeListener('destroyed',closed);}
   }catch(error){const code=owned?.controller.signal.aborted?'cancelled':error instanceof Error?error.message:'';
    const known:LayoutError[]=['invalid_input','permission_denied','source_changed','missing','unsupported','too_large','configuration','empty','parse_failed','busy','timeout','cancelled','unavailable','cache_invalid'];

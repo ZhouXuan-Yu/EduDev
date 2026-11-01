@@ -5,6 +5,7 @@ module.exports={
  files:['out/**/*','package.json'],
  extraResources:[
   {from:'.local-ocr/file-v3-dist/omni-edu-ocr',to:'ocr-runtime'},
+  ...(process.env.OMNI_EDU_BUNDLE_PAGE_BLOCKS==='1'?[{from:'.local-ocr/blocks-v1-dist/omni-edu-ocr',to:'page-blocks-runtime'}]:[]),
   {from:'.local-education/dist/omni-edu-education',to:'education-runtime'},
   {from:'.local-retrieval/dist/omni-edu-retrieval',to:'retrieval-runtime'},
   {from:'.local-reranker/dist/omni-edu-reranker',to:'reranker-runtime'},

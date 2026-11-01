@@ -1,5 +1,7 @@
 # Local OCR runtime sources
 
+Page blocks v1 (2026-11-01): RapidLayout 1.2.1 and PP-DocLayoutV3, both Apache-2.0, are reused in the existing worker host only for local PNG layout elements. Model SHA/bytes and source provenance are in licenses/PAGE_BLOCKS_NOTICE.md and page-blocks-runtime-manifest.json. This optional component has its own fixed .local-ocr/blocks-v1-dist/omni-edu-ocr directory; legacy OCR keeps its original file-v3-dist and compiled manifest. Build using scripts/release/build-page-blocks-runtime.mjs, requirements-page-blocks-windows.lock.txt and OMNI_EDU_BUILD_PYTHON. Production uses resources/page-blocks-runtime; the release script only bundles it with explicit OMNI_EDU_BUNDLE_PAGE_BLOCKS=1. No automatic production download. Runtime size and Windows installation/managed-download acceptance are separate.
+
 Recognition: original RapidOCR 3.9.2 / Apache-2.0, ONNX Runtime 1.30.0 / MIT. Adapter is worker.py. PP-OCRv6 detection/recognition and legacy angle models are bundled original artifacts; see licenses/MODEL_LICENSES.md with matching upstream hashes. Models are checked before use; no runtime download or cloud fallback.
 
 Build: Python 3.12.14, PyInstaller 6.22.3 (GPL distribution exception). Exact build environment in requirements-windows.lock.txt. Frozen Windows onedir runtime is private .local-ocr/resume-v2-dist/omni-edu-ocr for development and must be shipped as resources/ocr-runtime in a packaged build. No Codex Python is needed by that executable.

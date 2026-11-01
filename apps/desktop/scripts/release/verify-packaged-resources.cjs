@@ -5,6 +5,7 @@ const {createHash}=require('node:crypto');
 module.exports=async function verifyPackagedResources(context){
  const desktop=path.resolve(__dirname,'../..');
  for(const [manifestFile,sourceFolder,targetFolder] of [
+  ...(process.env.OMNI_EDU_BUNDLE_PAGE_BLOCKS==='1'?[['src/main/xiaozhi-agent/page-blocks-runtime-manifest.json','.local-ocr/blocks-v1-dist/omni-edu-ocr','page-blocks-runtime']]:[]),
   ['src/main/xiaozhi-agent/ocr-runtime-manifest.json','.local-ocr/file-v3-dist/omni-edu-ocr','ocr-runtime'],
   ['src/main/education/runtime-manifest.json','.local-education/dist/omni-edu-education','education-runtime'],
   ['src/main/retrieval/runtime-manifest.json','.local-retrieval/dist/omni-edu-retrieval','retrieval-runtime'],

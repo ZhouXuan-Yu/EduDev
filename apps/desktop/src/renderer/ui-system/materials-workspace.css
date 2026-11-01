@@ -1,4 +1,10 @@
 /* Materials-only application layout. Native HeroUI roots and vendor anatomy are untouched. */
+/* These marks carry source geometry. The legacy geometry adapter drops SVG paint,
+ * so keeping them in legacy CSS turns all source lines into opaque black bars. */
+.edu-materials .material-layout-overlay polygon { fill: rgba(100,116,139,.04); stroke: var(--muted); stroke-width: 1; vector-effect: non-scaling-stroke; cursor: pointer; }
+.edu-materials .material-layout-overlay polygon:hover, .edu-materials .material-layout-overlay polygon:focus-visible { fill: rgba(40,100,210,.12); stroke: var(--accent); stroke-width: 2; outline: none; }
+.edu-materials .material-layout-overlay polygon.is-selected { fill: rgba(40,100,210,.20); stroke: var(--accent); stroke-width: 2; }
+.edu-materials .material-layout-overlay[data-mode='blocks'] polygon { cursor: default; }
 .edu-materials { max-width: 1480px; margin: 0 auto; color: var(--foreground); font-size: 15px; line-height: 1.6; min-width: 0; }
 .edu-materials .teacher-library-heading { margin-bottom: 20px; gap: 16px; flex-wrap: wrap; }
 .edu-materials .teacher-library-heading h1 { font-size: 26px; line-height: 1.3; margin: 0 0 6px; font-weight: 650; }
