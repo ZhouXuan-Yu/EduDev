@@ -6,6 +6,9 @@
 
 不把OCR结果变成批准、不以两遍相同替代数学正确；真实修改仍保留分歧。讲义修复仅信息表单忙碌态，不扩展成全局导航/未保存草稿重写。完整Goal仍active。下一优先解决题面/图义与原图的完整对应、双遍答案稳定性和跨页拼接，再贯通已知答案/联网补答、Pi整卷与40GB召回/P95、按需下载和最终安装。原OCR间歇parse_failed及每次646文件279039929B认证成本未关闭。D日常工作树、运行窗口和安装未改。回退用OMNI_EDU_AI_CROP_REVIEW=0停止新策略创建，保留新读适配及原件/回执/资产，不重放旧付费调用。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C06：只读复用与本树manifest/buildInputs逐项hash吻合的固定构建资产，复制为自身资源，未借node_modules/改变他树。当前payload本机隔离安装，测试包仅关闭快捷方式创建，无公开发布；D生产字节不变故不重启。完整AT集中、不新增通过。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒沿原DSH advisory和唯一Pi dispatcher，不引入硬工具禁令或第二调度器。只将宿主关联附加移到比较后，实际进度/参数完整参与；短周期限2–4步，超过4步不冒称全覆盖。真实模型可能忽略提醒，受控SSE证明接线而非自然智能效果。W3→S/T及完整验收标准不变。
 
 

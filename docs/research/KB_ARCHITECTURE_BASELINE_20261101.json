@@ -4422,7 +4422,14 @@
           "sha256": "dfdcc7bd374d55485b54acd32ac84ec7c5a30fc1fabf72dabe2afc801387d858"
         }
       ],
-      "preservedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb"
+      "preservedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+      "lastUpstreamRefresh": {
+        "originMain": "53746efa9be03c067d995b1165650c8cea3414a2",
+        "scope": "Upstream installer acceptance scripts and documentation/evidence only; no production source or dependency changes after the tested integrated build",
+        "additiveConflicts": 13,
+        "bothSidesPreserved": true,
+        "manifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-merge-resolution.json"
+      }
     },
     "evidenceManifest": [
       {
@@ -4669,6 +4676,11 @@
         "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\usage-summary.json",
         "bytes": 225,
         "sha256": "365512d56dd6a1bed51e75baf3caefbe4189503617b1ea6f7acdd4a88cacd61a"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-merge-resolution.json",
+        "bytes": 1903,
+        "sha256": "2771079ab8dfaa94366a3897bc87c30df33ebc39306567426e2cd7379d43dc7b"
       }
     ],
     "sourceCommit": "6713d19",

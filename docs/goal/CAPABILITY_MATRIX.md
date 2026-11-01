@@ -1,5 +1,8 @@
 # 小智能力与复用矩阵
 
+2026-11-02 C06：当前packaged/NSIS安装路径工程已接通；实际安装启动6、同5资料冷读2通过，空PATH使用本地Worker。原件/106段及卸载保留已核；0付费。完整AT仍3/252，W3→S/T不变。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒：REQ-C05-08/E07-04提醒子项工程已实现；真实Pi调用关联污染digest已修，13领域/240组件/最终build/type/Pi3通过。来源/批准/停止不变；0付费，完整自然模型/阶段AT不新增通过，累计3/252。docs/research/AGENT_REPEAT_C05_20261102.json。
 
 

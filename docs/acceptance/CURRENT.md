@@ -10,6 +10,9 @@
 
 完整Goal仍active。下一优先解决题面/图义与原图的完整对应、双遍答案稳定性和跨页拼接，再贯通已知答案/联网补答、Pi整卷与40GB召回/P95、按需下载和最终安装。原OCR间歇parse_failed及每次646文件279039929B认证成本未关闭。D日常工作树、运行窗口和安装未改。回退用OMNI_EDU_AI_CROP_REVIEW=0停止新策略创建，保留新读适配及原件/回执/资产，不重放旧付费调用。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C06当前安装工程链路已实现：自身build/type、240组件、四运行时1049文件pin与安装后hash通过；解包/真实安装启动各6、同资料冷读各2通过，5原件hash保持/长文106段。隔离NSIS安装/卸载完成，7资料/DB与原快捷方式保留，0残留测试程序/新增付费。旧PATH/快捷区/正文导航夹具失败保留并只补失败段，未重导入。455生产文件字节不变，D仍c37c2ab/PID163732、3脏文档保留，未重启。非干净VM/升级回滚/重装或完整FX08/10验收，累计仍3/252、Goal active；继续W3功能后集中，再S/T。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒工程子项已实现（c37c2ab）：正式Pi比较真实工具结果后再附加planBasisCallId，修复每次关联ID不同导致旧重复提醒失效的问题；保留原调用/计划回执。DSH 3/5/8提醒扩展到2–4步短周期及16/32/64等持续稀疏提醒；真实进度/参数变化和新用户输入沿原reset，不硬禁合法轮询、不代执行或新增批准。13领域、240组件、最终build/type与原Pi3项通过；原记录证明7个计划关联逐一保留，冷启0重放/renderer错误。初次真实UI暴露根因（7次本地请求）及原思考能力夹具失败保留，修复后9次本地SSE；独立wire夹具修复及dispatcher改后各1项通过，0新付费，24份原始证据hash已核。main+1437B，renderer/preload字节完全不变，无新P95或自然智能质量结论。原循环提醒可能被真实模型忽略，完整C05/E07与阶段AT仍待集中，累计3/252、Goal active；继续W3 E06/E07/E08+C功能对齐后集中，再S/T。docs/research/AGENT_REPEAT_C05_20261102.json。 日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。
 
 

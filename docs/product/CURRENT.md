@@ -6,6 +6,9 @@
 
 综合发现讲义创建后立即修改说明会被详情回填覆盖，现信息表单在已有读取/保存中禁用，布局与Office输入框保持既有结构。证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C06：当前packaged/NSIS安装路径工程已接通；实际安装启动6、同5资料冷读2通过，空PATH使用本地Worker。原件/106段及卸载保留已核；0付费。完整AT仍3/252，W3→S/T不变。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒：小智能收到同工具及2–4步来回尝试无进展的提醒，调整方法或说明阻碍；新实质指令仍可继续原授权范围任务。不是新的审批或硬禁轮询；受控路径通过，真实模型采纳程度待集中体验验收。日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。 docs/research/AGENT_REPEAT_C05_20261102.json。
 
 

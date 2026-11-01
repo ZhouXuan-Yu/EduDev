@@ -6,6 +6,9 @@
 
 继续复用PDFium/RapidOCR、RapidLayout/PP-DocLayoutV3和既有QuestionAssets/双遍执行器；未引入新框架或服务。证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C06：当前npm pack:win/dist:win沿electron-builder.cjs、asar=false与OCR/education/retrieval/reranker四自包含运行时；旧python-embed/asar.unpacked是历史布局。455生产文件与C05字节不变，仅更新原专项脚本；真实本机安装/卸载和资料读回完成，不冒充干净设备/升级/重装/完整AT。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒：扩展原DSH3/5/8纯观察器，并修复Pi调用关联噪声；保持Hana/vendor循环与native/计划回执。无新包/服务；原Pi3与改后wire1通过，13边界/240组件/build/type通过，0付费。日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。 docs/research/AGENT_REPEAT_C05_20261102.json。
 
 

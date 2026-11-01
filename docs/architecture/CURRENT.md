@@ -4,6 +4,9 @@
 
 新v3原页单元冻结cropReviewPolicy=local-crop-review.v1，第二遍沿原执行器发送已认证局部OCR、边缘、原块坐标/资产hash及首稿比较，绑定原页和首稿hash。只作为不可信辅助证据，发送前隐私差异阻断；每块2048B、合计24KiB，截断明确。旧单元不补字段或重解释；无新模型调用、图片、依赖、表或IPC。带分值章节标题后紧接父题号才认下一页另起节，正文/图注/续题仍保守。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
 
+2026-11-02 C06：当前npm pack:win/dist:win沿electron-builder.cjs、asar=false与OCR/education/retrieval/reranker四自包含运行时；旧python-embed/asar.unpacked是历史布局。455生产文件与C05字节不变，仅更新原专项脚本；真实本机安装/卸载和资料读回完成，不冒充干净设备/升级/重装/完整AT。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒：toolBoundary真实结果→repeat/evidence→原planBasis回执→公共投影；关联及账本保持，不在摘要中过滤工具真实字段。观察器只留有界hash，原新输入/run reset，无IPC/DDL/依赖/定时器/审批变化。main+1437B，renderer/preload字节不变。docs/research/AGENT_REPEAT_C05_20261102.json。
 
 
