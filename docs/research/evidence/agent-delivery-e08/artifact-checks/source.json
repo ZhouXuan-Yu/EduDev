@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "checks": [
+    "Saved HTML resolves its original candidate receipt and stable disk version with no new inspection",
+    "Exact lookup finds retained matching receipt older than the twelve-entry recent list",
+    "Newer same-path/hash packet from another candidate cannot replace the selected receipt",
+    "Saved-file receipt can match exact content; stale requirement projection preserves original findings without applicability",
+    "Two real same-path versions retain different checks; old findings cannot certify edited current bytes",
+    "Changed or missing actual file keeps its exact original report, no automatic reconstruction",
+    "Real saved editable Office bytes resolve by original draft identity using metadata only",
+    "Other session, revoked owner and malformed identities do not expose a selected report",
+    "Cancelled receipts obey the same bounded64 retention and remain visibly cancelled rather than successful"
+  ],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-artifact-check-uN3hVd",
+  "boundary": "Actual original SQLite/text/Office effects and exact saved receipt lookup. Receipt packets and get-refresh projection are controlled fixtures; real inspector/refresh covered separately by formal Electron. No provider requests/full AT.",
+  "receiptReads": [
+    "xicheck_6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "xicheck_6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "xicheck_6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b",
+    "xicheck_b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9",
+    "xicheck_b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9",
+    "xicheck_b17ef6d19c7a5b1ee83b907c595526dcb1eb06db8227d650d5dda0a9f4ce8cd9",
+    "xicheck_4523540f1504cd17100c4835e85b7eefd49911580f8efff0599a8f283be6b9e3",
+    "xicheck_4523540f1504cd17100c4835e85b7eefd49911580f8efff0599a8f283be6b9e3",
+    "xicheck_4523540f1504cd17100c4835e85b7eefd49911580f8efff0599a8f283be6b9e3",
+    "xicheck_4ec9599fc203d176a301536c2e091a19bc852759b255bd6818810a42c5fed14a",
+    "xicheck_9f5635c7a94414075978a625107a6d08830637f4ae8cdf176c02d4bcf40b31e6"
+  ]
+}

@@ -84,7 +84,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
         <ChatTool.Approve isDisabled={draft.busy||reading||!review} onPress={()=>void decide('approve')} data-testid="pi-text-approve">确认保存</ChatTool.Approve>
         <ChatTool.Reject isDisabled={draft.busy} onPress={()=>void decide('reject')} data-testid="pi-text-reject">拒绝</ChatTool.Reject>
       </ChatTool.ApprovalActions></ChatTool.Approval>}
-      <PiDeliveryCheck key={change.id+':'+change.revision} sessionId={sessionId} path={change.path} draftId={change.id}/>
+      <PiDeliveryCheck key={change.id+':'+change.revision} sessionId={sessionId} path={change.path} {...(['applied','reverted'].includes(change.state)?{artifactId:change.id}:{draftId:change.id})}/>
     </ChatTool.Content>
     <div className="pi-text-change-actions">
       {!pending&&<Button size="sm" variant="ghost" onPress={()=>setExpanded(value=>!value)} data-testid="pi-text-review-toggle">{expanded?'收起修改':'查看修改'}</Button>}

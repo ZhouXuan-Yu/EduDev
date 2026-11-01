@@ -40,7 +40,7 @@ export async function migrateQuestionOrigins(host:OriginHost){
  if(tables.has('material_ai_units')&&tables.has('material_ai_members'))await host.run("CREATE TRIGGER IF NOT EXISTS question_origins_receipt_update AFTER UPDATE OF first_json,final_json,image_sha ON material_ai_units WHEN OLD.final_json<>'' AND (OLD.first_json<>NEW.first_json OR OLD.final_json<>NEW.final_json OR OLD.image_sha<>NEW.image_sha) BEGIN DELETE FROM material_question_origins WHERE question_id IN (SELECT question_id FROM material_ai_members WHERE batch_id=OLD.batch_id AND ordinal=OLD.ordinal); END");
  await host.run('DROP TRIGGER IF EXISTS question_origins_native_receipt_update');
  if(tables.has('material_ai_members')){
-  for(const table of ['material_ai_units','material_ai_image_inputs','material_ai_native_context','material_ai_native_inputs','material_ai_page_units'])if(tables.has(table))for(const event of ['UPDATE','DELETE']){
+  for(const table of ['material_ai_units','material_ai_image_inputs','material_ai_native_context','material_ai_native_inputs','material_ai_page_units','material_ai_page_crops'])if(tables.has(table))for(const event of ['UPDATE','DELETE']){
    if(table==='material_ai_units'&&event==='UPDATE')continue;
    await host.run(`CREATE TRIGGER IF NOT EXISTS question_origins_${table}_${event.toLowerCase()} AFTER ${event} ON ${table} BEGIN DELETE FROM material_question_origins WHERE question_id IN (SELECT question_id FROM material_ai_members WHERE batch_id=OLD.batch_id AND ordinal=OLD.ordinal); END`);
   }

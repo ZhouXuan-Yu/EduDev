@@ -1,9 +1,9 @@
 /* Real browser preview/print and HTML download, synthetic question data only. */
 (function(D){
- let mode='student';
+ let mode='student', paperTitle='浮力单元测验';
  function documentHtml(items){
   const title={student:'学生卷',teacher:'教师答案卷',sheet:'答题卡'}[mode];
-  return '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>浮力单元测验 · '+title+'</title><style>@page{size:A4;margin:20mm}body{font:16px/1.8 "Microsoft YaHei",sans-serif;color:#111;max-width:170mm;margin:20px auto}h1{text-align:center;font-size:24px}.meta{text-align:center}.question{margin:24px 0;break-inside:avoid}.blank{height:80px;border-bottom:1px dotted #bbb}.warning{padding:12px;border:1px solid #aaa;font-size:13px}@media print{body{margin:0;max-width:none}}</style><h1>浮力单元测验 · '+title+'</h1><p class="meta">姓名________ 班级________ 考号________</p><p class="meta">'+items.length+'题 · '+items.reduce((n,q)=>n+q.points,0)+'分</p><p class="warning">原型演示卷，非正式教学试卷。题目为合成样例，打印前请核对内容与分页。</p>'+items.map((q,i)=>'<section class="question"><b>'+(i+1)+'. （'+q.points+'分）</b> '+(mode==='sheet'?'作答区域':D.escape(q.text))+(mode==='teacher'?'<p>参考答案：'+D.escape(q.answer||'未生成，待教师核对')+'</p>':'<div class="blank"></div>')+'</section>').join('')+'</html>';
+  return '<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>'+D.escape(paperTitle)+' · '+title+'</title><style>@page{size:A4;margin:20mm}body{font:16px/1.8 "Microsoft YaHei",sans-serif;color:#111;max-width:170mm;margin:20px auto}h1{text-align:center;font-size:24px}.meta{text-align:center}.question{margin:24px 0;break-inside:avoid}.blank{height:80px;border-bottom:1px dotted #bbb}.warning{padding:12px;border:1px solid #aaa;font-size:13px}@media print{body{margin:0;max-width:none}}</style><h1>'+D.escape(paperTitle)+' · '+title+'</h1><p class="meta">姓名________ 班级________ 考号________</p><p class="meta">'+items.length+'题 · '+items.reduce((n,q)=>n+q.points,0)+'分</p><p class="warning">原型演示卷，非正式教学试卷。题目为合成样例，打印前请核对内容与分页。</p>'+items.map((q,i)=>'<section class="question"><b>'+(i+1)+'. （'+q.points+'分）</b> '+(mode==='sheet'?'作答区域':D.escape(q.text))+(mode==='teacher'?'<p>参考答案：'+D.escape(q.answer||'未生成，待教师核对')+'</p>':'<div class="blank"></div>')+'</section>').join('')+'</html>';
  }
  function preview(){
   const items=D.paperSelection.snapshot();
@@ -16,6 +16,7 @@
   D.$('#paper-download-current').onclick=()=>{const url=URL.createObjectURL(new Blob([documentHtml(items)],{type:'text/html;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='浮力测验-'+mode+'-原型样卷.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
   modal.addEventListener('close',()=>{modal.style.width='';},{once:true});
  }
+ D.paperPreviewOpen=title=>{paperTitle=title||'教学练习';preview();};
  const original=D.paper.render;
  D.paper.render=function(){original();const button=document.createElement('button');button.className='button primary';button.id='paper-preview-current';button.textContent='预览当前试卷 / 导出';button.onclick=preview;D.$('#question-selection').before(button);};
 })(window.Design);

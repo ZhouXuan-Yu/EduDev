@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';
 import '../office-agent/register-source.mjs';import assert from 'node:assert/strict';import {DatabaseSync} from 'node:sqlite';import {createHash,randomUUID} from 'node:crypto';
 const {MaterialAiRepository}=await import('../../src/main/assets/material-ai-repository.ts');
 const {archiveEligible,validQuestionArchive}=await import('../../src/shared/question-archive.ts');
@@ -44,7 +45,7 @@ function fixture(status='blank'){
   return JSON.stringify(result);
  }});
  const input={schemaVersion:'xiaozhi.material-ai.v1',resourceId:id,version,settingsRevision:1,start:1,count:1,maxCalls:4,images:true,cloudConsent:true,publicMaterial:true};
- return{db,id,version,state,input,repo,host,saved,async init(){await repo.migrate();await repo.saveSettings({schemaVersion:input.schemaVersion,revision:0,model:'deepseek-flash',apiKey:'controlled-no-network'});},async question(){const r=db.prepare('SELECT * FROM question_bank_items').get();return r?{...saved.find(v=>v.id===r.id),archive:JSON.parse(r.archive_json)}:undefined;}};
+ return{db,id,version,state,input,repo,host,saved,async init(){await repo.migrate();await repo.saveSettings({schemaVersion:input.schemaVersion,revision:0,model:'deepseek-flash',apiKey:'controlled-no-network'});},async question(){const r=db.prepare('SELECT * FROM question_bank_items').get();return r?{...saved.find(v=>v.id===r.id),archive:JSON.parse(r.archive_json),...(r.document_json?{document:JSON.parse(r.document_json)}:{})}:undefined;}};
 }
 async function imageFixture(status='blank'){
  const f=fixture(status);await f.init();f.db.prepare("UPDATE teacher_resources SET original_file_name='题目.png',parse_status=?").run(status==='complete'?'ready':'failed');
@@ -327,5 +328,66 @@ await check('Coverage stored only outside the canonical stem cannot qualify choi
   item.stem+='\n'+body;item.projection.statement.text=item.stem;assert.equal(pageQuestionEvidence(response,response,'1',sha('pixels'),stem),undefined,field+' absent from actual page candidate');
   if(field!=='tables')assert(pageQuestionEvidence(response,response,'1',sha('pixels'),item.stem),field+' complete source must remain usable');
  }
+});
+
+async function cropFixture(mode='normal'){
+ const f=fixture('blank');await f.init();const root=await fs.mkdtemp(path.join(os.tmpdir(),'xiaozhi-page-crop-test-'));f.host.root=()=>root;f.root=root;f.mode=mode;f.renders=0;
+ const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','base64');
+ const {CROP_QUALITY_SCHEMA}=await import('../../src/main/assets/material-ai-crop-quality.ts'),{LOCAL_OCR_ENGINE}=await import('../../src/shared/xiaozhi-ocr.ts');f.repo.runtime.inspectCrop=async()=>({schemaVersion:CROP_QUALITY_SCHEMA,engine:LOCAL_OCR_ENGINE,text:f.mode==='clipped_text'?'计算7+8。':'如图所示，计算7+8。',clearEdges:[f.mode!=='clipped_edge',true,true,true]});
+ f.repo.runtime.crop=async(source,box)=>{f.renders++;return{schemaVersion:'xiaozhi.material-page-preview.v1',ok:true,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,engine:'pdfium-5.14.0-page.v1',assetId:'asset_'+sha(JSON.stringify(box)).replace(/^(.{8})(.{4})(.{4})(.{4})(.{12}).*$/,'$1-$2-$3-$4-$5'),page:source.page,total:1,box,width:1,height:1,sha256:sha(png),dataUrl:'data:image/png;base64,'+png.toString('base64')};};
+ f.repo.runtime.complete=async input=>{f.state.calls++;assert.equal(input.pagePrompt.policy,'page-regions.v2');assert.equal(input.pagePrompt.resourceTitle,'原页.pdf');
+  if(input.previous){assert.equal(input.images.length,1);assert.equal(input.images[0].role,'题号1');assert.equal(input.images[0].data,png.toString('base64'));if(f.mode==='unknown')throw Error('outcome_unknown');}
+  const item=structuredClone(q);item.stem='如图所示，计算7+8。';item.projection.statement.text=item.stem;item.projection.figures={state:'provided',text:'图中标有7与8'};item.requiresImage=true;item.answerOrigin='ai_generated';item.analysisOrigin='ai_generated';
+  const region={number:'1',box:[.05,.1,.95,.6],complete:true};if(input.previous&&f.mode==='wrong_crop'){region.box=null;region.complete=false;item.issues=['incomplete_question'];}
+  if(f.mode==='unclear')item.issues=['uncertain_ocr'];if(f.mode==='math_changed'&&input.previous)item.answer='16';
+  return JSON.stringify({schemaVersion:'xiaozhi.material-ai-page-regions.v1',outcome:'questions',pageText:'第1题 '+item.stem,pageIssues:[],questions:[item],regions:[region]});};
+ f.dispose=async()=>{f.db.close();await fs.rm(root,{recursive:true,force:true});};return f;
+}
+await check('Versioned crop schema rejects overlapping, missing, sparse and executable regions without downgrading old page policies',async()=>{
+ const {validQuestionRegion,validQuestionRegions}=await import('../../src/shared/material-ai-page-regions.ts');
+ assert(validAiPagePrompt({policy:'page-regions.v1',ocrStatus:'blank',totalPages:1,resourceTitle:'公开试卷.pdf'}));
+ assert(!validAiPagePrompt({policy:'page-regions.v1',ocrStatus:'blank',totalPages:1,resourceTitle:'A\nB'}));
+ assert(validQuestionRegion({number:'1',box:[0,0,1,.5],complete:true}));assert(!validQuestionRegion({number:'1',box:null,complete:true}));
+ assert(!validQuestionRegions([{number:'1',box:[0,0,1,.5],complete:true},{number:'2',box:[0,.4,1,1],complete:true}],['1','2']));
+ const sparse=Array(1);assert(!validQuestionRegions(sparse,['1']));const access=[];Object.defineProperty(access,0,{enumerable:true,get(){throw Error('getter must not run');}});assert(!validQuestionRegions(access,['1']));
+});
+await check('Real durable crop receipts qualify image-dependent documents, preserve AI authority, and feed existing source, Pi and rich-paper adapters',async()=>{
+ const f=await cropFixture();try{await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();const saved=await f.question();assert.equal(f.state.calls,2);assert.equal(f.renders,1);assert.equal(saved.archive.ai.policy,'page-crop-complete.v1');assert(archiveEligible(saved));await f.repo.validate(saved);
+ const {questionPresentation}=await import('../../src/shared/native-question.ts'),{questionVersion,createQuestionContextProvider}=await import('../../src/main/education/question-context-provider.ts');assert.equal(questionPresentation(saved).authority,'ai');
+ const {OriginalQuestionRepository}=await import('../../src/main/education/original-question-repository.ts'),{QuestionAssets}=await import('../../src/main/assets/question-assets.ts');
+ const repo=new OriginalQuestionRepository({read:async()=>saved,all:f.host.all,run:f.host.run,create:f.host.create,transaction:async fn=>fn(f.host),automatic:(q,s)=>f.repo.automaticSource(q,s)},f.host.materials,new QuestionAssets(()=>f.root),async()=>{throw Error('must reuse saved crop');});
+ assert.deepEqual(await repo.context(saved.id,questionVersion(saved)),saved.document.context.projection);assert.equal((await repo.questionImages(saved.id,questionVersion(saved))).length,1);assert.equal((await repo.officeImages(saved.id,questionVersion(saved)))[0].blockId,'source_question_0');
+ const tools=createQuestionContextProvider({searchQuestionBank:async()=>[saved],getQuestionNotebookEntry:async()=>saved,listStudents:async()=>[],sanitizeProblemText:async t=>({sanitizedText:t}),readArchivedQuestionContext:q=>f.repo.validate(q),readQuestionDocumentContext:(...a)=>repo.context(...a)},()=>true);
+ const found=JSON.parse((await tools[0].execute('s',{query:'计算'},new AbortController().signal)).content[0].text);assert.equal(found.returned,1,JSON.stringify(found));
+ const read=JSON.parse((await tools[1].execute('r',{reference:'题目1',version:questionVersion(saved)},new AbortController().signal)).content[0].text);assert.equal(read.success,true);assert.equal(read.teacherConfirmationKnown,false);assert.equal(read.scope,'ai_transcribed_source');assert.equal(read.question.context.figures.text,'图中标有7与8');
+ const {compileRichPaperOffice}=await import('../../src/main/education/paper-rich-export.ts');const draft=compileRichPaperOffice({id:'xipaper_'+randomUUID(),title:'图题验收卷',digest:sha('paper'),blueprint:{grade:saved.grade,subject:saved.subject,durationMinutes:45,sections:[{id:'s',label:'解答题'}]},totalPoints:10,selection:{items:[{sectionId:'s',number:1,points:10,question:saved,source:{version:questionVersion(saved)}}]}},'student');assert(draft.sections.some(s=>s.figures?.some(i=>i.blockId==='source_question_0')));
+ }finally{await f.dispose();}
+});
+await check('Crop incompleteness, mathematical disagreement, local OCR doubts and changed crop evidence remain held or revoked',async()=>{
+ for(const mode of ['wrong_crop','math_changed','unclear','clipped_text','clipped_edge']){const f=await cropFixture(mode);try{await f.repo.create(f.input);await f.repo.drain();const saved=await f.question();assert(!archiveEligible(saved),mode);assert.notEqual(saved.archive.ai.policy,'page-crop-complete.v1',mode);}finally{await f.dispose();}}
+ const f=await cropFixture();try{await f.repo.create(f.input);await f.repo.drain();const saved=await f.question();f.db.prepare("UPDATE material_ai_page_crops SET first_sha=?").run(sha('changed'));await assert.rejects(()=>f.repo.validate(saved),/source_changed/);}finally{await f.dispose();}
+});
+await check('Explicit unknown retry reuses the frozen first pass and exact crop; teacher field edits keep separate receipts and no fake approval',async()=>{
+ const f=await cropFixture('unknown');try{const batchId=await f.repo.create(f.input);await f.repo.drain();const first=f.db.prepare('SELECT first_json FROM material_ai_units').get().first_json;assert.equal(f.renders,1);assert.equal(f.state.calls,2);
+ f.mode='normal';await f.repo.action({schemaVersion:'xiaozhi.material-ai.v1',batchId,action:'retry_unknown',acceptDuplicateCharge:true});await f.repo.drain();assert.equal(f.renders,1);assert.equal(f.state.calls,3);assert.equal(f.db.prepare('SELECT first_json FROM material_ai_units').get().first_json,first);
+ const saved=await f.question(),fields=Object.fromEntries(['stem','answer','analysis','subject','grade','knowledgePoint','questionType','difficulty'].map(k=>[k,saved[k]]));fields.analysis='教师补充：7加8等于15。';const document=await f.repo.revisePageDocument(saved,fields,true),edited={...saved,...fields,document,archive:{...saved.archive,state:'teacher_edited',sourceChecked:true,analysisOrigin:'teacher'}};await f.repo.validate(edited);assert.equal(document.analysis.origin,'teacher');assert.equal(document.blocks[0].sha256,saved.document.blocks[0].sha256);
+ const {questionPresentation}=await import('../../src/shared/native-question.ts');assert.equal(questionPresentation(edited).authority,'ai');assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_ai_page_document_edits').get().n,1);
+ }finally{await f.dispose();}
+});
+await check('The real provider requires every bound crop exactly once and keeps new versus legacy prompt instructions separate',async()=>{
+ const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts'),originalFetch=globalThis.fetch,requests=[];const item=structuredClone(q);item.requiresImage=true;item.projection.figures={state:'provided',text:'原图标注'};const response={schemaVersion:'xiaozhi.material-ai-page-regions.v1',outcome:'questions',questions:[item],pageText:text,pageIssues:[],regions:[{number:'1',box:[.1,.1,.9,.9],complete:true}]};
+ const input={model:'deepseek-flash',apiKey:'controlled-only',text:'OCR',page:true,pagePrompt:{policy:'page-regions.v2',ocrStatus:'complete',totalPages:1,resourceTitle:'公开试卷.pdf'},imageCoverage:true,image:{mime:'image/png',data:Buffer.from('controlled-original').toString('base64')}},image={role:'题号1',index:0,mime:'image/png',data:Buffer.from('controlled-crop').toString('base64')},signal=new AbortController().signal;
+ try{globalThis.fetch=async(_,options)=>{requests.push(JSON.parse(options.body));return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:JSON.stringify(response)}}]}),{status:200});};await completeMaterialAi(input,signal);for(const images of [undefined,[],[{...image,role:'题号2'}],[image,image]])await assert.rejects(completeMaterialAi({...input,previous:response,...(images?{images}:{})},signal),/invalid_input/);assert.equal(requests.length,1);await completeMaterialAi({...input,previous:response,images:[image]},signal);assert.equal(requests.length,2);const prompt=requests[1].messages[0].content;assert(prompt.includes('[原页完整题面与裁剪 page-regions.v2]'));assert(!prompt.includes('schemaVersion/outcome/questions三个字段'));assert(!prompt.includes('pageIssues五个字段'));const {pageRegionsInstruction}=await import('../../src/main/assets/material-ai-page-instruction.ts');assert(pageRegionsInstruction('冻结旧基线','page-regions.v1').includes('[原题裁剪证据 page-regions.v1]'));}finally{globalThis.fetch=originalFetch;}
+});
+await check('Local bitmap margins, literal OCR ends, mathematical glyphs and neighbouring parents independently block wrong crops',async()=>{
+ const {CROP_QUALITY_SCHEMA,cropClearEdges,cropTextComplete,validCropQuality}=await import('../../src/main/assets/material-ai-crop-quality.ts'),{LOCAL_OCR_ENGINE}=await import('../../src/shared/xiaozhi-ocr.ts');
+ const pixels=Buffer.alloc(40*40*4,255);assert.deepEqual(cropClearEdges(pixels,40,40),[true,true,true,true]);for(let y=4;y<8;y++)pixels.fill(0,(y*40+39)*4,(y*40+40)*4-1);assert.deepEqual(cropClearEdges(pixels,40,40),[true,false,true,true]);assert.deepEqual(cropClearEdges(Buffer.alloc(4),1,1),[false,false,false,false]);
+ const item={...q,stem:'原题条件：x²+7等于8，请写出完整的计算结果。'},quality={schemaVersion:CROP_QUALITY_SCHEMA,engine:LOCAL_OCR_ENGINE,text:item.stem,clearEdges:[true,true,true,true]};assert(validCropQuality(quality));assert(cropTextComplete(quality,item,[item]));for(const text of [item.stem.slice(4),item.stem.slice(0,-4),item.stem.replace('²','2')])assert(!cropTextComplete({...quality,text},item,[item]));const neighbour={...q,number:'2',stem:'另一道完全不同的题目，需要计算八加九等于多少。'};assert(!cropTextComplete({...quality,text:quality.text+neighbour.stem},item,[item,neighbour]));
+});
+await check('Missing historical crop checks revoke automatic use without rewriting saved responses or making a model call',async()=>{
+ const f=await cropFixture();try{await f.repo.create(f.input);await f.repo.drain();const saved=await f.question(),raw=f.db.prepare('SELECT first_json,final_json FROM material_ai_units').get();f.db.prepare("UPDATE material_ai_page_crops SET quality_json=''").run();await assert.rejects(()=>f.repo.validate(saved),/source_changed/);assert.equal(f.state.calls,2);assert.deepEqual(f.db.prepare('SELECT first_json,final_json FROM material_ai_units').get(),raw);}finally{await f.dispose();}
+});
+await check('Next-page continuation and unknown local receipt hold the current last parent despite two matching model outputs',async()=>{
+ for(const next of ['(2) 请继续完成上一题的实验。','unknown','接上页实验，请记录数据。']){const f=await cropFixture();try{f.db.prepare('UPDATE material_pdf_jobs SET total=2').run();if(next!=='unknown'){const old=f.db.prepare('SELECT * FROM material_pdf_pages').get();const raw=JSON.parse(old.result_json);Object.assign(raw,{status:'complete',error:'',method:'ocr',text:next,ocrText:next});f.db.prepare("INSERT INTO material_pdf_pages VALUES(?,2,'complete',?,'')").run(old.generation,JSON.stringify(raw));}await f.repo.create(f.input);await f.repo.drain();const saved=await f.question();assert(!archiveEligible(saved));assert(saved.archive.issues.includes(next.startsWith('(2)')?'cross_page':'incomplete_question'));await f.repo.validate(saved);}finally{await f.dispose();}}
 });
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));

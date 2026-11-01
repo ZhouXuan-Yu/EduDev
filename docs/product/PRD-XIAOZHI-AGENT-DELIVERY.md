@@ -377,7 +377,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E06-05 | 数值核验 | 结果符合冻结答案及模型假设；至少一种独立确定性方法；不以模型自称正确代替 | [AT-E06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-05) | 部分实现；实际CSV/XLSX240合计及立方体浮力独立确定性复算已接通，完整AT待W3集中验收 |
 | REQ-E06-06 | 跨文件一致 | 指出具体不一致对象；修复到同题同参数同版本；文件数齐不等于整包完成 | [AT-E06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-06) | 部分实现；同名数值/单位和题目版本文本跨文件比较已接通，完整FX整包待集中，完整AT待W3集中验收 |
 | REQ-E06-07 | 修复预算 | 可修复后重新检查；每类至多2轮自动修复；仍失败保留草稿、原因和已通过项，无无限循环 | [AT-E06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-07) | 部分实现；原Pi候选自动修复每类2轮、冻结规则/改名/人工修改区分已接通，完整AT待W3集中验收 |
-| REQ-E06-08 | 检查版本绑定 | 旧检查标过期；重新核当前内容或说明变更；不能沿旧hash报告新内容已验 | [AT-E06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-08) | 部分实现；文件/工作区/要求/草稿版本失效与刷新已接通，完整AT待W3集中验收 |
+| REQ-E06-08 | 检查版本绑定 | 旧检查标过期；重新核当前内容或说明变更；不能沿旧hash报告新内容已验 | [AT-E06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-08) | 部分实现；文件/工作区/要求/草稿版本失效与刷新已接通，完整AT待W3集中验收 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。 |
 | REQ-E06-09 | 检查不足与停止 | 区分未检查、失败、通过；停止后不补报成功；已保存文件可取回且真实状态保留 | [AT-E06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-09) | 部分实现；真实死循环停止/已取消回执已验证，字体不可用完整场景待验，完整AT待W3集中验收 |
 | REQ-E06-10 | 终态陈述 | 逐文件陈述保存与检查状态、未完成项；不显示整轮完成；不虚构路径、页数或审批 | [AT-E06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e06-10) | 部分实现；逐文件检查显示与正式回执附检查范围已接通，完整混合终态待验，完整AT待W3集中验收 |
 
@@ -418,7 +418,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
-| REQ-E08-01 | 成果卡信息 | 显示可读名称、格式、保存状态、版本、最近检查与打开/定位操作；内部ID不堆到正文 | [AT-E08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-01) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
+| REQ-E08-01 | 成果卡信息 | 显示可读名称、格式、保存状态、版本、最近检查与打开/定位操作；内部ID不堆到正文 | [AT-E08-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-01) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。 |
 | REQ-E08-02 | 打开与定位 | 指向同一当前版本文件；调用真实OS打开/定位；失败有反馈而非无反应 | [AT-E08-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-02) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
 | REQ-E08-03 | 文件被移走 | 提示文件缺失/位置变化；账本不删除伪装正常；不自动重生成或打开同名错误文件 | [AT-E08-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-03) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
 | REQ-E08-04 | 版本生成 | 旧版保留可开，新版为当前；说明实际修改范围；不为未变化文件额外产生版本 | [AT-E08-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-04) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
@@ -427,7 +427,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E08-07 | 整包状态 | 整包部分完成，逐项状态准确；可只重试失败项，已交付文件可独立使用 | [AT-E08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-07) | 部分实现：a73b389整包目录/逐项状态/所选包续做工程已实现；SQLite8、正式Electron10及build/type/240组件通过，成功HTML不重写，8页PPT及备注真实读回。完整FX10/AT仍集中；证据bundleCatalogSlice。 |
 | REQ-E08-08 | 来源导航 | 准确定位来源版本/原页或行；来源变化可见；无来源的生成内容不伪造教材引用 | [AT-E08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-08) | 部分实现：7a2d782来源入口/原行与变更提示工程已实现，最终整合bfb0691 build/type、240组件及正式Pi8通过；SQLite10与领域投影契约3保留边界。完整FX05/原页格式矩阵/人工REVIEW待集中，不记整条通过；证据artifactSourcesSlice。 |
 | REQ-E08-09 | 导出兼容 | 文字/公式/表格/图片可读；PPT关键文本可编辑；不存在全部截图却声称全可编辑 | [AT-E08-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-09) | 待验收 |
-| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 |
+| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。 |
 
 #### WP-S01 理科资料完整读取、题目结构与原出处
 
@@ -802,9 +802,9 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C03-02 | 原件与派生 | 原件哈希、确认题与正式产物保持；派生状态记录版本；不静默混用新旧索引 | [AT-C03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-02) | 待验收 |
 | REQ-C03-03 | 配置并发 | 一个有效提交，另一个冲突刷新；不丢教师修改或出现最后写入无提示 | [AT-C03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-03) | 待验收 |
 | REQ-C03-04 | 文件账本一致 | 原子安装或明确uncertain；重启只读核验后结算；无正式记录指向不存在文件的伪成功 | [AT-C03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-04) | 待验收 |
-| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) | 待验收 |
-| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) | 待验收 |
-| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) | 待验收 |
+| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
+| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
+| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
 | REQ-C03-08 | 跨会话隔离 | 身份与版本不串，引用不能跨授权会话复活；文件路径归属正确 | [AT-C03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-08) | 待验收 |
 | REQ-C03-09 | 异常目录链接 | 拒绝越界；不跟随到其他目录读写或递归清理；教师数据不变 | [AT-C03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-09) | 待验收 |
 | REQ-C03-10 | 回退验证 | 按发布兼容表读或明确阻止写入；无静默清空；回退步骤与备份路径可执行 | [AT-C03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-10) | 待验收 |

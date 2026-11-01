@@ -1,0 +1,295 @@
+{
+  "schemaVersion": "xiaozhi.evidence-files.v1",
+  "items": [
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-audit.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-audit.json",
+      "rawBytes": 59019,
+      "rawSha256": "7184f772839df89474377c0f4d3448d0481b734f5b8558683666381398f0da77",
+      "gzipBytes": 6507,
+      "gzipSha256": "7a9aa10454597fc1bea85882ae4af4ffdbd85dcd10e912eed3c686a67222301d"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-build-delivery.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-build-delivery.log",
+      "rawBytes": 40559,
+      "rawSha256": "9c1f0ed1ea720687b1af8026dda8103d3dfe7e0bbd4ae02822a0f216553a0f7f",
+      "gzipBytes": 8108,
+      "gzipSha256": "e5b18a4d32c42f7d7903e67100b0b10e908ed30b4e5d4562c8927f9bf28bdae7"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-build-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-build-final.log",
+      "rawBytes": 428,
+      "rawSha256": "9b60364a30ebc22c29f65995ddbd2f382d46707092d6a014337f84ad0f3b34f5",
+      "gzipBytes": 262,
+      "gzipSha256": "3d460c125736611d6a687376443d7ba4c622c6c3db4c35eda4a3e4e07e7a44cf"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-build-fixed.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-build-fixed.log",
+      "rawBytes": 40557,
+      "rawSha256": "5b3c11cadefa2765c9941e160e2b870d0c24dbd98c2341aa8efaa2fedc3d588f",
+      "gzipBytes": 8108,
+      "gzipSha256": "d970cf085999512764730cc98509a2383888d425ba861f55442e45c7056d39cc"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-build-release.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-build-release.log",
+      "rawBytes": 40560,
+      "rawSha256": "5a59cd912356ba78085b138708d43132afbcccee4093970cdeb8841fc73eb021",
+      "gzipBytes": 8107,
+      "gzipSha256": "a1d0a60225e0be625de83c909255b3ad98036b60c25a2ce0002fb5e5721bfe13"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-build-verified.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-build-verified.log",
+      "rawBytes": 40558,
+      "rawSha256": "4e64d48e2880573e89050663f279fad57abdededc02610745ca11ddb2391fc87",
+      "gzipBytes": 8106,
+      "gzipSha256": "787a3578120e4e36bc76e12cdef5392bc46af1a91c59620d062fc6e8aa1bd98e"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-build.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-build.log",
+      "rawBytes": 40558,
+      "rawSha256": "edb79045130ff9d047bdda2cb952885bbd4b3a62c08e18b1752294a70ff801db",
+      "gzipBytes": 8110,
+      "gzipSha256": "54853b2714a272a1426f51a1bb4b2bcd13ae423b0aaef284a0bc9b5cecf7a499"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-cold-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-cold-final.log",
+      "rawBytes": 1746,
+      "rawSha256": "8c2be393ed1ebdf21e0137c955f43567c9d0ea286a57eb384a9f53b9198d4700",
+      "gzipBytes": 685,
+      "gzipSha256": "5bba97161f0780240f2189decb9690dc8d38d725442923ed9b188884bbaaac3b"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-cold-locator.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-cold-locator.log",
+      "rawBytes": 1746,
+      "rawSha256": "b81ff9889321e20ad59315fb529ead57db6f06cf82dd5ab9ddab3b37b7695b4e",
+      "gzipBytes": 684,
+      "gzipSha256": "a494fdeba1a633a843f6de9bf0e839ff148f592a5cc11737e1be17fc285c769f"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-cold-verified.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-cold-verified.log",
+      "rawBytes": 738,
+      "rawSha256": "14b4bd2af4d1c35215431afd69bad3648a69a69a63f54d57328c706a94fde713",
+      "gzipBytes": 470,
+      "gzipSha256": "f50ec473d038503d0b8d0bebfeab66c61718b792daae919339627b63c50c7e2d"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-cold.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-cold.log",
+      "rawBytes": 1746,
+      "rawSha256": "b81ff9889321e20ad59315fb529ead57db6f06cf82dd5ab9ddab3b37b7695b4e",
+      "gzipBytes": 684,
+      "gzipSha256": "a494fdeba1a633a843f6de9bf0e839ff148f592a5cc11737e1be17fc285c769f"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-components.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-components.log",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipBytes": 280,
+      "gzipSha256": "93388790a1d5110a96990b5de3ec09da644cc218431729072ee09dc66ca2d6dd"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-integration-build.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-integration-build.log",
+      "rawBytes": 40574,
+      "rawSha256": "ee7385097ef2a2907584a525283608477e192a9cbf3be641c2480b9e48c6b64e",
+      "gzipBytes": 8122,
+      "gzipSha256": "3a8efcc7856a002376b0dc032840d93208afd6b1a354cfdb8424d92f7498c180"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-integration-cold.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-integration-cold.log",
+      "rawBytes": 738,
+      "rawSha256": "f333a2795d031ef76460b104562545ecc205421351b11d5599b44d7009f31201",
+      "gzipBytes": 470,
+      "gzipSha256": "a5e6c1d1a151ace7afd84490a3179723abb4e1f8604322425119834495d87273"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-integration-components.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-integration-components.log",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipBytes": 280,
+      "gzipSha256": "93388790a1d5110a96990b5de3ec09da644cc218431729072ee09dc66ca2d6dd"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-source-final.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-source-final.log",
+      "rawBytes": 1101,
+      "rawSha256": "034553ef332c431932eb08f0aba4dc1d431c666d9185f21db7c6789b55170f07",
+      "gzipBytes": 636,
+      "gzipSha256": "c80c9439d5f57a2dd8647d3be0784c9133df7de108f9d6fcd924e57f56a34766"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-source-release.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-source-release.log",
+      "rawBytes": 1234,
+      "rawSha256": "b171d33e41ea5a6fb0ebb784d44edef9ac5e9eef4111886c451446512f0ae3ab",
+      "gzipBytes": 697,
+      "gzipSha256": "dc5e48aaf7d94a1cc22ae9c0ebb17a773706fc9d2c77fe2d74c445e7a2c4f22b"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-source.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-source.log",
+      "rawBytes": 736,
+      "rawSha256": "6efc60a77fdf57f9d23c379f88b0c3dbf79e0b07ffd688b9f65b2da7a07144cd",
+      "gzipBytes": 536,
+      "gzipSha256": "2caec2029531151a11699d9b9c5246df4194ff55bba110bebed871556b590a83"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-ui.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-ui.log",
+      "rawBytes": 1014,
+      "rawSha256": "f124ca210fe6e9bca2b00a9df79923bba4a93b061c51985be81c30cc39847318",
+      "gzipBytes": 671,
+      "gzipSha256": "aec3a6cfdbb7747b6fda231594fe77bd4f65bd84c9cce9c0bb2e1871d7c13854"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/ui-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\report.json",
+      "rawBytes": 2923,
+      "rawSha256": "e2b9766c9ba6db59edd6d159e9afbb0f726728b37ec3a84199226c84bf39c24b",
+      "gzipBytes": 1433,
+      "gzipSha256": "8b17947c65d7678dccf87573315c3d51b5b2a482336b0dd3c7857d5ed371db05"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/ui-cold-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\cold-report.json",
+      "rawBytes": 4419,
+      "rawSha256": "68f41b0bfffa63e1d83d16f4a4f56373c1991c3086b66737a479ec32bc11777b",
+      "gzipBytes": 1888,
+      "gzipSha256": "f999c5e88fd7556bb53dd98ac995c6c3d374b96dac3c7a440e159cc43d43d564"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/ui-cold-verified-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\cold-verified-report.json",
+      "rawBytes": 4419,
+      "rawSha256": "68f41b0bfffa63e1d83d16f4a4f56373c1991c3086b66737a479ec32bc11777b",
+      "gzipBytes": 1888,
+      "gzipSha256": "f999c5e88fd7556bb53dd98ac995c6c3d374b96dac3c7a440e159cc43d43d564"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/ui-cold-locator-report.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\cold-locator-report.json",
+      "rawBytes": 1909,
+      "rawSha256": "bb25a48bb89da7217b0bc45184bdbde29292005fc7942cd86a307852640d86f6",
+      "gzipBytes": 734,
+      "gzipSha256": "67eb30a8e80ac71394b03ab156c39d97c9ff22553dddd09ec71020e1a696627e"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/ui-independent-readback.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\independent-readback.json",
+      "rawBytes": 3359,
+      "rawSha256": "21eb9ff29475335490c70324ee44a05453e78d61d1243c6f8c94fa038874c9d8",
+      "gzipBytes": 1359,
+      "gzipSha256": "a1f8fcf03b02ca1bf10534df71ef94ccfb3c02ee1125aedda7362b2972477616"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/ready-1366.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\ready-1366.png",
+      "bytes": 130329,
+      "sha256": "6f1643846828e37aeb7dc63bbaccb408e401ec0fa3f98c673d8a87b8372a143b"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/ready-1920.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\ready-1920.png",
+      "bytes": 145483,
+      "sha256": "6c184e87c375144490bb979200dbf413e394999ad7826322e62fa06485e9ef55"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/restored-ppt.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored-ppt.png",
+      "bytes": 205361,
+      "sha256": "1961a20c8976f138cf35deee1cc84c1a281e6c523eddc88e9d8b771d59b04680"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/restored-html.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored-html.png",
+      "bytes": 212996,
+      "sha256": "e4bfba5dd9bf9074cc69564271f5625e1fdb5189b936af33996fe145f0057736"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/failure.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\failure.png",
+      "bytes": 196307,
+      "sha256": "2c0dd8f0167270e012f89e11c5dd1cead9f0c6f8f38ce4b07c438c70a2dd3460"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/cold-locator-failure.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\cold-locator-failure.png",
+      "bytes": 193093,
+      "sha256": "e33a778b7ac53123608bd60e6ff6df896098d579e39982fd3f5ff11427c68d16"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/source-first-failure.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-73L1M4\\report.json",
+      "rawBytes": 805,
+      "rawSha256": "38ff32eb2fb4df08302de8d0914843adbff4ced0cdc64f11e01781a534d11757",
+      "gzipBytes": 563,
+      "gzipSha256": "54d6d13f015f9e784fec919bc0064a5de7295c4adb6b524d8a1e72b8026d2fa2"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/source-seven.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-dyAZLm\\report.json",
+      "rawBytes": 1754,
+      "rawSha256": "a8d56297d98c297e17af373b437e09dd949967586db339c8ba08ffcbb36d2a5e",
+      "gzipBytes": 968,
+      "gzipSha256": "749928607ebf4e4613d78f82bdb2c86783994c6d94bd8a3592a4555b7f6f87b5"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/source-eight.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-v7GC83\\report.json",
+      "rawBytes": 1888,
+      "rawSha256": "75e72132ce82df993558a348a16a59c1f9da5897e6eb3dc5cba476c003babb73",
+      "gzipBytes": 1023,
+      "gzipSha256": "0e97f2edc8e93738dc895cc80581df62badb895a9006e1591db034469bae5655"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/original-backup-manifest.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\exports\\OmniEduData-backup-2026-11-01T08-05-09-004Z\\omni-edu-backup-manifest.v1.json",
+      "rawBytes": 4560,
+      "rawSha256": "c9c90d4e076a666a856e5e6b0ff3007c484affa1d96a628eee9ea99e4724c7cc",
+      "gzipBytes": 1402,
+      "gzipSha256": "622d2832afb5b8bd8dc32c78d6503a7c0a338edb2ff70ed54e80b62c1bc94cca"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/restore-receipt.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\OmniEduData\\xiaozhi-recovery.v1.json",
+      "rawBytes": 474,
+      "rawSha256": "b4b30993188c391961917a33d37447f53cdb40b00a5ff71c24cc22f37a785915",
+      "gzipBytes": 283,
+      "gzipSha256": "7fc52d8254ab30de8083c8bd81f9f0decc41a8432f2aefc293f47187e07eae09"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/prepared-files.json.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-restore-ui-LvRXfg\\restored\\XiaozhiRecovered-25b70970-c323-4f15-8cd7-9561d16e892a\\restoration-files.v1.json",
+      "rawBytes": 6732,
+      "rawSha256": "f344f1d6860e5bb4a1fc890ff35c575f8f19cd5d9aa1e93fcd2b3edebd84268e",
+      "gzipBytes": 1444,
+      "gzipSha256": "64c4ef66c79d0a216799844631bd79e843647b8b8fd4b112e7303a4aa7598971"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/xiaozhi-restore-comprehensive.log.gz",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-restore-comprehensive.log",
+      "rawBytes": 837,
+      "rawSha256": "a0532e0ff9af9babb91b5b5ac2b5338798d33657990c9bb7b87c75c4a3ca173b",
+      "gzipBytes": 458,
+      "gzipSha256": "c4d491bbefd9fe81b56f3a8ea4dce66b91b72592be3a65ec0feac398860be944"
+    },
+    {
+      "path": "docs/research/evidence/agent-output-backup-c03/restore-20261101/comprehensive-failure.png",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\failure.png",
+      "bytes": 41666,
+      "sha256": "fca02e3f01bd1f48a8d88abafac5e5faf1678d5edf88fb6056e1425620929fc4"
+    }
+  ]
+}

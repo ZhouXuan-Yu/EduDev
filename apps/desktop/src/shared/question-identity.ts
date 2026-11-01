@@ -5,7 +5,7 @@ import {questionFactConflicts} from './question-facts';
 import {validNativeQuestionDocument,nativeQuestionComplete} from './native-question';
 
 export const QUESTION_CONTENT_IDENTITY_SCHEMA='xiaozhi.question-content-identity.v1' as const;
-export type QuestionIdentityScope='saved_text'|'reviewed_document'|'ai_native_document';
+export type QuestionIdentityScope='saved_text'|'reviewed_document'|'ai_native_document'|'ai_page_document';
 export type QuestionContentIdentity=
  |{schemaVersion:typeof QUESTION_CONTENT_IDENTITY_SCHEMA;status:'available';scope:QuestionIdentityScope;key:string}
  |{schemaVersion:typeof QUESTION_CONTENT_IDENTITY_SCHEMA;status:'unsupported';reason:'invalid_document'|'incomplete_document'|'fact_conflict'|'empty_text'};
@@ -39,7 +39,8 @@ export function questionContentIdentity(question:QuestionBankItem):QuestionConte
   if(questionFactConflicts(question).length)return{schemaVersion,status:'unsupported',reason:'fact_conflict'};
   if(document.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)return{schemaVersion,status:'unsupported',reason:'incomplete_document'};
   const projection=QUESTION_PROJECTION_FIELDS.map(field=>[field,document.context.projection[field].state,text(document.context.projection[field].text)]);
-  return{schemaVersion,status:'available',scope:'reviewed_document',key:JSON.stringify([schemaVersion,'reviewed_document',text(question.subject),projection,document.blocks.map(blockContent)])};
+  const scope=question.archive?.ai?.policy==='page-crop-complete.v1'?'ai_page_document':'reviewed_document';
+  return{schemaVersion,status:'available',scope,key:JSON.stringify([schemaVersion,scope,text(question.subject),projection,document.blocks.map(blockContent)])};
  }
  if(typeof question.stem!=='string'||!question.stem.trim()||question.stem.includes('\0'))return{schemaVersion,status:'unsupported',reason:'empty_text'};
  return{schemaVersion,status:'available',scope:'saved_text',key:JSON.stringify([schemaVersion,'saved_text',text(question.subject),text(question.stem)])};
