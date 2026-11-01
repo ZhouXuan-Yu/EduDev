@@ -10,6 +10,10 @@
   background: #fff;
   -webkit-app-region: drag;
   user-select: none;
+  box-sizing: border-box;
+  padding-left: env(titlebar-area-x, 0px);
+  padding-right: max(0px, calc(100% - env(titlebar-area-x, 0px) - env(titlebar-area-width, calc(100% - 140px))));
+  container: desktop-caption / inline-size;
 }
 .edu-chrome-controls {
   display: flex;
@@ -17,17 +21,27 @@
   gap: 2px;
   height: 100%;
   padding-left: 8px;
-  flex: 0 1 auto;
-  max-width: env(titlebar-area-width, calc(100% - 140px));
-  margin-left: env(titlebar-area-x, 0px);
+  flex: 0 0 auto;
   -webkit-app-region: no-drag;
 }
 .edu-chrome-drag {
   flex: 1 1 auto;
   align-self: stretch;
   min-width: 32px;
-  margin-right: 140px;
   -webkit-app-region: drag;
+}
+.edu-chrome-controls > button { flex-shrink: 0; }
+.edu-chrome-menu-app { display: none; }
+@container desktop-caption (max-width: 420px) {
+  .edu-chrome-menu-group { display: none; }
+  .edu-chrome-menu-app { display: inline-flex; }
+}
+@container desktop-caption (max-width: 220px) {
+  .edu-chrome-controls > [data-testid="desktop-back"],
+  .edu-chrome-controls > [data-testid="desktop-forward"] { display: none; }
+}
+@container desktop-caption (max-width: 160px) {
+  .edu-chrome-controls > [data-testid="desktop-sidebar"] { display: none; }
 }
 .edu-desktop-content {
   height: calc(100dvh - var(--edu-chrome-height, 44px));

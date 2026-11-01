@@ -338,3 +338,10 @@ renderer7179937→7182635B；合成Pi单次8488ms，不当作前后延迟/P95或
 - 回退本切片代码保留原记录/文件，无迁移；老数据无新增字段要求。自然质量和完整28WP/252AT不因此宣布完成。
 
 本片收尾：a8a3120与上述工程路径已取证；普通Office/精确PPT版本入口和恢复已实现，完整E08/252AT仍未执行。最终三处data-edu-domain只恢复已有几何，不修改全局隔离/native源码。详AGENT_DELIVERY_VERSIONS_E08_20261031.json及WORK_PROGRESS.md；D盘日常/安装包未更新。
+# 2026-11-01 C02 窄窗标题栏交付合同
+
+- 目标：REQ-C02-03/05/09 的功能缺口。当前390px窗口的7个标题栏控件实际溢出253px可用区，菜单压进原生caption及drag区域；常规双击最大化已响应，物理drag失败原因仍未知，不由本修复自动转为通过。
+- 改动：沿现有DesktopChrome typed契约增加应用菜单分组；main复用原生Menu及现有命令，在视图菜单补后退/前进；renderer根据原生titlebar可用宽度收拢菜单，极窄时导航通过原生菜单进入，留至少32px空白drag。原preload通道、来源、权限、数据与Pi不变。
+- 文件：shared/desktop-chrome.ts、main/desktop-chrome/index.ts、renderer/components/desktop/DesktopFrame.tsx、renderer/ui-system/chrome.css；新增定向Electron测试。无依赖、表、迁移、文件目录协议变化。
+- 定义：隔离原Electron以390/480/800/1366/1920和100/125/150/200%页面zoom检查可见控件不溢出原生可用区、drag余量、完整应用菜单、中文标签、原生菜单触发及导航、草稿切换与冷启；build/type与组件门禁。保留修前实际CSS测量。系统DPI/实际pointer/完整AT矩阵仍独立待验，不能以DOM边界或setBounds冒充。
+- 失败/回滚：原IPC仍校验sender/组名/窗口坐标，菜单失败原提示不变。回退本片4个生产文件即可恢复旧布局；无数据迁移或真实资料清理。日常窗口不输入、不因本片测试抢占用户操作；隔离测试不调用付费provider。
