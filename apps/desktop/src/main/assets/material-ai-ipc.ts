@@ -1,3 +1,7 @@
+import fs from 'node:fs';
+import {withMaterialPageBlocks} from './material-page-blocks';
+import {pageBlockTexts} from '../../shared/material-ai-page-fragments';
+import {ocrRuntimeRoot,recognizeLocalPageBlocks} from '../xiaozhi-agent/ocr-host';
 import {validBookMatchQuery} from '../../shared/question-book-answer';
 import {ipcMain as electronIpcMain,safeStorage,type BrowserWindow} from 'electron';
 import {inspectPageCrop} from './material-ai-crop-inspector';
@@ -34,6 +38,12 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
     ocr:async(bytes,signal)=>{try{const result=await recognizeLocalImage(bytes,signal);return {text:result.text,engine:result.engine};}catch(error){if(error instanceof Error&&error.message==='empty')return{text:'',engine:LOCAL_OCR_ENGINE};if(signal.aborted)throw Error('cancelled');throw Error(error instanceof Error&&error.message==='configuration'?'ocr_unavailable':'ocr_failed');}},
     crop:(source,box,signal)=>previewMaterialPage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,box},signal,renderLocalPdfPage,renderPdfFilePage),
     inspectCrop:inspectPageCrop,
+    blocks:async(source,signal)=>{
+      if(!fs.existsSync(ocrRuntimeRoot(true)))return;
+      const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
+      const blocks=(await withMaterialPageBlocks(store.materials,store.getDataRoot(),result,false,signal,recognizeLocalPageBlocks)).pageBlocks!.receipt;
+      return {blocks,blockTexts:pageBlockTexts(blocks,result.layout)};
+    },
     layout:async(source,signal)=>{
       const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
       return proposeLocalPageRegions(result.layout);

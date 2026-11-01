@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_in_progress_optional_mature_page_blocks_before_automatic_question_ownership",
+  "currentStage": "K0_multi_block_archive_implemented_natural_quality_failed",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -2965,5 +2965,105 @@
         "sha256": "2eb3a70df6607f3695eb36a9c157d947b19665e28f743a578fe2e30dec0c26d0"
       }
     ]
+  },
+  "multiBlockArchive": {
+    "date": "2026-11-01",
+    "baseCommit": "be7657c52ac8d2986749a84ebb4330e5d5d76e37",
+    "goalComplete": false,
+    "implementation": {
+      "prompt": [
+        "page-fragments.v1",
+        "page-fragments.v2"
+      ],
+      "response": "xiaozhi.material-ai-page-fragments.v1",
+      "blockTextsMaxBytes": 49152,
+      "inputMaxBytes": 163840,
+      "selectedBlocksPerQuestion": 32,
+      "assetsPerQuestion": 8,
+      "unitImageMaxBytes": 16777216,
+      "newDependencies": 0,
+      "newDdl": 0,
+      "newIpc": 0,
+      "canonical": "Existing SQLite writer, QuestionAssets and question-document.v2",
+      "secondPass": "Same authorized original page, frozen geometry and OCR hints; no additional crop images",
+      "rollback": "OMNI_EDU_AI_PAGE_FRAGMENTS=0 stops new fragment policies; retain readers and all evidence"
+    },
+    "checks": {
+      "pageBoundaries": 66,
+      "k0Boundaries": 64,
+      "blockCacheBoundaries": 12,
+      "rendererComponents": 240,
+      "sourceRepairBuildExit": 0,
+      "npmAudit": {
+        "exit": 1,
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "lockChanged": false
+      },
+      "smoke": {
+        "exit": 0,
+        "passed": 207,
+        "total": 207,
+        "buildMainSha256": "6530a74885d9ac84cb34a9a3e5c271fc72667f51e388c0d2b8eb765b0d6a7d03",
+        "boundary": "Before later text-only source evidence and caption/enum prompt repairs; not final integrated runtime acceptance"
+      }
+    },
+    "natural": {
+      "privateReport": "%TEMP%/omni-real-material-aWObCn/page-fragments-vGHZZS/report.json",
+      "exit": 1,
+      "pages": 6,
+      "cloudCalls": 11,
+      "candidates": 15,
+      "ready": 1,
+      "held": 14,
+      "qualifiedMultiImage": 0,
+      "coldRestartFactsEqual": true,
+      "coldExtraCalls": 0,
+      "rendererErrors": 0,
+      "scope": "Complete previously inspected natural exam, teacher folder grant and actual provider. Not mathematical or whole-corpus acceptance"
+    },
+    "localReplay": {
+      "privateReport": "%TEMP%/kb-fragments-local-replay.json",
+      "calls": 0,
+      "canonicalWrites": 0,
+      "beforeEligible": 1,
+      "afterEligible": 3,
+      "scope": "Retained natural responses, current pure text-only source assessment; not fresh provider or image acceptance"
+    },
+    "failures": [
+      "Early UI identifier/disclosure/account/async-view fixture errors made zero calls",
+      "An earlier interrupted owned folder grant resumed in the v1 run; explicitly paused through existing IPC; observed ledger kept unchanged; new preflight rejects overlapping running grants",
+      "v1 only 8 selected blocks rejected complete natural 9-14 block questions; v2 separates selected blocks from at most 8 source assets",
+      "Numeric geometry alone omitted parent opening; v2 binds existing OCR hints to block IDs",
+      "Natural v2 still omitted figure captions from complete stem and returned an invalid requiresImage issue on page4; strict gate preserved originals and held or outcome_unknown, with no automatic billed retry",
+      "Text-only evidence unnecessarily coupled to crop selection; fixed after natural run and verified by controlled and retained-response replay"
+    ],
+    "performance": {
+      "before": {
+        "mainBytes": 3502409,
+        "preloadBytes": 36248,
+        "rendererBytes": 7380997
+      },
+      "geometryAndHints": "Reuse saved same-page OCR layout; no new model calls. Additional local crop OCR per source asset.",
+      "limits": "No long-run, 40GB, recall or P95 measured in this slice"
+    },
+    "open": [
+      "Natural image question completeness and useful automatic archive rate",
+      "Cross-page parent assembly",
+      "Known answer pairing and online solution writeback",
+      "Real Pi whole-paper workflow and mathematical acceptance",
+      "10GB then 40GB, corpus recall/P95, recovery",
+      "End-user optional component download/configuration and installer"
+    ],
+    "logs": {
+      "boundaries": "%TEMP%/kb-fragments-boundaries-complete.log",
+      "k0": "%TEMP%/kb-fragments-k0-second.log",
+      "blocks": "%TEMP%/kb-fragments-block-boundaries-second.log",
+      "smoke": "%TEMP%/kb-fragments-final-smoke.log",
+      "real": "%TEMP%/kb-fragments-real-v2.log",
+      "repairBuild": "%TEMP%/kb-fragments-repair-build.log"
+    }
   }
 }
