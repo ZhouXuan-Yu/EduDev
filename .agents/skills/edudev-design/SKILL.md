@@ -34,3 +34,7 @@ description: Design and review EduDev desktop pages using the user-approved navi
 ## 审查输出
 
 给出可定位问题、教师影响、最小修复和实际验证；交付列出修改范围、前后截图、失败与未验证项。无相关变化时不运行无关全套回归。不得以“高级感”、文件数量或自动化通过数代替视觉接受。
+
+## 组卷专项更新（用户已确认）
+
+先读 [组卷V3需求与边界](../../../docs/design/system/ideal/QUESTION_STUDIO.md) 和决策D14。完整题目选题必须占主区；输出用途不得包装成三个同质工作流；题篮/编辑/预览共用题组，返回与恢复要实测。参考卷的命题结构和卷面模板独立复用。原型中示例OCR/AI及浏览器存储不得搬入正式业务当作完成实现。

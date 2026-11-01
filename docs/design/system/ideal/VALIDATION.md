@@ -1,3 +1,20 @@
+# V3 组卷原型专项验证 · 2026-11-01
+
+- 最终专项：`studio-check.mjs` **26/26通过，exit 0**，16张截图、0页面脚本错误、0HTTP(S)请求。图像覆盖1366×768、1920×1080、800×768。报告：[report.json](evidence/studio-v3/report.json)。
+- 真实路径覆盖：教学返回、浏览器历史、刷新恢复、筛选/滚动保留、重复选题、三题练习、学生/教师版、HTML下载、编辑失效、粘贴与演示上传、结构/版式分别应用、模板版本、缺题、改编对照、排序分值、新建归档、空结果、键盘及存储失败。
+- 初次专项发现 app.js 内 `history` 会话列表变量遮蔽浏览器 API，已改为 `window.history`；失败报告 [failure-01-history.json](evidence/studio-v3/failure-01-history.json) 保留。初次加载发现视图入口 edit/editor 命名错配，已修复。截图复查修复模板弹窗确认操作低于可视区域的问题，并增加可见性断言。
+- `node --check`：本轮修改的 JS/MJS 均通过。`git diff --check` 通过。
+- 桌面锁文件只读 `npm audit --package-lock-only --ignore-scripts --json`：既有45项（8 low / 29 moderate / 8 high），本轮不改变依赖，不以审计通过描述。原型新增运行依赖为0。QA的Playwright安装在独立临时目录，未借用协作者node_modules。
+- 不运行正式Electron构建：本轮未改生产源码。不沿用下方旧36项作为当前组卷通过证明。浏览器打印按钮存在，打印机/系统另存PDF及Office/WPS分页未作自动化验收；Word、真实OCR/AI及正式题库未接入。尚待用户视觉与流程验收。
+
+复现（PowerShell，测试工具位于独立目录）：
+```powershell
+$env:PROTOTYPE_PLAYWRIGHT='C:\Users\ZhouXuan\AppData\Local\Temp\edudev-prototype-qa\node_modules\playwright'
+node docs/design/system/ideal/studio-check.mjs
+```
+
+## 历史 V2 验证（仅对应当时版本）
+
 # V2 设计交付验证
 
 2026-11-01。验证层：离线 HTML / Skill 结构 / 文档；生产业务未实施。

@@ -38,7 +38,7 @@
         { name: `${tab} · 新任务草稿`, format: '草稿', date: '昨天 16:30', icon: 'book' }
       ];
       D.$('#content').innerHTML = `<div class="page">${D.heading('教学工作台', '围绕教学文件与课堂成果继续工作。', D.button(action, 'new-teaching', 'primary', 'plus'))}<nav class="tabs" role="tablist" aria-label="教学功能">${teachingTabs.map(label => `<button role="tab" data-teaching-tab="${label}" aria-selected="${tab === label}">${label}</button>`).join('')}</nav><div class="teaching-overview"><div><h2>${tab}</h2><p>${tab === '组卷' ? '先确定蓝图，再核对题目、答案与来源，最后确认导出。' : '打开已有成果继续编辑，或从新的教学任务开始。'}</p></div></div><div class="toolbar"><label class="search-box">${D.icon('search')}<input id="resource-search" placeholder="搜索${tab}" aria-label="搜索教学内容"></label><select aria-label="教学空间"><option>全部教学空间</option><option>八年级物理</option><option>七年级数学</option></select></div>${resourceTable(rows, 'teaching')}</div>`;
-      D.all('[data-teaching-tab]').forEach(button => button.onclick = () => { state.teachingTab = button.dataset.teachingTab; D.resources.teaching(); });
+      D.all('[data-teaching-tab]').forEach(button => button.onclick = () => { state.teachingTab = button.dataset.teachingTab; D.navigate('teaching'); });
       D.$('[data-action="new-teaching"]').onclick = newTeaching;
       if (tab === '备课本') {
         const overview = D.$('.teaching-overview');
