@@ -9,8 +9,10 @@ import { pairedScenario } from './acceptance/chat-paired-scenarios.mjs';
 import { installChatPublicProbe } from './acceptance/chat-live-public-probe.mjs';
 import { readOnlyRunBlocker, stopOwnedChatRun } from './acceptance/chat-live-blocker.mjs';
 import { captureStyleProbe } from './acceptance/ui-style-probe.mjs';
+import { reopenProcessDuringStream, verifyManualReopen } from './acceptance/chat-live-manual-reopen.mjs';
 import { assertChatMarkdownDisclosure } from './acceptance/chat-markdown-disclosure.mjs';
 const scenario = pairedScenario();
+const requireManualReopen = process.env.UI_CHAT_REQUIRE_MANUAL_REOPEN === '1';
 const expectDisclosure = process.env.UI_CHAT_EXPECT_DISCLOSURE === '1';
 const PROMPT = scenario.prompt;
 const EXPLANATION = scenario.explanation;
@@ -36,6 +38,8 @@ async function main() {
   const output = fs.mkdtempSync(path.join(base, "run-")), data = path.join(output, "data"), profile = path.join(output, "profile");
   const mainFile = testMain(root), build = fingerprint(path.dirname(path.dirname(mainFile)));
   const report = { success: false, output, scenario: scenario.name, promptOverride: scenario.promptOverride, prompt: PROMPT, promptSha256: sha256(Buffer.from(PROMPT)), focusMode, styleCase: captureStyles ? 'default-summary' : null, model: "deepseek-flash", pdf: { name: path.basename(source), sha256: sha256(fs.readFileSync(source)) }, buildSha256: build.sha256, scriptSha256: sha256(fs.readFileSync(fileURLToPath(import.meta.url))), scenarioConfigSha256: sha256(fs.readFileSync(new URL('./acceptance/chat-paired-scenarios.mjs', import.meta.url))), publicProbeSha256:sha256(fs.readFileSync(new URL('./acceptance/chat-live-public-probe.mjs',import.meta.url))), checks: [], runs: [], events: [], consoleErrors: [], screens: [], styleProbes: [], humanAccepted: false };
+  report.manualReopenScope = {required: requireManualReopen, run: 'attachment', proof: 'real keyboard reopen while running + later final public delta + open at completion', screenshots: 'completed open/collapsed dual viewports; live collapse proved by DOM observer only'};
+  report.manualReopenHelperSha256 = sha256(fs.readFileSync(new URL('./acceptance/chat-live-manual-reopen.mjs', import.meta.url)));
   if (expectDisclosure) Object.assign(report, {
     disclosureScope: {enabled: true, kind: 'single-model-HTML-functional-run', promptOverride: true,
       pairedBenchmark: false, stages: ['completed', 'cold-restored'],
@@ -244,6 +248,29 @@ async function main() {
       }
       const own = (await events()).filter((e) => e.runId === id);
       const live = await turn.locator('[data-mode="live-prose"]').count();
+      const explicit = own.some((e) => e.kind === "assistant_phase" && e.phase === "final_answer");
+      if (explicit && !handoff && (t.publicProcessCount || t.tools.length)) {
+        const observation = await page.evaluate(runId => window.__uiChatHandoffs.find(item => item.runId === runId), id);
+        if (!observation) return false;
+        assert.equal(t.presentation?.handoff, 'explicit', 'production projection must agree with explicit phase event');
+        record.handoffEvidence = observation;
+        assert(observation.beforeTerminal, 'actual DOM collapse must be observed before terminal, not inferred from completion');
+        if (needsTools) {
+          assert(focusArmed, 'focus case must be exercised before final');
+          assert.equal(observation.focusBefore, focusMode, 'explicit event must see the requested focus case');
+          assert.equal(observation.focusAfter, focusMode === 'composer' ? 'composer' : 'process-trigger', 'handoff restores tool focus without stealing composer focus');
+        }
+        await turn.getByTestId("agent-trace-toggle").waitFor({ state: "visible", timeout: 1e4 });
+        assert.equal(await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded"), "false", "explicit handoff must collapse process");
+        record.handoffObservedWhileRunning = observation.beforeTerminal;
+        record.handoffElapsedMs = Date.now() - start;
+        handoff = true;
+        record.manualReopen = {required: requireManualReopen && needsTools, sessionId, runId: id};
+        await reopenProcessDuringStream({page, turn, sessionId, runId:id, evidence:record.manualReopen});
+        record.manualReopenedWhileRunning = record.manualReopen.after.running;
+        record.manualReopenAfterSequence = record.manualReopen.afterSequence;
+        reopened = true;
+      }
       if (needsTools && !focusArmed && live && t.tools.length && s.running) {
         const summary = turn.locator('button[data-testid="agent-tool-trigger"]:visible').first();
         if (focusMode === 'composer') {
@@ -280,35 +307,8 @@ async function main() {
       }
       if (!executing && (t.publicProcessCount || t.tools.length) && live && (!needsTools || focusArmed)) {
         assert(await turn.getByTestId("agent-trace-timeline").isVisible(), "executing process is visible");
-        await turn.getByTestId('agent-trace-timeline').scrollIntoViewIfNeeded();
-        await sizes(`${name}-executing-expanded`);
+        record.executingEvidence = {running:s.running, sourceSequence:s.sourceSequence, mode:'live-prose', screenshotDeferredToCompleted:true};
         executing = true;
-      }
-      const explicit = own.some((e) => e.kind === "assistant_phase" && e.phase === "final_answer");
-      if (explicit && !handoff && (t.publicProcessCount || t.tools.length)) {
-        const observation = await page.evaluate(runId => window.__uiChatHandoffs.find(item => item.runId === runId), id);
-        if (!observation) return false;
-        assert.equal(t.presentation?.handoff, 'explicit', 'production projection must agree with explicit phase event');
-        record.handoffEvidence = observation;
-        assert(observation.beforeTerminal, 'actual DOM collapse must be observed before terminal, not inferred from completion');
-        if (needsTools) {
-          assert(focusArmed, 'focus case must be exercised before final');
-          assert.equal(observation.focusBefore, focusMode, 'explicit event must see the requested focus case');
-          assert.equal(observation.focusAfter, focusMode === 'composer' ? 'composer' : 'process-trigger', 'handoff restores tool focus without stealing composer focus');
-        }
-        await turn.getByTestId("agent-trace-toggle").waitFor({ state: "visible", timeout: 1e4 });
-        assert.equal(await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded"), "false", "explicit handoff must collapse process");
-        record.handoffObservedWhileRunning = observation.beforeTerminal;
-        record.handoffElapsedMs = Date.now() - start;
-        await turn.getByTestId('agent-trace-toggle').scrollIntoViewIfNeeded();
-        await sizes(`${name}-explicit-final-collapsed`);
-        handoff = true;
-        await turn.getByTestId("agent-trace-toggle").click();
-        assert.equal(await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded"), "true");
-        record.manualReopenedWhileRunning = (await state()).running;
-        record.manualReopenAfterSequence = Math.max(0, ...(await events()).filter(event=>event.runId===id).map(event=>event.sequence));
-        reopened = true;
-        await shot(`${name}-manual-reopen`);
       }
       if (t.answer.some((a) => a.text) && firstBodyAt === void 0) firstBodyAt = Date.now() - start;
       if (reopened) assert.equal(await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded"), "true", "manual reopen must survive subsequent tokens and completion");
@@ -319,7 +319,10 @@ async function main() {
       record.publicProcessCount = t.publicProcessCount;
       record.tools = t.tools;
       record.presentation = t.presentation;
-      record.publicDeltasAfterManualReopen = own.filter(event=>event.kind==='text_delta' && event.sequence > (record.manualReopenAfterSequence ?? Infinity)).length;
+      const completionEvents = (await events()).filter(event=>event.runId===id);
+      record.manualReopen ??= {required:requireManualReopen && needsTools, sessionId, runId:id};
+      verifyManualReopen(record.manualReopen, completionEvents, reopened ? await turn.getByTestId('agent-trace-toggle').getAttribute('aria-expanded') : null);
+      record.publicDeltasAfterManualReopen = record.manualReopen.publicDeltasAfterManualReopen;
       write(`${name}-answer.json`, { scenario: scenario.name, sessionId, runId: id, prompt, promptSha256:sha256(Buffer.from(prompt)), model: s.model, answer: t.answer, tools: t.tools, sourcePdfSha256: report.pdf.sha256 });
       assert(t.answer.some((a) => a.text.trim()), "public answer is nonempty");
       if (needsTools) {
@@ -337,6 +340,16 @@ async function main() {
         assert.equal(t.tools.length, 0, "explanation must not invent or invoke tools");
         assert(!await turn.getByTestId("office-tool-step").count(), "zero-tool answer has no tool UI");
         if (!t.publicProcessCount) assert(!await turn.getByTestId("agent-trace-toggle").count(), "no public process must not leave a fake completed disclosure");
+      }
+      if (reopened) {
+        // Prove retention before any intentional completed-state toggling.
+        await sizes(`${name}-completed-manual-open`);
+        const trigger = turn.getByTestId('agent-trace-toggle');
+        await trigger.focus(); await trigger.press('Enter');
+        assert.equal(await trigger.getAttribute('aria-expanded'), 'false', 'Completed screenshot must actually be collapsed');
+        await sizes(`${name}-completed-process-collapsed`);
+        await trigger.press('Enter');
+        assert.equal(await trigger.getAttribute('aria-expanded'), 'true', 'Restore completed open state after screenshot coverage');
       }
       if (t.tools.length) {
         if (await turn.getByTestId("agent-trace-toggle").getAttribute("aria-expanded") !== "true") await turn.getByTestId("agent-trace-toggle").click();
@@ -444,5 +457,5 @@ async function main() {
     console.log(JSON.stringify({ success: report.success, failure: report.failure, output, checks: report.checks.length }));
   }
 }
-if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,styleCase:captureStyles?'default-summary':null,...(expectDisclosure?{expectDisclosure:true,promptOverride:scenario.promptOverride,scope:'single-model-HTML-functional-run; not a paired benchmark; completed+cold same consumer; existing dual-viewport captures'}:{}),usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. Opt-in UI_CHAT_EXPECT_DISCLOSURE=1 requires UI_PAIRED_PROMPT and --scenario=practice|misconception for ONE model run. --check/--help never launch or call a model.'}));
+if (process.argv.includes("--help") || process.argv.includes("--check")) console.log(JSON.stringify({preparedOnly:true,requireManualReopen,scenario:scenario.name,prompt:PROMPT,promptSha256:sha256(Buffer.from(PROMPT)),model:'deepseek-flash',source,zeroToolSecondRound:Boolean(EXPLANATION),focusMode,styleCase:captureStyles?'default-summary':null,...(expectDisclosure?{expectDisclosure:true,promptOverride:scenario.promptOverride,scope:'single-model-HTML-functional-run; not a paired benchmark; completed+cold same consumer; existing dual-viewport captures'}:{}),usage:'Inject DEEPSEEK_API_KEY; node scripts/ui-goal-chat-live.mjs [--scenario=default|misconception|practice]. Optional shared UI_PAIRED_PROMPT/UI_PAIRED_PDF/UI_PAIRED_SCENARIO; UI_CHAT_FOCUS=summary|detail-link|composer, UI_CHAT_TIMEOUT_MS=180000, UI_CHAT_OUTPUT under test-results. Opt-in UI_CHAT_REQUIRE_MANUAL_REOPEN=1 requires real live keyboard reopen, subsequent final public delta and retained open state for the attachment run; missed windows fail without retrying or altering input. Opt-in UI_CHAT_EXPECT_DISCLOSURE=1 requires UI_PAIRED_PROMPT and --scenario=practice|misconception for ONE model run. --check/--help never launch or call a model.'}));
 else await main();
