@@ -87,6 +87,9 @@ try {
     assert((await agent.prompt(relevant[1])).ok);
     assert.equal(captures.length, 1, 'no extra generation or repair loop');
     assert.match(userText(captures[0]), /\[本次物理任务的答案核对约束\]/);
+    assert.match(userText(captures[0]), /\[本次回答的范围与篇幅\]/);
+    assert(userText(captures[0]).indexOf('[本次物理任务的答案核对约束]') < userText(captures[0]).indexOf('[本次回答的范围与篇幅]'));
+    assert.match(userText(captures[0]), /不删必要条件来缩短/);
     assert(userText(captures[0]).endsWith('[教师本次请求]\n' + relevant[1]));
     assert(!JSON.stringify(captures[0].messages.filter(message => message.role === 'system')).includes('[本次物理任务的答案核对约束]'), 'stable system/cache prefix must not change');
   });
@@ -95,14 +98,24 @@ try {
     assert((await agent.prompt(text)).ok);
     assert.equal(captures.length, 2);
     assert.equal(userText(captures[1]), text, 'historical context may remain, but current request gets no subject policy');
+  });
+  await check('a new explicit length request gets current scope without old physics rules, preserves original bytes and stable system', async () => {
+    const text = '  请用约180字解释叶片作用，并给一道练习及答案。\r\n仅据已知资料。  ';
+    assert((await agent.prompt(text)).ok);
+    assert.equal(captures.length, 3, 'one intercepted request, no second model rewrite');
+    const actual = userText(captures[2]);
+    assert.match(actual, /\[本次回答的范围与篇幅\]/);
+    assert(!actual.includes('[本次物理任务的答案核对约束]'));
+    assert(Buffer.from(actual).subarray(-Buffer.byteLength(text)).equals(Buffer.from(text)), 'keep CRLF, whitespace and Unicode in the teacher original');
+    assert.deepEqual(captures[2].messages.filter(message => message.role === 'system'), captures[1].messages.filter(message => message.role === 'system'));
     await agent.dispose(); agent = undefined;
   });
   await check('existing main-only legacy rollback disables subject injection on actual wire', async () => {
     process.env.XIAOZHI_ANSWER_QUALITY = 'legacy';
     agent = await createPiXiaozhiSession(options(2));
     assert((await agent.prompt(relevant[2])).ok);
-    assert.equal(captures.length, 3);
-    assert.equal(userText(captures[2]), relevant[2]);
+    assert.equal(captures.length, 4);
+    assert.equal(userText(captures[3]), relevant[2]);
   });
   console.log(JSON.stringify({ ok: true, checks: passed, relevantInputs: relevant.length, unrelatedInputs: unrelated.length, paidCalls: 0,
     boundary: 'Real Pi SDK with intercepted deterministic HTTP/SSE. Routing and wire contract only; no model/science acceptance.' }));
