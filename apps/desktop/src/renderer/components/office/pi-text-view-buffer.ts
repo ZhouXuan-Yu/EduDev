@@ -2,7 +2,12 @@ import type { XiaozhiAgentEvent, XiaozhiWorkspaceSnapshot } from '../../../share
 import type { OfficeProjection } from '../../../shared/office-agent';
 
 /** Renderer-only text, never a synthetic committed event or replay cursor. */
-export type PiTextView = { sessionId: string; runId: string; generation?: number; firstSequence: number; throughSequence: number; delta: string };
+export type PiTextView = { sessionId: string; runId: string; generation?: number; firstSequence: number; throughSequence: number; capturedAt?: number; delta: string };
+/** Reconstruct only renderer view metadata, retaining capture time rather than flush time. */
+export function piTextViewEvent(view: PiTextView): XiaozhiAgentEvent {
+  return { kind: 'text_delta', sessionId: view.sessionId, runId: view.runId,
+    generation: view.generation, sequence: view.firstSequence, capturedAt: view.capturedAt, delta: view.delta };
+}
 function prefixProof(previous: OfficeProjection | undefined, current: OfficeProjection) {
   if (!previous || previous.threadId !== current.threadId) return { valid: true, earlier: [] as OfficeProjection['turns'] };
   const prior = previous.turns.filter(turn => turn.id !== 'pending-send');
@@ -96,7 +101,7 @@ export function createPiTextViewBuffer(options: {
         flush(); lastText = undefined; lastApplied = undefined;
         options.immediate(event); return;
       }
-      const next: PiTextView = { sessionId: event.sessionId, runId: event.runId, generation: event.generation, firstSequence: event.sequence, throughSequence: event.sequence, delta: event.delta };
+      const next: PiTextView = { sessionId: event.sessionId, runId: event.runId, generation: event.generation, firstSequence: event.sequence, throughSequence: event.sequence, capturedAt: event.delta.trim() ? event.capturedAt : undefined, delta: event.delta };
       const adjacent = lastText && same(lastText, next) && lastText.throughSequence + 1 === next.firstSequence;
       if (!adjacent) { flush(); lastApplied = undefined; }
       lastText = next;
@@ -106,7 +111,7 @@ export function createPiTextViewBuffer(options: {
       if (!pending && (lastApplied === undefined || now() - lastApplied >= 32)) {
         lastApplied = now(); options.text(next); return;
       }
-      pending = pending ? { ...pending, throughSequence: next.throughSequence, delta: pending.delta + next.delta } : next;
+      pending = pending ? { ...pending, throughSequence: next.throughSequence, capturedAt: pending.delta.trim() ? pending.capturedAt : next.capturedAt, delta: pending.delta + next.delta } : next;
       count++;
       if (count >= 128 || pending.delta.length >= 65536) flush(); else arm();
     },

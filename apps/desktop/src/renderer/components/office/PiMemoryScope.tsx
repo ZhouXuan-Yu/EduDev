@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import { useEffect, useRef, useState } from 'react';
 import { History, RefreshCw } from 'lucide-react';
 import { Button } from '@heroui/react';
@@ -78,10 +79,10 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
             <label><input type="checkbox" checked={checked} disabled={busy || running || !checked && (item.status !== 'active' || selected.length >= 12 && !selected.some(entry => key(entry) === key(item)))} data-testid={`pi-memory-select-${item.id}`}
               onChange={event => setSelected(previous => event.target.checked ? [...previous.filter(entry => key(entry) !== key(item)), { ...projectMemorySource(item), id: item.id, version: item.version }] : previous.filter(entry => key(entry) !== key(item)))} />{item.section} · v{item.version} · {item.status === 'active' ? '有效' : item.status === 'disabled' ? '已停用' : '已删除'}</label>
             <p data-testid="pi-memory-local-text">{item.text}</p>
-            <details><summary>查看脱敏摘要</summary><p data-testid="pi-memory-sanitized-text">{item.sanitizedText}</p></details>
+            <DisclosureCard title={<>查看脱敏摘要</>}><p data-testid="pi-memory-sanitized-text">{item.sanitizedText}</p></DisclosureCard>
             <p data-testid="pi-memory-provenance">{item.provenance === 'surface_only' ? `仅有来源分类：${item.sourceDocuments.map(source => XIAOZHI_MEMORY_LABELS[source]).join('、')}；没有逐条证据。`
               : item.provenance === 'event_refs' ? `记录引用 ${item.referenceCount} 项；不表示结论已经核实。` : '没有记录来源引用。'}</p>
-            {item.refs.length > 0 && <details><summary>来源记录</summary><ul>{item.refs.map(ref => <li key={`${ref.kind}:${ref.id}`}>{ref.label} · {ref.kind === 'run' ? '任务' : '事件'} · {ref.id}</li>)}</ul></details>}
+            {item.refs.length > 0 &&<DisclosureCard title={<>来源记录</>}><ul>{item.refs.map(ref => <li key={`${ref.kind}:${ref.id}`}>{ref.label} · {ref.kind === 'run' ? '任务' : '事件'} · {ref.id}</li>)}</ul></DisclosureCard>}
           </article>;
         })}
         <div className="pi-memory-actions">
@@ -89,7 +90,7 @@ export function PiMemoryScope({ sessionId, scope, running, onSave, onRefresh }: 
           <Button size="sm" variant="ghost" isDisabled={loading || !catalog.hasMore} onPress={() => { void preview(sourceIndex, catalog.offset + 50); }} data-testid="pi-memory-next">下一页</Button>
         </div>
       </div>}
-      {trace !== undefined && <details data-testid="pi-memory-own-trace"><summary>本会话最近过程记录</summary>{trace ? <ul>{trace.events.map(event => <li key={event.sequence}>{event.label} · {event.status}</li>)}</ul> : <p>本会话尚无过程记录。</p>}</details>}
+      {trace !== undefined &&<DisclosureCard data-testid="pi-memory-own-trace" title={<>本会话最近过程记录</>}>{trace ? <ul>{trace.events.map(event => <li key={event.sequence}>{event.label} · {event.status}</li>)}</ul> : <p>本会话尚无过程记录。</p>}</DisclosureCard>}
       <p>当前选择 {selected.length}/12 项。记忆编辑、停用及删除仍在工作台“L2 记忆”中完成。</p>
       <div className="pi-memory-actions">
         <Button size="sm" variant="outline" isDisabled={busy || running} onPress={() => { void save(); }} data-testid="pi-memory-save">保存本会话选择</Button>

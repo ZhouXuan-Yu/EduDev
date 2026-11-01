@@ -6,10 +6,10 @@ import type {createClassroomState} from './classroom-state';
 import type {SceneOutline} from '@openmaic/generation';
 type Prepared={outline:SceneOutline};
 /** Pi supplies the model callback; upstream supplies prompts, normalization and scene assembly. */
-export function createClassroomTools(options:{sessionId:string;runId:string;state:ReturnType<typeof createClassroomState>;current:()=>boolean;sanitize:(text:string)=>Promise<string>;context?:()=>ClassroomContext}):ToolDefinition[]{
+export function createClassroomTools(options:{sessionId:string;runId:string;state:ReturnType<typeof createClassroomState>;current:()=>boolean;sanitize:(text:string)=>Promise<string>;context?:()=>ClassroomContext;outlineOnly?:boolean}):ToolDefinition[]{
  const prepared=new Map<string,Prepared>();
  let sequence=0;
- const check=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!options.current())throw new Error('cancelled');};
+ const check=(signal?:AbortSignal)=>{signal?.throwIfAborted();if(!options.current())throw new Error('cancelled');if(options.outlineOnly)throw new Error('not_confirmed');};
  const result=(data:unknown)=>({content:[{type:'text' as const,text:JSON.stringify({success:true,...data as object})}],details:{success:true}});
  const fail=(e:unknown)=>({content:[{type:'text' as const,text:JSON.stringify({success:false,error:(e as Error).message==='cancelled'?'cancelled':(e as Error).message==='invalid_reference'?'invalid_reference':(e as Error).message==='source_changed'?'source_changed':'invalid_input',message:(e as Error).message==='source_changed'?'已读取的资料段落已变化或被标为私密，未保存课堂。请重新读取当前段落后重试。':(e as Error).message==='invalid_reference'?'reference必须逐字使用准备工具返回的课页编号，不是页标题。请保留已有内容，按下面编号重交。':'课堂尚未保存。仅支持原生文字/形状/线/公式幻灯片与带答案、解析的选择题；禁止外部URL、图片或脚本。',preparedScenes:[...prepared].map(([reference,p])=>({reference,title:p.outline.title,type:p.outline.type}))})}],details:{success:false},isError:true});
  return[

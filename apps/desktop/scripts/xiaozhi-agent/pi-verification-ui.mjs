@@ -68,7 +68,7 @@ try{
  if(readback){
   assert(attachment.verification.checks.some(c=>c.id.startsWith('attachment:')&&c.state==='passed'&&c.evidenceIds.length===1));
   assert(attachment.verification.checks.some(c=>c.id==='answer:human'&&c.state==='needs_human'));
-  await notice(attachment.id).getByTestId('office-verification-checks').locator('summary').click();
+  await notice(attachment.id).getByTestId('office-verification-checks').locator(':scope > [data-slot="disclosure-heading"] > button[data-slot="disclosure-trigger"]').click();
   assert((await notice(attachment.id).innerText()).includes('附件正文、本地版本与本轮记录一致'));
   check('Actual local attachment and native result readback pass only their declared integrity scope, with visible answer-review boundary');
   const web=await run('帮我查教育部《义务教育课程方案和课程标准（2022年版）》的官方通知，读取通知正文，告诉我发文日期和实施时间，附官网来源。请区分网页发布日期和通知正文落款日期。');

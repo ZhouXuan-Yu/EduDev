@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {PiDeliveryVisual} from './PiDeliveryVisual';
@@ -25,8 +26,8 @@ export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId
   }catch{if(live.current)setError('检查未完成，已有文件保留。');}finally{request.current='';if(live.current)setBusy(false);}
  }
  const file=report?.files.find(f=>f.path===path);
- return <details data-edu-domain="delivery-check" className="pi-file-check" data-testid="pi-delivery-check" onToggle={event=>{if(event.target===event.currentTarget&&event.currentTarget.open)void latest();}}>
-  <summary>文件检查{report?` · ${states[report.state]}`:''}</summary>
+ return <DisclosureCard data-edu-domain="delivery-check" className="pi-file-check" data-testid="pi-delivery-check" onExpandedChange={expanded=>{if(expanded)void latest();}} title={<>文件检查{report?` · ${states[report.state]}`:''}</>}>
+
   <div className="pi-file-check-actions">{!draftId&&officeFile&&<label>检查应用 <select aria-label="文件检查应用" data-testid="pi-file-check-engine" value={officeEngine} disabled={busy} onChange={event=>setOfficeEngine(event.target.value as OfficeCheckEngine)}><option value="auto">自动选择</option><option value="microsoft">Microsoft Office</option><option value="wps">WPS</option></select></label>}
    {!draftId&&<Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void inspect()} data-testid="pi-file-check-run">检查当前文件</Button>}
    <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void latest()} data-testid="pi-file-check-refresh">刷新检查记录</Button>
@@ -39,7 +40,7 @@ export function PiDeliveryCheck({sessionId,path,version,workspaceVersion,draftId
    <dl>{CHECK_CLASSES.map(kind=>{const checks=file.checks.filter(c=>c.kind===kind),state=checks.some(c=>c.state==='failed')?'failed':checks.some(c=>c.state==='unchecked')?'unchecked':checks.some(c=>c.state==='passed')?'passed':'not_applicable';return <div key={kind} data-check-kind={kind} data-check-state={state}><dt>{CHECK_LABELS[kind]}</dt><dd>{CHECK_STATE_LABELS[state]}</dd></div>;})}</dl>
    <p>实际页数：{file.pageCount??'未确定'}；实际渲染页：{file.renderedPages.length?file.renderedPages.join('、'):'未渲染'}。</p>
    {file.sha256&&<PiDeliveryVisual key={report.id+file.sha256} sessionId={sessionId} reportId={report.id} fileSha256={file.sha256} evidence={file.visualEvidence||[]} historical={report.state==='stale'||file.state==='stale'}/>}
-   <details><summary>逐项结果与版本</summary><ul>{file.checks.map((check,index)=><li key={index} data-check-state={check.state}>{CHECK_STATE_LABELS[check.state]}{check.page?` · 第${check.page}页`:''}：{check.message}</li>)}</ul><p className="pi-file-check-hash">文件摘要：{file.sha256||'未取得'}</p></details>
+   <DisclosureCard title={<>逐项结果与版本</>}><ul>{file.checks.map((check,index)=><li key={index} data-check-state={check.state}>{CHECK_STATE_LABELS[check.state]}{check.page?` · 第${check.page}页`:''}：{check.message}</li>)}</ul><p className="pi-file-check-hash">文件摘要：{file.sha256||'未取得'}</p></DisclosureCard>
   </div>:!busy&&<p>尚无当前文件的检查记录。小智可按教学任务提供页数、备注、数值与交互约定；这里可直接检查文件的可用性。</p>}
- </details>;
+ </DisclosureCard>;
 }

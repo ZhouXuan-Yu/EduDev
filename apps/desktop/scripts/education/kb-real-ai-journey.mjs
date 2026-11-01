@@ -1,3 +1,4 @@
+import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -65,7 +66,7 @@ try{
   for(const resource of mode==='inspect'?[]:['diagnose','recheck'].includes(mode)?[pdf]:[image,pdf]){
    const old=await page.evaluate(id=>window.omniEdu.getMaterialAiBatches(id),resource.id),unstarted=mode==='diagnose'?old.find(b=>b.calls===0&&b.pending===1):undefined;
    if(mode!=='recheck'&&old.length&&(!['diagnose','verify-fix'].includes(mode)||old.some(b=>b.id!==unstarted?.id&&(b.questions||b.units.some(u=>u.error!=='invalid_response')))))throw Error('Sample already has a batch; inspect persisted results instead of silently repeating');
-   await page.getByTestId('material-'+resource.id).click();const ai=page.locator('[data-testid="material-ai-panel"]:visible');await ai.locator('summary').click();
+   await page.getByTestId('material-'+resource.id).click();const ai=page.locator('[data-testid="material-ai-panel"]:visible');await openMaterialDisclosure(ai);
    await ai.getByTestId('material-ai-count').fill('1');await ai.getByTestId('material-ai-start').fill('1');await ai.getByTestId('material-ai-budget').fill('2');await ai.getByTestId('material-ai-images').check();
    await ai.getByTestId('material-ai-public').check();await ai.getByTestId('material-ai-consent').check();
    await app.evaluate((_,name)=>{globalThis.__realAuthorizedSample=name;},resource.originalFileName);

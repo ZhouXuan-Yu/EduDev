@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import type {DeliveryVisualEvidence,DeliveryVisualResult} from '../../../shared/xiaozhi-delivery-checks';
@@ -24,7 +25,7 @@ export function PiDeliveryVisual({sessionId,reportId,fileSha256,evidence,histori
    {image&&<Button size="sm" variant="ghost" onPress={()=>dialog.current?.showModal()} data-testid="pi-check-visual-expand">放大查看</Button>}</div>
    {error&&<p role="status" data-testid="pi-check-visual-error">{error}</p>}
    {src&&image&&current&&<><img src={src} alt={`第${current.page}页 ${current.viewport}实际检查截图${old?'（历史版本）':''}`} loading="lazy" data-testid="pi-check-visual-image"/>
-    <details><summary>截图版本信息</summary><p className="pi-file-check-hash">文件SHA：{fileSha256}<br/>截图SHA：{image.evidence.sha256}<br/>{image.evidence.bytes.toLocaleString()}字节 · 实际PNG：{image.evidence.width}×{image.evidence.height}像素</p></details>
+    <DisclosureCard title={<>截图版本信息</>}><p className="pi-file-check-hash">文件SHA：{fileSha256}<br/>截图SHA：{image.evidence.sha256}<br/>{image.evidence.bytes.toLocaleString()}字节 · 实际PNG：{image.evidence.width}×{image.evidence.height}像素</p></DisclosureCard>
     <dialog ref={dialog} className="pi-check-visual-dialog" aria-label="放大检查截图" onKeyDown={event=>{if(event.key==='Escape')event.stopPropagation();}} data-testid="pi-check-visual-dialog"><div><strong>{old?'历史版本':'本次检查'} · 第{current.page}页 · {current.viewport}</strong><Button size="sm" variant="ghost" onPress={()=>dialog.current?.close()} data-testid="pi-check-visual-close">关闭</Button></div><img src={src} alt="放大的实际检查截图"/></dialog>
    </>}
   </>:<p>本条检查未留存截图。可重新检查当前文件；未渲染的页面仍属于视觉未检查。</p>}

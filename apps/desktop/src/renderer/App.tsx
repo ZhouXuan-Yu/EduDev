@@ -42,6 +42,7 @@ import { PiSettingsWorkspace } from './components/office/PiSettingsWorkspace';
 import { QuestionNotebookWorkspace } from './components/QuestionNotebookWorkspace';
 import { TeacherNotebookWorkspace } from './components/TeacherNotebookWorkspace';
 import { AiObservabilityWorkspace } from './components/AiObservabilityWorkspace';
+import { DisclosureCard } from './components/ui/DisclosureCard';
 import { TeachingBookWorkspace } from './components/TeachingBookWorkspace';
 import { MemoryGovernanceWorkspace } from './components/MemoryGovernanceWorkspace';
 import { MasteryPathWorkspace } from './components/MasteryPathWorkspace';
@@ -58,9 +59,10 @@ import { DataBackupPanel } from './components/DataBackupPanel';
 import { AiConversationSidebar, type AiConversationTarget } from './components/AiConversationSidebar';
 import { PiEducationWorkspace } from './components/office/PiEducationWorkspace';
 import { PiRuntimeStartup } from './components/office/PiRuntimeStartup';
-import { useDesktopCommands, useDesktopNavigation } from './components/desktop/DesktopFrame';
+import { useDesktopCommands, useDesktopNavigation, useDesktopNavigationGuard } from './components/desktop/DesktopFrame';
 import { ProductSpaceShell } from './components/product/ProductSpaceShell';
 import { WorkbenchHub } from './components/product/WorkbenchHub';
+import {StudentWorkbench,rememberStudentContext} from './components/product/StudentWorkbench';
 import { MaterialsWorkspace } from './components/product/MaterialsWorkspace';
 import {MaterialSourceNavigation} from './components/product/MaterialSourceNavigation';
 import type {MaterialSourceView} from '../shared/materials';
@@ -407,8 +409,9 @@ export function App() {
   const [studentSourceView,setStudentSourceView]=useState<StudentContextSourceView>();
   function setActiveView(view:ViewKey){
     const target = runtime === 'legacy-test' || isProductView(view) ? view : 'ai';
+    if(!desktopNavigation.navigate({view:target}))return;
     if(target !== activeView)setStatus('');
-    updateActiveView(target);desktopNavigation.navigate({view:target});
+    updateActiveView(target);
   }
   useEffect(()=>{
     const view=desktopNavigation.target.view;
@@ -433,6 +436,7 @@ export function App() {
   const [activeStudentId, setActiveStudentId] = useState('');
   const activeStudentIdRef=useRef('');
   const [studentQuery, setStudentQuery] = useState('');
+  const studentSearchRequest = useRef(0);
   const [recordKeyword, setRecordKeyword] = useState('');
   const [recordTypeFilter, setRecordTypeFilter] = useState('');
   const [recordSubjectFilter, setRecordSubjectFilter] = useState('');
@@ -463,6 +467,7 @@ export function App() {
   const [deepSeekForm, setDeepSeekForm] = useState({ provider: 'deepseek' as DeepSeekSettings['provider'], apiKey: '', model: 'deepseek-v4-flash' });
   const [studentForm, setStudentForm] = useState<StudentInput>(initialStudentForm);
   const [studentFormMode, setStudentFormMode] = useState<StudentFormMode>('closed');
+  useDesktopNavigationGuard(studentFormMode !== 'closed', '学生档案尚未保存，请先保存或取消再离开。');
   const [recordForm, setRecordForm] = useState({
     recordType: 'mistake',
     subject: '数学',
@@ -671,8 +676,9 @@ export function App() {
   }
 
   async function refreshStudents(query = studentQuery) {
+    const own = ++studentSearchRequest.current;
     const nextStudents = await window.omniEdu?.listStudents(query);
-    setStudents(nextStudents ?? []);
+    if (own === studentSearchRequest.current) setStudents(nextStudents ?? []);
     await refreshOverview();
   }
 
@@ -1521,7 +1527,7 @@ export function App() {
     });
   }
 
-  function renderStudentDirectory() {
+  function renderStudentDirectory(onSelected?: (studentId: string) => void) {
     return (
       <section className="directory-panel" aria-label="学生目录">
         <WorkspaceLabel number="01" title="学生目录" description="搜索真实档案，选择后进入证据链。" />
@@ -1548,8 +1554,11 @@ export function App() {
               data-testid={`student-row-${student.id}`}
               className={`student-row ${student.id === activeStudent?.id ? 'active' : ''} ${student.status === 'archived' ? 'archived' : ''}`}
               onClick={() => {
+                if (studentFormMode !== 'closed' && !window.confirm('学生档案尚未保存。放弃修改并切换学生？')) return;
+                rememberStudentContext(student.id);
                 setActiveStudentId(student.id);
                 setStudentFormMode('closed');
+                onSelected?.(student.id);
               }}
             >
               <span className="student-row-name">{student.displayName}{student.status === 'archived' ? <em data-testid={`student-row-status-${student.id}`}>已归档</em> : null}</span>
@@ -2428,10 +2437,10 @@ export function App() {
     );
   }
 
-  function renderStudentsView() {
+  function renderStudentsView(withDirectory = true) {
     return (
-      <div className="split-workspace">
-        {renderStudentDirectory()}
+      <div className={withDirectory ? "split-workspace" : "stack"}>
+        {withDirectory && renderStudentDirectory()}
         <div className="stack">
           {piEnabled&&<StudentConversationAction student={activeStudent}/>}
           {studentSourceView?.student.id===activeStudent?.id&&studentSourceView&&<StudentEvidencePanel view={studentSourceView} onClose={()=>setStudentSourceView(undefined)}/>}
@@ -2626,35 +2635,41 @@ export function App() {
   function renderAnalyticsView() {
     return (
       <div className="page-grid">
-        <div className="span-2">
-          <AiObservabilityWorkspace />
-        </div>
         <section className="work-panel span-2">
-          <WorkspaceLabel number="01" title="教师工作台概览" description="只展示已有本地聚合，不展示假趋势。" />
+          <WorkspaceLabel number="01" title="教师工作台概览" description="本地学生与学习资料汇总" />
           <div className="pro-kpi-grid large">
-            <ProKpiCard label="在读学生" value={overview.analytics.activeStudents} detail="当前可服务学生档案" trend="本地聚合" icon={<Users size={18} />} />
-            <ProKpiCard label="学习记录" value={overview.analytics.totalRecords} detail="AI 中控台可检索证据" trend="可调用" icon={<ClipboardList size={18} />} />
-            <ProKpiCard label="复盘报告" value={overview.analytics.totalReports} detail="老师确认后的交付资产" trend="复盘" icon={<FileText size={18} />} />
-            <ProKpiCard label="附件数量" value={overview.analytics.totalAttachments} detail="后续知识库导入来源" trend="本地文件" icon={<HardDrive size={18} />} />
+            <ProKpiCard label="在读学生" value={overview.analytics.activeStudents} detail="当前在读的学生档案" icon={<Users size={18} />} />
+            <ProKpiCard label="学习记录" value={overview.analytics.totalRecords} detail="已保存的学习记录" icon={<ClipboardList size={18} />} />
+            <ProKpiCard label="复盘报告" value={overview.analytics.totalReports} detail="已保存的复盘报告" icon={<FileText size={18} />} />
+            <ProKpiCard label="附件数量" value={overview.analytics.totalAttachments} detail="学习资料的附件" icon={<HardDrive size={18} />} />
           </div>
+          {overview.analytics.activeStudents === 0 && overview.analytics.totalRecords === 0
+            && overview.analytics.totalReports === 0 && overview.analytics.totalAttachments === 0 && (
+              <EmptyState>暂无学习资料。添加学生或学习记录后，可在这里查看汇总。</EmptyState>
+            )}
         </section>
-        <section className="work-panel span-2">
-          <WorkspaceLabel number="02" title="AI 与知识资产状态" description="以下状态来自当前已接入的数据层、工具注册表和确认队列。" />
-          <div className="capability-grid">
-            <article><Sparkles size={18} /><strong>AI 中控台</strong><span>AgentLoop、按需工具、结构校验与运行审计已接入</span></article>
-            <article><FileSearch size={18} /><strong>老师知识库</strong><span>{knowledgeOverview.counts.resources} 个资源 · {knowledgeOverview.counts.chunks} 个切片</span></article>
-            <article><Database size={18} /><strong>知识图谱</strong><span>{knowledgeOverview.counts.nodes} 个节点 · {knowledgeOverview.counts.edges} 条边</span></article>
-            <article><ListChecks size={18} /><strong>老师确认</strong><span>{aiConfirmations.length} 个当前待确认动作</span></article>
-          </div>
-        </section>
-        <section className="work-panel">
-          <WorkspaceLabel number="03" title="待续费风险" />
-          <EmptyState>待续费规则尚未接入。</EmptyState>
-        </section>
-        <section className="work-panel">
-          <WorkspaceLabel number="04" title="高频薄弱点" />
-          <EmptyState>薄弱点聚合将在错题和标签体系稳定后接入。</EmptyState>
-        </section>
+        <div className="span-2">
+          <DisclosureCard title="运行与诊断" defaultExpanded={false} data-testid="analytics-runtime-diagnostics">
+            <section className="work-panel span-2">
+              <WorkspaceLabel number="02" title="AI 与知识资产状态" description="以下状态来自当前已接入的数据层、工具注册表和确认队列。" />
+              <div className="capability-grid">
+                <article><Sparkles size={18} /><strong>AI 中控台</strong><span>AgentLoop、按需工具、结构校验与运行审计已接入</span></article>
+                <article><FileSearch size={18} /><strong>老师知识库</strong><span>{knowledgeOverview.counts.resources} 个资源 · {knowledgeOverview.counts.chunks} 个切片</span></article>
+                <article><Database size={18} /><strong>知识图谱</strong><span>{knowledgeOverview.counts.nodes} 个节点 · {knowledgeOverview.counts.edges} 条边</span></article>
+                <article><ListChecks size={18} /><strong>老师确认</strong><span>{aiConfirmations.length} 个当前待确认动作</span></article>
+              </div>
+            </section>
+            <section className="work-panel">
+              <WorkspaceLabel number="03" title="待续费风险 · 未接入" />
+              <p>能力状态：待续费规则尚未接入。</p>
+            </section>
+            <section className="work-panel">
+              <WorkspaceLabel number="04" title="高频薄弱点 · 未接入" />
+              <p>能力状态：薄弱点聚合将在错题和标签体系稳定后接入。</p>
+            </section>
+            <AiObservabilityWorkspace />
+          </DisclosureCard>
+        </div>
       </div>
     );
   }
@@ -2794,7 +2809,7 @@ export function App() {
 
   function renderCurrentView() {
     if (activeView === 'teaching') return <WorkbenchHub kind="teaching"><TeachingArtifactsWorkspace /></WorkbenchHub>;
-    if (activeView === 'student_workbench') return <WorkbenchHub kind="students">{renderStudentsView()}</WorkbenchHub>;
+    if (activeView === 'student_workbench') return <WorkbenchHub kind="students"><StudentWorkbench student={activeStudent} creating={studentFormMode !== 'closed'} directory={onSelected => renderStudentDirectory(onSelected)}>{renderStudentsView(false)}</StudentWorkbench></WorkbenchHub>;
     if (activeView === 'today') return renderTodayView();
     if (activeView === 'ai') return renderAIConsoleViewV2();
     if (activeView === 'knowledge') return renderKnowledgeBaseView();

@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import type { OfficeProjectedTurn } from '../../../shared/office-agent';
 import type { OfficeConversationProps } from './OfficeConversation';
 import { ChainOfThought } from '../../heroui-pro/components/chain-of-thought';
@@ -5,6 +6,7 @@ import { AgentTraceHeader } from './AgentTraceHeader';
 import { AgentTraceTimeline } from './AgentTraceTimeline';
 import { useAgentTraceState } from './useAgentTraceState';
 import { agentTraceTimeline } from './agent-trace-timeline';
+import { OfficeToolExpansionScope } from './OfficeToolExpansion';
 
 /** Accepted product choreography. This is intentionally not the official multi-block demo. */
 export function AgentProcess({
@@ -13,26 +15,24 @@ export function AgentProcess({
   renderPlan,
 }: Pick<OfficeConversationProps, 'renderPlan'> & { turn: OfficeProjectedTurn; sessionId: string }) {
   const state = useAgentTraceState(turn);
-  if (!agentTraceTimeline(turn).length && turn.status !== 'running' && !turn.presentation)
+  const handoffTrigger = useRef<HTMLButtonElement>(null);
+  const hasProcess = agentTraceTimeline(turn).length > 0;
+  if (!hasProcess && turn.status !== 'running')
     return null;
   return (
-    <div className="edu-agent-process" data-testid="agent-trace-streaming">
+    <OfficeToolExpansionScope key={turn.id} collapsed={!state.expanded} fallbackRef={handoffTrigger}><div className="edu-agent-process" data-testid="agent-trace-streaming">
       {!state.terminal && !state.answering ? (
         <div
           data-testid="agent-trace"
           data-run-id={turn.id}
           data-mode="live-prose"
           className="edu-process-list"
-          data-thinking={
-            turn.modelReasoning?.some((block) => block.status === 'streaming')
-              ? 'streaming'
-              : 'processing'
-          }
+          data-thinking={state.streaming ? 'processing' : 'settled'}
         >
           <p className="edu-process-wait" data-testid="agent-trace-live-heading">
             <AgentTraceHeader turn={turn} streaming={state.streaming} />
           </p>
-          {agentTraceTimeline(turn).length ? (
+          {hasProcess ? (
             <AgentTraceTimeline turn={turn} sessionId={sessionId} renderPlan={renderPlan} />
           ) : (
             <p role="status" data-testid="reply-waiting">
@@ -48,15 +48,9 @@ export function AgentProcess({
           data-testid="agent-trace"
           data-run-id={turn.id}
           data-mode="sealed-disclosure"
-          data-thinking={
-            turn.modelReasoning?.some((block) => block.status === 'streaming')
-              ? 'streaming'
-              : state.streaming
-                ? 'processing'
-                : 'settled'
-          }
+          data-thinking={state.streaming ? 'processing' : 'settled'}
         >
-          <ChainOfThought.Trigger data-testid="agent-trace-toggle">
+          <ChainOfThought.Trigger ref={handoffTrigger} data-testid="agent-trace-toggle">
             <AgentTraceHeader turn={turn} streaming={state.streaming} />
           </ChainOfThought.Trigger>
           <ChainOfThought.Content data-testid="agent-trace-content">
@@ -66,6 +60,6 @@ export function AgentProcess({
           </ChainOfThought.Content>
         </ChainOfThought>
       )}
-    </div>
+    </div></OfficeToolExpansionScope>
   );
 }

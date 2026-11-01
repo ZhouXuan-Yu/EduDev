@@ -9,8 +9,9 @@ function layoutError(error:LayoutError){const specific:Partial<Record<LayoutErro
 export function MaterialLayoutLines({layout,selected,toggle}:{layout:PdfLayout;selected:string[];toggle:(id:string)=>void}){
  return <div className="material-layout-lines" aria-label="原页文字区域" data-testid="materials-layout-lines">{layout.lines.map(line=><Checkbox key={line.id} isSelected={selected.includes(line.id)} onChange={()=>toggle(line.id)} data-testid={`materials-layout-${line.id}`}><Checkbox.Content><Checkbox.Control><Checkbox.Indicator/></Checkbox.Control><span>{line.text}</span></Checkbox.Content></Checkbox>)}</div>;
 }
-export function MaterialLayoutPreview({resource,preview,zoom,busy}:{resource:TeacherResource;preview:Preview;zoom:boolean;busy:boolean}){
+export function MaterialLayoutPreview({resource,preview,zoom,busy,onDraftDirty}:{resource:TeacherResource;preview:Preview;zoom:boolean;busy:boolean;onDraftDirty?:(dirty:boolean)=>void}){
  const [result,setResult]=useState<MaterialLayoutResult>(),[loading,setLoading]=useState(false),[stopping,setStopping]=useState(false),[selected,setSelected]=useState<string[]>([]),[draft,setDraft]=useState(''),[edited,setEdited]=useState(false);
+ useEffect(()=>{onDraftDirty?.(!!draft||edited);},[draft,edited,onDraftDirty]);
  const request=useRef<string|undefined>(undefined),cancelled=useRef<string|undefined>(undefined),pending=useRef(false);
  useEffect(()=>()=>{const id=request.current;request.current=undefined;if(id)void window.omniEdu?.cancelMaterialPageLayout({schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:id}).catch(()=>{});},[]);
  const stop=()=>{const id=request.current;if(id){cancelled.current=id;setResult({schemaVersion:MATERIAL_LAYOUT_SCHEMA,ok:false,error:'cancelled'});setLoading(false);setStopping(pending.current);void window.omniEdu?.cancelMaterialPageLayout({schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:id}).catch(()=>{});}};
@@ -30,7 +31,7 @@ export function MaterialLayoutPreview({resource,preview,zoom,busy}:{resource:Tea
   </div>
   <section className="material-layout" data-testid="materials-layout" aria-label="原页文字核对">
    <div className="material-layout-toolbar">
-    {loading?<Button variant="secondary" onPressStart={stop} data-testid="materials-layout-stop"><Square size={14}/>停止识别</Button>:<Button variant="secondary" onPress={()=>recognize(!!result)} isDisabled={busy||stopping} data-testid="materials-layout-start"><ScanText size={16}/>{result?'重新识别文字区域':'识别文字区域'}</Button>}
+    {loading?<Button variant="secondary" onPressStart={stop} data-testid="materials-layout-stop"><Square size={14}/>停止识别</Button>:<Button variant="secondary" onPress={()=>recognize(!!result)} isDisabled={busy||stopping||!!draft||edited} data-testid="materials-layout-start"><ScanText size={16}/>{result?'重新识别文字区域':'识别文字区域'}</Button>}
     <p className="teacher-library-caption">在原页选择文字并核对；文字框不代表完整题目。</p>
    </div>
    {loading?<p role="status" data-testid="materials-layout-loading">正在本机识别文字区域…</p>:result&&!result.ok?<p role="alert" data-testid="materials-layout-error">{layoutError(result.error)}</p>:layout?<>

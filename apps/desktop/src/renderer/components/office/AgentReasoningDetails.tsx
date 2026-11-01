@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import { useState } from 'react';
 import type { OfficeProjectedTurn } from '../../../shared/office-agent';
 import { AgentTraceText } from './AgentTraceText';
@@ -7,13 +8,10 @@ export function AgentReasoningDetails({ turn }: { turn: OfficeProjectedTurn }) {
   const [open, setOpen] = useState(false);
   const blocks = turn.modelReasoning?.filter((block) => block.text.trim()) || [];
   if (!blocks.length) return null;
-  return (
-    <details
-      data-testid="agent-raw-reasoning"
-      open={open}
-      onToggle={(event) => setOpen(event.currentTarget.open)}
-    >
-      <summary className="edu-reasoning-label">推理详情</summary>
+  return (<DisclosureCard data-testid="agent-raw-reasoning"
+      isExpanded={open}
+      onExpandedChange={setOpen} title={<>推理详情</>}>
+
       {open && (
         <div className="edu-process-list">
           {blocks.map((block) => (
@@ -32,6 +30,6 @@ export function AgentReasoningDetails({ turn }: { turn: OfficeProjectedTurn }) {
           ))}
         </div>
       )}
-    </details>
+    </DisclosureCard>
   );
 }

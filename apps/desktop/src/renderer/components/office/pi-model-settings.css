@@ -14,3 +14,23 @@
 .pi-model-settings [data-slot=list-view-item-content] { display:flex; min-width:0; width:100%; flex-direction:column; align-items:flex-start; gap:4px; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
 .pi-model-settings [data-slot=list-view-title], .pi-model-settings [data-slot=list-view-description] { white-space:normal; overflow-wrap:anywhere; }
 @media(max-width:700px) { .pi-model-settings>main { padding:24px 16px; } .pi-settings-provider { padding:16px; } }
+
+/* App-owned settings layout only; official controls and disclosure cards keep their styles. */
+.pi-model-settings .pi-model-settings-content { display:flex; flex-direction:column; gap:32px; min-width:0; }
+.pi-model-settings .pi-model-settings-heading { display:flex; flex-direction:column; gap:8px; }
+.pi-model-settings .pi-model-settings-section { margin:0; padding-top:24px; border-top:1px solid var(--border); }
+.pi-model-settings .pi-model-settings-section > div:first-child { flex-wrap:wrap; gap:12px; margin-bottom:12px; }
+.pi-model-settings .pi-model-settings-form { display:flex; flex-direction:column; gap:20px; margin-top:16px; }
+.pi-model-settings .pi-model-settings-credential { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:end; gap:12px; }
+.pi-model-settings .pi-model-settings-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:12px; }
+.pi-model-settings .pi-model-settings-model-row { padding:0; border:0; gap:16px; flex-wrap:wrap; }
+.pi-model-settings .pi-model-settings-catalogue { display:flex; flex-direction:column; gap:12px; min-width:0; }
+.pi-model-settings .pi-model-settings-secondary-text { color:var(--pi-muted,#77797d); font-size:14px; line-height:1.65; overflow-wrap:anywhere; }
+.pi-model-settings .pi-model-settings-thinking > div { display:flex; flex-direction:column; align-items:flex-start; gap:12px; }
+.pi-model-settings .pi-model-settings-secondary-sections { display:flex; flex-direction:column; gap:32px; min-width:0; }
+.pi-model-settings .pi-model-settings-secondary-sections > [data-settings-surface] { padding:24px 0 0; border:0; border-top:1px solid var(--border); border-radius:0; background:transparent; }
+.pi-model-settings .pi-model-settings-secondary-sections > [data-settings-surface] > div { display:flex; flex-direction:column; gap:16px; }
+@media(max-width:700px) {
+  .pi-model-settings .pi-model-settings-credential { grid-template-columns:minmax(0,1fr); }
+  .pi-model-settings .pi-model-settings-content, .pi-model-settings .pi-model-settings-secondary-sections { gap:24px; }
+}

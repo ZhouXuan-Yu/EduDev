@@ -5,6 +5,7 @@ import type {OmniEduStore} from '../db';
 import {validReplyExport,type ReplyExportInput,type ReplyExportResult} from '../../shared/reply-export';
 import {authorizedWorkspace} from './workspace-authority';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
+import {publicProviderTurn} from '../../shared/public-provider-text';
 const hash=(text:string)=>createHash('sha256').update(text).digest('hex');
 /** Teacher-confirmed local copy into the existing artifact library; no model rewrite. */
 export function registerReplyExport({ipcMain,store,window,dataRoot}:{ipcMain:IpcMain;store:OmniEduStore;window:()=>BrowserWindow|undefined;dataRoot:string}){
@@ -13,7 +14,9 @@ export function registerReplyExport({ipcMain,store,window,dataRoot}:{ipcMain:Ipc
     const detail=await store.getAiConversationSession(input.sessionId);
     if(detail.session.archivedAt)throw Error('permission_denied');
     const row=detail.messages.find(message=>message.role==='assistant'&&message.metadata.agentRunId===input.runId&&message.metadata.piVersion==='xiaozhi.pi.education.v1');
-    const item=(row?.metadata.publicItems as OfficeProjectedItem[]|undefined)?.find(item=>item.id===input.itemId&&item.kind==='message'&&item.role==='assistant');
+    const stored=(row?.metadata.publicItems as OfficeProjectedItem[]|undefined)?.find(item=>item.id===input.itemId&&item.kind==='message'&&item.role==='assistant');
+    // Re-derive from stored public prose on both reads; renderer supplies only identity/hash.
+    const item=stored?publicProviderTurn({id:input.runId,status:'completed',items:[stored]}).items[0]:undefined;
     if(!row||!item?.text?.trim()||hash(item.text)!==input.contentHash)throw Error('changed');
     return {row,item};
   }

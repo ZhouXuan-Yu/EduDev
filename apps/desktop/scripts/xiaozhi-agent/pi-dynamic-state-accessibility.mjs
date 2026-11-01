@@ -465,12 +465,12 @@ async function scenarioA() {
   const collapsedAfter = await trigger.getAttribute('aria-expanded');
   if (expandedAfter === collapsedAfter) fail('tool step trigger Enter did not toggle expansion');
   check(`Tool step disclosure toggles by Enter (${expandedAfter} -> ${collapsedAfter})`);
-  const checksSummary = page.locator('[data-testid="office-verification-checks"] summary').first();
+  const checksSummary = page.locator('[data-testid="office-verification-checks"] > [data-slot="disclosure-heading"] > button[data-slot="disclosure-trigger"]').first();
   if (await checksSummary.count()) {
     await checksSummary.focus(); await page.keyboard.press('Enter');
-    const open = await page.locator('[data-testid="office-verification-checks"]').first().getAttribute('open') !== null;
+    const open = await checksSummary.getAttribute('aria-expanded') === 'true';
     await page.keyboard.press('Enter');
-    const closed = await page.locator('[data-testid="office-verification-checks"]').first().getAttribute('open') === null;
+    const closed = await checksSummary.getAttribute('aria-expanded') === 'false';
     if (!(open && closed)) fail('verification checks summary Enter did not toggle');
     check('Verification checks summary toggles by Enter');
   }
@@ -894,7 +894,7 @@ async function scenarioP() {
     tabExpected: [...composerExpected.filter(name => name !== '选择模型'), pendingTrigger, 'learning-review-batch-confirm', 'learning-review-batch-reject', 'learning-review-select-', ...pendingFields, 'learning-review-reason', 'learning-review-confirm', 'learning-review-reject'],
     // The 14-day training plan adds ~70 real controls; walk them all.
     tabCap: 260,
-    contrastTargets: [...composerContrast, ['learning trigger', '[data-testid="pi-learning-review"][data-state="pending"] [data-slot="chat-tool-trigger"]'], ['learning body', '[data-testid="pi-learning-review"][data-state="pending"] p'], ['learning source summary', '[data-testid="pi-learning-review"][data-state="pending"] details summary'], ['batch confirm', '[data-testid="learning-review-batch-confirm"]'], ['batch reject', '[data-testid="learning-review-batch-reject"]'], ['learning confirm', '[data-testid="learning-review-confirm"]'], ['learning reject', '[data-testid="learning-review-reject"]'], ['batch count', '[data-testid="learning-review-selected-count"]']],
+    contrastTargets: [...composerContrast, ['learning trigger', '[data-testid="pi-learning-review"][data-state="pending"] [data-slot="chat-tool-trigger"]'], ['learning body', '[data-testid="pi-learning-review"][data-state="pending"] p'], ['learning source summary', '[data-testid="pi-learning-review"][data-state="pending"] .pi-learning-source button[data-slot="disclosure-trigger"]'], ['batch confirm', '[data-testid="learning-review-batch-confirm"]'], ['batch reject', '[data-testid="learning-review-batch-reject"]'], ['learning confirm', '[data-testid="learning-review-confirm"]'], ['learning reject', '[data-testid="learning-review-reject"]'], ['batch count', '[data-testid="learning-review-selected-count"]']],
     liveExpected: [],
   });
   // 2) Practice review cards (confirmed and rejected) in the student context.
@@ -999,17 +999,17 @@ async function scenarioR() {
   await probeState('r-recovered', {
     expect: { 'office-recovery': 'visible', 'pi-copy-approval': 'visible', approvalStates: ['interrupted'] },
     tabExpected: [...composerExpected.filter(name => name !== '选择模型'), '查看操作结果', '复制教学资料', '确认已失效'],
-    contrastTargets: [...composerContrast, ['recovery heading', '[data-testid="office-recovery"] strong'], ['recovery body', '[data-testid="office-recovery"] p'], ['recovery summary', '[data-testid="office-recovery"] summary'], ['approval trigger', '[data-testid="pi-copy-approval"] [data-slot="chat-tool-trigger"]'], ['turn notice', '.office-turn-notice strong']],
+    contrastTargets: [...composerContrast, ['recovery heading', '[data-testid="office-recovery"] strong'], ['recovery body', '[data-testid="office-recovery"] p'], ['recovery summary', '[data-testid="office-recovery"] button[data-slot="disclosure-trigger"]'], ['approval trigger', '[data-testid="pi-copy-approval"] [data-slot="chat-tool-trigger"]'], ['turn notice', '.office-turn-notice strong']],
     liveExpected: ['office-recovery'],
   });
   // Keyboard: recovery details and interrupted approval disclosure.
   report.phase = 'keyboard-r';
   await setView(1366, 768, 'light');
-  const recoverySummary = page.locator('[data-testid="office-recovery"] summary').first();
+  const recoverySummary = page.locator('[data-testid="office-recovery"] button[data-slot="disclosure-trigger"]').first();
   await recoverySummary.focus(); await page.keyboard.press('Enter');
-  const recoveryOpen = await page.locator('[data-testid="office-recovery"] details').first().evaluate(el => el.open);
+  const recoveryOpen = await recoverySummary.getAttribute('aria-expanded') === 'true';
   await page.keyboard.press('Enter');
-  const recoveryClosed = await page.locator('[data-testid="office-recovery"] details').first().evaluate(el => !el.open);
+  const recoveryClosed = await recoverySummary.getAttribute('aria-expanded') === 'false';
   if (!(recoveryOpen && recoveryClosed)) fail('recovery notice details did not toggle by Enter');
   check('Recovery notice operation details toggle by Enter');
   const approvalTrigger = page.locator('[data-testid="pi-copy-approval"] [data-slot="chat-tool-trigger"]').first();

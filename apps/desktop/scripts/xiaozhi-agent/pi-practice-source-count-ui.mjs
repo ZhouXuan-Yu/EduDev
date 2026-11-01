@@ -7,6 +7,7 @@ import {_electron as electron} from 'playwright';
 import {testMain, assertIsolatedPiMain} from '../acceptance/build-root.mjs';
 import {fingerprint} from '../acceptance/evidence.mjs';
 import {settleWorkspaceTransitions} from './capture-workspace-metrics.mjs';
+import {expandDisclosure} from '../education/paper-ui-disclosure.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..');
 const sourceData=path.join(desktop,'test-results/education-journey-brFkEo/data/app.db');
@@ -37,7 +38,7 @@ try{
   await studentRow.click();
   await page.getByTestId('nav-mistakes').click();
   const card=page.getByTestId('exercise-set-card-'+exercise.id);await card.waitFor();
-  await card.getByTestId('exercise-set-details-'+exercise.id).locator('summary').click();
+  await expandDisclosure(card.getByTestId('exercise-set-details-'+exercise.id),'查看练习内容与来源');
   await card.getByTestId('practice-source-open').click();
   const dialog=page.getByTestId('practice-source-dialog');await dialog.waitFor();
   const text=await dialog.innerText();

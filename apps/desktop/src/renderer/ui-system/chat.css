@@ -30,6 +30,28 @@
   display: flex;
   flex-direction: column;
 }
+/* Keep the very same composer DOM node in both layouts. No portal/reparenting. */
+.edu-chat .ai-chat-surface[data-empty='true'] {
+  justify-content: safe center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.edu-chat .ai-chat-surface[data-empty='true'] .ai-conversation-frame {
+  flex: none;
+}
+.edu-chat .ai-chat-surface[data-empty='true'] .wb-home-scroll {
+  flex: none;
+  overflow: visible;
+  padding: 0;
+}
+.wb-workspace-notifications {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 20px;
+}
 .edu-chat .office-conversation {
   flex: 1;
   min-height: 0;
@@ -272,5 +294,57 @@
 @media (max-width: 700px) {
   .edu-chat .teacher-quick-starts {
     grid-template-columns: 1fr;
+  }
+}
+
+/* U1 application-owned tool disclosure states; native component CSS is untouched. */
+.edu-process-tool-label {
+  min-width: 0;
+  max-width: 100%;
+  border-radius: 4px;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+.edu-process-tool-label:hover {
+  color: var(--foreground);
+  background-color: var(--surface-secondary, #f4f4f5);
+}
+.edu-process-tool-label:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  color: var(--foreground);
+}
+.edu-operation-target {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.edu-operation-chevron {
+  opacity: 0.6;
+  transform: rotate(0deg);
+  transition: transform 180ms ease;
+}
+.edu-operation-chevron[data-expanded='true'] {
+  transform: rotate(90deg);
+}
+.edu-process-tool-label:hover .edu-operation-chevron,
+.edu-process-tool-label:focus-visible .edu-operation-chevron {
+  opacity: 1;
+}
+@media (max-width: 700px) {
+  .edu-operation-target {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .edu-process-tool-label,
+  .edu-operation-chevron {
+    transition: none;
   }
 }

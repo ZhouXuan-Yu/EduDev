@@ -5,7 +5,10 @@ import {MaterialBookAnswers} from './MaterialBookAnswers';
 import {MaterialOriginalPreview} from './MaterialOriginalPreview';
 import './material-ai.css';
 import type {AiTextSource} from '../../../shared/material-ai-text';
-export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,initiallyOpen=false,bookRevision}:{batchId:string;ordinal?:number;units?:{ordinal:number;pageSource?:boolean}[];start?:number;reference?:AiTextSource;initiallyOpen?:boolean;bookRevision?:number}){
+import {DisclosureCard} from '../ui/DisclosureCard';
+export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,initiallyOpen=false,bookRevision,onDraftDirty}:{batchId:string;ordinal?:number;units?:{ordinal:number;pageSource?:boolean}[];start?:number;reference?:AiTextSource;initiallyOpen?:boolean;bookRevision?:number;onDraftDirty?:(dirty:boolean)=>void}){
+ const [draftDirty,setDraftDirty]=useState(false);
+ useEffect(()=>{onDraftDirty?.(draftDirty);},[draftDirty,onDraftDirty]);
  const choices=units?.filter(u=>u.pageSource).map(u=>u.ordinal)||[ordinal];
  const referenceKey=reference?JSON.stringify(reference):'';
  const [open,setOpen]=useState(initiallyOpen),[selected,setSelected]=useState(ordinal),[view,setView]=useState<AiPageView>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[revision,setRevision]=useState(0),[imageOpen,setImageOpen]=useState(false);
@@ -24,22 +27,23 @@ export function MaterialAiPagePanel({batchId,ordinal=1,units,start=1,reference,i
  },[open,batchId,selected,revision,referenceKey]);
  if(!choices.length)return null;
  return <section className="material-ai-page" data-testid="material-ai-page-panel">
-  <button className="secondary-action" data-testid="material-ai-page-open" onClick={()=>setOpen(v=>!v)}>{open?'收起还原正文':'查看原页与AI还原正文'}</button>
+  <button className="secondary-action" data-testid="material-ai-page-open" disabled={draftDirty} onClick={()=>setOpen(v=>!v)}>{open?'收起还原正文':'查看原页与AI还原正文'}</button>
+  {draftDirty&&<p role="note" data-testid="material-ai-page-unsaved">原页有临时校对文字。切换还原项、重新核对或收起前，请先复制所需文字，再清除选择和暂存文字；切换资料分区会保留。</p>}
   {open&&<div>
-   {choices.length>1&&<label>查看项目<select data-testid="material-ai-page-select" value={selected} onChange={e=>setSelected(Number(e.target.value))}>{choices.map(n=><option key={n} value={n}>第{start+n-1}项</option>)}</select></label>}
+   {choices.length>1&&<label>查看项目<select data-testid="material-ai-page-select" value={selected} disabled={draftDirty} onChange={e=>{if(!draftDirty)setSelected(Number(e.target.value));}}>{choices.map(n=><option key={n} value={n}>第{start+n-1}项</option>)}</select></label>}
    {busy&&<p role="status">正在核对原页来源及两遍回执…</p>}{error&&<p role="alert" data-testid="material-ai-page-error">{error}</p>}
-   {!busy&&<button className="secondary-action" data-testid="material-ai-page-refresh" onClick={()=>setRevision(n=>n+1)}>重新核对</button>}
+   {!busy&&<button className="secondary-action" data-testid="material-ai-page-refresh" disabled={draftDirty} onClick={()=>{if(!draftDirty)setRevision(n=>n+1);}}>重新核对</button>}
    {view&&<>
     <p data-testid="material-ai-page-status">原件第{view.source.page}页 · {view.bookAnswers?(view.bookAnswers.pageUncertain?'答案整页转录仍有疑点':view.status==='needs_review'?'答案按条目核对，局部待核项已保留':'AI答案转录，未经教师逐字核验'):view.status==='needs_review'?(view.transcriptionStatus==='complete'?'正文可检索，题目仍需核对':'正文和题目仍需核对'):view.status==='blank'?'AI两遍判断为空白，可回看原页核对':'AI整页转录，未经教师逐字核验'}</p>
     {view.status==='needs_review'&&view.transcriptionStatus==='complete'&&<p data-testid="material-ai-page-transcription-status">正文双遍转录一致，可检索；本页题目仍有待核项，未经教师逐字核验。</p>}
-    <MaterialOriginalPreview key={`${batchId}:${selected}:${revision}`} resource={view.resource} initialPage={view.source.page} busy={busy}/>
+    <MaterialOriginalPreview key={`${batchId}:${selected}:${revision}`} onDraftDirty={setDraftDirty} resource={view.resource} initialPage={view.source.page} busy={busy}/>
     {view.inputImage&&<div>
      <button className="secondary-action" data-testid="material-ai-page-image-open" onClick={()=>setImageOpen(v=>!v)}>{imageOpen?'收起核对图':'查看AI核对输入图'}</button>
      {imageOpen&&<><p>这是两遍AI实际核对的输入图，可能经过缩放；完整原件保留在本机资料库。</p><img src={view.inputImage.dataUrl} alt="两遍AI核对的资料图片" style={{maxWidth:'100%',height:'auto'}} data-testid="material-ai-page-image"/></>}
     </div>}
     {bookRevision&&<MaterialBookMatches key={`${batchId}:${selected}:${bookRevision}`} batchId={batchId} ordinal={selected} revision={bookRevision}/>}
     {view.bookAnswers&&<MaterialBookAnswers page={view.bookAnswers}/>}
-    <details><summary>本地识别对照文字</summary><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}</pre></details>
+    <DisclosureCard title="本地识别对照文字" headingLevel={4} data-testid="material-ai-ocr-reference"><pre className="material-ai-page-text" data-testid="material-ai-page-ocr">{view.ocrText||'本地识别未获得文字；这不代表原页为空白。'}</pre></DisclosureCard>
     <p>AI还原正文 · 补充推导的答案保留在题本，不写成原资料正文。</p><pre className="material-ai-page-text" data-testid="material-ai-page-text">{view.text||'本次原图两遍复核未转录出文字。'}</pre>
    </>}
   </div>}

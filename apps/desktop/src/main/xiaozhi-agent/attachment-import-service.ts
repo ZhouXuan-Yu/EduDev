@@ -111,6 +111,28 @@ export function createAttachmentImportService(options:{dataRoot:string;state:Ret
    if(captured.candidate.contentSha256!==row.contentSha256||captured.candidate.version!==row.version)throw new Error('changed');
    await verify(sessionId,selection,signal);current(signal);return {bytes:captured.bytes,mime:captured.candidate.mime};
   },
+  /** Submitted PDF only. Resolve the private captured copy, never the original
+   * picker path or any renderer-supplied path. Extraction grants no new access. */
+  async readPdfText(sessionId:string,selection:XiaozhiAttachmentSelection,signal:AbortSignal){
+   if(!validAttachmentSession(sessionId)||!validAttachmentSelection(selection))throw new Error('invalid_input');current(signal);
+   const row=await options.state.get(sessionId,selection.id);current(signal);
+   if(!row)throw new Error('not_found');
+   if(row.sessionId!==sessionId||row.state!=='submitted')throw new Error('permission_denied');
+   if(row.revision!==selection.revision)throw new Error('changed');
+   if(row.format!=='office'||row.mime!=='application/pdf'||!row.name.toLowerCase().endsWith('.pdf'))throw new Error('unsupported');
+   const target=await verify(sessionId,selection,signal);current(signal);
+   const lease=await resolve(sessionId);current(signal);
+   if(lease.version!==target.workspaceVersion)throw new Error('changed');
+   const localPath=approvedFile(lease.path,target.path);
+   const {readAttachmentPdfText}=await import('./attachment-pdf-text');current(signal);
+   const text=await readAttachmentPdfText({localPath,contentHash:row.contentSha256},signal);current(signal);
+   await verify(sessionId,selection,signal);current(signal);
+   const latest=await options.state.get(sessionId,selection.id);current(signal);
+   if(!latest||latest.state!=='submitted'||latest.revision!==row.revision||latest.version!==row.version
+    ||latest.contentSha256!==row.contentSha256||latest.runId!==row.runId||latest.messageId!==row.messageId)throw new Error('changed');
+   // No document.parser: these bytes were not extracted by AnyDoc.
+   return {text,format:'office' as const};
+  },
   async preview(sessionId:string,selection:XiaozhiAttachmentSelection,signal:AbortSignal):Promise<Omit<XiaozhiFilePreview,'path'>>{
    const target=await verify(sessionId,selection,signal);current(signal);
    const result=await createWorkspaceFiles(resolve).preview({schemaVersion:XIAOZHI_FILES_SCHEMA,sessionId,requestId:`xifile_${randomUUID()}`,...target},signal);

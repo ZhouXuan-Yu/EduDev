@@ -24,4 +24,6 @@
 
 ## 交互态
 
+用户于 2026-11-01 明确要求：应用自有对话引用、工具结果、折叠详情及业务页面不再使用浏览器原生 `details/summary` 的黑色三角。优先复用现有 ChatSources、ChatTool、ChainOfThought；普通业务详情通过现有 HeroUI Card/Disclosure 组合统一呈现。标题说明对象和关键信息，Chevron 表达展开状态；保留键盘、焦点、受控状态及已有安全校验。不能只隐藏 marker 而保留杂乱结构，也不能改 vendor 或给每个段落再套一层卡片。原文、数学符号和受保护输入组件不是文本符号清理的对象。
+
 Hover、Selected、Pressed、Keyboard focus可区分。图标按钮有可访问名称，提示不能只靠 Hover。常规披露150–200ms并尊重 reduced-motion；正文流式、文件预览不反复入场。不得为柔和视觉取消焦点轮廓或降低不可读文字对比。

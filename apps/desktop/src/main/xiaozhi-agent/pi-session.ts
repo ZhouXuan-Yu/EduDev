@@ -1,3 +1,4 @@
+import {CLASSROOM_PLAN_TOOLS} from '../../shared/classroom-plan';
 import {CLASSROOM_EXPORT_TOOL,CLASSROOM_READ_TOOL,CLASSROOM_EXPORT_TOOLS} from '../../shared/classroom-export';
 import fs from 'node:fs';
 import {ensureNativePlanContract,ensureNativeTaskContract,withPlanBasisReference} from './plan-native';
@@ -54,9 +55,10 @@ import {validQuestionContextSource} from '../../shared/question-context';
 import {availableChatTool,sourceAvailabilityText,type ChatSourceAvailability} from '../../shared/chat-source-availability';
 import {publicToolResult} from './public-tool-result';
 import {createModelReasoningTrace} from './model-reasoning';
-import {capturePresentationOrder,createPresentationEventAdapter,REPLY_PRESENTATION_PROMPT,visibleAssistantText} from './presentation-event-adapter';
+import {capturePresentationOrder,createPresentationEventAdapter,visibleAssistantText} from './presentation-event-adapter';
+import {withPublicResponsePrompt} from './public-response-prompt';
 import type {OfficeProjectedItem} from '../../shared/office-agent';
-import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,applyThinkingPayload,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
+import {answerQualityEnabled,resolveAnswerPolicy,resolveThinkingPolicy,resolveSubjectAnswerInstructions,applyThinkingPayload,TASK_SUMMARY_INSTRUCTIONS} from './answer-quality';
 import {createEducationToolCatalog,TOOL_DISCOVERY_NAME} from './education-tool-catalog';
 import {createRepeatToolReminder} from './repeat-tool-reminder';
 import {withModelRequestRecovery} from './model-request-recovery';
@@ -449,7 +451,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   prompt += '\n公开工作过程的每段说明默认使用简体中文，先简短说明实际下一步，再调用工具，按真实结果继续。最终结果也默认简体中文；文件名、代码和必要原文引用保持。教师明确指定其他输出语言时遵循。生成办公文档后的正文由教师本地确认，模型未收到确认版时不要复述原草稿数值或标题；交付以实际保存回执为准。';
   prompt += '\n回复表达：先直接回答本轮问题。普通问答、解释原因和讨论想法，默认用自然连贯的段落，不主动加小标题、编号或项目符号；即使有多个原因，也先用段落和具体例子串联，避免大段清单。只有教师明确要求分点，或成果本身需要操作步骤、对比表、教案和练习等结构时，才采用相应列表、标题或表格；遵循教师指定文体，不套固定的“结论—分析—建议”模板。资料足以回答时直接展开，不无故先写免责声明或在末尾反问、索要额外信息。最终正文交付答案或成果，不重复准备状态、检索日志、工具前说明或推理草稿；实际来源放在相关结论旁。工具前公开说明保持简短，技能文档中的编号是操作规则，不是最终回答的强制格式。';
   const materialIdentity={version:1,tools:['office_list_materials','office_read_material'],source:'sqlite-committed-materials-v1'};
-  prompt += REPLY_PRESENTATION_PROMPT;
+  prompt = withPublicResponsePrompt(prompt);
   const materialEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.material-read.'));
   if(materialEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.material-read.v1'||JSON.stringify(entry.data)!==JSON.stringify(materialIdentity))
     ||materialEntries.length&&!options.materialTools)throw new Error('configuration');
@@ -486,10 +488,18 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   const classroomEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.classroom.'));
   if(classroomEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom.v1'||JSON.stringify(entry.data)!==JSON.stringify(classroomIdentity))||classroomEntries.length&&!options.classroomTools)throw new Error('configuration');
   if(options.classroomTools){
-    if(options.classroomTools.map(tool=>tool.name).join(',')!==CLASSROOM_TOOLS.join(','))throw new Error('configuration');
+    const actual=options.classroomTools.map(tool=>tool.name);
+    if(actual.join(',')!==CLASSROOM_TOOLS.join(',')&&actual.join(',')!==[...CLASSROOM_TOOLS,...CLASSROOM_PLAN_TOOLS].join(','))throw new Error('configuration');
     if(!classroomEntries.length)manager.appendCustomEntry('xiaozhi.education.classroom.v1',classroomIdentity);
-    names.push(...CLASSROOM_TOOLS);
-    prompt+='\n教师请求互动课/互动课堂时，必须使用education_prepare_classroom_scene取得原生提示并逐页生成内容，再education_stage_classroom一次提交，至少讲解幻灯片与互动题。不能以普通文本或Office文件代替互动课堂。不额外发起Agent或模型；本Pi完成内容。保留数学条件/图形/答案供教师核对；自动对照不等于正确性验证。工具成功后教师从教学内容→互动课堂预览/修改/确认。';
+    names.push(...options.classroomTools.map(tool=>tool.name));
+    if(options.classroomTools.some(tool=>tool.name===CLASSROOM_PLAN_TOOLS[0])){
+      const identity={version:1,tools:[...CLASSROOM_PLAN_TOOLS],source:'sqlite-confirmed-outline-checkpoints-v1'};
+      const entries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.classroom-plan.'));
+      if(entries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.classroom-plan.v1'||JSON.stringify(entry.data)!==JSON.stringify(identity)))throw Error('configuration');
+      if(!entries.length)manager.appendCustomEntry('xiaozhi.education.classroom-plan.v1',identity);
+      prompt+='\n来源驱动课堂必须先office_list_materials/office_read_material实读保存正文，再education_propose_classroom_outline提交schemaVersion=xiaozhi.classroom-plan.v1的大纲（总时长与各页之和相等、稳定sceneId）。仅保存草稿后停止，提示教师到教学工作台互动课堂明确确认；不能自行确认，不能用旧prepare/stage绕过。教师已在页面点击生成或继续时，education_read_classroom_plan会返回宿主绑定当前版本与缺页；成功则只对缺页调用education_prepare_planned_scene生成contentJson、education_save_classroom_scene逐页保存，全部成功后education_finish_classroom_plan。已保存页不重复，来源变化或旧版本拒绝，不自行重试写入。完成只得到待核对课堂；大纲确认、最终课堂确认和Office写入批准是三件事。仅原生讲解slide与选择题quiz，无仿真/脚本/远程资源，不记录学生成绩。旧无资料互动课堂入口才兼容旧prepare/stage。';
+    }
+    if(!options.classroomTools.some(tool=>tool.name===CLASSROOM_PLAN_TOOLS[0]))prompt+='\n教师请求互动课/互动课堂时，必须使用education_prepare_classroom_scene取得原生提示并逐页生成内容，再education_stage_classroom一次提交，至少讲解幻灯片与互动题。不能以普通文本或Office文件代替互动课堂。不额外发起Agent或模型；本Pi完成内容。保留数学条件/图形/答案供教师核对；自动对照不等于正确性验证。工具成功后教师从教学内容→互动课堂预览/修改/确认。';
   }
   if(capabilityEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.deeptutor-reading.v1'||JSON.stringify(entry.data)!==JSON.stringify(capabilityIdentity))
     ||capabilityEntries.length&&!options.educationCapabilityTools)throw new Error('configuration');
@@ -928,7 +938,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
   };
   const emit = (value: XiaozhiAgentEventPayload) => {
     if (!runId || disposed) return;
-    try { options.onEvent?.({ ...value, traceOrder:value.traceOrder??capturePresentationOrder(), sessionId, runId, sequence: ++sequence }); }
+    try { options.onEvent?.({ ...value, capturedAt:Date.now(), traceOrder:value.traceOrder??capturePresentationOrder(), sessionId, runId, sequence: ++sequence }); }
     catch { /* Public UI consumer does not own the model/tool outcome. */ }
   };
   async function maybeCompactContext(turn: { context: unknown; message?: { role: string } }, signal?: AbortSignal) {
@@ -1128,7 +1138,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
         const facts=await phase(()=>getProtectedContext());await checkMemory();
         // Read-only local context precedes the current request. A historical
         // task index must not become the last instruction after compaction.
-        await session.prompt(facts?`${facts}\n\n[教师本次请求]\n${text}`:text);
+        const subjectInstructions=quality?resolveSubjectAnswerInstructions(text,options.toolTaskQuery):'';
+        const context=[facts,subjectInstructions].filter(Boolean).join('\n\n');
+        await session.prompt(context?`${context}\n\n[教师本次请求]\n${text}`:text);
         await checkMemory();
         const last = [...session.messages].reverse().find(message => message.role === 'assistant');
         if (last?.role === 'assistant' && last.stopReason === 'error') failure = classifyError(last.errorMessage);

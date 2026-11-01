@@ -1,4 +1,5 @@
 import {useEffect,useRef,useState} from 'react';
+import {DisclosureCard} from '../ui/DisclosureCard';
 import {Button,Pagination,SearchField} from '@heroui/react';
 import {FileText,FolderPlus,Plus,RefreshCw,Square} from 'lucide-react';
 import {ResourceTable} from '../../ui-system/ResourceTable';
@@ -7,7 +8,10 @@ import {MATERIALS_SCHEMA,MATERIAL_PAGE_SIZE,materialFailureText,type MaterialJob
 import {LibraryEmpty} from './LibraryEmpty';
 import {MaterialBodyPanel} from './MaterialBodyPanel';
 import {libraryFileSize,materialReadiness} from './material-library';
+import {selectMaterialSnapshot,materialTaskForSelection,type MaterialSelectionSnapshot} from './MaterialSelectionState';
 import './teacher-library.css';
+import '../../ui-system/materials-workspace.css';
+import {MaterialCatalogFilters,filterMaterialCatalog,type MaterialCatalogFilter} from './MaterialCatalogFilters';
 import {MATERIAL_TASK_SCHEMA,type MaterialQueueView} from '../../../shared/material-parse-task';
 import {MaterialImportPanel} from './MaterialImportPanel';
 import {MaterialQuestionStatus} from './MaterialQuestionStatus';
@@ -17,10 +21,12 @@ import {RetrievalProgress} from './RetrievalProgress';
 /** Local catalogue and committed body pages; never uploads or grants paths. */
 export function MaterialsWorkspace({sourceView,onAsk}:{sourceView?:MaterialSourceView;onAsk?:(prompt:string)=>void}) {
  const [catalog,setCatalog]=useState<MaterialPage>(),[query,setQuery]=useState(''),[offset,setOffset]=useState(0),[selected,setSelected]=useState('');
+ const [mode,setMode]=useState<'catalog'|'text'>('catalog'),[filters,setFilters]=useState<MaterialCatalogFilter>({format:'',state:''});
+ const sourceEpoch=useRef(0);
  const [loadedQuery,setLoadedQuery]=useState('');
  const [loading,setLoading]=useState(true),[localBusy,setBusy]=useState(false),[hostBusy,setHostBusy]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[revision,setRevision]=useState(0);
  const [studyDirty,setStudyDirty]=useState(false),studyDirtyRef=useRef(false);studyDirtyRef.current=studyDirty;
- const canChangeSource=()=>{if(!studyDirtyRef.current)return true;setError('阅读笔记尚未保存，请先保存后再切换资料。');return false;};
+ const canChangeSource=()=>{if(!studyDirtyRef.current)return true;setError('阅读笔记或临时校对文字尚未保存，请先保存笔记或清除暂存文字后再切换资料。');return false;};
  const busy=localBusy||hostBusy;
  const [queue,setQueue]=useState<MaterialQueueView>();
  const [scan,setScan]=useState<MaterialJob['scan']>();
@@ -29,13 +35,13 @@ export function MaterialsWorkspace({sourceView,onAsk}:{sourceView?:MaterialSourc
  const [sourceActive,setSourceActive]=useState(!!sourceView);
  const [textSource,setTextSource]=useState<MaterialSourceView>();
  const [batchResource,setBatchResource]=useState<TeacherResource>();
- useEffect(()=>{setSourceActive(!!sourceView);},[sourceView]);
+ useEffect(()=>{++sourceEpoch.current;setSourceActive(!!sourceView);},[sourceView]);
  const location=useRef({query,offset});location.current={query,offset};
  const selectedTask=useRef(selected);selectedTask.current=sourceActive?sourceView?.body.resource.id||selected:selected;
  async function load(search=query,start=offset){const stamp=++listEpoch.current;setLoading(true);setError('');try{const next=await window.omniEdu?.listMaterials({schemaVersion:MATERIALS_SCHEMA,query:search,offset:start});if(!next)throw new Error();if(alive.current&&stamp===listEpoch.current){setCatalog(next);setLoadedQuery(search);}}catch{if(alive.current&&stamp===listEpoch.current)setError('无法读取资料，请重试。');}finally{if(alive.current&&stamp===listEpoch.current)setLoading(false);}}
- useEffect(()=>{alive.current=true;return()=>{alive.current=false;++listEpoch.current;};},[]);
- useEffect(()=>{let mounted=true,inFlight=false,last='';const poll=async()=>{if(inFlight)return;inFlight=true;try{const [state,next]=await Promise.all([window.omniEdu?.getMaterialJob(),window.omniEdu?.getMaterialQueue(selectedTask.current||undefined)]);if(!mounted||!state)return;setHostBusy(state.active);setScan(state.scan);setFolderProgress(state.folder);setQueue(next);const signature=JSON.stringify(next);if(last&&last!==signature&&!lock.current){void load(location.current.query,location.current.offset);setRevision(v=>v+1);}last=signature;}catch{if(mounted)setError('后台收录状态暂不可用，请刷新重试。');}finally{inFlight=false;}};void poll();const timer=setInterval(()=>void poll(),500);return()=>{mounted=false;clearInterval(timer);};},[]);
- useEffect(()=>{setSelected('');setTextSource(undefined);const timer=setTimeout(()=>void load(query,offset),150);return()=>{clearTimeout(timer);++listEpoch.current;};},[query,offset]);
+ useEffect(()=>{alive.current=true;return()=>{alive.current=false;++listEpoch.current;++sourceEpoch.current;};},[]);
+ useEffect(()=>{let mounted=true,inFlight=false,last='';const poll=async()=>{if(inFlight)return;inFlight=true;try{const requested=selectedTask.current;const [state,next]=await Promise.all([window.omniEdu?.getMaterialJob(),window.omniEdu?.getMaterialQueue(selectedTask.current||undefined)]);if(!mounted||!state)return;setHostBusy(state.active);setScan(state.scan);setFolderProgress(state.folder);if(requested===selectedTask.current)setQueue(next);const signature=JSON.stringify(next);if(last&&last!==signature&&!lock.current){void load(location.current.query,location.current.offset);setRevision(v=>v+1);}last=signature;}catch{if(mounted)setError('后台收录状态暂不可用，请刷新重试。');}finally{inFlight=false;}};void poll();const timer=setInterval(()=>void poll(),500);return()=>{mounted=false;clearInterval(timer);};},[]);
+ useEffect(()=>{++sourceEpoch.current;setSelected('');setTextSource(undefined);const timer=setTimeout(()=>void load(query,offset),150);return()=>{clearTimeout(timer);++listEpoch.current;};},[query,offset]);
  async function work(retry=false,folder=false){if(lock.current||!canChangeSource())return;lock.current=true;setBusy(true);setError('');setNotice('');try{
   if(!window.omniEdu)throw new Error();
   if(retry){if(!resource)throw new Error();setQueue(await window.omniEdu.controlMaterialTask({schemaVersion:MATERIAL_TASK_SCHEMA,resourceId:resource.id,version:resource.contentHash,action:'retry'}));if(!alive.current)return;setNotice('已安排优先收录，可以继续浏览其他资料。');await load();}
@@ -50,27 +56,39 @@ export function MaterialsWorkspace({sourceView,onAsk}:{sourceView?:MaterialSourc
  async function stop(){try{await window.omniEdu?.cancelMaterialImport();setNotice('正在停止收录，已保存的资料会保留。');}catch{setError('未能停止，请重试。');}}
  async function control(action:'prioritize'|'cancel'){if(!resource||!window.omniEdu)return;try{setQueue(await window.omniEdu.controlMaterialTask({schemaVersion:MATERIAL_TASK_SCHEMA,resourceId:resource.id,version:resource.contentHash,action}));setNotice(action==='cancel'?'已停止这份资料的收录，原文件仍保存在本机。':'已安排优先处理这份资料。');}catch{setError('未能调整收录，请刷新确认原件版本后重试。');}}
  async function locate(){if(!resource||busy)return;setBusy(true);setError('');setNotice('');try{if(!window.omniEdu)throw new Error();await window.omniEdu.showKnowledgeResource(resource.localPath);setNotice('已在文件夹中定位资料。');}catch{setError('无法定位这份资料，请检查本地文件是否仍存在。');}finally{if(alive.current)setBusy(false);}}
- async function openBatchResource(id:string){if(!canChangeSource())return;try{const body=await window.omniEdu?.getMaterialBody({schemaVersion:MATERIALS_SCHEMA,resourceId:id,offset:0});if(!body||!alive.current||!canChangeSource())return;setSourceActive(false);setTextSource(undefined);setBatchResource(body.resource);setSelected(id);}catch{setError('这份资料暂不可读取，请刷新后重试。');}}
+ async function openBatchResource(id:string){if(!canChangeSource())return;const stamp=++sourceEpoch.current;try{const body=await window.omniEdu?.getMaterialBody({schemaVersion:MATERIALS_SCHEMA,resourceId:id,offset:0});if(!body||!alive.current||stamp!==sourceEpoch.current||!canChangeSource())return;setSourceActive(false);setTextSource(undefined);setBatchResource(body.resource);setSelected(id);}catch{if(alive.current&&stamp===sourceEpoch.current)setError('这份资料暂不可读取，请刷新后重试。');}}
  const stale=loadedQuery!==query||!!catalog&&catalog.offset!==offset;
  const fetching=loading||stale&&!error;
- const rows=stale?[]:catalog?.resources||[],activeSource=sourceActive?sourceView:textSource,resource=activeSource?.body.resource||rows.find(row=>row.id===selected)||(batchResource?.id===selected?batchResource:undefined);
- const task=queue?.tasks.find(task=>task.resourceId===resource?.id),background=!!queue&&(queue.pending>0||queue.running>0);
- return <section className="teacher-library" data-testid="materials-workspace" aria-label="我的资料">
+ const rows=stale?[]:catalog?.resources||[],activeSource=sourceActive?sourceView:textSource,candidateResource=activeSource?.body.resource||rows.find(row=>row.id===selected)||(batchResource?.id===selected?batchResource:undefined);
+ const protectedSelection=useRef<MaterialSelectionSnapshot>({resource:undefined,source:undefined});
+ protectedSelection.current=selectMaterialSnapshot(protectedSelection.current,{resource:candidateResource,source:activeSource},studyDirty);
+ const {resource,source:detailSource}=protectedSelection.current;
+ const task=materialTaskForSelection(queue,resource),background=!!queue&&(queue.pending>0||queue.running>0);
+ const visibleRows=filterMaterialCatalog(rows,filters);
+ return <section data-edu-domain="materials" className="teacher-library edu-materials" data-testid="materials-workspace" aria-label="我的资料">
   <header className="teacher-library-heading"><div><h1>我的资料</h1><p>教材、教案和自己的文件，放在一起随时查找。</p></div><div className="teacher-library-toolbar"><Button variant="secondary" onPress={()=>void work(false,true)} isDisabled={busy} data-testid="materials-import-folder"><FolderPlus size={17}/>添加文件夹</Button><Button onPress={()=>void work()} isDisabled={busy} isPending={busy} data-testid="materials-import"><Plus size={17}/>添加资料</Button></div></header>
+  <nav className="edu-material-modes" aria-label="资料库查找方式"><Button variant={mode==='catalog'?'secondary':'ghost'} aria-pressed={mode==='catalog'} onPress={()=>{if(canChangeSource())setMode('catalog');}} data-testid="materials-mode-catalog">管理资料</Button><Button variant={mode==='text'?'secondary':'ghost'} aria-pressed={mode==='text'} onPress={()=>{if(canChangeSource())setMode('text');}} data-testid="materials-mode-text">检索正文</Button></nav>
+  <div hidden={mode!=='catalog'}>
   <div className="teacher-library-toolbar"><SearchField aria-label="按资料名称或格式查找" value={query} onChange={value=>{if(canChangeSource()){setQuery(value);setOffset(0);}}} isDisabled={busy||studyDirty} className="teacher-library-search" variant="secondary"><SearchField.Group><SearchField.SearchIcon/><SearchField.Input placeholder="查找全部资料名称或格式" maxLength={128} data-testid="materials-search"/><SearchField.ClearButton aria-label="清除资料查找"/></SearchField.Group></SearchField>
    <Button variant="ghost" onPress={()=>{void load();setRevision(v=>v+1);}} isDisabled={busy||fetching} data-testid="materials-refresh"><RefreshCw size={16}/>刷新</Button>{(busy||background)&&<Button variant="secondary" onPress={()=>void stop()} data-testid="materials-stop"><Square size={14}/>停止收录</Button>}</div>
+  <MaterialCatalogFilters rows={rows} value={filters} disabled={busy||studyDirty} onChange={setFilters}/>
+  <p className="teacher-library-caption">名称查找覆盖全部资料；格式与状态筛选仅针对当前页。正文检索请切换到“检索正文”。</p></div>
+  <DisclosureCard className="edu-material-queue" data-testid="materials-queue" title={'收录与处理'+(background?` · ${queue?.running} 份处理中，${queue?.pending} 份等待`:'')+(queue?.invalid?' · 有记录需处理':'')+(task?.status==='failed'?' · 当前资料收录未完成':'')}>
   {(busy||background)&&<p role="status" className="teacher-library-caption" data-testid="materials-progress">{folderProgress?`正在添加文件夹：已查看 ${folderProgress.scanned} 个文件，新增 ${folderProgress.imported} 份、复用 ${folderProgress.reused} 份；原件不会上传…`:scan?`正在本机识别第 ${scan.page} / ${scan.total} 页，原文件不会上传…`:background?`${queue?.pending} 份等待收录，${queue?.running} 份正在处理，可以继续浏览…`:'正在保存本地资料，原文件不会上传…'}</p>}
   {!!queue?.invalid&&<p role="alert" className="teacher-library-error">有收录记录不可读取，尚未执行。请保留原件并重新添加。</p>}
   {task&&<div className="teacher-library-toolbar" data-testid="materials-task" data-status={task.status}><p role="status">{task.title}：{{pending:'等待收录',running:'正在收录',succeeded:'正文已收录',failed:'收录未完成',cancelled:'已停止'}[task.status]}{task.error&&task.status==='failed'?` · ${materialFailureText('parser:'+task.error)}`:''}</p>{(task.status==='pending'||task.status==='running'&&task.priority===0)&&<Button variant="secondary" onPress={()=>void control('prioritize')} isDisabled={busy} data-testid="materials-prioritize">优先处理</Button>}{['pending','running'].includes(task.status)&&<Button variant="ghost" onPress={()=>void control('cancel')} isDisabled={busy} data-testid="materials-task-stop">停止这份</Button>}</div>}
+  </DisclosureCard>
   {notice&&<p role="status" className="teacher-library-notice" data-testid="materials-notice">{notice}</p>}
   {error&&<p role="alert" className="teacher-library-error" data-testid="materials-error">{error}</p>}
-  <MaterialImportPanel revision={revision} changed={()=>{void load(location.current.query,location.current.offset);setRevision(v=>v+1);}} open={id=>void openBatchResource(id)}/>
-  <MaterialQuestionStatus/><RetrievalProgress/><MaterialTextSearch open={source=>{if(!canChangeSource())return;void window.omniEdu?.getMaterialSource(source).then(view=>{if(!alive.current||!canChangeSource())return;setSourceActive(false);setTextSource(view);setSelected(source.resourceId);requestAnimationFrame(()=>document.querySelector('[data-testid="materials-detail"]')?.scrollIntoView({block:'start'}));}).catch(()=>setError('资料来源已变化，请重新查找。'));}}/>
+  <DisclosureCard className="edu-material-queue" data-testid="materials-batches" title="文件夹批次与恢复"><MaterialImportPanel revision={revision} changed={()=>{void load(location.current.query,location.current.offset);setRevision(v=>v+1);}} open={id=>void openBatchResource(id)}/></DisclosureCard>
+  <DisclosureCard className="edu-material-queue" data-testid="materials-diagnostics" title="题库归档与检索状态"><MaterialQuestionStatus/><RetrievalProgress/></DisclosureCard>
+  <div hidden={mode!=='text'}><MaterialTextSearch open={source=>{if(!canChangeSource())return;const stamp=++sourceEpoch.current;void window.omniEdu?.getMaterialSource(source).then(view=>{if(!alive.current||stamp!==sourceEpoch.current||!canChangeSource())return;setSourceActive(false);setTextSource(view);setSelected(source.resourceId);requestAnimationFrame(()=>document.querySelector('[data-testid="materials-detail"]')?.scrollIntoView({block:'start'}));}).catch(()=>{if(alive.current&&stamp===sourceEpoch.current)setError('资料来源已变化，请重新查找。');});}}/></div>
   {imported?.items.some(item=>!item.ok)&&<ul className="teacher-library-import-failures" data-testid="materials-import-failures">{imported.items.filter(item=>!item.ok).map((item,index)=><li key={index}>{item.fileName}：未能添加，请检查文件是否可读取。</li>)}</ul>}
-  <p className="teacher-library-count" data-testid="materials-count">{fetching?'正在读取资料…':`${catalog?.total||0} 份资料 · 保存在本机`}</p>
-  <div className="teacher-library-grid"><div className="teacher-library-directory">
-   <ResourceTable label="资料列表" rows={rows.map(row=>({id:row.id,title:row.title,description:row.originalFileName+' · '+libraryFileSize(row.fileSize),type:row.originalFileName.split('.').at(-1)?.toUpperCase()||'资料',state:materialReadiness(row).label}))} selected={resource?.id} onSelect={id=>{if(!studyDirty){setSourceActive(false);setTextSource(undefined);setSelected(id);}}} disabled={busy||fetching||studyDirty} testPrefix="material" empty={fetching?<p role="status">正在读取资料…</p>:<LibraryEmpty title={query?'没有匹配的资料':'先添加一份资料'} description={query?'换个名称或格式，或清除查找条件。':'从本机选择教材、教案、图片或其他教学文件。'}/>}/>
+  {studyDirty&&candidateResource&&resource&&candidateResource.contentHash!==resource.contentHash&&<p role="alert">资料版本已更新，当前草稿仍绑定旧版本。请先处理未保存内容，再重新打开当前资料。</p>}
+  <p className="teacher-library-count" data-testid="materials-count">{fetching?'正在读取资料…':`${catalog?.total||0} 份资料 · 保存在本机${mode==='catalog'?' · 当前页显示 '+visibleRows.length+' / '+rows.length+' 份':''}`}</p>
+  <div className="teacher-library-grid" data-mode={mode}><div className="teacher-library-directory" hidden={mode!=='catalog'}>
+   <ResourceTable label="资料列表" rows={visibleRows.map(row=>({id:row.id,title:row.title,description:row.originalFileName+' · '+libraryFileSize(row.fileSize),type:row.originalFileName.split('.').at(-1)?.toUpperCase()||'资料',state:materialReadiness(row).label}))} selected={resource?.id} onSelect={id=>{if(!studyDirty){++sourceEpoch.current;setSourceActive(false);setTextSource(undefined);setSelected(id);}}} disabled={busy||fetching||studyDirty} testPrefix="material" empty={fetching?<p role="status">正在读取资料…</p>:<LibraryEmpty title={query||filters.format||filters.state?'没有匹配的资料':'先添加一份资料'} description={query||filters.format||filters.state?'请清除筛选，或翻页查看其他资料。':'从本机选择教材、教案、图片或其他教学文件。'}/>}/>
    {!!catalog?.total&&<Pagination aria-label="资料目录翻页" className="teacher-library-pagination"><Pagination.Summary>第 {Math.floor(catalog.offset/MATERIAL_PAGE_SIZE)+1} / {Math.ceil(catalog.total/MATERIAL_PAGE_SIZE)} 页</Pagination.Summary><Pagination.Content><Pagination.Item><Pagination.Previous isDisabled={busy||fetching||studyDirty||offset===0} onPress={()=>setOffset(Math.max(0,offset-MATERIAL_PAGE_SIZE))} data-testid="materials-previous">上一页</Pagination.Previous></Pagination.Item><Pagination.Item><Pagination.Next isDisabled={busy||fetching||studyDirty||!catalog.hasMore} onPress={()=>setOffset(offset+MATERIAL_PAGE_SIZE)} data-testid="materials-next">下一页</Pagination.Next></Pagination.Item></Pagination.Content></Pagination>}
-  </div><MaterialBodyPanel resource={resource} onAsk={onAsk} onStudyDirty={setStudyDirty} sourceView={activeSource} busy={busy} revision={revision} taskStatus={task?.status} locate={()=>void locate()} retry={()=>void work(true)}/></div>
+  </div><MaterialBodyPanel key={resource?resource.id+resource.contentHash:'empty'} resource={resource} onAsk={onAsk} onStudyDirty={setStudyDirty} sourceView={detailSource} busy={busy} revision={revision} taskStatus={task?.status} locate={()=>void locate()} retry={()=>void work(true)}/></div>
  </section>;
 }

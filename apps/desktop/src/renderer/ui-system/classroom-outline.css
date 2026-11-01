@@ -1,0 +1,15 @@
+.edu-classroom-plan{margin-block:24px 32px;min-width:0}
+.edu-plan-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-block-end:12px}
+.edu-plan-muted{color:var(--muted);font-size:14px;line-height:1.6;margin-block:6px}
+.edu-plan-grid{display:grid;grid-template-columns:minmax(160px,220px) minmax(0,1fr);gap:24px;align-items:start}
+.edu-plan-list{display:flex;flex-direction:column;gap:6px;min-width:0}
+.edu-plan-entry{display:block;min-width:0;max-width:100%;white-space:normal;text-align:start;overflow-wrap:anywhere}
+.edu-plan-list-state{display:block;font-size:12px;line-height:1.6}
+.edu-plan-detail{min-width:0;padding-inline-start:24px;border-inline-start:1px solid var(--separator)}
+.edu-plan-fields{display:grid;gap:16px}
+.edu-plan-duration{display:flex;align-items:end;flex-wrap:wrap;gap:16px;margin-block:16px}
+.edu-plan-section-stack{display:grid;gap:16px;min-width:0}
+.edu-plan-scene-summary{display:grid;gap:4px;min-width:0;text-align:start;overflow-wrap:anywhere}
+.edu-plan-scene-fields{display:grid;grid-template-columns:minmax(0,1fr) 100px;gap:16px;min-width:0}
+.edu-plan-actions{display:flex;flex-wrap:wrap;gap:8px;margin-block:20px 12px}
+@media(max-width:950px){.edu-plan-grid{grid-template-columns:1fr}.edu-plan-list{flex-direction:row;flex-wrap:wrap}.edu-plan-detail{border-inline-start:0;padding-inline-start:0}}

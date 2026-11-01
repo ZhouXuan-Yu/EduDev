@@ -46,7 +46,7 @@ if (!window.matchMedia) window.matchMedia = query => ({ matches: false, media: q
 if (!window.ResizeObserver) window.ResizeObserver = class { observe() {} unobserve() {} disconnect() {} };
 if (!window.scrollTo) window.scrollTo = () => {};
 
-const server = await createServer({ appType: 'custom', optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false, watch: null } });
+const server = await createServer({ appType: 'custom', optimizeDeps: { noDiscovery: true }, server: { middlewareMode: true, hmr: false, watch: null, ws: false } });
 
 try {
   const { OfficeToolProcess } = await server.ssrLoadModule('/src/renderer/components/office/OfficeToolProcess.tsx');

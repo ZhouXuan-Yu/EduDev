@@ -3,6 +3,7 @@ import {createHash} from 'node:crypto';
 import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import type {OmniEduStore} from '../db';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
+import {admitPaperProposal,type PaperProposalBinding} from './paper-admission';
 import {PAPER_SCHEMA,PAPER_GENERATED_SCHEMA,PAPER_TOOLS,PAPER_ERRORS,validPaperCreate,validPaperReview,validPaperCancel,validPaperBlueprint,validPaperGenerationQuery,type PaperCreateInput,type PaperReviewInput,type PaperCancelInput,type PaperDecision,type PaperSummary,type PaperView,type PaperResult,type PaperError,type PaperGenerationContext,type PaperGenerationQuery} from '../../shared/paper-blueprint';
 type Options={store:OmniEduStore;isCurrent:(sessionId:string,runId:string)=>boolean;canWrite:(sessionId:string,runId:string)=>boolean;emit:(sessionId:string,runId:string,value:PaperSummary)=>void;afterWrite?:()=>Promise<void>};
 const failure=(e:unknown):PaperError=>Object.prototype.hasOwnProperty.call(PAPER_ERRORS,(e as Error)?.message)?(e as Error).message as PaperError:'unavailable';
@@ -19,6 +20,7 @@ export function createPaperCoordinator(options:Options){
  };
  return{
   create,
+  admitProposal:(binding:PaperProposalBinding,raw:unknown,signal?:AbortSignal)=>admitPaperProposal({sql:options.store.xiaozhiState.sql,current:()=>!closing&&options.isCurrent(binding.sessionId,binding.runId)&&options.canWrite(binding.sessionId,binding.runId)},binding,raw,signal),
   async generationContexts(input:PaperGenerationQuery):Promise<PaperResult<PaperGenerationContext[]>>{if(!validPaperGenerationQuery(input))return{ok:false,error:'invalid_input'};try{return{ok:true,value:await options.store.papers.generationContexts(input)};}catch(e){return{ok:false,error:failure(e)};}},
   async list():Promise<PaperResult<PaperSummary[]>>{try{return{ok:true,value:await options.store.papers.list()};}catch(e){return{ok:false,error:failure(e)};}},
   async review(input:PaperReviewInput):Promise<PaperResult<PaperView>>{if(!validPaperReview(input))return{ok:false,error:'invalid_input'};try{return{ok:true,value:await options.store.papers.review(input.sessionId,input.id)};}catch(e){return{ok:false,error:failure(e)};}},

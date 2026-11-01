@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {RefreshCw} from 'lucide-react';
@@ -22,6 +23,6 @@ export function PiProviderBalance({view,onBusyChange}:{view?:XiaozhiSettingsView
   {busy&&<p role="status">正在读取官方账户余额…</p>}
   {error&&<p role="alert" data-testid="pi-balance-error">{error}</p>}
   {balance&&<div data-testid="pi-balance-result"><p>{balance.available?'账户可调用':'账户暂不可调用'} · {new Date(balance.observedAt).toLocaleString('zh-CN')}</p>{balance.balances.map(row=><p key={row.currency}>{row.currency==='CNY'?'人民币':'美元'}余额：{row.total}（充值 {row.toppedUp}，赠送 {row.granted}）</p>)}</div>}
-  <details data-testid="pi-package-capabilities"><summary>扩展能力</summary>{view?.packages?.map(item=><div key={item.name} data-testid={'pi-package-'+item.name.replace(/[^\w-]/g,'_')}><strong>{item.label} · {item.state==='active'?'已接入':'已安装，接入中'}</strong><p>{item.scope}</p><small>{item.name} {item.version}</small></div>)}</details>
+  <DisclosureCard data-testid="pi-package-capabilities" title={<>扩展能力</>}>{view?.packages?.map(item=><div key={item.name} data-testid={'pi-package-'+item.name.replace(/[^\w-]/g,'_')}><strong>{item.label} · {item.state==='active'?'已接入':'已安装，接入中'}</strong><p>{item.scope}</p><small>{item.name} {item.version}</small></div>)}</DisclosureCard>
  </SettingsStack></SettingsSurface>;
 }

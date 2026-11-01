@@ -1,0 +1,41 @@
+/* Materials-only application layout. Native HeroUI roots and vendor anatomy are untouched. */
+.edu-materials { max-width: 1480px; margin: 0 auto; color: var(--foreground); font-size: 15px; line-height: 1.6; min-width: 0; }
+.edu-materials .teacher-library-heading { margin-bottom: 20px; gap: 16px; flex-wrap: wrap; }
+.edu-materials .teacher-library-heading h1 { font-size: 26px; line-height: 1.3; margin: 0 0 6px; font-weight: 650; }
+.edu-materials .teacher-library-heading p, .edu-materials .teacher-library-caption,
+.edu-materials .teacher-library-count { color: var(--muted); }
+.edu-materials .teacher-library-toolbar { flex-wrap: wrap; gap: 8px; }
+.edu-material-modes, .edu-material-sections { display: flex; flex-wrap: wrap; gap: 6px; margin: 16px 0; }
+.edu-materials .teacher-library-grid { display: grid; grid-template-columns: minmax(300px, .85fr) minmax(0, 1.4fr); gap: 24px; align-items: start; }
+.edu-materials .teacher-library-grid[data-mode='text'] { grid-template-columns: minmax(0,1fr); }
+.edu-materials .teacher-library-directory { min-width: 0; }
+.edu-materials .teacher-library-detail { min-width: 0; padding: 20px; background: var(--surface); border: 1px solid var(--separator); border-radius: 14px; }
+.edu-materials .teacher-library-detail > header { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; margin-bottom: 16px; }
+.edu-materials .teacher-library-detail h2 { font-size: 20px; line-height: 1.4; margin: 0 0 6px; overflow-wrap: anywhere; }
+.edu-materials .teacher-library-detail header p { color: var(--muted); font-size: 13px; margin: 0; overflow-wrap: anywhere; }
+.edu-materials .teacher-library-caption { font-size: 13px; margin: 12px 0; }
+.edu-materials .teacher-library-error { color: var(--danger); }
+.edu-materials .teacher-library-notice { padding: 12px 0; }
+.edu-materials .teacher-library-count { margin: 16px 0 12px; font-size: 13px; }
+.edu-material-filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.edu-material-filters label { display: grid; gap: 5px; color: var(--muted); font-size: 13px; }
+.edu-material-filters select { font: inherit; color: var(--foreground); background: var(--surface); border: 1px solid var(--separator); border-radius: 8px; padding: 7px 10px; min-width: 145px; }
+.edu-material-filters select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.edu-material-queue { margin: 10px 0; }
+.edu-material-overview dl { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin: 20px 0; }
+.edu-material-overview dt { color: var(--muted); font-size: 13px; }
+.edu-material-overview dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+.edu-material-overview > p { color: var(--muted); font-size: 14px; }
+.edu-materials .teacher-library-excerpt { padding: 12px 0; overflow-wrap: anywhere; }
+.edu-materials .teacher-library-excerpt h3 { font-size: 14px; font-weight: 500; color: var(--muted); }
+.edu-materials .teacher-library-excerpt[data-source] { border-left: 2px solid var(--accent); padding-left: 12px; }
+.edu-materials .teacher-library-pagination { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-top: 16px; }
+.edu-materials .edu-resource-table { min-width: 0; overflow-wrap: anywhere; }
+.edu-materials .edu-resource-table table { width: 100%; table-layout: fixed; }
+.edu-materials .edu-resource-table th:first-child { width: 60%; }
+.edu-materials .edu-resource-table th:nth-child(2) { width: 15%; }
+.edu-materials .edu-resource-button { white-space: normal; min-width: 0; }
+.edu-materials .edu-resource-button strong, .edu-materials .edu-resource-button small { overflow-wrap: anywhere; }
+.edu-materials .material-batches { max-height: none; overflow: visible; }
+@media (max-width: 1100px) { .edu-materials .teacher-library-grid { grid-template-columns: minmax(260px,.8fr) minmax(0,1.2fr); gap: 16px; } .edu-materials .teacher-library-detail { padding: 16px; } }
+@media (max-width: 800px) { .edu-materials .teacher-library-grid { grid-template-columns: minmax(0,1fr); } .edu-material-overview dl { grid-template-columns: minmax(0,1fr); } }
