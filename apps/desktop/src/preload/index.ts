@@ -1,4 +1,8 @@
 import type {DeliveryCheckInput,DeliveryCheckResult,DeliveryCheckReport,DeliveryVisualResult} from '../shared/xiaozhi-delivery-checks';
+import type {
+  PaperBasketApi, PaperBasketCandidateInput, PaperBasketCreateInput, PaperBasketListInput,
+  PaperBasketMutationInput, PaperBasketReadInput, PaperBasketSnapshotInput,
+} from '../shared/paper-basket';
 import type {ManagedToolView,ManagedToolResult,ManagedToolInput,ManagedToolVersionInput} from '../shared/managed-tools';
 import type {ScienceExportInput,ScienceExportResult} from '../shared/science-export';
 import type {NativeQuestionImageQuery,NativeQuestionImage,NativeQuestionOriginQuery} from '../shared/native-question-image';
@@ -288,6 +292,12 @@ const api = {
   reviewQuestionCollection:(input:QuestionCollectionInput)=>ipcRenderer.invoke('xiaozhi:question-collection-review',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   decideQuestionCollection:(input:QuestionCollectionDecision)=>ipcRenderer.invoke('xiaozhi:question-collection-decide',input) as Promise<QuestionCollectionResult<QuestionCollectionView>>,
   reviewXiaozhiQuestions:(input:QuestionReviewInput)=>ipcRenderer.invoke('xiaozhi:question-review',input) as Promise<QuestionReviewResult<QuestionReviewView>>,
+  listPaperBaskets: (input: PaperBasketListInput) => ipcRenderer.invoke('education:paper-basket-list', input) as ReturnType<PaperBasketApi['listPaperBaskets']>,
+  readPaperBasket: (input: PaperBasketReadInput) => ipcRenderer.invoke('education:paper-basket-read', input) as ReturnType<PaperBasketApi['readPaperBasket']>,
+  readPaperBasketCandidate: (input: PaperBasketCandidateInput) => ipcRenderer.invoke('education:paper-basket-candidate', input) as ReturnType<PaperBasketApi['readPaperBasketCandidate']>,
+  createPaperBasket: (input: PaperBasketCreateInput) => ipcRenderer.invoke('education:paper-basket-create', input) as ReturnType<PaperBasketApi['createPaperBasket']>,
+  mutatePaperBasket: (input: PaperBasketMutationInput) => ipcRenderer.invoke('education:paper-basket-mutate', input) as ReturnType<PaperBasketApi['mutatePaperBasket']>,
+  createPaperFromBasket: (input: PaperBasketSnapshotInput) => ipcRenderer.invoke('education:paper-basket-snapshot', input) as ReturnType<PaperBasketApi['createPaperFromBasket']>,
   listPaperGenerationContexts:(input:PaperGenerationQuery)=>ipcRenderer.invoke('education:paper-generation-contexts',input) as Promise<PaperResult<PaperGenerationContext[]>>,
   listPapers:()=>ipcRenderer.invoke('education:paper-list') as Promise<PaperResult<PaperSummary[]>>,
   comparePapers:(input:PaperCompareInput)=>ipcRenderer.invoke('education:paper-compare',input) as Promise<PaperResult<PaperCompareView>>,

@@ -4,10 +4,13 @@ import { ArrowLeft, ArrowRight, PanelLeft } from 'lucide-react';
 import type { DesktopChromeState, DesktopCommand, DesktopMenu } from '../../../shared/desktop-chrome';
 import '../../ui-system/chrome.css';
 
-type Target={view:string;sessionId?:string;draft?:string};
+type Target={view:string;sessionId?:string;draft?:string;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
+const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId === b.sessionId &&
+  (a.view !== 'paper' || ((a.paper?.mode || 'basket') === (b.paper?.mode || 'basket') &&
+    a.paper?.basketId === b.paper?.basketId && a.paper?.stage === b.paper?.stage));
 type Handler=(command:DesktopCommand)=>boolean;
 type NavigationGuard=()=>string|undefined;
-type Navigation={target:Target;canBack:boolean;canForward:boolean;navigate:(target:Target)=>boolean;consumeDraft:(sessionId:string)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;registerGuard:(guard:NavigationGuard)=>()=>void;flush:()=>void};
+type Navigation={target:Target;canBack:boolean;canForward:boolean;navigate:(target:Target,options?:{replace?:boolean})=>boolean;consumeDraft:(sessionId:string)=>void;reject:(sessionId:string)=>void;register:(handler:Handler,priority:number)=>()=>void;registerGuard:(guard:NavigationGuard)=>()=>void;flush:()=>void};
 const empty:Navigation={target:{view:'ai'},canBack:false,canForward:false,navigate:()=>true,consumeDraft:()=>{},reject:()=>{},register:()=>()=>{},registerGuard:()=>()=>{},flush:()=>{}};
 const NavigationContext=createContext<Navigation>(empty);
 export const useDesktopNavigation=()=>useContext(NavigationContext);
@@ -41,11 +44,12 @@ export function DesktopFrame({children}:{children:ReactNode}) {
   },[allowNavigation]);
   const flush=useCallback(()=>{pending.current=pending.current.filter(command=>!deliver(command));},[deliver]);
   const register=useCallback((handler:Handler,priority:number)=>{const id=Symbol();handlers.current.set(id,{handler,priority});return ()=>{handlers.current.delete(id);};},[]);
-  const navigate=useCallback((target:Target)=>{
+  const navigate=useCallback((target:Target,options?:{replace?:boolean})=>{
     const active=historyRef.current.entries[historyRef.current.index];
-    if((active.view!==target.view||active.sessionId!==target.sessionId||target.draft!==undefined)&&!allowNavigation())return false;
+    if((!sameTarget(active,target)||target.draft!==undefined)&&!allowNavigation())return false;
     setHistory(old=>{
-    const current=old.entries[old.index];if(current.view===target.view&&current.sessionId===target.sessionId){
+    if(options?.replace){const entries=[...old.entries];entries[old.index]=target;return {...old,entries};}
+    const current=old.entries[old.index];if(sameTarget(current,target)){
       if(target.draft===undefined)return old;
       // Same-session actions may prepare a new request without another history entry.
       const entries=[...old.entries];entries[old.index]={...current,draft:target.draft};return {...old,entries};

@@ -590,7 +590,7 @@ try {
   assert.match(validateUsabilityReview({ ...parsedQualityRows[0], teacherScore: 6 }), /1 到 5/);
 
   const {PaperReviewPanel}=await server.ssrLoadModule('/src/renderer/components/PaperReviewPanel.tsx');
-  const {PaperBlueprintWorkspace}=await server.ssrLoadModule('/src/renderer/components/PaperBlueprintWorkspace.tsx');
+  const {PaperAutomaticBlueprintWorkspace:PaperBlueprintWorkspace}=await server.ssrLoadModule('/src/renderer/components/PaperBlueprintWorkspace.tsx');
   const paperQuestion={id:'question_00000000-0000-0000-0000-000000000001',subject:'数学',grade:'初二',knowledgePoint:'勾股',questionType:'计算',difficulty:'medium',stem:'<script>求3+2</script>',answer:'5',analysis:'加法计算',sourceKind:'local_bank',sourceTitle:'教师题库',tags:[],createdAt:'2026-10-09',updatedAt:'2026-10-09'};
   const paperView={id:'xipaper_00000000-0000-0000-0000-000000000001',sessionId:'aisession_00000000-0000-0000-0000-000000000001',runId:'',callId:'',requestId:'00000000-0000-0000-0000-000000000001',revision:1,title:'数学卷',state:'pending',count:1,totalPoints:100,complete:true,answerVerified:false,sourceCurrent:true,blueprint:{title:'数学卷',subject:'数学',grade:'初二',durationMinutes:90,totalPoints:100,mode:'source_only',sections:[{id:'one',label:'计算',questionType:'计算',count:1,points:100}]},selection:{items:[{sectionId:'one',number:1,points:100,question:paperQuestion,source:{schemaVersion:'xiaozhi.education.question-context.v1',questionId:paperQuestion.id,version:'a'.repeat(64)}}],shortages:[],scanned:1,scanComplete:false,excluded:{unsupported:0,missing_answer:0,source_unavailable:0},duplicateRecords:0}};
   const paperMarkup=v=>renderToStaticMarkup(React.createElement(PaperReviewPanel,{view:v,onChanged:()=>{}}));

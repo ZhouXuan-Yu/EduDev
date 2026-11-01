@@ -36,7 +36,7 @@ try{
  const load=path=>server.ssrLoadModule('/src/'+path);
  const {defaultPaperBlueprint}=await load('shared/paper-blueprint.ts');
  const {PaperReviewPanel}=await load('renderer/components/PaperReviewPanel.tsx');
- const {PaperBlueprintWorkspace}=await load('renderer/components/PaperBlueprintWorkspace.tsx');
+ const {PaperAutomaticBlueprintWorkspace:PaperBlueprintWorkspace}=await load('renderer/components/PaperBlueprintWorkspace.tsx');
  const {DesktopFrame,useDesktopNavigation,useDesktopCommands,useDesktopNavigationGuard}=await load('renderer/components/desktop/DesktopFrame.tsx');
  const {PAPER_UI_DRAFT_KEY,validPaperUiDraft,readPaperUiDraft}=await load('renderer/components/paper-ui/paper-draft-storage.ts');
  const {QuestionWebAnswerEvidence}=await load('renderer/components/QuestionWebAnswerEvidence.tsx');

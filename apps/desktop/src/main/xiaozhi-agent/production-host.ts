@@ -43,6 +43,7 @@ import {validOriginalInput,type OriginalQuestionDecision} from '../../shared/ori
 import fs from 'node:fs';
 import {validVersionedPlan,validPlanHistoryInput,type PlanHistoryResult} from '../../shared/xiaozhi-plan';
 import {createPaperCoordinator} from '../education/paper-coordinator';
+import {createPaperBasketApi} from '../education/paper-basket-api';
 import {assertPaperOffice,createPaperExportTool} from '../education/paper-export';
 import {isPaperOfficeDraft} from '../../shared/xiaozhi-office-draft';
 import {resolvePaperOfficeImages} from '../education/paper-office-images';
@@ -931,6 +932,12 @@ export function createXiaozhiProductionHost(options: { managedTools?:ReturnType<
     }
   }
   const host = {
+    ...createPaperBasketApi(store.paperBaskets, sessionId => {
+      const owner = active.get(sessionId);
+      const generation = learningDecisionGeneration.get(sessionId) || 0;
+      return () => !owner && !closing && !conversationStarting(sessionId) && !active.has(sessionId)
+        && generation === (learningDecisionGeneration.get(sessionId) || 0);
+    }),
     deliveryChecks:fileChecks,
     listPapers:paperReviews.list,
     comparePapers:(input:import('../../shared/paper-blueprint').PaperCompareInput)=>store.papers.compare(input),
