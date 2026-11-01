@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 本轮一次综合回归exit1：electron-smoke.mjs:1460，analytics导航后ai-observability-workspace保持隐藏，原因待定位，未记207通过。该进程开始后out在整合时重建，不作为单一最终SHA的综合验收；后续须固定测试构建。原始日志/截图已归档，恢复专项与最终冷启证据分别保留。
+
+2026-11-01 C03恢复专项：源码8、最终build/type、240组件、正式UI首3后定位失败与原副本剩余4通过、整合冷启4通过分别记录，不合成为一次全绿旅程。双尺寸1366×768/1920×1080 DPR1.5；复制/激活/实际HTML交互/PPT文字备注/历史/冷启/返回原目录已核；0付费/模型重放/renderer错误。完整FX07 A/B及全领域、旧格式恢复、真实磁盘满/原生自动relaunch、D日常安装仍待，252AT未提前标已实现。原失败保留，详docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
+
 2026-11-01 E06/E08检查入口：正式Pi合成SSE→真实HTML保存/修改→Teaching Files原检查→历史原结果且不能认证新版→恢复新身份不继承→外改/删除失效→冷启，共11项通过。最终主进程64清理后同夹具再冷读3项；实测1366×768/1920×1080、DPR1.5，无文件重写/模型重放/renderer错误。源码c3f7416，240组件/build通过，完整FX/AT待集中，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。
 
 2026-11-01 E08整包入口：原正式composer→HTML保存/PPT真实目标冲突→教学文件整包tab显示1/2及原conflict→打开实际HTML→续做新确认→8页PPT/教师备注、HTML hash/mtime不变→双原生窗口尺寸及冷启0模型。源码a73b389，SQLite8、Electron10/0 renderer错误，240组件/build通过。身份幂等/后继跳转覆盖；完整FX10/AT仍集中，详bundleCatalogSlice。

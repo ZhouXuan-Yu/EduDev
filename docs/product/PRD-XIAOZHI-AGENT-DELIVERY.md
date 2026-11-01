@@ -802,9 +802,9 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C03-02 | 原件与派生 | 原件哈希、确认题与正式产物保持；派生状态记录版本；不静默混用新旧索引 | [AT-C03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-02) | 待验收 |
 | REQ-C03-03 | 配置并发 | 一个有效提交，另一个冲突刷新；不丢教师修改或出现最后写入无提示 | [AT-C03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-03) | 待验收 |
 | REQ-C03-04 | 文件账本一致 | 原子安装或明确uncertain；重启只读核验后结算；无正式记录指向不存在文件的伪成功 | [AT-C03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-04) | 待验收 |
-| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) | 待验收 |
-| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) | 待验收 |
-| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) | 待验收 |
+| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
+| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
+| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
 | REQ-C03-08 | 跨会话隔离 | 身份与版本不串，引用不能跨授权会话复活；文件路径归属正确 | [AT-C03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-08) | 待验收 |
 | REQ-C03-09 | 异常目录链接 | 拒绝越界；不跟随到其他目录读写或递归清理；教师数据不变 | [AT-C03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-09) | 待验收 |
 | REQ-C03-10 | 回退验证 | 按发布兼容表读或明确阻止写入；无静默清空；回退步骤与备份路径可执行 | [AT-C03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-10) | 待验收 |

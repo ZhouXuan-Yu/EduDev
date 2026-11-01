@@ -1,5 +1,7 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-01 FX07/FX10工程补充：沿原合成Pi浮力HTML/PPT做真实设置备份（16文件）→新实例→激活→实际交互/PPT/版本→冷启→返回。相同副本续测，不为定位错误重建。独立168事件、4 native绑定、1 native文件和2成果一致；源码夹具非空检查报告保留另测，UI检查表0不算非空。ENOSPC仅注入复制错误，DPR1.5双尺寸，不代替真实磁盘满/100%缩放/原生自动重启及完整FX07 A/B与FX10。原集合和判定不改，详docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
+
 2026-11-01 FX01/FX07/FX10补充工程夹具：html-versions-electron --checks以真实原Pi生成4N、局部5N、历史另存恢复及原本机检查验证精确版本回执；实际外改/删除保留诊断但失效，最终构建冷启3双尺寸DPR1.5、0模型重放/文件重写。原数据库9含>12旧回执定位及取消64有界；受控receipt不冒充真实检查。完整FX题目、A/B会话、备份及故障集合不变；详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。
 
 2026-11-01 来源工程补充样本：合成题源.txt三行（载荷4N）→实际Pi读→HTML/PPT整包→原行/所选历史→外部改动/删除→冷启；原SQLite10另覆盖40/41读取分页、HTML恢复与所有权，领域3仅冻结输入契约。最终报告/字节hash/双尺寸证据见AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactSourcesSlice，不替换FX05十二题、多格式原页及人工REVIEW，完整AT仍待集中。

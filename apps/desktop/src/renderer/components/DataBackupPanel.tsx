@@ -1,3 +1,4 @@
+import {BACKUP_RESTORE_SCHEMA,type PreparedBackupRestore,type BackupRestoreStatus} from '../../shared/backup-restore';
 import { CheckCircle2, HardDrive, LoaderCircle, ShieldCheck, TriangleAlert, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Button } from '@heroui/react';
@@ -7,6 +8,9 @@ export type DataBackupPanelStatus =
   | 'idle'
   | 'exporting'
   | 'verifying'
+  | 'restoring'
+  | 'restore_ready'
+  | 'restarting'
   | 'export_success'
   | 'verify_success'
   | 'verification_failed'
@@ -17,6 +21,7 @@ export type DataBackupPanelState = {
   status: DataBackupPanelStatus;
   message: string;
   exportResult?: ExportDataRootResult;
+  restoreResult?:PreparedBackupRestore;
   verificationResult?: DataBackupVerificationResult;
 };
 
@@ -37,7 +42,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
   if (state.status === 'idle') {
     return <div className="backup-feedback neutral" data-testid="data-backup-idle">选择数据目录之外的位置创建完整备份，或选择已有备份进行只读校验。</div>;
   }
-  if (state.status === 'exporting' || state.status === 'verifying') {
+  if (['exporting','verifying','restoring','restarting'].includes(state.status)) {
     return <div className="backup-feedback neutral" data-testid="data-backup-loading"><LoaderCircle className="backup-spinner" size={17} />{state.message}</div>;
   }
   if (state.status === 'cancelled') {
@@ -83,11 +88,13 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
 }
 
 export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled = false, onBusyChange }: DataBackupPanelProps) {
+  const [restoreStatus,setRestoreStatus]=useState<BackupRestoreStatus|null>(null);
+  useEffect(()=>{let current=true;void window.omniEdu?.backupRestoreStatus?.().then(value=>{if(current)setRestoreStatus(value);}).catch(()=>undefined);return()=>{current=false;};},[]);
   const [state, updateState] = useState<DataBackupPanelState>({ status: 'idle', message: '' });
   const live = useRef(true), lock = useRef(false);
   useEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
   const setState = (next: DataBackupPanelState) => { if (live.current) updateState(next); };
-  const busy = state.status === 'exporting' || state.status === 'verifying';
+  const busy = ['exporting','verifying','restoring','restarting'].includes(state.status);
   useEffect(() => { onBusyChange?.(busy); return () => onBusyChange?.(false); }, [busy, onBusyChange]);
 
   const exportBackup = async () => {
@@ -138,13 +145,36 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
     } finally { lock.current = false; }
   };
 
+  const restoreBackup=async(action:'prepare'|'activate'|'revert')=>{
+    if(disabled||lock.current)return;const prepared=state.restoreResult;lock.current=true;
+    setState({status:action==='prepare'?'restoring':'restarting',message:action==='prepare'?'正在校验备份并创建独立恢复副本…':'正在切换数据目录，应用即将重启…'});
+    try{
+      const api=window.omniEdu;if(!api?.prepareBackupRestore||!api.activateBackupRestore)throw Error('恢复接口不可用，请重新启动应用。');
+      if(action==='prepare'){
+        const result=await api.prepareBackupRestore();
+        setState(result?{status:'restore_ready',message:'独立恢复副本已准备好。使用前请切换并重启，当前数据仍在原目录。',restoreResult:result}:{status:'cancelled',message:'已取消恢复，当前数据目录未切换。'});
+      }else{
+        if(action==='activate'&&!prepared)throw Error('请先准备恢复副本');
+        const result=await api.activateBackupRestore(action==='activate'?{schemaVersion:BACKUP_RESTORE_SCHEMA,action:'activate',id:prepared!.id}:{schemaVersion:BACKUP_RESTORE_SCHEMA,action:'revert'});
+        setRestoreStatus(result);
+      }
+    }catch(error){setState({status:'error',message:error instanceof Error?error.message:'恢复未完成；当前数据未切换。'});}
+    finally{lock.current=false;}
+  };
+  const restoreControls=<div className="pi-settings-actions" data-testid="data-backup-restore-controls">
+    <Button variant="outline" isDisabled={busy||disabled||!dataRoot} onPress={()=>void restoreBackup('prepare')} data-testid="data-backup-restore">恢复备份到新目录</Button>
+    {state.restoreResult&&<div role="status" data-testid="data-backup-restore-ready"><p>{state.message}</p><p className="pi-settings-location">{state.restoreResult.dataRoot}</p><p>原目录保留；旧任务不会自动继续，旧检查需按恢复后的文件重新核对。</p>{state.restoreResult.warnings.map(w=><p key={w}>{w}</p>)}<Button variant="primary" isDisabled={busy||disabled} onPress={()=>void restoreBackup('activate')} data-testid="data-backup-restore-activate">使用恢复数据并重启</Button></div>}
+    {restoreStatus?.previousRoot&&<Button variant="outline" isDisabled={busy||disabled} onPress={()=>void restoreBackup('revert')} data-testid="data-backup-restore-revert">返回恢复前的数据并重启</Button>}
+  </div>;
+
   if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">
     <p>备份本机资料、题库、对话和默认生成文件。题意索引缓存可重建；另选工作目录中的文件需单独备份。</p>
     <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
     <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>{state.status === 'exporting' ? '正在备份…' : '创建本地备份'}</Button>
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
+    {restoreControls}
     <div aria-live="polite">
-      {state.status === 'idle' ? <p data-testid="data-backup-idle">选择资料目录之外的位置保存备份。</p>
+      {state.status === 'restore_ready' ? null : state.status === 'idle' ? <p data-testid="data-backup-idle">选择资料目录之外的位置保存备份。</p>
         : <div role={['error','verification_failed'].includes(state.status) ? 'alert' : 'status'} data-testid={`data-backup-${state.status === 'export_success' ? 'export-success' : state.status === 'verify_success' ? 'verify-success' : state.status === 'verification_failed' ? 'verify-failed' : busy ? 'loading' : state.status}`}>
           <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}{state.exportResult?.conversationOutputs&&<p data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</p>}
           {state.verificationResult && <p className="pi-settings-location" data-testid="data-backup-verify-path">{state.verificationResult.backupPath}</p>}
@@ -163,6 +193,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
           <ShieldCheck size={17} />{state.status === 'verifying' ? '校验中…' : '校验备份完整性'}
         </button>
       </div>
+      {restoreControls}
       <div aria-live="polite"><DataBackupState state={state} /></div>
       <p className="backup-boundary" data-testid="data-backup-boundary">备份保留本地资料、题库和默认生成文件；另选工作目录中的文件需单独备份。题意索引缓存可重建；生成清单后不会自动恢复、上传云端或修改源数据。</p>
     </div>
