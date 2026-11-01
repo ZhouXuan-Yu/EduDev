@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 E08：原office/text state + journal.sourceWindow → artifact-sources只读薄适配 → typed IPC/preload → chat/Teaching Files/selected history；现有源控件/文件面板精确版本锁复用，无新表/依赖/Runtime。合并主线ChatSources保留引用展开/焦点；详artifactSourcesSlice。
+
 ## 2026-11-01 整份试卷质量漏斗与共性修复
 
 新普通原页冻结page-restoration.v3：覆盖字段只取题干连续原文，不混入选项摘要或解题公式；原第二遍携带有界本地字段检查代码，不新增调用循环。只有v3的临时parser输入可剔除与实际PDF页/总页匹配的末尾独立页码，原pageText/不可变回执保持。新输入冻结并复验总页数；旧v2/无元信息/答案册保持原语义，无新表、依赖、IPC或运行时。

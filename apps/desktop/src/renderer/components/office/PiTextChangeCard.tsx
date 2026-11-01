@@ -9,6 +9,7 @@ import type { XiaozhiChangeDecision, XiaozhiChangeSummary, XiaozhiChangeReview, 
 import './pi-text-changes.css';
 import {ScienceDemoFrame} from './ScienceDemoFrame';
 import {PiOfficeCurrent,PiOfficeVersions} from './PiOfficeVersions';
+import {PiArtifactSources} from './PiArtifactSources';
 
 const labels: Record<XiaozhiChangeState, string> = { pending: '需要你的确认', approved: '已批准，等待保存', executing: '正在保存',
   applied: '已保存并核验', rejected: '已拒绝，未写入', interrupted: '确认已失效，未继续写入', uncertain: '执行中断，需要核验',
@@ -92,6 +93,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
       {draft.busy&&<span role="status">正在提交…</span>}
     </div>
     {['applied','reverted'].includes(change.state)&&change.path.toLowerCase().endsWith('.html')&&<PiOfficeVersions sessionId={sessionId} artifactId={change.id} running={running} onOpen={onOpen} onRefresh={onRefresh}/>}
+    {['applied','reverted'].includes(change.state)&&change.path.toLowerCase().endsWith('.html')&&<PiArtifactSources sessionId={sessionId} artifactId={change.id}/>}
     {draft.error&&<p role="alert" data-testid="pi-text-error">{draft.error}<Button size="sm" variant="ghost" onPress={()=>void onRefresh()}>刷新状态</Button></p>}
   </ChatTool>;
 }

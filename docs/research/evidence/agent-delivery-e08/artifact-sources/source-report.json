@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-artifact-sources-qpLuDQ",
+  "checks": [
+    "Original journal excludes failed/discovery and overlapping reads completed after producer start; only actual prior lines are projected and private fields removed",
+    "Other sessions and malformed pages cannot read this artifact or run",
+    "All actual source receipts page deterministically at 32 with exact total and end; no silent source truncation",
+    "Original saved Office draft keeps explicit file binding separate from observed reads across the mixed pagination boundary",
+    "Changed/deleted declared source has explicit state while its original version link remains intact",
+    "Legacy/no-journal content has no invented textbook citation or read history",
+    "Real HTML restore follows selected original content receipt, excluding newer reads and parent-current content",
+    "Bundle producer adapter receives original child draft identity, keeping bundle read window before bundle start",
+    "Closing, archived/unauthorized session and changed workspace deny reads without changing original artifacts",
+    "Recreated reader restores original source associations from existing ledger/journal without model or new table"
+  ],
+  "boundary": "Real original SQLite/journal/text and Office services, actual files and HTML restore; domain-specific projection checked separately without claiming FX05/teacher review."
+}

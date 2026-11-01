@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+2026-11-01 E08来源定位工程已实现（7a2d782；最终整合bfb0691）：对话/教学文件/所选历史共用原来源控件，明确绑定与生成前实际读取分开，原行/版本可开，变更/删除保留关联且不改开新版；HTML恢复沿所选内容追溯。源码真实SQLite10、领域投影契约3（非真实领域验收）、最终build/type、240组件与正式Pi全8（双尺寸DPR1.5实测/冷启）通过，0付费/冷启模型重放/renderer错误。自身主包+9976B、renderer+8944B、preload+94B；最终整合含协作者UI/课堂/KB，不称速度/P95或全面智能提升。完整FX05/人工REVIEW/原页格式矩阵及252AT仍集中验收，旧综合失败保留。下一先核E06/E07/E08和适用C的功能缺口，再集中P1、依次S/T；Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactSourcesSlice。
+
 ## 2026-11-01 整份试卷质量漏斗与共性修复
 
 实际后续入口也已核对：题本搜索显示本轮新自动稿，小智真实运行run_1b105bbd-31fd-4949-8dd6-3a53f83bee3a经两次education_search_questions及education_read_question读取同一新题ID，答案正文与SQLite一致。Pi运行摘要记录3次DeepSeek请求、0重试，首答5.43秒、整轮36.96秒；仅单样本，不是P95/高召回验收。原测试helper因主进程账本未覆盖Pi运行时而exit1，保留失败；已用配对run元数据/来源/SQLite做0额外调用readback，不冒充独立HTTP账本通过。

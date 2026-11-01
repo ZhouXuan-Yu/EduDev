@@ -37,9 +37,13 @@ export function OfficeReplySources({turn,sessionId}:{turn:OfficeProjectedTurn;se
   return <ChatSources ref={root} data-testid="reply-sources" isExpanded={expanded} onExpandedChange={setExpanded}>
     <ChatSources.Trigger>本轮读取的资料（{sources.length}）</ChatSources.Trigger>
     <ChatSources.Content><p>读取记录不代表答案已经核验正确。</p><ChatSources.List>
-      {sources.map((source,i)=><ul key={i} tabIndex={-1} id={validCitationId(source.citationId)?source.citationId:undefined}>{source.question?<QuestionSourceLink source={source}/>:source.student?<StudentSourceLink source={source}/>:source.material?<MaterialSourceLink source={source}/>:validLocalAnswerSource(source.local)?<LocalAnswerSourceLink source={source.local} title={source.title} sessionId={sessionId}/>:source.url?<WebSource source={source} sessionId={sessionId}/>:<li>{source.title}</li>}</ul>)}
+      {sources.map((source,i)=><ul key={i} tabIndex={-1} id={validCitationId(source.citationId)?source.citationId:undefined}><OfficeSourceItem source={source} sessionId={sessionId}/></ul>)}
     </ChatSources.List></ChatSources.Content>
   </ChatSources>;
 }
 import {useLayoutEffect,useRef,useState} from 'react';
 import {ChatSources} from '../../heroui-pro/components/chat-source';
+
+export function OfficeSourceItem({source,sessionId}:{source:import('../../../shared/xiaozhi-web').XiaozhiPublicSource;sessionId:string}) {
+  return source.question?<QuestionSourceLink source={source}/>:source.student?<StudentSourceLink source={source}/>:source.material?<MaterialSourceLink source={source}/>:validLocalAnswerSource(source.local)?<LocalAnswerSourceLink source={source.local} title={source.title} sessionId={sessionId}/>:source.url?<WebSource source={source} sessionId={sessionId}/>:<li>{source.title}</li>;
+}

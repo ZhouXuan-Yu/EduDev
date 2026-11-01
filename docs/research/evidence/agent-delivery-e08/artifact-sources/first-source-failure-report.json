@@ -1,0 +1,14 @@
+{
+  "ok": false,
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-artifact-sources-bFYopN",
+  "checks": [
+    "Original journal excludes failed/discovery and overlapping reads completed after producer start; only actual prior lines are projected and private fields removed",
+    "Other sessions and malformed pages cannot read this artifact or run",
+    "All actual source receipts page deterministically at 32 with exact total and end; no silent source truncation",
+    "Original saved Office draft keeps explicit file binding separate from observed reads across the mixed pagination boundary",
+    "Changed/deleted declared source has explicit state while its original version link remains intact",
+    "Legacy/no-journal content has no invented textbook citation or read history"
+  ],
+  "boundary": "Real original SQLite/journal/text and Office services, actual files and HTML restore; domain-specific projection checked separately without claiming FX05/teacher review.",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'conflict'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/artifact-sources-smoke.mjs:38:295"
+}

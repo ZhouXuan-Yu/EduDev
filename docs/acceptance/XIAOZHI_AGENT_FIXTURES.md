@@ -1,5 +1,7 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-01 来源工程补充样本：合成题源.txt三行（载荷4N）→实际Pi读→HTML/PPT整包→原行/所选历史→外部改动/删除→冷启；原SQLite10另覆盖40/41读取分页、HTML恢复与所有权，领域3仅冻结输入契约。最终报告/字节hash/双尺寸证据见AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactSourcesSlice，不替换FX05十二题、多格式原页及人工REVIEW，完整AT仍待集中。
+
 2026-10-31 E08当前版本：E08本片继续复用原隔离FX01合成三版PPT与独立HTML，教师恢复第二版为第四当前版；实际文件面板检查第三版，恢复后原报告保留但读为过期。零模型重放，原四份文件内容/mtime不变；完整FX标准不缩。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#currentVersionSlice；日常进度WORK_PROGRESS.md。
 
 2026-10-31 E08：E08本轮复用FX01合成浮力草稿与独立HTML，正式Pi保存两版PPT并恢复旧版为第三版，最终续测仍用原文件，未重新生成。既定FX/16MiB等边界不变；新增工程故障用自有临时目录模拟写后落账中断，未写教师资料；不替代完整FX09/FX10集中验收。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json；日常进度以docs/goal/WORK_PROGRESS.md为准。
