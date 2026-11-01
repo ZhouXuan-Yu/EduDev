@@ -783,8 +783,8 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
 | REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) | 部分实现；2026-11-01原输入框浏览器组合态/229、普通Enter单发、Shift+Enter、长中文草稿及冷启通过，真实系统拼音仍待；eb5d8cd；[证据](../research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice) |
 | REQ-C02-07 | 滚动与选择 | 底部正常跟随；离底/选择时不强拉；可一键回到底部；复制不夹入过程或私有字段 | [AT-C02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-07) | 部分实现；2026-11-01选区/阅读位置、上滚/原latest、流式完成转换、公开复制与原历史hash专项通过，完整FX09/REVIEW仍待集中；eb5d8cd；[证据](../research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice) |
-| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 待验收 |
-| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
+| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 部分实现；键盘待处理子项已实现，原Pi6项通过；完整FX01/交接矩阵待验，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#keyboardSlice |
+| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 部分实现；补齐键盘右栏/真实问题/文件审阅/返回入口，最终原Pi6项与240组件通过；完整菜单/档位/对话框/REVIEW待验；保留bodyLayoutSlice证据，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#keyboardSlice |
 | REQ-C02-10 | 切换与空错误态 | 不混内容、不丢草稿；空态提示下一动作；失败可恢复且无永转加载 | [AT-C02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-10) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
 
 #### WP-C03 本地真源、迁移、备份与一致性

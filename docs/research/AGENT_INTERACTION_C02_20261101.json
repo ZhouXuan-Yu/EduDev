@@ -2619,5 +2619,300 @@
       "Installer/Office/WPS and natural model answer quality"
     ],
     "rollback": "Revert only the two production file changes in eb5d8cd; do not delete or rewind SQLite/native/files/drafts or collaborators material code."
+  },
+  "keyboardSlice": {
+    "sourceCommit": "f2888688a5b4e9ae4b9b5370dcf8fbcb5180ef45",
+    "baseCommit": "b8e365165b401967337c793a4a3b762638164576",
+    "goal": "active",
+    "newlyAcceptedAT": [],
+    "productionFiles": [
+      {
+        "file": "apps/desktop/src/renderer/components/office/PiWorkspaceShell.tsx",
+        "sha256": "2236a7dbda2a92e70d1a91f4033d2ca961e2fa8d4c018ebbc7cb3c8bae5003e3"
+      },
+      {
+        "file": "apps/desktop/src/renderer/components/office/WorkbenchContextPanel.tsx",
+        "sha256": "4da7f53f98d037e6d0806531a69a5037c64e46778a7344cb19d6208f9afd27b3"
+      },
+      {
+        "file": "apps/desktop/src/renderer/components/office/workspace-notifications.ts",
+        "sha256": "0ceae83053e901a1f6380c289461572a3c385ffa973fcac2ca7fac28cb2022cf"
+      }
+    ],
+    "result": {
+      "ok": true,
+      "checks": [
+        "Keyboard opens both wide/narrow right panels, reaches tabs with Tab/arrows and Esc restores the actual trigger",
+        "Original Pi pending question stays reachable outside the process; keyboard answer reaches the native tool continuation exactly once",
+        "Pending file notice opens its actual preview and focuses review, without selecting or executing a write decision",
+        "Tab to original explicit save and Enter produce one exact owned file; SQLite remains pending before that decision",
+        "Closing the file panel returns to the saved-file notification that opened it, rather than a different header control",
+        "Reload/cold launch restore the exact two native runs, saved file and unsent draft with zero replay; restored panel preferences do not steal focus"
+      ],
+      "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-UJUTCL",
+      "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-fixed-b8e3651",
+      "buildHash": "01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b",
+      "scriptHash": "5d9d981886ae10f0f2b705e4bb9cb820e487e6452905e55ad513df0a45ed0e54",
+      "localRequestsThisFinalRun": 5,
+      "paidRequests": 0,
+      "requestsAcrossAllDiagnostics": 14,
+      "savedFileSha256": "cf044f21c732bfda17ed6394c5e4361eb564f46a95c1a54d2aed1355cc2cb127",
+      "facts": {
+        "events": "8c80bc263519493eda445615f3029cd57759186ebb77c59248b0a47669b54d82",
+        "messages": "fe336b5b85b78a30238cbc2c695f3c5ce3951f44a070e6ea3fb32b1a23736978"
+      }
+    },
+    "baseline": {
+      "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-tP4fUo",
+      "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-reading-integrated",
+      "buildHash": "0210f0f56081bfda20eceb2c1cc4bb5deb2d5d20cce8ee949580f42bbba79920",
+      "observations": [
+        {
+          "width": 1366,
+          "stage": "panel-open",
+          "focused": {
+            "testId": "pi-aside-toggle",
+            "slot": "button",
+            "text": ""
+          }
+        },
+        {
+          "width": 480,
+          "stage": "panel-open",
+          "focused": {
+            "testId": "pi-aside-toggle",
+            "slot": "button",
+            "text": ""
+          }
+        }
+      ]
+    },
+    "failures": [
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-3OzNkJ",
+        "passed": 0,
+        "error": "Error: Keyboard fixture timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:18:143)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:70:17",
+        "requests": 0
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-tP4fUo",
+        "passed": 1,
+        "error": "Error: Keyboard fixture timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:18:143)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:79:15",
+        "requests": 4
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-AC5zeT",
+        "passed": 0,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'workbench-tab-tasks'\n- 'workbench-tab-files'\n                 ^\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:66:50",
+        "requests": 0
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-1a6J0p",
+        "passed": 3,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:93:9",
+        "requests": 5
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-1a6J0p",
+        "file": "report-tail.json",
+        "passed": 1,
+        "error": "Error: Keyboard fixture timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:22:143)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:102:115",
+        "requests": 0
+      }
+    ],
+    "commands": [
+      {
+        "command": "npm.cmd run build > test-results/c02-keyboard-build-fixed.log 2>&1",
+        "exit": 0
+      },
+      {
+        "command": "npm.cmd run test:renderer-components > test-results/c02-keyboard-components-fixed.log 2>&1",
+        "exit": 0,
+        "passed": 240
+      },
+      {
+        "command": "node scripts/ui-home-state-test.mjs > test-results/c02-keyboard-home.log 2>&1",
+        "exit": 0,
+        "passed": 14,
+        "note": "before the final remounted-file-notice focus repair; 240 and formal six are on final source"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/pending-keyboard-ui.mjs test-results/c02-keyboard-fixed-b8e3651 > test-results/c02-keyboard-fixed.log 2>&1",
+        "exit": 0,
+        "passed": 6
+      },
+      {
+        "command": "npm.cmd audit --json > test-results/c02-keyboard-audit.json",
+        "exit": 1,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 8,
+          "moderate": 29,
+          "high": 8,
+          "critical": 0,
+          "total": 45
+        }
+      },
+      {
+        "command": "$env:OMNI_EDU_TEST_BUILD_ROOT=(Resolve-Path test-results/c02-keyboard-fixed-b8e3651).Path; node scripts/electron-smoke.mjs > test-results/c02-keyboard-smoke.log 2>&1",
+        "exit": 0,
+        "passed": 207,
+        "build": "01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b",
+        "note": "f288868 build, before automatic focus request expiry repair; final isolated two-case test covers that repair without repeating model flows"
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0,
+        "note": "checked before each source commit; final documentation check recorded at closeout"
+      }
+    ],
+    "performance": {
+      "before": {
+        "main": {
+          "bytes": 3527270,
+          "sha256": "45438d136d68482a11f7fe29eb42d0e1afd61a154d210cf5373837cb1d53fe46"
+        },
+        "preload": {
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "bytes": 7383041,
+          "sha256": "ddfcc1852ced27765e3078929b400e4dc1a4de55af9b57bbb13fb09f855b2a99"
+        }
+      },
+      "after": {
+        "main": {
+          "bytes": 3527270,
+          "sha256": "45438d136d68482a11f7fe29eb42d0e1afd61a154d210cf5373837cb1d53fe46"
+        },
+        "preload": {
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "bytes": 7384820,
+          "sha256": "841a8c6edb425d848cddc9a3ff7b2dadeb6ff8f879c5637b7371fb4ea39c6889"
+        }
+      },
+      "rendererBytesDelta": 1779,
+      "note": "Focus work runs only on explicit entry/close; no new token handler, observer, IPC or model call. Bundle size comparison only; no new streaming P95/latency claim."
+    },
+    "rollback": "Revert the three application focus adapters from this source commit. No data/schema, runtime, dependency or provider migration; keep files and history.",
+    "boundaries": [
+      "Actual browser keyboard in isolated formal Pi, not physical locked daily window",
+      "Original FX01/FX09, all menus/dialogs, teacher review, OS IME, physical drag and full C02 remain open",
+      "D daily runtime was last verified at 05782b4; this slice and the prior reading slice are not applied there; wait for Windows unlock",
+      "Current full accepted AT remains 3/252; continue W3 E06/E07/E08 and C before S/T",
+      "No teacher data or genuine provider credentials in archives"
+    ],
+    "automaticFocusRepair": {
+      "sourceCommit": "078ff4ced1413860ea11484af16c56a3f3cbe6dc",
+      "file": "apps/desktop/src/renderer/components/office/PiWorkspaceShell.tsx",
+      "sha256": "ee0f56ee6c667385fb65ce7080eac9856d5d15f590a64e592013adad380b3595",
+      "buildRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-automatic-f288868",
+      "buildHash": "b378465adb4ef830126a276e0d4aae47a9c6680114493322aa0f624894266c2a",
+      "baseline": {
+        "ok": false,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-ASjepi",
+        "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-fixed-b8e3651",
+        "buildHash": "01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b",
+        "scriptHash": "79b116f4e5e2628609d5c74efd3cc8eeba12123ed27dc32b93fed675631d9fd3",
+        "checks": [],
+        "errors": [],
+        "boundary": "Owned original Pi empty workspace and browser keyboard/resize only; zero model requests. Not physical desktop drag, OS DPI, daily runtime or full AT.",
+        "runtime": {
+          "paths": {
+            "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-ASjepi\\profile",
+            "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-ASjepi\\profile"
+          },
+          "modules": [
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/education-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/image-header-cjlp_vkk.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/index.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/manifest-swncwwn7.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/material-word-ducvgi0b.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/materials-nj8u7iqp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/ocr-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/office-images-cozx6ckp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/office-math-czlpbpwf.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/office-pdf-renderer-drx7hwnm.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/runtime-command-ca2wibil.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/typed-table-cic72mke.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-attachments-b1qaifrn.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-documents-de5zjvnu.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-ocr-cijofhv6.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-office-artifacts-cmjkfs3l.js"
+          ]
+        },
+        "afterRestore": {
+          "focus": "workbench-panel-close",
+          "draft": "合成草稿：改变窗口尺寸后继续输入。"
+        },
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'workbench-panel-close'\n- 'office-prompt-input'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/panel-focus-resize-ui.mjs:17:82",
+        "modelRequests": []
+      },
+      "result": {
+        "ok": true,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-HifHYZ",
+        "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-automatic-f288868",
+        "buildHash": "b378465adb4ef830126a276e0d4aae47a9c6680114493322aa0f624894266c2a",
+        "scriptHash": "79b116f4e5e2628609d5c74efd3cc8eeba12123ed27dc32b93fed675631d9fd3",
+        "checks": [
+          "Automatic narrow/wide panel restoration preserves the original focused draft and does not reuse a past manual-open request",
+          "A subsequent explicit keyboard open still enters the panel and Esc restores its trigger"
+        ],
+        "errors": [],
+        "boundary": "Owned original Pi empty workspace and browser keyboard/resize only; zero model requests. Not physical desktop drag, OS DPI, daily runtime or full AT.",
+        "runtime": {
+          "paths": {
+            "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-HifHYZ\\profile",
+            "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-HifHYZ\\profile"
+          },
+          "modules": [
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/education-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/image-header-cjlp_vkk.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/index.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/manifest-swncwwn7.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/material-word-ducvgi0b.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/materials-nj8u7iqp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/ocr-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/office-images-cozx6ckp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/office-math-czlpbpwf.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/office-pdf-renderer-drx7hwnm.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/runtime-command-ca2wibil.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/typed-table-cic72mke.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-attachments-b1qaifrn.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-documents-de5zjvnu.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-ocr-cijofhv6.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-office-artifacts-cmjkfs3l.js"
+          ]
+        },
+        "afterRestore": {
+          "focus": "office-prompt-input",
+          "draft": "合成草稿：改变窗口尺寸后继续输入。"
+        },
+        "modelRequests": []
+      },
+      "commands": [
+        {
+          "command": "npm.cmd run build > test-results/c02-keyboard-build-automatic.log 2>&1",
+          "exit": 0
+        },
+        {
+          "command": "npm.cmd run test:renderer-components > test-results/c02-keyboard-components-automatic.log 2>&1",
+          "exit": 0,
+          "passed": 240
+        },
+        {
+          "command": "node scripts/xiaozhi-agent/panel-focus-resize-ui.mjs test-results/c02-keyboard-automatic-f288868 > test-results/c02-keyboard-resize-after.log 2>&1",
+          "exit": 0,
+          "passed": 2
+        }
+      ],
+      "rendererBytes": 7385067,
+      "rendererBytesDelta": 2026,
+      "note": "Expired focus request is cleared on automatic width, visibility/session or empty-state restoration. Actual 1366→480→1366 repro and final two-case formal Pi test use no model. Earlier six-case flow and 207 remain attached to their earlier immutable build; no repeat of successful generations."
+    }
   }
 }

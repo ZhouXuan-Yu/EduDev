@@ -1,5 +1,7 @@
 # 当前验收入口
 
+2026-11-01 C02键盘待处理工程：C02-08/09子项原Pi6项及最终build/type/240组件通过；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。完整FX01/09、全部菜单/档位/对话框、教师REVIEW、IME及物理drag未完成，未增加完整“已实现”AT，累计仍3/252。D日常/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
+
 2026-11-01 C02选读/C03续写工程：5原生、9既有边界，原正式Pi前6+原会话补尾3通过（前段末尾harness失败保留），精确公开复制/SQLite/journal/hash/长草稿冷启一致；固定整合前207综合、最终整合build/type/240组件通过，0新付费。完整AT仍3/252，系统IME/REVIEW/drag未验；D重启build/type/240通过但锁屏未确认页面。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
 
 ## 2026-11-01 后台多块原题归档
