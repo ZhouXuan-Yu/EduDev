@@ -1,6 +1,7 @@
+import {createCropReview,cropReviewEnabled} from './material-ai-crop-review';
 import {MaterialCropRechecks} from './material-ai-crop-rechecks';
 import {CROP_RECHECK_TABLES} from './material-ai-crop-recheck-storage';
-import {pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENTS_PROMPT,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,pageFragmentTextPolicy,type FragmentPageSource} from '../../shared/material-ai-page-fragments';
+import {MATERIAL_CROP_REVIEW_POLICY,pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENTS_PROMPT,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,pageFragmentTextPolicy,type FragmentPageSource} from '../../shared/material-ai-page-fragments';
 import type {PageBlocks} from '../../shared/material-page-blocks';
 import {pageCropStorage} from './material-ai-page-fragments';
 import {pageRegionsPolicy,MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
@@ -192,7 +193,7 @@ export class MaterialAiRepository{
           const blocks=blockSource&&'blockTexts'in blockSource?blockSource.blocks:blockSource,blockTexts=blockSource&&'blockTexts'in blockSource?blockSource.blockTexts:undefined;
           const layout=!blocks&&regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localLayout(original.source):undefined;
           if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==input.version||layout.page!==page||layout.total!==original.totalPages))throw Error('source_changed');
-          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}});continue;
+          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:blocks?{...(blockTexts?{policy:MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,blockTexts,...(process.env.OMNI_EDU_AI_CROP_REVIEW==='0'?{}:{cropReviewPolicy:MATERIAL_CROP_REVIEW_POLICY})}:{policy:MATERIAL_PAGE_FRAGMENTS_PROMPT}),ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,blocks}:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}});continue;
         }
         if(job.status!=='complete')throw Error(input.images?'page_restoration_disabled':'source_incomplete');
         const rows=await this.host.all('SELECT c.*, (SELECT COUNT(*) FROM resource_chunks x WHERE x.resource_id=c.resource_id AND (x.chunk_index<c.chunk_index OR x.chunk_index=c.chunk_index AND x.id<c.id)) AS body_offset FROM resource_chunks c WHERE c.resource_id=? AND c.page_number=? ORDER BY c.chunk_index,c.id LIMIT 17',[resource.id,page]);
@@ -445,7 +446,7 @@ export class MaterialAiRepository{
         if(unit.pagePrompt)args={...args,pagePrompt:unit.pagePrompt};
         if(unit.bookPagePolicy)args={...args,bookPagePolicy:unit.bookPagePolicy};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
-        const beforeSend=async()=>{if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
+        const beforeSend=async()=>{if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');if(args.cropReview&&await this.runtime!.clean(JSON.stringify(args.cropReview))!==JSON.stringify(args.cropReview))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
         if(this.runtime!.complete){await beforeSend();transportStarted=true;return this.runtime!.complete(args,signal);}
         return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;}},signal);
       };
@@ -481,8 +482,10 @@ export class MaterialAiRepository{
         },()=>signal.throwIfAborted());
       }
       const cropImages=[];for(const crop of pageFragmentsPolicy(unit.pagePrompt?.policy)?[]:crops){const bytes=await new QuestionAssets(this.host.root!).read(crop.image,true,signal);cropImages.push({role:'题号'+crop.number,index:0,data:bytes.toString('base64'),mime:'image/png' as const});}
+      const cropReview=cropReviewEnabled(unit.pagePrompt)?createCropReview(safeFirst as AiPageResponse,unit.pagePrompt,unit.pageSource!,crops,imageSha):undefined;
+      if(cropReview&&await this.runtime.clean(JSON.stringify(cropReview))!==JSON.stringify(cropReview))throw Error('privacy_blocked');
       lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
-      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:safeFirst,...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
+      const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:safeFirst,...(cropReview?{cropReview}:{}),...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
       if(unit.pageSource){
         const pageFirst=parseAiPageResponse(firstRaw),pageFinal=parseAiPageResponse(finalRaw);
         if(!image||await this.runtime.clean(pageFinal.pageText)!==pageFinal.pageText)throw Error('privacy_blocked');

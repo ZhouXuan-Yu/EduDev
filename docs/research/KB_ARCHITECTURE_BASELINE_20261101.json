@@ -3994,5 +3994,491 @@
       "pageTextSameAcrossBothPasses": true,
       "conclusion": "Do not clear held states after OCR success; repair common source completeness, cross-page and model projection/solving gaps next."
     }
+  },
+  "cropOcrSecondPass": {
+    "date": "2026-11-02",
+    "baselineCommit": "ad55ed904d6437fab291778f4a4851083f81f161",
+    "status": "implemented_source_path_quality_not_accepted",
+    "goalComplete": false,
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+    "architecture": "新v3原页单元冻结cropReviewPolicy=local-crop-review.v1，第二遍沿原执行器发送已认证局部OCR、边缘、原块坐标/资产hash及首稿比较，绑定原页和首稿hash。只作为不可信辅助证据，发送前隐私差异阻断；每块2048B、合计24KiB，截断明确。旧单元不补字段或重解释；无新模型调用、图片、依赖、表或IPC。带分值章节标题后紧接父题号才认下一页另起节，正文/图注/续题仍保守。",
+    "naturalProvider": {
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\report.json",
+      "command": "node scripts/education/kb-page-fragments-real.mjs <owned-temp-root> <existing-whole-exam-manifest> <isolated-sealed-provider-root>",
+      "exitCode": 0,
+      "scope": "Actual teacher folder import/grant, local OCR and two-pass DeepSeek on the previously inspected complete six-page exam; no substituted provider or page-specific production rule. Not mathematical correctness, 40GB or arbitrary-corpus acceptance.",
+      "calls": 12,
+      "pages": 6,
+      "questions": 15,
+      "ready": 4,
+      "held": 11,
+      "failedUnits": 0,
+      "multiImageQuestions": 1,
+      "rendererErrors": 0,
+      "checks": [
+        "All six pages use the existing durable folder executor and frozen fragment policy",
+        "All six second requests receive source-bound actual local crop OCR without an extra model call or image",
+        "Every accepted multi-image original is readable through teacher notebook",
+        "Cold restart preserves the complete folder result and question facts"
+      ],
+      "mainBuildSha256": "a28216c137894cb6d306905127d85ee68f6c0a50d3b525d77f6d2c9cdb2a3e72",
+      "folderBatchId": "batch_26784eb3-eb6e-4c81-96ca-7a4621b38526",
+      "localOcrFeedback": [
+        {
+          "call": 2,
+          "page": 1,
+          "imageSha": "adc5222ebfc5b5283b899fb8541c2aa5c9300743d305e4229f4fb2a691778674",
+          "phase": "review",
+          "localOcr": {
+            "questions": 5,
+            "crops": 6,
+            "failed": 0,
+            "textBytes": 531,
+            "truncated": 0,
+            "firstSha": "07a333541be05f1344c959bd6d14727eb1004ea56536aaf697f2f808ac4122d8"
+          },
+          "at": "2026-11-01T14:21:25.248Z",
+          "status": 200
+        },
+        {
+          "call": 4,
+          "page": 2,
+          "imageSha": "c76d9bbe6d8b24513c4f511a70f268942f0bd46883a3426e2e26b5b31a50208d",
+          "phase": "review",
+          "localOcr": {
+            "questions": 4,
+            "crops": 19,
+            "failed": 0,
+            "textBytes": 1182,
+            "truncated": 0,
+            "firstSha": "053d929ee183d104087f227bbe7e692e934def45d7c7b339e1a5edd6be3a30bc"
+          },
+          "at": "2026-11-01T14:24:00.212Z",
+          "status": 200
+        },
+        {
+          "call": 6,
+          "page": 3,
+          "imageSha": "386726a1b2e455c640475128080208ae1bee515e8a5958ce1785f5072ad44c7a",
+          "phase": "review",
+          "localOcr": {
+            "questions": 2,
+            "crops": 7,
+            "failed": 1,
+            "textBytes": 731,
+            "truncated": 0,
+            "firstSha": "f7b7de11bc3fa36bd228a4fe38f0a38fdbed623ec1b8f980ec54ecbf6b23dff4"
+          },
+          "at": "2026-11-01T14:25:11.943Z",
+          "status": 200
+        },
+        {
+          "call": 8,
+          "page": 4,
+          "imageSha": "369662114412b2e8c166775f51daabd7339f01764b9cbf62737f5cf188916602",
+          "phase": "review",
+          "localOcr": {
+            "questions": 1,
+            "crops": 8,
+            "failed": 0,
+            "textBytes": 1293,
+            "truncated": 0,
+            "firstSha": "6a0641cfbc1edd1c35008c4ad0d4504756bd6b30ecc83fc3867ae945cc109353"
+          },
+          "at": "2026-11-01T14:26:16.457Z",
+          "status": 200
+        },
+        {
+          "call": 10,
+          "page": 5,
+          "imageSha": "b28f6e146dcc59fc76fa31bc1dfc031a46b7e75d09b415388ca59999f22cb570",
+          "phase": "review",
+          "localOcr": {
+            "questions": 2,
+            "crops": 16,
+            "failed": 0,
+            "textBytes": 1519,
+            "truncated": 0,
+            "firstSha": "a7387f76ffa6a86f99244ce13517e7f0e45783c7f648d814e667929af598f9bb"
+          },
+          "at": "2026-11-01T14:28:25.091Z",
+          "status": 200
+        },
+        {
+          "call": 12,
+          "page": 6,
+          "imageSha": "f7598e19d29686c2ea3dc416813ff09c3b53b82d2e56cf59a92159cc99cf8bc2",
+          "phase": "review",
+          "localOcr": {
+            "questions": 1,
+            "crops": 8,
+            "failed": 0,
+            "textBytes": 1306,
+            "truncated": 0,
+            "firstSha": "de5105cfed9bececd2ec1065a4eea24e3ea8c1a05194cd00387387516edb5e37"
+          },
+          "at": "2026-11-01T14:29:31.220Z",
+          "status": 200
+        }
+      ],
+      "requestReceiptBinding": {
+        "scope": "Read-only actual transport request to persisted crop OCR receipts, no model calls or writes",
+        "passed": true,
+        "requests": [
+          {
+            "call": 2,
+            "page": 1,
+            "crops": 6,
+            "textBytes": 531,
+            "failed": 0,
+            "unavailable": 4
+          },
+          {
+            "call": 4,
+            "page": 2,
+            "crops": 19,
+            "textBytes": 1182,
+            "failed": 0,
+            "unavailable": 1
+          },
+          {
+            "call": 6,
+            "page": 3,
+            "crops": 7,
+            "textBytes": 731,
+            "failed": 1,
+            "unavailable": 0
+          },
+          {
+            "call": 8,
+            "page": 4,
+            "crops": 8,
+            "textBytes": 1293,
+            "failed": 0,
+            "unavailable": 0
+          },
+          {
+            "call": 10,
+            "page": 5,
+            "crops": 16,
+            "textBytes": 1519,
+            "failed": 0,
+            "unavailable": 0
+          },
+          {
+            "call": 12,
+            "page": 6,
+            "crops": 8,
+            "textBytes": 1306,
+            "failed": 0,
+            "unavailable": 0
+          }
+        ],
+        "crops": 64,
+        "textBytes": 6562,
+        "failed": 1,
+        "unavailable": 5
+      },
+      "qualityAccepted": false,
+      "qualityImprovement": false,
+      "acceptedNumbers": [
+        "1",
+        "2",
+        "3",
+        "5"
+      ],
+      "coldRestartExtraCalls": 0
+    },
+    "localReplay": {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\source-boundary-replay.json",
+      "exitCode": 0,
+      "scope": "Read-only old receipts under chapter boundary logic. No model call or DB write. Not current provider acceptance.",
+      "readyBefore": 4,
+      "readyAfter": 5,
+      "solePromotedNumber": "5"
+    },
+    "checks": [
+      {
+        "command": "npm run build",
+        "exitCode": 0,
+        "includes": "tsc --noEmit",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-build.log"
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "exitCode": 0,
+        "passed": 240,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-components.log"
+      },
+      {
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+        "exitCode": 0,
+        "passed": 88,
+        "controlled": true,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-boundaries.log"
+      },
+      {
+        "command": "node <private-temp>/kb-crop-review-request-binding.mjs",
+        "exitCode": 0,
+        "modelCalls": 0,
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-receipt-binding.json"
+      }
+    ],
+    "bookDraftRace": {
+      "failureLog": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-smoke.log",
+      "failureScreenshot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-smoke-failure.png",
+      "failureExitCode": 1,
+      "originalAssertionPreserved": true,
+      "cause": "Teacher can edit after create row exists while async detail readback is still pending; late detail replaces draft.",
+      "repair": "Disable existing information inputs/actions during existing loading/saving state; aria-busy. No layout, IPC or DB change.",
+      "scope": "Post-create/read/save information form only; global manual navigation/unsaved draft behavior is not accepted.",
+      "verification": "pending actual final desktop regression"
+    },
+    "performance": {
+      "baseline": {
+        "mainBytes": 3554155,
+        "preloadBytes": 36248,
+        "rendererBytes": 7389319
+      },
+      "fixedBuild": [
+        {
+          "path": "apps/desktop/out/main/index.js",
+          "bytes": 3562814,
+          "sha256": "a28216c137894cb6d306905127d85ee68f6c0a50d3b525d77f6d2c9cdb2a3e72"
+        },
+        {
+          "path": "apps/desktop/out/preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        {
+          "path": "apps/desktop/out/renderer/assets/index-53P-4WtU.js",
+          "bytes": 7389489,
+          "sha256": "068f3894e6c5b3696d598d4174aa80b25aea2fccc224a362827818138bf3f929"
+        }
+      ],
+      "mainDeltaBytes": 8659,
+      "preloadDeltaBytes": 0,
+      "rendererDeltaBytes": 170,
+      "newModelCallsPerPage": 0,
+      "newImagesPerPage": 0,
+      "ocrReprocessedForReview": 0,
+      "textBoundsBytes": {
+        "perCrop": 2048,
+        "allCrops": 24576
+      },
+      "latencyOrThroughputImprovementClaimed": false,
+      "unresolvedPerOcrRuntimeIntegrity": {
+        "files": 646,
+        "bytes": 279039929
+      }
+    },
+    "audit": {
+      "command": "npm audit --json",
+      "exitCode": 1,
+      "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-audit.json",
+      "existingVulnerabilities": {
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0
+      },
+      "newDependencies": false
+    },
+    "rollback": "Stop new policy creation with OMNI_EDU_AI_CROP_REVIEW=0; preserve readers, evidence, originals and teacher changes. Do not replay old paid units or delete data. Book guard may be reverted independently.",
+    "unresolved": "完整Goal仍active。下一优先解决题面/图义与原图的完整对应、双遍答案稳定性和跨页拼接，再贯通已知答案/联网补答、Pi整卷与40GB召回/P95、按需下载和最终安装。原OCR间歇parse_failed及每次646文件279039929B认证成本未关闭。D日常工作树、运行窗口和安装未改。回退用OMNI_EDU_AI_CROP_REVIEW=0停止新策略创建，保留新读适配及原件/回执/资产，不重放旧付费调用。",
+    "integration": {
+      "status": "pending",
+      "dailyRuntimeModified": false,
+      "installerModified": false
+    },
+    "evidenceManifest": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-type.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-boundaries.log",
+        "bytes": 9910,
+        "sha256": "9852bcc30cf23d50bbff97c84b5abe0b431df51de5ba0c00054c39b903a6b540"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-boundaries2.log",
+        "bytes": 10769,
+        "sha256": "7a71800cde5cc47eb70f9ae47ed266c71a0063e0ed74e2ec81a1a429e34bb3ff"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-build.log",
+        "bytes": 40559,
+        "sha256": "fba47dd2ad0d0d975ee1dee574761a0bb31b36169e2c4a0871e07bf2a1506207"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-components.log",
+        "bytes": 496,
+        "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-boundaries.log",
+        "bytes": 10769,
+        "sha256": "e96c88ba154eefb14b8dc97564ff8d03f2a56a6081cb3571a8cadcfb2eaf27e3"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-natural.log",
+        "bytes": 2989,
+        "sha256": "47cd09909361254ae770066ecc6cefa4a63be530bbd6450134ace0d9fde238b6"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-smoke.log",
+        "bytes": 604,
+        "sha256": "51dedbf9858c8e43ff9a4a9e95f997dffa419584216555c2507ec1a5865beae1"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-smoke-failure.png",
+        "bytes": 62654,
+        "sha256": "c0b8388334db4910d7f6c3daa77269d3633ccb5a37399f7f009d4bf325d147be"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-audit.json",
+        "bytes": 59446,
+        "sha256": "4c17b5a8525ae2d8a18af9c405c7c6f5edd7841815993b200ab9dbe31162c5ab"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\report.json",
+        "bytes": 321528,
+        "sha256": "82ba6092c385dd65bc4e80c3a4a2e8cb1c880ab8f0916a356b66810fb381195e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-receipt-binding.json",
+        "bytes": 1011,
+        "sha256": "b11a01a9ea79c848f9de638fd2ae49d585acc02a429a2382601b0a50a1e4fa3b"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-1.json",
+        "bytes": 1711805,
+        "sha256": "330395c5d7e203b6ed9ee0d46944fcf4fe0fb91ba79519c919f47e202e1966c9"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-10.json",
+        "bytes": 1290820,
+        "sha256": "68e914d7711ffd415e8381c68d08cdde5ed1f5f27ab16dcb946a640f37b5cf94"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-11.json",
+        "bytes": 1129849,
+        "sha256": "4d8947c6548f34d26ec96cba9c7f46f277acf81b92c9b38b0a8ccb04c28b28a9"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-12.json",
+        "bytes": 1140676,
+        "sha256": "c3fc22399553840c4f8ecbbad83e7145c7896610f7619f45aa20e4f6c2960523"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-2.json",
+        "bytes": 1730944,
+        "sha256": "ef61b2b949581c5df15d088df7a6d22ef3448e8e88f69120cb57add6b700af0b"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-3.json",
+        "bytes": 1705844,
+        "sha256": "45277f13683bfadbabb0f496e33013ce283f2aaf9f5faf3f12d6a651e3aafee7"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-4.json",
+        "bytes": 1726118,
+        "sha256": "81125d4678889a6505bafc11be6b13e6c094264b57ecbd7b9d4e6b6361ddceab"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-5.json",
+        "bytes": 1572529,
+        "sha256": "ef53ee1e71cdb9b76ea07487bc34f377dc3a6c8ef6bca519e1b04d3ed9639537"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-6.json",
+        "bytes": 1584965,
+        "sha256": "7ea66ee9d0c28fb8f7f5eea8358b0b3fda9e4ed086120c1d950c2ffdcb8d20e0"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-7.json",
+        "bytes": 1067427,
+        "sha256": "3e881f59dd708ade3c5dcb42891bc840f9f26c1b8180a1ea33f11b9186b17dbc"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-8.json",
+        "bytes": 1079757,
+        "sha256": "3c8ddf19831d5f9a72b0f0d7b080a948711d79d2b764b453b92d200d078c38bc"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-9.json",
+        "bytes": 1272353,
+        "sha256": "62c28f161eb1c57080a9b0de6fa4f02832f8b20bb812d62777c2a3b3d860862a"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-receipt-binding.json",
+        "bytes": 1011,
+        "sha256": "b11a01a9ea79c848f9de638fd2ae49d585acc02a429a2382601b0a50a1e4fa3b"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-1.json",
+        "bytes": 16302,
+        "sha256": "dccf8ca85bb787927bec0c822c6ada63760e55f643d6f2eb63367c4f1b5ec0b0"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-10.json",
+        "bytes": 12066,
+        "sha256": "f75b717a9b37f3152d07a5c958d258647dabeb8259c37cc0ff91b4e5e130a9ad"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-11.json",
+        "bytes": 6986,
+        "sha256": "088e2396b95c7be879b0354d5677490f0259862462a553e7e134829cde708773"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-12.json",
+        "bytes": 6987,
+        "sha256": "17b9584db3c610398e13371d03fc2deb9a04eaab4f9113a658b44f398fdb1ff6"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-2.json",
+        "bytes": 16304,
+        "sha256": "e8c2c81459272984b60ac5b7521d9f8511835cf375ea7f12e51252c0b47c17d2"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-3.json",
+        "bytes": 13103,
+        "sha256": "51d95124b6cf591a321fbbd8f105843f960597faf226473a3d75ef3c779857ad"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-4.json",
+        "bytes": 13752,
+        "sha256": "04d2b4a6a76c70d39351a0e85b5761e7412caa1b0666c8d72b5962c382c3e5c0"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-5.json",
+        "bytes": 9372,
+        "sha256": "ba1db394e76b3e4dfd885092d36c1534e4aa1307f553744ffb8587708a4ceaf9"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-6.json",
+        "bytes": 9377,
+        "sha256": "fd7b18bbfb805898c435585d2c13e6d4e8e75eda18cd095fe9f4ca18e88b22a4"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-7.json",
+        "bytes": 8481,
+        "sha256": "b3f1cac627bf7c524a28a4fc9ee7fe7a717d504e6f339288a1be66428f514142"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-8.json",
+        "bytes": 8483,
+        "sha256": "e969376a02a58019212373b80741da015f6f7f6251933f2ea871d24a8c18ea8d"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-9.json",
+        "bytes": 12157,
+        "sha256": "83e71894056fd8078f05912a0db41b187c034c44d30e8d756390c5f0ec31cf63"
+      }
+    ]
   }
 }

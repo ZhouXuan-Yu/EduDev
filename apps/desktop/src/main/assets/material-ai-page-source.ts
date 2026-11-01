@@ -35,6 +35,12 @@ export async function followingPageStatus(host:Host,source:MaterialPageSource,to
   if(following.status!=='complete'||!following.text.trim())return 'unknown';
   if(/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u.test(following.text))return 'continued';
   // Absence of a subquestion marker is not proof of separation: prose, captions and headers can continue a parent too.
-  return /^\s*(?:第\s*[0-9]{1,5}\s*题|[0-9]{1,5}\s*[.、．](?![0-9]))/u.test(following.text)?'separate':'unknown';
+  const parent=/^\s*(?:第\s*[0-9]{1,5}\s*题|[0-9]{1,5}\s*[.、．](?![0-9]))/u;
+  if(parent.test(following.text))return 'separate';
+  // A scored section heading immediately followed by a new parent starts a new section.
+  // Do not skip arbitrary prose, captions, page headers or an intervening continuation.
+  const lines=following.text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const section=/^[一二三四五六七八九十百]{1,4}(?:[、.．][ \t]*|[ \t]*)[^\r\n()（）:：?？]{1,48}[（(][1-9]\d{0,2}分[）)]$/u;
+  return section.test(lines[0]||'')&&parent.test(lines[1]||'')?'separate':'unknown';
  }catch{return 'unknown';}
 }

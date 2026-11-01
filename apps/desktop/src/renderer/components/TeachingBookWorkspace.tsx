@@ -342,16 +342,16 @@ export function TeachingBookWorkspace({ setStatus }: Props) {
         <button className="secondary-action" onClick={() => { setSelectedId(''); setDetail(null); setPreview(null); setBookDraft(emptyBookDraft); }} data-testid="teaching-book-new"><Plus size={16} />新建讲义</button>
       </section>
 
-      <section className="work-panel teaching-book-editor" data-testid="teaching-book-editor">
+      <section className="work-panel teaching-book-editor" data-testid="teaching-book-editor" aria-busy={loading || saving}>
         <div className="panel-heading"><div><h3>{detail ? '讲义信息' : '创建讲义'}</h3><p className="muted">更新使用乐观版本锁；归档后当前后端只支持只读审计。</p></div></div>
         <div className="form-grid compact-form-grid">
-          <label>标题<input value={bookDraft.title} onChange={(event) => setBookDraft({ ...bookDraft, title: event.target.value })} disabled={archived} data-testid="teaching-book-title" /></label>
-          <label>适用年级<input value={bookDraft.targetLevel} onChange={(event) => setBookDraft({ ...bookDraft, targetLevel: event.target.value })} disabled={archived} data-testid="teaching-book-target-level" /></label>
-          <label>语言<input value={bookDraft.language} onChange={(event) => setBookDraft({ ...bookDraft, language: event.target.value })} disabled={archived} data-testid="teaching-book-language" /></label>
-          {detail ? <label>状态<select value={bookDraft.status} onChange={(event) => setBookDraft({ ...bookDraft, status: event.target.value as TeachingBookStatus })} disabled={archived} data-testid="teaching-book-status">{bookStatuses.map((status) => <option key={status}>{status}</option>)}</select></label> : null}
+          <label>标题<input value={bookDraft.title} onChange={(event) => setBookDraft({ ...bookDraft, title: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-title" /></label>
+          <label>适用年级<input value={bookDraft.targetLevel} onChange={(event) => setBookDraft({ ...bookDraft, targetLevel: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-target-level" /></label>
+          <label>语言<input value={bookDraft.language} onChange={(event) => setBookDraft({ ...bookDraft, language: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-language" /></label>
+          {detail ? <label>状态<select value={bookDraft.status} onChange={(event) => setBookDraft({ ...bookDraft, status: event.target.value as TeachingBookStatus })} disabled={loading || saving || archived} data-testid="teaching-book-status">{bookStatuses.map((status) => <option key={status}>{status}</option>)}</select></label> : null}
         </div>
-        <label>说明<textarea value={bookDraft.description} onChange={(event) => setBookDraft({ ...bookDraft, description: event.target.value })} disabled={archived} data-testid="teaching-book-description" /></label>
-        <div className="toolbar-row">{detail ? <><button className="primary-action" onClick={() => void updateBook()} disabled={saving || archived} data-testid="teaching-book-save"><Save size={16} />保存信息</button><button className="secondary-action" onClick={() => void archiveBook()} disabled={saving || archived} data-testid="teaching-book-archive"><Archive size={16} />归档</button></> : <button className="primary-action" onClick={() => void createBook()} disabled={saving} data-testid="teaching-book-create"><Plus size={16} />创建讲义</button>}</div>
+        <label>说明<textarea value={bookDraft.description} onChange={(event) => setBookDraft({ ...bookDraft, description: event.target.value })} disabled={loading || saving || archived} data-testid="teaching-book-description" /></label>
+        <div className="toolbar-row">{detail ? <><button className="primary-action" onClick={() => void updateBook()} disabled={loading || saving || archived} data-testid="teaching-book-save"><Save size={16} />保存信息</button><button className="secondary-action" onClick={() => void archiveBook()} disabled={loading || saving || archived} data-testid="teaching-book-archive"><Archive size={16} />归档</button></> : <button className="primary-action" onClick={() => void createBook()} disabled={loading || saving} data-testid="teaching-book-create"><Plus size={16} />创建讲义</button>}</div>
       </section>
 
       {detail && !archived ? <>

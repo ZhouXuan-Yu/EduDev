@@ -3,6 +3,7 @@ import type {PageBox} from './material-page-preview';
 import type {PdfLayout} from './material-layout';
 import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
 
+export const MATERIAL_CROP_REVIEW_POLICY='local-crop-review.v1' as const;
 export const MATERIAL_PAGE_FRAGMENTS_PROMPT='page-fragments.v1' as const;
 export const MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT='page-fragments.v2' as const;
 export const MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT='page-fragments.v3' as const;
