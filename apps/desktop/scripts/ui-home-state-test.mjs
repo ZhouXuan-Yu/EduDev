@@ -71,14 +71,14 @@ try {
   card.scrollIntoView=()=>scrolled++;
   const trigger=document.createElement('button');trigger.setAttribute('data-slot','chat-tool-trigger');trigger.setAttribute('aria-expanded','false');
   const input=document.createElement('textarea');input.hidden=true;
-  trigger.onclick=()=>{trigger.setAttribute('aria-expanded','true');input.hidden=false;};
+  trigger.onclick=()=>{trigger.setAttribute('aria-expanded','true');if(item.kind==='question')input.hidden=false;};
   const action=document.createElement('button');action.onclick=()=>actionClicks++;
   card.append(trigger,input,action);pendingFixture.append(card);
   assert.equal(focusWorkspacePending(pendingFixture,item),true);
   await new Promise(resolve=>setTimeout(resolve,10));
-  assert.equal(document.activeElement,input);assert.equal(trigger.getAttribute('aria-expanded'),'true');
+  assert.equal(document.activeElement,item.kind==='question'?input:trigger);assert.equal(trigger.getAttribute('aria-expanded'),'true');
  }
- check('each pending type expands and focuses its own card without approving or answering',()=>{assert.equal(actionClicks,0);assert.equal(scrolled,5);});
+ check('pending questions focus their answer; other cards skip hidden editors and focus review without approving',()=>{assert.equal(actionClicks,0);assert.equal(scrolled,5);});
  check('missing or hidden-session target cannot focus another card',()=>assert.equal(focusWorkspacePending(document.createElement('div'),{kind:'copy',id:'copy',label:'确认'}),false));
  pendingFixture.remove();
  const { OfficeComposerState }=await server.ssrLoadModule('/src/renderer/components/office/OfficeComposerState.tsx');

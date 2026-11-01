@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import { Files, ListTodo, PanelRightClose } from 'lucide-react';
 import { Button } from '@heroui/react';
 import '../../ui-system/workbench-context.css';
@@ -6,14 +6,19 @@ import '../../ui-system/workbench-context.css';
 export type WorkbenchPanelMode = 'tasks' | 'files';
 
 /** Presentation only. File requests and task mutations stay in their existing owners. */
-export function WorkbenchContextPanel({ mode, onModeChange, onClose, tasks, files }: {
+export function WorkbenchContextPanel({ mode, onModeChange, onClose, tasks, files, focusRequest = 0 }: {
   mode: WorkbenchPanelMode;
   onModeChange: (mode: WorkbenchPanelMode) => void;
   onClose: () => void;
   tasks: ReactNode;
   files?: ReactNode;
+  focusRequest?: number;
 }) {
+  const close = useRef<HTMLButtonElement>(null);
   const tabs = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    if (focusRequest) close.current?.focus({ preventScroll: true });
+  }, [focusRequest]);
   const select = (value: WorkbenchPanelMode) => {
     onModeChange(value);
     requestAnimationFrame(() => tabs.current?.querySelector<HTMLButtonElement>(`[data-mode="${value}"]`)?.focus());
@@ -23,7 +28,7 @@ export function WorkbenchContextPanel({ mode, onModeChange, onClose, tasks, file
       if (event.key === 'Escape' && !event.defaultPrevented) { event.stopPropagation(); onClose(); }
     }}>
     <header className="wb-context-heading"><strong>任务与文件</strong>
-      <Button variant="ghost" isIconOnly aria-label="收起任务与文件" data-testid="workbench-panel-close" onPress={onClose}><PanelRightClose size={17} /></Button>
+      <Button ref={close} variant="ghost" isIconOnly aria-label="收起任务与文件" data-testid="workbench-panel-close" onPress={onClose}><PanelRightClose size={17} /></Button>
     </header>
     <div className="wb-context-tabs" ref={tabs} role="tablist" aria-label="任务与文件视图" onKeyDown={event => {
       if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {

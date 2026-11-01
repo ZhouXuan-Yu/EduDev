@@ -27,8 +27,32 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
   const [requestedInNarrow, setRequestedInNarrow] = useState(false);
   const open = (preferences.files || preferences.aside) && (!narrow || requestedInNarrow);
   const mode: WorkbenchPanelMode = preferences.files ? 'files' : 'tasks';
+  const panelOrigin = useRef<{ element: HTMLElement; session?: string; fileNotice: boolean } | undefined>(undefined);
+  const [panelFocus, setPanelFocus] = useState<{ session?: string; request: number }>({ request: 0 });
+  const focusScope = useRef({ sessionKey, visible });
+  focusScope.current = { sessionKey, visible };
   function panel(next: WorkbenchPanelMode | 'closed') {
-    if (next === 'closed') document.querySelector<HTMLElement>(`[data-testid="${mode === 'files' ? 'pi-files-toggle' : 'pi-aside-toggle'}"]`)?.focus();
+    if (next !== 'closed' && !open) {
+      if (document.activeElement instanceof HTMLElement) panelOrigin.current = { element: document.activeElement, session: sessionKey,
+        fileNotice: document.activeElement.getAttribute('data-testid') === 'workspace-files-available' };
+      setPanelFocus(previous => ({ session: sessionKey, request: previous.request + 1 }));
+    }
+    if (next === 'closed') {
+      const origin = panelOrigin.current;
+      panelOrigin.current = undefined;
+      setPanelFocus({ request: 0 });
+      requestAnimationFrame(() => {
+        if (focusScope.current.sessionKey !== sessionKey || !focusScope.current.visible) return;
+        // Opening files replaces this notice with the panel. Resolve its remounted
+        // entry after close, within the same visible conversation only.
+        const candidate = origin && origin.session === sessionKey && origin.fileNotice
+          ? document.querySelector<HTMLElement>('[data-testid="workspace-files-available"]') : origin?.element;
+        const element = origin && origin.session === sessionKey && candidate?.isConnected && !candidate.closest('[hidden],[inert],[aria-hidden="true"]')
+          && (candidate.checkVisibility?.({ checkVisibilityCSS: true }) ?? true) ? candidate
+          : document.querySelector<HTMLElement>(`[data-testid="${mode === 'files' ? 'pi-files-toggle' : 'pi-aside-toggle'}"]`);
+        element?.focus({ preventScroll: true });
+      });
+    }
     setRequestedInNarrow(next !== 'closed');
     setPreferences(previous => {
       const value = { ...previous, files: next === 'files', aside: next === 'tasks' };
@@ -85,7 +109,7 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
         {children}
       </div>
       {open && <ColumnResizeHandle side="right" width={panelWidth} min={300} max={680} label="调整右侧任务栏宽度" onResize={setPanelWidth} onReset={() => setPanelWidth(340)} />}
-      {open && <WorkbenchContextPanel mode={mode} onModeChange={panel} onClose={() => panel('closed')} tasks={aside} files={files?.(() => panel('closed'))} />}
+      {open && <WorkbenchContextPanel mode={mode} onModeChange={panel} onClose={() => panel('closed')} focusRequest={panelFocus.session === sessionKey ? panelFocus.request : 0} tasks={aside} files={files?.(() => panel('closed'))} />}
     </div>
     {historyOpen && <EduPanel title="对话记录" history onClose={() => setHistoryOpen(false)}><div className="edu-history-content">{sidebar}</div></EduPanel>}
   </EduShell>;
