@@ -3,7 +3,8 @@ import {materialId} from './materials';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,aiTextSignature,type AiImageResponse} from './material-ai-image';
 import type {TeacherResource} from './contracts';
 import {bookSectionKey,type BookAnswerPage} from './material-book-answer';
-import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE,validQuestionRegions,type AiQuestionRegion} from './material-ai-page-regions';
+import {pageRegionsPolicy,MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE,validQuestionRegions,type AiQuestionRegion} from './material-ai-page-regions';
+import {validLocalPageRegions,type LocalPageRegions} from './material-ai-layout-regions';
 export const MATERIAL_PAGE_SOURCE='xiaozhi.material-page-source.v1' as const;
 export const MATERIAL_IMAGE_SOURCE='xiaozhi.material-image-source.v1' as const;
 export const MATERIAL_AI_PAGE='xiaozhi.material-ai-page.v1' as const;
@@ -14,7 +15,7 @@ export type AiAnswerIssue={section:string;number:string;issues:AiIssue[]};
 export const MATERIAL_PAGE_PROMPT='page-restoration.v2' as const;
 export const MATERIAL_QUESTION_PAGE_PROMPT='page-restoration.v3' as const;
 type OcrStatus='complete'|'blank'|'failed'|'needs_review';
-export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string};
+export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string}|{policy:typeof MATERIAL_PAGE_LAYOUT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;layout:LocalPageRegions};
 export type MaterialPageSource={schemaVersion:typeof MATERIAL_PAGE_SOURCE|typeof MATERIAL_IMAGE_SOURCE;resourceId:string;version:string;page:number;generation:string;receiptSha:string};
 export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{pageText:string;pageIssues:AiIssue[]}&({schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE}|{schemaVersion:typeof MATERIAL_AI_BOOK_PAGE_RESPONSE;answerIssues:AiAnswerIssue[]}|{schemaVersion:typeof MATERIAL_PAGE_REGIONS_RESPONSE;regions:AiQuestionRegion[]});
 export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean,prompt?:AiPagePrompt){return pageRegionsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE:policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:policy===MATERIAL_BOOK_PAGE_POLICY&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
@@ -25,7 +26,8 @@ const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 export function validAiPagePrompt(v:unknown):v is AiPagePrompt{
  const old=plain(v,['policy','ocrStatus'])&&v.policy===MATERIAL_PAGE_PROMPT;
- const page=plain(v,['policy','ocrStatus','totalPages'])&&v.policy===MATERIAL_QUESTION_PAGE_PROMPT||plain(v,['policy','ocrStatus','totalPages','resourceTitle'])&&pageRegionsPolicy(v.policy)&&typeof v.resourceTitle==='string'&&v.resourceTitle.length>0&&v.resourceTitle.length<=512&&!/[\x00-\x1f]/.test(v.resourceTitle);
+ const region=(plain(v,['policy','ocrStatus','totalPages','resourceTitle'])&&(v.policy==='page-regions.v1'||v.policy===MATERIAL_PAGE_REGIONS_PROMPT)||plain(v,['policy','ocrStatus','totalPages','resourceTitle','layout'])&&v.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&validLocalPageRegions(v.layout)&&v.layout.total===v.totalPages)&&typeof v.resourceTitle==='string'&&v.resourceTitle.length>0&&v.resourceTitle.length<=512&&!/[\x00-\x1f]/.test(v.resourceTitle);
+ const page=plain(v,['policy','ocrStatus','totalPages'])&&v.policy===MATERIAL_QUESTION_PAGE_PROMPT||region;
  return (old||page&&Number.isSafeInteger(v.totalPages)&&Number(v.totalPages)>=1&&Number(v.totalPages)<=10000)&&typeof v.ocrStatus==='string'&&['complete','blank','failed','needs_review'].includes(v.ocrStatus);
 }
 export function validMaterialPageSource(v:unknown):v is MaterialPageSource{return plain(v,['schemaVersion','resourceId','version','page','generation','receiptSha'])&&(v.schemaVersion===MATERIAL_PAGE_SOURCE||v.schemaVersion===MATERIAL_IMAGE_SOURCE&&v.page===1)&&materialId(v.resourceId)&&sha(v.version)&&Number.isSafeInteger(v.page)&&Number(v.page)>=1&&Number(v.page)<=10000&&typeof v.generation==='string'&&/^[a-f0-9-]{36}$/i.test(v.generation)&&sha(v.receiptSha);}

@@ -1947,5 +1947,509 @@
       },
       "qualification": "Includes 53 upstream commits; no feature-only cost, speed, peak-memory, P95 or retrieval improvement established."
     }
+  },
+  "localLayoutRegions": {
+    "date": "2026-11-01",
+    "sourceCommit": "28669c3",
+    "integrationCommit": "3f0ddd6095a626ae65867f7e7387aa7026bac855",
+    "schemaVersion": "xiaozhi.local-layout-acceptance.v1",
+    "policy": "page-regions.v3",
+    "candidateSchema": "xiaozhi.local-page-regions.v1",
+    "goalComplete": false,
+    "cloudCalls": 0,
+    "newNaturalProviderRun": false,
+    "newAutomaticQuestionsAccepted": 0,
+    "scope": "Local coordinate proposals and exact-source binding. No full archive, mathematical quality, multi-block, cross-page or scale acceptance.",
+    "reuse": [
+      "layoutPdfFile",
+      "readMaterialLayout",
+      "MaterialLayoutCache",
+      "PDFium preview",
+      "RapidOCR crop inspector",
+      "MaterialAiRepository"
+    ],
+    "firstLayoutProbe": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\layout-iMizno",
+      "pages": [
+        {
+          "page": 1,
+          "ms": 15209,
+          "cached": false,
+          "rasterMatches": true,
+          "lines": 43
+        },
+        {
+          "page": 2,
+          "ms": 8110,
+          "cached": false,
+          "rasterMatches": true,
+          "lines": 62
+        },
+        {
+          "page": 3,
+          "ms": 7266,
+          "cached": false,
+          "rasterMatches": true,
+          "lines": 46
+        },
+        {
+          "page": 4,
+          "ms": 6830,
+          "cached": false,
+          "rasterMatches": true,
+          "lines": 47
+        },
+        {
+          "page": 5,
+          "ms": 6693,
+          "cached": false,
+          "rasterMatches": true,
+          "lines": 30
+        },
+        {
+          "page": 6,
+          "ms": 6672,
+          "cached": false,
+          "rasterMatches": true,
+          "lines": 33
+        }
+      ],
+      "success": true
+    },
+    "initialCandidateInspection": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\layout-regions-a9gkJL",
+      "success": true,
+      "regions": 13,
+      "regionsWithBoundaryInk": [
+        {
+          "page": 2,
+          "number": "7",
+          "clearEdges": [
+            true,
+            true,
+            false,
+            true
+          ]
+        },
+        {
+          "page": 2,
+          "number": "8",
+          "clearEdges": [
+            false,
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "page": 3,
+          "number": "10",
+          "clearEdges": [
+            true,
+            true,
+            false,
+            true
+          ]
+        },
+        {
+          "page": 3,
+          "number": "11",
+          "clearEdges": [
+            false,
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "critique": "Even exact OCR heading coordinates cannot isolate interleaved figure captions using one full-width rectangle. Initial inspection was geometry only; it never certified automatic archive."
+    },
+    "finalCandidateInspection": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\layout-regions-keYuM5",
+      "pages": [
+        {
+          "page": 1,
+          "cached": true,
+          "layoutMs": 337,
+          "regions": [
+            {
+              "number": "1",
+              "box": [
+                0,
+                0.23509409586588542,
+                1,
+                0.34043683369954425
+              ],
+              "sha256": "085b53c40da2a1ee40a28e571e5ec3295d32ea02e549c2795d01815b3abcfb12",
+              "width": 1696,
+              "height": 254,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 130
+            },
+            {
+              "number": "2",
+              "box": [
+                0,
+                0.34043683369954425,
+                1,
+                0.5496102396647136
+              ],
+              "sha256": "7497b78b9c1c9ae990a095ce42b8093a9308a3ca9f2b03718d08984c2e899367",
+              "width": 1696,
+              "height": 503,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 217
+            },
+            {
+              "number": "3",
+              "box": [
+                0,
+                0.5496102396647136,
+                1,
+                0.6277352396647136
+              ],
+              "sha256": "037c28eec4aef577564cc9255da8a39e10c3269a0039b9ca20473d13f8ab56e8",
+              "width": 1696,
+              "height": 188,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 85
+            },
+            {
+              "number": "4",
+              "box": [
+                0,
+                0.6277352396647136,
+                1,
+                0.7592876688639323
+              ],
+              "sha256": "7a4bc1e61abfd7cbc9f50b16ac3fa5b5d613967bfafd22ef242e7a17959f02f7",
+              "width": 1696,
+              "height": 317,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 190
+            },
+            {
+              "number": "5",
+              "box": [
+                0,
+                0.7592876688639323,
+                1,
+                0.9261223347981771
+              ],
+              "sha256": "d3d11fcf4f9c678018f2f2e0cbf4d71a7faca9560cc5a13c711a939631aa4ff1",
+              "width": 1696,
+              "height": 401,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 195
+            }
+          ]
+        },
+        {
+          "page": 2,
+          "cached": true,
+          "layoutMs": 331,
+          "regions": [
+            {
+              "number": "9",
+              "box": [
+                0,
+                0.7628159077962239,
+                1,
+                0.9165457153320312
+              ],
+              "sha256": "a2345574c4a3ef0b14ead031f9e8c9951d6c945c62041b8415d9a013ff7c41c4",
+              "width": 1696,
+              "height": 370,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 163
+            }
+          ]
+        },
+        {
+          "page": 3,
+          "cached": true,
+          "layoutMs": 195,
+          "regions": []
+        },
+        {
+          "page": 4,
+          "cached": true,
+          "layoutMs": 150,
+          "regions": [
+            {
+              "number": "12",
+              "box": [
+                0,
+                0.10656586964925131,
+                1,
+                0.9301546223958334
+              ],
+              "sha256": "15b8846ea79a87a1499d983f71db322ff1108a7720ae5b7c207417f571d6c855",
+              "width": 1696,
+              "height": 1978,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 562
+            }
+          ]
+        },
+        {
+          "page": 5,
+          "cached": true,
+          "layoutMs": 162,
+          "regions": []
+        },
+        {
+          "page": 6,
+          "cached": true,
+          "layoutMs": 203,
+          "regions": [
+            {
+              "number": "15",
+              "box": [
+                0,
+                0.12823925018310547,
+                1,
+                0.9422513834635416
+              ],
+              "sha256": "8f6c6cf2f7fb477c58037fa3b6f6d590044165cfe8b95b1d6f9e553834880259",
+              "width": 1696,
+              "height": 1955,
+              "clearEdges": [
+                true,
+                true,
+                true,
+                true
+              ],
+              "ocrCharacters": 481
+            }
+          ]
+        }
+      ],
+      "rendererErrors": [],
+      "cloudCalls": 0,
+      "buildSha256": "a6b59535a84d2937e72898a318bd0448b4d9241f970ef9c8922b7ca8ad452251",
+      "scope": "Eight proposals, not eight accepted questions. Ambiguous neighbours held; cross-page parent still requires next-page gates.",
+      "success": true,
+      "regions": 8,
+      "allCandidateEdgesClear": true,
+      "sameNativeArtifactAsDelivery": true
+    },
+    "historicalBadCropRegression": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\crop-quality-BOs1C3",
+      "success": true,
+      "checks": 6,
+      "crops": [
+        {
+          "id": "question_7299e31a-2a12-45eb-8e41-4623abb18c87",
+          "page": 1,
+          "number": "2",
+          "qualified": false,
+          "clearEdges": [
+            true,
+            false,
+            true,
+            true
+          ],
+          "sha256": "c525e14f6edd1d65e316b8a045afb4c53524fef0ed1e90d01ed9413e492fbc9e"
+        },
+        {
+          "id": "question_cbaf146c-8d5e-48e4-b5c1-bca0dbfea5aa",
+          "page": 2,
+          "number": "7",
+          "qualified": false,
+          "clearEdges": [
+            false,
+            true,
+            true,
+            true
+          ],
+          "sha256": "a397151066e0155f5d9a9d3ce0bc305587b9d9c7adc04696c9cf6d86a0dc3259"
+        },
+        {
+          "id": "question_2356f7b8-ef80-4a2b-971c-878456ab85de",
+          "page": 2,
+          "number": "8",
+          "qualified": false,
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "sha256": "713d7453103395f15f1b22b9f49576cb466dd7d3ecd49e24cd53d013d65f0059"
+        },
+        {
+          "id": "question_9c46654e-e597-4d07-9278-eb0f3944380e",
+          "page": 2,
+          "number": "9",
+          "qualified": false,
+          "clearEdges": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "sha256": "67b6c2abd398a8877557980b5acf4d0eb3c110dbb3fef04de2e4abae5f0256da"
+        }
+      ],
+      "rendererErrors": [],
+      "cloudCalls": 0,
+      "buildSha256": "a6b59535a84d2937e72898a318bd0448b4d9241f970ef9c8922b7ca8ad452251"
+    },
+    "tests": {
+      "build": {
+        "command": "npm run build",
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-layout-delivery-build.log",
+        "includesTypecheck": true
+      },
+      "components": {
+        "command": "npm run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-layout-delivery-components.log"
+      },
+      "boundaries": {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
+        "passed": 57,
+        "exit": 0,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-layout-delivery-boundaries.log",
+        "shutdownCancellation": true
+      },
+      "localCandidates": {
+        "command": "node scripts/education/kb-layout-regions-real.mjs <owned-temp-root> <retained-whole-exam-directory>",
+        "exit": 0
+      },
+      "historicalCrops": {
+        "command": "node scripts/education/kb-crop-quality-real.mjs <owned-temp-root> <retained-whole-exam-directory>",
+        "exit": 0
+      },
+      "audit": {
+        "command": "npm audit --json",
+        "exit": 1,
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "newDependencyChanges": false
+      },
+      "comprehensive": "Not rerun in this slice; previously retained failures remain unresolved."
+    },
+    "build": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3497000,
+        "sha256": "a6b59535a84d2937e72898a318bd0448b4d9241f970ef9c8922b7ca8ad452251"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 36248,
+        "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-GsVq_O3H.js",
+        "bytes": 7374774,
+        "sha256": "3b3a8d74e7a01bf19ee0638b9b82fe2aa611783eb412bc3223f113e0d037091e"
+      }
+    ],
+    "performance": {
+      "coldLayoutMs": [
+        15209,
+        8110,
+        7266,
+        6830,
+        6693,
+        6672
+      ],
+      "warmLayoutMs": [
+        337,
+        331,
+        195,
+        150,
+        162,
+        203
+      ],
+      "sample": "Single retained six-page 1548438-byte PDF; no latency percentile, high-recall or 40GB claim",
+      "versusD0d8Bytes": {
+        "main": 24791,
+        "preload": 273,
+        "renderer": 9783,
+        "incomingMainCommits": 16,
+        "featureOnly": false
+      },
+      "additionalWork": "One existing local layout OCR on a cold page. Cached PNG/layout disk usage and large-source hash cost still need scale acceptance."
+    },
+    "unresolved": [
+      "QuestionDocument multi-block original-source extraction for interleaved figures/captions",
+      "Cross-page parent assembly",
+      "Two-pass answer and analysis stability without relaxing correctness",
+      "Whole exam with new v3 and natural provider",
+      "Known-answer and browser fallback integration acceptance",
+      "40GB storage/concurrency/recovery",
+      "Retrieval recall and P95",
+      "Packaged delivery"
+    ],
+    "rollback": "Pause v3 batches and set OMNI_EDU_AI_PAGE_REGIONS=0 for new inputs. Keep v3 read adapters and immutable source/first/final/crop evidence. No destructive schema or dependency change.",
+    "previousIntegratedVerification": {
+      "integrationCommit": "63cbc06",
+      "build": [
+        {
+          "path": "apps/desktop/out/main/index.js",
+          "bytes": 3496438,
+          "sha256": "24920272ea355f8f64c57307c6d38f6f79e626374567f463b9b18eb4cfb93fe4"
+        },
+        {
+          "path": "apps/desktop/out/preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        {
+          "path": "apps/desktop/out/renderer/assets/index-BR-maNwr.js",
+          "bytes": 7368548,
+          "sha256": "0a007fd08cb0c5213e0ec18c6a4c838db84c8369a6e5c9cd04923233809b05e4"
+        }
+      ],
+      "candidateOutput": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\layout-regions-jz1WDf"
+    },
+    "sourceCommits": [
+      "28669c3",
+      "a30cba8"
+    ]
   }
 }

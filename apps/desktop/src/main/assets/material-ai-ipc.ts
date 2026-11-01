@@ -11,7 +11,11 @@ import {preparePublicModelImage} from '../xiaozhi-agent/image-host';
 import {previewMaterialPage} from './material-page-preview';
 import {renderLocalPdfPage,recognizeLocalImage} from '../xiaozhi-agent/ocr-host';
 import {LOCAL_OCR_ENGINE} from '../../shared/xiaozhi-ocr';
-import {renderPdfFilePage} from '../xiaozhi-agent/pdf-file-host';
+import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
+import {recognizeLocalPdfLayout} from '../xiaozhi-agent/ocr-host';
+import {MaterialLayoutCache,readMaterialLayout} from './material-layout';
+import {MATERIAL_LAYOUT_SCHEMA} from '../../shared/material-layout';
+import {proposeLocalPageRegions} from '../../shared/material-ai-layout-regions';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 import {validAiAction,validAiBatch,validAiSettings} from '../../shared/material-ai';
 import {validNativeQuestionImageQuery,validNativeQuestionOriginQuery} from '../../shared/native-question-image';
@@ -21,6 +25,7 @@ import {validMaterialBookPairInput} from '../../shared/material-book-pair';
 export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
   const codec={available:()=>safeStorage.isEncryptionAvailable(),seal:(key:string)=>safeStorage.encryptString(key).toString('base64'),open:(value:string)=>safeStorage.decryptString(Buffer.from(value,'base64')).toString()};
   const shared=createModelSettings({store,root:store.getDataRoot(),codec,busy:()=>false});
+  const layoutCache=new MaterialLayoutCache(()=>store.getDataRoot());
   store.materialAi.configure({
     account:async()=>{const saved=await store.xiaozhiState.modelSettings.configuration(),current=await shared.runtime();return{revision:parseInt(createHash('sha256').update(JSON.stringify([saved.revision,current.apiKey||'',current.model])).digest('hex').slice(0,12),16)+1,model:'deepseek-flash' as const,apiKey:current.apiKey||''};},
     codec:{available:()=>safeStorage.isEncryptionAvailable(),seal:key=>safeStorage.encryptString(key).toString('base64'),open:value=>safeStorage.decryptString(Buffer.from(value,'base64'))},
@@ -29,6 +34,10 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
     ocr:async(bytes,signal)=>{try{const result=await recognizeLocalImage(bytes,signal);return {text:result.text,engine:result.engine};}catch(error){if(error instanceof Error&&error.message==='empty')return{text:'',engine:LOCAL_OCR_ENGINE};if(signal.aborted)throw Error('cancelled');throw Error(error instanceof Error&&error.message==='configuration'?'ocr_unavailable':'ocr_failed');}},
     crop:(source,box,signal)=>previewMaterialPage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,box},signal,renderLocalPdfPage,renderPdfFilePage),
     inspectCrop:inspectPageCrop,
+    layout:async(source,signal)=>{
+      const result=await readMaterialLayout(store.materials,layoutCache,{schemaVersion:MATERIAL_LAYOUT_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,refresh:false},signal,recognizeLocalPdfLayout,layoutPdfFile);
+      return proposeLocalPageRegions(result.layout);
+    },
     image:async(id,version,page,signal)=>{
       const resource=await store.materials.resource(id);
       if(resource.contentHash!==version)throw new Error('source_changed');
