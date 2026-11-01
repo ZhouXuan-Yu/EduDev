@@ -1,0 +1,103 @@
+{
+  "schemaVersion": "artifact-check-readback.v1",
+  "sessionId": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+  "db": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb\\data\\app.db",
+  "receipts": [
+    {
+      "selection": "currentCheck",
+      "artifactId": "xichange_d7d183bb-be6b-4942-970f-6b3d181d8372",
+      "id": "xicheck_05eb249fedf17e154da9416a67c9672ff43ff0fed39fe78c3330f7e37cf6d9f1",
+      "conversation_id": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+      "scope": "a349f04708aa332e327077b264fcc8648910f8050edc9736eb8862b4e999f4c3",
+      "created_at": "2026-11-01T07:37:26.555Z",
+      "report_sha256": "83a99f157a88d367b73ae3f503be5744341a2376f5e8cc17164a7583c2a25926",
+      "originalReportUnchanged": true,
+      "fileHashes": [
+        {
+          "path": "浮力.html",
+          "sha256": "a2749a1a4388236c63affc394392700724aa69e32bb989b7aae1405fe62f9958"
+        }
+      ]
+    },
+    {
+      "selection": "historicalCheck",
+      "artifactId": "xichange_8cbb42c2-c836-496d-86f0-4025ad80e8ad",
+      "id": "xicheck_b016b0ebf83af135283a6f60072e7ae47d059208415bb1882dcca535206ca14a",
+      "conversation_id": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+      "scope": "b588e166e31d094d1a2339cf45fd0d867137409897cdcefe9413515efda716b1",
+      "created_at": "2026-11-01T07:37:01.261Z",
+      "report_sha256": "b009f26558c9ee5c3127b6f4d179b1ba6599163aeac5767487c7b850aad6adcc",
+      "originalReportUnchanged": true,
+      "fileHashes": [
+        {
+          "path": "浮力.html",
+          "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5"
+        }
+      ]
+    },
+    {
+      "selection": "restoredCheck",
+      "artifactId": "xichange_b5031103-119c-4de6-baed-7b1ebc64edb5",
+      "id": "xicheck_c47b70032399f081b48da6fac37870b9f912d8b77ee53315df666182b4fd6008",
+      "conversation_id": "aisession_f486d0d4-3966-4453-9239-c42ce47eec62",
+      "scope": "2f14a9d2556990284015a8f8ec568d77b502b02e7dcba9721ed3aa95c4f09abd",
+      "created_at": "2026-11-01T07:37:45.664Z",
+      "report_sha256": "034b6904073a460ecf71625295c65eecbb5ea440532f91cda3c824efc5bdc645",
+      "originalReportUnchanged": true,
+      "fileHashes": [
+        {
+          "path": "浮力-恢复版3.html",
+          "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5"
+        }
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "id": "xichange_8cbb42c2-c836-496d-86f0-4025ad80e8ad",
+      "parent_change_id": null,
+      "relative_path": "浮力.html",
+      "state": "applied",
+      "after_sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+      "saved_at": "2026-11-01T07:37:04.456Z",
+      "savedBytes": 542
+    },
+    {
+      "id": "xichange_d7d183bb-be6b-4942-970f-6b3d181d8372",
+      "parent_change_id": "xichange_8cbb42c2-c836-496d-86f0-4025ad80e8ad",
+      "relative_path": "浮力.html",
+      "state": "applied",
+      "after_sha256": "a2749a1a4388236c63affc394392700724aa69e32bb989b7aae1405fe62f9958",
+      "saved_at": "2026-11-01T07:37:15.522Z",
+      "savedBytes": 542
+    },
+    {
+      "id": "xichange_b5031103-119c-4de6-baed-7b1ebc64edb5",
+      "parent_change_id": "xichange_d7d183bb-be6b-4942-970f-6b3d181d8372",
+      "relative_path": "浮力-恢复版3.html",
+      "state": "applied",
+      "after_sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+      "saved_at": "2026-11-01T07:37:39.685Z",
+      "savedBytes": 542
+    }
+  ],
+  "files": [
+    {
+      "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb\\workspace\\浮力.html",
+      "sha256": "a2749a1a4388236c63affc394392700724aa69e32bb989b7aae1405fe62f9958",
+      "mtime": 1793518635517.4395,
+      "bytes": 542,
+      "independentSha256": "a2749a1a4388236c63affc394392700724aa69e32bb989b7aae1405fe62f9958",
+      "mtimeReadbackMs": 1793518635517.4395
+    },
+    {
+      "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb\\workspace\\浮力-恢复版3.html",
+      "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+      "mtime": 1793518670767.3176,
+      "bytes": 542,
+      "independentSha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+      "mtimeReadbackMs": 1793518670767.3179
+    }
+  ],
+  "boundary": "Older first4N snapshot is in original text ledger; same original disk path contains newer5N. Third restore contains original4N; final cold test changed neither bytes nor mtime. Original inspector packets read independently; no direct database writes."
+}

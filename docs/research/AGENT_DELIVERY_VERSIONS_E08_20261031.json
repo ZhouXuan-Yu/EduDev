@@ -1183,5 +1183,187 @@
       "Existing mastery_quiz/L2 comprehensive failures not rerun"
     ],
     "rollback": "Revert this thin catalog/optional start field; retain original SQLite/file ledgers. No migrations or data deletion."
+  },
+  "artifactChecksSlice": {
+    "date": "2026-11-01",
+    "sourceSha": "c3f7416b3846fe87991439f469002239d42923c0",
+    "baselineSha": "3c7a4665ece2bd26d24df479c79eb30a2a4e5f77",
+    "goal": "active",
+    "status": "Engineering feature implemented; REQ-E06-08/E08-01/E08-10 remain partial pending original complete stage AT",
+    "implemented": [
+      "Selected saved HTML/Office identity and exact original receipt, including retained reports older than latest12",
+      "Read-only typed artifactCheck with raw original findings and independent current applicability",
+      "Teaching Files/current chat/selected history reuse original check component; historical/changed/missing never certify new file",
+      "Current same-content file may use original local inspector; lookup and cold restart do not call a model or rewrite output",
+      "Cancelled inspection receipts obey original64 per-session retention"
+    ],
+    "tests": [
+      {
+        "command": "npm run build",
+        "exit": 0,
+        "scope": "Final build including cancellation retention; initial circular host TS7022 failure retained, explicit WorkspaceLease return annotation fixed inference"
+      },
+      {
+        "command": "npm run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "scope": "Before retention-only main helper change; final renderer fingerprint identical"
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/artifact-check-smoke.mjs",
+        "exit": 0,
+        "passed": 9,
+        "scope": "Actual original SQLite/text/Office effects and exact saved receipt lookup. Receipt packets and get-refresh projection are controlled fixtures; real inspector/refresh covered separately by formal Electron. No provider requests/full AT."
+      },
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs scripts/xiaozhi-agent/delivery-check-smoke.mjs",
+        "exit": 0,
+        "passed": 12,
+        "scope": "Original parsers/contract regression; no native Office rendering claim"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/html-versions-electron.mjs --checks",
+        "exit": 0,
+        "passed": 11,
+        "scope": "Actual formal main/preload/Pi/UI/local inspector/files/SQLite; controlled SSE, before final retention-only main change"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/artifact-check-cold-electron.mjs C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb",
+        "exit": 0,
+        "passed": 3,
+        "scope": "Final build after retention helper, actual saved fixture current/history readback, no regeneration"
+      },
+      {
+        "command": "npm audit --json",
+        "exit": 1,
+        "scope": "Existing45 vulnerabilities: high8/moderate29/low8/critical0; no dependency change"
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0
+      }
+    ],
+    "realProviderRequests": 0,
+    "coldModelReplay": 0,
+    "rendererErrors": 0,
+    "viewports": [
+      {
+        "width": 1366,
+        "height": 768,
+        "dpr": 1.5,
+        "scrollWidth": 1366
+      },
+      {
+        "width": 1920,
+        "height": 1080,
+        "dpr": 1.5,
+        "scrollWidth": 1920
+      }
+    ],
+    "buildFingerprints": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3436086,
+        "sha256": "4703604f8fc28342175dac321af2d557557ac65614af4818a8ff74b1f5c8efc8"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 35975,
+        "sha256": "33afd136f77265e4453e61e8f82b56b5987468ef0fb4d5854fbc602f9fe4e4a1"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-B063HZI-.js",
+        "bytes": 7364103,
+        "sha256": "ec99577679b2b326e220a67b2caac4496d97df05c115acea45fd714ac5a9c908"
+      }
+    ],
+    "rawLogs": [
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/build.log.gz",
+        "bytes": 1431,
+        "rawSha256": "8e4e726f13887fe745e6ed33e1f0a2cc0493da99786bd2f5a3409cf8869c5306"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/build-final.log.gz",
+        "bytes": 40557,
+        "rawSha256": "9aac1d9056e9f89eac1972a6545b5590706106584027ec72b85700536b78a373"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/build-retention.log.gz",
+        "bytes": 40559,
+        "rawSha256": "db097a511f33d362a663a3f1af94829f5f39748e116b02029b9a4fd283e147d9"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/components.log.gz",
+        "bytes": 496,
+        "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/source.log.gz",
+        "bytes": 1087,
+        "rawSha256": "23f6d6a5a5289bf2d7c8858c9a6a16d5941bc4e37b1684f4e5192874a9946ad0"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/source-final.log.gz",
+        "bytes": 1198,
+        "rawSha256": "dd41f6452ee44f752f27d63648c8eed50a91a9c790bcf8f9c7e201aba0bfcc9b"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/parser.log.gz",
+        "bytes": 3188,
+        "rawSha256": "94f9f5f1d2950216420f1e9b1c5d2b6cc819a9a768570fa88cfff94553f0e0af"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/ui.log.gz",
+        "bytes": 1549,
+        "rawSha256": "198ab0b2f338b33c5f0f09d9adac224f55f206029f6cd38e360bbe28a0fd4c29"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/cold.log.gz",
+        "bytes": 451,
+        "rawSha256": "d4cd393ff807e64017a3dafbea0210bf0991fc53ee89db6a417d4e788cd4db8a"
+      },
+      {
+        "path": "docs/research/evidence/agent-delivery-e08/artifact-checks/audit.json.gz",
+        "bytes": 59446,
+        "rawSha256": "4c17b5a8525ae2d8a18af9c405c7c6f5edd7841815993b200ab9dbe31162c5ab"
+      }
+    ],
+    "evidence": {
+      "source": "docs/research/evidence/agent-delivery-e08/artifact-checks/source.json",
+      "formalElectron": "docs/research/evidence/agent-delivery-e08/artifact-checks/electron.json",
+      "finalCold": "docs/research/evidence/agent-delivery-e08/artifact-checks/cold-final.json",
+      "independentReadback": "docs/research/evidence/agent-delivery-e08/artifact-checks/readback.json",
+      "screenshots": [
+        "docs/research/evidence/agent-delivery-e08/artifact-checks/1366.png",
+        "docs/research/evidence/agent-delivery-e08/artifact-checks/1920.png",
+        "docs/research/evidence/agent-delivery-e08/artifact-checks/checks-final-1366.png",
+        "docs/research/evidence/agent-delivery-e08/artifact-checks/checks-final-1920.png"
+      ]
+    },
+    "performance": {
+      "mainBytesDelta": 4858,
+      "preloadBytesDelta": 90,
+      "rendererBytesDelta": 3853,
+      "boundary": "Selected disclosure lazy read/hash only; no stream subscription, polling, table, dependency or runtime added. Bundle size is not latency or P95 evidence."
+    },
+    "failuresPreserved": [
+      "Initial build TS7022 host inference failed; corrected with explicit WorkspaceLease return type; both raw logs retained",
+      "Prior unrelated comprehensive mastery_quiz/L2 readback failures remain open; not rerun or reported passed"
+    ],
+    "notAccepted": [
+      "Full FX01/FX07/FX10 and252 AT",
+      "Natural model intelligence or superiority over Hana",
+      "D:/WorkProject/EduProject daily runtime and installer unchanged",
+      "Native Office/WPS/rendering/backup coverage not inferred from this selected receipt feature"
+    ],
+    "rollback": "Revert c3f7416 with its thin typed endpoint/UI adaptations; original ledgers/files and old check service remain. No migration, table or dependency removal required.",
+    "testBuildBoundary": {
+      "full11MainBytes": 3435995,
+      "full11MainSha256": "5072f637aaf79b5063a4794bf115863bd6641818f713f7a631b0df04cd386af4",
+      "final3MainBytes": 3436086,
+      "final3MainSha256": "4703604f8fc28342175dac321af2d557557ac65614af4818a8ff74b1f5c8efc8",
+      "difference": "Final cancellation retention helper adds91 main bytes; renderer/preload identical."
+    }
   }
 }

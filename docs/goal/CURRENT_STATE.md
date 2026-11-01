@@ -1,5 +1,7 @@
 # 小智 Goal 当前状态
 
+2026-11-01 E06/E08所选版本检查工程已实现（c3f7416）：教学文件、对话及所选历史按原版本/内容查原检查，保留当时明细，过期/外改/缺失不能认证当前；当前同内容可运行原本机检查，恢复新身份不继承旧回执。原SQLite9、解析12、正式Pi/检查11通过；最终含取消64上限构建及冷启3通过，240组件通过（renderer相同），0付费/冷启重放/renderer错误。主包+4858B、preload+90B、renderer+3853B，仅展开按需读取，无延迟/P95结论。完整FX01/07/10及252AT仍待集中；下一核C03备份覆盖、C02窗口/性能与C06实际运行，再集中P1→S/T。Goal active，D日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。
+
 2026-11-01 E08整包任务工程已实现（a73b389，整合9a49e4e）：教学文件可按12项分页查看整包/逐文件状态、独立打开已保存文件并绑定所选包续做，后继记录可跳转，旧父包不重复启动。原Pi成功HTML字节/mtime不变，重审保存真实8页PPT及教师备注；命令重复复用run、换包/旧父拒绝。build/type、240组件、SQLite8及正式Electron10（1366/1920、DPR1.5、冷启0重放/0错误）通过，0付费。包体相对26fcbf4：main+4418B、preload+94B、renderer+9061B；按需查询，不称P95或智能质量提升。完整FX10/252AT仍待集中，旧综合失败保留；继续E06/E07/E08与适用C功能缺口，再集中P1→S/T。Goal active，D日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#bundleCatalogSlice。
 
 2026-11-01 E08来源定位工程已实现（7a2d782；最终整合bfb0691）：对话/教学文件/所选历史共用原来源控件，明确绑定与生成前实际读取分开，原行/版本可开，变更/删除保留关联且不改开新版；HTML恢复沿所选内容追溯。源码真实SQLite10、领域投影契约3（非真实领域验收）、最终build/type、240组件与正式Pi全8（双尺寸DPR1.5实测/冷启）通过，0付费/冷启模型重放/renderer错误。自身主包+9976B、renderer+8944B、preload+94B；最终整合含协作者UI/课堂/KB，不称速度/P95或全面智能提升。完整FX05/人工REVIEW/原页格式矩阵及252AT仍集中验收，旧综合失败保留。下一先核E06/E07/E08和适用C的功能缺口，再集中P1、依次S/T；Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactSourcesSlice。

@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "checks": [
+    "Final build restores exact current receipt and marks the previously externally rewritten file honestly stale",
+    "Final build selected historical receipt remains separate from current and cannot be reinspected as that old file",
+    "Both native sizes keep original results reachable; output hashes/mtime unchanged and zero network/model replay"
+  ],
+  "errors": [],
+  "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb",
+  "boundary": "Final build read-only original saved fixture through real Teaching Files and selected history; no regeneration, no provider calls. Full FX07/252 AT not executed.",
+  "viewports": [
+    {
+      "width": 1366,
+      "height": 768,
+      "dpr": 1.5,
+      "scrollWidth": 1366
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "dpr": 1.5,
+      "scrollWidth": 1920
+    }
+  ],
+  "files": [
+    {
+      "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb\\workspace\\浮力.html",
+      "sha256": "a2749a1a4388236c63affc394392700724aa69e32bb989b7aae1405fe62f9958",
+      "mtime": 1793518635517.4395
+    },
+    {
+      "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-html-ui-X3xRbb\\workspace\\浮力-恢复版3.html",
+      "sha256": "a72aee5fd17509abbb8b040b866b4720d4973c56d55cdcc61482c397e578a5c5",
+      "mtime": 1793518670767.3176
+    }
+  ]
+}
