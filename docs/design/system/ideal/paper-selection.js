@@ -16,7 +16,7 @@
   D.all('[data-select-question]').forEach(b=>b.onclick=()=>{selected.push({...bank.find(q=>q.id===b.dataset.selectQuestion),points:5});render();});
   D.all('[data-adapt-question]').forEach(b=>b.onclick=()=>generate(bank.find(q=>q.id===b.dataset.adaptQuestion)));
   D.$('#question-create').onclick=()=>generate();
-  D.$('#question-auto').onclick=()=>D.form('默认自动选题 · 演示','<p>正式产品按当前蓝图的题型、数量、分值、难度和知识点匹配，不悄悄放宽条件。此原型仅把四道合成题加入草稿，不代表已满足真实蓝图。</p><label><input type="checkbox" name="keep" checked>保留已经手动选择的题目</label>',data=>{if(!data.get('keep'))selected=[];for(const q of bank)if(!selected.some(s=>s.id===q.id))selected.push({...q,points:5});render();},'演示自动选题'));
+  D.$('#question-auto').onclick=()=>D.form('默认自动选题 · 演示','<p>正式产品按当前蓝图的题型、数量、分值、难度和知识点匹配，不悄悄放宽条件。此原型仅把四道合成题加入草稿，不代表已满足真实蓝图。</p><label><input type="checkbox" name="keep" checked>保留已经手动选择的题目</label>',data=>{if(!data.get('keep'))selected=[];for(const q of bank)if(!selected.some(s=>s.id===q.id))selected.push({...q,points:5});render();},'演示自动选题');
   D.all('[data-question-score]').forEach(input=>input.onchange=()=>{const n=Number(input.value);if(!Number.isInteger(n)||n<1||n>100){D.toast('分值需为1至100的整数');render();return;}selected[+input.dataset.questionScore].points=n;render();});
   D.all('[data-question-remove]').forEach(b=>b.onclick=()=>{selected.splice(+b.dataset.questionRemove,1);render();});
   D.all('[data-question-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.questionUp;[selected[i-1],selected[i]]=[selected[i],selected[i-1]];render();});
