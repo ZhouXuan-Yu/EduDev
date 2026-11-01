@@ -2,11 +2,12 @@ import {Button, Input} from '@heroui/react';
 import {validPaperBlueprint, type PaperBlueprint, type PaperMode, type PaperSection} from '../../../shared/paper-blueprint';
 import {PaperSelect} from './PaperSelect';
 
-export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, onChange, onSave, onDiscard}: {
+export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, canDiscard, onChange, onSave, onDiscard}: {
   value: PaperBlueprint;
   disabled: boolean;
   dirty: boolean;
   hasBasket: boolean;
+  canDiscard?: boolean;
   onChange: (value: PaperBlueprint) => void;
   onSave: () => void;
   onDiscard: () => void;
@@ -63,9 +64,10 @@ export function PaperBasketBlueprintForm({value, disabled, dirty, hasBasket, onC
     </fieldset>
     <p>合计 {value.sections.reduce((sum, item) => sum + item.count * item.points, 0)} / {value.totalPoints} 分</p>
     {!validPaperBlueprint(value) && <p role="alert">请补齐蓝图并使各节分数之和等于总分。</p>}
-    {hasBasket && <div className="edu-paper-actions">
-      <Button className="edu-primary-action-contrast" data-testid="paper-basket-save-blueprint" isDisabled={disabled || !dirty || !validPaperBlueprint(value)} onPress={onSave}>保存蓝图</Button>
-      <Button variant="secondary" isDisabled={disabled || !dirty} onPress={onDiscard}>放弃蓝图修改</Button>
+    {(hasBasket || dirty || canDiscard) && <div className="edu-paper-actions">
+      {hasBasket && <Button className="edu-primary-action-contrast" data-testid="paper-basket-save-blueprint" isDisabled={disabled || !dirty || !validPaperBlueprint(value)} onPress={onSave}>保存蓝图</Button>}
+      <Button variant="secondary" data-testid="paper-basket-discard-blueprint"
+        isDisabled={canDiscard === undefined ? disabled || !dirty : !canDiscard} onPress={onDiscard}>放弃蓝图修改</Button>
     </div>}
   </section>;
 }

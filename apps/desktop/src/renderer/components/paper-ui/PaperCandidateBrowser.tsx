@@ -5,7 +5,7 @@ import {PAPER_BASKET_SCHEMA, type PaperBasketCandidate, type PaperBasketOperatio
 import {EmptyState} from '../../heroui-pro/components/empty-state';
 import {PaperQuestionContent} from './PaperQuestionContent';
 import {PaperSelect} from './PaperSelect';
-import {basketErrors, basketReasons, BASKET_PAGE_SIZE} from './paper-basket-ui';
+import {basketErrors, basketReasons, BASKET_PAGE_SIZE, observeCandidateScroll} from './paper-basket-ui';
 
 type CandidateRow = {id: string; candidate?: PaperBasketCandidate; error?: string};
 
@@ -65,8 +65,11 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
   }, [basket.id, basket.sessionId, blueprintKey, filters, ui.offset, refresh]);
 
   useLayoutEffect(() => {
-    if (!loading && scroll.current) scroll.current.scrollTop = latest.current.ui.scrollTop;
-  }, [loading, restoreKey]);
+    if (loading || !scroll.current) return;
+    return observeCandidateScroll(scroll.current, latest.current.ui.scrollTop, position => {
+      latest.current.onUi({...latest.current.ui, scrollTop: position});
+    });
+  }, [loading, restoreKey, basket.id, basket.sessionId, blueprintKey, filters, ui.offset, refresh]);
 
   function filter(key: keyof PaperBasketUiState['filters'], value: string) {
     const next = {...ui.filters};
@@ -106,12 +109,7 @@ export function PaperCandidateBrowser({basket, ui, disabled, restoreKey, onUi, o
     </div>
     {loading && <p role="status">正在读取完整题面与当前资格…</p>}
     {error && <p role="alert">{error}<Button variant="secondary" onPress={() => setRefresh(value => value + 1)}>重新读取</Button></p>}
-    <div className="edu-paper-candidate-list" data-testid="paper-candidate-scroll" ref={scroll} onScroll={() => {
-      if (loading) return;
-      const position = Math.min(10000000, Math.max(0, Math.round(scroll.current?.scrollTop || 0)));
-      // Capture immediately so a stage change can flush the latest position; host writes debounce in the controller.
-      latest.current.onUi({...latest.current.ui, scrollTop: position});
-    }}>
+    <div className="edu-paper-candidate-list" data-testid="paper-candidate-scroll" tabIndex={0} aria-label="完整题目列表" ref={scroll}>
       {!loading && !error && !rows.length && <EmptyState><EmptyState.Header><EmptyState.Title>没有匹配题目</EmptyState.Title>
         <EmptyState.Description>调整真实筛选条件，或前往题本补充资料；当前手选题不会被替换。</EmptyState.Description></EmptyState.Header></EmptyState>}
       {rows.map(row => row.candidate ? <CandidateCard key={row.id + ':' + row.candidate.contentVersion} candidate={row.candidate}

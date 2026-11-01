@@ -17,11 +17,11 @@ export function PaperQuestionImages({question, contentVersion, onReady}: {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
-  const [decoded, setDecoded] = useState<number[]>([]);
+  const [outcomes, setOutcomes] = useState<Partial<Record<number, 'success' | 'failure'>>>({});
   const needed = !!(question.document || question.archive?.native || question.archive?.pageSource);
   useEffect(() => {
     let live = true;
-    setImages([]); setDecoded([]); setError(''); setLoading(needed); onReady?.(!needed);
+    setImages([]); setOutcomes({}); setError(''); setLoading(needed); onReady?.(!needed);
     if (!needed) return;
     async function read(): Promise<Image[]> {
       const api = window.omniEdu;
@@ -56,14 +56,19 @@ export function PaperQuestionImages({question, contentVersion, onReady}: {
     return () => {live = false;};
   }, [question.id, contentVersion, needed, retry, onReady]);
   useEffect(() => {
-    if (images.length) onReady?.(!error && decoded.length === images.length);
-  }, [images, decoded, error, onReady]);
+    if (images.length) onReady?.(!error && images.every((_, index) => outcomes[index] === 'success'));
+  }, [images, outcomes, error, onReady]);
   if (!needed) return null;
-  return <div className="edu-paper-question-images">
+  const textOnly = question.archive?.native?.roles.question.figures.length === 0;
+  // A failed figure is terminal only for itself; other figures can still change the layout.
+  const settled = !loading && (images.length > 0
+    ? images.every((_, index) => outcomes[index] !== undefined)
+    : !!error || textOnly);
+  return <div className="edu-paper-question-images" data-paper-image-state={settled ? 'settled' : 'pending'}>
     {loading && <p role="status">正在读取本地题面图…</p>}
     {images.map((image, index) => <figure key={index}><img src={image.src} alt={image.label}
-      data-testid="paper-basket-question-image" onLoad={() => setDecoded(old => old.includes(index) ? old : [...old, index])}
-      onError={() => {setError('题面图无法显示，请重读后核对。'); onReady?.(false);}}/><figcaption>{image.label}</figcaption></figure>)}
+      data-testid="paper-basket-question-image" onLoad={() => setOutcomes(old => ({...old, [index]: 'success'}))}
+      onError={() => {setOutcomes(old => ({...old, [index]: 'failure'})); setError('题面图无法显示，请重读后核对。'); onReady?.(false);}}/><figcaption>{image.label}</figcaption></figure>)}
     {error && <p role="alert">{error}<Button variant="secondary" onPress={() => setRetry(value => value + 1)}>重读题面图</Button></p>}
   </div>;
 }

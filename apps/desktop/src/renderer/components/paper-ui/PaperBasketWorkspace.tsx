@@ -80,7 +80,8 @@ export function PaperBasketWorkspace({initialSessionId}: {initialSessionId?: str
     {!basket && !state.loading && <>
       <p>选择已有会话或新建本地会话，再保存题篮开始找题。会话与学生关联由宿主校验；浏览和整理无需调用模型。</p>
       <PaperBasketBlueprintForm value={state.blueprint} disabled={disabled} dirty={state.dirty} hasBasket={false}
-        onChange={state.setDraft} onSave={() => {}} onDiscard={() => {}}/>
+        canDiscard={!state.busy && !state.loading && (state.dirty || state.retryable)}
+        onChange={state.setDraft} onSave={() => {}} onDiscard={state.discardDraft}/>
       <Button className="edu-primary-action-contrast" data-testid="paper-basket-create" isDisabled={disabled || !validPaperBlueprint(state.blueprint)} onPress={() => void create(false)}>保存题篮并找题</Button>
     </>}
     {basket && <>

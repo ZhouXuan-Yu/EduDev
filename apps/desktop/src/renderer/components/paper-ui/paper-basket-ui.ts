@@ -4,6 +4,63 @@ import type {PaperBasketReason, PaperBasketUiState, PaperBasketView} from '../..
 export const emptyBasketUi = (): PaperBasketUiState => ({stage: 'select', filters: {}, offset: 0, scrollTop: 0});
 export const BASKET_PAGE_SIZE = 12;
 
+/** Restore once after main pictures settle. Only a user's scroll intent enables preference writes. */
+export function observeCandidateScroll(element: HTMLElement, scrollTop: number, onUserScroll: (position: number) => void) {
+  let disposed = false, restored = false, userControlled = false;
+  let firstFrame = 0, secondFrame = 0;
+  const cancelFrames = () => {cancelAnimationFrame(firstFrame); cancelAnimationFrame(secondFrame);};
+  const stopObserving = () => {mutation.disconnect(); resize.disconnect(); cancelFrames();};
+  function tryRestore() {
+    if (disposed || restored || userControlled) return;
+    cancelFrames();
+    if (element.querySelector('[data-paper-image-state="pending"]')) return;
+    firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => {
+        if (disposed || restored || userControlled || element.querySelector('[data-paper-image-state="pending"]')) return;
+        element.scrollTop = scrollTop;
+        restored = true;
+        stopObserving();
+      });
+    });
+  }
+  function userIntent() {
+    userControlled = true;
+    stopObserving();
+  }
+  function pointerIntent(event: PointerEvent) {
+    const bounds = element.getBoundingClientRect();
+    if (event.button === 1 || event.pointerType === 'touch' || event.target === element ||
+      event.clientX >= bounds.right - Math.max(16, element.offsetWidth - element.clientWidth)) userIntent();
+  }
+  function keyboardIntent(event: KeyboardEvent) {
+    if (!['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key)) return;
+    if (event.target instanceof Element && event.target.closest('input,textarea,select,[contenteditable="true"],[aria-haspopup]')) return;
+    userIntent();
+  }
+  function scrolled() {
+    if (!disposed && userControlled) onUserScroll(Math.min(10000000, Math.max(0, Math.round(element.scrollTop))));
+  }
+  const mutation = new MutationObserver(tryRestore);
+  const resize = new ResizeObserver(tryRestore);
+  mutation.observe(element, {childList: true, subtree: true, attributes: true, attributeFilter: ['data-paper-image-state']});
+  resize.observe(element);
+  for (const child of element.children) resize.observe(child);
+  element.addEventListener('scroll', scrolled, {passive: true});
+  element.addEventListener('wheel', userIntent, {passive: true});
+  element.addEventListener('touchstart', userIntent, {passive: true});
+  element.addEventListener('pointerdown', pointerIntent);
+  element.addEventListener('keydown', keyboardIntent);
+  tryRestore();
+  return () => {
+    disposed = true; stopObserving();
+    element.removeEventListener('scroll', scrolled);
+    element.removeEventListener('wheel', userIntent);
+    element.removeEventListener('touchstart', userIntent);
+    element.removeEventListener('pointerdown', pointerIntent);
+    element.removeEventListener('keydown', keyboardIntent);
+  };
+}
+
 export function sameBasketUi(a: PaperBasketUiState, b: PaperBasketUiState): boolean {
   return a.stage === b.stage && a.offset === b.offset && a.scrollTop === b.scrollTop &&
     (['query', 'knowledgePoint', 'questionType', 'difficulty', 'sourceKind', 'categoryId'] as const)

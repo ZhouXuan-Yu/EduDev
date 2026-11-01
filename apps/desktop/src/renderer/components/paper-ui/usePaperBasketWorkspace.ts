@@ -309,6 +309,17 @@ export function usePaperBasketWorkspace(initialSessionId?: string) {
     reload: () => basket ? read(basket.sessionId, basket.id, false)
       : owners.length ? loadOwner(current.current.ownerId) : (setStartupAttempt(value => value + 1), Promise.resolve(false)),
     retry: () => retry.current?.(),
-    discardDraft: () => {if (basket) {current.current.dirty = false; setDirty(false); setBlueprint(basket.blueprint); current.current.blueprint = basket.blueprint;}},
+    discardDraft: () => {
+      if (lock.current) return;
+      const initial = current.current.basket?.blueprint || defaultPaperBlueprint();
+      current.current.dirty = false;
+      current.current.blueprint = initial;
+      setDirty(false); setBlueprint(initial);
+      if (!current.current.basket && retryable) {
+        // Abandon local input/retry intent, without claiming that an uncertain host creation was rolled back.
+        retry.current = undefined; retryKind.current = undefined; setRetryable(false);
+        setError('已放弃本地蓝图。此前创建响应未确定，未撤销任何宿主记录；可重新读取已保存题篮核对。');
+      }
+    },
   };
 }

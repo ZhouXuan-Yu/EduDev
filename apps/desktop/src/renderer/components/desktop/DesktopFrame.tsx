@@ -6,7 +6,7 @@ import '../../ui-system/chrome.css';
 
 type Target={view:string;sessionId?:string;draft?:string;paper?:{mode:'basket'|'automatic';basketId?:string;stage?:'select'|'organize'|'preview'}};
 const sameTarget = (a: Target, b: Target) => a.view === b.view && a.sessionId === b.sessionId &&
-  (a.view !== 'paper' || ((a.paper?.mode || 'basket') === (b.paper?.mode || 'basket') &&
+  (a.view !== 'paper' || (a.paper?.mode === b.paper?.mode &&
     a.paper?.basketId === b.paper?.basketId && a.paper?.stage === b.paper?.stage));
 type Handler=(command:DesktopCommand)=>boolean;
 type NavigationGuard=()=>string|undefined;
