@@ -14,5 +14,8 @@ export function replySources(turn?:OfficeProjectedTurn){
 export function OfficeReplySources({turn,sessionId}:{turn:OfficeProjectedTurn;sessionId:string}){
   const sources=replySources(turn);
   if(!sources.length)return null;
-  return <details className="office-reply-sources" data-testid="reply-sources"><summary>本轮读取的资料（{sources.length}）</summary><p>读取记录不代表答案已经核验正确。</p>{sources.map((source,i)=><ul key={i} id={validCitationId(source.citationId)?source.citationId:undefined}>{source.question?<QuestionSourceLink source={source}/>:source.student?<StudentSourceLink source={source}/>:source.material?<MaterialSourceLink source={source}/>:validLocalAnswerSource(source.local)?<LocalAnswerSourceLink source={source.local} title={source.title} sessionId={sessionId}/>:source.url?<WebSource source={source} sessionId={sessionId}/>:<li>{source.title}</li>}</ul>)}</details>;
+  return <details className="office-reply-sources" data-testid="reply-sources"><summary>本轮读取的资料（{sources.length}）</summary><p>读取记录不代表答案已经核验正确。</p>{sources.map((source,i)=><ul key={i} id={validCitationId(source.citationId)?source.citationId:undefined}><OfficeSourceItem source={source} sessionId={sessionId}/></ul>)}</details>;
+}
+export function OfficeSourceItem({source,sessionId}:{source:import('../../../shared/xiaozhi-web').XiaozhiPublicSource;sessionId:string}) {
+  return source.question?<QuestionSourceLink source={source}/>:source.student?<StudentSourceLink source={source}/>:source.material?<MaterialSourceLink source={source}/>:validLocalAnswerSource(source.local)?<LocalAnswerSourceLink source={source.local} title={source.title} sessionId={sessionId}/>:source.url?<WebSource source={source} sessionId={sessionId}/>:<li>{source.title}</li>;
 }
