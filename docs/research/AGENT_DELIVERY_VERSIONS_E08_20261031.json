@@ -1364,6 +1364,14 @@
       "final3MainBytes": 3436086,
       "final3MainSha256": "4703604f8fc28342175dac321af2d557557ac65614af4818a8ff74b1f5c8efc8",
       "difference": "Final cancellation retention helper adds91 main bytes; renderer/preload identical."
+    },
+    "integration": {
+      "sha": "75bca4b1aaf2534a8fd0e3007f747c86739d3596",
+      "remoteMainIntegrated": "06b0a25e91d48ade8cd5e46af9adcc89777f1965",
+      "changedMainFiles": "5 docs/design/system/ideal prototype files only; original source tests and built fingerprints unchanged",
+      "verification": "No production source differences against c3f7416; no repeated UI/build for prototype documentation merge",
+      "goal": "active",
+      "dailyRuntimeUpdated": false
     }
   }
 }
