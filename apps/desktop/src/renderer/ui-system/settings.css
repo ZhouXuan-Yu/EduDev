@@ -81,3 +81,10 @@
     width: 160px;
   }
 }
+@media (max-width: 700px) {
+  .edu-settings { flex-direction: column; overflow-y: auto; padding: 16px; gap: 16px; }
+  .edu-settings-nav { width: 100%; overflow: visible; }
+  .edu-settings-nav > .pi-settings-search { min-width: 0; width: 100%; }
+  .edu-settings-main { flex: none; overflow: visible; }
+  .edu-settings .edu-setting-row { flex-direction: column; align-items: stretch; }
+}

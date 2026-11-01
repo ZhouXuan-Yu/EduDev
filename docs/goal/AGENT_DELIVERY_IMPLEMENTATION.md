@@ -345,3 +345,10 @@ renderer7179937→7182635B；合成Pi单次8488ms，不当作前后延迟/P95或
 - 文件：shared/desktop-chrome.ts、main/desktop-chrome/index.ts、renderer/components/desktop/DesktopFrame.tsx、renderer/ui-system/chrome.css；新增定向Electron测试。无依赖、表、迁移、文件目录协议变化。
 - 定义：隔离原Electron以390/480/800/1366/1920和100/125/150/200%页面zoom检查可见控件不溢出原生可用区、drag余量、完整应用菜单、中文标签、原生菜单触发及导航、草稿切换与冷启；build/type与组件门禁。保留修前实际CSS测量。系统DPI/实际pointer/完整AT矩阵仍独立待验，不能以DOM边界或setBounds冒充。
 - 失败/回滚：原IPC仍校验sender/组名/窗口坐标，菜单失败原提示不变。回退本片4个生产文件即可恢复旧布局；无数据迁移或真实资料清理。日常窗口不输入、不因本片测试抢占用户操作；隔离测试不调用付费provider。
+
+## 2026-11-01 C02 正文与控件缩放交付合同
+
+- 目标：补齐REQ-C02-05/09/10实际外层布局缺口。冻结修前原Electron空白/11轮FX09及设置页面：390 DIP/150%页面zoom下260 CSS px仍有64px导航轨，发送按钮x260–300在视口外；顶部更多按钮右304；设置主区被160px目录和内边距挤成0宽，保存等操作越界。不能用页面scrollWidth未增大冒充可达。
+- 改动：只改应用layout/chat/settings CSS，以及PiEducationWorkspace中OfficeComposer外的稳定滚动容器。极窄导航改为按原生菜单显式展开，头部动作可换行；保护输入框至少260px外层布局，极端窗口提供局部滚动取回全部原控件，短窗正文仍有可读区域；设置目录与正文在窄窗上下排列。输入框内部/弹层/配置、原Pi/IPC/SQLite/文件及vendor不变，无依赖/迁移。
+- 定义：一次相关检查，隔离原UI空白/原FX09历史、1366×768/1920×1080及390/480窄窗、100/125/150/200%页面zoom；定位/滚动真实控件、原生侧栏菜单、文件/任务面板、模型/档位/设置弹层、草稿切换和冷启；原复杂消息/事件hash不变、无真实模型请求。补充受控流停止路径；物理系统DPI/指针及完整IME/教育质量保留独立标准，不宣称全AT。
+- 文件：ui-system/layout.css、chat.css、settings.css、components/office/PiEducationWorkspace.tsx，定向Electron脚本/既有状态和C02证据。桌面正常尺寸保持布局，最小标题栏及geometry修复保留；四个生产文件可单独revert回退，无数据回退。日常窗口不接管、不重启。

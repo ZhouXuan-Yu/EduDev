@@ -65,6 +65,10 @@
   align-items: center;
   flex-shrink: 0;
 }
+@media (max-width: 480px) {
+  .edu-header { flex-wrap: wrap; gap: 4px 8px; padding: 8px 12px; }
+  .edu-header-actions { flex-wrap: wrap; flex-shrink: 1; max-width: 100%; margin-left: auto; }
+}
 .edu-page {
   flex: 1;
   min-height: 0;
@@ -78,6 +82,11 @@
   .edu-shell:has(> .wb-navigation) > .edu-resizer--left { display: none; }
   .edu-header { gap: 8px; }
   .edu-page { padding: 20px 16px; }
+}
+@media (max-width: 360px) {
+  /* Match the collapsed rail's specificity before removing its grid column. */
+  .edu-shell:has(> .wb-navigation[data-collapsed]) { grid-template-columns: minmax(0, 1fr); }
+  .edu-shell > .wb-navigation[data-collapsed='true'] { display: none; }
 }
 .edu-history-panel {
   position: absolute;

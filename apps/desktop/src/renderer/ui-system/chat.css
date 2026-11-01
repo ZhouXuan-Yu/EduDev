@@ -1,5 +1,6 @@
 /* Own reading surfaces; never target a native slot or its interaction state. */
 .edu-chat {
+  position: relative;
   display: flex;
   flex: 1;
   min-height: 0;
@@ -68,6 +69,21 @@
   padding: 12px 34px 22px;
   margin-inline: auto;
   flex-shrink: 0;
+}
+.edu-composer-viewport {
+  flex: none;
+  min-width: 0;
+  width: 100%;
+}
+@media (max-width: 360px), (max-height: 600px) {
+  .edu-chat .ai-chat-surface { overflow-y: auto; }
+  .edu-chat .ai-chat-surface:not([data-empty='true']) .ai-conversation-frame { flex: 1 0 160px; }
+}
+@media (max-width: 360px) {
+  .edu-composer-viewport { overflow-x: auto; }
+  .edu-chat .office-composer-container { min-width: 260px; padding-inline: 12px; }
+  .edu-chat .office-conversation-content { padding-inline: 12px; }
+  .wb-start-heading { padding-inline: 12px; }
 }
 .edu-chat .teacher-quick-starts {
   display: grid;
