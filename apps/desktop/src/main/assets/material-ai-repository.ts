@@ -60,6 +60,13 @@ export class MaterialAiRepository{
   private pumping?:Promise<void>;
   private active?:{batchId:string;controller:AbortController};
   private closing=false;
+  private layoutControllers=new Set<AbortController>();
+  private async localLayout(source:MaterialPageSource){
+    if(this.closing||!this.runtime?.layout)throw Error('cancelled');
+    const controller=new AbortController();this.layoutControllers.add(controller);
+    try{const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),layout=await this.runtime.layout(source,signal);signal.throwIfAborted();return layout;}
+    finally{this.layoutControllers.delete(controller);}
+  }
   readonly books:MaterialBookPairs;
   readonly bookAnswers:MaterialBookAnswerRepository;
   constructor(private host:Host){this.books=new MaterialBookPairs({all:host.all,run:host.run,resource:id=>host.materials().resource(id),writer:action=>this.write(target=>action(target.books))});this.bookAnswers=new MaterialBookAnswerRepository({all:host.all,run:host.run,receipt:(batch,ordinal)=>this.bookReceipt(batch,ordinal),role:id=>this.books.role(id),read:async id=>host.readQuestion?.(id),validate:async q=>{if(!host.validateQuestion)throw Error('unsupported');await host.validateQuestion(q);},title:async id=>(await host.materials().resource(id)).originalFileName,writer:(fn,beforeCommit)=>this.write(target=>fn(target.bookAnswers),beforeCommit)});}
@@ -168,7 +175,7 @@ export class MaterialAiRepository{
             if(window.units.length!==rows.length||window.units.some(u=>u.chunk.pageNumber!==page))throw Error('source_incomplete');sources=window.units.map(materialSource);
           }
           const regions=!!(this.runtime?.crop&&this.runtime.inspectCrop&&this.host.root&&process.env.OMNI_EDU_AI_PAGE_REGIONS!=='0');
-          const layout=regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.runtime.layout(original.source,AbortSignal.timeout(120000)):undefined;
+          const layout=regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.localLayout(original.source):undefined;
           if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==input.version||layout.page!==page||layout.total!==original.totalPages))throw Error('source_changed');
           units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}});continue;
         }
@@ -352,7 +359,7 @@ export class MaterialAiRepository{
     const pump=()=>{if(this.pumping||!this.runtime||this.closing)return;this.pumping=this.recover().then(()=>this.drain()).then(()=>undefined).catch(()=>undefined).finally(()=>{this.pumping=undefined;});};
     this.timer=setInterval(pump,1000);this.timer.unref();pump();
   }
-  async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;this.active?.controller.abort();await this.pumping;}
+  async close(){this.closing=true;if(this.timer)clearInterval(this.timer);this.timer=undefined;for(const controller of this.layoutControllers)controller.abort();this.active?.controller.abort();await this.pumping;}
   private async guard(batchId:string,config:AiBatchInput,unit:AiUnitInput,signal:AbortSignal){
     signal.throwIfAborted();const row=(await this.host.all('SELECT status FROM material_ai_batches WHERE id=?',[batchId]))[0];
     if(unit.pageSource&&process.env.OMNI_EDU_AI_PAGE_RESTORATION==='0')throw Error('page_restoration_disabled');

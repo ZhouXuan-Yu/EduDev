@@ -371,6 +371,11 @@ await check('Versioned crop schema rejects overlapping, missing, sparse and exec
  assert(!validQuestionRegions([{number:'1',box:[0,0,1,.5],complete:true},{number:'2',box:[0,.4,1,1],complete:true}],['1','2']));
  const sparse=Array(1);assert(!validQuestionRegions(sparse,['1']));const access=[];Object.defineProperty(access,0,{enumerable:true,get(){throw Error('getter must not run');}});assert(!validQuestionRegions(access,['1']));
 });
+await check('Closing the repository cancels the added local layout worker before a batch or model request is created',async()=>{
+ const f=await cropFixture();try{let entered;const started=new Promise(resolve=>{entered=resolve;});f.repo.runtime.layout=async(_source,signal)=>new Promise((_resolve,reject)=>{signal.addEventListener('abort',()=>reject(Error('cancelled')),{once:true});entered();});
+ const creating=f.repo.create(f.input),rejected=assert.rejects(creating,/cancelled/);await started;await f.repo.close();await rejected;assert.equal(f.state.calls,0);assert.equal(f.db.prepare('SELECT COUNT(*) n FROM material_ai_batches').get().n,0);
+ }finally{await f.dispose();}
+});
 await check('Real durable crop receipts qualify image-dependent documents, preserve AI authority, and feed existing source, Pi and rich-paper adapters',async()=>{
  const f=await cropFixture();try{await f.repo.create(f.input);await f.repo.drain();await f.repo.drain();const saved=await f.question();assert.equal(f.state.calls,2);assert.equal(f.renders,1);assert.equal(saved.archive.ai.policy,'page-crop-complete.v1');assert(archiveEligible(saved));await f.repo.validate(saved);
  const {questionPresentation}=await import('../../src/shared/native-question.ts'),{questionVersion,createQuestionContextProvider}=await import('../../src/main/education/question-context-provider.ts');assert.equal(questionPresentation(saved).authority,'ai');
