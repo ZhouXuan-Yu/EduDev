@@ -89,7 +89,7 @@ export function PiModelSettings({ onBack, embedded = false, onBusyChange }: { on
             {view !== undefined && view.models.length > 0 && !view.models.some(item => item.id === view.defaultModel) && (
               <p role="status" data-testid="pi-settings-model-unavailable">原默认模型 {view.defaultModel} 已不在当前目录。请选择可用模型，保存后用于新对话。</p>
             )}
-            <SettingsInline justify="end" className="pi-model-settings-actions"><Button type="submit" data-testid="pi-settings-save" isDisabled={disabled || !model}>{busy ? '正在验证并保存…' : '保存'}</Button></SettingsInline>
+            <SettingsInline justify="end" className="pi-model-settings-actions"><Button type="submit" className="edu-primary-action-contrast" data-testid="pi-settings-save" isDisabled={disabled || !model}>{busy ? '正在验证并保存…' : '保存'}</Button></SettingsInline>
           </form>
           {view?.locked && <p role="status">小智正在处理任务，结束后可修改配置。</p>}
         </SettingsSection>

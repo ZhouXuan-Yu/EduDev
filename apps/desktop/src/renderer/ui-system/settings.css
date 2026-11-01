@@ -28,6 +28,13 @@
 .edu-settings .edu-settings-search-input:not(:disabled)::placeholder {
   color: var(--field-placeholder, var(--muted));
 }
+/* Explicit opt-in for Save and the portaled archive confirmation only.
+ * Retain native state selectors and the official 90/10 hover/pressed mix. */
+.edu-primary-action-contrast:enabled:not([aria-disabled]) {
+  --button-bg: var(--edu-accent, #002fa7);
+  --button-bg-hover: color-mix(in oklab, var(--button-bg) 90%, var(--button-fg) 10%);
+  --button-bg-pressed: var(--button-bg-hover);
+}
 .edu-settings-nav-item {
   width: 100%;
   display: flex;
