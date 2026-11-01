@@ -88,7 +88,8 @@ export function DesktopFrame({children}:{children:ReactNode}) {
           <Button variant="ghost" isIconOnly aria-label="后退" isDisabled={!navigation.canBack} onPress={()=>command('back')} data-testid="desktop-back"><ArrowLeft size={17}/></Button>
           <Button variant="ghost" isIconOnly aria-label="前进" isDisabled={!navigation.canForward} onPress={()=>command('forward')} data-testid="desktop-forward"><ArrowRight size={17}/></Button>
           <Button variant="ghost" isIconOnly aria-label="显示或隐藏会话侧栏" onPress={()=>command('sidebar')} data-testid="desktop-sidebar"><PanelLeft size={17}/></Button>
-          {(['file','edit','view','help'] as const).map((group,index)=><Button key={group} variant="ghost" aria-haspopup="menu" data-testid={`desktop-menu-${group}`} onPress={event=>void menu(group,event.target)}>{['文件','编辑','视图','帮助'][index]}</Button>)}
+          {(['file','edit','view','help'] as const).map((group,index)=><Button key={group} className="edu-chrome-menu-group" variant="ghost" aria-haspopup="menu" data-testid={`desktop-menu-${group}`} onPress={event=>void menu(group,event.target)}>{['文件','编辑','视图','帮助'][index]}</Button>)}
+          <Button className="edu-chrome-menu-app" variant="ghost" aria-label="应用菜单" aria-haspopup="menu" data-testid="desktop-menu-app" onPress={event=>void menu('app',event.target)}>菜单</Button>
         </div>
         <div className="edu-chrome-drag" data-testid="desktop-titlebar-drag" aria-hidden="true" />
       </header>

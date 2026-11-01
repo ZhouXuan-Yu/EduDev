@@ -1,5 +1,14 @@
 # Goal 决策记录
 
+2026-11-01 C02继续采用应用外层布局修复，保护原输入框/底栏/弹层和Pi；极端宽度允许局部滚动取回控件，设置目录/行堆叠。真实物理drag、系统DPI、IME、教师视觉与工程可达性分别记录。一次综合在最后设置行CSS前通过，最终专项覆盖该变化，不再重复综合。
+
+## 2026-11-01 复用成熟图文分块来源层
+
+复用成熟RapidLayout1.2.1+PP-DocLayoutV3，不引入整套第二RAG/数据库/Agent。只增加未核对数值图文块，正文继续PDFium/RapidOCR。新运行时/manifest独立可选，普通OCR及旧数据不要求新组件；默认不打包，显式发行flag才校验附带。模型130MB不等于组件417MB。下一采用既有question-document.v2多图与原双遍writer做块归属，禁止直接把检测框当题目、清空requires_image或修改旧回执语义。 新组件安全复核独立升级Pillow/证书/构建依赖，保留旧OCR锁；图文块刷新不重跑文字OCR，避免无谓开销与校对区变化。
+
+
+2026-11-01 C02决定：复用原Electron Menu承载窄窗全部菜单，typed原通道仅增加app分组，不自造菜单/窗口移动协议、不改composer内部。标题栏子验通过与真实drag、极窄正文及系统DPI/弹层矩阵分开记录，不改原252AT标准。
+
 2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。
 
 2026-11-01 C02约定：原host最小宽与窗口偏好须共用常量；可选geometry既处理窗口close，也在app before-quit同步保存，因为原退出drain会destroy窗口。分数DPI只按实际测量做最多两次小幅修正，不能放宽精确冷启断言掩盖逐次漂移。OS前台条件拒绝不能换成setBounds/HTCAPTION宣布拖动通过；日常目录有其他任务活跃进程时保留现场。固定测试构建通过OMNI_EDU_TEST_BUILD_ROOT或专项build参数选择。 当前复杂控制样本未复现严重卡顿，故本轮不改projection/阅读锚点或历史memo来追求数字。

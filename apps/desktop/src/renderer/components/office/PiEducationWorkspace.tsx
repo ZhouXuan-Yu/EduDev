@@ -369,7 +369,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
         const target=id; const result=await window.omniEdu?.mutateXiaozhiQueue(input); await hydrate(target);
         if (!result?.ok) throw new Error('queue_mutation_failed');
       }}/>) } /> : <p className="pi-history-note" role="status">正在读取本地对话…</p>}</div>
-      <OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
+      <div className="edu-composer-viewport" data-testid="pi-composer-viewport"><OfficeComposer nativeAppearance visible={visible} sessionId={id || 'loading'} status={snapshot?.running ? current?.status || 'running' : current?.status}
         thinkingControl={<PiThinkingPicker key={id} view={models} scope="session" visible={visible} disabled={!snapshot||!id||snapshot.running||modelSelecting||syncBlocked} onChange={choice=>{
           if(mutationsBlocked()||modelLock.current||snapshot?.running||!models?.thinking?.session)return;
           modelLock.current=true;setModelSelecting(true);const target=id;
@@ -408,7 +408,7 @@ export function PiEducationWorkspace({ onLeave, onSettings, visible = true }: { 
           requireSynchronized();setNotice(''); const target = id; const result = await window.omniEdu?.selectXiaozhiWorkspace(target);
           if (result && !result.ok) setNotice(XIAOZHI_ERRORS[result.error]); else await hydrate(target);
         })().catch(() => setNotice('无法选择教学工作目录，请重试。')); }} onSubmit={send} onStop={async () => { viewBuffer.current!.flush(); const result = await window.omniEdu?.stopXiaozhi(id); if (!result?.ok) throw new Error('stop_failed'); }} />
-      <PiHomeSuggestions visible={isHomeConversation(projection)} />
+      </div><PiHomeSuggestions visible={isHomeConversation(projection)} />
     </section>
     {attachments.modal}
     {skillsOpen && <PiSkillSettings running={Boolean(snapshot?.running)} onClose={() => setSkillsOpen(false)} onChanged={() => hydrate(id)} />}

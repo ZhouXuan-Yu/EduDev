@@ -1,5 +1,14 @@
 # 当前架构
 
+2026-11-01 C02仅应用layout/chat/settings及OfficeComposer外的稳定滚动容器；不重挂载composer、不动Pi/缓冲/journal/IPC/数据。chat为既有绝对面板提供定位上下文，窄导航匹配collapsed选择器优先级后移除grid列。docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。
+
+## 2026-11-01 复用成熟图文分块来源层
+
+沿既有M03原页typed接口接入RapidLayout1.2.1/PP-DocLayoutV3可选本地组件，独立版本化块回执/缓存/root/manifest；PDFium/RapidOCR正文和旧运行时不变，Pi/SQLite/原writer真源不变。无DDL，新可选Python依赖/模型锁与许可证已记录；自动多块题目归属与按需下载尚未接通。
+
+
+2026-11-01 DesktopChrome的既有desktop:menu增加typed app分组，复用原生根Menu和原导航命令；安全区由env(titlebar-area-*)驱动容器查询，无新通道/库/数据真源。Pi/composer/geometry及原校验不变。fab49e4；C02证据captionLayoutSlice。
+
 2026-11-01 窗口几何仍是profile/desktop-window.v1.json UI元数据，无SQLite迁移或新依赖；MIN_HOST_WINDOW_WIDTH=390在host与应用层geometry共享，原ZCode文件保持。save读取原getNormalBounds，moved/close/before-quit同步原子写并去重；closed移除app listener。冷启在原分数DPI/工作区夹取上加最多两次测量修正。真实双屏几何与实际pointer拖动是两个独立标准。4f6ce66及docs/research/AGENT_INTERACTION_C02_20261101.json为当前实现/证据。
 
 ## 2026-11-01 复用本地布局辅助图题取图

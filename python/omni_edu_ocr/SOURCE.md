@@ -1,5 +1,7 @@
 # Local OCR runtime sources
 
+Page blocks v1 (2026-11-01): RapidLayout 1.2.1 and PP-DocLayoutV3, both Apache-2.0, are reused in the existing worker host only for local PNG layout elements. Model SHA/bytes and source provenance are in licenses/PAGE_BLOCKS_NOTICE.md and page-blocks-runtime-manifest.json. This optional component has its own fixed .local-ocr/blocks-v1-dist/omni-edu-ocr directory; legacy OCR keeps its original file-v3-dist and compiled manifest. Build using scripts/release/build-page-blocks-runtime.mjs, requirements-page-blocks-windows.lock.txt and OMNI_EDU_BUILD_PYTHON. Production uses resources/page-blocks-runtime; the release script only bundles it with explicit OMNI_EDU_BUNDLE_PAGE_BLOCKS=1. No automatic production download. Runtime size and Windows installation/managed-download acceptance are separate.
+
 Recognition: original RapidOCR 3.9.2 / Apache-2.0, ONNX Runtime 1.30.0 / MIT. Adapter is worker.py. PP-OCRv6 detection/recognition and legacy angle models are bundled original artifacts; see licenses/MODEL_LICENSES.md with matching upstream hashes. Models are checked before use; no runtime download or cloud fallback.
 
 Build: Python 3.12.14, PyInstaller 6.22.3 (GPL distribution exception). Exact build environment in requirements-windows.lock.txt. Frozen Windows onedir runtime is private .local-ocr/resume-v2-dist/omni-edu-ocr for development and must be shipped as resources/ocr-runtime in a packaged build. No Codex Python is needed by that executable.
@@ -26,3 +28,5 @@ File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Pyth
 File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
 
 File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
+
+Optional blocks runtime uses its own complete dependency lock; Pillow 13.0.0, certifi 2026.10.19, pip 26.2 and setuptools 84.1.0 replace inherited vulnerable versions only in this component. The build checks all installed lock entries and includes updated dependency notices; the legacy OCR lock/runtime remain unchanged.

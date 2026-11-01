@@ -223,7 +223,7 @@ FX01旅程：完整要求→真实进度→明确HTML/PPT待交付项→工具�
 | WP-T07 | 教师模板、表达风格与可撤销记忆 | P3 | 优化+新增 | M04/M09/M10 | E03,E08,C01 | 8 | 待实施/未验收 | 待验收 |
 | WP-T08 | 形成性评价、量规与课后反馈 | P3 | 新增/领域适配 | M05/M07/M08/M09 | T01,T02,T03,S05 | 8 | 待实施/未验收 | 待验收 |
 | WP-C01 | 权限、隐私与真实自主范围 | 贯穿 | 优化/补齐 | M10 | 无 | 10 | 待实施/未验收 | 待验收 |
-| WP-C02 | 流式性能、窗口与精细交互 | 贯穿 | 优化/补齐 | M12/M10 | E01基础入口,C04 | 10 | 待实施/未验收 | 待验收 |
+| WP-C02 | 流式性能、窗口与精细交互 | 贯穿 | 优化/补齐 | M12/M10 | E01基础入口,C04 | 10 | 部分实现/3条已验收 | AT01/02/04已实现，其余不计完成 |
 | WP-C03 | 本地真源、迁移、备份与一致性 | 贯穿 | 优化/补齐 | M01/M11 | 无 | 10 | 待实施/未验收 | 待验收 |
 | WP-C04 | 真实过程、错误分类与可核验记录 | 贯穿 | 优化/补齐 | M10/M12 | 无 | 10 | 待实施/未验收 | 待验收 |
 | WP-C05 | 质量、成本与有界资源 | 贯穿 | 优化/补齐 | M10 | E02,C04 | 10 | 待实施/未验收 | 待验收 |
@@ -778,14 +778,14 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-C02-01 | 长流与完整性 | 输出终态与持久正文一致、不掉字/乱序；草稿可继续编辑；无pageerror | [AT-C02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-01) | 已实现｜本地FX09长流验收通过｜2026-11-01｜4f6ce66｜[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)：最终UI/原消息/原事件正文hash一致，草稿和冷启完整；0pageerror/付费/重放。 |
 | REQ-C02-02 | 交互性能 | P95≤100ms、最大≤250ms作为本地控制样本目标；记录长任务与RSS；不可推断真实模型首字时间 | [AT-C02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-02) | 已实现｜本地FX09交互验收通过｜2026-11-01｜4f6ce66｜[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)：30输入/45滚动，P95 6.7/1.6ms，最大6.8/2ms，记录CPU/RSS/长任务；非模型首字或全机型结论。 |
-| REQ-C02-03 | 原生拖动 | 普通位置实际改变；最大化拖动还原；菜单不误拖；最小化/最大化/关闭真实有效 | [AT-C02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-03) | 部分实现；日常CUA两次drag未位移/还原，原因待定，用户Esc停止后续操作，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json) |
+| REQ-C02-03 | 原生拖动 | 普通位置实际改变；最大化拖动还原；菜单不误拖；最小化/最大化/关闭真实有效 | [AT-C02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-03) | 部分实现；日常CUA两次drag未位移/还原，原因待定，用户Esc停止后续操作，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)；另已修复窄窗菜单重叠（fab49e4），实际drag仍未通过 |
 | REQ-C02-04 | 重启几何 | 可见区域内恢复，标题栏可达；不顶死屏幕或开到屏外；不把HTCAPTION命中当位移通过 | [AT-C02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-04) | 已实现｜最终整合原生几何验收通过｜2026-11-01｜4f6ce66｜[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)：两块实际显示器、390/480/800、立即退出/最大化及模拟断屏；实际指针拖动归AT03。 |
-| REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) | 待验收 |
+| REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
 | REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) | 待验收 |
 | REQ-C02-07 | 滚动与选择 | 底部正常跟随；离底/选择时不强拉；可一键回到底部；复制不夹入过程或私有字段 | [AT-C02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-07) | 待验收 |
 | REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 待验收 |
-| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 待验收 |
-| REQ-C02-10 | 切换与空错误态 | 不混内容、不丢草稿；空态提示下一动作；失败可恢复且无永转加载 | [AT-C02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-10) | 待验收 |
+| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
+| REQ-C02-10 | 切换与空错误态 | 不混内容、不丢草稿；空态提示下一动作；失败可恢复且无永转加载 | [AT-C02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-10) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
 
 #### WP-C03 本地真源、迁移、备份与一致性
 

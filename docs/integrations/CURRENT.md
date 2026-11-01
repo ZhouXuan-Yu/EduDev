@@ -1,5 +1,14 @@
 # 当前集成与复用
 
+2026-11-01 C02正文切片af4b7ab在当前分支正常快进整合be7657c，固定最终构建原Pi12项通过，0付费/真实资料；既有原生sidebar命令和模型/档位组件复用，无新依赖。D盘日常未接管或重启、安装未发布。docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。
+
+## 2026-11-01 复用成熟图文分块来源层
+
+RapidLayout1.2.1（固定源码4cfe33f6）+PP-DocLayoutV3 ONNX（250dbad1…，130502330B），代码/模型声明Apache2，NOTICE与许可证随独立组件保留。复用ONNX/numpy/OpenCV与原Worker资源池/取消/禁网；独立冻结767文件417644037B，普通OCR root/manifest不变。build-page-blocks-runtime.mjs及独立requirements锁；OMNI_EDU_BUNDLE_PAGE_BLOCKS=1为发行显式选择。用户按需下载/config和最终Windows包仍待接通。
+
+
+2026-11-01 C02标题栏沿原Electron原生Menu集成，最终源码d8640d4整合main1b19e88，固定构建专项6及240组件/build通过；本片未恢复D窗口输入或重启，D既有记录保持历史，未发布安装包。C02证据captionLayoutSlice。
+
 2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。
 
 2026-11-01 窗口几何仍是profile/desktop-window.v1.json UI元数据，无SQLite迁移或新依赖；MIN_HOST_WINDOW_WIDTH=390在host与应用层geometry共享，原ZCode文件保持。save读取原getNormalBounds，moved/close/before-quit同步原子写并去重；closed移除app listener。冷启在原分数DPI/工作区夹取上加最多两次测量修正。真实双屏几何与实际pointer拖动是两个独立标准。4f6ce66及docs/research/AGENT_INTERACTION_C02_20261101.json为当前实现/证据。 固定样本走原Pi+原event/SQLite，仅本机截获SSE；没有新Agent/第二正文/自建窗口框架。

@@ -1,5 +1,14 @@
 # 当前验收入口
 
+2026-11-01 C02正文专项：最终build/type、240组件、实际Pi12项/18组布局与一次固定整合207综合通过；综合早于最后一行设置CSS，最终专项覆盖该变化。累计AT仍3/252，05/09/10仅部分；物理系统DPI/drag/IME/全键盘审批矩阵未通过。失败报告和正确原生截图均归档。docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。
+
+## 2026-11-01 复用成熟图文分块来源层
+
+图文块来源层最终真实六页14项和240组件/12新边界通过；旧AI57/K0 64通过。已验证缺组件/恢复、实际Worker取消、冷启缓存、双尺寸DPR1.5及原件/题目/AI单元/解析正文不变，0云请求。自动多块/跨页题目、40GB/召回P95、最终安装未验收；npm audit45项既有漏洞保留，综合smoke结果按统一基线pageBlocksComponent。 最终build/type/240组件/12边界通过，新组件pip-audit0项。207综合smoke为最后分块依赖/刷新专改前固定整合构建通过，最终专改由实际14项另验。
+
+
+2026-11-01 C02标题栏子项20组页面zoom/尺寸与原Electron6项通过，完整AT无新增，仍3/252；实际drag、正文260 CSS px截断和全部设置/审批/文件等矩阵未通过。仅有标题栏安全区/菜单/草稿证据，不冒充系统DPI/IME或整组验收。C02证据captionLayoutSlice。
+
 2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。
 
 2026-11-01 C02新增通过3条：AT-C02-01/02/04已实现（4f6ce66），其余249条仍未完整通过，WP-C02不整组通过。最终build/type、组件240/240、几何源码10、最终整合实际几何7和原复杂夹具冷读3通过。FX09固定样本原始输入30/滚动45、CPU/RSS与全部事件/消息hash已归档，P95/最大阈值未放宽。固定副本2749d3d+width/quit修复的综合207/207 exit0，早于最终DPI启动调整及无关KB整合；最终受影响路径用整合8c6b705+4f6ce66复验，不冒称同一构建完成全部门禁或252AT。此前analytics隐藏失败保留；本轮未固定out的综合调用被取消exit1，不计通过。实际pointer两次前台条件拒绝，AT03仍阻塞；缩放弹层/IME/选择/审批/键盘/切换错误矩阵及实际日常窗口、安装仍待。0真实付费。详docs/research/AGENT_INTERACTION_C02_20261101.json。

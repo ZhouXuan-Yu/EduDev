@@ -6,7 +6,7 @@ export const nativeChromeEnabled = process.platform === 'win32' && process.env.O
 export function nativeChromeOptions() {
   return nativeChromeEnabled ? { titleBarStyle: 'hidden' as const, titleBarOverlay: buildWindowsTitleBarOverlayForZoomLevel(0,'light'), autoHideMenuBar: true } : {};
 }
-const groups: DesktopMenu[] = ['file','edit','view','help'];
+const groups: DesktopMenu[] = ['app','file','edit','view','help'];
 function state(window: BrowserWindow): DesktopChromeState {
   return {enabled:nativeChromeEnabled,platform:process.platform,zoomFactor:window.webContents.getZoomFactor(),maximized:window.isMaximized(),height:36};
 }
@@ -22,6 +22,9 @@ export function installDesktopChrome(window: BrowserWindow) {
     {id:'edit',label:'编辑',submenu:[{label:'撤销',role:'undo'},{label:'重做',role:'redo'},{type:'separator'},
       {label:'剪切',role:'cut'},{label:'复制',role:'copy'},{label:'粘贴',role:'paste'},{type:'separator'},{label:'全选',role:'selectAll'}]},
     {id:'view',label:'视图',submenu:[
+      {id:'back',label:'后退',accelerator:'Alt+Left',click:()=>send('back')},
+      {id:'forward',label:'前进',accelerator:'Alt+Right',click:()=>send('forward')},
+      {type:'separator'},
       {id:'sidebar',label:'显示或隐藏会话侧栏',click:()=>send('sidebar')},
       {id:'files',label:'显示或隐藏文件面板',click:()=>send('files')},
       {type:'separator'},{id:'zoom-in',label:'放大',accelerator:'CmdOrCtrl+Plus',click:()=>zoom(1)},
@@ -43,7 +46,8 @@ export function registerDesktopChromeIpc(ipc:IpcMain,getWindow:()=>BrowserWindow
     const {group,x,y}=input as {group:DesktopMenu;x:number;y:number};const [width,height]=window.getContentSize();
     const factor=window.webContents.getZoomFactor();
     if(!groups.includes(group)||!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x*factor>width||y*factor>height)return {ok:false,error:'invalid_input'};
-    const menu=Menu.getApplicationMenu()?.getMenuItemById(group)?.submenu;if(!menu)return {ok:false,error:'unavailable'};
+    const applicationMenu=Menu.getApplicationMenu();
+    const menu=group==='app'?applicationMenu:applicationMenu?.getMenuItemById(group)?.submenu;if(!menu)return {ok:false,error:'unavailable'};
     menu.popup({window,x:Math.round(x*factor),y:Math.round(y*factor)});return {ok:true};
   });
 }
