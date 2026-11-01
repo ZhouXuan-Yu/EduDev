@@ -1,5 +1,7 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-01 用量工程子夹具：usage-case-reported（prompt100/output12/cache40→总112/输入100）；partial先原office_read_text读取自有计数资料再缺usage终答（2模型/1工具，112部分下界）；stop输出后停流，原Stop保留unknown/null与interrupted。固定runId逐项查DB/UI，教师草稿和usage/event hash冷启不变；4次本地SSE+1失败本地尝试、0付费。1366/1920原生截图DPR1实测及可视区边界补尾通过，37原始证据。只是FX09/10/13的补充，不替换原全集合。docs/research/AGENT_USAGE_C05_20261101.json。
+
 2026-11-01 C03外选目录工程子夹具：自有teacher-workspace通过原Pi保存HTML+原8页/每页备注PPT，另有未登记资料不复制；外选浮力.html SHA256 e5eb313c83a00c983a0bf2b11efc8a845ce374c46a2ae9310e0a00edd401bd27；外选浮力.pptx SHA256 274bbed9ea81b33fd5317ac7a26708ea919900d863738c39af6aa2cafd9cc2be。领域夹具另含两根同名文件、历史Office根、另选paper输出、登记原件、缺失/未知根/实际链接/中途外改及恢复副本损坏。原设置/冷启/教学文件4项通过，实际源字节/native/journal一致；3本地SSE/0付费。只补充、不替换原FX07/FX10集合与判定。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
 
 2026-11-01 执行补充（不改冻结FX）：独立自有资料合成资料.txt含核对码37，缺失资料.txt不存在；原Pi实际读取一成功一not_found，受控SSE故意声称均完成，UI仍显示host partial。6次本机合成请求/0付费，同记录样式补尾0调用、原消息/事件/源文件hash不变。此子夹具不替代FX10混合产物与完整AT，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。

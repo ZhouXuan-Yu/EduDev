@@ -1,5 +1,7 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 C04/C05工程：usage-receipt-ui.mjs原Pi实际完整usage/部分缺usage/Stop三场景及冷启通过4项；初版双尺寸仅isVisible证据不足，改用usage-receipt-viewport.mjs同记录0模型冷读2项，展开动画完成后实际滚动/矩形边界、1366×768与1920×1080、DPR1及截图均通过，原usage/events/草稿一致。build/type/240组件、7边界通过，4本地SSE+1失败本地尝试/0新付费，37原始证据含全部失败。完整FX09/10/13、物理桌面/IME/日常/安装保留未验；docs/research/AGENT_USAGE_C05_20261101.json。
+
 2026-11-01 C03工程检查：external-output-backup-ui.mjs沿原Pi明确选目录→整包审阅保存HTML/8页PPT→原设置导出→新副本恢复/显式激活/冷启→教学文件PPT与HTML交互，共4项通过，1366×768/1920×1080控件可达；原生/事件及源文件hash不变，0重放/renderer错误。首次HTML断言失败后复用同一已保存包，3本地SSE/0付费。固定构建fe48aee6…；最终c792d82整合另行build/type/240组件通过，未冒称最终包重跑全部UI。完整FX07/10及252AT仍待，日常D/Office/WPS/安装未验。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
 
 ## 2026-11-01 已存局部OCR失败的本地恢复

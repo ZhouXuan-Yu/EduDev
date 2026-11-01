@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 C04/C05显示沿原Pi runtime-budget→SQLite→typed snapshot；PiUsageReceipt为纯呈现，PiWorkspaceContext/PiBudgetCard复用，无订阅/轮询/新DDL/IPC/Runtime。原main/preload全文件hash不变，renderer入口-125B，无新延迟结论。源码0be9823；docs/research/AGENT_USAGE_C05_20261101.json。
+
 2026-11-01 外选成果备份接原OmniEduStore导出/校验和原prepareBackupRestore；新增backup/external-outputs.ts负责冻结SQLite→精确文件→可选v1扩展，恢复只迁移已复制文件地址/根hash。shared结果可选扩展，原typed IPC不变；无DDL/依赖/Pi循环变化。不可变事件/native/check保留。源码27bb1b6，整合c792d82；docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
 
 ## 2026-11-01 已存局部OCR失败的本地恢复
