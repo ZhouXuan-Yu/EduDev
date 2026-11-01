@@ -9,6 +9,7 @@ import {WORD_PARSER,wordText,type WordPayload} from '../shared/material-word';
 import {extractWord} from './assets/word-host';
 import {copyDataBackupFiles,collectDataBackupEntries,snapshotDataBackupSqlite,REBUILDABLE_BACKUP_PATHS} from './backup/data-root-files';
 import {assertOutputBackupDestination,copyConversationOutputs,readConversationOutputsBackup} from './backup/conversation-outputs';
+import {copyExternalOutputs,readExternalOutputsBackup} from './backup/external-outputs';
 import {PaperRepository,type PaperSql} from './education/paper-repository';
 import {findMistakeSimilar} from './education/mistake-similar';
 import type {MistakeSimilarInput} from '../shared/mistake-similar';
@@ -4730,13 +4731,14 @@ export class OmniEduStore {
     await snapshotDataBackupSqlite(this.db,join(exportPath,'app.db'));
     const copied = await copyDataBackupFiles(this.dataRoot, exportPath);
     const conversationOutputs=await copyConversationOutputs(this.dataRoot,exportPath);
-    const fileCount=copied+1+conversationOutputs.fileCount;
+    const externalOutputs=await copyExternalOutputs(this.dataRoot,exportPath);
+    const fileCount=copied+1+conversationOutputs.fileCount+externalOutputs.fileCount;
     const manifestPath = join(exportPath, 'omni-edu-backup-manifest.v1.json');
     const entries = await this.collectBackupManifestEntries(exportPath);
-    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
+    writeFileSync(manifestPath, JSON.stringify({ schemaVersion: 'omni-edu-backup-manifest.v1', createdAt: now(), fileCount: entries.length, files: entries, conversationOutputs, externalOutputs, excludedRebuildablePaths:REBUILDABLE_BACKUP_PATHS }, null, 2), 'utf8');
     const verification = await this.verifyDataBackup(exportPath);
     if (!verification.verified) throw new Error(`备份完整性验证失败：${verification.errorMessage || '文件校验不一致'}`);
-    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
+    return { exportPath, fileCount, manifestPath, verified: true, conversationOutputs, externalOutputs, excludedRebuildablePaths:[...REBUILDABLE_BACKUP_PATHS] };
   }
 
   async verifyDataBackup(backupPath: string): Promise<DataBackupVerificationResult> {
@@ -4753,7 +4755,7 @@ export class OmniEduStore {
     };
     try {
       if (!existsSync(manifestPath)) return { ...base, errorMessage: '备份清单不存在或不是 Omni-Edu v1 备份' };
-      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;conversationOutputs?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
+      const parsed = JSON.parse(readFileSync(manifestPath, 'utf8')) as { schemaVersion?: string;conversationOutputs?:unknown;externalOutputs?:unknown; files?: Array<{ path?: string; size?: number; sha256?: string }> };
       if (parsed.schemaVersion !== 'omni-edu-backup-manifest.v1' || !Array.isArray(parsed.files)) return { ...base, errorMessage: '备份清单版本或结构无效' };
       const expected = new Map(parsed.files.flatMap((item) => {
         const relativePath = String(item.path ?? '').replace(/\\/g, '/');
@@ -4764,6 +4766,7 @@ export class OmniEduStore {
       }));
       if (expected.size !== parsed.files.length) return { ...base, errorMessage: '备份清单包含非法路径或重复条目' };
       const conversationOutputs=readConversationOutputsBackup(parsed.conversationOutputs,expected.keys());
+      const externalOutputs=readExternalOutputsBackup(parsed.externalOutputs,expected.keys());
       const actual = await this.collectBackupManifestEntries(resolvedBackup);
       const actualMap = new Map(actual.map((item) => [item.path, item]));
       const missingFiles = [...expected.keys()].filter((path) => !actualMap.has(path));
@@ -4773,7 +4776,7 @@ export class OmniEduStore {
         if (actualItem && (actualItem.size !== expectedItem.size || actualItem.sha256 !== expectedItem.sha256)) changedFiles.push(path);
       }
       const unexpectedFiles = [...actualMap.keys()].filter((path) => !expected.has(path));
-      return { ...base, ...(conversationOutputs?{conversationOutputs}:{}),verified: !missingFiles.length && !changedFiles.length && !unexpectedFiles.length, fileCount: expected.size, missingFiles, changedFiles, unexpectedFiles, errorMessage: missingFiles.length || changedFiles.length || unexpectedFiles.length ? '备份文件与清单不一致' : undefined };
+      return { ...base, ...(conversationOutputs?{conversationOutputs}:{}),...(externalOutputs?{externalOutputs}:{}),verified: !missingFiles.length && !changedFiles.length && !unexpectedFiles.length, fileCount: expected.size, missingFiles, changedFiles, unexpectedFiles, errorMessage: missingFiles.length || changedFiles.length || unexpectedFiles.length ? '备份文件与清单不一致' : undefined };
     } catch (error) {
       return { ...base, errorMessage: error instanceof Error ? error.message : '备份清单读取失败' };
     }
