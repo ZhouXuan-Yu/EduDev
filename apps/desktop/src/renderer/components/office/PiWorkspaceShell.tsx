@@ -62,16 +62,16 @@ export function PiWorkspaceShell({ title, sidebar, aside, files, children, onSki
   }
   useEffect(() => {
     const query = matchMedia('(max-width: 1050px)');
-    const resize = () => { setNarrow(query.matches); setRequestedInNarrow(false); };
+    const resize = () => { setNarrow(query.matches); setRequestedInNarrow(false); setPanelFocus({ request: 0 }); panelOrigin.current = undefined; };
     query.addEventListener('change', resize);
     return () => query.removeEventListener('change', resize);
   }, []);
   useEffect(() => { writeColumnWidth('xiaozhi.ui.panelWidth.v1', panelWidth); }, [panelWidth]);
-  useEffect(() => { if (visible) setPreferences(initialWorkspacePreferences(isEmpty)); }, [visible, sessionKey]);
+  useEffect(() => { if (visible) { setPanelFocus({ request: 0 }); panelOrigin.current = undefined; setPreferences(initialWorkspacePreferences(isEmpty)); } }, [visible, sessionKey]);
   // Loading first becomes an empty thread after hydration. Do not close a panel the
   // teacher subsequently opens in that same empty thread.
   useEffect(() => {
-    if (isEmpty && !emptyWasVisible.current) setPreferences(previous => ({ ...previous, files: false, aside: false }));
+    if (isEmpty && !emptyWasVisible.current) { setPanelFocus({ request: 0 }); panelOrigin.current = undefined; setPreferences(previous => ({ ...previous, files: false, aside: false })); }
     emptyWasVisible.current = isEmpty;
   }, [isEmpty]);
   useEffect(() => { setHistoryOpen(false); }, [sessionKey]);
