@@ -1,5 +1,20 @@
 # 当前架构
 
+## 2026-11-01 整份试卷质量漏斗与共性修复
+
+新普通原页冻结page-restoration.v3：覆盖字段只取题干连续原文，不混入选项摘要或解题公式；原第二遍携带有界本地字段检查代码，不新增调用循环。只有v3的临时parser输入可剔除与实际PDF页/总页匹配的末尾独立页码，原pageText/不可变回执保持。新输入冻结并复验总页数；旧v2/无元信息/答案册保持原语义，无新表、依赖、IPC或运行时。
+
+下一主线：让11道图题沿原QuestionDocument/原图来源链归档与出题，补齐跨页父题与有来源的整卷上下文，再贯通已知答案/联网补答、Pi检索组卷。缺失年级9、真实转录疑点3仍保留；不通过猜补或清空requires_image/来源门禁换取可用数。40GB、召回率/P95、独立资料集和安装交付仍未验收，Goal保持active。
+
+## 2026-11-01 整套导入后的答案册关联
+
+整套资料验收继续作为主线。已修复“先导入/OCR后关联答案册”被规则候选阻止的问题：原writer/CAS保留全部题目及教师记录，只在当前有效答案角色下默认隐藏未经处理的规则候选；原始候选开关可查看，解除关联恢复。教师编辑/确认/收藏/分类/使用过的记录不隐藏，来源过期或未知格式保持可见，付费AI角色冻结不变。抽题读窗口中途变更角色时留在pending重读，不误报来源变化。 当前候选ID集合只扫描已关联答案册的成员，不按整库逐条解析JSON；原表幂等建表入口共享，无新DDL版本。统一证据lateAnswerRole，整套Goal仍active。
+
+## 2026-11-01 K0文件式访问实施
+
+K0文件式访问adapter已贯通资料/AI取图、小智原页工具、原题候选及流式来源校验；页读取不再加载整本正文，partial按页准入。仍用原任务/文件Worker，不新增服务；资源优先级/公平性与完整Pi链路仍待验证。 [整体架构](KNOWLEDGE_BASE.md)。
+
+
 2026-11-01 E08：原changes新增可空saved_at/verified_at→textVersionCatalog元数据投影→原listDocumentArtifacts typed preload→TeachingArtifactsWorkspace→共用officeVersion host/历史组件。无新表/IPC/Runtime，原Office导出输入和结果不扩展HTML；旧库幂等兼容，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
 
 2026-11-01 E08：原text-change状态/服务→HTML版本薄适配→现officeVersion typed IPC/preload→共用版本组件/原HTML卡；原表仅新增可空parent_change_id，零新表/IPC/Runtime。恢复复用原文件queue和local settings owner。

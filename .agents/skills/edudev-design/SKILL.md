@@ -7,6 +7,10 @@ description: Design and review EduDev desktop pages using the user-approved navi
 
 本 Skill 管理界面决策，不授予提交、上传、安装或数据操作权限。用户当轮要求优先。
 
+设计交付版 V2：先看 [HTML 总览](../../../docs/design/system/ideal/handoff.html) 与[差距证据](../../../docs/design/system/UI_GAP_AND_DECISIONS_V2.md)。执行开发时读[分阶段 Goal](../../../docs/goal/UI_DESIGN_IMPLEMENTATION_V2.md)，从最新主线核对；不能按旧截图盲改。交付版不等于用户已通过全部视觉和生产验收。
+
+**受保护区域**：现有 `OfficeComposer` 输入框、底部工具栏及其弹层整体保留，含配置、交互与外观。HTML 中的 composer 仅为布局表达，不能复制替换实际组件。
+
 ## 先识别确认状态
 
 先读 [决策台账](references/decisions.md)。其中已确认的是设计约束，不代表正式页面已经实现；待确认项不能自动升级为产品要求。旧截图、旧 page-contracts 和现有 CSS 是迁移基线，不覆盖新的用户决定。保留功能及业务真源，并不要求保留重复的可见入口。
@@ -17,6 +21,7 @@ description: Design and review EduDev desktop pages using the user-approved navi
 - 页面重组与去冗余：[页面契约](references/page-contracts.md)。
 - 聊天、工具、正文、审批与跨页状态：[交互契约](references/interaction-contracts.md)。
 - 实施与截图验收：[验证与反例](references/verification.md)。
+- 组件选型、代码边界和任务切片：[实施映射](references/implementation-map.md)。
 
 ## 工作方式
 

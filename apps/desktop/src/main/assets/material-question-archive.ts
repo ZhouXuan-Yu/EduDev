@@ -8,6 +8,7 @@ import {nativeQuestionComplete} from '../../shared/native-question';
 import {migrateQuestionOrigins,recordRuleOrigin,recordAiOrigin,type RuleOrigin} from './material-question-origins';
 import {materialSource} from './material-source';
 import {validateAiPageSource} from './material-ai-page-source';
+import {answerRuleCandidateHidden} from './material-book-pairs';
 type Row=Record<string,unknown>;type Value=string|number|null;
 type Host={all:(q:string,p?:Value[])=>Promise<Row[]>;run:(q:string,p?:Value[])=>Promise<void>;materials:()=>MaterialRepository;validateAi?:(q:QuestionBankItem)=>Promise<void>;validateNative?:(q:QuestionBankItem)=>Promise<void>;withNative?:<T>(q:QuestionBankItem,action:(permit:object)=>Promise<T>)=>Promise<T>;publishNative?:(q:QuestionBankItem,permit:object)=>Promise<void>;reviseNative?:(q:QuestionBankItem,fields:ArchiveEdit['fields'],checked:boolean,permit:object)=>Promise<NonNullable<QuestionBankItem['archive']>['native']>;validateWeb?:(q:QuestionBankItem)=>Promise<void>;create:(q:QuestionBankItemInput)=>Promise<QuestionBankItem>;read:(id:string)=>Promise<QuestionBankItem|undefined>;withWriter:<T>(action:(archive:MaterialQuestionArchive)=>Promise<T>)=>Promise<T>};
 /** Persistent, local-only derivative stage. Source questions remain ordinary bank items. */
@@ -32,7 +33,7 @@ export class MaterialQuestionArchive{
  start(){if(this.timer)return;this.controller=new AbortController();const pump=()=>{if(this.pumping)return;this.pumping=(async()=>{await this.reconcileOrigins();const began=Date.now();do{if(!await this.drain())break;await new Promise<void>(resolve=>setImmediate(resolve));}while(Date.now()-began<1000&&!this.controller.signal.aborted);})().catch(()=>undefined).finally(()=>{this.pumping=undefined;});};this.timer=setInterval(pump,900);this.timer.unref();pump();}
  async close(){if(this.timer)clearInterval(this.timer);this.timer=undefined;this.controller.abort();await this.pumping;}
  async status():Promise<ArchiveStatus>{
-  const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all("SELECT COUNT(*) n FROM material_question_members WHERE needs_attention=1"))[0];
+  const r=(await this.host.all("SELECT SUM(status='pending') pending,SUM(status='failed') failed,SUM(status='complete') documents,SUM(question_count) questions FROM material_question_jobs"))[0],n=(await this.host.all(`SELECT COUNT(*) n FROM material_question_members m JOIN question_bank_items q ON q.id=m.question_id WHERE m.needs_attention=1 AND NOT COALESCE(${answerRuleCandidateHidden},0)`))[0];
   const associated=(await this.host.all('SELECT COUNT(*) n FROM material_question_origins WHERE covered=1'))[0];
   const state=(await this.host.all('SELECT value_json FROM app_settings WHERE key=?',['xiaozhi.question-origins.cursor.v1']))[0];let cursor=0;try{cursor=Number(JSON.parse(String(state?.value_json||'{}')).cursor)||0;}catch{}
   const latest=(await this.host.all('SELECT COALESCE(MAX(rowid),0) n FROM question_bank_items'))[0];
@@ -73,7 +74,9 @@ export class MaterialQuestionArchive{
    for(const [i,q]of questions.entries())if(cursor>0||snapshot.hasMore&&i===questions.length-1){if(!q.archive.issues.includes('cross_chunk'))q.archive.issues.push('cross_chunk');if(!q.archive.sourceRisks.includes('cross_chunk'))q.archive.sourceRisks.push('cross_chunk');}
    await this.host.withWriter(async target=>{
     const current=(await target.host.all("SELECT version,status,cursor,parse_token FROM material_question_jobs WHERE resource_id=?",[id]))[0];if(!current||current.version!==version||current.status!=='pending'||Number(current.cursor)!==cursor||current.parse_token!==token)return;
-    if(JSON.stringify(await target.bookRole?.(id))!==JSON.stringify(role))throw Error('source_changed');
+    // Linking while a local window is being read changes its purpose, not the original file.
+    // Leave the cursor pending; the next drain rereads the current role before extracting anything.
+    if(JSON.stringify(await target.bookRole?.(id))!==JSON.stringify(role))return;
     const fresh=await target.host.materials().readingWindow(id,cursor);if(fresh.fingerprint!==snapshot.fingerprint)throw new Error('source_changed');
     for(const q of questions){
      this.controller.signal.throwIfAborted();const key=createHash('sha256').update(id+'\0'+version+'\0numbered-text.v1\0'+JSON.stringify(q.archive.sources)+'\0'+q.key).digest('hex');

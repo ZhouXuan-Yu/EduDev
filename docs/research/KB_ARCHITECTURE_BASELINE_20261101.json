@@ -2,10 +2,10 @@
   "schemaVersion": "xiaozhi.kb-architecture-baseline.v1",
   "date": "2026-11-01",
   "baselineCommit": "d80b9b5bb4c758492627a1dcbb74bd2761a4cb43",
-  "scope": "Architecture decision, critical feasibility audit and ordered K0 delivery contract; no production source implementation in this delivery",
+  "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_pending_implementation",
+  "currentStage": "K0_in_progress_whole_exam_projection_quality_repair",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -48,9 +48,20 @@
     "chunks": 40,
     "utf8TextBytes": 6040,
     "corpus": "Forty synthetic one-page PDFs, accumulated through four 10 GiB selections",
-    "earlierColdHybridUiMs": [4000.6219, 5962.91],
-    "laterMergedColdHybridUiMs": [3962.54, 4543.14],
-    "laterMergedRerank": {"candidates": 40, "reranked": 20, "complete": false, "reason": "candidate_limit"},
+    "earlierColdHybridUiMs": [
+      4000.6219,
+      5962.91
+    ],
+    "laterMergedColdHybridUiMs": [
+      3962.54,
+      4543.14
+    ],
+    "laterMergedRerank": {
+      "candidates": 40,
+      "reranked": 20,
+      "complete": false,
+      "reason": "candidate_limit"
+    },
     "limitations": [
       "Not one natural mixed 40 GiB folder import",
       "Not high-cardinality text or question retrieval",
@@ -68,7 +79,10 @@
     "policy": "page-restoration.v2",
     "ocrStatus": "complete",
     "realCalls": 2,
-    "httpStatuses": [200, 200],
+    "httpStatuses": [
+      200,
+      200
+    ],
     "questionsPublished": 12,
     "questionsNeedingReview": 12,
     "batchStatus": "attention",
@@ -98,9 +112,21 @@
       "observation": "All build phases logged completion; process no longer running. Terminal exit code was lost in truncated tool output and is not claimed.",
       "exitCode": null,
       "fingerprints": [
-        {"file": "out/main/index.js", "bytes": 3340613, "sha256": "f79435e6594a2039e4483464e551a7f19745eb647354f946d040ec0c964b6e02"},
-        {"file": "out/preload/index.cjs", "bytes": 35346, "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"},
-        {"file": "out/renderer/assets/index-W_wcqK5i.js", "bytes": 7261323, "sha256": "6535fb9fa971bf50aa0dfd86382eacb13a3786b4d5b1b19fc043daf010f60c6f"}
+        {
+          "file": "out/main/index.js",
+          "bytes": 3340613,
+          "sha256": "f79435e6594a2039e4483464e551a7f19745eb647354f946d040ec0c964b6e02"
+        },
+        {
+          "file": "out/preload/index.cjs",
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        {
+          "file": "out/renderer/assets/index-W_wcqK5i.js",
+          "bytes": 7261323,
+          "sha256": "6535fb9fa971bf50aa0dfd86382eacb13a3786b4d5b1b19fc043daf010f60c6f"
+        }
       ]
     },
     "dependencyAudit": {
@@ -121,11 +147,31 @@
     "rollback": "Revert this documentation-only delivery; no data/schema rollback required. Retain local WIP stash and immutable real-provider evidence."
   },
   "orderedStages": [
-    {"id": "K0", "work": "Unify file-source/page/region consumers and existing task resource boundaries", "status": "pending"},
-    {"id": "K1", "work": "Durable recursive mixed-directory background workflow and recovery", "status": "pending"},
-    {"id": "K2", "work": "Multimodal question completeness, per-item quality and paired answer books", "status": "pending"},
-    {"id": "K3", "work": "Teacher-relevant bounded hybrid retrieval, Pi and paper workflow", "status": "pending"},
-    {"id": "K4", "work": "Natural 40 GiB/high-text corpus, soak and clean Windows delivery", "status": "pending"}
+    {
+      "id": "K0",
+      "work": "Unify file-source/page/region consumers and existing task resource boundaries",
+      "status": "in_progress_file_consumers_implemented"
+    },
+    {
+      "id": "K1",
+      "work": "Durable recursive mixed-directory background workflow and recovery",
+      "status": "pending"
+    },
+    {
+      "id": "K2",
+      "work": "Multimodal question completeness, per-item quality and paired answer books",
+      "status": "pending"
+    },
+    {
+      "id": "K3",
+      "work": "Teacher-relevant bounded hybrid retrieval, Pi and paper workflow",
+      "status": "pending"
+    },
+    {
+      "id": "K4",
+      "work": "Natural 40 GiB/high-text corpus, soak and clean Windows delivery",
+      "status": "pending"
+    }
   ],
   "lastIntegration": {
     "architectureCommit": "b0ff7b9",
@@ -135,18 +181,55 @@
     "conflictResolution": "Both additive knowledge-base and collaborator E07/memory records retained; no production conflict",
     "ownProductionDiffAgainstMergedMain": false,
     "checks": [
-      {"command": "npm.cmd run build", "exitCode": 0, "includes": "tsc --noEmit and electron-vite build", "logBasename": "kb-architecture-integrated-build-20261101.log"},
-      {"command": "npm.cmd run test:renderer-components", "exitCode": 0, "passed": 240, "total": 240, "logBasename": "kb-architecture-integrated-components-20261101.log"},
-      {"command": "git diff --check", "exitCode": 0},
-      {"check": "Architecture relative-link existence and JSON parse/stage assertions", "exitCode": 0, "relativeLinksChecked": 5},
-      {"check": "Merged Markdown has no unresolved conflict markers", "exitCode": 0}
+      {
+        "command": "npm.cmd run build",
+        "exitCode": 0,
+        "includes": "tsc --noEmit and electron-vite build",
+        "logBasename": "kb-architecture-integrated-build-20261101.log"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "exitCode": 0,
+        "passed": 240,
+        "total": 240,
+        "logBasename": "kb-architecture-integrated-components-20261101.log"
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      },
+      {
+        "check": "Architecture relative-link existence and JSON parse/stage assertions",
+        "exitCode": 0,
+        "relativeLinksChecked": 5
+      },
+      {
+        "check": "Merged Markdown has no unresolved conflict markers",
+        "exitCode": 0
+      }
     ],
     "fingerprints": [
-      {"file": "out/main/index.js", "bytes": 3341932, "sha256": "a77f213d4d1f68244bf2a6d0699e70be1b98d448f9099ee697b1d5a4bb6c3a03"},
-      {"file": "out/preload/index.cjs", "bytes": 35346, "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"},
-      {"file": "out/renderer/assets/index-Di-5hxfM.js", "bytes": 7262888, "sha256": "6bce694ac1f64561a050fe03ca47a190b89bc3af0759d136666d3aed7409d681"}
+      {
+        "file": "out/main/index.js",
+        "bytes": 3341932,
+        "sha256": "a77f213d4d1f68244bf2a6d0699e70be1b98d448f9099ee697b1d5a4bb6c3a03"
+      },
+      {
+        "file": "out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "file": "out/renderer/assets/index-Di-5hxfM.js",
+        "bytes": 7262888,
+        "sha256": "6bce694ac1f64561a050fe03ca47a190b89bc3af0759d136666d3aed7409d681"
+      }
     ],
-    "sizeDeltaFromBaseline": {"mainBytes": 1319, "rendererBytes": 1565, "attribution": "Collaborator source integration; documentation-only knowledge-base changes have no production behavior or latency delta"},
+    "sizeDeltaFromBaseline": {
+      "mainBytes": 1319,
+      "rendererBytes": 1565,
+      "attribution": "Collaborator source integration; documentation-only knowledge-base changes have no production behavior or latency delta"
+    },
     "noNewElectronJourneyOrProviderCallOnMergedSource": true,
     "noSemanticRecallOrP95ImprovementMeasured": true,
     "rollback": "Revert the knowledge-base documentation commits only; do not revert the collaborator merge or delete the preserved WIP. No business-data/DDL rollback."
@@ -159,5 +242,849 @@
     "https://github.com/Tencent/WeKnora",
     "https://github.com/Mintplex-Labs/anything-llm",
     "https://github.com/docling-project/docling"
-  ]
+  ],
+  "k0Implementation": {
+    "sourceCommits": [
+      "cbcfbb7bd67b42c74dc1152366699ee2a61da014",
+      "6322fa9"
+    ],
+    "mergedMain": "c446966ab4a5931dc2da2b1155e615c2a86498b2",
+    "mergeCommit": "613cc84591eb42c9a81cfd5dd437865a5069be59",
+    "markdownConflictsResolved": 13,
+    "productionConflicts": 0,
+    "changes": [
+      "Reuse renderPdfFilePage adapter for material UI, AI input, original question single/multi image staging and default Pi page tools",
+      "Use existing streaming verify for original-question source and on file-backed layout cache hits",
+      "Shared 10000-page input bound with unchanged actual-count/image/window bounds",
+      "Metadata-only SQLite page authority before/after OCR; unknown-page privacy remains global; partial permits only pages with committed body; no book readingSnapshot"
+    ],
+    "noNewTablesDependenciesIpcOrWorkerVersion": true,
+    "noOriginalsQuestionsOrAnswerEdits": true,
+    "noCloudCalls": true,
+    "dailyRuntimeOrInstallerUpdated": false,
+    "checks": [
+      {
+        "command": "npm.cmd run build",
+        "exitCode": 0,
+        "includes": "tsc --noEmit + electron-vite",
+        "logBasename": "kb-k0-integrated-build.log"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "exitCode": 0,
+        "passed": 240,
+        "total": 240,
+        "logBasename": "kb-k0-integrated-components.log"
+      },
+      {
+        "command": "node scripts/education/kb-k0-file-access-boundaries.mjs",
+        "exitCode": 0,
+        "passed": 64,
+        "localReportBasename": "omni-k0-boundary-4capM4/report.json",
+        "scope": "Actual SQLite 10001 text chunks, 51 MiB fixture, injected rendering, privacy/version/stop/busy/CAS/legacy original review and pre-call same-length source tampering; not real parser accuracy"
+      },
+      {
+        "command": "node scripts/education/kb-k0-real-journey.mjs <authorized-existing-test-root>",
+        "exitCode": 0,
+        "passed": 5,
+        "localReportBasename": "k0-file-lWsuwH/report.json",
+        "scope": "Actual production Electron material UI plus source-bundled production page-tool factory/file Worker against existing authorized real-book SQLite read-only adapter. No Pi/provider generation, mathematical/quality or 40GB acceptance.",
+        "rendererErrors": 0,
+        "cloudRequests": 0
+      },
+      {
+        "command": "npm.cmd run test:smoke",
+        "exitCode": 0,
+        "passed": 207,
+        "total": 207,
+        "buildSha256": "62ec945f790a8a50ae7dc7ee472e4702a838cb32fbabafadb041fb4129ca05af",
+        "logBasename": "kb-k0-smoke.log",
+        "scope": "Single comprehensive pass on file-consumer build BEFORE cache-hit stream-verification fix and collaborator HTML integration. Not claimed rerun on final build; affected 64 boundaries, final build/240 components and real journey passed after those changes."
+      },
+      {
+        "command": "npm.cmd audit --json",
+        "exitCode": 1,
+        "vulnerabilities": {
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "critical": 0,
+          "total": 45
+        },
+        "meaning": "Existing unresolved audit; dependencies unchanged including merged main"
+      },
+      {
+        "command": "git diff --check",
+        "exitCode": 0
+      }
+    ],
+    "finalBuild": [
+      {
+        "file": "out/main/index.js",
+        "bytes": 3357693,
+        "sha256": "786f43b7769498df6fb6b03c54aae30bbe77980d0d50ddcd5af3e46ade2b7d22"
+      },
+      {
+        "file": "out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "file": "out/renderer/assets/index-B_f7MQo-.js",
+        "bytes": 7264397,
+        "sha256": "3956118f0a43a1780a047e7c7d92a2c5918244ad3feb7e9cedbcccffcbbbef78"
+      }
+    ],
+    "baselineCombinedSizeDeltaBytes": {
+      "main": 15761,
+      "renderer": 1509,
+      "preload": 0,
+      "meaning": "Includes collaborator source changes; not a latency improvement"
+    },
+    "realObservations": [
+      {
+        "success": true,
+        "page": 51,
+        "totalPages": 62,
+        "totalLines": 156,
+        "next": null,
+        "windows": 3,
+        "returnedLines": 156,
+        "characters": 1899,
+        "ms": 1775.1143999999986,
+        "rssBefore": 454840320,
+        "rssAfter": 467079168
+      },
+      {
+        "success": true,
+        "page": 62,
+        "totalPages": 62,
+        "totalLines": 68,
+        "next": null,
+        "windows": 2,
+        "returnedLines": 68,
+        "characters": 1225,
+        "ms": 3645.447900000003,
+        "rssBefore": 467197952,
+        "rssAfter": 499523584
+      },
+      {
+        "success": true,
+        "page": 62,
+        "totalPages": 62,
+        "totalLines": 29,
+        "next": null,
+        "windows": 1,
+        "returnedLines": 29,
+        "positionBasis": "selected_region",
+        "characters": 592,
+        "ms": 6925.138999999999,
+        "rssBefore": 499544064,
+        "rssAfter": 299220992
+      },
+      {
+        "ok": true,
+        "page": 62,
+        "total": 62,
+        "sha256": "8b31f1f2919a41f97d9b94b38b8f2e0f58208aa49eee3ea6178eabfc25fdf621",
+        "width": 2400,
+        "height": 1752,
+        "ms": 7126.8367
+      },
+      {
+        "success": true,
+        "page": 62,
+        "totalPages": 62,
+        "totalLines": 68,
+        "next": null,
+        "windows": 2,
+        "returnedLines": 68,
+        "characters": 1225,
+        "ms": 410.4623999999999,
+        "rssBefore": 255639552,
+        "rssAfter": 294518784
+      }
+    ],
+    "performanceBoundary": "Single read samples, no controlled latency A/B/P95/semantic recall or total worker-memory measurement. Final page 62 cold-restarted cached complete two-window read includes stream hash and is about 410ms; first new OCR in earlier same-source journey about 10-13 seconds. Earlier 48ms sample predates cache-hit source fix and is not current performance.",
+    "preservedFailures": [
+      {
+        "kind": "Old source-only layout/original fixtures omitted contentHash; fail-closed production check rejected them",
+        "localLogBasename": "kb-k0-boundaries.log",
+        "fix": "Supply actual fixture hash, no gate relaxation"
+      },
+      {
+        "kind": "Electron probe dynamic import unavailable in Playwright evaluate",
+        "localReportBasename": "k0-file-TYjjUR/report.json",
+        "fix": "Use Node builtin createRequire; no production change"
+      },
+      {
+        "kind": "Typecheck invoked at root with wrong npx tsc",
+        "localLogBasename": "kb-k0-type.log",
+        "fix": "Use installed desktop TypeScript; final build typecheck passed"
+      }
+    ],
+    "criticalReview": {
+      "fixed": "A stable within-call stamp does not authenticate an older cached OCR result. Added stream-hash verification and a same-length pre-call original mutation regression.",
+      "stillOpen": [
+        "Existing 8-worker shared pool lacks measured heavy-task/foreground fairness; preserve original parse queue priorities and extend existing host next",
+        "High-cardinality SQL page/privacy query plans and index strategy not measured",
+        "Full production Pi conversation and teacher original-candidate confirm/export on real >50-page book not yet accepted; factory/SQLite adapter probe is narrower",
+        "Pending partial-page tool feedback still uses existing source/availability errors",
+        "K1-K4 natural directory quality/recall/P95, long soak and Windows end-user delivery still open"
+      ]
+    },
+    "rollback": "No DDL or data migration. Preserve originals, responses and existing WIP. Revert only this slice adapters with a reviewed patch while retaining the cache-hit source-authentication fix; do not revert collaborator merge. Full rollback rehearsal not performed."
+  },
+  "wholeSetScheduling": {
+    "date": "2026-11-01",
+    "goalComplete": false,
+    "sourceCommits": [
+      "40a2d9d",
+      "1376e81"
+    ],
+    "integrationCommit": "279c8fe",
+    "userAcceptance": "Complete arbitrary question-set folder through import, OCR, authorized AI, question/answer organization, retrieval/paper, restart; no book/page/question-specific production branches",
+    "scope": "Existing MaterialParseQueue only; no DDL, dependency, IPC or second runtime",
+    "implementation": {
+      "maxParsers": 2,
+      "lowMemoryAdmission": "one when free physical memory <2 GiB or total memory <8 GiB",
+      "foreground": "use a free slot; when full preempt only one background task",
+      "ownership": "existing ai_tasks immutable lease/CAS; same resource excluded until prior task settles",
+      "shutdown": "join tracked claims; priority recheck SQL failure covered"
+    },
+    "verification": [
+      {
+        "command": "node --import ./scripts/office-agent/register-source.mjs -e <materialQueueBoundaries runner>",
+        "passed": 24,
+        "total": 24,
+        "exitCode": 0,
+        "logBasename": "kb-parallel-queue-boundaries.log"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exitCode": 0,
+        "logBasename": "kb-parallel-components.log"
+      },
+      {
+        "command": "npm.cmd run test:smoke",
+        "passed": 207,
+        "total": 207,
+        "exitCode": 0,
+        "buildSha256": "b1c90694fc6771844c3e729dcf3c87501daa2bad589235b1e05aaf60a201e2bb",
+        "boundary": "Before final SQL-owner tracking fix; final fix covered by 24 boundary cases, final build/type and final real local restart; not claiming final 207 rerun"
+      },
+      {
+        "command": "npm.cmd run build",
+        "exitCode": 0,
+        "logBasename": "kb-parallel-final-build.log",
+        "includes": "tsc --noEmit"
+      },
+      {
+        "command": "npm.cmd audit --json",
+        "exitCode": 1,
+        "existingVulnerabilities": {
+          "critical": 0,
+          "high": 8,
+          "moderate": 29,
+          "low": 8,
+          "total": 45
+        }
+      },
+      {
+        "command": "node node_modules/typescript/bin/tsc --noEmit",
+        "exitCode": 0,
+        "logBasename": "kb-parallel-final-type.log"
+      }
+    ],
+    "realDirectory": {
+      "rootBasename": "omni-real-material-aWObCn",
+      "files": 11,
+      "bytes": 332294145,
+      "pdfFiles": 5,
+      "pdfPages": 111,
+      "successfulPdfPages": 109,
+      "reviewPdfPages": 2,
+      "imageFiles": 6,
+      "archived": 11,
+      "sourceUnchanged": true,
+      "rendererErrors": 0,
+      "cloudCalls": 0,
+      "ruleExtractedCandidates": 524,
+      "answerBookRuleCandidates": 90,
+      "readyMaterials": 9,
+      "partialMaterials": 2,
+      "pendingParsers": 0,
+      "runningParsers": 0,
+      "sourceScope": "All original top-level user-authorized files; no added subfolder/Word claim from this corpus",
+      "baseline": {
+        "buildSha256": "786f43b7769498df6fb6b03c54aae30bbe77980d0d50ddcd5af3e46ade2b7d22",
+        "report": "prior-local-run-Qw9l6M/report.json",
+        "exitCode": 1,
+        "reason": "Old 15-minute observer budget expired, not production parser timeout",
+        "answerManifestDelayMs": 778820
+      },
+      "concurrentResume": {
+        "buildSha256": "b1c90694fc6771844c3e729dcf3c87501daa2bad589235b1e05aaf60a201e2bb",
+        "firstDualAt": "2026-10-31T19:24:13.306Z",
+        "confirmedPageProgressAt": "2026-10-31T19:24:33.844Z",
+        "resources": [
+          "answer book",
+          "physics notes PDF"
+        ],
+        "actualOcrChildren": 2,
+        "workingSetMiBSample": [
+          503,
+          303
+        ],
+        "boundary": "One sample, not peak memory or throughput A/B; resumed different remaining work",
+        "report": "prior-local-run-Ovtcbh/report.json"
+      },
+      "finalReadback": {
+        "command": "node scripts/education/kb-real-material-journey.mjs <authorized-folder> <existing-owned-root> 60",
+        "exitCode": 1,
+        "localOutcome": "attention",
+        "success": false,
+        "reason": "Local material stage requires attention; settled or archived files are not accepted as a usable question bank",
+        "report": "report.json",
+        "latestSnapshot": "2026-10-31T19:35:13.388Z",
+        "buildSha256": "89c8a04c8c0461061e887dfaf1587bc9a8ee0ffa856cf1f54a35facad42e6355",
+        "sourceUnchanged": true,
+        "rendererErrors": 0
+      },
+      "answerPairFailure": {
+        "command": "node scripts/education/kb-wusan-pair-journey.mjs <existing-owned-root>",
+        "exitCode": 1,
+        "report": "book-pair-Nw3yrC/report.json",
+        "observed": "Visible link did not appear within 60s; active pair count remained zero",
+        "codeDiagnosis": "material-book-pairs.ts rejects material_question_members for answer resource; actual 90 rule candidates already exist",
+        "sourceUnchanged": true,
+        "dataDeleted": false
+      }
+    },
+    "criticalReview": {
+      "overallAccepted": false,
+      "confirmedBlockers": [
+        "Whole-set post-OCR answer book has 90 rule candidates; existing pair change rejects any archived answer members (answer_already_processed), so association currently requires an unsafe timing dependency before automatic extraction. No data deleted to bypass it.",
+        "2 source native/OCR text conflicts remain review; 524 local rule candidates are not 524 usable AI questions.",
+        "Full-folder AI, known-answer matching/writeback, Pi retrieval and paper acceptance remain unproved on this fresh directory."
+      ],
+      "next": "Fix answer-role transition and machine-candidate disposition in the existing import/question/book domains; protect teacher edits, bookmarks and usage, then continue the same whole-set AI/answer/search/paper journey. Do not return to per-page green tests."
+    },
+    "rollback": "Revert queue commits to one parser; preserve ai_tasks, originals, PDF receipts and all teacher data. No migration or full rollback rehearsal.",
+    "finalBuild": [
+      {
+        "file": "out/main/index.js",
+        "bytes": 3358349,
+        "sha256": "89c8a04c8c0461061e887dfaf1587bc9a8ee0ffa856cf1f54a35facad42e6355"
+      },
+      {
+        "file": "out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "file": "out/renderer/assets/index-B_f7MQo-.js",
+        "bytes": 7264397,
+        "sha256": "3956118f0a43a1780a047e7c7d92a2c5918244ad3feb7e9cedbcccffcbbbef78"
+      }
+    ],
+    "performance": {
+      "baselineMainBytes": 3357693,
+      "finalMainBytes": 3358349,
+      "mainDeltaBytes": 656,
+      "rendererChanged": false,
+      "preloadChanged": false,
+      "claim": "bounded two-file progress and reduced head-of-line waiting; no whole-corpus throughput/recall/P95 A/B"
+    }
+  },
+  "lateAnswerRole": {
+    "baseCommit": "013a6b998e449c45b609e76db41c40c00430bd7f",
+    "goalComplete": false,
+    "teacherOutcome": "An answer PDF can be associated after local extraction, preserving all raw questions and teacher facts; only untouched rule candidates are hidden by default, restored on unlink. Incompatible/in-flight AI input roles remain blocked.",
+    "implementation": [
+      "Shared idempotent migration for existing material_book_pairs (no schema change)",
+      "Indexed derived candidate ID set limited to current answer resources and source versions, with teacher edits/confirmation/bookmark/category/usage protection",
+      "Existing notebook raw switch and pending attention presentation, no canonical question or needs_attention mutation",
+      "Local extraction role race leaves pending cursor for reread; source/fingerprint changes still fail closed",
+      "Existing association and notebook UI copy updated; no new IPC, dependency, model, runtime or service"
+    ],
+    "build": {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "typecheckIncluded": true,
+      "fingerprints": [
+        {
+          "file": "apps/desktop/out/main/index.js",
+          "bytes": 3359953,
+          "sha256": "07eac5a3fc35877666c1df70baeff1acaaf51d02084ff9697bf15ea63773e9c5"
+        },
+        {
+          "file": "apps/desktop/out/preload/index.cjs",
+          "bytes": 35346,
+          "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+        },
+        {
+          "file": "apps/desktop/out/renderer/assets/index-DGrHaRaL.js",
+          "bytes": 7264669,
+          "sha256": "ec813513f9bc101e934915a689ad65be211e0ffbc3a901c2e22a565e7736b791"
+        }
+      ],
+      "mainDeltaBytes": 1604,
+      "rendererDeltaBytes": 272,
+      "preloadDeltaBytes": 0
+    },
+    "checks": [
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-pairs-boundaries.mjs",
+        "passed": 15,
+        "exit": 0,
+        "scope": "Versioned roles/CAS/idempotence; late linking without loss; teacher protection; malformed/unknown/stale archives; unlink/relink; indexed query plan; concurrent role reread; real body change still rejected"
+      },
+      {
+        "command": "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-source-origins-boundaries.mjs",
+        "passed": 13,
+        "exit": 0,
+        "scope": "Existing origin associations and invalidation; controlled AI evidence, not provider quality"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "exit": 0,
+        "scope": "Final unchanged renderer source; later edits confined to main SQL/race and scripts/docs"
+      },
+      {
+        "command": "node scripts/education/kb-wusan-pair-journey.mjs %TEMP%\\omni-real-material-aWObCn",
+        "passed": 6,
+        "exit": 0,
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\book-pair-5xm8eY\\report.json",
+        "scope": "Late answer-role association in the existing whole-directory acceptance database: actual question PDF62pages and answer PDF31pages, production UI/SQLite, candidate preservation/default visibility/unlink/relink and cold restart. Other imported files remain present. No model calls, whole-set AI-quality, per-question answer-match, retrieval/paper or scale acceptance claim."
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "exit": 1,
+        "scope": "Earlier same-round build fa6492c017a15579b0582c88094c2713e57ff4df8e1065cebf1c4fe4f2d65ec3 before indexed-ID-set/race changes; do not report 207 passed",
+        "failure": "scripts/electron-smoke.mjs:1501 L2 memory adoption readback: l2Detail.entries[0] undefined after prior length wait. No memory-module changes in this slice; cause not established; evidence retained, not weakened or rerun to hide failure"
+      }
+    ],
+    "realDirectory": {
+      "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn",
+      "inputFiles": 11,
+      "bytes": 332294145,
+      "existingAnswerCandidates": 90,
+      "before": {
+        "normal": 524,
+        "raw": 524,
+        "attention": 524
+      },
+      "after": {
+        "normal": 434,
+        "raw": 524,
+        "attention": 434
+      },
+      "canonicalRecordsUnchanged": true,
+      "unlinkRestoresCounts": true,
+      "restartSame": true,
+      "pairRevision": 7,
+      "viewports": [
+        {
+          "width": 1366,
+          "height": 768,
+          "css": {
+            "width": 1366,
+            "height": 768,
+            "dpr": 1.5
+          }
+        },
+        {
+          "width": 1920,
+          "height": 1080,
+          "css": {
+            "width": 1920,
+            "height": 1080,
+            "dpr": 1.5
+          }
+        }
+      ],
+      "rendererErrors": [],
+      "cloudCalls": 0,
+      "pdfStates": [
+        {
+          "name": "主书.pdf",
+          "generation": "2c179816-bf32-4536-8703-39a190ccfa72",
+          "total": 62,
+          "complete": 61,
+          "blank": 0,
+          "review": 1,
+          "failed": 0,
+          "pending": 0,
+          "state": "partial",
+          "bytes": 854369,
+          "failures": [
+            {
+              "page": 61,
+              "error": "text_conflict",
+              "attempts": 1
+            }
+          ]
+        },
+        {
+          "name": "答案.pdf",
+          "generation": "22bcc78a-fff7-4ce6-a590-43d809fa87af",
+          "total": 31,
+          "complete": 30,
+          "blank": 0,
+          "review": 1,
+          "failed": 0,
+          "pending": 0,
+          "state": "partial",
+          "bytes": 838358,
+          "failures": [
+            {
+              "page": 30,
+              "error": "text_conflict",
+              "attempts": 1
+            }
+          ]
+        }
+      ],
+      "wholeSetAccepted": false
+    },
+    "performance": {
+      "firstCorrelatedQuery": {
+        "rows": 524,
+        "iterations": 50,
+        "before": {
+          "count": 524,
+          "medianMs": 0.054400000000015325,
+          "p95Ms": 0.0741999999999905,
+          "maxMs": 0.09979999999998768
+        },
+        "after": {
+          "count": 434,
+          "medianMs": 2.0556000000000267,
+          "p95Ms": 2.4775000000000205,
+          "maxMs": 2.720100000000002
+        },
+        "scope": "Warm read-only local count query on the existing 524-rule-candidate acceptance database; not user-path latency or tens-of-GB capacity"
+      },
+      "finalIndexedQuery": {
+        "rows": 524,
+        "iterations": 50,
+        "scope": "Warm read-only local count query, current real acceptance DB; not end-to-end or scale acceptance",
+        "before": {
+          "count": 524,
+          "medianMs": 0.054000000000002046,
+          "p95Ms": 0.07110000000000127,
+          "maxMs": 0.08039999999999736
+        },
+        "after": {
+          "count": 434,
+          "medianMs": 0.7028999999999996,
+          "p95Ms": 0.9114999999999895,
+          "maxMs": 1.1973000000000127
+        },
+        "plan": [
+          "SCAN q USING COVERING INDEX sqlite_autoindex_question_bank_items_1",
+          "CORRELATED SCALAR SUBQUERY 1",
+          "SEARCH o USING INDEX sqlite_autoindex_material_question_origins_1 (question_id=?)",
+          "LIST SUBQUERY 6",
+          "SCAN p USING INDEX idx_material_book_answer",
+          "SEARCH a USING INDEX sqlite_autoindex_teacher_resources_1 (id=?)",
+          "SEARCH r USING INDEX sqlite_autoindex_teacher_resources_1 (id=?)",
+          "SEARCH m USING INDEX material_question_members_resource (resource_id=?)",
+          "SEARCH aq USING INDEX sqlite_autoindex_question_bank_items_1 (id=?)",
+          "CORRELATED SCALAR SUBQUERY 2",
+          "SEARCH b USING INDEX sqlite_autoindex_question_notebook_bookmarks_1 (question_id=?)",
+          "CORRELATED SCALAR SUBQUERY 3",
+          "SEARCH l USING COVERING INDEX sqlite_autoindex_question_notebook_category_links_1 (question_id=?)",
+          "CORRELATED SCALAR SUBQUERY 4",
+          "SEARCH u USING COVERING INDEX idx_question_bank_usage (question_id=?)",
+          "CORRELATED SCALAR SUBQUERY 5",
+          "SCAN s VIRTUAL TABLE INDEX 3:",
+          "CREATE BLOOM FILTER"
+        ]
+      },
+      "conclusion": "Added role filtering costs about 0.65ms median on the 524-row warm local sample; indexed ID set reduces initial draft overhead. Not an end-to-end speedup, natural-scale, memory-peak or retrieval P95 claim."
+    },
+    "preservedFailures": [
+      "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\book-pair-Nw3yrC\\report.json",
+      "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\book-pair-LplUUx\\report.json"
+    ],
+    "testHarnessRepair": "Replay initially queried linked/unlinked controls before async loading finished; waits for one actual state now. SQLite fixture count expectation corrected to retain all existing memberships instead of assuming zero.",
+    "audit": {
+      "vulnerabilities": {
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "dependenciesChanged": false,
+      "clean": false
+    },
+    "rollback": "Unlink the new association to restore original default visibility. Revert only this slice if needed; original/teacher/AI records retained, old readers will show raw candidates. Full code rollback not rehearsed.",
+    "notAccepted": [
+      "Whole-set OCR/AI quality and complete known/missing-answer workflow",
+      "Pi retrieval/similar-question/paper user path on the whole set",
+      "40GB natural corpus recall, latency and durable resource stability",
+      "Windows installed EXE/optional-component delivery",
+      "Comprehensive smoke gate remains failed at memory readback"
+    ],
+    "next": "Continue complete-set authorized AI processing and question/answer evidence, then Pi retrieval and paper output; do not implement book/page/question-specific production exceptions."
+  },
+  "wholeExamProjection": {
+    "date": "2026-11-01",
+    "scope": "One complete public six-page physics exam selected from the authorized 11-file folder; actual folder UI, actual local parsing, real DeepSeek, SQLite/file evidence, cold restart. No mocks, source-specific production branches, deleted old rows or changed mathematical gate. This is not arbitrary-library acceptance.",
+    "sourceVersion": "edc42e345797f89f99958228db677c0030229fdcaaa43f5d6a7faa33bb8042d7",
+    "before": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-jPtqvv",
+      "reportSha256": "96ddd572f9a075afe28b2c2be6a3b194092cfcf36ae3eb013a10080f9bc38408",
+      "batchId": "batch_ca78f35e-c03e-4cc9-8614-779de413f999",
+      "buildSha256": "07eac5a3fc35877666c1df70baeff1acaaf51d02084ff9697bf15ea63773e9c5",
+      "folderResult": {
+        "schemaVersion": "xiaozhi.material-folder-ai.v1",
+        "batchId": "batch_ca78f35e-c03e-4cc9-8614-779de413f999",
+        "status": "attention",
+        "revision": 1,
+        "maxCalls": 12,
+        "calls": 12,
+        "reserved": 12,
+        "resources": 1,
+        "units": 6,
+        "complete": 0,
+        "skippedCover": 0,
+        "review": 6,
+        "failed": 0,
+        "waiting": 0,
+        "readyQuestions": 0,
+        "reviewQuestions": 17,
+        "error": "",
+        "issues": [
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 1,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 2,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 3,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 4,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 5,
+            "error": "page_content_incomplete"
+          }
+        ]
+      },
+      "candidateRows": 17,
+      "issueCounts": {
+        "ai_mismatch": 17,
+        "requires_image": 11,
+        "incomplete_question": 14,
+        "missing_grade": 11,
+        "uncertain_ocr": 6
+      },
+      "actualCloudCalls": 12,
+      "allHttp200": true,
+      "pipelineSettled": true,
+      "qualityAccepted": false,
+      "coldRestart": null,
+      "rendererErrors": 0
+    },
+    "after": {
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-codxqcpn",
+      "reportSha256": "e8af2d4d728e66c49db41f1b3819c66627845a9e541eda996022a4b5d1b9bce7",
+      "batchId": "batch_ee9b0a60-2089-4f09-81a3-a96280f1c30b",
+      "buildSha256": "5227a9c6123e0cb1dfe3d4908476fb6943bb4bc09f38e168073ab81e4abce574",
+      "folderResult": {
+        "schemaVersion": "xiaozhi.material-folder-ai.v1",
+        "batchId": "batch_ee9b0a60-2089-4f09-81a3-a96280f1c30b",
+        "status": "attention",
+        "revision": 1,
+        "maxCalls": 12,
+        "calls": 12,
+        "reserved": 12,
+        "resources": 1,
+        "units": 6,
+        "complete": 0,
+        "skippedCover": 0,
+        "review": 6,
+        "failed": 0,
+        "waiting": 0,
+        "readyQuestions": 4,
+        "reviewQuestions": 11,
+        "error": "",
+        "issues": [
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 1,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 2,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 3,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 4,
+            "error": "page_content_incomplete"
+          },
+          {
+            "resourceId": "resource_c4ecac0e-e4ae-4436-803a-2aff232ac3be",
+            "title": "26年6月风华初三三模模拟测试卷(1)",
+            "unit": 5,
+            "error": "page_content_incomplete"
+          }
+        ]
+      },
+      "candidateRows": 15,
+      "issueCounts": {
+        "ai_mismatch": 11,
+        "requires_image": 11,
+        "incomplete_question": 11,
+        "missing_grade": 9,
+        "uncertain_ocr": 3
+      },
+      "actualCloudCalls": 12,
+      "allHttp200": true,
+      "pipelineSettled": true,
+      "qualityAccepted": false,
+      "coldRestart": {
+        "sameFolderResult": true,
+        "sameQuestions": true,
+        "noAdditionalCalls": true
+      },
+      "rendererErrors": 0
+    },
+    "policy": "page-restoration.v3",
+    "changes": [
+      "Literal contiguous source coverage instead of option summaries or solution formulas in projection",
+      "Bounded local review codes sent only in the existing second pass",
+      "Verified terminal PDF page counter stripped only in the v3 ephemeral parser input; raw transcripts unchanged",
+      "Freeze actual PDF total; validate it before dispatch and source reads; legacy/v2 and answer-book prompt unchanged"
+    ],
+    "checks": {
+      "boundaryChecks": 45,
+      "rendererComponents": 240,
+      "buildAndTypecheck": "passed",
+      "wholeSetQualityGate": "failed, exit 1; 4 ready / 11 held",
+      "wholeSetRestart": "same folder and question readback; no extra calls",
+      "npmAudit": {
+        "exit": 1,
+        "total": 45,
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "dependencyChanges": false
+      },
+      "comprehensiveSmoke": "Earlier same-round run failed at memory L2 adoption readback (electron-smoke.mjs:1501). Not rerun after this projection-only fix; not claimed passed."
+    },
+    "commands": [
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-ai-page-boundaries.mjs",
+      "npm.cmd run build",
+      "npm.cmd run test:renderer-components",
+      "node %TEMP%/omni-real-material-aWObCn/whole-exam.mjs run <new inspected whole-exam directory>",
+      "npm.cmd audit --json"
+    ],
+    "build": [
+      {
+        "path": "apps/desktop/out/main/index.js",
+        "bytes": 3363964,
+        "sha256": "5227a9c6123e0cb1dfe3d4908476fb6943bb4bc09f38e168073ab81e4abce574"
+      },
+      {
+        "path": "apps/desktop/out/preload/index.cjs",
+        "bytes": 35346,
+        "sha256": "8cea386b5ab43c6703df19445a46b833685c4e26e037c967fdcfa02bba1c5b51"
+      },
+      {
+        "path": "apps/desktop/out/renderer/assets/index-DGrHaRaL.js",
+        "bytes": 7264669,
+        "sha256": "ec813513f9bc101e934915a689ad65be211e0ffbc3a901c2e22a565e7736b791"
+      }
+    ],
+    "performance": {
+      "mainBytesBefore": 3359953,
+      "mainBytesAfter": 3363964,
+      "mainBytesDelta": 4011,
+      "rendererAndPreloadUnchanged": true,
+      "paidCallsPerWholeExamBefore": 12,
+      "paidCallsPerWholeExamAfter": 12,
+      "stableLatencyOrRecallBenchmark": false
+    },
+    "nextCriticalWork": [
+      "11 diagram-dependent questions are held; retain source image and add governed original-question/diagram publication through the existing model, not a requiresImage bypass",
+      "Parent question continuation across page boundaries remains unassembled",
+      "Later pages lack source-backed document grade/context; do not fill by guess",
+      "Full known-answer pairing, web supplementation, Pi paper generation, held-out corpus, recall/P95, 40GB and installer remain unaccepted"
+    ],
+    "rollback": "Pause v3 batches and stop new v3 creation in a scoped rollback; retain v3 read/source validation and immutable receipts. Do not resume a v3 first draft with v2 instructions or reinterpret old results.",
+    "followThrough": {
+      "success": true,
+      "readbackOnly": true,
+      "runId": "run_1b105bbd-31fd-4949-8dd6-3a53f83bee3a",
+      "questionId": "question_fd372722-2a8f-4e69-b857-8827b51a579f",
+      "notebookUi": true,
+      "actualPiTools": [
+        "education_search_questions",
+        "education_search_questions",
+        "education_read_question"
+      ],
+      "pairedAssistantMatchesStoredStemAndAnswer": true,
+      "sameNewAiFinalQuestion": true,
+      "provider": "deepseek",
+      "model": "deepseek-flash",
+      "runtimeRequestSummary": {
+        "version": 1,
+        "mode": "optimized",
+        "preparationMs": 740.3265000000001,
+        "sdkEndedMs": 37756.28660000001,
+        "elapsedMs": 36958.474700000006,
+        "firstProviderEventMs": 5136.603999999999,
+        "firstAnswerTextMs": 5431.2094,
+        "lastAnswerTextMs": 36577.1302,
+        "requests": 3,
+        "retries": 0,
+        "requestBytes": 403791,
+        "maxExposedTools": 29,
+        "nativeSessionCacheHit": 0
+      },
+      "independentHttpLedger": false,
+      "extraCallsForReadback": 0,
+      "originalHelperExit": 1,
+      "helperFailure": "Main-process transport interception does not observe Pi runtime; missing pi-transport.json. Original failed report retained.",
+      "scope": "One actual UI question lookup after complete-exam import. No mathematical correctness, whole-library recall/P95 or paper acceptance.",
+      "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\whole-exam-codxqcpn\\read-runtime-readback.json",
+      "reportSha256": "e8bef2e9fa9a47cd7c1d1d348e75cc9fe5954a4a2acdebeffc686d21ff2b38b1"
+    }
+  }
 }

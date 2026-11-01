@@ -1,5 +1,10 @@
 # 知识库实施证据
 
+## 2026-11-01 K0文件式访问实施
+
+文件式访问切片真实结果与最终源码/构建/失败边界统一写入research/KB_ARCHITECTURE_BASELINE_20261101.json#k0Implementation，旧架构审查和真实AI失败证据保留；不得把当前局部来源探针称完整Pi/几十GB验收。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
 ## 2026-11-01 知识库整体架构优先
 
 整体架构可行性基线：[KB_ARCHITECTURE_BASELINE_20261101](../research/KB_ARCHITECTURE_BASELINE_20261101.json)；架构/当前阶段：[KNOWLEDGE_BASE](../architecture/KNOWLEDGE_BASE.md)。本轮架构与证据整理不改生产源码，不把WIP测试算主线证据；K0待实施、完整Goal active。历史40GiB仅40正文块，最新真实2调用仍12题待核。

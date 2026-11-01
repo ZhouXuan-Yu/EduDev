@@ -70,5 +70,7 @@ async function runFile(input:Input,operation:Operation,signal:AbortSignal,onEven
 }
 export async function parsePdfFile(input:Input,skipPages:number[],signal:AbortSignal,onEvent:(event:PdfFileEvent,executionSignal:AbortSignal)=>Promise<void>){await runFile(input,{operation:'parse',skipPages},signal,onEvent);}
 export async function previewPdfFile(input:Input,page:number,box:PageBox,signal:AbortSignal){const receipt=await runFile(input,{operation:'preview',page,box},signal);if(!receipt||receipt.schemaVersion!=='xiaozhi.local-pdf-page.v1')throw new Error('parse_failed');return receipt;}
+/** Shared file-render adapter for UI, Pi and original-question consumers. */
+export const renderPdfFilePage=(input:Input,region:{page:number;box:PageBox},signal:AbortSignal)=>previewPdfFile(input,region.page,region.box,signal);
 
 export async function layoutPdfFile(input:Input,page:number,signal:AbortSignal){const receipt=await runFile(input,{operation:'layout',page},signal);if(!receipt||receipt.schemaVersion!=='xiaozhi.local-pdf-layout.v1')throw new Error('parse_failed');return receipt;}

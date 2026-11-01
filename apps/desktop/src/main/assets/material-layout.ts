@@ -58,6 +58,9 @@ export async function readMaterialLayout(repository:MaterialRepository,cache:Mat
  signal.throwIfAborted();
  if(!validPdfLayout(layout)||!layout.ok||layout.inputSha256!==query.version||layout.page!==query.page)throw new Error(cached?'cache_invalid':'parse_failed');
  try{validateRaster(layout);}catch{throw new Error(cached?'cache_invalid':'parse_failed');}
+ // A stable stamp within this call does not prove that the file still matches
+ // an older cached receipt. Stream-verify the original on every file-cache hit.
+ if(fileRecognize&&cached)await repository.verify(query.resourceId,query.version,signal);
  if(fileRecognize){if(await repository.originalStamp(query.resourceId,query.version)!==stamp)throw new Error('source_changed');}else await repository.original(query.resourceId,query.version,signal);signal.throwIfAborted();
  if(!cached)await cache.put(query,layout,signal);
  if(fileRecognize){if(await repository.originalStamp(query.resourceId,query.version)!==stamp)throw new Error('source_changed');}else await repository.original(query.resourceId,query.version,signal);signal.throwIfAborted();

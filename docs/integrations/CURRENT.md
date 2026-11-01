@@ -1,5 +1,21 @@
 # 当前集成与复用
 
+## 2026-11-01 整份试卷质量漏斗与共性修复
+
+新普通原页冻结page-restoration.v3：覆盖字段只取题干连续原文，不混入选项摘要或解题公式；原第二遍携带有界本地字段检查代码，不新增调用循环。只有v3的临时parser输入可剔除与实际PDF页/总页匹配的末尾独立页码，原pageText/不可变回执保持。新输入冻结并复验总页数；旧v2/无元信息/答案册保持原语义，无新表、依赖、IPC或运行时。
+
+仍复用原MaterialAiRepository/provider、原writer/页回执、typed preload与资料AI/题本界面。没有新PDF/OCR/RAG或Agent轮子。
+
+## 2026-11-01 整套导入后的答案册关联
+
+整套资料验收继续作为主线。已修复“先导入/OCR后关联答案册”被规则候选阻止的问题：原writer/CAS保留全部题目及教师记录，只在当前有效答案角色下默认隐藏未经处理的规则候选；原始候选开关可查看，解除关联恢复。教师编辑/确认/收藏/分类/使用过的记录不隐藏，来源过期或未知格式保持可见，付费AI角色冻结不变。抽题读窗口中途变更角色时留在pending重读，不误报来源变化。 复用原表、SQLite writer、typed preload、题本与关联面板，无新服务/依赖或模型调用。
+
+
+## 2026-11-01 K0文件式访问实施
+
+沿原PDF文件Worker新增唯一renderPdfFilePage adapter，替换资料/AI原图回调并接通原题候选与小智页工具；原题verify复用既有流式hash。无依赖/许可证/组件版本变化，保留旧byte小文件测试入口，失败不自动切回整书字节。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
 2026-11-01 E08：HTML目录复用原text-change/Pi算法、原资源列表/HTML预览与版本组件；0依赖/新IPC/付费。源码6、HTML8、Office16、组件240、正式目录8及build/type通过；原生OS只核回调派发，不声称浏览器接受。证据docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
 
 2026-11-01 E08：HTML历史复用Pi编辑/原text ledger、Office版本DTO/typed IPC和原ScienceDemoFrame；零新组件库/CSS/依赖。Office16与原冲突6专项通过。

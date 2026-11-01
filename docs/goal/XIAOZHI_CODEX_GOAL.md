@@ -1,5 +1,17 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+## 2026-11-01 整套导入后的答案册关联
+
+整套资料验收继续作为主线。已修复“先导入/OCR后关联答案册”被规则候选阻止的问题：原writer/CAS保留全部题目及教师记录，只在当前有效答案角色下默认隐藏未经处理的规则候选；原始候选开关可查看，解除关联恢复。教师编辑/确认/收藏/分类/使用过的记录不隐藏，来源过期或未知格式保持可见，付费AI角色冻结不变。抽题读窗口中途变更角色时留在pending重读，不误报来源变化。
+
+同一真实11文件目录数据库已有验证：90条答案候选逐字段不变，默认题本/待核524→434，原始524，解除恢复524，重关联与冷启一致；两个OCR冲突页仍待核。最终构建复验结果见统一基线lateAnswerRole。15关联/可见性/并发边界、13原来源边界，240组件已通过；完整AI→已知答案→Pi检索/组卷、40GB与安装仍未验收，Goal active。不得用此切片称全流程通过。
+
+
+## 2026-11-01 K0文件式访问实施
+
+知识库K0已开始落实文件式消费者及有界页权限；完整K0/K1–K4、自然几十GB质量召回和Windows交付仍未完成，Goal active。原产品边界与协作者其他模块不变。 [整体架构](../architecture/KNOWLEDGE_BASE.md)。
+
+
 2026-11-01 E08教学文件HTML目录与时间工程已实现（1ff075c）：原修改账本派生当前族行，同一教学文件/对话版本控制可预览、另存恢复及回来源对话；正常保存记成功回执时间，旧记录未知、中断后只记核验时间。源码6、HTML8、Office16、build/type、240组件、正式Electron8（原三版续成第四版/双尺寸DPR1.5实测/冷启）exit0，0付费/模型重放/renderer错误。主包+2810B、renderer+614B、preload不变，仅按需元数据；无速度/P95结论。系统OS仅派发回调核对；完整来源页/行导航、E08/252AT及既有mastery_quiz失败仍待，未重复综合。D盘日常/安装包未更新，Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlCatalogSlice。
 
 2026-11-01 E08本轮收尾：整合main001093f为ab738bf，13处Markdown冲突保留双方；主线本次仅文档，HTML源码37bd444及实际out指纹逐字节未变，沿已通过源码8/Office16/冲突6/240组件/正式Pi6，不为文档重跑全套。单次综合mastery_quiz checkpoint失败保留，待相关路径定位；完整AT未完成。Goal active，下一HTML目录/来源/版本时间+C，再S/T；D盘日常/安装包未更新。证据htmlVersionSlice.lastIntegration。

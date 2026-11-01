@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小智 · UI 设计交付版 V2</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="shell.css">
+  <link rel="stylesheet" href="chat.css">
+  <link rel="stylesheet" href="composer.css">
+  <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="library.css">
+  <link rel="stylesheet" href="paper.css">
+  <link rel="stylesheet" href="lesson.css">
+  <script defer src="ui.js"></script>
+  <script defer src="composer.js"></script>
+  <script defer src="chat.js"></script>
+  <script defer src="library-data.js"></script>
+  <script defer src="library.js"></script>
+  <script defer src="paper.js"></script>
+  <script defer src="lesson.js"></script>
+  <script defer src="resources.js"></script>
+  <script defer src="students.js"></script>
+  <script defer src="settings-dialogs.js"></script>
+  <script defer src="settings.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="review-bar">
+    <span><b>设计审阅</b><span class="review-description"> · 演示数据，不连接模型或本地资料</span></span>
+    <div class="review-actions">
+      <a class="review-link" href="handoff.html">设计总览与开发交接</a>
+      <label class="sr-only" for="scene">对话状态演示</label>
+      <select id="scene" aria-label="对话状态演示">
+        <option value="home">空白对话</option><option value="running">运行中</option>
+        <option value="approval">待教师确认</option><option value="completed">已完成</option>
+        <option value="failed">工具失败</option><option value="stopped">已停止</option>
+      </select>
+      <button class="review-link" id="guide-button">页面目录与审阅说明</button>
+    </div>
+  </div>
+  <div class="app" id="app">
+    <aside class="sidebar" aria-label="主导航">
+      <header class="brand"><span data-icon="book"></span><strong class="nav-label">小智</strong>
+        <button class="icon-button" id="collapse" aria-label="收起导航" aria-expanded="true" title="收起导航"><span data-icon="panel-left"></span></button>
+      </header>
+      <div class="sidebar-scroll">
+        <button class="nav-item" data-route="chat" title="问小智"><span data-icon="chat"></span><span class="nav-label">问小智</span></button>
+        <button class="nav-item" id="new-chat" title="新建对话"><span data-icon="plus"></span><span class="nav-label">新建对话</span></button>
+        <button class="nav-item" id="search-chat" title="搜索对话"><span data-icon="search"></span><span class="nav-label">搜索对话</span></button>
+        <section class="sidebar-section nav-label">
+          <div class="section-label"><span>教学空间</span><button class="icon-button small" id="new-space" aria-label="新建教学空间"><span data-icon="folder-plus"></span></button></div>
+          <div id="spaces"><button class="nav-item space" data-space="八年级物理"><span data-icon="folder"></span>八年级物理</button><button class="nav-item space" data-space="七年级数学"><span data-icon="folder"></span>七年级数学</button></div>
+        </section>
+        <section class="sidebar-section nav-label history">
+          <div class="section-label">最近对话</div>
+          <button class="history-item" data-history="浮力实验课备课">浮力实验课备课</button>
+          <button class="history-item" data-history="一元一次方程练习">一元一次方程练习</button>
+          <button class="history-item" data-history="本周学习记录整理">本周学习记录整理</button>
+        </section>
+      </div>
+      <nav class="destinations" aria-label="工作台">
+        <button class="nav-item" data-route="library" title="资料库"><span data-icon="library"></span><span class="nav-label">资料库</span></button>
+        <button class="nav-item" data-route="teaching" title="教学工作台"><span data-icon="book"></span><span class="nav-label">教学工作台</span></button>
+        <button class="nav-item" data-route="students" title="学生工作台"><span data-icon="users"></span><span class="nav-label">学生工作台</span></button>
+      </nav>
+      <footer class="sidebar-footer"><button class="nav-item" data-route="settings" title="设置"><span data-icon="settings"></span><span class="nav-label">设置</span></button></footer>
+    </aside>
+    <main class="workspace">
+      <header class="workspace-header">
+        <div class="breadcrumb"><strong id="page-title">问小智</strong><span class="muted" id="page-context"></span></div>
+        <div class="header-actions"><button id="attention" class="text-button" hidden></button><button class="icon-button" id="panel-toggle" aria-label="打开任务与文件" aria-expanded="false" title="任务与文件"><span data-icon="panel-right"></span></button><button class="icon-button" id="workspace-more" aria-label="更多页面操作" title="更多"><span data-icon="more"></span></button></div>
+      </header>
+      <div class="workspace-body"><section id="content" class="content" aria-label="当前页面"></section><aside id="context" class="context" aria-label="任务与文件" hidden></aside></div>
+    </main>
+  </div>
+  <dialog id="modal" aria-labelledby="dialog-title"><div id="modal-body"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

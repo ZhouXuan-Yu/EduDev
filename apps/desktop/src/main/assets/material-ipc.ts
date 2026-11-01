@@ -20,7 +20,7 @@ import {materialCitation} from '../../shared/materials';
 import {validArchiveEdit} from '../../shared/question-archive';
 import {questionVersion} from '../education/question-context-provider';
 import {materialSnippet} from './material-snippet';
-import {previewPdfFile,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
+import {renderPdfFilePage,layoutPdfFile} from '../xiaozhi-agent/pdf-file-host';
 
 /** Main-owned native file selection; public retry accepts an ID, never a path. */
 export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|undefined,ipcMain:Pick<Electron.IpcMain,'handle'>=electronIpcMain){
@@ -87,7 +87,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
    check(event);if(!validMaterialPreviewQuery(input))throw new Error('invalid_input');if(preview)throw new Error('busy');
    const query=structuredClone(input),controller=new AbortController();owned={requestId:query.requestId,controller};preview=owned;
    const closed=()=>controller.abort();event.sender.once('destroyed',closed);
-   try{const result=await previewMaterialPage(store.materials,query,controller.signal,renderLocalPdfPage,(resource,input,signal)=>previewPdfFile(resource,input.page,input.box,signal));check(event);controller.signal.throwIfAborted();return result;}
+   try{const result=await previewMaterialPage(store.materials,query,controller.signal,renderLocalPdfPage,renderPdfFilePage);check(event);controller.signal.throwIfAborted();return result;}
    finally{event.sender.removeListener('destroyed',closed);}
   }catch(error){const code=owned?.controller.signal.aborted?'cancelled':error instanceof Error?error.message:'';
    const known:MaterialPreviewError[]=['invalid_input','permission_denied','source_changed','missing','unsupported','too_large','configuration','empty','parse_failed','busy','timeout','cancelled','unavailable'];
