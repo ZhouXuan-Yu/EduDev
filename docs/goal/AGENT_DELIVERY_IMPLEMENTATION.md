@@ -367,3 +367,6 @@ renderer7179937→7182635B；合成Pi单次8488ms，不当作前后延迟/P95或
 ### C03 续写依赖补充（先于选读修复）
 
 受控复制FX09历史续写在第一请求前configuration失败；隔离诊断堆栈已定位pi-session的office-text身份比较，新旧workspace绝对目录不等。原privateWorkspaceFingerprintCwd已严格限定同一aisession及xiaozhi-pi/workspace后缀，creation/control已沿用历史身份，五类文件工具身份尚未沿用。先将office-text/science-figure/document/artifact/delivery的身份workspace统一为该已验证historicalWorkspace；实际工具、SessionManager cwd、fileReadWorkspace和输出服务继续当前目录，不改原native/journal/SQLite、不迁移外选授权。反例沿原private identity边界检验，正式Pi复制FX09应从原输入入口继续一次本地受控流；旧消息/事件hash一致。若无选择位置缺陷则不改选择适配器。此项是C03历史连续性缺口，不能把冷读成功当续写成功。用户本轮另行明确允许关闭重启D日常窗口，已完成05782b4构建启动；Windows锁屏导致页面/物理拖动待确认，停止实际窗口输入，合成协议测试独立推进。
+
+
+本片收尾：eb5d8cd；正常整合93fb5be后build/type/240组件通过。原生5/既有9、原Pi前6+同会话后3、固定自身构建207综合通过；前段末尾harness定位失败保留，不重生成。123份归档逐项raw/stored hash验证。仅C02-06/07与C03-06部分实现，完整AT仍3/252；D已按本轮授权重启到05782b4，Windows锁屏停止输入，本片eb5d8cd未部署D。0新付费/依赖/DDL，回退仅本片两生产文件，不回退协作者/用户数据。docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。

@@ -1,5 +1,7 @@
 # 当前验收入口
 
+2026-11-01 C02选读/C03续写工程：5原生、9既有边界，原正式Pi前6+原会话补尾3通过（前段末尾harness失败保留），精确公开复制/SQLite/journal/hash/长草稿冷启一致；固定整合前207综合、最终整合build/type/240组件通过，0新付费。完整AT仍3/252，系统IME/REVIEW/drag未验；D重启build/type/240通过但锁屏未确认页面。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
+
 ## 2026-11-01 后台多块原题归档
 
 整合main 05782b4后提交0348966，12份新增段落冲突均保留双方记录；最终build/type、240组件、66原页边界exit0。主包较be7657c +24861B、preload不变、renderer +139B（含协作者UI，不代表速度提升）。旧Qwen UI批次脚本在模型配置前等不到旧面板而exit1，不计当前DeepSeek闭环通过；保留报告，不重跑整套掩盖。回滚仅置OMNI_EDU_AI_PAGE_FRAGMENTS=0，保留新读适配和全部回执。

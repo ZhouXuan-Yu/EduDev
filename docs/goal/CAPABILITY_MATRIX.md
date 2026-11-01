@@ -1,5 +1,7 @@
 # 小智能力与复用矩阵
 
+2026-11-01 C02-06/07及C03-06仅部分实现：选读/复制/冷启与私有目录续写已测，完整AT累计仍3/252、Goal active。源码eb5d8cd，整合93fb5be；5原生/9边界/6+3实际Pi/207固定综合，最终整合build/type/240组件通过。D按授权重启到05782b4，新切片未应用日常；锁屏页面/drag、系统IME与完整REVIEW矩阵待验。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
+
 2026-11-01 WP-C02正文/控件子功能已接通（af4b7ab），实际Pi12项/18组布局、模型档位/面板/设置/停止/冷启通过；REQ05/09/10仍部分，完整AT仍3/252，不降低252条标准。详WORK_PROGRESS及docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。
 
 2026-11-01 WP-C02标题栏子能力补齐（fab49e4）：原生应用菜单/zoom安全区/窄窗导航与草稿冷启专项通过；REQ-C02-03/05/09仍部分实现，完整AT无新增。全局3/252，Goal active；详WORK_PROGRESS.md及C02证据captionLayoutSlice。

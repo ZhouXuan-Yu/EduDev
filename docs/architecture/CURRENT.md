@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 仅OfficeTextSelection与Pi原五类文件身份接缝；沿原私有迁移校验保持历史逻辑身份，执行cwd仍当前目录；选择经原scroll通知/原组件恢复，未改vendor/Composer/Pi循环、IPC/数据真源。源码eb5d8cd，证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
+
 ## 2026-11-01 后台多块原题归档
 
 沿原MaterialAiRepository双遍执行器和QuestionAssets接入多块归档，复用RapidLayout/PP-DocLayoutV3、PDFium/RapidOCR及question-document.v2多图。page-fragments.v1回执保留；新v2冻结同页OCR块线索，最多32个选块，仅在不框入其他检测块时合并为最多8张图片。原题查看和Office源图读取全部图片；无新DDL、依赖、Agent或IPC。OMNI_EDU_AI_PAGE_FRAGMENTS=0只停止新策略，旧回执仍可读。

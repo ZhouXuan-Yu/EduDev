@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 eb5d8cd正常整合origin/main54bf791为93fb5be，无冲突；两自身生产文件按Git行尾规范化内容一致，整合后build/type/240通过，未重放已有Pi输出。D用户明确接管授权已正常关闭旧PID54720并快进177f882→05782b4重启PID72544，3脏文档hash保留；锁屏停止实际输入，新切片/安装未部署。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice与dailyRefresh。
+
 ## 2026-11-01 后台多块原题归档
 
 沿原MaterialAiRepository双遍执行器和QuestionAssets接入多块归档，复用RapidLayout/PP-DocLayoutV3、PDFium/RapidOCR及question-document.v2多图。page-fragments.v1回执保留；新v2冻结同页OCR块线索，最多32个选块，仅在不框入其他检测块时合并为最多8张图片。原题查看和Office源图读取全部图片；无新DDL、依赖、Agent或IPC。OMNI_EDU_AI_PAGE_FRAGMENTS=0只停止新策略，旧回执仍可读。 blockTexts复用已有同页layout OCR，不增加模型调用。模型仍统一DeepSeek，原图/资料上云授权范围不扩大。

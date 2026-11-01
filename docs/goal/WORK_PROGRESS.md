@@ -1,5 +1,7 @@
 # EduDev 当前任务进度
 
+2026-11-01 选读与历史续写修复落地（eb5d8cd，整合93fb5be）：五类文件身份复用已验证的私有历史workspace，执行仍用当前目录；修复流式选区的段落边界、静态模式DOM空换行及阅读位置，上滚释放、原latest恢复。原生5/既有边界9、原Pi前6+同会话后3专项、固定自身构建207综合及最终整合build/type/240组件通过；保留前段末尾隐藏按钮定位失败，以同一完成会话补尾、0重生成。原FX09消息/事件hash、公开复制和长草稿冷启一致，0新付费。最终整合仅知识库上游变化，两生产文件无代码差异；专项/207指向整合前固定构建，不冒充重新整套验收。完整AT仍3/252，IME/REVIEW/物理drag及完整C矩阵待集中。D已按本轮接管授权从177f882快进05782b4并正常重启（build/type、240组件，3脏文档hash不变），PID72544/窗口58004516；Windows锁屏停止窗口输入，页面/实际URL/drag未确认，本次新eb5d8cd尚未应用D。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice与dailyRefresh；下一补C02/C06剩余功能，再集中W3→S/T，Goal active。
+
 ## 2026-11-01 后台多块原题归档
 
 整合main 05782b4后提交0348966，12份新增段落冲突均保留双方记录；最终build/type、240组件、66原页边界exit0。主包较be7657c +24861B、preload不变、renderer +139B（含协作者UI，不代表速度提升）。旧Qwen UI批次脚本在模型配置前等不到旧面板而exit1，不计当前DeepSeek闭环通过；保留报告，不重跑整套掩盖。回滚仅置OMNI_EDU_AI_PAGE_FRAGMENTS=0，保留新读适配和全部回执。

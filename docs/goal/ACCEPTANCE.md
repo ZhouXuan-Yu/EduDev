@@ -1,5 +1,7 @@
 # Goal 验收台账
 
+2026-11-01 C02-06/07及C03-06仅部分实现：选读/复制/冷启与私有目录续写已测，完整AT累计仍3/252、Goal active。源码eb5d8cd，整合93fb5be；5原生/9边界/6+3实际Pi/207固定综合，最终整合build/type/240组件通过。D按授权重启到05782b4，新切片未应用日常；锁屏页面/drag、系统IME与完整REVIEW矩阵待验。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
+
 ## 2026-11-01 后台多块原题归档
 
 整合main 05782b4后提交0348966，12份新增段落冲突均保留双方记录；最终build/type、240组件、66原页边界exit0。主包较be7657c +24861B、preload不变、renderer +139B（含协作者UI，不代表速度提升）。旧Qwen UI批次脚本在模型配置前等不到旧面板而exit1，不计当前DeepSeek闭环通过；保留报告，不重跑整套掩盖。回滚仅置OMNI_EDU_AI_PAGE_FRAGMENTS=0，保留新读适配和全部回执。
