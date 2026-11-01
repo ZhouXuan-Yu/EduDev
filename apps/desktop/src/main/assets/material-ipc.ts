@@ -101,7 +101,7 @@ export function registerMaterialIpc(store:OmniEduStore,window:()=>BrowserWindow|
   try{check(event);if(!validLayoutQuery(input))throw new Error('invalid_input');if(layout)throw new Error('busy');
    const query=structuredClone(input),controller=new AbortController();owned={requestId:query.requestId,controller};layout=owned;
    const closed=()=>controller.abort();event.sender.once('destroyed',closed);
-   try{let result=await readMaterialLayout(store.materials,layoutCache,query,controller.signal,recognizeLocalPdfLayout,layoutPdfFile);
+   try{let result=await readMaterialLayout(store.materials,layoutCache,{...query,refresh:query.includeBlocks?false:query.refresh},controller.signal,recognizeLocalPdfLayout,layoutPdfFile);
     if(query.includeBlocks)result=await withMaterialPageBlocks(store.materials,store.getDataRoot(),result,query.refresh,controller.signal,recognizeLocalPageBlocks);
     check(event);controller.signal.throwIfAborted();return result;}
    finally{event.sender.removeListener('destroyed',closed);}

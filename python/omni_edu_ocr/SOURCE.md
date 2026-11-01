@@ -28,3 +28,5 @@ File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Pyth
 File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
 
 File v3: worker.py + pdf_stream.py, fixed file-v3-dist runtime. Same locked Python/RapidOCR/PDFium dependencies and notices; no new model. Read-only Windows handle, source SHA, per-page NDJSON and durable ACK. Old resume-v2-dist retained for rollback. Build with scripts/release/build-pdf-runtime.mjs and approved OMNI_EDU_BUILD_PYTHON.
+
+Optional blocks runtime uses its own complete dependency lock; Pillow 13.0.0, certifi 2026.10.19, pip 26.2 and setuptools 84.1.0 replace inherited vulnerable versions only in this component. The build checks all installed lock entries and includes updated dependency notices; the legacy OCR lock/runtime remain unchanged.

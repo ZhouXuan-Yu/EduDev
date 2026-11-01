@@ -27,37 +27,32 @@
     {
       "path": "_internal/PIL/_avif.cp312-win_amd64.pyd",
       "size": 7893504,
-      "sha256": "6731dce52baab0b96b0eeb3c664844b5b42c2168ea8668af2430e2fbdd2dfbd8"
+      "sha256": "3c31d65c8b3b4c91ac2838d5c843a6b2479d775b6904fe654d60b56d41772411"
     },
     {
       "path": "_internal/PIL/_imaging.cp312-win_amd64.pyd",
-      "size": 2632704,
-      "sha256": "c8c519ec72bf75b2945b4fc4afa854af2fca8b970a403134f9ddda3e164d85e9"
+      "size": 2662400,
+      "sha256": "7140f56d38dd6cd51512f8122386bcb914c5df2a82eb5f719c973527d9213cee"
     },
     {
       "path": "_internal/PIL/_imagingcms.cp312-win_amd64.pyd",
-      "size": 272384,
-      "sha256": "c89c633ae1bf3f26a327d14ff688db66628e19c9866ab925479f27dcb60a2d6f"
+      "size": 275456,
+      "sha256": "2640857cace64d69735bdcaa3987e9ad70f85168abc1a8662079c77ac44b5301"
     },
     {
       "path": "_internal/PIL/_imagingft.cp312-win_amd64.pyd",
-      "size": 2174976,
-      "sha256": "77c6d37de41733df40fb36d9af47644989ac17da036515e759303969edb22c48"
-    },
-    {
-      "path": "_internal/PIL/_imagingmath.cp312-win_amd64.pyd",
-      "size": 21504,
-      "sha256": "82ac45c41a008854d05f67deda298b65a7bed850d0d79a3af861ed583f6e7d62"
+      "size": 2250752,
+      "sha256": "985228f6086171978abb5d04f2f625c489fdc9d7f0a92f2077a621ff184a599e"
     },
     {
       "path": "_internal/PIL/_imagingtk.cp312-win_amd64.pyd",
-      "size": 14848,
-      "sha256": "690cc1cae4a2dc8594a342b9241e691dcc89d81dad4cddcefdf285275365a2b1"
+      "size": 14336,
+      "sha256": "e1c87f73e96d2269395624d03b3808300f4b0f795f5fad1ecc3d1492e5dcc7c2"
     },
     {
       "path": "_internal/PIL/_webp.cp312-win_amd64.pyd",
-      "size": 416256,
-      "sha256": "9823cebb84f425af3ac1e7437259bc176e7ad7e25d7fa829b0e1a3e55c11be70"
+      "size": 415744,
+      "sha256": "bb9c64d38a6e4857bd3358e14dbe6cf3a4593b1efcd1185fdba1ef8931550896"
     },
     {
       "path": "_internal/Shapely.libs/geos-ae6efa0782962b98e358f10ea539ae5f.dll",
@@ -362,12 +357,12 @@
     {
       "path": "_internal/base_library.zip",
       "size": 1333490,
-      "sha256": "dc2806ae1bb290620096a20fd9cdbc46f80ac521b613fc306774fc75fe9c0895"
+      "sha256": "4587ebdd847d702c56fccc54ddbc918941effa76408d487d26b6b6cda5e4fa9b"
     },
     {
       "path": "_internal/certifi/cacert.pem",
-      "size": 240216,
-      "sha256": "9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f"
+      "size": 238856,
+      "sha256": "50f79f98dac192b20dbf73f35c56f0b0c557ab267ff5199d1117cc1180b70785"
     },
     {
       "path": "_internal/certifi/py.typed",
@@ -3435,6 +3430,336 @@
       "sha256": "7ede825c9885907813b5cb0e500fe7aac4768b4e2892c44e416842114c96d372"
     },
     {
+      "path": "licenses/page-blocks/certifi-2026.10.19/0-LICENSE",
+      "size": 989,
+      "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7"
+    },
+    {
+      "path": "licenses/page-blocks/pillow-13.0.0/0-LICENSE",
+      "size": 78481,
+      "sha256": "988ffe8ab3480b0f4e9a0ab2702bffd73d9fb6b47198043fb3ba101a62fac236"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/0-AUTHORS.txt",
+      "size": 12139,
+      "sha256": "4eb1fb1705e2def898e81bcba19c3aac80620d27ba3569d6a6df7b4629d1b5c2"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/1-LICENSE.txt",
+      "size": 1093,
+      "sha256": "634300a669d49aeae65b12c6c48c924c51a4cdf3d1ff086dc3456dc8bcaa2104"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/10-LICENSE.BSD",
+      "size": 1344,
+      "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/11-LICENSE",
+      "size": 1023,
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/12-LICENSE",
+      "size": 1089,
+      "sha256": "29e0fd62e929850e86eb28c3fdccf0cefdf4fa94879011cffb3d0d4bed6d4db6"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/13-LICENSE",
+      "size": 1331,
+      "sha256": "a9d66f1d526df02e29dce73436d34e56e8632f46c275bbdffc70569e882f9f17"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/14-LICENSE",
+      "size": 1081,
+      "sha256": "1b22b049b5267d6dfc23a67bf4a84d8ec04b9fdfb1a51d360e42b4342c8b4154"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/15-LICENSE",
+      "size": 10142,
+      "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/16-LICENSE",
+      "size": 751,
+      "sha256": "f388fd38cad13112c1dc0f669bbe80e7f84541edbafb72f3030d2ca7642c3c9d"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/17-LICENSE",
+      "size": 1056,
+      "sha256": "deed7c17a4318158190a3ea239cc879a5a50271cebb98ae7025f48fbe58dca15"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/18-LICENSE",
+      "size": 1072,
+      "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/19-LICENSE",
+      "size": 1072,
+      "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/2-LICENSE.txt",
+      "size": 558,
+      "sha256": "86eeee87be2a43f3ff1f56496f451f69243926f025fedbb033666c304c4c161b"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/20-LICENSE",
+      "size": 1086,
+      "sha256": "33be7b7e8fa4fd19b1760e1a8ed8a668bdab852c91b692dd41424bcb725a9fca"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/21-LICENSE.txt",
+      "size": 1093,
+      "sha256": "130e3a64d5fdd5d096a752694634a7d9df284469de86e5732100268041e3d686"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/22-LICENSE.txt",
+      "size": 558,
+      "sha256": "86eeee87be2a43f3ff1f56496f451f69243926f025fedbb033666c304c4c161b"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/23-LICENSE",
+      "size": 989,
+      "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/24-LICENSE.txt",
+      "size": 14531,
+      "sha256": "808e10c8a6ab8deb149ff9b3fb19f447a808094606d712a9ca57fead3552599d"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/25-LICENSE",
+      "size": 11325,
+      "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/26-LICENSE.md",
+      "size": 1541,
+      "sha256": "1a9a4f0e3d479a27240ddd59a9137a66ab4a0f9dfdc8ca6188cc0bfd85187f04"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/27-COPYING",
+      "size": 614,
+      "sha256": "492dedba85da5872f78e6091bcd1fea474d660d35acb4dee964b8aab3f007427"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/28-LICENSE",
+      "size": 197,
+      "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/29-LICENSE.APACHE",
+      "size": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/3-LICENSE",
+      "size": 989,
+      "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/30-LICENSE.BSD",
+      "size": 1344,
+      "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/31-__init__.py",
+      "size": 7293,
+      "sha256": "fc9c745d1883ff9f296a5b169f22eb2ee879f59a4608f20f5cb29d668f4e26f4"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/32-_spdx.py",
+      "size": 51122,
+      "sha256": "596ec35e2ca0ebcba9fd8343ff0a51625af548786257815f24b41f7e08613314"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/33-LICENSE",
+      "size": 1023,
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/34-LICENSE",
+      "size": 1089,
+      "sha256": "29e0fd62e929850e86eb28c3fdccf0cefdf4fa94879011cffb3d0d4bed6d4db6"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/35-LICENSE",
+      "size": 1331,
+      "sha256": "a9d66f1d526df02e29dce73436d34e56e8632f46c275bbdffc70569e882f9f17"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/36-LICENSE",
+      "size": 1081,
+      "sha256": "1b22b049b5267d6dfc23a67bf4a84d8ec04b9fdfb1a51d360e42b4342c8b4154"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/37-LICENSE",
+      "size": 10142,
+      "sha256": "09e8a9bcec8067104652c168685ab0931e7868f9c8284b66f5ae6edae5f1130b"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/38-LICENSE",
+      "size": 751,
+      "sha256": "f388fd38cad13112c1dc0f669bbe80e7f84541edbafb72f3030d2ca7642c3c9d"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/39-LICENSE",
+      "size": 1056,
+      "sha256": "deed7c17a4318158190a3ea239cc879a5a50271cebb98ae7025f48fbe58dca15"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/4-LICENSE.txt",
+      "size": 14531,
+      "sha256": "808e10c8a6ab8deb149ff9b3fb19f447a808094606d712a9ca57fead3552599d"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/40-LICENSE",
+      "size": 1072,
+      "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/41-LICENSE",
+      "size": 1072,
+      "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/42-LICENSE",
+      "size": 1086,
+      "sha256": "33be7b7e8fa4fd19b1760e1a8ed8a668bdab852c91b692dd41424bcb725a9fca"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/43-LICENSE.txt",
+      "size": 1093,
+      "sha256": "130e3a64d5fdd5d096a752694634a7d9df284469de86e5732100268041e3d686"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/5-LICENSE",
+      "size": 11325,
+      "sha256": "cb5e8e7e5f4a3988e1063c142c60dc2df75605f4c46515e776e3aca6df976e14"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/6-LICENSE.md",
+      "size": 1541,
+      "sha256": "1a9a4f0e3d479a27240ddd59a9137a66ab4a0f9dfdc8ca6188cc0bfd85187f04"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/7-COPYING",
+      "size": 614,
+      "sha256": "492dedba85da5872f78e6091bcd1fea474d660d35acb4dee964b8aab3f007427"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/8-LICENSE",
+      "size": 197,
+      "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+    },
+    {
+      "path": "licenses/page-blocks/pip-26.2/9-LICENSE.APACHE",
+      "size": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    {
+      "path": "licenses/page-blocks/rapid-layout-1.2.1/0-LICENSE",
+      "size": 11337,
+      "sha256": "7ede825c9885907813b5cb0e500fe7aac4768b4e2892c44e416842114c96d372"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/0-LICENSE",
+      "size": 1023,
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/1-LICENSE",
+      "size": 7634,
+      "sha256": "ade78d04982d69972d444a8e14a94f87a2334dd3855cc80348ea8e240aa0df2d"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/10-LICENSE.BSD",
+      "size": 1344,
+      "sha256": "b70e7e9b742f1cc6f948b34c16aa39ffece94196364bc88ff0d2180f0028fac5"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/11-__init__.py",
+      "size": 5819,
+      "sha256": "4f05cb1d9097c1281d17044b3f15bad364fa99289eba74851cce9fa7ca605bbf"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/12-_spdx.py",
+      "size": 51122,
+      "sha256": "596ec35e2ca0ebcba9fd8343ff0a51625af548786257815f24b41f7e08613314"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/13-LICENSE",
+      "size": 1089,
+      "sha256": "29e0fd62e929850e86eb28c3fdccf0cefdf4fa94879011cffb3d0d4bed6d4db6"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/14-LICENSE",
+      "size": 1072,
+      "sha256": "b80816b0d530b8accb4c2211783790984a6e3b61922c2b5ee92f3372ab2742fe"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/15-LICENSE.txt",
+      "size": 1107,
+      "sha256": "30c23618679108f3e8ea1d2a658c7ca417bdfc891c98ef1a89fa4ff0c9828654"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/16-LICENSE",
+      "size": 1076,
+      "sha256": "5a57cb4db85e2a2dd88c290628908add57e3451449e0a9a71fdfb38776fd759d"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/17-NOTICE",
+      "size": 493,
+      "sha256": "2dddf08818297a3b89d43d95ff659d8da85741108c9136dfa3a4d856c0623bd8"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/18-NOTICE",
+      "size": 18737,
+      "sha256": "09c9bcea95ca086f8bc5bed174e40bc835b297d40fb5f86bbbb570fe0a5581a7"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/2-LICENSE",
+      "size": 1023,
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/3-LICENSE",
+      "size": 10278,
+      "sha256": "458502e12d97bbf64438606a20044aa85eb05fb0a8a807bb35dbec253fd1fc04"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/4-LICENSE",
+      "size": 1023,
+      "sha256": "86da0f01aeae46348a3c3d465195dc1ceccde79f79e87769a64b8da04b2a4741"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/5-LICENSE",
+      "size": 1076,
+      "sha256": "9755a18519666e5f0f4cae3daad3d7012bcae48a600b31237d75e9fe134e6683"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/6-LICENSE",
+      "size": 1076,
+      "sha256": "5a57cb4db85e2a2dd88c290628908add57e3451449e0a9a71fdfb38776fd759d"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/7-LICENSE",
+      "size": 1053,
+      "sha256": "09f1c8c9e941af3e584d59641ea9b87d83c0cb0fd007eb5ef391a7e2643c1a46"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/8-LICENSE",
+      "size": 197,
+      "sha256": "cad1ef5bd340d73e074ba614d26f7deaca5c7940c3d8c34852e65c4909686c48"
+    },
+    {
+      "path": "licenses/page-blocks/setuptools-84.1.0/9-LICENSE.APACHE",
+      "size": 10174,
+      "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+    },
+    {
       "path": "licenses/pypdfium2-5.14.0/LICENSES/Apache-2.0.txt",
       "size": 11560,
       "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
@@ -3526,11 +3851,11 @@
     },
     {
       "path": "omni-edu-ocr.exe",
-      "size": 9118184,
-      "sha256": "e3430cea3c4c0dfb2cf30523be83429e5423bea031a02ea23e3ea8518034731b"
+      "size": 9123421,
+      "sha256": "d61f6a65a9dc45e0ecb2b2bbf0453aba13bbab4cc4caa5b482b3a4c1935b4135"
     }
   ],
-  "totalBytes": 417151136,
+  "totalBytes": 417644037,
   "pdfFileEngine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3",
   "pdfStreamSha256": "d927508c3d7d087f53a9608b43d9f22d389ee23c5dab4f6b81f14257782d9dd9",
   "pageBlocks": {
