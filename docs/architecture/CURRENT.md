@@ -5,6 +5,9 @@
 沿原MaterialAiRepository双遍执行器和QuestionAssets接入多块归档，复用RapidLayout/PP-DocLayoutV3、PDFium/RapidOCR及question-document.v2多图。page-fragments.v1回执保留；新v2冻结同页OCR块线索，最多32个选块，仅在不框入其他检测块时合并为最多8张图片。原题查看和Office源图读取全部图片；无新DDL、依赖、Agent或IPC。OMNI_EDU_AI_PAGE_FRAGMENTS=0只停止新策略，旧回执仍可读。
 
 
+2026-11-01 C02仅应用layout/chat/settings及OfficeComposer外的稳定滚动容器；不重挂载composer、不动Pi/缓冲/journal/IPC/数据。chat为既有绝对面板提供定位上下文，窄导航匹配collapsed选择器优先级后移除grid列。docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。
+
+
 ## 2026-11-01 复用成熟图文分块来源层
 
 沿既有M03原页typed接口接入RapidLayout1.2.1/PP-DocLayoutV3可选本地组件，独立版本化块回执/缓存/root/manifest；PDFium/RapidOCR正文和旧运行时不变，Pi/SQLite/原writer真源不变。无DDL，新可选Python依赖/模型锁与许可证已记录；自动多块题目归属与按需下载尚未接通。
