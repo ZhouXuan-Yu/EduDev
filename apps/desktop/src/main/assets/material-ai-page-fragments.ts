@@ -8,6 +8,7 @@ import {QUESTION_PROJECTION_SCHEMA} from '../../shared/question-projection';
 import {checkedPageCropImage,type PageCrop,type PageCropRenderer} from './material-ai-page-crops';
 import {validCropQuality,cropTextComplete,CROP_OCR_FAILURE_REASONS,type CropInspector,type CropQuality,type CropOcrFailureReason} from './material-ai-crop-quality';
 import {QuestionAssets,type OriginalImage} from './question-assets';
+import {recheckedCropRows} from './material-ai-crop-recheck-storage';
 
 const SCHEMA='xiaozhi.material-ai-fragment-crops.v1';
 const GROUP_SCHEMA='xiaozhi.material-ai-fragment-crops.v2';
@@ -29,8 +30,16 @@ export function pageCropStorage(crop:PageCrop){return crop.failure?{
  image:JSON.stringify({schemaVersion:SCHEMA,fragments:crop.fragments.map(({blockId,image})=>({blockId,image}))}),
  quality:JSON.stringify({schemaVersion:SCHEMA,fragments:crop.fragments.map(({blockId,quality})=>({blockId,quality}))})
  }:{image:JSON.stringify(crop.image),quality:JSON.stringify(crop.quality)};}
-export async function readPageFragments(host:Host,batchId:string,ordinal:number,source:MaterialPageSource,first:AiPageResponse,firstRaw:string,imageSha:string,signal:AbortSignal,onlyNumber?:string,prompt?:AiPagePrompt):Promise<PageCrop[]>{
+export async function readPageFragments(host:Host,batchId:string,ordinal:number,source:MaterialPageSource,first:AiPageResponse,firstRaw:string,imageSha:string,signal:AbortSignal,onlyNumber?:string,prompt?:AiPagePrompt,baseOnly=false):Promise<PageCrop[]>{
  const expected=selectedPageFragments(first,prompt),rows=await host.all('SELECT * FROM material_ai_page_crops WHERE batch_id=? AND ordinal=?',[batchId,ordinal]);
+ if(!baseOnly&&prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT){
+  const overlaid=await recheckedCropRows(host,batchId,ordinal,rows);
+  if(overlaid.some((r,i)=>r!==rows[i])){
+   await readPageFragments(host,batchId,ordinal,source,first,firstRaw,imageSha,signal,onlyNumber,prompt,true);
+   const overlayHost={...host,all:(sql:string,p?:(string|number|null)[])=>sql==='SELECT * FROM material_ai_page_crops WHERE batch_id=? AND ordinal=?'?Promise.resolve(overlaid):host.all(sql,p)};
+   return readPageFragments(overlayHost,batchId,ordinal,source,first,firstRaw,imageSha,signal,onlyNumber,prompt,true);
+  }
+ }
  if(rows.length!==expected.length)throw Error('source_changed');if(!expected.length)return[];
  if(!host.root||!pageFragmentsPolicy(prompt?.policy))throw Error('storage_unavailable');
  const assets=new QuestionAssets(host.root),result:PageCrop[]=[];let total=0;

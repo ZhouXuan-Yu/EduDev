@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_structured_page_source_integrated_natural_exam_quality_open",
+  "currentStage": "K0_local_failed_crop_recovery_integrated_natural_exam_quality_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -3718,6 +3718,131 @@
       "attribution": "Integration contains collaborator Pi historical workspace and OfficeTextSelection changes. KB production source matches the final 12-call natural run; that run was before integration. No final integrated natural provider rerun or 40GB/P95 claim.",
       "dailyRuntimeUpdated": false,
       "installerUpdated": false
+    }
+  },
+  "localCropRecovery": {
+    "date": "2026-11-01",
+    "baseCommit": "4fe07fcaff39ff78ae40494cfd4e3b0de3321dd0",
+    "goalComplete": false,
+    "implementation": "沿原MaterialAiRepository.drain、writer与typed preload，在资料详情→题目与校正→原AI批次增加“仅重检本地OCR”。不新建模型批次、不读取模型账户、不增加云请求；旧失败/首稿/终稿不可变。新增material_ai_crop_rechecks与material_ai_crop_recheck_results幂等任务/结果日志；成功证据依原件、冻结输入、原块和资产hash读回，同一题ID只重算archive/document。原题全部字段和教师/答案册改动受完整指纹保护；OCR成功不自动消除两遍模型内容分歧。待处理可暂停/重启中断/显式重试，原云批次保持暂停。",
+    "teacherPath": "Current Pi > materials > resource > questions/correction > original AI batch > local OCR recheck",
+    "tables": [
+      "material_ai_crop_rechecks",
+      "material_ai_crop_recheck_results"
+    ],
+    "action": "recheck_local",
+    "noNewDependencies": true,
+    "noProviderAccountRead": true,
+    "checks": [
+      {
+        "command": "node scripts/education/kb-ai-page-boundaries.mjs",
+        "log": "%TEMP%/kb-local-recheck-final-boundaries.log",
+        "passed": 81,
+        "exit": 0
+      },
+      {
+        "command": "npm.cmd run build",
+        "log": "%TEMP%/kb-local-recheck-final-build.log",
+        "exit": 0,
+        "scope": "Before final held-reason UI text; final integrated checks follow"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "log": "%TEMP%/kb-local-recheck-components.log",
+        "passed": 240,
+        "exit": 0
+      },
+      {
+        "command": "npm.cmd audit --json",
+        "log": "%TEMP%/kb-local-recheck-audit.json",
+        "exit": 1,
+        "vulnerabilities": {
+          "low": 8,
+          "moderate": 29,
+          "high": 8,
+          "critical": 0,
+          "total": 45
+        },
+        "scope": "Existing lockfile; no dependency change this slice"
+      }
+    ],
+    "realRecovery": {
+      "command": "node scripts/education/kb-local-recheck-real.mjs <owned-temp-root> <original-page-fragments-run>",
+      "report": "%TEMP%/omni-real-material-aWObCn/local-recheck-o4kLgN/report.json",
+      "exit": 0,
+      "buildMainSha256": "e38f99c24c54fdce8842f5d7cf1640ff1c3b85e410361eab4d6900a1cf841ed7",
+      "passed": 3,
+      "checks": [
+        "Real UI schedules existing failed crop; actual local OCR completes, immutable crops/model calls/membership and all question text remain unchanged",
+        "Completed local status is reachable in 1366x768 and 1920x1080",
+        "Cold restart preserves source-bound local result and question facts with zero network attempt or duplicate job"
+      ],
+      "questionNumber": "12",
+      "actualLocalFragments": 8,
+      "localView": {
+        "remaining": 0,
+        "pending": 0,
+        "running": 0,
+        "status": "complete",
+        "error": ""
+      },
+      "ready": 4,
+      "review": 11,
+      "networkAttempts": 0,
+      "newModelCalls": 0,
+      "rendererErrors": 0,
+      "originalNegativeReceiptUnchanged": true,
+      "originalFirstFinalAndCallsUnchanged": true,
+      "sameQuestionIdsAndTextUnchanged": true,
+      "mathOrFullExamQualityAcceptance": false,
+      "visualScope": "Completion status and both sizes; original actual click run has no before-click screenshot. Controlled pause/failure cases are not full manual UI acceptance."
+    },
+    "investigation": {
+      "assetSha256": "f3b2f7ab9e2a71d6747a58954a08c59854336335915ee8a3c1584e8dc24f0dbc",
+      "directInheritedEnvMs": 3204,
+      "directRestrictedEnvMs": 3302,
+      "directBothLines": 5,
+      "hostReport": "%TEMP%/omni-real-material-aWObCn/local-host-VhkB19/report.json",
+      "hostExit": 0,
+      "hostLines": 5,
+      "hostStdoutBytes": 1021,
+      "hostStderrBytes": 0,
+      "originalIntermittentParseFailedRootCauseClosed": false
+    },
+    "failures": [
+      {
+        "report": "%TEMP%/omni-real-material-aWObCn/local-recheck-vtllT7/report.json",
+        "exit": 1,
+        "reason": "Test did not open existing lazy-loaded questions/correction section; no local task or network call. Navigation corrected without product route change."
+      },
+      "Controlled first run captured optional root too early; constructor now delegates dynamically. Startup assertion checks local queue and call count separately from independent answer-book work."
+    ],
+    "performance": {
+      "scope": "Pre-main-merge bundle size only; no throughput or P95 improvement claim",
+      "versus": "4fe07fc",
+      "mainBytes": 3554155,
+      "mainDelta": 19260,
+      "preloadBytes": 36248,
+      "preloadDelta": 0,
+      "rendererBytes": 7384905,
+      "rendererDelta": 1864,
+      "mainSha256": "e38f99c24c54fdce8842f5d7cf1640ff1c3b85e410361eab4d6900a1cf841ed7",
+      "ocrRuntimeVerifiedFilesPerCall": 646,
+      "ocrRuntimeVerifiedBytesPerCall": 279039929
+    },
+    "open": [
+      "Natural exam remains 4 ready / 11 held; local OCR recovery does not clear model or content disagreement",
+      "Original intermittent OCR parse_failed root cause",
+      "Repeated whole-tree OCR verification and process creation",
+      "Large-batch scheduling writer latency not measured",
+      "Cross-page source/question completeness and stable model solving",
+      "Separate answers and browser-solving full workflow",
+      "Pi whole-exam composition",
+      "Natural 40GB recall/P95 and end-user component/installer acceptance"
+    ],
+    "rollback": "Pause queued local work before disabling new write/schedule path. Keep new overlay readers, append-only result/task tables, original negative/two-pass receipts, source files and crop assets; no destructive downgrade.",
+    "integration": {
+      "status": "Pending commit, latest main merge and final fixed-build checks; no remote delivery claimed yet"
     }
   }
 }

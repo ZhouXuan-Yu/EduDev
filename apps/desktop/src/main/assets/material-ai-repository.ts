@@ -1,3 +1,5 @@
+import {MaterialCropRechecks} from './material-ai-crop-rechecks';
+import {CROP_RECHECK_TABLES} from './material-ai-crop-recheck-storage';
 import {pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENTS_PROMPT,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,pageFragmentTextPolicy,type FragmentPageSource} from '../../shared/material-ai-page-fragments';
 import type {PageBlocks} from '../../shared/material-page-blocks';
 import {pageCropStorage} from './material-ai-page-fragments';
@@ -63,6 +65,7 @@ export class MaterialAiRepository{
   private pumping?:Promise<void>;
   private active?:{batchId:string;controller:AbortController};
   private closing=false;
+  private lastDrainWasLocal=false;
   private layoutControllers=new Set<AbortController>();
   private async localLayout(source:MaterialPageSource){
     if(this.closing||!this.runtime?.layout)throw Error('cancelled');
@@ -76,9 +79,10 @@ export class MaterialAiRepository{
     try{const signal=AbortSignal.any([controller.signal,AbortSignal.timeout(120000)]),blocks=await this.runtime.blocks(source,signal);signal.throwIfAborted();return blocks;}
     finally{this.layoutControllers.delete(controller);}
   }
+  readonly cropRechecks:MaterialCropRechecks;
   readonly books:MaterialBookPairs;
   readonly bookAnswers:MaterialBookAnswerRepository;
-  constructor(private host:Host){this.books=new MaterialBookPairs({all:host.all,run:host.run,resource:id=>host.materials().resource(id),writer:action=>this.write(target=>action(target.books))});this.bookAnswers=new MaterialBookAnswerRepository({all:host.all,run:host.run,receipt:(batch,ordinal)=>this.bookReceipt(batch,ordinal),role:id=>this.books.role(id),read:async id=>host.readQuestion?.(id),validate:async q=>{if(!host.validateQuestion)throw Error('unsupported');await host.validateQuestion(q);},title:async id=>(await host.materials().resource(id)).originalFileName,writer:(fn,beforeCommit)=>this.write(target=>fn(target.bookAnswers),beforeCommit)});}
+  constructor(private host:Host){this.cropRechecks=new MaterialCropRechecks({all:host.all,run:host.run,root:()=>{if(!host.root)throw Error('storage_unavailable');return host.root();},proof:(batch,ordinal)=>this.pageEvidence(batch,ordinal),runtime:()=>this.runtime,writer:(fn,before)=>this.write(target=>fn(target.cropRechecks),before)});this.books=new MaterialBookPairs({all:host.all,run:host.run,resource:id=>host.materials().resource(id),writer:action=>this.write(target=>action(target.books))});this.bookAnswers=new MaterialBookAnswerRepository({all:host.all,run:host.run,receipt:(batch,ordinal)=>this.bookReceipt(batch,ordinal),role:id=>this.books.role(id),read:async id=>host.readQuestion?.(id),validate:async q=>{if(!host.validateQuestion)throw Error('unsupported');await host.validateQuestion(q);},title:async id=>(await host.materials().resource(id)).originalFileName,writer:(fn,beforeCommit)=>this.write(target=>fn(target.bookAnswers),beforeCommit)});}
   configure(runtime:AiRuntime){this.runtime=runtime;this.account=runtime.account;}
   private write<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void){return this.host.writer(target=>{target.account=this.runtime?.account||this.account;return action(target);},beforeCommit);}
   private nativeHost():NativeAiHost{if(!this.host.native||!this.host.word)throw Error('unsupported');return{all:this.host.all,run:this.host.run,create:this.host.create,native:this.host.native,word:this.host.word,associate:async(q,source,sources)=>{
@@ -99,7 +103,7 @@ export class MaterialAiRepository{
       `CREATE TABLE IF NOT EXISTS material_ai_image_inputs(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,image_sha TEXT NOT NULL,mime TEXT NOT NULL,data_base64 TEXT NOT NULL CHECK(length(data_base64)<=5592408),PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
       `CREATE TABLE IF NOT EXISTS material_ai_image_pending(sha256 TEXT PRIMARY KEY,temporary_name TEXT NOT NULL,error TEXT NOT NULL DEFAULT '')`,
       `CREATE TABLE IF NOT EXISTS material_ai_page_units(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,source_json TEXT NOT NULL,first_sha TEXT NOT NULL DEFAULT '',final_sha TEXT NOT NULL DEFAULT '',image_sha TEXT NOT NULL DEFAULT '',PRIMARY KEY(batch_id,ordinal),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`,
-      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,
+      PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,...CROP_RECHECK_TABLES,
       `CREATE TABLE IF NOT EXISTS material_ai_members(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,question_id TEXT NOT NULL UNIQUE,PRIMARY KEY(batch_id,ordinal,number))`
     ])await this.host.run(sql);
     if(!(await this.host.all('PRAGMA table_info(material_ai_page_crops)')).some(c=>c.name==='quality_json'))await this.host.run("ALTER TABLE material_ai_page_crops ADD COLUMN quality_json TEXT NOT NULL DEFAULT ''");
@@ -277,7 +281,8 @@ export class MaterialAiRepository{
     for(const row of rows){
       const c=JSON.parse(String(row.config_json)),units=await this.host.all('SELECT ordinal,status,error,(SELECT COUNT(*) FROM material_ai_members m WHERE m.batch_id=u.batch_id AND m.ordinal=u.ordinal) questions,EXISTS(SELECT 1 FROM material_ai_page_units p WHERE p.batch_id=u.batch_id AND p.ordinal=u.ordinal) page_source FROM material_ai_units u WHERE batch_id=? ORDER BY ordinal',[String(row.id)]);
       const n=(...states:string[])=>units.filter(u=>states.includes(String(u.status))).length;
-      result.push({id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status:String(row.status),calls:Number(row.calls),maxCalls:c.maxCalls,
+      const localOcr=await this.cropRechecks.view(String(row.id));
+      result.push({localOcr,id:String(row.id),resourceId:String(row.resource_id),title:String(row.title),model:c.model,start:c.start,count:c.count,images:c.images,status:String(row.status),calls:Number(row.calls),maxCalls:c.maxCalls,
         complete:n('complete','no_questions'),review:n('review'),failed:n('failed'),unknown:n('outcome_unknown'),pending:n('pending','first_saved','dispatched'),questions:units.reduce((sum,u)=>sum+Number(u.questions),0),
         units:units.map(u=>({ordinal:Number(u.ordinal),status:String(u.status),error:String(u.error),questions:Number(u.questions),...(u.page_source?{pageSource:true}:{})}))});
     }
@@ -351,6 +356,8 @@ export class MaterialAiRepository{
     if(!validAiAction(input))throw new Error('invalid_input');
     await this.write(async target=>{
       const row=(await target.host.all('SELECT * FROM material_ai_batches WHERE id=?',[input.batchId]))[0];if(!row)throw new Error('invalid_input');
+      if(input.action==='recheck_local'){await target.cropRechecks.schedule(input.batchId);return;}
+      if(input.action==='pause')await target.cropRechecks.pause(input.batchId);
       const c=JSON.parse(String(row.config_json));
       if(input.action!=='pause'&&(await target.configuration()).revision!==c.settingsRevision)throw new Error('configuration');
       if(input.action==='retry_unknown'){
@@ -370,7 +377,7 @@ export class MaterialAiRepository{
     const units=await this.host.all("SELECT batch_id,ordinal,owner_pid,lease,dispatched_at FROM material_ai_units WHERE status='dispatched'");
     for(const unit of units)if(!alive(Number(unit.owner_pid))||Date.now()-Number(unit.dispatched_at)>180000)await this.host.run("UPDATE material_ai_units SET status='outcome_unknown',error='outcome_unknown',owner_pid=0,lease='' WHERE batch_id=? AND ordinal=? AND status='dispatched' AND owner_pid=? AND lease=? AND dispatched_at=?",[String(unit.batch_id),Number(unit.ordinal),Number(unit.owner_pid),String(unit.lease),Number(unit.dispatched_at)]);
   }
-  async recoverStartup(){await this.recover();await recoverAiImageFiles(this.host);await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
+  async recoverStartup(){await this.cropRechecks.recoverStartup();await this.recover();await recoverAiImageFiles(this.host);await this.host.run("UPDATE material_ai_batches SET status='paused',pause_reason='startup' WHERE status='running'");}
   start(){
     if(this.timer)return;this.closing=false;
     const pump=()=>{if(this.pumping||!this.runtime||this.closing)return;this.pumping=this.recover().then(()=>this.drain()).then(()=>undefined).catch(()=>undefined).finally(()=>{this.pumping=undefined;});};
@@ -401,7 +408,10 @@ export class MaterialAiRepository{
   }
   async drain(){
     if(!this.runtime||this.closing)return false;
+    const local=await this.cropRechecks.next();
     const row=(await this.host.all("SELECT u.*,b.config_json,b.resource_id,b.version,b.title FROM material_ai_units u JOIN material_ai_batches b ON b.id=u.batch_id WHERE b.status='running' AND u.status IN ('pending','first_saved') AND u.retry_at<=? ORDER BY b.created_at,u.ordinal LIMIT 1",[Date.now()]))[0];
+    if(local&&(!this.lastDrainWasLocal||!row)){this.lastDrainWasLocal=true;const controller=new AbortController();this.active={batchId:String(local.batch_id),controller};try{await this.cropRechecks.execute(local,AbortSignal.any([controller.signal,AbortSignal.timeout(600000)]));return true;}finally{if(this.active?.controller===controller)this.active=undefined;}}
+    this.lastDrainWasLocal=false;
     if(!row){await this.host.run("UPDATE material_ai_batches SET status=CASE WHEN EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('failed','outcome_unknown','review')) THEN 'attention' ELSE 'complete' END WHERE status='running' AND NOT EXISTS(SELECT 1 FROM material_ai_units u WHERE u.batch_id=material_ai_batches.id AND u.status IN ('pending','first_saved','dispatched'))");const controller=new AbortController();this.active={batchId:'book-match',controller};try{return await this.bookAnswers.drain(controller.signal);}finally{if(this.active?.controller===controller)this.active=undefined;}}
     const batchId=String(row.batch_id),ordinal=Number(row.ordinal),config=JSON.parse(String(row.config_json)) as AiBatchInput&{model:AiSettings['model']},unit=JSON.parse(String(row.input_json)) as AiUnitInput;
     const controller=new AbortController(),signal=controller.signal;this.active={batchId,controller};let lease='',transportStarted=false;
