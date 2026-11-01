@@ -1,3 +1,5 @@
+import {pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENTS_PROMPT,MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT,validBlockTexts,MATERIAL_PAGE_FRAGMENTS_RESPONSE,validQuestionFragments,fragmentsMatchPage,type AiQuestionFragments,type BlockTextHint} from './material-ai-page-fragments';
+import {validPageBlocks,type PageBlocks} from './material-page-blocks';
 import {aiBatchId,AI_ISSUES,type AiIssue} from './material-ai';
 import {materialId} from './materials';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,aiTextSignature,type AiImageResponse} from './material-ai-image';
@@ -15,10 +17,10 @@ export type AiAnswerIssue={section:string;number:string;issues:AiIssue[]};
 export const MATERIAL_PAGE_PROMPT='page-restoration.v2' as const;
 export const MATERIAL_QUESTION_PAGE_PROMPT='page-restoration.v3' as const;
 type OcrStatus='complete'|'blank'|'failed'|'needs_review';
-export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string}|{policy:typeof MATERIAL_PAGE_LAYOUT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;layout:LocalPageRegions};
+export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string}|{policy:typeof MATERIAL_PAGE_LAYOUT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;layout:LocalPageRegions}|{policy:typeof MATERIAL_PAGE_FRAGMENTS_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks}|{policy:typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT;ocrStatus:OcrStatus;totalPages:number;resourceTitle:string;blocks:PageBlocks;blockTexts:BlockTextHint[]};
 export type MaterialPageSource={schemaVersion:typeof MATERIAL_PAGE_SOURCE|typeof MATERIAL_IMAGE_SOURCE;resourceId:string;version:string;page:number;generation:string;receiptSha:string};
-export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{pageText:string;pageIssues:AiIssue[]}&({schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE}|{schemaVersion:typeof MATERIAL_AI_BOOK_PAGE_RESPONSE;answerIssues:AiAnswerIssue[]}|{schemaVersion:typeof MATERIAL_PAGE_REGIONS_RESPONSE;regions:AiQuestionRegion[]});
-export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean,prompt?:AiPagePrompt){return pageRegionsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE:policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:policy===MATERIAL_BOOK_PAGE_POLICY&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
+export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{pageText:string;pageIssues:AiIssue[]}&({schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE}|{schemaVersion:typeof MATERIAL_AI_BOOK_PAGE_RESPONSE;answerIssues:AiAnswerIssue[]}|{schemaVersion:typeof MATERIAL_PAGE_REGIONS_RESPONSE;regions:AiQuestionRegion[]}|{schemaVersion:typeof MATERIAL_PAGE_FRAGMENTS_RESPONSE;fragments:AiQuestionFragments[]});
+export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean,prompt?:AiPagePrompt){return pageFragmentsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE&&fragmentsMatchPage(response.fragments,prompt.blocks):pageRegionsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE:policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:policy===MATERIAL_BOOK_PAGE_POLICY&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
 export type AiPageQuery={schemaVersion:typeof MATERIAL_AI_PAGE;batchId:string;ordinal:number;includeImage?:true};
 export type AiPageStatus='complete'|'needs_review'|'blank';
 export type AiPageView={schemaVersion:typeof MATERIAL_AI_PAGE;resource:TeacherResource;source:MaterialPageSource;text:string;ocrText:string;status:AiPageStatus;transcriptionStatus?:AiPageStatus;issues:AiIssue[];inputImage?:{dataUrl:string};bookAnswers?:BookAnswerPage};
@@ -26,7 +28,8 @@ const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 export function validAiPagePrompt(v:unknown):v is AiPagePrompt{
  const old=plain(v,['policy','ocrStatus'])&&v.policy===MATERIAL_PAGE_PROMPT;
- const region=(plain(v,['policy','ocrStatus','totalPages','resourceTitle'])&&(v.policy==='page-regions.v1'||v.policy===MATERIAL_PAGE_REGIONS_PROMPT)||plain(v,['policy','ocrStatus','totalPages','resourceTitle','layout'])&&v.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&validLocalPageRegions(v.layout)&&v.layout.total===v.totalPages)&&typeof v.resourceTitle==='string'&&v.resourceTitle.length>0&&v.resourceTitle.length<=512&&!/[\x00-\x1f]/.test(v.resourceTitle);
+ const fragment=(plain(v,['policy','ocrStatus','totalPages','resourceTitle','blocks'])&&v.policy===MATERIAL_PAGE_FRAGMENTS_PROMPT||plain(v,['policy','ocrStatus','totalPages','resourceTitle','blocks','blockTexts'])&&v.policy===MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT)&&validPageBlocks(v.blocks)&&v.blocks.ok&&(v.policy!==MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT||validBlockTexts(v.blockTexts,v.blocks));
+ const region=(plain(v,['policy','ocrStatus','totalPages','resourceTitle'])&&(v.policy==='page-regions.v1'||v.policy===MATERIAL_PAGE_REGIONS_PROMPT)||plain(v,['policy','ocrStatus','totalPages','resourceTitle','layout'])&&v.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&validLocalPageRegions(v.layout)&&v.layout.total===v.totalPages||fragment)&&typeof v.resourceTitle==='string'&&v.resourceTitle.length>0&&v.resourceTitle.length<=512&&!/[\x00-\x1f]/.test(v.resourceTitle);
  const page=plain(v,['policy','ocrStatus','totalPages'])&&v.policy===MATERIAL_QUESTION_PAGE_PROMPT||region;
  return (old||page&&Number.isSafeInteger(v.totalPages)&&Number(v.totalPages)>=1&&Number(v.totalPages)<=10000)&&typeof v.ocrStatus==='string'&&['complete','blank','failed','needs_review'].includes(v.ocrStatus);
 }
@@ -35,14 +38,15 @@ export function validAiPageQuery(v:unknown):v is AiPageQuery{return (plain(v,['s
 export function parseAiPageResponse(raw:string):AiPageResponse{
  try{
   if(new TextEncoder().encode(raw).length>128*1024)throw Error();const v=JSON.parse(raw);
-  const book=v?.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE,regions=v?.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE;
-  if(!plain(v,['schemaVersion','outcome','questions','pageText','pageIssues',...(book?['answerIssues']:regions?['regions']:[])])||!book&&!regions&&v.schemaVersion!==MATERIAL_AI_PAGE_RESPONSE||typeof v.pageText!=='string'||v.pageText!==v.pageText.trim()||/[\x00]/.test(v.pageText)||new TextEncoder().encode(v.pageText).length>64000||!Array.isArray(v.pageIssues)||v.pageIssues.length>5||new Set(v.pageIssues).size!==v.pageIssues.length||!v.pageIssues.every(i=>AI_ISSUES.includes(i)))throw Error();
+  const book=v?.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE,regions=v?.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE,fragments=v?.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE;
+  if(!plain(v,['schemaVersion','outcome','questions','pageText','pageIssues',...(book?['answerIssues']:regions?['regions']:fragments?['fragments']:[])])||!book&&!regions&&!fragments&&v.schemaVersion!==MATERIAL_AI_PAGE_RESPONSE||typeof v.pageText!=='string'||v.pageText!==v.pageText.trim()||/[\x00]/.test(v.pageText)||new TextEncoder().encode(v.pageText).length>64000||!Array.isArray(v.pageIssues)||v.pageIssues.length>5||new Set(v.pageIssues).size!==v.pageIssues.length||!v.pageIssues.every(i=>AI_ISSUES.includes(i)))throw Error();
   if(book){const keys=new Set<string>();if(!Array.isArray(v.answerIssues)||v.answerIssues.length>200||!Array.isArray(v.questions)||v.questions.length||v.outcome==='questions'||!v.answerIssues.every((item:unknown)=>{
    if(!plain(item,['section','number','issues'])||typeof item.section!=='string'||!item.section.trim()||item.section!==item.section.trim()||item.section.length>200||/[\x00-\x1f]/.test(item.section)||typeof item.number!=='string'||!/^\d{1,5}$/.test(item.number)||!Array.isArray(item.issues)||!item.issues.length||item.issues.length>5||new Set(item.issues).size!==item.issues.length||!item.issues.every(i=>AI_ISSUES.includes(i)))return false;
    const key=bookSectionKey(item.section)+'\0'+item.number;if(keys.has(key))return false;keys.add(key);return true;
   })||(v.pageIssues.length||v.answerIssues.length)&&v.outcome!=='needs_review')throw Error();}
   parseAiBatchResponse(JSON.stringify({schemaVersion:MATERIAL_AI_IMAGE_RESPONSE,outcome:v.outcome,questions:v.questions}));
   if(regions&&!validQuestionRegions(v.regions,(v.questions as AiImageResponse['questions']).map(q=>q.number)))throw Error();
+  if(fragments&&!validQuestionFragments(v.fragments,(v.questions as AiImageResponse['questions']).map(q=>q.number)))throw Error();
   if(v.outcome==='questions'&&!v.pageText)throw Error();return v as AiPageResponse;
  }catch{throw Error('invalid_response');}
 }
@@ -58,8 +62,9 @@ export function pageTranscriptionStatus(first:AiPageResponse,final:AiPageRespons
 }
 /** Missing new metadata keeps the old conservative status for older host adapters. */
 export function readablePageTranscription(view:AiPageView){return ['complete','blank'].includes(view.transcriptionStatus??view.status);}
-export function pageQuestionEvidence(first:AiPageResponse,final:AiPageResponse,number:string,imageSha:string,sourceStem:string){
+export function pageQuestionEvidence(first:AiPageResponse,final:AiPageResponse,number:string,imageSha:string,sourceStem:string,prompt?:AiPagePrompt){
  if(!pageTranscriptionAgrees(first,final))return;
+ if(first.schemaVersion===MATERIAL_PAGE_FRAGMENTS_RESPONSE&&(prompt?.policy!==MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT||[first,final].some(r=>{const q=r.questions.find(q=>q.number===number);return !q||q.requiresImage||q.projection.figures.state!=='not_applicable';}))){if(final.schemaVersion!==MATERIAL_PAGE_FRAGMENTS_RESPONSE)return;const a=first.fragments.find(r=>r.number===number),b=final.fragments.find(r=>r.number===number);if(!a?.complete||!b?.complete||JSON.stringify(a.blockIds)!==JSON.stringify(b.blockIds))return;}
  // Canonical question rows store the complete stem. Separate coverage fields cannot
  // excuse dropping choices, subquestions, table values or formulas from that stem.
  for(const response of [first,final]){const q=response.questions.find(item=>item.number===number);if(!q)return;

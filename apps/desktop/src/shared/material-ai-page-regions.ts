@@ -1,10 +1,11 @@
+import {pageFragmentsPolicy,MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT,MATERIAL_PAGE_FRAGMENTS_PROMPT} from './material-ai-page-fragments';
 import {aiTextSignature,type AiImageQuestion} from './material-ai-image';
 import {validQuestionProjection} from './question-projection';
 
 export const MATERIAL_PAGE_REGIONS_LEGACY_PROMPT='page-regions.v1' as const;
 export const MATERIAL_PAGE_REGIONS_PROMPT='page-regions.v2' as const;
 export const MATERIAL_PAGE_LAYOUT_PROMPT='page-regions.v3' as const;
-export function pageRegionsPolicy(value:unknown):value is typeof MATERIAL_PAGE_LAYOUT_PROMPT|typeof MATERIAL_PAGE_REGIONS_PROMPT|typeof MATERIAL_PAGE_REGIONS_LEGACY_PROMPT{return value===MATERIAL_PAGE_LAYOUT_PROMPT||value===MATERIAL_PAGE_REGIONS_PROMPT||value===MATERIAL_PAGE_REGIONS_LEGACY_PROMPT;}
+export function pageRegionsPolicy(value:unknown):value is typeof MATERIAL_PAGE_FRAGMENTS_PROMPT|typeof MATERIAL_PAGE_FRAGMENT_TEXT_PROMPT|typeof MATERIAL_PAGE_LAYOUT_PROMPT|typeof MATERIAL_PAGE_REGIONS_PROMPT|typeof MATERIAL_PAGE_REGIONS_LEGACY_PROMPT{return pageFragmentsPolicy(value)||value===MATERIAL_PAGE_LAYOUT_PROMPT||value===MATERIAL_PAGE_REGIONS_PROMPT||value===MATERIAL_PAGE_REGIONS_LEGACY_PROMPT;}
 export const MATERIAL_PAGE_REGIONS_RESPONSE='xiaozhi.material-ai-page-regions.v1' as const;
 export type AiQuestionRegion={number:string;box:[number,number,number,number]|null;complete:boolean};
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v))&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>{const d=Object.getOwnPropertyDescriptor(v,k);return !!d&&d.enumerable&&'value'in d;});

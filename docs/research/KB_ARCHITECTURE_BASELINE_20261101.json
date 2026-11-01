@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_in_progress_optional_mature_page_blocks_before_automatic_question_ownership",
+  "currentStage": "K0_multi_block_archive_implemented_natural_quality_failed",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -2965,5 +2965,163 @@
         "sha256": "2eb3a70df6607f3695eb36a9c157d947b19665e28f743a578fe2e30dec0c26d0"
       }
     ]
+  },
+  "multiBlockArchive": {
+    "date": "2026-11-01",
+    "baseCommit": "be7657c52ac8d2986749a84ebb4330e5d5d76e37",
+    "goalComplete": false,
+    "implementation": {
+      "prompt": [
+        "page-fragments.v1",
+        "page-fragments.v2"
+      ],
+      "response": "xiaozhi.material-ai-page-fragments.v1",
+      "blockTextsMaxBytes": 49152,
+      "inputMaxBytes": 163840,
+      "selectedBlocksPerQuestion": 32,
+      "assetsPerQuestion": 8,
+      "unitImageMaxBytes": 16777216,
+      "newDependencies": 0,
+      "newDdl": 0,
+      "newIpc": 0,
+      "canonical": "Existing SQLite writer, QuestionAssets and question-document.v2",
+      "secondPass": "Same authorized original page, frozen geometry and OCR hints; no additional crop images",
+      "rollback": "OMNI_EDU_AI_PAGE_FRAGMENTS=0 stops new fragment policies; retain readers and all evidence"
+    },
+    "checks": {
+      "pageBoundaries": 66,
+      "k0Boundaries": 64,
+      "blockCacheBoundaries": 12,
+      "rendererComponents": 240,
+      "sourceRepairBuildExit": 0,
+      "npmAudit": {
+        "exit": 1,
+        "total": 45,
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "lockChanged": false
+      },
+      "smoke": {
+        "exit": 0,
+        "passed": 207,
+        "total": 207,
+        "buildMainSha256": "6530a74885d9ac84cb34a9a3e5c271fc72667f51e388c0d2b8eb765b0d6a7d03",
+        "boundary": "Before later text-only source evidence and caption/enum prompt repairs; not final integrated runtime acceptance"
+      },
+      "integration": {
+        "buildExit": 0,
+        "rendererComponents": {
+          "passed": 240,
+          "total": 240,
+          "exit": 0
+        },
+        "pageBoundaries": {
+          "passed": 66,
+          "exit": 0
+        },
+        "legacyBatchUi": {
+          "exit": 1,
+          "privateReport": "%TEMP%/omni-edu-ai-batch-cFPnhC/report.json",
+          "failure": "Timed out at old material-ai-panel visibility before model configuration/request; fixture still uses obsolete Qwen account controls/endpoint; not counted as current DeepSeek runtime acceptance"
+        }
+      }
+    },
+    "natural": {
+      "privateReport": "%TEMP%/omni-real-material-aWObCn/page-fragments-vGHZZS/report.json",
+      "exit": 1,
+      "pages": 6,
+      "cloudCalls": 11,
+      "candidates": 15,
+      "ready": 1,
+      "held": 14,
+      "qualifiedMultiImage": 0,
+      "coldRestartFactsEqual": true,
+      "coldExtraCalls": 0,
+      "rendererErrors": 0,
+      "scope": "Complete previously inspected natural exam, teacher folder grant and actual provider. Not mathematical or whole-corpus acceptance"
+    },
+    "localReplay": {
+      "privateReport": "%TEMP%/kb-fragments-local-replay.json",
+      "calls": 0,
+      "canonicalWrites": 0,
+      "beforeEligible": 1,
+      "afterEligible": 3,
+      "scope": "Retained natural responses, current pure text-only source assessment; not fresh provider or image acceptance"
+    },
+    "failures": [
+      "Early UI identifier/disclosure/account/async-view fixture errors made zero calls",
+      "An earlier interrupted owned folder grant resumed in the v1 run; explicitly paused through existing IPC; observed ledger kept unchanged; new preflight rejects overlapping running grants",
+      "v1 only 8 selected blocks rejected complete natural 9-14 block questions; v2 separates selected blocks from at most 8 source assets",
+      "Numeric geometry alone omitted parent opening; v2 binds existing OCR hints to block IDs",
+      "Natural v2 still omitted figure captions from complete stem and returned an invalid requiresImage issue on page4; strict gate preserved originals and held or outcome_unknown, with no automatic billed retry",
+      "Text-only evidence unnecessarily coupled to crop selection; fixed after natural run and verified by controlled and retained-response replay"
+    ],
+    "performance": {
+      "before": {
+        "mainBytes": 3502409,
+        "preloadBytes": 36248,
+        "rendererBytes": 7380997
+      },
+      "geometryAndHints": "Reuse saved same-page OCR layout; no new model calls. Additional local crop OCR per source asset.",
+      "limits": "No long-run, 40GB, recall or P95 measured in this slice",
+      "final": {
+        "main": {
+          "bytes": 3527270,
+          "sha256": "6f8f4f1a574c71bd70342c70f4d795a5e853631e8193360f56041eab519a49ae"
+        },
+        "preload": {
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "file": "index-C1pJvoPl.js",
+          "bytes": 7381136,
+          "sha256": "bde76ae9824b3cb54dce9671a2e881786de784d336cd9ef3018de3deb8f37fea"
+        },
+        "deltaBytes": {
+          "main": 24861,
+          "preload": 0,
+          "renderer": 139
+        },
+        "scope": "Includes latest main UI integration. Size delta is not speed, 40GB or recall evidence. Optional OCR component bytes/dependencies unchanged in this slice."
+      }
+    },
+    "open": [
+      "Natural image question completeness and useful automatic archive rate",
+      "Cross-page parent assembly",
+      "Known answer pairing and online solution writeback",
+      "Real Pi whole-paper workflow and mathematical acceptance",
+      "10GB then 40GB, corpus recall/P95, recovery",
+      "End-user optional component download/configuration and installer"
+    ],
+    "logs": {
+      "boundaries": "%TEMP%/kb-fragments-boundaries-complete.log",
+      "k0": "%TEMP%/kb-fragments-k0-second.log",
+      "blocks": "%TEMP%/kb-fragments-block-boundaries-second.log",
+      "smoke": "%TEMP%/kb-fragments-final-smoke.log",
+      "real": "%TEMP%/kb-fragments-real-v2.log",
+      "repairBuild": "%TEMP%/kb-fragments-repair-build.log",
+      "integratedBuild": "%TEMP%/kb-fragments-integrated-build.log",
+      "integratedComponents": "%TEMP%/kb-fragments-integrated-components.log",
+      "integratedBoundaries": "%TEMP%/kb-fragments-integrated-boundaries.log",
+      "legacyUi": "%TEMP%/kb-fragments-integrated-journey.log"
+    },
+    "sourceCommit": "42a08aa",
+    "integrationCommit": "0348966",
+    "integratedMain": "05782b4",
+    "commands": {
+      "cwd": "apps/desktop",
+      "build": "npm.cmd run build",
+      "components": "npm.cmd run test:renderer-components",
+      "pageBoundaries": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+      "k0": "node --experimental-transform-types scripts/education/kb-k0-file-access-boundaries.mjs",
+      "blockCache": "node --import ./scripts/office-agent/register-source.mjs --experimental-transform-types scripts/education/kb-page-blocks-boundaries.mjs",
+      "smoke": "npm.cmd run build then node scripts/electron-smoke.mjs on the fixed pre-late-repair build",
+      "natural": "node scripts/education/kb-page-fragments-real.mjs <owned-root> <whole-exam-run> <authorized-isolated-account-root>",
+      "audit": "npm.cmd audit --json",
+      "legacyFixture": "node scripts/education/kb-ai-batch-journey.mjs",
+      "repository": "git diff --check"
+    }
   }
 }

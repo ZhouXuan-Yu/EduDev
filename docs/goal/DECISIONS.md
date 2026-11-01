@@ -1,6 +1,12 @@
 # Goal 决策记录
 
+## 2026-11-01 后台多块原题归档
+
+沿原MaterialAiRepository双遍执行器和QuestionAssets接入多块归档，复用RapidLayout/PP-DocLayoutV3、PDFium/RapidOCR及question-document.v2多图。page-fragments.v1回执保留；新v2冻结同页OCR块线索，最多32个选块，仅在不框入其他检测块时合并为最多8张图片。原题查看和Office源图读取全部图片；无新DDL、依赖、Agent或IPC。OMNI_EDU_AI_PAGE_FRAGMENTS=0只停止新策略，旧回执仍可读。 两遍归属一致仅作为原题来源的一项证据；失败不修改首稿/终稿，不自动复发结果未知的收费请求。
+
+
 2026-11-01 C02继续采用应用外层布局修复，保护原输入框/底栏/弹层和Pi；极端宽度允许局部滚动取回控件，设置目录/行堆叠。真实物理drag、系统DPI、IME、教师视觉与工程可达性分别记录。一次综合在最后设置行CSS前通过，最终专项覆盖该变化，不再重复综合。
+
 
 ## 2026-11-01 复用成熟图文分块来源层
 
