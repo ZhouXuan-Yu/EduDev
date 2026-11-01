@@ -1,5 +1,7 @@
 # 当前集成与复用
 
+2026-11-01 回执入口复用原OfficeVerificationNotice/OfficeRecoveryNotice及应用DisclosureCard，不修改HeroUI/Pi/Hana vendor；官方Disclosure内部另设应用domain边界，旧样式不进入原生控件。0依赖/付费/IPC变化，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
 2026-11-01 键盘交互整合收尾：f288868/078ff4c整合main 4fe07fc为62fbf1e，13处文档冲突保留双方，三处焦点生产文件内容不变；整合后build/type、240组件和原Pi 0模型焦点2项通过。此前流程6项/207综合分别绑定原固定构建，不冒充最终整合重跑；所有诊断失败已归档，177+份原始证据逐项hash核对。完整AT仍3/252、Goal active，继续W3后S/T；日常D最后核对05782b4，本片与选读修复未应用，实际窗口仍待解锁。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice.integration。
 
 2026-11-01 C02键盘待处理工程：源码f288868，固定构建01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b，主进程/preload与b8e3651基线字节/hash一致，renderer入口较基线+2026B，无新依赖或许可变化。实际Pi6项/240组件/build通过，0付费；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。D保留原05782b4运行与脏文档，等待解锁再核对，不发安装包。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
