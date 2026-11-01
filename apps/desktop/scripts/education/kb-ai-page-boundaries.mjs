@@ -335,14 +335,34 @@ async function cropFixture(mode='normal'){
  const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','base64');
  const {CROP_QUALITY_SCHEMA}=await import('../../src/main/assets/material-ai-crop-quality.ts'),{LOCAL_OCR_ENGINE}=await import('../../src/shared/xiaozhi-ocr.ts');f.repo.runtime.inspectCrop=async()=>({schemaVersion:CROP_QUALITY_SCHEMA,engine:LOCAL_OCR_ENGINE,text:f.mode==='clipped_text'?'计算7+8。':'如图所示，计算7+8。',clearEdges:[f.mode!=='clipped_edge',true,true,true]});
  f.repo.runtime.crop=async(source,box)=>{f.renders++;return{schemaVersion:'xiaozhi.material-page-preview.v1',ok:true,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,engine:'pdfium-5.14.0-page.v1',assetId:'asset_'+sha(JSON.stringify(box)).replace(/^(.{8})(.{4})(.{4})(.{4})(.{12}).*$/,'$1-$2-$3-$4-$5'),page:source.page,total:1,box,width:1,height:1,sha256:sha(png),dataUrl:'data:image/png;base64,'+png.toString('base64')};};
- f.repo.runtime.complete=async input=>{f.state.calls++;assert.equal(input.pagePrompt.policy,'page-regions.v2');assert.equal(input.pagePrompt.resourceTitle,'原页.pdf');
-  if(input.previous){assert.equal(input.images.length,1);assert.equal(input.images[0].role,'题号1');assert.equal(input.images[0].data,png.toString('base64'));if(f.mode==='unknown')throw Error('outcome_unknown');}
+ f.repo.runtime.complete=async input=>{f.state.calls++;assert.equal(input.pagePrompt.policy,f.layout?'page-regions.v3':'page-regions.v2');assert.equal(input.pagePrompt.resourceTitle,'原页.pdf');
+  if(input.previous){if(f.mode==='unbound_layout')assert.equal(input.images,undefined);else{assert.equal(input.images.length,1);assert.equal(input.images[0].role,'题号1');assert.equal(input.images[0].data,png.toString('base64'));}if(f.mode==='unknown')throw Error('outcome_unknown');}
   const item=structuredClone(q);item.stem='如图所示，计算7+8。';item.projection.statement.text=item.stem;item.projection.figures={state:'provided',text:'图中标有7与8'};item.requiresImage=true;item.answerOrigin='ai_generated';item.analysisOrigin='ai_generated';
   const region={number:'1',box:[.05,.1,.95,.6],complete:true};if(input.previous&&f.mode==='wrong_crop'){region.box=null;region.complete=false;item.issues=['incomplete_question'];}
   if(f.mode==='unclear')item.issues=['uncertain_ocr'];if(f.mode==='math_changed'&&input.previous)item.answer='16';
   return JSON.stringify({schemaVersion:'xiaozhi.material-ai-page-regions.v1',outcome:'questions',pageText:'第1题 '+item.stem,pageIssues:[],questions:[item],regions:[region]});};
  f.dispose=async()=>{f.db.close();await fs.rm(root,{recursive:true,force:true});};return f;
 }
+await check('Local layout proposals preserve geometry, abstain on multi-column and OCR split headings, and reject executable metadata',async()=>{
+ const {proposeLocalPageRegions,validLocalPageRegions}=await import('../../src/shared/material-ai-layout-regions.ts');
+ const line=(text,x,y)=>({text,score:.99,normalizedQuad:[[x,y],[x+.2,y],[x+.2,y+.02],[x,y+.02]]});
+ const layout={engine:'pdfium-5.14.0-rapidocr-3.9.2-layout.v1',inputSha256:sha('original'),rasterSha256:sha('pixels'),page:1,total:2,height:2400,lines:[line('1.原题第一题',.1,.2),line('(1)小问不是父题',.1,.3),line('2.原题第二题',.1,.5),line('第1页共2页',.4,.95)]};
+ const hints=proposeLocalPageRegions(layout);assert(validLocalPageRegions(hints));assert.deepEqual(hints.regions.map(r=>r.number),['1','2']);assert.equal(hints.regions[0].box[0],0);assert.equal(hints.regions[0].box[2],1);assert.equal(hints.regions[0].box[3],hints.regions[1].box[1]);assert(hints.regions[1].box[3]<.95);
+ assert.equal(proposeLocalPageRegions({...layout,lines:[line('1.甲',.1,.2),line('2.乙',.55,.5)]}).regions.length,0);
+ assert.equal(proposeLocalPageRegions({...layout,lines:[line('1.甲',.1,.2),line('1.4.疑似另一父题',.1,.5)]}).regions.length,0);
+ assert.equal(proposeLocalPageRegions({...layout,lines:[line('1.甲',.1,.2),line('图1',.8,.49),line('2.乙',.1,.5)]}).regions.length,0);
+ for(const bad of [{...hints,total:0},{...hints,rasterSha256:'wrong'},{...hints,extra:true},{...hints,regions:new Array(1)},Object.defineProperty({...hints},'regions',{enumerable:true,get(){throw Error('getter must not run');}})])assert(!validLocalPageRegions(bad));
+});
+await check('Frozen v3 binds layout to actual original pixels; only matching candidates render and old first drafts keep their policy',async()=>{
+ for(const mode of ['normal','unbound_layout','wrong_raster']){const f=await cropFixture(mode);try{
+  f.layout={schemaVersion:'xiaozhi.local-page-regions.v1',engine:'pdfium-5.14.0-rapidocr-3.9.2-layout.v1',inputSha256:f.version,rasterSha256:sha(mode==='wrong_raster'?'different pixels':'controlled-owned-image'),page:1,total:1,regions:mode==='unbound_layout'?[]:[{number:'1',box:[.05,.1,.95,.6],complete:true}]};
+  f.repo.runtime.layout=async()=>f.layout;await f.repo.create(f.input);await f.repo.drain();
+  if(mode==='wrong_raster'){assert.equal(f.state.calls,0);assert.equal(f.renders,0);continue;}
+  const saved=await f.question();assert(saved);assert.equal(f.state.calls,2);assert.equal(f.renders,mode==='normal'?1:0);assert.equal(archiveEligible(saved),mode==='normal');await f.repo.validate(saved);
+  const stored=JSON.parse(f.db.prepare('SELECT input_json FROM material_ai_units').get().input_json);assert.equal(stored.pagePrompt.policy,'page-regions.v3');assert.deepEqual(stored.pagePrompt.layout,f.layout);
+  if(mode==='normal'){stored.pagePrompt.layout.rasterSha256=sha('tampered receipt raster');f.db.prepare('UPDATE material_ai_units SET input_json=?').run(JSON.stringify(stored));await assert.rejects(()=>f.repo.validate(saved),/source_changed/);assert.equal(f.state.calls,2);}
+ }finally{await f.dispose();}}
+});
 await check('Versioned crop schema rejects overlapping, missing, sparse and executable regions without downgrading old page policies',async()=>{
  const {validQuestionRegion,validQuestionRegions}=await import('../../src/shared/material-ai-page-regions.ts');
  assert(validAiPagePrompt({policy:'page-regions.v1',ocrStatus:'blank',totalPages:1,resourceTitle:'公开试卷.pdf'}));
@@ -389,5 +409,13 @@ await check('Missing historical crop checks revoke automatic use without rewriti
 });
 await check('Next-page continuation and unknown local receipt hold the current last parent despite two matching model outputs',async()=>{
  for(const next of ['(2) 请继续完成上一题的实验。','unknown','接上页实验，请记录数据。']){const f=await cropFixture();try{f.db.prepare('UPDATE material_pdf_jobs SET total=2').run();if(next!=='unknown'){const old=f.db.prepare('SELECT * FROM material_pdf_pages').get();const raw=JSON.parse(old.result_json);Object.assign(raw,{status:'complete',error:'',method:'ocr',text:next,ocrText:next});f.db.prepare("INSERT INTO material_pdf_pages VALUES(?,2,'complete',?,'')").run(old.generation,JSON.stringify(raw));}await f.repo.create(f.input);await f.repo.drain();const saved=await f.question();assert(!archiveEligible(saved));assert(saved.archive.issues.includes(next.startsWith('(2)')?'cross_page':'incomplete_question'));await f.repo.validate(saved);}finally{await f.dispose();}}
+});
+
+await check('Provider uses the same v3 selection as crop storage, retains unbound questions for review and carries numeric hints only',async()=>{
+ const {completeMaterialAi}=await import('../../src/main/assets/material-ai-provider.ts'),originalFetch=globalThis.fetch,requests=[];
+ const item=structuredClone(q);item.requiresImage=true;item.projection.figures={state:'provided',text:'原图'};
+ const region={number:'1',box:[.1,.1,.9,.9],complete:true},response={schemaVersion:'xiaozhi.material-ai-page-regions.v1',outcome:'questions',questions:[item],pageText:text,pageIssues:[],regions:[region]},layout={schemaVersion:'xiaozhi.local-page-regions.v1',engine:'pdfium-5.14.0-rapidocr-3.9.2-layout.v1',inputSha256:sha('source'),rasterSha256:sha('controlled-original'),page:1,total:1,regions:[region]};
+ const input={model:'deepseek-flash',apiKey:'controlled-only',text:'OCR',page:true,imageCoverage:true,pagePrompt:{policy:'page-regions.v3',ocrStatus:'complete',totalPages:1,resourceTitle:'公开试卷.pdf',layout},image:{mime:'image/png',data:Buffer.from('controlled-original').toString('base64')},previous:response},image={role:'题号1',index:0,mime:'image/png',data:Buffer.from('controlled-crop').toString('base64')},signal=new AbortController().signal;
+ try{globalThis.fetch=async(_,o)=>{requests.push(JSON.parse(o.body));return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:JSON.stringify(response)}}]}),{status:200});};await assert.rejects(completeMaterialAi(input,signal),/invalid_input/);await completeMaterialAi({...input,images:[image]},signal);assert(requests[0].messages[0].content.includes('[本地坐标候选 page-regions.v3]'));const empty={...input,pagePrompt:{...input.pagePrompt,layout:{...layout,regions:[]}}};await assert.rejects(completeMaterialAi({...empty,images:[image]},signal),/invalid_input/);await completeMaterialAi(empty,signal);assert.equal(requests.length,2);assert.equal(JSON.parse(requests[1].messages[1].content[0].text).firstDraft.questions.length,1);}finally{globalThis.fetch=originalFetch;}
 });
 console.log(JSON.stringify({success:true,checks,scope:'Actual durable executor/SQLite and strict page schemas with controlled image/model only; not natural visual or mathematical quality'}));

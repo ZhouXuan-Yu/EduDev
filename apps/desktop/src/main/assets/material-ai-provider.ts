@@ -1,4 +1,5 @@
 import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
+import {selectedPageRegions} from '../../shared/material-ai-layout-regions';
 import {MATERIAL_AI_RESPONSE,parseAiResponse,type AiModel,type AiResponse} from '../../shared/material-ai';
 import {NATIVE_AI_RESPONSE,parseNativeAiResponse,type NativeAiResponse} from '../../shared/material-ai-native-response';
 import {createDeepSeekFetch} from '../xiaozhi-agent/deepseek-fetch';
@@ -41,10 +42,10 @@ export const completeMaterialAi:AiCompletion=async(input,signal)=>{
   if(input.native&&(!input.images?.length||input.images.length>8||input.image||input.images.some(i=>i.mime!=='image/png')||input.images.reduce((n,i)=>n+Buffer.from(i.data,'base64').length,0)>16*1048576))throw Error('invalid_input');
   if(input.images&&!input.native){
     if(!input.page||!pageRegionsPolicy(input.pagePrompt?.policy)||!input.previous||input.images.length>8||input.images.some(i=>i.mime!=='image/png'||!/^题号[0-9]{1,5}$/.test(i.role)||i.index!==0||!i.data||Buffer.from(i.data,'base64').toString('base64')!==i.data||Buffer.from(i.data,'base64').length>4*1048576)||input.images.reduce((n,i)=>n+Buffer.from(i.data,'base64').length,0)>16*1048576)throw Error('invalid_input');
-    const first=input.previous as AiPageResponse;if(first.schemaVersion!==MATERIAL_PAGE_REGIONS_RESPONSE)throw Error('invalid_input');const expected=first.questions.filter(q=>q.requiresImage&&first.regions.some(r=>r.number===q.number&&r.complete&&r.box)).slice(0,8).map(q=>'题号'+q.number);
+    const first=input.previous as AiPageResponse;if(first.schemaVersion!==MATERIAL_PAGE_REGIONS_RESPONSE)throw Error('invalid_input');const expected=selectedPageRegions(first,input.pagePrompt).map(r=>'题号'+r.number);
     if(JSON.stringify(expected)!==JSON.stringify(input.images.map(i=>i.role)))throw Error('invalid_input');
   }
-  if(input.page&&pageRegionsPolicy(input.pagePrompt?.policy)&&input.previous&&!input.images){const first=input.previous as AiPageResponse;if(first.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE&&first.questions.some(q=>q.requiresImage&&first.regions.some(r=>r.number===q.number&&r.complete&&r.box)))throw Error('invalid_input');}
+  if(input.page&&pageRegionsPolicy(input.pagePrompt?.policy)&&input.previous&&!input.images&&selectedPageRegions(input.previous as AiPageResponse,input.pagePrompt).length)throw Error('invalid_input');
   const timed=AbortSignal.any([signal,AbortSignal.timeout(120000)]);
   const content:unknown[]=[{type:'text',text:JSON.stringify({phase:input.previous?'复核并输出最终整理稿':'首次整理',material:input.text,...(input.pagePrompt?{pageContext:input.pagePrompt}:{}),...(input.bookPagePolicy?{answerContext:{policy:input.bookPagePolicy}}:{}),...(input.previous?{firstDraft:input.previous}:{}),...((input.pagePrompt?.policy===MATERIAL_QUESTION_PAGE_PROMPT||pageRegionsPolicy(input.pagePrompt?.policy))&&input.previous?{localReview:pageProjectionReview(input.previous as AiPageResponse)}:{})})}];
   if(input.image)content.push({type:'image_url',image_url:{url:`data:${input.image.mime};base64,${input.image.data}`}});

@@ -22,7 +22,7 @@ export function assessAiPage(first:AiPageResponse,final:AiPageResponse,source:Ma
 }
 export function aiPageQuestionIssues(first:AiPageResponse,final:AiPageResponse,source:MaterialPageSource,imageSha:string,q:AiImageQuestion,prompt?:AiPagePrompt,crops:PageCrop[]=[],following:'separate'|'continued'|'unknown'='separate'){
  const assessment=assessAiPage(first,final,source,false,prompt),candidate=assessment.numbered.find(c=>c.number===q.number),evidence=candidate&&!candidate.risks.length?pageQuestionEvidence(first,final,q.number,imageSha,candidate.fields.stem):undefined;
- const visual=!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,crops,candidate.fields.stem);
+ const visual=!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,crops,candidate.fields.stem,prompt);
  const issues=[...q.issues.filter(i=>!visual||i!=='requires_image'),...archiveMissing(q)];if(assessment.review||!evidence&&!visual)issues.push('ai_mismatch');
  if(q.number===final.questions.at(-1)?.number&&following!=='separate')issues.push(following==='continued'?'cross_page':'incomplete_question');
  if(!visual&&(q.requiresImage||q.projection.figures.state!=='not_applicable'))issues.push('requires_image');
@@ -40,7 +40,7 @@ export async function publishAiPage(host:Host,args:{batchId:string;ordinal:numbe
  await host.run('UPDATE material_ai_page_units SET first_sha=?,final_sha=?,image_sha=? WHERE batch_id=? AND ordinal=?',[hash(firstRaw),hash(finalRaw),imageSha,batchId,ordinal]);
  for(const q of final.questions){
   const unique=aiPageQuestionIssues(first,final,source,imageSha,q,args.pagePrompt,args.crops,args.following);review||=!!unique.length;
-  const candidate=assessment.numbered.find(c=>c.number===q.number),crop=args.crops?.find(c=>c.number===q.number),visual=!!crop&&!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,args.crops!,candidate.fields.stem);
+  const candidate=assessment.numbered.find(c=>c.number===q.number),crop=args.crops?.find(c=>c.number===q.number),visual=!!crop&&!!candidate&&!candidate.risks.some(r=>r!=='visual_unchecked')&&pageCropAgrees(first,final,q.number,args.crops!,candidate.fields.stem,args.pagePrompt);
   const document=visual?pageCropDocument(q,crop!,batchId,args.model):undefined;
   const archive:QuestionArchive={schemaVersion:QUESTION_PAGE_ARCHIVE_SCHEMA,extractor:'ai-page-two-pass.v1',state:unique.length?'ai_needs_review':'ai_final',number:q.number,sources:args.sources,pageSource:source,issues:unique,sourceRisks:q.requiresImage&&!visual?['visual_unchecked']:[],sourceChecked:false,answerOrigin:q.answerOrigin,analysisOrigin:q.analysisOrigin,ai:{batchId,ordinal,provider:'deepseek',model:args.model,firstSha:hash(firstRaw),finalSha:hash(finalRaw),imageSha,policy:visual?'page-crop-complete.v1':'page-image-complete.v1'}};
   const {projection:_,...fields}=q,saved=await host.create({...fields,sourceTitle:args.title,sourceKind:'teacher_resource',tags:['AI整理','AI原页还原',...(q.answerOrigin==='ai_generated'?['AI推导答案']:[])]});

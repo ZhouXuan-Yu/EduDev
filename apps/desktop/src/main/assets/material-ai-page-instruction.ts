@@ -1,4 +1,4 @@
-import {MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_LEGACY_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
+import {MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_LEGACY_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
 import {MATERIAL_PAGE_PROMPT,MATERIAL_QUESTION_PAGE_PROMPT,type AiPagePrompt,type AiPageResponse} from '../../shared/material-ai-page';
 import {aiTextSignature} from '../../shared/material-ai-image';
 
@@ -25,6 +25,9 @@ pageIssues只表达整页原文转录的真实缺口；不会解某道题、存�
 }
 
 export function pageRegionsInstruction(imageInstruction:string,policy:AiPagePrompt['policy']=MATERIAL_PAGE_REGIONS_PROMPT){
+ if(policy===MATERIAL_PAGE_LAYOUT_PROMPT)return imageInstruction.slice(0,imageInstruction.indexOf('根对象只允许'))+pageRegionsV2.replaceAll('page-regions.v2',MATERIAL_PAGE_LAYOUT_PROMPT)+`
+[本地坐标候选 ${MATERIAL_PAGE_LAYOUT_PROMPT}]
+pageContext.layout.regions是同一原页的本地OCR标题位置生成的候选，只含题号和数值坐标，不是正确性证明。禁止重新估算坐标；本题所有条件、图注、小问、选项均在该候选范围内且不含邻题、标题或页脚时，regions逐字复制该题候选box并complete=true。候选缺失、坐标不合适、漏题号、跨页或仍不确定，则本题complete=false、box=null，并保留适用incomplete_question/cross_page，不因此丢弃questions或猜造题号。第二遍继续独立核对实际裁剪，错误候选必须拒绝。其他转录、答案、来源和六根字段规则保持。`;
  if(policy===MATERIAL_PAGE_REGIONS_PROMPT)return imageInstruction.slice(0,imageInstruction.indexOf('根对象只允许'))+pageRegionsV2;
  if(policy!==MATERIAL_PAGE_REGIONS_LEGACY_PROMPT)throw Error('invalid_input');
  return pageRestorationInstruction(imageInstruction,MATERIAL_QUESTION_PAGE_PROMPT).replaceAll('xiaozhi.material-ai-page-response.v1',MATERIAL_PAGE_REGIONS_RESPONSE).replaceAll('schemaVersion/outcome/questions/pageText/pageIssues五个字段','schemaVersion/outcome/questions/pageText/pageIssues/regions六个字段')+`

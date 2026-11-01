@@ -1,4 +1,6 @@
-import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
+import {pageRegionsPolicy,MATERIAL_PAGE_LAYOUT_PROMPT,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE} from '../../shared/material-ai-page-regions';
+import {validLocalPageRegions,type LocalPageRegions} from '../../shared/material-ai-layout-regions';
+import type {MaterialPageSource} from '../../shared/material-ai-page';
 import {PAGE_CROP_TABLE,PAGE_CROP_EDITS_TABLE,editedPageCropDocument,pageCropAgrees,preparePageCrops,readPageCrops,pageCropDocument,type PageCrop,type PageCropRenderer} from './material-ai-page-crops';
 import {QuestionAssets} from './question-assets';
 import type {CropInspector} from './material-ai-crop-quality';
@@ -41,7 +43,7 @@ type Host={root?:()=>string;all:(sql:string,p?:Value[])=>Promise<Row[]>;run:(sql
   writer:<T>(action:(target:MaterialAiRepository)=>Promise<T>,beforeCommit?:()=>void)=>Promise<T>};
 type Configuration={revision:number;model:AiSettings['model'];sealedKey:string};
 export type AiBatchTask={key:string;folderId?:string;revision?:number};
-export type AiRuntime={crop?:PageCropRenderer;inspectCrop?:CropInspector;account?:()=>Promise<{revision:number;model:'deepseek-flash';apiKey:string}>;codec:SettingsKeyCodec;clean:(text:string)=>Promise<string>;image:(resourceId:string,version:string,page:number|undefined,signal:AbortSignal)=>Promise<{data:string;mime:string}>;complete?:AiCompletion;word?:WordProofRuntime;ocr?:(bytes:Buffer,signal:AbortSignal)=>Promise<{text:string;engine:typeof LOCAL_OCR_ENGINE}>};
+export type AiRuntime={layout?:(source:MaterialPageSource,signal:AbortSignal)=>Promise<LocalPageRegions>;crop?:PageCropRenderer;inspectCrop?:CropInspector;account?:()=>Promise<{revision:number;model:'deepseek-flash';apiKey:string}>;codec:SettingsKeyCodec;clean:(text:string)=>Promise<string>;image:(resourceId:string,version:string,page:number|undefined,signal:AbortSignal)=>Promise<{data:string;mime:string}>;complete?:AiCompletion;word?:WordProofRuntime;ocr?:(bytes:Buffer,signal:AbortSignal)=>Promise<{text:string;engine:typeof LOCAL_OCR_ENGINE}>};
 const key='xiaozhi.material-ai.v1';
 const hash=(v:string|Buffer)=>createHash('sha256').update(v).digest('hex');
 const alive=(pid:number)=>{try{process.kill(pid,0);return true;}catch(error){return (error as NodeJS.ErrnoException).code!=='ESRCH';}};
@@ -165,7 +167,10 @@ export class MaterialAiRepository{
             if(!rows.length||rows.length>16)throw Error('unit_too_large');const window=await this.host.materials().readingWindow(resource.id,Number(rows[0].body_offset),rows.length);
             if(window.units.length!==rows.length||window.units.some(u=>u.chunk.pageNumber!==page))throw Error('source_incomplete');sources=window.units.map(materialSource);
           }
-          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:this.runtime?.crop&&this.runtime.inspectCrop&&this.host.root&&process.env.OMNI_EDU_AI_PAGE_REGIONS!=='0'?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}});continue;
+          const regions=!!(this.runtime?.crop&&this.runtime.inspectCrop&&this.host.root&&process.env.OMNI_EDU_AI_PAGE_REGIONS!=='0');
+          const layout=regions&&this.runtime?.layout&&(await this.books.role(resource.id))?.kind!=='answers'?await this.runtime.layout(original.source,AbortSignal.timeout(120000)):undefined;
+          if(layout&&(!validLocalPageRegions(layout)||layout.inputSha256!==input.version||layout.page!==page||layout.total!==original.totalPages))throw Error('source_changed');
+          units.push({sources,text:original.text,page,visualRisk:true,stamp,pageSource:original.source,pagePrompt:layout?{policy:MATERIAL_PAGE_LAYOUT_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName,layout}:regions?{policy:MATERIAL_PAGE_REGIONS_PROMPT,ocrStatus:original.status,totalPages:original.totalPages,resourceTitle:resource.originalFileName}:{policy:MATERIAL_QUESTION_PAGE_PROMPT,ocrStatus:original.status,totalPages:original.totalPages}});continue;
         }
         if(job.status!=='complete')throw Error(input.images?'page_restoration_disabled':'source_incomplete');
         const rows=await this.host.all('SELECT c.*, (SELECT COUNT(*) FROM resource_chunks x WHERE x.resource_id=c.resource_id AND (x.chunk_index<c.chunk_index OR x.chunk_index=c.chunk_index AND x.id<c.id)) AS body_offset FROM resource_chunks c WHERE c.resource_id=? AND c.page_number=? ORDER BY c.chunk_index,c.id LIMIT 17',[resource.id,page]);
@@ -232,6 +237,7 @@ export class MaterialAiRepository{
     if((unit.pagePrompt?.policy===MATERIAL_QUESTION_PAGE_PROMPT||pageRegionsPolicy(unit.pagePrompt?.policy))&&(unit.bookRole?.kind==='answers'||unit.pageSource!.page>unit.pagePrompt.totalPages))throw Error('source_changed');
     const resource=await this.host.materials().resource(config.resourceId);
     if(pageRegionsPolicy(unit.pagePrompt?.policy)&&unit.pagePrompt.resourceTitle!==resource.originalFileName)throw Error('source_changed');
+    if(unit.pagePrompt?.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&(unit.pagePrompt.layout.inputSha256!==unit.pageSource?.version||unit.pagePrompt.layout.page!==unit.pageSource.page))throw Error('source_changed');
     if(resource.contentHash!==config.version||await this.host.materials().originalStamp(resource.id,config.version)!==unit.stamp)throw new Error('source_changed');
     for(const source of unit.sources){const view=await this.host.materials().source(source);if(unit.pageSource&&view.body.chunks[0]?.pageNumber!==unit.page)throw Error('source_changed');}
     if(unit.pageSource){
@@ -270,9 +276,9 @@ export class MaterialAiRepository{
       const proof=await this.pageEvidence(receipt.batchId,receipt.ordinal);
       if(!['page-image-complete.v1','page-crop-complete.v1'].includes(receipt.policy)||!unit.pageSource||JSON.stringify(unit.pageSource)!==JSON.stringify(q.archive?.pageSource))throw Error('source_changed');
       const original=proof.final.questions.find(p=>p.number===q.archive!.number);if(!original)throw Error('source_changed');
-      const crops=pageRegionsPolicy(unit.pagePrompt?.policy)?await readPageCrops(this.host,receipt.batchId,receipt.ordinal,unit.pageSource,proof.first,String(row.first_json),receipt.imageSha,signal,q.archive!.number):[];
+      const crops=pageRegionsPolicy(unit.pagePrompt?.policy)?await readPageCrops(this.host,receipt.batchId,receipt.ordinal,unit.pageSource,proof.first,String(row.first_json),receipt.imageSha,signal,q.archive!.number,unit.pagePrompt):[];
       if(receipt.policy==='page-crop-complete.v1'){const crop=crops.find(c=>c.number===original.number);const candidate=restoredPageQuestions(proof.final.pageText,unit.pageSource,proof.final.questions.map(q=>q.number),unit.pagePrompt).find(c=>c.number===original.number);
-        if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.first,proof.final,original.number,crops,candidate.fields.stem))throw Error('source_changed');
+        if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.first,proof.final,original.number,crops,candidate.fields.stem,unit.pagePrompt))throw Error('source_changed');
         const root=pageCropDocument(original,crop,receipt.batchId,String(proof.config.model)),raw=JSON.stringify(q.document);
         if(raw!==JSON.stringify(root)){const edit=(await this.host.all('SELECT first_sha,document_json FROM material_ai_page_document_edits WHERE question_id=? AND document_sha=?',[q.id,hash(raw)]))[0];if(q.archive!.state==='ai_final'||!edit||edit.first_sha!==receipt.firstSha||edit.document_json!==raw||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
         if(!q.document||q.document.schemaVersion!=='xiaozhi.question-document.v2'||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');}
@@ -308,6 +314,7 @@ export class MaterialAiRepository{
   }
   private async pageEvidence(batchId:string,ordinal:number){
     const proof=await readAiPageReceipt(this.host,batchId,ordinal);await this.validateInput(proof.config,proof.unit,true);
+    if(proof.unit.pagePrompt?.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&proof.unit.pagePrompt.layout.rasterSha256!==proof.imageSha)throw Error('source_changed');
     return proof;
   }
   async page(input:AiPageQuery):Promise<AiPageView>{
@@ -387,6 +394,7 @@ export class MaterialAiRepository{
       if(config.images){
         const stored=await this.storedImage(batchId,ordinal,signal);image=stored||await this.runtime.image(config.resourceId,config.version,unit.page,signal);
         const bytes=Buffer.from(image.data,'base64');
+        if(unit.pagePrompt?.policy===MATERIAL_PAGE_LAYOUT_PROMPT&&hash(bytes)!==unit.pagePrompt.layout.rasterSha256)throw Error('source_changed');
         if(!['image/png','image/jpeg','image/webp'].includes(image.mime)||!bytes.length||bytes.length>4*1048576||bytes.toString('base64')!==image.data)throw Error('unit_too_large');
         const savedImage=image;
         const publish=(reference?:AiImageFileReference)=>this.write(async target=>{
@@ -430,10 +438,10 @@ export class MaterialAiRepository{
       let crops:PageCrop[]=[];
       if(pageRegionsPolicy(unit.pagePrompt?.policy)){
         if(!this.runtime.crop||!this.runtime.inspectCrop||!unit.pageSource||!this.host.root)throw Error('unsupported');
-        const pageFirst=parseAiPageResponse(firstRaw);crops=await preparePageCrops(this.host,batchId,ordinal,unit.pageSource,pageFirst,firstRaw,imageSha,this.runtime.crop,this.runtime.inspectCrop,signal);
+        const pageFirst=parseAiPageResponse(firstRaw);crops=await preparePageCrops(this.host,batchId,ordinal,unit.pageSource,pageFirst,firstRaw,imageSha,this.runtime.crop,this.runtime.inspectCrop,signal,unit.pagePrompt);
         await this.write(async target=>{await target.guard(batchId,config,unit,signal);const saved=(await target.host.all('SELECT status,first_json,image_sha FROM material_ai_units WHERE batch_id=? AND ordinal=?',[batchId,ordinal]))[0];if(saved?.status!=='first_saved'||saved.first_json!==firstRaw||saved.image_sha!==imageSha)throw Error('conflict');
           for(const crop of crops)await target.host.run("INSERT INTO material_ai_page_crops(batch_id,ordinal,number,first_sha,page_image_sha,source_json,image_json,quality_json) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(batch_id,ordinal,number) DO UPDATE SET quality_json=excluded.quality_json WHERE material_ai_page_crops.quality_json='' AND material_ai_page_crops.first_sha=excluded.first_sha AND material_ai_page_crops.image_json=excluded.image_json",[batchId,ordinal,crop.number,hash(firstRaw),imageSha,JSON.stringify(unit.pageSource),JSON.stringify(crop.image),JSON.stringify(crop.quality)]);
-          await readPageCrops(target.host,batchId,ordinal,unit.pageSource!,pageFirst,firstRaw,imageSha,signal);
+          await readPageCrops(target.host,batchId,ordinal,unit.pageSource!,pageFirst,firstRaw,imageSha,signal,undefined,unit.pagePrompt);
         },()=>signal.throwIfAborted());
       }
       const cropImages=[];for(const crop of crops){const bytes=await new QuestionAssets(this.host.root!).read(crop.image,true,signal);cropImages.push({role:'题号'+crop.number,index:0,data:bytes.toString('base64'),mime:'image/png' as const});}
