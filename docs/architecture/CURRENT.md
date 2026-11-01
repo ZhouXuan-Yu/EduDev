@@ -1,5 +1,9 @@
 # 当前架构
 
+## 2026-11-01 复用本地布局辅助图题取图
+
+已将现有文件式PDFium/RapidOCR layout接入原MaterialAi输入，新的普通PDF冻结page-regions.v3及有界数值候选，原页hash/页号/版本绑定；provider、裁剪存储、发表及读回使用同一候选选择。旧v1/v2回执不重解释，无新表、依赖、服务、Agent或UI重构。 单矩形存在交错图注的表达局限；下一应复用QuestionDocument多图块/跨页来源，不继续让模型估算整个矩形。
+
 2026-11-01 C03：backup领域恢复服务→v1 typed IPC/preload→原DataBackupPanel，原store启动前读取profile选择，Pi/SQLite/文件真源不变。新副本校验和已知地址迁移后才显式激活；原退出drain/relaunch复用，UI测试手动冷启。后台旧积压在副本暂停，不停原调度服务。无新表/依赖；全领域/旧备份/外选目录矩阵未完成。见docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
 
 ## 2026-11-01 图题自动归档的独立来源检查

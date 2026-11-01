@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-01 复用本地布局辅助图题取图
+
+沿原layoutPdfFile、MaterialLayoutCache、readMaterialLayout、PDFium裁剪、RapidOCR检查与MaterialAi writer实现page-regions.v3；共享数值候选认证及选择，原preload/题本/Pi/组卷适配继续承接。没有新依赖、Worker协议、IPC、数据真源或Agent。
+
 2026-11-01 C03：backup领域恢复服务→v1 typed IPC/preload→原DataBackupPanel，原store启动前读取profile选择，Pi/SQLite/文件真源不变。新副本校验和已知地址迁移后才显式激活；原退出drain/relaunch复用，UI测试手动冷启。后台旧积压在副本暂停，不停原调度服务。无新表/依赖；全领域/旧备份/外选目录矩阵未完成。见docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
 
 ## 2026-11-01 图题自动归档的独立来源检查
