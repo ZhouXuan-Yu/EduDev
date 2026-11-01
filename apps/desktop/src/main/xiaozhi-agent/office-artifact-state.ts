@@ -141,7 +141,7 @@ export function createOfficeArtifactState(sql:Sql){
   async parent(id:string){return (await sql.all("SELECT * FROM document_artifacts WHERE id=? AND status='exported'",[id]))[0]??null;},
   async byArtifact(sessionId:string,id:string){const row=(await sql.all("SELECT * FROM xiaozhi_pi_office_drafts WHERE artifact_id=? AND conversation_id=? AND state='saved'",[id,sessionId]))[0];return row?parse(row):null;},
   // Version navigation needs metadata only. Never hydrate every saved BLOB/draft on a UI read.
-  async versionRecords(sessionId:string){return sql.all(`SELECT artifact_id AS artifactId,relative_path AS path,title,format,parent_artifact_id AS parentArtifactId,updated_at AS savedAt,length(output_bytes) AS size,output_hash AS sha256,workspace_hash AS workspaceHash,
+  async versionRecords(sessionId:string){return sql.all(`SELECT id AS draftId,artifact_id AS artifactId,relative_path AS path,title,format,parent_artifact_id AS parentArtifactId,updated_at AS savedAt,length(output_bytes) AS size,output_hash AS sha256,workspace_hash AS workspaceHash,
    json_extract(draft_json,'$.schemaVersion') AS draftSchema,
    (SELECT json_group_array(CAST(c.key AS INTEGER)+1) FROM json_each(d.draft_json,'$.sections') c WHERE json(c.value) IS NOT json_extract((SELECT p.draft_json FROM xiaozhi_pi_office_drafts p WHERE p.artifact_id=d.parent_artifact_id AND p.conversation_id=d.conversation_id),'$.sections['||c.key||']')) AS changedSections,
    json_array_length(draft_json,'$.sections') AS sectionCount,
