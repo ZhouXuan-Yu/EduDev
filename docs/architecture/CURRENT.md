@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 DesktopChrome的既有desktop:menu增加typed app分组，复用原生根Menu和原导航命令；安全区由env(titlebar-area-*)驱动容器查询，无新通道/库/数据真源。Pi/composer/geometry及原校验不变。fab49e4；C02证据captionLayoutSlice。
+
 2026-11-01 窗口几何仍是profile/desktop-window.v1.json UI元数据，无SQLite迁移或新依赖；MIN_HOST_WINDOW_WIDTH=390在host与应用层geometry共享，原ZCode文件保持。save读取原getNormalBounds，moved/close/before-quit同步原子写并去重；closed移除app listener。冷启在原分数DPI/工作区夹取上加最多两次测量修正。真实双屏几何与实际pointer拖动是两个独立标准。4f6ce66及docs/research/AGENT_INTERACTION_C02_20261101.json为当前实现/证据。
 
 ## 2026-11-01 复用本地布局辅助图题取图

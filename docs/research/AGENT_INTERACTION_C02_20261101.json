@@ -1469,5 +1469,409 @@
     "geometryFixActiveInDailyWindow": false,
     "installerVerified": false,
     "restartApproval": "Asked user asynchronously to allow normal close/restart of the other task's daily window after confirming idle. No response yet, so no update/restart performed."
+  },
+  "captionLayoutSlice": {
+    "date": "2026-11-01",
+    "sourceCommit": "fab49e4",
+    "finalIntegration": "d8640d452f39f6014a574e33005e3ef84cd53555",
+    "upstream": "1b19e88",
+    "goal": "active",
+    "newFullAtAccepted": 0,
+    "issue": "390px native content width: seven menu/navigation buttons extended to x308 outside the actual safe area ending at x253; icon buttons shrank to 16px. Existing no-drag controls overlapped caption/drag space.",
+    "implementation": [
+      "Use actual env(titlebar-area-*) safe region, including page zoom, instead of a fixed 140 CSS px caption reservation.",
+      "Keep existing four native groups in an application Menu popup at narrow widths; navigation remains in View and Alt+Left/Right.",
+      "Container queries hide only redundant buttons with smaller safe regions; each visible native control keeps its original size and a minimum 32 CSS px drag region."
+    ],
+    "files": [
+      "apps/desktop/src/shared/desktop-chrome.ts",
+      "apps/desktop/src/main/desktop-chrome/index.ts",
+      "apps/desktop/src/renderer/components/desktop/DesktopFrame.tsx",
+      "apps/desktop/src/renderer/ui-system/chrome.css"
+    ],
+    "unchanged": [
+      "Pi runtime/event/view buffer",
+      "composer internals/appearance",
+      "SQLite/files/data roots",
+      "sender and coordinate validation",
+      "vendor/dependencies"
+    ],
+    "evidence": {
+      "before": "docs/research/evidence/agent-interaction-c02/20261101/caption-before-layout.json.gz",
+      "first": "docs/research/evidence/agent-interaction-c02/20261101/caption-first-ui.json.gz",
+      "final": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-ui.json.gz",
+      "screenshot": "docs/research/evidence/agent-interaction-c02/20261101/caption-390-zoom150.png",
+      "buildLog": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-build.log.gz",
+      "componentLog": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-components.log.gz",
+      "uiLog": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-ui.log.gz",
+      "audit": "docs/research/evidence/agent-interaction-c02/20261101/caption-audit.json.gz"
+    },
+    "builds": {
+      "before": {
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-integration-8c6b705",
+        "files": 455,
+        "bytes": 34532472,
+        "treeSha256": "63039fd473ab644f79a1acffd673dfb3afabff86118e4f20e5c2e885168efc3c",
+        "manifest": "docs/research/evidence/agent-interaction-c02/20261101/c02-integration-8c6b705-files.json.gz",
+        "main": {
+          "path": "main/index.js",
+          "bytes": 3498133,
+          "sha256": "93b493df7bd7ff23af069de97094225017db8b9886d3c1402fafa48944dd76b5"
+        },
+        "preload": {
+          "path": "preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "path": "renderer/assets/index-CHNsKW9X.js",
+          "bytes": 7374774,
+          "sha256": "cf6c80abbdfb3e45664d315c8b67aa9712a770ebc97eccb6b92134125aebe41c"
+        },
+        "css": {
+          "path": "renderer/assets/index-NmruZcG3.css",
+          "bytes": 448559,
+          "sha256": "d116f96c0f55c6509f369e28df73c0fae6ec6b85dbd5edcab83aa9a74b3bfef9"
+        }
+      },
+      "scoped": {
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-caption-505cb7a",
+        "files": 455,
+        "bytes": 34533744,
+        "treeSha256": "021ba29d5489f9878863dff035437eaa211fbd5edd7f43ec51bdf5a61c97bc25",
+        "manifest": "docs/research/evidence/agent-interaction-c02/20261101/c02-caption-505cb7a-files.json.gz",
+        "main": {
+          "path": "main/index.js",
+          "bytes": 3498439,
+          "sha256": "0b03778d3a0f01280351c012363e5bcb10b44f51c5b40c61e1193f18817d0355"
+        },
+        "preload": {
+          "path": "preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "path": "renderer/assets/index-rOylfIs_.js",
+          "bytes": 7375083,
+          "sha256": "cfd8433329fcc54e6b7b4657a8ae393e7b4e456a6c16799bee61418ba152872e"
+        },
+        "css": {
+          "path": "renderer/assets/index-CBzqoflr.css",
+          "bytes": 449216,
+          "sha256": "162c04f103c04bc4ecbc2b04db3ac329fdb441f4d080b92e151869528e1241b4"
+        }
+      },
+      "final": {
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-caption-final-d8640d4",
+        "files": 455,
+        "bytes": 34535744,
+        "treeSha256": "fa14e48a579c020fa1921c7706a1aa3c9ad4291fa88424e0d8414f26ee0b0cce",
+        "manifest": "docs/research/evidence/agent-interaction-c02/20261101/c02-caption-final-d8640d4-files.json.gz",
+        "main": {
+          "path": "main/index.js",
+          "bytes": 3498439,
+          "sha256": "c80b272832e38c0694693fb32b58f70e44d2d7d966b35c64772a8d946f518c52"
+        },
+        "preload": {
+          "path": "preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "path": "renderer/assets/index-rOylfIs_.js",
+          "bytes": 7375083,
+          "sha256": "cfd8433329fcc54e6b7b4657a8ae393e7b4e456a6c16799bee61418ba152872e"
+        },
+        "css": {
+          "path": "renderer/assets/index-CBzqoflr.css",
+          "bytes": 449216,
+          "sha256": "162c04f103c04bc4ecbc2b04db3ac329fdb441f4d080b92e151869528e1241b4"
+        }
+      }
+    },
+    "before": {
+      "viewport": [
+        390,
+        768
+      ],
+      "scrollWidth": 390,
+      "drag": {
+        "x": 253,
+        "y": 0,
+        "w": 32,
+        "h": 44
+      },
+      "controls": {
+        "x": 0,
+        "y": 0,
+        "w": 253,
+        "h": 44
+      },
+      "buttons": [
+        {
+          "id": "desktop-back",
+          "rect": {
+            "x": 8,
+            "y": 2,
+            "w": 16,
+            "h": 40
+          },
+          "hit": true
+        },
+        {
+          "id": "desktop-forward",
+          "rect": {
+            "x": 26,
+            "y": 2,
+            "w": 16,
+            "h": 40
+          },
+          "hit": false
+        },
+        {
+          "id": "desktop-sidebar",
+          "rect": {
+            "x": 44,
+            "y": 2,
+            "w": 16,
+            "h": 40
+          },
+          "hit": true
+        },
+        {
+          "id": "desktop-menu-file",
+          "rect": {
+            "x": 62,
+            "y": 2,
+            "w": 60,
+            "h": 40
+          },
+          "hit": true
+        },
+        {
+          "id": "desktop-menu-edit",
+          "rect": {
+            "x": 124,
+            "y": 2,
+            "w": 60,
+            "h": 40
+          },
+          "hit": true
+        },
+        {
+          "id": "desktop-menu-view",
+          "rect": {
+            "x": 186,
+            "y": 2,
+            "w": 60,
+            "h": 40
+          },
+          "hit": true
+        },
+        {
+          "id": "desktop-menu-help",
+          "rect": {
+            "x": 248,
+            "y": 2,
+            "w": 60,
+            "h": 40
+          },
+          "hit": true
+        }
+      ],
+      "textarea": {
+        "x": 88,
+        "y": 248.9791717529297,
+        "w": 278,
+        "h": 112
+      }
+    },
+    "after390": [
+      {
+        "zoom": 1,
+        "viewport": {
+          "width": 390,
+          "height": 768,
+          "dpr": 1.5
+        },
+        "safe": {
+          "x": 0,
+          "y": 0,
+          "width": 253,
+          "height": 36,
+          "top": 0,
+          "right": 253,
+          "bottom": 36,
+          "left": 0
+        },
+        "drag": {
+          "x": 194,
+          "y": 0,
+          "width": 59,
+          "height": 44,
+          "right": 253,
+          "bottom": 44
+        },
+        "visibleButtons": [
+          "desktop-back",
+          "desktop-forward",
+          "desktop-sidebar",
+          "desktop-menu-app"
+        ]
+      },
+      {
+        "zoom": 1.25,
+        "viewport": {
+          "width": 312,
+          "height": 614,
+          "dpr": 1.875
+        },
+        "safe": {
+          "x": 0,
+          "y": 0,
+          "width": 203,
+          "height": 36,
+          "top": 0,
+          "right": 203,
+          "bottom": 36,
+          "left": 0
+        },
+        "drag": {
+          "x": 110.00000762939453,
+          "y": 0,
+          "width": 93.00000762939453,
+          "height": 44.000003814697266,
+          "right": 203.00001525878906,
+          "bottom": 44.000003814697266
+        },
+        "visibleButtons": [
+          "desktop-sidebar",
+          "desktop-menu-app"
+        ]
+      },
+      {
+        "zoom": 1.5,
+        "viewport": {
+          "width": 260,
+          "height": 512,
+          "dpr": 2.25
+        },
+        "safe": {
+          "x": 0,
+          "y": 0,
+          "width": 169,
+          "height": 36,
+          "top": 0,
+          "right": 169,
+          "bottom": 36,
+          "left": 0
+        },
+        "drag": {
+          "x": 110,
+          "y": 0,
+          "width": 59,
+          "height": 44,
+          "right": 169,
+          "bottom": 44
+        },
+        "visibleButtons": [
+          "desktop-sidebar",
+          "desktop-menu-app"
+        ]
+      },
+      {
+        "zoom": 2,
+        "viewport": {
+          "width": 195,
+          "height": 384,
+          "dpr": 3
+        },
+        "safe": {
+          "x": 0,
+          "y": 0,
+          "width": 127,
+          "height": 36,
+          "top": 0,
+          "right": 127,
+          "bottom": 36,
+          "left": 0
+        },
+        "drag": {
+          "x": 68,
+          "y": 0,
+          "width": 59,
+          "height": 44,
+          "right": 127,
+          "bottom": 44
+        },
+        "visibleButtons": [
+          "desktop-menu-app"
+        ]
+      }
+    ],
+    "validation": {
+      "build": {
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "includes": "sync capabilities + tsc --noEmit + electron-vite build"
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "passed": 240,
+        "total": 240,
+        "exit": 0
+      },
+      "ui": {
+        "command": "node scripts/xiaozhi-agent/native-caption-layout-ui.mjs test-results/c02-caption-final-d8640d4",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-caption-layout-I1YeWU",
+        "exit": 0,
+        "checks": [
+          "20 actual native content sizes/page zooms keep accessible controls outside caption buttons and at least 32 CSS px of drag space, without losing the draft",
+          "Compact application menu retains all four native groups, original editing roles and navigation/zoom commands",
+          "Actual compact button click and focused Enter invoke the original native application Menu popup at valid coordinates",
+          "Application menu preserves input validation and rejects a different renderer sender",
+          "Native back/forward MenuItem callbacks navigate real sessions and preserve each separate draft when narrow buttons are hidden",
+          "Cold actual UI retains the active session and draft; both sessions have no run or model work"
+        ],
+        "layouts": 20,
+        "rendererErrors": 0,
+        "providerRequests": 0,
+        "treeUnchanged": true,
+        "treeSha256": "b775b5381dc42fa5edc6b7d8425a4b6c2a786434c4ff71298a62b6a9172c3145"
+      },
+      "firstUi": {
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-caption-layout-3v6qzT",
+        "exit": 0,
+        "checks": 6
+      },
+      "audit": {
+        "exit": 1,
+        "existing": {
+          "low": 8,
+          "moderate": 29,
+          "high": 8,
+          "critical": 0,
+          "total": 45
+        },
+        "newDependencies": 0
+      }
+    },
+    "performance": {
+      "comparison": "Own scope vs unchanged previous production build: bundle bytes only; no new paired frame/latency samples. Existing FX09 samples remain historical evidence.",
+      "mainDeltaBytes": 306,
+      "rendererDeltaBytes": 309,
+      "preloadDeltaBytes": 0,
+      "streamHandlersChanged": false
+    },
+    "boundaries": [
+      "AT-C02-03 remains not passed: physical normal drag/maximized drag-restore cause remains unknown. No actual pointer input in this slice after prior physical Escape.",
+      "These 20 layouts verify the caption only, not settings/approval/file popups or all body controls. Page zoom is not system DPI.",
+      "The archived 390-native-width/150% zoom screenshot has only a 260-CSS-px viewport; existing body/header/composer clipping is visible and remains a separate C02-05 defect to fix. No full narrow-body acceptance claimed.",
+      "Native MenuItem callback routing is tested, not a human OS menu selection or complete keyboard/screen-reader acceptance.",
+      "No new paid API tests, daily restart or installer update; prior D runtime record is historical and not re-audited here.",
+      "Overall accepted count remains 3/252; all unaccepted stages and quality criteria retained."
+    ],
+    "rollback": "Revert fab49e4 production-file changes after stopping own test; retain original user data and previous geometry fix. No migration. Rollback not exercised.",
+    "next": "Continue C02-05 main-body/critical-popup reachability, IME, reading/selection, process/approval and error/switching feature gaps, then applicable C06; W3 stage acceptance once aligned, followed by S/T."
   }
 }

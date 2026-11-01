@@ -1,5 +1,7 @@
 # 小智能力与复用矩阵
 
+2026-11-01 WP-C02标题栏子能力补齐（fab49e4）：原生应用菜单/zoom安全区/窄窗导航与草稿冷启专项通过；REQ-C02-03/05/09仍部分实现，完整AT无新增。全局3/252，Goal active；详WORK_PROGRESS.md及C02证据captionLayoutSlice。
+
 2026-11-01 WP-C03补齐可操作独立恢复/激活/返回与默认产物读取，工程专项已测试；REQ-C03-05/06/07仍部分实现/完整AT未执行，旧格式及外部目录、全领域路径继续。来源/检查历史按原字节保留，旧版本适用性不得伪造。docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
 
 2026-11-01 E06/E08所选版本检查工程已实现（c3f7416）：教学文件、对话及所选历史按原版本/内容查原检查，保留当时明细，过期/外改/缺失不能认证当前；当前同内容可运行原本机检查，恢复新身份不继承旧回执。原SQLite9、解析12、正式Pi/检查11通过；最终含取消64上限构建及冷启3通过，240组件通过（renderer相同），0付费/冷启重放/renderer错误。主包+4858B、preload+90B、renderer+3853B，仅展开按需读取，无延迟/P95结论。完整FX01/07/10及252AT仍待集中；下一核C03备份覆盖、C02窗口/性能与C06实际运行，再集中P1→S/T。Goal active，D日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。

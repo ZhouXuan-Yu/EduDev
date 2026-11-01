@@ -394,6 +394,94 @@
       "rawSha256": "3b36f90aa6c98ce30258632ab5db47e67d445e2f47842f5f9a0afe48c106d77c",
       "storedBytes": 415,
       "storedSha256": "fabfdd7a0d189f1031f21995e9440ca8f20c4c27409881d8bce43e36175dc482"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-before-layout.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 7963,
+      "rawSha256": "e4e2a94d527ac4dd8077e58bd9992cade2f15f56822cebfaf5de3e50896cc827",
+      "storedBytes": 676,
+      "storedSha256": "547a3a0e6ad6ae4adae091ba7f374315c4b9c7413e1b367eaa0591b269a6e564"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-first-ui.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 58368,
+      "rawSha256": "eee798ed133ab0e6809c66aa73dce2566dca2351642563ebda317c8cb3698b75",
+      "storedBytes": 3853,
+      "storedSha256": "0458ce796806a248760fe18528ddbcc365a515d6b2f9b5b38f8e115bd5448be2"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-ui.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 130977,
+      "rawSha256": "cb65e1556ebebf0afc6b67c372e66dcf9d090059cde14a869afac606ab8e6815",
+      "storedBytes": 28546,
+      "storedSha256": "cc66c70b7c2412e445442ef0dc1079d48c06a4ba3e5169033c44ceaaa2142533"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-390-zoom150.png",
+      "encoding": "identity",
+      "rawBytes": 39881,
+      "rawSha256": "7998407b3dc9a7ea50a72cabb307774947db29b36f0adef6e776d45ec14f0f77",
+      "storedBytes": 39881,
+      "storedSha256": "7998407b3dc9a7ea50a72cabb307774947db29b36f0adef6e776d45ec14f0f77"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-build.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 40558,
+      "rawSha256": "409c06bbf2be436b9e6bd542488a8d03e256d1b45fe22f020e8908a6fdffa38c",
+      "storedBytes": 8184,
+      "storedSha256": "ebddd6bf30ad4320d12f897590d60e21e110b877bc16ce4c3fe3b34f7004b931"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-components.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "storedBytes": 279,
+      "storedSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-final-ui.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 825,
+      "rawSha256": "bf53f2608649526d77a8e35fc6cb45cb91699fa061ccb4bf937e42602273b8c9",
+      "storedBytes": 493,
+      "storedSha256": "1ee32cdc31760cce72bb51d1bbbac419ae6f47f94339be64d2996f3394518802"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/caption-audit.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 57146,
+      "rawSha256": "564f27b9d5ea834de8921ed37bcc00a6a36b89539cb13a63e25fa6e8ac67b482",
+      "storedBytes": 6658,
+      "storedSha256": "74fc1dbdf8381a021047dede4e8bb4e0f6196cd84c2d9cce8576a885386aa7bb"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/c02-integration-8c6b705-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "63039fd473ab644f79a1acffd673dfb3afabff86118e4f20e5c2e885168efc3c",
+      "storedBytes": 25853,
+      "storedSha256": "79811b960199788f5e9c4ac5146d8207600e0e16fe43f3b045bd5b1d16fe91cd"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/c02-caption-505cb7a-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "021ba29d5489f9878863dff035437eaa211fbd5edd7f43ec51bdf5a61c97bc25",
+      "storedBytes": 25856,
+      "storedSha256": "149c09e74aee83ff1e7422d7deca30547742c5492a0e42b938af792bebd7fe0b"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/c02-caption-final-d8640d4-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 63198,
+      "rawSha256": "fa14e48a579c020fa1921c7706a1aa3c9ad4291fa88424e0d8414f26ee0b0cce",
+      "storedBytes": 25854,
+      "storedSha256": "6222bdd44d48a0ba0f4abd433e3759c2c832b0188443f39a70fae5eeac2a4dfd"
     }
   ]
 }

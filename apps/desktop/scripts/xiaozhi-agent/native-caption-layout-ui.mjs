@@ -5,6 +5,7 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {_electron as electron} from 'playwright';
+import {fingerprint} from '../acceptance/evidence.mjs';
 
 const desktop=path.resolve(import.meta.dirname,'../..');
 const build=path.resolve(process.argv[2]);
@@ -12,8 +13,9 @@ assert(fs.existsSync(path.join(build,'main/index.js')),'Pass an immutable comple
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-caption-layout-'));
 const hash=file=>createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const mainHash=hash(path.join(build,'main/index.js'));
+const buildFingerprint=fingerprint(build);
 const scriptHash=hash(import.meta.filename);
-const report={ok:false,root,build,mainHash,scriptHash,checks:[],layouts:[],errors:[],requests:[],
+const report={ok:false,root,build,mainHash,scriptHash,buildFingerprint,checks:[],layouts:[],errors:[],requests:[],
  boundary:'Actual original Electron/Pi shell and native Menu popup, isolated synthetic data. Page zoom is not physical system DPI; MenuItem callback routing is not actual OS menu selection. No caption pointer/IME/screen-reader/installer/full AT acceptance.'};
 let app,page;
 const check=name=>{report.checks.push(name);console.log('PASS '+name);};
@@ -95,6 +97,6 @@ try{
  await close();await launch();assert.equal(await session(),originalSession);assert.equal(await input().inputValue(),'窄窗教师草稿：力与运动');
  for(const id of[originalSession,nextSession]){const snapshot=await page.evaluate(id=>window.omniEdu.getXiaozhiSnapshot(id),id);assert.equal(snapshot.projection.turns.length,0);}
  check('Cold actual UI retains the active session and draft; both sessions have no run or model work');
- await close();assert.deepEqual(report.requests,[]);assert.deepEqual(report.errors,[]);assert.equal(hash(path.join(build,'main/index.js')),mainHash);assert.equal(hash(import.meta.filename),scriptHash);report.ok=true;
+ await close();assert.deepEqual(report.requests,[]);assert.deepEqual(report.errors,[]);assert.equal(hash(path.join(build,'main/index.js')),mainHash);assert.equal(fingerprint(build).sha256,buildFingerprint.sha256);assert.equal(hash(import.meta.filename),scriptHash);report.ok=true;
 }catch(e){report.error=String(e.stack||e);process.exitCode=1;}
 finally{await close().catch(()=>{});fs.writeFileSync(path.join(root,'report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({ok:report.ok,checks:report.checks.length,root,error:report.error}));}
