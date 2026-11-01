@@ -1,5 +1,13 @@
 # 教师知识库整体架构与实施主线
 
+## 2026-11-02 局部图接通与质量试验未通过
+
+复用原QuestionAssets/分块回执/第二次dispatch，按题号、组序与PNG hash实际发送局部裁图和OCR；旧无字段/v1不重解释，新v3仅OMNI_EDU_AI_CROP_IMAGES=1冻结local-crop-review.v2。最多160组/16MiB裁图，无新依赖、表、IPC、UI或额外调用，原质量门禁不改。
+
+同一自然六页12次均200，72张实际裁图4281955B/7305B OCR与原保存资产逐一核对，冷启原事实一致、0 renderer错误；仍4自动稿/11待核，图题0通过，原质量断言exit1保留，不重跑凑成功。因此默认继续v1，图策略仅显式试验，完整Goal active。
+
+原图第2题确有B→A箭头，第二遍新增箭头描述触发图义投影精确差异；这是待验证纠错，不能清空mismatch。下一先区分原图真源、派生转录与纠错后验证，追踪Pi/组卷/导出消费者；停止仅补提示/图片并期待两遍逐字相同。边缘、空格/填空OCR、跨页、答案正确性/已知答案与联网补答、40GB召回/P95仍OPEN。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropImagesTrial。
+
 ## 2026-11-02 OCR管道字符完整性修复
 
 原ocr-host逐Buffer独立String解码会在UTF-8字符跨块时静默写入替换字符，JSON/schema仍可成功。已沿原宿主改为严格流式TextDecoder并在结束时flush，非法/截断UTF-8拒绝；BOM、字节预算、取消/退出后释放槽位、运行时固定清单及全部协议校验保持原要求。无新增依赖、表、IPC、页面或模型调用，旧回执/已存OCR不改写。

@@ -9,6 +9,8 @@ export const cropReviewInstruction=`
 当局部OCR乱码、跨行混排或无法直接理解时，先逐块对照原图恢复阅读顺序，再完整还原题目条件、选项、小问、表格和单位；检查数字、正负号、小数点、上下标、变量和否定词。不能为了与OCR一致保留错字，也不能为了通顺补造原图没有的内容。原图本身仍无法辨认时保留uncertain_ocr；不会解题与文字无法辨认分别处理，不能把不会求解当作整页OCR失败。
 每块truncated=true只说明本次对照文字因长度上限截断，不说明原件缺字；clearEdges含false提示可能裁到内容，必须核对完整性。ocr_failed/not_available不等于原图无题，不能编造本地识别成功。sourceFound/sourceStemMatches只比较首稿与本页转录，不是正确性保证；若为false，检查漏题、标题混入、题号重复、图注、出处或表格被省略，依原图纠正。
 第二遍重新核对首稿全部字段。首稿已正确的题干、图义投影、答案与解析保持原文，不为措辞优化重写；确有错误必须纠正，不能为两遍一致保留错误。章节标题在pageText单独保留，不用方括号添加到原题stem；独立图号与图义按原策略保留。存在真实疑点仍保留适用issues。沿原schema输出，不回显cropReview、检查代码或自定义批准字段。`;
+export const cropReviewImagesInstruction=cropReviewInstruction.replace('local-crop-review.v1','local-crop-review.v2').replace('未额外发送裁图，仍需按blockIds和box在当前整页原图中定位核对。','第二遍同时提供按题号及组序标记的实际局部PNG；对应cropReview同题同序crops，OCR失败时只对应failure原块。逐组核对文字、图形、图注、单位与首尾边界，再与整页检查阅读顺序和邻题归属；不能只复述首稿或OCR。局部图没有覆盖的条件仍须查整页，未读清保留疑点。');
+
 
 /** Bounded codes computed from the immutable first response; never a rewritten model receipt. */
 export function pageProjectionReview(first:AiPageResponse){

@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import {MATERIAL_CROP_REVIEW_POLICY,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,pageFragmentGroups} from '../../shared/material-ai-page-fragments';
+import {MATERIAL_CROP_REVIEW_IMAGES_POLICY,MATERIAL_CROP_REVIEW_POLICY,MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT,pageFragmentGroups} from '../../shared/material-ai-page-fragments';
 import type {AiPagePrompt,AiPageResponse,MaterialPageSource} from '../../shared/material-ai-page';
 import {aiTextSignature} from '../../shared/material-ai-image';
 import {LOCAL_OCR_ENGINE} from '../../shared/xiaozhi-ocr';
@@ -14,7 +14,14 @@ const digest=(value:string)=>createHash('sha256').update(value).digest('hex');
 type ReviewCrop={blockIds:string[];box:PageBox;sha256:string;text:string;originalBytes:number;truncated:boolean;clearEdges:boolean[]};
 export type AiCropReview={schemaVersion:typeof SCHEMA;firstDraftSha256:string;pageImageSha256:string;ocrEngine:typeof LOCAL_OCR_ENGINE;
  questions:{number:string;sourceFound:boolean;sourceStemMatches:boolean;ocrStatus:'available'|'not_available'|'ocr_failed';crops:ReviewCrop[];failure:null|{blockId:string;sha256:string;reason:CropOcrFailureReason}}[]};
-export const cropReviewEnabled=(prompt?:AiPagePrompt)=>prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropReviewPolicy===MATERIAL_CROP_REVIEW_POLICY;
+export const cropReviewEnabled=(prompt?:AiPagePrompt)=>prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&(prompt.cropReviewPolicy===MATERIAL_CROP_REVIEW_POLICY||prompt.cropReviewPolicy===MATERIAL_CROP_REVIEW_IMAGES_POLICY);
+export const cropReviewImagesEnabled=(prompt?:AiPagePrompt)=>prompt?.policy===MATERIAL_PAGE_FRAGMENT_SOURCE_PROMPT&&prompt.cropReviewPolicy===MATERIAL_CROP_REVIEW_IMAGES_POLICY;
+/** Same order as the source-bound OCR comparison, including the retained failed block. */
+export const cropReviewImagePlan=(review:AiCropReview)=>review.questions.flatMap(q=>q.ocrStatus==='ocr_failed'&&q.failure?[{role:'题号'+q.number,index:0,sha256:q.failure.sha256}]:q.crops.map((c,index)=>({role:'题号'+q.number,index,sha256:c.sha256})));
+export function validCropReviewImages(images:{role:string;index:number;data:string;mime:string}[],review:AiCropReview){
+ const expected=cropReviewImagePlan(review);let total=0;
+ return images.length<=160&&images.length===expected.length&&images.every((image,i)=>{const bytes=Buffer.from(image.data,'base64');total+=bytes.length;return image.role===expected[i].role&&image.index===expected[i].index&&image.mime==='image/png'&&bytes.length>0&&bytes.length<=4*1048576&&total<=16*1048576&&bytes.toString('base64')===image.data&&bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))&&createHash('sha256').update(bytes).digest('hex')===expected[i].sha256;});
+}
 const exact=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
 

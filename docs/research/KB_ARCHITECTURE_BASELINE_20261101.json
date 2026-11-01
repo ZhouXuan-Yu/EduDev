@@ -4848,11 +4848,13 @@
       "lockfileUnchanged": true
     },
     "integration": {
-      "status": "origin_main_fetched_unchanged_ready_for_normal_push",
+      "status": "verified_pushed_main_and_kb",
       "dailyRuntimeModifiedByThisRound": false,
       "installerModifiedByThisRound": false,
       "fetchedMainCommit": "c4eb64f288342a6e7191705fd55bd07f53192fa3",
-      "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb"
+      "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+      "sourceCommit": "24be2e151ba43ae39765bab22ea233d4d9f54a52",
+      "remoteMainAndKbMatched": true
     },
     "failures": {
       "fixtureFailuresRetained": [
@@ -4956,6 +4958,266 @@
         "path": "apps\\desktop\\scripts\\education\\kb-ocr-wire.mjs",
         "bytes": 6757,
         "sha256": "f901747d4c8a9c74373b4a5ef4a6862d8a8010d0f875f2fa9de117535d590f97"
+      }
+    ]
+  },
+  "cropImagesTrial": {
+    "date": "2026-11-02",
+    "baselineCommit": "24be2e151ba43ae39765bab22ea233d4d9f54a52",
+    "status": "experimental_only_quality_gate_failed",
+    "goalComplete": false,
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md#2026-11-02-第二遍实际局部裁图输入",
+    "implementation": {
+      "reused": "Existing QuestionAssets, stored fragment crops, cropReview, provider images and the original second dispatch; no new dependency/table/IPC/UI/runtime",
+      "frozenPolicy": "local-crop-review.v2",
+      "default": "local-crop-review.v1",
+      "activation": "Only new v3 units with OMNI_EDU_AI_CROP_IMAGES=1 freeze v2; old frozen units never reinterpreted",
+      "binding": "Ordered number/index and exact PNG hash match authenticated cropReview and source asset file; failed OCR only supplies its retained failed block",
+      "bounds": {
+        "maxCrops": 160,
+        "maxCropBytes": 16777216,
+        "maxOneCropBytes": 4194304,
+        "maxOriginalPageBytes": 4194304
+      },
+      "unchanged": "No reasoning parameter, model call count, publication/source/math gates or stored receipt changes"
+    },
+    "actualNatural": {
+      "run": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-vpiTLz",
+      "folderId": "batch_b5041633-b561-4cd6-a3cd-cd00befe8c63",
+      "command": "node scripts/education/kb-page-fragments-real.mjs <owned-temp-root> <inspected-six-page-run> <existing-isolated-account>",
+      "exitCode": 1,
+      "actualCalls": 12,
+      "allHttp200": true,
+      "failedUnits": 0,
+      "candidates": 15,
+      "ready": 4,
+      "held": 11,
+      "eligibleMultiImage": 0,
+      "qualityAccepted": false,
+      "coldFactsEqual": true,
+      "rendererErrors": [],
+      "cropPngs": 72,
+      "cropBytes": 4281955,
+      "allImagesIncludingOriginals": 84,
+      "ocrBytes": 7305,
+      "ocrFailures": 0,
+      "everyActualCropMatchedStoredAsset": true,
+      "galleryVerified": false,
+      "galleryNote": "Original report loop recorded an empty gallery pass before asserting ready.length>0; no gallery path was exercised. Failure retained; future check label corrected, original assertion unchanged."
+    },
+    "criticalFindings": [
+      "Actual source page 1 shows a B-to-A arrow. Question 2 final added the arrow relationship and failed exact figure-projection agreement, despite the same saved crop/complete text. This is an unverified correction, not permission to clear mismatch.",
+      "Real crop edges, missing source text/cross-page content, OCR end anchors and independent answer conflicts remain unresolved. Added pictures alone cannot close the goal.",
+      "The two-pass agreement gate currently cannot certify a corrected draft. Next freeze distinct original-image authority, derived transcription and correction verification before any new release policy; trace Pi/paper/export consumers."
+    ],
+    "checks": [
+      {
+        "command": "npm.cmd run build",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.log",
+        "exitCode": 0,
+        "includes": "tsc --noEmit"
+      },
+      {
+        "command": "npm.cmd run test:renderer-components",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-components.log",
+        "exitCode": 0,
+        "passed": 240
+      },
+      {
+        "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-boundaries.log",
+        "exitCode": 0,
+        "passed": 93,
+        "scope": "Controlled model, real durable executor/SQLite and asset files; includes opt-in/default/legacy/retry/failure/privacy/cancel/source cases"
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-smoke.log",
+        "exitCode": 0,
+        "passed": 207,
+        "buildManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-fixed-build.json",
+        "scope": "Before the default-only creation gate was disabled; not final integrated full regression or natural quality acceptance"
+      },
+      {
+        "command": "node scripts/education/kb-local-recheck-real.mjs <owned-root> <old-v1-natural-run> --readback",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-readback.log",
+        "exitCode": 0,
+        "passed": 3,
+        "cloudAttempts": 0,
+        "scope": "Final build reads old v1 real local recovery, both sizes and cold facts; does not exercise v2 natural gallery"
+      }
+    ],
+    "performance": {
+      "baselineManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-ocr-utf8-fixed-build.json",
+      "trialManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-fixed-build.json",
+      "finalManifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.json",
+      "comparedCoreFiles": 86,
+      "mainDeltaBytes": 3630,
+      "preloadRendererUnchanged": true,
+      "afterTrialOnlyChange": "Creation opt-in ternary, same bytes; no change to v2 provider/crop/validation behavior",
+      "previousActualTotalTokens": 148919,
+      "trialActualTotalTokens": 168427,
+      "observedIncreasePercent": 13.1,
+      "causalComparison": false,
+      "latencyP95PeakMemoryAcceptance": false
+    },
+    "audit": {
+      "command": "npm.cmd audit --json",
+      "exitCode": 1,
+      "existingVulnerabilities": 45,
+      "high": 8,
+      "moderate": 29,
+      "low": 8,
+      "newDependencyOrLockfileChange": false
+    },
+    "retainedFailures": [
+      "Wrong cwd in initial instruction/test editing command; first boundary log contains stale fixture expectation",
+      "Initial isolated account parameter omitted: zero-call sealed-key preflight rejected, then existing isolated test account supplied",
+      "Actual full-exam quality assertion failed with zero eligible multi-image questions; not retried or relaxed"
+    ],
+    "rollback": "Leave OMNI_EDU_AI_CROP_IMAGES unset or 0 for new v1 units. Retain v2 readers for existing experimental receipts. No data migration, deletion, regenerated answers or billable replay.",
+    "open": [
+      "Correction verification, source/blank/figure coverage, answer-book alignment and web-solving completion",
+      "Natural 10GB/40GB retrieval and recall/P95/peak memory/concurrent ingestion/recovery",
+      "Teacher paper confirmation/export and actual installed-delivery acceptance"
+    ],
+    "integration": {
+      "dailyRuntimeModified": false,
+      "installerModified": false,
+      "status": "origin_main_fetched_unchanged_ready_for_normal_push",
+      "protectedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb",
+      "fetchedMainCommit": "24be2e151ba43ae39765bab22ea233d4d9f54a52"
+    },
+    "evidenceManifest": [
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-boundaries.log",
+        "bytes": 9064,
+        "sha256": "c79023ac416de9c483a92bfaab595824b92f370c3153898d46bdf0fe37699dea"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-boundaries-corrected.log",
+        "bytes": 9064,
+        "sha256": "1306f75d2fdace0c07458e628dd9257eb4fc7021803399d07f953c11ce863043"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-boundaries-93.log",
+        "bytes": 11279,
+        "sha256": "27713c9fb0fa7d718e44f920b9aac4d0a876b60d24d67ad3bf928baf137c0ed3"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-build.log",
+        "bytes": 40558,
+        "sha256": "e47efa6272954b9e0f66200a0e4c0b9a803bcd3d84b89c19caefb95f98657bad"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-components.log",
+        "bytes": 496,
+        "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.log",
+        "bytes": 40559,
+        "sha256": "bffb040649a5ead64edb938e4a5661fb27e5cf16b511d8c2f51b2ceb9fd8f3f0"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-components.log",
+        "bytes": 496,
+        "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-boundaries.log",
+        "bytes": 11281,
+        "sha256": "087d605d54b3118061ea238fcc708af005a520de9a12fc2b0bc11c8c487e100e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-smoke.log",
+        "bytes": 13983,
+        "sha256": "300061a62e641796cbfe3f7414b45b1b61e19892ea9b405d893363882944be02"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-natural.log",
+        "bytes": 1013,
+        "sha256": "5c68cfb0b497581f9f0da611f6afbe95d1a82ef3dce351ac841aba4d91adbf7a"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-natural-account.log",
+        "bytes": 3231,
+        "sha256": "ed094595d74047d973534628e70a6aeaa671ea843bc3ce45e4105bb64bc1e194"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-binding.log",
+        "bytes": 873,
+        "sha256": "dab688cb68a18adacc15350b9c93854b2955c679cce4afdd28761f1206fafdf1"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-readback.log",
+        "bytes": 638,
+        "sha256": "6894b106273351f7fb2a745891df6584087df365886e93f65666dc90e662e8e1"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-audit.json",
+        "bytes": 59552,
+        "sha256": "991493e5747914572ce76de8c5b878e896173bbeb00e2ace65dcb4734b2d1321"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-fixed-build.json",
+        "bytes": 15733,
+        "sha256": "42582920f036065a8a125cc6b15ec571416836dc8008d53a52aa8a141b608bdc"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-images-final-build.json",
+        "bytes": 15733,
+        "sha256": "18531f80245d6248cc397e036a2979770c7da3c00473408b872980d03cf76112"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-vpiTLz\\report.json",
+        "bytes": 339495,
+        "sha256": "c85c7938e6de7b67f0605888e7e64de9b6f4ed3660a872632ff5b7508f6c6a60"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-vpiTLz\\request-receipt-binding.json",
+        "bytes": 1347,
+        "sha256": "06546bd3e9229bc8e23fbcbec5167657d2557678012a67bf17b93a95f6e14e4a"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\quality-diagnosis-crop-images.json",
+        "bytes": 12758,
+        "sha256": "a519fcb80401b24021b5c67ba9593173ac957ba9dbc1cbca42d10a297ee7a1db"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-xEX4hx\\report.json",
+        "bytes": 10060,
+        "sha256": "f99bd29b2ee8ef61d6a9e44c022022db71269fd5d8719518f63df506d8ff381c"
+      },
+      {
+        "path": "apps\\desktop\\src\\shared\\material-ai-page-fragments.ts",
+        "bytes": 7938,
+        "sha256": "5d0187fcaef6167abda69dd324024975f85f3ea05e5bbb88e8bcbc386b01d2a4"
+      },
+      {
+        "path": "apps\\desktop\\src\\shared\\material-ai-page.ts",
+        "bytes": 12744,
+        "sha256": "17e8e96708fbb2d963074ebf10018be2ac6e836bfd971274eb0099f852d0806a"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-crop-review.ts",
+        "bytes": 7541,
+        "sha256": "e838c50080b3e3a418c6f5f7a534a57db88298bcd32e3a89b6b6fd0ac17f620b"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-page-instruction.ts",
+        "bytes": 21502,
+        "sha256": "9f1cc0f1db2e772cb251c47187c05ba57a897e82d2a28370266303627fe077d1"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-provider.ts",
+        "bytes": 18373,
+        "sha256": "37af62206f06db46438c547891c826e9d6af19a1ee4b06f895b8a3abdaec5d83"
+      },
+      {
+        "path": "apps\\desktop\\src\\main\\assets\\material-ai-repository.ts",
+        "bytes": 68492,
+        "sha256": "f4b685c6240c6ef250cb259d09908a87cd778ea62daad28f7b9527a489e94610"
       }
     ]
   }
