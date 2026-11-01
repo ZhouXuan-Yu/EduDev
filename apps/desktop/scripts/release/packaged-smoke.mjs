@@ -5,21 +5,37 @@ import {fileURLToPath} from 'node:url';
 import {_electron} from 'playwright';
 import {Document,Packer,Paragraph} from 'docx';
 import {setTimeout as delay} from 'node:timers/promises';
+import {createHash} from 'node:crypto';
 const desktop=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
-const output=path.join(desktop,'test-results/goal/kb-s0','packaged-'+Date.now());
+const resumeIndex=process.argv.indexOf('--resume-dir');
+const resume=resumeIndex>=0;
+const labelIndex=process.argv.indexOf('--label'),label=labelIndex>=0?process.argv[labelIndex+1]:'';
+assert(labelIndex<0||resume,'Labels require --resume-dir');
+assert(labelIndex<0||/^[a-z0-9-]{1,32}$/.test(label||''),'Invalid report label');
+const suffix=label?'-'+label:'';
+const parent=path.join(desktop,'test-results/goal/kb-s0');
+const output=resume?path.resolve(process.argv[resumeIndex+1]||''):path.join(parent,'packaged-'+Date.now());
+if(resume){assert.equal(path.dirname(output).toLowerCase(),parent.toLowerCase());assert(path.basename(output).startsWith('packaged-'));assert.equal(fs.realpathSync(output).toLowerCase(),output.toLowerCase());}
 fs.mkdirSync(output,{recursive:true});
 const profile=path.join(output,'profile'),data=path.join(output,'data'),exe=process.env.OMNI_EDU_PACKAGED_EXE||path.join(desktop,'.release/win-unpacked/小智.exe');
 const text=path.join(output,'教师教案.md'),docx=path.join(output,'教师讲义.docx');
 const longText=path.join(output,'长教材.txt'),image=path.join(output,'题目照片.png'),pdf=path.join(output,'扫描题页.pdf');
+if(!resume){
 fs.writeFileSync(text,'# 一元一次方程\n\n方程的解必须使等式两边相等。');
 fs.writeFileSync(docx,await Packer.toBuffer(new Document({sections:[{children:[new Paragraph('一元一次方程讲义：移项必须变号。')]}]})));
 fs.writeFileSync(longText,'完整教材内容。'.repeat(18000)+'\n教材尾部验证：尾部知识点不能丢失。');
-const report={executable:exe,profile,data,checks:[],rendererErrors:[],boundary:'Packaged executable on this Windows host with empty PATH; not a clean VM or signed release.'};
+}
+const report={executable:exe,profile,data,checks:[],rendererErrors:[],networkAttempts:[],boundary:'Packaged executable on this Windows host with empty PATH; synthetic local imports only, no provider calls; not a clean VM or signed release.'};
+if(resume){const original=fs.readFileSync(path.join(output,'report.json'));report.resumedFrom={sha256:createHash('sha256').update(original).digest('hex'),report:'report.json',boundary:'Only existing catalogue/body/UI readback; no repeated generation, import or worker probes'};}
 let app,page;
 async function launch(){
  const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_PYTHON:'C:\\not-installed\\python.exe',PATH:''};
- for(const key of Object.keys(env))if(key.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(key))delete env[key];
+ for(const key of Object.keys(env))if(/API_KEY|AUTH_TOKEN|ACCESS_TOKEN/.test(key)||key.startsWith('OMNI_EDU_E2E_')||['ELECTRON_RUN_AS_NODE','ELECTRON_RENDERER_URL','NODE_OPTIONS'].includes(key))delete env[key];
  app=await _electron.launch({executablePath:exe,args:['--user-data-dir='+profile],cwd:output,env,timeout:60000});
+ await app.evaluate(({net})=>{globalThis.__packagedNetworkAttempts=[];const blocked=async input=>{globalThis.__packagedNetworkAttempts.push(String(input?.url??input));throw Error('Network disabled in packaged local import check');};net.fetch=blocked;globalThis.fetch=blocked;});
+ const launch=await app.evaluate(({app})=>({isPackaged:app.isPackaged,executable:process.execPath,resources:process.resourcesPath,userData:app.getPath('userData'),path:process.env.PATH??''}));
+ assert.equal(launch.isPackaged,true);assert.equal(fs.realpathSync(launch.executable).toLowerCase(),fs.realpathSync(exe).toLowerCase());assert.equal(launch.path,'');
+ (report.launches??=[]).push(launch);
  page=await app.firstWindow();page.on('pageerror',e=>report.rendererErrors.push(e.message));
  await page.setViewportSize({width:1366,height:768});
  await page.getByTestId('nav-knowledge').waitFor({timeout:60000});
@@ -27,6 +43,7 @@ async function launch(){
 }
 try{
  await launch();
+ if(!resume){
  const components=await app.evaluate(async({app},root)=>{
   const fs=process.getBuiltinModule('node:fs'),path=process.getBuiltinModule('node:path'),url=process.getBuiltinModule('node:url');
   if(!app.isPackaged)throw new Error('Not packaged');
@@ -79,7 +96,9 @@ try{
  assert(ready,'Import did not complete: '+JSON.stringify(last?.resources.map(x=>({name:x.originalFileName,status:x.parseStatus,engine:x.parseEngine}))));
  report.checks.push({name:'Teacher imports long text, Markdown, DOCX, image and synthetic scanned PDF through local parsers',passed:true});
  await page.screenshot({path:path.join(output,'materials-packaged.png'),fullPage:true});
+ report.networkAttempts.push(...await app.evaluate(()=>globalThis.__packagedNetworkAttempts));
  await app.close();app=undefined;await launch();
+ }
  const catalog=await page.evaluate(()=>window.omniEdu.listMaterials({schemaVersion:'xiaozhi.materials.v1',query:'',offset:0}));
  assert.equal(catalog.total,5);assert(catalog.resources.every(x=>x.parseStatus==='ready'));
  const bodies=await page.evaluate(async resources=>Promise.all(resources.map(r=>window.omniEdu.getMaterialBody({schemaVersion:'xiaozhi.materials.v1',resourceId:r.id,offset:0}))),catalog.resources);
@@ -91,14 +110,16 @@ try{
  const imageBody=bodies.find(x=>x.resource.id===imageResource.id);assert(imageBody.chunks.some(x=>x.contentMd.includes('2')));
  assert(imageResource.parseEngine.startsWith('image-rapidocr'));
  await page.getByTestId('material-'+imageResource.id).click();
+ await page.getByTestId('materials-section-content').click();
  await page.getByTestId('materials-ocr-notice').waitFor();
  assert.match(await page.getByTestId('materials-ocr-notice').innerText(),/尚未由教师核对/);
- await page.screenshot({path:path.join(output,'image-ocr-after-restart.png'),fullPage:true});
+ await page.screenshot({path:path.join(output,'image-ocr-after-restart'+suffix+'.png'),fullPage:true});
  await page.setViewportSize({width:1920,height:1080});
- await page.screenshot({path:path.join(output,'image-ocr-1920.png'),fullPage:true});
+ await page.screenshot({path:path.join(output,'image-ocr-1920'+suffix+'.png'),fullPage:true});
  report.checks.push({name:'Tail beyond 80 chunks and image OCR persist after cold restart',passed:true});
  report.checks.push({name:'Cold restart catalogue/body readback',passed:true});
+ report.networkAttempts.push(...await app.evaluate(()=>globalThis.__packagedNetworkAttempts));assert.deepEqual(report.networkAttempts,[]);
  assert.deepEqual(report.rendererErrors,[]);
  report.success=true;
-}catch(error){report.success=false;report.error=String(error.stack||error);if(page)await page.screenshot({path:path.join(output,'failure.png'),fullPage:true}).catch(()=>{});throw error;}
-finally{if(app)await app.close();fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({output,...report},null,2));}
+}catch(error){report.success=false;report.error=String(error.stack||error);if(page)await page.screenshot({path:path.join(output,resume?'failure-readback'+suffix+'.png':'failure.png'),fullPage:true}).catch(()=>{});throw error;}
+finally{if(app)await app.close();fs.writeFileSync(path.join(output,resume?'report-readback'+suffix+'.json':'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({output,...report},null,2));}

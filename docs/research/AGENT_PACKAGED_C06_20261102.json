@@ -1,0 +1,386 @@
+{
+  "schema": "xiaozhi.packaged-engineering.v1",
+  "date": "2026-11-02",
+  "source": "0df26415445b7523a7664f1ed736ce455d6580e2",
+  "stage": "W3 / M12 / C06 engineering slice; complete acceptance remains 3/252; Goal active",
+  "boundary": "Current production payload, local NSIS variant disables desktop/start-menu shortcut creation; same appId, four frozen runtimes, own dependencies. Not a clean VM, signed/public release, reinstallation/upgrade recovery or full FX08/10/252 acceptance.",
+  "changes": [
+    "Existing installation UI script now distinguishes unpacked/installed, verifies current four frozen resources instead of retired python-embed/asar.unpacked, executes a real frozen education worker with empty PATH and nonexistent system interpreter, and uses the current Composer.",
+    "Existing packaged import script enters the current content section, supports owned-root readback-only continuation and distinct labels, preserves original failure reports, strips keys and blocks model HTTP. No production source/IPC/DB/dependencies changed."
+  ],
+  "commands": [
+    {
+      "command": "npm.cmd run pack:win",
+      "exitCode": 0,
+      "scope": "Own build/type, prepare and afterPack resource verification; log preserved"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "exitCode": 0,
+      "passed": 240,
+      "total": 240
+    },
+    {
+      "command": "node node_modules/electron-builder/cli.js --prepackaged .release/win-unpacked --win nsis --x64 --config test-results/c06-builder-20261102.cjs",
+      "exitCode": 0,
+      "scope": "Current payload; shortcut creation disabled in the test installer only"
+    },
+    {
+      "command": "test-results/c06-install-20261102.ps1",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-windows-installer-ui.mjs --package-dir .release/win-unpacked",
+      "exitCode": 0,
+      "passed": 6,
+      "priorFailures": [
+        "Windows omitted empty PATH environment key; fixed assertion",
+        "Retired quick-start section expectation; aligned to current Composer"
+      ],
+      "roots": [
+        "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-7yPGHu",
+        "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-yRIFwk",
+        "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-P6emmU"
+      ]
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/pi-windows-installer-ui.mjs --install-dir test-results/c06-installed-20261102",
+      "exitCode": 0,
+      "passed": 6,
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-37t9h7"
+    },
+    {
+      "command": "node scripts/release/packaged-smoke.mjs",
+      "exitCode": 1,
+      "partialPassed": 3,
+      "error": "Legacy fixture stayed in overview instead of entering current content section; real worker/native LanceDB/PDFium/five imports had passed; original report retained"
+    },
+    {
+      "command": "node scripts/release/packaged-smoke.mjs --resume-dir test-results/goal/kb-s0/packaged-1793552641506",
+      "exitCode": 0,
+      "passed": 2,
+      "scope": "Same saved data, no repeated import/worker probes"
+    },
+    {
+      "command": "OMNI_EDU_PACKAGED_EXE=<installed>/小智.exe; node scripts/release/packaged-smoke.mjs --resume-dir test-results/goal/kb-s0/packaged-1793552641506 --label installed",
+      "exitCode": 0,
+      "passed": 2,
+      "scope": "Installed executable reads the same five materials and actual OCR content; no re-import"
+    },
+    {
+      "command": "test-results/c06-uninstall-20261102.ps1",
+      "exitCode": 0
+    },
+    {
+      "command": "npm.cmd audit --json",
+      "exitCode": 1,
+      "vulnerabilities": {
+        "low": 8,
+        "moderate": 29,
+        "high": 8,
+        "critical": 0,
+        "total": 45
+      },
+      "scope": "Existing findings, no new dependency or lockfile change"
+    },
+    {
+      "command": "git diff --check; node --check <two changed scripts>",
+      "exitCode": 0
+    }
+  ],
+  "install": {
+    "Started": "2026-11-02T01:11:31.4508392+08:00",
+    "Target": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-installed-20261102",
+    "Installer": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-nsis-20261102\\Xiaozhi-Setup-0.1.0-x64.exe",
+    "InstallerSha256": "C76975FA070D50CC4B9FC12A64664B3963B9B78F8AF22675FE6E59ECC74DB582",
+    "PriorRegistry": [],
+    "ShortcutsBefore": [
+      {
+        "Path": "C:\\Users\\ZhouXuan\\Desktop\\小智.lnk",
+        "Exists": false,
+        "Hash": null
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\小智.lnk",
+        "Exists": true,
+        "Hash": "2E948969084E6583ADB3AA45037FFAB57A14EC9314C2F2218007561E7D9F19A7"
+      }
+    ],
+    "Boundary": "Current payload, per-user NSIS; test config disables shortcut creation; existing D source app and user data preserved",
+    "ExitCode": 0,
+    "Ended": "2026-11-02T01:18:59.0676891+08:00",
+    "ExecutableExists": true
+  },
+  "uninstall": {
+    "Completed": "2026-11-02T01:21:17.8043117+08:00",
+    "Uninstaller": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-installed-20261102\\Uninstall 小智.exe",
+    "ParentExitCode": 0,
+    "Target": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-installed-20261102",
+    "ExecutableRemoved": true,
+    "UninstallerRemoved": true,
+    "DataFiles": [
+      {
+        "Path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-37t9h7\\data\\app.db",
+        "Exists": true,
+        "Sha256": "EEDDE4715F943CAF56BCCBF3BA43D0849C196401EB3A3D9774DF20A20DD8FF83",
+        "Before": "EEDDE4715F943CAF56BCCBF3BA43D0849C196401EB3A3D9774DF20A20DD8FF83"
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\data\\app.db",
+        "Exists": true,
+        "Sha256": "55DC852F734F697EDB55E775529C28E86A4E64D486472F2BC390865EEABE4AEF",
+        "Before": "55DC852F734F697EDB55E775529C28E86A4E64D486472F2BC390865EEABE4AEF"
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\教师教案.md",
+        "Exists": true,
+        "Sha256": "730D792871C4D691E8A1D12438C22ABEFF16372033A28A81A61670F88E85F231",
+        "Before": "730D792871C4D691E8A1D12438C22ABEFF16372033A28A81A61670F88E85F231"
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\教师讲义.docx",
+        "Exists": true,
+        "Sha256": "44289571D0FABAF9CDCE326496D13A180ADE963FDB9E397CE47B795077FB5C0B",
+        "Before": "44289571D0FABAF9CDCE326496D13A180ADE963FDB9E397CE47B795077FB5C0B"
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\题目照片.png",
+        "Exists": true,
+        "Sha256": "7759D22FFC918DE849F7C3D00F18D160547E380B551547E4AA75829C974726F5",
+        "Before": "7759D22FFC918DE849F7C3D00F18D160547E380B551547E4AA75829C974726F5"
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\扫描题页.pdf",
+        "Exists": true,
+        "Sha256": "A3E8E57BBA414777E7EE51E5C53B2C87543511551D4B2A135D41BBEC0C204C0D",
+        "Before": "A3E8E57BBA414777E7EE51E5C53B2C87543511551D4B2A135D41BBEC0C204C0D"
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\长教材.txt",
+        "Exists": true,
+        "Sha256": "D46CB97216591CEF2CBC79D26C49D7B51D1D49943B9491BBE40C9FF5BD972DE4",
+        "Before": "D46CB97216591CEF2CBC79D26C49D7B51D1D49943B9491BBE40C9FF5BD972DE4"
+      }
+    ],
+    "ProfilePreserved": true,
+    "Shortcuts": [
+      {
+        "Path": "C:\\Users\\ZhouXuan\\Desktop\\小智.lnk",
+        "Exists": false,
+        "Sha256": null,
+        "BeforeExists": false,
+        "BeforeHash": null
+      },
+      {
+        "Path": "C:\\Users\\ZhouXuan\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\小智.lnk",
+        "Exists": true,
+        "Sha256": "2E948969084E6583ADB3AA45037FFAB57A14EC9314C2F2218007561E7D9F19A7",
+        "BeforeExists": true,
+        "BeforeHash": "2E948969084E6583ADB3AA45037FFAB57A14EC9314C2F2218007561E7D9F19A7"
+      }
+    ],
+    "RemainingOwnedProcesses": [],
+    "Boundary": "NSIS may delegate self-removal to a child; final filesystem/process readback is authoritative. Only isolated synthetic profiles/data checked, not a whole clean machine or user-data recovery qualification"
+  },
+  "cleanup": {
+    "At": "2026-11-02T01:22:13.8013736+08:00",
+    "RemainingInstallRegistry": [],
+    "DailyProcess": {
+      "ProcessId": 163732,
+      "ExecutablePath": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+      "CommandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js"
+    },
+    "DailyDocuments": [
+      {
+        "Path": "D:\\WorkProject\\EduProject\\docs\\integrations\\ANATOMY.md",
+        "Hash": "F195CA9990034C505F21150D350E32CA50166247981E815D98011F00B9728D2B"
+      },
+      {
+        "Path": "D:\\WorkProject\\EduProject\\科普课件使用.md",
+        "Hash": "BDB0DD530A28BD9AEFB9BB19B015479E7C84D4BF25E43C5190CF2EC2C6B1102F"
+      },
+      {
+        "Path": "D:\\WorkProject\\EduProject\\docs\\integrations\\ANATOMY_用法与提示词规范.md",
+        "Hash": "D5B5739B27E9DCA7CEE91FCF5B82CE06E373AF9A5BEEDE4677F0170743D7B90B"
+      }
+    ],
+    "LogonUILocked": true
+  },
+  "installedResources": [
+    {
+      "manifest": "src/main/xiaozhi-agent/ocr-runtime-manifest.json",
+      "manifestSha256": "f104de59595f82c594ebde4582efefe1c6f94b6805d09b78937f1468a33a1f30",
+      "target": "ocr-runtime",
+      "files": 646,
+      "bytes": 279039929,
+      "platform": "win32-x64",
+      "engine": "rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1",
+      "bad": []
+    },
+    {
+      "manifest": "src/main/education/runtime-manifest.json",
+      "manifestSha256": "fe2260e0e2db2dae7dc72721ba997308394259d4b2fbf2230f2f481144bea0c8",
+      "target": "education-runtime",
+      "files": 90,
+      "bytes": 40307549,
+      "platform": "win32-x64",
+      "engine": "education-adapters.v1",
+      "toolchain": {
+        "python": "3.12.14",
+        "pyinstaller": "6.22.3",
+        "bits": 64
+      },
+      "bad": []
+    },
+    {
+      "manifest": "src/main/retrieval/runtime-manifest.json",
+      "manifestSha256": "72b1d8b5d33deadbe5e51a87fd4b1b3be451697e937701a73241eb86a3d06387",
+      "target": "retrieval-runtime",
+      "files": 156,
+      "bytes": 127076474,
+      "platform": "win32-x64",
+      "toolchain": {
+        "python": "3.12.14",
+        "numpy": "2.5.3",
+        "ort": "1.30.0",
+        "pyinstaller": "6.22.3",
+        "tokenizers": "0.21.4"
+      },
+      "bad": []
+    },
+    {
+      "manifest": "src/main/retrieval/reranker-runtime-manifest.json",
+      "manifestSha256": "a31127c41f84dfe54f2b572a398526e7848544ccc877afa994b77b26fe03160b",
+      "target": "reranker-runtime",
+      "files": 157,
+      "bytes": 399017988,
+      "platform": "win32-x64",
+      "toolchain": {
+        "python": "3.12.14",
+        "numpy": "2.5.3",
+        "ort": "1.30.0",
+        "pyinstaller": "6.22.3",
+        "tokenizers": "0.21.4"
+      },
+      "bad": []
+    }
+  ],
+  "materialReadback": {
+    "boundary": "Read-only independent SQLite/file evidence for five synthetic materials after current packaged UI imports and cold restart; not a separate user test",
+    "resources": [
+      {
+        "id": "resource_1557a308-bae9-4a4c-9311-1f7616192d62",
+        "original_file_name": "长教材.txt",
+        "local_path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\data\\teacher_resources\\1793552661977-16192d62-长教材.txt",
+        "file_size": 378052,
+        "content_hash": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4",
+        "parse_status": "ready",
+        "parse_engine": "local-text-v1",
+        "onDiskHash": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4",
+        "chunks": 106,
+        "bodySha256": "fa5b0f42e4769d8e87f26bf07e4daea2c8b9cfa85f906572b99a3a30cf850b9b",
+        "tail": "教材尾部验证：尾部知识点不能丢失。",
+        "originalSourceHash": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4"
+      },
+      {
+        "id": "resource_491996ae-7e05-4f91-ac05-ec6660c6d4cb",
+        "original_file_name": "题目照片.png",
+        "local_path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\data\\teacher_resources\\1793552662007-60c6d4cb-题目照片.png",
+        "file_size": 3501,
+        "content_hash": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5",
+        "parse_status": "ready",
+        "parse_engine": "image-rapidocr-3.9.2-ort-1.30.0-ppocrv6-small.v1",
+        "onDiskHash": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5",
+        "chunks": 1,
+        "bodySha256": "c3ffe071491b36c86119aa5ad5643be317e6aa5cdce8e9441186b8f224a9b52b",
+        "tail": "1+1=2",
+        "originalSourceHash": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5"
+      },
+      {
+        "id": "resource_5b8c32c2-5d3f-40c7-a301-49d885e7787a",
+        "original_file_name": "扫描题页.pdf",
+        "local_path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\data\\teacher_resources\\1793552662018-85e7787a-扫描题页.pdf",
+        "file_size": 8212,
+        "content_hash": "a3e8e57bba414777e7ee51e5c53b2c87543511551d4b2a135d41bbec0c204c0d",
+        "parse_status": "ready",
+        "parse_engine": "pdfium-5.14.0-rapidocr-3.9.2-file.v3",
+        "onDiskHash": "a3e8e57bba414777e7ee51e5c53b2c87543511551d4b2a135d41bbec0c204c0d",
+        "chunks": 1,
+        "bodySha256": "d75fdc7d73e78b1aed9e8334754fd2ecddfef2ba293bb4c8a1834fcb5657701c",
+        "tail": "1 + 1 = 2",
+        "originalSourceHash": "a3e8e57bba414777e7ee51e5c53b2c87543511551d4b2a135d41bbec0c204c0d"
+      },
+      {
+        "id": "resource_644c2aa3-0f09-44bb-a464-233047187cd4",
+        "original_file_name": "教师讲义.docx",
+        "local_path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\data\\teacher_resources\\1793552661957-47187cd4-教师讲义.docx",
+        "file_size": 9524,
+        "content_hash": "44289571d0fabaf9cdce326496d13a180ade963fdb9e397ce47b795077fb5c0b",
+        "parse_status": "ready",
+        "parse_engine": "word-ooxml.v1",
+        "onDiskHash": "44289571d0fabaf9cdce326496d13a180ade963fdb9e397ce47b795077fb5c0b",
+        "chunks": 1,
+        "bodySha256": "2594f6d56cd438bd9c8a683c1ef5c358d32ce03da0094503ff52aa978cb06935",
+        "tail": "一元一次方程讲义：移项必须变号。",
+        "originalSourceHash": "44289571d0fabaf9cdce326496d13a180ade963fdb9e397ce47b795077fb5c0b"
+      },
+      {
+        "id": "resource_ea24b917-bb6d-4417-9e24-89ca1981647b",
+        "original_file_name": "教师教案.md",
+        "local_path": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\data\\teacher_resources\\1793552661934-1981647b-教师教案.md",
+        "file_size": 64,
+        "content_hash": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231",
+        "parse_status": "ready",
+        "parse_engine": "local-text-v1",
+        "onDiskHash": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231",
+        "chunks": 1,
+        "bodySha256": "0f36c4f312a9a152dab09358f6cd883abe8492e050b9085fa9ec5499c80ff12c",
+        "tail": "# 一元一次方程\n\n方程的解必须使等式两边相等。",
+        "originalSourceHash": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231"
+      }
+    ]
+  },
+  "performance": {
+    "productionFiles": 455,
+    "unchangedAgainstPreviousC05": true,
+    "allPackagedOutIdentical": true,
+    "mainPreloadRendererByteDelta": 0,
+    "installerBytes": 663975926,
+    "unpackedFiles": 38911,
+    "unpackedBytes": 1773684182,
+    "observedInstallMs": 447617,
+    "limits": "Installer wall time on this host only; no new P95/CPU/RSS/model-quality comparison or claimed speedup"
+  },
+  "requests": {
+    "paid": 0,
+    "model": 0,
+    "networkAttempts": [],
+    "scope": "Synthetic local imports and real local workers; credentials removed and fetch blocked in owned test processes"
+  },
+  "archive": {
+    "manifest": "docs/research/evidence/packaged-c06/20261102/manifest.json",
+    "artifacts": 52,
+    "allHashesVerified": true
+  },
+  "rollback": "Production source/out unchanged; D daily c37c2ab PID163732 and three dirty documents preserved. Test installation uninstalled; retained owned data/profile and installer evidence. Revert the two test-script changes if needed; no business migration or user data deletion.",
+  "next": "Continue remaining W3 functional gaps (E06 full requirements/visual checks, E07/E08/C remaining functions), then concentrated W3 acceptance and S/T. Do not repeat this generation/import/install merely for another report.",
+  "testScriptSnapshots": [
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\release\\packaged-smoke.mjs",
+      "artifact": "f7e28d6c1bc9f1-packaged-smoke.mjs.gz",
+      "bytes": 11988,
+      "sha256": "f7e28d6c1bc9f15cca3e0033e902e79866571f64a33e1080f3957546a3a10b75",
+      "gzipBytes": 4429,
+      "gzipSha256": "e3a3656ade8ca5fe2267343ae2ee104924c8726a6f4cc12389c0b01779d572dd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-windows-installer-ui.mjs",
+      "artifact": "2b10b4eaec8e80-pi-windows-installer-ui.mjs.gz",
+      "bytes": 8628,
+      "sha256": "2b10b4eaec8e80cf84d4b9b30c2838bb3ede82f393b5567347a913956adfbd86",
+      "gzipBytes": 3242,
+      "gzipSha256": "a10e972f92a6ed1debd7f3c7a565488ee5f6797fa70f000eafe4d953dc8d2af4"
+    }
+  ],
+  "sourceMeaning": "Unchanged production payload built at source; the modified test scripts were executed from working copy, with exact bytes separately pinned here and in archive."
+}

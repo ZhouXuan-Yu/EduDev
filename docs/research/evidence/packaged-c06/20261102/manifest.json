@@ -1,0 +1,466 @@
+{
+  "schema": 1,
+  "scope": "Only owned synthetic tests, exact raw bytes and original failures preserved; no installer binaries or user profiles uploaded",
+  "artifacts": [
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-audit-20261102.json",
+      "artifact": "991493e5747914-c06-audit-20261102.json.gz",
+      "bytes": 59552,
+      "sha256": "991493e5747914572ce76de8c5b878e896173bbeb00e2ace65dcb4734b2d1321",
+      "gzipBytes": 6697,
+      "gzipSha256": "d9a7422674f78a317c42002f1ebe219aef6cffd0e959a8254497ec0c92fa960c"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-baseline-20261102.json",
+      "artifact": "04da70caba985f-c06-baseline-20261102.json.gz",
+      "bytes": 236176,
+      "sha256": "04da70caba985f8e9ce847fd5fb4f523925deb72cfaa000e2565b18d15daf873",
+      "gzipBytes": 78442,
+      "gzipSha256": "9e3f001a4256e2fa4488a619a2220e14acad1d3a5b77391e715aa48ef87c2a29"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-builder-20261102.cjs",
+      "artifact": "8bd8629a77e4cb-c06-builder-20261102.cjs.gz",
+      "bytes": 224,
+      "sha256": "8bd8629a77e4cbb78d1061afd70f19f05e099db6f1cc0614076c9030277904db",
+      "gzipBytes": 175,
+      "gzipSha256": "eee54e6766058ed16cfeaa44add352fb62711298b8c7271ca3596f76d3dbaed6"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-cleanup-daily-20261102.json",
+      "artifact": "b4a3fa231795ec-c06-cleanup-daily-20261102.json.gz",
+      "bytes": 1020,
+      "sha256": "b4a3fa231795ece0f89c9211b5f5921ced0dfcdcfdc0146feb82b40059a5bc17",
+      "gzipBytes": 550,
+      "gzipSha256": "0ca832e2e404531018d5b43786b1fb7c029d85faf946f5c2f63a27f18bd7ca51"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-closeout-20261102.mjs",
+      "artifact": "e0c22a54d5a95e-c06-closeout-20261102.mjs.gz",
+      "bytes": 13967,
+      "sha256": "e0c22a54d5a95e654ee1fc680ff2be076df46658fc32ab3e8e14b4d0242e9b7c",
+      "gzipBytes": 6571,
+      "gzipSha256": "31daf6d25a06a9c4a1aac219e4b8dca5dd6d74a03e631f80348424f0abd938cc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-components-20261102.log",
+      "artifact": "4502496e06596a-c06-components-20261102.log.gz",
+      "bytes": 496,
+      "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipBytes": 279,
+      "gzipSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-import-readonly-20261102.json",
+      "artifact": "4545f9ef6024b4-c06-import-readonly-20261102.json.gz",
+      "bytes": 4558,
+      "sha256": "4545f9ef6024b44f333acaf2e5f4d4900bab438e70ad02bec33296a7a541d2f0",
+      "gzipBytes": 1462,
+      "gzipSha256": "749cd37ee42967b91a863447eb72a1ecce88f17955c1e484f45cd01dc6e51d11"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-install-20261102.json",
+      "artifact": "b4ff7cadd38c9a-c06-install-20261102.json.gz",
+      "bytes": 1058,
+      "sha256": "b4ff7cadd38c9ad7dcfbe5d5db647c508b00917c35e7f08e820e0848fba1be9e",
+      "gzipBytes": 597,
+      "gzipSha256": "5e766f8399ac16c69a8e9081139afaf95375eb9bcd70dd664f02956ed3cd6e9a"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-install-20261102.ps1",
+      "artifact": "dafbf4d78d489e-c06-install-20261102.ps1.gz",
+      "bytes": 1996,
+      "sha256": "dafbf4d78d489e7d7695c95a46975b641dffbd3ff4d1b1841e00ef31bfe1c55f",
+      "gzipBytes": 950,
+      "gzipSha256": "93c66801bd599871579f3a4f1bc4d160d9cf0cefa45652a7e088d5fd5de07dfe"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-install-command-20261102.log",
+      "artifact": "b4ff7cadd38c9a-c06-install-command-20261102.log.gz",
+      "bytes": 1058,
+      "sha256": "b4ff7cadd38c9ad7dcfbe5d5db647c508b00917c35e7f08e820e0848fba1be9e",
+      "gzipBytes": 597,
+      "gzipSha256": "5e766f8399ac16c69a8e9081139afaf95375eb9bcd70dd664f02956ed3cd6e9a"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-installed-readback-20261102.log",
+      "artifact": "8e929ccc671e20-c06-installed-readback-20261102.log.gz",
+      "bytes": 1812,
+      "sha256": "8e929ccc671e20de1480e24106c99c58121640476e03e9921e43db400af33f6c",
+      "gzipBytes": 655,
+      "gzipSha256": "76fbb45ac02e39c1f3b5c7d8e5d89730f7a53f234edebdc9432923f6d35cf369"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-installed-resources-20261102.json",
+      "artifact": "dc53b17b107381-c06-installed-resources-20261102.json.gz",
+      "bytes": 1647,
+      "sha256": "dc53b17b107381d72d33c817b61e07c1bf740610bafbdcbeff297114ba3c43b8",
+      "gzipBytes": 555,
+      "gzipSha256": "5ef8533234144f9e16d9e67c609e562ab112127d179f0ac2996c6cc1961b1a18"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-installed-ui-20261102.log",
+      "artifact": "cb5d209ecba980-c06-installed-ui-20261102.log.gz",
+      "bytes": 705,
+      "sha256": "cb5d209ecba9806d2e1f5f51069e62a170363375c24bd2ce41ceb3a371ea0346",
+      "gzipBytes": 433,
+      "gzipSha256": "871a0dcf9d70feb0d032a3550894a51479e8b2ac7ed9da1f8a3ff870fe3ff5ee"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-nsis-build-20261102.log",
+      "artifact": "073cd75986a931-c06-nsis-build-20261102.log.gz",
+      "bytes": 716,
+      "sha256": "073cd75986a931b55c82a9867c3bfaef6d8dcee03293b036581d6be7887478c8",
+      "gzipBytes": 335,
+      "gzipSha256": "9f57b7d9f8d74368b4153bdb3c0fb35be2af7d3eebdfde48c9bd0e959c7bbd19"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-pack-20261102.log",
+      "artifact": "4bc35bf38b5753-c06-pack-20261102.log.gz",
+      "bytes": 54343,
+      "sha256": "4bc35bf38b5753272bcb2f4be8db1d9cb3c0f976c274c9fada5c03cd1b3b4606",
+      "gzipBytes": 11087,
+      "gzipSha256": "3d068c728fcde3e97800a40e194f164118daa7eedfd120a9dbb970f013a509c9"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-packaged-import-20261102.log",
+      "artifact": "e113019eadae6d-c06-packaged-import-20261102.log.gz",
+      "bytes": 3046,
+      "sha256": "e113019eadae6dc03edf085c43f601fc87c5028e554f72841fd6bf8b745bee06",
+      "gzipBytes": 888,
+      "gzipSha256": "41429914d35813fbfa961f7e3a8f37f9194ae0e3da996dca4d2f94d131198956"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-packaged-readback-20261102.log",
+      "artifact": "e6fd5d907ca4e1-c06-packaged-readback-20261102.log.gz",
+      "bytes": 1272,
+      "sha256": "e6fd5d907ca4e15116a2ba2b5f8028a0568c6f855bb3bbfdec79ed10fc4b8e95",
+      "gzipBytes": 596,
+      "gzipSha256": "21b2751b94288e784777eddc5b204d836a4766972ea75d08fa80e866afd97afd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-uninstall-20261102.json",
+      "artifact": "1ff3d576021379-c06-uninstall-20261102.json.gz",
+      "bytes": 3841,
+      "sha256": "1ff3d576021379a3f52cf0412d40b5bc24c971be28acde1c6b3ca8ebda9ef975",
+      "gzipBytes": 1180,
+      "gzipSha256": "f22b8c707f5443448fa6593a238cbd75e238fc3875b51bc0880b3ac65f1f1069"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-uninstall-20261102.ps1",
+      "artifact": "ae2a2217192c62-c06-uninstall-20261102.ps1.gz",
+      "bytes": 3783,
+      "sha256": "ae2a2217192c62806965f206769e8977093591b5f40310f88334c671ecae2c33",
+      "gzipBytes": 1579,
+      "gzipSha256": "0fd4da4ba4317b69bc037e65ef98235ab64a57024ae9c1550b6f067950e6df46"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-uninstall-command-20261102.log",
+      "artifact": "1ff3d576021379-c06-uninstall-command-20261102.log.gz",
+      "bytes": 3841,
+      "sha256": "1ff3d576021379a3f52cf0412d40b5bc24c971be28acde1c6b3ca8ebda9ef975",
+      "gzipBytes": 1180,
+      "gzipSha256": "f22b8c707f5443448fa6593a238cbd75e238fc3875b51bc0880b3ac65f1f1069"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-unpacked-current-ui-20261102.log",
+      "artifact": "066b05e503c5c2-c06-unpacked-current-ui-20261102.log.gz",
+      "bytes": 706,
+      "sha256": "066b05e503c5c27d9f5a9744356f5e00be8d9bed4c50054f925de8fb056f4e9a",
+      "gzipBytes": 437,
+      "gzipSha256": "b24164be6c741dcb4b4ae1a8a4dbc3f8d515c4c0da9f7476e29d0208a7a2f574"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-unpacked-ui-20261102.log",
+      "artifact": "87a70e92f1dee2-c06-unpacked-ui-20261102.log.gz",
+      "bytes": 809,
+      "sha256": "87a70e92f1dee22dd125005b1c3f94080de6bd2d8fefc0dee75d0448ffa8fd61",
+      "gzipBytes": 536,
+      "gzipSha256": "be7a758ca4e69b5ef9d0416c6c86300830adef49265bb8568ee3cc03ad023c40"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-unpacked-ui-fixed-20261102.log",
+      "artifact": "2a96f9c8d7a6dc-c06-unpacked-ui-fixed-20261102.log.gz",
+      "bytes": 985,
+      "sha256": "2a96f9c8d7a6dc6f105f95d27b7de82b5322f790408dcd54e1c8dd283a74fbe1",
+      "gzipBytes": 591,
+      "gzipSha256": "d99aea1ec580296654151979fa2330850dfe2108bc0ddc679f413984ea375cac"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-7yPGHu\\main-error.log",
+      "artifact": "9c8afec1f4204b-main-error.log.gz",
+      "bytes": 145,
+      "sha256": "9c8afec1f4204b4a893f753d7371065e7bce64f5ecb3383b7edc0597f5012fe6",
+      "gzipBytes": 143,
+      "gzipSha256": "0259cd74bba0b0fa493156456e8a970392328deefedcd8a162bb445ee24e9ff3"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-7yPGHu\\report.json",
+      "artifact": "7bc26a275a9dc3-report.json.gz",
+      "bytes": 3191,
+      "sha256": "7bc26a275a9dc3b845e3e188be4d6184634f54a6fedc5d211c3a098866cb5d9d",
+      "gzipBytes": 961,
+      "gzipSha256": "5918379cb2b542719fa1e89c7a94b266d6b58f036ce670865c3679322b6cbe54"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-yRIFwk\\main-error.log",
+      "artifact": "fbe5f2a97bf393-main-error.log.gz",
+      "bytes": 145,
+      "sha256": "fbe5f2a97bf393c75b964afe9bc6bd54d61a69b48dcfd6048eebce0b0be25e71",
+      "gzipBytes": 142,
+      "gzipSha256": "3ca888f4873f09d404ef126923fb19ab652fd4f57350242c4d7fb84adc505242"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-yRIFwk\\report.json",
+      "artifact": "9fd06403105058-report.json.gz",
+      "bytes": 3706,
+      "sha256": "9fd06403105058f3e09ce76f7f812478b082f455a35a394a19fcf6d318ce92eb",
+      "gzipBytes": 1055,
+      "gzipSha256": "a71bca25e6b5fa049361d02bcf48a3e2f411bc6d26fd6fd4bed76c7a1e24c417"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-P6emmU\\main-error.log",
+      "artifact": "41e820084cb6a7-main-error.log.gz",
+      "bytes": 145,
+      "sha256": "41e820084cb6a7efae2279e7429a63eb2050d9b53a0765b0ad1d3e84ff1de8ad",
+      "gzipBytes": 143,
+      "gzipSha256": "01b7479e0ea5bdc5aa1dc26dc5c6f7454c3619d0e0f52f31e6c8cfbb67191a2f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-P6emmU\\packaged-draft-dark-1920x1080.png",
+      "artifact": "ebf3521bc596a6-packaged-draft-dark-1920x1080.png.gz",
+      "bytes": 68576,
+      "sha256": "ebf3521bc596a63ca9b0d5ef573c133f99601c9a87968411958318b8577273ff",
+      "gzipBytes": 60003,
+      "gzipSha256": "f3162bb327f523878eae4fa21a9d5c8096d7737114673f2ef6c513c597f0caa2",
+      "pixels": {
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-P6emmU\\packaged-draft-light-1366x768.png",
+      "artifact": "732808803cefb8-packaged-draft-light-1366x768.png.gz",
+      "bytes": 62589,
+      "sha256": "732808803cefb8c9012a9a5d2710beea339cd4068de58c00ae8e61bfc8156883",
+      "gzipBytes": 58567,
+      "gzipSha256": "79f6aebc42ceff2f82f134470b2a1fcb50f4c8d39e00ecb1fcacf80533907c5b",
+      "pixels": {
+        "width": 1366,
+        "height": 768
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-P6emmU\\report.json",
+      "artifact": "25ea861250277b-report.json.gz",
+      "bytes": 3916,
+      "sha256": "25ea861250277b32f58997e7a06bc45c295aaf948eea30251973ca76362d31a7",
+      "gzipBytes": 1186,
+      "gzipSha256": "677612eacb8111c6b8a7b4b40cb11665492badc6dd3fad620258b497b19ac3cc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-37t9h7\\main-error.log",
+      "artifact": "8ae65ad338c22a-main-error.log.gz",
+      "bytes": 145,
+      "sha256": "8ae65ad338c22aca230871d4d0f10a9006c6cfb0456927081ad52e7f7389cea6",
+      "gzipBytes": 143,
+      "gzipSha256": "82aef8c7a75c0bbf6d75667143b51d55c95da0f5e3b1774b1e310b7511290c7f"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-37t9h7\\packaged-draft-dark-1920x1080.png",
+      "artifact": "ebf3521bc596a6-packaged-draft-dark-1920x1080.png.gz",
+      "bytes": 68576,
+      "sha256": "ebf3521bc596a63ca9b0d5ef573c133f99601c9a87968411958318b8577273ff",
+      "gzipBytes": 60003,
+      "gzipSha256": "f3162bb327f523878eae4fa21a9d5c8096d7737114673f2ef6c513c597f0caa2",
+      "pixels": {
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-37t9h7\\packaged-draft-light-1366x768.png",
+      "artifact": "732808803cefb8-packaged-draft-light-1366x768.png.gz",
+      "bytes": 62589,
+      "sha256": "732808803cefb8c9012a9a5d2710beea339cd4068de58c00ae8e61bfc8156883",
+      "gzipBytes": 58567,
+      "gzipSha256": "79f6aebc42ceff2f82f134470b2a1fcb50f4c8d39e00ecb1fcacf80533907c5b",
+      "pixels": {
+        "width": 1366,
+        "height": 768
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\xiaozhi-agent\\pi-windows-installer-ui-37t9h7\\report.json",
+      "artifact": "d134c0114a80ba-report.json.gz",
+      "bytes": 4029,
+      "sha256": "d134c0114a80bab016d37144c4c0195f6fec64248d8820ec6359a15df6e13269",
+      "gzipBytes": 1181,
+      "gzipSha256": "c1048b859f8db143855f4a46d01ab1307111c92ca8cb26f7f728ab9ab5877766"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\failure.png",
+      "artifact": "e642c7d4f054e1-failure.png.gz",
+      "bytes": 89177,
+      "sha256": "e642c7d4f054e1a1989534f565e173dd2f288e93d16bb066afbd96fee428907d",
+      "gzipBytes": 85772,
+      "gzipSha256": "1fa29ed638ce36bfb5c3c3622ebebe85702e6d560437736b05d6a85a6f724683",
+      "pixels": {
+        "width": 1366,
+        "height": 768
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\image-ocr-1920-installed.png",
+      "artifact": "ac5d27089696cf-image-ocr-1920-installed.png.gz",
+      "bytes": 111896,
+      "sha256": "ac5d27089696cf6b164a54be62eec67a3c7c76150062bfa6856ff216a62e2966",
+      "gzipBytes": 105169,
+      "gzipSha256": "a1ef408587815cc33768bd8ed921a0e937f621dfb6d8b26ff15006ab9fd8e7cd",
+      "pixels": {
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\image-ocr-1920.png",
+      "artifact": "ac5d27089696cf-image-ocr-1920.png.gz",
+      "bytes": 111896,
+      "sha256": "ac5d27089696cf6b164a54be62eec67a3c7c76150062bfa6856ff216a62e2966",
+      "gzipBytes": 105169,
+      "gzipSha256": "a1ef408587815cc33768bd8ed921a0e937f621dfb6d8b26ff15006ab9fd8e7cd",
+      "pixels": {
+        "width": 1920,
+        "height": 1080
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\image-ocr-after-restart-installed.png",
+      "artifact": "3cf477457852ec-image-ocr-after-restart-installed.png.gz",
+      "bytes": 84085,
+      "sha256": "3cf477457852ec6dda5103650e18ad34f8150f2b3c311c39b0b1b21fb29d1f67",
+      "gzipBytes": 80028,
+      "gzipSha256": "10a2dde4fea8dc032cc5245fec0c9326439186e6bee7c146feff207d2b8b1a00",
+      "pixels": {
+        "width": 1366,
+        "height": 768
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\image-ocr-after-restart.png",
+      "artifact": "75c6f6c3816801-image-ocr-after-restart.png.gz",
+      "bytes": 84088,
+      "sha256": "75c6f6c3816801c94d60a5e6eb4294b852750a6909f3284ad4f6ad8e4a4037ac",
+      "gzipBytes": 80004,
+      "gzipSha256": "b51d121633eca194722c0c04cbb35dc98ed2b2d5edb96abb4ff3b11a4a8a9765",
+      "pixels": {
+        "width": 1366,
+        "height": 768
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\materials-packaged.png",
+      "artifact": "5643180d6cc1a8-materials-packaged.png.gz",
+      "bytes": 81450,
+      "sha256": "5643180d6cc1a8f130f64edc0ec14baa5d1902d9aab59a5e5e3b524a2584b00f",
+      "gzipBytes": 78004,
+      "gzipSha256": "3ee422f61f0f4d8662d2ccd562fcb345ebdb325d1a0326d54c30531ed6fc280e",
+      "pixels": {
+        "width": 1366,
+        "height": 768
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\report-readback-installed.json",
+      "artifact": "aa3c556ab1accf-report-readback-installed.json.gz",
+      "bytes": 1640,
+      "sha256": "aa3c556ab1accfd6f64f8cb3240f0c5725fda2f87a5eef861043bef908dad9bc",
+      "gzipBytes": 637,
+      "gzipSha256": "8809a29ac01fa68b16f181f66557d5482c9cbbd7a44d315418c60b96ac9c2280"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\report-readback.json",
+      "artifact": "b68d50d5c58fa5-report-readback.json.gz",
+      "bytes": 1109,
+      "sha256": "b68d50d5c58fa55f8d6381f85b885db9b5c500631ac4c3c5cd49154ea9f9372b",
+      "gzipBytes": 580,
+      "gzipSha256": "316c991f02e4e5a5c1fa24d81bcb6d7978e7cd4242a7296035e4ec140eb61d9d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\report.json",
+      "artifact": "6b2cff37e8f955-report.json.gz",
+      "bytes": 2417,
+      "sha256": "6b2cff37e8f95533aa080bda066cc9017a123993508bfd4c20057d1fc42ad547",
+      "gzipBytes": 738,
+      "gzipSha256": "41d48174e4e85ecb12403eb05399e633f2ed25e427a7657ebf8297f24e1efcd8"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\扫描题页.pdf",
+      "artifact": "a3e8e57bba4147-扫描题页.pdf.gz",
+      "bytes": 8212,
+      "sha256": "a3e8e57bba414777e7ee51e5c53b2c87543511551d4b2a135d41bbec0c204c0d",
+      "gzipBytes": 5097,
+      "gzipSha256": "18347a1eba8330caaaebe1325a69de587bb99226acf8f9f1331e02f06e46d297"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\教师教案.md",
+      "artifact": "730d792871c4d6-教师教案.md.gz",
+      "bytes": 64,
+      "sha256": "730d792871c4d691e8a1d12438c22abeff16372033a28a81a61670f88e85f231",
+      "gzipBytes": 85,
+      "gzipSha256": "621e886e1eefe227887c7c67d0b265479e45b0094c47f87bb31c600b8b9897f4"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\教师讲义.docx",
+      "artifact": "44289571d0faba-教师讲义.docx.gz",
+      "bytes": 9524,
+      "sha256": "44289571d0fabaf9cdce326496d13a180ade963fdb9e397ce47b795077fb5c0b",
+      "gzipBytes": 7645,
+      "gzipSha256": "a02524a1b7542e42fb6c608e2a991bdd31661a0df3122ab0c47c8cfe73e7f3f5"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\长教材.txt",
+      "artifact": "d46cb97216591c-长教材.txt.gz",
+      "bytes": 378052,
+      "sha256": "d46cb97216591cef2cbc79d26c49d7b51d1d49943b9491bbe40c9ff5bd972de4",
+      "gzipBytes": 1024,
+      "gzipSha256": "75618cd3cae4e566b9007106bc063f42f736a26678f42f418bc78fa01ff07580"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\goal\\kb-s0\\packaged-1793552641506\\题目照片.png",
+      "artifact": "7759d22ffc918d-题目照片.png.gz",
+      "bytes": 3501,
+      "sha256": "7759d22ffc918de849f7c3d00f18d160547e380b551547e4aa75829c974726f5",
+      "gzipBytes": 2343,
+      "gzipSha256": "fc099861bff86af4bcee239494a59ca54a3d85340a0ea90a6ad04e3901e7728a",
+      "pixels": {
+        "width": 900,
+        "height": 302
+      }
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c06-nsis-20261102\\builder-debug.yml",
+      "artifact": "0b72dd0b5718bd-builder-debug.yml.gz",
+      "bytes": 6648,
+      "sha256": "0b72dd0b5718bd609470829f741234a9644a7dbe8cda2e2bbafcf0852a7809c4",
+      "gzipBytes": 1803,
+      "gzipSha256": "7a185d59ed54b19931e1a23b3bb91fdc2545046e80b427f4e615ae7d35cdab7c"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\release\\packaged-smoke.mjs",
+      "artifact": "f7e28d6c1bc9f1-packaged-smoke.mjs.gz",
+      "bytes": 11988,
+      "sha256": "f7e28d6c1bc9f15cca3e0033e902e79866571f64a33e1080f3957546a3a10b75",
+      "gzipBytes": 4429,
+      "gzipSha256": "e3a3656ade8ca5fe2267343ae2ee104924c8726a6f4cc12389c0b01779d572dd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\pi-windows-installer-ui.mjs",
+      "artifact": "2b10b4eaec8e80-pi-windows-installer-ui.mjs.gz",
+      "bytes": 8628,
+      "sha256": "2b10b4eaec8e80cf84d4b9b30c2838bb3ede82f393b5567347a913956adfbd86",
+      "gzipBytes": 3242,
+      "gzipSha256": "a10e972f92a6ed1debd7f3c7a565488ee5f6797fa70f000eafe4d953dc8d2af4"
+    }
+  ]
+}

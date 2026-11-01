@@ -1,5 +1,8 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-11-02 C06当前安装工程链路已实现：自身build/type、240组件、四运行时1049文件pin与安装后hash通过；解包/真实安装启动各6、同资料冷读各2通过，5原件hash保持/长文106段。隔离NSIS安装/卸载完成，7资料/DB与原快捷方式保留，0残留测试程序/新增付费。旧PATH/快捷区/正文导航夹具失败保留并只补失败段，未重导入。455生产文件字节不变，D仍c37c2ab/PID163732、3脏文档保留，未重启。非干净VM/升级回滚/重装或完整FX08/10验收，累计仍3/252、Goal active；继续W3功能后集中，再S/T。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒子项工程已实现（c37c2ab）：修复宿主调用ID污染重复比较，增加2–4步短周期及长序列提醒，新输入/真实进度仍可继续；13领域/240组件/最终build/type/正式Pi3通过，0付费。完整C05-08/E07-04与FX10/13保持原标准，累计完整AT仍3/252。docs/research/AGENT_REPEAT_C05_20261102.json。 日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。
 
 
@@ -889,13 +892,13 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-C06-01 | 实际运行根 | 为D:/WorkProject/EduProject或明确安装路径本次版本；不能以e147测试窗口代替日常已更新 | [AT-C06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-01) | 待验收 |
 | REQ-C06-02 | 第一窗口可见 | 原生窗口可见可操作，不后台无窗；旧实例更新策略真实说明，不多开错数据根 | [AT-C06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-02) | 待验收 |
-| REQ-C06-03 | 源码检查 | 记录精确命令、退出码、通过/失败/跳过；无借用他树node_modules；构建不冒充用户验收 | [AT-C06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-03) | 待验收 |
-| REQ-C06-04 | 无依赖安装 | 受管准备完成且任务可用；无需系统Python/Docker/命令行；网络失败可恢复 | [AT-C06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-04) | 待验收 |
+| REQ-C06-03 | 源码检查 | 记录精确命令、退出码、通过/失败/跳过；无借用他树node_modules；构建不冒充用户验收 | [AT-C06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-03) | 部分实现；待集中验收 |
+| REQ-C06-04 | 无依赖安装 | 受管准备完成且任务可用；无需系统Python/Docker/命令行；网络失败可恢复 | [AT-C06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-04) | 部分实现；待集中验收 |
 | REQ-C06-05 | 升级回滚 | 旧兼容版本可用；文件/题库/任务数据保留；不把下载成功当升级完成 | [AT-C06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-05) | 待验收 |
 | REQ-C06-06 | 退出进程 | 本应用所属进程结束或明确安全完成；不杀其他应用同名进程；无后台继续写教师文件 | [AT-C06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-06) | 待验收 |
-| REQ-C06-07 | 已安装证据 | app.isPackaged为true且资源/依赖可用；不能用源码Electron启动当安装包通过 | [AT-C06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-07) | 待验收 |
-| REQ-C06-08 | 卸载与保留 | 用户数据保留策略明确；重装成果/来源可恢复；卸载不静默删除真实资料 | [AT-C06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-08) | 待验收 |
-| REQ-C06-09 | 版本兼容表 | 每项来源/哈希/许可/平台/兼容关系有记录；未知或不兼容不激活 | [AT-C06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-09) | 待验收 |
+| REQ-C06-07 | 已安装证据 | app.isPackaged为true且资源/依赖可用；不能用源码Electron启动当安装包通过 | [AT-C06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-07) | 部分实现；待集中验收 |
+| REQ-C06-08 | 卸载与保留 | 用户数据保留策略明确；重装成果/来源可恢复；卸载不静默删除真实资料 | [AT-C06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-08) | 部分实现；待集中验收 |
+| REQ-C06-09 | 版本兼容表 | 每项来源/哈希/许可/平台/兼容关系有记录；未知或不兼容不激活 | [AT-C06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-09) | 部分实现；待集中验收 |
 | REQ-C06-10 | 发布与Git一致 | 保留协作者工作；普通推送并回读一致性；无发布授权不发安装包；Git同步不计产品验收 | [AT-C06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-10) | 待验收 |
 
 ### 7.7 兼容、恢复和回退总规则

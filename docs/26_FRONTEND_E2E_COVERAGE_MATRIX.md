@@ -1,5 +1,8 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-02 C06：当前packaged/NSIS安装路径工程已接通；实际安装启动6、同5资料冷读2通过，空PATH使用本地Worker。原件/106段及卸载保留已核；0付费。完整AT仍3/252，W3→S/T不变。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
 2026-11-02 C05循环提醒：原正式输入→6次真实Hana本地缺文件读取→两步循环提醒→结束原样重试→新输入1次读取无旧警告→native/journal/草稿冷启，共3项通过。首7次本地失败与最终9次均保留，0付费；7条planBasis关联逐一核对。无UI修改，renderer/preload字节不变；不冒充真实provider/自然质量/完整AT。docs/research/AGENT_REPEAT_C05_20261102.json。
 
 
