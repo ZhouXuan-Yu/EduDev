@@ -354,3 +354,19 @@ renderer7179937→7182635B；合成Pi单次8488ms，不当作前后延迟/P95或
 - 文件：ui-system/layout.css、chat.css、settings.css、components/office/PiEducationWorkspace.tsx，定向Electron脚本/既有状态和C02证据。桌面正常尺寸保持布局，最小标题栏及geometry修复保留；四个生产文件可单独revert回退，无数据回退。日常窗口不接管、不重启。
 
 本切片工程收尾：af4b7ab，四个生产文件及原Pi定向脚本完成；最终build/type、240组件、12项/18组布局与单次207综合分层通过。最终增加一行设置行堆叠CSS以避免中文标签挤成竖排，最后专项覆盖，综合不复跑；原失败全部保留。0新付费/依赖/迁移，完整AT不新增，日常窗口不接管。回滚仅四个生产文件，保留用户数据和旧几何/标题栏修复。详docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。
+
+## 2026-11-01 C02 选读与中文输入交付合同
+
+- 目标：REQ-C02-06/07/10；教师选读、复制流式正文时保留原文字和阅读位置，上翻不追底，原“回到最新消息”恢复跟随；中文组合态不误发、换行与会话草稿保留。
+- 当前能力：原PromptInput已包含isComposing/keyCode229保护和Shift+Enter，保持输入框内部、底栏、弹层及vendor不变。原OfficeTextSelection已恢复异步Markdown选择，原ReadingPosition已保护上翻和切页锚点；选择期间底部跟随尚待本轮实际复现，不能写成确认缺陷。
+- 拟改边界：只在现有OfficeTextSelection/OfficeReadingPosition应用适配与必要原OfficeConversation接缝修复确认的缺口；新增或复用定向UI脚本。原Pi、发送/队列/审批、typed IPC、SQLite/文件不变，不增依赖/表/迁移。
+- 本轮完成：隔离原正式Pi、复制原FX09合成历史，受控本地SSE从当前输入入口发送；真实浏览器鼠标选读、后续增量/完成、原按钮恢复、手动滚动/取消选择/切页/冷启，检查原正文与事件hash不变、0真实付费。IME仅先核原浏览器协议/原生字符与换行，不把合成composition事件当真实系统拼音验收。
+- 一次必要build/type、240组件及相关专项；失败保留并只复验受影响项，未变已过路径不重复综合。物理拖动/系统IME和完整审批键盘等仍独立待验，不新增平行UI/账本，不因局部通过标全AT。
+- 回滚：回退本片应用适配文件即可，原事件/文件/草稿保留，无数据回退或真实资料清理。日常窗口不接管或重启。
+
+### C03 续写依赖补充（先于选读修复）
+
+受控复制FX09历史续写在第一请求前configuration失败；隔离诊断堆栈已定位pi-session的office-text身份比较，新旧workspace绝对目录不等。原privateWorkspaceFingerprintCwd已严格限定同一aisession及xiaozhi-pi/workspace后缀，creation/control已沿用历史身份，五类文件工具身份尚未沿用。先将office-text/science-figure/document/artifact/delivery的身份workspace统一为该已验证historicalWorkspace；实际工具、SessionManager cwd、fileReadWorkspace和输出服务继续当前目录，不改原native/journal/SQLite、不迁移外选授权。反例沿原private identity边界检验，正式Pi复制FX09应从原输入入口继续一次本地受控流；旧消息/事件hash一致。若无选择位置缺陷则不改选择适配器。此项是C03历史连续性缺口，不能把冷读成功当续写成功。用户本轮另行明确允许关闭重启D日常窗口，已完成05782b4构建启动；Windows锁屏导致页面/物理拖动待确认，停止实际窗口输入，合成协议测试独立推进。
+
+
+本片收尾：eb5d8cd；正常整合93fb5be后build/type/240组件通过。原生5/既有9、原Pi前6+同会话后3、固定自身构建207综合通过；前段末尾harness定位失败保留，不重生成。123份归档逐项raw/stored hash验证。仅C02-06/07与C03-06部分实现，完整AT仍3/252；D已按本轮授权重启到05782b4，Windows锁屏停止输入，本片eb5d8cd未部署D。0新付费/依赖/DDL，回退仅本片两生产文件，不回退协作者/用户数据。docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。

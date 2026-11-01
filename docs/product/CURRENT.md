@@ -4,6 +4,8 @@
 
 冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。
 
+2026-11-01 流式选读已修复：选区文字和阅读位置保留，上滚不强拉，原“回到最新消息”恢复；目录恢复后的默认会话可继续生成。完整AT及教师体感质量仍待集中，D当前05782b4尚无本片eb5d8cd。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
+
 ## 2026-11-01 后台多块原题归档
 
 已安装可选图文块组件且本批已获授权时，后台普通PDF可自动选块、保存多张来源图；题本及既有Office/组卷消费者复用原入口。纯文字题保持原两遍原文证据。仍必须保留待核与教师编辑/正式试卷确认；不是任意题库自动正确承诺。

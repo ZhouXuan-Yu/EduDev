@@ -1,5 +1,7 @@
 # 小智 EduDev — Codex Goal Master Prompt
 
+2026-11-01 C02-06/07及C03-06仅部分实现：选读/复制/冷启与私有目录续写已测，完整AT累计仍3/252、Goal active。源码eb5d8cd，整合93fb5be；5原生/9边界/6+3实际Pi/207固定综合，最终整合build/type/240组件通过。D按授权重启到05782b4，新切片未应用日常；锁屏页面/drag、系统IME与完整REVIEW矩阵待验。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice。
+
 2026-11-01 本轮一次综合回归exit1：electron-smoke.mjs:1460，analytics导航后ai-observability-workspace保持隐藏，原因待定位，未记207通过。该进程开始后out在整合时重建，不作为单一最终SHA的综合验收；后续须固定测试构建。原始日志/截图已归档，恢复专项与最终冷启证据分别保留。
 
 2026-11-01 C03独立目录恢复工程路径已接通（b451808；主线整合331144f）：设置页选择备份→独立副本→显式切换/重启→读取原HTML/PPT/历史→返回原目录。源码SQLite/文件8项、最终build/type及240组件通过；初始正式UI3项后定位失败保留，原副本仅补跑读取/冷启/返回4项通过，最终整合4项亦通过，未重新生成。168事件/4 native绑定/1会话绑定和native文件、2成果hash独立一致；UI检查表为空，不冒充非空覆盖。0新付费，D日常/安装包未更新。旧缺目录信息备份仍只校验、外选文件/全资料路径与完整FX07/10及252AT未完成，不计整组已实现；下一C02流式性能/窗口和C06实际运行。证据：docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。
