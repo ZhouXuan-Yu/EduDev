@@ -352,3 +352,5 @@ renderer7179937→7182635B；合成Pi单次8488ms，不当作前后延迟/P95或
 - 改动：只改应用layout/chat/settings CSS，以及PiEducationWorkspace中OfficeComposer外的稳定滚动容器。极窄导航改为按原生菜单显式展开，头部动作可换行；保护输入框至少260px外层布局，极端窗口提供局部滚动取回全部原控件，短窗正文仍有可读区域；设置目录与正文在窄窗上下排列。输入框内部/弹层/配置、原Pi/IPC/SQLite/文件及vendor不变，无依赖/迁移。
 - 定义：一次相关检查，隔离原UI空白/原FX09历史、1366×768/1920×1080及390/480窄窗、100/125/150/200%页面zoom；定位/滚动真实控件、原生侧栏菜单、文件/任务面板、模型/档位/设置弹层、草稿切换和冷启；原复杂消息/事件hash不变、无真实模型请求。补充受控流停止路径；物理系统DPI/指针及完整IME/教育质量保留独立标准，不宣称全AT。
 - 文件：ui-system/layout.css、chat.css、settings.css、components/office/PiEducationWorkspace.tsx，定向Electron脚本/既有状态和C02证据。桌面正常尺寸保持布局，最小标题栏及geometry修复保留；四个生产文件可单独revert回退，无数据回退。日常窗口不接管、不重启。
+
+本切片工程收尾：af4b7ab，四个生产文件及原Pi定向脚本完成；最终build/type、240组件、12项/18组布局与单次207综合分层通过。最终增加一行设置行堆叠CSS以避免中文标签挤成竖排，最后专项覆盖，综合不复跑；原失败全部保留。0新付费/依赖/迁移，完整AT不新增，日常窗口不接管。回滚仅四个生产文件，保留用户数据和旧几何/标题栏修复。详docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice。

@@ -1873,5 +1873,318 @@
     ],
     "rollback": "Revert fab49e4 production-file changes after stopping own test; retain original user data and previous geometry fix. No migration. Rollback not exercised.",
     "next": "Continue C02-05 main-body/critical-popup reachability, IME, reading/selection, process/approval and error/switching feature gaps, then applicable C06; W3 stage acceptance once aligned, followed by S/T."
+  },
+  "bodyLayoutSlice": {
+    "date": "2026-11-01",
+    "sourceCommit": "af4b7abdf9491325164ae5ae987d66cd149eb867",
+    "upstream": "be7657c",
+    "goal": "active",
+    "newFullAtAccepted": 0,
+    "issue": "At 390 DIP / 150% page zoom (260 CSS px), the retained 64px rail left a 196px main area. Send ended at x300 and More at x304, outside the 260px viewport. Settings fixed navigation/padding reduced its main column to zero width.",
+    "implementation": [
+      "Hide the collapsed rail below 360 CSS px and remove its grid column at matching selector specificity; the original native sidebar command still opens navigation.",
+      "Allow the original header actions to wrap; give the original composer a stable outer horizontal scrolling viewport and 260px minimum layout, plus outer vertical access in short windows.",
+      "Anchor the existing absolute file/task panel to the chat area so its close button is below the header and not clipped.",
+      "Stack the settings navigation/main and application-owned settings rows in narrow windows, keeping labels readable and search/model/Save reachable."
+    ],
+    "files": [
+      "apps/desktop/src/renderer/components/office/PiEducationWorkspace.tsx",
+      "apps/desktop/src/renderer/ui-system/layout.css",
+      "apps/desktop/src/renderer/ui-system/chat.css",
+      "apps/desktop/src/renderer/ui-system/settings.css"
+    ],
+    "unchanged": [
+      "Original OfficeComposer internals, toolbar and popovers",
+      "Pi runtime, buffering and journal",
+      "IPC/preload, permissions and credentials",
+      "SQLite/files/data roots",
+      "Vendor and dependencies in this slice"
+    ],
+    "evidence": {
+      "before": "docs/research/evidence/agent-interaction-c02/20261101/body-before.json.gz",
+      "settingsBefore": "docs/research/evidence/agent-interaction-c02/20261101/body-settings-before.json.gz",
+      "final": "docs/research/evidence/agent-interaction-c02/20261101/body-delivery-ui.json.gz",
+      "script": "docs/research/evidence/agent-interaction-c02/20261101/body-delivery-ui.mjs.gz",
+      "buildLog": "docs/research/evidence/agent-interaction-c02/20261101/body-delivery-build.log.gz",
+      "components": "docs/research/evidence/agent-interaction-c02/20261101/body-components.log.gz",
+      "uiLog": "docs/research/evidence/agent-interaction-c02/20261101/body-delivery-ui.log.gz",
+      "audit": "docs/research/evidence/agent-interaction-c02/20261101/body-audit.json.gz",
+      "empty-after.png": "docs/research/evidence/agent-interaction-c02/20261101/body-empty-after.png",
+      "history-after.png": "docs/research/evidence/agent-interaction-c02/20261101/body-history-after.png",
+      "settings-top-after.png": "docs/research/evidence/agent-interaction-c02/20261101/body-settings-top-after.png",
+      "settings-after.png": "docs/research/evidence/agent-interaction-c02/20261101/body-settings-after.png",
+      "menuAccessibleName": "docs/research/evidence/agent-interaction-c02/20261101/body-menu-accessible-name.txt.gz",
+      "firstPassingUi": "docs/research/evidence/agent-interaction-c02/20261101/body-first-integrated-ui.json.gz",
+      "nativeCaptureUi": "docs/research/evidence/agent-interaction-c02/20261101/body-native-capture-ui.json.gz",
+      "smoke": "docs/research/evidence/agent-interaction-c02/20261101/body-smoke.log.gz"
+    },
+    "builds": {
+      "before": {
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-caption-final-d8640d4",
+        "files": 455,
+        "bytes": 34535744,
+        "treeSha256": "b775b5381dc42fa5edc6b7d8425a4b6c2a786434c4ff71298a62b6a9172c3145",
+        "manifest": "docs/research/evidence/agent-interaction-c02/20261101/c02-caption-final-d8640d4-body-files.json.gz",
+        "main": {
+          "path": "main/index.js",
+          "bytes": 3498439,
+          "sha256": "c80b272832e38c0694693fb32b58f70e44d2d7d966b35c64772a8d946f518c52"
+        },
+        "preload": {
+          "path": "preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "path": "renderer/assets/index-rOylfIs_.js",
+          "bytes": 7375083,
+          "sha256": "cfd8433329fcc54e6b7b4657a8ae393e7b4e456a6c16799bee61418ba152872e"
+        },
+        "css": {
+          "path": "renderer/assets/index-CBzqoflr.css",
+          "bytes": 449216,
+          "sha256": "162c04f103c04bc4ecbc2b04db3ac329fdb441f4d080b92e151869528e1241b4"
+        }
+      },
+      "integrated": {
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-body-integrated-be7657c",
+        "files": 455,
+        "bytes": 34672964,
+        "treeSha256": "9906da4547b88be41b04f6b45352a2ab29742bff4d08fa9fc345e83a10a4ea88",
+        "manifest": "docs/research/evidence/agent-interaction-c02/20261101/c02-body-integrated-be7657c-body-files.json.gz",
+        "main": {
+          "path": "main/index.js",
+          "bytes": 3502409,
+          "sha256": "d8041d14686335b48b9a459b2754ff455bb29dccc98ac6fc8bff63401d1c0f50"
+        },
+        "preload": {
+          "path": "preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "path": "renderer/assets/index-DEimE1GZ.js",
+          "bytes": 7381132,
+          "sha256": "6ac8a40ce0dc5b36c84ae32b90b004666faa6eb16c412bb926ef176c9d081f39"
+        },
+        "css": {
+          "path": "renderer/assets/index-CUIbCbEJ.css",
+          "bytes": 451355,
+          "sha256": "24c9e236f77b7ee3dd9d1d760a800e16e73b6d80eab2206e44568a6ab5b43389"
+        }
+      },
+      "final": {
+        "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-body-delivery-be7657c",
+        "files": 455,
+        "bytes": 34673048,
+        "treeSha256": "2491e9398e283dcae152ddfae4f61a965640f1f5d7bd7e17e9fa396d8c2d7aa1",
+        "manifest": "docs/research/evidence/agent-interaction-c02/20261101/c02-body-delivery-be7657c-body-files.json.gz",
+        "main": {
+          "path": "main/index.js",
+          "bytes": 3502409,
+          "sha256": "d8041d14686335b48b9a459b2754ff455bb29dccc98ac6fc8bff63401d1c0f50"
+        },
+        "preload": {
+          "path": "preload/index.cjs",
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "path": "renderer/assets/index-0cB_HC1U.js",
+          "bytes": 7381132,
+          "sha256": "71f1fc9de8487c47628b557b045f1d36c745626b3a870900319d49c57fa01d07"
+        },
+        "css": {
+          "path": "renderer/assets/index-DK39hH6Z.css",
+          "bytes": 451439,
+          "sha256": "df4f7504c306189f55708bedfb2567294cc9f0a9d97b781b20dbbc1100911492"
+        }
+      }
+    },
+    "failures": [
+      {
+        "name": "catalogue-shape",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-body-layout-IJbejk",
+        "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '选择模型', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button disabled data-rac=\"\" type=\"button\" aria-label=\"选择模型\" data-slot=\"button\" aria-haspopup=\"true\" data-disabled=\"true\" aria-expanded=\"false\" id=\"react-aria9400996278-_r_2i_\" data-react-aria-pressable=\"true\" class=\"button button--sm button--ghost office-model-picker\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    58 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not enabled\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n\n    at popover (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\body-layout-ui.mjs:45:77)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/body-layout-ui.mjs:61:3",
+        "report": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-catalogue-shape.json.gz",
+        "log": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-catalogue-shape.log.gz"
+      },
+      {
+        "name": "menu-name",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-body-layout-d5BVHK",
+        "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menu', { name: '模型', exact: true }) to be visible\u001b[22m\n\n    at popover (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\body-layout-ui.mjs:45:148)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/body-layout-ui.mjs:61:3",
+        "report": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-menu-name.json.gz",
+        "log": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-menu-name.log.gz"
+      },
+      {
+        "name": "grid-specificity",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-body-layout-yArMPF",
+        "error": "AssertionError [ERR_ASSERTION]: {\"width\":260,\"workspace\":{\"x\":0,\"y\":44,\"width\":64,\"height\":468,\"top\":44,\"right\":64,\"bottom\":512,\"left\":0},\"nav\":\"none\"}\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/body-layout-ui.mjs:54:284",
+        "report": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-grid-specificity.json.gz",
+        "log": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-grid-specificity.log.gz"
+      },
+      {
+        "name": "menu-name-final",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-body-layout-a6o7IG",
+        "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menu', { name: '模型', exact: true }) to be visible\u001b[22m\n\n    at popover (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\body-layout-ui.mjs:45:148)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/body-layout-ui.mjs:62:3",
+        "report": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-menu-name-final.json.gz",
+        "log": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-menu-name-final.log.gz"
+      },
+      {
+        "name": "menu-name-events",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-body-layout-AzRgG6",
+        "error": "locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('menu', { name: '模型', exact: true }) to be visible\u001b[22m\n\n    at popover (C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\scripts\\xiaozhi-agent\\body-layout-ui.mjs:45:627)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/body-layout-ui.mjs:62:3",
+        "report": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-menu-name-events.json.gz",
+        "log": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-menu-name-events.log.gz"
+      },
+      {
+        "name": "panel-anchor",
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-body-layout-vkCbzB",
+        "error": "AssertionError [ERR_ASSERTION]: {\"label\":\"收起任务与文件\",\"rect\":{\"x\":202,\"y\":52,\"width\":40,\"height\":40,\"right\":242,\"bottom\":92},\"viewport\":[260,512],\"visible\":[40,-37.888885498046875],\"hit\":false}\n    at reachable (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/body-layout-ui.mjs:43:88)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/body-layout-ui.mjs:65:160",
+        "report": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-panel-anchor.json.gz",
+        "log": "docs/research/evidence/agent-interaction-c02/20261101/body-failed-panel-anchor.log.gz"
+      }
+    ],
+    "validation": {
+      "build": {
+        "command": "npm.cmd run build",
+        "exit": 0,
+        "includes": "tsc --noEmit and electron-vite"
+      },
+      "components": {
+        "command": "npm.cmd run test:renderer-components",
+        "exit": 0,
+        "passed": 240,
+        "total": 240,
+        "boundary": "Final integrated TypeScript/JSX; last subsequent production change was one settings-row CSS rule."
+      },
+      "ui": {
+        "command": "node scripts/xiaozhi-agent/body-layout-ui.mjs test-results/c02-body-delivery-be7657c <original-synthetic-FX09-root>",
+        "exit": 0,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-body-layout-rtawh7",
+        "checks": [
+          "empty: nine actual content sizes/zooms keep original header/composer controls reachable with a 22-line draft, without session/draft loss",
+          "empty: original model and thinking menus open within the tiny viewport and Escape closes them",
+          "empty: real file/task panel remains closable and preserves the composer draft",
+          "empty: hidden narrow navigation is still available through the existing native sidebar command",
+          "Actual narrow settings has a usable main column, reachable search/Save and returns to the same unsent draft without saving credentials",
+          "A real original Pi local stream can be stopped from the tiny viewport; no later chunks or actions are sent",
+          "empty: cold restore preserves the same actual session, draft and projection without replay",
+          "history: nine actual content sizes/zooms keep original header/composer controls reachable with a 22-line draft, without session/draft loss",
+          "history: original model and thinking menus open within the tiny viewport and Escape closes them",
+          "history: real file/task panel remains closable and preserves the composer draft",
+          "history: hidden narrow navigation is still available through the existing native sidebar command",
+          "history: cold restore preserves the same actual session, draft and projection without replay"
+        ],
+        "cases": 18,
+        "rendererErrors": 0,
+        "requests": [
+          {
+            "local": true,
+            "aborted": true,
+            "chunks": 10
+          }
+        ],
+        "screenshots": [
+          {
+            "name": "empty-after.png",
+            "size": {
+              "width": 585,
+              "height": 1152
+            },
+            "viewport": [
+              260,
+              512
+            ]
+          },
+          {
+            "name": "settings-top-after.png",
+            "size": {
+              "width": 585,
+              "height": 1152
+            },
+            "viewport": [
+              260,
+              512
+            ]
+          },
+          {
+            "name": "settings-after.png",
+            "size": {
+              "width": 585,
+              "height": 1152
+            },
+            "viewport": [
+              260,
+              512
+            ]
+          },
+          {
+            "name": "history-after.png",
+            "size": {
+              "width": 585,
+              "height": 1152
+            },
+            "viewport": [
+              260,
+              512
+            ]
+          }
+        ],
+        "buildHash": "2491e9398e283dcae152ddfae4f61a965640f1f5d7bd7e17e9fa396d8c2d7aa1",
+        "scriptHash": "eccc02fc1ab86c6119a6aed3e4663d2681844dc318d792e06e7c160649cb744c",
+        "persistedBefore": {
+          "events": "edf6c16c9fee538c17c2dc50f8e75ace3758ac4aeca5cb9da3b158c5aaa9a71d",
+          "messages": "198bc370055e58173998544950d48440ecc3d02f2c24d7569b8661e887839419",
+          "body": "432c2852863155518b4b34d5bd15284c40f46d2715a7c2d2611fdebe11dff2a6"
+        },
+        "persistedAfter": {
+          "events": "edf6c16c9fee538c17c2dc50f8e75ace3758ac4aeca5cb9da3b158c5aaa9a71d",
+          "messages": "198bc370055e58173998544950d48440ecc3d02f2c24d7569b8661e887839419",
+          "body": "432c2852863155518b4b34d5bd15284c40f46d2715a7c2d2611fdebe11dff2a6"
+        }
+      },
+      "smoke": {
+        "command": "OMNI_EDU_TEST_BUILD_ROOT=test-results/c02-body-integrated-be7657c node scripts/electron-smoke.mjs",
+        "exit": 0,
+        "passed": 207,
+        "total": 207,
+        "boundary": "One legacy-test/Pi=0 regression on immutable integrated build before the last settings-row CSS rule. Actual production Pi is verified separately above; no second full smoke."
+      },
+      "audit": {
+        "exit": 1,
+        "existing": {
+          "low": 8,
+          "moderate": 29,
+          "high": 8,
+          "critical": 0,
+          "total": 45
+        },
+        "newDependencies": 0
+      }
+    },
+    "performance": {
+      "comparison": "Bundle sizes only. Before vs final also contains the upstream page-block integration; do not attribute combined bytes to this slice or claim latency/FPS improvement. No new paired frame/latency samples; previous FX09 timing evidence is retained.",
+      "combinedMainDeltaBytes": 3970,
+      "combinedRendererDeltaBytes": 6049,
+      "combinedCssDeltaBytes": 2223,
+      "preloadDeltaBytes": 0,
+      "streamHandlersChanged": false
+    },
+    "lessons": [
+      "A hidden rail also needs its grid column removed; the existing collapsed attribute selector has higher specificity than the generic media rule. The failed 64px workspace attempt is retained.",
+      "HeroUI exposes the model menu accessible name as its trigger label (选择模型), through aria-labelledby; aria-label 模型 alone was an incorrect role query. The initial catalogue fixture also needed object:list. These were harness defects, not provider/tool failures.",
+      "The absolute context panel previously anchored to the workspace, so the chat overflow clipped its heading/close button; a chat positioning context fixes the real defect.",
+      "Playwright page screenshots under Electron page zoom captured a cropped rectangle. Final images use native webContents.capturePage with explicit dimensions; early cropped screenshots are not full-window visual acceptance."
+    ],
+    "boundaries": [
+      "No full AT added: cumulative AT-C02-01/02/04 remain the only 3/252 accepted. The 18 layouts are page zoom/content-size samples, not the full physical system-DPI matrix.",
+      "Physical pointer drag/maximized restore remains not passed; no actual daily-window input after prior physical Escape. IME, full keyboard/screen-reader, approvals and all failure/switching variants remain open.",
+      "The protected original composer appearance is retained, including existing long-text/footer visual behavior; this slice establishes reachability, not teacher visual acceptance or a composer redesign.",
+      "No real provider/paid requests, teacher-data copying, daily restart or installer update. One local synthetic stream was interrupted and did not replay on restore.",
+      "Existing audit vulnerabilities are recorded; overall Goal and quality work are unfinished."
+    ],
+    "rollback": "Revert only the four production files from this source commit; retain original data, files and earlier geometry/caption fixes. No migration; rollback not exercised.",
+    "next": "Continue remaining C02 interaction/approval/IME/reading/switching functionality and C06; once E06/E07/E08 and applicable C align, execute W3 stage acceptance, then S/T. Do not repeat passed unrelated paths."
   }
 }

@@ -1,5 +1,7 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+2026-11-01 C02正文缩放工程已实现（af4b7ab，整合be7657c）：修复极窄导航占列、顶部换行/发送可达、文件任务面板关闭被裁剪及设置主区0宽；窄设置行上下排列。原输入框内部/弹层与Pi不变。最终build/type、240组件、原正式Pi12项/18组布局及复杂历史hash/长草稿/冷启、一次受控流停止通过，0新付费/renderer错误；一次固定整合构建207综合通过（最后一行设置CSS前，最终专项另列）。保留失败和测试名称/截图修正，不重复全套。完整AT仍3/252、Goal active；物理drag/IME/全键盘审批和完整C矩阵未通过，日常窗口/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#bodyLayoutSlice；下一剩余C02功能与C06，阶段对齐后集中W3，再S/T。
+
 2026-11-01 C02窄窗标题栏工程已实现（fab49e4，整合d8640d4）：原生安全区按实际zoom布局，窄窗聚合为原生应用菜单，完整菜单/导航保留；390px控件不再压入caption，drag由重叠变为59px独立空白。最终build/type、240组件及原Electron6项（20组尺寸/页面zoom、菜单点击/Enter、sender边界、双草稿/冷启）通过，0付费/renderer错误。仅标题栏子项，未替代物理drag、系统DPI、IME/全部弹层或正文矩阵；极窄260 CSS px正文截断另列待修。累计完整AT仍3/252，Goal active。日常窗口/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#captionLayoutSlice；下一C02正文/关键弹层等功能与C06，阶段对齐后集中W3，再S/T。
 
 2026-11-01 日常运行补录：用户明确“直接关了重启，接管使用”。已正常关闭旧D主进程52540（无强杀），保留3份脏文档hash，D从c59ec05快进d76e6e5，以本目录自己的依赖npm.cmd start重新build/type并启动exit0。新PID58588/窗口6295124，Computer Use Raise后可见，实际renderer URL为file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html，本轮窗口几何修复已进入日常版。未发送对话/新增付费测试，不归档真实UI或教师数据。原生标题栏双击可最大化；普通drag位置未变、最大化drag未还原，原因未确定，AT03仍未通过。用户物理Esc终止后续Computer Use，最后还原按钮动作结果未知，已停止全部窗口输入。详docs/research/AGENT_INTERACTION_C02_20261101.json#runtime。Goal仍active，其余功能及集中矩阵继续，不因日常启动通过标全组。
