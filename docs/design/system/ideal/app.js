@@ -6,11 +6,18 @@
     ...['档案', '学习记录', '错题与练习', '学习计划', '学习复盘', '学习概览'].map(tab => [tab === '档案' ? '学生档案' : tab, 'students', tab]),
     ['查找学生与记录', 'students', '查找'], ['添加学习记录', 'students', '录入'], ['设置', 'settings', '']
   ];
+  let readingEntry = false;
   D.navigate = route => {
     if (!titles[route]) return;
     if (D.state.route === 'library' && route !== 'library' && !D.library.canLeave()) return;
     const dirty = D.$('#editor-status')?.textContent.includes('未保存');
     if (dirty && !window.confirm('演示编辑尚未保存，确定离开吗？')) return;
+    D.studio?.captureScroll();
+    if (!readingEntry) {
+      const target = new URLSearchParams({page: route});
+      if (route === 'teaching') target.set('tab', D.state.teachingTab || '教学文件');
+      if (location.hash.slice(1) !== target.toString()) window.history.pushState(null, '', '#' + target);
+    }
     D.state.route = route;
     if (D.state.panel) D.closePanel();
     D.$('#page-title').textContent = titles[route];
@@ -31,7 +38,7 @@
     D.navigate('chat'); D.$('#prompt')?.focus();
   };
   D.guide = () => {
-    const modal = D.dialog('完整设计稿 · 页面目录', `<p class="muted">先看整体布局，再检查真实任务会经过的状态。所有记录与文件都是演示数据，关闭页面即丢弃。</p><div class="directory-grid">${routes.map(([label, route, tab], index) => `<button data-guide-route="${index}">${D.icon(route === 'students' ? 'user' : route === 'teaching' ? 'book' : route === 'settings' ? 'settings' : 'file')}${label}</button>`).join('')}</div><details><summary>建议审阅顺序与组件参考</summary><div class="detail-content"><p>1. 空白对话：输入位置、轻量入口、默认关闭的右栏。</p><p>2. 输入一句教学任务：公开过程展开 → 工具记录 → 过程收起 → 正文流式输出。</p><p>3. 顶部状态选择：失败、停止、待确认；查看不同图标与恢复入口。</p><p>4. 资料库、教学五个页签、学生六个页签和设置七类内容。</p><p>参考 HeroUI Sidebar、PromptInput、ChainOfThought、EmptyState 的结构与交互语义。本稿为原生 HTML 设计表达，不是官方 React 组件渲染，也不是功能已交付证明。</p></div></details><p class="muted" style="margin-top:20px;font-size:12px">项目 UI Skill 与分阶段 Goal 已随 V2 交付；正式开发按用户验收后的设计实施。</p>`);
+    const modal = D.dialog('完整设计稿 · 页面目录', `<p class="muted">先看整体布局，再检查真实任务会经过的状态。所有记录与文件都是演示数据；组卷草稿保存在此浏览器，其余演示刷新重置。</p><div class="directory-grid">${routes.map(([label, route, tab], index) => `<button data-guide-route="${index}">${D.icon(route === 'students' ? 'user' : route === 'teaching' ? 'book' : route === 'settings' ? 'settings' : 'file')}${label}</button>`).join('')}</div><details><summary>建议审阅顺序与组件参考</summary><div class="detail-content"><p>1. 空白对话：输入位置、轻量入口、默认关闭的右栏。</p><p>2. 输入一句教学任务：公开过程展开 → 工具记录 → 过程收起 → 正文流式输出。</p><p>3. 顶部状态选择：失败、停止、待确认；查看不同图标与恢复入口。</p><p>4. 资料库、教学五个页签、学生六个页签和设置七类内容。</p><p>参考 HeroUI Sidebar、PromptInput、ChainOfThought、EmptyState 的结构与交互语义。本稿为原生 HTML 设计表达，不是官方 React 组件渲染，也不是功能已交付证明。</p></div></details><p class="muted" style="margin-top:20px;font-size:12px">项目 UI Skill 与分阶段 Goal 已随 V2 交付；正式开发按用户验收后的设计实施。</p>`);
     D.all('[data-guide-route]', modal).forEach(button => button.onclick = () => {
       const [, route, tab] = routes[+button.dataset.guideRoute];
       if (route === 'teaching') D.state.teachingTab = tab;
@@ -96,8 +103,9 @@
   });
   function openEntry() {
     const entry = new URLSearchParams(location.hash.slice(1));
-    if (entry.get('tab')) D.state.teachingTab = entry.get('tab');
-    D.navigate(titles[entry.get('page')] ? entry.get('page') : 'chat');
+    if (entry.get('page') === 'teaching') D.state.teachingTab = entry.get('tab') || '教学文件';
+    readingEntry = true;
+    try { D.navigate(titles[entry.get('page')] ? entry.get('page') : 'chat'); } finally { readingEntry = false; }
     if (entry.get('lesson') === '1' && D.state.route === 'teaching') D.lesson.open();
   }
   window.addEventListener('hashchange', openEntry);

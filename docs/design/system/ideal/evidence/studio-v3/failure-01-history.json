@@ -1,0 +1,13 @@
+{
+  "layer": "offline HTML prototype, not production",
+  "checks": [],
+  "screenshots": [
+    "FAILURE.png"
+  ],
+  "errors": [
+    "Uncaught TypeError: history.pushState is not a function"
+  ],
+  "requests": [],
+  "success": false,
+  "failure": "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-teaching-tab=\"组卷\"]')\u001b[22m\n\n    at D:\\WorkProject\\EduProject-prototype\\docs\\design\\system\\ideal\\studio-check.mjs:26:106\n    at async check (D:\\WorkProject\\EduProject-prototype\\docs\\design\\system\\ideal\\studio-check.mjs:16:31)\n    at async file:///D:/WorkProject/EduProject-prototype/docs/design/system/ideal/studio-check.mjs:25:3"
+}
