@@ -4222,6 +4222,15 @@
         "exitCode": 0,
         "modelCalls": 0,
         "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-receipt-binding.json"
+      },
+      {
+        "command": "node scripts/electron-smoke.mjs (after npm run build)",
+        "exitCode": 0,
+        "passed": 207,
+        "total": 207,
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-smoke.log",
+        "scope": "Fixed own build before main integration; isolated existing desktop education flow, not full Pi/natural-exam quality acceptance",
+        "buildFingerprintsUnchangedAfterRun": true
       }
     ],
     "bookDraftRace": {
@@ -4232,7 +4241,7 @@
       "cause": "Teacher can edit after create row exists while async detail readback is still pending; late detail replaces draft.",
       "repair": "Disable existing information inputs/actions during existing loading/saving state; aria-busy. No layout, IPC or DB change.",
       "scope": "Post-create/read/save information form only; global manual navigation/unsaved draft behavior is not accepted.",
-      "verification": "pending actual final desktop regression"
+      "verification": "Original desktop create-immediate-edit-save assertion passes in 207-case fixed-build regression; original failure retained."
     },
     "performance": {
       "baseline": {
@@ -4271,6 +4280,31 @@
       "unresolvedPerOcrRuntimeIntegrity": {
         "files": 646,
         "bytes": 279039929
+      },
+      "actualProviderUsage": {
+        "baselineRun": "page-fragments-bHzthu",
+        "newRun": "page-fragments-rdER4X",
+        "callsEach": 12,
+        "baseline": {
+          "promptTokens": 98332,
+          "completionTokens": 32931,
+          "totalTokens": 131263
+        },
+        "new": {
+          "promptTokens": 114539,
+          "completionTokens": 34380,
+          "totalTokens": 148919
+        },
+        "promptDelta": 16207,
+        "totalDelta": 17656,
+        "qualityCountDelta": 0,
+        "scope": "Single observed full-set runs; prompts and generated responses/cache differ. No isolated speed or cost attribution; extra context did not improve total ready count."
+      },
+      "mergedDeltaFromOwnFixedBuild": {
+        "mainBytes": 20573,
+        "preloadBytes": 204,
+        "rendererBytes": 7261,
+        "scope": "Upstream backup/diagnostic/loop work; source of this knowledge slice unchanged. Bytes only, no latency improvement claim."
       }
     },
     "audit": {
@@ -4289,9 +4323,106 @@
     "rollback": "Stop new policy creation with OMNI_EDU_AI_CROP_REVIEW=0; preserve readers, evidence, originals and teacher changes. Do not replay old paid units or delete data. Book guard may be reverted independently.",
     "unresolved": "完整Goal仍active。下一优先解决题面/图义与原图的完整对应、双遍答案稳定性和跨页拼接，再贯通已知答案/联网补答、Pi整卷与40GB召回/P95、按需下载和最终安装。原OCR间歇parse_failed及每次646文件279039929B认证成本未关闭。D日常工作树、运行窗口和安装未改。回退用OMNI_EDU_AI_CROP_REVIEW=0停止新策略创建，保留新读适配及原件/回执/资产，不重放旧付费调用。",
     "integration": {
-      "status": "pending",
-      "dailyRuntimeModified": false,
-      "installerModified": false
+      "status": "all_scoped_integrated_checks_passed_ready_for_normal_push",
+      "mergeCommit": "e7ad298",
+      "originMainIntegrated": "0df26415445b7523a7664f1ed736ce455d6580e2",
+      "conflictFiles": 13,
+      "resolution": "Both additive Markdown sections preserved; no production code conflict",
+      "manifest": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-merge-resolution.json",
+      "dailyRuntimeModifiedByThisRound": false,
+      "installerModified": false,
+      "fingerprints": [
+        {
+          "path": "apps/desktop/out/main/index.js",
+          "bytes": 3583387,
+          "sha256": "6668e45fe3c2fd9cce16b29dedf0b07e5725e9df66ea944c8b2d197388d627aa"
+        },
+        {
+          "path": "apps/desktop/out/preload/index.cjs",
+          "bytes": 36452,
+          "sha256": "e827946ece651cab38f6a1d4a304c44d1c4d86d1fb9e05792b3813a9d93c7836"
+        },
+        {
+          "path": "apps/desktop/out/renderer/assets/index-Dvmui_fZ.js",
+          "bytes": 7396750,
+          "sha256": "15ccf7f59b19de50cdacc2f6586856e7f3ad63b3b7b1806f9f269282b24ab54a"
+        }
+      ],
+      "checks": [
+        {
+          "command": "npm.cmd run build",
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-build.log",
+          "exitCode": 0,
+          "includes": "tsc --noEmit"
+        },
+        {
+          "command": "node --experimental-transform-types scripts/xiaozhi-agent/external-output-backup-smoke.mjs",
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-backup.log",
+          "exitCode": 0,
+          "passed": 7,
+          "scope": "Real isolated filesystem/SQLite domain regression of upstream backup/restore changes; not full Pi delivery acceptance"
+        },
+        {
+          "command": "npm.cmd run test:renderer-components",
+          "exitCode": 0,
+          "passed": 240,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-components.log"
+        },
+        {
+          "command": "node --experimental-transform-types scripts/education/kb-ai-page-boundaries.mjs",
+          "exitCode": 0,
+          "passed": 88,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-boundaries.log",
+          "scope": "Durable executor and contracts with controlled model/image; not natural-provider quality"
+        },
+        {
+          "command": "node scripts/education/kb-local-recheck-real.mjs <owned-root> <old-original-run> --readback",
+          "exitCode": 0,
+          "passed": 3,
+          "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-readback.log",
+          "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-HP1k6N\\report.json",
+          "modelCalls": 0,
+          "cloudAttempts": 0,
+          "scope": "Already-completed old local OCR receipts, teacher UI and cold restart; no new OCR/model. Natural whole-set provider run and 207 suite remain bound to earlier own build."
+        }
+      ],
+      "fixedBuildUnchangedAfterTests": true,
+      "knowledgeSourceUnchangedByIntegration": true,
+      "preservedSourceFiles": [
+        {
+          "path": "apps/desktop/src/main/assets/material-ai-crop-review.ts",
+          "sha256": "1d1f350de3c090c8b08caa9d082980bc5de6fea6b7b38ad44c7296441da7014a"
+        },
+        {
+          "path": "apps/desktop/src/main/assets/material-ai-page-instruction.ts",
+          "sha256": "42b5075d4c6feb199ff63c7d62c80773a16ce0c6ededf58ef258548b84066517"
+        },
+        {
+          "path": "apps/desktop/src/main/assets/material-ai-page-source.ts",
+          "sha256": "bd08136cf0a451acd8b5efc7afa653080b8bd3e707bb347bd14837d43105f4bf"
+        },
+        {
+          "path": "apps/desktop/src/main/assets/material-ai-provider.ts",
+          "sha256": "14be6ffb6d44596333ffdd6e72d24bc3214484506839089a63fcf7a61d1413a8"
+        },
+        {
+          "path": "apps/desktop/src/main/assets/material-ai-repository.ts",
+          "sha256": "1d8d661bd7ebebe3d7658eb5109a41024b7015cc6f4186471b4e90c1d022267f"
+        },
+        {
+          "path": "apps/desktop/src/shared/material-ai-page.ts",
+          "sha256": "d0ddf4611506d15bd9d4590b11949f4b5b7d729a64f0b843c563344ed53debeb"
+        },
+        {
+          "path": "apps/desktop/src/shared/material-ai-page-fragments.ts",
+          "sha256": "88d31acc50583b739c6859bb36083a178d3dc38c9a62a04155fd44d2b2b20639"
+        },
+        {
+          "path": "apps/desktop/src/renderer/components/TeachingBookWorkspace.tsx",
+          "sha256": "dfdcc7bd374d55485b54acd32ac84ec7c5a30fc1fabf72dabe2afc801387d858"
+        }
+      ],
+      "preservedStash": "db8c35b6e2a7b291d7cf83bb6733ce23f34fb5cb"
     },
     "evidenceManifest": [
       {
@@ -4415,11 +4546,6 @@
         "sha256": "62c28f161eb1c57080a9b0de6fa4f02832f8b20bb812d62777c2a3b3d860862a"
       },
       {
-        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\request-receipt-binding.json",
-        "bytes": 1011,
-        "sha256": "b11a01a9ea79c848f9de638fd2ae49d585acc02a429a2382601b0a50a1e4fa3b"
-      },
-      {
         "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-1.json",
         "bytes": 16302,
         "sha256": "dccf8ca85bb787927bec0c822c6ada63760e55f643d6f2eb63367c4f1b5ec0b0"
@@ -4478,6 +4604,111 @@
         "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\response-9.json",
         "bytes": 12157,
         "sha256": "83e71894056fd8078f05912a0db41b187c034c44d30e8d756390c5f0ec31cf63"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-smoke.log",
+        "bytes": 13984,
+        "sha256": "0a5987249265d6fcc46e534b5baaa735e48b9484d58116668022e53902590a7b"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-final-fingerprints.json",
+        "bytes": 514,
+        "sha256": "5c703a99c76b9c4461d1d9029aa296e8477cf7ca96aa21e91343fdf2763de339"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-book-1366x768.png",
+        "bytes": 59966,
+        "sha256": "b6b0333a159217e8aeb3e46ccb7e8a013b235c7c4db880d9779bb722dcba1b8f"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-book-1920x1080.png",
+        "bytes": 87667,
+        "sha256": "545e42240a180da1f2e4dc86f2b8b34ba41373adda83154e5aa838a8a89a1fbd"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-merge-resolution.json",
+        "bytes": 1910,
+        "sha256": "0cd76a74dd1975259cecac514211abde14f6f110d490b39526ef03facddcdc31"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-build.log",
+        "bytes": 40560,
+        "sha256": "e6715bb14e3ac7e45685b8b76853a33c97277b92f5e5d84e41f329783beea4c1"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-components.log",
+        "bytes": 496,
+        "sha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-boundaries.log",
+        "bytes": 10769,
+        "sha256": "1b52f271639a452c629ddfaafb7a805e336784a3600e506944edcb6e341b3eef"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-backup.log",
+        "bytes": 1176,
+        "sha256": "c9a7af38d293d5744a3dbc8dfcb60650da564da9e2405e108185a931c403e1ea"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-readback.log",
+        "bytes": 638,
+        "sha256": "a87759f5783610ebbe6510c88ec53058455b60fc2b08d007893aca4f8eb24852"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-integrated-fingerprints.json",
+        "bytes": 514,
+        "sha256": "31c0469d0ec6934b7a49dc59935d7d8a99851ace252fb6d8bfbb488b53a4fb80"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\local-recheck-HP1k6N\\report.json",
+        "bytes": 10746,
+        "sha256": "9cb3365a3295041a12cac0bdaa070a56d055ed55ab7e07918c297ef0cda3d70f"
+      },
+      {
+        "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-real-material-aWObCn\\page-fragments-rdER4X\\usage-summary.json",
+        "bytes": 225,
+        "sha256": "365512d56dd6a1bed51e75baf3caefbe4189503617b1ea6f7acdd4a88cacd61a"
+      }
+    ],
+    "sourceCommit": "6713d19",
+    "criticalReview": {
+      "verdict": "Core quality requirement is not met; keep full goal active and all held results visible.",
+      "actualExample": {
+        "questionNumber": "4",
+        "firstAnswerValue": "0.014",
+        "finalAnswerValue": "0.0014",
+        "kind": "Tenfold numeric disagreement, not wording noise"
+      },
+      "nextRepairPriority": [
+        "Complete source text/figure correspondence and cross-page parent assembly",
+        "Separate source restoration from unsupported/generated answer solving while preserving immutable receipts and independent correctness checks",
+        "Connect existing known-answer and web-solving flows to the same question version",
+        "Then evaluate held-out recall, 40GB durability/P95 and managed installer delivery"
+      ],
+      "disallowedShortcuts": [
+        "Do not clear ai_mismatch or uncertain_ocr to inflate ready count",
+        "Do not replay paid full books to substitute for generic source/solver repairs",
+        "Do not create a second business database or Agent runtime"
+      ]
+    },
+    "failures": [
+      {
+        "stage": "Initial boundary edit/entry",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-boundaries.log",
+        "exitCode": 1,
+        "resolution": "Correct working-directory path and remove new optional field from legacy v2 fixture; strict production schema retained; final 88 pass"
+      },
+      {
+        "stage": "Initial desktop smoke",
+        "log": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\kb-crop-review-smoke.log",
+        "exitCode": 1,
+        "resolution": "Actual teacher description overwrite fixed by existing form loading/saving state; original assertion retained; final own-build 207 pass"
+      },
+      {
+        "stage": "Merge preservation script",
+        "exitCode": 1,
+        "resolution": "First conservative script stopped before modifying any file because upstream began with plain dated records rather than a heading; inspected and preserved both additive sections in all 13 Markdown files"
       }
     ]
   }
