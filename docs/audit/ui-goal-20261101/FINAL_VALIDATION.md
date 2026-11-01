@@ -2,6 +2,8 @@
 
 ## 最新续接02（先读）
 
+1b19e88已正常推送main与任务分支，D盘源码ff、自身build/TSC exit0及新PID54720可见窗口已确认，三份未提交文档hash保持。[日常启动记录](CANONICAL_RUNTIME.md)。最新整合a17构建9526、几何schema10项通过；下列M4及补图保留7f/31eb范围，不因后续几何整合改写旧证据。U4-A真实持久手选正按[合同](U4_A_CONTRACT.md)实施，不冒称已进入日常版。
+
 7f8220d已整合主线8c6b705；本片仅新增当前请求范围提示与修复QA重开时序，未改组件设计或Pi事件语义。[完整续接记录](CONTINUATION_02.md) · [M4评分](QUALITY_RESULT.md)。31eb构建/TSC exit0、renderer240/240、KB57受控边界及本片scope4/physics8/public-response5/manual-reopen7均通过；依赖审计仍45项（8高/29中/8低）。
 
 唯一预声明真实MIS `run-J9YdNN` 5/5、exit0，明确交接seq120在终态前折叠；实际Enter重开前后running=true，操作后seq337–595共259条同run final增量，完成仍展开；冷启默认收起、正文/用时相同、0重放、consoleErrors为空。这一缺证已关闭，旧M3的false/0不改写。同构建完成态只读补图 `run-5hAo5N` 7项、exit0，双尺寸标题及首正文同时可见；无新模型调用，不冒称新的流式测试。[收起1366](evidence/continuation-02/completed-collapsed-1366.png) · [展开1920](evidence/continuation-02/completed-open-1920.png)。新解释243字符，仍超240上限3字符，独立评分90/100；变式条件/情境衔接、教师/留出/parity、U4-V3生产增量仍未关闭。不能以工程检查宣布全部内容质量通过。后续交付及启动记录见续接页；下文保留首轮构建和历史结果的原范围。
