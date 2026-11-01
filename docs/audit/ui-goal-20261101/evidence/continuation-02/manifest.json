@@ -1,0 +1,161 @@
+{
+  "scope": "Completed-only cloned readback of M4, not a new streaming run",
+  "sourceRun": "continuation-02-mis/run-J9YdNN",
+  "readbackRun": "chat-completed-readback/run-5hAo5N",
+  "sourceReportSha256": "04fd18ccea2f933c86ace34c60e7cc63701aa5c3ee4b1f7380131b173be60ebd",
+  "readbackReportSha256": "7affe9f7a283e709dd086d8a5e07c8a50663d96d2400db9e9739f2ea875de023",
+  "buildSha256": "31ebaae252a38f209d0ecf0dad9edb5a249bc6a133f5d9176d56392143414ffe",
+  "sourceFixtureUnchanged": true,
+  "nativeHistoryUnchanged": true,
+  "checks": [
+    {
+      "name": "Exact data/profile clone; original report and fixture untouched",
+      "pass": true
+    },
+    {
+      "name": "Exact completed run/body/time restored; no original streaming proof replayed",
+      "pass": true
+    },
+    {
+      "name": "1366: completed collapsed header and first body visible; same body/time/run",
+      "pass": true
+    },
+    {
+      "name": "1366: completed open header and first body visible; same body/time/run",
+      "pass": true
+    },
+    {
+      "name": "1920: completed collapsed header and first body visible; same body/time/run",
+      "pass": true
+    },
+    {
+      "name": "1920: completed open header and first body visible; same body/time/run",
+      "pass": true
+    },
+    {
+      "name": "Zero new runs/model requests/events, unchanged native history/receipt rows, clean console",
+      "pass": true
+    }
+  ],
+  "consoleErrors": [],
+  "networkAttempts": [],
+  "networkObservation": "Main fetch and renderer route interception begin after firstWindow; startup before that boundary is not observed. Unchanged durable ledgers independently prove zero added model runs/requests.",
+  "files": [
+    {
+      "file": "completed-collapsed-1366.png",
+      "sha256": "d25fb7e708ee78fc9dc30d8e8e3d2f7227a355dbedd39310e62258c1689f2221",
+      "viewport": [
+        1366,
+        768
+      ],
+      "expanded": false,
+      "bounds": {
+        "trigger": {
+          "x": 413.3333435058594,
+          "y": 100.16667175292969,
+          "width": 118.5625,
+          "height": 32,
+          "right": 531.8958435058594,
+          "bottom": 132.1666717529297
+        },
+        "firstBody": {
+          "x": 413.3333435058594,
+          "y": 164.1666717529297,
+          "width": 724,
+          "height": 45.5,
+          "right": 1137.3333435058594,
+          "bottom": 209.6666717529297
+        }
+      },
+      "timeText": "17 秒",
+      "toolsInspected": 0
+    },
+    {
+      "file": "completed-open-1366.png",
+      "sha256": "dd825af6ff17214837b44e064c5b8b38ef8f8a11e214f732235f949cd32baea4",
+      "viewport": [
+        1366,
+        768
+      ],
+      "expanded": true,
+      "bounds": {
+        "trigger": {
+          "x": 413.3333435058594,
+          "y": 100.16667175292969,
+          "width": 118.5625,
+          "height": 32,
+          "right": 531.8958435058594,
+          "bottom": 132.1666717529297
+        },
+        "firstBody": {
+          "x": 413.3333435058594,
+          "y": 386.3333435058594,
+          "width": 724,
+          "height": 45.5,
+          "right": 1137.3333435058594,
+          "bottom": 431.8333435058594
+        }
+      },
+      "timeText": "17 秒",
+      "toolsInspected": 2
+    },
+    {
+      "file": "completed-collapsed-1920.png",
+      "sha256": "45b935a0eebd85eb4ca137e0d3e1ce44c4c908cab7eda73d38486325935e88fd",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "expanded": false,
+      "bounds": {
+        "trigger": {
+          "x": 690.3333740234375,
+          "y": 100.16667175292969,
+          "width": 118.5625,
+          "height": 32,
+          "right": 808.8958740234375,
+          "bottom": 132.1666717529297
+        },
+        "firstBody": {
+          "x": 690.3333740234375,
+          "y": 164.1666717529297,
+          "width": 724,
+          "height": 45.5,
+          "right": 1414.3333740234375,
+          "bottom": 209.6666717529297
+        }
+      },
+      "timeText": "17 秒",
+      "toolsInspected": 0
+    },
+    {
+      "file": "completed-open-1920.png",
+      "sha256": "54fc5a9680c4c02851dc3885efa7331a5642b6747491047420b1c0a527813fc9",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "expanded": true,
+      "bounds": {
+        "trigger": {
+          "x": 690.3333740234375,
+          "y": 100.16667175292969,
+          "width": 118.5625,
+          "height": 32,
+          "right": 808.8958740234375,
+          "bottom": 132.1666717529297
+        },
+        "firstBody": {
+          "x": 690.3333740234375,
+          "y": 386.3333435058594,
+          "width": 724,
+          "height": 45.5,
+          "right": 1414.3333740234375,
+          "bottom": 431.8333435058594
+        }
+      },
+      "timeText": "17 秒",
+      "toolsInspected": 2
+    }
+  ]
+}
