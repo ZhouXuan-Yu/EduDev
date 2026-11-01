@@ -348,7 +348,9 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
 
   // Independent additive capability: original creation/control/memory fingerprints above stay byte-identical.
   const officeEntries = manager.getEntries().filter(entry => entry.type === 'custom' && entry.customType.startsWith('xiaozhi.education.office-text.'));
-  const officeIdentity = { version: 1, tools: ['office_create_text', 'office_edit_text'], workspace };
+  // A relocated private conversation retains its native capability identity.
+  // Tool execution still uses the current workspace and main-owned callbacks.
+  const officeIdentity = { version: 1, tools: ['office_create_text', 'office_edit_text'], workspace: historicalWorkspace };
   if (officeEntries.some(entry => entry.type !== 'custom' || entry.customType !== 'xiaozhi.education.office-text.v1'
     || JSON.stringify(entry.data) !== JSON.stringify(officeIdentity)) || officeEntries.length && !options.officeTextTools) throw new Error('configuration');
   if (options.officeTextTools) {
@@ -357,7 +359,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
       manager.appendCustomEntry('xiaozhi.education.office-text.v1', officeIdentity);
     names.push(...officeIdentity.tools);
     // Additive identity: historic text capability remains byte-identical.
-    const scienceIdentity={version:1,tools:['office_create_science_figure'],workspace};
+    const scienceIdentity={version:1,tools:['office_create_science_figure'],workspace:historicalWorkspace};
     const scienceEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.science-figure.'));
     if(scienceEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.science-figure.v1'||JSON.stringify(entry.data)!==JSON.stringify(scienceIdentity)))throw Error('configuration');
     if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.science-figure.v1'))manager.appendCustomEntry('xiaozhi.education.science-figure.v1',scienceIdentity);
@@ -365,7 +367,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     prompt += '\n已授权目录另支持 office_create_science_figure，以Anatomy真实几何部件生成.svg科普图或HTML结构演示并等待教师预览确认。教师用“课堂演示/课件/备课讲解”等日常语言描述一个可观察的物理结构或原理时，直接按科普绘图流程提出教学版HTML，不要让教师先选择技术技能、填写坐标、帧率或编码；只补问会改变教学内容的缺失信息。teaching必须来自教师给出的年级/对象、目标、观察与讲解要求，确认后才可从文件面板导出课堂PPT。任务计划中，office_create_science_figure生成.html/.svg必须登记为saved_text；即使产物后续导出PPT，也不能登记为saved_office。saved_office只对应office_create_document生成的DOCX/PDF/XLSX/PPTX。已授权目录支持 office_create_text 和 office_edit_text 创建或修改 .md/.txt/.html/.svg 教学文件。科普图几何失败时只修正工具参数，不改用普通文本；平板重复肋片可直接以底板box(0,0,0,120,60,4,lo)和一片repeat肋片box(0,5,4,1.5,50,24,lit,count40,dx3)构成41实体，teaching步骤用“底板”“散热肋片”。先核实来源，再用实际工具提出修改并等待教师审阅；只有已保存回执才表示文件交付。教师已明确指定目标文件和保存要求时，可用一句公开说明概括将写入的内容，随后直接调用写入工具生成含全文/差异的审阅卡；审阅卡本身承担确认步骤，不要再要求教师额外发送“确认”后才生成审阅。拒绝、停止和版本冲突后，同一轮不得自动重试或绕过写入。教师在后续消息重新发起修改（即使目标内容相同）是新的任务，应重新实读当前版本并提出新的审阅，等待新的确认；旧拒绝不是永久禁止，旧批准不复用。撤销由教师在修改卡明确操作，记忆和技能不是写入权限。';
     prompt += '\n教师明确指定文件及原文/新文时，以本次工具实读内容为准：原文匹配就直接提出修改审阅，即使它是文件全文，也属于明确的替换请求。不要因旧回执、撤销或手工修改记录重复询问已有明确要求；新的教师任务可以提出新的审阅，旧确认不能复用。只有实际原文不匹配、位置不唯一或目标缺失时才澄清；不得一边承认实读文本匹配，一边虚构它不存在。';
   }
-  const documentIdentity={version:1,tools:['office_read_document'],workspace,parser:'hana-anydoc-0.1.2'};
+  const documentIdentity={version:1,tools:['office_read_document'],workspace:historicalWorkspace,parser:'hana-anydoc-0.1.2'};
   const documentEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.office-document.'));
   if(documentEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.office-document.v1'||JSON.stringify(entry.data)!==JSON.stringify(documentIdentity))
     ||documentEntries.length&&!options.officeDocumentTools)throw new Error('configuration');
@@ -394,7 +396,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     if(!manager.getBranch().some(entry=>entry.type==='custom'&&entry.customType==='xiaozhi.education.attachment-ocr.v1'))manager.appendCustomEntry('xiaozhi.education.attachment-ocr.v1',ocrIdentity);
     prompt+='\n学生或私密图片读取教师明确确认后的本地OCR校正文字；原图未上传，不能把校正文字实读称为模型看图。未确认OCR文字时，请教师从消息附件预览中本地识别、校正并确认，再继续；不把未经确认原文写入公开过程或将学生图请求云视觉。明确公开且不含学生信息的图片，使用下文独立的公开图片工具及教师用途确认，不能沿OCR批准自动上云。';
   }
-  const artifactIdentity={version:1,tools:['office_create_document'],workspace,generator:'office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0'};
+  const artifactIdentity={version:1,tools:['office_create_document'],workspace:historicalWorkspace,generator:'office1:docx9.8.1/exceljs4.4.0/pptxgenjs4.0.1/hana0.449.0'};
   const imageIdentity={version:1,resolver:'submitted-public-confirmed-run-v1',history:'local-unless-confirmed',provider:'deepseek'};
   const imageEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.public-image.'));
   if(imageEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.public-image.v1'||JSON.stringify(entry.data)!==JSON.stringify(imageIdentity))||imageEntries.length&&!options.publicImages)throw new Error('configuration');
@@ -412,7 +414,7 @@ async function assemblePiXiaozhiSession(options: PiXiaozhiOptions,onLease:(lease
     names.push('office_create_document');
     prompt+='\n授权目录可用office_create_document提出DOCX/PDF/XLSX/PPTX真实拟产物。按教师明确要求选择格式、新的相对文件名、标题/章节/段落/有限表格；不要把Office文件写成UTF8文本或凭空宣称已导出。sources只引用本次实读version，无实际源用空数组。工具会等待教师审阅修改或拒绝，只有saved回执与实际artifactId才表示交付；teacher本地修改无需模型再确认，最终正文未回传模型，完成后仅报告真实路径、格式与保存状态，不复述未重新实读的标题、段落或表格值。拒绝、停止或目标冲突后本轮不自动重放写入；教师后续重新发起任务时须重新核实来源/目标并提出新的拟内容与确认，旧批准不能复用。uncertain必须先只读核验效果，不得自动重写。更新已有binary用当前本会话artifactId作为parentArtifactId及新文件名，保留原文件，来源/记忆/技能不是新权限。';
   }
-  const deliveryIdentity={version:1,tools:['office_deliver_files'],workspace};
+  const deliveryIdentity={version:1,tools:['office_deliver_files'],workspace:historicalWorkspace};
   const deliveryEntries=manager.getEntries().filter(entry=>entry.type==='custom'&&entry.customType.startsWith('xiaozhi.education.delivery.'));
   if(deliveryEntries.some(entry=>entry.type!=='custom'||entry.customType!=='xiaozhi.education.delivery.v1'||JSON.stringify(entry.data)!==JSON.stringify(deliveryIdentity)))throw Error('configuration');
   if(options.deliveryTools){
