@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "checks": [
+    "One review covers both files; teacher PPT edit invalidates old approval and saves exact revised notes",
+    "Aggregate independent verification binds every disk file; corruption invalidates the whole bundle",
+    "Rejecting the whole bundle creates neither file",
+    "PPT failure preserves HTML; new-run resume carries HTML without rewriting and reconfirms only the unfinished file"
+  ],
+  "boundary": "Synthetic fixtures, actual original file/Office services, SQLite, disk, independent aggregate readback. No paid model, natural quality or full AT acceptance.",
+  "error": "Error: unavailable\n    at transaction (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/education/classroom-plan-state.ts:48:79)\n    at Object.recover (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/education/classroom-plan-state.ts:144:26)\n    at Object.recover (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/src/main/xiaozhi-agent/session-state.ts:73:44)\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-bundle-smoke.mjs:72:84\n    at async check (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-bundle-smoke.mjs:30:30)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-bundle-smoke.mjs:70:2"
+}

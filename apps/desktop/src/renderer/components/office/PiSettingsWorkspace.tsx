@@ -19,10 +19,13 @@ import { SettingsSection } from './hana-settings/SettingsSection';
 import { SettingsRow } from './hana-settings/SettingsRow';
 import { searchSettings, type SettingsSearchEntry } from './hana-settings/settings-search';
 import navStyles from './hana-settings/workspace-nav.module.css';
+import {SettingsNavigation} from './SettingsNavigation';
+import layoutStyles from '../../ui-system/u5-settings.module.css';
 import {teacherWorkspaceLabel} from './workspace-label';
 import { readWorkspacePreferences, writeWorkspacePreferences, type WorkspacePreferences } from './workspace-preferences';
 import './pi-settings-workspace.css';
 import {EduShell} from '../../ui-system/EduShell';
+import { useWorkbenchPreferences } from '../../ui-system/WorkbenchState';
 
 const tabs = [
   { id: 'models', label: '模型与连接', icon: Plug },
@@ -32,6 +35,7 @@ const tabs = [
   { id: 'interface', label: '界面偏好', icon: Monitor },
   { id: 'archives', label: '归档', icon: Archive },
   { id: 'backup', label: '备份', icon: HardDrive },
+  { id: 'diagnostics', label: '策略与诊断', icon: RefreshCw },
 ] as const;
 type Tab = typeof tabs[number]['id'];
 // Capability-only metadata. Never index credentials, history, paths or document contents.
@@ -44,7 +48,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'pi-mcp-name', tabId: 'tools', title: '外部工具连接', path: ['外部工具（高级）', 'MCP'], aliases: ['mcp', 'stdio', '外部服务', '工具授权'] },
   { id: 'pi-settings-workspace-choose', tabId: 'permissions', title: '本会话工作目录', path: ['工作目录与权限', '工作目录'], aliases: ['workspace', 'folder', '文件', '写入', '授权', '确认'] },
   { id: 'pi-memory-scope', tabId: 'permissions', title: '本会话记忆', path: ['工作目录与权限', '记忆'], aliases: ['memory', '脱敏', '摘要', '撤权', '隐私'] },
-  { id: 'pi-preference-sidebar', tabId: 'interface', title: '会话侧栏', path: ['界面偏好', '会话侧栏'], aliases: ['sidebar', '侧边栏'] },
+  { id: 'pi-preference-sidebar', tabId: 'interface', title: '展开左侧导航', path: ['界面偏好', '展开左侧导航'], aliases: ['sidebar', '侧边栏', '会话侧栏'] },
   { id: 'pi-preference-aside', tabId: 'interface', title: '任务详情', path: ['界面偏好', '任务详情'], aliases: ['aside', '任务面板'] },
   { id: 'pi-preference-files', tabId: 'interface', title: '本地文件面板', path: ['界面偏好', '本地文件面板'], aliases: ['files', 'file panel', '预览'] },
   { id: 'pi-settings-archives', tabId: 'archives', title: '已归档对话', path: ['归档', '对话记录'], aliases: ['archived chats', 'history', '历史'] },
@@ -58,6 +62,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   const [snapshot, setSnapshot] = useState<XiaozhiWorkspaceSnapshot>(), [dataRoot, setDataRoot] = useState('');
   const [locked, setLocked] = useState(true), [loading, setLoading] = useState(true), [notice, setNotice] = useState('');
   const [preferences, setPreferences] = useState(readWorkspacePreferences), [preferenceNotice, setPreferenceNotice] = useState('');
+  const navigationPreferences = useWorkbenchPreferences();
   const [actionBusy, setActionBusy] = useState(false), [childBusy, setChildBusy] = useState(false);
   const [archive, setArchive] = useState<{ title: string; value: XiaozhiWorkspaceSnapshot }>(), [archiveLoading, setArchiveLoading] = useState(false), [archiveNotice, setArchiveNotice] = useState('');
   const live = useRef(true), request = useRef(0), archiveRequest = useRef(0), action = useRef(false), target = useRef('');
@@ -98,7 +103,8 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
   }
   function updatePreference(field: keyof WorkspacePreferences, value: boolean) {
     const next = { ...preferences, [field]: value };
-    if (writeWorkspacePreferences(next)) { setPreferences(next); setPreferenceNotice('已保存，返回小智后生效。'); }
+    const saved = field === 'sidebar' ? navigationPreferences.update({ collapsed: !value }) : writeWorkspacePreferences(next);
+    if (saved) { setPreferences(next); setPreferenceNotice('已保存，返回小智后生效。'); }
     else setPreferenceNotice('未能保存界面偏好。请确认本机存储可用后重试。');
   }
   async function mutatePermission(work: () => Promise<void>) {
@@ -145,9 +151,9 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             <span className={navStyles['settings-search-result-title']}>{result.title}</span><span className={navStyles['settings-search-result-path']}>{result.path}</span>
           </Button>)}
           {!results.length && <p className={navStyles['settings-search-empty']} data-testid="pi-settings-search-empty">没有找到设置，试试“技能”“目录”或“备份”。</p>}
-        </div> : tabs.map(item => <button key={item.id} className="edu-settings-nav-item" aria-current={tab === item.id ? 'page' : undefined} data-testid={`pi-settings-tab-${item.id}`} disabled={busy} onClick={() => open(item.id)}><item.icon size={18}/>{item.label}</button>)}
+        </div> : <SettingsNavigation tabs={tabs} active={tab} disabled={busy} onSelect={open}/>}
       </nav>
-      <main className="edu-settings-main" aria-label={title} data-testid="pi-settings-main">
+      <main className={`edu-settings-main ${layoutStyles.main}`} aria-label={title} data-testid="pi-settings-main">
         {notice && <div className="pi-settings-state" role="alert" data-testid="pi-settings-state"><p>{notice}</p><Button size="sm" variant="ghost" isDisabled={busy} onPress={() => void reload()}>刷新</Button></div>}
         {tab === 'models' && <PiModelSettings embedded onBack={onBack} onBusyChange={setChildBusy}/>}
         {tab === 'skills' && <PiSkillSettings embedded running={locked} onClose={onBack} onChanged={reload} onBusyChange={setChildBusy}/>}
@@ -160,10 +166,15 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
             </SettingsSection>
             <SettingsSection title="联网与资料保护" surface="plain"><SettingsStack gap="sm"><p>小智可以按任务检索网页和读取网页。每次请求显示真实工具过程与来源。</p><p>原始资料与学生图片保留本机。模型只使用完成任务所需的脱敏文本；技能与界面偏好不会扩大文件权限。</p></SettingsStack></SettingsSection>
             {snapshot.memoryScope && <PiMemoryScope key={sessionId} sessionId={sessionId} scope={snapshot.memoryScope} running={locked || busy} onSave={saveMemory} onRefresh={reload}/>}
-            <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/><PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/></>}
+            </>}
         </SettingsStack></SettingsPage>}
+        {tab === 'diagnostics' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>策略与诊断</h1><p>按需核对执行策略与候选记录，不改变会话权限。</p></div>
+          {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>
+            <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
+            <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
+          </>}</SettingsStack></SettingsPage>}
         {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>调整小智工作区的面板显示。</p></div><SettingsSection title="工作区面板">
-          {([{ field: 'sidebar', label: '会话侧栏', hint: '显示项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '打开时显示已授权目录中的文件，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}
+          {([{ field: 'sidebar', label: '展开左侧导航', hint: '关闭后保留图标导航，收起项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '有对话内容时恢复文件面板；空白对话按需手动打开，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={item.field === 'sidebar' ? !navigationPreferences.preferences.collapsed : preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}
         </SettingsSection>{preferenceNotice && <p role="status" data-testid="pi-preference-notice">{preferenceNotice}</p>}</SettingsStack></SettingsPage>}
         {tab === 'archives' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>查看保存在本机的归档记录。</p></div><div className="pi-settings-actions"><Button size="sm" variant="ghost" onPress={() => { setArchive(undefined); void reload(); }}><RefreshCw size={15}/>刷新归档</Button></div>
           <SettingsSection title="已归档对话"><div data-testid="pi-settings-archives">

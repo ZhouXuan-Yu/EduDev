@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import { useEffect, useState } from 'react';
 import { Button, Tabs } from '@heroui/react';
 import { FilePenLine } from 'lucide-react';
@@ -8,6 +9,7 @@ import type { XiaozhiChangeDecision, XiaozhiChangeSummary, XiaozhiChangeReview, 
 import './pi-text-changes.css';
 import {ScienceDemoFrame} from './ScienceDemoFrame';
 import {PiOfficeCurrent,PiOfficeVersions} from './PiOfficeVersions';
+import {PiArtifactSources} from './PiArtifactSources';
 
 const labels: Record<XiaozhiChangeState, string> = { pending: '需要你的确认', approved: '已批准，等待保存', executing: '正在保存',
   applied: '已保存并核验', rejected: '已拒绝，未写入', interrupted: '确认已失效，未继续写入', uncertain: '执行中断，需要核验',
@@ -61,13 +63,13 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
       {reading ? <p role="status">正在读取本地修改…</p> : review && <div className="pi-text-review" data-testid="pi-text-review">
         {change.path.toLowerCase().endsWith('.svg')&&<img data-testid="pi-science-preview" alt="科普图草稿：请核对科学含义" src={'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(review.after)} style={{display:'block',width:'100%',maxHeight:520,objectFit:'contain',background:'#fff'}}/>}
         {change.path.toLowerCase().endsWith('.html')&&<ScienceDemoFrame html={review.after}/>}
-        {science ? <details data-testid="pi-science-technical">
-          <summary>技术内容（通常无需查看）</summary>
+        {science ? <DisclosureCard data-testid="pi-science-technical" title={<>技术内容（通常无需查看）</>}>
+
           <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
             <Tabs.ListContainer><Tabs.List aria-label="文件修改审阅">{tabs.map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
           </Tabs>
           <CodeBlock><CodeBlock.Code code={text} language={tab==='changes'?'diff':change.path.endsWith('.md')?'markdown':'text'} data-testid="pi-text-diff"/></CodeBlock>
-        </details> : <>
+        </DisclosureCard> : <>
           <Tabs selectedKey={tab} onSelectionChange={key=>setTab(String(key))}>
             <Tabs.ListContainer><Tabs.List aria-label="文件修改审阅">{tabs.map(([key,label])=><Tabs.Tab key={key} id={key}>{label}<Tabs.Indicator/></Tabs.Tab>)}</Tabs.List></Tabs.ListContainer>
           </Tabs>
@@ -82,7 +84,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
         <ChatTool.Approve isDisabled={draft.busy||reading||!review} onPress={()=>void decide('approve')} data-testid="pi-text-approve">确认保存</ChatTool.Approve>
         <ChatTool.Reject isDisabled={draft.busy} onPress={()=>void decide('reject')} data-testid="pi-text-reject">拒绝</ChatTool.Reject>
       </ChatTool.ApprovalActions></ChatTool.Approval>}
-      <PiDeliveryCheck key={change.id+':'+change.revision} sessionId={sessionId} path={change.path} draftId={change.id}/>
+      <PiDeliveryCheck key={change.id+':'+change.revision} sessionId={sessionId} path={change.path} {...(['applied','reverted'].includes(change.state)?{artifactId:change.id}:{draftId:change.id})}/>
     </ChatTool.Content>
     <div className="pi-text-change-actions">
       {!pending&&<Button size="sm" variant="ghost" onPress={()=>setExpanded(value=>!value)} data-testid="pi-text-review-toggle">{expanded?'收起修改':'查看修改'}</Button>}
@@ -91,6 +93,7 @@ export function PiTextChangeCard({ change, sessionId, running, onRefresh, onOpen
       {draft.busy&&<span role="status">正在提交…</span>}
     </div>
     {['applied','reverted'].includes(change.state)&&change.path.toLowerCase().endsWith('.html')&&<PiOfficeVersions sessionId={sessionId} artifactId={change.id} running={running} onOpen={onOpen} onRefresh={onRefresh}/>}
+    {['applied','reverted'].includes(change.state)&&change.path.toLowerCase().endsWith('.html')&&<PiArtifactSources sessionId={sessionId} artifactId={change.id}/>}
     {draft.error&&<p role="alert" data-testid="pi-text-error">{draft.error}<Button size="sm" variant="ghost" onPress={()=>void onRefresh()}>刷新状态</Button></p>}
   </ChatTool>;
 }

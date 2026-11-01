@@ -1,3 +1,4 @@
+import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';import {DatabaseSync} from 'node:sqlite';import {_electron} from 'playwright';
 // Local-only extraction from the user's authorized book. No synthetic OCR, model response or database seed.
 const root=path.resolve(process.argv[2]||'');assert.equal(path.dirname(root),path.resolve(os.tmpdir()));assert(/^omni-real-material-[a-z0-9]+$/i.test(path.basename(root)));assert.equal(fs.realpathSync(root),root);
@@ -12,7 +13,7 @@ const until=async(fn,ms=240000)=>{const end=Date.now()+ms;while(Date.now()<end){
 async function launch(){const env={...process.env,OMNI_EDU_DATA_ROOT:data,OMNI_EDU_E2E_DIALOG_MODE:'1',OMNI_EDU_E2E_VISIBLE:'0',OMNI_EDU_XIAOZHI_PI:'1'};for(const k of ['ELECTRON_RUN_AS_NODE','NODE_OPTIONS','ELECTRON_RENDERER_URL'])delete env[k];app=await _electron.launch({args:[path.join(desktop,'out/main/index.js'),'--user-data-dir='+path.join(output,'profile')],cwd:output,env,timeout:60000});report.starts++;await app.evaluate(({net})=>{globalThis.coverCloud=0;for(const owner of [globalThis,net])owner.fetch=async()=>{globalThis.coverCloud++;throw Error('Local cover acceptance forbids cloud');};});page=await app.firstWindow();page.setDefaultTimeout(45000);page.on('pageerror',e=>report.rendererErrors.push(e.message));await page.locator('[data-testid="nav-knowledge"]:visible').click();await page.getByTestId('materials-import-folder').waitFor();}
 async function close(){if(!app)return;report.cloudAttempts+=await app.evaluate(()=>globalThis.coverCloud||0);await app.close();app=undefined;}
 const view=()=>page.evaluate(id=>window.omniEdu.getMaterialFolderAi({schemaVersion:'xiaozhi.material-folder-ai.v1',batchId:id}),id);
-async function open(){const card=page.getByTestId('folder-ai-'+id);if(!await card.evaluate(e=>e.open))await card.locator(':scope > summary').click();return card;}
+async function open(){const card=page.getByTestId('folder-ai-'+id);await openMaterialDisclosure(card);return card;}
 try{
  await launch();const settings=await page.evaluate(()=>window.omniEdu.getMaterialAiSettings());assert(settings.configured&&settings.secureStorage,'Use only the existing authorized test settings; no credentials are copied or changed');
  await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},folder);const began=Date.now();await page.getByTestId('materials-import-folder').click();id=await until(()=>sql('SELECT id FROM material_import_batches WHERE root_path=?',[folder])[0]?.id);report.batchId=id;

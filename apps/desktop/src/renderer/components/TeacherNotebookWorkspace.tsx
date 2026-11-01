@@ -1,6 +1,7 @@
 import { ArchiveRestore, Plus, RefreshCw, Save, Trash2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, SearchField } from '@heroui/react';
+import {DisclosureCard} from './ui/DisclosureCard';
 import { ListView } from '../heroui-pro/components/list-view';
 import { Markdown } from '../heroui-pro/components/markdown';
 import { LibraryEmpty } from './product/LibraryEmpty';
@@ -177,7 +178,15 @@ export function TeacherNotebookWorkspace({ setStatus }: Props) {
             {!item.deletedAt && selected?.status === 'active' && <div className="teacher-library-detail-actions"><Button variant="secondary" onPress={() => editRecord(item)} isDisabled={blocked || recordsLoading} data-testid={`teacher-notebook-record-edit-${item.id}`}>编辑</Button><Button variant="danger-soft" onPress={() => deleteRecord(item)} isDisabled={blocked || recordsLoading} data-testid={`teacher-notebook-record-delete-${item.id}`}>删除笔记</Button></div>}</article>)}</div>
           {selected?.status === 'active' && <div className="teacher-notebook-record-form" data-testid="teacher-notebook-record-form"><h3>{editingRecordId ? '编辑笔记' : '添加笔记'}</h3><fieldset disabled={blocked || recordsLoading} className="teacher-notebook-fields"><div className="teacher-notebook-record-identity"><label>类型<select value={recordDraft.recordType} onChange={event => setRecordDraft({...recordDraft, recordType: event.target.value as TeacherNotebookRecordType})} data-testid="teacher-notebook-record-type">{Object.entries(recordTypeLabels).map(([value,label]) => <option key={value} value={value}>{label}</option>)}</select></label><label>标题<input value={recordDraft.title} onChange={event => setRecordDraft({...recordDraft,title:event.target.value})} data-testid="teacher-notebook-record-title"/></label></div>
             <label>正文<textarea value={recordDraft.output} onChange={event => setRecordDraft({...recordDraft,output:event.target.value})} rows={7} data-testid="teacher-notebook-record-output"/></label>
-            <details><summary>补充问题和摘要</summary><label>问题或任务<textarea value={recordDraft.userQuery} onChange={event => setRecordDraft({...recordDraft,userQuery:event.target.value})} rows={2} data-testid="teacher-notebook-record-query"/></label><label>摘要<textarea value={recordDraft.summary} onChange={event => setRecordDraft({...recordDraft,summary:event.target.value})} rows={2} data-testid="teacher-notebook-record-summary"/></label></details></fieldset>
+            <DisclosureCard title="补充问题和摘要" data-testid="teacher-notebook-record-extras">
+              <label>问题或任务
+                <textarea value={recordDraft.userQuery} onChange={event => setRecordDraft({...recordDraft,userQuery:event.target.value})} rows={2} data-testid="teacher-notebook-record-query"/>
+              </label>
+              <label>摘要
+                <textarea value={recordDraft.summary} onChange={event => setRecordDraft({...recordDraft,summary:event.target.value})} rows={2} data-testid="teacher-notebook-record-summary"/>
+              </label>
+            </DisclosureCard>
+          </fieldset>
             <div className="teacher-library-detail-actions"><Button onPress={saveRecord} isDisabled={blocked || recordsLoading} isPending={saving} data-testid="teacher-notebook-record-save"><Save size={16}/>{editingRecordId ? '保存修改' : '保存笔记'}</Button><Button variant="ghost" onPress={() => {resetRecord();success('已取消笔记编辑。');}} isDisabled={blocked} data-testid="teacher-notebook-record-cancel">取消编辑</Button></div></div>}
         </section>
       </div>

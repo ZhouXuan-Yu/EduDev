@@ -18,7 +18,7 @@ export async function checkWpsPages(ctx){
  report.wps.composerMs=Date.now()-started;check('Original Pi composer explicitly selects WPS for the exact DOCX/PPTX fixtures; both persist3 actual pages with physical-page content checks and distinct engine findings');
  const open=async f=>{
   const page=ctx.page;if(!await page.getByTestId('pi-file-panel').isVisible())await page.getByTestId('pi-files-toggle').click();await page.getByTestId('pi-files-refresh').click();const toggle=page.getByTestId('pi-files-explorer-toggle');if(await toggle.getAttribute('aria-pressed')==='false')await toggle.click();await page.getByTestId('pi-file-entry-'+f.name).click();
-  const pane=page.getByTestId('pi-file-panel'),details=pane.getByTestId('pi-delivery-check');await details.locator('summary').first().click();await details.getByTestId('pi-file-check-result').waitFor();return{pane,details};
+  const pane=page.getByTestId('pi-file-panel'),details=pane.getByTestId('pi-delivery-check');await details.locator(':scope > [data-slot="disclosure-heading"] > button[data-slot="disclosure-trigger"]').click();await details.getByTestId('pi-file-check-result').waitFor();return{pane,details};
  };
  const view=async(f,file)=>{const ui=await open(f),visual=ui.details.getByTestId('pi-check-visual');await visual.getByTestId('pi-check-visual-select').selectOption('1');await visual.getByTestId('pi-check-visual-load').click();await until(async()=>await visual.getByTestId('pi-check-visual-image').evaluate(e=>e.complete&&e.naturalWidth>0));assert.equal(sha(Buffer.from((await visual.getByTestId('pi-check-visual-image').getAttribute('src')).split(',')[1],'base64')),file.visualEvidence[1].sha256);return{...ui,visual};};
  for(const f of fixtures){
@@ -36,7 +36,7 @@ export async function checkWpsPages(ctx){
   check('Focused recovery reuses both exact previously inspected WPS files and their persisted3-page proofs without replaying passed composer/view/cold/Word cancellation paths');
  }
  const openStop=async f=>{
-  const page=ctx.page;if(!await page.getByTestId('pi-file-panel').isVisible())await page.getByTestId('pi-files-toggle').click();await page.getByTestId('pi-files-refresh').click();const toggle=page.getByTestId('pi-files-explorer-toggle');if(await toggle.getAttribute('aria-pressed')==='false')await toggle.click();await page.getByTestId('pi-file-entry-'+f.name).click();const pane=page.getByTestId('pi-file-panel'),details=pane.getByTestId('pi-delivery-check');await details.locator('summary').first().click();return{pane,details};
+  const page=ctx.page;if(!await page.getByTestId('pi-file-panel').isVisible())await page.getByTestId('pi-files-toggle').click();await page.getByTestId('pi-files-refresh').click();const toggle=page.getByTestId('pi-files-explorer-toggle');if(await toggle.getAttribute('aria-pressed')==='false')await toggle.click();await page.getByTestId('pi-file-entry-'+f.name).click();const pane=page.getByTestId('pi-file-panel'),details=pane.getByTestId('pi-delivery-check');await details.locator(':scope > [data-slot="disclosure-heading"] > button[data-slot="disclosure-trigger"]').click();return{pane,details};
  };
  for(const original of fixtures.filter(f=>!pptxStopOnly||f.format==='pptx')){
   let f=original;

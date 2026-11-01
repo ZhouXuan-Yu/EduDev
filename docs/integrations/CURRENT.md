@@ -1,5 +1,11 @@
 # 当前集成与复用
 
+2026-11-01 saved artifactCheck只读v1：原text/Office元数据与精确原回执按需投影；历史明细和当前适用性分开，取消沿原64上限，无新表/依赖/Runtime。源码c3f7416；SQLite9/解析12/Pi11/最终冷启3与240组件/build通过，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。
+
+2026-11-01 E08复用PiDeliveryBundleCard、原coordinator/text/Office服务及ResourceTable；目录只读，待确认编辑回原对话，已保存文件直接原预览。a73b389整合原型docs主线为9a49e4e，生产源码相同；build/type、240组件、SQLite8及正式Electron10通过，见bundleCatalogSlice；0付费，D未更新。
+
+2026-11-01 E08复用原Question/Material/LocalAnswerSource/Student/Web/File控件及Pi，0新依赖；原ledger/journal按32项投影来源。7a2d782整合bfaa6ae为bfb0691后build/type、240组件及正式Pi8通过；领域3仅契约输入，不冒充原页/FX05验收，见artifactSourcesSlice。
+
 ## 2026-11-01 整份试卷质量漏斗与共性修复
 
 新普通原页冻结page-restoration.v3：覆盖字段只取题干连续原文，不混入选项摘要或解题公式；原第二遍携带有界本地字段检查代码，不新增调用循环。只有v3的临时parser输入可剔除与实际PDF页/总页匹配的末尾独立页码，原pageText/不可变回执保持。新输入冻结并复验总页数；旧v2/无元信息/答案册保持原语义，无新表、依赖、IPC或运行时。

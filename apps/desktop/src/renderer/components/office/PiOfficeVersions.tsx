@@ -4,6 +4,8 @@ import {History,FolderOpen,ExternalLink} from 'lucide-react';
 import {OFFICE_VERSIONS_SCHEMA,OFFICE_VERSION_ERRORS,type OfficeVersionView,type OfficeVersionInput} from '../../../shared/xiaozhi-office-versions';
 import './pi-office-versions.css';
 import {ScienceDemoFrame} from './ScienceDemoFrame';
+import {PiDeliveryCheck} from './PiDeliveryCheck';
+import {PiArtifactSources} from './PiArtifactSources';
 
 /** Resolve on click, so old chat cards never silently open an obsolete default. */
 export function PiOfficeCurrent({sessionId,artifactId,fallbackPath,onOpen,action='preview',label='打开当前文件',testId='pi-office-open',disabled=false}:{sessionId:string;artifactId:string;fallbackPath:string;onOpen:(path:string)=>void;action?:'preview'|'open'|'locate';label?:string;testId?:string;disabled?:boolean}){
@@ -71,6 +73,8 @@ export function PiOfficeVersions({sessionId,artifactId,running=false,onOpen,onRe
      <Button size="sm" variant="ghost" isDisabled={busy||running||!view.canRestore} onPress={()=>setConfirm(true)} data-testid="office-version-restore">恢复此版</Button>
     </div>
     {preview&&view.htmlPreview&&<ScienceDemoFrame html={view.htmlPreview}/>}
+    {selected&&<PiDeliveryCheck key={view.selectedArtifactId+':checks'} sessionId={sessionId} path={selected.path} artifactId={view.selectedArtifactId}/>}
+    <PiArtifactSources key={view.selectedArtifactId} sessionId={sessionId} artifactId={view.selectedArtifactId} label="此版来源"/>
     {confirm&&<div role="group" aria-label="确认恢复版本"><p>将第 {selected?.number} 版另存为新的当前版本，所有历史文件都会保留。</p><Button size="sm" variant="secondary" isDisabled={busy||running} onPress={()=>void act('restore')} data-testid="office-version-confirm">确认恢复为新版本</Button><Button size="sm" variant="ghost" onPress={()=>setConfirm(false)}>取消</Button></div>}
    </>}
    <Button size="sm" variant="ghost" isDisabled={busy} onPress={()=>void act()} data-testid="office-versions-refresh">刷新历史</Button>

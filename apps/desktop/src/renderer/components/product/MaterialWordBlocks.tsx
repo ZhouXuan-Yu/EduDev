@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {DisclosureCard} from '../ui/DisclosureCard';
 import {Button} from '@heroui/react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
@@ -25,6 +26,6 @@ function Block({value,assets,resource}:{value:WordBlock;assets:WordAsset[];resou
    {value.rows.length>10&&<div className="teacher-library-toolbar"><Button variant="ghost" isDisabled={!row} onPress={()=>setRow(Math.max(0,row-10))}>表格前10行</Button><span>第 {row+1}–{Math.min(row+10,value.rows.length)} / {value.rows.length} 行</span><Button variant="ghost" isDisabled={row+10>=value.rows.length} onPress={()=>setRow(row+10)}>表格后10行</Button></div>}
    {columns>8&&<div className="teacher-library-toolbar"><Button variant="ghost" isDisabled={!column} onPress={()=>setColumn(Math.max(0,column-8))}>表格前8列</Button><span>第 {column+1}–{Math.min(column+8,columns)} / {columns} 列</span><Button variant="ghost" isDisabled={column+8>=columns} onPress={()=>setColumn(column+8)}>表格后8列</Button></div>}
   </>}</>}
-  <details className="material-word-anchor" data-word-part={value.anchor.part} data-word-path={value.anchor.path}><summary>原文件来源</summary><p>{resource.originalFileName} · {/header/i.test(value.anchor.part)?'页眉':/footer/i.test(value.anchor.part)?'页脚':/footnote/i.test(value.anchor.part)?'脚注':/endnote/i.test(value.anchor.part)?'尾注':'正文'}。可点击上方“定位文件”打开原件对照。</p></details>
+  <DisclosureCard className="material-word-anchor" bodyClassName="material-evidence-fields" headingLevel={5} data-word-part={value.anchor.part} data-word-path={value.anchor.path} title="原文件来源"><dl><div><dt>原文件</dt><dd>{resource.originalFileName}</dd></div><div><dt>文件位置</dt><dd>{/header/i.test(value.anchor.part)?'页眉':/footer/i.test(value.anchor.part)?'页脚':/footnote/i.test(value.anchor.part)?'脚注':/endnote/i.test(value.anchor.part)?'尾注':'正文'}</dd></div></dl><p>可点击上方“定位文件”打开原件对照。</p></DisclosureCard>
  </article>;
 }

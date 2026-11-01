@@ -3575,9 +3575,9 @@ export class OmniEduStore {
   async listAiConfirmations(status: AiConfirmationStatus | 'all' = 'pending'): Promise<AiConfirmationItem[]> {
     const allowedStatuses = new Set(['pending', 'confirmed', 'rejected', 'failed']);
     const rows = status === 'all'
-      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type NOT IN ('pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`)
+      ? await this.all(`SELECT * FROM ai_confirmation_items WHERE action_type NOT IN ('pi_classroom_plan','pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`)
       : await this.all(
-        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type NOT IN ('pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`,
+        `SELECT * FROM ai_confirmation_items WHERE status = ? AND action_type NOT IN ('pi_classroom_plan','pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate') ORDER BY updated_at DESC`,
         [allowedStatuses.has(status) ? status : 'pending'],
       );
     return rows.map((row) => this.mapAiConfirmationItem(row));
@@ -6485,7 +6485,7 @@ export class OmniEduStore {
   }
 
   private async getAiConfirmationOrThrow(id: string): Promise<AiConfirmationItem> {
-    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type NOT IN ('pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate')`, [id]))[0];
+    const row = (await this.all(`SELECT * FROM ai_confirmation_items WHERE id = ? AND action_type NOT IN ('pi_classroom_plan','pi_classroom_candidate','pi_office_copy','pi_student_learning_change','pi_question_candidate','pi_original_question_candidate','pi_practice_candidate','pi_paper_candidate')`, [id]))[0];
     if (!row) throw new Error('确认项不存在');
     return this.mapAiConfirmationItem(row);
   }

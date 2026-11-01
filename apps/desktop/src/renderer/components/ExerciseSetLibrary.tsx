@@ -1,4 +1,5 @@
 import {Button} from '@heroui/react';
+import {DisclosureCard} from './ui/DisclosureCard';
 import {useDesktopNavigation} from './desktop/DesktopFrame';
 import { useCallback, useEffect, useState } from 'react';
 import type { ExerciseSet, Student } from '../../shared/contracts';
@@ -77,8 +78,7 @@ export function ExerciseSetLibraryState({
             </div>
             <time dateTime={exerciseSet.createdAt}>{new Date(exerciseSet.createdAt).toLocaleString('zh-CN')}</time>
           </div>
-          <details data-testid={`exercise-set-details-${exerciseSet.id}`}>
-            <summary>查看练习内容与来源</summary>
+          <DisclosureCard title="查看练习内容与来源" data-testid={`exercise-set-details-${exerciseSet.id}`}>
             <div className="exercise-set-items">
               {exerciseSet.items.map((item, index) => (
                 <section key={`${item.role}-${item.questionId ?? index}`} data-testid={`exercise-set-item-${exerciseSet.id}-${index}`}>
@@ -94,7 +94,7 @@ export function ExerciseSetLibraryState({
                 </section>
               ))}
             </div>
-          </details>
+          </DisclosureCard>
           {exerciseSet.reviewSource&&<div className="student-training-actions"><PracticeSourceButton source={exerciseSet.reviewSource}/><Button variant="secondary" data-testid="exercise-training-open" onPress={()=>navigation.navigate({view:'mastery'})}>学习计划与结果</Button></div>}
         </article>
       ))}

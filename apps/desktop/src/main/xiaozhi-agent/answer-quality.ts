@@ -1,5 +1,6 @@
 import type {XiaozhiModelCapabilities} from '../../shared/xiaozhi-agent';
 import { supportedThinking, type ThinkingChoice, type ThinkingDecision } from '../../shared/xiaozhi-thinking';
+import { physicsAnswerInstructions } from './physics-answer-quality';
 
 /** Main-only rollback/controlled A/B. Never supplied by the model or renderer. */
 export function answerQualityEnabled() { return process.env.XIAOZHI_ANSWER_QUALITY !== 'legacy'; }
@@ -18,6 +19,10 @@ export function resolveAnswerPolicy(text:string, capacity?:XiaozhiModelCapabilit
 }
 
 export const isThinkingContinuation=(text:string)=>/^(继续|可以|好的|好|行|没问题|接着做|继续完成|就这样)[！!。\s]*$/u.test(text.trim());
+/** Reuse the current-task continuation rule; unrelated new turns get no subject addendum. */
+export function resolveSubjectAnswerInstructions(text:string, unfinishedTask='') {
+  return physicsAnswerInstructions(isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text);
+}
 export function resolveThinkingPolicy(text:string, capacity?:XiaozhiModelCapabilities,
   requested:ThinkingChoice='auto', scope:ThinkingDecision['scope']='global', unfinishedTask=''):ThinkingDecision {
   const taskText=isThinkingContinuation(text)&&unfinishedTask ? unfinishedTask : text;

@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button} from '@heroui/react';
 import {MANAGED_TOOL_ERRORS,type ManagedToolView,type ManagedToolPhase} from '../../../shared/managed-tools';
@@ -39,12 +40,12 @@ export function PiManagedTools({running,onBusyChange}:{running:boolean;onBusyCha
       {item.phase&&<p role="status" data-testid="pi-managed-tool-progress">{item.preparingVersion?`${item.preparingVersion} · `:''}{phases[item.phase]}{item.phase==='downloading'?` · ${item.downloadedBytes||0} / ${item.preparingBytes||item.downloadBytes} 字节`:''}</p>}
       {item.notice&&<p role="status">{item.notice}</p>}
       {item.maximumConcurrent&&<p data-testid="pi-managed-worker-state">正在计算 {item.running||0} 个 · 排队 {item.queued||0} 个 · 最多同时 {item.maximumConcurrent} 个</p>}
-      {item.versions&&<details data-testid="pi-managed-versions"><summary>版本管理</summary><p>更新只影响新任务；正在处理的任务保持原版本。</p>{item.versions.map(version=><div key={version.version} data-testid={`pi-managed-version-${version.version}`}>
+      {item.versions&&<DisclosureCard data-testid="pi-managed-versions" title={<>版本管理</>}><p>更新只影响新任务；正在处理的任务保持原版本。</p>{item.versions.map(version=><div key={version.version} data-testid={`pi-managed-version-${version.version}`}>
         <span>{version.version}{version.version===item.version?' · 当前使用':''}{version.ready?' · 已准备':' · 未准备'}{version.inUse?` · ${version.inUse} 个任务正在使用`:''}</span>
         <Button size="sm" variant="ghost" data-testid={`pi-managed-use-${version.version}`} isDisabled={busy||version.version===item.version||item.status==='unsupported'} onPress={()=>void selectVersion(item.id,version.version)}>使用此版本</Button>
         {version.ready&&version.origin==='download'&&<Button size="sm" variant="ghost" data-testid={`pi-managed-version-remove-${version.version}`} isDisabled={busy||version.inUse>0} onPress={()=>void removeVersion(item.id,version.version)}>卸载此版本</Button>}
-      </div>)}</details>}
-      <details><summary>来源与组件信息</summary><p>{item.sourceUrl}</p><p>{item.license} · 下载 {item.downloadBytes} 字节 · 组件 {item.installedBytes} 字节</p></details>
+      </div>)}</DisclosureCard>}
+      <DisclosureCard title={<>来源与组件信息</>}><p>{item.sourceUrl}</p><p>{item.license} · 下载 {item.downloadBytes} 字节 · 组件 {item.installedBytes} 字节</p></DisclosureCard>
     </div>)}
     {notice&&<p role="status" data-testid="pi-managed-tool-notice">{notice}</p>}
     <Button size="sm" variant="ghost" data-testid="pi-managed-tool-refresh" isDisabled={busy} onPress={()=>void refresh()}>重新检查</Button>

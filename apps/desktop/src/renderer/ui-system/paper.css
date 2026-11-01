@@ -1,0 +1,37 @@
+/* U4 application layout only; HeroUI controls keep their original styles. */
+.edu-paper-workspace { display: grid; gap: 24px; min-width: 0; max-width: 1440px; margin-inline: auto; }
+.edu-paper-heading { display: flex; justify-content: space-between; align-items: start; gap: 20px; }
+.edu-paper-stages { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 12px; border-block: 1px solid var(--border); }
+.edu-paper-body { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 32px; align-items: start; }
+.edu-paper-main { min-width: 0; }
+.edu-paper-sidebar { display: grid; gap: 24px; min-width: 0; }
+.edu-paper-summary { padding: 20px; border: 1px solid var(--border); border-radius: 12px; }
+.edu-paper-summary dl { display: flex; gap: 24px; margin-block: 16px; }
+.edu-paper-summary dt { color: var(--muted); font-size: 13px; }
+.edu-paper-summary dd { margin: 0; font-size: 20px; font-weight: 600; }
+.edu-paper-editor > fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.edu-paper-workspace .paper-fields { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 16px; }
+.edu-paper-workspace .paper-fields label { display: grid; gap: 6px; min-width: 0; }
+.edu-paper-workspace .paper-section-fields { min-width: 0; border: 0; border-top: 1px solid var(--border); margin: 24px 0; padding: 16px 0; }
+.edu-paper-workspace .paper-section-fields legend { padding-inline-end: 12px; font-weight: 600; }
+.edu-paper-workspace .paper-review-actions,
+.edu-paper-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 20px; }
+.edu-paper-workspace .paper-review-actions { position: static; }
+.edu-paper-history { min-width: 0; }
+.edu-paper-history-list { display: grid; gap: 8px; margin-top: 16px; max-height: 360px; overflow: auto; }
+.edu-paper-question-card { min-width: 0; margin-block: 12px; overflow-wrap: anywhere; }
+.edu-paper-evidence-card { margin-block: 12px; }
+.edu-paper-workspace .paper-source-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.edu-paper-workspace .paper-layout { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
+.edu-paper-workspace .paper-section-preview { margin-block: 24px; }
+.edu-paper-export-options { display: grid; gap: 16px; margin-block: 24px; }
+.edu-paper-export-option { display: flex; justify-content: space-between; gap: 16px; align-items: center; padding-block: 16px; border-top: 1px solid var(--border); }
+.edu-paper-export-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+@media (max-width: 1100px) {
+  .edu-paper-body { grid-template-columns: minmax(0,1fr); }
+  .edu-paper-sidebar { grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); }
+}
+@media (max-width: 600px) {
+  .edu-paper-heading, .edu-paper-export-option { flex-direction: column; align-items: stretch; }
+  .edu-paper-workspace .paper-layout { grid-template-columns: minmax(0,1fr); }
+}

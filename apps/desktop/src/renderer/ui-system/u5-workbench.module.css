@@ -1,0 +1,14 @@
+.hub { min-width:0; color:var(--foreground); font-size:15px; }
+.heading { margin-bottom:24px; }
+.heading h1 { margin:0 0 8px; font-size:26px; line-height:1.35; }
+.heading p { margin:0; color:var(--muted); line-height:1.7; }
+.navigation { display:flex; flex-wrap:wrap; gap:4px; padding-bottom:12px; margin-bottom:20px; border-bottom:1px solid var(--border); }
+.studentLayout { display:grid; grid-template-columns:minmax(220px, 280px) minmax(0,1fr); gap:28px; min-width:0; }
+.directory { min-width:0; border-right:1px solid var(--border); padding-right:20px; }
+.detail { min-width:0; }
+.context { display:flex; align-items:baseline; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
+.context strong { font-size:20px; }
+.context span { color:var(--muted); font-size:14px; }
+.empty { padding:64px 24px; text-align:center; color:var(--muted); }
+.empty h2 { color:var(--foreground); font-size:20px; }
+@media(max-width:900px) { .studentLayout { grid-template-columns:minmax(0,1fr); gap:20px; } .directory { border-right:0; padding-right:0; border-bottom:1px solid var(--border); padding-bottom:16px; } .empty { padding:24px 16px; } }

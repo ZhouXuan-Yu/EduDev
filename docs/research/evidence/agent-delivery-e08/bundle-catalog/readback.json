@@ -1,0 +1,77 @@
+{
+  "bundles": [
+    {
+      "id": "xidelivery_9923eb0367c1023e29598897f3807344d5e93434494fe9bb580a09882bec067b",
+      "sessionId": "aisession_534c88d9-0566-47c6-aceb-32a045b06df5",
+      "runId": "run_9ba382de-0d2d-4fe1-8c16-8e410df0648a",
+      "state": "partial",
+      "revision": 9,
+      "files": [
+        {
+          "fileId": "html",
+          "kind": "text",
+          "path": "浮力演示.html",
+          "callId": "delivery_1ec35c38b9bbf90520aa4a182e2c316f82b329ee2f670ced2585cc45886f289f",
+          "runId": "run_9ba382de-0d2d-4fe1-8c16-8e410df0648a",
+          "draftId": "xichange_971cbabb-c844-4d18-9916-6e70270c3faf",
+          "carried": false
+        },
+        {
+          "fileId": "ppt",
+          "kind": "office",
+          "path": "浮力讲解.pptx",
+          "callId": "delivery_ce242e432aea476325dd647679f701802aaa5c881e328073979cfde100ae6726",
+          "runId": "run_9ba382de-0d2d-4fe1-8c16-8e410df0648a",
+          "draftId": "xioffice_b0dc33a5-c3f0-4def-a546-1249f3df48c0",
+          "carried": false,
+          "error": "conflict"
+        }
+      ]
+    },
+    {
+      "id": "xidelivery_9aa1bcc5754a5a00395903ddf295f90601e5deb7ec7cc6a3212007f5fe71950e",
+      "sessionId": "aisession_534c88d9-0566-47c6-aceb-32a045b06df5",
+      "runId": "run_48711e21-3bb3-47e5-bfc8-3c2df9a25e2f",
+      "state": "saved",
+      "revision": 6,
+      "files": [
+        {
+          "fileId": "html",
+          "kind": "text",
+          "path": "浮力演示.html",
+          "callId": "delivery_1ec35c38b9bbf90520aa4a182e2c316f82b329ee2f670ced2585cc45886f289f",
+          "runId": "run_9ba382de-0d2d-4fe1-8c16-8e410df0648a",
+          "draftId": "xichange_971cbabb-c844-4d18-9916-6e70270c3faf",
+          "carried": true
+        },
+        {
+          "fileId": "ppt",
+          "kind": "office",
+          "path": "浮力讲解.pptx",
+          "callId": "delivery_0defc2783494ab42810e27458c2860bd1d495e4adec80ebf48a3cefc1c191287",
+          "runId": "run_48711e21-3bb3-47e5-bfc8-3c2df9a25e2f",
+          "draftId": "xioffice_41abea89-15bb-4ad0-9531-afb78b5a2dee",
+          "carried": false
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-cqQiNm\\XiaozhiOutputs\\390df5f7c58466e5\\aisession_534c88d9-0566-47c6-aceb-32a045b06df5\\浮力演示.html",
+      "bytes": 646,
+      "sha256": "863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef",
+      "mtimeMs": 1793517468057.3452
+    },
+    {
+      "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-cqQiNm\\XiaozhiOutputs\\390df5f7c58466e5\\aisession_534c88d9-0566-47c6-aceb-32a045b06df5\\浮力讲解.pptx",
+      "bytes": 122228,
+      "sha256": "7b8bc96642f988a1afb17ecdf9eb007f8d83202b74d4a76d2ca1521aa6c56c00",
+      "mtimeMs": 1793517481756.5322
+    }
+  ],
+  "textChangeCount": 1,
+  "slideCount": 8,
+  "notesCount": 8,
+  "teacherNotesRetained": true
+}

@@ -1,6 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { AiConversationWorkspace } from '../../shared/contracts';
-import { defaultWorkbenchPreferences, readWorkbenchPreferences, WORKBENCH_PREFERENCES_KEY, type WorkbenchPreferences } from './workbench-preferences';
+import { defaultWorkbenchPreferences, readWorkbenchPreferences, writeWorkbenchPreferences, type WorkbenchPreferences } from './workbench-preferences';
 
 export type WorkbenchData = {
   folders: AiConversationWorkspace['folders'];
@@ -15,7 +15,7 @@ export type WorkbenchData = {
 type Publisher = (data?: WorkbenchData) => void;
 const DataContext = createContext<WorkbenchData | undefined>(undefined);
 const PublisherContext = createContext<Publisher>(() => {});
-const PreferencesContext = createContext({ preferences: defaultWorkbenchPreferences, update: (_value: Partial<WorkbenchPreferences>) => {} });
+const PreferencesContext = createContext({ preferences: defaultWorkbenchPreferences, update: (_value: Partial<WorkbenchPreferences>): boolean => false });
 export const useWorkbenchPreferences = () => useContext(PreferencesContext);
 
 /** Presentation bridge only. Pi owns business data and callback lifetime. */
@@ -23,10 +23,14 @@ export function WorkbenchProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<WorkbenchData>();
   const publish = useCallback<Publisher>(next => setData(next), []);
   const [preferences, setPreferences] = useState(readWorkbenchPreferences);
-  const update = useCallback((value: Partial<WorkbenchPreferences>) => setPreferences(old => ({ ...old, ...value })), []);
-  useEffect(() => {
-    try { localStorage.setItem(WORKBENCH_PREFERENCES_KEY, JSON.stringify({ schema: 1, ...preferences })); } catch { /* Optional UI storage. */ }
-  }, [preferences]);
+  const current = useRef(preferences);
+  const update = useCallback((value: Partial<WorkbenchPreferences>) => {
+    const next = { ...current.current, ...value };
+    if (!writeWorkbenchPreferences(next)) return false;
+    current.current = next;
+    setPreferences(next);
+    return true;
+  }, []);
   const ui = useMemo(() => ({ preferences, update }), [preferences, update]);
   return <PublisherContext.Provider value={publish}><DataContext.Provider value={data}><PreferencesContext.Provider value={ui}>{children}</PreferencesContext.Provider></DataContext.Provider></PublisherContext.Provider>;
 }

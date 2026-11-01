@@ -3,7 +3,7 @@
 .material-word-block{padding:10px 0;border-top:1px solid var(--border,#dce1e7);min-width:0}
 .material-word-paragraph{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.9}
 .material-word-formula{display:inline-block;max-width:100%;vertical-align:middle;overflow-x:auto;padding:2px 6px}
-.material-word-formula details,.material-word-anchor{font-size:12px;color:var(--muted,#596577)}
+.material-word-anchor{margin-top:10px}
 .material-word-formula pre{white-space:pre-wrap;max-width:100%;overflow-wrap:anywhere;max-height:200px;overflow:auto}
 .material-word-picture{display:block;padding:8px 0;max-width:100%}.material-word-picture>img{display:block;max-width:100%;max-height:600px;object-fit:contain;border:1px solid var(--border,#dce1e7)}
 .material-word-table{overflow:auto;max-width:100%}.material-word-table table{border-collapse:collapse;width:100%}.material-word-table td{border:1px solid var(--border,#dce1e7);padding:8px;min-width:100px;vertical-align:top}

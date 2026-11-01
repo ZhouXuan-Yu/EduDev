@@ -11,6 +11,15 @@
 
 截图必须写明源码、native/CSS尺寸、DPR、数据根、场景和是否样张。对比Hover/Focus/Pressed、empty/loading/ready/running/completed/partial/failed/cancelled/retry、展开/收起；本产品仅浅色。只跑本轮相关检查，不为文档更改重复全业务付费验收。
 
+## D13 折叠与引用验收
+
+依据[决策台账 D13](decisions.md)与[交互态约束](visual-system.md#交互态)，不新增产品范围：
+
+- 应用自有 UI 禁止新增原生 `details/summary` 黑三角。普通业务详情采用现有官方 Card/Disclosure 组合，通过受支持的 props/className 完成应用布局；这不是恢复上游默认样式，不修改 vendor 或全局覆盖。引用与工具分别复用现有 ChatSources、ChatTool 等组件，沿原 typed 数据、来源跳转及权限校验，不将原始工具 JSON 或私有推理当作可见内容。
+- **源码扫描与真实交互均须验证**：扫描应用 JSX/组件使用点，并在正式 Electron 检查实际挂载的应用 UI；不能仅隐藏 marker、只看静态字符串搜索或凭截图判定完成。原件预览内容不作为应用控件替换，遵守受保护组件边界。
+- 真实带内容场景须验证标题与 Chevron 同行、长标题、展开/收起、Hover/Focus、Enter/Space、减少动画，以及嵌套输入的挂载/草稿保留、来源/工具真实入口；既有异步、失败及权限守卫不能因替换丢失。减少动画按有效动画/过渡核对，`transition-property:none` 时不能只因 duration 非零判失败。
+- 空资料库、未选学生或未发生工具调用的检查只证明对应空态；没有覆盖的带内容路径必须列为未测，不能据此宣称全部页面或工具引用已通过。生成的 HTML、离线预览、静态 fixture 和组件测试不能冒充正式业务 UI 验收。
+
 ## 从本轮否决截图派生的反例
 
 | 情境 | 应作的决定 | 必须拒绝的捷径 |

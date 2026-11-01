@@ -51,6 +51,10 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
    fingerprint:deliveryHash([row.id,row.revision,row.taskVersion,row.files,versions]),...(row.parentId?{parentId:row.parentId}:{})};
  }
  async function publish(row:DeliveryRow){const value=await summary(row);options.emit(row.sessionId,row.runId,{kind:'delivery_bundle',delivery:value});return value;}
+ async function withContinuation(row:DeliveryRow,rows:DeliveryRow[]){
+  const value=await summary(row),child=rows.filter(r=>r.parentId===row.id).at(-1);
+  return child?{...value,continuation:{id:child.id,state:child.state},...(child.state==='saved'?{continuedBy:child.id}:{})}:value;
+ }
  function current(row:DeliveryRow,signal?:AbortSignal){signal?.throwIfAborted();if(!options.current(row.sessionId,row.runId))throw Error('cancelled');}
  async function version(row:DeliveryRow){current(row);if(await options.taskVersion(row.sessionId)!==row.taskVersion)throw Error('conflict');current(row);}
  async function invalidate(row:DeliveryRow){
@@ -112,6 +116,7 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   if(raw.resumeBundleId!==undefined){
    if(!deliveryId(raw.resumeBundleId)||raw.files!==undefined)throw Error('invalid_input');
    const parent=await owned(sessionId,raw.resumeBundleId);if(parent.runId===runId||!['partial','interrupted','failed','conflict'].includes(parent.state))throw Error('conflict');parentId=parent.id;
+   if((await options.state.list(sessionId)).some(row=>row.parentId===parent.id&&(row.runId!==runId||row.callId!==callId)))throw Error('conflict');
    const renames=raw.renames??[];if(!Array.isArray(renames)||renames.length>8||!renames.every(r=>object(r)&&Object.keys(r).length===2&&typeof r.fileId==='string'&&typeof r.path==='string')||new Set(renames.map(r=>r.fileId)).size!==renames.length)throw Error('invalid_input');
    const old=await summary(parent);
    for(const f of parent.files){
@@ -194,22 +199,23 @@ export function createDeliveryCoordinator(options:{state:ReturnType<typeof creat
   return{content:[{type:'text' as const,text:JSON.stringify({success:value.state==='saved',bundleId:value.id,outcome:value.state,files,message:value.state==='saved'?'整包文件已按教师最终确认版本保存并核验；不要复述未重新实读的正文。':value.state==='rejected'?'教师拒绝，本包未写入新文件；不得在本轮重提。':'整包尚未全部交付，已保存文件保留。后续明确续做可用resumeBundleId，只重提未完成部分并重新确认。'})}],details:{success:value.state==='saved'},isError:value.state!=='saved'};
  }
  return{decide,revise,cancel,summary,
-  async context(sessionId:string){
-   const all=await options.state.list(sessionId),resolved=new Set(all.filter(r=>r.state==='saved').map(r=>r.parentId));
-   const rows=all.filter(r=>!resolved.has(r.id)&&['partial','interrupted','failed','conflict'].includes(r.state)).slice(-4);
+  async context(sessionId:string,boundId?:string){
+   const all=await options.state.list(sessionId),superseded=new Set(all.map(r=>r.parentId));
+   const rows=all.filter(r=>(boundId?r.id===boundId:!superseded.has(r.id))&&['partial','interrupted','failed','conflict'].includes(r.state)).slice(-4);
    if(!rows.length)return '';
    const bundles=await Promise.all(rows.map(async row=>({bundleId:row.id,state:row.state,files:await Promise.all((await summary(row)).files.map(async f=>({fileId:f.fileId,path:await options.sanitize(f.kind,f.path),state:f.change?.state??f.artifact?.state??'not_proposed'})))})));
-   return '\n宿主保存的待续做文件组（状态摘要，非执行权限；续做使用整包工具的resumeBundleId）：'+JSON.stringify(bundles);
+   return '\n宿主保存的待续做文件组（状态摘要，非执行权限；续做使用整包工具的resumeBundleId）'+(boundId?'；教师本次只选择此包，使用该resumeBundleId续做，不另建同名成果':'')+'：'+JSON.stringify(bundles);
   },list:async(sessionId:string)=>{
    const rows=await options.state.list(sessionId);
-   return Promise.all(rows.map(async row=>{const value=await summary(row),child=rows.find(r=>r.parentId===row.id&&r.state==='saved');return child?{...value,continuedBy:child.id}:value;}));
+   return Promise.all(rows.map(row=>withContinuation(row,rows)));
   },
-  tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters']):ToolDefinition[]{
+  async read(sessionId:string,id:string){return withContinuation(await owned(sessionId,id),await options.state.list(sessionId));},
+  tools(sessionId:string,runId:string,wait:Wait,officeParameters:ToolDefinition['parameters'],boundId?:string):ToolDefinition[]{
    const office=officeParameters as unknown as {properties:Record<string,unknown>;required:string[]};
    const {checks:_,...officeProperties}=office.properties;
    return[{name:'office_deliver_files',label:'整包交付教学文件',description:'交付前宿主自动检查真实候选，明确失败先返回原Pi修复，每类最多2轮；checks可按教师要求声明[{path,rules}]（规则同education_check_delivery），未检查不冒充通过。同一任务需要2至8份文件时，一次提交整包草稿，教师统一预览、修改PPT并一次确认保存。files每项fileId为稳定小写标识；kind=text提供path/content（UTF8 md/txt/csv/html最多64KiB）；kind=office使用office_create_document相同path/format/draft/sources/parentArtifactId。严格页数PPT用presentation-draft.v1。所有目标不同且不存在。任务计划用saved_bundle、target=current；成功只有整包真实保存并核验。单文件仍用原工具。部分保存失败保留成功文件，后续新任务可传resumeBundleId（不带files），只续做未完成部分；renames只可为未完成fileId指定新path，仍需整包新确认。拒绝后同轮不可重提。',
     parameters:{type:'object',additionalProperties:false,properties:{checks:CHECKS_PARAMETERS,files:{type:'array',minItems:2,maxItems:8,items:{type:'object',additionalProperties:false,properties:{fileId:{type:'string',pattern:'^[a-z][a-z0-9_-]{0,63}$'},kind:{type:'string',enum:['text','office']},content:{type:'string',maxLength:65536},...officeProperties},required:['fileId','kind','path']}},resumeBundleId:{type:'string',pattern:'^xidelivery_[a-f0-9]{64}$'},renames:{type:'array',maxItems:8,items:{type:'object',additionalProperties:false,required:['fileId','path'],properties:{fileId:{type:'string'},path:{type:'string',maxLength:500}}}}}} as ToolDefinition['parameters'],
-    execute:async(callId,raw,signal)=>{try{return await execute(sessionId,runId,wait,callId,raw,signal);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
+    execute:async(callId,raw,signal)=>{try{if(boundId&&(!object(raw)||raw.resumeBundleId!==boundId))throw Error('invalid_input');return await execute(sessionId,runId,wait,callId,raw,signal);}catch(e){if(signal?.aborted||code(e)==='cancelled')throw e;return{content:[{type:'text' as const,text:JSON.stringify({success:false,error:code(e),message:code(e)==='file_writes_disabled'?'小智自动文件生成已暂停，整包未提交。已有文件仍可读取；恢复生成需取消启动停写设置并重启。':'整包未提交或未完成；请核对文件草稿、目标和当前状态。不能宣称已交付。'})}],details:{success:false},isError:true};}}
    }];
   }
  };

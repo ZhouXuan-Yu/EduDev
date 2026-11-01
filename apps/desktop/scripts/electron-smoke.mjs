@@ -1137,7 +1137,7 @@ async function run() {
   await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).waitFor({ state: 'visible' });
   assert.match(await first.page.getByTestId(`exercise-set-card-${confirmedExerciseSet.id}`).textContent(), new RegExp(confirmedExerciseSet.title.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), 'confirmed exercise-set title must render from SQLite readback');
   assert.match(await first.page.getByTestId('exercise-set-readonly-boundary').textContent(), /保留确认时的题目版本.*重新准备练习/, 'formal exercise-set readback must expose its read-only boundary');
-  await first.page.getByTestId(`exercise-set-details-${confirmedExerciseSet.id}`).locator('summary').click();
+  await first.page.getByTestId(`exercise-set-details-${confirmedExerciseSet.id}`).getByRole('button', { name: '查看练习内容与来源', exact: true }).click();
   for (let index = 0; index < confirmedExerciseSet.items.length; index += 1) {
     const expectedSourceLabel = { local_bank: '本地题库', teacher_resource: '教师资源', generated: '小智生成' }[confirmedExerciseSet.items[index].sourceKind];
     assert.match(await first.page.getByTestId(`exercise-set-source-${confirmedExerciseSet.id}-${index}`).textContent(), new RegExp(expectedSourceLabel), 'each exercise item must expose its truthful source label');
@@ -1234,7 +1234,7 @@ async function run() {
   await first.page.getByTestId(`question-notebook-delete-category-${uiQuestionCategory.id}`).click();
   await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories(true)).find((category) => category.id === categoryId)?.status === 'deleted', uiQuestionCategory.id);
   assert.equal((await first.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id)).categories.some((category) => category.id === uiQuestionCategory.id), false, 'soft-deleted category must disappear from active question overlay');
-  await first.page.getByTestId('question-notebook-deleted-categories').click();
+  await first.page.getByTestId('question-notebook-deleted-categories').getByRole('button', { name: /^已删除分类/ }).click();
   await first.page.getByTestId(`question-notebook-restore-category-${uiQuestionCategory.id}`).click();
   await first.page.waitForFunction(async (categoryId) => (await window.omniEdu.listQuestionNotebookCategories()).find((category) => category.id === categoryId)?.version === 5, uiQuestionCategory.id);
   assert.ok((await first.page.evaluate((questionId) => window.omniEdu.getQuestionNotebookEntry(questionId), uiCreatedQuestion.id)).categories.some((category) => category.id === uiQuestionCategory.id), 'restored category should reveal its retained historical association');
@@ -1262,7 +1262,7 @@ async function run() {
   const teacherNotebookFixture = (await first.page.evaluate(() => window.omniEdu.listTeacherNotebooks())).find((item) => item.name === '一次函数备课本');
   assert.ok(teacherNotebookFixture, 'teacher notebook create click should persist a notebook');
   await first.page.getByTestId('teacher-notebook-record-title').fill('斜率课堂导入');
-  await first.page.getByTestId('teacher-notebook-record-form').locator('summary').click();
+  await first.page.getByTestId('teacher-notebook-record-form').getByRole('button', { name: '补充问题和摘要', exact: true }).click();
   await first.page.getByTestId('teacher-notebook-record-query').fill('如何用生活情境解释一次函数斜率？');
   await first.page.getByTestId('teacher-notebook-record-summary').fill('以速度变化建立斜率直觉。');
   await first.page.getByTestId('teacher-notebook-record-output').fill('先比较相同时间内路程变化，再抽象为纵向变化量与横向变化量之比。');

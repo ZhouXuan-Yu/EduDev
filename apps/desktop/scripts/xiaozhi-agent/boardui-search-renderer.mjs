@@ -4,7 +4,7 @@ import {createElement as h} from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
 
-const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false}});
+const server=await createServer({appType:'custom',optimizeDeps:{noDiscovery:true},server:{middlewareMode:true,hmr:false,watch:null,ws:false}});
 const output=fs.mkdtempSync('test-results/xiaozhi-agent/boardui-search-renderer-'),checks=[];
 try {
  const {OfficeToolProcess}=await server.ssrLoadModule('/src/renderer/components/office/OfficeToolProcess.tsx');
@@ -19,16 +19,16 @@ try {
   assert(doc.querySelector('.bui-ws-working'));assert(!doc.querySelector('.bui-ws-timer'));
   assert(!doc.body.textContent.includes('2.3'));
  });
- check('Host completion and recorded duration replace Working, without any sample result or input control',()=>{
+ check('Host completion replaces Working without exposing invocation duration, sample results or input controls',()=>{
   const doc=render([base]);assert.equal(doc.querySelector('[data-testid="pi-web-search-process"]').dataset.state,'completed');
-  assert(!doc.querySelector('.bui-ws-working'));assert(doc.body.textContent.includes('2 秒'));assert(!doc.querySelector('textarea,input'));
+  assert(!doc.querySelector('.bui-ws-working'));assert(!doc.body.textContent.includes('2 秒'));assert(!doc.querySelector('.bui-ws-timer'));assert(!doc.querySelector('textarea,input'));
   assert(!/Reddit|GitHub|What do teams|component library/.test(doc.body.textContent));
  });
  check('Failed, stopped, waiting and unknown operations keep accessible details; no state is upgraded to success',()=>{
   for(const [status,code,expected]of[['failed','network','failed'],['failed','cancelled','stopped'],['waiting_input',undefined,'waiting'],['pending',undefined,'unknown']]){
    const attempt=code?{schemaVersion:1,callId:base.id,tool:'office_web_search',attempt:1,maxAttempts:2,state:'failed',code,effect:'none'}:undefined;
    const doc=render([{...base,status,toolAttempt:attempt}]);assert.equal(doc.querySelector('[data-testid="pi-web-search-process"]').dataset.state,expected);
-   assert(doc.querySelector('.office-web-search-details[open]'));assert(!doc.querySelector('.bui-ws-working'));
+   const trigger=Array.from(doc.querySelectorAll('[data-call-id="call_web"] button[data-slot="disclosure-trigger"]')).find(button=>button.textContent.trim()==='查看操作详情');assert(trigger);assert.equal(trigger.getAttribute('aria-expanded'),'true');assert.equal(doc.querySelectorAll('details,summary').length,0);assert(!doc.querySelector('.bui-ws-working'));
   }
  });
  check('Actual empty result is explicit; source-less success does not invent Sources',()=>{

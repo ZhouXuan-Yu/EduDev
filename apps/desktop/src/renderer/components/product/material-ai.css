@@ -1,5 +1,4 @@
-.material-ai {margin:14px 0;padding:12px;border:1px solid var(--border-color,#b8c2ce);border-radius:10px;overflow-wrap:anywhere}
-.material-ai summary {cursor:pointer;font-weight:600}
+.material-ai {margin:14px 0;overflow-wrap:anywhere}
 .material-ai fieldset {display:grid;gap:10px;margin:12px 0;padding:12px;min-width:0;border:1px solid var(--border-color,#b8c2ce);border-radius:8px}
 .material-ai label {display:grid;gap:5px;min-width:0}
 .material-ai input,.material-ai select {max-width:100%}
@@ -9,4 +8,8 @@
 .material-ai article {padding:10px 0;border-top:1px solid var(--border-color,#b8c2ce)}
 .material-ai-page {min-width:0;margin:10px 0;overflow-wrap:anywhere}
 .material-ai-page-text {max-height:32rem;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;padding:10px;border:1px solid var(--border-color,#b8c2ce);border-radius:6px}
-.material-ai button {white-space:normal;max-width:100%;padding:7px 10px;border-radius:6px}
+.material-ai button:not([data-slot]):not([aria-expanded]) {white-space:normal;max-width:100%;padding:7px 10px;border-radius:6px}
+.material-evidence-fields dl {display:grid;gap:12px;margin:0;min-width:0}
+.material-evidence-fields dt {color:var(--muted);font-size:13px;margin-bottom:4px}
+.material-evidence-fields dd {margin:0;overflow-wrap:anywhere}
+.material-evidence-fields pre {margin:0}

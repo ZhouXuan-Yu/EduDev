@@ -1,3 +1,4 @@
+import {createClassroomPlanState} from '../education/classroom-plan-state';
 import {createInspectionState} from './checks/state';
 type SqlValue = string | number | null | Buffer;
 export type Sql = { run: (sql: string, values?: SqlValue[]) => Promise<unknown>;
@@ -46,6 +47,7 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
   const goals=createGoalState(sql);
   const eventJournal=createEventJournal(sql,{...(options?{readNative:binding=>readNativeToolEntries(binding,options.nativeRoot())}:{}),readEffect:createRecoveryEffectReader({persistent,changes,artifacts:officeArtifacts,dataRoot:options?.dataRoot})});
   const classrooms=createClassroomState(sql);
+  const classroomPlans=createClassroomPlanState(sql);
   return {
     sql,
     ...persistent,
@@ -67,7 +69,8 @@ export function createXiaozhiSessionState(source: Sql,options?:{nativeRoot:()=>s
     goals,
     eventJournal,
     classrooms,
-    async recover() { await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
+    classroomPlans,
+    async recover() { await classroomPlans.recover(); await eventJournal.recover(); await persistent.recover(); await controls.recoverControls(); await budget.recoverBudget(); await changes.recover(); await officeArtifacts.recover(); await deliveries.recover(); await attachmentImports.recover(); await attachmentOcr.recover(); await goals.recover(); },
     async init() {
       await sql.run(`CREATE TABLE IF NOT EXISTS xiaozhi_pi_session_bindings (
         conversation_id TEXT PRIMARY KEY, schema_version INTEGER NOT NULL DEFAULT 1,

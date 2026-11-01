@@ -2,31 +2,29 @@ import { ListTodo } from 'lucide-react';
 import type { OfficeProjectedTurn } from '../../../shared/office-agent';
 import type { OfficeConversationProps } from './OfficeConversation';
 import { AgentTraceText } from './AgentTraceText';
-import { AgentTraceTool } from './AgentTraceTool';
+import { AgentPublicTool } from './AgentPublicTool';
 import { AgentTraceNotice } from './AgentTraceNotice';
 import { OfficeMarkdown } from './OfficeMarkdown';
 import { agentTraceTimeline } from './agent-trace-timeline';
-import { AgentReasoningDetails } from './AgentReasoningDetails';
 
 export function AgentTraceTimeline({
   turn,
   sessionId,
   renderPlan,
 }: Pick<OfficeConversationProps, 'renderPlan'> & { turn: OfficeProjectedTurn; sessionId: string }) {
+  const entries = agentTraceTimeline(turn);
   return (
     <div className="edu-process-list" data-testid="agent-trace-timeline">
-      {!agentTraceTimeline(turn).some((entry) => entry.kind === 'item') &&
+      {!entries.length &&
         turn.status === 'running' && (
           <p className="edu-process-wait" role="status" data-testid="reply-waiting">
-            {turn.modelReasoning?.length ? '正在思考…' : '正在处理…'}
+            正在处理…
           </p>
         )}
-      {agentTraceTimeline(turn)
-        .filter((entry) => entry.kind === 'item')
-        .map((entry) => {
+      {entries.map((entry) => {
           const { item } = entry;
           if (item.kind === 'tool')
-            return <AgentTraceTool key={entry.id} item={item} sessionId={sessionId} />;
+            return <AgentPublicTool key={entry.id} item={item} sessionId={sessionId} />;
           if (item.kind === 'plan')
             return (
               <div key={entry.id}>
@@ -51,7 +49,6 @@ export function AgentTraceTimeline({
             />
           );
         })}
-      <AgentReasoningDetails turn={turn} />
     </div>
   );
 }

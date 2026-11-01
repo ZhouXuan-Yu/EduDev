@@ -1,3 +1,4 @@
+import {openMaterialDisclosure} from './material-disclosure-ui.mjs';
 import '../office-agent/register-source.mjs';
 import fs from 'node:fs';import path from 'node:path';import os from 'node:os';import assert from 'node:assert/strict';import {createHash,randomUUID} from 'node:crypto';import {DatabaseSync} from 'node:sqlite';import {_electron} from 'playwright';
 const {prepareModelImage}=await import('../../src/main/xiaozhi-agent/model-image-worker.ts');
@@ -36,7 +37,7 @@ async function launch(){
 try{
  await launch();const settings=await page.evaluate(()=>window.omniEdu.getMaterialAiSettings());assert(settings.configured&&settings.secureStorage);
  await app.evaluate(({dialog},folder)=>{dialog.showOpenDialog=async()=>({canceled:false,filePaths:[folder]});},path.dirname(folder));await page.getByTestId('materials-import-folder').click();batchId=await until(()=>sql('SELECT id FROM material_import_batches WHERE root_path=?',[path.dirname(folder)])[0]?.id);report.batchId=batchId;
- const card=page.getByTestId('folder-ai-'+batchId);await card.locator('summary').click();await card.getByTestId('folder-ai-open-authorization').click();await card.getByTestId('folder-ai-budget').fill('2');await card.getByTestId('folder-ai-public').check();await card.getByTestId('folder-ai-consent').check();await until(async()=>!await card.getByTestId('folder-ai-authorize').isDisabled());await card.getByTestId('folder-ai-authorize').click();
+ const card=page.getByTestId('folder-ai-'+batchId);await openMaterialDisclosure(card);await card.getByTestId('folder-ai-open-authorization').click();await card.getByTestId('folder-ai-budget').fill('2');await card.getByTestId('folder-ai-public').check();await card.getByTestId('folder-ai-consent').check();await until(async()=>!await card.getByTestId('folder-ai-authorize').isDisabled());await card.getByTestId('folder-ai-authorize').click();
  report.result=await until(async()=>{const v=await page.evaluate(batchId=>window.omniEdu.getMaterialFolderAi({schemaVersion:'xiaozhi.material-folder-ai.v1',batchId}),batchId);return ['complete','attention','configuration_changed'].includes(v?.status)?v:undefined;});
  assert.equal(report.result.calls,2,JSON.stringify(report.result));const resource=sql('SELECT r.id,r.content_hash FROM teacher_resources r JOIN material_import_entries e ON e.resource_id=r.id WHERE e.batch_id=?',[batchId])[0];assert.equal(resource.content_hash,sourceSha);
  const local=sql('SELECT * FROM material_image_ocr_receipts WHERE resource_id=?',[resource.id])[0];assert.equal(local.status,'complete');report.ocrBytes=Buffer.byteLength(JSON.parse(local.receipt_json).text);report.ocrReceiptSha=sha(JSON.stringify(local));

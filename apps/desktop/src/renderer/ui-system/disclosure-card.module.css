@@ -1,0 +1,24 @@
+/* App-owned composition via official className props; HeroUI owns focus, state and motion.
+ * Kept with UI system CSS to avoid the legacy domain stylesheet adapter.
+ */
+.card { padding: var(--space-16, 16px); }
+
+/* Disclosure is a primitive: its default inline-block trigger does not compose
+ * the block SVG indicator into a row. Keep this application layout local.
+ */
+.trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--space-8, 8px);
+  text-align: start;
+}
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+.indicator {
+  flex-shrink: 0;
+}

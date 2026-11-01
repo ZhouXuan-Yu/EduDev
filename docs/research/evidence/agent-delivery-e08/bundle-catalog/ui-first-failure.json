@@ -1,0 +1,17 @@
+{
+  "ok": false,
+  "checks": [
+    "Formal composer produces one grouped review with two real previews; individual approval cannot bypass it",
+    "Unsaved teacher edits disable bundle confirmation; saving the edited PPT refreshes the whole approval version",
+    "A real target conflict after HTML save displays partial delivery and preserves the HTML"
+  ],
+  "errors": [],
+  "boundary": "Actual formal Electron main/preload/page/Pi, synthetic SSE only, real approvals, HTML/PPT bytes and restart. No real-provider quality, WPS/Office or complete AT acceptance.",
+  "catalog": {
+    "parentId": "xidelivery_919f3ee91d9949bd5bc4c6641ebbd82a662a002129e3d6b311a1552d0b45ebe5",
+    "htmlPath": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-bundle-ui-6pFf3I\\XiaozhiOutputs\\71678940df4689dc\\aisession_16bacbba-06cf-4426-8447-59ab56506586\\浮力演示.html",
+    "htmlHash": "863ac0387ecb9cf7b9ac290db2e2690adb5e88fbb7ba16e2ce0f70dc7b29b3ef",
+    "htmlMtime": 1793517201266.4497
+  },
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert((await panel.getByTestId('pi-file-preview').innerText()).includes('浮力演示.html'))\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/delivery-bundle-electron.mjs:114:105"
+}

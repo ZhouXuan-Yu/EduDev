@@ -1,0 +1,17 @@
+[
+  {
+    "path": "apps\\desktop\\out\\main\\index.js",
+    "bytes": 3373940,
+    "sha256": "9ff344e024be9b5e8d19ac8e59cd9c4c0d8625e52ac2db764b78cae6dd48ddb5"
+  },
+  {
+    "path": "apps\\desktop\\out\\preload\\index.cjs",
+    "bytes": 35440,
+    "sha256": "3d23bc64446b7cd76531b987a0614b9a1a0007f0c6435f26cd18edc71fa2390a"
+  },
+  {
+    "path": "apps\\desktop\\out\\renderer\\assets\\index-Doxs6u9G.js",
+    "bytes": 7273613,
+    "sha256": "fdaf7116659e1f8573800d41469b3ea89f26b259f3e0de943c4d823daf99a90c"
+  }
+]

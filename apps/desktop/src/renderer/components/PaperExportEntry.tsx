@@ -3,6 +3,7 @@ import {Button} from '@heroui/react';
 import type {PaperView} from '../../shared/paper-blueprint';
 import {PAPER_OUTPUT_SCHEMA,type PaperExportInput} from '../../shared/paper-export';
 import {XIAOZHI_ERRORS} from '../../shared/xiaozhi-projection';
+import {PaperExportChoices} from './paper-ui/PaperExportChoices';
 import {useDesktopNavigation} from './desktop/DesktopFrame';
 
 /** Native output-only grant; input workspace and Office approval stay unchanged. */
@@ -23,5 +24,10 @@ export function PaperExportEntry({view,disabled=false,onPrepared}:{view:PaperVie
   }catch(e){if(stamp===owner.current)setError(e instanceof Error?e.message:'导出准备未完成，请重试。');}finally{lock.current=false;if(stamp===owner.current)setBusy(false);}
  }
  if(view.state!=='confirmed'||view.exportCurrent!==true||!view.sourceCurrent)return null;
- return <section className="work-panel" data-testid="paper-export-entry"><h2>交付试卷</h2><p>选择学生卷、教师答案卷或答题卡，核对文件内容后保存。完整图文题保留已确认原图；答题卡不含答案或解析；无法完整交付时会提示。</p><p role="status" data-testid="paper-output-label">{label?'保存到：'+label:'首次导出请选择保存文件夹。'}</p><Button variant="secondary" data-testid="paper-output-choose" isDisabled={disabled||busy} isPending={busy} onPress={()=>void prepare()}>{label?'更换保存文件夹':'选择保存文件夹'}</Button><div>{(['student','teacher'] as const).flatMap(audience=>(['docx','pdf'] as const).map(format=><Button key={audience+format} variant="secondary" data-testid={'paper-export-'+audience+'-'+format} isDisabled={disabled||busy} onPress={()=>void prepare(audience,format)}>{audience==='student'?'学生卷':'教师答案卷'} · {format==='docx'?'Word':'PDF'}</Button>))}{(['docx','pdf'] as const).map(format=><Button key={'answer_sheet'+format} variant="secondary" data-testid={'paper-export-answer_sheet-'+format} isDisabled={disabled||busy} onPress={()=>void prepare('student',format,'answer_sheet')}>答题卡 · {format==='docx'?'Word':'PDF'}</Button>)}</div>{error&&<p role="alert" data-testid="paper-output-error">{error}</p>}</section>;
+ return <section className="edu-paper-export" data-testid="paper-export-entry">
+      <h2>交付试卷</h2>
+      <p>选择学生卷、教师答案卷或答题卡，核对文件内容后保存。完整图文题保留已确认原图；答题卡不含答案或解析；无法完整交付时会提示。</p>
+      <p role="status" data-testid="paper-output-label">{label?'保存到：'+label:'首次导出请选择保存文件夹。'}</p>
+      <Button variant="secondary" data-testid="paper-output-choose" isDisabled={disabled||busy} isPending={busy} onPress={()=>void prepare()}>{label?'更换保存文件夹':'选择保存文件夹'}</Button>
+      <PaperExportChoices disabled={disabled||busy} onPrepare={(audience,format,template)=>void prepare(audience,format,template)}/>{error&&<p role="alert" data-testid="paper-output-error">{error}</p>}</section>;
 }

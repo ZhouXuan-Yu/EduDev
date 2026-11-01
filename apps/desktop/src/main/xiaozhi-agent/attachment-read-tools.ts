@@ -4,6 +4,9 @@ import {XIAOZHI_ATTACHMENT_ERRORS,type XiaozhiAttachmentError} from '../../share
 import type {PrivateAttachment,createAttachmentState} from './attachment-state';
 import type {createAttachmentImportService} from './attachment-import-service';
 import type {createAttachmentOcrState} from './attachment-ocr-state';
+import type {XiaozhiFilePreview} from '../../shared/xiaozhi-files';
+
+const pdfParseFailures=new Set(['parse_failed','unavailable','empty','text_unreadable','needs_ocr']);
 
 type Options={sessionId:string;state:ReturnType<typeof createAttachmentState>;importer:ReturnType<typeof createAttachmentImportService>;
   ocr?:ReturnType<typeof createAttachmentOcrState>;
@@ -45,7 +48,17 @@ export function createAttachmentReadTools(options:Options):ToolDefinition[]{
       const selection={id:row.id,revision:row.revision};
       const ocr=row.format==='image'?await options.ocr?.get(row):undefined;
       if(row.format==='image'&&ocr?.status!=='approved')throw new Error('needs_ocr');
-      const preview=row.format==='image'?{text:ocr!.corrected,format:'text',document:undefined}:await options.importer.preview(options.sessionId,selection,scoped);current(scoped);
+      let preview:Pick<XiaozhiFilePreview,'text'|'format'|'document'>;
+      if(row.format==='image')preview={text:ocr!.corrected,format:'text'};
+      else try{preview=await options.importer.preview(options.sessionId,selection,scoped);}
+      catch(error){
+        current(scoped);
+        if(row.format!=='office'||row.mime!=='application/pdf'||!row.name.toLowerCase().endsWith('.pdf')
+          ||!(error instanceof Error)||!pdfParseFailures.has(error.message))throw error;
+        await authorized(row,scoped);
+        preview=await options.importer.readPdfText(options.sessionId,selection,scoped);
+      }
+      current(scoped);
       if(typeof preview.text!=='string'||!['text','markdown','office'].includes(preview.format))throw new Error('unsupported');
       const clean=await options.sanitize(preview.text);current(scoped);const lines=clean.split('\n'),start=args.startLine??1,count=args.lineCount??60;
       if(start>lines.length)throw new Error('invalid_input');
@@ -59,7 +72,8 @@ export function createAttachmentReadTools(options:Options):ToolDefinition[]{
       await options.importer.verify(options.sessionId,selection,scoped);await authorized(row,scoped);
       if(ocr){const latestOcr=await options.ocr!.get(row);current(scoped);if(!latestOcr||latestOcr.status!=='approved'||latestOcr.revision!==ocr.revision)throw new Error('changed');}
       const latest=await options.state.get(options.sessionId,row.id);current(scoped);
-      if(!latest||latest.state!=='submitted'||latest.revision!==row.revision||latest.version!==row.version||latest.contentSha256!==row.contentSha256)throw new Error('changed');
+      if(!latest||latest.state!=='submitted'||latest.revision!==row.revision||latest.version!==row.version||latest.contentSha256!==row.contentSha256
+        ||latest.runId!==row.runId||latest.messageId!==row.messageId)throw new Error('changed');
       const end=start+used-1,citation=`${title} · ${ocr?'教师校正文字':row.format==='office'?'提取正文':'文本'}第${start}–${end}行${ocr?'（图片未上传）':row.format==='office'?'（原页码未定位）':''}`;
       return {content:[{type:'text' as const,text:JSON.stringify({success:true,text,sanitized:true,format:preview.document?.format??preview.format,
         totalLines:lines.length,truncated:partialLine||end<lines.length,

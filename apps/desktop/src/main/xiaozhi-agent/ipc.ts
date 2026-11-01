@@ -100,7 +100,7 @@ export function registerXiaozhiIpc(options: { ipcMain: IpcMain; store: OmniEduSt
   registerTextChangeIpc({ ipcMain: options.ipcMain, allowed: fromMain, host });
   registerOfficeArtifactIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerLearningReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
-  registerClassroomIpc({ipcMain:options.ipcMain,allowed:fromMain,state:options.store.xiaozhiState.classrooms});
+  registerClassroomIpc({ipcMain:options.ipcMain,allowed:fromMain,state:options.store.xiaozhiState.classrooms,plans:options.store.xiaozhiState.classroomPlans});
   registerQuestionReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerOriginalQuestionIpc({ipcMain:options.ipcMain,allowed:fromMain,host});
   registerPracticeReviewIpc({ipcMain:options.ipcMain,allowed:fromMain,host});

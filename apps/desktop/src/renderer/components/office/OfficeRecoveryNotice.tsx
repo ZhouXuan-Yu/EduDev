@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {CircleHelp,FileCheck2} from 'lucide-react';
 import type {OfficeProjectedTurn} from '../../../shared/office-agent';
 import {validRecovery} from '../../../shared/xiaozhi-recovery';
@@ -9,9 +10,9 @@ export function OfficeRecoveryNotice({turn}:{turn:OfficeProjectedTurn}){
  return <div className="office-verification-notice" data-testid="office-recovery" data-run-id={turn.id} role="status"><Icon size={16} aria-hidden="true"/><div>
   <strong>{turn.status==='interrupted'?'已恢复操作记录':'操作记录已保存'}</strong>
   <p>保留了 {value.receipts.length} 项操作记录{pending?`，其中 ${pending} 项结果需要核对`:''}。恢复记录不会再次执行操作。</p>
-  <details><summary>查看操作结果</summary><ul>{value.receipts.map(row=><li key={row.id} data-receipt-id={row.id} data-disposition={row.disposition}>
+  <DisclosureCard title={<>查看操作结果</>}><ul>{value.receipts.map(row=><li key={row.id} data-receipt-id={row.id} data-disposition={row.disposition}>
    {turn.items.find(item=>item.id===row.callId)?.label||'授权操作'} · {description[row.disposition]}
    {row.effect==='matched'?'；核对时本地产物与确认保存记录一致':row.native==='matched'||row.native==='recorded'?'；已找到保存的工具结果，实际效果仍需按任务核对':''}
-  </li>)}</ul></details>
+  </li>)}</ul></DisclosureCard>
  </div></div>;
 }

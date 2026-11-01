@@ -1,3 +1,4 @@
+import { DisclosureCard } from '../ui/DisclosureCard';
 import {useEffect,useRef,useState} from 'react';
 import {Button,TextArea} from '@heroui/react';
 import {XIAOZHI_ATTACHMENTS_SCHEMA,XIAOZHI_ATTACHMENT_ERRORS,type XiaozhiAttachment,type XiaozhiAttachmentInput,type XiaozhiAttachmentResult} from '../../../shared/xiaozhi-attachments';
@@ -30,7 +31,7 @@ export function AttachmentOcrPanel({sessionId,item,onBusyChange}:{sessionId:stri
   {busy?<p role="status">正在处理本地识别… <Button variant="ghost" size="sm" data-testid="pi-ocr-cancel" onPress={cancel}>取消</Button></p>:
    !review||['rejected','interrupted','processing'].includes(review.status)?<Button variant="secondary" isDisabled={sync.blocked} data-testid="pi-ocr-start" onPress={()=>void call(value=>window.omniEdu?.startXiaozhiAttachmentOcr(value),true)}>{review?'重新识别':'识别图片文字'}</Button>:null}
   {review&&['review','approved'].includes(review.status)&&<>
-   <details><summary>查看识别原文</summary><pre data-testid="pi-ocr-original">{review.original}</pre></details>
+   <DisclosureCard title={<>查看识别原文</>}><pre data-testid="pi-ocr-original">{review.original}</pre></DisclosureCard>
    <label htmlFor={`ocr-${item.id}`}>校正文字</label><TextArea id={`ocr-${item.id}`} aria-label="校正识别文字" data-testid="pi-ocr-corrected" fullWidth rows={6} value={text} maxLength={128000} disabled={busy} readOnly={locked} onChange={event=>setText(event.target.value)}/>
    {locked?<p className="pi-attachment-local-note">本轮已保存确认文字。需要新版本时，可重新添加图片并校正。</p>:<div className="pi-attachment-ocr-actions">
     <Button variant="secondary" isDisabled={busy||sync.blocked} data-testid="pi-ocr-reject" onPress={()=>void call(value=>window.omniEdu?.decideXiaozhiAttachmentOcr({...value,ocrRevision:review.revision,decision:'reject',text:''}),true)}>拒绝此结果</Button>

@@ -5,6 +5,7 @@ export interface OfficeProjectedItem {
   kind: 'message' | 'tool' | 'plan' | 'compaction' | 'memory_isolation' | 'skill_isolation';
   role?: 'user' | 'assistant';
   phase?: 'commentary' | 'final_answer' | 'partial_answer';
+  phaseSource?: 'explicit';
   text?: string;
   label?: string;
   /** Actual public tool identity, not inferred from its translated label. Optional in old history. */

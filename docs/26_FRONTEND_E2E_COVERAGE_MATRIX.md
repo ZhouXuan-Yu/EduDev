@@ -1,5 +1,9 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+2026-11-01 E06/E08检查入口：正式Pi合成SSE→真实HTML保存/修改→Teaching Files原检查→历史原结果且不能认证新版→恢复新身份不继承→外改/删除失效→冷启，共11项通过。最终主进程64清理后同夹具再冷读3项；实测1366×768/1920×1080、DPR1.5，无文件重写/模型重放/renderer错误。源码c3f7416，240组件/build通过，完整FX/AT待集中，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。
+
+2026-11-01 E08整包入口：原正式composer→HTML保存/PPT真实目标冲突→教学文件整包tab显示1/2及原conflict→打开实际HTML→续做新确认→8页PPT/教师备注、HTML hash/mtime不变→双原生窗口尺寸及冷启0模型。源码a73b389，SQLite8、Electron10/0 renderer错误，240组件/build通过。身份幂等/后继跳转覆盖；完整FX10/AT仍集中，详bundleCatalogSlice。
+
 2026-11-01 E08 HTML教学文件：正式Electron8项通过（源码1ff075c，htmlCatalogSlice）：实际原三版Pi夹具→目录搜索/分组→当前/历史预览→另存第四版→旧卡同当前→缺失/外改/读取失败→双尺寸DPR1.5及冷启。0模型/renderer错误；OS派发仅回调观察；完整来源导航/AT仍待，不替代既有失败综合。
 
 2026-11-01 E08通用HTML版本工程已实现（37bd444）：原修改账本增可选parent_change_id，旧记录可读；同一typed officeVersion及原历史组件接通HTML三版预览/选择/另存恢复，旧卡默认打开当前文件。历史副本为派生缓存，不作新真源。源码8、Office16、冲突6、build/type、240组件及正式Pi6（双尺寸DPR按截图推算1.5/冷启）exit0；0付费/重放/renderer错误。一遍综合在mastery_quiz checkpoint提交失败，原日志/截图保留，不记207通过，未改该路径。下一HTML教学文件目录/全部来源定位及版本时间口径+C，再S/T；完整阶段AT/252仍待集中，Goal active，D盘日常/安装包未更新。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#htmlVersionSlice。
