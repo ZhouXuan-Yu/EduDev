@@ -778,7 +778,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-C02-01 | 长流与完整性 | 输出终态与持久正文一致、不掉字/乱序；草稿可继续编辑；无pageerror | [AT-C02-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-01) | 已实现｜本地FX09长流验收通过｜2026-11-01｜4f6ce66｜[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)：最终UI/原消息/原事件正文hash一致，草稿和冷启完整；0pageerror/付费/重放。 |
 | REQ-C02-02 | 交互性能 | P95≤100ms、最大≤250ms作为本地控制样本目标；记录长任务与RSS；不可推断真实模型首字时间 | [AT-C02-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-02) | 已实现｜本地FX09交互验收通过｜2026-11-01｜4f6ce66｜[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)：30输入/45滚动，P95 6.7/1.6ms，最大6.8/2ms，记录CPU/RSS/长任务；非模型首字或全机型结论。 |
-| REQ-C02-03 | 原生拖动 | 普通位置实际改变；最大化拖动还原；菜单不误拖；最小化/最大化/关闭真实有效 | [AT-C02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-03) | 部分实现；系统前台焦点受阻，实际pointer待验收，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json) |
+| REQ-C02-03 | 原生拖动 | 普通位置实际改变；最大化拖动还原；菜单不误拖；最小化/最大化/关闭真实有效 | [AT-C02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-03) | 部分实现；日常CUA两次drag未位移/还原，原因待定，用户Esc停止后续操作，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json) |
 | REQ-C02-04 | 重启几何 | 可见区域内恢复，标题栏可达；不顶死屏幕或开到屏外；不把HTCAPTION命中当位移通过 | [AT-C02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-04) | 已实现｜最终整合原生几何验收通过｜2026-11-01｜4f6ce66｜[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)：两块实际显示器、390/480/800、立即退出/最大化及模拟断屏；实际指针拖动归AT03。 |
 | REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) | 待验收 |
 | REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) | 待验收 |

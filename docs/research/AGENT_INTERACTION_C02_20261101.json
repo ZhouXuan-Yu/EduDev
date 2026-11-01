@@ -783,7 +783,7 @@
     }
   },
   "nativePointer": {
-    "status": "foreground unavailable; AT-C02-03 unaccepted",
+    "status": "Early Win32 foreground precondition failures retained; actual daily Sky double-click works, two drag gestures produced no movement/restore; cause undetermined. User then stopped Computer Use with physical Escape.",
     "attempts": [
       "Initial PS UInt64 -> IntPtr cast failed before any pointer action; helper corrected.",
       "Two later attempts refused before input because the owned HWND could not become foreground."
@@ -850,14 +850,81 @@
     "newDependencies": 0
   },
   "runtime": {
-    "dailyRoot": "D:/WorkProject/EduProject",
-    "observedHead": "2749d3d",
-    "observedMainPid": 52540,
-    "owner": "Another current task updated and launched D. Live window and three unrelated dirty docs preserved.",
-    "updatedByThisSlice": false,
-    "geometryFixActiveInDailyWindow": false,
-    "installerVerified": false,
-    "restartApproval": "Asked user asynchronously to allow normal close/restart of the other task's daily window after confirming idle. No response yet, so no update/restart performed."
+    "dailyRoot": "D:\\WorkProject\\EduProject",
+    "sourceHead": "d76e6e5bfc227a06cc1886a4e9fa573c7d8eda60",
+    "previousHead": "c59ec05b240b1e0cb56bcd2c300c82c071636733",
+    "authorization": "User explicitly said: directly close, restart and take over.",
+    "oldMainPid": 52540,
+    "oldMainClosedNormally": true,
+    "forcedTermination": false,
+    "mainPid": 58588,
+    "command": "D:/WorkProject/EduProject/apps/desktop/node_modules/electron/dist/electron.exe D:/WorkProject/EduProject/apps/desktop/out/main/index.js",
+    "windowId": 6295124,
+    "rendererUrl": "file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html",
+    "nativeRaiseAndVisibleUI": true,
+    "startCommand": "npm.cmd start",
+    "cwd": "D:\\WorkProject\\EduProject\\apps\\desktop",
+    "startExit": 0,
+    "ownDependencies": true,
+    "dirtyDocumentsPreserved": [
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "bytes": 9796,
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "bytes": 6092,
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "bytes": 9427,
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "main": {
+      "bytes": 3498133,
+      "sha256": "93b493df7bd7ff23af069de97094225017db8b9886d3c1402fafa48944dd76b5"
+    },
+    "renderer": {
+      "name": "index-CP10PA5h.js",
+      "bytes": 7374749,
+      "sha256": "a2848f82ef5a3ce8891df48bfa0fb961303445bbab070ff251c4e13f4948b35f"
+    },
+    "geometryFixActiveInDailyWindow": true,
+    "submittedPrompts": 0,
+    "providerNetworkInstrumented": false,
+    "newPaidTestRequests": 0,
+    "installedAppVerified": false,
+    "screenshotsPersisted": false,
+    "normalDrag": {
+      "before": {
+        "x": 3195,
+        "y": 97,
+        "width": 1382,
+        "height": 1082
+      },
+      "after": {
+        "x": 3195,
+        "y": 97,
+        "width": 1382,
+        "height": 1082
+      },
+      "moved": false
+    },
+    "captionDoubleClick": {
+      "maximized": true,
+      "after": {
+        "x": 2560,
+        "y": 0,
+        "width": 2560,
+        "height": 1392
+      }
+    },
+    "maximizedDragRestored": false,
+    "interruption": "Physical Escape stopped Computer Use during the attempted native restore-button action. Outcome of that last action unknown; no further Computer Use performed.",
+    "scope": "Actual daily startup and visible page verified; actual drag still not accepted. No teacher data, full accessibility tree or real UI screenshot archived."
   },
   "paidRequests": 0,
   "failuresPreserved": [
@@ -871,7 +938,7 @@
   "remaining": [
     "AT-C02-03 actual OS pointer/button path",
     "AT-C02-05 full viewports/system-scale/popups; AT06 IME; AT07 selection/follow; AT08 process/approval; AT09 keyboard; AT10 switch/error matrices",
-    "C06 activate this geometry fix in actual D runtime when current owner releases it; installer not released",
+    "C06 actual daily root updated and restarted; full first/duplicate-instance/installer/update-failure matrix still pending",
     "Full W3 and S/T order unchanged, no blanket Hana or natural teaching-quality superiority"
   ],
   "rollback": "Revert scoped production changes in 4f6ce66 or disable optional OMNI_EDU_WINDOW_GEOMETRY, preserving v1 preferences, database and files. Existing >=1100px records remain readable. Entire rollback not rehearsed.",
@@ -1392,5 +1459,15 @@
   },
   "validationScriptCommit": "18fc836aaa66399e18c434a531790d59900cf89f",
   "validationScriptSha256": "37136b66025e93ac8d71b3cb1f64815f5a98c0f6d8b9f865dbb567b720fe3fa1",
-  "geometryAcceptanceDetail": "Every final launch explicitly verifies native isVisible=true and a reachable rendered titlebar; both connected physical displays tested, no pointer or focus claim."
+  "geometryAcceptanceDetail": "Every final launch explicitly verifies native isVisible=true and a reachable rendered titlebar; both connected physical displays tested, no pointer or focus claim.",
+  "runtimeBeforeTakeover": {
+    "dailyRoot": "D:/WorkProject/EduProject",
+    "observedHead": "2749d3d",
+    "observedMainPid": 52540,
+    "owner": "Another current task updated and launched D. Live window and three unrelated dirty docs preserved.",
+    "updatedByThisSlice": false,
+    "geometryFixActiveInDailyWindow": false,
+    "installerVerified": false,
+    "restartApproval": "Asked user asynchronously to allow normal close/restart of the other task's daily window after confirming idle. No response yet, so no update/restart performed."
+  }
 }
