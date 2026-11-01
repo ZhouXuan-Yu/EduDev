@@ -1,5 +1,7 @@
 # 当前架构
 
+2026-11-01 键盘交互整合收尾：f288868/078ff4c整合main 4fe07fc为62fbf1e，13处文档冲突保留双方，三处焦点生产文件内容不变；整合后build/type、240组件和原Pi 0模型焦点2项通过。此前流程6项/207综合分别绑定原固定构建，不冒充最终整合重跑；所有诊断失败已归档，177+份原始证据逐项hash核对。完整AT仍3/252、Goal active，继续W3后S/T；日常D最后核对05782b4，本片与选读修复未应用，实际窗口仍待解锁。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice.integration。
+
 2026-11-01 C02键盘待处理工程：应用层三文件焦点适配，Pi/main/preload/数据库/事件及Composer/vendor不变。仅显式动作产生focusRequest，原生偏好恢复不请求；关闭RAF限定当前可见会话，文件通知重挂后仍可返回。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
 
 ## 2026-11-01 结构化题面来源与局部OCR失败

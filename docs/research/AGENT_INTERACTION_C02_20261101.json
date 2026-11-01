@@ -2913,6 +2913,76 @@
       "rendererBytes": 7385067,
       "rendererBytesDelta": 2026,
       "note": "Expired focus request is cleared on automatic width, visibility/session or empty-state restoration. Actual 1366→480→1366 repro and final two-case formal Pi test use no model. Earlier six-case flow and 207 remain attached to their earlier immutable build; no repeat of successful generations."
+    },
+    "integration": {
+      "sourceCommit": "62fbf1ea4664b2f89dce226a170076ad7a546e3f",
+      "upstream": "4fe07fc",
+      "documentationConflicts": 13,
+      "allKeptBoth": true,
+      "productionCodeConflicts": 0,
+      "ownThreeProductionFilesUnchangedFrom": "078ff4c",
+      "buildRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-integrated-62fbf1e",
+      "buildHash": "4afc482e972095af59294f3fb81cb133d6b6ecb896bc1b82ed416994674c1c70",
+      "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-panel-focus-QovHAz",
+      "result": {
+        "ok": true,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-QovHAz",
+        "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-integrated-62fbf1e",
+        "buildHash": "4afc482e972095af59294f3fb81cb133d6b6ecb896bc1b82ed416994674c1c70",
+        "scriptHash": "79b116f4e5e2628609d5c74efd3cc8eeba12123ed27dc32b93fed675631d9fd3",
+        "checks": [
+          "Automatic narrow/wide panel restoration preserves the original focused draft and does not reuse a past manual-open request",
+          "A subsequent explicit keyboard open still enters the panel and Esc restores its trigger"
+        ],
+        "errors": [],
+        "boundary": "Owned original Pi empty workspace and browser keyboard/resize only; zero model requests. Not physical desktop drag, OS DPI, daily runtime or full AT.",
+        "runtime": {
+          "paths": {
+            "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-QovHAz\\profile",
+            "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-QovHAz\\profile"
+          },
+          "modules": [
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/education-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/image-header-cjlp_vkk.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/index.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/manifest-swncwwn7.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/material-word-ducvgi0b.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/materials-nj8u7iqp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/ocr-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/office-images-cozx6ckp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/office-math-czlpbpwf.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/office-pdf-renderer-drx7hwnm.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/runtime-command-ca2wibil.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/typed-table-cic72mke.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-attachments-b1qaifrn.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-documents-de5zjvnu.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-ocr-cijofhv6.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-office-artifacts-cmjkfs3l.js"
+          ]
+        },
+        "afterRestore": {
+          "focus": "office-prompt-input",
+          "draft": "合成草稿：改变窗口尺寸后继续输入。"
+        },
+        "modelRequests": []
+      },
+      "commands": [
+        {
+          "command": "npm.cmd run build > test-results/c02-keyboard-build-integrated.log 2>&1",
+          "exit": 0
+        },
+        {
+          "command": "npm.cmd run test:renderer-components > test-results/c02-keyboard-components-integrated.log 2>&1",
+          "exit": 0,
+          "passed": 240
+        },
+        {
+          "command": "node scripts/xiaozhi-agent/panel-focus-resize-ui.mjs test-results/c02-keyboard-integrated-62fbf1e > test-results/c02-keyboard-resize-integrated.log 2>&1",
+          "exit": 0,
+          "passed": 2
+        }
+      ],
+      "boundary": "Original six-case generation and 207 smoke are bound to f288868 immutable build before the automatic-focus repair/integration. Final integration runs type/build, 240 components and the affected zero-model focus flow, without replaying model tasks. No daily or installer update; accepted full AT remains 3/252."
     }
   }
 }

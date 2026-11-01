@@ -1418,6 +1418,62 @@
       "rawSha256": "79e21efc761212613a98e0b239c2ccc63fb253905e230b76e01bca89532ff6ac",
       "storedBytes": 23965,
       "storedSha256": "d0f78f089d9830ffdfca9c2bdab1bcf93e7f9cbc2893ba79ebb0674015dee21c"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/keyboard-integrated-report.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 3622,
+      "rawSha256": "c5711f45823cd23c75328dbec79bec296c8724d1d7ed463d6ca762037452519e",
+      "storedBytes": 1021,
+      "storedSha256": "ba545bbbbdbc3250e51f3ecb4ebb70806e67a42d3030f8cdcc0a73a39cca1490"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/keyboard-integrated-focus.png",
+      "encoding": "identity",
+      "rawBytes": 136202,
+      "rawSha256": "4a012ed17ca549004e091f7a72da0003c94f972d71743912d47d4ae4bb5f7161",
+      "storedBytes": 136202,
+      "storedSha256": "4a012ed17ca549004e091f7a72da0003c94f972d71743912d47d4ae4bb5f7161"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/keyboard-build-integrated.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 40557,
+      "rawSha256": "63b20483253499f378a675994c4baca5837c120f9d64b84496e5ae820e5a3f54",
+      "storedBytes": 7999,
+      "storedSha256": "63531285bac001028711f600419cb55bbf25491f304ee45be60b81f35aa9fef4"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/keyboard-components-integrated.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "storedBytes": 279,
+      "storedSha256": "2a000f850e8f81faa4cdc0a65294b0015e8e84abf63482f9baeb6d86557fd102"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/keyboard-resize-integrated.log.gz",
+      "encoding": "gzip",
+      "rawBytes": 318,
+      "rawSha256": "15e9469b8ee86ff4a91937bd1549964fad7e08e4329451a3de29954ef0caa01c",
+      "storedBytes": 249,
+      "storedSha256": "06c611524ad4218e232f021d0fd59c0d47fb1a89bdb3223daecb6cd24cc988de"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/keyboard-merge-audit.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 1079,
+      "rawSha256": "c3d0996bc5be6ec878931837dad2fcc18a417eaac08d0316004dd1aefc2cc59f",
+      "storedBytes": 248,
+      "storedSha256": "05019bc1a5823580f714fb802252163c6a197783e8f7f31d8dda3daba9fd9f12"
+    },
+    {
+      "file": "docs/research/evidence/agent-interaction-c02/20261101/keyboard-integrated-files.json.gz",
+      "encoding": "gzip",
+      "rawBytes": 68931,
+      "rawSha256": "5d5f195b0d70e90eb619bdcc1b9f8de0750f8f8f5a9c13673f9b0ba96e71ccb4",
+      "storedBytes": 23961,
+      "storedSha256": "7499153136ee2a25d526e41f4380235750560b559dea5d622f5c03a7c6c12467"
     }
   ]
 }

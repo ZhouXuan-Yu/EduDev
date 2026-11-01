@@ -1,5 +1,7 @@
 # 当前验收入口
 
+2026-11-01 键盘交互整合收尾：f288868/078ff4c整合main 4fe07fc为62fbf1e，13处文档冲突保留双方，三处焦点生产文件内容不变；整合后build/type、240组件和原Pi 0模型焦点2项通过。此前流程6项/207综合分别绑定原固定构建，不冒充最终整合重跑；所有诊断失败已归档，177+份原始证据逐项hash核对。完整AT仍3/252、Goal active，继续W3后S/T；日常D最后核对05782b4，本片与选读修复未应用，实际窗口仍待解锁。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice.integration。
+
 2026-11-01 C02键盘待处理工程：C02-08/09子项原Pi6项及最终build/type/240组件通过；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。完整FX01/09、全部菜单/档位/对话框、教师REVIEW、IME及物理drag未完成，未增加完整“已实现”AT，累计仍3/252。D日常/安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
 
 ## 2026-11-01 结构化题面来源与局部OCR失败
