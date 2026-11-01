@@ -1,5 +1,6 @@
 import {validBookMatchQuery} from '../../shared/question-book-answer';
 import {ipcMain as electronIpcMain,safeStorage,type BrowserWindow} from 'electron';
+import {inspectPageCrop} from './material-ai-crop-inspector';
 import {randomUUID,createHash} from 'node:crypto';
 import {createModelSettings} from '../xiaozhi-agent/model-settings';
 import type {OmniEduStore} from '../db';
@@ -26,6 +27,8 @@ export function registerMaterialAiIpc(store:OmniEduStore,window:()=>BrowserWindo
     clean:async text=>(await createStudentContextSanitizer(store))(text),
     word:{environment:async()=>{const m=await import('./word-question-render');return m.wordProofEnvironment();},render:async(source,images,signal,dataRoot)=>{const m=await import('./word-question-render');return m.renderWordQuestionProof(source,images,{dataRoot,signal});}},
     ocr:async(bytes,signal)=>{try{const result=await recognizeLocalImage(bytes,signal);return {text:result.text,engine:result.engine};}catch(error){if(error instanceof Error&&error.message==='empty')return{text:'',engine:LOCAL_OCR_ENGINE};if(signal.aborted)throw Error('cancelled');throw Error(error instanceof Error&&error.message==='configuration'?'ocr_unavailable':'ocr_failed');}},
+    crop:(source,box,signal)=>previewMaterialPage(store.materials,{schemaVersion:MATERIAL_PREVIEW_SCHEMA,requestId:randomUUID(),resourceId:source.resourceId,version:source.version,page:source.page,box},signal,renderLocalPdfPage,renderPdfFilePage),
+    inspectCrop:inspectPageCrop,
     image:async(id,version,page,signal)=>{
       const resource=await store.materials.resource(id);
       if(resource.contentHash!==version)throw new Error('source_changed');

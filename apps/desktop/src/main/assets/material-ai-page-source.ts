@@ -26,3 +26,15 @@ export async function readAiPageSource(host:Host,resourceId:string,version:strin
 export async function validateAiPageSource(host:Host,source:MaterialPageSource){
  if(!validMaterialPageSource(source))throw Error('source_changed');const current=await readAiPageSource(host,source.resourceId,source.version,source.page);if(JSON.stringify(current.source)!==JSON.stringify(source))throw Error('source_changed');return current;
 }
+/** A visible continuation on the next local page overrides an AI's single-page completeness claim.
+ * This bounded local check sends no extra page or text to a provider. It does not assemble the parent.
+ */
+export async function followingPageStatus(host:Host,source:MaterialPageSource,totalPages:number):Promise<'separate'|'continued'|'unknown'>{
+ if(source.schemaVersion!==MATERIAL_PAGE_SOURCE||source.page>=totalPages)return 'separate';
+ try{const following=await readAiPageSource(host,source.resourceId,source.version,source.page+1);
+  if(following.status!=='complete'||!following.text.trim())return 'unknown';
+  if(/^\s*(?:[（(]\s*(?:[2-9]|[1-9][0-9])\s*[)）]|[②-⑳])/u.test(following.text))return 'continued';
+  // Absence of a subquestion marker is not proof of separation: prose, captions and headers can continue a parent too.
+  return /^\s*(?:第\s*[0-9]{1,5}\s*题|[0-9]{1,5}\s*[.、．](?![0-9]))/u.test(following.text)?'separate':'unknown';
+ }catch{return 'unknown';}
+}

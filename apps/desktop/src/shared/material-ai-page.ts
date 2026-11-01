@@ -3,6 +3,7 @@ import {materialId} from './materials';
 import {MATERIAL_AI_IMAGE_RESPONSE,parseAiBatchResponse,imageTextEvidence,aiTextSignature,type AiImageResponse} from './material-ai-image';
 import type {TeacherResource} from './contracts';
 import {bookSectionKey,type BookAnswerPage} from './material-book-answer';
+import {pageRegionsPolicy,MATERIAL_PAGE_REGIONS_PROMPT,MATERIAL_PAGE_REGIONS_RESPONSE,validQuestionRegions,type AiQuestionRegion} from './material-ai-page-regions';
 export const MATERIAL_PAGE_SOURCE='xiaozhi.material-page-source.v1' as const;
 export const MATERIAL_IMAGE_SOURCE='xiaozhi.material-image-source.v1' as const;
 export const MATERIAL_AI_PAGE='xiaozhi.material-ai-page.v1' as const;
@@ -13,28 +14,33 @@ export type AiAnswerIssue={section:string;number:string;issues:AiIssue[]};
 export const MATERIAL_PAGE_PROMPT='page-restoration.v2' as const;
 export const MATERIAL_QUESTION_PAGE_PROMPT='page-restoration.v3' as const;
 type OcrStatus='complete'|'blank'|'failed'|'needs_review';
-export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number};
+export type AiPagePrompt={policy:typeof MATERIAL_PAGE_PROMPT;ocrStatus:OcrStatus}|{policy:typeof MATERIAL_QUESTION_PAGE_PROMPT;ocrStatus:OcrStatus;totalPages:number}|{policy:typeof MATERIAL_PAGE_REGIONS_PROMPT|'page-regions.v1';ocrStatus:OcrStatus;totalPages:number;resourceTitle:string};
 export type MaterialPageSource={schemaVersion:typeof MATERIAL_PAGE_SOURCE|typeof MATERIAL_IMAGE_SOURCE;resourceId:string;version:string;page:number;generation:string;receiptSha:string};
-export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{pageText:string;pageIssues:AiIssue[]}&({schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE}|{schemaVersion:typeof MATERIAL_AI_BOOK_PAGE_RESPONSE;answerIssues:AiAnswerIssue[]});
-export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean){return policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:policy===MATERIAL_BOOK_PAGE_POLICY&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
+export type AiPageResponse=Omit<AiImageResponse,'schemaVersion'>&{pageText:string;pageIssues:AiIssue[]}&({schemaVersion:typeof MATERIAL_AI_PAGE_RESPONSE}|{schemaVersion:typeof MATERIAL_AI_BOOK_PAGE_RESPONSE;answerIssues:AiAnswerIssue[]}|{schemaVersion:typeof MATERIAL_PAGE_REGIONS_RESPONSE;regions:AiQuestionRegion[]});
+export function pageResponseMatchesPolicy(response:AiPageResponse,policy:unknown,answerBook:boolean,prompt?:AiPagePrompt){return pageRegionsPolicy(prompt?.policy)?!answerBook&&policy===undefined&&response.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE:policy===undefined?response.schemaVersion===MATERIAL_AI_PAGE_RESPONSE:policy===MATERIAL_BOOK_PAGE_POLICY&&answerBook&&response.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;}
 export type AiPageQuery={schemaVersion:typeof MATERIAL_AI_PAGE;batchId:string;ordinal:number;includeImage?:true};
 export type AiPageStatus='complete'|'needs_review'|'blank';
 export type AiPageView={schemaVersion:typeof MATERIAL_AI_PAGE;resource:TeacherResource;source:MaterialPageSource;text:string;ocrText:string;status:AiPageStatus;transcriptionStatus?:AiPageStatus;issues:AiIssue[];inputImage?:{dataUrl:string};bookAnswers?:BookAnswerPage};
 const plain=(v:unknown,keys:string[]):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&[Object.prototype,null].includes(Object.getPrototypeOf(v))&&Reflect.ownKeys(v).length===keys.length&&keys.every(k=>{const d=Object.getOwnPropertyDescriptor(v,k);return !!d&&d.enumerable&&'value'in d;});
 const sha=(v:unknown)=>typeof v==='string'&&/^[a-f0-9]{64}$/.test(v);
-export function validAiPagePrompt(v:unknown):v is AiPagePrompt{return (plain(v,['policy','ocrStatus'])&&v.policy===MATERIAL_PAGE_PROMPT||plain(v,['policy','ocrStatus','totalPages'])&&v.policy===MATERIAL_QUESTION_PAGE_PROMPT&&Number.isSafeInteger(v.totalPages)&&Number(v.totalPages)>=1&&Number(v.totalPages)<=10000)&&typeof v.ocrStatus==='string'&&['complete','blank','failed','needs_review'].includes(v.ocrStatus);}
+export function validAiPagePrompt(v:unknown):v is AiPagePrompt{
+ const old=plain(v,['policy','ocrStatus'])&&v.policy===MATERIAL_PAGE_PROMPT;
+ const page=plain(v,['policy','ocrStatus','totalPages'])&&v.policy===MATERIAL_QUESTION_PAGE_PROMPT||plain(v,['policy','ocrStatus','totalPages','resourceTitle'])&&pageRegionsPolicy(v.policy)&&typeof v.resourceTitle==='string'&&v.resourceTitle.length>0&&v.resourceTitle.length<=512&&!/[\x00-\x1f]/.test(v.resourceTitle);
+ return (old||page&&Number.isSafeInteger(v.totalPages)&&Number(v.totalPages)>=1&&Number(v.totalPages)<=10000)&&typeof v.ocrStatus==='string'&&['complete','blank','failed','needs_review'].includes(v.ocrStatus);
+}
 export function validMaterialPageSource(v:unknown):v is MaterialPageSource{return plain(v,['schemaVersion','resourceId','version','page','generation','receiptSha'])&&(v.schemaVersion===MATERIAL_PAGE_SOURCE||v.schemaVersion===MATERIAL_IMAGE_SOURCE&&v.page===1)&&materialId(v.resourceId)&&sha(v.version)&&Number.isSafeInteger(v.page)&&Number(v.page)>=1&&Number(v.page)<=10000&&typeof v.generation==='string'&&/^[a-f0-9-]{36}$/i.test(v.generation)&&sha(v.receiptSha);}
 export function validAiPageQuery(v:unknown):v is AiPageQuery{return (plain(v,['schemaVersion','batchId','ordinal'])||plain(v,['schemaVersion','batchId','ordinal','includeImage'])&&v.includeImage===true)&&v.schemaVersion===MATERIAL_AI_PAGE&&aiBatchId(v.batchId)&&Number.isSafeInteger(v.ordinal)&&Number(v.ordinal)>=1&&Number(v.ordinal)<=100;}
 export function parseAiPageResponse(raw:string):AiPageResponse{
  try{
   if(new TextEncoder().encode(raw).length>128*1024)throw Error();const v=JSON.parse(raw);
-  const book=v?.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE;
-  if(!plain(v,['schemaVersion','outcome','questions','pageText','pageIssues',...(book?['answerIssues']:[])])||!book&&v.schemaVersion!==MATERIAL_AI_PAGE_RESPONSE||typeof v.pageText!=='string'||v.pageText!==v.pageText.trim()||/[\x00]/.test(v.pageText)||new TextEncoder().encode(v.pageText).length>64000||!Array.isArray(v.pageIssues)||v.pageIssues.length>5||new Set(v.pageIssues).size!==v.pageIssues.length||!v.pageIssues.every(i=>AI_ISSUES.includes(i)))throw Error();
+  const book=v?.schemaVersion===MATERIAL_AI_BOOK_PAGE_RESPONSE,regions=v?.schemaVersion===MATERIAL_PAGE_REGIONS_RESPONSE;
+  if(!plain(v,['schemaVersion','outcome','questions','pageText','pageIssues',...(book?['answerIssues']:regions?['regions']:[])])||!book&&!regions&&v.schemaVersion!==MATERIAL_AI_PAGE_RESPONSE||typeof v.pageText!=='string'||v.pageText!==v.pageText.trim()||/[\x00]/.test(v.pageText)||new TextEncoder().encode(v.pageText).length>64000||!Array.isArray(v.pageIssues)||v.pageIssues.length>5||new Set(v.pageIssues).size!==v.pageIssues.length||!v.pageIssues.every(i=>AI_ISSUES.includes(i)))throw Error();
   if(book){const keys=new Set<string>();if(!Array.isArray(v.answerIssues)||v.answerIssues.length>200||!Array.isArray(v.questions)||v.questions.length||v.outcome==='questions'||!v.answerIssues.every((item:unknown)=>{
    if(!plain(item,['section','number','issues'])||typeof item.section!=='string'||!item.section.trim()||item.section!==item.section.trim()||item.section.length>200||/[\x00-\x1f]/.test(item.section)||typeof item.number!=='string'||!/^\d{1,5}$/.test(item.number)||!Array.isArray(item.issues)||!item.issues.length||item.issues.length>5||new Set(item.issues).size!==item.issues.length||!item.issues.every(i=>AI_ISSUES.includes(i)))return false;
    const key=bookSectionKey(item.section)+'\0'+item.number;if(keys.has(key))return false;keys.add(key);return true;
   })||(v.pageIssues.length||v.answerIssues.length)&&v.outcome!=='needs_review')throw Error();}
   parseAiBatchResponse(JSON.stringify({schemaVersion:MATERIAL_AI_IMAGE_RESPONSE,outcome:v.outcome,questions:v.questions}));
+  if(regions&&!validQuestionRegions(v.regions,(v.questions as AiImageResponse['questions']).map(q=>q.number)))throw Error();
   if(v.outcome==='questions'&&!v.pageText)throw Error();return v as AiPageResponse;
  }catch{throw Error('invalid_response');}
 }

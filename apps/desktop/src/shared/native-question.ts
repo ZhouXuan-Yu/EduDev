@@ -62,6 +62,7 @@ export function nativeQuestionConflicts(q:Pick<QuestionBankItem,'stem'|'answer'|
 /** One presentation boundary. AI coverage remains AI coverage, including after a routine teacher edit. */
 export function questionPresentation(q:QuestionBankItem){
  if(q.archive?.native){if(q.document||!validNativeQuestionDocument(q.archive.native)||nativeQuestionConflicts(q,q.archive.native).length)throw Error('question_fact_conflict');return{kind:'ai_native' as const,authority:'ai' as const,document:q.archive.native,projection:q.archive.native.projection};}
+ if(q.archive?.ai?.policy==='page-crop-complete.v1'){if(!q.document||!validQuestionDocument(q.document)||q.document.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)throw Error('question_fact_conflict');return{kind:'ai_page' as const,authority:'ai' as const,document:q.document,projection:q.document.context.projection};}
  if(q.document){if(!validQuestionDocument(q.document))throw Error('question_document_invalid');return{kind:'teacher_document' as const,authority:q.document.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA?'teacher' as const:'unreviewed' as const,document:q.document,projection:q.document.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA?q.document.context.projection:undefined};}
  return{kind:'text' as const,authority:'unreviewed' as const,document:undefined,projection:undefined};
 }

@@ -1,5 +1,9 @@
 # 当前集成与复用
 
+## 2026-11-01 图题自动归档的独立来源检查
+
+两遍AI一致、区域坐标相同和名义ready数不能证明裁剪完整。新图题必须保存本地像素边缘及RapidOCR首尾/邻题证据，下一页续题或来源未知保持待核；旧实验缺证据不补写成功。原PDF/首稿/终稿/错误裁剪保留，测试观察器失败不能归因模型或静默重放未知调用。原题面AI来源与教师核对来源保持区分。
+
 2026-11-01 saved artifactCheck只读v1：原text/Office元数据与精确原回执按需投影；历史明细和当前适用性分开，取消沿原64上限，无新表/依赖/Runtime。源码c3f7416；SQLite9/解析12/Pi11/最终冷启3与240组件/build通过，详docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#artifactChecksSlice。
 
 2026-11-01 E08复用PiDeliveryBundleCard、原coordinator/text/Office服务及ResourceTable；目录只读，待确认编辑回原对话，已保存文件直接原预览。a73b389整合原型docs主线为9a49e4e，生产源码相同；build/type、240组件、SQLite8及正式Electron10通过，见bundleCatalogSlice；0付费，D未更新。

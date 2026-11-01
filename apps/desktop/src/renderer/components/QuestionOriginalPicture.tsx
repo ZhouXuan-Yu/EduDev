@@ -8,6 +8,7 @@ import {QuestionOriginalGallery} from './QuestionOriginalGallery';
 import {NativeQuestionPicture} from './NativeQuestionPicture';
 import {MaterialAiPagePanel} from './product/MaterialAiPagePanel';
 export function QuestionOriginalPicture({question}:{question:QuestionBankItem}){
+ if(question.archive?.ai?.policy==='page-crop-complete.v1')return <><QuestionOriginalGallery question={question}/><MaterialAiPagePanel batchId={question.archive.ai.batchId} ordinal={question.archive.ai.ordinal}/></>;
  if(question.archive?.pageSource&&question.archive.ai)return <MaterialAiPagePanel batchId={question.archive.ai.batchId} ordinal={question.archive.ai.ordinal}/>;
  if(question.archive?.native)return <NativeQuestionPicture question={question}/>;
  if(!question.document)return null;
