@@ -1,14 +1,14 @@
 # UI Goal 验证汇总
 
-2026-11-01 文档冻结。当前源码HEAD `a67f3cf9c81ed96d8cf2546868115dd076fa7ad2`；父任务确认相对构建源码63e3的 `apps/desktop/src` 无差异，0231构建保持。build/TSC、renderer240、新源码边界及本轮MIS/HTML实际检查已有下表证据。旧设置、legacy、Paper/U6等只按各自原构建限定接受，历史失败报告不改写、不拼接计数。
+2026-11-01 工程交付补录。`2749d3d2974165f2ca3764dd6cef31db7f223e5f` 已正常推送至远端main与任务分支，D盘源码已快进至该提交。相对已验源码63e3，生产源码与package/lock无差异；0231测试构建证据保持。D盘另行独立构建/TSC exit0，并通过CUA确认实际新版窗口可见、已置前；详[启动记录](CANONICAL_RUNTIME.md)。旧设置、legacy、Paper/U6等只按各自原构建限定接受，历史失败报告不改写、不拼接计数。后续仅本交付文档更新不要求重复构建。
 
-**尚未整体验收或宣称main已交付。** MIS独立评分81.25/100仍非全项质量pass；字数、条件/合成来源边界、运行中重开续接、独立教师视觉/使用及完整ChatGPT parity仍有缺口。原型V3仅为设计边界。父任务独占后续正常Git交付、canonical启动及本地runtime证据追加；本docs worker冻结写入，不追加模型重跑或审计。
+**工程代码已交付main，整体产品尚未验收。** MIS独立评分81.25/100仍非全项质量pass；字数、条件/合成来源边界、运行中重开续接、独立教师视觉/使用及完整ChatGPT parity仍有缺口。原型V3仅为设计边界；不因合入设计文件就宣布生产UI已应用。此次交付不关闭这些余项。
 
 ## 当前结果摘要
 
 | 项目 | 实际结果 | 接受范围 / 剩余项 |
 | --- | --- | --- |
-| 源码 / 构建 | a67f3cf9（文档合入）；63e3源码构建0231；build/TSC exit0、renderer240/240 exit0 | 455文件指纹见下；Git推送/远端一致性、canonical实际窗口由父任务补录 |
+| 源码 / 构建 | 2749d3d已推送main；63e3源码测试构建0231；build/TSC exit0、renderer240/240 exit0 | D盘自身独立构建及实际窗口另有记录；455文件指纹不混同不同目录构建 |
 | 新源码边界 | artifact9、backup8、KB53，分别exit0 | 真实SQLite/files或受控image/model；不是新DataBackupPanel完整UI AT、自然视觉/数学质量 |
 | 最终MIS LvqyDM | 一次预声明同prompt真实模型流5/5 exit0；A评分81.25/100 | D=[3,3,4,2,4,4]；解释307字符超160–240容差，条件及合成来源边界轻微遗漏；运行中手动重开未证明 |
 | 最终HTML / 冷读 | 正式--checks 11/11 exit0；同fixture冷读3/3 exit0 | 0231，controlled SSE走真实Pi/composer/SQLite/Office审批、当前/历史版本及冷启，非paid；误传--help的另轮actual6/6独立保留 |
@@ -59,7 +59,7 @@
 - 父任务通报该轮settings/归档旧CLI忽略 `--check` 并误入actual，**该轮不是只读/仅预检**；现已修复未知参数拒绝。此处不重解释不同脚本（例如PiPaperReview）的既有预检证据。本docs worker未启动actual；父任务显式无模型archive-only最新2BZXtR已6/6、exit0，旧5iqviG 1pass/exit1保留，不重跑已接受29项及模型调用。
 - 2BZXtR归档6/6及bf167完整legacy补验exit0已限定接受，compat复制边界结论已接受；0FGfz0历史selector、gubq7n旧chrome锚点、legacy隐藏workspace超时及BAGFV6失败均保留。eBPbd2为复制authority环境边界、不算生产缺陷，整体仍exit 1，不判定未证实的生产丢功能；reader修正不降低亮度/4.5门槛。上述QA补验均属ce5/bf167冻结批次；后续主线生产边界另列，不称当前HEAD仍为ce5。
 - 旧Paper/U6、raw7及旧截图保持原构建范围；incoming改变OfficeReplySources、host journal与Office artifacts，不能称同backend或最终整包功能全通过。新集成replay/cards已独立通过，但不替代学科质量与全部业务。
-- 人类视觉/使用验收、旧质量失败的修复后复评及ChatGPT parity均未完成；最新参考画面被Python网络授权/Docker错误弹窗遮挡，无法完整观察，早先无遮挡运行相观察仍保留；当前源码的main非强制HEAD:main推送/远端一致性及canonical运行尚待父任务证据，不移动其他main工作树、不强推或丢弃他人功能。
+- 人类视觉/使用验收、旧质量失败的修复后复评及ChatGPT parity均未完成；参考画面曾被Python网络授权/Docker错误弹窗遮挡，无法完整观察，早先无遮挡运行相观察仍保留。main正常推送、D盘独立构建及实际窗口现已补录；未移动其他main工作树、未强推或丢弃他人功能。
 - 父任务最新复核97项保护文件原始字节/Git blob全不变、exit 0；canonical D三份脏文档hash/size仍与before一致，diff --check为0。保留原清单范围，本worker未新增审计。无root/global/vendor/Composer改动；本轮只向2.Memory/3.Learning/4.Wiki最小追加指针，保留他人内容；1.Agent无新规则不写。
 
 ## 最新构建及合入边界
@@ -206,7 +206,7 @@ working tree原始SHA-256分别为 `f308a852f86193f3a54865a4406563f49bc9092b999d
 | --- | --- | --- |
 | 执行 | `attachment-executing-expanded-1366.png` → [mis-executing-1366.png](evidence/final/mis-executing-1366.png) | 117,745 B；2049×1152；`25114015bcd33f6922026e2fdbb4422f05876fda0e689aefcbcb5565b95e1b7e` |
 | 交接采集 | `attachment-explicit-final-collapsed-1366.png` → [mis-handoff-1366.png](evidence/final/mis-handoff-1366.png) | 138,578 B；2049×1152；`9a79cf99761ef85889cd8644fb0cf69045ec23ba654601bfc940d7fc88ceb0a8` |
-| 完成 | `attachment-completed-1366.png` → [mis-completed-1366.png](evidence/final/mis-completed-1366.png) | 144,166 B；2049×1152；`d62860519339b9f252911de60b1ab74582d09436880c467edae120b5a84ea4c6` |
+| 完成后手动展开工具详情 | `attachment-completed-1366.png` → [mis-completed-1366.png](evidence/final/mis-completed-1366.png) | 144,166 B；2049×1152；`d62860519339b9f252911de60b1ab74582d09436880c467edae120b5a84ea4c6` |
 
 CSS视口1366×768、DPR1.5；截图仅证明各自采集状态/滚动位置，交接时序依照报告及A安全事件核验，不凭文件名推定瞬间状态。完成图含展开工具详情，不作为运行中手动重开续接证据；该项本次未证明。
 
