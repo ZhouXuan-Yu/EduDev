@@ -23,3 +23,13 @@ Canonical D HEAD 保持 `7c767fe2c61d002d2c23eab18c0235b956ec88ba`；安装前�
 - 本地完整运行记录：[canonical-launch-final.json](../../../apps/desktop/test-results/ui-goal-20261101/canonical-launch-final.json)；构建日志：[canonical-start-desktop-final.log](../../../apps/desktop/test-results/ui-goal-20261101/canonical-start-desktop-final.log)。原失败日志为同目录canonical-start-final.log。
 
 后续仅提交此交付记录的文档变更，D盘可再次快进，不改变已启动的生产源码。可见窗口及构建通过不替代教师验收、OCR准确率、完整ChatGPT parity或内容质量全部通过。
+
+## 续接02：1b19e88日常版实际启动
+
+- `1b19e8875d9d3fb298c5b140bdfaad57750cf7f2` 已正常推送main与任务分支，含本片aa95请求范围提示、真实重开QA及协作者窗口几何修复。D盘此前由协作者更新至d76e6e5；本片未回退，而是正常ff至1b19e88。
+- 重启前CUA确认日常窗口输入为空、无进行中的停止入口；旧主进程58588已退出后才启动新主进程，未强杀。首次日志重定向至D盘不存在的test-results子目录失败，npm没有执行；改为已存在的sidebar证据目录后，实际 `npm.cmd start` 在D盘apps/desktop运行，build/TSC与启动命令exit0。此命令失败不计为功能回归，也不冒称首次命令成功。
+- D盘使用自己的依赖重新构建，未复制sidebar out/node_modules。src tree为 `8382190bfa58728772960ee073aa924874e8d326`；455文件out SHA256 `cc699cd47b43a381cfabd584169dc0060c10898453ff49e306b2d8d1b8b64695`，main入口SHA256 `41410cc4eed549391887ea51f537a346431864d06d245ae600f3575aedd60d42`。renderer `index-CP10PA5h.js` 与sidebar产物名不同，不把不同根目录构建指纹混同。
+- 新main PID54720，命令为D盘electron.exe加D盘out/main/index.js。CUA选择窗口1839426，文档URL为 `file:///D:/WorkProject/EduProject/apps/desktop/out/renderer/index.html`；Raise后AX及目视截图均确认首页、原输入工具栏、固定底部设置、按需关闭的右栏可见。未发送对话或修改权限。D盘3份未提交文档size/SHA256全部保持原值。
+- 完整本地证据：[canonical-launch-continuation-02.json](../../../apps/desktop/test-results/ui-goal-20261101/canonical-launch-continuation-02.json)、[canonical-start-continuation-02.log](../../../apps/desktop/test-results/ui-goal-20261101/canonical-start-continuation-02.log)。本机日常启动不替代隔离fixture、教师验收或完整ChatGPT parity；M4字数/变式条件余项仍保留。
+
+U4-A持久手选题篮在任务分支继续实施，当前日常版不冒称已包含。后续仅文档提交的ff不要求重建上述同一生产源码。

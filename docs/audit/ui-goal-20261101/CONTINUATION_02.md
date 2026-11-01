@@ -72,4 +72,4 @@
 - `node scripts/xiaozhi-agent/window-geometry-state-smoke.mjs`：10/10、exit0。仅证明v1尺寸schema/显示算术，不把它冒称原生拖动验收；协作者AT03原生拖动余项仍保留。
 - 没有因几何整合重复付费生成M4。原240组件、KB57及scope/传输测试保留各自7f8220d范围；不累加为新的整包功能验收。依赖与lock未变，审计45项仍未关闭。
 
-main推送和D盘新版启动证据在完成后补录；不据已启动首轮或协作者d76窗口冒称本片新代码已运行。
+`1b19e8875d9d3fb298c5b140bdfaad57750cf7f2` 已正常推送main与任务分支。D盘从d76正常ff至1b19e88，三份脏文档原size/hash保持；D盘自身 `npm.cmd start` build/TSC及启动exit0，新main PID54720。CUA窗口1839426的D盘renderer URL、Raise后可见截图和原输入工具栏已核对。D盘out指纹cc699不同于sidebar9526，分别记录；[完整日常启动与原失败边界](CANONICAL_RUNTIME.md)。后续仅文档ff不变更生产源码。U4-A真实宿主与页面增量另按[冻结合同](U4_A_CONTRACT.md)继续，不计入本片已交付。
