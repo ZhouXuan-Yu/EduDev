@@ -1,0 +1,186 @@
+{
+  "date": "2026-11-02",
+  "scope": "Owned synthetic diagnostics artifacts only; initial failure and stale native frame retained",
+  "entries": [
+    {
+      "name": "domain-report.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-domain-Q4ZCYa\\report.json",
+      "rawBytes": 1219,
+      "rawSha256": "bc7884c0ed338a4b7d1f2d38bee0a81c0fb30ee383d624801bb9dcf932520c5b",
+      "gzipBytes": 679,
+      "gzipSha256": "ba785f670a7e5f72b17a86a0f83d12235afe92286b1e8a4344bf31ad0be21d85",
+      "file": "docs/research/evidence/diagnostics/20261102/domain-report.json.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-before-resume-1793548940610.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\before-resume-1793548940610.json",
+      "rawBytes": 6070,
+      "rawSha256": "eee71884b1cba86e22639471405f82881d6f2f96ce7341629ad820c4f46db12f",
+      "gzipBytes": 1882,
+      "gzipSha256": "7410a6dd588751dd2f8f5c1b059587b052fccaa053257f043236758856034177",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-before-resume-1793548940610.json.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-before-resume-1793548940610.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\before-resume-1793548940610.png",
+      "rawBytes": 130694,
+      "rawSha256": "df8284375a27370596287b03981a4f86803ca7e38607a91acddc3524ecf5ffff",
+      "gzipBytes": 120732,
+      "gzipSha256": "1dc4dd88a8bfd52a3c676ec8cd296d678536b3064d5e05f15dade70d8b7ef20b",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-before-resume-1793548940610.png.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-diagnostics-1366.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\diagnostics-1366.png",
+      "rawBytes": 111492,
+      "rawSha256": "b1a1fe439b0fb1e5dacf5531acae770702d56660d0bb54dc6a8d5da99813bab5",
+      "gzipBytes": 107256,
+      "gzipSha256": "a7d2667301b07efa63a1db09703f68f4a7d567a5ffabe9925d08553afced6e9d",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-diagnostics-1366.png.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-diagnostics-1920.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\diagnostics-1920.png",
+      "rawBytes": 135149,
+      "rawSha256": "6af23c258277ecff48a558d22d947d8fad2624428994fdcb3cb3dc91df005f7b",
+      "gzipBytes": 127045,
+      "gzipSha256": "d6962cd5b435dd7c7234cc82c72d37178f3af9d3a406da8dc4dcd881f7a4d082",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-diagnostics-1920.png.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-failure.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\failure.png",
+      "rawBytes": 130694,
+      "rawSha256": "df8284375a27370596287b03981a4f86803ca7e38607a91acddc3524ecf5ffff",
+      "gzipBytes": 120732,
+      "gzipSha256": "1dc4dd88a8bfd52a3c676ec8cd296d678536b3064d5e05f15dade70d8b7ef20b",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-failure.png.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-report.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\report.json",
+      "rawBytes": 7125,
+      "rawSha256": "126a57387c4294419aa46dd70075fd0ece6115df3b8b67dddf14bb6de7ecd4a5",
+      "gzipBytes": 2345,
+      "gzipSha256": "d4c4bb8031d6e221a6a2d058df0ba8d6a936ab582cde332bf7ca6217fce45099",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-report.json.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-viewport-1366.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\viewport-1366.png",
+      "rawBytes": 99416,
+      "rawSha256": "35e2de6d14b2a35a4d676202342fa6095a9adf0ff6ca557290b2f5b23d2cd376",
+      "gzipBytes": 95332,
+      "gzipSha256": "bed6bffcf48cbe59924f8f4d70bd3cde524654f1043c6f2c691047f804a9eff9",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-viewport-1366.png.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-viewport-1920.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\viewport-1920.png",
+      "rawBytes": 134290,
+      "rawSha256": "f3aba0eceedf8050342a55ea4783962440e60d5b75b7a68d8e49d920b2cdda51",
+      "gzipBytes": 126550,
+      "gzipSha256": "1fe14bcc581b88e8aceb3f5391055b48b37d9285ffc2b1c4b880d77f9dcf1d42",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-viewport-1920.png.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-viewport-report.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\viewport-report.json",
+      "rawBytes": 3855,
+      "rawSha256": "5b009f3f0665f64a66bda8fc19649836e2f546ceaf528da4dd39ac068f03dbee",
+      "gzipBytes": 990,
+      "gzipSha256": "607353ba21514b8eaac580b06d0aaa019b840c8bd2234d6a5c61275738bf3e0a",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-viewport-report.json.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-诊断.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-diagnostic-ui-1wQuEQ\\诊断.json",
+      "rawBytes": 1143,
+      "rawSha256": "e5ef235c4ac49620e84efbe10db7e184915ba76f38cdb13528b7da71b5459b3f",
+      "gzipBytes": 531,
+      "gzipSha256": "9a64c766884d6e4e45aae0187857695a5b66bd17c9993c44ee34d60058f087eb",
+      "file": "docs/research/evidence/diagnostics/20261102/ui-诊断.json.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-build.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-build.log",
+      "rawBytes": 40560,
+      "rawSha256": "502919edafcd687bf6d0b15b169b525212b841fa1d08a6233019d20ff3dc5596",
+      "gzipBytes": 8185,
+      "gzipSha256": "59c45fe4f34b48d1da283b8624ab1cfffc132a0e3823e364b04336813899bf9d",
+      "file": "docs/research/evidence/diagnostics/20261102/diagnostics-build.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-components.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-components.log",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipBytes": 279,
+      "gzipSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561",
+      "file": "docs/research/evidence/diagnostics/20261102/diagnostics-components.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-domain.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-domain.log",
+      "rawBytes": 282,
+      "rawSha256": "4af5a4404bd886131310849ffccd1bdf09d369c62cfbdb621f8ef13ba93f4627",
+      "gzipBytes": 239,
+      "gzipSha256": "5ceb508ef883d9dad83f278f1fba24f0d9c409b45aaec6e649e0735211cdc4b9",
+      "file": "docs/research/evidence/diagnostics/20261102/diagnostics-domain.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-ui.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-ui.log",
+      "rawBytes": 1817,
+      "rawSha256": "3b59c74f16b251e31b8acbc27a59966d818b7c1928f75777ab69387792b14bd7",
+      "gzipBytes": 770,
+      "gzipSha256": "4c48c056ee9578038c8926686bd0dd9c2075c040371e8ae919edebd5aed2f241",
+      "file": "docs/research/evidence/diagnostics/20261102/diagnostics-ui.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-ui-resume.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-ui-resume.log",
+      "rawBytes": 729,
+      "rawSha256": "2e64a5be1eb44b0e550b8ffe79a9811a235263d453da6282247a21813799cabd",
+      "gzipBytes": 478,
+      "gzipSha256": "52d1d8de775561459ad88081cf505850a465f6817113a51c5a806cf82a5ba024",
+      "file": "docs/research/evidence/diagnostics/20261102/diagnostics-ui-resume.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-viewport.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-viewport.log",
+      "rawBytes": 209,
+      "rawSha256": "510fd617723e74ea630252b2743670c8ca0ac22ef5f48815c959fcd116114778",
+      "gzipBytes": 182,
+      "gzipSha256": "d5284c839c0ec6d01927f973694cc3d14a0b46ee5148f8ef2678912b643a856b",
+      "file": "docs/research/evidence/diagnostics/20261102/diagnostics-viewport.log.gz",
+      "verified": true
+    },
+    {
+      "name": "diagnostics-audit.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\diagnostics-audit.json",
+      "rawBytes": 57556,
+      "rawSha256": "51f19b047a871972747c62ba8f35f45d9730a054ba54a1661123e41017922cf9",
+      "gzipBytes": 6664,
+      "gzipSha256": "20e47a97caa9ef06179f847e81252ad53efb5a65fadd25de343ddfbdd79e1257",
+      "file": "docs/research/evidence/diagnostics/20261102/diagnostics-audit.json.gz",
+      "verified": true
+    }
+  ]
+}

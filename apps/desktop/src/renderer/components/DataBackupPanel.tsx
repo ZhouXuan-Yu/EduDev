@@ -38,6 +38,13 @@ function issueList(label: string, items: string[]) {
   return <li><strong>{label}：</strong>{items.slice(0, 5).join('、')}{items.length > 5 ? ` 等 ${items.length} 项` : ''}</li>;
 }
 
+function ExternalBackupSummary({value}:{value?:{externalOutputs?:ExportDataRootResult['externalOutputs']}}){
+ const result=value?.externalOutputs;if(!result)return null;
+ return <div data-testid="data-backup-external-summary"><p>含 {result.fileCount} 个另选目录成果{result.omittedCount?`；${result.omittedCount} 项未纳入`:''}</p>
+  {result.omittedCount>0&&<p data-testid="data-backup-omitted" role="status">{result.omitted.slice(0,3).join('；')}{result.omittedCount>3?'；其余遗漏见备份清单':''}。请找回对应文件或目录后重新备份。</p>}
+ </div>;
+}
+
 export function DataBackupState({ state }: { state: DataBackupPanelState }) {
   if (state.status === 'idle') {
     return <div className="backup-feedback neutral" data-testid="data-backup-idle">选择数据目录之外的位置创建完整备份，或选择已有备份进行只读校验。</div>;
@@ -55,7 +62,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
     return (
       <div className="backup-feedback success" data-testid="data-backup-export-success">
         <CheckCircle2 size={17} />
-        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small>{state.exportResult.conversationOutputs&&<small data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</small>}</div>
+        <div><strong>{state.message}</strong><span data-testid="data-backup-export-path">{state.exportResult.exportPath}</span><span data-testid="data-backup-manifest-path">{state.exportResult.manifestPath}</span><small>{state.exportResult.fileCount} 个源文件 · manifest 已回读校验</small>{state.exportResult.conversationOutputs&&<small data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</small>}<ExternalBackupSummary value={state.exportResult}/></div>
       </div>
     );
   }
@@ -64,7 +71,7 @@ export function DataBackupState({ state }: { state: DataBackupPanelState }) {
     return (
       <div className="backup-feedback success" data-testid="data-backup-verify-success">
         <CheckCircle2 size={17} />
-        <div><strong>{state.message}</strong><span data-testid="data-backup-verify-path">{result.backupPath}</span><small>{result.fileCount} 个文件与 manifest 的大小、SHA-256 一致</small></div>
+        <div><strong>{state.message}</strong><span data-testid="data-backup-verify-path">{result.backupPath}</span><small>{result.fileCount} 个文件与 manifest 的大小、SHA-256 一致</small><ExternalBackupSummary value={result}/></div>
       </div>
     );
   }
@@ -110,7 +117,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
         setStatus?.(message);
         return;
       }
-      const message = result.verified ? '完整数据备份已生成并通过校验。' : '备份已生成，但完整性校验未通过。';
+      const message = result.verified ? result.externalOutputs?.omittedCount ? `备份已生成并通过文件校验；${result.externalOutputs.omittedCount} 项成果未纳入，请查看遗漏说明。` : '完整数据备份已生成并通过校验。' : '备份已生成，但完整性校验未通过。';
       setState({ status: result.verified ? 'export_success' : 'error', message, exportResult: result });
       setStatus?.(message);
     } catch (error) {
@@ -134,7 +141,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
         return;
       }
       const message = result.verified
-        ? '备份完整性校验通过。'
+        ? result.externalOutputs?.omittedCount ? `清单内文件校验通过；备份时有 ${result.externalOutputs.omittedCount} 项成果未纳入。` : '备份完整性校验通过。'
         : `备份校验失败：缺失 ${result.missingFiles.length}、被修改 ${result.changedFiles.length}、清单外 ${result.unexpectedFiles.length}。`;
       setState({ status: result.verified ? 'verify_success' : 'verification_failed', message, verificationResult: result });
       setStatus?.(message);
@@ -168,7 +175,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
   </div>;
 
   if (modern) return <section className="pi-local-backup" data-testid="data-backup-panel">
-    <p>备份本机资料、题库、对话和默认生成文件。题意索引缓存可重建；另选工作目录中的文件需单独备份。</p>
+    <p>备份本机资料、题库、对话、默认生成文件及已登记的另选目录成果；另选目录中的其他文件不扫描。</p>
     <p className="pi-settings-location" data-testid="data-root-path">本地资料位置：{dataRoot || '正在读取…'}</p>
     <div className="pi-settings-actions"><Button variant="secondary" isDisabled={busy || disabled || !dataRoot} onPress={() => void exportBackup()} data-testid="data-backup-export"><HardDrive size={17}/>{state.status === 'exporting' ? '正在备份…' : '创建本地备份'}</Button>
       <Button variant="outline" isDisabled={busy || disabled || !dataRoot} onPress={() => void verifyBackup()} data-testid="data-backup-verify"><ShieldCheck size={17}/>{state.status === 'verifying' ? '正在检查…' : '检查已有备份'}</Button></div>
@@ -178,6 +185,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
         : <div role={['error','verification_failed'].includes(state.status) ? 'alert' : 'status'} data-testid={`data-backup-${state.status === 'export_success' ? 'export-success' : state.status === 'verify_success' ? 'verify-success' : state.status === 'verification_failed' ? 'verify-failed' : busy ? 'loading' : state.status}`}>
           <p>{state.message}</p>{state.exportResult && <p className="pi-settings-location" data-testid="data-backup-export-path">{state.exportResult.exportPath}</p>}{state.exportResult?.conversationOutputs&&<p data-testid="data-backup-generated-count">含 {state.exportResult.conversationOutputs.fileCount} 个默认生成文件</p>}
           {state.verificationResult && <p className="pi-settings-location" data-testid="data-backup-verify-path">{state.verificationResult.backupPath}</p>}
+          <ExternalBackupSummary value={state.exportResult||state.verificationResult}/>
         </div>}
     </div>
     {disabled && <p>任务结束后可创建或检查备份。</p>}
@@ -195,7 +203,7 @@ export function DataBackupPanel({ dataRoot, setStatus, modern = false, disabled 
       </div>
       {restoreControls}
       <div aria-live="polite"><DataBackupState state={state} /></div>
-      <p className="backup-boundary" data-testid="data-backup-boundary">备份保留本地资料、题库和默认生成文件；另选工作目录中的文件需单独备份。题意索引缓存可重建；生成清单后不会自动恢复、上传云端或修改源数据。</p>
+      <p className="backup-boundary" data-testid="data-backup-boundary">备份保留本地资料、题库、默认生成文件及已登记的另选目录成果；其他外部文件需单独备份。题意索引缓存可重建；生成清单后不会自动恢复、上传云端或修改源数据。</p>
     </div>
   );
 }

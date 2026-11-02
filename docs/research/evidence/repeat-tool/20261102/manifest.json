@@ -1,0 +1,246 @@
+{
+  "date": "2026-11-02",
+  "scope": "Owned synthetic fixtures, reports and daily source/process/document hashes only. Failed attempts retained.",
+  "entries": [
+    {
+      "name": "domain-report.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-tool-3CJgHN\\report.json",
+      "rawBytes": 1197,
+      "rawSha256": "c38412926e92c2b22ec54fe2188a6e1789948370789bb1cd4c98c1c15901cbd2",
+      "gzipBytes": 621,
+      "gzipSha256": "1d1b75e8fcf183a0aff878457083b9de999a697c4e873970c9794ae9c6907351",
+      "file": "docs/research/evidence/repeat-tool/20261102/domain-report.json.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-report.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\report.json",
+      "rawBytes": 6498,
+      "rawSha256": "3c5946db72447cbd034af75c258c9b7a2710265ce786180e6cd2752396362eac",
+      "gzipBytes": 1680,
+      "gzipSha256": "26c41f25b94ed8aa04b6cb67caf20fb8e7501f809300b5e1aba9912d388e5ded",
+      "file": "docs/research/evidence/repeat-tool/20261102/ui-report.json.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-reply.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\reply.png",
+      "rawBytes": 106211,
+      "rawSha256": "9614dd1363fcfafc42356b8129dbcac955c8524df8c86c548f4bb9203a611462",
+      "gzipBytes": 97652,
+      "gzipSha256": "8f93b74522bd28bad23d941c0bc1d79e69e8b9947f53fffdc2e547f24c94a0f2",
+      "file": "docs/research/evidence/repeat-tool/20261102/ui-reply.png.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-first-failure.json",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-NtfORA\\report.json",
+      "rawBytes": 4234,
+      "rawSha256": "260ba295da7f78948e900642461b8262ff1db7d57a0cb1ec418c0e72b6d7b14f",
+      "gzipBytes": 1043,
+      "gzipSha256": "051a9af03fa15b9161428c56d092c22368955765b0ad6c73a9f3feae972bdf8d",
+      "file": "docs/research/evidence/repeat-tool/20261102/ui-first-failure.json.gz",
+      "verified": true
+    },
+    {
+      "name": "ui-first-failure.png",
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-NtfORA\\failure.png",
+      "rawBytes": 126209,
+      "rawSha256": "317aa0180e889c681fa7a4580576ff916d6549ef1ad22dfe3f6b8185997058ef",
+      "gzipBytes": 116444,
+      "gzipSha256": "14439a0dcb0e439ea5d5c1d5f52d1c416f89548507fb92406a50d5b84934c008",
+      "file": "docs/research/evidence/repeat-tool/20261102/ui-first-failure.png.gz",
+      "verified": true
+    },
+    {
+      "name": "native-proof.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-native-proof.json",
+      "rawBytes": 3281,
+      "rawSha256": "23770f707ed81f72502f9e5997da9466bf09295b52fb207d401c8d8dd085467a",
+      "gzipBytes": 480,
+      "gzipSha256": "821c034ac8fc77514ba4ff644a063e9ad563499fc9e447223abad947ef8e0a05",
+      "file": "docs/research/evidence/repeat-tool/20261102/native-proof.json.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-build.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-build.log",
+      "rawBytes": 40560,
+      "rawSha256": "e5e499ba4e45e460cae4e0591d419c051c20b97fa8d38f7744976afab1595c97",
+      "gzipBytes": 8183,
+      "gzipSha256": "7e6c062d6a808c71a18a9f296a93e096dc3635c0290c168bae9f17871d16f5fb",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-build.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-build-final.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-build-final.log",
+      "rawBytes": 40558,
+      "rawSha256": "ad940fc8b31d4902849827823555f4ed334dddfacc0ebdbd40993c0731462a26",
+      "gzipBytes": 8182,
+      "gzipSha256": "7fc410ec896c173cf915db80615bc49901b603d3ba664423aa2eb45d4d090935",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-build-final.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-components.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-components.log",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipBytes": 279,
+      "gzipSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-components.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-domain.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-domain.log",
+      "rawBytes": 104,
+      "rawSha256": "eeb44525dc8b59643c14e6b3932148bd3f5bf9dc16b9409192b4fd12dd0d8c71",
+      "gzipBytes": 122,
+      "gzipSha256": "5a23cc077e69aabaf03a3cef887015aa9a02b1222a7656463d9ede0a6107329d",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-domain.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-quality.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-quality.log",
+      "rawBytes": 1793,
+      "rawSha256": "456c6517cd06ab1aa10261e394986d205a6383e2ce673373f38e6f1f65763423",
+      "gzipBytes": 896,
+      "gzipSha256": "27ef9256563569bfe68d92ed53026430fb4e44b18c31c318f01ce2c496c10b32",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-quality.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-quality-wire.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-quality-wire.log",
+      "rawBytes": 358,
+      "rawSha256": "659ec97640b1838b5a34024a5e3148b978a6aab00bc324d9be8da67d738ff72a",
+      "gzipBytes": 286,
+      "gzipSha256": "f5dd1bcbaaa00f10909ab87c26f9f34aa5b8c7ed42c9a2817843a8dc4c34651a",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-quality-wire.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-quality-wire-final.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-quality-wire-final.log",
+      "rawBytes": 358,
+      "rawSha256": "9c7026e7418eb3148e6f9eea21775cc184e26b17b712b46706687dc7c6dbdeed",
+      "gzipBytes": 285,
+      "gzipSha256": "44e1bccca4291b20c30a599635121c4b375c484c2e10fba38eb44376109a87cb",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-quality-wire-final.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-audit.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-audit.json",
+      "rawBytes": 59552,
+      "rawSha256": "991493e5747914572ce76de8c5b878e896173bbeb00e2ace65dcb4734b2d1321",
+      "gzipBytes": 6697,
+      "gzipSha256": "d9a7422674f78a317c42002f1ebe219aef6cffd0e959a8254497ec0c92fa960c",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-audit.json.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-ui-syntax.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-ui-syntax.log",
+      "rawBytes": 1740,
+      "rawSha256": "408ba63f2b865c0740d92845bb47332e5c059b7787124abc83e6e0f69f8fca52",
+      "gzipBytes": 676,
+      "gzipSha256": "077600cdd385c32e731491d26a2ba7856d2df0550c736fb12b708cbd3653916a",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-ui-syntax.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-ui.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-ui.log",
+      "rawBytes": 547,
+      "rawSha256": "9a8bb02707b25695d1f1c0c746a0cfe59b3859b96a14682dba11e715033a3621",
+      "gzipBytes": 413,
+      "gzipSha256": "4080191ebc659e1b51e4ce304917cb98d4adb9cc42c67f6d6f8c67ee78c41fdb",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-ui.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-ui-final.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-ui-final.log",
+      "rawBytes": 286,
+      "rawSha256": "65ad053c710803ce53dcd135a44287fb7043eda9cbe8ea50f5fcb76b0424be44",
+      "gzipBytes": 241,
+      "gzipSha256": "c4567ed61bfb3eadd2d55080749603b5df7096cddea4b02b5e11aedc6fc36a5a",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-ui-final.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-daily-before.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-daily-before.json",
+      "rawBytes": 934,
+      "rawSha256": "b85a88b3ef469b42d6a8ee51b19f4c9b4cad15d3ef4164b59c7b11b532fcc2cb",
+      "gzipBytes": 533,
+      "gzipSha256": "8908cfb1c3483b89a56e738f2c480ed4e96f167ed237d7df7b73d821509b2e2f",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-daily-before.json.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-daily-after.json",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-daily-after.json",
+      "rawBytes": 1237,
+      "rawSha256": "2c8ae0dcde4d4bfa119f3dd136934cd17125a89aeaf6638409bd2417c8688e82",
+      "gzipBytes": 632,
+      "gzipSha256": "a568bbf9bb59b25488c6323a5fe2f1c0028347a41bd385791d66d84a4262c920",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-daily-after.json.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-daily-start.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-daily-start.log",
+      "rawBytes": 39067,
+      "rawSha256": "910a800f5f656fe78f6c83a221a0698ec8dc6e739e368bb7c57432423ba731fb",
+      "gzipBytes": 8383,
+      "gzipSha256": "30a306c1246139f1af099d58dbfb3ec59804c196fce023156b58f5e434730e8e",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-daily-start.log.gz",
+      "verified": true
+    },
+    {
+      "name": "repeat-tool-daily-components.log",
+      "source": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\repeat-tool-daily-components.log",
+      "rawBytes": 496,
+      "rawSha256": "4502496e06596a46cadb289e45ae1e581720cd56a468ab2c43384732b6cf552e",
+      "gzipBytes": 279,
+      "gzipSha256": "2b69eddd0bc2a6c3e0b097c5234db9bf51c029e18058ae3d039893b1ca9e0561",
+      "file": "docs/research/evidence/repeat-tool/20261102/repeat-tool-daily-components.log.gz",
+      "verified": true
+    },
+    {
+      "name": "quality-report-0.json",
+      "source": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-answer-quality-9MOeFB/report.json",
+      "rawBytes": 1971,
+      "rawSha256": "aed6e5d1b991218c188f1ab8b3455004edaf1df37975f27de7caa932c36f3ded",
+      "gzipBytes": 945,
+      "gzipSha256": "0003daba0b326098a3048c2c18cc4f1c27981cc84c8bd47aaaf06c0d163821d6",
+      "file": "docs/research/evidence/repeat-tool/20261102/quality-report-0.json.gz",
+      "verified": true
+    },
+    {
+      "name": "quality-report-1.json",
+      "source": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-answer-quality-PNbRMU/report.json",
+      "rawBytes": 504,
+      "rawSha256": "f24b23f207632f9fba53c86f4d946f7df675390bee630223ad4ab7b135cfbd15",
+      "gzipBytes": 332,
+      "gzipSha256": "a87d7e5c891892e8e69faad9c1df64e37775c631fa6c2ad96a270d31b1fc087f",
+      "file": "docs/research/evidence/repeat-tool/20261102/quality-report-1.json.gz",
+      "verified": true
+    },
+    {
+      "name": "quality-report-2.json",
+      "source": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-answer-quality-beu0a7/report.json",
+      "rawBytes": 504,
+      "rawSha256": "f24b23f207632f9fba53c86f4d946f7df675390bee630223ad4ab7b135cfbd15",
+      "gzipBytes": 332,
+      "gzipSha256": "a87d7e5c891892e8e69faad9c1df64e37775c631fa6c2ad96a270d31b1fc087f",
+      "file": "docs/research/evidence/repeat-tool/20261102/quality-report-2.json.gz",
+      "verified": true
+    }
+  ]
+}

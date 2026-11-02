@@ -10,10 +10,10 @@ import {QUESTION_PROJECTION_SCHEMA} from '../../shared/question-projection';
 import {aiTextSignature,type AiImageQuestion} from '../../shared/material-ai-image';
 import type {ArchiveFields} from '../../shared/question-archive';
 import {QuestionAssets,type OriginalImage} from './question-assets';
-import {validCropQuality,cropTextComplete,type CropQuality,type CropInspector} from './material-ai-crop-quality';
+import {validCropQuality,cropTextComplete,type CropQuality,type CropInspector,type CropOcrFailureReason} from './material-ai-crop-quality';
 
 type Host={root?:()=>string;all:(sql:string,p?:(string|number|null)[])=>Promise<Record<string,unknown>[]>};
-export type PageCrop={number:string;image:OriginalImage;quality?:CropQuality;fragments?:PageFragment[]};
+export type PageCrop={number:string;image:OriginalImage;quality?:CropQuality;fragments?:PageFragment[];failure?:{blockId:string;error:'ocr_failed';reason:CropOcrFailureReason}};
 export type PageCropRenderer=(source:MaterialPageSource,box:PageBox,signal:AbortSignal)=>Promise<Extract<MaterialPreviewResult,{ok:true}>>;
 const hash=(s:string)=>createHash('sha256').update(s).digest('hex');
 export const PAGE_CROP_TABLE=`CREATE TABLE IF NOT EXISTS material_ai_page_crops(batch_id TEXT NOT NULL,ordinal INTEGER NOT NULL,number TEXT NOT NULL,first_sha TEXT NOT NULL,page_image_sha TEXT NOT NULL,source_json TEXT NOT NULL,image_json TEXT NOT NULL,PRIMARY KEY(batch_id,ordinal,number),FOREIGN KEY(batch_id,ordinal) REFERENCES material_ai_units(batch_id,ordinal))`;

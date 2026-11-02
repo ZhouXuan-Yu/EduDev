@@ -1,5 +1,23 @@
 # 小智教育智能体完整任务书与最终效果规格
 
+2026-11-02 C06当前安装工程链路已实现：自身build/type、240组件、四运行时1049文件pin与安装后hash通过；解包/真实安装启动各6、同资料冷读各2通过，5原件hash保持/长文106段。隔离NSIS安装/卸载完成，7资料/DB与原快捷方式保留，0残留测试程序/新增付费。旧PATH/快捷区/正文导航夹具失败保留并只补失败段，未重导入。455生产文件字节不变，D仍c37c2ab/PID163732、3脏文档保留，未重启。非干净VM/升级回滚/重装或完整FX08/10验收，累计仍3/252、Goal active；继续W3功能后集中，再S/T。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
+2026-11-02 C05循环提醒子项工程已实现（c37c2ab）：修复宿主调用ID污染重复比较，增加2–4步短周期及长序列提醒，新输入/真实进度仍可继续；13领域/240组件/最终build/type/正式Pi3通过，0付费。完整C05-08/E07-04与FX10/13保持原标准，累计完整AT仍3/252。docs/research/AGENT_REPEAT_C05_20261102.json。 日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。
+
+
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断（9e9e586）工程子项已实现：原设置先预览allowlist单轮快照再导出精确字节，分类错误与unknown用量保持，取消/失败/冷启局部通过；12领域/240组件/原Pi5/同记录双尺寸补尾2，2本地请求、0付费。完整FX06/10/13及AT标准不变，累计完整通过仍3/252。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
+2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
+
+2026-11-01 C04/C05用量工程子项（0be9823）：本轮记录完整性、未知费用、停止后记录及无虚假缓存收益已贯通原详情/兼容预算，局部检查通过；完整AT仍按W3集中，累计3/252，最终效果标准不变。另将上轮C03外选文件备份的真实进度补记到本任务书原REQ行；不新增验收通过。docs/research/AGENT_USAGE_C05_20261101.json。
+
+2026-11-01 E06/E07当前入口：已实现（工程子项，399f1f7）：当前对话核对/恢复只读入口，失败摘要、展开范围与冷启零重放；原Pi4项、最终同记录补尾2项、组件边界7及build/type/240组件通过。完整AT不提前通过，仍按W3集中。证据docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
 2026-11-01 C02：窗口几何修复已实现（4f6ce66）：host与v1偏好统一390px下限，菜单退出前保存最后尺寸，修复150% DPI冷启逐次增宽。最终整合8c6b705后build/type、240组件、源码10、实际Electron几何7（390/480/800、立即退出、最大化、真实双屏100%/150%及模拟断屏）、复杂正文冷读3通过。FX09 50段/10公式/100行表格/2中文代码/10轮历史，生成中30输入/45滚动；输入P95 7.8→6.7ms，滚动2.2→1.6ms，最终样本输入最大6.8ms，长任务69ms×2→0；两次均达本地目标，不归因速度提升或真实模型首字。原正文/消息/journal hash及草稿完整，0新付费。AT-C02-01/02/04已实现，累计3/252，其余249未完整验收，WP仍部分；实际pointer因系统前台焦点拒绝未派发，AT03不通过。D目录由另一任务更新至2749d3d并运行，本轮保留该窗口/脏文档，当前窗口尚未用此geometry修复；安装未更新。证据docs/research/AGENT_INTERACTION_C02_20261101.json，45份原始证据hash归档；下一补C02剩余实际交互/C06，与E06/E07/E08+C功能齐备后集中W3，再S/T，Goal active。
 
 2026-11-01 E07：冲突三方对照/当前文件重读和新稿重新确认已贯通原Pi/typed IPC/审阅卡；实际生成中与保存后强退恢复亦有证据。源码6、组件240、正式Pi7及build/type通过，0付费，完整阶段AT仍待集中。日常进度见docs/goal/WORK_PROGRESS.md，证据：docs/research/AGENT_RECOVERY_E07_20261031.json#conflictReviewSlice。
@@ -399,7 +417,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E07-01 | 首响应暂时失败 | 同任务有界恢复，最多2次重试；等待可停止；总尝试与费用可追踪 | [AT-E07-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-01) | 待验收 |
 | REQ-E07-02 | 鉴权及额度 | 显示具体处理建议；不换密钥/账户、不高频自动重试；草稿与任务保留 | [AT-E07-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-02) | 待验收 |
 | REQ-E07-03 | 正文中断 | 原部分保留并标未完成；不整段盲重放；继续沿确认的任务约束，版本有对应 | [AT-E07-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-03) | 待验收 |
-| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。 |
+| REQ-E07-04 | 普通工具失败 | 先核目标/版本，再采用合理恢复；不把不存在的问题归因“模型不支持”；失败原因与处理可读 | [AT-E07-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-04) | 已实现（工程专项）：真实缺文件→列目录→更名文件/版本读取、短暂及持续占用已贯通；正式Pi合成传输6项含冷启。完整AT待阶段集中。  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) |
 | REQ-E07-05 | 停止按钮 | 本机按钮300ms内反馈，1秒内停止派发新动作；在途结果按真实效果结算，不声称远端请求一定撤回 | [AT-E07-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-05) | 部分实现：本轮下载/实际计算child/原审批等待停止工程通过（反馈5.9/4.1/7.3ms，原下载与child分别3/12ms中止）；1.1秒无新派发，旧批准拒绝，新任务可用；既有连接/读重试证据保留。完整AT待阶段集中。 |
 | REQ-E07-06 | 重启中断 | 无永久伪running；效果未知标uncertain并先查文件/账本；未核前不重写 | [AT-E07-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-06) | 部分实现：已实测生成中、实际文本写入后outcome前强退，重启保留部分正文/uncertain，原卡核验不重写；其余恢复/部分正式产物及完整AT仍阶段集中。 |
 | REQ-E07-07 | 事件落账失败 | 停止新增有副作用动作；已保存记录可读；解释同步问题并允许重新读取，不伪造完成 | [AT-E07-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e07-07) | 部分实现：真实保存后落账失败原地读回已实现，完整密集事件矩阵待集中（c61bd4e；recordRecoverySlice） |
@@ -429,7 +447,7 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-E08-07 | 整包状态 | 整包部分完成，逐项状态准确；可只重试失败项，已交付文件可独立使用 | [AT-E08-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-07) | 部分实现：a73b389整包目录/逐项状态/所选包续做工程已实现；SQLite8、正式Electron10及build/type/240组件通过，成功HTML不重写，8页PPT及备注真实读回。完整FX10/AT仍集中；证据bundleCatalogSlice。 |
 | REQ-E08-08 | 来源导航 | 准确定位来源版本/原页或行；来源变化可见；无来源的生成内容不伪造教材引用 | [AT-E08-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-08) | 部分实现：7a2d782来源入口/原行与变更提示工程已实现，最终整合bfb0691 build/type、240组件及正式Pi8通过；SQLite10与领域投影契约3保留边界。完整FX05/原页格式矩阵/人工REVIEW待集中，不记整条通过；证据artifactSourcesSlice。 |
 | REQ-E08-09 | 导出兼容 | 文字/公式/表格/图片可读；PPT关键文本可编辑；不存在全部截图却声称全可编辑 | [AT-E08-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-09) | 待验收 |
-| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。 |
+| REQ-E08-10 | 重启一致 | 当前版本、历史版本、来源与检查状态对应文件读回一致；无额外模型请求 | [AT-E08-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-e08-10) | 部分实现：HTML教学文件目录、当前/历史预览、另存恢复与保存/核验/未知时间工程已实现（1ff075c，htmlCatalogSlice）；原Pi三版夹具续成四版，正式目录8及冷启通过。全来源页/行导航、真实OS与完整AT仍待。 本轮所选版本检查工程已实现（c3f7416）：精确原回执、历史/当前适用分离、外改/缺失失效及最终冷启；SQLite9/解析12/Pi11/最终冷启3通过。完整FX/AT仍待集中，证据artifactChecksSlice。  外选目录精确成果/登记原件备份、遗漏摘要与新副本恢复工程已实现（27bb1b6/整合c792d82）；领域7/显示3/原Pi4及最终build/type/240组件通过。完整FX07/10与AT仍待；[补充证据](../research/AGENT_EXTERNAL_BACKUP_C03_20261101.json) |
 
 #### WP-S01 理科资料完整读取、题目结构与原出处
 
@@ -781,10 +799,10 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C02-03 | 原生拖动 | 普通位置实际改变；最大化拖动还原；菜单不误拖；最小化/最大化/关闭真实有效 | [AT-C02-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-03) | 部分实现；日常CUA两次drag未位移/还原，原因待定，用户Esc停止后续操作，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)；另已修复窄窗菜单重叠（fab49e4），实际drag仍未通过 |
 | REQ-C02-04 | 重启几何 | 可见区域内恢复，标题栏可达；不顶死屏幕或开到屏外；不把HTCAPTION命中当位移通过 | [AT-C02-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-04) | 已实现｜最终整合原生几何验收通过｜2026-11-01｜4f6ce66｜[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)：两块实际显示器、390/480/800、立即退出/最大化及模拟断屏；实际指针拖动归AT03。 |
 | REQ-C02-05 | 双视口与缩放 | 关键控件可达，无水平截断；弹层在窗口内；放大字体不使确认/停止不可触达 | [AT-C02-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-05) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
-| REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) | 待验收 |
-| REQ-C02-07 | 滚动与选择 | 底部正常跟随；离底/选择时不强拉；可一键回到底部；复制不夹入过程或私有字段 | [AT-C02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-07) | 待验收 |
-| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 待验收 |
-| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
+| REQ-C02-06 | 中文输入与快捷键 | 组合态不误发；普通Enter行为符合输入框说明；换行/草稿恢复正确，无双重提交 | [AT-C02-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-06) | 部分实现；2026-11-01原输入框浏览器组合态/229、普通Enter单发、Shift+Enter、长中文草稿及冷启通过，真实系统拼音仍待；eb5d8cd；[证据](../research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice) |
+| REQ-C02-07 | 滚动与选择 | 底部正常跟随；离底/选择时不强拉；可一键回到底部；复制不夹入过程或私有字段 | [AT-C02-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-07) | 部分实现；2026-11-01选区/阅读位置、上滚/原latest、流式完成转换、公开复制与原历史hash专项通过，完整FX09/REVIEW仍待集中；eb5d8cd；[证据](../research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice) |
+| REQ-C02-08 | 过程与确认 | 过程按真实阶段收起/可展开；审批和问题始终可见；不展示伪造推理或工具完成 | [AT-C02-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-08) | 部分实现；键盘待处理子项已实现，原Pi6项通过；完整FX01/交接矩阵待验，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#keyboardSlice |
+| REQ-C02-09 | 无障碍操作 | 焦点可见、顺序合理、无焦点陷阱；控件有中文标签；错误不仅靠颜色表达 | [AT-C02-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-09) | 部分实现；补齐键盘右栏/真实问题/文件审阅/返回入口，最终原Pi6项与240组件通过；完整菜单/档位/对话框/REVIEW待验；保留bodyLayoutSlice证据，见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#keyboardSlice |
 | REQ-C02-10 | 切换与空错误态 | 不混内容、不丢草稿；空态提示下一动作；失败可恢复且无永转加载 | [AT-C02-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c02-10) | 部分实现；正文/控件子项af4b7ab已接通；实际Pi12项/18组布局、菜单/面板/设置/停止与草稿冷启通过，完整标准仍待验；见[C02证据](../research/AGENT_INTERACTION_C02_20261101.json)#bodyLayoutSlice |
 
 #### WP-C03 本地真源、迁移、备份与一致性
@@ -804,9 +822,9 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C03-02 | 原件与派生 | 原件哈希、确认题与正式产物保持；派生状态记录版本；不静默混用新旧索引 | [AT-C03-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-02) | 待验收 |
 | REQ-C03-03 | 配置并发 | 一个有效提交，另一个冲突刷新；不丢教师修改或出现最后写入无提示 | [AT-C03-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-03) | 待验收 |
 | REQ-C03-04 | 文件账本一致 | 原子安装或明确uncertain；重启只读核验后结算；无正式记录指向不存在文件的伪成功 | [AT-C03-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-04) | 待验收 |
-| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
-| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
-| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice) |
+| REQ-C03-05 | 备份包含 | 包含全部不可重建事实和文件；排除凭证或按既有加密规则处理；派生可重建项注明 | [AT-C03-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-05) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice)  外选目录精确成果/登记原件备份、遗漏摘要与新副本恢复工程已实现（27bb1b6/整合c792d82）；领域7/显示3/原Pi4及最终build/type/240组件通过。完整FX07/10与AT仍待；[补充证据](../research/AGENT_EXTERNAL_BACKUP_C03_20261101.json) |
+| REQ-C03-06 | 恢复读回 | 文件哈希、来源、当前版本和未完成任务一致；不自动发送模型或执行旧写入 | [AT-C03-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-06) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice)；2026-11-01另修复五类文件身份的迁移后续写，eb5d8cd；[补充证据](../research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice)  外选目录精确成果/登记原件备份、遗漏摘要与新副本恢复工程已实现（27bb1b6/整合c792d82）；领域7/显示3/原Pi4及最终build/type/240组件通过。完整FX07/10与AT仍待；[补充证据](../research/AGENT_EXTERNAL_BACKUP_C03_20261101.json) |
+| REQ-C03-07 | 坏包与空间 | 激活前拒绝/失败可回退；原应用数据不被破坏；保留可诊断原因 | [AT-C03-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-07) | 部分实现；2026-11-01独立目录恢复专项已测，完整AT待集中；b451808；[证据](../research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice)  外选目录精确成果/登记原件备份、遗漏摘要与新副本恢复工程已实现（27bb1b6/整合c792d82）；领域7/显示3/原Pi4及最终build/type/240组件通过。完整FX07/10与AT仍待；[补充证据](../research/AGENT_EXTERNAL_BACKUP_C03_20261101.json) |
 | REQ-C03-08 | 跨会话隔离 | 身份与版本不串，引用不能跨授权会话复活；文件路径归属正确 | [AT-C03-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-08) | 待验收 |
 | REQ-C03-09 | 异常目录链接 | 拒绝越界；不跟随到其他目录读写或递归清理；教师数据不变 | [AT-C03-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-09) | 待验收 |
 | REQ-C03-10 | 回退验证 | 按发布兼容表读或明确阻止写入；无静默清空；回退步骤与备份路径可执行 | [AT-C03-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c03-10) | 待验收 |
@@ -825,12 +843,12 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | 需求ID | 细项 | 最终效果/通过条件 | 验收 | 实现备注 |
 |---|---|---|---|---|
 | REQ-C04-01 | 真实阶段 | 界面阶段来自真实事件；等待模型只称等待；工具结果与公开说明区分 | [AT-C04-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-01) | 待验收 |
-| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收 |
+| REQ-C04-02 | 错误分类 | 用户看到对应原因及有效下一步；内部stack不原样暴露；同错误不都叫“模型错误” | [AT-C04-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-02) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-03 | 终态与回执 | 终态由真实回执决定；失败/部分/待核验准确；模型文字不能升级事实 | [AT-C04-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-03) | 待验收 |
 | REQ-C04-04 | 事件保序 | 序列连续不乱序/重复/丢终态；推理合并不丢正文；缺口可补读 | [AT-C04-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-04) | 待验收 |
 | REQ-C04-05 | 重复投递 | 一次呈现一次记账；游标正确；不重新执行写文件等副作用 | [AT-C04-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-05) | 待验收 |
-| REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) | 待验收 |
-| REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) | 待验收 |
+| REQ-C04-06 | 记录脱敏 | 诊断含必要版本/阶段/错误，无凭证、私有原文和学生可识别字段；用户可先查看 | [AT-C04-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-06) | 待验收  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
+| REQ-C04-07 | 请求观测 | 内容脱敏且不存密钥；unknown/缺失标未知；不以估算冒充真实用量或命中缓存 | [AT-C04-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-07) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json)  部分工程子项已实现：本轮脱敏诊断预览/精确导出（9e9e586），完整AT待集中；[证据](../research/AGENT_DIAGNOSTICS_C04_20261102.json) |
 | REQ-C04-08 | 旧事件回放 | 旧正文/来源/状态可读；未知字段不使整页崩溃；不自动调用模型补写历史 | [AT-C04-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-08) | 待验收 |
 | REQ-C04-09 | 任务效果对应 | 每项结果对应正确文件/调用；不串工具详情或把另run成功当本次成功 | [AT-C04-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-09) | 待验收 |
 | REQ-C04-10 | 独立检查报告 | 报告带源码SHA、实际运行根、时间、样本、命令退出与证据路径；未执行不能算通过 | [AT-C04-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c04-10) | 待验收 |
@@ -853,10 +871,10 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 | REQ-C05-03 | 简洁与相关 | 一句话不扩成建议清单；100字按FX13计数；详细说明覆盖当前要求，无无关教学段落 | [AT-C05-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-03) | 待验收 |
 | REQ-C05-04 | 同条件对照 | 同条件可比较；参数差异单列；失败计入分母，不混用其它构建或不同模型当算法收益 | [AT-C05-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-04) | 待验收 |
 | REQ-C05-05 | 费用授权 | 没有本任务新增明确授权不发请求；计划数量/重试上限与费用用途可审阅 | [AT-C05-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-05) | 待验收 |
-| REQ-C05-06 | 真实与估算 | 真实值准确记录；估算注明；无用量/价格显示未知，不显示0费用或虚假缓存收益 | [AT-C05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-06) | 待验收 |
-| REQ-C05-07 | 停止后费用 | 说明在途请求可能计费；记录已知usage，不保证撤回远端；无新请求继续消耗 | [AT-C05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-07) | 待验收 |
-| REQ-C05-08 | 重复循环 | 提示或有界改变策略；不无限原样重试；新输入可继续合法任务，不硬禁正常轮询 | [AT-C05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-08) | 待验收 |
-| REQ-C05-09 | 性能解释 | 分别报告，不把模型思考慢说成界面卡；样本不足不报P95；没有前后证据不声称提速 | [AT-C05-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-09) | 待验收 |
+| REQ-C05-06 | 真实与估算 | 真实值准确记录；估算注明；无用量/价格显示未知，不显示0费用或虚假缓存收益 | [AT-C05-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-06) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json) |
+| REQ-C05-07 | 停止后费用 | 说明在途请求可能计费；记录已知usage，不保证撤回远端；无新请求继续消耗 | [AT-C05-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-07) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json) |
+| REQ-C05-08 | 重复循环 | 提示或有界改变策略；不无限原样重试；新输入可继续合法任务，不硬禁正常轮询 | [AT-C05-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-08) | 待验收  部分工程子项已实现：真实Pi重复比较及2–4步循环提醒（c37c2ab），完整AT待集中；[证据](../research/AGENT_REPEAT_C05_20261102.json) |
+| REQ-C05-09 | 性能解释 | 分别报告，不把模型思考慢说成界面卡；样本不足不报P95；没有前后证据不声称提速 | [AT-C05-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-09) | 待验收  部分实现：当前run用量/完整性、未知费用及停止保留工程已实现（0be9823）；7边界/原Pi4/双尺寸冷读2、build/type/240组件通过。完整FX与AT待集中；[证据](../research/AGENT_USAGE_C05_20261101.json) |
 | REQ-C05-10 | 资源回收 | 所属执行进程、定时器、句柄与租约按合同回收；保留RSS/CPU曲线，无持续无界增长 | [AT-C05-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c05-10) | 待验收 |
 
 #### WP-C06 日常运行、安装更新与交付一致性
@@ -874,13 +892,13 @@ REQ与AT一一对应；C类在所属阶段同时满足，不留到最后才补�
 |---|---|---|---|---|
 | REQ-C06-01 | 实际运行根 | 为D:/WorkProject/EduProject或明确安装路径本次版本；不能以e147测试窗口代替日常已更新 | [AT-C06-01](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-01) | 待验收 |
 | REQ-C06-02 | 第一窗口可见 | 原生窗口可见可操作，不后台无窗；旧实例更新策略真实说明，不多开错数据根 | [AT-C06-02](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-02) | 待验收 |
-| REQ-C06-03 | 源码检查 | 记录精确命令、退出码、通过/失败/跳过；无借用他树node_modules；构建不冒充用户验收 | [AT-C06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-03) | 待验收 |
-| REQ-C06-04 | 无依赖安装 | 受管准备完成且任务可用；无需系统Python/Docker/命令行；网络失败可恢复 | [AT-C06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-04) | 待验收 |
+| REQ-C06-03 | 源码检查 | 记录精确命令、退出码、通过/失败/跳过；无借用他树node_modules；构建不冒充用户验收 | [AT-C06-03](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-03) | 部分实现；待集中验收 |
+| REQ-C06-04 | 无依赖安装 | 受管准备完成且任务可用；无需系统Python/Docker/命令行；网络失败可恢复 | [AT-C06-04](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-04) | 部分实现；待集中验收 |
 | REQ-C06-05 | 升级回滚 | 旧兼容版本可用；文件/题库/任务数据保留；不把下载成功当升级完成 | [AT-C06-05](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-05) | 待验收 |
 | REQ-C06-06 | 退出进程 | 本应用所属进程结束或明确安全完成；不杀其他应用同名进程；无后台继续写教师文件 | [AT-C06-06](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-06) | 待验收 |
-| REQ-C06-07 | 已安装证据 | app.isPackaged为true且资源/依赖可用；不能用源码Electron启动当安装包通过 | [AT-C06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-07) | 待验收 |
-| REQ-C06-08 | 卸载与保留 | 用户数据保留策略明确；重装成果/来源可恢复；卸载不静默删除真实资料 | [AT-C06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-08) | 待验收 |
-| REQ-C06-09 | 版本兼容表 | 每项来源/哈希/许可/平台/兼容关系有记录；未知或不兼容不激活 | [AT-C06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-09) | 待验收 |
+| REQ-C06-07 | 已安装证据 | app.isPackaged为true且资源/依赖可用；不能用源码Electron启动当安装包通过 | [AT-C06-07](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-07) | 部分实现；待集中验收 |
+| REQ-C06-08 | 卸载与保留 | 用户数据保留策略明确；重装成果/来源可恢复；卸载不静默删除真实资料 | [AT-C06-08](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-08) | 部分实现；待集中验收 |
+| REQ-C06-09 | 版本兼容表 | 每项来源/哈希/许可/平台/兼容关系有记录；未知或不兼容不激活 | [AT-C06-09](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-09) | 部分实现；待集中验收 |
 | REQ-C06-10 | 发布与Git一致 | 保留协作者工作；普通推送并回读一致性；无发布授权不发安装包；Git同步不计产品验收 | [AT-C06-10](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md#at-c06-10) | 待验收 |
 
 ### 7.7 兼容、恢复和回退总规则

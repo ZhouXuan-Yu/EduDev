@@ -335,6 +335,10 @@ try {
   assert.match(teachingBookLoading, /data-testid="teaching-book-workspace"/);
   assert.match(teachingBookLoading, /data-testid="teaching-book-loading"/);
   assert.match(teachingBookLoading, /data-testid="teaching-book-create"/);
+  assert.match(teachingBookLoading, /data-testid="teaching-book-editor" aria-busy="true"/);
+  for (const field of ['title', 'target-level', 'language', 'description', 'create']) {
+    assert.match(teachingBookLoading, new RegExp(`<[^>]*disabled=""[^>]*data-testid="teaching-book-${field}"`));
+  }
 
   const memoryLoading = renderToStaticMarkup(React.createElement(MemoryGovernanceWorkspace, { setStatus: noop }));
   assert.match(memoryLoading, /data-testid="memory-governance-workspace"/);

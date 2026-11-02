@@ -1,5 +1,7 @@
 # 小智教育智能体：能力路线与共同决策稿
 
+2026-11-01 已实现（C03工程子项）：外选目录正式成果与登记原件备份、遗漏摘要、新实例精确恢复及原教学文件预览。领域7/显示3/实际Pi4及build/type/240组件通过，0新付费；全领域FX07/10和整项C03/E08不提前通过。任务书原最终效果与W3→S/T顺序不变。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
 收尾集成更新：origin/main ce0fd95已含c5f0415原图文字纠错与f964f02核心题库常驻/假空修复；下方b09073b核查表为当时快照，已修部分以新代码/限定真实证据为准，不重复计为缺失。文件工具默认可用、通用HTML、手动思考及自动准备仍按任务书推进；本轮未更新日常运行构建。
 
 完整细化见[任务书](PRD-XIAOZHI-AGENT-DELIVERY.md)、[逐项验收](../acceptance/XIAOZHI_AGENT_ACCEPTANCE.md)、[数据与答案](../acceptance/XIAOZHI_AGENT_FIXTURES.md)和[追踪表](../acceptance/XIAOZHI_AGENT_TRACEABILITY.csv)。28组252条均未执行；路线/规格不是功能完成证据。

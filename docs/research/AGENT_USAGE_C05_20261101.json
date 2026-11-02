@@ -1,0 +1,374 @@
+{
+  "date": "2026-11-01",
+  "sourceCommit": "0be98237e52c6848727600d1ed1577a81fce3187",
+  "state": "Engineering subfeature implemented; full C04/C05 and 252 AT remain pending, 3 accepted, Goal active.",
+  "requirements": [
+    "C04-07",
+    "C05-06",
+    "C05-07",
+    "C05-09"
+  ],
+  "changes": [
+    "Original task details now show exact current-run request attempts, tool calls, reported/partial/unknown tokens and task/human-wait time.",
+    "Unknown provider usage is not zero; partial counts are explicitly incomplete. Billing always remains unknown without a verified price/bill.",
+    "Stopped/failed usage remains visible with possible in-flight charges. Cache zeros/partial fields do not create a fabricated exact hit-rate or cost saving.",
+    "Legacy limited-budget view shares the same receipt, preserving original limits/editor/exhaustion controls."
+  ],
+  "productionFiles": [
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiUsageReceipt.tsx",
+      "sha256": "96e82f8d50fa740e7ef4c8c6b4bf944a243ae59a5f64d12471d262bef0e1a1df"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiWorkspaceContext.tsx",
+      "sha256": "abe39ea49cedcc1e39e75ca808a702dae28d8f0beedd10d09fa3c87141f2ca30"
+    },
+    {
+      "path": "apps/desktop/src/renderer/components/office/PiBudgetCard.tsx",
+      "sha256": "2e355ea98a3469784b0e97c03666f59d1db07986c0baa3fd5780a5fb4942157b"
+    }
+  ],
+  "tests": {
+    "buildTypecheck": "exit 0",
+    "rendererComponents": 240,
+    "rendererBoundaries": 7,
+    "originalPiChecks": [
+      "Original task details show reported SDK/host usage for the exact current run without inventing billing or cache savings",
+      "Original task details show partial SDK/host usage for the exact current run without inventing billing or cache savings",
+      "Original task details show stop SDK/host usage for the exact current run without inventing billing or cache savings",
+      "Initial two viewport steps checked DOM visibility only, insufficient for reachability; cold launch usage/events/draft persistence and zero replay passed. See independent corrected viewport proof."
+    ],
+    "paidRequests": 0,
+    "servedLocalResponses": 4,
+    "additionalFailedLocalAttempt": 1,
+    "coldReplayRequests": 0,
+    "rendererErrors": [],
+    "full207": "Not repeated; unchanged successful paths not regenerated.",
+    "viewportChecks": [
+      "Both requested CSS viewport sizes expose the cost receipt after panel scrolling; native/emulated capture mode explicit per size",
+      "Same completed usage/events/draft retained with zero network/model requests"
+    ],
+    "viewportColdRequests": 0
+  },
+  "commands": {
+    "cwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+    "passed": [
+      "npm.cmd run build",
+      "npm.cmd run test:renderer-components",
+      "node scripts/xiaozhi-agent/usage-receipt-renderer.mjs",
+      "node scripts/xiaozhi-agent/usage-receipt-ui.mjs test-results/c05-usage-4b7ee6c",
+      "node scripts/xiaozhi-agent/usage-receipt-viewport.mjs test-results/c05-usage-4b7ee6c C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-usage-receipt-BfetQX"
+    ],
+    "root": "git diff --check",
+    "audit": "npm.cmd audit --json (exit 1, existing 45 findings)"
+  },
+  "actualCases": [
+    {
+      "name": "reported",
+      "runId": "run_280f0429-e363-42fd-97e0-3b8e6cafc9eb",
+      "usage": {
+        "runId": "run_280f0429-e363-42fd-97e0-3b8e6cafc9eb",
+        "budget": {
+          "maxModelCalls": 16,
+          "maxToolCalls": 64,
+          "maxTokens": 100000,
+          "activeMs": 90000,
+          "waitMs": 300000
+        },
+        "limitsEnforced": false,
+        "modelCalls": 1,
+        "toolCalls": 0,
+        "tokens": {
+          "input": 60,
+          "output": 12,
+          "cacheRead": 40,
+          "cacheWrite": 0,
+          "total": 112
+        },
+        "completeness": "reported",
+        "cost": null,
+        "activeMs": 954,
+        "waitingMs": 0,
+        "state": "completed"
+      }
+    },
+    {
+      "name": "partial",
+      "runId": "run_674989bb-46f7-4ea8-a13c-0d286fdad72e",
+      "usage": {
+        "runId": "run_674989bb-46f7-4ea8-a13c-0d286fdad72e",
+        "budget": {
+          "maxModelCalls": 16,
+          "maxToolCalls": 64,
+          "maxTokens": 100000,
+          "activeMs": 90000,
+          "waitMs": 300000
+        },
+        "limitsEnforced": false,
+        "modelCalls": 2,
+        "toolCalls": 1,
+        "tokens": {
+          "input": 60,
+          "output": 12,
+          "cacheRead": 40,
+          "cacheWrite": 0,
+          "total": 112
+        },
+        "completeness": "partial",
+        "cost": null,
+        "activeMs": 1810,
+        "waitingMs": 0,
+        "state": "completed"
+      }
+    },
+    {
+      "name": "stop",
+      "runId": "run_a475c75a-20b1-4170-a091-ac1770228c5b",
+      "usage": {
+        "runId": "run_a475c75a-20b1-4170-a091-ac1770228c5b",
+        "budget": {
+          "maxModelCalls": 16,
+          "maxToolCalls": 64,
+          "maxTokens": 100000,
+          "activeMs": 90000,
+          "waitMs": 300000
+        },
+        "limitsEnforced": false,
+        "modelCalls": 1,
+        "toolCalls": 0,
+        "tokens": null,
+        "completeness": "unknown",
+        "cost": null,
+        "activeMs": 5445,
+        "waitingMs": 0,
+        "state": "interrupted"
+      }
+    }
+  ],
+  "diagnostic": {
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-usage-receipt-LyoVaB",
+    "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'unknown'\n- 'reported'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/usage-receipt-ui.mjs:38:32",
+    "explanation": "First fixture inspected only the last raw user content, which can be a structured array or host context. It rejected before serving an SSE response; one local SDK attempt failed, unknown/failed usage was retained. Corrected fixture flattens user text parts and selects the latest synthetic case. No successful generation was repeated.",
+    "viewport": {
+      "initial": "DOM isVisible assertion was insufficient. First cold probe sampled during expansion/scroll and timed out. Wait for completed expansion then ordinary scroll; no production CSS change required.",
+      "thirdAttempt": "Both viewport bounds passed; Node SQLite null-prototype rows differed from JSON plain objects in deepStrictEqual. Compared exact persisted fields as plain objects, without changing DB values or weakening hash checks.",
+      "fourthAttempt": "An early width wait passed transiently but Windows later constrained the native window to 1704x1019. It cannot prove native 1920 reachability. Finalization caught the actual width and stopped before writing documents; the incorrectly ok report is preserved as a diagnostic, not passing evidence.",
+      "nativeConstraint": "One probe exposed only a 1707x1019 work area. During the final probe the actual second 2560x1392 work-area display returned. The script selects a fitting real display; final native modes, DPR1 and exact capture sizes asserted. CSS fallback was not used in the final successful probe.",
+      "final": "Same three completed runs cold-read at native 1366 and native 1920, exact usage/events and draft unchanged, zero model/network requests; modes/live dimensions and captured pixel dimensions asserted. All failures and screenshots archived."
+    }
+  },
+  "runtime": {
+    "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-usage-receipt-BfetQX",
+    "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-usage-receipt-BfetQX\\data",
+    "profile": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-usage-receipt-BfetQX\\profile",
+    "boundaries": "Original formal Pi, SDK usage, host persistence and task details. Local SSE/fake key only; no paid requests, daily data or physical desktop input. Does not prove real provider billing, natural quality or full C04/C05 acceptance.",
+    "initialScreenshots": [
+      {
+        "name": "usage-1366.png",
+        "css": {
+          "width": 1366,
+          "height": 768,
+          "zoom": 1
+        },
+        "bitmap": {
+          "width": 2049,
+          "height": 1152
+        },
+        "dprInferredFromCapture": 1.5,
+        "note": "CSS dimensions asserted in renderer; DPR inferred from native capture dimensions, not independently sampled."
+      },
+      {
+        "name": "usage-1920.png",
+        "css": {
+          "width": 1920,
+          "height": 1080,
+          "zoom": 1
+        },
+        "bitmap": {
+          "width": 2880,
+          "height": 1620
+        },
+        "dprInferredFromCapture": 1.5,
+        "note": "CSS dimensions asserted in renderer; DPR inferred from native capture dimensions, not independently sampled."
+      }
+    ],
+    "screenshots": [
+      {
+        "name": "viewport-1366.png",
+        "css": {
+          "width": 1366,
+          "height": 768,
+          "dpr": 1,
+          "cost": {
+            "top": 585.25,
+            "bottom": 606.6875,
+            "left": 1058,
+            "right": 1320
+          },
+          "scrollWidth": 1366,
+          "mode": "native"
+        },
+        "bitmap": {
+          "width": 1366,
+          "height": 768
+        },
+        "note": "Live DPR and actual cost bounds sampled after expand animation and panel scroll; actual size reasserted at capture and pixel dimensions verified. Both final captures are native on the returned 2560x1392 work-area display at DPR1."
+      },
+      {
+        "name": "viewport-1920.png",
+        "css": {
+          "width": 1920,
+          "height": 1080,
+          "dpr": 1,
+          "cost": {
+            "top": 897.25,
+            "bottom": 918.6875,
+            "left": 1612,
+            "right": 1874
+          },
+          "scrollWidth": 1920,
+          "mode": "native"
+        },
+        "bitmap": {
+          "width": 1920,
+          "height": 1080
+        },
+        "note": "Live DPR and actual cost bounds sampled after expand animation and panel scroll; actual size reasserted at capture and pixel dimensions verified. Both final captures are native on the returned 2560x1392 work-area display at DPR1."
+      }
+    ],
+    "viewportDisplays": [
+      {
+        "id": 2107855836,
+        "scaleFactor": 1,
+        "workArea": {
+          "x": 1707,
+          "y": 0,
+          "width": 2560,
+          "height": 1392
+        }
+      },
+      {
+        "id": 2963872884,
+        "scaleFactor": 1.5,
+        "workArea": {
+          "x": 0,
+          "y": 0,
+          "width": 1707,
+          "height": 1019
+        }
+      }
+    ]
+  },
+  "performance": {
+    "before": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c03-external-backup-integrated-c792d82",
+      "sha256": "c83642b392f767aaf0e55ae7d1b4116a8eff4d04c5b28e0f734cdf1d9be6248e",
+      "sizes": {
+        "main": 14585590,
+        "preload": 36248,
+        "renderer": 20123575
+      },
+      "rendererEntryBytes": 7390752
+    },
+    "after": {
+      "root": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c05-usage-4b7ee6c",
+      "sha256": "ba86cf2405cfb1f4853cff0d0315431c4e9d9f7e1da91fedda7a3bf7a82557db",
+      "sizes": {
+        "main": 14585590,
+        "preload": 36248,
+        "renderer": 20123450
+      },
+      "rendererEntryBytes": 7390627
+    },
+    "byteDelta": {
+      "main": 0,
+      "preload": 0,
+      "renderer": -125,
+      "rendererEntry": -125
+    },
+    "mainPreloadByteIdentical": true,
+    "scope": "No new subscriptions, polling or timers. Display uses existing batched snapshot. Byte evidence only, no new stream P95, latency, cost or intelligence improvement claim."
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 29,
+    "high": 8,
+    "critical": 0,
+    "total": 45,
+    "newDependencies": 0,
+    "lockfileChanged": false
+  },
+  "rawEvidence": {
+    "manifest": "docs/research/evidence/usage-receipt/20261101/manifest.json",
+    "count": 37,
+    "verified": "Every gzip decompressed and raw hash checked during archival."
+  },
+  "limitations": [
+    "Controlled SSE/SDK usage proves local parsing/persistence/display only, not a real provider invoice or natural-answer quality.",
+    "Legacy enforced-budget controls checked by existing renderer suite and targeted receipt boundaries; old paid budget smoke not rerun.",
+    "Full FX10/13, physical desktop/IME/drag and installer remain pending. Daily D was normally restarted at cd93a69 with own build/type/240 and visible responding window; actual teacher journey still unverified while LogonUI remains."
+  ],
+  "rollback": "Revert three display files while preserving original usage/event rows, native session history and drafts. No DB/shared/IPC/dependency changes or user file deletion.",
+  "testSources": {
+    "apps/desktop/scripts/xiaozhi-agent/usage-receipt-ui.mjs": "b8de1b9080578b59f521cc1ebae94fde8ecec7d32cea8ea442b133783ce3a6af",
+    "apps/desktop/scripts/xiaozhi-agent/usage-receipt-viewport.mjs": "52b0365999c1106cea5c7309e0ca55e6ea9fa13c18e4798b0c5d94f13ece0b4c"
+  },
+  "testSourceBoundary": "Original three generation cases bind the archived UI script hash/report. Later viewport assertion repair independently checked on those same completed records with zero regeneration; source syntax checked, no claim of rerunning generation.",
+  "dailyRuntime": {
+    "date": "2026-11-01",
+    "authorization": "直接关了重启，接管使用",
+    "beforeSource": "05782b4e9a39d44c40472894c190df0e77fda8ef",
+    "sourceCommit": "cd93a69cbd98e70a22965a56340d779c0212b4a9",
+    "root": "D:/WorkProject/EduProject",
+    "previousPid": 72544,
+    "shutdown": "CloseMainWindow returned true; original main and children exited, no forced kill.",
+    "launchCommand": "npm.cmd start (D:/WorkProject/EduProject/apps/desktop)",
+    "exitCode": 0,
+    "ownBuildTypecheck": "exit 0 through original daily launcher",
+    "ownRendererComponents": {
+      "passed": 240,
+      "exitCode": 0
+    },
+    "process": {
+      "Pid": 143132,
+      "ParentPid": 142656,
+      "ExecutablePath": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+      "CommandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "WindowHandle": 22287116,
+      "Title": "Omni-Edu Agent",
+      "Responding": true,
+      "NativeWindowVisible": true
+    },
+    "build": {
+      "sha256": "d59ac006313bf1a83d077906760bd55aebf626ee9a7332130fe8da43e79dd8cf",
+      "sizes": {
+        "main": 14589911,
+        "preload": 36248,
+        "renderer": 20117264
+      }
+    },
+    "preservedDirtyFiles": [
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "status": " M",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "status": " M",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "status": "??",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "paidRequests": 0,
+    "conversationsSent": 0,
+    "rawEvidence": "docs/research/evidence/usage-receipt/20261101/daily/manifest.json",
+    "boundary": "Main process, exact D executable/source entry, responding native visible window and own build verified. Windows LogonUI still present: no physical desktop input, no renderer UI/drag/IME/daily teacher journey or installer acceptance claim.",
+    "rollback": "Normal close, detached checkout of previous 05782b4 and original npm start; preserve the three dirty documents and existing data/optional logs. Do not delete tables, files or user state."
+  }
+}

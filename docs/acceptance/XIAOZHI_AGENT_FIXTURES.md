@@ -1,5 +1,25 @@
 # 小智教育智能体：验收数据与判定基准
 
+2026-11-02 C06当前安装工程链路已实现：自身build/type、240组件、四运行时1049文件pin与安装后hash通过；解包/真实安装启动各6、同资料冷读各2通过，5原件hash保持/长文106段。隔离NSIS安装/卸载完成，7资料/DB与原快捷方式保留，0残留测试程序/新增付费。旧PATH/快捷区/正文导航夹具失败保留并只补失败段，未重导入。455生产文件字节不变，D仍c37c2ab/PID163732、3脏文档保留，未重启。非干净VM/升级回滚/重装或完整FX08/10验收，累计仍3/252、Goal active；继续W3功能后集中，再S/T。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
+2026-11-02 C05循环提醒子项工程已实现（c37c2ab）：修复宿主调用ID污染重复比较，增加2–4步短周期及长序列提醒，新输入/真实进度仍可继续；13领域/240组件/最终build/type/正式Pi3通过，0付费。完整C05-08/E07-04与FX10/13保持原标准，累计完整AT仍3/252。docs/research/AGENT_REPEAT_C05_20261102.json。 日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。
+
+
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断（9e9e586）工程子项已实现：原设置先预览allowlist单轮快照再导出精确字节，分类错误与unknown用量保持，取消/失败/冷启局部通过；12领域/240组件/原Pi5/同记录双尺寸补尾2，2本地请求、0付费。完整FX06/10/13及AT标准不变，累计完整通过仍3/252。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
+2026-11-01 用量工程子夹具：usage-case-reported（prompt100/output12/cache40→总112/输入100）；partial先原office_read_text读取自有计数资料再缺usage终答（2模型/1工具，112部分下界）；stop输出后停流，原Stop保留unknown/null与interrupted。固定runId逐项查DB/UI，教师草稿和usage/event hash冷启不变；4次本地SSE+1失败本地尝试、0付费。1366/1920原生截图DPR1实测及可视区边界补尾通过，37原始证据。只是FX09/10/13的补充，不替换原全集合。docs/research/AGENT_USAGE_C05_20261101.json。
+
+2026-11-01 C03外选目录工程子夹具：自有teacher-workspace通过原Pi保存HTML+原8页/每页备注PPT，另有未登记资料不复制；外选浮力.html SHA256 e5eb313c83a00c983a0bf2b11efc8a845ce374c46a2ae9310e0a00edd401bd27；外选浮力.pptx SHA256 274bbed9ea81b33fd5317ac7a26708ea919900d863738c39af6aa2cafd9cc2be。领域夹具另含两根同名文件、历史Office根、另选paper输出、登记原件、缺失/未知根/实际链接/中途外改及恢复副本损坏。原设置/冷启/教学文件4项通过，实际源字节/native/journal一致；3本地SSE/0付费。只补充、不替换原FX07/FX10集合与判定。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
+2026-11-01 执行补充（不改冻结FX）：独立自有资料合成资料.txt含核对码37，缺失资料.txt不存在；原Pi实际读取一成功一not_found，受控SSE故意声称均完成，UI仍显示host partial。6次本机合成请求/0付费，同记录样式补尾0调用、原消息/事件/源文件hash不变。此子夹具不替代FX10混合产物与完整AT，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
+2026-11-01 C02键盘待处理工程补充夹具keyboard-synthetic.v1/5d9d981886ae10f0f2b705e4bb9cb820e487e6452905e55ad513df0a45ed0e54：合成课堂形式问题（小组合作/独立观察）、原v3任务计划及keyboard-lesson.md，最终固定原Pi5次本机SSE，精确文件hash cf044f21c732bfda17ed6394c5e4361eb564f46a95c1a54d2aed1355cc2cb127；宽1366/480 CSS px，实际环境DPR按截图，本轮不替代原FX01/FX09输入或完整判定。生成/确认/冷启6项通过；0真实provider。详docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
+
 2026-11-01 FX09 UI子样本冻结：fx09-complex-stream.v1，hash 26768810795d9553c3b4ab6c0d06f96e2050b2b7ef39b4ef9fb283dd8ea8bd22，50段/10公式/100行表格/2中文代码及原UI生成10轮历史；生成期间30输入/45滚动。原Pi本地合成传输，消息/journal/冷启正文hash相等，原CPU/RSS/长任务/环境样本归档。geometry-restart.v1 hash a7747b8cdae6bf1d5c7d3a6b37467dbc2803cf7e954a6e2fdadba7c464810e8f（390/480/800、立即退出/最大化、实际双屏100%/150%与模拟断屏）。仅支持AT-C02-01/02/04本地控制条款；FX09完整Office/WPS材料、弹层/多缩放/IME/其他交互不缩减，AT03因前台拒绝保持未通过。详docs/research/AGENT_INTERACTION_C02_20261101.json。
 
 2026-11-01 FX07/FX10工程补充：沿原合成Pi浮力HTML/PPT做真实设置备份（16文件）→新实例→激活→实际交互/PPT/版本→冷启→返回。相同副本续测，不为定位错误重建。独立168事件、4 native绑定、1 native文件和2成果一致；源码夹具非空检查报告保留另测，UI检查表0不算非空。ENOSPC仅注入复制错误，DPR1.5双尺寸，不代替真实磁盘满/100%缩放/原生自动重启及完整FX07 A/B与FX10。原集合和判定不改，详docs/research/AGENT_OUTPUT_BACKUP_C03_20261029.json#restoreSlice。

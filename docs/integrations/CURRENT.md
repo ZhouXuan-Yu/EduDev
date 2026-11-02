@@ -1,5 +1,59 @@
 # 当前集成与复用
 
+## 2026-11-02 局部图接通与质量试验未通过
+
+复用原QuestionAssets/分块回执/第二次dispatch，按题号、组序与PNG hash实际发送局部裁图和OCR；旧无字段/v1不重解释，新v3仅OMNI_EDU_AI_CROP_IMAGES=1冻结local-crop-review.v2。最多160组/16MiB裁图，无新依赖、表、IPC、UI或额外调用，原质量门禁不改。
+
+本次总tokens148919→168427（+13.1%），非严格AB，不作裁图因果或延迟改善结论；最终main仅+3630B，preload/renderer不变。回退保持图片flag未设/0，只影响新创建，保留v2读取和全部回执；无数据迁移，D日常/安装不改。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropImagesTrial。
+
+## 2026-11-02 OCR管道字符完整性修复
+
+复用平台TextDecoder替换逐块字符串转换，继续原RapidOCR/PDFium/RapidLayout进程、编译清单与原执行器；无新增依赖或引擎版本。下一优先让第二遍实际看见同一来源的必要局部裁图：现分块策略仅传整页图与OCR文字。官方视觉文档说明大图仍按面积缩放，可能损失细小图字；这是待验证原因，不是已证明的整卷根因。保留来源/资产/两遍/数学门禁；跨页、答案正确性/已知答案与联网补答、自然40GB召回/P95及最终安装继续OPEN，Goal active。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ocrUtf8Transport。
+
+## 2026-11-02 局部OCR进入模型复核
+
+新v3原页单元冻结cropReviewPolicy=local-crop-review.v1，第二遍沿原执行器发送已认证局部OCR、边缘、原块坐标/资产hash及首稿比较，绑定原页和首稿hash。只作为不可信辅助证据，发送前隐私差异阻断；每块2048B、合计24KiB，截断明确。旧单元不补字段或重解释；无新模型调用、图片、依赖、表或IPC。带分值章节标题后紧接父题号才认下一页另起节，正文/图注/续题仍保守。
+
+继续复用PDFium/RapidOCR、RapidLayout/PP-DocLayoutV3和既有QuestionAssets/双遍执行器；未引入新框架或服务。证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#cropOcrSecondPass。
+
+2026-11-02 C06：当前npm pack:win/dist:win沿electron-builder.cjs、asar=false与OCR/education/retrieval/reranker四自包含运行时；旧python-embed/asar.unpacked是历史布局。455生产文件与C05字节不变，仅更新原专项脚本；真实本机安装/卸载和资料读回完成，不冒充干净设备/升级/重装/完整AT。docs/research/AGENT_PACKAGED_C06_20261102.json。
+
+
+2026-11-02 C05循环提醒：扩展原DSH3/5/8纯观察器，并修复Pi调用关联噪声；保持Hana/vendor循环与native/计划回执。无新包/服务；原Pi3与改后wire1通过，13边界/240组件/build/type通过，0付费。日常D已按接管授权正常关闭旧PID157884，无强杀，从9e9e586 detached更新c37c2ab；原npm.cmd start/自身build/type和240组件通过，新PID163732/窗口39195390准确D入口、响应/native visible已核，3份脏文档hash保留。未发送教师对话/新增付费；LogonUI仍在，物理拖窗/IME/完整日常与安装未验。详同证据dailyRuntime。 docs/research/AGENT_REPEAT_C05_20261102.json。
+
+
+2026-11-02 C04本轮诊断日常更新：按既有接管授权正常关闭D旧PID143132（无强杀），保留3份脏文档hash，detached切换9e9e586并经自身npm.cmd start/build/type与240组件通过。新PID157884/窗口26545540，准确D入口、响应及native visible=true已核，诊断修复进入日常源码。0教师对话/新增付费，不归档用户UI；LogonUI仍在，物理拖窗/IME/保存对话框、完整日常旅程和安装未验，不增加AT通过。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json#dailyRuntime。
+
+
+2026-11-02 C04本轮诊断：沿原Pi事件/预算纯读，不改vendor/Hana循环、权限、Composer或provider；新增两条typed IPC及临时快照服务，无依赖或迁移。原正式Pi5项与双尺寸冷读2项通过，2本地响应/0付费。docs/research/AGENT_DIAGNOSTICS_C04_20261102.json。
+
+
+2026-11-01 日常运行补充：D已按用户接管授权正常重启到cd93a69，自身build/type与240组件通过；3份脏文档hash保留，原生窗口可见且响应，无新对话/付费。只补启动证据，不替代锁屏下未验的实际drag/IME/完整C06或阶段AT。docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime。
+
+2026-11-01 用量复用原SDK/host预算观测及snapshot，不改Hana/Pi/vendor/凭证/依赖/下载。4次本地合成响应+1次失败本地尝试，0付费；审计45（8高29中8低/0严重，exit1）沿旧记录。docs/research/AGENT_USAGE_C05_20261101.json。
+
+2026-11-01 C03复用原sqlite3只读快照、文件hash、workspace路径校验及原恢复激活；无下载、依赖或凭证修改。局部扩展不改Hana/Pi/vendor，0付费；正常整合origin/main ad55ed9的独立OCR恢复，无冲突，本片生产文件无差异，最终build/type/240组件通过。docs/research/AGENT_EXTERNAL_BACKUP_C03_20261101.json。
+
+## 2026-11-01 已存局部OCR失败的本地恢复
+
+沿原MaterialAiRepository.drain、writer与typed preload，在资料详情→题目与校正→原AI批次增加“仅重检本地OCR”。不新建模型批次、不读取模型账户、不增加云请求；旧失败/首稿/终稿不可变。新增material_ai_crop_rechecks与material_ai_crop_recheck_results幂等任务/结果日志；成功证据依原件、冻结输入、原块和资产hash读回，同一题ID只重算archive/document。原题全部字段和教师/答案册改动受完整指纹保护；OCR成功不自动消除两遍模型内容分歧。待处理可暂停/重启中断/显式重试，原云批次保持暂停。
+
+真实旧六页批次第12题8块本地OCR恢复成功：实际教师入口、1366×768/1920×1080状态可达及冷启共3检查，0网络/新增模型调用、0renderer错误，旧回执/调用账本/题目内容/成员不变。整卷仍4自动稿/11待核，不是完整题库质量通过。81边界（含8个新增恢复场景）、240组件及build/type已通过；最终主线整合证据在统一基线localCropRecovery追加，未完成的检查不计通过。
+
+原parse_failed间歇根因未关闭：同一hash资产在独立进程与实际宿主复探均成功，不能据此称OCR引擎已修复。原宿主每次认证646文件279039929B的成本、跨页/双遍内容与解题稳定性、答案联网、Pi整卷、40GB召回/P95和最终安装均保持开放，Goal active；D日常/安装未更新。回滚先暂停新本地任务并停止调度写路径，保留新读适配、日志、原件/资产与两遍回执，不删除新表或退回只读旧回执的版本。 证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#localCropRecovery。
+
+2026-11-01 回执入口复用原OfficeVerificationNotice/OfficeRecoveryNotice及应用DisclosureCard，不修改HeroUI/Pi/Hana vendor；官方Disclosure内部另设应用domain边界，旧样式不进入原生控件。0依赖/付费/IPC变化，详docs/research/AGENT_RUN_RECEIPTS_20261101.json。
+
+2026-11-01 键盘交互整合收尾：f288868/078ff4c整合main 4fe07fc为62fbf1e，13处文档冲突保留双方，三处焦点生产文件内容不变；整合后build/type、240组件和原Pi 0模型焦点2项通过。此前流程6项/207综合分别绑定原固定构建，不冒充最终整合重跑；所有诊断失败已归档，177+份原始证据逐项hash核对。完整AT仍3/252、Goal active，继续W3后S/T；日常D最后核对05782b4，本片与选读修复未应用，实际窗口仍待解锁。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice.integration。
+
+2026-11-01 C02键盘待处理工程：源码f288868，固定构建01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b，主进程/preload与b8e3651基线字节/hash一致，renderer入口较基线+2026B，无新依赖或许可变化。实际Pi6项/240组件/build通过，0付费；固定f288868构建207/207综合通过；追加自动恢复焦点修复后最终build/type、240组件及0模型专项2项通过，未重放此前已通过生成流程。D保留原05782b4运行与脏文档，等待解锁再核对，不发安装包。证据docs/research/AGENT_INTERACTION_C02_20261101.json#keyboardSlice。
+
+## 2026-11-01 结构化题面来源与局部OCR失败
+
+冻结page-fragments.v3，沿原SQLite/文件真源、MaterialAi双遍执行器与question-document.v2，原v1/v2不重解释。编号比较与图号/标题布局证据分开，局部明确OCR失败保存负面回执，同页独立题继续。无新表、依赖、IPC或Agent；正式组卷教师确认与每批图片授权保留。真实六页15候选/4自动稿/11待核、1道六图来源路径及冷启通过，仍不是整卷质量验收。来源、未解决项和回退见docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#structuredPageSource。
+
+2026-11-01 eb5d8cd正常整合origin/main54bf791为93fb5be，无冲突；两自身生产文件按Git行尾规范化内容一致，整合后build/type/240通过，未重放已有Pi输出。D用户明确接管授权已正常关闭旧PID54720并快进177f882→05782b4重启PID72544，3脏文档hash保留；锁屏停止实际输入，新切片/安装未部署。证据docs/research/AGENT_INTERACTION_C02_20261101.json#readingFocusSlice与dailyRefresh。
+
 ## 2026-11-01 后台多块原题归档
 
 沿原MaterialAiRepository双遍执行器和QuestionAssets接入多块归档，复用RapidLayout/PP-DocLayoutV3、PDFium/RapidOCR及question-document.v2多图。page-fragments.v1回执保留；新v2冻结同页OCR块线索，最多32个选块，仅在不框入其他检测块时合并为最多8张图片。原题查看和Office源图读取全部图片；无新DDL、依赖、Agent或IPC。OMNI_EDU_AI_PAGE_FRAGMENTS=0只停止新策略，旧回执仍可读。 blockTexts复用已有同页layout OCR，不增加模型调用。模型仍统一DeepSeek，原图/资料上云授权范围不扩大。

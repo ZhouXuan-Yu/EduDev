@@ -6,13 +6,15 @@ import {_electron as electron} from 'playwright';
 
 const desktop = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
 const installDirIndex = process.argv.indexOf('--install-dir');
-const installDir = installDirIndex >= 0
-  ? path.resolve(process.argv[installDirIndex + 1])
-  : null;
-if (!installDir) throw new Error('--install-dir is required');
+const packageDirIndex = process.argv.indexOf('--package-dir');
+assert((installDirIndex >= 0) !== (packageDirIndex >= 0), 'Specify exactly one of --install-dir or --package-dir');
+const directoryIndex = installDirIndex >= 0 ? installDirIndex : packageDirIndex;
+assert(process.argv[directoryIndex + 1] && !process.argv[directoryIndex + 1].startsWith('--'), 'Directory is required');
+const installDir = path.resolve(process.argv[directoryIndex + 1]);
+const mode = installDirIndex >= 0 ? 'installed' : 'unpacked';
 
 const executable = path.join(installDir, '小智.exe');
-if (!fs.existsSync(executable)) throw new Error(`installed executable missing: ${executable}`);
+if (!fs.existsSync(executable)) throw new Error(`packaged executable missing: ${executable}`);
 
 const output = fs.mkdtempSync(path.join(desktop, 'test-results', 'xiaozhi-agent', 'pi-windows-installer-ui-'));
 const profile = path.join(output, 'profile');
@@ -21,15 +23,16 @@ const checks = [];
 const report = {
   schema: 1,
   success: false,
+  mode,
   installDir,
   executable,
   output,
   checks,
   errors: [],
   boundary: [
-    'Actual installed Electron executable and packaged resources, not the development out directory',
+    `Actual ${mode} executable and current electron-builder.cjs resources; unpacked does not prove NSIS installation`,
     'Isolated owned profile and data roots; no model request, file import or external upload',
-    'This proves installation startup and teacher quick-start reachability, not curriculum quality, VPN-off or human acceptance',
+    'This proves packaged startup, current Composer and a local worker, not curriculum quality, a clean VM or human acceptance',
   ],
 };
 
@@ -45,18 +48,28 @@ const appLog = (stream, prefix) => stream?.on('data', chunk => {
 let application;
 let page;
 try {
+  const env = {...process.env, PATH: '', OMNI_EDU_PYTHON: 'C:\\not-installed\\python.exe', OMNI_EDU_DATA_ROOT: data};
+  for (const key of Object.keys(env)) {
+    if (/API_KEY|AUTH_TOKEN|ACCESS_TOKEN/.test(key) || key.startsWith('OMNI_EDU_E2E_') ||
+      ['ELECTRON_RUN_AS_NODE', 'ELECTRON_RENDERER_URL', 'NODE_OPTIONS'].includes(key)) delete env[key];
+  }
   application = await electron.launch({
     executablePath: executable,
     args: [`--user-data-dir=${profile}`, '--force-device-scale-factor=1'],
-    env: {
-      ...process.env,
-      DEEPSEEK_API_KEY: '',
-      OMNI_EDU_DATA_ROOT: data,
-    },
+    env,
     timeout: 60000,
   });
   appLog(application.process().stdout, 'main');
   appLog(application.process().stderr, 'main-error');
+  await application.evaluate(({net}) => {
+    globalThis.__packagedBlockedRequests = [];
+    const blocked = async input => {
+      globalThis.__packagedBlockedRequests.push(String(input?.url ?? input));
+      throw new Error('Network disabled in packaged startup check');
+    };
+    net.fetch = blocked;
+    globalThis.fetch = blocked;
+  });
   page = await application.firstWindow();
   page.on('pageerror', error => report.errors.push(String(error)));
   page.on('console', message => {
@@ -79,17 +92,29 @@ try {
   assert.equal(fs.realpathSync(launch.executablePath).toLowerCase(), fs.realpathSync(executable).toLowerCase());
   assert.equal(fs.realpathSync(launch.userData).toLowerCase(), fs.realpathSync(profile).toLowerCase());
   assert.equal(fs.realpathSync(launch.sessionData).toLowerCase(), fs.realpathSync(profile).toLowerCase());
-  check('Installed executable launches with app.isPackaged=true in the owned user-data profile');
+  check(`${mode} executable launches with app.isPackaged=true in the owned user-data profile`);
 
   const resources = [
-    ['python', path.join(launch.resourcesPath, 'python-embed', 'python.exe')],
     ['ocr', path.join(launch.resourcesPath, 'ocr-runtime', 'omni-edu-ocr.exe')],
-    ['readingWorker', path.join(launch.resourcesPath, 'app.asar.unpacked', 'out', 'main', 'reading-worker.py')],
-    ['mathWorker', path.join(launch.resourcesPath, 'app.asar.unpacked', 'out', 'main', 'math-worker.py')],
+    ['education', path.join(launch.resourcesPath, 'education-runtime', 'omni-edu-education.exe')],
+    ['retrieval', path.join(launch.resourcesPath, 'retrieval-runtime', 'omni-edu-retrieval.exe')],
+    ['reranker', path.join(launch.resourcesPath, 'reranker-runtime', 'omni-edu-reranker.exe')],
   ].map(([name, file]) => ({name, file, exists: fs.existsSync(file), bytes: fs.existsSync(file) ? fs.statSync(file).size : 0}));
   assert(resources.every(item => item.exists && item.bytes > 0));
   report.resources = resources;
-  check('Installed resources contain bundled Python, OCR and unpacked education workers');
+  check('Current packaged resources contain all four frozen Windows runtimes');
+
+  report.worker = await application.evaluate(async ({app}) => {
+    const path = process.getBuiltinModule('node:path');
+    const require = process.getBuiltinModule('node:module').createRequire(path.join(app.getAppPath(), 'package.json'));
+    const {runEducationWorker} = require(path.join(app.getAppPath(), 'out/main/education-runtime.js'));
+    const result = await runEducationWorker('reading', {text: '方程的解。', quote: '方程的解'},
+      'xiaozhi.education.quote.v1', new AbortController().signal, 65536, 2048, value => value.found === true, value => value);
+    return {found: result.found, schemaVersion: result.schemaVersion, path: process.env.PATH, interpreter: process.env.OMNI_EDU_PYTHON};
+  });
+  assert.equal(report.worker.found, true);
+  assert.equal(report.worker.path ?? '', '');
+  check('Packaged education host executes the frozen worker with empty PATH and no system Python');
 
   const bootstrap = await page.evaluate(() => window.omniEdu.bootstrap());
   assert.equal(fs.realpathSync(bootstrap.dataRoot).toLowerCase(), fs.realpathSync(data).toLowerCase());
@@ -97,38 +122,26 @@ try {
     dataRoot: bootstrap.dataRoot,
     students: bootstrap.students.length,
   };
-  check('Installed app uses the owned data root and does not manufacture demo students');
-
-  const quickStarts = page.locator('[data-testid^="teacher-quick-start-"]');
-  await page.getByTestId('teacher-quick-starts').waitFor({state: 'visible'});
-  assert.equal(await quickStarts.count(), 3);
-  assert.deepEqual(await quickStarts.locator('strong').allInnerTexts(), [
-    '根据资料备课',
-    '讲清一道错题',
-    '做一份课堂课件',
-  ]);
-  report.quickStarts = await quickStarts.locator('strong').allInnerTexts();
-  check('Installed teacher workspace exposes only the three reviewed high-frequency starts');
+  check('Packaged app uses the owned data root and does not manufacture demo students');
 
   await page.setViewportSize({width: 1366, height: 768});
   await page.emulateMedia({colorScheme: 'light', reducedMotion: 'reduce'});
-  await page.getByTestId('teacher-quick-start-materials').click();
-  const prompt = await page.getByTestId('office-prompt-input').inputValue();
-  assert(prompt.includes('先读取资料'));
-  assert(prompt.includes('确认后再保存'));
-  report.quickStartDraft = prompt;
-  assert.equal(await page.locator('.office-turn').count(), 0, 'quick start must not send a message');
+  const draft = '先读取资料，整理一元一次方程讲义，确认后再保存。';
+  await page.getByTestId('office-prompt-input').fill(draft);
+  assert.equal(await page.getByTestId('office-prompt-input').inputValue(), draft);
+  report.draft = draft;
+  assert.equal(await page.locator('.office-turn').count(), 0, 'editing a draft must not create a turn');
   await page.screenshot({
-    path: path.join(output, 'installed-quick-start-light-1366x768.png'),
+    path: path.join(output, 'packaged-draft-light-1366x768.png'),
     fullPage: false,
   });
-  check('Quick start seeds the existing teacher draft without sending or creating a turn');
+  check('Current packaged Composer accepts a teacher draft without sending or creating a turn');
 
   await page.setViewportSize({width: 1920, height: 1080});
   await page.emulateMedia({colorScheme: 'dark', reducedMotion: 'reduce'});
   await page.waitForTimeout(350);
   await page.screenshot({
-    path: path.join(output, 'installed-quick-start-dark-1920x1080.png'),
+    path: path.join(output, 'packaged-draft-dark-1920x1080.png'),
     fullPage: false,
   });
   const layout = await page.evaluate(() => ({
@@ -141,8 +154,10 @@ try {
   report.layout = layout;
   assert(layout.width >= 1920 && layout.height >= 1080);
   assert(layout.scrollWidth <= layout.clientWidth + 1, 'installed workspace must not overflow horizontally');
-  check('Installed workspace captures reachable light and dark teacher views at the two desktop sizes');
+  check('Packaged workspace captures reachable light and dark teacher views at the two desktop sizes');
 
+  report.blockedRequests = await application.evaluate(() => globalThis.__packagedBlockedRequests);
+  assert.deepEqual(report.blockedRequests, []);
   assert.deepEqual(report.errors, []);
   report.success = true;
 } catch (error) {

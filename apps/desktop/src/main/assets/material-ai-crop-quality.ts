@@ -4,6 +4,8 @@ import type {AiImageQuestion} from '../../shared/material-ai-image';
 export const CROP_QUALITY_SCHEMA='xiaozhi.material-ai-crop-quality.v1';
 export type CropQuality={schemaVersion:typeof CROP_QUALITY_SCHEMA;engine:typeof LOCAL_OCR_ENGINE;text:string;clearEdges:[boolean,boolean,boolean,boolean]};
 export type CropInspector=(bytes:Buffer,signal:AbortSignal)=>Promise<CropQuality>;
+export const CROP_OCR_FAILURE_REASONS=['configuration','unavailable','parse_failed','timeout','too_large','unknown'] as const;
+export type CropOcrFailureReason=typeof CROP_OCR_FAILURE_REASONS[number];
 export function validCropQuality(value:unknown):value is CropQuality{
  if(!value||typeof value!=='object'||Array.isArray(value))return false;
  const v=value as CropQuality;

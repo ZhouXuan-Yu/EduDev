@@ -12,6 +12,7 @@ import { PiSkillSettings } from './PiSkillSettings';
 import { PiMcpSettings } from './PiMcpSettings';
 import { PiDecisionHistory } from './PiDecisionHistory';
 import {PiCandidateHistory} from './PiCandidateHistory';
+import {PiDiagnostics} from './PiDiagnostics';
 import { PiMemoryScope } from './PiMemoryScope';
 import { OfficeConversation } from './OfficeConversation';
 import { SettingsPage, SettingsStack } from './hana-settings/SettingsPrimitives';
@@ -54,6 +55,7 @@ export const XIAOZHI_SETTINGS_SEARCH_ENTRIES: SettingsSearchEntry[] = [
   { id: 'pi-settings-archives', tabId: 'archives', title: '已归档对话', path: ['归档', '对话记录'], aliases: ['archived chats', 'history', '历史'] },
   { id: 'data-backup-export', tabId: 'backup', title: '创建本地备份', path: ['备份', '创建'], aliases: ['backup export', '导出备份', '数据'] },
   { id: 'data-backup-verify', tabId: 'backup', title: '检查已有备份', path: ['备份', '检查'], aliases: ['backup verify', '校验', '完整性'] },
+  { id: 'pi-diagnostic-preview', tabId: 'diagnostics', title: '本轮诊断', path: ['策略与诊断', '本轮诊断'], aliases: ['诊断导出', '错误记录', 'diagnostic', '脱敏'] },
 ];
 
 export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
@@ -172,6 +174,7 @@ export function PiSettingsWorkspace({ onBack }: { onBack: () => void }) {
           {loading ? <p role="status">正在读取记录…</p> : !sessionId || !snapshot ? <p>还没有可查看的对话，请先新建对话。</p> : <>
             <PiDecisionHistory key={'decisions-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
             <PiCandidateHistory key={'candidates-'+sessionId} sessionId={sessionId} running={locked||actionBusy} onBusyChange={setChildBusy}/>
+            <PiDiagnostics key={'diagnostics-'+sessionId} sessionId={sessionId} turns={snapshot.projection.turns} onBusyChange={setChildBusy}/>
           </>}</SettingsStack></SettingsPage>}
         {tab === 'interface' && <SettingsPage tab={tab}><SettingsStack gap="lg"><div><h1>{title}</h1><p>调整小智工作区的面板显示。</p></div><SettingsSection title="工作区面板">
           {([{ field: 'sidebar', label: '展开左侧导航', hint: '关闭后保留图标导航，收起项目和最近对话。' }, { field: 'aside', label: '任务详情', hint: '显示任务、来源和本会话设置。' }, { field: 'files', label: '本地文件面板', hint: '有对话内容时恢复文件面板；空白对话按需手动打开，替代任务详情面板。' }] as const).map(item => <SettingsRow key={item.field} label={item.label} hint={item.hint} control={<Switch aria-label={item.label} data-testid={`pi-preference-${item.field}`} isSelected={item.field === 'sidebar' ? !navigationPreferences.preferences.collapsed : preferences[item.field]} onChange={value => updatePreference(item.field, value)}><Switch.Content><Switch.Control><Switch.Thumb/></Switch.Control></Switch.Content></Switch>}/>)}

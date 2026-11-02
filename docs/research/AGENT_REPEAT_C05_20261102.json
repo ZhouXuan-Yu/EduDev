@@ -1,0 +1,405 @@
+{
+  "date": "2026-11-02",
+  "sourceCommit": "c37c2ab6022fc31ce659c805703ecfd58ab754de",
+  "state": "Engineering subfeature implemented; full C05-08/E07-04 and 252 AT remain pending, complete accepted remains 3/252, Goal active.",
+  "requirements": [
+    "C05-08",
+    "E07-04 applicable repeat/recovery subset"
+  ],
+  "changes": [
+    "Original Pi compares actual tool outcome before adding per-call planBasisCallId. Correlation metadata remains in every model/native receipt.",
+    "Existing DSH 3/5/8 advisories now recognize repeating 2–4-step cycles, continue sparsely at 16/32/64..., and reset on real result/argument change or existing new-user/new-run boundaries.",
+    "No hard execution gate, automatic retry, approval, permission, second agent loop, UI rewrite, IPC, database, dependency, timer or ignored real progress fields.",
+    "At most 12 hashes retained; serialization has depth/node/character limits. Invalid or oversized outcomes reset advisory state without blocking the real tool result."
+  ],
+  "files": [
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/repeat-tool-reminder.ts",
+      "sha256": "edc42558c0aac6f597c0f6e108bd910866db23554c9c659e3f47276746e3bbda",
+      "dailyRawSha256": "5f63e4bff9792ba77483e388413f313651d5dbaedd21b14b31ff7e3349f38f12",
+      "dailyCanonicalSourceMatch": true
+    },
+    {
+      "path": "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "sha256": "30ba5c0461349151fba9cba0f51ecaf75821bfb9c9af04c6f90c12e86e98152e",
+      "dailyRawSha256": "30ba5c0461349151fba9cba0f51ecaf75821bfb9c9af04c6f90c12e86e98152e",
+      "dailyCanonicalSourceMatch": true
+    }
+  ],
+  "tests": {
+    "buildTypecheck": "initial and dispatcher repair final exit 0",
+    "rendererComponents": 240,
+    "domain": [
+      "Existing one-tool 3/5/8 pattern continues sparsely at 16/32/64",
+      "2-step unchanged cycles are detected without repeated phase warnings",
+      "3-step unchanged cycles are detected without repeated phase warnings",
+      "4-step unchanged cycles are detected without repeated phase warnings",
+      "Object key order is irrelevant and input data is not modified",
+      "Changing poll results including time/progress remain real progress",
+      "Different arguments or tool identity are not mistaken for one repeated call",
+      "New user input resets both single and cyclic history",
+      "An intervening unrelated call breaks the old cycle",
+      "Transient errors changing to success start fresh history",
+      "Oversized, cyclic, deep and excessive-node values clear history without blocking a result",
+      "Advisory never contains private arguments, result or tool name",
+      "Fresh monitor has no previous-run cycle and reminders have no hard stop"
+    ],
+    "existingQuality": {
+      "initialPassed": 10,
+      "initialFailed": 1,
+      "cause": "Old fixture omitted verified effort capability and expected low for fast mode; current contract correctly emits unknown fallback / off none. Fixture repaired, no production thinking change.",
+      "wireRepairPass": 1,
+      "wireAfterDispatcherChangePass": 1,
+      "unchangedTenNotRepeated": true
+    },
+    "originalPi": [
+      "Original Pi receives the real two-step cycle advisory after six actual missing-file reads and ends the loop",
+      "New user instruction executes a fresh read without the previous cycle warning or stale permission",
+      "Cold read preserves the exact journal/native/usage and draft with zero model replay"
+    ],
+    "formalUiLocalRequests": 16,
+    "firstFailedUiRequests": 7,
+    "finalUiRequests": 9,
+    "paidRequests": 0,
+    "coldReplayRequests": 0,
+    "rendererErrors": [],
+    "standaloneWireLocalRequests": {
+      "initial": 3,
+      "fixtureRepair": 7,
+      "afterDispatcherChange": 7,
+      "measurement": "Inferred from the deterministic stage sequence and failure assertion location, not a persisted usage measurement."
+    },
+    "failuresRetained": [
+      "UI script syntax/cwd setup before model calls",
+      "Old thinking-capability fixture failed its wire assertion after 10 passed checks",
+      "First formal Pi attempt found no reminder after six real missing-file reads because correlation metadata changed the digest; terminal model transport error was thrown by the local test assertion, not an external provider failure."
+    ]
+  },
+  "commands": {
+    "cwd": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop",
+    "passed": [
+      "node scripts/xiaozhi-agent/repeat-tool-boundaries.mjs",
+      "npm.cmd run build (initial and final after dispatcher repair)",
+      "npm.cmd run test:renderer-components",
+      "node scripts/xiaozhi-agent/answer-quality-boundaries.mjs --wire-only (fixture repair, then changed dispatcher)",
+      "node scripts/xiaozhi-agent/repeat-tool-ui.mjs test-results/c05-repeat-final-dc9e085",
+      "D own npm.cmd start and npm.cmd run test:renderer-components"
+    ],
+    "failed": [
+      "node scripts/xiaozhi-agent/answer-quality-boundaries.mjs (10 pass, 1 old fixture failure)",
+      "node scripts/xiaozhi-agent/repeat-tool-ui.mjs test-results/c05-repeat-dc9e085 (real ordering gap exposed)"
+    ],
+    "audit": "npm.cmd audit --json: exit 1, existing 45 findings; no dependency/lockfile changes",
+    "root": "git diff --check"
+  },
+  "audit": {
+    "info": 0,
+    "low": 8,
+    "moderate": 29,
+    "high": 8,
+    "critical": 0,
+    "total": 45
+  },
+  "performance": {
+    "beforeBuild": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c04-diagnostics-43917da",
+    "afterBuild": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c05-repeat-final-dc9e085",
+    "beforeHash": "38635fceb8062dfe3efe290ba18f886426961528332f46e1be93bcc277b11972",
+    "afterHash": "d1a03cc759611ed62dcea8ca5ffe7cb1f62dc05ab68ace27b53eb19752096ca0",
+    "beforeBytes": {
+      "main": 14595310,
+      "preload": 36452,
+      "renderer": 20130699
+    },
+    "afterBytes": {
+      "main": 14596747,
+      "preload": 36452,
+      "renderer": 20130699
+    },
+    "deltaBytes": {
+      "main": 1437,
+      "preload": 0,
+      "renderer": 0
+    },
+    "preloadAndRendererByteIdentical": true,
+    "boundary": "Bundle size and constant bounded observer state only. No P95, model latency, CPU/RSS, cost or natural answer quality improvement claim."
+  },
+  "uiRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-repeat-ui-nzk1CT",
+  "initialUiRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-repeat-ui-NtfORA",
+  "domainRoot": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-repeat-tool-3CJgHN",
+  "actualCases": [
+    {
+      "name": "cycle",
+      "runId": "run_dffba9d9-670d-4866-b530-4a4b2962874c",
+      "state": "completed",
+      "tools": [
+        {
+          "id": "repeat-cycle-1",
+          "status": "failed",
+          "attempt": "failed"
+        },
+        {
+          "id": "repeat-cycle-2",
+          "status": "failed",
+          "attempt": "failed"
+        },
+        {
+          "id": "repeat-cycle-3",
+          "status": "failed",
+          "attempt": "failed"
+        },
+        {
+          "id": "repeat-cycle-4",
+          "status": "failed",
+          "attempt": "failed"
+        },
+        {
+          "id": "repeat-cycle-5",
+          "status": "failed",
+          "attempt": "failed"
+        },
+        {
+          "id": "repeat-cycle-6",
+          "status": "failed",
+          "attempt": "failed"
+        }
+      ]
+    },
+    {
+      "name": "new",
+      "runId": "run_85485061-e5f3-48bf-981a-84e26bae9635",
+      "state": "completed",
+      "tools": [
+        {
+          "id": "repeat-new-1",
+          "status": "failed",
+          "attempt": "failed"
+        }
+      ]
+    }
+  ],
+  "actualRequests": [
+    {
+      "name": "cycle",
+      "request": 1,
+      "toolResults": 0,
+      "cycleReminders": 0,
+      "errors": 0
+    },
+    {
+      "name": "cycle",
+      "request": 2,
+      "toolResults": 1,
+      "cycleReminders": 0,
+      "errors": 1
+    },
+    {
+      "name": "cycle",
+      "request": 3,
+      "toolResults": 2,
+      "cycleReminders": 0,
+      "errors": 2
+    },
+    {
+      "name": "cycle",
+      "request": 4,
+      "toolResults": 3,
+      "cycleReminders": 0,
+      "errors": 3
+    },
+    {
+      "name": "cycle",
+      "request": 5,
+      "toolResults": 4,
+      "cycleReminders": 0,
+      "errors": 4
+    },
+    {
+      "name": "cycle",
+      "request": 6,
+      "toolResults": 5,
+      "cycleReminders": 0,
+      "errors": 5
+    },
+    {
+      "name": "cycle",
+      "request": 7,
+      "toolResults": 6,
+      "cycleReminders": 1,
+      "errors": 6
+    },
+    {
+      "name": "new",
+      "request": 1,
+      "toolResults": 0,
+      "cycleReminders": 0,
+      "errors": 0
+    },
+    {
+      "name": "new",
+      "request": 2,
+      "toolResults": 1,
+      "cycleReminders": 0,
+      "errors": 1
+    }
+  ],
+  "initialRequests": [
+    {
+      "name": "cycle",
+      "request": 1,
+      "toolResults": 0,
+      "cycleReminders": 0,
+      "errors": 0
+    },
+    {
+      "name": "cycle",
+      "request": 2,
+      "toolResults": 1,
+      "cycleReminders": 0,
+      "errors": 1
+    },
+    {
+      "name": "cycle",
+      "request": 3,
+      "toolResults": 2,
+      "cycleReminders": 0,
+      "errors": 2
+    },
+    {
+      "name": "cycle",
+      "request": 4,
+      "toolResults": 3,
+      "cycleReminders": 0,
+      "errors": 3
+    },
+    {
+      "name": "cycle",
+      "request": 5,
+      "toolResults": 4,
+      "cycleReminders": 0,
+      "errors": 4
+    },
+    {
+      "name": "cycle",
+      "request": 6,
+      "toolResults": 5,
+      "cycleReminders": 0,
+      "errors": 5
+    },
+    {
+      "name": "cycle",
+      "request": 7,
+      "toolResults": 6,
+      "cycleReminders": 0,
+      "errors": 6
+    }
+  ],
+  "nativeProof": {
+    "initial": {
+      "tools": 6,
+      "rawContentHashCount": 6,
+      "outcomeHashCount": 1,
+      "callIds": [
+        "repeat-cycle-1",
+        "repeat-cycle-2",
+        "repeat-cycle-3",
+        "repeat-cycle-4",
+        "repeat-cycle-5",
+        "repeat-cycle-6"
+      ]
+    },
+    "final": {
+      "tools": 7,
+      "exactCallCorrelations": [
+        {
+          "callId": "repeat-cycle-1",
+          "planBasisCallId": "repeat-cycle-1",
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\data\\xiaozhi-pi\\aisession_dd830185-f98e-4c02-a763-f1f6703d7fc5\\sessions\\2026-11-01T16-41-08-601Z_01a197fc-7af8-7223-ac93-9a15967bb60e.jsonl",
+          "fileSha256": "343245485c5cfb0bdd1734dc5e1406df4c537c0f63f46f79916606a0983e5e8b"
+        },
+        {
+          "callId": "repeat-cycle-2",
+          "planBasisCallId": "repeat-cycle-2",
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\data\\xiaozhi-pi\\aisession_dd830185-f98e-4c02-a763-f1f6703d7fc5\\sessions\\2026-11-01T16-41-08-601Z_01a197fc-7af8-7223-ac93-9a15967bb60e.jsonl",
+          "fileSha256": "343245485c5cfb0bdd1734dc5e1406df4c537c0f63f46f79916606a0983e5e8b"
+        },
+        {
+          "callId": "repeat-cycle-3",
+          "planBasisCallId": "repeat-cycle-3",
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\data\\xiaozhi-pi\\aisession_dd830185-f98e-4c02-a763-f1f6703d7fc5\\sessions\\2026-11-01T16-41-08-601Z_01a197fc-7af8-7223-ac93-9a15967bb60e.jsonl",
+          "fileSha256": "343245485c5cfb0bdd1734dc5e1406df4c537c0f63f46f79916606a0983e5e8b"
+        },
+        {
+          "callId": "repeat-cycle-4",
+          "planBasisCallId": "repeat-cycle-4",
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\data\\xiaozhi-pi\\aisession_dd830185-f98e-4c02-a763-f1f6703d7fc5\\sessions\\2026-11-01T16-41-08-601Z_01a197fc-7af8-7223-ac93-9a15967bb60e.jsonl",
+          "fileSha256": "343245485c5cfb0bdd1734dc5e1406df4c537c0f63f46f79916606a0983e5e8b"
+        },
+        {
+          "callId": "repeat-cycle-5",
+          "planBasisCallId": "repeat-cycle-5",
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\data\\xiaozhi-pi\\aisession_dd830185-f98e-4c02-a763-f1f6703d7fc5\\sessions\\2026-11-01T16-41-08-601Z_01a197fc-7af8-7223-ac93-9a15967bb60e.jsonl",
+          "fileSha256": "343245485c5cfb0bdd1734dc5e1406df4c537c0f63f46f79916606a0983e5e8b"
+        },
+        {
+          "callId": "repeat-cycle-6",
+          "planBasisCallId": "repeat-cycle-6",
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\data\\xiaozhi-pi\\aisession_dd830185-f98e-4c02-a763-f1f6703d7fc5\\sessions\\2026-11-01T16-41-08-601Z_01a197fc-7af8-7223-ac93-9a15967bb60e.jsonl",
+          "fileSha256": "343245485c5cfb0bdd1734dc5e1406df4c537c0f63f46f79916606a0983e5e8b"
+        },
+        {
+          "callId": "repeat-new-1",
+          "planBasisCallId": "repeat-new-1",
+          "file": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-repeat-ui-nzk1CT\\data\\xiaozhi-pi\\aisession_dd830185-f98e-4c02-a763-f1f6703d7fc5\\sessions\\2026-11-01T16-41-08-601Z_01a197fc-7af8-7223-ac93-9a15967bb60e.jsonl",
+          "fileSha256": "343245485c5cfb0bdd1734dc5e1406df4c537c0f63f46f79916606a0983e5e8b"
+        }
+      ],
+      "advisories": 1
+    }
+  },
+  "rawEvidence": "docs/research/evidence/repeat-tool/20261102/manifest.json",
+  "rawCount": 24,
+  "dailyRuntime": {
+    "root": "D:/WorkProject/EduProject",
+    "sourceCommit": "c37c2ab6022fc31ce659c805703ecfd58ab754de",
+    "previousHead": "9e9e586694700ae9a571e58c71d4daa8220d55b0",
+    "oldPID": 157884,
+    "normalClose": true,
+    "forcedClose": false,
+    "launcher": "Original npm.cmd start, own dependencies, build/type exit 0",
+    "rendererComponents": 240,
+    "process": {
+      "id": 163732,
+      "handle": 39195390,
+      "path": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe",
+      "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+      "title": "Omni-Edu Agent",
+      "responding": true,
+      "nativeVisible": true
+    },
+    "buildHash": "b3660727aa752fd46a1951ba13764e2947bfdb0dd2c58b7b7132f7c674b0d899",
+    "preservedDirtyFiles": [
+      {
+        "path": "docs/integrations/ANATOMY.md",
+        "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+      },
+      {
+        "path": "科普课件使用.md",
+        "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+      },
+      {
+        "path": "docs/integrations/ANATOMY_用法与提示词规范.md",
+        "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+      }
+    ],
+    "logonUI": true,
+    "paidRequests": 0,
+    "teacherConversationsSent": 0,
+    "boundary": "Exact D entry/process/native visible responding window and own build verified. Windows locked: no physical input, drag/IME, actual teacher journey or installer acceptance."
+  },
+  "limits": [
+    "Controlled SSE responds to the real advisory to demonstrate the production contract. A real model may ignore advice; no full natural-loop/teacher-quality acceptance is claimed.",
+    "Cycles longer than four distinct steps are outside this bounded short-cycle detector. No hard ban on legitimate changing polls or new user tasks.",
+    "Complete C05/E07, physical daily UI, full W3 and installer acceptance remain open."
+  ],
+  "rollback": "Normal close D and return detached to previous 9e9e586 using original npm start; preserve three dirty docs and all native/journal/usage/user files. Or revert both production observer and dispatcher ordering changes together; no schema/data rollback."
+}

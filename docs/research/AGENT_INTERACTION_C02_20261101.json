@@ -2186,5 +2186,803 @@
     ],
     "rollback": "Revert only the four production files from this source commit; retain original data, files and earlier geometry/caption fixes. No migration; rollback not exercised.",
     "next": "Continue remaining C02 interaction/approval/IME/reading/switching functionality and C06; once E06/E07/E08 and applicable C align, execute W3 stage acceptance, then S/T. Do not repeat passed unrelated paths."
+  },
+  "dailyRefresh": {
+    "date": "2026-11-01T11:56:06.194Z",
+    "authorized": "直接关了重启，接管使用",
+    "root": "D:/WorkProject/EduProject",
+    "oldCommit": "177f882",
+    "commit": "05782b4e9a39d44c40472894c190df0e77fda8ef",
+    "oldProcess": 54720,
+    "normalClose": true,
+    "newProcess": 72544,
+    "window": 58004516,
+    "buildAndStartExit": 0,
+    "components": {
+      "passed": 240,
+      "total": 240,
+      "exit": 0
+    },
+    "dirtyDocumentsPreserved": 3,
+    "buildHash": "4e4ebd4438ed9424e58ed37f9d830af9b435506c16cc2544b7120f57b2e2ed15",
+    "desktop": "Locked PIN screen observed; stopped Computer Use input. Visible page, actual renderer URL and physical drag not confirmed in this refresh.",
+    "paidRequests": 0,
+    "rollback": "Restart the previously verified source in a separate clean checkout; preserve data and the three local document edits."
+  },
+  "readingFocusSlice": {
+    "date": "2026-11-01T11:56:06.195Z",
+    "sourceCommit": "eb5d8cd12dbd9f518d23bcc9da9a7a4fd1f5dbfd",
+    "integrationCommit": "93fb5be30cd97df852e098506d45d515c492f794",
+    "goal": "active",
+    "acceptedAdded": [],
+    "scope": [
+      "REQ-C02-06 partial",
+      "REQ-C02-07 partial",
+      "REQ-C03-06 continuation dependency"
+    ],
+    "productionFiles": [
+      "apps/desktop/src/main/xiaozhi-agent/pi-session.ts",
+      "apps/desktop/src/renderer/components/office/OfficeTextSelection.tsx"
+    ],
+    "changes": [
+      "Five file capabilities retain the validated historical private-workspace identity; actual runtime cwd and main callbacks stay at the current root.",
+      "Native selection preserves paragraph edge affinity and ignores formatting-only inter-block newline nodes when streaming switches to static markdown; code whitespace is retained.",
+      "Selected passage keeps its viewport position during deltas/completion. Native wheel releases pinning; the original latest button resumes following."
+    ],
+    "tests": {
+      "unit": {
+        "checks": 5,
+        "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-private-relocation-RdVBJW/report.json",
+        "paidRequests": 0
+      },
+      "existingPrivateIdentityBoundaries": {
+        "checks": 9,
+        "exit": 0
+      },
+      "targeted": {
+        "prefix": {
+          "checks": 6,
+          "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-reading-focus-FSEf1v/report.json",
+          "exit": 1,
+          "remainingHarnessFailure": "Unnecessary latest-button lookup while already at the bottom; preserve failed report."
+        },
+        "tail": {
+          "checks": 3,
+          "report": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-reading-focus-KCBoVR/report.json",
+          "exit": 0,
+          "reusedSameGeneratedRun": true,
+          "modelRequests": 0
+        },
+        "buildHash": "55d8693e7d514861b269907f0a80b3b1a01b7196e312b0b6dbf6706e4ecb5448",
+        "rendererErrors": 0
+      },
+      "build": {
+        "sourceExit": 0,
+        "integrationExit": 0,
+        "sourceComponents": 240,
+        "integrationComponents": 240
+      },
+      "smoke": {
+        "ok": true,
+        "dataRoot": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-edu-smoke-Yr07B4",
+        "createdStudents": 30,
+        "knowledgeResources": 1,
+        "knowledgeChunks": 2,
+        "knowledgeNodes": 5,
+        "frontendAcceptance": {
+          "cases": [
+            "native attachment dialog adapter click",
+            "attachment copy and hash readback",
+            "attachment source retained",
+            "attachment cancel zero writes",
+            "attachment status feedback",
+            "needs_ocr persisted",
+            "teacher correction persisted",
+            "phone sanitized",
+            "missing credential actionable",
+            "triplet preview editable",
+            "triplet reject zero writes",
+            "triplet confirm writes exercise set",
+            "exercise source kinds retained",
+            "local_bank source visible",
+            "generated source visible",
+            "bookmark persisted",
+            "bookmarked-only filter hit",
+            "question search no-hit state",
+            "question search hit state",
+            "artifact export file and hash",
+            "PDF UI click export",
+            "PDF Unicode file bytes",
+            "PDF SQLite metadata readback",
+            "DOCX UI click export",
+            "DOCX Unicode and style bytes",
+            "DOCX long content SQLite readback",
+            "empty artifact visible failure",
+            "empty artifact zero writes",
+            "PDF and DOCX restart readback",
+            "question UI canonical create",
+            "teacher provenance cannot forge generated",
+            "question category create",
+            "question category versioned rename",
+            "question category assignment",
+            "question category soft delete",
+            "question category restore",
+            "question usage empty state",
+            "question manual usage readback",
+            "question management restart readback",
+            "question empty validation zero writes",
+            "question category conflict fail closed",
+            "exercise/bookmark/artifact restart readback",
+            "1366x768 and 1920x1080 visual capture",
+            "teacher notebook empty state",
+            "teacher notebook create readback",
+            "teacher note create readback",
+            "teacher note versioned edit",
+            "teacher note soft delete audit",
+            "teacher notebook soft delete",
+            "teacher notebook restore",
+            "teacher notebook restart readback",
+            "AI observability summary readback",
+            "regression report click persistence",
+            "computed regression gates visible",
+            "recent run inspector visible",
+            "bounded trace boundary visible",
+            "raw prompt and hidden reasoning excluded",
+            "regression report restart readback",
+            "teaching book empty state",
+            "teaching book create readback",
+            "teaching book versioned update",
+            "teaching chapter create",
+            "teaching page create",
+            "manual source binding",
+            "source-anchored block create",
+            "read-only compiled preview",
+            "patch draft zero writes",
+            "patch apply readback",
+            "patch undo readback",
+            "selection patch exact preview",
+            "selection patch zero writes",
+            "selection patch apply and undo",
+            "versioned direct block edit",
+            "teaching source health refresh",
+            "page and block pending regeneration state",
+            "teaching book Markdown export",
+            "teaching book archive boundary",
+            "teaching book restart readback",
+            "teaching book dual-viewport capture",
+            "memory workspace empty state",
+            "L2 candidate zero writes",
+            "L2 teacher adoption",
+            "L2 versioned edit",
+            "L2 stale conflict fail closed",
+            "L2 conflict preserves readback",
+            "L2 revision history",
+            "L2 disable and restore",
+            "L2 soft delete audit",
+            "L3 candidate zero writes",
+            "L3 teacher adoption",
+            "L3 versioned edit",
+            "L3 stale conflict fail closed",
+            "L3 conflict preserves readback",
+            "L3 disable and restore",
+            "bounded evidence graph",
+            "raw prompt and hidden reasoning excluded from memory",
+            "memory governance counts",
+            "memory restart readback",
+            "memory dual-viewport capture",
+            "AI formal memory write disabled",
+            "mastery path navigation click",
+            "mastery path SQLite version readback",
+            "mastery module and type order visible",
+            "mastery refresh stable readback",
+            "mastery percentage not invented",
+            "mastery empty state",
+            "mastery student isolation",
+            "mastery AI handoff prefill",
+            "mastery restart and dual-viewport readback",
+            "global search navigation and idle state",
+            "global search blank validation",
+            "global student search hit",
+            "global student result navigation",
+            "global record search hit",
+            "global record owner navigation",
+            "global search no-hit state",
+            "global search restart readback",
+            "global search dual-viewport capture",
+            "exercise-set teacher-visible readback",
+            "exercise-set read-only boundary",
+            "exercise-set source labels visible",
+            "exercise-set refresh zero writes",
+            "exercise-set empty state",
+            "exercise-set student isolation",
+            "exercise-set restart UI readback",
+            "exercise-set 1366x768 capture",
+            "exercise-set 1920x1080 capture",
+            "review reminder navigation click",
+            "review reminder due SQLite readback",
+            "review reminder bounded projection",
+            "review reminder refresh zero writes",
+            "review reminder evidence navigation",
+            "review reminder clear state",
+            "review reminder student isolation",
+            "review reminder restart UI readback",
+            "review reminder 1366x768 capture",
+            "review reminder 1920x1080 capture",
+            "student create form SQLite readback",
+            "student edit identity and SQLite readback",
+            "student folder open visible feedback",
+            "student export user click",
+            "student export metadata file readback",
+            "student export SQLite record projection",
+            "student export cancel zero writes",
+            "student archive confirmation cancel zero writes",
+            "student archive confirm SQLite write",
+            "student archived row label",
+            "student archived read-only controls",
+            "student lifecycle restart readback",
+            "student lifecycle dual-viewport capture",
+            "data backup settings navigation",
+            "data backup export user click",
+            "data backup outside live root",
+            "data backup manifest schema and file count",
+            "data backup relative paths and SHA-256",
+            "data backup clean verification",
+            "data backup export cancel zero writes",
+            "data backup changed file detection",
+            "data backup unexpected file detection",
+            "data backup verify cancel zero writes",
+            "data backup restart verification",
+            "data backup dual-viewport capture",
+            "AI conversation sidebar navigation",
+            "AI folder blank validation zero writes",
+            "AI folder create SQLite readback",
+            "AI conversation create SQLite readback",
+            "AI conversation rename SQLite readback",
+            "AI conversation drag move SQLite readback",
+            "AI conversation archive cancel zero writes",
+            "AI conversation archive confirm",
+            "AI folder rename SQLite readback",
+            "AI folder archive cancel zero writes",
+            "AI folder cascade archive",
+            "AI archived workspace restart readback",
+            "AI archived settings UI readback",
+            "AI conversation dual-viewport capture",
+            "review report navigation and validation",
+            "review invalid range zero writes",
+            "review generation SQLite readback",
+            "review source evidence visible",
+            "review quality checks visible",
+            "review initial Markdown snapshot",
+            "review edit zero writes before save",
+            "review save SQLite readback",
+            "review parent summary readback",
+            "review initial snapshot boundary",
+            "review history reopen",
+            "review student isolation",
+            "review restart SQLite readback",
+            "review restart file boundary",
+            "review report dual-viewport capture",
+            "AI quality settings navigation and loading",
+            "quality blank validation zero writes",
+            "quality invalid CSV zero writes",
+            "teacher quality score SQLite readback",
+            "teacher rewrite flag and failure visibility",
+            "quality summary refresh readback",
+            "model grader truthful mode visibility",
+            "quality sample replay to AI input",
+            "quality before selection visibility",
+            "quality after review SQLite readback",
+            "quality replay experiment SQLite link",
+            "quality score delta visible",
+            "quality valid CSV import",
+            "quality reviews restart readback",
+            "quality experiment and model grade restart readback",
+            "AI quality dual-viewport capture"
+          ],
+          "passed": 207,
+          "total": 207,
+          "viewports": [
+            "1366x768",
+            "1920x1080"
+          ],
+          "screenshots": [
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mistakes-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mistakes-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-question-notebook-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-artifact-pdf-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-artifact-docx-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-artifact-error-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teacher-notebook-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teacher-notebook-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-observability-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-observability-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teaching-book-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-teaching-book-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-memory-governance-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-memory-governance-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mastery-path-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-mastery-path-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-global-search-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-global-search-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-exercise-sets-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-exercise-sets-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-reminder-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-reminder-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-student-lifecycle-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-student-lifecycle-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-data-backup-success-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-data-backup-failed-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-conversation-library-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-conversation-archive-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-report-draft-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-review-report-saved-1920x1080.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-quality-review-1366x768.png",
+            "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\electron-e2e\\frontend-ai-quality-experiment-1920x1080.png"
+          ]
+        }
+      },
+      "scriptGuardFollowup": "Only replace the historical line-number guard with the precise archived hidden-button error; separately assert the condition. Tested tail source reconstructed and hash-matched, no UI replay.",
+      "integrationBoundary": "Main 54bf791 adds unrelated material fragment code. The two production files have identical code content to tested source eb5d8cd under Git line-ending normalization. Integrated build/type and 240 components pass; affected Pi and 207 checks reference the earlier immutable build, not a new full integrated run."
+    },
+    "originalFacts": {
+      "before": {
+        "journal": "edf6c16c9fee538c17c2dc50f8e75ace3758ac4aeca5cb9da3b158c5aaa9a71d",
+        "messages": "198bc370055e58173998544950d48440ecc3d02f2c24d7569b8661e887839419"
+      },
+      "after": {
+        "journal": "edf6c16c9fee538c17c2dc50f8e75ace3758ac4aeca5cb9da3b158c5aaa9a71d",
+        "messages": "198bc370055e58173998544950d48440ecc3d02f2c24d7569b8661e887839419"
+      },
+      "publicTextSha256": "ae6f25ebbaf29f8e9ef88e90e39214e895e79eaf703729bfd5946f0c8d780a1a",
+      "unchanged": true
+    },
+    "selectedPosition": {
+      "before": {
+        "text": "合成选读段落30：先",
+        "rect": {
+          "x": 413.3333435058594,
+          "y": 340,
+          "width": 128.42709350585938,
+          "height": 17.333343505859375,
+          "top": 340,
+          "right": 541.7604370117188,
+          "bottom": 357.3333435058594,
+          "left": 413.3333435058594
+        }
+      },
+      "after": {
+        "text": "合成选读段落30：先",
+        "rect": {
+          "x": 413.3333435058594,
+          "y": 340,
+          "width": 128.42709350585938,
+          "height": 17.333343505859375,
+          "top": 340,
+          "right": 541.7604370117188,
+          "bottom": 357.3333435058594,
+          "left": 413.3333435058594
+        }
+      },
+      "completionBefore": {
+        "text": "后续课堂说明16：从",
+        "rect": {
+          "x": 413.3333435058594,
+          "y": 362.75,
+          "width": 128.42709350585938,
+          "height": 17.333343505859375,
+          "top": 362.75,
+          "right": 541.7604370117188,
+          "bottom": 380.0833435058594,
+          "left": 413.3333435058594
+        }
+      },
+      "completionAfter": {
+        "text": "后续课堂说明16：从",
+        "rect": {
+          "x": 413.3333435058594,
+          "y": 364.85418701171875,
+          "width": 128.42709350585938,
+          "height": 17.33331298828125,
+          "top": 364.85418701171875,
+          "right": 541.7604370117188,
+          "bottom": 382.1875,
+          "left": 413.3333435058594
+        }
+      }
+    },
+    "failureEvidence": [
+      "configuration before the first provider request",
+      "selection dragged during streaming and collapsed at completion",
+      "unit harness imported an unavailable schema package; removed that import without adding dependencies",
+      "idle tool-execution/cwd accessor assumptions in the unit harness",
+      "terminal whitespace mismatch in the synthetic fixture; final paragraph now has an explicit non-whitespace end, exact content/hash assertions retained",
+      "completion requires ignoring non-visible DOM block separators",
+      "hidden latest-button lookup after already reaching bottom"
+    ],
+    "performance": "No new latency or P95 samples. Selection work remains inactive without a saved range; selected mutations restore one range and position using the original scroller. No new dependencies, IPC, tables, workers or model requests.",
+    "paidRequests": 0,
+    "audit": {
+      "exit": 1,
+      "existing": {
+        "high": 8,
+        "moderate": 29,
+        "low": 8,
+        "critical": 0,
+        "total": 45
+      }
+    },
+    "unverified": [
+      "Actual system Pinyin IME",
+      "Teacher REVIEW and full FX09/C02/C03 acceptance matrix",
+      "Physical window drag and maximized drag restore",
+      "Daily application of this new selection/continuation slice; daily runtime is still 05782b4",
+      "Installer/Office/WPS and natural model answer quality"
+    ],
+    "rollback": "Revert only the two production file changes in eb5d8cd; do not delete or rewind SQLite/native/files/drafts or collaborators material code."
+  },
+  "keyboardSlice": {
+    "sourceCommit": "f2888688a5b4e9ae4b9b5370dcf8fbcb5180ef45",
+    "baseCommit": "b8e365165b401967337c793a4a3b762638164576",
+    "goal": "active",
+    "newlyAcceptedAT": [],
+    "productionFiles": [
+      {
+        "file": "apps/desktop/src/renderer/components/office/PiWorkspaceShell.tsx",
+        "sha256": "2236a7dbda2a92e70d1a91f4033d2ca961e2fa8d4c018ebbc7cb3c8bae5003e3"
+      },
+      {
+        "file": "apps/desktop/src/renderer/components/office/WorkbenchContextPanel.tsx",
+        "sha256": "4da7f53f98d037e6d0806531a69a5037c64e46778a7344cb19d6208f9afd27b3"
+      },
+      {
+        "file": "apps/desktop/src/renderer/components/office/workspace-notifications.ts",
+        "sha256": "0ceae83053e901a1f6380c289461572a3c385ffa973fcac2ca7fac28cb2022cf"
+      }
+    ],
+    "result": {
+      "ok": true,
+      "checks": [
+        "Keyboard opens both wide/narrow right panels, reaches tabs with Tab/arrows and Esc restores the actual trigger",
+        "Original Pi pending question stays reachable outside the process; keyboard answer reaches the native tool continuation exactly once",
+        "Pending file notice opens its actual preview and focuses review, without selecting or executing a write decision",
+        "Tab to original explicit save and Enter produce one exact owned file; SQLite remains pending before that decision",
+        "Closing the file panel returns to the saved-file notification that opened it, rather than a different header control",
+        "Reload/cold launch restore the exact two native runs, saved file and unsent draft with zero replay; restored panel preferences do not steal focus"
+      ],
+      "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-UJUTCL",
+      "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-fixed-b8e3651",
+      "buildHash": "01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b",
+      "scriptHash": "5d9d981886ae10f0f2b705e4bb9cb820e487e6452905e55ad513df0a45ed0e54",
+      "localRequestsThisFinalRun": 5,
+      "paidRequests": 0,
+      "requestsAcrossAllDiagnostics": 14,
+      "savedFileSha256": "cf044f21c732bfda17ed6394c5e4361eb564f46a95c1a54d2aed1355cc2cb127",
+      "facts": {
+        "events": "8c80bc263519493eda445615f3029cd57759186ebb77c59248b0a47669b54d82",
+        "messages": "fe336b5b85b78a30238cbc2c695f3c5ce3951f44a070e6ea3fb32b1a23736978"
+      }
+    },
+    "baseline": {
+      "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-tP4fUo",
+      "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-reading-integrated",
+      "buildHash": "0210f0f56081bfda20eceb2c1cc4bb5deb2d5d20cce8ee949580f42bbba79920",
+      "observations": [
+        {
+          "width": 1366,
+          "stage": "panel-open",
+          "focused": {
+            "testId": "pi-aside-toggle",
+            "slot": "button",
+            "text": ""
+          }
+        },
+        {
+          "width": 480,
+          "stage": "panel-open",
+          "focused": {
+            "testId": "pi-aside-toggle",
+            "slot": "button",
+            "text": ""
+          }
+        }
+      ]
+    },
+    "failures": [
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-3OzNkJ",
+        "passed": 0,
+        "error": "Error: Keyboard fixture timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:18:143)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:70:17",
+        "requests": 0
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-tP4fUo",
+        "passed": 1,
+        "error": "Error: Keyboard fixture timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:18:143)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:79:15",
+        "requests": 4
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-AC5zeT",
+        "passed": 0,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'workbench-tab-tasks'\n- 'workbench-tab-files'\n                 ^\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:66:50",
+        "requests": 0
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-1a6J0p",
+        "passed": 3,
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n0 !== 1\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:93:9",
+        "requests": 5
+      },
+      {
+        "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-pending-keyboard-1a6J0p",
+        "file": "report-tail.json",
+        "passed": 1,
+        "error": "Error: Keyboard fixture timed out\n    at until (file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:22:143)\n    at async file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/pending-keyboard-ui.mjs:102:115",
+        "requests": 0
+      }
+    ],
+    "commands": [
+      {
+        "command": "npm.cmd run build > test-results/c02-keyboard-build-fixed.log 2>&1",
+        "exit": 0
+      },
+      {
+        "command": "npm.cmd run test:renderer-components > test-results/c02-keyboard-components-fixed.log 2>&1",
+        "exit": 0,
+        "passed": 240
+      },
+      {
+        "command": "node scripts/ui-home-state-test.mjs > test-results/c02-keyboard-home.log 2>&1",
+        "exit": 0,
+        "passed": 14,
+        "note": "before the final remounted-file-notice focus repair; 240 and formal six are on final source"
+      },
+      {
+        "command": "node scripts/xiaozhi-agent/pending-keyboard-ui.mjs test-results/c02-keyboard-fixed-b8e3651 > test-results/c02-keyboard-fixed.log 2>&1",
+        "exit": 0,
+        "passed": 6
+      },
+      {
+        "command": "npm.cmd audit --json > test-results/c02-keyboard-audit.json",
+        "exit": 1,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 8,
+          "moderate": 29,
+          "high": 8,
+          "critical": 0,
+          "total": 45
+        }
+      },
+      {
+        "command": "$env:OMNI_EDU_TEST_BUILD_ROOT=(Resolve-Path test-results/c02-keyboard-fixed-b8e3651).Path; node scripts/electron-smoke.mjs > test-results/c02-keyboard-smoke.log 2>&1",
+        "exit": 0,
+        "passed": 207,
+        "build": "01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b",
+        "note": "f288868 build, before automatic focus request expiry repair; final isolated two-case test covers that repair without repeating model flows"
+      },
+      {
+        "command": "git diff --check",
+        "exit": 0,
+        "note": "checked before each source commit; final documentation check recorded at closeout"
+      }
+    ],
+    "performance": {
+      "before": {
+        "main": {
+          "bytes": 3527270,
+          "sha256": "45438d136d68482a11f7fe29eb42d0e1afd61a154d210cf5373837cb1d53fe46"
+        },
+        "preload": {
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "bytes": 7383041,
+          "sha256": "ddfcc1852ced27765e3078929b400e4dc1a4de55af9b57bbb13fb09f855b2a99"
+        }
+      },
+      "after": {
+        "main": {
+          "bytes": 3527270,
+          "sha256": "45438d136d68482a11f7fe29eb42d0e1afd61a154d210cf5373837cb1d53fe46"
+        },
+        "preload": {
+          "bytes": 36248,
+          "sha256": "e8d9634377edc6401630642e14f537b1e887b31c73929228389f48b53cbbab86"
+        },
+        "renderer": {
+          "bytes": 7384820,
+          "sha256": "841a8c6edb425d848cddc9a3ff7b2dadeb6ff8f879c5637b7371fb4ea39c6889"
+        }
+      },
+      "rendererBytesDelta": 1779,
+      "note": "Focus work runs only on explicit entry/close; no new token handler, observer, IPC or model call. Bundle size comparison only; no new streaming P95/latency claim."
+    },
+    "rollback": "Revert the three application focus adapters from this source commit. No data/schema, runtime, dependency or provider migration; keep files and history.",
+    "boundaries": [
+      "Actual browser keyboard in isolated formal Pi, not physical locked daily window",
+      "Original FX01/FX09, all menus/dialogs, teacher review, OS IME, physical drag and full C02 remain open",
+      "D daily runtime was last verified at 05782b4; this slice and the prior reading slice are not applied there; wait for Windows unlock",
+      "Current full accepted AT remains 3/252; continue W3 E06/E07/E08 and C before S/T",
+      "No teacher data or genuine provider credentials in archives"
+    ],
+    "automaticFocusRepair": {
+      "sourceCommit": "078ff4ced1413860ea11484af16c56a3f3cbe6dc",
+      "file": "apps/desktop/src/renderer/components/office/PiWorkspaceShell.tsx",
+      "sha256": "ee0f56ee6c667385fb65ce7080eac9856d5d15f590a64e592013adad380b3595",
+      "buildRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-automatic-f288868",
+      "buildHash": "b378465adb4ef830126a276e0d4aae47a9c6680114493322aa0f624894266c2a",
+      "baseline": {
+        "ok": false,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-ASjepi",
+        "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-fixed-b8e3651",
+        "buildHash": "01cecfe457c5dba1de36947953d7fc6c6140c3d005ecc26850f8d83ef9df658b",
+        "scriptHash": "79b116f4e5e2628609d5c74efd3cc8eeba12123ed27dc32b93fed675631d9fd3",
+        "checks": [],
+        "errors": [],
+        "boundary": "Owned original Pi empty workspace and browser keyboard/resize only; zero model requests. Not physical desktop drag, OS DPI, daily runtime or full AT.",
+        "runtime": {
+          "paths": {
+            "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-ASjepi\\profile",
+            "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-ASjepi\\profile"
+          },
+          "modules": [
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/education-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/image-header-cjlp_vkk.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/index.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/manifest-swncwwn7.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/material-word-ducvgi0b.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/materials-nj8u7iqp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/ocr-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/office-images-cozx6ckp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/office-math-czlpbpwf.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/office-pdf-renderer-drx7hwnm.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/runtime-command-ca2wibil.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/typed-table-cic72mke.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-attachments-b1qaifrn.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-documents-de5zjvnu.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-ocr-cijofhv6.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-fixed-b8e3651/main/xiaozhi-office-artifacts-cmjkfs3l.js"
+          ]
+        },
+        "afterRestore": {
+          "focus": "workbench-panel-close",
+          "draft": "合成草稿：改变窗口尺寸后继续输入。"
+        },
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'workbench-panel-close'\n- 'office-prompt-input'\n\n    at file:///C:/Users/ZhouXuan/.codex/worktrees/e147/EduProject/apps/desktop/scripts/xiaozhi-agent/panel-focus-resize-ui.mjs:17:82",
+        "modelRequests": []
+      },
+      "result": {
+        "ok": true,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-HifHYZ",
+        "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-automatic-f288868",
+        "buildHash": "b378465adb4ef830126a276e0d4aae47a9c6680114493322aa0f624894266c2a",
+        "scriptHash": "79b116f4e5e2628609d5c74efd3cc8eeba12123ed27dc32b93fed675631d9fd3",
+        "checks": [
+          "Automatic narrow/wide panel restoration preserves the original focused draft and does not reuse a past manual-open request",
+          "A subsequent explicit keyboard open still enters the panel and Esc restores its trigger"
+        ],
+        "errors": [],
+        "boundary": "Owned original Pi empty workspace and browser keyboard/resize only; zero model requests. Not physical desktop drag, OS DPI, daily runtime or full AT.",
+        "runtime": {
+          "paths": {
+            "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-HifHYZ\\profile",
+            "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-HifHYZ\\profile"
+          },
+          "modules": [
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/education-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/image-header-cjlp_vkk.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/index.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/manifest-swncwwn7.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/material-word-ducvgi0b.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/materials-nj8u7iqp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/ocr-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/office-images-cozx6ckp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/office-math-czlpbpwf.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/office-pdf-renderer-drx7hwnm.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/runtime-command-ca2wibil.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/typed-table-cic72mke.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-attachments-b1qaifrn.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-documents-de5zjvnu.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-ocr-cijofhv6.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-automatic-f288868/main/xiaozhi-office-artifacts-cmjkfs3l.js"
+          ]
+        },
+        "afterRestore": {
+          "focus": "office-prompt-input",
+          "draft": "合成草稿：改变窗口尺寸后继续输入。"
+        },
+        "modelRequests": []
+      },
+      "commands": [
+        {
+          "command": "npm.cmd run build > test-results/c02-keyboard-build-automatic.log 2>&1",
+          "exit": 0
+        },
+        {
+          "command": "npm.cmd run test:renderer-components > test-results/c02-keyboard-components-automatic.log 2>&1",
+          "exit": 0,
+          "passed": 240
+        },
+        {
+          "command": "node scripts/xiaozhi-agent/panel-focus-resize-ui.mjs test-results/c02-keyboard-automatic-f288868 > test-results/c02-keyboard-resize-after.log 2>&1",
+          "exit": 0,
+          "passed": 2
+        }
+      ],
+      "rendererBytes": 7385067,
+      "rendererBytesDelta": 2026,
+      "note": "Expired focus request is cleared on automatic width, visibility/session or empty-state restoration. Actual 1366→480→1366 repro and final two-case formal Pi test use no model. Earlier six-case flow and 207 remain attached to their earlier immutable build; no repeat of successful generations."
+    },
+    "integration": {
+      "sourceCommit": "62fbf1ea4664b2f89dce226a170076ad7a546e3f",
+      "upstream": "4fe07fc",
+      "documentationConflicts": 13,
+      "allKeptBoth": true,
+      "productionCodeConflicts": 0,
+      "ownThreeProductionFilesUnchangedFrom": "078ff4c",
+      "buildRoot": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-integrated-62fbf1e",
+      "buildHash": "4afc482e972095af59294f3fb81cb133d6b6ecb896bc1b82ed416994674c1c70",
+      "root": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-panel-focus-QovHAz",
+      "result": {
+        "ok": true,
+        "root": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-QovHAz",
+        "build": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\c02-keyboard-integrated-62fbf1e",
+        "buildHash": "4afc482e972095af59294f3fb81cb133d6b6ecb896bc1b82ed416994674c1c70",
+        "scriptHash": "79b116f4e5e2628609d5c74efd3cc8eeba12123ed27dc32b93fed675631d9fd3",
+        "checks": [
+          "Automatic narrow/wide panel restoration preserves the original focused draft and does not reuse a past manual-open request",
+          "A subsequent explicit keyboard open still enters the panel and Esc restores its trigger"
+        ],
+        "errors": [],
+        "boundary": "Owned original Pi empty workspace and browser keyboard/resize only; zero model requests. Not physical desktop drag, OS DPI, daily runtime or full AT.",
+        "runtime": {
+          "paths": {
+            "userData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-QovHAz\\profile",
+            "sessionData": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-panel-focus-QovHAz\\profile"
+          },
+          "modules": [
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/education-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/image-header-cjlp_vkk.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/index.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/manifest-swncwwn7.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/material-word-ducvgi0b.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/materials-nj8u7iqp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/ocr-runtime.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/office-images-cozx6ckp.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/office-math-czlpbpwf.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/office-pdf-renderer-drx7hwnm.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/runtime-command-ca2wibil.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/typed-table-cic72mke.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-attachments-b1qaifrn.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-documents-de5zjvnu.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-ocr-cijofhv6.js",
+            "/c:/users/zhouxuan/.codex/worktrees/e147/eduproject/apps/desktop/test-results/c02-keyboard-integrated-62fbf1e/main/xiaozhi-office-artifacts-cmjkfs3l.js"
+          ]
+        },
+        "afterRestore": {
+          "focus": "office-prompt-input",
+          "draft": "合成草稿：改变窗口尺寸后继续输入。"
+        },
+        "modelRequests": []
+      },
+      "commands": [
+        {
+          "command": "npm.cmd run build > test-results/c02-keyboard-build-integrated.log 2>&1",
+          "exit": 0
+        },
+        {
+          "command": "npm.cmd run test:renderer-components > test-results/c02-keyboard-components-integrated.log 2>&1",
+          "exit": 0,
+          "passed": 240
+        },
+        {
+          "command": "node scripts/xiaozhi-agent/panel-focus-resize-ui.mjs test-results/c02-keyboard-integrated-62fbf1e > test-results/c02-keyboard-resize-integrated.log 2>&1",
+          "exit": 0,
+          "passed": 2
+        }
+      ],
+      "boundary": "Original six-case generation and 207 smoke are bound to f288868 immutable build before the automatic-focus repair/integration. Final integration runs type/build, 240 components and the affected zero-model focus flow, without replaying model tasks. No daily or installer update; accepted full AT remains 3/252."
+    }
   }
 }
