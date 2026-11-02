@@ -6,18 +6,19 @@ import os from 'node:os';
 import {randomUUID} from 'node:crypto';
 import {DatabaseSync} from 'node:sqlite';
 import {presentationFixture} from './presentation-fixture.mjs';
-import {createXiaozhiSessionState} from '../../src/main/xiaozhi-agent/session-state.ts';
-import {createTextChangeService} from '../../src/main/xiaozhi-agent/text-change-service.ts';
-import {createOfficeArtifactService} from '../../src/main/xiaozhi-agent/office-artifact-service.ts';
-import {createOfficeArtifactCoordinator} from '../../src/main/xiaozhi-agent/office-artifact-coordinator.ts';
-import {createDeliveryCoordinator} from '../../src/main/xiaozhi-agent/delivery-coordinator.ts';
-import {createDeliveryReadback} from '../../src/main/xiaozhi-agent/verification/delivery-readback.ts';
-import {createRunResultReadback} from '../../src/main/xiaozhi-agent/verification/result-readback.ts';
-import {createDeliveryCatalog} from '../../src/main/xiaozhi-agent/delivery-catalog.ts';
-import {DELIVERY_CATALOG_SCHEMA} from '../../src/shared/xiaozhi-delivery.ts';
-import {validXiaozhiStart} from '../../src/shared/xiaozhi-start.ts';
-import {legacyVerification} from '../../src/shared/xiaozhi-verification.ts';
-import {readPresentationNotes} from './presentation-readback.ts';
+const {createXiaozhiSessionState}=await import('../../src/main/xiaozhi-agent/session-state.ts');
+const {createTextChangeService}=await import('../../src/main/xiaozhi-agent/text-change-service.ts');
+const {createOfficeArtifactService}=await import('../../src/main/xiaozhi-agent/office-artifact-service.ts');
+const {createOfficeArtifactCoordinator}=await import('../../src/main/xiaozhi-agent/office-artifact-coordinator.ts');
+const {createDeliveryCoordinator}=await import('../../src/main/xiaozhi-agent/delivery-coordinator.ts');
+const {createDeliveryReadback}=await import('../../src/main/xiaozhi-agent/verification/delivery-readback.ts');
+const {createRunResultReadback}=await import('../../src/main/xiaozhi-agent/verification/result-readback.ts');
+const {createDeliveryCatalog}=await import('../../src/main/xiaozhi-agent/delivery-catalog.ts');
+const {DELIVERY_CATALOG_SCHEMA}=await import('../../src/shared/xiaozhi-delivery.ts');
+const {validXiaozhiStart}=await import('../../src/shared/xiaozhi-start.ts');
+const {legacyVerification}=await import('../../src/shared/xiaozhi-verification.ts');
+const {readPresentationNotes}=await import('./presentation-readback.ts');
+const {fileVersion}=await import('../../src/main/xiaozhi-agent/workspace-files.ts');
 
 const output=fs.mkdtempSync(path.join(os.tmpdir(),'xiaozhi-bundle-')),dataRoot=path.join(output,'data'),workspace=path.join(output,'files');fs.mkdirSync(dataRoot);fs.mkdirSync(workspace);
 const db=new DatabaseSync(path.join(dataRoot,'app.db'));
@@ -60,6 +61,35 @@ try{
   results.capture('bundle','office_deliver_files',result,false);const v=await results.finish(legacyVerification(runId),async()=>[{toolCallId:'bundle',toolName:'office_deliver_files',...result}]);assert(v.checks.some(c=>c.id==='saved_bundle:bundle'&&c.state==='passed'));
   const original=fs.readFileSync(path.join(workspace,'first.html'));fs.appendFileSync(path.join(workspace,'first.html'),'changed');await assert.rejects(proof.read(),/evidence_missing/);fs.writeFileSync(path.join(workspace,'first.html'),original);
  });
+ const source=(await coordinator.list(id)).find(v=>v.runId==='one').files.find(f=>f.kind==='office').artifact;
+ const sourceFile=path.join(workspace,'first.pptx'),sourceBytes=fs.readFileSync(sourceFile),sourceMtime=fs.statSync(sourceFile).mtimeMs;
+ const sourceDraft=(await state.officeArtifacts.get(source.id)).draft;
+ const edit=(pages,path='delta.pptx')=>({fileId:'ppt',kind:'office',path,format:'pptx',parentArtifactId:source.artifactId,sources:[],presentationEdit:{schemaVersion:'xiaozhi.presentation-edit.v1',version:fileVersion(fs.statSync(sourceFile)),pages}});
+ const companion=path=>({fileId:'html',kind:'text',path,content:'<!doctype html><html><p>总向下力11N，浮力上限10N；未触底向下合力1N</p></html>'});
+ await check('Bundle materializes a current-version page delta through the original service and preserves all unselected fields and original file',async()=>{
+  runId='delta';const paragraphs=['主线载荷改为5N，总向下力11N，最大浮力10N。','未触底向下合力1N；触底静止需另计支撑力1N。'];
+  const request={files:[companion('delta.html'),edit([{page:6,paragraphs}])]};
+  const work=start(request);let view=await pending();const row=await state.officeArtifacts.get(view.files.find(f=>f.kind==='office').draftId);
+  const expected=structuredClone(sourceDraft);expected.sections[5].paragraphs=paragraphs;assert.deepEqual(row.draft,expected);assert.equal(row.parentArtifactId,source.artifactId);assert.equal(row.sources.find(s=>s.kind==='parent_artifact').path,'first.pptx');
+  assert((await coordinator.decide(decision(view))).ok);const result=payload(await work);assert(result.success,JSON.stringify(result));await (await read().bind('bundle',result)).read();
+  assert.deepEqual(await readPresentationNotes(fs.readFileSync(path.join(workspace,'delta.pptx'))),await readPresentationNotes(sourceBytes));assert(fs.readFileSync(sourceFile).equals(sourceBytes));assert.equal(fs.statSync(sourceFile).mtimeMs,sourceMtime);
+  const before=(await state.officeArtifacts.list(id)).length;assert(payload(await start(request)).success);assert.equal((await state.officeArtifacts.list(id)).length,before);
+ });
+ await check('Unchanged PPT inside a changed bundle carries the original receipt without draft, target file, new version or repeated file review',async()=>{
+  runId='delta-noop';const before=(await state.officeArtifacts.list(id)).length;
+  const work=start({files:[companion('delta-noop.html'),edit([{page:4,heading:sourceDraft.sections[3].heading}],'unused-delta.pptx')]});const view=await pending();const old=view.files.find(f=>f.kind==='office');assert(old.carried);assert.equal(old.path,'first.pptx');assert.equal(old.draftId,source.id);assert.equal((await state.officeArtifacts.list(id)).length,before);
+  assert((await coordinator.decide(decision(view))).ok);const result=payload(await work);assert(result.success);await (await read().bind('bundle',result)).read();assert(!fs.existsSync(path.join(workspace,'unused-delta.pptx')));assert(fs.readFileSync(sourceFile).equals(sourceBytes));assert.equal(fs.statSync(sourceFile).mtimeMs,sourceMtime);
+ });
+ await check('Invalid page, stale source and mixed draft/edit are rejected before creating any companion draft or bundle',async()=>{
+  for(const bad of [edit([{page:19,heading:'越界'}]),{...edit([{page:4,heading:'changed'}]),presentationEdit:{...edit([]).presentationEdit,version:'0'.repeat(64)}},{...edit([{page:4,heading:'changed'}]),draft:sourceDraft}]){
+   runId='invalid-'+randomUUID();const before=(await state.changes.list(id)).length,offices=(await state.officeArtifacts.list(id)).length,bundles=(await coordinator.list(id)).length;
+   const result=payload(await start({files:[companion('not-created.html'),bad]}));assert(!result.success);assert.equal((await state.changes.list(id)).length,before);assert.equal((await state.officeArtifacts.list(id)).length,offices);assert.equal((await coordinator.list(id)).length,bundles);
+  }
+ });
+ await check('A source changed after bundle review invalidates the original confirmation before either new file is saved',async()=>{
+  runId='delta-stale';const work=start({files:[companion('delta-stale.html'),edit([{page:6,heading:'changed'}],'delta-stale.pptx')]});const view=await pending();fs.appendFileSync(sourceFile,'teacher edit');
+  assert.equal((await coordinator.decide(decision(view))).error,'conflict');assert(!fs.existsSync(path.join(workspace,'delta-stale.pptx')));assert(!fs.existsSync(path.join(workspace,'delta-stale.html')));await coordinator.cancel(runId);await work.catch(()=>{});fs.writeFileSync(sourceFile,sourceBytes);
+ });
  await check('Rejecting the whole bundle creates neither file',async()=>{
   runId='reject';const work=start({files:files('reject')});const view=await pending();assert((await coordinator.decide(decision(view,'reject'))).ok);assert.equal(payload(await work).outcome,'rejected');assert(!fs.existsSync(path.join(workspace,'reject.html')));assert(!fs.existsSync(path.join(workspace,'reject.pptx')));
  });
@@ -92,7 +122,7 @@ try{
   let reads=0;const catalog=createDeliveryCatalog({state:state.deliveries,coordinator:{read:async(...args)=>{++reads;return coordinator.read(...args);}},authorize:async sid=>{if(!db.prepare('SELECT id FROM ai_conversation_sessions WHERE id=? AND archived_at IS NULL').get(sid))throw Error('permission_denied');},running:()=>false});
   const list=offset=>catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'list',offset});
   const original=(await state.deliveries.list(id))[0];for(let i=0;i<14;i++){const suffix=(i+100).toString(16).padStart(64,'0');await state.deliveries.create({...original,id:'xidelivery_'+suffix,callId:'catalog-'+i,runId:'catalog-'+i});}
-  const first=await list(0);assert(first.ok&&first.kind==='list');assert.equal(first.items.length,12);assert.equal(first.nextOffset,12);assert.equal(reads,0);const second=await list(12);assert(second.ok&&second.kind==='list');assert.equal(new Set([...first.items,...second.items].map(v=>v.id)).size,first.total);
+  const first=await list(0);assert(first.ok&&first.kind==='list');assert.equal(first.items.length,12);assert.equal(first.nextOffset,12);assert.equal(reads,0);const items=[...first.items];let offset=first.nextOffset;while(offset!==undefined){const next=await list(offset);assert(next.ok&&next.kind==='list');items.push(...next.items);offset=next.nextOffset;}assert.equal(new Set(items.map(v=>v.id)).size,first.total);
   assert(first.items.every(v=>!('files'in v)&&!('content'in v)&&v.paths.length===2));
   const picked=await catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'get',sessionId:id,bundleId:partial.bundleId});assert(picked.ok&&picked.kind==='get');assert.equal(reads,1);assert.equal(picked.delivery.state,'partial');assert.equal(picked.delivery.continuation.state,'saved');assert.equal(picked.delivery.files.filter(f=>f.change?.state==='applied').length,1);
   const foreign='aisession_'+randomUUID();db.prepare('INSERT INTO ai_conversation_sessions(id) VALUES(?)').run(foreign);assert.equal((await catalog({schemaVersion:DELIVERY_CATALOG_SCHEMA,action:'get',sessionId:foreign,bundleId:partial.bundleId})).error,'permission_denied');assert.equal(reads,1);
