@@ -1858,6 +1858,70 @@
     ],
     "rollback": "Stop offering v2 in original tools while retaining v2 readers/ledger/family support and all saved files; revert generator paint implementation only after checking affected math exports. Never reinterpret v1 as v2 or remove data. Full rollback drill untested.",
     "evidenceManifest": "docs/research/evidence/office-math/20261102/manifest.json",
-    "manifestItems": 99
+    "manifestItems": 110,
+    "integration": {
+      "date": "2026-11-02",
+      "mergeSha": "b093113dc5626d40adeb9205f7f4f64ca7a90ba7",
+      "mainParent": "e265ec3",
+      "reason": "First atomic push rejected because another task had just pushed paper-material return. Four collaboration-doc header conflicts resolved by retaining both entries. Normal merge and push, no force.",
+      "productionChange": "Existing App/materials/notebook/paper basket return and edit guard; this slice Pi/shared draft/card/generator files unchanged from f9a062e",
+      "checks": {
+        "buildAndType": true,
+        "rendererComponents": 245,
+        "paperMaterialHandoff": 21,
+        "paperMaterialEditGuard": 49,
+        "sameSavedOfficeReadback": 3,
+        "newModelCalls": 0
+      },
+      "dailyRuntime": {
+        "source": "b093113dc5626d40adeb9205f7f4f64ca7a90ba7",
+        "responding": true,
+        "teacherMessagesSent": 0,
+        "commandLine": "D:\\WorkProject\\EduProject\\apps\\desktop\\node_modules\\electron\\dist\\electron.exe D:\\WorkProject\\EduProject\\apps\\desktop\\out\\main\\index.js",
+        "buildPassed": true,
+        "pid": 298792,
+        "closedNormally": [
+          276440,
+          297000
+        ],
+        "visible": true,
+        "componentsPassed": 245,
+        "hwnd": 14553942,
+        "foreign": [
+          {
+            "hwnd": 52497534,
+            "start": "2026-11-02T10:21:55.8812891Z",
+            "pid": 261420
+          },
+          {
+            "hwnd": 70323342,
+            "start": "2026-11-02T10:44:44.4659046Z",
+            "pid": 265852
+          }
+        ],
+        "locked": true,
+        "dirtyDocuments": [
+          {
+            "path": "docs\\integrations\\ANATOMY.md",
+            "sha256": "f195ca9990034c505f21150d350e32ca50166247981e815d98011f00b9728d2b"
+          },
+          {
+            "path": "科普课件使用.md",
+            "sha256": "bdb0dd530a28bd9aefb9bb19b015479e7c84d4bf25e43c5190cf2ec2c6b1102f"
+          },
+          {
+            "path": "docs\\integrations\\ANATOMY_用法与提示词规范.md",
+            "sha256": "d5b5739b27e9dca7cee91fcf5b82ce06e373af9a5beede4677f0170743d7b90b"
+          }
+        ]
+      },
+      "mainAndPreloadSameHash": {
+        "main/index.js": true,
+        "preload/index.cjs": true
+      },
+      "nativeRenders": "No repeated export/native generation; original final files unchanged, and merged original UI reads/cold reopens the same bytes at both sizes.",
+      "performanceAttribution": "Earlier +8188 bytes is formula-only D f9a062e build. Final integrated UI additionally contains collaborator changes; do not attribute their bytes to formula slice.",
+      "remoteVerifiedAtCodePush": "HEAD = origin/main = origin/codex/hana-answer-quality = b093113; documentation-only follow-up normal push verified separately"
+    }
   }
 }

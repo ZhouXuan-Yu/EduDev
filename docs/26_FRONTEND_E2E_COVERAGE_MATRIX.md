@@ -1,5 +1,8 @@
 # 前端接线与 Electron E2E 覆盖矩阵
 
+最终整合主线资料题目回接e265ec3为b093113：四份协作记录顶部冲突保留双方，公式/Pi/shared/成果卡源码与f9a062e相同。整合后build/type、245组件、协作者21接力＋49编辑守卫、同三文件双尺寸冷启只读3检查通过，0新增模型调用；旧原生成/WPS证据不冒称重跑。日常D再次正常关闭297000并以自身依赖build/type/245组件启动整合代码，新PID298792/窗口14553942响应可见，3脏文档hash及其他任务窗口PID/start/HWND保留；C/D主包和preload同hash。完整AT仍3/252、Goal active。证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice.integration。
+
+
 ## 2026-11-02 E08 普通教学文件公式排版
 
 E08普通公式切片：原Pi真实整包卡预览MathML/编辑分母/未保存禁确认/保存后一次确认/三实际文件/双尺寸/冷启5检查通过。WPS与Word/PDF实际页面已查看，原有公式串帧已修；3项帧检查/9边界/20兼容及245组件通过。 日常D正常关闭旧PID276440，detached更新f9a062e，以自身依赖build/type与245组件通过并经原npm start启动；新PID297000/窗口5705078响应且可见，3脏文档hash及其他窗口PID/start/HWND保持。0日常教师消息或资料上传。 完整AT仍3/252、Goal active；本片不等于完整FX09/全学科或原生Office编辑保存验收。Microsoft PPT因已有PID217336未运行；物理drag/IME仍受LogonUI限制。普通XLSX仍v1，标题普通文字，公式图片不可直接编辑。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeMathSlice。

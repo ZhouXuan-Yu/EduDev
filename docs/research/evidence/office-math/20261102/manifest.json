@@ -693,6 +693,83 @@
       "bytes": 80607,
       "sha256": "bd76a6c0d99e0396889ff59bf0293306ddfa99f96154de91004cda058c25d701",
       "gzipSha256": "f9a3e8ae32219964e5c84a6131e165a08e19adec3369b412166c0762d809f787"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-build-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-build-20261102.log.gz",
+      "bytes": 41050,
+      "sha256": "d6c72f371e86887459a1e8daeb9a3cfdbcfa41f7d8062dac464d5a16b8e5915f",
+      "gzipSha256": "2bf0b58bfb863f57590496f455b5a83649f1d1de857534974a822a08095d141d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-components-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-components-20261102.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "gzipSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-paper-handoff-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-paper-handoff-20261102.log.gz",
+      "bytes": 1956,
+      "sha256": "21841a26e2a4aa51e89027018f79c423f7d6423c806b891efbba4db396f01143",
+      "gzipSha256": "2e00237078e7fd0a4c681563bd8c5729acfaf8658d337fb3b923657d7725ed9d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-paper-guard-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-paper-guard-20261102.log.gz",
+      "bytes": 4497,
+      "sha256": "ec516c3e1b87b571d8acf33b6a7cb59342659e996362eee36491f3b51d65c1ca",
+      "gzipSha256": "0290023005f56eddd624b3b59af03b77176accf266f2cad50968230856f13974"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-ui-readback-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-ui-readback-20261102.log.gz",
+      "bytes": 660,
+      "sha256": "f4b57a7a2afc8ab8289a5a799823c1eb94137693b5c85b385365f9e82bed3d3d",
+      "gzipSha256": "3c0b93c622b26e3d8a0aab7aaa45333dedb0b22b435a9fab871f03febd890571"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-daily-start-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-daily-start-20261102.log.gz",
+      "bytes": 79774,
+      "sha256": "47feda46ad3b5d1e35191156185d9cc8ebe81af7dfa404ed64ae9a81447d2bd9",
+      "gzipSha256": "65fc30908112a38e1f4b710380a619d6999ceb4f9baeec9be055bbbfb7e6f444"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-daily-components-20261102.log",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-daily-components-20261102.log.gz",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "gzipSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\e08-office-math-merged-daily-20261102.json",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/e08-office-math-merged-daily-20261102.json.gz",
+      "bytes": 1197,
+      "sha256": "e3384edef5795be7c02acb05e70ac3054b44f8f2e638e8cfe0cef60cf2e03a3f",
+      "gzipSha256": "6d37f9aa10d63c1286b2b565e78562510f5c89a11b1719c3e72d2e953a254bb2"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\readback-report.json",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/readback-report.json.gz",
+      "bytes": 2273,
+      "sha256": "23ebedaf4dd3a24ca4fc92849007e27335f4d5076f23c6c7688e74537de1b4de",
+      "gzipSha256": "cb7c17efb1a2406cc86e7e26db1ed44b037e1a650e02ed86fadb5696482fcbdd"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\saved-1366.png",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/saved-1366.png.gz",
+      "bytes": 75124,
+      "sha256": "91bd882cc7509f7b60fb3efbebd90b7b9c2e91171c60c4399131a55b0363ce27",
+      "gzipSha256": "8320b04b450da639420089e4adbf66db97e89824a7f9b678d5274e275872325d"
+    },
+    {
+      "source": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\xiaozhi-office-math-ui-bOhqix\\saved-1920.png",
+      "artifact": "docs/research/evidence/office-math/20261102/integration/saved-1920.png.gz",
+      "bytes": 104664,
+      "sha256": "dccf0f47888049425041da76b17e380397895a432064d7189ff5b2cc35156b05",
+      "gzipSha256": "ed19b80684539ef8009c83511063c34eff1e510fea975b261ded34423e5b2828"
     }
   ]
 }
