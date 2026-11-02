@@ -71,6 +71,34 @@
       "originalSha256": "3d7e8755ff9e4a1a7139993d3e70a2324130cb315fdf445231d9a6c38d8903d3",
       "compressedBytes": 27931,
       "compressedSha256": "a78b6e9a55863c68b496e39d2cc1e0e99dfcde32c7f80f003632e45cc858a408"
+    },
+    {
+      "file": "kb-continuation-text-final2-build.log.gz",
+      "originalBytes": 41567,
+      "originalSha256": "5afacca448bb4eee06e6c8ce235e381d664ec53df5d6d15313b07025fdecf5e8",
+      "compressedBytes": 8175,
+      "compressedSha256": "02c84fd93962196e3703853d06dd1f3f58f452deaf225a75f2d788c67e9d7d9d"
+    },
+    {
+      "file": "kb-continuation-text-final2-components.log.gz",
+      "originalBytes": 527,
+      "originalSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "compressedBytes": 288,
+      "compressedSha256": "5c7c476da369467c900e2955b3d1952cba713dde65c2ec262b4b35adf38d6bbc"
+    },
+    {
+      "file": "kb-continuation-text-final2-readback.log.gz",
+      "originalBytes": 913,
+      "originalSha256": "62008aaea16a71c45f79212d8136b0bab8da18853bf1a7169ea784c70edb2d3a",
+      "compressedBytes": 529,
+      "compressedSha256": "14a61e051bacab4d9f50557c55b40e83073caf409ba4b1502af830793cd5e234"
+    },
+    {
+      "file": "kb-continuation-text-final2-build-manifest.json.gz",
+      "originalBytes": 74344,
+      "originalSha256": "edbb3ca0ed8df31af47339097b248e800b066163dc08dbe8a511a64f86394787",
+      "compressedBytes": 27924,
+      "compressedSha256": "aa072c1f82c83b3f19c6f8433c5489fb128fc80fc9fa6f29d1c79cf3ec95a9e2"
     }
   ]
 }

@@ -6770,9 +6770,10 @@
       "semanticReview": "Internal contradiction persists: two options are justified with weaker convergence and larger image distance but receive opposite feasibility conclusions. The model answer remains unreliable despite three consistent drafts and source/consistency ai_final. No reference-answer or independent correctness acceptance. Experimental creation stays off.",
       "privateArtifactHashes": {
         "report.json": "fd15265f216f574eb7b9f3a8188a6356123c258b211aac28c96364e311fa6947",
-        "readback-final.json": "e2e0c27d89f1b8e5ae26534d293394d77772b9e9ff1fe805a6e6a62c7af696b5",
+        "readback-final.json": "5683a39f37ff43d45b65d24624eae7f16c8d757ad74ef2f78a721776cd4c012e",
         "transport.json": "bab60f575b64f700e13d12393dadc584bad1b2e037fae3740eba111f016b6e87",
-        "cold-source-page3.png": "40c1d37457c25b75a7e7712db2fd1ae9ac1cef269ded2283b303c3e064e69b27"
+        "cold-source-page3.png": "40c1d37457c25b75a7e7712db2fd1ae9ac1cef269ded2283b303c3e064e69b27",
+        "readback-4079adc.json": "e2e0c27d89f1b8e5ae26534d293394d77772b9e9ff1fe805a6e6a62c7af696b5"
       },
       "privateDataNotCommitted": [
         "Original documents and images",
@@ -6847,6 +6848,52 @@
     ],
     "rollback": "Stop new v2 creation by leaving OMNI_EDU_AI_CONTINUATION_TEXT unset/0. Keep v1/v2 readers, stateless local inspector, original documents/assets, immutable drafts/receipts, failures and teacher changes. No destructive data or dependency rollback.",
     "collaboration": "Normal merge and non-force main/task-branch push; no D runtime, collaborator worktree, dependency takeover or protected stash changes.",
-    "evidenceManifest": "docs/research/evidence/continuation-text/20261103/manifest.json"
+    "evidenceManifest": "docs/research/evidence/continuation-text/20261103/manifest.json",
+    "finalMainIntegration": {
+      "mergedMain": "895d956",
+      "testedCommit": "45c50ee3c7911dc243d4c3e48566ccf901a7067e",
+      "documentConflicts": 13,
+      "conflictResolution": "Verified both additions and complete identical common-ancestor tail, preserving both sides. No production source conflict.",
+      "ownSourceHashesUnchanged": 10,
+      "build": {
+        "command": "npm run build",
+        "exitCode": 0,
+        "log": "kb-continuation-text-final2-build.log"
+      },
+      "renderer": {
+        "command": "npm run test:renderer-components",
+        "exitCode": 0,
+        "passed": 245,
+        "total": 245,
+        "log": "kb-continuation-text-final2-components.log"
+      },
+      "readback": {
+        "command": "node scripts/education/kb-cross-page-real.mjs <owned-temp-root> <manifest> <account> <retained-v2-trial>",
+        "exitCode": 1,
+        "checksPassed": 3,
+        "sourceGatePassed": true,
+        "qualityPassed": false,
+        "newProviderCalls": 0,
+        "rendererErrors": 0,
+        "viewports": [
+          "1366x768",
+          "1920x1080"
+        ],
+        "log": "kb-continuation-text-final2-readback.log"
+      },
+      "files": 456,
+      "bytes": 35230441,
+      "main": {
+        "bytes": 3778331,
+        "sha256": "b2665b8faf41720e09e4d32575171713376b367b6b8e7d686b0ea673869549e6"
+      },
+      "preload": {
+        "bytes": 37712,
+        "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+      },
+      "mainDeltaFromBaselineIncludingCollaboratorChanges": 23325,
+      "totalDeltaFromBaselineIncludingCollaboratorChanges": 31162,
+      "p95PeakMemoryNotMeasured": true
+    }
   }
 }
