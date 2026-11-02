@@ -1,0 +1,398 @@
+{
+  "status": "limited-accepted",
+  "scope": "Current confirmed paper identity end-to-end plus precise stale-source rejection. Overall UI Goal active. No new successful paid Office export on final build claimed.",
+  "codeCommit": "20a8382",
+  "integration": "ccf543543a34e4679d6af12ebc5f690772c96c68",
+  "incomingMain": "37ba4c5bf16a6609ec5180880b426aee484cddcf",
+  "freeze": {
+    "commit": "ccf543543a34e4679d6af12ebc5f690772c96c68",
+    "incomingMain": "37ba4c5bf16a6609ec5180880b426aee484cddcf",
+    "src": {
+      "sha256": "3d49df6860d5aa43d3e8a52fb6a6c2134f5511b2c154309b3baa2e42ea03eb55",
+      "files": 1283
+    },
+    "out": {
+      "sha256": "260c029fc6c6dc35250e51455e33d7254c2b377c09feb1caf80e1353bb332d23",
+      "files": 455
+    },
+    "scripts": [
+      {
+        "file": "scripts/ui-goal-paper-export-intent-rejection-readback.mjs",
+        "sha256": "3c27bd6ca45515743ce81d9826ce1d7ba521fcf8bd072fcba61338dd73b2ad0c"
+      },
+      {
+        "file": "scripts/ui-goal-paper-export-intent.mjs",
+        "sha256": "a9656cd3ff0b3bed58978c7ef06a637ff5a6dbfb6de5b9d495ebf839e769a73c"
+      },
+      {
+        "file": "scripts/acceptance/paper-export-intent-ui.mjs",
+        "sha256": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0"
+      },
+      {
+        "file": "scripts/acceptance/paper-export-intent-evidence.mjs",
+        "sha256": "db8f6a21e742d8acfad5d6efb3a26125f9da6178dca1ff4c8d71987fb00c1032"
+      }
+    ],
+    "bytes": [
+      {
+        "file": "main/index.js",
+        "bytes": 3724451
+      },
+      {
+        "file": "renderer/assets/index-Bhxz2FCG.js",
+        "bytes": 7619331
+      },
+      {
+        "file": "renderer/assets/index-BuEi_Gtg.css",
+        "bytes": 455420
+      }
+    ],
+    "scope": "D1 error repair merged latest HTML/PPT main; zero-model same-fixture supplement only; no relabel of original normal export as new build export",
+    "productionAggregateSha256": "b42306765b5ec7cd80194537e0825beb0339dc785739f2a81d82a71bbc14ba15",
+    "owned": [
+      {
+        "file": "src/shared/paper-export.ts",
+        "kind": "production",
+        "sha256": "8b21fb197b922c41025036c4df9ba538ce38b1fe8d3348dab4f3479e25a73c50"
+      },
+      {
+        "file": "src/shared/xiaozhi-agent.ts",
+        "kind": "production",
+        "sha256": "1e7ec0c5ee436c2151b5fd72ae4fd798e8e97476f893b1a2efff8f6521724c06"
+      },
+      {
+        "file": "src/shared/xiaozhi-start.ts",
+        "kind": "production",
+        "sha256": "f29a5f0f33acde3fe09998af37f7abf82b402a6a5d881bb00c274b3e5e8fb9f5"
+      },
+      {
+        "file": "src/shared/xiaozhi-projection.ts",
+        "kind": "production",
+        "sha256": "0aec58dbe14b8ac21c6ca64030367cd1741e90b1a3d71e3a42c166a63ecb1297"
+      },
+      {
+        "file": "src/main/education/paper-export.ts",
+        "kind": "production",
+        "sha256": "d3f232532aa86aa269a347c37c299d25ddace9b7092f91a7ac69cfd947137f42"
+      },
+      {
+        "file": "src/main/education/paper-export-intent.ts",
+        "kind": "production",
+        "sha256": "54ce160d5ea9d29d925cf847a736d028a2311d38f3478834f8381c3f11dfe891"
+      },
+      {
+        "file": "src/main/xiaozhi-agent/production-host.ts",
+        "kind": "production",
+        "sha256": "da98ff8e2ce15fdf6dc269a4dacb05ae32bbf1b0a48c11a528d5bfc7cb308534"
+      },
+      {
+        "file": "src/main/xiaozhi-agent/tasks/coordinator.ts",
+        "kind": "production",
+        "sha256": "cd4d92f92a77247484f49fbd95b89b054e1ea98d9280ab08e30b3b4a95fdae15"
+      },
+      {
+        "file": "src/main/xiaozhi-agent/tasks/paper-export-continuation.ts",
+        "kind": "production",
+        "sha256": "9c5c5fe06c82523aec307e73290f0ab9381d8fce4555935d6e108d7c5c3efd5f"
+      },
+      {
+        "file": "src/renderer/components/PaperExportEntry.tsx",
+        "kind": "production",
+        "sha256": "5d2710e3b50d2d75d7c15de6ac4693d95656106b07f446b9ab98f76a0efa60f6"
+      },
+      {
+        "file": "src/renderer/components/desktop/DesktopFrame.tsx",
+        "kind": "production",
+        "sha256": "a1038117e737a563d2a75edec5b588a504b81ccdaa2821797f20fca9c32c7498"
+      },
+      {
+        "file": "src/renderer/components/office/OfficeComposerState.tsx",
+        "kind": "production",
+        "sha256": "934fd1c0fe8395d8be090fcd7e6663ce0678c0a13b618da12808d10a4e917f42"
+      },
+      {
+        "file": "src/renderer/components/office/OfficeComposer.tsx",
+        "kind": "production",
+        "sha256": "6c7a032c70f37a2fe547e80f075c8d74dce9bfb9cdf51c13e44240428f3b0960"
+      },
+      {
+        "file": "src/renderer/components/office/composer-drafts.ts",
+        "kind": "production",
+        "sha256": "7c70173b5c421317afeedf6a6e401649b7066125611e27d5f54d1b38cbec4588"
+      },
+      {
+        "file": "src/renderer/components/office/PiEducationWorkspace.tsx",
+        "kind": "production",
+        "sha256": "52e812f286bc94c8c14a9f3d7a332108b1509d6e32a83c05500437e36d4f216e"
+      },
+      {
+        "file": "src/renderer/components/office/paper-export-request.ts",
+        "kind": "production",
+        "sha256": "6c2850ba1bc27f55be5f7bf736444f828db7112a921aebd68e8b275f02560b08"
+      },
+      {
+        "file": "scripts/education/paper-export-intent-test.mjs",
+        "kind": "test",
+        "sha256": "e4181fc8f7f9bdc2a6c1007bef9b9da8ff6d5948332104c18d5e91ae6b63e5e6"
+      },
+      {
+        "file": "scripts/education/paper-export-intent-host-test.mjs",
+        "kind": "test",
+        "sha256": "686a74556fafff1d3705a6462feaac3e6fd54416694f5960bc828cc27dca45f1"
+      },
+      {
+        "file": "scripts/education/paper-export-intent-race-test.mjs",
+        "kind": "test",
+        "sha256": "3ba92c33c9cc3e071638603fde572d485bf83f4ba5ce9a400f24a51082a5503a"
+      },
+      {
+        "file": "scripts/paper-export-intent-renderer-test.mjs",
+        "kind": "test",
+        "sha256": "77223cebf6d3e70e2d3b4458c350ff49612f2f8d456498efc097effffa9a617b"
+      },
+      {
+        "file": "scripts/paper-export-intent-pi-test.mjs",
+        "kind": "test",
+        "sha256": "04df1426055166eb81359528106c60b689423f0a8b990132c75b2ccb129b34bc"
+      },
+      {
+        "file": "scripts/acceptance/paper-instance-renderer-env.mjs",
+        "kind": "test",
+        "sha256": "44e513306877ce60c1ee99990485d48928866c25961567952909663dccafce9f"
+      }
+    ]
+  },
+  "commands": [
+    {
+      "command": "npm.cmd run build",
+      "exit": 0,
+      "scope": "Final integrated build including TSC"
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "exit": 0,
+      "passed": 245,
+      "total": 245
+    },
+    {
+      "command": "node scripts/education/paper-export-intent-host-test.mjs",
+      "exit": 0,
+      "passed": 10
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/delivery-html-input-boundaries.mjs",
+      "exit": 0,
+      "passed": 3
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/delivery-html-viewport-boundaries.mjs",
+      "exit": 0,
+      "passed": 3
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/presentation-unchanged-smoke.mjs",
+      "exit": 0,
+      "passed": 9
+    },
+    {
+      "command": "npm.cmd run test:smoke",
+      "exit": 0,
+      "passed": 207,
+      "scope": "Original D1 build bf73fd95, not final integrated build"
+    },
+    {
+      "command": "npm.cmd audit --json",
+      "exit": 1,
+      "vulnerabilities": {
+        "high": 8,
+        "moderate": 26,
+        "low": 8,
+        "critical": 0,
+        "total": 42
+      },
+      "scope": "Existing dependency backlog, no new dependency"
+    }
+  ],
+  "actual": {
+    "command": "node scripts/ui-goal-paper-export-intent-rejection-readback.mjs --run-ui --verify-existing --expect-build=260c029fc6c6dc35250e51455e33d7254c2b377c09feb1caf80e1353bb332d23 --from=test-results/ui-goal-paper-export-intent-mOHpzM",
+    "exit": 0,
+    "report": "test-results/ui-goal-paper-export-intent-rejection-kWaJSj/report.json",
+    "reportSha256": "2fafc018bfc56761b68e23bb8504a8eb86f6f231fd949a31c73917436b804837",
+    "checks": [
+      {
+        "name": "Byte-identical independent data/profile copies retain actual1 IDs and original normal DOCX bytes/SQLite lineage; no domain/auth rewrite",
+        "pass": true
+      },
+      {
+        "name": "New build cold-opens the actual1 profile: exact old A text/binding, superseded A and current B, unchanged model/command/message/grant/source facts",
+        "pass": true
+      },
+      {
+        "name": "Exactly one real Enter yields paper_export_source_changed and clear return-to-paper-review guidance; original full draft retained, zero new paid/model/run/command/message/file/grant/source facts",
+        "pass": true
+      },
+      {
+        "name": "Second cold start retains the same existing A draft/binding without another Enter or dispatch; old normal file and every protected fact remain unchanged",
+        "pass": true
+      }
+    ],
+    "budget": {
+      "enterPresses": 1,
+      "retries": 0,
+      "newModelCalls": 0,
+      "newRuns": 0,
+      "newCommands": 0,
+      "newMessages": 0,
+      "newFiles": 0,
+      "newAuthorizations": 0
+    },
+    "enterPresses": 1,
+    "launches": 2,
+    "buildBefore": "260c029fc6c6dc35250e51455e33d7254c2b377c09feb1caf80e1353bb332d23",
+    "buildAfter": "260c029fc6c6dc35250e51455e33d7254c2b377c09feb1caf80e1353bb332d23",
+    "productionBefore": "3d49df6860d5aa43d3e8a52fb6a6c2134f5511b2c154309b3baa2e42ea03eb55",
+    "productionAfter": "3d49df6860d5aa43d3e8a52fb6a6c2134f5511b2c154309b3baa2e42ea03eb55",
+    "sourceBefore": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+    "sourceAfter": "c7ad3b64aa15f3814c631c8bd76e6e7c374d0a08942ddee7fac3a30d40afa9b4",
+    "qaBefore": {
+      "scripts/ui-goal-paper-export-intent-rejection-readback.mjs": "3c27bd6ca45515743ce81d9826ce1d7ba521fcf8bd072fcba61338dd73b2ad0c",
+      "scripts/ui-goal-paper-export-intent.mjs": "a9656cd3ff0b3bed58978c7ef06a637ff5a6dbfb6de5b9d495ebf839e769a73c",
+      "scripts/acceptance/paper-export-intent-evidence.mjs": "db8f6a21e742d8acfad5d6efb3a26125f9da6178dca1ff4c8d71987fb00c1032",
+      "scripts/acceptance/paper-export-intent-ui.mjs": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0",
+      "scripts/acceptance/paper-instance-export-readback.mjs": "97a922bb9e1808cc0232355b6b560a1b2906098384af7eb442ceb8f8a4d56f23"
+    },
+    "qaAfter": {
+      "scripts/ui-goal-paper-export-intent-rejection-readback.mjs": "3c27bd6ca45515743ce81d9826ce1d7ba521fcf8bd072fcba61338dd73b2ad0c",
+      "scripts/ui-goal-paper-export-intent.mjs": "a9656cd3ff0b3bed58978c7ef06a637ff5a6dbfb6de5b9d495ebf839e769a73c",
+      "scripts/acceptance/paper-export-intent-evidence.mjs": "db8f6a21e742d8acfad5d6efb3a26125f9da6178dca1ff4c8d71987fb00c1032",
+      "scripts/acceptance/paper-export-intent-ui.mjs": "44cfb91bff32487c63809bef353af25129fd5d3f1af21551a4c64374639ec3a0",
+      "scripts/acceptance/paper-instance-export-readback.mjs": "97a922bb9e1808cc0232355b6b560a1b2906098384af7eb442ceb8f8a4d56f23"
+    },
+    "refusal": {
+      "code": "paper_export_source_changed",
+      "stage": "production-start-exact-source-preflight",
+      "admitted": false,
+      "runId": null,
+      "modelCalls": 0,
+      "refusal": "这份确认卷已被替代或来源已变化，尚未发起导出。请回到组卷重新核对并准备请求；原输入和文件保留。",
+      "draftRetained": true
+    },
+    "normalReadback": {
+      "kind": "teacher",
+      "format": "docx",
+      "audience": "teacher",
+      "template": "paper",
+      "path": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-export-intent-mOHpzM\\success-workspace\\B Office 当前实例 mOHpzMA-teacher.docx",
+      "draftId": "xioffice_6b7c8cef-0905-46b3-b56a-7f30bdb4b20e",
+      "artifactId": "artifact_85d3a361-0301-4132-b36c-1d0785c298ed",
+      "sha256": "408bf41c82d760f87d9a198d3c075ac3cccbddd12f47d1a650371699ed36546e"
+    },
+    "errors": [],
+    "screens": [
+      {
+        "file": "u4d1-desktop/final-existing-A-cold-restored-before-send-1366.png",
+        "width": 1366,
+        "height": 768,
+        "nativeDisclosures": 0,
+        "sha256": "31898dd9f71036bc57303025755be8872d650c53f7b7fc5cad5534971b72d0e5"
+      },
+      {
+        "file": "u4d1-desktop/final-existing-A-cold-restored-before-send-1920.png",
+        "width": 1920,
+        "height": 1080,
+        "nativeDisclosures": 0,
+        "sha256": "ca1484342b3533ce2507bcf94b0dcd9ee7526e30516ceb06f7bf87d5e07c1558"
+      },
+      {
+        "file": "u4d1-desktop/final-new-source-changed-refusal-retains-A-1366.png",
+        "width": 1366,
+        "height": 768,
+        "nativeDisclosures": 0,
+        "sha256": "bd990394b689571e8459f5fa45c852e7b137f0aea447380c1364d3affaeaaf99"
+      },
+      {
+        "file": "u4d1-desktop/final-new-source-changed-refusal-retains-A-1920.png",
+        "width": 1920,
+        "height": 1080,
+        "nativeDisclosures": 0,
+        "sha256": "4260e1e864c7cc87d632456377b38232ab2934756a062abc5ff5c1b1c60452df"
+      },
+      {
+        "file": "u4d1-desktop/final-cold-after-new-refusal-original-A-1366.png",
+        "width": 1366,
+        "height": 768,
+        "nativeDisclosures": 0,
+        "sha256": "31898dd9f71036bc57303025755be8872d650c53f7b7fc5cad5534971b72d0e5"
+      },
+      {
+        "file": "u4d1-desktop/final-cold-after-new-refusal-original-A-1920.png",
+        "width": 1920,
+        "height": 1080,
+        "nativeDisclosures": 0,
+        "sha256": "ca1484342b3533ce2507bcf94b0dcd9ee7526e30516ceb06f7bf87d5e07c1558"
+      }
+    ]
+  },
+  "previousActual": {
+    "report": "U4_D1_DESKTOP_ACTUAL1.json",
+    "normalSends": 1,
+    "modelCalls": 4,
+    "toolCalls": 3,
+    "scope": "Original 73c source/bf73 build, 8 checks and actual original approval/Word bytes/source/XML. Wrong notice retained historically; not relabeled as final build normal replay."
+  },
+  "review": "Astra independently rehashed frozen src/out/QA and compared actual screenshots, SQLite/source/usage/artifact facts and old normal DOCX; precise-notice P2 closed. Protocol error code is asserted by host test; UI observes the mapped text.",
+  "logs": [
+    {
+      "file": "u4d1-desktop/logs/d1-final-build.log.gz",
+      "sha256": "775d16be5cd256ef70e072c4890d60dfa1450d3d4e1f2fe87efb27a8d70359a6",
+      "uncompressedSha256": "531e84b5b5dfefd8a87f5745df9401ced31ed0f13c9a4536a2641dbe6572cb6b"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-final-components.log.gz",
+      "sha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df",
+      "uncompressedSha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-final-host.log.gz",
+      "sha256": "bd7f7b9ba01b2720fc47c06a52ef524177e0409246ea0b47fad16ee322077260",
+      "uncompressedSha256": "5654033c17bfb491ecd74f39cec52928f4d033d909a4230ae3dd9f13f0fef2d5"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-integrated-html-input.log.gz",
+      "sha256": "00375d849eb11decf6347f27577d1d422e2ad1b5c38f9195758f0b5ba74968e3",
+      "uncompressedSha256": "f27dde7847f6d35c42e76bf9b0f9a8b3f55df8b5341bed1cc6299a09f819e4a1"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-integrated-html-viewport.log.gz",
+      "sha256": "ef55ccbb0440748f18df9338f1451b0352c6c2bec75860dfa4093a6ab2ac099b",
+      "uncompressedSha256": "d0e023db915e83f7432cb0678a2e17933ed990d5cefaef9debb0312ff8fb260b"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-integrated-ppt-unchanged.log.gz",
+      "sha256": "3df3d74cb96c5be67c7fb8be61c8dcce7e298725a92965c68737c9abb7cd122f",
+      "uncompressedSha256": "6a23f2a9c826e55822e4444461f56bc73e0c753697c9fd461f3a70560a8332a7"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-final-rejection-actual.log.gz",
+      "sha256": "ea508a0eadf84873d5044bcca26316f9ce004475c856bd3f4078974ac96b195b",
+      "uncompressedSha256": "ef6e65d5bc44eb50b5c97162edbd3e90d4810d01f7368c9350dd1a9baa169a32"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-smoke-attempt1.log.gz",
+      "sha256": "4705824539821a471342165bc1fd502108a57cc8d5f9051537fb38ec405f4374",
+      "uncompressedSha256": "1c37169467e1e10d845393116b99d8501f7ac2b11971ade93139a5b20fffb508"
+    },
+    {
+      "file": "u4d1-desktop/logs/d1-final-audit.json.gz",
+      "sha256": "79f08cdb1222ba01d2e476097c2cff6db16d94d97d90d5bb456b32e556c60aa6",
+      "uncompressedSha256": "70a5b7a0b39d023632c22c513338d24b9181bb77177cc18bcf4ca4591d6c6ca4"
+    }
+  ],
+  "limitations": [
+    "Teacher/product-wide acceptance remains pending.",
+    "Other five format actual files remain accepted only on original B build; no current full six-format claim.",
+    "Native Office/WPS layout, natural OCR/images/math, full ChatGPT parity, reference-paper/template/purpose workflows remain open.",
+    "No P95, memory or rollback drill acceptance.",
+    "Canonical D daily worktree and three dirty documents untouched; latest review launch separate."
+  ]
+}

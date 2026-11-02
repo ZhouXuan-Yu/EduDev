@@ -1,5 +1,10 @@
 # EduDev 当前任务进度
 
+## 2026-11-02 UI U4-D1 当前确认卷导出绑定（限定通过）
+
+本片按合同实施当前卷身份绑定，发现并关闭三类续接丢绑定、chooser验收假设与实际错误提示P2；最终主线整合ccf5435，构建及适用回归通过。两次actual原始记录独立保留，交付与可见窗口另记；参考卷/用途版式、自然质量和教师验收未关闭。docs/audit/ui-goal-20261101/U4_D1_DELIVERY.md 与 U4_D1_MAIN_INTEGRATION_RESULT.json。
+
+
 ## 2026-11-02 E08 同值局部修改不产生空版本
 
 工程子项已实现（4ed966d）：本产品PPT的显式同值局部修改先核原版本/hash并比较内容；不创建草稿/候选/成果/版本/新文件，不重复确认。真实变化仍走原一次审阅及另存谱系，完整draft同内容复制不被抑制。原native回执与SQLite/文件独立读回标为unchanged_office，不冒充saved_office；原最终说明压住模型虚报的新文件，双尺寸冷启0重放。9边界、15原回执回归、正式Pi/双尺寸/冷启/后续真修改4项、build/type与245组件通过。首次脚本层级/初始化错误留档并复用同一源文件续测，合计15次本地合成SSE、0付费。 日常D正常关闭PID326824，以自身依赖原npm start构建并启动4ed966d，新PID341944/HWND89198402响应且native visible；3其他窗口身份与3脏文档hash保留，0教师消息。 实际D主包3713585→3718350B（+4765B），455文件总量35124272→35129157B，preload37712B不变，C/D主包同hash；无新依赖。只读同值分支省生成/确认/写入，P95/峰值未测，不称提速。 完整AT仍3/252、Goal active；W3已核实的双尺寸交互及同值PPT缺口已补。继续按原FX/AT核对W3集中旅程，发现实际功能缺口继续实现，随后S01/S02与T依赖；不重复建设已有版本/恢复/来源，不重跑无关207、导入、安装。完整自然质量、格式/Office教师操作、物理drag/IME未验，LogonUI仍锁定。 证据：docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#unchangedPresentationSlice；docs/research/evidence/presentation-unchanged/20261102/manifest.json。
