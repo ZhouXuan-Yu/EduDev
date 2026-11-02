@@ -2,7 +2,7 @@ import type {Sql} from '../session-state';
 import {taskObject,taskKeys,taskIdentity,taskDigest,taskNatural,taskText,validTaskCorrection,validTaskReview,type TaskView,type TaskCandidate,type TaskCorrectionInput,type TaskReviewInput} from '../../../shared/xiaozhi-task';
 import type {TaskDocument,TaskRecord} from './task-state';
 import type {TaskVerification} from '../../../shared/xiaozhi-verification';
-import {validTaskVerification} from '../../../shared/xiaozhi-verification';
+import {validTaskVerification,verificationOutstandingFailures} from '../../../shared/xiaozhi-verification';
 import {taskHash,applyTaskRecheck} from './task-evidence';
 import {correctTaskGoal,reviewTaskGoal,requireTaskGoal} from './goal-binding';
 
@@ -40,7 +40,7 @@ export async function taskCandidate(sql:Sql,view:TaskView,messageId?:string):Pro
 async function requireVerifiedExecution(sql:Sql,candidate:TaskCandidate):Promise<TaskVerification>{
  const row=(await sql.all('SELECT metadata_json FROM ai_conversation_messages WHERE id=?',[candidate.messageId]))[0];let meta;
  try{meta=JSON.parse(String(row?.metadata_json));}catch{throw Error('task_result_unverified');}
- const v=meta?.verification;if(!validTaskVerification(v,candidate.runId)||!['needs_human','verified'].includes(v.state)||v.operations.failed!==0)throw Error('task_result_unverified');return v;
+ const v=meta?.verification;if(!validTaskVerification(v,candidate.runId)||!['needs_human','verified'].includes(v.state)||verificationOutstandingFailures(v)!==0)throw Error('task_result_unverified');return v;
 }
 export async function auditTaskTeacherChecks(sql:Sql,doc:TaskDocument){
  for(const check of doc.view.checks.filter(c=>c.authority==='teacher')){
@@ -115,7 +115,7 @@ export function createTaskTeacherActions(api:Internals){
    if(input.checked.length!==humanObserved.length||humanObserved.some(c=>!input.checked.some(s=>s.criterionId===c.id&&s.version===c.version)))throw Error('task_criteria_invalid');
    const accepting=input.checked.every(c=>c.accepted);let reviewVerification:TaskVerification|undefined;
    if(accepting){const original=await requireVerifiedExecution(api.sql,candidateObserved),machine=original.checks.filter(c=>c.state==='passed'&&c.evidenceIds.length);
-    if(machine.length){if(!api.resultRecheck)throw Error('task_effect_recheck_required');reviewVerification=await api.resultRecheck(candidateObserved,clone(observed.doc.view));if(!validTaskVerification(reviewVerification,candidateObserved.runId)||Math.abs(Date.now()-Date.parse(reviewVerification.checkedAt))>60000||!['needs_human','verified'].includes(reviewVerification.state)||reviewVerification.operations.failed||machine.some(c=>!reviewVerification!.checks.some(fresh=>fresh.id===c.id&&fresh.state==='passed')))throw Error('task_result_unverified');}
+    if(machine.length){if(!api.resultRecheck)throw Error('task_effect_recheck_required');reviewVerification=await api.resultRecheck(candidateObserved,clone(observed.doc.view));if(!validTaskVerification(reviewVerification,candidateObserved.runId)||Math.abs(Date.now()-Date.parse(reviewVerification.checkedAt))>60000||!['needs_human','verified'].includes(reviewVerification.state)||verificationOutstandingFailures(reviewVerification)||machine.some(c=>!reviewVerification!.checks.some(fresh=>fresh.id===c.id&&fresh.state==='passed')))throw Error('task_result_unverified');}
    }
    let proofs:TaskVerification[]=[];
    if(accepting&&observed.doc.view.criteria.some(c=>c.kind!=='human')){if(!api.recheck)throw Error('task_effect_recheck_required');proofs=await api.recheck(clone(observed.doc.view));}

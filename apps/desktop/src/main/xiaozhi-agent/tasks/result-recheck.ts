@@ -6,6 +6,7 @@ import type {TaskView,TaskCandidate} from '../../../shared/xiaozhi-task';
 import {legacyVerification,validTaskVerification} from '../../../shared/xiaozhi-verification';
 import {readNativeToolEntries,type NativeRunBinding} from '../events/native-tail';
 import {createRunResultReadback} from '../verification/result-readback';
+import {createRunVerification} from '../verification/run-observer';
 import {createDeliveryReadback} from '../verification/delivery-readback';
 import {createEffectReadback} from '../verification/effect-readback';
 import {createEducationReadback} from '../verification/education-readback';
@@ -30,7 +31,7 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const detail=await store.getAiConversationSession(id),message=strict?detail.messages.find(m=>m.id===candidate.messageId&&m.role==='assistant'&&m.metadata.agentRunId===candidate.runId):undefined;
   const original=validTaskVerification(message?.metadata.verification,candidate.runId)?message!.metadata.verification!:undefined;
   if(detail.session.archivedAt||strict&&!original)throw Error('task_result_unverified');
-  const selected=(await sql.all('SELECT student_id FROM ai_agent_runs WHERE id=? AND session_id=?',[candidate.runId,id]))[0];
+  const selected=(await sql.all('SELECT student_id,status FROM ai_agent_runs WHERE id=? AND session_id=?',[candidate.runId,id]))[0];
   if(!selected||String(selected.student_id||'')!==String(detail.session.studentId||''))throw Error('task_source_changed');
   const base={...legacyVerification(candidate.runId),state:'needs_human' as const,reason:'human_review' as const,checkedAt:new Date().toISOString(),operations:original?.operations||{succeeded:0,failed:0},checks:original?.checks.filter(c=>c.id.startsWith('teacher:'))||[]};
   if(strict&&!original!.checks.some(c=>c.state==='passed'&&c.evidenceIds.length))return{...base,checkedAt:new Date().toISOString()};
@@ -47,7 +48,8 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
   const webAnswers=createQuestionWebAnswerReadback({sessionId:id,runId:candidate.runId,current,repo:store.questionWeb});
   const questions=createEducationReadback({sessionId:id,runId:candidate.runId,current,questions:store.questionReviews});
   const practice=createPracticeReadback({sessionId:id,runId:candidate.runId,current,practice:store.practiceReviews});
-  const results=createRunResultReadback({runId:candidate.runId,bindEffect:(call,tool,payload)=>{tool=computationEffectTool(tool,payload);return tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
+  let canResolveFailures=false;
+  const results=createRunResultReadback({runId:candidate.runId,canResolveFailures:()=>current()&&canResolveFailures,bindEffect:(call,tool,payload)=>{tool=computationEffectTool(tool,payload);return tool==='education_web_answer'?webAnswers(call,tool,payload):tool==='education_propose_questions'?questions(call,tool,payload)
     :tool==='education_propose_practice'?practice(call,tool,payload):tool==='office_deliver_files'?bundles.bind(call,payload):files(call,tool,payload);},readLocal:async(tool,payload)=>{
    fence();if(tool==='office_read_attachment'){
     const row=await store.xiaozhiState.attachments.get(id,payload.source.attachmentId);if(!row||row.version!==payload.source.version)throw Error('attachment_changed');
@@ -61,8 +63,14 @@ export function createTaskResultRecheck(options:{store:OmniEduStore;dataRoot:str
    await importer.verify(id,{id:ref.id,revision:ref.revision},signal);fence();return true;
   }});
   for(const entry of entries){const receipt=receipts.find(r=>r.call_id===entry.callId&&r.tool===entry.tool&&r.phase==='settled'&&r.admitted===1&&Boolean(r.success)!==entry.failed&&r.result_digest===entry.digest);if(receipt)results.capture(entry.callId,entry.tool,{content:entry.message.content},entry.failed);}
-  const images=await sql.all("SELECT event_json,event_hash FROM xiaozhi_event_journal WHERE run_id=? AND generation=? AND json_extract(event_json,'$.kind')='image_delivery' ORDER BY sequence",[candidate.runId,binding.generation]);
-  for(const row of images){const raw=String(row.event_json);if(hash(raw)!==row.event_hash)throw Error('task_result_unverified');const event=JSON.parse(raw);results.image(event.image);}
+  // Reuse the original observation rules, including invalid events and work
+  // that never settled. A successful run status alone cannot erase failures.
+  const observations=await sql.all("SELECT event_json,event_hash FROM xiaozhi_event_journal WHERE run_id=? AND generation=? AND json_extract(event_json,'$.kind') IN ('tool_start','tool_end','tool_attempt','image_delivery') ORDER BY sequence LIMIT 4097",[candidate.runId,binding.generation]);
+  if(observations.length>4096)throw Error('task_result_unverified');
+  const observer=createRunVerification(candidate.runId);
+  for(const row of observations){const raw=String(row.event_json);if(hash(raw)!==row.event_hash)throw Error('task_result_unverified');const event=JSON.parse(raw);observer.observe(event);if(event.kind==='image_delivery')results.image(event.image);}
+  const observed=observer.finish({failed:selected.status!=='succeeded',stopped:false});
+  canResolveFailures=observer.canResolveFailures()&&observed.operations.failed===base.operations.failed&&observed.operations.succeeded===base.operations.succeeded;
   const proof=await results.finish(base,async()=>entries.map(e=>e.message));fence();return proof;
  },{timeoutMs:15000});
  return Object.assign((candidate:TaskCandidate,task:TaskView)=>recheck(candidate,task),{run:(runId:string,task:TaskView)=>recheck({runId},task)});

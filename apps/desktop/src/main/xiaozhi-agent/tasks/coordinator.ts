@@ -5,7 +5,7 @@ import type {Sql} from '../session-state';
 import type {createEventPublisher} from '../events/publisher';
 import type {XiaozhiAgentEvent} from '../../../shared/xiaozhi-agent';
 import {validTaskQuery,validTaskReview,validTaskCorrection,validTaskView,type TaskApiError,type TaskApiResult,type TaskView,type TaskSnapshot,type TaskOwner,type TaskReviewInput,type TaskCorrectionInput,type TaskCandidate} from '../../../shared/xiaozhi-task';
-import {validTaskVerification,type TaskVerification} from '../../../shared/xiaozhi-verification';
+import {validTaskVerification,verificationOutstandingFailures,type TaskVerification} from '../../../shared/xiaozhi-verification';
 import {createTaskState} from './task-state';
 import {readTaskAction} from './teacher-actions';
 import {validTaskResume,taskHasRemainingSteps,type TaskResumeInput} from '../../../shared/xiaozhi-task';
@@ -55,7 +55,7 @@ export function createTaskCoordinator(options:{store:OmniEduStore;closing:()=>bo
   let candidate;try{candidate=await state().candidate(id,task.id);}catch(e){if(!/candidate_unavailable|owner_stale/.test(e instanceof Error?e.message:''))throw e;}
   let canAccept=false;if(candidate&&!options.busy(id)&&['review_required','paused'].includes(task.state)){
    const message=(await options.store.getAiConversationSession(id)).messages.find(m=>m.id===candidate!.messageId),v=message?.metadata.verification;
-   canAccept=validTaskVerification(v,candidate.runId)&&['needs_human','verified'].includes(v.state)&&v.operations.failed===0&&task.criteria.every(c=>c.kind==='human'||task.checks.some(k=>k.criterionId===c.id&&k.criterionVersion===c.version&&k.state==='passed'));
+   canAccept=validTaskVerification(v,candidate.runId)&&['needs_human','verified'].includes(v.state)&&verificationOutstandingFailures(v)===0&&task.criteria.every(c=>c.kind==='human'||task.checks.some(k=>k.criterionId===c.id&&k.criterionVersion===c.version&&k.state==='passed'));
   }
   let canResume=false;if(!options.busy(id)&&taskHasRemainingSteps(task))try{await resumeSource(id,task.id,task.revision,task.requirementsVersion);canResume=true;}catch{/* Changed sources cannot be resumed from a stale card. */}
   return{task,...(candidate?{candidate}:{}),canAccept,canResume};
