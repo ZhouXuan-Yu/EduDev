@@ -1,0 +1,151 @@
+{
+  "createdAt": "2026-11-02T09:34:22.881Z",
+  "workspace": "D:\\WorkProject\\EduProject-sidebar",
+  "productionFrozen": true,
+  "production": [
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketOrganizer.tsx",
+      "sha256": "7c535ff9443387d351edbcee62265b9dddde12a66970a953bed3e392750df6c8"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketPanel.tsx",
+      "sha256": "dd6ed3df96111b2b710557825a542fc02d9e7867c3db62896e2af5e79849dc4f"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketPreview.tsx",
+      "sha256": "43890be6ad7f97314ea87b52f897c85dd76eb7d7386d98838b4ac3b3f32647ba"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperBasketWorkspace.tsx",
+      "sha256": "ac1a18ec3957b2d7657d819f6e394d454fba869a6e7ed996c1db8255562967af"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperCandidateBrowser.tsx",
+      "sha256": "22f2daf492b17df0f1e93e3a20f6de2deef4a15326348ac4d620b100c12841b8"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceBlockEditor.tsx",
+      "sha256": "2259600eaf7bdee9f63e21ff1455b1bc7422b7bf03a26f78831fb4c0779df917"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceContent.tsx",
+      "sha256": "8aee5c1b56a95ea1ed510e74d58cbef3f83b870ab578f6c0f6362c1ce156ee21"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceEditor.tsx",
+      "sha256": "e1c9bc83f4cb4f3292d080fabaeace734233ab42200f6aa6bf056b674cdbb695"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceOrphanDrafts.tsx",
+      "sha256": "8768bec017106368290386eb6a30ae5e7c3e541e6412f83be6f91939fcd964e8"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceReviewContent.tsx",
+      "sha256": "ca71e9d85b533c6da2d66b286d336d86470568919895509f4086e34e72737170"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceRoleEditor.tsx",
+      "sha256": "3481389bb995161f2125ba40bfb69282662d9f1faa566c4fd1828ccac5493b25"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperInstanceRoleImages.tsx",
+      "sha256": "4cf73ab0a8733b50d46fdd8d0f4bc5506c011a17cbd7e161cb2ea33993163e90"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/PaperQuestionReviewCard.tsx",
+      "sha256": "9f118a4b6db8b0942ed912961e4964fe246f06bac9730b63a5e5b3c562a0db4a"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-basket-client.ts",
+      "sha256": "b3e223a370451123686c5615c54ca154338f934310fe1f66d4c057bd32d88ff8"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-basket-ui.ts",
+      "sha256": "33861ecbafdf2e28e9ecce9acc842fdfd907ba76301088226b73e61189b96b8e"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-instance-content.ts",
+      "sha256": "d262fd9e3aa49c1ee494f1bd7d8905055003190d15557669484fa80dff350069"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/paper-instance-draft-storage.ts",
+      "sha256": "53d751b4363de4256acc99f0cf1baddb271bbc455daacbf40b393d0d5770bc77"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/usePaperBasketWorkspace.ts",
+      "sha256": "bdcfade1982e324ed3baef73b0cffb27adbab67ca0dd8cf5a4fb52c2144e6b41"
+    },
+    {
+      "file": "src/renderer/components/paper-ui/usePaperInstanceDrafts.ts",
+      "sha256": "9cdf423033198a2d9bf99a0ab87a43136cd16b40f92f552288e5607a914f907b"
+    },
+    {
+      "file": "src/renderer/ui-system/paper.css",
+      "sha256": "c37885b9f4e3184aedeaf5a83ed64782f5274e428fbd4eb6f6f17a18bd4aae7a"
+    }
+  ],
+  "productionSha256": "f79731fff9b1534b5dc9e6052a64b5bad2f9642003553a60ba0f18046fd8352d",
+  "tests": [
+    {
+      "file": "scripts/paper-instance-hook-test.mjs",
+      "sha256": "54524c8e1e5b5ab6bfdcbe6b3f8e2719d3f78b31df8e2e5a08d6bab3e7b86014"
+    },
+    {
+      "file": "scripts/paper-instance-ui-test.mjs",
+      "sha256": "bbc08568cac534fd1a071b20b5214efe973283618d8ce64686325ab2eea975a2"
+    },
+    {
+      "file": "scripts/paper-instance-review-card-test.mjs",
+      "sha256": "9baaffce78bb62b32e29b6f0b4196114cec6d221a16a651c01267d8147363c74"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-renderer-env.mjs",
+      "sha256": "34909dae1b5e1c9c72ff74828df93834b22af2b2da537885403559a3a2f30e99"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-renderer-fixture.mjs",
+      "sha256": "454e3c45bdb9c5d45d50da4e9b9ff5357358469fc138109a86f9b2bb0854e8c9"
+    }
+  ],
+  "checks": [
+    {
+      "command": "node scripts/paper-instance-hook-test.mjs",
+      "passed": 17,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-instance-ui-test.mjs",
+      "passed": 11,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-instance-review-card-test.mjs",
+      "passed": 5,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-basket-renderer-interaction-test.mjs",
+      "passed": 45,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-draft-decision-interaction-test.mjs",
+      "passed": 45,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/desktop-navigation-guard-test.mjs",
+      "passed": 16,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-workflow-ui-test.mjs",
+      "exit": 0
+    },
+    {
+      "command": "node node_modules/typescript/bin/tsc --noEmit",
+      "exit": 0
+    }
+  ],
+  "scope": "Source and mounted-renderer regressions only. No build, Electron, provider, actual SQLite or Office delivery performed. B actual QA script pending separately."
+}

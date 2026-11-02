@@ -1,0 +1,182 @@
+{
+  "scope": "Prepared standalone fresh-real-UI-session B Pi Office six-file acceptance runner",
+  "productAcceptance": false,
+  "actualLiveExecution": false,
+  "appLaunches": 0,
+  "modelCalls": 0,
+  "command": "node scripts/ui-goal-paper-instance-office-live.mjs --run-ui --live --from=latest-bui",
+  "cwd": "D:/WorkProject/EduProject-sidebar/apps/desktop",
+  "preflight": {
+    "command": "node scripts/ui-goal-paper-instance-office-live.mjs --check",
+    "exitCode": 0
+  },
+  "sourceHashes": [
+    {
+      "path": "apps/desktop/scripts/ui-goal-paper-instance-office-live.mjs",
+      "sha256": "4c9b66918bee0a5579c6a3a8fbb7f4e4e9201c1d6af66472b6923490c2d3a71d"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-office-fixture-ui.mjs",
+      "sha256": "6585d487ddf4f549d6f993b86df2a0da874169d172bfc43a43fe6d0fcb32f6f7"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-export-live.mjs",
+      "sha256": "a752da70714e477b24eac8c13cd59943cd70dbe17e7548155ccb1456c99b56ae"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-export-readback.mjs",
+      "sha256": "97a922bb9e1808cc0232355b6b560a1b2906098384af7eb442ceb8f8a4d56f23"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-export-readback.py",
+      "sha256": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf"
+    },
+    {
+      "path": "apps/desktop/scripts/acceptance/paper-instance-export-selftest.mjs",
+      "sha256": "c7f111fb9b88d3b03f65978b9ae0ff9041e3cd8223f4ec8b6473dff945de736e"
+    },
+    {
+      "path": "apps/desktop/scripts/education/paper-instance-boundaries.mjs",
+      "sha256": "b0f3c7f03b524779a1555f32b620d2ccfb3204d8ac2d55d04467de5a5357c967"
+    }
+  ],
+  "flow": [
+    "Select newest successful U4-B-real-instance-UI result; byte-copy data only and fresh isolated profile",
+    "Actual pi-new-session UI captures new persisted session; original owner/root never reused",
+    "Actual UI creates witness and target baskets/adds first real bank question; form edits stem/structured current labels/subquestion/table/teacher references; saves/reviews exact revision",
+    "Actual UI snapshot and confirmation create new current paper; no typed/SQL confirmation",
+    "Actual first native output chooser UI authorizes only own run teacher-workspace; original authorizations unchanged",
+    "Actual composer Enter maps one persisted command to matching run/pending Office; exact current production compiler comparison precedes original visible UI approval",
+    "Require six actual saved artifacts and SQLite/hash/paper-lineage joins plus independent XML/PDF text/A4/image-pixel/PDFium-page readback",
+    "Bank, every pre-existing basket/paper, original source data, frozen build/script hashes checked before/after; no partial three-DOCX six-file pass"
+  ],
+  "hostSelftest": {
+    "exitCode": 0,
+    "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-acceptance-helper-HwOHAo/report.json",
+    "report": {
+      "success": true,
+      "scope": "owned-real-SQLite-production-host-3-DOCX-new-helper-regression",
+      "productAcceptance": false,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-acceptance-helper-HwOHAo",
+      "checks": [
+        {
+          "name": "UI helper cannot send without both explicit opt-in flags, before touching page or DB",
+          "pass": true
+        },
+        {
+          "name": "Six-way matrix rejects absent PDF, duplicates, wrong format and reused paths; no pass for three DOCX",
+          "pass": true
+        },
+        {
+          "name": "Current real SQLite reviewed instance projects into six actual production compiler drafts, custom option labels and private roles",
+          "pass": true
+        },
+        {
+          "name": "Read-only full-row invariants detect owned-bank mutation; restored bytes and original other basket/paper remain identical",
+          "pass": true
+        },
+        {
+          "name": "Production Office propose/host-decide/apply creates actual three DOCX and real trigger-published facts; explicitly no UI or Pi claim",
+          "pass": true,
+          "facts": {
+            "files": [
+              "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-acceptance-helper-HwOHAo\\workspace\\student.docx",
+              "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-acceptance-helper-HwOHAo\\workspace\\teacher.docx",
+              "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-acceptance-helper-HwOHAo\\workspace\\answer_sheet.docx"
+            ]
+          }
+        },
+        {
+          "name": "Read-only provenance joins real saved drafts, trigger-published artifacts and paper lineage against actual bytes, excluding reserved IDs from artifact facts",
+          "pass": true
+        },
+        {
+          "name": "Independent XML readback opens actual DOCX, preserves text/table/options/subquestion order, rejects reversed order and answer leakage probes",
+          "pass": true
+        },
+        {
+          "name": "Full six-file verifier refuses three actual DOCX instead of manufacturing PDF/acceptance success",
+          "pass": true
+        },
+        {
+          "name": "Actual prepared output then instance mutation rejects install with conflict, no file/fact/lineage, all earlier delivered bytes intact",
+          "pass": true
+        }
+      ],
+      "pending": [
+        "Actual Pi send/original UI approval and all three actual PDF outputs require the parent live run."
+      ],
+      "sourceHashes": {
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-live.mjs": "a752da70714e477b24eac8c13cd59943cd70dbe17e7548155ccb1456c99b56ae",
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-readback.mjs": "97a922bb9e1808cc0232355b6b560a1b2906098384af7eb442ceb8f8a4d56f23",
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-readback.py": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf",
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\acceptance\\paper-instance-export-selftest.mjs": "c7f111fb9b88d3b03f65978b9ae0ff9041e3cd8223f4ec8b6473dff945de736e",
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\scripts\\education\\paper-instance-boundaries.mjs": "b0f3c7f03b524779a1555f32b620d2ccfb3204d8ac2d55d04467de5a5357c967",
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-instance.ts": "3a7355f8d633576d7c35a537507231878869ed7f059f6fd60934ba0d62b5ac78",
+        "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\src\\shared\\paper-basket-v2.ts": "dbace9544fc280dd75e566fe13bf92758155e057c07f23ae8d35850d112900d9"
+      },
+      "installRefusal": {
+        "scope": "typed-host-actual-install-refusal",
+        "productAcceptance": false,
+        "draftId": "xioffice_6eecec19-5314-48e9-9aa1-41d3ac591af7",
+        "error": "conflict",
+        "beforeState": "approved",
+        "afterState": "uncertain",
+        "preservedFiles": [
+          {
+            "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-acceptance-helper-HwOHAo\\workspace\\student.docx",
+            "sha256": "8af83cac92d849c35e2715e670310b2b74d44d2b0be9841159f158f2cf0e01b0"
+          },
+          {
+            "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-acceptance-helper-HwOHAo\\workspace\\teacher.docx",
+            "sha256": "ace14e91ebb3b5f00b31d3d408ea4c72ee5ea0885ba6493f202ad91ac16cf1b5"
+          },
+          {
+            "path": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-acceptance-helper-HwOHAo\\workspace\\answer_sheet.docx",
+            "sha256": "0f022621642b362e1664e30a834ff2c08070d0595f46da79eb16f6e399f76690"
+          }
+        ],
+        "artifactsUnchanged": true,
+        "lineageUnchanged": true,
+        "targetAbsent": true
+      }
+    }
+  },
+  "pdfParserSmoke": {
+    "exitCode": 0,
+    "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-pdf-parser-9ayqep3w/report.json",
+    "report": {
+      "success": true,
+      "scope": "offline-parser-smoke-on-preexisting-real-PDF-only",
+      "productAcceptance": false,
+      "BFilesProduced": 0,
+      "source": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-9G2OGc\\teacher-workspace\\导出验收卷-student.pdf",
+      "sourceSha256": "badcac1c22aca59be84fdcc578194f86252f7818dbd3379580d8a62af1c7c07f",
+      "verifierSha256": "1b4af504d95b1bd47d4b4f36efcefb7224682997febb1be8ad52f37a4cf065cf",
+      "pages": 2,
+      "visibleTextCharacters": 723,
+      "renderedPages": [
+        "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdf-parser-9ayqep3w\\导出验收卷-student-page-1.png",
+        "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-pdf-parser-9ayqep3w\\导出验收卷-student-page-2.png"
+      ],
+      "sourceUnchanged": true
+    },
+    "boundary": "Existing old real PDF read/render only; zero new B files or B acceptance"
+  },
+  "previousHelperFailureReports": [
+    "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-acceptance-helper-1PRIpj/report.json",
+    "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-acceptance-helper-m7fTGK/report.json"
+  ],
+  "previousFailureExplanation": "Helpers assumed reserved artifact ID timing incorrectly. Corrected helper verifies prepared bytes exist, final CAS refusal leaves no formal artifact/lineage/file, and prior deliveries stay byte-identical; production code unchanged.",
+  "hostFreeze": "docs/audit/ui-goal-20261101/U4_B_OPTIONS_REQUIRED_HOST_RESULT.json",
+  "fixture17Freeze": "docs/audit/ui-goal-20261101/U4_B_OPTIONS_FIXTURE_17_RESULT.json",
+  "boundaries": [
+    "No app/model/build/out/Git invoked while preparing/testing helpers",
+    "Original default no-model main BUI QA script/report unchanged",
+    "Only authorized old17 test12 fixture adds existing explicit options; original assertions retained",
+    "No callable send_input available; notify/intermediate messages deliver parent/Pasteur handoff",
+    "Actual live launch requires both --run-ui and --live; key inherited only from parent process.env and never printed/stored/read from private env files",
+    "Actual fresh UI/Pi six-file execution remains parent-run on frozen B build after successful main BUI fixture",
+    "Manual Word/WPS and independent mathematical correctness remain unverified"
+  ]
+}

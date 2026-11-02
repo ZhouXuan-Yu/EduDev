@@ -1,0 +1,209 @@
+{
+  "scope": "U4-B newly authorized options_required host guard; pending Astra rereview",
+  "productAcceptance": false,
+  "productionFiles": 4,
+  "newRegressionFiles": 1,
+  "sourceHashes": [
+    {
+      "path": "apps/desktop/src/shared/paper-basket-v2.ts",
+      "sha256": "DBACE9544FC280DD75E566FE13BF92758155E057C07F23AE8D35850D112900D9"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-instance.ts",
+      "sha256": "5605A7489D35C1CC071AC34DC1B84E26FED98F6F7F4CCDE38D6FA377E48F27EF"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-basket-v2-repository.ts",
+      "sha256": "F969B2737F5FD2FF15C6AACC12A4E6DE41883D21E26FAC78A9E0386CC5934BFA"
+    },
+    {
+      "path": "apps/desktop/src/main/education/paper-export.ts",
+      "sha256": "41F2F622AE11B8EA018F71EFC45CADF16143A956ADA73855AE0E225DC2FD9F54"
+    },
+    {
+      "path": "apps/desktop/scripts/education/paper-instance-options-required.mjs",
+      "sha256": "C47A2433526387653B745C604877FCA72B8665E29F46FB5FE1E3C684DC24C570"
+    }
+  ],
+  "before": {
+    "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-options-Eo98yN/report.json",
+    "report": {
+      "success": false,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-options-Eo98yN",
+      "phase": "before",
+      "scope": "owned-real-SQLite-production-host-compiler-options-guard",
+      "productAcceptance": false,
+      "checks": [
+        {
+          "name": "Plain edited choice is saved unchanged but options_required blocks confirmation/snapshot atomically and survives cold read",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'needs_review'\n- 'options_required'\n\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:41:12\n    at async check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:19:47)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:37:1"
+        },
+        {
+          "name": "Explicit structured current options permit real review/snapshot/confirmation; all outputs use current labels without A-D fallback",
+          "pass": true,
+          "facts": {
+            "paperId": "xipaper_0481220a-8b83-4a34-bef4-af0997334a68",
+            "labels": [
+              "甲",
+              "乙",
+              "戊"
+            ]
+          }
+        },
+        {
+          "name": "Persisted pre-guard reviewed snapshot and raw compiler cannot produce an empty answer sheet or bypass paper-role checks",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: Missing expected exception.\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:69:114\n    at async check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:19:47)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:62:1"
+        },
+        {
+          "name": "One option, duplicate labels across blocks, and text pretending to be options remain drafts for choice/single/multiple types",
+          "pass": false,
+          "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ 'needs_review'\n- 'options_required'\n\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:78:88\n    at async check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:19:47)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-options-required.mjs:74:1"
+        },
+        {
+          "name": "V1/source choice fallback and edited non-choice remain unchanged",
+          "pass": true
+        }
+      ],
+      "sourceHashes": {
+        "src/shared/paper-basket-v2.ts": "6916b5b3d2c46e91a960ec1aef412b7c6bf69ca3cf456066a35a90dcd2a9eab5",
+        "src/main/education/paper-instance.ts": "61faac45b4507276859420187909f6a5b94a2406b787042f5bf2dc60a0956527",
+        "src/main/education/paper-basket-v2-repository.ts": "71f4ac628c270b22a71a853258b651b1b0a5a4a36b86ac88eedf7a0759da1ee8",
+        "src/main/education/paper-export.ts": "6531fcfa08e154c36b00f0266aad3296893389d00ecc536cfe2e03fd5b878a1b",
+        "scripts/education/paper-instance-options-required.mjs": "baae20c64e9c0c25322f1922e0f9aa9142acd420aeb6c809e8dbeae6862bbec6"
+      }
+    }
+  },
+  "after": {
+    "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-options-EgxJxY/report.json",
+    "exitCode": 0,
+    "report": {
+      "success": true,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-options-EgxJxY",
+      "phase": "after",
+      "scope": "owned-real-SQLite-production-host-compiler-options-guard",
+      "productAcceptance": false,
+      "checks": [
+        {
+          "name": "Plain edited choice is saved unchanged but options_required blocks confirmation/snapshot atomically and survives cold read",
+          "pass": true,
+          "facts": {
+            "basketId": "xibasket_3bde035f-3b8f-4f6d-b29e-ee8e3f9523d3",
+            "instanceRevision": 2,
+            "deliveryBlock": "options_required"
+          }
+        },
+        {
+          "name": "Explicit structured current options permit real review/snapshot/confirmation; all outputs use current labels without A-D fallback",
+          "pass": true,
+          "facts": {
+            "paperId": "xipaper_d7c04517-cc74-4dfb-b10e-40da17fc5630",
+            "labels": [
+              "甲",
+              "乙",
+              "戊"
+            ]
+          }
+        },
+        {
+          "name": "Detached pre-guard snapshot shape and raw compiler cannot produce an empty answer sheet or bypass paper-role checks",
+          "pass": true
+        },
+        {
+          "name": "One option, duplicate labels across blocks, and text pretending to be options remain drafts for choice/single/multiple types",
+          "pass": true
+        },
+        {
+          "name": "V1/source choice fallback and edited non-choice remain unchanged",
+          "pass": true
+        }
+      ],
+      "sourceHashes": {
+        "src/shared/paper-basket-v2.ts": "dbace9544fc280dd75e566fe13bf92758155e057c07f23ae8d35850d112900d9",
+        "src/main/education/paper-instance.ts": "5605a7489d35c1cc071ac34dc1b84e26fed98f6f7f4ccde38d6fa377e48f27ef",
+        "src/main/education/paper-basket-v2-repository.ts": "f969b2737f5fd2ff15c6aacc12a4e6de41883d21e26fac78a9e0386cc5934bfa",
+        "src/main/education/paper-export.ts": "41f2f622ae11b8ea018f71efc45cadf16143a956ada73855ae0e225dc2fd9f54",
+        "scripts/education/paper-instance-options-required.mjs": "c47a2433526387653b745c604877fca72b8665e29f46fb5fe1e3c684dc24c570"
+      }
+    }
+  },
+  "unchangedLegacy17": {
+    "path": "C:/Users/ZhouXuan/AppData/Local/Temp/omni-paper-instance-zfC1D2/report.json",
+    "exitCode": 1,
+    "passedBeforeStop": 11,
+    "report": {
+      "success": false,
+      "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-zfC1D2",
+      "checks": [
+        {
+          "name": "Strict roles and operation schemas reject unknowns, getter, sparse, cycles, HTML, path, URL, data and byte overflow without invoking coercion",
+          "pass": true
+        },
+        {
+          "name": "V2 reads old basket without writes; v1 receipt/schema/history remain unchanged and two baskets share only parent source",
+          "pass": true
+        },
+        {
+          "name": "Edit atomically upgrades one basket; independent identities, original facts, other basket and old confirmed payload remain byte-identical",
+          "pass": true
+        },
+        {
+          "name": "V1 list filters v2 with consistent total; v2 list includes both; v1 writes and old receipt retries never downgrade v2",
+          "pass": true
+        },
+        {
+          "name": "Content and basket CAS, canonical retry, no-op save, changed request conflict and review digest binding",
+          "pass": true
+        },
+        {
+          "name": "Exact immutable v2 snapshot contains edit, review and source binding; comparison sees same-source edits and answer/review differences",
+          "pass": true
+        },
+        {
+          "name": "Reject invalidates delivery independently; restore increments content revision, clears review and restores pinned source only",
+          "pass": true
+        },
+        {
+          "name": "Replacement preserves entryId, rejects duplicate or wrong-section source, and explicit same-question source update rebases only after candidate version check",
+          "pass": true
+        },
+        {
+          "name": "Cancellation, loss of permission and write faults roll back state, instance events and receipt atomically",
+          "pass": true
+        },
+        {
+          "name": "History has separate review events, bounded count/bytes and no inline unbounded history; cold repository reconstructs exact instance",
+          "pass": true
+        },
+        {
+          "name": "Typed v2 IPC rejects untrusted frame and forged owner before acquiring write lease",
+          "pass": true
+        }
+      ],
+      "boundary": "Source-only real SQLite/Office; controlled source adapters; no Electron/model/build; not product acceptance",
+      "performance": {
+        "scope": "12 sequential cold-connection reads per API, one controlled question, same v1 basket; not production P95",
+        "v1MedianMs": 0.9611999999999625,
+        "v2AdapterMedianMs": 1.0058000000001357
+      },
+      "richDocx": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-paper-instance-zfC1D2\\role-edited-teacher.docx",
+      "error": "Error: conflict\n    at file:///D:/WorkProject/EduProject-sidebar/apps/desktop/src/main/education/paper-basket-v2-repository.ts:154:86\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/src/main/education/paper-basket-v2-repository.ts:23:85\n    at async transaction (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-basket-fixture.mjs:97:22)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-boundaries.mjs:144:195\n    at async check (file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-boundaries.mjs:38:35)\n    at async file:///D:/WorkProject/EduProject-sidebar/apps/desktop/scripts/education/paper-instance-boundaries.mjs:126:2"
+    },
+    "finding": "Old test line144 confirms an edited choice containing text/sourceImage but no structured options; the newly required confirm guard rejects with conflict. No test/assertion/fixture changed.",
+    "scriptSha256": "4F6E652BB77BCCDDCC9DD0B70CA44792E5353C275854B3D4079893AAD6BC4D85"
+  },
+  "typecheck": {
+    "command": "node node_modules/typescript/bin/tsc --noEmit",
+    "exitCode": 0,
+    "diagnostics": []
+  },
+  "boundaries": [
+    "No app/Electron/build/out/Git/model invocation",
+    "No renderer changes; Pasteur must expose options_required and structured choice seed",
+    "V1/source and edited non-choice behavior retained",
+    "Dedicated regression tests raw detached pre-guard snapshot shape, not a fabricated persisted legacy confirmation",
+    "Original accepted reports retained; no claim of full old17 pass or B product acceptance",
+    "Office acceptance helpers are staged work; independent new-session runner and actual Pi six-file run remain pending"
+  ]
+}

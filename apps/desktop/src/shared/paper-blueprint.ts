@@ -1,3 +1,4 @@
+import type {PaperInstance} from './paper-instance';
 import type {QuestionBankItem} from './contracts';
 import type {QuestionContextSource} from './question-context';
 import {plainStudentInput} from './student-context';
@@ -10,16 +11,21 @@ export type PaperGenerationQuery={schemaVersion:typeof PAPER_SCHEMA;subject:stri
 export const PAPER_TOOLS=['education_propose_paper','education_read_paper'] as const;
 export type PaperSection={id:string;label:string;questionType:string;count:number;points:number;difficulty?:'easy'|'medium'|'hard';knowledgePoint?:string;generatedCount?:number};
 export type PaperBlueprint={title:string;subject:string;grade:string;durationMinutes:number;totalPoints:number;mode:PaperMode;sections:PaperSection[]};
-export type PaperItem={sectionId:string;number:number;points:number;question:QuestionBankItem;source:QuestionContextSource;generation?:PaperGeneration};
-export type PaperSelection={items:PaperItem[];shortages:{sectionId:string;label:string;required:number;selected:number;missing:number;sourceKind?:'original'|'generated'}[];scanned:number;scanComplete:boolean;excluded:Record<'unsupported'|'missing_answer'|'source_unavailable',number>;duplicateRecords:number};
+export type PaperBasketBinding = {
+ basketId: string;
+ basketRevision: number;
+ entryIds: string[];
+};
+export type PaperItem={sectionId:string;number:number;points:number;question:QuestionBankItem;source:QuestionContextSource;generation?:PaperGeneration;entryId?:string;instance?:PaperInstance};
+export type PaperSelection={items:PaperItem[];shortages:{sectionId:string;label:string;required:number;selected:number;missing:number;sourceKind?:'original'|'generated'}[];scanned:number;scanComplete:boolean;method?:'manual';excluded:Record<'unsupported'|'missing_answer'|'source_unavailable',number>;duplicateRecords:number};
 export type PaperSummary={id:string;sessionId:string;runId:string;callId:string;requestId:string;revision:number;title:string;state:'pending'|'confirmed'|'rejected';count:number;totalPoints:number;complete:boolean};
-export type PaperView=PaperSummary&{blueprint:PaperBlueprint;selection:PaperSelection;sourceCurrent:boolean;exportCurrent?:boolean;answerVerified:false;digest?:string};
+export type PaperView=PaperSummary&{blueprint:PaperBlueprint;selection:PaperSelection;sourceCurrent:boolean;exportCurrent?:boolean;answerVerified:false;digest?:string;basket?:PaperBasketBinding};
 export type PaperCreateInput={schemaVersion:typeof PAPER_SCHEMA|typeof PAPER_GENERATED_SCHEMA;sessionId:string;requestId:string;blueprint:PaperBlueprint;generationScope?:'approved_session';replace?:{id:string;revision:number}};
 export type PaperReviewInput={schemaVersion:typeof PAPER_SCHEMA;sessionId:string;id:string};
 export type PaperDecision=PaperReviewInput&{revision:number;action:'confirm'|'reject'};
 export type PaperCancelInput={schemaVersion:typeof PAPER_SCHEMA;sessionId:string;requestId:string};
 export const PAPER_COMPARE_SCHEMA='xiaozhi.paper-compare.v1' as const;
-export const PAPER_COMPARE_FIELDS=['number','sectionId','points','difficulty','knowledgePoint','sourceKind','generation.effectDigest'] as const;
+export const PAPER_COMPARE_FIELDS=['number','sectionId','points','difficulty','knowledgePoint','sourceKind','generation.effectDigest','instance.contentDigest','instance.answer','instance.review'] as const;
 export type PaperCompareField=typeof PAPER_COMPARE_FIELDS[number];
 export type PaperCompareInput={schemaVersion:typeof PAPER_SCHEMA;sessionId:string;leftId:string;rightId:string};
 export type PaperCompareSummary={title:string;count:number;totalPoints:number;durationMinutes:number;mode:PaperMode;state:PaperSummary['state'];digest?:string};

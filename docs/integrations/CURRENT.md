@@ -1,5 +1,15 @@
 # 当前集成与复用
 
+## 2026-11-02 同题归属裁图与整卷质量失败
+
+冻结可选cropGeometryPolicy=owned-block-margins.v1，仅OMNI_EDU_AI_OWNED_CROP_MARGINS=1的新page-fragments.v3单元采用。≤32有序自有块，12像素边距受外来块限制，连续分组矩形不得相交组外块，动态规划≤8组完整覆盖；同题重叠图注随图纳入。图注适配只认独立完整边缘OCR、单一figure_title与纯图号，并保留最终题面/图义精确对应；旧单元原义和原转录不改。
+
+回退不启用新建裁图开关，保留可选字段读取、原图/裁图/三稿/失败/教师修改；无新表、IPC、依赖或运行包。D日常和安装未由本知识库切片更新。
+
+主包+4150B、其余已记录基线产物相同；自然token未降，不以纯几何基准冒充40GB吞吐。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ownedCropGeometryTrial。
+
 ## 2026-11-02 E08 Office来源行导航
 
 workspace/extracted_lines复用LocalAnswerSource v1及原typed预览；实际工具、answer evidence和Pi公开投影三处贯通，不增加表/IPC/依赖/批准/Agent Loop。范围仅为提取行；脱敏改变行数时不建立错误跳转，旧无定位不补造。关闭或换源清旧预览，版本/Office格式仍校验。 主包3612940→3613327B（+387B），preload36452B不变；来源只点击时沿原解析器读一次，不新增模型请求或逐token路径。未测延迟/P95，不声称自然质量或速度提升。回退仅停新Office来源写入/登记/公开投影，保留通用来源读器、所有原文件/记录；无迁移，完整回退演练未执行。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。

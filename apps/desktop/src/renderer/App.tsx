@@ -2819,7 +2819,7 @@ export function App() {
     if (activeView === 'mistakes') return renderMistakesView();
     if (activeView === 'review') return <ReviewReportWorkspace activeStudent={activeStudent} records={records} reports={reports} selectedReportId={reviewReportSelectionId} onReportsChanged={(nextReports) => { setReports(nextReports); void refreshOverview(); }} setStatus={setStatus} />;
     if (activeView === 'search') return renderSearchView();
-    if (activeView === 'paper') return <PaperBlueprintWorkspace/>;
+    if (activeView === 'paper') return <PaperBlueprintWorkspace initialSessionId={activeAiSessionId}/>;
     if (activeView === 'question_notebook') return renderQuestionNotebookView();
     if (activeView === 'notebook') return renderTeacherNotebookView();
     if (activeView === 'book') return renderTeachingBookView();

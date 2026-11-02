@@ -1,5 +1,13 @@
 # 小智能力与复用矩阵
 
+## 2026-11-02 同题归属裁图与整卷质量失败
+
+M03/M05/M10裁图几何已有受控/实图证据，完整题库质量仍未接受。新裁图策略在原成熟版面/PDFium/RapidOCR/原队列上保留重叠图注、完整分割同题块。原同稿离线72→60组，边缘问题6→2题，第8题补出6组。自然完整六页18次均HTTP200，60组真实OCR各一次成功、0局部失败；但仅4/15 AI自动稿、11待核、0合格图题，质量断言exit1保留，未通过整卷验收。新策略仍默认关闭，不能声称质量已达标。
+
+下一主线先做通用跨页父题拼接与来源绑定，再细化题级证据及OCR/公式/填空完整性；不继续盲目重跑三遍。第9题虽页内图/OCR一致，但原图第3页确有续小问，当前拦截正确；第2题仍图义投影分歧。已知答案/联网补答、Pi整卷、自然10GB/40GB召回/P95/内存与安装交付仍OPEN，Goal active。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#ownedCropGeometryTrial。
+
 ## 2026-11-02 E08 Office来源行导航
 
 2026-11-02 E08 Office来源行导航工程子项已实现（7e04cd4）：DOCX/PDF/XLSX/PPTX真实读取→原Pi公开过程→正文引用/成果卡/历史/教学文件同版本提取行贯通；来源外改/移动明确报错且不打开新正文。15边界、原12兼容、build/type、245组件、正式Electron六项与只读收尾通过，双尺寸/冷启0模型重放。完整FX05/物理原页/人工REVIEW与完整AT仍待集中，累计3/252、Goal active。 workspace/extracted_lines复用LocalAnswerSource v1及原typed预览；实际工具、answer evidence和Pi公开投影三处贯通，不增加表/IPC/依赖/批准/Agent Loop。范围仅为提取行；脱敏改变行数时不建立错误跳转，旧无定位不补造。关闭或换源清旧预览，版本/Office格式仍校验。 不重复已通过遮挡/生成/导入/安装/207；本任务之前L2综合失败保留，不将主线207或合成SSE作为真实模型质量验收。继续补齐W3后集中验收，再S/T。 docs/research/AGENT_DELIVERY_VERSIONS_E08_20261031.json#officeReadSourcesSlice。

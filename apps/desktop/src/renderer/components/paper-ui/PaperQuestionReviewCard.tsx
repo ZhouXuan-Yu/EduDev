@@ -5,9 +5,14 @@ import {QuestionMathText} from '../QuestionMathText';
 import {QuestionAnswerEvidence} from '../QuestionAnswerEvidence';
 import {QuestionOriginalPicture} from '../QuestionOriginalPicture';
 import {QuestionSourceLink} from '../office/PiQuestionSource';
+import {PaperInstanceReviewContent} from './PaperInstanceReviewContent';
 
 /** Presentation of the host's saved whole-question item; no local confirmation state. */
 export function PaperQuestionReviewCard({item}:{item:PaperItem}){
+ if(item.instance)return <DisclosureCard className="edu-paper-question-card" data-testid="paper-question"
+  title={`第 ${item.number} 题 · ${item.points} 分 · ${item.question.knowledgePoint||'知识点未标注'}`}>
+  <PaperInstanceReviewContent item={item}/>
+ </DisclosureCard>;
  const document=item.question.document;
  return <DisclosureCard className="edu-paper-question-card" data-testid="paper-question"
   title={`第 ${item.number} 题 · ${item.points} 分 · ${item.question.knowledgePoint||'知识点未标注'}`}>

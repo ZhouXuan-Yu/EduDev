@@ -70,10 +70,10 @@ export function WorkbenchNavigation({ view, disabled = false }: { view: string; 
     setDialog(undefined); setError('');
     requestAnimationFrame(() => dialogTrigger.current?.isConnected && dialogTrigger.current.focus());
   }
-  async function run(action: () => Promise<void>, close = false) {
+  async function run(action: () => Promise<void | boolean>, close = false) {
     if (unavailable || lock.current) return;
     lock.current = true; setBusy(true); setError('');
-    try { await action(); if (close) closeDialog(); }
+    try { const selected = await action(); if (close && selected !== false) closeDialog(); }
     catch (cause) { setError(cause instanceof Error ? cause.message : '操作失败，请重试。'); }
     finally { lock.current = false; setBusy(false); }
   }

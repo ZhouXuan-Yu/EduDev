@@ -1,0 +1,523 @@
+{
+  "source": "8baf5939d7c0085ba3c830330b2adffb71dab85a",
+  "build": "20eed7fccb81ba0ec06ad7ede7ca23f6e2896eb46a3a747d1ed72f335ee6e353",
+  "rawReportSha256": "c39e05ccb72c1491c1b23c920bfe985ae987299caab4010f033fb3c6eae50bba",
+  "checks": [
+    {
+      "name": "Real owner and positive exam blueprint saved by UI; no renderer-owned basket IDs",
+      "pass": true
+    },
+    {
+      "name": "Two exact real full candidates added with host content versions and no automatic substitutions",
+      "pass": true
+    },
+    {
+      "name": "Actual organize reorder/remove/re-add preserves existing entry identity and submits real typed callbacks",
+      "pass": true
+    },
+    {
+      "name": "Blueprint changes retain members and expose gaps; real cross-section move restores completeness",
+      "pass": true
+    },
+    {
+      "name": "Actual application back/forward restores the same pinned basket and organize/preview stages without content revision changes",
+      "pass": true
+    },
+    {
+      "name": "Student answer DOM stays absent; teacher answer is Tab reachable and Enter toggles with Escape focus retained, no native details",
+      "pass": true
+    },
+    {
+      "name": "Exact manual snapshot, real teacher confirmation, six original export choices present; no export/model requested",
+      "pass": true
+    },
+    {
+      "name": "Navigation and cold restart restore exact host basket, pinned versions, ordering and saved UI preferences",
+      "pass": true
+    },
+    {
+      "name": "Explicit archive-and-new retains old pinned basket read-only and creates a separate empty active basket",
+      "pass": true
+    },
+    {
+      "name": "No added model runs/requests/events, clean renderer/console, no post-firstWindow observed network attempts",
+      "pass": true
+    }
+  ],
+  "geometry": [
+    {
+      "file": "full-question-selected-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 284,
+        "y": 354.09375,
+        "width": 720,
+        "height": 23.09375,
+        "right": 1004,
+        "bottom": 377.1875,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 284,
+        "y": 354.09375,
+        "width": 720,
+        "height": 23.09375,
+        "right": 1004,
+        "bottom": 377.1875
+      }
+    },
+    {
+      "file": "full-question-selected-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 356.5,
+        "y": 422.90625,
+        "width": 1129,
+        "height": 23.09375,
+        "right": 1485.5,
+        "bottom": 446,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 356.5,
+        "y": 422.90625,
+        "width": 1129,
+        "height": 23.09375,
+        "right": 1485.5,
+        "bottom": 446
+      }
+    },
+    {
+      "file": "organized-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 284,
+        "y": 281.015625,
+        "width": 735,
+        "height": 26.390625,
+        "right": 1019,
+        "bottom": 307.40625,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 284,
+        "y": 316.5,
+        "width": 735,
+        "height": 23.09375,
+        "right": 1019,
+        "bottom": 339.59375
+      }
+    },
+    {
+      "file": "organized-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 356.5,
+        "y": 280.734375,
+        "width": 1144,
+        "height": 26.390625,
+        "right": 1500.5,
+        "bottom": 307.125,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 356.5,
+        "y": 316.21875,
+        "width": 1144,
+        "height": 23.09375,
+        "right": 1500.5,
+        "bottom": 339.3125
+      }
+    },
+    {
+      "file": "student-preview-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 292,
+        "y": 452.609375,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 475.703125,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 292,
+        "y": 475.703125,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 498.796875
+      }
+    },
+    {
+      "file": "student-preview-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 364.5,
+        "y": 764.328125,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 787.421875,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 364.5,
+        "y": 787.421875,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 810.515625
+      }
+    },
+    {
+      "file": "teacher-preview-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 292,
+        "y": 422.609375,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 445.703125,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 292,
+        "y": 445.703125,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 468.796875
+      }
+    },
+    {
+      "file": "teacher-preview-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 364.5,
+        "y": 480.328125,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 503.421875,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 364.5,
+        "y": 503.421875,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 526.515625
+      }
+    },
+    {
+      "file": "cold-restored-organize-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 284,
+        "y": 609.984375,
+        "width": 735,
+        "height": 26.390625,
+        "right": 1019,
+        "bottom": 636.375,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 284,
+        "y": 645.46875,
+        "width": 735,
+        "height": 23.09375,
+        "right": 1019,
+        "bottom": 668.5625
+      }
+    },
+    {
+      "file": "cold-restored-organize-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 356.5,
+        "y": 609.984375,
+        "width": 1144,
+        "height": 26.390625,
+        "right": 1500.5,
+        "bottom": 636.375,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 356.5,
+        "y": 645.46875,
+        "width": 1144,
+        "height": 23.09375,
+        "right": 1500.5,
+        "bottom": 668.5625
+      }
+    },
+    {
+      "file": "archived-readonly-1366.png",
+      "width": 1366,
+      "height": 768,
+      "geometry": {
+        "x": 292,
+        "y": 452.8125,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 475.90625,
+        "viewport": {
+          "width": 1366,
+          "height": 768
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 292,
+        "y": 475.90625,
+        "width": 719,
+        "height": 23.09375,
+        "right": 1011,
+        "bottom": 499
+      }
+    },
+    {
+      "file": "archived-readonly-1920.png",
+      "width": 1920,
+      "height": 1080,
+      "geometry": {
+        "x": 364.5,
+        "y": 764.53125,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 787.625,
+        "viewport": {
+          "width": 1920,
+          "height": 1080
+        },
+        "horizontalOverflow": 0
+      },
+      "bodyGeometry": {
+        "x": 364.5,
+        "y": 787.625,
+        "width": 1128,
+        "height": 23.09375,
+        "right": 1492.5,
+        "bottom": 810.71875
+      }
+    }
+  ],
+  "contrast": [
+    {
+      "name": "enabled search text",
+      "foreground": [
+        24,
+        24,
+        27
+      ],
+      "background": [
+        255,
+        255,
+        255
+      ],
+      "opacity": 1,
+      "ratio": 17.71676507806213
+    },
+    {
+      "name": "enabled exact snapshot action",
+      "foreground": [
+        252,
+        252,
+        252
+      ],
+      "background": [
+        0,
+        47,
+        167
+      ],
+      "opacity": 1,
+      "ratio": 10.418812905137083
+    }
+  ],
+  "answerKeyboard": {
+    "tabs": 1,
+    "enterExpanded": true,
+    "expandedAfterEscape": "true",
+    "finalExpanded": false,
+    "nativeDetails": 0
+  },
+  "history": [
+    {
+      "direction": "back",
+      "basketId": "xibasket_65b3d0f6-2d38-44dc-b531-c15f0574665c",
+      "stage": "organize",
+      "revision": 9
+    },
+    {
+      "direction": "forward",
+      "basketId": "xibasket_65b3d0f6-2d38-44dc-b531-c15f0574665c",
+      "stage": "preview",
+      "revision": 9
+    }
+  ],
+  "modelLedgerUnchanged": true,
+  "sourceUnchanged": true,
+  "rendererErrors": [],
+  "postFirstWindowNetworkAttempts": [],
+  "traceSummary": [
+    {
+      "events": 1000,
+      "dropped": 916,
+      "current": [
+        {
+          "node": 2,
+          "connected": true,
+          "basketId": "xibasket_65b3d0f6-2d38-44dc-b531-c15f0574665c",
+          "revision": "9",
+          "stage": "organize",
+          "pending": false,
+          "stageDisabled": false,
+          "savedDisabled": false,
+          "view": "paper"
+        }
+      ]
+    },
+    {
+      "events": 113,
+      "dropped": 0,
+      "current": [
+        {
+          "node": 1,
+          "connected": true,
+          "basketId": "xibasket_65b3d0f6-2d38-44dc-b531-c15f0574665c",
+          "revision": "10",
+          "stage": "organize",
+          "pending": false,
+          "stageDisabled": true,
+          "savedDisabled": false,
+          "view": "paper"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No actual exports or paid model requested in this UI scenario",
+    "Text real-ingested controlled fixture, not textbook/math quality acceptance",
+    "First-launch DOM diagnostics dropped 916 old events; not complete root-cause trace",
+    "Original Actual6 transient empty identity remains unexplained; new strict gate + cold-only diagnosis and full Actual7 passed; not relabelled as production fix",
+    "Native pointer/DPI/teacher acceptance remain separate"
+  ],
+  "artifacts": [
+    {
+      "file": "accepted-run/full-question-selected-1366.png",
+      "sha256": "ebc71649968c3f1176adf24c78e0e70fdc8fc986f7f96e914ccb54d9edd729ce",
+      "bytes": 71894
+    },
+    {
+      "file": "accepted-run/full-question-selected-1920.png",
+      "sha256": "d50c16335fcd36e137c2d85a7a4e6fa1151690d3854ef63a687fa143f9654417",
+      "bytes": 94996
+    },
+    {
+      "file": "accepted-run/organized-1366.png",
+      "sha256": "3ee0c1a0a06175271ba9b0fdc706c2d1393fedabe664b3a3e73ef3efe896f7f4",
+      "bytes": 68628
+    },
+    {
+      "file": "accepted-run/organized-1920.png",
+      "sha256": "56bcd00d9c25bf993d3ed0a3a4f97bdc596d88d27030082752d98e958ab19319",
+      "bytes": 85753
+    },
+    {
+      "file": "accepted-run/student-preview-1366.png",
+      "sha256": "968746acd8af47f5f01868c411b5358b036d58f9d9750e4d6ab3a2ea38098a9c",
+      "bytes": 72823
+    },
+    {
+      "file": "accepted-run/student-preview-1920.png",
+      "sha256": "292e8563553584ce239f9f685d024cff6872be417df1e2b7734924a3420e9479",
+      "bytes": 96336
+    },
+    {
+      "file": "accepted-run/teacher-preview-1366.png",
+      "sha256": "cc8d4e1e1d4ebdc9cd2a2bf7ad81ee88888fbb8f39ffbcff0d7aa013c668b648",
+      "bytes": 74068
+    },
+    {
+      "file": "accepted-run/teacher-preview-1920.png",
+      "sha256": "81c42dd3915a98b038d5b1f0f317cc1454efb68f0bf8eed93942be8d45d1096c",
+      "bytes": 91236
+    },
+    {
+      "file": "accepted-run/cold-restored-organize-1366.png",
+      "sha256": "5c282c9382961e5daa404c301079ab5f5b011fd7040c4863609725b09922127a",
+      "bytes": 75241
+    },
+    {
+      "file": "accepted-run/cold-restored-organize-1920.png",
+      "sha256": "c3318e4a970467834ec99430054920345df00abcfb3b8a968f12574cb0a26f60",
+      "bytes": 98087
+    },
+    {
+      "file": "accepted-run/archived-readonly-1366.png",
+      "sha256": "cab51db9b4baa3979f96e7b0ed7550a65e495febc21541181646bd7212c5468e",
+      "bytes": 63741
+    },
+    {
+      "file": "accepted-run/archived-readonly-1920.png",
+      "sha256": "17141cec88531b1aaad14c7ad532ceb4516adcd072078fa1f3fee710e67fd7c8",
+      "bytes": 81085
+    }
+  ]
+}

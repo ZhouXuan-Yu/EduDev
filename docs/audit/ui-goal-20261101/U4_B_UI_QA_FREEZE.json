@@ -1,0 +1,84 @@
+{
+  "createdAt": "2026-11-02T10:07:51.438Z",
+  "qaFrozen": true,
+  "previousFreeze": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\u4b-ui-qa-awaited-freeze-3B71Kw\\freeze.json",
+  "qaSha256": "0b7ec47bec78be71543ba219174e3a81b81f101ff00da9e8b1bc4232f212ffc5",
+  "files": [
+    {
+      "file": "scripts/ui-goal-paper-instance.mjs",
+      "sha256": "46f69e506337ceaa31f69cba3aae80b3b58f4356bc75ea47d0203167773e0941"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-ui-driver.mjs",
+      "sha256": "970d7b62e96fe3d85ce081e2450a802903b9baef8456afd80aa92512641f42ee"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-ui-evidence.mjs",
+      "sha256": "15cc91fe696549b0d5cab83d19e3146370639721ea7e4cac5147614e8f86761c"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-ui-journey.mjs",
+      "sha256": "376803e1d319a3d4cee0e1d4027c5c13d26a9c5203a33a27a288983cc281c057"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-ui-form.mjs",
+      "sha256": "523629320d1dfe7cd66de5daf096c2dc352bf00d1fcb98c619cd3e18020a2cbe"
+    },
+    {
+      "file": "scripts/paper-instance-qa-test.mjs",
+      "sha256": "30fb308fd9dbfffdeb302387bb06afc9f6f036d90b40dec720f6096b80777e11"
+    },
+    {
+      "file": "scripts/paper-instance-qa-form-test.mjs",
+      "sha256": "559cdedddf3937a8f021489e85cc4a089882594b683b6b8c4bd821f107962ceb"
+    },
+    {
+      "file": "scripts/acceptance/paper-instance-ui-wait.mjs",
+      "sha256": "12f054c3627ac7331246a5a058d5e2ae3a3665f1b087aef0c409acc5f2b122f5"
+    },
+    {
+      "file": "scripts/paper-instance-qa-browser-wait-test.mjs",
+      "sha256": "5dce96aae43e97f53efc7441b14f2e200f474ef27c8f24da2f64dc2020e669d5"
+    }
+  ],
+  "commands": {
+    "cwd": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop",
+    "check": "node scripts/ui-goal-paper-instance.mjs --check",
+    "run": "node scripts/ui-goal-paper-instance.mjs --run-ui --from=test-results/ui-goal-paper-9G2OGc --owner=aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2 --witness-owner=aisession_8b649d13-87fc-4285-b1a1-e8e69e942300 --questions=question_d0ed2e88-704b-4b96-90f1-d4f880ab7e10,question_5326992e-9786-418b-829e-8be64ee8e237"
+  },
+  "productionFilesVerifiedUnchanged": 21,
+  "productionSha256": "9f97aca2002ba94ae5965dff8b525d21836c2ffbf1a441701c8a0d88784f3c53",
+  "checks": [
+    {
+      "command": "node scripts/paper-instance-qa-test.mjs",
+      "passed": 11,
+      "exit": 0
+    },
+    {
+      "command": "node scripts/paper-instance-qa-browser-wait-test.mjs",
+      "passed": 8,
+      "exit": 0
+    },
+    {
+      "command": "node --check <each listed QA file>",
+      "files": 9,
+      "exit": 0
+    }
+  ],
+  "failuresPreserved": [
+    {
+      "file": "test-results/ui-goal-paper-instance-v4yoAr/report.json",
+      "sha256": "4bb092ab21fdfb47e86bce433083d3bd626c9d7385d63d6ff780c4935d41c59b",
+      "success": false,
+      "passed": 6
+    },
+    {
+      "file": "test-results/ui-goal-paper-instance-t9T6nw/report.json",
+      "sha256": "5898a485fd408427d7b8ddc962d59ebc56d479f72a5891bdc1042363c7cf8398",
+      "success": false,
+      "passed": 0
+    }
+  ],
+  "rootCause": "Fresh host basket revision 2 data_json contains blueprint/entries but no optional uiState. Renderer uses emptyBasketUi defaults. QA now defaults only undefined to select/empty filters/offset0/scrollTop0; explicit prefs and invalid null remain subject to strict comparison. Awaited Node wrapper, after-IPC same-node check, revision and immediate identity assertions retained.",
+  "actualElectronExecuted": false
+}
