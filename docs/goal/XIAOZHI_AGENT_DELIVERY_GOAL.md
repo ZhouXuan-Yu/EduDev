@@ -1,5 +1,14 @@
 # Goal：按任务书完整实现并验收小智教育智能体
 
+## 2026-11-02 E06 局部文字遮挡
+
+2026-11-02 E06局部文字遮挡工程子项已实现（cd4ef03，整合e1cb14c）：原WPS真实字符边界定位第6页英文/第9页中文局部遮挡，不误报第1/3/4/8页；同一9页SHA50f04d60…，14边界、build/type、245组件、原Pi实际检查/9PNG及0调用读回5项通过，最终整合再读5项通过。PowerPoint因已有PID217336暂未测，保留其进程；复杂/语义遮挡、完整FX09/AT仍未验，累计完整3/252、Goal active。0付费，无新依赖/表/IPC/审核。
+
+日常D已正常关闭旧PID224824并detached更新e1cb14c，以自身build/type、245组件及原编译入口启动，新PID241700/窗口10882376、响应/native visible为真；3脏文档hash保留。0教师对话/资料上传；LogonUI仍在，物理drag/IME、完整教师旅程及安装未验证。
+
+下一仍补齐W3 E06/E07/E08+C功能，再集中验收、之后S/T；不重复已通过生成/导入/安装/207。上轮本任务L2综合失败保留，主线另一次207通过不冒作本片证据。 docs/research/AGENT_DELIVERY_CHECKS_E06_20261031.json#partialCoverSlice。
+
+
 2026-11-01 按用户“直接关了重启，接管使用”更新日常D：旧PID72544经CloseMainWindow正常退出、无强杀；D保留3份脏文档hash，从05782b4正常切换到cd93a69，用自身依赖npm.cmd start完成build/type并启动，独立240组件exit0。新PID143132/窗口22287116，准确D路径/入口、响应及原生visible=true已核，本轮用量和此前C03/焦点/回执修复进入日常源码。未发送对话/新增付费，未归档教师UI。Windows仍有LogonUI，未做实际输入/drag/IME或完整日常旅程；启动不代替C06/完整AT，累计仍3/252、Goal active。构建指纹d59ac006…与4份本机启动证据见docs/research/AGENT_USAGE_C05_20261101.json#dailyRuntime；前述“本片未更新日常”为此前状态，本条覆盖当前运行状态。
 
 2026-11-01 C04/C05用量显示工程子项已实现（0be9823），build/type/240组件、7边界、原Pi4及同记录双尺寸冷读2通过；完整AT仍3/252、Goal active，继续W3功能后集中验收再S/T。日常D仍05782b4/锁屏，未应用本片。docs/research/AGENT_USAGE_C05_20261101.json。

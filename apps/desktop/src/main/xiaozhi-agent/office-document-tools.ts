@@ -3,6 +3,7 @@ import type {ToolDefinition} from '@earendil-works/pi-coding-agent';
 import {createWorkspaceFiles,validFileRequest,type WorkspaceLease} from './workspace-files';
 import {isOfficeDocument} from '../../shared/xiaozhi-documents';
 import {XIAOZHI_FILES_SCHEMA,XIAOZHI_FILE_ERRORS,type XiaozhiFileError} from '../../shared/xiaozhi-files';
+import type {LocalAnswerSource} from '../../shared/local-answer-source';
 type PrivacyStore={sanitizeProblemText:(text:string)=>Promise<{sanitizedText:string}>;listStudents:(query:string)=>Promise<{displayName?:string;realName?:string}[]>};
 /** Reuse the existing education patterns plus known local names; no name list leaves main. */
 export async function sanitizeOfficeDocumentText(store:PrivacyStore,text:string):Promise<string>{
@@ -44,12 +45,15 @@ export function createOfficeDocumentTools(options:Options):ToolDefinition[]{
         const end=Number(start)+used-1,title=(await options.sanitize(read.data.path)).slice(0,200);current(signal);
         const payload={success:true,text,format:read.data.document.format,sanitized:true,totalLines:lines.length,truncated:partialLine||end<lines.length,
           source:{title,version:read.data.version,locator:{kind:'extracted_lines',start:Number(start),end,partialLine},originalPageLocated:false},
-          citation:`${title} · 提取正文第${start}–${end}行（原页码未定位）`};
+          citation:`${title.slice(0,120)} · 提取正文第${start}–${end}行（原页码未定位）`};
         const final=await files.stat({...base,requestId:`xifile_${randomUUID()}`},signal||new AbortController().signal);current(signal);
         if(!final.ok)return failed(final.error);
         if(final.workspaceVersion!==initial.workspaceVersion||final.data.version!==entry.version)return failed('changed');
-        // Safe model excerpt; public projection only reads the explicit title list.
-        return {content:[{type:'text' as const,text:JSON.stringify(payload)}],details:{success:true,data:{sources:[{title:payload.citation}]}}};
+        // Locators refer to the same raw extraction opened locally, never physical page numbers.
+        // If redaction changes line boundaries, keep the safe excerpt but do not create a misleading jump.
+        const local:LocalAnswerSource|undefined=used>0&&lines.length===read.data.text.split('\n').length
+          ?{kind:'workspace',path:raw.path,version:read.data.version,locator:'extracted_lines',startLine:Number(start),endLine:end,...(partialLine?{partialLine:true}:{})}:undefined;
+        return {content:[{type:'text' as const,text:JSON.stringify(payload)}],details:{success:true,data:{sources:[{title:payload.citation,...(local?{local}:{})}]}}};
       }catch(error){return failed(signal?.aborted?'cancelled':(error as Error).message==='permission_denied'?'permission_denied':'read_failed');}
     }
   }];

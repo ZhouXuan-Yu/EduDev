@@ -49,19 +49,22 @@ export async function renderPowerPoint(bytes:Buffer,metrics:DocumentMetrics,opti
   if(value.schemaVersion!==POWERPOINT_RENDER_SCHEMA||value.ok!==true)throw Error(['busy','too_large','unsupported','page_count_changed'].includes(String(value.error))?String(value.error):'unavailable');
   if(value.pages!==metrics.pageCount||!Number.isInteger(value.width)||!Number.isInteger(value.height)||Number(value.width)<16||Number(value.width)>1600||Number(value.height)<16||Number(value.height)>1600||!['PowerPoint','WPS Presentation'].includes(String(value.engine))||typeof value.version!=='string'||!/^[\d.]{1,40}$/.test(value.version)||!Array.isArray(value.findings)||value.findings.length>128)throw Error('unavailable');
   const engine=`${value.engine} ${value.version}`,findings:CheckFinding[]=[];
-  for(const item of value.findings as {code:string;page:number;font?:string;object?:number;cover?:number;point?:string}[]){
-   const codes=['font_missing','rendered_text_outside','rendered_text_overflow','rendered_text_covered','system_glyph_missing','layer_coverage_partial','glyph_coverage_partial'];
+  for(const item of value.findings as {code:string;page:number;font?:string;object?:number;cover?:number;point?:string;character?:number}[]){
+   const codes=['font_missing','rendered_text_outside','rendered_text_overflow','rendered_text_covered','rendered_text_partly_covered','system_glyph_missing','layer_coverage_partial','glyph_coverage_partial'];
    if(!item||!codes.includes(item.code)||!Number.isInteger(item.page)||item.page<0||item.page>metrics.pageCount||item.font!==undefined&&(typeof item.font!=='string'||item.font.length>200)
     ||['object','cover'].some(k=>item[k as 'object'|'cover']!==undefined&&(!Number.isInteger(item[k as 'object'|'cover'])||Number(item[k as 'object'|'cover'])<1||Number(item[k as 'object'|'cover'])>2147483647))
     ||item.point!==undefined&&(typeof item.point!=='string'||!/^U\+[0-9A-F]{4,6}$/.test(item.point)||Number.parseInt(item.point.slice(2),16)>0x10ffff)
-    ||item.code==='rendered_text_covered'&&(!item.page||!item.object||!item.cover)||item.code==='system_glyph_missing'&&(!item.page||!item.object||!item.point))throw Error('unavailable');
+    ||item.character!==undefined&&(!Number.isInteger(item.character)||item.character<1||item.character>4096)
+    ||['rendered_text_covered','rendered_text_partly_covered'].includes(item.code)&&(!item.page||!item.object||!item.cover)
+    ||item.code==='rendered_text_partly_covered'&&!item.character||item.code==='system_glyph_missing'&&(!item.page||!item.object||!item.point))throw Error('unavailable');
    const message:Record<string,string>={
     font_missing:`本机未安装文件声明的字体“${item.font}”；页面可能使用替代字体，不能判定原字体视觉通过。`,
     rendered_text_outside:`${engine}实际排版的文字边界超出页面。`,
     rendered_text_overflow:`${engine}实际排版的文字高度超出文本框，请核对截图中的裁切或遮挡。`,
     rendered_text_covered:`${engine}对象${item.object}的实际文字边界被上层不透明矩形${item.cover}完整覆盖，请移开遮挡并重检。`,
+    rendered_text_partly_covered:`${engine}对象${item.object}正文第${item.character}个字符的实际排版边界被上层不透明矩形${item.cover}完整覆盖，部分文字不可见；请移开遮挡并重检。`,
     system_glyph_missing:`对象${item.object}的字符${item.point}在本机系统字体回退后仍无字形，请替换字符或字体并核对原生截图。此项为独立系统整形检查。`,
-    layer_coverage_partial:'本页含动画、组合、表格、旋转文字或超出图层预算；相应遮挡未完整检查，请核对实际页面。',
+    layer_coverage_partial:'本页含动画、组合、表格、旋转/复杂文字、边界局部相交或超出图层/字符预算；相应遮挡未完整检查，请核对实际页面。',
     glyph_coverage_partial:'本页含嵌入或混合字体、组合/表格文字，或系统整形不可用/超出字符预算；相应缺字未完整检查。',
    };
    findings.push({kind:'visual',state:item.code.endsWith('_partial')?'unchecked':'failed',code:item.code,...(item.page?{page:item.page}:{}),message:message[item.code]});
@@ -74,7 +77,7 @@ export async function renderPowerPoint(bytes:Buffer,metrics:DocumentMetrics,opti
    captures.push({bytes:buffer,page,kind:'office_page',viewport:`${proof.width}x${proof.height}`});
   }
   if(hash(await fs.readFile(path.join(folder,'input.pptx')))!==hash(bytes))throw Error('changed');signal.throwIfAborted();
-  findings.push({kind:'visual',state:'unchecked',code:'actual_office_rendered',message:`${engine}已实际渲染全部${captures.length}页；已检查文字边界、静态顶层实心矩形完整遮挡，并以系统字体回退检查可读文字的字形覆盖。部分遮挡、复杂图形/公式、Office与系统整形差异及动画仍需查看截图核对。`});
+  findings.push({kind:'visual',state:'unchecked',code:'actual_office_rendered',message:`${engine}已实际渲染全部${captures.length}页；已检查文字边界、静态顶层实心矩形的整段遮挡和预算内普通文字的完整字符遮挡，并以系统字体回退检查可读文字的字形覆盖。笔画局部遮挡、复杂图形/公式、Office与系统整形差异及动画仍需查看截图核对。`});
   return{pages:captures.map(c=>c.page),captures,findings,engine};
  }finally{
   await clearOfficeStage(folder,['input.pptx','request.json','owned.json','render.ps1']);

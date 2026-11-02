@@ -1,0 +1,334 @@
+{
+  "date": "2026-11-02",
+  "scope": "Owned synthetic Office/PDF fixtures, failures and exact receipt/line/cold checks; final-workspace includes intentionally changed DOCX and moved XLSX. No daily teacher files/profile/credentials copied.",
+  "entries": [
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/initial/failure.png",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-T9sbVq/failure.png",
+      "bytes": 100257,
+      "sha256": "05831479a3861d04485d7659de15732ed989f8c691fb273cbda65140d3892c32",
+      "storedSha256": "05831479a3861d04485d7659de15732ed989f8c691fb273cbda65140d3892c32",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/initial/report.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-T9sbVq/report.json",
+      "bytes": 10576,
+      "sha256": "728ba6c4561ed6b3bc7588a9657105c35b4cd9bc6ce7fc2cf6acb9a814b27266",
+      "storedSha256": "d7cdf6a82086f6b8bd9ea21a30b8b1ee27127fdae3a87772b0c9904fc1792b4f",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/1366.png",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/1366.png",
+      "bytes": 164434,
+      "sha256": "442d3a9ebfc8c3dce5fec02388fa3cf6790f8945326f38099efd69b97430d0a4",
+      "storedSha256": "442d3a9ebfc8c3dce5fec02388fa3cf6790f8945326f38099efd69b97430d0a4",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/1920.png",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/1920.png",
+      "bytes": 255454,
+      "sha256": "49059275600b8299e2123f754b61048279ef3bef795805c424c1c9cd8a7785ae",
+      "storedSha256": "49059275600b8299e2123f754b61048279ef3bef795805c424c1c9cd8a7785ae",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/failure.png",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/failure.png",
+      "bytes": 219161,
+      "sha256": "e76ed5cc8249ed0cec213c39d3ea0195a3d4c7611797c03cbcb4dbf8050588e0",
+      "storedSha256": "e76ed5cc8249ed0cec213c39d3ea0195a3d4c7611797c03cbcb4dbf8050588e0",
+      "gzip": false
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/report-before-resume.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/report-before-resume.json",
+      "bytes": 12962,
+      "sha256": "d6d79cd8054f79374a79063b1ba6388b749ffedb34f2211cc3a4cfebe6cf03af",
+      "storedSha256": "3476ba3d70367f41c4e5296fe153d8441317ceea4dd611b2e762637df71afdd6",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/report-citation-old-run-failure.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/report-citation-old-run-failure.json",
+      "bytes": 6222,
+      "sha256": "92e35d8ead131a88aa668fd3445b5ec3738c10c1132636e753e05d14e622146f",
+      "storedSha256": "6c4cc7590a88c84d1fbff91503aaaa5541f6b25f1e8ac236b5839a08623ff5ca",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/report-optional-query-failure.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/report-optional-query-failure.json",
+      "bytes": 5552,
+      "sha256": "be67b9e2d34530fe9f279aa56f365e06f3bf1afc0cc371338e9c677b3eeefefd",
+      "storedSha256": "37f78d872a3befd11b3140f717945c003c2b679e884f044e324e5fd7a823b09d",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/report.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/report.json",
+      "bytes": 5376,
+      "sha256": "f07ab4153eb791e92a348e7316c8c21657eb98bfd1b312d2665b57fefbe383a5",
+      "storedSha256": "02bfb312ae2c8abc0063b65ef66d7dc21b63a2d1531f45e83230b16db4e91990",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/source-journal-readback.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/source-journal-readback.json",
+      "bytes": 17739,
+      "sha256": "937032f57a2ad26922acca860aa16cf298609331cbc0163e85d45130ba2d9af3",
+      "storedSha256": "4faf8ba8530981ba0baef9dea57bd47bbc0fd278c1a3b848074c5186e555a77e",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/.env.local.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/.env.local",
+      "bytes": 16,
+      "sha256": "2202e402768c1dfc55af2261a53d2580a357900b440fdbfd5b7f11ab844a9d69",
+      "storedSha256": "26c5621a665e4bc5f86d880d549a28bccf55cc1dc3192fdf33be4615e8085264",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/fixture-facts.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/fixture-facts.json",
+      "bytes": 745,
+      "sha256": "1f10cbc02a9874573385fcc07db66f7a2f1f2f6dab9b700ea497563f690af028",
+      "storedSha256": "9a63e04e8eb7c3eac9b24d8520c754c89dc042b0c0ba03315813e1dff1d48bf8",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/四种文档课堂摘要.html.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/四种文档课堂摘要.html",
+      "bytes": 541,
+      "sha256": "16dd562445199ecd61778e1a8c35869f8dfca9f239a1f29386e427cd69e07ce0",
+      "storedSha256": "9d548f9055fc7569f8621fd68191ce0cce0abfb37ffd0065d3121bbf2846d3b6",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/备注.txt.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/备注.txt",
+      "bytes": 61,
+      "sha256": "84d63ac4a3ead942e3dbff182d6283ad1f0d2559873c1e880176eafcf7261a57",
+      "storedSha256": "da2e630690c917528bcbe6ac0b54e1949525b6d2bbfd32b978b644a612f8a96a",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/备课.docx.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/备课.docx",
+      "bytes": 36953,
+      "sha256": "72387652b5eec352134d60a442c5c17c0cb404a3b77967b9dfe8948300b5068e",
+      "storedSha256": "ccc031e4c8601eb553344b7a9d4f6267d5f8e69784fc3262663f6ed586256c2c",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/扫描.pdf.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/扫描.pdf",
+      "bytes": 178847,
+      "sha256": "162ad074d020aaf3248aeac7e235f61f68bb8393775417cbefa08363631876e0",
+      "storedSha256": "b32c4cc717e3f5d84db55dc901a596a501867ea600088daeb547d3d096c27eaa",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/损坏.docx.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/损坏.docx",
+      "bytes": 14,
+      "sha256": "08f42856dcf2342cbf576be4e72e49527b7910dbbf894eb2b9ac9a09724a835c",
+      "storedSha256": "e59d33bbb19bd4766dad5036875163cf9511ec2e43ee7999cc61474b332c8e26",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/教研.xlsx.test-moved.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/教研.xlsx.test-moved",
+      "bytes": 4990,
+      "sha256": "d544aba7b5d31ec412be7dec98c6e25f15310d911a5c526569a366b060d476c0",
+      "storedSha256": "232e1608e46f3da7020bfc8a008f1ae8a3f7176638f88bc5c62b63f766dce15f",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/缺文字映射.pdf.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/缺文字映射.pdf",
+      "bytes": 2349,
+      "sha256": "6683056cd680be2ea9b90783d50b207658062bf827260b9c291c949039ea99ca",
+      "storedSha256": "0638e3357bd2e248479aaa65767ec0dd73e78cc2b34a52baaa7caefd71bad200",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/讲义.pdf.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/讲义.pdf",
+      "bytes": 24780,
+      "sha256": "7587ad6155d730391c6f0bb87899fbedb3312a538edf76aec304c5cf9ff3a54e",
+      "storedSha256": "a6c81ab3a8f1baa7def4006f7c4948a26adfdc4c755f2e2bfded44e56a14d175",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/actual/final-workspace/课件.pptx.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-source-FOyJ52/workspace/课件.pptx",
+      "bytes": 29243,
+      "sha256": "e9d6efe68f81c983829cb1b23e482c4adcbbb9cdbe737c5798b77021c0e952e0",
+      "storedSha256": "a1ed06bd9c6e7d59b6d3227defa9d6d954ec8a3381ea233910b94db4b839c4f7",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-audit-20261102.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-audit-20261102.json",
+      "bytes": 59019,
+      "sha256": "7184f772839df89474377c0f4d3448d0481b734f5b8558683666381398f0da77",
+      "storedSha256": "0f9b7ac5825633f5fca449573a0ac0111cbb6c21c1762d5879b42c5818dd75b8",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-boundaries-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-boundaries-20261102.log",
+      "bytes": 194,
+      "sha256": "d20e9b6e86f865e4f7d6b93403aef55afbfe230872e8ab623f068682a0a317f1",
+      "storedSha256": "5f6d449e2c4d2df0022b73274a2984283caf752292729b6711b8e241bb9bf234",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-boundaries-final-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-boundaries-final-20261102.log",
+      "bytes": 194,
+      "sha256": "d20e9b6e86f865e4f7d6b93403aef55afbfe230872e8ab623f068682a0a317f1",
+      "storedSha256": "5f6d449e2c4d2df0022b73274a2984283caf752292729b6711b8e241bb9bf234",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-boundaries-initial-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-boundaries-initial-20261102.log",
+      "bytes": 502,
+      "sha256": "89d82d7710ab7158fc3739ec790af6203e8b46a8803f6d4bd1de6bd47cf90484",
+      "storedSha256": "58d09babf97254d76aa19a789ff0d36585ec13ad814b8e9385bd82d5fca8460c",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-build-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-build-20261102.log",
+      "bytes": 40560,
+      "sha256": "5326231aa1de9bedc777e2911a85580fff249bfd6d50563dede020662ca1ed7b",
+      "storedSha256": "71c92af79b2b5f8164f029bc1c925ee38b158ece4f0a41fb96e56d72e38da5d9",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-components-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-components-20261102.log",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-electron-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-electron-20261102.log",
+      "bytes": 488,
+      "sha256": "78769f8eceb05f11e27c588d9f42337b9690a4e0ef7b90dd8aecfb711446f393",
+      "storedSha256": "c3f324fafbc6dcfde3771119cc151918c61b39d85c6792f81163f6e179b9d156",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-electron-finalize-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-electron-finalize-20261102.log",
+      "bytes": 271,
+      "sha256": "c675d9efee0456fea01fbf11901738f4333f80769a635bccf1259696b4c5d5e2",
+      "storedSha256": "16b75468e349d151fdee2efc9c030e129f752da9cd966800f2abcac82cd0d4be",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-electron-fixed-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-electron-fixed-20261102.log",
+      "bytes": 728,
+      "sha256": "b1eb17c3357c4a805b60b65eeae0a7f67998bd410cc03e087a1d99e9f92b592d",
+      "storedSha256": "a892d79ec787d2594296e03891025e70becbf8ca542c8a4e667bc1a4af13967b",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-electron-realistic-resume-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-electron-realistic-resume-20261102.log",
+      "bytes": 728,
+      "sha256": "7ab64cae6c98ee9a96a1a12503099a7c055df3b1bc223294b3b24973ad441922",
+      "storedSha256": "f2efe10aa8eaf8c400093c9340aca60b8454cc7b9aeb9050847a0ee93ca8d1aa",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-electron-resume-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-electron-resume-20261102.log",
+      "bytes": 722,
+      "sha256": "815e74ee7bca35cdcb669e2e19cbf25b77c83db624b2f48d470ad0dad7948ad7",
+      "storedSha256": "968cdf2b5af34ba24188346327989446bf64ccd72d9c3d9b8e8df587a06fa50c",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-electron-targeted-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-electron-targeted-20261102.log",
+      "bytes": 1366,
+      "sha256": "0dc07202caa3a0198e92ff738de22eb4da6a5dbde275fd7f2184cfad5664fedc",
+      "storedSha256": "1b8ee2d66afca1719a60857c92f92b90730eaeff44d3afb8988356f4f245943e",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-final-build-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-final-build-20261102.log",
+      "bytes": 40559,
+      "sha256": "560b2e48918bdf27f91100b34a7a7950d02398b0cbbf52bc78ee1b32a562523c",
+      "storedSha256": "eaa81e9cee95fbdca8f2d0c0233cafcc57f95c0410118b76a91734ddbd05e02a",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-legacy-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-legacy-20261102.log",
+      "bytes": 1318,
+      "sha256": "62b5b134669669d3df8b5c44f84910a94f39bee6bff9497e38ed6a33698fd454",
+      "storedSha256": "7f4023d3372f61267d8f88dc263926f9b0d7d1869540656049d83f340f6d4377",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-legacy-initial-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-legacy-initial-20261102.log",
+      "bytes": 1170,
+      "sha256": "03988d930c170154f4416f89c0bca5ecffc5dc2c438f8c1d35358bed01dd48e2",
+      "storedSha256": "d6777ff24c97c87c8a861c6bfb0af7a76a849806a5fc873debb4f8fb45a5ffda",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-projection-build-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-projection-build-20261102.log",
+      "bytes": 40559,
+      "sha256": "a79e863da78f04c841722da44dd4f91fb8ee881005f7fd61461a54131bfd6c07",
+      "storedSha256": "f6ee6763a6210dc0d5cf9f9d348fca16e1efd446182a689fb1015dbc081cc887",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/boundary/report.json.gz",
+      "original": "C:/Users/ZhouXuan/AppData/Local/Temp/xiaozhi-office-boundary-YAr8PS/report.json",
+      "bytes": 1969,
+      "sha256": "cb7b993e6ddb8914c5c31bc00e284abf79a42d1c41b934fcad0965b1cdf8b6e8",
+      "storedSha256": "261625c625bcb7661038b4eeff4702aafd5b978ce9b17aa47052fba5c0269e16",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-daily-build-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-daily-build-20261102.log",
+      "bytes": 38835,
+      "sha256": "9b869cf29833a4042b5df9ff348a83ce60a1aa9c822fecfebe35ea087dc66649",
+      "storedSha256": "fca86d883351d516811443a0debd61cc2239f6fb1d73ddd3bd51b11f14f6a33f",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-daily-components-20261102.log.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-daily-components-20261102.log",
+      "bytes": 527,
+      "sha256": "a8dccbf01e696b6d353b37b394572a0d2c67cf2f1063d54e1f59430961c13f11",
+      "storedSha256": "aa6dc1e01ce8848781dbbae774fd0ba8a2f1dfe80b9e3833c5c823c1739d01df",
+      "gzip": true
+    },
+    {
+      "file": "docs/research/evidence/office-read-sources/20261102/logs/e08-office-source-daily-runtime-20261102.json.gz",
+      "original": "C:\\Users\\ZhouXuan\\.codex\\worktrees\\e147\\EduProject\\apps\\desktop\\test-results\\e08-office-source-daily-runtime-20261102.json",
+      "bytes": 809,
+      "sha256": "55d4839a4a3c0f9d395d8bd0ccabe51872e0906df2f379805aa1b725b7c97a5c",
+      "storedSha256": "63a5a6dd45cca11d76ebc0596c38615ca009bb3f3b760723fe61adcb39d74093",
+      "gzip": true
+    }
+  ]
+}

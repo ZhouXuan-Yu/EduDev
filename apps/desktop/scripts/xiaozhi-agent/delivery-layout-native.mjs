@@ -17,7 +17,8 @@ try{
   const folder=path.join(output,engine);await fs.mkdir(folder);await fs.writeFile(path.join(folder,'input.pptx'),bytes);await fs.writeFile(path.join(folder,'request.json'),JSON.stringify({officeEngine:engine,pages:7,fonts:metrics.fonts,embeddedFonts:metrics.embeddedFonts}));
   const start=Date.now(),actual=await ps(POWERPOINT_RENDER_SCRIPT.replace('$result.error=$code','$result.error=$code;$result.diagnostic=$_.Exception.ToString()'),folder);assert(actual.ok);assert.equal(actual.pages,7);
   assert(actual.findings.some(f=>f.code==='rendered_text_covered'&&f.page===2));assert(actual.findings.some(f=>f.code==='system_glyph_missing'&&f.page===5&&f.point==='U+10FFFD'));
-  assert(!actual.findings.some(f=>['rendered_text_covered','system_glyph_missing'].includes(f.code)&&[1,3,4,6].includes(f.page)),JSON.stringify(actual.findings));assert(actual.findings.some(f=>f.code==='layer_coverage_partial'&&f.page===7));
+  assert(!actual.findings.some(f=>['rendered_text_covered','system_glyph_missing'].includes(f.code)&&[1,3,4].includes(f.page)),JSON.stringify(actual.findings));assert(actual.findings.some(f=>f.code==='layer_coverage_partial'&&f.page===7));
+  assert(actual.findings.some(f=>f.code==='rendered_text_partly_covered'&&f.page===6&&f.character>0));
   const proofs=[];for(let page=1;page<=7;page++)proofs.push(visualMetadata(await fs.readFile(path.join(folder,`page-${page}.png`)),{page,kind:'office_page'}));assert.equal(sha(await fs.readFile(path.join(folder,'input.pptx'))),sha(bytes));report[engine]={elapsedMs:Date.now()-start,actual,proofs,owner:JSON.parse(await fs.readFile(path.join(folder,'owned.json'),'utf8'))};
   check(`${engine}: actual7-page PNGs, exact page/object obstruction and missing glyph; transparent/background/Chinese positives not falsely failed; rotated coverage unchecked; source unchanged`);
  }
