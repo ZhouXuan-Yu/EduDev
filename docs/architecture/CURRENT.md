@@ -1,5 +1,14 @@
 # 当前架构
 
+## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
+
+新增math-check.v5，薄复用原SymPy1.14.0方程求解、原worker4并发/15s、Pi/Hana/native/typed投影。无新依赖/表/IPC/preload/Runtime；固定Windows运行时90件40328642B已同步。v1–v4及旧能力身份/回执逐值保持。conditionsVerified=false，仅证明提交的形式化链，不证明题意翻译、未见图义或整题教学质量；此片尚未接入题目保存科学计划。
+
+主包3780472→3796712B（本功能+9062B，主线另+7178B，总+16240B），preload37712B不变；日常456件out共35255467.0B。固定运行时+4888B。核验只在显式工具调用执行，不增加每token工作；P95/峰值与自然教学质量未测。audit一次仍既有42（8高26中8低、0严重，exit1），无新依赖。
+
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+
+
 ## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
 
 整合收尾：正常合入origin/main 2831b59为d8e47a9，14处仅文档顶部冲突均核对共同尾部并保留双方；24份本功能生产源码hash不变，隐私helper另补答案册answerIssues.section人类文字负例。整合后build/TSC、245组件、原执行器126项（109旧+11跨页+6新增）及同一合成题库的双尺寸/冷启只读3项通过，0新增模型/外网请求/renderer错误。完整207/207在功能347be78通过一次，不冒称合并后重跑。最终456文件35242539B，主包3787650B（相对整合前另+2239B，含协作者和最后隐私负例修正），preload37712B不变。readback早期把被拦截的GET /v1/models误算作模型调用，已保留失败并区分；无重发/扣费或canonical变化。统一manifest24件，不包含自然资料或账户。

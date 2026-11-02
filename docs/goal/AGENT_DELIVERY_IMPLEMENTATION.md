@@ -1,5 +1,16 @@
 # 小智交付能力实施合同
 
+## 2026-11-03 S02 解题链、增根丢根与首错证据（工程子项已实现）
+
+新增math-check.v5，薄复用原SymPy1.14.0方程求解、原worker4并发/15s、Pi/Hana/native/typed投影。无新依赖/表/IPC/preload/Runtime；固定Windows运行时90件40328642B已同步。v1–v4及旧能力身份/回执逐值保持。conditionsVerified=false，仅证明提交的形式化链，不证明题意翻译、未见图义或整题教学质量；此片尚未接入题目保存科学计划。
+
+源链21、公开摘要5、旧方程兼容23、真实固定EXE20及245组件通过，最终build/TSC通过。主线b7866bf正常合为1ecd5f6，合后build/TSC/245及原记录冷读通过；中文证据补齐后仅重测摘要及受影响Pi旅程。最终原Pi教师输入→真实SymPy→过程区首错/候选差异→新条件→双尺寸/冷启4项，最终保存证据冷读1项，0重放/0renderer错误。两次受影响旅程共14本地合成响应，0新增付费；不代表自然模型质量通过。
+
+功能c8c9adf，主线整合1ecd5f6，中文证据及最终代码a960ca9。D:/WorkProject/EduProject保持detached，以自身依赖原npm start构建启动a960ca9；正常关闭376204，新PID374048/HWND35327890可见且响应，4个其他窗口身份及3脏文档hash保留。0教师消息。固定90文件逐件size/hash一致，仅复制3件；manifest因Git换行仅语义相同，未谎称逐字节相同。C/D main及preload hash相同。
+
+证据：docs/research/AGENT_SOLUTION_CHAIN_S02_20261103.json；docs/research/evidence/solution-chain/20261103/manifest.json（46件限定范围压缩原始证据，原始及压缩hash均已核）。完整AT仍5/252、Goal active；REQ-S02-01/02/07仅工程部分实现，不标整条已实现。
+
+
 ## 2026-11-03 S02 解题链等价与增根/丢根（实施前冻结）
 
 - 目标M10：REQ-S02-01/02/07。教师在原问小智对话中核对推导链，能定位首次错误变形、保留原定义域、区分等价变形/候选扩展/代回筛选；最终答案碰巧正确不能掩盖中间错误。
