@@ -1,0 +1,249 @@
+{
+  "sourceCommit": "10336f3d4e64bd114d8c544bf7623b66233a958c",
+  "incomingMain": "564041a8356c9d5a6d0a8c373ebc9668ffd4c267",
+  "scope": "C1 integration after collaborator formula renderer/host changes; prior MYqnyI remains on its own earlier build",
+  "freeze": {
+    "out": "b2320f9f22a824f4b6885a92f29627a2e495d0efffe1dcd132bd3f0ea5b12b23",
+    "src": "2add9773bb418602ade5d48a2b9ababedf1bcd1b73d2c03320dd723670ccae37",
+    "buildFiles": 455,
+    "srcFiles": 1278
+  },
+  "commands": [
+    {
+      "command": "npm.cmd run build",
+      "exitCode": 0
+    },
+    {
+      "command": "npm.cmd run test:renderer-components",
+      "exitCode": 0,
+      "passed": 245
+    },
+    {
+      "command": "node scripts/xiaozhi-agent/office-math-boundaries.mjs",
+      "exitCode": 0,
+      "passed": 9
+    },
+    {
+      "command": "node scripts/paper-material-handoff-test.mjs",
+      "exitCode": 0,
+      "passed": 21
+    },
+    {
+      "command": "node scripts/paper-material-edit-guard-test.mjs",
+      "exitCode": 0,
+      "passed": 49
+    }
+  ],
+  "actual": {
+    "report": "test-results/ui-goal-paper-material-return-BHxF5z/report.json",
+    "sha256": "73fa78216cd483e644b181ad8b4f19d5fbe9c436c83c579ed76f0f58893e2339",
+    "exitCode": 0,
+    "success": true,
+    "productAcceptance": false,
+    "scenario": "U4-C1-real-material-question-return",
+    "output": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-BHxF5z",
+    "owner": "aisession_7a4a1a6c-ad0d-4614-bef7-33b9be2322b2",
+    "basketId": "xibasket_74b421ab-8c2d-4f2d-80e3-a3b76019f150",
+    "checks": [
+      {
+        "name": "Real nonempty basket -> materials; canceled native chooser writes no material/question/member; actual desktop Back/Forward preserves exact basket and preferences",
+        "pass": true
+      },
+      {
+        "name": "Actual owned TXT import/local parser creates exactly one source-bound rule archive in the real bank; no fabricated question/API receipt",
+        "pass": true
+      },
+      {
+        "name": "Same rule-created question ID: dirty return/history blocked; original archive save preserves material source; Back/Forward and explicit return restore owner/basket/stage/preferences with unchanged domain revision",
+        "pass": true
+      },
+      {
+        "name": "Only explicit candidate selection/Add changes the original basket once (+1), pinning this exact corrected question/source version; previous member remains identical",
+        "pass": true
+      },
+      {
+        "name": "Fresh-profile cold restart restores the exact saved basket, preferences and corrected archive without replay or model work",
+        "pass": true
+      },
+      {
+        "name": "All original bank rows, other baskets, historical papers and grants remain unchanged; exactly one imported question; zero added paid/model facts and console errors",
+        "pass": true
+      }
+    ],
+    "screens": [
+      {
+        "file": "nonempty-original-basket-1366.png",
+        "phase": "prepare-existing-nonempty-basket",
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "file": "nonempty-original-basket-1920.png",
+        "phase": "prepare-existing-nonempty-basket",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "actual-import-and-rule-archive-1366.png",
+        "phase": "real-txt-import",
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "file": "actual-import-and-rule-archive-1920.png",
+        "phase": "real-txt-import",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "same-archive-dirty-return-blocked-1366.png",
+        "phase": "same-question-correction",
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "file": "same-archive-dirty-return-blocked-1920.png",
+        "phase": "same-question-correction",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "same-archive-correction-saved-1366.png",
+        "phase": "same-question-correction",
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "file": "same-archive-correction-saved-1920.png",
+        "phase": "same-question-correction",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "returned-original-basket-1366.png",
+        "phase": "explicit-add",
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "file": "returned-original-basket-1920.png",
+        "phase": "explicit-add",
+        "width": 1920,
+        "height": 1080
+      },
+      {
+        "file": "cold-saved-basket-1366.png",
+        "phase": "cold-restart",
+        "width": 1366,
+        "height": 768
+      },
+      {
+        "file": "cold-saved-basket-1920.png",
+        "phase": "cold-restart",
+        "width": 1920,
+        "height": 1080
+      }
+    ],
+    "errors": [],
+    "networkAttempts": [],
+    "launches": [
+      {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-BHxF5z\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-BHxF5z\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-cg5vtn-c.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-cdq7jdfc.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-uuabdwoo.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-clmdx-lm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-draft-bqm_1_od.js"
+        ]
+      },
+      {
+        "paths": {
+          "userData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-BHxF5z\\profile",
+          "sessionData": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-BHxF5z\\profile"
+        },
+        "modules": [
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/education-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/image-header-cjlp_vkk.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/index.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/manifest-swncwwn7.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/material-word-ctzayilm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/materials-ceps7wk0.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/ocr-runtime.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-images-cg5vtn-c.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-math-cdq7jdfc.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/office-pdf-renderer-uuabdwoo.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/runtime-command-ca2wibil.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/typed-table-clmdx-lm.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-attachments-b1qaifrn.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-documents-de5zjvnu.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-ocr-cijofhv6.js",
+          "/d:/workproject/eduproject-sidebar/apps/desktop/out/main/xiaozhi-office-draft-bqm_1_od.js"
+        ]
+      }
+    ],
+    "chooser": [
+      {
+        "title": "选择教学资料",
+        "cancel": true
+      },
+      {
+        "title": "选择教学资料",
+        "cancel": false,
+        "file": "D:\\WorkProject\\EduProject-sidebar\\apps\\desktop\\test-results\\ui-goal-paper-material-return-BHxF5z\\C1资料回接-BHxF5z.txt"
+      }
+    ],
+    "immutable": {
+      "history": "ea48d8cc0dc1831f767124c7e2a0d71ddf280f82a29f09124a4f00416a68c574",
+      "grants": "730bad5714c802280bd9489c47c7a4d5cd2a1c39adc7998c62784c8d974351cd",
+      "ledger": {
+        "ai_agent_runs": {
+          "count": 11,
+          "sha256": "82243209c6e332a38c9eee2e9ec1f6d3f8104e47b82b3d676db99e332551a88c"
+        },
+        "ai_agent_run_requests": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "ai_agent_events": {
+          "count": 64,
+          "sha256": "b84edb3d7e3d8817170209ef4bb6f6cabed734c60e5a340244ebf419819c97cc"
+        },
+        "xiaozhi_event_journal": {
+          "count": 3085,
+          "sha256": "887339936dc7381e11197e9491f9da636c750c9cbf37f6aaebecb36cce5ec626"
+        }
+      }
+    },
+    "boundaries": [
+      "Byte-copy completed owned BUI data; fresh profile. No SQL/API domain writes or authorization rewrite.",
+      "Controlled TXT, real local parser and rule archive; SAME host-created question is corrected and saved through original archive UI. No manual-new substitute.",
+      "Not a natural OCR/native image, source-mutation injection, saving/failure injection or answer correctness acceptance.",
+      "Network observation begins after firstWindow; zero added durable model facts checked independently."
+    ],
+    "sourceBefore": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+    "sourceAfter": "57058a9787858e2fb74f2291407d7a84db7429347948189236ee6077c0ba8165",
+    "buildBefore": "b2320f9f22a824f4b6885a92f29627a2e495d0efffe1dcd132bd3f0ea5b12b23",
+    "buildAfter": "b2320f9f22a824f4b6885a92f29627a2e495d0efffe1dcd132bd3f0ea5b12b23"
+  },
+  "startupPreflightFailure": {
+    "command": "c1-integrated-formula-ui.log",
+    "exitCode": 1,
+    "reason": "Parent supplied incorrect expected build fingerprint. Rejected before app/data copy; corrected execution reads actual freeze JSON.",
+    "doesNotCountAsProductFailureOrPass": true
+  }
+}
