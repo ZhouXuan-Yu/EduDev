@@ -5,7 +5,7 @@ import type {QuestionBankItem} from '../../shared/contracts';
 import {QUESTION_CONTEXT_SCHEMA,validQuestionContextQuery,validQuestionContextRead,type QuestionContextSource,type QuestionContextPurpose} from '../../shared/question-context';
 import {createStudentContextSanitizer} from '../students/context-sanitizer';
 
-import {QUESTION_DOCUMENT_COMPLETE_SCHEMA} from '../../shared/question-document';
+import {isCompleteQuestionDocument} from '../../shared/question-document';
 import {QUESTION_PROJECTION_FIELDS,type QuestionProjection} from '../../shared/question-projection';
 type ProjectionStore=Partial<Pick<OmniEduStore,'readQuestionDocumentContext'|'readArchivedQuestionContext'|'readAnswerEnrichmentContext'>>;
 type Store=Pick<OmniEduStore,'searchQuestionBank'|'getQuestionNotebookEntry'|'listStudents'|'sanitizeProblemText'>&ProjectionStore&Partial<Pick<OmniEduStore,'searchQuestionBankWithCoverage'|'searchQuestionsForAnswerEnrichment'>>;
@@ -23,7 +23,7 @@ export async function readQuestionContextSource(store:Pick<Store,'getQuestionNot
  if(!saved||questionVersion(saved)!==source.version)throw new Error('source_changed');
  if(questionFactConflicts(saved).length)throw new Error('question_fact_conflict');
  if(saved.archive){if(!store.readArchivedQuestionContext)throw new Error('document_context_unavailable');await store.readArchivedQuestionContext(saved);const current=await store.getQuestionNotebookEntry(source.questionId);signal?.throwIfAborted();if(!current||questionVersion(current)!==source.version)throw new Error('source_changed');}
- if(saved.document?.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA){
+ if(isCompleteQuestionDocument(saved.document)){
   if(!store.readQuestionDocumentContext)throw new Error('document_context_unavailable');
   const projection=await store.readQuestionDocumentContext(saved.id,source.version,signal);
   if(JSON.stringify(projection)!==JSON.stringify(saved.document.context.projection))throw new Error('source_changed');
@@ -52,7 +52,7 @@ export function createQuestionContextProvider(store:Store,isCurrent:()=>boolean,
     if(found.purpose!==args.purpose)throw new Error('permission_denied');
     const original=(await readQuestionContextSource(store,{schemaVersion:QUESTION_CONTEXT_SCHEMA,questionId:found.id,version:found.version},abort,args.purpose)).question;current(abort);
     // Legacy originals lack a reviewed complete text projection; never solve their truncated summaries.
-    if(original.document&&original.document.schemaVersion!==QUESTION_DOCUMENT_COMPLETE_SCHEMA)return{content:[{type:'text',text:JSON.stringify({success:false,code:'document_context_unavailable',message:errors.document_context_unavailable,contextComplete:false})}],details:{success:false,error:{code:'document_context_unavailable'}},isError:true};
+    if(original.document&&!isCompleteQuestionDocument(original.document))return{content:[{type:'text',text:JSON.stringify({success:false,code:'document_context_unavailable',message:errors.document_context_unavailable,contextComplete:false})}],details:{success:false,error:{code:'document_context_unavailable'}},isError:true};
     const enriching=args.purpose==='answer_enrichment',missingRoles=enriching?answerEnrichmentRoles(original):[];
     if(enriching?!missingRoles.length:!archiveEligible(original))throw new Error('document_context_unavailable');
     if(!original.document&&!original.archive?.native&&Buffer.byteLength(JSON.stringify(original),'utf8')>32000)throw new Error('too_large');
@@ -90,7 +90,7 @@ export function createQuestionContextProvider(store:Store,isCurrent:()=>boolean,
     const stem=await clean(q.stem);
     prepared.push({q,version:v,
      value:{version:v,subject:await clean(q.subject),grade:await clean(q.grade),knowledgePoint:await clean(q.knowledgePoint),questionType:await clean(q.questionType),difficulty:q.difficulty,
-      snippet:stem.slice(0,500),snippetTruncated:stem.length>500,sourceTitle:await clean(q.sourceTitle),sourceKind:q.sourceKind,...(q.archive?{archiveState:q.archive.state}:{}),usableForReading:!q.document||q.document.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA,...(enriching?{missingRoles:answerEnrichmentRoles(q),usableForPaper:false}: {})}});
+      snippet:stem.slice(0,500),snippetTruncated:stem.length>500,sourceTitle:await clean(q.sourceTitle),sourceKind:q.sourceKind,...(q.archive?{archiveState:q.archive.state}:{}),usableForReading:!q.document||isCompleteQuestionDocument(q.document),...(enriching?{missingRoles:answerEnrichmentRoles(q),usableForPaper:false}: {})}});
    }
    for(const item of prepared){try{await readQuestionContextSource(store,source(item.q),abort,purpose);}catch{current(abort);throw new Error('source_changed');}current(abort);}
    current(abort);const aliases=prepareQuestionAliases(discovered,prepared.map(p=>source(p.q)),purpose);

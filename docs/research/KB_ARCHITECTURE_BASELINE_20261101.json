@@ -5,7 +5,7 @@
   "scope": "Current implementation and real whole-set acceptance evidence; architecture and historical baselines retained. Goal remains active.",
   "architecture": "docs/architecture/KNOWLEDGE_BASE.md",
   "goalComplete": false,
-  "currentStage": "K0_v2_source_correspondence_closed_generated_answer_conflict_and_structured_book_writeback_open",
+  "currentStage": "K0_structured_book_writeback_controlled_path_closed_natural_answer_quality_and_full_scale_open",
   "decision": {
     "businessTruth": "Existing SQLite writer and versioned business facts",
     "originalsAndArtifacts": "Existing local filesystem; immutable source and AI evidence",
@@ -6894,6 +6894,266 @@
       "mainDeltaFromBaselineIncludingCollaboratorChanges": 23325,
       "totalDeltaFromBaselineIncludingCollaboratorChanges": 31162,
       "p95PeakMemoryNotMeasured": true
+    }
+  },
+  "bookDocumentTrial": {
+    "date": "2026-11-03",
+    "baselineCommit": "79a5568bdf4381c1415d7e2da90f0ab11fa59990",
+    "goalComplete": false,
+    "contract": "docs/goal/KB_IMPLEMENTATION_CONTRACT.md",
+    "manifest": "docs/research/evidence/book-document/20261103/manifest.json",
+    "implementation": [
+      "question-document.v3 adds independent book_extracted role receipts; v1/v2 meanings remain closed",
+      "Existing pair/index/work/SQLite writer/journal updates canonical fields, archive and document together",
+      "Exact authenticated structured stem locates section despite interrupted transcript; conflicts/protected roles remain held",
+      "Original source-document authentication and edit ledgers permit teacher edits while preserving untouched answer provenance",
+      "Pi context, retrieval, identity, editor and rich/instance export accept v2/v3 complete documents",
+      "Typed match UI opens the independent answer receipt and original page",
+      "Privacy matching applies to human text in closed-schema payloads; exact long-decimal coordinates/hashes retain original schema/source validation"
+    ],
+    "tests": {
+      "buildAndTypecheck": true,
+      "rendererComponents": 245,
+      "legacyBookAndNewDocument": {
+        "legacy": 21,
+        "new": 7
+      },
+      "originalExecutor": {
+        "legacy": 109,
+        "crossPage": 11,
+        "new": 6
+      },
+      "newBoundaryChecks": 13,
+      "electronChecks": 3,
+      "smoke": {
+        "passed": 207,
+        "total": 207,
+        "featureCommit": "347be78",
+        "runtime": "Explicit isolated legacy education regression, not production Pi; not rerun after independent collaborator bundle changes"
+      }
+    },
+    "commands": [
+      "npm run build",
+      "npm run test:renderer-components",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-boundaries.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-executor.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-journey.mjs <owned-account-temp-root>",
+      "node scripts/electron-smoke.mjs",
+      "node --experimental-transform-types --import ./scripts/office-agent/register-source.mjs scripts/education/kb-book-document-readback.mjs <retained-controlled-journey-root>"
+    ],
+    "electron": {
+      "scope": "Controlled printed PDF pair, actual recursive folder import/local parser/OCR/layout/crops, existing authorization and automatic matching, production Electron UI, typed source/Pi readback and restart. Model responses are controlled, no external requests. Not natural-book accuracy, full mixed-format, 40GB or installer acceptance.",
+      "checks": [
+        "Teacher recursively imports two printed PDFs, links the answer book, authorizes the original folder executor and receives a v3 structured question through automatic matching",
+        "Production match card opens the independently authenticated answer page in both desktop sizes without renderer errors",
+        "Cold production IPC/Pi context accepts the v3 document, preserves exact canonical facts and source provenance, and makes zero additional model calls"
+      ],
+      "buildSha256": "2a3ba4f660c6fc546ceea7264f6c114a5325bf1b67ee5659af1d2556707a78eb",
+      "controlledTransportCalls": 5,
+      "newCloudCalls": 0,
+      "rendererErrors": 0,
+      "sizes": [
+        [
+          1366,
+          768
+        ],
+        [
+          1920,
+          1080
+        ]
+      ],
+      "coldRestart": true,
+      "sqliteIntegrity": "ok",
+      "originalKnownAnswerSource": "Synthetic printed answer PDF, independently imported and processed; not a known answer invented for the natural exam"
+    },
+    "retainedFailures": [
+      {
+        "name": "omni-book-document-LE4r9h",
+        "transportCalls": 0,
+        "cloudRequests": 0,
+        "reason": "locator.getAttribute: Timeout 60000ms exceeded."
+      },
+      {
+        "name": "omni-book-document-7smQxJ",
+        "transportCalls": 0,
+        "cloudRequests": 0,
+        "reason": "locator.click: Timeout 60000ms exceeded."
+      },
+      {
+        "name": "omni-book-document-py0eL7",
+        "transportCalls": 2,
+        "cloudRequests": 0,
+        "reason": "Error: Controlled document journey timed out; inspect retained report and receipts"
+      },
+      {
+        "name": "omni-book-document-U5QLKY",
+        "transportCalls": 5,
+        "cloudRequests": 0,
+        "reason": "SyntaxError: Unexpected end of JSON input"
+      },
+      {
+        "name": "omni-book-document-FSywAn",
+        "transportCalls": 3,
+        "cloudRequests": 0,
+        "reason": "Error: Controlled document journey timed out; inspect retained report and receipts"
+      }
+    ],
+    "observedProductionBug": {
+      "case": "An actual crop box contains .046552740129640544; serializing metadata caused ID-card regex to match 18 fractional digits",
+      "effect": "privacy_blocked after first saved draft; no silent replay",
+      "fix": "Only human text passes the unchanged PII rules, in one bounded text batch; numeric/hash metadata remains authenticated by strict schema and source rules",
+      "negativeTests": [
+        "stem",
+        "answer",
+        "figure projection",
+        "page transcript",
+        "local crop OCR",
+        "answer-book issue section heading"
+      ]
+    },
+    "audit": {
+      "total": 42,
+      "high": 8,
+      "moderate": 26,
+      "low": 8,
+      "critical": 0,
+      "exitCode": 1,
+      "dependenciesChanged": false,
+      "productionOnlyTotal": 29
+    },
+    "build": {
+      "files": 456,
+      "bytes": 35240082,
+      "main": {
+        "bytes": 3785411,
+        "sha256": "2a3ba4f660c6fc546ceea7264f6c114a5325bf1b67ee5659af1d2556707a78eb"
+      },
+      "preload": {
+        "bytes": 37712,
+        "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+      },
+      "deltaFrom79a5568": {
+        "main": 7080,
+        "all": 9641,
+        "preload": 0
+      },
+      "productionSourceHashes": {
+        "apps/desktop/src/main/assets/material-ai-page-crops.ts": "cc02bf8eeedf9f3d9453832f62f6effd520dcea4a8b0a08cead93590272d311c",
+        "apps/desktop/src/main/assets/material-ai-repository.ts": "79d33fe99b76cdd34701d764f5bb42f4b1fab8c7f183c68eb174f16c73565598",
+        "apps/desktop/src/main/assets/material-book-answer-repository.ts": "fdb900f7e733b6e7338cd8e14cb63f4df25a60e05544f5cab1de25991bc3a045",
+        "apps/desktop/src/main/db.ts": "ea85f0ba145e53c9fbcd3f2a3280419706b05a80547a097534532800f2a9f824",
+        "apps/desktop/src/main/education/original-question-repository.ts": "4a6b32ca8e1f5af87eb89e89db956baac938460d06b6a2762fe230ab8dd61cf1",
+        "apps/desktop/src/main/education/paper-instance-export.ts": "125d5551db7d076f4cf426ac594975a723d6d19908da8092b4a117f54ddf4de3",
+        "apps/desktop/src/main/education/paper-instance.ts": "d2d378a23c94a3e1c6a312fe3c420c8fdcdb1718b4cff5661e9ccc8ca1d766d0",
+        "apps/desktop/src/main/education/paper-rich-export.ts": "063612fe7c88672dd0872792d1f063066809128b21be6a2fbbf99f2602347884",
+        "apps/desktop/src/main/education/question-context-provider.ts": "ec5aef5687ec25f280c8d065289ccce32d83f68ded8d434563e834f3360c33ed",
+        "apps/desktop/src/main/education/question-context-revision.ts": "85f4bff5335a1c6e416bdedfd575ee40467be3a79db4bde564f694209ba8e2f8",
+        "apps/desktop/src/main/education/question-explanation.ts": "b1f792d9873de3ddb3a335c662ab8ff8835cfcf9263ee3aee69039f875e0ff89",
+        "apps/desktop/src/main/education/question-retrieval.ts": "d9f328dcab338d2bf2ba85b8fea4783882d31c127cb109c2b25aa189c5bb5675",
+        "apps/desktop/src/main/retrieval/repository.ts": "625d3342651e390f9d2e7f4ef58e6a6960c181fa88ac6e97868df5e1081adf2a",
+        "apps/desktop/src/renderer/components/QuestionContextEditor.tsx": "9aaa335435d62b192d53e25eb68031161f8f77c3b30d66661115999658828a9e",
+        "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx": "7ccc0f8cb988a2a60b15a64680c268c9938e9a7e530428e11509c686386fdf3e",
+        "apps/desktop/src/renderer/components/paper-ui/PaperQuestionReviewCard.tsx": "39ed3cc33f59fd5272354486ed66f5a4c998fbccdd7335bd5595fd4985b42a2c",
+        "apps/desktop/src/renderer/components/paper-ui/paper-instance-content.ts": "f76e8e96704c67858d6377ece38dbf10594fc790c953ae3a90a8ac8c3ff50022",
+        "apps/desktop/src/renderer/components/product/MaterialBookMatches.tsx": "c6edacedcc4023f03a769703efffe0f178b4725d0f2071805229efe0d211fd0c",
+        "apps/desktop/src/shared/native-question.ts": "ecc1f032eda15ff87a716e3c46266015ae045832e4a43271cab2bcca64d6ce4a",
+        "apps/desktop/src/shared/question-answer-enrichment.ts": "d43b52b4717f63740e6f154ba1bfdbf8400116d283d059e16bf9808c363656da",
+        "apps/desktop/src/shared/question-document.ts": "84619fd0f83785426f95cd73e8cfbf3486be829eb97b34947832371c8861198c",
+        "apps/desktop/src/shared/question-facts.ts": "5caa9ab3cddff29679eee9949488bfff0cdd48a940976394a00d5e57fd2e78ce",
+        "apps/desktop/src/shared/question-identity.ts": "94083a3eaeaa10d03bca60b1adccffc86557dc4c126ae11fb50d9ceb21838f90",
+        "apps/desktop/src/shared/question-book-document.ts": "6b883b4b04123e7948e6c29eede8c15838a3c43b9845b5096c6e1265f30e2123",
+        "apps/desktop/src/main/assets/material-ai-output-privacy.ts": "09f4cf6f7a659c6b6adec2ddda297184d328b3e0b436b661bcfc3dbae03c21e0"
+      }
+    },
+    "limits": [
+      "Natural six-page exam remains 1/6 AI draft and 5 held with the earlier internally contradictory generated answer; qualityPassed remains false",
+      "Natural paired-book structured-image correctness, all pages/mixed formats and web conflict adjudication remain open",
+      "Historical unsupported matching rows can be retried from the existing page button; no unbounded startup backfill",
+      "Natural 10GB to 40GB recall, P95, memory, recovery and managed installer acceptance remain open",
+      "Real Office/WPS/A4 rendering not rerun; controlled compiler preserves two primary images, teacher attribution and student answer isolation"
+    ],
+    "rollback": "Set OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0 to disable new structured writeback. Keep v3 readers, journal/source receipts, original files and privacy fix. No destructive migration or new queue/table/IPC/dependency.",
+    "integration": {
+      "mergeCommit": "d8e47a9",
+      "originMain": "2831b59",
+      "conflicts": "14 prepend-only state documents; shared base tails verified; both sides preserved; no production source conflict",
+      "featureSourcePreserved": 24,
+      "intentionalPostMergeSourceFix": "material-ai-output-privacy.ts also scans human answerIssues.section; one negative regression added",
+      "buildAndTypecheck": true,
+      "rendererComponents": 245,
+      "originalExecutorChecks": 126,
+      "readback": {
+        "output": "C:\\Users\\ZhouXuan\\AppData\\Local\\Temp\\omni-book-document-7bCCoz\\readback-jjvjD4",
+        "checks": [
+          "Independent answer original page and typed Pi v3 source at 1366x768",
+          "Independent answer original page and typed Pi v3 source at 1920x1080",
+          "Cold restart retains exact canonical/journal provenance and paid ledgers"
+        ],
+        "rendererErrors": [],
+        "modelRequests": 0,
+        "externalRequestsSent": 0,
+        "buildSha256": "5aed8ec0656edbcc708f4c8b372442c4f30021fee3c85dc66691213df70b9eb6",
+        "scope": "Zero-cloud production Electron readback of the exact retained synthetic v3 question; both sizes, independent answer original page, typed Pi source and cold restart. No replay of ingestion or model/teacher/40GB acceptance.",
+        "blockedMetadataRequests": [
+          {
+            "protocol": "https:",
+            "host": "api.deepseek.com",
+            "path": "/v1/models",
+            "method": "GET"
+          }
+        ],
+        "success": true
+      },
+      "build": {
+        "files": 456,
+        "bytes": 35242539,
+        "main": {
+          "bytes": 3787650,
+          "sha256": "5aed8ec0656edbcc708f4c8b372442c4f30021fee3c85dc66691213df70b9eb6"
+        },
+        "preload": {
+          "bytes": 37712,
+          "sha256": "bec570c44c3654219e7c729fbc5e66280c3dd0df381d6e725190d0874554d159"
+        },
+        "featureSourceChangesAfterMerge": [
+          "apps/desktop/src/main/assets/material-ai-output-privacy.ts"
+        ],
+        "integrationCommit": "d8e47a9",
+        "originMainIntegrated": "2831b59",
+        "smokePassedOnPreMergeFeature": 207,
+        "productionSourceHashes": {
+          "apps/desktop/src/main/assets/material-ai-page-crops.ts": "cc02bf8eeedf9f3d9453832f62f6effd520dcea4a8b0a08cead93590272d311c",
+          "apps/desktop/src/main/assets/material-ai-repository.ts": "79d33fe99b76cdd34701d764f5bb42f4b1fab8c7f183c68eb174f16c73565598",
+          "apps/desktop/src/main/assets/material-book-answer-repository.ts": "fdb900f7e733b6e7338cd8e14cb63f4df25a60e05544f5cab1de25991bc3a045",
+          "apps/desktop/src/main/db.ts": "ea85f0ba145e53c9fbcd3f2a3280419706b05a80547a097534532800f2a9f824",
+          "apps/desktop/src/main/education/original-question-repository.ts": "4a6b32ca8e1f5af87eb89e89db956baac938460d06b6a2762fe230ab8dd61cf1",
+          "apps/desktop/src/main/education/paper-instance-export.ts": "125d5551db7d076f4cf426ac594975a723d6d19908da8092b4a117f54ddf4de3",
+          "apps/desktop/src/main/education/paper-instance.ts": "d2d378a23c94a3e1c6a312fe3c420c8fdcdb1718b4cff5661e9ccc8ca1d766d0",
+          "apps/desktop/src/main/education/paper-rich-export.ts": "063612fe7c88672dd0872792d1f063066809128b21be6a2fbbf99f2602347884",
+          "apps/desktop/src/main/education/question-context-provider.ts": "ec5aef5687ec25f280c8d065289ccce32d83f68ded8d434563e834f3360c33ed",
+          "apps/desktop/src/main/education/question-context-revision.ts": "85f4bff5335a1c6e416bdedfd575ee40467be3a79db4bde564f694209ba8e2f8",
+          "apps/desktop/src/main/education/question-explanation.ts": "b1f792d9873de3ddb3a335c662ab8ff8835cfcf9263ee3aee69039f875e0ff89",
+          "apps/desktop/src/main/education/question-retrieval.ts": "d9f328dcab338d2bf2ba85b8fea4783882d31c127cb109c2b25aa189c5bb5675",
+          "apps/desktop/src/main/retrieval/repository.ts": "625d3342651e390f9d2e7f4ef58e6a6960c181fa88ac6e97868df5e1081adf2a",
+          "apps/desktop/src/renderer/components/QuestionContextEditor.tsx": "9aaa335435d62b192d53e25eb68031161f8f77c3b30d66661115999658828a9e",
+          "apps/desktop/src/renderer/components/paper-ui/PaperQuestionContent.tsx": "7ccc0f8cb988a2a60b15a64680c268c9938e9a7e530428e11509c686386fdf3e",
+          "apps/desktop/src/renderer/components/paper-ui/PaperQuestionReviewCard.tsx": "39ed3cc33f59fd5272354486ed66f5a4c998fbccdd7335bd5595fd4985b42a2c",
+          "apps/desktop/src/renderer/components/paper-ui/paper-instance-content.ts": "f76e8e96704c67858d6377ece38dbf10594fc790c953ae3a90a8ac8c3ff50022",
+          "apps/desktop/src/renderer/components/product/MaterialBookMatches.tsx": "c6edacedcc4023f03a769703efffe0f178b4725d0f2071805229efe0d211fd0c",
+          "apps/desktop/src/shared/native-question.ts": "ecc1f032eda15ff87a716e3c46266015ae045832e4a43271cab2bcca64d6ce4a",
+          "apps/desktop/src/shared/question-answer-enrichment.ts": "d43b52b4717f63740e6f154ba1bfdbf8400116d283d059e16bf9808c363656da",
+          "apps/desktop/src/shared/question-document.ts": "84619fd0f83785426f95cd73e8cfbf3486be829eb97b34947832371c8861198c",
+          "apps/desktop/src/shared/question-facts.ts": "5caa9ab3cddff29679eee9949488bfff0cdd48a940976394a00d5e57fd2e78ce",
+          "apps/desktop/src/shared/question-identity.ts": "94083a3eaeaa10d03bca60b1adccffc86557dc4c126ae11fb50d9ceb21838f90",
+          "apps/desktop/src/shared/question-book-document.ts": "6b883b4b04123e7948e6c29eede8c15838a3c43b9845b5096c6e1265f30e2123",
+          "apps/desktop/src/main/assets/material-ai-output-privacy.ts": "adcdf46ba16742512eab4f67da9a77a9505b43bd43c625b0da1012d398741cf3"
+        },
+        "deltaIncludingCollaboratorAndFinalPrivacyGuard": {
+          "main": 2239,
+          "all": 2457
+        }
+      },
+      "readbackHarnessFailures": "GET https://api.deepseek.com/v1/models was originally counted as a model call, masking the first report; metadata requests remained blocked and no completion/paid ledger changed. Counter/report corrected, failed logs retained."
     }
   }
 }

@@ -1,5 +1,5 @@
 import type {QuestionBankItem} from './contracts';
-import {QUESTION_DOCUMENT_COMPLETE_SCHEMA,validQuestionDocument} from './question-document';
+import {isCompleteQuestionDocument,validQuestionDocument} from './question-document';
 import {validQuestionArchive} from './question-archive';
 import {nativeQuestionConflicts} from './native-question';
 export type QuestionFactConflict='answer'|'analysis'|'statement';
@@ -10,8 +10,9 @@ export function questionFactConflicts(q:Pick<QuestionBankItem,'stem'|'answer'|'a
  const conflicts:QuestionFactConflict[]=[];
  if(q.answer!==document.answer.text)conflicts.push('answer');
  if(q.analysis!==document.analysis.text)conflicts.push('analysis');
+ for(const role of ['answer','analysis'] as const){const evidence=document[role],book=q.archive?.book?.roles[role];if(evidence.origin==='book_extracted'||q.archive?.[`${role}Origin`]==='book_extracted')if(evidence.origin!=='book_extracted'||!book||evidence.book.candidateId!==book.candidateId)if(!conflicts.includes(role))conflicts.push(role);}
  // v1 deliberately stores a summary beside original images; do not reinterpret old summaries as complete statements.
- if(document.schemaVersion===QUESTION_DOCUMENT_COMPLETE_SCHEMA&&q.stem!==document.context.projection.statement.text)conflicts.push('statement');
+ if(isCompleteQuestionDocument(document)&&q.stem!==document.context.projection.statement.text)conflicts.push('statement');
  return conflicts;
 }
 /** Hash facts, not notebook bookmarks/categories or a claimed accuracy score. */

@@ -1,3 +1,4 @@
+import {isCompleteQuestionDocument} from '../../../shared/question-document';
 import type {QuestionBlock} from '../../../shared/question-document';
 import type {PaperInstanceBlock, PaperInstanceContent, PaperInstanceRole} from '../../../shared/paper-instance';
 import type {PaperWorkspaceEntry} from './paper-basket-client';
@@ -30,7 +31,7 @@ export function seedInstanceRole(entry: PaperWorkspaceEntry, role: PaperInstance
       case 'subquestion': return [{type: 'subquestions', items: [{label: block.label, text: text(block.blocks)}]}, ...figures(block.blocks)];
     }
   });
-  if (role === 'question' && q.document?.blocks.length && q.document.schemaVersion !== 'xiaozhi.question-document.v2') return blocks(q.document.blocks);
+  if (role === 'question' && q.document?.blocks.length && !isCompleteQuestionDocument(q.document)) return blocks(q.document.blocks);
   const native = q.archive?.native?.roles[role];
   const value = native?.text || q[role === 'question' ? 'stem' : role] || '';
   const split = role === 'question' && isChoiceQuestion(q.questionType) ? splitInstanceOptions(value) : undefined;
@@ -40,7 +41,7 @@ export function seedInstanceRole(entry: PaperWorkspaceEntry, role: PaperInstance
   if (native) result.push(...native.figures.map(figure => image(figure.blockId)));
   else if (role === 'question' && q.document) {
     // V2 projections provide context alongside full-role screenshots. Keep their dependencies explicit.
-    if (q.document.schemaVersion === 'xiaozhi.question-document.v2') {
+    if (isCompleteQuestionDocument(q.document)) {
       for (const field of ['formulas', 'tables', 'choices', 'subquestions'] as const) {
         const projection = q.document.context.projection[field];
         if (field === 'choices') {

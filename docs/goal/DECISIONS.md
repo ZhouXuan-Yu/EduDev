@@ -1,5 +1,21 @@
 # Goal 决策记录
 
+## 2026-11-03 结构化题与独立答案册写回已贯通（受控闭环）
+
+整合收尾：正常合入origin/main 2831b59为d8e47a9，14处仅文档顶部冲突均核对共同尾部并保留双方；24份本功能生产源码hash不变，隐私helper另补答案册answerIssues.section人类文字负例。整合后build/TSC、245组件、原执行器126项（109旧+11跨页+6新增）及同一合成题库的双尺寸/冷启只读3项通过，0新增模型/外网请求/renderer错误。完整207/207在功能347be78通过一次，不冒称合并后重跑。最终456文件35242539B，主包3787650B（相对整合前另+2239B，含协作者和最后隐私负例修正），preload37712B不变。readback早期把被拦截的GET /v1/models误算作模型调用，已保留失败并区分；无重发/扣费或canonical变化。统一manifest24件，不包含自然资料或账户。
+
+
+复用原pair/index/work/writer/journal，新增question-document.v3独立答案PDF角色证据；完整图题/跨页题按已认证题面、章节和题号匹配，answer/analysis/archive/document同事务写回。原图/context不变，冲突保留、教师/原文保护；教师前后编辑、源变化撤销、Pi完整读取及检索/组卷/导出版本检查已接通。已有unsupported可从原页按钮重试，不做全库启动扫描。
+
+真实合成PDF链路发现并修复：裁剪坐标18位小数被整段JSON身份证检查误拦截，停在privacy_blocked。现在闭合schema内的人类文字仍按原PII规则批量检查，几何/hash仍严格认证；真正题干/答案/图义/页文/OCR隐私仍阻断。保留首稿和原失败，不自动重发未知请求。
+
+回退新写回：OMNI_EDU_BOOK_DOCUMENT_WRITEBACK=0；保留v3读取、journal、原件与原隐私规则，历史不删除。D协作者工作树/运行时和受保护stash未动；本轮正常推main与知识库分支，以最终远端读回为准。
+
+完整Goal active、AT数不变。此前自然六页样本仍1/6自动稿、5待核，物理解答内部矛盾未被三稿一致发现，qualityPassed=false保持；本片不篡改旧回执，不以合成答案册替代自然质量。下一继续自然主书/答案册结构化图题与冲突裁决、其余待核/续题归属和联网补答，再走整书→Pi组卷与自然10→40GB召回/恢复/P95/内存/受管安装，不能宣称整体交付。
+
+证据：docs/research/KB_ARCHITECTURE_BASELINE_20261101.json#bookDocumentTrial；docs/research/evidence/book-document/20261103/manifest.json。只归档合成/受控报告及构建日志，不上传自然资料、数据库或账户。
+
+
 ## 2026-11-03 整包局部改页与4N→5N联动（工程子项已实现）
 
 原请求目标大小写不敏感去重先于同值携带，防止别名碰撞误排除新文件检查。office_deliver_files在创建子草稿前调用既有preparePresentationEdit，保留来源版本/hash、幂等、原BoundEffect/审批/取消/部分恢复。未变化文件做新鲜磁盘回读，不声称重新内容检查。withStaticOfficePage以宿主停止Promise结算悬挂回调；隐藏DOM两帧等待加50ms兜底，原数值/交互检查不放松。无新依赖、表、共享协议、IPC/preload、Runtime或审批卡。

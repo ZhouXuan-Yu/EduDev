@@ -1,3 +1,5 @@
+import {aiOutputTextIsPublic,cropReviewTextIsPublic} from './material-ai-output-privacy';
+import {QUESTION_DOCUMENT_BOOK_SCHEMA,isCompleteQuestionDocument} from '../../shared/question-document';
 import type {ContinuationTextInspector} from './material-ai-continuation-text';
 import {pageContinuation} from '../../shared/material-ai-continuation';
 import {preparePageContinuation,validatePageContinuation} from './material-ai-continuation';
@@ -316,9 +318,9 @@ export class MaterialAiRepository{
       const crops=pageRegionsPolicy(unit.pagePrompt?.policy)?await readPageCrops(this.host,receipt.batchId,receipt.ordinal,unit.pageSource,proof.first,String(row.first_json),receipt.imageSha,signal,q.archive!.number,unit.pagePrompt):[];
       if(receipt.policy==='page-crop-complete.v1'){const crop=crops.find(c=>c.number===original.number);const candidate=restoredResponseQuestions(proof.final,unit.pageSource,unit.pagePrompt,crops).find(c=>c.number===original.number);
         if(!crop||!candidate||candidate.risks.some(r=>r!=='visual_unchecked')||!pageCropAgrees(proof.review||proof.first,proof.final,original.number,crops,candidate.fields.stem,unit.pagePrompt))throw Error('source_changed');
-        const root=pageCropDocument(original,crop,receipt.batchId,String(proof.config.model)),raw=JSON.stringify(q.document);
-        if(raw!==JSON.stringify(root)){const edit=(await this.host.all('SELECT first_sha,document_json FROM material_ai_page_document_edits WHERE question_id=? AND document_sha=?',[q.id,hash(raw)]))[0];if(q.archive!.state==='ai_final'||!edit||edit.first_sha!==receipt.firstSha||edit.document_json!==raw||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
-        if(!q.document||q.document.schemaVersion!=='xiaozhi.question-document.v2'||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');}
+        const root=pageCropDocument(original,crop,receipt.batchId,String(proof.config.model)),raw=JSON.stringify(q.document),base=q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA?await this.bookAnswers.validatedSourceDocument(q):q.document;
+        if(JSON.stringify(base)!==JSON.stringify(root)){const edits=await this.host.all('SELECT first_sha,document_json FROM material_ai_page_document_edits WHERE question_id=? AND document_sha IN (?,?)',[q.id,hash(raw),hash(JSON.stringify(base))]),edit=edits.find(e=>e.first_sha===receipt.firstSha&&(e.document_json===raw||q.document?.schemaVersion===QUESTION_DOCUMENT_BOOK_SCHEMA&&e.document_json===JSON.stringify(base)));if(q.archive!.state==='ai_final'||!edit||!q.document||JSON.stringify(q.document.source)!==JSON.stringify(root.source)||JSON.stringify(q.document.blocks.filter(b=>b.kind==='image'))!==JSON.stringify(root.blocks.filter(b=>b.kind==='image')))throw Error('source_changed');}
+        if(!isCompleteQuestionDocument(q.document)||q.document.context.projection.statement.text!==q.stem||q.document.answer.text!==q.answer||q.document.analysis.text!==q.analysis)throw Error('source_changed');}
       else if(q.document)throw Error('source_changed');
       const following=pageRegionsPolicy(unit.pagePrompt?.policy)?await followingPageStatus(this.host,unit.pageSource,unit.pagePrompt&&'totalPages'in unit.pagePrompt?unit.pagePrompt.totalPages:unit.pageSource.page):'separate';
       if(following!=='separate'&&original.number===proof.final.questions.at(-1)?.number&&!(receipt.policy==='page-crop-complete.v1'&&pageContinuation(unit.pagePrompt)?.number===original.number)&&!q.archive!.issues.includes(following==='continued'?'cross_page':'incomplete_question'))throw Error('source_incomplete');
@@ -345,7 +347,7 @@ export class MaterialAiRepository{
   async automaticSource(q:QuestionBankItem,signal:AbortSignal){
     if(q.archive?.ai?.policy!=='page-crop-complete.v1')return;
     signal.throwIfAborted();const checked=await this.validate(q,signal);if(!checked)throw Error('source_changed');await this.host.materials().verify(q.archive.pageSource!.resourceId,q.archive.pageSource!.version,signal);const crop=checked.crops.find(c=>c.number===q.archive!.number);
-    if(!crop||!q.document||q.document.schemaVersion!=='xiaozhi.question-document.v2'||!this.host.root)throw Error('source_changed');
+    if(!crop||!isCompleteQuestionDocument(q.document)||!this.host.root)throw Error('source_changed');
     const assets=new QuestionAssets(this.host.root),images=[];
     for(const [i,image]of (crop.fragments?.map(f=>f.image)||[crop.image]).entries()){
       const bytes=await assets.read(image,true,signal);signal.throwIfAborted();
@@ -459,7 +461,7 @@ export class MaterialAiRepository{
         const extra=pageContinuation(unit.pagePrompt);if(extra){const bytes=await new QuestionAssets(this.host.root!).read(extra.image,true,signal);args={...args,continuationImage:{data:bytes.toString('base64'),mime:'image/png'}};}
         if(unit.bookPagePolicy)args={...args,bookPagePolicy:unit.bookPagePolicy};
         if(unit.bookRole?.kind==='answers')args={...args,answerBook:true};
-        const beforeSend=async()=>{const extra=pageContinuation(unit.pagePrompt);if(extra&&await this.runtime!.clean(extra.text)!==extra.text)throw Error('privacy_blocked');if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&await this.runtime!.clean(JSON.stringify(args.previous))!==JSON.stringify(args.previous))throw Error('privacy_blocked');if(args.cropReview&&await this.runtime!.clean(JSON.stringify(args.cropReview))!==JSON.stringify(args.cropReview))throw Error('privacy_blocked');if(args.verification&&await this.runtime!.clean(JSON.stringify(args.verification))!==JSON.stringify(args.verification))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
+        const beforeSend=async()=>{const extra=pageContinuation(unit.pagePrompt);if(extra&&await this.runtime!.clean(extra.text)!==extra.text)throw Error('privacy_blocked');if(pageRegionsPolicy(unit.pagePrompt?.policy)&&await this.runtime!.clean(unit.pagePrompt.resourceTitle)!==unit.pagePrompt.resourceTitle)throw Error('privacy_blocked');if(await this.runtime!.clean(unit.text)!==clean||args.previous&&!await aiOutputTextIsPublic(args.previous,this.runtime!.clean))throw Error('privacy_blocked');if(args.cropReview&&!await cropReviewTextIsPublic(args.cropReview,this.runtime!.clean))throw Error('privacy_blocked');if(args.verification&&!await aiOutputTextIsPublic(args.verification.originalFirst,this.runtime!.clean))throw Error('privacy_blocked');await this.guard(batchId,config,unit,signal);};
         if(this.runtime!.complete){await beforeSend();transportStarted=true;return this.runtime!.complete(args,signal);}
         return completeMaterialAi({...args,beforeSend,onTransport:()=>{transportStarted=true;}},signal);
       };
@@ -502,14 +504,14 @@ export class MaterialAiRepository{
         const available=crops.flatMap(c=>(c.fragments?.map(f=>f.image)||[c.image]).map((image,index)=>({role:'题号'+c.number,index,image})));let total=0;
         for(const expected of cropReviewImagePlan(cropReview)){signal.throwIfAborted();const saved=available.find(i=>i.role===expected.role&&i.index===expected.index&&i.image.sha256===expected.sha256);if(!saved)throw Error('source_changed');const bytes=await new QuestionAssets(this.host.root!).read(saved.image,true,signal);total+=bytes.length;if(total>16*1048576)throw Error('unit_too_large');cropImages.push({role:expected.role,index:expected.index,data:bytes.toString('base64'),mime:'image/png' as const});}
       }else for(const crop of pageFragmentsPolicy(unit.pagePrompt?.policy)?[]:crops){const bytes=await new QuestionAssets(this.host.root!).read(crop.image,true,signal);cropImages.push({role:'题号'+crop.number,index:0,data:bytes.toString('base64'),mime:'image/png' as const});}
-      if(cropReview&&await this.runtime.clean(JSON.stringify(cropReview))!==JSON.stringify(cropReview))throw Error('privacy_blocked');
+      if(cropReview&&!await cropReviewTextIsPublic(cropReview,this.runtime.clean))throw Error('privacy_blocked');
       lease=await this.dispatch(batchId,ordinal,config,unit,'first_saved',signal);
       const finalRaw=await complete({model:config.model,apiKey,text:clean,image,imageCoverage:safeFirst.schemaVersion===MATERIAL_AI_IMAGE_RESPONSE||'pageText'in safeFirst,previous:verification?.review||safeFirst,...(verification?{verification:correctionVerification(first as AiPageResponse,verification.review)}:{}),...(cropReview?{cropReview}:{}),...(cropImages.length?{images:cropImages}:{}),...(unit.pageSource?{page:true as const}:{})}),final=parse(finalRaw);
       if(unit.pageSource){
         const pageFirst=parseAiPageResponse(firstRaw),pageFinal=parseAiPageResponse(finalRaw);
         if(!image||await this.runtime.clean(pageFinal.pageText)!==pageFinal.pageText)throw Error('privacy_blocked');
         if(correctionReviewEnabled(unit.pagePrompt)&&!verification){
-          if(await this.runtime.clean(JSON.stringify(pageFinal))!==JSON.stringify(pageFinal))throw Error('privacy_blocked');
+          if(!await aiOutputTextIsPublic(pageFinal,this.runtime.clean))throw Error('privacy_blocked');
           await this.write(async target=>{
             await target.guard(batchId,config,unit,signal);await target.owned(batchId,ordinal,lease);
             if(await readPageVerification(target.host,batchId,ordinal,unit.pageSource!,unit.pagePrompt,firstRaw,imageSha))throw Error('conflict');

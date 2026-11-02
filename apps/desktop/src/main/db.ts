@@ -20,7 +20,7 @@ import type {PaperBlueprint} from '../shared/paper-blueprint';
 import {questionVersion} from './education/question-context-provider';
 import {QuestionWebAnswerRepository} from './education/question-web-answer-repository';
 import { createHash, randomUUID } from 'node:crypto';
-import {readQuestionDocument} from '../shared/question-document';
+import {isCompleteQuestionDocument,readQuestionDocument} from '../shared/question-document';
 import {MaterialAiRepository} from './assets/material-ai-repository';
 import {recordAiOrigin,sourceCandidateHidden,migrateQuestionOrigins} from './assets/material-question-origins';
 import {NativeQuestionRepository} from './assets/native-question-repository';
@@ -1109,7 +1109,7 @@ export class OmniEduStore {
   private paperSql():PaperSql{
     return {all:(sql,params)=>this.all(sql,params),run:(sql,params)=>this.run(sql,params),read:id=>this.getQuestionBankItem(id),
       page:(blueprint:PaperBlueprint,after:string)=>this.questionCandidatePage(blueprint.subject,blueprint.grade,after),
-      validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(q.document.schemaVersion!=='xiaozhi.question-document.v2'||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
+      validate:async q=>{await this.materialQuestions.validate(q,true);if(q.document){const projection=await this.readQuestionDocumentContext(q.id,questionVersion(q));if(!isCompleteQuestionDocument(q.document)||JSON.stringify(projection)!==JSON.stringify(q.document.context.projection))throw new Error('source_changed');}}
     };
   }
   private async paperTransaction<T>(action:(sql:PaperSql)=>Promise<T>,readOnly=false):Promise<T>{
