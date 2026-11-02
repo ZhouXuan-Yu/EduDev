@@ -2,15 +2,17 @@ import type {GeneratedQuestionCompletenessIssue} from './generated-question-comp
 import {validMathStepStates,aggregateMathSteps,type MathStepState} from './math-check';
 import type {QuestionDraftIssue} from './question-draft';
 import {plainStudentInput} from './student-context';
+import {validQuestionScienceResult,type QuestionScienceResult} from './question-science';
 
 export const QUESTION_QUALITY_SCHEMA='xiaozhi.education.question-quality.v1' as const;
 export const QUESTION_QUALITY_RECORD_SCHEMA='xiaozhi.education.question-review-record.v2' as const;
 export const QUESTION_MATH_QUALITY_SCHEMA='xiaozhi.education.question-quality.v2' as const;
 export const QUESTION_MATH_RECORD_SCHEMA='xiaozhi.education.question-review-record.v3' as const;
-export type QuestionMathReceipt={state:'matched'|'mismatch'|'unsupported'|'basis_changed'|'not_run';conditionsVerified:false;calculation?:string;stepStates?:MathStepState[];engine?:'sympy-1.14.0'};
+export const QUESTION_SCIENCE_QUALITY_SCHEMA='xiaozhi.education.question-quality.v3' as const;
+export type QuestionMathReceipt={state:'matched'|'mismatch'|'unsupported'|'basis_changed'|'not_run';conditionsVerified:false;calculation?:string;stepStates?:MathStepState[];engine?:'sympy-1.14.0';science?:QuestionScienceResult};
 export type QuestionQualityIssue=QuestionDraftIssue|GeneratedQuestionCompletenessIssue|'choice_embedded_options_conflict'|'duplicate_batch'|'duplicate_parent'|'answer_conflict'|'math_mismatch';
 export type QuestionQualityReview={
- schemaVersion:typeof QUESTION_QUALITY_SCHEMA|typeof QUESTION_MATH_QUALITY_SCHEMA;
+ schemaVersion:typeof QUESTION_QUALITY_SCHEMA|typeof QUESTION_MATH_QUALITY_SCHEMA|typeof QUESTION_SCIENCE_QUALITY_SCHEMA;
  revisionHash:string;
  state:'blocked'|'manual_review';
  duplicateScope:'batch_and_read_parents';
@@ -31,16 +33,17 @@ export const QUESTION_QUALITY_MESSAGES:Record<QuestionQualityIssue,string>={
  non_choice_must_not_have_options:'本题型不能包含选择题选项',non_choice_correct_answer_looks_like_option_key:'本题型需要完整答案，不能只写选项字母',
  duplicate_batch:'与本组另一道题完全重复，请删除重复内容或重新出题',duplicate_parent:'与实读原题完全重复，不能作为变式题保存',
  answer_conflict:'完全相同的题面出现不同参考答案，请核对并解决冲突',
- math_mismatch:'提交的计算或线性条件检查未通过，候选不可保存；请核对下方具体结果',
+ math_mismatch:'提交的计算或条件检查未通过，候选不可保存；请核对下方具体结果',
 };
 export function validQuestionQuality(v:unknown,count:number):v is QuestionQualityReview{
- if(!plainStudentInput(v,['schemaVersion','revisionHash','state','duplicateScope','answerVerification','items'])||![QUESTION_QUALITY_SCHEMA,QUESTION_MATH_QUALITY_SCHEMA].includes(v.schemaVersion as typeof QUESTION_QUALITY_SCHEMA)||typeof v.revisionHash!=='string'||!/^[a-f0-9]{64}$/.test(v.revisionHash)||!['blocked','manual_review'].includes(String(v.state))||v.duplicateScope!=='batch_and_read_parents'||v.answerVerification!=='not_run'||!Array.isArray(v.items)||v.items.length!==count)return false;
- return v.items.every(i=>plainStudentInput(i,v.schemaVersion===QUESTION_QUALITY_SCHEMA?['state','issues']:['state','issues','math'])&&Array.isArray(i.issues)&&i.issues.length<=Object.keys(QUESTION_QUALITY_MESSAGES).length&&new Set(i.issues).size===i.issues.length&&i.issues.every(k=>typeof k==='string'&&Object.prototype.hasOwnProperty.call(QUESTION_QUALITY_MESSAGES,k))&&i.state===(i.issues.length?'blocked':'manual_review')&&(v.schemaVersion===QUESTION_QUALITY_SCHEMA?!i.issues.includes('math_mismatch'):validQuestionMathReceipt(i.math)&&i.issues.includes('math_mismatch')===(i.math.state==='mismatch')))&&v.state===(v.items.some(i=>i.state==='blocked')?'blocked':'manual_review');
+ if(!plainStudentInput(v,['schemaVersion','revisionHash','state','duplicateScope','answerVerification','items'])||![QUESTION_QUALITY_SCHEMA,QUESTION_MATH_QUALITY_SCHEMA,QUESTION_SCIENCE_QUALITY_SCHEMA].includes(v.schemaVersion as typeof QUESTION_QUALITY_SCHEMA)||typeof v.revisionHash!=='string'||!/^[a-f0-9]{64}$/.test(v.revisionHash)||!['blocked','manual_review'].includes(String(v.state))||v.duplicateScope!=='batch_and_read_parents'||v.answerVerification!=='not_run'||!Array.isArray(v.items)||v.items.length!==count)return false;
+ return v.items.every(i=>plainStudentInput(i,v.schemaVersion===QUESTION_QUALITY_SCHEMA?['state','issues']:['state','issues','math'])&&Array.isArray(i.issues)&&i.issues.length<=Object.keys(QUESTION_QUALITY_MESSAGES).length&&new Set(i.issues).size===i.issues.length&&i.issues.every(k=>typeof k==='string'&&Object.prototype.hasOwnProperty.call(QUESTION_QUALITY_MESSAGES,k))&&i.state===(i.issues.length?'blocked':'manual_review')&&(v.schemaVersion===QUESTION_QUALITY_SCHEMA?!i.issues.includes('math_mismatch'):validQuestionMathReceipt(i.math,v.schemaVersion===QUESTION_SCIENCE_QUALITY_SCHEMA)&&i.issues.includes('math_mismatch')===(i.math.state==='mismatch')))&&v.state===(v.items.some(i=>i.state==='blocked')?'blocked':'manual_review');
 }
-function validQuestionMathReceipt(v:unknown):v is QuestionMathReceipt{
- if(!plainStudentInput(v,['state','conditionsVerified','calculation','engine','stepStates'])||v.conditionsVerified!==false)return false;
+function validQuestionMathReceipt(v:unknown,science=false):v is QuestionMathReceipt{
+ if(!plainStudentInput(v,science?['state','conditionsVerified','calculation','engine','stepStates','science']:['state','conditionsVerified','calculation','engine','stepStates'])||v.conditionsVerified!==false)return false;
+ if(v.science!==undefined&&(!science||!validQuestionScienceResult(v.science)||v.stepStates!==undefined||v.state!== (v.science.result.state==='dimension_mismatch'?'mismatch':v.science.result.state)))return false;
  if(v.stepStates!==undefined&&(!validMathStepStates(v.stepStates)||aggregateMathSteps(v.stepStates)!==v.state))return false;
  if(v.state==='not_run')return v.calculation===undefined&&v.engine===undefined;
- if(typeof v.calculation!=='string'||v.calculation.length>8000)return false;
+ if(typeof v.calculation!=='string'||v.calculation.length>(science?24000:8000))return false;
  return v.state==='basis_changed'?v.engine===undefined:['matched','mismatch','unsupported'].includes(String(v.state))&&v.engine==='sympy-1.14.0';
 }
